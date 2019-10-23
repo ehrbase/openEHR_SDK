@@ -28,7 +28,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <skipIntegrationTests>true</skipIntegrationTests>
-        <ehrbaseVersion>0.9.0-SNAPSHOT</ehrbaseVersion>
+        <ehrbaseVersion>0.9.0</ehrbaseVersion>
     </properties>
 
     <build>
