@@ -20,6 +20,7 @@ package org.ehrbase.client.openehrclient.defaultrestclient;
 import org.ehrbase.client.Integration;
 import org.ehrbase.client.TestData;
 import org.ehrbase.client.classgenerator.EhrbaseBloodPressureSimpleDeV0;
+import org.ehrbase.client.classgenerator.EhrbaseMultiOccurrenceDeV1;
 import org.ehrbase.client.openehrclient.CompositionEndpoint;
 import org.ehrbase.client.openehrclient.OpenEhrClient;
 import org.junit.BeforeClass;
@@ -64,5 +65,23 @@ public class DefaultRestCompositionEndpointIT {
 
         Optional<EhrbaseBloodPressureSimpleDeV0> actual = compositionEndpoint.find(compositionId, EhrbaseBloodPressureSimpleDeV0.class);
         assertTrue(actual.isPresent());
+    }
+
+    @Test
+    public void testEhrbaseMultiOccurrenceDeV1() {
+
+        UUID ehr = openEhrClient.ehrEndpoint().createEhr();
+        EhrbaseMultiOccurrenceDeV1 bloodPressureSimpleDeV0 = TestData.buildEhrbaseMultiOccurrenceDeV1();
+
+        CompositionEndpoint compositionEndpoint = openEhrClient.compositionEndpoint(ehr);
+        UUID compositionId = compositionEndpoint.saveCompositionEntity(bloodPressureSimpleDeV0);
+
+        Optional<EhrbaseMultiOccurrenceDeV1> actual = compositionEndpoint.find(compositionId, EhrbaseMultiOccurrenceDeV1.class);
+        assertTrue(actual.isPresent());
+        assertThat(actual.get().getBodyTemperature()).size().isEqualTo(1);
+        EhrbaseMultiOccurrenceDeV1.BodyTemperature bodyTemperature = actual.get().getBodyTemperature().get(0);
+        assertThat(bodyTemperature.getHistory())
+                .extracting(h -> h.getTemperatureMagnitude())
+                .containsExactlyInAnyOrder(11d, 22d);
     }
 }

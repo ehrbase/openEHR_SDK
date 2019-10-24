@@ -21,6 +21,7 @@ import com.nedap.archie.rm.archetyped.Locatable;
 import com.nedap.archie.rm.datatypes.CodePhrase;
 import com.nedap.archie.rm.support.identification.ObjectId;
 import org.ehrbase.client.annotations.Archetype;
+import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.Path;
 import org.ehrbase.client.classgenerator.EnumValueSet;
 import org.ehrbase.client.exception.ClientException;
@@ -70,7 +71,7 @@ public class Flattener {
             Class<?> aClass = ReflectionUtils.forName(actualTypeArgument.getTypeName(), this.getClass().getClassLoader());
             for (Object childItem : childList) {
 
-                if (aClass.isAnnotationPresent(Archetype.class)) {
+                if (aClass.isAnnotationPresent(Entity.class)) {
 
                     Object dtoItem = createInstance(aClass);
                     mapEntityToDto((Locatable) childItem, dtoItem);

@@ -106,24 +106,25 @@ public class TemplateIntrospect {
         Class rmClass = RM_INFO_LOOKUP.getClass(ccomplexobject.getRmTypeName());
         if (Pathable.class.isAssignableFrom(rmClass)) {
             localNodeMap.putAll(handleNonTemplateFields(rmClass, path));
-        }
+
 
         CATTRIBUTE[] cattributes = ccomplexobject.getAttributesArray();
-        if (ArrayUtils.isNotEmpty(cattributes)) {
-            for (CATTRIBUTE cattribute : cattributes) {
-                String pathLoop = path + PATH_DIVIDER + cattribute.getRmAttributeName();
-                log.trace("Path: {}", pathLoop);
-                if (
-                        (Event.class.isAssignableFrom(rmClass) && pathLoop.contains("offset")) // event.offset is a calculated value
-                                || pathLoop.equals("/category") // set from template
-                ) {
-                    continue;
-                }
+            if (ArrayUtils.isNotEmpty(cattributes)) {
+                for (CATTRIBUTE cattribute : cattributes) {
+                    String pathLoop = path + PATH_DIVIDER + cattribute.getRmAttributeName();
+                    log.trace("Path: {}", pathLoop);
+                    if (
+                            (Event.class.isAssignableFrom(rmClass) && pathLoop.contains("offset")) // event.offset is a calculated value
+                                    || pathLoop.equals("/category") // set from template
+                    ) {
+                        continue;
+                    }
 
-                for (COBJECT cobject : cattribute.getChildrenArray()) {
-                    localNodeMap.putAll(handleCOBJECT(cobject, pathLoop, termDef, term));
-                }
+                    for (COBJECT cobject : cattribute.getChildrenArray()) {
+                        localNodeMap.putAll(handleCOBJECT(cobject, pathLoop, termDef, term));
+                    }
 
+                }
             }
         } else {
             localNodeMap.put(path, new EndNode(RM_INFO_LOOKUP.getClass(ccomplexobject.getRmTypeName()), term));

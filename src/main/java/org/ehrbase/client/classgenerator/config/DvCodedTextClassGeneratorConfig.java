@@ -32,7 +32,7 @@ public class DvCodedTextClassGeneratorConfig implements RmClassGeneratorConfig {
     }
 
     @Override
-    public boolean idExpandField() {
+    public boolean isExpandField() {
         return true;
     }
 

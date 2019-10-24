@@ -32,7 +32,7 @@ public class PartyProxyClassGeneratorConfig implements RmClassGeneratorConfig {
     }
 
     @Override
-    public boolean idExpandField() {
+    public boolean isExpandField() {
         return true;
     }
 
