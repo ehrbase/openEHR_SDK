@@ -18,8 +18,8 @@
 package org.ehrbase.client.openehrclient.defaultrestclient;
 
 import org.ehrbase.client.Integration;
+import org.ehrbase.client.TestData;
 import org.ehrbase.client.classgenerator.EhrbaseBloodPressureSimpleDeV0;
-import org.ehrbase.client.flattener.FlattenerTest;
 import org.ehrbase.client.openehrclient.CompositionEndpoint;
 import org.ehrbase.client.openehrclient.OpenEhrClient;
 import org.junit.BeforeClass;
@@ -47,7 +47,7 @@ public class DefaultRestCompositionEndpointIT {
     public void testSaveCompositionEntity() {
 
         UUID ehr = openEhrClient.ehrEndpoint().createEhr();
-        EhrbaseBloodPressureSimpleDeV0 bloodPressureSimpleDeV0 = FlattenerTest.buildEhrbaseBloodPressureSimpleDeV0();
+        EhrbaseBloodPressureSimpleDeV0 bloodPressureSimpleDeV0 = TestData.buildEhrbaseBloodPressureSimpleDeV0();
 
         UUID compositionId = openEhrClient.compositionEndpoint(ehr).saveCompositionEntity(bloodPressureSimpleDeV0);
         assertThat(compositionId).isNotNull();
@@ -57,7 +57,7 @@ public class DefaultRestCompositionEndpointIT {
     public void testFind() {
 
         UUID ehr = openEhrClient.ehrEndpoint().createEhr();
-        EhrbaseBloodPressureSimpleDeV0 bloodPressureSimpleDeV0 = FlattenerTest.buildEhrbaseBloodPressureSimpleDeV0();
+        EhrbaseBloodPressureSimpleDeV0 bloodPressureSimpleDeV0 = TestData.buildEhrbaseBloodPressureSimpleDeV0();
 
         CompositionEndpoint compositionEndpoint = openEhrClient.compositionEndpoint(ehr);
         UUID compositionId = compositionEndpoint.saveCompositionEntity(bloodPressureSimpleDeV0);

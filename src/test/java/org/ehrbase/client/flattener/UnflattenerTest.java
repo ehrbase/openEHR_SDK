@@ -21,19 +21,22 @@ import com.nedap.archie.rm.archetyped.Locatable;
 import com.nedap.archie.rm.composition.Composition;
 import com.nedap.archie.rm.composition.Observation;
 import com.nedap.archie.rm.datastructures.Element;
+import com.nedap.archie.rm.datastructures.PointEvent;
 import com.nedap.archie.rm.datatypes.CodePhrase;
 import com.nedap.archie.rm.datavalues.DvCodedText;
 import com.nedap.archie.rm.datavalues.quantity.DvQuantity;
 import com.nedap.archie.rm.support.identification.TerminologyId;
+import org.ehrbase.client.TestData;
 import org.ehrbase.client.classgenerator.EhrbaseBloodPressureSimpleDeV0;
+import org.ehrbase.client.classgenerator.EhrbaseMultiOccurrenceDeV1;
 import org.junit.Test;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.ehrbase.client.flattener.FlattenerTest.buildEhrbaseBloodPressureSimpleDeV0;
-import static org.ehrbase.client.flattener.FlattenerTest.buildExampleBloodpressureListDe;
+import static org.ehrbase.client.TestData.buildEhrbaseBloodPressureSimpleDeV0;
+import static org.ehrbase.client.TestData.buildExampleBloodpressureListDe;
 
 public class UnflattenerTest {
 
@@ -78,6 +81,28 @@ public class UnflattenerTest {
         DvCodedText expected = new DvCodedText("Fifth sound", new CodePhrase(new TerminologyId("local"), "at1012"));
 
         assertThat(observation.itemAtPath("/protocol[at0011]/items[at1010]/value")).isEqualTo(expected);
+
+    }
+
+    @Test
+    public void testUnflattenEhrbaseMultiOccurrenceDeV1() {
+        Unflattener cut = new Unflattener(new TestDataTemplateProvider());
+
+        EhrbaseMultiOccurrenceDeV1 dto = TestData.buildEhrbaseMultiOccurrenceDeV1();
+
+        Composition rmObject = (Composition) cut.unflatten(dto);
+
+        assertThat(rmObject).isNotNull();
+        assertThat(rmObject.getArchetypeDetails().getTemplateId().getValue()).isEqualTo("ehrbase_multi_occurrence.de.v1");
+        List<Object> observationList = rmObject.itemsAtPath("/content[openEHR-EHR-OBSERVATION.body_temperature.v2]");
+        assertThat(observationList).size().isEqualTo(1);
+        Observation observation = (Observation) observationList.get(0);
+        List<Object> objects = observation.itemsAtPath("/data[at0002]/events");
+        assertThat(objects)
+                .extracting(o -> ((PointEvent) o))
+                .extracting(p -> (DvQuantity) p.itemAtPath("/data[at0001]/items[at0004]/value"))
+                .extracting(DvQuantity::getMagnitude)
+                .containsExactlyInAnyOrder(11d, 22d);
 
     }
 

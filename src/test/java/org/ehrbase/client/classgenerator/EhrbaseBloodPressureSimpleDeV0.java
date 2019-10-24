@@ -23,6 +23,7 @@ import com.nedap.archie.rm.datavalues.DataValue;
 import com.nedap.archie.rm.generic.PartyIdentified;
 import com.nedap.archie.rm.support.identification.PartyRef;
 import org.ehrbase.client.annotations.Archetype;
+import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.Path;
 import org.ehrbase.client.annotations.Template;
 
@@ -31,6 +32,7 @@ import java.util.List;
 
 @Archetype("openEHR-EHR-COMPOSITION.sample_encounter.v1")
 @Template("ehrbase_blood_pressure_simple.de.v0")
+@Entity
 public class EhrbaseBloodPressureSimpleDeV0 {
     @Path("/context/end_time|value")
     private TemporalAccessor endTimeValue;
@@ -156,6 +158,7 @@ public class EhrbaseBloodPressureSimpleDeV0 {
     }
 
     @Archetype("openEHR-EHR-OBSERVATION.sample_blood_pressure.v1")
+    @Entity
     public static class BloodPressureTrainingSample {
         @Path("/data[at0001]/events[at0002]/state[at0007]/items")
         private Cluster stateStructure;
@@ -572,6 +575,7 @@ public class EhrbaseBloodPressureSimpleDeV0 {
     }
 
     @Archetype("openEHR-EHR-CLUSTER.sample_device.v1")
+    @Entity
     public static class DeviceDetailsTrainingSample {
         @Path("/items[at0004]/items[at0005]/value|value")
         private String modelValue;
