@@ -38,13 +38,30 @@ public class ClassGeneratorTest {
         OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(OperationalTemplateTestData.BLOOD_PRESSURE_SIMPLE.getStream()).getTemplate();
         ClassGenerator cut = new ClassGenerator();
         TypeSpec generate = cut.generate(template);
-        JavaFile javaFile = JavaFile.builder("de.ehrbase.client.classgenerator", generate)
+        JavaFile javaFile = JavaFile.builder("org.ehrbase.client.classgenerator", generate)
                 .build();
         StringWriter stringWriter = new StringWriter();
         javaFile.writeTo(stringWriter);
         String actual = stringWriter.toString();
         System.out.println(actual);
         assertTrue(StringUtils.isNotBlank(actual));
+    }
+
+    @Test
+    public void testGenerateMultiOccurrence() throws IOException, XmlException {
+        OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(OperationalTemplateTestData.MULTI_OCCURRENCE.getStream()).getTemplate();
+        ClassGenerator cut = new ClassGenerator();
+        TypeSpec generate = cut.generate(template);
+        JavaFile javaFile = JavaFile.builder("org.ehrbase.client.classgenerator", generate)
+                .build();
+
+        //  javaFile.writeTo(Paths.get(".", "src/test/java/"));
+        StringWriter stringWriter = new StringWriter();
+        javaFile.writeTo(stringWriter);
+        String actual = stringWriter.toString();
+        System.out.println(actual);
+        assertTrue(StringUtils.isNotBlank(actual));
+
     }
 
 

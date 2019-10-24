@@ -19,7 +19,7 @@ package org.ehrbase.client.introspect.node;
 
 import java.util.Map;
 
-public class ArchetypeNode extends MultiNode {
+public class ArchetypeNode extends EntityNode {
 
     private final String archetypeId;
 

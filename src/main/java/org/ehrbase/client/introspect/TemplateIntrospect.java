@@ -26,7 +26,7 @@ import org.ehrbase.client.exception.ClientException;
 import org.ehrbase.client.introspect.config.RmIntrospectConfig;
 import org.ehrbase.client.introspect.node.ArchetypeNode;
 import org.ehrbase.client.introspect.node.EndNode;
-import org.ehrbase.client.introspect.node.MultiNode;
+import org.ehrbase.client.introspect.node.EntityNode;
 import org.ehrbase.client.introspect.node.Node;
 import org.ehrbase.ehr.encode.wrappers.SnakeCase;
 import org.openehr.schemas.v1.*;
@@ -142,7 +142,7 @@ public class TemplateIntrospect {
 
             return Collections.singletonMap(path, handleCARCHETYPEROOT((CARCHETYPEROOT) cobject, term, multi));
         } else if (cobject instanceof CCOMPLEXOBJECT && multi) {
-            return Collections.singletonMap(path, handleMulti((CCOMPLEXOBJECT) cobject, term, termDef, multi));
+            return Collections.singletonMap(path, handleEntity((CCOMPLEXOBJECT) cobject, term, termDef, multi));
         } else if (cobject instanceof CCOMPLEXOBJECT) {
             if (!cobject.getNodeId().isEmpty()) {
                 path = path + "[" + cobject.getNodeId() + "]";
@@ -164,8 +164,8 @@ public class TemplateIntrospect {
         }
     }
 
-    private MultiNode handleMulti(CCOMPLEXOBJECT cobject, String name, Map<String, TermDefinition> termDef, boolean multi) {
-        return new MultiNode(Optional.ofNullable(termDef.get("at0000")).map(TermDefinition::getValue).orElse(name), multi, handleCCOMPLEXOBJECT(cobject, "", termDef, ""));
+    private EntityNode handleEntity(CCOMPLEXOBJECT cobject, String name, Map<String, TermDefinition> termDef, boolean multi) {
+        return new EntityNode(Optional.ofNullable(termDef.get("at0000")).map(TermDefinition::getValue).orElse("") + name, multi, handleCCOMPLEXOBJECT(cobject, "", termDef, ""));
     }
 
     private Map<String, Node> handleNonTemplateFields(Class clazz, String path) {
