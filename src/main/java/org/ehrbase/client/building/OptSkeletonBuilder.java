@@ -80,14 +80,14 @@ public class OptSkeletonBuilder {
 
     private Object buildSkeletonForTerminalRmObjekts(XmlObject cpo) {
 
-        return builderMap
+        RmObjektSkeletonBuilder rmObjektSkeletonBuilder = builderMap
                 .entrySet()
                 .stream()
                 .filter(e -> e.getKey().isAssignableFrom(cpo.getClass()))
                 .findAny()
                 .map(Map.Entry::getValue)
-                .map(b -> b.getRmObjekt(cpo))
                 .orElseThrow(() -> new RuntimeException(String.format("No builder for {%s}", cpo.getClass())));
+        return rmObjektSkeletonBuilder.getRmObjekt(cpo);
     }
 
 

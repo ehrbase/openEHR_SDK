@@ -14,17 +14,18 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+package org.ehrbase.client.building.rmobjektskeletonbuilder;
 
-package org.ehrbase.client.annotations;
+import org.openehr.schemas.v1.CPRIMITIVEOBJECT;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+public class PrimitiveSkeletonBuilder implements RmObjektSkeletonBuilder<CPRIMITIVEOBJECT, Object> {
+    @Override
+    public Class<CPRIMITIVEOBJECT> getXmlClass() {
+        return CPRIMITIVEOBJECT.class;
+    }
 
-@Retention(RetentionPolicy.RUNTIME)
-@Target(value = {ElementType.TYPE})
-public @interface Template {
-    public static final String VALUE = "value";
-    public String value();
+    @Override
+    public Object getRmObjekt(CPRIMITIVEOBJECT xml) {
+        return null;
+    }
 }

@@ -26,15 +26,13 @@ import org.apache.commons.lang3.reflect.FieldUtils;
 import org.apache.commons.text.CaseUtils;
 import org.apache.xmlbeans.XmlException;
 import org.ehrbase.client.annotations.Archetype;
+import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.Path;
 import org.ehrbase.client.annotations.Template;
 import org.ehrbase.client.classgenerator.config.RmClassGeneratorConfig;
 import org.ehrbase.client.exception.ClientException;
 import org.ehrbase.client.introspect.TemplateIntrospect;
-import org.ehrbase.client.introspect.node.ArchetypeNode;
-import org.ehrbase.client.introspect.node.EndNode;
-import org.ehrbase.client.introspect.node.Node;
-import org.ehrbase.client.introspect.node.TemplateNode;
+import org.ehrbase.client.introspect.node.*;
 import org.ehrbase.ehr.encode.wrappers.SnakeCase;
 import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
 import org.openehr.schemas.v1.TemplateDocument;
@@ -78,13 +76,16 @@ public class ClassGenerator {
 
     }
 
-    private TypeSpec build(ArchetypeNode archetypeNode) {
+    private TypeSpec build(EntityNode archetypeNode) {
         curentFieldNameMap = new HashMap<>();
         TypeSpec.Builder classBuilder = TypeSpec.classBuilder(normalise(archetypeNode.getName(), true));
         classBuilder.addModifiers(Modifier.PUBLIC);
+        classBuilder.addAnnotation(AnnotationSpec.builder(Entity.class).build());
 
-        AnnotationSpec archetypeAnnotation = AnnotationSpec.builder(Archetype.class).addMember(Archetype.VALUE, "$S", archetypeNode.getArchetypeId()).build();
-        classBuilder.addAnnotation(archetypeAnnotation);
+        if (archetypeNode instanceof ArchetypeNode) {
+            AnnotationSpec archetypeAnnotation = AnnotationSpec.builder(Archetype.class).addMember(Archetype.VALUE, "$S", ((ArchetypeNode) archetypeNode).getArchetypeId()).build();
+            classBuilder.addAnnotation(archetypeAnnotation);
+        }
 
         if (archetypeNode instanceof TemplateNode) {
             AnnotationSpec templateAnnotation = AnnotationSpec.builder(Template.class).addMember(Template.VALUE, "$S", ((TemplateNode) archetypeNode).getTemplateId()).build();
@@ -97,8 +98,8 @@ public class ClassGenerator {
             if (entry.getValue() instanceof EndNode) {
                 EndNode endNode = (EndNode) entry.getValue();
                 addSimpleField(classBuilder, entry.getKey(), endNode);
-            } else if (entry.getValue() instanceof ArchetypeNode) {
-                addComplexField(classBuilder, entry.getKey(), (ArchetypeNode) entry.getValue());
+            } else if (entry.getValue() instanceof EntityNode) {
+                addComplexField(classBuilder, entry.getKey(), (EntityNode) entry.getValue());
             }
         }
 
@@ -120,7 +121,7 @@ public class ClassGenerator {
         }
     }
 
-    private void addComplexField(TypeSpec.Builder classBuilder, String path, ArchetypeNode node) {
+    private void addComplexField(TypeSpec.Builder classBuilder, String path, EntityNode node) {
         TypeSpec subSpec = build(node);
         classBuilder.addType(subSpec);
 

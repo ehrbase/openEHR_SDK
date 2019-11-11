@@ -25,13 +25,13 @@ import com.nedap.archie.rm.datavalues.DvCodedText;
 import com.nedap.archie.rm.support.identification.TerminologyId;
 import com.nedap.archie.rminfo.ArchieRMInfoLookup;
 import org.apache.commons.text.CaseUtils;
-import org.ehrbase.client.annotations.Archetype;
+import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.Path;
 import org.ehrbase.client.annotations.Template;
 import org.ehrbase.client.building.OptSkeletonBuilder;
 import org.ehrbase.client.classgenerator.EnumValueSet;
 import org.ehrbase.client.exception.ClientException;
-import org.ehrbase.serialisation.CanonicalXML;
+import org.ehrbase.serialisation.CanonicalJson;
 import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,7 +57,7 @@ public class Unflattener {
     public RMObject unflatten(Object dto) {
         Template template = dto.getClass().getAnnotation(Template.class);
 
-        OPERATIONALTEMPLATE operationalTemplate = templateProvider.getForTemplateId(template.value()).get();
+        OPERATIONALTEMPLATE operationalTemplate = templateProvider.getForTemplateId(template.value()).orElseThrow(() -> new ClientException(String.format("Unknown Template %s", template.value())));
         OptSkeletonBuilder optSkeletonBuilder = new OptSkeletonBuilder();
         Locatable generate = (Locatable) optSkeletonBuilder.generate(operationalTemplate);
 
@@ -104,7 +104,7 @@ public class Unflattener {
             dvCodedText.setDefiningCode(new CodePhrase(new TerminologyId(valueSet.getTerminologyId()), valueSet.getCode()));
         } else if (extractType(toCamelCase(childName), parent).isAssignableFrom(value.getClass())) {
             RM_OBJECT_CREATOR.set(parent, childName, Collections.singletonList(value));
-        } else if (value.getClass().isAnnotationPresent(Archetype.class)) {
+        } else if (value.getClass().isAnnotationPresent(Entity.class)) {
             mapDtoToEntity(value, (Locatable) child);
         }
 
@@ -121,7 +121,7 @@ public class Unflattener {
     }
 
     private <T extends RMObject> T deepClone(RMObject rmObjekt) {
-        CanonicalXML canonicalXML = new CanonicalXML();
+        CanonicalJson canonicalXML = new CanonicalJson();
         return (T) canonicalXML.unmarshal(canonicalXML.marshal(rmObjekt), rmObjekt.getClass());
     }
 

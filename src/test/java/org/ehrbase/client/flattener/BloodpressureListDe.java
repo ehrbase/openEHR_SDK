@@ -18,6 +18,7 @@
 package org.ehrbase.client.flattener;
 
 import org.ehrbase.client.annotations.Archetype;
+import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.Path;
 import org.ehrbase.client.annotations.Template;
 
@@ -26,6 +27,7 @@ import java.util.List;
 
 @Archetype(value = "openEHR-EHR-COMPOSITION.sample_encounter.v1")
 @Template(value = "ehrbase_blood_pressure_simple.de.v0")
+@Entity
 public class BloodpressureListDe {
 
     public static final String START_TIME = "startTime";
@@ -34,6 +36,7 @@ public class BloodpressureListDe {
     public static final String BLOODPRESSURE_SYSTOLISCH_VALUE = "systolischValue";
 
     @Archetype(value = "openEHR-EHR-OBSERVATION.sample_blood_pressure.v1")
+    @Entity
     public static class Bloodpressure {
 
         @Path(value = "/data[at0001]/events[at0002]/data[at0003]/items[at0004]|magnitude")

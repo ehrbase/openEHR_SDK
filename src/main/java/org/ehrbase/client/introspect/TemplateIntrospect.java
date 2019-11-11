@@ -26,6 +26,7 @@ import org.ehrbase.client.exception.ClientException;
 import org.ehrbase.client.introspect.config.RmIntrospectConfig;
 import org.ehrbase.client.introspect.node.ArchetypeNode;
 import org.ehrbase.client.introspect.node.EndNode;
+import org.ehrbase.client.introspect.node.EntityNode;
 import org.ehrbase.client.introspect.node.Node;
 import org.ehrbase.ehr.encode.wrappers.SnakeCase;
 import org.openehr.schemas.v1.*;
@@ -131,7 +132,7 @@ public class TemplateIntrospect {
     }
 
     private Map<String, Node> handleCOBJECT(COBJECT cobject, String path, Map<String, TermDefinition> termDef, String term) {
-
+        boolean multi = cobject.getOccurrences().getUpper() > 1 || cobject.getOccurrences().getUpperUnbounded();
         if (cobject instanceof CARCHETYPEROOT && !((CARCHETYPEROOT) cobject).getArchetypeId().getValue().isEmpty()) {
             path = path + "[" + ((CARCHETYPEROOT) cobject).getArchetypeId().getValue() + "]";
             log.trace("Path: {}", path);
@@ -139,7 +140,9 @@ public class TemplateIntrospect {
                 term = term + TERM_DIVIDER + termDef.get(cobject.getNodeId()).getValue();
             }
 
-            return Collections.singletonMap(path, handleCARCHETYPEROOT((CARCHETYPEROOT) cobject, term, cobject.getOccurrences().getUpper() > 1));
+            return Collections.singletonMap(path, handleCARCHETYPEROOT((CARCHETYPEROOT) cobject, term, multi));
+        } else if (cobject instanceof CCOMPLEXOBJECT && multi) {
+            return Collections.singletonMap(path, handleEntity((CCOMPLEXOBJECT) cobject, term, termDef, multi));
         } else if (cobject instanceof CCOMPLEXOBJECT) {
             if (!cobject.getNodeId().isEmpty()) {
                 path = path + "[" + cobject.getNodeId() + "]";
@@ -159,6 +162,10 @@ public class TemplateIntrospect {
             }
             return Collections.singletonMap(path, new EndNode(RM_INFO_LOOKUP.getClass(cobject.getRmTypeName()), term, termDefinitions));
         }
+    }
+
+    private EntityNode handleEntity(CCOMPLEXOBJECT cobject, String name, Map<String, TermDefinition> termDef, boolean multi) {
+        return new EntityNode(Optional.ofNullable(termDef.get("at0000")).map(TermDefinition::getValue).orElse("") + name, multi, handleCCOMPLEXOBJECT(cobject, "", termDef, ""));
     }
 
     private Map<String, Node> handleNonTemplateFields(Class clazz, String path) {

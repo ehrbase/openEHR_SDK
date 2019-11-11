@@ -41,4 +41,15 @@ public class TemplateIntrospectTest {
         assertThat(actual).isNotEmpty();
 
     }
+
+    @Test
+    public void introspectMultiOccurrence() throws IOException, XmlException {
+        OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(OperationalTemplateTestData.MULTI_OCCURRENCE.getStream()).getTemplate();
+        TemplateIntrospect cut = new TemplateIntrospect(template);
+
+        Map<String, Node> actual = cut.getRoot().getChildren();
+
+        assertThat(actual).isNotEmpty();
+
+    }
 }

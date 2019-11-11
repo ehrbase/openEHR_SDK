@@ -14,17 +14,31 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+package org.ehrbase.client.introspect.node;
 
-package org.ehrbase.client.annotations;
+import java.util.Map;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+public class EntityNode implements Node {
+    protected final String name;
+    protected final boolean multi;
+    protected final Map<String, Node> children;
 
-@Retention(RetentionPolicy.RUNTIME)
-@Target(value = {ElementType.TYPE})
-public @interface Template {
-    public static final String VALUE = "value";
-    public String value();
+    public EntityNode(String name, boolean multi, Map<String, Node> children) {
+        this.name = name;
+        this.multi = multi;
+        this.children = children;
+    }
+
+    @Override
+    public String getName() {
+        return name;
+    }
+
+    public boolean isMulti() {
+        return multi;
+    }
+
+    public Map<String, Node> getChildren() {
+        return children;
+    }
 }

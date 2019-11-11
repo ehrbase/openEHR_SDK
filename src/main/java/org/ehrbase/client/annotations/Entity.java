@@ -14,7 +14,6 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 package org.ehrbase.client.annotations;
 
 import java.lang.annotation.ElementType;
@@ -24,7 +23,5 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(value = {ElementType.TYPE})
-public @interface Template {
-    public static final String VALUE = "value";
-    public String value();
+public @interface Entity {
 }
