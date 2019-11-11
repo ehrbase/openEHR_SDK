@@ -37,6 +37,8 @@ import org.ehrbase.ehr.encode.wrappers.SnakeCase;
 import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
 import org.openehr.schemas.v1.TemplateDocument;
 import org.reflections.Reflections;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.lang.model.element.Modifier;
 import java.io.IOException;
@@ -48,6 +50,7 @@ import java.util.stream.Collectors;
 public class ClassGenerator {
 
     public static final Options OPTIONS = new Options();
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final Map<Class, RmClassGeneratorConfig> configMap;
     private Map<String, Integer> curentFieldNameMap;
 
@@ -107,13 +110,17 @@ public class ClassGenerator {
     }
 
     private void addSimpleField(TypeSpec.Builder classBuilder, String path, EndNode endNode) {
+
+        if (endNode.getClazz() == null) {
+            logger.warn("No class for path {} ", path);
+        }
         RmClassGeneratorConfig classGeneratorConfig = configMap.get(endNode.getClazz());
         if (CodePhrase.class.equals(endNode.getClazz()) && !endNode.getValuset().isEmpty()) {
 
             TypeSpec build = buildEnumValueSet(endNode);
             classBuilder.addType(build);
             addField(classBuilder, path, endNode.getName(), ClassName.get("", build.name));
-        } else if (classGeneratorConfig == null || !classGeneratorConfig.idExpandField()) {
+        } else if (classGeneratorConfig == null || !classGeneratorConfig.isExpandField()) {
             addField(classBuilder, path, endNode.getName(), ClassName.get(Optional.ofNullable(endNode.getClazz()).orElse(Object.class)));
         } else {
             Map<String, Field> fieldMap = Arrays.stream(FieldUtils.getAllFields(endNode.getClazz())).collect(Collectors.toMap(Field::getName, f -> f));

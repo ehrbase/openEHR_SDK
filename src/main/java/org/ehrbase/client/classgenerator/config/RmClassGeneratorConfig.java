@@ -23,7 +23,7 @@ public interface RmClassGeneratorConfig {
 
     Class getRMClass();
 
-    boolean idExpandField();
+    boolean isExpandField();
 
     Set<String> getExpandFields();
 }

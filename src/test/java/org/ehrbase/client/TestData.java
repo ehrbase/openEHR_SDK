@@ -89,10 +89,14 @@ public class TestData {
 
         EhrbaseMultiOccurrenceDeV1.BodyTemperature.BodyTemperatureHistory history1 = new EhrbaseMultiOccurrenceDeV1.BodyTemperature.BodyTemperatureHistory();
         history1.setTemperatureMagnitude(22d);
+        history1.setTemperatureUnits("Cel");
+        history1.setCurrentDayOfMenstrualCycleMagnitude(3l);
         dto.getBodyTemperature().get(0).getHistory().add(history1);
 
         EhrbaseMultiOccurrenceDeV1.BodyTemperature.BodyTemperatureHistory history2 = new EhrbaseMultiOccurrenceDeV1.BodyTemperature.BodyTemperatureHistory();
         history2.setTemperatureMagnitude(11d);
+        history2.setTemperatureUnits("Cel");
+        history2.setCurrentDayOfMenstrualCycleMagnitude(3l);
         dto.getBodyTemperature().get(0).getHistory().add(history2);
 
         return dto;

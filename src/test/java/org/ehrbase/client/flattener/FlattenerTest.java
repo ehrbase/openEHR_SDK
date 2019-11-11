@@ -21,6 +21,7 @@ import com.nedap.archie.rm.RMObject;
 import com.nedap.archie.rm.archetyped.Locatable;
 import org.ehrbase.client.TestData;
 import org.ehrbase.client.classgenerator.EhrbaseBloodPressureSimpleDeV0;
+import org.ehrbase.client.classgenerator.EhrbaseMultiOccurrenceDeV1;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -50,15 +51,31 @@ public class FlattenerTest {
         EhrbaseBloodPressureSimpleDeV0 bloodPressureSimpleDeV0 = TestData.buildEhrbaseBloodPressureSimpleDeV0();
         RMObject rmObject = new Unflattener(new TestDataTemplateProvider()).unflatten(bloodPressureSimpleDeV0);
 
-        EhrbaseBloodPressureSimpleDeV0 expected = cut.flatten((Locatable) rmObject, EhrbaseBloodPressureSimpleDeV0.class);
+        EhrbaseBloodPressureSimpleDeV0 actual = cut.flatten((Locatable) rmObject, EhrbaseBloodPressureSimpleDeV0.class);
 
-        assertThat(expected).isNotNull();
-        assertThat(expected.getBloodPressureTrainingSample()).size().isEqualTo(1);
-        assertThat(expected.getBloodPressureTrainingSample().get(0).getSystolicMagnitude()).isEqualTo(22d);
-        assertThat(expected.getBloodPressureTrainingSample().get(0).getSystolicUnits()).isEqualTo("mm[Hg]");
-        assertThat(expected.getBloodPressureTrainingSample().get(0).getKorotkoffSounds()).isEqualTo(EhrbaseBloodPressureSimpleDeV0.BloodPressureTrainingSample.KorotkoffSounds.FIFTHSOUND);
+        assertThat(actual).isNotNull();
+        assertThat(actual.getBloodPressureTrainingSample()).size().isEqualTo(1);
+        assertThat(actual.getBloodPressureTrainingSample().get(0).getSystolicMagnitude()).isEqualTo(22d);
+        assertThat(actual.getBloodPressureTrainingSample().get(0).getSystolicUnits()).isEqualTo("mm[Hg]");
+        assertThat(actual.getBloodPressureTrainingSample().get(0).getKorotkoffSounds()).isEqualTo(EhrbaseBloodPressureSimpleDeV0.BloodPressureTrainingSample.KorotkoffSounds.FIFTHSOUND);
 
     }
 
 
+    @Test
+    public void testFlattenEhrbaseMultiOccurrenceDeV1() {
+        Flattener cut = new Flattener();
+        EhrbaseMultiOccurrenceDeV1 bloodPressureSimpleDeV0 = TestData.buildEhrbaseMultiOccurrenceDeV1();
+        RMObject rmObject = new Unflattener(new TestDataTemplateProvider()).unflatten(bloodPressureSimpleDeV0);
+
+        EhrbaseMultiOccurrenceDeV1 actual = cut.flatten((Locatable) rmObject, EhrbaseMultiOccurrenceDeV1.class);
+
+        assertThat(actual).isNotNull();
+        assertThat(actual.getBodyTemperature()).size().isEqualTo(1);
+        EhrbaseMultiOccurrenceDeV1.BodyTemperature bodyTemperature = actual.getBodyTemperature().get(0);
+        assertThat(bodyTemperature.getHistory())
+                .extracting(h -> h.getTemperatureMagnitude())
+                .containsExactlyInAnyOrder(11d, 22d);
+
+    }
 }
