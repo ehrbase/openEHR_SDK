@@ -29,6 +29,7 @@ import org.openehr.schemas.v1.TemplateDocument;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Optional;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertFalse;
@@ -61,6 +62,7 @@ public class DefaultRestTemplateEndpointIT {
         OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(OperationalTemplateTestData.BLOOD_PRESSURE_SIMPLE.getStream()).getTemplate();
         String templateId = "ehrbase_blood_pressure_simple.de.v" + RandomStringUtils.randomNumeric(10);
         template.getTemplateId().setValue(templateId);
+        template.getUid().setValue(UUID.randomUUID().toString());
         String actual = new DefaultRestTemplateEndpoint(cut).upload(template);
         assertThat(actual).isEqualTo(templateId);
     }
