@@ -22,6 +22,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.google.common.net.HttpHeaders;
 import com.nedap.archie.rm.RMObject;
+import com.nedap.archie.rm.archetyped.Locatable;
 import com.nedap.archie.rm.composition.Composition;
 import com.nedap.archie.rm.ehr.EhrStatus;
 import com.nedap.archie.rm.support.identification.HierObjectId;
@@ -113,15 +114,16 @@ public class DefaultRestClient implements OpenEhrClient {
         }
     }
 
-    static UUID httpPut(URI uri, RMObject body) {
+    static UUID httpPut(URI uri, Locatable body) {
         try {
             HttpResponse response = Request.Put(uri)
                     .addHeader(HttpHeaders.ACCEPT, ContentType.APPLICATION_JSON.toString())
+                    .addHeader(HttpHeaders.IF_MATCH, body.getUid().getValue())
                     .bodyString(new CanonicalJson().marshal(body), ContentType.APPLICATION_JSON)
                     .execute().returnResponse();
             checkStatus(response, HttpStatus.SC_OK, HttpStatus.SC_NO_CONTENT);
             Header location = response.getFirstHeader(HttpHeaders.LOCATION);
-            return UUID.fromString(location.getValue().substring(location.getValue().lastIndexOf('/') + 1));
+            return UUID.fromString(location.getValue().substring(location.getValue().lastIndexOf('/') + 1, location.getValue().indexOf("::")));
         } catch (IOException e) {
             throw new ClientException(e.getMessage(), e);
         }

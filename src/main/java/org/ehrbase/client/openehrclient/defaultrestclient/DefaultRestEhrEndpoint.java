@@ -22,7 +22,6 @@ import com.nedap.archie.rm.generic.PartySelf;
 import com.nedap.archie.rm.support.identification.HierObjectId;
 import com.nedap.archie.rm.support.identification.PartyRef;
 import org.ehrbase.client.openehrclient.EhrEndpoint;
-import org.ehrbase.rest.openehr.response.EhrResponseData;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -31,6 +30,7 @@ import static org.ehrbase.client.openehrclient.defaultrestclient.DefaultRestClie
 
 public class DefaultRestEhrEndpoint implements EhrEndpoint {
     public static final String EHR_PATH = "ehr/";
+    public static final String EHR_STATUS_PATH = "/ehr_status";
     private final DefaultRestClient defaultRestClient;
 
     public DefaultRestEhrEndpoint(DefaultRestClient defaultRestClient) {
@@ -50,12 +50,11 @@ public class DefaultRestEhrEndpoint implements EhrEndpoint {
     @Override
     public Optional<EhrStatus> getEhrStatus(UUID ehrId) {
 
-        return httpGet(defaultRestClient.getConfig().getBaseUri().resolve(EHR_PATH + ehrId.toString()), EhrResponseData.class)
-                .map(EhrResponseData::getEhrStatus);
+        return httpGet(defaultRestClient.getConfig().getBaseUri().resolve(EHR_PATH + ehrId.toString() + EHR_STATUS_PATH), EhrStatus.class);
     }
 
     @Override
     public void updateEhrStatus(UUID ehrId, EhrStatus ehrStatus) {
-        httpPut(defaultRestClient.getConfig().getBaseUri().resolve(EHR_PATH + ehrId + "/ehr_status"), ehrStatus);
+        httpPut(defaultRestClient.getConfig().getBaseUri().resolve(EHR_PATH + ehrId + EHR_STATUS_PATH), ehrStatus);
     }
 }
