@@ -40,6 +40,7 @@ import org.reflections.Reflections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Modifier;
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -52,7 +53,8 @@ public class ClassGenerator {
     public static final Options OPTIONS = new Options();
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final Map<Class, RmClassGeneratorConfig> configMap;
-    private Map<String, Integer> curentFieldNameMap;
+    private Map<String, Integer> currentFieldNameMap = new HashMap<>();
+    private Map<String, Integer> currentClassNameMap = new HashMap<>();
 
     public ClassGenerator() {
         configMap = buildConfigMap();
@@ -80,8 +82,9 @@ public class ClassGenerator {
     }
 
     private TypeSpec build(EntityNode archetypeNode) {
-        curentFieldNameMap = new HashMap<>();
-        TypeSpec.Builder classBuilder = TypeSpec.classBuilder(normalise(archetypeNode.getName(), true));
+        Map<String, Integer> oldFieldNameMap = currentFieldNameMap;
+        currentFieldNameMap = new HashMap<>();
+        TypeSpec.Builder classBuilder = TypeSpec.classBuilder(buildClassName(archetypeNode.getName()));
         classBuilder.addModifiers(Modifier.PUBLIC);
         classBuilder.addAnnotation(AnnotationSpec.builder(Entity.class).build());
 
@@ -105,7 +108,7 @@ public class ClassGenerator {
                 addComplexField(classBuilder, entry.getKey(), (EntityNode) entry.getValue());
             }
         }
-
+        currentFieldNameMap = oldFieldNameMap;
         return classBuilder.build();
     }
 
@@ -190,21 +193,34 @@ public class ClassGenerator {
     }
 
     private String buildFieldName(String name) {
-        String[] strings = name.split(TemplateIntrospect.TERM_DIVIDER);
+        String[] strings = Arrays.stream(name.split(TemplateIntrospect.TERM_DIVIDER)).filter(StringUtils::isNotBlank).toArray(String[]::new);
 
         String fieldName = "";
         for (int i = 0; i < strings.length; i++) {
-            fieldName = normalise(fieldName + "_" + strings[strings.length - 1], false);
-            if (!curentFieldNameMap.containsKey(fieldName)) {
+            fieldName = normalise(fieldName + "_" + strings[strings.length - (i + 1)], false);
+            if (!currentFieldNameMap.containsKey(fieldName) && SourceVersion.isName(fieldName)) {
                 break;
             }
         }
 
-        if (curentFieldNameMap.containsKey(fieldName)) {
-            curentFieldNameMap.put(fieldName, curentFieldNameMap.get(fieldName) + 1);
-            fieldName = fieldName + curentFieldNameMap.get(fieldName);
+        if (currentFieldNameMap.containsKey(fieldName)) {
+            currentFieldNameMap.put(fieldName, currentFieldNameMap.get(fieldName) + 1);
+            fieldName = fieldName + currentFieldNameMap.get(fieldName);
         } else {
-            curentFieldNameMap.put(fieldName, 1);
+            currentFieldNameMap.put(fieldName, 1);
+        }
+        return fieldName;
+    }
+
+    private String buildClassName(String name) {
+
+        String fieldName = normalise(name, true);
+
+        if (currentClassNameMap.containsKey(fieldName)) {
+            currentClassNameMap.put(fieldName, currentClassNameMap.get(fieldName) + 1);
+            fieldName = fieldName + currentClassNameMap.get(fieldName);
+        } else {
+            currentClassNameMap.put(fieldName, 1);
         }
         return fieldName;
     }

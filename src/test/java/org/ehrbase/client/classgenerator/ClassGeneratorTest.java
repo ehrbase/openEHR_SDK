@@ -28,6 +28,7 @@ import org.openehr.schemas.v1.TemplateDocument;
 
 import java.io.IOException;
 import java.io.StringWriter;
+import java.nio.file.Paths;
 
 import static org.junit.Assert.assertTrue;
 
@@ -61,6 +62,25 @@ public class ClassGeneratorTest {
         String actual = stringWriter.toString();
         System.out.println(actual);
         assertTrue(StringUtils.isNotBlank(actual));
+
+    }
+
+    @Test
+    public void testGenerateAllTypes() throws IOException, XmlException {
+        OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(OperationalTemplateTestData.ALL_TYPES.getStream()).getTemplate();
+        ClassGenerator cut = new ClassGenerator();
+        TypeSpec generate = cut.generate(template);
+        JavaFile javaFile = JavaFile.builder("org.ehrbase.client.classgenerator", generate)
+                .build();
+
+        javaFile.writeTo(Paths.get(".", "src/test/java/"));
+         /*
+        StringWriter stringWriter = new StringWriter();
+        javaFile.writeTo(stringWriter);
+        String actual = stringWriter.toString();
+        System.out.println(actual);
+        assertTrue(StringUtils.isNotBlank(actual));
+          */
 
     }
 
