@@ -18,6 +18,9 @@
 package org.ehrbase.client.introspect;
 
 import org.apache.xmlbeans.XmlException;
+import org.assertj.core.groups.Tuple;
+import org.ehrbase.client.introspect.node.ArchetypeNode;
+import org.ehrbase.client.introspect.node.EndNode;
 import org.ehrbase.client.introspect.node.Node;
 import org.ehrbase.test_data.operationaltemplate.OperationalTemplateTestData;
 import org.junit.Test;
@@ -25,7 +28,10 @@ import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
 import org.openehr.schemas.v1.TemplateDocument;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -50,6 +56,90 @@ public class TemplateIntrospectTest {
         Map<String, Node> actual = cut.getRoot().getChildren();
 
         assertThat(actual).isNotEmpty();
+        assertThat(actual.keySet())
+                .containsExactlyInAnyOrder(
+                        "/context/end_time",
+                        "/language",
+                        "/context/health_care_facility",
+                        "/composer",
+                        "/context/setting",
+                        "/territory",
+                        "/content[openEHR-EHR-OBSERVATION.body_temperature.v2]",
+                        "/context/other_context[at0001]/items",
+                        "/context/location",
+                        "/context/start_time"
+                );
 
+    }
+
+    @Test
+    public void introspectAllTypes() throws IOException, XmlException {
+        OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(OperationalTemplateTestData.ALL_TYPES.getStream()).getTemplate();
+        TemplateIntrospect cut = new TemplateIntrospect(template);
+
+        Map<String, Node> actual = cut.getRoot().getChildren();
+
+        assertThat(actual).isNotEmpty();
+        assertThat(actual.keySet())
+                .containsExactlyInAnyOrder(
+                        "/content[openEHR-EHR-EVALUATION.test_all_types.v1]",
+                        "/context/end_time",
+                        "/content[openEHR-EHR-SECTION.test_all_types.v1]",
+                        "/language",
+                        "/context/health_care_facility",
+                        "/composer",
+                        "/context/setting",
+                        "/territory",
+                        "/context/other_context[at0004]/item[at0005]/value",
+                        "/content[openEHR-EHR-OBSERVATION.test_all_types.v1]",
+                        "/context/location",
+                        "/context/start_time"
+                );
+        assertThat(((ArchetypeNode) actual.get("/content[openEHR-EHR-SECTION.test_all_types.v1]")).getChildren().keySet())
+                .containsExactlyInAnyOrder(
+                        "/items[at0001]/items[at0002]/items[openEHR-EHR-ACTION.test_all_types.v1]",
+                        "/items[at0001]/items[at0002]/items[openEHR-EHR-INSTRUCTION.test_all_types.v1]",
+                        "/items[at0001]/items[openEHR-EHR-ADMIN_ENTRY.test_all_types.v1]"
+                );
+
+        Map<Class, Long> classes = findAll(actual).stream()
+                .collect(Collectors.groupingBy(EndNode::getClazz, Collectors.counting()));
+
+        assertThat(classes.entrySet())
+                .extracting(e -> e.getKey().getSimpleName(), Map.Entry::getValue)
+                .containsExactlyInAnyOrder(
+                        new Tuple("PartyProxy", 1L),
+                        new Tuple("DvDate", 2L),
+                        new Tuple("DvMultimedia", 1L),
+                        new Tuple("DvCodedText", 10L),
+                        new Tuple("DvURI", 1L),
+                        new Tuple("CodePhrase", 2L),
+                        new Tuple("DvParsable", 1L),
+                        new Tuple("DvOrdinal", 1L),
+                        new Tuple("DvCount", 3L),
+                        new Tuple("DvTime", 1L),
+                        new Tuple("PartyIdentified", 1L),
+                        new Tuple("DvDateTime", 5L),
+                        new Tuple("DvQuantity", 1L),
+                        new Tuple("DvProportion", 1L),
+                        new Tuple("DvInterval", 3L),
+                        new Tuple("DvText", 2L),
+                        new Tuple("DvDuration", 1L),
+                        new Tuple("String", 2L),
+                        new Tuple("DvBoolean", 2L),
+                        new Tuple("DvIdentifier", 1L)
+                );
+    }
+
+    private List<EndNode> findAll(Map<String, Node> nodeMap) {
+        List<EndNode> nodes = new ArrayList<>();
+        for (Node node : nodeMap.values()) {
+            if (EndNode.class.isAssignableFrom(node.getClass())) {
+                nodes.add((EndNode) node);
+            } else if (ArchetypeNode.class.isAssignableFrom(node.getClass())) {
+                nodes.addAll(findAll(((ArchetypeNode) node).getChildren()));
+            }
+        }
+        return nodes;
     }
 }

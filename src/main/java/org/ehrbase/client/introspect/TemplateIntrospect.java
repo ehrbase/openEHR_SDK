@@ -108,7 +108,7 @@ public class TemplateIntrospect {
             localNodeMap.putAll(handleNonTemplateFields(rmClass, path));
 
 
-        CATTRIBUTE[] cattributes = ccomplexobject.getAttributesArray();
+            CATTRIBUTE[] cattributes = ccomplexobject.getAttributesArray();
             if (ArrayUtils.isNotEmpty(cattributes)) {
                 for (CATTRIBUTE cattribute : cattributes) {
                     String pathLoop = path + PATH_DIVIDER + cattribute.getRmAttributeName();
@@ -127,7 +127,7 @@ public class TemplateIntrospect {
                 }
             }
         } else {
-            localNodeMap.put(path, new EndNode(RM_INFO_LOOKUP.getClass(ccomplexobject.getRmTypeName()), term));
+            localNodeMap.put(path, new EndNode(findJavaClass(ccomplexobject.getRmTypeName()), term));
         }
         return localNodeMap;
     }
@@ -161,7 +161,25 @@ public class TemplateIntrospect {
             } else {
                 termDefinitions = Collections.emptySet();
             }
-            return Collections.singletonMap(path, new EndNode(RM_INFO_LOOKUP.getClass(cobject.getRmTypeName()), term, termDefinitions));
+            return Collections.singletonMap(path, new EndNode(findJavaClass(cobject.getRmTypeName()), term, termDefinitions));
+        }
+    }
+
+
+    private Class findJavaClass(String rmName) {
+        switch (rmName) {
+            case "STRING":
+                return String.class;
+            case "INTEGER":
+            case "INTEGER64":
+                return Long.class;
+            case "BOOLEAN":
+                return Boolean.class;
+            case "REAL":
+            case "DOUBLE":
+                return Double.class;
+            default:
+                return RM_INFO_LOOKUP.getClass(rmName);
         }
     }
 
