@@ -19,10 +19,18 @@ package org.ehrbase.client.flattener;
 
 import com.nedap.archie.rm.RMObject;
 import com.nedap.archie.rm.archetyped.Locatable;
+import com.nedap.archie.rm.composition.Composition;
+import org.apache.commons.io.IOUtils;
 import org.ehrbase.client.TestData;
 import org.ehrbase.client.classgenerator.EhrbaseBloodPressureSimpleDeV0;
 import org.ehrbase.client.classgenerator.EhrbaseMultiOccurrenceDeV1;
+import org.ehrbase.client.classgenerator.TestAllTypesEnV1;
+import org.ehrbase.serialisation.CanonicalXML;
+import org.ehrbase.test_data.composition.CompositionTestDataCanonicalXML;
 import org.junit.Test;
+
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -77,5 +85,13 @@ public class FlattenerTest {
                 .extracting(h -> h.getTemperatureMagnitude())
                 .containsExactlyInAnyOrder(11d, 22d);
 
+    }
+
+    @Test
+    public void testFlattenAllTypes() throws IOException {
+        Composition composition = new CanonicalXML().unmarshal(IOUtils.toString(CompositionTestDataCanonicalXML.ALL_TYPES.getStream(), StandardCharsets.UTF_8), Composition.class);
+        Flattener cut = new Flattener();
+        TestAllTypesEnV1 actual = cut.flatten(composition, TestAllTypesEnV1.class);
+        assertThat(actual).isNotNull();
     }
 }

@@ -17,15 +17,21 @@
 
 package org.ehrbase.client.introspect.config;
 
-import com.nedap.archie.rm.composition.Observation;
+import com.nedap.archie.rm.datastructures.Cluster;
 
-public class ObservationIntrospectConfig extends CareEntryIntrospectConfig implements RmIntrospectConfig {
+import java.util.Collections;
+import java.util.Set;
+
+public class ClusterIntrospectConfig implements RmIntrospectConfig {
 
 
     @Override
     public Class getRMClass() {
-        return Observation.class;
+        return Cluster.class;
     }
 
-
+    @Override
+    public Set<String> getNonTemplateFields() {
+        return Collections.emptySet();
+    }
 }

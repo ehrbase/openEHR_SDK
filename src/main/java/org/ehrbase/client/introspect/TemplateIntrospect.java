@@ -34,6 +34,7 @@ import org.reflections.Reflections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.lang.reflect.Modifier;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -64,7 +65,9 @@ public class TemplateIntrospect {
         Reflections reflections = new Reflections(RmIntrospectConfig.class.getPackage().getName());
         Set<Class<? extends RmIntrospectConfig>> configs = reflections.getSubTypesOf(RmIntrospectConfig.class);
 
-        return configs.stream().map(c -> {
+        return configs.stream()
+                .filter(c -> !Modifier.isAbstract(c.getModifiers()))
+                .map(c -> {
             try {
                 return c.getConstructor().newInstance();
             } catch (Exception e) {

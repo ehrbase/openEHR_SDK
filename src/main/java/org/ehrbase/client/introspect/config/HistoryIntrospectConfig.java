@@ -17,15 +17,23 @@
 
 package org.ehrbase.client.introspect.config;
 
-import com.nedap.archie.rm.composition.Observation;
+import com.nedap.archie.rm.datastructures.History;
 
-public class ObservationIntrospectConfig extends CareEntryIntrospectConfig implements RmIntrospectConfig {
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
+public class HistoryIntrospectConfig implements RmIntrospectConfig {
+
+    private static final Set<String> FIELDS = Stream.of("origin").collect(Collectors.toSet());
 
     @Override
     public Class getRMClass() {
-        return Observation.class;
+        return History.class;
     }
 
-
+    @Override
+    public Set<String> getNonTemplateFields() {
+        return FIELDS;
+    }
 }

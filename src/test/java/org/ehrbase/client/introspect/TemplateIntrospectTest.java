@@ -108,26 +108,27 @@ public class TemplateIntrospectTest {
         assertThat(classes.entrySet())
                 .extracting(e -> e.getKey().getSimpleName(), Map.Entry::getValue)
                 .containsExactlyInAnyOrder(
-                        new Tuple("PartyProxy", 1L),
+                        new Tuple("PartyProxy", 4L),
                         new Tuple("DvDate", 2L),
                         new Tuple("DvMultimedia", 1L),
                         new Tuple("DvCodedText", 10L),
                         new Tuple("DvURI", 1L),
-                        new Tuple("CodePhrase", 2L),
+                        new Tuple("CodePhrase", 6L),
                         new Tuple("DvParsable", 1L),
                         new Tuple("DvOrdinal", 1L),
                         new Tuple("DvCount", 3L),
                         new Tuple("DvTime", 1L),
                         new Tuple("PartyIdentified", 1L),
-                        new Tuple("DvDateTime", 5L),
+                        new Tuple("DvDateTime", 8L),
                         new Tuple("DvQuantity", 1L),
                         new Tuple("DvProportion", 1L),
                         new Tuple("DvInterval", 3L),
-                        new Tuple("DvText", 2L),
+                        new Tuple("DvText", 3L),
                         new Tuple("DvDuration", 1L),
                         new Tuple("String", 2L),
                         new Tuple("DvBoolean", 2L),
-                        new Tuple("DvIdentifier", 1L)
+                        new Tuple("DvIdentifier", 1L),
+                        new Tuple("ItemStructure", 1L)
                 );
     }
 
