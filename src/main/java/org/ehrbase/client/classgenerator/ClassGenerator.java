@@ -116,8 +116,12 @@ public class ClassGenerator {
 
         if (endNode.getClazz() == null) {
             logger.warn("No class for path {} ", path);
+            return;
         }
         RmClassGeneratorConfig classGeneratorConfig = configMap.get(endNode.getClazz());
+        if (classGeneratorConfig == null && !endNode.getClazz().getName().contains("java.lang")) {
+            logger.debug("No ClassGenerator for {}", endNode.getClazz());
+        }
         if (CodePhrase.class.equals(endNode.getClazz()) && !endNode.getValuset().isEmpty()) {
 
             TypeSpec build = buildEnumValueSet(endNode);

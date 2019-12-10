@@ -31,10 +31,6 @@ public class PartyProxyClassGeneratorConfig implements RmClassGeneratorConfig {
         return PartyProxy.class;
     }
 
-    @Override
-    public boolean isExpandField() {
-        return true;
-    }
 
     @Override
     public Set<String> getExpandFields() {

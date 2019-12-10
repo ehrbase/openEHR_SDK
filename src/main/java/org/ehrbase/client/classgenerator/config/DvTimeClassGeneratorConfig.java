@@ -17,19 +17,18 @@
 
 package org.ehrbase.client.classgenerator.config;
 
-import com.nedap.archie.rm.datavalues.quantity.DvQuantity;
+import com.nedap.archie.rm.datavalues.quantity.datetime.DvTime;
 
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class DvQuantityClassGeneratorConfig implements RmClassGeneratorConfig {
-
-    private static final Set<String> FIELDS = Stream.of("units", "magnitude").collect(Collectors.toSet());
+public class DvTimeClassGeneratorConfig implements RmClassGeneratorConfig {
+    private static final Set<String> FIELDS = Stream.of("value").collect(Collectors.toSet());
 
     @Override
     public Class getRMClass() {
-        return DvQuantity.class;
+        return DvTime.class;
     }
 
 

@@ -32,11 +32,6 @@ public class DvCodedTextClassGeneratorConfig implements RmClassGeneratorConfig {
     }
 
     @Override
-    public boolean isExpandField() {
-        return true;
-    }
-
-    @Override
     public Set<String> getExpandFields() {
         return FIELDS;
     }
