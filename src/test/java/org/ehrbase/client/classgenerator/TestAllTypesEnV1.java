@@ -10,10 +10,7 @@ import com.nedap.archie.rm.datavalues.quantity.DvOrdinal;
 import com.nedap.archie.rm.datavalues.quantity.DvProportion;
 import com.nedap.archie.rm.generic.PartyIdentified;
 import com.nedap.archie.rm.support.identification.PartyRef;
-import org.ehrbase.client.annotations.Archetype;
-import org.ehrbase.client.annotations.Entity;
-import org.ehrbase.client.annotations.Path;
-import org.ehrbase.client.annotations.Template;
+import org.ehrbase.client.annotations.*;
 
 import java.net.URI;
 import java.time.temporal.Temporal;
@@ -200,8 +197,9 @@ public class TestAllTypesEnV1 {
         @Path("/language")
         private CodePhrase language;
 
-        @Path("/data[at0001]/items[at0009]/value|magnitude")
-        private Long choiceMagnitude;
+        @Path("/data[at0001]/items[at0009]/value")
+        @Choice
+        private ArbolChoiceChoice choice;
 
         @Path("/subject|external_ref")
         private PartyRef subjectExternalref;
@@ -254,12 +252,12 @@ public class TestAllTypesEnV1 {
             return this.language;
         }
 
-        public void setChoiceMagnitude(Long choiceMagnitude) {
-            this.choiceMagnitude = choiceMagnitude;
+        public void setChoice(ArbolChoiceChoice choice) {
+            this.choice = choice;
         }
 
-        public Long getChoiceMagnitude() {
-            return this.choiceMagnitude;
+        public ArbolChoiceChoice getChoice() {
+            return this.choice;
         }
 
         public void setSubjectExternalref(PartyRef subjectExternalref) {
@@ -268,6 +266,50 @@ public class TestAllTypesEnV1 {
 
         public PartyRef getSubjectExternalref() {
             return this.subjectExternalref;
+        }
+
+        public interface ArbolChoiceChoice {
+        }
+
+        @Entity
+        @OptionFor("DvQuantity")
+        public static class ArbolChoiceDvquantity implements ArbolChoiceChoice {
+            @Path("|magnitude")
+            private Double choiceMagnitude;
+
+            @Path("|units")
+            private String choiceUnits;
+
+            public void setChoiceMagnitude(Double choiceMagnitude) {
+                this.choiceMagnitude = choiceMagnitude;
+            }
+
+            public Double getChoiceMagnitude() {
+                return this.choiceMagnitude;
+            }
+
+            public void setChoiceUnits(String choiceUnits) {
+                this.choiceUnits = choiceUnits;
+            }
+
+            public String getChoiceUnits() {
+                return this.choiceUnits;
+            }
+        }
+
+        @Entity
+        @OptionFor("DvCount")
+        public static class ArbolChoiceDvcount implements ArbolChoiceChoice {
+            @Path("|magnitude")
+            private Long choiceMagnitude;
+
+            public void setChoiceMagnitude(Long choiceMagnitude) {
+                this.choiceMagnitude = choiceMagnitude;
+            }
+
+            public Long getChoiceMagnitude() {
+                return this.choiceMagnitude;
+            }
         }
     }
 

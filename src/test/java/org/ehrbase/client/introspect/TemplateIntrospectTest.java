@@ -20,6 +20,7 @@ package org.ehrbase.client.introspect;
 import org.apache.xmlbeans.XmlException;
 import org.assertj.core.groups.Tuple;
 import org.ehrbase.client.introspect.node.ArchetypeNode;
+import org.ehrbase.client.introspect.node.ChoiceNode;
 import org.ehrbase.client.introspect.node.EndNode;
 import org.ehrbase.client.introspect.node.Node;
 import org.ehrbase.test_data.operationaltemplate.OperationalTemplateTestData;
@@ -120,7 +121,7 @@ public class TemplateIntrospectTest {
                         new Tuple("DvTime", 1L),
                         new Tuple("PartyIdentified", 1L),
                         new Tuple("DvDateTime", 8L),
-                        new Tuple("DvQuantity", 1L),
+                        new Tuple("DvQuantity", 2L),
                         new Tuple("DvProportion", 1L),
                         new Tuple("DvInterval", 3L),
                         new Tuple("DvText", 3L),
@@ -139,6 +140,8 @@ public class TemplateIntrospectTest {
                 nodes.add((EndNode) node);
             } else if (ArchetypeNode.class.isAssignableFrom(node.getClass())) {
                 nodes.addAll(findAll(((ArchetypeNode) node).getChildren()));
+            } else if (ChoiceNode.class.isAssignableFrom(node.getClass())) {
+                nodes.addAll(((ChoiceNode) node).getNodes());
             }
         }
         return nodes;

@@ -93,5 +93,7 @@ public class FlattenerTest {
         Flattener cut = new Flattener();
         TestAllTypesEnV1 actual = cut.flatten(composition, TestAllTypesEnV1.class);
         assertThat(actual).isNotNull();
+        assertThat(actual.getTestAllTypes().get(0).getChoice().getClass()).isEqualTo(TestAllTypesEnV1.TestAllTypes.ArbolChoiceDvcount.class);
+        assertThat(((TestAllTypesEnV1.TestAllTypes.ArbolChoiceDvcount) actual.getTestAllTypes().get(0).getChoice()).getChoiceMagnitude()).isEqualTo(148L);
     }
 }

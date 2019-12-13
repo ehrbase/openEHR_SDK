@@ -71,17 +71,16 @@ public class ClassGeneratorTest {
         TypeSpec generate = cut.generate(template);
         JavaFile javaFile = JavaFile.builder("org.ehrbase.client.classgenerator", generate)
                 .build();
+
         /*
         javaFile.writeTo(Paths.get(".", "src/test/java/"));
-        */
-
+*/
 
         StringWriter stringWriter = new StringWriter();
         javaFile.writeTo(stringWriter);
         String actual = stringWriter.toString();
         System.out.println(actual);
         assertTrue(StringUtils.isNotBlank(actual));
-
 
     }
 

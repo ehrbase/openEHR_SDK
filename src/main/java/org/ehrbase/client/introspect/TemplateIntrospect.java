@@ -20,14 +20,13 @@ package org.ehrbase.client.introspect;
 import com.nedap.archie.rm.archetyped.Pathable;
 import com.nedap.archie.rm.datastructures.Event;
 import com.nedap.archie.rminfo.ArchieRMInfoLookup;
+import org.apache.commons.collections4.ListValuedMap;
+import org.apache.commons.collections4.multimap.ArrayListValuedHashMap;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.ehrbase.client.exception.ClientException;
 import org.ehrbase.client.introspect.config.RmIntrospectConfig;
-import org.ehrbase.client.introspect.node.ArchetypeNode;
-import org.ehrbase.client.introspect.node.EndNode;
-import org.ehrbase.client.introspect.node.EntityNode;
-import org.ehrbase.client.introspect.node.Node;
+import org.ehrbase.client.introspect.node.*;
 import org.ehrbase.ehr.encode.wrappers.SnakeCase;
 import org.openehr.schemas.v1.*;
 import org.reflections.Reflections;
@@ -68,12 +67,12 @@ public class TemplateIntrospect {
         return configs.stream()
                 .filter(c -> !Modifier.isAbstract(c.getModifiers()))
                 .map(c -> {
-            try {
-                return c.getConstructor().newInstance();
-            } catch (Exception e) {
-                throw new ClientException(e.getMessage(), e);
-            }
-        }).collect(Collectors.toMap(RmIntrospectConfig::getRMClass, c -> c));
+                    try {
+                        return c.getConstructor().newInstance();
+                    } catch (Exception e) {
+                        throw new ClientException(e.getMessage(), e);
+                    }
+                }).collect(Collectors.toMap(RmIntrospectConfig::getRMClass, c -> c));
     }
 
     private ArchetypeNode buildNodeMap() {
@@ -110,7 +109,7 @@ public class TemplateIntrospect {
         if (Pathable.class.isAssignableFrom(rmClass)) {
             localNodeMap.putAll(handleNonTemplateFields(rmClass, path));
 
-
+            ListValuedMap<String, Node> multiValuedMap = new ArrayListValuedHashMap<>();
             CATTRIBUTE[] cattributes = ccomplexobject.getAttributesArray();
             if (ArrayUtils.isNotEmpty(cattributes)) {
                 for (CATTRIBUTE cattribute : cattributes) {
@@ -124,11 +123,28 @@ public class TemplateIntrospect {
                     }
 
                     for (COBJECT cobject : cattribute.getChildrenArray()) {
-                        localNodeMap.putAll(handleCOBJECT(cobject, pathLoop, termDef, term));
+                        multiValuedMap.putAll(handleCOBJECT(cobject, pathLoop, termDef, term));
                     }
 
                 }
             }
+            multiValuedMap
+                    .asMap()
+                    .forEach((key, value) -> {
+                        if (value.size() == 1) {
+                            localNodeMap.put(key, value.iterator().next());
+                        } else {
+                            localNodeMap.put(key,
+                                    new ChoiceNode(
+                                            value.iterator().next().getName(),
+                                            value.stream()
+                                                    .filter(n -> EndNode.class.isAssignableFrom(n.getClass()))
+                                                    .map(n -> (EndNode) n)
+                                                    .collect(Collectors.toList())
+                                    )
+                            );
+                        }
+                    });
         } else {
             localNodeMap.put(path, new EndNode(findJavaClass(ccomplexobject.getRmTypeName()), term));
         }
@@ -136,18 +152,25 @@ public class TemplateIntrospect {
     }
 
     private Map<String, Node> handleCOBJECT(COBJECT cobject, String path, Map<String, TermDefinition> termDef, String term) {
+
         boolean multi = cobject.getOccurrences().getUpper() > 1 || cobject.getOccurrences().getUpperUnbounded();
+
         if (cobject instanceof CARCHETYPEROOT && !((CARCHETYPEROOT) cobject).getArchetypeId().getValue().isEmpty()) {
             path = path + "[" + ((CARCHETYPEROOT) cobject).getArchetypeId().getValue() + "]";
             log.trace("Path: {}", path);
+
             if (!cobject.getNodeId().isEmpty() && termDef.containsKey(cobject.getNodeId())) {
                 term = term + TERM_DIVIDER + termDef.get(cobject.getNodeId()).getValue();
             }
 
             return Collections.singletonMap(path, handleCARCHETYPEROOT((CARCHETYPEROOT) cobject, term, multi));
+
         } else if (cobject instanceof CCOMPLEXOBJECT && multi) {
+
             return Collections.singletonMap(path, handleEntity((CCOMPLEXOBJECT) cobject, term, termDef, multi));
+
         } else if (cobject instanceof CCOMPLEXOBJECT) {
+
             if (!cobject.getNodeId().isEmpty()) {
                 path = path + "[" + cobject.getNodeId() + "]";
                 log.trace("Path: {}", path);
@@ -155,8 +178,11 @@ public class TemplateIntrospect {
                     term = term + TERM_DIVIDER + termDef.get(cobject.getNodeId()).getValue();
                 }
             }
+
             return handleCCOMPLEXOBJECT((CCOMPLEXOBJECT) cobject, path, termDef, term);
+
         } else {
+
             Set<TermDefinition> termDefinitions;
             if (cobject instanceof CCODEPHRASE) {
 

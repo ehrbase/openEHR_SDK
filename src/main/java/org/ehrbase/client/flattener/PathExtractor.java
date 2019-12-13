@@ -56,10 +56,7 @@ class PathExtractor {
 
 
         int i = childPath.lastIndexOf('/');
-        if (i < 0 || i == childPath.length()) {
-            throw new IllegalArgumentException(
-                    "invalid path for setting value: " + childPath);
-        }
+
         parentPath = "/";
         if (i > 0) {
             parentPath = childPath.substring(0, i);
