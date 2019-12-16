@@ -84,4 +84,6 @@ public class DefaultRestCompositionEndpointIT {
                 .extracting(h -> h.getTemperatureMagnitude())
                 .containsExactlyInAnyOrder(11d, 22d);
     }
+
+
 }

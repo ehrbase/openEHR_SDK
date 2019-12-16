@@ -22,7 +22,6 @@ import org.ehrbase.client.classgenerator.EhrbaseBloodPressureSimpleDeV0;
 import org.ehrbase.client.classgenerator.EhrbaseMultiOccurrenceDeV1;
 import org.ehrbase.client.flattener.BloodpressureListDe;
 
-import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
@@ -52,8 +51,8 @@ public class TestData {
 
     public static EhrbaseBloodPressureSimpleDeV0 buildEhrbaseBloodPressureSimpleDeV0() {
         EhrbaseBloodPressureSimpleDeV0 bloodPressureSimpleDeV0 = new EhrbaseBloodPressureSimpleDeV0();
-        bloodPressureSimpleDeV0.setStartTimeValue(LocalDateTime.now());
-        bloodPressureSimpleDeV0.setEndTimeValue(LocalDateTime.now());
+        bloodPressureSimpleDeV0.setStartTimeValue(OffsetDateTime.now());
+        bloodPressureSimpleDeV0.setEndTimeValue(OffsetDateTime.now());
         bloodPressureSimpleDeV0.setBloodPressureTrainingSample(new ArrayList<>());
         bloodPressureSimpleDeV0.setLanguage(new CodePhrase(new TerminologyId("ISO_639-1"), "de"));
         bloodPressureSimpleDeV0.setTerritory(new CodePhrase(new TerminologyId("ISO_3166-1"), "UY"));
@@ -78,8 +77,8 @@ public class TestData {
 
     public static EhrbaseMultiOccurrenceDeV1 buildEhrbaseMultiOccurrenceDeV1() {
         EhrbaseMultiOccurrenceDeV1 dto = new EhrbaseMultiOccurrenceDeV1();
-        dto.setStartTimeValue(LocalDateTime.now());
-        dto.setEndTimeValue(LocalDateTime.now());
+        dto.setStartTimeValue(OffsetDateTime.now());
+        dto.setEndTimeValue(OffsetDateTime.now());
         dto.setLanguage(new CodePhrase(new TerminologyId("ISO_639-1"), "de"));
         dto.setTerritory(new CodePhrase(new TerminologyId("ISO_3166-1"), "UY"));
         dto.setSettingDefiningcode(new CodePhrase(new TerminologyId("openehr"), "229"));

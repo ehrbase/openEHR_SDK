@@ -19,6 +19,7 @@ package org.ehrbase.client.flattener;
 
 import com.nedap.archie.rm.archetyped.Locatable;
 import com.nedap.archie.rm.composition.Composition;
+import com.nedap.archie.rm.composition.Evaluation;
 import com.nedap.archie.rm.composition.Observation;
 import com.nedap.archie.rm.datastructures.Element;
 import com.nedap.archie.rm.datastructures.PointEvent;
@@ -26,11 +27,17 @@ import com.nedap.archie.rm.datatypes.CodePhrase;
 import com.nedap.archie.rm.datavalues.DvCodedText;
 import com.nedap.archie.rm.datavalues.quantity.DvQuantity;
 import com.nedap.archie.rm.support.identification.TerminologyId;
+import org.apache.commons.io.IOUtils;
 import org.ehrbase.client.TestData;
 import org.ehrbase.client.classgenerator.EhrbaseBloodPressureSimpleDeV0;
 import org.ehrbase.client.classgenerator.EhrbaseMultiOccurrenceDeV1;
+import org.ehrbase.client.classgenerator.TestAllTypesEnV1;
+import org.ehrbase.serialisation.CanonicalXML;
+import org.ehrbase.test_data.composition.CompositionTestDataCanonicalXML;
 import org.junit.Test;
 
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -106,5 +113,25 @@ public class UnflattenerTest {
 
     }
 
+    @Test
+    public void testUnflattenAllTypes() throws IOException {
+        Composition composition = new CanonicalXML().unmarshal(IOUtils.toString(CompositionTestDataCanonicalXML.ALL_TYPES.getStream(), StandardCharsets.UTF_8), Composition.class);
+        Flattener flattener = new Flattener();
+        TestAllTypesEnV1 testAllTypesEnV1 = flattener.flatten(composition, TestAllTypesEnV1.class);
+        TestAllTypesEnV1.TestAllTypes.ArbolChoiceDvquantity choiceDvquantity = new TestAllTypesEnV1.TestAllTypes.ArbolChoiceDvquantity();
+        choiceDvquantity.setChoiceMagnitude(22d);
+        choiceDvquantity.setChoiceUnits("mm[Hg]");
+        testAllTypesEnV1.getTestAllTypes().get(0).setChoice(choiceDvquantity);
+
+        Unflattener cut = new Unflattener(new TestDataTemplateProvider());
+        Composition actual = (Composition) cut.unflatten(testAllTypesEnV1);
+        assertThat(actual).isNotNull();
+        Evaluation evaluation = (Evaluation) actual.itemAtPath("/content[openEHR-EHR-EVALUATION.test_all_types.v1]");
+        assertThat(evaluation).isNotNull();
+        DvQuantity dvquantity = (DvQuantity) evaluation.itemAtPath("/data[at0001]/items[at0009]/value");
+        assertThat(dvquantity).isNotNull();
+        assertThat(dvquantity.getMagnitude()).isEqualTo(22d);
+        assertThat(dvquantity.getUnits()).isEqualTo("mm[Hg]");
+    }
 
 }
