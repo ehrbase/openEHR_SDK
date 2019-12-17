@@ -67,9 +67,9 @@ public class TestData {
         bloodPressureTrainingSample.setMeanArterialPressureUnits("mm[Hg]");
         bloodPressureTrainingSample.setPulsePressureMagnitude(22d);
         bloodPressureTrainingSample.setPulsePressureUnits("mm[Hg]");
-        bloodPressureTrainingSample.setKorotkoffSounds(EhrbaseBloodPressureSimpleDeV0.BloodPressureTrainingSample.KorotkoffSounds.FIFTHSOUND);
-        bloodPressureTrainingSample.setCuffSize(EhrbaseBloodPressureSimpleDeV0.BloodPressureTrainingSample.CuffSize.ADULT);
-        bloodPressureTrainingSample.setLocationOfMeasurement(EhrbaseBloodPressureSimpleDeV0.BloodPressureTrainingSample.LocationOfMeasurement.FINGER);
+        bloodPressureTrainingSample.setKorotkoffSoundsDefiningcode(EhrbaseBloodPressureSimpleDeV0.BloodPressureTrainingSample.KorotkoffSoundsDefiningcode.FIFTHSOUND);
+        bloodPressureTrainingSample.setCuffSizeDefiningcode(EhrbaseBloodPressureSimpleDeV0.BloodPressureTrainingSample.CuffSizeDefiningcode.ADULT);
+        bloodPressureTrainingSample.setLocationOfMeasurementDefiningcode(EhrbaseBloodPressureSimpleDeV0.BloodPressureTrainingSample.LocationOfMeasurementDefiningcode.FINGER);
         bloodPressureSimpleDeV0.getBloodPressureTrainingSample().add(bloodPressureTrainingSample);
         return bloodPressureSimpleDeV0;
     }

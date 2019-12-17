@@ -106,12 +106,15 @@ public class TemplateIntrospect {
         HashMap<String, Node> localNodeMap = new HashMap<>();
         log.trace("RmTyp: {}", ccomplexobject.getRmTypeName());
         Class rmClass = RM_INFO_LOOKUP.getClass(ccomplexobject.getRmTypeName());
+
         if (Pathable.class.isAssignableFrom(rmClass)) {
             localNodeMap.putAll(handleNonTemplateFields(rmClass, path));
 
-            ListValuedMap<String, Node> multiValuedMap = new ArrayListValuedHashMap<>();
+
             CATTRIBUTE[] cattributes = ccomplexobject.getAttributesArray();
             if (ArrayUtils.isNotEmpty(cattributes)) {
+                ListValuedMap<String, Node> multiValuedMap = new ArrayListValuedHashMap<>();
+
                 for (CATTRIBUTE cattribute : cattributes) {
                     String pathLoop = path + PATH_DIVIDER + cattribute.getRmAttributeName();
                     log.trace("Path: {}", pathLoop);
@@ -127,26 +130,32 @@ public class TemplateIntrospect {
                     }
 
                 }
+                multiValuedMap
+                        .asMap()
+                        .forEach((key, value) -> {
+                            if (value.size() == 1) {
+                                localNodeMap.put(key, value.iterator().next());
+                            } else {
+                                localNodeMap.put(key,
+                                        new ChoiceNode(
+                                                value.iterator().next().getName(),
+                                                value.stream()
+                                                        .filter(n -> EndNode.class.isAssignableFrom(n.getClass()))
+                                                        .map(n -> (EndNode) n)
+                                                        .collect(Collectors.toList())
+                                        )
+                                );
+                            }
+                        });
             }
-            multiValuedMap
-                    .asMap()
-                    .forEach((key, value) -> {
-                        if (value.size() == 1) {
-                            localNodeMap.put(key, value.iterator().next());
-                        } else {
-                            localNodeMap.put(key,
-                                    new ChoiceNode(
-                                            value.iterator().next().getName(),
-                                            value.stream()
-                                                    .filter(n -> EndNode.class.isAssignableFrom(n.getClass()))
-                                                    .map(n -> (EndNode) n)
-                                                    .collect(Collectors.toList())
-                                    )
-                            );
-                        }
-                    });
+
         } else {
-            localNodeMap.put(path, new EndNode(findJavaClass(ccomplexobject.getRmTypeName()), term));
+            Set<TermDefinition> termDefinitionSet = Arrays.stream(ccomplexobject.getAttributesArray())
+                    .flatMap(c -> Arrays.asList(c.getChildrenArray()).stream())
+                    .map(c -> buildTermSet(c, termDef))
+                    .findAny()
+                    .orElse(Collections.emptySet());
+            localNodeMap.put(path, new EndNode(findJavaClass(ccomplexobject.getRmTypeName()), term, termDefinitionSet));
         }
         return localNodeMap;
     }
@@ -181,17 +190,32 @@ public class TemplateIntrospect {
 
             return handleCCOMPLEXOBJECT((CCOMPLEXOBJECT) cobject, path, termDef, term);
 
+        } else if (cobject instanceof ARCHETYPESLOT) {
+            if (!cobject.getNodeId().isEmpty()) {
+                path = path + "[" + cobject.getNodeId() + "]";
+                log.trace("Path: {}", path);
+                if (termDef.containsKey(cobject.getNodeId())) {
+                    term = term + TERM_DIVIDER + termDef.get(cobject.getNodeId()).getValue();
+                }
+            }
+            return Collections.singletonMap(path, new SlotNode(findJavaClass(cobject.getRmTypeName()), term, Collections.emptySet(), multi));
+
         } else {
 
-            Set<TermDefinition> termDefinitions;
-            if (cobject instanceof CCODEPHRASE) {
-
-                termDefinitions = Arrays.stream(((CCODEPHRASE) cobject).getCodeListArray()).filter(termDef::containsKey).map(termDef::get).collect(Collectors.toSet());
-            } else {
-                termDefinitions = Collections.emptySet();
-            }
+            Set<TermDefinition> termDefinitions = buildTermSet(cobject, termDef);
             return Collections.singletonMap(path, new EndNode(findJavaClass(cobject.getRmTypeName()), term, termDefinitions));
         }
+    }
+
+    private Set<TermDefinition> buildTermSet(COBJECT cobject, Map<String, TermDefinition> termDef) {
+        Set<TermDefinition> termDefinitions;
+        if (cobject instanceof CCODEPHRASE) {
+
+            termDefinitions = Arrays.stream(((CCODEPHRASE) cobject).getCodeListArray()).filter(termDef::containsKey).map(termDef::get).collect(Collectors.toSet());
+        } else {
+            termDefinitions = Collections.emptySet();
+        }
+        return termDefinitions;
     }
 
 

@@ -17,22 +17,21 @@
 
 package org.ehrbase.client.classgenerator.config;
 
-import com.nedap.archie.rm.datavalues.DvCodedText;
+import com.nedap.archie.rm.datastructures.PointEvent;
 
+import java.util.Collections;
 import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
-public class DvCodedTextClassGeneratorConfig implements RmClassGeneratorConfig {
-    private static final Set<String> FIELDS = Stream.of("definingCode").collect(Collectors.toSet());
+public class PointEventClassGeneratorConfig implements RmClassGeneratorConfig {
 
     @Override
     public Class getRMClass() {
-        return DvCodedText.class;
+        return PointEvent.class;
     }
+
 
     @Override
     public Set<String> getExpandFields() {
-        return FIELDS;
+        return Collections.emptySet();
     }
 }

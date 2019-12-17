@@ -66,11 +66,15 @@ public class Flattener {
         if (List.class.isAssignableFrom(field.getType())) {
 
             final List<Object> childList;
-            if (List.class.isAssignableFrom(child.getClass())) {
+
+            if (child == null) {
+                childList = Collections.emptyList();
+            } else if (List.class.isAssignableFrom(child.getClass())) {
                 childList = (List<Object>) child;
             } else {
                 childList = Collections.singletonList(child);
             }
+
             List<Object> dtoList = new ArrayList<>();
             Type actualTypeArgument = ((ParameterizedType) field.getGenericType()).getActualTypeArguments()[0];
             Class<?> aClass = ReflectionUtils.forName(actualTypeArgument.getTypeName(), this.getClass().getClassLoader());
@@ -112,16 +116,17 @@ public class Flattener {
         Class<?> fieldType = field.getType();
 
         if (field.isAnnotationPresent(Choice.class)) {
+            String simpleName = Optional.ofNullable(child).map(Object::getClass).map(Class::getSimpleName).orElse("");
             Class<?> type = reflections.getSubTypesOf(fieldType)
                     .stream()
                     .filter(c -> c.isAnnotationPresent(OptionFor.class))
-                    .filter(c -> c.getAnnotation(OptionFor.class).value().equals(child.getClass().getSimpleName()))
+                    .filter(c -> c.getAnnotation(OptionFor.class).value().equals(simpleName))
                     .findAny()
                     .orElse(null);
             if (type != null) {
                 fieldType = type;
             } else {
-                logger.warn("No implementation of {} for {}", fieldType, child.getClass().getSimpleName());
+                logger.warn("No implementation of {} for {}", fieldType, simpleName);
             }
         }
 

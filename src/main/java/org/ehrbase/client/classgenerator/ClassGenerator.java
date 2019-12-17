@@ -20,6 +20,7 @@ package org.ehrbase.client.classgenerator;
 import com.nedap.archie.rm.datatypes.CodePhrase;
 import com.squareup.javapoet.*;
 import org.apache.commons.cli.*;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
@@ -29,6 +30,7 @@ import org.ehrbase.client.annotations.*;
 import org.ehrbase.client.classgenerator.config.RmClassGeneratorConfig;
 import org.ehrbase.client.exception.ClientException;
 import org.ehrbase.client.introspect.TemplateIntrospect;
+import org.ehrbase.client.introspect.TermDefinition;
 import org.ehrbase.client.introspect.node.*;
 import org.ehrbase.ehr.encode.wrappers.SnakeCase;
 import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
@@ -133,7 +135,7 @@ public class ClassGenerator {
         }
 
 
-        addField(classBuilder, path, choiceNode.getName(), interfaceClassName, true);
+        addField(classBuilder, path, choiceNode.getName(), interfaceClassName, Collections.emptySet(), true);
     }
 
     private void addSimpleField(TypeSpec.Builder classBuilder, String path, EndNode endNode) {
@@ -146,16 +148,17 @@ public class ClassGenerator {
         if (classGeneratorConfig == null && !endNode.getClazz().getName().contains("java.lang")) {
             logger.debug("No ClassGenerator for {}", endNode.getClazz());
         }
-        if (CodePhrase.class.equals(endNode.getClazz()) && !endNode.getValuset().isEmpty()) {
+        if (classGeneratorConfig == null || !classGeneratorConfig.isExpandField() || endNode instanceof SlotNode) {
 
-            TypeSpec build = buildEnumValueSet(endNode);
-            classBuilder.addType(build);
-            addField(classBuilder, path, endNode.getName(), ClassName.get("", build.name), false);
-        } else if (classGeneratorConfig == null || !classGeneratorConfig.isExpandField()) {
-            addField(classBuilder, path, endNode.getName(), ClassName.get(Optional.ofNullable(endNode.getClazz()).orElse(Object.class)), false);
+            TypeName className = ClassName.get(Optional.ofNullable(endNode.getClazz()).orElse(Object.class));
+            if (endNode instanceof SlotNode && ((SlotNode) endNode).isMulti()) {
+                className = ParameterizedTypeName.get(ClassName.get(List.class), className);
+            }
+
+            addField(classBuilder, path, endNode.getName(), className, endNode.getValuset(), false);
         } else {
             Map<String, Field> fieldMap = Arrays.stream(FieldUtils.getAllFields(endNode.getClazz())).collect(Collectors.toMap(Field::getName, f -> f));
-            classGeneratorConfig.getExpandFields().forEach(fieldName -> addField(classBuilder, path + "|" + new SnakeCase(fieldName).camelToSnake(), endNode.getName() + "_" + fieldName, ClassName.get(fieldMap.get(fieldName).getType()), false));
+            classGeneratorConfig.getExpandFields().forEach(fieldName -> addField(classBuilder, path + "|" + new SnakeCase(fieldName).camelToSnake(), endNode.getName() + "_" + fieldName, ClassName.get(fieldMap.get(fieldName).getType()), endNode.getValuset(), false));
         }
     }
 
@@ -164,15 +167,15 @@ public class ClassGenerator {
         classBuilder.addType(subSpec);
 
         TypeName className = ClassName.get("", subSpec.name);
-        if ((node).isMulti()) {
+        if (node.isMulti()) {
             className = ParameterizedTypeName.get(ClassName.get(List.class), className);
         }
-        addField(classBuilder, path, node.getName(), className, false);
+        addField(classBuilder, path, node.getName(), className, Collections.emptySet(), false);
     }
 
-    private TypeSpec buildEnumValueSet(EndNode endNode) {
+    private TypeSpec buildEnumValueSet(String name, Set<TermDefinition> valuset) {
         TypeSpec.Builder enumBuilder = TypeSpec
-                .enumBuilder(normalise(extractSubName(endNode.getName()), true))
+                .enumBuilder(normalise(extractSubName(name), true))
                 .addSuperinterface(EnumValueSet.class)
                 .addModifiers(Modifier.PUBLIC);
         FieldSpec fieldSpec1 = FieldSpec.builder(ClassName.get(String.class), "value").addModifiers(Modifier.PRIVATE).build();
@@ -186,7 +189,7 @@ public class ClassGenerator {
 
         MethodSpec constructor = buildConstructor(fieldSpec1, fieldSpec2, fieldSpec3, fieldSpec4);
         enumBuilder.addMethod(constructor);
-        endNode.getValuset().forEach(t -> {
+        valuset.forEach(t -> {
             String fieldName = extractSubName(t.getValue());
             enumBuilder.addEnumConstant(normalise(fieldName, false).toUpperCase(), TypeSpec.anonymousClassBuilder("$S, $S, $S, $S", t.getValue(), t.getDescription(), "local", t.getCode()).build());
         });
@@ -207,15 +210,25 @@ public class ClassGenerator {
         return builder.build();
     }
 
-    private void addField(TypeSpec.Builder classBuilder, String path, String name, TypeName className, boolean addChoiceAnnotation) {
-        AnnotationSpec annotationSpec = AnnotationSpec.builder(Path.class).addMember(Path.VALUE, "$S", path).build();
+    private void addField(TypeSpec.Builder classBuilder, String path, String name, TypeName className, Set<TermDefinition> valueSet, boolean addChoiceAnnotation) {
+
+
+        if (CodePhrase.class.getName().equals(className.toString()) && CollectionUtils.isNotEmpty(valueSet)) {
+
+            TypeSpec enumValueSet = buildEnumValueSet(name, valueSet);
+            classBuilder.addType(enumValueSet);
+            className = ClassName.get("", enumValueSet.name);
+        }
+
         String fieldName = buildFieldName(name);
         FieldSpec.Builder builder = FieldSpec.builder(className, fieldName)
-                .addAnnotation(annotationSpec)
+                .addAnnotation(AnnotationSpec.builder(Path.class).addMember(Path.VALUE, "$S", path).build())
                 .addModifiers(Modifier.PRIVATE);
+
         if (addChoiceAnnotation) {
             builder.addAnnotation(Choice.class);
         }
+
         FieldSpec fieldSpec = builder
                 .build();
         classBuilder.addField(fieldSpec);

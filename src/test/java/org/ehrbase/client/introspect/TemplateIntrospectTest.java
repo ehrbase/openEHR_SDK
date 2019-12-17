@@ -66,7 +66,7 @@ public class TemplateIntrospectTest {
                         "/context/setting",
                         "/territory",
                         "/content[openEHR-EHR-OBSERVATION.body_temperature.v2]",
-                        "/context/other_context[at0001]/items",
+                        "/context/other_context[at0001]/items[at0002]",
                         "/context/location",
                         "/context/start_time"
                 );

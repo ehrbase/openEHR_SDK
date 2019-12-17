@@ -15,24 +15,25 @@
  *  limitations under the License.
  */
 
-package org.ehrbase.client.classgenerator.config;
+package org.ehrbase.client.introspect.config;
 
-import com.nedap.archie.rm.datavalues.DvCodedText;
+import com.nedap.archie.rm.datastructures.PointEvent;
 
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class DvCodedTextClassGeneratorConfig implements RmClassGeneratorConfig {
-    private static final Set<String> FIELDS = Stream.of("definingCode").collect(Collectors.toSet());
+public class PointEventIntrospectConfig implements RmIntrospectConfig {
+
+    private static final Set<String> FIELDS = Stream.of("time").collect(Collectors.toSet());
 
     @Override
     public Class getRMClass() {
-        return DvCodedText.class;
+        return PointEvent.class;
     }
 
     @Override
-    public Set<String> getExpandFields() {
+    public Set<String> getNonTemplateFields() {
         return FIELDS;
     }
 }

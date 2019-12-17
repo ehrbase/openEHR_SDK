@@ -43,17 +43,11 @@ public class TestAllTypesEnV1 {
     @Path("/context/setting|defining_code")
     private CodePhrase settingDefiningcode;
 
-    @Path("/context/setting|value")
-    private String settingValue;
-
     @Path("/territory")
     private CodePhrase territory;
 
     @Path("/context/other_context[at0004]/item[at0005]/value|defining_code")
-    private CodePhrase contextCodedTextDefiningcode;
-
-    @Path("/context/other_context[at0004]/item[at0005]/value|value")
-    private String contextCodedTextValue;
+    private ContextCodedTextDefiningcode contextCodedTextDefiningcode;
 
     @Path("/content[openEHR-EHR-OBSERVATION.test_all_types.v1]")
     private List<TestAllTypes7> testAllTypes3;
@@ -120,14 +114,6 @@ public class TestAllTypesEnV1 {
         return this.settingDefiningcode;
     }
 
-    public void setSettingValue(String settingValue) {
-        this.settingValue = settingValue;
-    }
-
-    public String getSettingValue() {
-        return this.settingValue;
-    }
-
     public void setTerritory(CodePhrase territory) {
         this.territory = territory;
     }
@@ -136,20 +122,13 @@ public class TestAllTypesEnV1 {
         return this.territory;
     }
 
-    public void setContextCodedTextDefiningcode(CodePhrase contextCodedTextDefiningcode) {
+    public void setContextCodedTextDefiningcode(
+            ContextCodedTextDefiningcode contextCodedTextDefiningcode) {
         this.contextCodedTextDefiningcode = contextCodedTextDefiningcode;
     }
 
-    public CodePhrase getContextCodedTextDefiningcode() {
+    public ContextCodedTextDefiningcode getContextCodedTextDefiningcode() {
         return this.contextCodedTextDefiningcode;
-    }
-
-    public void setContextCodedTextValue(String contextCodedTextValue) {
-        this.contextCodedTextValue = contextCodedTextValue;
-    }
-
-    public String getContextCodedTextValue() {
-        return this.contextCodedTextValue;
     }
 
     public void setTestAllTypes3(List<TestAllTypes7> testAllTypes3) {
@@ -356,40 +335,22 @@ public class TestAllTypesEnV1 {
             private TemporalAccessor timeValue;
 
             @Path("/ism_transition[at0005]/careflow_step|defining_code")
-            private CodePhrase completedDefiningcode;
-
-            @Path("/ism_transition[at0005]/careflow_step|value")
-            private String completedValue;
+            private CompletedDefiningcode completedDefiningcode;
 
             @Path("/ism_transition[at0005]/current_state|defining_code")
             private CodePhrase completedDefiningcode2;
 
-            @Path("/ism_transition[at0005]/current_state|value")
-            private String completedValue2;
-
             @Path("/ism_transition[at0003]/current_state|defining_code")
             private CodePhrase plannedDefiningcode;
-
-            @Path("/ism_transition[at0003]/current_state|value")
-            private String plannedValue;
 
             @Path("/ism_transition[at0004]/current_state|defining_code")
             private CodePhrase activeDefiningcode;
 
-            @Path("/ism_transition[at0004]/current_state|value")
-            private String activeValue;
-
             @Path("/ism_transition[at0003]/careflow_step|defining_code")
-            private CodePhrase plannedDefiningcode2;
-
-            @Path("/ism_transition[at0003]/careflow_step|value")
-            private String plannedValue2;
+            private PlannedDefiningcode plannedDefiningcode2;
 
             @Path("/ism_transition[at0004]/careflow_step|defining_code")
-            private CodePhrase activeDefiningcode2;
-
-            @Path("/ism_transition[at0004]/careflow_step|value")
-            private String activeValue2;
+            private ActiveDefiningcode activeDefiningcode2;
 
             @Path("/description[at0001]/items[openEHR-EHR-CLUSTER.test_all_types.v1]")
             private List<TestAllTypes4> testAllTypes;
@@ -402,20 +363,12 @@ public class TestAllTypesEnV1 {
                 return this.timeValue;
             }
 
-            public void setCompletedDefiningcode(CodePhrase completedDefiningcode) {
+            public void setCompletedDefiningcode(CompletedDefiningcode completedDefiningcode) {
                 this.completedDefiningcode = completedDefiningcode;
             }
 
-            public CodePhrase getCompletedDefiningcode() {
+            public CompletedDefiningcode getCompletedDefiningcode() {
                 return this.completedDefiningcode;
-            }
-
-            public void setCompletedValue(String completedValue) {
-                this.completedValue = completedValue;
-            }
-
-            public String getCompletedValue() {
-                return this.completedValue;
             }
 
             public void setCompletedDefiningcode2(CodePhrase completedDefiningcode2) {
@@ -426,28 +379,12 @@ public class TestAllTypesEnV1 {
                 return this.completedDefiningcode2;
             }
 
-            public void setCompletedValue2(String completedValue2) {
-                this.completedValue2 = completedValue2;
-            }
-
-            public String getCompletedValue2() {
-                return this.completedValue2;
-            }
-
             public void setPlannedDefiningcode(CodePhrase plannedDefiningcode) {
                 this.plannedDefiningcode = plannedDefiningcode;
             }
 
             public CodePhrase getPlannedDefiningcode() {
                 return this.plannedDefiningcode;
-            }
-
-            public void setPlannedValue(String plannedValue) {
-                this.plannedValue = plannedValue;
-            }
-
-            public String getPlannedValue() {
-                return this.plannedValue;
             }
 
             public void setActiveDefiningcode(CodePhrase activeDefiningcode) {
@@ -458,44 +395,20 @@ public class TestAllTypesEnV1 {
                 return this.activeDefiningcode;
             }
 
-            public void setActiveValue(String activeValue) {
-                this.activeValue = activeValue;
-            }
-
-            public String getActiveValue() {
-                return this.activeValue;
-            }
-
-            public void setPlannedDefiningcode2(CodePhrase plannedDefiningcode2) {
+            public void setPlannedDefiningcode2(PlannedDefiningcode plannedDefiningcode2) {
                 this.plannedDefiningcode2 = plannedDefiningcode2;
             }
 
-            public CodePhrase getPlannedDefiningcode2() {
+            public PlannedDefiningcode getPlannedDefiningcode2() {
                 return this.plannedDefiningcode2;
             }
 
-            public void setPlannedValue2(String plannedValue2) {
-                this.plannedValue2 = plannedValue2;
-            }
-
-            public String getPlannedValue2() {
-                return this.plannedValue2;
-            }
-
-            public void setActiveDefiningcode2(CodePhrase activeDefiningcode2) {
+            public void setActiveDefiningcode2(ActiveDefiningcode activeDefiningcode2) {
                 this.activeDefiningcode2 = activeDefiningcode2;
             }
 
-            public CodePhrase getActiveDefiningcode2() {
+            public ActiveDefiningcode getActiveDefiningcode2() {
                 return this.activeDefiningcode2;
-            }
-
-            public void setActiveValue2(String activeValue2) {
-                this.activeValue2 = activeValue2;
-            }
-
-            public String getActiveValue2() {
-                return this.activeValue2;
             }
 
             public void setTestAllTypes(List<TestAllTypes4> testAllTypes) {
@@ -504,6 +417,111 @@ public class TestAllTypesEnV1 {
 
             public List<TestAllTypes4> getTestAllTypes() {
                 return this.testAllTypes;
+            }
+
+            public enum CompletedDefiningcode implements EnumValueSet {
+                COMPLETED("Completed", "*", "local", "at0005");
+
+                private String value;
+
+                private String description;
+
+                private String terminologyId;
+
+                private String code;
+
+                CompletedDefiningcode(String value, String description, String terminologyId, String code) {
+                    this.value = value;
+                    this.description = description;
+                    this.terminologyId = terminologyId;
+                    this.code = code;
+                }
+
+                public String getValue() {
+                    return this.value;
+                }
+
+                public String getDescription() {
+                    return this.description;
+                }
+
+                public String getTerminologyId() {
+                    return this.terminologyId;
+                }
+
+                public String getCode() {
+                    return this.code;
+                }
+            }
+
+            public enum PlannedDefiningcode implements EnumValueSet {
+                PLANNED("Planned", "*", "local", "at0003");
+
+                private String value;
+
+                private String description;
+
+                private String terminologyId;
+
+                private String code;
+
+                PlannedDefiningcode(String value, String description, String terminologyId, String code) {
+                    this.value = value;
+                    this.description = description;
+                    this.terminologyId = terminologyId;
+                    this.code = code;
+                }
+
+                public String getValue() {
+                    return this.value;
+                }
+
+                public String getDescription() {
+                    return this.description;
+                }
+
+                public String getTerminologyId() {
+                    return this.terminologyId;
+                }
+
+                public String getCode() {
+                    return this.code;
+                }
+            }
+
+            public enum ActiveDefiningcode implements EnumValueSet {
+                ACTIVE("Active", "*", "local", "at0004");
+
+                private String value;
+
+                private String description;
+
+                private String terminologyId;
+
+                private String code;
+
+                ActiveDefiningcode(String value, String description, String terminologyId, String code) {
+                    this.value = value;
+                    this.description = description;
+                    this.terminologyId = terminologyId;
+                    this.code = code;
+                }
+
+                public String getValue() {
+                    return this.value;
+                }
+
+                public String getDescription() {
+                    return this.description;
+                }
+
+                public String getTerminologyId() {
+                    return this.terminologyId;
+                }
+
+                public String getCode() {
+                    return this.code;
+                }
             }
 
             @Entity
@@ -630,6 +648,46 @@ public class TestAllTypesEnV1 {
         }
     }
 
+    public enum ContextCodedTextDefiningcode implements EnumValueSet {
+        VALUE3("value3", "*", "local", "at0008"),
+
+        VALUE1("value1", "*", "local", "at0006"),
+
+        VALUE2("value2", "*", "local", "at0007");
+
+        private String value;
+
+        private String description;
+
+        private String terminologyId;
+
+        private String code;
+
+        ContextCodedTextDefiningcode(String value, String description, String terminologyId,
+                                     String code) {
+            this.value = value;
+            this.description = description;
+            this.terminologyId = terminologyId;
+            this.code = code;
+        }
+
+        public String getValue() {
+            return this.value;
+        }
+
+        public String getDescription() {
+            return this.description;
+        }
+
+        public String getTerminologyId() {
+            return this.terminologyId;
+        }
+
+        public String getCode() {
+            return this.code;
+        }
+    }
+
     @Entity
     @Archetype("openEHR-EHR-OBSERVATION.test_all_types.v1")
     public static class TestAllTypes7 {
@@ -654,9 +712,6 @@ public class TestAllTypesEnV1 {
         @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0005]/value|defining_code")
         private CodePhrase codedTextDefiningcode;
 
-        @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0005]/value|value")
-        private String codedTextValue;
-
         @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0022]/value")
         private DvProportion proportionAny;
 
@@ -665,9 +720,6 @@ public class TestAllTypesEnV1 {
 
         @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0006]/value|defining_code")
         private CodePhrase codedTextTerminologyDefiningcode;
-
-        @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0006]/value|value")
-        private String codedTextTerminologyValue;
 
         @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0007]/value|magnitude")
         private Double quantityMagnitude;
@@ -758,14 +810,6 @@ public class TestAllTypesEnV1 {
             return this.codedTextDefiningcode;
         }
 
-        public void setCodedTextValue(String codedTextValue) {
-            this.codedTextValue = codedTextValue;
-        }
-
-        public String getCodedTextValue() {
-            return this.codedTextValue;
-        }
-
         public void setProportionAny(DvProportion proportionAny) {
             this.proportionAny = proportionAny;
         }
@@ -788,14 +832,6 @@ public class TestAllTypesEnV1 {
 
         public CodePhrase getCodedTextTerminologyDefiningcode() {
             return this.codedTextTerminologyDefiningcode;
-        }
-
-        public void setCodedTextTerminologyValue(String codedTextTerminologyValue) {
-            this.codedTextTerminologyValue = codedTextTerminologyValue;
-        }
-
-        public String getCodedTextTerminologyValue() {
-            return this.codedTextTerminologyValue;
         }
 
         public void setQuantityMagnitude(Double quantityMagnitude) {
