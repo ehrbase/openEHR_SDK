@@ -235,29 +235,29 @@ public class EhrbaseMultiOccurrenceDeV1 {
             }
 
             public enum LocationOfMeasurementDefiningcode implements EnumValueSet {
-                INTRAVASCULAR("Intravascular", "Temperature is measured within the vascular system.", "local", "at0028"),
-
-                MOUTH("Mouth", "Temperature is measured within the mouth.", "local", "at0022"),
-
-                FOREHEAD("Forehead", "Temperature is measured on the forehead.", "local", "at0061"),
-
-                INGUINALSKINCREASE("Inguinal skin crease", "Temperature is measured in the inguinal skin crease between the leg and abdominal wall.", "local", "at0055"),
-
-                NASOPHARYNX("Nasopharynx", "Temperature is measured within the nasopharynx.", "local", "at0026"),
+                RECTUM("Rectum", "Temperature measured within the rectum.", "local", "at0025"),
 
                 URINARYBLADDER("Urinary bladder", "Temperature is measured in the urinary bladder.", "local", "at0027"),
 
-                RECTUM("Rectum", "Temperature measured within the rectum.", "local", "at0025"),
-
-                OESOPHAGUS("Oesophagus", "Temperatue is measured within the oesophagus.", "local", "at0054"),
+                NASOPHARYNX("Nasopharynx", "Temperature is measured within the nasopharynx.", "local", "at0026"),
 
                 AXILLA("Axilla", "Temperature is measured from the skin of the axilla with the arm positioned down by the side.", "local", "at0024"),
 
+                FOREHEAD("Forehead", "Temperature is measured on the forehead.", "local", "at0061"),
+
+                MOUTH("Mouth", "Temperature is measured within the mouth.", "local", "at0022"),
+
+                INGUINALSKINCREASE("Inguinal skin crease", "Temperature is measured in the inguinal skin crease between the leg and abdominal wall.", "local", "at0055"),
+
+                VAGINA("Vagina", "Temperature is measured within the vagina.", "local", "at0051"),
+
                 EARCANAL("Ear canal", "Temperature is measured from within the external auditory canal.", "local", "at0023"),
+
+                OESOPHAGUS("Oesophagus", "Temperatue is measured within the oesophagus.", "local", "at0054"),
 
                 TEMPLE("Temple", "Temperature is measured at the temple, over the superficial temporal artery.", "local", "at0060"),
 
-                VAGINA("Vagina", "Temperature is measured within the vagina.", "local", "at0051"),
+                INTRAVASCULAR("Intravascular", "Temperature is measured within the vascular system.", "local", "at0028"),
 
                 SKIN("Skin", "Temperature is measured from exposed skin.", "local", "at0043");
 
@@ -419,9 +419,9 @@ public class EhrbaseMultiOccurrenceDeV1 {
                 }
 
                 public enum BodyExposureDefiningcode implements EnumValueSet {
-                    BEDDING("Reduced clothing/bedding", "The person is covered by a lesser amount of clothing or bedding than deemed appropriate for the environmental circumstances.", "local", "at0032"),
+                    NAKED("Naked", "No clothing, bedding or covering.", "local", "at0031"),
 
-                    NAKED("Naked", "No clothing, bedding or covering.", "local", "at0031");
+                    BEDDING("Appropriate clothing/bedding", "The person is covered by an amount of clothing or bedding deemed appropriate for the environmental circumstances.", "local", "at0033");
 
                     private String value;
 

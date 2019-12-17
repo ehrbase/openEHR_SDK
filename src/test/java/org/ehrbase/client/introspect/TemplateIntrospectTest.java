@@ -19,10 +19,7 @@ package org.ehrbase.client.introspect;
 
 import org.apache.xmlbeans.XmlException;
 import org.assertj.core.groups.Tuple;
-import org.ehrbase.client.introspect.node.ArchetypeNode;
-import org.ehrbase.client.introspect.node.ChoiceNode;
-import org.ehrbase.client.introspect.node.EndNode;
-import org.ehrbase.client.introspect.node.Node;
+import org.ehrbase.client.introspect.node.*;
 import org.ehrbase.test_data.operationaltemplate.OperationalTemplateTestData;
 import org.junit.Test;
 import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
@@ -46,7 +43,41 @@ public class TemplateIntrospectTest {
         Map<String, Node> actual = cut.getRoot().getChildren();
 
         assertThat(actual).isNotEmpty();
+        assertThat(actual.keySet())
+                .containsExactlyInAnyOrder(
+                        "/context/end_time",
+                        "/language",
+                        "/context/health_care_facility",
+                        "/composer",
+                        "/context/setting",
+                        "/territory",
+                        "/content[openEHR-EHR-OBSERVATION.sample_blood_pressure.v1]",
+                        "/context/other_context[at0001]/items[at0006]/items[openEHR-EHR-CLUSTER.sample_device.v1]",
+                        "/context/location",
+                        "/context/start_time"
+                );
 
+        Map<Class, Long> classes = findAll(actual).stream()
+                .collect(Collectors.groupingBy(EndNode::getClazz, Collectors.counting()));
+
+        assertThat(classes.entrySet())
+                .extracting(e -> e.getKey().getSimpleName(), Map.Entry::getValue)
+                .containsExactlyInAnyOrder(
+                        new Tuple("PartyProxy", 2L),
+                        new Tuple("DvCodedText", 5L),
+                        new Tuple("CodePhrase", 3L),
+                        new Tuple("PartyIdentified", 1L),
+                        new Tuple("DvDateTime", 6L),
+                        new Tuple("DvQuantity", 5L),
+                        new Tuple("DvText", 7L),
+                        new Tuple("Cluster", 3L),
+                        new Tuple("String", 1L)
+                );
+
+        assertThat(countNodes(actual, ArchetypeNode.class)).isEqualTo(2l);
+        assertThat(countNodes(actual, EndNode.class)).isEqualTo(33l);
+        assertThat(countNodes(actual, SlotNode.class)).isEqualTo(3l);
+        assertThat(countNodes(actual, ChoiceNode.class)).isEqualTo(0l);
     }
 
     @Test
@@ -70,7 +101,26 @@ public class TemplateIntrospectTest {
                         "/context/location",
                         "/context/start_time"
                 );
+        Map<Class, Long> classes = findAll(actual).stream()
+                .collect(Collectors.groupingBy(EndNode::getClazz, Collectors.counting()));
 
+        assertThat(classes.entrySet())
+                .extracting(e -> e.getKey().getSimpleName(), Map.Entry::getValue)
+                .containsExactlyInAnyOrder(
+                        new Tuple("PartyProxy", 2L),
+                        new Tuple("DvCodedText", 2L),
+                        new Tuple("CodePhrase", 3L),
+                        new Tuple("PartyIdentified", 1L),
+                        new Tuple("DvDateTime", 3L),
+                        new Tuple("DvText", 1L),
+                        new Tuple("Cluster", 4L),
+                        new Tuple("String", 1L)
+                );
+
+        assertThat(countNodes(actual, ArchetypeNode.class)).isEqualTo(1l);
+        assertThat(countNodes(actual, EndNode.class)).isEqualTo(17l);
+        assertThat(countNodes(actual, SlotNode.class)).isEqualTo(6l);
+        assertThat(countNodes(actual, ChoiceNode.class)).isEqualTo(1l);
     }
 
     @Test
@@ -131,6 +181,11 @@ public class TemplateIntrospectTest {
                         new Tuple("DvIdentifier", 1L),
                         new Tuple("ItemStructure", 1L)
                 );
+
+        assertThat(countNodes(actual, ArchetypeNode.class)).isEqualTo(7l);
+        assertThat(countNodes(actual, EndNode.class)).isEqualTo(55l);
+        assertThat(countNodes(actual, SlotNode.class)).isEqualTo(2l);
+        assertThat(countNodes(actual, ChoiceNode.class)).isEqualTo(1l);
     }
 
     private List<EndNode> findAll(Map<String, Node> nodeMap) {
@@ -145,5 +200,19 @@ public class TemplateIntrospectTest {
             }
         }
         return nodes;
+    }
+
+    private long countNodes(Map<String, Node> nodeMap, Class nodeClass) {
+        Long collect = nodeMap.values().stream().filter(n -> nodeClass.isAssignableFrom(n.getClass())).count();
+
+        for (Node node : nodeMap.values()) {
+            if (ArchetypeNode.class.isAssignableFrom(node.getClass())) {
+                collect += countNodes(((ArchetypeNode) node).getChildren(), nodeClass);
+            } else if (ChoiceNode.class.isAssignableFrom(node.getClass()) && EndNode.class.isAssignableFrom(nodeClass)) {
+                collect += ((ChoiceNode) node).getNodes().size();
+            }
+        }
+
+        return collect;
     }
 }

@@ -649,9 +649,9 @@ public class TestAllTypesEnV1 {
     }
 
     public enum ContextCodedTextDefiningcode implements EnumValueSet {
-        VALUE3("value3", "*", "local", "at0008"),
-
         VALUE1("value1", "*", "local", "at0006"),
+
+        VALUE3("value3", "*", "local", "at0008"),
 
         VALUE2("value2", "*", "local", "at0007");
 
