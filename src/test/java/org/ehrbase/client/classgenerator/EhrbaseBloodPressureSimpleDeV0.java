@@ -365,19 +365,19 @@ public class EhrbaseBloodPressureSimpleDeV0 {
         }
 
         public enum CuffSizeDefiningcode implements EnumValueSet {
-            INFANT("Infant", "A cuff used for infants - bladder approx 5cm x 15cm", "local", "at1018"),
+            LARGEADULT("Large Adult", "A cuff for adults with larger arms - bladder approx 16cm x 38cm", "local", "at0016"),
+
+            NEONATAL("Neonatal", "A cuff used for a new born - bladder approx 3cm x 6cm", "local", "at1009"),
 
             CHILD("Paediatric/Child", "A cuff that is appropriate for a child or thin arm - bladder approx 8cm x 21 cm", "local", "at0017"),
 
-            ADULT("Adult", "A cuff that is standard for an adult - bladder approx 13cm x 30cm", "local", "at0015"),
+            ADULTTHIGH("Adult Thigh", "A cuff used for an adult thigh - bladder approx 20cm x 42 cm", "local", "at1008"),
 
-            LARGEADULT("Large Adult", "A cuff for adults with larger arms - bladder approx 16cm x 38cm", "local", "at0016"),
+            ADULT("Adult", "A cuff that is standard for an adult - bladder approx 13cm x 30cm", "local", "at0015"),
 
             SMALLADULT("Small Adult", "A cuff used for a small adult - bladder approx 10cm x 24 cm", "local", "at1019"),
 
-            ADULTTHIGH("Adult Thigh", "A cuff used for an adult thigh - bladder approx 20cm x 42 cm", "local", "at1008"),
-
-            NEONATAL("Neonatal", "A cuff used for a new born - bladder approx 3cm x 6cm", "local", "at1009");
+            INFANT("Infant", "A cuff used for infants - bladder approx 5cm x 15cm", "local", "at1018");
 
             private String value;
 
@@ -450,17 +450,17 @@ public class EhrbaseBloodPressureSimpleDeV0 {
         }
 
         public enum PositionDefiningcode implements EnumValueSet {
-            LEFTLATERAL("Left Lateral", "Lying on the left side at the time of blood pressure measurement", "local", "at1014"),
-
             STANDING("Standing", "Standing at the time of blood pressure measurement", "local", "at1000"),
-
-            LYING("Lying", "Lying flat at the time of blood pressure measurement", "local", "at1003"),
-
-            SITTING("Sitting", "Sitting (for example on bed or chair) at the time of blood pressure measurement", "local", "at1001"),
 
             TRENDELENBURG("Trendelenburg", "Lying flat on the back (supine position) with the feet higher than the head at the time of blood pressure measurement", "local", "at1013"),
 
-            RECLINING("Reclining", "Reclining at the time of blood pressure measurement", "local", "at1002");
+            LYING("Lying", "Lying flat at the time of blood pressure measurement", "local", "at1003"),
+
+            LEFTLATERAL("Left Lateral", "Lying on the left side at the time of blood pressure measurement", "local", "at1014"),
+
+            RECLINING("Reclining", "Reclining at the time of blood pressure measurement", "local", "at1002"),
+
+            SITTING("Sitting", "Sitting (for example on bed or chair) at the time of blood pressure measurement", "local", "at1001");
 
             private String value;
 
@@ -495,25 +495,25 @@ public class EhrbaseBloodPressureSimpleDeV0 {
         }
 
         public enum LocationOfMeasurementDefiningcode implements EnumValueSet {
+            RIGHTANKLE("Right ankle", "The right ankle of the person", "local", "at1031"),
+
+            RIGHTTHIGH("Right thigh", "The right thigh of the person", "local", "at0027"),
+
+            INTRAARTERIAL("Intra-arterial", "Blood pressure monitored via an intra-arterial line", "local", "at0032"),
+
             LEFTANKLE("Left ankle", "The left ankle of the person", "local", "at1032"),
 
             LEFTTHIGH("Left thigh", "The left thigh of the person", "local", "at0028"),
 
-            RIGHTARM("Right arm", "The right arm of the person", "local", "at0025"),
-
             LEFTARM("Left arm", "The left arm of the person", "local", "at0026"),
-
-            RIGHTTHIGH("Right thigh", "The right thigh of the person", "local", "at0027"),
 
             RIGHTWRIST("Right wrist", "The right wrist of the person", "local", "at1020"),
 
-            INTRAARTERIAL("Intra-arterial", "Blood pressure monitored via an intra-arterial line", "local", "at0032"),
-
             LEFTWRIST("Left wrist", "The left wrist of the person", "local", "at1021"),
 
-            RIGHTANKLE("Right ankle", "The right ankle of the person", "local", "at1031"),
+            FINGER("Finger", "A finger of the person", "local", "at1026"),
 
-            FINGER("Finger", "A finger of the person", "local", "at1026");
+            RIGHTARM("Right arm", "The right arm of the person", "local", "at0025");
 
             private String value;
 

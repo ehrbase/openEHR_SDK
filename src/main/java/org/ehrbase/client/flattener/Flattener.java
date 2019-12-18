@@ -21,6 +21,8 @@ import com.nedap.archie.rm.RMObject;
 import com.nedap.archie.rm.archetyped.Locatable;
 import com.nedap.archie.rm.datatypes.CodePhrase;
 import com.nedap.archie.rm.support.identification.ObjectId;
+import com.nedap.archie.rminfo.ArchieRMInfoLookup;
+import com.nedap.archie.rminfo.RMTypeInfo;
 import org.ehrbase.client.annotations.Choice;
 import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.OptionFor;
@@ -41,6 +43,8 @@ import java.lang.reflect.Type;
 import java.util.*;
 
 public class Flattener {
+
+    private static final ArchieRMInfoLookup RM_INFO_LOOKUP = ArchieRMInfoLookup.getInstance();
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
     private Reflections reflections;
@@ -116,7 +120,7 @@ public class Flattener {
         Class<?> fieldType = field.getType();
 
         if (field.isAnnotationPresent(Choice.class)) {
-            String simpleName = Optional.ofNullable(child).map(Object::getClass).map(Class::getSimpleName).orElse("");
+            String simpleName = Optional.ofNullable(child).map(Object::getClass).map(RM_INFO_LOOKUP::getTypeInfo).map(RMTypeInfo::getRmName).orElse("");
             Class<?> type = reflections.getSubTypesOf(fieldType)
                     .stream()
                     .filter(c -> c.isAnnotationPresent(OptionFor.class))

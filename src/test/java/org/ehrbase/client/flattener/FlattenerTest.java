@@ -79,11 +79,20 @@ public class FlattenerTest {
         EhrbaseMultiOccurrenceDeV1 actual = cut.flatten((Locatable) rmObject, EhrbaseMultiOccurrenceDeV1.class);
 
         assertThat(actual).isNotNull();
-        assertThat(actual.getBodyTemperature()).size().isEqualTo(1);
-        EhrbaseMultiOccurrenceDeV1.BodyTemperature bodyTemperature = actual.getBodyTemperature().get(0);
-        assertThat(bodyTemperature.getHistory())
-                .extracting(h -> h.getTemperatureMagnitude())
+        assertThat(actual.getBodyTemperature()).size().isEqualTo(2);
+        EhrbaseMultiOccurrenceDeV1.BodyTemperature bodyTemperature1 = actual.getBodyTemperature().get(0);
+        assertThat(bodyTemperature1.getHistory())
+                .extracting(EhrbaseMultiOccurrenceDeV1.BodyTemperature.BodyTemperatureHistory::getTemperatureMagnitude)
                 .containsExactlyInAnyOrder(11d, 22d);
+
+        EhrbaseMultiOccurrenceDeV1.BodyTemperature.ProtocolLocationOfMeasurementChoice locationOfMeasurement1 = bodyTemperature1.getLocationOfMeasurement();
+        assertThat(locationOfMeasurement1.getClass()).isEqualTo(EhrbaseMultiOccurrenceDeV1.BodyTemperature.ProtocolLocationOfMeasurementDvcodedtext.class);
+        assertThat(((EhrbaseMultiOccurrenceDeV1.BodyTemperature.ProtocolLocationOfMeasurementDvcodedtext) locationOfMeasurement1).getLocationOfMeasurementDefiningcode()).isEqualTo(EhrbaseMultiOccurrenceDeV1.BodyTemperature.ProtocolLocationOfMeasurementDvcodedtext.LocationOfMeasurementDefiningcode.FOREHEAD);
+
+        EhrbaseMultiOccurrenceDeV1.BodyTemperature bodyTemperature2 = actual.getBodyTemperature().get(1);
+        EhrbaseMultiOccurrenceDeV1.BodyTemperature.ProtocolLocationOfMeasurementChoice locationOfMeasurement2 = bodyTemperature2.getLocationOfMeasurement();
+        assertThat(locationOfMeasurement2.getClass()).isEqualTo(EhrbaseMultiOccurrenceDeV1.BodyTemperature.ProtocolLocationOfMeasurementDvtext.class);
+        assertThat(((EhrbaseMultiOccurrenceDeV1.BodyTemperature.ProtocolLocationOfMeasurementDvtext) locationOfMeasurement2).getLocationOfMeasurementValue()).isEqualTo("location");
 
     }
 

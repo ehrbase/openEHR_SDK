@@ -83,21 +83,51 @@ public class TestData {
         dto.setTerritory(new CodePhrase(new TerminologyId("ISO_3166-1"), "UY"));
         dto.setSettingDefiningcode(new CodePhrase(new TerminologyId("openehr"), "229"));
         dto.setBodyTemperature(new ArrayList<>());
-        dto.getBodyTemperature().add(new EhrbaseMultiOccurrenceDeV1.BodyTemperature());
-        dto.getBodyTemperature().get(0).setHistory(new ArrayList<>());
+
+        dto.getBodyTemperature().add(buildBodyTemperature1());
+        dto.getBodyTemperature().add(buildBodyTemperature2());
+        return dto;
+    }
+
+    private static EhrbaseMultiOccurrenceDeV1.BodyTemperature buildBodyTemperature1() {
+        EhrbaseMultiOccurrenceDeV1.BodyTemperature bodyTemperature = new EhrbaseMultiOccurrenceDeV1.BodyTemperature();
+        bodyTemperature.setHistory(new ArrayList<>());
+        EhrbaseMultiOccurrenceDeV1.BodyTemperature.ProtocolLocationOfMeasurementDvcodedtext locationOfMeasurement = new EhrbaseMultiOccurrenceDeV1.BodyTemperature.ProtocolLocationOfMeasurementDvcodedtext();
+        locationOfMeasurement.setLocationOfMeasurementDefiningcode(EhrbaseMultiOccurrenceDeV1.BodyTemperature.ProtocolLocationOfMeasurementDvcodedtext.LocationOfMeasurementDefiningcode.FOREHEAD);
+        bodyTemperature.setLocationOfMeasurement(locationOfMeasurement);
 
         EhrbaseMultiOccurrenceDeV1.BodyTemperature.BodyTemperatureHistory history1 = new EhrbaseMultiOccurrenceDeV1.BodyTemperature.BodyTemperatureHistory();
         history1.setTemperatureMagnitude(22d);
         history1.setTemperatureUnits("Cel");
         history1.setCurrentDayOfMenstrualCycleMagnitude(3l);
-        dto.getBodyTemperature().get(0).getHistory().add(history1);
+        bodyTemperature.getHistory().add(history1);
 
         EhrbaseMultiOccurrenceDeV1.BodyTemperature.BodyTemperatureHistory history2 = new EhrbaseMultiOccurrenceDeV1.BodyTemperature.BodyTemperatureHistory();
         history2.setTemperatureMagnitude(11d);
         history2.setTemperatureUnits("Cel");
         history2.setCurrentDayOfMenstrualCycleMagnitude(3l);
-        dto.getBodyTemperature().get(0).getHistory().add(history2);
+        bodyTemperature.getHistory().add(history2);
+        return bodyTemperature;
+    }
 
-        return dto;
+    private static EhrbaseMultiOccurrenceDeV1.BodyTemperature buildBodyTemperature2() {
+        EhrbaseMultiOccurrenceDeV1.BodyTemperature bodyTemperature = new EhrbaseMultiOccurrenceDeV1.BodyTemperature();
+        bodyTemperature.setHistory(new ArrayList<>());
+        EhrbaseMultiOccurrenceDeV1.BodyTemperature.ProtocolLocationOfMeasurementDvtext locationOfMeasurement = new EhrbaseMultiOccurrenceDeV1.BodyTemperature.ProtocolLocationOfMeasurementDvtext();
+        locationOfMeasurement.setLocationOfMeasurementValue("location");
+        bodyTemperature.setLocationOfMeasurement(locationOfMeasurement);
+
+        EhrbaseMultiOccurrenceDeV1.BodyTemperature.BodyTemperatureHistory history1 = new EhrbaseMultiOccurrenceDeV1.BodyTemperature.BodyTemperatureHistory();
+        history1.setTemperatureMagnitude(22d);
+        history1.setTemperatureUnits("Cel");
+        history1.setCurrentDayOfMenstrualCycleMagnitude(3l);
+        bodyTemperature.getHistory().add(history1);
+
+        EhrbaseMultiOccurrenceDeV1.BodyTemperature.BodyTemperatureHistory history2 = new EhrbaseMultiOccurrenceDeV1.BodyTemperature.BodyTemperatureHistory();
+        history2.setTemperatureMagnitude(11d);
+        history2.setTemperatureUnits("Cel");
+        history2.setCurrentDayOfMenstrualCycleMagnitude(3l);
+        bodyTemperature.getHistory().add(history2);
+        return bodyTemperature;
     }
 }

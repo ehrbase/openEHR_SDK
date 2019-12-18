@@ -28,7 +28,6 @@ import org.openehr.schemas.v1.TemplateDocument;
 
 import java.io.IOException;
 import java.io.StringWriter;
-import java.nio.file.Paths;
 
 import static org.junit.Assert.assertTrue;
 
@@ -43,8 +42,7 @@ public class ClassGeneratorTest {
                 .build();
 
 
-        javaFile.writeTo(Paths.get(".", "src/test/java/"));
-
+      //  javaFile.writeTo(Paths.get(".", "src/test/java/"));
 
         StringWriter stringWriter = new StringWriter();
         javaFile.writeTo(stringWriter);
@@ -63,7 +61,8 @@ public class ClassGeneratorTest {
         JavaFile javaFile = JavaFile.builder("org.ehrbase.client.classgenerator", generate)
                 .build();
 
-        javaFile.writeTo(Paths.get(".", "src/test/java/"));
+        //  javaFile.writeTo(Paths.get(".", "src/test/java/"));
+
         StringWriter stringWriter = new StringWriter();
         javaFile.writeTo(stringWriter);
         String actual = stringWriter.toString();
@@ -81,8 +80,7 @@ public class ClassGeneratorTest {
                 .build();
 
 
-        javaFile.writeTo(Paths.get(".", "src/test/java/"));
-
+        //   javaFile.writeTo(Paths.get(".", "src/test/java/"));
 
         StringWriter stringWriter = new StringWriter();
         javaFile.writeTo(stringWriter);

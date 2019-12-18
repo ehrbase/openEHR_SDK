@@ -18,6 +18,8 @@
 package org.ehrbase.client.classgenerator;
 
 import com.nedap.archie.rm.datatypes.CodePhrase;
+import com.nedap.archie.rminfo.ArchieRMInfoLookup;
+import com.nedap.archie.rminfo.RMTypeInfo;
 import com.squareup.javapoet.*;
 import org.apache.commons.cli.*;
 import org.apache.commons.collections4.CollectionUtils;
@@ -49,11 +51,14 @@ import java.util.stream.Collectors;
 
 public class ClassGenerator {
 
-    public static final Options OPTIONS = new Options();
+    private static final Options OPTIONS = new Options();
+    private static final ArchieRMInfoLookup RM_INFO_LOOKUP = ArchieRMInfoLookup.getInstance();
+
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final Map<Class, RmClassGeneratorConfig> configMap;
     private Map<String, Integer> currentFieldNameMap = new HashMap<>();
     private Map<String, Integer> currentClassNameMap = new HashMap<>();
+
 
     public ClassGenerator() {
         configMap = buildConfigMap();
@@ -122,12 +127,14 @@ public class ClassGenerator {
         for (EndNode endNode : choiceNode.getNodes()) {
             Map<String, Integer> oldFieldNameMap = currentFieldNameMap;
             currentFieldNameMap = new HashMap<>();
+
+            RMTypeInfo typeInfo = RM_INFO_LOOKUP.getTypeInfo(endNode.getClazz());
             TypeSpec.Builder builder = TypeSpec.classBuilder(buildClassName(choiceNode.getName() + "_" + endNode.getClazz().getSimpleName()))
                     .addSuperinterface(interfaceClassName)
                     .addModifiers(Modifier.PUBLIC)
                     .addModifiers(Modifier.STATIC)
                     .addAnnotation(AnnotationSpec.builder(Entity.class).build())
-                    .addAnnotation(AnnotationSpec.builder(OptionFor.class).addMember(OptionFor.VALUE, "$S", endNode.getClazz().getSimpleName()).build());
+                    .addAnnotation(AnnotationSpec.builder(OptionFor.class).addMember(OptionFor.VALUE, "$S", typeInfo.getRmName()).build());
             addSimpleField(builder, "", endNode);
             TypeSpec typeSpec = builder.build();
             classBuilder.addType(typeSpec);

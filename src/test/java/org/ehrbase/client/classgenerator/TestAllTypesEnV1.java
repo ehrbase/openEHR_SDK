@@ -251,7 +251,7 @@ public class TestAllTypesEnV1 {
         }
 
         @Entity
-        @OptionFor("DvQuantity")
+        @OptionFor("DV_QUANTITY")
         public static class ArbolChoiceDvquantity implements ArbolChoiceChoice {
             @Path("|magnitude")
             private Double choiceMagnitude;
@@ -277,7 +277,7 @@ public class TestAllTypesEnV1 {
         }
 
         @Entity
-        @OptionFor("DvCount")
+        @OptionFor("DV_COUNT")
         public static class ArbolChoiceDvcount implements ArbolChoiceChoice {
             @Path("|magnitude")
             private Long choiceMagnitude;
@@ -649,9 +649,9 @@ public class TestAllTypesEnV1 {
     }
 
     public enum ContextCodedTextDefiningcode implements EnumValueSet {
-        VALUE1("value1", "*", "local", "at0006"),
-
         VALUE3("value3", "*", "local", "at0008"),
+
+        VALUE1("value1", "*", "local", "at0006"),
 
         VALUE2("value2", "*", "local", "at0007");
 

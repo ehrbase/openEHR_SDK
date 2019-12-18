@@ -25,6 +25,7 @@ import com.nedap.archie.rm.datastructures.Element;
 import com.nedap.archie.rm.datastructures.PointEvent;
 import com.nedap.archie.rm.datatypes.CodePhrase;
 import com.nedap.archie.rm.datavalues.DvCodedText;
+import com.nedap.archie.rm.datavalues.DvText;
 import com.nedap.archie.rm.datavalues.quantity.DvQuantity;
 import com.nedap.archie.rm.support.identification.TerminologyId;
 import org.apache.commons.io.IOUtils;
@@ -44,6 +45,7 @@ import java.util.stream.Collectors;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.ehrbase.client.TestData.buildEhrbaseBloodPressureSimpleDeV0;
 import static org.ehrbase.client.TestData.buildExampleBloodpressureListDe;
+import static org.junit.Assert.assertFalse;
 
 public class UnflattenerTest {
 
@@ -102,15 +104,22 @@ public class UnflattenerTest {
         assertThat(rmObject).isNotNull();
         assertThat(rmObject.getArchetypeDetails().getTemplateId().getValue()).isEqualTo("ehrbase_multi_occurrence.de.v1");
         List<Object> observationList = rmObject.itemsAtPath("/content[openEHR-EHR-OBSERVATION.body_temperature.v2]");
-        assertThat(observationList).size().isEqualTo(1);
-        Observation observation = (Observation) observationList.get(0);
-        List<Object> objects = observation.itemsAtPath("/data[at0002]/events");
+        assertThat(observationList).size().isEqualTo(2);
+
+        Observation observation1 = (Observation) observationList.get(0);
+        List<Object> objects = observation1.itemsAtPath("/data[at0002]/events");
         assertThat(objects)
                 .extracting(o -> ((PointEvent) o))
                 .extracting(p -> (DvQuantity) p.itemAtPath("/data[at0001]/items[at0004]/value"))
                 .extracting(DvQuantity::getMagnitude)
                 .containsExactlyInAnyOrder(11d, 22d);
+        DvCodedText dvCodedText = (DvCodedText) observation1.itemAtPath("/protocol[at0020]/items[at0021]/value");
+        assertThat(dvCodedText.getValue()).isEqualTo("Forehead");
 
+        Observation observation2 = (Observation) observationList.get(1);
+        DvText dvText = (DvText) observation2.itemAtPath("/protocol[at0020]/items[at0021]/value");
+        assertFalse(dvText instanceof DvCodedText);
+        assertThat(dvText.getValue()).isEqualTo("location");
     }
 
     @Test
