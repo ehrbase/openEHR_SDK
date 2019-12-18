@@ -17,6 +17,7 @@
 
 package org.ehrbase.client.flattener;
 
+import com.nedap.archie.aom.CComplexObject;
 import com.nedap.archie.creation.RMObjectCreator;
 import com.nedap.archie.rm.RMObject;
 import com.nedap.archie.rm.archetyped.Locatable;
@@ -26,6 +27,7 @@ import com.nedap.archie.rm.support.identification.TerminologyId;
 import com.nedap.archie.rminfo.ArchieRMInfoLookup;
 import org.apache.commons.text.CaseUtils;
 import org.ehrbase.client.annotations.Entity;
+import org.ehrbase.client.annotations.OptionFor;
 import org.ehrbase.client.annotations.Path;
 import org.ehrbase.client.annotations.Template;
 import org.ehrbase.client.building.OptSkeletonBuilder;
@@ -65,12 +67,12 @@ public class Unflattener {
         return generate;
     }
 
-    private void mapDtoToEntity(Object dto, Locatable generate) {
+    private void mapDtoToEntity(Object dto, RMObject generate) {
         Map<String, Object> valueMap = buildValueMap(dto);
         valueMap.forEach((key, value) -> setValueAtPath(generate, key, value));
     }
 
-    private void setValueAtPath(Locatable locatable, String path, Object value) {
+    private void setValueAtPath(RMObject locatable, String path, Object value) {
 
         ItemExtractor itemExtractor = new ItemExtractor(locatable, path);
         String childName = itemExtractor.getChildName();
@@ -87,7 +89,7 @@ public class Unflattener {
                 RM_OBJECT_CREATOR.addElementToListOrSetSingleValues(parent, childName, deepClone);
             }
             for (int i = 0; i < valueList.size(); i++) {
-                handleSingleValue(valueList.get(i), childName, (RMObject) childList.get(i), parent);
+                handleSingleValue(valueList.get(i), childName, childList.get(i), parent);
             }
         } else {
             handleSingleValue(value, childName, child, parent);
@@ -95,6 +97,16 @@ public class Unflattener {
     }
 
     private void handleSingleValue(Object value, String childName, Object child, Object parent) {
+
+        if (value != null && value.getClass().isAnnotationPresent(OptionFor.class)) {
+
+            String rmclass = value.getClass().getAnnotation(OptionFor.class).value();
+            CComplexObject elementConstraint = new CComplexObject();
+            elementConstraint.setRmTypeName(rmclass);
+            child = RM_OBJECT_CREATOR.create(elementConstraint);
+            RM_OBJECT_CREATOR.set(parent, childName, Collections.singletonList(child));
+        }
+
         if (value == null) {
             //NOP
         } else if (EnumValueSet.class.isAssignableFrom(value.getClass()) && DvCodedText.class.isAssignableFrom(parent.getClass())) {
@@ -105,7 +117,7 @@ public class Unflattener {
         } else if (extractType(toCamelCase(childName), parent).isAssignableFrom(value.getClass())) {
             RM_OBJECT_CREATOR.set(parent, childName, Collections.singletonList(value));
         } else if (value.getClass().isAnnotationPresent(Entity.class)) {
-            mapDtoToEntity(value, (Locatable) child);
+            mapDtoToEntity(value, (RMObject) child);
         }
 
     }

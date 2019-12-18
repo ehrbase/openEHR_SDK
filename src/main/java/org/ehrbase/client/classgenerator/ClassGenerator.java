@@ -18,20 +18,21 @@
 package org.ehrbase.client.classgenerator;
 
 import com.nedap.archie.rm.datatypes.CodePhrase;
+import com.nedap.archie.rminfo.ArchieRMInfoLookup;
+import com.nedap.archie.rminfo.RMTypeInfo;
 import com.squareup.javapoet.*;
 import org.apache.commons.cli.*;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.apache.commons.text.CaseUtils;
 import org.apache.xmlbeans.XmlException;
-import org.ehrbase.client.annotations.Archetype;
-import org.ehrbase.client.annotations.Entity;
-import org.ehrbase.client.annotations.Path;
-import org.ehrbase.client.annotations.Template;
+import org.ehrbase.client.annotations.*;
 import org.ehrbase.client.classgenerator.config.RmClassGeneratorConfig;
 import org.ehrbase.client.exception.ClientException;
 import org.ehrbase.client.introspect.TemplateIntrospect;
+import org.ehrbase.client.introspect.TermDefinition;
 import org.ehrbase.client.introspect.node.*;
 import org.ehrbase.ehr.encode.wrappers.SnakeCase;
 import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
@@ -40,6 +41,7 @@ import org.reflections.Reflections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Modifier;
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -49,10 +51,14 @@ import java.util.stream.Collectors;
 
 public class ClassGenerator {
 
-    public static final Options OPTIONS = new Options();
+    private static final Options OPTIONS = new Options();
+    private static final ArchieRMInfoLookup RM_INFO_LOOKUP = ArchieRMInfoLookup.getInstance();
+
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final Map<Class, RmClassGeneratorConfig> configMap;
-    private Map<String, Integer> curentFieldNameMap;
+    private Map<String, Integer> currentFieldNameMap = new HashMap<>();
+    private Map<String, Integer> currentClassNameMap = new HashMap<>();
+
 
     public ClassGenerator() {
         configMap = buildConfigMap();
@@ -80,8 +86,9 @@ public class ClassGenerator {
     }
 
     private TypeSpec build(EntityNode archetypeNode) {
-        curentFieldNameMap = new HashMap<>();
-        TypeSpec.Builder classBuilder = TypeSpec.classBuilder(normalise(archetypeNode.getName(), true));
+        Map<String, Integer> oldFieldNameMap = currentFieldNameMap;
+        currentFieldNameMap = new HashMap<>();
+        TypeSpec.Builder classBuilder = TypeSpec.classBuilder(buildClassName(archetypeNode.getName()));
         classBuilder.addModifiers(Modifier.PUBLIC);
         classBuilder.addAnnotation(AnnotationSpec.builder(Entity.class).build());
 
@@ -99,32 +106,66 @@ public class ClassGenerator {
 
         for (Map.Entry<String, Node> entry : archetypeNode.getChildren().entrySet()) {
             if (entry.getValue() instanceof EndNode) {
-                EndNode endNode = (EndNode) entry.getValue();
-                addSimpleField(classBuilder, entry.getKey(), endNode);
+                addSimpleField(classBuilder, entry.getKey(), (EndNode) entry.getValue());
             } else if (entry.getValue() instanceof EntityNode) {
                 addComplexField(classBuilder, entry.getKey(), (EntityNode) entry.getValue());
+            } else if (entry.getValue() instanceof ChoiceNode) {
+                addChoiceField(classBuilder, entry.getKey(), (ChoiceNode) entry.getValue());
             }
         }
-
+        currentFieldNameMap = oldFieldNameMap;
         return classBuilder.build();
+    }
+
+    private void addChoiceField(TypeSpec.Builder classBuilder, String path, ChoiceNode choiceNode) {
+        TypeSpec interfaceSpec = TypeSpec.interfaceBuilder(buildClassName(choiceNode.getName() + "_choice"))
+                .addModifiers(Modifier.PUBLIC)
+                .build();
+        classBuilder.addType(interfaceSpec);
+        TypeName interfaceClassName = ClassName.get("", interfaceSpec.name);
+
+        for (EndNode endNode : choiceNode.getNodes()) {
+            Map<String, Integer> oldFieldNameMap = currentFieldNameMap;
+            currentFieldNameMap = new HashMap<>();
+
+            RMTypeInfo typeInfo = RM_INFO_LOOKUP.getTypeInfo(endNode.getClazz());
+            TypeSpec.Builder builder = TypeSpec.classBuilder(buildClassName(choiceNode.getName() + "_" + endNode.getClazz().getSimpleName()))
+                    .addSuperinterface(interfaceClassName)
+                    .addModifiers(Modifier.PUBLIC)
+                    .addModifiers(Modifier.STATIC)
+                    .addAnnotation(AnnotationSpec.builder(Entity.class).build())
+                    .addAnnotation(AnnotationSpec.builder(OptionFor.class).addMember(OptionFor.VALUE, "$S", typeInfo.getRmName()).build());
+            addSimpleField(builder, "", endNode);
+            TypeSpec typeSpec = builder.build();
+            classBuilder.addType(typeSpec);
+            currentFieldNameMap = oldFieldNameMap;
+        }
+
+
+        addField(classBuilder, path, choiceNode.getName(), interfaceClassName, Collections.emptySet(), true);
     }
 
     private void addSimpleField(TypeSpec.Builder classBuilder, String path, EndNode endNode) {
 
         if (endNode.getClazz() == null) {
             logger.warn("No class for path {} ", path);
+            return;
         }
         RmClassGeneratorConfig classGeneratorConfig = configMap.get(endNode.getClazz());
-        if (CodePhrase.class.equals(endNode.getClazz()) && !endNode.getValuset().isEmpty()) {
+        if (classGeneratorConfig == null && !endNode.getClazz().getName().contains("java.lang")) {
+            logger.debug("No ClassGenerator for {}", endNode.getClazz());
+        }
+        if (classGeneratorConfig == null || !classGeneratorConfig.isExpandField() || endNode instanceof SlotNode) {
 
-            TypeSpec build = buildEnumValueSet(endNode);
-            classBuilder.addType(build);
-            addField(classBuilder, path, endNode.getName(), ClassName.get("", build.name));
-        } else if (classGeneratorConfig == null || !classGeneratorConfig.isExpandField()) {
-            addField(classBuilder, path, endNode.getName(), ClassName.get(Optional.ofNullable(endNode.getClazz()).orElse(Object.class)));
+            TypeName className = ClassName.get(Optional.ofNullable(endNode.getClazz()).orElse(Object.class));
+            if (endNode instanceof SlotNode && ((SlotNode) endNode).isMulti()) {
+                className = ParameterizedTypeName.get(ClassName.get(List.class), className);
+            }
+
+            addField(classBuilder, path, endNode.getName(), className, endNode.getValuset(), false);
         } else {
             Map<String, Field> fieldMap = Arrays.stream(FieldUtils.getAllFields(endNode.getClazz())).collect(Collectors.toMap(Field::getName, f -> f));
-            classGeneratorConfig.getExpandFields().forEach(fieldName -> addField(classBuilder, path + "|" + new SnakeCase(fieldName).camelToSnake(), endNode.getName() + "_" + fieldName, ClassName.get(fieldMap.get(fieldName).getType())));
+            classGeneratorConfig.getExpandFields().forEach(fieldName -> addField(classBuilder, path + "|" + new SnakeCase(fieldName).camelToSnake(), endNode.getName() + "_" + fieldName, ClassName.get(fieldMap.get(fieldName).getType()), endNode.getValuset(), false));
         }
     }
 
@@ -133,15 +174,15 @@ public class ClassGenerator {
         classBuilder.addType(subSpec);
 
         TypeName className = ClassName.get("", subSpec.name);
-        if ((node).isMulti()) {
+        if (node.isMulti()) {
             className = ParameterizedTypeName.get(ClassName.get(List.class), className);
         }
-        addField(classBuilder, path, node.getName(), className);
+        addField(classBuilder, path, node.getName(), className, Collections.emptySet(), false);
     }
 
-    private TypeSpec buildEnumValueSet(EndNode endNode) {
+    private TypeSpec buildEnumValueSet(String name, Set<TermDefinition> valuset) {
         TypeSpec.Builder enumBuilder = TypeSpec
-                .enumBuilder(normalise(extractSubName(endNode.getName()), true))
+                .enumBuilder(normalise(extractSubName(name), true))
                 .addSuperinterface(EnumValueSet.class)
                 .addModifiers(Modifier.PUBLIC);
         FieldSpec fieldSpec1 = FieldSpec.builder(ClassName.get(String.class), "value").addModifiers(Modifier.PRIVATE).build();
@@ -155,7 +196,7 @@ public class ClassGenerator {
 
         MethodSpec constructor = buildConstructor(fieldSpec1, fieldSpec2, fieldSpec3, fieldSpec4);
         enumBuilder.addMethod(constructor);
-        endNode.getValuset().forEach(t -> {
+        valuset.forEach(t -> {
             String fieldName = extractSubName(t.getValue());
             enumBuilder.addEnumConstant(normalise(fieldName, false).toUpperCase(), TypeSpec.anonymousClassBuilder("$S, $S, $S, $S", t.getValue(), t.getDescription(), "local", t.getCode()).build());
         });
@@ -176,12 +217,26 @@ public class ClassGenerator {
         return builder.build();
     }
 
-    private void addField(TypeSpec.Builder classBuilder, String path, String name, TypeName className) {
-        AnnotationSpec annotationSpec = AnnotationSpec.builder(Path.class).addMember(Path.VALUE, "$S", path).build();
+    private void addField(TypeSpec.Builder classBuilder, String path, String name, TypeName className, Set<TermDefinition> valueSet, boolean addChoiceAnnotation) {
+
+
+        if (CodePhrase.class.getName().equals(className.toString()) && CollectionUtils.isNotEmpty(valueSet)) {
+
+            TypeSpec enumValueSet = buildEnumValueSet(name, valueSet);
+            classBuilder.addType(enumValueSet);
+            className = ClassName.get("", enumValueSet.name);
+        }
+
         String fieldName = buildFieldName(name);
-        FieldSpec fieldSpec = FieldSpec.builder(className, fieldName)
-                .addAnnotation(annotationSpec)
-                .addModifiers(Modifier.PRIVATE)
+        FieldSpec.Builder builder = FieldSpec.builder(className, fieldName)
+                .addAnnotation(AnnotationSpec.builder(Path.class).addMember(Path.VALUE, "$S", path).build())
+                .addModifiers(Modifier.PRIVATE);
+
+        if (addChoiceAnnotation) {
+            builder.addAnnotation(Choice.class);
+        }
+
+        FieldSpec fieldSpec = builder
                 .build();
         classBuilder.addField(fieldSpec);
 
@@ -190,21 +245,34 @@ public class ClassGenerator {
     }
 
     private String buildFieldName(String name) {
-        String[] strings = name.split(TemplateIntrospect.TERM_DIVIDER);
+        String[] strings = Arrays.stream(name.split(TemplateIntrospect.TERM_DIVIDER)).filter(StringUtils::isNotBlank).toArray(String[]::new);
 
         String fieldName = "";
         for (int i = 0; i < strings.length; i++) {
-            fieldName = normalise(fieldName + "_" + strings[strings.length - 1], false);
-            if (!curentFieldNameMap.containsKey(fieldName)) {
+            fieldName = normalise(fieldName + "_" + strings[strings.length - (i + 1)], false);
+            if (!currentFieldNameMap.containsKey(fieldName) && SourceVersion.isName(fieldName)) {
                 break;
             }
         }
 
-        if (curentFieldNameMap.containsKey(fieldName)) {
-            curentFieldNameMap.put(fieldName, curentFieldNameMap.get(fieldName) + 1);
-            fieldName = fieldName + curentFieldNameMap.get(fieldName);
+        if (currentFieldNameMap.containsKey(fieldName)) {
+            currentFieldNameMap.put(fieldName, currentFieldNameMap.get(fieldName) + 1);
+            fieldName = fieldName + currentFieldNameMap.get(fieldName);
         } else {
-            curentFieldNameMap.put(fieldName, 1);
+            currentFieldNameMap.put(fieldName, 1);
+        }
+        return fieldName;
+    }
+
+    private String buildClassName(String name) {
+
+        String fieldName = normalise(name, true);
+
+        if (currentClassNameMap.containsKey(fieldName)) {
+            currentClassNameMap.put(fieldName, currentClassNameMap.get(fieldName) + 1);
+            fieldName = fieldName + currentClassNameMap.get(fieldName);
+        } else {
+            currentClassNameMap.put(fieldName, 1);
         }
         return fieldName;
     }

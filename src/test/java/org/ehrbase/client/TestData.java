@@ -22,7 +22,6 @@ import org.ehrbase.client.classgenerator.EhrbaseBloodPressureSimpleDeV0;
 import org.ehrbase.client.classgenerator.EhrbaseMultiOccurrenceDeV1;
 import org.ehrbase.client.flattener.BloodpressureListDe;
 
-import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
@@ -52,8 +51,8 @@ public class TestData {
 
     public static EhrbaseBloodPressureSimpleDeV0 buildEhrbaseBloodPressureSimpleDeV0() {
         EhrbaseBloodPressureSimpleDeV0 bloodPressureSimpleDeV0 = new EhrbaseBloodPressureSimpleDeV0();
-        bloodPressureSimpleDeV0.setStartTimeValue(LocalDateTime.now());
-        bloodPressureSimpleDeV0.setEndTimeValue(LocalDateTime.now());
+        bloodPressureSimpleDeV0.setStartTimeValue(OffsetDateTime.now());
+        bloodPressureSimpleDeV0.setEndTimeValue(OffsetDateTime.now());
         bloodPressureSimpleDeV0.setBloodPressureTrainingSample(new ArrayList<>());
         bloodPressureSimpleDeV0.setLanguage(new CodePhrase(new TerminologyId("ISO_639-1"), "de"));
         bloodPressureSimpleDeV0.setTerritory(new CodePhrase(new TerminologyId("ISO_3166-1"), "UY"));
@@ -68,9 +67,9 @@ public class TestData {
         bloodPressureTrainingSample.setMeanArterialPressureUnits("mm[Hg]");
         bloodPressureTrainingSample.setPulsePressureMagnitude(22d);
         bloodPressureTrainingSample.setPulsePressureUnits("mm[Hg]");
-        bloodPressureTrainingSample.setKorotkoffSounds(EhrbaseBloodPressureSimpleDeV0.BloodPressureTrainingSample.KorotkoffSounds.FIFTHSOUND);
-        bloodPressureTrainingSample.setCuffSize(EhrbaseBloodPressureSimpleDeV0.BloodPressureTrainingSample.CuffSize.ADULT);
-        bloodPressureTrainingSample.setLocationOfMeasurement(EhrbaseBloodPressureSimpleDeV0.BloodPressureTrainingSample.LocationOfMeasurement.FINGER);
+        bloodPressureTrainingSample.setKorotkoffSoundsDefiningcode(EhrbaseBloodPressureSimpleDeV0.BloodPressureTrainingSample.KorotkoffSoundsDefiningcode.FIFTHSOUND);
+        bloodPressureTrainingSample.setCuffSizeDefiningcode(EhrbaseBloodPressureSimpleDeV0.BloodPressureTrainingSample.CuffSizeDefiningcode.ADULT);
+        bloodPressureTrainingSample.setLocationOfMeasurementDefiningcode(EhrbaseBloodPressureSimpleDeV0.BloodPressureTrainingSample.LocationOfMeasurementDefiningcode.FINGER);
         bloodPressureSimpleDeV0.getBloodPressureTrainingSample().add(bloodPressureTrainingSample);
         return bloodPressureSimpleDeV0;
     }
@@ -78,27 +77,57 @@ public class TestData {
 
     public static EhrbaseMultiOccurrenceDeV1 buildEhrbaseMultiOccurrenceDeV1() {
         EhrbaseMultiOccurrenceDeV1 dto = new EhrbaseMultiOccurrenceDeV1();
-        dto.setStartTimeValue(LocalDateTime.now());
-        dto.setEndTimeValue(LocalDateTime.now());
+        dto.setStartTimeValue(OffsetDateTime.now());
+        dto.setEndTimeValue(OffsetDateTime.now());
         dto.setLanguage(new CodePhrase(new TerminologyId("ISO_639-1"), "de"));
         dto.setTerritory(new CodePhrase(new TerminologyId("ISO_3166-1"), "UY"));
         dto.setSettingDefiningcode(new CodePhrase(new TerminologyId("openehr"), "229"));
         dto.setBodyTemperature(new ArrayList<>());
-        dto.getBodyTemperature().add(new EhrbaseMultiOccurrenceDeV1.BodyTemperature());
-        dto.getBodyTemperature().get(0).setHistory(new ArrayList<>());
+
+        dto.getBodyTemperature().add(buildBodyTemperature1());
+        dto.getBodyTemperature().add(buildBodyTemperature2());
+        return dto;
+    }
+
+    private static EhrbaseMultiOccurrenceDeV1.BodyTemperature buildBodyTemperature1() {
+        EhrbaseMultiOccurrenceDeV1.BodyTemperature bodyTemperature = new EhrbaseMultiOccurrenceDeV1.BodyTemperature();
+        bodyTemperature.setHistory(new ArrayList<>());
+        EhrbaseMultiOccurrenceDeV1.BodyTemperature.ProtocolLocationOfMeasurementDvcodedtext locationOfMeasurement = new EhrbaseMultiOccurrenceDeV1.BodyTemperature.ProtocolLocationOfMeasurementDvcodedtext();
+        locationOfMeasurement.setLocationOfMeasurementDefiningcode(EhrbaseMultiOccurrenceDeV1.BodyTemperature.ProtocolLocationOfMeasurementDvcodedtext.LocationOfMeasurementDefiningcode.FOREHEAD);
+        bodyTemperature.setLocationOfMeasurement(locationOfMeasurement);
 
         EhrbaseMultiOccurrenceDeV1.BodyTemperature.BodyTemperatureHistory history1 = new EhrbaseMultiOccurrenceDeV1.BodyTemperature.BodyTemperatureHistory();
         history1.setTemperatureMagnitude(22d);
         history1.setTemperatureUnits("Cel");
         history1.setCurrentDayOfMenstrualCycleMagnitude(3l);
-        dto.getBodyTemperature().get(0).getHistory().add(history1);
+        bodyTemperature.getHistory().add(history1);
 
         EhrbaseMultiOccurrenceDeV1.BodyTemperature.BodyTemperatureHistory history2 = new EhrbaseMultiOccurrenceDeV1.BodyTemperature.BodyTemperatureHistory();
         history2.setTemperatureMagnitude(11d);
         history2.setTemperatureUnits("Cel");
         history2.setCurrentDayOfMenstrualCycleMagnitude(3l);
-        dto.getBodyTemperature().get(0).getHistory().add(history2);
+        bodyTemperature.getHistory().add(history2);
+        return bodyTemperature;
+    }
 
-        return dto;
+    private static EhrbaseMultiOccurrenceDeV1.BodyTemperature buildBodyTemperature2() {
+        EhrbaseMultiOccurrenceDeV1.BodyTemperature bodyTemperature = new EhrbaseMultiOccurrenceDeV1.BodyTemperature();
+        bodyTemperature.setHistory(new ArrayList<>());
+        EhrbaseMultiOccurrenceDeV1.BodyTemperature.ProtocolLocationOfMeasurementDvtext locationOfMeasurement = new EhrbaseMultiOccurrenceDeV1.BodyTemperature.ProtocolLocationOfMeasurementDvtext();
+        locationOfMeasurement.setLocationOfMeasurementValue("location");
+        bodyTemperature.setLocationOfMeasurement(locationOfMeasurement);
+
+        EhrbaseMultiOccurrenceDeV1.BodyTemperature.BodyTemperatureHistory history1 = new EhrbaseMultiOccurrenceDeV1.BodyTemperature.BodyTemperatureHistory();
+        history1.setTemperatureMagnitude(22d);
+        history1.setTemperatureUnits("Cel");
+        history1.setCurrentDayOfMenstrualCycleMagnitude(3l);
+        bodyTemperature.getHistory().add(history1);
+
+        EhrbaseMultiOccurrenceDeV1.BodyTemperature.BodyTemperatureHistory history2 = new EhrbaseMultiOccurrenceDeV1.BodyTemperature.BodyTemperatureHistory();
+        history2.setTemperatureMagnitude(11d);
+        history2.setTemperatureUnits("Cel");
+        history2.setCurrentDayOfMenstrualCycleMagnitude(3l);
+        bodyTemperature.getHistory().add(history2);
+        return bodyTemperature;
     }
 }

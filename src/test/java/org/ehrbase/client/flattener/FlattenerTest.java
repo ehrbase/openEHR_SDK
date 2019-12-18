@@ -19,10 +19,18 @@ package org.ehrbase.client.flattener;
 
 import com.nedap.archie.rm.RMObject;
 import com.nedap.archie.rm.archetyped.Locatable;
+import com.nedap.archie.rm.composition.Composition;
+import org.apache.commons.io.IOUtils;
 import org.ehrbase.client.TestData;
 import org.ehrbase.client.classgenerator.EhrbaseBloodPressureSimpleDeV0;
 import org.ehrbase.client.classgenerator.EhrbaseMultiOccurrenceDeV1;
+import org.ehrbase.client.classgenerator.TestAllTypesEnV1;
+import org.ehrbase.serialisation.CanonicalXML;
+import org.ehrbase.test_data.composition.CompositionTestDataCanonicalXML;
 import org.junit.Test;
+
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -57,7 +65,7 @@ public class FlattenerTest {
         assertThat(actual.getBloodPressureTrainingSample()).size().isEqualTo(1);
         assertThat(actual.getBloodPressureTrainingSample().get(0).getSystolicMagnitude()).isEqualTo(22d);
         assertThat(actual.getBloodPressureTrainingSample().get(0).getSystolicUnits()).isEqualTo("mm[Hg]");
-        assertThat(actual.getBloodPressureTrainingSample().get(0).getKorotkoffSounds()).isEqualTo(EhrbaseBloodPressureSimpleDeV0.BloodPressureTrainingSample.KorotkoffSounds.FIFTHSOUND);
+        assertThat(actual.getBloodPressureTrainingSample().get(0).getKorotkoffSoundsDefiningcode()).isEqualTo(EhrbaseBloodPressureSimpleDeV0.BloodPressureTrainingSample.KorotkoffSoundsDefiningcode.FIFTHSOUND);
 
     }
 
@@ -71,11 +79,30 @@ public class FlattenerTest {
         EhrbaseMultiOccurrenceDeV1 actual = cut.flatten((Locatable) rmObject, EhrbaseMultiOccurrenceDeV1.class);
 
         assertThat(actual).isNotNull();
-        assertThat(actual.getBodyTemperature()).size().isEqualTo(1);
-        EhrbaseMultiOccurrenceDeV1.BodyTemperature bodyTemperature = actual.getBodyTemperature().get(0);
-        assertThat(bodyTemperature.getHistory())
-                .extracting(h -> h.getTemperatureMagnitude())
+        assertThat(actual.getBodyTemperature()).size().isEqualTo(2);
+        EhrbaseMultiOccurrenceDeV1.BodyTemperature bodyTemperature1 = actual.getBodyTemperature().get(0);
+        assertThat(bodyTemperature1.getHistory())
+                .extracting(EhrbaseMultiOccurrenceDeV1.BodyTemperature.BodyTemperatureHistory::getTemperatureMagnitude)
                 .containsExactlyInAnyOrder(11d, 22d);
 
+        EhrbaseMultiOccurrenceDeV1.BodyTemperature.ProtocolLocationOfMeasurementChoice locationOfMeasurement1 = bodyTemperature1.getLocationOfMeasurement();
+        assertThat(locationOfMeasurement1.getClass()).isEqualTo(EhrbaseMultiOccurrenceDeV1.BodyTemperature.ProtocolLocationOfMeasurementDvcodedtext.class);
+        assertThat(((EhrbaseMultiOccurrenceDeV1.BodyTemperature.ProtocolLocationOfMeasurementDvcodedtext) locationOfMeasurement1).getLocationOfMeasurementDefiningcode()).isEqualTo(EhrbaseMultiOccurrenceDeV1.BodyTemperature.ProtocolLocationOfMeasurementDvcodedtext.LocationOfMeasurementDefiningcode.FOREHEAD);
+
+        EhrbaseMultiOccurrenceDeV1.BodyTemperature bodyTemperature2 = actual.getBodyTemperature().get(1);
+        EhrbaseMultiOccurrenceDeV1.BodyTemperature.ProtocolLocationOfMeasurementChoice locationOfMeasurement2 = bodyTemperature2.getLocationOfMeasurement();
+        assertThat(locationOfMeasurement2.getClass()).isEqualTo(EhrbaseMultiOccurrenceDeV1.BodyTemperature.ProtocolLocationOfMeasurementDvtext.class);
+        assertThat(((EhrbaseMultiOccurrenceDeV1.BodyTemperature.ProtocolLocationOfMeasurementDvtext) locationOfMeasurement2).getLocationOfMeasurementValue()).isEqualTo("location");
+
+    }
+
+    @Test
+    public void testFlattenAllTypes() throws IOException {
+        Composition composition = new CanonicalXML().unmarshal(IOUtils.toString(CompositionTestDataCanonicalXML.ALL_TYPES.getStream(), StandardCharsets.UTF_8), Composition.class);
+        Flattener cut = new Flattener();
+        TestAllTypesEnV1 actual = cut.flatten(composition, TestAllTypesEnV1.class);
+        assertThat(actual).isNotNull();
+        assertThat(actual.getTestAllTypes().get(0).getChoice().getClass()).isEqualTo(TestAllTypesEnV1.TestAllTypes.ArbolChoiceDvcount.class);
+        assertThat(((TestAllTypesEnV1.TestAllTypes.ArbolChoiceDvcount) actual.getTestAllTypes().get(0).getChoice()).getChoiceMagnitude()).isEqualTo(148L);
     }
 }

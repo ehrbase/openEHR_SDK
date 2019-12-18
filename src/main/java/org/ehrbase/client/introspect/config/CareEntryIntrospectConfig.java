@@ -15,26 +15,22 @@
  *  limitations under the License.
  */
 
-package org.ehrbase.client.classgenerator.config;
-
-import com.nedap.archie.rm.datavalues.quantity.DvQuantity;
+package org.ehrbase.client.introspect.config;
 
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class DvQuantityClassGeneratorConfig implements RmClassGeneratorConfig {
+/**
+ * Only used for extending
+ */
+public abstract class CareEntryIntrospectConfig implements RmIntrospectConfig {
 
-    private static final Set<String> FIELDS = Stream.of("units", "magnitude").collect(Collectors.toSet());
-
-    @Override
-    public Class getRMClass() {
-        return DvQuantity.class;
-    }
+    private static final Set<String> FIELDS = Stream.of("language", "subject").collect(Collectors.toSet());
 
 
     @Override
-    public Set<String> getExpandFields() {
+    public Set<String> getNonTemplateFields() {
         return FIELDS;
     }
 }

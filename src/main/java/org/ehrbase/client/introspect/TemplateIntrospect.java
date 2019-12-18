@@ -20,20 +20,20 @@ package org.ehrbase.client.introspect;
 import com.nedap.archie.rm.archetyped.Pathable;
 import com.nedap.archie.rm.datastructures.Event;
 import com.nedap.archie.rminfo.ArchieRMInfoLookup;
+import org.apache.commons.collections4.ListValuedMap;
+import org.apache.commons.collections4.multimap.ArrayListValuedHashMap;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.ehrbase.client.exception.ClientException;
 import org.ehrbase.client.introspect.config.RmIntrospectConfig;
-import org.ehrbase.client.introspect.node.ArchetypeNode;
-import org.ehrbase.client.introspect.node.EndNode;
-import org.ehrbase.client.introspect.node.EntityNode;
-import org.ehrbase.client.introspect.node.Node;
+import org.ehrbase.client.introspect.node.*;
 import org.ehrbase.ehr.encode.wrappers.SnakeCase;
 import org.openehr.schemas.v1.*;
 import org.reflections.Reflections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.lang.reflect.Modifier;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -64,13 +64,15 @@ public class TemplateIntrospect {
         Reflections reflections = new Reflections(RmIntrospectConfig.class.getPackage().getName());
         Set<Class<? extends RmIntrospectConfig>> configs = reflections.getSubTypesOf(RmIntrospectConfig.class);
 
-        return configs.stream().map(c -> {
-            try {
-                return c.getConstructor().newInstance();
-            } catch (Exception e) {
-                throw new ClientException(e.getMessage(), e);
-            }
-        }).collect(Collectors.toMap(RmIntrospectConfig::getRMClass, c -> c));
+        return configs.stream()
+                .filter(c -> !Modifier.isAbstract(c.getModifiers()))
+                .map(c -> {
+                    try {
+                        return c.getConstructor().newInstance();
+                    } catch (Exception e) {
+                        throw new ClientException(e.getMessage(), e);
+                    }
+                }).collect(Collectors.toMap(RmIntrospectConfig::getRMClass, c -> c));
     }
 
     private ArchetypeNode buildNodeMap() {
@@ -104,12 +106,15 @@ public class TemplateIntrospect {
         HashMap<String, Node> localNodeMap = new HashMap<>();
         log.trace("RmTyp: {}", ccomplexobject.getRmTypeName());
         Class rmClass = RM_INFO_LOOKUP.getClass(ccomplexobject.getRmTypeName());
+
         if (Pathable.class.isAssignableFrom(rmClass)) {
             localNodeMap.putAll(handleNonTemplateFields(rmClass, path));
 
 
-        CATTRIBUTE[] cattributes = ccomplexobject.getAttributesArray();
+            CATTRIBUTE[] cattributes = ccomplexobject.getAttributesArray();
             if (ArrayUtils.isNotEmpty(cattributes)) {
+                ListValuedMap<String, Node> multiValuedMap = new ArrayListValuedHashMap<>();
+
                 for (CATTRIBUTE cattribute : cattributes) {
                     String pathLoop = path + PATH_DIVIDER + cattribute.getRmAttributeName();
                     log.trace("Path: {}", pathLoop);
@@ -121,30 +126,60 @@ public class TemplateIntrospect {
                     }
 
                     for (COBJECT cobject : cattribute.getChildrenArray()) {
-                        localNodeMap.putAll(handleCOBJECT(cobject, pathLoop, termDef, term));
+                        multiValuedMap.putAll(handleCOBJECT(cobject, pathLoop, termDef, term));
                     }
 
                 }
+                multiValuedMap
+                        .asMap()
+                        .forEach((key, value) -> {
+                            if (value.size() == 1) {
+                                localNodeMap.put(key, value.iterator().next());
+                            } else {
+                                localNodeMap.put(key,
+                                        new ChoiceNode(
+                                                value.iterator().next().getName(),
+                                                value.stream()
+                                                        .filter(n -> EndNode.class.isAssignableFrom(n.getClass()))
+                                                        .map(n -> (EndNode) n)
+                                                        .collect(Collectors.toList())
+                                        )
+                                );
+                            }
+                        });
             }
+
         } else {
-            localNodeMap.put(path, new EndNode(RM_INFO_LOOKUP.getClass(ccomplexobject.getRmTypeName()), term));
+            Set<TermDefinition> termDefinitionSet = Arrays.stream(ccomplexobject.getAttributesArray())
+                    .flatMap(c -> Arrays.asList(c.getChildrenArray()).stream())
+                    .map(c -> buildTermSet(c, termDef))
+                    .findAny()
+                    .orElse(Collections.emptySet());
+            localNodeMap.put(path, new EndNode(findJavaClass(ccomplexobject.getRmTypeName()), term, termDefinitionSet));
         }
         return localNodeMap;
     }
 
     private Map<String, Node> handleCOBJECT(COBJECT cobject, String path, Map<String, TermDefinition> termDef, String term) {
+
         boolean multi = cobject.getOccurrences().getUpper() > 1 || cobject.getOccurrences().getUpperUnbounded();
+
         if (cobject instanceof CARCHETYPEROOT && !((CARCHETYPEROOT) cobject).getArchetypeId().getValue().isEmpty()) {
             path = path + "[" + ((CARCHETYPEROOT) cobject).getArchetypeId().getValue() + "]";
             log.trace("Path: {}", path);
+
             if (!cobject.getNodeId().isEmpty() && termDef.containsKey(cobject.getNodeId())) {
                 term = term + TERM_DIVIDER + termDef.get(cobject.getNodeId()).getValue();
             }
 
             return Collections.singletonMap(path, handleCARCHETYPEROOT((CARCHETYPEROOT) cobject, term, multi));
+
         } else if (cobject instanceof CCOMPLEXOBJECT && multi) {
+
             return Collections.singletonMap(path, handleEntity((CCOMPLEXOBJECT) cobject, term, termDef, multi));
+
         } else if (cobject instanceof CCOMPLEXOBJECT) {
+
             if (!cobject.getNodeId().isEmpty()) {
                 path = path + "[" + cobject.getNodeId() + "]";
                 log.trace("Path: {}", path);
@@ -152,16 +187,52 @@ public class TemplateIntrospect {
                     term = term + TERM_DIVIDER + termDef.get(cobject.getNodeId()).getValue();
                 }
             }
-            return handleCCOMPLEXOBJECT((CCOMPLEXOBJECT) cobject, path, termDef, term);
-        } else {
-            Set<TermDefinition> termDefinitions;
-            if (cobject instanceof CCODEPHRASE) {
 
-                termDefinitions = Arrays.stream(((CCODEPHRASE) cobject).getCodeListArray()).filter(termDef::containsKey).map(termDef::get).collect(Collectors.toSet());
-            } else {
-                termDefinitions = Collections.emptySet();
+            return handleCCOMPLEXOBJECT((CCOMPLEXOBJECT) cobject, path, termDef, term);
+
+        } else if (cobject instanceof ARCHETYPESLOT) {
+            if (!cobject.getNodeId().isEmpty()) {
+                path = path + "[" + cobject.getNodeId() + "]";
+                log.trace("Path: {}", path);
+                if (termDef.containsKey(cobject.getNodeId())) {
+                    term = term + TERM_DIVIDER + termDef.get(cobject.getNodeId()).getValue();
+                }
             }
-            return Collections.singletonMap(path, new EndNode(RM_INFO_LOOKUP.getClass(cobject.getRmTypeName()), term, termDefinitions));
+            return Collections.singletonMap(path, new SlotNode(findJavaClass(cobject.getRmTypeName()), term, Collections.emptySet(), multi));
+
+        } else {
+
+            Set<TermDefinition> termDefinitions = buildTermSet(cobject, termDef);
+            return Collections.singletonMap(path, new EndNode(findJavaClass(cobject.getRmTypeName()), term, termDefinitions));
+        }
+    }
+
+    private Set<TermDefinition> buildTermSet(COBJECT cobject, Map<String, TermDefinition> termDef) {
+        Set<TermDefinition> termDefinitions;
+        if (cobject instanceof CCODEPHRASE) {
+
+            termDefinitions = Arrays.stream(((CCODEPHRASE) cobject).getCodeListArray()).filter(termDef::containsKey).map(termDef::get).collect(Collectors.toSet());
+        } else {
+            termDefinitions = Collections.emptySet();
+        }
+        return termDefinitions;
+    }
+
+
+    private Class findJavaClass(String rmName) {
+        switch (rmName) {
+            case "STRING":
+                return String.class;
+            case "INTEGER":
+            case "INTEGER64":
+                return Long.class;
+            case "BOOLEAN":
+                return Boolean.class;
+            case "REAL":
+            case "DOUBLE":
+                return Double.class;
+            default:
+                return RM_INFO_LOOKUP.getClass(rmName);
         }
     }
 
