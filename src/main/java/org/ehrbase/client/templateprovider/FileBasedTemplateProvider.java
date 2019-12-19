@@ -25,8 +25,10 @@ import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.PathMatcher;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -37,6 +39,7 @@ import java.util.stream.Stream;
  */
 public class FileBasedTemplateProvider implements TemplateProvider {
 
+    public static final PathMatcher OPT_FILE_MATCHER = FileSystems.getDefault().getPathMatcher("glob:**.opt");
     private final Map<String, Path> pathMap = new HashMap<>();
 
     private final Path templateDirectory;
@@ -55,7 +58,7 @@ public class FileBasedTemplateProvider implements TemplateProvider {
         try (Stream<Path> walk = Files.walk(templateDirectory)) {
             walk
                     .filter(p -> p.toFile().isFile())
-                    .filter(p -> p.endsWith(".opt"))
+                    .filter(OPT_FILE_MATCHER::matches)
                     .filter(p -> !pathMap.containsValue(p))
                     .forEach(p -> pathMap.put(extractTemplateId(p), p));
 

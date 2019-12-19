@@ -26,10 +26,11 @@ import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
 import javax.xml.namespace.QName;
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
+import java.util.Collections;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -64,6 +65,6 @@ public class FileBasedTemplateProviderTest {
         opts.setSaveSyntheticDocumentElement(new QName("http://schemas.openehr.org/v1", "template"));
 
         Path path = Paths.get(templateFolder.getPath(), operationaltemplate.getTemplateId().getValue() + ".opt");
-        Files.write(path, operationaltemplate.xmlText(opts).getBytes(), StandardOpenOption.CREATE);
+        Files.write(path, Collections.singletonList(operationaltemplate.xmlText(opts)), StandardCharsets.UTF_8);
     }
 }
