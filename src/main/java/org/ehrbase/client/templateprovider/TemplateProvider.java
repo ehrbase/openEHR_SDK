@@ -15,7 +15,7 @@
  *  limitations under the License.
  */
 
-package org.ehrbase.client.flattener;
+package org.ehrbase.client.templateprovider;
 
 import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
 
@@ -23,5 +23,5 @@ import java.util.Optional;
 
 public interface TemplateProvider {
 
-     Optional<OPERATIONALTEMPLATE> getForTemplateId(String templateId);
+    Optional<OPERATIONALTEMPLATE> find(String templateId);
 }

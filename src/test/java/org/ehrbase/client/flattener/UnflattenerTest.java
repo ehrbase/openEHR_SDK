@@ -33,6 +33,7 @@ import org.ehrbase.client.TestData;
 import org.ehrbase.client.classgenerator.EhrbaseBloodPressureSimpleDeV0;
 import org.ehrbase.client.classgenerator.EhrbaseMultiOccurrenceDeV1;
 import org.ehrbase.client.classgenerator.TestAllTypesEnV1;
+import org.ehrbase.client.templateprovider.TestDataTemplateProvider;
 import org.ehrbase.serialisation.CanonicalXML;
 import org.ehrbase.test_data.composition.CompositionTestDataCanonicalXML;
 import org.junit.Test;

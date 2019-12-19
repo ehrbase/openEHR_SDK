@@ -77,7 +77,7 @@ public class DefaultRestTemplateEndpoint implements TemplateEndpoint {
 
     @Override
     public void ensureExistence(String templateId) {
-        Optional<OPERATIONALTEMPLATE> operationaltemplate = defaultRestClient.getTemplateProvider().getForTemplateId(templateId);
+        Optional<OPERATIONALTEMPLATE> operationaltemplate = defaultRestClient.getTemplateProvider().find(templateId);
         if (!operationaltemplate.isPresent()) {
             throw new ClientException(String.format("Unknown Template with Id %s", templateId));
         }
