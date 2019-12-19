@@ -33,6 +33,7 @@ import org.ehrbase.client.annotations.Template;
 import org.ehrbase.client.building.OptSkeletonBuilder;
 import org.ehrbase.client.classgenerator.EnumValueSet;
 import org.ehrbase.client.exception.ClientException;
+import org.ehrbase.client.templateprovider.TemplateProvider;
 import org.ehrbase.serialisation.CanonicalJson;
 import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
 import org.slf4j.Logger;
@@ -59,7 +60,7 @@ public class Unflattener {
     public RMObject unflatten(Object dto) {
         Template template = dto.getClass().getAnnotation(Template.class);
 
-        OPERATIONALTEMPLATE operationalTemplate = templateProvider.getForTemplateId(template.value()).orElseThrow(() -> new ClientException(String.format("Unknown Template %s", template.value())));
+        OPERATIONALTEMPLATE operationalTemplate = templateProvider.find(template.value()).orElseThrow(() -> new ClientException(String.format("Unknown Template %s", template.value())));
         OptSkeletonBuilder optSkeletonBuilder = new OptSkeletonBuilder();
         Locatable generate = (Locatable) optSkeletonBuilder.generate(operationalTemplate);
 

@@ -36,11 +36,11 @@ import org.apache.http.util.EntityUtils;
 import org.ehrbase.api.mapper.RmObjektJsonDeSerializer;
 import org.ehrbase.client.exception.ClientException;
 import org.ehrbase.client.exception.WrongStatusCodeException;
-import org.ehrbase.client.flattener.TemplateProvider;
 import org.ehrbase.client.openehrclient.CompositionEndpoint;
 import org.ehrbase.client.openehrclient.OpenEhrClient;
 import org.ehrbase.client.openehrclient.OpenEhrClientConfig;
 import org.ehrbase.client.openehrclient.TemplateEndpoint;
+import org.ehrbase.client.templateprovider.TemplateProvider;
 import org.ehrbase.serialisation.CanonicalJson;
 
 import java.io.IOException;

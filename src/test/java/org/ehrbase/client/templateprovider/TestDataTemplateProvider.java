@@ -15,7 +15,7 @@
  *  limitations under the License.
  */
 
-package org.ehrbase.client.flattener;
+package org.ehrbase.client.templateprovider;
 
 import org.apache.xmlbeans.XmlException;
 import org.ehrbase.test_data.operationaltemplate.OperationalTemplateTestData;
@@ -30,7 +30,7 @@ import java.util.stream.Collectors;
 
 public class TestDataTemplateProvider implements TemplateProvider {
     @Override
-    public Optional<OPERATIONALTEMPLATE> getForTemplateId(String templateId) {
+    public Optional<OPERATIONALTEMPLATE> find(String templateId) {
         return Optional.ofNullable(OperationalTemplateTestData.findByTemplateId(templateId))
                 .map(OperationalTemplateTestData::getStream)
                 .map(s -> {
