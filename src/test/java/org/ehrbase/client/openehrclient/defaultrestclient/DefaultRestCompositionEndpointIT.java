@@ -19,8 +19,8 @@ package org.ehrbase.client.openehrclient.defaultrestclient;
 
 import org.ehrbase.client.Integration;
 import org.ehrbase.client.TestData;
-import org.ehrbase.client.classgenerator.EhrbaseBloodPressureSimpleDeV0;
 import org.ehrbase.client.classgenerator.EhrbaseMultiOccurrenceDeV1;
+import org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev0.EhrbaseBloodPressureSimpleDeV0;
 import org.ehrbase.client.openehrclient.CompositionEndpoint;
 import org.ehrbase.client.openehrclient.OpenEhrClient;
 import org.junit.BeforeClass;

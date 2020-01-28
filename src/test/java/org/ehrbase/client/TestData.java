@@ -18,8 +18,15 @@ package org.ehrbase.client;
 
 import com.nedap.archie.rm.datatypes.CodePhrase;
 import com.nedap.archie.rm.support.identification.TerminologyId;
-import org.ehrbase.client.classgenerator.EhrbaseBloodPressureSimpleDeV0;
 import org.ehrbase.client.classgenerator.EhrbaseMultiOccurrenceDeV1;
+import org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev0.EhrbaseBloodPressureSimpleDeV0;
+import org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev0.definition.BloodPressureTrainingSample;
+import org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev0.definition.CuffSizeDefiningcode;
+import org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev0.definition.KorotkoffSoundsDefiningcode;
+import org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev0.definition.LocationOfMeasurementDefiningcode;
+import org.ehrbase.client.classgenerator.examples.shareddefinition.Language;
+import org.ehrbase.client.classgenerator.examples.shareddefinition.SettingDefiningcode;
+import org.ehrbase.client.classgenerator.examples.shareddefinition.Territory;
 import org.ehrbase.client.flattener.BloodpressureListDe;
 
 import java.time.OffsetDateTime;
@@ -54,11 +61,11 @@ public class TestData {
         bloodPressureSimpleDeV0.setStartTimeValue(OffsetDateTime.now());
         bloodPressureSimpleDeV0.setEndTimeValue(OffsetDateTime.now());
         bloodPressureSimpleDeV0.setBloodPressureTrainingSample(new ArrayList<>());
-        bloodPressureSimpleDeV0.setLanguage(EhrbaseBloodPressureSimpleDeV0.Language.DE);
-        bloodPressureSimpleDeV0.setTerritory(EhrbaseBloodPressureSimpleDeV0.Territory.DE);
-        bloodPressureSimpleDeV0.setSettingDefiningcode(EhrbaseBloodPressureSimpleDeV0.SettingDefiningcode.NURSINGHOMECARE);
+        bloodPressureSimpleDeV0.setLanguage(Language.DE);
+        bloodPressureSimpleDeV0.setTerritory(Territory.DE);
+        bloodPressureSimpleDeV0.setSettingDefiningcode(SettingDefiningcode.NURSINGHOMECARE);
 
-        EhrbaseBloodPressureSimpleDeV0.BloodPressureTrainingSample bloodPressureTrainingSample = new EhrbaseBloodPressureSimpleDeV0.BloodPressureTrainingSample();
+        BloodPressureTrainingSample bloodPressureTrainingSample = new BloodPressureTrainingSample();
         bloodPressureTrainingSample.setSystolicMagnitude(22d);
         bloodPressureTrainingSample.setSystolicUnits("mm[Hg]");
         bloodPressureTrainingSample.setDiastolicMagnitude(22d);
@@ -67,9 +74,9 @@ public class TestData {
         bloodPressureTrainingSample.setMeanArterialPressureUnits("mm[Hg]");
         bloodPressureTrainingSample.setPulsePressureMagnitude(22d);
         bloodPressureTrainingSample.setPulsePressureUnits("mm[Hg]");
-        bloodPressureTrainingSample.setKorotkoffSoundsDefiningcode(EhrbaseBloodPressureSimpleDeV0.BloodPressureTrainingSample.KorotkoffSoundsDefiningcode.FIFTHSOUND);
-        bloodPressureTrainingSample.setCuffSizeDefiningcode(EhrbaseBloodPressureSimpleDeV0.BloodPressureTrainingSample.CuffSizeDefiningcode.ADULT);
-        bloodPressureTrainingSample.setLocationOfMeasurementDefiningcode(EhrbaseBloodPressureSimpleDeV0.BloodPressureTrainingSample.LocationOfMeasurementDefiningcode.FINGER);
+        bloodPressureTrainingSample.setKorotkoffSoundsDefiningcode(KorotkoffSoundsDefiningcode.FIFTHSOUND);
+        bloodPressureTrainingSample.setCuffSizeDefiningcode(CuffSizeDefiningcode.ADULT);
+        bloodPressureTrainingSample.setLocationOfMeasurementDefiningcode(LocationOfMeasurementDefiningcode.FINGER);
         bloodPressureSimpleDeV0.getBloodPressureTrainingSample().add(bloodPressureTrainingSample);
         return bloodPressureSimpleDeV0;
     }

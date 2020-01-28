@@ -56,8 +56,14 @@ public class ClassGenerator {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final Map<Class, RmClassGeneratorConfig> configMap;
+
+
     private Map<String, Integer> currentFieldNameMap = new HashMap<>();
     private Map<String, Integer> currentClassNameMap = new HashMap<>();
+
+    private ClassGeneratorResult currentResult;
+    private String currentPackageName;
+    private String currentMainClass;
 
 
     public ClassGenerator() {
@@ -77,18 +83,26 @@ public class ClassGenerator {
         }).collect(Collectors.toMap(RmClassGeneratorConfig::getRMClass, c -> c));
     }
 
-    public TypeSpec generate(OPERATIONALTEMPLATE operationalTemplate) {
+    public ClassGeneratorResult generate(String packageName, OPERATIONALTEMPLATE operationalTemplate) {
+        currentResult = new ClassGeneratorResult();
+        currentPackageName = packageName;
+        currentMainClass = "";
         ArchetypeNode root = new TemplateIntrospect(operationalTemplate).getRoot();
         String templateId = operationalTemplate.getTemplateId().getValue();
         TemplateNode templateNode = new TemplateNode(templateId, root.getArchetypeId(), root.getChildren(), templateId);
-        return build(templateNode);
-
+        TypeSpec build = build(templateNode);
+        currentResult.addClass(currentPackageName + "." + currentMainClass.toLowerCase(), build);
+        return currentResult;
     }
 
     private TypeSpec build(EntityNode archetypeNode) {
         Map<String, Integer> oldFieldNameMap = currentFieldNameMap;
         currentFieldNameMap = new HashMap<>();
-        TypeSpec.Builder classBuilder = TypeSpec.classBuilder(buildClassName(archetypeNode.getName()));
+        String className = buildClassName(archetypeNode.getName());
+        TypeSpec.Builder classBuilder = TypeSpec.classBuilder(className);
+        if (StringUtils.isBlank(currentMainClass)) {
+            currentMainClass = className;
+        }
         classBuilder.addModifiers(Modifier.PUBLIC);
         classBuilder.addAnnotation(AnnotationSpec.builder(Entity.class).build());
 
@@ -100,8 +114,6 @@ public class ClassGenerator {
         if (archetypeNode instanceof TemplateNode) {
             AnnotationSpec templateAnnotation = AnnotationSpec.builder(Template.class).addMember(Template.VALUE, "$S", ((TemplateNode) archetypeNode).getTemplateId()).build();
             classBuilder.addAnnotation(templateAnnotation);
-        } else {
-            classBuilder.addModifiers(Modifier.STATIC);
         }
 
         for (Map.Entry<String, Node> entry : archetypeNode.getChildren().entrySet()) {
@@ -121,8 +133,10 @@ public class ClassGenerator {
         TypeSpec interfaceSpec = TypeSpec.interfaceBuilder(buildClassName(choiceNode.getName() + "_choice"))
                 .addModifiers(Modifier.PUBLIC)
                 .build();
-        classBuilder.addType(interfaceSpec);
-        TypeName interfaceClassName = ClassName.get("", interfaceSpec.name);
+
+        String interfacePackage = currentPackageName + "." + currentMainClass.toLowerCase() + ".definition";
+        currentResult.addClass(interfacePackage, interfaceSpec);
+        TypeName interfaceClassName = ClassName.get(interfacePackage, interfaceSpec.name);
 
         for (EndNode endNode : choiceNode.getNodes()) {
             Map<String, Integer> oldFieldNameMap = currentFieldNameMap;
@@ -137,7 +151,7 @@ public class ClassGenerator {
                     .addAnnotation(AnnotationSpec.builder(OptionFor.class).addMember(OptionFor.VALUE, "$S", typeInfo.getRmName()).build());
             addSimpleField(builder, "", endNode);
             TypeSpec typeSpec = builder.build();
-            classBuilder.addType(typeSpec);
+            currentResult.addClass(currentPackageName + "." + currentMainClass.toLowerCase() + ".definition", typeSpec);
             currentFieldNameMap = oldFieldNameMap;
         }
 
@@ -171,9 +185,11 @@ public class ClassGenerator {
 
     private void addComplexField(TypeSpec.Builder classBuilder, String path, EntityNode node) {
         TypeSpec subSpec = build(node);
-        classBuilder.addType(subSpec);
 
-        TypeName className = ClassName.get("", subSpec.name);
+        String subSpecPackage = currentPackageName + "." + currentMainClass.toLowerCase() + ".definition";
+
+        currentResult.addClass(subSpecPackage, subSpec);
+        TypeName className = ClassName.get(subSpecPackage, subSpec.name);
         if (node.isMulti()) {
             className = ParameterizedTypeName.get(ClassName.get(List.class), className);
         }
@@ -223,8 +239,14 @@ public class ClassGenerator {
         if (CodePhrase.class.getName().equals(className.toString()) && CollectionUtils.isNotEmpty(valueSet.getTherms())) {
 
             TypeSpec enumValueSet = buildEnumValueSet(name, valueSet);
-            classBuilder.addType(enumValueSet);
-            className = ClassName.get("", enumValueSet.name);
+            String enumPackage;
+            if (valueSet.getId().equals("local")) {
+                enumPackage = currentPackageName + "." + currentMainClass.toLowerCase() + ".definition";
+            } else {
+                enumPackage = currentPackageName + ".shareddefinition";
+            }
+            currentResult.addClass(enumPackage, enumValueSet);
+            className = ClassName.get(enumPackage, enumValueSet.name);
         }
 
         String fieldName = buildFieldName(name);
@@ -336,12 +358,11 @@ public class ClassGenerator {
         }
         OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(Paths.get(cmd.getOptionValue("opt")).toFile()).getTemplate();
         ClassGenerator cut = new ClassGenerator();
-        TypeSpec generate = cut.generate(template);
-        JavaFile javaFile = JavaFile.builder(cmd.getOptionValue("package"), generate)
-                .build();
+        ClassGeneratorResult generate = cut.generate(cmd.getOptionValue("package"), template);
+
         java.nio.file.Path fsRoot = Paths.get(cmd.getOptionValue("out"));
 
-        javaFile.writeTo(fsRoot);
+        generate.createFiles(fsRoot);
     }
 
     private static void showHelp() {

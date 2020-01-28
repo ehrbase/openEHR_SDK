@@ -18,52 +18,51 @@
 package org.ehrbase.client.classgenerator;
 
 import com.squareup.javapoet.FieldSpec;
-import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.TypeSpec;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.xmlbeans.XmlException;
 import org.assertj.core.groups.Tuple;
 import org.ehrbase.test_data.operationaltemplate.OperationalTemplateTestData;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
 import org.openehr.schemas.v1.TemplateDocument;
 
 import java.io.IOException;
-import java.io.StringWriter;
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertTrue;
 
-@Ignore
+
 public class ClassGeneratorTest {
 
     @Test
     public void testGenerate() throws IOException, XmlException {
         OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(OperationalTemplateTestData.BLOOD_PRESSURE_SIMPLE.getStream()).getTemplate();
         ClassGenerator cut = new ClassGenerator();
-        TypeSpec generate = cut.generate(template);
+        ClassGeneratorResult generate = cut.generate("org.ehrbase.client.classgenerator.examples", template);
 
 
-        List<FieldSpec> fieldSpecs = generate.typeSpecs.stream().map(t -> t.fieldSpecs).flatMap(List::stream).collect(Collectors.toList());
-        fieldSpecs.addAll(generate.fieldSpecs);
+        List<FieldSpec> fieldSpecs = generate.getClasses().values().stream()
+                .flatMap(Collection::stream)
+                .filter(t -> !t.kind.equals(TypeSpec.Kind.ENUM))
+                .map(t -> t.fieldSpecs).flatMap(List::stream).collect(Collectors.toList());
+
 
         assertThat(fieldSpecs)
                 .extracting(f -> f.name, f -> f.type.toString())
                 .containsExactlyInAnyOrder(
                         new Tuple("device", "java.util.List<com.nedap.archie.rm.datastructures.Cluster>"),
-                        new Tuple("language", "com.nedap.archie.rm.datatypes.CodePhrase"),
+                        new Tuple("language", "org.ehrbase.client.classgenerator.examples.shareddefinition.Language"),
                         new Tuple("levelOfExertion", "java.util.List<com.nedap.archie.rm.datastructures.Cluster>"),
                         new Tuple("commentValue", "java.lang.String"),
-                        new Tuple("cuffSizeDefiningcode", "CuffSizeDefiningcode"),
-                        new Tuple("korotkoffSoundsDefiningcode", "KorotkoffSoundsDefiningcode"),
+                        new Tuple("cuffSizeDefiningcode", "org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev0.definition.CuffSizeDefiningcode"),
+                        new Tuple("korotkoffSoundsDefiningcode", "org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev0.definition.KorotkoffSoundsDefiningcode"),
                         new Tuple("systolicMagnitude", "java.lang.Double"),
                         new Tuple("systolicUnits", "java.lang.String"),
                         new Tuple("diastolicMagnitude", "java.lang.Double"),
                         new Tuple("diastolicUnits", "java.lang.String"),
-                        new Tuple("positionDefiningcode", "PositionDefiningcode"),
+                        new Tuple("positionDefiningcode", "org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev0.definition.PositionDefiningcode"),
                         new Tuple("tiltMagnitude", "java.lang.Double"),
                         new Tuple("tiltUnits", "java.lang.String"),
                         new Tuple("meanArterialPressureMagnitude", "java.lang.Double"),
@@ -73,7 +72,7 @@ public class ClassGeneratorTest {
                         new Tuple("originValue", "java.time.temporal.TemporalAccessor"),
                         new Tuple("pulsePressureMagnitude", "java.lang.Double"),
                         new Tuple("pulsePressureUnits", "java.lang.String"),
-                        new Tuple("locationOfMeasurementDefiningcode", "LocationOfMeasurementDefiningcode"),
+                        new Tuple("locationOfMeasurementDefiningcode", "org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev0.definition.LocationOfMeasurementDefiningcode"),
                         new Tuple("modelValue", "java.lang.String"),
                         new Tuple("serialNumberValue", "java.lang.String"),
                         new Tuple("dateLastServicedValue", "java.time.temporal.TemporalAccessor"),
@@ -84,32 +83,23 @@ public class ClassGeneratorTest {
                         new Tuple("servicedByValue", "java.lang.String"),
                         new Tuple("manufacturerValue", "java.lang.String"),
                         new Tuple("endTimeValue", "java.time.temporal.TemporalAccessor"),
-                        new Tuple("language", "com.nedap.archie.rm.datatypes.CodePhrase"),
+                        new Tuple("language", "org.ehrbase.client.classgenerator.examples.shareddefinition.Language"),
                         new Tuple("healthCareFacility", "com.nedap.archie.rm.generic.PartyIdentified"),
                         new Tuple("composerExternalref", "com.nedap.archie.rm.support.identification.PartyRef"),
-                        new Tuple("settingDefiningcode", "com.nedap.archie.rm.datatypes.CodePhrase"),
-                        new Tuple("territory", "com.nedap.archie.rm.datatypes.CodePhrase"),
-                        new Tuple("bloodPressureTrainingSample", "java.util.List<BloodPressureTrainingSample>"),
+                        new Tuple("settingDefiningcode", "org.ehrbase.client.classgenerator.examples.shareddefinition.SettingDefiningcode"),
+                        new Tuple("territory", "org.ehrbase.client.classgenerator.examples.shareddefinition.Territory"),
+                        new Tuple("bloodPressureTrainingSample", "java.util.List<org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev0.definition.BloodPressureTrainingSample>"),
                         new Tuple("location", "java.lang.String"),
-                        new Tuple("deviceDetailsTrainingSample", "java.util.List<DeviceDetailsTrainingSample>"),
+                        new Tuple("deviceDetailsTrainingSample", "java.util.List<org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev0.definition.DeviceDetailsTrainingSample>"),
                         new Tuple("startTimeValue", "java.time.temporal.TemporalAccessor")
                 );
 
-        JavaFile javaFile = JavaFile.builder("org.ehrbase.client.classgenerator.examples." + generate.name.toLowerCase(), generate)
-                .build();
 
-
-        //   javaFile.writeTo(Paths.get(".", "src/test/java/"));
-
-        StringWriter stringWriter = new StringWriter();
-        javaFile.writeTo(stringWriter);
-        String actual = stringWriter.toString();
-        System.out.println(actual);
-        assertTrue(StringUtils.isNotBlank(actual));
+        //generate.createFiles(Paths.get(".", "src/test/java/"));
 
 
     }
-
+/*
     @Test
     public void testGenerateMultiOccurrence() throws IOException, XmlException {
         OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(OperationalTemplateTestData.MULTI_OCCURRENCE.getStream()).getTemplate();
@@ -233,5 +223,5 @@ public class ClassGeneratorTest {
 
     }
 
-
+*/
 }

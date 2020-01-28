@@ -22,9 +22,10 @@ import com.nedap.archie.rm.archetyped.Locatable;
 import com.nedap.archie.rm.composition.Composition;
 import org.apache.commons.io.IOUtils;
 import org.ehrbase.client.TestData;
-import org.ehrbase.client.classgenerator.EhrbaseBloodPressureSimpleDeV0;
 import org.ehrbase.client.classgenerator.EhrbaseMultiOccurrenceDeV1;
 import org.ehrbase.client.classgenerator.TestAllTypesEnV1;
+import org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev0.EhrbaseBloodPressureSimpleDeV0;
+import org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev0.definition.KorotkoffSoundsDefiningcode;
 import org.ehrbase.client.templateprovider.TestDataTemplateProvider;
 import org.ehrbase.serialisation.CanonicalXML;
 import org.ehrbase.test_data.composition.CompositionTestDataCanonicalXML;
@@ -66,7 +67,7 @@ public class FlattenerTest {
         assertThat(actual.getBloodPressureTrainingSample()).size().isEqualTo(1);
         assertThat(actual.getBloodPressureTrainingSample().get(0).getSystolicMagnitude()).isEqualTo(22d);
         assertThat(actual.getBloodPressureTrainingSample().get(0).getSystolicUnits()).isEqualTo("mm[Hg]");
-        assertThat(actual.getBloodPressureTrainingSample().get(0).getKorotkoffSoundsDefiningcode()).isEqualTo(EhrbaseBloodPressureSimpleDeV0.BloodPressureTrainingSample.KorotkoffSoundsDefiningcode.FIFTHSOUND);
+        assertThat(actual.getBloodPressureTrainingSample().get(0).getKorotkoffSoundsDefiningcode()).isEqualTo(KorotkoffSoundsDefiningcode.FIFTHSOUND);
 
     }
 
