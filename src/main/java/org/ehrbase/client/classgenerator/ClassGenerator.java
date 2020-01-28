@@ -32,8 +32,8 @@ import org.ehrbase.client.annotations.*;
 import org.ehrbase.client.classgenerator.config.RmClassGeneratorConfig;
 import org.ehrbase.client.exception.ClientException;
 import org.ehrbase.client.introspect.TemplateIntrospect;
-import org.ehrbase.client.introspect.TermDefinition;
 import org.ehrbase.client.introspect.node.*;
+import org.ehrbase.client.terminology.ValueSet;
 import org.ehrbase.ehr.encode.wrappers.SnakeCase;
 import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
 import org.openehr.schemas.v1.TemplateDocument;
@@ -142,7 +142,7 @@ public class ClassGenerator {
         }
 
 
-        addField(classBuilder, path, choiceNode.getName(), interfaceClassName, Collections.emptySet(), true);
+        addField(classBuilder, path, choiceNode.getName(), interfaceClassName, new ValueSet(ValueSet.LOCAL, Collections.emptySet()), true);
     }
 
     private void addSimpleField(TypeSpec.Builder classBuilder, String path, EndNode endNode) {
@@ -177,10 +177,10 @@ public class ClassGenerator {
         if (node.isMulti()) {
             className = ParameterizedTypeName.get(ClassName.get(List.class), className);
         }
-        addField(classBuilder, path, node.getName(), className, Collections.emptySet(), false);
+        addField(classBuilder, path, node.getName(), className, new ValueSet(ValueSet.LOCAL, Collections.emptySet()), false);
     }
 
-    private TypeSpec buildEnumValueSet(String name, Set<TermDefinition> valuset) {
+    private TypeSpec buildEnumValueSet(String name, ValueSet valuset) {
         TypeSpec.Builder enumBuilder = TypeSpec
                 .enumBuilder(normalise(extractSubName(name), true))
                 .addSuperinterface(EnumValueSet.class)
@@ -196,9 +196,9 @@ public class ClassGenerator {
 
         MethodSpec constructor = buildConstructor(fieldSpec1, fieldSpec2, fieldSpec3, fieldSpec4);
         enumBuilder.addMethod(constructor);
-        valuset.forEach(t -> {
+        valuset.getTherms().forEach(t -> {
             String fieldName = extractSubName(t.getValue());
-            enumBuilder.addEnumConstant(normalise(fieldName, false).toUpperCase(), TypeSpec.anonymousClassBuilder("$S, $S, $S, $S", t.getValue(), t.getDescription(), "local", t.getCode()).build());
+            enumBuilder.addEnumConstant(normalise(fieldName, false).toUpperCase(), TypeSpec.anonymousClassBuilder("$S, $S, $S, $S", t.getValue(), t.getDescription(), StringUtils.substringBefore(valuset.getId(), ":"), t.getCode()).build());
         });
 
         enumBuilder.addMethod(buildGetter(fieldSpec1));
@@ -217,10 +217,10 @@ public class ClassGenerator {
         return builder.build();
     }
 
-    private void addField(TypeSpec.Builder classBuilder, String path, String name, TypeName className, Set<TermDefinition> valueSet, boolean addChoiceAnnotation) {
+    private void addField(TypeSpec.Builder classBuilder, String path, String name, TypeName className, ValueSet valueSet, boolean addChoiceAnnotation) {
 
 
-        if (CodePhrase.class.getName().equals(className.toString()) && CollectionUtils.isNotEmpty(valueSet)) {
+        if (CodePhrase.class.getName().equals(className.toString()) && CollectionUtils.isNotEmpty(valueSet.getTherms())) {
 
             TypeSpec enumValueSet = buildEnumValueSet(name, valueSet);
             classBuilder.addType(enumValueSet);

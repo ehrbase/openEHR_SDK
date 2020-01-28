@@ -24,6 +24,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.xmlbeans.XmlException;
 import org.assertj.core.groups.Tuple;
 import org.ehrbase.test_data.operationaltemplate.OperationalTemplateTestData;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
 import org.openehr.schemas.v1.TemplateDocument;
@@ -36,6 +37,7 @@ import java.util.stream.Collectors;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertTrue;
 
+@Ignore
 public class ClassGeneratorTest {
 
     @Test
@@ -93,11 +95,11 @@ public class ClassGeneratorTest {
                         new Tuple("startTimeValue", "java.time.temporal.TemporalAccessor")
                 );
 
-        JavaFile javaFile = JavaFile.builder("org.ehrbase.client.classgenerator", generate)
+        JavaFile javaFile = JavaFile.builder("org.ehrbase.client.classgenerator.examples." + generate.name.toLowerCase(), generate)
                 .build();
 
 
-        //  javaFile.writeTo(Paths.get(".", "src/test/java/"));
+        //   javaFile.writeTo(Paths.get(".", "src/test/java/"));
 
         StringWriter stringWriter = new StringWriter();
         javaFile.writeTo(stringWriter);

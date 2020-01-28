@@ -27,6 +27,8 @@ import org.apache.commons.lang3.reflect.FieldUtils;
 import org.ehrbase.client.exception.ClientException;
 import org.ehrbase.client.introspect.config.RmIntrospectConfig;
 import org.ehrbase.client.introspect.node.*;
+import org.ehrbase.client.terminology.TermDefinition;
+import org.ehrbase.client.terminology.ValueSet;
 import org.ehrbase.ehr.encode.wrappers.SnakeCase;
 import org.openehr.schemas.v1.*;
 import org.reflections.Reflections;
@@ -36,6 +38,8 @@ import org.slf4j.LoggerFactory;
 import java.lang.reflect.Modifier;
 import java.util.*;
 import java.util.stream.Collectors;
+
+import static org.ehrbase.client.terminology.ValueSet.LOCAL;
 
 public class TemplateIntrospect {
 
@@ -151,11 +155,11 @@ public class TemplateIntrospect {
 
         } else {
             Set<TermDefinition> termDefinitionSet = Arrays.stream(ccomplexobject.getAttributesArray())
-                    .flatMap(c -> Arrays.asList(c.getChildrenArray()).stream())
+                    .flatMap(c -> Arrays.stream(c.getChildrenArray()))
                     .map(c -> buildTermSet(c, termDef))
                     .findAny()
                     .orElse(Collections.emptySet());
-            localNodeMap.put(path, new EndNode(findJavaClass(ccomplexobject.getRmTypeName()), term, termDefinitionSet));
+            localNodeMap.put(path, new EndNode(findJavaClass(ccomplexobject.getRmTypeName()), term, new ValueSet(LOCAL, termDefinitionSet)));
         }
         return localNodeMap;
     }
@@ -198,12 +202,12 @@ public class TemplateIntrospect {
                     term = term + TERM_DIVIDER + termDef.get(cobject.getNodeId()).getValue();
                 }
             }
-            return Collections.singletonMap(path, new SlotNode(findJavaClass(cobject.getRmTypeName()), term, Collections.emptySet(), multi));
+            return Collections.singletonMap(path, new SlotNode(findJavaClass(cobject.getRmTypeName()), term, new ValueSet(LOCAL, Collections.emptySet()), multi));
 
         } else {
 
             Set<TermDefinition> termDefinitions = buildTermSet(cobject, termDef);
-            return Collections.singletonMap(path, new EndNode(findJavaClass(cobject.getRmTypeName()), term, termDefinitions));
+            return Collections.singletonMap(path, new EndNode(findJavaClass(cobject.getRmTypeName()), term, new ValueSet(LOCAL, termDefinitions)));
         }
     }
 
@@ -249,7 +253,7 @@ public class TemplateIntrospect {
                     .forEach(f -> {
                         String snakeName = new SnakeCase(f.getName()).camelToSnake();
                         String localPath = path + PATH_DIVIDER + snakeName;
-                        localNodeMap.put(localPath, new EndNode(f.getType(), snakeName));
+                        localNodeMap.put(localPath, new EndNode(f.getType(), snakeName, introspectConfig.findExternalValueSet(f.getName())));
                     });
             return localNodeMap;
         } else {

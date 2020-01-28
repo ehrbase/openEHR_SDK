@@ -54,9 +54,9 @@ public class TestData {
         bloodPressureSimpleDeV0.setStartTimeValue(OffsetDateTime.now());
         bloodPressureSimpleDeV0.setEndTimeValue(OffsetDateTime.now());
         bloodPressureSimpleDeV0.setBloodPressureTrainingSample(new ArrayList<>());
-        bloodPressureSimpleDeV0.setLanguage(new CodePhrase(new TerminologyId("ISO_639-1"), "de"));
-        bloodPressureSimpleDeV0.setTerritory(new CodePhrase(new TerminologyId("ISO_3166-1"), "UY"));
-        bloodPressureSimpleDeV0.setSettingDefiningcode(new CodePhrase(new TerminologyId("openehr"), "229"));
+        bloodPressureSimpleDeV0.setLanguage(EhrbaseBloodPressureSimpleDeV0.Language.DE);
+        bloodPressureSimpleDeV0.setTerritory(EhrbaseBloodPressureSimpleDeV0.Territory.DE);
+        bloodPressureSimpleDeV0.setSettingDefiningcode(EhrbaseBloodPressureSimpleDeV0.SettingDefiningcode.NURSINGHOMECARE);
 
         EhrbaseBloodPressureSimpleDeV0.BloodPressureTrainingSample bloodPressureTrainingSample = new EhrbaseBloodPressureSimpleDeV0.BloodPressureTrainingSample();
         bloodPressureTrainingSample.setSystolicMagnitude(22d);
