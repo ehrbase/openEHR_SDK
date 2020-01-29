@@ -17,24 +17,23 @@
 
 package org.ehrbase.client.introspect.node;
 
-import org.ehrbase.client.introspect.TermDefinition;
+import org.ehrbase.client.terminology.ValueSet;
 
-import java.util.Collections;
-import java.util.Set;
+import static org.ehrbase.client.terminology.ValueSet.EMPTY_VALUE_SET;
 
 public class EndNode implements Node {
 
     private final Class clazz;
     private final String name;
-    private final Set<TermDefinition> valueSet;
+    private final ValueSet valueSet;
 
     public EndNode(Class clazz, String name) {
         this.clazz = clazz;
         this.name = name;
-        this.valueSet = Collections.emptySet();
+        this.valueSet = EMPTY_VALUE_SET;
     }
 
-    public EndNode(Class clazz, String name, Set<TermDefinition> valuset) {
+    public EndNode(Class clazz, String name, ValueSet valuset) {
         this.clazz = clazz;
         this.name = name;
         this.valueSet = valuset;
@@ -48,7 +47,7 @@ public class EndNode implements Node {
         return name;
     }
 
-    public Set<TermDefinition> getValuset() {
+    public ValueSet getValuset() {
         return valueSet;
     }
 }

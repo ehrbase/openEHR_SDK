@@ -17,7 +17,6 @@
 
 package org.ehrbase.client.flattener;
 
-import com.nedap.archie.rm.archetyped.Locatable;
 import com.nedap.archie.rm.composition.Composition;
 import com.nedap.archie.rm.composition.Evaluation;
 import com.nedap.archie.rm.composition.Observation;
@@ -30,9 +29,10 @@ import com.nedap.archie.rm.datavalues.quantity.DvQuantity;
 import com.nedap.archie.rm.support.identification.TerminologyId;
 import org.apache.commons.io.IOUtils;
 import org.ehrbase.client.TestData;
-import org.ehrbase.client.classgenerator.EhrbaseBloodPressureSimpleDeV0;
-import org.ehrbase.client.classgenerator.EhrbaseMultiOccurrenceDeV1;
-import org.ehrbase.client.classgenerator.TestAllTypesEnV1;
+import org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev0.EhrbaseBloodPressureSimpleDeV0;
+import org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1.EhrbaseMultiOccurrenceDeV1;
+import org.ehrbase.client.classgenerator.examples.testalltypesenv1.TestAllTypesEnV1;
+import org.ehrbase.client.classgenerator.examples.testalltypesenv1.definition.ArbolChoiceDvquantity;
 import org.ehrbase.client.templateprovider.TestDataTemplateProvider;
 import org.ehrbase.serialisation.CanonicalXML;
 import org.ehrbase.test_data.composition.CompositionTestDataCanonicalXML;
@@ -56,7 +56,7 @@ public class UnflattenerTest {
 
         BloodpressureListDe dto = buildExampleBloodpressureListDe();
 
-        Locatable rmObject = (Locatable) cut.unflatten(dto);
+        Composition rmObject = (Composition) cut.unflatten(dto);
 
         assertThat(rmObject).isNotNull();
         assertThat(rmObject.itemAtPath("/context/start_time/value")).isEqualTo(dto.getStartTime());
@@ -83,6 +83,7 @@ public class UnflattenerTest {
         Composition rmObject = (Composition) cut.unflatten(dto);
 
         assertThat(rmObject).isNotNull();
+        assertThat(rmObject.getLanguage()).extracting(CodePhrase::getCodeString, c -> c.getTerminologyId().getValue()).containsExactly("de", "ISO_639-1");
         assertThat(rmObject.getArchetypeDetails().getTemplateId().getValue()).isEqualTo("ehrbase_blood_pressure_simple.de.v0");
         assertThat(rmObject.itemAtPath("/context/start_time/value")).isEqualTo(dto.getStartTimeValue());
         List<Object> observationList = rmObject.itemsAtPath("/content[openEHR-EHR-OBSERVATION.sample_blood_pressure.v1]");
@@ -128,7 +129,7 @@ public class UnflattenerTest {
         Composition composition = new CanonicalXML().unmarshal(IOUtils.toString(CompositionTestDataCanonicalXML.ALL_TYPES.getStream(), StandardCharsets.UTF_8), Composition.class);
         Flattener flattener = new Flattener();
         TestAllTypesEnV1 testAllTypesEnV1 = flattener.flatten(composition, TestAllTypesEnV1.class);
-        TestAllTypesEnV1.TestAllTypes.ArbolChoiceDvquantity choiceDvquantity = new TestAllTypesEnV1.TestAllTypes.ArbolChoiceDvquantity();
+        ArbolChoiceDvquantity choiceDvquantity = new ArbolChoiceDvquantity();
         choiceDvquantity.setChoiceMagnitude(22d);
         choiceDvquantity.setChoiceUnits("mm[Hg]");
         testAllTypesEnV1.getTestAllTypes().get(0).setChoice(choiceDvquantity);

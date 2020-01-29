@@ -17,6 +17,9 @@
 
 package org.ehrbase.client.introspect.config;
 
+import org.ehrbase.client.terminology.TerminologyProvider;
+import org.ehrbase.client.terminology.ValueSet;
+
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -32,5 +35,15 @@ public abstract class CareEntryIntrospectConfig implements RmIntrospectConfig {
     @Override
     public Set<String> getNonTemplateFields() {
         return FIELDS;
+    }
+
+    @Override
+    public ValueSet findExternalValueSet(String fieldName) {
+        switch (fieldName) {
+            case "language":
+                return TerminologyProvider.findOpenEhrValueSet("ISO_639-1", "");
+            default:
+                return ValueSet.EMPTY_VALUE_SET;
+        }
     }
 }

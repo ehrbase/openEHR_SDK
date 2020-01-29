@@ -18,14 +18,18 @@
 package org.ehrbase.client.introspect.config;
 
 import com.nedap.archie.rm.composition.IsmTransition;
+import org.ehrbase.client.terminology.TerminologyProvider;
+import org.ehrbase.client.terminology.ValueSet;
 
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static org.ehrbase.client.terminology.TerminologyProvider.OPENEHR;
+
 public class IsmTransitionIntrospectConfig implements RmIntrospectConfig {
 
-    private static final Set<String> FIELDS = Stream.of("currentState", "territory", "composer").collect(Collectors.toSet());
+    private static final Set<String> FIELDS = Stream.of("currentState", "transition").collect(Collectors.toSet());
 
     @Override
     public Class getRMClass() {
@@ -35,5 +39,17 @@ public class IsmTransitionIntrospectConfig implements RmIntrospectConfig {
     @Override
     public Set<String> getNonTemplateFields() {
         return FIELDS;
+    }
+
+    @Override
+    public ValueSet findExternalValueSet(String fieldName) {
+        switch (fieldName) {
+            case "currentState":
+                return TerminologyProvider.findOpenEhrValueSet(OPENEHR, "instruction states");
+            case "transition":
+                return TerminologyProvider.findOpenEhrValueSet(OPENEHR, "instruction transitions");
+            default:
+                return ValueSet.EMPTY_VALUE_SET;
+        }
     }
 }

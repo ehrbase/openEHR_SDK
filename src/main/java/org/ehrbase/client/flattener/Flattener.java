@@ -80,7 +80,9 @@ public class Flattener {
             }
 
             List<Object> dtoList = new ArrayList<>();
+
             Type actualTypeArgument = ((ParameterizedType) field.getGenericType()).getActualTypeArguments()[0];
+
             Class<?> aClass = ReflectionUtils.forName(actualTypeArgument.getTypeName(), this.getClass().getClassLoader());
             for (Object childItem : childList) {
 

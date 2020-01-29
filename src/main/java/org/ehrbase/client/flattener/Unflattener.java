@@ -115,6 +115,10 @@ public class Unflattener {
             DvCodedText dvCodedText = (DvCodedText) parent;
             dvCodedText.setValue(valueSet.getValue());
             dvCodedText.setDefiningCode(new CodePhrase(new TerminologyId(valueSet.getTerminologyId()), valueSet.getCode()));
+        } else if (EnumValueSet.class.isAssignableFrom(value.getClass())) {
+            EnumValueSet valueSet = (EnumValueSet) value;
+            CodePhrase codePhrase = new CodePhrase(new TerminologyId(valueSet.getTerminologyId()), valueSet.getCode());
+            RM_OBJECT_CREATOR.set(parent, childName, Collections.singletonList(codePhrase));
         } else if (extractType(toCamelCase(childName), parent).isAssignableFrom(value.getClass())) {
             RM_OBJECT_CREATOR.set(parent, childName, Collections.singletonList(value));
         } else if (value.getClass().isAnnotationPresent(Entity.class)) {

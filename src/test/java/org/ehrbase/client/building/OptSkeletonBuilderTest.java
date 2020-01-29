@@ -43,4 +43,6 @@ public class OptSkeletonBuilderTest {
         assertThat(generate.itemAtPath("/context/end_time")).isNotNull();
         assertThat(generate.itemAtPath("/content[openEHR-EHR-OBSERVATION.sample_blood_pressure.v1]/data[at0001]/events[at0002]/state[at0007]/items[at1005]/value")).isNotNull();
     }
+
+
 }

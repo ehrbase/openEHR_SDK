@@ -18,6 +18,8 @@
 package org.ehrbase.client.introspect.config;
 
 import com.nedap.archie.rm.datastructures.IntervalEvent;
+import org.ehrbase.client.terminology.TerminologyProvider;
+import org.ehrbase.client.terminology.ValueSet;
 
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -35,5 +37,15 @@ public class IntervalEventIntrospectConfig implements RmIntrospectConfig {
     @Override
     public Set<String> getNonTemplateFields() {
         return FIELDS;
+    }
+
+    @Override
+    public ValueSet findExternalValueSet(String fieldName) {
+        switch (fieldName) {
+            case "mathFunction":
+                return TerminologyProvider.findOpenEhrValueSet("openehr", "event math function");
+            default:
+                return ValueSet.EMPTY_VALUE_SET;
+        }
     }
 }

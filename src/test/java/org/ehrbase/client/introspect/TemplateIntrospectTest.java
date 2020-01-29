@@ -162,7 +162,7 @@ public class TemplateIntrospectTest {
                         new Tuple("PartyProxy", 4L),
                         new Tuple("DvDate", 2L),
                         new Tuple("DvMultimedia", 1L),
-                        new Tuple("DvCodedText", 10L),
+                        new Tuple("DvCodedText", 13L),
                         new Tuple("DvURI", 1L),
                         new Tuple("CodePhrase", 6L),
                         new Tuple("DvParsable", 1L),
@@ -183,7 +183,7 @@ public class TemplateIntrospectTest {
                 );
 
         assertThat(countNodes(actual, ArchetypeNode.class)).isEqualTo(7l);
-        assertThat(countNodes(actual, EndNode.class)).isEqualTo(55l);
+        assertThat(countNodes(actual, EndNode.class)).isEqualTo(58l);
         assertThat(countNodes(actual, SlotNode.class)).isEqualTo(2l);
         assertThat(countNodes(actual, ChoiceNode.class)).isEqualTo(1l);
     }

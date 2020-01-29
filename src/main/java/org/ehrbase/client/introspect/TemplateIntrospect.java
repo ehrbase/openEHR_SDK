@@ -23,19 +23,30 @@ import com.nedap.archie.rminfo.ArchieRMInfoLookup;
 import org.apache.commons.collections4.ListValuedMap;
 import org.apache.commons.collections4.multimap.ArrayListValuedHashMap;
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.ehrbase.client.exception.ClientException;
 import org.ehrbase.client.introspect.config.RmIntrospectConfig;
 import org.ehrbase.client.introspect.node.*;
+import org.ehrbase.client.terminology.TermDefinition;
+import org.ehrbase.client.terminology.TerminologyProvider;
+import org.ehrbase.client.terminology.ValueSet;
 import org.ehrbase.ehr.encode.wrappers.SnakeCase;
 import org.openehr.schemas.v1.*;
+import org.reflections.ReflectionUtils;
 import org.reflections.Reflections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.*;
 import java.util.stream.Collectors;
+
+import static org.ehrbase.client.terminology.ValueSet.EMPTY_VALUE_SET;
+import static org.ehrbase.client.terminology.ValueSet.LOCAL;
 
 public class TemplateIntrospect {
 
@@ -150,11 +161,11 @@ public class TemplateIntrospect {
             }
 
         } else {
-            Set<TermDefinition> termDefinitionSet = Arrays.stream(ccomplexobject.getAttributesArray())
-                    .flatMap(c -> Arrays.asList(c.getChildrenArray()).stream())
+            ValueSet termDefinitionSet = Arrays.stream(ccomplexobject.getAttributesArray())
+                    .flatMap(c -> Arrays.stream(c.getChildrenArray()))
                     .map(c -> buildTermSet(c, termDef))
                     .findAny()
-                    .orElse(Collections.emptySet());
+                    .orElse(EMPTY_VALUE_SET);
             localNodeMap.put(path, new EndNode(findJavaClass(ccomplexobject.getRmTypeName()), term, termDefinitionSet));
         }
         return localNodeMap;
@@ -198,24 +209,31 @@ public class TemplateIntrospect {
                     term = term + TERM_DIVIDER + termDef.get(cobject.getNodeId()).getValue();
                 }
             }
-            return Collections.singletonMap(path, new SlotNode(findJavaClass(cobject.getRmTypeName()), term, Collections.emptySet(), multi));
+            return Collections.singletonMap(path, new SlotNode(findJavaClass(cobject.getRmTypeName()), term, new ValueSet(LOCAL, Collections.emptySet()), multi));
 
         } else {
 
-            Set<TermDefinition> termDefinitions = buildTermSet(cobject, termDef);
-            return Collections.singletonMap(path, new EndNode(findJavaClass(cobject.getRmTypeName()), term, termDefinitions));
+            return Collections.singletonMap(path, new EndNode(findJavaClass(cobject.getRmTypeName()), term, buildTermSet(cobject, termDef)));
         }
     }
 
-    private Set<TermDefinition> buildTermSet(COBJECT cobject, Map<String, TermDefinition> termDef) {
-        Set<TermDefinition> termDefinitions;
+    private ValueSet buildTermSet(COBJECT cobject, Map<String, TermDefinition> termDef) {
+        final ValueSet valueSet;
         if (cobject instanceof CCODEPHRASE) {
 
-            termDefinitions = Arrays.stream(((CCODEPHRASE) cobject).getCodeListArray()).filter(termDef::containsKey).map(termDef::get).collect(Collectors.toSet());
+            CCODEPHRASE ccodephrase = (CCODEPHRASE) cobject;
+            String terminologyId = Optional.ofNullable(ccodephrase).map(CCODEPHRASE::getTerminologyId).map(OBJECTID::getValue).orElse("");
+            if (terminologyId.equals("local")) {
+                valueSet = new ValueSet(terminologyId, Arrays.stream(ccodephrase.getCodeListArray()).filter(termDef::containsKey).map(termDef::get).collect(Collectors.toSet()));
+            } else if (StringUtils.isNotBlank(terminologyId)) {
+                valueSet = TerminologyProvider.findOpenEhrValueSet(terminologyId, ccodephrase.getCodeListArray());
+            } else {
+                valueSet = EMPTY_VALUE_SET;
+            }
         } else {
-            termDefinitions = Collections.emptySet();
+            valueSet = EMPTY_VALUE_SET;
         }
-        return termDefinitions;
+        return valueSet;
     }
 
 
@@ -249,12 +267,22 @@ public class TemplateIntrospect {
                     .forEach(f -> {
                         String snakeName = new SnakeCase(f.getName()).camelToSnake();
                         String localPath = path + PATH_DIVIDER + snakeName;
-                        localNodeMap.put(localPath, new EndNode(f.getType(), snakeName));
+                        localNodeMap.put(localPath, new EndNode(unwarap(f), snakeName, introspectConfig.findExternalValueSet(f.getName())));
                     });
             return localNodeMap;
         } else {
             log.debug("No RmIntrospectConfig for {}", clazz);
             return Collections.emptyMap();
+        }
+    }
+
+    private Class unwarap(Field field) {
+        if (List.class.isAssignableFrom(field.getType())) {
+            Type actualTypeArgument = ((ParameterizedType) field.getGenericType()).getActualTypeArguments()[0];
+
+            return ReflectionUtils.forName(actualTypeArgument.getTypeName(), this.getClass().getClassLoader());
+        } else {
+            return field.getType();
         }
     }
 

@@ -39,6 +39,7 @@ import org.ehrbase.client.building.rmobjektskeletonbuilder.RmObjektSkeletonBuild
 import org.ehrbase.client.introspect.TemplateIntrospect;
 import org.ehrbase.client.introspect.config.RmIntrospectConfig;
 import org.ehrbase.ehr.encode.wrappers.SnakeCase;
+import org.ehrbase.terminology.openehr.implementation.LocalizedTerminologies;
 import org.openehr.schemas.v1.*;
 import org.reflections.Reflections;
 import org.slf4j.Logger;
@@ -52,6 +53,15 @@ public class OptSkeletonBuilder {
 
     private static final ArchieRMInfoLookup RM_INFO_LOOKUP = ArchieRMInfoLookup.getInstance();
     private static final RMObjectCreator RM_CREATOR = new RMObjectCreator(RM_INFO_LOOKUP);
+    private static final LocalizedTerminologies LOCALIZED_TERMINOLOGIES;
+
+    static {
+        try {
+            LOCALIZED_TERMINOLOGIES = new LocalizedTerminologies();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     private final Logger log = LoggerFactory.getLogger(getClass());
     private final Map<Class, RmIntrospectConfig> configMap;
@@ -282,15 +292,24 @@ public class OptSkeletonBuilder {
             ((Composition) obj).setArchetypeDetails(archetypeDetails);
         } else if (obj instanceof DvCodedText) {
             DvCodedText dvCodedText = (DvCodedText) obj;
-            String value = Optional.ofNullable(valueMap.get("defining_code"))
-                    .map(o -> (CodePhrase) o)
+            Optional<CodePhrase> defining_code = Optional.ofNullable(valueMap.get("defining_code"))
+                    .map(o -> (CodePhrase) o);
+            String value = defining_code
                     .map(CodePhrase::getCodeString)
                     .map(termDef::get)
-                    .orElse("");
+                    .orElse(defining_code
+                            .map(this::findByTerminologie).orElse(""));
             dvCodedText.setValue(value);
         }
     }
 
+    public String findByTerminologie(CodePhrase codePhrase) {
+        try {
+            return LOCALIZED_TERMINOLOGIES.getDefault().terminology(codePhrase.getTerminologyId().getValue()).rubricForCode(codePhrase.getCodeString(), "en");
+        } catch (RuntimeException e) {
+            return null;
+        }
+    }
 
     private void addNodeId(CCOMPLEXOBJECT ccobj, Map<String, String> termDef, Map<String, Object> valueMap) {
 
