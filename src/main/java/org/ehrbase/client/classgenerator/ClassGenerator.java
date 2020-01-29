@@ -146,7 +146,6 @@ public class ClassGenerator {
             TypeSpec.Builder builder = TypeSpec.classBuilder(buildClassName(choiceNode.getName() + "_" + endNode.getClazz().getSimpleName()))
                     .addSuperinterface(interfaceClassName)
                     .addModifiers(Modifier.PUBLIC)
-                    .addModifiers(Modifier.STATIC)
                     .addAnnotation(AnnotationSpec.builder(Entity.class).build())
                     .addAnnotation(AnnotationSpec.builder(OptionFor.class).addMember(OptionFor.VALUE, "$S", typeInfo.getRmName()).build());
             addSimpleField(builder, "", endNode);

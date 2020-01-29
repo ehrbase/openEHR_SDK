@@ -25,6 +25,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static org.ehrbase.client.terminology.TerminologyProvider.OPENEHR;
+
 public class EventContextIntrospectConfig implements RmIntrospectConfig {
 
     private static final Set<String> FIELDS = Stream.of("startTime", "endTime", "location", "setting", "healthCareFacility").collect(Collectors.toSet());
@@ -43,7 +45,7 @@ public class EventContextIntrospectConfig implements RmIntrospectConfig {
     public ValueSet findExternalValueSet(String fieldName) {
         switch (fieldName) {
             case "setting":
-                return TerminologyProvider.findOpenEhrValueSet("openehr", "setting");
+                return TerminologyProvider.findOpenEhrValueSet(OPENEHR, "setting");
             default:
                 return ValueSet.EMPTY_VALUE_SET;
         }

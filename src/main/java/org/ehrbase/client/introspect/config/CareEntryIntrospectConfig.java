@@ -41,7 +41,7 @@ public abstract class CareEntryIntrospectConfig implements RmIntrospectConfig {
     public ValueSet findExternalValueSet(String fieldName) {
         switch (fieldName) {
             case "language":
-                return TerminologyProvider.findOpenEhrValueSet("ISO_639-1", null);
+                return TerminologyProvider.findOpenEhrValueSet("ISO_639-1", "");
             default:
                 return ValueSet.EMPTY_VALUE_SET;
         }

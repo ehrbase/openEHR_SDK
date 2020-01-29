@@ -20,16 +20,21 @@
 package org.ehrbase.client.terminology;
 
 import com.nedap.archie.rm.datatypes.CodePhrase;
+import com.nedap.archie.rm.support.identification.TerminologyId;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.ehrbase.terminology.openehr.implementation.LocalizedTerminologies;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Arrays;
 import java.util.stream.Collectors;
 
 public class TerminologyProvider {
     private static final LocalizedTerminologies LOCALIZED_TERMINOLOGIES;
     private static final Logger LOGGER = LoggerFactory.getLogger(TerminologyProvider.class);
+
+    public static final String OPENEHR = "openehr";
 
     static {
         try {
@@ -40,10 +45,28 @@ public class TerminologyProvider {
     }
 
     public static ValueSet findOpenEhrValueSet(String id, String group) {
-        if (StringUtils.isNotBlank(group)) {
-            return new ValueSet(id + ":" + group, LOCALIZED_TERMINOLOGIES.getDefault().terminology(id).codesForGroupId(group).stream().map((CodePhrase cp) -> convert(id, cp)).collect(Collectors.toSet()));
-        } else {
-            return new ValueSet(id + ":all", LOCALIZED_TERMINOLOGIES.getDefault().codeSet(id).allCodes().stream().map((CodePhrase cp) -> convert(id, cp)).collect(Collectors.toSet()));
+        try {
+            if (StringUtils.isNotBlank(group)) {
+                return new ValueSet(id + ":" + group, LOCALIZED_TERMINOLOGIES.getDefault().terminology(id).codesForGroupId(group).stream().map((CodePhrase cp) -> convert(id, cp)).collect(Collectors.toSet()));
+            } else {
+                return new ValueSet(id + ":all", LOCALIZED_TERMINOLOGIES.getDefault().codeSet(id).allCodes().stream().map((CodePhrase cp) -> convert(id, cp)).collect(Collectors.toSet()));
+            }
+        } catch (RuntimeException e) {
+            LOGGER.warn("Unknown  group {} in Terminology {}", group, id);
+            return ValueSet.EMPTY_VALUE_SET;
+        }
+    }
+
+    public static ValueSet findOpenEhrValueSet(String id, String[] values) {
+        try {
+            if (ArrayUtils.isNotEmpty(values)) {
+                return new ValueSet(id + ":" + values.toString(), Arrays.stream(values).map(v -> new CodePhrase(new TerminologyId(id), v)).map((CodePhrase cp) -> convert(id, cp)).collect(Collectors.toSet()));
+            } else {
+                return new ValueSet(id + ":all", LOCALIZED_TERMINOLOGIES.getDefault().codeSet(id).allCodes().stream().map((CodePhrase cp) -> convert(id, cp)).collect(Collectors.toSet()));
+            }
+        } catch (RuntimeException e) {
+            LOGGER.warn("Unknown  value {} in Terminology {}", values, id);
+            return ValueSet.EMPTY_VALUE_SET;
         }
     }
 

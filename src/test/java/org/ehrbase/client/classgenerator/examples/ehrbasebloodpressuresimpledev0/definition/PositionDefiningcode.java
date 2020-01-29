@@ -3,17 +3,17 @@ package org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev
 import org.ehrbase.client.classgenerator.EnumValueSet;
 
 public enum PositionDefiningcode implements EnumValueSet {
+    SITTING("Sitting", "Sitting (for example on bed or chair) at the time of blood pressure measurement", "local", "at1001"),
+
+    STANDING("Standing", "Standing at the time of blood pressure measurement", "local", "at1000"),
+
     LYING("Lying", "Lying flat at the time of blood pressure measurement", "local", "at1003"),
-
-    RECLINING("Reclining", "Reclining at the time of blood pressure measurement", "local", "at1002"),
-
-    LEFTLATERAL("Left Lateral", "Lying on the left side at the time of blood pressure measurement", "local", "at1014"),
 
     TRENDELENBURG("Trendelenburg", "Lying flat on the back (supine position) with the feet higher than the head at the time of blood pressure measurement", "local", "at1013"),
 
-    SITTING("Sitting", "Sitting (for example on bed or chair) at the time of blood pressure measurement", "local", "at1001"),
+    RECLINING("Reclining", "Reclining at the time of blood pressure measurement", "local", "at1002"),
 
-    STANDING("Standing", "Standing at the time of blood pressure measurement", "local", "at1000");
+    LEFTLATERAL("Left Lateral", "Lying on the left side at the time of blood pressure measurement", "local", "at1014");
 
     private String value;
 

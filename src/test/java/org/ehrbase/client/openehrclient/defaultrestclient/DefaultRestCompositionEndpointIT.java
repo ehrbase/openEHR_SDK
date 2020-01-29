@@ -19,8 +19,9 @@ package org.ehrbase.client.openehrclient.defaultrestclient;
 
 import org.ehrbase.client.Integration;
 import org.ehrbase.client.TestData;
-import org.ehrbase.client.classgenerator.EhrbaseMultiOccurrenceDeV1;
 import org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev0.EhrbaseBloodPressureSimpleDeV0;
+import org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1.EhrbaseMultiOccurrenceDeV1;
+import org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1.definition.*;
 import org.ehrbase.client.openehrclient.CompositionEndpoint;
 import org.ehrbase.client.openehrclient.OpenEhrClient;
 import org.junit.BeforeClass;
@@ -78,19 +79,19 @@ public class DefaultRestCompositionEndpointIT {
 
         Optional<EhrbaseMultiOccurrenceDeV1> actual = compositionEndpoint.find(compositionId, EhrbaseMultiOccurrenceDeV1.class);
         assertTrue(actual.isPresent());
-        EhrbaseMultiOccurrenceDeV1.BodyTemperature bodyTemperature1 = actual.get().getBodyTemperature().get(0);
+        BodyTemperature bodyTemperature1 = actual.get().getBodyTemperature().get(0);
         assertThat(bodyTemperature1.getHistory())
-                .extracting(EhrbaseMultiOccurrenceDeV1.BodyTemperature.BodyTemperatureHistory::getTemperatureMagnitude)
+                .extracting(BodyTemperatureHistory::getTemperatureMagnitude)
                 .containsExactlyInAnyOrder(11d, 22d);
 
-        EhrbaseMultiOccurrenceDeV1.BodyTemperature.ProtocolLocationOfMeasurementChoice locationOfMeasurement1 = bodyTemperature1.getLocationOfMeasurement();
-        assertThat(locationOfMeasurement1.getClass()).isEqualTo(EhrbaseMultiOccurrenceDeV1.BodyTemperature.ProtocolLocationOfMeasurementDvcodedtext.class);
-        assertThat(((EhrbaseMultiOccurrenceDeV1.BodyTemperature.ProtocolLocationOfMeasurementDvcodedtext) locationOfMeasurement1).getLocationOfMeasurementDefiningcode()).isEqualTo(EhrbaseMultiOccurrenceDeV1.BodyTemperature.ProtocolLocationOfMeasurementDvcodedtext.LocationOfMeasurementDefiningcode.FOREHEAD);
+        ProtocolLocationOfMeasurementChoice locationOfMeasurement1 = bodyTemperature1.getLocationOfMeasurement();
+        assertThat(locationOfMeasurement1.getClass()).isEqualTo(ProtocolLocationOfMeasurementDvcodedtext.class);
+        assertThat(((ProtocolLocationOfMeasurementDvcodedtext) locationOfMeasurement1).getLocationOfMeasurementDefiningcode()).isEqualTo(LocationOfMeasurementDefiningcode.FOREHEAD);
 
-        EhrbaseMultiOccurrenceDeV1.BodyTemperature bodyTemperature2 = actual.get().getBodyTemperature().get(1);
-        EhrbaseMultiOccurrenceDeV1.BodyTemperature.ProtocolLocationOfMeasurementChoice locationOfMeasurement2 = bodyTemperature2.getLocationOfMeasurement();
-        assertThat(locationOfMeasurement2.getClass()).isEqualTo(EhrbaseMultiOccurrenceDeV1.BodyTemperature.ProtocolLocationOfMeasurementDvtext.class);
-        assertThat(((EhrbaseMultiOccurrenceDeV1.BodyTemperature.ProtocolLocationOfMeasurementDvtext) locationOfMeasurement2).getLocationOfMeasurementValue()).isEqualTo("location");
+        BodyTemperature bodyTemperature2 = actual.get().getBodyTemperature().get(1);
+        ProtocolLocationOfMeasurementChoice locationOfMeasurement2 = bodyTemperature2.getLocationOfMeasurement();
+        assertThat(locationOfMeasurement2.getClass()).isEqualTo(ProtocolLocationOfMeasurementDvtext.class);
+        assertThat(((ProtocolLocationOfMeasurementDvtext) locationOfMeasurement2).getLocationOfMeasurementValue()).isEqualTo("location");
 
     }
 

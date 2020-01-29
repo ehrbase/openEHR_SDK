@@ -1,23 +1,4 @@
-/*
- *
- *  *  Copyright (c) 2019  Stefan Spiska (Vitasystems GmbH) and Hannover Medical School
- *  *  This file is part of Project EHRbase
- *  *
- *  *  Licensed under the Apache License, Version 2.0 (the "License");
- *  *  you may not use this file except in compliance with the License.
- *  *  You may obtain a copy of the License at
- *  *
- *  *  http://www.apache.org/licenses/LICENSE-2.0
- *  *
- *  *  Unless required by applicable law or agreed to in writing, software
- *  *  distributed under the License is distributed on an "AS IS" BASIS,
- *  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  *  See the License for the specific language governing permissions and
- *  *  limitations under the License.
- *
- */
-
-package org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev0;
+package org.ehrbase.client.classgenerator.examples.testalltypesenv1;
 
 import com.nedap.archie.rm.generic.PartyIdentified;
 import com.nedap.archie.rm.support.identification.PartyRef;
@@ -25,21 +6,29 @@ import org.ehrbase.client.annotations.Archetype;
 import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.Path;
 import org.ehrbase.client.annotations.Template;
-import org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev0.definition.BloodPressureTrainingSample;
-import org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev0.definition.DeviceDetailsTrainingSample;
 import org.ehrbase.client.classgenerator.examples.shareddefinition.Language;
 import org.ehrbase.client.classgenerator.examples.shareddefinition.SettingDefiningcode;
 import org.ehrbase.client.classgenerator.examples.shareddefinition.Territory;
+import org.ehrbase.client.classgenerator.examples.testalltypesenv1.definition.ContextCodedTextDefiningcode;
+import org.ehrbase.client.classgenerator.examples.testalltypesenv1.definition.TestAllTypes;
+import org.ehrbase.client.classgenerator.examples.testalltypesenv1.definition.TestAllTypes2;
+import org.ehrbase.client.classgenerator.examples.testalltypesenv1.definition.TestAllTypes7;
 
 import java.time.temporal.TemporalAccessor;
 import java.util.List;
 
 @Entity
-@Archetype("openEHR-EHR-COMPOSITION.sample_encounter.v1")
-@Template("ehrbase_blood_pressure_simple.de.v0")
-public class EhrbaseBloodPressureSimpleDeV0 {
+@Archetype("openEHR-EHR-COMPOSITION.test_all_types.v1")
+@Template("test_all_types.en.v1")
+public class TestAllTypesEnV1 {
+    @Path("/content[openEHR-EHR-EVALUATION.test_all_types.v1]")
+    private List<TestAllTypes> testAllTypes;
+
     @Path("/context/end_time|value")
     private TemporalAccessor endTimeValue;
+
+    @Path("/content[openEHR-EHR-SECTION.test_all_types.v1]")
+    private List<TestAllTypes2> testAllTypes2;
 
     @Path("/language")
     private Language language;
@@ -56,17 +45,25 @@ public class EhrbaseBloodPressureSimpleDeV0 {
     @Path("/territory")
     private Territory territory;
 
-    @Path("/content[openEHR-EHR-OBSERVATION.sample_blood_pressure.v1]")
-    private List<BloodPressureTrainingSample> bloodPressureTrainingSample;
+    @Path("/context/other_context[at0004]/item[at0005]/value|defining_code")
+    private ContextCodedTextDefiningcode contextCodedTextDefiningcode;
+
+    @Path("/content[openEHR-EHR-OBSERVATION.test_all_types.v1]")
+    private List<TestAllTypes7> testAllTypes3;
 
     @Path("/context/location")
     private String location;
 
-    @Path("/context/other_context[at0001]/items[at0006]/items[openEHR-EHR-CLUSTER.sample_device.v1]")
-    private List<DeviceDetailsTrainingSample> deviceDetailsTrainingSample;
-
     @Path("/context/start_time|value")
     private TemporalAccessor startTimeValue;
+
+    public void setTestAllTypes(List<TestAllTypes> testAllTypes) {
+        this.testAllTypes = testAllTypes;
+    }
+
+    public List<TestAllTypes> getTestAllTypes() {
+        return this.testAllTypes;
+    }
 
     public void setEndTimeValue(TemporalAccessor endTimeValue) {
         this.endTimeValue = endTimeValue;
@@ -74,6 +71,14 @@ public class EhrbaseBloodPressureSimpleDeV0 {
 
     public TemporalAccessor getEndTimeValue() {
         return this.endTimeValue;
+    }
+
+    public void setTestAllTypes2(List<TestAllTypes2> testAllTypes2) {
+        this.testAllTypes2 = testAllTypes2;
+    }
+
+    public List<TestAllTypes2> getTestAllTypes2() {
+        return this.testAllTypes2;
     }
 
     public void setLanguage(Language language) {
@@ -116,13 +121,21 @@ public class EhrbaseBloodPressureSimpleDeV0 {
         return this.territory;
     }
 
-    public void setBloodPressureTrainingSample(
-            List<BloodPressureTrainingSample> bloodPressureTrainingSample) {
-        this.bloodPressureTrainingSample = bloodPressureTrainingSample;
+    public void setContextCodedTextDefiningcode(
+            ContextCodedTextDefiningcode contextCodedTextDefiningcode) {
+        this.contextCodedTextDefiningcode = contextCodedTextDefiningcode;
     }
 
-    public List<BloodPressureTrainingSample> getBloodPressureTrainingSample() {
-        return this.bloodPressureTrainingSample;
+    public ContextCodedTextDefiningcode getContextCodedTextDefiningcode() {
+        return this.contextCodedTextDefiningcode;
+    }
+
+    public void setTestAllTypes3(List<TestAllTypes7> testAllTypes3) {
+        this.testAllTypes3 = testAllTypes3;
+    }
+
+    public List<TestAllTypes7> getTestAllTypes3() {
+        return this.testAllTypes3;
     }
 
     public void setLocation(String location) {
@@ -131,15 +144,6 @@ public class EhrbaseBloodPressureSimpleDeV0 {
 
     public String getLocation() {
         return this.location;
-    }
-
-    public void setDeviceDetailsTrainingSample(
-            List<DeviceDetailsTrainingSample> deviceDetailsTrainingSample) {
-        this.deviceDetailsTrainingSample = deviceDetailsTrainingSample;
-    }
-
-    public List<DeviceDetailsTrainingSample> getDeviceDetailsTrainingSample() {
-        return this.deviceDetailsTrainingSample;
     }
 
     public void setStartTimeValue(TemporalAccessor startTimeValue) {

@@ -43,9 +43,9 @@ public class CompositionIntrospectConfig implements RmIntrospectConfig {
     public ValueSet findExternalValueSet(String fieldName) {
         switch (fieldName) {
             case "language":
-                return TerminologyProvider.findOpenEhrValueSet("ISO_639-1", null);
+                return TerminologyProvider.findOpenEhrValueSet("ISO_639-1", "");
             case "territory":
-                return TerminologyProvider.findOpenEhrValueSet("ISO_3166-1", null);
+                return TerminologyProvider.findOpenEhrValueSet("ISO_3166-1", "");
             default:
                 return ValueSet.EMPTY_VALUE_SET;
         }
