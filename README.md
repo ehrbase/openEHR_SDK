@@ -11,7 +11,7 @@ Generic openEHR Client and Objekt-mapper:
 ## Installation
 
 ### Prerequisite
-You need to have EHRbase jars for v0.8.0 in your maven repo 
+You need to have EHRbase jars for v0.10.0 in your maven repo 
 ### Build
 ```bash
 mvn clean install
