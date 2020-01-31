@@ -20,6 +20,9 @@
 package org.ehrbase.client.openehrclient.defaultrestclient;
 
 import org.ehrbase.client.Integration;
+import org.ehrbase.client.TestData;
+import org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev0.EhrbaseBloodPressureSimpleDeV0;
+import org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1.EhrbaseMultiOccurrenceDeV1;
 import org.ehrbase.client.openehrclient.FolderDAO;
 import org.ehrbase.client.openehrclient.OpenEhrClient;
 import org.junit.BeforeClass;
@@ -27,6 +30,7 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
 import java.net.URISyntaxException;
+import java.util.List;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -56,6 +60,31 @@ public class DefaultRestDirectoryEndpointIT {
         FolderDAO root = openEhrClient.folder(ehr, "");
         FolderDAO visit = root.getSubFolder("case1/visit1");
         assertThat(visit.getName()).isEqualTo("visit1");
+
+    }
+
+    @Test
+    public void testSaveEntity() {
+        UUID ehr = openEhrClient.ehrEndpoint().createEhr();
+
+        FolderDAO root = openEhrClient.folder(ehr, "");
+
+        FolderDAO visit = root.getSubFolder("case1/visit1");
+
+        EhrbaseBloodPressureSimpleDeV0 bloodPressureSimpleDeV01 = TestData.buildEhrbaseBloodPressureSimpleDeV0();
+        visit.addCompositionEntity(bloodPressureSimpleDeV01);
+
+        EhrbaseBloodPressureSimpleDeV0 bloodPressureSimpleDeV02 = TestData.buildEhrbaseBloodPressureSimpleDeV0();
+        visit.addCompositionEntity(bloodPressureSimpleDeV02);
+
+        EhrbaseMultiOccurrenceDeV1 ehrbaseMultiOccurrenceDeV1 = TestData.buildEhrbaseMultiOccurrenceDeV1();
+        visit.addCompositionEntity(ehrbaseMultiOccurrenceDeV1);
+
+        List<EhrbaseBloodPressureSimpleDeV0> actual = visit.find(EhrbaseBloodPressureSimpleDeV0.class);
+        assertThat(actual).size().isEqualTo(2);
+
+        List<EhrbaseMultiOccurrenceDeV1> actual2 = visit.find(EhrbaseMultiOccurrenceDeV1.class);
+        assertThat(actual2).size().isEqualTo(1);
 
     }
 }

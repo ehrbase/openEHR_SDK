@@ -23,6 +23,7 @@ import com.nedap.archie.rm.datavalues.DvText;
 import com.nedap.archie.rm.directory.Folder;
 import com.nedap.archie.rm.support.identification.ObjectVersionId;
 import org.apache.commons.lang3.StringUtils;
+import org.ehrbase.client.openehrclient.CompositionEndpoint;
 import org.ehrbase.client.openehrclient.FolderDAO;
 import org.ehrbase.rest.openehr.response.DirectoryResponseData;
 
@@ -113,5 +114,17 @@ public class DefaultRestDirectoryEndpoint {
 
     public FolderDAO getFolder(String path) {
         return new DefaultRestFolderDAO(this, path);
+    }
+
+    CompositionEndpoint getCompositionEndpoint() {
+        return defaultRestClient.compositionEndpoint(ehrId);
+    }
+
+    DefaultRestClient getDefaultRestClient() {
+        return defaultRestClient;
+    }
+
+    UUID getEhrId() {
+        return ehrId;
     }
 }

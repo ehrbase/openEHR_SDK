@@ -19,6 +19,8 @@
 
 package org.ehrbase.client.openehrclient;
 
+import java.util.List;
+
 public interface FolderDAO {
 
     String getName();
@@ -26,4 +28,8 @@ public interface FolderDAO {
     void setName(String name);
 
     FolderDAO getSubFolder(String path);
+
+    void addCompositionEntity(Object entity);
+
+    <T> List<T> find(Class<T> clazz);
 }
