@@ -55,7 +55,7 @@ public class DefaultRestDirectoryEndpoint {
         if (root == null) {
             createRoot();
         }
-        Optional<DirectoryResponseData> directoryResponseData = httpGet(resolve(root.getUid().getValue()), DirectoryResponseData.class);
+        Optional<DirectoryResponseData> directoryResponseData = httpGet(resolve(""), DirectoryResponseData.class);
         copyToFolder(root, directoryResponseData.get());
     }
 
