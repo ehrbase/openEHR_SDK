@@ -40,6 +40,7 @@ import org.apache.http.entity.ContentType;
 import org.apache.http.util.EntityUtils;
 import org.ehrbase.api.mapper.RmObjektJsonDeSerializer;
 import org.ehrbase.client.exception.ClientException;
+import org.ehrbase.client.exception.OptimisticLockException;
 import org.ehrbase.client.exception.WrongStatusCodeException;
 import org.ehrbase.client.openehrclient.*;
 import org.ehrbase.client.templateprovider.TemplateProvider;
@@ -115,35 +116,33 @@ public class DefaultRestClient implements OpenEhrClient {
         return new DefaultRestTemplateEndpoint(this);
     }
 
-    static UUID httpPost(URI uri, RMObject body) {
+    static VersionUid httpPost(URI uri, RMObject body) {
         try {
             HttpResponse response = Request.Post(uri)
                     .addHeader(HttpHeaders.ACCEPT, ContentType.APPLICATION_JSON.toString())
                     .bodyString(new CanonicalJson().marshal(body), ContentType.APPLICATION_JSON)
                     .execute().returnResponse();
             checkStatus(response, HttpStatus.SC_OK, HttpStatus.SC_CREATED, HttpStatus.SC_NO_CONTENT);
-            Header location = response.getFirstHeader(HttpHeaders.LOCATION);
-
-            int endIndex = location.getValue().indexOf("::");
-            if (endIndex == -1) {
-                endIndex = location.getValue().length();
-            }
-            return UUID.fromString(location.getValue().substring(location.getValue().lastIndexOf('/') + 1, endIndex));
+            Header eTag = response.getFirstHeader(HttpHeaders.ETAG);
+            return new VersionUid(eTag.getValue().replace("\"", ""));
         } catch (IOException e) {
             throw new ClientException(e.getMessage(), e);
         }
     }
 
-    static UUID httpPut(URI uri, Locatable body) {
+    static VersionUid httpPut(URI uri, Locatable body, VersionUid versionUid) {
         try {
             HttpResponse response = Request.Put(uri)
                     .addHeader(HttpHeaders.ACCEPT, ContentType.APPLICATION_JSON.toString())
-                    .addHeader(HttpHeaders.IF_MATCH, body.getUid().getValue())
+                    .addHeader(HttpHeaders.IF_MATCH, versionUid.toString())
                     .bodyString(new CanonicalJson().marshal(body), ContentType.APPLICATION_JSON)
                     .execute().returnResponse();
-            checkStatus(response, HttpStatus.SC_OK, HttpStatus.SC_NO_CONTENT);
-            Header location = response.getFirstHeader(HttpHeaders.LOCATION);
-            return UUID.fromString(location.getValue().substring(location.getValue().lastIndexOf('/') + 1, location.getValue().indexOf("::")));
+            checkStatus(response, HttpStatus.SC_OK, HttpStatus.SC_NO_CONTENT, HttpStatus.SC_PRECONDITION_FAILED);
+            if (HttpStatus.SC_PRECONDITION_FAILED == response.getStatusLine().getStatusCode()) {
+                throw new OptimisticLockException("Entity outdated");
+            }
+            Header eTag = response.getFirstHeader(HttpHeaders.ETAG);
+            return new VersionUid(eTag.getValue().replace("\"", ""));
         } catch (IOException e) {
             throw new ClientException(e.getMessage(), e);
         }

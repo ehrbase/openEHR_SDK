@@ -17,19 +17,10 @@
  *
  */
 
-package org.ehrbase.client.openehrclient;
+package org.ehrbase.client.exception;
 
-import java.util.List;
-
-public interface FolderDAO {
-
-    String getName();
-
-    void setName(String name);
-
-    FolderDAO getSubFolder(String path);
-
-    <T> T addCompositionEntity(T entity);
-
-    <T> List<T> find(Class<T> clazz);
+public class OptimisticLockException extends ClientException {
+    public OptimisticLockException(String message) {
+        super(message);
+    }
 }

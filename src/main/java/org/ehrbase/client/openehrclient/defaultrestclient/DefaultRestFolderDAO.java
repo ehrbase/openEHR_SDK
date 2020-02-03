@@ -84,14 +84,18 @@ public class DefaultRestFolderDAO implements FolderDAO {
     }
 
     @Override
-    public void addCompositionEntity(Object entity) {
-        UUID uuid = directoryEndpoint.getCompositionEndpoint().saveCompositionEntity(entity);
+    public <T> T addCompositionEntity(T entity) {
+        T updatedEntity = directoryEndpoint.getCompositionEndpoint().mergeCompositionEntity(entity);
+        UUID uuid = DefaultRestCompositionEndpoint.extractVersionUid(updatedEntity)
+                .orElseThrow(() -> new ClientException(String.format("No Id Element for %s", entity.getClass())))
+                .getUuid();
         Folder folder = getFolder();
         if (folder.getItems() == null) {
             folder.setItems(new ArrayList<>());
         }
         folder.getItems().add(new ObjectRef(new ObjectVersionId(uuid.toString()), "dffddfd", "VERSIONED_COMPOSITION"));
         directoryEndpoint.saveToDb();
+        return updatedEntity;
     }
 
     @Override

@@ -27,6 +27,7 @@ import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
 import org.openehr.schemas.v1.TemplateDocument;
 
 import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -36,11 +37,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class ClassGeneratorTest {
 
+    public static final String PACKAGE_NAME = "org.ehrbase.client.classgenerator.examples";
+
     @Test
     public void testGenerate() throws IOException, XmlException {
         OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(OperationalTemplateTestData.BLOOD_PRESSURE_SIMPLE.getStream()).getTemplate();
         ClassGenerator cut = new ClassGenerator();
-        ClassGeneratorResult generate = cut.generate("org.ehrbase.client.classgenerator.examples", template);
+        ClassGeneratorResult generate = cut.generate(PACKAGE_NAME, template);
 
 
         List<FieldSpec> fieldSpecs = generate.getClasses().values().stream()
@@ -52,6 +55,7 @@ public class ClassGeneratorTest {
         assertThat(fieldSpecs)
                 .extracting(f -> f.name, f -> f.type.toString())
                 .containsExactlyInAnyOrder(
+                        new Tuple("versionUid", "org.ehrbase.client.openehrclient.VersionUid"),
                         new Tuple("device", "java.util.List<com.nedap.archie.rm.datastructures.Cluster>"),
                         new Tuple("language", "org.ehrbase.client.classgenerator.examples.shareddefinition.Language"),
                         new Tuple("levelOfExertion", "java.util.List<com.nedap.archie.rm.datastructures.Cluster>"),
@@ -95,7 +99,7 @@ public class ClassGeneratorTest {
                 );
 
 
-       // generate.createFiles(Paths.get(".", "src/test/java/"));
+        generate.createFiles(Paths.get(".", "src/test/java/"));
 
 
     }
@@ -104,7 +108,7 @@ public class ClassGeneratorTest {
     public void testGenerateMultiOccurrence() throws IOException, XmlException {
         OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(OperationalTemplateTestData.MULTI_OCCURRENCE.getStream()).getTemplate();
         ClassGenerator cut = new ClassGenerator();
-        ClassGeneratorResult generate = cut.generate("org.ehrbase.client.classgenerator.examples", template);
+        ClassGeneratorResult generate = cut.generate(PACKAGE_NAME, template);
 
 
         List<FieldSpec> fieldSpecs = generate.getClasses().values().stream()
@@ -116,6 +120,7 @@ public class ClassGeneratorTest {
         assertThat(fieldSpecs)
                 .extracting(f -> f.name, f -> f.type.toString())
                 .containsExactlyInAnyOrder(
+                        new Tuple("versionUid", "org.ehrbase.client.openehrclient.VersionUid"),
                         new Tuple("extension", "java.util.List<com.nedap.archie.rm.datastructures.Cluster>"),
                         new Tuple("language", "org.ehrbase.client.classgenerator.examples.shareddefinition.Language"),
                         new Tuple("settingDefiningcode", "org.ehrbase.client.classgenerator.examples.shareddefinition.SettingDefiningcode"),
@@ -149,7 +154,7 @@ public class ClassGeneratorTest {
                 );
 
 
-        // generate.createFiles(Paths.get(".", "src/test/java/"));
+        generate.createFiles(Paths.get(".", "src/test/java/"));
 
     }
 
@@ -157,7 +162,7 @@ public class ClassGeneratorTest {
     public void testGenerateAllTypes() throws IOException, XmlException {
         OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(OperationalTemplateTestData.ALL_TYPES.getStream()).getTemplate();
         ClassGenerator cut = new ClassGenerator();
-        ClassGeneratorResult generate = cut.generate("org.ehrbase.client.classgenerator.examples", template);
+        ClassGeneratorResult generate = cut.generate(PACKAGE_NAME, template);
 
 
         List<FieldSpec> fieldSpecs = generate.getClasses().values().stream()
@@ -168,6 +173,7 @@ public class ClassGeneratorTest {
         assertThat(fieldSpecs)
                 .extracting(f -> f.name, f -> f.type.toString())
                 .containsExactlyInAnyOrder(
+                        new Tuple("versionUid", "org.ehrbase.client.openehrclient.VersionUid"),
                         new Tuple("intervalQuantity", "com.nedap.archie.rm.datavalues.quantity.DvInterval"),
                         new Tuple("text2Value", "java.lang.String"),
                         new Tuple("intervalCount", "com.nedap.archie.rm.datavalues.quantity.DvInterval"),
@@ -239,7 +245,7 @@ public class ClassGeneratorTest {
                 );
 
 
-        //   generate.createFiles(Paths.get(".", "src/test/java/"));
+        generate.createFiles(Paths.get(".", "src/test/java/"));
 
     }
 

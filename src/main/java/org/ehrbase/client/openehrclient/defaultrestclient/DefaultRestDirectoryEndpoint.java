@@ -25,6 +25,7 @@ import com.nedap.archie.rm.support.identification.ObjectVersionId;
 import org.apache.commons.lang3.StringUtils;
 import org.ehrbase.client.openehrclient.CompositionEndpoint;
 import org.ehrbase.client.openehrclient.FolderDAO;
+import org.ehrbase.client.openehrclient.VersionUid;
 import org.ehrbase.rest.openehr.response.DirectoryResponseData;
 
 import java.net.URI;
@@ -41,6 +42,7 @@ public class DefaultRestDirectoryEndpoint {
     static final String FOLDER_DIVIDER = "/";
 
     private final DefaultRestClient defaultRestClient;
+    private VersionUid rootVersion;
     private final UUID ehrId;
     private Folder root;
 
@@ -56,11 +58,11 @@ public class DefaultRestDirectoryEndpoint {
             createRoot();
         }
         Optional<DirectoryResponseData> directoryResponseData = httpGet(resolve(""), DirectoryResponseData.class);
-        copyToFolder(root, directoryResponseData.get());
+        copyToFolder(root, directoryResponseData.orElseThrow());
     }
 
     synchronized void saveToDb() {
-        httpPut(resolve(""), root);
+        rootVersion = httpPut(resolve(""), root, rootVersion);
         syncFromDb();
     }
 
@@ -100,8 +102,9 @@ public class DefaultRestDirectoryEndpoint {
         root = new Folder();
         root.setName(new DvText("root"));
         root.setArchetypeNodeId("openEHR-EHR-FOLDER.generic.v1");
-        UUID uuid = httpPost(resolve(""), root);
-        root.setUid(new ObjectVersionId(uuid.toString()));
+        VersionUid versionUid = httpPost(resolve(""), root);
+        rootVersion = versionUid;
+        root.setUid(new ObjectVersionId(versionUid.getUuid().toString()));
     }
 
     private URI resolve(String subPath) {
