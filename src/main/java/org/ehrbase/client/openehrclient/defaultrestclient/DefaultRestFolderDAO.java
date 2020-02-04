@@ -31,6 +31,7 @@ import com.nedap.archie.rm.directory.Folder;
 import com.nedap.archie.rm.support.identification.ObjectRef;
 import com.nedap.archie.rm.support.identification.ObjectVersionId;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.fluent.Request;
@@ -46,6 +47,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static org.ehrbase.client.openehrclient.defaultrestclient.DefaultRestClient.OBJECT_MAPPER;
 import static org.ehrbase.client.openehrclient.defaultrestclient.DefaultRestClient.checkStatus;
@@ -67,6 +69,19 @@ public class DefaultRestFolderDAO implements FolderDAO {
         return getFolder().getName().getValue();
     }
 
+    @Override
+    public Set<String> listSubFolderNames() {
+        directoryEndpoint.syncFromDb();
+        return Optional.of(getFolder())
+                .stream()
+                .map(Folder::getFolders)
+                .filter(Objects::nonNull)
+                .flatMap(List::stream)
+                .map(Folder::getName)
+                .map(DvText::getValue)
+                .collect(Collectors.toSet());
+    }
+
     private Folder getFolder() {
         return directoryEndpoint.find(path);
     }
@@ -80,7 +95,9 @@ public class DefaultRestFolderDAO implements FolderDAO {
 
     @Override
     public FolderDAO getSubFolder(String path) {
-        return new DefaultRestFolderDAO(directoryEndpoint, this.path + "\\" + path);
+        DefaultRestFolderDAO folderDAO = new DefaultRestFolderDAO(directoryEndpoint, Stream.of(this.path, path).filter(s -> StringUtils.isNotBlank(s)).collect(Collectors.joining("//")));
+        folderDAO.sync();
+        return folderDAO;
     }
 
     @Override
@@ -132,6 +149,11 @@ public class DefaultRestFolderDAO implements FolderDAO {
             throw new ClientException(e.getMessage(), e);
         }
         return result;
+    }
+
+    void sync() {
+        getFolder();
+        directoryEndpoint.saveToDb();
     }
 
     private String buildMatches() {

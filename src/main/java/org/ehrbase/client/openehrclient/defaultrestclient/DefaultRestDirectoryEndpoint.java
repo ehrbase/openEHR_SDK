@@ -79,6 +79,7 @@ public class DefaultRestDirectoryEndpoint {
                 newFolder = new Folder();
                 newFolder.setArchetypeNodeId("openEHR-EHR-FOLDER.generic.v1");
                 newFolder.setName(new DvText(folderName));
+                newFolder.setUid(new ObjectVersionId(UUID.randomUUID().toString()));
                 if (current.getFolders() == null) {
                     current.setFolders(new ArrayList<>());
                 }
@@ -116,7 +117,9 @@ public class DefaultRestDirectoryEndpoint {
     }
 
     public FolderDAO getFolder(String path) {
-        return new DefaultRestFolderDAO(this, path);
+        DefaultRestFolderDAO folderDAO = new DefaultRestFolderDAO(this, path);
+        folderDAO.sync();
+        return folderDAO;
     }
 
     CompositionEndpoint getCompositionEndpoint() {

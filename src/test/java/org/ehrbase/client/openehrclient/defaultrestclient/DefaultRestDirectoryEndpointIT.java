@@ -87,4 +87,19 @@ public class DefaultRestDirectoryEndpointIT {
         assertThat(actual2).size().isEqualTo(1);
 
     }
+
+    @Test
+    public void testListSubFolderNames() {
+        UUID ehr = openEhrClient.ehrEndpoint().createEhr();
+
+        FolderDAO root = openEhrClient.folder(ehr, "");
+        root.getSubFolder("case1");
+        root.getSubFolder("case2");
+        root.getSubFolder("case3/visit1");
+        root.getSubFolder("case3/visit2");
+
+        assertThat(root.listSubFolderNames()).containsExactlyInAnyOrder("case1", "case2", "case3");
+
+        assertThat(root.getSubFolder("case3").listSubFolderNames()).containsExactlyInAnyOrder("visit1", "visit2");
+    }
 }

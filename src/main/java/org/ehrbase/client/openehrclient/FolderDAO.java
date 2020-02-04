@@ -20,12 +20,15 @@
 package org.ehrbase.client.openehrclient;
 
 import java.util.List;
+import java.util.Set;
 
 public interface FolderDAO {
 
     String getName();
 
     void setName(String name);
+
+    Set<String> listSubFolderNames();
 
     FolderDAO getSubFolder(String path);
 
