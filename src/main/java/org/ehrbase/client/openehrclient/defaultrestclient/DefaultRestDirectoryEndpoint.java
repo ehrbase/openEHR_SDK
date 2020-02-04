@@ -21,7 +21,6 @@ package org.ehrbase.client.openehrclient.defaultrestclient;
 
 import com.nedap.archie.rm.datavalues.DvText;
 import com.nedap.archie.rm.directory.Folder;
-import com.nedap.archie.rm.support.identification.ObjectVersionId;
 import org.apache.commons.lang3.StringUtils;
 import org.ehrbase.client.openehrclient.CompositionEndpoint;
 import org.ehrbase.client.openehrclient.FolderDAO;
@@ -79,7 +78,6 @@ public class DefaultRestDirectoryEndpoint {
                 newFolder = new Folder();
                 newFolder.setArchetypeNodeId("openEHR-EHR-FOLDER.generic.v1");
                 newFolder.setName(new DvText(folderName));
-                newFolder.setUid(new ObjectVersionId(UUID.randomUUID().toString()));
                 if (current.getFolders() == null) {
                     current.setFolders(new ArrayList<>());
                 }
@@ -105,7 +103,6 @@ public class DefaultRestDirectoryEndpoint {
         root.setArchetypeNodeId("openEHR-EHR-FOLDER.generic.v1");
         VersionUid versionUid = httpPost(resolve(""), root);
         rootVersion = versionUid;
-        root.setUid(new ObjectVersionId(versionUid.getUuid().toString()));
     }
 
     private URI resolve(String subPath) {
