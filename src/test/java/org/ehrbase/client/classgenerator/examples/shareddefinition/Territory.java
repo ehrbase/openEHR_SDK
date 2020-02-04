@@ -3,507 +3,507 @@ package org.ehrbase.client.classgenerator.examples.shareddefinition;
 import org.ehrbase.client.classgenerator.EnumValueSet;
 
 public enum Territory implements EnumValueSet {
-  MC("MC", "MC", "ISO_3166-1", "MC"),
+    AR("AR", "AR", "ISO_3166-1", "AR"),
 
-  SD("SD", "SD", "ISO_3166-1", "SD"),
+    BZ("BZ", "BZ", "ISO_3166-1", "BZ"),
 
-  BG("BG", "BG", "ISO_3166-1", "BG"),
+    BM("BM", "BM", "ISO_3166-1", "BM"),
 
-  NI("NI", "NI", "ISO_3166-1", "NI"),
+    KP("KP", "KP", "ISO_3166-1", "KP"),
 
-  ES("ES", "ES", "ISO_3166-1", "ES"),
+    FR("FR", "FR", "ISO_3166-1", "FR"),
 
-  VU("VU", "VU", "ISO_3166-1", "VU"),
+    CC("CC", "CC", "ISO_3166-1", "CC"),
 
-  SZ("SZ", "SZ", "ISO_3166-1", "SZ"),
+    CV("CV", "CV", "ISO_3166-1", "CV"),
 
-  ER("ER", "ER", "ISO_3166-1", "ER"),
+    FK("FK", "FK", "ISO_3166-1", "FK"),
 
-  GL("GL", "GL", "ISO_3166-1", "GL"),
+    GY("GY", "GY", "ISO_3166-1", "GY"),
 
-  MF("MF", "MF", "ISO_3166-1", "MF"),
+    AQ("AQ", "AQ", "ISO_3166-1", "AQ"),
 
-  EH("EH", "EH", "ISO_3166-1", "EH"),
+    FJ("FJ", "FJ", "ISO_3166-1", "FJ"),
 
-  CL("CL", "CL", "ISO_3166-1", "CL"),
+    CX("CX", "CX", "ISO_3166-1", "CX"),
 
-  MT("MT", "MT", "ISO_3166-1", "MT"),
+    NO("NO", "NO", "ISO_3166-1", "NO"),
 
-  LV("LV", "LV", "ISO_3166-1", "LV"),
+    AM("AM", "AM", "ISO_3166-1", "AM"),
 
-  FJ("FJ", "FJ", "ISO_3166-1", "FJ"),
+    ST("ST", "ST", "ISO_3166-1", "ST"),
 
-  CY("CY", "CY", "ISO_3166-1", "CY"),
+    DJ("DJ", "DJ", "ISO_3166-1", "DJ"),
 
-  CH("CH", "CH", "ISO_3166-1", "CH"),
+    TD("TD", "TD", "ISO_3166-1", "TD"),
 
-  US("US", "US", "ISO_3166-1", "US"),
+    VE("VE", "VE", "ISO_3166-1", "VE"),
 
-  EC("EC", "EC", "ISO_3166-1", "EC"),
+    ET("ET", "ET", "ISO_3166-1", "ET"),
 
-  ZM("ZM", "ZM", "ISO_3166-1", "ZM"),
+    GH("GH", "GH", "ISO_3166-1", "GH"),
 
-  IN("IN", "IN", "ISO_3166-1", "IN"),
+    JO("JO", "JO", "ISO_3166-1", "JO"),
 
-  GN("GN", "GN", "ISO_3166-1", "GN"),
+    HT("HT", "HT", "ISO_3166-1", "HT"),
 
-  MN("MN", "MN", "ISO_3166-1", "MN"),
+    MY("MY", "MY", "ISO_3166-1", "MY"),
 
-  LK("LK", "LK", "ISO_3166-1", "LK"),
+    MD("MD", "MD", "ISO_3166-1", "MD"),
 
-  BO("BO", "BO", "ISO_3166-1", "BO"),
+    SH("SH", "SH", "ISO_3166-1", "SH"),
 
-  RE("RE", "RE", "ISO_3166-1", "RE"),
+    BD("BD", "BD", "ISO_3166-1", "BD"),
 
-  IS("IS", "IS", "ISO_3166-1", "IS"),
+    GB("GB", "GB", "ISO_3166-1", "GB"),
 
-  AI("AI", "AI", "ISO_3166-1", "AI"),
+    AT("AT", "AT", "ISO_3166-1", "AT"),
 
-  SG("SG", "SG", "ISO_3166-1", "SG"),
+    OM("OM", "OM", "ISO_3166-1", "OM"),
 
-  FK("FK", "FK", "ISO_3166-1", "FK"),
+    CD("CD", "CD", "ISO_3166-1", "CD"),
 
-  CN("CN", "CN", "ISO_3166-1", "CN"),
+    TM("TM", "TM", "ISO_3166-1", "TM"),
 
-  PS("PS", "PS", "ISO_3166-1", "PS"),
+    ER("ER", "ER", "ISO_3166-1", "ER"),
 
-  PK("PK", "PK", "ISO_3166-1", "PK"),
+    UY("UY", "UY", "ISO_3166-1", "UY"),
 
-  CK("CK", "CK", "ISO_3166-1", "CK"),
+    TH("TH", "TH", "ISO_3166-1", "TH"),
 
-  TD("TD", "TD", "ISO_3166-1", "TD"),
+    TJ("TJ", "TJ", "ISO_3166-1", "TJ"),
 
-  ZA("ZA", "ZA", "ISO_3166-1", "ZA"),
+    GA("GA", "GA", "ISO_3166-1", "GA"),
 
-  GW("GW", "GW", "ISO_3166-1", "GW"),
+    MH("MH", "MH", "ISO_3166-1", "MH"),
 
-  QA("QA", "QA", "ISO_3166-1", "QA"),
+    VG("VG", "VG", "ISO_3166-1", "VG"),
 
-  TW("TW", "TW", "ISO_3166-1", "TW"),
+    JE("JE", "JE", "ISO_3166-1", "JE"),
 
-  IM("IM", "IM", "ISO_3166-1", "IM"),
+    DO("DO", "DO", "ISO_3166-1", "DO"),
 
-  TO("TO", "TO", "ISO_3166-1", "TO"),
+    LV("LV", "LV", "ISO_3166-1", "LV"),
 
-  KZ("KZ", "KZ", "ISO_3166-1", "KZ"),
+    NR("NR", "NR", "ISO_3166-1", "NR"),
 
-  MZ("MZ", "MZ", "ISO_3166-1", "MZ"),
+    AU("AU", "AU", "ISO_3166-1", "AU"),
 
-  AE("AE", "AE", "ISO_3166-1", "AE"),
+    PE("PE", "PE", "ISO_3166-1", "PE"),
 
-  SH("SH", "SH", "ISO_3166-1", "SH"),
+    SG("SG", "SG", "ISO_3166-1", "SG"),
 
-  BI("BI", "BI", "ISO_3166-1", "BI"),
+    ZW("ZW", "ZW", "ISO_3166-1", "ZW"),
 
-  ID("ID", "ID", "ISO_3166-1", "ID"),
+    LI("LI", "LI", "ISO_3166-1", "LI"),
 
-  KI("KI", "KI", "ISO_3166-1", "KI"),
+    LY("LY", "LY", "ISO_3166-1", "LY"),
 
-  KY("KY", "KY", "ISO_3166-1", "KY"),
+    SY("SY", "SY", "ISO_3166-1", "SY"),
 
-  ST("ST", "ST", "ISO_3166-1", "ST"),
+    MG("MG", "MG", "ISO_3166-1", "MG"),
 
-  GR("GR", "GR", "ISO_3166-1", "GR"),
+    MK("MK", "MK", "ISO_3166-1", "MK"),
 
-  HM("HM", "HM", "ISO_3166-1", "HM"),
+    TO("TO", "TO", "ISO_3166-1", "TO"),
 
-  CU("CU", "CU", "ISO_3166-1", "CU"),
+    BY("BY", "BY", "ISO_3166-1", "BY"),
 
-  SB("SB", "SB", "ISO_3166-1", "SB"),
+    SO("SO", "SO", "ISO_3166-1", "SO"),
 
-  VE("VE", "VE", "ISO_3166-1", "VE"),
+    RW("RW", "RW", "ISO_3166-1", "RW"),
 
-  AS("AS", "AS", "ISO_3166-1", "AS"),
+    SN("SN", "SN", "ISO_3166-1", "SN"),
 
-  VN("VN", "VN", "ISO_3166-1", "VN"),
+    DK("DK", "DK", "ISO_3166-1", "DK"),
 
-  TK("TK", "TK", "ISO_3166-1", "TK"),
+    HU("HU", "HU", "ISO_3166-1", "HU"),
 
-  GT("GT", "GT", "ISO_3166-1", "GT"),
+    PK("PK", "PK", "ISO_3166-1", "PK"),
 
-  SI("SI", "SI", "ISO_3166-1", "SI"),
+    GD("GD", "GD", "ISO_3166-1", "GD"),
 
-  IO("IO", "IO", "ISO_3166-1", "IO"),
+    JM("JM", "JM", "ISO_3166-1", "JM"),
 
-  IL("IL", "IL", "ISO_3166-1", "IL"),
+    TK("TK", "TK", "ISO_3166-1", "TK"),
 
-  TH("TH", "TH", "ISO_3166-1", "TH"),
+    ME("ME", "ME", "ISO_3166-1", "ME"),
 
-  LB("LB", "LB", "ISO_3166-1", "LB"),
+    DZ("DZ", "DZ", "ISO_3166-1", "DZ"),
 
-  DZ("DZ", "DZ", "ISO_3166-1", "DZ"),
+    GT("GT", "GT", "ISO_3166-1", "GT"),
 
-  TR("TR", "TR", "ISO_3166-1", "TR"),
+    MU("MU", "MU", "ISO_3166-1", "MU"),
 
-  GB("GB", "GB", "ISO_3166-1", "GB"),
+    GG("GG", "GG", "ISO_3166-1", "GG"),
 
-  HR("HR", "HR", "ISO_3166-1", "HR"),
+    MX("MX", "MX", "ISO_3166-1", "MX"),
 
-  IT("IT", "IT", "ISO_3166-1", "IT"),
+    ZA("ZA", "ZA", "ISO_3166-1", "ZA"),
 
-  MQ("MQ", "MQ", "ISO_3166-1", "MQ"),
+    FI("FI", "FI", "ISO_3166-1", "FI"),
 
-  VC("VC", "VC", "ISO_3166-1", "VC"),
+    TR("TR", "TR", "ISO_3166-1", "TR"),
 
-  CV("CV", "CV", "ISO_3166-1", "CV"),
+    BJ("BJ", "BJ", "ISO_3166-1", "BJ"),
 
-  AX("AX", "AX", "ISO_3166-1", "AX"),
+    LR("LR", "LR", "ISO_3166-1", "LR"),
 
-  KR("KR", "KR", "ISO_3166-1", "KR"),
+    SV("SV", "SV", "ISO_3166-1", "SV"),
 
-  SO("SO", "SO", "ISO_3166-1", "SO"),
+    CL("CL", "CL", "ISO_3166-1", "CL"),
 
-  SN("SN", "SN", "ISO_3166-1", "SN"),
+    BB("BB", "BB", "ISO_3166-1", "BB"),
 
-  AQ("AQ", "AQ", "ISO_3166-1", "AQ"),
+    TN("TN", "TN", "ISO_3166-1", "TN"),
 
-  CX("CX", "CX", "ISO_3166-1", "CX"),
+    LA("LA", "LA", "ISO_3166-1", "LA"),
 
-  KG("KG", "KG", "ISO_3166-1", "KG"),
+    LB("LB", "LB", "ISO_3166-1", "LB"),
 
-  KH("KH", "KH", "ISO_3166-1", "KH"),
+    US("US", "US", "ISO_3166-1", "US"),
 
-  PL("PL", "PL", "ISO_3166-1", "PL"),
+    HN("HN", "HN", "ISO_3166-1", "HN"),
 
-  GM("GM", "GM", "ISO_3166-1", "GM"),
+    MR("MR", "MR", "ISO_3166-1", "MR"),
 
-  YE("YE", "YE", "ISO_3166-1", "YE"),
+    MC("MC", "MC", "ISO_3166-1", "MC"),
 
-  LI("LI", "LI", "ISO_3166-1", "LI"),
+    IL("IL", "IL", "ISO_3166-1", "IL"),
 
-  MW("MW", "MW", "ISO_3166-1", "MW"),
+    NP("NP", "NP", "ISO_3166-1", "NP"),
 
-  CF("CF", "CF", "ISO_3166-1", "CF"),
+    CR("CR", "CR", "ISO_3166-1", "CR"),
 
-  BF("BF", "BF", "ISO_3166-1", "BF"),
+    BL("BL", "BL", "ISO_3166-1", "BL"),
 
-  NP("NP", "NP", "ISO_3166-1", "NP"),
+    IQ("IQ", "IQ", "ISO_3166-1", "IQ"),
 
-  SK("SK", "SK", "ISO_3166-1", "SK"),
+    KW("KW", "KW", "ISO_3166-1", "KW"),
 
-  FO("FO", "FO", "ISO_3166-1", "FO"),
+    PG("PG", "PG", "ISO_3166-1", "PG"),
 
-  BD("BD", "BD", "ISO_3166-1", "BD"),
+    SR("SR", "SR", "ISO_3166-1", "SR"),
 
-  JO("JO", "JO", "ISO_3166-1", "JO"),
+    BR("BR", "BR", "ISO_3166-1", "BR"),
 
-  MR("MR", "MR", "ISO_3166-1", "MR"),
+    GL("GL", "GL", "ISO_3166-1", "GL"),
 
-  MA("MA", "MA", "ISO_3166-1", "MA"),
+    NC("NC", "NC", "ISO_3166-1", "NC"),
 
-  HT("HT", "HT", "ISO_3166-1", "HT"),
+    AN("AN", "AN", "ISO_3166-1", "AN"),
 
-  AU("AU", "AU", "ISO_3166-1", "AU"),
+    MO("MO", "MO", "ISO_3166-1", "MO"),
 
-  NA("NA", "NA", "ISO_3166-1", "NA"),
+    BF("BF", "BF", "ISO_3166-1", "BF"),
 
-  LY("LY", "LY", "ISO_3166-1", "LY"),
+    KG("KG", "KG", "ISO_3166-1", "KG"),
 
-  SY("SY", "SY", "ISO_3166-1", "SY"),
+    AG("AG", "AG", "ISO_3166-1", "AG"),
 
-  MG("MG", "MG", "ISO_3166-1", "MG"),
+    TF("TF", "TF", "ISO_3166-1", "TF"),
 
-  BB("BB", "BB", "ISO_3166-1", "BB"),
+    MV("MV", "MV", "ISO_3166-1", "MV"),
 
-  DE("DE", "DE", "ISO_3166-1", "DE"),
+    BI("BI", "BI", "ISO_3166-1", "BI"),
 
-  LS("LS", "LS", "ISO_3166-1", "LS"),
+    UM("UM", "UM", "ISO_3166-1", "UM"),
 
-  BL("BL", "BL", "ISO_3166-1", "BL"),
+    AI("AI", "AI", "ISO_3166-1", "AI"),
 
-  BR("BR", "BR", "ISO_3166-1", "BR"),
+    BW("BW", "BW", "ISO_3166-1", "BW"),
 
-  RS("RS", "RS", "ISO_3166-1", "RS"),
+    SK("SK", "SK", "ISO_3166-1", "SK"),
 
-  ME("ME", "ME", "ISO_3166-1", "ME"),
+    BN("BN", "BN", "ISO_3166-1", "BN"),
 
-  SV("SV", "SV", "ISO_3166-1", "SV"),
+    AL("AL", "AL", "ISO_3166-1", "AL"),
 
-  AF("AF", "AF", "ISO_3166-1", "AF"),
+    TC("TC", "TC", "ISO_3166-1", "TC"),
 
-  NG("NG", "NG", "ISO_3166-1", "NG"),
+    AS("AS", "AS", "ISO_3166-1", "AS"),
 
-  PH("PH", "PH", "ISO_3166-1", "PH"),
+    KE("KE", "KE", "ISO_3166-1", "KE"),
 
-  MM("MM", "MM", "ISO_3166-1", "MM"),
+    PW("PW", "PW", "ISO_3166-1", "PW"),
 
-  ZW("ZW", "ZW", "ISO_3166-1", "ZW"),
+    MT("MT", "MT", "ISO_3166-1", "MT"),
 
-  PF("PF", "PF", "ISO_3166-1", "PF"),
+    GE("GE", "GE", "ISO_3166-1", "GE"),
 
-  GQ("GQ", "GQ", "ISO_3166-1", "GQ"),
+    QA("QA", "QA", "ISO_3166-1", "QA"),
 
-  BT("BT", "BT", "ISO_3166-1", "BT"),
+    IN("IN", "IN", "ISO_3166-1", "IN"),
 
-  SC("SC", "SC", "ISO_3166-1", "SC"),
+    HR("HR", "HR", "ISO_3166-1", "HR"),
 
-  WF("WF", "WF", "ISO_3166-1", "WF"),
+    PF("PF", "PF", "ISO_3166-1", "PF"),
 
-  FI("FI", "FI", "ISO_3166-1", "FI"),
+    BT("BT", "BT", "ISO_3166-1", "BT"),
 
-  PY("PY", "PY", "ISO_3166-1", "PY"),
+    CF("CF", "CF", "ISO_3166-1", "CF"),
 
-  BS("BS", "BS", "ISO_3166-1", "BS"),
+    CA("CA", "CA", "ISO_3166-1", "CA"),
 
-  BZ("BZ", "BZ", "ISO_3166-1", "BZ"),
+    VC("VC", "VC", "ISO_3166-1", "VC"),
 
-  UM("UM", "UM", "ISO_3166-1", "UM"),
+    SL("SL", "SL", "ISO_3166-1", "SL"),
 
-  KN("KN", "KN", "ISO_3166-1", "KN"),
+    PL("PL", "PL", "ISO_3166-1", "PL"),
 
-  VG("VG", "VG", "ISO_3166-1", "VG"),
+    LU("LU", "LU", "ISO_3166-1", "LU"),
 
-  DM("DM", "DM", "ISO_3166-1", "DM"),
+    FM("FM", "FM", "ISO_3166-1", "FM"),
 
-  BH("BH", "BH", "ISO_3166-1", "BH"),
+    SB("SB", "SB", "ISO_3166-1", "SB"),
 
-  CZ("CZ", "CZ", "ISO_3166-1", "CZ"),
+    TZ("TZ", "TZ", "ISO_3166-1", "TZ"),
 
-  AN("AN", "AN", "ISO_3166-1", "AN"),
+    AX("AX", "AX", "ISO_3166-1", "AX"),
 
-  NC("NC", "NC", "ISO_3166-1", "NC"),
+    NZ("NZ", "NZ", "ISO_3166-1", "NZ"),
 
-  GY("GY", "GY", "ISO_3166-1", "GY"),
+    MN("MN", "MN", "ISO_3166-1", "MN"),
 
-  GI("GI", "GI", "ISO_3166-1", "GI"),
+    HM("HM", "HM", "ISO_3166-1", "HM"),
 
-  BY("BY", "BY", "ISO_3166-1", "BY"),
+    PT("PT", "PT", "ISO_3166-1", "PT"),
 
-  BE("BE", "BE", "ISO_3166-1", "BE"),
+    SD("SD", "SD", "ISO_3166-1", "SD"),
 
-  AT("AT", "AT", "ISO_3166-1", "AT"),
+    BG("BG", "BG", "ISO_3166-1", "BG"),
 
-  WS("WS", "WS", "ISO_3166-1", "WS"),
+    GM("GM", "GM", "ISO_3166-1", "GM"),
 
-  KP("KP", "KP", "ISO_3166-1", "KP"),
+    LK("LK", "LK", "ISO_3166-1", "LK"),
 
-  UY("UY", "UY", "ISO_3166-1", "UY"),
+    IM("IM", "IM", "ISO_3166-1", "IM"),
 
-  PT("PT", "PT", "ISO_3166-1", "PT"),
+    VI("VI", "VI", "ISO_3166-1", "VI"),
 
-  LT("LT", "LT", "ISO_3166-1", "LT"),
+    EG("EG", "EG", "ISO_3166-1", "EG"),
 
-  GH("GH", "GH", "ISO_3166-1", "GH"),
+    AE("AE", "AE", "ISO_3166-1", "AE"),
 
-  CR("CR", "CR", "ISO_3166-1", "CR"),
+    GR("GR", "GR", "ISO_3166-1", "GR"),
 
-  AM("AM", "AM", "ISO_3166-1", "AM"),
+    CZ("CZ", "CZ", "ISO_3166-1", "CZ"),
 
-  AW("AW", "AW", "ISO_3166-1", "AW"),
+    AW("AW", "AW", "ISO_3166-1", "AW"),
 
-  GS("GS", "GS", "ISO_3166-1", "GS"),
+    BE("BE", "BE", "ISO_3166-1", "BE"),
 
-  CA("CA", "CA", "ISO_3166-1", "CA"),
+    YE("YE", "YE", "ISO_3166-1", "YE"),
 
-  MH("MH", "MH", "ISO_3166-1", "MH"),
+    CO("CO", "CO", "ISO_3166-1", "CO"),
 
-  IQ("IQ", "IQ", "ISO_3166-1", "IQ"),
+    MS("MS", "MS", "ISO_3166-1", "MS"),
 
-  MD("MD", "MD", "ISO_3166-1", "MD"),
+    YT("YT", "YT", "ISO_3166-1", "YT"),
 
-  YT("YT", "YT", "ISO_3166-1", "YT"),
+    JP("JP", "JP", "ISO_3166-1", "JP"),
 
-  IE("IE", "IE", "ISO_3166-1", "IE"),
+    AO("AO", "AO", "ISO_3166-1", "AO"),
 
-  ET("ET", "ET", "ISO_3166-1", "ET"),
+    ZM("ZM", "ZM", "ISO_3166-1", "ZM"),
 
-  JP("JP", "JP", "ISO_3166-1", "JP"),
+    IT("IT", "IT", "ISO_3166-1", "IT"),
 
-  NO("NO", "NO", "ISO_3166-1", "NO"),
+    WF("WF", "WF", "ISO_3166-1", "WF"),
 
-  TM("TM", "TM", "ISO_3166-1", "TM"),
+    GP("GP", "GP", "ISO_3166-1", "GP"),
 
-  GA("GA", "GA", "ISO_3166-1", "GA"),
+    KM("KM", "KM", "ISO_3166-1", "KM"),
 
-  AD("AD", "AD", "ISO_3166-1", "AD"),
+    TW("TW", "TW", "ISO_3166-1", "TW"),
 
-  CC("CC", "CC", "ISO_3166-1", "CC"),
+    GS("GS", "GS", "ISO_3166-1", "GS"),
 
-  SE("SE", "SE", "ISO_3166-1", "SE"),
+    RE("RE", "RE", "ISO_3166-1", "RE"),
 
-  CO("CO", "CO", "ISO_3166-1", "CO"),
+    CI("CI", "CI", "ISO_3166-1", "CI"),
 
-  KW("KW", "KW", "ISO_3166-1", "KW"),
+    PH("PH", "PH", "ISO_3166-1", "PH"),
 
-  CG("CG", "CG", "ISO_3166-1", "CG"),
+    TG("TG", "TG", "ISO_3166-1", "TG"),
 
-  MO("MO", "MO", "ISO_3166-1", "MO"),
+    LS("LS", "LS", "ISO_3166-1", "LS"),
 
-  PG("PG", "PG", "ISO_3166-1", "PG"),
+    CN("CN", "CN", "ISO_3166-1", "CN"),
 
-  FM("FM", "FM", "ISO_3166-1", "FM"),
+    NA("NA", "NA", "ISO_3166-1", "NA"),
 
-  NL("NL", "NL", "ISO_3166-1", "NL"),
+    EE("EE", "EE", "ISO_3166-1", "EE"),
 
-  HN("HN", "HN", "ISO_3166-1", "HN"),
+    CG("CG", "CG", "ISO_3166-1", "CG"),
 
-  MP("MP", "MP", "ISO_3166-1", "MP"),
+    KN("KN", "KN", "ISO_3166-1", "KN"),
 
-  PM("PM", "PM", "ISO_3166-1", "PM"),
+    MQ("MQ", "MQ", "ISO_3166-1", "MQ"),
 
-  PE("PE", "PE", "ISO_3166-1", "PE"),
+    NF("NF", "NF", "ISO_3166-1", "NF"),
 
-  AL("AL", "AL", "ISO_3166-1", "AL"),
+    EC("EC", "EC", "ISO_3166-1", "EC"),
 
-  GG("GG", "GG", "ISO_3166-1", "GG"),
+    PY("PY", "PY", "ISO_3166-1", "PY"),
 
-  BW("BW", "BW", "ISO_3166-1", "BW"),
+    RO("RO", "RO", "ISO_3166-1", "RO"),
 
-  MX("MX", "MX", "ISO_3166-1", "MX"),
+    GQ("GQ", "GQ", "ISO_3166-1", "GQ"),
 
-  LU("LU", "LU", "ISO_3166-1", "LU"),
+    ID("ID", "ID", "ISO_3166-1", "ID"),
 
-  LC("LC", "LC", "ISO_3166-1", "LC"),
+    PA("PA", "PA", "ISO_3166-1", "PA"),
 
-  RW("RW", "RW", "ISO_3166-1", "RW"),
+    NU("NU", "NU", "ISO_3166-1", "NU"),
 
-  PW("PW", "PW", "ISO_3166-1", "PW"),
+    AF("AF", "AF", "ISO_3166-1", "AF"),
 
-  GU("GU", "GU", "ISO_3166-1", "GU"),
+    MF("MF", "MF", "ISO_3166-1", "MF"),
 
-  NR("NR", "NR", "ISO_3166-1", "NR"),
+    SC("SC", "SC", "ISO_3166-1", "SC"),
 
-  DK("DK", "DK", "ISO_3166-1", "DK"),
+    VA("VA", "VA", "ISO_3166-1", "VA"),
 
-  NE("NE", "NE", "ISO_3166-1", "NE"),
+    MM("MM", "MM", "ISO_3166-1", "MM"),
 
-  NF("NF", "NF", "ISO_3166-1", "NF"),
+    KR("KR", "KR", "ISO_3166-1", "KR"),
 
-  DO("DO", "DO", "ISO_3166-1", "DO"),
+    KI("KI", "KI", "ISO_3166-1", "KI"),
 
-  TL("TL", "TL", "ISO_3166-1", "TL"),
+    KH("KH", "KH", "ISO_3166-1", "KH"),
 
-  MS("MS", "MS", "ISO_3166-1", "MS"),
+    TV("TV", "TV", "ISO_3166-1", "TV"),
 
-  UA("UA", "UA", "ISO_3166-1", "UA"),
+    NI("NI", "NI", "ISO_3166-1", "NI"),
 
-  PN("PN", "PN", "ISO_3166-1", "PN"),
+    IE("IE", "IE", "ISO_3166-1", "IE"),
 
-  RU("RU", "RU", "ISO_3166-1", "RU"),
+    UZ("UZ", "UZ", "ISO_3166-1", "UZ"),
 
-  EG("EG", "EG", "ISO_3166-1", "EG"),
+    BS("BS", "BS", "ISO_3166-1", "BS"),
 
-  TF("TF", "TF", "ISO_3166-1", "TF"),
+    VU("VU", "VU", "ISO_3166-1", "VU"),
 
-  KE("KE", "KE", "ISO_3166-1", "KE"),
+    TT("TT", "TT", "ISO_3166-1", "TT"),
 
-  FR("FR", "FR", "ISO_3166-1", "FR"),
+    LC("LC", "LC", "ISO_3166-1", "LC"),
 
-  GP("GP", "GP", "ISO_3166-1", "GP"),
+    CH("CH", "CH", "ISO_3166-1", "CH"),
 
-  SR("SR", "SR", "ISO_3166-1", "SR"),
+    HK("HK", "HK", "ISO_3166-1", "HK"),
 
-  GD("GD", "GD", "ISO_3166-1", "GD"),
+    CM("CM", "CM", "ISO_3166-1", "CM"),
 
-  GF("GF", "GF", "ISO_3166-1", "GF"),
+    GN("GN", "GN", "ISO_3166-1", "GN"),
 
-  NU("NU", "NU", "ISO_3166-1", "NU"),
+    GU("GU", "GU", "ISO_3166-1", "GU"),
 
-  HK("HK", "HK", "ISO_3166-1", "HK"),
+    KY("KY", "KY", "ISO_3166-1", "KY"),
 
-  TJ("TJ", "TJ", "ISO_3166-1", "TJ"),
+    ML("ML", "ML", "ISO_3166-1", "ML"),
 
-  MY("MY", "MY", "ISO_3166-1", "MY"),
+    DM("DM", "DM", "ISO_3166-1", "DM"),
 
-  SJ("SJ", "SJ", "ISO_3166-1", "SJ"),
+    NL("NL", "NL", "ISO_3166-1", "NL"),
 
-  TC("TC", "TC", "ISO_3166-1", "TC"),
+    PN("PN", "PN", "ISO_3166-1", "PN"),
 
-  JE("JE", "JE", "ISO_3166-1", "JE"),
+    CY("CY", "CY", "ISO_3166-1", "CY"),
 
-  MK("MK", "MK", "ISO_3166-1", "MK"),
+    IO("IO", "IO", "ISO_3166-1", "IO"),
 
-  BV("BV", "BV", "ISO_3166-1", "BV"),
+    GF("GF", "GF", "ISO_3166-1", "GF"),
 
-  LA("LA", "LA", "ISO_3166-1", "LA"),
+    MZ("MZ", "MZ", "ISO_3166-1", "MZ"),
 
-  BM("BM", "BM", "ISO_3166-1", "BM"),
+    SJ("SJ", "SJ", "ISO_3166-1", "SJ"),
 
-  JM("JM", "JM", "ISO_3166-1", "JM"),
+    MA("MA", "MA", "ISO_3166-1", "MA"),
 
-  GE("GE", "GE", "ISO_3166-1", "GE"),
+    SE("SE", "SE", "ISO_3166-1", "SE"),
 
-  AG("AG", "AG", "ISO_3166-1", "AG"),
+    GI("GI", "GI", "ISO_3166-1", "GI"),
 
-  EE("EE", "EE", "ISO_3166-1", "EE"),
+    GW("GW", "GW", "ISO_3166-1", "GW"),
 
-  LR("LR", "LR", "ISO_3166-1", "LR"),
+    AZ("AZ", "AZ", "ISO_3166-1", "AZ"),
 
-  OM("OM", "OM", "ISO_3166-1", "OM"),
+    ES("ES", "ES", "ISO_3166-1", "ES"),
 
-  TZ("TZ", "TZ", "ISO_3166-1", "TZ"),
+    AD("AD", "AD", "ISO_3166-1", "AD"),
 
-  TT("TT", "TT", "ISO_3166-1", "TT"),
+    IS("IS", "IS", "ISO_3166-1", "IS"),
 
-  SA("SA", "SA", "ISO_3166-1", "SA"),
+    PR("PR", "PR", "ISO_3166-1", "PR"),
 
-  PA("PA", "PA", "ISO_3166-1", "PA"),
+    UG("UG", "UG", "ISO_3166-1", "UG"),
 
-  CD("CD", "CD", "ISO_3166-1", "CD"),
+    SI("SI", "SI", "ISO_3166-1", "SI"),
 
-  PR("PR", "PR", "ISO_3166-1", "PR"),
+    PS("PS", "PS", "ISO_3166-1", "PS"),
 
-  RO("RO", "RO", "ISO_3166-1", "RO"),
+    SZ("SZ", "SZ", "ISO_3166-1", "SZ"),
 
-  NZ("NZ", "NZ", "ISO_3166-1", "NZ"),
+    EH("EH", "EH", "ISO_3166-1", "EH"),
 
-  BA("BA", "BA", "ISO_3166-1", "BA"),
+    BH("BH", "BH", "ISO_3166-1", "BH"),
 
-  AO("AO", "AO", "ISO_3166-1", "AO"),
+    KZ("KZ", "KZ", "ISO_3166-1", "KZ"),
 
-  TN("TN", "TN", "ISO_3166-1", "TN"),
+    BO("BO", "BO", "ISO_3166-1", "BO"),
 
-  UG("UG", "UG", "ISO_3166-1", "UG"),
+    BA("BA", "BA", "ISO_3166-1", "BA"),
 
-  CM("CM", "CM", "ISO_3166-1", "CM"),
+    UA("UA", "UA", "ISO_3166-1", "UA"),
 
-  TV("TV", "TV", "ISO_3166-1", "TV"),
+    TL("TL", "TL", "ISO_3166-1", "TL"),
 
-  IR("IR", "IR", "ISO_3166-1", "IR"),
+    WS("WS", "WS", "ISO_3166-1", "WS"),
 
-  TG("TG", "TG", "ISO_3166-1", "TG"),
+    DE("DE", "DE", "ISO_3166-1", "DE"),
 
-  MU("MU", "MU", "ISO_3166-1", "MU"),
+    NG("NG", "NG", "ISO_3166-1", "NG"),
 
-  VA("VA", "VA", "ISO_3166-1", "VA"),
+    FO("FO", "FO", "ISO_3166-1", "FO"),
 
-  SM("SM", "SM", "ISO_3166-1", "SM"),
+    CK("CK", "CK", "ISO_3166-1", "CK"),
 
-  HU("HU", "HU", "ISO_3166-1", "HU"),
+    MP("MP", "MP", "ISO_3166-1", "MP"),
 
-  KM("KM", "KM", "ISO_3166-1", "KM"),
+    LT("LT", "LT", "ISO_3166-1", "LT"),
 
-  CI("CI", "CI", "ISO_3166-1", "CI"),
+    CU("CU", "CU", "ISO_3166-1", "CU"),
 
-  UZ("UZ", "UZ", "ISO_3166-1", "UZ"),
+    IR("IR", "IR", "ISO_3166-1", "IR"),
 
-  BJ("BJ", "BJ", "ISO_3166-1", "BJ"),
+    VN("VN", "VN", "ISO_3166-1", "VN"),
 
-  AZ("AZ", "AZ", "ISO_3166-1", "AZ"),
+    SA("SA", "SA", "ISO_3166-1", "SA"),
 
-  SL("SL", "SL", "ISO_3166-1", "SL"),
+    RU("RU", "RU", "ISO_3166-1", "RU"),
 
-  AR("AR", "AR", "ISO_3166-1", "AR"),
+    PM("PM", "PM", "ISO_3166-1", "PM"),
 
-  DJ("DJ", "DJ", "ISO_3166-1", "DJ"),
+    RS("RS", "RS", "ISO_3166-1", "RS"),
 
-  BN("BN", "BN", "ISO_3166-1", "BN"),
+    BV("BV", "BV", "ISO_3166-1", "BV"),
 
-  MV("MV", "MV", "ISO_3166-1", "MV"),
+    NE("NE", "NE", "ISO_3166-1", "NE"),
 
-  ML("ML", "ML", "ISO_3166-1", "ML"),
+    MW("MW", "MW", "ISO_3166-1", "MW"),
 
-  VI("VI", "VI", "ISO_3166-1", "VI");
+    SM("SM", "SM", "ISO_3166-1", "SM");
 
-  private String value;
+    private String value;
 
-  private String description;
+    private String description;
 
-  private String terminologyId;
+    private String terminologyId;
 
-  private String code;
+    private String code;
 
-  Territory(String value, String description, String terminologyId, String code) {
+    Territory(String value, String description, String terminologyId, String code) {
     this.value = value;
     this.description = description;
     this.terminologyId = terminologyId;
@@ -511,18 +511,18 @@ public enum Territory implements EnumValueSet {
   }
 
   public String getValue() {
-    return this.value;
+      return this.value;
   }
 
   public String getDescription() {
-    return this.description;
+      return this.description;
   }
 
   public String getTerminologyId() {
-    return this.terminologyId;
+      return this.terminologyId;
   }
 
   public String getCode() {
-    return this.code;
+      return this.code;
   }
 }

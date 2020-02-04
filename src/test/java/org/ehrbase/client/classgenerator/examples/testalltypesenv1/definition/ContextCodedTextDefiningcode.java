@@ -3,11 +3,11 @@ package org.ehrbase.client.classgenerator.examples.testalltypesenv1.definition;
 import org.ehrbase.client.classgenerator.EnumValueSet;
 
 public enum ContextCodedTextDefiningcode implements EnumValueSet {
-  VALUE1("value1", "*", "local", "at0006"),
-
   VALUE2("value2", "*", "local", "at0007"),
 
-  VALUE3("value3", "*", "local", "at0008");
+  VALUE3("value3", "*", "local", "at0008"),
+
+  VALUE1("value1", "*", "local", "at0006");
 
   private String value;
 

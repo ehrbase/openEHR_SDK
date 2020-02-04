@@ -16,11 +16,11 @@ public enum KorotkoffSoundsDefiningcode implements EnumValueSet {
     private String code;
 
     KorotkoffSoundsDefiningcode(String value, String description, String terminologyId, String code) {
-    this.value = value;
-    this.description = description;
-    this.terminologyId = terminologyId;
-    this.code = code;
-  }
+        this.value = value;
+        this.description = description;
+        this.terminologyId = terminologyId;
+        this.code = code;
+    }
 
   public String getValue() {
       return this.value;
