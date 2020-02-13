@@ -19,7 +19,7 @@ package org.ehrbase.client.flattener;
 
 import org.apache.commons.lang3.StringUtils;
 
-class PathExtractor {
+public class PathExtractor {
     private String childPath;
     private String attributeName;
     private String parentPath;
