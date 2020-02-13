@@ -261,8 +261,10 @@ public class ClassGenerator {
             className = ClassName.get(enumPackage, enumValueSet.name);
         }
 
-        String parentPath = new PathExtractor(path).getParentPath();
-        String fieldName = buildFieldName(parentPath + TemplateIntrospect.TERM_DIVIDER + name);
+        PathExtractor pathExtractor = new PathExtractor(path);
+        String parentPath = pathExtractor.getParentPath();
+        String childPath = pathExtractor.getChildPath();
+        String fieldName = buildFieldName(parentPath + TemplateIntrospect.TERM_DIVIDER + childPath + TemplateIntrospect.TERM_DIVIDER + name);
         FieldSpec.Builder builder = FieldSpec.builder(className, fieldName)
                 .addAnnotation(AnnotationSpec.builder(Path.class).addMember(Path.VALUE, "$S", path).build())
                 .addModifiers(Modifier.PRIVATE);
