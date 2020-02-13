@@ -3,9 +3,9 @@ package org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev
 import org.ehrbase.client.classgenerator.EnumValueSet;
 
 public enum KorotkoffSoundsDefiningcode implements EnumValueSet {
-    FIFTHSOUND("Fifth sound", "The fifth Korotkoff sound is identified by absence of sounds as the cuff pressure drops below the diastolic blood pressure", "local", "at1012"),
+    FOURTHSOUND("Fourth sound", "The fourth Korotkoff sound is identified as an abrupt muffling of sounds", "local", "at1011"),
 
-    FOURTHSOUND("Fourth sound", "The fourth Korotkoff sound is identified as an abrupt muffling of sounds", "local", "at1011");
+    FIFTHSOUND("Fifth sound", "The fifth Korotkoff sound is identified by absence of sounds as the cuff pressure drops below the diastolic blood pressure", "local", "at1012");
 
     private String value;
 
@@ -22,16 +22,16 @@ public enum KorotkoffSoundsDefiningcode implements EnumValueSet {
         this.code = code;
     }
 
-  public String getValue() {
-      return this.value;
-  }
+    public String getValue() {
+        return this.value;
+    }
 
-  public String getDescription() {
-      return this.description;
-  }
+    public String getDescription() {
+        return this.description;
+    }
 
-  public String getTerminologyId() {
-      return this.terminologyId;
+    public String getTerminologyId() {
+        return this.terminologyId;
   }
 
   public String getCode() {
