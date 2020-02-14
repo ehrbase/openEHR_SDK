@@ -31,6 +31,7 @@ import org.apache.xmlbeans.XmlException;
 import org.ehrbase.client.annotations.*;
 import org.ehrbase.client.classgenerator.config.RmClassGeneratorConfig;
 import org.ehrbase.client.exception.ClientException;
+import org.ehrbase.client.flattener.PathExtractor;
 import org.ehrbase.client.introspect.TemplateIntrospect;
 import org.ehrbase.client.introspect.node.*;
 import org.ehrbase.client.openehrclient.VersionUid;
@@ -260,7 +261,10 @@ public class ClassGenerator {
             className = ClassName.get(enumPackage, enumValueSet.name);
         }
 
-        String fieldName = buildFieldName(name);
+        PathExtractor pathExtractor = new PathExtractor(path);
+        String parentPath = pathExtractor.getParentPath();
+        String childPath = pathExtractor.getChildPath();
+        String fieldName = buildFieldName(parentPath + TemplateIntrospect.TERM_DIVIDER + childPath + TemplateIntrospect.TERM_DIVIDER + name);
         FieldSpec.Builder builder = FieldSpec.builder(className, fieldName)
                 .addAnnotation(AnnotationSpec.builder(Path.class).addMember(Path.VALUE, "$S", path).build())
                 .addModifiers(Modifier.PRIVATE);

@@ -3,29 +3,29 @@ package org.ehrbase.client.classgenerator.examples.shareddefinition;
 import org.ehrbase.client.classgenerator.EnumValueSet;
 
 public enum SettingDefiningcode implements EnumValueSet {
-    SECONDARYMEDICALCARE("secondary medical care", "secondary medical care", "openehr", "232"),
-
-    SECONDARYNURSINGCARE("secondary nursing care", "secondary nursing care", "openehr", "233"),
-
     DENTALCARE("dental care", "dental care", "openehr", "236"),
 
+    SECONDARYMEDICALCARE("secondary medical care", "secondary medical care", "openehr", "232"),
+
+    MIDWIFERYCARE("midwifery care", "midwifery care", "openehr", "231"),
+
+    PRIMARYALLIEDHEALTHCARE("primary allied health care", "primary allied health care", "openehr", "230"),
+
+    PRIMARYMEDICALCARE("primary medical care", "primary medical care", "openehr", "228"),
+
+    EMERGENCYCARE("emergency care", "emergency care", "openehr", "227"),
+
     OTHERCARE("other care", "other care", "openehr", "238"),
+
+    PRIMARYNURSINGCARE("primary nursing care", "primary nursing care", "openehr", "229"),
+
+    SECONDARYNURSINGCARE("secondary nursing care", "secondary nursing care", "openehr", "233"),
 
     HOME("home", "home", "openehr", "225"),
 
     NURSINGHOMECARE("nursing home care", "nursing home care", "openehr", "237"),
 
-    EMERGENCYCARE("emergency care", "emergency care", "openehr", "227"),
-
     SECONDARYALLIEDHEALTHCARE("secondary allied health care", "secondary allied health care", "openehr", "234"),
-
-    PRIMARYALLIEDHEALTHCARE("primary allied health care", "primary allied health care", "openehr", "230"),
-
-    MIDWIFERYCARE("midwifery care", "midwifery care", "openehr", "231"),
-
-    PRIMARYMEDICALCARE("primary medical care", "primary medical care", "openehr", "228"),
-
-    PRIMARYNURSINGCARE("primary nursing care", "primary nursing care", "openehr", "229"),
 
     COMPLEMENTARYHEALTHCARE("complementary health care", "complementary health care", "openehr", "235");
 
@@ -37,7 +37,7 @@ public enum SettingDefiningcode implements EnumValueSet {
 
     private String code;
 
-  SettingDefiningcode(String value, String description, String terminologyId, String code) {
+    SettingDefiningcode(String value, String description, String terminologyId, String code) {
     this.value = value;
     this.description = description;
     this.terminologyId = terminologyId;

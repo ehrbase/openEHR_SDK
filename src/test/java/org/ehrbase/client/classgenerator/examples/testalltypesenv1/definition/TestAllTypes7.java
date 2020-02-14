@@ -44,7 +44,7 @@ public class TestAllTypes7 {
     private DvProportion proportionAny;
 
     @Path("/data[at0001]/events[at0002]/time|value")
-    private TemporalAccessor timeValue2;
+    private TemporalAccessor timevalueTime;
 
     @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0006]/value|defining_code")
     private CodePhrase codedTextTerminologyDefiningcode;
@@ -146,12 +146,12 @@ public class TestAllTypes7 {
         return this.proportionAny;
     }
 
-    public void setTimeValue2(TemporalAccessor timeValue2) {
-        this.timeValue2 = timeValue2;
+    public void setTimevalueTime(TemporalAccessor timevalueTime) {
+        this.timevalueTime = timevalueTime;
     }
 
-    public TemporalAccessor getTimeValue2() {
-        return this.timeValue2;
+    public TemporalAccessor getTimevalueTime() {
+        return this.timevalueTime;
     }
 
     public void setCodedTextTerminologyDefiningcode(CodePhrase codedTextTerminologyDefiningcode) {

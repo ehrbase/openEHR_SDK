@@ -29,7 +29,7 @@ public class TestAllTypesEnV1 {
     private TemporalAccessor endTimeValue;
 
     @Path("/content[openEHR-EHR-SECTION.test_all_types.v1]")
-    private List<TestAllTypes2> testAllTypes2;
+    private List<TestAllTypes2> testalltypesContentOpenehrEhrSectionTestAllTypesV1;
 
     @Path("/language")
     private Language language;
@@ -50,7 +50,7 @@ public class TestAllTypesEnV1 {
     private ContextCodedTextDefiningcode contextCodedTextDefiningcode;
 
     @Path("/content[openEHR-EHR-OBSERVATION.test_all_types.v1]")
-    private List<TestAllTypes7> testAllTypes3;
+    private List<TestAllTypes7> testalltypesContentOpenehrEhrObservationTestAllTypesV1;
 
     @Path("/context/location")
     private String location;
@@ -82,12 +82,13 @@ public class TestAllTypesEnV1 {
         return this.endTimeValue;
     }
 
-    public void setTestAllTypes2(List<TestAllTypes2> testAllTypes2) {
-        this.testAllTypes2 = testAllTypes2;
+    public void setTestalltypesContentOpenehrEhrSectionTestAllTypesV1(
+            List<TestAllTypes2> testalltypesContentOpenehrEhrSectionTestAllTypesV1) {
+        this.testalltypesContentOpenehrEhrSectionTestAllTypesV1 = testalltypesContentOpenehrEhrSectionTestAllTypesV1;
     }
 
-    public List<TestAllTypes2> getTestAllTypes2() {
-        return this.testAllTypes2;
+    public List<TestAllTypes2> getTestalltypesContentOpenehrEhrSectionTestAllTypesV1() {
+        return this.testalltypesContentOpenehrEhrSectionTestAllTypesV1;
     }
 
     public void setLanguage(Language language) {
@@ -139,12 +140,13 @@ public class TestAllTypesEnV1 {
         return this.contextCodedTextDefiningcode;
     }
 
-    public void setTestAllTypes3(List<TestAllTypes7> testAllTypes3) {
-        this.testAllTypes3 = testAllTypes3;
+    public void setTestalltypesContentOpenehrEhrObservationTestAllTypesV1(
+            List<TestAllTypes7> testalltypesContentOpenehrEhrObservationTestAllTypesV1) {
+        this.testalltypesContentOpenehrEhrObservationTestAllTypesV1 = testalltypesContentOpenehrEhrObservationTestAllTypesV1;
     }
 
-    public List<TestAllTypes7> getTestAllTypes3() {
-        return this.testAllTypes3;
+    public List<TestAllTypes7> getTestalltypesContentOpenehrEhrObservationTestAllTypesV1() {
+        return this.testalltypesContentOpenehrEhrObservationTestAllTypesV1;
     }
 
     public void setLocation(String location) {

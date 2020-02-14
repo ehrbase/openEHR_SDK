@@ -191,7 +191,7 @@ public class TemplateIntrospect {
 
         } else if (cobject instanceof CCOMPLEXOBJECT) {
 
-            if (!cobject.getNodeId().isEmpty()) {
+            if (cobject.getNodeId() != null && !cobject.getNodeId().isEmpty()) {
                 path = path + "[" + cobject.getNodeId() + "]";
                 log.trace("Path: {}", path);
                 if (termDef.containsKey(cobject.getNodeId())) {

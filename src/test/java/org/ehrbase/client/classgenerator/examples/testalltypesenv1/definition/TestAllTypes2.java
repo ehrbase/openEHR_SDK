@@ -13,10 +13,10 @@ public class TestAllTypes2 {
     private List<TestAllTypes3> testAllTypes;
 
     @Path("/items[at0001]/items[at0002]/items[openEHR-EHR-INSTRUCTION.test_all_types.v1]")
-    private List<TestAllTypes5> testAllTypes2;
+    private List<TestAllTypes5> testalltypesItemsOpenehrEhrInstructionTestAllTypesV1;
 
     @Path("/items[at0001]/items[openEHR-EHR-ADMIN_ENTRY.test_all_types.v1]")
-    private List<TestAllTypes6> testAllTypes3;
+    private List<TestAllTypes6> testalltypesItemsOpenehrEhrAdminEntryTestAllTypesV1;
 
     public void setTestAllTypes(List<TestAllTypes3> testAllTypes) {
         this.testAllTypes = testAllTypes;
@@ -26,19 +26,21 @@ public class TestAllTypes2 {
         return this.testAllTypes;
     }
 
-    public void setTestAllTypes2(List<TestAllTypes5> testAllTypes2) {
-        this.testAllTypes2 = testAllTypes2;
+    public void setTestalltypesItemsOpenehrEhrInstructionTestAllTypesV1(
+            List<TestAllTypes5> testalltypesItemsOpenehrEhrInstructionTestAllTypesV1) {
+        this.testalltypesItemsOpenehrEhrInstructionTestAllTypesV1 = testalltypesItemsOpenehrEhrInstructionTestAllTypesV1;
     }
 
-    public List<TestAllTypes5> getTestAllTypes2() {
-        return this.testAllTypes2;
+    public List<TestAllTypes5> getTestalltypesItemsOpenehrEhrInstructionTestAllTypesV1() {
+        return this.testalltypesItemsOpenehrEhrInstructionTestAllTypesV1;
     }
 
-    public void setTestAllTypes3(List<TestAllTypes6> testAllTypes3) {
-        this.testAllTypes3 = testAllTypes3;
+    public void setTestalltypesItemsOpenehrEhrAdminEntryTestAllTypesV1(
+            List<TestAllTypes6> testalltypesItemsOpenehrEhrAdminEntryTestAllTypesV1) {
+        this.testalltypesItemsOpenehrEhrAdminEntryTestAllTypesV1 = testalltypesItemsOpenehrEhrAdminEntryTestAllTypesV1;
     }
 
-    public List<TestAllTypes6> getTestAllTypes3() {
-        return this.testAllTypes3;
+    public List<TestAllTypes6> getTestalltypesItemsOpenehrEhrAdminEntryTestAllTypesV1() {
+        return this.testalltypesItemsOpenehrEhrAdminEntryTestAllTypesV1;
     }
 }

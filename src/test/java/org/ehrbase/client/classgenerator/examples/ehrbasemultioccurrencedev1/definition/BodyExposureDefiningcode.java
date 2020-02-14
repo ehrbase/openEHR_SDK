@@ -5,7 +5,7 @@ import org.ehrbase.client.classgenerator.EnumValueSet;
 public enum BodyExposureDefiningcode implements EnumValueSet {
     NAKED("Naked", "No clothing, bedding or covering.", "local", "at0031"),
 
-    BEDDING("Reduced clothing/bedding", "The person is covered by a lesser amount of clothing or bedding than deemed appropriate for the environmental circumstances.", "local", "at0032");
+    BEDDING("Appropriate clothing/bedding", "The person is covered by an amount of clothing or bedding deemed appropriate for the environmental circumstances.", "local", "at0033");
 
     private String value;
 
@@ -22,16 +22,16 @@ public enum BodyExposureDefiningcode implements EnumValueSet {
         this.code = code;
     }
 
-  public String getValue() {
-      return this.value;
-  }
+    public String getValue() {
+        return this.value;
+    }
 
-  public String getDescription() {
-      return this.description;
-  }
+    public String getDescription() {
+        return this.description;
+    }
 
-  public String getTerminologyId() {
-      return this.terminologyId;
+    public String getTerminologyId() {
+        return this.terminologyId;
   }
 
   public String getCode() {
