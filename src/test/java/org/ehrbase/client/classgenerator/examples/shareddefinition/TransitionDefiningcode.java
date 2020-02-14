@@ -3,55 +3,55 @@ package org.ehrbase.client.classgenerator.examples.shareddefinition;
 import org.ehrbase.client.classgenerator.EnumValueSet;
 
 public enum TransitionDefiningcode implements EnumValueSet {
-  FINISH("finish", "finish", "openehr", "548"),
+    RESUME("resume", "resume", "openehr", "546"),
 
-  ABORT("abort", "abort", "openehr", "547"),
+    ABORT("abort", "abort", "openehr", "547"),
 
-  POSTPONE("postpone", "postpone", "openehr", "537"),
+    PLANSTEP("plan step", "plan step", "openehr", "536"),
 
-  NOTIFYCANCELLED("notify cancelled", "notify cancelled", "openehr", "552"),
+    NOTIFYABORTED("notify aborted", "notify aborted", "openehr", "550"),
 
-  CANCEL("cancel", "cancel", "openehr", "166"),
+    NOTIFYCOMPLETED("notify completed", "notify completed", "openehr", "551"),
 
-  RESTORE("restore", "restore", "openehr", "538"),
+    NOTIFYCANCELLED("notify cancelled", "notify cancelled", "openehr", "552"),
 
-  INITIATE("initiate", "initiate", "openehr", "535"),
+    ACTIVESTEP("active step", "active step", "openehr", "543"),
 
-  NOTIFYABORTED("notify aborted", "notify aborted", "openehr", "550"),
+    SUSPENDEDSTEP("suspended step", "suspended step", "openehr", "545"),
 
-  ACTIVESTEP("active step", "active step", "openehr", "543"),
+    RESTORE("restore", "restore", "openehr", "538"),
 
-  START("start", "start", "openehr", "540"),
+    CANCEL("cancel", "cancel", "openehr", "166"),
 
-  SUSPEND("suspend", "suspend", "openehr", "544"),
+    SCHEDULEDSTEP("scheduled step", "scheduled step", "openehr", "534"),
 
-  POSTPONEDSTEP("postponed step", "postponed step", "openehr", "542"),
+    START("start", "start", "openehr", "540"),
 
-  NOTIFYCOMPLETED("notify completed", "notify completed", "openehr", "551"),
+    POSTPONEDSTEP("postponed step", "postponed step", "openehr", "542"),
 
-  RESUME("resume", "resume", "openehr", "546"),
+    SCHEDULE("schedule", "schedule", "openehr", "539"),
 
-  DO("do", "do", "openehr", "541"),
+    SUSPEND("suspend", "suspend", "openehr", "544"),
 
-  SUSPENDEDSTEP("suspended step", "suspended step", "openehr", "545"),
+    DO("do", "do", "openehr", "541"),
 
-  SCHEDULE("schedule", "schedule", "openehr", "539"),
+    TIMEOUT("time out", "time out", "openehr", "549"),
 
-  PLANSTEP("plan step", "plan step", "openehr", "536"),
+    FINISH("finish", "finish", "openehr", "548"),
 
-  SCHEDULEDSTEP("scheduled step", "scheduled step", "openehr", "534"),
+    INITIATE("initiate", "initiate", "openehr", "535"),
 
-  TIMEOUT("time out", "time out", "openehr", "549");
+    POSTPONE("postpone", "postpone", "openehr", "537");
 
-  private String value;
+    private String value;
 
-  private String description;
+    private String description;
 
-  private String terminologyId;
+    private String terminologyId;
 
-  private String code;
+    private String code;
 
-  TransitionDefiningcode(String value, String description, String terminologyId, String code) {
+    TransitionDefiningcode(String value, String description, String terminologyId, String code) {
     this.value = value;
     this.description = description;
     this.terminologyId = terminologyId;
@@ -59,18 +59,18 @@ public enum TransitionDefiningcode implements EnumValueSet {
   }
 
   public String getValue() {
-    return this.value;
+      return this.value;
   }
 
   public String getDescription() {
-    return this.description;
+      return this.description;
   }
 
   public String getTerminologyId() {
-    return this.terminologyId;
+      return this.terminologyId;
   }
 
   public String getCode() {
-    return this.code;
+      return this.code;
   }
 }

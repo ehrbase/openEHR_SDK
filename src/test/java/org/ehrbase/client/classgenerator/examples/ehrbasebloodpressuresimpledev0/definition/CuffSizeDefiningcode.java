@@ -1,40 +1,21 @@
-/*
- *
- *  *  Copyright (c) 2019  Stefan Spiska (Vitasystems GmbH) and Hannover Medical School
- *  *  This file is part of Project EHRbase
- *  *
- *  *  Licensed under the Apache License, Version 2.0 (the "License");
- *  *  you may not use this file except in compliance with the License.
- *  *  You may obtain a copy of the License at
- *  *
- *  *  http://www.apache.org/licenses/LICENSE-2.0
- *  *
- *  *  Unless required by applicable law or agreed to in writing, software
- *  *  distributed under the License is distributed on an "AS IS" BASIS,
- *  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  *  See the License for the specific language governing permissions and
- *  *  limitations under the License.
- *
- */
-
 package org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev0.definition;
 
 import org.ehrbase.client.classgenerator.EnumValueSet;
 
 public enum CuffSizeDefiningcode implements EnumValueSet {
-    NEONATAL("Neonatal", "A cuff used for a new born - bladder approx 3cm x 6cm", "local", "at1009"),
-
-    ADULT("Adult", "A cuff that is standard for an adult - bladder approx 13cm x 30cm", "local", "at0015"),
+    INFANT("Infant", "A cuff used for infants - bladder approx 5cm x 15cm", "local", "at1018"),
 
     LARGEADULT("Large Adult", "A cuff for adults with larger arms - bladder approx 16cm x 38cm", "local", "at0016"),
 
     CHILD("Paediatric/Child", "A cuff that is appropriate for a child or thin arm - bladder approx 8cm x 21 cm", "local", "at0017"),
 
-    ADULTTHIGH("Adult Thigh", "A cuff used for an adult thigh - bladder approx 20cm x 42 cm", "local", "at1008"),
+    SMALLADULT("Small Adult", "A cuff used for a small adult - bladder approx 10cm x 24 cm", "local", "at1019"),
 
-    INFANT("Infant", "A cuff used for infants - bladder approx 5cm x 15cm", "local", "at1018"),
+    NEONATAL("Neonatal", "A cuff used for a new born - bladder approx 3cm x 6cm", "local", "at1009"),
 
-    SMALLADULT("Small Adult", "A cuff used for a small adult - bladder approx 10cm x 24 cm", "local", "at1019");
+    ADULT("Adult", "A cuff that is standard for an adult - bladder approx 13cm x 30cm", "local", "at0015"),
+
+    ADULTTHIGH("Adult Thigh", "A cuff used for an adult thigh - bladder approx 20cm x 42 cm", "local", "at1008");
 
     private String value;
 

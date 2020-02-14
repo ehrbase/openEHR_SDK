@@ -37,6 +37,7 @@ see FlattenerTest and UnflattenerTest
 - ehr : see DefaultRestEhrEndpointIT
 - composition: see DefaultRestCompositionEndpointIT
 - template : see DefaultRestTemplateEndpointIT
+- directory : see DefaultRestDirectoryEndpointIT
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
 

@@ -2,10 +2,7 @@ package org.ehrbase.client.classgenerator.examples.testalltypesenv1;
 
 import com.nedap.archie.rm.generic.PartyIdentified;
 import com.nedap.archie.rm.support.identification.PartyRef;
-import org.ehrbase.client.annotations.Archetype;
-import org.ehrbase.client.annotations.Entity;
-import org.ehrbase.client.annotations.Path;
-import org.ehrbase.client.annotations.Template;
+import org.ehrbase.client.annotations.*;
 import org.ehrbase.client.classgenerator.examples.shareddefinition.Language;
 import org.ehrbase.client.classgenerator.examples.shareddefinition.SettingDefiningcode;
 import org.ehrbase.client.classgenerator.examples.shareddefinition.Territory;
@@ -13,6 +10,7 @@ import org.ehrbase.client.classgenerator.examples.testalltypesenv1.definition.Co
 import org.ehrbase.client.classgenerator.examples.testalltypesenv1.definition.TestAllTypes;
 import org.ehrbase.client.classgenerator.examples.testalltypesenv1.definition.TestAllTypes2;
 import org.ehrbase.client.classgenerator.examples.testalltypesenv1.definition.TestAllTypes7;
+import org.ehrbase.client.openehrclient.VersionUid;
 
 import java.time.temporal.TemporalAccessor;
 import java.util.List;
@@ -21,6 +19,9 @@ import java.util.List;
 @Archetype("openEHR-EHR-COMPOSITION.test_all_types.v1")
 @Template("test_all_types.en.v1")
 public class TestAllTypesEnV1 {
+    @Id
+    private VersionUid versionUid;
+
     @Path("/content[openEHR-EHR-EVALUATION.test_all_types.v1]")
     private List<TestAllTypes> testAllTypes;
 
@@ -56,6 +57,14 @@ public class TestAllTypesEnV1 {
 
     @Path("/context/start_time|value")
     private TemporalAccessor startTimeValue;
+
+    public VersionUid getVersionUid() {
+        return this.versionUid;
+    }
+
+    public void setVersionUid(VersionUid versionUid) {
+        this.versionUid = versionUid;
+    }
 
     public void setTestAllTypes(List<TestAllTypes> testAllTypes) {
         this.testAllTypes = testAllTypes;

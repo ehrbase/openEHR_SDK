@@ -18,15 +18,22 @@
 package org.ehrbase.client.openehrclient.defaultrestclient;
 
 import com.nedap.archie.rm.composition.Composition;
+import org.ehrbase.client.annotations.Id;
+import org.ehrbase.client.exception.ClientException;
 import org.ehrbase.client.flattener.Flattener;
 import org.ehrbase.client.flattener.Unflattener;
 import org.ehrbase.client.openehrclient.CompositionEndpoint;
+import org.ehrbase.client.openehrclient.VersionUid;
 
+import java.beans.IntrospectionException;
+import java.beans.PropertyDescriptor;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.util.Arrays;
 import java.util.Optional;
 import java.util.UUID;
 
-import static org.ehrbase.client.openehrclient.defaultrestclient.DefaultRestClient.httpGet;
-import static org.ehrbase.client.openehrclient.defaultrestclient.DefaultRestClient.httpPost;
+import static org.ehrbase.client.openehrclient.defaultrestclient.DefaultRestClient.*;
 import static org.ehrbase.client.openehrclient.defaultrestclient.DefaultRestEhrEndpoint.EHR_PATH;
 
 public class DefaultRestCompositionEndpoint implements CompositionEndpoint {
@@ -40,10 +47,49 @@ public class DefaultRestCompositionEndpoint implements CompositionEndpoint {
     }
 
     @Override
-    public UUID saveCompositionEntity(Object entity) {
+    public <T> T mergeCompositionEntity(T entity) {
         Composition composition = (Composition) new Unflattener(defaultRestClient.getTemplateProvider()).unflatten(entity);
 
-        return httpPost(defaultRestClient.getConfig().getBaseUri().resolve(EHR_PATH + ehrId.toString() + COMPOSITION_PATH), composition);
+        Optional<VersionUid> versionUid = extractVersionUid(entity);
+
+        final VersionUid updatedVersion;
+        if (versionUid.isEmpty()) {
+            updatedVersion = httpPost(defaultRestClient.getConfig().getBaseUri().resolve(EHR_PATH + ehrId.toString() + COMPOSITION_PATH), composition);
+        } else {
+            updatedVersion = httpPut(defaultRestClient.getConfig().getBaseUri().resolve(EHR_PATH + ehrId.toString() + COMPOSITION_PATH + versionUid.get().getUuid()), composition, versionUid.get());
+        }
+        addVersion(entity, updatedVersion);
+
+        return entity;
+    }
+
+    static <T> void addVersion(T entity, VersionUid versionUid) {
+        Optional<Field> idField = Arrays.stream(entity.getClass().getDeclaredFields())
+                .filter(f -> f.isAnnotationPresent(Id.class))
+                .findAny();
+        if (idField.isPresent()) {
+            try {
+                PropertyDescriptor propertyDescriptor = new PropertyDescriptor(idField.get().getName(), entity.getClass());
+                propertyDescriptor.getWriteMethod().invoke(entity, versionUid);
+            } catch (IllegalAccessException | InvocationTargetException | IntrospectionException e) {
+                throw new ClientException(e.getMessage(), e);
+            }
+        }
+    }
+
+    static Optional<VersionUid> extractVersionUid(Object entity) {
+        return Arrays.stream(entity.getClass().getDeclaredFields())
+                .filter(f -> f.isAnnotationPresent(Id.class))
+                .findAny()
+                .map(idField -> {
+                            try {
+                                PropertyDescriptor propertyDescriptor = new PropertyDescriptor(idField.getName(), entity.getClass());
+                                return (VersionUid) propertyDescriptor.getReadMethod().invoke(entity);
+                            } catch (IllegalAccessException | InvocationTargetException | IntrospectionException e) {
+                                throw new ClientException(e.getMessage(), e);
+                            }
+                        }
+                );
     }
 
     @Override

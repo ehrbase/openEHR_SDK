@@ -33,6 +33,7 @@ import org.ehrbase.client.classgenerator.config.RmClassGeneratorConfig;
 import org.ehrbase.client.exception.ClientException;
 import org.ehrbase.client.introspect.TemplateIntrospect;
 import org.ehrbase.client.introspect.node.*;
+import org.ehrbase.client.openehrclient.VersionUid;
 import org.ehrbase.client.terminology.ValueSet;
 import org.ehrbase.ehr.encode.wrappers.SnakeCase;
 import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
@@ -114,6 +115,9 @@ public class ClassGenerator {
         if (archetypeNode instanceof TemplateNode) {
             AnnotationSpec templateAnnotation = AnnotationSpec.builder(Template.class).addMember(Template.VALUE, "$S", ((TemplateNode) archetypeNode).getTemplateId()).build();
             classBuilder.addAnnotation(templateAnnotation);
+
+            addVersionUid(classBuilder);
+
         }
 
         for (Map.Entry<String, Node> entry : archetypeNode.getChildren().entrySet()) {
@@ -127,6 +131,14 @@ public class ClassGenerator {
         }
         currentFieldNameMap = oldFieldNameMap;
         return classBuilder.build();
+    }
+
+    private void addVersionUid(TypeSpec.Builder classBuilder) {
+        FieldSpec versionUid = FieldSpec.builder(VersionUid.class, "versionUid", Modifier.PRIVATE).addAnnotation(Id.class).build();
+        classBuilder.addField(versionUid);
+        classBuilder.addMethod(buildGetter(versionUid));
+        classBuilder.addMethod(buildSetter(versionUid));
+        currentFieldNameMap.put("versionUid", 1);
     }
 
     private void addChoiceField(TypeSpec.Builder classBuilder, String path, ChoiceNode choiceNode) {

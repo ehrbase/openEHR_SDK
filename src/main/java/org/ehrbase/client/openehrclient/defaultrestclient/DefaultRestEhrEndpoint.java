@@ -22,6 +22,7 @@ import com.nedap.archie.rm.generic.PartySelf;
 import com.nedap.archie.rm.support.identification.HierObjectId;
 import com.nedap.archie.rm.support.identification.PartyRef;
 import org.ehrbase.client.openehrclient.EhrEndpoint;
+import org.ehrbase.client.openehrclient.VersionUid;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -43,7 +44,7 @@ public class DefaultRestEhrEndpoint implements EhrEndpoint {
         PartySelf partySelf = new PartySelf(new PartyRef(new HierObjectId(UUID.randomUUID().toString()), "default", null));
         ehrStatus.setSubject(partySelf);
 
-        return httpPost(defaultRestClient.getConfig().getBaseUri().resolve(EHR_PATH), ehrStatus);
+        return httpPost(defaultRestClient.getConfig().getBaseUri().resolve(EHR_PATH), ehrStatus).getUuid();
     }
 
 
@@ -55,6 +56,6 @@ public class DefaultRestEhrEndpoint implements EhrEndpoint {
 
     @Override
     public void updateEhrStatus(UUID ehrId, EhrStatus ehrStatus) {
-        httpPut(defaultRestClient.getConfig().getBaseUri().resolve(EHR_PATH + ehrId + EHR_STATUS_PATH), ehrStatus);
+        httpPut(defaultRestClient.getConfig().getBaseUri().resolve(EHR_PATH + ehrId + EHR_STATUS_PATH), ehrStatus, new VersionUid(ehrStatus.getUid().getValue()));
     }
 }

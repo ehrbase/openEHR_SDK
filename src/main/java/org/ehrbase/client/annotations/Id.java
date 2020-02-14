@@ -15,34 +15,14 @@
  *  limitations under the License.
  */
 
-package org.ehrbase.client.openehrclient;
+package org.ehrbase.client.annotations;
 
-import java.util.UUID;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-public interface OpenEhrClient {
-
-    /**
-     * Get the {@link EhrEndpoint}
-     *
-     * @return
-     */
-    EhrEndpoint ehrEndpoint();
-
-    /**
-     * Get the {@link CompositionEndpoint} for ehr with Id {@code ehrId}
-     *
-     * @param ehrId ehrId of ehr for which to revive compositions
-     * @return
-     */
-    CompositionEndpoint compositionEndpoint(UUID ehrId);
-
-    FolderDAO folder(UUID ehrId, String path);
-
-    /**
-     * Get the {@link TemplateEndpoint}
-     *
-     * @return
-     */
-    TemplateEndpoint templateEndpoint();
-
+@Retention(RetentionPolicy.RUNTIME)
+@Target(value = {ElementType.FIELD})
+public @interface Id {
 }

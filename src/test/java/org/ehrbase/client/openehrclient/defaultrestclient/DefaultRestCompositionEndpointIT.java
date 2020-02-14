@@ -22,8 +22,11 @@ import org.ehrbase.client.TestData;
 import org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev0.EhrbaseBloodPressureSimpleDeV0;
 import org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1.EhrbaseMultiOccurrenceDeV1;
 import org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1.definition.*;
+import org.ehrbase.client.classgenerator.examples.shareddefinition.SettingDefiningcode;
+import org.ehrbase.client.exception.OptimisticLockException;
 import org.ehrbase.client.openehrclient.CompositionEndpoint;
 import org.ehrbase.client.openehrclient.OpenEhrClient;
+import org.ehrbase.client.openehrclient.VersionUid;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -34,6 +37,7 @@ import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 @Category(Integration.class)
 public class DefaultRestCompositionEndpointIT {
@@ -51,8 +55,26 @@ public class DefaultRestCompositionEndpointIT {
         UUID ehr = openEhrClient.ehrEndpoint().createEhr();
         EhrbaseBloodPressureSimpleDeV0 bloodPressureSimpleDeV0 = TestData.buildEhrbaseBloodPressureSimpleDeV0();
 
-        UUID compositionId = openEhrClient.compositionEndpoint(ehr).saveCompositionEntity(bloodPressureSimpleDeV0);
-        assertThat(compositionId).isNotNull();
+        openEhrClient.compositionEndpoint(ehr).mergeCompositionEntity(bloodPressureSimpleDeV0);
+        assertThat(bloodPressureSimpleDeV0.getVersionUid()).isNotNull();
+        assertThat(bloodPressureSimpleDeV0.getVersionUid().getVersion()).isEqualTo(1L);
+
+        bloodPressureSimpleDeV0.setSettingDefiningcode(SettingDefiningcode.EMERGENCYCARE);
+        openEhrClient.compositionEndpoint(ehr).mergeCompositionEntity(bloodPressureSimpleDeV0);
+        assertThat(bloodPressureSimpleDeV0.getVersionUid()).isNotNull();
+        assertThat(bloodPressureSimpleDeV0.getVersionUid().getVersion()).isEqualTo(2L);
+
+        bloodPressureSimpleDeV0.setVersionUid(
+                new VersionUid(bloodPressureSimpleDeV0.getVersionUid().getUuid(),
+                        bloodPressureSimpleDeV0.getVersionUid().getSystem(),
+                        1L));
+
+        try {
+            openEhrClient.compositionEndpoint(ehr).mergeCompositionEntity(bloodPressureSimpleDeV0);
+            fail();
+        } catch (RuntimeException e) {
+            assertThat(e.getClass()).isEqualTo(OptimisticLockException.class);
+        }
     }
 
     @Test
@@ -62,9 +84,9 @@ public class DefaultRestCompositionEndpointIT {
         EhrbaseBloodPressureSimpleDeV0 bloodPressureSimpleDeV0 = TestData.buildEhrbaseBloodPressureSimpleDeV0();
 
         CompositionEndpoint compositionEndpoint = openEhrClient.compositionEndpoint(ehr);
-        UUID compositionId = compositionEndpoint.saveCompositionEntity(bloodPressureSimpleDeV0);
+        EhrbaseBloodPressureSimpleDeV0 version1 = compositionEndpoint.mergeCompositionEntity(bloodPressureSimpleDeV0);
 
-        Optional<EhrbaseBloodPressureSimpleDeV0> actual = compositionEndpoint.find(compositionId, EhrbaseBloodPressureSimpleDeV0.class);
+        Optional<EhrbaseBloodPressureSimpleDeV0> actual = compositionEndpoint.find(version1.getVersionUid().getUuid(), EhrbaseBloodPressureSimpleDeV0.class);
         assertTrue(actual.isPresent());
     }
 
@@ -75,9 +97,9 @@ public class DefaultRestCompositionEndpointIT {
         EhrbaseMultiOccurrenceDeV1 bloodPressureSimpleDeV0 = TestData.buildEhrbaseMultiOccurrenceDeV1();
 
         CompositionEndpoint compositionEndpoint = openEhrClient.compositionEndpoint(ehr);
-        UUID compositionId = compositionEndpoint.saveCompositionEntity(bloodPressureSimpleDeV0);
+        EhrbaseMultiOccurrenceDeV1 version1 = compositionEndpoint.mergeCompositionEntity(bloodPressureSimpleDeV0);
 
-        Optional<EhrbaseMultiOccurrenceDeV1> actual = compositionEndpoint.find(compositionId, EhrbaseMultiOccurrenceDeV1.class);
+        Optional<EhrbaseMultiOccurrenceDeV1> actual = compositionEndpoint.find(version1.getVersionUid().getUuid(), EhrbaseMultiOccurrenceDeV1.class);
         assertTrue(actual.isPresent());
         BodyTemperature bodyTemperature1 = actual.get().getBodyTemperature().get(0);
         assertThat(bodyTemperature1.getHistory())

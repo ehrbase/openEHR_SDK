@@ -3,14 +3,12 @@ package org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1;
 import com.nedap.archie.rm.datastructures.Cluster;
 import com.nedap.archie.rm.generic.PartyIdentified;
 import com.nedap.archie.rm.support.identification.PartyRef;
-import org.ehrbase.client.annotations.Archetype;
-import org.ehrbase.client.annotations.Entity;
-import org.ehrbase.client.annotations.Path;
-import org.ehrbase.client.annotations.Template;
+import org.ehrbase.client.annotations.*;
 import org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1.definition.BodyTemperature;
 import org.ehrbase.client.classgenerator.examples.shareddefinition.Language;
 import org.ehrbase.client.classgenerator.examples.shareddefinition.SettingDefiningcode;
 import org.ehrbase.client.classgenerator.examples.shareddefinition.Territory;
+import org.ehrbase.client.openehrclient.VersionUid;
 
 import java.time.temporal.TemporalAccessor;
 import java.util.List;
@@ -19,6 +17,9 @@ import java.util.List;
 @Archetype("openEHR-EHR-COMPOSITION.encounter.v1")
 @Template("ehrbase_multi_occurrence.de.v1")
 public class EhrbaseMultiOccurrenceDeV1 {
+    @Id
+    private VersionUid versionUid;
+
     @Path("/context/end_time|value")
     private TemporalAccessor endTimeValue;
 
@@ -48,6 +49,14 @@ public class EhrbaseMultiOccurrenceDeV1 {
 
     @Path("/context/other_context[at0001]/items[at0002]")
     private List<Cluster> extension;
+
+    public VersionUid getVersionUid() {
+        return this.versionUid;
+    }
+
+    public void setVersionUid(VersionUid versionUid) {
+        this.versionUid = versionUid;
+    }
 
     public void setEndTimeValue(TemporalAccessor endTimeValue) {
         this.endTimeValue = endTimeValue;
