@@ -1,7 +1,7 @@
 package org.ehrbase.client.classgenerator.examples.testalltypesenv1.definition;
 
 import com.nedap.archie.rm.datavalues.quantity.DvInterval;
-import com.nedap.archie.rm.support.identification.PartyRef;
+import com.nedap.archie.rm.generic.PartyProxy;
 import org.ehrbase.client.annotations.Archetype;
 import org.ehrbase.client.annotations.Choice;
 import org.ehrbase.client.annotations.Entity;
@@ -35,8 +35,8 @@ public class TestAllTypes {
     @Choice
     private ArbolChoiceChoice choice;
 
-    @Path("/subject|external_ref")
-    private PartyRef subjectExternalref;
+    @Path("/subject")
+    private PartyProxy subject;
 
     public void setIntervalQuantity(DvInterval intervalQuantity) {
         this.intervalQuantity = intervalQuantity;
@@ -94,11 +94,11 @@ public class TestAllTypes {
         return this.choice;
     }
 
-    public void setSubjectExternalref(PartyRef subjectExternalref) {
-        this.subjectExternalref = subjectExternalref;
+    public void setSubject(PartyProxy subject) {
+        this.subject = subject;
     }
 
-    public PartyRef getSubjectExternalref() {
-        return this.subjectExternalref;
+    public PartyProxy getSubject() {
+        return this.subject;
     }
 }

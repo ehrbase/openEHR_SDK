@@ -21,6 +21,7 @@ package org.ehrbase.client.normalizer;
 
 import com.nedap.archie.rm.RMObject;
 import com.nedap.archie.rm.archetyped.Locatable;
+import com.nedap.archie.rm.generic.PartySelf;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
 
@@ -48,7 +49,9 @@ public class Normalizer {
 
         List<Field> allFields = Arrays.stream(FieldUtils.getAllFields(t.getClass())).collect(Collectors.toList());
         boolean empty = allFields.stream().map(f -> normalizeField(f, t)).reduce(!allFields.isEmpty(), (b1, b2) -> b1 && b2);
-        if (empty && !root) {
+        if (PartySelf.class.isAssignableFrom(t.getClass())) {
+            return t;
+        } else if (empty && !root) {
             return null;
         } else {
             return t;

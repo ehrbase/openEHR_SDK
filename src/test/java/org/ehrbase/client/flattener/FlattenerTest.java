@@ -20,6 +20,8 @@ package org.ehrbase.client.flattener;
 import com.nedap.archie.rm.RMObject;
 import com.nedap.archie.rm.archetyped.Locatable;
 import com.nedap.archie.rm.composition.Composition;
+import com.nedap.archie.rm.generic.PartyIdentified;
+import com.nedap.archie.rm.generic.PartySelf;
 import org.apache.commons.io.IOUtils;
 import org.ehrbase.client.TestData;
 import org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev0.EhrbaseBloodPressureSimpleDeV0;
@@ -66,7 +68,14 @@ public class FlattenerTest {
         EhrbaseBloodPressureSimpleDeV0 actual = cut.flatten((Locatable) rmObject, EhrbaseBloodPressureSimpleDeV0.class);
 
         assertThat(actual).isNotNull();
+
+        assertThat(actual.getComposer()).isNotNull().extracting(Object::getClass).isEqualTo(PartyIdentified.class);
+
+        PartyIdentified composer = (PartyIdentified) actual.getComposer();
+        assertThat(composer.getName()).isEqualTo("Test");
+
         assertThat(actual.getBloodPressureTrainingSample()).size().isEqualTo(1);
+        assertThat(actual.getBloodPressureTrainingSample().get(0).getSubject()).isNotNull().extracting(Object::getClass).isEqualTo(PartySelf.class);
         assertThat(actual.getBloodPressureTrainingSample().get(0).getSystolicMagnitude()).isEqualTo(22d);
         assertThat(actual.getBloodPressureTrainingSample().get(0).getSystolicUnits()).isEqualTo("mm[Hg]");
         assertThat(actual.getBloodPressureTrainingSample().get(0).getKorotkoffSoundsDefiningcode()).isEqualTo(KorotkoffSoundsDefiningcode.FIFTHSOUND);

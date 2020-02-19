@@ -25,6 +25,7 @@ import com.nedap.archie.rm.datatypes.CodePhrase;
 import com.nedap.archie.rm.datavalues.DvCodedText;
 import com.nedap.archie.rm.support.identification.TerminologyId;
 import com.nedap.archie.rminfo.ArchieRMInfoLookup;
+import org.apache.commons.lang3.reflect.FieldUtils;
 import org.apache.commons.text.CaseUtils;
 import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.OptionFor;
@@ -131,10 +132,15 @@ public class Unflattener {
 
 
     private Class<?> extractType(String childName, Object parent) {
-        try {
-            return parent.getClass().getDeclaredField(childName).getType();
-        } catch (NoSuchFieldException e) {
-            logger.warn(e.getMessage());
+
+        Optional<? extends Class<?>> type = Arrays.stream(FieldUtils.getAllFields(parent.getClass()))
+                .filter(f -> f.getName().equals(childName))
+                .map(Field::getType)
+                .findAny();
+        if (type.isPresent()) {
+            return type.get();
+        } else {
+            logger.warn("No field {} for class {}", childName, parent.getClass());
             return Object.class;
         }
     }

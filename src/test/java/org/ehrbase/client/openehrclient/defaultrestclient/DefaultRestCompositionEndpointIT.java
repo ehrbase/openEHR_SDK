@@ -17,9 +17,12 @@
 
 package org.ehrbase.client.openehrclient.defaultrestclient;
 
+import com.nedap.archie.rm.generic.PartyIdentified;
+import com.nedap.archie.rm.generic.PartySelf;
 import org.ehrbase.client.Integration;
 import org.ehrbase.client.TestData;
 import org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev0.EhrbaseBloodPressureSimpleDeV0;
+import org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev0.definition.KorotkoffSoundsDefiningcode;
 import org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1.EhrbaseMultiOccurrenceDeV1;
 import org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1.definition.*;
 import org.ehrbase.client.classgenerator.examples.shareddefinition.SettingDefiningcode;
@@ -88,6 +91,17 @@ public class DefaultRestCompositionEndpointIT {
 
         Optional<EhrbaseBloodPressureSimpleDeV0> actual = compositionEndpoint.find(version1.getVersionUid().getUuid(), EhrbaseBloodPressureSimpleDeV0.class);
         assertTrue(actual.isPresent());
+
+        assertThat(actual.get().getComposer()).isNotNull().extracting(Object::getClass).isEqualTo(PartyIdentified.class);
+
+        PartyIdentified composer = (PartyIdentified) actual.get().getComposer();
+        assertThat(composer.getName()).isEqualTo("Test");
+
+        assertThat(actual.get().getBloodPressureTrainingSample()).size().isEqualTo(1);
+        assertThat(actual.get().getBloodPressureTrainingSample().get(0).getSubject()).isNotNull().extracting(Object::getClass).isEqualTo(PartySelf.class);
+        assertThat(actual.get().getBloodPressureTrainingSample().get(0).getSystolicMagnitude()).isEqualTo(22d);
+        assertThat(actual.get().getBloodPressureTrainingSample().get(0).getSystolicUnits()).isEqualTo("mm[Hg]");
+        assertThat(actual.get().getBloodPressureTrainingSample().get(0).getKorotkoffSoundsDefiningcode()).isEqualTo(KorotkoffSoundsDefiningcode.FIFTHSOUND);
     }
 
     @Test

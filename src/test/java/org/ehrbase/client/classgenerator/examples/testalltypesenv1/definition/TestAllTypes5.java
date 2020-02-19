@@ -1,7 +1,7 @@
 package org.ehrbase.client.classgenerator.examples.testalltypesenv1.definition;
 
 import com.nedap.archie.rm.datastructures.ItemStructure;
-import com.nedap.archie.rm.support.identification.PartyRef;
+import com.nedap.archie.rm.generic.PartyProxy;
 import org.ehrbase.client.annotations.Archetype;
 import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.Path;
@@ -25,8 +25,8 @@ public class TestAllTypes5 {
     @Path("/activities[at0001]/description[at0002]/items[at0003]/value|value")
     private Temporal partialDateValue;
 
-    @Path("/subject|external_ref")
-    private PartyRef subjectExternalref;
+    @Path("/subject")
+    private PartyProxy subject;
 
     @Path("/activities[at0001]/action_archetype_id")
     private String currentActivity;
@@ -66,12 +66,12 @@ public class TestAllTypes5 {
         return this.partialDateValue;
     }
 
-    public void setSubjectExternalref(PartyRef subjectExternalref) {
-        this.subjectExternalref = subjectExternalref;
+    public void setSubject(PartyProxy subject) {
+        this.subject = subject;
     }
 
-    public PartyRef getSubjectExternalref() {
-        return this.subjectExternalref;
+    public PartyProxy getSubject() {
+        return this.subject;
     }
 
     public void setCurrentActivity(String currentActivity) {

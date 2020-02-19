@@ -1,7 +1,7 @@
 package org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev0.definition;
 
 import com.nedap.archie.rm.datastructures.Cluster;
-import com.nedap.archie.rm.support.identification.PartyRef;
+import com.nedap.archie.rm.generic.PartyProxy;
 import org.ehrbase.client.annotations.Archetype;
 import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.Path;
@@ -61,8 +61,8 @@ public class BloodPressureTrainingSample {
     @Path("/data[at0001]/events[at0002]/time|value")
     private TemporalAccessor timeValue;
 
-    @Path("/subject|external_ref")
-    private PartyRef subjectExternalref;
+    @Path("/subject")
+    private PartyProxy subject;
 
     @Path("/data[at0001]/origin|value")
     private TemporalAccessor originValue;
@@ -205,12 +205,12 @@ public class BloodPressureTrainingSample {
         return this.timeValue;
     }
 
-    public void setSubjectExternalref(PartyRef subjectExternalref) {
-        this.subjectExternalref = subjectExternalref;
+    public void setSubject(PartyProxy subject) {
+        this.subject = subject;
     }
 
-    public PartyRef getSubjectExternalref() {
-        return this.subjectExternalref;
+    public PartyProxy getSubject() {
+        return this.subject;
     }
 
     public void setOriginValue(TemporalAccessor originValue) {
