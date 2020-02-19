@@ -16,6 +16,8 @@
  */
 package org.ehrbase.client;
 
+import com.nedap.archie.rm.support.identification.HierObjectId;
+import com.nedap.archie.rm.support.identification.PartyRef;
 import org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev0.EhrbaseBloodPressureSimpleDeV0;
 import org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev0.definition.BloodPressureTrainingSample;
 import org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev0.definition.CuffSizeDefiningcode;
@@ -26,6 +28,7 @@ import org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1.def
 import org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1.definition.BodyTemperatureHistory;
 import org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1.definition.ProtocolLocationOfMeasurementDvcodedtext;
 import org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1.definition.ProtocolLocationOfMeasurementDvtext;
+import org.ehrbase.client.classgenerator.examples.shareddefinition.CategoryDefiningcode;
 import org.ehrbase.client.classgenerator.examples.shareddefinition.Language;
 import org.ehrbase.client.classgenerator.examples.shareddefinition.SettingDefiningcode;
 import org.ehrbase.client.classgenerator.examples.shareddefinition.Territory;
@@ -35,6 +38,7 @@ import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class TestData {
     private TestData() {
@@ -65,7 +69,9 @@ public class TestData {
         bloodPressureSimpleDeV0.setBloodPressureTrainingSample(new ArrayList<>());
         bloodPressureSimpleDeV0.setLanguage(Language.DE);
         bloodPressureSimpleDeV0.setTerritory(Territory.DE);
+        bloodPressureSimpleDeV0.setCategoryDefiningcode(CategoryDefiningcode.EVENT);
         bloodPressureSimpleDeV0.setSettingDefiningcode(SettingDefiningcode.NURSINGHOMECARE);
+        bloodPressureSimpleDeV0.setComposerExternalref(buildPartyRef());
 
         BloodPressureTrainingSample bloodPressureTrainingSample = new BloodPressureTrainingSample();
         bloodPressureTrainingSample.setSystolicMagnitude(22d);
@@ -83,6 +89,9 @@ public class TestData {
         return bloodPressureSimpleDeV0;
     }
 
+    private static PartyRef buildPartyRef() {
+        return new PartyRef(new HierObjectId(UUID.randomUUID().toString()), "local", "type");
+    }
 
     public static EhrbaseMultiOccurrenceDeV1 buildEhrbaseMultiOccurrenceDeV1() {
         EhrbaseMultiOccurrenceDeV1 dto = new EhrbaseMultiOccurrenceDeV1();
@@ -91,6 +100,8 @@ public class TestData {
         dto.setLanguage(Language.DE);
         dto.setTerritory(Territory.DE);
         dto.setSettingDefiningcode(SettingDefiningcode.DENTALCARE);
+        dto.setCategoryDefiningcode(CategoryDefiningcode.EVENT);
+        dto.setComposerExternalref(buildPartyRef());
         dto.setBodyTemperature(new ArrayList<>());
 
         dto.getBodyTemperature().add(buildBodyTemperature1());

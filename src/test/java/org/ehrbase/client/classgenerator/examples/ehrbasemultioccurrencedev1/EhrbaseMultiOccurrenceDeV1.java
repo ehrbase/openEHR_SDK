@@ -5,6 +5,7 @@ import com.nedap.archie.rm.generic.PartyIdentified;
 import com.nedap.archie.rm.support.identification.PartyRef;
 import org.ehrbase.client.annotations.*;
 import org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1.definition.BodyTemperature;
+import org.ehrbase.client.classgenerator.examples.shareddefinition.CategoryDefiningcode;
 import org.ehrbase.client.classgenerator.examples.shareddefinition.Language;
 import org.ehrbase.client.classgenerator.examples.shareddefinition.SettingDefiningcode;
 import org.ehrbase.client.classgenerator.examples.shareddefinition.Territory;
@@ -43,6 +44,9 @@ public class EhrbaseMultiOccurrenceDeV1 {
 
     @Path("/context/location")
     private String location;
+
+    @Path("/category|defining_code")
+    private CategoryDefiningcode categoryDefiningcode;
 
     @Path("/context/start_time|value")
     private TemporalAccessor startTimeValue;
@@ -120,6 +124,14 @@ public class EhrbaseMultiOccurrenceDeV1 {
 
     public String getLocation() {
         return this.location;
+    }
+
+    public void setCategoryDefiningcode(CategoryDefiningcode categoryDefiningcode) {
+        this.categoryDefiningcode = categoryDefiningcode;
+    }
+
+    public CategoryDefiningcode getCategoryDefiningcode() {
+        return this.categoryDefiningcode;
     }
 
     public void setStartTimeValue(TemporalAccessor startTimeValue) {

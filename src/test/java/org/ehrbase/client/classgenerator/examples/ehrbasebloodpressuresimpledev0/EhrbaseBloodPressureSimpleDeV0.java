@@ -5,6 +5,7 @@ import com.nedap.archie.rm.support.identification.PartyRef;
 import org.ehrbase.client.annotations.*;
 import org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev0.definition.BloodPressureTrainingSample;
 import org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev0.definition.DeviceDetailsTrainingSample;
+import org.ehrbase.client.classgenerator.examples.shareddefinition.CategoryDefiningcode;
 import org.ehrbase.client.classgenerator.examples.shareddefinition.Language;
 import org.ehrbase.client.classgenerator.examples.shareddefinition.SettingDefiningcode;
 import org.ehrbase.client.classgenerator.examples.shareddefinition.Territory;
@@ -43,6 +44,9 @@ public class EhrbaseBloodPressureSimpleDeV0 {
 
     @Path("/context/location")
     private String location;
+
+    @Path("/category|defining_code")
+    private CategoryDefiningcode categoryDefiningcode;
 
     @Path("/context/other_context[at0001]/items[at0006]/items[openEHR-EHR-CLUSTER.sample_device.v1]")
     private List<DeviceDetailsTrainingSample> deviceDetailsTrainingSample;
@@ -121,6 +125,14 @@ public class EhrbaseBloodPressureSimpleDeV0 {
 
     public String getLocation() {
         return this.location;
+    }
+
+    public void setCategoryDefiningcode(CategoryDefiningcode categoryDefiningcode) {
+        this.categoryDefiningcode = categoryDefiningcode;
+    }
+
+    public CategoryDefiningcode getCategoryDefiningcode() {
+        return this.categoryDefiningcode;
     }
 
     public void setDeviceDetailsTrainingSample(

@@ -32,9 +32,9 @@ public enum KorotkoffSoundsDefiningcode implements EnumValueSet {
 
     public String getTerminologyId() {
         return this.terminologyId;
-  }
+    }
 
-  public String getCode() {
-      return this.code;
-  }
+    public String getCode() {
+        return this.code;
+    }
 }

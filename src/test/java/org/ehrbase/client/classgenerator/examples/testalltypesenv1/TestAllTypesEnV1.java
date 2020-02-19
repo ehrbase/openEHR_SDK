@@ -3,6 +3,7 @@ package org.ehrbase.client.classgenerator.examples.testalltypesenv1;
 import com.nedap.archie.rm.generic.PartyIdentified;
 import com.nedap.archie.rm.support.identification.PartyRef;
 import org.ehrbase.client.annotations.*;
+import org.ehrbase.client.classgenerator.examples.shareddefinition.CategoryDefiningcode;
 import org.ehrbase.client.classgenerator.examples.shareddefinition.Language;
 import org.ehrbase.client.classgenerator.examples.shareddefinition.SettingDefiningcode;
 import org.ehrbase.client.classgenerator.examples.shareddefinition.Territory;
@@ -22,14 +23,8 @@ public class TestAllTypesEnV1 {
     @Id
     private VersionUid versionUid;
 
-    @Path("/content[openEHR-EHR-EVALUATION.test_all_types.v1]")
-    private List<TestAllTypes> testAllTypes;
-
     @Path("/context/end_time|value")
     private TemporalAccessor endTimeValue;
-
-    @Path("/content[openEHR-EHR-SECTION.test_all_types.v1]")
-    private List<TestAllTypes2> testalltypesContentOpenehrEhrSectionTestAllTypesV1;
 
     @Path("/language")
     private Language language;
@@ -37,17 +32,26 @@ public class TestAllTypesEnV1 {
     @Path("/context/health_care_facility")
     private PartyIdentified healthCareFacility;
 
-    @Path("/composer|external_ref")
-    private PartyRef composerExternalref;
-
-    @Path("/context/setting|defining_code")
-    private SettingDefiningcode settingDefiningcode;
-
     @Path("/territory")
     private Territory territory;
 
     @Path("/context/other_context[at0004]/item[at0005]/value|defining_code")
     private ContextCodedTextDefiningcode contextCodedTextDefiningcode;
+
+    @Path("/context/start_time|value")
+    private TemporalAccessor startTimeValue;
+
+    @Path("/content[openEHR-EHR-EVALUATION.test_all_types.v1]")
+    private List<TestAllTypes> testAllTypes;
+
+    @Path("/content[openEHR-EHR-SECTION.test_all_types.v1]")
+    private List<TestAllTypes2> testalltypesContentOpenehrEhrSectionTestAllTypesV1;
+
+    @Path("/composer|external_ref")
+    private PartyRef composerExternalref;
+
+    @Path("/context/setting|defining_code")
+    private SettingDefiningcode settingDefiningcode;
 
     @Path("/content[openEHR-EHR-OBSERVATION.test_all_types.v1]")
     private List<TestAllTypes7> testalltypesContentOpenehrEhrObservationTestAllTypesV1;
@@ -55,8 +59,8 @@ public class TestAllTypesEnV1 {
     @Path("/context/location")
     private String location;
 
-    @Path("/context/start_time|value")
-    private TemporalAccessor startTimeValue;
+    @Path("/category|defining_code")
+    private CategoryDefiningcode categoryDefiningcode;
 
     public VersionUid getVersionUid() {
         return this.versionUid;
@@ -66,29 +70,12 @@ public class TestAllTypesEnV1 {
         this.versionUid = versionUid;
     }
 
-    public void setTestAllTypes(List<TestAllTypes> testAllTypes) {
-        this.testAllTypes = testAllTypes;
-    }
-
-    public List<TestAllTypes> getTestAllTypes() {
-        return this.testAllTypes;
-    }
-
     public void setEndTimeValue(TemporalAccessor endTimeValue) {
         this.endTimeValue = endTimeValue;
     }
 
     public TemporalAccessor getEndTimeValue() {
         return this.endTimeValue;
-    }
-
-    public void setTestalltypesContentOpenehrEhrSectionTestAllTypesV1(
-            List<TestAllTypes2> testalltypesContentOpenehrEhrSectionTestAllTypesV1) {
-        this.testalltypesContentOpenehrEhrSectionTestAllTypesV1 = testalltypesContentOpenehrEhrSectionTestAllTypesV1;
-    }
-
-    public List<TestAllTypes2> getTestalltypesContentOpenehrEhrSectionTestAllTypesV1() {
-        return this.testalltypesContentOpenehrEhrSectionTestAllTypesV1;
     }
 
     public void setLanguage(Language language) {
@@ -105,22 +92,6 @@ public class TestAllTypesEnV1 {
 
     public PartyIdentified getHealthCareFacility() {
         return this.healthCareFacility;
-    }
-
-    public void setComposerExternalref(PartyRef composerExternalref) {
-        this.composerExternalref = composerExternalref;
-    }
-
-    public PartyRef getComposerExternalref() {
-        return this.composerExternalref;
-    }
-
-    public void setSettingDefiningcode(SettingDefiningcode settingDefiningcode) {
-        this.settingDefiningcode = settingDefiningcode;
-    }
-
-    public SettingDefiningcode getSettingDefiningcode() {
-        return this.settingDefiningcode;
     }
 
     public void setTerritory(Territory territory) {
@@ -140,6 +111,47 @@ public class TestAllTypesEnV1 {
         return this.contextCodedTextDefiningcode;
     }
 
+    public void setStartTimeValue(TemporalAccessor startTimeValue) {
+        this.startTimeValue = startTimeValue;
+    }
+
+    public TemporalAccessor getStartTimeValue() {
+        return this.startTimeValue;
+    }
+
+    public void setTestAllTypes(List<TestAllTypes> testAllTypes) {
+        this.testAllTypes = testAllTypes;
+    }
+
+    public List<TestAllTypes> getTestAllTypes() {
+        return this.testAllTypes;
+    }
+
+    public void setTestalltypesContentOpenehrEhrSectionTestAllTypesV1(
+            List<TestAllTypes2> testalltypesContentOpenehrEhrSectionTestAllTypesV1) {
+        this.testalltypesContentOpenehrEhrSectionTestAllTypesV1 = testalltypesContentOpenehrEhrSectionTestAllTypesV1;
+    }
+
+    public List<TestAllTypes2> getTestalltypesContentOpenehrEhrSectionTestAllTypesV1() {
+        return this.testalltypesContentOpenehrEhrSectionTestAllTypesV1;
+    }
+
+    public void setComposerExternalref(PartyRef composerExternalref) {
+        this.composerExternalref = composerExternalref;
+    }
+
+    public PartyRef getComposerExternalref() {
+        return this.composerExternalref;
+    }
+
+    public void setSettingDefiningcode(SettingDefiningcode settingDefiningcode) {
+        this.settingDefiningcode = settingDefiningcode;
+    }
+
+    public SettingDefiningcode getSettingDefiningcode() {
+        return this.settingDefiningcode;
+    }
+
     public void setTestalltypesContentOpenehrEhrObservationTestAllTypesV1(
             List<TestAllTypes7> testalltypesContentOpenehrEhrObservationTestAllTypesV1) {
         this.testalltypesContentOpenehrEhrObservationTestAllTypesV1 = testalltypesContentOpenehrEhrObservationTestAllTypesV1;
@@ -157,11 +169,11 @@ public class TestAllTypesEnV1 {
         return this.location;
     }
 
-    public void setStartTimeValue(TemporalAccessor startTimeValue) {
-        this.startTimeValue = startTimeValue;
+    public void setCategoryDefiningcode(CategoryDefiningcode categoryDefiningcode) {
+        this.categoryDefiningcode = categoryDefiningcode;
     }
 
-    public TemporalAccessor getStartTimeValue() {
-        return this.startTimeValue;
+    public CategoryDefiningcode getCategoryDefiningcode() {
+        return this.categoryDefiningcode;
     }
 }

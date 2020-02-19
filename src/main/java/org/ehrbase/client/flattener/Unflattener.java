@@ -33,6 +33,7 @@ import org.ehrbase.client.annotations.Template;
 import org.ehrbase.client.building.OptSkeletonBuilder;
 import org.ehrbase.client.classgenerator.EnumValueSet;
 import org.ehrbase.client.exception.ClientException;
+import org.ehrbase.client.normalizer.Normalizer;
 import org.ehrbase.client.templateprovider.TemplateProvider;
 import org.ehrbase.serialisation.CanonicalJson;
 import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
@@ -48,9 +49,11 @@ import java.util.*;
 public class Unflattener {
 
     private static final RMObjectCreator RM_OBJECT_CREATOR = new RMObjectCreator(ArchieRMInfoLookup.getInstance());
+    public static final Normalizer NORMALIZER = new Normalizer();
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
     private TemplateProvider templateProvider;
+    public static final OptSkeletonBuilder OPT_SKELETON_BUILDER = new OptSkeletonBuilder();
 
     public Unflattener(TemplateProvider templateProvider) {
 
@@ -61,11 +64,10 @@ public class Unflattener {
         Template template = dto.getClass().getAnnotation(Template.class);
 
         OPERATIONALTEMPLATE operationalTemplate = templateProvider.find(template.value()).orElseThrow(() -> new ClientException(String.format("Unknown Template %s", template.value())));
-        OptSkeletonBuilder optSkeletonBuilder = new OptSkeletonBuilder();
-        Locatable generate = (Locatable) optSkeletonBuilder.generate(operationalTemplate);
+        Locatable generate = (Locatable) OPT_SKELETON_BUILDER.generate(operationalTemplate);
 
         mapDtoToEntity(dto, generate);
-        return generate;
+        return NORMALIZER.normalize(generate);
     }
 
     private void mapDtoToEntity(Object dto, RMObject generate) {
