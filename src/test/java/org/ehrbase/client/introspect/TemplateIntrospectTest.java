@@ -54,6 +54,7 @@ public class TemplateIntrospectTest {
                         "/content[openEHR-EHR-OBSERVATION.sample_blood_pressure.v1]",
                         "/context/other_context[at0001]/items[at0006]/items[openEHR-EHR-CLUSTER.sample_device.v1]",
                         "/context/location",
+                        "/category",
                         "/context/start_time"
                 );
 
@@ -64,7 +65,7 @@ public class TemplateIntrospectTest {
                 .extracting(e -> e.getKey().getSimpleName(), Map.Entry::getValue)
                 .containsExactlyInAnyOrder(
                         new Tuple("PartyProxy", 2L),
-                        new Tuple("DvCodedText", 5L),
+                        new Tuple("DvCodedText", 6L),
                         new Tuple("CodePhrase", 3L),
                         new Tuple("PartyIdentified", 1L),
                         new Tuple("DvDateTime", 6L),
@@ -75,7 +76,7 @@ public class TemplateIntrospectTest {
                 );
 
         assertThat(countNodes(actual, ArchetypeNode.class)).isEqualTo(2l);
-        assertThat(countNodes(actual, EndNode.class)).isEqualTo(33l);
+        assertThat(countNodes(actual, EndNode.class)).isEqualTo(34l);
         assertThat(countNodes(actual, SlotNode.class)).isEqualTo(3l);
         assertThat(countNodes(actual, ChoiceNode.class)).isEqualTo(0l);
     }
@@ -99,6 +100,7 @@ public class TemplateIntrospectTest {
                         "/content[openEHR-EHR-OBSERVATION.body_temperature.v2]",
                         "/context/other_context[at0001]/items[at0002]",
                         "/context/location",
+                        "/category",
                         "/context/start_time"
                 );
         Map<Class, Long> classes = findAll(actual).stream()
@@ -108,7 +110,7 @@ public class TemplateIntrospectTest {
                 .extracting(e -> e.getKey().getSimpleName(), Map.Entry::getValue)
                 .containsExactlyInAnyOrder(
                         new Tuple("PartyProxy", 2L),
-                        new Tuple("DvCodedText", 2L),
+                        new Tuple("DvCodedText", 3L),
                         new Tuple("CodePhrase", 3L),
                         new Tuple("PartyIdentified", 1L),
                         new Tuple("DvDateTime", 3L),
@@ -118,7 +120,7 @@ public class TemplateIntrospectTest {
                 );
 
         assertThat(countNodes(actual, ArchetypeNode.class)).isEqualTo(1l);
-        assertThat(countNodes(actual, EndNode.class)).isEqualTo(17l);
+        assertThat(countNodes(actual, EndNode.class)).isEqualTo(18l);
         assertThat(countNodes(actual, SlotNode.class)).isEqualTo(6l);
         assertThat(countNodes(actual, ChoiceNode.class)).isEqualTo(1l);
     }
@@ -144,6 +146,7 @@ public class TemplateIntrospectTest {
                         "/context/other_context[at0004]/item[at0005]/value",
                         "/content[openEHR-EHR-OBSERVATION.test_all_types.v1]",
                         "/context/location",
+                        "/category",
                         "/context/start_time"
                 );
         assertThat(((ArchetypeNode) actual.get("/content[openEHR-EHR-SECTION.test_all_types.v1]")).getChildren().keySet())
@@ -162,7 +165,7 @@ public class TemplateIntrospectTest {
                         new Tuple("PartyProxy", 4L),
                         new Tuple("DvDate", 2L),
                         new Tuple("DvMultimedia", 1L),
-                        new Tuple("DvCodedText", 13L),
+                        new Tuple("DvCodedText", 14L),
                         new Tuple("DvURI", 1L),
                         new Tuple("CodePhrase", 6L),
                         new Tuple("DvParsable", 1L),
@@ -183,7 +186,7 @@ public class TemplateIntrospectTest {
                 );
 
         assertThat(countNodes(actual, ArchetypeNode.class)).isEqualTo(7l);
-        assertThat(countNodes(actual, EndNode.class)).isEqualTo(58l);
+        assertThat(countNodes(actual, EndNode.class)).isEqualTo(59l);
         assertThat(countNodes(actual, SlotNode.class)).isEqualTo(2l);
         assertThat(countNodes(actual, ChoiceNode.class)).isEqualTo(1l);
     }

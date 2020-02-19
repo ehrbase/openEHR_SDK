@@ -94,11 +94,12 @@ public class ClassGeneratorTest {
                         new Tuple("bloodPressureTrainingSample", "java.util.List<org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev0.definition.BloodPressureTrainingSample>"),
                         new Tuple("location", "java.lang.String"),
                         new Tuple("deviceDetailsTrainingSample", "java.util.List<org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev0.definition.DeviceDetailsTrainingSample>"),
+                        new Tuple("categoryDefiningcode", "org.ehrbase.client.classgenerator.examples.shareddefinition.CategoryDefiningcode"),
                         new Tuple("startTimeValue", "java.time.temporal.TemporalAccessor")
                 );
 
 
-      //  generate.createFiles(Paths.get(".", "src/test/java/"));
+        //    generate.createFiles(Paths.get(".", "src/test/java/"));
 
 
     }
@@ -149,11 +150,12 @@ public class ClassGeneratorTest {
                         new Tuple("environmentalConditions", "java.util.List<com.nedap.archie.rm.datastructures.Cluster>"),
                         new Tuple("bodyExposure", "org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1.definition.StateBodyExposureChoice"),
                         new Tuple("locationOfMeasurement", "org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1.definition.ProtocolLocationOfMeasurementChoice"),
+                        new Tuple("categoryDefiningcode", "org.ehrbase.client.classgenerator.examples.shareddefinition.CategoryDefiningcode"),
                         new Tuple("extension", "java.util.List<com.nedap.archie.rm.datastructures.Cluster>")
                 );
 
 
-        //     generate.createFiles(Paths.get(".", "src/test/java/"));
+        //    generate.createFiles(Paths.get(".", "src/test/java/"));
 
     }
 
@@ -240,11 +242,12 @@ public class ClassGeneratorTest {
                         new Tuple("testAllTypes", "java.util.List<org.ehrbase.client.classgenerator.examples.testalltypesenv1.definition.TestAllTypes4>"),
                         new Tuple("language", "org.ehrbase.client.classgenerator.examples.shareddefinition.Language"),
                         new Tuple("contextCodedTextDefiningcode", "org.ehrbase.client.classgenerator.examples.testalltypesenv1.definition.ContextCodedTextDefiningcode"),
+                        new Tuple("categoryDefiningcode", "org.ehrbase.client.classgenerator.examples.shareddefinition.CategoryDefiningcode"),
                         new Tuple("location", "java.lang.String")
                 );
 
 
-        //      generate.createFiles(Paths.get(".", "src/test/java/"));
+        //          generate.createFiles(Paths.get(".", "src/test/java/"));
 
     }
 

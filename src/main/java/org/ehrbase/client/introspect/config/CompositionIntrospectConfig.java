@@ -27,7 +27,7 @@ import java.util.stream.Stream;
 
 public class CompositionIntrospectConfig implements RmIntrospectConfig {
 
-    private static final Set<String> FIELDS = Stream.of("language", "territory", "composer").collect(Collectors.toSet());
+    private static final Set<String> FIELDS = Stream.of("language", "territory", "composer", "category").collect(Collectors.toSet());
 
     @Override
     public Class getRMClass() {
@@ -46,6 +46,8 @@ public class CompositionIntrospectConfig implements RmIntrospectConfig {
                 return TerminologyProvider.findOpenEhrValueSet("ISO_639-1", "");
             case "territory":
                 return TerminologyProvider.findOpenEhrValueSet("ISO_3166-1", "");
+            case "category":
+                return TerminologyProvider.findOpenEhrValueSet(TerminologyProvider.OPENEHR, "composition category");
             default:
                 return ValueSet.EMPTY_VALUE_SET;
         }

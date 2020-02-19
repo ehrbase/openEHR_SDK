@@ -220,7 +220,7 @@ public class OptSkeletonBuilder {
             rmTypeName = "POINT_EVENT";
         }
 
-        Class rmClass = RM_INFO_LOOKUP.getClass(ccobj.getRmTypeName());
+        Class<?> rmClass = RM_INFO_LOOKUP.getClass(ccobj.getRmTypeName());
 
         if (Pathable.class.isAssignableFrom(rmClass)) {
 
@@ -241,7 +241,7 @@ public class OptSkeletonBuilder {
         return obj;
     }
 
-    private void handelNonTemplateFields(Class rmClass, Map<String, Object> valueMap) {
+    private void handelNonTemplateFields(Class<?> rmClass, Map<String, Object> valueMap) {
         RmIntrospectConfig introspectConfig = configMap.get(rmClass);
 
         if (introspectConfig != null) {
@@ -298,7 +298,7 @@ public class OptSkeletonBuilder {
                     .map(CodePhrase::getCodeString)
                     .map(termDef::get)
                     .orElse(defining_code
-                            .map(this::findByTerminologie).orElse(""));
+                            .map(this::findByTerminologie).orElse(null));
             dvCodedText.setValue(value);
         }
     }

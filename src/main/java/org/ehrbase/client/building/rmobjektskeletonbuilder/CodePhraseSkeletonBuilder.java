@@ -19,7 +19,6 @@ package org.ehrbase.client.building.rmobjektskeletonbuilder;
 
 import com.nedap.archie.rm.datatypes.CodePhrase;
 import com.nedap.archie.rm.support.identification.TerminologyId;
-import org.apache.commons.lang3.ArrayUtils;
 import org.openehr.schemas.v1.CCODEPHRASE;
 import org.openehr.schemas.v1.CODEPHRASE;
 
@@ -37,10 +36,7 @@ public class CodePhraseSkeletonBuilder implements RmObjektSkeletonBuilder<CCODEP
             codePhrase.setCodeString(assumedValue.getCodeString());
             codePhrase.setTerminologyId(new TerminologyId(assumedValue.getTerminologyId().getValue()));
         }
-        if (ArrayUtils.isNotEmpty(xml.getCodeListArray()) && xml.getCodeListArray().length == 1) {
-            codePhrase.setTerminologyId(new TerminologyId(xml.getTerminologyId().getValue()));
-            codePhrase.setCodeString(xml.getCodeListArray()[0]);
-        }
+
         return codePhrase;
     }
 }
