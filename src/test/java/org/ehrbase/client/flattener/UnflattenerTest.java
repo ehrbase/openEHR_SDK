@@ -26,6 +26,7 @@ import com.nedap.archie.rm.datatypes.CodePhrase;
 import com.nedap.archie.rm.datavalues.DvCodedText;
 import com.nedap.archie.rm.datavalues.DvText;
 import com.nedap.archie.rm.datavalues.quantity.DvQuantity;
+import com.nedap.archie.rm.generic.PartySelf;
 import com.nedap.archie.rm.support.identification.TerminologyId;
 import org.apache.commons.io.IOUtils;
 import org.ehrbase.client.TestData;
@@ -92,6 +93,7 @@ public class UnflattenerTest {
         DvCodedText expected = new DvCodedText("Fifth sound", new CodePhrase(new TerminologyId("local"), "at1012"));
 
         assertThat(observation.itemAtPath("/protocol[at0011]/items[at1010]/value")).isEqualTo(expected);
+        assertThat(observation.getSubject()).isNotNull().extracting(Object::getClass).isEqualTo(PartySelf.class);
 
     }
 

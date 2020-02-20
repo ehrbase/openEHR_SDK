@@ -16,6 +16,8 @@
  */
 package org.ehrbase.client;
 
+import com.nedap.archie.rm.generic.PartyIdentified;
+import com.nedap.archie.rm.generic.PartySelf;
 import com.nedap.archie.rm.support.identification.HierObjectId;
 import com.nedap.archie.rm.support.identification.PartyRef;
 import org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev0.EhrbaseBloodPressureSimpleDeV0;
@@ -71,9 +73,10 @@ public class TestData {
         bloodPressureSimpleDeV0.setTerritory(Territory.DE);
         bloodPressureSimpleDeV0.setCategoryDefiningcode(CategoryDefiningcode.EVENT);
         bloodPressureSimpleDeV0.setSettingDefiningcode(SettingDefiningcode.NURSINGHOMECARE);
-        bloodPressureSimpleDeV0.setComposerExternalref(buildPartyRef());
+        bloodPressureSimpleDeV0.setComposer(new PartyIdentified(null, "Test", null));
 
         BloodPressureTrainingSample bloodPressureTrainingSample = new BloodPressureTrainingSample();
+        bloodPressureTrainingSample.setSubject(new PartySelf());
         bloodPressureTrainingSample.setSystolicMagnitude(22d);
         bloodPressureTrainingSample.setSystolicUnits("mm[Hg]");
         bloodPressureTrainingSample.setDiastolicMagnitude(22d);
@@ -101,7 +104,7 @@ public class TestData {
         dto.setTerritory(Territory.DE);
         dto.setSettingDefiningcode(SettingDefiningcode.DENTALCARE);
         dto.setCategoryDefiningcode(CategoryDefiningcode.EVENT);
-        dto.setComposerExternalref(buildPartyRef());
+        dto.setComposer(new PartyIdentified(null, "Test", null));
         dto.setBodyTemperature(new ArrayList<>());
 
         dto.getBodyTemperature().add(buildBodyTemperature1());

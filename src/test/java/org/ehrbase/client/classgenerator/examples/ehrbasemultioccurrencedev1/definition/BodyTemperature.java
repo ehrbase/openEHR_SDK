@@ -1,7 +1,7 @@
 package org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1.definition;
 
 import com.nedap.archie.rm.datastructures.Cluster;
-import com.nedap.archie.rm.support.identification.PartyRef;
+import com.nedap.archie.rm.generic.PartyProxy;
 import org.ehrbase.client.annotations.Archetype;
 import org.ehrbase.client.annotations.Choice;
 import org.ehrbase.client.annotations.Entity;
@@ -29,8 +29,8 @@ public class BodyTemperature {
     @Path("/protocol[at0020]/items[at0059]")
     private Cluster device;
 
-    @Path("/subject|external_ref")
-    private PartyRef subjectExternalref;
+    @Path("/subject")
+    private PartyProxy subject;
 
     @Path("/protocol[at0020]/items[at0021]/value")
     @Choice
@@ -79,12 +79,12 @@ public class BodyTemperature {
         return this.device;
     }
 
-    public void setSubjectExternalref(PartyRef subjectExternalref) {
-        this.subjectExternalref = subjectExternalref;
+    public void setSubject(PartyProxy subject) {
+        this.subject = subject;
     }
 
-    public PartyRef getSubjectExternalref() {
-        return this.subjectExternalref;
+    public PartyProxy getSubject() {
+        return this.subject;
     }
 
     public void setLocationOfMeasurement(ProtocolLocationOfMeasurementChoice locationOfMeasurement) {

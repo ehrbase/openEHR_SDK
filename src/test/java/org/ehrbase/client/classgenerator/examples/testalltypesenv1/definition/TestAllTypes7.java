@@ -6,7 +6,7 @@ import com.nedap.archie.rm.datavalues.encapsulated.DvMultimedia;
 import com.nedap.archie.rm.datavalues.encapsulated.DvParsable;
 import com.nedap.archie.rm.datavalues.quantity.DvOrdinal;
 import com.nedap.archie.rm.datavalues.quantity.DvProportion;
-import com.nedap.archie.rm.support.identification.PartyRef;
+import com.nedap.archie.rm.generic.PartyProxy;
 import org.ehrbase.client.annotations.Archetype;
 import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.Path;
@@ -61,8 +61,8 @@ public class TestAllTypes7 {
     @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0009]/value|value")
     private Temporal dateValue;
 
-    @Path("/subject|external_ref")
-    private PartyRef subjectExternalref;
+    @Path("/subject")
+    private PartyProxy subject;
 
     @Path("/data[at0001]/origin|value")
     private TemporalAccessor originValue;
@@ -194,12 +194,12 @@ public class TestAllTypes7 {
         return this.dateValue;
     }
 
-    public void setSubjectExternalref(PartyRef subjectExternalref) {
-        this.subjectExternalref = subjectExternalref;
+    public void setSubject(PartyProxy subject) {
+        this.subject = subject;
     }
 
-    public PartyRef getSubjectExternalref() {
-        return this.subjectExternalref;
+    public PartyProxy getSubject() {
+        return this.subject;
     }
 
     public void setOriginValue(TemporalAccessor originValue) {

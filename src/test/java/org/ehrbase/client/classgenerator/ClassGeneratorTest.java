@@ -71,7 +71,7 @@ public class ClassGeneratorTest {
                         new Tuple("meanArterialPressureMagnitude", "java.lang.Double"),
                         new Tuple("meanArterialPressureUnits", "java.lang.String"),
                         new Tuple("timeValue", "java.time.temporal.TemporalAccessor"),
-                        new Tuple("subjectExternalref", "com.nedap.archie.rm.support.identification.PartyRef"),
+                        new Tuple("subject", "com.nedap.archie.rm.generic.PartyProxy"),
                         new Tuple("originValue", "java.time.temporal.TemporalAccessor"),
                         new Tuple("pulsePressureMagnitude", "java.lang.Double"),
                         new Tuple("pulsePressureUnits", "java.lang.String"),
@@ -88,7 +88,7 @@ public class ClassGeneratorTest {
                         new Tuple("endTimeValue", "java.time.temporal.TemporalAccessor"),
                         new Tuple("language", "org.ehrbase.client.classgenerator.examples.shareddefinition.Language"),
                         new Tuple("healthCareFacility", "com.nedap.archie.rm.generic.PartyIdentified"),
-                        new Tuple("composerExternalref", "com.nedap.archie.rm.support.identification.PartyRef"),
+                        new Tuple("composer", "com.nedap.archie.rm.generic.PartyProxy"),
                         new Tuple("settingDefiningcode", "org.ehrbase.client.classgenerator.examples.shareddefinition.SettingDefiningcode"),
                         new Tuple("territory", "org.ehrbase.client.classgenerator.examples.shareddefinition.Territory"),
                         new Tuple("bloodPressureTrainingSample", "java.util.List<org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev0.definition.BloodPressureTrainingSample>"),
@@ -99,7 +99,7 @@ public class ClassGeneratorTest {
                 );
 
 
-        //    generate.createFiles(Paths.get(".", "src/test/java/"));
+        //  generate.createFiles(Paths.get(".", "src/test/java/"));
 
 
     }
@@ -127,7 +127,7 @@ public class ClassGeneratorTest {
                         new Tuple("structuredMeasurementLocation", "java.util.List<com.nedap.archie.rm.datastructures.Cluster>"),
                         new Tuple("originValue", "java.time.temporal.TemporalAccessor"),
                         new Tuple("device", "com.nedap.archie.rm.datastructures.Cluster"),
-                        new Tuple("subjectExternalref", "com.nedap.archie.rm.support.identification.PartyRef"),
+                        new Tuple("subject", "com.nedap.archie.rm.generic.PartyProxy"),
                         new Tuple("locationOfMeasurementDefiningcode", "org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1.definition.LocationOfMeasurementDefiningcode"),
                         new Tuple("history", "java.util.List<org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1.definition.BodyTemperatureHistory>"),
                         new Tuple("locationOfMeasurementValue", "java.lang.String"),
@@ -141,7 +141,7 @@ public class ClassGeneratorTest {
                         new Tuple("endTimeValue", "java.time.temporal.TemporalAccessor"),
                         new Tuple("language", "org.ehrbase.client.classgenerator.examples.shareddefinition.Language"),
                         new Tuple("healthCareFacility", "com.nedap.archie.rm.generic.PartyIdentified"),
-                        new Tuple("composerExternalref", "com.nedap.archie.rm.support.identification.PartyRef"),
+                        new Tuple("composer", "com.nedap.archie.rm.generic.PartyProxy"),
                         new Tuple("territory", "org.ehrbase.client.classgenerator.examples.shareddefinition.Territory"),
                         new Tuple("bodyTemperature", "java.util.List<org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1.definition.BodyTemperature>"),
                         new Tuple("location", "java.lang.String"),
@@ -155,7 +155,7 @@ public class ClassGeneratorTest {
                 );
 
 
-        //    generate.createFiles(Paths.get(".", "src/test/java/"));
+        // generate.createFiles(Paths.get(".", "src/test/java/"));
 
     }
 
@@ -183,7 +183,7 @@ public class ClassGeneratorTest {
                         new Tuple("language", "org.ehrbase.client.classgenerator.examples.shareddefinition.Language"),
                         new Tuple("language", "org.ehrbase.client.classgenerator.examples.shareddefinition.Language"),
                         new Tuple("choice", "org.ehrbase.client.classgenerator.examples.testalltypesenv1.definition.ArbolChoiceChoice"),
-                        new Tuple("subjectExternalref", "com.nedap.archie.rm.support.identification.PartyRef"),
+                        new Tuple("subject", "com.nedap.archie.rm.generic.PartyProxy"),
                         new Tuple("testAllTypes", "java.util.List<org.ehrbase.client.classgenerator.examples.testalltypesenv1.definition.TestAllTypes3>"),
                         new Tuple("testalltypesItemsOpenehrEhrInstructionTestAllTypesV1", "java.util.List<org.ehrbase.client.classgenerator.examples.testalltypesenv1.definition.TestAllTypes5>"),
                         new Tuple("testalltypesItemsOpenehrEhrAdminEntryTestAllTypesV1", "java.util.List<org.ehrbase.client.classgenerator.examples.testalltypesenv1.definition.TestAllTypes6>"),
@@ -203,7 +203,7 @@ public class ClassGeneratorTest {
                         new Tuple("quantityUnits", "java.lang.String"),
                         new Tuple("countMagnitude", "java.lang.Long"),
                         new Tuple("dateValue", "java.time.temporal.Temporal"),
-                        new Tuple("subjectExternalref", "com.nedap.archie.rm.support.identification.PartyRef"),
+                        new Tuple("subject", "com.nedap.archie.rm.generic.PartyProxy"),
                         new Tuple("originValue", "java.time.temporal.TemporalAccessor"),
                         new Tuple("durationAnyValue", "java.time.temporal.TemporalAmount"),
                         new Tuple("ordinal", "com.nedap.archie.rm.datavalues.quantity.DvOrdinal"),
@@ -215,7 +215,7 @@ public class ClassGeneratorTest {
                         new Tuple("testalltypesContentOpenehrEhrSectionTestAllTypesV1", "java.util.List<org.ehrbase.client.classgenerator.examples.testalltypesenv1.definition.TestAllTypes2>"),
                         new Tuple("language", "com.nedap.archie.rm.datatypes.CodePhrase"),
                         new Tuple("healthCareFacility", "com.nedap.archie.rm.generic.PartyIdentified"),
-                        new Tuple("composerExternalref", "com.nedap.archie.rm.support.identification.PartyRef"),
+                        new Tuple("composer", "com.nedap.archie.rm.generic.PartyProxy"),
                         new Tuple("settingDefiningcode", "org.ehrbase.client.classgenerator.examples.shareddefinition.SettingDefiningcode"),
                         new Tuple("territory", "org.ehrbase.client.classgenerator.examples.shareddefinition.Territory"),
                         new Tuple("testalltypesContentOpenehrEhrObservationTestAllTypesV1", "java.util.List<org.ehrbase.client.classgenerator.examples.testalltypesenv1.definition.TestAllTypes7>"),
@@ -237,7 +237,7 @@ public class ClassGeneratorTest {
                         new Tuple("count3Magnitude", "java.lang.Long"),
                         new Tuple("language", "org.ehrbase.client.classgenerator.examples.shareddefinition.Language"),
                         new Tuple("timeValue", "java.time.temporal.TemporalAccessor"),
-                        new Tuple("subjectExternalref", "com.nedap.archie.rm.support.identification.PartyRef"),
+                        new Tuple("subject", "com.nedap.archie.rm.generic.PartyProxy"),
                         new Tuple("completedDefiningcode", "org.ehrbase.client.classgenerator.examples.testalltypesenv1.definition.CompletedDefiningcode"),
                         new Tuple("testAllTypes", "java.util.List<org.ehrbase.client.classgenerator.examples.testalltypesenv1.definition.TestAllTypes4>"),
                         new Tuple("language", "org.ehrbase.client.classgenerator.examples.shareddefinition.Language"),
@@ -247,7 +247,7 @@ public class ClassGeneratorTest {
                 );
 
 
-        //          generate.createFiles(Paths.get(".", "src/test/java/"));
+        //   generate.createFiles(Paths.get(".", "src/test/java/"));
 
     }
 

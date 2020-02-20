@@ -1,7 +1,7 @@
 package org.ehrbase.client.classgenerator.examples.testalltypesenv1;
 
 import com.nedap.archie.rm.generic.PartyIdentified;
-import com.nedap.archie.rm.support.identification.PartyRef;
+import com.nedap.archie.rm.generic.PartyProxy;
 import org.ehrbase.client.annotations.*;
 import org.ehrbase.client.classgenerator.examples.shareddefinition.CategoryDefiningcode;
 import org.ehrbase.client.classgenerator.examples.shareddefinition.Language;
@@ -47,8 +47,8 @@ public class TestAllTypesEnV1 {
     @Path("/content[openEHR-EHR-SECTION.test_all_types.v1]")
     private List<TestAllTypes2> testalltypesContentOpenehrEhrSectionTestAllTypesV1;
 
-    @Path("/composer|external_ref")
-    private PartyRef composerExternalref;
+    @Path("/composer")
+    private PartyProxy composer;
 
     @Path("/context/setting|defining_code")
     private SettingDefiningcode settingDefiningcode;
@@ -136,12 +136,12 @@ public class TestAllTypesEnV1 {
         return this.testalltypesContentOpenehrEhrSectionTestAllTypesV1;
     }
 
-    public void setComposerExternalref(PartyRef composerExternalref) {
-        this.composerExternalref = composerExternalref;
+    public void setComposer(PartyProxy composer) {
+        this.composer = composer;
     }
 
-    public PartyRef getComposerExternalref() {
-        return this.composerExternalref;
+    public PartyProxy getComposer() {
+        return this.composer;
     }
 
     public void setSettingDefiningcode(SettingDefiningcode settingDefiningcode) {
