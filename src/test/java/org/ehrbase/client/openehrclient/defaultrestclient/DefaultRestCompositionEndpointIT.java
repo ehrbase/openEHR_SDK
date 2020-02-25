@@ -21,10 +21,10 @@ import com.nedap.archie.rm.generic.PartyIdentified;
 import com.nedap.archie.rm.generic.PartySelf;
 import org.ehrbase.client.Integration;
 import org.ehrbase.client.TestData;
-import org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev0.EhrbaseBloodPressureSimpleDeV0;
-import org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev0.definition.KorotkoffSoundsDefiningcode;
-import org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1.EhrbaseMultiOccurrenceDeV1;
-import org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1.definition.*;
+import org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev0composition.EhrbaseBloodPressureSimpleDeV0Composition;
+import org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev0composition.definition.KorotkoffSoundsDefiningcode;
+import org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1composition.EhrbaseMultiOccurrenceDeV1Composition;
+import org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1composition.definition.*;
 import org.ehrbase.client.classgenerator.examples.shareddefinition.SettingDefiningcode;
 import org.ehrbase.client.exception.OptimisticLockException;
 import org.ehrbase.client.openehrclient.CompositionEndpoint;
@@ -56,7 +56,7 @@ public class DefaultRestCompositionEndpointIT {
     public void testSaveCompositionEntity() {
 
         UUID ehr = openEhrClient.ehrEndpoint().createEhr();
-        EhrbaseBloodPressureSimpleDeV0 bloodPressureSimpleDeV0 = TestData.buildEhrbaseBloodPressureSimpleDeV0();
+        EhrbaseBloodPressureSimpleDeV0Composition bloodPressureSimpleDeV0 = TestData.buildEhrbaseBloodPressureSimpleDeV0();
 
         openEhrClient.compositionEndpoint(ehr).mergeCompositionEntity(bloodPressureSimpleDeV0);
         assertThat(bloodPressureSimpleDeV0.getVersionUid()).isNotNull();
@@ -84,12 +84,12 @@ public class DefaultRestCompositionEndpointIT {
     public void testFind() {
 
         UUID ehr = openEhrClient.ehrEndpoint().createEhr();
-        EhrbaseBloodPressureSimpleDeV0 bloodPressureSimpleDeV0 = TestData.buildEhrbaseBloodPressureSimpleDeV0();
+        EhrbaseBloodPressureSimpleDeV0Composition bloodPressureSimpleDeV0 = TestData.buildEhrbaseBloodPressureSimpleDeV0();
 
         CompositionEndpoint compositionEndpoint = openEhrClient.compositionEndpoint(ehr);
-        EhrbaseBloodPressureSimpleDeV0 version1 = compositionEndpoint.mergeCompositionEntity(bloodPressureSimpleDeV0);
+        EhrbaseBloodPressureSimpleDeV0Composition version1 = compositionEndpoint.mergeCompositionEntity(bloodPressureSimpleDeV0);
 
-        Optional<EhrbaseBloodPressureSimpleDeV0> actual = compositionEndpoint.find(version1.getVersionUid().getUuid(), EhrbaseBloodPressureSimpleDeV0.class);
+        Optional<EhrbaseBloodPressureSimpleDeV0Composition> actual = compositionEndpoint.find(version1.getVersionUid().getUuid(), EhrbaseBloodPressureSimpleDeV0Composition.class);
         assertTrue(actual.isPresent());
 
         assertThat(actual.get().getComposer()).isNotNull().extracting(Object::getClass).isEqualTo(PartyIdentified.class);
@@ -108,26 +108,26 @@ public class DefaultRestCompositionEndpointIT {
     public void testEhrbaseMultiOccurrenceDeV1() {
 
         UUID ehr = openEhrClient.ehrEndpoint().createEhr();
-        EhrbaseMultiOccurrenceDeV1 bloodPressureSimpleDeV0 = TestData.buildEhrbaseMultiOccurrenceDeV1();
+        EhrbaseMultiOccurrenceDeV1Composition bloodPressureSimpleDeV0 = TestData.buildEhrbaseMultiOccurrenceDeV1();
 
         CompositionEndpoint compositionEndpoint = openEhrClient.compositionEndpoint(ehr);
-        EhrbaseMultiOccurrenceDeV1 version1 = compositionEndpoint.mergeCompositionEntity(bloodPressureSimpleDeV0);
+        EhrbaseMultiOccurrenceDeV1Composition version1 = compositionEndpoint.mergeCompositionEntity(bloodPressureSimpleDeV0);
 
-        Optional<EhrbaseMultiOccurrenceDeV1> actual = compositionEndpoint.find(version1.getVersionUid().getUuid(), EhrbaseMultiOccurrenceDeV1.class);
+        Optional<EhrbaseMultiOccurrenceDeV1Composition> actual = compositionEndpoint.find(version1.getVersionUid().getUuid(), EhrbaseMultiOccurrenceDeV1Composition.class);
         assertTrue(actual.isPresent());
-        BodyTemperature bodyTemperature1 = actual.get().getBodyTemperature().get(0);
-        assertThat(bodyTemperature1.getHistory())
-                .extracting(BodyTemperatureHistory::getTemperatureMagnitude)
+        BodyTemperatureObservation bodyTemperature1 = actual.get().getBodyTemperature().get(0);
+        assertThat(bodyTemperature1.getAnyEvent())
+                .extracting(AnyEventEvent::getTemperatureMagnitude)
                 .containsExactlyInAnyOrder(11d, 22d);
 
-        ProtocolLocationOfMeasurementChoice locationOfMeasurement1 = bodyTemperature1.getLocationOfMeasurement();
-        assertThat(locationOfMeasurement1.getClass()).isEqualTo(ProtocolLocationOfMeasurementDvcodedtext.class);
-        assertThat(((ProtocolLocationOfMeasurementDvcodedtext) locationOfMeasurement1).getLocationOfMeasurementDefiningcode()).isEqualTo(LocationOfMeasurementDefiningcode.FOREHEAD);
+        LocationOfMeasurementChoice locationOfMeasurement1 = bodyTemperature1.getLocationOfMeasurement();
+        assertThat(locationOfMeasurement1.getClass()).isEqualTo(LocationOfMeasurementDvcodedtext.class);
+        assertThat(((LocationOfMeasurementDvcodedtext) locationOfMeasurement1).getLocationOfMeasurementDefiningcode()).isEqualTo(LocationOfMeasurementDefiningcode.FOREHEAD);
 
-        BodyTemperature bodyTemperature2 = actual.get().getBodyTemperature().get(1);
-        ProtocolLocationOfMeasurementChoice locationOfMeasurement2 = bodyTemperature2.getLocationOfMeasurement();
-        assertThat(locationOfMeasurement2.getClass()).isEqualTo(ProtocolLocationOfMeasurementDvtext.class);
-        assertThat(((ProtocolLocationOfMeasurementDvtext) locationOfMeasurement2).getLocationOfMeasurementValue()).isEqualTo("location");
+        BodyTemperatureObservation bodyTemperature2 = actual.get().getBodyTemperature().get(1);
+        LocationOfMeasurementChoice locationOfMeasurement2 = bodyTemperature2.getLocationOfMeasurement();
+        assertThat(locationOfMeasurement2.getClass()).isEqualTo(LocationOfMeasurementDvtext.class);
+        assertThat(((LocationOfMeasurementDvtext) locationOfMeasurement2).getLocationOfMeasurementValue()).isEqualTo("location");
 
     }
 

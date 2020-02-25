@@ -30,10 +30,10 @@ import com.nedap.archie.rm.generic.PartySelf;
 import com.nedap.archie.rm.support.identification.TerminologyId;
 import org.apache.commons.io.IOUtils;
 import org.ehrbase.client.TestData;
-import org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev0.EhrbaseBloodPressureSimpleDeV0;
-import org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1.EhrbaseMultiOccurrenceDeV1;
-import org.ehrbase.client.classgenerator.examples.testalltypesenv1.TestAllTypesEnV1;
-import org.ehrbase.client.classgenerator.examples.testalltypesenv1.definition.ArbolChoiceDvquantity;
+import org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev0composition.EhrbaseBloodPressureSimpleDeV0Composition;
+import org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1composition.EhrbaseMultiOccurrenceDeV1Composition;
+import org.ehrbase.client.classgenerator.examples.testalltypesenv1composition.TestAllTypesEnV1Composition;
+import org.ehrbase.client.classgenerator.examples.testalltypesenv1composition.definition.ChoiceDvquantity;
 import org.ehrbase.client.templateprovider.TestDataTemplateProvider;
 import org.ehrbase.serialisation.CanonicalXML;
 import org.ehrbase.test_data.composition.CompositionTestDataCanonicalXML;
@@ -79,7 +79,7 @@ public class UnflattenerTest {
     public void testUnflattenEhrbaseBloodPressureSimpleDeV0() {
         Unflattener cut = new Unflattener(new TestDataTemplateProvider());
 
-        EhrbaseBloodPressureSimpleDeV0 dto = buildEhrbaseBloodPressureSimpleDeV0();
+        EhrbaseBloodPressureSimpleDeV0Composition dto = buildEhrbaseBloodPressureSimpleDeV0();
 
         Composition rmObject = (Composition) cut.unflatten(dto);
 
@@ -101,7 +101,7 @@ public class UnflattenerTest {
     public void testUnflattenEhrbaseMultiOccurrenceDeV1() {
         Unflattener cut = new Unflattener(new TestDataTemplateProvider());
 
-        EhrbaseMultiOccurrenceDeV1 dto = TestData.buildEhrbaseMultiOccurrenceDeV1();
+        EhrbaseMultiOccurrenceDeV1Composition dto = TestData.buildEhrbaseMultiOccurrenceDeV1();
 
         Composition rmObject = (Composition) cut.unflatten(dto);
 
@@ -130,8 +130,8 @@ public class UnflattenerTest {
     public void testUnflattenAllTypes() throws IOException {
         Composition composition = new CanonicalXML().unmarshal(IOUtils.toString(CompositionTestDataCanonicalXML.ALL_TYPES.getStream(), StandardCharsets.UTF_8), Composition.class);
         Flattener flattener = new Flattener();
-        TestAllTypesEnV1 testAllTypesEnV1 = flattener.flatten(composition, TestAllTypesEnV1.class);
-        ArbolChoiceDvquantity choiceDvquantity = new ArbolChoiceDvquantity();
+        TestAllTypesEnV1Composition testAllTypesEnV1 = flattener.flatten(composition, TestAllTypesEnV1Composition.class);
+        ChoiceDvquantity choiceDvquantity = new ChoiceDvquantity();
         choiceDvquantity.setChoiceMagnitude(22d);
         choiceDvquantity.setChoiceUnits("mm[Hg]");
         testAllTypesEnV1.getTestAllTypes().get(0).setChoice(choiceDvquantity);

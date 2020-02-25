@@ -18,17 +18,32 @@
 package org.ehrbase.client.introspect.node;
 
 import java.util.Map;
+import java.util.Objects;
 
 public class TemplateNode extends ArchetypeNode {
 
     private final String templateId;
 
-    public TemplateNode(String name, String archetypeId, Map<String, Node> children, String templateId) {
-        super(name, archetypeId, children, false);
+    public TemplateNode(String name, String archetypeId, Map<String, Node> children, String templateId, String rmName) {
+        super(name, archetypeId, children, false, rmName);
         this.templateId = templateId;
     }
 
     public String getTemplateId() {
         return templateId;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        TemplateNode that = (TemplateNode) o;
+        return Objects.equals(templateId, that.templateId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), templateId);
     }
 }

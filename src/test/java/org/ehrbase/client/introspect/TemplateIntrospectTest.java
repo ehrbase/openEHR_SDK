@@ -81,6 +81,54 @@ public class TemplateIntrospectTest {
         assertThat(countNodes(actual, ChoiceNode.class)).isEqualTo(0l);
     }
 
+
+    @Test
+    public void introspectAltEvents() throws IOException, XmlException {
+        OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(OperationalTemplateTestData.ALT_EVENTS.getStream()).getTemplate();
+        TemplateIntrospect cut = new TemplateIntrospect(template);
+
+        Map<String, Node> actual = cut.getRoot().getChildren();
+
+        assertThat(actual).isNotEmpty();
+        assertThat(actual.keySet())
+                .containsExactlyInAnyOrder(
+                        "/context/end_time",
+                        "/language",
+                        "/context/health_care_facility",
+                        "/composer",
+                        "/context/setting",
+                        "/territory",
+                        "/content[openEHR-EHR-OBSERVATION.body_weight.v2]",
+                        "/context/location",
+                        "/category",
+                        "/context/start_time",
+                        "/context/other_context[at0001]/items[at0005]/value",
+                        "/context/other_context[at0001]/items[at0002]/value",
+                        "/context/other_context[at0001]/items[at0006]"
+                );
+
+        Map<Class, Long> classes = findAll(actual).stream()
+                .collect(Collectors.groupingBy(EndNode::getClazz, Collectors.counting()));
+
+        assertThat(classes.entrySet())
+                .extracting(e -> e.getKey().getSimpleName(), Map.Entry::getValue)
+                .containsExactlyInAnyOrder(
+                        new Tuple("PartyProxy", 2L),
+                        new Tuple("DvCodedText", 2L),
+                        new Tuple("CodePhrase", 3L),
+                        new Tuple("PartyIdentified", 1L),
+                        new Tuple("DvDateTime", 3L),
+                        new Tuple("DvText", 2L),
+                        new Tuple("Cluster", 3L),
+                        new Tuple("String", 1L)
+                );
+
+        assertThat(countNodes(actual, ArchetypeNode.class)).isEqualTo(1L);
+        assertThat(countNodes(actual, EndNode.class)).isEqualTo(17L);
+        assertThat(countNodes(actual, SlotNode.class)).isEqualTo(3L);
+        assertThat(countNodes(actual, ChoiceNode.class)).isEqualTo(0L);
+    }
+
     @Test
     public void introspectMultiOccurrence() throws IOException, XmlException {
         OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(OperationalTemplateTestData.MULTI_OCCURRENCE.getStream()).getTemplate();
@@ -110,11 +158,10 @@ public class TemplateIntrospectTest {
                 .extracting(e -> e.getKey().getSimpleName(), Map.Entry::getValue)
                 .containsExactlyInAnyOrder(
                         new Tuple("PartyProxy", 2L),
-                        new Tuple("DvCodedText", 3L),
+                        new Tuple("DvCodedText", 2L),
                         new Tuple("CodePhrase", 3L),
                         new Tuple("PartyIdentified", 1L),
                         new Tuple("DvDateTime", 3L),
-                        new Tuple("DvText", 1L),
                         new Tuple("Cluster", 4L),
                         new Tuple("String", 1L)
                 );
@@ -170,11 +217,11 @@ public class TemplateIntrospectTest {
                         new Tuple("CodePhrase", 6L),
                         new Tuple("DvParsable", 1L),
                         new Tuple("DvOrdinal", 1L),
-                        new Tuple("DvCount", 3L),
+                        new Tuple("DvCount", 2L),
                         new Tuple("DvTime", 1L),
                         new Tuple("PartyIdentified", 1L),
                         new Tuple("DvDateTime", 8L),
-                        new Tuple("DvQuantity", 2L),
+                        new Tuple("DvQuantity", 1L),
                         new Tuple("DvProportion", 1L),
                         new Tuple("DvInterval", 3L),
                         new Tuple("DvText", 3L),
@@ -199,7 +246,7 @@ public class TemplateIntrospectTest {
             } else if (ArchetypeNode.class.isAssignableFrom(node.getClass())) {
                 nodes.addAll(findAll(((ArchetypeNode) node).getChildren()));
             } else if (ChoiceNode.class.isAssignableFrom(node.getClass())) {
-                nodes.addAll(((ChoiceNode) node).getNodes());
+                nodes.addAll(((ChoiceNode) node).getNodes().stream().filter(n -> EntityNode.class.isAssignableFrom(n.getClass())).map(n -> (EndNode) n).collect(Collectors.toList()));
             }
         }
         return nodes;

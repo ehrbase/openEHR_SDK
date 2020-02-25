@@ -21,8 +21,8 @@ package org.ehrbase.client.openehrclient.defaultrestclient;
 
 import org.ehrbase.client.Integration;
 import org.ehrbase.client.TestData;
-import org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev0.EhrbaseBloodPressureSimpleDeV0;
-import org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1.EhrbaseMultiOccurrenceDeV1;
+import org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev0composition.EhrbaseBloodPressureSimpleDeV0Composition;
+import org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1composition.EhrbaseMultiOccurrenceDeV1Composition;
 import org.ehrbase.client.openehrclient.FolderDAO;
 import org.ehrbase.client.openehrclient.OpenEhrClient;
 import org.junit.BeforeClass;
@@ -71,19 +71,19 @@ public class DefaultRestDirectoryEndpointIT {
 
         FolderDAO visit = root.getSubFolder("case1/visit1");
 
-        EhrbaseBloodPressureSimpleDeV0 bloodPressureSimpleDeV01 = TestData.buildEhrbaseBloodPressureSimpleDeV0();
+        EhrbaseBloodPressureSimpleDeV0Composition bloodPressureSimpleDeV01 = TestData.buildEhrbaseBloodPressureSimpleDeV0();
         visit.addCompositionEntity(bloodPressureSimpleDeV01);
 
-        EhrbaseBloodPressureSimpleDeV0 bloodPressureSimpleDeV02 = TestData.buildEhrbaseBloodPressureSimpleDeV0();
+        EhrbaseBloodPressureSimpleDeV0Composition bloodPressureSimpleDeV02 = TestData.buildEhrbaseBloodPressureSimpleDeV0();
         visit.addCompositionEntity(bloodPressureSimpleDeV02);
 
-        EhrbaseMultiOccurrenceDeV1 ehrbaseMultiOccurrenceDeV1 = TestData.buildEhrbaseMultiOccurrenceDeV1();
+        EhrbaseMultiOccurrenceDeV1Composition ehrbaseMultiOccurrenceDeV1 = TestData.buildEhrbaseMultiOccurrenceDeV1();
         visit.addCompositionEntity(ehrbaseMultiOccurrenceDeV1);
 
-        List<EhrbaseBloodPressureSimpleDeV0> actual = visit.find(EhrbaseBloodPressureSimpleDeV0.class);
+        List<EhrbaseBloodPressureSimpleDeV0Composition> actual = visit.find(EhrbaseBloodPressureSimpleDeV0Composition.class);
         assertThat(actual).size().isEqualTo(2);
 
-        List<EhrbaseMultiOccurrenceDeV1> actual2 = visit.find(EhrbaseMultiOccurrenceDeV1.class);
+        List<EhrbaseMultiOccurrenceDeV1Composition> actual2 = visit.find(EhrbaseMultiOccurrenceDeV1Composition.class);
         assertThat(actual2).size().isEqualTo(1);
 
     }

@@ -59,13 +59,13 @@ public class ClassGeneratorTest {
                         new Tuple("language", "org.ehrbase.client.classgenerator.examples.shareddefinition.Language"),
                         new Tuple("levelOfExertion", "java.util.List<com.nedap.archie.rm.datastructures.Cluster>"),
                         new Tuple("commentValue", "java.lang.String"),
-                        new Tuple("cuffSizeDefiningcode", "org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev0.definition.CuffSizeDefiningcode"),
-                        new Tuple("korotkoffSoundsDefiningcode", "org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev0.definition.KorotkoffSoundsDefiningcode"),
+                        new Tuple("cuffSizeDefiningcode", "org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev0composition.definition.CuffSizeDefiningcode"),
+                        new Tuple("korotkoffSoundsDefiningcode", "org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev0composition.definition.KorotkoffSoundsDefiningcode"),
                         new Tuple("systolicMagnitude", "java.lang.Double"),
                         new Tuple("systolicUnits", "java.lang.String"),
                         new Tuple("diastolicMagnitude", "java.lang.Double"),
                         new Tuple("diastolicUnits", "java.lang.String"),
-                        new Tuple("positionDefiningcode", "org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev0.definition.PositionDefiningcode"),
+                        new Tuple("positionDefiningcode", "org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev0composition.definition.PositionDefiningcode"),
                         new Tuple("tiltMagnitude", "java.lang.Double"),
                         new Tuple("tiltUnits", "java.lang.String"),
                         new Tuple("meanArterialPressureMagnitude", "java.lang.Double"),
@@ -75,7 +75,7 @@ public class ClassGeneratorTest {
                         new Tuple("originValue", "java.time.temporal.TemporalAccessor"),
                         new Tuple("pulsePressureMagnitude", "java.lang.Double"),
                         new Tuple("pulsePressureUnits", "java.lang.String"),
-                        new Tuple("locationOfMeasurementDefiningcode", "org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev0.definition.LocationOfMeasurementDefiningcode"),
+                        new Tuple("locationOfMeasurementDefiningcode", "org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev0composition.definition.LocationOfMeasurementDefiningcode"),
                         new Tuple("modelValue", "java.lang.String"),
                         new Tuple("serialNumberValue", "java.lang.String"),
                         new Tuple("dateLastServicedValue", "java.time.temporal.TemporalAccessor"),
@@ -91,15 +91,74 @@ public class ClassGeneratorTest {
                         new Tuple("composer", "com.nedap.archie.rm.generic.PartyProxy"),
                         new Tuple("settingDefiningcode", "org.ehrbase.client.classgenerator.examples.shareddefinition.SettingDefiningcode"),
                         new Tuple("territory", "org.ehrbase.client.classgenerator.examples.shareddefinition.Territory"),
-                        new Tuple("bloodPressureTrainingSample", "java.util.List<org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev0.definition.BloodPressureTrainingSample>"),
+                        new Tuple("bloodPressureTrainingSample", "java.util.List<org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev0composition.definition.BloodPressureTrainingSampleObservation>"),
                         new Tuple("location", "java.lang.String"),
-                        new Tuple("deviceDetailsTrainingSample", "java.util.List<org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev0.definition.DeviceDetailsTrainingSample>"),
+                        new Tuple("deviceDetailsTrainingSample", "java.util.List<org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev0composition.definition.DeviceDetailsTrainingSampleCluster>"),
                         new Tuple("categoryDefiningcode", "org.ehrbase.client.classgenerator.examples.shareddefinition.CategoryDefiningcode"),
                         new Tuple("startTimeValue", "java.time.temporal.TemporalAccessor")
                 );
 
 
-        //  generate.createFiles(Paths.get(".", "src/test/java/"));
+        //generate.createFiles(Paths.get(".", "src/test/java/"));
+
+
+    }
+
+
+    @Test
+    public void testGenerateAltEvents() throws IOException, XmlException {
+        OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(OperationalTemplateTestData.ALT_EVENTS.getStream()).getTemplate();
+        ClassGenerator cut = new ClassGenerator();
+        ClassGeneratorResult generate = cut.generate(PACKAGE_NAME, template);
+
+
+        List<FieldSpec> fieldSpecs = generate.getClasses().values().stream()
+                .flatMap(Collection::stream)
+                .filter(t -> !t.kind.equals(TypeSpec.Kind.ENUM))
+                .map(t -> t.fieldSpecs).flatMap(List::stream).collect(Collectors.toList());
+
+
+        assertThat(fieldSpecs)
+                .extracting(f -> f.name, f -> f.type.toString())
+                .containsExactlyInAnyOrder(
+                        new Tuple("versionUid", "org.ehrbase.client.openehrclient.VersionUid"),
+                        new Tuple("value", "java.lang.String"),
+                        new Tuple("stateOfDressEnDefiningcode", "org.ehrbase.client.classgenerator.examples.alternativeeventscomposition.definition.StateOfDressEnDefiningcode"),
+                        new Tuple("commentEnValue", "java.lang.String"),
+                        new Tuple("timeValue", "java.time.temporal.TemporalAccessor"),
+                        new Tuple("gewichtMagnitude", "java.lang.Double"),
+                        new Tuple("gewichtUnits", "java.lang.String"),
+                        new Tuple("confoundingFactorsEn", "java.util.List<org.ehrbase.client.classgenerator.examples.alternativeeventscomposition.definition.ConfoundingFactorsEnElement>"),
+                        new Tuple("value", "java.lang.String"),
+                        new Tuple("timeValue", "java.time.temporal.TemporalAccessor"),
+                        new Tuple("gewichtMagnitude", "java.lang.Double"),
+                        new Tuple("gewichtUnits", "java.lang.String"),
+                        new Tuple("confoundingFactorsEn", "java.util.List<org.ehrbase.client.classgenerator.examples.alternativeeventscomposition.definition.ConfoundingFactorsEnElement>"),
+                        new Tuple("commentEnValue", "java.lang.String"),
+                        new Tuple("stateOfDressEnDefiningcode", "org.ehrbase.client.classgenerator.examples.alternativeeventscomposition.definition.StateOfDressEnDefiningcode"),
+                        new Tuple("birthEn", "org.ehrbase.client.classgenerator.examples.alternativeeventscomposition.definition.BirthEnEvent"),
+                        new Tuple("anyEventEn", "java.util.List<org.ehrbase.client.classgenerator.examples.alternativeeventscomposition.definition.AnyEventEnEvent>"),
+                        new Tuple("extensionEn", "java.util.List<com.nedap.archie.rm.datastructures.Cluster>"),
+                        new Tuple("language", "org.ehrbase.client.classgenerator.examples.shareddefinition.Language"),
+                        new Tuple("originValue", "java.time.temporal.TemporalAccessor"),
+                        new Tuple("gerat", "com.nedap.archie.rm.datastructures.Cluster"),
+                        new Tuple("subject", "com.nedap.archie.rm.generic.PartyProxy"),
+                        new Tuple("endTimeValue", "java.time.temporal.TemporalAccessor"),
+                        new Tuple("language", "org.ehrbase.client.classgenerator.examples.shareddefinition.Language"),
+                        new Tuple("healthCareFacility", "com.nedap.archie.rm.generic.PartyIdentified"),
+                        new Tuple("statusValue", "java.lang.String"),
+                        new Tuple("berichtIdValue", "java.lang.String"),
+                        new Tuple("territory", "org.ehrbase.client.classgenerator.examples.shareddefinition.Territory"),
+                        new Tuple("startTimeValue", "java.time.temporal.TemporalAccessor"),
+                        new Tuple("composer", "com.nedap.archie.rm.generic.PartyProxy"),
+                        new Tuple("settingDefiningcode", "org.ehrbase.client.classgenerator.examples.shareddefinition.SettingDefiningcode"),
+                        new Tuple("korpergewicht", "java.util.List<org.ehrbase.client.classgenerator.examples.alternativeeventscomposition.definition.KorpergewichtObservation>"),
+                        new Tuple("erweiterung", "java.util.List<com.nedap.archie.rm.datastructures.Cluster>"),
+                        new Tuple("location", "java.lang.String"),
+                        new Tuple("categoryDefiningcode", "org.ehrbase.client.classgenerator.examples.shareddefinition.CategoryDefiningcode")
+                );
+
+        // generate.createFiles(Paths.get(".", "src/test/java/"));
 
 
     }
@@ -128,10 +187,9 @@ public class ClassGeneratorTest {
                         new Tuple("originValue", "java.time.temporal.TemporalAccessor"),
                         new Tuple("device", "com.nedap.archie.rm.datastructures.Cluster"),
                         new Tuple("subject", "com.nedap.archie.rm.generic.PartyProxy"),
-                        new Tuple("locationOfMeasurementDefiningcode", "org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1.definition.LocationOfMeasurementDefiningcode"),
-                        new Tuple("history", "java.util.List<org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1.definition.BodyTemperatureHistory>"),
+                        new Tuple("locationOfMeasurementDefiningcode", "org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1composition.definition.LocationOfMeasurementDefiningcode"),
                         new Tuple("locationOfMeasurementValue", "java.lang.String"),
-                        new Tuple("bodyExposureDefiningcode", "org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1.definition.BodyExposureDefiningcode"),
+                        new Tuple("bodyExposureDefiningcode", "org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1composition.definition.BodyExposureDefiningcode"),
                         new Tuple("bodyExposureValue", "java.lang.String"),
                         new Tuple("temperatureMagnitude", "java.lang.Double"),
                         new Tuple("temperatureUnits", "java.lang.String"),
@@ -143,19 +201,20 @@ public class ClassGeneratorTest {
                         new Tuple("healthCareFacility", "com.nedap.archie.rm.generic.PartyIdentified"),
                         new Tuple("composer", "com.nedap.archie.rm.generic.PartyProxy"),
                         new Tuple("territory", "org.ehrbase.client.classgenerator.examples.shareddefinition.Territory"),
-                        new Tuple("bodyTemperature", "java.util.List<org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1.definition.BodyTemperature>"),
+                        new Tuple("bodyTemperature", "java.util.List<org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1composition.definition.BodyTemperatureObservation>"),
                         new Tuple("location", "java.lang.String"),
                         new Tuple("startTimeValue", "java.time.temporal.TemporalAccessor"),
                         new Tuple("currentDayOfMenstrualCycleMagnitude", "java.lang.Long"),
                         new Tuple("environmentalConditions", "java.util.List<com.nedap.archie.rm.datastructures.Cluster>"),
-                        new Tuple("bodyExposure", "org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1.definition.StateBodyExposureChoice"),
-                        new Tuple("locationOfMeasurement", "org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1.definition.ProtocolLocationOfMeasurementChoice"),
+                        new Tuple("bodyExposure", "org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1composition.definition.BodyExposureChoice"),
+                        new Tuple("locationOfMeasurement", "org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1composition.definition.LocationOfMeasurementChoice"),
                         new Tuple("categoryDefiningcode", "org.ehrbase.client.classgenerator.examples.shareddefinition.CategoryDefiningcode"),
-                        new Tuple("extension", "java.util.List<com.nedap.archie.rm.datastructures.Cluster>")
+                        new Tuple("extension", "java.util.List<com.nedap.archie.rm.datastructures.Cluster>"),
+                        new Tuple("anyEvent", "java.util.List<org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1composition.definition.AnyEventEvent>")
                 );
 
 
-        // generate.createFiles(Paths.get(".", "src/test/java/"));
+        //generate.createFiles(Paths.get(".", "src/test/java/"));
 
     }
 
@@ -182,11 +241,11 @@ public class ClassGeneratorTest {
                         new Tuple("uriValue", "java.net.URI"),
                         new Tuple("language", "org.ehrbase.client.classgenerator.examples.shareddefinition.Language"),
                         new Tuple("language", "org.ehrbase.client.classgenerator.examples.shareddefinition.Language"),
-                        new Tuple("choice", "org.ehrbase.client.classgenerator.examples.testalltypesenv1.definition.ArbolChoiceChoice"),
+                        new Tuple("choice", "org.ehrbase.client.classgenerator.examples.testalltypesenv1composition.definition.ChoiceChoice"),
                         new Tuple("subject", "com.nedap.archie.rm.generic.PartyProxy"),
-                        new Tuple("testAllTypes", "java.util.List<org.ehrbase.client.classgenerator.examples.testalltypesenv1.definition.TestAllTypes3>"),
-                        new Tuple("testalltypesItemsOpenehrEhrInstructionTestAllTypesV1", "java.util.List<org.ehrbase.client.classgenerator.examples.testalltypesenv1.definition.TestAllTypes5>"),
-                        new Tuple("testalltypesItemsOpenehrEhrAdminEntryTestAllTypesV1", "java.util.List<org.ehrbase.client.classgenerator.examples.testalltypesenv1.definition.TestAllTypes6>"),
+                        new Tuple("testAllTypes", "java.util.List<org.ehrbase.client.classgenerator.examples.testalltypesenv1composition.definition.TestAllTypesAction>"),
+                        new Tuple("testAllTypesItemsOpenehrEhrInstructionTestAllTypesV1", "java.util.List<org.ehrbase.client.classgenerator.examples.testalltypesenv1composition.definition.TestAllTypesInstruction>"),
+                        new Tuple("testAllTypesItemsOpenehrEhrAdminEntryTestAllTypesV1", "java.util.List<org.ehrbase.client.classgenerator.examples.testalltypesenv1composition.definition.TestAllTypesAdminEntry>"),
                         new Tuple("choiceMagnitude", "java.lang.Double"),
                         new Tuple("choiceUnits", "java.lang.String"),
                         new Tuple("choiceMagnitude", "java.lang.Long"),
@@ -197,7 +256,7 @@ public class ClassGeneratorTest {
                         new Tuple("textValue", "java.lang.String"),
                         new Tuple("codedTextDefiningcode", "com.nedap.archie.rm.datatypes.CodePhrase"),
                         new Tuple("proportionAny", "com.nedap.archie.rm.datavalues.quantity.DvProportion"),
-                        new Tuple("timevalueTime", "java.time.temporal.TemporalAccessor"),
+                        new Tuple("timeValueTime", "java.time.temporal.TemporalAccessor"),
                         new Tuple("codedTextTerminologyDefiningcode", "com.nedap.archie.rm.datatypes.CodePhrase"),
                         new Tuple("quantityMagnitude", "java.lang.Double"),
                         new Tuple("quantityUnits", "java.lang.String"),
@@ -210,24 +269,24 @@ public class ClassGeneratorTest {
                         new Tuple("booleanValue", "java.lang.Boolean"),
                         new Tuple("datetimeValue", "java.time.temporal.TemporalAccessor"),
                         new Tuple("datetimeAnyValue", "java.time.temporal.TemporalAccessor"),
-                        new Tuple("testAllTypes", "java.util.List<org.ehrbase.client.classgenerator.examples.testalltypesenv1.definition.TestAllTypes>"),
+                        new Tuple("testAllTypes", "java.util.List<org.ehrbase.client.classgenerator.examples.testalltypesenv1composition.definition.TestAllTypesCluster>"),
                         new Tuple("endTimeValue", "java.time.temporal.TemporalAccessor"),
-                        new Tuple("testalltypesContentOpenehrEhrSectionTestAllTypesV1", "java.util.List<org.ehrbase.client.classgenerator.examples.testalltypesenv1.definition.TestAllTypes2>"),
+                        new Tuple("testAllTypesContentOpenehrEhrSectionTestAllTypesV1", "java.util.List<org.ehrbase.client.classgenerator.examples.testalltypesenv1composition.definition.TestAllTypesSection>"),
                         new Tuple("language", "com.nedap.archie.rm.datatypes.CodePhrase"),
                         new Tuple("healthCareFacility", "com.nedap.archie.rm.generic.PartyIdentified"),
                         new Tuple("composer", "com.nedap.archie.rm.generic.PartyProxy"),
                         new Tuple("settingDefiningcode", "org.ehrbase.client.classgenerator.examples.shareddefinition.SettingDefiningcode"),
                         new Tuple("territory", "org.ehrbase.client.classgenerator.examples.shareddefinition.Territory"),
-                        new Tuple("testalltypesContentOpenehrEhrObservationTestAllTypesV1", "java.util.List<org.ehrbase.client.classgenerator.examples.testalltypesenv1.definition.TestAllTypes7>"),
+                        new Tuple("testAllTypesContentOpenehrEhrObservationTestAllTypesV1", "java.util.List<org.ehrbase.client.classgenerator.examples.testalltypesenv1composition.definition.TestAllTypesObservation>"),
                         new Tuple("boolean2Value", "java.lang.Boolean"),
                         new Tuple("transitionDefiningcode", "org.ehrbase.client.classgenerator.examples.shareddefinition.TransitionDefiningcode"),
-                        new Tuple("transitiondefiningcodeTransition", "org.ehrbase.client.classgenerator.examples.shareddefinition.TransitionDefiningcode"),
-                        new Tuple("completeddefiningcodeCurrentState", "org.ehrbase.client.classgenerator.examples.shareddefinition.CompletedDefiningcode"),
+                        new Tuple("transitionDefiningcodeTransition", "org.ehrbase.client.classgenerator.examples.shareddefinition.TransitionDefiningcode"),
+                        new Tuple("completedDefiningcodeCurrentState", "org.ehrbase.client.classgenerator.examples.shareddefinition.CompletedDefiningcode"),
                         new Tuple("plannedDefiningcode", "org.ehrbase.client.classgenerator.examples.shareddefinition.PlannedDefiningcode"),
                         new Tuple("activeDefiningcode", "org.ehrbase.client.classgenerator.examples.shareddefinition.ActiveDefiningcode"),
-                        new Tuple("planneddefiningcodeCareflowStep", "org.ehrbase.client.classgenerator.examples.testalltypesenv1.definition.PlannedDefiningcode"),
-                        new Tuple("activedefiningcodeCareflowStep", "org.ehrbase.client.classgenerator.examples.testalltypesenv1.definition.ActiveDefiningcode"),
-                        new Tuple("transitiondefiningcodetransitionIsmTransitionAt0003", "org.ehrbase.client.classgenerator.examples.shareddefinition.TransitionDefiningcode"),
+                        new Tuple("plannedDefiningcodeCareflowStep", "org.ehrbase.client.classgenerator.examples.testalltypesenv1composition.definition.PlannedDefiningcode"),
+                        new Tuple("activeDefiningcodeCareflowStep", "org.ehrbase.client.classgenerator.examples.testalltypesenv1composition.definition.ActiveDefiningcode"),
+                        new Tuple("transitionDefiningcodeTransitionIsmTransitionAt0003", "org.ehrbase.client.classgenerator.examples.shareddefinition.TransitionDefiningcode"),
                         new Tuple("narrativeValue", "java.lang.String"),
                         new Tuple("description", "com.nedap.archie.rm.datastructures.ItemStructure"),
                         new Tuple("partialDateValue", "java.time.temporal.Temporal"),
@@ -238,17 +297,25 @@ public class ClassGeneratorTest {
                         new Tuple("language", "org.ehrbase.client.classgenerator.examples.shareddefinition.Language"),
                         new Tuple("timeValue", "java.time.temporal.TemporalAccessor"),
                         new Tuple("subject", "com.nedap.archie.rm.generic.PartyProxy"),
-                        new Tuple("completedDefiningcode", "org.ehrbase.client.classgenerator.examples.testalltypesenv1.definition.CompletedDefiningcode"),
-                        new Tuple("testAllTypes", "java.util.List<org.ehrbase.client.classgenerator.examples.testalltypesenv1.definition.TestAllTypes4>"),
+                        new Tuple("completedDefiningcode", "org.ehrbase.client.classgenerator.examples.testalltypesenv1composition.definition.CompletedDefiningcode"),
+                        new Tuple("testAllTypes", "java.util.List<org.ehrbase.client.classgenerator.examples.testalltypesenv1composition.definition.TestAllTypesEvaluation>"),
                         new Tuple("language", "org.ehrbase.client.classgenerator.examples.shareddefinition.Language"),
-                        new Tuple("contextCodedTextDefiningcode", "org.ehrbase.client.classgenerator.examples.testalltypesenv1.definition.ContextCodedTextDefiningcode"),
+                        new Tuple("contextCodedTextDefiningcode", "org.ehrbase.client.classgenerator.examples.testalltypesenv1composition.definition.ContextCodedTextDefiningcode"),
                         new Tuple("categoryDefiningcode", "org.ehrbase.client.classgenerator.examples.shareddefinition.CategoryDefiningcode"),
                         new Tuple("location", "java.lang.String")
                 );
 
 
-        //   generate.createFiles(Paths.get(".", "src/test/java/"));
+        // generate.createFiles(Paths.get(".", "src/test/java/"));
 
+    }
+
+    @Test
+    public void testCreateName() {
+        ClassGenerator cut = new ClassGenerator();
+        String className = cut.buildClassName("/_state structure/*_confounding factors(en)_ELEMENT");
+
+        assertThat(className).isEqualTo("ConfoundingFactorsEnElement");
     }
 
 }

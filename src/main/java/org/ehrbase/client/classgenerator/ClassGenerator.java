@@ -62,6 +62,7 @@ public class ClassGenerator {
 
     private Map<String, Integer> currentFieldNameMap = new HashMap<>();
     private Map<String, Integer> currentClassNameMap = new HashMap<>();
+    private Map<EntityNode, TypeSpec> currentTypeSpec;
 
     private ClassGeneratorResult currentResult;
     private String currentPackageName;
@@ -86,21 +87,23 @@ public class ClassGenerator {
     }
 
     public ClassGeneratorResult generate(String packageName, OPERATIONALTEMPLATE operationalTemplate) {
+        currentTypeSpec = new HashMap<>();
         currentResult = new ClassGeneratorResult();
         currentPackageName = packageName;
         currentMainClass = "";
         ArchetypeNode root = new TemplateIntrospect(operationalTemplate).getRoot();
         String templateId = operationalTemplate.getTemplateId().getValue();
-        TemplateNode templateNode = new TemplateNode(templateId, root.getArchetypeId(), root.getChildren(), templateId);
-        TypeSpec build = build(templateNode);
+
+        TemplateNode templateNode = new TemplateNode(templateId, root.getArchetypeId(), root.getChildren(), templateId, operationalTemplate.getDefinition().getRmTypeName());
+        TypeSpec build = build(templateNode).build();
         currentResult.addClass(currentPackageName + "." + currentMainClass.toLowerCase(), build);
         return currentResult;
     }
 
-    private TypeSpec build(EntityNode archetypeNode) {
+    private TypeSpec.Builder build(EntityNode archetypeNode) {
         Map<String, Integer> oldFieldNameMap = currentFieldNameMap;
         currentFieldNameMap = new HashMap<>();
-        String className = buildClassName(archetypeNode.getName());
+        String className = buildClassName(new SnakeCase(archetypeNode.getName()).camelToSnake() + "_" + archetypeNode.getRmName());
         TypeSpec.Builder classBuilder = TypeSpec.classBuilder(className);
         if (StringUtils.isBlank(currentMainClass)) {
             currentMainClass = className;
@@ -131,7 +134,7 @@ public class ClassGenerator {
             }
         }
         currentFieldNameMap = oldFieldNameMap;
-        return classBuilder.build();
+        return classBuilder;
     }
 
     private void addVersionUid(TypeSpec.Builder classBuilder) {
@@ -151,19 +154,28 @@ public class ClassGenerator {
         currentResult.addClass(interfacePackage, interfaceSpec);
         TypeName interfaceClassName = ClassName.get(interfacePackage, interfaceSpec.name);
 
-        for (EndNode endNode : choiceNode.getNodes()) {
+        for (Node node : choiceNode.getNodes()) {
             Map<String, Integer> oldFieldNameMap = currentFieldNameMap;
             currentFieldNameMap = new HashMap<>();
+            TypeSpec typeSpec;
+            if (EndNode.class.isAssignableFrom(node.getClass())) {
+                EndNode endNode = (EndNode) node;
+                RMTypeInfo typeInfo = RM_INFO_LOOKUP.getTypeInfo(endNode.getClazz());
+                TypeSpec.Builder builder = TypeSpec.classBuilder(buildClassName(choiceNode.getName() + "_" + endNode.getClazz().getSimpleName()))
+                        .addSuperinterface(interfaceClassName)
+                        .addModifiers(Modifier.PUBLIC)
+                        .addAnnotation(AnnotationSpec.builder(Entity.class).build())
+                        .addAnnotation(AnnotationSpec.builder(OptionFor.class).addMember(OptionFor.VALUE, "$S", typeInfo.getRmName()).build());
+                addSimpleField(builder, "", endNode);
+                typeSpec = builder.build();
+            } else {
+                logger.warn("Unhandled Option {}:{}", node.getName(), node.getClass());
+                typeSpec = null;
+            }
 
-            RMTypeInfo typeInfo = RM_INFO_LOOKUP.getTypeInfo(endNode.getClazz());
-            TypeSpec.Builder builder = TypeSpec.classBuilder(buildClassName(choiceNode.getName() + "_" + endNode.getClazz().getSimpleName()))
-                    .addSuperinterface(interfaceClassName)
-                    .addModifiers(Modifier.PUBLIC)
-                    .addAnnotation(AnnotationSpec.builder(Entity.class).build())
-                    .addAnnotation(AnnotationSpec.builder(OptionFor.class).addMember(OptionFor.VALUE, "$S", typeInfo.getRmName()).build());
-            addSimpleField(builder, "", endNode);
-            TypeSpec typeSpec = builder.build();
-            currentResult.addClass(currentPackageName + "." + currentMainClass.toLowerCase() + ".definition", typeSpec);
+            if (typeSpec != null) {
+                currentResult.addClass(currentPackageName + "." + currentMainClass.toLowerCase() + ".definition", typeSpec);
+            }
             currentFieldNameMap = oldFieldNameMap;
         }
 
@@ -196,7 +208,14 @@ public class ClassGenerator {
     }
 
     private void addComplexField(TypeSpec.Builder classBuilder, String path, EntityNode node) {
-        TypeSpec subSpec = build(node);
+        final TypeSpec subSpec;
+        if (currentTypeSpec.containsKey(node)) {
+            subSpec = currentTypeSpec.get(node);
+        } else {
+            subSpec = build(node).build();
+            currentTypeSpec.put(node, subSpec);
+        }
+
 
         String subSpecPackage = currentPackageName + "." + currentMainClass.toLowerCase() + ".definition";
 
@@ -285,8 +304,10 @@ public class ClassGenerator {
         String[] strings = Arrays.stream(name.split(TemplateIntrospect.TERM_DIVIDER)).filter(StringUtils::isNotBlank).toArray(String[]::new);
 
         String fieldName = "";
+        String nonNormalized = "";
         for (int i = 0; i < strings.length; i++) {
-            fieldName = normalise(fieldName + "_" + strings[strings.length - (i + 1)], false);
+            nonNormalized = nonNormalized + "_" + strings[strings.length - (i + 1)];
+            fieldName = normalise(nonNormalized, false);
             if (!currentFieldNameMap.containsKey(fieldName) && SourceVersion.isName(fieldName)) {
                 break;
             }
@@ -301,9 +322,17 @@ public class ClassGenerator {
         return fieldName;
     }
 
-    private String buildClassName(String name) {
-
-        String fieldName = normalise(name, true);
+    String buildClassName(String name) {
+        String[] strings = Arrays.stream(name.split(TemplateIntrospect.TERM_DIVIDER)).filter(StringUtils::isNotBlank).toArray(String[]::new);
+        String fieldName = "";
+        String nonNormalized = "";
+        for (int i = 0; i < strings.length; i++) {
+            nonNormalized = nonNormalized + "_" + strings[strings.length - (i + 1)];
+            fieldName = normalise(nonNormalized, true);
+            if (!currentClassNameMap.containsKey(fieldName) && SourceVersion.isName(fieldName)) {
+                break;
+            }
+        }
 
         if (currentClassNameMap.containsKey(fieldName)) {
             currentClassNameMap.put(fieldName, currentClassNameMap.get(fieldName) + 1);
@@ -343,7 +372,7 @@ public class ClassGenerator {
         if (StringUtils.isBlank(name) || name.equals("_")) {
             return RandomStringUtils.randomAlphabetic(10);
         }
-        String normalisedString = name.replaceAll("[^A-Za-z0-9]", "_");
+        String normalisedString = StringUtils.strip(StringUtils.stripAccents(name).replaceAll("[^A-Za-z0-9]", "_"), "_");
         return CaseUtils.toCamelCase(normalisedString, capitalizeFirstLetter, '_');
     }
 
