@@ -16,6 +16,8 @@
  */
 package org.ehrbase.client;
 
+import com.nedap.archie.rm.datavalues.DvText;
+import com.nedap.archie.rm.generic.Participation;
 import com.nedap.archie.rm.generic.PartyIdentified;
 import com.nedap.archie.rm.generic.PartySelf;
 import org.ehrbase.client.classgenerator.examples.alternativeeventscomposition.AlternativeEventsComposition;
@@ -74,6 +76,9 @@ public class TestData {
         bloodPressureSimpleDeV0.setCategoryDefiningcode(CategoryDefiningcode.EVENT);
         bloodPressureSimpleDeV0.setSettingDefiningcode(SettingDefiningcode.NURSINGHOMECARE);
         bloodPressureSimpleDeV0.setComposer(new PartyIdentified(null, "Test", null));
+        bloodPressureSimpleDeV0.setParticipations(new ArrayList<>());
+        bloodPressureSimpleDeV0.getParticipations().add(new Participation(new PartyIdentified(null, "Test", null), new DvText("Pos1"), null, null));
+        bloodPressureSimpleDeV0.getParticipations().add(new Participation(new PartyIdentified(null, "Test2", null), new DvText("Pos2"), null, null));
 
         BloodPressureTrainingSampleObservation bloodPressureTrainingSample = new BloodPressureTrainingSampleObservation();
         bloodPressureTrainingSample.setSubject(new PartySelf());

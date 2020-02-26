@@ -1,5 +1,6 @@
 package org.ehrbase.client.classgenerator.examples.testalltypesenv1composition;
 
+import com.nedap.archie.rm.generic.Participation;
 import com.nedap.archie.rm.generic.PartyIdentified;
 import com.nedap.archie.rm.generic.PartyProxy;
 import org.ehrbase.client.annotations.*;
@@ -25,6 +26,9 @@ public class TestAllTypesEnV1Composition {
 
     @Path("/context/end_time|value")
     private TemporalAccessor endTimeValue;
+
+    @Path("/context/participations")
+    private List<Participation> participations;
 
     @Path("/language")
     private Language language;
@@ -76,6 +80,14 @@ public class TestAllTypesEnV1Composition {
 
     public TemporalAccessor getEndTimeValue() {
         return this.endTimeValue;
+    }
+
+    public void setParticipations(List<Participation> participations) {
+        this.participations = participations;
+    }
+
+    public List<Participation> getParticipations() {
+        return this.participations;
     }
 
     public void setLanguage(Language language) {

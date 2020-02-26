@@ -41,11 +41,15 @@ import org.ehrbase.client.introspect.config.RmIntrospectConfig;
 import org.ehrbase.ehr.encode.wrappers.SnakeCase;
 import org.ehrbase.terminology.openehr.implementation.LocalizedTerminologies;
 import org.openehr.schemas.v1.*;
+import org.reflections.ReflectionUtils;
 import org.reflections.Reflections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -172,7 +176,7 @@ public class OptSkeletonBuilder {
             String pathloop = path + TemplateIntrospect.PATH_DIVIDER + attr.getRmAttributeName();
             COBJECT[] children = attr.getChildrenArray();
             String attrName = attr.getRmAttributeName();
-            if (attr instanceof CSINGLEATTRIBUTE) {
+            if (attr instanceof CSINGLEATTRIBUTE && !"/name".equals(pathloop)) {
                 if (children != null && children.length > 0) {
                     try {
                         COBJECT cobj = children[0];
@@ -253,6 +257,10 @@ public class OptSkeletonBuilder {
                             Object value;
                             if (f.getType().equals(PartyProxy.class)) {
                                 value = new PartyIdentified();
+                            } else if (List.class.isAssignableFrom(f.getType())) {
+                                value = new ArrayList<>();
+                                Class unwarap = unwarap(f);
+                                ((List) value).add(unwarap.getConstructor().newInstance());
                             } else {
                                 value = f.getType().getConstructor().newInstance();
                             }
@@ -265,6 +273,16 @@ public class OptSkeletonBuilder {
         } else {
             log.debug("No RmIntrospectConfig for {}", rmClass);
 
+        }
+    }
+
+    public Class unwarap(Field field) {
+        if (List.class.isAssignableFrom(field.getType())) {
+            Type actualTypeArgument = ((ParameterizedType) field.getGenericType()).getActualTypeArguments()[0];
+
+            return ReflectionUtils.forName(actualTypeArgument.getTypeName(), this.getClass().getClassLoader());
+        } else {
+            return field.getType();
         }
     }
 

@@ -42,6 +42,7 @@ import org.ehrbase.client.normalizer.Normalizer;
 import org.ehrbase.client.templateprovider.TemplateProvider;
 import org.ehrbase.serialisation.CanonicalJson;
 import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
+import org.reflections.ReflectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,6 +50,8 @@ import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.*;
 
 public class Unflattener {
@@ -160,7 +163,18 @@ public class Unflattener {
             CodePhrase codePhrase = new CodePhrase(new TerminologyId(valueSet.getTerminologyId()), valueSet.getCode());
             RM_OBJECT_CREATOR.set(parent, childName, Collections.singletonList(codePhrase));
         } else if (extractType(toCamelCase(childName), parent).isAssignableFrom(value.getClass())) {
-            RM_OBJECT_CREATOR.set(parent, childName, Collections.singletonList(value));
+            RMAttributeInfo attributeInfo = ARCHIE_RM_INFO_LOOKUP.getAttributeInfo(parent.getClass(), childName);
+            if (attributeInfo.isMultipleValued()) {
+                try {
+                    Object invoke = attributeInfo.getGetMethod().invoke(parent);
+                    if (Collection.class.isAssignableFrom(invoke.getClass())) {
+                        ((Collection) invoke).remove(child);
+                    }
+                } catch (IllegalAccessException | InvocationTargetException e) {
+                    logger.warn(e.getMessage(), e);
+                }
+            }
+            RM_OBJECT_CREATOR.addElementToListOrSetSingleValues(parent, childName, Collections.singletonList(value));
         } else if (value.getClass().isAnnotationPresent(Entity.class)) {
             mapDtoToEntity(value, (RMObject) child);
         } else {
@@ -169,12 +183,31 @@ public class Unflattener {
 
     }
 
+    public Class<?> unwarap(Field field) {
+        try {
+            if (List.class.isAssignableFrom(field.getType())) {
+                Type actualTypeArgument = ((ParameterizedType) field.getGenericType()).getActualTypeArguments()[0];
+
+                Class<?> aClass = ReflectionUtils.forName(actualTypeArgument.getTypeName(), this.getClass().getClassLoader());
+                if (aClass != null) {
+                    return aClass;
+                } else {
+                    return Dummy.class;
+                }
+
+            } else {
+                return field.getType();
+            }
+        } catch (Throwable e) {
+            return Dummy.class;
+        }
+    }
 
     private Class<?> extractType(String childName, Object parent) {
 
         Optional<? extends Class<?>> type = Arrays.stream(FieldUtils.getAllFields(parent.getClass()))
                 .filter(f -> f.getName().equals(childName))
-                .map(Field::getType)
+                .map(this::unwarap)
                 .findAny();
         if (type.isPresent()) {
             return type.get();

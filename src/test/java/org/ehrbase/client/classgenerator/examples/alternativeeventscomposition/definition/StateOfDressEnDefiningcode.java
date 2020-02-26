@@ -3,13 +3,13 @@ package org.ehrbase.client.classgenerator.examples.alternativeeventscomposition.
 import org.ehrbase.client.classgenerator.EnumValueSet;
 
 public enum StateOfDressEnDefiningcode implements EnumValueSet {
-    FULLYCLOTHEDWITHOUTSHOESEN("*Fully clothed, without shoes (en)", "*Clothing which may add significantly to weight. (en)", "local", "at0028"),
-
     UNTERWASCHE("Leicht bekleidet / Unterwäsche", "Bekleidung, die nicht signifikant zum Gewicht beiträgt.", "local", "at0011"),
 
-    VOLLBEKLEIDETMITSCHUHEN("Voll bekleidet, mit Schuhen", "Bekleidung, die signifikant zum Gewicht beiträgt, mit Schuhen.", "local", "at0010"),
+    FULLYCLOTHEDWITHOUTSHOESEN("*Fully clothed, without shoes (en)", "*Clothing which may add significantly to weight. (en)", "local", "at0028"),
 
     UNBEKLEIDET("Unbekleidet", "Ohne Kleidung.", "local", "at0013"),
+
+    VOLLBEKLEIDETMITSCHUHEN("Voll bekleidet, mit Schuhen", "Bekleidung, die signifikant zum Gewicht beiträgt, mit Schuhen.", "local", "at0010"),
 
     WINDEL("Windel", "Trägt Windel; kann signifikant zum Gewicht beitragen.", "local", "at0017");
 
