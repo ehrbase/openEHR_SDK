@@ -3,45 +3,45 @@ package org.ehrbase.client.classgenerator.examples.shareddefinition;
 import org.ehrbase.client.classgenerator.EnumValueSet;
 
 public enum TransitionDefiningcode implements EnumValueSet {
-    CANCEL("cancel", "cancel", "openehr", "166"),
-
-    ACTIVESTEP("active step", "active step", "openehr", "543"),
-
     FINISH("finish", "finish", "openehr", "548"),
 
-    POSTPONE("postpone", "postpone", "openehr", "537"),
-
-    RESTORE("restore", "restore", "openehr", "538"),
-
-    NOTIFYCANCELLED("notify cancelled", "notify cancelled", "openehr", "552"),
-
-    INITIATE("initiate", "initiate", "openehr", "535"),
-
-    NOTIFYCOMPLETED("notify completed", "notify completed", "openehr", "551"),
-
-    SUSPEND("suspend", "suspend", "openehr", "544"),
+    POSTPONEDSTEP("postponed step", "postponed step", "openehr", "542"),
 
     TIMEOUT("time out", "time out", "openehr", "549"),
 
     SCHEDULEDSTEP("scheduled step", "scheduled step", "openehr", "534"),
 
-    DO("do", "do", "openehr", "541"),
+    SCHEDULE("schedule", "schedule", "openehr", "539"),
 
-    POSTPONEDSTEP("postponed step", "postponed step", "openehr", "542"),
+    NOTIFYCOMPLETED("notify completed", "notify completed", "openehr", "551"),
 
-    START("start", "start", "openehr", "540"),
+    POSTPONE("postpone", "postpone", "openehr", "537"),
 
     SUSPENDEDSTEP("suspended step", "suspended step", "openehr", "545"),
+
+    NOTIFYCANCELLED("notify cancelled", "notify cancelled", "openehr", "552"),
+
+    START("start", "start", "openehr", "540"),
 
     PLANSTEP("plan step", "plan step", "openehr", "536"),
 
     ABORT("abort", "abort", "openehr", "547"),
 
-    SCHEDULE("schedule", "schedule", "openehr", "539"),
+    RESUME("resume", "resume", "openehr", "546"),
 
-    NOTIFYABORTED("notify aborted", "notify aborted", "openehr", "550"),
+    SUSPEND("suspend", "suspend", "openehr", "544"),
 
-    RESUME("resume", "resume", "openehr", "546");
+    INITIATE("initiate", "initiate", "openehr", "535"),
+
+    ACTIVESTEP("active step", "active step", "openehr", "543"),
+
+    RESTORE("restore", "restore", "openehr", "538"),
+
+    CANCEL("cancel", "cancel", "openehr", "166"),
+
+    DO("do", "do", "openehr", "541"),
+
+    NOTIFYABORTED("notify aborted", "notify aborted", "openehr", "550");
 
     private String value;
 

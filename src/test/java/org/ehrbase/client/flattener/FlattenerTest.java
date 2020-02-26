@@ -24,10 +24,15 @@ import com.nedap.archie.rm.generic.PartyIdentified;
 import com.nedap.archie.rm.generic.PartySelf;
 import org.apache.commons.io.IOUtils;
 import org.ehrbase.client.TestData;
+import org.ehrbase.client.classgenerator.examples.alternativeeventscomposition.AlternativeEventsComposition;
+import org.ehrbase.client.classgenerator.examples.alternativeeventscomposition.definition.AnyEventEnIntervalEvent;
+import org.ehrbase.client.classgenerator.examples.alternativeeventscomposition.definition.AnyEventEnPointEvent;
+import org.ehrbase.client.classgenerator.examples.alternativeeventscomposition.definition.BirthEnEvent;
 import org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev0composition.EhrbaseBloodPressureSimpleDeV0Composition;
 import org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev0composition.definition.KorotkoffSoundsDefiningcode;
 import org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1composition.EhrbaseMultiOccurrenceDeV1Composition;
 import org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1composition.definition.*;
+import org.ehrbase.client.classgenerator.examples.shareddefinition.MathFunctionDefiningcode;
 import org.ehrbase.client.classgenerator.examples.testalltypesenv1composition.TestAllTypesEnV1Composition;
 import org.ehrbase.client.classgenerator.examples.testalltypesenv1composition.definition.ChoiceDvcount;
 import org.ehrbase.client.templateprovider.TestDataTemplateProvider;
@@ -37,8 +42,14 @@ import org.junit.Test;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.time.Duration;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.ehrbase.client.TestData.buildAlternativeEventsComposition;
 
 public class FlattenerTest {
 
@@ -95,7 +106,7 @@ public class FlattenerTest {
         assertThat(actual.getBodyTemperature()).size().isEqualTo(2);
         BodyTemperatureObservation bodyTemperature1 = actual.getBodyTemperature().get(0);
         assertThat(bodyTemperature1.getAnyEvent())
-                .extracting(AnyEventEvent::getTemperatureMagnitude)
+                .extracting(e -> ((AnyEventPointEvent) e).getTemperatureMagnitude())
                 .containsExactlyInAnyOrder(11d, 22d);
 
         LocationOfMeasurementChoice locationOfMeasurement1 = bodyTemperature1.getLocationOfMeasurement();
@@ -117,5 +128,33 @@ public class FlattenerTest {
         assertThat(actual).isNotNull();
         assertThat(actual.getTestAllTypes().get(0).getChoice().getClass()).isEqualTo(ChoiceDvcount.class);
         assertThat(((ChoiceDvcount) actual.getTestAllTypes().get(0).getChoice()).getChoiceMagnitude()).isEqualTo(148L);
+    }
+
+    @Test
+    public void TestFlattenAltEvents() {
+        Composition composition = (Composition) new Unflattener(new TestDataTemplateProvider()).unflatten(buildAlternativeEventsComposition());
+        Flattener cut = new Flattener();
+        AlternativeEventsComposition actual = cut.flatten(composition, AlternativeEventsComposition.class);
+        assertThat(actual).isNotNull();
+        assertThat(actual.getKorpergewicht()).size().isEqualTo(1);
+        BirthEnEvent birthEn = actual.getKorpergewicht().get(0).getBirthEn();
+        assertThat(birthEn.getTimeValue()).isEqualTo(OffsetDateTime.of(1990, 11, 02, 12, 00, 00, 00, ZoneOffset.UTC));
+        assertThat(birthEn.getGewichtMagnitude()).isEqualTo(30d);
+        assertThat(birthEn.getGewichtUnits()).isEqualTo("kg");
+
+        List<AnyEventEnPointEvent> eventEnPointEvents = actual.getKorpergewicht().get(0).getAnyEventEn().stream().filter(e -> AnyEventEnPointEvent.class.isAssignableFrom(e.getClass())).map(e -> (AnyEventEnPointEvent) e).collect(Collectors.toList());
+        assertThat(eventEnPointEvents).size().isEqualTo(1);
+        assertThat(eventEnPointEvents.get(0).getTimeValue()).isEqualTo(OffsetDateTime.of(2013, 11, 02, 12, 00, 00, 00, ZoneOffset.UTC));
+        assertThat(eventEnPointEvents.get(0).getGewichtMagnitude()).isEqualTo(55d);
+        assertThat(eventEnPointEvents.get(0).getGewichtUnits()).isEqualTo("kg");
+
+
+        List<AnyEventEnIntervalEvent> anyEventEnIntervalEvents = actual.getKorpergewicht().get(0).getAnyEventEn().stream().filter(e -> AnyEventEnIntervalEvent.class.isAssignableFrom(e.getClass())).map(e -> (AnyEventEnIntervalEvent) e).collect(Collectors.toList());
+        assertThat(eventEnPointEvents).size().isEqualTo(1);
+        assertThat(anyEventEnIntervalEvents.get(0).getTimeValue()).isEqualTo(OffsetDateTime.of(2015, 11, 02, 12, 00, 00, 00, ZoneOffset.UTC));
+        assertThat(anyEventEnIntervalEvents.get(0).getGewichtMagnitude()).isEqualTo(60d);
+        assertThat(anyEventEnIntervalEvents.get(0).getGewichtUnits()).isEqualTo("kg");
+        assertThat(anyEventEnIntervalEvents.get(0).getMathFunctionDefiningcode()).isEqualTo(MathFunctionDefiningcode.MEAN);
+        assertThat(anyEventEnIntervalEvents.get(0).getWidthValue()).isEqualTo(Duration.ofDays(30));
     }
 }

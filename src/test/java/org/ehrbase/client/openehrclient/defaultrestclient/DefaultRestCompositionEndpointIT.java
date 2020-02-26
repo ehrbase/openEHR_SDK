@@ -117,7 +117,7 @@ public class DefaultRestCompositionEndpointIT {
         assertTrue(actual.isPresent());
         BodyTemperatureObservation bodyTemperature1 = actual.get().getBodyTemperature().get(0);
         assertThat(bodyTemperature1.getAnyEvent())
-                .extracting(AnyEventEvent::getTemperatureMagnitude)
+                .extracting(e -> ((AnyEventPointEvent) e).getTemperatureMagnitude())
                 .containsExactlyInAnyOrder(11d, 22d);
 
         LocationOfMeasurementChoice locationOfMeasurement1 = bodyTemperature1.getLocationOfMeasurement();

@@ -168,6 +168,12 @@ public class ClassGenerator {
                         .addAnnotation(AnnotationSpec.builder(OptionFor.class).addMember(OptionFor.VALUE, "$S", typeInfo.getRmName()).build());
                 addSimpleField(builder, "", endNode);
                 typeSpec = builder.build();
+            } else if (EntityNode.class.isAssignableFrom(node.getClass())) {
+                TypeSpec.Builder builder = build((EntityNode) node);
+                builder
+                        .addSuperinterface(interfaceClassName)
+                        .addAnnotation(AnnotationSpec.builder(OptionFor.class).addMember(OptionFor.VALUE, "$S", ((EntityNode) node).getRmName()).build());
+                typeSpec = builder.build();
             } else {
                 logger.warn("Unhandled Option {}:{}", node.getName(), node.getClass());
                 typeSpec = null;
@@ -179,6 +185,9 @@ public class ClassGenerator {
             currentFieldNameMap = oldFieldNameMap;
         }
 
+        if (choiceNode.isMulti()) {
+            interfaceClassName = ParameterizedTypeName.get(ClassName.get(List.class), interfaceClassName);
+        }
 
         addField(classBuilder, path, choiceNode.getName(), interfaceClassName, new ValueSet(ValueSet.LOCAL, Collections.emptySet()), true);
     }

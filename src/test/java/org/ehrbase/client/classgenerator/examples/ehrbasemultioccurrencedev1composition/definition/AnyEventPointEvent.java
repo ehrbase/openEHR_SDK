@@ -3,13 +3,15 @@ package org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1com
 import com.nedap.archie.rm.datastructures.Cluster;
 import org.ehrbase.client.annotations.Choice;
 import org.ehrbase.client.annotations.Entity;
+import org.ehrbase.client.annotations.OptionFor;
 import org.ehrbase.client.annotations.Path;
 
 import java.time.temporal.TemporalAccessor;
 import java.util.List;
 
 @Entity
-public class AnyEventEvent {
+@OptionFor("POINT_EVENT")
+public class AnyEventPointEvent implements AnyEventChoice {
     @Path("/time|value")
     private TemporalAccessor timeValue;
 

@@ -91,6 +91,17 @@ public class Flattener {
                     Object dtoItem = createInstance(aClass);
                     mapEntityToDto((RMObject) childItem, dtoItem);
                     dtoList.add(dtoItem);
+                } else if (field.isAnnotationPresent(Choice.class)) {
+                    String simpleName = Optional.ofNullable(childItem).map(Object::getClass).map(RM_INFO_LOOKUP::getTypeInfo).map(RMTypeInfo::getRmName).orElse("");
+                    Class<?> type = reflections.getSubTypesOf((Class<?>) actualTypeArgument)
+                            .stream()
+                            .filter(c -> c.isAnnotationPresent(OptionFor.class))
+                            .filter(c -> c.getAnnotation(OptionFor.class).value().equals(simpleName))
+                            .findAny()
+                            .orElse(null);
+                    Object dtoItem = createInstance(type);
+                    mapEntityToDto((RMObject) childItem, dtoItem);
+                    dtoList.add(dtoItem);
                 } else if (aClass.isAssignableFrom(child.getClass())) {
 
                     dtoList.add(child);

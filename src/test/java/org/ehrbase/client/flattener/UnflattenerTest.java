@@ -21,6 +21,7 @@ import com.nedap.archie.rm.composition.Composition;
 import com.nedap.archie.rm.composition.Evaluation;
 import com.nedap.archie.rm.composition.Observation;
 import com.nedap.archie.rm.datastructures.Element;
+import com.nedap.archie.rm.datastructures.IntervalEvent;
 import com.nedap.archie.rm.datastructures.PointEvent;
 import com.nedap.archie.rm.datatypes.CodePhrase;
 import com.nedap.archie.rm.datavalues.DvCodedText;
@@ -29,7 +30,9 @@ import com.nedap.archie.rm.datavalues.quantity.DvQuantity;
 import com.nedap.archie.rm.generic.PartySelf;
 import com.nedap.archie.rm.support.identification.TerminologyId;
 import org.apache.commons.io.IOUtils;
+import org.assertj.core.groups.Tuple;
 import org.ehrbase.client.TestData;
+import org.ehrbase.client.classgenerator.examples.alternativeeventscomposition.AlternativeEventsComposition;
 import org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev0composition.EhrbaseBloodPressureSimpleDeV0Composition;
 import org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1composition.EhrbaseMultiOccurrenceDeV1Composition;
 import org.ehrbase.client.classgenerator.examples.testalltypesenv1composition.TestAllTypesEnV1Composition;
@@ -41,12 +44,14 @@ import org.junit.Test;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.time.Duration;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.ehrbase.client.TestData.buildEhrbaseBloodPressureSimpleDeV0;
-import static org.ehrbase.client.TestData.buildExampleBloodpressureListDe;
+import static org.ehrbase.client.TestData.*;
 import static org.junit.Assert.assertFalse;
 
 public class UnflattenerTest {
@@ -146,5 +151,44 @@ public class UnflattenerTest {
         assertThat(dvquantity.getMagnitude()).isEqualTo(22d);
         assertThat(dvquantity.getUnits()).isEqualTo("mm[Hg]");
     }
+
+    @Test
+    public void testUnflattenAltEvent() {
+        AlternativeEventsComposition alternativeEventsComposition = buildAlternativeEventsComposition();
+
+        Unflattener cut = new Unflattener(new TestDataTemplateProvider());
+        Composition actual = (Composition) cut.unflatten(alternativeEventsComposition);
+
+        assertThat(actual).isNotNull();
+        assertThat(actual.getContent()).size().isEqualTo(1);
+        Observation actualObservation = (Observation) actual.getContent().get(0);
+        assertThat(actualObservation.getData().getEvents()).size().isEqualTo(3);
+        assertThat(actualObservation.getData().getEvents()).extracting(e -> (Class) e.getClass())
+                .containsExactlyInAnyOrder(PointEvent.class, PointEvent.class, IntervalEvent.class);
+
+        List<PointEvent> pointEvents = actualObservation.getData().getEvents().stream().filter(e -> PointEvent.class.isAssignableFrom(e.getClass())).map(e -> (PointEvent) e).collect(Collectors.toList());
+        assertThat(pointEvents).extracting(
+                p -> p.getTime().getValue(),
+                p -> ((DvQuantity) ((Element) p.getData().getItems().get(0)).getValue()).getMagnitude(),
+                p -> ((DvQuantity) ((Element) p.getData().getItems().get(0)).getValue()).getUnits()
+        )
+                .containsExactlyInAnyOrder(
+                        new Tuple(OffsetDateTime.of(1990, 11, 02, 12, 00, 00, 00, ZoneOffset.UTC), 30d, "kg"),
+                        new Tuple(OffsetDateTime.of(2013, 11, 02, 12, 00, 00, 00, ZoneOffset.UTC), 55d, "kg")
+                );
+
+        List<IntervalEvent> intervalEvents = actualObservation.getData().getEvents().stream().filter(e -> IntervalEvent.class.isAssignableFrom(e.getClass())).map(e -> (IntervalEvent) e).collect(Collectors.toList());
+        assertThat(intervalEvents).extracting(
+                p -> p.getTime().getValue(),
+                p -> ((DvQuantity) ((Element) p.getData().getItems().get(0)).getValue()).getMagnitude(),
+                p -> ((DvQuantity) ((Element) p.getData().getItems().get(0)).getValue()).getUnits(),
+                p -> p.getMathFunction().getValue(),
+                p -> p.getWidth().getValue()
+        )
+                .containsExactlyInAnyOrder(
+                        new Tuple(OffsetDateTime.of(2015, 11, 02, 12, 00, 00, 00, ZoneOffset.UTC), 60d, "kg", "mean", Duration.ofDays(30))
+                );
+    }
+
 
 }

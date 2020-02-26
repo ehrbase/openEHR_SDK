@@ -15,7 +15,8 @@ import java.util.List;
 @Archetype("openEHR-EHR-OBSERVATION.body_temperature.v2")
 public class BodyTemperatureObservation {
     @Path("/data[at0002]/events[at0003]")
-    private List<AnyEventEvent> anyEvent;
+    @Choice
+    private List<AnyEventChoice> anyEvent;
 
     @Path("/protocol[at0020]/items[at0062]")
     private List<Cluster> extension;
@@ -39,11 +40,11 @@ public class BodyTemperatureObservation {
     @Choice
     private LocationOfMeasurementChoice locationOfMeasurement;
 
-    public void setAnyEvent(List<AnyEventEvent> anyEvent) {
+    public void setAnyEvent(List<AnyEventChoice> anyEvent) {
         this.anyEvent = anyEvent;
     }
 
-    public List<AnyEventEvent> getAnyEvent() {
+    public List<AnyEventChoice> getAnyEvent() {
         return this.anyEvent;
     }
 

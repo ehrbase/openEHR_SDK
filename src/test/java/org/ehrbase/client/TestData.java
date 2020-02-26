@@ -18,22 +18,25 @@ package org.ehrbase.client;
 
 import com.nedap.archie.rm.generic.PartyIdentified;
 import com.nedap.archie.rm.generic.PartySelf;
+import org.ehrbase.client.classgenerator.examples.alternativeeventscomposition.AlternativeEventsComposition;
+import org.ehrbase.client.classgenerator.examples.alternativeeventscomposition.definition.AnyEventEnIntervalEvent;
+import org.ehrbase.client.classgenerator.examples.alternativeeventscomposition.definition.AnyEventEnPointEvent;
+import org.ehrbase.client.classgenerator.examples.alternativeeventscomposition.definition.BirthEnEvent;
+import org.ehrbase.client.classgenerator.examples.alternativeeventscomposition.definition.KorpergewichtObservation;
 import org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev0composition.EhrbaseBloodPressureSimpleDeV0Composition;
 import org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev0composition.definition.BloodPressureTrainingSampleObservation;
 import org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev0composition.definition.CuffSizeDefiningcode;
 import org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev0composition.definition.KorotkoffSoundsDefiningcode;
 import org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev0composition.definition.LocationOfMeasurementDefiningcode;
 import org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1composition.EhrbaseMultiOccurrenceDeV1Composition;
-import org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1composition.definition.AnyEventEvent;
+import org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1composition.definition.AnyEventPointEvent;
 import org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1composition.definition.BodyTemperatureObservation;
 import org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1composition.definition.LocationOfMeasurementDvcodedtext;
 import org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1composition.definition.LocationOfMeasurementDvtext;
-import org.ehrbase.client.classgenerator.examples.shareddefinition.CategoryDefiningcode;
-import org.ehrbase.client.classgenerator.examples.shareddefinition.Language;
-import org.ehrbase.client.classgenerator.examples.shareddefinition.SettingDefiningcode;
-import org.ehrbase.client.classgenerator.examples.shareddefinition.Territory;
+import org.ehrbase.client.classgenerator.examples.shareddefinition.*;
 import org.ehrbase.client.flattener.BloodpressureListDe;
 
+import java.time.Duration;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
@@ -113,13 +116,13 @@ public class TestData {
         locationOfMeasurement.setLocationOfMeasurementDefiningcode(org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1composition.definition.LocationOfMeasurementDefiningcode.FOREHEAD);
         bodyTemperature.setLocationOfMeasurement(locationOfMeasurement);
 
-        AnyEventEvent history1 = new AnyEventEvent();
+        AnyEventPointEvent history1 = new AnyEventPointEvent();
         history1.setTemperatureMagnitude(22d);
         history1.setTemperatureUnits("Cel");
         history1.setCurrentDayOfMenstrualCycleMagnitude(3l);
         bodyTemperature.getAnyEvent().add(history1);
 
-        AnyEventEvent history2 = new AnyEventEvent();
+        AnyEventPointEvent history2 = new AnyEventPointEvent();
         history2.setTemperatureMagnitude(11d);
         history2.setTemperatureUnits("Cel");
         history2.setCurrentDayOfMenstrualCycleMagnitude(3l);
@@ -134,17 +137,52 @@ public class TestData {
         locationOfMeasurement.setLocationOfMeasurementValue("location");
         bodyTemperature.setLocationOfMeasurement(locationOfMeasurement);
 
-        AnyEventEvent history1 = new AnyEventEvent();
+        AnyEventPointEvent history1 = new AnyEventPointEvent();
         history1.setTemperatureMagnitude(22d);
         history1.setTemperatureUnits("Cel");
         history1.setCurrentDayOfMenstrualCycleMagnitude(3l);
         bodyTemperature.getAnyEvent().add(history1);
 
-        AnyEventEvent history2 = new AnyEventEvent();
+        AnyEventPointEvent history2 = new AnyEventPointEvent();
         history2.setTemperatureMagnitude(11d);
         history2.setTemperatureUnits("Cel");
         history2.setCurrentDayOfMenstrualCycleMagnitude(3l);
         bodyTemperature.getAnyEvent().add(history2);
         return bodyTemperature;
+    }
+
+    public static AlternativeEventsComposition buildAlternativeEventsComposition() {
+        AlternativeEventsComposition alternativeEventsComposition = new AlternativeEventsComposition();
+        alternativeEventsComposition.setStartTimeValue(OffsetDateTime.of(2010, 11, 02, 12, 00, 00, 00, ZoneOffset.UTC));
+        alternativeEventsComposition.setComposer(new PartyIdentified(null, "Test", null));
+        alternativeEventsComposition.setLanguage(Language.EN);
+        alternativeEventsComposition.setTerritory(Territory.DE);
+        alternativeEventsComposition.setCategoryDefiningcode(CategoryDefiningcode.EVENT);
+        alternativeEventsComposition.setKorpergewicht(new ArrayList<>());
+        KorpergewichtObservation korpergewichtObservation = new KorpergewichtObservation();
+        alternativeEventsComposition.getKorpergewicht().add(korpergewichtObservation);
+
+        BirthEnEvent birthEnEvent = new BirthEnEvent();
+        birthEnEvent.setGewichtMagnitude(30d);
+        birthEnEvent.setGewichtUnits("kg");
+        birthEnEvent.setTimeValue(OffsetDateTime.of(1990, 11, 02, 12, 00, 00, 00, ZoneOffset.UTC));
+
+        korpergewichtObservation.setBirthEn(birthEnEvent);
+        korpergewichtObservation.setAnyEventEn(new ArrayList<>());
+
+        AnyEventEnPointEvent pointEvent = new AnyEventEnPointEvent();
+        pointEvent.setGewichtMagnitude(55d);
+        pointEvent.setGewichtUnits("kg");
+        pointEvent.setTimeValue(OffsetDateTime.of(2013, 11, 02, 12, 00, 00, 00, ZoneOffset.UTC));
+        korpergewichtObservation.getAnyEventEn().add(pointEvent);
+
+        AnyEventEnIntervalEvent intervalEvent = new AnyEventEnIntervalEvent();
+        intervalEvent.setGewichtMagnitude(60d);
+        intervalEvent.setGewichtUnits("kg");
+        intervalEvent.setTimeValue(OffsetDateTime.of(2015, 11, 02, 12, 00, 00, 00, ZoneOffset.UTC));
+        intervalEvent.setWidthValue(Duration.ofDays(30));
+        intervalEvent.setMathFunctionDefiningcode(MathFunctionDefiningcode.MEAN);
+        korpergewichtObservation.getAnyEventEn().add(intervalEvent);
+        return alternativeEventsComposition;
     }
 }

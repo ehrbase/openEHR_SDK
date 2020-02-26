@@ -124,9 +124,9 @@ public class TemplateIntrospectTest {
                 );
 
         assertThat(countNodes(actual, ArchetypeNode.class)).isEqualTo(1L);
-        assertThat(countNodes(actual, EndNode.class)).isEqualTo(17L);
-        assertThat(countNodes(actual, SlotNode.class)).isEqualTo(3L);
-        assertThat(countNodes(actual, ChoiceNode.class)).isEqualTo(0L);
+        assertThat(countNodes(actual, EndNode.class)).isEqualTo(19L);
+        assertThat(countNodes(actual, SlotNode.class)).isEqualTo(5L);
+        assertThat(countNodes(actual, ChoiceNode.class)).isEqualTo(1L);
     }
 
     @Test
@@ -158,7 +158,8 @@ public class TemplateIntrospectTest {
                 .extracting(e -> e.getKey().getSimpleName(), Map.Entry::getValue)
                 .containsExactlyInAnyOrder(
                         new Tuple("PartyProxy", 2L),
-                        new Tuple("DvCodedText", 2L),
+                        new Tuple("DvCodedText", 3L),
+                        new Tuple("DvText", 1L),
                         new Tuple("CodePhrase", 3L),
                         new Tuple("PartyIdentified", 1L),
                         new Tuple("DvDateTime", 3L),
@@ -167,9 +168,9 @@ public class TemplateIntrospectTest {
                 );
 
         assertThat(countNodes(actual, ArchetypeNode.class)).isEqualTo(1l);
-        assertThat(countNodes(actual, EndNode.class)).isEqualTo(18l);
-        assertThat(countNodes(actual, SlotNode.class)).isEqualTo(6l);
-        assertThat(countNodes(actual, ChoiceNode.class)).isEqualTo(1l);
+        assertThat(countNodes(actual, EndNode.class)).isEqualTo(20l);
+        assertThat(countNodes(actual, SlotNode.class)).isEqualTo(8l);
+        assertThat(countNodes(actual, ChoiceNode.class)).isEqualTo(2l);
     }
 
     @Test
@@ -217,11 +218,11 @@ public class TemplateIntrospectTest {
                         new Tuple("CodePhrase", 6L),
                         new Tuple("DvParsable", 1L),
                         new Tuple("DvOrdinal", 1L),
-                        new Tuple("DvCount", 2L),
+                        new Tuple("DvCount", 3L),
                         new Tuple("DvTime", 1L),
                         new Tuple("PartyIdentified", 1L),
                         new Tuple("DvDateTime", 8L),
-                        new Tuple("DvQuantity", 1L),
+                        new Tuple("DvQuantity", 2L),
                         new Tuple("DvProportion", 1L),
                         new Tuple("DvInterval", 3L),
                         new Tuple("DvText", 3L),
@@ -246,7 +247,7 @@ public class TemplateIntrospectTest {
             } else if (ArchetypeNode.class.isAssignableFrom(node.getClass())) {
                 nodes.addAll(findAll(((ArchetypeNode) node).getChildren()));
             } else if (ChoiceNode.class.isAssignableFrom(node.getClass())) {
-                nodes.addAll(((ChoiceNode) node).getNodes().stream().filter(n -> EntityNode.class.isAssignableFrom(n.getClass())).map(n -> (EndNode) n).collect(Collectors.toList()));
+                nodes.addAll(((ChoiceNode) node).getNodes().stream().filter(n -> EndNode.class.isAssignableFrom(n.getClass())).map(n -> (EndNode) n).collect(Collectors.toList()));
             }
         }
         return nodes;

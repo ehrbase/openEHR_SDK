@@ -56,4 +56,17 @@ public class FlatPath {
     public FlatPath getChild() {
         return child;
     }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(name);
+        if (StringUtils.isNotBlank(atCode)) {
+            sb.append("[" + atCode + "]");
+        }
+        if (child != null) {
+            sb.append("/" + child.toString());
+        }
+        return sb.toString();
+    }
 }

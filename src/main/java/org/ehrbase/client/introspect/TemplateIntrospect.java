@@ -164,8 +164,8 @@ public class TemplateIntrospect {
                     if (collect.keySet().size() > 1) {
                         for (Map.Entry<String, List<Map.Entry<String, Node>>> entry : collect.entrySet()) {
                             if (entry.getValue().size() > 1) {
-                                EntityNode entityNode = new EntityNode(term + TERM_DIVIDER + termDef.get(entry.getKey()).getValue(), false, "EVENT", entry.getValue().stream().collect(Collectors.toMap(Map.Entry::getKey, (Function<Map.Entry<String, Node>, Node>) Map.Entry::getValue)));
-                                localNodeMap.put("/data[at0002]/event" + "[" + entry.getKey() + "]", entityNode);
+                                EntityNode entityNode = new EntityNode(term + TERM_DIVIDER + termDef.get(entry.getKey()).getValue(), false, "EVENT", entry.getValue().stream().collect(Collectors.toMap(k -> k.getKey().replace("/data[at0002]/events" + "[" + entry.getKey() + "]", ""), (Function<Map.Entry<String, Node>, Node>) Map.Entry::getValue)));
+                                localNodeMap.put("/data[at0002]/events" + "[" + entry.getKey() + "]", entityNode);
                                 entry.getValue().forEach(e -> localNodeMap.remove(e.getKey()));
                             }
                         }
@@ -269,9 +269,18 @@ public class TemplateIntrospect {
         }
     }
 
-    private EntityNode handleEntity(CCOMPLEXOBJECT cobject, String name, Map<String, TermDefinition> termDef, boolean multi) {
+    private Node handleEntity(CCOMPLEXOBJECT cobject, String name, Map<String, TermDefinition> termDef, boolean multi) {
+        Class rmClass = RM_INFO_LOOKUP.getClass(cobject.getRmTypeName());
+        if (Event.class.isAssignableFrom(rmClass)) {
 
-        return new EntityNode(name + TERM_DIVIDER + Optional.ofNullable(termDef.get(cobject.getNodeId())).map(TermDefinition::getValue).orElse(""), multi, cobject.getRmTypeName(), handleCCOMPLEXOBJECT(cobject, "", termDef, ""));
+            cobject.setRmTypeName("POINT_EVENT");
+            EntityNode pointNode = new EntityNode(name + TERM_DIVIDER + Optional.ofNullable(termDef.get(cobject.getNodeId())).map(TermDefinition::getValue).orElse(""), false, cobject.getRmTypeName(), handleCCOMPLEXOBJECT(cobject, "", termDef, ""));
+            cobject.setRmTypeName("INTERVAL_EVENT");
+            EntityNode intervalNode = new EntityNode(name + TERM_DIVIDER + Optional.ofNullable(termDef.get(cobject.getNodeId())).map(TermDefinition::getValue).orElse(""), false, cobject.getRmTypeName(), handleCCOMPLEXOBJECT(cobject, "", termDef, ""));
+            return new ChoiceNode(name + TERM_DIVIDER + Optional.ofNullable(termDef.get(cobject.getNodeId())).map(TermDefinition::getValue).orElse(""), Arrays.asList(pointNode, intervalNode), multi);
+        } else {
+            return new EntityNode(name + TERM_DIVIDER + Optional.ofNullable(termDef.get(cobject.getNodeId())).map(TermDefinition::getValue).orElse(""), multi, cobject.getRmTypeName(), handleCCOMPLEXOBJECT(cobject, "", termDef, ""));
+        }
     }
 
     private Map<String, Node> handleNonTemplateFields(Class clazz, String path) {

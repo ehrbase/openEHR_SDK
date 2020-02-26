@@ -63,5 +63,6 @@ public class PathExtractor {
         }
         childName = childPath.substring(i + 1);
         childName = StringUtils.substringBefore(childName, "[");
+
     }
 }
