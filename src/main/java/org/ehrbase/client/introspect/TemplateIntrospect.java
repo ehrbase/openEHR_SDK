@@ -19,6 +19,7 @@ package org.ehrbase.client.introspect;
 
 import com.nedap.archie.rm.archetyped.Pathable;
 import com.nedap.archie.rm.datastructures.Event;
+import com.nedap.archie.rm.datastructures.History;
 import com.nedap.archie.rminfo.ArchieRMInfoLookup;
 import org.apache.commons.collections4.ListValuedMap;
 import org.apache.commons.collections4.multimap.ArrayListValuedHashMap;
@@ -26,6 +27,7 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.ehrbase.client.exception.ClientException;
+import org.ehrbase.client.flatpath.FlatPath;
 import org.ehrbase.client.introspect.config.RmIntrospectConfig;
 import org.ehrbase.client.introspect.node.*;
 import org.ehrbase.client.terminology.TermDefinition;
@@ -43,6 +45,7 @@ import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static org.ehrbase.client.terminology.ValueSet.EMPTY_VALUE_SET;
@@ -109,7 +112,7 @@ public class TemplateIntrospect {
             termDef.put(code, new TermDefinition(code, value, description));
 
         }
-        return new ArchetypeNode(Optional.ofNullable(termDef.get("at0000")).map(TermDefinition::getValue).orElse(name), definition.getArchetypeId().getValue(), handleCCOMPLEXOBJECT(definition, "", termDef, ""), multi);
+        return new ArchetypeNode(Optional.ofNullable(termDef.get("at0000")).map(TermDefinition::getValue).orElse(name), definition.getArchetypeId().getValue(), handleCCOMPLEXOBJECT(definition, "", termDef, ""), multi, definition.getRmTypeName());
     }
 
     private Map<String, Node> handleCCOMPLEXOBJECT(CCOMPLEXOBJECT ccomplexobject, String path, Map<String, TermDefinition> termDef, String term) {
@@ -150,14 +153,25 @@ public class TemplateIntrospect {
                                 localNodeMap.put(key,
                                         new ChoiceNode(
                                                 value.iterator().next().getName(),
-                                                value.stream()
-                                                        .filter(n -> EndNode.class.isAssignableFrom(n.getClass()))
-                                                        .map(n -> (EndNode) n)
-                                                        .collect(Collectors.toList())
-                                        )
+                                                new ArrayList<>(value),
+                                                value.stream().filter(n -> EntityNode.class.isAssignableFrom(n.getClass())).map(n -> (EntityNode) n).anyMatch(EntityNode::isMulti))
                                 );
                             }
                         });
+
+                if (History.class.isAssignableFrom(rmClass)) {
+                    Map<String, List<Map.Entry<String, Node>>> collect = localNodeMap.entrySet().stream().filter(e -> e.getKey().contains("/data[at0002]/event")).collect(Collectors.groupingBy(e -> new FlatPath(e.getKey()).getChild().getAtCode()));
+                    if (collect.keySet().size() > 1) {
+                        for (Map.Entry<String, List<Map.Entry<String, Node>>> entry : collect.entrySet()) {
+                            if (entry.getValue().size() > 1) {
+                                EntityNode entityNode = new EntityNode(term + TERM_DIVIDER + termDef.get(entry.getKey()).getValue(), false, "EVENT", entry.getValue().stream().collect(Collectors.toMap(k -> k.getKey().replace("/data[at0002]/events" + "[" + entry.getKey() + "]", ""), (Function<Map.Entry<String, Node>, Node>) Map.Entry::getValue)));
+                                localNodeMap.put("/data[at0002]/events" + "[" + entry.getKey() + "]", entityNode);
+                                entry.getValue().forEach(e -> localNodeMap.remove(e.getKey()));
+                            }
+                        }
+                    }
+
+                }
             }
 
         } else {
@@ -186,7 +200,8 @@ public class TemplateIntrospect {
             return Collections.singletonMap(path, handleCARCHETYPEROOT((CARCHETYPEROOT) cobject, term, multi));
 
         } else if (cobject instanceof CCOMPLEXOBJECT && multi) {
-
+            path = path + "[" + cobject.getNodeId() + "]";
+            log.trace("Path: {}", path);
             return Collections.singletonMap(path, handleEntity((CCOMPLEXOBJECT) cobject, term, termDef, multi));
 
         } else if (cobject instanceof CCOMPLEXOBJECT) {
@@ -222,7 +237,7 @@ public class TemplateIntrospect {
         if (cobject instanceof CCODEPHRASE) {
 
             CCODEPHRASE ccodephrase = (CCODEPHRASE) cobject;
-            String terminologyId = Optional.ofNullable(ccodephrase).map(CCODEPHRASE::getTerminologyId).map(OBJECTID::getValue).orElse("");
+            String terminologyId = Optional.of(ccodephrase).map(CCODEPHRASE::getTerminologyId).map(OBJECTID::getValue).orElse("");
             if (terminologyId.equals("local")) {
                 valueSet = new ValueSet(terminologyId, Arrays.stream(ccodephrase.getCodeListArray()).filter(termDef::containsKey).map(termDef::get).collect(Collectors.toSet()));
             } else if (StringUtils.isNotBlank(terminologyId)) {
@@ -254,8 +269,18 @@ public class TemplateIntrospect {
         }
     }
 
-    private EntityNode handleEntity(CCOMPLEXOBJECT cobject, String name, Map<String, TermDefinition> termDef, boolean multi) {
-        return new EntityNode(Optional.ofNullable(termDef.get("at0000")).map(TermDefinition::getValue).orElse("") + name, multi, handleCCOMPLEXOBJECT(cobject, "", termDef, ""));
+    private Node handleEntity(CCOMPLEXOBJECT cobject, String name, Map<String, TermDefinition> termDef, boolean multi) {
+        Class rmClass = RM_INFO_LOOKUP.getClass(cobject.getRmTypeName());
+        if (Event.class.isAssignableFrom(rmClass)) {
+
+            cobject.setRmTypeName("POINT_EVENT");
+            EntityNode pointNode = new EntityNode(name + TERM_DIVIDER + Optional.ofNullable(termDef.get(cobject.getNodeId())).map(TermDefinition::getValue).orElse(""), false, cobject.getRmTypeName(), handleCCOMPLEXOBJECT(cobject, "", termDef, ""));
+            cobject.setRmTypeName("INTERVAL_EVENT");
+            EntityNode intervalNode = new EntityNode(name + TERM_DIVIDER + Optional.ofNullable(termDef.get(cobject.getNodeId())).map(TermDefinition::getValue).orElse(""), false, cobject.getRmTypeName(), handleCCOMPLEXOBJECT(cobject, "", termDef, ""));
+            return new ChoiceNode(name + TERM_DIVIDER + Optional.ofNullable(termDef.get(cobject.getNodeId())).map(TermDefinition::getValue).orElse(""), Arrays.asList(pointNode, intervalNode), multi);
+        } else {
+            return new EntityNode(name + TERM_DIVIDER + Optional.ofNullable(termDef.get(cobject.getNodeId())).map(TermDefinition::getValue).orElse(""), multi, cobject.getRmTypeName(), handleCCOMPLEXOBJECT(cobject, "", termDef, ""));
+        }
     }
 
     private Map<String, Node> handleNonTemplateFields(Class clazz, String path) {

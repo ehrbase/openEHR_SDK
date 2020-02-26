@@ -81,6 +81,54 @@ public class TemplateIntrospectTest {
         assertThat(countNodes(actual, ChoiceNode.class)).isEqualTo(0l);
     }
 
+
+    @Test
+    public void introspectAltEvents() throws IOException, XmlException {
+        OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(OperationalTemplateTestData.ALT_EVENTS.getStream()).getTemplate();
+        TemplateIntrospect cut = new TemplateIntrospect(template);
+
+        Map<String, Node> actual = cut.getRoot().getChildren();
+
+        assertThat(actual).isNotEmpty();
+        assertThat(actual.keySet())
+                .containsExactlyInAnyOrder(
+                        "/context/end_time",
+                        "/language",
+                        "/context/health_care_facility",
+                        "/composer",
+                        "/context/setting",
+                        "/territory",
+                        "/content[openEHR-EHR-OBSERVATION.body_weight.v2]",
+                        "/context/location",
+                        "/category",
+                        "/context/start_time",
+                        "/context/other_context[at0001]/items[at0005]/value",
+                        "/context/other_context[at0001]/items[at0002]/value",
+                        "/context/other_context[at0001]/items[at0006]"
+                );
+
+        Map<Class, Long> classes = findAll(actual).stream()
+                .collect(Collectors.groupingBy(EndNode::getClazz, Collectors.counting()));
+
+        assertThat(classes.entrySet())
+                .extracting(e -> e.getKey().getSimpleName(), Map.Entry::getValue)
+                .containsExactlyInAnyOrder(
+                        new Tuple("PartyProxy", 2L),
+                        new Tuple("DvCodedText", 2L),
+                        new Tuple("CodePhrase", 3L),
+                        new Tuple("PartyIdentified", 1L),
+                        new Tuple("DvDateTime", 3L),
+                        new Tuple("DvText", 2L),
+                        new Tuple("Cluster", 3L),
+                        new Tuple("String", 1L)
+                );
+
+        assertThat(countNodes(actual, ArchetypeNode.class)).isEqualTo(1L);
+        assertThat(countNodes(actual, EndNode.class)).isEqualTo(19L);
+        assertThat(countNodes(actual, SlotNode.class)).isEqualTo(5L);
+        assertThat(countNodes(actual, ChoiceNode.class)).isEqualTo(1L);
+    }
+
     @Test
     public void introspectMultiOccurrence() throws IOException, XmlException {
         OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(OperationalTemplateTestData.MULTI_OCCURRENCE.getStream()).getTemplate();
@@ -111,18 +159,18 @@ public class TemplateIntrospectTest {
                 .containsExactlyInAnyOrder(
                         new Tuple("PartyProxy", 2L),
                         new Tuple("DvCodedText", 3L),
+                        new Tuple("DvText", 1L),
                         new Tuple("CodePhrase", 3L),
                         new Tuple("PartyIdentified", 1L),
                         new Tuple("DvDateTime", 3L),
-                        new Tuple("DvText", 1L),
                         new Tuple("Cluster", 4L),
                         new Tuple("String", 1L)
                 );
 
         assertThat(countNodes(actual, ArchetypeNode.class)).isEqualTo(1l);
-        assertThat(countNodes(actual, EndNode.class)).isEqualTo(18l);
-        assertThat(countNodes(actual, SlotNode.class)).isEqualTo(6l);
-        assertThat(countNodes(actual, ChoiceNode.class)).isEqualTo(1l);
+        assertThat(countNodes(actual, EndNode.class)).isEqualTo(20l);
+        assertThat(countNodes(actual, SlotNode.class)).isEqualTo(8l);
+        assertThat(countNodes(actual, ChoiceNode.class)).isEqualTo(2l);
     }
 
     @Test
@@ -199,7 +247,7 @@ public class TemplateIntrospectTest {
             } else if (ArchetypeNode.class.isAssignableFrom(node.getClass())) {
                 nodes.addAll(findAll(((ArchetypeNode) node).getChildren()));
             } else if (ChoiceNode.class.isAssignableFrom(node.getClass())) {
-                nodes.addAll(((ChoiceNode) node).getNodes());
+                nodes.addAll(((ChoiceNode) node).getNodes().stream().filter(n -> EndNode.class.isAssignableFrom(n.getClass())).map(n -> (EndNode) n).collect(Collectors.toList()));
             }
         }
         return nodes;

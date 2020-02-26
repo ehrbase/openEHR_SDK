@@ -21,10 +21,14 @@ import com.nedap.archie.aom.CComplexObject;
 import com.nedap.archie.creation.RMObjectCreator;
 import com.nedap.archie.rm.RMObject;
 import com.nedap.archie.rm.archetyped.Locatable;
+import com.nedap.archie.rm.datastructures.Event;
+import com.nedap.archie.rm.datastructures.IntervalEvent;
 import com.nedap.archie.rm.datatypes.CodePhrase;
 import com.nedap.archie.rm.datavalues.DvCodedText;
+import com.nedap.archie.rm.datavalues.quantity.datetime.DvDuration;
 import com.nedap.archie.rm.support.identification.TerminologyId;
 import com.nedap.archie.rminfo.ArchieRMInfoLookup;
+import com.nedap.archie.rminfo.RMAttributeInfo;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.apache.commons.text.CaseUtils;
 import org.ehrbase.client.annotations.Entity;
@@ -49,7 +53,8 @@ import java.util.*;
 
 public class Unflattener {
 
-    private static final RMObjectCreator RM_OBJECT_CREATOR = new RMObjectCreator(ArchieRMInfoLookup.getInstance());
+    public static final ArchieRMInfoLookup ARCHIE_RM_INFO_LOOKUP = ArchieRMInfoLookup.getInstance();
+    private static final RMObjectCreator RM_OBJECT_CREATOR = new RMObjectCreator(ARCHIE_RM_INFO_LOOKUP);
     public static final Normalizer NORMALIZER = new Normalizer();
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -107,8 +112,34 @@ public class Unflattener {
             String rmclass = value.getClass().getAnnotation(OptionFor.class).value();
             CComplexObject elementConstraint = new CComplexObject();
             elementConstraint.setRmTypeName(rmclass);
-            child = RM_OBJECT_CREATOR.create(elementConstraint);
-            RM_OBJECT_CREATOR.set(parent, childName, Collections.singletonList(child));
+            Object newChild = RM_OBJECT_CREATOR.create(elementConstraint);
+            if (Event.class.isAssignableFrom(newChild.getClass())) {
+                Event newEvent = (Event) newChild;
+                Event oldEvent = (Event) child;
+                newEvent.setState(oldEvent.getState());
+                newEvent.setData(oldEvent.getData());
+                newEvent.setArchetypeDetails(oldEvent.getArchetypeDetails());
+                newEvent.setArchetypeNodeId(oldEvent.getArchetypeNodeId());
+                newEvent.setName(oldEvent.getName());
+                newEvent.setTime(oldEvent.getTime());
+                if (IntervalEvent.class.isAssignableFrom(newEvent.getClass())) {
+                    ((IntervalEvent) newEvent).setWidth(new DvDuration());
+                }
+
+            }
+            RMAttributeInfo attributeInfo = ARCHIE_RM_INFO_LOOKUP.getAttributeInfo(parent.getClass(), childName);
+            if (attributeInfo.isMultipleValued()) {
+                try {
+                    Object invoke = attributeInfo.getGetMethod().invoke(parent);
+                    if (Collection.class.isAssignableFrom(invoke.getClass())) {
+                        ((Collection) invoke).remove(child);
+                    }
+                } catch (IllegalAccessException | InvocationTargetException e) {
+                    logger.warn(e.getMessage(), e);
+                }
+            }
+            child = newChild;
+            RM_OBJECT_CREATOR.addElementToListOrSetSingleValues(parent, childName, Collections.singletonList(child));
         }
 
         if (value == null) {
@@ -118,6 +149,12 @@ public class Unflattener {
             DvCodedText dvCodedText = (DvCodedText) parent;
             dvCodedText.setValue(valueSet.getValue());
             dvCodedText.setDefiningCode(new CodePhrase(new TerminologyId(valueSet.getTerminologyId()), valueSet.getCode()));
+        } else if (EnumValueSet.class.isAssignableFrom(value.getClass()) && DvCodedText.class.isAssignableFrom(ARCHIE_RM_INFO_LOOKUP.getAttributeInfo(parent.getClass(), childName).getType())) {
+            EnumValueSet valueSet = (EnumValueSet) value;
+            DvCodedText dvCodedText = new DvCodedText();
+            dvCodedText.setValue(valueSet.getValue());
+            dvCodedText.setDefiningCode(new CodePhrase(new TerminologyId(valueSet.getTerminologyId()), valueSet.getCode()));
+            RM_OBJECT_CREATOR.set(parent, childName, Collections.singletonList(dvCodedText));
         } else if (EnumValueSet.class.isAssignableFrom(value.getClass())) {
             EnumValueSet valueSet = (EnumValueSet) value;
             CodePhrase codePhrase = new CodePhrase(new TerminologyId(valueSet.getTerminologyId()), valueSet.getCode());
@@ -126,6 +163,8 @@ public class Unflattener {
             RM_OBJECT_CREATOR.set(parent, childName, Collections.singletonList(value));
         } else if (value.getClass().isAnnotationPresent(Entity.class)) {
             mapDtoToEntity(value, (RMObject) child);
+        } else {
+            logger.warn("Unhandled child {} in {}", childName, parent);
         }
 
     }
@@ -141,7 +180,7 @@ public class Unflattener {
             return type.get();
         } else {
             logger.warn("No field {} for class {}", childName, parent.getClass());
-            return Object.class;
+            return Dummy.class;
         }
     }
 

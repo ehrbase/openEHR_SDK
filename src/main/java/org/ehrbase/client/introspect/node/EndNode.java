@@ -19,6 +19,8 @@ package org.ehrbase.client.introspect.node;
 
 import org.ehrbase.client.terminology.ValueSet;
 
+import java.util.Objects;
+
 import static org.ehrbase.client.terminology.ValueSet.EMPTY_VALUE_SET;
 
 public class EndNode implements Node {
@@ -49,5 +51,20 @@ public class EndNode implements Node {
 
     public ValueSet getValuset() {
         return valueSet;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        EndNode endNode = (EndNode) o;
+        return Objects.equals(clazz, endNode.clazz) &&
+                Objects.equals(getFirstName(), endNode.getFirstName()) &&
+                Objects.equals(valueSet, endNode.valueSet);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(clazz, getFirstName(), valueSet);
     }
 }

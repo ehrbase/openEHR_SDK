@@ -17,7 +17,18 @@
 
 package org.ehrbase.client.introspect.node;
 
+import static org.ehrbase.client.introspect.TemplateIntrospect.TERM_DIVIDER;
+
 public interface Node {
 
     String getName();
+
+
+    default String getFirstName() {
+        if (getName() == null) {
+            return null;
+        }
+        String[] split = getName().split(TERM_DIVIDER);
+        return split[split.length - 1];
+    }
 }

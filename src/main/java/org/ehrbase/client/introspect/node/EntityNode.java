@@ -17,15 +17,18 @@
 package org.ehrbase.client.introspect.node;
 
 import java.util.Map;
+import java.util.Objects;
 
 public class EntityNode implements Node {
     protected final String name;
     protected final boolean multi;
+    protected final String rmName;
     protected final Map<String, Node> children;
 
-    public EntityNode(String name, boolean multi, Map<String, Node> children) {
+    public EntityNode(String name, boolean multi, String rmName, Map<String, Node> children) {
         this.name = name;
         this.multi = multi;
+        this.rmName = rmName;
         this.children = children;
     }
 
@@ -40,5 +43,26 @@ public class EntityNode implements Node {
 
     public Map<String, Node> getChildren() {
         return children;
+    }
+
+    public String getRmName() {
+        return rmName;
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        EntityNode that = (EntityNode) o;
+        return multi == that.multi &&
+                Objects.equals(getFirstName(), that.getFirstName()) &&
+                Objects.equals(rmName, that.rmName) &&
+                Objects.equals(children, that.children);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getFirstName(), multi, rmName, children);
     }
 }
