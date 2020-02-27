@@ -1,11 +1,11 @@
 package org.ehrbase.client.classgenerator.examples.episodeofcarecomposition.definition;
 
-import com.nedap.archie.rm.datatypes.CodePhrase;
 import com.nedap.archie.rm.datavalues.quantity.DvInterval;
 import com.nedap.archie.rm.generic.PartyProxy;
 import org.ehrbase.client.annotations.Archetype;
 import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.Path;
+import org.ehrbase.client.classgenerator.examples.shareddefinition.Language;
 
 import java.net.URI;
 import java.util.List;
@@ -23,7 +23,7 @@ public class EpisodeofcareAdminEntry {
     private StatusDefiningcode statusDefiningcode;
 
     @Path("/language")
-    private CodePhrase language;
+    private Language language;
 
     @Path("/data[at0001]/items[at0018]")
     private List<DiagnosisCluster> diagnosis;
@@ -67,11 +67,11 @@ public class EpisodeofcareAdminEntry {
         return this.statusDefiningcode;
     }
 
-    public void setLanguage(CodePhrase language) {
+    public void setLanguage(Language language) {
         this.language = language;
     }
 
-    public CodePhrase getLanguage() {
+    public Language getLanguage() {
         return this.language;
     }
 

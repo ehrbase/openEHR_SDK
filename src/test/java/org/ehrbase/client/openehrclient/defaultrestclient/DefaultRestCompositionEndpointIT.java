@@ -25,6 +25,9 @@ import org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev0
 import org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev0composition.definition.KorotkoffSoundsDefiningcode;
 import org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1composition.EhrbaseMultiOccurrenceDeV1Composition;
 import org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1composition.definition.*;
+import org.ehrbase.client.classgenerator.examples.episodeofcarecomposition.EpisodeOfCareComposition;
+import org.ehrbase.client.classgenerator.examples.episodeofcarecomposition.definition.EpisodeofcareAdminEntry;
+import org.ehrbase.client.classgenerator.examples.episodeofcarecomposition.definition.TeamElement;
 import org.ehrbase.client.classgenerator.examples.shareddefinition.SettingDefiningcode;
 import org.ehrbase.client.exception.OptimisticLockException;
 import org.ehrbase.client.openehrclient.CompositionEndpoint;
@@ -34,6 +37,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Optional;
 import java.util.UUID;
@@ -131,5 +135,24 @@ public class DefaultRestCompositionEndpointIT {
 
     }
 
+    @Test
+    public void testEpisodeOfCare() {
+
+        UUID ehr = openEhrClient.ehrEndpoint().createEhr();
+        EpisodeOfCareComposition bloodPressureSimpleDeV0 = TestData.buildEpisodeOfCareComposition();
+
+        CompositionEndpoint compositionEndpoint = openEhrClient.compositionEndpoint(ehr);
+        EpisodeOfCareComposition version1 = compositionEndpoint.mergeCompositionEntity(bloodPressureSimpleDeV0);
+
+        Optional<EpisodeOfCareComposition> actual = compositionEndpoint.find(version1.getVersionUid().getUuid(), EpisodeOfCareComposition.class);
+        assertTrue(actual.isPresent());
+        assertThat(actual.get().getEpisodeofcare()).size().isEqualTo(1);
+        EpisodeofcareAdminEntry episodeofcareAdminEntry = actual.get().getEpisodeofcare().get(0);
+
+        assertThat(episodeofcareAdminEntry.getIdentifier()).extracting(e -> e.getValue().getId()).containsExactlyInAnyOrder("123", "456");
+
+        assertThat(episodeofcareAdminEntry.getTeam()).extracting(TeamElement::getValue).containsExactlyInAnyOrder(URI.create("https://github.com/ehrbase"));
+
+    }
 
 }
