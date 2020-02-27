@@ -34,6 +34,8 @@ import org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev0
 import org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1composition.EhrbaseMultiOccurrenceDeV1Composition;
 import org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1composition.definition.*;
 import org.ehrbase.client.classgenerator.examples.episodeofcarecomposition.EpisodeOfCareComposition;
+import org.ehrbase.client.classgenerator.examples.episodeofcarecomposition.definition.EpisodeofcareAdminEntry;
+import org.ehrbase.client.classgenerator.examples.episodeofcarecomposition.definition.TeamElement;
 import org.ehrbase.client.classgenerator.examples.shareddefinition.MathFunctionDefiningcode;
 import org.ehrbase.client.classgenerator.examples.testalltypesenv1composition.TestAllTypesEnV1Composition;
 import org.ehrbase.client.classgenerator.examples.testalltypesenv1composition.definition.ChoiceDvcount;
@@ -43,6 +45,7 @@ import org.ehrbase.test_data.composition.CompositionTestDataCanonicalXML;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.time.OffsetDateTime;
@@ -149,20 +152,20 @@ public class FlattenerTest {
         assertThat(actual).isNotNull();
         assertThat(actual.getKorpergewicht()).size().isEqualTo(1);
         BirthEnEvent birthEn = actual.getKorpergewicht().get(0).getBirthEn();
-        assertThat(birthEn.getTimeValue()).isEqualTo(OffsetDateTime.of(1990, 11, 02, 12, 00, 00, 00, ZoneOffset.UTC));
+        assertThat(birthEn.getTimeValue()).isEqualTo(OffsetDateTime.of(1990, 11, 2, 12, 0, 0, 0, ZoneOffset.UTC));
         assertThat(birthEn.getGewichtMagnitude()).isEqualTo(30d);
         assertThat(birthEn.getGewichtUnits()).isEqualTo("kg");
 
         List<AnyEventEnPointEvent> eventEnPointEvents = actual.getKorpergewicht().get(0).getAnyEventEn().stream().filter(e -> AnyEventEnPointEvent.class.isAssignableFrom(e.getClass())).map(e -> (AnyEventEnPointEvent) e).collect(Collectors.toList());
         assertThat(eventEnPointEvents).size().isEqualTo(1);
-        assertThat(eventEnPointEvents.get(0).getTimeValue()).isEqualTo(OffsetDateTime.of(2013, 11, 02, 12, 00, 00, 00, ZoneOffset.UTC));
+        assertThat(eventEnPointEvents.get(0).getTimeValue()).isEqualTo(OffsetDateTime.of(2013, 11, 2, 12, 0, 0, 0, ZoneOffset.UTC));
         assertThat(eventEnPointEvents.get(0).getGewichtMagnitude()).isEqualTo(55d);
         assertThat(eventEnPointEvents.get(0).getGewichtUnits()).isEqualTo("kg");
 
 
         List<AnyEventEnIntervalEvent> anyEventEnIntervalEvents = actual.getKorpergewicht().get(0).getAnyEventEn().stream().filter(e -> AnyEventEnIntervalEvent.class.isAssignableFrom(e.getClass())).map(e -> (AnyEventEnIntervalEvent) e).collect(Collectors.toList());
         assertThat(eventEnPointEvents).size().isEqualTo(1);
-        assertThat(anyEventEnIntervalEvents.get(0).getTimeValue()).isEqualTo(OffsetDateTime.of(2015, 11, 02, 12, 00, 00, 00, ZoneOffset.UTC));
+        assertThat(anyEventEnIntervalEvents.get(0).getTimeValue()).isEqualTo(OffsetDateTime.of(2015, 11, 2, 12, 0, 0, 0, ZoneOffset.UTC));
         assertThat(anyEventEnIntervalEvents.get(0).getGewichtMagnitude()).isEqualTo(60d);
         assertThat(anyEventEnIntervalEvents.get(0).getGewichtUnits()).isEqualTo("kg");
         assertThat(anyEventEnIntervalEvents.get(0).getMathFunctionDefiningcode()).isEqualTo(MathFunctionDefiningcode.MEAN);
@@ -175,5 +178,12 @@ public class FlattenerTest {
         Flattener cut = new Flattener();
         EpisodeOfCareComposition actual = cut.flatten(composition, EpisodeOfCareComposition.class);
         assertThat(actual).isNotNull();
+        assertThat(actual.getEpisodeofcare()).size().isEqualTo(1);
+        EpisodeofcareAdminEntry episodeofcareAdminEntry = actual.getEpisodeofcare().get(0);
+
+        assertThat(episodeofcareAdminEntry.getIdentifier()).extracting(e -> e.getValue().getId()).containsExactlyInAnyOrder("123", "456");
+
+        assertThat(episodeofcareAdminEntry.getTeam()).extracting(TeamElement::getValue).containsExactlyInAnyOrder(URI.create("https://github.com/ehrbase"));
+
     }
 }

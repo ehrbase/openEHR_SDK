@@ -27,7 +27,6 @@ import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
 import org.openehr.schemas.v1.TemplateDocument;
 
 import java.io.IOException;
-import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -180,9 +179,14 @@ public class ClassGeneratorTest {
         OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(OperationalTemplateTestData.EPISODE_OF_CARE.getStream()).getTemplate();
         ClassGenerator cut = new ClassGenerator();
         ClassGeneratorResult generate = cut.generate(PACKAGE_NAME, template);
+        List<FieldSpec> fieldSpecs = generate.getClasses().values().stream()
+                .flatMap(Collection::stream)
+                .filter(t -> !t.kind.equals(TypeSpec.Kind.ENUM))
+                .map(t -> t.fieldSpecs).flatMap(List::stream).collect(Collectors.toList());
 
+        assertThat(fieldSpecs).size().isEqualTo(22);
 
-        generate.createFiles(Paths.get(".", "src/test/java/"));
+        //  generate.createFiles(Paths.get(".", "src/test/java/"));
 
 
     }
@@ -340,7 +344,8 @@ public class ClassGeneratorTest {
                         new Tuple("contextCodedTextDefiningcode", "org.ehrbase.client.classgenerator.examples.testalltypesenv1composition.definition.ContextCodedTextDefiningcode"),
                         new Tuple("categoryDefiningcode", "org.ehrbase.client.classgenerator.examples.shareddefinition.CategoryDefiningcode"),
                         new Tuple("location", "java.lang.String"),
-                        new Tuple("participations", "java.util.List<com.nedap.archie.rm.generic.Participation>")
+                        new Tuple("participations", "java.util.List<com.nedap.archie.rm.generic.Participation>"),
+                        new Tuple("subject", "com.nedap.archie.rm.generic.PartyProxy")
                 );
 
 
