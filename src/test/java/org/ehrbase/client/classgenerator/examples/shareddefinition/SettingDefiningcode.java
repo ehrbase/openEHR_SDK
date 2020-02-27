@@ -3,41 +3,41 @@ package org.ehrbase.client.classgenerator.examples.shareddefinition;
 import org.ehrbase.client.classgenerator.EnumValueSet;
 
 public enum SettingDefiningcode implements EnumValueSet {
-  PRIMARYALLIEDHEALTHCARE("primary allied health care", "primary allied health care", "openehr", "230"),
+    COMPLEMENTARYHEALTHCARE("complementary health care", "complementary health care", "openehr", "235"),
 
-  HOME("home", "home", "openehr", "225"),
+    PRIMARYMEDICALCARE("primary medical care", "primary medical care", "openehr", "228"),
 
-  NURSINGHOMECARE("nursing home care", "nursing home care", "openehr", "237"),
+    NURSINGHOMECARE("nursing home care", "nursing home care", "openehr", "237"),
 
-  MIDWIFERYCARE("midwifery care", "midwifery care", "openehr", "231"),
+    PRIMARYALLIEDHEALTHCARE("primary allied health care", "primary allied health care", "openehr", "230"),
 
-  EMERGENCYCARE("emergency care", "emergency care", "openehr", "227"),
+    SECONDARYMEDICALCARE("secondary medical care", "secondary medical care", "openehr", "232"),
 
-  DENTALCARE("dental care", "dental care", "openehr", "236"),
+    PRIMARYNURSINGCARE("primary nursing care", "primary nursing care", "openehr", "229"),
 
-  SECONDARYNURSINGCARE("secondary nursing care", "secondary nursing care", "openehr", "233"),
+    OTHERCARE("other care", "other care", "openehr", "238"),
 
-  SECONDARYMEDICALCARE("secondary medical care", "secondary medical care", "openehr", "232"),
+    HOME("home", "home", "openehr", "225"),
 
-  OTHERCARE("other care", "other care", "openehr", "238"),
+    MIDWIFERYCARE("midwifery care", "midwifery care", "openehr", "231"),
 
-  PRIMARYMEDICALCARE("primary medical care", "primary medical care", "openehr", "228"),
+    EMERGENCYCARE("emergency care", "emergency care", "openehr", "227"),
 
-  PRIMARYNURSINGCARE("primary nursing care", "primary nursing care", "openehr", "229"),
+    SECONDARYALLIEDHEALTHCARE("secondary allied health care", "secondary allied health care", "openehr", "234"),
 
-  SECONDARYALLIEDHEALTHCARE("secondary allied health care", "secondary allied health care", "openehr", "234"),
+    SECONDARYNURSINGCARE("secondary nursing care", "secondary nursing care", "openehr", "233"),
 
-  COMPLEMENTARYHEALTHCARE("complementary health care", "complementary health care", "openehr", "235");
+    DENTALCARE("dental care", "dental care", "openehr", "236");
 
-  private String value;
+    private String value;
 
-  private String description;
+    private String description;
 
-  private String terminologyId;
+    private String terminologyId;
 
-  private String code;
+    private String code;
 
-  SettingDefiningcode(String value, String description, String terminologyId, String code) {
+    SettingDefiningcode(String value, String description, String terminologyId, String code) {
     this.value = value;
     this.description = description;
     this.terminologyId = terminologyId;
@@ -45,18 +45,18 @@ public enum SettingDefiningcode implements EnumValueSet {
   }
 
   public String getValue() {
-    return this.value;
+      return this.value;
   }
 
   public String getDescription() {
-    return this.description;
+      return this.description;
   }
 
   public String getTerminologyId() {
-    return this.terminologyId;
+      return this.terminologyId;
   }
 
   public String getCode() {
-    return this.code;
+      return this.code;
   }
 }

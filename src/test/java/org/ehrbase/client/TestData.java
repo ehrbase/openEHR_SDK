@@ -213,10 +213,13 @@ public class TestData {
     public static EpisodeOfCareComposition buildEpisodeOfCareComposition() {
         EpisodeOfCareComposition episode = new EpisodeOfCareComposition();
         episode.setComposer(new PartyIdentified(null, "Test", null));
-        episode.setCategoryDefiningcode(CategoryDefiningcode.PERSISTENT);
+        episode.setCategoryDefiningcode(CategoryDefiningcode.EVENT);
         episode.setLanguage(Language.DE);
         episode.setTerritory(Territory.DE);
         episode.setEpisodeofcare(new ArrayList<>());
+        episode.setStartTimeValue(OffsetDateTime.now());
+        episode.setCategoryDefiningcode(CategoryDefiningcode.EVENT);
+        episode.setSettingDefiningcode(SettingDefiningcode.NURSINGHOMECARE);
 
         EpisodeofcareAdminEntry episodeofcareAdminEntry = new EpisodeofcareAdminEntry();
         episodeofcareAdminEntry.setLanguage(Language.DE);
