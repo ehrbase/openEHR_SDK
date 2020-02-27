@@ -21,6 +21,7 @@ package org.ehrbase.client.normalizer;
 
 import com.nedap.archie.rm.RMObject;
 import com.nedap.archie.rm.archetyped.Locatable;
+import com.nedap.archie.rm.composition.Entry;
 import com.nedap.archie.rm.generic.PartySelf;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
@@ -96,7 +97,7 @@ public class Normalizer {
     }
 
     private boolean checkIsEmpty(Field field, Object normalize) {
-        if (field.getDeclaringClass().equals(Locatable.class)) {
+        if (field.getDeclaringClass().equals(Locatable.class) || field.getDeclaringClass().equals(Entry.class)) {
             return true;
         } else if (Collection.class.isAssignableFrom(field.getType())) {
             return CollectionUtils.isEmpty((Collection<?>) normalize);

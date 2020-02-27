@@ -82,6 +82,9 @@ public class TestData {
 
         BloodPressureTrainingSampleObservation bloodPressureTrainingSample = new BloodPressureTrainingSampleObservation();
         bloodPressureTrainingSample.setSubject(new PartySelf());
+        bloodPressureTrainingSample.setOriginValue(OffsetDateTime.now());
+        bloodPressureTrainingSample.setTimeValue(OffsetDateTime.now());
+        bloodPressureTrainingSample.setLanguage(Language.DE);
         bloodPressureTrainingSample.setSystolicMagnitude(22d);
         bloodPressureTrainingSample.setSystolicUnits("mm[Hg]");
         bloodPressureTrainingSample.setDiastolicMagnitude(22d);
@@ -116,6 +119,9 @@ public class TestData {
 
     private static BodyTemperatureObservation buildBodyTemperature1() {
         BodyTemperatureObservation bodyTemperature = new BodyTemperatureObservation();
+        bodyTemperature.setLanguage(Language.DE);
+        bodyTemperature.setSubject(new PartySelf());
+        bodyTemperature.setOriginValue(OffsetDateTime.now());
         bodyTemperature.setAnyEvent(new ArrayList<>());
         LocationOfMeasurementDvcodedtext locationOfMeasurement = new LocationOfMeasurementDvcodedtext();
         locationOfMeasurement.setLocationOfMeasurementDefiningcode(org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1composition.definition.LocationOfMeasurementDefiningcode.FOREHEAD);
@@ -125,18 +131,23 @@ public class TestData {
         history1.setTemperatureMagnitude(22d);
         history1.setTemperatureUnits("Cel");
         history1.setCurrentDayOfMenstrualCycleMagnitude(3l);
+        history1.setTimeValue(OffsetDateTime.now());
         bodyTemperature.getAnyEvent().add(history1);
 
         AnyEventPointEvent history2 = new AnyEventPointEvent();
         history2.setTemperatureMagnitude(11d);
         history2.setTemperatureUnits("Cel");
         history2.setCurrentDayOfMenstrualCycleMagnitude(3l);
+        history2.setTimeValue(OffsetDateTime.now());
         bodyTemperature.getAnyEvent().add(history2);
         return bodyTemperature;
     }
 
     private static BodyTemperatureObservation buildBodyTemperature2() {
         BodyTemperatureObservation bodyTemperature = new BodyTemperatureObservation();
+        bodyTemperature.setLanguage(Language.DE);
+        bodyTemperature.setSubject(new PartySelf());
+        bodyTemperature.setOriginValue(OffsetDateTime.now());
         bodyTemperature.setAnyEvent(new ArrayList<>());
         LocationOfMeasurementDvtext locationOfMeasurement = new LocationOfMeasurementDvtext();
         locationOfMeasurement.setLocationOfMeasurementValue("location");
@@ -146,12 +157,14 @@ public class TestData {
         history1.setTemperatureMagnitude(22d);
         history1.setTemperatureUnits("Cel");
         history1.setCurrentDayOfMenstrualCycleMagnitude(3l);
+        history1.setTimeValue(OffsetDateTime.now());
         bodyTemperature.getAnyEvent().add(history1);
 
         AnyEventPointEvent history2 = new AnyEventPointEvent();
         history2.setTemperatureMagnitude(11d);
         history2.setTemperatureUnits("Cel");
         history2.setCurrentDayOfMenstrualCycleMagnitude(3l);
+        history2.setTimeValue(OffsetDateTime.now());
         bodyTemperature.getAnyEvent().add(history2);
         return bodyTemperature;
     }

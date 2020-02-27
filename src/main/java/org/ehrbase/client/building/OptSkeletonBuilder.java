@@ -27,11 +27,14 @@ import com.nedap.archie.rm.archetyped.Archetyped;
 import com.nedap.archie.rm.archetyped.Pathable;
 import com.nedap.archie.rm.archetyped.TemplateId;
 import com.nedap.archie.rm.composition.Composition;
+import com.nedap.archie.rm.composition.Entry;
 import com.nedap.archie.rm.datatypes.CodePhrase;
 import com.nedap.archie.rm.datavalues.DvCodedText;
 import com.nedap.archie.rm.datavalues.DvText;
 import com.nedap.archie.rm.generic.PartyIdentified;
 import com.nedap.archie.rm.generic.PartyProxy;
+import com.nedap.archie.rm.support.identification.ArchetypeID;
+import com.nedap.archie.rm.support.identification.TerminologyId;
 import com.nedap.archie.rminfo.ArchieRMInfoLookup;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.apache.xmlbeans.XmlObject;
@@ -231,6 +234,7 @@ public class OptSkeletonBuilder {
             handelNonTemplateFields(rmClass, valueMap);
         }
 
+
         Object obj;
         try {
             CComplexObject elementConstraint = new CComplexObject();
@@ -303,12 +307,21 @@ public class OptSkeletonBuilder {
                 log.warn(e2.getMessage());
             }
         }
+
+        if (obj instanceof Entry) {
+            ((Entry) obj).setEncoding(new CodePhrase(new TerminologyId("IANA_character-sets"), "UTF-8"));
+        }
         if (obj instanceof Composition) {
             Archetyped archetypeDetails = new Archetyped();
             archetypeDetails.setTemplateId(new TemplateId());
             archetypeDetails.getTemplateId().setValue(opt.getTemplateId().getValue());
+            archetypeDetails.setRmVersion("1.0.4");
+            archetypeDetails.setArchetypeId(new ArchetypeID(((Composition) obj).getArchetypeNodeId()));
+
             ((Composition) obj).setArchetypeDetails(archetypeDetails);
-        } else if (obj instanceof DvCodedText) {
+        }
+
+        if (obj instanceof DvCodedText) {
             DvCodedText dvCodedText = (DvCodedText) obj;
             Optional<CodePhrase> defining_code = Optional.ofNullable(valueMap.get("defining_code"))
                     .map(o -> (CodePhrase) o);
