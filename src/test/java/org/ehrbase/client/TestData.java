@@ -218,7 +218,6 @@ public class TestData {
         episode.setTerritory(Territory.DE);
         episode.setEpisodeofcare(new ArrayList<>());
         episode.setStartTimeValue(OffsetDateTime.now());
-        episode.setCategoryDefiningcode(CategoryDefiningcode.EVENT);
         episode.setSettingDefiningcode(SettingDefiningcode.NURSINGHOMECARE);
 
         EpisodeofcareAdminEntry episodeofcareAdminEntry = new EpisodeofcareAdminEntry();
