@@ -36,6 +36,7 @@ import org.ehrbase.client.TestData;
 import org.ehrbase.client.classgenerator.examples.alternativeeventscomposition.AlternativeEventsComposition;
 import org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev0composition.EhrbaseBloodPressureSimpleDeV0Composition;
 import org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1composition.EhrbaseMultiOccurrenceDeV1Composition;
+import org.ehrbase.client.classgenerator.examples.episodeofcarecomposition.EpisodeOfCareComposition;
 import org.ehrbase.client.classgenerator.examples.testalltypesenv1composition.TestAllTypesEnV1Composition;
 import org.ehrbase.client.classgenerator.examples.testalltypesenv1composition.definition.ChoiceDvquantity;
 import org.ehrbase.client.templateprovider.TestDataTemplateProvider;
@@ -198,6 +199,16 @@ public class UnflattenerTest {
                 .containsExactlyInAnyOrder(
                         new Tuple(OffsetDateTime.of(2015, 11, 02, 12, 00, 00, 00, ZoneOffset.UTC), 60d, "kg", "mean", Duration.ofDays(30))
                 );
+    }
+
+    @Test
+    public void testUnflattenEpsiode() {
+        EpisodeOfCareComposition episode = buildEpisodeOfCareComposition();
+
+        Unflattener cut = new Unflattener(new TestDataTemplateProvider());
+        Composition actual = (Composition) cut.unflatten(episode);
+
+        assertThat(actual).isNotNull();
     }
 
 

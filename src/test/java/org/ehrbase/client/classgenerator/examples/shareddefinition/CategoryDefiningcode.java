@@ -3,11 +3,11 @@ package org.ehrbase.client.classgenerator.examples.shareddefinition;
 import org.ehrbase.client.classgenerator.EnumValueSet;
 
 public enum CategoryDefiningcode implements EnumValueSet {
-    PERSISTENT("persistent", "persistent", "openehr", "431"),
+    EPISODIC("episodic", "episodic", "openehr", "435"),
 
     EVENT("event", "event", "openehr", "433"),
 
-    EPISODIC("episodic", "episodic", "openehr", "435");
+    PERSISTENT("persistent", "persistent", "openehr", "431");
 
     private String value;
 
@@ -24,16 +24,16 @@ public enum CategoryDefiningcode implements EnumValueSet {
         this.code = code;
     }
 
-  public String getValue() {
-      return this.value;
-  }
+    public String getValue() {
+        return this.value;
+    }
 
-  public String getDescription() {
-      return this.description;
-  }
+    public String getDescription() {
+        return this.description;
+    }
 
-  public String getTerminologyId() {
-      return this.terminologyId;
+    public String getTerminologyId() {
+        return this.terminologyId;
   }
 
   public String getCode() {

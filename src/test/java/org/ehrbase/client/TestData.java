@@ -16,6 +16,7 @@
  */
 package org.ehrbase.client;
 
+import com.nedap.archie.rm.datavalues.DvIdentifier;
 import com.nedap.archie.rm.datavalues.DvText;
 import com.nedap.archie.rm.generic.Participation;
 import com.nedap.archie.rm.generic.PartyIdentified;
@@ -35,9 +36,14 @@ import org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1comp
 import org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1composition.definition.BodyTemperatureObservation;
 import org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1composition.definition.LocationOfMeasurementDvcodedtext;
 import org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1composition.definition.LocationOfMeasurementDvtext;
+import org.ehrbase.client.classgenerator.examples.episodeofcarecomposition.EpisodeOfCareComposition;
+import org.ehrbase.client.classgenerator.examples.episodeofcarecomposition.definition.EpisodeofcareAdminEntry;
+import org.ehrbase.client.classgenerator.examples.episodeofcarecomposition.definition.IdentifierElement;
+import org.ehrbase.client.classgenerator.examples.episodeofcarecomposition.definition.TeamElement;
 import org.ehrbase.client.classgenerator.examples.shareddefinition.*;
 import org.ehrbase.client.flattener.BloodpressureListDe;
 
+import java.net.URI;
 import java.time.Duration;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
@@ -202,5 +208,38 @@ public class TestData {
         intervalEvent.setMathFunctionDefiningcode(MathFunctionDefiningcode.MEAN);
         korpergewichtObservation.getAnyEventEn().add(intervalEvent);
         return alternativeEventsComposition;
+    }
+
+    public static EpisodeOfCareComposition buildEpisodeOfCareComposition() {
+        EpisodeOfCareComposition episode = new EpisodeOfCareComposition();
+        episode.setComposer(new PartyIdentified(null, "Test", null));
+        episode.setCategoryDefiningcode(CategoryDefiningcode.EVENT);
+        episode.setLanguage(Language.DE);
+        episode.setTerritory(Territory.DE);
+        episode.setEpisodeofcare(new ArrayList<>());
+
+        EpisodeofcareAdminEntry episodeofcareAdminEntry = new EpisodeofcareAdminEntry();
+        episodeofcareAdminEntry.setSubject(new PartySelf());
+        episodeofcareAdminEntry.setIdentifier(new ArrayList<>());
+        IdentifierElement identifierElement = new IdentifierElement();
+        DvIdentifier value = new DvIdentifier();
+        value.setId("123");
+        identifierElement.setValue(value);
+        episodeofcareAdminEntry.getIdentifier().add(identifierElement);
+
+        IdentifierElement identifierElement2 = new IdentifierElement();
+        DvIdentifier value2 = new DvIdentifier();
+        value2.setId("456");
+        identifierElement2.setValue(value2);
+        episodeofcareAdminEntry.getIdentifier().add(identifierElement2);
+
+        episodeofcareAdminEntry.setTeam(new ArrayList<>());
+        TeamElement teamElement1 = new TeamElement();
+        teamElement1.setValue(URI.create("https://github.com/ehrbase"));
+        episodeofcareAdminEntry.getTeam().add(teamElement1);
+
+
+        episode.getEpisodeofcare().add(episodeofcareAdminEntry);
+        return episode;
     }
 }

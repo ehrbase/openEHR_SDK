@@ -25,7 +25,7 @@ import java.util.stream.Stream;
 
 public class AdminEntryIntrospectConfig implements RmIntrospectConfig {
 
-    private static final Set<String> FIELDS = Stream.of("language").collect(Collectors.toSet());
+    private static final Set<String> FIELDS = Stream.of("language", "subject").collect(Collectors.toSet());
 
     @Override
     public Class getRMClass() {

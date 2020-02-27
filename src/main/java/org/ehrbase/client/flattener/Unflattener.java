@@ -86,17 +86,19 @@ public class Unflattener {
 
     private void setValueAtPath(RMObject locatable, String path, Object value) {
 
-        ItemExtractor itemExtractor = new ItemExtractor(locatable, path);
+        boolean multi = value instanceof List;
+        ItemExtractor itemExtractor = new ItemExtractor(locatable, path, multi);
         String childName = itemExtractor.getChildName();
         Object child = itemExtractor.getChild();
         Object parent = itemExtractor.getParent();
 
-        if (value instanceof List) {
+        if (multi) {
             List valueList = (List) value;
             List childList = new ArrayList();
-            childList.add(child);
+            Object prototype = ((List) child).get(0);
+            childList.add(prototype);
             for (int i = 1; i < valueList.size(); i++) {
-                RMObject deepClone = deepClone((RMObject) child);
+                RMObject deepClone = deepClone((RMObject) prototype);
                 childList.add(deepClone);
                 RM_OBJECT_CREATOR.addElementToListOrSetSingleValues(parent, childName, deepClone);
             }

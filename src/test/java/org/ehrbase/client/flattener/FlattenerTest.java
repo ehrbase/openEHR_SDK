@@ -33,6 +33,7 @@ import org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev0
 import org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev0composition.definition.KorotkoffSoundsDefiningcode;
 import org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1composition.EhrbaseMultiOccurrenceDeV1Composition;
 import org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1composition.definition.*;
+import org.ehrbase.client.classgenerator.examples.episodeofcarecomposition.EpisodeOfCareComposition;
 import org.ehrbase.client.classgenerator.examples.shareddefinition.MathFunctionDefiningcode;
 import org.ehrbase.client.classgenerator.examples.testalltypesenv1composition.TestAllTypesEnV1Composition;
 import org.ehrbase.client.classgenerator.examples.testalltypesenv1composition.definition.ChoiceDvcount;
@@ -51,6 +52,7 @@ import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.ehrbase.client.TestData.buildAlternativeEventsComposition;
+import static org.ehrbase.client.TestData.buildEpisodeOfCareComposition;
 
 public class FlattenerTest {
 
@@ -165,5 +167,13 @@ public class FlattenerTest {
         assertThat(anyEventEnIntervalEvents.get(0).getGewichtUnits()).isEqualTo("kg");
         assertThat(anyEventEnIntervalEvents.get(0).getMathFunctionDefiningcode()).isEqualTo(MathFunctionDefiningcode.MEAN);
         assertThat(anyEventEnIntervalEvents.get(0).getWidthValue()).isEqualTo(Duration.ofDays(30));
+    }
+
+    @Test
+    public void testFlattenEpisodeOfCare() {
+        Composition composition = (Composition) new Unflattener(new TestDataTemplateProvider()).unflatten(buildEpisodeOfCareComposition());
+        Flattener cut = new Flattener();
+        EpisodeOfCareComposition actual = cut.flatten(composition, EpisodeOfCareComposition.class);
+        assertThat(actual).isNotNull();
     }
 }

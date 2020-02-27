@@ -27,6 +27,7 @@ import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
 import org.openehr.schemas.v1.TemplateDocument;
 
 import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -170,6 +171,18 @@ public class ClassGeneratorTest {
                 );
 
         // generate.createFiles(Paths.get(".", "src/test/java/"));
+
+
+    }
+
+    @Test
+    public void testGenerateEpisode() throws IOException, XmlException {
+        OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(OperationalTemplateTestData.EPISODE_OF_CARE.getStream()).getTemplate();
+        ClassGenerator cut = new ClassGenerator();
+        ClassGeneratorResult generate = cut.generate(PACKAGE_NAME, template);
+
+
+        generate.createFiles(Paths.get(".", "src/test/java/"));
 
 
     }
