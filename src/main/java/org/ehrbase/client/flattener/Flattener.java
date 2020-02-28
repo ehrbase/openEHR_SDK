@@ -102,15 +102,15 @@ public class Flattener {
                     Object dtoItem = createInstance(type);
                     mapEntityToDto((RMObject) childItem, dtoItem);
                     dtoList.add(dtoItem);
-                } else if (aClass.isAssignableFrom(child.getClass())) {
+                } else if (aClass.isAssignableFrom(childItem.getClass())) {
 
-                    dtoList.add(child);
+                    dtoList.add(childItem);
                 } else {
                     logger.warn("Incompatible Typ {} {}", aClass, child.getClass());
                 }
 
-                writeField(field, dto, dtoList);
             }
+            writeField(field, dto, dtoList);
         } else {
             handleSingleField(dto, field, child);
         }

@@ -55,7 +55,8 @@ public class TemplateIntrospectTest {
                         "/context/other_context[at0001]/items[at0006]/items[openEHR-EHR-CLUSTER.sample_device.v1]",
                         "/context/location",
                         "/category",
-                        "/context/start_time"
+                        "/context/start_time",
+                        "/context/participations"
                 );
 
         Map<Class, Long> classes = findAll(actual).stream()
@@ -72,11 +73,12 @@ public class TemplateIntrospectTest {
                         new Tuple("DvQuantity", 5L),
                         new Tuple("DvText", 7L),
                         new Tuple("Cluster", 3L),
-                        new Tuple("String", 1L)
+                        new Tuple("String", 1L),
+                        new Tuple("Participation", 1L)
                 );
 
         assertThat(countNodes(actual, ArchetypeNode.class)).isEqualTo(2l);
-        assertThat(countNodes(actual, EndNode.class)).isEqualTo(34l);
+        assertThat(countNodes(actual, EndNode.class)).isEqualTo(35l);
         assertThat(countNodes(actual, SlotNode.class)).isEqualTo(3l);
         assertThat(countNodes(actual, ChoiceNode.class)).isEqualTo(0l);
     }
@@ -104,7 +106,8 @@ public class TemplateIntrospectTest {
                         "/context/start_time",
                         "/context/other_context[at0001]/items[at0005]/value",
                         "/context/other_context[at0001]/items[at0002]/value",
-                        "/context/other_context[at0001]/items[at0006]"
+                        "/context/other_context[at0001]/items[at0006]",
+                        "/context/participations"
                 );
 
         Map<Class, Long> classes = findAll(actual).stream()
@@ -120,11 +123,12 @@ public class TemplateIntrospectTest {
                         new Tuple("DvDateTime", 3L),
                         new Tuple("DvText", 2L),
                         new Tuple("Cluster", 3L),
-                        new Tuple("String", 1L)
+                        new Tuple("String", 1L),
+                        new Tuple("Participation", 1L)
                 );
 
         assertThat(countNodes(actual, ArchetypeNode.class)).isEqualTo(1L);
-        assertThat(countNodes(actual, EndNode.class)).isEqualTo(19L);
+        assertThat(countNodes(actual, EndNode.class)).isEqualTo(20L);
         assertThat(countNodes(actual, SlotNode.class)).isEqualTo(5L);
         assertThat(countNodes(actual, ChoiceNode.class)).isEqualTo(1L);
     }
@@ -149,7 +153,8 @@ public class TemplateIntrospectTest {
                         "/context/other_context[at0001]/items[at0002]",
                         "/context/location",
                         "/category",
-                        "/context/start_time"
+                        "/context/start_time",
+                        "/context/participations"
                 );
         Map<Class, Long> classes = findAll(actual).stream()
                 .collect(Collectors.groupingBy(EndNode::getClazz, Collectors.counting()));
@@ -164,11 +169,12 @@ public class TemplateIntrospectTest {
                         new Tuple("PartyIdentified", 1L),
                         new Tuple("DvDateTime", 3L),
                         new Tuple("Cluster", 4L),
-                        new Tuple("String", 1L)
+                        new Tuple("String", 1L),
+                        new Tuple("Participation", 1L)
                 );
 
         assertThat(countNodes(actual, ArchetypeNode.class)).isEqualTo(1l);
-        assertThat(countNodes(actual, EndNode.class)).isEqualTo(20l);
+        assertThat(countNodes(actual, EndNode.class)).isEqualTo(21l);
         assertThat(countNodes(actual, SlotNode.class)).isEqualTo(8l);
         assertThat(countNodes(actual, ChoiceNode.class)).isEqualTo(2l);
     }
@@ -195,7 +201,8 @@ public class TemplateIntrospectTest {
                         "/content[openEHR-EHR-OBSERVATION.test_all_types.v1]",
                         "/context/location",
                         "/category",
-                        "/context/start_time"
+                        "/context/start_time",
+                        "/context/participations"
                 );
         assertThat(((ArchetypeNode) actual.get("/content[openEHR-EHR-SECTION.test_all_types.v1]")).getChildren().keySet())
                 .containsExactlyInAnyOrder(
@@ -230,11 +237,12 @@ public class TemplateIntrospectTest {
                         new Tuple("String", 2L),
                         new Tuple("DvBoolean", 2L),
                         new Tuple("DvIdentifier", 1L),
-                        new Tuple("ItemStructure", 1L)
+                        new Tuple("ItemStructure", 1L),
+                        new Tuple("Participation", 1L)
                 );
 
         assertThat(countNodes(actual, ArchetypeNode.class)).isEqualTo(7l);
-        assertThat(countNodes(actual, EndNode.class)).isEqualTo(59l);
+        assertThat(countNodes(actual, EndNode.class)).isEqualTo(60l);
         assertThat(countNodes(actual, SlotNode.class)).isEqualTo(2l);
         assertThat(countNodes(actual, ChoiceNode.class)).isEqualTo(1l);
     }

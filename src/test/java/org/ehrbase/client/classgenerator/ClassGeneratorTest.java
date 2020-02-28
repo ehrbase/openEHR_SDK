@@ -95,7 +95,8 @@ public class ClassGeneratorTest {
                         new Tuple("location", "java.lang.String"),
                         new Tuple("deviceDetailsTrainingSample", "java.util.List<org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev0composition.definition.DeviceDetailsTrainingSampleCluster>"),
                         new Tuple("categoryDefiningcode", "org.ehrbase.client.classgenerator.examples.shareddefinition.CategoryDefiningcode"),
-                        new Tuple("startTimeValue", "java.time.temporal.TemporalAccessor")
+                        new Tuple("startTimeValue", "java.time.temporal.TemporalAccessor"),
+                        new Tuple("participations", "java.util.List<com.nedap.archie.rm.generic.Participation>")
                 );
 
 
@@ -120,7 +121,7 @@ public class ClassGeneratorTest {
 
         assertThat(fieldSpecs)
                 .extracting(f -> f.name, f -> f.type.toString())
-                .containsExactly(
+                .containsExactlyInAnyOrder(
                         new Tuple("value", "java.lang.String"),
                         new Tuple("timeValue", "java.time.temporal.TemporalAccessor"),
                         new Tuple("gewichtMagnitude", "java.lang.Double"),
@@ -164,10 +165,11 @@ public class ClassGeneratorTest {
                         new Tuple("korpergewicht", "java.util.List<org.ehrbase.client.classgenerator.examples.alternativeeventscomposition.definition.KorpergewichtObservation>"),
                         new Tuple("erweiterung", "java.util.List<com.nedap.archie.rm.datastructures.Cluster>"),
                         new Tuple("location", "java.lang.String"),
-                        new Tuple("categoryDefiningcode", "org.ehrbase.client.classgenerator.examples.shareddefinition.CategoryDefiningcode")
+                        new Tuple("categoryDefiningcode", "org.ehrbase.client.classgenerator.examples.shareddefinition.CategoryDefiningcode"),
+                        new Tuple("participations", "java.util.List<com.nedap.archie.rm.generic.Participation>")
                 );
 
-        //  generate.createFiles(Paths.get(".", "src/test/java/"));
+        // generate.createFiles(Paths.get(".", "src/test/java/"));
 
 
     }
@@ -231,11 +233,12 @@ public class ClassGeneratorTest {
                         new Tuple("widthValue", "java.time.temporal.TemporalAmount"),
                         new Tuple("bodyExposure", "org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1composition.definition.BodyExposureChoiceState"),
                         new Tuple("mathFunctionDefiningcode", "org.ehrbase.client.classgenerator.examples.shareddefinition.MathFunctionDefiningcode"),
-                        new Tuple("anyEvent", "java.util.List<org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1composition.definition.AnyEventChoice>")
+                        new Tuple("anyEvent", "java.util.List<org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1composition.definition.AnyEventChoice>"),
+                        new Tuple("participations", "java.util.List<com.nedap.archie.rm.generic.Participation>")
                 );
 
 
-        //generate.createFiles(Paths.get(".", "src/test/java/"));
+        //  generate.createFiles(Paths.get(".", "src/test/java/"));
 
     }
 
@@ -323,11 +326,12 @@ public class ClassGeneratorTest {
                         new Tuple("language", "org.ehrbase.client.classgenerator.examples.shareddefinition.Language"),
                         new Tuple("contextCodedTextDefiningcode", "org.ehrbase.client.classgenerator.examples.testalltypesenv1composition.definition.ContextCodedTextDefiningcode"),
                         new Tuple("categoryDefiningcode", "org.ehrbase.client.classgenerator.examples.shareddefinition.CategoryDefiningcode"),
-                        new Tuple("location", "java.lang.String")
+                        new Tuple("location", "java.lang.String"),
+                        new Tuple("participations", "java.util.List<com.nedap.archie.rm.generic.Participation>")
                 );
 
 
-        // generate.createFiles(Paths.get(".", "src/test/java/"));
+        //    generate.createFiles(Paths.get(".", "src/test/java/"));
 
     }
 

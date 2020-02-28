@@ -29,7 +29,7 @@ import static org.ehrbase.client.terminology.TerminologyProvider.OPENEHR;
 
 public class EventContextIntrospectConfig implements RmIntrospectConfig {
 
-    private static final Set<String> FIELDS = Stream.of("startTime", "endTime", "location", "setting", "healthCareFacility").collect(Collectors.toSet());
+    private static final Set<String> FIELDS = Stream.of("startTime", "endTime", "location", "setting", "healthCareFacility", "participations").collect(Collectors.toSet());
 
     @Override
     public Class getRMClass() {

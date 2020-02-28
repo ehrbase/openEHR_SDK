@@ -16,6 +16,8 @@
  */
 package org.ehrbase.client;
 
+import com.nedap.archie.rm.datavalues.DvText;
+import com.nedap.archie.rm.generic.Participation;
 import com.nedap.archie.rm.generic.PartyIdentified;
 import com.nedap.archie.rm.generic.PartySelf;
 import org.ehrbase.client.classgenerator.examples.alternativeeventscomposition.AlternativeEventsComposition;
@@ -74,9 +76,15 @@ public class TestData {
         bloodPressureSimpleDeV0.setCategoryDefiningcode(CategoryDefiningcode.EVENT);
         bloodPressureSimpleDeV0.setSettingDefiningcode(SettingDefiningcode.NURSINGHOMECARE);
         bloodPressureSimpleDeV0.setComposer(new PartyIdentified(null, "Test", null));
+        bloodPressureSimpleDeV0.setParticipations(new ArrayList<>());
+        bloodPressureSimpleDeV0.getParticipations().add(new Participation(new PartyIdentified(null, "Test", null), new DvText("Pos1"), null, null));
+        bloodPressureSimpleDeV0.getParticipations().add(new Participation(new PartyIdentified(null, "Test2", null), new DvText("Pos2"), null, null));
 
         BloodPressureTrainingSampleObservation bloodPressureTrainingSample = new BloodPressureTrainingSampleObservation();
         bloodPressureTrainingSample.setSubject(new PartySelf());
+        bloodPressureTrainingSample.setOriginValue(OffsetDateTime.now());
+        bloodPressureTrainingSample.setTimeValue(OffsetDateTime.now());
+        bloodPressureTrainingSample.setLanguage(Language.DE);
         bloodPressureTrainingSample.setSystolicMagnitude(22d);
         bloodPressureTrainingSample.setSystolicUnits("mm[Hg]");
         bloodPressureTrainingSample.setDiastolicMagnitude(22d);
@@ -111,6 +119,9 @@ public class TestData {
 
     private static BodyTemperatureObservation buildBodyTemperature1() {
         BodyTemperatureObservation bodyTemperature = new BodyTemperatureObservation();
+        bodyTemperature.setLanguage(Language.DE);
+        bodyTemperature.setSubject(new PartySelf());
+        bodyTemperature.setOriginValue(OffsetDateTime.now());
         bodyTemperature.setAnyEvent(new ArrayList<>());
         LocationOfMeasurementDvcodedtext locationOfMeasurement = new LocationOfMeasurementDvcodedtext();
         locationOfMeasurement.setLocationOfMeasurementDefiningcode(org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1composition.definition.LocationOfMeasurementDefiningcode.FOREHEAD);
@@ -120,18 +131,23 @@ public class TestData {
         history1.setTemperatureMagnitude(22d);
         history1.setTemperatureUnits("Cel");
         history1.setCurrentDayOfMenstrualCycleMagnitude(3l);
+        history1.setTimeValue(OffsetDateTime.now());
         bodyTemperature.getAnyEvent().add(history1);
 
         AnyEventPointEvent history2 = new AnyEventPointEvent();
         history2.setTemperatureMagnitude(11d);
         history2.setTemperatureUnits("Cel");
         history2.setCurrentDayOfMenstrualCycleMagnitude(3l);
+        history2.setTimeValue(OffsetDateTime.now());
         bodyTemperature.getAnyEvent().add(history2);
         return bodyTemperature;
     }
 
     private static BodyTemperatureObservation buildBodyTemperature2() {
         BodyTemperatureObservation bodyTemperature = new BodyTemperatureObservation();
+        bodyTemperature.setLanguage(Language.DE);
+        bodyTemperature.setSubject(new PartySelf());
+        bodyTemperature.setOriginValue(OffsetDateTime.now());
         bodyTemperature.setAnyEvent(new ArrayList<>());
         LocationOfMeasurementDvtext locationOfMeasurement = new LocationOfMeasurementDvtext();
         locationOfMeasurement.setLocationOfMeasurementValue("location");
@@ -141,12 +157,14 @@ public class TestData {
         history1.setTemperatureMagnitude(22d);
         history1.setTemperatureUnits("Cel");
         history1.setCurrentDayOfMenstrualCycleMagnitude(3l);
+        history1.setTimeValue(OffsetDateTime.now());
         bodyTemperature.getAnyEvent().add(history1);
 
         AnyEventPointEvent history2 = new AnyEventPointEvent();
         history2.setTemperatureMagnitude(11d);
         history2.setTemperatureUnits("Cel");
         history2.setCurrentDayOfMenstrualCycleMagnitude(3l);
+        history2.setTimeValue(OffsetDateTime.now());
         bodyTemperature.getAnyEvent().add(history2);
         return bodyTemperature;
     }

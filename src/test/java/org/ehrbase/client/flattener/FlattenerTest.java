@@ -23,6 +23,7 @@ import com.nedap.archie.rm.composition.Composition;
 import com.nedap.archie.rm.generic.PartyIdentified;
 import com.nedap.archie.rm.generic.PartySelf;
 import org.apache.commons.io.IOUtils;
+import org.assertj.core.groups.Tuple;
 import org.ehrbase.client.TestData;
 import org.ehrbase.client.classgenerator.examples.alternativeeventscomposition.AlternativeEventsComposition;
 import org.ehrbase.client.classgenerator.examples.alternativeeventscomposition.definition.AnyEventEnIntervalEvent;
@@ -84,6 +85,14 @@ public class FlattenerTest {
 
         PartyIdentified composer = (PartyIdentified) actual.getComposer();
         assertThat(composer.getName()).isEqualTo("Test");
+        assertThat(actual.getParticipations()).extracting(
+                p -> ((PartyIdentified) p.getPerformer()).getName(),
+                p -> p.getFunction().getValue()
+        )
+                .containsExactlyInAnyOrder(
+                        new Tuple("Test", "Pos1"),
+                        new Tuple("Test2", "Pos2")
+                );
 
         assertThat(actual.getBloodPressureTrainingSample()).size().isEqualTo(1);
         assertThat(actual.getBloodPressureTrainingSample().get(0).getSubject()).isNotNull().extracting(Object::getClass).isEqualTo(PartySelf.class);

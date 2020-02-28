@@ -27,6 +27,7 @@ import com.nedap.archie.rm.datatypes.CodePhrase;
 import com.nedap.archie.rm.datavalues.DvCodedText;
 import com.nedap.archie.rm.datavalues.DvText;
 import com.nedap.archie.rm.datavalues.quantity.DvQuantity;
+import com.nedap.archie.rm.generic.PartyIdentified;
 import com.nedap.archie.rm.generic.PartySelf;
 import com.nedap.archie.rm.support.identification.TerminologyId;
 import org.apache.commons.io.IOUtils;
@@ -89,6 +90,15 @@ public class UnflattenerTest {
         Composition rmObject = (Composition) cut.unflatten(dto);
 
         assertThat(rmObject).isNotNull();
+        assertThat(rmObject.getContext().getParticipations()).extracting(
+                p -> ((PartyIdentified) p.getPerformer()).getName(),
+                p -> p.getFunction().getValue()
+        )
+                .containsExactlyInAnyOrder(
+                        new Tuple("Test", "Pos1"),
+                        new Tuple("Test2", "Pos2")
+                );
+
         assertThat(rmObject.getLanguage()).extracting(CodePhrase::getCodeString, c -> c.getTerminologyId().getValue()).containsExactly("de", "ISO_639-1");
         assertThat(rmObject.getArchetypeDetails().getTemplateId().getValue()).isEqualTo("ehrbase_blood_pressure_simple.de.v0");
         assertThat(rmObject.itemAtPath("/context/start_time/value")).isEqualTo(dto.getStartTimeValue());

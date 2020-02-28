@@ -28,17 +28,27 @@ public class EndNode implements Node {
     private final Class clazz;
     private final String name;
     private final ValueSet valueSet;
+    private final boolean multi;
 
     public EndNode(Class clazz, String name) {
         this.clazz = clazz;
         this.name = name;
         this.valueSet = EMPTY_VALUE_SET;
+        this.multi = false;
     }
 
     public EndNode(Class clazz, String name, ValueSet valuset) {
         this.clazz = clazz;
         this.name = name;
         this.valueSet = valuset;
+        this.multi = false;
+    }
+
+    public EndNode(Class clazz, String name, ValueSet valueSet, boolean multi) {
+        this.clazz = clazz;
+        this.name = name;
+        this.valueSet = valueSet;
+        this.multi = multi;
     }
 
     public Class getClazz() {
@@ -53,18 +63,23 @@ public class EndNode implements Node {
         return valueSet;
     }
 
+    public boolean isMulti() {
+        return multi;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         EndNode endNode = (EndNode) o;
-        return Objects.equals(clazz, endNode.clazz) &&
-                Objects.equals(getFirstName(), endNode.getFirstName()) &&
+        return multi == endNode.multi &&
+                Objects.equals(clazz, endNode.clazz) &&
+                Objects.equals(name, endNode.name) &&
                 Objects.equals(valueSet, endNode.valueSet);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(clazz, getFirstName(), valueSet);
+        return Objects.hash(clazz, name, valueSet, multi);
     }
 }

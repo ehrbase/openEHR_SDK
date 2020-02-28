@@ -292,7 +292,7 @@ public class TemplateIntrospect {
                     .forEach(f -> {
                         String snakeName = new SnakeCase(f.getName()).camelToSnake();
                         String localPath = path + PATH_DIVIDER + snakeName;
-                        localNodeMap.put(localPath, new EndNode(unwarap(f), snakeName, introspectConfig.findExternalValueSet(f.getName())));
+                        localNodeMap.put(localPath, new EndNode(unwarap(f), snakeName, introspectConfig.findExternalValueSet(f.getName()), List.class.isAssignableFrom(f.getType())));
                     });
             return localNodeMap;
         } else {
@@ -301,7 +301,7 @@ public class TemplateIntrospect {
         }
     }
 
-    private Class unwarap(Field field) {
+    public Class unwarap(Field field) {
         if (List.class.isAssignableFrom(field.getType())) {
             Type actualTypeArgument = ((ParameterizedType) field.getGenericType()).getActualTypeArguments()[0];
 

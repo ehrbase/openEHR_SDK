@@ -205,7 +205,7 @@ public class ClassGenerator {
         if (classGeneratorConfig == null || !classGeneratorConfig.isExpandField() || endNode instanceof SlotNode) {
 
             TypeName className = ClassName.get(Optional.ofNullable(endNode.getClazz()).orElse(Object.class));
-            if (endNode instanceof SlotNode && ((SlotNode) endNode).isMulti()) {
+            if (endNode.isMulti()) {
                 className = ParameterizedTypeName.get(ClassName.get(List.class), className);
             }
 
