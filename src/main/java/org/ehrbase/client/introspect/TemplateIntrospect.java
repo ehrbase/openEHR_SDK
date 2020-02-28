@@ -18,8 +18,13 @@
 package org.ehrbase.client.introspect;
 
 import com.nedap.archie.rm.archetyped.Pathable;
+import com.nedap.archie.rm.composition.Composition;
 import com.nedap.archie.rm.datastructures.Event;
 import com.nedap.archie.rm.datastructures.History;
+import com.nedap.archie.rm.datavalues.DvCodedText;
+import com.nedap.archie.rm.datavalues.quantity.datetime.DvDateTime;
+import com.nedap.archie.rm.generic.Participation;
+import com.nedap.archie.rm.generic.PartyIdentified;
 import com.nedap.archie.rminfo.ArchieRMInfoLookup;
 import org.apache.commons.collections4.ListValuedMap;
 import org.apache.commons.collections4.multimap.ArrayListValuedHashMap;
@@ -48,6 +53,7 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import static org.ehrbase.client.terminology.TerminologyProvider.OPENEHR;
 import static org.ehrbase.client.terminology.ValueSet.EMPTY_VALUE_SET;
 import static org.ehrbase.client.terminology.ValueSet.LOCAL;
 
@@ -134,7 +140,7 @@ public class TemplateIntrospect {
                     log.trace("Path: {}", pathLoop);
                     if (
                             (Event.class.isAssignableFrom(rmClass) && pathLoop.contains("offset")) // event.offset is a calculated value
-                                    || pathLoop.equals("/category") // set from template
+                                    || pathLoop.equals("/category") || pathLoop.equals("/name") // set from template
                     ) {
                         continue;
                     }
@@ -173,7 +179,26 @@ public class TemplateIntrospect {
 
                 }
             }
-
+            if (Composition.class.isAssignableFrom(rmClass)) {
+                if (!localNodeMap.containsKey("/context/end_time")) {
+                    localNodeMap.put("/context/end_time", new EndNode(DvDateTime.class, "end_time"));
+                }
+                if (!localNodeMap.containsKey("/context/participations")) {
+                    localNodeMap.put("/context/participations", new EndNode(Participation.class, "participations", EMPTY_VALUE_SET, true));
+                }
+                if (!localNodeMap.containsKey("/context/health_care_facility")) {
+                    localNodeMap.put("/context/health_care_facility", new EndNode(PartyIdentified.class, "healthCareFacility"));
+                }
+                if (!localNodeMap.containsKey("/context/start_time")) {
+                    localNodeMap.put("/context/start_time", new EndNode(DvDateTime.class, "start_time"));
+                }
+                if (!localNodeMap.containsKey("/context/location")) {
+                    localNodeMap.put("/context/location", new EndNode(String.class, "location"));
+                }
+                if (!localNodeMap.containsKey("/context/setting")) {
+                    localNodeMap.put("/context/setting", new EndNode(DvCodedText.class, "setting", TerminologyProvider.findOpenEhrValueSet(OPENEHR, "setting")));
+                }
+            }
         } else {
             ValueSet termDefinitionSet = Arrays.stream(ccomplexobject.getAttributesArray())
                     .flatMap(c -> Arrays.stream(c.getChildrenArray()))
@@ -185,7 +210,8 @@ public class TemplateIntrospect {
         return localNodeMap;
     }
 
-    private Map<String, Node> handleCOBJECT(COBJECT cobject, String path, Map<String, TermDefinition> termDef, String term) {
+    private Map<String, Node> handleCOBJECT(COBJECT cobject, String
+            path, Map<String, TermDefinition> termDef, String term) {
 
         boolean multi = cobject.getOccurrences().getUpper() > 1 || cobject.getOccurrences().getUpperUnbounded();
 
@@ -269,7 +295,8 @@ public class TemplateIntrospect {
         }
     }
 
-    private Node handleEntity(CCOMPLEXOBJECT cobject, String name, Map<String, TermDefinition> termDef, boolean multi) {
+    private Node handleEntity(CCOMPLEXOBJECT cobject, String name, Map<String, TermDefinition> termDef,
+                              boolean multi) {
         Class rmClass = RM_INFO_LOOKUP.getClass(cobject.getRmTypeName());
         if (Event.class.isAssignableFrom(rmClass)) {
 

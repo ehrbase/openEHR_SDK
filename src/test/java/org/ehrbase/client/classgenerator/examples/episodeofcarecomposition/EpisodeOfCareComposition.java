@@ -1,6 +1,5 @@
 package org.ehrbase.client.classgenerator.examples.episodeofcarecomposition;
 
-import com.nedap.archie.rm.datastructures.Cluster;
 import com.nedap.archie.rm.generic.Participation;
 import com.nedap.archie.rm.generic.PartyIdentified;
 import com.nedap.archie.rm.generic.PartyProxy;
@@ -22,6 +21,9 @@ public class EpisodeOfCareComposition {
     @Id
     private VersionUid versionUid;
 
+    @Path("/content[openEHR-EHR-ADMIN_ENTRY.episodeofcare.v0]")
+    private List<EpisodeofcareAdminEntry> episodeofcare;
+
     @Path("/context/end_time|value")
     private TemporalAccessor endTimeValue;
 
@@ -32,25 +34,7 @@ public class EpisodeOfCareComposition {
     private Language language;
 
     @Path("/context/health_care_facility")
-    private PartyIdentified healthCareFacility;
-
-    @Path("/context/other_context[at0001]/items[at0005]/value|value")
-    private String versorgungsfallValue;
-
-    @Path("/context/other_context[at0001]/items[at0002]/value|value")
-    private String versorgungsfallValueValue;
-
-    @Path("/territory")
-    private Territory territory;
-
-    @Path("/context/start_time|value")
-    private TemporalAccessor startTimeValue;
-
-    @Path("/content[openEHR-EHR-ADMIN_ENTRY.episodeofcare.v0]")
-    private List<EpisodeofcareAdminEntry> episodeofcare;
-
-    @Path("/name|value")
-    private String value;
+    private PartyIdentified healthcarefacility;
 
     @Path("/composer")
     private PartyProxy composer;
@@ -58,8 +42,8 @@ public class EpisodeOfCareComposition {
     @Path("/context/setting|defining_code")
     private SettingDefiningcode settingDefiningcode;
 
-    @Path("/context/other_context[at0001]/items[at0006]")
-    private List<Cluster> versorgungsfall;
+    @Path("/territory")
+    private Territory territory;
 
     @Path("/context/location")
     private String location;
@@ -67,12 +51,23 @@ public class EpisodeOfCareComposition {
     @Path("/category|defining_code")
     private CategoryDefiningcode categoryDefiningcode;
 
+    @Path("/context/start_time|value")
+    private TemporalAccessor startTimeValue;
+
     public VersionUid getVersionUid() {
         return this.versionUid;
     }
 
     public void setVersionUid(VersionUid versionUid) {
         this.versionUid = versionUid;
+    }
+
+    public void setEpisodeofcare(List<EpisodeofcareAdminEntry> episodeofcare) {
+        this.episodeofcare = episodeofcare;
+    }
+
+    public List<EpisodeofcareAdminEntry> getEpisodeofcare() {
+        return this.episodeofcare;
     }
 
     public void setEndTimeValue(TemporalAccessor endTimeValue) {
@@ -99,60 +94,12 @@ public class EpisodeOfCareComposition {
         return this.language;
     }
 
-    public void setHealthCareFacility(PartyIdentified healthCareFacility) {
-        this.healthCareFacility = healthCareFacility;
+    public void setHealthcarefacility(PartyIdentified healthcarefacility) {
+        this.healthcarefacility = healthcarefacility;
     }
 
-    public PartyIdentified getHealthCareFacility() {
-        return this.healthCareFacility;
-    }
-
-    public void setVersorgungsfallValue(String versorgungsfallValue) {
-        this.versorgungsfallValue = versorgungsfallValue;
-    }
-
-    public String getVersorgungsfallValue() {
-        return this.versorgungsfallValue;
-    }
-
-    public void setVersorgungsfallValueValue(String versorgungsfallValueValue) {
-        this.versorgungsfallValueValue = versorgungsfallValueValue;
-    }
-
-    public String getVersorgungsfallValueValue() {
-        return this.versorgungsfallValueValue;
-    }
-
-    public void setTerritory(Territory territory) {
-        this.territory = territory;
-    }
-
-    public Territory getTerritory() {
-        return this.territory;
-    }
-
-    public void setStartTimeValue(TemporalAccessor startTimeValue) {
-        this.startTimeValue = startTimeValue;
-    }
-
-    public TemporalAccessor getStartTimeValue() {
-        return this.startTimeValue;
-    }
-
-    public void setEpisodeofcare(List<EpisodeofcareAdminEntry> episodeofcare) {
-        this.episodeofcare = episodeofcare;
-    }
-
-    public List<EpisodeofcareAdminEntry> getEpisodeofcare() {
-        return this.episodeofcare;
-    }
-
-    public void setValue(String value) {
-        this.value = value;
-    }
-
-    public String getValue() {
-        return this.value;
+    public PartyIdentified getHealthcarefacility() {
+        return this.healthcarefacility;
     }
 
     public void setComposer(PartyProxy composer) {
@@ -171,12 +118,12 @@ public class EpisodeOfCareComposition {
         return this.settingDefiningcode;
     }
 
-    public void setVersorgungsfall(List<Cluster> versorgungsfall) {
-        this.versorgungsfall = versorgungsfall;
+    public void setTerritory(Territory territory) {
+        this.territory = territory;
     }
 
-    public List<Cluster> getVersorgungsfall() {
-        return this.versorgungsfall;
+    public Territory getTerritory() {
+        return this.territory;
     }
 
     public void setLocation(String location) {
@@ -193,5 +140,13 @@ public class EpisodeOfCareComposition {
 
     public CategoryDefiningcode getCategoryDefiningcode() {
         return this.categoryDefiningcode;
+    }
+
+    public void setStartTimeValue(TemporalAccessor startTimeValue) {
+        this.startTimeValue = startTimeValue;
+    }
+
+    public TemporalAccessor getStartTimeValue() {
+        return this.startTimeValue;
     }
 }
