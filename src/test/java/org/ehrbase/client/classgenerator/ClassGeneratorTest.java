@@ -27,7 +27,6 @@ import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
 import org.openehr.schemas.v1.TemplateDocument;
 
 import java.io.IOException;
-import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -37,7 +36,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class ClassGeneratorTest {
 
-    public static final String PACKAGE_NAME = "org.ehrbase.client.classgenerator.examples2";
+    public static final String PACKAGE_NAME = "org.ehrbase.client.classgenerator.examples";
 
     @Test
     public void testGenerate() throws IOException, XmlException {
@@ -170,7 +169,7 @@ public class ClassGeneratorTest {
                         new Tuple("participations", "java.util.List<com.nedap.archie.rm.generic.Participation>")
                 );
 */
-        //   generate.createFiles(Paths.get(".", "src/test/java/"));
+        //     generate.createFiles(Paths.get(".", "src/test/java/"));
 
 
     }
@@ -256,7 +255,7 @@ public class ClassGeneratorTest {
                 );
 
 */
-        generate.createFiles(Paths.get(".", "src/test/java/"));
+        //   generate.createFiles(Paths.get(".", "src/test/java/"));
 
     }
 
@@ -266,7 +265,7 @@ public class ClassGeneratorTest {
         ClassGenerator cut = new ClassGenerator();
         ClassGeneratorResult generate = cut.generate(PACKAGE_NAME, template);
 
-
+/*
         List<FieldSpec> fieldSpecs = generate.getClasses().values().stream()
                 .flatMap(Collection::stream)
                 .filter(t -> !t.kind.equals(TypeSpec.Kind.ENUM))
@@ -349,7 +348,7 @@ public class ClassGeneratorTest {
                         new Tuple("subject", "com.nedap.archie.rm.generic.PartyProxy")
                 );
 
-
+*/
         //    generate.createFiles(Paths.get(".", "src/test/java/"));
 
     }

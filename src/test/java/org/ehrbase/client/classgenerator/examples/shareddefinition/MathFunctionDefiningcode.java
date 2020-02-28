@@ -3,37 +3,37 @@ package org.ehrbase.client.classgenerator.examples.shareddefinition;
 import org.ehrbase.client.classgenerator.EnumValueSet;
 
 public enum MathFunctionDefiningcode implements EnumValueSet {
-  MAXIMUM("maximum", "maximum", "openehr", "144"),
+    MODE("mode", "mode", "openehr", "267"),
 
-  INCREASE("increase", "increase", "openehr", "522"),
+    VARIATION("variation", "variation", "openehr", "149"),
 
-  MODE("mode", "mode", "openehr", "267"),
+    TOTAL("total", "total", "openehr", "148"),
 
-  DECREASE("decrease", "decrease", "openehr", "521"),
+    INCREASE("increase", "increase", "openehr", "522"),
 
-  MEDIAN("median", "median", "openehr", "268"),
+    MINIMUM("minimum", "minimum", "openehr", "145"),
 
-  MEAN("mean", "mean", "openehr", "146"),
+    CHANGE("change", "change", "openehr", "147"),
 
-  CHANGE("change", "change", "openehr", "147"),
+    MEDIAN("median", "median", "openehr", "268"),
 
-  VARIATION("variation", "variation", "openehr", "149"),
+    ACTUAL("actual", "actual", "openehr", "640"),
 
-  MINIMUM("minimum", "minimum", "openehr", "145"),
+    MEAN("mean", "mean", "openehr", "146"),
 
-  ACTUAL("actual", "actual", "openehr", "640"),
+    MAXIMUM("maximum", "maximum", "openehr", "144"),
 
-  TOTAL("total", "total", "openehr", "148");
+    DECREASE("decrease", "decrease", "openehr", "521");
 
-  private String value;
+    private String value;
 
-  private String description;
+    private String description;
 
-  private String terminologyId;
+    private String terminologyId;
 
-  private String code;
+    private String code;
 
-  MathFunctionDefiningcode(String value, String description, String terminologyId, String code) {
+    MathFunctionDefiningcode(String value, String description, String terminologyId, String code) {
     this.value = value;
     this.description = description;
     this.terminologyId = terminologyId;
@@ -41,18 +41,18 @@ public enum MathFunctionDefiningcode implements EnumValueSet {
   }
 
   public String getValue() {
-    return this.value;
+      return this.value;
   }
 
   public String getDescription() {
-    return this.description;
+      return this.description;
   }
 
   public String getTerminologyId() {
-    return this.terminologyId;
+      return this.terminologyId;
   }
 
   public String getCode() {
-    return this.code;
+      return this.code;
   }
 }
