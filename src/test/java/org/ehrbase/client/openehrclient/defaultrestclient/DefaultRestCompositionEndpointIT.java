@@ -148,6 +148,7 @@ public class DefaultRestCompositionEndpointIT {
         assertTrue(actual.isPresent());
         assertThat(actual.get().getVersionUid()).extracting(v -> v.getUuid().toString(), VersionUid::getSystem, VersionUid::getVersion).containsExactly(version1.getVersionUid().getUuid().toString(), "local.ehrbase.org", 1L);
         assertThat(actual.get().getEpisodeofcare()).size().isEqualTo(1);
+
         EpisodeofcareAdminEntry episodeofcareAdminEntry = actual.get().getEpisodeofcare().get(0);
 
         assertThat(episodeofcareAdminEntry.getIdentifier()).extracting(e -> e.getValue().getId()).containsExactlyInAnyOrder("123", "456");

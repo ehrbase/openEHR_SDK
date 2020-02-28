@@ -22,6 +22,7 @@ package org.ehrbase.client.normalizer;
 import com.nedap.archie.rm.RMObject;
 import com.nedap.archie.rm.archetyped.Locatable;
 import com.nedap.archie.rm.composition.Entry;
+import com.nedap.archie.rm.datavalues.quantity.DvInterval;
 import com.nedap.archie.rm.generic.PartySelf;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
@@ -47,6 +48,11 @@ public class Normalizer {
             return null;
         }
 
+        if (DvInterval.class.isAssignableFrom(t.getClass())) {
+            ((DvInterval) t).setLower(normalize(((DvInterval) t).getLower(), false));
+            ((DvInterval) t).setUpper(normalize(((DvInterval) t).getUpper(), false));
+            return t.equals(new DvInterval<>()) ? null : t;
+        }
 
         List<Field> allFields = Arrays.stream(FieldUtils.getAllFields(t.getClass())).collect(Collectors.toList());
         boolean empty = allFields.stream().map(f -> normalizeField(f, t)).reduce(!allFields.isEmpty(), (b1, b2) -> b1 && b2);

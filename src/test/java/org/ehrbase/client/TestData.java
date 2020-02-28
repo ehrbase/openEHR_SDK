@@ -18,6 +18,8 @@ package org.ehrbase.client;
 
 import com.nedap.archie.rm.datavalues.DvIdentifier;
 import com.nedap.archie.rm.datavalues.DvText;
+import com.nedap.archie.rm.datavalues.quantity.DvInterval;
+import com.nedap.archie.rm.datavalues.quantity.datetime.DvDateTime;
 import com.nedap.archie.rm.generic.Participation;
 import com.nedap.archie.rm.generic.PartyIdentified;
 import com.nedap.archie.rm.generic.PartySelf;
@@ -221,6 +223,11 @@ public class TestData {
         episode.setSettingDefiningcode(SettingDefiningcode.NURSINGHOMECARE);
 
         EpisodeofcareAdminEntry episodeofcareAdminEntry = new EpisodeofcareAdminEntry();
+
+        DvInterval<DvDateTime> periode = new DvInterval<>();
+        periode.setLower(new DvDateTime(OffsetDateTime.now()));
+        periode.setUpper(new DvDateTime(OffsetDateTime.now()));
+        episodeofcareAdminEntry.setPeriod(periode);
         episodeofcareAdminEntry.setLanguage(Language.DE);
         episodeofcareAdminEntry.setSubject(new PartySelf());
         episodeofcareAdminEntry.setIdentifier(new ArrayList<>());
