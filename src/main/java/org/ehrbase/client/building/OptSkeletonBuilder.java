@@ -28,9 +28,12 @@ import com.nedap.archie.rm.archetyped.Pathable;
 import com.nedap.archie.rm.archetyped.TemplateId;
 import com.nedap.archie.rm.composition.Composition;
 import com.nedap.archie.rm.composition.Entry;
+import com.nedap.archie.rm.composition.EventContext;
 import com.nedap.archie.rm.datatypes.CodePhrase;
 import com.nedap.archie.rm.datavalues.DvCodedText;
 import com.nedap.archie.rm.datavalues.DvText;
+import com.nedap.archie.rm.datavalues.quantity.datetime.DvDateTime;
+import com.nedap.archie.rm.generic.Participation;
 import com.nedap.archie.rm.generic.PartyIdentified;
 import com.nedap.archie.rm.generic.PartyProxy;
 import com.nedap.archie.rm.support.identification.ArchetypeID;
@@ -319,6 +322,18 @@ public class OptSkeletonBuilder {
             archetypeDetails.setArchetypeId(new ArchetypeID(((Composition) obj).getArchetypeNodeId()));
 
             ((Composition) obj).setArchetypeDetails(archetypeDetails);
+
+            if (((Composition) obj).getContext() == null) {
+                EventContext context = new EventContext();
+                context.setEndTime(new DvDateTime());
+                context.setStartTime(new DvDateTime());
+                context.setHealthCareFacility(new PartyIdentified(null, null, new ArrayList<>()));
+                context.setParticipations(new ArrayList<>());
+                context.getParticipations().add(new Participation());
+                context.setSetting(new DvCodedText());
+                ((Composition) obj).setContext(context);
+
+            }
         }
 
         if (obj instanceof DvCodedText) {

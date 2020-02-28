@@ -17,6 +17,7 @@
 
 package org.ehrbase.client.flattener;
 
+import com.nedap.archie.rm.composition.AdminEntry;
 import com.nedap.archie.rm.composition.Composition;
 import com.nedap.archie.rm.composition.Evaluation;
 import com.nedap.archie.rm.composition.Observation;
@@ -25,7 +26,9 @@ import com.nedap.archie.rm.datastructures.IntervalEvent;
 import com.nedap.archie.rm.datastructures.PointEvent;
 import com.nedap.archie.rm.datatypes.CodePhrase;
 import com.nedap.archie.rm.datavalues.DvCodedText;
+import com.nedap.archie.rm.datavalues.DvIdentifier;
 import com.nedap.archie.rm.datavalues.DvText;
+import com.nedap.archie.rm.datavalues.DvURI;
 import com.nedap.archie.rm.datavalues.quantity.DvQuantity;
 import com.nedap.archie.rm.generic.PartyIdentified;
 import com.nedap.archie.rm.generic.PartySelf;
@@ -36,6 +39,7 @@ import org.ehrbase.client.TestData;
 import org.ehrbase.client.classgenerator.examples.alternativeeventscomposition.AlternativeEventsComposition;
 import org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev0composition.EhrbaseBloodPressureSimpleDeV0Composition;
 import org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1composition.EhrbaseMultiOccurrenceDeV1Composition;
+import org.ehrbase.client.classgenerator.examples.episodeofcarecomposition.EpisodeOfCareComposition;
 import org.ehrbase.client.classgenerator.examples.testalltypesenv1composition.TestAllTypesEnV1Composition;
 import org.ehrbase.client.classgenerator.examples.testalltypesenv1composition.definition.ChoiceDvquantity;
 import org.ehrbase.client.templateprovider.TestDataTemplateProvider;
@@ -44,6 +48,7 @@ import org.ehrbase.test_data.composition.CompositionTestDataCanonicalXML;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.time.OffsetDateTime;
@@ -198,6 +203,24 @@ public class UnflattenerTest {
                 .containsExactlyInAnyOrder(
                         new Tuple(OffsetDateTime.of(2015, 11, 02, 12, 00, 00, 00, ZoneOffset.UTC), 60d, "kg", "mean", Duration.ofDays(30))
                 );
+    }
+
+    @Test
+    public void testUnflattenEpsiode() {
+        EpisodeOfCareComposition episode = buildEpisodeOfCareComposition();
+
+        Unflattener cut = new Unflattener(new TestDataTemplateProvider());
+        Composition actual = (Composition) cut.unflatten(episode);
+
+        assertThat(actual).isNotNull();
+
+        assertThat(actual.getContent()).size().isEqualTo(1);
+        AdminEntry actualAdminEntry = (AdminEntry) actual.getContent().get(0);
+        List<Object> identifiers = actualAdminEntry.itemsAtPath("/data[at0001]/items[at0002]/value");
+        assertThat(identifiers).extracting(i -> ((DvIdentifier) i).getId()).containsExactlyInAnyOrder("123", "456");
+
+        List<Object> uris = actualAdminEntry.itemsAtPath("/data[at0001]/items[at0013]/value");
+        assertThat(uris).extracting(u -> ((DvURI) u).getValue()).containsExactlyInAnyOrder(URI.create("https://github.com/ehrbase"));
     }
 
 

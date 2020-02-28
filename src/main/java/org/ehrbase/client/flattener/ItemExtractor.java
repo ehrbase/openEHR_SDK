@@ -35,6 +35,8 @@ class ItemExtractor {
 
     private Logger logger = LoggerFactory.getLogger(ItemExtractor.class);
 
+    private boolean multi;
+
     private RMObject rmObject;
     private String path;
     private String childName;
@@ -44,6 +46,14 @@ class ItemExtractor {
     public ItemExtractor(RMObject rmObject, String path) {
         this.rmObject = rmObject;
         this.path = path;
+        this.multi = false;
+        invoke();
+    }
+
+    public ItemExtractor(RMObject rmObject, String path, boolean multi) {
+        this.rmObject = rmObject;
+        this.path = path;
+        this.multi = multi;
         invoke();
     }
 
@@ -78,9 +88,10 @@ class ItemExtractor {
                 child = locatable.itemAtPath(childPath);
             }
 
-            if (child instanceof List && ((List) child).size() == 1) {
+            if (!multi && child instanceof List && ((List) child).size() == 1) {
                 child = ((List) child).get(0);
             }
+
 
             if (child instanceof Element) {
                 child = ((Element) child).getValue();

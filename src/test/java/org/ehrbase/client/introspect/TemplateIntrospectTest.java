@@ -83,6 +83,52 @@ public class TemplateIntrospectTest {
         assertThat(countNodes(actual, ChoiceNode.class)).isEqualTo(0l);
     }
 
+    @Test
+    public void introspectEpisodeOfCare() throws IOException, XmlException {
+        OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(OperationalTemplateTestData.EPISODE_OF_CARE.getStream()).getTemplate();
+        TemplateIntrospect cut = new TemplateIntrospect(template);
+
+        Map<String, Node> actual = cut.getRoot().getChildren();
+
+        assertThat(actual).isNotEmpty();
+        assertThat(actual.keySet())
+                .containsExactlyInAnyOrder(
+                        "/context/end_time",
+                        "/language",
+                        "/context/health_care_facility",
+                        "/composer",
+                        "/context/setting",
+                        "/territory",
+                        "/content[openEHR-EHR-ADMIN_ENTRY.episodeofcare.v0]",
+                        "/context/location",
+                        "/category",
+                        "/context/start_time",
+                        "/context/participations"
+                );
+
+        Map<Class, Long> classes = findAll(actual).stream()
+                .collect(Collectors.groupingBy(EndNode::getClazz, Collectors.counting()));
+
+        assertThat(classes.entrySet())
+                .extracting(e -> e.getKey().getSimpleName(), Map.Entry::getValue)
+                .containsExactlyInAnyOrder(
+                        new Tuple("PartyProxy", 2L),
+                        new Tuple("DvCodedText", 3L),
+                        new Tuple("CodePhrase", 3L),
+                        new Tuple("PartyIdentified", 1L),
+                        new Tuple("DvDateTime", 2L),
+                        new Tuple("DvURI", 2L),
+                        new Tuple("DvText", 1L),
+                        new Tuple("String", 1L),
+                        new Tuple("DvInterval", 1L),
+                        new Tuple("Participation", 1L)
+                );
+
+        assertThat(countNodes(actual, ArchetypeNode.class)).isEqualTo(1L);
+        assertThat(countNodes(actual, EndNode.class)).isEqualTo(17L);
+        assertThat(countNodes(actual, SlotNode.class)).isEqualTo(0L);
+        assertThat(countNodes(actual, ChoiceNode.class)).isEqualTo(0l);
+    }
 
     @Test
     public void introspectAltEvents() throws IOException, XmlException {
@@ -217,7 +263,7 @@ public class TemplateIntrospectTest {
         assertThat(classes.entrySet())
                 .extracting(e -> e.getKey().getSimpleName(), Map.Entry::getValue)
                 .containsExactlyInAnyOrder(
-                        new Tuple("PartyProxy", 4L),
+                        new Tuple("PartyProxy", 5L),
                         new Tuple("DvDate", 2L),
                         new Tuple("DvMultimedia", 1L),
                         new Tuple("DvCodedText", 14L),
@@ -242,7 +288,7 @@ public class TemplateIntrospectTest {
                 );
 
         assertThat(countNodes(actual, ArchetypeNode.class)).isEqualTo(7l);
-        assertThat(countNodes(actual, EndNode.class)).isEqualTo(60l);
+        assertThat(countNodes(actual, EndNode.class)).isEqualTo(61l);
         assertThat(countNodes(actual, SlotNode.class)).isEqualTo(2l);
         assertThat(countNodes(actual, ChoiceNode.class)).isEqualTo(1l);
     }

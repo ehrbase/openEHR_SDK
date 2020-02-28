@@ -175,6 +175,23 @@ public class ClassGeneratorTest {
     }
 
     @Test
+    public void testGenerateEpisode() throws IOException, XmlException {
+        OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(OperationalTemplateTestData.EPISODE_OF_CARE.getStream()).getTemplate();
+        ClassGenerator cut = new ClassGenerator();
+        ClassGeneratorResult generate = cut.generate(PACKAGE_NAME, template);
+        List<FieldSpec> fieldSpecs = generate.getClasses().values().stream()
+                .flatMap(Collection::stream)
+                .filter(t -> !t.kind.equals(TypeSpec.Kind.ENUM))
+                .map(t -> t.fieldSpecs).flatMap(List::stream).collect(Collectors.toList());
+
+        assertThat(fieldSpecs).size().isEqualTo(27);
+
+        //  generate.createFiles(Paths.get(".", "src/test/java/"));
+
+
+    }
+
+    @Test
     public void testGenerateMultiOccurrence() throws IOException, XmlException {
         OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(OperationalTemplateTestData.MULTI_OCCURRENCE.getStream()).getTemplate();
         ClassGenerator cut = new ClassGenerator();
@@ -296,7 +313,7 @@ public class ClassGeneratorTest {
                         new Tuple("testAllTypes", "java.util.List<org.ehrbase.client.classgenerator.examples.testalltypesenv1composition.definition.TestAllTypesCluster>"),
                         new Tuple("endTimeValue", "java.time.temporal.TemporalAccessor"),
                         new Tuple("testAllTypesContentOpenehrEhrSectionTestAllTypesV1", "java.util.List<org.ehrbase.client.classgenerator.examples.testalltypesenv1composition.definition.TestAllTypesSection>"),
-                        new Tuple("language", "com.nedap.archie.rm.datatypes.CodePhrase"),
+                        new Tuple("language", "org.ehrbase.client.classgenerator.examples.shareddefinition.Language"),
                         new Tuple("healthCareFacility", "com.nedap.archie.rm.generic.PartyIdentified"),
                         new Tuple("composer", "com.nedap.archie.rm.generic.PartyProxy"),
                         new Tuple("settingDefiningcode", "org.ehrbase.client.classgenerator.examples.shareddefinition.SettingDefiningcode"),
@@ -327,7 +344,8 @@ public class ClassGeneratorTest {
                         new Tuple("contextCodedTextDefiningcode", "org.ehrbase.client.classgenerator.examples.testalltypesenv1composition.definition.ContextCodedTextDefiningcode"),
                         new Tuple("categoryDefiningcode", "org.ehrbase.client.classgenerator.examples.shareddefinition.CategoryDefiningcode"),
                         new Tuple("location", "java.lang.String"),
-                        new Tuple("participations", "java.util.List<com.nedap.archie.rm.generic.Participation>")
+                        new Tuple("participations", "java.util.List<com.nedap.archie.rm.generic.Participation>"),
+                        new Tuple("subject", "com.nedap.archie.rm.generic.PartyProxy")
                 );
 
 

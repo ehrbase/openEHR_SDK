@@ -63,11 +63,12 @@ public class Flattener {
     }
 
     private void setFieldFromPath(Object dto, RMObject locatable, String path, Field field) {
-
-        ItemExtractor itemExtractor = new ItemExtractor(locatable, path);
+        boolean multi = List.class.isAssignableFrom(field.getType());
+        ItemExtractor itemExtractor = new ItemExtractor(locatable, path, multi);
         Object child = itemExtractor.getChild();
 
-        if (List.class.isAssignableFrom(field.getType())) {
+
+        if (multi) {
 
             final List<Object> childList;
 

@@ -1,13 +1,21 @@
-package org.ehrbase.client.classgenerator.examples.shareddefinition;
+package org.ehrbase.client.classgenerator.examples.episodeofcarecomposition.definition;
 
 import org.ehrbase.client.classgenerator.EnumValueSet;
 
-public enum CategoryDefiningcode implements EnumValueSet {
-    EPISODIC("episodic", "episodic", "openehr", "435"),
+public enum StatusDefiningcode implements EnumValueSet {
+    PLANNED("planned", "*", "local", "at0004"),
 
-    EVENT("event", "event", "openehr", "433"),
+    ONHOLD("onhold", "*", "local", "at0007"),
 
-    PERSISTENT("persistent", "persistent", "openehr", "431");
+    ENTEREDINERROR("entered-in-error", "*", "local", "at0010"),
+
+    ACTIVE("active", "*", "local", "at0006"),
+
+    FINISHED("finished", "*", "local", "at0008"),
+
+    CANCELLED("cancelled", "*", "local", "at0009"),
+
+    WAITLIST("waitlist", "*", "local", "at0005");
 
     private String value;
 
@@ -17,7 +25,7 @@ public enum CategoryDefiningcode implements EnumValueSet {
 
     private String code;
 
-    CategoryDefiningcode(String value, String description, String terminologyId, String code) {
+    StatusDefiningcode(String value, String description, String terminologyId, String code) {
         this.value = value;
         this.description = description;
         this.terminologyId = terminologyId;
