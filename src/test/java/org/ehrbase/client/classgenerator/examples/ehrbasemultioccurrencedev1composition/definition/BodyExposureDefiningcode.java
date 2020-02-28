@@ -3,9 +3,9 @@ package org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1com
 import org.ehrbase.client.classgenerator.EnumValueSet;
 
 public enum BodyExposureDefiningcode implements EnumValueSet {
-    NAKED("Naked", "No clothing, bedding or covering.", "local", "at0031"),
+    BEDDING("Reduced clothing/bedding", "The person is covered by a lesser amount of clothing or bedding than deemed appropriate for the environmental circumstances.", "local", "at0032"),
 
-    BEDDING("Increased clothing/bedding", "The person is covered by an increased amount of clothing or bedding than deemed appropriate for the environmental circumstances.", "local", "at0034");
+    NAKED("Naked", "No clothing, bedding or covering.", "local", "at0031");
 
     private String value;
 

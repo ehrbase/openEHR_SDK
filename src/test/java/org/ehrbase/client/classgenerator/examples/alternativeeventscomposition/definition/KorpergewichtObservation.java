@@ -15,11 +15,11 @@ import java.util.List;
 @Archetype("openEHR-EHR-OBSERVATION.body_weight.v2")
 public class KorpergewichtObservation {
     @Path("/data[at0002]/events[at0026]")
-    private BirthEnEvent birthEn;
+    private KorpergewichtBirthEnEvent birthEn;
 
     @Path("/data[at0002]/events[at0003]")
     @Choice
-    private List<AnyEventEnChoice> anyEventEn;
+    private List<KorpergewichtAnyEventEnChoice> anyEventEn;
 
     @Path("/protocol[at0015]/items[at0027]")
     private List<Cluster> extensionEn;
@@ -36,19 +36,19 @@ public class KorpergewichtObservation {
     @Path("/subject")
     private PartyProxy subject;
 
-    public void setBirthEn(BirthEnEvent birthEn) {
+    public void setBirthEn(KorpergewichtBirthEnEvent birthEn) {
         this.birthEn = birthEn;
     }
 
-    public BirthEnEvent getBirthEn() {
+    public KorpergewichtBirthEnEvent getBirthEn() {
         return this.birthEn;
     }
 
-    public void setAnyEventEn(List<AnyEventEnChoice> anyEventEn) {
+    public void setAnyEventEn(List<KorpergewichtAnyEventEnChoice> anyEventEn) {
         this.anyEventEn = anyEventEn;
     }
 
-    public List<AnyEventEnChoice> getAnyEventEn() {
+    public List<KorpergewichtAnyEventEnChoice> getAnyEventEn() {
         return this.anyEventEn;
     }
 

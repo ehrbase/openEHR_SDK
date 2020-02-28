@@ -38,7 +38,7 @@ import org.apache.http.HttpStatus;
 import org.apache.http.client.fluent.Request;
 import org.apache.http.entity.ContentType;
 import org.apache.http.util.EntityUtils;
-import org.ehrbase.api.mapper.RmObjektJsonDeSerializer;
+import org.ehrbase.api.mapper.RmObjectJsonDeSerializer;
 import org.ehrbase.client.exception.ClientException;
 import org.ehrbase.client.exception.OptimisticLockException;
 import org.ehrbase.client.exception.WrongStatusCodeException;
@@ -74,14 +74,14 @@ public class DefaultRestClient implements OpenEhrClient {
         ObjectMapper objectMapper = new ObjectMapper();
         SimpleModule module =
                 new SimpleModule("openEHR", new Version(1, 0, 0, null, null, null));
-        module.addDeserializer(EhrStatus.class, new RmObjektJsonDeSerializer());
-        module.addDeserializer(HierObjectId.class, new RmObjektJsonDeSerializer());
-        module.addDeserializer(Composition.class, new RmObjektJsonDeSerializer());
-        module.addDeserializer(Folder.class, new RmObjektJsonDeSerializer());
-        module.addDeserializer(UIDBasedId.class, new RmObjektJsonDeSerializer());
-        module.addDeserializer(DvText.class, new RmObjektJsonDeSerializer());
-        module.addDeserializer(ObjectRef.class, new RmObjektJsonDeSerializer());
-        module.addDeserializer(ItemStructure.class, new RmObjektJsonDeSerializer());
+        module.addDeserializer(EhrStatus.class, new RmObjectJsonDeSerializer());
+        module.addDeserializer(HierObjectId.class, new RmObjectJsonDeSerializer());
+        module.addDeserializer(Composition.class, new RmObjectJsonDeSerializer());
+        module.addDeserializer(Folder.class, new RmObjectJsonDeSerializer());
+        module.addDeserializer(UIDBasedId.class, new RmObjectJsonDeSerializer());
+        module.addDeserializer(DvText.class, new RmObjectJsonDeSerializer());
+        module.addDeserializer(ObjectRef.class, new RmObjectJsonDeSerializer());
+        module.addDeserializer(ItemStructure.class, new RmObjectJsonDeSerializer());
         objectMapper.registerModule(module);
         return objectMapper;
     }

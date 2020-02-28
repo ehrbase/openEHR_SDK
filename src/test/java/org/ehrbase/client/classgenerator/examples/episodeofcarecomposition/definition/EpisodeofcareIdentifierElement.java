@@ -5,7 +5,7 @@ import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.Path;
 
 @Entity
-public class IdentifierElement {
+public class EpisodeofcareIdentifierElement {
     @Path("/value")
     private DvIdentifier value;
 

@@ -27,7 +27,7 @@ import org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1comp
 import org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1composition.definition.*;
 import org.ehrbase.client.classgenerator.examples.episodeofcarecomposition.EpisodeOfCareComposition;
 import org.ehrbase.client.classgenerator.examples.episodeofcarecomposition.definition.EpisodeofcareAdminEntry;
-import org.ehrbase.client.classgenerator.examples.episodeofcarecomposition.definition.TeamElement;
+import org.ehrbase.client.classgenerator.examples.episodeofcarecomposition.definition.EpisodeofcareTeamElement;
 import org.ehrbase.client.classgenerator.examples.shareddefinition.SettingDefiningcode;
 import org.ehrbase.client.exception.OptimisticLockException;
 import org.ehrbase.client.openehrclient.CompositionEndpoint;
@@ -121,17 +121,17 @@ public class DefaultRestCompositionEndpointIT {
         assertTrue(actual.isPresent());
         BodyTemperatureObservation bodyTemperature1 = actual.get().getBodyTemperature().get(0);
         assertThat(bodyTemperature1.getAnyEvent())
-                .extracting(e -> ((AnyEventPointEvent) e).getTemperatureMagnitude())
+                .extracting(e -> ((BodyTemperatureAnyEventPointEvent) e).getTemperatureMagnitude())
                 .containsExactlyInAnyOrder(11d, 22d);
 
-        LocationOfMeasurementChoice locationOfMeasurement1 = bodyTemperature1.getLocationOfMeasurement();
-        assertThat(locationOfMeasurement1.getClass()).isEqualTo(LocationOfMeasurementDvcodedtext.class);
-        assertThat(((LocationOfMeasurementDvcodedtext) locationOfMeasurement1).getLocationOfMeasurementDefiningcode()).isEqualTo(LocationOfMeasurementDefiningcode.FOREHEAD);
+        BodyTemperatureLocationOfMeasurementChoice locationOfMeasurement1 = bodyTemperature1.getLocationOfMeasurement();
+        assertThat(locationOfMeasurement1.getClass()).isEqualTo(BodyTemperatureLocationOfMeasurementDvcodedtext.class);
+        assertThat(((BodyTemperatureLocationOfMeasurementDvcodedtext) locationOfMeasurement1).getLocationOfMeasurementDefiningcode()).isEqualTo(LocationOfMeasurementDefiningcode.FOREHEAD);
 
         BodyTemperatureObservation bodyTemperature2 = actual.get().getBodyTemperature().get(1);
-        LocationOfMeasurementChoice locationOfMeasurement2 = bodyTemperature2.getLocationOfMeasurement();
-        assertThat(locationOfMeasurement2.getClass()).isEqualTo(LocationOfMeasurementDvtext.class);
-        assertThat(((LocationOfMeasurementDvtext) locationOfMeasurement2).getLocationOfMeasurementValue()).isEqualTo("location");
+        BodyTemperatureLocationOfMeasurementChoice locationOfMeasurement2 = bodyTemperature2.getLocationOfMeasurement();
+        assertThat(locationOfMeasurement2.getClass()).isEqualTo(BodyTemperatureLocationOfMeasurementDvtext.class);
+        assertThat(((BodyTemperatureLocationOfMeasurementDvtext) locationOfMeasurement2).getLocationOfMeasurementValue()).isEqualTo("location");
 
     }
 
@@ -146,12 +146,13 @@ public class DefaultRestCompositionEndpointIT {
 
         Optional<EpisodeOfCareComposition> actual = compositionEndpoint.find(version1.getVersionUid().getUuid(), EpisodeOfCareComposition.class);
         assertTrue(actual.isPresent());
+        assertThat(actual.get().getVersionUid()).extracting(v -> v.getUuid().toString(), VersionUid::getSystem, VersionUid::getVersion).containsExactly(version1.getVersionUid().getUuid().toString(), "local.ehrbase.org", 1L);
         assertThat(actual.get().getEpisodeofcare()).size().isEqualTo(1);
         EpisodeofcareAdminEntry episodeofcareAdminEntry = actual.get().getEpisodeofcare().get(0);
 
         assertThat(episodeofcareAdminEntry.getIdentifier()).extracting(e -> e.getValue().getId()).containsExactlyInAnyOrder("123", "456");
 
-        assertThat(episodeofcareAdminEntry.getTeam()).extracting(TeamElement::getValue).containsExactlyInAnyOrder(URI.create("https://github.com/ehrbase"));
+        assertThat(episodeofcareAdminEntry.getTeam()).extracting(EpisodeofcareTeamElement::getValue).containsExactlyInAnyOrder(URI.create("https://github.com/ehrbase"));
 
     }
 

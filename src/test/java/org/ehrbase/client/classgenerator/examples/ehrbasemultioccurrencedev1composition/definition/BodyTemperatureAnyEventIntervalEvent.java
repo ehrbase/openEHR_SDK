@@ -13,7 +13,7 @@ import java.util.List;
 
 @Entity
 @OptionFor("INTERVAL_EVENT")
-public class AnyEventIntervalEvent implements AnyEventChoice {
+public class BodyTemperatureAnyEventIntervalEvent implements BodyTemperatureAnyEventChoice {
     @Path("/time|value")
     private TemporalAccessor timeValue;
 
@@ -40,7 +40,7 @@ public class AnyEventIntervalEvent implements AnyEventChoice {
 
     @Path("/state[at0029]/items[at0030]/value")
     @Choice
-    private BodyExposureChoiceState bodyExposure;
+    private BodyTemperatureBodyExposureChoiceState bodyExposure;
 
     @Path("/math_function|defining_code")
     private MathFunctionDefiningcode mathFunctionDefiningcode;
@@ -109,11 +109,11 @@ public class AnyEventIntervalEvent implements AnyEventChoice {
         return this.widthValue;
     }
 
-    public void setBodyExposure(BodyExposureChoiceState bodyExposure) {
+    public void setBodyExposure(BodyTemperatureBodyExposureChoiceState bodyExposure) {
         this.bodyExposure = bodyExposure;
     }
 
-    public BodyExposureChoiceState getBodyExposure() {
+    public BodyTemperatureBodyExposureChoiceState getBodyExposure() {
         return this.bodyExposure;
     }
 

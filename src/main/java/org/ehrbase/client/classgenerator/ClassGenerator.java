@@ -67,6 +67,7 @@ public class ClassGenerator {
     private ClassGeneratorResult currentResult;
     private String currentPackageName;
     private String currentMainClass;
+    private String currentArchetypeName = "";
 
 
     public ClassGenerator() {
@@ -103,7 +104,16 @@ public class ClassGenerator {
     private TypeSpec.Builder build(EntityNode archetypeNode) {
         Map<String, Integer> oldFieldNameMap = currentFieldNameMap;
         currentFieldNameMap = new HashMap<>();
-        String className = buildClassName(new SnakeCase(archetypeNode.getName()).camelToSnake() + "_" + archetypeNode.getRmName());
+        String name;
+        if (ArchetypeNode.class.isAssignableFrom(archetypeNode.getClass())) {
+            currentArchetypeName = "";
+        }
+        name = new SnakeCase(archetypeNode.getName()).camelToSnake() + "_" + archetypeNode.getRmName();
+
+        String className = buildClassName(name);
+        if (ArchetypeNode.class.isAssignableFrom(archetypeNode.getClass())) {
+            currentArchetypeName = archetypeNode.getName();
+        }
         TypeSpec.Builder classBuilder = TypeSpec.classBuilder(className);
         if (StringUtils.isBlank(currentMainClass)) {
             currentMainClass = className;
@@ -146,7 +156,7 @@ public class ClassGenerator {
     }
 
     private void addChoiceField(TypeSpec.Builder classBuilder, String path, ChoiceNode choiceNode) {
-        TypeSpec interfaceSpec = TypeSpec.interfaceBuilder(buildClassName(choiceNode.getName() + "_choice"))
+        TypeSpec interfaceSpec = TypeSpec.interfaceBuilder(buildClassName(new SnakeCase(currentArchetypeName) + "_" + choiceNode.getName() + "_choice"))
                 .addModifiers(Modifier.PUBLIC)
                 .build();
 
@@ -337,7 +347,7 @@ public class ClassGenerator {
         String nonNormalized = "";
         for (int i = 0; i < strings.length; i++) {
             nonNormalized = nonNormalized + "_" + strings[strings.length - (i + 1)];
-            fieldName = normalise(nonNormalized, true);
+            fieldName = normalise(new SnakeCase(currentArchetypeName).camelToSnake() + "_" + nonNormalized, true);
             if (!currentClassNameMap.containsKey(fieldName) && SourceVersion.isName(fieldName)) {
                 break;
             }

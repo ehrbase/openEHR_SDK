@@ -22,9 +22,9 @@ import com.nedap.archie.rm.generic.Participation;
 import com.nedap.archie.rm.generic.PartyIdentified;
 import com.nedap.archie.rm.generic.PartySelf;
 import org.ehrbase.client.classgenerator.examples.alternativeeventscomposition.AlternativeEventsComposition;
-import org.ehrbase.client.classgenerator.examples.alternativeeventscomposition.definition.AnyEventEnIntervalEvent;
-import org.ehrbase.client.classgenerator.examples.alternativeeventscomposition.definition.AnyEventEnPointEvent;
-import org.ehrbase.client.classgenerator.examples.alternativeeventscomposition.definition.BirthEnEvent;
+import org.ehrbase.client.classgenerator.examples.alternativeeventscomposition.definition.KorpergewichtAnyEventEnIntervalEvent;
+import org.ehrbase.client.classgenerator.examples.alternativeeventscomposition.definition.KorpergewichtAnyEventEnPointEvent;
+import org.ehrbase.client.classgenerator.examples.alternativeeventscomposition.definition.KorpergewichtBirthEnEvent;
 import org.ehrbase.client.classgenerator.examples.alternativeeventscomposition.definition.KorpergewichtObservation;
 import org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev0composition.EhrbaseBloodPressureSimpleDeV0Composition;
 import org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev0composition.definition.BloodPressureTrainingSampleObservation;
@@ -32,14 +32,14 @@ import org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev0
 import org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev0composition.definition.KorotkoffSoundsDefiningcode;
 import org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev0composition.definition.LocationOfMeasurementDefiningcode;
 import org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1composition.EhrbaseMultiOccurrenceDeV1Composition;
-import org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1composition.definition.AnyEventPointEvent;
+import org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1composition.definition.BodyTemperatureAnyEventPointEvent;
+import org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1composition.definition.BodyTemperatureLocationOfMeasurementDvcodedtext;
+import org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1composition.definition.BodyTemperatureLocationOfMeasurementDvtext;
 import org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1composition.definition.BodyTemperatureObservation;
-import org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1composition.definition.LocationOfMeasurementDvcodedtext;
-import org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1composition.definition.LocationOfMeasurementDvtext;
 import org.ehrbase.client.classgenerator.examples.episodeofcarecomposition.EpisodeOfCareComposition;
 import org.ehrbase.client.classgenerator.examples.episodeofcarecomposition.definition.EpisodeofcareAdminEntry;
-import org.ehrbase.client.classgenerator.examples.episodeofcarecomposition.definition.IdentifierElement;
-import org.ehrbase.client.classgenerator.examples.episodeofcarecomposition.definition.TeamElement;
+import org.ehrbase.client.classgenerator.examples.episodeofcarecomposition.definition.EpisodeofcareIdentifierElement;
+import org.ehrbase.client.classgenerator.examples.episodeofcarecomposition.definition.EpisodeofcareTeamElement;
 import org.ehrbase.client.classgenerator.examples.shareddefinition.*;
 import org.ehrbase.client.flattener.BloodpressureListDe;
 
@@ -129,18 +129,18 @@ public class TestData {
         bodyTemperature.setSubject(new PartySelf());
         bodyTemperature.setOriginValue(OffsetDateTime.now());
         bodyTemperature.setAnyEvent(new ArrayList<>());
-        LocationOfMeasurementDvcodedtext locationOfMeasurement = new LocationOfMeasurementDvcodedtext();
+        BodyTemperatureLocationOfMeasurementDvcodedtext locationOfMeasurement = new BodyTemperatureLocationOfMeasurementDvcodedtext();
         locationOfMeasurement.setLocationOfMeasurementDefiningcode(org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1composition.definition.LocationOfMeasurementDefiningcode.FOREHEAD);
         bodyTemperature.setLocationOfMeasurement(locationOfMeasurement);
 
-        AnyEventPointEvent history1 = new AnyEventPointEvent();
+        BodyTemperatureAnyEventPointEvent history1 = new BodyTemperatureAnyEventPointEvent();
         history1.setTemperatureMagnitude(22d);
         history1.setTemperatureUnits("Cel");
         history1.setCurrentDayOfMenstrualCycleMagnitude(3l);
         history1.setTimeValue(OffsetDateTime.now());
         bodyTemperature.getAnyEvent().add(history1);
 
-        AnyEventPointEvent history2 = new AnyEventPointEvent();
+        BodyTemperatureAnyEventPointEvent history2 = new BodyTemperatureAnyEventPointEvent();
         history2.setTemperatureMagnitude(11d);
         history2.setTemperatureUnits("Cel");
         history2.setCurrentDayOfMenstrualCycleMagnitude(3l);
@@ -155,18 +155,18 @@ public class TestData {
         bodyTemperature.setSubject(new PartySelf());
         bodyTemperature.setOriginValue(OffsetDateTime.now());
         bodyTemperature.setAnyEvent(new ArrayList<>());
-        LocationOfMeasurementDvtext locationOfMeasurement = new LocationOfMeasurementDvtext();
+        BodyTemperatureLocationOfMeasurementDvtext locationOfMeasurement = new BodyTemperatureLocationOfMeasurementDvtext();
         locationOfMeasurement.setLocationOfMeasurementValue("location");
         bodyTemperature.setLocationOfMeasurement(locationOfMeasurement);
 
-        AnyEventPointEvent history1 = new AnyEventPointEvent();
+        BodyTemperatureAnyEventPointEvent history1 = new BodyTemperatureAnyEventPointEvent();
         history1.setTemperatureMagnitude(22d);
         history1.setTemperatureUnits("Cel");
         history1.setCurrentDayOfMenstrualCycleMagnitude(3l);
         history1.setTimeValue(OffsetDateTime.now());
         bodyTemperature.getAnyEvent().add(history1);
 
-        AnyEventPointEvent history2 = new AnyEventPointEvent();
+        BodyTemperatureAnyEventPointEvent history2 = new BodyTemperatureAnyEventPointEvent();
         history2.setTemperatureMagnitude(11d);
         history2.setTemperatureUnits("Cel");
         history2.setCurrentDayOfMenstrualCycleMagnitude(3l);
@@ -186,7 +186,7 @@ public class TestData {
         KorpergewichtObservation korpergewichtObservation = new KorpergewichtObservation();
         alternativeEventsComposition.getKorpergewicht().add(korpergewichtObservation);
 
-        BirthEnEvent birthEnEvent = new BirthEnEvent();
+        KorpergewichtBirthEnEvent birthEnEvent = new KorpergewichtBirthEnEvent();
         birthEnEvent.setGewichtMagnitude(30d);
         birthEnEvent.setGewichtUnits("kg");
         birthEnEvent.setTimeValue(OffsetDateTime.of(1990, 11, 02, 12, 00, 00, 00, ZoneOffset.UTC));
@@ -194,13 +194,13 @@ public class TestData {
         korpergewichtObservation.setBirthEn(birthEnEvent);
         korpergewichtObservation.setAnyEventEn(new ArrayList<>());
 
-        AnyEventEnPointEvent pointEvent = new AnyEventEnPointEvent();
+        KorpergewichtAnyEventEnPointEvent pointEvent = new KorpergewichtAnyEventEnPointEvent();
         pointEvent.setGewichtMagnitude(55d);
         pointEvent.setGewichtUnits("kg");
         pointEvent.setTimeValue(OffsetDateTime.of(2013, 11, 02, 12, 00, 00, 00, ZoneOffset.UTC));
         korpergewichtObservation.getAnyEventEn().add(pointEvent);
 
-        AnyEventEnIntervalEvent intervalEvent = new AnyEventEnIntervalEvent();
+        KorpergewichtAnyEventEnIntervalEvent intervalEvent = new KorpergewichtAnyEventEnIntervalEvent();
         intervalEvent.setGewichtMagnitude(60d);
         intervalEvent.setGewichtUnits("kg");
         intervalEvent.setTimeValue(OffsetDateTime.of(2015, 11, 02, 12, 00, 00, 00, ZoneOffset.UTC));
@@ -224,20 +224,20 @@ public class TestData {
         episodeofcareAdminEntry.setLanguage(Language.DE);
         episodeofcareAdminEntry.setSubject(new PartySelf());
         episodeofcareAdminEntry.setIdentifier(new ArrayList<>());
-        IdentifierElement identifierElement = new IdentifierElement();
+        EpisodeofcareIdentifierElement identifierElement = new EpisodeofcareIdentifierElement();
         DvIdentifier value = new DvIdentifier();
         value.setId("123");
         identifierElement.setValue(value);
         episodeofcareAdminEntry.getIdentifier().add(identifierElement);
 
-        IdentifierElement identifierElement2 = new IdentifierElement();
+        EpisodeofcareIdentifierElement identifierElement2 = new EpisodeofcareIdentifierElement();
         DvIdentifier value2 = new DvIdentifier();
         value2.setId("456");
         identifierElement2.setValue(value2);
         episodeofcareAdminEntry.getIdentifier().add(identifierElement2);
 
         episodeofcareAdminEntry.setTeam(new ArrayList<>());
-        TeamElement teamElement1 = new TeamElement();
+        EpisodeofcareTeamElement teamElement1 = new EpisodeofcareTeamElement();
         teamElement1.setValue(URI.create("https://github.com/ehrbase"));
         episodeofcareAdminEntry.getTeam().add(teamElement1);
 

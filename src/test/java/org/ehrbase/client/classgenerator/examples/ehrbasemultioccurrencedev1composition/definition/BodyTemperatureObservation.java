@@ -16,7 +16,7 @@ import java.util.List;
 public class BodyTemperatureObservation {
     @Path("/data[at0002]/events[at0003]")
     @Choice
-    private List<AnyEventChoice> anyEvent;
+    private List<BodyTemperatureAnyEventChoice> anyEvent;
 
     @Path("/protocol[at0020]/items[at0062]")
     private List<Cluster> extension;
@@ -38,13 +38,13 @@ public class BodyTemperatureObservation {
 
     @Path("/protocol[at0020]/items[at0021]/value")
     @Choice
-    private LocationOfMeasurementChoice locationOfMeasurement;
+    private BodyTemperatureLocationOfMeasurementChoice locationOfMeasurement;
 
-    public void setAnyEvent(List<AnyEventChoice> anyEvent) {
+    public void setAnyEvent(List<BodyTemperatureAnyEventChoice> anyEvent) {
         this.anyEvent = anyEvent;
     }
 
-    public List<AnyEventChoice> getAnyEvent() {
+    public List<BodyTemperatureAnyEventChoice> getAnyEvent() {
         return this.anyEvent;
     }
 
@@ -96,11 +96,12 @@ public class BodyTemperatureObservation {
         return this.subject;
     }
 
-    public void setLocationOfMeasurement(LocationOfMeasurementChoice locationOfMeasurement) {
+    public void setLocationOfMeasurement(
+            BodyTemperatureLocationOfMeasurementChoice locationOfMeasurement) {
         this.locationOfMeasurement = locationOfMeasurement;
     }
 
-    public LocationOfMeasurementChoice getLocationOfMeasurement() {
+    public BodyTemperatureLocationOfMeasurementChoice getLocationOfMeasurement() {
         return this.locationOfMeasurement;
     }
 }

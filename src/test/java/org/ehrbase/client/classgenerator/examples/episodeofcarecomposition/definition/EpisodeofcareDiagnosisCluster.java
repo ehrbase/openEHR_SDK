@@ -5,7 +5,7 @@ import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.Path;
 
 @Entity
-public class DiagnosisCluster {
+public class EpisodeofcareDiagnosisCluster {
     @Path("/items[at0021]/value|magnitude")
     private Long rankMagnitude;
 

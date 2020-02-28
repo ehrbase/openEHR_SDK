@@ -14,10 +14,10 @@ import java.util.List;
 @Archetype("openEHR-EHR-ADMIN_ENTRY.episodeofcare.v0")
 public class EpisodeofcareAdminEntry {
     @Path("/data[at0001]/items[at0002]")
-    private List<IdentifierElement> identifier;
+    private List<EpisodeofcareIdentifierElement> identifier;
 
     @Path("/data[at0001]/items[at0013]")
-    private List<TeamElement> team;
+    private List<EpisodeofcareTeamElement> team;
 
     @Path("/data[at0001]/items[at0003]/value|defining_code")
     private StatusDefiningcode statusDefiningcode;
@@ -26,7 +26,7 @@ public class EpisodeofcareAdminEntry {
     private Language language;
 
     @Path("/data[at0001]/items[at0018]")
-    private List<DiagnosisCluster> diagnosis;
+    private List<EpisodeofcareDiagnosisCluster> diagnosis;
 
     @Path("/subject")
     private PartyProxy subject;
@@ -43,19 +43,19 @@ public class EpisodeofcareAdminEntry {
     @Path("/data[at0001]/items[at0012]/value|value")
     private URI careManagerValue;
 
-    public void setIdentifier(List<IdentifierElement> identifier) {
+    public void setIdentifier(List<EpisodeofcareIdentifierElement> identifier) {
         this.identifier = identifier;
     }
 
-    public List<IdentifierElement> getIdentifier() {
+    public List<EpisodeofcareIdentifierElement> getIdentifier() {
         return this.identifier;
     }
 
-    public void setTeam(List<TeamElement> team) {
+    public void setTeam(List<EpisodeofcareTeamElement> team) {
         this.team = team;
     }
 
-    public List<TeamElement> getTeam() {
+    public List<EpisodeofcareTeamElement> getTeam() {
         return this.team;
     }
 
@@ -75,11 +75,11 @@ public class EpisodeofcareAdminEntry {
         return this.language;
     }
 
-    public void setDiagnosis(List<DiagnosisCluster> diagnosis) {
+    public void setDiagnosis(List<EpisodeofcareDiagnosisCluster> diagnosis) {
         this.diagnosis = diagnosis;
     }
 
-    public List<DiagnosisCluster> getDiagnosis() {
+    public List<EpisodeofcareDiagnosisCluster> getDiagnosis() {
         return this.diagnosis;
     }
 

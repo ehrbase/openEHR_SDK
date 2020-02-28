@@ -1,4 +1,4 @@
 package org.ehrbase.client.classgenerator.examples.alternativeeventscomposition.definition;
 
-public interface AnyEventEnChoice {
+public interface KorpergewichtAnyEventEnChoice {
 }
