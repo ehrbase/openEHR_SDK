@@ -35,7 +35,7 @@ public class BodyTemperatureAnyEventPointEvent implements BodyTemperatureAnyEven
 
     @Path("/state[at0029]/items[at0030]/value")
     @Choice
-    private BodyExposureChoice bodyExposure;
+    private BodyTemperatureBodyExposureChoice bodyExposure;
 
     public void setTimeValue(TemporalAccessor timeValue) {
         this.timeValue = timeValue;
@@ -93,11 +93,11 @@ public class BodyTemperatureAnyEventPointEvent implements BodyTemperatureAnyEven
         return this.environmentalConditions;
     }
 
-    public void setBodyExposure(BodyExposureChoice bodyExposure) {
+    public void setBodyExposure(BodyTemperatureBodyExposureChoice bodyExposure) {
         this.bodyExposure = bodyExposure;
     }
 
-    public BodyExposureChoice getBodyExposure() {
+    public BodyTemperatureBodyExposureChoice getBodyExposure() {
         return this.bodyExposure;
     }
 }

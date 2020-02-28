@@ -124,14 +124,14 @@ public class DefaultRestCompositionEndpointIT {
                 .extracting(e -> ((BodyTemperatureAnyEventPointEvent) e).getTemperatureMagnitude())
                 .containsExactlyInAnyOrder(11d, 22d);
 
-        LocationOfMeasurementChoice locationOfMeasurement1 = bodyTemperature1.getLocationOfMeasurement();
-        assertThat(locationOfMeasurement1.getClass()).isEqualTo(LocationOfMeasurementDvcodedtext.class);
-        assertThat(((LocationOfMeasurementDvcodedtext) locationOfMeasurement1).getLocationOfMeasurementDefiningcode()).isEqualTo(LocationOfMeasurementDefiningcode.FOREHEAD);
+        BodyTemperatureLocationOfMeasurementChoice locationOfMeasurement1 = bodyTemperature1.getLocationOfMeasurement();
+        assertThat(locationOfMeasurement1.getClass()).isEqualTo(BodyTemperatureLocationOfMeasurementDvcodedtext.class);
+        assertThat(((BodyTemperatureLocationOfMeasurementDvcodedtext) locationOfMeasurement1).getLocationOfMeasurementDefiningcode()).isEqualTo(LocationOfMeasurementDefiningcode.FOREHEAD);
 
         BodyTemperatureObservation bodyTemperature2 = actual.get().getBodyTemperature().get(1);
-        LocationOfMeasurementChoice locationOfMeasurement2 = bodyTemperature2.getLocationOfMeasurement();
-        assertThat(locationOfMeasurement2.getClass()).isEqualTo(LocationOfMeasurementDvtext.class);
-        assertThat(((LocationOfMeasurementDvtext) locationOfMeasurement2).getLocationOfMeasurementValue()).isEqualTo("location");
+        BodyTemperatureLocationOfMeasurementChoice locationOfMeasurement2 = bodyTemperature2.getLocationOfMeasurement();
+        assertThat(locationOfMeasurement2.getClass()).isEqualTo(BodyTemperatureLocationOfMeasurementDvtext.class);
+        assertThat(((BodyTemperatureLocationOfMeasurementDvtext) locationOfMeasurement2).getLocationOfMeasurementValue()).isEqualTo("location");
 
     }
 

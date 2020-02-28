@@ -40,7 +40,7 @@ public class BodyTemperatureAnyEventIntervalEvent implements BodyTemperatureAnyE
 
     @Path("/state[at0029]/items[at0030]/value")
     @Choice
-    private BodyExposureChoiceState bodyExposure;
+    private BodyTemperatureBodyExposureChoiceState bodyExposure;
 
     @Path("/math_function|defining_code")
     private MathFunctionDefiningcode mathFunctionDefiningcode;
@@ -109,11 +109,11 @@ public class BodyTemperatureAnyEventIntervalEvent implements BodyTemperatureAnyE
         return this.widthValue;
     }
 
-    public void setBodyExposure(BodyExposureChoiceState bodyExposure) {
+    public void setBodyExposure(BodyTemperatureBodyExposureChoiceState bodyExposure) {
         this.bodyExposure = bodyExposure;
     }
 
-    public BodyExposureChoiceState getBodyExposure() {
+    public BodyTemperatureBodyExposureChoiceState getBodyExposure() {
         return this.bodyExposure;
     }
 

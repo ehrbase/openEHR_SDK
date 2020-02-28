@@ -38,7 +38,7 @@ public class BodyTemperatureObservation {
 
     @Path("/protocol[at0020]/items[at0021]/value")
     @Choice
-    private LocationOfMeasurementChoice locationOfMeasurement;
+    private BodyTemperatureLocationOfMeasurementChoice locationOfMeasurement;
 
     public void setAnyEvent(List<BodyTemperatureAnyEventChoice> anyEvent) {
         this.anyEvent = anyEvent;
@@ -96,11 +96,12 @@ public class BodyTemperatureObservation {
         return this.subject;
     }
 
-    public void setLocationOfMeasurement(LocationOfMeasurementChoice locationOfMeasurement) {
+    public void setLocationOfMeasurement(
+            BodyTemperatureLocationOfMeasurementChoice locationOfMeasurement) {
         this.locationOfMeasurement = locationOfMeasurement;
     }
 
-    public LocationOfMeasurementChoice getLocationOfMeasurement() {
+    public BodyTemperatureLocationOfMeasurementChoice getLocationOfMeasurement() {
         return this.locationOfMeasurement;
     }
 }

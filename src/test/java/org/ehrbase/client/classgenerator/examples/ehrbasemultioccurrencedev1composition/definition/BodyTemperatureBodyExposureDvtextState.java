@@ -6,7 +6,7 @@ import org.ehrbase.client.annotations.Path;
 
 @Entity
 @OptionFor("DV_TEXT")
-public class BodyExposureDvtext implements BodyExposureChoice {
+public class BodyTemperatureBodyExposureDvtextState implements BodyTemperatureBodyExposureChoiceState {
     @Path("|value")
     private String bodyExposureValue;
 

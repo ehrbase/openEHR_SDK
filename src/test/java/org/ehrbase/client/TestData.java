@@ -33,9 +33,9 @@ import org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev0
 import org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev0composition.definition.LocationOfMeasurementDefiningcode;
 import org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1composition.EhrbaseMultiOccurrenceDeV1Composition;
 import org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1composition.definition.BodyTemperatureAnyEventPointEvent;
+import org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1composition.definition.BodyTemperatureLocationOfMeasurementDvcodedtext;
+import org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1composition.definition.BodyTemperatureLocationOfMeasurementDvtext;
 import org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1composition.definition.BodyTemperatureObservation;
-import org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1composition.definition.LocationOfMeasurementDvcodedtext;
-import org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1composition.definition.LocationOfMeasurementDvtext;
 import org.ehrbase.client.classgenerator.examples.episodeofcarecomposition.EpisodeOfCareComposition;
 import org.ehrbase.client.classgenerator.examples.episodeofcarecomposition.definition.EpisodeofcareAdminEntry;
 import org.ehrbase.client.classgenerator.examples.episodeofcarecomposition.definition.EpisodeofcareIdentifierElement;
@@ -129,7 +129,7 @@ public class TestData {
         bodyTemperature.setSubject(new PartySelf());
         bodyTemperature.setOriginValue(OffsetDateTime.now());
         bodyTemperature.setAnyEvent(new ArrayList<>());
-        LocationOfMeasurementDvcodedtext locationOfMeasurement = new LocationOfMeasurementDvcodedtext();
+        BodyTemperatureLocationOfMeasurementDvcodedtext locationOfMeasurement = new BodyTemperatureLocationOfMeasurementDvcodedtext();
         locationOfMeasurement.setLocationOfMeasurementDefiningcode(org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1composition.definition.LocationOfMeasurementDefiningcode.FOREHEAD);
         bodyTemperature.setLocationOfMeasurement(locationOfMeasurement);
 
@@ -155,7 +155,7 @@ public class TestData {
         bodyTemperature.setSubject(new PartySelf());
         bodyTemperature.setOriginValue(OffsetDateTime.now());
         bodyTemperature.setAnyEvent(new ArrayList<>());
-        LocationOfMeasurementDvtext locationOfMeasurement = new LocationOfMeasurementDvtext();
+        BodyTemperatureLocationOfMeasurementDvtext locationOfMeasurement = new BodyTemperatureLocationOfMeasurementDvtext();
         locationOfMeasurement.setLocationOfMeasurementValue("location");
         bodyTemperature.setLocationOfMeasurement(locationOfMeasurement);
 
