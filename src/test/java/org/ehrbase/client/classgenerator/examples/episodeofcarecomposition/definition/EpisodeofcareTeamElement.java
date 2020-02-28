@@ -6,7 +6,7 @@ import org.ehrbase.client.annotations.Path;
 import java.net.URI;
 
 @Entity
-public class TeamElement {
+public class EpisodeofcareTeamElement {
     @Path("/value|value")
     private URI value;
 

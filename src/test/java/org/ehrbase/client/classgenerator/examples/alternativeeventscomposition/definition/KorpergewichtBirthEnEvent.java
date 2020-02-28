@@ -7,7 +7,7 @@ import java.time.temporal.TemporalAccessor;
 import java.util.List;
 
 @Entity
-public class BirthEnEvent {
+public class KorpergewichtBirthEnEvent {
     @Path("/time|value")
     private TemporalAccessor timeValue;
 
@@ -18,7 +18,7 @@ public class BirthEnEvent {
     private String gewichtUnits;
 
     @Path("/state[at0008]/items[at0025]")
-    private List<ConfoundingFactorsEnElement> confoundingFactorsEn;
+    private List<KorpergewichtConfoundingFactorsEnElement> confoundingFactorsEn;
 
     @Path("/data[at0001]/items[at0024]/value|value")
     private String commentEnValue;
@@ -50,11 +50,12 @@ public class BirthEnEvent {
         return this.gewichtUnits;
     }
 
-    public void setConfoundingFactorsEn(List<ConfoundingFactorsEnElement> confoundingFactorsEn) {
+    public void setConfoundingFactorsEn(
+            List<KorpergewichtConfoundingFactorsEnElement> confoundingFactorsEn) {
         this.confoundingFactorsEn = confoundingFactorsEn;
     }
 
-    public List<ConfoundingFactorsEnElement> getConfoundingFactorsEn() {
+    public List<KorpergewichtConfoundingFactorsEnElement> getConfoundingFactorsEn() {
         return this.confoundingFactorsEn;
     }
 

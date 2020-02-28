@@ -3,13 +3,15 @@ package org.ehrbase.client.classgenerator.examples.alternativeeventscomposition.
 import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.OptionFor;
 import org.ehrbase.client.annotations.Path;
+import org.ehrbase.client.classgenerator.examples.shareddefinition.MathFunctionDefiningcode;
 
 import java.time.temporal.TemporalAccessor;
+import java.time.temporal.TemporalAmount;
 import java.util.List;
 
 @Entity
-@OptionFor("POINT_EVENT")
-public class AnyEventEnPointEvent implements AnyEventEnChoice {
+@OptionFor("INTERVAL_EVENT")
+public class KorpergewichtAnyEventEnIntervalEvent implements KorpergewichtAnyEventEnChoice {
     @Path("/time|value")
     private TemporalAccessor timeValue;
 
@@ -20,13 +22,19 @@ public class AnyEventEnPointEvent implements AnyEventEnChoice {
     private String gewichtUnits;
 
     @Path("/state[at0008]/items[at0025]")
-    private List<ConfoundingFactorsEnElement> confoundingFactorsEn;
+    private List<KorpergewichtConfoundingFactorsEnElement> confoundingFactorsEn;
+
+    @Path("/width|value")
+    private TemporalAmount widthValue;
 
     @Path("/data[at0001]/items[at0024]/value|value")
     private String commentEnValue;
 
     @Path("/state[at0008]/items[at0009]/value|defining_code")
     private StateOfDressEnDefiningcode stateOfDressEnDefiningcode;
+
+    @Path("/math_function|defining_code")
+    private MathFunctionDefiningcode mathFunctionDefiningcode;
 
     public void setTimeValue(TemporalAccessor timeValue) {
         this.timeValue = timeValue;
@@ -52,12 +60,21 @@ public class AnyEventEnPointEvent implements AnyEventEnChoice {
         return this.gewichtUnits;
     }
 
-    public void setConfoundingFactorsEn(List<ConfoundingFactorsEnElement> confoundingFactorsEn) {
+    public void setConfoundingFactorsEn(
+            List<KorpergewichtConfoundingFactorsEnElement> confoundingFactorsEn) {
         this.confoundingFactorsEn = confoundingFactorsEn;
     }
 
-    public List<ConfoundingFactorsEnElement> getConfoundingFactorsEn() {
+    public List<KorpergewichtConfoundingFactorsEnElement> getConfoundingFactorsEn() {
         return this.confoundingFactorsEn;
+    }
+
+    public void setWidthValue(TemporalAmount widthValue) {
+        this.widthValue = widthValue;
+    }
+
+    public TemporalAmount getWidthValue() {
+        return this.widthValue;
     }
 
     public void setCommentEnValue(String commentEnValue) {
@@ -74,5 +91,13 @@ public class AnyEventEnPointEvent implements AnyEventEnChoice {
 
     public StateOfDressEnDefiningcode getStateOfDressEnDefiningcode() {
         return this.stateOfDressEnDefiningcode;
+    }
+
+    public void setMathFunctionDefiningcode(MathFunctionDefiningcode mathFunctionDefiningcode) {
+        this.mathFunctionDefiningcode = mathFunctionDefiningcode;
+    }
+
+    public MathFunctionDefiningcode getMathFunctionDefiningcode() {
+        return this.mathFunctionDefiningcode;
     }
 }

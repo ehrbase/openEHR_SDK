@@ -95,8 +95,12 @@ public class DefaultRestCompositionEndpoint implements CompositionEndpoint {
     @Override
     public <T> Optional<T> find(UUID compositionId, Class<T> clazz) {
         Optional<Composition> composition = httpGet(defaultRestClient.getConfig().getBaseUri().resolve(EHR_PATH + ehrId.toString() + COMPOSITION_PATH + compositionId.toString()), Composition.class);
-        return composition
+        Optional<T> t = composition
                 .map(c -> new Flattener().flatten(c, clazz));
+        if (t.isPresent()) {
+            addVersion(t.get(), new VersionUid(composition.get().getUid().getValue()));
+        }
+        return t;
     }
 
 

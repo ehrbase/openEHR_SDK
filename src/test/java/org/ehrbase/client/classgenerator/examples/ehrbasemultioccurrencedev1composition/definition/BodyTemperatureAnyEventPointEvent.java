@@ -5,15 +5,13 @@ import org.ehrbase.client.annotations.Choice;
 import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.OptionFor;
 import org.ehrbase.client.annotations.Path;
-import org.ehrbase.client.classgenerator.examples.shareddefinition.MathFunctionDefiningcode;
 
 import java.time.temporal.TemporalAccessor;
-import java.time.temporal.TemporalAmount;
 import java.util.List;
 
 @Entity
-@OptionFor("INTERVAL_EVENT")
-public class AnyEventIntervalEvent implements AnyEventChoice {
+@OptionFor("POINT_EVENT")
+public class BodyTemperatureAnyEventPointEvent implements BodyTemperatureAnyEventChoice {
     @Path("/time|value")
     private TemporalAccessor timeValue;
 
@@ -35,15 +33,9 @@ public class AnyEventIntervalEvent implements AnyEventChoice {
     @Path("/state[at0029]/items[at0056]")
     private List<Cluster> environmentalConditions;
 
-    @Path("/width|value")
-    private TemporalAmount widthValue;
-
     @Path("/state[at0029]/items[at0030]/value")
     @Choice
-    private BodyExposureChoiceState bodyExposure;
-
-    @Path("/math_function|defining_code")
-    private MathFunctionDefiningcode mathFunctionDefiningcode;
+    private BodyExposureChoice bodyExposure;
 
     public void setTimeValue(TemporalAccessor timeValue) {
         this.timeValue = timeValue;
@@ -101,27 +93,11 @@ public class AnyEventIntervalEvent implements AnyEventChoice {
         return this.environmentalConditions;
     }
 
-    public void setWidthValue(TemporalAmount widthValue) {
-        this.widthValue = widthValue;
-    }
-
-    public TemporalAmount getWidthValue() {
-        return this.widthValue;
-    }
-
-    public void setBodyExposure(BodyExposureChoiceState bodyExposure) {
+    public void setBodyExposure(BodyExposureChoice bodyExposure) {
         this.bodyExposure = bodyExposure;
     }
 
-    public BodyExposureChoiceState getBodyExposure() {
+    public BodyExposureChoice getBodyExposure() {
         return this.bodyExposure;
-    }
-
-    public void setMathFunctionDefiningcode(MathFunctionDefiningcode mathFunctionDefiningcode) {
-        this.mathFunctionDefiningcode = mathFunctionDefiningcode;
-    }
-
-    public MathFunctionDefiningcode getMathFunctionDefiningcode() {
-        return this.mathFunctionDefiningcode;
     }
 }
