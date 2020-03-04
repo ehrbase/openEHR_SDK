@@ -7,11 +7,18 @@ Generic openEHR Client and Objekt-mapper:
 * RestClient for openEHR Rest-API 
 * AQL-Query generator (TODO)
 
+## Release Notes (v0.3.0)
+-RestClient for DIRECTORY endpoint
+-Improved clean-up of empty elements
+-Improved generation of EVENT classes
+-Automated generation of PARTICIPATION classes
+-Added support for PARTY_PROXY
+-Moved to EHRbase 11
 
 ## Installation
 
 ### Prerequisite
-You need to have EHRbase jars for v0.10.0 in your maven repo 
+You need to have EHRbase jars for v0.11.0 in your maven repo (clone EHRbase and build with 'mvn clean install')
 ### Build
 ```bash
 mvn clean install

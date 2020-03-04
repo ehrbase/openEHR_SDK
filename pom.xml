@@ -23,12 +23,12 @@
 
     <groupId>org.ehrbase</groupId>
     <artifactId>client-library</artifactId>
-    <version>0.2.0</version>
+    <version>0.3.0</version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <skipIntegrationTests>true</skipIntegrationTests>
-        <ehrbaseVersion>0.10.0</ehrbaseVersion>
+        <ehrbaseVersion>0.11.0</ehrbaseVersion>
         <maven.compiler.release>11</maven.compiler.release>
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
