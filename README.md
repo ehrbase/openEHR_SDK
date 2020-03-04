@@ -8,12 +8,12 @@ Generic openEHR Client and Objekt-mapper:
 * AQL-Query generator (TODO)
 
 ## Release Notes (v0.3.0)
--RestClient for DIRECTORY endpoint
--Improved clean-up of empty elements
--Improved generation of EVENT classes
--Automated generation of PARTICIPATION classes
--Added support for PARTY_PROXY
--Moved to EHRbase 11
+* RestClient for DIRECTORY endpoint
+* Improved clean-up of empty elements
+* Improved generation of EVENT classes
+* Automated generation of PARTICIPATION classes
+* Added support for PARTY_PROXY
+* Moved to EHRbase 11
 
 ## Installation
 
