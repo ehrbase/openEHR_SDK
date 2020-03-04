@@ -24,16 +24,11 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class DvCodedTextClassGeneratorConfig implements RmClassGeneratorConfig {
-    private static final Set<String> FIELDS = Stream.of("value", "definingCode").collect(Collectors.toSet());
+    private static final Set<String> FIELDS = Stream.of("definingCode").collect(Collectors.toSet());
 
     @Override
     public Class getRMClass() {
         return DvCodedText.class;
-    }
-
-    @Override
-    public boolean idExpandField() {
-        return true;
     }
 
     @Override

@@ -32,10 +32,6 @@ public class DvQuantityClassGeneratorConfig implements RmClassGeneratorConfig {
         return DvQuantity.class;
     }
 
-    @Override
-    public boolean idExpandField() {
-        return true;
-    }
 
     @Override
     public Set<String> getExpandFields() {

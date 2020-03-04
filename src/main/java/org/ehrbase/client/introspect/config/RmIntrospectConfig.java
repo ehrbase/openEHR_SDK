@@ -17,6 +17,9 @@
 
 package org.ehrbase.client.introspect.config;
 
+import org.ehrbase.client.terminology.ValueSet;
+
+import java.util.Collections;
 import java.util.Set;
 
 public interface RmIntrospectConfig {
@@ -24,4 +27,8 @@ public interface RmIntrospectConfig {
     Class getRMClass();
 
     Set<String> getNonTemplateFields();
+
+    default ValueSet findExternalValueSet(String fieldName) {
+        return new ValueSet(ValueSet.LOCAL, Collections.emptySet());
+    }
 }

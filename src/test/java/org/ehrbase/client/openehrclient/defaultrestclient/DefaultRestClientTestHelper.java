@@ -17,8 +17,8 @@
 
 package org.ehrbase.client.openehrclient.defaultrestclient;
 
-import org.ehrbase.client.flattener.TestDataTemplateProvider;
 import org.ehrbase.client.openehrclient.OpenEhrClientConfig;
+import org.ehrbase.client.templateprovider.TestDataTemplateProvider;
 
 import java.net.URI;
 import java.net.URISyntaxException;

@@ -17,13 +17,17 @@
 
 package org.ehrbase.client.classgenerator.config;
 
+import org.apache.commons.collections4.CollectionUtils;
+
 import java.util.Set;
 
 public interface RmClassGeneratorConfig {
 
     Class getRMClass();
 
-    boolean idExpandField();
+    default boolean isExpandField() {
+        return CollectionUtils.isNotEmpty(getExpandFields());
+    }
 
     Set<String> getExpandFields();
 }

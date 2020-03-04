@@ -14,14 +14,18 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+package org.ehrbase.client.building.rmobjektskeletonbuilder;
 
-package org.ehrbase.client.flattener;
+import org.openehr.schemas.v1.CPRIMITIVEOBJECT;
 
-import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
+public class PrimitiveSkeletonBuilder implements RmObjektSkeletonBuilder<CPRIMITIVEOBJECT, Object> {
+    @Override
+    public Class<CPRIMITIVEOBJECT> getXmlClass() {
+        return CPRIMITIVEOBJECT.class;
+    }
 
-import java.util.Optional;
-
-public interface TemplateProvider {
-
-     Optional<OPERATIONALTEMPLATE> getForTemplateId(String templateId);
+    @Override
+    public Object getRmObjekt(CPRIMITIVEOBJECT xml) {
+        return null;
+    }
 }

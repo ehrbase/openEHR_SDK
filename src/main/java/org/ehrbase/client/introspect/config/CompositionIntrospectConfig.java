@@ -18,6 +18,8 @@
 package org.ehrbase.client.introspect.config;
 
 import com.nedap.archie.rm.composition.Composition;
+import org.ehrbase.client.terminology.TerminologyProvider;
+import org.ehrbase.client.terminology.ValueSet;
 
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -25,7 +27,7 @@ import java.util.stream.Stream;
 
 public class CompositionIntrospectConfig implements RmIntrospectConfig {
 
-    private static final Set<String> FIELDS = Stream.of("language", "territory", "composer").collect(Collectors.toSet());
+    private static final Set<String> FIELDS = Stream.of("language", "territory", "composer", "category").collect(Collectors.toSet());
 
     @Override
     public Class getRMClass() {
@@ -35,5 +37,19 @@ public class CompositionIntrospectConfig implements RmIntrospectConfig {
     @Override
     public Set<String> getNonTemplateFields() {
         return FIELDS;
+    }
+
+    @Override
+    public ValueSet findExternalValueSet(String fieldName) {
+        switch (fieldName) {
+            case "language":
+                return TerminologyProvider.findOpenEhrValueSet("ISO_639-1", "");
+            case "territory":
+                return TerminologyProvider.findOpenEhrValueSet("ISO_3166-1", "");
+            case "category":
+                return TerminologyProvider.findOpenEhrValueSet(TerminologyProvider.OPENEHR, "composition category");
+            default:
+                return ValueSet.EMPTY_VALUE_SET;
+        }
     }
 }

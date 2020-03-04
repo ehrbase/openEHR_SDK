@@ -18,14 +18,18 @@
 package org.ehrbase.client.introspect.config;
 
 import com.nedap.archie.rm.composition.EventContext;
+import org.ehrbase.client.terminology.TerminologyProvider;
+import org.ehrbase.client.terminology.ValueSet;
 
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static org.ehrbase.client.terminology.TerminologyProvider.OPENEHR;
+
 public class EventContextIntrospectConfig implements RmIntrospectConfig {
 
-    private static final Set<String> FIELDS = Stream.of("startTime", "endTime", "location", "setting", "healthCareFacility").collect(Collectors.toSet());
+    private static final Set<String> FIELDS = Stream.of("startTime", "endTime", "location", "setting", "healthCareFacility", "participations").collect(Collectors.toSet());
 
     @Override
     public Class getRMClass() {
@@ -35,5 +39,15 @@ public class EventContextIntrospectConfig implements RmIntrospectConfig {
     @Override
     public Set<String> getNonTemplateFields() {
         return FIELDS;
+    }
+
+    @Override
+    public ValueSet findExternalValueSet(String fieldName) {
+        switch (fieldName) {
+            case "setting":
+                return TerminologyProvider.findOpenEhrValueSet(OPENEHR, "setting");
+            default:
+                return ValueSet.EMPTY_VALUE_SET;
+        }
     }
 }

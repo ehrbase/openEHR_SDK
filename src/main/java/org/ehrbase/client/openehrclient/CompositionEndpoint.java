@@ -34,7 +34,7 @@ public interface CompositionEndpoint {
      * @throws ClientException
      * @throws WrongStatusCodeException
      */
-    UUID saveCompositionEntity(Object entity);
+    <T> T mergeCompositionEntity(T entity);
 
     /**
      * Finds a Flat-Entity by

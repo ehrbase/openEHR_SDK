@@ -31,10 +31,6 @@ public class DvTextClassGeneratorConfig implements RmClassGeneratorConfig {
         return DvText.class;
     }
 
-    @Override
-    public boolean idExpandField() {
-        return true;
-    }
 
     @Override
     public Set<String> getExpandFields() {

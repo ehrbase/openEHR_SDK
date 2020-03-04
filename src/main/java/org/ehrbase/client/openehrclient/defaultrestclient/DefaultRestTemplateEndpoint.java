@@ -22,6 +22,7 @@ import org.apache.http.HttpHeaders;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.fluent.Request;
+import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.entity.ContentType;
 import org.apache.xmlbeans.XmlException;
 import org.apache.xmlbeans.XmlOptions;
@@ -36,8 +37,7 @@ import org.slf4j.LoggerFactory;
 import javax.xml.namespace.QName;
 import java.io.IOException;
 import java.net.URI;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
+import java.net.URISyntaxException;
 import java.util.Optional;
 
 public class DefaultRestTemplateEndpoint implements TemplateEndpoint {
@@ -56,7 +56,7 @@ public class DefaultRestTemplateEndpoint implements TemplateEndpoint {
         final TemplateDocument templateDocument;
         try {
 
-            URI uri = defaultRestClient.getConfig().getBaseUri().resolve(DEFINITION_TEMPLATE_ADL_1_4_PATH + URLEncoder.encode(templateId, StandardCharsets.UTF_8.toString()));
+            URI uri = defaultRestClient.getConfig().getBaseUri().resolve(new URIBuilder().setPath(defaultRestClient.getConfig().getBaseUri().getPath() + DEFINITION_TEMPLATE_ADL_1_4_PATH + templateId).build());
             logger.debug("Calling Get {}", uri);
             HttpResponse httpResponse = Request.Get(uri)
                     .addHeader(HttpHeaders.ACCEPT, ContentType.APPLICATION_XML.toString())
@@ -68,7 +68,7 @@ public class DefaultRestTemplateEndpoint implements TemplateEndpoint {
                 return Optional.empty();
             }
             templateDocument = TemplateDocument.Factory.parse(httpResponse.getEntity().getContent());
-        } catch (IOException | XmlException e) {
+        } catch (IOException | XmlException | URISyntaxException e) {
             throw new ClientException(e.getMessage(), e);
         }
 
@@ -77,7 +77,7 @@ public class DefaultRestTemplateEndpoint implements TemplateEndpoint {
 
     @Override
     public void ensureExistence(String templateId) {
-        Optional<OPERATIONALTEMPLATE> operationaltemplate = defaultRestClient.getTemplateProvider().getForTemplateId(templateId);
+        Optional<OPERATIONALTEMPLATE> operationaltemplate = defaultRestClient.getTemplateProvider().find(templateId);
         if (!operationaltemplate.isPresent()) {
             throw new ClientException(String.format("Unknown Template with Id %s", templateId));
         }

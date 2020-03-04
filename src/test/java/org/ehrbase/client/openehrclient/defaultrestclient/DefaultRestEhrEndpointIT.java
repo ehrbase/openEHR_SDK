@@ -67,7 +67,10 @@ public class DefaultRestEhrEndpointIT {
 
     @Test
     public void testUpdateEhrStatus() throws IOException {
-        EhrStatus ehrStatus = new EhrStatus();
+
+        UUID ehrId = openEhrClient.ehrEndpoint().createEhr();
+
+        EhrStatus ehrStatus = openEhrClient.ehrEndpoint().getEhrStatus(ehrId).get();
         ehrStatus.setQueryable(false);
         ehrStatus.setModifiable(false);
         HierObjectId subjectId = new HierObjectId("6ee110de-08f8-4fac-8372-820650f150a9");
@@ -76,7 +79,7 @@ public class DefaultRestEhrEndpointIT {
         String value = IOUtils.toString(ItemStruktureTestDataCanonicalJson.SIMPLE_EHR_OTHER_Details.getStream(), UTF_8);
         ehrStatus.setOtherDetails(new CanonicalJson().unmarshal(value, ItemTree.class));
 
-        UUID ehrId = openEhrClient.ehrEndpoint().createEhr();
+
         openEhrClient.ehrEndpoint().updateEhrStatus(ehrId, ehrStatus);
         EhrStatus actual = openEhrClient.ehrEndpoint().getEhrStatus(ehrId).get();
 

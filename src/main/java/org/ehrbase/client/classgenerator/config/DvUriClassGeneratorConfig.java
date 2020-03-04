@@ -15,28 +15,25 @@
  *  limitations under the License.
  */
 
-package org.ehrbase.client.introspect;
+package org.ehrbase.client.classgenerator.config;
 
-public class TermDefinition {
-    private final String code;
-    private final String value;
-    private final String description;
+import com.nedap.archie.rm.datavalues.DvURI;
 
-    public TermDefinition(String code, String value, String description) {
-        this.code = code;
-        this.value = value;
-        this.description = description;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+public class DvUriClassGeneratorConfig implements RmClassGeneratorConfig {
+    private static final Set<String> FIELDS = Stream.of("value").collect(Collectors.toSet());
+
+    @Override
+    public Class getRMClass() {
+        return DvURI.class;
     }
 
-    public String getCode() {
-        return code;
-    }
 
-    public String getValue() {
-        return value;
-    }
-
-    public String getDescription() {
-        return description;
+    @Override
+    public Set<String> getExpandFields() {
+        return FIELDS;
     }
 }

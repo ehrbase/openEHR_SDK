@@ -19,25 +19,20 @@ package org.ehrbase.client.classgenerator.config;
 
 import com.nedap.archie.rm.generic.PartyProxy;
 
+import java.util.Collections;
 import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class PartyProxyClassGeneratorConfig implements RmClassGeneratorConfig {
-    private static final Set<String> FIELDS = Stream.of("externalRef").collect(Collectors.toSet());
+
 
     @Override
     public Class getRMClass() {
         return PartyProxy.class;
     }
 
-    @Override
-    public boolean idExpandField() {
-        return true;
-    }
 
     @Override
     public Set<String> getExpandFields() {
-        return FIELDS;
+        return Collections.emptySet();
     }
 }

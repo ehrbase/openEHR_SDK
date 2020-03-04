@@ -19,7 +19,7 @@ package org.ehrbase.client.flattener;
 
 import org.apache.commons.lang3.StringUtils;
 
-class PathExtractor {
+public class PathExtractor {
     private String childPath;
     private String attributeName;
     private String parentPath;
@@ -56,15 +56,13 @@ class PathExtractor {
 
 
         int i = childPath.lastIndexOf('/');
-        if (i < 0 || i == childPath.length()) {
-            throw new IllegalArgumentException(
-                    "invalid path for setting value: " + childPath);
-        }
+
         parentPath = "/";
         if (i > 0) {
             parentPath = childPath.substring(0, i);
         }
         childName = childPath.substring(i + 1);
         childName = StringUtils.substringBefore(childName, "[");
+
     }
 }

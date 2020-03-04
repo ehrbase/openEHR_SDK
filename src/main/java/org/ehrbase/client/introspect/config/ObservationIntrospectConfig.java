@@ -19,10 +19,7 @@ package org.ehrbase.client.introspect.config;
 
 import com.nedap.archie.rm.composition.Observation;
 
-import java.util.Collections;
-import java.util.Set;
-
-public class ObservationIntrospectConfig implements RmIntrospectConfig {
+public class ObservationIntrospectConfig extends CareEntryIntrospectConfig implements RmIntrospectConfig {
 
 
     @Override
@@ -30,8 +27,5 @@ public class ObservationIntrospectConfig implements RmIntrospectConfig {
         return Observation.class;
     }
 
-    @Override
-    public Set<String> getNonTemplateFields() {
-        return Collections.emptySet();
-    }
+
 }

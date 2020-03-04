@@ -36,6 +36,8 @@ public interface OpenEhrClient {
      */
     CompositionEndpoint compositionEndpoint(UUID ehrId);
 
+    FolderDAO folder(UUID ehrId, String path);
+
     /**
      * Get the {@link TemplateEndpoint}
      *

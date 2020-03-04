@@ -19,18 +19,43 @@ package org.ehrbase.client.flattener;
 
 import com.nedap.archie.rm.RMObject;
 import com.nedap.archie.rm.archetyped.Locatable;
-import com.nedap.archie.rm.datatypes.CodePhrase;
-import com.nedap.archie.rm.support.identification.TerminologyId;
-import org.ehrbase.client.classgenerator.EhrbaseBloodPressureSimpleDeV0;
+import com.nedap.archie.rm.composition.Composition;
+import com.nedap.archie.rm.generic.PartyIdentified;
+import com.nedap.archie.rm.generic.PartySelf;
+import org.apache.commons.io.IOUtils;
+import org.assertj.core.groups.Tuple;
+import org.ehrbase.client.TestData;
+import org.ehrbase.client.classgenerator.examples.alternativeeventscomposition.AlternativeEventsComposition;
+import org.ehrbase.client.classgenerator.examples.alternativeeventscomposition.definition.KorpergewichtAnyEventEnIntervalEvent;
+import org.ehrbase.client.classgenerator.examples.alternativeeventscomposition.definition.KorpergewichtAnyEventEnPointEvent;
+import org.ehrbase.client.classgenerator.examples.alternativeeventscomposition.definition.KorpergewichtBirthEnEvent;
+import org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev0composition.EhrbaseBloodPressureSimpleDeV0Composition;
+import org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev0composition.definition.KorotkoffSoundsDefiningcode;
+import org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1composition.EhrbaseMultiOccurrenceDeV1Composition;
+import org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1composition.definition.*;
+import org.ehrbase.client.classgenerator.examples.episodeofcarecomposition.EpisodeOfCareComposition;
+import org.ehrbase.client.classgenerator.examples.episodeofcarecomposition.definition.EpisodeofcareAdminEntry;
+import org.ehrbase.client.classgenerator.examples.episodeofcarecomposition.definition.EpisodeofcareTeamElement;
+import org.ehrbase.client.classgenerator.examples.shareddefinition.MathFunctionDefiningcode;
+import org.ehrbase.client.classgenerator.examples.testalltypesenv1composition.TestAllTypesEnV1Composition;
+import org.ehrbase.client.classgenerator.examples.testalltypesenv1composition.definition.ChoiceDvcount;
+import org.ehrbase.client.templateprovider.TestDataTemplateProvider;
+import org.ehrbase.serialisation.CanonicalXML;
+import org.ehrbase.test_data.composition.CompositionTestDataCanonicalXML;
 import org.junit.Test;
 
-import java.time.LocalDateTime;
+import java.io.IOException;
+import java.net.URI;
+import java.nio.charset.StandardCharsets;
+import java.time.Duration;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.ehrbase.client.TestData.buildAlternativeEventsComposition;
+import static org.ehrbase.client.TestData.buildEpisodeOfCareComposition;
 
 public class FlattenerTest {
 
@@ -38,7 +63,7 @@ public class FlattenerTest {
     @Test
     public void testFlatten() {
         Flattener cut = new Flattener();
-        BloodpressureListDe bloodpressureListDe = buildExampleBloodpressureListDe();
+        BloodpressureListDe bloodpressureListDe = TestData.buildExampleBloodpressureListDe();
 
         RMObject rmObject = new Unflattener(new TestDataTemplateProvider()).unflatten(bloodpressureListDe);
 
@@ -54,60 +79,111 @@ public class FlattenerTest {
     @Test
     public void testFlattenEhrbaseBloodPressureSimpleDeV0() {
         Flattener cut = new Flattener();
-        EhrbaseBloodPressureSimpleDeV0 bloodPressureSimpleDeV0 = buildEhrbaseBloodPressureSimpleDeV0();
+        EhrbaseBloodPressureSimpleDeV0Composition bloodPressureSimpleDeV0 = TestData.buildEhrbaseBloodPressureSimpleDeV0();
         RMObject rmObject = new Unflattener(new TestDataTemplateProvider()).unflatten(bloodPressureSimpleDeV0);
 
-        EhrbaseBloodPressureSimpleDeV0 expected = cut.flatten((Locatable) rmObject, EhrbaseBloodPressureSimpleDeV0.class);
+        EhrbaseBloodPressureSimpleDeV0Composition actual = cut.flatten((Locatable) rmObject, EhrbaseBloodPressureSimpleDeV0Composition.class);
 
-        assertThat(expected).isNotNull();
-        assertThat(expected.getBloodPressureTrainingSample()).size().isEqualTo(1);
-        assertThat(expected.getBloodPressureTrainingSample().get(0).getSystolicMagnitude()).isEqualTo(22d);
-        assertThat(expected.getBloodPressureTrainingSample().get(0).getSystolicUnits()).isEqualTo("mm[Hg]");
-        assertThat(expected.getBloodPressureTrainingSample().get(0).getKorotkoffSounds()).isEqualTo(EhrbaseBloodPressureSimpleDeV0.BloodPressureTrainingSample.KorotkoffSounds.FIFTHSOUND);
+        assertThat(actual).isNotNull();
+
+        assertThat(actual.getComposer()).isNotNull().extracting(Object::getClass).isEqualTo(PartyIdentified.class);
+
+        PartyIdentified composer = (PartyIdentified) actual.getComposer();
+        assertThat(composer.getName()).isEqualTo("Test");
+        assertThat(actual.getParticipations()).extracting(
+                p -> ((PartyIdentified) p.getPerformer()).getName(),
+                p -> p.getFunction().getValue()
+        )
+                .containsExactlyInAnyOrder(
+                        new Tuple("Test", "Pos1"),
+                        new Tuple("Test2", "Pos2")
+                );
+
+        assertThat(actual.getBloodPressureTrainingSample()).size().isEqualTo(1);
+        assertThat(actual.getBloodPressureTrainingSample().get(0).getSubject()).isNotNull().extracting(Object::getClass).isEqualTo(PartySelf.class);
+        assertThat(actual.getBloodPressureTrainingSample().get(0).getSystolicMagnitude()).isEqualTo(22d);
+        assertThat(actual.getBloodPressureTrainingSample().get(0).getSystolicUnits()).isEqualTo("mm[Hg]");
+        assertThat(actual.getBloodPressureTrainingSample().get(0).getKorotkoffSoundsDefiningcode()).isEqualTo(KorotkoffSoundsDefiningcode.FIFTHSOUND);
 
     }
 
 
-    public static BloodpressureListDe buildExampleBloodpressureListDe() {
-        BloodpressureListDe dto = new BloodpressureListDe();
-        OffsetDateTime startTime = OffsetDateTime.of(2019, 9, 10, 12, 0, 0, 0, ZoneOffset.ofHours(2));
-        dto.setStartTime(startTime);
-        List<BloodpressureListDe.Bloodpressure> bloodpressureList = new ArrayList<>();
+    @Test
+    public void testFlattenEhrbaseMultiOccurrenceDeV1() {
+        Flattener cut = new Flattener();
+        EhrbaseMultiOccurrenceDeV1Composition bloodPressureSimpleDeV0 = TestData.buildEhrbaseMultiOccurrenceDeV1();
+        RMObject rmObject = new Unflattener(new TestDataTemplateProvider()).unflatten(bloodPressureSimpleDeV0);
 
-        BloodpressureListDe.Bloodpressure bloodpressure1 = new BloodpressureListDe.Bloodpressure();
-        bloodpressure1.setSystolischValue(12d);
-        bloodpressureList.add(bloodpressure1);
+        EhrbaseMultiOccurrenceDeV1Composition actual = cut.flatten((Locatable) rmObject, EhrbaseMultiOccurrenceDeV1Composition.class);
 
-        BloodpressureListDe.Bloodpressure bloodpressure2 = new BloodpressureListDe.Bloodpressure();
-        bloodpressure2.setSystolischValue(22d);
-        bloodpressureList.add(bloodpressure2);
+        assertThat(actual).isNotNull();
+        assertThat(actual.getBodyTemperature()).size().isEqualTo(2);
+        BodyTemperatureObservation bodyTemperature1 = actual.getBodyTemperature().get(0);
+        assertThat(bodyTemperature1.getAnyEvent())
+                .extracting(e -> ((BodyTemperatureAnyEventPointEvent) e).getTemperatureMagnitude())
+                .containsExactlyInAnyOrder(11d, 22d);
 
-        dto.setBloodpressures(bloodpressureList);
-        return dto;
+        BodyTemperatureLocationOfMeasurementChoice locationOfMeasurement1 = bodyTemperature1.getLocationOfMeasurement();
+        assertThat(locationOfMeasurement1.getClass()).isEqualTo(BodyTemperatureLocationOfMeasurementDvcodedtext.class);
+        assertThat(((BodyTemperatureLocationOfMeasurementDvcodedtext) locationOfMeasurement1).getLocationOfMeasurementDefiningcode()).isEqualTo(LocationOfMeasurementDefiningcode.FOREHEAD);
+
+        BodyTemperatureObservation bodyTemperature2 = actual.getBodyTemperature().get(1);
+        BodyTemperatureLocationOfMeasurementChoice locationOfMeasurement2 = bodyTemperature2.getLocationOfMeasurement();
+        assertThat(locationOfMeasurement2.getClass()).isEqualTo(BodyTemperatureLocationOfMeasurementDvtext.class);
+        assertThat(((BodyTemperatureLocationOfMeasurementDvtext) locationOfMeasurement2).getLocationOfMeasurementValue()).isEqualTo("location");
+
     }
 
-    public static EhrbaseBloodPressureSimpleDeV0 buildEhrbaseBloodPressureSimpleDeV0() {
-        EhrbaseBloodPressureSimpleDeV0 bloodPressureSimpleDeV0 = new EhrbaseBloodPressureSimpleDeV0();
-        bloodPressureSimpleDeV0.setStartTimeValue(LocalDateTime.now());
-        bloodPressureSimpleDeV0.setEndTimeValue(LocalDateTime.now());
-        bloodPressureSimpleDeV0.setBloodPressureTrainingSample(new ArrayList<>());
-        bloodPressureSimpleDeV0.setLanguage(new CodePhrase(new TerminologyId("ISO_639-1"), "de"));
-        bloodPressureSimpleDeV0.setTerritory(new CodePhrase(new TerminologyId("ISO_3166-1"), "UY"));
-        bloodPressureSimpleDeV0.setSettingDefiningcode(new CodePhrase(new TerminologyId("openehr"), "229"));
+    @Test
+    public void testFlattenAllTypes() throws IOException {
+        Composition composition = new CanonicalXML().unmarshal(IOUtils.toString(CompositionTestDataCanonicalXML.ALL_TYPES.getStream(), StandardCharsets.UTF_8), Composition.class);
+        Flattener cut = new Flattener();
+        TestAllTypesEnV1Composition actual = cut.flatten(composition, TestAllTypesEnV1Composition.class);
+        assertThat(actual).isNotNull();
+        assertThat(actual.getTestAllTypes().get(0).getChoice().getClass()).isEqualTo(ChoiceDvcount.class);
+        assertThat(((ChoiceDvcount) actual.getTestAllTypes().get(0).getChoice()).getChoiceMagnitude()).isEqualTo(148L);
+    }
 
-        EhrbaseBloodPressureSimpleDeV0.BloodPressureTrainingSample bloodPressureTrainingSample = new EhrbaseBloodPressureSimpleDeV0.BloodPressureTrainingSample();
-        bloodPressureTrainingSample.setSystolicMagnitude(22d);
-        bloodPressureTrainingSample.setSystolicUnits("mm[Hg]");
-        bloodPressureTrainingSample.setDiastolicMagnitude(22d);
-        bloodPressureTrainingSample.setDiastolicUnits("mm[Hg]");
-        bloodPressureTrainingSample.setMeanArterialPressureMagnitude(22d);
-        bloodPressureTrainingSample.setMeanArterialPressureUnits("mm[Hg]");
-        bloodPressureTrainingSample.setPulsePressureMagnitude(22d);
-        bloodPressureTrainingSample.setPulsePressureUnits("mm[Hg]");
-        bloodPressureTrainingSample.setKorotkoffSounds(EhrbaseBloodPressureSimpleDeV0.BloodPressureTrainingSample.KorotkoffSounds.FIFTHSOUND);
-        bloodPressureTrainingSample.setCuffSize(EhrbaseBloodPressureSimpleDeV0.BloodPressureTrainingSample.CuffSize.ADULT);
-        bloodPressureTrainingSample.setLocationOfMeasurement(EhrbaseBloodPressureSimpleDeV0.BloodPressureTrainingSample.LocationOfMeasurement.FINGER);
-        bloodPressureSimpleDeV0.getBloodPressureTrainingSample().add(bloodPressureTrainingSample);
-        return bloodPressureSimpleDeV0;
+    @Test
+    public void TestFlattenAltEvents() {
+        Composition composition = (Composition) new Unflattener(new TestDataTemplateProvider()).unflatten(buildAlternativeEventsComposition());
+        Flattener cut = new Flattener();
+        AlternativeEventsComposition actual = cut.flatten(composition, AlternativeEventsComposition.class);
+        assertThat(actual).isNotNull();
+        assertThat(actual.getKorpergewicht()).size().isEqualTo(1);
+        KorpergewichtBirthEnEvent birthEn = actual.getKorpergewicht().get(0).getBirthEn();
+        assertThat(birthEn.getTimeValue()).isEqualTo(OffsetDateTime.of(1990, 11, 2, 12, 0, 0, 0, ZoneOffset.UTC));
+        assertThat(birthEn.getGewichtMagnitude()).isEqualTo(30d);
+        assertThat(birthEn.getGewichtUnits()).isEqualTo("kg");
+
+        List<KorpergewichtAnyEventEnPointEvent> eventEnPointEvents = actual.getKorpergewicht().get(0).getAnyEventEn().stream().filter(e -> KorpergewichtAnyEventEnPointEvent.class.isAssignableFrom(e.getClass())).map(e -> (KorpergewichtAnyEventEnPointEvent) e).collect(Collectors.toList());
+        assertThat(eventEnPointEvents).size().isEqualTo(1);
+        assertThat(eventEnPointEvents.get(0).getTimeValue()).isEqualTo(OffsetDateTime.of(2013, 11, 2, 12, 0, 0, 0, ZoneOffset.UTC));
+        assertThat(eventEnPointEvents.get(0).getGewichtMagnitude()).isEqualTo(55d);
+        assertThat(eventEnPointEvents.get(0).getGewichtUnits()).isEqualTo("kg");
+
+
+        List<KorpergewichtAnyEventEnIntervalEvent> anyEventEnIntervalEvents = actual.getKorpergewicht().get(0).getAnyEventEn().stream().filter(e -> KorpergewichtAnyEventEnIntervalEvent.class.isAssignableFrom(e.getClass())).map(e -> (KorpergewichtAnyEventEnIntervalEvent) e).collect(Collectors.toList());
+        assertThat(eventEnPointEvents).size().isEqualTo(1);
+        assertThat(anyEventEnIntervalEvents.get(0).getTimeValue()).isEqualTo(OffsetDateTime.of(2015, 11, 2, 12, 0, 0, 0, ZoneOffset.UTC));
+        assertThat(anyEventEnIntervalEvents.get(0).getGewichtMagnitude()).isEqualTo(60d);
+        assertThat(anyEventEnIntervalEvents.get(0).getGewichtUnits()).isEqualTo("kg");
+        assertThat(anyEventEnIntervalEvents.get(0).getMathFunctionDefiningcode()).isEqualTo(MathFunctionDefiningcode.MEAN);
+        assertThat(anyEventEnIntervalEvents.get(0).getWidthValue()).isEqualTo(Duration.ofDays(30));
+    }
+
+    @Test
+    public void testFlattenEpisodeOfCare() {
+        Composition composition = (Composition) new Unflattener(new TestDataTemplateProvider()).unflatten(buildEpisodeOfCareComposition());
+        Flattener cut = new Flattener();
+        EpisodeOfCareComposition actual = cut.flatten(composition, EpisodeOfCareComposition.class);
+        assertThat(actual).isNotNull();
+        assertThat(actual.getEpisodeofcare()).size().isEqualTo(1);
+        EpisodeofcareAdminEntry episodeofcareAdminEntry = actual.getEpisodeofcare().get(0);
+
+        assertThat(episodeofcareAdminEntry.getIdentifier()).extracting(e -> e.getValue().getId()).containsExactlyInAnyOrder("123", "456");
+
+        assertThat(episodeofcareAdminEntry.getTeam()).extracting(EpisodeofcareTeamElement::getValue).containsExactlyInAnyOrder(URI.create("https://github.com/ehrbase"));
+
     }
 }

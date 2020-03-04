@@ -18,35 +18,32 @@
 package org.ehrbase.client.introspect.node;
 
 import java.util.Map;
+import java.util.Objects;
 
-public class ArchetypeNode implements Node {
+public class ArchetypeNode extends EntityNode {
 
-    private final String name;
     private final String archetypeId;
-    private final Map<String, Node> children;
-    private final boolean multi;
 
-    public ArchetypeNode(String name, String archetypeId, Map<String, Node> children, boolean multi) {
-        this.name = name;
+    public ArchetypeNode(String name, String archetypeId, Map<String, Node> children, boolean multi, String rmName) {
+        super(name, multi, rmName, children);
         this.archetypeId = archetypeId;
-        this.children = children;
-        this.multi = multi;
-    }
-
-    @Override
-    public String getName() {
-        return name;
-    }
-
-    public Map<String, Node> getChildren() {
-        return children;
     }
 
     public String getArchetypeId() {
         return archetypeId;
     }
 
-    public boolean isMulti() {
-        return multi;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        ArchetypeNode that = (ArchetypeNode) o;
+        return Objects.equals(archetypeId, that.archetypeId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), archetypeId);
     }
 }

@@ -17,27 +17,38 @@
 
 package org.ehrbase.client.introspect.node;
 
-import org.ehrbase.client.introspect.TermDefinition;
+import org.ehrbase.client.terminology.ValueSet;
 
-import java.util.Collections;
-import java.util.Set;
+import java.util.Objects;
+
+import static org.ehrbase.client.terminology.ValueSet.EMPTY_VALUE_SET;
 
 public class EndNode implements Node {
 
     private final Class clazz;
     private final String name;
-    private final Set<TermDefinition> valueSet;
+    private final ValueSet valueSet;
+    private final boolean multi;
 
     public EndNode(Class clazz, String name) {
         this.clazz = clazz;
         this.name = name;
-        this.valueSet = Collections.emptySet();
+        this.valueSet = EMPTY_VALUE_SET;
+        this.multi = false;
     }
 
-    public EndNode(Class clazz, String name, Set<TermDefinition> valuset) {
+    public EndNode(Class clazz, String name, ValueSet valuset) {
         this.clazz = clazz;
         this.name = name;
         this.valueSet = valuset;
+        this.multi = false;
+    }
+
+    public EndNode(Class clazz, String name, ValueSet valueSet, boolean multi) {
+        this.clazz = clazz;
+        this.name = name;
+        this.valueSet = valueSet;
+        this.multi = multi;
     }
 
     public Class getClazz() {
@@ -48,7 +59,27 @@ public class EndNode implements Node {
         return name;
     }
 
-    public Set<TermDefinition> getValuset() {
+    public ValueSet getValuset() {
         return valueSet;
+    }
+
+    public boolean isMulti() {
+        return multi;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        EndNode endNode = (EndNode) o;
+        return multi == endNode.multi &&
+                Objects.equals(clazz, endNode.clazz) &&
+                Objects.equals(name, endNode.name) &&
+                Objects.equals(valueSet, endNode.valueSet);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(clazz, name, valueSet, multi);
     }
 }

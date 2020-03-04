@@ -22,9 +22,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.google.common.net.HttpHeaders;
 import com.nedap.archie.rm.RMObject;
+import com.nedap.archie.rm.archetyped.Locatable;
 import com.nedap.archie.rm.composition.Composition;
+import com.nedap.archie.rm.datastructures.ItemStructure;
+import com.nedap.archie.rm.datavalues.DvText;
+import com.nedap.archie.rm.directory.Folder;
 import com.nedap.archie.rm.ehr.EhrStatus;
 import com.nedap.archie.rm.support.identification.HierObjectId;
+import com.nedap.archie.rm.support.identification.ObjectRef;
+import com.nedap.archie.rm.support.identification.UIDBasedId;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.http.Header;
 import org.apache.http.HttpResponse;
@@ -32,20 +38,20 @@ import org.apache.http.HttpStatus;
 import org.apache.http.client.fluent.Request;
 import org.apache.http.entity.ContentType;
 import org.apache.http.util.EntityUtils;
-import org.ehrbase.api.mapper.RmObjektJsonDeSerializer;
+import org.ehrbase.api.mapper.RmObjectJsonDeSerializer;
 import org.ehrbase.client.exception.ClientException;
+import org.ehrbase.client.exception.OptimisticLockException;
 import org.ehrbase.client.exception.WrongStatusCodeException;
-import org.ehrbase.client.flattener.TemplateProvider;
-import org.ehrbase.client.openehrclient.CompositionEndpoint;
-import org.ehrbase.client.openehrclient.OpenEhrClient;
-import org.ehrbase.client.openehrclient.OpenEhrClientConfig;
-import org.ehrbase.client.openehrclient.TemplateEndpoint;
+import org.ehrbase.client.openehrclient.*;
+import org.ehrbase.client.templateprovider.TemplateProvider;
 import org.ehrbase.serialisation.CanonicalJson;
 
 import java.io.IOException;
 import java.net.URI;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.WeakHashMap;
 
 public class DefaultRestClient implements OpenEhrClient {
 
@@ -54,6 +60,7 @@ public class DefaultRestClient implements OpenEhrClient {
     private final OpenEhrClientConfig config;
     private final TemplateProvider templateProvider;
     private final DefaultRestEhrEndpoint defaultRestEhrEndpoint;
+    private final Map<UUID, DefaultRestDirectoryEndpoint> directoryEndpointMap = new WeakHashMap<>();
 
 
     public DefaultRestClient(OpenEhrClientConfig config, TemplateProvider templateProvider) {
@@ -67,9 +74,14 @@ public class DefaultRestClient implements OpenEhrClient {
         ObjectMapper objectMapper = new ObjectMapper();
         SimpleModule module =
                 new SimpleModule("openEHR", new Version(1, 0, 0, null, null, null));
-        module.addDeserializer(EhrStatus.class, new RmObjektJsonDeSerializer());
-        module.addDeserializer(HierObjectId.class, new RmObjektJsonDeSerializer());
-        module.addDeserializer(Composition.class, new RmObjektJsonDeSerializer());
+        module.addDeserializer(EhrStatus.class, new RmObjectJsonDeSerializer());
+        module.addDeserializer(HierObjectId.class, new RmObjectJsonDeSerializer());
+        module.addDeserializer(Composition.class, new RmObjectJsonDeSerializer());
+        module.addDeserializer(Folder.class, new RmObjectJsonDeSerializer());
+        module.addDeserializer(UIDBasedId.class, new RmObjectJsonDeSerializer());
+        module.addDeserializer(DvText.class, new RmObjectJsonDeSerializer());
+        module.addDeserializer(ObjectRef.class, new RmObjectJsonDeSerializer());
+        module.addDeserializer(ItemStructure.class, new RmObjectJsonDeSerializer());
         objectMapper.registerModule(module);
         return objectMapper;
     }
@@ -95,33 +107,42 @@ public class DefaultRestClient implements OpenEhrClient {
     }
 
     @Override
+    public FolderDAO folder(UUID ehrId, String path) {
+        return directoryEndpointMap.computeIfAbsent(ehrId, k -> new DefaultRestDirectoryEndpoint(this, k)).getFolder(path);
+    }
+
+    @Override
     public TemplateEndpoint templateEndpoint() {
         return new DefaultRestTemplateEndpoint(this);
     }
 
-    static UUID httpPost(URI uri, RMObject body) {
+    static VersionUid httpPost(URI uri, RMObject body) {
         try {
             HttpResponse response = Request.Post(uri)
                     .addHeader(HttpHeaders.ACCEPT, ContentType.APPLICATION_JSON.toString())
                     .bodyString(new CanonicalJson().marshal(body), ContentType.APPLICATION_JSON)
                     .execute().returnResponse();
             checkStatus(response, HttpStatus.SC_OK, HttpStatus.SC_CREATED, HttpStatus.SC_NO_CONTENT);
-            Header location = response.getFirstHeader(HttpHeaders.LOCATION);
-            return UUID.fromString(location.getValue().substring(location.getValue().lastIndexOf('/') + 1));
+            Header eTag = response.getFirstHeader(HttpHeaders.ETAG);
+            return new VersionUid(eTag.getValue().replace("\"", ""));
         } catch (IOException e) {
             throw new ClientException(e.getMessage(), e);
         }
     }
 
-    static UUID httpPut(URI uri, RMObject body) {
+    static VersionUid httpPut(URI uri, Locatable body, VersionUid versionUid) {
         try {
             HttpResponse response = Request.Put(uri)
                     .addHeader(HttpHeaders.ACCEPT, ContentType.APPLICATION_JSON.toString())
+                    .addHeader(HttpHeaders.IF_MATCH, versionUid.toString())
                     .bodyString(new CanonicalJson().marshal(body), ContentType.APPLICATION_JSON)
                     .execute().returnResponse();
-            checkStatus(response, HttpStatus.SC_OK, HttpStatus.SC_NO_CONTENT);
-            Header location = response.getFirstHeader(HttpHeaders.LOCATION);
-            return UUID.fromString(location.getValue().substring(location.getValue().lastIndexOf('/') + 1));
+            checkStatus(response, HttpStatus.SC_OK, HttpStatus.SC_NO_CONTENT, HttpStatus.SC_PRECONDITION_FAILED);
+            if (HttpStatus.SC_PRECONDITION_FAILED == response.getStatusLine().getStatusCode()) {
+                throw new OptimisticLockException("Entity outdated");
+            }
+            Header eTag = response.getFirstHeader(HttpHeaders.ETAG);
+            return new VersionUid(eTag.getValue().replace("\"", ""));
         } catch (IOException e) {
             throw new ClientException(e.getMessage(), e);
         }

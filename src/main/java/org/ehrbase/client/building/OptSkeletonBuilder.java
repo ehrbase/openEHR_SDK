@@ -27,11 +27,17 @@ import com.nedap.archie.rm.archetyped.Archetyped;
 import com.nedap.archie.rm.archetyped.Pathable;
 import com.nedap.archie.rm.archetyped.TemplateId;
 import com.nedap.archie.rm.composition.Composition;
+import com.nedap.archie.rm.composition.Entry;
+import com.nedap.archie.rm.composition.EventContext;
 import com.nedap.archie.rm.datatypes.CodePhrase;
 import com.nedap.archie.rm.datavalues.DvCodedText;
 import com.nedap.archie.rm.datavalues.DvText;
+import com.nedap.archie.rm.datavalues.quantity.datetime.DvDateTime;
+import com.nedap.archie.rm.generic.Participation;
 import com.nedap.archie.rm.generic.PartyIdentified;
 import com.nedap.archie.rm.generic.PartyProxy;
+import com.nedap.archie.rm.support.identification.ArchetypeID;
+import com.nedap.archie.rm.support.identification.TerminologyId;
 import com.nedap.archie.rminfo.ArchieRMInfoLookup;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.apache.xmlbeans.XmlObject;
@@ -39,12 +45,17 @@ import org.ehrbase.client.building.rmobjektskeletonbuilder.RmObjektSkeletonBuild
 import org.ehrbase.client.introspect.TemplateIntrospect;
 import org.ehrbase.client.introspect.config.RmIntrospectConfig;
 import org.ehrbase.ehr.encode.wrappers.SnakeCase;
+import org.ehrbase.terminology.openehr.implementation.LocalizedTerminologies;
 import org.openehr.schemas.v1.*;
+import org.reflections.ReflectionUtils;
 import org.reflections.Reflections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -52,6 +63,15 @@ public class OptSkeletonBuilder {
 
     private static final ArchieRMInfoLookup RM_INFO_LOOKUP = ArchieRMInfoLookup.getInstance();
     private static final RMObjectCreator RM_CREATOR = new RMObjectCreator(RM_INFO_LOOKUP);
+    private static final LocalizedTerminologies LOCALIZED_TERMINOLOGIES;
+
+    static {
+        try {
+            LOCALIZED_TERMINOLOGIES = new LocalizedTerminologies();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     private final Logger log = LoggerFactory.getLogger(getClass());
     private final Map<Class, RmIntrospectConfig> configMap;
@@ -80,14 +100,14 @@ public class OptSkeletonBuilder {
 
     private Object buildSkeletonForTerminalRmObjekts(XmlObject cpo) {
 
-        return builderMap
+        RmObjektSkeletonBuilder rmObjektSkeletonBuilder = builderMap
                 .entrySet()
                 .stream()
                 .filter(e -> e.getKey().isAssignableFrom(cpo.getClass()))
                 .findAny()
                 .map(Map.Entry::getValue)
-                .map(b -> b.getRmObjekt(cpo))
                 .orElseThrow(() -> new RuntimeException(String.format("No builder for {%s}", cpo.getClass())));
+        return rmObjektSkeletonBuilder.getRmObjekt(cpo);
     }
 
 
@@ -162,7 +182,7 @@ public class OptSkeletonBuilder {
             String pathloop = path + TemplateIntrospect.PATH_DIVIDER + attr.getRmAttributeName();
             COBJECT[] children = attr.getChildrenArray();
             String attrName = attr.getRmAttributeName();
-            if (attr instanceof CSINGLEATTRIBUTE) {
+            if (attr instanceof CSINGLEATTRIBUTE && !"/name".equals(pathloop)) {
                 if (children != null && children.length > 0) {
                     try {
                         COBJECT cobj = children[0];
@@ -210,12 +230,13 @@ public class OptSkeletonBuilder {
             rmTypeName = "POINT_EVENT";
         }
 
-        Class rmClass = RM_INFO_LOOKUP.getClass(ccobj.getRmTypeName());
+        Class<?> rmClass = RM_INFO_LOOKUP.getClass(ccobj.getRmTypeName());
 
         if (Pathable.class.isAssignableFrom(rmClass)) {
 
             handelNonTemplateFields(rmClass, valueMap);
         }
+
 
         Object obj;
         try {
@@ -231,7 +252,7 @@ public class OptSkeletonBuilder {
         return obj;
     }
 
-    private void handelNonTemplateFields(Class rmClass, Map<String, Object> valueMap) {
+    private void handelNonTemplateFields(Class<?> rmClass, Map<String, Object> valueMap) {
         RmIntrospectConfig introspectConfig = configMap.get(rmClass);
 
         if (introspectConfig != null) {
@@ -243,6 +264,10 @@ public class OptSkeletonBuilder {
                             Object value;
                             if (f.getType().equals(PartyProxy.class)) {
                                 value = new PartyIdentified();
+                            } else if (List.class.isAssignableFrom(f.getType())) {
+                                value = new ArrayList<>();
+                                Class unwarap = unwarap(f);
+                                ((List) value).add(unwarap.getConstructor().newInstance());
                             } else {
                                 value = f.getType().getConstructor().newInstance();
                             }
@@ -255,6 +280,16 @@ public class OptSkeletonBuilder {
         } else {
             log.debug("No RmIntrospectConfig for {}", rmClass);
 
+        }
+    }
+
+    public Class unwarap(Field field) {
+        if (List.class.isAssignableFrom(field.getType())) {
+            Type actualTypeArgument = ((ParameterizedType) field.getGenericType()).getActualTypeArguments()[0];
+
+            return ReflectionUtils.forName(actualTypeArgument.getTypeName(), this.getClass().getClassLoader());
+        } else {
+            return field.getType();
         }
     }
 
@@ -275,22 +310,52 @@ public class OptSkeletonBuilder {
                 log.warn(e2.getMessage());
             }
         }
+
+        if (obj instanceof Entry) {
+            ((Entry) obj).setEncoding(new CodePhrase(new TerminologyId("IANA_character-sets"), "UTF-8"));
+        }
         if (obj instanceof Composition) {
             Archetyped archetypeDetails = new Archetyped();
             archetypeDetails.setTemplateId(new TemplateId());
             archetypeDetails.getTemplateId().setValue(opt.getTemplateId().getValue());
+            archetypeDetails.setRmVersion("1.0.4");
+            archetypeDetails.setArchetypeId(new ArchetypeID(((Composition) obj).getArchetypeNodeId()));
+
             ((Composition) obj).setArchetypeDetails(archetypeDetails);
-        } else if (obj instanceof DvCodedText) {
+
+            if (((Composition) obj).getContext() == null) {
+                EventContext context = new EventContext();
+                context.setEndTime(new DvDateTime());
+                context.setStartTime(new DvDateTime());
+                context.setHealthCareFacility(new PartyIdentified(null, null, new ArrayList<>()));
+                context.setParticipations(new ArrayList<>());
+                context.getParticipations().add(new Participation());
+                context.setSetting(new DvCodedText());
+                ((Composition) obj).setContext(context);
+
+            }
+        }
+
+        if (obj instanceof DvCodedText) {
             DvCodedText dvCodedText = (DvCodedText) obj;
-            String value = Optional.ofNullable(valueMap.get("defining_code"))
-                    .map(o -> (CodePhrase) o)
+            Optional<CodePhrase> defining_code = Optional.ofNullable(valueMap.get("defining_code"))
+                    .map(o -> (CodePhrase) o);
+            String value = defining_code
                     .map(CodePhrase::getCodeString)
                     .map(termDef::get)
-                    .orElse("");
+                    .orElse(defining_code
+                            .map(this::findByTerminologie).orElse(null));
             dvCodedText.setValue(value);
         }
     }
 
+    public String findByTerminologie(CodePhrase codePhrase) {
+        try {
+            return LOCALIZED_TERMINOLOGIES.getDefault().terminology(codePhrase.getTerminologyId().getValue()).rubricForCode(codePhrase.getCodeString(), "en");
+        } catch (RuntimeException e) {
+            return null;
+        }
+    }
 
     private void addNodeId(CCOMPLEXOBJECT ccobj, Map<String, String> termDef, Map<String, Object> valueMap) {
 

@@ -17,9 +17,12 @@
 
 package org.ehrbase.client.flattener;
 
+import com.nedap.archie.rm.RMObject;
 import com.nedap.archie.rm.archetyped.Locatable;
 import com.nedap.archie.rm.datastructures.Element;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.CaseUtils;
+import org.ehrbase.client.exception.ClientException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,15 +35,25 @@ class ItemExtractor {
 
     private Logger logger = LoggerFactory.getLogger(ItemExtractor.class);
 
-    private Locatable locatable;
+    private boolean multi;
+
+    private RMObject rmObject;
     private String path;
     private String childName;
     private Object child;
     private Object parent;
 
-    public ItemExtractor(Locatable locatable, String path) {
-        this.locatable = locatable;
+    public ItemExtractor(RMObject rmObject, String path) {
+        this.rmObject = rmObject;
         this.path = path;
+        this.multi = false;
+        invoke();
+    }
+
+    public ItemExtractor(RMObject rmObject, String path, boolean multi) {
+        this.rmObject = rmObject;
+        this.path = path;
+        this.multi = multi;
         invoke();
     }
 
@@ -61,21 +74,33 @@ class ItemExtractor {
         String childPath = pathExtractor.getChildPath();
         String attributeName = pathExtractor.getAttributeName();
         String parentPath = pathExtractor.getParentPath();
-        childName = pathExtractor.getChildName();
-        child = locatable.itemsAtPath(childPath);
 
-        if (child == null || ((List) child).isEmpty()) {
-            child = locatable.itemAtPath(childPath);
-        }
+        if (StringUtils.isNotBlank(childPath)) {
+            childName = pathExtractor.getChildName();
+            //childPath not empty implies  rmObject is Locatable
+            if (!Locatable.class.isAssignableFrom(rmObject.getClass())) {
+                throw new ClientException(String.format("Locatable not assignable from %s", rmObject.getClass()));
+            }
+            Locatable locatable = (Locatable) this.rmObject;
+            child = locatable.itemsAtPath(childPath);
 
-        if (child instanceof List && ((List) child).size() == 1) {
-            child = ((List) child).get(0);
-        }
+            if (child == null || ((List) child).isEmpty()) {
+                child = locatable.itemAtPath(childPath);
+            }
 
-        if (child instanceof Element) {
-            child = ((Element) child).getValue();
+            if (!multi && child instanceof List && ((List) child).size() == 1) {
+                child = ((List) child).get(0);
+            }
+
+
+            if (child instanceof Element) {
+                child = ((Element) child).getValue();
+            }
+            parent = locatable.itemAtPath(parentPath);
+        } else {
+            // already at the right position
+            child = rmObject;
         }
-        parent = locatable.itemAtPath(parentPath);
 
         if (attributeName != null && child != null) {
             try {

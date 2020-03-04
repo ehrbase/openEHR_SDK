@@ -33,11 +33,6 @@ public class DvDateTimeClassGeneratorConfig implements RmClassGeneratorConfig {
     }
 
     @Override
-    public boolean idExpandField() {
-        return true;
-    }
-
-    @Override
     public Set<String> getExpandFields() {
         return FIELDS;
     }
