@@ -1,0 +1,110 @@
+/*
+ *
+ *  *  Copyright (c) 2020  Stefan Spiska (Vitasystems GmbH) and Hannover Medical School
+ *  *  This file is part of Project EHRbase
+ *  *
+ *  *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  *  you may not use this file except in compliance with the License.
+ *  *  You may obtain a copy of the License at
+ *  *
+ *  *  http://www.apache.org/licenses/LICENSE-2.0
+ *  *
+ *  *  Unless required by applicable law or agreed to in writing, software
+ *  *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  *  See the License for the specific language governing permissions and
+ *  *  limitations under the License.
+ *
+ */
+
+package org.ehrbase.client.openehrclient.defaultrestclient;
+
+import com.fasterxml.jackson.core.Version;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.google.common.net.HttpHeaders;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
+import org.apache.http.client.fluent.Request;
+import org.apache.http.entity.ContentType;
+import org.apache.http.util.EntityUtils;
+import org.ehrbase.client.aql.*;
+import org.ehrbase.client.exception.ClientException;
+import org.ehrbase.client.openehrclient.AqlEndpoint;
+import org.ehrbase.client.openehrclient.VersionUid;
+import org.ehrbase.serialisation.JacksonUtil;
+
+import java.io.IOException;
+import java.net.URI;
+import java.time.temporal.TemporalAccessor;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import static org.ehrbase.client.openehrclient.defaultrestclient.DefaultRestClient.OBJECT_MAPPER;
+import static org.ehrbase.client.openehrclient.defaultrestclient.DefaultRestClient.checkStatus;
+
+public class DefaultRestAqlEndpoint implements AqlEndpoint {
+    public static final String AQL_PATH = "/query/aql/";
+    private final DefaultRestClient defaultRestClient;
+
+    public DefaultRestAqlEndpoint(DefaultRestClient defaultRestClient) {
+        this.defaultRestClient = defaultRestClient;
+    }
+
+    @Override
+    public <T extends Record> List<T> execute(Query<T> query, ParameterValue... parameterValues) {
+        List<T> result = new ArrayList<>();
+        Map<String, String> qMap = new HashMap<>();
+        String aql = query.getAql();
+        for (ParameterValue v : parameterValues) {
+            aql = aql.replace(v.getParameter().getAqlParameter(), StringUtils.wrap(v.getValue().toString(), "'"));
+        }
+
+        qMap.put("q", aql);
+        URI uri = defaultRestClient.getConfig().getBaseUri().resolve("query/aql");
+        try {
+            HttpResponse response = Request.Post(uri)
+                    .addHeader(HttpHeaders.ACCEPT, ContentType.APPLICATION_JSON.toString())
+                    .bodyString(OBJECT_MAPPER.writeValueAsString(qMap), ContentType.APPLICATION_JSON)
+                    .execute().returnResponse();
+            checkStatus(response, HttpStatus.SC_OK, HttpStatus.SC_CREATED, HttpStatus.SC_NO_CONTENT);
+            String value = EntityUtils.toString(response.getEntity());
+            JsonObject asJsonObject = JsonParser.parseString(value).getAsJsonObject();
+            JsonArray rows = asJsonObject.get("rows").getAsJsonArray();
+            for (JsonElement jresult : rows) {
+                RecordImp record = new RecordImp(query.fields());
+                int i = 0;
+                for (Field<?> field : query.fields()) {
+                    String valueAsString = ((JsonArray) jresult).get(i).toString();
+                    Object object = buildAqlObjectMapper().readValue(valueAsString, field.getClazz());
+                    record.putValue(i, object);
+                    i++;
+                }
+                result.add((T) record);
+
+            }
+
+        } catch (IOException e) {
+            throw new ClientException(e.getMessage(), e);
+        }
+        return result;
+
+    }
+
+    private ObjectMapper buildAqlObjectMapper() {
+        ObjectMapper objectMapper = JacksonUtil.getObjectMapper();
+        SimpleModule module =
+                new SimpleModule("openEHR", new Version(1, 0, 0, null, null, null));
+        module.addDeserializer(VersionUid.class, new VersionUidDeSerializer());
+        module.addDeserializer(TemporalAccessor.class, new TemporalAccessorDeSerializer());
+        objectMapper.registerModule(module);
+        return objectMapper;
+    }
+}

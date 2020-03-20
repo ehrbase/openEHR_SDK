@@ -39,7 +39,7 @@ import static org.ehrbase.client.openehrclient.defaultrestclient.DefaultRestEhrE
 public class DefaultRestCompositionEndpoint implements CompositionEndpoint {
     public static final String COMPOSITION_PATH = "/composition/";
     private final DefaultRestClient defaultRestClient;
-    private UUID ehrId;
+    private final UUID ehrId;
 
     public DefaultRestCompositionEndpoint(DefaultRestClient defaultRestClient, UUID ehrId) {
         this.defaultRestClient = defaultRestClient;

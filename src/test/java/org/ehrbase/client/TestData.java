@@ -76,7 +76,7 @@ public class TestData {
 
     public static EhrbaseBloodPressureSimpleDeV0Composition buildEhrbaseBloodPressureSimpleDeV0() {
         EhrbaseBloodPressureSimpleDeV0Composition bloodPressureSimpleDeV0 = new EhrbaseBloodPressureSimpleDeV0Composition();
-        bloodPressureSimpleDeV0.setStartTimeValue(OffsetDateTime.now());
+        bloodPressureSimpleDeV0.setStartTimeValue(OffsetDateTime.of(2019, 04, 03, 22, 00, 00, 00, ZoneOffset.UTC));
         bloodPressureSimpleDeV0.setEndTimeValue(OffsetDateTime.now());
         bloodPressureSimpleDeV0.setBloodPressureTrainingSample(new ArrayList<>());
         bloodPressureSimpleDeV0.setLanguage(Language.DE);

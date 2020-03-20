@@ -45,4 +45,10 @@ public interface OpenEhrClient {
      */
     TemplateEndpoint templateEndpoint();
 
+    /**
+     * Get the {@link AqlEndpoint}
+     *
+     * @return
+     */
+    AqlEndpoint aqlEndpoint();
 }
