@@ -19,24 +19,23 @@
 
 package org.ehrbase.client.aql;
 
-public class NativeQuery<T extends Record> implements Query<T> {
-    private final Field<?>[] fields;
-    private final String aql;
+import java.util.UUID;
 
-    protected NativeQuery(String aql, Field<?>... fields) {
-        this.fields = fields;
-        this.aql = aql;
+public class Ehr {
+
+    private static final Containment EHR_CONTAINMENT = new Containment("EHR") {
+        @Override
+        String getVariableName() {
+            return "e";
+        }
+    };
+
+    private Ehr() {
     }
 
-    @Override
-    public String buildAql() {
-        return aql;
-    }
-
-    @Override
-    public Field<?>[] fields() {
-        return fields;
+    public static SelectField<UUID> ehrId() {
+        FieldImp<UUID> ehrId = new FieldImp<>(null, "/ehr_id/value", "ehrId", UUID.class);
+        ehrId.setContainment(EHR_CONTAINMENT);
+        return ehrId;
     }
 }
-
-

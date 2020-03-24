@@ -23,10 +23,9 @@ import com.nedap.archie.rm.datavalues.quantity.datetime.DvDateTime;
 import org.assertj.core.groups.Tuple;
 import org.ehrbase.client.Integration;
 import org.ehrbase.client.TestData;
-import org.ehrbase.client.aql.ParameterValue;
-import org.ehrbase.client.aql.Query;
-import org.ehrbase.client.aql.Record2;
+import org.ehrbase.client.aql.*;
 import org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev0composition.EhrbaseBloodPressureSimpleDeV0Composition;
+import org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev0composition.definition.BloodPressureTrainingSampleObservation;
 import org.ehrbase.client.openehrclient.OpenEhrClient;
 import org.ehrbase.client.openehrclient.VersionUid;
 import org.junit.BeforeClass;
@@ -60,7 +59,7 @@ public class DefaultRestAqlEndpointTestIT {
         openEhrClient.compositionEndpoint(ehr).mergeCompositionEntity(TestData.buildEhrbaseBloodPressureSimpleDeV0());
         openEhrClient.compositionEndpoint(ehr).mergeCompositionEntity(TestData.buildEhrbaseBloodPressureSimpleDeV0());
 
-        Query<Record2<String, DvDateTime>> query = Query.nativeQuery("select  a/template_id, a/context/start_time from EHR e[ehr_id/value = $ehr_id]  contains COMPOSITION a [openEHR-EHR-COMPOSITION.sample_encounter.v1]", String.class, DvDateTime.class);
+        Query<Record2<String, DvDateTime>> query = Query.buildNativeQuery("select  a/template_id, a/context/start_time from EHR e[ehr_id/value = $ehr_id]  contains COMPOSITION a [openEHR-EHR-COMPOSITION.sample_encounter.v1]", String.class, DvDateTime.class);
 
         List<Record2<String, DvDateTime>> result = openEhrClient.aqlEndpoint().execute(query, new ParameterValue("ehr_id", ehr));
         assertThat(result).isNotNull();
@@ -77,7 +76,7 @@ public class DefaultRestAqlEndpointTestIT {
         EhrbaseBloodPressureSimpleDeV0Composition comp1 = openEhrClient.compositionEndpoint(ehr).mergeCompositionEntity(TestData.buildEhrbaseBloodPressureSimpleDeV0());
         EhrbaseBloodPressureSimpleDeV0Composition comp2 = openEhrClient.compositionEndpoint(ehr).mergeCompositionEntity(TestData.buildEhrbaseBloodPressureSimpleDeV0());
 
-        Query<Record2<Double, OffsetDateTime>> query = Query.nativeQuery("select  a/content[openEHR-EHR-OBSERVATION.sample_blood_pressure.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/magnitude, a/context/start_time/value from EHR e[ehr_id/value = $ehr_id]  contains COMPOSITION a [openEHR-EHR-COMPOSITION.sample_encounter.v1]", Double.class, OffsetDateTime.class);
+        Query<Record2<Double, OffsetDateTime>> query = Query.buildNativeQuery("select  a/content[openEHR-EHR-OBSERVATION.sample_blood_pressure.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/magnitude, a/context/start_time/value from EHR e[ehr_id/value = $ehr_id]  contains COMPOSITION a [openEHR-EHR-COMPOSITION.sample_encounter.v1]", Double.class, OffsetDateTime.class);
 
         List<Record2<Double, OffsetDateTime>> result = openEhrClient.aqlEndpoint().execute(query, new ParameterValue("ehr_id", ehr));
         assertThat(result).isNotNull();
@@ -99,7 +98,7 @@ public class DefaultRestAqlEndpointTestIT {
         EhrbaseBloodPressureSimpleDeV0Composition comp1 = openEhrClient.compositionEndpoint(ehr).mergeCompositionEntity(TestData.buildEhrbaseBloodPressureSimpleDeV0());
         EhrbaseBloodPressureSimpleDeV0Composition comp2 = openEhrClient.compositionEndpoint(ehr).mergeCompositionEntity(TestData.buildEhrbaseBloodPressureSimpleDeV0());
 
-        Query<Record2<VersionUid, TemporalAccessor>> query = Query.nativeQuery("select  a/uid/value, a/context/start_time/value from EHR e[ehr_id/value = $ehr_id]  contains COMPOSITION a [openEHR-EHR-COMPOSITION.sample_encounter.v1]", VersionUid.class, TemporalAccessor.class);
+        Query<Record2<VersionUid, TemporalAccessor>> query = Query.buildNativeQuery("select  a/uid/value, a/context/start_time/value from EHR e[ehr_id/value = $ehr_id]  contains COMPOSITION a [openEHR-EHR-COMPOSITION.sample_encounter.v1]", VersionUid.class, TemporalAccessor.class);
 
         List<Record2<VersionUid, TemporalAccessor>> result = openEhrClient.aqlEndpoint().execute(query, new ParameterValue("ehr_id", ehr));
         assertThat(result).isNotNull();
@@ -110,6 +109,48 @@ public class DefaultRestAqlEndpointTestIT {
                         new Tuple(comp1.getVersionUid().toString(), OffsetDateTime.of(2019, 04, 03, 22, 00, 00, 00, ZoneOffset.UTC)),
                         new Tuple(comp2.getVersionUid().toString(), OffsetDateTime.of(2019, 04, 03, 22, 00, 00, 00, ZoneOffset.UTC))
                 );
+
+    }
+
+
+    @Test
+    public void testExecuteEntityQuery() {
+        UUID ehr = openEhrClient.ehrEndpoint().createEhr();
+
+        EhrbaseBloodPressureSimpleDeV0Composition comp1 = openEhrClient.compositionEndpoint(ehr).mergeCompositionEntity(TestData.buildEhrbaseBloodPressureSimpleDeV0());
+        EhrbaseBloodPressureSimpleDeV0Composition comp2 = openEhrClient.compositionEndpoint(ehr).mergeCompositionEntity(TestData.buildEhrbaseBloodPressureSimpleDeV0());
+
+        EntityField<TemporalAccessor> startTimeField = new FieldImp<>(EhrbaseBloodPressureSimpleDeV0Composition.class, "/context/start_time|value", "startTimeValue", TemporalAccessor.class);
+        EntityField<BloodPressureTrainingSampleObservation> bloodPressureTrainingSampleField = new FieldImp<>(BloodPressureTrainingSampleObservation.class, "", "bloodPressureTrainingSample", BloodPressureTrainingSampleObservation.class);
+        Containment containmentComposition = Query.buildContainment(EhrbaseBloodPressureSimpleDeV0Composition.class);
+        Containment containmentObservation = Query.buildContainment(BloodPressureTrainingSampleObservation.class);
+        containmentComposition.setChild(containmentObservation);
+        EntityQuery<Record2<TemporalAccessor, BloodPressureTrainingSampleObservation>> entityQuery = Query.buildEntityQuery(containmentComposition, containmentComposition.bindField(startTimeField), containmentObservation.bindField(bloodPressureTrainingSampleField));
+        Parameter<UUID> ehrIdParameter = entityQuery.buildParameter();
+        entityQuery.where(Condition.equal(Ehr.ehrId(), ehrIdParameter));
+
+        List<Record2<TemporalAccessor, BloodPressureTrainingSampleObservation>> actual = openEhrClient.aqlEndpoint().execute(entityQuery, ehrIdParameter.setValue(ehr));
+        assertThat(actual).size().isEqualTo(2);
+
+    }
+
+
+    @Test
+    public void testExecuteEntityQueryWithList() {
+        UUID ehr = openEhrClient.ehrEndpoint().createEhr();
+
+        EhrbaseBloodPressureSimpleDeV0Composition comp1 = openEhrClient.compositionEndpoint(ehr).mergeCompositionEntity(TestData.buildEhrbaseBloodPressureSimpleDeV0());
+        EhrbaseBloodPressureSimpleDeV0Composition comp2 = openEhrClient.compositionEndpoint(ehr).mergeCompositionEntity(TestData.buildEhrbaseBloodPressureSimpleDeV0());
+
+        EntityField<TemporalAccessor> startTimeField = new FieldImp<>(EhrbaseBloodPressureSimpleDeV0Composition.class, "/context/start_time|value", "startTimeValue", TemporalAccessor.class);
+        ListSelectField<BloodPressureTrainingSampleObservation> bloodPressureTrainingSampleField = new ListFieldImp<>(EhrbaseBloodPressureSimpleDeV0Composition.class, "/content[openEHR-EHR-OBSERVATION.sample_blood_pressure.v1]", "bloodPressureTrainingSample", BloodPressureTrainingSampleObservation.class);
+        Containment containment = Query.buildContainment(EhrbaseBloodPressureSimpleDeV0Composition.class);
+        EntityQuery<Record2<TemporalAccessor, List<BloodPressureTrainingSampleObservation>>> entityQuery = Query.buildEntityQuery(containment, containment.bindField(startTimeField), containment.bindField(bloodPressureTrainingSampleField));
+        Parameter<UUID> ehrIdParameter = entityQuery.buildParameter();
+        entityQuery.where(Condition.equal(Ehr.ehrId(), ehrIdParameter));
+
+        List<Record2<TemporalAccessor, List<BloodPressureTrainingSampleObservation>>> actual = openEhrClient.aqlEndpoint().execute(entityQuery, ehrIdParameter.setValue(ehr));
+        assertThat(actual).size().isEqualTo(2);
 
     }
 }

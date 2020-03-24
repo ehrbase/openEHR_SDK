@@ -19,24 +19,7 @@
 
 package org.ehrbase.client.aql;
 
-public class NativeQuery<T extends Record> implements Query<T> {
-    private final Field<?>[] fields;
-    private final String aql;
+public interface SelectField<T> extends EntityField<T> {
 
-    protected NativeQuery(String aql, Field<?>... fields) {
-        this.fields = fields;
-        this.aql = aql;
-    }
-
-    @Override
-    public String buildAql() {
-        return aql;
-    }
-
-    @Override
-    public Field<?>[] fields() {
-        return fields;
-    }
+    String buildAQL();
 }
-
-

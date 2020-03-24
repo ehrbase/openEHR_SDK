@@ -19,11 +19,19 @@
 
 package org.ehrbase.client.aql;
 
-public class FieldImp<T> implements Field<T> {
+public class FieldImp<T> implements SelectField<T> {
 
     private String name;
     private String path;
     private Class<T> clazz;
+    private Class<?> entityClass;
+    private Containment containment;
+
+    public void setMultiValued(boolean multiValued) {
+        this.multiValued = multiValued;
+    }
+
+    private boolean multiValued = false;
 
     protected FieldImp() {
 
@@ -32,6 +40,22 @@ public class FieldImp<T> implements Field<T> {
     protected FieldImp(Class<T> clazz) {
         this.clazz = clazz;
     }
+
+    public FieldImp(Class<?> entityClass, String path, String name, Class<T> clazz) {
+        this.name = name;
+        this.path = path;
+        this.clazz = clazz;
+        this.entityClass = entityClass;
+    }
+
+    protected FieldImp(Class<?> entityClass, String path, String name, Class<T> clazz, boolean multiValued) {
+        this.name = name;
+        this.path = path;
+        this.clazz = clazz;
+        this.entityClass = entityClass;
+        this.multiValued = multiValued;
+    }
+
 
     @Override
     public String getName() {
@@ -47,6 +71,11 @@ public class FieldImp<T> implements Field<T> {
         return path;
     }
 
+    @Override
+    public Class<?> getEntityClass() {
+        return entityClass;
+    }
+
     public void setPath(String path) {
         this.path = path;
     }
@@ -56,7 +85,27 @@ public class FieldImp<T> implements Field<T> {
         return clazz;
     }
 
+    @Override
+    public boolean isMultiValued() {
+        return multiValued;
+    }
+
     public void setClazz(Class<T> clazz) {
         this.clazz = clazz;
     }
+
+
+    protected void setEntityClass(Class<?> entityClass) {
+        this.entityClass = entityClass;
+    }
+
+    protected void setContainment(Containment containment) {
+        this.containment = containment;
+    }
+
+    @Override
+    public String buildAQL() {
+        return containment.getVariableName() + path.replace("|", "/");
+    }
+
 }

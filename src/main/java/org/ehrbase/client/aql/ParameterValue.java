@@ -19,25 +19,25 @@
 
 package org.ehrbase.client.aql;
 
-public class ParameterValue {
-    private final Parameter parameter;
-    private final Object value;
+public class ParameterValue<T> {
+    private final Parameter<T> parameter;
+    private final T value;
 
-    public ParameterValue(Parameter parameter, Object value) {
+    public ParameterValue(Parameter<T> parameter, T value) {
         this.parameter = parameter;
         this.value = value;
     }
 
-    public ParameterValue(String parameterName, Object value) {
+    public ParameterValue(String parameterName, T value) {
         this.parameter = new Parameter(parameterName);
         this.value = value;
     }
 
-    public Parameter getParameter() {
+    public Parameter<T> getParameter() {
         return parameter;
     }
 
-    public Object getValue() {
+    public T getValue() {
         return value;
     }
 }

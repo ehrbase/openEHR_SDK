@@ -19,24 +19,31 @@
 
 package org.ehrbase.client.aql;
 
-public class NativeQuery<T extends Record> implements Query<T> {
-    private final Field<?>[] fields;
-    private final String aql;
+import java.util.List;
 
-    protected NativeQuery(String aql, Field<?>... fields) {
-        this.fields = fields;
-        this.aql = aql;
+public class ListFieldImp<T> extends FieldImp<List<T>> implements ListSelectField<T>, ListEntityField<T> {
+    private Class<T> innerClass;
+
+    protected ListFieldImp() {
+
     }
+
+
+    public ListFieldImp(Class<?> entityClass, String path, String name, Class<T> clazz) {
+
+        super(entityClass, path, name, null, true);
+        innerClass = clazz;
+    }
+
+
+    protected void setInnerClass(Class<T> innerClass) {
+        this.innerClass = innerClass;
+    }
+
 
     @Override
-    public String buildAql() {
-        return aql;
+    public Class<T> getInnerClass() {
+        return innerClass;
     }
 
-    @Override
-    public Field<?>[] fields() {
-        return fields;
-    }
 }
-
-

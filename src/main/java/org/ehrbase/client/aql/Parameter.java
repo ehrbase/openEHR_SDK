@@ -21,7 +21,7 @@ package org.ehrbase.client.aql;
 
 import org.apache.commons.lang3.StringUtils;
 
-public class Parameter {
+public class Parameter<T> {
 
     private final String name;
 
@@ -29,7 +29,15 @@ public class Parameter {
         this.name = name;
     }
 
+    public Parameter(EntityQuery<?> query) {
+        name = query.buildParameterName();
+    }
+
     public String getAqlParameter() {
         return "$" + StringUtils.normalizeSpace(name).replace(" ", "_");
+    }
+
+    public ParameterValue<T> setValue(T value) {
+        return new ParameterValue<>(this, value);
     }
 }

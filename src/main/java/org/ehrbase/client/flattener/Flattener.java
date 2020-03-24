@@ -18,7 +18,6 @@
 package org.ehrbase.client.flattener;
 
 import com.nedap.archie.rm.RMObject;
-import com.nedap.archie.rm.archetyped.Locatable;
 import com.nedap.archie.rm.datatypes.CodePhrase;
 import com.nedap.archie.rm.support.identification.ObjectId;
 import com.nedap.archie.rminfo.ArchieRMInfoLookup;
@@ -50,7 +49,7 @@ public class Flattener {
     private Reflections reflections;
 
 
-    public <T> T flatten(Locatable locatable, Class<T> clazz) {
+    public <T> T flatten(RMObject locatable, Class<T> clazz) {
         reflections = new Reflections(clazz.getPackage().getName());
         T dto = createInstance(clazz);
         mapEntityToDto(locatable, dto);
@@ -99,7 +98,7 @@ public class Flattener {
                             .filter(c -> c.isAnnotationPresent(OptionFor.class))
                             .filter(c -> c.getAnnotation(OptionFor.class).value().equals(simpleName))
                             .findAny()
-                            .orElse(null);
+                            .orElseThrow(() -> new ClientException(String.format("No Option for %s ", simpleName)));
                     Object dtoItem = createInstance(type);
                     mapEntityToDto((RMObject) childItem, dtoItem);
                     dtoList.add(dtoItem);
@@ -107,7 +106,7 @@ public class Flattener {
 
                     dtoList.add(childItem);
                 } else {
-                    logger.warn("Incompatible Typ {} {}", aClass, child.getClass());
+                    logger.warn("Incompatible Typ {} {}", aClass, child != null ? child.getClass() : "null");
                 }
 
             }

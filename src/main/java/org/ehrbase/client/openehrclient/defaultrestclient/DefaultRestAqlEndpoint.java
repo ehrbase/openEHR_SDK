@@ -27,14 +27,17 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.nedap.archie.rm.RMObject;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.fluent.Request;
 import org.apache.http.entity.ContentType;
 import org.apache.http.util.EntityUtils;
+import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.aql.*;
 import org.ehrbase.client.exception.ClientException;
+import org.ehrbase.client.flattener.Flattener;
 import org.ehrbase.client.openehrclient.AqlEndpoint;
 import org.ehrbase.client.openehrclient.VersionUid;
 import org.ehrbase.serialisation.JacksonUtil;
@@ -53,6 +56,7 @@ import static org.ehrbase.client.openehrclient.defaultrestclient.DefaultRestClie
 public class DefaultRestAqlEndpoint implements AqlEndpoint {
     public static final String AQL_PATH = "/query/aql/";
     private final DefaultRestClient defaultRestClient;
+    public static final ObjectMapper AQL_OBJECT_MAPPER = buildAqlObjectMapper();
 
     public DefaultRestAqlEndpoint(DefaultRestClient defaultRestClient) {
         this.defaultRestClient = defaultRestClient;
@@ -62,7 +66,7 @@ public class DefaultRestAqlEndpoint implements AqlEndpoint {
     public <T extends Record> List<T> execute(Query<T> query, ParameterValue... parameterValues) {
         List<T> result = new ArrayList<>();
         Map<String, String> qMap = new HashMap<>();
-        String aql = query.getAql();
+        String aql = query.buildAql();
         for (ParameterValue v : parameterValues) {
             aql = aql.replace(v.getParameter().getAqlParameter(), StringUtils.wrap(v.getValue().toString(), "'"));
         }
@@ -83,7 +87,22 @@ public class DefaultRestAqlEndpoint implements AqlEndpoint {
                 int i = 0;
                 for (Field<?> field : query.fields()) {
                     String valueAsString = ((JsonArray) jresult).get(i).toString();
-                    Object object = buildAqlObjectMapper().readValue(valueAsString, field.getClazz());
+
+                    final Object object;
+
+
+                    Class<?> aClass = field.getClazz();
+                    if (ListSelectField.class.isAssignableFrom(field.getClass())) {
+                        List list = new ArrayList();
+                        object = list;
+                        for (JsonElement element : JsonParser.parseString(valueAsString).getAsJsonObject().get("items").getAsJsonArray()) {
+                            list.add(extractValue(element.toString(), ((ListSelectField) field).getInnerClass()));
+                        }
+
+                    } else {
+                        object = extractValue(valueAsString, aClass);
+                    }
+
                     record.putValue(i, object);
                     i++;
                 }
@@ -98,7 +117,17 @@ public class DefaultRestAqlEndpoint implements AqlEndpoint {
 
     }
 
-    private ObjectMapper buildAqlObjectMapper() {
+    private Object extractValue(String valueAsString, Class<?> aClass) throws com.fasterxml.jackson.core.JsonProcessingException {
+        Object object;
+        if (aClass.isAnnotationPresent(Entity.class)) {
+            object = new Flattener().flatten(AQL_OBJECT_MAPPER.readValue(valueAsString, RMObject.class), aClass);
+        } else {
+            object = AQL_OBJECT_MAPPER.readValue(valueAsString, aClass);
+        }
+        return object;
+    }
+
+    private static ObjectMapper buildAqlObjectMapper() {
         ObjectMapper objectMapper = JacksonUtil.getObjectMapper();
         SimpleModule module =
                 new SimpleModule("openEHR", new Version(1, 0, 0, null, null, null));

@@ -20,13 +20,13 @@
 package org.ehrbase.client.aql;
 
 public interface Field<T> {
-    String getName();
 
-    String getPath();
 
     Class<T> getClazz();
 
     static <Y> Field<Y> create(Class<Y> clazz) {
         return new FieldImp<>(clazz);
     }
+
+    boolean isMultiValued();
 }
