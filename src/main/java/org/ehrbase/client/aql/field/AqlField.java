@@ -19,8 +19,14 @@
 
 package org.ehrbase.client.aql.field;
 
-import java.util.List;
+public interface AqlField<T> {
 
-public interface ListSelectField<T> extends SelectField<List<T>> {
-    Class<T> getInnerClass();
+
+    Class<T> getValueClass();
+
+    static <Y> AqlField<Y> create(Class<Y> clazz) {
+        return new AqlFieldImp<>(clazz);
+    }
+
+    boolean isMultiValued();
 }

@@ -19,13 +19,13 @@
 
 package org.ehrbase.client.aql.record;
 
-import org.ehrbase.client.aql.field.Field;
+import org.ehrbase.client.aql.field.AqlField;
 
 public interface Record1<T1> extends Record {
     /**
      * Get the first field.
      */
-    Field<T1> field1();
+    AqlField<T1> field1();
 
     /**
      * Get the first value.

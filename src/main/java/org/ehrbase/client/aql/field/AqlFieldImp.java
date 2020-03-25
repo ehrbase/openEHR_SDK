@@ -21,41 +21,45 @@ package org.ehrbase.client.aql.field;
 
 import org.ehrbase.client.aql.containment.Containment;
 
-public class FieldImp<T> implements SelectField<T> {
+import java.util.List;
 
-    private String name;
-    private String path;
-    private Class<T> clazz;
-    private Class<?> entityClass;
-    private Containment containment;
+public class AqlFieldImp<T> implements SelectAqlField<T> {
 
-    public void setMultiValued(boolean multiValued) {
-        this.multiValued = multiValued;
+    private final String name;
+    private final String path;
+    private final Class<T> valueClass;
+    private final Class<?> entityClass;
+    private final Containment containment;
+    private final boolean multiValued;
+
+
+    protected AqlFieldImp(Class<T> clazz) {
+        this.valueClass = clazz;
+        this.name = null;
+        this.path = null;
+        this.entityClass = null;
+        this.containment = null;
+        this.multiValued = List.class.isAssignableFrom(clazz);
+
     }
 
-    private boolean multiValued = false;
 
-    protected FieldImp() {
-
-    }
-
-    protected FieldImp(Class<T> clazz) {
-        this.clazz = clazz;
-    }
-
-    public FieldImp(Class<?> entityClass, String path, String name, Class<T> clazz) {
+    public AqlFieldImp(Class<?> entityClass, String path, String name, Class<T> valueClass, Containment containment) {
         this.name = name;
         this.path = path;
-        this.clazz = clazz;
+        this.valueClass = valueClass;
         this.entityClass = entityClass;
+        this.containment = containment;
+        this.multiValued = false;
     }
 
-    protected FieldImp(Class<?> entityClass, String path, String name, Class<T> clazz, boolean multiValued) {
+    protected AqlFieldImp(Class<?> entityClass, String path, String name, Class<T> valueClass, boolean multiValued, Containment containment) {
         this.name = name;
         this.path = path;
-        this.clazz = clazz;
+        this.valueClass = valueClass;
         this.entityClass = entityClass;
         this.multiValued = multiValued;
+        this.containment = containment;
     }
 
 
@@ -64,9 +68,6 @@ public class FieldImp<T> implements SelectField<T> {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
 
     @Override
     public String getPath() {
@@ -78,13 +79,10 @@ public class FieldImp<T> implements SelectField<T> {
         return entityClass;
     }
 
-    public void setPath(String path) {
-        this.path = path;
-    }
 
     @Override
-    public Class<T> getClazz() {
-        return clazz;
+    public Class<T> getValueClass() {
+        return valueClass;
     }
 
     @Override
@@ -92,18 +90,6 @@ public class FieldImp<T> implements SelectField<T> {
         return multiValued;
     }
 
-    public void setClazz(Class<T> clazz) {
-        this.clazz = clazz;
-    }
-
-
-    protected void setEntityClass(Class<?> entityClass) {
-        this.entityClass = entityClass;
-    }
-
-    public void setContainment(Containment containment) {
-        this.containment = containment;
-    }
 
     @Override
     public String buildAQL() {

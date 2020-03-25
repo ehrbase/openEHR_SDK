@@ -32,9 +32,9 @@ import java.util.Map;
 public class ClassGeneratorResult {
     private final MultiValuedMap<String, TypeSpec> classes = new ArrayListValuedHashMap<>();
 
-    void addClass(String path, TypeSpec typeSpec) {
-        classes.put(path, typeSpec);
-    }
+  public void addClass(String path, TypeSpec typeSpec) {
+      classes.put(path, typeSpec);
+  }
 
     public Map<String, Collection<TypeSpec>> getClasses() {
         return classes.asMap();

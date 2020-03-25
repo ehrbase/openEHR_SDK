@@ -23,9 +23,6 @@ import com.nedap.archie.rm.archetyped.Locatable;
 import com.nedap.archie.rm.composition.Composition;
 import com.nedap.archie.rm.composition.Observation;
 import org.apache.commons.lang3.StringUtils;
-import org.ehrbase.client.aql.field.EntityField;
-import org.ehrbase.client.aql.field.FieldImp;
-import org.ehrbase.client.aql.field.SelectField;
 import org.ehrbase.client.aql.query.EntityQuery;
 import org.ehrbase.client.exception.ClientException;
 
@@ -34,7 +31,7 @@ public class Containment implements ContainmentExpression {
     private final Class<? extends Locatable> type;
     private final String archetype;
     private EntityQuery<?> query;
-    private ContainmentExpression child;
+    private ContainmentExpression contains;
 
 
     public Containment(String archetype) {
@@ -66,10 +63,10 @@ public class Containment implements ContainmentExpression {
                 .append(" ")
                 .append(getVariableName())
                 .append("[").append(archetype).append("]");
-        if (child != null) {
+        if (contains != null) {
             sb
                     .append("contains ")
-                    .append(child.buildAQL());
+                    .append(contains.buildAQL());
         }
         return sb.toString();
     }
@@ -82,16 +79,9 @@ public class Containment implements ContainmentExpression {
     @Override
     public void bindQuery(EntityQuery<?> query) {
         this.query = query;
-        if (child != null) {
-            child.bindQuery(query);
+        if (contains != null) {
+            contains.bindQuery(query);
         }
-    }
-
-    public <T> SelectField<T> bindField(EntityField<T> entityField) {
-
-        FieldImp<T> f = (FieldImp<T>) entityField;
-        f.setContainment(this);
-        return f;
     }
 
 
@@ -99,11 +89,11 @@ public class Containment implements ContainmentExpression {
         return type;
     }
 
-    public ContainmentExpression getChild() {
-        return child;
+    public ContainmentExpression getContains() {
+        return contains;
     }
 
-    public void setChild(ContainmentExpression child) {
-        this.child = child;
+    public void setContains(ContainmentExpression contains) {
+        this.contains = contains;
     }
 }

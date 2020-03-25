@@ -19,13 +19,13 @@
 
 package org.ehrbase.client.aql.record;
 
-import org.ehrbase.client.aql.field.Field;
+import org.ehrbase.client.aql.field.AqlField;
 
 public interface Record {
 
-    Field<?> field(int index);
+    AqlField<?> field(int index);
 
-    Field<?>[] fields();
+    AqlField<?>[] fields();
 
     Object value(int index);
 

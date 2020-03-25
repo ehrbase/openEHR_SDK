@@ -17,11 +17,25 @@
  *
  */
 
-package org.ehrbase.client.aql.field;
+package org.ehrbase.client.aql.fieldgenerator;
 
-import java.util.List;
+import org.ehrbase.client.classgenerator.ClassGeneratorResult;
+import org.junit.Test;
 
-public interface ListEntityField<T> extends EntityField<List<T>> {
+import java.io.IOException;
 
-    Class<T> getInnerClass();
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.ehrbase.client.classgenerator.ClassGeneratorTest.PACKAGE_NAME;
+
+public class FieldGeneratorTest {
+
+    @Test
+    public void testGenerate() throws IOException {
+        FieldGenerator cut = new FieldGenerator();
+        ClassGeneratorResult actual = cut.generate(PACKAGE_NAME + ".ehrbasebloodpressuresimpledev0composition");
+
+        assertThat(actual).isNotNull();
+
+        // actual.createFiles(Paths.get(".", "src/test/java/"));
+    }
 }

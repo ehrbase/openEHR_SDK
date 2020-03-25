@@ -22,8 +22,8 @@ package org.ehrbase.client.aql.query;
 import org.ehrbase.client.aql.condition.Condition;
 import org.ehrbase.client.aql.containment.Containment;
 import org.ehrbase.client.aql.containment.ContainmentExpression;
-import org.ehrbase.client.aql.field.Field;
-import org.ehrbase.client.aql.field.SelectField;
+import org.ehrbase.client.aql.field.AqlField;
+import org.ehrbase.client.aql.field.SelectAqlField;
 import org.ehrbase.client.aql.parameter.Parameter;
 import org.ehrbase.client.aql.record.Record;
 
@@ -33,14 +33,14 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class EntityQuery<T extends Record> implements Query<T> {
-    private final SelectField<?>[] fields;
+    private final SelectAqlField<?>[] fields;
     private final ContainmentExpression containmentExpression;
     private int variabelCount = 0;
     private int parameterCount = 0;
     private Map<Containment, String> variablesMap = new HashMap<>();
     private Condition where;
 
-    protected EntityQuery(ContainmentExpression containmentExpression, SelectField<?>... fields) {
+    protected EntityQuery(ContainmentExpression containmentExpression, SelectAqlField<?>... fields) {
         this.fields = fields;
         this.containmentExpression = containmentExpression;
         containmentExpression.bindQuery(this);
@@ -52,7 +52,7 @@ public class EntityQuery<T extends Record> implements Query<T> {
         StringBuilder sb = new StringBuilder();
         sb
                 .append("Select ")
-                .append(Arrays.stream(fields).map(SelectField::buildAQL).collect(Collectors.joining(", ")))
+                .append(Arrays.stream(fields).map(SelectAqlField::buildAQL).collect(Collectors.joining(", ")))
                 .append(" from EHR e ");
         if (containmentExpression != null) {
             sb
@@ -68,7 +68,7 @@ public class EntityQuery<T extends Record> implements Query<T> {
     }
 
     @Override
-    public Field<?>[] fields() {
+    public AqlField<?>[] fields() {
         return fields;
     }
 

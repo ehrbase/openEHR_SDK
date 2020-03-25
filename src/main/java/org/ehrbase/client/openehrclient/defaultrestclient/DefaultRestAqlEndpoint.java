@@ -35,8 +35,8 @@ import org.apache.http.client.fluent.Request;
 import org.apache.http.entity.ContentType;
 import org.apache.http.util.EntityUtils;
 import org.ehrbase.client.annotations.Entity;
-import org.ehrbase.client.aql.field.Field;
-import org.ehrbase.client.aql.field.ListSelectField;
+import org.ehrbase.client.aql.field.AqlField;
+import org.ehrbase.client.aql.field.ListSelectAqlField;
 import org.ehrbase.client.aql.parameter.ParameterValue;
 import org.ehrbase.client.aql.query.Query;
 import org.ehrbase.client.aql.record.Record;
@@ -90,18 +90,18 @@ public class DefaultRestAqlEndpoint implements AqlEndpoint {
             for (JsonElement jresult : rows) {
                 RecordImp record = new RecordImp(query.fields());
                 int i = 0;
-                for (Field<?> field : query.fields()) {
+                for (AqlField<?> aqlField : query.fields()) {
                     String valueAsString = ((JsonArray) jresult).get(i).toString();
 
                     final Object object;
 
 
-                    Class<?> aClass = field.getClazz();
-                    if (ListSelectField.class.isAssignableFrom(field.getClass())) {
+                    Class<?> aClass = aqlField.getValueClass();
+                    if (ListSelectAqlField.class.isAssignableFrom(aqlField.getClass())) {
                         List list = new ArrayList();
                         object = list;
                         for (JsonElement element : JsonParser.parseString(valueAsString).getAsJsonObject().get("items").getAsJsonArray()) {
-                            list.add(extractValue(element.toString(), ((ListSelectField) field).getInnerClass()));
+                            list.add(extractValue(element.toString(), ((ListSelectAqlField) aqlField).getInnerClass()));
                         }
 
                     } else {

@@ -19,7 +19,7 @@
 
 package org.ehrbase.client.aql.condition;
 
-import org.ehrbase.client.aql.field.SelectField;
+import org.ehrbase.client.aql.field.SelectAqlField;
 import org.ehrbase.client.aql.parameter.Parameter;
 
 public interface Condition {
@@ -27,11 +27,11 @@ public interface Condition {
     String buildAql();
 
 
-    static <T> Condition equal(SelectField<T> field, T value) {
+    static <T> Condition equal(SelectAqlField<T> field, T value) {
         return new Equal<T>(field, value);
     }
 
-    static <T> Condition equal(SelectField<T> field, Parameter<T> parameter) {
+    static <T> Condition equal(SelectAqlField<T> field, Parameter<T> parameter) {
         return new Equal<T>(field, parameter);
     }
 }

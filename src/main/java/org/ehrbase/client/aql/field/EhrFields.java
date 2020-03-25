@@ -23,7 +23,7 @@ import org.ehrbase.client.aql.containment.Containment;
 
 import java.util.UUID;
 
-public class Ehr {
+public class EhrFields {
 
     private static final Containment EHR_CONTAINMENT = new Containment("EHR") {
         @Override
@@ -32,12 +32,11 @@ public class Ehr {
         }
     };
 
-    private Ehr() {
+    private EhrFields() {
     }
 
-    public static SelectField<UUID> ehrId() {
-        FieldImp<UUID> ehrId = new FieldImp<>(null, "/ehr_id/value", "ehrId", UUID.class);
-        ehrId.setContainment(EHR_CONTAINMENT);
+    public static SelectAqlField<UUID> EHR_ID() {
+        AqlFieldImp<UUID> ehrId = new AqlFieldImp<>(null, "/ehr_id/value", "ehrId", UUID.class, EHR_CONTAINMENT);
         return ehrId;
     }
 }

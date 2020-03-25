@@ -21,29 +21,6 @@ package org.ehrbase.client.aql.field;
 
 import java.util.List;
 
-public class ListFieldImp<T> extends FieldImp<List<T>> implements ListSelectField<T>, ListEntityField<T> {
-    private Class<T> innerClass;
-
-    protected ListFieldImp() {
-
-    }
-
-
-    public ListFieldImp(Class<?> entityClass, String path, String name, Class<T> clazz) {
-
-        super(entityClass, path, name, null, true);
-        innerClass = clazz;
-    }
-
-
-    protected void setInnerClass(Class<T> innerClass) {
-        this.innerClass = innerClass;
-    }
-
-
-    @Override
-    public Class<T> getInnerClass() {
-        return innerClass;
-    }
-
+public interface ListSelectAqlField<T> extends SelectAqlField<List<T>> {
+    Class<T> getInnerClass();
 }

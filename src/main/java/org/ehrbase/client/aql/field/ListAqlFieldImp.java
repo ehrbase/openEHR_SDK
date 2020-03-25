@@ -19,11 +19,24 @@
 
 package org.ehrbase.client.aql.field;
 
+import org.ehrbase.client.aql.containment.Containment;
 
-public interface EntityField<T> extends Field<T> {
-    String getName();
+import java.util.List;
 
-    String getPath();
+public class ListAqlFieldImp<T> extends AqlFieldImp<List<T>> implements ListSelectAqlField<T> {
+    private final Class<T> innerClass;
 
-    Class<?> getEntityClass();
+
+    public ListAqlFieldImp(Class<?> entityClass, String path, String name, Class<T> innerClass, Containment containment) {
+
+        super(entityClass, path, name, null, true, containment);
+        this.innerClass = innerClass;
+    }
+
+
+    @Override
+    public Class<T> getInnerClass() {
+        return innerClass;
+    }
+
 }

@@ -22,8 +22,8 @@ package org.ehrbase.client.aql.query;
 import org.ehrbase.client.annotations.Archetype;
 import org.ehrbase.client.aql.containment.Containment;
 import org.ehrbase.client.aql.containment.ContainmentExpression;
-import org.ehrbase.client.aql.field.Field;
-import org.ehrbase.client.aql.field.SelectField;
+import org.ehrbase.client.aql.field.AqlField;
+import org.ehrbase.client.aql.field.SelectAqlField;
 import org.ehrbase.client.aql.record.Record;
 import org.ehrbase.client.aql.record.Record1;
 import org.ehrbase.client.aql.record.Record2;
@@ -34,18 +34,18 @@ public interface Query<T extends Record> {
 
     String buildAql();
 
-    Field<?>[] fields();
+    AqlField<?>[] fields();
 
     static Query<Record> buildNativeQuery(String aql, Class<?>... expected) {
-        return new NativeQuery<>(aql, Arrays.stream(expected).map(Field::create).toArray(Field<?>[]::new));
+        return new NativeQuery<>(aql, Arrays.stream(expected).map(AqlField::create).toArray(AqlField<?>[]::new));
     }
 
     static <T1> Query<Record1<T1>> buildNativeQuery(String aql, Class<T1> expected1) {
-        return new NativeQuery<>(aql, Field.create(expected1));
+        return new NativeQuery<>(aql, AqlField.create(expected1));
     }
 
     static <T1, T2> Query<Record2<T1, T2>> buildNativeQuery(String aql, Class<T1> expected1, Class<T2> expected2) {
-        return new NativeQuery<>(aql, Field.create(expected1), Field.create(expected2));
+        return new NativeQuery<>(aql, AqlField.create(expected1), AqlField.create(expected2));
     }
 
     static Containment buildContainment(Class<?> entityClass) {
@@ -53,15 +53,15 @@ public interface Query<T extends Record> {
         return new Containment(annotation.value());
     }
 
-    static EntityQuery<Record> buildEntityQuery(ContainmentExpression containment, SelectField<?>... selectFields) {
+    static EntityQuery<Record> buildEntityQuery(ContainmentExpression containment, SelectAqlField<?>... selectFields) {
         return new EntityQuery<>(containment, selectFields);
     }
 
-    static <T1> EntityQuery<Record1<T1>> buildEntityQuery(ContainmentExpression containment, SelectField<T1> selectField1) {
+    static <T1> EntityQuery<Record1<T1>> buildEntityQuery(ContainmentExpression containment, SelectAqlField<T1> selectField1) {
         return new EntityQuery<>(containment, selectField1);
     }
 
-    static <T1, T2> EntityQuery<Record2<T1, T2>> buildEntityQuery(ContainmentExpression containment, SelectField<T1> selectField1, SelectField<T2> selectField2) {
+    static <T1, T2> EntityQuery<Record2<T1, T2>> buildEntityQuery(ContainmentExpression containment, SelectAqlField<T1> selectField1, SelectAqlField<T2> selectField2) {
         return new EntityQuery<>(containment, selectField1, selectField2);
     }
 }

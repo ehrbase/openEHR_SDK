@@ -19,29 +19,29 @@
 
 package org.ehrbase.client.aql.record;
 
-import org.ehrbase.client.aql.field.Field;
+import org.ehrbase.client.aql.field.AqlField;
 
 public class RecordImp<T1, T2>
         implements
         Record1<T1>,
         Record2<T1, T2> {
 
-    private final Field<?>[] fields;
+    private final AqlField<?>[] aqlFields;
     private final Object[] values;
 
-    public RecordImp(Field<?>... fields) {
-        this.fields = fields;
-        values = new Object[fields.length];
+    public RecordImp(AqlField<?>... aqlFields) {
+        this.aqlFields = aqlFields;
+        values = new Object[aqlFields.length];
     }
 
     @Override
-    public Field<T1> field1() {
-        return (Field<T1>) field(0);
+    public AqlField<T1> field1() {
+        return (AqlField<T1>) field(0);
     }
 
     @Override
-    public Field<T2> field2() {
-        return (Field<T2>) field(1);
+    public AqlField<T2> field2() {
+        return (AqlField<T2>) field(1);
     }
 
     @Override
@@ -55,13 +55,13 @@ public class RecordImp<T1, T2>
     }
 
     @Override
-    public Field<?> field(int index) {
-        return fields[index];
+    public AqlField<?> field(int index) {
+        return aqlFields[index];
     }
 
     @Override
-    public Field<?>[] fields() {
-        return fields;
+    public AqlField<?>[] fields() {
+        return aqlFields;
     }
 
     @Override

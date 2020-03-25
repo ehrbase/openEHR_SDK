@@ -19,22 +19,22 @@
 
 package org.ehrbase.client.aql.condition;
 
-import org.ehrbase.client.aql.field.SelectField;
+import org.ehrbase.client.aql.field.SelectAqlField;
 import org.ehrbase.client.aql.parameter.Parameter;
 
 public class Equal<T> implements Condition {
 
-    private SelectField<T> field;
+    private SelectAqlField<T> field;
     private T value;
     private Parameter<T> parameter;
 
 
-    protected Equal(SelectField<T> field, T value) {
+    protected Equal(SelectAqlField<T> field, T value) {
         this.field = field;
         this.value = value;
     }
 
-    protected Equal(SelectField<T> field, Parameter<T> parameter) {
+    protected Equal(SelectAqlField<T> field, Parameter<T> parameter) {
         this.field = field;
         this.parameter = parameter;
     }
