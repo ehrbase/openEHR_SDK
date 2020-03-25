@@ -17,18 +17,9 @@
  *
  */
 
-package org.ehrbase.client.aql;
+package org.ehrbase.client.aql.field;
 
-public interface Condition {
+public interface SelectField<T> extends EntityField<T> {
 
-    String buildAql();
-
-
-    static <T> Condition equal(SelectField<T> field, T value) {
-        return new Equal<T>(field, value);
-    }
-
-    static <T> Condition equal(SelectField<T> field, Parameter<T> parameter) {
-        return new Equal<T>(field, parameter);
-    }
+    String buildAQL();
 }

@@ -17,11 +17,18 @@
  *
  */
 
-package org.ehrbase.client.aql;
+package org.ehrbase.client.aql.record;
 
-import java.util.List;
+import org.ehrbase.client.aql.field.Field;
 
-public interface ListEntityField<T> extends EntityField<List<T>> {
+public interface Record1<T1> extends Record {
+    /**
+     * Get the first field.
+     */
+    Field<T1> field1();
 
-    Class<T> getInnerClass();
+    /**
+     * Get the first value.
+     */
+    T1 value1();
 }

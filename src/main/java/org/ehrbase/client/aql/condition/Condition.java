@@ -17,13 +17,21 @@
  *
  */
 
-package org.ehrbase.client.aql;
+package org.ehrbase.client.aql.condition;
+
+import org.ehrbase.client.aql.field.SelectField;
+import org.ehrbase.client.aql.parameter.Parameter;
+
+public interface Condition {
+
+    String buildAql();
 
 
-public interface EntityField<T> extends Field<T> {
-    String getName();
+    static <T> Condition equal(SelectField<T> field, T value) {
+        return new Equal<T>(field, value);
+    }
 
-    String getPath();
-
-    Class<?> getEntityClass();
+    static <T> Condition equal(SelectField<T> field, Parameter<T> parameter) {
+        return new Equal<T>(field, parameter);
+    }
 }

@@ -17,16 +17,33 @@
  *
  */
 
-package org.ehrbase.client.aql;
+package org.ehrbase.client.aql.field;
 
-public interface Record {
+import java.util.List;
 
-    Field<?> field(int index);
+public class ListFieldImp<T> extends FieldImp<List<T>> implements ListSelectField<T>, ListEntityField<T> {
+    private Class<T> innerClass;
 
-    Field<?>[] fields();
+    protected ListFieldImp() {
 
-    Object value(int index);
+    }
 
-    Object[] values();
+
+    public ListFieldImp(Class<?> entityClass, String path, String name, Class<T> clazz) {
+
+        super(entityClass, path, name, null, true);
+        innerClass = clazz;
+    }
+
+
+    protected void setInnerClass(Class<T> innerClass) {
+        this.innerClass = innerClass;
+    }
+
+
+    @Override
+    public Class<T> getInnerClass() {
+        return innerClass;
+    }
 
 }

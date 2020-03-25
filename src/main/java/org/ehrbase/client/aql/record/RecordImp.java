@@ -17,7 +17,9 @@
  *
  */
 
-package org.ehrbase.client.aql;
+package org.ehrbase.client.aql.record;
+
+import org.ehrbase.client.aql.field.Field;
 
 public class RecordImp<T1, T2>
         implements

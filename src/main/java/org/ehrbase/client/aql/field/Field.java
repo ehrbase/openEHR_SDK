@@ -17,26 +17,16 @@
  *
  */
 
-package org.ehrbase.client.aql;
+package org.ehrbase.client.aql.field;
 
-public interface Record2<T1, T2> extends Record {
-    /**
-     * Get the first field.
-     */
-    Field<T1> field1();
+public interface Field<T> {
 
-    /**
-     * Get the second field.
-     */
-    Field<T2> field2();
 
-    /**
-     * Get the first value.
-     */
-    T1 value1();
+    Class<T> getClazz();
 
-    /**
-     * Get the second value.
-     */
-    T2 value2();
+    static <Y> Field<Y> create(Class<Y> clazz) {
+        return new FieldImp<>(clazz);
+    }
+
+    boolean isMultiValued();
 }

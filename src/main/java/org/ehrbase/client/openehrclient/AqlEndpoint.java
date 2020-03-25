@@ -19,9 +19,9 @@
 
 package org.ehrbase.client.openehrclient;
 
-import org.ehrbase.client.aql.ParameterValue;
-import org.ehrbase.client.aql.Query;
-import org.ehrbase.client.aql.Record;
+import org.ehrbase.client.aql.parameter.ParameterValue;
+import org.ehrbase.client.aql.query.Query;
+import org.ehrbase.client.aql.record.Record;
 
 import java.util.List;
 

@@ -17,7 +17,10 @@
  *
  */
 
-package org.ehrbase.client.aql;
+package org.ehrbase.client.aql.condition;
+
+import org.ehrbase.client.aql.field.SelectField;
+import org.ehrbase.client.aql.parameter.Parameter;
 
 public class Equal<T> implements Condition {
 

@@ -17,9 +17,13 @@
  *
  */
 
-package org.ehrbase.client.aql;
+package org.ehrbase.client.aql.field;
 
-public interface SelectField<T> extends EntityField<T> {
 
-    String buildAQL();
+public interface EntityField<T> extends Field<T> {
+    String getName();
+
+    String getPath();
+
+    Class<?> getEntityClass();
 }

@@ -17,16 +17,10 @@
  *
  */
 
-package org.ehrbase.client.aql;
+package org.ehrbase.client.aql.field;
 
-public interface Field<T> {
+import java.util.List;
 
-
-    Class<T> getClazz();
-
-    static <Y> Field<Y> create(Class<Y> clazz) {
-        return new FieldImp<>(clazz);
-    }
-
-    boolean isMultiValued();
+public interface ListSelectField<T> extends SelectField<List<T>> {
+    Class<T> getInnerClass();
 }

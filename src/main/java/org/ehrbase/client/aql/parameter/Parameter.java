@@ -17,27 +17,28 @@
  *
  */
 
-package org.ehrbase.client.aql;
+package org.ehrbase.client.aql.parameter;
 
-public class ParameterValue<T> {
-    private final Parameter<T> parameter;
-    private final T value;
+import org.apache.commons.lang3.StringUtils;
+import org.ehrbase.client.aql.query.EntityQuery;
 
-    public ParameterValue(Parameter<T> parameter, T value) {
-        this.parameter = parameter;
-        this.value = value;
+public class Parameter<T> {
+
+    private final String name;
+
+    public Parameter(String name) {
+        this.name = name;
     }
 
-    public ParameterValue(String parameterName, T value) {
-        this.parameter = new Parameter(parameterName);
-        this.value = value;
+    public Parameter(EntityQuery<?> query) {
+        name = query.buildParameterName();
     }
 
-    public Parameter<T> getParameter() {
-        return parameter;
+    public String getAqlParameter() {
+        return "$" + StringUtils.normalizeSpace(name).replace(" ", "_");
     }
 
-    public T getValue() {
-        return value;
+    public ParameterValue<T> setValue(T value) {
+        return new ParameterValue<>(this, value);
     }
 }

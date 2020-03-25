@@ -17,9 +17,16 @@
  *
  */
 
-package org.ehrbase.client.aql;
+package org.ehrbase.client.aql.query;
 
 import org.ehrbase.client.annotations.Archetype;
+import org.ehrbase.client.aql.containment.Containment;
+import org.ehrbase.client.aql.containment.ContainmentExpression;
+import org.ehrbase.client.aql.field.Field;
+import org.ehrbase.client.aql.field.SelectField;
+import org.ehrbase.client.aql.record.Record;
+import org.ehrbase.client.aql.record.Record1;
+import org.ehrbase.client.aql.record.Record2;
 
 import java.util.Arrays;
 

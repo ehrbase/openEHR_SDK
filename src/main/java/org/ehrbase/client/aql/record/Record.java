@@ -17,27 +17,18 @@
  *
  */
 
-package org.ehrbase.client.aql;
+package org.ehrbase.client.aql.record;
 
-import org.apache.commons.lang3.StringUtils;
+import org.ehrbase.client.aql.field.Field;
 
-public class Parameter<T> {
+public interface Record {
 
-    private final String name;
+    Field<?> field(int index);
 
-    public Parameter(String name) {
-        this.name = name;
-    }
+    Field<?>[] fields();
 
-    public Parameter(EntityQuery<?> query) {
-        name = query.buildParameterName();
-    }
+    Object value(int index);
 
-    public String getAqlParameter() {
-        return "$" + StringUtils.normalizeSpace(name).replace(" ", "_");
-    }
+    Object[] values();
 
-    public ParameterValue<T> setValue(T value) {
-        return new ParameterValue<>(this, value);
-    }
 }

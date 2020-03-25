@@ -17,16 +17,13 @@
  *
  */
 
-package org.ehrbase.client.aql;
+package org.ehrbase.client.aql.containment;
 
-public interface Record1<T1> extends Record {
-    /**
-     * Get the first field.
-     */
-    Field<T1> field1();
+import org.ehrbase.client.aql.query.EntityQuery;
 
-    /**
-     * Get the first value.
-     */
-    T1 value1();
+public interface ContainmentExpression {
+
+    String buildAQL();
+
+    void bindQuery(EntityQuery<?> query);
 }

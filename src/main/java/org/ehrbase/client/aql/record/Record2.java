@@ -17,25 +17,28 @@
  *
  */
 
-package org.ehrbase.client.aql;
+package org.ehrbase.client.aql.record;
 
-import java.util.UUID;
+import org.ehrbase.client.aql.field.Field;
 
-public class Ehr {
+public interface Record2<T1, T2> extends Record {
+    /**
+     * Get the first field.
+     */
+    Field<T1> field1();
 
-    private static final Containment EHR_CONTAINMENT = new Containment("EHR") {
-        @Override
-        String getVariableName() {
-            return "e";
-        }
-    };
+    /**
+     * Get the second field.
+     */
+    Field<T2> field2();
 
-    private Ehr() {
-    }
+    /**
+     * Get the first value.
+     */
+    T1 value1();
 
-    public static SelectField<UUID> ehrId() {
-        FieldImp<UUID> ehrId = new FieldImp<>(null, "/ehr_id/value", "ehrId", UUID.class);
-        ehrId.setContainment(EHR_CONTAINMENT);
-        return ehrId;
-    }
+    /**
+     * Get the second value.
+     */
+    T2 value2();
 }

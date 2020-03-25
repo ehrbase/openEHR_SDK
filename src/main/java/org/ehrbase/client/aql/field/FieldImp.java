@@ -17,7 +17,9 @@
  *
  */
 
-package org.ehrbase.client.aql;
+package org.ehrbase.client.aql.field;
+
+import org.ehrbase.client.aql.containment.Containment;
 
 public class FieldImp<T> implements SelectField<T> {
 
@@ -99,7 +101,7 @@ public class FieldImp<T> implements SelectField<T> {
         this.entityClass = entityClass;
     }
 
-    protected void setContainment(Containment containment) {
+    public void setContainment(Containment containment) {
         this.containment = containment;
     }
 

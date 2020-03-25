@@ -17,11 +17,27 @@
  *
  */
 
-package org.ehrbase.client.aql;
+package org.ehrbase.client.aql.parameter;
 
-public interface ContainmentExpression {
+public class ParameterValue<T> {
+    private final Parameter<T> parameter;
+    private final T value;
 
-    String buildAQL();
+    public ParameterValue(Parameter<T> parameter, T value) {
+        this.parameter = parameter;
+        this.value = value;
+    }
 
-    void bindQuery(EntityQuery<?> query);
+    public ParameterValue(String parameterName, T value) {
+        this.parameter = new Parameter(parameterName);
+        this.value = value;
+    }
+
+    public Parameter<T> getParameter() {
+        return parameter;
+    }
+
+    public T getValue() {
+        return value;
+    }
 }

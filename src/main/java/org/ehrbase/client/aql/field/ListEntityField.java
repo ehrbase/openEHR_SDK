@@ -17,10 +17,11 @@
  *
  */
 
-package org.ehrbase.client.aql;
+package org.ehrbase.client.aql.field;
 
 import java.util.List;
 
-public interface ListSelectField<T> extends SelectField<List<T>> {
+public interface ListEntityField<T> extends EntityField<List<T>> {
+
     Class<T> getInnerClass();
 }

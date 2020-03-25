@@ -17,12 +17,16 @@
  *
  */
 
-package org.ehrbase.client.aql;
+package org.ehrbase.client.aql.containment;
 
 import com.nedap.archie.rm.archetyped.Locatable;
 import com.nedap.archie.rm.composition.Composition;
 import com.nedap.archie.rm.composition.Observation;
 import org.apache.commons.lang3.StringUtils;
+import org.ehrbase.client.aql.field.EntityField;
+import org.ehrbase.client.aql.field.FieldImp;
+import org.ehrbase.client.aql.field.SelectField;
+import org.ehrbase.client.aql.query.EntityQuery;
 import org.ehrbase.client.exception.ClientException;
 
 public class Containment implements ContainmentExpression {
@@ -70,7 +74,7 @@ public class Containment implements ContainmentExpression {
         return sb.toString();
     }
 
-    String getVariableName() {
+    public String getVariableName() {
         return query.buildVariabelName(this);
     }
 
@@ -91,7 +95,7 @@ public class Containment implements ContainmentExpression {
     }
 
 
-    protected Class<? extends Locatable> getType() {
+    public Class<? extends Locatable> getType() {
         return type;
     }
 
