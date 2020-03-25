@@ -28,6 +28,8 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.nedap.archie.rm.RMObject;
+import com.nedap.archie.rm.datatypes.CodePhrase;
+import com.nedap.archie.rm.datavalues.DvCodedText;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -41,6 +43,7 @@ import org.ehrbase.client.aql.parameter.ParameterValue;
 import org.ehrbase.client.aql.query.Query;
 import org.ehrbase.client.aql.record.Record;
 import org.ehrbase.client.aql.record.RecordImp;
+import org.ehrbase.client.classgenerator.EnumValueSet;
 import org.ehrbase.client.exception.ClientException;
 import org.ehrbase.client.flattener.Flattener;
 import org.ehrbase.client.openehrclient.AqlEndpoint;
@@ -50,10 +53,7 @@ import org.ehrbase.serialisation.JacksonUtil;
 import java.io.IOException;
 import java.net.URI;
 import java.time.temporal.TemporalAccessor;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.ehrbase.client.openehrclient.defaultrestclient.DefaultRestClient.OBJECT_MAPPER;
 import static org.ehrbase.client.openehrclient.defaultrestclient.DefaultRestClient.checkStatus;
@@ -126,6 +126,19 @@ public class DefaultRestAqlEndpoint implements AqlEndpoint {
         Object object;
         if (aClass.isAnnotationPresent(Entity.class)) {
             object = new Flattener().flatten(AQL_OBJECT_MAPPER.readValue(valueAsString, RMObject.class), aClass);
+        } else if (EnumValueSet.class.isAssignableFrom(aClass)) {
+            RMObject rmObject = AQL_OBJECT_MAPPER.readValue(valueAsString, RMObject.class);
+            final String codeString;
+            if (CodePhrase.class.isAssignableFrom(rmObject.getClass())) {
+                codeString = ((CodePhrase) rmObject).getCodeString();
+            } else {
+                codeString = ((DvCodedText) rmObject).getDefiningCode().getCodeString();
+            }
+            object = Arrays.stream(aClass.getEnumConstants())
+                    .map(e -> (EnumValueSet) e)
+                    .filter(e -> e.getCode().equals(codeString))
+                    .findAny()
+                    .orElseThrow(() -> new ClientException(String.format("Unknown code %s for %s", codeString, aClass.getSimpleName())));
         } else {
             object = AQL_OBJECT_MAPPER.readValue(valueAsString, aClass);
         }

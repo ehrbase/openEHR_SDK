@@ -21,10 +21,11 @@ package org.ehrbase.client.aql.record;
 
 import org.ehrbase.client.aql.field.AqlField;
 
-public class RecordImp<T1, T2>
+public class RecordImp<T1, T2, T3>
         implements
         Record1<T1>,
-        Record2<T1, T2> {
+        Record2<T1, T2>,
+        Record3<T1, T2, T3> {
 
     private final AqlField<?>[] aqlFields;
     private final Object[] values;
@@ -45,6 +46,11 @@ public class RecordImp<T1, T2>
     }
 
     @Override
+    public AqlField<T3> field3() {
+        return (AqlField<T3>) field(2);
+    }
+
+    @Override
     public T1 value1() {
         return (T1) value(0);
     }
@@ -52,6 +58,11 @@ public class RecordImp<T1, T2>
     @Override
     public T2 value2() {
         return (T2) value(1);
+    }
+
+    @Override
+    public T3 value3() {
+        return (T3) value(2);
     }
 
     @Override

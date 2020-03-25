@@ -30,10 +30,12 @@ import org.ehrbase.client.aql.parameter.ParameterValue;
 import org.ehrbase.client.aql.query.EntityQuery;
 import org.ehrbase.client.aql.query.Query;
 import org.ehrbase.client.aql.record.Record2;
+import org.ehrbase.client.aql.record.Record3;
 import org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev0composition.EhrbaseBloodPressureSimpleDeV0Composition;
 import org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev0composition.EhrbaseBloodPressureSimpleDeV0CompositionContainment;
 import org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev0composition.definition.BloodPressureTrainingSampleObservation;
 import org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev0composition.definition.BloodPressureTrainingSampleObservationContainment;
+import org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev0composition.definition.CuffSizeDefiningcode;
 import org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev0composition.definition.KorotkoffSoundsDefiningcode;
 import org.ehrbase.client.openehrclient.OpenEhrClient;
 import org.ehrbase.client.openehrclient.VersionUid;
@@ -136,20 +138,22 @@ public class DefaultRestAqlEndpointTestIT {
 
         containmentComposition.setContains(containmentObservation);
 
-        EntityQuery<Record2<TemporalAccessor, BloodPressureTrainingSampleObservation>> entityQuery = Query.buildEntityQuery(
+        EntityQuery<Record3<TemporalAccessor, BloodPressureTrainingSampleObservation, CuffSizeDefiningcode>> entityQuery = Query.buildEntityQuery(
                 containmentComposition,
                 containmentComposition.START_TIME_VALUE,
-                containmentObservation.BLOOD_PRESSURE_TRAINING_SAMPLE_OBSERVATION
+                containmentObservation.BLOOD_PRESSURE_TRAINING_SAMPLE_OBSERVATION,
+                containmentObservation.CUFF_SIZE_DEFININGCODE
         );
         Parameter<UUID> ehrIdParameter = entityQuery.buildParameter();
         entityQuery.where(Condition.equal(EhrFields.EHR_ID(), ehrIdParameter));
 
-        List<Record2<TemporalAccessor, BloodPressureTrainingSampleObservation>> actual = openEhrClient.aqlEndpoint().execute(entityQuery, ehrIdParameter.setValue(ehr));
+        List<Record3<TemporalAccessor, BloodPressureTrainingSampleObservation, CuffSizeDefiningcode>> actual = openEhrClient.aqlEndpoint().execute(entityQuery, ehrIdParameter.setValue(ehr));
         assertThat(actual).size().isEqualTo(2);
 
-        Record2<TemporalAccessor, BloodPressureTrainingSampleObservation> record1 = actual.get(0);
+        Record3<TemporalAccessor, BloodPressureTrainingSampleObservation, CuffSizeDefiningcode> record1 = actual.get(0);
         assertThat(record1.value1()).isEqualTo(OffsetDateTime.of(2019, 04, 03, 22, 00, 00, 00, ZoneOffset.UTC));
         assertThat(record1.value2().getKorotkoffSoundsDefiningcode()).isEqualTo(KorotkoffSoundsDefiningcode.FIFTHSOUND);
+        assertThat(record1.value3()).isEqualTo(CuffSizeDefiningcode.ADULT);
 
     }
 

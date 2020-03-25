@@ -27,6 +27,7 @@ import org.ehrbase.client.aql.field.SelectAqlField;
 import org.ehrbase.client.aql.record.Record;
 import org.ehrbase.client.aql.record.Record1;
 import org.ehrbase.client.aql.record.Record2;
+import org.ehrbase.client.aql.record.Record3;
 
 import java.util.Arrays;
 
@@ -48,6 +49,10 @@ public interface Query<T extends Record> {
         return new NativeQuery<>(aql, AqlField.create(expected1), AqlField.create(expected2));
     }
 
+    static <T1, T2, T3> Query<Record3<T1, T2, T3>> buildNativeQuery(String aql, Class<T1> expected1, Class<T2> expected2, Class<T3> expected3) {
+        return new NativeQuery<>(aql, AqlField.create(expected1), AqlField.create(expected2), AqlField.create(expected3));
+    }
+
     static Containment buildContainment(Class<?> entityClass) {
         Archetype annotation = entityClass.getAnnotation(Archetype.class);
         return new Containment(annotation.value());
@@ -63,5 +68,9 @@ public interface Query<T extends Record> {
 
     static <T1, T2> EntityQuery<Record2<T1, T2>> buildEntityQuery(ContainmentExpression containment, SelectAqlField<T1> selectField1, SelectAqlField<T2> selectField2) {
         return new EntityQuery<>(containment, selectField1, selectField2);
+    }
+
+    static <T1, T2, T3> EntityQuery<Record3<T1, T2, T3>> buildEntityQuery(ContainmentExpression containment, SelectAqlField<T1> selectField1, SelectAqlField<T2> selectField2, SelectAqlField<T3> selectField3) {
+        return new EntityQuery<>(containment, selectField1, selectField2, selectField3);
     }
 }
