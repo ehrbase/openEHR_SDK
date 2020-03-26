@@ -20,38 +20,31 @@
 package org.ehrbase.client.aql.containment;
 
 import com.nedap.archie.rm.archetyped.Locatable;
-import com.nedap.archie.rm.composition.Composition;
-import com.nedap.archie.rm.composition.Observation;
+import com.nedap.archie.rminfo.ArchieRMInfoLookup;
 import org.apache.commons.lang3.StringUtils;
 import org.ehrbase.client.aql.query.EntityQuery;
-import org.ehrbase.client.exception.ClientException;
 
 public class Containment implements ContainmentExpression {
+
+    private static final ArchieRMInfoLookup RM_INFO_LOOKUP = ArchieRMInfoLookup.getInstance();
 
     private final Class<? extends Locatable> type;
     private final String archetype;
     private EntityQuery<?> query;
     private ContainmentExpression contains;
+    private String typeName;
 
 
     public Containment(String archetype) {
         this.archetype = archetype;
-        String typeName = StringUtils.substringBetween(archetype, "openEHR-EHR-", ".");
+        typeName = StringUtils.substringBetween(archetype, "openEHR-EHR-", ".");
         if (StringUtils.isBlank(typeName)) {
             typeName = archetype;
         }
-        switch (typeName) {
-            case "COMPOSITION":
-                type = Composition.class;
-                break;
-            case "OBSERVATION":
-                type = Observation.class;
-                break;
-            case "EHR":
-                type = null;
-                break;
-            default:
-                throw new ClientException(String.format("Unknown type %s", typeName));
+        if ("EHR".equals(typeName)) {
+            type = null;
+        } else {
+            type = RM_INFO_LOOKUP.getClass(typeName);
         }
     }
 
@@ -59,7 +52,7 @@ public class Containment implements ContainmentExpression {
     public String buildAQL() {
         StringBuilder sb = new StringBuilder();
         sb
-                .append(type.getSimpleName().toUpperCase())
+                .append(typeName.toUpperCase())
                 .append(" ")
                 .append(getVariableName())
                 .append("[").append(archetype).append("]");
@@ -96,4 +89,6 @@ public class Containment implements ContainmentExpression {
     public void setContains(ContainmentExpression contains) {
         this.contains = contains;
     }
+
+
 }
