@@ -147,11 +147,6 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.reflections</groupId>
-            <artifactId>reflections</artifactId>
-            <version>0.9.12</version>
-        </dependency>
-        <dependency>
             <groupId>org.jooq</groupId>
             <artifactId>joor</artifactId>
             <version>0.9.12</version>
