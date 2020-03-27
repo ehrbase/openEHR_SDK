@@ -45,83 +45,83 @@ public class BodyTemperatureAnyEventIntervalEvent implements BodyTemperatureAnyE
     @Path("/math_function|defining_code")
     private MathFunctionDefiningcode mathFunctionDefiningcode;
 
-    public void setTimeValue(TemporalAccessor timeValue) {
-        this.timeValue = timeValue;
-    }
-
     public TemporalAccessor getTimeValue() {
         return this.timeValue;
     }
 
-    public void setTemperatureMagnitude(Double temperatureMagnitude) {
-        this.temperatureMagnitude = temperatureMagnitude;
+    public void setTimeValue(TemporalAccessor timeValue) {
+        this.timeValue = timeValue;
     }
 
     public Double getTemperatureMagnitude() {
         return this.temperatureMagnitude;
     }
 
-    public void setTemperatureUnits(String temperatureUnits) {
-        this.temperatureUnits = temperatureUnits;
+    public void setTemperatureMagnitude(Double temperatureMagnitude) {
+        this.temperatureMagnitude = temperatureMagnitude;
     }
 
     public String getTemperatureUnits() {
         return this.temperatureUnits;
     }
 
-    public void setDescriptionOfThermalStressValue(String descriptionOfThermalStressValue) {
-        this.descriptionOfThermalStressValue = descriptionOfThermalStressValue;
+    public void setTemperatureUnits(String temperatureUnits) {
+        this.temperatureUnits = temperatureUnits;
     }
 
     public String getDescriptionOfThermalStressValue() {
         return this.descriptionOfThermalStressValue;
     }
 
-    public void setExertion(Cluster exertion) {
-        this.exertion = exertion;
+    public void setDescriptionOfThermalStressValue(String descriptionOfThermalStressValue) {
+        this.descriptionOfThermalStressValue = descriptionOfThermalStressValue;
     }
 
     public Cluster getExertion() {
         return this.exertion;
     }
 
-    public void setCurrentDayOfMenstrualCycleMagnitude(Long currentDayOfMenstrualCycleMagnitude) {
-        this.currentDayOfMenstrualCycleMagnitude = currentDayOfMenstrualCycleMagnitude;
+    public void setExertion(Cluster exertion) {
+        this.exertion = exertion;
     }
 
     public Long getCurrentDayOfMenstrualCycleMagnitude() {
         return this.currentDayOfMenstrualCycleMagnitude;
     }
 
-    public void setEnvironmentalConditions(List<Cluster> environmentalConditions) {
-        this.environmentalConditions = environmentalConditions;
+    public void setCurrentDayOfMenstrualCycleMagnitude(Long currentDayOfMenstrualCycleMagnitude) {
+        this.currentDayOfMenstrualCycleMagnitude = currentDayOfMenstrualCycleMagnitude;
     }
 
     public List<Cluster> getEnvironmentalConditions() {
         return this.environmentalConditions;
     }
 
-    public void setWidthValue(TemporalAmount widthValue) {
-        this.widthValue = widthValue;
+    public void setEnvironmentalConditions(List<Cluster> environmentalConditions) {
+        this.environmentalConditions = environmentalConditions;
     }
 
     public TemporalAmount getWidthValue() {
         return this.widthValue;
     }
 
-    public void setBodyExposure(BodyTemperatureBodyExposureChoiceState bodyExposure) {
-        this.bodyExposure = bodyExposure;
+    public void setWidthValue(TemporalAmount widthValue) {
+        this.widthValue = widthValue;
     }
 
     public BodyTemperatureBodyExposureChoiceState getBodyExposure() {
         return this.bodyExposure;
     }
 
-    public void setMathFunctionDefiningcode(MathFunctionDefiningcode mathFunctionDefiningcode) {
-        this.mathFunctionDefiningcode = mathFunctionDefiningcode;
+    public void setBodyExposure(BodyTemperatureBodyExposureChoiceState bodyExposure) {
+        this.bodyExposure = bodyExposure;
     }
 
     public MathFunctionDefiningcode getMathFunctionDefiningcode() {
         return this.mathFunctionDefiningcode;
+    }
+
+    public void setMathFunctionDefiningcode(MathFunctionDefiningcode mathFunctionDefiningcode) {
+        this.mathFunctionDefiningcode = mathFunctionDefiningcode;
     }
 }

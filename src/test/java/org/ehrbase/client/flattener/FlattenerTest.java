@@ -38,7 +38,7 @@ import org.ehrbase.client.classgenerator.examples.episodeofcarecomposition.defin
 import org.ehrbase.client.classgenerator.examples.episodeofcarecomposition.definition.EpisodeofcareTeamElement;
 import org.ehrbase.client.classgenerator.examples.shareddefinition.MathFunctionDefiningcode;
 import org.ehrbase.client.classgenerator.examples.testalltypesenv1composition.TestAllTypesEnV1Composition;
-import org.ehrbase.client.classgenerator.examples.testalltypesenv1composition.definition.ChoiceDvcount;
+import org.ehrbase.client.classgenerator.examples.testalltypesenv1composition.definition.TestAllTypesChoiceDvcount;
 import org.ehrbase.client.templateprovider.TestDataTemplateProvider;
 import org.ehrbase.serialisation.CanonicalXML;
 import org.ehrbase.test_data.composition.CompositionTestDataCanonicalXML;
@@ -140,8 +140,8 @@ public class FlattenerTest {
         Flattener cut = new Flattener();
         TestAllTypesEnV1Composition actual = cut.flatten(composition, TestAllTypesEnV1Composition.class);
         assertThat(actual).isNotNull();
-        assertThat(actual.getTestAllTypes().get(0).getChoice().getClass()).isEqualTo(ChoiceDvcount.class);
-        assertThat(((ChoiceDvcount) actual.getTestAllTypes().get(0).getChoice()).getChoiceMagnitude()).isEqualTo(148L);
+        assertThat(actual.getTestAllTypes().get(0).getChoice().getClass()).isEqualTo(TestAllTypesChoiceDvcount.class);
+        assertThat(((TestAllTypesChoiceDvcount) actual.getTestAllTypes().get(0).getChoice()).getChoiceMagnitude()).isEqualTo(148L);
     }
 
     @Test

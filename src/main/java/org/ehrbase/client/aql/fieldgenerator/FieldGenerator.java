@@ -20,6 +20,7 @@
 package org.ehrbase.client.aql.fieldgenerator;
 
 import com.squareup.javapoet.*;
+import org.apache.commons.lang3.StringUtils;
 import org.ehrbase.client.annotations.Archetype;
 import org.ehrbase.client.annotations.Path;
 import org.ehrbase.client.aql.containment.Containment;
@@ -29,96 +30,89 @@ import org.ehrbase.client.aql.field.ListSelectAqlField;
 import org.ehrbase.client.aql.field.SelectAqlField;
 import org.ehrbase.client.classgenerator.ClassGeneratorResult;
 import org.ehrbase.ehr.encode.wrappers.SnakeCase;
-import org.reflections.ReflectionUtils;
-import org.reflections.Reflections;
-import org.reflections.scanners.ResourcesScanner;
-import org.reflections.scanners.SubTypesScanner;
 
 import javax.lang.model.element.Modifier;
-import java.lang.reflect.Field;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
-import java.util.Arrays;
 import java.util.List;
 
 public class FieldGenerator {
 
-    public ClassGeneratorResult generate(String rootPackage) {
+    public static final String NEW_FIELD_DEFINITION = "new $T<$T>($T.class, $S, $S, $T.class, this)";
+
+    public ClassGeneratorResult generate(List<JavaFile> files) {
         ClassGeneratorResult result = new ClassGeneratorResult();
 
-        Reflections reflections = new Reflections(rootPackage, new SubTypesScanner(false /* don't exclude Object.class */), new ResourcesScanner());
-        reflections.getSubTypesOf(Object.class)
-                .stream()
-                .filter(c -> c.isAnnotationPresent(Archetype.class))
-                .forEach(c -> result.addClass(c.getPackageName(), buildFieldClass(c)));
+        files.stream()
+                .filter(javaFile -> containsAnnotation(javaFile.typeSpec.annotations, Archetype.class))
+                .forEach(c -> result.addClass(c.packageName, buildFieldClass(c.typeSpec)));
         return result;
     }
 
-    private TypeSpec buildFieldClass(Class<?> c) {
-        TypeSpec.Builder builder = TypeSpec.classBuilder(c.getSimpleName() + "Containment");
+
+    private String extractAnnotationValue(List<AnnotationSpec> annotationSpecs, Class<?> annotation) {
+        return annotationSpecs.stream()
+                .filter(a -> a.type.toString().equals(annotation.getName()))
+                .map(a -> a.members.get("value")).map(s -> s.get(0))
+                .map(Object::toString).map(s -> StringUtils.substringBetween(s, "\""))
+                .findAny().orElse("");
+    }
+
+    private boolean containsAnnotation(List<AnnotationSpec> annotationSpecs, Class<?> annotation) {
+        return annotationSpecs.stream()
+                .map(a -> a.type)
+                .map(TypeName::toString)
+                .anyMatch(s -> s.equals(annotation.getName()));
+    }
+
+    private TypeSpec buildFieldClass(TypeSpec c) {
+        TypeSpec.Builder builder = TypeSpec.classBuilder(c.name + "Containment");
         builder
                 .superclass(ClassName.get(Containment.class))
                 .addModifiers(Modifier.PUBLIC);
         MethodSpec constructor = MethodSpec
                 .constructorBuilder()
                 .addModifiers(Modifier.PRIVATE)
-                .addStatement("super($S)", c.getAnnotation(Archetype.class).value())
+                .addStatement("super($S)", extractAnnotationValue(c.annotations, Archetype.class))
                 .build();
         builder.addMethod(constructor);
         builder.addMethod(MethodSpec.methodBuilder("getInstance")
                 .addModifiers(Modifier.PUBLIC)
                 .addModifiers(Modifier.STATIC)
-                .returns(ClassName.get("", c.getSimpleName() + "Containment"))
-                .addStatement("return new $T()", ClassName.get("", c.getSimpleName() + "Containment"))
+                .returns(ClassName.get("", c.name + "Containment"))
+                .addStatement("return new $T()", ClassName.get("", c.name + "Containment"))
                 .build());
         FieldSpec.Builder selfField;
 
 
-        selfField = FieldSpec.builder(ParameterizedTypeName.get(ClassName.get(SelectAqlField.class), ClassName.get(c)), new SnakeCase(c.getSimpleName()).camelToUpperSnake(), Modifier.PUBLIC);
-        selfField.initializer("new $T<$T>($T.class, $S, $S, $T.class, this)", ClassName.get(AqlFieldImp.class), ClassName.get(c), ClassName.get(c), "", c.getSimpleName(), ClassName.get(c));
+        ClassName baseClassName = ClassName.get("", c.name);
+        selfField = FieldSpec.builder(ParameterizedTypeName.get(ClassName.get(SelectAqlField.class), baseClassName), new SnakeCase(c.name).camelToUpperSnake(), Modifier.PUBLIC);
+        selfField.initializer(NEW_FIELD_DEFINITION, ClassName.get(AqlFieldImp.class), baseClassName, baseClassName, "", c.name, baseClassName);
         builder.addField(selfField.build());
 
-        Arrays.stream(c.getDeclaredFields())
-                .filter(f -> f.isAnnotationPresent(Path.class))
-                .forEach(f -> builder.addField(buildField(f, c)));
+        c.fieldSpecs.stream()
+                .filter(javaFile -> containsAnnotation(javaFile.annotations, Path.class))
+                .forEach(f -> builder.addField(buildAQLField(baseClassName, f.name, extractAnnotationValue(f.annotations, Path.class), f.type)));
 
         return builder.build();
     }
 
-    private FieldSpec buildField(Field f, Class<?> baseClass) {
+    private FieldSpec buildAQLField(ClassName baseClass, String name, String path, TypeName type) {
         final FieldSpec.Builder builder;
 
-        if (List.class.isAssignableFrom(f.getType())) {
-            TypeName typeName = ParameterizedTypeName.get(ClassName.get(ListSelectAqlField.class), ClassName.get(unwarap(f)));
-            builder = FieldSpec.builder(typeName, new SnakeCase(f.getName()).camelToUpperSnake(), Modifier.PUBLIC);
-            builder.initializer("new $T<$T>($T.class, $S, $S, $T.class, this)", ClassName.get(ListAqlFieldImp.class), ClassName.get(unwarap(f)), ClassName.get(baseClass), f.getAnnotation(Path.class).value(), f.getName(), ClassName.get(unwarap(f)));
+        if (ParameterizedTypeName.class.isAssignableFrom(type.getClass())) {
+            TypeName typeName = ParameterizedTypeName.get(ClassName.get(ListSelectAqlField.class), unwarap((ParameterizedTypeName) type));
+            builder = FieldSpec.builder(typeName, new SnakeCase(name).camelToUpperSnake(), Modifier.PUBLIC);
+            builder.initializer(NEW_FIELD_DEFINITION, ClassName.get(ListAqlFieldImp.class), unwarap((ParameterizedTypeName) type), baseClass, path, name, unwarap((ParameterizedTypeName) type));
         } else {
-            TypeName typeName = ParameterizedTypeName.get(ClassName.get(SelectAqlField.class), ClassName.get(f.getType()));
-            builder = FieldSpec.builder(typeName, new SnakeCase(f.getName()).camelToUpperSnake(), Modifier.PUBLIC);
-            builder.initializer("new $T<$T>($T.class, $S, $S, $T.class, this)", ClassName.get(AqlFieldImp.class), ClassName.get(f.getType()), ClassName.get(baseClass), f.getAnnotation(Path.class).value(), f.getName(), ClassName.get(f.getType()));
+            TypeName typeName = ParameterizedTypeName.get(ClassName.get(SelectAqlField.class), type);
+            builder = FieldSpec.builder(typeName, new SnakeCase(name).camelToUpperSnake(), Modifier.PUBLIC);
+            builder.initializer(NEW_FIELD_DEFINITION, ClassName.get(AqlFieldImp.class), type, baseClass, path, name, type);
         }
         return builder.build();
     }
 
 
-    public Class<?> unwarap(Field field) {
-        try {
-            if (List.class.isAssignableFrom(field.getType())) {
-                Type actualTypeArgument = ((ParameterizedType) field.getGenericType()).getActualTypeArguments()[0];
-
-                Class<?> aClass = ReflectionUtils.forName(actualTypeArgument.getTypeName(), this.getClass().getClassLoader());
-                if (aClass != null) {
-                    return aClass;
-                } else {
-                    return null;
-                }
-
-            } else {
-                return field.getType();
-            }
-        } catch (Throwable e) {
-            return null;
-        }
+    private TypeName unwarap(ParameterizedTypeName field) {
+        return field.typeArguments.get(0);
     }
 
 }

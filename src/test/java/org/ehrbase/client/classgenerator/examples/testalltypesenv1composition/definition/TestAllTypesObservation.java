@@ -82,148 +82,148 @@ public class TestAllTypesObservation {
     @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0011]/value|value")
     private TemporalAccessor datetimeAnyValue;
 
-    public void setMultimediaAny(DvMultimedia multimediaAny) {
-        this.multimediaAny = multimediaAny;
-    }
-
     public DvMultimedia getMultimediaAny() {
         return this.multimediaAny;
     }
 
-    public void setLanguage(Language language) {
-        this.language = language;
+    public void setMultimediaAny(DvMultimedia multimediaAny) {
+        this.multimediaAny = multimediaAny;
     }
 
     public Language getLanguage() {
         return this.language;
     }
 
-    public void setTimeValue(TemporalAccessor timeValue) {
-        this.timeValue = timeValue;
+    public void setLanguage(Language language) {
+        this.language = language;
     }
 
     public TemporalAccessor getTimeValue() {
         return this.timeValue;
     }
 
-    public void setParsableAny(DvParsable parsableAny) {
-        this.parsableAny = parsableAny;
+    public void setTimeValue(TemporalAccessor timeValue) {
+        this.timeValue = timeValue;
     }
 
     public DvParsable getParsableAny() {
         return this.parsableAny;
     }
 
-    public void setIdentifier(DvIdentifier identifier) {
-        this.identifier = identifier;
+    public void setParsableAny(DvParsable parsableAny) {
+        this.parsableAny = parsableAny;
     }
 
     public DvIdentifier getIdentifier() {
         return this.identifier;
     }
 
-    public void setTextValue(String textValue) {
-        this.textValue = textValue;
+    public void setIdentifier(DvIdentifier identifier) {
+        this.identifier = identifier;
     }
 
     public String getTextValue() {
         return this.textValue;
     }
 
-    public void setCodedTextDefiningcode(CodePhrase codedTextDefiningcode) {
-        this.codedTextDefiningcode = codedTextDefiningcode;
+    public void setTextValue(String textValue) {
+        this.textValue = textValue;
     }
 
     public CodePhrase getCodedTextDefiningcode() {
         return this.codedTextDefiningcode;
     }
 
-    public void setProportionAny(DvProportion proportionAny) {
-        this.proportionAny = proportionAny;
+    public void setCodedTextDefiningcode(CodePhrase codedTextDefiningcode) {
+        this.codedTextDefiningcode = codedTextDefiningcode;
     }
 
     public DvProportion getProportionAny() {
         return this.proportionAny;
     }
 
-    public void setTimeValueTime(TemporalAccessor timeValueTime) {
-        this.timeValueTime = timeValueTime;
+    public void setProportionAny(DvProportion proportionAny) {
+        this.proportionAny = proportionAny;
     }
 
     public TemporalAccessor getTimeValueTime() {
         return this.timeValueTime;
     }
 
-    public void setCodedTextTerminologyDefiningcode(CodePhrase codedTextTerminologyDefiningcode) {
-        this.codedTextTerminologyDefiningcode = codedTextTerminologyDefiningcode;
+    public void setTimeValueTime(TemporalAccessor timeValueTime) {
+        this.timeValueTime = timeValueTime;
     }
 
     public CodePhrase getCodedTextTerminologyDefiningcode() {
         return this.codedTextTerminologyDefiningcode;
     }
 
-    public void setQuantityMagnitude(Double quantityMagnitude) {
-        this.quantityMagnitude = quantityMagnitude;
+    public void setCodedTextTerminologyDefiningcode(CodePhrase codedTextTerminologyDefiningcode) {
+        this.codedTextTerminologyDefiningcode = codedTextTerminologyDefiningcode;
     }
 
     public Double getQuantityMagnitude() {
         return this.quantityMagnitude;
     }
 
-    public void setQuantityUnits(String quantityUnits) {
-        this.quantityUnits = quantityUnits;
+    public void setQuantityMagnitude(Double quantityMagnitude) {
+        this.quantityMagnitude = quantityMagnitude;
     }
 
     public String getQuantityUnits() {
         return this.quantityUnits;
     }
 
-    public void setCountMagnitude(Long countMagnitude) {
-        this.countMagnitude = countMagnitude;
+    public void setQuantityUnits(String quantityUnits) {
+        this.quantityUnits = quantityUnits;
     }
 
     public Long getCountMagnitude() {
         return this.countMagnitude;
     }
 
-    public void setDateValue(Temporal dateValue) {
-        this.dateValue = dateValue;
+    public void setCountMagnitude(Long countMagnitude) {
+        this.countMagnitude = countMagnitude;
     }
 
     public Temporal getDateValue() {
         return this.dateValue;
     }
 
-    public void setSubject(PartyProxy subject) {
-        this.subject = subject;
+    public void setDateValue(Temporal dateValue) {
+        this.dateValue = dateValue;
     }
 
     public PartyProxy getSubject() {
         return this.subject;
     }
 
-    public void setOriginValue(TemporalAccessor originValue) {
-        this.originValue = originValue;
+    public void setSubject(PartyProxy subject) {
+        this.subject = subject;
     }
 
     public TemporalAccessor getOriginValue() {
         return this.originValue;
     }
 
-    public void setDurationAnyValue(TemporalAmount durationAnyValue) {
-        this.durationAnyValue = durationAnyValue;
+    public void setOriginValue(TemporalAccessor originValue) {
+        this.originValue = originValue;
     }
 
     public TemporalAmount getDurationAnyValue() {
         return this.durationAnyValue;
     }
 
-    public void setOrdinal(DvOrdinal ordinal) {
-        this.ordinal = ordinal;
+    public void setDurationAnyValue(TemporalAmount durationAnyValue) {
+        this.durationAnyValue = durationAnyValue;
     }
 
     public DvOrdinal getOrdinal() {
         return this.ordinal;
+    }
+
+    public void setOrdinal(DvOrdinal ordinal) {
+        this.ordinal = ordinal;
     }
 
     public void setBooleanValue(Boolean booleanValue) {
@@ -234,19 +234,19 @@ public class TestAllTypesObservation {
         return this.booleanValue;
     }
 
-    public void setDatetimeValue(TemporalAccessor datetimeValue) {
-        this.datetimeValue = datetimeValue;
-    }
-
     public TemporalAccessor getDatetimeValue() {
         return this.datetimeValue;
     }
 
-    public void setDatetimeAnyValue(TemporalAccessor datetimeAnyValue) {
-        this.datetimeAnyValue = datetimeAnyValue;
+    public void setDatetimeValue(TemporalAccessor datetimeValue) {
+        this.datetimeValue = datetimeValue;
     }
 
     public TemporalAccessor getDatetimeAnyValue() {
         return this.datetimeAnyValue;
+    }
+
+    public void setDatetimeAnyValue(TemporalAccessor datetimeAnyValue) {
+        this.datetimeAnyValue = datetimeAnyValue;
     }
 }

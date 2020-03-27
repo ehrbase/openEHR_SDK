@@ -18,15 +18,19 @@
 package org.ehrbase.client.classgenerator;
 
 import com.squareup.javapoet.FieldSpec;
+import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.TypeSpec;
 import org.apache.xmlbeans.XmlException;
 import org.assertj.core.groups.Tuple;
+import org.ehrbase.client.aql.fieldgenerator.FieldGenerator;
 import org.ehrbase.test_data.operationaltemplate.OperationalTemplateTestData;
 import org.junit.Test;
 import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
 import org.openehr.schemas.v1.TemplateDocument;
 
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -37,6 +41,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class ClassGeneratorTest {
 
     public static final String PACKAGE_NAME = "org.ehrbase.client.classgenerator.examples";
+
+    private static final boolean WRITE_FILES = false;
 
     @Test
     public void testGenerate() throws IOException, XmlException {
@@ -100,9 +106,20 @@ public class ClassGeneratorTest {
                 );
 
 
-        //generate.createFiles(Paths.get(".", "src/test/java/"));
+        writeFiles(generate);
 
 
+    }
+
+    private void writeFiles(ClassGeneratorResult generate) throws IOException {
+        if (WRITE_FILES) {
+            Path path = Paths.get(".", "src/test/java/");
+            // FileUtils.cleanDirectory(Paths.get(path,PACKAGE_NAME.replace(".","/")).toFile());
+            List<JavaFile> generateFiles = generate.writeFiles(path);
+
+            FieldGenerator fieldGenerator = new FieldGenerator();
+            fieldGenerator.generate(generateFiles).writeFiles(path);
+        }
     }
 
 
@@ -169,7 +186,7 @@ public class ClassGeneratorTest {
                         new Tuple("participations", "java.util.List<com.nedap.archie.rm.generic.Participation>")
                 );
 
-        //     generate.createFiles(Paths.get(".", "src/test/java/"));
+        writeFiles(generate);
 
 
     }
@@ -186,7 +203,7 @@ public class ClassGeneratorTest {
 
         assertThat(fieldSpecs).size().isEqualTo(27);
 
-        //generate.createFiles(Paths.get(".", "src/test/java/"));
+        writeFiles(generate);
 
 
     }
@@ -255,7 +272,7 @@ public class ClassGeneratorTest {
                 );
 
 
-           //generate.createFiles(Paths.get(".", "src/test/java/"));
+        writeFiles(generate);
 
     }
 
@@ -272,7 +289,8 @@ public class ClassGeneratorTest {
                 .map(t -> t.fieldSpecs).flatMap(List::stream).collect(Collectors.toList());
 
         assertThat(fieldSpecs).size().isEqualTo(72L);
-        //    generate.createFiles(Paths.get(".", "src/test/java/"));
+
+        writeFiles(generate);
 
     }
 

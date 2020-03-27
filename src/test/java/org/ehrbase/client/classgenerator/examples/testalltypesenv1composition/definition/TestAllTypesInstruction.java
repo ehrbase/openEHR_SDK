@@ -34,59 +34,59 @@ public class TestAllTypesInstruction {
     @Path("/activities[at0001]/description[at0002]/items[at0004]/value|value")
     private TemporalAccessor partialDatetimeValue;
 
-    public void setNarrativeValue(String narrativeValue) {
-        this.narrativeValue = narrativeValue;
-    }
-
     public String getNarrativeValue() {
         return this.narrativeValue;
     }
 
-    public void setLanguage(Language language) {
-        this.language = language;
+    public void setNarrativeValue(String narrativeValue) {
+        this.narrativeValue = narrativeValue;
     }
 
     public Language getLanguage() {
         return this.language;
     }
 
-    public void setDescription(ItemStructure description) {
-        this.description = description;
+    public void setLanguage(Language language) {
+        this.language = language;
     }
 
     public ItemStructure getDescription() {
         return this.description;
     }
 
-    public void setPartialDateValue(Temporal partialDateValue) {
-        this.partialDateValue = partialDateValue;
+    public void setDescription(ItemStructure description) {
+        this.description = description;
     }
 
     public Temporal getPartialDateValue() {
         return this.partialDateValue;
     }
 
-    public void setSubject(PartyProxy subject) {
-        this.subject = subject;
+    public void setPartialDateValue(Temporal partialDateValue) {
+        this.partialDateValue = partialDateValue;
     }
 
     public PartyProxy getSubject() {
         return this.subject;
     }
 
-    public void setCurrentActivity(String currentActivity) {
-        this.currentActivity = currentActivity;
+    public void setSubject(PartyProxy subject) {
+        this.subject = subject;
     }
 
     public String getCurrentActivity() {
         return this.currentActivity;
     }
 
-    public void setPartialDatetimeValue(TemporalAccessor partialDatetimeValue) {
-        this.partialDatetimeValue = partialDatetimeValue;
+    public void setCurrentActivity(String currentActivity) {
+        this.currentActivity = currentActivity;
     }
 
     public TemporalAccessor getPartialDatetimeValue() {
         return this.partialDatetimeValue;
+    }
+
+    public void setPartialDatetimeValue(TemporalAccessor partialDatetimeValue) {
+        this.partialDatetimeValue = partialDatetimeValue;
     }
 }

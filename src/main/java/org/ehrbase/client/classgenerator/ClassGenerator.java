@@ -29,6 +29,7 @@ import org.apache.commons.lang3.reflect.FieldUtils;
 import org.apache.commons.text.CaseUtils;
 import org.apache.xmlbeans.XmlException;
 import org.ehrbase.client.annotations.*;
+import org.ehrbase.client.aql.fieldgenerator.FieldGenerator;
 import org.ehrbase.client.classgenerator.config.RmClassGeneratorConfig;
 import org.ehrbase.client.exception.ClientException;
 import org.ehrbase.client.flattener.PathExtractor;
@@ -425,7 +426,9 @@ public class ClassGenerator {
 
         java.nio.file.Path fsRoot = Paths.get(cmd.getOptionValue("out"));
 
-        generate.createFiles(fsRoot);
+        List<JavaFile> generateFiles = generate.writeFiles(fsRoot);
+        FieldGenerator fieldGenerator = new FieldGenerator();
+        fieldGenerator.generate(generateFiles).writeFiles(fsRoot);
     }
 
     private static void showHelp() {

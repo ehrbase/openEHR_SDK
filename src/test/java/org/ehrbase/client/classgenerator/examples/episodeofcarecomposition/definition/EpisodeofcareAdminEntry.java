@@ -43,83 +43,83 @@ public class EpisodeofcareAdminEntry {
     @Path("/data[at0001]/items[at0012]/value|value")
     private URI careManagerValue;
 
-    public void setIdentifier(List<EpisodeofcareIdentifierElement> identifier) {
-        this.identifier = identifier;
-    }
-
     public List<EpisodeofcareIdentifierElement> getIdentifier() {
         return this.identifier;
     }
 
-    public void setTeam(List<EpisodeofcareTeamElement> team) {
-        this.team = team;
+    public void setIdentifier(List<EpisodeofcareIdentifierElement> identifier) {
+        this.identifier = identifier;
     }
 
     public List<EpisodeofcareTeamElement> getTeam() {
         return this.team;
     }
 
-    public void setStatusDefiningcode(StatusDefiningcode statusDefiningcode) {
-        this.statusDefiningcode = statusDefiningcode;
+    public void setTeam(List<EpisodeofcareTeamElement> team) {
+        this.team = team;
     }
 
     public StatusDefiningcode getStatusDefiningcode() {
         return this.statusDefiningcode;
     }
 
-    public void setLanguage(Language language) {
-        this.language = language;
+    public void setStatusDefiningcode(StatusDefiningcode statusDefiningcode) {
+        this.statusDefiningcode = statusDefiningcode;
     }
 
     public Language getLanguage() {
         return this.language;
     }
 
-    public void setDiagnosis(List<EpisodeofcareDiagnosisCluster> diagnosis) {
-        this.diagnosis = diagnosis;
+    public void setLanguage(Language language) {
+        this.language = language;
     }
 
     public List<EpisodeofcareDiagnosisCluster> getDiagnosis() {
         return this.diagnosis;
     }
 
-    public void setSubject(PartyProxy subject) {
-        this.subject = subject;
+    public void setDiagnosis(List<EpisodeofcareDiagnosisCluster> diagnosis) {
+        this.diagnosis = diagnosis;
     }
 
     public PartyProxy getSubject() {
         return this.subject;
     }
 
-    public void setManagingOrganizationValue(URI managingOrganizationValue) {
-        this.managingOrganizationValue = managingOrganizationValue;
+    public void setSubject(PartyProxy subject) {
+        this.subject = subject;
     }
 
     public URI getManagingOrganizationValue() {
         return this.managingOrganizationValue;
     }
 
-    public void setTypeValue(String typeValue) {
-        this.typeValue = typeValue;
+    public void setManagingOrganizationValue(URI managingOrganizationValue) {
+        this.managingOrganizationValue = managingOrganizationValue;
     }
 
     public String getTypeValue() {
         return this.typeValue;
     }
 
-    public void setPeriod(DvInterval period) {
-        this.period = period;
+    public void setTypeValue(String typeValue) {
+        this.typeValue = typeValue;
     }
 
     public DvInterval getPeriod() {
         return this.period;
     }
 
-    public void setCareManagerValue(URI careManagerValue) {
-        this.careManagerValue = careManagerValue;
+    public void setPeriod(DvInterval period) {
+        this.period = period;
     }
 
     public URI getCareManagerValue() {
         return this.careManagerValue;
+    }
+
+    public void setCareManagerValue(URI careManagerValue) {
+        this.careManagerValue = careManagerValue;
     }
 }

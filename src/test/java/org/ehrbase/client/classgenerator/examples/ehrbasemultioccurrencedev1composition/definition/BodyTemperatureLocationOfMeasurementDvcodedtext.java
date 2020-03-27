@@ -10,12 +10,12 @@ public class BodyTemperatureLocationOfMeasurementDvcodedtext implements BodyTemp
     @Path("|defining_code")
     private LocationOfMeasurementDefiningcode locationOfMeasurementDefiningcode;
 
+    public LocationOfMeasurementDefiningcode getLocationOfMeasurementDefiningcode() {
+        return this.locationOfMeasurementDefiningcode;
+    }
+
     public void setLocationOfMeasurementDefiningcode(
             LocationOfMeasurementDefiningcode locationOfMeasurementDefiningcode) {
         this.locationOfMeasurementDefiningcode = locationOfMeasurementDefiningcode;
-    }
-
-    public LocationOfMeasurementDefiningcode getLocationOfMeasurementDefiningcode() {
-        return this.locationOfMeasurementDefiningcode;
     }
 }
