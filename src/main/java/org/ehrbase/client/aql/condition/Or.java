@@ -19,22 +19,13 @@
 
 package org.ehrbase.client.aql.condition;
 
-import org.ehrbase.client.aql.field.SelectAqlField;
-import org.ehrbase.client.aql.parameter.Parameter;
-
-public class Equal<T> extends ComparisonOperator<T> {
-
-
-    protected Equal(SelectAqlField<T> field, T value) {
-        super(field, value);
-    }
-
-    protected Equal(SelectAqlField<T> field, Parameter<T> parameter) {
-        super(field, parameter);
+public class Or extends BinaryLogicalOperator {
+    public Or(Condition condition1, Condition condition2) {
+        super(condition1, condition2);
     }
 
     @Override
     protected String getSymbol() {
-        return "=";
+        return "or";
     }
 }

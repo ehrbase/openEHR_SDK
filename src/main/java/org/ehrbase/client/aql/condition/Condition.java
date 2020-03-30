@@ -34,4 +34,54 @@ public interface Condition {
     static <T> Condition equal(SelectAqlField<T> field, Parameter<T> parameter) {
         return new Equal<T>(field, parameter);
     }
+
+
+    static <T> Condition notEqual(SelectAqlField<T> field, T value) {
+        return new NotEqual<T>(field, value);
+    }
+
+    static <T> Condition notEqual(SelectAqlField<T> field, Parameter<T> parameter) {
+        return new NotEqual<T>(field, parameter);
+    }
+
+    static <T> Condition greaterOrEqual(SelectAqlField<T> field, T value) {
+        return new GreaterOrEqual<>(field, value);
+    }
+
+    static <T> Condition greaterOrEqual(SelectAqlField<T> field, Parameter<T> parameter) {
+        return new GreaterOrEqual<T>(field, parameter);
+    }
+
+    static <T> Condition greaterThen(SelectAqlField<T> field, T value) {
+        return new GreaterThan<>(field, value);
+    }
+
+    static <T> Condition greaterThen(SelectAqlField<T> field, Parameter<T> parameter) {
+        return new GreaterThan<>(field, parameter);
+    }
+
+
+    static <T> Condition lessOrEqual(SelectAqlField<T> field, T value) {
+        return new LessOrEqual<T>(field, value);
+    }
+
+    static <T> Condition lessOrEqual(SelectAqlField<T> field, Parameter<T> parameter) {
+        return new LessOrEqual<>(field, parameter);
+    }
+
+    static <T> Condition lessThen(SelectAqlField<T> field, T value) {
+        return new LessThan<>(field, value);
+    }
+
+    static <T> Condition lessThen(SelectAqlField<T> field, Parameter<T> parameter) {
+        return new LessThan<>(field, parameter);
+    }
+
+    static Condition and(Condition condition1, Condition condition2) {
+        return new And(condition1, condition2);
+    }
+
+    static Condition or(Condition condition1, Condition condition2) {
+        return new Or(condition1, condition2);
+    }
 }

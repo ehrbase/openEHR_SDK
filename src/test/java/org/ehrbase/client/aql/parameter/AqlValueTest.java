@@ -36,5 +36,6 @@ public class AqlValueTest {
         assertThat(new AqlValue(34.56634556d).buildAql()).isEqualTo("34.56634556");
         assertThat(new AqlValue("Test").buildAql()).isEqualTo("'Test'");
         assertThat(new AqlValue(OffsetDateTime.of(2019, 04, 03, 22, 00, 00, 00, ZoneOffset.UTC)).buildAql()).isEqualTo("'2019-04-03T22:00:00Z'");
+        assertThat(new AqlValue(true).buildAql()).isEqualTo("true");
     }
 }

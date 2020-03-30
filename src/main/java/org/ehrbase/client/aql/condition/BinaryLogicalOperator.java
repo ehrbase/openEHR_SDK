@@ -19,22 +19,30 @@
 
 package org.ehrbase.client.aql.condition;
 
-import org.ehrbase.client.aql.field.SelectAqlField;
-import org.ehrbase.client.aql.parameter.Parameter;
+public abstract class BinaryLogicalOperator implements Condition {
 
-public class Equal<T> extends ComparisonOperator<T> {
+    private final Condition condition1;
+    private final Condition condition2;
 
-
-    protected Equal(SelectAqlField<T> field, T value) {
-        super(field, value);
-    }
-
-    protected Equal(SelectAqlField<T> field, Parameter<T> parameter) {
-        super(field, parameter);
+    public BinaryLogicalOperator(Condition condition1, Condition condition2) {
+        this.condition1 = condition1;
+        this.condition2 = condition2;
     }
 
     @Override
-    protected String getSymbol() {
-        return "=";
+    public String buildAql() {
+        StringBuilder sb = new StringBuilder();
+        sb
+                .append("(")
+                .append(condition1.buildAql())
+                .append(" ")
+                .append(getSymbol())
+                .append(" ")
+                .append(condition2.buildAql())
+                .append(")");
+
+        return sb.toString();
     }
+
+    protected abstract String getSymbol();
 }

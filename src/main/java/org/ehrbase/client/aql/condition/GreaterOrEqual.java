@@ -22,19 +22,19 @@ package org.ehrbase.client.aql.condition;
 import org.ehrbase.client.aql.field.SelectAqlField;
 import org.ehrbase.client.aql.parameter.Parameter;
 
-public class Equal<T> extends ComparisonOperator<T> {
+public class GreaterOrEqual<T> extends ComparisonOperator<T> {
 
 
-    protected Equal(SelectAqlField<T> field, T value) {
+    protected GreaterOrEqual(SelectAqlField<T> field, T value) {
         super(field, value);
     }
 
-    protected Equal(SelectAqlField<T> field, Parameter<T> parameter) {
+    protected GreaterOrEqual(SelectAqlField<T> field, Parameter<T> parameter) {
         super(field, parameter);
     }
 
     @Override
     protected String getSymbol() {
-        return "=";
+        return ">=";
     }
 }

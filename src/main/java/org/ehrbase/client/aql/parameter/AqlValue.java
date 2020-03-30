@@ -42,6 +42,9 @@ public class AqlValue {
             return value.toString();
         } else if (Double.class.isAssignableFrom(value.getClass()) || Float.class.isAssignableFrom(value.getClass())) {
             return value.toString();
+        }
+        if (Boolean.class.isAssignableFrom(value.getClass())) {
+            return value.toString();
         } else if (String.class.isAssignableFrom(value.getClass()) || UUID.class.isAssignableFrom(value.getClass())) {
             return StringUtils.wrap(value.toString(), "'");
         } else if (TemporalAccessor.class.isAssignableFrom(value.getClass())) {
