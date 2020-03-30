@@ -19,31 +19,22 @@
 
 package org.ehrbase.client.aql.parameter;
 
-public class ParameterValue<T> {
-    private final Parameter<T> parameter;
-    private final T value;
+import org.junit.Test;
 
-    public ParameterValue(Parameter<T> parameter, T value) {
-        this.parameter = parameter;
-        this.value = value;
-    }
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 
-    public ParameterValue(String parameterName, T value) {
-        this.parameter = new Parameter(parameterName);
-        this.value = value;
-        //check that is valid AQl value
-        buildAql();
-    }
+import static org.assertj.core.api.Assertions.assertThat;
 
-    public Parameter<T> getParameter() {
-        return parameter;
-    }
+public class AqlValueTest {
 
-    public T getValue() {
-        return value;
-    }
-
-    public String buildAql() {
-        return new AqlValue(value).buildAql();
+    @Test
+    public void testBuildAql() {
+        assertThat(new AqlValue(123).buildAql()).isEqualTo("123");
+        assertThat(new AqlValue(345566576767L).buildAql()).isEqualTo("345566576767");
+        assertThat(new AqlValue(34.566f).buildAql()).isEqualTo("34.566");
+        assertThat(new AqlValue(34.56634556d).buildAql()).isEqualTo("34.56634556");
+        assertThat(new AqlValue("Test").buildAql()).isEqualTo("'Test'");
+        assertThat(new AqlValue(OffsetDateTime.of(2019, 04, 03, 22, 00, 00, 00, ZoneOffset.UTC)).buildAql()).isEqualTo("'2019-04-03T22:00:00Z'");
     }
 }

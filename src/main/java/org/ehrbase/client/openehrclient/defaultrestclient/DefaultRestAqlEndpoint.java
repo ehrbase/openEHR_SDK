@@ -30,7 +30,6 @@ import com.google.gson.JsonParser;
 import com.nedap.archie.rm.RMObject;
 import com.nedap.archie.rm.datatypes.CodePhrase;
 import com.nedap.archie.rm.datavalues.DvCodedText;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.fluent.Request;
@@ -73,7 +72,7 @@ public class DefaultRestAqlEndpoint implements AqlEndpoint {
         Map<String, String> qMap = new HashMap<>();
         String aql = query.buildAql();
         for (ParameterValue v : parameterValues) {
-            aql = aql.replace(v.getParameter().getAqlParameter(), StringUtils.wrap(v.getValue().toString(), "'"));
+            aql = aql.replace(v.getParameter().getAqlParameter(), v.buildAql());
         }
 
         qMap.put("q", aql);
