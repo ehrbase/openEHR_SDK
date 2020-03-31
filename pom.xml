@@ -53,7 +53,7 @@
                             </excludes>
                             <includes>
                                 <include>org.slf4j:slf4j-api</include>
-                                <include>org.slf4j:slf4j-simple:*:jar:test</include>
+                                <include>org.slf4j:slf4j-simple:*:jar</include>
                             </includes>
                         </bannedDependencies>
                         <requireMavenVersion>
@@ -147,6 +147,11 @@
 
     <dependencies>
         <dependency>
+            <groupId>org.jooq</groupId>
+            <artifactId>joor</artifactId>
+            <version>0.9.12</version>
+        </dependency>
+        <dependency>
             <groupId>javax.cache</groupId>
             <artifactId>cache-api</artifactId>
             <version>1.1.1</version>
@@ -225,7 +230,7 @@
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-simple</artifactId>
             <version>1.7.27</version>
-            <scope>test</scope>
+            <optional>true</optional>
         </dependency>
 
         <dependency>
@@ -239,6 +244,12 @@
             <artifactId>assertj-core</artifactId>
             <scope>test</scope>
             <version>3.13.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <scope>test</scope>
+            <version>3.3.0</version>
         </dependency>
         <dependency>
             <groupId>org.ehrbase.openehr</groupId>

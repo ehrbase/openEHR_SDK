@@ -116,6 +116,11 @@ public class DefaultRestClient implements OpenEhrClient {
         return new DefaultRestTemplateEndpoint(this);
     }
 
+    @Override
+    public AqlEndpoint aqlEndpoint() {
+        return new DefaultRestAqlEndpoint(this);
+    }
+
     static VersionUid httpPost(URI uri, RMObject body) {
         try {
             HttpResponse response = Request.Post(uri)

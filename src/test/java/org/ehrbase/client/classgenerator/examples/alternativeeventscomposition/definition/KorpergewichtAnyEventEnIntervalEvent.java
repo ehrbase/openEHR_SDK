@@ -36,28 +36,32 @@ public class KorpergewichtAnyEventEnIntervalEvent implements KorpergewichtAnyEve
     @Path("/math_function|defining_code")
     private MathFunctionDefiningcode mathFunctionDefiningcode;
 
-    public void setTimeValue(TemporalAccessor timeValue) {
-        this.timeValue = timeValue;
-    }
-
     public TemporalAccessor getTimeValue() {
         return this.timeValue;
     }
 
-    public void setGewichtMagnitude(Double gewichtMagnitude) {
-        this.gewichtMagnitude = gewichtMagnitude;
+    public void setTimeValue(TemporalAccessor timeValue) {
+        this.timeValue = timeValue;
     }
 
     public Double getGewichtMagnitude() {
         return this.gewichtMagnitude;
     }
 
-    public void setGewichtUnits(String gewichtUnits) {
-        this.gewichtUnits = gewichtUnits;
+    public void setGewichtMagnitude(Double gewichtMagnitude) {
+        this.gewichtMagnitude = gewichtMagnitude;
     }
 
     public String getGewichtUnits() {
         return this.gewichtUnits;
+    }
+
+    public void setGewichtUnits(String gewichtUnits) {
+        this.gewichtUnits = gewichtUnits;
+    }
+
+    public List<KorpergewichtConfoundingFactorsEnElement> getConfoundingFactorsEn() {
+        return this.confoundingFactorsEn;
     }
 
     public void setConfoundingFactorsEn(
@@ -65,39 +69,35 @@ public class KorpergewichtAnyEventEnIntervalEvent implements KorpergewichtAnyEve
         this.confoundingFactorsEn = confoundingFactorsEn;
     }
 
-    public List<KorpergewichtConfoundingFactorsEnElement> getConfoundingFactorsEn() {
-        return this.confoundingFactorsEn;
+    public TemporalAmount getWidthValue() {
+        return this.widthValue;
     }
 
     public void setWidthValue(TemporalAmount widthValue) {
         this.widthValue = widthValue;
     }
 
-    public TemporalAmount getWidthValue() {
-        return this.widthValue;
+    public String getCommentEnValue() {
+        return this.commentEnValue;
     }
 
     public void setCommentEnValue(String commentEnValue) {
         this.commentEnValue = commentEnValue;
     }
 
-    public String getCommentEnValue() {
-        return this.commentEnValue;
+    public StateOfDressEnDefiningcode getStateOfDressEnDefiningcode() {
+        return this.stateOfDressEnDefiningcode;
     }
 
     public void setStateOfDressEnDefiningcode(StateOfDressEnDefiningcode stateOfDressEnDefiningcode) {
         this.stateOfDressEnDefiningcode = stateOfDressEnDefiningcode;
     }
 
-    public StateOfDressEnDefiningcode getStateOfDressEnDefiningcode() {
-        return this.stateOfDressEnDefiningcode;
+    public MathFunctionDefiningcode getMathFunctionDefiningcode() {
+        return this.mathFunctionDefiningcode;
     }
 
     public void setMathFunctionDefiningcode(MathFunctionDefiningcode mathFunctionDefiningcode) {
         this.mathFunctionDefiningcode = mathFunctionDefiningcode;
-    }
-
-    public MathFunctionDefiningcode getMathFunctionDefiningcode() {
-        return this.mathFunctionDefiningcode;
     }
 }

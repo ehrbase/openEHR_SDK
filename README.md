@@ -28,7 +28,7 @@ mvn clean install
 ###  Entity generation
 To generate a entity class from a template use
 ```bash
- java -jar client-library-version.jar
+ java  -jar client-library-version.jar
  -h               show help
  -opt <arg>       path to opt file
  -out <arg>       path to output directory

@@ -41,7 +41,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertTrue;
 
 @Category(Integration.class)
-public class DefaultRestEhrEndpointIT {
+public class DefaultRestEhrFieldsEndpointIT {
     private static OpenEhrClient openEhrClient;
 
     @BeforeClass

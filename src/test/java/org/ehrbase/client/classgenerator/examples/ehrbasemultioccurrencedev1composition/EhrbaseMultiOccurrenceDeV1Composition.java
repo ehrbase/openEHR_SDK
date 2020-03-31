@@ -66,99 +66,99 @@ public class EhrbaseMultiOccurrenceDeV1Composition {
         this.versionUid = versionUid;
     }
 
-    public void setEndTimeValue(TemporalAccessor endTimeValue) {
-        this.endTimeValue = endTimeValue;
-    }
-
     public TemporalAccessor getEndTimeValue() {
         return this.endTimeValue;
     }
 
-    public void setParticipations(List<Participation> participations) {
-        this.participations = participations;
+    public void setEndTimeValue(TemporalAccessor endTimeValue) {
+        this.endTimeValue = endTimeValue;
     }
 
     public List<Participation> getParticipations() {
         return this.participations;
     }
 
-    public void setLanguage(Language language) {
-        this.language = language;
+    public void setParticipations(List<Participation> participations) {
+        this.participations = participations;
     }
 
     public Language getLanguage() {
         return this.language;
     }
 
-    public void setHealthCareFacility(PartyIdentified healthCareFacility) {
-        this.healthCareFacility = healthCareFacility;
+    public void setLanguage(Language language) {
+        this.language = language;
     }
 
     public PartyIdentified getHealthCareFacility() {
         return this.healthCareFacility;
     }
 
-    public void setComposer(PartyProxy composer) {
-        this.composer = composer;
+    public void setHealthCareFacility(PartyIdentified healthCareFacility) {
+        this.healthCareFacility = healthCareFacility;
     }
 
     public PartyProxy getComposer() {
         return this.composer;
     }
 
-    public void setSettingDefiningcode(SettingDefiningcode settingDefiningcode) {
-        this.settingDefiningcode = settingDefiningcode;
+    public void setComposer(PartyProxy composer) {
+        this.composer = composer;
     }
 
     public SettingDefiningcode getSettingDefiningcode() {
         return this.settingDefiningcode;
     }
 
-    public void setTerritory(Territory territory) {
-        this.territory = territory;
+    public void setSettingDefiningcode(SettingDefiningcode settingDefiningcode) {
+        this.settingDefiningcode = settingDefiningcode;
     }
 
     public Territory getTerritory() {
         return this.territory;
     }
 
-    public void setBodyTemperature(List<BodyTemperatureObservation> bodyTemperature) {
-        this.bodyTemperature = bodyTemperature;
+    public void setTerritory(Territory territory) {
+        this.territory = territory;
     }
 
     public List<BodyTemperatureObservation> getBodyTemperature() {
         return this.bodyTemperature;
     }
 
-    public void setLocation(String location) {
-        this.location = location;
+    public void setBodyTemperature(List<BodyTemperatureObservation> bodyTemperature) {
+        this.bodyTemperature = bodyTemperature;
     }
 
     public String getLocation() {
         return this.location;
     }
 
-    public void setCategoryDefiningcode(CategoryDefiningcode categoryDefiningcode) {
-        this.categoryDefiningcode = categoryDefiningcode;
+    public void setLocation(String location) {
+        this.location = location;
     }
 
     public CategoryDefiningcode getCategoryDefiningcode() {
         return this.categoryDefiningcode;
     }
 
-    public void setStartTimeValue(TemporalAccessor startTimeValue) {
-        this.startTimeValue = startTimeValue;
+    public void setCategoryDefiningcode(CategoryDefiningcode categoryDefiningcode) {
+        this.categoryDefiningcode = categoryDefiningcode;
     }
 
     public TemporalAccessor getStartTimeValue() {
         return this.startTimeValue;
     }
 
-    public void setExtension(List<Cluster> extension) {
-        this.extension = extension;
+    public void setStartTimeValue(TemporalAccessor startTimeValue) {
+        this.startTimeValue = startTimeValue;
     }
 
     public List<Cluster> getExtension() {
         return this.extension;
+    }
+
+    public void setExtension(List<Cluster> extension) {
+        this.extension = extension;
     }
 }

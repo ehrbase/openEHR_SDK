@@ -33,72 +33,72 @@ public class TestAllTypesEvaluation {
 
     @Path("/data[at0001]/items[at0009]/value")
     @Choice
-    private ChoiceChoice choice;
+    private TestAllTypesChoiceChoice choice;
 
     @Path("/subject")
     private PartyProxy subject;
-
-    public void setIntervalQuantity(DvInterval intervalQuantity) {
-        this.intervalQuantity = intervalQuantity;
-    }
 
     public DvInterval getIntervalQuantity() {
         return this.intervalQuantity;
     }
 
-    public void setText2Value(String text2Value) {
-        this.text2Value = text2Value;
+    public void setIntervalQuantity(DvInterval intervalQuantity) {
+        this.intervalQuantity = intervalQuantity;
     }
 
     public String getText2Value() {
         return this.text2Value;
     }
 
-    public void setIntervalCount(DvInterval intervalCount) {
-        this.intervalCount = intervalCount;
+    public void setText2Value(String text2Value) {
+        this.text2Value = text2Value;
     }
 
     public DvInterval getIntervalCount() {
         return this.intervalCount;
     }
 
-    public void setIntervalDatetime(DvInterval intervalDatetime) {
-        this.intervalDatetime = intervalDatetime;
+    public void setIntervalCount(DvInterval intervalCount) {
+        this.intervalCount = intervalCount;
     }
 
     public DvInterval getIntervalDatetime() {
         return this.intervalDatetime;
     }
 
-    public void setUriValue(URI uriValue) {
-        this.uriValue = uriValue;
+    public void setIntervalDatetime(DvInterval intervalDatetime) {
+        this.intervalDatetime = intervalDatetime;
     }
 
     public URI getUriValue() {
         return this.uriValue;
     }
 
-    public void setLanguage(Language language) {
-        this.language = language;
+    public void setUriValue(URI uriValue) {
+        this.uriValue = uriValue;
     }
 
     public Language getLanguage() {
         return this.language;
     }
 
-    public void setChoice(ChoiceChoice choice) {
-        this.choice = choice;
+    public void setLanguage(Language language) {
+        this.language = language;
     }
 
-    public ChoiceChoice getChoice() {
+    public TestAllTypesChoiceChoice getChoice() {
         return this.choice;
     }
 
-    public void setSubject(PartyProxy subject) {
-        this.subject = subject;
+    public void setChoice(TestAllTypesChoiceChoice choice) {
+        this.choice = choice;
     }
 
     public PartyProxy getSubject() {
         return this.subject;
+    }
+
+    public void setSubject(PartyProxy subject) {
+        this.subject = subject;
     }
 }

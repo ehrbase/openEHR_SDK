@@ -66,60 +66,64 @@ public class EhrbaseBloodPressureSimpleDeV0Composition {
         this.versionUid = versionUid;
     }
 
-    public void setEndTimeValue(TemporalAccessor endTimeValue) {
-        this.endTimeValue = endTimeValue;
-    }
-
     public TemporalAccessor getEndTimeValue() {
         return this.endTimeValue;
     }
 
-    public void setParticipations(List<Participation> participations) {
-        this.participations = participations;
+    public void setEndTimeValue(TemporalAccessor endTimeValue) {
+        this.endTimeValue = endTimeValue;
     }
 
     public List<Participation> getParticipations() {
         return this.participations;
     }
 
-    public void setLanguage(Language language) {
-        this.language = language;
+    public void setParticipations(List<Participation> participations) {
+        this.participations = participations;
     }
 
     public Language getLanguage() {
         return this.language;
     }
 
-    public void setHealthCareFacility(PartyIdentified healthCareFacility) {
-        this.healthCareFacility = healthCareFacility;
+    public void setLanguage(Language language) {
+        this.language = language;
     }
 
     public PartyIdentified getHealthCareFacility() {
         return this.healthCareFacility;
     }
 
-    public void setComposer(PartyProxy composer) {
-        this.composer = composer;
+    public void setHealthCareFacility(PartyIdentified healthCareFacility) {
+        this.healthCareFacility = healthCareFacility;
     }
 
     public PartyProxy getComposer() {
         return this.composer;
     }
 
-    public void setSettingDefiningcode(SettingDefiningcode settingDefiningcode) {
-        this.settingDefiningcode = settingDefiningcode;
+    public void setComposer(PartyProxy composer) {
+        this.composer = composer;
     }
 
     public SettingDefiningcode getSettingDefiningcode() {
         return this.settingDefiningcode;
     }
 
-    public void setTerritory(Territory territory) {
-        this.territory = territory;
+    public void setSettingDefiningcode(SettingDefiningcode settingDefiningcode) {
+        this.settingDefiningcode = settingDefiningcode;
     }
 
     public Territory getTerritory() {
         return this.territory;
+    }
+
+    public void setTerritory(Territory territory) {
+        this.territory = territory;
+    }
+
+    public List<BloodPressureTrainingSampleObservation> getBloodPressureTrainingSample() {
+        return this.bloodPressureTrainingSample;
     }
 
     public void setBloodPressureTrainingSample(
@@ -127,24 +131,24 @@ public class EhrbaseBloodPressureSimpleDeV0Composition {
         this.bloodPressureTrainingSample = bloodPressureTrainingSample;
     }
 
-    public List<BloodPressureTrainingSampleObservation> getBloodPressureTrainingSample() {
-        return this.bloodPressureTrainingSample;
+    public String getLocation() {
+        return this.location;
     }
 
     public void setLocation(String location) {
         this.location = location;
     }
 
-    public String getLocation() {
-        return this.location;
+    public CategoryDefiningcode getCategoryDefiningcode() {
+        return this.categoryDefiningcode;
     }
 
     public void setCategoryDefiningcode(CategoryDefiningcode categoryDefiningcode) {
         this.categoryDefiningcode = categoryDefiningcode;
     }
 
-    public CategoryDefiningcode getCategoryDefiningcode() {
-        return this.categoryDefiningcode;
+    public List<DeviceDetailsTrainingSampleCluster> getDeviceDetailsTrainingSample() {
+        return this.deviceDetailsTrainingSample;
     }
 
     public void setDeviceDetailsTrainingSample(
@@ -152,15 +156,11 @@ public class EhrbaseBloodPressureSimpleDeV0Composition {
         this.deviceDetailsTrainingSample = deviceDetailsTrainingSample;
     }
 
-    public List<DeviceDetailsTrainingSampleCluster> getDeviceDetailsTrainingSample() {
-        return this.deviceDetailsTrainingSample;
+    public TemporalAccessor getStartTimeValue() {
+        return this.startTimeValue;
     }
 
     public void setStartTimeValue(TemporalAccessor startTimeValue) {
         this.startTimeValue = startTimeValue;
-    }
-
-    public TemporalAccessor getStartTimeValue() {
-        return this.startTimeValue;
     }
 }

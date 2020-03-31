@@ -41,7 +41,7 @@ import org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev0
 import org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1composition.EhrbaseMultiOccurrenceDeV1Composition;
 import org.ehrbase.client.classgenerator.examples.episodeofcarecomposition.EpisodeOfCareComposition;
 import org.ehrbase.client.classgenerator.examples.testalltypesenv1composition.TestAllTypesEnV1Composition;
-import org.ehrbase.client.classgenerator.examples.testalltypesenv1composition.definition.ChoiceDvquantity;
+import org.ehrbase.client.classgenerator.examples.testalltypesenv1composition.definition.TestAllTypesChoiceDvquantity;
 import org.ehrbase.client.templateprovider.TestDataTemplateProvider;
 import org.ehrbase.serialisation.CanonicalXML;
 import org.ehrbase.test_data.composition.CompositionTestDataCanonicalXML;
@@ -151,7 +151,8 @@ public class UnflattenerTest {
         Composition composition = new CanonicalXML().unmarshal(IOUtils.toString(CompositionTestDataCanonicalXML.ALL_TYPES.getStream(), StandardCharsets.UTF_8), Composition.class);
         Flattener flattener = new Flattener();
         TestAllTypesEnV1Composition testAllTypesEnV1 = flattener.flatten(composition, TestAllTypesEnV1Composition.class);
-        ChoiceDvquantity choiceDvquantity = new ChoiceDvquantity();
+
+        TestAllTypesChoiceDvquantity choiceDvquantity = new TestAllTypesChoiceDvquantity();
         choiceDvquantity.setChoiceMagnitude(22d);
         choiceDvquantity.setChoiceUnits("mm[Hg]");
         testAllTypesEnV1.getTestAllTypes().get(0).setChoice(choiceDvquantity);

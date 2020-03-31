@@ -10,11 +10,11 @@ public class BodyTemperatureBodyExposureDvcodedtextState implements BodyTemperat
     @Path("|defining_code")
     private BodyExposureDefiningcode bodyExposureDefiningcode;
 
-    public void setBodyExposureDefiningcode(BodyExposureDefiningcode bodyExposureDefiningcode) {
-        this.bodyExposureDefiningcode = bodyExposureDefiningcode;
-    }
-
     public BodyExposureDefiningcode getBodyExposureDefiningcode() {
         return this.bodyExposureDefiningcode;
+    }
+
+    public void setBodyExposureDefiningcode(BodyExposureDefiningcode bodyExposureDefiningcode) {
+        this.bodyExposureDefiningcode = bodyExposureDefiningcode;
     }
 }
