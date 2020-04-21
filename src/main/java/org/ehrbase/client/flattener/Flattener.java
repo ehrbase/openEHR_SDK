@@ -112,6 +112,8 @@ public class Flattener {
             }
             writeField(field, dto, dtoList);
         } else {
+            if (child == null)  // field is done
+                return;
             handleSingleField(dto, field, child);
         }
 
