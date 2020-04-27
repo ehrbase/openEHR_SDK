@@ -41,6 +41,7 @@ public class DefaultRestEhrEndpoint implements EhrEndpoint {
     @Override
     public UUID createEhr() {
         // ehrstatus should be passed as a parameter since the client should be able to set the id for the subject and link it to the MPI
+        EhrStatus ehrStatus = null;
         // EhrStatus ehrStatus = new EhrStatus();
         // PartySelf partySelf = new PartySelf(new PartyRef(new HierObjectId(UUID.randomUUID().toString()), "default", null));
         // ehrStatus.setSubject(partySelf);
