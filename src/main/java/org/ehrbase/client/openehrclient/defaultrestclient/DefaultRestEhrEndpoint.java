@@ -40,9 +40,10 @@ public class DefaultRestEhrEndpoint implements EhrEndpoint {
 
     @Override
     public UUID createEhr() {
-        EhrStatus ehrStatus = new EhrStatus();
-        PartySelf partySelf = new PartySelf(new PartyRef(new HierObjectId(UUID.randomUUID().toString()), "default", null));
-        ehrStatus.setSubject(partySelf);
+        // ehrstatus should be passed as a parameter since the client should be able to set the id for the subject and link it to the MPI
+        // EhrStatus ehrStatus = new EhrStatus();
+        // PartySelf partySelf = new PartySelf(new PartyRef(new HierObjectId(UUID.randomUUID().toString()), "default", null));
+        // ehrStatus.setSubject(partySelf);
 
         return httpPost(defaultRestClient.getConfig().getBaseUri().resolve(EHR_PATH), ehrStatus).getUuid();
     }
