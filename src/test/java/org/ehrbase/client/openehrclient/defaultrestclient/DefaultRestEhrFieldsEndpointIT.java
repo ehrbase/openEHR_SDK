@@ -18,6 +18,7 @@
 package org.ehrbase.client.openehrclient.defaultrestclient;
 
 import com.nedap.archie.rm.datastructures.ItemTree;
+import com.nedap.archie.rm.datavalues.DvText;
 import com.nedap.archie.rm.ehr.EhrStatus;
 import com.nedap.archie.rm.generic.PartySelf;
 import com.nedap.archie.rm.support.identification.HierObjectId;
@@ -74,11 +75,12 @@ public class DefaultRestEhrFieldsEndpointIT {
         ehrStatus.setQueryable(false);
         ehrStatus.setModifiable(false);
         HierObjectId subjectId = new HierObjectId("6ee110de-08f8-4fac-8372-820650f150a9");
-        ehrStatus.setSubject(new PartySelf(new PartyRef(subjectId, "default", null)));
+        ehrStatus.setSubject(new PartySelf(new PartyRef(subjectId, "default", "PERSON")));
 
         String value = IOUtils.toString(ItemStruktureTestDataCanonicalJson.SIMPLE_EHR_OTHER_Details.getStream(), UTF_8);
         ehrStatus.setOtherDetails(new CanonicalJson().unmarshal(value, ItemTree.class));
-
+        ehrStatus.getOtherDetails().setArchetypeNodeId("other-details-test");
+        ehrStatus.getOtherDetails().setName(new DvText("test"));
 
         openEhrClient.ehrEndpoint().updateEhrStatus(ehrId, ehrStatus);
         EhrStatus actual = openEhrClient.ehrEndpoint().getEhrStatus(ehrId).get();
