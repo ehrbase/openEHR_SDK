@@ -264,5 +264,10 @@
             <scope>test</scope>
         </dependency>
 
+        <dependency>
+            <groupId>com.nedap.healthcare.archie</groupId>
+            <artifactId>archie-all</artifactId>
+            <version>0.12.2</version>
+        </dependency>
     </dependencies>
 </project>

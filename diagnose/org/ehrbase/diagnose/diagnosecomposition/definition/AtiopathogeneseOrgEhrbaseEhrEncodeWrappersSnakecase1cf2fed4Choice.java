@@ -1,0 +1,4 @@
+package org.ehrbase.diagnose.diagnosecomposition.definition;
+
+public interface AtiopathogeneseOrgEhrbaseEhrEncodeWrappersSnakecase1cf2fed4Choice {
+}
