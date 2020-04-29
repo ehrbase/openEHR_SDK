@@ -17,10 +17,15 @@
 
 package org.ehrbase.client.openehrclient.defaultrestclient;
 
+import com.nedap.archie.rm.composition.Composition;
 import com.nedap.archie.rm.generic.PartyIdentified;
 import com.nedap.archie.rm.generic.PartySelf;
 import org.ehrbase.client.Integration;
 import org.ehrbase.client.TestData;
+import org.ehrbase.client.classgenerator.examples.allergiescomposition.AllergiesComposition;
+import org.ehrbase.client.classgenerator.examples.beatmungcomposition.BeatmungComposition;
+import org.ehrbase.client.classgenerator.examples.coronaanamnesecomposition.CoronaAnamneseComposition;
+import org.ehrbase.client.classgenerator.examples.diagnosecomposition.DiagnoseComposition;
 import org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev0composition.EhrbaseBloodPressureSimpleDeV0Composition;
 import org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev0composition.definition.KorotkoffSoundsDefiningcode;
 import org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1composition.EhrbaseMultiOccurrenceDeV1Composition;
@@ -28,21 +33,33 @@ import org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1comp
 import org.ehrbase.client.classgenerator.examples.episodeofcarecomposition.EpisodeOfCareComposition;
 import org.ehrbase.client.classgenerator.examples.episodeofcarecomposition.definition.EpisodeofcareAdminEntry;
 import org.ehrbase.client.classgenerator.examples.episodeofcarecomposition.definition.EpisodeofcareTeamElement;
+import org.ehrbase.client.classgenerator.examples.kennzeichnungerregernachweissarscov2composition.KennzeichnungErregernachweisSARSCoV2Composition;
+import org.ehrbase.client.classgenerator.examples.openehrsuspectedcovid19riskassessmentv0composition.OpenEHRSuspectedCOVID19RiskAssessmentV0Composition;
+import org.ehrbase.client.classgenerator.examples.patientenaufenthaltcomposition.PatientenaufenthaltComposition;
 import org.ehrbase.client.classgenerator.examples.shareddefinition.SettingDefiningcode;
+import org.ehrbase.client.classgenerator.examples.stationarerversorgungsfallcomposition.StationarerVersorgungsfallComposition;
+import org.ehrbase.client.classgenerator.examples.virologischerbefundcomposition.VirologischerBefundComposition;
 import org.ehrbase.client.exception.OptimisticLockException;
+import org.ehrbase.client.flattener.Unflattener;
 import org.ehrbase.client.openehrclient.CompositionEndpoint;
 import org.ehrbase.client.openehrclient.OpenEhrClient;
 import org.ehrbase.client.openehrclient.VersionUid;
+import org.ehrbase.serialisation.CanonicalJson;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.*;
+import java.time.temporal.TemporalAccessor;
+import java.util.Date;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.ThreadLocalRandom;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.ehrbase.client.TestData.*;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -157,4 +174,139 @@ public class DefaultRestCompositionEndpointIT {
 
     }
 
+    @Test
+    public void testBeatmung(){
+
+        UUID ehr = openEhrClient.ehrEndpoint().createEhr();
+        BeatmungComposition composition = TestData.buildBeatmungsComposition();
+
+        CompositionEndpoint compositionEndpoint = openEhrClient.compositionEndpoint(ehr);
+        BeatmungComposition version1 = compositionEndpoint.mergeCompositionEntity(composition);
+        //System.out.println(version1.toString());
+    }
+
+    @Test
+    public void testVirologischerBefund(){
+
+        UUID ehr = openEhrClient.ehrEndpoint().createEhr();
+        OffsetDateTime of = OffsetDateTime.of(2020, 04, 02, 12, 00, 00, 00, ZoneOffset.UTC);
+        VirologischerBefundComposition composition = TestData.buildVirologischerBefundComposition(of);
+        CompositionEndpoint compositionEndpoint = openEhrClient.compositionEndpoint(ehr);
+        VirologischerBefundComposition version1 = compositionEndpoint.mergeCompositionEntity(composition);
+
+        //System.out.println(version1.toString());
+    }
+
+    @Test
+    public void createCOVIDTestData(){
+
+        //Number of EHRs created
+        for (int i = 0; i < 50; i++) {
+
+            UUID ehr = openEhrClient.ehrEndpoint().createEhr();
+            CompositionEndpoint compositionEndpoint = openEhrClient.compositionEndpoint(ehr);
+
+            OffsetDateTime of = OffsetDateTime.of(2020, ThreadLocalRandom.current().nextInt(1, 2), ThreadLocalRandom.current().nextInt(1, 30), 00, 00, 00, 00, ZoneOffset.UTC);
+            int fallID = ThreadLocalRandom.current().nextInt(100000, 9999999);
+
+            //Create Versorgungsfall
+            StationarerVersorgungsfallComposition versorgungsfallComposition = buildVersorgungsfallComposition(of, fallID);
+            compositionEndpoint.mergeCompositionEntity(versorgungsfallComposition);
+            OffsetDateTime endTimeValue = (OffsetDateTime) versorgungsfallComposition.getEntlassungsdaten().getUhrzeitValueEntlassungsdatum();
+
+            //Numbers of lab tests
+            for (int z = 0; z < 2; z++) {
+
+                VirologischerBefundComposition composition = buildVirologischerBefundComposition(of.plusWeeks(ThreadLocalRandom.current().nextInt(1, 3)));
+                compositionEndpoint.mergeCompositionEntity(composition);
+            }
+
+            if (ThreadLocalRandom.current().nextInt(1, 5) == 4) {
+              //  KennzeichnungErregernachweisSARSCoV2Composition kennzeichnungErregernachweisSARSCoV2Composition = buildCovid19Flag(of);
+              //  compositionEndpoint.mergeCompositionEntity(kennzeichnungErregernachweisSARSCoV2Composition);
+
+                DiagnoseComposition composition = buildDiagnose(of);
+                compositionEndpoint.mergeCompositionEntity(composition);
+            }
+
+            //Build one diagnosis composition
+            DiagnoseComposition composition = buildDiagnose(of);
+            compositionEndpoint.mergeCompositionEntity(composition);
+
+            OffsetDateTime offsetDateTime = of.plusHours(ThreadLocalRandom.current().nextInt(48, 96));
+
+            while(endTimeValue.isAfter(offsetDateTime)) {
+
+                offsetDateTime = offsetDateTime.plusHours(ThreadLocalRandom.current().nextInt(48, 96));
+
+                if (endTimeValue.isAfter(offsetDateTime)) {
+                    PatientenaufenthaltComposition patientenaufenthaltComposition = buildPatientenAufenthaltComposition(offsetDateTime);
+                    compositionEndpoint.mergeCompositionEntity(patientenaufenthaltComposition);
+                }
+            }
+        }
+    }
+
+
+    @Test
+    public void testStationarerVersorgungsfall(){
+
+        OffsetDateTime of = OffsetDateTime.of(2020, 04, 02, 12, 00, 00, 00, ZoneOffset.UTC);
+        UUID ehr = openEhrClient.ehrEndpoint().createEhr();
+        CompositionEndpoint compositionEndpoint = openEhrClient.compositionEndpoint(ehr);
+        StationarerVersorgungsfallComposition versorgungsfallComposition = buildVersorgungsfallComposition(of, 234546);
+        StationarerVersorgungsfallComposition versorgungsfallComposition1 = compositionEndpoint.mergeCompositionEntity(versorgungsfallComposition);
+    }
+
+
+    @Test
+    public void testCovidFlag(){
+
+        OffsetDateTime of = OffsetDateTime.of(2020, 04, 02, 12, 00, 00, 00, ZoneOffset.UTC);
+        UUID ehr = openEhrClient.ehrEndpoint().createEhr();
+        CompositionEndpoint compositionEndpoint = openEhrClient.compositionEndpoint(ehr);
+        KennzeichnungErregernachweisSARSCoV2Composition kennzeichnungErregernachweisSARSCoV2Composition = buildCovid19Flag(of);
+        KennzeichnungErregernachweisSARSCoV2Composition kennzeichnungErregernachweisSARSCoV2Composition1 = compositionEndpoint.mergeCompositionEntity(kennzeichnungErregernachweisSARSCoV2Composition);
+
+    }
+
+    @Test
+    public void testCovidFalldaten(){
+
+        UUID ehr = openEhrClient.ehrEndpoint().createEhr();
+
+    }
+
+
+   /* @Test
+    public void testCovidRiskAssessment(){
+
+        UUID ehr = openEhrClient.ehrEndpoint().createEhr();
+        OpenEHRSuspectedCOVID19RiskAssessmentV0Composition composition = TestData.buildCovidRiskAssessmentComposition();
+        CompositionEndpoint compositionEndpoint = openEhrClient.compositionEndpoint(ehr);
+        OpenEHRSuspectedCOVID19RiskAssessmentV0Composition version1 = compositionEndpoint.mergeCompositionEntity(composition);
+        System.out.println(version1.toString());
+    }*/
+
+    @Test
+    public void testCoronaAnamnese(){
+
+        UUID ehr = openEhrClient.ehrEndpoint().createEhr();
+        CoronaAnamneseComposition composition = TestData.buildCoronaAnamnese();
+        CompositionEndpoint compositionEndpoint = openEhrClient.compositionEndpoint(ehr);
+        CoronaAnamneseComposition version1 = compositionEndpoint.mergeCompositionEntity(composition);
+        System.out.println(version1.toString());
+    }
+
+    @Test
+    public void testDiagnose(){
+
+        UUID ehr = openEhrClient.ehrEndpoint().createEhr();
+        OffsetDateTime of = OffsetDateTime.of(2020, 04, 02, 12, 00, 00, 00, ZoneOffset.UTC);
+        DiagnoseComposition composition = TestData.buildDiagnose(of);
+        CompositionEndpoint compositionEndpoint = openEhrClient.compositionEndpoint(ehr);
+        DiagnoseComposition version1 = compositionEndpoint.mergeCompositionEntity(composition);
+        System.out.println(version1.toString());
+
+    }
 }

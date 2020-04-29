@@ -1,0 +1,35 @@
+package org.ehrbase.client.classgenerator.examples.coronaanamnesecomposition.definition;
+
+import org.ehrbase.client.aql.containment.Containment;
+import org.ehrbase.client.aql.field.AqlFieldImp;
+import org.ehrbase.client.aql.field.SelectAqlField;
+
+public class SymptomeSectionContainment extends Containment {
+  public SelectAqlField<SymptomeSection> SYMPTOME_SECTION = new AqlFieldImp<SymptomeSection>(SymptomeSection.class, "", "SymptomeSection", SymptomeSection.class, this);
+
+  public SelectAqlField<AnzeichenObservation> ANZEICHEN = new AqlFieldImp<AnzeichenObservation>(SymptomeSection.class, "/items[openEHR-EHR-OBSERVATION.symptom_sign_screening_husten.v0]", "anzeichen", AnzeichenObservation.class, this);
+
+  public SelectAqlField<AnzeichenObservationScreeningFragebogenZurSymptomen> ANZEICHEN_SCREENING_FRAGEBOGEN_ZUR_SYMPTOMEN = new AqlFieldImp<AnzeichenObservationScreeningFragebogenZurSymptomen>(SymptomeSection.class, "/items[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0]", "anzeichenScreeningFragebogenZurSymptomen", AnzeichenObservationScreeningFragebogenZurSymptomen.class, this);
+
+  public SelectAqlField<AnzeichenObservationScreeningFragebogenZurSymptomen2> ANZEICHEN_SCREENING_FRAGEBOGEN_ZUR_SYMPTOMEN_ITEMS_OPENEHR_EHR_OBSERVATION_SYMPTOM_SIGN_SCREENING_SCHNUPFEN_V0 = new AqlFieldImp<AnzeichenObservationScreeningFragebogenZurSymptomen2>(SymptomeSection.class, "/items[openEHR-EHR-OBSERVATION.symptom_sign_screening_schnupfen.v0]", "anzeichenScreeningFragebogenZurSymptomenItemsOpenehrEhrObservationSymptomSignScreeningSchnupfenV0", AnzeichenObservationScreeningFragebogenZurSymptomen2.class, this);
+
+  public SelectAqlField<AnzeichenObservationScreeningFragebogenZurSymptomen3> ANZEICHEN_SCREENING_FRAGEBOGEN_ZUR_SYMPTOMEN_ITEMS_OPENEHR_EHR_OBSERVATION_SYMPTOM_SIGN_SCREENING_GESCHMACK_V0 = new AqlFieldImp<AnzeichenObservationScreeningFragebogenZurSymptomen3>(SymptomeSection.class, "/items[openEHR-EHR-OBSERVATION.symptom_sign_screening_geschmack.v0]", "anzeichenScreeningFragebogenZurSymptomenItemsOpenehrEhrObservationSymptomSignScreeningGeschmackV0", AnzeichenObservationScreeningFragebogenZurSymptomen3.class, this);
+
+  public SelectAqlField<KorpertemperaturObservation> KORPERTEMPERATUR = new AqlFieldImp<KorpertemperaturObservation>(SymptomeSection.class, "/items[openEHR-EHR-OBSERVATION.body_temperature.v2]", "korpertemperatur", KorpertemperaturObservation.class, this);
+
+  public SelectAqlField<AnzeichenObservationScreeningFragebogenZurSymptomen4> ANZEICHEN_SCREENING_FRAGEBOGEN_ZUR_SYMPTOMEN_ITEMS_OPENEHR_EHR_OBSERVATION_SYMPTOM_SIGN_SCREENING_GERUCH_V0 = new AqlFieldImp<AnzeichenObservationScreeningFragebogenZurSymptomen4>(SymptomeSection.class, "/items[openEHR-EHR-OBSERVATION.symptom_sign_screening_geruch.v0]", "anzeichenScreeningFragebogenZurSymptomenItemsOpenehrEhrObservationSymptomSignScreeningGeruchV0", AnzeichenObservationScreeningFragebogenZurSymptomen4.class, this);
+
+  public SelectAqlField<AnzeichenObservationScreeningFragebogenZurSymptomen5> ANZEICHEN_SCREENING_FRAGEBOGEN_ZUR_SYMPTOMEN_ITEMS_OPENEHR_EHR_OBSERVATION_SYMPTOM_SIGN_SCREENING_WEITERE_V0 = new AqlFieldImp<AnzeichenObservationScreeningFragebogenZurSymptomen5>(SymptomeSection.class, "/items[openEHR-EHR-OBSERVATION.symptom_sign_screening_weitere.v0]", "anzeichenScreeningFragebogenZurSymptomenItemsOpenehrEhrObservationSymptomSignScreeningWeitereV0", AnzeichenObservationScreeningFragebogenZurSymptomen5.class, this);
+
+  public SelectAqlField<AnzeichenObservationScreeningFragebogenZurSymptomen6> ANZEICHEN_SCREENING_FRAGEBOGEN_ZUR_SYMPTOMEN_ITEMS_OPENEHR_EHR_OBSERVATION_SYMPTOM_SIGN_SCREENING_HEISERKEIT_V0 = new AqlFieldImp<AnzeichenObservationScreeningFragebogenZurSymptomen6>(SymptomeSection.class, "/items[openEHR-EHR-OBSERVATION.symptom_sign_screening_heiserkeit.v0]", "anzeichenScreeningFragebogenZurSymptomenItemsOpenehrEhrObservationSymptomSignScreeningHeiserkeitV0", AnzeichenObservationScreeningFragebogenZurSymptomen6.class, this);
+
+  public SelectAqlField<AnzeichenObservationScreeningFragebogenZurSymptomen7> ANZEICHEN_SCREENING_FRAGEBOGEN_ZUR_SYMPTOMEN_ITEMS_OPENEHR_EHR_OBSERVATION_SYMPTOM_SIGN_SCREENING_DURCHFALL_V0 = new AqlFieldImp<AnzeichenObservationScreeningFragebogenZurSymptomen7>(SymptomeSection.class, "/items[openEHR-EHR-OBSERVATION.symptom_sign_screening_durchfall.v0]", "anzeichenScreeningFragebogenZurSymptomenItemsOpenehrEhrObservationSymptomSignScreeningDurchfallV0", AnzeichenObservationScreeningFragebogenZurSymptomen7.class, this);
+
+  private SymptomeSectionContainment() {
+    super("openEHR-EHR-SECTION.symptome.v1");
+  }
+
+  public static SymptomeSectionContainment getInstance() {
+    return new SymptomeSectionContainment();
+  }
+}

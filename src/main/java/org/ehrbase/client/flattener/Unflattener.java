@@ -21,14 +21,18 @@ import com.nedap.archie.aom.CComplexObject;
 import com.nedap.archie.creation.RMObjectCreator;
 import com.nedap.archie.rm.RMObject;
 import com.nedap.archie.rm.archetyped.Locatable;
+import com.nedap.archie.rm.datastructures.Cluster;
 import com.nedap.archie.rm.datastructures.Event;
 import com.nedap.archie.rm.datastructures.IntervalEvent;
+import com.nedap.archie.rm.datastructures.Item;
 import com.nedap.archie.rm.datatypes.CodePhrase;
 import com.nedap.archie.rm.datavalues.DvCodedText;
+import com.nedap.archie.rm.datavalues.DvText;
 import com.nedap.archie.rm.datavalues.quantity.datetime.DvDuration;
 import com.nedap.archie.rm.support.identification.TerminologyId;
 import com.nedap.archie.rminfo.ArchieRMInfoLookup;
 import com.nedap.archie.rminfo.RMAttributeInfo;
+import javassist.expr.Instanceof;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.apache.commons.text.CaseUtils;
 import org.ehrbase.client.annotations.Entity;
@@ -147,9 +151,9 @@ public class Unflattener {
             RM_OBJECT_CREATOR.addElementToListOrSetSingleValues(parent, childName, Collections.singletonList(child));
         }
 
-        if (value == null) {
-            //NOP
-        } else if (EnumValueSet.class.isAssignableFrom(value.getClass()) && DvCodedText.class.isAssignableFrom(parent.getClass())) {
+        if (value == null || value instanceof Cluster) {
+
+        } else if (EnumValueSet.class.isAssignableFrom(value.getClass()) && DvCodedText.class.isAssignableFrom(parent.getClass())) { //CODE_dfgf fails
             EnumValueSet valueSet = (EnumValueSet) value;
             DvCodedText dvCodedText = (DvCodedText) parent;
             dvCodedText.setValue(valueSet.getValue());
@@ -178,7 +182,21 @@ public class Unflattener {
             }
             RM_OBJECT_CREATOR.addElementToListOrSetSingleValues(parent, childName, Collections.singletonList(value));
         } else if (value.getClass().isAnnotationPresent(Entity.class)) {
-            mapDtoToEntity(value, (RMObject) child);
+
+            {
+
+                if(child instanceof Cluster) {
+
+                    Item item = (Item) child;
+                    DvText name = item.getName();
+                    if(!(name.getValue() == null)); mapDtoToEntity(value, (RMObject) child);
+                }
+                    else {
+                    mapDtoToEntity(value, (RMObject) child);
+                }
+            }
+
+
         } else {
             logger.warn("Unhandled child {} in {}", childName, parent);
         }

@@ -108,12 +108,15 @@ public class TemplateIntrospect {
             String code = term.getCode();
             String value = null;
             String description = null;
+            String name2 = null;
             for (StringDictionaryItem item : term.getItemsArray()) {
                 if ("text".equals(item.getId())) {
                     value = item.getStringValue();
                 }
                 if ("description".equals(item.getId()))
                     description = item.getStringValue();
+                if ("name".equals(item.getId()))
+                    name2 = item.getStringValue();
             }
             termDef.put(code, new TermDefinition(code, value, description));
 

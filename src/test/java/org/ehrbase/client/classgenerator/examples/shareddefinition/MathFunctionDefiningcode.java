@@ -1,29 +1,30 @@
 package org.ehrbase.client.classgenerator.examples.shareddefinition;
 
+import java.lang.String;
 import org.ehrbase.client.classgenerator.EnumValueSet;
 
 public enum MathFunctionDefiningcode implements EnumValueSet {
-  MEDIAN("median", "median", "openehr", "268"),
-
   DECREASE("decrease", "decrease", "openehr", "521"),
-
-  MINIMUM("minimum", "minimum", "openehr", "145"),
-
-  VARIATION("variation", "variation", "openehr", "149"),
-
-  INCREASE("increase", "increase", "openehr", "522"),
-
-  MAXIMUM("maximum", "maximum", "openehr", "144"),
-
-  MODE("mode", "mode", "openehr", "267"),
-
-  MEAN("mean", "mean", "openehr", "146"),
-
-  ACTUAL("actual", "actual", "openehr", "640"),
 
   CHANGE("change", "change", "openehr", "147"),
 
-  TOTAL("total", "total", "openehr", "148");
+  INCREASE("increase", "increase", "openehr", "522"),
+
+  TOTAL("total", "total", "openehr", "148"),
+
+  VARIATION("variation", "variation", "openehr", "149"),
+
+  MAXIMUM("maximum", "maximum", "openehr", "144"),
+
+  MINIMUM("minimum", "minimum", "openehr", "145"),
+
+  MEDIAN("median", "median", "openehr", "268"),
+
+  MEAN("mean", "mean", "openehr", "146"),
+
+  MODE("mode", "mode", "openehr", "267"),
+
+  ACTUAL("actual", "actual", "openehr", "640");
 
   private String value;
 
@@ -41,18 +42,18 @@ public enum MathFunctionDefiningcode implements EnumValueSet {
   }
 
   public String getValue() {
-    return this.value;
+     return this.value ;
   }
 
   public String getDescription() {
-    return this.description;
+     return this.description ;
   }
 
   public String getTerminologyId() {
-    return this.terminologyId;
+     return this.terminologyId ;
   }
 
   public String getCode() {
-    return this.code;
+     return this.code ;
   }
 }

@@ -34,6 +34,7 @@ public class ElementIntrospectConfig implements RmIntrospectConfig {
 
     @Override
     public Set<String> getNonTemplateFields() {
+
         return FIELDS;
     }
 }

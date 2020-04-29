@@ -1,0 +1,4 @@
+package org.ehrbase.client.classgenerator.examples.beatmungcomposition.definition;
+
+public interface LuftsauerstoffOrgEhrbaseEhrEncodeWrappersSnakecase255990ccChoice {
+}

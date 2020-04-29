@@ -122,6 +122,11 @@ public class DefaultRestClient implements OpenEhrClient {
     }
 
     static VersionUid httpPost(URI uri, RMObject body) {
+
+        String marshal = new CanonicalJson().marshal(body);
+        System.out.println(marshal);
+
+
         try {
             HttpResponse response = Request.Post(uri)
                     .addHeader(HttpHeaders.ACCEPT, ContentType.APPLICATION_JSON.toString())

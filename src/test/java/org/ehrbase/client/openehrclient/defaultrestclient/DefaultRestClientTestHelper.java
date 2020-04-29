@@ -18,17 +18,22 @@
 package org.ehrbase.client.openehrclient.defaultrestclient;
 
 import org.ehrbase.client.openehrclient.OpenEhrClientConfig;
+import org.ehrbase.client.templateprovider.FileBasedTemplateProvider;
 import org.ehrbase.client.templateprovider.TestDataTemplateProvider;
 
+import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
 
 public class DefaultRestClientTestHelper {
 
     public static DefaultRestClient setupDefaultRestClient() throws URISyntaxException {
-        TestDataTemplateProvider templateProvider = new TestDataTemplateProvider();
+        File file = new File("C:/SDK4/ehrbase_client_library/src/test/java/org/ehrbase/client/classgenerator/examples");
+        FileBasedTemplateProvider templateProvider = new FileBasedTemplateProvider(file.toPath());
+
+        //TestDataTemplateProvider templateProvider = new TestDataTemplateProvider();
         DefaultRestClient client = new DefaultRestClient(new OpenEhrClientConfig(new URI("http://localhost:8080/ehrbase/rest/openehr/v1/")), templateProvider);
-        templateProvider.listTemplateIds().stream().forEach(t -> client.templateEndpoint().ensureExistence(t));
+        //templateProvider.listTemplateIds().stream().forEach(t -> client.templateEndpoint().ensureExistence(t));
         return client;
     }
 }

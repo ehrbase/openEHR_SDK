@@ -1,0 +1,4 @@
+package org.ehrbase.client.classgenerator.examples.openehrsuspectedcovid19riskassessmentv0composition.definition;
+
+public interface TravelEventAnyIntervalEventChoice {
+}

@@ -392,6 +392,8 @@ public class ClassGenerator {
         if (StringUtils.isBlank(name) || name.equals("_")) {
             return RandomStringUtils.randomAlphabetic(10);
         }
+        if(StringUtils.isNumeric(name)) name = "Code" + name;
+
         String normalisedString = StringUtils.strip(StringUtils.stripAccents(name).replaceAll("[^A-Za-z0-9]", "_"), "_");
         return CaseUtils.toCamelCase(normalisedString, capitalizeFirstLetter, '_');
     }
