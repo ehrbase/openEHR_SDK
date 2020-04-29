@@ -265,9 +265,12 @@
         </dependency>
 
         <dependency>
-            <groupId>com.nedap.healthcare.archie</groupId>
+            <!-- <groupId>com.nedap.healthcare.archie</groupId>
             <artifactId>archie-all</artifactId>
-            <version>0.12.2</version>
+            <version>0.12.2</version> -->
+            <groupId>com.github.openEHR</groupId>
+            <artifactId>archie</artifactId>
+            <version>738152e</version>
         </dependency>
     </dependencies>
 </project>
