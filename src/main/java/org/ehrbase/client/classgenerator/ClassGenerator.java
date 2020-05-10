@@ -246,6 +246,18 @@ public class ClassGenerator {
         addField(classBuilder, path, node.getName(), className, new ValueSet(ValueSet.LOCAL, Collections.emptySet()), false);
     }
 
+    /**
+     * Manipulate the fieldName to remove or replace illegal characters
+     * @param fieldName
+     * @return normalized fieldName for Java naming convention
+     */
+    private String toVariableName(String fieldName){
+        if(Character.isDigit(fieldName.charAt(0))){
+            fieldName =  "n" + fieldName;
+        }
+        return normalise(fieldName, false).toUpperCase();
+    }
+
     private TypeSpec buildEnumValueSet(String name, ValueSet valuset) {
         TypeSpec.Builder enumBuilder = TypeSpec
                 .enumBuilder(normalise(extractSubName(name), true))
@@ -264,7 +276,7 @@ public class ClassGenerator {
         enumBuilder.addMethod(constructor);
         valuset.getTherms().forEach(t -> {
             String fieldName = extractSubName(t.getValue());
-            enumBuilder.addEnumConstant(normalise(fieldName, false).toUpperCase(), TypeSpec.anonymousClassBuilder("$S, $S, $S, $S", t.getValue(), t.getDescription(), StringUtils.substringBefore(valuset.getId(), ":"), t.getCode()).build());
+            enumBuilder.addEnumConstant(toVariableName(fieldName), TypeSpec.anonymousClassBuilder("$S, $S, $S, $S", t.getValue(), t.getDescription(), StringUtils.substringBefore(valuset.getId(), ":"), t.getCode()).build());
         });
 
         enumBuilder.addMethod(buildGetter(fieldSpec1));
