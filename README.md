@@ -1,11 +1,22 @@
-# EHRBase Client (Pre-Alpha) 
-
+# EHRBase SDK (Beta) 
+## client 
 Generic openEHR Client and Objekt-mapper:
 * Define entity classes for openEHR-Templates (v1.4) in a jpa like way
-* Autogenerate  entity classes from template
 * Map entity <-> Archie RM objekts.
 * RestClient for openEHR Rest-API 
 * AQL-Query generator (TODO)
+## generator 
+* Autogenerate  entity classes from template
+## opt-1.4
+* Opt 1.4 xmlbeans
+## response-dto
+* DTO's representing the response for the ehrsacpe and openEHR Rest API
+## terminologie
+* Mini openEHR terminologie implementation
+## validation
+* Validation of Compositions against templates
+## test-data
+* Example templates and Composition for tests
 
 ## Release Notes (v0.3.0)
 * RestClient for DIRECTORY endpoint
@@ -17,8 +28,6 @@ Generic openEHR Client and Objekt-mapper:
 
 ## Installation
 
-### Prerequisite
-You need to have EHRbase jars for v0.11.0 in your maven repo (clone EHRbase and build with 'mvn clean install')
 ### Build
 ```bash
 mvn clean install
@@ -26,9 +35,9 @@ mvn clean install
 
 ## Usage
 ###  Entity generation
-To generate a entity class from a template use
+To generate an entity class from a template use
 ```bash
- java  -jar client-library-version.jar
+ java  -jar generator-version.jar
  -h               show help
  -opt <arg>       path to opt file
  -out <arg>       path to output directory
