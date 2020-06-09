@@ -1313,8 +1313,7 @@
             </items>
             <items archetype_node_id="openEHR-EHR-SECTION.adhoc.v1" xsi:type="SECTION">
                 <name>
-                    <value>Exposição a substâncias: uso de álcool, tabaco e outras substâncias nos últimos 3 meses
-                    </value>
+                    <value>Exposição a substâncias: uso de álcool, tabaco e outras substâncias nos últimos 3 meses</value>
                 </name>
                 <archetype_details>
                     <archetype_id>

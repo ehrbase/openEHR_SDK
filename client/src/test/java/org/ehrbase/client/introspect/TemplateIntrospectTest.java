@@ -284,11 +284,12 @@ public class TemplateIntrospectTest {
                         new Tuple("DvBoolean", 2L),
                         new Tuple("DvIdentifier", 1L),
                         new Tuple("ItemStructure", 1L),
-                        new Tuple("Participation", 1L)
+                        new Tuple("Participation", 1L),
+                        new Tuple("DataValue", 1L)
                 );
 
         assertThat(countNodes(actual, ArchetypeNode.class)).isEqualTo(7l);
-        assertThat(countNodes(actual, EndNode.class)).isEqualTo(61l);
+        assertThat(countNodes(actual, EndNode.class)).isEqualTo(62l);
         assertThat(countNodes(actual, SlotNode.class)).isEqualTo(2l);
         assertThat(countNodes(actual, ChoiceNode.class)).isEqualTo(1l);
     }

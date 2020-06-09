@@ -33,6 +33,7 @@
         <module>serialisation</module>
         <module>terminology</module>
         <module>test-data</module>
+        <module>validation</module>
     </modules>
 
     <properties>
@@ -139,6 +140,11 @@
             <dependency>
                 <groupId>org.ehrbase.sdk</groupId>
                 <artifactId>terminology</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.ehrbase.sdk</groupId>
+                <artifactId>validation</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>

@@ -193,10 +193,10 @@ public class PathAttribute {
 
     public static List<String> dividePathIntoSegments(String path) {
         List<String> segments = new ArrayList<String>();
-        StringTokenizer tokens = new StringTokenizer(path, "/");
+        StringTokenizer tokens = new StringTokenizer( path, "/");
         while (tokens.hasMoreTokens()) {
             String next = tokens.nextToken();
-            if (next.matches(".+\\[.+[^\\]]$")) {
+            if (next.matches(".+\\[.+[^]]$")) {
                 do {
                     next = next + "/" + tokens.nextToken();
                 } while (!next.matches(".*]$"));

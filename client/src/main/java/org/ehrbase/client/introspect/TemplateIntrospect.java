@@ -123,7 +123,7 @@ public class TemplateIntrospect {
 
         HashMap<String, Node> localNodeMap = new HashMap<>();
         log.trace("RmTyp: {}", ccomplexobject.getRmTypeName());
-        Class rmClass = RM_INFO_LOOKUP.getClass(ccomplexobject.getRmTypeName());
+        Class rmClass = RM_INFO_LOOKUP.getClass(StringUtils.stripToEmpty(ccomplexobject.getRmTypeName()));
 
         if (Pathable.class.isAssignableFrom(rmClass)) {
             localNodeMap.putAll(handleNonTemplateFields(rmClass, path));
@@ -289,13 +289,13 @@ public class TemplateIntrospect {
             case "DOUBLE":
                 return Double.class;
             default:
-                return RM_INFO_LOOKUP.getClass(rmName);
+                return RM_INFO_LOOKUP.getClass(StringUtils.stripToEmpty(rmName));
         }
     }
 
     private Node handleEntity(CCOMPLEXOBJECT cobject, String name, Map<String, TermDefinition> termDef,
                               boolean multi) {
-        Class rmClass = RM_INFO_LOOKUP.getClass(cobject.getRmTypeName());
+        Class rmClass = RM_INFO_LOOKUP.getClass( StringUtils.stripToEmpty(cobject.getRmTypeName()));
         if (Event.class.isAssignableFrom(rmClass)) {
 
             cobject.setRmTypeName("POINT_EVENT");
