@@ -40,7 +40,7 @@ import org.ehrbase.client.classgenerator.examples.shareddefinition.MathFunctionD
 import org.ehrbase.client.classgenerator.examples.testalltypesenv1composition.TestAllTypesEnV1Composition;
 import org.ehrbase.client.classgenerator.examples.testalltypesenv1composition.definition.TestAllTypesChoiceDvcount;
 import org.ehrbase.client.templateprovider.TestDataTemplateProvider;
-import org.ehrbase.serialisation.CanonicalXML;
+import org.ehrbase.serialisation.xmlencoding.CanonicalXML;
 import org.ehrbase.test_data.composition.CompositionTestDataCanonicalXML;
 import org.junit.Test;
 

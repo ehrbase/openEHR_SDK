@@ -25,7 +25,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.ehrbase.client.openehrclient.CompositionEndpoint;
 import org.ehrbase.client.openehrclient.FolderDAO;
 import org.ehrbase.client.openehrclient.VersionUid;
-import org.ehrbase.rest.openehr.response.DirectoryResponseData;
+import org.ehrbase.response.openehr.DirectoryResponseData;
 
 import java.net.URI;
 import java.util.ArrayList;

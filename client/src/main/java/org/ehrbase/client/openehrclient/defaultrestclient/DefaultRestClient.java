@@ -38,13 +38,13 @@ import org.apache.http.HttpStatus;
 import org.apache.http.client.fluent.Request;
 import org.apache.http.entity.ContentType;
 import org.apache.http.util.EntityUtils;
-import org.ehrbase.api.mapper.RmObjectJsonDeSerializer;
 import org.ehrbase.client.exception.ClientException;
 import org.ehrbase.client.exception.OptimisticLockException;
 import org.ehrbase.client.exception.WrongStatusCodeException;
 import org.ehrbase.client.openehrclient.*;
 import org.ehrbase.client.templateprovider.TemplateProvider;
-import org.ehrbase.serialisation.CanonicalJson;
+import org.ehrbase.serialisation.jsonencoding.CanonicalJson;
+import org.ehrbase.serialisation.mapper.RmObjectJsonDeSerializer;
 
 import java.io.IOException;
 import java.net.URI;

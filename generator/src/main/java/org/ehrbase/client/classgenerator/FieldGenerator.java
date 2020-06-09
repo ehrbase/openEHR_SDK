@@ -28,7 +28,7 @@ import org.ehrbase.client.aql.field.AqlFieldImp;
 import org.ehrbase.client.aql.field.ListAqlFieldImp;
 import org.ehrbase.client.aql.field.ListSelectAqlField;
 import org.ehrbase.client.aql.field.SelectAqlField;
-import org.ehrbase.ehr.encode.wrappers.SnakeCase;
+import org.ehrbase.serialisation.util.SnakeCase;
 
 import javax.lang.model.element.Modifier;
 import java.util.List;

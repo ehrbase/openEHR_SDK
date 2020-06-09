@@ -47,7 +47,7 @@ import org.ehrbase.client.exception.ClientException;
 import org.ehrbase.client.flattener.Flattener;
 import org.ehrbase.client.openehrclient.AqlEndpoint;
 import org.ehrbase.client.openehrclient.VersionUid;
-import org.ehrbase.serialisation.JacksonUtil;
+import org.ehrbase.serialisation.jsonencoding.JacksonUtil;
 
 import java.io.IOException;
 import java.net.URI;

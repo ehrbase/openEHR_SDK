@@ -88,6 +88,11 @@ public class TestData {
         bloodPressureSimpleDeV0.getParticipations().add(new Participation(new PartyIdentified(null, "Test", null), new DvText("Pos1"), null, null));
         bloodPressureSimpleDeV0.getParticipations().add(new Participation(new PartyIdentified(null, "Test2", null), new DvText("Pos2"), null, null));
 
+        bloodPressureSimpleDeV0.getBloodPressureTrainingSample().add(buildBloodPressureTrainingSampleObservation());
+        return bloodPressureSimpleDeV0;
+    }
+
+    protected static BloodPressureTrainingSampleObservation buildBloodPressureTrainingSampleObservation() {
         BloodPressureTrainingSampleObservation bloodPressureTrainingSample = new BloodPressureTrainingSampleObservation();
         bloodPressureTrainingSample.setSubject(new PartySelf());
         bloodPressureTrainingSample.setOriginValue(OffsetDateTime.now());
@@ -104,8 +109,7 @@ public class TestData {
         bloodPressureTrainingSample.setKorotkoffSoundsDefiningcode(KorotkoffSoundsDefiningcode.FIFTHSOUND);
         bloodPressureTrainingSample.setCuffSizeDefiningcode(CuffSizeDefiningcode.ADULT);
         bloodPressureTrainingSample.setLocationOfMeasurementDefiningcode(LocationOfMeasurementDefiningcode.FINGER);
-        bloodPressureSimpleDeV0.getBloodPressureTrainingSample().add(bloodPressureTrainingSample);
-        return bloodPressureSimpleDeV0;
+        return bloodPressureTrainingSample;
     }
 
 

@@ -26,7 +26,7 @@ import com.nedap.archie.rm.support.identification.PartyRef;
 import org.apache.commons.io.IOUtils;
 import org.ehrbase.client.Integration;
 import org.ehrbase.client.openehrclient.OpenEhrClient;
-import org.ehrbase.serialisation.CanonicalJson;
+import org.ehrbase.serialisation.jsonencoding.CanonicalJson;
 import org.ehrbase.test_data.item_structure.ItemStruktureTestDataCanonicalJson;
 import org.junit.BeforeClass;
 import org.junit.Test;

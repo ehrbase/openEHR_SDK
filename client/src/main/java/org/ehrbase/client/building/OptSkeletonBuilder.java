@@ -44,7 +44,7 @@ import org.apache.xmlbeans.XmlObject;
 import org.ehrbase.client.building.rmobjektskeletonbuilder.RmObjektSkeletonBuilder;
 import org.ehrbase.client.introspect.TemplateIntrospect;
 import org.ehrbase.client.introspect.config.RmIntrospectConfig;
-import org.ehrbase.ehr.encode.wrappers.SnakeCase;
+import org.ehrbase.serialisation.util.SnakeCase;
 import org.ehrbase.terminology.openehr.implementation.LocalizedTerminologies;
 import org.openehr.schemas.v1.*;
 import org.reflections.ReflectionUtils;

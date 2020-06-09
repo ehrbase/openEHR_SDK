@@ -38,7 +38,7 @@ import org.ehrbase.client.introspect.node.*;
 import org.ehrbase.client.terminology.TermDefinition;
 import org.ehrbase.client.terminology.TerminologyProvider;
 import org.ehrbase.client.terminology.ValueSet;
-import org.ehrbase.ehr.encode.wrappers.SnakeCase;
+import org.ehrbase.serialisation.util.SnakeCase;
 import org.openehr.schemas.v1.*;
 import org.reflections.ReflectionUtils;
 import org.reflections.Reflections;

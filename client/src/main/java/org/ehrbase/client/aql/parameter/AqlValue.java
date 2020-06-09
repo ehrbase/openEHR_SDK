@@ -22,7 +22,7 @@ package org.ehrbase.client.aql.parameter;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.apache.commons.lang3.StringUtils;
 import org.ehrbase.client.exception.ClientException;
-import org.ehrbase.serialisation.JacksonUtil;
+import org.ehrbase.serialisation.jsonencoding.JacksonUtil;
 
 import java.time.temporal.TemporalAccessor;
 import java.util.Objects;

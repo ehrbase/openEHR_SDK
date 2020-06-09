@@ -40,7 +40,7 @@ import org.ehrbase.client.classgenerator.EnumValueSet;
 import org.ehrbase.client.exception.ClientException;
 import org.ehrbase.client.normalizer.Normalizer;
 import org.ehrbase.client.templateprovider.TemplateProvider;
-import org.ehrbase.serialisation.CanonicalJson;
+import org.ehrbase.serialisation.jsonencoding.CanonicalJson;
 import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
 import org.reflections.ReflectionUtils;
 import org.slf4j.Logger;
