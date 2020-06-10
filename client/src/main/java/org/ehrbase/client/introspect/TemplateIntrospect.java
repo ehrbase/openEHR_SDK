@@ -214,7 +214,10 @@ public class TemplateIntrospect {
         boolean multi = cobject.getOccurrences().getUpper() > 1 || cobject.getOccurrences().getUpperUnbounded();
 
         if (cobject instanceof CARCHETYPEROOT && !((CARCHETYPEROOT) cobject).getArchetypeId().getValue().isEmpty()) {
-            path = path + "[" + ((CARCHETYPEROOT) cobject).getArchetypeId().getValue() + "]";
+            StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.append(path).append("[").append(((CARCHETYPEROOT) cobject).getArchetypeId().getValue());
+
+            path = stringBuilder.append("]").toString();
             log.trace("Path: {}", path);
 
             if (!cobject.getNodeId().isEmpty() && termDef.containsKey(cobject.getNodeId())) {

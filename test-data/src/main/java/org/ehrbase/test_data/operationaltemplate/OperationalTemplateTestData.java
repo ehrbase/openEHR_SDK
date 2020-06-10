@@ -33,7 +33,8 @@ public enum OperationalTemplateTestData {
     ALT_EVENTS("Template with alternative Events", "AlternativeEvents.opt", "AlternativeEvents"),
     TWO_EVENTS("Template with two Events", "TwoEvents.opt", "SingleEvent"),
     AVERAGE_24("Template with  a Interval Events", "24StundenDurchschnitt.opt", "24StundenDurchschnitt"),
-    EPISODE_OF_CARE("EpisodeOfCare", "EpisodeOfCare.opt", "EpisodeOfCare");
+    EPISODE_OF_CARE("EpisodeOfCare", "EpisodeOfCare.opt", "EpisodeOfCare"),
+    CORONA_ANAMMNESE("Corona_Anamnese", "corona_anamnese.opt", "Corona_Anamnese");
 
     private final String filename;
     private final String templateId;

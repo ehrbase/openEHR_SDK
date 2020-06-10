@@ -17,8 +17,10 @@
 
 package org.ehrbase.client.introspect;
 
+import com.nedap.archie.rm.RMObject;
 import org.apache.xmlbeans.XmlException;
 import org.assertj.core.groups.Tuple;
+import org.ehrbase.client.building.OptSkeletonBuilder;
 import org.ehrbase.client.introspect.node.*;
 import org.ehrbase.test_data.operationaltemplate.OperationalTemplateTestData;
 import org.junit.Test;
@@ -223,6 +225,16 @@ public class TemplateIntrospectTest {
         assertThat(countNodes(actual, EndNode.class)).isEqualTo(21l);
         assertThat(countNodes(actual, SlotNode.class)).isEqualTo(8l);
         assertThat(countNodes(actual, ChoiceNode.class)).isEqualTo(2l);
+    }
+
+    @Test
+    public void introspectCorona() throws IOException, XmlException {
+        OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(OperationalTemplateTestData.CORONA_ANAMMNESE.getStream()).getTemplate();
+        TemplateIntrospect cut = new TemplateIntrospect(template);
+
+        Map<String, Node> actual = cut.getRoot().getChildren();
+
+        RMObject generate = new OptSkeletonBuilder().generate(template);
     }
 
     @Test
