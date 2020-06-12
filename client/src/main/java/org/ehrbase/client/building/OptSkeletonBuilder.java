@@ -232,7 +232,7 @@ public class OptSkeletonBuilder {
             rmTypeName = "POINT_EVENT";
         }
 
-        Class<?> rmClass = RM_INFO_LOOKUP.getClass(ccobj.getRmTypeName());
+        Class<?> rmClass = RM_INFO_LOOKUP.getClass(rmTypeName);
 
         if (Pathable.class.isAssignableFrom(rmClass)) {
 
