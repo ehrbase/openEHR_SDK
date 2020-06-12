@@ -76,7 +76,7 @@ public class OptSkeletonBuilderTest {
         assertThat(generate).isNotNull();
         assertThat(generate.itemAtPath("/composer")).isNotNull();
         assertThat(generate.itemAtPath("/context/end_time")).isNotNull();
-        assertThat(generate.itemAtPath("/name")).extracting(d -> ((DvText) d).getValue()).isEqualTo("Versorgungsfall");
+        assertThat(generate.itemAtPath("/name")).extracting(d -> ((DvText) d).getValue()).isEqualTo("EpisodeOfCare");
     }
 
 

@@ -31,6 +31,7 @@ import org.apache.commons.collections4.multimap.ArrayListValuedHashMap;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
+import org.ehrbase.client.building.OptNameHelper;
 import org.ehrbase.client.exception.ClientException;
 import org.ehrbase.client.flatpath.FlatPath;
 import org.ehrbase.client.introspect.config.RmIntrospectConfig;
@@ -116,7 +117,9 @@ public class TemplateIntrospect {
             termDef.put(code, new TermDefinition(code, value, description));
 
         }
-        return new ArchetypeNode(Optional.ofNullable(termDef.get("at0000")).map(TermDefinition::getValue).orElse(name), definition.getArchetypeId().getValue(), handleCCOMPLEXOBJECT(definition, "", termDef, ""), multi, definition.getRmTypeName());
+        Optional<String> nodeName = OptNameHelper.extractName(definition);
+        Optional<String> termName = Optional.ofNullable(termDef.get("at0000")).map(TermDefinition::getValue);
+        return new ArchetypeNode(nodeName.orElse(termName.orElse(name)), definition.getArchetypeId().getValue(), handleCCOMPLEXOBJECT(definition, "", termDef, ""), multi, definition.getRmTypeName());
     }
 
     private Map<String, Node> handleCCOMPLEXOBJECT(CCOMPLEXOBJECT ccomplexobject, String path, Map<String, TermDefinition> termDef, String term) {
@@ -216,7 +219,10 @@ public class TemplateIntrospect {
         if (cobject instanceof CARCHETYPEROOT && !((CARCHETYPEROOT) cobject).getArchetypeId().getValue().isEmpty()) {
             StringBuilder stringBuilder = new StringBuilder();
             stringBuilder.append(path).append("[").append(((CARCHETYPEROOT) cobject).getArchetypeId().getValue());
-
+            Optional<String> name = OptNameHelper.extractName((CARCHETYPEROOT) cobject);
+            if (name.isPresent()) {
+                stringBuilder.append(" and name/value='").append(name.get()).append("'");
+            }
             path = stringBuilder.append("]").toString();
             log.trace("Path: {}", path);
 
@@ -298,7 +304,7 @@ public class TemplateIntrospect {
 
     private Node handleEntity(CCOMPLEXOBJECT cobject, String name, Map<String, TermDefinition> termDef,
                               boolean multi) {
-        Class rmClass = RM_INFO_LOOKUP.getClass( StringUtils.stripToEmpty(cobject.getRmTypeName()));
+        Class rmClass = RM_INFO_LOOKUP.getClass(StringUtils.stripToEmpty(cobject.getRmTypeName()));
         if (Event.class.isAssignableFrom(rmClass)) {
 
             cobject.setRmTypeName("POINT_EVENT");

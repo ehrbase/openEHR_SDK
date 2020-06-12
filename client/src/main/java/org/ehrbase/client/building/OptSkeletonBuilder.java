@@ -375,7 +375,7 @@ public class OptSkeletonBuilder {
                         .getValue());
                 valueMap.put("archetype_node_id", ((CARCHETYPEROOT) ccobj)
                         .getArchetypeId().getValue());
-                Optional<String> name = extractName((CARCHETYPEROOT) ccobj);
+                Optional<String> name = OptNameHelper.extractName((CARCHETYPEROOT) ccobj);
                 String termName = name.orElse(termDef.get(nodeId));
                 if (termName != null) {
                     txtName = new DvText(termName);
@@ -445,22 +445,6 @@ public class OptSkeletonBuilder {
 
         }
 
-    }
-
-    public  static Optional<String> extractName(CARCHETYPEROOT carchetyperoot){
-    return   Arrays.stream( carchetyperoot.getAttributesArray())
-              .filter(a -> CSINGLEATTRIBUTE.class.isAssignableFrom(a.getClass()))
-              .map(a ->(CSINGLEATTRIBUTE)a)
-              .filter(a -> a.getRmAttributeName().equals("name"))
-              .map(a -> a.getChildrenArray(0))
-              .map(c -> (CCOMPLEXOBJECT)c)
-              .map(c -> c.getAttributesArray(0))
-              .map(a -> a.getChildrenArray(0))
-              .map(p -> (CPRIMITIVEOBJECT)p )
-              .map(a -> a.getItem())
-              .map(s -> (CSTRING)s)
-              .map(s -> s.getListArray(0))
-              .findAny();
     }
 
 }

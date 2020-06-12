@@ -17,10 +17,8 @@
 
 package org.ehrbase.client.introspect;
 
-import com.nedap.archie.rm.RMObject;
 import org.apache.xmlbeans.XmlException;
 import org.assertj.core.groups.Tuple;
-import org.ehrbase.client.building.OptSkeletonBuilder;
 import org.ehrbase.client.introspect.node.*;
 import org.ehrbase.test_data.operationaltemplate.OperationalTemplateTestData;
 import org.junit.Test;
@@ -233,8 +231,29 @@ public class TemplateIntrospectTest {
         TemplateIntrospect cut = new TemplateIntrospect(template);
 
         Map<String, Node> actual = cut.getRoot().getChildren();
+        assertThat(actual).isNotEmpty();
+        assertThat(actual.keySet())
+                .containsExactlyInAnyOrder(
+                        "/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Risikogebiet']",
+                        "/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Allgemeine Angaben']",
+                        "/context/end_time",
+                        "/context/participations",
+                        "/language",
+                        "/context/health_care_facility",
+                        "/context/other_context[at0001]/items[at0005]/value",
+                        "/content[openEHR-EHR-OBSERVATION.story.v1]",
+                        "/context/other_context[at0001]/items[at0002]/value",
+                        "/territory",
+                        "/context/start_time",
+                        "/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Kontakt']",
+                        "/composer",
+                        "/context/setting",
+                        "/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Symptome']",
+                        "/context/other_context[at0001]/items[at0006]",
+                        "/context/location",
+                        "/category"
+                );
 
-        RMObject generate = new OptSkeletonBuilder().generate(template);
     }
 
     @Test

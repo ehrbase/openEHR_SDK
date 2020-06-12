@@ -158,7 +158,12 @@ public class Flattener {
         if (fieldType.isAnnotationPresent(Entity.class)) {
 
             Object subDto = createInstance(fieldType);
-            mapEntityToDto((RMObject) child, subDto);
+            try {
+
+                mapEntityToDto((RMObject) child, subDto);
+            } catch (RuntimeException e) {
+                throw e;
+            }
             writeField(field, dto, subDto);
 
         } else if (EnumValueSet.class.isAssignableFrom(fieldType) && child != null && CodePhrase.class.isAssignableFrom(child.getClass())) {

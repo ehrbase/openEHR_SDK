@@ -18,6 +18,9 @@
 package org.ehrbase.client.flattener;
 
 import org.apache.commons.lang3.StringUtils;
+import org.ehrbase.client.flatpath.FlatPath;
+
+import java.util.Optional;
 
 public class PathExtractor {
     private String childPath;
@@ -47,22 +50,19 @@ public class PathExtractor {
     }
 
     private void invoke() {
-        int k = childPath.indexOf('|');
-        attributeName = null;
-        if (k >= 0) {
-            attributeName = childPath.substring(k + 1);
-            childPath = childPath.substring(0, k);
+        FlatPath flatPath = new FlatPath(childPath);
+
+        while (flatPath.getChild() != null) {
+            flatPath = flatPath.getChild();
         }
 
-
-        int i = childPath.lastIndexOf('/');
-
-        parentPath = "/";
-        if (i > 0) {
-            parentPath = childPath.substring(0, i);
+        parentPath = StringUtils.remove(childPath, flatPath.toString());
+        if (StringUtils.isBlank(parentPath)) {
+            parentPath = "/";
         }
-        childName = childPath.substring(i + 1);
-        childName = StringUtils.substringBefore(childName, "[");
+        childPath = StringUtils.remove(childPath, Optional.ofNullable(flatPath.getAttributeName()).map(s -> "|" + s).orElse(""));
+        childName = flatPath.getName();
+        attributeName = flatPath.getAttributeName();
 
     }
 }
