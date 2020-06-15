@@ -17,31 +17,39 @@
  *
  */
 
-package org.ehrbase.client.aql.condition;
+package org.ehrbase.client.aql.containment;
 
-public abstract class BinaryLogicalOperator implements Condition {
+import org.ehrbase.client.aql.query.EntityQuery;
 
-    private final Condition condition1;
-    private final Condition condition2;
+public abstract class BinaryLogicalOperator implements ContainmentExpression {
 
-     BinaryLogicalOperator(Condition condition1, Condition condition2) {
-         this.condition1 = condition1;
-         this.condition2 = condition2;
-     }
+    private final ContainmentExpression containmentExpression1;
+    private final ContainmentExpression containmentExpression2;
+
+    protected BinaryLogicalOperator(ContainmentExpression containmentExpression1, ContainmentExpression containmentExpression2) {
+        this.containmentExpression1 = containmentExpression1;
+        this.containmentExpression2 = containmentExpression2;
+    }
 
     @Override
-    public String buildAql() {
+    public String buildAQL() {
         StringBuilder sb = new StringBuilder();
         sb
                 .append("(")
-                .append(condition1.buildAql())
+                .append(containmentExpression1.buildAQL())
                 .append(" ")
                 .append(getSymbol())
                 .append(" ")
-                .append(condition2.buildAql())
+                .append(containmentExpression2.buildAQL())
                 .append(")");
 
         return sb.toString();
+    }
+
+    @Override
+    public void bindQuery(EntityQuery<?> query) {
+        containmentExpression1.bindQuery(query);
+        containmentExpression2.bindQuery(query);
     }
 
     protected abstract String getSymbol();

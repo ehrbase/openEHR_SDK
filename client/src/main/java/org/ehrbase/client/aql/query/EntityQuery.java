@@ -37,6 +37,7 @@ public class EntityQuery<T extends Record> implements Query<T> {
     private final ContainmentExpression containmentExpression;
     private int variabelCount = 0;
     private int parameterCount = 0;
+    private int selectCount = 0;
     private Map<Containment, String> variablesMap = new HashMap<>();
     private Condition where;
 
@@ -52,11 +53,11 @@ public class EntityQuery<T extends Record> implements Query<T> {
         StringBuilder sb = new StringBuilder();
         sb
                 .append("Select ")
-                .append(Arrays.stream(fields).map(SelectAqlField::buildAQL).collect(Collectors.joining(", ")))
+                .append(Arrays.stream(fields).map(SelectAqlField::buildAQL).map(s -> s + " as F" + selectCount++).collect(Collectors.joining(", ")))
                 .append(" from EHR e ");
         if (containmentExpression != null) {
             sb
-                    .append("contains ")
+                    .append(" contains ")
                     .append(containmentExpression.buildAQL());
         }
         if (where != null) {

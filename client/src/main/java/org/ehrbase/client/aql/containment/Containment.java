@@ -65,7 +65,7 @@ public class Containment implements ContainmentExpression {
                 .append("[").append(archetype).append("]");
         if (contains != null) {
             sb
-                    .append("contains ")
+                    .append(" contains ")
                     .append(contains.buildAQL());
         }
         return sb.toString();

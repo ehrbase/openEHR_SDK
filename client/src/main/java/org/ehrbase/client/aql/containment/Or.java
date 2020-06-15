@@ -17,11 +17,13 @@
  *
  */
 
-package org.ehrbase.client.aql.condition;
+package org.ehrbase.client.aql.containment;
 
 public class Or extends BinaryLogicalOperator {
-    protected Or(Condition condition1, Condition condition2) {
-        super(condition1, condition2);
+
+
+    public Or(ContainmentExpression containmentExpression1, ContainmentExpression containmentExpression2) {
+        super(containmentExpression1, containmentExpression2);
     }
 
     @Override

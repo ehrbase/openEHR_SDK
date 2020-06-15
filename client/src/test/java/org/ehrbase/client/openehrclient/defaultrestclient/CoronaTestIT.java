@@ -21,14 +21,17 @@ package org.ehrbase.client.openehrclient.defaultrestclient;
 
 import com.nedap.archie.rm.composition.Composition;
 import org.apache.commons.io.IOUtils;
+import org.assertj.core.groups.Tuple;
 import org.ehrbase.client.aql.condition.Condition;
+import org.ehrbase.client.aql.containment.ContainmentExpression;
 import org.ehrbase.client.aql.field.EhrFields;
 import org.ehrbase.client.aql.parameter.Parameter;
 import org.ehrbase.client.aql.query.EntityQuery;
 import org.ehrbase.client.aql.query.Query;
-import org.ehrbase.client.aql.record.Record1;
+import org.ehrbase.client.aql.record.Record2;
 import org.ehrbase.client.classgenerator.examples.coronaanamnesecomposition.CoronaAnamneseComposition;
 import org.ehrbase.client.classgenerator.examples.coronaanamnesecomposition.CoronaAnamneseCompositionContainment;
+import org.ehrbase.client.classgenerator.examples.coronaanamnesecomposition.definition.FieberOderErhohteKorpertemperaturObservationContainment;
 import org.ehrbase.client.classgenerator.examples.coronaanamnesecomposition.definition.HustenObservationContainment;
 import org.ehrbase.client.classgenerator.examples.coronaanamnesecomposition.definition.SymptomeSectionContainment;
 import org.ehrbase.client.classgenerator.examples.coronaanamnesecomposition.definition.VorhandenDefiningcode;
@@ -73,15 +76,16 @@ public class CoronaTestIT {
         SymptomeSectionContainment symptomeSectionContainment = SymptomeSectionContainment.getInstance();
         coronaAnamneseCompositionContainment.setContains(symptomeSectionContainment);
         HustenObservationContainment hustenObservationContainment = HustenObservationContainment.getInstance();
-        symptomeSectionContainment.setContains(hustenObservationContainment);
+        FieberOderErhohteKorpertemperaturObservationContainment fieberOderErhohteKorpertemperaturObservationContainment = FieberOderErhohteKorpertemperaturObservationContainment.getInstance();
+        symptomeSectionContainment.setContains(ContainmentExpression.and(hustenObservationContainment, fieberOderErhohteKorpertemperaturObservationContainment));
 
-        EntityQuery<Record1<VorhandenDefiningcode>> entityQuery = Query.buildEntityQuery(coronaAnamneseCompositionContainment, hustenObservationContainment.VORHANDEN_DEFININGCODE);
+        EntityQuery<Record2<VorhandenDefiningcode, VorhandenDefiningcode>> entityQuery = Query.buildEntityQuery(coronaAnamneseCompositionContainment, hustenObservationContainment.VORHANDEN_DEFININGCODE, fieberOderErhohteKorpertemperaturObservationContainment.VORHANDEN_DEFININGCODE);
         Parameter<UUID> ehrIdParameter = entityQuery.buildParameter();
         entityQuery.where(Condition.equal(EhrFields.EHR_ID(), ehrIdParameter));
 
-        List<Record1<VorhandenDefiningcode>> actual = openEhrClient.aqlEndpoint().execute(entityQuery, ehrIdParameter.setValue(ehr));
+        List<Record2<VorhandenDefiningcode, VorhandenDefiningcode>> actual = openEhrClient.aqlEndpoint().execute(entityQuery, ehrIdParameter.setValue(ehr));
 
-        assertThat(actual).extracting(Record1::value1).containsExactlyInAnyOrder(VorhandenDefiningcode.VORHANDEN);
+        assertThat(actual).extracting(Record2::value1, Record2::value2).containsExactlyInAnyOrder(new Tuple(VorhandenDefiningcode.VORHANDEN, VorhandenDefiningcode.VORHANDEN));
 
 
     }
