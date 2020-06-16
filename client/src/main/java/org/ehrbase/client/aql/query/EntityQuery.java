@@ -33,7 +33,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class EntityQuery<T extends Record> implements Query<T> {
-    private final SelectAqlField<?>[] fields;
+    private final SelectAqlField<Object>[] fields;
     private final ContainmentExpression containmentExpression;
     private int variabelCount = 0;
     private int parameterCount = 0;
@@ -42,7 +42,7 @@ public class EntityQuery<T extends Record> implements Query<T> {
     private Condition where;
 
     protected EntityQuery(ContainmentExpression containmentExpression, SelectAqlField<?>... fields) {
-        this.fields = fields;
+        this.fields = (SelectAqlField<Object>[]) fields;
         this.containmentExpression = containmentExpression;
         containmentExpression.bindQuery(this);
     }
@@ -69,7 +69,7 @@ public class EntityQuery<T extends Record> implements Query<T> {
     }
 
     @Override
-    public AqlField<?>[] fields() {
+    public AqlField<Object>[] fields() {
         return fields;
     }
 

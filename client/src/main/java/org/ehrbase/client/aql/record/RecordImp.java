@@ -21,11 +21,8 @@ package org.ehrbase.client.aql.record;
 
 import org.ehrbase.client.aql.field.AqlField;
 
-public class RecordImp<T1, T2, T3>
-        implements
-        Record1<T1>,
-        Record2<T1, T2>,
-        Record3<T1, T2, T3> {
+public class RecordImp<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21>
+        extends AbstractRecordImp<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21> {
 
     private final AqlField<?>[] aqlFields;
     private final Object[] values;
@@ -35,35 +32,6 @@ public class RecordImp<T1, T2, T3>
         values = new Object[aqlFields.length];
     }
 
-    @Override
-    public AqlField<T1> field1() {
-        return (AqlField<T1>) field(0);
-    }
-
-    @Override
-    public AqlField<T2> field2() {
-        return (AqlField<T2>) field(1);
-    }
-
-    @Override
-    public AqlField<T3> field3() {
-        return (AqlField<T3>) field(2);
-    }
-
-    @Override
-    public T1 value1() {
-        return (T1) value(0);
-    }
-
-    @Override
-    public T2 value2() {
-        return (T2) value(1);
-    }
-
-    @Override
-    public T3 value3() {
-        return (T3) value(2);
-    }
 
     @Override
     public AqlField<?> field(int index) {
