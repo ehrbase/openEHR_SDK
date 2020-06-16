@@ -30,6 +30,7 @@ import com.google.gson.JsonParser;
 import com.nedap.archie.rm.RMObject;
 import com.nedap.archie.rm.datatypes.CodePhrase;
 import com.nedap.archie.rm.datavalues.DvCodedText;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.fluent.Request;
@@ -133,7 +134,10 @@ public class DefaultRestAqlEndpoint implements AqlEndpoint {
 
     private Object extractValue(String valueAsString, Class<?> aClass) throws com.fasterxml.jackson.core.JsonProcessingException {
         Object object;
-        if (aClass.isAnnotationPresent(Entity.class)) {
+
+        if (StringUtils.isBlank(valueAsString) || "null".equals(valueAsString)) {
+            object = null;
+        } else if (aClass.isAnnotationPresent(Entity.class)) {
             object = new Flattener().flatten(AQL_OBJECT_MAPPER.readValue(valueAsString, RMObject.class), aClass);
         } else if (EnumValueSet.class.isAssignableFrom(aClass)) {
             RMObject rmObject = AQL_OBJECT_MAPPER.readValue(valueAsString, RMObject.class);

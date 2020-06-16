@@ -27,6 +27,10 @@ public interface ContainmentExpression {
 
     void bindQuery(EntityQuery<?> query);
 
+    default ContainmentExpression and(ContainmentExpression containmentExpression) {
+        return and(this, containmentExpression);
+    }
+
     static ContainmentExpression and(ContainmentExpression containmentExpression1, ContainmentExpression containmentExpression2) {
         return new And(containmentExpression1, containmentExpression2);
     }

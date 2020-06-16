@@ -97,5 +97,14 @@ public class Containment implements ContainmentExpression {
         this.contains = contains;
     }
 
+    public ContainmentTree contains(Containment contains) {
+        ContainmentTree tree = new ContainmentTree(this);
+        return tree.contains(contains);
+    }
+
+    public ContainmentExpression contains(ContainmentExpression contains) {
+        this.contains = contains;
+        return this;
+    }
 
 }
