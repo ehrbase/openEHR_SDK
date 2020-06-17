@@ -23,50 +23,42 @@ import org.ehrbase.client.aql.field.SelectAqlField;
 import org.ehrbase.client.aql.parameter.AqlValue;
 import org.ehrbase.client.aql.parameter.Parameter;
 
-public abstract class ComparisonOperator<T> implements Condition {
-    protected final SelectAqlField<T> field;
-    protected final AqlValue value;
-    protected final Parameter<T> parameter;
-    protected final SelectAqlField<T> compereField;
+import java.util.Arrays;
+import java.util.stream.Collectors;
 
-    protected ComparisonOperator(SelectAqlField<T> field, T value) {
+public class Matches<T> implements Condition {
+
+    private final SelectAqlField<T> field;
+    private final AqlValue[] values;
+    private final Parameter<T>[] parameters;
+
+    Matches(SelectAqlField<T> field, T... values) {
         this.field = field;
-        this.value = new AqlValue(value);
-        this.parameter = null;
-        this.compereField = null;
+        this.values = Arrays.stream(values).map(AqlValue::new).toArray(AqlValue[]::new);
+        this.parameters = null;
     }
 
-    protected ComparisonOperator(SelectAqlField<T> field, Parameter<T> parameter) {
+    Matches(SelectAqlField<T> field, Parameter<T>... parameters) {
         this.field = field;
-        this.parameter = parameter;
-        this.value = null;
-        this.compereField = null;
+        this.values = null;
+        this.parameters = parameters;
     }
 
-    protected ComparisonOperator(SelectAqlField<T> field, SelectAqlField<T> compereField) {
-        this.field = field;
-        this.value = null;
-        this.parameter = null;
-        this.compereField = compereField;
-    }
 
     @Override
     public String buildAql() {
         StringBuilder sb = new StringBuilder();
         sb
                 .append(field.buildAQL())
-                .append(" ")
-                .append(getSymbol())
-                .append(" ");
-        if (value != null) {
-            sb.append(value.buildAql());
-        } else if (parameter != null) {
-            sb.append(parameter.getAqlParameter());
+                .append(" matches {");
+
+        if (values != null) {
+            sb.append(Arrays.stream(values).map(AqlValue::buildAql).collect(Collectors.joining(",")));
         } else {
-            sb.append(compereField.buildAQL());
+            sb.append(Arrays.stream(parameters).map(Parameter::getAqlParameter).collect(Collectors.joining(",")));
         }
+        sb.append("}");
+
         return sb.toString();
     }
-
-    protected abstract String getSymbol();
 }

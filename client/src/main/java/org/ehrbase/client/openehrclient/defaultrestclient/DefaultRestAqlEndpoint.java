@@ -28,6 +28,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.nedap.archie.rm.RMObject;
+import com.nedap.archie.rm.composition.Composition;
 import com.nedap.archie.rm.datatypes.CodePhrase;
 import com.nedap.archie.rm.datavalues.DvCodedText;
 import org.apache.commons.lang3.StringUtils;
@@ -57,6 +58,7 @@ import java.util.*;
 
 import static org.ehrbase.client.openehrclient.defaultrestclient.DefaultRestClient.OBJECT_MAPPER;
 import static org.ehrbase.client.openehrclient.defaultrestclient.DefaultRestClient.checkStatus;
+import static org.ehrbase.client.openehrclient.defaultrestclient.DefaultRestCompositionEndpoint.addVersion;
 
 public class DefaultRestAqlEndpoint implements AqlEndpoint {
     public static final String AQL_PATH = "/query/aql/";
@@ -138,7 +140,11 @@ public class DefaultRestAqlEndpoint implements AqlEndpoint {
         if (StringUtils.isBlank(valueAsString) || "null".equals(valueAsString)) {
             object = null;
         } else if (aClass.isAnnotationPresent(Entity.class)) {
-            object = new Flattener().flatten(AQL_OBJECT_MAPPER.readValue(valueAsString, RMObject.class), aClass);
+            RMObject locatable = AQL_OBJECT_MAPPER.readValue(valueAsString, RMObject.class);
+            object = new Flattener().flatten(locatable, aClass);
+            if (locatable instanceof Composition) {
+                addVersion(object, new VersionUid(((Composition) locatable).getUid().getValue()));
+            }
         } else if (EnumValueSet.class.isAssignableFrom(aClass)) {
             RMObject rmObject = AQL_OBJECT_MAPPER.readValue(valueAsString, RMObject.class);
             final String codeString;

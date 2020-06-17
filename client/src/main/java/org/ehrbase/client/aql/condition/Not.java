@@ -19,26 +19,17 @@
 
 package org.ehrbase.client.aql.condition;
 
-import org.ehrbase.client.aql.field.SelectAqlField;
-import org.ehrbase.client.aql.parameter.Parameter;
+public class Not implements Condition {
 
-public class LessOrEqual<T> extends ComparisonOperator<T> {
+    private final Condition condition;
 
-
-    protected LessOrEqual(SelectAqlField<T> field, T value) {
-        super(field, value);
-    }
-
-    protected LessOrEqual(SelectAqlField<T> field, Parameter<T> parameter) {
-        super(field, parameter);
-    }
-
-    public LessOrEqual(SelectAqlField<T> field, SelectAqlField<T> compereField) {
-        super(field, compereField);
+    Not(Condition condition) {
+        this.condition = condition;
     }
 
     @Override
-    protected String getSymbol() {
-        return "<=";
+    public String buildAql() {
+        StringBuilder builder = new StringBuilder();
+        return builder.append("NOT ").append(condition.buildAql()).toString();
     }
 }

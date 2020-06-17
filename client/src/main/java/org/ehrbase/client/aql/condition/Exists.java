@@ -20,25 +20,18 @@
 package org.ehrbase.client.aql.condition;
 
 import org.ehrbase.client.aql.field.SelectAqlField;
-import org.ehrbase.client.aql.parameter.Parameter;
 
-public class LessOrEqual<T> extends ComparisonOperator<T> {
+class Exists implements Condition {
 
+    private final SelectAqlField<?> field;
 
-    protected LessOrEqual(SelectAqlField<T> field, T value) {
-        super(field, value);
-    }
-
-    protected LessOrEqual(SelectAqlField<T> field, Parameter<T> parameter) {
-        super(field, parameter);
-    }
-
-    public LessOrEqual(SelectAqlField<T> field, SelectAqlField<T> compereField) {
-        super(field, compereField);
+    public Exists(SelectAqlField<?> field) {
+        this.field = field;
     }
 
     @Override
-    protected String getSymbol() {
-        return "<=";
+    public String buildAql() {
+        StringBuilder sb = new StringBuilder();
+        return sb.append("EXISTS ").append(field.buildAQL()).toString();
     }
 }

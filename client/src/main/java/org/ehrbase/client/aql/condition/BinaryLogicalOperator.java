@@ -45,4 +45,12 @@ public abstract class BinaryLogicalOperator implements Condition {
     }
 
     protected abstract String getSymbol();
+
+    protected Condition getCondition1() {
+        return condition1;
+    }
+
+    protected Condition getCondition2() {
+        return condition2;
+    }
 }
