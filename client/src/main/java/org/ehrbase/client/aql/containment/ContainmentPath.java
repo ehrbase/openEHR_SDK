@@ -21,11 +21,11 @@ package org.ehrbase.client.aql.containment;
 
 import org.ehrbase.client.aql.query.EntityQuery;
 
-public class ContainmentTree implements ContainmentExpression {
+public class ContainmentPath implements ContainmentExpression {
 
     private final Containment root;
 
-    ContainmentTree(Containment root) {
+    ContainmentPath(Containment root) {
         this.root = root;
     }
 
@@ -39,7 +39,7 @@ public class ContainmentTree implements ContainmentExpression {
         root.bindQuery(query);
     }
 
-    public ContainmentTree contains(Containment contains) {
+    public ContainmentPath contains(Containment contains) {
         Containment leaf = root;
         while (leaf.getContains() != null) {
             leaf = (Containment) leaf.getContains();
