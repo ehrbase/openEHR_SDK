@@ -25,6 +25,7 @@ import org.ehrbase.client.Integration;
 import org.ehrbase.client.TestData;
 import org.ehrbase.client.aql.condition.Condition;
 import org.ehrbase.client.aql.field.EhrFields;
+import org.ehrbase.client.aql.orderby.OrderBy;
 import org.ehrbase.client.aql.parameter.Parameter;
 import org.ehrbase.client.aql.parameter.ParameterValue;
 import org.ehrbase.client.aql.query.EntityQuery;
@@ -215,6 +216,76 @@ public class DefaultRestAqlEndpointTestIT {
                     .extracting(VersionUid::getUuid)
                     .as("TestCase %s", t.id)
                     .containsExactlyInAnyOrder(t.uuids);
+
+        });
+    }
+
+
+    @Test
+    public void testExecuteEntityQueryOrderBY() {
+
+        UUID ehr = openEhrClient.ehrEndpoint().createEhr();
+
+        EhrbaseBloodPressureSimpleDeV0Composition comp1 = openEhrClient.compositionEndpoint(ehr).mergeCompositionEntity(TestData.buildEhrbaseBloodPressureSimpleDeV0());
+
+        EhrbaseBloodPressureSimpleDeV0Composition ehrbaseBloodPressureSimpleDeV0Composition = TestData.buildEhrbaseBloodPressureSimpleDeV0();
+        ehrbaseBloodPressureSimpleDeV0Composition.getBloodPressureTrainingSample().get(0).setSystolicMagnitude(44d);
+        EhrbaseBloodPressureSimpleDeV0Composition comp2 = openEhrClient.compositionEndpoint(ehr).mergeCompositionEntity(ehrbaseBloodPressureSimpleDeV0Composition);
+
+
+        EhrbaseBloodPressureSimpleDeV0Composition ehrbaseBloodPressureSimpleDeV0Composition2 = TestData.buildEhrbaseBloodPressureSimpleDeV0();
+        ehrbaseBloodPressureSimpleDeV0Composition2.getBloodPressureTrainingSample().get(0).setSystolicMagnitude(44d);
+        ehrbaseBloodPressureSimpleDeV0Composition2.getBloodPressureTrainingSample().get(0).setDiastolicMagnitude(44d);
+        EhrbaseBloodPressureSimpleDeV0Composition comp3 = openEhrClient.compositionEndpoint(ehr).mergeCompositionEntity(ehrbaseBloodPressureSimpleDeV0Composition2);
+
+        EhrbaseBloodPressureSimpleDeV0CompositionContainment containmentComposition = EhrbaseBloodPressureSimpleDeV0CompositionContainment.getInstance();
+
+        BloodPressureTrainingSampleObservationContainment containmentObservation = BloodPressureTrainingSampleObservationContainment.getInstance();
+
+        containmentComposition.setContains(containmentObservation);
+
+        class TestCase {
+            int id;
+            OrderBy orderBy;
+            UUID[] uuids;
+
+            TestCase(int id, OrderBy orderBy, UUID... uuids) {
+                this.id = id;
+                this.orderBy = orderBy;
+                this.uuids = uuids;
+            }
+        }
+
+        List<TestCase> testCases = new ArrayList<>();
+
+        testCases.add(new TestCase(1,
+                OrderBy.descending(containmentObservation.SYSTOLIC_MAGNITUDE).andThenDescending(containmentObservation.DIASTOLIC_MAGNITUDE),
+                comp3.getVersionUid().getUuid(), comp2.getVersionUid().getUuid(), comp1.getVersionUid().getUuid()));
+
+        testCases.add(new TestCase(2,
+                OrderBy.descending(containmentObservation.SYSTOLIC_MAGNITUDE).andThenAscending(containmentObservation.DIASTOLIC_MAGNITUDE),
+                comp2.getVersionUid().getUuid(), comp3.getVersionUid().getUuid(), comp1.getVersionUid().getUuid()));
+
+        testCases.add(new TestCase(3,
+                OrderBy.ascending(containmentObservation.SYSTOLIC_MAGNITUDE).andThenAscending(containmentObservation.DIASTOLIC_MAGNITUDE),
+                comp1.getVersionUid().getUuid(), comp2.getVersionUid().getUuid(), comp3.getVersionUid().getUuid()));
+
+        testCases.forEach(t -> {
+            EntityQuery<Record1<EhrbaseBloodPressureSimpleDeV0Composition>> entityQuery = Query.buildEntityQuery(
+                    containmentComposition,
+                    containmentComposition.EHRBASE_BLOOD_PRESSURE_SIMPLE_DE_V0_COMPOSITION
+            );
+            Parameter<UUID> ehrIdParameter = entityQuery.buildParameter();
+
+            Condition where = Condition.equal(EhrFields.EHR_ID(), ehrIdParameter);
+            entityQuery.where(where).orderBy(t.orderBy);
+
+            assertThat(openEhrClient.aqlEndpoint().execute(entityQuery, ehrIdParameter.setValue(ehr)))
+                    .extracting(Record1::value1)
+                    .extracting(EhrbaseBloodPressureSimpleDeV0Composition::getVersionUid)
+                    .extracting(VersionUid::getUuid)
+                    .as("TestCase %s", t.id)
+                    .containsExactly(t.uuids);
 
         });
     }

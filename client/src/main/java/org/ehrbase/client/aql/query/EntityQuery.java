@@ -24,6 +24,7 @@ import org.ehrbase.client.aql.containment.Containment;
 import org.ehrbase.client.aql.containment.ContainmentExpression;
 import org.ehrbase.client.aql.field.AqlField;
 import org.ehrbase.client.aql.field.SelectAqlField;
+import org.ehrbase.client.aql.orderby.OrderBy;
 import org.ehrbase.client.aql.parameter.Parameter;
 import org.ehrbase.client.aql.record.Record;
 
@@ -40,6 +41,7 @@ public class EntityQuery<T extends Record> implements Query<T> {
     private int selectCount = 0;
     private Map<Containment, String> variablesMap = new HashMap<>();
     private Condition where;
+    private OrderBy orderBy;
 
     protected EntityQuery(ContainmentExpression containmentExpression, SelectAqlField<?>... fields) {
         this.fields = (SelectAqlField<Object>[]) fields;
@@ -65,6 +67,11 @@ public class EntityQuery<T extends Record> implements Query<T> {
                     .append(" where ")
                     .append(where.buildAql());
         }
+        if (orderBy != null) {
+            sb
+                    .append(" order by ")
+                    .append(orderBy.buildAql());
+        }
         return sb.toString();
     }
 
@@ -86,6 +93,11 @@ public class EntityQuery<T extends Record> implements Query<T> {
 
     public EntityQuery<T> where(Condition where) {
         this.where = where;
+        return this;
+    }
+
+    public EntityQuery<T> orderBy(OrderBy orderBy) {
+        this.orderBy = orderBy;
         return this;
     }
 
