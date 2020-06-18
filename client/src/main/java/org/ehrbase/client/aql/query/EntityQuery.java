@@ -24,7 +24,7 @@ import org.ehrbase.client.aql.containment.Containment;
 import org.ehrbase.client.aql.containment.ContainmentExpression;
 import org.ehrbase.client.aql.field.AqlField;
 import org.ehrbase.client.aql.field.SelectAqlField;
-import org.ehrbase.client.aql.orderby.OrderBy;
+import org.ehrbase.client.aql.orderby.OrderByExpression;
 import org.ehrbase.client.aql.parameter.Parameter;
 import org.ehrbase.client.aql.record.Record;
 import org.ehrbase.client.aql.top.TopExpresion;
@@ -42,7 +42,7 @@ public class EntityQuery<T extends Record> implements Query<T> {
     private int selectCount = 0;
     private Map<Containment, String> variablesMap = new HashMap<>();
     private Condition where;
-    private OrderBy orderBy;
+    private OrderByExpression orderByExpression;
     private TopExpresion topExpresion;
 
     protected EntityQuery(ContainmentExpression containmentExpression, SelectAqlField<?>... fields) {
@@ -73,10 +73,10 @@ public class EntityQuery<T extends Record> implements Query<T> {
                     .append(" where ")
                     .append(where.buildAql());
         }
-        if (orderBy != null) {
+        if (orderByExpression != null) {
             sb
                     .append(" order by ")
-                    .append(orderBy.buildAql());
+                    .append(orderByExpression.buildAql());
         }
         return sb.toString();
     }
@@ -102,8 +102,8 @@ public class EntityQuery<T extends Record> implements Query<T> {
         return this;
     }
 
-    public EntityQuery<T> orderBy(OrderBy orderBy) {
-        this.orderBy = orderBy;
+    public EntityQuery<T> orderBy(OrderByExpression orderByExpression) {
+        this.orderByExpression = orderByExpression;
         return this;
     }
 

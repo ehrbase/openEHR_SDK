@@ -21,24 +21,24 @@ package org.ehrbase.client.aql.orderby;
 
 import org.ehrbase.client.aql.field.SelectAqlField;
 
-public interface OrderBy {
+public interface OrderByExpression {
 
     String buildAql();
 
 
-    default OrderBy andThenAscending(SelectAqlField<?> field) {
+    default OrderByExpression andThenAscending(SelectAqlField<?> field) {
         return new AndThen(this, new Ascending(field));
     }
 
-    default OrderBy andThenDescending(SelectAqlField<?> field) {
+    default OrderByExpression andThenDescending(SelectAqlField<?> field) {
         return new AndThen(this, new Descending(field));
     }
 
-    static OrderBy ascending(SelectAqlField<?> field) {
+    static OrderByExpression ascending(SelectAqlField<?> field) {
         return new Ascending(field);
     }
 
-    static OrderBy descending(SelectAqlField<?> field) {
+    static OrderByExpression descending(SelectAqlField<?> field) {
         return new Descending(field);
     }
 }

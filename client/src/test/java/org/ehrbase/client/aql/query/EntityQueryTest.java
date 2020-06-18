@@ -22,7 +22,7 @@ package org.ehrbase.client.aql.query;
 import org.ehrbase.client.aql.condition.Condition;
 import org.ehrbase.client.aql.containment.ContainmentPath;
 import org.ehrbase.client.aql.field.EhrFields;
-import org.ehrbase.client.aql.orderby.OrderBy;
+import org.ehrbase.client.aql.orderby.OrderByExpression;
 import org.ehrbase.client.aql.parameter.Parameter;
 import org.ehrbase.client.aql.record.Record3;
 import org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev0composition.EhrbaseBloodPressureSimpleDeV0CompositionContainment;
@@ -57,7 +57,7 @@ public class EntityQueryTest {
         Parameter<UUID> ehrIdParameter = entityQuery.buildParameter();
         entityQuery
                 .where(Condition.equal(EhrFields.EHR_ID(), ehrIdParameter).and(Condition.greaterOrEqual(containmentObservation.SYSTOLIC_MAGNITUDE, 22d)))
-                .orderBy(OrderBy.ascending(containmentComposition.START_TIME_VALUE).andThenDescending(containmentObservation.TIME_VALUE));
+                .orderBy(OrderByExpression.ascending(containmentComposition.START_TIME_VALUE).andThenDescending(containmentObservation.TIME_VALUE));
 
         assertThat(entityQuery.buildAql()).isEqualTo("Select c0/context/start_time/value as F0, o1 as F1, o1/protocol[at0011]/items[at0013]/value/defining_code as F2 " +
                 "from EHR e  " +

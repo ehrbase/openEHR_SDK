@@ -21,7 +21,7 @@ package org.ehrbase.client.aql.orderby;
 
 import org.ehrbase.client.aql.field.SelectAqlField;
 
-abstract class AbstractOrderBy implements OrderBy {
+abstract class AbstractOrderBy implements OrderByExpression {
     protected final SelectAqlField<?> field;
 
     AbstractOrderBy(SelectAqlField<?> field) {

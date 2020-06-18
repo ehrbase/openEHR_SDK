@@ -25,7 +25,7 @@ import org.ehrbase.client.Integration;
 import org.ehrbase.client.TestData;
 import org.ehrbase.client.aql.condition.Condition;
 import org.ehrbase.client.aql.field.EhrFields;
-import org.ehrbase.client.aql.orderby.OrderBy;
+import org.ehrbase.client.aql.orderby.OrderByExpression;
 import org.ehrbase.client.aql.parameter.Parameter;
 import org.ehrbase.client.aql.parameter.ParameterValue;
 import org.ehrbase.client.aql.query.EntityQuery;
@@ -247,10 +247,10 @@ public class DefaultRestAqlEndpointTestIT {
 
         class TestCase {
             int id;
-            OrderBy orderBy;
+            OrderByExpression orderBy;
             UUID[] uuids;
 
-            TestCase(int id, OrderBy orderBy, UUID... uuids) {
+            TestCase(int id, OrderByExpression orderBy, UUID... uuids) {
                 this.id = id;
                 this.orderBy = orderBy;
                 this.uuids = uuids;
@@ -260,15 +260,15 @@ public class DefaultRestAqlEndpointTestIT {
         List<TestCase> testCases = new ArrayList<>();
 
         testCases.add(new TestCase(1,
-                OrderBy.descending(containmentObservation.SYSTOLIC_MAGNITUDE).andThenDescending(containmentObservation.DIASTOLIC_MAGNITUDE),
+                OrderByExpression.descending(containmentObservation.SYSTOLIC_MAGNITUDE).andThenDescending(containmentObservation.DIASTOLIC_MAGNITUDE),
                 comp3.getVersionUid().getUuid(), comp2.getVersionUid().getUuid(), comp1.getVersionUid().getUuid()));
 
         testCases.add(new TestCase(2,
-                OrderBy.descending(containmentObservation.SYSTOLIC_MAGNITUDE).andThenAscending(containmentObservation.DIASTOLIC_MAGNITUDE),
+                OrderByExpression.descending(containmentObservation.SYSTOLIC_MAGNITUDE).andThenAscending(containmentObservation.DIASTOLIC_MAGNITUDE),
                 comp2.getVersionUid().getUuid(), comp3.getVersionUid().getUuid(), comp1.getVersionUid().getUuid()));
 
         testCases.add(new TestCase(3,
-                OrderBy.ascending(containmentObservation.SYSTOLIC_MAGNITUDE).andThenAscending(containmentObservation.DIASTOLIC_MAGNITUDE),
+                OrderByExpression.ascending(containmentObservation.SYSTOLIC_MAGNITUDE).andThenAscending(containmentObservation.DIASTOLIC_MAGNITUDE),
                 comp1.getVersionUid().getUuid(), comp2.getVersionUid().getUuid(), comp3.getVersionUid().getUuid()));
 
         testCases.forEach(t -> {
@@ -348,7 +348,7 @@ public class DefaultRestAqlEndpointTestIT {
             Parameter<UUID> ehrIdParameter = entityQuery.buildParameter();
 
             Condition where = Condition.equal(EhrFields.EHR_ID(), ehrIdParameter);
-            entityQuery.top(t.topExpresion).where(where).orderBy(OrderBy.descending(containmentObservation.SYSTOLIC_MAGNITUDE).andThenDescending(containmentObservation.DIASTOLIC_MAGNITUDE));
+            entityQuery.top(t.topExpresion).where(where).orderBy(OrderByExpression.descending(containmentObservation.SYSTOLIC_MAGNITUDE).andThenDescending(containmentObservation.DIASTOLIC_MAGNITUDE));
 
             assertThat(openEhrClient.aqlEndpoint().execute(entityQuery, ehrIdParameter.setValue(ehr)))
                     .extracting(Record1::value1)

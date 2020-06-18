@@ -19,12 +19,12 @@
 
 package org.ehrbase.client.aql.orderby;
 
-public class AndThen implements OrderBy {
+public class AndThen implements OrderByExpression {
 
-    private final OrderBy first;
-    private final OrderBy second;
+    private final OrderByExpression first;
+    private final OrderByExpression second;
 
-    public AndThen(OrderBy first, OrderBy second) {
+    public AndThen(OrderByExpression first, OrderByExpression second) {
         this.first = first;
         this.second = second;
     }
