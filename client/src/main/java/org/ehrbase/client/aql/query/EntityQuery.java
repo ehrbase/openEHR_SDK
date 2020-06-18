@@ -27,6 +27,7 @@ import org.ehrbase.client.aql.field.SelectAqlField;
 import org.ehrbase.client.aql.orderby.OrderBy;
 import org.ehrbase.client.aql.parameter.Parameter;
 import org.ehrbase.client.aql.record.Record;
+import org.ehrbase.client.aql.top.TopExpresion;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -42,6 +43,7 @@ public class EntityQuery<T extends Record> implements Query<T> {
     private Map<Containment, String> variablesMap = new HashMap<>();
     private Condition where;
     private OrderBy orderBy;
+    private TopExpresion topExpresion;
 
     protected EntityQuery(ContainmentExpression containmentExpression, SelectAqlField<?>... fields) {
         this.fields = (SelectAqlField<Object>[]) fields;
@@ -54,8 +56,12 @@ public class EntityQuery<T extends Record> implements Query<T> {
     public String buildAql() {
         StringBuilder sb = new StringBuilder();
         sb
-                .append("Select ")
-                .append(Arrays.stream(fields).map(SelectAqlField::buildAQL).map(s -> s + " as F" + selectCount++).collect(Collectors.joining(", ")))
+                .append("Select ");
+        if (topExpresion != null) {
+            sb.append(topExpresion.buildAql()).append(" ");
+        }
+
+        sb.append(Arrays.stream(fields).map(SelectAqlField::buildAQL).map(s -> s + " as F" + selectCount++).collect(Collectors.joining(", ")))
                 .append(" from EHR e ");
         if (containmentExpression != null) {
             sb
@@ -98,6 +104,11 @@ public class EntityQuery<T extends Record> implements Query<T> {
 
     public EntityQuery<T> orderBy(OrderBy orderBy) {
         this.orderBy = orderBy;
+        return this;
+    }
+
+    public EntityQuery<T> top(TopExpresion topExpresion) {
+        this.topExpresion = topExpresion;
         return this;
     }
 
