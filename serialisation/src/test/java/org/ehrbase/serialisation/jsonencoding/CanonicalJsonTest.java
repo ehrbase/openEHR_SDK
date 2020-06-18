@@ -216,6 +216,29 @@ public class CanonicalJsonTest {
         }
     }
 
+
+    @Test
+    public void marshal_DvDuration() throws IOException {
+        String value = IOUtils.toString(CompositionTestDataCanonicalJson.CORONA.getStream(), UTF_8);
+
+        CanonicalJson cut = new CanonicalJson();
+
+        Composition composition = cut.unmarshal(value, Composition.class);
+
+        assertThat(composition.getUid().getValue()).isNotEmpty();
+        assertThat(composition.getArchetypeNodeId()).isNotEmpty();
+
+        String marshal = cut.marshal(composition);
+
+        //System.out.println(marshal);
+
+        assertThat(marshal).isNotEmpty();
+        assertThat(marshal).contains("PT0S");
+
+
+    }
+
+
     @Test
     public void marshal_minimal_evaluation_new() throws IOException {
 

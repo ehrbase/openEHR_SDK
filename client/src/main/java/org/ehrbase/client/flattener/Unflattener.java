@@ -29,6 +29,7 @@ import com.nedap.archie.rm.datavalues.quantity.datetime.DvDuration;
 import com.nedap.archie.rm.support.identification.TerminologyId;
 import com.nedap.archie.rminfo.ArchieRMInfoLookup;
 import com.nedap.archie.rminfo.RMAttributeInfo;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.apache.commons.text.CaseUtils;
 import org.ehrbase.client.annotations.Entity;
@@ -93,16 +94,22 @@ public class Unflattener {
 
         if (multi) {
             List valueList = (List) value;
-            List childList = new ArrayList();
-            Object prototype = ((List) child).get(0);
-            childList.add(prototype);
-            for (int i = 1; i < valueList.size(); i++) {
-                RMObject deepClone = deepClone((RMObject) prototype);
-                childList.add(deepClone);
-                RM_OBJECT_CREATOR.addElementToListOrSetSingleValues(parent, childName, deepClone);
-            }
-            for (int i = 0; i < valueList.size(); i++) {
-                handleSingleValue(valueList.get(i), childName, childList.get(i), parent);
+            if (CollectionUtils.isNotEmpty((List) child)) {
+                List childList = new ArrayList();
+                Object prototype = ((List) child).get(0);
+                childList.add(prototype);
+                for (int i = 1; i < valueList.size(); i++) {
+                    RMObject deepClone = deepClone((RMObject) prototype);
+                    childList.add(deepClone);
+                    RM_OBJECT_CREATOR.addElementToListOrSetSingleValues(parent, childName, deepClone);
+                }
+                for (int i = 0; i < valueList.size(); i++) {
+                    handleSingleValue(valueList.get(i), childName, childList.get(i), parent);
+                }
+            } else {
+                for (Object o : valueList) {
+                    handleSingleValue(o, childName, null, parent);
+                }
             }
         } else {
             handleSingleValue(value, childName, child, parent);

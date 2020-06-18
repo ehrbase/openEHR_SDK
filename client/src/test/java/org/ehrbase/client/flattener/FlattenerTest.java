@@ -29,6 +29,8 @@ import org.ehrbase.client.classgenerator.examples.alternativeeventscomposition.A
 import org.ehrbase.client.classgenerator.examples.alternativeeventscomposition.definition.KorpergewichtAnyEventEnIntervalEvent;
 import org.ehrbase.client.classgenerator.examples.alternativeeventscomposition.definition.KorpergewichtAnyEventEnPointEvent;
 import org.ehrbase.client.classgenerator.examples.alternativeeventscomposition.definition.KorpergewichtBirthEnEvent;
+import org.ehrbase.client.classgenerator.examples.coronaanamnesecomposition.CoronaAnamneseComposition;
+import org.ehrbase.client.classgenerator.examples.coronaanamnesecomposition.definition.VorhandenDefiningcode;
 import org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev0composition.EhrbaseBloodPressureSimpleDeV0Composition;
 import org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev0composition.definition.KorotkoffSoundsDefiningcode;
 import org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1composition.EhrbaseMultiOccurrenceDeV1Composition;
@@ -40,7 +42,9 @@ import org.ehrbase.client.classgenerator.examples.shareddefinition.MathFunctionD
 import org.ehrbase.client.classgenerator.examples.testalltypesenv1composition.TestAllTypesEnV1Composition;
 import org.ehrbase.client.classgenerator.examples.testalltypesenv1composition.definition.TestAllTypesChoiceDvcount;
 import org.ehrbase.client.templateprovider.TestDataTemplateProvider;
+import org.ehrbase.serialisation.jsonencoding.CanonicalJson;
 import org.ehrbase.serialisation.xmlencoding.CanonicalXML;
+import org.ehrbase.test_data.composition.CompositionTestDataCanonicalJson;
 import org.ehrbase.test_data.composition.CompositionTestDataCanonicalXML;
 import org.junit.Test;
 
@@ -145,7 +149,18 @@ public class FlattenerTest {
     }
 
     @Test
-    public void TestFlattenAltEvents() {
+    public void testFlattenCorona() throws IOException {
+        Composition composition = new CanonicalJson().unmarshal(IOUtils.toString(CompositionTestDataCanonicalJson.CORONA.getStream(), StandardCharsets.UTF_8), Composition.class);
+        Flattener cut = new Flattener();
+        CoronaAnamneseComposition actual = cut.flatten(composition, CoronaAnamneseComposition.class);
+        assertThat(actual).isNotNull();
+        assertThat(actual.getSymptome()).isNotNull();
+        assertThat(actual.getSymptome().getHeiserkeit()).isNotNull();
+        assertThat(actual.getSymptome().getHeiserkeit().getVorhandenDefiningcode()).isEqualTo(VorhandenDefiningcode.NICHTVORHANDEN);
+    }
+
+    @Test
+    public void testFlattenAltEvents() {
         Composition composition = (Composition) new Unflattener(new TestDataTemplateProvider()).unflatten(buildAlternativeEventsComposition());
         Flattener cut = new Flattener();
         AlternativeEventsComposition actual = cut.flatten(composition, AlternativeEventsComposition.class);

@@ -24,6 +24,7 @@ import com.nedap.archie.aom.CComplexObject;
 import com.nedap.archie.creation.RMObjectCreator;
 import com.nedap.archie.rm.RMObject;
 import com.nedap.archie.rm.archetyped.Archetyped;
+import com.nedap.archie.rm.archetyped.Locatable;
 import com.nedap.archie.rm.archetyped.Pathable;
 import com.nedap.archie.rm.archetyped.TemplateId;
 import com.nedap.archie.rm.composition.Composition;
@@ -39,6 +40,7 @@ import com.nedap.archie.rm.generic.PartyProxy;
 import com.nedap.archie.rm.support.identification.ArchetypeID;
 import com.nedap.archie.rm.support.identification.TerminologyId;
 import com.nedap.archie.rminfo.ArchieRMInfoLookup;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.apache.xmlbeans.XmlObject;
 import org.ehrbase.client.building.rmobjektskeletonbuilder.RmObjektSkeletonBuilder;
@@ -182,7 +184,7 @@ public class OptSkeletonBuilder {
             String pathloop = path + TemplateIntrospect.PATH_DIVIDER + attr.getRmAttributeName();
             COBJECT[] children = attr.getChildrenArray();
             String attrName = attr.getRmAttributeName();
-            if (attr instanceof CSINGLEATTRIBUTE && !"/name".equals(pathloop)) {
+            if (attr instanceof CSINGLEATTRIBUTE && !pathloop.endsWith("/name")) {
                 if (children != null && children.length > 0) {
                     try {
                         COBJECT cobj = children[0];
@@ -230,7 +232,7 @@ public class OptSkeletonBuilder {
             rmTypeName = "POINT_EVENT";
         }
 
-        Class<?> rmClass = RM_INFO_LOOKUP.getClass(ccobj.getRmTypeName());
+        Class<?> rmClass = RM_INFO_LOOKUP.getClass(rmTypeName);
 
         if (Pathable.class.isAssignableFrom(rmClass)) {
 
@@ -314,6 +316,9 @@ public class OptSkeletonBuilder {
         if (obj instanceof Entry) {
             ((Entry) obj).setEncoding(new CodePhrase(new TerminologyId("IANA_character-sets"), "UTF-8"));
         }
+        if (obj instanceof Locatable && StringUtils.isBlank(((Locatable) obj).getName().getValue())){
+            ((Locatable) obj).getName().setValue(valueMap.getOrDefault("name","").toString());
+        }
         if (obj instanceof Composition) {
             Archetyped archetypeDetails = new Archetyped();
             archetypeDetails.setTemplateId(new TemplateId());
@@ -370,7 +375,8 @@ public class OptSkeletonBuilder {
                         .getValue());
                 valueMap.put("archetype_node_id", ((CARCHETYPEROOT) ccobj)
                         .getArchetypeId().getValue());
-                String termName = termDef.get(nodeId);
+                Optional<String> name = OptNameHelper.extractName((CARCHETYPEROOT) ccobj);
+                String termName = name.orElse(termDef.get(nodeId));
                 if (termName != null) {
                     txtName = new DvText(termName);
                     valueMap.put("name", txtName);
@@ -440,6 +446,5 @@ public class OptSkeletonBuilder {
         }
 
     }
-
 
 }

@@ -23,6 +23,7 @@ import com.nedap.archie.rm.datastructures.Element;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.CaseUtils;
 import org.ehrbase.client.exception.ClientException;
+import org.ehrbase.client.flatpath.FlatPath;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -71,21 +72,31 @@ class ItemExtractor {
 
     private ItemExtractor invoke() {
         PathExtractor pathExtractor = new PathExtractor(path);
-        String childPath = pathExtractor.getChildPath();
+        FlatPath childPath = new FlatPath(pathExtractor.getChildPath());
+
         String attributeName = pathExtractor.getAttributeName();
         String parentPath = pathExtractor.getParentPath();
 
-        if (StringUtils.isNotBlank(childPath)) {
+        if (StringUtils.isNotBlank(childPath.format(false))) {
             childName = pathExtractor.getChildName();
             //childPath not empty implies  rmObject is Locatable
             if (!Locatable.class.isAssignableFrom(rmObject.getClass())) {
                 throw new ClientException(String.format("Locatable not assignable from %s", rmObject.getClass()));
             }
             Locatable locatable = (Locatable) this.rmObject;
-            child = locatable.itemsAtPath(childPath);
+
+            child = locatable.itemsAtPath(childPath.format(false));
 
             if (child == null || ((List) child).isEmpty()) {
-                child = locatable.itemAtPath(childPath);
+                child = locatable.itemAtPath(childPath.format(false));
+            }
+
+            if (StringUtils.isNotBlank(childPath.findOtherPredicate("name/value")) && child instanceof List) {
+                child = ((List) child).stream()
+                        .filter(c -> childPath.findOtherPredicate("name/value").equals(((Locatable) c).getNameAsString()))
+                        .findAny()
+                        .orElse(null);
+
             }
 
             if (!multi && child instanceof List && ((List) child).size() == 1) {

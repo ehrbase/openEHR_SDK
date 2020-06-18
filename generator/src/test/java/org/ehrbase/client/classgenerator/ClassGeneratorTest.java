@@ -113,8 +113,8 @@ public class ClassGeneratorTest {
 
     private void writeFiles(ClassGeneratorResult generate) throws IOException {
         if (WRITE_FILES) {
-            Path path = Paths.get(".", "client/src/test/java/");
-            // FileUtils.cleanDirectory(Paths.get(path,PACKAGE_NAME.replace(".","/")).toFile());
+            Path path = Paths.get("..", "client/src/test/java/");
+            // FileUtils.cleanDirectory(Paths.get(path,PACKAGE_NAME.replace("..","/")).toFile());
             List<JavaFile> generateFiles = generate.writeFiles(path);
 
             FieldGenerator fieldGenerator = new FieldGenerator();
@@ -289,6 +289,24 @@ public class ClassGeneratorTest {
                 .map(t -> t.fieldSpecs).flatMap(List::stream).collect(Collectors.toList());
 
         Assertions.assertThat(fieldSpecs).size().isEqualTo(73L);
+
+        writeFiles(generate);
+
+    }
+
+    @Test
+    public void testGenerateCorona() throws IOException, XmlException {
+        OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(OperationalTemplateTestData.CORONA_ANAMMNESE.getStream()).getTemplate();
+        ClassGenerator cut = new ClassGenerator();
+        ClassGeneratorResult generate = cut.generate(PACKAGE_NAME, template);
+
+
+        List<FieldSpec> fieldSpecs = generate.getClasses().values().stream()
+                .flatMap(Collection::stream)
+                .filter(t -> !t.kind.equals(TypeSpec.Kind.ENUM))
+                .map(t -> t.fieldSpecs).flatMap(List::stream).collect(Collectors.toList());
+
+        Assertions.assertThat(fieldSpecs).size().isEqualTo(316L);
 
         writeFiles(generate);
 

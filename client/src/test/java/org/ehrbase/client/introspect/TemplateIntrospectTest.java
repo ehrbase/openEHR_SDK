@@ -226,6 +226,37 @@ public class TemplateIntrospectTest {
     }
 
     @Test
+    public void introspectCorona() throws IOException, XmlException {
+        OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(OperationalTemplateTestData.CORONA_ANAMMNESE.getStream()).getTemplate();
+        TemplateIntrospect cut = new TemplateIntrospect(template);
+
+        Map<String, Node> actual = cut.getRoot().getChildren();
+        assertThat(actual).isNotEmpty();
+        assertThat(actual.keySet())
+                .containsExactlyInAnyOrder(
+                        "/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Risikogebiet']",
+                        "/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Allgemeine Angaben']",
+                        "/context/end_time",
+                        "/context/participations",
+                        "/language",
+                        "/context/health_care_facility",
+                        "/context/other_context[at0001]/items[at0005]/value",
+                        "/content[openEHR-EHR-OBSERVATION.story.v1]",
+                        "/context/other_context[at0001]/items[at0002]/value",
+                        "/territory",
+                        "/context/start_time",
+                        "/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Kontakt']",
+                        "/composer",
+                        "/context/setting",
+                        "/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Symptome']",
+                        "/context/other_context[at0001]/items[at0006]",
+                        "/context/location",
+                        "/category"
+                );
+
+    }
+
+    @Test
     public void introspectAllTypes() throws IOException, XmlException {
         OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(OperationalTemplateTestData.ALL_TYPES.getStream()).getTemplate();
         TemplateIntrospect cut = new TemplateIntrospect(template);

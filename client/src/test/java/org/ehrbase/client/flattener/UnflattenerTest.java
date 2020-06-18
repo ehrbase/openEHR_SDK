@@ -17,6 +17,7 @@
 
 package org.ehrbase.client.flattener;
 
+import com.nedap.archie.rm.archetyped.Locatable;
 import com.nedap.archie.rm.composition.AdminEntry;
 import com.nedap.archie.rm.composition.Composition;
 import com.nedap.archie.rm.composition.Evaluation;
@@ -37,13 +38,16 @@ import org.apache.commons.io.IOUtils;
 import org.assertj.core.groups.Tuple;
 import org.ehrbase.client.TestData;
 import org.ehrbase.client.classgenerator.examples.alternativeeventscomposition.AlternativeEventsComposition;
+import org.ehrbase.client.classgenerator.examples.coronaanamnesecomposition.CoronaAnamneseComposition;
 import org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev0composition.EhrbaseBloodPressureSimpleDeV0Composition;
 import org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1composition.EhrbaseMultiOccurrenceDeV1Composition;
 import org.ehrbase.client.classgenerator.examples.episodeofcarecomposition.EpisodeOfCareComposition;
 import org.ehrbase.client.classgenerator.examples.testalltypesenv1composition.TestAllTypesEnV1Composition;
 import org.ehrbase.client.classgenerator.examples.testalltypesenv1composition.definition.TestAllTypesChoiceDvquantity;
 import org.ehrbase.client.templateprovider.TestDataTemplateProvider;
+import org.ehrbase.serialisation.jsonencoding.CanonicalJson;
 import org.ehrbase.serialisation.xmlencoding.CanonicalXML;
+import org.ehrbase.test_data.composition.CompositionTestDataCanonicalJson;
 import org.ehrbase.test_data.composition.CompositionTestDataCanonicalXML;
 import org.junit.Test;
 
@@ -115,6 +119,27 @@ public class UnflattenerTest {
         assertThat(observation.itemAtPath("/protocol[at0011]/items[at1010]/value")).isEqualTo(expected);
         assertThat(observation.getSubject()).isNotNull().extracting(Object::getClass).isEqualTo(PartySelf.class);
 
+    }
+
+    @Test
+    public void testUnflattenCorona() throws IOException {
+        Composition expected = new CanonicalJson().unmarshal(IOUtils.toString(CompositionTestDataCanonicalJson.CORONA.getStream(), StandardCharsets.UTF_8), Composition.class);
+        Flattener flattener = new Flattener();
+        CoronaAnamneseComposition coronaAnamneseComposition = flattener.flatten(expected, CoronaAnamneseComposition.class);
+
+        Unflattener cut = new Unflattener(new TestDataTemplateProvider());
+        Composition actual = (Composition) cut.unflatten(coronaAnamneseComposition);
+        assertThat(actual).isNotNull();
+        assertThat(actual.getContent())
+                .extracting(
+                        Locatable::getNameAsString,
+                        Locatable::getArchetypeNodeId
+                )
+                .containsExactlyInAnyOrder(
+                        actual.getContent().stream().map(c -> new Tuple(
+                                c.getNameAsString(),
+                                c.getArchetypeNodeId())).toArray(Tuple[]::new)
+                );
     }
 
     @Test
