@@ -33,7 +33,7 @@
     <dependencies>
         <dependency>
             <groupId>org.ehrbase.sdk</groupId>
-            <artifactId>client-library</artifactId>
+            <artifactId>client</artifactId>
         </dependency>
 
         <dependency>
