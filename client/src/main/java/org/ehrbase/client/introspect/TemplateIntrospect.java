@@ -19,8 +19,7 @@ package org.ehrbase.client.introspect;
 
 import com.nedap.archie.rm.archetyped.Pathable;
 import com.nedap.archie.rm.composition.Composition;
-import com.nedap.archie.rm.datastructures.Event;
-import com.nedap.archie.rm.datastructures.History;
+import com.nedap.archie.rm.datastructures.*;
 import com.nedap.archie.rm.datavalues.DvCodedText;
 import com.nedap.archie.rm.datavalues.quantity.datetime.DvDateTime;
 import com.nedap.archie.rm.generic.Participation;
@@ -68,6 +67,7 @@ public class TemplateIntrospect {
     private final Map<Class, RmIntrospectConfig> configMap;
     private final OPERATIONALTEMPLATE operationaltemplate;
     private final ArchetypeNode root;
+    private String rootName;
 
 
     public TemplateIntrospect(OPERATIONALTEMPLATE operationaltemplate) {
@@ -117,9 +117,11 @@ public class TemplateIntrospect {
             termDef.put(code, new TermDefinition(code, value, description));
 
         }
-        Optional<String> nodeName = OptNameHelper.extractName(definition);
-        Optional<String> termName = Optional.ofNullable(termDef.get("at0000")).map(TermDefinition::getValue);
-        return new ArchetypeNode(nodeName.orElse(termName.orElse(name)), definition.getArchetypeId().getValue(), handleCCOMPLEXOBJECT(definition, "", termDef, ""), multi, definition.getRmTypeName());
+        String term = buildTerm(definition, termDef, "");
+        if (rootName == null) {
+            rootName = term.replace("/", "");
+        }
+        return new ArchetypeNode(term, definition.getArchetypeId().getValue(), handleCCOMPLEXOBJECT(definition, "", termDef, ""), multi, definition.getRmTypeName());
     }
 
     private Map<String, Node> handleCCOMPLEXOBJECT(CCOMPLEXOBJECT ccomplexobject, String path, Map<String, TermDefinition> termDef, String term) {
@@ -220,21 +222,17 @@ public class TemplateIntrospect {
             StringBuilder stringBuilder = new StringBuilder();
             stringBuilder.append(path).append("[").append(((CARCHETYPEROOT) cobject).getArchetypeId().getValue());
             Optional<String> name = OptNameHelper.extractName((CARCHETYPEROOT) cobject);
-            if (name.isPresent()) {
-                stringBuilder.append(" and name/value='").append(name.get()).append("'");
-            }
+            name.ifPresent(s -> stringBuilder.append(" and name/value='").append(s).append("'"));
             path = stringBuilder.append("]").toString();
             log.trace("Path: {}", path);
-
-            if (!cobject.getNodeId().isEmpty() && termDef.containsKey(cobject.getNodeId())) {
-                term = term + TERM_DIVIDER + termDef.get(cobject.getNodeId()).getValue();
-            }
 
             return Collections.singletonMap(path, handleCARCHETYPEROOT((CARCHETYPEROOT) cobject, term, multi));
 
         } else if (cobject instanceof CCOMPLEXOBJECT && multi) {
             path = path + "[" + cobject.getNodeId() + "]";
             log.trace("Path: {}", path);
+
+            term = buildTerm(cobject, termDef, term);
             return Collections.singletonMap(path, handleEntity((CCOMPLEXOBJECT) cobject, term, termDef, multi));
 
         } else if (cobject instanceof CCOMPLEXOBJECT) {
@@ -242,10 +240,10 @@ public class TemplateIntrospect {
             if (cobject.getNodeId() != null && !cobject.getNodeId().isEmpty()) {
                 path = path + "[" + cobject.getNodeId() + "]";
                 log.trace("Path: {}", path);
-                if (termDef.containsKey(cobject.getNodeId())) {
-                    term = term + TERM_DIVIDER + termDef.get(cobject.getNodeId()).getValue();
-                }
+
+
             }
+            term = buildTerm(cobject, termDef, term);
 
             return handleCCOMPLEXOBJECT((CCOMPLEXOBJECT) cobject, path, termDef, term);
 
@@ -263,6 +261,32 @@ public class TemplateIntrospect {
 
             return Collections.singletonMap(path, new EndNode(findJavaClass(cobject.getRmTypeName()), term, buildTermSet(cobject, termDef)));
         }
+    }
+
+    private String buildTerm(COBJECT cobject, Map<String, TermDefinition> termDef, String term) {
+        boolean multi = cobject.getOccurrences().getUpper() > 1 || cobject.getOccurrences().getUpperUnbounded();
+        Class rmClass = RM_INFO_LOOKUP.getClass(StringUtils.stripToEmpty(cobject.getRmTypeName()));
+        if (List.of(History.class, ItemTree.class, ItemList.class, ItemSingle.class, ItemTable.class, ItemStructure.class).contains(rmClass)
+                || (Event.class.isAssignableFrom(rmClass) && !multi)) {
+            return term;
+        }
+        Optional<String> name = OptNameHelper.extractName((CCOMPLEXOBJECT) cobject);
+        if (name.isPresent()) {
+            term = term + TERM_DIVIDER + normaliseTerm(name.get());
+        } else if (!cobject.getNodeId().isEmpty() && termDef.containsKey(cobject.getNodeId())) {
+            term = term + TERM_DIVIDER + normaliseTerm(termDef.get(cobject.getNodeId()).getValue());
+        }
+        return term;
+    }
+
+    private String normaliseTerm(String term) {
+
+        String normalTerm = StringUtils.normalizeSpace(term.toLowerCase().replaceAll("[^a-z0-9äüöß]", " ").trim()).replace(" ", "_");
+        if (StringUtils.isNumeric(normalTerm.substring(0, 1))) {
+            normalTerm = "a" + normalTerm;
+        }
+
+        return normalTerm;
     }
 
     private ValueSet buildTermSet(COBJECT cobject, Map<String, TermDefinition> termDef) {
@@ -347,5 +371,9 @@ public class TemplateIntrospect {
 
     public ArchetypeNode getRoot() {
         return root;
+    }
+
+    public String getRootName() {
+        return rootName;
     }
 }

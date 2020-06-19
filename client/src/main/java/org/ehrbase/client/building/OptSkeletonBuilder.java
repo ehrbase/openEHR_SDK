@@ -375,7 +375,7 @@ public class OptSkeletonBuilder {
                         .getValue());
                 valueMap.put("archetype_node_id", ((CARCHETYPEROOT) ccobj)
                         .getArchetypeId().getValue());
-                Optional<String> name = OptNameHelper.extractName((CARCHETYPEROOT) ccobj);
+                Optional<String> name = OptNameHelper.extractName(ccobj);
                 String termName = name.orElse(termDef.get(nodeId));
                 if (termName != null) {
                     txtName = new DvText(termName);
