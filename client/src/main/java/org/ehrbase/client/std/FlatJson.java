@@ -25,14 +25,18 @@ import com.nedap.archie.rm.archetyped.Locatable;
 import com.nedap.archie.rm.composition.Composition;
 import com.nedap.archie.rm.datatypes.CodePhrase;
 import com.nedap.archie.rm.datavalues.DvCodedText;
+import com.nedap.archie.rm.generic.PartyIdentified;
+import com.nedap.archie.rm.generic.PartySelf;
 import org.ehrbase.client.classgenerator.config.RmClassGeneratorConfig;
 import org.ehrbase.client.exception.ClientException;
 import org.ehrbase.client.flattener.ItemExtractor;
 import org.ehrbase.client.introspect.TemplateIntrospect;
-import org.ehrbase.client.introspect.node.ArchetypeNode;
+import org.ehrbase.client.introspect.node.ChoiceNode;
 import org.ehrbase.client.introspect.node.EndNode;
+import org.ehrbase.client.introspect.node.EntityNode;
 import org.ehrbase.client.introspect.node.Node;
 import org.ehrbase.serialisation.jsonencoding.JacksonUtil;
+import org.ehrbase.serialisation.util.SnakeCase;
 import org.reflections.Reflections;
 
 import java.beans.IntrospectionException;
@@ -44,7 +48,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static org.ehrbase.client.introspect.TemplateIntrospect.PATH_DIVIDER;
 import static org.ehrbase.client.introspect.TemplateIntrospect.TERM_DIVIDER;
 
 public class FlatJson {
@@ -75,7 +78,7 @@ public class FlatJson {
 
     public String toFlatJson(Composition composition) {
 
-        Map<String, Object> result = new HashMap<>(handelNode(introspect.getRootName(), "", introspect.getRoot(), composition));
+        Map<String, Object> result = new HashMap<>(handelEntityNode(introspect.getRootName(), "", introspect.getRoot(), composition));
 
         try {
             return OBJECT_MAPPER.writeValueAsString(result);
@@ -84,38 +87,70 @@ public class FlatJson {
         }
     }
 
-    Map<String, Object> handelNode(String term, String path, ArchetypeNode archetypeNode, Locatable locatable) {
+    Map<String, Object> handelEntityNode(String term, String path, EntityNode archetypeNode, Locatable locatable) {
         Map<String, Object> result = new HashMap<>();
 
         for (Map.Entry<String, Node> nodeEntry : archetypeNode.getChildren().entrySet()) {
 
-            Node childNode = nodeEntry.getValue();
-            String pathloop = path + PATH_DIVIDER + nodeEntry.getKey();
-            String termLoop = term + TERM_DIVIDER + childNode.getName();
-            if (childNode instanceof EndNode) {
-                Object child = new ItemExtractor(locatable, nodeEntry.getKey(), ((EndNode) childNode).isMulti()).getChild();
-
-                if (child instanceof List) {
-                    for (int i = 0; i < ((List) child).size(); i++) {
-                        result.putAll(addSingleValue(termLoop + "[" + i + "]", ((List) child).get(i)));
-                    }
-                } else if (child != null) {
-                    result.putAll(addSingleValue(termLoop, child));
-                }
-            } else if (childNode instanceof ArchetypeNode) {
-                Object child = new ItemExtractor(locatable, nodeEntry.getKey(), ((ArchetypeNode) childNode).isMulti()).getChild();
-
-                if (child instanceof List) {
-                    for (int i = 0; i < ((List) child).size(); i++) {
-                        result.putAll(handelNode(termLoop + "[" + i + "]", pathloop, (ArchetypeNode) childNode, (Locatable) ((List) child).get(i)));
-                    }
-                } else if (child != null) {
-                    result.putAll(handelNode(termLoop, pathloop, (ArchetypeNode) childNode, (Locatable) child));
-                }
-            }
+            result.putAll(handleNode(term, path, locatable, nodeEntry.getKey(), nodeEntry.getValue()));
 
         }
         return result;
+    }
+
+    private Map<String, Object> handleNode(String term, String path, Locatable locatable, String childPath, Node childNode) {
+
+        Map<String, Object> result = new HashMap<>();
+        String pathloop = path + childPath;
+        String termLoop = term + TERM_DIVIDER + childNode.getName();
+        if (childNode instanceof EndNode) {
+            Object child = new ItemExtractor(locatable, childPath, ((EndNode) childNode).isMulti()).getChild();
+
+            if (child instanceof List) {
+                for (int i = 0; i < ((List) child).size(); i++) {
+                    result.putAll(addSingleValue(termLoop + ":" + i, ((List) child).get(i)));
+                }
+            } else if (child != null) {
+                result.putAll(addSingleValue(termLoop, child));
+            }
+        } else if (childNode instanceof EntityNode) {
+            Object child = new ItemExtractor(locatable, childPath, ((EntityNode) childNode).isMulti()).getChild();
+
+            if (child instanceof List) {
+                for (int i = 0; i < ((List) child).size(); i++) {
+                    result.putAll(handelEntityNode(termLoop + ":" + i, pathloop, (EntityNode) childNode, (Locatable) ((List) child).get(i)));
+                }
+            } else if (child != null) {
+                result.putAll(handelEntityNode(termLoop, pathloop, (EntityNode) childNode, (Locatable) child));
+            }
+        } else if (childNode instanceof ChoiceNode) {
+            Object child = new ItemExtractor(locatable, childPath, ((ChoiceNode) childNode).isMulti()).getChild();
+            if (child instanceof List) {
+                for (int i = 0; i < ((List) child).size(); i++) {
+                    //TODO set i
+                    result.putAll(handleChoiceNode((ChoiceNode) childNode, path, term, ((List) child).get(i)));
+                }
+            } else if (child != null) {
+                result.putAll(handleChoiceNode((ChoiceNode) childNode, path, term, child));
+            }
+        }
+        return result;
+    }
+
+    private Map<String, Object> handleChoiceNode(ChoiceNode childNode, String pathloop, String termLoop, Object child) {
+
+        Node endNode = childNode.getNodes().stream()
+                .filter(n -> (EndNode.class.isAssignableFrom(n.getClass()) && child.getClass().isAssignableFrom(((EndNode) n).getClazz())
+                                ||
+                                (EntityNode.class.isAssignableFrom(n.getClass()) && new SnakeCase(child.getClass().getSimpleName()).camelToUpperSnake().equals(((EntityNode) n).getRmName()))
+
+                        )
+
+                )
+
+                .findAny()
+                .orElseThrow(() -> new ClientException(String.format("No choice for %s", child.getClass())));
+        return new HashMap<>(handleNode(termLoop, pathloop, (Locatable) child, "/", endNode));
     }
 
     private Map<String, Object> addSingleValue(String termLoop, Object child) {
@@ -123,24 +158,48 @@ public class FlatJson {
         RmClassGeneratorConfig rmClassGeneratorConfig = configMap.get(child.getClass());
         if (child instanceof CodePhrase) {
 
-            result.put(termLoop + "|" + "code", ((CodePhrase) child).getCodeString());
-            result.put(termLoop + "|" + "terminology", ((CodePhrase) child).getTerminologyId().getValue());
+
+            addValue(result, termLoop, "code", ((CodePhrase) child).getCodeString());
+            addValue(result, termLoop, "terminology", ((CodePhrase) child).getTerminologyId().getValue());
 
 
         } else if (child instanceof DvCodedText) {
 
-            result.put(termLoop + "|" + "code", (((DvCodedText) child).getDefiningCode().getCodeString()));
-            result.put(termLoop + "|" + "terminology", ((DvCodedText) child).getDefiningCode().getTerminologyId().getValue());
-            result.put(termLoop + "|" + "value", ((DvCodedText) child).getValue());
+            addValue(result, termLoop, "code", ((DvCodedText) child).getDefiningCode().getCodeString());
+            addValue(result, termLoop, "terminology", ((DvCodedText) child).getDefiningCode().getTerminologyId().getValue());
+            addValue(result, termLoop, "value", ((DvCodedText) child).getValue());
+
+        } else if (child instanceof PartyIdentified) {
+
+            addValue(result, termLoop, "name", ((PartyIdentified) child).getName());
+
+
+        } else if (child instanceof PartySelf) {
+
+            //NOP
 
         } else if (rmClassGeneratorConfig != null && rmClassGeneratorConfig.isExpandField()) {
-            for (String propertyName : rmClassGeneratorConfig.getExpandFields()) {
+
+            Set<String> expandFields = rmClassGeneratorConfig.getExpandFields();
+            if (expandFields.size() == 1 && expandFields.contains("value")) {
+
                 try {
-                    PropertyDescriptor propertyDescriptor = new PropertyDescriptor(propertyName, child.getClass());
+                    PropertyDescriptor propertyDescriptor = new PropertyDescriptor("value", child.getClass());
                     Object property = propertyDescriptor.getReadMethod().invoke(child);
-                    result.put(termLoop + "|" + propertyName, property);
+                    result.put(termLoop, property);
                 } catch (IllegalAccessException | InvocationTargetException | IntrospectionException e) {
                     throw new ClientException(e.getMessage(), e);
+                }
+
+            } else {
+                for (String propertyName : expandFields) {
+                    try {
+                        PropertyDescriptor propertyDescriptor = new PropertyDescriptor(propertyName, child.getClass());
+                        Object property = propertyDescriptor.getReadMethod().invoke(child);
+                        result.put(termLoop + "|" + propertyName, property);
+                    } catch (IllegalAccessException | InvocationTargetException | IntrospectionException e) {
+                        throw new ClientException(e.getMessage(), e);
+                    }
                 }
             }
 
@@ -150,4 +209,11 @@ public class FlatJson {
         return result;
 
     }
+
+    private void addValue(Map<String, Object> result, String termLoop, String propertyName, String value) {
+        if (value != null) {
+            result.put(termLoop + "|" + propertyName, value);
+        }
+    }
+
 }

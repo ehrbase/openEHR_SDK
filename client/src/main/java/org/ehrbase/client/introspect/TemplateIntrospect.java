@@ -19,6 +19,7 @@ package org.ehrbase.client.introspect;
 
 import com.nedap.archie.rm.archetyped.Pathable;
 import com.nedap.archie.rm.composition.Composition;
+import com.nedap.archie.rm.composition.EventContext;
 import com.nedap.archie.rm.datastructures.*;
 import com.nedap.archie.rm.datavalues.DvCodedText;
 import com.nedap.archie.rm.datavalues.quantity.datetime.DvDateTime;
@@ -131,7 +132,7 @@ public class TemplateIntrospect {
         Class rmClass = RM_INFO_LOOKUP.getClass(StringUtils.stripToEmpty(ccomplexobject.getRmTypeName()));
 
         if (Pathable.class.isAssignableFrom(rmClass)) {
-            localNodeMap.putAll(handleNonTemplateFields(rmClass, path));
+            localNodeMap.putAll(handleNonTemplateFields(rmClass, path, term));
 
 
             CATTRIBUTE[] cattributes = ccomplexobject.getAttributesArray();
@@ -271,17 +272,24 @@ public class TemplateIntrospect {
             return term;
         }
         Optional<String> name = OptNameHelper.extractName((CCOMPLEXOBJECT) cobject);
+
+        String newTerm = term;
         if (name.isPresent()) {
-            term = term + TERM_DIVIDER + normaliseTerm(name.get());
+            newTerm = term + TERM_DIVIDER + normaliseTerm(name.get());
         } else if (!cobject.getNodeId().isEmpty() && termDef.containsKey(cobject.getNodeId())) {
-            term = term + TERM_DIVIDER + normaliseTerm(termDef.get(cobject.getNodeId()).getValue());
+            newTerm = term + TERM_DIVIDER + normaliseTerm(termDef.get(cobject.getNodeId()).getValue());
         }
-        return term;
+
+        if (rmClass.isAssignableFrom(EventContext.class) && newTerm.equals(term)) {
+            newTerm = term + TERM_DIVIDER + "context";
+        }
+        newTerm = StringUtils.strip(newTerm, TERM_DIVIDER);
+        return newTerm;
     }
 
     private String normaliseTerm(String term) {
 
-        String normalTerm = StringUtils.normalizeSpace(term.toLowerCase().replaceAll("[^a-z0-9äüöß]", " ").trim()).replace(" ", "_");
+        String normalTerm = StringUtils.normalizeSpace(term.toLowerCase().replaceAll("[^a-z0-9äüöß._\\-]", " ").trim()).replace(" ", "_");
         if (StringUtils.isNumeric(normalTerm.substring(0, 1))) {
             normalTerm = "a" + normalTerm;
         }
@@ -332,16 +340,16 @@ public class TemplateIntrospect {
         if (Event.class.isAssignableFrom(rmClass)) {
 
             cobject.setRmTypeName("POINT_EVENT");
-            EntityNode pointNode = new EntityNode(name + TERM_DIVIDER + Optional.ofNullable(termDef.get(cobject.getNodeId())).map(TermDefinition::getValue).orElse(""), false, cobject.getRmTypeName(), handleCCOMPLEXOBJECT(cobject, "", termDef, ""));
+            EntityNode pointNode = new EntityNode(name, false, cobject.getRmTypeName(), handleCCOMPLEXOBJECT(cobject, "", termDef, ""));
             cobject.setRmTypeName("INTERVAL_EVENT");
-            EntityNode intervalNode = new EntityNode(name + TERM_DIVIDER + Optional.ofNullable(termDef.get(cobject.getNodeId())).map(TermDefinition::getValue).orElse(""), false, cobject.getRmTypeName(), handleCCOMPLEXOBJECT(cobject, "", termDef, ""));
+            EntityNode intervalNode = new EntityNode(name, false, cobject.getRmTypeName(), handleCCOMPLEXOBJECT(cobject, "", termDef, ""));
             return new ChoiceNode(name + TERM_DIVIDER + Optional.ofNullable(termDef.get(cobject.getNodeId())).map(TermDefinition::getValue).orElse(""), Arrays.asList(pointNode, intervalNode), multi);
         } else {
             return new EntityNode(name + TERM_DIVIDER + Optional.ofNullable(termDef.get(cobject.getNodeId())).map(TermDefinition::getValue).orElse(""), multi, cobject.getRmTypeName(), handleCCOMPLEXOBJECT(cobject, "", termDef, ""));
         }
     }
 
-    private Map<String, Node> handleNonTemplateFields(Class clazz, String path) {
+    private Map<String, Node> handleNonTemplateFields(Class clazz, String path, String term) {
         RmIntrospectConfig introspectConfig = configMap.get(clazz);
         if (introspectConfig != null) {
             HashMap<String, Node> localNodeMap = new HashMap<>();
@@ -350,7 +358,7 @@ public class TemplateIntrospect {
                     .forEach(f -> {
                         String snakeName = new SnakeCase(f.getName()).camelToSnake();
                         String localPath = path + PATH_DIVIDER + snakeName;
-                        localNodeMap.put(localPath, new EndNode(unwarap(f), snakeName, introspectConfig.findExternalValueSet(f.getName()), List.class.isAssignableFrom(f.getType())));
+                        localNodeMap.put(localPath, new EndNode(unwarap(f), StringUtils.strip(term + TERM_DIVIDER + snakeName, TERM_DIVIDER), introspectConfig.findExternalValueSet(f.getName()), List.class.isAssignableFrom(f.getType())));
                     });
             return localNodeMap;
         } else {

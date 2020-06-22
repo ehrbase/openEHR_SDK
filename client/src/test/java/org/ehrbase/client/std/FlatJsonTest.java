@@ -19,19 +19,26 @@
 
 package org.ehrbase.client.std;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nedap.archie.rm.composition.Composition;
 import org.apache.commons.io.IOUtils;
 import org.apache.xmlbeans.XmlException;
+import org.assertj.core.groups.Tuple;
 import org.ehrbase.client.introspect.TemplateIntrospect;
 import org.ehrbase.serialisation.jsonencoding.CanonicalJson;
+import org.ehrbase.serialisation.jsonencoding.JacksonUtil;
 import org.ehrbase.test_data.composition.CompositionTestDataCanonicalJson;
+import org.ehrbase.test_data.composition.CompositionTestDataSimSDTJson;
 import org.ehrbase.test_data.operationaltemplate.OperationalTemplateTestData;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
 import org.openehr.schemas.v1.TemplateDocument;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -39,6 +46,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class FlatJsonTest {
 
     @Test
+    @Ignore
     public void toFlatJson() throws IOException, XmlException {
 
         OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(OperationalTemplateTestData.CORONA_ANAMMNESE.getStream()).getTemplate();
@@ -47,5 +55,23 @@ public class FlatJsonTest {
         FlatJson cut = new FlatJson(introspect);
         String actual = cut.toFlatJson(composition);
         assertThat(actual).isNotNull();
+
+        String expected = IOUtils.toString(CompositionTestDataSimSDTJson.CORONA.getStream(), StandardCharsets.UTF_8);
+
+        compere(actual, expected);
+    }
+
+    private void compere(String actualJson, String expectedJson) throws JsonProcessingException {
+
+        ObjectMapper objectMapper = JacksonUtil.getObjectMapper();
+
+        Map<String, Object> actual = objectMapper.readValue(actualJson, Map.class);
+        Map<String, Object> expected = objectMapper.readValue(expectedJson, Map.class);
+
+        assertThat(actual.entrySet()).extracting(Map.Entry::getKey, Map.Entry::getValue).containsExactlyInAnyOrder(expected.entrySet().stream()
+                .map(e -> new Tuple(e.getKey(), e.getValue()))
+                .toArray(Tuple[]::new)
+        );
+
     }
 }
