@@ -7,7 +7,7 @@ workflows:
   build_and_test:
     jobs:
       - maven/test:
-          command: 'verify'
+          command: 'clean install'
       
 
 # 1. checkout code
