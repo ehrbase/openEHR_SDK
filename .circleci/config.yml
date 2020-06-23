@@ -2,7 +2,6 @@ version: 2.1
 
 orbs:
   maven: circleci/maven@1.0.1
-  openjdk-install: cloudesire/openjdk-install@1.2.3
 
 workflows:
   build_and_test:
