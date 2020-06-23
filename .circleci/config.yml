@@ -1,9 +1,19 @@
 version: 2.1
 
 orbs:
-  maven: circleci/maven@0.0.12
+  maven: circleci/maven@1.0.1
 
 workflows:
-  maven_test:
+  build_and_test:
     jobs:
-      - maven/test # checkout, build, test, and upload test results
+      - maven/test:
+          command: 'verify'
+      
+
+# 1. checkout code
+# 2. build & (unit)test
+# 3. run integation tests
+#    - checkout ehrbase repo
+#    - setup test environment
+#    - execute robot tests
+# 4. deploy (to maven central?)
