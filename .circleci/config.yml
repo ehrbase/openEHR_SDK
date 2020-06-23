@@ -2,12 +2,14 @@ version: 2.1
 
 orbs:
   maven: circleci/maven@1.0.1
+  openjdk-install: cloudesire/openjdk-install@1.2.3
 
 workflows:
   build_and_test:
     jobs:
-      - maven/test:
-          command: 'mvn clean install'
+      - maven-orb-test:
+          maven_command: 'mvn clean install'
+          test_result_path: client/target/surefire-reports
       
 
 # 1. checkout code
