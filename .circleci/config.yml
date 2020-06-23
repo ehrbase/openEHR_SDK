@@ -7,7 +7,7 @@ workflows:
   build_and_test:
     jobs:
       - maven/test:
-          command: '-X package'
+          command: 'mvn clean install'
       
 
 # 1. checkout code
