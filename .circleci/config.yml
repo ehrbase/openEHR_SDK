@@ -10,10 +10,11 @@ workflows:
   build_and_test:
     jobs:
       - maven/test:
-          executer: default
-            - tag: '11.0'
+          executor:
+            name: maven/default
+            tag: '11.0'
           command: 'clean install'
-          test_result_path: client/target/surefire-reports
+          test_results_path: client/target/surefire-reports
   
   deploy:
     jobs:
@@ -41,4 +42,3 @@ jobs:
 #    - setup test environment
 #    - execute robot tests
 # 4. deploy (to maven central?)
-c
