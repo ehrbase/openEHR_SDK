@@ -10,7 +10,6 @@ workflows:
   build_and_test:
     jobs:
       - maven/test:
-          app_src_directory: client/src
           executor:
             name: maven/default
             tag: '11.0'
