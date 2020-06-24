@@ -10,6 +10,7 @@ workflows:
   build_and_test:
     jobs:
       - maven-compile
+      - maven-verify
   
   deploy:
     jobs:
@@ -24,7 +25,7 @@ jobs:
     steps:
       - checkout
       - maven/with_cache:
-          maven_command: mvn compile
+          # maven_command: mvn compile
           steps:
             - run: mvn compile
 
@@ -34,7 +35,9 @@ jobs:
       tag: '11.0'
     steps:
       - maven/with_cache:
-          maven_command: mnv verify
+          # maven_command: mnv verify
+          steps:
+            - run: mvn verify
       - maven/process_test_results:
           test_results_path: client/target/surefire-reports
 
