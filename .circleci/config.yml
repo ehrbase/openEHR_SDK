@@ -9,7 +9,7 @@ workflows:
 
   build_and_test:
     jobs:
-      - maven-orb-test
+      - maven-compile
   
   deploy:
     jobs:
@@ -17,7 +17,7 @@ workflows:
 
 
 jobs:
-  maven-orb-test:
+  maven-compile:
     executor:
       name: maven/default
       tag: '11.0'
@@ -27,6 +27,14 @@ jobs:
           maven_command: mvn compile
           steps:
             - run: mvn compile
+
+  maven-verify:
+    executor:
+      name: maven/default
+      tag: '11.0'
+    steps:
+      - maven/with_cache:
+          maven_command: mnv verify
       - maven/process_test_results:
           test_results_path: client/target/surefire-reports
 
@@ -38,6 +46,7 @@ jobs:
           command: |
             pwd
             java --version
+            mvn --version
             echo deployed
 
 
