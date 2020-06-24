@@ -10,7 +10,9 @@ workflows:
   build_and_test:
     jobs:
       - maven-compile
-      - maven-verify
+      - maven-verify:
+          requires:
+            - maven-compile
   
   # deploy:
   #   jobs:
@@ -35,6 +37,7 @@ jobs:
       name: maven/default
       tag: '11.0'
     steps:
+      - checkout
       - maven/with_cache:
           maven_command: mvn compile
           steps:
