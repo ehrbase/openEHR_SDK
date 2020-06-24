@@ -12,9 +12,12 @@ workflows:
       - maven-build-and-test
 
   
-  # deploy:
-  #   jobs:
-  #     - deploy-to-maven-central
+  deploy:
+    when:
+      and: # All must be true to trigger
+        - equal: [ release, <<pipeline.git.branch >> ]
+    jobs:
+      - deploy-to-maven-central
 
 
 jobs:
