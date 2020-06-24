@@ -11,7 +11,7 @@ workflows:
     jobs:
       - maven/test:
           executer: default
-            tag: '11.0'
+            - tag: '11.0'
           command: 'clean install'
           test_result_path: client/target/surefire-reports
   
