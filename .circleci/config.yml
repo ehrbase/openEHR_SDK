@@ -9,12 +9,7 @@ workflows:
 
   build_and_test:
     jobs:
-      - maven/test:
-          executor:
-            name: maven/default
-            tag: '11.0'
-          maven_command: mvn compile
-          test_results_path: client/target/surefire-reports
+      - maven-orb-test
   
   deploy:
     jobs:
@@ -22,6 +17,18 @@ workflows:
 
 
 jobs:
+  maven-orb-test:
+    executor:
+      name: maven/default
+      tag: '11.0'
+    steps:
+      - checkout
+      - maven/with_cache:
+          maven_command: mvn compile
+          steps:
+            - run: mvn compile
+      - maven/process_test_results:
+          test_results_path: client/target/surefire-reports
 
   deploy-to-maven-central:
     docker:
