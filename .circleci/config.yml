@@ -25,9 +25,10 @@ jobs:
     steps:
       - checkout
       - maven/with_cache:
-          # maven_command: mvn compile
+          maven_command: mvn compile
           steps:
             - run: mvn compile
+            - run: mvn verify
 
   maven-verify:
     executor:
@@ -35,7 +36,7 @@ jobs:
       tag: '11.0'
     steps:
       - maven/with_cache:
-          # maven_command: mnv verify
+          maven_command: mnv compile
           steps:
             - run: mvn verify
       - maven/process_test_results:
