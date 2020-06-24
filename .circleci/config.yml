@@ -7,12 +7,10 @@ orbs:
 
 workflows:
 
-  build_and_test:
+  build_and_test_SDK:
     jobs:
-      - maven-compile
-      - maven-verify:
-          requires:
-            - maven-compile
+      - maven-build-and-test
+
   
   # deploy:
   #   jobs:
@@ -20,7 +18,7 @@ workflows:
 
 
 jobs:
-  maven-compile:
+  maven-build-and-test:
     executor:
       name: maven/default
       tag: '11.0'
@@ -30,20 +28,10 @@ jobs:
           maven_command: mvn compile
           steps:
             - run: mvn compile
-            # - run: mvn verify
-
-  maven-verify:
-    executor:
-      name: maven/default
-      tag: '11.0'
-    steps:
-      - checkout
-      - maven/with_cache:
-          maven_command: mvn compile
-          steps:
             - run: mvn verify
       - maven/process_test_results:
           test_results_path: client/target/surefire-reports
+
 
   deploy-to-maven-central:
     docker:
@@ -58,10 +46,10 @@ jobs:
 
 
 
-# 1. checkout code
-# 2. build & (unit)test
+# 1. build & (unit)test the SDK
+# 2. build & (unit)test EHRbase w/ SDK (as local dependency)
+#    NOTE: make sure EHRbase is build w/ latest commit to SDK
 # 3. run integation tests
-#    - checkout ehrbase repo
 #    - setup test environment
 #    - execute robot tests
 # 4. deploy (to maven central?)
