@@ -3,13 +3,36 @@ version: 2.1
 orbs:
   maven: circleci/maven@1.0.1
 
+
+
 workflows:
+
   build_and_test:
     jobs:
-      - maven-orb-test:
-          maven_command: 'mvn clean install'
+      - maven/test:
+          executer: default
+            tag: '11.0'
+          command: 'clean install'
           test_result_path: client/target/surefire-reports
-      
+  
+  deploy:
+    jobs:
+      - deploy-to-maven-central
+
+
+jobs:
+
+  deploy-to-maven-central:
+    docker:
+      - image: cimg/openjdk:11.0
+    steps:
+      - run:
+          command: |
+            pwd
+            jave --version
+            echo deployed
+
+
 
 # 1. checkout code
 # 2. build & (unit)test
@@ -18,3 +41,4 @@ workflows:
 #    - setup test environment
 #    - execute robot tests
 # 4. deploy (to maven central?)
+c
