@@ -54,7 +54,7 @@ jobs:
     steps:
       - openjdk-install/openjdk:
           version: 11
-      - run: java -version
+      - run: java --version
       - attach_workspace:
           at: /home/circleci
       - run:
