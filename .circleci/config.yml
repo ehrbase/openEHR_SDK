@@ -39,7 +39,7 @@ jobs:
       # Secondary (service) container image available at `host: localhost`
       - image: ehrbaseorg/ehrbase-postgres:latest
         environment:
-          POSTGRES_USER: ehrbase
+          POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
 
     steps:
