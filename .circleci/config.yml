@@ -137,7 +137,7 @@ commands:
       - run:
           name: Install openjdk-<< parameters.version >>-jdk
           command: |
-            sudo killall apt apt-get
+            sudo killall apt apt-get || true
             ps aux | grep -i apt
             sudo apt-get install -y openjdk-<< parameters.version >>-jdk
       - run: 
