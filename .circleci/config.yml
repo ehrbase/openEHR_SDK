@@ -49,12 +49,22 @@ jobs:
           paths:
             - .m2
       - run:
+          name: Setup database
+          command: |
+            docker run --name ehrdb -e POSTGRES_USER=$POSTGRES_USER \
+            -e POSTGRES_PASSWORD=$POSTGRES_PASSWORD -d \
+            -p 5432:5432 ehrbaseorg/ehrbase-database-docker
+      - run:
           name: Checkout EHRbase repo
           command: |
             cd ..
             git clone git@github.com:ehrbase/ehrbase.git
             cd ehrbase
             ls -la
+            git checkout snapshot_0.3.1
+            mvn compile
+      
+      
 
 
   maven build-and-test-ehrbase:
