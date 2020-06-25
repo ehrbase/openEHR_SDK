@@ -2,6 +2,7 @@ version: 2.1
 
 orbs:
   maven: circleci/maven@1.0.1
+  openjdk-install: cloudesire/openjdk-install@1.2.3
 
 
 
@@ -51,13 +52,15 @@ jobs:
     machine:
       image: circleci/classic:201808-01
     steps:
+      - openjdk-install/openjdk:
+          version: 11
       - run: java -version
       - attach_workspace:
           at: /home/circleci
       - run:
           command: |
             pwd
-            ls -la
+            ls -la /home/circleci
 
 
   deploy-to-maven-central:
