@@ -48,6 +48,8 @@ jobs:
           root: /home/circleci
           paths:
             - .m2
+      - setup_remote_docker:
+          docker_layer_caching: true
       - run:
           name: Setup database
           command: |
