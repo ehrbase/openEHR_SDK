@@ -36,9 +36,10 @@ jobs:
       - maven/with_cache:
           maven_command: mvn compile
           steps:
-            - run: mvn compile
-            - run: mvn verify
-            - run: mvn install -DskipTests
+            # - run: mvn compile
+            # - run: mvn verify
+            # - run: mvn install -DskipTests
+            - run: mvn install
       - maven/process_test_results:
           test_results_path: client/target/surefire-reports
       - persist_to_workspace:
@@ -97,6 +98,8 @@ commands:
   #   Y8,           Y8,        ,8P  88   `8b d8'   88  88   `8b d8'   88    d8""""""""8b    88    `8b 88  88         8P          `8b
   #    Y8a.    .a8P  Y8a.    .a8P   88    `888'    88  88    `888'    88   d8'        `8b   88     `8888  88      .a8P   Y8a     a8P
   #     `"Y8888Y"'    `"Y8888Y"'    88     `8'     88  88     `8'     88  d8'          `8b  88      `888  88888888Y"'     "Y88888P"
+
+
   install-openjdk:
     parameters:
       version:
@@ -109,9 +112,9 @@ commands:
       - run:
           name: Workaround for running apt behind the scene
           command: sudo killall -9 apt-get || true
-      - run:
-          name: Switch to US mirror for faster performances
-          command: sudo sed -i 's/\/\/archive.ubuntu.com/\/\/us.archive.ubuntu.com/g' /etc/apt/sources.list
+      # - run:
+      #     name: Switch to US mirror for faster performances
+      #     command: sudo sed -i 's/\/\/archive.ubuntu.com/\/\/us.archive.ubuntu.com/g' /etc/apt/sources.list
       - run:
           name: Add openjdk-r PPA
           command: |
@@ -135,8 +138,11 @@ commands:
           name: Install openjdk-<< parameters.version >>-jdk
           command: |
             sudo apt-get install -y openjdk-<< parameters.version >>-jdk
-            sleep 1
-            sudo killall -9 apt apt-get || true
+      - run: 
+          name: Make installed openjdk the default Java version
+          command: |
+            ps aux | grep -i apt
+            sudo killall apt apt-get
             sudo update-java-alternatives --set java-1.<< parameters.version >>.0-openjdk-amd64
       - run:
           name: Prepare to save apt cache
