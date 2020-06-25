@@ -2,7 +2,7 @@ version: 2.1
 
 orbs:
   maven: circleci/maven@1.0.1
-
+  openjdk-install: cloudesire/openjdk-install@1.2.3
 
 
 workflows:
@@ -52,7 +52,7 @@ jobs:
       image: ubuntu-1604:202004-01
     steps:
       - run: ps aux | grep -i apt
-      - install-openjdk:
+      - openjdk-install/openjdk:
           version: 11
       - run: java --version
       - attach_workspace:
@@ -99,53 +99,51 @@ commands:
   #     `"Y8888Y"'    `"Y8888Y"'    88     `8'     88  88     `8'     88  d8'          `8b  88      `888  88888888Y"'     "Y88888P"
 
 
-  install-openjdk:
-    parameters:
-      version:
-        type: integer
-        default: 8
-      cache_version:
-        type: integer
-        default: 1
-    steps:
-      - run:
-          name: Workaround for running apt behind the scene
-          command: |
-            sudo killall -9 apt-get || true
-            ps aux | grep -i apt
-            java --version
-      # - run:
-      #     name: Switch to US mirror for faster performances
-      #     command: sudo sed -i 's/\/\/archive.ubuntu.com/\/\/us.archive.ubuntu.com/g' /etc/apt/sources.list
-      - run:
-          name: Add openjdk-r PPA
-          command: |
-            sudo add-apt-repository ppa:openjdk-r/ppa
-            sudo apt-get update
-      - run:
-          name: Generate cache version
-          command: |
-            apt-cache policy openjdk-<< parameters.version >>-jdk | grep 'Candidate:' | cut -d' ' -f4 > .openjdk_version
-            cat .openjdk_version
-      - restore_cache:
-          keys:
-          - apt-cache-{{ checksum ".openjdk_version" }}-v<< parameters.cache_version >>
-      - run:
-          name: Create temp directory if restore cache didn't
-          command: mkdir -p /tmp/archives
-      - run:
-          name: Restore apt cache
-          command: sudo rsync -av /tmp/archives/ /var/cache/apt/archives/
-      - run:
-          name: Install openjdk-<< parameters.version >>-jdk
-          command: sudo apt-get install -y openjdk-<< parameters.version >>-jdk
-      - run: 
-          name: Make installed openjdk the default Java version
-          command: sudo update-java-alternatives --set java-1.<< parameters.version >>.0-openjdk-amd64
-      - run:
-          name: Prepare to save apt cache
-          command: rsync -av /var/cache/apt/archives/*.deb /tmp/archives/
-      - save_cache:
-          key: apt-cache-{{ checksum ".openjdk_version" }}-v<< parameters.cache_version >>
-          paths:
-          - /tmp/archives
+  # install-openjdk:
+  #   parameters:
+  #     version:
+  #       type: integer
+  #       default: 8
+  #     cache_version:
+  #       type: integer
+  #       default: 1
+  #   steps:
+  #     - run:
+  #         name: Workaround for running apt behind the scene
+  #         command: |
+  #           sudo killall -9 apt-get || true
+  #     # - run:
+  #     #     name: Switch to US mirror for faster performances
+  #     #     command: sudo sed -i 's/\/\/archive.ubuntu.com/\/\/us.archive.ubuntu.com/g' /etc/apt/sources.list
+  #     - run:
+  #         name: Add openjdk-r PPA
+  #         command: |
+  #           sudo add-apt-repository ppa:openjdk-r/ppa
+  #           sudo apt-get update
+  #     - run:
+  #         name: Generate cache version
+  #         command: |
+  #           apt-cache policy openjdk-<< parameters.version >>-jdk | grep 'Candidate:' | cut -d' ' -f4 > .openjdk_version
+  #           cat .openjdk_version
+  #     - restore_cache:
+  #         keys:
+  #         - apt-cache-{{ checksum ".openjdk_version" }}-v<< parameters.cache_version >>
+  #     - run:
+  #         name: Create temp directory if restore cache didn't
+  #         command: mkdir -p /tmp/archives
+  #     - run:
+  #         name: Restore apt cache
+  #         command: sudo rsync -av /tmp/archives/ /var/cache/apt/archives/
+  #     - run:
+  #         name: Install openjdk-<< parameters.version >>-jdk
+  #         command: sudo apt-get install -y openjdk-<< parameters.version >>-jdk
+  #     - run: 
+  #         name: Make installed openjdk the default Java version
+  #         command: sudo update-java-alternatives --set java-1.<< parameters.version >>.0-openjdk-amd64
+  #     - run:
+  #         name: Prepare to save apt cache
+  #         command: rsync -av /var/cache/apt/archives/*.deb /tmp/archives/
+  #     - save_cache:
+  #         key: apt-cache-{{ checksum ".openjdk_version" }}-v<< parameters.cache_version >>
+  #         paths:
+  #         - /tmp/archives
