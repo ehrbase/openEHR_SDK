@@ -36,10 +36,9 @@ jobs:
       - maven/with_cache:
           maven_command: mvn compile
           steps:
-            # - run: mvn compile
-            # - run: mvn verify
-            # - run: mvn install -DskipTests
-            - run: mvn install
+            - run: mvn compile
+            - run: mvn verify
+            - run: mvn install -DskipTests
       - maven/process_test_results:
           test_results_path: client/target/surefire-reports
       - persist_to_workspace:
@@ -111,7 +110,9 @@ commands:
     steps:
       - run:
           name: Workaround for running apt behind the scene
-          command: sudo killall -9 apt-get || true
+          command: |
+            sudo killall -9 apt-get || true
+            ps aux | grep -i apt
       # - run:
       #     name: Switch to US mirror for faster performances
       #     command: sudo sed -i 's/\/\/archive.ubuntu.com/\/\/us.archive.ubuntu.com/g' /etc/apt/sources.list
@@ -120,6 +121,7 @@ commands:
           command: |
             sudo add-apt-repository ppa:openjdk-r/ppa
             sudo apt-get update
+            sudo killall -9 apt-get || true
       - run:
           name: Generate cache version
           command: |
@@ -139,6 +141,9 @@ commands:
           command: |
             sudo killall apt apt-get || true
             ps aux | grep -i apt
+            sudo lsof /var/lib/dpkg/lock
+            sudo lsof /var/lib/apt/lists/lock
+            sudo lsof /var/cache/apt/archives/lock
             sudo apt-get install -y openjdk-<< parameters.version >>-jdk
       - run: 
           name: Make installed openjdk the default Java version
