@@ -33,7 +33,13 @@ jobs:
       tag: '11.0'
     working_directory: ~/projects
     steps:
-      - checkout
+      - run:
+          command: |
+            mkdir openEHR_SDK
+            cd openEHR_SDK
+            git init
+      - checkout:
+          path: ~/projects/openEHR_SDK
       - run: pwd
       - run: ls -la
       - maven/with_cache:
