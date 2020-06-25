@@ -10,9 +10,9 @@ workflows:
   build_and_test_SDK:
     jobs:
       - maven-build-and-test
-      - maven build-and-test-ehrbase:
-          requires:
-            - maven-build-and-test
+      # - maven build-and-test-ehrbase:
+      #     requires:
+      #       - maven-build-and-test
   
   deploy:
     when:
@@ -31,9 +31,11 @@ jobs:
     executor:
       name: maven/default
       tag: '11.0'
-    working_directory: ~/projects/openEHR_SDK
+    working_directory: ~/projects
     steps:
       - checkout
+      - run: pwd
+      - run: ls -la
       - maven/with_cache:
           maven_command: mvn compile
           steps:
