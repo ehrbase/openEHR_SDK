@@ -31,15 +31,9 @@ jobs:
     executor:
       name: maven/default
       tag: '11.0'
-    working_directory: ~/projects
+    working_directory: ~/projects/openEHR_SDK
     steps:
-      - run:
-          command: |
-            mkdir openEHR_SDK
-            cd openEHR_SDK
-            git init
-      - checkout:
-          path: ~/projects/openEHR_SDK
+      - checkout
       - run: pwd
       - run: ls -la
       - maven/with_cache:
@@ -54,6 +48,13 @@ jobs:
           root: /home/circleci
           paths:
             - .m2
+      - run:
+          name: Checkout EHRbase repo
+          command: |
+            cd ..
+            git clone git@github.com:ehrbase/ehrbase.git
+            cd ehrbase
+            ls -la
 
 
   maven build-and-test-ehrbase:
