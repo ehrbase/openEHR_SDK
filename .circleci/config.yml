@@ -52,6 +52,12 @@ jobs:
       image: circleci/classic:201808-01
     steps:
       - run: java -version
+      - attach_workspace:
+          at: /home/circleci
+      - run:
+          command: |
+            pwd
+            ls -la
 
 
   deploy-to-maven-central:
