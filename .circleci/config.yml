@@ -52,11 +52,7 @@ jobs:
       - run:
           name: Setup database
           command: |
-            docker network create ehrbase-net
-            docker run --name ehrdb --network ehrbase-net \
-            -e POSTGRES_PASSWORD=postgres \
-            -e POSTGRES_USER=postgres \
-            -d -p 5432:5432 ehrbaseorg/ehrbase-postgres:latest
+            docker run --name ehrdb -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -e DISABLE_SECURITY=true -d -p 5432:5432 ehrbaseorg/ehrbase-database-docker:11.5
       - run: docker ps
       - run:
           name: Checkout EHRbase repo
