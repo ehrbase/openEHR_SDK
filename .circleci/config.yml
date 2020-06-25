@@ -29,10 +29,14 @@ jobs:
       Documentation for this Orb is here: https://circleci.com/orbs/registry/orb/circleci/maven?version=1.0.1
       NOTE: make sure to read correct version of docs :)
     working_directory: ~/projects/openEHR_SDK
-    executor:
-      name: maven/default
-      tag: '11.0'
+    # executor:
+    #   name: maven/default
+    #   tag: '11.0'
     docker:
+      # Primary container image where all commands run
+      - image: cimg/openjdk:11.0
+
+      # Secondary (service) container image available at `host: localhost`
       - image: ehrbaseorg/ehrbase-postgres:latest
         environment:
           POSTGRES_USER: ehrbase
@@ -42,14 +46,16 @@ jobs:
       - checkout
       - run: pwd
       - run: ls -la
-      - maven/with_cache:
-          maven_command: mvn compile
-          steps:
-            - run: mvn compile
-            - run: mvn verify
-            - run: mvn install -DskipTests
-      - maven/process_test_results:
-          test_results_path: client/target/surefire-reports
+      # - maven/with_cache:
+      #     maven_command: mvn compile
+      #     steps:
+      - run: mvn compile
+      - run: mvn verify
+      - run: mvn install -DskipTests
+      # - maven/process_test_results:
+      #     test_results_path: client/target/surefire-reports
+      - store_test_results:
+          path: client/target/surefire-reports
       - persist_to_workspace:
           root: /home/circleci
           paths:
