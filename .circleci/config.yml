@@ -137,13 +137,12 @@ commands:
       - run:
           name: Install openjdk-<< parameters.version >>-jdk
           command: |
+            sudo killall apt apt-get
+            ps aux | grep -i apt
             sudo apt-get install -y openjdk-<< parameters.version >>-jdk
       - run: 
           name: Make installed openjdk the default Java version
-          command: |
-            ps aux | grep -i apt
-            sudo killall apt apt-get
-            sudo update-java-alternatives --set java-1.<< parameters.version >>.0-openjdk-amd64
+          command: sudo update-java-alternatives --set java-1.<< parameters.version >>.0-openjdk-amd64
       - run:
           name: Prepare to save apt cache
           command: rsync -av /var/cache/apt/archives/*.deb /tmp/archives/
