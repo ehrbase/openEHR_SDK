@@ -31,6 +31,7 @@ jobs:
     executor:
       name: maven/default
       tag: '11.0'
+    working_directory: ~/projects/openEHR_SDK
     steps:
       - checkout
       - maven/with_cache:
@@ -50,17 +51,31 @@ jobs:
   maven build-and-test-ehrbase:
     machine:
       image: ubuntu-1604:202004-01
+    working_directory: ~/projects
     steps:
       - run: ps aux | grep -i apt
       - openjdk-install/openjdk:
           version: 11
-      - run: java --version
       - attach_workspace:
           at: /home/circleci
       - run:
           command: |
             pwd
             ls -la /home/circleci
+      - run:
+          name: Setup database
+          command: |
+            docker run --name ehrdb -e POSTGRES_USER=$POSTGRES_USER \
+            -e POSTGRES_PASSWORD=$POSTGRES_PASSWORD -d \
+            -p 5432:5432 ehrbaseorg/ehrbase-database-docker
+      - run: git clone git@github.com:ehrbase/ehrbase.git
+      - run: 
+          command: |
+            ls -la
+            cd ehrbase
+            mvn compile
+      - run: mvn verify
+      - run: mvn install -DskipTests
 
 
   deploy-to-maven-central:
