@@ -10,7 +10,7 @@ workflows:
   build_and_test_SDK:
     jobs:
       - maven-build-and-test
-
+      - maven build-and-test-ehrbase
   
   deploy:
     when:
@@ -22,6 +22,10 @@ workflows:
 
 jobs:
   maven-build-and-test:
+    description: |
+      This job relies on the official circleci maven Orb!
+      Documentation for this Orb is here: https://circleci.com/orbs/registry/orb/circleci/maven?version=1.0.1
+      NOTE: make sure to read correct version of docs :)
     executor:
       name: maven/default
       tag: '11.0'
@@ -32,9 +36,19 @@ jobs:
           steps:
             - run: mvn compile
             - run: mvn verify
+            - run: mvn install -DskipTests
       - maven/process_test_results:
           test_results_path: client/target/surefire-reports
+      - persist_to_workspace:
+          root: /home/circleci
+          paths:
+            - .m2
 
+  maven build-and-test-ehrbase:
+    machine:
+      image: circleci/classic:201808-01
+    steps:
+      - run: java -version
 
   deploy-to-maven-central:
     docker:
