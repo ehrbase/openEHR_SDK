@@ -28,10 +28,16 @@ jobs:
       This job relies on the official circleci maven Orb!
       Documentation for this Orb is here: https://circleci.com/orbs/registry/orb/circleci/maven?version=1.0.1
       NOTE: make sure to read correct version of docs :)
+    working_directory: ~/projects/openEHR_SDK
     executor:
       name: maven/default
       tag: '11.0'
-    working_directory: ~/projects/openEHR_SDK
+    docker:
+      - image: ehrbaseorg/ehrbase-postgres:latest
+        environment:
+          POSTGRES_USER: ehrbase
+          POSTGRES_PASSWORD: postgres
+
     steps:
       - checkout
       - run: pwd
@@ -48,12 +54,12 @@ jobs:
           root: /home/circleci
           paths:
             - .m2
-      - setup_remote_docker
-      - run:
-          name: Setup database
-          command: |
-            docker network create ehrbase-net
-            docker run --name ehrdb --network ehrbase-net -e POSTGRES_PASSWORD=postgres -d ehrbaseorg/ehrbase-postgres:latest
+      # - setup_remote_docker
+      # - run:
+      #     name: Setup database
+      #     command: |
+      #       docker network create ehrbase-net
+      #       docker run --name ehrdb --network ehrbase-net -e POSTGRES_PASSWORD=postgres -d ehrbaseorg/ehrbase-postgres:latest
       - run: docker ps
       - run:
           name: Checkout EHRbase repo
