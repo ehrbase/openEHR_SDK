@@ -82,6 +82,7 @@ jobs:
           command: |
             ls -la
             git clone git@github.com:ehrbase/ehrbase.git
+            cd ~/projects/ehrbase
             git checkout snapshot_0.3.1
       - run:
           name: Generate Cache Checksum for EHRbase Dependencies
