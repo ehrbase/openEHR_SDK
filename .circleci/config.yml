@@ -50,10 +50,6 @@ jobs:
           command: find . -name 'pom.xml' | sort | xargs cat > /tmp/openEHR_SDK_maven_cache_seed
       - restore_cache:
           key: openEHR_SDK-{{ checksum "/tmp/openEHR_SDK_maven_cache_seed" }}
-      - save_cache:
-          key: openEHR_SDK-{{ checksum "/tmp/openEHR_SDK_maven_cache_seed" }}
-          paths:
-          - ~/.m2
 
       - run:
           name: Maven build, test, install openEHR_SDK
@@ -64,6 +60,12 @@ jobs:
       #     root: /home/circleci
       #     paths:
       #       - .m2
+      - save_cache:
+          key: openEHR_SDK-{{ checksum "/tmp/openEHR_SDK_maven_cache_seed" }}
+          paths:
+          - ~/.m2
+
+
       - run:
           name: Checkout EHRbase repo
           command: |
@@ -75,18 +77,20 @@ jobs:
           command: find ~/projects/ehrbase -name 'pom.xml' | sort | xargs cat > /tmp/EHRbase_maven_cache_seed
       - restore_cache:
           key: EHRbase-{{ checksum "/tmp/EHRbase_maven_cache_seed" }}
-      - save_cache:
-          key: EHRbase-{{ checksum "/tmp/EHRbase_maven_cache_seed" }}
-          paths:
-          - ~/.m2
-
       - run:
           name: Maven build EHRbase
           command: |
             cd ~/projects/ehrbase
             git checkout snapshot_0.3.1
             mvn package dependency:go-offline -DskipTests -Dmaven.javadoc.skip=true
+      - save_cache:
+          key: EHRbase-{{ checksum "/tmp/EHRbase_maven_cache_seed" }}
+          paths:
+          - ~/.m2
 
+      - configure-python-version
+      - install-python-requirements
+      
   
 
 
@@ -124,6 +128,25 @@ commands:
   #   Y8,           Y8,        ,8P  88   `8b d8'   88  88   `8b d8'   88    d8""""""""8b    88    `8b 88  88         8P          `8b
   #    Y8a.    .a8P  Y8a.    .a8P   88    `888'    88  88    `888'    88   d8'        `8b   88     `8888  88      .a8P   Y8a     a8P
   #     `"Y8888Y"'    `"Y8888Y"'    88     `8'     88  88     `8'     88  d8'          `8b  88      `888  88888888Y"'     "Y88888P"
+
+
+  configure-python-version:
+    description: Configure Python version to 3.7.0
+    steps:
+      - run:
+          name: Configure Python version to 3.7.0
+          command: |
+            pyenv global 3.7.0
+
+
+  install-python-requirements:
+    description: Install Python requirements
+    steps:
+      - run:
+          name: Install Python requirements
+          command: |
+            python -c "import site; print(site.getsitepackages())"
+            pip install -r ~/projects/ehrbase/tests/requirements.txt
 
 
   # install-openjdk:
