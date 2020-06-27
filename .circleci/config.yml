@@ -44,29 +44,50 @@ jobs:
       - checkout
       - run: pwd
       - run: ls -la
+      
       - run:
-          name: Build, test, install openEHR_SDK
+          name: Generate Cache Checksum for openEHR_SDK Dependencies
+          command: find . -name 'pom.xml' | sort | xargs cat > /tmp/openEHR_SDK_maven_cache_seed
+      - restore_cache:
+          key: openEHR_SDK-{{ checksum "/tmp/openEHR_SDK_maven_cache_seed" }}
+      - save_cache:
+          key: openEHR_SDK-{{ checksum "/tmp/openEHR_SDK_maven_cache_seed" }}
+          paths:
+          - ~/.m2
+
+      - run:
+          name: Maven build, test, install openEHR_SDK
           command: mvn install
       - store_test_results:
           path: client/target/surefire-reports
-      - persist_to_workspace:
-          root: /home/circleci
-          paths:
-            - .m2
+      # - persist_to_workspace:
+      #     root: /home/circleci
+      #     paths:
+      #       - .m2
       - run:
-          name: Checkout & build EHRbase repo
+          name: Checkout EHRbase repo
           command: |
             cd ..
             git clone git@github.com:ehrbase/ehrbase.git
-            cd ehrbase
+
+      - run:
+          name: Generate Cache Checksum for EHRbase Dependencies
+          command: find ~/projects/ehrbase -name 'pom.xml' | sort | xargs cat > /tmp/EHRbase_maven_cache_seed
+      - restore_cache:
+          key: EHRbase-{{ checksum "/tmp/EHRbase_maven_cache_seed" }}
+      - save_cache:
+          key: EHRbase-{{ checksum "/tmp/EHRbase_maven_cache_seed" }}
+          paths:
+          - ~/.m2
+
+      - run:
+          name: Maven build EHRbase
+          command: |
+            cd ~/projects/ehrbase
             ls -la
             git checkout snapshot_0.3.1
             mvn package
-      - run:
-          name: Start EHRbase Server
-          command: |
-            cd ~/projects/ehrbase
-            java -jar application/target/application-0.13.0.jar --cache.enabled=false --system.allow-template-overwrite=true
+
   
 
 
