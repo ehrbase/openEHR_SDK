@@ -74,6 +74,7 @@ jobs:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
     steps:
+      - checkout
       - attach_workspace:
           at: /home/circleci/.m2
       - run:

@@ -43,6 +43,7 @@
         <maven.compiler.target>11</maven.compiler.target>
         <skipIntegrationTests>true</skipIntegrationTests>
         <jackson.version>2.10.2</jackson.version>
+        <wladversion>0.1.0</wladversion>
     </properties>
 
     <repositories>
