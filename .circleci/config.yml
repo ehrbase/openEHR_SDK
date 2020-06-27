@@ -9,7 +9,17 @@ workflows:
 
   build_and_test_SDK:
     jobs:
-      - maven-build-and-test
+      - build-openEHR_SDK
+      - build-EHRbase:
+          requires:
+            - build-openEHR_SDK
+      - run-CONTRIBUTION-test:
+          requires:
+            - build-EHRbase
+          filters:
+            branches:
+              ignore:
+                - master
 
 
   deploy:
@@ -22,12 +32,36 @@ workflows:
 
 
 jobs:
-  maven-build-and-test:
-    description: |
-      This job relies on the official circleci maven Orb!
-      Documentation for this Orb is here: https://circleci.com/orbs/registry/orb/circleci/maven?version=1.0.1
-      NOTE: make sure to read correct version of docs :)
+  build-openEHR_SDK:
     working_directory: ~/projects/openEHR_SDK
+    docker:
+      # Primary container w/ Maven & Java JDK
+      - image: cimg/openjdk:11.0
+
+    steps:
+      - checkout
+      - run:
+          name: Generate Cache Checksum for openEHR_SDK Dependencies
+          command: find . -name 'pom.xml' | sort | xargs cat > /tmp/openEHR_SDK_maven_cache_seed
+      - restore_cache:
+          key: openEHR_SDK-{{ checksum "/tmp/openEHR_SDK_maven_cache_seed" }}
+      - run:
+          name: Maven build, test, install openEHR_SDK
+          command: mvn install dependency:go-offline -Dmaven.javadoc.skip=true
+      - save_cache:
+          key: openEHR_SDK-{{ checksum "/tmp/openEHR_SDK_maven_cache_seed" }}
+          paths:
+          - ~/.m2
+      - store_test_results:
+          path: client/target/surefire-reports
+      - persist_to_workspace:
+          root: /home/circleci
+          paths:
+            - .m2
+
+
+  build-EHRbase:
+    working_directory: ~/projects
     docker:
       # Primary container w/ Maven & Java JDK
       # NOTE: all commands run here
@@ -39,39 +73,14 @@ jobs:
         environment:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
-
     steps:
-      - checkout
-      - run: pwd
-      - run: ls -la
-      
+      - attach_workspace:
+          at: /home/circleci/.m2
       - run:
-          name: Generate Cache Checksum for openEHR_SDK Dependencies
-          command: find . -name 'pom.xml' | sort | xargs cat > /tmp/openEHR_SDK_maven_cache_seed
-      - restore_cache:
-          key: openEHR_SDK-{{ checksum "/tmp/openEHR_SDK_maven_cache_seed" }}
-
-      - run:
-          name: Maven build, test, install openEHR_SDK
-          command: mvn install dependency:go-offline -Dmaven.javadoc.skip=true
-      - store_test_results:
-          path: client/target/surefire-reports
-      # - persist_to_workspace:
-      #     root: /home/circleci
-      #     paths:
-      #       - .m2
-      - save_cache:
-          key: openEHR_SDK-{{ checksum "/tmp/openEHR_SDK_maven_cache_seed" }}
-          paths:
-          - ~/.m2
-
-
-      - run:
-          name: Checkout EHRbase repo
+          name: Git clone EHRbase repo
           command: |
-            cd ..
+            ls -la
             git clone git@github.com:ehrbase/ehrbase.git
-
       - run:
           name: Generate Cache Checksum for EHRbase Dependencies
           command: find ~/projects/ehrbase -name 'pom.xml' | sort | xargs cat > /tmp/EHRbase_maven_cache_seed
@@ -87,13 +96,23 @@ jobs:
           key: EHRbase-{{ checksum "/tmp/EHRbase_maven_cache_seed" }}
           paths:
           - ~/.m2
+      - persist_to_workspace:
+          root: /home/circleci
+          paths:
+            - projects/ehrbase
 
-      - configure-python-version
-      - install-python-requirements
+
+  run-CONTRIBUTION-test:
+    working_directory: ~/projects
+    machine:
+      image: ubuntu-1604:202004-01
+    steps:
+      - run-robot-tests:
+          include-tags: "CONTRIBUTION"
+          test-suite-path: "CONTRIBUTION_TESTS"
+          test-suite-name: "CONTRIBUTION"
       
   
-
-
   deploy-to-maven-central:
     docker:
       - image: cimg/openjdk:11.0
@@ -130,6 +149,49 @@ commands:
   #     `"Y8888Y"'    `"Y8888Y"'    88     `8'     88  88     `8'     88  d8'          `8b  88      `888  88888888Y"'     "Y88888P"
 
 
+  run-robot-tests:
+    description: Run integration tests written in Robot Framework
+    parameters:
+      include-tags:
+        description: Which tests to inclue by TAGs (Robot syntax applies!)
+        type: string
+      test-suite-path:
+        description: Target test-suite given by it's folder name e.g. COMPOSITION_TESTS
+        type: string
+      test-suite-name:
+        description: Titel of generated Robot Log/Report.html
+        type: string
+    steps:
+      - configure-python-version
+      - restore-pip-cache
+      - attach-ehrbase-repo-to-workspace
+      - install-python-requirements
+      # - openjdk-install/openjdk:
+      #     version: 11
+      - run:
+          name: EXECUTE ROBOT COMMAND
+          no_output_timeout: 30m
+          command: |
+            cd ~/projects/ehrbase/tests
+            robot --include << parameters.include-tags >> \
+                  --exclude TODO -e future -e obsolete -e libtest \
+                  --console dotted \
+                  --loglevel TRACE \
+                  --noncritical not-ready \
+                  --flattenkeywords for \
+                  --flattenkeywords foritem \
+                  --flattenkeywords name:_resources.* \
+                  --outputdir results/<< parameters.test-suite-name >> \
+                  --name << parameters.test-suite-name >> \
+                  robot/<< parameters.test-suite-path >>/
+      - save-pip-cache
+      - persist-test-results-folder
+      - store_test_results:
+          path: ~/projects/ehrbase/tests/results/
+      - store_artifacts:
+          path: ~/projects/ehrbase/tests/results/
+
+  
   configure-python-version:
     description: Configure Python version to 3.7.0
     steps:
@@ -147,6 +209,61 @@ commands:
           command: |
             python -c "import site; print(site.getsitepackages())"
             pip install -r ~/projects/ehrbase/tests/requirements.txt
+  
+
+  save-pip-cache:
+    description: Save all caches in interation tests job
+    steps:
+      - run:
+          when: always
+          name: Save integration test cache
+          command: |
+            ls -la ~/.cache
+            ls -la /opt/circleci/
+      - save_cache:
+          key: pip-{{ checksum "~/projects/ehrbase/tests/requirements.txt" }}
+          paths:
+            - ~/.cache/pip
+            # - /opt/circleci/.pyenv/versions/3.7.0/lib/python3.7/site-packages
+
+
+  restore-pip-cache:
+    description: Restore all caches in interation tests job
+    steps:
+      - restore_cache:
+          keys:
+            - pip-{{ checksum "~/projects/ehrbase/tests/requirements.txt" }}
+  
+
+  attach-ehrbase-repo-to-workspace:
+    description: Attach EHRbase repo containing target folder and tests back to workspace
+    steps:
+      - run: ls -la
+      - attach_workspace:
+          at: /home/circleci/projects/ehrbase
+      - run: ls -la ehrbase
+
+
+  persist-test-results-folder:
+    description: Persist Robot tests folder to workspace
+    steps:
+      - run:
+          when: always
+          command: |
+            echo "persist test results"
+      - persist_to_workspace:
+          root: /home/circleci
+          paths:
+            - projects/ehrbase/tests/results
+
+
+  attach-test-results-folder:
+    description: Attach Robot tests folder back to workspace
+    steps:
+      - attach_workspace:
+          at: /home/circleci/projects/ehrbase/tests/results
+
+
 
 
   # install-openjdk:
