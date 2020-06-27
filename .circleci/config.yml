@@ -63,7 +63,7 @@ jobs:
             git checkout snapshot_0.3.1
             mvn package
       - run:
-          name: Start EHRbase Server
+          name: Start EHRbase Server w/ some options
           command: |
             cd ~/projects/ehrbase
             java -jar application/target/application-0.13.0.jar --cache.enabled=false --system.allow-template-overwrite=true
