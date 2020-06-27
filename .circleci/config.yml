@@ -218,15 +218,15 @@ commands:
     steps:
       - run:
           when: always
-          name: Save integration test cache
+          name: Save PIP cache
           command: |
             ls -la ~/.cache
             ls -la /opt/circleci/
       - save_cache:
           key: pip-{{ checksum "~/projects/ehrbase/tests/requirements.txt" }}
           paths:
-            - ~/.cache/pip
-            # - /opt/circleci/.pyenv/versions/3.7.0/lib/python3.7/site-packages
+            # - ~/.cache/pip
+            - /opt/circleci/.pyenv/versions/3.7.0/lib/python3.7/site-packages
 
 
   restore-pip-cache:
