@@ -106,7 +106,7 @@ jobs:
   run-CONTRIBUTION-test:
     working_directory: ~/projects
     machine:
-      image: ubuntu-1604:202004-01
+      image: ubuntu-1604:201903-01
     steps:
       - run-robot-tests:
           include-tags: "CONTRIBUTION"
@@ -163,9 +163,9 @@ commands:
         description: Titel of generated Robot Log/Report.html
         type: string
     steps:
+      - attach-ehrbase-repo-to-workspace
       - configure-python-version
       - restore-pip-cache
-      - attach-ehrbase-repo-to-workspace
       - install-python-requirements
       # - openjdk-install/openjdk:
       #     version: 11
