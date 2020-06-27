@@ -76,12 +76,13 @@ jobs:
     steps:
       - checkout
       - attach_workspace:
-          at: /home/circleci/.m2
+          at: /home/circleci/
       - run:
           name: Git clone EHRbase repo
           command: |
             ls -la
             git clone git@github.com:ehrbase/ehrbase.git
+            git checkout snapshot_0.3.1
       - run:
           name: Generate Cache Checksum for EHRbase Dependencies
           command: find ~/projects/ehrbase -name 'pom.xml' | sort | xargs cat > /tmp/EHRbase_maven_cache_seed
@@ -91,7 +92,6 @@ jobs:
           name: Maven build EHRbase
           command: |
             cd ~/projects/ehrbase
-            git checkout snapshot_0.3.1
             mvn package dependency:go-offline -DskipTests -Dmaven.javadoc.skip=true
       - save_cache:
           key: EHRbase-{{ checksum "/tmp/EHRbase_maven_cache_seed" }}
@@ -241,7 +241,7 @@ commands:
     steps:
       - run: ls -la
       - attach_workspace:
-          at: /home/circleci/projects/ehrbase
+          at: /home/circleci/
       - run: ls -la ehrbase
 
 
@@ -262,7 +262,7 @@ commands:
     description: Attach Robot tests folder back to workspace
     steps:
       - attach_workspace:
-          at: /home/circleci/projects/ehrbase/tests/results
+          at: /home/circleci/
 
 
 
