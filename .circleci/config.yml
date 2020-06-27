@@ -81,7 +81,7 @@ jobs:
           - ~/.m2
 
       - run:
-          name: Maven build EHRbase
+          name: Maven build EHRbase again
           command: |
             cd ~/projects/ehrbase
             ls -la
