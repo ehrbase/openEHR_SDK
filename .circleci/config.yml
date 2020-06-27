@@ -10,16 +10,15 @@ workflows:
   build_and_test_SDK:
     jobs:
       - maven-build-and-test
-      # - maven build-and-test-ehrbase:
-      #     requires:
-      #       - maven-build-and-test
-  
+
+
   deploy:
     when:
       and: # All must be true to trigger
         - equal: [ release, <<pipeline.git.branch >> ]
     jobs:
       - deploy-to-maven-central
+
 
 
 jobs:
@@ -29,14 +28,13 @@ jobs:
       Documentation for this Orb is here: https://circleci.com/orbs/registry/orb/circleci/maven?version=1.0.1
       NOTE: make sure to read correct version of docs :)
     working_directory: ~/projects/openEHR_SDK
-    # executor:
-    #   name: maven/default
-    #   tag: '11.0'
     docker:
-      # Primary container image where all commands run
+      # Primary container w/ Maven & Java JDK
+      # NOTE: all commands run here
       - image: cimg/openjdk:11.0
 
-      # Secondary (service) container image available at `host: localhost`
+      # Secondary (service) container w/ PostgreSQL DB
+      # NOTE: DB is available at `host: localhost`
       - image: ehrbaseorg/ehrbase-postgres:latest
         environment:
           POSTGRES_USER: postgres
@@ -46,29 +44,17 @@ jobs:
       - checkout
       - run: pwd
       - run: ls -la
-      # - maven/with_cache:
-      #     maven_command: mvn compile
-      #     steps:
-          # - run: mvn compile
-          # - run: mvn verify
-          # - run: mvn install -DskipTests
-      - run: mvn install
-      # - maven/process_test_results:
-      #     test_results_path: client/target/surefire-reports
+      - run:
+          name: Build, test, install openEHR_SDK
+          command: mvn install
       - store_test_results:
           path: client/target/surefire-reports
       - persist_to_workspace:
           root: /home/circleci
           paths:
             - .m2
-      # - setup_remote_docker
-      # - run:
-      #     name: Setup database
-      #     command: |
-      #       docker network create ehrbase-net
-      #       docker run --name ehrdb --network ehrbase-net -e POSTGRES_PASSWORD=postgres -d ehrbaseorg/ehrbase-postgres:latest
       - run:
-          name: Checkout EHRbase repo
+          name: Checkout & build EHRbase repo
           command: |
             cd ..
             git clone git@github.com:ehrbase/ehrbase.git
@@ -76,38 +62,12 @@ jobs:
             ls -la
             git checkout snapshot_0.3.1
             mvn package
-      
-      
-
-
-  maven build-and-test-ehrbase:
-    machine:
-      image: ubuntu-1604:202004-01
-    working_directory: ~/projects
-    steps:
-      - run: ps aux | grep -i apt
-      - openjdk-install/openjdk:
-          version: 11
-      - attach_workspace:
-          at: /home/circleci
       - run:
+          name: Start EHRbase Server
           command: |
-            pwd
-            ls -la /home/circleci
-      - run:
-          name: Setup database
-          command: |
-            docker run --name ehrdb -e POSTGRES_USER=$POSTGRES_USER \
-            -e POSTGRES_PASSWORD=$POSTGRES_PASSWORD -d \
-            -p 5432:5432 ehrbaseorg/ehrbase-database-docker
-      - run: git clone git@github.com:ehrbase/ehrbase.git
-      - run: 
-          command: |
-            ls -la
-            cd ehrbase
-            mvn compile
-      - run: mvn verify
-      - run: mvn install -DskipTests
+            cd ~/projects/ehrbase
+            java -jar application/target/application-0.13.0.jar --cache.enabled=false --system.allow-template-overwrite=true
+  
 
 
   deploy-to-maven-central:
