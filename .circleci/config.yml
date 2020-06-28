@@ -173,11 +173,6 @@ commands:
       # - configure-python-version
       # - restore-pip-cache
       - install-python-requirements
-      - run: python --version
-      - run: pip list
-      - run: pip install -U pip
-      - run: pip list
-      - run: pip install -U pip
       - run: pip list
       - run:
           name: EXECUTE ROBOT COMMAND
@@ -217,12 +212,17 @@ commands:
     steps:
       - configure-python-version
       - restore-pip-cache
+      - run: python --version
+      - run: pip list
+      - run: pip install -U pip
+      - run: pip install -U pip
       - run:
           name: Install Python requirements
           command: |
             python -c "import site; print(site.getsitepackages())"
             pip install -r ~/projects/ehrbase/tests/requirements.txt
       - save-pip-cache
+      - run: sudo chown -R circleci:circleci /opt/circleci/.pyenv/versions/3.7.0/lib/python3.7/site-packages
   
 
   save-pip-cache:
@@ -247,7 +247,6 @@ commands:
       - restore_cache:
           keys:
             - pip-v1-
-      - run: sudo chown -R circleci:circleci /opt/circleci/.pyenv/versions/3.7.0/lib/python3.7/site-packages
   
 
   attach-ehrbase-repo-to-workspace:
