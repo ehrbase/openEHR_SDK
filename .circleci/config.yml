@@ -204,6 +204,7 @@ commands:
           name: Configure Python version to 3.7.0
           command: |
             pyenv global 3.7.0
+            sudo chown -R circleci:circleci /opt/circleci/.pyenv/versions/3.7.0/lib/python3.7/site-packages
 
 
   install-python-requirements:
@@ -211,7 +212,6 @@ commands:
     steps:
       - configure-python-version
       - restore-pip-cache
-      - run: pip install --upgrade pip
       - run:
           name: Install Python requirements
           command: |
