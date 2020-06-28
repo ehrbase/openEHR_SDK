@@ -169,8 +169,8 @@ commands:
       - configure-python-version
       - restore-pip-cache
       - install-python-requirements
-      # - openjdk-install/openjdk:
-      #     version: 11
+      - openjdk-install/openjdk:
+          version: 11
       - run:
           name: EXECUTE ROBOT COMMAND
           no_output_timeout: 30m
