@@ -173,6 +173,7 @@ commands:
       # - configure-python-version
       # - restore-pip-cache
       - install-python-requirements
+      - run: python --version
       - run:
           name: EXECUTE ROBOT COMMAND
           no_output_timeout: 30m
