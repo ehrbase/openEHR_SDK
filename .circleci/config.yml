@@ -204,7 +204,6 @@ commands:
           name: Configure Python version to 3.7.0
           command: |
             pyenv global 3.7.0
-            sudo chown -R circleci:circleci /opt/circleci/.pyenv/versions/3.7.0/lib/python3.7/site-packages
 
 
   install-python-requirements:
@@ -230,7 +229,7 @@ commands:
             ls -la ~/.cache
             ls -la /opt/circleci/
       - save_cache:
-          key: pip-{{ checksum "~/projects/ehrbase/tests/requirements.txt" }}
+          key: pip-v1-{{ checksum "~/projects/ehrbase/tests/requirements.txt" }}
           paths:
             # - ~/.cache/pip
             - /opt/circleci/.pyenv/versions/3.7.0/lib/python3.7/site-packages
@@ -241,7 +240,8 @@ commands:
     steps:
       - restore_cache:
           keys:
-            - pip-
+            - pip-v1-
+      - run: sudo chown -R circleci:circleci /opt/circleci/.pyenv/versions/3.7.0/lib/python3.7/site-packages
   
 
   attach-ehrbase-repo-to-workspace:
