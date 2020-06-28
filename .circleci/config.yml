@@ -49,7 +49,8 @@ jobs:
           key: openEHR_SDK-{{ checksum "/tmp/openEHR_SDK_maven_cache_seed" }}
       - run:
           name: Maven build, test, install openEHR_SDK
-          command: mvn install dependency:go-offline -Dmaven.javadoc.skip=true
+                                                          # TODO: @WLAD remove -DskipTests
+          command: mvn install dependency:go-offline -Dmaven.javadoc.skip=true -DskipTests
       - save_cache:
           key: openEHR_SDK-{{ checksum "/tmp/openEHR_SDK_maven_cache_seed" }}
           paths:
@@ -111,6 +112,8 @@ jobs:
     machine:
       image: ubuntu-1604:201903-01
     steps:
+      - openjdk-install/openjdk:
+          version: 11
       - run-robot-tests:
           include-tags: "CONTRIBUTION"
           test-suite-path: "CONTRIBUTION_TESTS"
@@ -170,8 +173,6 @@ commands:
       # - configure-python-version
       # - restore-pip-cache
       - install-python-requirements
-      - openjdk-install/openjdk:
-          version: 11
       - run:
           name: EXECUTE ROBOT COMMAND
           no_output_timeout: 30m
@@ -209,12 +210,12 @@ commands:
     description: Install Python requirements
     steps:
       - restore-pip-cache
-      - configure-python-version
       - run:
           name: Install Python requirements
           command: |
             python -c "import site; print(site.getsitepackages())"
             pip install -r ~/projects/ehrbase/tests/requirements.txt
+      - configure-python-version
       - save-pip-cache
   
 
@@ -239,7 +240,7 @@ commands:
     steps:
       - restore_cache:
           keys:
-            - pip-{{ checksum "~/projects/ehrbase/tests/requirements.txt" }}
+            - pip-
   
 
   attach-ehrbase-repo-to-workspace:
