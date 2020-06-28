@@ -210,13 +210,13 @@ commands:
     description: Install Python requirements
     steps:
       - configure-python-version
-      - restore-pip-cache
+      # - restore-pip-cache
       - run:
           name: Install Python requirements
           command: |
             python -c "import site; print(site.getsitepackages())"
-            pip install --user -r ~/projects/ehrbase/tests/requirements.txt
-      - save-pip-cache
+            pip install -r ~/projects/ehrbase/tests/requirements.txt
+      # - save-pip-cache
   
 
   save-pip-cache:
