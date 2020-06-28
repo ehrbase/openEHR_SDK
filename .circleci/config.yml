@@ -86,7 +86,7 @@ jobs:
             ls -la
             git clone git@github.com:ehrbase/ehrbase.git
             cd ~/projects/ehrbase
-            git checkout snapshot_0.3.1
+            mvn versions:set-property -Dproperty=ehrbase.sdk.version -DnewVersion=0.3.1-SNAPSHOT
       - run:
           name: Generate Cache Checksum for EHRbase Dependencies
           command: find ~/projects/ehrbase -name 'pom.xml' | sort | xargs cat > /tmp/EHRbase_maven_cache_seed
@@ -174,6 +174,8 @@ commands:
       # - restore-pip-cache
       - install-python-requirements
       - run: python --version
+      - run: pip list
+      - run: pip install -U pip
       - run: pip list
       - run: pip install -U pip
       - run: pip list
