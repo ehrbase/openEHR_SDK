@@ -167,8 +167,8 @@ commands:
         type: string
     steps:
       - attach-ehrbase-repo-to-workspace
-      - configure-python-version
-      - restore-pip-cache
+      # - configure-python-version
+      # - restore-pip-cache
       - install-python-requirements
       - openjdk-install/openjdk:
           version: 11
@@ -188,7 +188,7 @@ commands:
                   --outputdir results/<< parameters.test-suite-name >> \
                   --name << parameters.test-suite-name >> \
                   robot/<< parameters.test-suite-path >>/
-      - save-pip-cache
+      # - save-pip-cache
       - persist-test-results-folder
       - store_test_results:
           path: ~/projects/ehrbase/tests/results/
@@ -208,11 +208,14 @@ commands:
   install-python-requirements:
     description: Install Python requirements
     steps:
+      - restore-pip-cache
+      - configure-python-version
       - run:
           name: Install Python requirements
           command: |
             python -c "import site; print(site.getsitepackages())"
             pip install -r ~/projects/ehrbase/tests/requirements.txt
+      - save-pip-cache
   
 
   save-pip-cache:
