@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+shopt -s extglob
 case $last_commit in
     # Check if the two substr 'major' AND 'release'
     # are contained in $last_commit message.
