@@ -49,7 +49,7 @@ jobs:
       - image: cimg/openjdk:11.0
 
     steps:
-      - checkout
+      # - checkout
       - run: echo "build openEHR_SDK job mock"
       # - run:
       #     name: Generate Cache Checksum for openEHR_SDK Dependencies
@@ -92,7 +92,7 @@ jobs:
         #       POSTGRES_PASSWORD: postgres
 
     steps:
-      - checkout
+      # - checkout
       - run: echo "build EHRbase job mock"
       # - attach_workspace:
       #     at: /home/circleci/
