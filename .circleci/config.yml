@@ -192,11 +192,12 @@ jobs:
           command: |
             git config --global user.email "Tset-Noitamotua@users.noreply.github.com"
             git config --global user.name "Tset-Noitamotua"
+            git config --global push.followTags true
             git remote -v
+
         
       - run:
           command: |
-            echo test
             last_commit="$(git log -1 --pretty=%B | cat)"
             echo $last_commit
             shopt -s extglob
@@ -214,9 +215,9 @@ jobs:
                     mvn build-helper:parse-version versions:set -DnewVersion=\${parsedVersion.majorVersion}.\${parsedVersion.minorVersion}.\${parsedVersion.nextIncrementalVersion} versions:commit
                     echo "TODO - deploy to jitpack command goes here"
                     SDK_VERSION=$(mvn -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive exec:exec)
-                    git commit -am "released ${SDK_VERSION}-SNAPSHOT"
+                    git commit -am "released v${SDK_VERSION}-SNAPSHOT"
                     git tag -a v${SDK_VERSION} -m "release v${SDK_VERSION}-SNAPSHOT"
-                    git push && git push tag v${SDK_VERSION}
+                    git push
                     exit 0
                     ;;
                 *)
