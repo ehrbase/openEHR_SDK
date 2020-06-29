@@ -32,16 +32,32 @@ workflows:
                 - develop
 
 
-  deploy:
+  deploy-snapshot-release:
     when:
       and: # All must be true to trigger
-        - equal: [ release, <<pipeline.git.branch >> ]
+        - equal: [ develop, << pipeline.git.branch >> ]
     jobs:
-      - deploy-to-maven-central
+      - deploy-snapshot
 
+
+  deploy-release:
+    when:
+      and: # All must be true to trigger
+        - equal: [ master, << pipeline.git.branch >> ]
+    jobs:
+      - deploy-release
 
 
 jobs:
+  #           88    ,ad8888ba,    88888888ba    ad88888ba
+  #           88   d8"'    `"8b   88      "8b  d8"     "8b
+  #           88  d8'        `8b  88      ,8P  Y8,
+  #           88  88          88  88aaaaaa8P'  `Y8aaaaa,
+  #           88  88          88  88""""""8b,    `"""""8b,
+  #           88  Y8,        ,8P  88      `8b          `8b
+  #   88,   ,d88   Y8a.    .a8P   88      a8P  Y8a     a8P
+  #    "Y8888P"     `"Y8888Y"'    88888888P"    "Y88888P"
+
   build-openEHR_SDK:
     working_directory: ~/projects/openEHR_SDK
     docker:
@@ -149,18 +165,62 @@ jobs:
     steps:
       - run: echo "generate test report job mock"
   
-  deploy-to-maven-central:
+  
+  deploy-snapshot:
+    docker:
+      - image: cimg/openjdk:11.0
+    steps:
+      - run:
+          name: Get last commit message
+          command: |
+            last_commit="$(git log -1 --pretty=%B | cat)"
+      - run:
+          command: |
+            echo $last_commit
+            case $last_commit in 
+              ( !(!(*"major"*)|!(*"release"*)) )
+                echo "deploy major release"
+                ;;
+              ( !(!(*"ninor"*)|!(*"release"*)) )
+                echo "deploy minor release"
+                ;;
+              ( !(!(*"patch"*)|!(*"release"*)) )
+                echo "deploy patch release"
+                ;;
+              *)
+                echo "do nothing"
+                exit 0
+                ;;
+            esac
+  
+  
+  deploy-release:
     docker:
       - image: cimg/openjdk:11.0
     steps:
       - run:
           command: |
-            pwd
-            java --version
-            mvn --version
-            echo deployed
+            echo epl rls
+  
 
-
+  deploy-patch-version:
+    executor: maven-executor
+    steps:
+      - deploy:
+          versioncommand: mvn build-helper:parse-version versions:set -DnewVersion=\${parsedVersion.majorVersion}.\${parsedVersion.minorVersion}.\${parsedVersion.nextIncrementalVersion} versions:commit
+  
+  deploy-minor-version:
+    executor: maven-executor
+    steps:
+      - deploy:
+          versioncommand: mvn build-helper:parse-version versions:set -DnewVersion=\${parsedVersion.majorVersion}.\${parsedVersion.nextMinorVersion}.\${parsedVersion.incrementalVersion} versions:commit
+  
+  deploy-major-version:
+    executor: maven-executor
+    steps:
+      - deploy:
+          versioncommand: mvn build-helper:parse-version versions:set -DnewVersion=\${parsedVersion.nextMajorVersion}.\${parsedVersion.minorVersion}.\${parsedVersion.incrementalVersion} versions:commit
+  
 
 # 1. build & (unit)test the SDK
 # 2. build & (unit)test EHRbase w/ SDK (as local dependency)
@@ -300,8 +360,81 @@ commands:
     steps:
       - attach_workspace:
           at: /home/circleci/
+  
+
+  bump-version:
+    parameters:
+      versioncommand:
+        type: string
+    steps:
+      # - attach_workspace:
+      #     at: .
+      # - restore_cache:
+      #     key: auto-deploy-test-{{ checksum ".circleci/config.yml" }}
+      - run:
+          name: Bump version
+          command: |
+            << parameters.versioncommand >>
+            # DskipTests -Dspotbugs.skip=true
+            echo "Succesfully released new version"
+      # - save_cache:
+      #   paths:
+      #     - ~/.m2
+      #   key: auto-deploy-test-{{ checksum ".circleci/config.yml" }}
+
+  foo-snapshot-release:
+    steps:
+      - run:
+          name: Release new version to Maven Central
+          command: |
+            echo "Starting new release..."
+            << parameters.versioncommand >>
+            mvn -s .circleci/maven-release-settings.xml clean deploy -DdeployAtEnd=true -DperformRelease=true -DskipTests -Dspotbugs.skip=true
+            echo "Succesfully released new version"
+
+  foo:
+    steps:
+      - run:
+          name: Get last commit message
+          command: |
+            last_commit="$(git log -1 --pretty=%B | cat)"
 
 
+      - run:
+          name: Check if commit message contains 'some-string'
+          command: |
+            if [[ ${last_commit} == *[some-string]* ]]
+            then
+              # Generate and publish API docs
+            fi
+
+            if [[ ${last_commit} == *"minor"* ]]; then echo hello wlad; fi
+
+            STR='GNU/Linux is an operating system'
+            SUB='Linux'
+
+            case $STR in
+
+              *"$SUB"*)
+                echo -n "It's there."
+                ;;
+            esac
+
+            case $last_commit in 
+              ( !(!(*"major"*)|!(*"release"*)) )
+                echo "deploy major release"
+                ;;
+              ( !(!(*"ninor"*)|!(*"release"*)) )
+                echo "deploy minor release"
+                ;;
+              ( !(!(*"patch"*)|!(*"release"*)) )
+                echo "deploy patch release"
+                ;;
+              *)
+                echo "do nothing"
+                exit 0
+                ;;
+            esac
 
 
   # install-openjdk:
