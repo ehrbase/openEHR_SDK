@@ -8,18 +8,18 @@ shopt -s extglob
 case $last_commit in
     ( !(!(*"major"*)|!(*"release"*)) )
         echo "deploy major release"
-        # exit 0
+        exit 0
         ;;
     ( !(!(*"minor"*)|!(*"release"*)) )
         echo "deploy minor release"
-        # exit 0
+        exit 0
         ;;
     ( !(!(*"patch"*)|!(*"release"*)) )
         echo "deploy patch release"
-        # exit 0
+        exit 0
         ;;
     *)
         echo "do nothing"
-        # exit 0
+        exit 0
         ;;
 esac
