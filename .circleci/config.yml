@@ -22,6 +22,14 @@ workflows:
               ignore:
                 - master
                 - develop
+      - generate-test-report:
+          requires:
+            - run-CONTRIBUTION-test
+          filters:
+            branches:
+              ignore:
+                - master
+                - develop
 
 
   deploy:
@@ -42,25 +50,26 @@ jobs:
 
     steps:
       - checkout
-      - run:
-          name: Generate Cache Checksum for openEHR_SDK Dependencies
-          command: find . -name 'pom.xml' | sort | xargs cat > /tmp/openEHR_SDK_maven_cache_seed
-      - restore_cache:
-          key: openEHR_SDK-{{ checksum "/tmp/openEHR_SDK_maven_cache_seed" }}
-      - run:
-          name: Maven build, test, install openEHR_SDK
-                                                          # TODO: @WLAD remove -DskipTests
-          command: mvn install dependency:go-offline -Dmaven.javadoc.skip=true -DskipTests
-      - save_cache:
-          key: openEHR_SDK-{{ checksum "/tmp/openEHR_SDK_maven_cache_seed" }}
-          paths:
-          - ~/.m2
-      - store_test_results:
-          path: client/target/surefire-reports
-      - persist_to_workspace:
-          root: /home/circleci
-          paths:
-            - .m2
+      - run: echo build openEHR_SDK job mock
+      # - run:
+      #     name: Generate Cache Checksum for openEHR_SDK Dependencies
+      #     command: find . -name 'pom.xml' | sort | xargs cat > /tmp/openEHR_SDK_maven_cache_seed
+      # - restore_cache:
+      #     key: openEHR_SDK-{{ checksum "/tmp/openEHR_SDK_maven_cache_seed" }}
+      # - run:
+      #     name: Maven build, test, install openEHR_SDK
+      #                                                     # TODO: @WLAD remove -DskipTests
+      #     command: mvn install dependency:go-offline -Dmaven.javadoc.skip=true -DskipTests
+      # - save_cache:
+      #     key: openEHR_SDK-{{ checksum "/tmp/openEHR_SDK_maven_cache_seed" }}
+      #     paths:
+      #     - ~/.m2
+      # - store_test_results:
+      #     path: client/target/surefire-reports
+      # - persist_to_workspace:
+      #     root: /home/circleci
+      #     paths:
+      #       - .m2
 
 
   build-EHRbase:
@@ -78,33 +87,34 @@ jobs:
           POSTGRES_PASSWORD: postgres
     steps:
       - checkout
-      - attach_workspace:
-          at: /home/circleci/
-      - run:
-          name: Git clone EHRbase repo
-          command: |
-            ls -la
-            git clone git@github.com:ehrbase/ehrbase.git
-            cd ~/projects/ehrbase
-            mvn versions:set-property -Dproperty=ehrbase.sdk.version -DnewVersion=0.3.1-SNAPSHOT
-      - run:
-          name: Generate Cache Checksum for EHRbase Dependencies
-          command: find ~/projects/ehrbase -name 'pom.xml' | sort | xargs cat > /tmp/EHRbase_maven_cache_seed
-      - restore_cache:
-          key: EHRbase-{{ checksum "/tmp/EHRbase_maven_cache_seed" }}
-      - run:
-          name: Maven build EHRbase
-          command: |
-            cd ~/projects/ehrbase
-            mvn package dependency:go-offline -DskipTests -Dmaven.javadoc.skip=true
-      - save_cache:
-          key: EHRbase-{{ checksum "/tmp/EHRbase_maven_cache_seed" }}
-          paths:
-          - ~/.m2
-      - persist_to_workspace:
-          root: /home/circleci
-          paths:
-            - projects/ehrbase
+      - run: build EHRbase job mock
+      # - attach_workspace:
+      #     at: /home/circleci/
+      # - run:
+      #     name: Git clone EHRbase repo
+      #     command: |
+      #       ls -la
+      #       git clone git@github.com:ehrbase/ehrbase.git
+      #       cd ~/projects/ehrbase
+      #       mvn versions:set-property -Dproperty=ehrbase.sdk.version -DnewVersion=0.3.1-SNAPSHOT
+      # - run:
+      #     name: Generate Cache Checksum for EHRbase Dependencies
+      #     command: find ~/projects/ehrbase -name 'pom.xml' | sort | xargs cat > /tmp/EHRbase_maven_cache_seed
+      # - restore_cache:
+      #     key: EHRbase-{{ checksum "/tmp/EHRbase_maven_cache_seed" }}
+      # - run:
+      #     name: Maven build EHRbase
+      #     command: |
+      #       cd ~/projects/ehrbase
+      #       mvn package dependency:go-offline -DskipTests -Dmaven.javadoc.skip=true
+      # - save_cache:
+      #     key: EHRbase-{{ checksum "/tmp/EHRbase_maven_cache_seed" }}
+      #     paths:
+      #     - ~/.m2
+      # - persist_to_workspace:
+      #     root: /home/circleci
+      #     paths:
+      #       - projects/ehrbase
 
 
   run-CONTRIBUTION-test:
@@ -112,12 +122,13 @@ jobs:
     machine:
       image: ubuntu-1604:201903-01
     steps:
-      - openjdk-install/openjdk:
-          version: 11
-      - run-robot-tests:
-          include-tags: "CONTRIBUTION"
-          test-suite-path: "CONTRIBUTION_TESTS"
-          test-suite-name: "CONTRIBUTION"
+      - run: run integration tests job mock
+      # - openjdk-install/openjdk:
+      #     version: 11
+      # - run-robot-tests:
+      #     include-tags: "CONTRIBUTION"
+      #     test-suite-path: "CONTRIBUTION_TESTS"
+      #     test-suite-name: "CONTRIBUTION"
       
   
   deploy-to-maven-central:
@@ -211,18 +222,13 @@ commands:
     description: Install Python requirements
     steps:
       - configure-python-version
-      - restore-pip-cache
-      - run: python --version
-      - run: pip list
-      - run: pip install -U pip
-      - run: pip install -U pip
+      # - restore-pip-cache
       - run:
           name: Install Python requirements
           command: |
             python -c "import site; print(site.getsitepackages())"
             pip install -r ~/projects/ehrbase/tests/requirements.txt
-      - save-pip-cache
-      - run: sudo chown -R circleci:circleci /opt/circleci/.pyenv/versions/3.7.0/lib/python3.7/site-packages
+      # - save-pip-cache
   
 
   save-pip-cache:
