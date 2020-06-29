@@ -9,10 +9,20 @@ workflows:
 
   build_and_test_SDK:
     jobs:
-      - build-openEHR_SDK
+      - build-openEHR_SDK:
+          filters:
+            branches:
+              ignore:
+                - master
+                - develop
       - build-EHRbase:
           requires:
             - build-openEHR_SDK
+          filters:
+            branches:
+              ignore:
+                - master
+                - develop
       - run-CONTRIBUTION-test:
           context: org-global
           requires:
@@ -40,12 +50,12 @@ workflows:
       - deploy-snapshot
 
 
-  deploy-release:
+  deploy-stable-release:
     when:
       and: # All must be true to trigger
         - equal: [ master, << pipeline.git.branch >> ]
     jobs:
-      - deploy-release
+      - deploy-stable-release
 
 
 jobs:
@@ -170,6 +180,7 @@ jobs:
     docker:
       - image: cimg/openjdk:11.0
     steps:
+      - checkout
       - run:
           name: Get last commit message
           command: |
@@ -194,13 +205,13 @@ jobs:
             esac
   
   
-  deploy-release:
+  deploy-stable-release:
     docker:
       - image: cimg/openjdk:11.0
     steps:
       - run:
           command: |
-            echo epl rls
+            echo dpl stbl rls
   
 
   deploy-patch-version:
