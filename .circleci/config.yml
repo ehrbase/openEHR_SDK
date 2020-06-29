@@ -187,6 +187,7 @@ jobs:
             last_commit="$(git log -1 --pretty=%B | cat)"
             echo $last_commit
       - run:
+          shell: /bin/bash
           command: |
             echo $last_commit
             . ~/project/.circleci/deploy-snapshot.sh
