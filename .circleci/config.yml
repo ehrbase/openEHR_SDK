@@ -183,6 +183,7 @@ jobs:
       - checkout
       - run:
           command: |
+            echo patch
             last_commit="$(git log -1 --pretty=%B | cat)"
             echo $last_commit
             . ~/project/.circleci/deploy-snapshot.sh
