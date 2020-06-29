@@ -181,13 +181,14 @@ jobs:
       - image: cimg/openjdk:11.0
     steps:
       - checkout
+      # - run:
+      #     name: Get last commit message
+      #     command: |
+      #       last_commit="$(git log -1 --pretty=%B | cat)"
+      #       echo $last_commit
       - run:
-          name: Get last commit message
           command: |
             last_commit="$(git log -1 --pretty=%B | cat)"
-            echo $last_commit
-      - run:
-          command: |
             echo $last_commit
             . ~/project/.circleci/deploy-snapshot.sh
   
