@@ -50,7 +50,7 @@ jobs:
 
     steps:
       - checkout
-      - run: echo build openEHR_SDK job mock
+      - run: echo "build openEHR_SDK job mock"
       # - run:
       #     name: Generate Cache Checksum for openEHR_SDK Dependencies
       #     command: find . -name 'pom.xml' | sort | xargs cat > /tmp/openEHR_SDK_maven_cache_seed
@@ -87,7 +87,7 @@ jobs:
           POSTGRES_PASSWORD: postgres
     steps:
       - checkout
-      - run: build EHRbase job mock
+      - run: echo "build EHRbase job mock"
       # - attach_workspace:
       #     at: /home/circleci/
       # - run:
@@ -122,7 +122,7 @@ jobs:
     machine:
       image: ubuntu-1604:201903-01
     steps:
-      - run: run integration tests job mock
+      - run: echo "run integration tests job mock"
       # - openjdk-install/openjdk:
       #     version: 11
       # - run-robot-tests:
@@ -130,6 +130,12 @@ jobs:
       #     test-suite-path: "CONTRIBUTION_TESTS"
       #     test-suite-name: "CONTRIBUTION"
       
+
+  generate-test-report:
+    docker:
+      - image: cimg/openjdk:11.0
+    steps:
+      - run: echo "generate test report job mock"
   
   deploy-to-maven-central:
     docker:
