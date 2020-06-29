@@ -188,6 +188,12 @@ jobs:
             - 3f:9d:4b:50:9d:82:15:44:03:9b:3a:15:c3:66:f4:3b
       - checkout
       - run:
+          name: Configure GIT
+          command: |
+            git config --global user.email "tset.no@gmail.com"
+            git config --global user.name "CI-BOT (tset.no)"
+        
+      - run:
           command: |
             last_commit="$(git log -1 --pretty=%B | cat)"
             echo $last_commit
