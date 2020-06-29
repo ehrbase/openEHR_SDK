@@ -185,8 +185,10 @@ jobs:
           name: Get last commit message
           command: |
             last_commit="$(git log -1 --pretty=%B | cat)"
+            echo $last_commit
       - run:
           command: |
+            bash
             echo $last_commit
             case $last_commit in 
               ( !(!(*"major"*)|!(*"release"*)) )
