@@ -190,8 +190,8 @@ jobs:
       - run:
           name: Configure GIT
           command: |
-            git config --global user.email "tset.no@gmail.com"
-            git config --global user.name "CI-BOT (tset.no)"
+            git config --global user.email "Tset-Noitamotua@users.noreply.github.com"
+            git config --global user.name "Tset-Noitamotua"
         
       - run:
           command: |
