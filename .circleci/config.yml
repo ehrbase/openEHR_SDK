@@ -76,15 +76,21 @@ jobs:
     working_directory: ~/projects
     docker:
       # Primary container w/ Maven & Java JDK
-      # NOTE: all commands run here
       - image: cimg/openjdk:11.0
 
-      # Secondary (service) container w/ PostgreSQL DB
-      # NOTE: DB is available at `host: localhost`
-      - image: ehrbaseorg/ehrbase-postgres:latest
-        environment:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
+        # TODO: RESTORE THIS
+        # docker:
+        #   # Primary container w/ Maven & Java JDK
+        #   # NOTE: all commands run here
+        #   - image: cimg/openjdk:11.0
+
+        #   # Secondary (service) container w/ PostgreSQL DB
+        #   # NOTE: DB is available at `host: localhost`
+        #   - image: ehrbaseorg/ehrbase-postgres:latest
+        #     environment:
+        #       POSTGRES_USER: postgres
+        #       POSTGRES_PASSWORD: postgres
+
     steps:
       - checkout
       - run: echo "build EHRbase job mock"
@@ -119,8 +125,14 @@ jobs:
 
   run-CONTRIBUTION-test:
     working_directory: ~/projects
-    machine:
-      image: ubuntu-1604:201903-01
+    docker:
+      # Primary container w/ Maven & Java JDK
+      - image: cimg/openjdk:11.0
+
+        # TODO: RESTORE THIS
+        # machine:
+        #   image: ubuntu-1604:201903-01
+
     steps:
       - run: echo "run integration tests job mock"
       # - openjdk-install/openjdk:
