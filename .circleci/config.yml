@@ -1,0 +1,487 @@
+version: 2.1
+
+orbs:
+  maven: circleci/maven@1.0.1
+  openjdk-install: cloudesire/openjdk-install@1.2.3
+
+
+workflows:
+
+  build_and_test_SDK:
+    jobs:
+      - build-openEHR_SDK
+      - build-EHRbase:
+          requires:
+            - build-openEHR_SDK
+      - run-CONTRIBUTION-test:
+          context: org-global
+          requires:
+            - build-EHRbase
+          filters:
+            branches:
+              ignore:
+                - master
+                - develop
+      - generate-test-report:
+          requires:
+            - run-CONTRIBUTION-test
+          filters:
+            branches:
+              ignore:
+                - master
+                - develop
+
+
+  deploy-snapshot-release:
+    when:
+      and: # All must be true to trigger
+        - equal: [ develop, << pipeline.git.branch >> ]
+    jobs:
+      - deploy-snapshot
+
+
+  deploy-release:
+    when:
+      and: # All must be true to trigger
+        - equal: [ master, << pipeline.git.branch >> ]
+    jobs:
+      - deploy-release
+
+
+jobs:
+  #           88    ,ad8888ba,    88888888ba    ad88888ba
+  #           88   d8"'    `"8b   88      "8b  d8"     "8b
+  #           88  d8'        `8b  88      ,8P  Y8,
+  #           88  88          88  88aaaaaa8P'  `Y8aaaaa,
+  #           88  88          88  88""""""8b,    `"""""8b,
+  #           88  Y8,        ,8P  88      `8b          `8b
+  #   88,   ,d88   Y8a.    .a8P   88      a8P  Y8a     a8P
+  #    "Y8888P"     `"Y8888Y"'    88888888P"    "Y88888P"
+
+  build-openEHR_SDK:
+    working_directory: ~/projects/openEHR_SDK
+    docker:
+      # Primary container w/ Maven & Java JDK
+      - image: cimg/openjdk:11.0
+
+    steps:
+      # - checkout
+      - run: echo "build openEHR_SDK job mock"
+      # - run:
+      #     name: Generate Cache Checksum for openEHR_SDK Dependencies
+      #     command: find . -name 'pom.xml' | sort | xargs cat > /tmp/openEHR_SDK_maven_cache_seed
+      # - restore_cache:
+      #     key: openEHR_SDK-{{ checksum "/tmp/openEHR_SDK_maven_cache_seed" }}
+      # - run:
+      #     name: Maven build, test, install openEHR_SDK
+      #                                                     # TODO: @WLAD remove -DskipTests
+      #     command: mvn install dependency:go-offline -Dmaven.javadoc.skip=true -DskipTests
+      # - save_cache:
+      #     key: openEHR_SDK-{{ checksum "/tmp/openEHR_SDK_maven_cache_seed" }}
+      #     paths:
+      #     - ~/.m2
+      # - store_test_results:
+      #     path: client/target/surefire-reports
+      # - persist_to_workspace:
+      #     root: /home/circleci
+      #     paths:
+      #       - .m2
+
+
+  build-EHRbase:
+    working_directory: ~/projects
+    docker:
+      # Primary container w/ Maven & Java JDK
+      - image: cimg/openjdk:11.0
+
+        # TODO: RESTORE THIS
+        # docker:
+        #   # Primary container w/ Maven & Java JDK
+        #   # NOTE: all commands run here
+        #   - image: cimg/openjdk:11.0
+
+        #   # Secondary (service) container w/ PostgreSQL DB
+        #   # NOTE: DB is available at `host: localhost`
+        #   - image: ehrbaseorg/ehrbase-postgres:latest
+        #     environment:
+        #       POSTGRES_USER: postgres
+        #       POSTGRES_PASSWORD: postgres
+
+    steps:
+      # - checkout
+      - run: echo "build EHRbase job mock"
+      # - attach_workspace:
+      #     at: /home/circleci/
+      # - run:
+      #     name: Git clone EHRbase repo
+      #     command: |
+      #       ls -la
+      #       git clone git@github.com:ehrbase/ehrbase.git
+      #       cd ~/projects/ehrbase
+      #       mvn versions:set-property -Dproperty=ehrbase.sdk.version -DnewVersion=0.3.1-SNAPSHOT
+      # - run:
+      #     name: Generate Cache Checksum for EHRbase Dependencies
+      #     command: find ~/projects/ehrbase -name 'pom.xml' | sort | xargs cat > /tmp/EHRbase_maven_cache_seed
+      # - restore_cache:
+      #     key: EHRbase-{{ checksum "/tmp/EHRbase_maven_cache_seed" }}
+      # - run:
+      #     name: Maven build EHRbase
+      #     command: |
+      #       cd ~/projects/ehrbase
+      #       mvn package dependency:go-offline -DskipTests -Dmaven.javadoc.skip=true
+      # - save_cache:
+      #     key: EHRbase-{{ checksum "/tmp/EHRbase_maven_cache_seed" }}
+      #     paths:
+      #     - ~/.m2
+      # - persist_to_workspace:
+      #     root: /home/circleci
+      #     paths:
+      #       - projects/ehrbase
+
+
+  run-CONTRIBUTION-test:
+    working_directory: ~/projects
+    docker:
+      # Primary container w/ Maven & Java JDK
+      - image: cimg/openjdk:11.0
+
+        # TODO: RESTORE THIS
+        # machine:
+        #   image: ubuntu-1604:201903-01
+
+    steps:
+      - run: echo "run integration tests job mock"
+      # - openjdk-install/openjdk:
+      #     version: 11
+      # - run-robot-tests:
+      #     include-tags: "CONTRIBUTION"
+      #     test-suite-path: "CONTRIBUTION_TESTS"
+      #     test-suite-name: "CONTRIBUTION"
+      
+
+  generate-test-report:
+    docker:
+      - image: cimg/openjdk:11.0
+    steps:
+      - run: echo "generate test report job mock"
+  
+  
+  deploy-snapshot:
+    docker:
+      - image: cimg/openjdk:11.0
+    steps:
+      - run:
+          name: Get last commit message
+          command: |
+            last_commit="$(git log -1 --pretty=%B | cat)"
+      - run:
+          command: |
+            echo $last_commit
+            case $last_commit in 
+              ( !(!(*"major"*)|!(*"release"*)) )
+                echo "deploy major release"
+                ;;
+              ( !(!(*"ninor"*)|!(*"release"*)) )
+                echo "deploy minor release"
+                ;;
+              ( !(!(*"patch"*)|!(*"release"*)) )
+                echo "deploy patch release"
+                ;;
+              *)
+                echo "do nothing"
+                exit 0
+                ;;
+            esac
+  
+  
+  deploy-release:
+    docker:
+      - image: cimg/openjdk:11.0
+    steps:
+      - run:
+          command: |
+            echo epl rls
+  
+
+  deploy-patch-version:
+    executor: maven-executor
+    steps:
+      - deploy:
+          versioncommand: mvn build-helper:parse-version versions:set -DnewVersion=\${parsedVersion.majorVersion}.\${parsedVersion.minorVersion}.\${parsedVersion.nextIncrementalVersion} versions:commit
+  
+  deploy-minor-version:
+    executor: maven-executor
+    steps:
+      - deploy:
+          versioncommand: mvn build-helper:parse-version versions:set -DnewVersion=\${parsedVersion.majorVersion}.\${parsedVersion.nextMinorVersion}.\${parsedVersion.incrementalVersion} versions:commit
+  
+  deploy-major-version:
+    executor: maven-executor
+    steps:
+      - deploy:
+          versioncommand: mvn build-helper:parse-version versions:set -DnewVersion=\${parsedVersion.nextMajorVersion}.\${parsedVersion.minorVersion}.\${parsedVersion.incrementalVersion} versions:commit
+  
+
+# 1. build & (unit)test the SDK
+# 2. build & (unit)test EHRbase w/ SDK (as local dependency)
+#    NOTE: make sure EHRbase is build w/ latest commit to SDK
+# 3. run integation tests
+#    - setup test environment
+#    - execute robot tests
+# 4. deploy (to maven central?)
+
+
+
+
+
+commands:
+  #     ,ad8888ba,    ,ad8888ba,    88b           d88  88b           d88         db         888b      88  88888888ba,     ad88888ba
+  #    d8"'    `"8b  d8"'    `"8b   888b         d888  888b         d888        d88b        8888b     88  88      `"8b   d8"     "8b
+  #   d8'           d8'        `8b  88`8b       d8'88  88`8b       d8'88       d8'`8b       88 `8b    88  88        `8b  Y8,
+  #   88            88          88  88 `8b     d8' 88  88 `8b     d8' 88      d8'  `8b      88  `8b   88  88         88  `Y8aaaaa,
+  #   88            88          88  88  `8b   d8'  88  88  `8b   d8'  88     d8YaaaaY8b     88   `8b  88  88         88    `"""""8b,
+  #   Y8,           Y8,        ,8P  88   `8b d8'   88  88   `8b d8'   88    d8""""""""8b    88    `8b 88  88         8P          `8b
+  #    Y8a.    .a8P  Y8a.    .a8P   88    `888'    88  88    `888'    88   d8'        `8b   88     `8888  88      .a8P   Y8a     a8P
+  #     `"Y8888Y"'    `"Y8888Y"'    88     `8'     88  88     `8'     88  d8'          `8b  88      `888  88888888Y"'     "Y88888P"
+
+
+  run-robot-tests:
+    description: Run integration tests written in Robot Framework
+    parameters:
+      include-tags:
+        description: Which tests to inclue by TAGs (Robot syntax applies!)
+        type: string
+      test-suite-path:
+        description: Target test-suite given by it's folder name e.g. COMPOSITION_TESTS
+        type: string
+      test-suite-name:
+        description: Titel of generated Robot Log/Report.html
+        type: string
+    steps:
+      - attach-ehrbase-repo-to-workspace
+      # - configure-python-version
+      # - restore-pip-cache
+      - install-python-requirements
+      - run: pip list
+      - run:
+          name: EXECUTE ROBOT COMMAND
+          no_output_timeout: 30m
+          command: |
+            cd ~/projects/ehrbase/tests
+            robot --include << parameters.include-tags >> \
+                  --exclude TODO -e future -e obsolete -e libtest \
+                  --console dotted \
+                  --loglevel TRACE \
+                  --noncritical not-ready \
+                  --flattenkeywords for \
+                  --flattenkeywords foritem \
+                  --flattenkeywords name:_resources.* \
+                  --outputdir results/<< parameters.test-suite-name >> \
+                  --name << parameters.test-suite-name >> \
+                  robot/<< parameters.test-suite-path >>/
+      # - save-pip-cache
+      - persist-test-results-folder
+      - store_test_results:
+          path: ~/projects/ehrbase/tests/results/
+      - store_artifacts:
+          path: ~/projects/ehrbase/tests/results/
+
+  
+  configure-python-version:
+    description: Configure Python version to 3.7.0
+    steps:
+      - run:
+          name: Configure Python version to 3.7.0
+          command: |
+            pyenv global 3.7.0
+
+
+  install-python-requirements:
+    description: Install Python requirements
+    steps:
+      - configure-python-version
+      # - restore-pip-cache
+      - run:
+          name: Install Python requirements
+          command: |
+            python -c "import site; print(site.getsitepackages())"
+            pip install -r ~/projects/ehrbase/tests/requirements.txt
+      # - save-pip-cache
+  
+
+  save-pip-cache:
+    description: Save all caches in interation tests job
+    steps:
+      - run:
+          when: always
+          name: Save PIP cache
+          command: |
+            ls -la ~/.cache
+            ls -la /opt/circleci/
+      - save_cache:
+          key: pip-v1-{{ checksum "~/projects/ehrbase/tests/requirements.txt" }}
+          paths:
+            # - ~/.cache/pip
+            - /opt/circleci/.pyenv/versions/3.7.0/lib/python3.7/site-packages
+
+
+  restore-pip-cache:
+    description: Restore all caches in interation tests job
+    steps:
+      - restore_cache:
+          keys:
+            - pip-v1-
+  
+
+  attach-ehrbase-repo-to-workspace:
+    description: Attach EHRbase repo containing target folder and tests back to workspace
+    steps:
+      - run: ls -la
+      - attach_workspace:
+          at: /home/circleci/
+      - run: ls -la ehrbase
+
+
+  persist-test-results-folder:
+    description: Persist Robot tests folder to workspace
+    steps:
+      - run:
+          when: always
+          command: |
+            echo "persist test results"
+      - persist_to_workspace:
+          root: /home/circleci
+          paths:
+            - projects/ehrbase/tests/results
+
+
+  attach-test-results-folder:
+    description: Attach Robot tests folder back to workspace
+    steps:
+      - attach_workspace:
+          at: /home/circleci/
+  
+
+  bump-version:
+    parameters:
+      versioncommand:
+        type: string
+    steps:
+      # - attach_workspace:
+      #     at: .
+      # - restore_cache:
+      #     key: auto-deploy-test-{{ checksum ".circleci/config.yml" }}
+      - run:
+          name: Bump version
+          command: |
+            << parameters.versioncommand >>
+            # DskipTests -Dspotbugs.skip=true
+            echo "Succesfully released new version"
+      # - save_cache:
+      #   paths:
+      #     - ~/.m2
+      #   key: auto-deploy-test-{{ checksum ".circleci/config.yml" }}
+
+  foo-snapshot-release:
+    steps:
+      - run:
+          name: Release new version to Maven Central
+          command: |
+            echo "Starting new release..."
+            << parameters.versioncommand >>
+            mvn -s .circleci/maven-release-settings.xml clean deploy -DdeployAtEnd=true -DperformRelease=true -DskipTests -Dspotbugs.skip=true
+            echo "Succesfully released new version"
+
+  foo:
+    steps:
+      - run:
+          name: Get last commit message
+          command: |
+            last_commit="$(git log -1 --pretty=%B | cat)"
+
+
+      - run:
+          name: Check if commit message contains 'some-string'
+          command: |
+            if [[ ${last_commit} == *[some-string]* ]]
+            then
+              # Generate and publish API docs
+            fi
+
+            if [[ ${last_commit} == *"minor"* ]]; then echo hello wlad; fi
+
+            STR='GNU/Linux is an operating system'
+            SUB='Linux'
+
+            case $STR in
+
+              *"$SUB"*)
+                echo -n "It's there."
+                ;;
+            esac
+
+            case $last_commit in 
+              ( !(!(*"major"*)|!(*"release"*)) )
+                echo "deploy major release"
+                ;;
+              ( !(!(*"ninor"*)|!(*"release"*)) )
+                echo "deploy minor release"
+                ;;
+              ( !(!(*"patch"*)|!(*"release"*)) )
+                echo "deploy patch release"
+                ;;
+              *)
+                echo "do nothing"
+                exit 0
+                ;;
+            esac
+
+
+  # install-openjdk:
+  #   parameters:
+  #     version:
+  #       type: integer
+  #       default: 8
+  #     cache_version:
+  #       type: integer
+  #       default: 1
+  #   steps:
+  #     - run:
+  #         name: Workaround for running apt behind the scene
+  #         command: |
+  #           sudo killall -9 apt-get || true
+  #     # - run:
+  #     #     name: Switch to US mirror for faster performances
+  #     #     command: sudo sed -i 's/\/\/archive.ubuntu.com/\/\/us.archive.ubuntu.com/g' /etc/apt/sources.list
+  #     - run:
+  #         name: Add openjdk-r PPA
+  #         command: |
+  #           sudo add-apt-repository ppa:openjdk-r/ppa
+  #           sudo apt-get update
+  #     - run:
+  #         name: Generate cache version
+  #         command: |
+  #           apt-cache policy openjdk-<< parameters.version >>-jdk | grep 'Candidate:' | cut -d' ' -f4 > .openjdk_version
+  #           cat .openjdk_version
+  #     - restore_cache:
+  #         keys:
+  #         - apt-cache-{{ checksum ".openjdk_version" }}-v<< parameters.cache_version >>
+  #     - run:
+  #         name: Create temp directory if restore cache didn't
+  #         command: mkdir -p /tmp/archives
+  #     - run:
+  #         name: Restore apt cache
+  #         command: sudo rsync -av /tmp/archives/ /var/cache/apt/archives/
+  #     - run:
+  #         name: Install openjdk-<< parameters.version >>-jdk
+  #         command: sudo apt-get install -y openjdk-<< parameters.version >>-jdk
+  #     - run: 
+  #         name: Make installed openjdk the default Java version
+  #         command: sudo update-java-alternatives --set java-1.<< parameters.version >>.0-openjdk-amd64
+  #     - run:
+  #         name: Prepare to save apt cache
+  #         command: rsync -av /var/cache/apt/archives/*.deb /tmp/archives/
+  #     - save_cache:
+  #         key: apt-cache-{{ checksum ".openjdk_version" }}-v<< parameters.cache_version >>
+  #         paths:
+  #         - /tmp/archives
