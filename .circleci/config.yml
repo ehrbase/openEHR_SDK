@@ -190,7 +190,7 @@ jobs:
           shell: /bin/sh
           command: |
             echo $last_commit
-            . ~/project/.circleci/deploy-snapshot.sh
+            $(~/project/.circleci/deploy-snapshot.sh)
   
   
   deploy-stable-release:
