@@ -188,23 +188,8 @@ jobs:
             echo $last_commit
       - run:
           command: |
-            bash
             echo $last_commit
-            case $last_commit in 
-              ( !(!(*"major"*)|!(*"release"*)) )
-                echo "deploy major release"
-                ;;
-              ( !(!(*"ninor"*)|!(*"release"*)) )
-                echo "deploy minor release"
-                ;;
-              ( !(!(*"patch"*)|!(*"release"*)) )
-                echo "deploy patch release"
-                ;;
-              *)
-                echo "do nothing"
-                exit 0
-                ;;
-            esac
+            . ~/project/.circleci/deploy-snapshot.sh
   
   
   deploy-stable-release:
