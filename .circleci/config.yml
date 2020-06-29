@@ -183,9 +183,9 @@ jobs:
     docker:
       - image: cimg/openjdk:11.0
     steps:
-      # - add_ssh_keys:
-      #     fingerprints:
-      #       - 3f:9d:4b:50:9d:82:15:44:03:9b:3a:15:c3:66:f4:3b
+      - add_ssh_keys:
+          fingerprints:
+            - 73:b0:b0:ce:33:b1:b2:c4:24:ee:98:1d:56:4c:af:6e
       - checkout
       - run:
           name: Configure GIT
