@@ -16,6 +16,8 @@ case $last_commit in
         ;;
     ( !(!(*"patch"*)|!(*"release"*)) )
         echo "deploy patch release"
+        cd ..
+        mvn build-helper:parse-version versions:set -DnewVersion=\${parsedVersion.majorVersion}.\${parsedVersion.minorVersion}.\${parsedVersion.nextIncrementalVersion} versions:commit
         exit 0
         ;;
     *)

@@ -47,7 +47,10 @@ workflows:
       and: # All must be true to trigger
         - equal: [ develop, << pipeline.git.branch >> ]
     jobs:
-      - deploy-snapshot
+      - deploy-snapshot:
+          filters:
+            tags:
+              ignore: /^v.*/
 
 
   deploy-stable-release:
@@ -185,7 +188,31 @@ jobs:
           command: |
             last_commit="$(git log -1 --pretty=%B | cat)"
             echo $last_commit
-            . ~/project/.circleci/deploy-snapshot.sh
+            shopt -s extglob
+            case $last_commit in
+                ( !(!(*"major"*)|!(*"release"*)) )
+                    echo "deploy major release"
+                    exit 0
+                    ;;
+                ( !(!(*"minor"*)|!(*"release"*)) )
+                    echo "deploy minor release"
+                    exit 0
+                    ;;
+                ( !(!(*"patch"*)|!(*"release"*)) )
+                    echo "deploy patch release"
+                    mvn build-helper:parse-version versions:set -DnewVersion=\${parsedVersion.majorVersion}.\${parsedVersion.minorVersion}.\${parsedVersion.nextIncrementalVersion} versions:commit
+                    echo "TODO - deploy to jitpack command goes here"
+                    SDK_VERSION=$(mvn -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive exec:exec)
+                    git commit -am "released ${SDK_VERSION}-SNAPSHOT"
+                    git tag -a v${SDK_VERSION} -m "SNAPSHOT release v${SDK_VERSION}"
+                    git push origin tag v${SDK_VERSION}
+                    exit 0
+                    ;;
+                *)
+                    echo "do nothing"
+                    exit 0
+                    ;;
+            esac
   
   
   deploy-stable-release:
