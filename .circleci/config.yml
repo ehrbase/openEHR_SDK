@@ -185,13 +185,14 @@ jobs:
     steps:
       - add_ssh_keys:
           fingerprints:
-            - 73:b0:b0:ce:33:b1:b2:c4:24:ee:98:1d:56:4c:af:6e
+            - b7:59:8b:46:65:4e:37:d9:b1:21:30:90:df:9c:c8:dd
       - checkout
       - run:
           name: Configure GIT
           command: |
             git config --global user.email "Tset-Noitamotua@users.noreply.github.com"
             git config --global user.name "Tset-Noitamotua"
+            git remote -v
         
       - run:
           command: |
@@ -215,7 +216,7 @@ jobs:
                     SDK_VERSION=$(mvn -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive exec:exec)
                     git commit -am "released ${SDK_VERSION}-SNAPSHOT"
                     git tag -a v${SDK_VERSION} -m "release v${SDK_VERSION}-SNAPSHOT"
-                    git push origin tag v${SDK_VERSION}
+                    git push && git push tag v${SDK_VERSION}
                     exit 0
                     ;;
                 *)
