@@ -195,7 +195,8 @@ jobs:
             git config --global push.followTags true
             git remote -v
 
-        
+      - restore_cache:
+          key: maven-dep-v1-
       - run:
           command: |
             last_commit="$(git log -1 --pretty=%B | cat)"
@@ -225,6 +226,11 @@ jobs:
                     exit 0
                     ;;
             esac
+      - save_cache:
+          key: maven-dep-v1-{{ checksum ".circleci/config.yml" }}
+          paths:
+            - ~/.m2
+          
   
   
   deploy-stable-release:
