@@ -23,8 +23,8 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <artifactId>root</artifactId>
-        <groupId>org.ehrbase.sdk</groupId>
-        <version>0.3.1-SNAPSHOT</version>
+        <groupId>com.github.ehrbase.openEHR_SDK</groupId>
+        <version>v0.3.2-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -32,7 +32,7 @@
     <artifactId>generator</artifactId>
     <dependencies>
         <dependency>
-            <groupId>org.ehrbase.sdk</groupId>
+            <groupId>com.github.ehrbase.openEHR_SDK</groupId>
             <artifactId>client</artifactId>
         </dependency>
 
@@ -54,7 +54,7 @@
             <artifactId>mockito-core</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.ehrbase.sdk</groupId>
+            <groupId>com.github.ehrbase.openEHR_SDK</groupId>
             <artifactId>test-data</artifactId>
         </dependency>
     </dependencies>
