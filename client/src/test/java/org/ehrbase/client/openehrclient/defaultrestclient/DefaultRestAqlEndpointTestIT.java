@@ -334,11 +334,11 @@ public class DefaultRestAqlEndpointTestIT {
                 TopExpresion.forward(1),
                 comp3.getVersionUid().getUuid()));
 
-        /* Direction  is ignored on ehrbase
+        /* TODO: Direction is ignored in ehrbase. See https://github.com/ehrbase/ehrbase/issues/265
         testCases.add(new TestCase(2,
                 TopExpresion.backward(1),
                 comp1.getVersionUid().getUuid()));
-*/
+        */
         testCases.forEach(t -> {
             EntityQuery<Record1<EhrbaseBloodPressureSimpleDeV0Composition>> entityQuery = Query.buildEntityQuery(
                     containmentComposition,

@@ -45,7 +45,6 @@ public class ConditionTest {
         Condition condition2 = Condition.notEqual(containmentObservation.MEAN_ARTERIAL_PRESSURE_UNITS, "mh");
         Condition condition3 = Condition.lessThan(containmentObservation.TIME_VALUE, OffsetDateTime.of(2019, 04, 03, 22, 00, 00, 00, ZoneOffset.UTC));
 
-        //Condition cut = Condition.and(condition1, Condition.or(condition2, condition3));
         Condition cut = condition1.and(condition2.or(condition3));
 
         assertThat(cut.buildAql()).isEqualTo("(v/data[at0001]/events[at0002]/data[at0003]/items[at0005]/value/magnitude >= 13.0 and " +
