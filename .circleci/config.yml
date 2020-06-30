@@ -78,27 +78,27 @@ jobs:
       - image: cimg/openjdk:11.0
 
     steps:
-      # - checkout
+      - checkout
       - run: echo "build openEHR_SDK job mock"
-      # - run:
-      #     name: Generate Cache Checksum for openEHR_SDK Dependencies
-      #     command: find . -name 'pom.xml' | sort | xargs cat > /tmp/openEHR_SDK_maven_cache_seed
-      # - restore_cache:
-      #     key: openEHR_SDK-{{ checksum "/tmp/openEHR_SDK_maven_cache_seed" }}
-      # - run:
-      #     name: Maven build, test, install openEHR_SDK
-      #                                                     # TODO: @WLAD remove -DskipTests
-      #     command: mvn install dependency:go-offline -Dmaven.javadoc.skip=true -DskipTests
-      # - save_cache:
-      #     key: openEHR_SDK-{{ checksum "/tmp/openEHR_SDK_maven_cache_seed" }}
-      #     paths:
-      #     - ~/.m2
-      # - store_test_results:
-      #     path: client/target/surefire-reports
-      # - persist_to_workspace:
-      #     root: /home/circleci
-      #     paths:
-      #       - .m2
+      - run:
+          name: Generate Cache Checksum for openEHR_SDK Dependencies
+          command: find . -name 'pom.xml' | sort | xargs cat > /tmp/openEHR_SDK_maven_cache_seed
+      - restore_cache:
+          key: openEHR_SDK-{{ checksum "/tmp/openEHR_SDK_maven_cache_seed" }}
+      - run:
+          name: Maven build, test, install openEHR_SDK
+                                                          # TODO: @WLAD remove -DskipTests
+          command: mvn install dependency:go-offline -Dmaven.javadoc.skip=true -DskipTests
+      - save_cache:
+          key: openEHR_SDK-{{ checksum "/tmp/openEHR_SDK_maven_cache_seed" }}
+          paths:
+          - ~/.m2
+      - store_test_results:
+          path: client/target/surefire-reports
+      - persist_to_workspace:
+          root: /home/circleci
+          paths:
+            - .m2
 
 
   build-EHRbase:
