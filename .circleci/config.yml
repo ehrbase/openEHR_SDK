@@ -199,6 +199,7 @@ jobs:
           key: maven-dep-v1-
       - run:
           command: |
+            echo test
             last_commit="$(git log -1 --pretty=%B | cat)"
             echo $last_commit
             shopt -s extglob
