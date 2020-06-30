@@ -216,9 +216,9 @@ jobs:
                     mvn build-helper:parse-version versions:set -DnewVersion=\${parsedVersion.majorVersion}.\${parsedVersion.minorVersion}.\${parsedVersion.nextIncrementalVersion} versions:commit
                     echo "TODO - deploy to jitpack command goes here"
                     SDK_VERSION=$(mvn -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive exec:exec)
-                    git commit -am "released v${SDK_VERSION}-SNAPSHOT [skip ci]"
+                    git commit -am "released v${SDK_VERSION}-SNAPSHOT"
                     git tag -a v${SDK_VERSION} -m "release v${SDK_VERSION}-SNAPSHOT"
-                    git push origin v${SDK_VERSION}
+                    git push --set-upstream origin develop v${SDK_VERSION}
                     exit 0
                     ;;
                 *)
