@@ -86,8 +86,7 @@ jobs:
           key: openEHR_SDK-{{ checksum "/tmp/openEHR_SDK_maven_cache_seed" }}
       - run:
           name: Maven build, test, install openEHR_SDK
-                                                          # TODO: @WLAD remove -DskipTests
-          command: mvn install dependency:go-offline -Dmaven.javadoc.skip=true -DskipTests
+          command: mvn install dependency:go-offline -Dmaven.javadoc.skip=true
       - save_cache:
           key: openEHR_SDK-{{ checksum "/tmp/openEHR_SDK_maven_cache_seed" }}
           paths:
