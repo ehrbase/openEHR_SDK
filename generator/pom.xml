@@ -33,7 +33,7 @@
     <dependencies>
         <dependency>
             <groupId>com.github.ehrbase.openEHR_SDK</groupId>
-            <artifactId>client-library</artifactId>
+            <artifactId>client</artifactId>
         </dependency>
 
         <dependency>

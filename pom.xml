@@ -114,7 +114,7 @@
             <!-- modules -->
             <dependency>
                 <groupId>com.github.ehrbase.openEHR_SDK</groupId>
-                <artifactId>client-library</artifactId>
+                <artifactId>client</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
