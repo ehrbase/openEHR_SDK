@@ -33,6 +33,10 @@ public class LessOrEqual<T> extends ComparisonOperator<T> {
         super(field, parameter);
     }
 
+    public LessOrEqual(SelectAqlField<T> field, SelectAqlField<T> compereField) {
+        super(field, compereField);
+    }
+
     @Override
     protected String getSymbol() {
         return "<=";
