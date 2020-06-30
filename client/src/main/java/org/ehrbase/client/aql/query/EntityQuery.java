@@ -24,8 +24,10 @@ import org.ehrbase.client.aql.containment.Containment;
 import org.ehrbase.client.aql.containment.ContainmentExpression;
 import org.ehrbase.client.aql.field.AqlField;
 import org.ehrbase.client.aql.field.SelectAqlField;
+import org.ehrbase.client.aql.orderby.OrderByExpression;
 import org.ehrbase.client.aql.parameter.Parameter;
 import org.ehrbase.client.aql.record.Record;
+import org.ehrbase.client.aql.top.TopExpresion;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -33,15 +35,18 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class EntityQuery<T extends Record> implements Query<T> {
-    private final SelectAqlField<?>[] fields;
+    private final SelectAqlField<Object>[] fields;
     private final ContainmentExpression containmentExpression;
     private int variabelCount = 0;
     private int parameterCount = 0;
+    private int selectCount = 0;
     private Map<Containment, String> variablesMap = new HashMap<>();
     private Condition where;
+    private OrderByExpression orderByExpression;
+    private TopExpresion topExpresion;
 
     protected EntityQuery(ContainmentExpression containmentExpression, SelectAqlField<?>... fields) {
-        this.fields = fields;
+        this.fields = (SelectAqlField<Object>[]) fields;
         this.containmentExpression = containmentExpression;
         containmentExpression.bindQuery(this);
     }
@@ -51,12 +56,16 @@ public class EntityQuery<T extends Record> implements Query<T> {
     public String buildAql() {
         StringBuilder sb = new StringBuilder();
         sb
-                .append("Select ")
-                .append(Arrays.stream(fields).map(SelectAqlField::buildAQL).collect(Collectors.joining(", ")))
+                .append("Select ");
+        if (topExpresion != null) {
+            sb.append(topExpresion.buildAql()).append(" ");
+        }
+
+        sb.append(Arrays.stream(fields).map(SelectAqlField::buildAQL).map(s -> s + " as F" + selectCount++).collect(Collectors.joining(", ")))
                 .append(" from EHR e ");
         if (containmentExpression != null) {
             sb
-                    .append("contains ")
+                    .append(" contains ")
                     .append(containmentExpression.buildAQL());
         }
         if (where != null) {
@@ -64,11 +73,16 @@ public class EntityQuery<T extends Record> implements Query<T> {
                     .append(" where ")
                     .append(where.buildAql());
         }
+        if (orderByExpression != null) {
+            sb
+                    .append(" order by ")
+                    .append(orderByExpression.buildAql());
+        }
         return sb.toString();
     }
 
     @Override
-    public AqlField<?>[] fields() {
+    public AqlField<Object>[] fields() {
         return fields;
     }
 
@@ -85,6 +99,16 @@ public class EntityQuery<T extends Record> implements Query<T> {
 
     public EntityQuery<T> where(Condition where) {
         this.where = where;
+        return this;
+    }
+
+    public EntityQuery<T> orderBy(OrderByExpression orderByExpression) {
+        this.orderByExpression = orderByExpression;
+        return this;
+    }
+
+    public EntityQuery<T> top(TopExpresion topExpresion) {
+        this.topExpresion = topExpresion;
         return this;
     }
 

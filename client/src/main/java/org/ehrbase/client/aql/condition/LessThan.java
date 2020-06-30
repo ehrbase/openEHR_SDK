@@ -33,6 +33,10 @@ public class LessThan<T> extends ComparisonOperator<T> {
         super(field, parameter);
     }
 
+    public LessThan(SelectAqlField<T> field, SelectAqlField<T> compereField) {
+        super(field, compereField);
+    }
+
     @Override
     protected String getSymbol() {
         return "<";

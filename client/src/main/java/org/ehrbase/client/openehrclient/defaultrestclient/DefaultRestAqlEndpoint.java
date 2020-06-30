@@ -28,8 +28,10 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.nedap.archie.rm.RMObject;
+import com.nedap.archie.rm.composition.Composition;
 import com.nedap.archie.rm.datatypes.CodePhrase;
 import com.nedap.archie.rm.datavalues.DvCodedText;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.fluent.Request;
@@ -56,6 +58,7 @@ import java.util.*;
 
 import static org.ehrbase.client.openehrclient.defaultrestclient.DefaultRestClient.OBJECT_MAPPER;
 import static org.ehrbase.client.openehrclient.defaultrestclient.DefaultRestClient.checkStatus;
+import static org.ehrbase.client.openehrclient.defaultrestclient.DefaultRestCompositionEndpoint.addVersion;
 
 public class DefaultRestAqlEndpoint implements AqlEndpoint {
     public static final String AQL_PATH = "/query/aql/";
@@ -109,6 +112,7 @@ public class DefaultRestAqlEndpoint implements AqlEndpoint {
                     if (ListSelectAqlField.class.isAssignableFrom(aqlField.getClass())) {
                         List list = new ArrayList();
                         object = list;
+                        //@TODO how to handle list values results like content[openEHR-EHR-OBSERVATION.sample_blood_pressure.v1]
                         //      for (JsonElement element : JsonParser.parseString(valueAsString).getAsJsonObject().get("items").getAsJsonArray()) {
                         list.add(extractValue(valueAsString, ((ListSelectAqlField) aqlField).getInnerClass()));
                         //    }
@@ -133,8 +137,15 @@ public class DefaultRestAqlEndpoint implements AqlEndpoint {
 
     private Object extractValue(String valueAsString, Class<?> aClass) throws com.fasterxml.jackson.core.JsonProcessingException {
         Object object;
-        if (aClass.isAnnotationPresent(Entity.class)) {
-            object = new Flattener().flatten(AQL_OBJECT_MAPPER.readValue(valueAsString, RMObject.class), aClass);
+
+        if (StringUtils.isBlank(valueAsString) || "null".equals(valueAsString)) {
+            object = null;
+        } else if (aClass.isAnnotationPresent(Entity.class)) {
+            RMObject locatable = AQL_OBJECT_MAPPER.readValue(valueAsString, RMObject.class);
+            object = new Flattener().flatten(locatable, aClass);
+            if (locatable instanceof Composition) {
+                addVersion(object, new VersionUid(((Composition) locatable).getUid().getValue()));
+            }
         } else if (EnumValueSet.class.isAssignableFrom(aClass)) {
             RMObject rmObject = AQL_OBJECT_MAPPER.readValue(valueAsString, RMObject.class);
             final String codeString;

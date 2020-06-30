@@ -24,18 +24,30 @@ import org.ehrbase.client.aql.parameter.AqlValue;
 import org.ehrbase.client.aql.parameter.Parameter;
 
 public abstract class ComparisonOperator<T> implements Condition {
-    protected SelectAqlField<T> field;
-    protected AqlValue value;
-    protected Parameter<T> parameter;
+    protected final SelectAqlField<T> field;
+    protected final AqlValue value;
+    protected final Parameter<T> parameter;
+    protected final SelectAqlField<T> compereField;
 
     protected ComparisonOperator(SelectAqlField<T> field, T value) {
         this.field = field;
         this.value = new AqlValue(value);
+        this.parameter = null;
+        this.compereField = null;
     }
 
     protected ComparisonOperator(SelectAqlField<T> field, Parameter<T> parameter) {
         this.field = field;
         this.parameter = parameter;
+        this.value = null;
+        this.compereField = null;
+    }
+
+    protected ComparisonOperator(SelectAqlField<T> field, SelectAqlField<T> compereField) {
+        this.field = field;
+        this.value = null;
+        this.parameter = null;
+        this.compereField = compereField;
     }
 
     @Override
@@ -48,8 +60,10 @@ public abstract class ComparisonOperator<T> implements Condition {
                 .append(" ");
         if (value != null) {
             sb.append(value.buildAql());
-        } else {
+        } else if (parameter != null) {
             sb.append(parameter.getAqlParameter());
+        } else {
+            sb.append(compereField.buildAQL());
         }
         return sb.toString();
     }

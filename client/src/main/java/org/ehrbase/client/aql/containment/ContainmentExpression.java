@@ -26,4 +26,16 @@ public interface ContainmentExpression {
     String buildAQL();
 
     void bindQuery(EntityQuery<?> query);
+
+    default ContainmentExpression and(ContainmentExpression containmentExpression) {
+        return and(this, containmentExpression);
+    }
+
+    static ContainmentExpression and(ContainmentExpression containmentExpression1, ContainmentExpression containmentExpression2) {
+        return new And(containmentExpression1, containmentExpression2);
+    }
+
+    static ContainmentExpression or(ContainmentExpression containmentExpression1, ContainmentExpression containmentExpression2) {
+        return new Or(containmentExpression1, containmentExpression2);
+    }
 }

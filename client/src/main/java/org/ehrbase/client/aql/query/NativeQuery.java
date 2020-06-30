@@ -23,11 +23,11 @@ import org.ehrbase.client.aql.field.AqlField;
 import org.ehrbase.client.aql.record.Record;
 
 public class NativeQuery<T extends Record> implements Query<T> {
-    private final AqlField<?>[] aqlFields;
+    private final AqlField<Object>[] aqlFields;
     private final String aql;
 
     protected NativeQuery(String aql, AqlField<?>... aqlFields) {
-        this.aqlFields = aqlFields;
+        this.aqlFields = (AqlField<Object>[]) aqlFields;
         this.aql = aql;
     }
 
@@ -37,7 +37,7 @@ public class NativeQuery<T extends Record> implements Query<T> {
     }
 
     @Override
-    public AqlField<?>[] fields() {
+    public AqlField<Object>[] fields() {
         return aqlFields;
     }
 }

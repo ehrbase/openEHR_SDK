@@ -29,7 +29,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>client-library</artifactId>
+    <artifactId>client</artifactId>
 
     <dependencies>
         <dependency>

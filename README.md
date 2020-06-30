@@ -1,22 +1,24 @@
-# EHRBase SDK (Beta) 
-## client 
+# EHRBase SDK  
+## client (mostly Beta)
 Generic openEHR Client and Objekt-mapper:
 * Define entity classes for openEHR-Templates (v1.4) in a jpa like way
 * Map entity <-> Archie RM objekts.
 * RestClient for openEHR Rest-API 
-* AQL-Query generator (TODO)
-## generator 
+* AQL-Query generator (Alpha)
+## generator (Beta)
 * Autogenerate  entity classes from template
-## opt-1.4
+## opt-1.4 (Beta)
 * Opt 1.4 xmlbeans
-## response-dto
+## response-dto (Beta)
 * DTO's representing the response for the ehrsacpe and openEHR Rest API
-## terminologie
+## terminologie (Beta)
 * Mini openEHR terminologie implementation
-## validation
+## validation (Beta)
 * Validation of Compositions against templates
-## test-data
+## test-data (Beta)
 * Example templates and Composition for tests
+## serialisation (Beta)
+* map Compositions from and to JSON;XML
 
 ## Release Notes (v0.3.0)
 * RestClient for DIRECTORY endpoint
@@ -43,12 +45,13 @@ To generate an entity class from a template use
  -out <arg>       path to output directory
  -package <arg>   package name
 ```
-
-###  Map entity <-> Archie RM objekts
+### Use The SDK in your projekt
+You can include the SDK via [jitpack.io](https://jitpack.io/#ehrbase/openEHR_SDK)
+####  Map entity <-> Archie RM objekts
 
 see FlattenerTest and UnflattenerTest
 
-### RestClient for openEHR Rest-API 
+#### RestClient for openEHR Rest-API 
 
 - ehr : see DefaultRestEhrEndpointIT
 - composition: see DefaultRestCompositionEndpointIT

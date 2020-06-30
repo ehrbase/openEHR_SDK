@@ -68,10 +68,9 @@
                 <executions>
                     <execution>
                         <id>copy-dependencies</id>
-                        <phase>prepare-package</phase>
-                        <goals>
-                            <goal>copy-dependencies</goal>
-                        </goals>
+                          <goals>
+                              <goal>copy-dependencies</goal>
+                          </goals>
                         <configuration>
                             <outputDirectory>
                                 ${project.build.directory}/libs
