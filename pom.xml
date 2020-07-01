@@ -50,14 +50,6 @@
         <repository>
             <id>jitpack.io</id>
             <url>https://jitpack.io</url>
-            <snapshots>
-                <enabled>true</enabled>
-                <updatePolicy>never</updatePolicy>
-            </snapshots>
-            <releases>
-                <enabled>true</enabled>
-                <updatePolicy>never</updatePolicy>
-            </releases>
         </repository>
     </repositories>
 

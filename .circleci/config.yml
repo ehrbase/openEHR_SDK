@@ -143,16 +143,19 @@ jobs:
             which can take up to 15 minutes!
 
             Using Maven's -o (for offline) flag fails when dependencies are not cached first.
-            After caching deps it works but I can't trust that too much.
+            After caching deps it works but not 100% reliable.
 
-            As a more robust solution install xmlstarlet (a cli too to handle XML) and 
+            As a more robust solution install xmlstarlet (a cli tool to handle XML) and 
             use it as a fallback if the 'mvn -o' approach starts to fail.
+            NOTE: I had issues installing it in docker executor (cimg/openjdk:11.0)
+                  may be it works better in machine executor(?)
           command: |
-            # SDK_VERSION=$(cat ~/projects/openEHR_SDK/SDK_VERSION)
-            # echo $SDK_VERSION
-            # cd ~/projects/ehrbase
-            # mvn versions:set-property -Dproperty=ehrbase.sdk.version -DnewVersion=$SDK_VERSION -o
-            xml edit -N my=http://maven.apache.org/POM/4.0.0 -u my:project/my:version -v $SDK_VERSION pom.xml
+            SDK_VERSION=$(cat ~/projects/openEHR_SDK/SDK_VERSION)
+            echo $SDK_VERSION
+            cd ~/projects/ehrbase
+            mvn versions:set-property -Dproperty=ehrbase.sdk.version -DnewVersion=$SDK_VERSION -o
+            # #BACKUP xmlstarlet command
+            # xml edit -N my=http://maven.apache.org/POM/4.0.0 -u my:project/my:version -v $SDK_VERSION pom.xml
       - run:
           name: Maven build EHRbase
           command: |
