@@ -100,27 +100,22 @@ jobs:
           root: /home/circleci
           paths:
             - .m2
-            - /projects/openEHR_SDK/
+            - projects/openEHR_SDK/
 
 
   build-EHRbase:
     working_directory: ~/projects
     docker:
       # Primary container w/ Maven & Java JDK
+      # NOTE: all commands run here
       - image: cimg/openjdk:11.0
 
-        # TODO: RESTORE THIS
-        # docker:
-        #   # Primary container w/ Maven & Java JDK
-        #   # NOTE: all commands run here
-        #   - image: cimg/openjdk:11.0
-
-        #   # Secondary (service) container w/ PostgreSQL DB
-        #   # NOTE: DB is available at `host: localhost`
-        #   - image: ehrbaseorg/ehrbase-postgres:latest
-        #     environment:
-        #       POSTGRES_USER: postgres
-        #       POSTGRES_PASSWORD: postgres
+      # Secondary (service) container w/ PostgreSQL DB
+      # NOTE: DB is available at `host: localhost`
+      - image: ehrbaseorg/ehrbase-postgres:latest
+        environment:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
 
     steps:
       - checkout
@@ -133,17 +128,17 @@ jobs:
             git clone git@github.com:ehrbase/ehrbase.git
             ls -la
       - run:
-          name: Adjust SDK version number in EHRbase's pom
-          command: |
-            $SDK_VERSION=$(cat ~/projects/openEHR_SDK/SDK_VERSION)
-            echo $SDK_VERSION
-            cd ~/projects/ehrbase
-            mvn versions:set-property -Dproperty=ehrbase.sdk.version -DnewVersion=$SDK_VERSION
-      - run:
           name: Generate Cache Checksum for EHRbase Dependencies
           command: find ~/projects/ehrbase -name 'pom.xml' | sort | xargs cat > /tmp/EHRbase_maven_cache_seed
       - restore_cache:
-          key: EHRbase-{{ checksum "/tmp/EHRbase_maven_cache_seed" }}
+          key: EHRbase-
+      - run:
+          name: Adjust SDK version number in EHRbase's pom
+          command: |
+            SDK_VERSION=$(cat ~/projects/openEHR_SDK/SDK_VERSION)
+            echo $SDK_VERSION
+            cd ~/projects/ehrbase
+            mvn versions:set-property -Dproperty=ehrbase.sdk.version -DnewVersion=$SDK_VERSION -o
       - run:
           name: Maven build EHRbase
           command: |
