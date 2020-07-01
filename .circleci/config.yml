@@ -89,6 +89,7 @@ jobs:
           name: Maven build, test, install openEHR_SDK
                                                           # TODO: @WLAD remove -DskipTests
           command: mvn install dependency:go-offline -Dmaven.javadoc.skip=true -DskipTests
+      - persist_installed_SKD_version_number
       - save_cache:
           key: openEHR_SDK-{{ checksum "/tmp/openEHR_SDK_maven_cache_seed" }}
           paths:
@@ -99,6 +100,7 @@ jobs:
           root: /home/circleci
           paths:
             - .m2
+            - /projects/openEHR_SDK/
 
 
   build-EHRbase:
@@ -121,35 +123,40 @@ jobs:
         #       POSTGRES_PASSWORD: postgres
 
     steps:
-      # - checkout
-      - run: echo "build EHRbase job mock"
-      # - attach_workspace:
-      #     at: /home/circleci/
-      # - run:
-      #     name: Git clone EHRbase repo
-      #     command: |
-      #       ls -la
-      #       git clone git@github.com:ehrbase/ehrbase.git
-      #       cd ~/projects/ehrbase
-      #       mvn versions:set-property -Dproperty=ehrbase.sdk.version -DnewVersion=0.3.1-SNAPSHOT
-      # - run:
-      #     name: Generate Cache Checksum for EHRbase Dependencies
-      #     command: find ~/projects/ehrbase -name 'pom.xml' | sort | xargs cat > /tmp/EHRbase_maven_cache_seed
-      # - restore_cache:
-      #     key: EHRbase-{{ checksum "/tmp/EHRbase_maven_cache_seed" }}
-      # - run:
-      #     name: Maven build EHRbase
-      #     command: |
-      #       cd ~/projects/ehrbase
-      #       mvn package dependency:go-offline -DskipTests -Dmaven.javadoc.skip=true
-      # - save_cache:
-      #     key: EHRbase-{{ checksum "/tmp/EHRbase_maven_cache_seed" }}
-      #     paths:
-      #     - ~/.m2
-      # - persist_to_workspace:
-      #     root: /home/circleci
-      #     paths:
-      #       - projects/ehrbase
+      - checkout
+      - attach_workspace:
+          at: /home/circleci/
+      - run:
+          name: Git clone EHRbase repo
+          command: |
+            ls -la
+            git clone git@github.com:ehrbase/ehrbase.git
+            ls -la
+      - run:
+          name: Adjust SDK version number in EHRbase's pom
+          command: |
+            $SDK_VERSION=$(cat ~/projects/openEHR_SDK/SDK_VERSION)
+            echo $SDK_VERSION
+            cd ~/projects/ehrbase
+            mvn versions:set-property -Dproperty=ehrbase.sdk.version -DnewVersion=$SDK_VERSION
+      - run:
+          name: Generate Cache Checksum for EHRbase Dependencies
+          command: find ~/projects/ehrbase -name 'pom.xml' | sort | xargs cat > /tmp/EHRbase_maven_cache_seed
+      - restore_cache:
+          key: EHRbase-{{ checksum "/tmp/EHRbase_maven_cache_seed" }}
+      - run:
+          name: Maven build EHRbase
+          command: |
+            cd ~/projects/ehrbase
+            mvn package dependency:go-offline -DskipTests -Dmaven.javadoc.skip=true
+      - save_cache:
+          key: EHRbase-{{ checksum "/tmp/EHRbase_maven_cache_seed" }}
+          paths:
+          - ~/.m2
+      - persist_to_workspace:
+          root: /home/circleci
+          paths:
+            - projects/ehrbase
 
 
   run-CONTRIBUTION-test:
@@ -284,6 +291,14 @@ commands:
   #    Y8a.    .a8P  Y8a.    .a8P   88    `888'    88  88    `888'    88   d8'        `8b   88     `8888  88      .a8P   Y8a     a8P
   #     `"Y8888Y"'    `"Y8888Y"'    88     `8'     88  88     `8'     88  d8'          `8b  88      `888  88888888Y"'     "Y88888P"
 
+
+  persist_installed_SKD_version_number:
+    steps:
+      - run:
+          name: Save the version number of locally installed SDK into a file
+          command: |
+            SDK_VERSION=$(mvn -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive exec:exec)
+            echo $SDK_VERSION > SDK_VERSION
 
   run-robot-tests:
     description: Run integration tests written in Robot Framework
