@@ -100,7 +100,7 @@ jobs:
           root: /home/circleci
           paths:
             - .m2
-            - /projects/openEHR_SDK/
+            - projects/openEHR_SDK/
 
 
   build-EHRbase:
