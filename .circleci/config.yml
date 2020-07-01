@@ -135,7 +135,7 @@ jobs:
       - run:
           name: Adjust SDK version number in EHRbase's pom
           command: |
-            $SDK_VERSION=$(cat ~/projects/openEHR_SDK/SDK_VERSION)
+            SDK_VERSION=$(cat ~/projects/openEHR_SDK/SDK_VERSION)
             echo $SDK_VERSION
             cd ~/projects/ehrbase
             mvn versions:set-property -Dproperty=ehrbase.sdk.version -DnewVersion=$SDK_VERSION
