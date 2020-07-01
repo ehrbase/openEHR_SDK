@@ -132,13 +132,27 @@ jobs:
           command: find ~/projects/ehrbase -name 'pom.xml' | sort | xargs cat > /tmp/EHRbase_maven_cache_seed
       - restore_cache:
           key: EHRbase-
+      - install-xml-cli-tool
       - run:
           name: Adjust SDK version number in EHRbase's pom
+          description: |
+            We have to provide the version of locally build openEHR_SDK in EHRbase's POM
+            to make sure that EHRbase builds succesfully w/ latest changes applied to the SDK.
+            "mvn versions:set-property" is an simple way to achieve exactly that. Ufortunately
+            it triggers a check for SDK dependency updates from jitpack.io
+            which can take up to 15 minutes!
+
+            Using Maven's -o (for offline) flag fails when dependencies are not cached first.
+            After caching deps it works but I can't trust that too much.
+
+            As a more robust solution install xmlstarlet (a cli too to handle XML) and 
+            use it as a fallback if the 'mvn -o' approach starts to fail.
           command: |
-            SDK_VERSION=$(cat ~/projects/openEHR_SDK/SDK_VERSION)
-            echo $SDK_VERSION
-            cd ~/projects/ehrbase
-            mvn versions:set-property -Dproperty=ehrbase.sdk.version -DnewVersion=$SDK_VERSION -o
+            # SDK_VERSION=$(cat ~/projects/openEHR_SDK/SDK_VERSION)
+            # echo $SDK_VERSION
+            # cd ~/projects/ehrbase
+            # mvn versions:set-property -Dproperty=ehrbase.sdk.version -DnewVersion=$SDK_VERSION -o
+            xml edit -N my=http://maven.apache.org/POM/4.0.0 -u my:project/my:version -v $SDK_VERSION pom.xml
       - run:
           name: Maven build EHRbase
           command: |
@@ -287,6 +301,12 @@ commands:
   #     `"Y8888Y"'    `"Y8888Y"'    88     `8'     88  88     `8'     88  d8'          `8b  88      `888  88888888Y"'     "Y88888P"
 
 
+  install-xml-cli-tool:
+    steps:
+      - run:
+          name: Install xmlstarlet to handle XML file from CLI
+          command: apt-get -y update && apt-get -y install xmlstarlet
+  
   persist-version-number-of-installed-sdk:
     steps:
       - run:
