@@ -128,17 +128,17 @@ jobs:
             git clone git@github.com:ehrbase/ehrbase.git
             ls -la
       - run:
-          name: Adjust SDK version number in EHRbase's pom
-          command: |
-            SDK_VERSION=$(cat ~/projects/openEHR_SDK/SDK_VERSION)
-            echo $SDK_VERSION
-            cd ~/projects/ehrbase
-            mvn versions:set-property -Dproperty=ehrbase.sdk.version -DnewVersion=$SDK_VERSION -o
-      - run:
           name: Generate Cache Checksum for EHRbase Dependencies
           command: find ~/projects/ehrbase -name 'pom.xml' | sort | xargs cat > /tmp/EHRbase_maven_cache_seed
       - restore_cache:
-          key: EHRbase-{{ checksum "/tmp/EHRbase_maven_cache_seed" }}
+          key: EHRbase-
+      - run:
+        name: Adjust SDK version number in EHRbase's pom
+        command: |
+          SDK_VERSION=$(cat ~/projects/openEHR_SDK/SDK_VERSION)
+          echo $SDK_VERSION
+          cd ~/projects/ehrbase
+          mvn versions:set-property -Dproperty=ehrbase.sdk.version -DnewVersion=$SDK_VERSION
       - run:
           name: Maven build EHRbase
           command: |
