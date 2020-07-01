@@ -220,8 +220,8 @@ jobs:
                     echo "TODO - deploy to jitpack command goes here"
                     SDK_VERSION=$(mvn -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive exec:exec)
                     git commit -am "released v${SDK_VERSION}-SNAPSHOT [skip ci]"
-                    git tag -a v${SDK_VERSION} -m "release v${SDK_VERSION}-SNAPSHOT"
-                    git push --set-upstream origin develop v${SDK_VERSION}
+                    git tag -a v${SDK_VERSION}-SNAPSHOT -m "release v${SDK_VERSION}-SNAPSHOT"
+                    git push --set-upstream origin develop v${SDK_VERSION}-SNAPSHOT
                     exit 0
                     ;;
                 *)
