@@ -132,7 +132,7 @@ jobs:
           command: find ~/projects/ehrbase -name 'pom.xml' | sort | xargs cat > /tmp/EHRbase_maven_cache_seed
       - restore_cache:
           key: EHRbase-
-      - install-xml-cli-tool
+      # - install-xml-cli-tool
       - run:
           name: Adjust SDK version number in EHRbase's pom
           description: |
