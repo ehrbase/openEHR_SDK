@@ -89,7 +89,7 @@ jobs:
           name: Maven build, test, install openEHR_SDK
                                                           # TODO: @WLAD remove -DskipTests
           command: mvn install dependency:go-offline -Dmaven.javadoc.skip=true -DskipTests
-      - persist_installed_SKD_version_number
+      - persist-version-number-of-installed-sdk
       - save_cache:
           key: openEHR_SDK-{{ checksum "/tmp/openEHR_SDK_maven_cache_seed" }}
           paths:
@@ -292,7 +292,7 @@ commands:
   #     `"Y8888Y"'    `"Y8888Y"'    88     `8'     88  88     `8'     88  d8'          `8b  88      `888  88888888Y"'     "Y88888P"
 
 
-  persist_installed_SKD_version_number:
+  persist-version-number-of-installed-sdk:
     steps:
       - run:
           name: Save the version number of locally installed SDK into a file
