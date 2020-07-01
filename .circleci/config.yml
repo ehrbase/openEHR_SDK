@@ -305,7 +305,7 @@ commands:
     steps:
       - run:
           name: Install xmlstarlet to handle XML file from CLI
-          command: apt-get -y update && apt-get -y install xmlstarlet
+          command: sudo apt-get -y update && apt-get -y install xmlstarlet
   
   persist-version-number-of-installed-sdk:
     steps:
