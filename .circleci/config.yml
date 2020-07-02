@@ -152,8 +152,9 @@ jobs:
             it triggers a check for SDK dependency updates from jitpack.io
             which can take up to 15 minutes!
 
-            Using Maven's -o (for offline) flag fails when dependencies are not cached first.
-            After caching deps it works but not 100% reliable.
+            Using Maven's -o (for offline) flag can help to prevent check for update but
+            it fails when dependencies are not cached first.
+            After caching dependencies it works but not 100% reliable.
 
             As a more robust solution install xmlstarlet (a cli tool to handle XML) and 
             use it as a fallback if the 'mvn -o' approach starts to fail.
