@@ -15,6 +15,7 @@ workflows:
               ignore:
                 - master
                 - develop
+                - snapshot
       - build-EHRbase:
           requires:
             - build-openEHR_SDK
@@ -23,6 +24,7 @@ workflows:
               ignore:
                 - master
                 - develop
+                - snapshot
       - run-CONTRIBUTION-test:
           context: org-global
           requires:
@@ -32,6 +34,7 @@ workflows:
               ignore:
                 - master
                 - develop
+                - snapshot
       - generate-test-report:
           requires:
             - run-CONTRIBUTION-test
@@ -40,6 +43,7 @@ workflows:
               ignore:
                 - master
                 - develop
+                - snapshot
 
 
   deploy-snapshot-release:
@@ -56,7 +60,7 @@ workflows:
   deploy-stable-release:
     when:
       and: # All must be true to trigger
-        - equal: [ master, << pipeline.git.branch >> ]
+        - equal: [ release, << pipeline.git.branch >> ]
     jobs:
       - deploy-stable-release
 
@@ -71,15 +75,23 @@ jobs:
   #   88,   ,d88   Y8a.    .a8P   88      a8P  Y8a     a8P
   #    "Y8888P"     `"Y8888Y"'    88888888P"    "Y88888P"
 
+
+  # OVERVIEW
+  # 1. build & (unit)test the SDK
+  # 2. build & (unit)test EHRbase w/ SDK (as local dependency)
+  # 3. run all integation tests suites
+  #    - setup test environment
+  #    - execute robot tests
+  # 4. publish snapshot & release artifacts on jitpack.io
+
+
   build-openEHR_SDK:
     working_directory: ~/projects/openEHR_SDK
     docker:
       # Primary container w/ Maven & Java JDK
       - image: cimg/openjdk:11.0
-
     steps:
       - checkout
-      - run: echo "build openEHR_SDK job mock"
       - run:
           name: Generate Cache Checksum for openEHR_SDK Dependencies
           command: find . -name 'pom.xml' | sort | xargs cat > /tmp/openEHR_SDK_maven_cache_seed
@@ -116,7 +128,6 @@ jobs:
         environment:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
-
     steps:
       - checkout
       - attach_workspace:
@@ -141,8 +152,9 @@ jobs:
             it triggers a check for SDK dependency updates from jitpack.io
             which can take up to 15 minutes!
 
-            Using Maven's -o (for offline) flag fails when dependencies are not cached first.
-            After caching deps it works but not 100% reliable.
+            Using Maven's -o (for offline) flag can help to prevent check for update but
+            it fails when dependencies are not cached first.
+            After caching dependencies it works but not 100% reliable.
 
             As a more robust solution install xmlstarlet (a cli tool to handle XML) and 
             use it as a fallback if the 'mvn -o' approach starts to fail.
@@ -179,7 +191,6 @@ jobs:
         # TODO: RESTORE THIS
         # machine:
         #   image: ubuntu-1604:201903-01
-
     steps:
       - run: echo "run integration tests job mock"
       # - openjdk-install/openjdk:
@@ -212,7 +223,6 @@ jobs:
             git config --global user.name "ci-bot"
             # git config --global push.followTags true
             git remote -v
-
       - restore_cache:
           key: maven-dep-v1-
       - run:
@@ -224,19 +234,29 @@ jobs:
             case $last_commit in
                 ( !(!(*"major"*)|!(*"release"*)) )
                     echo "deploy major release"
+                    git checkout -b snapshot
+                    mvn build-helper:parse-version versions:set -DnewVersion=\${parsedVersion.nextMajorVersion}.0.0 versions:commit
+                    SDK_VERSION=$(mvn -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive exec:exec)
+                    git commit -am "released v${SDK_VERSION}-SNAPSHOT"
+                    git tag -a v${SDK_VERSION}-SNAPSHOT -m "v${SDK_VERSION}-SNAPSHOT release"
+                    git push --set-upstream origin develop v${SDK_VERSION}-SNAPSHOT
                     exit 0
                     ;;
                 ( !(!(*"minor"*)|!(*"release"*)) )
                     echo "deploy minor release"
+                    mvn build-helper:parse-version versions:set -DnewVersion=\${parsedVersion.majorVersion}.\${parsedVersion.nextMinorVersion}.0 versions:commit
+                    SDK_VERSION=$(mvn -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive exec:exec)
+                    git commit -am "released v${SDK_VERSION}-SNAPSHOT [skip ci]"
+                    git tag -a v${SDK_VERSION}-SNAPSHOT -m "v${SDK_VERSION}-SNAPSHOT release"
+                    git push --set-upstream origin develop v${SDK_VERSION}-SNAPSHOT
                     exit 0
                     ;;
                 ( !(!(*"patch"*)|!(*"release"*)) )
                     echo "deploy patch release"
                     mvn build-helper:parse-version versions:set -DnewVersion=\${parsedVersion.majorVersion}.\${parsedVersion.minorVersion}.\${parsedVersion.nextIncrementalVersion} versions:commit
-                    echo "TODO - deploy to jitpack command goes here"
                     SDK_VERSION=$(mvn -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive exec:exec)
                     git commit -am "released v${SDK_VERSION}-SNAPSHOT [skip ci]"
-                    git tag -a v${SDK_VERSION}-SNAPSHOT -m "release v${SDK_VERSION}-SNAPSHOT"
+                    git tag -a v${SDK_VERSION}-SNAPSHOT -m "v${SDK_VERSION}-SNAPSHOT release"
                     git push --set-upstream origin develop v${SDK_VERSION}-SNAPSHOT
                     exit 0
                     ;;
@@ -251,7 +271,6 @@ jobs:
             - ~/.m2
           
   
-  
   deploy-stable-release:
     docker:
       - image: cimg/openjdk:11.0
@@ -261,32 +280,9 @@ jobs:
             echo dpl stbl rls
   
 
-  deploy-patch-version:
-    executor: maven-executor
-    steps:
-      - deploy:
-          versioncommand: mvn build-helper:parse-version versions:set -DnewVersion=\${parsedVersion.majorVersion}.\${parsedVersion.minorVersion}.\${parsedVersion.nextIncrementalVersion} versions:commit
-  
-  deploy-minor-version:
-    executor: maven-executor
-    steps:
-      - deploy:
-          versioncommand: mvn build-helper:parse-version versions:set -DnewVersion=\${parsedVersion.majorVersion}.\${parsedVersion.nextMinorVersion}.\${parsedVersion.incrementalVersion} versions:commit
-  
-  deploy-major-version:
-    executor: maven-executor
-    steps:
-      - deploy:
-          versioncommand: mvn build-helper:parse-version versions:set -DnewVersion=\${parsedVersion.nextMajorVersion}.\${parsedVersion.minorVersion}.\${parsedVersion.incrementalVersion} versions:commit
-  
 
-# 1. build & (unit)test the SDK
-# 2. build & (unit)test EHRbase w/ SDK (as local dependency)
-#    NOTE: make sure EHRbase is build w/ latest commit to SDK
-# 3. run integation tests
-#    - setup test environment
-#    - execute robot tests
-# 4. deploy (to maven central?)
+
+
 
 
 
