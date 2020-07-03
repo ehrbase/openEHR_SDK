@@ -31,6 +31,7 @@ import org.ehrbase.serialisation.dbencoding.wrappers.json.writer.translator_db2r
 
 import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
@@ -88,7 +89,11 @@ public class LightRawJsonEncoder {
         //convert to raw json
         String converted = encodeContentAsString(root);
 
-        return converted.replaceFirst(Pattern.quote("{"), new ArchieCompositionProlog(root).toString());
+        Map<String, Object> compoMap = (Map<String, Object>) db2map(false);
+
+        String compositionName = (String) ((Map)((List)compoMap.get("/name")).get(0)).get("value");
+
+        return converted.replaceFirst(Pattern.quote("{"), new ArchieCompositionProlog(root, compositionName).toString());
     }
 
     @SuppressWarnings("unchecked")
