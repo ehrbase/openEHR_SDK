@@ -264,8 +264,9 @@ jobs:
                     mvn build-helper:parse-version versions:set -DnewVersion=\${parsedVersion.majorVersion}.\${parsedVersion.minorVersion}.\${parsedVersion.nextIncrementalVersion} versions:commit
                     SDK_VERSION=$(mvn -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive exec:exec)
                     git commit -am "updated to version v${SDK_VERSION}-SNAPSHOT"
+                    git merge --strategy=ours develop
                     git checkout develop
-                    git merge --strategy=theirs snapshot
+                    git merge snapshot
                     git tag -a v${SDK_VERSION}-SNAPSHOT -m "v${SDK_VERSION}-SNAPSHOT release"
                     git push --set-upstream origin develop v${SDK_VERSION}-SNAPSHOT
                     exit 0
