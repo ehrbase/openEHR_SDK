@@ -284,8 +284,8 @@ jobs:
       - image: cimg/openjdk:11.0
     steps:
       - add_ssh_keys:
-        fingerprints:
-          - b7:59:8b:46:65:4e:37:d9:b1:21:30:90:df:9c:c8:dd
+          fingerprints:
+            - b7:59:8b:46:65:4e:37:d9:b1:21:30:90:df:9c:c8:dd
       - checkout
       - run:
           name: Configure GIT
