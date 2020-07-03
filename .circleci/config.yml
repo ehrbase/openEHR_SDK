@@ -388,7 +388,7 @@ jobs:
             SDK_VERSION=$(mvn -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive exec:exec)
             git merge --strategy=ours develop
             git checkout develop
-            git merge snapshot
+            git merge major-snapshot-update
             git tag -a v${SDK_VERSION}-SNAPSHOT -m "v${SDK_VERSION}-SNAPSHOT release"
             git push --set-upstream origin develop v${SDK_VERSION}-SNAPSHOT
             git push origin :SNAPSHOT
