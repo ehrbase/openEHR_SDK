@@ -162,10 +162,10 @@ jobs:
 
       # # Secondary (service) container w/ PostgreSQL DB
       # # NOTE: DB is available at `host: localhost`
-      - image: ehrbaseorg/ehrbase-postgres:latest
-        environment:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
+      # - image: ehrbaseorg/ehrbase-postgres:latest
+      #   environment:
+      #     POSTGRES_USER: postgres
+      #     POSTGRES_PASSWORD: postgres
     steps:
       - checkout
       - run: echo mock buidl EHRbase
