@@ -69,9 +69,12 @@ workflows:
       #           - snapshot
       - trigger-snapshot-creation:
           filters:
+            branches:
+              only:
+                - develop
             tags:
               ignore:
-                - /^v*/
+                - /^v.*/
                 - SNAPSHOT
       - publish-major-snapshot-update:
           filters:
