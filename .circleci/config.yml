@@ -251,9 +251,9 @@ jobs:
                     exit 0
                     ;;
                 *"[minor]"*)
-                    echo "deploy minor release"
                     git branch
                     git checkout -b snapshot
+                    echo "bump minor release version"
                     mvn build-helper:parse-version versions:set -DnewVersion=\${parsedVersion.majorVersion}.\${parsedVersion.nextMinorVersion}.0 versions:commit
                     SDK_VERSION=$(mvn -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive exec:exec)
                     git commit -am "released v${SDK_VERSION}-SNAPSHOT"
@@ -262,9 +262,9 @@ jobs:
                     exit 0
                     ;;
                 *"[patch]"*)
-                    echo "deploy patch release"
                     git branch
                     git checkout -b snapshot
+                    echo "bump patch release version"
                     mvn build-helper:parse-version versions:set -DnewVersion=\${parsedVersion.majorVersion}.\${parsedVersion.minorVersion}.\${parsedVersion.nextIncrementalVersion} versions:commit
                     SDK_VERSION=$(mvn -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive exec:exec)
                     git commit -am "updated to version v${SDK_VERSION}-SNAPSHOT"
