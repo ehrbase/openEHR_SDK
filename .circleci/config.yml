@@ -127,22 +127,22 @@ jobs:
     steps:
       - checkout
       - run: echo mock build SDK
-      # - run:
-      #     name: Generate Cache Checksum for openEHR_SDK Dependencies
-      #     command: find . -name 'pom.xml' | sort | xargs cat > /tmp/openEHR_SDK_maven_cache_seed
-      # - restore_cache:
-      #     key: openEHR_SDK-{{ checksum "/tmp/openEHR_SDK_maven_cache_seed" }}
-      # - run:
-      #     name: Maven build, test, install openEHR_SDK
-      #                                                     # TODO: @WLAD remove -DskipTests
-      #     command: mvn install dependency:go-offline -Dmaven.javadoc.skip=true -DskipTests
-      # - persist-version-number-of-installed-sdk
-      # - save_cache:
-      #     key: openEHR_SDK-{{ checksum "/tmp/openEHR_SDK_maven_cache_seed" }}
-      #     paths:
-      #     - ~/.m2
-      # - store_test_results:
-      #     path: client/target/surefire-reports
+      - run:
+          name: Generate Cache Checksum for openEHR_SDK Dependencies
+          command: find . -name 'pom.xml' | sort | xargs cat > /tmp/openEHR_SDK_maven_cache_seed
+      - restore_cache:
+          key: openEHR_SDK-{{ checksum "/tmp/openEHR_SDK_maven_cache_seed" }}
+      - run:
+          name: Maven build, test, install openEHR_SDK
+                                                          # TODO: @WLAD remove -DskipTests
+          command: mvn install dependency:go-offline -Dmaven.javadoc.skip=true -DskipTests
+      - persist-version-number-of-installed-sdk
+      - save_cache:
+          key: openEHR_SDK-{{ checksum "/tmp/openEHR_SDK_maven_cache_seed" }}
+          paths:
+          - ~/.m2
+      - store_test_results:
+          path: client/target/surefire-reports
       - persist_to_workspace:
           root: /home/circleci
           paths:
@@ -161,10 +161,10 @@ jobs:
 
       # # Secondary (service) container w/ PostgreSQL DB
       # # NOTE: DB is available at `host: localhost`
-      # - image: ehrbaseorg/ehrbase-postgres:latest
-      #   environment:
-      #     POSTGRES_USER: postgres
-      #     POSTGRES_PASSWORD: postgres
+      - image: ehrbaseorg/ehrbase-postgres:latest
+        environment:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
     steps:
       - checkout
       - run: echo mock buidl EHRbase
@@ -175,49 +175,49 @@ jobs:
           command: |
             git clone git@github.com:ehrbase/ehrbase.git
             ls -la
-      # - run:
-      #     name: Generate Cache Checksum for EHRbase Dependencies
-      #     command: find ~/projects/ehrbase -name 'pom.xml' | sort | xargs cat > /tmp/EHRbase_maven_cache_seed
-      # - restore_cache:
-      #     key: EHRbase-
-      # # - install-xml-cli-tool
-      # - run:
-      #     name: Adjust SDK version number in EHRbase's pom
-      #     description: |
-      #       We have to provide the version of locally build openEHR_SDK in EHRbase's POM
-      #       to make sure that EHRbase builds succesfully w/ latest changes applied to the SDK.
-      #       "mvn versions:set-property" is an simple way to achieve exactly that. Ufortunately
-      #       it triggers a check for SDK dependency updates from jitpack.io
-      #       which can take up to 15 minutes!
+      - run:
+          name: Generate Cache Checksum for EHRbase Dependencies
+          command: find ~/projects/ehrbase -name 'pom.xml' | sort | xargs cat > /tmp/EHRbase_maven_cache_seed
+      - restore_cache:
+          key: EHRbase-
+      # - install-xml-cli-tool
+      - run:
+          name: Adjust SDK version number in EHRbase's pom
+          description: |
+            We have to provide the version of locally build openEHR_SDK in EHRbase's POM
+            to make sure that EHRbase builds succesfully w/ latest changes applied to the SDK.
+            "mvn versions:set-property" is an simple way to achieve exactly that. Ufortunately
+            it triggers a check for SDK dependency updates from jitpack.io
+            which can take up to 15 minutes!
 
-      #       Using Maven's -o (for offline) flag can help to prevent check for update but
-      #       it fails when dependencies are not cached first.
-      #       After caching dependencies it works but not 100% reliable.
+            Using Maven's -o (for offline) flag can help to prevent check for update but
+            it fails when dependencies are not cached first.
+            After caching dependencies it works but not 100% reliable.
 
-      #       As a more robust solution install xmlstarlet (a cli tool to handle XML) and 
-      #       use it as a fallback if the 'mvn -o' approach starts to fail.
-      #       NOTE: I had issues installing it in docker executor (cimg/openjdk:11.0)
-      #             may be it works better in machine executor(?)
-      #     command: |
-      #       SDK_VERSION=$(cat ~/projects/openEHR_SDK/SDK_VERSION)
-      #       echo $SDK_VERSION
-      #       cd ~/projects/ehrbase
-      #       mvn versions:set-property -Dproperty=ehrbase.sdk.version -DnewVersion=$SDK_VERSION -o
-      #       # #BACKUP xmlstarlet command
-      #       # xml edit -N my=http://maven.apache.org/POM/4.0.0 -u my:project/my:version -v $SDK_VERSION pom.xml
-      # - run:
-      #     name: Maven build EHRbase
-      #     command: |
-      #       cd ~/projects/ehrbase
-      #       mvn package dependency:go-offline -DskipTests -Dmaven.javadoc.skip=true
-      # - save_cache:
-      #     key: EHRbase-{{ checksum "/tmp/EHRbase_maven_cache_seed" }}
-      #     paths:
-      #     - ~/.m2
-      # - persist_to_workspace:
-      #     root: /home/circleci
-      #     paths:
-      #       - projects/ehrbase
+            As a more robust solution install xmlstarlet (a cli tool to handle XML) and 
+            use it as a fallback if the 'mvn -o' approach starts to fail.
+            NOTE: I had issues installing it in docker executor (cimg/openjdk:11.0)
+                  may be it works better in machine executor(?)
+          command: |
+            SDK_VERSION=$(cat ~/projects/openEHR_SDK/SDK_VERSION)
+            echo $SDK_VERSION
+            cd ~/projects/ehrbase
+            mvn versions:set-property -Dproperty=ehrbase.sdk.version -DnewVersion=$SDK_VERSION -o
+            # #BACKUP xmlstarlet command
+            # xml edit -N my=http://maven.apache.org/POM/4.0.0 -u my:project/my:version -v $SDK_VERSION pom.xml
+      - run:
+          name: Maven build EHRbase
+          command: |
+            cd ~/projects/ehrbase
+            mvn package dependency:go-offline -DskipTests -Dmaven.javadoc.skip=true
+      - save_cache:
+          key: EHRbase-{{ checksum "/tmp/EHRbase_maven_cache_seed" }}
+          paths:
+          - ~/.m2
+      - persist_to_workspace:
+          root: /home/circleci
+          paths:
+            - projects/ehrbase
 
 
   run-CONTRIBUTION-test:
