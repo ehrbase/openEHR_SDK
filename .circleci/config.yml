@@ -127,6 +127,8 @@ jobs:
     steps:
       - checkout
       - run: echo mock build SDK
+      - run: java --version
+      - run: sudo apt install maven -y
       - run:
           name: Generate Cache Checksum for openEHR_SDK Dependencies
           command: find . -name 'pom.xml' | sort | xargs cat > /tmp/openEHR_SDK_maven_cache_seed
