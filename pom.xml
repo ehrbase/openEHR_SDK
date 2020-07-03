@@ -24,7 +24,7 @@
     <groupId>com.github.ehrbase.openEHR_SDK</groupId>
     <artifactId>root</artifactId>
     <packaging>pom</packaging>
-    <version>0.3.9</version>
+    <version>1.0.0</version>
     <modules>
         <module>client</module>
         <module>generator</module>
