@@ -60,14 +60,11 @@ workflows:
 
   trigger-job:
     when:
-      and:
-        - not:
-            equal: [ SNAPSHOT, << pipeline.git.tag >> ]
-        - or:
-          - equal: [ develop, << pipeline.git.branch >> ]
-          - equal: [ major-snapshot-update, << pipeline.git.branch >> ]
-          - equal: [ minor-snapshot-update, << pipeline.git.branch >> ]
-          - equal: [ patch-snapshot-update, << pipeline.git.branch >> ]
+      or:
+        - equal: [ develop, << pipeline.git.branch >> ]
+        - equal: [ major-snapshot-update, << pipeline.git.branch >> ]
+        - equal: [ minor-snapshot-update, << pipeline.git.branch >> ]
+        - equal: [ patch-snapshot-update, << pipeline.git.branch >> ]
       
         
         
