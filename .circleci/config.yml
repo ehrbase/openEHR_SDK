@@ -121,7 +121,8 @@ jobs:
     working_directory: ~/projects/openEHR_SDK
     docker:
       # Primary container w/ Maven & Java JDK
-      - image: cimg/openjdk:11.0
+      # - image: cimg/openjdk:11.0
+      - image: classic
     steps:
       - checkout
       - run: echo mock build SDK
@@ -141,36 +142,40 @@ jobs:
       #     - ~/.m2
       # - store_test_results:
       #     path: client/target/surefire-reports
-      # - persist_to_workspace:
-      #     root: /home/circleci
-      #     paths:
-      #       - .m2
-      #       - projects/openEHR_SDK/
+      - persist_to_workspace:
+          root: /home/circleci
+          paths:
+            - .m2
+            - projects/openEHR_SDK/
 
 
   build-EHRbase:
     working_directory: ~/projects
     docker:
-      # Primary container w/ Maven & Java JDK
-      # NOTE: all commands run here
-      - image: cimg/openjdk:11.0
+      - image: classic
+      # # Primary container w/ Maven & Java JDK
+      # # NOTE: all commands run here
+      # - image: cimg/openjdk:11.0
 
-      # Secondary (service) container w/ PostgreSQL DB
-      # NOTE: DB is available at `host: localhost`
-      - image: ehrbaseorg/ehrbase-postgres:latest
-        environment:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
+      # # Secondary (service) container w/ PostgreSQL DB
+      # # NOTE: DB is available at `host: localhost`
+      # - image: ehrbaseorg/ehrbase-postgres:latest
+      #   environment:
+      #     POSTGRES_USER: postgres
+      #     POSTGRES_PASSWORD: postgres
     steps:
-      - checkout
+      # - checkout
+      - add_ssh_keys:
+          fingerprints:
+            - b7:59:8b:46:65:4e:37:d9:b1:21:30:90:df:9c:c8:dd
       - run: echo mock buidl EHRbase
-      # - attach_workspace:
-      #     at: /home/circleci/
-      # - run:
-      #     name: Git clone EHRbase repo
-      #     command: |
-      #       git clone git@github.com:ehrbase/ehrbase.git
-      #       ls -la
+      - attach_workspace:
+          at: /home/circleci/
+      - run:
+          name: Git clone EHRbase repo
+          command: |
+            git clone git@github.com:ehrbase/ehrbase.git
+            ls -la
       # - run:
       #     name: Generate Cache Checksum for EHRbase Dependencies
       #     command: find ~/projects/ehrbase -name 'pom.xml' | sort | xargs cat > /tmp/EHRbase_maven_cache_seed
@@ -244,7 +249,8 @@ jobs:
 
   trigger-snapshot-creation:
     docker:
-      - image: cimg/openjdk:11.0
+      # - image: cimg/openjdk:11.0
+      - image: classic
     steps:
       - add_ssh_keys:
           fingerprints:
@@ -318,6 +324,7 @@ jobs:
   publish-major-snapshot-update:
     docker:
       - image: cimg/openjdk:11.0
+
     steps:
       - attach_workspace:
           at: /home/circleci/
