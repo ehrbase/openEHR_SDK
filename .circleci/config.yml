@@ -70,7 +70,7 @@ workflows:
       - trigger-snapshot-creation:
           filters:
             tags:
-              ignore: /^v.*-SNAPSHOT/
+              ignore: /^v.*/
       - publish-major-snapshot-update:
           filters:
             branches:
@@ -169,13 +169,13 @@ jobs:
     steps:
       - checkout
       - run: echo mock buidl EHRbasee
-      # - attach_workspace:
-      #     at: /home/circleci/
-      # - run:
-      #     name: Git clone EHRbase repo
-      #     command: |
-      #       git clone git@github.com:ehrbase/ehrbase.git
-      #       ls -la
+      - attach_workspace:
+          at: /home/circleci/
+      - run:
+          name: Git clone EHRbase repo
+          command: |
+            git clone git@github.com:ehrbase/ehrbase.git
+            ls -la
       # - run:
       #     name: Generate Cache Checksum for EHRbase Dependencies
       #     command: find ~/projects/ehrbase -name 'pom.xml' | sort | xargs cat > /tmp/EHRbase_maven_cache_seed
@@ -220,6 +220,11 @@ jobs:
       #     root: /home/circleci
       #     paths:
       #       - projects/ehrbase
+      - save_cache:
+          key: workspace-v1-{{ checksum ".circleci/config.yml" }}
+          paths:
+            - ~/projects
+
 
 
   run-CONTRIBUTION-test:
@@ -253,6 +258,7 @@ jobs:
   
 
   trigger-snapshot-creation:
+    working_directory: ~/projects/openEHR_SDK
     docker:
       # - image: cimg/openjdk:11.0
       # - image: circleci/python:3.8.3-buster-node-browsers
@@ -323,10 +329,14 @@ jobs:
           # key: maven-dep-v1-{{ checksum ".circleci/config.yml" }}
           paths:
             - ~/.m2
+      - save_cache:
+          key: workspace-v1-{{ checksum ".circleci/config.yml" }}
+          paths:
+            - ~/projects
       - persist_to_workspace:
           root: /home/circleci
           paths:
-            - project
+            - projects
 
   
   publish-major-snapshot-update:
