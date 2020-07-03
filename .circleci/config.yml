@@ -58,10 +58,11 @@ workflows:
       - deploy-snapshot:
           filters:
             tags:
-              ignore: /^v.*/
+              only: /^v.*-SNAPSHOT/
             branches:
               ignore:
-                - develop
+                - snapshot
+      
 
 
   deploy-stable-release:
@@ -239,7 +240,7 @@ jobs:
             echo $last_commit
             shopt -s extglob
             case $last_commit in
-                ( !(!(*"major"*)|!(*"release"*)) )
+                *"[major]"*)
                     echo "deploy major release"
                     git checkout -b snapshot
                     mvn build-helper:parse-version versions:set -DnewVersion=\${parsedVersion.nextMajorVersion}.0.0 versions:commit
@@ -249,7 +250,7 @@ jobs:
                     git push --set-upstream origin develop v${SDK_VERSION}-SNAPSHOT
                     exit 0
                     ;;
-                ( !(!(*"minor"*)|!(*"release"*)) )
+                *"[minor]"*)
                     echo "deploy minor release"
                     git branch
                     git checkout -b snapshot
@@ -260,7 +261,7 @@ jobs:
                     git push --set-upstream origin develop v${SDK_VERSION}-SNAPSHOT
                     exit 0
                     ;;
-                ( !(!(*"patch"*)|!(*"release"*)) )
+                *"[patch]"*
                     echo "deploy patch release"
                     git branch
                     git checkout -b snapshot
