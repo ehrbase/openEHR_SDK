@@ -79,24 +79,24 @@ workflows:
       #       branches:
       #         ignore:
       #           - snapshot
-      - trigger-snapshot-creation:
+      - initiate-snapshot-creation:
           filters:
             branches:
               only:
                 - develop
             tags:
-              ignore:
-                - /^v.*/
-                - SNAPSHOT
+              # ignore:
+              #   - /^v.*/
+              #   - SNAPSHOT
       - publish-major-snapshot-update:
           filters:
             branches:
               only:
                 - major-snapshot-update
             tags:
-              ignore:
-                - /^v.*/
-                - SNAPSHOT
+              # ignore:
+              #   - /^v.*/
+              #   - SNAPSHOT
       # - publish-minor-snapshot-update:
       #   filters:
       #     branches:
@@ -281,7 +281,7 @@ jobs:
       - run: echo "generate test report job mock"
   
 
-  trigger-snapshot-creation:
+  initiate-snapshot-creation:
     executor: circleci-python3-java11
     # working_directory: ~/projects/openEHR_SDK
     # docker:
@@ -315,8 +315,7 @@ jobs:
                     mvn build-helper:parse-version versions:set -DnewVersion=\${parsedVersion.nextMajorVersion}.0.0 versions:commit
                     SDK_VERSION=$(mvn -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive exec:exec)
                     git commit -am "updated major verion to v${SDK_VERSION}-SNAPSHOT"
-                    git tag -a SNAPSHOT -m "SNAPSHOT release"
-                    git push --set-upstream origin major-snapshot-update SNAPSHOT
+                    git push --set-upstream origin major-snapshot-update
                     exit 0
                     ;;
                 *"[minor]"*)
@@ -401,7 +400,6 @@ jobs:
             git merge major-snapshot-update
             git tag -a v${SDK_VERSION}-SNAPSHOT -m "v${SDK_VERSION}-SNAPSHOT release"
             git push --set-upstream origin develop v${SDK_VERSION}-SNAPSHOT
-            # git push origin :SNAPSHOT
             git push origin :major-snapshot-update
   
   deploy-snapshot:
