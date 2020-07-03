@@ -168,7 +168,7 @@ jobs:
       #     POSTGRES_PASSWORD: postgres
     steps:
       - checkout
-      - run: echo mock buidl EHRbase
+      - run: echo mock buidl EHRbasee
       # - attach_workspace:
       #     at: /home/circleci/
       # - run:
