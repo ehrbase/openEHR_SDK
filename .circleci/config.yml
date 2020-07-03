@@ -121,10 +121,13 @@ jobs:
     working_directory: ~/projects/openEHR_SDK
     docker:
       # Primary container w/ Maven & Java JDK
-      - image: cimg/openjdk:11.0
+      # - image: cimg/openjdk:11.0
+      # - image: circleci/python:3.8.3-buster-node-browsers
+      - image: circleci/python@sha256:e1c98a85c5ee62ac52a2779fe5abe2677f021c8e3158e4fb2d569c7b9c6ac073
     steps:
       - checkout
       - run: echo mock build SDK
+      # - run: sudo apt install maven -y
       # - run:
       #     name: Generate Cache Checksum for openEHR_SDK Dependencies
       #     command: find . -name 'pom.xml' | sort | xargs cat > /tmp/openEHR_SDK_maven_cache_seed
@@ -141,22 +144,24 @@ jobs:
       #     - ~/.m2
       # - store_test_results:
       #     path: client/target/surefire-reports
-      # - persist_to_workspace:
-      #     root: /home/circleci
-      #     paths:
-      #       - .m2
-      #       - projects/openEHR_SDK/
+      - persist_to_workspace:
+          root: /home/circleci
+          paths:
+            - .m2
+            - projects/openEHR_SDK/
 
 
   build-EHRbase:
     working_directory: ~/projects
     docker:
-      # Primary container w/ Maven & Java JDK
-      # NOTE: all commands run here
-      - image: cimg/openjdk:11.0
+      # - image: circleci/python:3.8.3-buster-node-browsers
+      - image: circleci/python@sha256:e1c98a85c5ee62ac52a2779fe5abe2677f021c8e3158e4fb2d569c7b9c6ac073
+      # # Primary container w/ Maven & Java JDK
+      # # NOTE: all commands run here
+      # - image: cimg/openjdk:11.0
 
-      # Secondary (service) container w/ PostgreSQL DB
-      # NOTE: DB is available at `host: localhost`
+      # # Secondary (service) container w/ PostgreSQL DB
+      # # NOTE: DB is available at `host: localhost`
       - image: ehrbaseorg/ehrbase-postgres:latest
         environment:
           POSTGRES_USER: postgres
@@ -176,6 +181,7 @@ jobs:
       #     command: find ~/projects/ehrbase -name 'pom.xml' | sort | xargs cat > /tmp/EHRbase_maven_cache_seed
       # - restore_cache:
       #     key: EHRbase-
+      # - run: sudo apt install maven -y
       # # - install-xml-cli-tool
       # - run:
       #     name: Adjust SDK version number in EHRbase's pom
@@ -220,7 +226,9 @@ jobs:
     working_directory: ~/projects
     docker:
       # Primary container w/ Maven & Java JDK
-      - image: cimg/openjdk:11.0
+      # - image: cimg/openjdk:11.0
+      # - image: circleci/python:3.8.3-buster-node-browsers
+      - image: circleci/python@sha256:e1c98a85c5ee62ac52a2779fe5abe2677f021c8e3158e4fb2d569c7b9c6ac073
 
         # TODO: RESTORE THIS
         # machine:
@@ -237,14 +245,18 @@ jobs:
 
   generate-test-report:
     docker:
-      - image: cimg/openjdk:11.0
+      # - image: cimg/openjdk:11.0
+      # - image: circleci/python:3.8.3-buster-node-browsers
+      - image: circleci/python@sha256:e1c98a85c5ee62ac52a2779fe5abe2677f021c8e3158e4fb2d569c7b9c6ac073
     steps:
       - run: echo "generate test report job mock"
   
 
   trigger-snapshot-creation:
     docker:
-      - image: cimg/openjdk:11.0
+      # - image: cimg/openjdk:11.0
+      # - image: circleci/python:3.8.3-buster-node-browsers
+      - image: circleci/python@sha256:e1c98a85c5ee62ac52a2779fe5abe2677f021c8e3158e4fb2d569c7b9c6ac073
     steps:
       - add_ssh_keys:
           fingerprints:
@@ -306,7 +318,8 @@ jobs:
                     ;;
             esac
       - save_cache:
-          key: maven-dep-v1-{{ checksum ".circleci/config.yml" }}
+          key: maven-dep-v1-
+          # key: maven-dep-v1-{{ checksum ".circleci/config.yml" }}
           paths:
             - ~/.m2
       - persist_to_workspace:
@@ -317,7 +330,10 @@ jobs:
   
   publish-major-snapshot-update:
     docker:
-      - image: cimg/openjdk:11.0
+      # - image: cimg/openjdk:11.0
+      # - image: circleci/python:3.8.3-buster-node-browsers
+      - image: circleci/python@sha256:e1c98a85c5ee62ac52a2779fe5abe2677f021c8e3158e4fb2d569c7b9c6ac073
+
     steps:
       - attach_workspace:
           at: /home/circleci/
@@ -350,7 +366,8 @@ jobs:
   
   deploy-snapshot:
     docker:
-      - image: cimg/openjdk:11.0
+      # - image: circleci/python:3.8.3-buster-node-browsers
+      - image: circleci/python@sha256:e1c98a85c5ee62ac52a2779fe5abe2677f021c8e3158e4fb2d569c7b9c6ac073
     steps:
       - add_ssh_keys:
           fingerprints:
@@ -420,7 +437,9 @@ jobs:
   
   deploy-stable-release:
     docker:
-      - image: cimg/openjdk:11.0
+      # - image: cimg/openjdk:11.0
+      # - image: circleci/python:3.8.3-buster-node-browsers
+      - image: circleci/python@sha256:e1c98a85c5ee62ac52a2779fe5abe2677f021c8e3158e4fb2d569c7b9c6ac073
     steps:
       - add_ssh_keys:
           fingerprints:
