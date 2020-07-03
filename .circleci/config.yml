@@ -59,7 +59,7 @@ workflows:
           filters:
             tags:
               only: /^v.*-SNAPSHOT/
-            branch:
+            branches:
               ignore:
                 - snapshot
       
