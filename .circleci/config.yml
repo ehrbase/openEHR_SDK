@@ -349,8 +349,8 @@ jobs:
       - image: circleci/python@sha256:e1c98a85c5ee62ac52a2779fe5abe2677f021c8e3158e4fb2d569c7b9c6ac073
 
     steps:
-      - attach_workspace:
-          at: /home/circleci/
+      - restore_cache:
+          key: workspace-v1-
       - run: pwd
       - run: ls -la
       - run: cd ..
