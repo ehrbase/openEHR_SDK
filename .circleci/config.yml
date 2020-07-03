@@ -164,10 +164,7 @@ jobs:
       #     POSTGRES_USER: postgres
       #     POSTGRES_PASSWORD: postgres
     steps:
-      # - checkout
-      - add_ssh_keys:
-          fingerprints:
-            - b7:59:8b:46:65:4e:37:d9:b1:21:30:90:df:9c:c8:dd
+      - checkout
       - run: echo mock buidl EHRbase
       - attach_workspace:
           at: /home/circleci/
