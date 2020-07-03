@@ -4,6 +4,12 @@ orbs:
   maven: circleci/maven@1.0.1
   openjdk-install: cloudesire/openjdk-install@1.2.3
 
+executors:
+  circleci-python3-java11:
+    working_directory: ~/projects
+    docker:
+      - image: circleci/python:3.8.3-buster-node-browsers
+
 
 workflows:
 
@@ -226,9 +232,9 @@ jobs:
       #     paths:
       #       - projects/ehrbase
       - save_cache:
-          key: workspace-v1-{{ checksum ".circleci/config.yml" }}
+          key: ehrbase-repo-v1-{{ checksum ".circleci/config.yml" }}
           paths:
-            - ~/projects
+            - ~/projects/ehrbase
 
 
 
@@ -356,8 +362,6 @@ jobs:
           key: workspace-v1-
       - run: pwd
       - run: ls -la
-      - run: cd ..
-      - run: ls -la
       - add_ssh_keys:
           fingerprints:
             - b7:59:8b:46:65:4e:37:d9:b1:21:30:90:df:9c:c8:dd
@@ -374,6 +378,7 @@ jobs:
           key: maven-dep-v1-
       - run:
           command: |
+            cd openEHR_SDK
             git branch
             git checkout major-snapshot-update
             SDK_VERSION=$(mvn -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive exec:exec)
