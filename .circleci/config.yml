@@ -59,12 +59,12 @@ workflows:
 
 
   trigger-job:
-    # when:
-    #   or:
-    #     - equal: [ develop, << pipeline.git.branch >> ]
-    #     - equal: [ major-snapshot-update, << pipeline.git.branch >> ]
-    #     - equal: [ minor-snapshot-update, << pipeline.git.branch >> ]
-    #     - equal: [ patch-snapshot-update, << pipeline.git.branch >> ]
+    when:
+      and:
+        - equal: [ develop, << pipeline.git.branch >> ]
+        - not:
+            equal: [ /^v.*-SNAPSHOT/, << pipeline.git.tag >> ]
+
       
         
         
@@ -83,19 +83,15 @@ workflows:
                 - develop
             tags:
               ignore:
-                - /.*/
-              #   - /^v.*/
-              #   - SNAPSHOT
+                - /^v.*/
+
       - publish-major-snapshot-update:
           filters:
             branches:
               only:
                 - major-snapshot-update
-            tags:
-              ignore:
-                - /.*/
-              #   - /^v.*/
-              #   - SNAPSHOT
+
+
       # - publish-minor-snapshot-update:
       #   filters:
       #     branches:
