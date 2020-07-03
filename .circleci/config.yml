@@ -8,7 +8,7 @@ executors:
   circleci-python3-java11:
     working_directory: ~/projects
     docker:
-      - image: circleci/python:3.8.3-buster-node-browsers
+      - image: circleci/python@sha256:e1c98a85c5ee62ac52a2779fe5abe2677f021c8e3158e4fb2d569c7b9c6ac073
 
 
 workflows:
@@ -85,7 +85,8 @@ workflows:
               only:
                 - develop
             tags:
-              # ignore:
+              ignore:
+                - /.*/
               #   - /^v.*/
               #   - SNAPSHOT
       - publish-major-snapshot-update:
@@ -94,7 +95,8 @@ workflows:
               only:
                 - major-snapshot-update
             tags:
-              # ignore:
+              ignore:
+                - /.*/
               #   - /^v.*/
               #   - SNAPSHOT
       # - publish-minor-snapshot-update:
