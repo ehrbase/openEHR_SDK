@@ -271,11 +271,8 @@ jobs:
                     mvn build-helper:parse-version versions:set -DnewVersion=\${parsedVersion.nextMajorVersion}.0.0 versions:commit
                     SDK_VERSION=$(mvn -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive exec:exec)
                     git commit -am "updated major verion to v${SDK_VERSION}-SNAPSHOT"
-                    git push --set-upstream origin major-snapshot-update
-
-                    # git tag -a v${SDK_VERSION}-SNAPSHOT -m "v${SDK_VERSION}-SNAPSHOT release"
-                    # git push --set-upstream origin develop v${SDK_VERSION}-SNAPSHOT
-
+                    git tag -a v${SDK_VERSION}-SNAPSHOT -m "v${SDK_VERSION}-SNAPSHOT release"
+                    git push --set-upstream origin major-snapshot-update v${SDK_VERSION}-SNAPSHOT
                     exit 0
                     ;;
                 *"[minor]"*)
@@ -323,7 +320,9 @@ jobs:
       - image: cimg/openjdk:11.0
     steps:
       - attach_workspace:
-          at: .
+          at: /home/circleci/
+      - run: pwd
+      - run: ls -la
       - add_ssh_keys:
           fingerprints:
             - b7:59:8b:46:65:4e:37:d9:b1:21:30:90:df:9c:c8:dd
