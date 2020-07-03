@@ -16,6 +16,7 @@ workflows:
                 - master
                 - develop
                 - snapshot
+                - release
       - build-EHRbase:
           requires:
             - build-openEHR_SDK
@@ -25,6 +26,7 @@ workflows:
                 - master
                 - develop
                 - snapshot
+                - release
       - run-CONTRIBUTION-test:
           context: org-global
           requires:
@@ -35,6 +37,7 @@ workflows:
                 - master
                 - develop
                 - snapshot
+                - release
       - generate-test-report:
           requires:
             - run-CONTRIBUTION-test
@@ -44,6 +47,7 @@ workflows:
                 - master
                 - develop
                 - snapshot
+                - release
 
 
   deploy-snapshot-release:
@@ -279,11 +283,27 @@ jobs:
     docker:
       - image: cimg/openjdk:11.0
     steps:
+      - add_ssh_keys:
+        fingerprints:
+          - b7:59:8b:46:65:4e:37:d9:b1:21:30:90:df:9c:c8:dd
+      - checkout
       - run:
+          name: Configure GIT
           command: |
-            echo dpl stbl rls
-  
-
+            git config --global user.email "ci-bot@ehrbase.org"
+            git config --global user.name "ci-bot"
+            # git config --global push.followTags true
+            git remote -v
+      - restore_cache:
+        key: maven-dep-v1-
+      - run:
+          name: Create and push release version tag
+          command: |
+            SDK_VERSION=$(mvn -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive exec:exec)
+            git merge --strategy=ours --no-commit master
+            git commit -am "released v${SDK_VERSION}"
+            git tag -a v${SDK_VERSION} -m "v${SDK_VERSION} release"
+            git push --set-upstream origin master v${SDK_VERSION}
 
 
 
