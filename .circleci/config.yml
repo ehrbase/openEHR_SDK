@@ -58,13 +58,19 @@ workflows:
       #           - release
 
 
-  deploy-snapshot-release:
+  trigger-job:
     when:
-      or:
-        - equal: [ develop, << pipeline.git.branch >> ]
-        - equal: [ major-snapshot-update, << pipeline.git.branch >> ]
-        - equal: [ minor-snapshot-update, << pipeline.git.branch >> ]
-        - equal: [ patch-snapshot-update, << pipeline.git.branch >> ]
+      and:
+        - not:
+            equal: [ SNAPSHOT, << pipeline.git.tag >> ]
+        - or:
+          - equal: [ develop, << pipeline.git.branch >> ]
+          - equal: [ major-snapshot-update, << pipeline.git.branch >> ]
+          - equal: [ minor-snapshot-update, << pipeline.git.branch >> ]
+          - equal: [ patch-snapshot-update, << pipeline.git.branch >> ]
+      
+        
+        
     jobs:
       # - deploy-snapshot:
       #     filters:
