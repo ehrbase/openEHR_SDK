@@ -122,7 +122,8 @@ jobs:
     docker:
       # Primary container w/ Maven & Java JDK
       # - image: cimg/openjdk:11.0
-      - image: circleci/python:3.8.3-buster-node-browsers
+      # - image: circleci/python:3.8.3-buster-node-browsers
+      - image: circleci/python@sha256:e1c98a85c5ee62ac52a2779fe5abe2677f021c8e3158e4fb2d569c7b9c6ac073
     steps:
       - checkout
       - run: echo mock build SDK
@@ -152,7 +153,8 @@ jobs:
   build-EHRbase:
     working_directory: ~/projects
     docker:
-      - image: circleci/python:3.8.3-buster-node-browsers
+      # - image: circleci/python:3.8.3-buster-node-browsers
+      - image: circleci/python@sha256:e1c98a85c5ee62ac52a2779fe5abe2677f021c8e3158e4fb2d569c7b9c6ac073
       # # Primary container w/ Maven & Java JDK
       # # NOTE: all commands run here
       # - image: cimg/openjdk:11.0
@@ -223,7 +225,8 @@ jobs:
     docker:
       # Primary container w/ Maven & Java JDK
       # - image: cimg/openjdk:11.0
-      - image: circleci/python:3.8.3-buster-node-browsers
+      # - image: circleci/python:3.8.3-buster-node-browsers
+      - image: circleci/python@sha256:e1c98a85c5ee62ac52a2779fe5abe2677f021c8e3158e4fb2d569c7b9c6ac073
 
         # TODO: RESTORE THIS
         # machine:
@@ -241,7 +244,8 @@ jobs:
   generate-test-report:
     docker:
       # - image: cimg/openjdk:11.0
-      - image: circleci/python:3.8.3-buster-node-browsers
+      # - image: circleci/python:3.8.3-buster-node-browsers
+      - image: circleci/python@sha256:e1c98a85c5ee62ac52a2779fe5abe2677f021c8e3158e4fb2d569c7b9c6ac073
     steps:
       - run: echo "generate test report job mock"
   
@@ -249,7 +253,8 @@ jobs:
   trigger-snapshot-creation:
     docker:
       # - image: cimg/openjdk:11.0
-      - image: circleci/python:3.8.3-buster-node-browsers
+      # - image: circleci/python:3.8.3-buster-node-browsers
+      - image: circleci/python@sha256:e1c98a85c5ee62ac52a2779fe5abe2677f021c8e3158e4fb2d569c7b9c6ac073
     steps:
       - add_ssh_keys:
           fingerprints:
@@ -323,7 +328,8 @@ jobs:
   publish-major-snapshot-update:
     docker:
       # - image: cimg/openjdk:11.0
-      - image: circleci/python:3.8.3-buster-node-browsers
+      # - image: circleci/python:3.8.3-buster-node-browsers
+      - image: circleci/python@sha256:e1c98a85c5ee62ac52a2779fe5abe2677f021c8e3158e4fb2d569c7b9c6ac073
 
     steps:
       - attach_workspace:
@@ -357,7 +363,8 @@ jobs:
   
   deploy-snapshot:
     docker:
-      - image: circleci/python:3.8.3-buster-node-browsers
+      # - image: circleci/python:3.8.3-buster-node-browsers
+      - image: circleci/python@sha256:e1c98a85c5ee62ac52a2779fe5abe2677f021c8e3158e4fb2d569c7b9c6ac073
     steps:
       - add_ssh_keys:
           fingerprints:
@@ -428,7 +435,8 @@ jobs:
   deploy-stable-release:
     docker:
       # - image: cimg/openjdk:11.0
-      - image: circleci/python:3.8.3-buster-node-browsers
+      # - image: circleci/python:3.8.3-buster-node-browsers
+      - image: circleci/python@sha256:e1c98a85c5ee62ac52a2779fe5abe2677f021c8e3158e4fb2d569c7b9c6ac073
     steps:
       - add_ssh_keys:
           fingerprints:
