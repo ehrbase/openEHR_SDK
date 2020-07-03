@@ -122,7 +122,7 @@ jobs:
     docker:
       # Primary container w/ Maven & Java JDK
       # - image: cimg/openjdk:11.0
-      - image: classic
+      - image: cimg/base:2020.01
     steps:
       - checkout
       - run: echo mock build SDK
@@ -152,7 +152,7 @@ jobs:
   build-EHRbase:
     working_directory: ~/projects
     docker:
-      - image: classic
+      - image: cimg/base:2020.01
       # # Primary container w/ Maven & Java JDK
       # # NOTE: all commands run here
       # - image: cimg/openjdk:11.0
@@ -250,7 +250,7 @@ jobs:
   trigger-snapshot-creation:
     docker:
       # - image: cimg/openjdk:11.0
-      - image: classic
+      - image: cimg/base:2020.01
     steps:
       - add_ssh_keys:
           fingerprints:
@@ -323,7 +323,8 @@ jobs:
   
   publish-major-snapshot-update:
     docker:
-      - image: cimg/openjdk:11.0
+      # - image: cimg/openjdk:11.0
+      - image: cimg/base:2020.01
 
     steps:
       - attach_workspace:
