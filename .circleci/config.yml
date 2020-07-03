@@ -64,9 +64,8 @@ workflows:
       #           - snapshot
       - trigger-snapshot-creation:
           filters:
-            branches:
-              only:
-                - develop
+            tags:
+              ignore: /^v.*-SNAPSHOT/
       - publish-major-snapshot-update:
           filters:
             branches:
@@ -265,6 +264,7 @@ jobs:
                     mvn build-helper:parse-version versions:set -DnewVersion=\${parsedVersion.nextMajorVersion}.0.0 versions:commit
                     SDK_VERSION=$(mvn -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive exec:exec)
                     git commit -am "updated major verion to v${SDK_VERSION}-SNAPSHOT"
+                    git push --set-upstream origin major-snapshot-update
 
                     # git tag -a v${SDK_VERSION}-SNAPSHOT -m "v${SDK_VERSION}-SNAPSHOT release"
                     # git push --set-upstream origin develop v${SDK_VERSION}-SNAPSHOT
