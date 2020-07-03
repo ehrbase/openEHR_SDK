@@ -27,27 +27,27 @@ workflows:
                 - develop
                 - snapshot
                 - release
-      - run-CONTRIBUTION-test:
-          context: org-global
-          requires:
-            - build-EHRbase
-          filters:
-            branches:
-              ignore:
-                - master
-                - develop
-                - snapshot
-                - release
-      - generate-test-report:
-          requires:
-            - run-CONTRIBUTION-test
-          filters:
-            branches:
-              ignore:
-                - master
-                - develop
-                - snapshot
-                - release
+      # - run-CONTRIBUTION-test:
+      #     context: org-global
+      #     requires:
+      #       - build-EHRbase
+      #     filters:
+      #       branches:
+      #         ignore:
+      #           - master
+      #           - develop
+      #           - snapshot
+      #           - release
+      # - generate-test-report:
+      #     requires:
+      #       - run-CONTRIBUTION-test
+      #     filters:
+      #       branches:
+      #         ignore:
+      #           - master
+      #           - develop
+      #           - snapshot
+      #           - release
 
 
   deploy-snapshot-release:
@@ -261,7 +261,7 @@ jobs:
                     git push --set-upstream origin develop v${SDK_VERSION}-SNAPSHOT
                     exit 0
                     ;;
-                *"[patch]"*
+                *"[patch]"*)
                     echo "deploy patch release"
                     git branch
                     git checkout -b snapshot
