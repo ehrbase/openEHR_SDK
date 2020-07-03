@@ -59,6 +59,9 @@ workflows:
           filters:
             tags:
               ignore: /^v.*/
+          branches:
+            ignore:
+              - develop
 
 
   deploy-stable-release:
