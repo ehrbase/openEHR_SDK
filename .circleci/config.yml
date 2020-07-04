@@ -303,14 +303,13 @@ jobs:
                     echo "bump major release version"
                     mvn build-helper:parse-version versions:set -DnewVersion=\${parsedVersion.nextMajorVersion}.0.0 versions:commit
                     SDK_VERSION=$(mvn -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive exec:exec)
-                    git commit -am "updated major verion to v${SDK_VERSION}-SNAPSHOT"
+                    git commit -am "updated major version to v${SDK_VERSION}-SNAPSHOT [skip ci]"
                     # git tag -a SNAPSHOT -m "v${SDK_VERSION}-SNAPSHOT release"
                     # git push --set-upstream origin major-snapshot-update SNAPSHOT
 
                     git merge --strategy=ours develop
                     git checkout develop
-                    git merge major-snapshot-update --no-commit
-                    git commit -am "merged v${SDK_VERSION} version update into develop"
+                    git merge major-snapshot-update
                     git tag -a v${SDK_VERSION}-SNAPSHOT -m "v${SDK_VERSION}-SNAPSHOT release"
                     git push --set-upstream origin develop v${SDK_VERSION}-SNAPSHOT
 
