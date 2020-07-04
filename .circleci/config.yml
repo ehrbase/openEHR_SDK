@@ -111,19 +111,21 @@ jobs:
     executor: circleci-python3-java11
     steps:
       - checkout
-      # - run: echo mock build SDK
       - restore-sdk-m2-cache
       - build-and-test-sdk
       - save-sdk-m2-cache
       - save-sdk-unittest-results
       - save-sdk-workspace
+      # - run: echo mock build SDK
+      - cache-sdk-workspace
 
 
   build-EHRbase:
     executor: circleci-py3-java11-postgres
     steps:
-      - checkout
       # - run: echo mock buidl EHRbasee
+      # - uncache-sdk-workspace
+      - checkout
       - restore-sdk-workspace
       - git-clone-ehrbase-repo
       - restore-ehrbase-m2-cache
@@ -340,7 +342,7 @@ commands:
           name: Install xmlstarlet to handle XML file from CLI
           command: |
             sudo killall -9 apt-get || true
-            sudo apt -y update && apt -y install xmlstarlet
+            sudo apt -y update && sudo apt -y install xmlstarlet
   
 
 
@@ -393,6 +395,19 @@ commands:
     steps:
       - attach_workspace:
           at: /home/circleci/
+
+  # NOTE: don't use these two steps in production
+  #       this is just for testing ci pipeline w/ mocked jobs/steps
+  cache-sdk-workspace:
+    steps:
+      - save_cache:
+          key: sdk-workspace-cache
+          paths:
+            - .
+  uncache-sdk-workspace:
+    steps:
+      - restore_cache:
+          key: sdk-workspace-cache
 
 
 
