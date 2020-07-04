@@ -254,81 +254,74 @@ jobs:
     steps:
       - checkout
       - configure-git-for-ci-bot
-      # - add_ssh_keys:
-      #   fingerprints:
-      #     - b7:59:8b:46:65:4e:37:d9:b1:21:30:90:df:9c:c8:dd
-      # - run:
-      #     name: Configure GIT
-      #     command: |
-      #       git config --global user.email "ci-bot@ehrbase.org"
-      #       git config --global user.name "ci-bot"
-      #       # git config --global push.followTags true
-      #       git remote -v
+
 
       - restore_cache:
           key: maven-dep-v1-
-      - run: sudo apt install maven -y
+
+      - update-snapshot-release-version
+      # - run: sudo apt install maven -y
       
-      - run:
-          name: Update Snapshot Release Version
-          command: |
-            echo test
-            last_commit="$(git log -1 --pretty=%B | cat)"
-            echo $last_commit
-            case $last_commit in
-                *"[major]"*)
+      # - run:
+      #     name: Update Snapshot Release Version
+      #     command: |
+      #       echo test
+      #       last_commit="$(git log -1 --pretty=%B | cat)"
+      #       echo $last_commit
+      #       case $last_commit in
+      #           *"[major]"*)
                 
-                    echo "bump major release version"
-                    mvn build-helper:parse-version versions:set -DnewVersion=\${parsedVersion.nextMajorVersion}.0.0 versions:commit
-                    SDK_VERSION=$(mvn -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive exec:exec)
+      #               echo "bump major release version"
+      #               mvn build-helper:parse-version versions:set -DnewVersion=\${parsedVersion.nextMajorVersion}.0.0 versions:commit
+      #               SDK_VERSION=$(mvn -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive exec:exec)
                     
-                    git checkout -b major-snapshot-update
-                    git commit -am "updated major version to v${SDK_VERSION}-SNAPSHOT [skip ci]"
-                    git merge --strategy=ours develop
-                    git checkout develop
-                    git merge major-snapshot-update
-                    git tag -a v${SDK_VERSION}-SNAPSHOT -m "v${SDK_VERSION}-SNAPSHOT release"
-                    git push --set-upstream origin develop v${SDK_VERSION}-SNAPSHOT
+      #               git checkout -b major-snapshot-update
+      #               git commit -am "updated major version to v${SDK_VERSION}-SNAPSHOT [skip ci]"
+      #               git merge --strategy=ours develop
+      #               git checkout develop
+      #               git merge major-snapshot-update
+      #               git tag -a v${SDK_VERSION}-SNAPSHOT -m "v${SDK_VERSION}-SNAPSHOT release"
+      #               git push --set-upstream origin develop v${SDK_VERSION}-SNAPSHOT
 
-                    exit 0
-                    ;;
-                *"[minor]"*)
+      #               exit 0
+      #               ;;
+      #           *"[minor]"*)
 
-                    echo "bump minor release version"
-                    mvn build-helper:parse-version versions:set -DnewVersion=\${parsedVersion.majorVersion}.\${parsedVersion.nextMinorVersion}.0 versions:commit
-                    SDK_VERSION=$(mvn -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive exec:exec)
+      #               echo "bump minor release version"
+      #               mvn build-helper:parse-version versions:set -DnewVersion=\${parsedVersion.majorVersion}.\${parsedVersion.nextMinorVersion}.0 versions:commit
+      #               SDK_VERSION=$(mvn -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive exec:exec)
                     
-                    git checkout -b minor-snapshot-update
-                    git commit -am "updated minor version to v${SDK_VERSION}-SNAPSHOT [skip ci]"
-                    git merge --strategy=ours develop
-                    git checkout develop
-                    git merge minor-snapshot-update
-                    git tag -a v${SDK_VERSION}-SNAPSHOT -m "v${SDK_VERSION}-SNAPSHOT release"
-                    git push --set-upstream origin develop v${SDK_VERSION}-SNAPSHOT
+      #               git checkout -b minor-snapshot-update
+      #               git commit -am "updated minor version to v${SDK_VERSION}-SNAPSHOT [skip ci]"
+      #               git merge --strategy=ours develop
+      #               git checkout develop
+      #               git merge minor-snapshot-update
+      #               git tag -a v${SDK_VERSION}-SNAPSHOT -m "v${SDK_VERSION}-SNAPSHOT release"
+      #               git push --set-upstream origin develop v${SDK_VERSION}-SNAPSHOT
 
-                    exit 0
-                    ;;
-                *"[patch]"*)
+      #               exit 0
+      #               ;;
+      #           *"[patch]"*)
 
-                    echo "bump patch release version"
-                    mvn build-helper:parse-version versions:set -DnewVersion=\${parsedVersion.majorVersion}.\${parsedVersion.minorVersion}.\${parsedVersion.nextIncrementalVersion} versions:commit
-                    SDK_VERSION=$(mvn -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive exec:exec)
+      #               echo "bump patch release version"
+      #               mvn build-helper:parse-version versions:set -DnewVersion=\${parsedVersion.majorVersion}.\${parsedVersion.minorVersion}.\${parsedVersion.nextIncrementalVersion} versions:commit
+      #               SDK_VERSION=$(mvn -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive exec:exec)
                     
-                    git checkout -b patch-snapshot-update
-                    git commit -am "updated patch version to v${SDK_VERSION}-SNAPSHOT [skip ci]"
-                    git merge --strategy=ours develop
-                    git checkout develop
-                    git merge patch-snapshot-update
-                    git tag -a v${SDK_VERSION}-SNAPSHOT -m "v${SDK_VERSION}-SNAPSHOT release"
-                    git push --set-upstream origin develop v${SDK_VERSION}-SNAPSHOT
+      #               git checkout -b patch-snapshot-update
+      #               git commit -am "updated patch version to v${SDK_VERSION}-SNAPSHOT [skip ci]"
+      #               git merge --strategy=ours develop
+      #               git checkout develop
+      #               git merge patch-snapshot-update
+      #               git tag -a v${SDK_VERSION}-SNAPSHOT -m "v${SDK_VERSION}-SNAPSHOT release"
+      #               git push --set-upstream origin develop v${SDK_VERSION}-SNAPSHOT
 
-                    exit 0
-                    ;;
-                *)
-                    echo "do nothing"
-                    exit 0
-                    ;;
-            esac
+      #               exit 0
+      #               ;;
+      #           *)
+      #               echo "do nothing"
+      #               exit 0
+      #               ;;
+      #       esac
       - save_cache:
           key: maven-dep-v1-
           paths:
@@ -389,6 +382,70 @@ commands:
   #    Y8a.    .a8P  Y8a.    .a8P   88    `888'    88  88    `888'    88   d8'        `8b   88     `8888  88      .a8P   Y8a     a8P
   #     `"Y8888Y"'    `"Y8888Y"'    88     `8'     88  88     `8'     88  d8'          `8b  88      `888  88888888Y"'     "Y88888P"
 
+
+  update-snapshot-release-version:
+    steps:
+      - run: sudo apt install maven -y
+      - run:
+          name: Update Snapshot Release Version
+          command: |
+            echo test
+            last_commit="$(git log -1 --pretty=%B | cat)"
+            echo $last_commit
+            case $last_commit in
+                *"[major]"*)
+                
+                    echo "bump major release version"
+                    mvn build-helper:parse-version versions:set -DnewVersion=\${parsedVersion.nextMajorVersion}.0.0 versions:commit
+                    SDK_VERSION=$(mvn -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive exec:exec)
+                    
+                    git checkout -b major-snapshot-update
+                    git commit -am "updated major version to v${SDK_VERSION}-SNAPSHOT [skip ci]"
+                    git merge --strategy=ours develop
+                    git checkout develop
+                    git merge major-snapshot-update
+                    git tag -a v${SDK_VERSION}-SNAPSHOT -m "v${SDK_VERSION}-SNAPSHOT release"
+                    git push --set-upstream origin develop v${SDK_VERSION}-SNAPSHOT
+
+                    exit 0
+                    ;;
+                *"[minor]"*)
+
+                    echo "bump minor release version"
+                    mvn build-helper:parse-version versions:set -DnewVersion=\${parsedVersion.majorVersion}.\${parsedVersion.nextMinorVersion}.0 versions:commit
+                    SDK_VERSION=$(mvn -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive exec:exec)
+                    
+                    git checkout -b minor-snapshot-update
+                    git commit -am "updated minor version to v${SDK_VERSION}-SNAPSHOT [skip ci]"
+                    git merge --strategy=ours develop
+                    git checkout develop
+                    git merge minor-snapshot-update
+                    git tag -a v${SDK_VERSION}-SNAPSHOT -m "v${SDK_VERSION}-SNAPSHOT release"
+                    git push --set-upstream origin develop v${SDK_VERSION}-SNAPSHOT
+
+                    exit 0
+                    ;;
+                *"[patch]"*)
+
+                    echo "bump patch release version"
+                    mvn build-helper:parse-version versions:set -DnewVersion=\${parsedVersion.majorVersion}.\${parsedVersion.minorVersion}.\${parsedVersion.nextIncrementalVersion} versions:commit
+                    SDK_VERSION=$(mvn -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive exec:exec)
+                    
+                    git checkout -b patch-snapshot-update
+                    git commit -am "updated patch version to v${SDK_VERSION}-SNAPSHOT [skip ci]"
+                    git merge --strategy=ours develop
+                    git checkout develop
+                    git merge patch-snapshot-update
+                    git tag -a v${SDK_VERSION}-SNAPSHOT -m "v${SDK_VERSION}-SNAPSHOT release"
+                    git push --set-upstream origin develop v${SDK_VERSION}-SNAPSHOT
+
+                    exit 0
+                    ;;
+                *)
+                    echo "do nothing"
+                    exit 0
+                    ;;
+            esac
 
   configure-git-for-ci-bot:
     steps:
