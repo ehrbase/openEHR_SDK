@@ -124,17 +124,16 @@ jobs:
   build-EHRbase:
     executor: circleci-py3-java11-postgres
     steps:
-      # - run: echo mock buidl EHRbasee
-      - uncache-sdk-workspace
-      - checkout
+      - run: echo mock buidl EHRbasee
+      # - checkout
       # - restore-sdk-workspace
-      - git-clone-ehrbase-repo
-      - restore-ehrbase-m2-cache
-      - force-ehrbase-to-use-local-sdk-version
-      - build-and-test-ehrbase
-      - save-ehrbase-m2-cache
-      - save-ehrbase-workspace
-      - cache-ehrbase-workspace
+      # - git-clone-ehrbase-repo
+      # - restore-ehrbase-m2-cache
+      # - force-ehrbase-to-use-local-sdk-version
+      # - build-and-test-ehrbase
+      # - save-ehrbase-m2-cache
+      # - save-ehrbase-workspace
+      # # - cache-ehrbase-workspace
 
 
   run-CONTRIBUTION-test:
@@ -513,9 +512,9 @@ commands:
             ls -la
             cd ehrbase
             java -jar application/target/application-*.jar --cache.enabled=false --system.allow-template-overwrite=true > log &
-            sleep 20
-            echo ... EHRbase server started.
-            #- grep -m 1 "Started EhrBase in" <(tail -f log)
+            # sleep 20
+            # echo ... EHRbase server started.
+            grep -m 1 "Started EhrBase in" <(tail -f log)
 
 
   run-robot-tests:
