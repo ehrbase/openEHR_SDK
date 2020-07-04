@@ -391,20 +391,22 @@ commands:
   
 
 
-  # *********************************************************************
-  # SDK COMMANDS
+  # ///////////////////////////////////////////////////////////////////////////
+  # /// SDK COMMANDS                                                        ///
+  # ///////////////////////////////////////////////////////////////////////////
+  
   build-and-test-sdk:
     steps:
       - run: sudo apt install maven -y
       - run:
           name: Maven build, test, install openEHR_SDK
-                                                          # TODO: @WLAD remove -DskipTests
-          command: mvn install dependency:go-offline -Dmaven.javadoc.skip=true -DskipTests
+          command: mvn install dependency:go-offline -Dmaven.javadoc.skip=true
       - run:
           name: Save the version number of locally installed SDK into a file
           command: |
             SDK_VERSION=$(mvn -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive exec:exec)
             echo $SDK_VERSION > SDK_VERSION
+            cat SDK_VERSION
 
   restore-sdk-m2-cache:
     steps:
