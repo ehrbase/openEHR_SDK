@@ -488,7 +488,7 @@ commands:
             cd ~/projects/ehrbase
             # mvn versions:set-property -Dproperty=ehrbase.sdk.version -DnewVersion=$SDK_VERSION -o
             #BACKUP xmlstarlet command
-            xml edit --inplace -N my=http://maven.apache.org/POM/4.0.0 -u my:project/my:version -v $SDK_VERSION pom.xml
+            xmlstarlet edit --inplace -N my=http://maven.apache.org/POM/4.0.0 -u my:project/my:version -v $SDK_VERSION pom.xml
     
   # NOTE: don't use these two steps in production
   #       this is just for testing ci pipeline w/ mocked jobs/steps
