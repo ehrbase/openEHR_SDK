@@ -10,6 +10,15 @@ executors:
     docker:
       - image: circleci/python@sha256:e1c98a85c5ee62ac52a2779fe5abe2677f021c8e3158e4fb2d569c7b9c6ac073
 
+  circleci-py3-java11-postgres:
+    working_directory: ~/projects
+    docker:
+      - image: circleci/python@sha256:e1c98a85c5ee62ac52a2779fe5abe2677f021c8e3158e4fb2d569c7b9c6ac073
+      - image: ehrbaseorg/ehrbase-postgres:latest
+        environment:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+
 # OVERVIEW - What this CI pipeline does:
 # 1. build & (unit)test the SDK
 # 2. build & (unit)test EHRbase w/ SDK (as local dependency)
@@ -118,7 +127,7 @@ jobs:
 
 
   build-EHRbase:
-    executor: circleci-python3-java11
+    executor: circleci-py3-java11-postgres
     # working_directory: ~/projects
     # docker:
     #   # Primary container w/ Java JDK
@@ -135,13 +144,9 @@ jobs:
     steps:
       - checkout
       - run: echo mock buidl EHRbasee
-      # - attach_workspace:
-      #     at: /home/circleci/
-      - run:
-          name: Git clone EHRbase repo
-          command: |
-            git clone git@github.com:ehrbase/ehrbase.git
-            ls -la
+      - restore-sdk-workspace
+      - git-clone-ehrbase-repo
+
       # - run:
       #     name: Generate Cache Checksum for EHRbase Dependencies
       #     command: find ~/projects/ehrbase -name 'pom.xml' | sort | xargs cat > /tmp/EHRbase_maven_cache_seed
@@ -435,6 +440,29 @@ commands:
           paths:
             - .m2
             - projects
+
+
+  # ///////////////////////////////////////////////////////////////////////////
+  # /// EHRBASE COMMANDS                                                    ///
+  # ///////////////////////////////////////////////////////////////////////////
+
+  git-clone-ehrbase-repo:
+    steps:
+    - run:
+        name: Git clone EHRbase repo
+        command: |
+          git clone git@github.com:ehrbase/ehrbase.git
+          ls -la
+
+  restore-sdk-workspace:
+    steps:
+    - attach_workspace:
+        at: /home/circleci/
+
+
+
+
+
 
 
   run-robot-tests:
