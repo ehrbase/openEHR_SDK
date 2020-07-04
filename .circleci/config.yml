@@ -62,11 +62,8 @@ workflows:
     when:
       or:
         - equal: [ develop, << pipeline.git.branch >> ]
-        - equal: [ SNAPSHOT, << pipeline.git.tag >> ]
+        # - equal: [ SNAPSHOT, << pipeline.git.tag >> ]
 
-      
-        
-        
     jobs:
       # - deploy-snapshot:
       #     filters:
@@ -75,14 +72,11 @@ workflows:
       #       branches:
       #         ignore:
       #           - snapshot
-      - initiate-snapshot-creation:
+      - publish-snapshot:
           filters:
-            branches:
-              only:
-                - develop
             tags:
               ignore:
-                - /^v.*/
+                # - /^v.*/
                 - /SNAPSHOT.*/
 
       - publish-major-snapshot-update:
@@ -276,7 +270,7 @@ jobs:
       - run: echo "generate test report job mock"
   
 
-  initiate-snapshot-creation:
+  publish-snapshot:
     executor: circleci-python3-java11
     # working_directory: ~/projects/openEHR_SDK
     # docker:
@@ -318,7 +312,6 @@ jobs:
                     git merge major-snapshot-update
                     git tag -a v${SDK_VERSION}-SNAPSHOT -m "v${SDK_VERSION}-SNAPSHOT release"
                     git push --set-upstream origin develop v${SDK_VERSION}-SNAPSHOT
-                    git push origin :major-snapshot-update
 
                     exit 0
                     ;;
