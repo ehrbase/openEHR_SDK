@@ -48,7 +48,6 @@ workflows:
               ignore:
                 - master
                 - develop
-                - snapshot
                 - release
 
       - run-CONTRIBUTION-test:
@@ -449,8 +448,8 @@ commands:
 
   force-ehrbase-to-use-local-sdk-version:
     steps:
-    # - install-xml-cli-tool
-      - run: sudo apt install maven -y
+      - install-xml-cli-tool
+      # - run: sudo apt install maven -y
       - run:
           name: Adjust SDK version number in EHRbase's pom
           description: |
@@ -472,9 +471,9 @@ commands:
             SDK_VERSION=$(cat ~/projects/SDK_VERSION)
             echo $SDK_VERSION
             cd ~/projects/ehrbase
-            mvn versions:set-property -Dproperty=ehrbase.sdk.version -DnewVersion=$SDK_VERSION -o
-            # #BACKUP xmlstarlet command
-            # xml edit -N my=http://maven.apache.org/POM/4.0.0 -u my:project/my:version -v $SDK_VERSION pom.xml
+            # mvn versions:set-property -Dproperty=ehrbase.sdk.version -DnewVersion=$SDK_VERSION -o
+            #BACKUP xmlstarlet command
+            xml edit --inplace -N my=http://maven.apache.org/POM/4.0.0 -u my:project/my:version -v $SDK_VERSION pom.xml
     
   # NOTE: don't use these two steps in production
   #       this is just for testing ci pipeline w/ mocked jobs/steps
