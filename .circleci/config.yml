@@ -10,6 +10,14 @@ executors:
     docker:
       - image: circleci/python@sha256:e1c98a85c5ee62ac52a2779fe5abe2677f021c8e3158e4fb2d569c7b9c6ac073
 
+# OVERVIEW - What this CI pipeline does:
+# 1. build & (unit)test the SDK
+# 2. build & (unit)test EHRbase w/ SDK (as local dependency)
+# 3. run all integation tests suites
+#    - setup test environment
+#    - execute robot tests
+# 4. publish snapshot & release artifacts on jitpack.io
+
 
 workflows:
 
@@ -21,9 +29,8 @@ workflows:
               ignore:
                 - master
                 - develop
-                # - snapshot
                 - release
-                # - major-snapshot-update
+
       - build-EHRbase:
           requires:
             - build-openEHR_SDK
@@ -34,7 +41,7 @@ workflows:
                 - develop
                 - snapshot
                 - release
-                # - major-snapshot-update
+
       # - run-CONTRIBUTION-test:
       #     context: org-global
       #     requires:
@@ -44,8 +51,8 @@ workflows:
       #         ignore:
       #           - master
       #           - develop
-      #           - snapshot
       #           - release
+
       # - generate-test-report:
       #     requires:
       #       - run-CONTRIBUTION-test
@@ -54,8 +61,8 @@ workflows:
       #         ignore:
       #           - master
       #           - develop
-      #           - snapshot
       #           - release
+
 
 
   deploy-snapshot-release:
@@ -63,7 +70,6 @@ workflows:
       and:
         - equal: [ develop, << pipeline.git.branch >> ]
         # - equal: [ SNAPSHOT, << pipeline.git.tag >> ]
-
     jobs:
       - publish-snapshot:
           filters:
@@ -72,6 +78,7 @@ workflows:
                 # - /^v.*/
                 - /SNAPSHOT.*/
       
+
 
   deploy-stable-release:
     when:
@@ -92,15 +99,6 @@ jobs:
   #    "Y8888P"     `"Y8888Y"'    88888888P"    "Y88888P"
 
 
-  # OVERVIEW
-  # 1. build & (unit)test the SDK
-  # 2. build & (unit)test EHRbase w/ SDK (as local dependency)
-  # 3. run all integation tests suites
-  #    - setup test environment
-  #    - execute robot tests
-  # 4. publish snapshot & release artifacts on jitpack.io
-
-
   build-openEHR_SDK:
     executor: circleci-python3-java11
     # working_directory: ~/projects/openEHR_SDK
@@ -111,29 +109,12 @@ jobs:
     #   - image: circleci/python@sha256:e1c98a85c5ee62ac52a2779fe5abe2677f021c8e3158e4fb2d569c7b9c6ac073
     steps:
       - checkout
-      - run: echo mock build SDK
-      # - run: sudo apt install maven -y
-      # - run:
-      #     name: Generate Cache Checksum for openEHR_SDK Dependencies
-      #     command: find . -name 'pom.xml' | sort | xargs cat > /tmp/openEHR_SDK_maven_cache_seed
-      # - restore_cache:
-      #     key: openEHR_SDK-{{ checksum "/tmp/openEHR_SDK_maven_cache_seed" }}
-      # - run:
-      #     name: Maven build, test, install openEHR_SDK
-      #                                                     # TODO: @WLAD remove -DskipTests
-      #     command: mvn install dependency:go-offline -Dmaven.javadoc.skip=true -DskipTests
-      # - persist-version-number-of-installed-sdk
-      # - save_cache:
-      #     key: openEHR_SDK-{{ checksum "/tmp/openEHR_SDK_maven_cache_seed" }}
-      #     paths:
-      #     - ~/.m2
-      # - store_test_results:
-      #     path: client/target/surefire-reports
-      # - persist_to_workspace:
-      #     root: /home/circleci
-      #     paths:
-      #       - .m2
-      #       - projects/openEHR_SDK/
+      # - run: echo mock build SDK
+      - restore-sdk-m2-cache
+      - build-and-test-sdk
+      - save-sdk-m2-cache
+      - save-sdk-unittest-results
+      - save-sdk-workspace
 
 
   build-EHRbase:
@@ -254,25 +235,19 @@ jobs:
     steps:
       - checkout
       - configure-git-for-ci-bot
-
       - restore-versionupdater-dependencies
-      # - restore_cache:
-      #     key: maven-dep-v1-
-
       - update-snapshot-release-version
       - save-versionupdater-dependencies
+
+      # TODO: DELETE?
       # - save_cache:
-      #     key: maven-dep-v1-
+      #     key: workspace-v1-{{ checksum ".circleci/config.yml" }}
       #     paths:
-      #       - ~/.m2
-      - save_cache:
-          key: workspace-v1-{{ checksum ".circleci/config.yml" }}
-          paths:
-            - ~/projects
-      - persist_to_workspace:
-          root: /home/circleci
-          paths:
-            - projects
+      #       - ~/projects
+      # - persist_to_workspace:
+      #     root: /home/circleci
+      #     paths:
+      #       - projects
 
 
   publish-release:
@@ -282,19 +257,10 @@ jobs:
     #   # - image: circleci/python:3.8.3-buster-node-browsers
     #   - image: circleci/python@sha256:e1c98a85c5ee62ac52a2779fe5abe2677f021c8e3158e4fb2d569c7b9c6ac073
     steps:
-      - add_ssh_keys:
-          fingerprints:
-            - b7:59:8b:46:65:4e:37:d9:b1:21:30:90:df:9c:c8:dd
       - checkout
-      - run:
-          name: Configure GIT
-          command: |
-            git config --global user.email "ci-bot@ehrbase.org"
-            git config --global user.name "ci-bot"
-            # git config --global push.followTags true
-            git remote -v
-      - restore_cache:
-          key: maven-dep-v1-
+      - configure-git-for-ci-bot
+      - restore-versionupdater-dependencies
+
       - run:
           name: Create and push release version tag
           command: |
@@ -303,6 +269,8 @@ jobs:
             git commit -am "released v${SDK_VERSION}"
             git tag -a v${SDK_VERSION} -m "v${SDK_VERSION} release"
             git push --set-upstream origin master v${SDK_VERSION}
+
+
 
 
 
@@ -393,10 +361,11 @@ commands:
                     exit 0
                     ;;
                 *)
-                    echo "do nothing"
+                    echo "This was just a simple merge - no versions updated"
                     exit 0
                     ;;
             esac
+
 
   configure-git-for-ci-bot:
     steps:
@@ -411,6 +380,7 @@ commands:
             # git config --global push.followTags true
             git remote -v
   
+
   install-xml-cli-tool:
     steps:
       - run:
@@ -419,13 +389,51 @@ commands:
             sudo killall -9 apt-get || true
             sudo apt -y update && apt -y install xmlstarlet
   
-  persist-version-number-of-installed-sdk:
+
+
+  # *********************************************************************
+  # SDK COMMANDS
+  build-and-test-sdk:
     steps:
+      - run: sudo apt install maven -y
+      - run:
+          name: Maven build, test, install openEHR_SDK
+                                                          # TODO: @WLAD remove -DskipTests
+          command: mvn install dependency:go-offline -Dmaven.javadoc.skip=true -DskipTests
       - run:
           name: Save the version number of locally installed SDK into a file
           command: |
             SDK_VERSION=$(mvn -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive exec:exec)
             echo $SDK_VERSION > SDK_VERSION
+
+  restore-sdk-m2-cache:
+    steps:
+      - run:
+          name: Generate Cache Checksum for openEHR_SDK Dependencies
+          command: find . -name 'pom.xml' | sort | xargs cat > /tmp/openEHR_SDK_maven_cache_seed
+      - restore_cache:
+          key: openEHR_SDK-
+
+  save-sdk-m2-cache:
+    steps:
+      - save_cache:
+          key: openEHR_SDK-{{ checksum "/tmp/openEHR_SDK_maven_cache_seed" }}
+          paths:
+          - ~/.m2
+  
+  save-sdk-unittest-results:
+    steps:
+      - store_test_results:
+          path: client/target/surefire-reports
+  
+  save-sdk-workspace:
+    steps:
+      - persist_to_workspace:
+          root: /home/circleci
+          paths:
+            - .m2
+            - projects
+
 
   run-robot-tests:
     description: Run integration tests written in Robot Framework
