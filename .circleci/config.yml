@@ -486,8 +486,8 @@ commands:
             - projects/ehrbase
   uncache-ehrbase-workspace:
     steps:
-      restore_cache:
-        key: EHRbase-WS-cache
+      - restore_cache:
+          key: EHRbase-WS-cache
 
 
 
