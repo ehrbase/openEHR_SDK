@@ -429,7 +429,7 @@ commands:
           name: Maven build EHRbase
           command: |
             cd ~/projects/ehrbase
-            mvn package dependency:go-offline -Dmaven.javadoc.skip=true -DskipTests
+            mvn package dependency:go-offline -Dmaven.javadoc.skip=true
 
   save-ehrbase-m2-cache:
     steps:
@@ -475,7 +475,7 @@ commands:
             NOTE: I had issues installing it in docker executor (cimg/openjdk:11.0)
                   may be it works better in machine executor(?)
           command: |
-            SDK_VERSION=$(cat ~/projects/openEHR_SDK/SDK_VERSION)
+            SDK_VERSION=$(cat ~/projects/SDK_VERSION)
             echo $SDK_VERSION
             cd ~/projects/ehrbase
             mvn versions:set-property -Dproperty=ehrbase.sdk.version -DnewVersion=$SDK_VERSION -o
