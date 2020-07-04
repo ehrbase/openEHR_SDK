@@ -83,6 +83,7 @@ workflows:
             tags:
               ignore:
                 - /^v.*/
+                - /SNAPSHOT.*/
 
       - publish-major-snapshot-update:
           filters:
