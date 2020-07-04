@@ -51,16 +51,16 @@ workflows:
                 - snapshot
                 - release
 
-      # - run-CONTRIBUTION-test:
-      #     context: org-global
-      #     requires:
-      #       - build-EHRbase
-      #     filters:
-      #       branches:
-      #         ignore:
-      #           - master
-      #           - develop
-      #           - release
+      - run-CONTRIBUTION-test:
+          context: org-global
+          requires:
+            - build-EHRbase
+          filters:
+            branches:
+              ignore:
+                - master
+                - develop
+                - release
 
       # - generate-test-report:
       #     requires:
@@ -110,12 +110,6 @@ jobs:
 
   build-openEHR_SDK:
     executor: circleci-python3-java11
-    # working_directory: ~/projects/openEHR_SDK
-    # docker:
-    #   # Primary container w/ Maven & Java JDK
-    #   # - image: cimg/openjdk:11.0
-    #   # - image: circleci/python:3.8.3-buster-node-browsers
-    #   - image: circleci/python@sha256:e1c98a85c5ee62ac52a2779fe5abe2677f021c8e3158e4fb2d569c7b9c6ac073
     steps:
       - checkout
       # - run: echo mock build SDK
@@ -128,19 +122,6 @@ jobs:
 
   build-EHRbase:
     executor: circleci-py3-java11-postgres
-    # working_directory: ~/projects
-    # docker:
-    #   # Primary container w/ Java JDK
-    #   # NOTE: all commands run here
-    #   # - image: circleci/python:3.8.3-buster-node-browsers
-    #   - image: circleci/python@sha256:e1c98a85c5ee62ac52a2779fe5abe2677f021c8e3158e4fb2d569c7b9c6ac073
-
-    #   # Secondary (service) container w/ PostgreSQL DB
-    #   # NOTE: DB is available at `host: localhost`
-    #   - image: ehrbaseorg/ehrbase-postgres:latest
-    #     environment:
-    #       POSTGRES_USER: postgres
-    #       POSTGRES_PASSWORD: postgres
     steps:
       - checkout
       # - run: echo mock buidl EHRbasee
@@ -152,34 +133,37 @@ jobs:
       - save-ehrbase-m2-cache
       - save-ehrbase-workspace
 
-      # TODO: DELETE?
-      # - save_cache:
-      #     key: ehrbase-repo-v1-{{ checksum ".circleci/config.yml" }}
-      #     paths:
-      #       - ~/projects/ehrbase
-
-
 
   run-CONTRIBUTION-test:
-    executor: circleci-python3-java11
-    # working_directory: ~/projects
-    # docker:
-    #   # Primary container w/ Maven & Java JDK
-    #   # - image: cimg/openjdk:11.0
-    #   # - image: circleci/python:3.8.3-buster-node-browsers
-    #   - image: circleci/python@sha256:e1c98a85c5ee62ac52a2779fe5abe2677f021c8e3158e4fb2d569c7b9c6ac073
-
-        # TODO: RESTORE THIS
-        # machine:
-        #   image: ubuntu-1604:201903-01
+    executor: circleci-py3-java11-postgres
     steps:
-      - run: echo "run integration tests job mock"
-      # - openjdk-install/openjdk:
-      #     version: 11
-      # - run-robot-tests:
-      #     include-tags: "CONTRIBUTION"
-      #     test-suite-path: "CONTRIBUTION_TESTS"
-      #     test-suite-name: "CONTRIBUTION"
+      # - run: echo "run integration tests job mock"
+      - run-robot-tests:
+          include-tags: "CONTRIBUTION"
+          test-suite-path: "CONTRIBUTION_TESTS"
+          test-suite-name: "CONTRIBUTION"
+
+
+  # run-CONTRIBUTION-test:
+  #   executor: circleci-python3-java11
+  #   # working_directory: ~/projects
+  #   # docker:
+  #   #   # Primary container w/ Maven & Java JDK
+  #   #   # - image: cimg/openjdk:11.0
+  #   #   # - image: circleci/python:3.8.3-buster-node-browsers
+  #   #   - image: circleci/python@sha256:e1c98a85c5ee62ac52a2779fe5abe2677f021c8e3158e4fb2d569c7b9c6ac073
+
+  #       # TODO: RESTORE THIS
+  #       # machine:
+  #       #   image: ubuntu-1604:201903-01
+  #   steps:
+  #     - run: echo "run integration tests job mock"
+  #     # - openjdk-install/openjdk:
+  #     #     version: 11
+  #     # - run-robot-tests:
+  #     #     include-tags: "CONTRIBUTION"
+  #     #     test-suite-path: "CONTRIBUTION_TESTS"
+  #     #     test-suite-name: "CONTRIBUTION"
       
 
   generate-test-report:
@@ -453,6 +437,14 @@ commands:
         paths:
           - projects/ehrbase
 
+  restore-ehrbase-workspace:
+    description: Attach EHRbase repo containing target folder and tests back to workspace
+    steps:
+      - run: ls -la
+      - attach_workspace:
+          at: /home/circleci/
+      - run: ls -la ehrbase
+
   force-ehrbase-to-use-local-sdk-version:
     steps:
     # - install-xml-cli-tool
@@ -501,7 +493,7 @@ commands:
         description: Titel of generated Robot Log/Report.html
         type: string
     steps:
-      - attach-ehrbase-repo-to-workspace
+      - restore-ehrbase-workspace
       # - configure-python-version
       # - restore-pip-cache
       - install-python-requirements
@@ -521,6 +513,7 @@ commands:
                   --flattenkeywords name:_resources.* \
                   --outputdir results/<< parameters.test-suite-name >> \
                   --name << parameters.test-suite-name >> \
+                  --variable nodocker:true \
                   robot/<< parameters.test-suite-path >>/
       # - save-pip-cache
       - persist-test-results-folder
@@ -528,6 +521,47 @@ commands:
           path: ~/projects/ehrbase/tests/results/
       - store_artifacts:
           path: ~/projects/ehrbase/tests/results/
+
+  # run-robot-tests:
+  #   description: Run integration tests written in Robot Framework
+  #   parameters:
+  #     include-tags:
+  #       description: Which tests to inclue by TAGs (Robot syntax applies!)
+  #       type: string
+  #     test-suite-path:
+  #       description: Target test-suite given by it's folder name e.g. COMPOSITION_TESTS
+  #       type: string
+  #     test-suite-name:
+  #       description: Titel of generated Robot Log/Report.html
+  #       type: string
+  #   steps:
+  #     - restore-ehrbase-workspace
+  #     # - configure-python-version
+  #     # - restore-pip-cache
+  #     - install-python-requirements
+  #     - run: pip list
+  #     - run:
+  #         name: EXECUTE ROBOT COMMAND
+  #         no_output_timeout: 30m
+  #         command: |
+  #           cd ~/projects/ehrbase/tests
+  #           robot --include << parameters.include-tags >> \
+  #                 --exclude TODO -e future -e obsolete -e libtest \
+  #                 --console dotted \
+  #                 --loglevel TRACE \
+  #                 --noncritical not-ready \
+  #                 --flattenkeywords for \
+  #                 --flattenkeywords foritem \
+  #                 --flattenkeywords name:_resources.* \
+  #                 --outputdir results/<< parameters.test-suite-name >> \
+  #                 --name << parameters.test-suite-name >> \
+  #                 robot/<< parameters.test-suite-path >>/
+  #     # - save-pip-cache
+  #     - persist-test-results-folder
+  #     - store_test_results:
+  #         path: ~/projects/ehrbase/tests/results/
+  #     - store_artifacts:
+  #         path: ~/projects/ehrbase/tests/results/
 
   
   configure-python-version:
@@ -574,15 +608,6 @@ commands:
       - restore_cache:
           keys:
             - pip-v1-
-  
-
-  attach-ehrbase-repo-to-workspace:
-    description: Attach EHRbase repo containing target folder and tests back to workspace
-    steps:
-      - run: ls -la
-      - attach_workspace:
-          at: /home/circleci/
-      - run: ls -la ehrbase
 
 
   persist-test-results-folder:
