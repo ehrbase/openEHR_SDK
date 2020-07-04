@@ -58,9 +58,9 @@ workflows:
       #           - release
 
 
-  trigger-job:
+  deploy-snapshot-release:
     when:
-      or:
+      and:
         - equal: [ develop, << pipeline.git.branch >> ]
         # - equal: [ SNAPSHOT, << pipeline.git.tag >> ]
 
@@ -309,7 +309,8 @@ jobs:
 
                     git merge --strategy=ours develop
                     git checkout develop
-                    git merge major-snapshot-update
+                    git merge major-snapshot-update --no-commit
+                    git commit -am "merged v${SDK_VERSION} version update into develop"
                     git tag -a v${SDK_VERSION}-SNAPSHOT -m "v${SDK_VERSION}-SNAPSHOT release"
                     git push --set-upstream origin develop v${SDK_VERSION}-SNAPSHOT
 
