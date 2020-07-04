@@ -572,18 +572,29 @@ commands:
           command: |
             pyenv global 3.7.0
 
-
   install-python-requirements:
     description: Install Python requirements
     steps:
-      - configure-python-version
       # - restore-pip-cache
       - run:
           name: Install Python requirements
           command: |
+            python --version
             python -c "import site; print(site.getsitepackages())"
             pip install -r ~/projects/ehrbase/tests/requirements.txt
       # - save-pip-cache
+
+  # install-python-requirements:
+  #   description: Install Python requirements
+  #   steps:
+  #     - configure-python-version
+  #     # - restore-pip-cache
+  #     - run:
+  #         name: Install Python requirements
+  #         command: |
+  #           python -c "import site; print(site.getsitepackages())"
+  #           pip install -r ~/projects/ehrbase/tests/requirements.txt
+  #     # - save-pip-cache
   
 
   save-pip-cache:
