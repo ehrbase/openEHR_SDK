@@ -21,9 +21,9 @@ workflows:
               ignore:
                 - master
                 - develop
-                - snapshot
+                # - snapshot
                 - release
-                - major-snapshot-update
+                # - major-snapshot-update
       - build-EHRbase:
           requires:
             - build-openEHR_SDK
@@ -34,7 +34,7 @@ workflows:
                 - develop
                 - snapshot
                 - release
-                - major-snapshot-update
+                # - major-snapshot-update
       # - run-CONTRIBUTION-test:
       #     context: org-global
       #     requires:
@@ -65,46 +65,20 @@ workflows:
         # - equal: [ SNAPSHOT, << pipeline.git.tag >> ]
 
     jobs:
-      # - deploy-snapshot:
-      #     filters:
-      #       tags:
-      #         only: /^v.*-SNAPSHOT/
-      #       branches:
-      #         ignore:
-      #           - snapshot
       - publish-snapshot:
           filters:
             tags:
               ignore:
                 # - /^v.*/
                 - /SNAPSHOT.*/
-
-      - publish-major-snapshot-update:
-          filters:
-            branches:
-              only:
-                - major-snapshot-update
-
-
-      # - publish-minor-snapshot-update:
-      #   filters:
-      #     branches:
-      #       only:
-      #         - minor-snapshot-update
-      # - publish-patch-snapshot-update:
-      #   filters:
-      #     branches:
-      #       only:
-      #         - patch-snapshot-update
       
-
 
   deploy-stable-release:
     when:
-      and: # All must be true to trigger
+      and:
         - equal: [ release, << pipeline.git.branch >> ]
     jobs:
-      - deploy-stable-release
+      - publish-release
 
 
 jobs:
@@ -299,14 +273,13 @@ jobs:
             echo $last_commit
             case $last_commit in
                 *"[major]"*)
-                    git checkout -b major-snapshot-update
+                
                     echo "bump major release version"
                     mvn build-helper:parse-version versions:set -DnewVersion=\${parsedVersion.nextMajorVersion}.0.0 versions:commit
                     SDK_VERSION=$(mvn -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive exec:exec)
+                    
+                    git checkout -b major-snapshot-update
                     git commit -am "updated major version to v${SDK_VERSION}-SNAPSHOT [skip ci]"
-                    # git tag -a SNAPSHOT -m "v${SDK_VERSION}-SNAPSHOT release"
-                    # git push --set-upstream origin major-snapshot-update SNAPSHOT
-
                     git merge --strategy=ours develop
                     git checkout develop
                     git merge major-snapshot-update
@@ -316,28 +289,35 @@ jobs:
                     exit 0
                     ;;
                 *"[minor]"*)
-                    git branch
-                    git checkout -b snapshot
+
                     echo "bump minor release version"
                     mvn build-helper:parse-version versions:set -DnewVersion=\${parsedVersion.majorVersion}.\${parsedVersion.nextMinorVersion}.0 versions:commit
                     SDK_VERSION=$(mvn -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive exec:exec)
-                    git commit -am "updated minor version to v${SDK_VERSION}-SNAPSHOT"
+                    
+                    git checkout -b minor-snapshot-update
+                    git commit -am "updated minor version to v${SDK_VERSION}-SNAPSHOT [skip ci]"
+                    git merge --strategy=ours develop
+                    git checkout develop
+                    git merge minor-snapshot-update
                     git tag -a v${SDK_VERSION}-SNAPSHOT -m "v${SDK_VERSION}-SNAPSHOT release"
                     git push --set-upstream origin develop v${SDK_VERSION}-SNAPSHOT
+
                     exit 0
                     ;;
                 *"[patch]"*)
-                    git branch
-                    git checkout -b snapshot
+
                     echo "bump patch release version"
                     mvn build-helper:parse-version versions:set -DnewVersion=\${parsedVersion.majorVersion}.\${parsedVersion.minorVersion}.\${parsedVersion.nextIncrementalVersion} versions:commit
                     SDK_VERSION=$(mvn -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive exec:exec)
-                    git commit -am "updated patch version to v${SDK_VERSION}-SNAPSHOT"
+                    
+                    git checkout -b patch-snapshot-update
+                    git commit -am "updated patch version to v${SDK_VERSION}-SNAPSHOT [skip ci]"
                     git merge --strategy=ours develop
                     git checkout develop
-                    git merge snapshot
+                    git merge patch-snapshot-update
                     git tag -a v${SDK_VERSION}-SNAPSHOT -m "v${SDK_VERSION}-SNAPSHOT release"
                     git push --set-upstream origin develop v${SDK_VERSION}-SNAPSHOT
+
                     exit 0
                     ;;
                 *)
@@ -359,123 +339,124 @@ jobs:
             - projects
 
   
-  publish-major-snapshot-update:
+  # publish-major-snapshot-update:
+  #   executor: circleci-python3-java11
+  #   # working_directory: ~/projects
+  #   # docker:
+  #   #   # - image: cimg/openjdk:11.0
+  #   #   # - image: circleci/python:3.8.3-buster-node-browsers
+  #   #   - image: circleci/python@sha256:e1c98a85c5ee62ac52a2779fe5abe2677f021c8e3158e4fb2d569c7b9c6ac073
+
+  #   steps:
+  #     # - restore_cache:
+  #     #     key: workspace-v1-
+  #     - run: pwd
+  #     - run: ls -la
+  #     - add_ssh_keys:
+  #         fingerprints:
+  #           - b7:59:8b:46:65:4e:37:d9:b1:21:30:90:df:9c:c8:dd
+  #     - run: sudo apt install maven -y
+  #     - checkout
+  #     - run:
+  #         name: Configure GIT
+  #         command: |
+  #           git config --global user.email "ci-bot@ehrbase.org"
+  #           git config --global user.name "ci-bot"
+  #           # git config --global push.followTags true
+  #           git remote -v
+  #     - restore_cache:
+  #         key: maven-dep-v1-
+  #     - run:
+  #         command: |
+  #           # cd openEHR_SDK
+  #           git branch
+  #           git checkout major-snapshot-update
+  #           SDK_VERSION=$(mvn -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive exec:exec)
+  #           git merge --strategy=ours develop
+  #           git checkout develop
+  #           git merge major-snapshot-update
+  #           git tag -a v${SDK_VERSION}-SNAPSHOT -m "v${SDK_VERSION}-SNAPSHOT release"
+  #           git push --set-upstream origin develop v${SDK_VERSION}-SNAPSHOT
+  #           git push origin :major-snapshot-update
+  #           git push origin :SNAPSHOT
+  
+  # deploy-snapshot:
+  #   docker:
+  #     # - image: circleci/python:3.8.3-buster-node-browsers
+  #     - image: circleci/python@sha256:e1c98a85c5ee62ac52a2779fe5abe2677f021c8e3158e4fb2d569c7b9c6ac073
+  #   steps:
+  #     - add_ssh_keys:
+  #         fingerprints:
+  #           - b7:59:8b:46:65:4e:37:d9:b1:21:30:90:df:9c:c8:dd
+  #     - checkout
+  #     - run:
+  #         name: Configure GIT
+  #         command: |
+  #           git config --global user.email "ci-bot@ehrbase.org"
+  #           git config --global user.name "ci-bot"
+  #           # git config --global push.followTags true
+  #           git remote -v
+  #     - restore_cache:
+  #         key: maven-dep-v1-
+  #     - run:
+  #         command: |
+  #           echo test
+  #           last_commit="$(git log -1 --pretty=%B | cat)"
+  #           echo $last_commit
+  #           shopt -s extglob
+  #           case $last_commit in
+  #               *"[major]"*)
+  #                   echo "deploy major release"
+  #                   git checkout -b snapshot
+  #                   mvn build-helper:parse-version versions:set -DnewVersion=\${parsedVersion.nextMajorVersion}.0.0 versions:commit
+  #                   SDK_VERSION=$(mvn -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive exec:exec)
+  #                   git commit -am "released v${SDK_VERSION}-SNAPSHOT"
+  #                   git tag -a v${SDK_VERSION}-SNAPSHOT -m "v${SDK_VERSION}-SNAPSHOT release"
+  #                   git push --set-upstream origin develop v${SDK_VERSION}-SNAPSHOT
+  #                   exit 0
+  #                   ;;
+  #               *"[minor]"*)
+  #                   git branch
+  #                   git checkout -b snapshot
+  #                   echo "bump minor release version"
+  #                   mvn build-helper:parse-version versions:set -DnewVersion=\${parsedVersion.majorVersion}.\${parsedVersion.nextMinorVersion}.0 versions:commit
+  #                   SDK_VERSION=$(mvn -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive exec:exec)
+  #                   git commit -am "released v${SDK_VERSION}-SNAPSHOT"
+  #                   git tag -a v${SDK_VERSION}-SNAPSHOT -m "v${SDK_VERSION}-SNAPSHOT release"
+  #                   git push --set-upstream origin develop v${SDK_VERSION}-SNAPSHOT
+  #                   exit 0
+  #                   ;;
+  #               *"[patch]"*)
+  #                   git branch
+  #                   git checkout -b snapshot
+  #                   echo "bump patch release version"
+  #                   mvn build-helper:parse-version versions:set -DnewVersion=\${parsedVersion.majorVersion}.\${parsedVersion.minorVersion}.\${parsedVersion.nextIncrementalVersion} versions:commit
+  #                   SDK_VERSION=$(mvn -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive exec:exec)
+  #                   git commit -am "updated to version v${SDK_VERSION}-SNAPSHOT"
+  #                   git merge --strategy=ours develop
+  #                   git checkout develop
+  #                   git merge snapshot
+  #                   git tag -a v${SDK_VERSION}-SNAPSHOT -m "v${SDK_VERSION}-SNAPSHOT release"
+  #                   git push --set-upstream origin develop v${SDK_VERSION}-SNAPSHOT
+  #                   exit 0
+  #                   ;;
+  #               *)
+  #                   echo "do nothing"
+  #                   exit 0
+  #                   ;;
+  #           esac
+  #     - save_cache:
+  #         key: maven-dep-v1-{{ checksum ".circleci/config.yml" }}
+  #         paths:
+  #           - ~/.m2
+          
+  
+  publish-release:
     executor: circleci-python3-java11
-    # working_directory: ~/projects
     # docker:
     #   # - image: cimg/openjdk:11.0
     #   # - image: circleci/python:3.8.3-buster-node-browsers
     #   - image: circleci/python@sha256:e1c98a85c5ee62ac52a2779fe5abe2677f021c8e3158e4fb2d569c7b9c6ac073
-
-    steps:
-      # - restore_cache:
-      #     key: workspace-v1-
-      - run: pwd
-      - run: ls -la
-      - add_ssh_keys:
-          fingerprints:
-            - b7:59:8b:46:65:4e:37:d9:b1:21:30:90:df:9c:c8:dd
-      - run: sudo apt install maven -y
-      - checkout
-      - run:
-          name: Configure GIT
-          command: |
-            git config --global user.email "ci-bot@ehrbase.org"
-            git config --global user.name "ci-bot"
-            # git config --global push.followTags true
-            git remote -v
-      - restore_cache:
-          key: maven-dep-v1-
-      - run:
-          command: |
-            # cd openEHR_SDK
-            git branch
-            git checkout major-snapshot-update
-            SDK_VERSION=$(mvn -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive exec:exec)
-            git merge --strategy=ours develop
-            git checkout develop
-            git merge major-snapshot-update
-            git tag -a v${SDK_VERSION}-SNAPSHOT -m "v${SDK_VERSION}-SNAPSHOT release"
-            git push --set-upstream origin develop v${SDK_VERSION}-SNAPSHOT
-            git push origin :major-snapshot-update
-            git push origin :SNAPSHOT
-  
-  deploy-snapshot:
-    docker:
-      # - image: circleci/python:3.8.3-buster-node-browsers
-      - image: circleci/python@sha256:e1c98a85c5ee62ac52a2779fe5abe2677f021c8e3158e4fb2d569c7b9c6ac073
-    steps:
-      - add_ssh_keys:
-          fingerprints:
-            - b7:59:8b:46:65:4e:37:d9:b1:21:30:90:df:9c:c8:dd
-      - checkout
-      - run:
-          name: Configure GIT
-          command: |
-            git config --global user.email "ci-bot@ehrbase.org"
-            git config --global user.name "ci-bot"
-            # git config --global push.followTags true
-            git remote -v
-      - restore_cache:
-          key: maven-dep-v1-
-      - run:
-          command: |
-            echo test
-            last_commit="$(git log -1 --pretty=%B | cat)"
-            echo $last_commit
-            shopt -s extglob
-            case $last_commit in
-                *"[major]"*)
-                    echo "deploy major release"
-                    git checkout -b snapshot
-                    mvn build-helper:parse-version versions:set -DnewVersion=\${parsedVersion.nextMajorVersion}.0.0 versions:commit
-                    SDK_VERSION=$(mvn -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive exec:exec)
-                    git commit -am "released v${SDK_VERSION}-SNAPSHOT"
-                    git tag -a v${SDK_VERSION}-SNAPSHOT -m "v${SDK_VERSION}-SNAPSHOT release"
-                    git push --set-upstream origin develop v${SDK_VERSION}-SNAPSHOT
-                    exit 0
-                    ;;
-                *"[minor]"*)
-                    git branch
-                    git checkout -b snapshot
-                    echo "bump minor release version"
-                    mvn build-helper:parse-version versions:set -DnewVersion=\${parsedVersion.majorVersion}.\${parsedVersion.nextMinorVersion}.0 versions:commit
-                    SDK_VERSION=$(mvn -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive exec:exec)
-                    git commit -am "released v${SDK_VERSION}-SNAPSHOT"
-                    git tag -a v${SDK_VERSION}-SNAPSHOT -m "v${SDK_VERSION}-SNAPSHOT release"
-                    git push --set-upstream origin develop v${SDK_VERSION}-SNAPSHOT
-                    exit 0
-                    ;;
-                *"[patch]"*)
-                    git branch
-                    git checkout -b snapshot
-                    echo "bump patch release version"
-                    mvn build-helper:parse-version versions:set -DnewVersion=\${parsedVersion.majorVersion}.\${parsedVersion.minorVersion}.\${parsedVersion.nextIncrementalVersion} versions:commit
-                    SDK_VERSION=$(mvn -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive exec:exec)
-                    git commit -am "updated to version v${SDK_VERSION}-SNAPSHOT"
-                    git merge --strategy=ours develop
-                    git checkout develop
-                    git merge snapshot
-                    git tag -a v${SDK_VERSION}-SNAPSHOT -m "v${SDK_VERSION}-SNAPSHOT release"
-                    git push --set-upstream origin develop v${SDK_VERSION}-SNAPSHOT
-                    exit 0
-                    ;;
-                *)
-                    echo "do nothing"
-                    exit 0
-                    ;;
-            esac
-      - save_cache:
-          key: maven-dep-v1-{{ checksum ".circleci/config.yml" }}
-          paths:
-            - ~/.m2
-          
-  
-  deploy-stable-release:
-    docker:
-      # - image: cimg/openjdk:11.0
-      # - image: circleci/python:3.8.3-buster-node-browsers
-      - image: circleci/python@sha256:e1c98a85c5ee62ac52a2779fe5abe2677f021c8e3158e4fb2d569c7b9c6ac073
     steps:
       - add_ssh_keys:
           fingerprints:
