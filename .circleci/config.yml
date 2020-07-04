@@ -111,27 +111,27 @@ jobs:
   build-openEHR_SDK:
     executor: circleci-python3-java11
     steps:
-      - checkout
-      # - run: echo mock build SDK
-      - restore-sdk-m2-cache
-      - build-and-test-sdk
-      - save-sdk-m2-cache
-      - save-sdk-unittest-results
-      - save-sdk-workspace
+      # - checkout
+      - run: echo mock build SDK
+      # - restore-sdk-m2-cache
+      # - build-and-test-sdk
+      # - save-sdk-m2-cache
+      # - save-sdk-unittest-results
+      # - save-sdk-workspace
 
 
   build-EHRbase:
     executor: circleci-py3-java11-postgres
     steps:
-      - checkout
-      # - run: echo mock buidl EHRbasee
-      - restore-sdk-workspace
-      - git-clone-ehrbase-repo
-      - restore-ehrbase-m2-cache
-      - force-ehrbase-to-use-local-sdk-version
-      - build-and-test-ehrbase
-      - save-ehrbase-m2-cache
-      - save-ehrbase-workspace
+      # - checkout
+      - run: echo mock buidl EHRbasee
+      # - restore-sdk-workspace
+      # - git-clone-ehrbase-repo
+      # - restore-ehrbase-m2-cache
+      # - force-ehrbase-to-use-local-sdk-version
+      # - build-and-test-ehrbase
+      # - save-ehrbase-m2-cache
+      # - save-ehrbase-workspace
 
 
   run-CONTRIBUTION-test:
@@ -406,7 +406,6 @@ commands:
             git clone git@github.com:ehrbase/ehrbase.git
             ls -la
   
-  # TODO: clarify if it's OK to skip this unit tests
   build-and-test-ehrbase:
     steps:
       - run:
@@ -497,7 +496,7 @@ commands:
       # - configure-python-version
       # - restore-pip-cache
       - install-python-requirements
-      - run: pip list
+      # - run: pip list
       - run:
           name: EXECUTE ROBOT COMMAND
           no_output_timeout: 30m
@@ -513,7 +512,6 @@ commands:
                   --flattenkeywords name:_resources.* \
                   --outputdir results/<< parameters.test-suite-name >> \
                   --name << parameters.test-suite-name >> \
-                  --variable nodocker:true \
                   robot/<< parameters.test-suite-path >>/
       # - save-pip-cache
       - persist-test-results-folder
