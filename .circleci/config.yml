@@ -110,23 +110,24 @@ jobs:
   build-openEHR_SDK:
     executor: circleci-python3-java11
     steps:
-      - checkout
-      - restore-sdk-m2-cache
-      - build-and-test-sdk
-      - save-sdk-m2-cache
-      - save-sdk-unittest-results
-      - save-sdk-workspace
-      # - run: echo mock build SDK
-      - cache-sdk-workspace
+      # - checkout
+      # - restore-sdk-m2-cache
+      # - build-and-test-sdk
+      # - save-sdk-m2-cache
+      # - save-sdk-unittest-results
+      # - save-sdk-workspace
+      - run: echo mock build SDK
+      # - uncache-sdk-workspace
+      # - cache-sdk-workspace
 
 
   build-EHRbase:
     executor: circleci-py3-java11-postgres
     steps:
       # - run: echo mock buidl EHRbasee
-      # - uncache-sdk-workspace
-      - checkout
-      - restore-sdk-workspace
+      - uncache-sdk-workspace
+      # - checkout
+      # - restore-sdk-workspace
       - git-clone-ehrbase-repo
       - restore-ehrbase-m2-cache
       - force-ehrbase-to-use-local-sdk-version
@@ -425,6 +426,7 @@ commands:
   
   build-and-test-ehrbase:
     steps:
+      - run: sudo apt install maven -y
       - run:
           name: Maven build EHRbase
           command: |
@@ -467,27 +469,10 @@ commands:
       # - run: sudo apt install maven -y
       - run:
           name: Adjust SDK version number in EHRbase's pom
-          description: |
-            We have to provide the version of locally build openEHR_SDK in EHRbase's POM
-            to make sure that EHRbase builds succesfully w/ latest changes applied to the SDK.
-            "mvn versions:set-property" is an simple way to achieve exactly that. Ufortunately
-            it triggers a check for SDK dependency updates from jitpack.io
-            which can take up to 15 minutes!
-
-            Using Maven's -o (for offline) flag can help to prevent check for update but
-            it fails when dependencies are not cached first.
-            After caching dependencies it works but not 100% reliable.
-
-            As a more robust solution install xmlstarlet (a cli tool to handle XML) and 
-            use it as a fallback if the 'mvn -o' approach starts to fail.
-            NOTE: I had issues installing it in docker executor (cimg/openjdk:11.0)
-                  may be it works better in machine executor(?)
           command: |
             SDK_VERSION=$(cat ~/projects/SDK_VERSION)
             echo $SDK_VERSION
             cd ~/projects/ehrbase
-            # mvn versions:set-property -Dproperty=ehrbase.sdk.version -DnewVersion=$SDK_VERSION -o
-            #BACKUP xmlstarlet command
             xmlstarlet edit --inplace -N my=http://maven.apache.org/POM/4.0.0 -u my:project/my:version -v $SDK_VERSION pom.xml
     
   # NOTE: don't use these two steps in production
@@ -505,6 +490,17 @@ commands:
 
 
 
+
+
+  #                            88
+  #                            88                         ,d             ,d                             ,d
+  #                            88                         88             88                             88
+  #   8b,dPPYba,   ,adPPYba,   88,dPPYba,    ,adPPYba,  MM88MMM        MM88MMM  ,adPPYba,  ,adPPYba,  MM88MMM  ,adPPYba,
+  #   88P'   "Y8  a8"     "8a  88P'    "8a  a8"     "8a   88             88    a8P_____88  I8[    ""    88     I8[    ""
+  #   88          8b       d8  88       d8  8b       d8   88             88    8PP"""""""   `"Y8ba,     88      `"Y8ba,
+  #   88          "8a,   ,a8"  88b,   ,a8"  "8a,   ,a8"   88,            88,   "8b,   ,aa  aa    ]8I    88,    aa    ]8I
+  #   88           `"YbbdP"'   8Y"Ybbd8"'    `"YbbdP"'    "Y888          "Y888  `"Ybbd8"'  `"YbbdP"'    "Y888  `"YbbdP"'
+  #
   # ///////////////////////////////////////////////////////////////////////////
   # /// ROBOT INTEGRATION TESTS COMMANDS                                    ///
   # ///////////////////////////////////////////////////////////////////////////
@@ -757,6 +753,24 @@ commands:
             esac
 
 
+
+
+
+
+
+
+
+
+# oooooooooo.        .o.         .oooooo.   oooo    oooo ooooo     ooo ooooooooo.
+# `888'   `Y8b      .888.       d8P'  `Y8b  `888   .8P'  `888'     `8' `888   `Y88.
+#  888     888     .8"888.     888           888  d8'     888       8   888   .d88'
+#  888oooo888'    .8' `888.    888           88888[       888       8   888ooo88P'
+#  888    `88b   .88ooo8888.   888           888`88b.     888       8   888
+#  888    .88P  .8'     `888.  `88b    ooo   888  `88b.   `88.    .8'   888
+# o888bood8P'  o88o     o8888o  `Y8bood8P'  o888o  o888o    `YbodP'    o888o
+#
+# [ BACKUP ]
+
   # install-openjdk:
   #   parameters:
   #     version:
@@ -805,3 +819,27 @@ commands:
   #         key: apt-cache-{{ checksum ".openjdk_version" }}-v<< parameters.cache_version >>
   #         paths:
   #         - /tmp/archives
+
+  # force-ehrbase-to-use-local-sdk-version:
+  #   steps:
+  #     - run: sudo apt install maven -y
+  #     - run:
+  #         name: Adjust SDK version number in EHRbase's pom
+  #         description: |
+  #           We have to provide the version of locally build openEHR_SDK in EHRbase's POM
+  #           to make sure that EHRbase builds succesfully w/ latest changes applied to the SDK.
+  #           "mvn versions:set-property" is an simple way to achieve exactly that. Ufortunately
+  #           it triggers a check for SDK dependency updates from jitpack.io
+  #           which can take up to 15 minutes!
+
+  #           Using Maven's -o (for offline) flag can help to prevent check for update but
+  #           it fails when dependencies are not cached first.
+  #           After caching dependencies it works but not 100% reliable.
+
+  #           As a more robust solution install xmlstarlet (a cli tool to handle XML) and 
+  #           use it as a fallback if the 'mvn -o' approach starts to fail.
+  #         command: |
+  #           SDK_VERSION=$(cat ~/projects/SDK_VERSION)
+  #           echo $SDK_VERSION
+  #           cd ~/projects/ehrbase
+  #           mvn versions:set-property -Dproperty=ehrbase.sdk.version -DnewVersion=$SDK_VERSION -o
