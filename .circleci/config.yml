@@ -111,33 +111,36 @@ jobs:
   build-openEHR_SDK:
     executor: circleci-python3-java11
     steps:
-      # - checkout
-      - run: echo mock build SDK
-      # - restore-sdk-m2-cache
-      # - build-and-test-sdk
-      # - save-sdk-m2-cache
-      # - save-sdk-unittest-results
-      # - save-sdk-workspace
+      - checkout
+      # - run: echo mock build SDK
+      - restore-sdk-m2-cache
+      - build-and-test-sdk
+      - save-sdk-m2-cache
+      - save-sdk-unittest-results
+      - save-sdk-workspace
 
 
   build-EHRbase:
     executor: circleci-py3-java11-postgres
     steps:
-      # - checkout
-      - run: echo mock buidl EHRbasee
-      # - restore-sdk-workspace
-      # - git-clone-ehrbase-repo
-      # - restore-ehrbase-m2-cache
-      # - force-ehrbase-to-use-local-sdk-version
-      # - build-and-test-ehrbase
-      # - save-ehrbase-m2-cache
-      # - save-ehrbase-workspace
+      - checkout
+      # - run: echo mock buidl EHRbasee
+      - restore-sdk-workspace
+      - git-clone-ehrbase-repo
+      - restore-ehrbase-m2-cache
+      - force-ehrbase-to-use-local-sdk-version
+      - build-and-test-ehrbase
+      - save-ehrbase-m2-cache
+      - save-ehrbase-workspace
+      - cache-ehrbase-workspace
 
 
   run-CONTRIBUTION-test:
     executor: circleci-py3-java11-postgres
     steps:
       # - run: echo "run integration tests job mock"
+      - uncache-ehrbase-workspace
+      - start-ehrbase-server
       - run-robot-tests:
           include-tags: "CONTRIBUTION"
           test-suite-path: "CONTRIBUTION_TESTS"
@@ -472,12 +475,38 @@ commands:
             mvn versions:set-property -Dproperty=ehrbase.sdk.version -DnewVersion=$SDK_VERSION -o
             # #BACKUP xmlstarlet command
             # xml edit -N my=http://maven.apache.org/POM/4.0.0 -u my:project/my:version -v $SDK_VERSION pom.xml
+    
+  # NOTE: don't use these two steps in production
+  #       this is just for testing ci pipeline w/ mocked jobs/steps
+  cache-ehrbase-workspace:
+    steps:
+      - save_cache:
+          key: EHRbase-WS-cache
+          paths:
+            - projects/ehrbase
+  uncache-ehrbase-workspace:
+    steps:
+      restore_cache:
+        key: EHRbase-WS-cache
 
 
 
   # ///////////////////////////////////////////////////////////////////////////
   # /// ROBOT INTEGRATION TESTS COMMANDS                                    ///
   # ///////////////////////////////////////////////////////////////////////////
+
+  start-ehrbase-server:
+    steps:
+      - run:
+          name: Start EHRbase server
+          command: |
+            ls -la
+            cd ehrbase
+            java -jar application/target/application-*.jar --cache.enabled=false --system.allow-template-overwrite=true > log &
+            sleep 20
+            echo ... EHRbase server started.
+            #- grep -m 1 "Started EhrBase in" <(tail -f log)
+
 
   run-robot-tests:
     description: Run integration tests written in Robot Framework
@@ -492,7 +521,6 @@ commands:
         description: Titel of generated Robot Log/Report.html
         type: string
     steps:
-      - restore-ehrbase-workspace
       # - configure-python-version
       # - restore-pip-cache
       - install-python-requirements
@@ -512,6 +540,7 @@ commands:
                   --flattenkeywords name:_resources.* \
                   --outputdir results/<< parameters.test-suite-name >> \
                   --name << parameters.test-suite-name >> \
+                  --variable nodocker:true \
                   robot/<< parameters.test-suite-path >>/
       # - save-pip-cache
       - persist-test-results-folder
