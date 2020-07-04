@@ -126,7 +126,7 @@ jobs:
     steps:
       # - run: echo mock buidl EHRbasee
       - uncache-sdk-workspace
-      # - checkout
+      - checkout
       # - restore-sdk-workspace
       - git-clone-ehrbase-repo
       - restore-ehrbase-m2-cache
