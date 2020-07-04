@@ -483,7 +483,7 @@ commands:
       - save_cache:
           key: EHRbase-WS-cache
           paths:
-            - projects/ehrbase
+            - ehrbase
   uncache-ehrbase-workspace:
     steps:
       - restore_cache:
