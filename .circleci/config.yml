@@ -62,8 +62,8 @@ workflows:
     when:
       and:
         - equal: [ develop, << pipeline.git.branch >> ]
-        - not:
-            equal: [ /^v.*-SNAPSHOT/, << pipeline.git.tag >> ]
+        # - not:
+        #     equal: [ /^v.*-SNAPSHOT/, << pipeline.git.tag >> ]
 
       
         
