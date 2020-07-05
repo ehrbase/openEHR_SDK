@@ -183,8 +183,8 @@ jobs:
   
 
   publish-snapshot:
-    # executor: docker-python3-java11
-    executor: vm-ubuntu-1604    # (spins up faster than the docker executor)
+    executor: docker-python3-java11
+    # executor: vm-ubuntu-1604    # (use for pipeline debugging only!)
     steps:
       - checkout
       - configure-git-for-ci-bot
@@ -194,8 +194,8 @@ jobs:
 
 
   publish-release:
-    # executor: docker-python3-java11
-    executor: vm-ubuntu-1604    # (spins up faster than the docker executor)
+    executor: docker-python3-java11
+    # executor: vm-ubuntu-1604    # (use for pipeline debugging only!)
     steps:
       - checkout
       - configure-git-for-ci-bot
