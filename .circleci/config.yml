@@ -134,7 +134,7 @@ jobs:
       - build-and-test-ehrbase
       - save-ehrbase-m2-cache
       - save-ehrbase-workspace
-      - cache-ehrbase-workspace
+      # - cache-ehrbase-workspace
 
 
   run-CONTRIBUTION-test:
@@ -142,7 +142,7 @@ jobs:
     steps:
       # - run: echo "run integration tests job mock"
       - uncache-ehrbase-workspace
-      # - start-ehrbase-server
+      - start-ehrbase-server
       - run-robot-tests:
           include-tags: "CONTRIBUTION"
           test-suite-path: "CONTRIBUTION_TESTS"
