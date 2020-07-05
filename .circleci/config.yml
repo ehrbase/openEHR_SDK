@@ -251,7 +251,6 @@ commands:
                     
                     git commit -am "updated major version to v${SDK_VERSION}-SNAPSHOT [skip ci]"
                     git checkout -b major-snapshot-update
-                    
                     git merge --strategy=ours develop
                     git checkout develop
                     git merge major-snapshot-update
@@ -268,7 +267,6 @@ commands:
                     
                     git commit -am "updated minor version to v${SDK_VERSION}-SNAPSHOT [skip ci]"
                     git checkout -b minor-snapshot-update
-                    
                     git merge --strategy=ours develop
                     git checkout develop
                     git merge minor-snapshot-update
@@ -285,7 +283,6 @@ commands:
                     
                     git commit -am "updated patch version to v${SDK_VERSION}-SNAPSHOT [skip ci]"
                     git checkout -b patch-snapshot-update
-                    
                     git merge --strategy=ours develop
                     git checkout develop
                     git merge patch-snapshot-update
@@ -338,7 +335,7 @@ commands:
           name: Install xmlstarlet to handle XML file from CLI
           command: |
             sudo killall -9 apt-get || true
-            sudo apt -y update && sudo apt -y install xmlstarlet
+            sudo apt -y update && sudo apt -y install xmlstarlet=1.6.1-2
   
 
 
@@ -461,7 +458,6 @@ commands:
   force-ehrbase-to-use-local-sdk-version:
     steps:
       - install-xml-cli-tool
-      # - run: sudo apt install maven -y
       - run:
           name: Adjust SDK version number in EHRbase's pom
           command: |
