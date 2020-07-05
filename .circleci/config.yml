@@ -209,6 +209,11 @@ jobs:
       #     paths:
       #       - projects
 
+  ask-to-publish-release:
+    # executor: vm-ubuntu-1604
+    machine: true
+    steps:
+      - run: echo manual approval
 
   publish-release:
     executor: docker-python3-java11
