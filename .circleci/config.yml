@@ -226,18 +226,23 @@ jobs:
     executor: vm-ubuntu-1604    # (use for pipeline debugging only)
     steps:
       - run: echo PUBLISHED RELEAS YEAAAAAAAAAH!!!
-      # - checkout
-      # - configure-git-for-ci-bot
-      # - restore-versionupdater-dependencies
+      - checkout
+      - configure-git-for-ci-bot
+      - restore-versionupdater-dependencies
 
-      # - run:
-      #     name: Create and push release version tag
-      #     command: |
-      #       SDK_VERSION=$(mvn -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive exec:exec)
-      #       git merge --strategy=ours --no-commit master
-      #       git commit -am "released v${SDK_VERSION}"
-      #       git tag -a v${SDK_VERSION} -m "v${SDK_VERSION} release"
-      #       git push --set-upstream origin master v${SDK_VERSION}
+      - run:
+          name: Create and push release version tag
+          command: |
+            git branch
+            SDK_VERSION=$(mvn -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive exec:exec)
+            git checkout release
+            git merge --strategy=ours master
+            git checkout master
+            git merge --no-commit release
+            git commit -am "v${SDK_VERSION} (stable) release"
+            git tag -a v${SDK_VERSION} -m "v${SDK_VERSION} release"
+
+            git push --set-upstream origin master v${SDK_VERSION}
 
 
 
@@ -287,8 +292,9 @@ commands:
                     mvn build-helper:parse-version versions:set -DnewVersion=\${parsedVersion.nextMajorVersion}.0.0 versions:commit
                     SDK_VERSION=$(mvn -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive exec:exec)
                     
-                    git checkout -b major-snapshot-update
                     git commit -am "updated major version to v${SDK_VERSION}-SNAPSHOT [skip ci]"
+                    git checkout -b major-snapshot-update
+                    
                     git merge --strategy=ours develop
                     git checkout develop
                     git merge major-snapshot-update
@@ -303,8 +309,9 @@ commands:
                     mvn build-helper:parse-version versions:set -DnewVersion=\${parsedVersion.majorVersion}.\${parsedVersion.nextMinorVersion}.0 versions:commit
                     SDK_VERSION=$(mvn -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive exec:exec)
                     
-                    git checkout -b minor-snapshot-update
                     git commit -am "updated minor version to v${SDK_VERSION}-SNAPSHOT [skip ci]"
+                    git checkout -b minor-snapshot-update
+                    
                     git merge --strategy=ours develop
                     git checkout develop
                     git merge minor-snapshot-update
@@ -319,8 +326,9 @@ commands:
                     mvn build-helper:parse-version versions:set -DnewVersion=\${parsedVersion.majorVersion}.\${parsedVersion.minorVersion}.\${parsedVersion.nextIncrementalVersion} versions:commit
                     SDK_VERSION=$(mvn -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive exec:exec)
                     
-                    git checkout -b patch-snapshot-update
                     git commit -am "updated patch version to v${SDK_VERSION}-SNAPSHOT [skip ci]"
+                    git checkout -b patch-snapshot-update
+                    
                     git merge --strategy=ours develop
                     git checkout develop
                     git merge patch-snapshot-update
