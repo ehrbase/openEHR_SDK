@@ -178,44 +178,29 @@ jobs:
 
   generate-test-report:
     executor: docker-python3-java11
-    # docker:
-    #   # - image: cimg/openjdk:11.0
-    #   # - image: circleci/python:3.8.3-buster-node-browsers
-    #   - image: circleci/python@sha256:e1c98a85c5ee62ac52a2779fe5abe2677f021c8e3158e4fb2d569c7b9c6ac073
     steps:
       - run: echo "generate test report job mock"
   
 
   publish-snapshot:
-    executor: docker-python3-java11
+    # executor: docker-python3-java11
+    executor: vm-ubuntu-1604    # (spins up faster than the docker executor)
     steps:
       - checkout
       - configure-git-for-ci-bot
       - restore-versionupdater-dependencies
-      - update-snapshot-release-version
+      - update-and-publish-snapshot-release-version
       - save-versionupdater-dependencies
 
 
   publish-release:
     # executor: docker-python3-java11
-    executor: vm-ubuntu-1604    # (use for pipeline debugging only)
+    executor: vm-ubuntu-1604    # (spins up faster than the docker executor)
     steps:
-      - run: echo PUBLISHED RELEAS YEAAAAAAAAAH!!!
       - checkout
       - configure-git-for-ci-bot
       - restore-versionupdater-dependencies
-      - run:
-          name: Create and push release version tag
-          command: |
-            git branch
-            SDK_VERSION=$(mvn -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive exec:exec)
-            echo $SDK_VERSION
-            git fetch
-            git checkout master
-            git reset --hard release
-            git push origin :release
-            git tag -a v${SDK_VERSION} -m "v${SDK_VERSION} (stable) release"
-            git push --force --set-upstream origin master v${SDK_VERSION}
+      - publish-release-version
 
 
 
@@ -249,7 +234,7 @@ commands:
           paths:
             - ~/.m2
 
-  update-snapshot-release-version:
+  update-and-publish-snapshot-release-version:
     steps:
       - run: sudo apt install maven -y
       - run:
@@ -315,6 +300,22 @@ commands:
                     exit 0
                     ;;
             esac
+
+
+  publish-release-version:
+    steps:
+      - run:
+          name: Create and push release version tag
+          command: |
+            git branch
+            SDK_VERSION=$(mvn -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive exec:exec)
+            echo $SDK_VERSION
+            git fetch
+            git checkout master
+            git reset --hard release
+            git push origin :release
+            git tag -a v${SDK_VERSION} -m "v${SDK_VERSION} (stable) release"
+            git push --force --set-upstream origin master v${SDK_VERSION}
 
 
   configure-git-for-ci-bot:
