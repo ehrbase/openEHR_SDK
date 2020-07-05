@@ -220,6 +220,7 @@ jobs:
             git branch
             SDK_VERSION=$(mvn -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive exec:exec)
             echo $SDK_VERSION
+            git fetch
             git checkout master
             git reset --hard release
             # git commit -am "v${SDK_VERSION} (stable) release [skip ci]"
