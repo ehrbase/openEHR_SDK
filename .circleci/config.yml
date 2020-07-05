@@ -192,7 +192,7 @@ jobs:
   publish-snapshot:
     # executor: docker-python3-java11
     executor: vm-ubuntu-1604
- steps:
+    steps:
       - checkout
       - configure-git-for-ci-bot
       - restore-versionupdater-dependencies
@@ -723,8 +723,6 @@ commands:
 
   foo:
     steps:
-
-
       - run:
           name: Check if commit message contains 'some-string'
           command: |
