@@ -190,13 +190,9 @@ jobs:
   
 
   publish-snapshot:
-    executor: docker-python3-java11
-    # working_directory: ~/projects/openEHR_SDK
-    # docker:
-    #   # - image: cimg/openjdk:11.0
-    #   # - image: circleci/python:3.8.3-buster-node-browsers
-    #   - image: circleci/python@sha256:e1c98a85c5ee62ac52a2779fe5abe2677f021c8e3158e4fb2d569c7b9c6ac073
-    steps:
+    # executor: docker-python3-java11
+    executor: vm-ubuntu-1604
+ steps:
       - checkout
       - configure-git-for-ci-bot
       - restore-versionupdater-dependencies
@@ -727,10 +723,6 @@ commands:
 
   foo:
     steps:
-      - run:
-          name: Get last commit message
-          command: |
-            last_commit="$(git log -1 --pretty=%B | cat)"
 
 
       - run:
