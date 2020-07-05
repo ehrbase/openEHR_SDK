@@ -85,10 +85,10 @@ workflows:
 
 
   deploy-snapshot-release:
-    # when:
-    #   and:
-    #     - equal: [ develop, << pipeline.git.branch >> ]
-    #     # - equal: [ SNAPSHOT, << pipeline.git.tag >> ]
+    when:
+      and:
+        - equal: [ develop, << pipeline.git.branch >> ]
+        # - equal: [ SNAPSHOT, << pipeline.git.tag >> ]
     jobs:
       - publish-snapshot:
           filters:
@@ -96,8 +96,6 @@ workflows:
               ignore:
                 # - /^v.*/
                 - /SNAPSHOT.*/
-            branches:
-              only: develop
 
 
 
