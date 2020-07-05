@@ -127,14 +127,14 @@ jobs:
       # - run: echo mock buidl EHRbasee
       - checkout
       - restore-sdk-workspace
-      - uncache-sdk-workspace
+      - uncache-sdk-workspace   # remove
       - git-clone-ehrbase-repo
       - restore-ehrbase-m2-cache
       - force-ehrbase-to-use-local-sdk-version
       - build-and-test-ehrbase
       - save-ehrbase-m2-cache
       - save-ehrbase-workspace
-      # - cache-ehrbase-workspace
+      - cache-ehrbase-workspace
 
 
   run-CONTRIBUTION-test:
@@ -480,13 +480,13 @@ commands:
   cache-ehrbase-workspace:
     steps:
       - save_cache:
-          key: ehrbase-workspace-cache-v1
+          key: ehrbase-workspace-cache-v2
           paths:
             - ehrbase
   uncache-ehrbase-workspace:
     steps:
       - restore_cache:
-          key: ehrbase-workspace-cache-v1
+          key: ehrbase-workspace-cache-v2
 
 
 
