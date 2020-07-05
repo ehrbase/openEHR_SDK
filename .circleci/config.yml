@@ -328,6 +328,7 @@ commands:
 
   publish-release-version:
     steps:
+      - run: sudo apt install maven -y
       - run:
           name: Create and push release version tag
           command: |
