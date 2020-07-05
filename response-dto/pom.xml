@@ -23,8 +23,8 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <artifactId>root</artifactId>
-        <groupId>org.ehrbase.sdk</groupId>
-        <version>0.3.1-SNAPSHOT</version>
+        <groupId>com.github.ehrbase.openEHR_SDK</groupId>
+        <version>v0.3.2-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 

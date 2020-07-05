@@ -65,7 +65,7 @@ public class Containment implements ContainmentExpression {
                 .append("[").append(archetype).append("]");
         if (contains != null) {
             sb
-                    .append("contains ")
+                    .append(" contains ")
                     .append(contains.buildAQL());
         }
         return sb.toString();
@@ -97,5 +97,14 @@ public class Containment implements ContainmentExpression {
         this.contains = contains;
     }
 
+    public ContainmentPath contains(Containment contains) {
+        ContainmentPath tree = new ContainmentPath(this);
+        return tree.contains(contains);
+    }
+
+    public ContainmentExpression contains(ContainmentExpression contains) {
+        this.contains = contains;
+        return this;
+    }
 
 }

@@ -33,6 +33,10 @@ public class GreaterThan<T> extends ComparisonOperator<T> {
         super(field, parameter);
     }
 
+    protected GreaterThan(SelectAqlField<T> field, SelectAqlField<T> compereField) {
+        super(field, compereField);
+    }
+
     @Override
     protected String getSymbol() {
         return ">";

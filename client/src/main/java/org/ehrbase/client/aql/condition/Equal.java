@@ -33,6 +33,10 @@ public class Equal<T> extends ComparisonOperator<T> {
         super(field, parameter);
     }
 
+    protected Equal(SelectAqlField<T> field, SelectAqlField<T> compereField) {
+        super(field, compereField);
+    }
+
     @Override
     protected String getSymbol() {
         return "=";
