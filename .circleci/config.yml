@@ -206,21 +206,6 @@ jobs:
       #       - projects
 
 
-  shall-we-publish-a-release-based-on-that-snapshot:
-    # executor: vm-ubuntu-1604
-    machine: true
-    steps:
-      - run:
-          name: This is a manual approval step!
-          command: echo "Do you want to publish a (stable) release based on that SNAPSHOT?"
-  
-
-  checkout-and-push-release-branch:
-    machine: true
-    steps:
-      - run: echo checked out and pushed release branche
-
-
   publish-release:
     # executor: docker-python3-java11
     executor: vm-ubuntu-1604    # (use for pipeline debugging only)
@@ -229,7 +214,6 @@ jobs:
       - checkout
       - configure-git-for-ci-bot
       - restore-versionupdater-dependencies
-
       - run:
           name: Create and push release version tag
           command: |
@@ -239,9 +223,8 @@ jobs:
             git merge --strategy=ours master
             git checkout master
             git merge --no-commit release
-            git commit -am "v${SDK_VERSION} (stable) release"
+            git commit -am "v${SDK_VERSION} (stable) release [skip ci]"
             git tag -a v${SDK_VERSION} -m "v${SDK_VERSION} release"
-
             git push --set-upstream origin master v${SDK_VERSION}
 
 
