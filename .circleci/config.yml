@@ -5,12 +5,12 @@ orbs:
   openjdk-install: cloudesire/openjdk-install@1.2.3
 
 executors:
-  circleci-python3-java11:
+  docker-python3-java11:
     working_directory: ~/projects
     docker:
       - image: circleci/python@sha256:e1c98a85c5ee62ac52a2779fe5abe2677f021c8e3158e4fb2d569c7b9c6ac073
 
-  circleci-py3-java11-postgres:
+  docker-py3-java11-postgres:
     working_directory: ~/projects
     docker:
       - image: circleci/python@sha256:e1c98a85c5ee62ac52a2779fe5abe2677f021c8e3158e4fb2d569c7b9c6ac073
@@ -19,7 +19,7 @@ executors:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
 
-  circleci-ubuntu-1604:
+  vm-ubuntu-1604:
     working_directory: ~/projects
     # working_directory: /mnt/ramdisk
     machine:
@@ -116,8 +116,8 @@ jobs:
 
 
   build-openEHR_SDK:
-    # executor: circleci-python3-java11
-    executor: circleci-ubuntu-1604
+    # executor: docker-python3-java11
+    executor: vm-ubuntu-1604
     steps:
       # - checkout
       # - restore-sdk-m2-cache
@@ -131,11 +131,12 @@ jobs:
 
 
   build-EHRbase:
-    executor: circleci-py3-java11-postgres
-    # executor: circleci-ubuntu-1604
+    executor: docker-py3-java11-postgres
+    # executor: vm-ubuntu-1604
     steps:
       - checkout
       - restore-sdk-workspace
+      - uncache-sdk-workspace
       - git-clone-ehrbase-repo
       - restore-ehrbase-m2-cache
       - force-ehrbase-to-use-local-sdk-version
@@ -147,7 +148,7 @@ jobs:
 
 
   run-CONTRIBUTION-test:
-    executor: circleci-py3-java11-postgres
+    executor: docker-py3-java11-postgres
     steps:
       # - run: echo "run integration tests job mock"
       - uncache-ehrbase-workspace
@@ -159,7 +160,7 @@ jobs:
 
 
   # run-CONTRIBUTION-test:
-  #   executor: circleci-ubuntu-1604
+  #   executor: vm-ubuntu-1604
   #   steps:
   #     # - run: echo "run integration tests job mock"
   #     - uncache-ehrbase-workspace
@@ -173,7 +174,7 @@ jobs:
       
 
   generate-test-report:
-    executor: circleci-python3-java11
+    executor: docker-python3-java11
     # docker:
     #   # - image: cimg/openjdk:11.0
     #   # - image: circleci/python:3.8.3-buster-node-browsers
@@ -183,7 +184,7 @@ jobs:
   
 
   publish-snapshot:
-    executor: circleci-python3-java11
+    executor: docker-python3-java11
     # working_directory: ~/projects/openEHR_SDK
     # docker:
     #   # - image: cimg/openjdk:11.0
@@ -208,7 +209,7 @@ jobs:
 
 
   publish-release:
-    executor: circleci-python3-java11
+    executor: docker-python3-java11
     # docker:
     #   # - image: cimg/openjdk:11.0
     #   # - image: circleci/python:3.8.3-buster-node-browsers
