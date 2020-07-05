@@ -19,6 +19,14 @@ executors:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
 
+  circleci-ubuntu-1604:
+    working_directory: ~/projects
+    machine:
+      image: ubuntu-1604:201903-01
+      docker_layer_caching: true
+
+
+
 # OVERVIEW - What this CI pipeline does:
 # 1. build & (unit)test the SDK
 # 2. build & (unit)test EHRbase w/ SDK (as local dependency)
@@ -116,59 +124,50 @@ jobs:
       # - save-sdk-m2-cache
       # - save-sdk-unittest-results
       # - save-sdk-workspace
-      - run: echo mock build SDK
-      # - uncache-sdk-workspace
-      # - cache-sdk-workspace
+      - run: echo mock build SDK    # use this steps for pipeline debugging only
+      # - uncache-sdk-workspace       #
+      # - cache-sdk-workspace         #
 
 
   build-EHRbase:
     executor: circleci-py3-java11-postgres
     steps:
-      # - run: echo mock buidl EHRbasee
-      - checkout
-      - restore-sdk-workspace
-      - uncache-sdk-workspace   # remove
-      - git-clone-ehrbase-repo
-      - restore-ehrbase-m2-cache
-      - force-ehrbase-to-use-local-sdk-version
-      - build-and-test-ehrbase
-      - save-ehrbase-m2-cache
-      - save-ehrbase-workspace
-      - cache-ehrbase-workspace
+      # - checkout
+      # - restore-sdk-workspace
+      # - git-clone-ehrbase-repo
+      # - restore-ehrbase-m2-cache
+      # - force-ehrbase-to-use-local-sdk-version
+      # - build-and-test-ehrbase
+      # - save-ehrbase-m2-cache
+      # - save-ehrbase-workspace
+      - run: echo mock buidl EHRbasee    # use this steps for pipeline debugging only
+      # - cache-ehrbase-workspace          #
+
+
+  # run-CONTRIBUTION-test:
+  #   executor: circleci-py3-java11-postgres
+  #   steps:
+  #     # - run: echo "run integration tests job mock"
+  #     - uncache-ehrbase-workspace
+  #     - start-ehrbase-server
+  #     - run-robot-tests:
+  #         include-tags: "CONTRIBUTION"
+  #         test-suite-path: "CONTRIBUTION_TESTS"
+  #         test-suite-name: "CONTRIBUTION"
 
 
   run-CONTRIBUTION-test:
-    executor: circleci-py3-java11-postgres
+    executor: circleci-ubuntu-1604
     steps:
       # - run: echo "run integration tests job mock"
       - uncache-ehrbase-workspace
-      - start-ehrbase-server
+      - openjdk-install/openjdk:
+          version: 11
+      - restore-ehrbase-workspace
       - run-robot-tests:
           include-tags: "CONTRIBUTION"
           test-suite-path: "CONTRIBUTION_TESTS"
           test-suite-name: "CONTRIBUTION"
-
-
-  # run-CONTRIBUTION-test:
-  #   executor: circleci-python3-java11
-  #   # working_directory: ~/projects
-  #   # docker:
-  #   #   # Primary container w/ Maven & Java JDK
-  #   #   # - image: cimg/openjdk:11.0
-  #   #   # - image: circleci/python:3.8.3-buster-node-browsers
-  #   #   - image: circleci/python@sha256:e1c98a85c5ee62ac52a2779fe5abe2677f021c8e3158e4fb2d569c7b9c6ac073
-
-  #       # TODO: RESTORE THIS
-  #       # machine:
-  #       #   image: ubuntu-1604:201903-01
-  #   steps:
-  #     - run: echo "run integration tests job mock"
-  #     # - openjdk-install/openjdk:
-  #     #     version: 11
-  #     # - run-robot-tests:
-  #     #     include-tags: "CONTRIBUTION"
-  #     #     test-suite-path: "CONTRIBUTION_TESTS"
-  #     #     test-suite-name: "CONTRIBUTION"
       
 
   generate-test-report:
@@ -518,47 +517,7 @@ commands:
             grep -m 1 "Started EhrBase in" <(tail -f log)
 
 
-  run-robot-tests:
-    description: Run integration tests written in Robot Framework
-    parameters:
-      include-tags:
-        description: Which tests to inclue by TAGs (Robot syntax applies!)
-        type: string
-      test-suite-path:
-        description: Target test-suite given by it's folder name e.g. COMPOSITION_TESTS
-        type: string
-      test-suite-name:
-        description: Titel of generated Robot Log/Report.html
-        type: string
-    steps:
-      # - configure-python-version
-      # - restore-pip-cache
-      - install-python-requirements
-      # - run: pip list
-      - run:
-          name: EXECUTE ROBOT COMMAND
-          no_output_timeout: 30m
-          command: |
-            cd ~/projects/ehrbase/tests
-            robot --include << parameters.include-tags >> \
-                  --exclude TODO -e future -e obsolete -e libtest \
-                  --console dotted \
-                  --loglevel TRACE \
-                  --noncritical not-ready \
-                  --flattenkeywords for \
-                  --flattenkeywords foritem \
-                  --flattenkeywords name:_resources.* \
-                  --outputdir results/<< parameters.test-suite-name >> \
-                  --name << parameters.test-suite-name >> \
-                  -v nodocker \
-                  robot/<< parameters.test-suite-path >>/
-      # - save-pip-cache
-      - persist-test-results-folder
-      - store_test_results:
-          path: ~/projects/ehrbase/tests/results/
-      - store_artifacts:
-          path: ~/projects/ehrbase/tests/results/
-
+  # # for docker executor
   # run-robot-tests:
   #   description: Run integration tests written in Robot Framework
   #   parameters:
@@ -572,11 +531,10 @@ commands:
   #       description: Titel of generated Robot Log/Report.html
   #       type: string
   #   steps:
-  #     # - restore-ehrbase-workspace
   #     # - configure-python-version
   #     # - restore-pip-cache
   #     - install-python-requirements
-  #     - run: pip list
+  #     # - run: pip list
   #     - run:
   #         name: EXECUTE ROBOT COMMAND
   #         no_output_timeout: 30m
@@ -592,6 +550,7 @@ commands:
   #                 --flattenkeywords name:_resources.* \
   #                 --outputdir results/<< parameters.test-suite-name >> \
   #                 --name << parameters.test-suite-name >> \
+  #                 -v nodocker \
   #                 robot/<< parameters.test-suite-path >>/
   #     # - save-pip-cache
   #     - persist-test-results-folder
@@ -599,6 +558,48 @@ commands:
   #         path: ~/projects/ehrbase/tests/results/
   #     - store_artifacts:
   #         path: ~/projects/ehrbase/tests/results/
+
+
+  # for machine executor
+  run-robot-tests:
+    description: Run integration tests written in Robot Framework
+    parameters:
+      include-tags:
+        description: Which tests to inclue by TAGs (Robot syntax applies!)
+        type: string
+      test-suite-path:
+        description: Target test-suite given by it's folder name e.g. COMPOSITION_TESTS
+        type: string
+      test-suite-name:
+        description: Titel of generated Robot Log/Report.html
+        type: string
+    steps:
+      - configure-python-version
+      # - restore-pip-cache
+      - install-python-requirements
+      - run: pip list
+      - run:
+          name: EXECUTE ROBOT COMMAND
+          no_output_timeout: 30m
+          command: |
+            cd ~/projects/ehrbase/tests
+            robot --include << parameters.include-tags >> \
+                  --exclude TODO -e future -e obsolete -e libtest \
+                  --console dotted \
+                  --loglevel TRACE \
+                  --noncritical not-ready \
+                  --flattenkeywords for \
+                  --flattenkeywords foritem \
+                  --flattenkeywords name:_resources.* \
+                  --outputdir results/<< parameters.test-suite-name >> \
+                  --name << parameters.test-suite-name >> \
+                  robot/<< parameters.test-suite-path >>/
+      # - save-pip-cache
+      - persist-test-results-folder
+      - store_test_results:
+          path: ~/projects/ehrbase/tests/results/
+      - store_artifacts:
+          path: ~/projects/ehrbase/tests/results/
 
   
   configure-python-version:
