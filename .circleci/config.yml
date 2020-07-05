@@ -38,6 +38,7 @@ executors:
 
 workflows:
 
+  # WORKFLOW 1/4) Build & Test the SDK
   build_and_test_SDK:
     jobs:
       - build-openEHR_SDK:
@@ -81,6 +82,7 @@ workflows:
 
 
 
+  # WORKFLOW 2/4) Publish Git tags for SNAPSHOT releases
   deploy-snapshot-release:
     when:
       and:
@@ -96,12 +98,29 @@ workflows:
 
 
 
+  # WORKFLOW 3/4) Publish Git tag for (stable) releases
   deploy-stable-release:
     when:
       and:
         - equal: [ release, << pipeline.git.branch >> ]
     jobs:
       - publish-release
+
+
+
+  # WORKFLOW 4/4) Update SDK version in EHRbase's POM /w lastest stable release
+  update-ehrbase-sdk-dependency:
+    when:
+      and:
+        - equal: [ master, << pipeline.git.branch >> ]
+    jobs:
+      - approve-sdk-version-update:
+          type: approval
+      - update-ehrbase-sdk-dependency:
+          requires:
+            - approve-sdk-version-update
+
+
 
 
 jobs:
@@ -200,6 +219,14 @@ jobs:
       - publish-release-version
 
 
+  update-ehrbase-sdk-dependency:
+    executor: docker-python3-java11
+    # executor: vm-ubuntu-1604    # (use for pipeline debugging only!)
+    steps:
+      - run: echo UPDATED SKD VERSION IN EHRBASE's POM
+      # - checkout
+      # - configure-git-for-ci-bot
+      # - restore-versionupdater-dependencies
 
 
 
