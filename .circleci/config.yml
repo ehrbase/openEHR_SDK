@@ -134,16 +134,16 @@ jobs:
     # executor: circleci-py3-java11-postgres
     executor: circleci-ubuntu-1604
     steps:
-      # - checkout
-      # - restore-sdk-workspace
-      # - git-clone-ehrbase-repo
-      # - restore-ehrbase-m2-cache
-      # - force-ehrbase-to-use-local-sdk-version
-      # - build-and-test-ehrbase
-      # - save-ehrbase-m2-cache
-      # - save-ehrbase-workspace
-      - run: echo mock buidl EHRbasee    # use this steps for pipeline debugging only
-      # - cache-ehrbase-workspace          #
+      - checkout
+      - restore-sdk-workspace
+      - git-clone-ehrbase-repo
+      - restore-ehrbase-m2-cache
+      - force-ehrbase-to-use-local-sdk-version
+      - build-and-test-ehrbase
+      - save-ehrbase-m2-cache
+      - save-ehrbase-workspace
+      # - run: echo mock buidl EHRbasee    # use this steps for pipeline debugging only
+      - cache-ehrbase-workspace          #
 
 
   run-CONTRIBUTION-test:
