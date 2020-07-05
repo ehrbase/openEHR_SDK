@@ -517,47 +517,6 @@ commands:
             grep -m 1 "Started EhrBase in" <(tail -f log)
 
 
-  # run-robot-tests:
-  #   description: Run integration tests written in Robot Framework
-  #   parameters:
-  #     include-tags:
-  #       description: Which tests to inclue by TAGs (Robot syntax applies!)
-  #       type: string
-  #     test-suite-path:
-  #       description: Target test-suite given by it's folder name e.g. COMPOSITION_TESTS
-  #       type: string
-  #     test-suite-name:
-  #       description: Titel of generated Robot Log/Report.html
-  #       type: string
-  #   steps:
-  #     # - configure-python-version
-  #     # - restore-pip-cache
-  #     - install-python-requirements
-  #     # - run: pip list
-  #     - run:
-  #         name: EXECUTE ROBOT COMMAND
-  #         no_output_timeout: 30m
-  #         command: |
-  #           cd ~/projects/ehrbase/tests
-  #           robot --include << parameters.include-tags >> \
-  #                 --exclude TODO -e future -e obsolete -e libtest \
-  #                 --console dotted \
-  #                 --loglevel TRACE \
-  #                 --noncritical not-ready \
-  #                 --flattenkeywords for \
-  #                 --flattenkeywords foritem \
-  #                 --flattenkeywords name:_resources.* \
-  #                 --outputdir results/<< parameters.test-suite-name >> \
-  #                 --name << parameters.test-suite-name >> \
-  #                 -v nodocker \
-  #                 robot/<< parameters.test-suite-path >>/
-  #     # - save-pip-cache
-  #     - persist-test-results-folder
-  #     - store_test_results:
-  #         path: ~/projects/ehrbase/tests/results/
-  #     - store_artifacts:
-  #         path: ~/projects/ehrbase/tests/results/
-
   run-robot-tests:
     description: Run integration tests written in Robot Framework
     parameters:
@@ -571,11 +530,10 @@ commands:
         description: Titel of generated Robot Log/Report.html
         type: string
     steps:
-      # - restore-ehrbase-workspace
       # - configure-python-version
       # - restore-pip-cache
       - install-python-requirements
-      - run: pip list
+      # - run: pip list
       - run:
           name: EXECUTE ROBOT COMMAND
           no_output_timeout: 30m
@@ -591,6 +549,7 @@ commands:
                   --flattenkeywords name:_resources.* \
                   --outputdir results/<< parameters.test-suite-name >> \
                   --name << parameters.test-suite-name >> \
+                  -v nodocker \
                   robot/<< parameters.test-suite-path >>/
       # - save-pip-cache
       - persist-test-results-folder
@@ -598,6 +557,47 @@ commands:
           path: ~/projects/ehrbase/tests/results/
       - store_artifacts:
           path: ~/projects/ehrbase/tests/results/
+
+  # run-robot-tests:
+  #   description: Run integration tests written in Robot Framework
+  #   parameters:
+  #     include-tags:
+  #       description: Which tests to inclue by TAGs (Robot syntax applies!)
+  #       type: string
+  #     test-suite-path:
+  #       description: Target test-suite given by it's folder name e.g. COMPOSITION_TESTS
+  #       type: string
+  #     test-suite-name:
+  #       description: Titel of generated Robot Log/Report.html
+  #       type: string
+  #   steps:
+  #     # - restore-ehrbase-workspace
+  #     # - configure-python-version
+  #     # - restore-pip-cache
+  #     - install-python-requirements
+  #     - run: pip list
+  #     - run:
+  #         name: EXECUTE ROBOT COMMAND
+  #         no_output_timeout: 30m
+  #         command: |
+  #           cd ~/projects/ehrbase/tests
+  #           robot --include << parameters.include-tags >> \
+  #                 --exclude TODO -e future -e obsolete -e libtest \
+  #                 --console dotted \
+  #                 --loglevel TRACE \
+  #                 --noncritical not-ready \
+  #                 --flattenkeywords for \
+  #                 --flattenkeywords foritem \
+  #                 --flattenkeywords name:_resources.* \
+  #                 --outputdir results/<< parameters.test-suite-name >> \
+  #                 --name << parameters.test-suite-name >> \
+  #                 robot/<< parameters.test-suite-path >>/
+  #     # - save-pip-cache
+  #     - persist-test-results-folder
+  #     - store_test_results:
+  #         path: ~/projects/ehrbase/tests/results/
+  #     - store_artifacts:
+  #         path: ~/projects/ehrbase/tests/results/
 
   
   configure-python-version:
