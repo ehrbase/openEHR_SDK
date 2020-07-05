@@ -131,8 +131,8 @@ jobs:
 
 
   build-EHRbase:
-    # executor: circleci-py3-java11-postgres
-    executor: circleci-ubuntu-1604
+    executor: circleci-py3-java11-postgres
+    # executor: circleci-ubuntu-1604
     steps:
       - checkout
       - restore-sdk-workspace
