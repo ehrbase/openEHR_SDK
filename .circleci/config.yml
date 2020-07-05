@@ -46,6 +46,7 @@ workflows:
               ignore:
                 - master
                 - develop
+                - snapshot
                 - release
 
       - build-EHRbase:
@@ -56,6 +57,7 @@ workflows:
               ignore:
                 - master
                 - develop
+                - snapshot
                 - release
 
       - run-CONTRIBUTION-test:
@@ -67,6 +69,7 @@ workflows:
               ignore:
                 - master
                 - develop
+                - snapshot
                 - release
 
       # - generate-test-report:
@@ -94,18 +97,8 @@ workflows:
                 # - /^v.*/
                 - /SNAPSHOT.*/
             branches:
-              only: snapshot
-      - shall-we-publish-a-release-based-on-that-snapshot:
-          type: approval
-          requires:
-            - publish-snapshot
-      - checkout-and-push-release-branch:
-          requires:
-            - shall-we-publish-a-release-based-on-that-snapshot
-          filters:
-            branches:
-              only: snapshot
-      
+              only: develop
+
 
 
   deploy-stable-release:
