@@ -46,7 +46,6 @@ workflows:
               ignore:
                 - master
                 - develop
-                - snapshot
                 - release
 
       - build-EHRbase:
@@ -57,7 +56,6 @@ workflows:
               ignore:
                 - master
                 - develop
-                - snapshot
                 - release
 
       - run-CONTRIBUTION-test:
@@ -69,7 +67,6 @@ workflows:
               ignore:
                 - master
                 - develop
-                - snapshot
                 - release
 
       # - generate-test-report:
@@ -622,18 +619,6 @@ commands:
             python -c "import site; print(site.getsitepackages())"
             pip install -r ~/projects/ehrbase/tests/requirements.txt
       # - save-pip-cache
-
-  # install-python-requirements:
-  #   description: Install Python requirements
-  #   steps:
-  #     - configure-python-version
-  #     # - restore-pip-cache
-  #     - run:
-  #         name: Install Python requirements
-  #         command: |
-  #           python -c "import site; print(site.getsitepackages())"
-  #           pip install -r ~/projects/ehrbase/tests/requirements.txt
-  #     # - save-pip-cache
   
 
   save-pip-cache:
@@ -678,59 +663,6 @@ commands:
     steps:
       - attach_workspace:
           at: /home/circleci/
-  
-
-  bump-version:
-    parameters:
-      versioncommand:
-        type: string
-    steps:
-      # - attach_workspace:
-      #     at: .
-      # - restore_cache:
-      #     key: auto-deploy-test-{{ checksum ".circleci/config.yml" }}
-      - run:
-          name: Bump version
-          command: |
-            << parameters.versioncommand >>
-            # DskipTests -Dspotbugs.skip=true
-            echo "Succesfully released new version"
-      # - save_cache:
-      #   paths:
-      #     - ~/.m2
-      #   key: auto-deploy-test-{{ checksum ".circleci/config.yml" }}
-
-  foo-snapshot-release:
-    steps:
-      - run:
-          name: Release new version to Maven Central
-          command: |
-            echo "Starting new release..."
-            << parameters.versioncommand >>
-            mvn -s .circleci/maven-release-settings.xml clean deploy -DdeployAtEnd=true -DperformRelease=true -DskipTests -Dspotbugs.skip=true
-            echo "Succesfully released new version"
-
-  foo:
-    steps:
-      - run:
-          name: Check if commit message contains 'some-string'
-          command: |
-            if [[ ${last_commit} == *[some-string]* ]]
-            then
-              # Generate and publish API docs
-            fi
-
-            if [[ ${last_commit} == *"minor"* ]]; then echo hello wlad; fi
-
-            STR='GNU/Linux is an operating system'
-            SUB='Linux'
-
-            case $STR in
-
-              *"$SUB"*)
-                echo -n "It's there."
-                ;;
-            esac
 
 
 
@@ -800,6 +732,8 @@ commands:
   #         paths:
   #         - /tmp/archives
 
+
+
   # force-ehrbase-to-use-local-sdk-version:
   #   steps:
   #     - run: sudo apt install maven -y
@@ -823,3 +757,27 @@ commands:
   #           echo $SDK_VERSION
   #           cd ~/projects/ehrbase
   #           mvn versions:set-property -Dproperty=ehrbase.sdk.version -DnewVersion=$SDK_VERSION -o
+
+
+
+  # command-check-commit-message-contains-string:
+  #   steps:
+  #     - run:
+  #         name: Check if commit message contains 'some-string'
+  #         command: |
+  #           if [[ ${last_commit} == *[some-string]* ]]
+  #           then
+  #             # Generate and publish API docs
+  #           fi
+
+  #           if [[ ${last_commit} == *"minor"* ]]; then echo hello wlad; fi
+
+  #           STR='GNU/Linux is an operating system'
+  #           SUB='Linux'
+
+  #           case $STR in
+
+  #             *"$SUB"*)
+  #               echo -n "It's there."
+  #               ;;
+  #           esac
