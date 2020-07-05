@@ -156,13 +156,13 @@ jobs:
   run-CONTRIBUTION-test:
     executor: docker-py3-java11-postgres
     steps:
-      # - run: echo "run integration tests job mock"
-      - uncache-ehrbase-workspace
-      - start-ehrbase-server
-      - run-robot-tests:
-          include-tags: "CONTRIBUTION"
-          test-suite-path: "CONTRIBUTION_TESTS"
-          test-suite-name: "CONTRIBUTION"
+      - run: echo "run integration tests job mock"
+      # - uncache-ehrbase-workspace
+      # - start-ehrbase-server
+      # - run-robot-tests:
+      #     include-tags: "CONTRIBUTION"
+      #     test-suite-path: "CONTRIBUTION_TESTS"
+      #     test-suite-name: "CONTRIBUTION"
 
 
   # run-CONTRIBUTION-test:
