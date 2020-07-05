@@ -23,7 +23,6 @@ executors:
     working_directory: ~/projects
     machine:
       image: ubuntu-1604:201903-01
-      docker_layer_caching: true
 
 
 
@@ -116,7 +115,8 @@ jobs:
 
 
   build-openEHR_SDK:
-    executor: circleci-python3-java11
+    # executor: circleci-python3-java11
+    executor: circleci-ubuntu-1604
     steps:
       # - checkout
       # - restore-sdk-m2-cache
@@ -130,7 +130,8 @@ jobs:
 
 
   build-EHRbase:
-    executor: circleci-py3-java11-postgres
+    # executor: circleci-py3-java11-postgres
+    executor: circleci-ubuntu-1604
     steps:
       # - checkout
       # - restore-sdk-workspace
