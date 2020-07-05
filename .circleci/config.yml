@@ -4,6 +4,37 @@ orbs:
   maven: circleci/maven@1.0.1
   openjdk-install: cloudesire/openjdk-install@1.2.3
 
+executors:
+  docker-python3-java11:
+    working_directory: ~/projects
+    docker:
+      - image: circleci/python@sha256:e1c98a85c5ee62ac52a2779fe5abe2677f021c8e3158e4fb2d569c7b9c6ac073
+
+  docker-py3-java11-postgres:
+    working_directory: ~/projects
+    docker:
+      - image: circleci/python@sha256:e1c98a85c5ee62ac52a2779fe5abe2677f021c8e3158e4fb2d569c7b9c6ac073
+      - image: ehrbaseorg/ehrbase-postgres:latest
+        environment:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+
+  vm-ubuntu-1604:
+    working_directory: ~/projects
+    # working_directory: /mnt/ramdisk
+    machine:
+      image: ubuntu-1604:201903-01
+
+
+
+# OVERVIEW - What this CI pipeline does:
+# 1. build & (unit)test the SDK
+# 2. build & (unit)test EHRbase w/ SDK (as local dependency)
+# 3. run all integation tests suites
+#    - setup test environment
+#    - execute robot tests
+# 4. publish snapshot & release artifacts on jitpack.io
+
 
 workflows:
 
@@ -15,6 +46,9 @@ workflows:
               ignore:
                 - master
                 - develop
+                - snapshot
+                - release
+
       - build-EHRbase:
           requires:
             - build-openEHR_SDK
@@ -23,6 +57,9 @@ workflows:
               ignore:
                 - master
                 - develop
+                - snapshot
+                - release
+
       - run-CONTRIBUTION-test:
           context: org-global
           requires:
@@ -32,33 +69,42 @@ workflows:
               ignore:
                 - master
                 - develop
-      - generate-test-report:
-          requires:
-            - run-CONTRIBUTION-test
-          filters:
-            branches:
-              ignore:
-                - master
-                - develop
+                - snapshot
+                - release
+
+      # - generate-test-report:
+      #     requires:
+      #       - run-CONTRIBUTION-test
+      #     filters:
+      #       branches:
+      #         ignore:
+      #           - master
+      #           - develop
+      #           - release
+
 
 
   deploy-snapshot-release:
     when:
-      and: # All must be true to trigger
+      and:
         - equal: [ develop, << pipeline.git.branch >> ]
+        # - equal: [ SNAPSHOT, << pipeline.git.tag >> ]
     jobs:
-      - deploy-snapshot:
+      - publish-snapshot:
           filters:
             tags:
-              ignore: /^v.*/
+              ignore:
+                # - /^v.*/
+                - /SNAPSHOT.*/
+
 
 
   deploy-stable-release:
     when:
-      and: # All must be true to trigger
-        - equal: [ master, << pipeline.git.branch >> ]
+      and:
+        - equal: [ release, << pipeline.git.branch >> ]
     jobs:
-      - deploy-stable-release
+      - publish-release
 
 
 jobs:
@@ -71,223 +117,119 @@ jobs:
   #   88,   ,d88   Y8a.    .a8P   88      a8P  Y8a     a8P
   #    "Y8888P"     `"Y8888Y"'    88888888P"    "Y88888P"
 
-  build-openEHR_SDK:
-    working_directory: ~/projects/openEHR_SDK
-    docker:
-      # Primary container w/ Maven & Java JDK
-      - image: cimg/openjdk:11.0
 
+  build-openEHR_SDK:
+    # executor: docker-python3-java11
+    executor: vm-ubuntu-1604    # (use for pipeline debugging only)
     steps:
-      - checkout
-      - run: echo "build openEHR_SDK job mock"
-      - run:
-          name: Generate Cache Checksum for openEHR_SDK Dependencies
-          command: find . -name 'pom.xml' | sort | xargs cat > /tmp/openEHR_SDK_maven_cache_seed
-      - restore_cache:
-          key: openEHR_SDK-{{ checksum "/tmp/openEHR_SDK_maven_cache_seed" }}
-      - run:
-          name: Maven build, test, install openEHR_SDK
-                                                          # TODO: @WLAD remove -DskipTests
-          command: mvn install dependency:go-offline -Dmaven.javadoc.skip=true -DskipTests
-      - persist-version-number-of-installed-sdk
-      - save_cache:
-          key: openEHR_SDK-{{ checksum "/tmp/openEHR_SDK_maven_cache_seed" }}
-          paths:
-          - ~/.m2
-      - store_test_results:
-          path: client/target/surefire-reports
-      - persist_to_workspace:
-          root: /home/circleci
-          paths:
-            - .m2
-            - projects/openEHR_SDK/
+      # - checkout
+      # - restore-sdk-m2-cache
+      # - build-and-test-sdk
+      # - save-sdk-m2-cache
+      # - save-sdk-unittest-results
+      # - save-sdk-workspace
+      - run: echo mock build SDK    # use this steps for pipeline debugging only
+      # - uncache-sdk-workspace       #
+      # - cache-sdk-workspace         #
 
 
   build-EHRbase:
-    working_directory: ~/projects
-    docker:
-      # Primary container w/ Maven & Java JDK
-      # NOTE: all commands run here
-      - image: cimg/openjdk:11.0
-
-      # Secondary (service) container w/ PostgreSQL DB
-      # NOTE: DB is available at `host: localhost`
-      - image: ehrbaseorg/ehrbase-postgres:latest
-        environment:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
-
+    # executor: docker-py3-java11-postgres
+    executor: vm-ubuntu-1604    # (use for pipeline debugging only)
     steps:
-      - checkout
-      - attach_workspace:
-          at: /home/circleci/
-      - run:
-          name: Git clone EHRbase repo
-          command: |
-            ls -la
-            git clone git@github.com:ehrbase/ehrbase.git
-            ls -la
-      - run:
-          name: Generate Cache Checksum for EHRbase Dependencies
-          command: find ~/projects/ehrbase -name 'pom.xml' | sort | xargs cat > /tmp/EHRbase_maven_cache_seed
-      - restore_cache:
-          key: EHRbase-
-      # - install-xml-cli-tool
-      - run:
-          name: Adjust SDK version number in EHRbase's pom
-          description: |
-            We have to provide the version of locally build openEHR_SDK in EHRbase's POM
-            to make sure that EHRbase builds succesfully w/ latest changes applied to the SDK.
-            "mvn versions:set-property" is an simple way to achieve exactly that. Ufortunately
-            it triggers a check for SDK dependency updates from jitpack.io
-            which can take up to 15 minutes!
-
-            Using Maven's -o (for offline) flag fails when dependencies are not cached first.
-            After caching deps it works but not 100% reliable.
-
-            As a more robust solution install xmlstarlet (a cli tool to handle XML) and 
-            use it as a fallback if the 'mvn -o' approach starts to fail.
-            NOTE: I had issues installing it in docker executor (cimg/openjdk:11.0)
-                  may be it works better in machine executor(?)
-          command: |
-            SDK_VERSION=$(cat ~/projects/openEHR_SDK/SDK_VERSION)
-            echo $SDK_VERSION
-            cd ~/projects/ehrbase
-            mvn versions:set-property -Dproperty=ehrbase.sdk.version -DnewVersion=$SDK_VERSION -o
-            # #BACKUP xmlstarlet command
-            # xml edit -N my=http://maven.apache.org/POM/4.0.0 -u my:project/my:version -v $SDK_VERSION pom.xml
-      - run:
-          name: Maven build EHRbase
-          command: |
-            cd ~/projects/ehrbase
-            mvn package dependency:go-offline -DskipTests -Dmaven.javadoc.skip=true
-      - save_cache:
-          key: EHRbase-{{ checksum "/tmp/EHRbase_maven_cache_seed" }}
-          paths:
-          - ~/.m2
-      - persist_to_workspace:
-          root: /home/circleci
-          paths:
-            - projects/ehrbase
+      # - checkout
+      # - restore-sdk-workspace
+      # - git-clone-ehrbase-repo
+      # - restore-ehrbase-m2-cache
+      # - force-ehrbase-to-use-local-sdk-version
+      # - build-and-test-ehrbase
+      # - save-ehrbase-m2-cache
+      # - save-ehrbase-workspace
+      - run: echo mock buidl EHRbasee    # use this steps for pipeline debugging only
+      # - cache-ehrbase-workspace          #
 
 
   run-CONTRIBUTION-test:
-    working_directory: ~/projects
-    docker:
-      # Primary container w/ Maven & Java JDK
-      - image: cimg/openjdk:11.0
-
-        # TODO: RESTORE THIS
-        # machine:
-        #   image: ubuntu-1604:201903-01
-
+    # executor: docker-py3-java11-postgres
+    executor: vm-ubuntu-1604    # (use for pipeline debugging only)
     steps:
       - run: echo "run integration tests job mock"
-      # - openjdk-install/openjdk:
-      #     version: 11
+      # - uncache-ehrbase-workspace
+      # - start-ehrbase-server
       # - run-robot-tests:
       #     include-tags: "CONTRIBUTION"
       #     test-suite-path: "CONTRIBUTION_TESTS"
       #     test-suite-name: "CONTRIBUTION"
+
+
+  # run-CONTRIBUTION-test:
+  #   executor: vm-ubuntu-1604
+  #   steps:
+  #     # - run: echo "run integration tests job mock"
+  #     - uncache-ehrbase-workspace
+  #     - openjdk-install/openjdk:
+  #         version: 11
+  #     - restore-ehrbase-workspace
+  #     - run-robot-tests:
+  #         include-tags: "CONTRIBUTION"
+  #         test-suite-path: "CONTRIBUTION_TESTS"
+  #         test-suite-name: "CONTRIBUTION"
       
 
   generate-test-report:
-    docker:
-      - image: cimg/openjdk:11.0
+    executor: docker-python3-java11
+    # docker:
+    #   # - image: cimg/openjdk:11.0
+    #   # - image: circleci/python:3.8.3-buster-node-browsers
+    #   - image: circleci/python@sha256:e1c98a85c5ee62ac52a2779fe5abe2677f021c8e3158e4fb2d569c7b9c6ac073
     steps:
       - run: echo "generate test report job mock"
   
-  
-  deploy-snapshot:
-    docker:
-      - image: cimg/openjdk:11.0
+
+  publish-snapshot:
+    executor: docker-python3-java11
     steps:
-      - add_ssh_keys:
-          fingerprints:
-            - b7:59:8b:46:65:4e:37:d9:b1:21:30:90:df:9c:c8:dd
       - checkout
-      - run:
-          name: Configure GIT
-          command: |
-            git config --global user.email "ci-bot@ehrbase.org"
-            git config --global user.name "ci-bot"
-            # git config --global push.followTags true
-            git remote -v
+      - configure-git-for-ci-bot
+      - restore-versionupdater-dependencies
+      - update-snapshot-release-version
+      - save-versionupdater-dependencies
 
-      - restore_cache:
-          key: maven-dep-v1-
-      - run:
-          command: |
-            echo test
-            last_commit="$(git log -1 --pretty=%B | cat)"
-            echo $last_commit
-            shopt -s extglob
-            case $last_commit in
-                ( !(!(*"major"*)|!(*"release"*)) )
-                    echo "deploy major release"
-                    exit 0
-                    ;;
-                ( !(!(*"minor"*)|!(*"release"*)) )
-                    echo "deploy minor release"
-                    exit 0
-                    ;;
-                ( !(!(*"patch"*)|!(*"release"*)) )
-                    echo "deploy patch release"
-                    mvn build-helper:parse-version versions:set -DnewVersion=\${parsedVersion.majorVersion}.\${parsedVersion.minorVersion}.\${parsedVersion.nextIncrementalVersion} versions:commit
-                    echo "TODO - deploy to jitpack command goes here"
-                    SDK_VERSION=$(mvn -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive exec:exec)
-                    git commit -am "released v${SDK_VERSION}-SNAPSHOT [skip ci]"
-                    git tag -a v${SDK_VERSION}-SNAPSHOT -m "release v${SDK_VERSION}-SNAPSHOT"
-                    git push --set-upstream origin develop v${SDK_VERSION}-SNAPSHOT
-                    exit 0
-                    ;;
-                *)
-                    echo "do nothing"
-                    exit 0
-                    ;;
-            esac
-      - save_cache:
-          key: maven-dep-v1-{{ checksum ".circleci/config.yml" }}
-          paths:
-            - ~/.m2
-          
-  
-  
-  deploy-stable-release:
-    docker:
-      - image: cimg/openjdk:11.0
-    steps:
-      - run:
-          command: |
-            echo dpl stbl rls
-  
+      # TODO: DELETE?
+      # - save_cache:
+      #     key: workspace-v1-{{ checksum ".circleci/config.yml" }}
+      #     paths:
+      #       - ~/projects
+      # - persist_to_workspace:
+      #     root: /home/circleci
+      #     paths:
+      #       - projects
 
-  deploy-patch-version:
-    executor: maven-executor
-    steps:
-      - deploy:
-          versioncommand: mvn build-helper:parse-version versions:set -DnewVersion=\${parsedVersion.majorVersion}.\${parsedVersion.minorVersion}.\${parsedVersion.nextIncrementalVersion} versions:commit
-  
-  deploy-minor-version:
-    executor: maven-executor
-    steps:
-      - deploy:
-          versioncommand: mvn build-helper:parse-version versions:set -DnewVersion=\${parsedVersion.majorVersion}.\${parsedVersion.nextMinorVersion}.\${parsedVersion.incrementalVersion} versions:commit
-  
-  deploy-major-version:
-    executor: maven-executor
-    steps:
-      - deploy:
-          versioncommand: mvn build-helper:parse-version versions:set -DnewVersion=\${parsedVersion.nextMajorVersion}.\${parsedVersion.minorVersion}.\${parsedVersion.incrementalVersion} versions:commit
-  
 
-# 1. build & (unit)test the SDK
-# 2. build & (unit)test EHRbase w/ SDK (as local dependency)
-#    NOTE: make sure EHRbase is build w/ latest commit to SDK
-# 3. run integation tests
-#    - setup test environment
-#    - execute robot tests
-# 4. deploy (to maven central?)
+  publish-release:
+    # executor: docker-python3-java11
+    executor: vm-ubuntu-1604    # (use for pipeline debugging only)
+    steps:
+      - run: echo PUBLISHED RELEAS YEAAAAAAAAAH!!!
+      - checkout
+      - configure-git-for-ci-bot
+      - restore-versionupdater-dependencies
+      - run:
+          name: Create and push release version tag
+          command: |
+            git branch
+            SDK_VERSION=$(mvn -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive exec:exec)
+            echo $SDK_VERSION
+            git checkout master
+            git reset --hard release
+            # git commit -am "v${SDK_VERSION} (stable) release [skip ci]"
+            git tag -a v${SDK_VERSION} -m "v${SDK_VERSION} release"
+            git push --set-upstream origin master v${SDK_VERSION}
+
+
+
+
+
 
 
 
@@ -304,22 +246,283 @@ commands:
   #     `"Y8888Y"'    `"Y8888Y"'    88     `8'     88  88     `8'     88  d8'          `8b  88      `888  88888888Y"'     "Y88888P"
 
 
+  restore-versionupdater-dependencies:
+    steps:
+      - restore_cache:
+          key: maven-dep-v1-
+
+  save-versionupdater-dependencies:
+    steps:
+      - save_cache:
+          key: maven-dep-v1-
+          paths:
+            - ~/.m2
+
+  update-snapshot-release-version:
+    steps:
+      - run: sudo apt install maven -y
+      - run:
+          name: Update Snapshot Release Version
+          command: |
+            echo test
+            last_commit="$(git log -1 --pretty=%B | cat)"
+            echo $last_commit
+            case $last_commit in
+                *"[major]"*)
+                
+                    echo "bump major release version"
+                    mvn build-helper:parse-version versions:set -DnewVersion=\${parsedVersion.nextMajorVersion}.0.0 versions:commit
+                    SDK_VERSION=$(mvn -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive exec:exec)
+                    
+                    git commit -am "updated major version to v${SDK_VERSION}-SNAPSHOT [skip ci]"
+                    git checkout -b major-snapshot-update
+                    
+                    git merge --strategy=ours develop
+                    git checkout develop
+                    git merge major-snapshot-update
+                    git tag -a v${SDK_VERSION}-SNAPSHOT -m "v${SDK_VERSION}-SNAPSHOT release"
+                    git push --set-upstream origin develop v${SDK_VERSION}-SNAPSHOT
+
+                    exit 0
+                    ;;
+                *"[minor]"*)
+
+                    echo "bump minor release version"
+                    mvn build-helper:parse-version versions:set -DnewVersion=\${parsedVersion.majorVersion}.\${parsedVersion.nextMinorVersion}.0 versions:commit
+                    SDK_VERSION=$(mvn -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive exec:exec)
+                    
+                    git commit -am "updated minor version to v${SDK_VERSION}-SNAPSHOT [skip ci]"
+                    git checkout -b minor-snapshot-update
+                    
+                    git merge --strategy=ours develop
+                    git checkout develop
+                    git merge minor-snapshot-update
+                    git tag -a v${SDK_VERSION}-SNAPSHOT -m "v${SDK_VERSION}-SNAPSHOT release"
+                    git push --set-upstream origin develop v${SDK_VERSION}-SNAPSHOT
+
+                    exit 0
+                    ;;
+                *"[patch]"*)
+
+                    echo "bump patch release version"
+                    mvn build-helper:parse-version versions:set -DnewVersion=\${parsedVersion.majorVersion}.\${parsedVersion.minorVersion}.\${parsedVersion.nextIncrementalVersion} versions:commit
+                    SDK_VERSION=$(mvn -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive exec:exec)
+                    
+                    git commit -am "updated patch version to v${SDK_VERSION}-SNAPSHOT [skip ci]"
+                    git checkout -b patch-snapshot-update
+                    
+                    git merge --strategy=ours develop
+                    git checkout develop
+                    git merge patch-snapshot-update
+                    git tag -a v${SDK_VERSION}-SNAPSHOT -m "v${SDK_VERSION}-SNAPSHOT release"
+                    git push --set-upstream origin develop v${SDK_VERSION}-SNAPSHOT
+
+                    exit 0
+                    ;;
+                *)
+                    echo "This was just a simple merge - no versions updated"
+                    exit 0
+                    ;;
+            esac
+
+
+  configure-git-for-ci-bot:
+    steps:
+      - add_ssh_keys:
+          fingerprints:
+            - b7:59:8b:46:65:4e:37:d9:b1:21:30:90:df:9c:c8:dd
+      - run:
+          name: Configure GIT
+          command: |
+            git config --global user.email "ci-bot@ehrbase.org"
+            git config --global user.name "ci-bot"
+            # git config --global push.followTags true
+            git remote -v
+  
+
   install-xml-cli-tool:
     steps:
       - run:
           name: Install xmlstarlet to handle XML file from CLI
           command: |
             sudo killall -9 apt-get || true
-            sudo apt -y update && apt -y install xmlstarlet
+            sudo apt -y update && sudo apt -y install xmlstarlet
   
-  persist-version-number-of-installed-sdk:
+
+
+  # ///////////////////////////////////////////////////////////////////////////
+  # /// SDK COMMANDS                                                        ///
+  # ///////////////////////////////////////////////////////////////////////////
+  
+  build-and-test-sdk:
     steps:
+      - run: sudo apt install maven -y
+      - run:
+          name: Maven build, test, install openEHR_SDK
+          command: mvn install dependency:go-offline -Dmaven.javadoc.skip=true
       - run:
           name: Save the version number of locally installed SDK into a file
           command: |
             SDK_VERSION=$(mvn -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive exec:exec)
             echo $SDK_VERSION > SDK_VERSION
+            cat SDK_VERSION
 
+  restore-sdk-m2-cache:
+    steps:
+      - run:
+          name: Generate Cache Checksum for openEHR_SDK Dependencies
+          command: find . -name 'pom.xml' | sort | xargs cat > /tmp/openEHR_SDK_maven_cache_seed
+      - restore_cache:
+          key: openEHR_SDK-
+
+  save-sdk-m2-cache:
+    steps:
+      - save_cache:
+          key: openEHR_SDK-{{ checksum "/tmp/openEHR_SDK_maven_cache_seed" }}
+          paths:
+          - ~/.m2
+  
+  save-sdk-unittest-results:
+    steps:
+      - store_test_results:
+          path: client/target/surefire-reports
+  
+  save-sdk-workspace:
+    steps:
+      - persist_to_workspace:
+          root: /home/circleci
+          paths:
+            - .m2
+            - projects
+
+  restore-sdk-workspace:
+    steps:
+      - attach_workspace:
+          at: /home/circleci/
+
+  # NOTE: don't use these two steps in production
+  #       this is just for testing ci pipeline w/ mocked jobs/steps
+  cache-sdk-workspace:
+    steps:
+      - save_cache:
+          key: sdk-workspace-cache
+          paths:
+            - .
+  uncache-sdk-workspace:
+    steps:
+      - restore_cache:
+          key: sdk-workspace-cache
+
+
+
+  # ///////////////////////////////////////////////////////////////////////////
+  # /// EHRBASE COMMANDS                                                    ///
+  # ///////////////////////////////////////////////////////////////////////////
+
+  git-clone-ehrbase-repo:
+    steps:
+      - run:
+          name: Git clone EHRbase repo
+          command: |
+            git clone git@github.com:ehrbase/ehrbase.git
+            ls -la
+  
+  build-and-test-ehrbase:
+    steps:
+      - run: sudo apt install maven -y
+      - run:
+          name: Maven build EHRbase
+          command: |
+            cd ~/projects/ehrbase
+            mvn package dependency:go-offline -Dmaven.javadoc.skip=true
+
+  save-ehrbase-m2-cache:
+    steps:
+      - save_cache:
+          key: EHRbase-{{ checksum "/tmp/EHRbase_maven_cache_seed" }}
+          paths:
+            - ~/.m2
+  
+  restore-ehrbase-m2-cache:
+    steps:
+      - run:
+          name: Generate Cache Checksum for EHRbase Dependencies
+          command: find ~/projects/ehrbase -name 'pom.xml' | sort | xargs cat > /tmp/EHRbase_maven_cache_seed
+      - restore_cache:
+          key: EHRbase-
+
+  save-ehrbase-workspace:
+    steps:
+    - persist_to_workspace:
+        root: /home/circleci
+        paths:
+          - projects/ehrbase
+
+  restore-ehrbase-workspace:
+    description: Attach EHRbase repo containing target folder and tests back to workspace
+    steps:
+      - run: ls -la
+      - attach_workspace:
+          at: /home/circleci/
+      - run: ls -la ehrbase
+
+  force-ehrbase-to-use-local-sdk-version:
+    steps:
+      - install-xml-cli-tool
+      # - run: sudo apt install maven -y
+      - run:
+          name: Adjust SDK version number in EHRbase's pom
+          command: |
+            SDK_VERSION=$(cat ~/projects/SDK_VERSION)
+            echo $SDK_VERSION
+            cd ~/projects/ehrbase
+            xmlstarlet edit --inplace -N my=http://maven.apache.org/POM/4.0.0 -u my:project/my:version -v $SDK_VERSION pom.xml
+    
+  # NOTE: don't use these two steps in production
+  #       this is just for testing ci pipeline w/ mocked jobs/steps
+  cache-ehrbase-workspace:
+    steps:
+      - save_cache:
+          key: ehrbase-workspace-cache-v3
+          paths:
+            - ehrbase
+  uncache-ehrbase-workspace:
+    steps:
+      - restore_cache:
+          key: ehrbase-workspace-cache-v3
+
+
+
+
+
+  #                            88
+  #                            88                         ,d             ,d                             ,d
+  #                            88                         88             88                             88
+  #   8b,dPPYba,   ,adPPYba,   88,dPPYba,    ,adPPYba,  MM88MMM        MM88MMM  ,adPPYba,  ,adPPYba,  MM88MMM  ,adPPYba,
+  #   88P'   "Y8  a8"     "8a  88P'    "8a  a8"     "8a   88             88    a8P_____88  I8[    ""    88     I8[    ""
+  #   88          8b       d8  88       d8  8b       d8   88             88    8PP"""""""   `"Y8ba,     88      `"Y8ba,
+  #   88          "8a,   ,a8"  88b,   ,a8"  "8a,   ,a8"   88,            88,   "8b,   ,aa  aa    ]8I    88,    aa    ]8I
+  #   88           `"YbbdP"'   8Y"Ybbd8"'    `"YbbdP"'    "Y888          "Y888  `"Ybbd8"'  `"YbbdP"'    "Y888  `"YbbdP"'
+  #
+  # ///////////////////////////////////////////////////////////////////////////
+  # /// ROBOT INTEGRATION TESTS COMMANDS                                    ///
+  # ///////////////////////////////////////////////////////////////////////////
+
+  start-ehrbase-server:
+    steps:
+      - run:
+          name: Start EHRbase server
+          background: true
+          command: |
+            ls -la
+            cd ehrbase
+            java -jar application/target/application-0.13.0.jar --cache.enabled=false --system.allow-template-overwrite=true > log
+            # sleep 20
+            # echo ... EHRbase server started.
+            # grep -m 1 "Started EhrBase in" <(tail -f log)
+
+
+  # for docker executor
   run-robot-tests:
     description: Run integration tests written in Robot Framework
     parameters:
@@ -333,11 +536,14 @@ commands:
         description: Titel of generated Robot Log/Report.html
         type: string
     steps:
-      - attach-ehrbase-repo-to-workspace
-      # - configure-python-version
       # - restore-pip-cache
       - install-python-requirements
-      - run: pip list
+      - run: jps
+      - run:
+          name: Wait until EHRbase server is ready
+          command: |
+            cd ehrbase
+            grep -m 1 "Started EhrBase in" <(tail -f log)
       - run:
           name: EXECUTE ROBOT COMMAND
           no_output_timeout: 30m
@@ -353,6 +559,7 @@ commands:
                   --flattenkeywords name:_resources.* \
                   --outputdir results/<< parameters.test-suite-name >> \
                   --name << parameters.test-suite-name >> \
+                  -v nodocker \
                   robot/<< parameters.test-suite-path >>/
       # - save-pip-cache
       - persist-test-results-folder
@@ -360,6 +567,48 @@ commands:
           path: ~/projects/ehrbase/tests/results/
       - store_artifacts:
           path: ~/projects/ehrbase/tests/results/
+
+
+  # # for machine executor
+  # run-robot-tests:
+  #   description: Run integration tests written in Robot Framework
+  #   parameters:
+  #     include-tags:
+  #       description: Which tests to inclue by TAGs (Robot syntax applies!)
+  #       type: string
+  #     test-suite-path:
+  #       description: Target test-suite given by it's folder name e.g. COMPOSITION_TESTS
+  #       type: string
+  #     test-suite-name:
+  #       description: Titel of generated Robot Log/Report.html
+  #       type: string
+  #   steps:
+  #     - configure-python-version
+  #     # - restore-pip-cache
+  #     - install-python-requirements
+  #     - run: pip list
+  #     - run:
+  #         name: EXECUTE ROBOT COMMAND
+  #         no_output_timeout: 30m
+  #         command: |
+  #           cd ~/projects/ehrbase/tests
+  #           robot --include << parameters.include-tags >> \
+  #                 --exclude TODO -e future -e obsolete -e libtest \
+  #                 --console dotted \
+  #                 --loglevel TRACE \
+  #                 --noncritical not-ready \
+  #                 --flattenkeywords for \
+  #                 --flattenkeywords foritem \
+  #                 --flattenkeywords name:_resources.* \
+  #                 --outputdir results/<< parameters.test-suite-name >> \
+  #                 --name << parameters.test-suite-name >> \
+  #                 robot/<< parameters.test-suite-path >>/
+  #     # - save-pip-cache
+  #     - persist-test-results-folder
+  #     - store_test_results:
+  #         path: ~/projects/ehrbase/tests/results/
+  #     - store_artifacts:
+  #         path: ~/projects/ehrbase/tests/results/
 
   
   configure-python-version:
@@ -370,18 +619,29 @@ commands:
           command: |
             pyenv global 3.7.0
 
-
   install-python-requirements:
     description: Install Python requirements
     steps:
-      - configure-python-version
       # - restore-pip-cache
       - run:
           name: Install Python requirements
           command: |
+            python --version
             python -c "import site; print(site.getsitepackages())"
             pip install -r ~/projects/ehrbase/tests/requirements.txt
       # - save-pip-cache
+
+  # install-python-requirements:
+  #   description: Install Python requirements
+  #   steps:
+  #     - configure-python-version
+  #     # - restore-pip-cache
+  #     - run:
+  #         name: Install Python requirements
+  #         command: |
+  #           python -c "import site; print(site.getsitepackages())"
+  #           pip install -r ~/projects/ehrbase/tests/requirements.txt
+  #     # - save-pip-cache
   
 
   save-pip-cache:
@@ -406,15 +666,6 @@ commands:
       - restore_cache:
           keys:
             - pip-v1-
-  
-
-  attach-ehrbase-repo-to-workspace:
-    description: Attach EHRbase repo containing target folder and tests back to workspace
-    steps:
-      - run: ls -la
-      - attach_workspace:
-          at: /home/circleci/
-      - run: ls -la ehrbase
 
 
   persist-test-results-folder:
@@ -470,12 +721,6 @@ commands:
   foo:
     steps:
       - run:
-          name: Get last commit message
-          command: |
-            last_commit="$(git log -1 --pretty=%B | cat)"
-
-
-      - run:
           name: Check if commit message contains 'some-string'
           command: |
             if [[ ${last_commit} == *[some-string]* ]]
@@ -495,22 +740,24 @@ commands:
                 ;;
             esac
 
-            case $last_commit in 
-              ( !(!(*"major"*)|!(*"release"*)) )
-                echo "deploy major release"
-                ;;
-              ( !(!(*"ninor"*)|!(*"release"*)) )
-                echo "deploy minor release"
-                ;;
-              ( !(!(*"patch"*)|!(*"release"*)) )
-                echo "deploy patch release"
-                ;;
-              *)
-                echo "do nothing"
-                exit 0
-                ;;
-            esac
 
+
+
+
+
+
+
+
+
+# oooooooooo.        .o.         .oooooo.   oooo    oooo ooooo     ooo ooooooooo.
+# `888'   `Y8b      .888.       d8P'  `Y8b  `888   .8P'  `888'     `8' `888   `Y88.
+#  888     888     .8"888.     888           888  d8'     888       8   888   .d88'
+#  888oooo888'    .8' `888.    888           88888[       888       8   888ooo88P'
+#  888    `88b   .88ooo8888.   888           888`88b.     888       8   888
+#  888    .88P  .8'     `888.  `88b    ooo   888  `88b.   `88.    .8'   888
+# o888bood8P'  o88o     o8888o  `Y8bood8P'  o888o  o888o    `YbodP'    o888o
+#
+# [ BACKUP ]
 
   # install-openjdk:
   #   parameters:
@@ -560,3 +807,27 @@ commands:
   #         key: apt-cache-{{ checksum ".openjdk_version" }}-v<< parameters.cache_version >>
   #         paths:
   #         - /tmp/archives
+
+  # force-ehrbase-to-use-local-sdk-version:
+  #   steps:
+  #     - run: sudo apt install maven -y
+  #     - run:
+  #         name: Adjust SDK version number in EHRbase's pom
+  #         description: |
+  #           We have to provide the version of locally build openEHR_SDK in EHRbase's POM
+  #           to make sure that EHRbase builds succesfully w/ latest changes applied to the SDK.
+  #           "mvn versions:set-property" is an simple way to achieve exactly that. Ufortunately
+  #           it triggers a check for SDK dependency updates from jitpack.io
+  #           which can take up to 15 minutes!
+
+  #           Using Maven's -o (for offline) flag can help to prevent check for update but
+  #           it fails when dependencies are not cached first.
+  #           After caching dependencies it works but not 100% reliable.
+
+  #           As a more robust solution install xmlstarlet (a cli tool to handle XML) and 
+  #           use it as a fallback if the 'mvn -o' approach starts to fail.
+  #         command: |
+  #           SDK_VERSION=$(cat ~/projects/SDK_VERSION)
+  #           echo $SDK_VERSION
+  #           cd ~/projects/ehrbase
+  #           mvn versions:set-property -Dproperty=ehrbase.sdk.version -DnewVersion=$SDK_VERSION -o
