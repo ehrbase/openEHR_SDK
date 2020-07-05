@@ -21,6 +21,7 @@ executors:
 
   circleci-ubuntu-1604:
     working_directory: ~/projects
+    # working_directory: /mnt/ramdisk
     machine:
       image: ubuntu-1604:201903-01
 
@@ -145,30 +146,30 @@ jobs:
       # - cache-ehrbase-workspace          #
 
 
-  # run-CONTRIBUTION-test:
-  #   executor: circleci-py3-java11-postgres
-  #   steps:
-  #     # - run: echo "run integration tests job mock"
-  #     - uncache-ehrbase-workspace
-  #     - start-ehrbase-server
-  #     - run-robot-tests:
-  #         include-tags: "CONTRIBUTION"
-  #         test-suite-path: "CONTRIBUTION_TESTS"
-  #         test-suite-name: "CONTRIBUTION"
-
-
   run-CONTRIBUTION-test:
-    executor: circleci-ubuntu-1604
+    executor: circleci-py3-java11-postgres
     steps:
       # - run: echo "run integration tests job mock"
       - uncache-ehrbase-workspace
-      - openjdk-install/openjdk:
-          version: 11
-      - restore-ehrbase-workspace
+      - start-ehrbase-server
       - run-robot-tests:
           include-tags: "CONTRIBUTION"
           test-suite-path: "CONTRIBUTION_TESTS"
           test-suite-name: "CONTRIBUTION"
+
+
+  # run-CONTRIBUTION-test:
+  #   executor: circleci-ubuntu-1604
+  #   steps:
+  #     # - run: echo "run integration tests job mock"
+  #     - uncache-ehrbase-workspace
+  #     - openjdk-install/openjdk:
+  #         version: 11
+  #     - restore-ehrbase-workspace
+  #     - run-robot-tests:
+  #         include-tags: "CONTRIBUTION"
+  #         test-suite-path: "CONTRIBUTION_TESTS"
+  #         test-suite-name: "CONTRIBUTION"
       
 
   generate-test-report:
@@ -518,50 +519,7 @@ commands:
             grep -m 1 "Started EhrBase in" <(tail -f log)
 
 
-  # # for docker executor
-  # run-robot-tests:
-  #   description: Run integration tests written in Robot Framework
-  #   parameters:
-  #     include-tags:
-  #       description: Which tests to inclue by TAGs (Robot syntax applies!)
-  #       type: string
-  #     test-suite-path:
-  #       description: Target test-suite given by it's folder name e.g. COMPOSITION_TESTS
-  #       type: string
-  #     test-suite-name:
-  #       description: Titel of generated Robot Log/Report.html
-  #       type: string
-  #   steps:
-  #     # - configure-python-version
-  #     # - restore-pip-cache
-  #     - install-python-requirements
-  #     # - run: pip list
-  #     - run:
-  #         name: EXECUTE ROBOT COMMAND
-  #         no_output_timeout: 30m
-  #         command: |
-  #           cd ~/projects/ehrbase/tests
-  #           robot --include << parameters.include-tags >> \
-  #                 --exclude TODO -e future -e obsolete -e libtest \
-  #                 --console dotted \
-  #                 --loglevel TRACE \
-  #                 --noncritical not-ready \
-  #                 --flattenkeywords for \
-  #                 --flattenkeywords foritem \
-  #                 --flattenkeywords name:_resources.* \
-  #                 --outputdir results/<< parameters.test-suite-name >> \
-  #                 --name << parameters.test-suite-name >> \
-  #                 -v nodocker \
-  #                 robot/<< parameters.test-suite-path >>/
-  #     # - save-pip-cache
-  #     - persist-test-results-folder
-  #     - store_test_results:
-  #         path: ~/projects/ehrbase/tests/results/
-  #     - store_artifacts:
-  #         path: ~/projects/ehrbase/tests/results/
-
-
-  # for machine executor
+  # for docker executor
   run-robot-tests:
     description: Run integration tests written in Robot Framework
     parameters:
@@ -575,10 +533,9 @@ commands:
         description: Titel of generated Robot Log/Report.html
         type: string
     steps:
-      - configure-python-version
       # - restore-pip-cache
       - install-python-requirements
-      - run: pip list
+      # - run: pip list
       - run:
           name: EXECUTE ROBOT COMMAND
           no_output_timeout: 30m
@@ -594,6 +551,7 @@ commands:
                   --flattenkeywords name:_resources.* \
                   --outputdir results/<< parameters.test-suite-name >> \
                   --name << parameters.test-suite-name >> \
+                  -v nodocker \
                   robot/<< parameters.test-suite-path >>/
       # - save-pip-cache
       - persist-test-results-folder
@@ -601,6 +559,48 @@ commands:
           path: ~/projects/ehrbase/tests/results/
       - store_artifacts:
           path: ~/projects/ehrbase/tests/results/
+
+
+  # # for machine executor
+  # run-robot-tests:
+  #   description: Run integration tests written in Robot Framework
+  #   parameters:
+  #     include-tags:
+  #       description: Which tests to inclue by TAGs (Robot syntax applies!)
+  #       type: string
+  #     test-suite-path:
+  #       description: Target test-suite given by it's folder name e.g. COMPOSITION_TESTS
+  #       type: string
+  #     test-suite-name:
+  #       description: Titel of generated Robot Log/Report.html
+  #       type: string
+  #   steps:
+  #     - configure-python-version
+  #     # - restore-pip-cache
+  #     - install-python-requirements
+  #     - run: pip list
+  #     - run:
+  #         name: EXECUTE ROBOT COMMAND
+  #         no_output_timeout: 30m
+  #         command: |
+  #           cd ~/projects/ehrbase/tests
+  #           robot --include << parameters.include-tags >> \
+  #                 --exclude TODO -e future -e obsolete -e libtest \
+  #                 --console dotted \
+  #                 --loglevel TRACE \
+  #                 --noncritical not-ready \
+  #                 --flattenkeywords for \
+  #                 --flattenkeywords foritem \
+  #                 --flattenkeywords name:_resources.* \
+  #                 --outputdir results/<< parameters.test-suite-name >> \
+  #                 --name << parameters.test-suite-name >> \
+  #                 robot/<< parameters.test-suite-path >>/
+  #     # - save-pip-cache
+  #     - persist-test-results-folder
+  #     - store_test_results:
+  #         path: ~/projects/ehrbase/tests/results/
+  #     - store_artifacts:
+  #         path: ~/projects/ehrbase/tests/results/
 
   
   configure-python-version:
