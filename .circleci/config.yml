@@ -93,7 +93,8 @@ workflows:
               ignore:
                 # - /^v.*/
                 - /SNAPSHOT.*/
-      - ask-to-publish-release:
+      - manual-approval-to-publish-relase:
+          type: approval
           requires:
             - publish-snapshot
       
@@ -209,11 +210,11 @@ jobs:
       #     paths:
       #       - projects
 
-  ask-to-publish-release:
+  manual-approval-to-publish-relase:
     # executor: vm-ubuntu-1604
     machine: true
     steps:
-      - run: echo manual approval
+      - run: echo "Do you want to publish a (stable) release based on that SNAPSHOT?"
 
   publish-release:
     executor: docker-python3-java11
@@ -547,7 +548,9 @@ commands:
       - run: jps
       - run:
           name: Wait until EHRbase server is ready
-          command: grep -m 1 "Started EhrBase in" <(tail -f log)
+          command: |
+            cd ehrbase
+            grep -m 1 "Started EhrBase in" <(tail -f log)
       - run:
           name: EXECUTE ROBOT COMMAND
           no_output_timeout: 30m
