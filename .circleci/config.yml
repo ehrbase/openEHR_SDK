@@ -1,32 +1,5 @@
 version: 2.1
 
-orbs:
-  maven: circleci/maven@1.0.1
-  openjdk-install: cloudesire/openjdk-install@1.2.3
-
-executors:
-  docker-python3-java11:
-    working_directory: ~/projects
-    docker:
-      - image: circleci/python@sha256:e1c98a85c5ee62ac52a2779fe5abe2677f021c8e3158e4fb2d569c7b9c6ac073
-
-  docker-py3-java11-postgres:
-    working_directory: ~/projects
-    docker:
-      - image: circleci/python@sha256:e1c98a85c5ee62ac52a2779fe5abe2677f021c8e3158e4fb2d569c7b9c6ac073
-      - image: ehrbaseorg/ehrbase-postgres:latest
-        environment:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
-
-  vm-ubuntu-1604:
-    working_directory: ~/projects
-    # working_directory: /mnt/ramdisk
-    machine:
-      image: ubuntu-1604:201903-01
-
-
-
 # OVERVIEW - What this CI pipeline does:
 # 1. build & (unit)test the SDK
 # 2. build & (unit)test EHRbase w/ SDK (as local dependency)
@@ -119,6 +92,9 @@ workflows:
       - update-ehrbase-sdk-dependency:
           requires:
             - approve-sdk-version-update
+
+
+
 
 
 
@@ -227,7 +203,6 @@ jobs:
       # - checkout
       # - configure-git-for-ci-bot
       # - restore-versionupdater-dependencies
-
 
 
 
@@ -512,6 +487,7 @@ commands:
 
 
 
+
   #                            88
   #                            88                         ,d             ,d                             ,d
   #                            88                         88             88                             88
@@ -534,9 +510,6 @@ commands:
             ls -la
             cd ehrbase
             java -jar application/target/application-0.13.0.jar --cache.enabled=false --system.allow-template-overwrite=true > log
-            # sleep 20
-            # echo ... EHRbase server started.
-            # grep -m 1 "Started EhrBase in" <(tail -f log)
 
 
   # for docker executor
@@ -691,6 +664,40 @@ commands:
     steps:
       - attach_workspace:
           at: /home/circleci/
+
+
+
+
+
+# ///////////////////////////////////////////////////////////////////////////
+# /// CIRCLECI META                                                       ///
+# ///////////////////////////////////////////////////////////////////////////
+
+
+orbs:
+  maven: circleci/maven@1.0.1
+  openjdk-install: cloudesire/openjdk-install@1.2.3
+
+executors:
+  docker-python3-java11:
+    working_directory: ~/projects
+    docker:
+      - image: circleci/python@sha256:e1c98a85c5ee62ac52a2779fe5abe2677f021c8e3158e4fb2d569c7b9c6ac073
+
+  docker-py3-java11-postgres:
+    working_directory: ~/projects
+    docker:
+      - image: circleci/python@sha256:e1c98a85c5ee62ac52a2779fe5abe2677f021c8e3158e4fb2d569c7b9c6ac073
+      - image: ehrbaseorg/ehrbase-postgres:latest
+        environment:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+
+  vm-ubuntu-1604:
+    working_directory: ~/projects
+    # working_directory: /mnt/ramdisk
+    machine:
+      image: ubuntu-1604:201903-01
 
 
 
