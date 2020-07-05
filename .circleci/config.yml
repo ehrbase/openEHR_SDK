@@ -82,24 +82,29 @@ workflows:
 
 
   deploy-snapshot-release:
-    when:
-      and:
-        - equal: [ develop, << pipeline.git.branch >> ]
-        # - equal: [ SNAPSHOT, << pipeline.git.tag >> ]
+    # when:
+    #   and:
+    #     - equal: [ develop, << pipeline.git.branch >> ]
+    #     # - equal: [ SNAPSHOT, << pipeline.git.tag >> ]
     jobs:
-      - publish-snapshot
-          # filters:
-          #   tags:
-          #     ignore:
-          #       # - /^v.*/
-          #       - /SNAPSHOT.*/
-      - manual-approval-to-publish-relase:
+      - publish-snapshot:
+          filters:
+            tags:
+              ignore:
+                # - /^v.*/
+                - /SNAPSHOT.*/
+            branches:
+              only: snapshot
+      - shall-we-publish-a-release-based-on-that-snapshot:
           type: approval
           requires:
             - publish-snapshot
-      - publish-release:
+      - checkout-and-push-release-branch:
           requires:
-            - manual-approval-to-publish-relase
+            - shall-we-publish-a-release-based-on-that-snapshot
+          filters:
+            branches:
+              only: snapshot
       
 
 
@@ -124,7 +129,7 @@ jobs:
 
   build-openEHR_SDK:
     # executor: docker-python3-java11
-    executor: vm-ubuntu-1604
+    executor: vm-ubuntu-1604    # (use for pipeline debugging only)
     steps:
       # - checkout
       # - restore-sdk-m2-cache
@@ -138,8 +143,8 @@ jobs:
 
 
   build-EHRbase:
-    executor: docker-py3-java11-postgres
-    # executor: vm-ubuntu-1604
+    # executor: docker-py3-java11-postgres
+    executor: vm-ubuntu-1604    # (use for pipeline debugging only)
     steps:
       # - checkout
       # - restore-sdk-workspace
@@ -154,7 +159,8 @@ jobs:
 
 
   run-CONTRIBUTION-test:
-    executor: docker-py3-java11-postgres
+    # executor: docker-py3-java11-postgres
+    executor: vm-ubuntu-1604    # (use for pipeline debugging only)
     steps:
       - run: echo "run integration tests job mock"
       # - uncache-ehrbase-workspace
@@ -208,14 +214,25 @@ jobs:
       #     paths:
       #       - projects
 
-  manual-approval-to-publish-relase:
+
+  shall-we-publish-a-release-based-on-that-snapshot:
     # executor: vm-ubuntu-1604
     machine: true
     steps:
-      - run: echo "Do you want to publish a (stable) release based on that SNAPSHOT?"
+      - run:
+          name: This is a manual approval step!
+          command: echo "Do you want to publish a (stable) release based on that SNAPSHOT?"
+  
+
+  checkout-and-push-release-branch:
+    machine: true
+    steps:
+      - run: echo checked out and pushed release branche
+
 
   publish-release:
-    executor: docker-python3-java11
+    # executor: docker-python3-java11
+    executor: vm-ubuntu-1604    # (use for pipeline debugging only)
     steps:
       - run: echo PUBLISHED RELEAS YEAAAAAAAAAH!!!
       # - checkout
