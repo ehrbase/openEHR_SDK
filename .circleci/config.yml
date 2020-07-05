@@ -742,22 +742,6 @@ commands:
                 ;;
             esac
 
-            case $last_commit in 
-              ( !(!(*"major"*)|!(*"release"*)) )
-                echo "deploy major release"
-                ;;
-              ( !(!(*"ninor"*)|!(*"release"*)) )
-                echo "deploy minor release"
-                ;;
-              ( !(!(*"patch"*)|!(*"release"*)) )
-                echo "deploy patch release"
-                ;;
-              *)
-                echo "do nothing"
-                exit 0
-                ;;
-            esac
-
 
 
 
