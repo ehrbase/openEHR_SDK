@@ -190,8 +190,7 @@ jobs:
   
 
   publish-snapshot:
-    # executor: docker-python3-java11
-    executor: vm-ubuntu-1604
+    executor: docker-python3-java11
     steps:
       - checkout
       - configure-git-for-ci-bot
