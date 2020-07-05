@@ -482,13 +482,13 @@ commands:
   cache-ehrbase-workspace:
     steps:
       - save_cache:
-          key: ehrbase-workspace-cache-v2
+          key: ehrbase-workspace-cache-v3
           paths:
             - ehrbase
   uncache-ehrbase-workspace:
     steps:
       - restore_cache:
-          key: ehrbase-workspace-cache-v2
+          key: ehrbase-workspace-cache-v3
 
 
 
