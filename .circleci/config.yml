@@ -87,7 +87,7 @@ workflows:
         - equal: [ develop, << pipeline.git.branch >> ]
         # - equal: [ SNAPSHOT, << pipeline.git.tag >> ]
     jobs:
-      - publish-snapshot:
+      - publish-snapshot
           # filters:
           #   tags:
           #     ignore:
