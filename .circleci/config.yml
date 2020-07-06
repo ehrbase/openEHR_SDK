@@ -87,51 +87,7 @@ workflows:
       #           - develop
       #           - release
 
-      - DIRECTORY-tests:
-          context: org-global
-          requires:
-            - build-EHRbase
-          filters:
-            branches:
-              ignore:
-                - master
-                - develop
-                - release
-
-      - EHRSERVICE-tests:
-          context: org-global
-          requires:
-            - build-EHRbase
-          filters:
-            branches:
-              ignore:
-                - master
-                - develop
-                - release
-      
-      - EHRSTATUS-tests:
-          context: org-global
-          requires:
-            - build-EHRbase
-          filters:
-            branches:
-              ignore:
-                - master
-                - develop
-                - release
-      
-      - KNOWLEDGE-tests:
-          context: org-global
-          requires:
-            - build-EHRbase
-          filters:
-            branches:
-              ignore:
-                - master
-                - develop
-                - release
-
-      # - QUERYSERVICE-tests-1:
+      # - DIRECTORY-tests:          # WORKS
       #     context: org-global
       #     requires:
       #       - build-EHRbase
@@ -142,7 +98,7 @@ workflows:
       #           - develop
       #           - release
 
-      # - QUERYSERVICE-tests-2:
+      # - EHRSERVICE-tests:          # WORKS
       #     context: org-global
       #     requires:
       #       - build-EHRbase
@@ -152,6 +108,50 @@ workflows:
       #           - master
       #           - develop
       #           - release
+      
+      # - EHRSTATUS-tests:          # WORKS
+      #     context: org-global
+      #     requires:
+      #       - build-EHRbase
+      #     filters:
+      #       branches:
+      #         ignore:
+      #           - master
+      #           - develop
+      #           - release
+      
+      # - KNOWLEDGE-tests:          # WORKS
+      #     context: org-global
+      #     requires:
+      #       - build-EHRbase
+      #     filters:
+      #       branches:
+      #         ignore:
+      #           - master
+      #           - develop
+      #           - release
+
+      - QUERYSERVICE-tests-1:
+          context: org-global
+          requires:
+            - build-EHRbase
+          filters:
+            branches:
+              ignore:
+                - master
+                - develop
+                - release
+
+      - QUERYSERVICE-tests-2:
+          context: org-global
+          requires:
+            - build-EHRbase
+          filters:
+            branches:
+              ignore:
+                - master
+                - develop
+                - release
 
       # - ROBOT-TEST-REPORT:
       #     context: org-global
@@ -412,7 +412,7 @@ jobs:
       - run: echo "run integration tests job mock"    # (use for pipeline debugging only)
       # - configure-python-version                    # (use on machin executor only)
       # - checkout
-      # - restore-integration-tests-job-caches
+      # - restore-pip-cache
       # - attach-tests-folder
       # - merge-robot-outputs
 
@@ -849,6 +849,7 @@ commands:
           name: Configure Python version to 3.7.0
           command: |
             pyenv global 3.7.0
+
 
   install-python-requirements:
     description: Install Python requirements
