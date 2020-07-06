@@ -32,49 +32,49 @@ workflows:
                 - develop
                 - release
 
-      - COMPOSITION-tests-1:
-          context: org-global
-          requires:
-            - build-EHRbase
-          filters:
-            branches:
-              ignore:
-                - master
-                - develop
-                - release
+      # - COMPOSITION-tests-1:
+      #     context: org-global
+      #     requires:
+      #       - build-EHRbase
+      #     filters:
+      #       branches:
+      #         ignore:
+      #           - master
+      #           - develop
+      #           - release
 
-      - COMPOSITION-tests-2:
-          context: org-global
-          requires:
-            - build-EHRbase
-          filters:
-            branches:
-              ignore:
-                - master
-                - develop
-                - release
+      # - COMPOSITION-tests-2:
+      #     context: org-global
+      #     requires:
+      #       - build-EHRbase
+      #     filters:
+      #       branches:
+      #         ignore:
+      #           - master
+      #           - develop
+      #           - release
 
-      - COMPOSITION-tests-3:
-          context: org-global
-          requires:
-            - build-EHRbase
-          filters:
-            branches:
-              ignore:
-                - master
-                - develop
-                - release
+      # - COMPOSITION-tests-3:
+      #     context: org-global
+      #     requires:
+      #       - build-EHRbase
+      #     filters:
+      #       branches:
+      #         ignore:
+      #           - master
+      #           - develop
+      #           - release
 
-      - COMPOSITION-tests-4:
-          context: org-global
-          requires:
-            - build-EHRbase
-          filters:
-            branches:
-              ignore:
-                - master
-                - develop
-                - release
+      # - COMPOSITION-tests-4:
+      #     context: org-global
+      #     requires:
+      #       - build-EHRbase
+      #     filters:
+      #       branches:
+      #         ignore:
+      #           - master
+      #           - develop
+      #           - release
 
       - CONTRIBUTION-tests:
           context: org-global
@@ -87,71 +87,71 @@ workflows:
                 - develop
                 - release
 
-      - DIRECTORY-tests:
-          context: org-global
-          requires:
-            - build-EHRbase
-          filters:
-            branches:
-              ignore:
-                - master
-                - develop
-                - release
+      # - DIRECTORY-tests:
+      #     context: org-global
+      #     requires:
+      #       - build-EHRbase
+      #     filters:
+      #       branches:
+      #         ignore:
+      #           - master
+      #           - develop
+      #           - release
 
-      - EHRSERVICE-tests:
-          context: org-global
-          requires:
-            - build-EHRbase
-          filters:
-            branches:
-              ignore:
-                - master
-                - develop
-                - release
+      # - EHRSERVICE-tests:
+      #     context: org-global
+      #     requires:
+      #       - build-EHRbase
+      #     filters:
+      #       branches:
+      #         ignore:
+      #           - master
+      #           - develop
+      #           - release
       
-      - EHRSTATUS-tests:
-          context: org-global
-          requires:
-            - build-EHRbase
-          filters:
-            branches:
-              ignore:
-                - master
-                - develop
-                - release
+      # - EHRSTATUS-tests:
+      #     context: org-global
+      #     requires:
+      #       - build-EHRbase
+      #     filters:
+      #       branches:
+      #         ignore:
+      #           - master
+      #           - develop
+      #           - release
       
-      - KNOWLEDGE-tests:
-          context: org-global
-          requires:
-            - build-EHRbase
-          filters:
-            branches:
-              ignore:
-                - master
-                - develop
-                - release
+      # - KNOWLEDGE-tests:
+      #     context: org-global
+      #     requires:
+      #       - build-EHRbase
+      #     filters:
+      #       branches:
+      #         ignore:
+      #           - master
+      #           - develop
+      #           - release
 
-      - QUERYSERVICE-tests-1:
-          context: org-global
-          requires:
-            - build-EHRbase
-          filters:
-            branches:
-              ignore:
-                - master
-                - develop
-                - release
+      # - QUERYSERVICE-tests-1:
+      #     context: org-global
+      #     requires:
+      #       - build-EHRbase
+      #     filters:
+      #       branches:
+      #         ignore:
+      #           - master
+      #           - develop
+      #           - release
 
-      - QUERYSERVICE-tests-2:
-          context: org-global
-          requires:
-            - build-EHRbase
-          filters:
-            branches:
-              ignore:
-                - master
-                - develop
-                - release
+      # - QUERYSERVICE-tests-2:
+      #     context: org-global
+      #     requires:
+      #       - build-EHRbase
+      #     filters:
+      #       branches:
+      #         ignore:
+      #           - master
+      #           - develop
+      #           - release
 
       - ROBOT-REPORT:
           context: org-global
@@ -271,19 +271,19 @@ jobs:
       - run: echo mock buidl EHRbasee    # use this steps for pipeline debugging only
       # - cache-ehrbase-workspace          #
 
-
-  CONTRIBUTION-test:
-    # executor: docker-py3-java11-postgres
-    executor: vm-ubuntu-1604    # (use for pipeline debugging only)
-    steps:
-      - run: echo "run integration tests job mock"
-      # - uncache-ehrbase-workspace    # (use for pipeline debugging only)
-      # - restore-ehrbase-workspace
-      # - start-ehrbase-server
-      # - run-robot-tests:
-      #     include-tags: "CONTRIBUTION"
-      #     test-suite-path: "CONTRIBUTION_TESTS"
-      #     test-suite-name: "CONTRIBUTION"
+  # TODO: REMOVE
+  # CONTRIBUTION-test:
+  #   # executor: docker-py3-java11-postgres
+  #   executor: vm-ubuntu-1604    # (use for pipeline debugging only)
+  #   steps:
+  #     - run: echo "run integration tests job mock"
+  #     - uncache-ehrbase-workspace    # (use for pipeline debugging only)
+  #     # - restore-ehrbase-workspace
+  #     # - start-ehrbase-server
+  #     # - run-robot-tests:
+  #     #     include-tags: "CONTRIBUTION"
+  #     #     test-suite-path: "CONTRIBUTION_TESTS"
+  #     #     test-suite-name: "CONTRIBUTION"
 
   COMPOSITION-tests-1:
     # executor: docker-py3-java11-postgres
@@ -797,54 +797,7 @@ commands:
             java -jar application/target/application-0.13.0.jar --cache.enabled=false --system.allow-template-overwrite=true > log
 
 
-  # for docker executor
-  run-robot-tests:
-    description: Run integration tests written in Robot Framework
-    parameters:
-      include-tags:
-        description: Which tests to inclue by TAGs (Robot syntax applies!)
-        type: string
-      test-suite-path:
-        description: Target test-suite given by it's folder name e.g. COMPOSITION_TESTS
-        type: string
-      test-suite-name:
-        description: Titel of generated Robot Log/Report.html
-        type: string
-    steps:
-      # - restore-pip-cache
-      - install-python-requirements
-      - run: jps
-      - run:
-          name: Wait until EHRbase server is ready
-          command: |
-            cd ehrbase
-            grep -m 1 "Started EhrBase in" <(tail -f log)
-      - run:
-          name: EXECUTE ROBOT COMMAND
-          no_output_timeout: 30m
-          command: |
-            cd ~/projects/ehrbase/tests
-            robot --include << parameters.include-tags >> \
-                  --exclude TODO -e future -e obsolete -e libtest \
-                  --console dotted \
-                  --loglevel TRACE \
-                  --noncritical not-ready \
-                  --flattenkeywords for \
-                  --flattenkeywords foritem \
-                  --flattenkeywords name:_resources.* \
-                  --outputdir results/<< parameters.test-suite-name >> \
-                  --name << parameters.test-suite-name >> \
-                  -v nodocker \
-                  robot/<< parameters.test-suite-path >>/
-      # - save-pip-cache
-      - persist-test-results-folder
-      - store_test_results:
-          path: ~/projects/ehrbase/tests/results/
-      - store_artifacts:
-          path: ~/projects/ehrbase/tests/results/
-
-
-  # # for machine executor
+  # # for docker executor
   # run-robot-tests:
   #   description: Run integration tests written in Robot Framework
   #   parameters:
@@ -858,10 +811,14 @@ commands:
   #       description: Titel of generated Robot Log/Report.html
   #       type: string
   #   steps:
-  #     - configure-python-version
   #     # - restore-pip-cache
   #     - install-python-requirements
-  #     - run: pip list
+  #     - run: jps
+  #     - run:
+  #         name: Wait until EHRbase server is ready
+  #         command: |
+  #           cd ehrbase
+  #           grep -m 1 "Started EhrBase in" <(tail -f log)
   #     - run:
   #         name: EXECUTE ROBOT COMMAND
   #         no_output_timeout: 30m
@@ -877,6 +834,7 @@ commands:
   #                 --flattenkeywords name:_resources.* \
   #                 --outputdir results/<< parameters.test-suite-name >> \
   #                 --name << parameters.test-suite-name >> \
+  #                 -v nodocker \
   #                 robot/<< parameters.test-suite-path >>/
   #     # - save-pip-cache
   #     - persist-test-results-folder
@@ -884,6 +842,48 @@ commands:
   #         path: ~/projects/ehrbase/tests/results/
   #     - store_artifacts:
   #         path: ~/projects/ehrbase/tests/results/
+
+
+  # for machine executor
+  run-robot-tests:
+    description: Run integration tests written in Robot Framework
+    parameters:
+      include-tags:
+        description: Which tests to inclue by TAGs (Robot syntax applies!)
+        type: string
+      test-suite-path:
+        description: Target test-suite given by it's folder name e.g. COMPOSITION_TESTS
+        type: string
+      test-suite-name:
+        description: Titel of generated Robot Log/Report.html
+        type: string
+    steps:
+      # - configure-python-version
+      # - restore-pip-cache
+      - install-python-requirements
+      - run: pip list
+      - run:
+          name: EXECUTE ROBOT COMMAND
+          no_output_timeout: 30m
+          command: |
+            cd ~/projects/ehrbase/tests
+            robot --include << parameters.include-tags >> \
+                  --exclude TODO -e future -e obsolete -e libtest \
+                  --console dotted \
+                  --loglevel TRACE \
+                  --noncritical not-ready \
+                  --flattenkeywords for \
+                  --flattenkeywords foritem \
+                  --flattenkeywords name:_resources.* \
+                  --outputdir results/<< parameters.test-suite-name >> \
+                  --name << parameters.test-suite-name >> \
+                  robot/<< parameters.test-suite-path >>/
+      # - save-pip-cache
+      - persist-test-results-folder
+      - store_test_results:
+          path: ~/projects/ehrbase/tests/results/
+      - store_artifacts:
+          path: ~/projects/ehrbase/tests/results/
 
   
   configure-python-version:
