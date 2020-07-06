@@ -410,11 +410,10 @@ jobs:
     # executor: vm-ubuntu-1604                        # (use for pipeline debugging only)
     steps:
       - run: echo "run integration tests job mock"    # (use for pipeline debugging only)
-      # - configure-python-version                    # (use on machin executor only)
       # - checkout
       # - restore-pip-cache
-      # - restore-test-results-folder
-      # - merge-robot-outputs
+      - restore-test-results-folder
+      - merge-robot-outputs
 
 
   publish-snapshot:
@@ -582,6 +581,8 @@ commands:
   
 
 
+
+
   # ///////////////////////////////////////////////////////////////////////////
   # /// SDK COMMANDS                                                        ///
   # ///////////////////////////////////////////////////////////////////////////
@@ -644,6 +645,8 @@ commands:
     steps:
       - restore_cache:
           key: sdk-workspace-cache
+
+
 
 
 
@@ -721,7 +724,6 @@ commands:
     steps:
       - restore_cache:
           key: ehrbase-workspace-cache-v3
-
 
 
 
@@ -906,6 +908,52 @@ commands:
     steps:
       - attach_workspace:
           at: /home/circleci/
+
+
+  merge-robot-outputs:
+    description: Merge Robot Results from Parallel Tests
+    steps:
+      # - configure-python-version                    # (use on machin executor only)
+      - run:
+          command: |
+            pip install robotframework
+      - run:
+          name: POST PROCESS & MERGE TEST RESULTS
+          when: always
+          command: |
+            cd tests
+
+            # Create Log/Report with ALL DETAILS
+            rebot --outputdir results \
+                  --name EHRbase \
+                  --exclude TODO -e future -e obsolete -e libtest \
+                  --removekeywords for \
+                  --removekeywords wuks \
+                  --loglevel TRACE \
+                  --noncritical not-ready \
+                  --output EHRbase-output.xml \
+                  --log EHRbase-log.html \
+                  --report EHRbase-report.html \
+                  results/*/*.xml
+      - run:
+          name: GENERATE TEST SUMMARY
+          when: always
+          command: |
+            cd tests
+
+            # Create JUNIT report from merged results
+            rebot --outputdir results \
+                  --exclude TODO -e future -e obsolete -e libtest \
+                  --noncritical not-ready \
+                  --xunit junit-output.xml --xunitskipnoncritical \
+                  --log NONE \
+                  --report NONE \
+                  results/EHRbase-output.xml
+      - save-test-results-folder
+      - store_test_results:
+          path: ~/projects/ehrbase/tests/results/
+      - store_artifacts:
+          path: ~/projects/ehrbase/tests/results/
 
 
 
