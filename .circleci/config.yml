@@ -286,7 +286,8 @@ jobs:
       #     test-suite-name: "CONTRIBUTION"
 
   COMPOSITION-tests-1:
-    executor: docker-py3-java11-postgres
+    # executor: docker-py3-java11-postgres
+    executor: vm-ubuntu-1604    # (use for pipeline debugging only)
     steps:
       - run: echo "run integration tests job mock"
       # - uncache-ehrbase-workspace    # (use for pipeline debugging only)
@@ -298,7 +299,8 @@ jobs:
       #     test-suite-name: "COMPOSITION_1"
 
   COMPOSITION-tests-2:
-    executor: docker-py3-java11-postgres
+    # executor: docker-py3-java11-postgres
+    executor: vm-ubuntu-1604    # (use for pipeline debugging only)
     steps:
       - run: echo "run integration tests job mock"
       # - uncache-ehrbase-workspace    # (use for pipeline debugging only)
@@ -310,7 +312,8 @@ jobs:
       #     test-suite-name: "COMPOSITION_2"
 
   COMPOSITION-tests-3:
-    executor: docker-py3-java11-postgres
+    # executor: docker-py3-java11-postgres
+    executor: vm-ubuntu-1604    # (use for pipeline debugging only)
     steps:
       - run: echo "run integration tests job mock"
       # - uncache-ehrbase-workspace    # (use for pipeline debugging only)
@@ -322,7 +325,8 @@ jobs:
       #     test-suite-name: "COMPOSITION_3"
 
   COMPOSITION-tests-4:
-    executor: docker-py3-java11-postgres
+    # executor: docker-py3-java11-postgres
+    executor: vm-ubuntu-1604    # (use for pipeline debugging only)
     steps:
       - run: echo "run integration tests job mock"
       # - uncache-ehrbase-workspace    # (use for pipeline debugging only)
@@ -334,7 +338,8 @@ jobs:
       #     test-suite-name: "COMPOSITION_4"
 
   CONTRIBUTION-tests:
-    executor: docker-py3-java11-postgres
+    # executor: docker-py3-java11-postgres
+    executor: vm-ubuntu-1604    # (use for pipeline debugging only)
     steps:
       - run: echo "run integration tests job mock"
       # - uncache-ehrbase-workspace    # (use for pipeline debugging only)
@@ -346,7 +351,8 @@ jobs:
       #     test-suite-name: "CONTRIBUTION"
 
   DIRECTORY-tests:
-    executor: docker-py3-java11-postgres
+    # executor: docker-py3-java11-postgres
+    executor: vm-ubuntu-1604    # (use for pipeline debugging only)
     steps:
       - run: echo "run integration tests job mock"
       # - uncache-ehrbase-workspace    # (use for pipeline debugging only)
@@ -358,7 +364,8 @@ jobs:
       #     test-suite-name: "DIRECTORY"
 
   EHRSERVICE-tests:
-    executor: docker-py3-java11-postgres
+    # executor: docker-py3-java11-postgres
+    executor: vm-ubuntu-1604    # (use for pipeline debugging only)
     steps:
       - run: echo "run integration tests job mock"
       # - uncache-ehrbase-workspace    # (use for pipeline debugging only)
@@ -370,7 +377,8 @@ jobs:
       #     test-suite-name: "EHR_SERVICE"
 
   EHRSTATUS-tests:
-    executor: docker-py3-java11-postgres
+    # executor: docker-py3-java11-postgres
+    executor: vm-ubuntu-1604    # (use for pipeline debugging only)
     steps:
       - run: echo "run integration tests job mock"
       # - uncache-ehrbase-workspace    # (use for pipeline debugging only)
@@ -382,7 +390,8 @@ jobs:
       #     test-suite-name: "EHR_STATUS"
 
   KNOWLEDGE-tests:
-    executor: docker-py3-java11-postgres
+    # executor: docker-py3-java11-postgres
+    executor: vm-ubuntu-1604    # (use for pipeline debugging only)
     steps:
       - run: echo "run integration tests job mock"
       # - uncache-ehrbase-workspace    # (use for pipeline debugging only)
@@ -394,7 +403,8 @@ jobs:
       #     test-suite-name: "KNOWLEDGE"
 
   QUERYSERVICE-tests-1:
-    executor: docker-py3-java11-postgres
+    # executor: docker-py3-java11-postgres
+    executor: vm-ubuntu-1604    # (use for pipeline debugging only)
     steps:
       - run: echo "run integration tests job mock"
       # - uncache-ehrbase-workspace    # (use for pipeline debugging only)
@@ -406,7 +416,8 @@ jobs:
       #     test-suite-name: "ADHOC-QUERY-1"
 
   QUERYSERVICE-tests-2:
-    executor: docker-py3-java11-postgres
+    # executor: docker-py3-java11-postgres
+    executor: vm-ubuntu-1604    # (use for pipeline debugging only)
     steps:
       - run: echo "run integration tests job mock"
       # - uncache-ehrbase-workspace    # (use for pipeline debugging only)
@@ -418,7 +429,8 @@ jobs:
       #     test-suite-name: "ADHOC-QUERY-2"
 
   ROBOT-REPORT:
-    executor: docker-py3-java11-postgres
+    # executor: docker-py3-java11-postgres
+    executor: vm-ubuntu-1604    # (use for pipeline debugging only)
     steps:
       - run: echo "run integration tests job mock"
       # - configure-python-version
