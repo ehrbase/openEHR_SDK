@@ -328,8 +328,8 @@ jobs:
       #     test-suite-name: "COMPOSITION_4"
 
   CONTRIBUTION-tests:
-    # executor: docker-py3-java11-postgres
-    executor: vm-ubuntu-1604    # (use for pipeline debugging only)
+    executor: docker-py3-java11-postgres
+    # executor: vm-ubuntu-1604    # (use for pipeline debugging only)
     steps:
       - run: echo "run integration tests job mock"
       - uncache-ehrbase-workspace    # (use for pipeline debugging only)
