@@ -32,10 +32,141 @@ workflows:
                 - develop
                 - release
 
-      - run-CONTRIBUTION-test:
+      - COMPOSITION-tests-1:
           context: org-global
           requires:
             - build-EHRbase
+          filters:
+            branches:
+              ignore:
+                - master
+                - develop
+                - release
+
+      - COMPOSITION-tests-2:
+          context: org-global
+          requires:
+            - build-EHRbase
+          filters:
+            branches:
+              ignore:
+                - master
+                - develop
+                - release
+
+      - COMPOSITION-tests-3:
+          context: org-global
+          requires:
+            - build-EHRbase
+          filters:
+            branches:
+              ignore:
+                - master
+                - develop
+                - release
+
+      - COMPOSITION-tests-4:
+          context: org-global
+          requires:
+            - build-EHRbase
+          filters:
+            branches:
+              ignore:
+                - master
+                - develop
+                - release
+
+      - CONTRIBUTION-tests:
+          context: org-global
+          requires:
+            - build-EHRbase
+          filters:
+            branches:
+              ignore:
+                - master
+                - develop
+                - release
+
+      - DIRECTORY-tests:
+          context: org-global
+          requires:
+            - build-EHRbase
+          filters:
+            branches:
+              ignore:
+                - master
+                - develop
+                - release
+
+      - EHRSERVICE-tests:
+          context: org-global
+          requires:
+            - build-EHRbase
+          filters:
+            branches:
+              ignore:
+                - master
+                - develop
+                - release
+      
+      - EHRSTATUS-tests:
+          context: org-global
+          requires:
+            - build-EHRbase
+          filters:
+            branches:
+              ignore:
+                - master
+                - develop
+                - release
+      
+      - KNOWLEDGE-tests:
+          context: org-global
+          requires:
+            - build-EHRbase
+          filters:
+            branches:
+              ignore:
+                - master
+                - develop
+                - release
+
+      - QUERYSERVICE-tests-1:
+          context: org-global
+          requires:
+            - build-EHRbase
+          filters:
+            branches:
+              ignore:
+                - master
+                - develop
+                - release
+
+      - QUERYSERVICE-tests-2:
+          context: org-global
+          requires:
+            - build-EHRbase
+          filters:
+            branches:
+              ignore:
+                - master
+                - develop
+                - release
+
+      - ROBOT-REPORT:
+          context: org-global
+          requires:
+            - COMPOSITION-tests-1
+            - COMPOSITION-tests-2
+            - COMPOSITION-tests-3
+            - COMPOSITION-tests-4
+            - CONTRIBUTION-tests
+            - DIRECTORY-tests
+            - EHRSERVICE-tests
+            - EHRSTATUS-tests
+            - KNOWLEDGE-tests
+            - QUERYSERVICE-tests-1
+            - QUERYSERVICE-tests-2
           filters:
             branches:
               ignore:
@@ -141,24 +272,176 @@ jobs:
       # - cache-ehrbase-workspace          #
 
 
-  run-CONTRIBUTION-test:
+  CONTRIBUTION-test:
     # executor: docker-py3-java11-postgres
     executor: vm-ubuntu-1604    # (use for pipeline debugging only)
     steps:
       - run: echo "run integration tests job mock"
-      # - uncache-ehrbase-workspace
+      # - uncache-ehrbase-workspace    # (use for pipeline debugging only)
+      # - restore-ehrbase-workspace
       # - start-ehrbase-server
       # - run-robot-tests:
       #     include-tags: "CONTRIBUTION"
       #     test-suite-path: "CONTRIBUTION_TESTS"
       #     test-suite-name: "CONTRIBUTION"
 
+  COMPOSITION-tests-1:
+    executor: docker-py3-java11-postgres
+    steps:
+      - run: echo "run integration tests job mock"
+      # - uncache-ehrbase-workspace    # (use for pipeline debugging only)
+      # - restore-ehrbase-workspace
+      # - start-ehrbase-server
+      # - run-robot-tests:
+      #     include-tags: "compositionANDjson1"
+      #     test-suite-path: "COMPOSITION_TESTS"
+      #     test-suite-name: "COMPOSITION_1"
+
+  COMPOSITION-tests-2:
+    executor: docker-py3-java11-postgres
+    steps:
+      - run: echo "run integration tests job mock"
+      # - uncache-ehrbase-workspace    # (use for pipeline debugging only)
+      # - restore-ehrbase-workspace
+      # - start-ehrbase-server
+      # - run-robot-tests:
+      #     include-tags: "compositionANDjson2"
+      #     test-suite-path: "COMPOSITION_TESTS"
+      #     test-suite-name: "COMPOSITION_2"
+
+  COMPOSITION-tests-3:
+    executor: docker-py3-java11-postgres
+    steps:
+      - run: echo "run integration tests job mock"
+      # - uncache-ehrbase-workspace    # (use for pipeline debugging only)
+      # - restore-ehrbase-workspace
+      # - start-ehrbase-server
+      # - run-robot-tests:
+      #     include-tags: "compositionANDxml1"
+      #     test-suite-path: "COMPOSITION_TESTS"
+      #     test-suite-name: "COMPOSITION_3"
+
+  COMPOSITION-tests-4:
+    executor: docker-py3-java11-postgres
+    steps:
+      - run: echo "run integration tests job mock"
+      # - uncache-ehrbase-workspace    # (use for pipeline debugging only)
+      # - restore-ehrbase-workspace
+      # - start-ehrbase-server
+      # - run-robot-tests:
+      #     include-tags: "compositionANDxml2"
+      #     test-suite-path: "COMPOSITION_TESTS"
+      #     test-suite-name: "COMPOSITION_4"
+
+  CONTRIBUTION-tests:
+    executor: docker-py3-java11-postgres
+    steps:
+      - run: echo "run integration tests job mock"
+      # - uncache-ehrbase-workspace    # (use for pipeline debugging only)
+      # - restore-ehrbase-workspace
+      # - start-ehrbase-server
+      # - run-robot-tests:
+      #     include-tags: "CONTRIBUTION"
+      #     test-suite-path: "CONTRIBUTION_TESTS"
+      #     test-suite-name: "CONTRIBUTION"
+
+  DIRECTORY-tests:
+    executor: docker-py3-java11-postgres
+    steps:
+      - run: echo "run integration tests job mock"
+      # - uncache-ehrbase-workspace    # (use for pipeline debugging only)
+      # - restore-ehrbase-workspace
+      # - start-ehrbase-server
+      # - run-robot-tests:
+      #     include-tags: "directory"
+      #     test-suite-path: "DIRECTORY_TESTS"
+      #     test-suite-name: "DIRECTORY"
+
+  EHRSERVICE-tests:
+    executor: docker-py3-java11-postgres
+    steps:
+      - run: echo "run integration tests job mock"
+      # - uncache-ehrbase-workspace    # (use for pipeline debugging only)
+      # - restore-ehrbase-workspace
+      # - start-ehrbase-server
+      # - run-robot-tests:
+      #     include-tags: "EHR_SERVICE"
+      #     test-suite-path: "EHR_SERVICE_TESTS"
+      #     test-suite-name: "EHR_SERVICE"
+
+  EHRSTATUS-tests:
+    executor: docker-py3-java11-postgres
+    steps:
+      - run: echo "run integration tests job mock"
+      # - uncache-ehrbase-workspace    # (use for pipeline debugging only)
+      # - restore-ehrbase-workspace
+      # - start-ehrbase-server
+      # - run-robot-tests:
+      #     include-tags: "EHR_STATUS"
+      #     test-suite-path: "EHR_STATUS_TESTS"
+      #     test-suite-name: "EHR_STATUS"
+
+  KNOWLEDGE-tests:
+    executor: docker-py3-java11-postgres
+    steps:
+      - run: echo "run integration tests job mock"
+      # - uncache-ehrbase-workspace    # (use for pipeline debugging only)
+      # - restore-ehrbase-workspace
+      # - start-ehrbase-server
+      # - run-robot-tests:
+      #     include-tags: "KNOWLEDGE"
+      #     test-suite-path: "KNOWLEDGE_TESTS"
+      #     test-suite-name: "KNOWLEDGE"
+
+  QUERYSERVICE-tests-1:
+    executor: docker-py3-java11-postgres
+    steps:
+      - run: echo "run integration tests job mock"
+      # - uncache-ehrbase-workspace    # (use for pipeline debugging only)
+      # - restore-ehrbase-workspace
+      # - start-ehrbase-server
+      # - run-robot-tests:
+      #     include-tags: "aql_adhoc-queryANDempty_db"
+      #     test-suite-path: "QUERY_SERVICE_TESTS"
+      #     test-suite-name: "ADHOC-QUERY-1"
+
+  QUERYSERVICE-tests-2:
+    executor: docker-py3-java11-postgres
+    steps:
+      - run: echo "run integration tests job mock"
+      # - uncache-ehrbase-workspace    # (use for pipeline debugging only)
+      # - restore-ehrbase-workspace
+      # - start-ehrbase-server
+      # - run-robot-tests:
+      #     include-tags: "aql_adhoc-queryANDloaded_db"
+      #     test-suite-path: "QUERY_SERVICE_TESTS"
+      #     test-suite-name: "ADHOC-QUERY-2"
+
+  ROBOT-REPORT:
+    executor: docker-py3-java11-postgres
+    steps:
+      - run: echo "run integration tests job mock"
+      # - configure-python-version
+      # - checkout
+      # - restore-integration-tests-job-caches
+      # - attach-tests-folder
+      # - merge-robot-outputs
+
+
+
+
+
+
+
+
+
+
 
   # run-CONTRIBUTION-test:
   #   executor: vm-ubuntu-1604
   #   steps:
   #     # - run: echo "run integration tests job mock"
-  #     - uncache-ehrbase-workspace
+  #     - uncache-ehrbase-workspace    # (use for pipeline debugging only)
   #     - openjdk-install/openjdk:
   #         version: 11
   #     - restore-ehrbase-workspace
@@ -167,12 +450,6 @@ jobs:
   #         test-suite-path: "CONTRIBUTION_TESTS"
   #         test-suite-name: "CONTRIBUTION"
       
-
-  generate-test-report:
-    executor: docker-python3-java11
-    steps:
-      - run: echo "generate test report job mock"
-  
 
   publish-snapshot:
     executor: docker-python3-java11
