@@ -409,9 +409,10 @@ jobs:
     executor: docker-py3-java11-postgres
     # executor: vm-ubuntu-1604                        # (use for pipeline debugging only)
     steps:
-      - run: echo "run integration tests job mock"    # (use for pipeline debugging only)
+      # - run: echo "run integration tests job mock"  # (use for pipeline debugging only)
       # - checkout
-      # - restore-pip-cache
+      - cache-out-ehrbase-workspace                 # (use for pipeline debugging only)
+      # - cache-out-python-requirements
       - restore-test-results-folder
       - merge-robot-outputs
 
@@ -422,9 +423,9 @@ jobs:
     steps:
       - checkout
       - configure-git-for-ci-bot
-      - restore-versionupdater-dependencies
+      - cache-out-versionupdater-dependencies
       - update-and-publish-snapshot-release-version
-      - save-versionupdater-dependencies
+      - cache-in-versionupdater-dependencies
 
 
   publish-release:
@@ -433,7 +434,7 @@ jobs:
     steps:
       - checkout
       - configure-git-for-ci-bot
-      - restore-versionupdater-dependencies
+      - cache-out-versionupdater-dependencies
       - publish-release-version
 
 
@@ -444,7 +445,7 @@ jobs:
       - run: echo UPDATED SKD VERSION IN EHRBASE's POM
       # - checkout
       # - configure-git-for-ci-bot
-      # - restore-versionupdater-dependencies
+      # - cache-out-versionupdater-dependencies
 
 
 
@@ -463,12 +464,12 @@ commands:
   #     `"Y8888Y"'    `"Y8888Y"'    88     `8'     88  88     `8'     88  d8'          `8b  88      `888  88888888Y"'     "Y88888P"
 
 
-  restore-versionupdater-dependencies:
+  cache-out-versionupdater-dependencies:
     steps:
       - restore_cache:
           key: maven-dep-v1-
 
-  save-versionupdater-dependencies:
+  cache-in-versionupdater-dependencies:
     steps:
       - save_cache:
           key: maven-dep-v1-
@@ -769,7 +770,7 @@ commands:
         description: Titel of generated Robot Log/Report.html
         type: string
     steps:
-      # - restore-pip-cache
+      # - cache-out-python-requirements
       - install-python-requirements
       - run: jps
       - run:
@@ -794,7 +795,7 @@ commands:
                   --name << parameters.test-suite-name >> \
                   -v nodocker \
                   robot/<< parameters.test-suite-path >>/
-      # - save-pip-cache
+      # - cache-in-python-requirements
       - save-test-results-folder
       - store_test_results:
           path: ~/projects/ehrbase/tests/results/
@@ -817,7 +818,7 @@ commands:
   #       type: string
   #   steps:
   #     - configure-python-version
-  #     # - restore-pip-cache
+  #     # - cache-out-python-requirements
   #     - install-python-requirements
   #     - run: pip list
   #     - run:
@@ -836,7 +837,7 @@ commands:
   #                 --outputdir results/<< parameters.test-suite-name >> \
   #                 --name << parameters.test-suite-name >> \
   #                 robot/<< parameters.test-suite-path >>/
-  #     # - save-pip-cache
+  #     # - cache-in-python-requirements
   #     - save-test-results-folder
   #     - store_test_results:
   #         path: ~/projects/ehrbase/tests/results/
@@ -856,17 +857,17 @@ commands:
   install-python-requirements:
     description: Install Python requirements
     steps:
-      # - restore-pip-cache
+      # - cache-out-python-requirements
       - run:
           name: Install Python requirements
           command: |
             python --version
             python -c "import site; print(site.getsitepackages())"
             pip install -r ~/projects/ehrbase/tests/requirements.txt
-      # - save-pip-cache
+      # - cache-in-python-requirements
   
 
-  save-pip-cache:
+  cache-in-python-requirements:
     description: Save all caches in interation tests job
     steps:
       - run:
@@ -882,7 +883,7 @@ commands:
             - /opt/circleci/.pyenv/versions/3.7.0/lib/python3.7/site-packages
 
 
-  restore-pip-cache:
+  cache-out-python-requirements:
     description: Restore all caches in interation tests job
     steps:
       - restore_cache:
