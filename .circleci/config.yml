@@ -32,18 +32,7 @@ workflows:
                 - develop
                 - release
 
-      - COMPOSITION-tests-1:
-          context: org-global
-          requires:
-            - build-EHRbase
-          filters:
-            branches:
-              ignore:
-                - master
-                - develop
-                - release
-
-      # - COMPOSITION-tests-2:
+      # - COMPOSITION-tests-1:    # WORKS
       #     context: org-global
       #     requires:
       #       - build-EHRbase
@@ -53,6 +42,17 @@ workflows:
       #           - master
       #           - develop
       #           - release
+
+      - COMPOSITION-tests-2:
+          context: org-global
+          requires:
+            - build-EHRbase
+          filters:
+            branches:
+              ignore:
+                - master
+                - develop
+                - release
 
       # - COMPOSITION-tests-3:
       #     context: org-global
@@ -261,7 +261,7 @@ jobs:
       - run: echo mock buidl EHRbasee    # use this steps for pipeline debugging only
       # - cache-ehrbase-workspace          #
 
-      
+
   COMPOSITION-tests-1:
     executor: docker-py3-java11-postgres
     # executor: vm-ubuntu-1604                        # (use for pipeline debugging only)
