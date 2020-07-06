@@ -922,7 +922,7 @@ commands:
           name: POST PROCESS & MERGE TEST RESULTS
           when: always
           command: |
-            cd tests
+            cd ehrbase/tests
 
             # Create Log/Report with ALL DETAILS
             rebot --outputdir results \
@@ -940,7 +940,7 @@ commands:
           name: GENERATE TEST SUMMARY
           when: always
           command: |
-            cd tests
+            cd ehrbase/tests
 
             # Create JUNIT report from merged results
             rebot --outputdir results \
