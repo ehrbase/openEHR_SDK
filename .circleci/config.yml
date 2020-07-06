@@ -32,27 +32,27 @@ workflows:
                 - develop
                 - release
 
-      # - COMPOSITION-tests-1:    # WORKS
-      #     context: org-global
-      #     requires:
-      #       - build-EHRbase
-      #     filters:
-      #       branches:
-      #         ignore:
-      #           - master
-      #           - develop
-      #           - release
+      - COMPOSITION-tests-1:    # WORKS
+          context: org-global
+          requires:
+            - build-EHRbase
+          filters:
+            branches:
+              ignore:
+                - master
+                - develop
+                - release
 
-      # - COMPOSITION-tests-2:     # WORKS
-      #     context: org-global
-      #     requires:
-      #       - build-EHRbase
-      #     filters:
-      #       branches:
-      #         ignore:
-      #           - master
-      #           - develop
-      #           - release
+      - COMPOSITION-tests-2:     # WORKS
+          context: org-global
+          requires:
+            - build-EHRbase
+          filters:
+            branches:
+              ignore:
+                - master
+                - develop
+                - release
 
       # - COMPOSITION-tests-3:     # WORKS
       #     context: org-global
@@ -131,48 +131,48 @@ workflows:
       #           - develop
       #           - release
 
-      - QUERYSERVICE-tests-1:
-          context: org-global
-          requires:
-            - build-EHRbase
-          filters:
-            branches:
-              ignore:
-                - master
-                - develop
-                - release
-
-      - QUERYSERVICE-tests-2:
-          context: org-global
-          requires:
-            - build-EHRbase
-          filters:
-            branches:
-              ignore:
-                - master
-                - develop
-                - release
-
-      # - ROBOT-TEST-REPORT:
+      # - QUERYSERVICE-tests-1:     # WORKS
       #     context: org-global
       #     requires:
-      #       - COMPOSITION-tests-1
-      #       - COMPOSITION-tests-2
-      #       - COMPOSITION-tests-3
-      #       - COMPOSITION-tests-4
-      #       - CONTRIBUTION-tests
-      #       - DIRECTORY-tests
-      #       - EHRSERVICE-tests
-      #       - EHRSTATUS-tests
-      #       - KNOWLEDGE-tests
-      #       - QUERYSERVICE-tests-1
-      #       - QUERYSERVICE-tests-2
+      #       - build-EHRbase
       #     filters:
       #       branches:
       #         ignore:
       #           - master
       #           - develop
       #           - release
+
+      # - QUERYSERVICE-tests-2:     # WORKS
+      #     context: org-global
+      #     requires:
+      #       - build-EHRbase
+      #     filters:
+      #       branches:
+      #         ignore:
+      #           - master
+      #           - develop
+      #           - release
+
+      - ROBOT-TEST-REPORT:
+          context: org-global
+          requires:
+            - COMPOSITION-tests-1
+            - COMPOSITION-tests-2
+            # - COMPOSITION-tests-3
+            # - COMPOSITION-tests-4
+            # - CONTRIBUTION-tests
+            # - DIRECTORY-tests
+            # - EHRSERVICE-tests
+            # - EHRSTATUS-tests
+            # - KNOWLEDGE-tests
+            # - QUERYSERVICE-tests-1
+            # - QUERYSERVICE-tests-2
+          filters:
+            branches:
+              ignore:
+                - master
+                - develop
+                - release
 
 
 
@@ -236,14 +236,14 @@ jobs:
     executor: vm-ubuntu-1604    # (use for pipeline debugging only)
     steps:
       # - checkout
-      # - restore-sdk-m2-cache
+      # - cache-out-sdk-m2-dependencies
       # - build-and-test-sdk
-      # - save-sdk-m2-cache
+      # - cache-in-sdk-m2-dependencies
       # - save-sdk-unittest-results
       # - save-sdk-workspace
       - run: echo mock build SDK    # use this steps for pipeline debugging only
-      # - uncache-sdk-workspace       #
-      # - cache-sdk-workspace         #
+      # - cache-out-sdk-workspace       #
+      # - cache-in-sdk-workspace         #
 
 
   build-EHRbase:
@@ -253,13 +253,13 @@ jobs:
       # - checkout
       # - restore-sdk-workspace
       # - git-clone-ehrbase-repo
-      # - restore-ehrbase-m2-cache
+      # - cache-out-ehrbase-m2-dependencies
       # - force-ehrbase-to-use-local-sdk-version
       # - build-and-test-ehrbase
-      # - save-ehrbase-m2-cache
+      # - cache-in-ehrbase-m2-dependencies
       # - save-ehrbase-workspace
       - run: echo mock buidl EHRbasee    # use this steps for pipeline debugging only
-      # - cache-ehrbase-workspace          #
+      # - cache-in-ehrbase-workspace          #
 
 
   COMPOSITION-tests-1:
@@ -267,7 +267,7 @@ jobs:
     # executor: vm-ubuntu-1604                        # (use for pipeline debugging only)
     steps:
       # - run: echo "run integration tests job mock"    # (use for pipeline debugging only)
-      - uncache-ehrbase-workspace                     #
+      - cache-out-ehrbase-workspace                     #
       # - restore-ehrbase-workspace
       - start-ehrbase-server
       - run-robot-tests:
@@ -280,7 +280,7 @@ jobs:
     # executor: vm-ubuntu-1604                        # (use for pipeline debugging only)
     steps:
       - run: echo "run integration tests job mock"    # (use for pipeline debugging only)
-      - uncache-ehrbase-workspace                     #
+      - cache-out-ehrbase-workspace                     #
       # - restore-ehrbase-workspace
       - start-ehrbase-server
       - run-robot-tests:
@@ -293,7 +293,7 @@ jobs:
     # executor: vm-ubuntu-1604                        # (use for pipeline debugging only)
     steps:
       - run: echo "run integration tests job mock"    # (use for pipeline debugging only)
-      - uncache-ehrbase-workspace                     #
+      - cache-out-ehrbase-workspace                     #
       # - restore-ehrbase-workspace
       - start-ehrbase-server
       - run-robot-tests:
@@ -306,7 +306,7 @@ jobs:
     # executor: vm-ubuntu-1604                        # (use for pipeline debugging only)
     steps:
       - run: echo "run integration tests job mock"    # (use for pipeline debugging only)
-      - uncache-ehrbase-workspace                     #
+      - cache-out-ehrbase-workspace                     #
       # - restore-ehrbase-workspace
       - start-ehrbase-server
       - run-robot-tests:
@@ -319,7 +319,7 @@ jobs:
     # executor: vm-ubuntu-1604                        # (use for pipeline debugging only)
     steps:
       # - run: echo "run integration tests job mock"    # (use for pipeline debugging only)
-      # - uncache-ehrbase-workspace                     #
+      # - cache-out-ehrbase-workspace                     #
       - restore-ehrbase-workspace
       - start-ehrbase-server
       - run-robot-tests:
@@ -332,7 +332,7 @@ jobs:
     # executor: vm-ubuntu-1604                        # (use for pipeline debugging only)
     steps:
       - run: echo "run integration tests job mock"    # (use for pipeline debugging only)
-      - uncache-ehrbase-workspace                     #
+      - cache-out-ehrbase-workspace                     #
       # - restore-ehrbase-workspace
       - start-ehrbase-server
       - run-robot-tests:
@@ -345,7 +345,7 @@ jobs:
     # executor: vm-ubuntu-1604                        # (use for pipeline debugging only)
     steps:
       - run: echo "run integration tests job mock"    # (use for pipeline debugging only)
-      - uncache-ehrbase-workspace                     #
+      - cache-out-ehrbase-workspace                     #
       # - restore-ehrbase-workspace
       - start-ehrbase-server
       - run-robot-tests:
@@ -358,7 +358,7 @@ jobs:
     # executor: vm-ubuntu-1604                        # (use for pipeline debugging only)
     steps:
       - run: echo "run integration tests job mock"    # (use for pipeline debugging only)
-      - uncache-ehrbase-workspace                     #
+      - cache-out-ehrbase-workspace                     #
       # - restore-ehrbase-workspace
       # - start-ehrbase-server
       # - run-robot-tests:
@@ -371,7 +371,7 @@ jobs:
     # executor: vm-ubuntu-1604                        # (use for pipeline debugging only)
     steps:
       - run: echo "run integration tests job mock"    # (use for pipeline debugging only)
-      - uncache-ehrbase-workspace                     #
+      - cache-out-ehrbase-workspace                     #
       # - restore-ehrbase-workspace
       # - start-ehrbase-server
       # - run-robot-tests:
@@ -384,7 +384,7 @@ jobs:
     # executor: vm-ubuntu-1604                        # (use for pipeline debugging only)
     steps:
       - run: echo "run integration tests job mock"    # (use for pipeline debugging only)
-      - uncache-ehrbase-workspace                     #
+      - cache-out-ehrbase-workspace                     #
       # - restore-ehrbase-workspace
       # - start-ehrbase-server
       # - run-robot-tests:
@@ -397,7 +397,7 @@ jobs:
     # executor: vm-ubuntu-1604                        # (use for pipeline debugging only)
     steps:
       - run: echo "run integration tests job mock"    # (use for pipeline debugging only)
-      - uncache-ehrbase-workspace                     #
+      - cache-out-ehrbase-workspace                     #
       # - restore-ehrbase-workspace
       - start-ehrbase-server
       - run-robot-tests:
@@ -413,7 +413,7 @@ jobs:
       # - configure-python-version                    # (use on machin executor only)
       # - checkout
       # - restore-pip-cache
-      # - attach-tests-folder
+      # - restore-test-results-folder
       # - merge-robot-outputs
 
 
@@ -599,7 +599,7 @@ commands:
             echo $SDK_VERSION > SDK_VERSION
             cat SDK_VERSION
 
-  restore-sdk-m2-cache:
+  cache-out-sdk-m2-dependencies:
     steps:
       - run:
           name: Generate Cache Checksum for openEHR_SDK Dependencies
@@ -607,7 +607,7 @@ commands:
       - restore_cache:
           key: openEHR_SDK-
 
-  save-sdk-m2-cache:
+  cache-in-sdk-m2-dependencies:
     steps:
       - save_cache:
           key: openEHR_SDK-{{ checksum "/tmp/openEHR_SDK_maven_cache_seed" }}
@@ -634,13 +634,13 @@ commands:
 
   # NOTE: don't use these two steps in production
   #       this is just for testing ci pipeline w/ mocked jobs/steps
-  cache-sdk-workspace:
+  cache-in-sdk-workspace:
     steps:
       - save_cache:
           key: sdk-workspace-cache
           paths:
             - .
-  uncache-sdk-workspace:
+  cache-out-sdk-workspace:
     steps:
       - restore_cache:
           key: sdk-workspace-cache
@@ -668,14 +668,14 @@ commands:
             cd ~/projects/ehrbase
             mvn package dependency:go-offline -Dmaven.javadoc.skip=true
 
-  save-ehrbase-m2-cache:
+  cache-in-ehrbase-m2-dependencies:
     steps:
       - save_cache:
           key: EHRbase-{{ checksum "/tmp/EHRbase_maven_cache_seed" }}
           paths:
             - ~/.m2
   
-  restore-ehrbase-m2-cache:
+  cache-out-ehrbase-m2-dependencies:
     steps:
       - run:
           name: Generate Cache Checksum for EHRbase Dependencies
@@ -711,13 +711,13 @@ commands:
     
   # NOTE: don't use these two steps in production
   #       this is just for testing ci pipeline w/ mocked jobs/steps
-  cache-ehrbase-workspace:
+  cache-in-ehrbase-workspace:
     steps:
       - save_cache:
           key: ehrbase-workspace-cache-v3
           paths:
             - ehrbase
-  uncache-ehrbase-workspace:
+  cache-out-ehrbase-workspace:
     steps:
       - restore_cache:
           key: ehrbase-workspace-cache-v3
@@ -793,7 +793,7 @@ commands:
                   -v nodocker \
                   robot/<< parameters.test-suite-path >>/
       # - save-pip-cache
-      - persist-test-results-folder
+      - save-test-results-folder
       - store_test_results:
           path: ~/projects/ehrbase/tests/results/
       - store_artifacts:
@@ -835,7 +835,7 @@ commands:
   #                 --name << parameters.test-suite-name >> \
   #                 robot/<< parameters.test-suite-path >>/
   #     # - save-pip-cache
-  #     - persist-test-results-folder
+  #     - save-test-results-folder
   #     - store_test_results:
   #         path: ~/projects/ehrbase/tests/results/
   #     - store_artifacts:
@@ -888,7 +888,7 @@ commands:
             - pip-v1-
 
 
-  persist-test-results-folder:
+  save-test-results-folder:
     description: Persist Robot tests folder to workspace
     steps:
       - run:
@@ -901,7 +901,7 @@ commands:
             - projects/ehrbase/tests/results
 
 
-  attach-test-results-folder:
+  restore-test-results-folder:
     description: Attach Robot tests folder back to workspace
     steps:
       - attach_workspace:
