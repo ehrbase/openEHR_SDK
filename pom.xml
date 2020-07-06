@@ -21,10 +21,10 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.ehrbase.sdk</groupId>
+    <groupId>com.github.ehrbase.openEHR_SDK</groupId>
     <artifactId>root</artifactId>
     <packaging>pom</packaging>
-    <version>0.3.1-SNAPSHOT</version>
+    <version>0.3.5</version>
     <modules>
         <module>client</module>
         <module>generator</module>
@@ -113,42 +113,42 @@
         <dependencies>
             <!-- modules -->
             <dependency>
-                <groupId>org.ehrbase.sdk</groupId>
-                <artifactId>client-library</artifactId>
+                <groupId>com.github.ehrbase.openEHR_SDK</groupId>
+                <artifactId>client</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.ehrbase.sdk</groupId>
+                <groupId>com.github.ehrbase.openEHR_SDK</groupId>
                 <artifactId>generator</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.ehrbase.sdk</groupId>
+                <groupId>com.github.ehrbase.openEHR_SDK</groupId>
                 <artifactId>response-dto</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.ehrbase.sdk</groupId>
+                <groupId>com.github.ehrbase.openEHR_SDK</groupId>
                 <artifactId>opt-1.4</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.ehrbase.sdk</groupId>
+                <groupId>com.github.ehrbase.openEHR_SDK</groupId>
                 <artifactId>serialisation</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.ehrbase.sdk</groupId>
+                <groupId>com.github.ehrbase.openEHR_SDK</groupId>
                 <artifactId>terminology</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.ehrbase.sdk</groupId>
+                <groupId>com.github.ehrbase.openEHR_SDK</groupId>
                 <artifactId>validation</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.ehrbase.sdk</groupId>
+                <groupId>com.github.ehrbase.openEHR_SDK</groupId>
                 <artifactId>test-data</artifactId>
                 <version>${project.version}</version>
                 <scope>test</scope>
