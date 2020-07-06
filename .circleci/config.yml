@@ -153,30 +153,20 @@ workflows:
       #           - develop
       #           - release
 
-      - ROBOT-REPORT:
-          context: org-global
-          requires:
-            - COMPOSITION-tests-1
-            - COMPOSITION-tests-2
-            - COMPOSITION-tests-3
-            - COMPOSITION-tests-4
-            - CONTRIBUTION-tests
-            - DIRECTORY-tests
-            - EHRSERVICE-tests
-            - EHRSTATUS-tests
-            - KNOWLEDGE-tests
-            - QUERYSERVICE-tests-1
-            - QUERYSERVICE-tests-2
-          filters:
-            branches:
-              ignore:
-                - master
-                - develop
-                - release
-
-      # - generate-test-report:
+      # - ROBOT-TEST-REPORT:
+      #     context: org-global
       #     requires:
-      #       - run-CONTRIBUTION-test
+      #       - COMPOSITION-tests-1
+      #       - COMPOSITION-tests-2
+      #       - COMPOSITION-tests-3
+      #       - COMPOSITION-tests-4
+      #       - CONTRIBUTION-tests
+      #       - DIRECTORY-tests
+      #       - EHRSERVICE-tests
+      #       - EHRSTATUS-tests
+      #       - KNOWLEDGE-tests
+      #       - QUERYSERVICE-tests-1
+      #       - QUERYSERVICE-tests-2
       #     filters:
       #       branches:
       #         ignore:
@@ -428,7 +418,7 @@ jobs:
       #     test-suite-path: "QUERY_SERVICE_TESTS"
       #     test-suite-name: "ADHOC-QUERY-2"
 
-  ROBOT-REPORT:
+  ROBOT-TEST-REPORT:
     # executor: docker-py3-java11-postgres
     executor: vm-ubuntu-1604    # (use for pipeline debugging only)
     steps:
