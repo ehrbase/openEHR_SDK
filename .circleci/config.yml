@@ -850,7 +850,7 @@ commands:
         description: Titel of generated Robot Log/Report.html
         type: string
     steps:
-      # - configure-python-version
+      - configure-python-version
       # - restore-pip-cache
       - install-python-requirements
       - run: pip list
