@@ -23,8 +23,8 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <artifactId>root</artifactId>
-        <groupId>org.ehrbase.sdk</groupId>
-        <version>0.3.1-SNAPSHOT</version>
+        <groupId>com.github.ehrbase.openEHR_SDK</groupId>
+        <version>0.3.5</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -43,7 +43,7 @@
 
         </dependency>
         <dependency>
-            <groupId>org.ehrbase.sdk</groupId>
+            <groupId>com.github.ehrbase.openEHR_SDK</groupId>
             <artifactId>opt-1.4</artifactId>
         </dependency>
         <dependency>
@@ -51,16 +51,16 @@
             <artifactId>commons-cli</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.ehrbase.sdk</groupId>
+           <groupId>com.github.ehrbase.openEHR_SDK</groupId>
             <artifactId>serialisation</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.ehrbase.sdk</groupId>
+            <groupId>com.github.ehrbase.openEHR_SDK</groupId>
             <artifactId>terminology</artifactId>
         </dependency>
 
         <dependency>
-            <groupId>org.ehrbase.sdk</groupId>
+            <groupId>com.github.ehrbase.openEHR_SDK</groupId>
             <artifactId>response-dto</artifactId>
         </dependency>
         <dependency>
@@ -102,7 +102,7 @@
 
         </dependency>
         <dependency>
-            <groupId>org.ehrbase.sdk</groupId>
+            <groupId>com.github.ehrbase.openEHR_SDK</groupId>
             <artifactId>test-data</artifactId>
 
         </dependency>
