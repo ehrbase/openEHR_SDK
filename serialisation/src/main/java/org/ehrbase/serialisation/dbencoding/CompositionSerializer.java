@@ -128,7 +128,7 @@ public class CompositionSerializer {
     public static final String DEFAULT_NARRATIVE = "DEFAULT_NARRATIVE";
 
 
-    public CompositionSerializer() {
+    protected CompositionSerializer() {
         this.allElements = false;
         this.tag_mode = WalkerOutputMode.PATH;
 //		initTags();
@@ -1007,6 +1007,9 @@ public class CompositionSerializer {
 
         if (retmap != null) {
             retmap.put(CompositionSerializer.TAG_CLASS, className(item)); //this will come out as an array...
+            if (!retmap.containsKey(TAG_NAME) && item.getName() != null){
+                retmap.put(TAG_NAME, mapName(item.getName()));
+            }
         }
         return retmap;
 
@@ -1166,7 +1169,7 @@ public class CompositionSerializer {
             stringObjectMap = traverse((ItemStructure) rmObject, TAG_ITEMS);
             if (((ItemStructure) rmObject).getArchetypeNodeId() != null)
                 stringObjectMap.put(CompositionSerializer.TAG_ARCHETYPE_NODE_ID, ((ItemStructure) rmObject).getArchetypeNodeId());
-            if (((ItemStructure) rmObject).getName() != null)
+            if (!stringObjectMap.containsKey(CompositionSerializer.TAG_NAME) && ((ItemStructure)rmObject).getName() != null)
                 stringObjectMap.put(CompositionSerializer.TAG_NAME, ((ItemStructure) rmObject).getName());
         } else
             throw new MarshalException(String.format("Class %s not supported ", rmObject.getClass()), null);
