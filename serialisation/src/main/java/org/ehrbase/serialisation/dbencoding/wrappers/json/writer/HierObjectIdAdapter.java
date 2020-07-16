@@ -35,12 +35,8 @@ public class HierObjectIdAdapter extends DvTypeAdapter<HierObjectId> {
         super(adapterType);
     }
 
-    public HierObjectIdAdapter() {
-    }
-
     @Override
     public HierObjectId read(JsonReader arg0) throws IOException {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -56,12 +52,6 @@ public class HierObjectIdAdapter extends DvTypeAdapter<HierObjectId> {
             writer.name("value").value(hierObjectId.getValue());
             writer.name(CompositionSerializer.TAG_CLASS).value(HierObjectId.class.getSimpleName());
             writer.endObject();
-        } else if (adapterType == AdapterType.RAW_JSON) {
-//            writer.beginObject(); //{
-//            writer.name(I_DvTypeAdapter.TAG_CLASS_RAW_JSON).value(new ObjectSnakeCase(genericId).camelToUpperSnake());
-//            writer.name("code_string").value(genericId.getCodeString());
-//            writer.name("terminology_id").value(gson.toJson(genericId.getTerminologyId()));
-//            writer.endObject(); //}
         }
 
     }

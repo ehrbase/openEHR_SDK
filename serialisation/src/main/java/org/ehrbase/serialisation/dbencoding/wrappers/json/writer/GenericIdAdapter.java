@@ -34,12 +34,9 @@ public class GenericIdAdapter extends DvTypeAdapter<GenericId> {
         super(adapterType);
     }
 
-    public GenericIdAdapter() {
-    }
 
     @Override
     public GenericId read(JsonReader arg0) throws IOException {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -56,12 +53,6 @@ public class GenericIdAdapter extends DvTypeAdapter<GenericId> {
             writer.name("value").value(genericId.getValue());
             writer.name(CompositionSerializer.TAG_CLASS).value(GenericId.class.getSimpleName());
             writer.endObject();
-        } else if (adapterType == AdapterType.RAW_JSON) {
-//            writer.beginObject(); //{
-//            writer.name(I_DvTypeAdapter.TAG_CLASS_RAW_JSON).value(new ObjectSnakeCase(genericId).camelToUpperSnake());
-//            writer.name("code_string").value(genericId.getCodeString());
-//            writer.name("terminology_id").value(gson.toJson(genericId.getTerminologyId()));
-//            writer.endObject(); //}
         }
 
     }
