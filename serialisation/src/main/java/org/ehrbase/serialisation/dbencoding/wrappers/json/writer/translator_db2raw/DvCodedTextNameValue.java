@@ -32,10 +32,6 @@ public class DvCodedTextNameValue implements I_NameValueHandler{
     private final String codeString;
     private final String terminologyId;
 
-    DvCodedTextNameValue(JsonWriter writer, String value) {
-        throw new IllegalStateException("Invalid DvCodedText");
-    }
-
     DvCodedTextNameValue(JsonWriter writer, LinkedTreeMap value) {
         this.writer = writer;
         this.value = value.get("value").toString();
@@ -53,6 +49,7 @@ public class DvCodedTextNameValue implements I_NameValueHandler{
      * </code>
      * @throws IOException
      */
+    @Override
     public void write() throws IOException {
         if (value == null || value.isEmpty())
             return;
