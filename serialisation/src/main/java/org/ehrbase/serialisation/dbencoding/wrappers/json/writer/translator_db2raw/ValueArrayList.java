@@ -17,13 +17,13 @@
  */
 package org.ehrbase.serialisation.dbencoding.wrappers.json.writer.translator_db2raw;
 
+import com.google.gson.internal.LinkedTreeMap;
 import com.google.gson.stream.JsonWriter;
 import org.ehrbase.serialisation.dbencoding.CompositionSerializer;
 import org.ehrbase.serialisation.dbencoding.wrappers.json.I_DvTypeAdapter;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Map;
 
 /**
  * deals with values passed as an array. This is a tweak since we use MultiValueMap which is backed by an ArrayList
@@ -49,10 +49,18 @@ public class ValueArrayList {
 
         switch (tag) {
             case CompositionSerializer.TAG_NAME:
-                Object nameDefinition = ((Map) (value.get(0))).get("value");
-                if (nameDefinition != null) {
-                    new NameValue(writer, nameDefinition.toString()).write();
+
+                LinkedTreeMap nameEncoded = (value.get(0) instanceof ArrayList) ?
+                        ((LinkedTreeMap)((ArrayList)value.get(0)).get(0)) :
+                        ((LinkedTreeMap) (value.get(0)));
+
+                if (nameEncoded.size() == 1) {
+                    new DvTextNameValue(writer, nameEncoded).write();
                 }
+                if (nameEncoded.size() > 1){ //dvCodedText
+                    new DvCodedTextNameValue(writer, nameEncoded).write();
+                }
+
                 break;
             case CompositionSerializer.TAG_ARCHETYPE_NODE_ID:
                 writer.name(I_DvTypeAdapter.ARCHETYPE_NODE_ID).value(value.get(0).toString());

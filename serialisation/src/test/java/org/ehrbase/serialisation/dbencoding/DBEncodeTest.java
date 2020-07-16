@@ -318,4 +318,32 @@ public class DBEncodeTest {
 
         assertNotNull(converted);
     }
+
+    @Test
+    public void compositionEncodingNamedItemTree() throws Exception {
+        String value = IOUtils.toString(CompositionTestDataCanonicalJson.MINIMAL_EVAL_NAMED_ITEM_TREE.getStream(), UTF_8);
+        CanonicalJson cut = new CanonicalJson();
+        Composition composition = cut.unmarshal(value, Composition.class);
+
+        assertNotNull(composition);
+
+        CompositionSerializer compositionSerializerRawJson = new CompositionSerializer();
+
+        String db_encoded = compositionSerializerRawJson.dbEncode(composition);
+        //check that ITEM_TREE name is serialized
+        assertNotNull(db_encoded);
+
+        String converted = new LightRawJsonEncoder(db_encoded).encodeCompositionAsString();
+
+        assertNotNull(converted);
+
+        //see if this can be interpreted by Archie
+        Composition object = new CanonicalJson().unmarshal(converted,Composition.class);
+
+        assertNotNull(object);
+
+        String interpreted = new CanonicalXML().marshal(object);
+
+        assertNotNull(interpreted);
+    }
 }
