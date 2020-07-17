@@ -30,6 +30,10 @@ public class AdminDeleteResponseData {
     @JsonProperty(value = "deleted")
     private int deleted;
 
+    public AdminDeleteResponseData(int deleted) {
+        this.deleted = deleted;
+    }
+
     public void setDeleted(int deleted) {
         this.deleted = deleted;
     }

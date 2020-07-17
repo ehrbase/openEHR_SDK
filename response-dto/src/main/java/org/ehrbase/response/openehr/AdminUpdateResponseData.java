@@ -30,6 +30,10 @@ public class AdminUpdateResponseData {
     @JsonProperty(value = "updated")
     private int updated;
 
+    public AdminUpdateResponseData(int updated) {
+        this.updated = updated;
+    }
+
     public void setUpdated(int updated) {
         this.updated = updated;
     }

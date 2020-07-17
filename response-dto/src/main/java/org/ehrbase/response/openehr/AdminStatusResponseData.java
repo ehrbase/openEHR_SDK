@@ -29,6 +29,10 @@ public class AdminStatusResponseData {
     @JsonProperty(value = "message")
     private String message;
 
+    public AdminStatusResponseData(String message) {
+        this.message = message;
+    }
+
     public void setMessage(String message) {
         this.message = message;
     }
