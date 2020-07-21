@@ -15,30 +15,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ehrbase.response.openehr;
+package org.ehrbase.response.openehr.admin;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 
 /**
- * Delete response data for all all DELETE requests. Contains the number of deleted target entries, i.e. if an EHR
- * has to be deleted the number of deleted EHR will be returned.
+ * Admin API response data for successful PUT responses. Returns the number of updated elements as a response field.
+ * TODO: Return updated resource data instead of number. Should be generic for all use cases, i.e. EHR, directory, etc.
  */
 @JacksonXmlRootElement
-public class AdminDeleteResponseData {
+public class AdminUpdateResponseData {
 
-    @JsonProperty(value = "deleted")
-    private int deleted;
+    @JsonProperty(value = "updated")
+    private int updated;
 
-    public AdminDeleteResponseData(int deleted) {
-        this.deleted = deleted;
+    public AdminUpdateResponseData(int updated) {
+        this.updated = updated;
     }
 
-    public void setDeleted(int deleted) {
-        this.deleted = deleted;
+    public void setUpdated(int updated) {
+        this.updated = updated;
     }
 
-    public int getDeleted() {
-        return this.deleted;
+    public int getUpdated() {
+        return this.updated;
     }
 }
