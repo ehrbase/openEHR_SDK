@@ -20,6 +20,8 @@ package org.ehrbase.client.introspect;
 import org.apache.xmlbeans.XmlException;
 import org.assertj.core.groups.Tuple;
 import org.ehrbase.client.introspect.node.*;
+import org.ehrbase.client.terminology.TermDefinition;
+import org.ehrbase.client.terminology.ValueSet;
 import org.ehrbase.test_data.operationaltemplate.OperationalTemplateTestData;
 import org.junit.Test;
 import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
@@ -82,6 +84,30 @@ public class TemplateIntrospectTest {
         assertThat(countNodes(actual, SlotNode.class)).isEqualTo(3l);
         assertThat(countNodes(actual, ChoiceNode.class)).isEqualTo(0l);
     }
+
+
+    @Test
+    public void introspectDiagnose() throws IOException, XmlException {
+        OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(OperationalTemplateTestData.DIAGNOSE.getStream()).getTemplate();
+        TemplateIntrospect cut = new TemplateIntrospect(template);
+
+        Map<String, Node> actual = cut.getRoot().getChildren();
+
+        assertThat(actual).isNotNull();
+
+        ValueSet valuset = ((EndNode) ((ArchetypeNode) actual.get("/content[openEHR-EHR-EVALUATION.problem_diagnosis.v1]"))
+                .getChildren()
+                .get("/data[at0001]/items[at0002]/value")).getValuset();
+
+        assertThat(valuset.getTherms()).extracting(TermDefinition::getValue).containsExactlyInAnyOrder(
+                "COVID-19, Virus nicht nachgewiesen",
+                "Infektion durch Koronaviren nicht näher bezeichneter Lokalisation",
+                "Koronaviren als Ursache von Krankheiten, die in anderen Kapiteln klassifiziert sind",
+                "COVID-19, Virus nachgewiesen"
+        );
+
+    }
+
 
     @Test
     public void introspectEpisodeOfCare() throws IOException, XmlException {

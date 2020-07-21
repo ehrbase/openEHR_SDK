@@ -76,7 +76,7 @@ public class TerminologyProvider {
             value = LOCALIZED_TERMINOLOGIES.getDefault().terminology(id).rubricForCode(codePhrase.getCodeString(), "en");
         } catch (RuntimeException e) {
             value = codePhrase.getCodeString();
-            LOGGER.warn("Unknown  value {} in Terminology {}", value, id);
+            LOGGER.info("Unknown  value {} in Terminology {}", value, id);
         }
         return new TermDefinition(codePhrase.getCodeString(), value, value);
 
