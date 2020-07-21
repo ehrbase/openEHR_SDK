@@ -40,6 +40,9 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Optional;
 
+import static org.ehrbase.client.openehrclient.defaultrestclient.DefaultRestClient.ACCEPT_APPLICATION_JSON;
+import static org.ehrbase.client.openehrclient.defaultrestclient.DefaultRestClient.ACCEPT_APPLICATION_XML;
+
 public class DefaultRestTemplateEndpoint implements TemplateEndpoint {
 
     public static final String DEFINITION_TEMPLATE_ADL_1_4_PATH = "definition/template/adl1.4/";
@@ -59,7 +62,7 @@ public class DefaultRestTemplateEndpoint implements TemplateEndpoint {
             URI uri = defaultRestClient.getConfig().getBaseUri().resolve(new URIBuilder().setPath(defaultRestClient.getConfig().getBaseUri().getPath() + DEFINITION_TEMPLATE_ADL_1_4_PATH + templateId).build());
             logger.debug("Calling Get {}", uri);
             HttpResponse httpResponse = Request.Get(uri)
-                    .addHeader(HttpHeaders.ACCEPT, ContentType.APPLICATION_XML.toString())
+                    .addHeader(HttpHeaders.ACCEPT, ACCEPT_APPLICATION_XML)
                     .execute()
                     .returnResponse();
 
@@ -101,7 +104,7 @@ public class DefaultRestTemplateEndpoint implements TemplateEndpoint {
         opts.setSaveSyntheticDocumentElement(new QName("http://schemas.openehr.org/v1", "template"));
         try {
             HttpResponse response = Request.Post(uri)
-                    .addHeader(HttpHeaders.ACCEPT, ContentType.APPLICATION_JSON.toString()).bodyString(
+                    .addHeader(HttpHeaders.ACCEPT, ACCEPT_APPLICATION_JSON).bodyString(
                             operationaltemplate.xmlText(opts), ContentType.APPLICATION_XML)
                     .execute().returnResponse();
             DefaultRestClient.checkStatus(response, HttpStatus.SC_OK, HttpStatus.SC_CREATED, HttpStatus.SC_NO_CONTENT);
