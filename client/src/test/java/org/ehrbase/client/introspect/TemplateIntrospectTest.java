@@ -95,11 +95,11 @@ public class TemplateIntrospectTest {
 
         assertThat(actual).isNotNull();
 
-        ValueSet valuset = ((EndNode) ((ArchetypeNode) actual.get("/content[openEHR-EHR-EVALUATION.problem_diagnosis.v1]"))
+        ValueSet valueSet = ((EndNode) ((ArchetypeNode) actual.get("/content[openEHR-EHR-EVALUATION.problem_diagnosis.v1]"))
                 .getChildren()
                 .get("/data[at0001]/items[at0002]/value")).getValuset();
 
-        assertThat(valuset.getTherms()).extracting(TermDefinition::getValue).containsExactlyInAnyOrder(
+        assertThat(valueSet.getTherms()).extracting(TermDefinition::getValue).containsExactlyInAnyOrder(
                 "COVID-19, Virus nicht nachgewiesen",
                 "Infektion durch Koronaviren nicht näher bezeichneter Lokalisation",
                 "Koronaviren als Ursache von Krankheiten, die in anderen Kapiteln klassifiziert sind",
