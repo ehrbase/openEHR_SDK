@@ -18,41 +18,41 @@ import org.ehrbase.client.classgenerator.examples.shareddefinition.Territory;
 import java.time.temporal.TemporalAccessor;
 
 public class AlternativeEventsCompositionContainment extends Containment {
-    public SelectAqlField<AlternativeEventsComposition> ALTERNATIVE_EVENTS_COMPOSITION = new AqlFieldImp<AlternativeEventsComposition>(AlternativeEventsComposition.class, "", "AlternativeEventsComposition", AlternativeEventsComposition.class, this);
+  public SelectAqlField<AlternativeEventsComposition> ALTERNATIVE_EVENTS_COMPOSITION = new AqlFieldImp<AlternativeEventsComposition>(AlternativeEventsComposition.class, "", "AlternativeEventsComposition", AlternativeEventsComposition.class, this);
 
-    public SelectAqlField<TemporalAccessor> END_TIME_VALUE = new AqlFieldImp<TemporalAccessor>(AlternativeEventsComposition.class, "/context/end_time|value", "endTimeValue", TemporalAccessor.class, this);
+  public SelectAqlField<TemporalAccessor> END_TIME_VALUE = new AqlFieldImp<TemporalAccessor>(AlternativeEventsComposition.class, "/context/end_time|value", "endTimeValue", TemporalAccessor.class, this);
 
-    public ListSelectAqlField<Participation> PARTICIPATIONS = new ListAqlFieldImp<Participation>(AlternativeEventsComposition.class, "/context/participations", "participations", Participation.class, this);
+  public ListSelectAqlField<Participation> PARTICIPATIONS = new ListAqlFieldImp<Participation>(AlternativeEventsComposition.class, "/context/participations", "participations", Participation.class, this);
 
-    public SelectAqlField<Language> LANGUAGE = new AqlFieldImp<Language>(AlternativeEventsComposition.class, "/language", "language", Language.class, this);
+  public SelectAqlField<Language> LANGUAGE = new AqlFieldImp<Language>(AlternativeEventsComposition.class, "/language", "language", Language.class, this);
 
-    public SelectAqlField<PartyIdentified> HEALTH_CARE_FACILITY = new AqlFieldImp<PartyIdentified>(AlternativeEventsComposition.class, "/context/health_care_facility", "healthCareFacility", PartyIdentified.class, this);
+  public SelectAqlField<PartyIdentified> HEALTH_CARE_FACILITY = new AqlFieldImp<PartyIdentified>(AlternativeEventsComposition.class, "/context/health_care_facility", "healthCareFacility", PartyIdentified.class, this);
 
-    public SelectAqlField<String> STATUS_VALUE = new AqlFieldImp<String>(AlternativeEventsComposition.class, "/context/other_context[at0001]/items[at0005]/value|value", "statusValue", String.class, this);
+  public SelectAqlField<String> STATUS_VALUE = new AqlFieldImp<String>(AlternativeEventsComposition.class, "/context/other_context[at0001]/items[at0005]/value|value", "statusValue", String.class, this);
 
-    public SelectAqlField<String> BERICHT_ID_VALUE = new AqlFieldImp<String>(AlternativeEventsComposition.class, "/context/other_context[at0001]/items[at0002]/value|value", "berichtIdValue", String.class, this);
+  public SelectAqlField<String> BERICHT_ID_VALUE = new AqlFieldImp<String>(AlternativeEventsComposition.class, "/context/other_context[at0001]/items[at0002]/value|value", "berichtIdValue", String.class, this);
 
-    public SelectAqlField<Territory> TERRITORY = new AqlFieldImp<Territory>(AlternativeEventsComposition.class, "/territory", "territory", Territory.class, this);
+  public SelectAqlField<Territory> TERRITORY = new AqlFieldImp<Territory>(AlternativeEventsComposition.class, "/territory", "territory", Territory.class, this);
 
-    public SelectAqlField<TemporalAccessor> START_TIME_VALUE = new AqlFieldImp<TemporalAccessor>(AlternativeEventsComposition.class, "/context/start_time|value", "startTimeValue", TemporalAccessor.class, this);
+  public SelectAqlField<TemporalAccessor> START_TIME_VALUE = new AqlFieldImp<TemporalAccessor>(AlternativeEventsComposition.class, "/context/start_time|value", "startTimeValue", TemporalAccessor.class, this);
 
-    public SelectAqlField<PartyProxy> COMPOSER = new AqlFieldImp<PartyProxy>(AlternativeEventsComposition.class, "/composer", "composer", PartyProxy.class, this);
+  public SelectAqlField<PartyProxy> COMPOSER = new AqlFieldImp<PartyProxy>(AlternativeEventsComposition.class, "/composer", "composer", PartyProxy.class, this);
 
-    public SelectAqlField<SettingDefiningcode> SETTING_DEFININGCODE = new AqlFieldImp<SettingDefiningcode>(AlternativeEventsComposition.class, "/context/setting|defining_code", "settingDefiningcode", SettingDefiningcode.class, this);
+  public SelectAqlField<SettingDefiningcode> SETTING_DEFININGCODE = new AqlFieldImp<SettingDefiningcode>(AlternativeEventsComposition.class, "/context/setting|defining_code", "settingDefiningcode", SettingDefiningcode.class, this);
 
-    public ListSelectAqlField<KorpergewichtObservation> KORPERGEWICHT = new ListAqlFieldImp<KorpergewichtObservation>(AlternativeEventsComposition.class, "/content[openEHR-EHR-OBSERVATION.body_weight.v2]", "korpergewicht", KorpergewichtObservation.class, this);
+  public ListSelectAqlField<KorpergewichtObservation> KORPERGEWICHT = new ListAqlFieldImp<KorpergewichtObservation>(AlternativeEventsComposition.class, "/content[openEHR-EHR-OBSERVATION.body_weight.v2]", "korpergewicht", KorpergewichtObservation.class, this);
 
-    public ListSelectAqlField<Cluster> ERWEITERUNG = new ListAqlFieldImp<Cluster>(AlternativeEventsComposition.class, "/context/other_context[at0001]/items[at0006]", "erweiterung", Cluster.class, this);
+  public ListSelectAqlField<Cluster> ERWEITERUNG = new ListAqlFieldImp<Cluster>(AlternativeEventsComposition.class, "/context/other_context[at0001]/items[at0006]", "erweiterung", Cluster.class, this);
 
-    public SelectAqlField<String> LOCATION = new AqlFieldImp<String>(AlternativeEventsComposition.class, "/context/location", "location", String.class, this);
+  public SelectAqlField<String> LOCATION = new AqlFieldImp<String>(AlternativeEventsComposition.class, "/context/location", "location", String.class, this);
 
-    public SelectAqlField<CategoryDefiningcode> CATEGORY_DEFININGCODE = new AqlFieldImp<CategoryDefiningcode>(AlternativeEventsComposition.class, "/category|defining_code", "categoryDefiningcode", CategoryDefiningcode.class, this);
+  public SelectAqlField<CategoryDefiningcode> CATEGORY_DEFININGCODE = new AqlFieldImp<CategoryDefiningcode>(AlternativeEventsComposition.class, "/category|defining_code", "categoryDefiningcode", CategoryDefiningcode.class, this);
 
-    private AlternativeEventsCompositionContainment() {
-        super("openEHR-EHR-COMPOSITION.report.v1");
-    }
+  private AlternativeEventsCompositionContainment() {
+    super("openEHR-EHR-COMPOSITION.report.v1");
+  }
 
-    public static AlternativeEventsCompositionContainment getInstance() {
-        return new AlternativeEventsCompositionContainment();
-    }
+  public static AlternativeEventsCompositionContainment getInstance() {
+    return new AlternativeEventsCompositionContainment();
+  }
 }

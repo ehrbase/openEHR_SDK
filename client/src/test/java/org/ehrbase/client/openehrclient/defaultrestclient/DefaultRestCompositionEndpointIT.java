@@ -66,7 +66,7 @@ public class DefaultRestCompositionEndpointIT {
         assertThat(bloodPressureSimpleDeV0.getVersionUid()).isNotNull();
         assertThat(bloodPressureSimpleDeV0.getVersionUid().getVersion()).isEqualTo(1L);
 
-        bloodPressureSimpleDeV0.setSettingDefiningcode(SettingDefiningcode.EMERGENCYCARE);
+        bloodPressureSimpleDeV0.setSettingDefiningcode(SettingDefiningcode.EMERGENCY_CARE);
         openEhrClient.compositionEndpoint(ehr).mergeCompositionEntity(bloodPressureSimpleDeV0);
         assertThat(bloodPressureSimpleDeV0.getVersionUid()).isNotNull();
         assertThat(bloodPressureSimpleDeV0.getVersionUid().getVersion()).isEqualTo(2L);
@@ -105,7 +105,7 @@ public class DefaultRestCompositionEndpointIT {
         assertThat(actual.get().getBloodPressureTrainingSample().get(0).getSubject()).isNotNull().extracting(Object::getClass).isEqualTo(PartySelf.class);
         assertThat(actual.get().getBloodPressureTrainingSample().get(0).getSystolicMagnitude()).isEqualTo(22d);
         assertThat(actual.get().getBloodPressureTrainingSample().get(0).getSystolicUnits()).isEqualTo("mm[Hg]");
-        assertThat(actual.get().getBloodPressureTrainingSample().get(0).getKorotkoffSoundsDefiningcode()).isEqualTo(KorotkoffSoundsDefiningcode.FIFTHSOUND);
+        assertThat(actual.get().getBloodPressureTrainingSample().get(0).getKorotkoffSoundsDefiningcode()).isEqualTo(KorotkoffSoundsDefiningcode.FIFTH_SOUND);
     }
 
     @Test

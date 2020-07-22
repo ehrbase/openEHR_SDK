@@ -37,67 +37,67 @@ public class BodyTemperatureAnyEventPointEvent implements BodyTemperatureAnyEven
     @Choice
     private BodyTemperatureBodyExposureChoice bodyExposure;
 
-    public TemporalAccessor getTimeValue() {
-        return this.timeValue;
-    }
-
     public void setTimeValue(TemporalAccessor timeValue) {
         this.timeValue = timeValue;
     }
 
-    public Double getTemperatureMagnitude() {
-        return this.temperatureMagnitude;
+    public TemporalAccessor getTimeValue() {
+        return this.timeValue;
     }
 
     public void setTemperatureMagnitude(Double temperatureMagnitude) {
         this.temperatureMagnitude = temperatureMagnitude;
     }
 
-    public String getTemperatureUnits() {
-        return this.temperatureUnits;
+    public Double getTemperatureMagnitude() {
+        return this.temperatureMagnitude;
     }
 
     public void setTemperatureUnits(String temperatureUnits) {
         this.temperatureUnits = temperatureUnits;
     }
 
-    public String getDescriptionOfThermalStressValue() {
-        return this.descriptionOfThermalStressValue;
+    public String getTemperatureUnits() {
+        return this.temperatureUnits;
     }
 
     public void setDescriptionOfThermalStressValue(String descriptionOfThermalStressValue) {
         this.descriptionOfThermalStressValue = descriptionOfThermalStressValue;
     }
 
-    public Cluster getExertion() {
-        return this.exertion;
+    public String getDescriptionOfThermalStressValue() {
+        return this.descriptionOfThermalStressValue;
     }
 
     public void setExertion(Cluster exertion) {
         this.exertion = exertion;
     }
 
-    public Long getCurrentDayOfMenstrualCycleMagnitude() {
-        return this.currentDayOfMenstrualCycleMagnitude;
+    public Cluster getExertion() {
+        return this.exertion;
     }
 
     public void setCurrentDayOfMenstrualCycleMagnitude(Long currentDayOfMenstrualCycleMagnitude) {
         this.currentDayOfMenstrualCycleMagnitude = currentDayOfMenstrualCycleMagnitude;
     }
 
-    public List<Cluster> getEnvironmentalConditions() {
-        return this.environmentalConditions;
+    public Long getCurrentDayOfMenstrualCycleMagnitude() {
+        return this.currentDayOfMenstrualCycleMagnitude;
     }
 
     public void setEnvironmentalConditions(List<Cluster> environmentalConditions) {
         this.environmentalConditions = environmentalConditions;
     }
 
-    public BodyTemperatureBodyExposureChoice getBodyExposure() {
-        return this.bodyExposure;
+    public List<Cluster> getEnvironmentalConditions() {
+        return this.environmentalConditions;
     }
 
     public void setBodyExposure(BodyTemperatureBodyExposureChoice bodyExposure) {
         this.bodyExposure = bodyExposure;
+    }
+
+    public BodyTemperatureBodyExposureChoice getBodyExposure() {
+        return this.bodyExposure;
     }
 }

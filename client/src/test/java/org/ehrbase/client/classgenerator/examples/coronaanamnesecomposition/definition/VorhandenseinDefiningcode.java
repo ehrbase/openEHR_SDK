@@ -3,7 +3,7 @@ package org.ehrbase.client.classgenerator.examples.coronaanamnesecomposition.def
 import org.ehrbase.client.classgenerator.EnumValueSet;
 
 public enum VorhandenseinDefiningcode implements EnumValueSet {
-  NICHTVORHANDEN("Nicht vorhanden", "*The specific exposure is or has been absent at or during the event.(en)", "local", "at0049"),
+  NICHT_VORHANDEN("Nicht vorhanden", "*The specific exposure is or has been absent at or during the event.(en)", "local", "at0049"),
 
   VORHANDEN("Vorhanden", "*The specific exposure is or has been present at or during the event.(en)", "local", "at0047");
 

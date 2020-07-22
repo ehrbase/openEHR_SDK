@@ -62,91 +62,91 @@ public class EpisodeOfCareComposition {
         this.versionUid = versionUid;
     }
 
-    public List<EpisodeofcareAdminEntry> getEpisodeofcare() {
-        return this.episodeofcare;
-    }
-
     public void setEpisodeofcare(List<EpisodeofcareAdminEntry> episodeofcare) {
         this.episodeofcare = episodeofcare;
     }
 
-    public TemporalAccessor getEndTimeValue() {
-        return this.endTimeValue;
+    public List<EpisodeofcareAdminEntry> getEpisodeofcare() {
+        return this.episodeofcare;
     }
 
     public void setEndTimeValue(TemporalAccessor endTimeValue) {
         this.endTimeValue = endTimeValue;
     }
 
-    public List<Participation> getParticipations() {
-        return this.participations;
+    public TemporalAccessor getEndTimeValue() {
+        return this.endTimeValue;
     }
 
     public void setParticipations(List<Participation> participations) {
         this.participations = participations;
     }
 
-    public Language getLanguage() {
-        return this.language;
+    public List<Participation> getParticipations() {
+        return this.participations;
     }
 
     public void setLanguage(Language language) {
         this.language = language;
     }
 
-    public PartyIdentified getHealthcarefacility() {
-        return this.healthcarefacility;
+    public Language getLanguage() {
+        return this.language;
     }
 
     public void setHealthcarefacility(PartyIdentified healthcarefacility) {
         this.healthcarefacility = healthcarefacility;
     }
 
-    public PartyProxy getComposer() {
-        return this.composer;
+    public PartyIdentified getHealthcarefacility() {
+        return this.healthcarefacility;
     }
 
     public void setComposer(PartyProxy composer) {
         this.composer = composer;
     }
 
-    public SettingDefiningcode getSettingDefiningcode() {
-        return this.settingDefiningcode;
+    public PartyProxy getComposer() {
+        return this.composer;
     }
 
     public void setSettingDefiningcode(SettingDefiningcode settingDefiningcode) {
         this.settingDefiningcode = settingDefiningcode;
     }
 
-    public Territory getTerritory() {
-        return this.territory;
+    public SettingDefiningcode getSettingDefiningcode() {
+        return this.settingDefiningcode;
     }
 
     public void setTerritory(Territory territory) {
         this.territory = territory;
     }
 
-    public String getLocation() {
-        return this.location;
+    public Territory getTerritory() {
+        return this.territory;
     }
 
     public void setLocation(String location) {
         this.location = location;
     }
 
-    public CategoryDefiningcode getCategoryDefiningcode() {
-        return this.categoryDefiningcode;
+    public String getLocation() {
+        return this.location;
     }
 
     public void setCategoryDefiningcode(CategoryDefiningcode categoryDefiningcode) {
         this.categoryDefiningcode = categoryDefiningcode;
     }
 
-    public TemporalAccessor getStartTimeValue() {
-        return this.startTimeValue;
+    public CategoryDefiningcode getCategoryDefiningcode() {
+        return this.categoryDefiningcode;
     }
 
     public void setStartTimeValue(TemporalAccessor startTimeValue) {
         this.startTimeValue = startTimeValue;
+    }
+
+    public TemporalAccessor getStartTimeValue() {
+        return this.startTimeValue;
     }
 }

@@ -3,7 +3,7 @@ package org.ehrbase.client.classgenerator.examples.coronaanamnesecomposition.def
 import org.ehrbase.client.classgenerator.EnumValueSet;
 
 public enum DiagnosestatusDefiningcode implements EnumValueSet {
-  INBEARBEITUNG("In Bearbeitung", "Eine vorübergehende Diagnose, bei welcher Testergebnisse und klinische Hinweise oder Empfehlungen noch ausstehen, welche aber bereits auf einer soliden klinischen Sicherheit beruht. Sobald weitere Testresultate und klinische Hinweise oder Empfehlungen zur Verfügung stehen, kann sich die Diagnose noch ändern.", "local", "at0017");
+  IN_BEARBEITUNG("In Bearbeitung", "Eine vorübergehende Diagnose, bei welcher Testergebnisse und klinische Hinweise oder Empfehlungen noch ausstehen, welche aber bereits auf einer soliden klinischen Sicherheit beruht. Sobald weitere Testresultate und klinische Hinweise oder Empfehlungen zur Verfügung stehen, kann sich die Diagnose noch ändern.", "local", "at0017");
 
   private String value;
 

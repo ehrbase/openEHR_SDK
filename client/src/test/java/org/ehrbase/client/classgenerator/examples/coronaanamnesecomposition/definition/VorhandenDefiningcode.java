@@ -5,7 +5,7 @@ import org.ehrbase.client.classgenerator.EnumValueSet;
 public enum VorhandenDefiningcode implements EnumValueSet {
   VORHANDEN("Vorhanden", "Das spezifische Symptom oder Anzeichen ist vorhanden.", "local", "at0023"),
 
-  NICHTVORHANDEN("Nicht vorhanden", "Das spezifische Symptom oder Anzeichen ist nicht vorhanden.", "local", "at0024");
+  NICHT_VORHANDEN("Nicht vorhanden", "Das spezifische Symptom oder Anzeichen ist nicht vorhanden.", "local", "at0024");
 
   private String value;
 

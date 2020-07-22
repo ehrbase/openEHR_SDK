@@ -1,0 +1,4 @@
+package org.ehrbase.client.classgenerator.examples.diagnosecomposition.definition;
+
+public interface AtiopathogeneseOrgEhrbaseSerialisationUtilSnakecase5c448433Choice {
+}

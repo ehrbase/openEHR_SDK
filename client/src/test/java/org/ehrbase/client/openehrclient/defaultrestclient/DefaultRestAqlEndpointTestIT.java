@@ -156,7 +156,7 @@ public class DefaultRestAqlEndpointTestIT {
 
         Record3<TemporalAccessor, BloodPressureTrainingSampleObservation, CuffSizeDefiningcode> record1 = actual.get(0);
         assertThat(record1.value1()).isEqualTo(OffsetDateTime.of(2019, 04, 03, 22, 00, 00, 00, ZoneOffset.UTC));
-        assertThat(record1.value2().getKorotkoffSoundsDefiningcode()).isEqualTo(KorotkoffSoundsDefiningcode.FIFTHSOUND);
+        assertThat(record1.value2().getKorotkoffSoundsDefiningcode()).isEqualTo(KorotkoffSoundsDefiningcode.FIFTH_SOUND);
         assertThat(record1.value3()).isEqualTo(CuffSizeDefiningcode.ADULT);
 
     }

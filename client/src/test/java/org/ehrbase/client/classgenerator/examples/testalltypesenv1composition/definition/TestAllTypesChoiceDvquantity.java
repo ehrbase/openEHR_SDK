@@ -13,19 +13,19 @@ public class TestAllTypesChoiceDvquantity implements TestAllTypesChoiceChoice {
     @Path("|units")
     private String choiceUnits;
 
-    public Double getChoiceMagnitude() {
-        return this.choiceMagnitude;
-    }
-
     public void setChoiceMagnitude(Double choiceMagnitude) {
         this.choiceMagnitude = choiceMagnitude;
     }
 
-    public String getChoiceUnits() {
-        return this.choiceUnits;
+    public Double getChoiceMagnitude() {
+        return this.choiceMagnitude;
     }
 
     public void setChoiceUnits(String choiceUnits) {
         this.choiceUnits = choiceUnits;
+    }
+
+    public String getChoiceUnits() {
+        return this.choiceUnits;
     }
 }
