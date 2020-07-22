@@ -72,115 +72,115 @@ public class AlternativeEventsComposition {
         this.versionUid = versionUid;
     }
 
-    public TemporalAccessor getEndTimeValue() {
-        return this.endTimeValue;
-    }
-
     public void setEndTimeValue(TemporalAccessor endTimeValue) {
         this.endTimeValue = endTimeValue;
     }
 
-    public List<Participation> getParticipations() {
-        return this.participations;
+    public TemporalAccessor getEndTimeValue() {
+        return this.endTimeValue;
     }
 
     public void setParticipations(List<Participation> participations) {
         this.participations = participations;
     }
 
-    public Language getLanguage() {
-        return this.language;
+    public List<Participation> getParticipations() {
+        return this.participations;
     }
 
     public void setLanguage(Language language) {
         this.language = language;
     }
 
-    public PartyIdentified getHealthCareFacility() {
-        return this.healthCareFacility;
+    public Language getLanguage() {
+        return this.language;
     }
 
     public void setHealthCareFacility(PartyIdentified healthCareFacility) {
         this.healthCareFacility = healthCareFacility;
     }
 
-    public String getStatusValue() {
-        return this.statusValue;
+    public PartyIdentified getHealthCareFacility() {
+        return this.healthCareFacility;
     }
 
     public void setStatusValue(String statusValue) {
         this.statusValue = statusValue;
     }
 
-    public String getBerichtIdValue() {
-        return this.berichtIdValue;
+    public String getStatusValue() {
+        return this.statusValue;
     }
 
     public void setBerichtIdValue(String berichtIdValue) {
         this.berichtIdValue = berichtIdValue;
     }
 
-    public Territory getTerritory() {
-        return this.territory;
+    public String getBerichtIdValue() {
+        return this.berichtIdValue;
     }
 
     public void setTerritory(Territory territory) {
         this.territory = territory;
     }
 
-    public TemporalAccessor getStartTimeValue() {
-        return this.startTimeValue;
+    public Territory getTerritory() {
+        return this.territory;
     }
 
     public void setStartTimeValue(TemporalAccessor startTimeValue) {
         this.startTimeValue = startTimeValue;
     }
 
-    public PartyProxy getComposer() {
-        return this.composer;
+    public TemporalAccessor getStartTimeValue() {
+        return this.startTimeValue;
     }
 
     public void setComposer(PartyProxy composer) {
         this.composer = composer;
     }
 
-    public SettingDefiningcode getSettingDefiningcode() {
-        return this.settingDefiningcode;
+    public PartyProxy getComposer() {
+        return this.composer;
     }
 
     public void setSettingDefiningcode(SettingDefiningcode settingDefiningcode) {
         this.settingDefiningcode = settingDefiningcode;
     }
 
-    public List<KorpergewichtObservation> getKorpergewicht() {
-        return this.korpergewicht;
+    public SettingDefiningcode getSettingDefiningcode() {
+        return this.settingDefiningcode;
     }
 
     public void setKorpergewicht(List<KorpergewichtObservation> korpergewicht) {
         this.korpergewicht = korpergewicht;
     }
 
-    public List<Cluster> getErweiterung() {
-        return this.erweiterung;
+    public List<KorpergewichtObservation> getKorpergewicht() {
+        return this.korpergewicht;
     }
 
     public void setErweiterung(List<Cluster> erweiterung) {
         this.erweiterung = erweiterung;
     }
 
-    public String getLocation() {
-        return this.location;
+    public List<Cluster> getErweiterung() {
+        return this.erweiterung;
     }
 
     public void setLocation(String location) {
         this.location = location;
     }
 
-    public CategoryDefiningcode getCategoryDefiningcode() {
-        return this.categoryDefiningcode;
+    public String getLocation() {
+        return this.location;
     }
 
     public void setCategoryDefiningcode(CategoryDefiningcode categoryDefiningcode) {
         this.categoryDefiningcode = categoryDefiningcode;
+    }
+
+    public CategoryDefiningcode getCategoryDefiningcode() {
+        return this.categoryDefiningcode;
     }
 }

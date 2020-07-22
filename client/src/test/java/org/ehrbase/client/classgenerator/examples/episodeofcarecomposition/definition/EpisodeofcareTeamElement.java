@@ -10,11 +10,11 @@ public class EpisodeofcareTeamElement {
     @Path("/value|value")
     private URI value;
 
-    public URI getValue() {
-        return this.value;
-    }
-
     public void setValue(URI value) {
         this.value = value;
+    }
+
+    public URI getValue() {
+        return this.value;
     }
 }

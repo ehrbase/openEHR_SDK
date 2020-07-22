@@ -23,7 +23,6 @@ import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.TypeSpec;
 import org.apache.xmlbeans.XmlException;
-import org.assertj.core.api.Assertions;
 import org.assertj.core.groups.Tuple;
 import org.ehrbase.test_data.operationaltemplate.OperationalTemplateTestData;
 import org.junit.Test;
@@ -35,7 +34,10 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 
 public class ClassGeneratorTest {
@@ -57,7 +59,7 @@ public class ClassGeneratorTest {
                 .map(t -> t.fieldSpecs).flatMap(List::stream).collect(Collectors.toList());
 
 
-        Assertions.assertThat(fieldSpecs)
+        assertThat(fieldSpecs)
                 .extracting(f -> f.name, f -> f.type.toString())
                 .containsExactlyInAnyOrder(
                         new Tuple("versionUid", "org.ehrbase.client.openehrclient.VersionUid"),
@@ -136,7 +138,7 @@ public class ClassGeneratorTest {
                 .map(t -> t.fieldSpecs).flatMap(List::stream).collect(Collectors.toList());
 
 
-        Assertions.assertThat(fieldSpecs)
+        assertThat(fieldSpecs)
                 .extracting(f -> f.name, f -> f.type.toString())
                 .containsExactlyInAnyOrder(
                         new Tuple("value", "java.lang.String"),
@@ -192,6 +194,31 @@ public class ClassGeneratorTest {
     }
 
     @Test
+    public void testGenerateDiagnose() throws IOException, XmlException {
+        OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(OperationalTemplateTestData.DIAGNOSE.getStream()).getTemplate();
+        ClassGenerator cut = new ClassGenerator();
+        ClassGeneratorResult generate = cut.generate(PACKAGE_NAME, template);
+
+        Set<String> derDiagnoseDefiningcode = generate.getClasses()
+                .get("org.ehrbase.client.classgenerator.examples.diagnosecomposition.definition")
+                .stream()
+                .filter(t -> t.name.equals("DerDiagnoseDefiningcode"))
+                .findAny()
+                .get()
+                .enumConstants
+                .keySet();
+
+        assertThat(derDiagnoseDefiningcode).containsExactlyInAnyOrder(
+                "KORONAVIREN_ALS_URSACHE_VON_KRANKHEITEN_DIE_IN_ANDEREN_KAPITELN_KLASSIFIZIERT_SIND",
+                "COVID19_VIRUS_NICHT_NACHGEWIESEN",
+                "COVID19_VIRUS_NACHGEWIESEN",
+                "INFEKTION_DURCH_KORONAVIREN_NICHT_NAHER_BEZEICHNETER_LOKALISATION"
+        );
+        writeFiles(generate);
+    }
+
+
+    @Test
     public void testGenerateEpisode() throws IOException, XmlException {
         OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(OperationalTemplateTestData.EPISODE_OF_CARE.getStream()).getTemplate();
         ClassGenerator cut = new ClassGenerator();
@@ -201,7 +228,7 @@ public class ClassGeneratorTest {
                 .filter(t -> !t.kind.equals(TypeSpec.Kind.ENUM))
                 .map(t -> t.fieldSpecs).flatMap(List::stream).collect(Collectors.toList());
 
-        Assertions.assertThat(fieldSpecs).size().isEqualTo(27);
+        assertThat(fieldSpecs).size().isEqualTo(27);
 
         writeFiles(generate);
 
@@ -221,7 +248,7 @@ public class ClassGeneratorTest {
                 .map(t -> t.fieldSpecs).flatMap(List::stream).collect(Collectors.toList());
 
 
-        Assertions.assertThat(fieldSpecs)
+        assertThat(fieldSpecs)
                 .extracting(f -> f.name, f -> f.type.toString())
                 .containsExactlyInAnyOrder(
                         new Tuple("versionUid", "org.ehrbase.client.openehrclient.VersionUid"),
@@ -288,7 +315,7 @@ public class ClassGeneratorTest {
                 .filter(t -> !t.kind.equals(TypeSpec.Kind.ENUM))
                 .map(t -> t.fieldSpecs).flatMap(List::stream).collect(Collectors.toList());
 
-        Assertions.assertThat(fieldSpecs).size().isEqualTo(73L);
+        assertThat(fieldSpecs).size().isEqualTo(73L);
 
         writeFiles(generate);
 
@@ -306,7 +333,7 @@ public class ClassGeneratorTest {
                 .filter(t -> !t.kind.equals(TypeSpec.Kind.ENUM))
                 .map(t -> t.fieldSpecs).flatMap(List::stream).collect(Collectors.toList());
 
-        Assertions.assertThat(fieldSpecs).size().isEqualTo(316L);
+        assertThat(fieldSpecs).size().isEqualTo(316L);
 
         writeFiles(generate);
 
@@ -317,7 +344,7 @@ public class ClassGeneratorTest {
         ClassGenerator cut = new ClassGenerator();
         String className = cut.buildClassName("/_state structure/*_confounding factors(en)_ELEMENT");
 
-        Assertions.assertThat(className).isEqualTo("ConfoundingFactorsEnElement");
+        assertThat(className).isEqualTo("ConfoundingFactorsEnElement");
     }
 
 }

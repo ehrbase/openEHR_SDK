@@ -10,11 +10,11 @@ public class TestAllTypesChoiceDvcount implements TestAllTypesChoiceChoice {
     @Path("|magnitude")
     private Long choiceMagnitude;
 
-    public Long getChoiceMagnitude() {
-        return this.choiceMagnitude;
-    }
-
     public void setChoiceMagnitude(Long choiceMagnitude) {
         this.choiceMagnitude = choiceMagnitude;
+    }
+
+    public Long getChoiceMagnitude() {
+        return this.choiceMagnitude;
     }
 }

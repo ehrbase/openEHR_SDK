@@ -5,7 +5,7 @@ import org.ehrbase.client.aql.field.AqlFieldImp;
 import org.ehrbase.client.aql.field.SelectAqlField;
 
 public class SymptomeSectionContainment extends Containment {
-    public SelectAqlField<SymptomeSection> SYMPTOME_SECTION = new AqlFieldImp<SymptomeSection>(SymptomeSection.class, "", "SymptomeSection", SymptomeSection.class, this);
+  public SelectAqlField<SymptomeSection> SYMPTOME_SECTION = new AqlFieldImp<SymptomeSection>(SymptomeSection.class, "", "SymptomeSection", SymptomeSection.class, this);
 
     public SelectAqlField<WeitereSymptomeObservation> WEITERE_SYMPTOME = new AqlFieldImp<WeitereSymptomeObservation>(SymptomeSection.class, "/items[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0 and name/value='Weitere Symptome']", "weitereSymptome", WeitereSymptomeObservation.class, this);
 

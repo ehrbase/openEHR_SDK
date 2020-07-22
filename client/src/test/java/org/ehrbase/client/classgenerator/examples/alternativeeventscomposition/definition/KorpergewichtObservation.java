@@ -36,59 +36,59 @@ public class KorpergewichtObservation {
     @Path("/subject")
     private PartyProxy subject;
 
-    public KorpergewichtBirthEnEvent getBirthEn() {
-        return this.birthEn;
-    }
-
     public void setBirthEn(KorpergewichtBirthEnEvent birthEn) {
         this.birthEn = birthEn;
     }
 
-    public List<KorpergewichtAnyEventEnChoice> getAnyEventEn() {
-        return this.anyEventEn;
+    public KorpergewichtBirthEnEvent getBirthEn() {
+        return this.birthEn;
     }
 
     public void setAnyEventEn(List<KorpergewichtAnyEventEnChoice> anyEventEn) {
         this.anyEventEn = anyEventEn;
     }
 
-    public List<Cluster> getExtensionEn() {
-        return this.extensionEn;
+    public List<KorpergewichtAnyEventEnChoice> getAnyEventEn() {
+        return this.anyEventEn;
     }
 
     public void setExtensionEn(List<Cluster> extensionEn) {
         this.extensionEn = extensionEn;
     }
 
-    public Language getLanguage() {
-        return this.language;
+    public List<Cluster> getExtensionEn() {
+        return this.extensionEn;
     }
 
     public void setLanguage(Language language) {
         this.language = language;
     }
 
-    public TemporalAccessor getOriginValue() {
-        return this.originValue;
+    public Language getLanguage() {
+        return this.language;
     }
 
     public void setOriginValue(TemporalAccessor originValue) {
         this.originValue = originValue;
     }
 
-    public Cluster getGerat() {
-        return this.gerat;
+    public TemporalAccessor getOriginValue() {
+        return this.originValue;
     }
 
     public void setGerat(Cluster gerat) {
         this.gerat = gerat;
     }
 
-    public PartyProxy getSubject() {
-        return this.subject;
+    public Cluster getGerat() {
+        return this.gerat;
     }
 
     public void setSubject(PartyProxy subject) {
         this.subject = subject;
+    }
+
+    public PartyProxy getSubject() {
+        return this.subject;
     }
 }

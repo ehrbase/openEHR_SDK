@@ -82,7 +82,7 @@ public class TestData {
         bloodPressureSimpleDeV0.setLanguage(Language.DE);
         bloodPressureSimpleDeV0.setTerritory(Territory.DE);
         bloodPressureSimpleDeV0.setCategoryDefiningcode(CategoryDefiningcode.EVENT);
-        bloodPressureSimpleDeV0.setSettingDefiningcode(SettingDefiningcode.NURSINGHOMECARE);
+        bloodPressureSimpleDeV0.setSettingDefiningcode(SettingDefiningcode.NURSING_HOME_CARE);
         bloodPressureSimpleDeV0.setComposer(new PartyIdentified(null, "Test", null));
         bloodPressureSimpleDeV0.setParticipations(new ArrayList<>());
         bloodPressureSimpleDeV0.getParticipations().add(new Participation(new PartyIdentified(null, "Test", null), new DvText("Pos1"), null, null));
@@ -106,7 +106,7 @@ public class TestData {
         bloodPressureTrainingSample.setMeanArterialPressureUnits("mm[Hg]");
         bloodPressureTrainingSample.setPulsePressureMagnitude(22d);
         bloodPressureTrainingSample.setPulsePressureUnits("mm[Hg]");
-        bloodPressureTrainingSample.setKorotkoffSoundsDefiningcode(KorotkoffSoundsDefiningcode.FIFTHSOUND);
+        bloodPressureTrainingSample.setKorotkoffSoundsDefiningcode(KorotkoffSoundsDefiningcode.FIFTH_SOUND);
         bloodPressureTrainingSample.setCuffSizeDefiningcode(CuffSizeDefiningcode.ADULT);
         bloodPressureTrainingSample.setLocationOfMeasurementDefiningcode(LocationOfMeasurementDefiningcode.FINGER);
         return bloodPressureTrainingSample;
@@ -119,7 +119,7 @@ public class TestData {
         dto.setEndTimeValue(OffsetDateTime.now());
         dto.setLanguage(Language.DE);
         dto.setTerritory(Territory.DE);
-        dto.setSettingDefiningcode(SettingDefiningcode.DENTALCARE);
+        dto.setSettingDefiningcode(SettingDefiningcode.DENTAL_CARE);
         dto.setCategoryDefiningcode(CategoryDefiningcode.EVENT);
         dto.setComposer(new PartyIdentified(null, "Test", null));
         dto.setBodyTemperature(new ArrayList<>());
@@ -224,7 +224,7 @@ public class TestData {
         episode.setTerritory(Territory.DE);
         episode.setEpisodeofcare(new ArrayList<>());
         episode.setStartTimeValue(OffsetDateTime.now());
-        episode.setSettingDefiningcode(SettingDefiningcode.NURSINGHOMECARE);
+        episode.setSettingDefiningcode(SettingDefiningcode.NURSING_HOME_CARE);
 
         EpisodeofcareAdminEntry episodeofcareAdminEntry = new EpisodeofcareAdminEntry();
 
