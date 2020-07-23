@@ -57,7 +57,6 @@ public class FlatJsonMarshallerTest {
     }
 
     @Test
-
     public void toFlatJson() throws IOException, XmlException {
 
         OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(OperationalTemplateTestData.CORONA_ANAMMNESE.getStream()).getTemplate();

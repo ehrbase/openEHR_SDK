@@ -211,7 +211,8 @@ public class ClassGenerator {
     }
 
     private void addChoiceField(TypeSpec.Builder classBuilder, String path, ChoiceNode choiceNode) {
-        TypeSpec interfaceSpec = TypeSpec.interfaceBuilder(buildClassName(new SnakeCase(currentArchetypeName).camelToSnake() + "_" + choiceNode.getName() + "_choice"))
+
+        TypeSpec interfaceSpec = TypeSpec.interfaceBuilder(buildClassName(choiceNode.getName() + "_choice"))
                 .addModifiers(Modifier.PUBLIC)
                 .build();
 

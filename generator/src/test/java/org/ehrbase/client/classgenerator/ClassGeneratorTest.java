@@ -202,7 +202,7 @@ public class ClassGeneratorTest {
         Set<String> derDiagnoseDefiningcode = generate.getClasses()
                 .get("org.ehrbase.client.classgenerator.examples.diagnosecomposition.definition")
                 .stream()
-                .filter(t -> t.name.equals("DerDiagnoseDefiningcode"))
+                .filter(t -> t.name.equals("NameDesProblemsDerDiagnoseDefiningcode"))
                 .findAny()
                 .get()
                 .enumConstants
@@ -292,7 +292,7 @@ public class ClassGeneratorTest {
                         new Tuple("currentDayOfMenstrualCycleMagnitude", "java.lang.Long"),
                         new Tuple("environmentalConditions", "java.util.List<com.nedap.archie.rm.datastructures.Cluster>"),
                         new Tuple("widthValue", "java.time.temporal.TemporalAmount"),
-                        new Tuple("bodyExposure", "org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1composition.definition.BodyTemperatureBodyExposureChoiceState"),
+                        new Tuple("bodyExposure", "org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1composition.definition.BodyTemperatureBodyExposureChoice2"),
                         new Tuple("mathFunctionDefiningcode", "org.ehrbase.client.classgenerator.examples.shareddefinition.MathFunctionDefiningcode"),
                         new Tuple("anyEvent", "java.util.List<org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1composition.definition.BodyTemperatureAnyEventChoice>"),
                         new Tuple("participations", "java.util.List<com.nedap.archie.rm.generic.Participation>")
