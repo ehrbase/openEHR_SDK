@@ -40,6 +40,11 @@ public class DefaultRestEhrEndpoint implements EhrEndpoint {
         return httpPost(defaultRestClient.getConfig().getBaseUri().resolve(EHR_PATH), null).getUuid();
     }
 
+    @Override
+    public UUID createEhr(EhrStatus ehrStatus) {
+        return httpPost(defaultRestClient.getConfig().getBaseUri().resolve(EHR_PATH), ehrStatus).getUuid();
+    }
+
 
     @Override
     public Optional<EhrStatus> getEhrStatus(UUID ehrId) {

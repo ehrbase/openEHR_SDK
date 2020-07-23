@@ -26,15 +26,24 @@ import java.util.UUID;
 
 public interface EhrEndpoint {
 
-
     /**
-     * Create a new Ehr.
+     * Create a new EHR.
      *
      * @return ehrID
      * @throws ClientException
      * @throws WrongStatusCodeException
      */
     UUID createEhr();
+
+    /**
+     * Create a new EHR with the given EHR_STATUS.
+     *
+     * @param ehrStatus EHR_STATUS object to create the EHR with.
+     * @return ehrID
+     * @throws ClientException
+     * @throws WrongStatusCodeException
+     */
+    UUID createEhr(EhrStatus ehrStatus);
 
     /**
      * Get the EhrStatus for {@code ehrId}.
