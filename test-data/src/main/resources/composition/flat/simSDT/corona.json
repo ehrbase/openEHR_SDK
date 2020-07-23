@@ -1,5 +1,5 @@
 {
-  "bericht/_uid": "22d8a863-76db-4603-b5ed-9a7a399770d9::piri.ehrscape.com::1",
+  "bericht/_uid": "93a018f1-ad95-4d52-bb8f-0f64d7f7cce6::piri.ehrscape.com::1",
   "bericht/language|code": "de",
   "bericht/language|terminology": "ISO_639-1",
   "bericht/territory|code": "DE",
@@ -50,7 +50,7 @@
   "bericht/symptome/fieber_oder_erhöhte_körpertemperatur/language|terminology": "ISO_639-1",
   "bericht/symptome/fieber_oder_erhöhte_körpertemperatur/encoding|code": "UTF-8",
   "bericht/symptome/fieber_oder_erhöhte_körpertemperatur/encoding|terminology": "IANA_character-sets",
-  "bericht/symptome/körpertemperatur/temperatur|magnitude": 39,
+  "bericht/symptome/körpertemperatur/temperatur|magnitude": 39.0,
   "bericht/symptome/körpertemperatur/temperatur|unit": "°C",
   "bericht/symptome/körpertemperatur/time": "2020-05-11T22:53:12.039139+02:00",
   "bericht/symptome/körpertemperatur/language|code": "de",

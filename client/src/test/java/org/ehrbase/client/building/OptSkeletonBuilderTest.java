@@ -53,16 +53,16 @@ public class OptSkeletonBuilderTest {
         OptSkeletonBuilder cut = new OptSkeletonBuilder();
 
         Composition generate = (Composition) cut.generate(operationaltemplate);
-       assertThat(generate.getContent())
-               .extracting(Locatable::getName)
-               .extracting(DvText::getValue)
-               .containsExactlyInAnyOrder(
-                       "Geschichte/Historie",
-                       "Symptome",
-                       "Kontakt",
-                       "Risikogebiet",
-                       "Allgemeine Angaben"
-               );
+        assertThat(generate.getContent())
+                .extracting(Locatable::getName)
+                .extracting(DvText::getValue)
+                .containsExactlyInAnyOrder(
+                        "Geschichte/Historie",
+                        "Symptome",
+                        "Kontakt",
+                        "Risikogebiet",
+                        "Allgemeine Angaben"
+                );
     }
 
     @Test

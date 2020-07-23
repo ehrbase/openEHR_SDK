@@ -316,8 +316,8 @@ public class OptSkeletonBuilder {
         if (obj instanceof Entry) {
             ((Entry) obj).setEncoding(new CodePhrase(new TerminologyId("IANA_character-sets"), "UTF-8"));
         }
-        if (obj instanceof Locatable && StringUtils.isBlank(((Locatable) obj).getName().getValue())){
-            ((Locatable) obj).getName().setValue(valueMap.getOrDefault("name","").toString());
+        if (obj instanceof Locatable && StringUtils.isBlank(((Locatable) obj).getName().getValue())) {
+            ((Locatable) obj).getName().setValue(valueMap.getOrDefault("name", "").toString());
         }
         if (obj instanceof Composition) {
             Archetyped archetypeDetails = new Archetyped();

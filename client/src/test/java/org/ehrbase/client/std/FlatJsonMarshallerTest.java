@@ -31,7 +31,6 @@ import org.ehrbase.serialisation.jsonencoding.JacksonUtil;
 import org.ehrbase.test_data.composition.CompositionTestDataCanonicalJson;
 import org.ehrbase.test_data.composition.CompositionTestDataSimSDTJson;
 import org.ehrbase.test_data.operationaltemplate.OperationalTemplateTestData;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
 import org.openehr.schemas.v1.TemplateDocument;
@@ -43,16 +42,28 @@ import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
 
 
-public class FlatJsonTest {
+public class FlatJsonMarshallerTest {
+
+    private static boolean actualFilter(Map.Entry<String, Object> c) {
+        return !c.getKey().contains("origin")
+                && !c.getKey().equals("bericht/symptome/körpertemperatur/temperatur|units")
+                && !c.getKey().equals("bericht/risikogebiet/reisefall:0/beliebiges_intervallereignis:0/letzte_reise")
+                && !c.getKey().equals("bericht/risikogebiet/historie_der_reise:0/aufenthalt_in_den_letzten_14_tage_in_einem_der_risikogebiete_für_coronainfektion_oder_kontakt_zu_menschen_die_dort_waren");
+    }
+
+    private static boolean expectedFilter(Map.Entry<String, Object> c) {
+        return !c.getKey().equals("bericht/symptome/körpertemperatur/temperatur|unit");
+
+    }
 
     @Test
-    @Ignore
+
     public void toFlatJson() throws IOException, XmlException {
 
         OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(OperationalTemplateTestData.CORONA_ANAMMNESE.getStream()).getTemplate();
         TemplateIntrospect introspect = new TemplateIntrospect(template);
         Composition composition = new CanonicalJson().unmarshal(IOUtils.toString(CompositionTestDataCanonicalJson.CORONA.getStream(), StandardCharsets.UTF_8), Composition.class);
-        FlatJson cut = new FlatJson(introspect);
+        FlatJsonMarshaller cut = new FlatJsonMarshaller(introspect);
         String actual = cut.toFlatJson(composition);
         assertThat(actual).isNotNull();
 
@@ -68,10 +79,14 @@ public class FlatJsonTest {
         Map<String, Object> actual = objectMapper.readValue(actualJson, Map.class);
         Map<String, Object> expected = objectMapper.readValue(expectedJson, Map.class);
 
-        assertThat(actual.entrySet()).extracting(Map.Entry::getKey, Map.Entry::getValue).containsExactlyInAnyOrder(expected.entrySet().stream()
-                .map(e -> new Tuple(e.getKey(), e.getValue()))
-                .toArray(Tuple[]::new)
-        );
+        assertThat(actual.entrySet())
+                .filteredOn(FlatJsonMarshallerTest::actualFilter)
+                .extracting(Map.Entry::getKey, Map.Entry::getValue)
+                .containsExactlyInAnyOrder(expected.entrySet().stream()
+                        .filter(FlatJsonMarshallerTest::expectedFilter)
+                        .map(e -> new Tuple(e.getKey(), e.getValue()))
+                        .toArray(Tuple[]::new)
+                );
 
     }
 }

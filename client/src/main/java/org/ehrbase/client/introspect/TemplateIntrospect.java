@@ -95,6 +95,7 @@ public class TemplateIntrospect {
                 }).collect(Collectors.toMap(RmIntrospectConfig::getRMClass, c -> c));
     }
 
+
     private ArchetypeNode buildNodeMap() {
         CARCHETYPEROOT definition = operationaltemplate.getDefinition();
         return handleCARCHETYPEROOT(definition, "", false);
@@ -118,7 +119,7 @@ public class TemplateIntrospect {
             termDef.put(code, new TermDefinition(code, value, description));
 
         }
-        String term = buildTerm(definition, termDef, "");
+        String term = buildTerm(definition, termDef, name);
         if (rootName == null) {
             rootName = term.replace("/", "");
         }
@@ -343,9 +344,9 @@ public class TemplateIntrospect {
             EntityNode pointNode = new EntityNode(name, false, cobject.getRmTypeName(), handleCCOMPLEXOBJECT(cobject, "", termDef, ""));
             cobject.setRmTypeName("INTERVAL_EVENT");
             EntityNode intervalNode = new EntityNode(name, false, cobject.getRmTypeName(), handleCCOMPLEXOBJECT(cobject, "", termDef, ""));
-            return new ChoiceNode(name + TERM_DIVIDER + Optional.ofNullable(termDef.get(cobject.getNodeId())).map(TermDefinition::getValue).orElse(""), Arrays.asList(pointNode, intervalNode), multi);
+            return new ChoiceNode(name, Arrays.asList(pointNode, intervalNode), multi);
         } else {
-            return new EntityNode(name + TERM_DIVIDER + Optional.ofNullable(termDef.get(cobject.getNodeId())).map(TermDefinition::getValue).orElse(""), multi, cobject.getRmTypeName(), handleCCOMPLEXOBJECT(cobject, "", termDef, ""));
+            return new EntityNode(name, multi, cobject.getRmTypeName(), handleCCOMPLEXOBJECT(cobject, "", termDef, ""));
         }
     }
 
