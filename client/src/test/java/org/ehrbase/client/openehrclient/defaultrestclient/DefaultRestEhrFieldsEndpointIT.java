@@ -67,6 +67,24 @@ public class DefaultRestEhrFieldsEndpointIT {
     }
 
     @Test
+    public void testCreateEhrWithStatus() {
+        EhrStatus ehrStatus = new EhrStatus();
+        ehrStatus.setQueryable(false);
+        ehrStatus.setModifiable(false);
+        HierObjectId subjectId = new HierObjectId(UUID.randomUUID().toString());
+        ehrStatus.setSubject(new PartySelf(new PartyRef(subjectId, "default", "PERSON")));
+
+        ehrStatus.setArchetypeNodeId("just-a-status");
+        ehrStatus.setName(new DvText("Status"));
+
+        UUID ehr = openEhrClient.ehrEndpoint().createEhr(ehrStatus);
+        assertThat(ehr).isNotNull();
+
+        EhrStatus actual = openEhrClient.ehrEndpoint().getEhrStatus(ehr).get();
+        assertThat(actual.getSubject().getExternalRef().getId()).isEqualTo(subjectId);
+    }
+
+    @Test
     public void testUpdateEhrStatus() throws IOException {
 
         UUID ehrId = openEhrClient.ehrEndpoint().createEhr();

@@ -19,23 +19,23 @@ package org.ehrbase.serialisation.dbencoding.wrappers.json.writer.translator_db2
 
 import com.google.gson.internal.LinkedTreeMap;
 import com.google.gson.stream.JsonWriter;
-import org.ehrbase.serialisation.dbencoding.wrappers.json.I_DvTypeAdapter;
 
 import java.io.IOException;
 
 public class NameValue {
 
-    private final JsonWriter writer;
-    private final String value;
+    private final I_NameValueHandler handler;
 
     NameValue(JsonWriter writer, String value) {
-        this.writer = writer;
-        this.value = value;
+        this.handler = new DvTextNameValue(writer, value);
     }
 
     NameValue(JsonWriter writer, LinkedTreeMap value) {
-        this.writer = writer;
-        this.value = value.get("value").toString();
+        if (value.containsKey("defining_code")){
+            this.handler = new DvCodedTextNameValue(writer, value);
+        }
+        else
+            this.handler = new DvTextNameValue(writer, value);
     }
 
 
@@ -46,15 +46,9 @@ public class NameValue {
      * "value":...
      * }
      * </code>
-     *
      * @throws IOException
      */
     public void write() throws IOException {
-        if (value == null || value.isEmpty())
-            return;
-        writer.name(I_DvTypeAdapter.NAME);
-        writer.beginObject();
-        writer.name(I_DvTypeAdapter.VALUE).value(value);
-        writer.endObject();
+        handler.write();
     }
 }

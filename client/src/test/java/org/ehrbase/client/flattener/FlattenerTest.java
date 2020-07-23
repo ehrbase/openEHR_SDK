@@ -107,7 +107,7 @@ public class FlattenerTest {
         assertThat(actual.getBloodPressureTrainingSample().get(0).getSubject()).isNotNull().extracting(Object::getClass).isEqualTo(PartySelf.class);
         assertThat(actual.getBloodPressureTrainingSample().get(0).getSystolicMagnitude()).isEqualTo(22d);
         assertThat(actual.getBloodPressureTrainingSample().get(0).getSystolicUnits()).isEqualTo("mm[Hg]");
-        assertThat(actual.getBloodPressureTrainingSample().get(0).getKorotkoffSoundsDefiningcode()).isEqualTo(KorotkoffSoundsDefiningcode.FIFTHSOUND);
+        assertThat(actual.getBloodPressureTrainingSample().get(0).getKorotkoffSoundsDefiningcode()).isEqualTo(KorotkoffSoundsDefiningcode.FIFTH_SOUND);
 
     }
 
@@ -156,7 +156,7 @@ public class FlattenerTest {
         assertThat(actual).isNotNull();
         assertThat(actual.getSymptome()).isNotNull();
         assertThat(actual.getSymptome().getHeiserkeit()).isNotNull();
-        assertThat(actual.getSymptome().getHeiserkeit().getVorhandenDefiningcode()).isEqualTo(VorhandenDefiningcode.NICHTVORHANDEN);
+        assertThat(actual.getSymptome().getHeiserkeit().getVorhandenDefiningcode()).isEqualTo(VorhandenDefiningcode.NICHT_VORHANDEN);
     }
 
     @Test

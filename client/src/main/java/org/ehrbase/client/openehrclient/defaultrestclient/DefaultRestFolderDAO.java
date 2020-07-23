@@ -49,8 +49,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static org.ehrbase.client.openehrclient.defaultrestclient.DefaultRestClient.OBJECT_MAPPER;
-import static org.ehrbase.client.openehrclient.defaultrestclient.DefaultRestClient.checkStatus;
+import static org.ehrbase.client.openehrclient.defaultrestclient.DefaultRestClient.*;
 
 public class DefaultRestFolderDAO implements FolderDAO {
 
@@ -131,7 +130,7 @@ public class DefaultRestFolderDAO implements FolderDAO {
         URI uri = directoryEndpoint.getDefaultRestClient().getConfig().getBaseUri().resolve("query/aql");
         try {
             HttpResponse response = Request.Post(uri)
-                    .addHeader(HttpHeaders.ACCEPT, ContentType.APPLICATION_JSON.toString())
+                    .addHeader(HttpHeaders.ACCEPT, ACCEPT_APPLICATION_JSON)
                     .bodyString(OBJECT_MAPPER.writeValueAsString(qMap), ContentType.APPLICATION_JSON)
                     .execute().returnResponse();
             checkStatus(response, HttpStatus.SC_OK, HttpStatus.SC_CREATED, HttpStatus.SC_NO_CONTENT);

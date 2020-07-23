@@ -307,11 +307,11 @@ public class ClassGenerator {
      * @param fieldName
      * @return normalized fieldName for Java naming convention
      */
-    private String toVariableName(String fieldName) {
+    private String toEnumName(String fieldName) {
         if (Character.isDigit(fieldName.charAt(0))) {
             fieldName = "n" + fieldName;
         }
-        return normalise(fieldName, false).toUpperCase();
+        return new SnakeCase(normalise(fieldName, false)).camelToUpperSnake();
     }
 
     private TypeSpec buildEnumValueSet(String name, ValueSet valuset) {
@@ -332,7 +332,7 @@ public class ClassGenerator {
         enumBuilder.addMethod(constructor);
         valuset.getTherms().forEach(t -> {
             String fieldName = extractSubName(t.getValue());
-            enumBuilder.addEnumConstant(toVariableName(fieldName), TypeSpec.anonymousClassBuilder("$S, $S, $S, $S", t.getValue(), t.getDescription(), StringUtils.substringBefore(valuset.getId(), ":"), t.getCode()).build());
+            enumBuilder.addEnumConstant(toEnumName(fieldName), TypeSpec.anonymousClassBuilder("$S, $S, $S, $S", t.getValue(), t.getDescription(), StringUtils.substringBefore(valuset.getId(), ":"), t.getCode()).build());
         });
 
         enumBuilder.addMethod(buildGetter(fieldSpec1));
@@ -358,7 +358,7 @@ public class ClassGenerator {
 
             TypeSpec enumValueSet = buildEnumValueSet(name, valueSet);
             String enumPackage;
-            if (valueSet.getId().equals("local")) {
+            if (valueSet.getId().contains("local")) {
                 enumPackage = currentPackageName + "." + currentMainClass.toLowerCase() + ".definition";
             } else {
                 enumPackage = currentPackageName + ".shareddefinition";

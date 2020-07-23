@@ -7,7 +7,7 @@ import org.ehrbase.client.aql.field.ListSelectAqlField;
 import org.ehrbase.client.aql.field.SelectAqlField;
 
 public class AllgemeineAngabenSectionContainment extends Containment {
-    public SelectAqlField<AllgemeineAngabenSection> ALLGEMEINE_ANGABEN_SECTION = new AqlFieldImp<AllgemeineAngabenSection>(AllgemeineAngabenSection.class, "", "AllgemeineAngabenSection", AllgemeineAngabenSection.class, this);
+  public SelectAqlField<AllgemeineAngabenSection> ALLGEMEINE_ANGABEN_SECTION = new AqlFieldImp<AllgemeineAngabenSection>(AllgemeineAngabenSection.class, "", "AllgemeineAngabenSection", AllgemeineAngabenSection.class, this);
 
     public SelectAqlField<FragebogenZumMedikationsScreeningObservation> FRAGEBOGEN_ZUM_MEDIKATIONS_SCREENING = new AqlFieldImp<FragebogenZumMedikationsScreeningObservation>(AllgemeineAngabenSection.class, "/items[openEHR-EHR-OBSERVATION.medication_use.v0]", "fragebogenZumMedikationsScreening", FragebogenZumMedikationsScreeningObservation.class, this);
 

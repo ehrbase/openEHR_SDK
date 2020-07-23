@@ -56,8 +56,7 @@ import java.net.URI;
 import java.time.temporal.TemporalAccessor;
 import java.util.*;
 
-import static org.ehrbase.client.openehrclient.defaultrestclient.DefaultRestClient.OBJECT_MAPPER;
-import static org.ehrbase.client.openehrclient.defaultrestclient.DefaultRestClient.checkStatus;
+import static org.ehrbase.client.openehrclient.defaultrestclient.DefaultRestClient.*;
 import static org.ehrbase.client.openehrclient.defaultrestclient.DefaultRestCompositionEndpoint.addVersion;
 
 public class DefaultRestAqlEndpoint implements AqlEndpoint {
@@ -92,7 +91,7 @@ public class DefaultRestAqlEndpoint implements AqlEndpoint {
         URI uri = defaultRestClient.getConfig().getBaseUri().resolve("query/aql");
         try {
             HttpResponse response = Request.Post(uri)
-                    .addHeader(HttpHeaders.ACCEPT, ContentType.APPLICATION_JSON.toString())
+                    .addHeader(HttpHeaders.ACCEPT, ACCEPT_APPLICATION_JSON)
                     .bodyString(OBJECT_MAPPER.writeValueAsString(qMap), ContentType.APPLICATION_JSON)
                     .execute().returnResponse();
             checkStatus(response, HttpStatus.SC_OK, HttpStatus.SC_CREATED, HttpStatus.SC_NO_CONTENT);

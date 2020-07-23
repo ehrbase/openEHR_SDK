@@ -72,16 +72,6 @@ public class CoronaTestIT {
 
         assertThat(openEhrClient.compositionEndpoint(ehr).find(coronaAnamneseComposition.getVersionUid().getUuid(), CoronaAnamneseComposition.class)).isNotNull();
 
-/*
-        CoronaAnamneseCompositionContainment coronaAnamneseCompositionContainment = CoronaAnamneseCompositionContainment.getInstance();
-        SymptomeSectionContainment symptomeSectionContainment = SymptomeSectionContainment.getInstance();
-        coronaAnamneseCompositionContainment.setContains(symptomeSectionContainment);
-
-        HustenObservationContainment hustenObservationContainment = HustenObservationContainment.getInstance();
-        FieberOderErhohteKorpertemperaturObservationContainment fieberOderErhohteKorpertemperaturObservationContainment = FieberOderErhohteKorpertemperaturObservationContainment.getInstance();
-        symptomeSectionContainment.setContains(ContainmentExpression.and(hustenObservationContainment, fieberOderErhohteKorpertemperaturObservationContainment));
-*/
-
         CoronaAnamneseCompositionContainment coronaAnamneseCompositionContainment = CoronaAnamneseCompositionContainment.getInstance();
         SymptomeSectionContainment symptomeSectionContainment = SymptomeSectionContainment.getInstance();
 

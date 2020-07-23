@@ -18,27 +18,27 @@ public class TestAllTypesAdminEntry {
     @Path("/data[at0001]/item[at0002]/value|magnitude")
     private Long count3Magnitude;
 
-    public PartyProxy getSubject() {
-        return this.subject;
-    }
-
     public void setSubject(PartyProxy subject) {
         this.subject = subject;
     }
 
-    public Language getLanguage() {
-        return this.language;
+    public PartyProxy getSubject() {
+        return this.subject;
     }
 
     public void setLanguage(Language language) {
         this.language = language;
     }
 
-    public Long getCount3Magnitude() {
-        return this.count3Magnitude;
+    public Language getLanguage() {
+        return this.language;
     }
 
     public void setCount3Magnitude(Long count3Magnitude) {
         this.count3Magnitude = count3Magnitude;
+    }
+
+    public Long getCount3Magnitude() {
+        return this.count3Magnitude;
     }
 }

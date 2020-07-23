@@ -55,7 +55,8 @@ import java.util.WeakHashMap;
 
 public class DefaultRestClient implements OpenEhrClient {
 
-    static final String APPLICATION_JSON = "application/json";
+    static final String ACCEPT_APPLICATION_JSON = "application/json";
+    static final String ACCEPT_APPLICATION_XML = "application/xml";
     static final ObjectMapper OBJECT_MAPPER = createObjectMapper();
     private final OpenEhrClientConfig config;
     private final TemplateProvider templateProvider;
@@ -89,7 +90,7 @@ public class DefaultRestClient implements OpenEhrClient {
     static VersionUid httpPost(URI uri, RMObject body) {
         try {
             HttpResponse response = Request.Post(uri)
-                    .addHeader(HttpHeaders.ACCEPT, ContentType.APPLICATION_JSON.toString())
+                    .addHeader(HttpHeaders.ACCEPT, ACCEPT_APPLICATION_JSON)
                     .bodyString(new CanonicalJson().marshal(body), ContentType.APPLICATION_JSON)
                     .execute().returnResponse();
             checkStatus(response, HttpStatus.SC_OK, HttpStatus.SC_CREATED, HttpStatus.SC_NO_CONTENT);
@@ -103,7 +104,7 @@ public class DefaultRestClient implements OpenEhrClient {
     static VersionUid httpPut(URI uri, Locatable body, VersionUid versionUid) {
         try {
             HttpResponse response = Request.Put(uri)
-                    .addHeader(HttpHeaders.ACCEPT, ContentType.APPLICATION_JSON.toString())
+                    .addHeader(HttpHeaders.ACCEPT, ACCEPT_APPLICATION_JSON)
                     .addHeader(HttpHeaders.IF_MATCH, versionUid.toString())
                     .bodyString(new CanonicalJson().marshal(body), ContentType.APPLICATION_JSON)
                     .execute().returnResponse();
@@ -121,7 +122,7 @@ public class DefaultRestClient implements OpenEhrClient {
     static <T> Optional<T> httpGet(URI uri, Class<T> valueType) {
         try {
             HttpResponse response = Request.Get(uri)
-                    .addHeader(HttpHeaders.ACCEPT, ContentType.APPLICATION_JSON.toString())
+                    .addHeader(HttpHeaders.ACCEPT, ACCEPT_APPLICATION_JSON)
                     .execute().returnResponse();
             checkStatus(response, HttpStatus.SC_OK, HttpStatus.SC_NOT_FOUND);
             if (response.getStatusLine().getStatusCode() == HttpStatus.SC_NOT_FOUND) {

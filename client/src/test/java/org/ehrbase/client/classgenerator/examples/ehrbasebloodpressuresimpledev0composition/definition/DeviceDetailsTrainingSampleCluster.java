@@ -38,75 +38,75 @@ public class DeviceDetailsTrainingSampleCluster {
     @Path("/items[at0004]/items[at0003]/value|value")
     private String manufacturerValue;
 
-    public String getModelValue() {
-        return this.modelValue;
-    }
-
     public void setModelValue(String modelValue) {
         this.modelValue = modelValue;
     }
 
-    public String getSerialNumberValue() {
-        return this.serialNumberValue;
+    public String getModelValue() {
+        return this.modelValue;
     }
 
     public void setSerialNumberValue(String serialNumberValue) {
         this.serialNumberValue = serialNumberValue;
     }
 
-    public TemporalAccessor getDateLastServicedValue() {
-        return this.dateLastServicedValue;
+    public String getSerialNumberValue() {
+        return this.serialNumberValue;
     }
 
     public void setDateLastServicedValue(TemporalAccessor dateLastServicedValue) {
         this.dateLastServicedValue = dateLastServicedValue;
     }
 
-    public TemporalAccessor getDateLastCalibrationValue() {
-        return this.dateLastCalibrationValue;
+    public TemporalAccessor getDateLastServicedValue() {
+        return this.dateLastServicedValue;
     }
 
     public void setDateLastCalibrationValue(TemporalAccessor dateLastCalibrationValue) {
         this.dateLastCalibrationValue = dateLastCalibrationValue;
     }
 
-    public String getNameValue() {
-        return this.nameValue;
+    public TemporalAccessor getDateLastCalibrationValue() {
+        return this.dateLastCalibrationValue;
     }
 
     public void setNameValue(String nameValue) {
         this.nameValue = nameValue;
     }
 
-    public String getDescriptionValue() {
-        return this.descriptionValue;
+    public String getNameValue() {
+        return this.nameValue;
     }
 
     public void setDescriptionValue(String descriptionValue) {
         this.descriptionValue = descriptionValue;
     }
 
-    public List<Cluster> getComponents() {
-        return this.components;
+    public String getDescriptionValue() {
+        return this.descriptionValue;
     }
 
     public void setComponents(List<Cluster> components) {
         this.components = components;
     }
 
-    public String getServicedByValue() {
-        return this.servicedByValue;
+    public List<Cluster> getComponents() {
+        return this.components;
     }
 
     public void setServicedByValue(String servicedByValue) {
         this.servicedByValue = servicedByValue;
     }
 
-    public String getManufacturerValue() {
-        return this.manufacturerValue;
+    public String getServicedByValue() {
+        return this.servicedByValue;
     }
 
     public void setManufacturerValue(String manufacturerValue) {
         this.manufacturerValue = manufacturerValue;
+    }
+
+    public String getManufacturerValue() {
+        return this.manufacturerValue;
     }
 }

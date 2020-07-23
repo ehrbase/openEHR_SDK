@@ -9,11 +9,11 @@ public class EpisodeofcareIdentifierElement {
     @Path("/value")
     private DvIdentifier value;
 
-    public DvIdentifier getValue() {
-        return this.value;
-    }
-
     public void setValue(DvIdentifier value) {
         this.value = value;
+    }
+
+    public DvIdentifier getValue() {
+        return this.value;
     }
 }

@@ -10,11 +10,11 @@ public class BodyTemperatureLocationOfMeasurementDvtext implements BodyTemperatu
     @Path("|value")
     private String locationOfMeasurementValue;
 
-    public String getLocationOfMeasurementValue() {
-        return this.locationOfMeasurementValue;
-    }
-
     public void setLocationOfMeasurementValue(String locationOfMeasurementValue) {
         this.locationOfMeasurementValue = locationOfMeasurementValue;
+    }
+
+    public String getLocationOfMeasurementValue() {
+        return this.locationOfMeasurementValue;
     }
 }

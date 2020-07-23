@@ -1,82 +1,69 @@
-/*
- *
- *  *  Copyright (c) 2020  Stefan Spiska (Vitasystems GmbH) and Hannover Medical School
- *  *  This file is part of Project EHRbase
- *  *
- *  *  Licensed under the Apache License, Version 2.0 (the "License");
- *  *  you may not use this file except in compliance with the License.
- *  *  You may obtain a copy of the License at
- *  *
- *  *  http://www.apache.org/licenses/LICENSE-2.0
- *  *
- *  *  Unless required by applicable law or agreed to in writing, software
- *  *  distributed under the License is distributed on an "AS IS" BASIS,
- *  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  *  See the License for the specific language governing permissions and
- *  *  limitations under the License.
- *
- */
-
 package org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1composition.definition;
 
 import org.ehrbase.client.classgenerator.EnumValueSet;
 
 public enum LocationOfMeasurementDefiningcode implements EnumValueSet {
-    VAGINA("Vagina", "Temperature is measured within the vagina.", "local", "at0051"),
+  NASOPHARYNX("Nasopharynx", "Temperature is measured within the nasopharynx.", "local", "at0026"),
 
-    URINARYBLADDER("Urinary bladder", "Temperature is measured in the urinary bladder.", "local", "at0027"),
+  FOREHEAD("Forehead", "Temperature is measured on the forehead.", "local", "at0061"),
 
-    INGUINALSKINCREASE("Inguinal skin crease", "Temperature is measured in the inguinal skin crease between the leg and abdominal wall.", "local", "at0055"),
+  TEMPLE("Temple", "Temperature is measured at the temple, over the superficial temporal\n"
+          + "                        artery.\n"
+          + "                    ", "local", "at0060"),
 
-    NASOPHARYNX("Nasopharynx", "Temperature is measured within the nasopharynx.", "local", "at0026"),
+  RECTUM("Rectum", "Temperature measured within the rectum.", "local", "at0025"),
 
-    EARCANAL("Ear canal", "Temperature is measured from within the external auditory canal.", "local", "at0023"),
+  OESOPHAGUS("Oesophagus", "Temperatue is measured within the oesophagus.", "local", "at0054"),
 
-    RECTUM("Rectum", "Temperature measured within the rectum.", "local", "at0025"),
+  AXILLA("Axilla", "Temperature is measured from the skin of the axilla with the arm positioned\n"
+          + "                        down by the side.\n"
+          + "                    ", "local", "at0024"),
 
-    AXILLA("Axilla", "Temperature is measured from the skin of the axilla with the arm positioned down by the side.", "local", "at0024"),
+  INGUINAL_SKIN_CREASE("Inguinal skin crease", "Temperature is measured in the inguinal skin crease between the leg and\n"
+          + "                        abdominal wall.\n"
+          + "                    ", "local", "at0055"),
 
-    MOUTH("Mouth", "Temperature is measured within the mouth.", "local", "at0022"),
+  URINARY_BLADDER("Urinary bladder", "Temperature is measured in the urinary bladder.", "local", "at0027"),
 
-    TEMPLE("Temple", "Temperature is measured at the temple, over the superficial temporal artery.", "local", "at0060"),
+  MOUTH("Mouth", "Temperature is measured within the mouth.", "local", "at0022"),
 
-    INTRAVASCULAR("Intravascular", "Temperature is measured within the vascular system.", "local", "at0028"),
+  SKIN("Skin", "Temperature is measured from exposed skin.", "local", "at0043"),
 
-    SKIN("Skin", "Temperature is measured from exposed skin.", "local", "at0043"),
+  INTRAVASCULAR("Intravascular", "Temperature is measured within the vascular system.", "local", "at0028"),
 
-    OESOPHAGUS("Oesophagus", "Temperatue is measured within the oesophagus.", "local", "at0054"),
+  EAR_CANAL("Ear canal", "Temperature is measured from within the external auditory canal.", "local", "at0023"),
 
-    FOREHEAD("Forehead", "Temperature is measured on the forehead.", "local", "at0061");
+  VAGINA("Vagina", "Temperature is measured within the vagina.", "local", "at0051");
 
-    private String value;
+  private String value;
 
-    private String description;
+  private String description;
 
-    private String terminologyId;
+  private String terminologyId;
 
-    private String code;
+  private String code;
 
-    LocationOfMeasurementDefiningcode(String value, String description, String terminologyId,
-                                      String code) {
-        this.value = value;
-        this.description = description;
-        this.terminologyId = terminologyId;
-        this.code = code;
-    }
+  LocationOfMeasurementDefiningcode(String value, String description, String terminologyId,
+                                    String code) {
+    this.value = value;
+    this.description = description;
+    this.terminologyId = terminologyId;
+    this.code = code;
+  }
 
-    public String getValue() {
-        return this.value;
-    }
+  public String getValue() {
+    return this.value;
+  }
 
-    public String getDescription() {
-        return this.description;
-    }
+  public String getDescription() {
+    return this.description;
+  }
 
-    public String getTerminologyId() {
-        return this.terminologyId;
-    }
+  public String getTerminologyId() {
+    return this.terminologyId;
+  }
 
-    public String getCode() {
-        return this.code;
-    }
+  public String getCode() {
+    return this.code;
+  }
 }

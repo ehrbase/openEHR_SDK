@@ -66,64 +66,60 @@ public class EhrbaseBloodPressureSimpleDeV0Composition {
         this.versionUid = versionUid;
     }
 
-    public TemporalAccessor getEndTimeValue() {
-        return this.endTimeValue;
-    }
-
     public void setEndTimeValue(TemporalAccessor endTimeValue) {
         this.endTimeValue = endTimeValue;
     }
 
-    public List<Participation> getParticipations() {
-        return this.participations;
+    public TemporalAccessor getEndTimeValue() {
+        return this.endTimeValue;
     }
 
     public void setParticipations(List<Participation> participations) {
         this.participations = participations;
     }
 
-    public Language getLanguage() {
-        return this.language;
+    public List<Participation> getParticipations() {
+        return this.participations;
     }
 
     public void setLanguage(Language language) {
         this.language = language;
     }
 
-    public PartyIdentified getHealthCareFacility() {
-        return this.healthCareFacility;
+    public Language getLanguage() {
+        return this.language;
     }
 
     public void setHealthCareFacility(PartyIdentified healthCareFacility) {
         this.healthCareFacility = healthCareFacility;
     }
 
-    public PartyProxy getComposer() {
-        return this.composer;
+    public PartyIdentified getHealthCareFacility() {
+        return this.healthCareFacility;
     }
 
     public void setComposer(PartyProxy composer) {
         this.composer = composer;
     }
 
-    public SettingDefiningcode getSettingDefiningcode() {
-        return this.settingDefiningcode;
+    public PartyProxy getComposer() {
+        return this.composer;
     }
 
     public void setSettingDefiningcode(SettingDefiningcode settingDefiningcode) {
         this.settingDefiningcode = settingDefiningcode;
     }
 
-    public Territory getTerritory() {
-        return this.territory;
+    public SettingDefiningcode getSettingDefiningcode() {
+        return this.settingDefiningcode;
     }
 
     public void setTerritory(Territory territory) {
         this.territory = territory;
     }
 
-    public List<BloodPressureTrainingSampleObservation> getBloodPressureTrainingSample() {
-        return this.bloodPressureTrainingSample;
+    public Territory getTerritory() {
+        return this.territory;
     }
 
     public void setBloodPressureTrainingSample(
@@ -131,24 +127,24 @@ public class EhrbaseBloodPressureSimpleDeV0Composition {
         this.bloodPressureTrainingSample = bloodPressureTrainingSample;
     }
 
-    public String getLocation() {
-        return this.location;
+    public List<BloodPressureTrainingSampleObservation> getBloodPressureTrainingSample() {
+        return this.bloodPressureTrainingSample;
     }
 
     public void setLocation(String location) {
         this.location = location;
     }
 
-    public CategoryDefiningcode getCategoryDefiningcode() {
-        return this.categoryDefiningcode;
+    public String getLocation() {
+        return this.location;
     }
 
     public void setCategoryDefiningcode(CategoryDefiningcode categoryDefiningcode) {
         this.categoryDefiningcode = categoryDefiningcode;
     }
 
-    public List<DeviceDetailsTrainingSampleCluster> getDeviceDetailsTrainingSample() {
-        return this.deviceDetailsTrainingSample;
+    public CategoryDefiningcode getCategoryDefiningcode() {
+        return this.categoryDefiningcode;
     }
 
     public void setDeviceDetailsTrainingSample(
@@ -156,11 +152,15 @@ public class EhrbaseBloodPressureSimpleDeV0Composition {
         this.deviceDetailsTrainingSample = deviceDetailsTrainingSample;
     }
 
-    public TemporalAccessor getStartTimeValue() {
-        return this.startTimeValue;
+    public List<DeviceDetailsTrainingSampleCluster> getDeviceDetailsTrainingSample() {
+        return this.deviceDetailsTrainingSample;
     }
 
     public void setStartTimeValue(TemporalAccessor startTimeValue) {
         this.startTimeValue = startTimeValue;
+    }
+
+    public TemporalAccessor getStartTimeValue() {
+        return this.startTimeValue;
     }
 }

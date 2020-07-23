@@ -156,7 +156,7 @@ public class DefaultRestAqlEndpointTestIT {
 
         Record3<TemporalAccessor, BloodPressureTrainingSampleObservation, CuffSizeDefiningcode> record1 = actual.get(0);
         assertThat(record1.value1()).isEqualTo(OffsetDateTime.of(2019, 04, 03, 22, 00, 00, 00, ZoneOffset.UTC));
-        assertThat(record1.value2().getKorotkoffSoundsDefiningcode()).isEqualTo(KorotkoffSoundsDefiningcode.FIFTHSOUND);
+        assertThat(record1.value2().getKorotkoffSoundsDefiningcode()).isEqualTo(KorotkoffSoundsDefiningcode.FIFTH_SOUND);
         assertThat(record1.value3()).isEqualTo(CuffSizeDefiningcode.ADULT);
 
     }
@@ -334,11 +334,11 @@ public class DefaultRestAqlEndpointTestIT {
                 TopExpresion.forward(1),
                 comp3.getVersionUid().getUuid()));
 
-        /* Direction  is ignored on ehrbase
+        /* TODO: Direction is ignored in ehrbase. See https://github.com/ehrbase/ehrbase/issues/265
         testCases.add(new TestCase(2,
                 TopExpresion.backward(1),
                 comp1.getVersionUid().getUuid()));
-*/
+        */
         testCases.forEach(t -> {
             EntityQuery<Record1<EhrbaseBloodPressureSimpleDeV0Composition>> entityQuery = Query.buildEntityQuery(
                     containmentComposition,

@@ -37,10 +37,11 @@ import com.nedap.archie.rm.datavalues.quantity.datetime.DvDateTime;
 import com.nedap.archie.rm.generic.Participation;
 import com.nedap.archie.rm.generic.PartyIdentified;
 import com.nedap.archie.rm.integration.GenericEntry;
-import org.apache.commons.collections.MapUtils;
-import org.apache.commons.collections.PredicateUtils;
 import org.apache.commons.collections.map.MultiValueMap;
-import org.apache.commons.collections.map.PredicatedMap;
+import org.apache.commons.collections4.MapUtils;
+import org.apache.commons.collections4.PredicateUtils;
+import org.apache.commons.collections4.map.PredicatedMap;
+import org.ehrbase.serialisation.attributes.SubjectAttributes;
 import org.ehrbase.serialisation.exception.MarshalException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -105,6 +106,8 @@ public class CompositionSerializer {
     public static final String TAG_OBSERVATION = "/observation";
     public static final String TAG_ACTION = "/action";
     public static final String TAG_SUBJECT = "/subject";
+    public static final String TAG_LANGUAGE = "/language";
+    public static final String TAG_ENCODING = "/encoding";
     public static final String TAG_ISM_TRANSITION = "/ism_transition";
     public static final String TAG_CURRENT_STATE = "/current_state";
     public static final String TAG_CAREFLOW_STEP = "/careflow_step";
@@ -128,7 +131,7 @@ public class CompositionSerializer {
     public static final String DEFAULT_NARRATIVE = "DEFAULT_NARRATIVE";
 
 
-    public CompositionSerializer() {
+    protected CompositionSerializer() {
         this.allElements = false;
         this.tag_mode = WalkerOutputMode.PATH;
 //		initTags();
@@ -147,7 +150,7 @@ public class CompositionSerializer {
      * @return
      */
     @SuppressWarnings("unchecked")
-    private Map<String, Object> newPathMap() {
+    public Map<String, Object> newPathMap() {
         return MapUtils.predicatedMap(new TreeMap<String, Object>(), PredicateUtils.uniquePredicate(), null);
     }
 
@@ -515,9 +518,6 @@ public class CompositionSerializer {
             if (observation.getUid() != null)
                 encodeNodeAttribute(ltree, TAG_UID, observation.getUid(), observation.getName());
 
-            if (observation.getSubject() != null)
-                encodeNodeAttribute(ltree, TAG_SUBJECT, observation.getSubject(), observation.getName());
-
             if (ltree.size() > 0)
                 retmap = ltree;
             else
@@ -722,7 +722,19 @@ public class CompositionSerializer {
         //add complementary attributes
 
         if (item instanceof Entry) {
-            putEntryMetaData(retmap, (Entry) item);
+            if (((Entry) item).getSubject() != null){
+                retmap.put(TAG_SUBJECT, new SubjectAttributes(((Entry) item).getSubject(), this).toMap());
+            }
+            if (((Entry) item).getLanguage() != null){
+                retmap.put(TAG_LANGUAGE, ((Entry) item).getLanguage());
+            }
+            if (((Entry) item).getProvider() != null){
+                retmap.put(TAG_PROVIDER, new SubjectAttributes(((Entry) item).getProvider(), this).toMap());
+            }
+            if (((Entry) item).getEncoding() != null){
+                retmap.put(TAG_ENCODING, ((Entry) item).getEncoding());
+            }
+
         }
 
         itemStack.popStacks();
@@ -1007,6 +1019,9 @@ public class CompositionSerializer {
 
         if (retmap != null) {
             retmap.put(CompositionSerializer.TAG_CLASS, className(item)); //this will come out as an array...
+            if (!retmap.containsKey(TAG_NAME) && item.getName() != null){
+                retmap.put(TAG_NAME, mapName(item.getName()));
+            }
         }
         return retmap;
 
@@ -1166,7 +1181,7 @@ public class CompositionSerializer {
             stringObjectMap = traverse((ItemStructure) rmObject, TAG_ITEMS);
             if (((ItemStructure) rmObject).getArchetypeNodeId() != null)
                 stringObjectMap.put(CompositionSerializer.TAG_ARCHETYPE_NODE_ID, ((ItemStructure) rmObject).getArchetypeNodeId());
-            if (((ItemStructure) rmObject).getName() != null)
+            if (!stringObjectMap.containsKey(CompositionSerializer.TAG_NAME) && ((ItemStructure)rmObject).getName() != null)
                 stringObjectMap.put(CompositionSerializer.TAG_NAME, ((ItemStructure) rmObject).getName());
         } else
             throw new MarshalException(String.format("Class %s not supported ", rmObject.getClass()), null);

@@ -25,6 +25,7 @@ public enum CompositionTestDataCanonicalJson {
     LABORATORY_REPORT_NO_CONTENT("Laboratory report no content", "laboratory_report_no_content.json"),
     MINIMAL_ADMIN("Minimal Admin", "minimal_admin.json"),
     MINIMAL_EVAL("Minimal Evaluation", "minimal_evaluation.json"),
+    MINIMAL_EVAL_NAMED_ITEM_TREE("Minimal Evaluation modified", "minimal_evaluation_item_tree_name.json"),
     MINIMAL_INST("Minimal Instruction", "minimal_instruction.json"),
     MINIMAL_OBS("Minimal Observation", "minimal_observation.json"),
     INVALID("Invalid example", "invalid.json"),
@@ -37,7 +38,11 @@ public enum CompositionTestDataCanonicalJson {
     MINIMAL_PERSISTENT("Minimal Persistent", "minimal_persistent.json"),
     NESTED("Nested", "nested.json"),
     TIME_SERIES("Time Series", "time_series.json"),
-    CORONA("Corona", "compo_corona.json");
+    CORONA("Corona", "compo_corona.json"),
+    SUBJECT_PARTY_IDENTIFIED("Nested subject PARTY_IDENTIFIED", "compo_with_nested_party_identified.json"),
+    SUBJECT_PARTY_SELF("Nested subject PARTY_SELF", "compo_with_nested_party_self.json"),
+    SUBJECT_PARTY_RELATED("Nested subject PARTY_RELATED", "compo_with_nested_party_related.json"),
+    NESTED_PROVIDER("Nested provider PARTY_IDENTIFIED", "compo_with_nested_provider.json");
 
 
     private final String filename;
