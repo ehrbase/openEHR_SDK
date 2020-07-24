@@ -52,7 +52,7 @@ import static org.ehrbase.client.introspect.TemplateIntrospect.TERM_DIVIDER;
 public class FlatJsonMarshaller {
 
     public static final DefaultStdConfig DEFAULT_STD_CONFIG = new DefaultStdConfig();
-    private TemplateIntrospect introspect;
+    private final TemplateIntrospect introspect;
     private static final ObjectMapper OBJECT_MAPPER = JacksonUtil.getObjectMapper();
 
     private final Map<Class, StdConfig<?>> configMap;

@@ -61,8 +61,8 @@ public class Unflattener {
     public static final Normalizer NORMALIZER = new Normalizer();
     public static final OptSkeletonBuilder OPT_SKELETON_BUILDER = new OptSkeletonBuilder();
     private static final RMObjectCreator RM_OBJECT_CREATOR = new RMObjectCreator(ARCHIE_RM_INFO_LOOKUP);
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
-    private TemplateProvider templateProvider;
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final TemplateProvider templateProvider;
 
     public Unflattener(TemplateProvider templateProvider) {
 
