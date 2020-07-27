@@ -19,6 +19,7 @@ package org.ehrbase.serialisation.attributes;
 
 import com.nedap.archie.rm.generic.PartySelf;
 import org.ehrbase.serialisation.dbencoding.CompositionSerializer;
+import org.ehrbase.serialisation.dbencoding.PathMap;
 
 import java.util.Map;
 
@@ -35,7 +36,7 @@ public class PartySelfAttributes implements I_SubjectAttributes {
     }
 
     public Map<String, Object> toMap(){
-        Map<String, Object> valuemap = compositionSerializer.newPathMap();
+        Map<String, Object> valuemap = PathMap.getInstance();
 
         valuemap.put(TAG_CLASS, partySelf.getClass().getSimpleName());
 

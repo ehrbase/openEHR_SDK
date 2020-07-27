@@ -24,10 +24,10 @@ import com.nedap.archie.rm.datavalues.quantity.DvInterval;
 /**
  * this class handles special DataValues for DB serialization
  */
-class ElementValue {
+public class ElementValue {
     DataValue value;
 
-    ElementValue(DataValue value) {
+    public ElementValue(DataValue value) {
         this.value = value;
     }
 
@@ -37,7 +37,7 @@ class ElementValue {
      *
      * @return the actualized object following the DB encoding convention
      */
-    Object normalize() {
+    public Object normalize() {
         if (value instanceof DvInterval) {
             DvInterval dvInterval = (DvInterval) value;
             Interval interval = new Interval(dvInterval.getLower(), dvInterval.getUpper());
