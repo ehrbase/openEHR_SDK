@@ -45,14 +45,16 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class FlatJsonMarshallerTest {
 
     private static boolean actualFilter(Map.Entry<String, Object> c) {
+
+        //@TODO remove origin if it is equal to time
         return !c.getKey().contains("origin")
-                && !c.getKey().equals("bericht/symptome/körpertemperatur/temperatur|units")
+                //@TODO remove constants
                 && !c.getKey().equals("bericht/risikogebiet/reisefall:0/beliebiges_intervallereignis:0/letzte_reise")
                 && !c.getKey().equals("bericht/risikogebiet/historie_der_reise:0/aufenthalt_in_den_letzten_14_tage_in_einem_der_risikogebiete_für_coronainfektion_oder_kontakt_zu_menschen_die_dort_waren");
     }
 
     private static boolean expectedFilter(Map.Entry<String, Object> c) {
-        return !c.getKey().equals("bericht/symptome/körpertemperatur/temperatur|unit");
+        return true;
 
     }
 

@@ -138,7 +138,7 @@ public class FlatJsonUnmarshaller {
     private void mapNode(String path, String term, String childPath, Node node, Map<String, String> values, Locatable locatable, Integer outerCount) {
 
         String pathLoop = path + childPath;
-        String termLoop = StringUtils.isNotBlank(node.getName()) ? term + TERM_DIVIDER + StringUtils.stripStart(node.getName(), "/") : node.getName();
+        String termLoop = StringUtils.isNotBlank(node.getName()) ? term + TERM_DIVIDER + StringUtils.stripStart(node.getName(), "/") : term;
 
         if (outerCount != null) {
             termLoop = termLoop + ":" + outerCount;

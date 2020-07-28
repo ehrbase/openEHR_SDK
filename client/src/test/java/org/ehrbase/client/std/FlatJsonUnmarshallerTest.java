@@ -25,7 +25,6 @@ import org.apache.xmlbeans.XmlException;
 import org.ehrbase.client.introspect.TemplateIntrospect;
 import org.ehrbase.test_data.composition.CompositionTestDataSimSDTJson;
 import org.ehrbase.test_data.operationaltemplate.OperationalTemplateTestData;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
 import org.openehr.schemas.v1.TemplateDocument;
@@ -39,8 +38,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class FlatJsonUnmarshallerTest {
 
     @Test
-    @Ignore
-    public void unmarschall() throws IOException, XmlException {
+    public void unmarshal() throws IOException, XmlException {
         OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(OperationalTemplateTestData.CORONA_ANAMMNESE.getStream()).getTemplate();
         TemplateIntrospect introspect = new TemplateIntrospect(template);
 

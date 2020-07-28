@@ -51,7 +51,7 @@
   "bericht/symptome/fieber_oder_erhöhte_körpertemperatur/encoding|code": "UTF-8",
   "bericht/symptome/fieber_oder_erhöhte_körpertemperatur/encoding|terminology": "IANA_character-sets",
   "bericht/symptome/körpertemperatur/temperatur|magnitude": 39.0,
-  "bericht/symptome/körpertemperatur/temperatur|unit": "°C",
+  "bericht/symptome/körpertemperatur/temperatur|units": "°C",
   "bericht/symptome/körpertemperatur/time": "2020-05-11T22:53:12.039139+02:00",
   "bericht/symptome/körpertemperatur/language|code": "de",
   "bericht/symptome/körpertemperatur/language|terminology": "ISO_639-1",
