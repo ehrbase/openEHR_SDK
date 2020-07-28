@@ -17,13 +17,19 @@
  *
  */
 
-package org.ehrbase.client.std.mapper;
+package org.ehrbase.client.std.postprozessor;
 
 import com.nedap.archie.rm.RMObject;
 
-public class DefaultRMUnmarshaller extends AbstractRMUnmarshaller<RMObject> {
+import java.util.HashSet;
+import java.util.Set;
+
+public abstract class AbstractPostprozessor<T extends RMObject> implements Postprozessor<T> {
+    protected final Set<String> consumedPath = new HashSet<>();
+
+
     @Override
-    public Class<RMObject> getRMClass() {
-        return RMObject.class;
+    public Set<String> getConsumedPaths() {
+        return consumedPath;
     }
 }

@@ -17,27 +17,25 @@
  *
  */
 
-package org.ehrbase.client.std.mapper;
+package org.ehrbase.client.std.postprozessor;
 
-import com.nedap.archie.datetime.DateTimeParsers;
-import com.nedap.archie.rm.datavalues.quantity.datetime.DvTime;
-import org.apache.commons.lang3.StringUtils;
+import com.nedap.archie.rm.composition.Entry;
 
 import java.util.Map;
 
-public class DvTimeRMUnmarshaller extends AbstractRMUnmarshaller<DvTime> {
+import static org.ehrbase.client.introspect.TemplateIntrospect.PATH_DIVIDER;
+
+public class EntryPostprocessor extends AbstractPostprozessor<Entry> {
 
     @Override
-    public Class<DvTime> getRMClass() {
-        return DvTime.class;
+    public void prozess(String term, Entry rmObject, Map<String, String> values) {
+        consumedPath.add(term + PATH_DIVIDER + "encoding|code");
+        consumedPath.add(term + PATH_DIVIDER + "encoding|terminology");
     }
 
+
     @Override
-    public void handle(String termLoop, DvTime child, Map<String, String> values) {
-        String s = values.get(termLoop);
-        if (StringUtils.isNotBlank(s)) {
-            child.setValue(DateTimeParsers.parseTimeValue(StringUtils.strip(s, "\"")));
-            consumedPath.add(termLoop);
-        }
+    public Class<Entry> getRMClass() {
+        return Entry.class;
     }
 }

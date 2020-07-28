@@ -17,24 +17,27 @@
  *
  */
 
-package org.ehrbase.client.std.mapper;
+package org.ehrbase.client.std.rmunmarshaller;
 
-import com.nedap.archie.rm.datatypes.CodePhrase;
-import com.nedap.archie.rm.support.identification.TerminologyId;
+import com.nedap.archie.datetime.DateTimeParsers;
+import com.nedap.archie.rm.datavalues.quantity.datetime.DvDuration;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.Map;
 
-public class CodePhraseRMUnmarshaller extends AbstractRMUnmarshaller<CodePhrase> {
+public class DvDurationRMUnmarshaller extends AbstractRMUnmarshaller<DvDuration> {
 
     @Override
-    public Class<CodePhrase> getRMClass() {
-        return CodePhrase.class;
+    public Class<DvDuration> getRMClass() {
+        return DvDuration.class;
     }
 
     @Override
-    public void handle(String termLoop, CodePhrase child, Map<String, String> values) {
-        setValue(termLoop, "code", values, child::setCodeString, String.class);
-        child.setTerminologyId(new TerminologyId());
-        setValue(termLoop, "terminology", values, t -> child.getTerminologyId().setValue(t), String.class);
+    public void handle(String termLoop, DvDuration child, Map<String, String> values) {
+        String s = values.get(termLoop);
+        if (StringUtils.isNotBlank(s)) {
+            child.setValue(DateTimeParsers.parseDurationValue(StringUtils.strip(s, "\"")));
+            consumedPath.add(termLoop);
+        }
     }
 }

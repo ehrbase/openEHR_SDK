@@ -17,7 +17,7 @@
  *
  */
 
-package org.ehrbase.client.std.mapper;
+package org.ehrbase.client.std.rmunmarshaller;
 
 import com.nedap.archie.rm.datatypes.CodePhrase;
 import com.nedap.archie.rm.datavalues.DvCodedText;

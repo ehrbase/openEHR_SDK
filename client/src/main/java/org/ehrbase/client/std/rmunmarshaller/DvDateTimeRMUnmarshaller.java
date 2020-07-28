@@ -17,26 +17,27 @@
  *
  */
 
-package org.ehrbase.client.std.mapper;
+package org.ehrbase.client.std.rmunmarshaller;
 
 import com.nedap.archie.datetime.DateTimeParsers;
-import com.nedap.archie.rm.datavalues.quantity.datetime.DvDate;
+import com.nedap.archie.rm.datavalues.quantity.datetime.DvDateTime;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Map;
 
-public class DvDateRMUnmarshaller extends AbstractRMUnmarshaller<DvDate> {
+public class DvDateTimeRMUnmarshaller extends AbstractRMUnmarshaller<DvDateTime> {
 
     @Override
-    public Class<DvDate> getRMClass() {
-        return DvDate.class;
+    public Class<DvDateTime> getRMClass() {
+        return DvDateTime.class;
     }
 
     @Override
-    public void handle(String termLoop, DvDate child, Map<String, String> values) {
+    public void handle(String termLoop, DvDateTime child, Map<String, String> values) {
+
         String s = values.get(termLoop);
         if (StringUtils.isNotBlank(s)) {
-            child.setValue(DateTimeParsers.parseDateValue(StringUtils.strip(s, "\"")));
+            child.setValue(DateTimeParsers.parseDateTimeValue(StringUtils.strip(s, "\"")));
             consumedPath.add(termLoop);
         }
     }

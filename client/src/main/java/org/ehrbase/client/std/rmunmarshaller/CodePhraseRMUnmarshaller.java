@@ -17,18 +17,24 @@
  *
  */
 
-package org.ehrbase.client.std.mapper;
+package org.ehrbase.client.std.rmunmarshaller;
 
-import com.nedap.archie.rm.RMObject;
+import com.nedap.archie.rm.datatypes.CodePhrase;
+import com.nedap.archie.rm.support.identification.TerminologyId;
 
 import java.util.Map;
-import java.util.Set;
 
-public interface RMUnmarshaller<T extends RMObject> {
+public class CodePhraseRMUnmarshaller extends AbstractRMUnmarshaller<CodePhrase> {
 
-    void handle(String termLoop, T child, Map<String, String> values);
+    @Override
+    public Class<CodePhrase> getRMClass() {
+        return CodePhrase.class;
+    }
 
-    Set<String> getConsumedPaths();
-
-    Class<T> getRMClass();
+    @Override
+    public void handle(String termLoop, CodePhrase child, Map<String, String> values) {
+        setValue(termLoop, "code", values, child::setCodeString, String.class);
+        child.setTerminologyId(new TerminologyId());
+        setValue(termLoop, "terminology", values, t -> child.getTerminologyId().setValue(t), String.class);
+    }
 }

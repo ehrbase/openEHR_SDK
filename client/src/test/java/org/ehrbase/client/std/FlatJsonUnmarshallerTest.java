@@ -20,6 +20,7 @@
 package org.ehrbase.client.std;
 
 import com.nedap.archie.rm.composition.Composition;
+import com.nedap.archie.rm.composition.Observation;
 import org.apache.commons.io.IOUtils;
 import org.apache.xmlbeans.XmlException;
 import org.ehrbase.client.introspect.TemplateIntrospect;
@@ -49,6 +50,9 @@ public class FlatJsonUnmarshallerTest {
         Composition actual = cut.unmarshal(flat, introspect, template);
 
         assertThat(actual).isNotNull();
+
+        Observation observation = (Observation) actual.itemAtPath("/content[openEHR-EHR-OBSERVATION.story.v1]");
+        assertThat(observation.getData().getOrigin().getValue().toString()).isEqualTo("2020-05-11T22:53:12.039139+02:00");
 
         assertThat(cut.getUnconsumed()).containsExactlyInAnyOrder();
     }

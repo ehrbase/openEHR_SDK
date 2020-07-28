@@ -25,8 +25,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nedap.archie.rm.RMObject;
 import com.nedap.archie.rm.archetyped.Locatable;
 import com.nedap.archie.rm.composition.Composition;
-import com.nedap.archie.rm.composition.Entry;
-import com.nedap.archie.rm.support.identification.HierObjectId;
+import org.apache.commons.lang3.ClassUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.ehrbase.client.building.OptSkeletonBuilder;
 import org.ehrbase.client.exception.ClientException;
@@ -34,8 +33,9 @@ import org.ehrbase.client.flattener.ItemExtractor;
 import org.ehrbase.client.introspect.TemplateIntrospect;
 import org.ehrbase.client.introspect.node.*;
 import org.ehrbase.client.normalizer.Normalizer;
-import org.ehrbase.client.std.mapper.DefaultRMUnmarshaller;
-import org.ehrbase.client.std.mapper.RMUnmarshaller;
+import org.ehrbase.client.std.postprozessor.Postprozessor;
+import org.ehrbase.client.std.rmunmarshaller.DefaultRMUnmarshaller;
+import org.ehrbase.client.std.rmunmarshaller.RMUnmarshaller;
 import org.ehrbase.serialisation.jsonencoding.CanonicalJson;
 import org.ehrbase.serialisation.jsonencoding.JacksonUtil;
 import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
@@ -46,8 +46,8 @@ import org.slf4j.LoggerFactory;
 import java.lang.reflect.Modifier;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-import static org.ehrbase.client.introspect.TemplateIntrospect.PATH_DIVIDER;
 import static org.ehrbase.client.introspect.TemplateIntrospect.TERM_DIVIDER;
 
 public class FlatJsonUnmarshaller {
@@ -61,6 +61,7 @@ public class FlatJsonUnmarshaller {
     private Set<String> consumedPath;
 
     private static final Map<Class, RMUnmarshaller<?>> UNMARSHALLER_MAP = buildUnmarshallerMap();
+    private static final Map<Class, Postprozessor<?>> POSTPROZESSOR_MAP = buildPostprozessorMap();
     private Map<String, String> curentValues;
 
     private static Map<Class, RMUnmarshaller<?>> buildUnmarshallerMap() {
@@ -76,6 +77,21 @@ public class FlatJsonUnmarshaller {
                         throw new ClientException(e.getMessage(), e);
                     }
                 }).collect(Collectors.toMap(RMUnmarshaller::getRMClass, c -> c));
+    }
+
+    private static Map<Class, Postprozessor<?>> buildPostprozessorMap() {
+        Reflections reflections = new Reflections(Postprozessor.class.getPackage().getName());
+        Set<Class<? extends Postprozessor>> configs = reflections.getSubTypesOf(Postprozessor.class);
+
+        return configs.stream()
+                .filter(c -> !Modifier.isAbstract(c.getModifiers()))
+                .map(c -> {
+                    try {
+                        return c.getConstructor().newInstance();
+                    } catch (Exception e) {
+                        throw new ClientException(e.getMessage(), e);
+                    }
+                }).collect(Collectors.toMap(Postprozessor::getRMClass, c -> c));
     }
 
 
@@ -115,24 +131,25 @@ public class FlatJsonUnmarshaller {
     }
 
     private void handelArchetypeNode(String term, String path, EntityNode root, Map<String, String> values, Locatable locatable) {
+        if (locatable != null) {
+            root.getChildren().forEach((p, node) -> mapNode(path, term, p, node, values, locatable, null));
 
-        root.getChildren().forEach((p, node) -> mapNode(path, term, p, node, values, locatable, null));
-        if (locatable instanceof Entry) {
-
-            consumedPath.add(term + PATH_DIVIDER + "encoding|code");
-            consumedPath.add(term + PATH_DIVIDER + "encoding|terminology");
-
-
+            postprocess(term, values, locatable);
         }
+    }
 
-        if (locatable instanceof Composition) {
 
-            String strip = StringUtils.strip(values.get(term + PATH_DIVIDER + "_uid") + "", "\"");
-            if (StringUtils.isNotBlank(strip)) {
-                locatable.setUid(new HierObjectId(strip));
-            }
-            consumedPath.add(term + PATH_DIVIDER + "_uid");
-        }
+    private <T extends RMObject> void postprocess(String term, Map<String, String> values, T locatable) {
+
+        List<Postprozessor<? super T>> postprozessor = Stream.concat(Stream.of(locatable.getClass()), ClassUtils.getAllSuperclasses(locatable.getClass()).stream())
+                .map(POSTPROZESSOR_MAP::get)
+                .filter(Objects::nonNull)
+                .map(p -> (Postprozessor<? super T>) p)
+                .collect(Collectors.toList());
+        postprozessor.forEach(p -> {
+            p.prozess(term, locatable, values);
+            consumedPath.addAll(p.getConsumedPaths());
+        });
     }
 
     private void mapNode(String path, String term, String childPath, Node node, Map<String, String> values, Locatable locatable, Integer outerCount) {
@@ -208,6 +225,7 @@ public class FlatJsonUnmarshaller {
             }
         }
 
+
     }
 
     private void handleChoiceNode(String path, String term, String childPath, ChoiceNode choiceNode, Object child, Map<String, String> values, Integer outer, Locatable locatable) {
@@ -222,9 +240,10 @@ public class FlatJsonUnmarshaller {
         if (child == null) {
             //NOOP
         } else if (child instanceof RMObject) {
-            RMUnmarshaller RMUnmarshaller = UNMARSHALLER_MAP.getOrDefault(child.getClass(), new DefaultRMUnmarshaller());
-            RMUnmarshaller.handle(termLoop, (RMObject) child, values);
-            consumedPath.addAll(RMUnmarshaller.getConsumedPaths());
+            RMUnmarshaller rmUnmarshaller = UNMARSHALLER_MAP.getOrDefault(child.getClass(), new DefaultRMUnmarshaller());
+            rmUnmarshaller.handle(termLoop, (RMObject) child, values);
+            consumedPath.addAll(rmUnmarshaller.getConsumedPaths());
+            postprocess(termLoop, values, (RMObject) child);
         } else {
             log.warn("Unhandled: {}", termLoop);
         }

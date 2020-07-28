@@ -17,20 +17,27 @@
  *
  */
 
-package org.ehrbase.client.std.mapper;
+package org.ehrbase.client.std.rmunmarshaller;
 
-import com.nedap.archie.rm.generic.PartyIdentified;
+import com.nedap.archie.datetime.DateTimeParsers;
+import com.nedap.archie.rm.datavalues.quantity.datetime.DvDate;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.Map;
 
-public class PartyIdentifiedRMUnmarshaller extends AbstractRMUnmarshaller<PartyIdentified> {
+public class DvDateRMUnmarshaller extends AbstractRMUnmarshaller<DvDate> {
+
     @Override
-    public Class<PartyIdentified> getRMClass() {
-        return PartyIdentified.class;
+    public Class<DvDate> getRMClass() {
+        return DvDate.class;
     }
 
     @Override
-    public void handle(String termLoop, PartyIdentified child, Map<String, String> values) {
-        setValue(termLoop, "name", values, child::setName, String.class);
+    public void handle(String termLoop, DvDate child, Map<String, String> values) {
+        String s = values.get(termLoop);
+        if (StringUtils.isNotBlank(s)) {
+            child.setValue(DateTimeParsers.parseDateValue(StringUtils.strip(s, "\"")));
+            consumedPath.add(termLoop);
+        }
     }
 }
