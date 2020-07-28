@@ -22,27 +22,20 @@ package org.ehrbase.client.std;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.nedap.archie.datetime.DateTimeParsers;
 import com.nedap.archie.rm.RMObject;
 import com.nedap.archie.rm.archetyped.Locatable;
 import com.nedap.archie.rm.composition.Composition;
 import com.nedap.archie.rm.composition.Entry;
-import com.nedap.archie.rm.datatypes.CodePhrase;
-import com.nedap.archie.rm.datavalues.DvCodedText;
-import com.nedap.archie.rm.datavalues.quantity.datetime.DvDate;
-import com.nedap.archie.rm.datavalues.quantity.datetime.DvDateTime;
-import com.nedap.archie.rm.datavalues.quantity.datetime.DvDuration;
-import com.nedap.archie.rm.datavalues.quantity.datetime.DvTime;
 import com.nedap.archie.rm.support.identification.HierObjectId;
-import com.nedap.archie.rm.support.identification.TerminologyId;
 import org.apache.commons.lang3.StringUtils;
 import org.ehrbase.client.building.OptSkeletonBuilder;
-import org.ehrbase.client.classgenerator.config.RmClassGeneratorConfig;
 import org.ehrbase.client.exception.ClientException;
 import org.ehrbase.client.flattener.ItemExtractor;
 import org.ehrbase.client.introspect.TemplateIntrospect;
 import org.ehrbase.client.introspect.node.*;
 import org.ehrbase.client.normalizer.Normalizer;
+import org.ehrbase.client.std.mapper.DefaultRMUnmarshaller;
+import org.ehrbase.client.std.mapper.RMUnmarshaller;
 import org.ehrbase.serialisation.jsonencoding.CanonicalJson;
 import org.ehrbase.serialisation.jsonencoding.JacksonUtil;
 import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
@@ -50,17 +43,14 @@ import org.reflections.Reflections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.beans.IntrospectionException;
-import java.beans.PropertyDescriptor;
-import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Modifier;
 import java.util.*;
-import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 import static org.ehrbase.client.introspect.TemplateIntrospect.PATH_DIVIDER;
 import static org.ehrbase.client.introspect.TemplateIntrospect.TERM_DIVIDER;
 
-public class FlatJsonUnmarschaller {
+public class FlatJsonUnmarshaller {
 
     private static final ObjectMapper OBJECT_MAPPER = JacksonUtil.getObjectMapper();
     public static final OptSkeletonBuilder OPT_SKELETON_BUILDER = new OptSkeletonBuilder();
@@ -70,24 +60,26 @@ public class FlatJsonUnmarschaller {
 
     private Set<String> consumedPath;
 
-    private static final Map<Class, RmClassGeneratorConfig> configMap = buildConfigMap();
+    private static final Map<Class, RMUnmarshaller<?>> UNMARSHALLER_MAP = buildUnmarshallerMap();
     private Map<String, String> curentValues;
 
-    private static Map<Class, RmClassGeneratorConfig> buildConfigMap() {
-        Reflections reflections = new Reflections(RmClassGeneratorConfig.class.getPackage().getName());
-        Set<Class<? extends RmClassGeneratorConfig>> configs = reflections.getSubTypesOf(RmClassGeneratorConfig.class);
+    private static Map<Class, RMUnmarshaller<?>> buildUnmarshallerMap() {
+        Reflections reflections = new Reflections(RMUnmarshaller.class.getPackage().getName());
+        Set<Class<? extends RMUnmarshaller>> configs = reflections.getSubTypesOf(RMUnmarshaller.class);
 
-        return configs.stream().map(c -> {
-            try {
-                return c.getConstructor().newInstance();
-            } catch (Exception e) {
-                throw new ClientException(e.getMessage(), e);
-            }
-        }).collect(Collectors.toMap(RmClassGeneratorConfig::getRMClass, c -> c));
+        return configs.stream()
+                .filter(c -> !Modifier.isAbstract(c.getModifiers()))
+                .map(c -> {
+                    try {
+                        return c.getConstructor().newInstance();
+                    } catch (Exception e) {
+                        throw new ClientException(e.getMessage(), e);
+                    }
+                }).collect(Collectors.toMap(RMUnmarshaller::getRMClass, c -> c));
     }
 
 
-    public Composition Unmarschall(String flat, TemplateIntrospect introspect, OPERATIONALTEMPLATE operationalTemplate) {
+    public Composition unmarshal(String flat, TemplateIntrospect introspect, OPERATIONALTEMPLATE operationalTemplate) {
 
         consumedPath = new HashSet<>();
         Composition generate = (Composition) OPT_SKELETON_BUILDER.generate(operationalTemplate);
@@ -227,100 +219,17 @@ public class FlatJsonUnmarschaller {
 
 
     private void handleEndNode(String pathLoop, String termLoop, EndNode node, Object child, Map<String, String> values) {
-        if (child instanceof CodePhrase) {
-            setValue(termLoop, "code", values, ((CodePhrase) child)::setCodeString, String.class);
-            ((CodePhrase) child).setTerminologyId(new TerminologyId());
-            setValue(termLoop, "terminology", values, t -> ((CodePhrase) child).getTerminologyId().setValue(t), String.class);
-        } else if (child instanceof DvCodedText) {
-            setValue(termLoop, "value", values, c -> ((DvCodedText) child).setValue(c), String.class);
-            ((DvCodedText) child).setDefiningCode(new CodePhrase());
-            setValue(termLoop, "code", values, c -> ((DvCodedText) child).getDefiningCode().setCodeString(c), String.class);
-            ((DvCodedText) child).getDefiningCode().setTerminologyId(new TerminologyId());
-            setValue(termLoop, "terminology", values, t -> ((DvCodedText) child).getDefiningCode().getTerminologyId().setValue(t), String.class);
-        } else if (child instanceof DvDateTime) {
-            String s = values.get(termLoop);
-            if (StringUtils.isNotBlank(s)) {
-                ((DvDateTime) child).setValue(DateTimeParsers.parseDateTimeValue(StringUtils.strip(s, "\"")));
-                consumedPath.add(termLoop);
-            }
-        } else if (child instanceof DvTime) {
-            String s = values.get(termLoop);
-            if (StringUtils.isNotBlank(s)) {
-                ((DvTime) child).setValue(DateTimeParsers.parseTimeValue(StringUtils.strip(s, "\"")));
-                consumedPath.add(termLoop);
-            }
-        } else if (child instanceof DvDate) {
-            String s = values.get(termLoop);
-            if (StringUtils.isNotBlank(s)) {
-                ((DvDate) child).setValue(DateTimeParsers.parseDateValue(StringUtils.strip(s, "\"")));
-                consumedPath.add(termLoop);
-            }
-        } else if (child instanceof DvDuration) {
-            String s = values.get(termLoop);
-            if (StringUtils.isNotBlank(s)) {
-                ((DvDuration) child).setValue(DateTimeParsers.parseDurationValue(StringUtils.strip(s, "\"")));
-                consumedPath.add(termLoop);
-            }
+        if (child == null) {
+            //NOOP
         } else if (child instanceof RMObject) {
-            RmClassGeneratorConfig rmClassGeneratorConfig = configMap.get(child.getClass());
-            if (rmClassGeneratorConfig != null && rmClassGeneratorConfig.isExpandField()) {
-
-                Set<String> expandFields = rmClassGeneratorConfig.getExpandFields();
-                if (expandFields.size() == 1 && expandFields.contains("value")) {
-
-                    try {
-                        PropertyDescriptor propertyDescriptor = new PropertyDescriptor("value", child.getClass());
-
-                        setValue(termLoop, null, values, s -> {
-                            try {
-                                propertyDescriptor.getWriteMethod().invoke(child, s);
-                            } catch (IllegalAccessException | InvocationTargetException e) {
-                                throw new ClientException(e.getMessage(), e);
-                            }
-                        }, propertyDescriptor.getPropertyType());
-                    } catch (IntrospectionException e) {
-                        throw new ClientException(e.getMessage(), e);
-                    }
-
-                } else {
-                    for (String propertyName : expandFields) {
-                        try {
-                            PropertyDescriptor propertyDescriptor = new PropertyDescriptor(propertyName, child.getClass());
-                            setValue(termLoop, propertyName, values, s -> {
-                                try {
-                                    propertyDescriptor.getWriteMethod().invoke(child, s);
-                                } catch (IllegalAccessException | InvocationTargetException e) {
-                                    throw new ClientException(e.getMessage(), e);
-                                }
-                            }, propertyDescriptor.getPropertyType());
-                        } catch (IntrospectionException e) {
-                            throw new ClientException(e.getMessage(), e);
-                        }
-                    }
-                }
-
-            }
+            RMUnmarshaller RMUnmarshaller = UNMARSHALLER_MAP.getOrDefault(child.getClass(), new DefaultRMUnmarshaller());
+            RMUnmarshaller.handle(termLoop, (RMObject) child, values);
+            consumedPath.addAll(RMUnmarshaller.getConsumedPaths());
         } else {
-            log.warn("Unhandled: " + termLoop);
+            log.warn("Unhandled: {}", termLoop);
         }
     }
 
-    private <T> void setValue(String term, String propertyName, Map<String, String> values, Consumer<T> consumer, Class<T> clazz) {
-        String key = propertyName != null ? term + "|" + propertyName : term;
-        String jasonValue = values.get(key);
-        if (StringUtils.isNotBlank(jasonValue)) {
-            try {
-                T value = OBJECT_MAPPER.readValue(jasonValue, clazz);
-                consumer.accept(value);
-                consumedPath.add(key);
-            } catch (JsonProcessingException e) {
-                log.error(e.getMessage());
-            }
-        } else {
-            consumer.accept(null);
-            consumedPath.add(key);
-        }
-    }
 
     private Integer findCount(Map<String, String> subValues, String termLoop) {
         return subValues.keySet().stream()

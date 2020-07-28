@@ -36,7 +36,7 @@ import java.nio.charset.StandardCharsets;
 import static org.assertj.core.api.Assertions.assertThat;
 
 
-public class FlatJsonUnmarschallerTest {
+public class FlatJsonUnmarshallerTest {
 
     @Test
     @Ignore
@@ -44,11 +44,11 @@ public class FlatJsonUnmarschallerTest {
         OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(OperationalTemplateTestData.CORONA_ANAMMNESE.getStream()).getTemplate();
         TemplateIntrospect introspect = new TemplateIntrospect(template);
 
-        FlatJsonUnmarschaller cut = new FlatJsonUnmarschaller();
+        FlatJsonUnmarshaller cut = new FlatJsonUnmarshaller();
 
         String flat = IOUtils.toString(CompositionTestDataSimSDTJson.CORONA.getStream(), StandardCharsets.UTF_8);
 
-        Composition actual = cut.Unmarschall(flat, introspect, template);
+        Composition actual = cut.unmarshal(flat, introspect, template);
 
         assertThat(actual).isNotNull();
 
