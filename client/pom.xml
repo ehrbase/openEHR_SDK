@@ -30,7 +30,9 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>client</artifactId>
-
+    <properties>
+        <skipIntegrationTests>true</skipIntegrationTests>
+    </properties>
     <dependencies>
         <dependency>
             <groupId>org.jooq</groupId>
@@ -51,7 +53,7 @@
             <artifactId>commons-cli</artifactId>
         </dependency>
         <dependency>
-           <groupId>com.github.ehrbase.openEHR_SDK</groupId>
+            <groupId>com.github.ehrbase.openEHR_SDK</groupId>
             <artifactId>serialisation</artifactId>
         </dependency>
         <dependency>
