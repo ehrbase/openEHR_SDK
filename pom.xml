@@ -41,7 +41,6 @@
         <maven.compiler.release>11</maven.compiler.release>
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
-        <skipIntegrationTests>true</skipIntegrationTests>
         <jackson.version>2.10.2</jackson.version>
     </properties>
 
