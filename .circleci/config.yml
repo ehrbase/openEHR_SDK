@@ -24,151 +24,163 @@ workflows:
                 - develop
                 - release
 
-      - build-EHRbase:
+      # - build-EHRbase:
+      #     requires:
+      #       - build-openEHR_SDK
+      #     filters:
+      #       branches:
+      #         ignore:
+      #           - master
+      #           - develop
+      #           - release
+
+      # - COMPOSITION-tests-1:
+      #     context: org-global
+      #     requires:
+      #       - build-EHRbase
+      #     filters:
+      #       branches:
+      #         ignore:
+      #           - master
+      #           - develop
+      #           - release
+
+      # - COMPOSITION-tests-2:
+      #     context: org-global
+      #     requires:
+      #       - build-EHRbase
+      #     filters:
+      #       branches:
+      #         ignore:
+      #           - master
+      #           - develop
+      #           - release
+
+      # - COMPOSITION-tests-3:
+      #     context: org-global
+      #     requires:
+      #       - build-EHRbase
+      #     filters:
+      #       branches:
+      #         ignore:
+      #           - master
+      #           - develop
+      #           - release
+
+      # - COMPOSITION-tests-4:
+      #     context: org-global
+      #     requires:
+      #       - build-EHRbase
+      #     filters:
+      #       branches:
+      #         ignore:
+      #           - master
+      #           - develop
+      #           - release
+
+      # - CONTRIBUTION-tests:
+      #     context: org-global
+      #     requires:
+      #       - build-EHRbase
+      #     filters:
+      #       branches:
+      #         ignore:
+      #           - master
+      #           - develop
+      #           - release
+
+      # - DIRECTORY-tests:
+      #     context: org-global
+      #     requires:
+      #       - build-EHRbase
+      #     filters:
+      #       branches:
+      #         ignore:
+      #           - master
+      #           - develop
+      #           - release
+
+      # - EHRSERVICE-tests:
+      #     context: org-global
+      #     requires:
+      #       - build-EHRbase
+      #     filters:
+      #       branches:
+      #         ignore:
+      #           - master
+      #           - develop
+      #           - release
+      
+      # - EHRSTATUS-tests:
+      #     context: org-global
+      #     requires:
+      #       - build-EHRbase
+      #     filters:
+      #       branches:
+      #         ignore:
+      #           - master
+      #           - develop
+      #           - release
+      
+      # - KNOWLEDGE-tests:
+      #     context: org-global
+      #     requires:
+      #       - build-EHRbase
+      #     filters:
+      #       branches:
+      #         ignore:
+      #           - master
+      #           - develop
+      #           - release
+
+      # - QUERYSERVICE-tests-1:
+      #     context: org-global
+      #     requires:
+      #       - build-EHRbase
+      #     filters:
+      #       branches:
+      #         ignore:
+      #           - master
+      #           - develop
+      #           - release
+
+      # - QUERYSERVICE-tests-2:
+      #     context: org-global
+      #     requires:
+      #       - build-EHRbase
+      #     filters:
+      #       branches:
+      #         ignore:
+      #           - master
+      #           - develop
+      #           - release
+
+      # - ROBOT-TEST-REPORT:
+      #     context: org-global
+      #     requires:
+      #       - COMPOSITION-tests-1
+      #       - COMPOSITION-tests-2
+      #       - COMPOSITION-tests-3
+      #       - COMPOSITION-tests-4
+      #       - CONTRIBUTION-tests
+      #       - DIRECTORY-tests
+      #       - EHRSERVICE-tests
+      #       - EHRSTATUS-tests
+      #       - KNOWLEDGE-tests
+      #       - QUERYSERVICE-tests-1
+      #       - QUERYSERVICE-tests-2
+      #     filters:
+      #       branches:
+      #         ignore:
+      #           - master
+      #           - develop
+      #           - release
+
+      - run-static-code-analysis:
+          context: org-global
           requires:
             - build-openEHR_SDK
-          filters:
-            branches:
-              ignore:
-                - master
-                - develop
-                - release
-
-      - COMPOSITION-tests-1:
-          context: org-global
-          requires:
-            - build-EHRbase
-          filters:
-            branches:
-              ignore:
-                - master
-                - develop
-                - release
-
-      - COMPOSITION-tests-2:
-          context: org-global
-          requires:
-            - build-EHRbase
-          filters:
-            branches:
-              ignore:
-                - master
-                - develop
-                - release
-
-      - COMPOSITION-tests-3:
-          context: org-global
-          requires:
-            - build-EHRbase
-          filters:
-            branches:
-              ignore:
-                - master
-                - develop
-                - release
-
-      - COMPOSITION-tests-4:
-          context: org-global
-          requires:
-            - build-EHRbase
-          filters:
-            branches:
-              ignore:
-                - master
-                - develop
-                - release
-
-      - CONTRIBUTION-tests:
-          context: org-global
-          requires:
-            - build-EHRbase
-          filters:
-            branches:
-              ignore:
-                - master
-                - develop
-                - release
-
-      - DIRECTORY-tests:
-          context: org-global
-          requires:
-            - build-EHRbase
-          filters:
-            branches:
-              ignore:
-                - master
-                - develop
-                - release
-
-      - EHRSERVICE-tests:
-          context: org-global
-          requires:
-            - build-EHRbase
-          filters:
-            branches:
-              ignore:
-                - master
-                - develop
-                - release
-      
-      - EHRSTATUS-tests:
-          context: org-global
-          requires:
-            - build-EHRbase
-          filters:
-            branches:
-              ignore:
-                - master
-                - develop
-                - release
-      
-      - KNOWLEDGE-tests:
-          context: org-global
-          requires:
-            - build-EHRbase
-          filters:
-            branches:
-              ignore:
-                - master
-                - develop
-                - release
-
-      - QUERYSERVICE-tests-1:
-          context: org-global
-          requires:
-            - build-EHRbase
-          filters:
-            branches:
-              ignore:
-                - master
-                - develop
-                - release
-
-      - QUERYSERVICE-tests-2:
-          context: org-global
-          requires:
-            - build-EHRbase
-          filters:
-            branches:
-              ignore:
-                - master
-                - develop
-                - release
-
-      - ROBOT-TEST-REPORT:
-          context: org-global
-          requires:
-            - COMPOSITION-tests-1
-            - COMPOSITION-tests-2
-            - COMPOSITION-tests-3
-            - COMPOSITION-tests-4
-            - CONTRIBUTION-tests
-            - DIRECTORY-tests
-            - EHRSERVICE-tests
-            - EHRSTATUS-tests
-            - KNOWLEDGE-tests
-            - QUERYSERVICE-tests-1
-            - QUERYSERVICE-tests-2
+            # - dependency-check
           filters:
             branches:
               ignore:
@@ -247,6 +259,16 @@ jobs:
       # - run: echo mock build SDK        # 
       # - cache-out-sdk-workspace         #
       # - cache-in-sdk-workspace          #
+
+  run-static-code-analysis:
+    executor: docker-python3-java11
+    # executor: vm-ubuntu-1604                          # (use for pipeline debugging only)
+    steps:
+      - checkout
+      - cache-out-sdk-m2-dependencies
+      - build-and-test-sdk
+      - sonarcloud/scan:
+          cache_version: 1
 
 
   build-EHRbase:
@@ -1001,6 +1023,7 @@ commands:
 orbs:
   maven: circleci/maven@1.0.1
   openjdk-install: cloudesire/openjdk-install@1.2.3
+  sonarcloud: sonarsource/sonarcloud@1.0.2
 
 executors:
   docker-python3-java11:
