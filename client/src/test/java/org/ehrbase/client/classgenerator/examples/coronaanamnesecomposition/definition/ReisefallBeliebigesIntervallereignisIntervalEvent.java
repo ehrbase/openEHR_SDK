@@ -22,7 +22,7 @@ public class ReisefallBeliebigesIntervallereignisIntervalEvent implements Reisef
     private MathFunctionDefiningcode mathFunctionDefiningcode;
 
     @Path("/data[at0003]/items[at0008]")
-    private List<ReisefallBestimmteReiseCluster2> bestimmteReise;
+    private List<ReisefallBestimmteReiseCluster> bestimmteReise;
 
     @Path("/width|value")
     private TemporalAmount widthValue;
@@ -54,11 +54,11 @@ public class ReisefallBeliebigesIntervallereignisIntervalEvent implements Reisef
         return this.mathFunctionDefiningcode;
     }
 
-    public void setBestimmteReise(List<ReisefallBestimmteReiseCluster2> bestimmteReise) {
+    public void setBestimmteReise(List<ReisefallBestimmteReiseCluster> bestimmteReise) {
         this.bestimmteReise = bestimmteReise;
     }
 
-    public List<ReisefallBestimmteReiseCluster2> getBestimmteReise() {
+    public List<ReisefallBestimmteReiseCluster> getBestimmteReise() {
         return this.bestimmteReise;
     }
 

@@ -343,7 +343,7 @@ public class ClassGeneratorTest {
                 .filter(t -> !t.kind.equals(TypeSpec.Kind.ENUM))
                 .map(t -> t.fieldSpecs).flatMap(List::stream).collect(Collectors.toList());
 
-        assertThat(fieldSpecs).size().isEqualTo(309L);
+        assertThat(fieldSpecs).size().isEqualTo(304L);
 
         writeFiles(generate);
 

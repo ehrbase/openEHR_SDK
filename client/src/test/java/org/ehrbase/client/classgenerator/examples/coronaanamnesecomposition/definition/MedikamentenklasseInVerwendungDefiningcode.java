@@ -3,11 +3,11 @@ package org.ehrbase.client.classgenerator.examples.coronaanamnesecomposition.def
 import org.ehrbase.client.classgenerator.EnumValueSet;
 
 public enum MedikamentenklasseInVerwendungDefiningcode implements EnumValueSet {
+  IN_VERWENDUNG("In Verwendung", "Die Person verwendet die Medikamentenklasse zum Zeitpunkt des Ergebnis oder währendessen oder hat sie verwendet.", "local", "at0028"),
+
   UNBEKANNT("Unbekannt", "Es ist unbekannt, ob die Person die Medikamentenklasse zum Zeitpunkt des Ergebnis oder währendessen verwendet oder sie verwendet hat.", "local", "at0030"),
 
-  NICHT_IN_VERWENDUNG("Nicht in Verwendung", "Die Person verwendet die Medikamentenklasse zum Zeitpunkt des Ergebnis oder währendessen nicht oder hat sie nicht verwendet.", "local", "at0029"),
-
-  IN_VERWENDUNG("In Verwendung", "Die Person verwendet die Medikamentenklasse zum Zeitpunkt des Ergebnis oder währendessen oder hat sie verwendet.", "local", "at0028");
+  NICHT_IN_VERWENDUNG("Nicht in Verwendung", "Die Person verwendet die Medikamentenklasse zum Zeitpunkt des Ergebnis oder währendessen nicht oder hat sie nicht verwendet.", "local", "at0029");
 
   private String value;
 

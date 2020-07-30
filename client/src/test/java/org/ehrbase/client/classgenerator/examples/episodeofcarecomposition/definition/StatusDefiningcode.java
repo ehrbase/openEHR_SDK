@@ -3,19 +3,19 @@ package org.ehrbase.client.classgenerator.examples.episodeofcarecomposition.defi
 import org.ehrbase.client.classgenerator.EnumValueSet;
 
 public enum StatusDefiningcode implements EnumValueSet {
-  ACTIVE("active", "*", "local", "at0006"),
-
   WAITLIST("waitlist", "*", "local", "at0005"),
-
-  FINISHED("finished", "*", "local", "at0008"),
 
   CANCELLED("cancelled", "*", "local", "at0009"),
 
   ENTERED_IN_ERROR("entered-in-error", "*", "local", "at0010"),
 
+  ACTIVE("active", "*", "local", "at0006"),
+
   PLANNED("planned", "*", "local", "at0004"),
 
-  ONHOLD("onhold", "*", "local", "at0007");
+  ONHOLD("onhold", "*", "local", "at0007"),
+
+  FINISHED("finished", "*", "local", "at0008");
 
   private String value;
 
@@ -33,7 +33,7 @@ public enum StatusDefiningcode implements EnumValueSet {
   }
 
   public String getValue() {
-     return this.value;
+    return this.value;
   }
 
   public String getDescription() {

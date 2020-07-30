@@ -20,6 +20,7 @@
 package org.ehrbase.client.terminology;
 
 import java.util.Collections;
+import java.util.Objects;
 import java.util.Set;
 
 public class ValueSet {
@@ -40,5 +41,19 @@ public class ValueSet {
 
     public Set<TermDefinition> getTherms() {
         return therms;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ValueSet valueSet = (ValueSet) o;
+        return Objects.equals(id, valueSet.id) &&
+                Objects.equals(therms, valueSet.therms);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, therms);
     }
 }

@@ -28,6 +28,8 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.text.CaseUtils;
 import org.apache.xmlbeans.XmlException;
 import org.ehrbase.client.annotations.*;
@@ -67,6 +69,7 @@ public class ClassGenerator {
     private Map<String, Integer> currentFieldNameMap = new HashMap<>();
     private Map<String, Integer> currentClassNameMap = new HashMap<>();
     private Map<EntityNode, TypeSpec> currentTypeSpec;
+    private Map<Pair<String, ValueSet>, TypeSpec> currentEnums;
 
     private ClassGeneratorResult currentResult;
     private String currentPackageName;
@@ -146,6 +149,7 @@ public class ClassGenerator {
 
     public ClassGeneratorResult generate(String packageName, OPERATIONALTEMPLATE operationalTemplate) {
         currentTypeSpec = new HashMap<>();
+        currentEnums = new HashMap<>();
         currentResult = new ClassGeneratorResult();
         currentPackageName = packageName;
         currentMainClass = "";
@@ -359,7 +363,8 @@ public class ClassGenerator {
 
         if (CodePhrase.class.getName().equals(className.toString()) && CollectionUtils.isNotEmpty(valueSet.getTherms())) {
 
-            TypeSpec enumValueSet = buildEnumValueSet(name, valueSet);
+            final TypeSpec enumValueSet = currentEnums.computeIfAbsent(new ImmutablePair<>(name, valueSet), n -> buildEnumValueSet(n.getKey(), n.getValue()));
+
             String enumPackage;
             if (valueSet.getId().contains("local")) {
                 enumPackage = currentPackageName + "." + currentMainClass.toLowerCase() + ".definition";

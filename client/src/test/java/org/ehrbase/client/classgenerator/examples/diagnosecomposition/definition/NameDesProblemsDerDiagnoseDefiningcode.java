@@ -3,13 +3,13 @@ package org.ehrbase.client.classgenerator.examples.diagnosecomposition.definitio
 import org.ehrbase.client.classgenerator.EnumValueSet;
 
 public enum NameDesProblemsDerDiagnoseDefiningcode implements EnumValueSet {
-  KORONAVIREN_ALS_URSACHE_VON_KRANKHEITEN_DIE_IN_ANDEREN_KAPITELN_KLASSIFIZIERT_SIND("Koronaviren als Ursache von Krankheiten, die in anderen Kapiteln klassifiziert sind", null, "ICD-10-GM-2020", "B97.2"),
-
-  COVID19_VIRUS_NACHGEWIESEN("COVID-19, Virus nachgewiesen", null, "ICD-10-GM-2020", "U07.1"),
-
   INFEKTION_DURCH_KORONAVIREN_NICHT_NAHER_BEZEICHNETER_LOKALISATION("Infektion durch Koronaviren nicht näher bezeichneter Lokalisation", null, "ICD-10-GM-2020", "B34.2"),
 
-  COVID19_VIRUS_NICHT_NACHGEWIESEN("COVID-19, Virus nicht nachgewiesen", null, "ICD-10-GM-2020", "U07.2");
+  KORONAVIREN_ALS_URSACHE_VON_KRANKHEITEN_DIE_IN_ANDEREN_KAPITELN_KLASSIFIZIERT_SIND("Koronaviren als Ursache von Krankheiten, die in anderen Kapiteln klassifiziert sind", null, "ICD-10-GM-2020", "B97.2"),
+
+  COVID19_VIRUS_NICHT_NACHGEWIESEN("COVID-19, Virus nicht nachgewiesen", null, "ICD-10-GM-2020", "U07.2"),
+
+  COVID19_VIRUS_NACHGEWIESEN("COVID-19, Virus nachgewiesen", null, "ICD-10-GM-2020", "U07.1");
 
   private String value;
 

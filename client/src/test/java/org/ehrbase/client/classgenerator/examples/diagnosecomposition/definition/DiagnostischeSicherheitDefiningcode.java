@@ -5,9 +5,9 @@ import org.ehrbase.client.classgenerator.EnumValueSet;
 public enum DiagnostischeSicherheitDefiningcode implements EnumValueSet {
   WAHRSCHEINLICH("Wahrscheinlich", "Die Diagnose wurde mit einem hohen Maß an Sicherheit gestellt.", "local", "at0075"),
 
-  BESTATIGT("Bestätigt", "Die Diagnose wurde anhand anerkannter Kriterien bestätigt.", "local", "at0076"),
+  VERMUTET("Vermutet", "Die Diagnose wurde mit einem niedrigen Grad an Sicherheit gestellt.", "local", "at0074"),
 
-  VERMUTET("Vermutet", "Die Diagnose wurde mit einem niedrigen Grad an Sicherheit gestellt.", "local", "at0074");
+  BESTATIGT("Bestätigt", "Die Diagnose wurde anhand anerkannter Kriterien bestätigt.", "local", "at0076");
 
   private String value;
 

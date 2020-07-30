@@ -3,23 +3,23 @@ package org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev
 import org.ehrbase.client.classgenerator.EnumValueSet;
 
 public enum LocationOfMeasurementDefiningcode implements EnumValueSet {
-  LEFT_ANKLE("Left ankle", "The left ankle of the person", "local", "at1032"),
+  LEFT_THIGH("Left thigh", "The left thigh of the person", "local", "at0028"),
+
+  INTRA_ARTERIAL("Intra-arterial", "Blood pressure monitored via an intra-arterial line", "local", "at0032"),
+
+  FINGER("Finger", "A finger of the person", "local", "at1026"),
 
   RIGHT_ANKLE("Right ankle", "The right ankle of the person", "local", "at1031"),
 
-  INTRA_ARTERIAL("Intra-arterial", "Blood pressure monitored via an intra-arterial line", "local", "at0032"),
+  LEFT_WRIST("Left wrist", "The left wrist of the person", "local", "at1021"),
 
   RIGHT_WRIST("Right wrist", "The right wrist of the person", "local", "at1020"),
 
   LEFT_ARM("Left arm", "The left arm of the person", "local", "at0026"),
 
-  LEFT_WRIST("Left wrist", "The left wrist of the person", "local", "at1021"),
-
-  LEFT_THIGH("Left thigh", "The left thigh of the person", "local", "at0028"),
+  LEFT_ANKLE("Left ankle", "The left ankle of the person", "local", "at1032"),
 
   RIGHT_THIGH("Right thigh", "The right thigh of the person", "local", "at0027"),
-
-  FINGER("Finger", "A finger of the person", "local", "at1026"),
 
   RIGHT_ARM("Right arm", "The right arm of the person", "local", "at0025");
 

@@ -3,9 +3,9 @@ package org.ehrbase.client.classgenerator.examples.coronaanamnesecomposition.def
 import org.ehrbase.client.classgenerator.EnumValueSet;
 
 public enum AufenthaltInDenLetzten14TageInEinemDerRisikogebieteFurCoronainfektionOderKontak_ implements EnumValueSet {
-  NEIN("Nein", "Der Patient ist in letzter Zeit nicht gereist.", "local", "at0113"),
+  JA("Ja", "Der Patient ist vor kurzem gereist.", "local", "at0112"),
 
-  JA("Ja", "Der Patient ist vor kurzem gereist.", "local", "at0112");
+  NEIN("Nein", "Der Patient ist in letzter Zeit nicht gereist.", "local", "at0113");
 
   private String value;
 

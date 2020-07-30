@@ -5,9 +5,9 @@ import org.ehrbase.client.classgenerator.EnumValueSet;
 public enum CategoryDefiningcode implements EnumValueSet {
   EVENT("event", "event", "openehr", "433"),
 
-  PERSISTENT("persistent", "persistent", "openehr", "431"),
+  EPISODIC("episodic", "episodic", "openehr", "435"),
 
-  EPISODIC("episodic", "episodic", "openehr", "435");
+  PERSISTENT("persistent", "persistent", "openehr", "431");
 
   private String value;
 
@@ -25,7 +25,7 @@ public enum CategoryDefiningcode implements EnumValueSet {
   }
 
   public String getValue() {
-     return this.value;
+    return this.value;
   }
 
   public String getDescription() {

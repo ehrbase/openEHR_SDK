@@ -3,9 +3,9 @@ package org.ehrbase.client.classgenerator.examples.coronaanamnesecomposition.def
 import org.ehrbase.client.classgenerator.EnumValueSet;
 
 public enum InlandAuslandDefiningcode implements EnumValueSet {
-  INLANDS_UND_AUSLANDSREISE("Inlands- und Auslandsreise", "Die Person ist innerhalb des festgelegten Zeitraums sowohl im Inland als auch international gereist.", "local", "at0030"),
-
   INLANDSREISE("Inlandsreise", "Die Person ist innerhalb des angegebenen Zeitraums im Inland gereist.", "local", "at0028"),
+
+  INLANDS_UND_AUSLANDSREISE("Inlands- und Auslandsreise", "Die Person ist innerhalb des festgelegten Zeitraums sowohl im Inland als auch international gereist.", "local", "at0030"),
 
   AUSLANDREISE("Auslandreise", "Die Person ist innerhalb des angegebenen Zeitraums international gereist.", "local", "at0029");
 

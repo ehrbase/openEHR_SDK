@@ -3,31 +3,31 @@ package org.ehrbase.client.classgenerator.examples.shareddefinition;
 import org.ehrbase.client.classgenerator.EnumValueSet;
 
 public enum SettingDefiningcode implements EnumValueSet {
-  OTHER_CARE("other care", "other care", "openehr", "238"),
-
-  SECONDARY_NURSING_CARE("secondary nursing care", "secondary nursing care", "openehr", "233"),
-
-  PRIMARY_MEDICAL_CARE("primary medical care", "primary medical care", "openehr", "228"),
-
-  PRIMARY_NURSING_CARE("primary nursing care", "primary nursing care", "openehr", "229"),
-
-  PRIMARY_ALLIED_HEALTH_CARE("primary allied health care", "primary allied health care", "openehr", "230"),
+  COMPLEMENTARY_HEALTH_CARE("complementary health care", "complementary health care", "openehr", "235"),
 
   HOME("home", "home", "openehr", "225"),
 
-  SECONDARY_MEDICAL_CARE("secondary medical care", "secondary medical care", "openehr", "232"),
+  SECONDARY_NURSING_CARE("secondary nursing care", "secondary nursing care", "openehr", "233"),
 
-  EMERGENCY_CARE("emergency care", "emergency care", "openehr", "227"),
+  DENTAL_CARE("dental care", "dental care", "openehr", "236"),
 
-  MIDWIFERY_CARE("midwifery care", "midwifery care", "openehr", "231"),
+  OTHER_CARE("other care", "other care", "openehr", "238"),
 
   NURSING_HOME_CARE("nursing home care", "nursing home care", "openehr", "237"),
 
-  COMPLEMENTARY_HEALTH_CARE("complementary health care", "complementary health care", "openehr", "235"),
-
   SECONDARY_ALLIED_HEALTH_CARE("secondary allied health care", "secondary allied health care", "openehr", "234"),
 
-  DENTAL_CARE("dental care", "dental care", "openehr", "236");
+  EMERGENCY_CARE("emergency care", "emergency care", "openehr", "227"),
+
+  PRIMARY_NURSING_CARE("primary nursing care", "primary nursing care", "openehr", "229"),
+
+  PRIMARY_MEDICAL_CARE("primary medical care", "primary medical care", "openehr", "228"),
+
+  PRIMARY_ALLIED_HEALTH_CARE("primary allied health care", "primary allied health care", "openehr", "230"),
+
+  SECONDARY_MEDICAL_CARE("secondary medical care", "secondary medical care", "openehr", "232"),
+
+  MIDWIFERY_CARE("midwifery care", "midwifery care", "openehr", "231");
 
   private String value;
 
@@ -45,7 +45,7 @@ public enum SettingDefiningcode implements EnumValueSet {
   }
 
   public String getValue() {
-     return this.value;
+    return this.value;
   }
 
   public String getDescription() {
