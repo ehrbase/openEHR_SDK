@@ -145,7 +145,7 @@ public class TemplateIntrospect {
                     log.trace("Path: {}", pathLoop);
                     if (
                             (Event.class.isAssignableFrom(rmClass) && pathLoop.contains("offset")) // event.offset is a calculated value
-                                    || pathLoop.equals("/category") || pathLoop.equals("/name") // set from template
+                                    || pathLoop.equals("/category") || pathLoop.endsWith("/name") // set from template
                     ) {
                         continue;
                     }
