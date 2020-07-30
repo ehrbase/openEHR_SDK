@@ -8,7 +8,7 @@ import java.time.temporal.TemporalAccessor;
 import java.util.List;
 
 @Entity
-public class ReisefallBestimmteReiseClusterTree {
+public class ReisefallBestimmteReiseCluster2 {
     @Path("/items[at0010]")
     private List<ReisefallBestimmtesReisezielCluster2> bestimmtesReiseziel;
 

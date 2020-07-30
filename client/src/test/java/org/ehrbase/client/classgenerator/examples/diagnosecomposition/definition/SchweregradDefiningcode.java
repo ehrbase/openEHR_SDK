@@ -3,9 +3,9 @@ package org.ehrbase.client.classgenerator.examples.diagnosecomposition.definitio
 import org.ehrbase.client.classgenerator.EnumValueSet;
 
 public enum SchweregradDefiningcode implements EnumValueSet {
-  SCHWER("Schwer", "Das Problem oder die Diagnose verhindert die normale Aktivität oder verursacht schwerwiegende gesundheitliche Schäden, falls es nicht behandelt wird.", "local", "at0049"),
-
   LEICHT("Leicht", "Das Problem oder die Diagnose beeinträchtigt die normale Aktivität nicht, bzw. verursacht nicht bleibende gesundheitliche Schäden, falls es nicht behandelt wird.", "local", "at0047"),
+
+  SCHWER("Schwer", "Das Problem oder die Diagnose verhindert die normale Aktivität oder verursacht schwerwiegende gesundheitliche Schäden, falls es nicht behandelt wird.", "local", "at0049"),
 
   MA_IG("Mäßig", "Das Problem oder die Diagnose beeinträchtigt die normale Aktivität oder verursacht bleibende gesundheitliche Schäden, falls es nicht behandelt wird.", "local", "at0048");
 
@@ -25,7 +25,7 @@ public enum SchweregradDefiningcode implements EnumValueSet {
   }
 
   public String getValue() {
-    return this.value;
+     return this.value;
   }
 
   public String getDescription() {

@@ -19,7 +19,7 @@ public class WeitereSymptomeBeliebigesEreignisIntervalEvent implements WeitereSy
     private MathFunctionDefiningcode mathFunctionDefiningcode;
 
     @Path("/data[at0003]/items[at0022]")
-    private List<WeitereSymptomeAnzeichenClusterSpezifischesSymptom> anzeichen;
+    private List<WeitereSymptomeSpezifischesSymptomAnzeichenCluster2> spezifischesSymptomAnzeichen;
 
     @Path("/width|value")
     private TemporalAmount widthValue;
@@ -40,12 +40,14 @@ public class WeitereSymptomeBeliebigesEreignisIntervalEvent implements WeitereSy
         return this.mathFunctionDefiningcode;
     }
 
-    public void setAnzeichen(List<WeitereSymptomeAnzeichenClusterSpezifischesSymptom> anzeichen) {
-        this.anzeichen = anzeichen;
+    public void setSpezifischesSymptomAnzeichen(
+            List<WeitereSymptomeSpezifischesSymptomAnzeichenCluster2> spezifischesSymptomAnzeichen) {
+        this.spezifischesSymptomAnzeichen = spezifischesSymptomAnzeichen;
     }
 
-    public List<WeitereSymptomeAnzeichenClusterSpezifischesSymptom> getAnzeichen() {
-        return this.anzeichen;
+    public List<WeitereSymptomeSpezifischesSymptomAnzeichenCluster2> getSpezifischesSymptomAnzeichen(
+    ) {
+        return this.spezifischesSymptomAnzeichen;
     }
 
     public void setWidthValue(TemporalAmount widthValue) {

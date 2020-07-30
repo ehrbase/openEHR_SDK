@@ -6,7 +6,7 @@ import org.ehrbase.client.annotations.Path;
 
 @Entity
 @OptionFor("DV_TEXT")
-public class AtiopathogeneseDvtext implements AtiopathogeneseOrgEhrbaseSerialisationUtilSnakecase5c448433Choice {
+public class AtiopathogeneseDvtext implements AtiopathogeneseChoice {
     @Path("|value")
     private String value;
 

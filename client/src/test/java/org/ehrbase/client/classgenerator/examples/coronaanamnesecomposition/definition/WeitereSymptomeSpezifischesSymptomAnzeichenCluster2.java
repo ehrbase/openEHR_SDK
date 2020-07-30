@@ -7,7 +7,7 @@ import org.ehrbase.client.annotations.Path;
 import java.util.List;
 
 @Entity
-public class WeitereSymptomeAnzeichenClusterSpezifischesSymptom {
+public class WeitereSymptomeSpezifischesSymptomAnzeichenCluster2 {
     @Path("/items[at0005]/value|defining_code")
     private VorhandenDefiningcode vorhandenDefiningcode;
 

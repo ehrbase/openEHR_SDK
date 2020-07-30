@@ -57,6 +57,8 @@ public class ClassGenerator {
 
     private static final Options OPTIONS = new Options();
     private static final ArchieRMInfoLookup RM_INFO_LOOKUP = ArchieRMInfoLookup.getInstance();
+    public static final String ABBREV_MARKER = "_";
+    public static final int CLASS_NAME_MAX_WIDTH = 80;
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final Map<Class, RmClassGeneratorConfig> configMap;
@@ -317,7 +319,7 @@ public class ClassGenerator {
 
     private TypeSpec buildEnumValueSet(String name, ValueSet valuset) {
         TypeSpec.Builder enumBuilder = TypeSpec
-                .enumBuilder(normalise(extractSubName(name), true))
+                .enumBuilder(StringUtils.abbreviate(normalise(extractSubName(name), true), ABBREV_MARKER, CLASS_NAME_MAX_WIDTH))
                 .addSuperinterface(EnumValueSet.class)
                 .addModifiers(Modifier.PUBLIC);
         FieldSpec fieldSpec1 = FieldSpec.builder(ClassName.get(String.class), "value").addModifiers(Modifier.PRIVATE).build();
@@ -416,7 +418,7 @@ public class ClassGenerator {
         String nonNormalized = "";
         for (int i = 0; i < strings.length; i++) {
             nonNormalized = nonNormalized + "_" + strings[strings.length - (i + 1)];
-            fieldName = normalise(new SnakeCase(currentArchetypeName).camelToSnake() + "_" + nonNormalized, true);
+            fieldName = StringUtils.abbreviate(normalise(new SnakeCase(currentArchetypeName).camelToSnake() + "_" + nonNormalized, true), ABBREV_MARKER, CLASS_NAME_MAX_WIDTH);
             if (!currentClassNameMap.containsKey(fieldName) && SourceVersion.isName(fieldName)) {
                 break;
             }

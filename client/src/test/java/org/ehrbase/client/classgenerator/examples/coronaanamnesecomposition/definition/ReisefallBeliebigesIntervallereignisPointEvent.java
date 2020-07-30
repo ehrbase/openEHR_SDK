@@ -13,17 +13,14 @@ public class ReisefallBeliebigesIntervallereignisPointEvent implements Reisefall
     @Path("/time|value")
     private TemporalAccessor timeValue;
 
-    @Path("/data[at0003]/items[at0004]/name|value")
-    private String reiseValue;
-
     @Path("/data[at0003]/items[at0004]/value|defining_code")
-    private ReiseDefiningcode reiseDefiningcode;
+    private LetzteReiseDefiningcode letzteReiseDefiningcode;
 
     @Path("/data[at0003]/items[at0008]")
     private List<ReisefallBestimmteReiseCluster> bestimmteReise;
 
     @Path("/data[at0003]/items[at0026]/value|defining_code")
-    private AuslandDefiningcode auslandDefiningcode;
+    private InlandAuslandDefiningcode inlandAuslandDefiningcode;
 
     public void setTimeValue(TemporalAccessor timeValue) {
         this.timeValue = timeValue;
@@ -33,20 +30,12 @@ public class ReisefallBeliebigesIntervallereignisPointEvent implements Reisefall
         return this.timeValue;
     }
 
-    public void setReiseValue(String reiseValue) {
-        this.reiseValue = reiseValue;
+    public void setLetzteReiseDefiningcode(LetzteReiseDefiningcode letzteReiseDefiningcode) {
+        this.letzteReiseDefiningcode = letzteReiseDefiningcode;
     }
 
-    public String getReiseValue() {
-        return this.reiseValue;
-    }
-
-    public void setReiseDefiningcode(ReiseDefiningcode reiseDefiningcode) {
-        this.reiseDefiningcode = reiseDefiningcode;
-    }
-
-    public ReiseDefiningcode getReiseDefiningcode() {
-        return this.reiseDefiningcode;
+    public LetzteReiseDefiningcode getLetzteReiseDefiningcode() {
+        return this.letzteReiseDefiningcode;
     }
 
     public void setBestimmteReise(List<ReisefallBestimmteReiseCluster> bestimmteReise) {
@@ -57,11 +46,11 @@ public class ReisefallBeliebigesIntervallereignisPointEvent implements Reisefall
         return this.bestimmteReise;
     }
 
-    public void setAuslandDefiningcode(AuslandDefiningcode auslandDefiningcode) {
-        this.auslandDefiningcode = auslandDefiningcode;
+    public void setInlandAuslandDefiningcode(InlandAuslandDefiningcode inlandAuslandDefiningcode) {
+        this.inlandAuslandDefiningcode = inlandAuslandDefiningcode;
     }
 
-    public AuslandDefiningcode getAuslandDefiningcode() {
-        return this.auslandDefiningcode;
+    public InlandAuslandDefiningcode getInlandAuslandDefiningcode() {
+        return this.inlandAuslandDefiningcode;
     }
 }

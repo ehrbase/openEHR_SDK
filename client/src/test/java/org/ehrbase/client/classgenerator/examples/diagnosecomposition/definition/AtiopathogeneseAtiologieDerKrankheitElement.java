@@ -8,13 +8,13 @@ import org.ehrbase.client.annotations.Path;
 public class AtiopathogeneseAtiologieDerKrankheitElement {
     @Path("/value")
     @Choice
-    private AtiopathogeneseOrgEhrbaseSerialisationUtilSnakecase5c448433Choice value;
+    private AtiopathogeneseChoice value;
 
-    public void setValue(AtiopathogeneseOrgEhrbaseSerialisationUtilSnakecase5c448433Choice value) {
+    public void setValue(AtiopathogeneseChoice value) {
         this.value = value;
     }
 
-    public AtiopathogeneseOrgEhrbaseSerialisationUtilSnakecase5c448433Choice getValue() {
+    public AtiopathogeneseChoice getValue() {
         return this.value;
     }
 }

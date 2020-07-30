@@ -2,10 +2,12 @@ package org.ehrbase.client.classgenerator.examples.coronaanamnesecomposition.def
 
 import org.ehrbase.client.classgenerator.EnumValueSet;
 
-public enum KurzlicheReiseDefiningcode implements EnumValueSet {
-  JA("Ja", "Der Patient ist vor kurzem gereist.", "local", "at0112"),
+public enum LetzteReiseDefiningcode implements EnumValueSet {
+  JA_NATIONAL("Ja - national", "Die Person ist innerhalb des angegebenen Zeitraums national gereist.", "local", "at0006"),
 
-  NEIN("Nein", "Der Patient ist in letzter Zeit nicht gereist.", "local", "at0113");
+  NEIN("Nein", "Die Person ist nicht innerhalb des angegebenen Zeitraums gereist.", "local", "at0005"),
+
+  UNBEKANNT("Unbekannt", "Es ist nicht bekannt, ob die Person innerhalb des angegebenen Zeitinraumss gereist ist.", "local", "at0027");
 
   private String value;
 
@@ -15,7 +17,7 @@ public enum KurzlicheReiseDefiningcode implements EnumValueSet {
 
   private String code;
 
-  KurzlicheReiseDefiningcode(String value, String description, String terminologyId, String code) {
+  LetzteReiseDefiningcode(String value, String description, String terminologyId, String code) {
     this.value = value;
     this.description = description;
     this.terminologyId = terminologyId;

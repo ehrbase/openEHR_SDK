@@ -3,74 +3,74 @@ package org.ehrbase.client.classgenerator.examples.shareddefinition;
 import org.ehrbase.client.classgenerator.EnumValueSet;
 
 public enum TransitionDefiningcode implements EnumValueSet {
-    ABORT("abort", "abort", "openehr", "547"),
+  RESUME("resume", "resume", "openehr", "546"),
 
-    POSTPONE("postpone", "postpone", "openehr", "537"),
+  TIME_OUT("time out", "time out", "openehr", "549"),
 
-    TIME_OUT("time out", "time out", "openehr", "549"),
+  SUSPENDED_STEP("suspended step", "suspended step", "openehr", "545"),
 
-    SCHEDULE("schedule", "schedule", "openehr", "539"),
+  NOTIFY_CANCELLED("notify cancelled", "notify cancelled", "openehr", "552"),
 
-    DO("do", "do", "openehr", "541"),
+  POSTPONED_STEP("postponed step", "postponed step", "openehr", "542"),
 
-    RESUME("resume", "resume", "openehr", "546"),
+  ACTIVE_STEP("active step", "active step", "openehr", "543"),
 
-    NOTIFY_ABORTED("notify aborted", "notify aborted", "openehr", "550"),
+  INITIATE("initiate", "initiate", "openehr", "535"),
 
-    CANCEL("cancel", "cancel", "openehr", "166"),
+  ABORT("abort", "abort", "openehr", "547"),
 
-    RESTORE("restore", "restore", "openehr", "538"),
+  NOTIFY_ABORTED("notify aborted", "notify aborted", "openehr", "550"),
 
-    ACTIVE_STEP("active step", "active step", "openehr", "543"),
+  SCHEDULE("schedule", "schedule", "openehr", "539"),
 
-    NOTIFY_CANCELLED("notify cancelled", "notify cancelled", "openehr", "552"),
+  PLAN_STEP("plan step", "plan step", "openehr", "536"),
 
-    POSTPONED_STEP("postponed step", "postponed step", "openehr", "542"),
+  DO("do", "do", "openehr", "541"),
 
-    FINISH("finish", "finish", "openehr", "548"),
+  RESTORE("restore", "restore", "openehr", "538"),
 
-    SUSPENDED_STEP("suspended step", "suspended step", "openehr", "545"),
+  NOTIFY_COMPLETED("notify completed", "notify completed", "openehr", "551"),
 
-    INITIATE("initiate", "initiate", "openehr", "535"),
+  CANCEL("cancel", "cancel", "openehr", "166"),
 
-    SUSPEND("suspend", "suspend", "openehr", "544"),
+  POSTPONE("postpone", "postpone", "openehr", "537"),
 
-    START("start", "start", "openehr", "540"),
+  START("start", "start", "openehr", "540"),
 
-    PLAN_STEP("plan step", "plan step", "openehr", "536"),
+  SUSPEND("suspend", "suspend", "openehr", "544"),
 
-    NOTIFY_COMPLETED("notify completed", "notify completed", "openehr", "551"),
+  SCHEDULED_STEP("scheduled step", "scheduled step", "openehr", "534"),
 
-    SCHEDULED_STEP("scheduled step", "scheduled step", "openehr", "534");
+  FINISH("finish", "finish", "openehr", "548");
 
-    private String value;
+  private String value;
 
-    private String description;
+  private String description;
 
-    private String terminologyId;
+  private String terminologyId;
 
-    private String code;
+  private String code;
 
-    TransitionDefiningcode(String value, String description, String terminologyId, String code) {
-        this.value = value;
-        this.description = description;
-        this.terminologyId = terminologyId;
-        this.code = code;
-    }
+  TransitionDefiningcode(String value, String description, String terminologyId, String code) {
+    this.value = value;
+    this.description = description;
+    this.terminologyId = terminologyId;
+    this.code = code;
+  }
 
-    public String getValue() {
-        return this.value;
-    }
+  public String getValue() {
+     return this.value;
+  }
 
-    public String getDescription() {
-        return this.description;
-    }
+  public String getDescription() {
+    return this.description;
+  }
 
-    public String getTerminologyId() {
-        return this.terminologyId;
-    }
+  public String getTerminologyId() {
+    return this.terminologyId;
+  }
 
-    public String getCode() {
-        return this.code;
-    }
+  public String getCode() {
+    return this.code;
+  }
 }

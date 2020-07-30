@@ -8,8 +8,8 @@ import org.ehrbase.client.aql.field.AqlFieldImp;
 import org.ehrbase.client.aql.field.ListAqlFieldImp;
 import org.ehrbase.client.aql.field.ListSelectAqlField;
 import org.ehrbase.client.aql.field.SelectAqlField;
-import org.ehrbase.client.classgenerator.examples.diagnosecomposition.definition.DiagnoseEvaluation;
 import org.ehrbase.client.classgenerator.examples.diagnosecomposition.definition.FallidentifikationCluster;
+import org.ehrbase.client.classgenerator.examples.diagnosecomposition.definition.ProblemDiagnoseEvaluation;
 import org.ehrbase.client.classgenerator.examples.shareddefinition.CategoryDefiningcode;
 import org.ehrbase.client.classgenerator.examples.shareddefinition.Language;
 import org.ehrbase.client.classgenerator.examples.shareddefinition.SettingDefiningcode;
@@ -24,7 +24,7 @@ public class DiagnoseCompositionContainment extends Containment {
 
   public ListSelectAqlField<Participation> PARTICIPATIONS = new ListAqlFieldImp<Participation>(DiagnoseComposition.class, "/context/participations", "participations", Participation.class, this);
 
-  public SelectAqlField<DiagnoseEvaluation> DIAGNOSE = new AqlFieldImp<DiagnoseEvaluation>(DiagnoseComposition.class, "/content[openEHR-EHR-EVALUATION.problem_diagnosis.v1]", "diagnose", DiagnoseEvaluation.class, this);
+  public SelectAqlField<ProblemDiagnoseEvaluation> PROBLEM_DIAGNOSE = new AqlFieldImp<ProblemDiagnoseEvaluation>(DiagnoseComposition.class, "/content[openEHR-EHR-EVALUATION.problem_diagnosis.v1]", "problemDiagnose", ProblemDiagnoseEvaluation.class, this);
 
   public SelectAqlField<Language> LANGUAGE = new AqlFieldImp<Language>(DiagnoseComposition.class, "/language", "language", Language.class, this);
 

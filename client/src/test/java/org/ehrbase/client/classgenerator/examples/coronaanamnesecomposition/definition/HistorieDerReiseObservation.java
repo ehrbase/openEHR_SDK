@@ -20,7 +20,7 @@ public class HistorieDerReiseObservation {
     private StandortCluster standort;
 
     @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0111]/value|defining_code")
-    private KurzlicheReiseDefiningcode kurzlicheReiseDefiningcode;
+    private AufenthaltInDenLetzten14TageInEinemDerRisikogebieteFurCoronainfektionOderKontak_ aufenthaltInDenLetzten14TageInEinemDerRisikogebieteFurCoronainfektionOderKontaktZuMenschenDieDortWarenDefiningcode;
 
     @Path("/data[at0001]/events[at0002]/time|value")
     private TemporalAccessor timeValue;
@@ -30,9 +30,6 @@ public class HistorieDerReiseObservation {
 
     @Path("/data[at0001]/origin|value")
     private TemporalAccessor originValue;
-
-    @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0111]/name|value")
-    private String kurzlicheReiseValue;
 
     @Path("/protocol[at0100]/items[at0101]")
     private List<Cluster> extensionEn;
@@ -56,12 +53,14 @@ public class HistorieDerReiseObservation {
         return this.standort;
     }
 
-    public void setKurzlicheReiseDefiningcode(KurzlicheReiseDefiningcode kurzlicheReiseDefiningcode) {
-        this.kurzlicheReiseDefiningcode = kurzlicheReiseDefiningcode;
+    public void setAufenthaltInDenLetzten14TageInEinemDerRisikogebieteFurCoronainfektionOderKontaktZuMenschenDieDortWarenDefiningcode(
+            AufenthaltInDenLetzten14TageInEinemDerRisikogebieteFurCoronainfektionOderKontak_ aufenthaltInDenLetzten14TageInEinemDerRisikogebieteFurCoronainfektionOderKontaktZuMenschenDieDortWarenDefiningcode) {
+        this.aufenthaltInDenLetzten14TageInEinemDerRisikogebieteFurCoronainfektionOderKontaktZuMenschenDieDortWarenDefiningcode = aufenthaltInDenLetzten14TageInEinemDerRisikogebieteFurCoronainfektionOderKontaktZuMenschenDieDortWarenDefiningcode;
     }
 
-    public KurzlicheReiseDefiningcode getKurzlicheReiseDefiningcode() {
-        return this.kurzlicheReiseDefiningcode;
+    public AufenthaltInDenLetzten14TageInEinemDerRisikogebieteFurCoronainfektionOderKontak_ getAufenthaltInDenLetzten14TageInEinemDerRisikogebieteFurCoronainfektionOderKontaktZuMenschenDieDortWarenDefiningcode(
+    ) {
+        return this.aufenthaltInDenLetzten14TageInEinemDerRisikogebieteFurCoronainfektionOderKontaktZuMenschenDieDortWarenDefiningcode;
     }
 
     public void setTimeValue(TemporalAccessor timeValue) {
@@ -86,14 +85,6 @@ public class HistorieDerReiseObservation {
 
     public TemporalAccessor getOriginValue() {
         return this.originValue;
-    }
-
-    public void setKurzlicheReiseValue(String kurzlicheReiseValue) {
-        this.kurzlicheReiseValue = kurzlicheReiseValue;
-    }
-
-    public String getKurzlicheReiseValue() {
-        return this.kurzlicheReiseValue;
     }
 
     public void setExtensionEn(List<Cluster> extensionEn) {

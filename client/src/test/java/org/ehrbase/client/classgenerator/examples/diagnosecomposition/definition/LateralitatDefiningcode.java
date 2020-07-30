@@ -3,11 +3,11 @@ package org.ehrbase.client.classgenerator.examples.diagnosecomposition.definitio
 import org.ehrbase.client.classgenerator.EnumValueSet;
 
 public enum LateralitatDefiningcode implements EnumValueSet {
-  LINKS_UND_RECHTS("Links und Rechts", "Beide Körperseiten.", "local", "at0086"),
+  LINKS("Links", "Die linke Körperseite.", "local", "at0003"),
 
   RECHTS("Rechts", "Die rechte Körperseite.", "local", "at0004"),
 
-  LINKS("Links", "Die linke Körperseite.", "local", "at0003");
+  LINKS_UND_RECHTS("Links und Rechts", "Beide Körperseiten.", "local", "at0086");
 
   private String value;
 
@@ -25,7 +25,7 @@ public enum LateralitatDefiningcode implements EnumValueSet {
   }
 
   public String getValue() {
-    return this.value;
+     return this.value;
   }
 
   public String getDescription() {

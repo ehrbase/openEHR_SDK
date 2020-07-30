@@ -6,7 +6,7 @@ import org.ehrbase.client.annotations.Path;
 
 @Entity
 @OptionFor("DV_CODED_TEXT")
-public class BewertungDesGesundheitsrisikosVorhandenseinDvcodedtextRisikofaktoren implements BewertungDesGesundheitsrisikosVorhandenseinChoice {
+public class BewertungDesGesundheitsrisikosVorhandenseinDvcodedtextSpezifischerRisikofaktor implements BewertungDesGesundheitsrisikosVorhandenseinChoice {
     @Path("|defining_code")
     private VorhandenseinDefiningcode vorhandenseinDefiningcode;
 

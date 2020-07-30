@@ -13,7 +13,7 @@ import java.util.List;
 
 @Entity
 @Archetype("openEHR-EHR-OBSERVATION.story.v1")
-public class HistorieObservation {
+public class GeschichteHistorieObservation {
     @Path("/subject")
     private PartyProxy subject;
 

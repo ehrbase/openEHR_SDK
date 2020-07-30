@@ -19,13 +19,13 @@ public class AllgemeineAngabenSection {
     private ChronischeErkrankungenObservation chronischeErkrankungen;
 
     @Path("/items[openEHR-EHR-EVALUATION.problem_diagnosis.v1]")
-    private List<DiagnoseEvaluation> diagnose;
+    private List<ProblemDiagnoseEvaluation> problemDiagnose;
 
     @Path("/items[openEHR-EHR-INSTRUCTION.service_request.v1]")
     private List<DienstleistungInstruction> dienstleistung;
 
     @Path("/items[openEHR-EHR-EVALUATION.problem_diagnosis_covid.v1 and name/value='Problem/Diganose Coronovirus']")
-    private DiganoseCoronovirusEvaluation diganoseCoronovirus;
+    private ProblemDiganoseCoronovirusEvaluation problemDiganoseCoronovirus;
 
     @Path("/items[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0 and name/value='Andere aktuelle Erkrankungen']")
     private AndereAktuelleErkrankungenObservation andereAktuelleErkrankungen;
@@ -62,12 +62,12 @@ public class AllgemeineAngabenSection {
         return this.chronischeErkrankungen;
     }
 
-    public void setDiagnose(List<DiagnoseEvaluation> diagnose) {
-        this.diagnose = diagnose;
+    public void setProblemDiagnose(List<ProblemDiagnoseEvaluation> problemDiagnose) {
+        this.problemDiagnose = problemDiagnose;
     }
 
-    public List<DiagnoseEvaluation> getDiagnose() {
-        return this.diagnose;
+    public List<ProblemDiagnoseEvaluation> getProblemDiagnose() {
+        return this.problemDiagnose;
     }
 
     public void setDienstleistung(List<DienstleistungInstruction> dienstleistung) {
@@ -78,12 +78,13 @@ public class AllgemeineAngabenSection {
         return this.dienstleistung;
     }
 
-    public void setDiganoseCoronovirus(DiganoseCoronovirusEvaluation diganoseCoronovirus) {
-        this.diganoseCoronovirus = diganoseCoronovirus;
+    public void setProblemDiganoseCoronovirus(
+            ProblemDiganoseCoronovirusEvaluation problemDiganoseCoronovirus) {
+        this.problemDiganoseCoronovirus = problemDiganoseCoronovirus;
     }
 
-    public DiganoseCoronovirusEvaluation getDiganoseCoronovirus() {
-        return this.diganoseCoronovirus;
+    public ProblemDiganoseCoronovirusEvaluation getProblemDiganoseCoronovirus() {
+        return this.problemDiganoseCoronovirus;
     }
 
     public void setAndereAktuelleErkrankungen(

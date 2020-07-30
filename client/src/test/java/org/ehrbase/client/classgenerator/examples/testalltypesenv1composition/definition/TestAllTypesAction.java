@@ -18,7 +18,7 @@ public class TestAllTypesAction {
     private TransitionDefiningcode transitionDefiningcode;
 
     @Path("/ism_transition[at0005]/transition|defining_code")
-    private TransitionDefiningcode transitionDefiningcodeTransition;
+    private TransitionDefiningcode transitionDefiningcodeCompleted;
 
     @Path("/ism_transition[at0005]/careflow_step|defining_code")
     private CompletedDefiningcode completedDefiningcode;
@@ -39,7 +39,7 @@ public class TestAllTypesAction {
     private ActiveDefiningcode activeDefiningcodeCareflowStep;
 
     @Path("/ism_transition[at0003]/transition|defining_code")
-    private TransitionDefiningcode transitionDefiningcodeTransitionIsmTransitionAt0003;
+    private TransitionDefiningcode transitionDefiningcodePlanned;
 
     @Path("/description[at0001]/items[openEHR-EHR-CLUSTER.test_all_types.v1]")
     private List<TestAllTypesCluster> testAllTypes;
@@ -60,13 +60,13 @@ public class TestAllTypesAction {
         return this.transitionDefiningcode;
     }
 
-    public void setTransitionDefiningcodeTransition(
-            TransitionDefiningcode transitionDefiningcodeTransition) {
-        this.transitionDefiningcodeTransition = transitionDefiningcodeTransition;
+    public void setTransitionDefiningcodeCompleted(
+            TransitionDefiningcode transitionDefiningcodeCompleted) {
+        this.transitionDefiningcodeCompleted = transitionDefiningcodeCompleted;
     }
 
-    public TransitionDefiningcode getTransitionDefiningcodeTransition() {
-        return this.transitionDefiningcodeTransition;
+    public TransitionDefiningcode getTransitionDefiningcodeCompleted() {
+        return this.transitionDefiningcodeCompleted;
     }
 
     public void setCompletedDefiningcode(CompletedDefiningcode completedDefiningcode) {
@@ -124,13 +124,13 @@ public class TestAllTypesAction {
         return this.activeDefiningcodeCareflowStep;
     }
 
-    public void setTransitionDefiningcodeTransitionIsmTransitionAt0003(
-            TransitionDefiningcode transitionDefiningcodeTransitionIsmTransitionAt0003) {
-        this.transitionDefiningcodeTransitionIsmTransitionAt0003 = transitionDefiningcodeTransitionIsmTransitionAt0003;
+    public void setTransitionDefiningcodePlanned(
+            TransitionDefiningcode transitionDefiningcodePlanned) {
+        this.transitionDefiningcodePlanned = transitionDefiningcodePlanned;
     }
 
-    public TransitionDefiningcode getTransitionDefiningcodeTransitionIsmTransitionAt0003() {
-        return this.transitionDefiningcodeTransitionIsmTransitionAt0003;
+    public TransitionDefiningcode getTransitionDefiningcodePlanned() {
+        return this.transitionDefiningcodePlanned;
     }
 
     public void setTestAllTypes(List<TestAllTypesCluster> testAllTypes) {

@@ -13,7 +13,7 @@ import java.util.List;
 
 @Entity
 @Archetype("openEHR-EHR-EVALUATION.problem_diagnosis_covid.v1")
-public class DiganoseCoronovirusEvaluation {
+public class ProblemDiganoseCoronovirusEvaluation {
     @Path("/protocol[at0032]/items[at0071]")
     private List<Cluster> erweiterung;
 
@@ -21,7 +21,7 @@ public class DiganoseCoronovirusEvaluation {
     private String kommentarValue;
 
     @Path("/data[at0001]/items[at0002]/value|value")
-    private String derDiagnoseValue;
+    private String nameDesProblemsDerDiagnoseValue;
 
     @Path("/data[at0001]/items[at0039]")
     private List<Cluster> anatomischeStelleStrukturiert;
@@ -61,12 +61,12 @@ public class DiganoseCoronovirusEvaluation {
         return this.kommentarValue;
     }
 
-    public void setDerDiagnoseValue(String derDiagnoseValue) {
-        this.derDiagnoseValue = derDiagnoseValue;
+    public void setNameDesProblemsDerDiagnoseValue(String nameDesProblemsDerDiagnoseValue) {
+        this.nameDesProblemsDerDiagnoseValue = nameDesProblemsDerDiagnoseValue;
     }
 
-    public String getDerDiagnoseValue() {
-        return this.derDiagnoseValue;
+    public String getNameDesProblemsDerDiagnoseValue() {
+        return this.nameDesProblemsDerDiagnoseValue;
     }
 
     public void setAnatomischeStelleStrukturiert(List<Cluster> anatomischeStelleStrukturiert) {

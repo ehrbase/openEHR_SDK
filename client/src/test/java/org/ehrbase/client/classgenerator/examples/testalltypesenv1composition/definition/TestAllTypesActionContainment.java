@@ -16,7 +16,7 @@ public class TestAllTypesActionContainment extends Containment {
 
   public SelectAqlField<TransitionDefiningcode> TRANSITION_DEFININGCODE = new AqlFieldImp<TransitionDefiningcode>(TestAllTypesAction.class, "/ism_transition[at0004]/transition|defining_code", "transitionDefiningcode", TransitionDefiningcode.class, this);
 
-  public SelectAqlField<TransitionDefiningcode> TRANSITION_DEFININGCODE_TRANSITION = new AqlFieldImp<TransitionDefiningcode>(TestAllTypesAction.class, "/ism_transition[at0005]/transition|defining_code", "transitionDefiningcodeTransition", TransitionDefiningcode.class, this);
+  public SelectAqlField<TransitionDefiningcode> TRANSITION_DEFININGCODE_COMPLETED = new AqlFieldImp<TransitionDefiningcode>(TestAllTypesAction.class, "/ism_transition[at0005]/transition|defining_code", "transitionDefiningcodeCompleted", TransitionDefiningcode.class, this);
 
   public SelectAqlField<CompletedDefiningcode> COMPLETED_DEFININGCODE = new AqlFieldImp<CompletedDefiningcode>(TestAllTypesAction.class, "/ism_transition[at0005]/careflow_step|defining_code", "completedDefiningcode", CompletedDefiningcode.class, this);
 
@@ -30,7 +30,7 @@ public class TestAllTypesActionContainment extends Containment {
 
   public SelectAqlField<ActiveDefiningcode> ACTIVE_DEFININGCODE_CAREFLOW_STEP = new AqlFieldImp<ActiveDefiningcode>(TestAllTypesAction.class, "/ism_transition[at0004]/careflow_step|defining_code", "activeDefiningcodeCareflowStep", ActiveDefiningcode.class, this);
 
-  public SelectAqlField<TransitionDefiningcode> TRANSITION_DEFININGCODE_TRANSITION_ISM_TRANSITION_AT0003 = new AqlFieldImp<TransitionDefiningcode>(TestAllTypesAction.class, "/ism_transition[at0003]/transition|defining_code", "transitionDefiningcodeTransitionIsmTransitionAt0003", TransitionDefiningcode.class, this);
+  public SelectAqlField<TransitionDefiningcode> TRANSITION_DEFININGCODE_PLANNED = new AqlFieldImp<TransitionDefiningcode>(TestAllTypesAction.class, "/ism_transition[at0003]/transition|defining_code", "transitionDefiningcodePlanned", TransitionDefiningcode.class, this);
 
   public ListSelectAqlField<TestAllTypesCluster> TEST_ALL_TYPES = new ListAqlFieldImp<TestAllTypesCluster>(TestAllTypesAction.class, "/description[at0001]/items[openEHR-EHR-CLUSTER.test_all_types.v1]", "testAllTypes", TestAllTypesCluster.class, this);
 
