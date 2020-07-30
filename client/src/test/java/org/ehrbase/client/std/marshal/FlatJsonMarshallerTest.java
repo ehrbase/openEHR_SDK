@@ -39,18 +39,10 @@ import org.openehr.schemas.v1.TemplateDocument;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
+import java.util.function.Predicate;
 
 
 public class FlatJsonMarshallerTest {
-
-    private static boolean actualFilter(Map.Entry<String, Object> c) {
-        return true;
-    }
-
-    private static boolean expectedFilter(Map.Entry<String, Object> c) {
-        return true;
-
-    }
 
     @Test
     public void toFlatJson() throws IOException, XmlException {
@@ -64,10 +56,10 @@ public class FlatJsonMarshallerTest {
 
         String expected = IOUtils.toString(CompositionTestDataSimSDTJson.CORONA.getStream(), StandardCharsets.UTF_8);
 
-        compere(actual, expected);
+        compere(actual, expected, c -> true, c1 -> true);
     }
 
-    public static void compere(String actualJson, String expectedJson) throws JsonProcessingException {
+    public static void compere(String actualJson, String expectedJson, Predicate<Map.Entry<String, Object>> actualFilter, Predicate<Map.Entry<String, Object>> expectedFilter) throws JsonProcessingException {
 
         ObjectMapper objectMapper = JacksonUtil.getObjectMapper();
 
@@ -75,10 +67,10 @@ public class FlatJsonMarshallerTest {
         Map<String, Object> expected = objectMapper.readValue(expectedJson, Map.class);
 
         Assertions.assertThat(actual.entrySet())
-                .filteredOn(FlatJsonMarshallerTest::actualFilter)
+                .filteredOn(actualFilter)
                 .extracting(Map.Entry::getKey, Map.Entry::getValue)
                 .containsExactlyInAnyOrder(expected.entrySet().stream()
-                        .filter(FlatJsonMarshallerTest::expectedFilter)
+                        .filter(expectedFilter)
                         .map(e -> new Tuple(e.getKey(), e.getValue()))
                         .toArray(Tuple[]::new)
                 );

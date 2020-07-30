@@ -42,6 +42,7 @@ import org.reflections.Reflections;
 
 import java.lang.reflect.Modifier;
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -93,7 +94,7 @@ public class FlatJsonMarshaller {
 
     public String toFlatJson(Composition composition) {
 
-        Map<String, Object> result = new HashMap<>(handelEntityNode(introspect.getRootName(), "", introspect.getRoot(), composition));
+        Map<String, Object> result = new HashMap<>(handelEntityNode(new Context<>(introspect.getRootName(), "", composition, "", introspect.getRoot(), null)));
 
         try {
             return OBJECT_MAPPER.writeValueAsString(result);
@@ -102,94 +103,152 @@ public class FlatJsonMarshaller {
         }
     }
 
-    Map<String, Object> handelEntityNode(String term, String path, EntityNode archetypeNode, Locatable locatable) {
+    Map<String, Object> handelEntityNode(Context<EntityNode, Locatable> context) {
         Map<String, Object> result = new HashMap<>();
 
-        for (Map.Entry<String, Node> nodeEntry : archetypeNode.getChildren().entrySet()) {
+        final String term;
+        if (context.outerCount != null) {
+            term = context.getCurrentTerm() + ":" + context.outerCount;
+        } else {
+            term = context.getCurrentTerm();
+        }
+        for (Map.Entry<String, Node> nodeEntry : context.getNode().getChildren().entrySet()) {
 
-            result.putAll(handleNode(term, path, locatable, nodeEntry.getKey(), nodeEntry.getValue(), null));
+            result.putAll(handleNode(new Context<>(term, context.getCurrentPath(), context.getCurrentObject(), nodeEntry.getKey(), nodeEntry.getValue(), null)));
 
         }
 
-        List<Postprozessor> postprozessor = Stream.concat(Stream.of(locatable.getClass()), ClassUtils.getAllSuperclasses(locatable.getClass()).stream())
+        List<Postprozessor> postprozessor = Stream.concat(Stream.of(context.getCurrentObject().getClass()), ClassUtils.getAllSuperclasses(context.getCurrentObject().getClass()).stream())
                 .map(POSTPROCESSOR_MAP::get)
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
 
-        postprozessor.forEach(p -> p.prozess(term, locatable, result));
+        postprozessor.forEach(p -> p.prozess(term, context.getCurrentObject(), result));
 
         return result;
     }
 
-    private Map<String, Object> handleNode(String term, String path, Locatable locatable, String childPath, Node childNode, Integer outerCount) {
+    private Map<String, Object> handleNode(Context<Node, RMObject> context) {
 
         Map<String, Object> result = new HashMap<>();
-        String pathloop = path + childPath;
-        String termLoop = StringUtils.isNotBlank(childNode.getName()) ? term + TERM_DIVIDER + childNode.getName() : term;
-        if (outerCount != null) {
-            termLoop = termLoop + ":" + outerCount;
+        String pathloop = context.getCurrentPath() + context.getPathToNode();
+        String termLoop = StringUtils.isNotBlank(context.getNode().getName()) ? context.getCurrentTerm() + TERM_DIVIDER + StringUtils.stripStart(context.getNode().getName(), TERM_DIVIDER) : context.getCurrentTerm();
+
+        if (context.getOuterCount() != null) {
+            termLoop = termLoop + ":" + context.getOuterCount();
         }
 
-        if (childNode instanceof EndNode) {
-            Object child = new ItemExtractor(locatable, childPath, ((EndNode) childNode).isMulti()).getChild();
+        if (context.getNode() instanceof EndNode) {
 
-            if (child instanceof List) {
-                for (int i = 0; i < ((List) child).size(); i++) {
-                    result.putAll(buildChildValues(termLoop + ":" + i, ((List) child).get(i)));
-                }
-            } else if (child != null) {
-                result.putAll(buildChildValues(termLoop, child));
-            }
-        } else if (childNode instanceof EntityNode) {
-            Object child = new ItemExtractor(locatable, childPath, ((EntityNode) childNode).isMulti()).getChild();
+            Object child = new ItemExtractor(context.getCurrentObject(), context.getPathToNode(), ((EndNode) context.getNode()).isMulti()).getChild();
+            result.putAll(handleMulti(new Context<>(termLoop, pathloop, child, "", (EndNode) context.getNode(), null), this::buildChildValues));
 
-            if (child instanceof List) {
-                for (int i = 0; i < ((List) child).size(); i++) {
-                    result.putAll(handelEntityNode(termLoop + ":" + i, pathloop, (EntityNode) childNode, (Locatable) ((List) child).get(i)));
-                }
-            } else if (child != null) {
-                result.putAll(handelEntityNode(termLoop, pathloop, (EntityNode) childNode, (Locatable) child));
-            }
-        } else if (childNode instanceof ChoiceNode) {
-            Object child = new ItemExtractor(locatable, childPath, ((ChoiceNode) childNode).isMulti()).getChild();
-            if (child instanceof List) {
-                for (int i = 0; i < ((List) child).size(); i++) {
+        } else if (context.getNode() instanceof EntityNode) {
 
-                    result.putAll(handleChoiceNode((ChoiceNode) childNode, path, term, ((List) child).get(i), i));
-                }
-            } else if (child != null) {
-                result.putAll(handleChoiceNode((ChoiceNode) childNode, path, term, child, null));
-            }
+            Object child = new ItemExtractor(context.getCurrentObject(), context.getPathToNode(), ((EntityNode) context.getNode()).isMulti()).getChild();
+            result.putAll(handleMulti(new Context<>(termLoop, pathloop, child, "", (EntityNode) context.getNode(), null), this::handelEntityNode));
+
+        } else if (context.getNode() instanceof ChoiceNode) {
+
+            Object child = new ItemExtractor(context.getCurrentObject(), context.getPathToNode(), ((ChoiceNode) context.getNode()).isMulti()).getChild();
+            result.putAll(handleMulti(new Context<>(context.getCurrentTerm(), context.getCurrentPath(), child, "", (ChoiceNode) context.getNode(), null), this::handleChoiceNode));
+
         }
         return result;
     }
 
-    private Map<String, Object> handleChoiceNode(ChoiceNode childNode, String pathloop, String termLoop, Object child, Integer count) {
+    private <T extends Node, V> Map<String, Object> handleMulti(Context<T, ?> context, Function<Context<T, V>, Map<String, Object>> handler) {
 
-        Node endNode = childNode.getNodes().stream()
-                .filter(n -> (EndNode.class.isAssignableFrom(n.getClass()) && child.getClass().isAssignableFrom(((EndNode) n).getClazz())
+        Object child = context.getCurrentObject();
+        if (child instanceof List) {
+            Map<String, Object> result = new HashMap<>();
+            for (int i = 0; i < ((List<V>) child).size(); i++) {
+                result.putAll(handler.apply(new Context<>(context.getCurrentTerm(), context.currentPath, ((List<V>) child).get(i), context.pathToNode, context.node, i)));
+            }
+            return result;
+        } else if (child != null) {
+            return handler.apply(new Context<>(context.getCurrentTerm(), context.currentPath, (V) context.currentObject, context.pathToNode, context.node, null));
+        }
+        return Collections.emptyMap();
+    }
+
+    private Map<String, Object> handleChoiceNode(Context<ChoiceNode, Object> context) {
+
+        Node endNode = context.getNode().getNodes().stream()
+                .filter(n -> (EndNode.class.isAssignableFrom(n.getClass()) && context.getCurrentObject().getClass().isAssignableFrom(((EndNode) n).getClazz())
                                 ||
-                                (EntityNode.class.isAssignableFrom(n.getClass()) && new SnakeCase(child.getClass().getSimpleName()).camelToUpperSnake().equals(((EntityNode) n).getRmName()))
+                                (EntityNode.class.isAssignableFrom(n.getClass()) && new SnakeCase(context.getCurrentObject().getClass().getSimpleName()).camelToUpperSnake().equals(((EntityNode) n).getRmName()))
 
                         )
 
                 )
 
                 .findAny()
-                .orElseThrow(() -> new ClientException(String.format("No choice for %s", child.getClass())));
-        return new HashMap<>(handleNode(termLoop, pathloop, (Locatable) child, "/", endNode, count));
+                .orElseThrow(() -> new ClientException(String.format("No choice for %s", context.getCurrentObject().getClass())));
+        return new HashMap<>(handleNode(new Context<>(context.getCurrentTerm(), context.getCurrentPath(), (Locatable) context.getCurrentObject(), "", endNode, context.getOuterCount())));
     }
 
-    private Map<String, Object> buildChildValues(String termLoop, Object child) {
-        if (child instanceof RMObject) {
-            StdConfig stdConfig = configMap.getOrDefault(child.getClass(), DEFAULT_STD_CONFIG);
+    private Map<String, Object> buildChildValues(Context<EndNode, Object> context) {
 
-            return stdConfig.buildChildValues(termLoop, (RMObject) child);
-
+        final String term;
+        if (context.outerCount != null) {
+            term = context.getCurrentTerm() + ":" + context.outerCount;
         } else {
-            return Map.of(termLoop, child);
+            term = context.getCurrentTerm();
+        }
+
+        if (context.getCurrentObject() instanceof RMObject) {
+            StdConfig stdConfig = configMap.getOrDefault(context.getCurrentObject().getClass(), DEFAULT_STD_CONFIG);
+
+            return stdConfig.buildChildValues(term, (RMObject) context.getCurrentObject());
+
+        } else if (context.getCurrentObject() != null) {
+            return Map.of(term, context.getCurrentObject());
+        } else {
+            return Collections.emptyMap();
         }
     }
 
 
+    private static class Context<T extends Node, V> {
+        private final String currentTerm;
+        private final String currentPath;
+        private final V currentObject;
+        private final String pathToNode;
+        private final T node;
+        private final Integer outerCount;
+
+        private Context(String currentTerm, String currentPath, V currentObject, String pathToNode, T node, Integer outerCount) {
+            this.currentTerm = currentTerm;
+            this.currentPath = currentPath;
+            this.currentObject = currentObject;
+            this.pathToNode = pathToNode;
+            this.node = node;
+            this.outerCount = outerCount;
+        }
+
+        public String getCurrentTerm() {
+            return currentTerm;
+        }
+
+        public String getCurrentPath() {
+            return currentPath;
+        }
+
+        public V getCurrentObject() {
+            return currentObject;
+        }
+
+        public String getPathToNode() {
+            return pathToNode;
+        }
+
+        public T getNode() {
+            return node;
+        }
+
+        public Integer getOuterCount() {
+            return outerCount;
+        }
+    }
 }
