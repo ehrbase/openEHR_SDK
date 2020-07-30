@@ -30,7 +30,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.ehrbase.client.std.FlatJsonMarshallerTest.compere;
+import static org.ehrbase.client.std.marshal.FlatJsonMarshallerTest.compere;
 
 public class FlatJsonTest {
 

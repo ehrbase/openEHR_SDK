@@ -23,6 +23,8 @@ import com.nedap.archie.rm.RMObject;
 import com.nedap.archie.rm.composition.Composition;
 import org.ehrbase.client.exception.ClientException;
 import org.ehrbase.client.introspect.TemplateIntrospect;
+import org.ehrbase.client.std.marshal.FlatJsonMarshaller;
+import org.ehrbase.client.std.umarschal.FlatJsonUnmarshaller;
 import org.ehrbase.serialisation.RMDataFormat;
 import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
 
