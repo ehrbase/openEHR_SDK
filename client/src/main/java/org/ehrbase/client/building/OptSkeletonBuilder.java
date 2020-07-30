@@ -263,15 +263,17 @@ public class OptSkeletonBuilder {
                     .forEach(f -> {
                         try {
 
-                            Object value;
+                           final Object value;
                             if (f.getType().equals(PartyProxy.class)) {
                                 value = new PartyIdentified();
                             } else if (List.class.isAssignableFrom(f.getType())) {
                                 value = new ArrayList<>();
                                 Class unwarap = unwarap(f);
                                 ((List) value).add(unwarap.getConstructor().newInstance());
-                            } else {
+                            } else if (!f.getType().isPrimitive() && !f.getType().equals(String.class)) {
                                 value = f.getType().getConstructor().newInstance();
+                            } else {
+                                value = null;
                             }
                             valueMap.computeIfAbsent(new SnakeCase(f.getName()).camelToSnake(), k -> value);
                         } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {

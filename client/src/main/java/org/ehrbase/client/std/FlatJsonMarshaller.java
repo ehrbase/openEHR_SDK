@@ -52,15 +52,13 @@ import static org.ehrbase.client.introspect.TemplateIntrospect.TERM_DIVIDER;
 public class FlatJsonMarshaller {
 
     public static final DefaultStdConfig DEFAULT_STD_CONFIG = new DefaultStdConfig();
-    private final TemplateIntrospect introspect;
     private static final ObjectMapper OBJECT_MAPPER = JacksonUtil.getObjectMapper();
+    private final static Map<Class, StdConfig<?>> configMap = buildConfigMap();
 
-    private final Map<Class, StdConfig<?>> configMap;
+    private final TemplateIntrospect introspect;
 
     public FlatJsonMarshaller(TemplateIntrospect introspect) {
-
         this.introspect = introspect;
-        this.configMap = buildConfigMap();
     }
 
     public static Map<Class, StdConfig<?>> buildConfigMap() {
@@ -170,11 +168,14 @@ public class FlatJsonMarshaller {
     }
 
     private Map<String, Object> buildChildValues(String termLoop, Object child) {
+        if (child instanceof RMObject) {
+            StdConfig stdConfig = configMap.getOrDefault(child.getClass(), DEFAULT_STD_CONFIG);
 
-        StdConfig stdConfig = configMap.getOrDefault(child.getClass(), DEFAULT_STD_CONFIG);
+            return stdConfig.buildChildValues(termLoop, (RMObject) child);
 
-        return stdConfig.buildChildValues(termLoop, (RMObject) child);
-
+        } else {
+            return Map.of(termLoop, child);
+        }
     }
 
 

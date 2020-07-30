@@ -70,17 +70,17 @@ public class FlatJsonMarshallerTest {
         compere(actual, expected);
     }
 
-    private void compere(String actualJson, String expectedJson) throws JsonProcessingException {
+     static void compere(String actualJson, String expectedJson) throws JsonProcessingException {
 
-        ObjectMapper objectMapper = JacksonUtil.getObjectMapper();
+         ObjectMapper objectMapper = JacksonUtil.getObjectMapper();
 
-        Map<String, Object> actual = objectMapper.readValue(actualJson, Map.class);
-        Map<String, Object> expected = objectMapper.readValue(expectedJson, Map.class);
+         Map<String, Object> actual = objectMapper.readValue(actualJson, Map.class);
+         Map<String, Object> expected = objectMapper.readValue(expectedJson, Map.class);
 
-        assertThat(actual.entrySet())
-                .filteredOn(FlatJsonMarshallerTest::actualFilter)
-                .extracting(Map.Entry::getKey, Map.Entry::getValue)
-                .containsExactlyInAnyOrder(expected.entrySet().stream()
+         assertThat(actual.entrySet())
+                 .filteredOn(FlatJsonMarshallerTest::actualFilter)
+                 .extracting(Map.Entry::getKey, Map.Entry::getValue)
+                 .containsExactlyInAnyOrder(expected.entrySet().stream()
                         .filter(FlatJsonMarshallerTest::expectedFilter)
                         .map(e -> new Tuple(e.getKey(), e.getValue()))
                         .toArray(Tuple[]::new)
