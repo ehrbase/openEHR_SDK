@@ -21,12 +21,14 @@ package org.ehrbase.client.std;
 
 import com.nedap.archie.rm.composition.Composition;
 import com.nedap.archie.rm.composition.Observation;
+import com.nedap.archie.rm.generic.PartySelf;
 import org.apache.commons.io.IOUtils;
 import org.apache.xmlbeans.XmlException;
 import org.ehrbase.client.introspect.TemplateIntrospect;
 import org.ehrbase.client.std.umarschal.FlatJsonUnmarshaller;
 import org.ehrbase.test_data.composition.CompositionTestDataSimSDTJson;
 import org.ehrbase.test_data.operationaltemplate.OperationalTemplateTestData;
+import org.ehrbase.validation.Validator;
 import org.junit.Test;
 import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
 import org.openehr.schemas.v1.TemplateDocument;
@@ -35,6 +37,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.fail;
 
 
 public class FlatJsonUnmarshallerTest {
@@ -54,7 +57,14 @@ public class FlatJsonUnmarshallerTest {
 
         Observation observation = (Observation) actual.itemAtPath("/content[openEHR-EHR-OBSERVATION.story.v1]");
         assertThat(observation.getData().getOrigin().getValue().toString()).isEqualTo("2020-05-11T22:53:12.039139+02:00");
-
+        assertThat(observation.getSubject()).isNotNull();
+        assertThat(observation.getSubject().getClass()).isEqualTo(PartySelf.class);
         assertThat(cut.getUnconsumed()).containsExactlyInAnyOrder();
+
+        try {
+            new Validator(template).check(actual);
+        } catch (Exception e) {
+            fail(e.getMessage());
+        }
     }
 }

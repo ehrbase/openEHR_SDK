@@ -20,6 +20,10 @@
 package org.ehrbase.client.std.umarschal.postprozessor;
 
 import com.nedap.archie.rm.composition.Entry;
+import com.nedap.archie.rm.generic.PartyIdentified;
+import com.nedap.archie.rm.generic.PartyProxy;
+import com.nedap.archie.rm.generic.PartySelf;
+import org.apache.commons.collections4.CollectionUtils;
 
 import java.util.Map;
 
@@ -31,6 +35,18 @@ public class EntryPostprocessor extends AbstractPostprozessor<Entry> {
     public void prozess(String term, Entry rmObject, Map<String, String> values) {
         consumedPath.add(term + PATH_DIVIDER + "encoding|code");
         consumedPath.add(term + PATH_DIVIDER + "encoding|terminology");
+
+        PartyProxy subject = rmObject.getSubject();
+        if (subject == null ||
+                (
+                        subject instanceof PartyIdentified
+                                && ((PartyIdentified) subject).getName() == null
+                                && CollectionUtils.isEmpty(((PartyIdentified) subject).getIdentifiers())
+                                && subject.getExternalRef() == null
+                )
+        ) {
+            rmObject.setSubject(new PartySelf());
+        }
     }
 
 
