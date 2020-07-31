@@ -27,9 +27,7 @@ import org.reflections.Reflections;
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public abstract class AbstractsStdConfig<T extends RMObject> implements StdConfig<T> {
@@ -88,5 +86,11 @@ public abstract class AbstractsStdConfig<T extends RMObject> implements StdConfi
         if (value != null) {
             result.put(termLoop + "|" + propertyName, value);
         }
+    }
+
+    @Override
+    public List<Integer> valueCount(Class<T> clazz) {
+        RmClassGeneratorConfig rmClassGeneratorConfig = configMap.get(clazz);
+        return Collections.singletonList(Optional.ofNullable(rmClassGeneratorConfig).map(RmClassGeneratorConfig::getExpandFields).map(Set::size).orElse(1));
     }
 }

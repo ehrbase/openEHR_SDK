@@ -21,6 +21,7 @@ package org.ehrbase.client.std.marshal.config;
 
 import com.nedap.archie.rm.RMObject;
 
+import java.util.List;
 import java.util.Map;
 
 public interface StdConfig<T extends RMObject> {
@@ -28,4 +29,6 @@ public interface StdConfig<T extends RMObject> {
     Map<String, Object> buildChildValues(String termLoop, T child);
 
     Class<T> getRMClass();
+
+    List<Integer> valueCount(Class<T> clazz);
 }

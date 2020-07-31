@@ -22,9 +22,17 @@ package org.ehrbase.client.std.umarschal;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.nedap.archie.aom.CComplexObject;
+import com.nedap.archie.creation.RMObjectCreator;
 import com.nedap.archie.rm.RMObject;
 import com.nedap.archie.rm.archetyped.Locatable;
 import com.nedap.archie.rm.composition.Composition;
+import com.nedap.archie.rm.datastructures.Event;
+import com.nedap.archie.rm.datastructures.IntervalEvent;
+import com.nedap.archie.rm.datavalues.DvCodedText;
+import com.nedap.archie.rm.datavalues.quantity.datetime.DvDuration;
+import com.nedap.archie.rminfo.ArchieRMInfoLookup;
+import com.nedap.archie.rminfo.RMAttributeInfo;
 import org.apache.commons.lang3.ClassUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.ehrbase.client.building.OptSkeletonBuilder;
@@ -33,16 +41,20 @@ import org.ehrbase.client.flattener.ItemExtractor;
 import org.ehrbase.client.introspect.TemplateIntrospect;
 import org.ehrbase.client.introspect.node.*;
 import org.ehrbase.client.normalizer.Normalizer;
+import org.ehrbase.client.std.marshal.config.DefaultStdConfig;
+import org.ehrbase.client.std.marshal.config.StdConfig;
 import org.ehrbase.client.std.umarschal.postprozessor.Postprozessor;
 import org.ehrbase.client.std.umarschal.rmunmarshaller.DefaultRMUnmarshaller;
 import org.ehrbase.client.std.umarschal.rmunmarshaller.RMUnmarshaller;
 import org.ehrbase.serialisation.jsonencoding.CanonicalJson;
 import org.ehrbase.serialisation.jsonencoding.JacksonUtil;
+import org.ehrbase.serialisation.util.SnakeCase;
 import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
 import org.reflections.Reflections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -52,8 +64,12 @@ import static org.ehrbase.client.introspect.TemplateIntrospect.TERM_DIVIDER;
 
 public class FlatJsonUnmarshaller {
 
+    public static final DefaultStdConfig DEFAULT_STD_CONFIG = new DefaultStdConfig();
+    private static final Map<Class, StdConfig<?>> configMap = buildConfigMap();
     private static final ObjectMapper OBJECT_MAPPER = JacksonUtil.getObjectMapper();
     public static final OptSkeletonBuilder OPT_SKELETON_BUILDER = new OptSkeletonBuilder();
+    public static final ArchieRMInfoLookup ARCHIE_RM_INFO_LOOKUP = ArchieRMInfoLookup.getInstance();
+    private static final RMObjectCreator RM_OBJECT_CREATOR = new RMObjectCreator(ARCHIE_RM_INFO_LOOKUP);
     public static final Normalizer NORMALIZER = new Normalizer();
 
     private final Logger log = LoggerFactory.getLogger(getClass());
@@ -63,6 +79,23 @@ public class FlatJsonUnmarshaller {
     private static final Map<Class, RMUnmarshaller<?>> UNMARSHALLER_MAP = buildUnmarshallerMap();
     private static final Map<Class, Postprozessor<?>> POSTPROCESSOR_MAP = buildPostprozessorMap();
     private Map<String, String> curentValues;
+
+
+    public static Map<Class, StdConfig<?>> buildConfigMap() {
+
+        Reflections reflections = new Reflections(StdConfig.class.getPackage().getName());
+        Set<Class<? extends StdConfig>> configs = reflections.getSubTypesOf(StdConfig.class);
+
+        return configs.stream()
+                .filter(c -> !Modifier.isAbstract(c.getModifiers()))
+                .map(c -> {
+                    try {
+                        return c.getConstructor().newInstance();
+                    } catch (Exception e) {
+                        throw new ClientException(e.getMessage(), e);
+                    }
+                }).collect(Collectors.toMap(StdConfig::getRMClass, c -> c));
+    }
 
     private static Map<Class, RMUnmarshaller<?>> buildUnmarshallerMap() {
         Reflections reflections = new Reflections(RMUnmarshaller.class.getPackage().getName());
@@ -132,7 +165,7 @@ public class FlatJsonUnmarshaller {
 
     private void handelArchetypeNode(String term, String path, EntityNode root, Map<String, String> values, Locatable locatable) {
         if (locatable != null) {
-            root.getChildren().forEach((p, node) -> mapNode(path, term, p, node, values, locatable, null));
+            root.getChildren().forEach((p, node) -> mapNode(new Context<>(path, term, p, node, values, locatable, null)));
 
             postprocess(term, values, locatable);
         }
@@ -152,21 +185,21 @@ public class FlatJsonUnmarshaller {
         });
     }
 
-    private void mapNode(String path, String term, String childPath, Node node, Map<String, String> values, Locatable locatable, Integer outerCount) {
+    private void mapNode(Context<Node, Locatable> context) {
 
-        String pathLoop = path + childPath;
-        String termLoop = StringUtils.isNotBlank(node.getName()) ? term + TERM_DIVIDER + StringUtils.stripStart(node.getName(), "/") : term;
+        String pathLoop = context.getPath() + context.getChildPath();
+        String termLoop = addTerms(context.getTerm(), context.getNode().getName());
 
-        if (outerCount != null) {
-            termLoop = termLoop + ":" + outerCount;
+        if (context.getOuterCount() != null) {
+            termLoop = termLoop + ":" + context.getOuterCount();
         }
-        Map<String, String> subValues = values.entrySet().stream()
-                .filter(e -> e.getKey().startsWith(term))
+        Map<String, String> subValues = context.getValues().entrySet().stream()
+                .filter(e -> e.getKey().startsWith(context.getTerm()))
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
-        if (node instanceof EntityNode) {
-            boolean multi = ((EntityNode) node).isMulti();
-            Object child = new ItemExtractor(locatable, childPath, multi).getChild();
+        if (context.getNode() instanceof EntityNode) {
+            boolean multi = ((EntityNode) context.getNode()).isMulti();
+            Object child = new ItemExtractor(context.getLocatable(), context.getChildPath(), multi).getChild();
             if (child instanceof List) {
                 Integer integer = findCount(subValues, termLoop);
                 List childList = (List) child;
@@ -178,15 +211,15 @@ public class FlatJsonUnmarshaller {
                         childList.add(deepClone);
                         child = deepClone;
                     }
-                    handelArchetypeNode(termLoop + ":" + i, pathLoop, (EntityNode) node, subValues, (Locatable) child);
+                    handelArchetypeNode(termLoop + ":" + i, pathLoop, (EntityNode) context.getNode(), subValues, (Locatable) child);
                 }
 
             } else {
-                handelArchetypeNode(termLoop, pathLoop, (EntityNode) node, subValues, (Locatable) child);
+                handelArchetypeNode(termLoop, pathLoop, (EntityNode) context.getNode(), subValues, (Locatable) child);
             }
-        } else if (node instanceof EndNode) {
-            boolean multi = ((EndNode) node).isMulti();
-            Object child = new ItemExtractor(locatable, childPath, multi).getChild();
+        } else if (context.getNode() instanceof EndNode) {
+            boolean multi = ((EndNode) context.getNode()).isMulti();
+            Object child = new ItemExtractor(context.getLocatable(), context.getChildPath(), multi).getChild();
             if (child instanceof List) {
                 Integer integer = findCount(subValues, termLoop);
                 List childList = (List) child;
@@ -198,14 +231,14 @@ public class FlatJsonUnmarshaller {
                         childList.add(deepClone);
                         child = deepClone;
                     }
-                    handleEndNode(pathLoop, termLoop + ":" + i, (EndNode) node, child, subValues);
+                    handleEndNode(pathLoop, termLoop + ":" + i, (EndNode) context.getNode(), child, subValues);
                 }
             } else {
-                handleEndNode(pathLoop, termLoop, (EndNode) node, child, subValues);
+                handleEndNode(pathLoop, termLoop, (EndNode) context.getNode(), child, subValues);
             }
-        } else if (node instanceof ChoiceNode) {
-            boolean multi = ((ChoiceNode) node).isMulti();
-            Object child = new ItemExtractor(locatable, childPath, multi).getChild();
+        } else if (context.getNode() instanceof ChoiceNode) {
+            boolean multi = ((ChoiceNode) context.getNode()).isMulti();
+            Object child = new ItemExtractor(context.getLocatable(), context.getChildPath(), multi).getChild();
 
             if (child instanceof List) {
                 Integer integer = findCount(subValues, termLoop);
@@ -218,10 +251,10 @@ public class FlatJsonUnmarshaller {
                         childList.add(deepClone);
                         child = deepClone;
                     }
-                    handleChoiceNode(path, term, childPath, (ChoiceNode) node, child, values, i, locatable);
+                    handleChoiceNode(context.getPath(), context.getTerm(), context.getChildPath(), (ChoiceNode) context.getNode(), child, context.getValues(), i, context.getLocatable());
                 }
             } else {
-                handleChoiceNode(path, term, childPath, (ChoiceNode) node, child, values, null, locatable);
+                handleChoiceNode(context.getPath(), context.getTerm(), context.getChildPath(), (ChoiceNode) context.getNode(), child, context.getValues(), null, context.getLocatable());
             }
         }
 
@@ -229,9 +262,102 @@ public class FlatJsonUnmarshaller {
     }
 
     private void handleChoiceNode(String path, String term, String childPath, ChoiceNode choiceNode, Object child, Map<String, String> values, Integer outer, Locatable locatable) {
-        for (Node node : choiceNode.getNodes()) {
-            mapNode(path, term, childPath, node, values, locatable, outer);
+
+        if (values.isEmpty()) {
+            return;
         }
+
+        Node actualNode = choiceNode.getNodes().stream().filter(n -> isMatchingNode(n, values, term, path, outer)).findFirst().orElseThrow(() -> new ClientException(String.format("No matching Node for term: %s path: %s", term, path)));
+        String pathLoop = path + childPath;
+        String actualNodeName = actualNode.getName();
+        String termLoop = addTerms(term, actualNodeName);
+
+        if (outer != null) {
+            termLoop = termLoop + ":" + outer;
+        }
+
+        ItemExtractor itemExtractor = new ItemExtractor(locatable, childPath, outer != null);
+        String childName = itemExtractor.getChildName();
+        Object parent = itemExtractor.getParent();
+        final String rmclass;
+        if (actualNode instanceof EntityNode) {
+            rmclass = ((EntityNode) actualNode).getRmName();
+        } else {
+            rmclass = new SnakeCase(((EndNode) actualNode).getClazz().getSimpleName()).camelToUpperSnake();
+        }
+        CComplexObject elementConstraint = new CComplexObject();
+        elementConstraint.setRmTypeName(rmclass);
+        Object newChild = RM_OBJECT_CREATOR.create(elementConstraint);
+        if (Event.class.isAssignableFrom(newChild.getClass())) {
+            Event newEvent = (Event) newChild;
+            Event oldEvent = (Event) child;
+            newEvent.setState(oldEvent.getState());
+            newEvent.setData(oldEvent.getData());
+            newEvent.setArchetypeDetails(oldEvent.getArchetypeDetails());
+            newEvent.setArchetypeNodeId(oldEvent.getArchetypeNodeId());
+            newEvent.setName(oldEvent.getName());
+            newEvent.setTime(oldEvent.getTime());
+            if (IntervalEvent.class.isAssignableFrom(newEvent.getClass())) {
+                ((IntervalEvent) newEvent).setWidth(new DvDuration());
+                ((IntervalEvent<?>) newEvent).setMathFunction(new DvCodedText());
+            }
+
+        }
+        RMAttributeInfo attributeInfo = ARCHIE_RM_INFO_LOOKUP.getAttributeInfo(parent.getClass(), childName);
+        if (attributeInfo.isMultipleValued()) {
+            try {
+                Object invoke = attributeInfo.getGetMethod().invoke(parent);
+                if (Collection.class.isAssignableFrom(invoke.getClass())) {
+                    ((Collection) invoke).remove(child);
+                }
+            } catch (IllegalAccessException | InvocationTargetException e) {
+                log.warn(e.getMessage(), e);
+            }
+        }
+
+        RM_OBJECT_CREATOR.addElementToListOrSetSingleValues(parent, childName, Collections.singletonList(newChild));
+
+        if (actualNode instanceof EntityNode) {
+            handelArchetypeNode(termLoop, pathLoop, (EntityNode) actualNode, values, (Locatable) newChild);
+        } else {
+            handleEndNode(pathLoop, termLoop, (EndNode) actualNode, newChild, values);
+        }
+
+    }
+
+    private String addTerms(String term, String actualNodeName) {
+        return StringUtils.isNotBlank(actualNodeName) ? term + TERM_DIVIDER + StringUtils.stripStart(actualNodeName, "/") : term;
+    }
+
+
+    private boolean isMatchingNode(Node node, Map<String, String> values, String term, String path, Integer outerCount) {
+
+        String termLoop = addTerms(term, node.getName());
+
+        if (outerCount != null) {
+            termLoop = termLoop + ":" + outerCount;
+        }
+        final String termLoop2 = termLoop;
+
+        Map<String, String> subValues = values.entrySet().stream()
+                .filter(e -> e.getKey().startsWith(termLoop2))
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+        if (node instanceof EntityNode) {
+
+            for (Node n : ((EntityNode) node).getChildren().values()) {
+                String prefix = addTerms(termLoop, n.getName());
+                subValues = subValues.entrySet().stream()
+                        .filter(e -> !e.getKey().startsWith(prefix))
+                        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+            }
+
+            return subValues.isEmpty();
+        } else {
+
+            StdConfig<?> stdConfig = configMap.getOrDefault(((EndNode) node).getClazz(), DEFAULT_STD_CONFIG);
+            return stdConfig.valueCount(((EndNode) node).getClazz()).contains(subValues.size());
+        }
+
 
     }
 
@@ -263,5 +389,53 @@ public class FlatJsonUnmarshaller {
     private <T extends RMObject> T deepClone(RMObject rmObjekt) {
         CanonicalJson canonicalXML = new CanonicalJson();
         return (T) canonicalXML.unmarshal(canonicalXML.marshal(rmObjekt), rmObjekt.getClass());
+    }
+
+    private static class Context<T extends Node, V> {
+        private final String path;
+        private final String term;
+        private final String childPath;
+        private final T node;
+        private final Map<String, String> values;
+        private final V locatable;
+        private final Integer outerCount;
+
+        private Context(String path, String term, String childPath, T node, Map<String, String> values, V locatable, Integer outerCount) {
+            this.path = path;
+            this.term = term;
+            this.childPath = childPath;
+            this.node = node;
+            this.values = values;
+            this.locatable = locatable;
+            this.outerCount = outerCount;
+        }
+
+        public String getPath() {
+            return path;
+        }
+
+        public String getTerm() {
+            return term;
+        }
+
+        public String getChildPath() {
+            return childPath;
+        }
+
+        public T getNode() {
+            return node;
+        }
+
+        public Map<String, String> getValues() {
+            return values;
+        }
+
+        public V getLocatable() {
+            return locatable;
+        }
+
+        public Integer getOuterCount() {
+            return outerCount;
+        }
     }
 }

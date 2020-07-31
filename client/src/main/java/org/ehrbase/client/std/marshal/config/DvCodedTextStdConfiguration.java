@@ -21,7 +21,9 @@ package org.ehrbase.client.std.marshal.config;
 
 import com.nedap.archie.rm.datavalues.DvCodedText;
 
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class DvCodedTextStdConfiguration extends AbstractsStdConfig<DvCodedText> {
@@ -39,5 +41,10 @@ public class DvCodedTextStdConfiguration extends AbstractsStdConfig<DvCodedText>
         addValue(result, termLoop, "value", child.getValue());
 
         return result;
+    }
+
+    @Override
+    public List<Integer> valueCount(Class<DvCodedText> clazz) {
+        return Collections.singletonList(3);
     }
 }

@@ -22,6 +22,7 @@ package org.ehrbase.client.std.marshal.config;
 import com.nedap.archie.rm.generic.PartySelf;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 public class PartySelfStdConfig extends AbstractsStdConfig<PartySelf> {
@@ -35,5 +36,10 @@ public class PartySelfStdConfig extends AbstractsStdConfig<PartySelf> {
     public Map<String, Object> buildChildValues(String termLoop, PartySelf child) {
 
         return Collections.emptyMap();
+    }
+
+    @Override
+    public List<Integer> valueCount(Class<PartySelf> clazz) {
+        return List.of(0, 1);
     }
 }

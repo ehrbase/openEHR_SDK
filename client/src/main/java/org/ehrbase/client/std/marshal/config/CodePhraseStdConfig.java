@@ -21,7 +21,9 @@ package org.ehrbase.client.std.marshal.config;
 
 import com.nedap.archie.rm.datatypes.CodePhrase;
 
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class CodePhraseStdConfig extends AbstractsStdConfig<CodePhrase> {
@@ -38,5 +40,10 @@ public class CodePhraseStdConfig extends AbstractsStdConfig<CodePhrase> {
     @Override
     public Class<CodePhrase> getRMClass() {
         return CodePhrase.class;
+    }
+
+    @Override
+    public List<Integer> valueCount(Class<CodePhrase> clazz) {
+        return Collections.singletonList(2);
     }
 }

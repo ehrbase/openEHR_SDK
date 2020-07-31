@@ -21,7 +21,9 @@ package org.ehrbase.client.std.marshal.config;
 
 import com.nedap.archie.rm.generic.PartyIdentified;
 
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class PartyIdentifiedStdConfig extends AbstractsStdConfig<PartyIdentified> {
@@ -37,5 +39,10 @@ public class PartyIdentifiedStdConfig extends AbstractsStdConfig<PartyIdentified
         addValue(result, termLoop, "name", child.getName());
 
         return result;
+    }
+
+    @Override
+    public List<Integer> valueCount(Class<PartyIdentified> clazz) {
+        return Collections.singletonList(1);
     }
 }
