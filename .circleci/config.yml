@@ -261,6 +261,9 @@ jobs:
       # - cache-in-sdk-workspace          #
 
   run-static-code-analysis:
+    description: |
+      Runs code analysis w/ SonarCloud via CircleCI Orb provided by sonarsource team.
+      Orb documentation: https://circleci.com/orbs/registry/orb/sonarsource/sonarcloud
     executor: docker-python3-java11
     # executor: vm-ubuntu-1604                          # (use for pipeline debugging only)
     steps:
