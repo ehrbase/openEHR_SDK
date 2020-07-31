@@ -48,6 +48,7 @@
         <sonar.moduleKey>${artifactId}</sonar.moduleKey>
         <sonar.organization>wlad</sonar.organization>
         <sonar.host.url>https://sonarcloud.io</sonar.host.url> -->
+        <sonar.moduleKey>${artifactId}</sonar.moduleKey>
 
     </properties>
 
