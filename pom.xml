@@ -45,10 +45,9 @@
 
         <!-- SonarCloud
         <sonar.projectKey>wlad_openEHR_SDK</sonar.projectKey>
-        <sonar.moduleKey>${artifactId}</sonar.moduleKey>
+        <sonar.moduleKey>${project.artifactId}</sonar.moduleKey>
         <sonar.organization>wlad</sonar.organization>
         <sonar.host.url>https://sonarcloud.io</sonar.host.url> -->
-        <sonar.moduleKey>${artifactId}</sonar.moduleKey>
 
     </properties>
 
