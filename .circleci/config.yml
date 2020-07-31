@@ -16,13 +16,13 @@ workflows:
   # WORKFLOW 1/4) Build & Test the SDK
   build_and_test_SDK:
     jobs:
-      - build-openEHR_SDK:
-          filters:
-            branches:
-              ignore:
-                - master
-                - develop
-                - release
+      # - build-openEHR_SDK:
+      #     filters:
+      #       branches:
+      #         ignore:
+      #           - master
+      #           - develop
+      #           - release
 
       # - build-EHRbase:
       #     requires:
@@ -178,9 +178,6 @@ workflows:
 
       - run-static-code-analysis:
           context: org-global
-          requires:
-            - build-openEHR_SDK
-            # - dependency-check
           filters:
             branches:
               ignore:
@@ -261,14 +258,17 @@ jobs:
       # - cache-in-sdk-workspace          #
 
   run-static-code-analysis:
+    description: |
+      Runs code analysis w/ SonarCloud via CircleCI Orb provided by sonarsource team.
+      Orb documentation: https://circleci.com/orbs/registry/orb/sonarsource/sonarcloud
+      Scanner configuration happens in file sonar-project.properties in project's root folder.
     executor: docker-python3-java11
-    # executor: vm-ubuntu-1604                          # (use for pipeline debugging only)
     steps:
       - checkout
       - cache-out-sdk-m2-dependencies
       - build-and-test-sdk
       - sonarcloud/scan:
-          cache_version: 1
+          cache_version: 1       # NOTE: increment this to force cache rebuild
 
 
   build-EHRbase:
