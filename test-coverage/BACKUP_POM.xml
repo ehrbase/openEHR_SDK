@@ -1,0 +1,157 @@
+<execution>
+    <id>default-instrument</id>
+    <goals>
+        <goal>instrument</goal>
+        <goal>report</goal>
+    </goals>
+    <configuration>
+        <!-- this configuration affects this "execution" of "instrument" and "report" goals -->
+        <excludes>*</excludes>
+    </configuration>
+</execution>
+
+
+
+<executions>
+    <execution>
+        <id>unit-tests</id>
+        <phase>test</phase>
+        <goals>
+            <goal>test</goal>
+        </goals>
+        <configuration>
+            <skipTests>false</skipTests>
+            <includes>
+                <include>**/*Test.java</include>
+            </includes>
+        </configuration>
+    </execution>
+    <execution>
+        <id>integration-tests</id>
+        <phase>integration-test</phase>
+        <goals>
+            <goal>test</goal>
+        </goals>
+        <configuration>
+            <skipTests>false</skipTests>
+            <includes>
+                <include>**/*TestIT.*</include>
+                <!-- <include>**/*Tests.*</include> -->
+            </includes>
+        </configuration>
+    </execution>
+</executions>
+
+
+
+<!-- set arg line property for surefire -->
+<configuration>
+    <propertyName>surefireArgLine</propertyName>
+
+
+
+    <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>2.22.2</version>
+        <configuration>
+            <!-- Sets the VM argument line used when unit tests are run. -->
+            <argLine>${surefireArgLine}</argLine>
+            <excludedGroups>org.ehrbase.client.Integration</excludedGroups>
+
+            <!-- FIX ME! @WLAD excluded this test due to "duplicate key $jacocodata" issue -->
+            <excludes>
+                <exclude>**/ClassGeneratorTest.java</exclude>
+            </excludes>
+        </configuration>
+    </plugin>
+
+
+    <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-failsafe-plugin</artifactId>
+        <version>2.22.0</version>
+        <executions>
+            <execution>
+                <id>integration-test</id>
+                <goals>
+                    <goal>integration-test</goal>
+                    <goal>verify</goal>
+                </goals>
+                <configuration>
+                    <!-- Sets the VM argument line used when integration tests are run. -->
+                    <argLine>${failsafeArgLine}</argLine>
+                </configuration>
+            </execution>
+        </executions>
+    </plugin>
+
+
+    <plugin>
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
+        <executions>
+            <!-- set arg line property for surefire -->
+            <execution>
+                <id>prepare-agent</id>
+                <goals>
+                    <goal>prepare-agent</goal>
+                </goals>
+                <configuration>
+                    <propertyName>surefireArgLine</propertyName>
+                </configuration>
+            </execution>
+            <!-- set arg line property for failsafe -->
+            <execution>
+                <id>prepare-agent-integration</id>
+                <goals>
+                    <goal>prepare-agent-integration</goal>
+                </goals>
+                <configuration>
+                    <propertyName>failsafeArgLine</propertyName>
+                </configuration>
+            </execution>
+            <!-- aggregated unit test coverage report -->
+            <execution>
+                <id>aggregate-reports-ut</id>
+                <phase>test</phase>
+                <goals>
+                    <goal>report-aggregate</goal>
+                </goals>
+                <configuration>
+                    <title>Maven Multimodule Coverage Demo: Coverage of Unit Tests</title>
+                    <outputDirectory>${project.reporting.outputDirectory}/jacoco-unit-test</outputDirectory>
+                    <dataFileExcludes>
+                        <dataFileExclude>**/target/jacoco-it.exec</dataFileExclude>
+                    </dataFileExcludes>
+                </configuration>
+            </execution>
+            <!-- aggregated integration test coverage report -->
+            <execution>
+                <id>aggregate-reports-it</id>
+                <phase>verify</phase>
+                <goals>
+                    <goal>report-aggregate</goal>
+                </goals>
+                <configuration>
+                    <title>Maven Multimodule Coverage Demo: Coverage of Integration Tests</title>
+                    <outputDirectory>${project.reporting.outputDirectory}/jacoco-integration-test</outputDirectory>
+                    <dataFileExcludes>
+                        <dataFileExclude>**/target/jacoco.exec</dataFileExclude>
+                    </dataFileExcludes>
+                </configuration>
+            </execution>
+            <!-- aggregated overall coverage report -->
+            <execution>
+                <id>aggregate-reports-all</id>
+                <phase>verify</phase>
+                <goals>
+                    <goal>report-aggregate</goal>
+                </goals>
+                <configuration>
+                    <title>Maven Multimodule Coverage Demo: Overall Coverage </title>
+                    <outputDirectory>${project.reporting.outputDirectory}/jacoco-aggregate-all</outputDirectory>
+                </configuration>
+            </execution>
+        </executions>
+    </plugin>

@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <artifactId>root</artifactId>
+        <groupId>com.github.ehrbase.openEHR_SDK</groupId>
+        <version>0.3.5</version>
+        <!-- <relativePath>../pom.xml</relativePath> -->
+    </parent>
+
+    <artifactId>jacoco-aggregated-code-coverage</artifactId>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.github.ehrbase.openEHR_SDK</groupId>
+            <artifactId>client</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.ehrbase.openEHR_SDK</groupId>
+            <artifactId>generator</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.ehrbase.openEHR_SDK</groupId>
+            <artifactId>response-dto</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.ehrbase.openEHR_SDK</groupId>
+            <artifactId>opt-1.4</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.ehrbase.openEHR_SDK</groupId>
+            <artifactId>serialisation</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.ehrbase.openEHR_SDK</groupId>
+            <artifactId>terminology</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.ehrbase.openEHR_SDK</groupId>
+            <artifactId>validation</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.22.2</version>
+                <configuration>
+                    <!-- <skipTests>true</skipTests> -->
+                    <!-- Jacoco prepare-agent builds some command-line params without -->
+                    <!-- which jacoco will not instrument. Hence it is important to add -->
+                    <!-- those command-line params here (${argLine} holds those params) -->
+                    <!-- <argLine>${argLine} -Xms256m -Xmx2048m</argLine> -->
+                    <forkCount>1</forkCount>
+                    <runOrder>random</runOrder>
+
+
+
+                    <!-- Sets the VM argument line used when unit tests are run. -->
+                    <!-- <argLine>${surefireArgLine}</argLine> -->
+
+
+
+
+                    <!-- @WLAD brauche ich nicht, geht auch ohne -->
+                    <!-- <excludedGroups>org.ehrbase.client.Integration</excludedGroups> -->
+
+
+
+                    <!-- <excludes>
+                        <exclude>${exclude.tests}</exclude>
+                    </excludes> -->
+                </configuration>
+                <!-- <executions>
+                    <execution>
+                        <id>unit-tests</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>test</goal>
+                        </goals>
+                        <configuration>
+                            <skipTests>false</skipTests>
+                            <includes>
+                                <include>**/*Test.java</include>
+                            </includes>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>integration-tests</id>
+                        <phase>integration-test</phase>
+                        <goals>
+                            <goal>test</goal>
+                        </goals>
+                        <configuration>
+                            <skipTests>false</skipTests>
+                            <includes>
+                                <include>**/*TestIT.*</include>
+                            </includes>
+                        </configuration>
+                    </execution>
+                </executions> -->
+
+
+            </plugin>
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+
+                <executions>
+                    <!-- aggregated unit test coverage report -->
+                    <execution>
+                        <id>aggregate-jacoco-unit-test-reports</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>report-aggregate</goal>
+                        </goals>
+                        <configuration>
+                            <title>Coverage of Unit Tests</title>
+                            <outputDirectory>${project.reporting.outputDirectory}/jacoco-unit-test</outputDirectory>
+                            <dataFileIncludes>
+                                <dataFileInclude>**/target/jacoco.exec</dataFileInclude>
+                            </dataFileIncludes>
+                            <dataFileExcludes>
+                                <dataFileExclude>**/target/jacoco-it.exec</dataFileExclude>
+                            </dataFileExcludes>
+
+
+
+                            <!-- NOTE: @WLAD funzt auch auf top level von plugin/configuration -->
+                            <!-- TODO: CLARIFY W/ @STEFAN.S. IF IT'S OK TO EXCLUDE THIS STUFF! -->
+                            <excludes>
+                                <exclude>com/oceaninformatics/characterMapping/**/*</exclude>
+                                <exclude>openEHR/v1/template/**/*</exclude>
+                                <exclude>org/openehr/schemas/v1/**/*</exclude>
+                                <exclude>schemaorg_apache_xmlbeans/**/*</exclude>
+                                <exclude>org/ehrbase/response/**/*</exclude>
+                            </excludes>
+
+
+
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>

@@ -33,6 +33,7 @@
         <module>terminology</module>
         <module>test-data</module>
         <module>validation</module>
+        <module>test-coverage</module>
     </modules>
 
     <properties>
@@ -41,8 +42,8 @@
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
         <jackson.version>2.10.2</jackson.version>
-        <jacoco.version>0.8.2</jacoco.version>
-        <aggregate.report.dir>test-coverage/target/site/jacoco-aggregate/jacoco.xml</aggregate.report.dir>
+        <jacoco.version>0.8.5</jacoco.version>
+        <!-- <aggregate.report.dir>test-coverage/target/site/jacoco-aggregate/jacoco.xml</aggregate.report.dir> -->
 
         <!-- SonarCloud
         <sonar.projectKey>wlad_openEHR_SDK</sonar.projectKey>
@@ -59,24 +60,110 @@
         </repository>
     </repositories>
 
+    <dependencies>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!--  ONLY needed for offline intrumentation!!!  -->
+        <!-- <dependency>
+            <groupId>org.jacoco</groupId>
+            <artifactId>org.jacoco.agent</artifactId>
+            <classifier>runtime</classifier>
+            <version>${jacoco.version}</version>
+            <scope>test</scope>
+        </dependency> -->
+    </dependencies>
+
+
+
     <build>
+
+
         <pluginManagement>
-            <plugins>
+            <!-- <plugins>
                 <plugin>
                     <groupId>org.jacoco</groupId>
                     <artifactId>jacoco-maven-plugin</artifactId>
                     <version>${jacoco.version}</version>
-                    <executions>
-                        <execution>
-                            <goals>
-                                <goal>prepare-agent</goal>
-                            </goals>
-                        </execution>
-                    </executions>
                 </plugin>
-            </plugins>
+            </plugins> -->
         </pluginManagement>
+
+
         <plugins>
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>${jacoco.version}</version>
+                <configuration>
+                    <!-- <destFile>target/jacoco.exec</destFile> -->
+                    <!-- <systemPropertyVariables>
+                        <jacoco-agent.destfile>target/jacoco.exec</jacoco-agent.destfile>
+                    </systemPropertyVariables> -->
+                </configuration>
+
+                <executions>
+                    <!-- 
+
+                    Don't use offline and on-the-fly instrumentation (prepare-agent)
+                    simultaneously!
+
+                    NOTE: can't use on-the-fly instrumentation due to issue
+                    w/ classGenerator.class ("duplicate key $jacocodata")
+                    during test execution.
+
+                    TODO: FIX IT! cause on-the-fly instr. is the recommanded way
+                          to use jacoco!
+
+                    -->
+
+                    <!-- on-the-fly instrumentation -->
+                    <execution>
+                        <id>prepare-agent</id>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+
+                        <configuration>
+
+
+
+                            <!-- <excludes>
+                                <exclude>org/ehrbase/client/ClassGeneratorTest*</exclude>
+                            </excludes> -->
+
+
+
+                        </configuration>
+                    </execution>
+
+
+                    <!-- offline instrumentation -->
+                    <!-- <execution>
+
+                        <id>default-instrument</id>
+                        <goals>
+                            <goal>instrument</goal>
+                            <goal>report</goal>
+                        </goals>
+                        <configuration>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>default-restore-instrumented-classes</id>
+                        <goals>
+                            <goal>restore-instrumented-classes</goal>
+                        </goals>
+                    </execution> -->
+
+
+
+                </executions>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-enforcer-plugin</artifactId>
@@ -120,15 +207,62 @@
                     <release>11</release>
                 </configuration>
             </plugin>
+
+
+
+
+
+
+
+            <!-- THIS WAS WORKING -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>2.22.2</version>
                 <configuration>
+                    <skipTests>true</skipTests>
                     <systemPropertyVariables>
-                        <jacoco-agent.destfile>**/target/jacoco.exec</jacoco-agent.destfile>
+                        <jacoco-agent.destfile>target/jacoco.exec</jacoco-agent.destfile>
                     </systemPropertyVariables>
                 </configuration>
+                <executions>
+                    <execution>
+                        <id>unit-tests</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>test</goal>
+                        </goals>
+                        <configuration>
+                            <skipTests>false</skipTests>
+                            <includes>
+                                <include>**/*Test.java</include>
+                            </includes>
+
+
+
+                            <!-- FIX ME! excluded this test due to "duplicate key $jacocodata" issue -->
+                            <excludes>
+                                <exclude>**/ClassGeneratorTest.java</exclude>
+                            </excludes>
+
+
+
+                        </configuration>
+                    </execution>
+                    <!-- <execution>
+                        <id>integration-tests</id>
+                        <phase>integration-test</phase>
+                        <goals>
+                            <goal>test</goal>
+                        </goals>
+                        <configuration>
+                            <skipTests>false</skipTests>
+                            <includes>
+                                <include>**/*TestIT.*</include>
+                            </includes>
+                        </configuration>
+                    </execution> -->
+                </executions>
             </plugin>
             <!-- <plugin>
                 <groupId>org.jacoco</groupId>
@@ -344,12 +478,17 @@
                 <scope>test</scope>
             </dependency>
 
+
+            <!-- 
             <dependency>
                 <groupId>junit</groupId>
                 <artifactId>junit</artifactId>
                 <version>4.12</version>
-                <!-- <scope>test</scope> -->
-            </dependency>
+                <scope>test</scope>
+            </dependency> -->
+
+
+
             <dependency>
                 <groupId>org.assertj</groupId>
                 <artifactId>assertj-core</artifactId>

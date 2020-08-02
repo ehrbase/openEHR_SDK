@@ -43,20 +43,22 @@
             <artifactId>archie</artifactId>
         </dependency>
 
-        <dependency>
+
+
+        <!-- <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <scope>test</scope>
-        </dependency>
+        </dependency> -->
 
 
-        <dependency>
+        <!-- <dependency>
             <groupId>org.jacoco</groupId>
             <artifactId>org.jacoco.agent</artifactId>
             <classifier>runtime</classifier>
             <scope>test</scope>
             <version>${jacoco.version}</version>
-        </dependency>
+        </dependency> -->
 
 
 
