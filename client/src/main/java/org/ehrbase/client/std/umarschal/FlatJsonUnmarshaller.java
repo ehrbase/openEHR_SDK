@@ -57,6 +57,7 @@ import org.slf4j.LoggerFactory;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 import java.util.*;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -143,7 +144,7 @@ public class FlatJsonUnmarshaller {
             }
             ArchetypeNode root = introspect.getRoot();
 
-            handelArchetypeNode(root.getName(), "", root, curentValues, generate);
+            handleEntityNode(new Context<>(root.getName(), "", generate, "", root, curentValues, null));
 
         } catch (JsonProcessingException e) {
             throw new ClientException(e.getMessage());
@@ -163,11 +164,18 @@ public class FlatJsonUnmarshaller {
         }
     }
 
-    private void handelArchetypeNode(String term, String path, EntityNode root, Map<String, String> values, Locatable locatable) {
-        if (locatable != null) {
-            root.getChildren().forEach((p, node) -> mapNode(new Context<>(path, term, p, node, values, locatable, null)));
+    private void handleEntityNode(Context<EntityNode, Locatable> context) {
+        String termLoop = context.getCurrentTerm();
+        if (context.getOuterCount() != null) {
+            termLoop = termLoop + ":" + context.getOuterCount();
+        }
 
-            postprocess(term, values, locatable);
+        if (context.getCurrentObject() != null) {
+
+            String finalTermLoop = termLoop;
+            context.getNode().getChildren().forEach((p, n) -> mapNode(new Context<>(finalTermLoop, context.getCurrentPath(), context.getCurrentObject(), p, n, context.getCurrentValues(), null)));
+
+            postprocess(termLoop, context.getCurrentValues(), context.getCurrentObject());
         }
     }
 
@@ -187,96 +195,67 @@ public class FlatJsonUnmarshaller {
 
     private void mapNode(Context<Node, Locatable> context) {
 
-        String pathLoop = context.getPath() + context.getChildPath();
-        String termLoop = addTerms(context.getTerm(), context.getNode().getName());
+        String pathLoop = context.getCurrentPath() + context.getPathToNode();
+        String termLoop = addTerms(context.getCurrentTerm(), context.getNode().getName());
 
-        if (context.getOuterCount() != null) {
-            termLoop = termLoop + ":" + context.getOuterCount();
-        }
-        Map<String, String> subValues = context.getValues().entrySet().stream()
-                .filter(e -> e.getKey().startsWith(context.getTerm()))
+
+        Map<String, String> subValues = context.getCurrentValues().entrySet().stream()
+                .filter(e -> e.getKey().startsWith(context.getCurrentTerm()))
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
         if (context.getNode() instanceof EntityNode) {
             boolean multi = ((EntityNode) context.getNode()).isMulti();
-            Object child = new ItemExtractor(context.getLocatable(), context.getChildPath(), multi).getChild();
-            if (child instanceof List) {
-                Integer integer = findCount(subValues, termLoop);
-                List childList = (List) child;
-                child = childList.get(0);
-                RMObject prototype = (RMObject) child;
-                for (int i = 0; i <= integer; i++) {
-                    if (i > 0) {
-                        RMObject deepClone = deepClone(prototype);
-                        childList.add(deepClone);
-                        child = deepClone;
-                    }
-                    handelArchetypeNode(termLoop + ":" + i, pathLoop, (EntityNode) context.getNode(), subValues, (Locatable) child);
-                }
-
-            } else {
-                handelArchetypeNode(termLoop, pathLoop, (EntityNode) context.getNode(), subValues, (Locatable) child);
-            }
+            Object child = new ItemExtractor(context.getCurrentObject(), context.getPathToNode(), multi).getChild();
+            handleMulti(new Context<>(termLoop, pathLoop, child, "", (EntityNode) context.getNode(), subValues, null), this::handleEntityNode);
         } else if (context.getNode() instanceof EndNode) {
             boolean multi = ((EndNode) context.getNode()).isMulti();
-            Object child = new ItemExtractor(context.getLocatable(), context.getChildPath(), multi).getChild();
-            if (child instanceof List) {
-                Integer integer = findCount(subValues, termLoop);
-                List childList = (List) child;
-                child = childList.get(0);
-                RMObject prototype = (RMObject) child;
-                for (int i = 0; i <= integer; i++) {
-                    if (i > 0) {
-                        RMObject deepClone = deepClone(prototype);
-                        childList.add(deepClone);
-                        child = deepClone;
-                    }
-                    handleEndNode(pathLoop, termLoop + ":" + i, (EndNode) context.getNode(), child, subValues);
-                }
-            } else {
-                handleEndNode(pathLoop, termLoop, (EndNode) context.getNode(), child, subValues);
-            }
+            Object child = new ItemExtractor(context.getCurrentObject(), context.getPathToNode(), multi).getChild();
+            handleMulti(new Context<>(termLoop, pathLoop, child, "", (EndNode) context.getNode(), subValues, null), this::handleEndNode);
         } else if (context.getNode() instanceof ChoiceNode) {
             boolean multi = ((ChoiceNode) context.getNode()).isMulti();
-            Object child = new ItemExtractor(context.getLocatable(), context.getChildPath(), multi).getChild();
-
-            if (child instanceof List) {
-                Integer integer = findCount(subValues, termLoop);
-                List childList = (List) child;
-                child = childList.get(0);
-                RMObject prototype = (RMObject) child;
-                for (int i = 0; i <= integer; i++) {
-                    if (i > 0) {
-                        RMObject deepClone = deepClone(prototype);
-                        childList.add(deepClone);
-                        child = deepClone;
-                    }
-                    handleChoiceNode(context.getPath(), context.getTerm(), context.getChildPath(), (ChoiceNode) context.getNode(), child, context.getValues(), i, context.getLocatable());
-                }
-            } else {
-                handleChoiceNode(context.getPath(), context.getTerm(), context.getChildPath(), (ChoiceNode) context.getNode(), child, context.getValues(), null, context.getLocatable());
-            }
+            Object child = new ItemExtractor(context.getCurrentObject(), context.getPathToNode(), multi).getChild();
+            handleMulti(new Context<>(context.getCurrentTerm(), context.getCurrentPath(), child, context.getPathToNode(), (ChoiceNode) context.getNode(), subValues, null), c -> handleChoiceNode(c, context.currentObject));
         }
 
 
     }
 
-    private void handleChoiceNode(String path, String term, String childPath, ChoiceNode choiceNode, Object child, Map<String, String> values, Integer outer, Locatable locatable) {
+    private <T extends Node, V> void handleMulti(Context<T, ?> context, Consumer<Context<T, V>> consumer) {
 
-        if (values.isEmpty()) {
+        if (context.getCurrentObject() instanceof List) {
+            Integer integer = findCount(context.currentValues, context.currentTerm);
+            List<V> childList = (List<V>) context.getCurrentObject();
+            V child = childList.get(0);
+            RMObject prototype = (RMObject) child;
+            for (int i = 0; i <= integer; i++) {
+                if (i > 0) {
+                    V deepClone = (V) deepClone(prototype);
+                    childList.add(deepClone);
+                    child = deepClone;
+                }
+                consumer.accept(new Context<>(context.currentTerm, context.currentPath, child, context.pathToNode, context.node, context.currentValues, i));
+            }
+        } else {
+            consumer.accept(new Context<>(context.currentTerm, context.currentPath, (V) context.getCurrentObject(), context.pathToNode, context.node, context.currentValues, context.outerCount));
+        }
+    }
+
+    private void handleChoiceNode(Context<ChoiceNode, Object> context, Locatable locatable) {
+
+        if (context.getCurrentValues().isEmpty()) {
             return;
         }
 
-        Node actualNode = choiceNode.getNodes().stream().filter(n -> isMatchingNode(n, values, term, path, outer)).findFirst().orElseThrow(() -> new ClientException(String.format("No matching Node for term: %s path: %s", term, path)));
-        String pathLoop = path + childPath;
+        Node actualNode = context.getNode().getNodes().stream().filter(n -> isMatchingNode(n, context.getCurrentValues(), context.getCurrentTerm(), context.getCurrentPath(), context.getOuterCount())).findFirst().orElseThrow(() -> new ClientException(String.format("No matching Node for currentTerm: %s currentPath: %s", context.getCurrentTerm(), context.getCurrentPath())));
+        String pathLoop = context.getCurrentPath() + context.getPathToNode();
         String actualNodeName = actualNode.getName();
-        String termLoop = addTerms(term, actualNodeName);
+        String termLoop = addTerms(context.getCurrentTerm(), actualNodeName);
 
-        if (outer != null) {
-            termLoop = termLoop + ":" + outer;
+        if (context.getOuterCount() != null) {
+            termLoop = termLoop + ":" + context.getOuterCount();
         }
 
-        ItemExtractor itemExtractor = new ItemExtractor(locatable, childPath, outer != null);
+        ItemExtractor itemExtractor = new ItemExtractor(locatable, context.getPathToNode(), context.getOuterCount() != null);
         String childName = itemExtractor.getChildName();
         Object parent = itemExtractor.getParent();
         final String rmclass;
@@ -290,7 +269,7 @@ public class FlatJsonUnmarshaller {
         Object newChild = RM_OBJECT_CREATOR.create(elementConstraint);
         if (Event.class.isAssignableFrom(newChild.getClass())) {
             Event newEvent = (Event) newChild;
-            Event oldEvent = (Event) child;
+            Event oldEvent = (Event) context.getCurrentObject();
             newEvent.setState(oldEvent.getState());
             newEvent.setData(oldEvent.getData());
             newEvent.setArchetypeDetails(oldEvent.getArchetypeDetails());
@@ -308,7 +287,7 @@ public class FlatJsonUnmarshaller {
             try {
                 Object invoke = attributeInfo.getGetMethod().invoke(parent);
                 if (Collection.class.isAssignableFrom(invoke.getClass())) {
-                    ((Collection) invoke).remove(child);
+                    ((Collection) invoke).remove(context.getCurrentObject());
                 }
             } catch (IllegalAccessException | InvocationTargetException e) {
                 log.warn(e.getMessage(), e);
@@ -318,9 +297,9 @@ public class FlatJsonUnmarshaller {
         RM_OBJECT_CREATOR.addElementToListOrSetSingleValues(parent, childName, Collections.singletonList(newChild));
 
         if (actualNode instanceof EntityNode) {
-            handelArchetypeNode(termLoop, pathLoop, (EntityNode) actualNode, values, (Locatable) newChild);
+            handleEntityNode(new Context(termLoop, pathLoop, newChild, "", actualNode, context.getCurrentValues(), null));
         } else {
-            handleEndNode(pathLoop, termLoop, (EndNode) actualNode, newChild, values);
+            handleEndNode(new Context<>(termLoop, pathLoop, newChild, "", (EndNode) actualNode, context.getCurrentValues(), null));
         }
 
     }
@@ -362,16 +341,21 @@ public class FlatJsonUnmarshaller {
     }
 
 
-    private void handleEndNode(String pathLoop, String termLoop, EndNode node, Object child, Map<String, String> values) {
-        if (child == null) {
+    private void handleEndNode(Context<EndNode, Object> context) {
+        String termLoop = context.getCurrentTerm();
+        if (context.getOuterCount() != null) {
+            termLoop = termLoop + ":" + context.getOuterCount();
+        }
+
+        if (context.getCurrentObject() == null) {
             //NOOP
-        } else if (child instanceof RMObject) {
-            RMUnmarshaller rmUnmarshaller = UNMARSHALLER_MAP.getOrDefault(child.getClass(), new DefaultRMUnmarshaller());
-            rmUnmarshaller.handle(termLoop, (RMObject) child, values);
+        } else if (context.getCurrentObject() instanceof RMObject) {
+            RMUnmarshaller rmUnmarshaller = UNMARSHALLER_MAP.getOrDefault(context.getCurrentObject().getClass(), new DefaultRMUnmarshaller());
+            rmUnmarshaller.handle(termLoop, (RMObject) context.getCurrentObject(), context.getCurrentValues());
             consumedPath.addAll(rmUnmarshaller.getConsumedPaths());
-            postprocess(termLoop, values, (RMObject) child);
+            postprocess(termLoop, context.getCurrentValues(), (RMObject) context.getCurrentObject());
         } else {
-            log.warn("Unhandled: {}", termLoop);
+            log.warn("Unhandled: {}", context.getCurrentTerm());
         }
     }
 
@@ -392,46 +376,46 @@ public class FlatJsonUnmarshaller {
     }
 
     private static class Context<T extends Node, V> {
-        private final String path;
-        private final String term;
-        private final String childPath;
+        private final String currentPath;
+        private final String currentTerm;
+        private final String pathToNode;
         private final T node;
-        private final Map<String, String> values;
-        private final V locatable;
+        private final Map<String, String> currentValues;
+        private final V currentObject;
         private final Integer outerCount;
 
-        private Context(String path, String term, String childPath, T node, Map<String, String> values, V locatable, Integer outerCount) {
-            this.path = path;
-            this.term = term;
-            this.childPath = childPath;
+        private Context(String currentTerm, String currentPath, V currentObject, String pathToNode, T node, Map<String, String> currentValues, Integer outerCount) {
+            this.currentPath = currentPath;
+            this.currentTerm = currentTerm;
+            this.pathToNode = pathToNode;
             this.node = node;
-            this.values = values;
-            this.locatable = locatable;
+            this.currentValues = currentValues;
+            this.currentObject = currentObject;
             this.outerCount = outerCount;
         }
 
-        public String getPath() {
-            return path;
+        public String getCurrentPath() {
+            return currentPath;
         }
 
-        public String getTerm() {
-            return term;
+        public String getCurrentTerm() {
+            return currentTerm;
         }
 
-        public String getChildPath() {
-            return childPath;
+        public String getPathToNode() {
+            return pathToNode;
         }
 
         public T getNode() {
             return node;
         }
 
-        public Map<String, String> getValues() {
-            return values;
+        public Map<String, String> getCurrentValues() {
+            return currentValues;
         }
 
-        public V getLocatable() {
-            return locatable;
+        public V getCurrentObject() {
+            return currentObject;
         }
 
         public Integer getOuterCount() {
