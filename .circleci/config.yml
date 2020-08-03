@@ -178,12 +178,12 @@ workflows:
 
       - run-static-code-analysis:
           context: org-global
-          filters:
-            branches:
-              ignore:
-                - master
-                - develop
-                - release
+          # filters:
+          #   branches:
+          #     ignore:
+          #       - master
+          #       - develop
+          #       - release
 
 
 
@@ -267,7 +267,6 @@ jobs:
       - checkout
       - cache-out-sdk-m2-dependencies
       - build-and-test-sdk
-      # - generate-code-coverage-report   # this happens in build-and-test BUT for unit tests only!
       - sonarcloud/scan:
           cache_version: 1       # NOTE: increment this to force cache rebuild
 
