@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <artifactId>root</artifactId>
+        <groupId>com.github.ehrbase.openEHR_SDK</groupId>
+        <version>0.3.5</version>
+    </parent>
+
+    <artifactId>code-coverage</artifactId>
+
+
+
+    <dependencies>
+        <dependency>
+            <groupId>com.github.ehrbase.openEHR_SDK</groupId>
+            <artifactId>client</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.ehrbase.openEHR_SDK</groupId>
+            <artifactId>generator</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.ehrbase.openEHR_SDK</groupId>
+            <artifactId>response-dto</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.ehrbase.openEHR_SDK</groupId>
+            <artifactId>opt-1.4</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.ehrbase.openEHR_SDK</groupId>
+            <artifactId>serialisation</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.ehrbase.openEHR_SDK</groupId>
+            <artifactId>terminology</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.ehrbase.openEHR_SDK</groupId>
+            <artifactId>validation</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+    </dependencies>
+
+
+
+    <build>
+        <plugins>
+
+
+            <plugin>
+
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+
+                <configuration>
+                    <!-- TODO: CLARIFY W/ @S.SPISKA IF IT'S OK TO EXCLUDE THIS STUFF! -->
+                    <excludes>
+                        <exclude>com/oceaninformatics/characterMapping/**/*</exclude>
+                        <exclude>openEHR/v1/template/**/*</exclude>
+                        <exclude>org/openehr/schemas/v1/**/*</exclude>
+                        <exclude>schemaorg_apache_xmlbeans/**/*</exclude>
+                        <exclude>org/ehrbase/response/**/*</exclude>
+                    </excludes>
+                </configuration>
+
+                <executions>
+
+                    <!-- AGGREGATED UNIT TEST COVERAGE REPORT -->
+                    <execution>
+                        <id>aggregate-jacoco-unit-test-coverage</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>report-aggregate</goal>
+                        </goals>
+                        <configuration>
+                            <title>Coverage of Unit Tests</title>
+                            <outputDirectory>${project.reporting.outputDirectory}/jacoco-ut-coverage</outputDirectory>
+                            <dataFileExcludes>
+                                <dataFileExclude>**/target/jacoco-it.exec</dataFileExclude>
+                            </dataFileExcludes>
+                        </configuration>
+                    </execution>
+
+                    <!-- AGGREGATED INTEGRATION TEST COVERAGE REPORT -->
+                    <execution>
+                        <id>aggregate-jacoco-integration-test-coverage</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>report-aggregate</goal>
+                        </goals>
+                        <configuration>
+                            <title>Coverage of Integration Tests</title>
+                            <outputDirectory>${project.reporting.outputDirectory}/jacoco-it-coverage</outputDirectory>
+                            <dataFileExcludes>
+                                <dataFileExclude>**/target/jacoco.exec</dataFileExclude>
+                            </dataFileExcludes>
+                        </configuration>
+                    </execution>
+
+                    <!-- AGGREGATED OVERALL COVERAGE REPORT -->
+                    <execution>
+                        <id>aggregate-jacoco-overall-coverage</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>report-aggregate</goal>
+                        </goals>
+                        <configuration>
+                            <title>Overall Coverage</title>
+                            <outputDirectory>${project.reporting.outputDirectory}/jacoco-overall-coverage</outputDirectory>
+                        </configuration>
+                    </execution>
+
+                    <!-- FAIL BUILD IF RULES NOT MET! -->
+                    <execution>
+                        <id>default-check</id>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                        <configuration>
+                            <rules>
+                                <rule>
+                                    <element>BUNDLE</element>
+                                    <limits>
+                                        <limit>
+                                            <counter>INSTRUCTION</counter>
+                                            <value>COVEREDRATIO</value>
+                                            <minimum>0.00</minimum>
+                                        </limit>
+                                        <limit>
+                                            <counter>CLASS</counter>
+                                            <value>MISSEDCOUNT</value>
+                                            <maximum>0</maximum>
+                                        </limit>
+                                    </limits>
+                                </rule>
+                            </rules>
+                        </configuration>
+                    </execution>
+
+
+                </executions>
+            </plugin>
+
+
+        </plugins>
+    </build>
+
+</project>

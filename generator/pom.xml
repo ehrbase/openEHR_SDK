@@ -40,19 +40,22 @@
             <artifactId>slf4j-simple</artifactId>
             <scope>runtime</scope>
         </dependency>
-        <dependency>
+
+
+
+        <!-- <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-        </dependency>
+        </dependency> -->
 
 
-        <dependency>
+        <!-- <dependency>
             <groupId>org.jacoco</groupId>
             <artifactId>org.jacoco.agent</artifactId>
             <classifier>runtime</classifier>
             <scope>test</scope>
             <version>${jacoco.version}</version>
-        </dependency>
+        </dependency> -->
 
 
 
@@ -79,6 +82,17 @@
                 <executions>
                     <execution>
                         <id>copy-dependencies</id>
+
+
+
+                        <!-- NOTE: I had to add this otherwise there is this issue in maven's test phase:
+                                "Failed to execute goal org.apache.maven.plugins:maven-dependency-plugin:3.1.1:copy-dependencies
+                                (copy-dependencies) on project generator: Artifact has not been packaged yet. 
+                        -->
+                        <phase>verify</phase>
+
+
+
                         <goals>
                             <goal>copy-dependencies</goal>
                         </goals>
