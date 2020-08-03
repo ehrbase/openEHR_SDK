@@ -54,17 +54,9 @@ public class CompositionSerializer {
 
     private Logger log = LoggerFactory.getLogger(this.getClass());
 
-    private Map<String, Object> ctree;
-
     protected ItemStack itemStack = new ItemStack();
 
-    private String treeRootClass;
-    private String treeRootArchetype;
-
     private final WalkerOutputMode tagMode; //default
-    private final boolean allElements; //default
-
-//	private Gson gson = new Gson();
 
     public static final String TAG_META = "/meta";
     public static final String TAG_CONTENT = "/content";
@@ -116,13 +108,13 @@ public class CompositionSerializer {
     public static final String INNER_CLASS_LIST = "$INNER_CLASS_LIST$";
     public static final String TAG_ACTION_ARCHETYPE_ID = "/action_archetype_id";
     public static final String TAG_ARCHETYPE_NODE_ID = "/archetype_node_id";
+    public static final String TAG_LINKS = "/links";
     public static final String DEFAULT_NARRATIVE = "DEFAULT_NARRATIVE";
     public static final String TAG_ARCHETYPE_DETAILS = "/archetype_details";
-    public static final DvText NO_NAME = (DvText)null;
+    public static final DvText NO_NAME = null;
 
 
-    protected CompositionSerializer() {
-        this.allElements = false;
+    public CompositionSerializer() {
         this.tagMode = WalkerOutputMode.PATH;
     }
 
@@ -134,30 +126,24 @@ public class CompositionSerializer {
      */
 //    @Override
     private Map<String, Object> traverse(Composition composition) {
-        ctree = PathMap.getInstance();;
-        if (composition == null  /* CHC 170426: no content is legit... || composition.getContent() == null || composition.getContent().isEmpty() */)
+        Map<String, Object> ctree = PathMap.getInstance();
+        if (composition == null  /* CHC 170426: no content is legit... */)
             return null;
 
-//		pushPathStack(TAG_COMPOSITION+"["+composition.getArchetypeNodeId()+"]");
-        Map<String, Object> ltree = MultiMap.getInstance();;
+        Map<String, Object> ltree = MultiMap.getInstance();
 
         if (composition.getContent() != null && !composition.getContent().isEmpty()) {
             for (ContentItem item : composition.getContent()) {
                 ltree = new EntrySerialTree(ltree, tagMode).insert(item, TAG_CONTENT, traverse(item, TAG_CONTENT));
             }
         }
-        log.debug(ltree.toString());
 
+        ltree.remove(TAG_CLASS);
+        ltree.put(TAG_CLASS, new SimpleClassName(composition).toString()); //force the classname
         itemStack.popStacks();
 
         ctree = new EntrySerialTree(ctree, tagMode).insert(composition, TAG_COMPOSITION, ltree);
-        //store locally the tree root
-        if (ctree.size() > 0) {
-            String path = (String) ctree.keySet().toArray()[0];
-            treeRootArchetype = ItemStack.normalizeLabel(path);
-            treeRootClass = ItemStack.getLabelType(path);
-        }
-
+        
         return ctree;
     }
 
@@ -188,7 +174,7 @@ public class CompositionSerializer {
 
         if (item instanceof Observation) {
             Observation observation = (Observation) item;
-            Map<String, Object> ltree = PathMap.getInstance();;
+            Map<String, Object> ltree = PathMap.getInstance();
 
             if (observation.getProtocol() != null) {
                 ltree = new EntrySerialTree(ltree, tagMode).insert(observation, TAG_PROTOCOL, traverse(observation.getProtocol(), TAG_PROTOCOL));
@@ -210,7 +196,7 @@ public class CompositionSerializer {
 
         } else if (item instanceof Evaluation) {
             Evaluation evaluation = (Evaluation) item;
-            Map<String, Object> ltree = PathMap.getInstance();;
+            Map<String, Object> ltree = PathMap.getInstance();
 
             if (evaluation.getProtocol() != null)
                 ltree = new EntrySerialTree(ltree, tagMode).insert(evaluation, TAG_PROTOCOL, traverse(evaluation.getProtocol(), TAG_PROTOCOL));
@@ -227,19 +213,18 @@ public class CompositionSerializer {
                 retmap = null;
 
         } else if (item instanceof Instruction) {
-//			Map<String, Object>ltree = MultiMap.getInstance();;
-            Map<String, Object> ltree = PathMap.getInstance();;
+            Map<String, Object> ltree = PathMap.getInstance();
 
             Instruction instruction = (Instruction) item;
 
             if (instruction.getProtocol() != null)
-                ltree = new SerialTree(ltree).insert(new SimpleClassName(instruction).toString(), instruction, new NodeEncoding(tagMode).tag(TAG_PROTOCOL, ((Instruction) item).getProtocol(), ltree), traverse(instruction.getProtocol(), TAG_PROTOCOL));
+                ltree = new SerialTree(ltree).insert(instruction, new NodeEncoding(tagMode).tag(TAG_PROTOCOL, ((Instruction) item).getProtocol(), ltree), traverse(instruction.getProtocol(), TAG_PROTOCOL));
 
             ltree = new InstructionAttributes(this, itemStack, ltree).toMap(instruction);
 
             if (instruction.getActivities() != null) {
 
-                Map<String, Object> activities = MultiMap.getInstance();;
+                Map<String, Object> activities = MultiMap.getInstance();
                 for (Activity activity : instruction.getActivities()) {
                     itemStack.pushStacks(TAG_ACTIVITIES + "[" + activity.getArchetypeNodeId() + "]", activity.getName().getValue());
                     activities = new EntrySerialTree(activities, tagMode).insert(activity, TAG_ACTIVITIES, traverse(activity, TAG_DESCRIPTION));
@@ -256,7 +241,7 @@ public class CompositionSerializer {
                 retmap = null;
 
         } else if (item instanceof Action) {
-            Map<String, Object> ltree = PathMap.getInstance();;
+            Map<String, Object> ltree = PathMap.getInstance();
 
             Action action = (Action) item;
             boolean hasActiveContent = false;
@@ -286,15 +271,17 @@ public class CompositionSerializer {
 
         } else if (item instanceof Section) {
 
-            Map<String, Object> ltree = MultiMap.getInstance();;
+            Map<String, Object> ltree = MultiMap.getInstance();
 
             for (ContentItem contentItem : ((Section) item).getItems()) {
-                ltree = new SerialTree(ltree).insert(new SimpleClassName(item).toString(), contentItem, new NodeEncoding(tagMode).tag(TAG_ITEMS, contentItem, ltree), traverse(contentItem, TAG_ITEMS));
+                ltree = new SerialTree(ltree).insert(contentItem, new NodeEncoding(tagMode).tag(TAG_ITEMS, contentItem, ltree), traverse(contentItem, TAG_ITEMS));
+                log.debug("ltree now:"+(ltree != null));
             }
-            //CHC: 160531 add explicit name
-//            Section section = (Section) item;
-////            if (section.getName() != null) encodeNodeAttribute(ltree, null, null, section.getName());
+
             ltree = new SectionAttributes(this, itemStack, ltree).toMap((Section)item);
+
+            ltree.remove(TAG_CLASS);
+            ltree.put(TAG_CLASS, new SimpleClassName(item).toString()); //force the classname
 
             if (ltree.size() > 0)
                 retmap = ltree;
@@ -303,11 +290,11 @@ public class CompositionSerializer {
 
         } else if (item instanceof AdminEntry) {
             AdminEntry adminEntry = (AdminEntry) item;
-            Map<String, Object> ltree = PathMap.getInstance();;
+            Map<String, Object> ltree = PathMap.getInstance();
             
 
             if (adminEntry.getData() != null) {
-                ltree = new SerialTree(ltree).insert(new SimpleClassName(adminEntry).toString(), adminEntry, new NodeEncoding(tagMode).tag(TAG_DATA, adminEntry.getData(), ltree), traverse(adminEntry.getData(), TAG_DATA));
+                ltree = new SerialTree(ltree).insert(adminEntry, new NodeEncoding(tagMode).tag(TAG_DATA, adminEntry.getData(), ltree), traverse(adminEntry.getData(), TAG_DATA));
             }
             if (ltree.size() > 0)
                 retmap = ltree;
@@ -315,11 +302,11 @@ public class CompositionSerializer {
                 retmap = null;
 
         } else if (item instanceof GenericEntry) {
-            Map<String, Object> ltree = PathMap.getInstance();;
+            Map<String, Object> ltree = PathMap.getInstance();
 
             GenericEntry genericEntry = (GenericEntry) item;
 
-            ltree = new SerialTree(ltree).insert(new SimpleClassName(genericEntry).toString(), genericEntry, new NodeEncoding(tagMode).tag(TAG_DATA, genericEntry.getData(), ltree), traverse(genericEntry.getData(), TAG_DATA));
+            ltree = new SerialTree(ltree).insert(genericEntry, new NodeEncoding(tagMode).tag(TAG_DATA, genericEntry.getData(), ltree), traverse(genericEntry.getData(), TAG_DATA));
 
             if (ltree.size() > 0)
                 retmap = ltree;
@@ -345,7 +332,7 @@ public class CompositionSerializer {
             throw new IllegalArgumentException("Invalid activity, no description found:" + activity.getNameAsString());
         }
 
-        Map<String, Object> ltree = PathMap.getInstance();;
+        Map<String, Object> ltree = PathMap.getInstance();
 
         ltree = new ActivityAttributes(this, itemStack, ltree).toMap(activity);
 
@@ -392,12 +379,12 @@ public class CompositionSerializer {
 
         if (history.getEvents() != null) {
 
-            Map<String, Object> eventtree = MultiMap.getInstance();;
+            Map<String, Object> eventtree = MultiMap.getInstance();
 
             for (Event<?> event : history.getEvents()) {
                 itemStack.pushStacks(TAG_EVENTS + "[" + event.getArchetypeNodeId() + "]", event.getName().getValue());
 
-                Map<String, Object> subtree = PathMap.getInstance();;
+                Map<String, Object> subtree = PathMap.getInstance();
                 log.debug(itemStack.pathStackDump() + TAG_TIME + "[" + event.getArchetypeNodeId() + "]=" + event.getTime());
 
                 subtree = new EventAttributes(this, itemStack, subtree).toMap(event);
@@ -450,7 +437,7 @@ public class CompositionSerializer {
      * @param item
      * @param uppertag
      */
-    private Map<String, Object> traverse(ItemStructure item, String uppertag) {
+    private Map<String, Object> traverse(ItemStructure<?> item, String uppertag) {
 
         Map<String, Object> retmap = null;
 
@@ -466,7 +453,7 @@ public class CompositionSerializer {
         }
 
         if (item instanceof ItemSingle) {
-            Map<String, Object> ltree = PathMap.getInstance();;
+            Map<String, Object> ltree = PathMap.getInstance();
 
             ItemSingle itemSingle = (ItemSingle) item;
 
@@ -478,7 +465,7 @@ public class CompositionSerializer {
             else
                 retmap = null;
         } else if (item instanceof ItemList) {
-            Map<String, Object> ltree = MultiMap.getInstance();;
+            Map<String, Object> ltree = MultiMap.getInstance();
 
             ItemList list = (ItemList) item;
 
@@ -494,7 +481,7 @@ public class CompositionSerializer {
                 retmap = null;
 
         } else if (item instanceof ItemTree) {
-            Map<String, Object> ltree = MultiMap.getInstance();;
+            Map<String, Object> ltree = MultiMap.getInstance();
 
             ItemTree tree = (ItemTree) item;
 
@@ -510,7 +497,7 @@ public class CompositionSerializer {
                 retmap = null;
 
         } else if (item instanceof ItemTable) {
-            Map<String, Object> ltree = MultiMap.getInstance();;
+            Map<String, Object> ltree = MultiMap.getInstance();
 
             ItemTable table = (ItemTable) item;
 
@@ -529,12 +516,11 @@ public class CompositionSerializer {
 
         if (uppertag != null) itemStack.popStacks();
 
-        if (retmap != null && retmap.containsKey(TAG_CLASS)) {
-            retmap.remove(CompositionSerializer.TAG_CLASS); //this will come out as an array...
-        }
-
         if (retmap != null) {
-            retmap.put(CompositionSerializer.TAG_CLASS, new SimpleClassName(item).toString()); //this will come out as an array...
+            if (retmap.containsKey(TAG_CLASS)) {
+                retmap.remove(CompositionSerializer.TAG_CLASS); //this will come out as an array...
+            }
+            retmap.put(TAG_CLASS, new SimpleClassName(item).toString()); //this will come out as an array...
             retmap = new ItemStructureAttributes(this, itemStack, retmap).toMap(item);
         }
         return retmap;
@@ -550,7 +536,7 @@ public class CompositionSerializer {
      * @throws Exception
      */
     private Map<String, Object> traverse(Item item, String tag) {
-        Map<String, Object> retmap = null;
+        Map<String, Object> retmap = PathMap.getInstance();
 
         log.debug("traverse item:" + item);
 
@@ -560,13 +546,13 @@ public class CompositionSerializer {
 
         if (item instanceof Element) { //NB. Element value and null flavour are optional
             itemStack.pushStacks(tag + "[" + item.getArchetypeNodeId() + "]", null);
-            retmap = new ElementAttributes(tagMode, itemStack).toMap((Element) item);
+            retmap = new ElementAttributes(this, itemStack, retmap).toMap((Element) item);
             itemStack.popStacks();
         } else if (item instanceof Cluster) {
-            Map<String, Object> ltree = MultiMap.getInstance();;
+            Map<String, Object> ltree = MultiMap.getInstance();
             itemStack.pushStacks(tag + "[" + item.getArchetypeNodeId() + "]", item.getNameAsString());
 
-            Cluster cluster = (Cluster) item;
+            Cluster<?> cluster = (Cluster) item;
             boolean hasContent = false;
 
             if (cluster.getItems() != null) {
@@ -590,7 +576,8 @@ public class CompositionSerializer {
                 }
                 if (ltree.size() > 0) hasContent = true;
 
-                if (cluster.getName() != null) ltree.put(TAG_NAME, new NameAsDvText(item.getName()).toMap());
+                ltree = new ClusterAttributes(this, itemStack, ltree).toMap(cluster);
+
                 if (!ltree.containsKey(TAG_CLASS))
                     ltree.put(TAG_CLASS, Cluster.class.getSimpleName());
 
@@ -610,23 +597,23 @@ public class CompositionSerializer {
     //    @Override
     public String dbEncode(RMObject rmObject) {
 
-        Map<String, Object> stringObjectMap;
+        Map<String, Object> objectMap;
         if (rmObject instanceof Composition) {
-            stringObjectMap = traverse((Composition) rmObject);
+            objectMap = traverse((Composition) rmObject);
         } else if (rmObject instanceof Item)
-            stringObjectMap = traverse((Item) rmObject, TAG_ITEMS);
+            objectMap = traverse((Item) rmObject, TAG_ITEMS);
         else if (rmObject instanceof ItemStructure) {
-            stringObjectMap = traverse((ItemStructure) rmObject, TAG_ITEMS);
+            objectMap = traverse((ItemStructure) rmObject, TAG_ITEMS);
             if (((ItemStructure) rmObject).getArchetypeNodeId() != null)
-                stringObjectMap.put(CompositionSerializer.TAG_ARCHETYPE_NODE_ID, ((ItemStructure) rmObject).getArchetypeNodeId());
-            if (!stringObjectMap.containsKey(CompositionSerializer.TAG_NAME) && ((ItemStructure)rmObject).getName() != null)
-                stringObjectMap.put(CompositionSerializer.TAG_NAME, ((ItemStructure) rmObject).getName());
+                objectMap.put(CompositionSerializer.TAG_ARCHETYPE_NODE_ID, ((ItemStructure) rmObject).getArchetypeNodeId());
+            if (!objectMap.containsKey(CompositionSerializer.TAG_NAME) && ((ItemStructure)rmObject).getName() != null)
+                objectMap.put(CompositionSerializer.TAG_NAME, ((ItemStructure) rmObject).getName());
         } else
             throw new MarshalException(String.format("Class %s not supported ", rmObject.getClass()), null);
 
         GsonBuilder builder = EncodeUtilArchie.getGsonBuilderInstance();
         Gson gson = builder.setPrettyPrinting().create();
-        return gson.toJson(stringObjectMap);
+        return gson.toJson(objectMap);
     }
 
 

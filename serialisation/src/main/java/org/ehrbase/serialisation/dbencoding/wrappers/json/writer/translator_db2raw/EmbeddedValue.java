@@ -36,9 +36,11 @@ class EmbeddedValue {
         if (valueMap.containsKey(tag)) {
             LinkedTreeMap<String, Object> treeMap = (LinkedTreeMap<String, Object>) valueMap.get(tag);
             //get the value
-            LinkedTreeMap treeMapValue = (LinkedTreeMap) treeMap.get(CompositionSerializer.TAG_VALUE);
-            if (treeMapValue != null)
-                treeMap.replace(CompositionSerializer.TAG_VALUE, treeMapValue.get("value"));
+            if (!(treeMap.get(CompositionSerializer.TAG_VALUE) instanceof String)) {
+                LinkedTreeMap treeMapValue = (LinkedTreeMap) treeMap.get(CompositionSerializer.TAG_VALUE);
+                if (treeMapValue != null)
+                    treeMap.replace(CompositionSerializer.TAG_VALUE, treeMapValue.get("value"));
+            }
         }
 
         return valueMap;

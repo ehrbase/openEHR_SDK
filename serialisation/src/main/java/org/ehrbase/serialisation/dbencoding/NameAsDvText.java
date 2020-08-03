@@ -6,6 +6,9 @@ import com.nedap.archie.rm.datavalues.DvText;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * format a RM object name as a DvText or DvCodedText
+ */
 public class NameAsDvText {
 
     private DvText aName;

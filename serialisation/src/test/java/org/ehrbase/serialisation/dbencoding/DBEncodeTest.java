@@ -19,6 +19,8 @@
 package org.ehrbase.serialisation.dbencoding;
 
 import com.google.gson.JsonElement;
+import com.nedap.archie.rm.archetyped.FeederAudit;
+import com.nedap.archie.rm.archetyped.FeederAuditDetails;
 import com.nedap.archie.rm.composition.AdminEntry;
 import com.nedap.archie.rm.composition.Composition;
 import com.nedap.archie.rm.datastructures.Element;
@@ -29,6 +31,7 @@ import com.nedap.archie.rm.datavalues.quantity.DvInterval;
 import com.nedap.archie.rm.datavalues.quantity.datetime.DvDateTime;
 import org.apache.commons.io.IOUtils;
 import org.ehrbase.serialisation.dbencoding.rawjson.LightRawJsonEncoder;
+import org.ehrbase.serialisation.dbencoding.rmobject.FeederAuditEncoding;
 import org.ehrbase.serialisation.jsonencoding.CanonicalJson;
 import org.ehrbase.serialisation.xmlencoding.CanonicalXML;
 import org.ehrbase.test_data.composition.CompositionTestDataCanonicalJson;
@@ -45,16 +48,16 @@ import static org.junit.Assert.assertNotNull;
 public class DBEncodeTest {
 
     private static CompositionTestDataCanonicalXML[] canonicals = {
-//            CompositionTestDataCanonicalXML.DIADEM,
-//            CompositionTestDataCanonicalXML.ALL_TYPES_FIXED,
-            CompositionTestDataCanonicalXML.RIPPLE_COMFORMANCE_ACTION
-//            CompositionTestDataCanonicalXML.RIPPLE_COMFORMANCE_ADMIN_ENTRY,
-//            CompositionTestDataCanonicalXML.RIPPLE_COMFORMANCE_EVALUATION,
-//            CompositionTestDataCanonicalXML.RIPPLE_COMFORMANCE_OBSERVATION_DEMO,
-//            CompositionTestDataCanonicalXML.RIPPLE_COMFORMANCE_OBSERVATION_PULSE,
-//            CompositionTestDataCanonicalXML.RIPPLE_COMFORMANCE_INSTRUCTION,
-//            CompositionTestDataCanonicalXML.RIPPLE_CONFORMANCE_FULL,
-//            CompositionTestDataCanonicalXML.ALL_TYPES_NO_CONTENT
+            CompositionTestDataCanonicalXML.DIADEM,
+            CompositionTestDataCanonicalXML.ALL_TYPES_FIXED,
+            CompositionTestDataCanonicalXML.RIPPLE_COMFORMANCE_ACTION,
+            CompositionTestDataCanonicalXML.RIPPLE_COMFORMANCE_ADMIN_ENTRY,
+            CompositionTestDataCanonicalXML.RIPPLE_COMFORMANCE_EVALUATION,
+            CompositionTestDataCanonicalXML.RIPPLE_COMFORMANCE_OBSERVATION_DEMO,
+            CompositionTestDataCanonicalXML.RIPPLE_COMFORMANCE_OBSERVATION_PULSE,
+            CompositionTestDataCanonicalXML.RIPPLE_COMFORMANCE_INSTRUCTION,
+            CompositionTestDataCanonicalXML.RIPPLE_CONFORMANCE_FULL,
+            CompositionTestDataCanonicalXML.ALL_TYPES_NO_CONTENT
     };
 
     /**
@@ -469,6 +472,8 @@ public class DBEncodeTest {
         //see if this can be interpreted by Archie
         Composition object = new CanonicalJson().unmarshal(converted,Composition.class);
 
+        assertEquals("1234",object.itemsAtPath("/content[openEHR-EHR-EVALUATION.minimal.v1]/data[at0001]/name/defining_code/code_string").get(0).toString());
+
         assertNotNull(object);
 
         String interpreted = new CanonicalXML().marshal(object);
@@ -497,10 +502,46 @@ public class DBEncodeTest {
         //see if this can be interpreted by Archie
         Composition object = new CanonicalJson().unmarshal(converted,Composition.class);
 
+        //check the feeder_audit values in evaluation
+        assertEquals("EMIS",object.itemsAtPath("/content[openEHR-EHR-SECTION.allergies_adverse_reactions_rcp.v1]/items[openEHR-EHR-EVALUATION.adverse_reaction_risk.v1]/feeder_audit/originating_system_audit/system_id").get(0).toString());
+
+
         assertNotNull(object);
 
         String interpreted = new CanonicalXML().marshal(object);
 
         assertNotNull(interpreted);
+    }
+
+    @Test
+    public void testEncodeDecodeFeederAudit(){
+        String jsonFeederAudit = "{\n" +
+                "              \"originating_system_item_ids\": [\n" +
+                "                {\n" +
+                "                  \"issuer\": \"EMIS\",\n" +
+                "                  \"assigner\": \"EMIS\",\n" +
+                "                  \"id\": \"123456\",\n" +
+                "                  \"type\": \"FHIR\"\n" +
+                "                }\n" +
+                "              ],\n" +
+                "              \"feeder_system_item_ids\": [],\n" +
+                "              \"originating_system_audit\": {\n" +
+                "                \"system_id\": \"EMIS\",\n" +
+                "                \"time\": {\n" +
+                "                  \"value\": \"2016-12-20T00:11:02.518+02:00\",\n" +
+                "                  \"epoch_offset\": 1.482185462E9\n" +
+                "                }\n" +
+                "              }\n" +
+                "            }";
+
+        CanonicalJson cut = new CanonicalJson();
+        FeederAudit feederAudit = cut.unmarshal(jsonFeederAudit, FeederAudit.class);
+
+        String encodedToDB = new FeederAuditEncoding().toDB(feederAudit);
+
+        FeederAudit decodedFromDB = new FeederAuditEncoding().fromDB(encodedToDB);
+
+        assertEquals(feederAudit.getOriginatingSystemAudit().getSystemId(), decodedFromDB.getOriginatingSystemAudit().getSystemId());
+
     }
 }

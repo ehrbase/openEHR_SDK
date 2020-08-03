@@ -23,9 +23,7 @@ package org.ehrbase.serialisation.dbencoding;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Map;
-import java.util.Stack;
-import java.util.TreeMap;
+import java.util.*;
 
 /**
  * ETHERCIS Project ehrservice
@@ -41,9 +39,9 @@ public class ItemStack {
     private Logger log = LoggerFactory.getLogger(this.getClass());
 
     //contains the ADL path to an element
-    private Stack<String> pathStack = new Stack<>();
+    private Deque<String> pathStack = new ArrayDeque<>();
     //contains the named path to an element (used to bind Flat JSON)
-    private Stack<String> namedStack = new Stack<>();
+    private Deque<String> namedStack = new ArrayDeque<>();
 
 
     //used to resolve and index containments
@@ -101,7 +99,6 @@ public class ItemStack {
     private void flushContainmentMap() {
         //get the last element on stack
         ContainmentStruct containmentStruct = containmentStack.lastElement();
-//        System.out.println(containmentStruct.getLabel() + "-->" + containmentStruct.getFullPath());
         if (!ltreeMap.containsKey(containmentStruct.getLabel()))
             ltreeMap.put(containmentStruct.getLabel(), containmentStruct.getFullPath());
     }
@@ -109,13 +106,12 @@ public class ItemStack {
     public void pushStacks(String path, String name) {
         //specify name/value for path in the format /something[openEHR-EHR-blablah...] for disambiguation
         log.debug("-- PUSH PATH:" + path + "::" + name);
-        if (path.contains(archetypePrefix) || path.contains(CompositionSerializer.TAG_ACTIVITIES) || path.contains(CompositionSerializer.TAG_ITEMS) || path.contains(CompositionSerializer.TAG_EVENTS)) {
+        if ((path.contains(archetypePrefix)
+                || path.contains(CompositionSerializer.TAG_ACTIVITIES)
+                || path.contains(CompositionSerializer.TAG_ITEMS)
+                || path.contains(CompositionSerializer.TAG_EVENTS)) && name != null) {
             //add name in path
-//            if (!name.contains("'"))
-            if (name != null)
-                path = path.substring(0, path.indexOf("]")) + namedItemPrefix + name + namedItemSuffix;
-//            else
-//                log.warn("Ignoring entry/item name:"+name);
+            path = path.substring(0, path.indexOf("]")) + namedItemPrefix + name + namedItemSuffix;
         }
         pushStack(pathStack, path);
         if (name != null)
@@ -136,11 +132,10 @@ public class ItemStack {
             containmentStack.push(containmentStruct);
         }
 
-//        pushNamedStack(name);
     }
 
     public void popStacks() {
-        log.debug("-- POP PATH:" + (pathStack.isEmpty() ? "*empty*" : pathStack.lastElement()));
+        log.debug("-- POP PATH:" + (pathStack.isEmpty() ? "*empty*" : pathStack.getLast()));
         String path = popStack(pathStack);
         if (path != null && isArchetypeSlot(path)) {
             flushContainmentMap();
@@ -149,18 +144,18 @@ public class ItemStack {
         popStack(namedStack);
     }
 
-    private void pushStack(Stack<String> stack, String s) {
+    private void pushStack(Deque<String> stack, String s) {
         stack.push(s);
     }
 
-    private String popStack(Stack<String> stack) {
-        if (!stack.empty()) {
+    private String popStack(Deque<String> stack) {
+        if (!stack.isEmpty()) {
             return stack.pop();
         }
         return null;
     }
 
-    private String stackDump(Stack stack) {
+    private String stackDump(Deque stack) {
         StringBuilder b = new StringBuilder();
         for (Object s : stack.toArray()) b.append((String) s);
         return b.toString();
@@ -175,8 +170,9 @@ public class ItemStack {
     public String expandedStackDump() {
         StringBuilder b = new StringBuilder();
         int i = 0;
+        String[] pathArray = pathStack.toArray(new String[]{});
         for (Object s : namedStack.toArray()) {
-            b.append(s).append("{{").append(pathStack.get(i++)).append("}}/");
+            b.append(s).append("{{").append(pathArray[i++]).append("}}/");
         }
         return b.toString();
 

@@ -17,33 +17,22 @@
 
 package org.ehrbase.serialisation.attributes;
 
-import com.nedap.archie.rm.composition.Activity;
-import com.nedap.archie.rm.datavalues.encapsulated.DvParsable;
+import com.nedap.archie.rm.archetyped.Locatable;
 import org.ehrbase.serialisation.dbencoding.CompositionSerializer;
 import org.ehrbase.serialisation.dbencoding.ItemStack;
 
 import java.util.Map;
-
-import static org.ehrbase.serialisation.dbencoding.CompositionSerializer.TAG_TIMING;
-
 /**
- * populate the attributes for RM Activity
+ * populate the attributes for RM Cluster
  */
-public class ActivityAttributes extends LocatableAttributes {
+public class ClusterAttributes extends ItemAttributes {
 
-    public ActivityAttributes(CompositionSerializer compositionSerializer, ItemStack itemStack, Map<String, Object> map) {
+    public ClusterAttributes(CompositionSerializer compositionSerializer, ItemStack itemStack, Map<String, Object> map) {
         super(compositionSerializer, itemStack, map);
     }
 
-    public Map<String, Object> toMap(Activity activity){
-
-        if (activity.getTiming() != null && !activity.getTiming().equals(new DvParsable())) {
-            map = toMap(TAG_TIMING, activity.getTiming(), null);
-        }
-
-        map =  super.toMap(activity);
-
-        return map;
+    @Override
+    public Map<String, Object> toMap(Locatable locatable) {
+        return super.toMap(locatable);
     }
-
 }

@@ -1,3 +1,20 @@
+/*
+ * Copyright (c) 2020 Christian Chevalley (Hannover Medical School) and Vitasystems GmbH
+ *
+ * This file is part of project EHRbase
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and limitations under the License.
+ */
+
 package org.ehrbase.serialisation.attributes;
 
 import com.nedap.archie.rm.datastructures.Element;
@@ -8,30 +25,30 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 
-import static org.ehrbase.serialisation.dbencoding.CompositionSerializer.*;
+import static org.ehrbase.serialisation.dbencoding.CompositionSerializer.TAG_NULL_FLAVOUR;
+import static org.ehrbase.serialisation.dbencoding.CompositionSerializer.TAG_VALUE;
 
-public class ElementAttributes {
+/**
+ * populate the attributes for RM Elements
+ */
+public class ElementAttributes extends ItemAttributes {
 
     private static final String INITIAL_DUMMY_PREFIX = "$*>";
 
     private boolean allElements = false;
-    private final WalkerOutputMode tagMode;
-    private final ItemStack itemStack;
     private Logger log = LoggerFactory.getLogger(ElementAttributes.class.getSimpleName());
 
-    public ElementAttributes(boolean allElements, WalkerOutputMode tagMode, ItemStack itemStack) {
-        this.allElements = allElements;
-        this.tagMode = tagMode;
-        this.itemStack = itemStack;
+    public ElementAttributes(CompositionSerializer compositionSerializer, ItemStack itemStack, Map<String, Object> map) {
+        super(compositionSerializer, itemStack, map);
     }
 
-    public ElementAttributes(WalkerOutputMode tagMode, ItemStack itemStack) {
-        this.tagMode = tagMode;
-        this.itemStack = itemStack;
-    }
-
+    /**
+     * map the value or null_flavour of an Element
+     * @param element
+     * @return
+     */
     public Map<String, Object> toMap(Element element) {
-        Map<String, Object> ltree = PathMap.getInstance();
+        Map<String, Object> ltree = map;
 
         //to deal with ITEM_SINGLE initial value
         if (element.getName().getValue().startsWith(INITIAL_DUMMY_PREFIX)) {
@@ -48,11 +65,6 @@ public class ElementAttributes {
             log.debug(itemStack.pathStackDump() + "=" + element.getValue());
             Map<String, Object> valuemap = PathMap.getInstance();
 
-            //set name
-            if (element.getName() != null)
-                valuemap = new SerialTree(valuemap).insert(null, element, TAG_NAME, new NameAsDvText(element.getName()).toMap());
-
-            //set value
             if (element.getValue() != null && !element.getValue().toString().isEmpty())
                 valuemap = new SerialTree(valuemap).insert(new CompositeClassName(element.getValue()).toString(), element, TAG_VALUE, new ElementValue(element.getValue()).normalize());
 

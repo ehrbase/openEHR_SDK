@@ -24,7 +24,9 @@ import org.ehrbase.serialisation.dbencoding.PathMap;
 import java.util.Map;
 
 import static org.ehrbase.serialisation.dbencoding.CompositionSerializer.TAG_CLASS;
-
+/**
+ * populate the attributes for RM PartySelf
+ */
 public class PartySelfAttributes implements I_SubjectAttributes {
 
     PartySelf partySelf;

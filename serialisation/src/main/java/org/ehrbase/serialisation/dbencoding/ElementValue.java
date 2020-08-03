@@ -39,8 +39,8 @@ public class ElementValue {
      */
     public Object normalize() {
         if (value instanceof DvInterval) {
-            DvInterval dvInterval = (DvInterval) value;
-            Interval interval = new Interval(dvInterval.getLower(), dvInterval.getUpper());
+            DvInterval<?> dvInterval = (DvInterval<?>) value;
+            Interval<?> interval = new Interval<>(dvInterval.getLower(), dvInterval.getUpper());
             interval.setLowerIncluded(dvInterval.isLowerIncluded());
             interval.setUpperIncluded(dvInterval.isUpperIncluded());
             interval.setLowerUnbounded(dvInterval.isLowerUnbounded());

@@ -1,9 +1,6 @@
 package org.ehrbase.serialisation.dbencoding;
 
 import com.nedap.archie.rm.archetyped.Locatable;
-import com.nedap.archie.rm.composition.*;
-import com.nedap.archie.rm.datastructures.Event;
-import com.nedap.archie.rm.datastructures.History;
 import org.apache.commons.collections4.map.PredicatedMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,6 +9,9 @@ import java.util.Map;
 
 import static org.ehrbase.serialisation.dbencoding.CompositionSerializer.*;
 
+/**
+ * insert the attributes of a structural object into the DB encoded structure
+ */
 public class SerialTree {
 
     Map<String, Object> map;
@@ -23,8 +23,6 @@ public class SerialTree {
     }
 
 
-
-
     /**
      * put a key=value pair in a map and detects duplicates.
      *
@@ -34,8 +32,9 @@ public class SerialTree {
      * @throws Exception
      */
     public Map<String, Object> insert(String clazz, Object node, String key, Object addStructure){
+
         if (addStructure == null) return null;
-        if (addStructure instanceof Map && ((Map) addStructure).size() == 0 && !clazz.toUpperCase().equals("COMPOSITION"))
+        if (addStructure instanceof Map && ((Map) addStructure).size() == 0 && !clazz.equalsIgnoreCase("COMPOSITION"))
             return null;
 
         if (key.equals(TAG_NAME)) {
@@ -63,4 +62,14 @@ public class SerialTree {
 
         return map;
     }
+
+    public Map<String, Object> insert(Object node, String key, Object addStructure){
+
+        String clazz = new SimpleClassName(node).toString();
+
+        return insert(clazz, node, key, addStructure);
+    }
+
+
+
 }

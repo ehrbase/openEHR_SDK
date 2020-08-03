@@ -1,3 +1,20 @@
+/*
+ * Copyright (c) 2020 Christian Chevalley (Hannover Medical School) and Vitasystems GmbH
+ *
+ * This file is part of project EHRbase
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and limitations under the License.
+ */
+
 package org.ehrbase.serialisation.dbencoding;
 
 import com.nedap.archie.rm.composition.*;
@@ -9,6 +26,9 @@ import java.util.Map;
 import static org.ehrbase.serialisation.dbencoding.CompositionSerializer.*;
 import static org.ehrbase.serialisation.dbencoding.CompositionSerializer.TAG_STATE;
 
+/**
+ * Used to insert Entry specific attributes in the encoded map.
+ */
 public class EntrySerialTree extends SerialTree {
 
     private final CompositionSerializer.WalkerOutputMode tagMode;
@@ -22,7 +42,7 @@ public class EntrySerialTree extends SerialTree {
         Map<String, Object> retMap;
         switch (attribute){
             case TAG_COMPOSITION:
-                retMap = insert(new SimpleClassName(composition).toString(), composition, new NodeEncoding(tagMode).tag(TAG_COMPOSITION, composition, map), addStructure);
+                retMap = super.insert(composition, new NodeEncoding(tagMode).tag(TAG_COMPOSITION, composition, map), addStructure);
                 break;
             default:
                 retMap = map;
@@ -37,7 +57,7 @@ public class EntrySerialTree extends SerialTree {
             case TAG_CONTENT:
                 if (addStructure != null && !((Map)addStructure).containsKey(TAG_NAME))
                     ((Map)addStructure).put(TAG_NAME, new NameAsDvText(contentItem.getName()).toMap()); //this fixes the issue with SECTION name
-                retMap = insert(null, contentItem, new NodeEncoding(tagMode).tag(TAG_CONTENT, contentItem, map), addStructure);
+                retMap = super.insert(contentItem, new NodeEncoding(tagMode).tag(TAG_CONTENT, contentItem, map), addStructure);
                 break;
             default:
                 retMap = map;
@@ -50,13 +70,13 @@ public class EntrySerialTree extends SerialTree {
         Map<String, Object> retMap;
         switch (attribute){
             case TAG_PROTOCOL:
-                retMap = insert(new SimpleClassName(observation).toString(), observation, new NodeEncoding(tagMode).tag(TAG_PROTOCOL, observation.getProtocol(), map), addStructure);
+                retMap = super.insert(observation, new NodeEncoding(tagMode).tag(TAG_PROTOCOL, observation.getProtocol(), map), addStructure);
                 break;
             case TAG_DATA:
-                retMap = insert(new SimpleClassName(observation).toString(), observation, new NodeEncoding(tagMode).tag(TAG_DATA, observation.getData(), map), addStructure);
+                retMap = super.insert(observation, new NodeEncoding(tagMode).tag(TAG_DATA, observation.getData(), map), addStructure);
                 break;
             case TAG_STATE:
-                retMap = insert(new SimpleClassName(observation).toString(), observation, new NodeEncoding(tagMode).tag(TAG_STATE, observation.getState(), map), addStructure);
+                retMap = super.insert(observation, new NodeEncoding(tagMode).tag(TAG_STATE, observation.getState(), map), addStructure);
                 break;
             default:
                 retMap = map;
@@ -69,10 +89,10 @@ public class EntrySerialTree extends SerialTree {
         Map<String, Object> retMap;
         switch (attribute){
             case TAG_PROTOCOL:
-                retMap = insert(new SimpleClassName(evaluation).toString(), evaluation, new NodeEncoding(tagMode).tag(TAG_PROTOCOL, evaluation.getProtocol(), map), addStructure);
+                retMap = super.insert(evaluation, new NodeEncoding(tagMode).tag(TAG_PROTOCOL, evaluation.getProtocol(), map), addStructure);
                 break;
             case TAG_DATA:
-                retMap = insert(new SimpleClassName(evaluation).toString(), evaluation, new NodeEncoding(tagMode).tag(TAG_DATA, evaluation.getData(), map), addStructure);
+                retMap = super.insert(evaluation, new NodeEncoding(tagMode).tag(TAG_DATA, evaluation.getData(), map), addStructure);
                 break;
             default:
                 retMap = map;
@@ -85,10 +105,10 @@ public class EntrySerialTree extends SerialTree {
         Map<String, Object> retMap;
         switch (attribute){
             case TAG_PROTOCOL:
-                retMap = insert(new SimpleClassName(instruction).toString(), instruction, new NodeEncoding(tagMode).tag(TAG_PROTOCOL, instruction.getProtocol(), map), addStructure);
+                retMap = super.insert(instruction, new NodeEncoding(tagMode).tag(TAG_PROTOCOL, instruction.getProtocol(), map), addStructure);
                 break;
             case TAG_ACTIVITIES:
-                retMap = insert(new SimpleClassName(instruction).toString(), instruction, TAG_ACTIVITIES, addStructure);
+                retMap = super.insert(instruction, TAG_ACTIVITIES, addStructure);
                 break;
             default:
                 retMap = map;
@@ -101,7 +121,7 @@ public class EntrySerialTree extends SerialTree {
         Map<String, Object> retMap;
         switch (attribute){
             case TAG_ACTIVITIES:
-                retMap = insert(new SimpleClassName(activity).toString(), activity, new NodeEncoding(tagMode).tag(TAG_ACTIVITIES, activity, map), addStructure);
+                retMap = super.insert(activity, new NodeEncoding(tagMode).tag(TAG_ACTIVITIES, activity, map), addStructure);
                 break;
             default:
                 retMap = map;
@@ -114,10 +134,10 @@ public class EntrySerialTree extends SerialTree {
         Map<String, Object> retMap;
         switch (attribute){
             case TAG_PROTOCOL:
-                retMap = insert(new SimpleClassName(action).toString(), action, new NodeEncoding(tagMode).tag(TAG_PROTOCOL, action.getProtocol(), map), addStructure);
+                retMap = super.insert(action, new NodeEncoding(tagMode).tag(TAG_PROTOCOL, action.getProtocol(), map), addStructure);
                 break;
             case TAG_DESCRIPTION:
-                retMap = insert(new SimpleClassName(action).toString(), action, new NodeEncoding(tagMode).tag(TAG_DATA, action.getDescription(), map), addStructure);
+                retMap = super.insert(action, new NodeEncoding(tagMode).tag(TAG_DESCRIPTION, action.getDescription(), map), addStructure);
                 break;
             default:
                 retMap = map;
@@ -126,14 +146,14 @@ public class EntrySerialTree extends SerialTree {
         return retMap;
     }
 
-    public Map<String, Object> insert(History history, String attribute, Object addStructure){
+    public Map<String, Object> insert(History<?> history, String attribute, Object addStructure){
         Map<String, Object> retMap;
         switch (attribute){
             case TAG_SUMMARY:
-                retMap = insert(new SimpleClassName(history).toString(), history, new NodeEncoding(tagMode).tag(TAG_SUMMARY, history, map), addStructure);
+                retMap = super.insert(history, new NodeEncoding(tagMode).tag(TAG_SUMMARY, history, map), addStructure);
                 break;
             case TAG_EVENTS:
-                retMap = insert(new SimpleClassName(history).toString(), history, new NodeEncoding(tagMode).tag(TAG_EVENTS, null, map), addStructure);
+                retMap = super.insert(history, new NodeEncoding(tagMode).tag(TAG_EVENTS, null, map), addStructure);
                 break;
             default:
                 retMap = map;
@@ -142,14 +162,14 @@ public class EntrySerialTree extends SerialTree {
         return retMap;
     }
 
-    public Map<String, Object> insert(Event event, String attribute, Object addStructure){
+    public Map<String, Object> insert(Event<?> event, String attribute, Object addStructure){
         Map<String, Object> retMap;
         switch (attribute){
             case TAG_DATA:
-                retMap = insert(new SimpleClassName(event).toString(), event, new NodeEncoding(tagMode).tag(TAG_DATA, event.getData(), map), addStructure);
+                retMap = super.insert(event, new NodeEncoding(tagMode).tag(TAG_DATA, event.getData(), map), addStructure);
                 break;
             case TAG_STATE:
-                retMap = insert(new SimpleClassName(event).toString(), event, new NodeEncoding(tagMode).tag(TAG_STATE, event.getState(), map), addStructure);
+                retMap = super.insert(event, new NodeEncoding(tagMode).tag(TAG_STATE, event.getState(), map), addStructure);
                 break;
             default:
                 retMap = map;

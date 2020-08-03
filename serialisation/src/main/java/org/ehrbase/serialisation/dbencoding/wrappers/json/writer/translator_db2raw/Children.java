@@ -23,8 +23,13 @@ import org.ehrbase.serialisation.dbencoding.CompositionSerializer;
 import org.ehrbase.serialisation.dbencoding.wrappers.json.I_DvTypeAdapter;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
+
+import static org.ehrbase.serialisation.dbencoding.CompositionSerializer.*;
 
 
 /**
@@ -39,7 +44,9 @@ public class Children {
     }
 
     public boolean isItemsOnly() {
-        boolean isItems = true;
+
+        if (linkedTreeMap.keySet().stream().filter(s -> s.startsWith(TAG_ITEMS)).collect(Collectors.toSet()).size() == 0)
+            return false;
 
         for (String key : linkedTreeMap.keySet()) {
             if (!key.startsWith(CompositionSerializer.TAG_ITEMS)
@@ -48,10 +55,10 @@ public class Children {
                     && !key.equals(CompositionSerializer.TAG_ARCHETYPE_NODE_ID)
                     && !key.equals(I_DvTypeAdapter.AT_CLASS)
                     && !key.equals(CompositionSerializer.TAG_CLASS)) {
-                isItems = false;
+               return  false;
             }
         }
-        return isItems;
+        return true;
     }
 
     public int itemsCount() {
@@ -78,10 +85,14 @@ public class Children {
 
     //check for multiple items in content
     public boolean isMultiContent() {
+
+        if (!containsKeyStartingWith(TAG_CONTENT))
+            return false;
+
         int contents = 0;
 
         for (String key : linkedTreeMap.keySet()) {
-            if (key.startsWith(CompositionSerializer.TAG_CONTENT)) {
+            if (key.startsWith(TAG_CONTENT)) {
                 contents++;
             }
         }
@@ -92,7 +103,7 @@ public class Children {
         int contents = 0;
 
         for (String key : linkedTreeMap.keySet()) {
-            if (key.startsWith(CompositionSerializer.TAG_CONTENT)) {
+            if (key.startsWith(TAG_CONTENT)) {
                 contents++;
             }
         }
@@ -111,6 +122,9 @@ public class Children {
     }
 
     public boolean isEvents() {
+        if (linkedTreeMap.keySet().stream().filter(s -> s.startsWith(TAG_EVENTS)).collect(Collectors.toSet()).size() == 0)
+            return false;
+
         int isEvents = 0;
 
         for (String key : linkedTreeMap.keySet()) {
@@ -170,7 +184,7 @@ public class Children {
         ArrayList contents = new ArrayList();
 
         for (String key : linkedTreeMap.keySet()) {
-            if (key.startsWith(CompositionSerializer.TAG_CONTENT))
+            if (key.startsWith(TAG_CONTENT))
                 contents.add(linkedTreeMap.get(key));
 
         }
@@ -179,14 +193,15 @@ public class Children {
     }
 
     public LinkedTreeMap removeContents() {
-        String key = linkedTreeMap.keySet().iterator().next();
-        while (key != null) {
-            if (key.startsWith(CompositionSerializer.TAG_CONTENT))
-                linkedTreeMap.remove(key);
-            if (linkedTreeMap.keySet().size() == 0)
-                break;
-            key = linkedTreeMap.keySet().iterator().next();
+        LinkedTreeMap retMap = new LinkedTreeMap();
+        for (String key: linkedTreeMap.keySet()) {
+            if (!key.startsWith(TAG_CONTENT))
+                retMap.put(key, linkedTreeMap.get(key));
         }
-        return linkedTreeMap;
+        return retMap;
+    }
+
+    private boolean containsKeyStartingWith(String key){
+       return linkedTreeMap.keySet().stream().filter(s -> s.startsWith(key)).collect(Collectors.toSet()).size() > 0;
     }
 }

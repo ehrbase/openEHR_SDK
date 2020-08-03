@@ -15,25 +15,25 @@
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
-package org.ehrbase.serialisation.attributes;
+package org.ehrbase.serialisation.dbencoding.rmobject;
 
-import com.nedap.archie.rm.archetyped.Locatable;
-import org.ehrbase.serialisation.dbencoding.CompositionSerializer;
-import org.ehrbase.serialisation.dbencoding.ItemStack;
+import com.nedap.archie.rm.archetyped.FeederAudit;
+import org.ehrbase.serialisation.attributes.FeederAuditAttributes;
 
 import java.util.Map;
 
-import static org.ehrbase.serialisation.dbencoding.CompositionSerializer.*;
 /**
- * populate the attributes for RM ItemStructure
+ * Encode/decode a FeederAudit object as a json structure.
+ * Should be used to support FeederAudit at DB level (f.e. Composition Entry)
  */
-public class ItemStructureAttributes extends DataStructureAttributes {
+public class FeederAuditEncoding extends RMObjectEncoding{
 
-    public ItemStructureAttributes(CompositionSerializer compositionSerializer, ItemStack itemStack, Map<String, Object> map) {
-        super(compositionSerializer, itemStack, map);
+    public String toDB(FeederAudit feederAudit) {
+        Map<String, Object> objectMap = new FeederAuditAttributes(feederAudit).toMap();
+        return super.toDB(objectMap);
     }
 
-    public Map<String, Object> toMap(Locatable locatable) {
-        return super.toMap(locatable);
+    public FeederAudit fromDB(String dbJonRepresentation) {
+        return (FeederAudit)super.fromDB(FeederAudit.class, dbJonRepresentation);
     }
 }
