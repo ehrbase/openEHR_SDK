@@ -16,23 +16,23 @@ workflows:
   # WORKFLOW 1/4) Build & Test the SDK
   build_and_test_SDK:
     jobs:
-      # - build-openEHR_SDK:
-      #     filters:
-      #       branches:
-      #         ignore:
-      #           - master
-      #           - develop
-      #           - release
+      - build-openEHR_SDK:
+          filters:
+            branches:
+              ignore:
+                - master
+                - develop
+                - release
 
-      # - build-EHRbase:
-      #     requires:
-      #       - build-openEHR_SDK
-      #     filters:
-      #       branches:
-      #         ignore:
-      #           - master
-      #           - develop
-      #           - release
+      - build-EHRbase:
+          requires:
+            - build-openEHR_SDK
+          filters:
+            branches:
+              ignore:
+                - master
+                - develop
+                - release
 
       # - COMPOSITION-tests-1:
       #     context: org-global
@@ -144,16 +144,16 @@ workflows:
       #           - develop
       #           - release
 
-      # - QUERYSERVICE-tests-2:
-      #     context: org-global
-      #     requires:
-      #       - build-EHRbase
-      #     filters:
-      #       branches:
-      #         ignore:
-      #           - master
-      #           - develop
-      #           - release
+      - QUERYSERVICE-tests-2:
+          context: org-global
+          requires:
+            - build-EHRbase
+          filters:
+            branches:
+              ignore:
+                - master
+                - develop
+                - release
 
       # - ROBOT-TEST-REPORT:
       #     context: org-global
