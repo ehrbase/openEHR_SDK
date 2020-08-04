@@ -131,7 +131,12 @@ public class LinkedTreeMapAdapter extends TypeAdapter<LinkedTreeMap<String, Obje
                         writeNode((LinkedTreeMap) map.get(key), writer);
                         writer.endObject();
                     } else
-                        writer.name(key).value((String) map.get(key));
+                        if (map.get(key) instanceof ArrayList){ //due to using multimap
+                            ArrayList arrayList = (ArrayList)map.get(key);
+                            writer.name(key).value(arrayList.get(0).toString());
+                        }
+                        else
+                            writer.name(key).value((String) map.get(key));
                     map.remove(key);
                 } else {
                     if (isNodePredicate(key)) {
