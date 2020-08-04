@@ -28,7 +28,7 @@ public class HistoryIntrospectConfig implements RmIntrospectConfig {
     private static final Set<String> FIELDS = Stream.of("origin").collect(Collectors.toSet());
 
     @Override
-    public Class getRMClass() {
+    public Class getAssociatedClass() {
         return History.class;
     }
 

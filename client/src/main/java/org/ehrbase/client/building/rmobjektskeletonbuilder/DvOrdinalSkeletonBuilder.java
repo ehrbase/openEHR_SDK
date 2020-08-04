@@ -26,7 +26,7 @@ import org.openehr.schemas.v1.DVORDINAL;
 
 public class DvOrdinalSkeletonBuilder implements RmObjektSkeletonBuilder<CDVORDINAL, DvOrdinal> {
     @Override
-    public Class<CDVORDINAL> getXmlClass() {
+    public Class<CDVORDINAL> getAssociatedClass() {
         return CDVORDINAL.class;
     }
 

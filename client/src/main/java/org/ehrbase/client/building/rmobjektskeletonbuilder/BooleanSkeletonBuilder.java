@@ -21,7 +21,7 @@ import org.openehr.schemas.v1.CBOOLEAN;
 
 public class BooleanSkeletonBuilder implements RmObjektSkeletonBuilder<CBOOLEAN, Boolean> {
     @Override
-    public Class<CBOOLEAN> getXmlClass() {
+    public Class<CBOOLEAN> getAssociatedClass() {
         return CBOOLEAN.class;
     }
 

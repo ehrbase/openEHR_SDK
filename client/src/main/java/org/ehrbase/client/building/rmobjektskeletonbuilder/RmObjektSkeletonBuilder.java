@@ -18,10 +18,10 @@
 package org.ehrbase.client.building.rmobjektskeletonbuilder;
 
 import org.apache.xmlbeans.XmlObject;
+import org.ehrbase.client.reflection.ClassDependent;
 
-public interface RmObjektSkeletonBuilder<T extends XmlObject, R> {
+public interface RmObjektSkeletonBuilder<T extends XmlObject, R> extends ClassDependent<T> {
 
-    Class<T> getXmlClass();
 
     R getRmObjekt(T xml);
 

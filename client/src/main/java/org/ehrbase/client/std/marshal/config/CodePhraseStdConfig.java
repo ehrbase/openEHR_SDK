@@ -38,7 +38,7 @@ public class CodePhraseStdConfig extends AbstractsStdConfig<CodePhrase> {
     }
 
     @Override
-    public Class<CodePhrase> getRMClass() {
+    public Class<CodePhrase> getAssociatedClass() {
         return CodePhrase.class;
     }
 

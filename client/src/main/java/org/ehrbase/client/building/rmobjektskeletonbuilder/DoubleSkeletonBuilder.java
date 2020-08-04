@@ -21,7 +21,7 @@ import org.openehr.schemas.v1.CREAL;
 
 public class DoubleSkeletonBuilder implements RmObjektSkeletonBuilder<CREAL, Double> {
     @Override
-    public Class<CREAL> getXmlClass() {
+    public Class<CREAL> getAssociatedClass() {
         return CREAL.class;
     }
 

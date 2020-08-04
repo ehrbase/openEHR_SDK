@@ -21,7 +21,7 @@ import org.openehr.schemas.v1.CSTRING;
 
 public class StringSkeletonBuilder implements RmObjektSkeletonBuilder<CSTRING, String> {
     @Override
-    public Class<CSTRING> getXmlClass() {
+    public Class<CSTRING> getAssociatedClass() {
         return CSTRING.class;
     }
 

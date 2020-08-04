@@ -28,7 +28,7 @@ import java.util.Map;
 public class PartySelfStdConfig extends AbstractsStdConfig<PartySelf> {
 
     @Override
-    public Class<PartySelf> getRMClass() {
+    public Class<PartySelf> getAssociatedClass() {
         return PartySelf.class;
     }
 

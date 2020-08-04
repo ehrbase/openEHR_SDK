@@ -25,7 +25,7 @@ import java.util.Map;
 
 public class PartyIdentifiedRMUnmarshaller extends AbstractRMUnmarshaller<PartyIdentified> {
     @Override
-    public Class<PartyIdentified> getRMClass() {
+    public Class<PartyIdentified> getAssociatedClass() {
         return PartyIdentified.class;
     }
 

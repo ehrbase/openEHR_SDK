@@ -22,7 +22,7 @@ import org.openehr.schemas.v1.CDATE;
 
 public class DvDateSkeletonBuilder implements RmObjektSkeletonBuilder<CDATE, DvDate> {
     @Override
-    public Class<CDATE> getXmlClass() {
+    public Class<CDATE> getAssociatedClass() {
         return CDATE.class;
     }
 

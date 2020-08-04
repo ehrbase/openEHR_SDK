@@ -39,7 +39,7 @@ public class CompositionPostprozessor extends AbstractPostprozessor<Composition>
     }
 
     @Override
-    public Class<Composition> getRMClass() {
+    public Class<Composition> getAssociatedClass() {
         return Composition.class;
     }
 }

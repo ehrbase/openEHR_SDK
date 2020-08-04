@@ -26,7 +26,7 @@ public class ItemTreeIntrospectConfig implements RmIntrospectConfig {
 
 
     @Override
-    public Class getRMClass() {
+    public Class getAssociatedClass() {
         return ItemTree.class;
     }
 

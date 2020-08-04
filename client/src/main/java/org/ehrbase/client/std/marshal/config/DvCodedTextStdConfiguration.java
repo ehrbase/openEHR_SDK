@@ -28,7 +28,7 @@ import java.util.Map;
 
 public class DvCodedTextStdConfiguration extends AbstractsStdConfig<DvCodedText> {
     @Override
-    public Class<DvCodedText> getRMClass() {
+    public Class<DvCodedText> getAssociatedClass() {
         return DvCodedText.class;
     }
 

@@ -33,14 +33,13 @@ import org.ehrbase.client.introspect.node.ChoiceNode;
 import org.ehrbase.client.introspect.node.EndNode;
 import org.ehrbase.client.introspect.node.EntityNode;
 import org.ehrbase.client.introspect.node.Node;
+import org.ehrbase.client.reflection.ReflectionHelper;
 import org.ehrbase.client.std.marshal.config.DefaultStdConfig;
 import org.ehrbase.client.std.marshal.config.StdConfig;
 import org.ehrbase.client.std.marshal.postprozesor.Postprozessor;
 import org.ehrbase.serialisation.jsonencoding.JacksonUtil;
 import org.ehrbase.serialisation.util.SnakeCase;
-import org.reflections.Reflections;
 
-import java.lang.reflect.Modifier;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -52,8 +51,8 @@ public class FlatJsonMarshaller {
 
     public static final DefaultStdConfig DEFAULT_STD_CONFIG = new DefaultStdConfig();
     private static final ObjectMapper OBJECT_MAPPER = JacksonUtil.getObjectMapper();
-    private static final Map<Class, StdConfig<?>> configMap = buildConfigMap();
-    private static final Map<Class, Postprozessor<?>> POSTPROCESSOR_MAP = buildPostprozessorMap();
+    private static final Map<Class<? extends RMObject>, StdConfig> configMap = ReflectionHelper.buildMap(StdConfig.class);
+    private static final Map<Class<? extends RMObject>, Postprozessor> POSTPROCESSOR_MAP = ReflectionHelper.buildMap(Postprozessor.class);
 
     private final TemplateIntrospect introspect;
 
@@ -61,40 +60,10 @@ public class FlatJsonMarshaller {
         this.introspect = introspect;
     }
 
-    public static Map<Class, StdConfig<?>> buildConfigMap() {
-
-        Reflections reflections = new Reflections(StdConfig.class.getPackage().getName());
-        Set<Class<? extends StdConfig>> configs = reflections.getSubTypesOf(StdConfig.class);
-
-        return configs.stream()
-                .filter(c -> !Modifier.isAbstract(c.getModifiers()))
-                .map(c -> {
-                    try {
-                        return c.getConstructor().newInstance();
-                    } catch (Exception e) {
-                        throw new ClientException(e.getMessage(), e);
-                    }
-                }).collect(Collectors.toMap(StdConfig::getRMClass, c -> c));
-    }
-
-    private static Map<Class, Postprozessor<?>> buildPostprozessorMap() {
-        Reflections reflections = new Reflections(Postprozessor.class.getPackage().getName());
-        Set<Class<? extends Postprozessor>> configs = reflections.getSubTypesOf(Postprozessor.class);
-
-        return configs.stream()
-                .filter(c -> !Modifier.isAbstract(c.getModifiers()))
-                .map(c -> {
-                    try {
-                        return c.getConstructor().newInstance();
-                    } catch (Exception e) {
-                        throw new ClientException(e.getMessage(), e);
-                    }
-                }).collect(Collectors.toMap(Postprozessor::getRMClass, c -> c));
-    }
 
     public String toFlatJson(Composition composition) {
 
-        Map<String, Object> result = new HashMap<>(handelEntityNode(new Context<>(introspect.getRootName(), "", composition, "", introspect.getRoot(), null)));
+        Map<String, Object> result = new HashMap<>(handleEntityNode(new Context<>(introspect.getRootName(), "", composition, "", introspect.getRoot(), null)));
 
         try {
             return OBJECT_MAPPER.writeValueAsString(result);
@@ -103,7 +72,7 @@ public class FlatJsonMarshaller {
         }
     }
 
-    Map<String, Object> handelEntityNode(Context<EntityNode, Locatable> context) {
+    Map<String, Object> handleEntityNode(Context<EntityNode, Locatable> context) {
         Map<String, Object> result = new HashMap<>();
 
         final String term;
@@ -118,12 +87,12 @@ public class FlatJsonMarshaller {
 
         }
 
-        List<Postprozessor> postprozessor = Stream.concat(Stream.of(context.getCurrentObject().getClass()), ClassUtils.getAllSuperclasses(context.getCurrentObject().getClass()).stream())
+        List<Postprozessor> postprocessor = Stream.concat(Stream.of(context.getCurrentObject().getClass()), ClassUtils.getAllSuperclasses(context.getCurrentObject().getClass()).stream())
                 .map(POSTPROCESSOR_MAP::get)
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
 
-        postprozessor.forEach(p -> p.prozess(term, context.getCurrentObject(), result));
+        postprocessor.forEach(p -> p.prozess(term, context.getCurrentObject(), result));
 
         return result;
     }
@@ -146,7 +115,7 @@ public class FlatJsonMarshaller {
         } else if (context.getNode() instanceof EntityNode) {
 
             Object child = new ItemExtractor(context.getCurrentObject(), context.getPathToNode(), ((EntityNode) context.getNode()).isMulti()).getChild();
-            result.putAll(handleMulti(new Context<>(termLoop, pathloop, child, "", (EntityNode) context.getNode(), null), this::handelEntityNode));
+            result.putAll(handleMulti(new Context<>(termLoop, pathloop, child, "", (EntityNode) context.getNode(), null), this::handleEntityNode));
 
         } else if (context.getNode() instanceof ChoiceNode) {
 

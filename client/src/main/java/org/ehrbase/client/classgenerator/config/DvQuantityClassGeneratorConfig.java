@@ -28,7 +28,7 @@ public class DvQuantityClassGeneratorConfig implements RmClassGeneratorConfig {
     private static final Set<String> FIELDS = Stream.of("units", "magnitude").collect(Collectors.toSet());
 
     @Override
-    public Class getRMClass() {
+    public Class getAssociatedClass() {
         return DvQuantity.class;
     }
 

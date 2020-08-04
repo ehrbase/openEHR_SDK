@@ -24,7 +24,7 @@ import org.openehr.schemas.v1.CODEPHRASE;
 
 public class CodePhraseSkeletonBuilder implements RmObjektSkeletonBuilder<CCODEPHRASE, CodePhrase> {
     @Override
-    public Class<CCODEPHRASE> getXmlClass() {
+    public Class<CCODEPHRASE> getAssociatedClass() {
         return CCODEPHRASE.class;
     }
 

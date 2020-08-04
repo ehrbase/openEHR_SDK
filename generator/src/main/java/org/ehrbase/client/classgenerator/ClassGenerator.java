@@ -34,16 +34,15 @@ import org.apache.commons.text.CaseUtils;
 import org.apache.xmlbeans.XmlException;
 import org.ehrbase.client.annotations.*;
 import org.ehrbase.client.classgenerator.config.RmClassGeneratorConfig;
-import org.ehrbase.client.exception.ClientException;
 import org.ehrbase.client.flattener.PathExtractor;
 import org.ehrbase.client.introspect.TemplateIntrospect;
 import org.ehrbase.client.introspect.node.*;
 import org.ehrbase.client.openehrclient.VersionUid;
+import org.ehrbase.client.reflection.ReflectionHelper;
 import org.ehrbase.client.terminology.ValueSet;
 import org.ehrbase.serialisation.util.SnakeCase;
 import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
 import org.openehr.schemas.v1.TemplateDocument;
-import org.reflections.Reflections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -61,9 +60,9 @@ public class ClassGenerator {
     private static final ArchieRMInfoLookup RM_INFO_LOOKUP = ArchieRMInfoLookup.getInstance();
     public static final String ABBREV_MARKER = "_";
     public static final int CLASS_NAME_MAX_WIDTH = 80;
+    private static final Map<Class<?>, RmClassGeneratorConfig> configMap = ReflectionHelper.buildMap(RmClassGeneratorConfig.class);
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
-    private final Map<Class, RmClassGeneratorConfig> configMap;
 
 
     private Map<String, Integer> currentFieldNameMap = new HashMap<>();
@@ -76,10 +75,6 @@ public class ClassGenerator {
     private String currentMainClass;
     private String currentArchetypeName = "";
 
-
-    public ClassGenerator() {
-        configMap = buildConfigMap();
-    }
 
     private static String normalise(String name, boolean capitalizeFirstLetter) {
         if (StringUtils.isBlank(name) || name.equals("_")) {
@@ -132,19 +127,6 @@ public class ClassGenerator {
 
         System.exit(0);
 
-    }
-
-    private Map<Class, RmClassGeneratorConfig> buildConfigMap() {
-        Reflections reflections = new Reflections(RmClassGeneratorConfig.class.getPackage().getName());
-        Set<Class<? extends RmClassGeneratorConfig>> configs = reflections.getSubTypesOf(RmClassGeneratorConfig.class);
-
-        return configs.stream().map(c -> {
-            try {
-                return c.getConstructor().newInstance();
-            } catch (Exception e) {
-                throw new ClientException(e.getMessage(), e);
-            }
-        }).collect(Collectors.toMap(RmClassGeneratorConfig::getRMClass, c -> c));
     }
 
     public ClassGeneratorResult generate(String packageName, OPERATIONALTEMPLATE operationalTemplate) {

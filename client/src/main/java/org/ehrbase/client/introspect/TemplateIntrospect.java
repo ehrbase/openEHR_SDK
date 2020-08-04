@@ -32,22 +32,20 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.ehrbase.client.building.OptNameHelper;
-import org.ehrbase.client.exception.ClientException;
 import org.ehrbase.client.flatpath.FlatPath;
 import org.ehrbase.client.introspect.config.RmIntrospectConfig;
 import org.ehrbase.client.introspect.node.*;
+import org.ehrbase.client.reflection.ReflectionHelper;
 import org.ehrbase.client.terminology.TermDefinition;
 import org.ehrbase.client.terminology.TerminologyProvider;
 import org.ehrbase.client.terminology.ValueSet;
 import org.ehrbase.serialisation.util.SnakeCase;
 import org.openehr.schemas.v1.*;
 import org.reflections.ReflectionUtils;
-import org.reflections.Reflections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.*;
@@ -63,36 +61,19 @@ public class TemplateIntrospect {
     public static final String PATH_DIVIDER = "/";
     public static final String TERM_DIVIDER = "/";
     private static final ArchieRMInfoLookup RM_INFO_LOOKUP = ArchieRMInfoLookup.getInstance();
+    private static final Map<Class<?>, RmIntrospectConfig> configMap = ReflectionHelper.buildMap(RmIntrospectConfig.class);
+
     private final Logger log = LoggerFactory.getLogger(getClass());
 
-    private final Map<Class, RmIntrospectConfig> configMap;
     private final OPERATIONALTEMPLATE operationaltemplate;
     private final ArchetypeNode root;
     private String rootName;
 
 
     public TemplateIntrospect(OPERATIONALTEMPLATE operationaltemplate) {
-
         this.operationaltemplate = operationaltemplate;
-        configMap = buildConfigMap();
         root = buildNodeMap();
 
-    }
-
-    public static Map<Class, RmIntrospectConfig> buildConfigMap() {
-
-        Reflections reflections = new Reflections(RmIntrospectConfig.class.getPackage().getName());
-        Set<Class<? extends RmIntrospectConfig>> configs = reflections.getSubTypesOf(RmIntrospectConfig.class);
-
-        return configs.stream()
-                .filter(c -> !Modifier.isAbstract(c.getModifiers()))
-                .map(c -> {
-                    try {
-                        return c.getConstructor().newInstance();
-                    } catch (Exception e) {
-                        throw new ClientException(e.getMessage(), e);
-                    }
-                }).collect(Collectors.toMap(RmIntrospectConfig::getRMClass, c -> c));
     }
 
 

@@ -27,7 +27,7 @@ public class DvDurationClassGeneratorConfig implements RmClassGeneratorConfig {
     private static final Set<String> FIELDS = Stream.of("value").collect(Collectors.toSet());
 
     @Override
-    public Class getRMClass() {
+    public Class getAssociatedClass() {
         return DvDuration.class;
     }
 

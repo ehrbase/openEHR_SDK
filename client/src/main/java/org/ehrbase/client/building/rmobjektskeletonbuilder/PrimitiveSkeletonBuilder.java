@@ -20,7 +20,7 @@ import org.openehr.schemas.v1.CPRIMITIVEOBJECT;
 
 public class PrimitiveSkeletonBuilder implements RmObjektSkeletonBuilder<CPRIMITIVEOBJECT, Object> {
     @Override
-    public Class<CPRIMITIVEOBJECT> getXmlClass() {
+    public Class<CPRIMITIVEOBJECT> getAssociatedClass() {
         return CPRIMITIVEOBJECT.class;
     }
 

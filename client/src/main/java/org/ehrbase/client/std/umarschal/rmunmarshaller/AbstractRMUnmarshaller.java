@@ -25,8 +25,8 @@ import com.nedap.archie.rm.RMObject;
 import org.apache.commons.lang3.StringUtils;
 import org.ehrbase.client.classgenerator.config.RmClassGeneratorConfig;
 import org.ehrbase.client.exception.ClientException;
+import org.ehrbase.client.reflection.ReflectionHelper;
 import org.ehrbase.serialisation.jsonencoding.JacksonUtil;
-import org.reflections.Reflections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,29 +37,15 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
-import java.util.stream.Collectors;
 
 public abstract class AbstractRMUnmarshaller<T extends RMObject> implements RMUnmarshaller<T> {
 
     private static final ObjectMapper OBJECT_MAPPER = JacksonUtil.getObjectMapper();
-    private static final Map<Class, RmClassGeneratorConfig> configMap = buildConfigMap();
+    private static final Map<Class<?>, RmClassGeneratorConfig> configMap = ReflectionHelper.buildMap(RmClassGeneratorConfig.class);
     private final Logger log = LoggerFactory.getLogger(getClass());
 
     protected final Set<String> consumedPath = new HashSet<>();
 
-
-    private static Map<Class, RmClassGeneratorConfig> buildConfigMap() {
-        Reflections reflections = new Reflections(RmClassGeneratorConfig.class.getPackage().getName());
-        Set<Class<? extends RmClassGeneratorConfig>> configs = reflections.getSubTypesOf(RmClassGeneratorConfig.class);
-
-        return configs.stream().map(c -> {
-            try {
-                return c.getConstructor().newInstance();
-            } catch (Exception e) {
-                throw new ClientException(e.getMessage(), e);
-            }
-        }).collect(Collectors.toMap(RmClassGeneratorConfig::getRMClass, c -> c));
-    }
 
     @Override
     public void handle(String termLoop, T child, Map<String, String> values) {

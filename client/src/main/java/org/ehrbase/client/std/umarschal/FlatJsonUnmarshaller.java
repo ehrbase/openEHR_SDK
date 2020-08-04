@@ -41,6 +41,7 @@ import org.ehrbase.client.flattener.ItemExtractor;
 import org.ehrbase.client.introspect.TemplateIntrospect;
 import org.ehrbase.client.introspect.node.*;
 import org.ehrbase.client.normalizer.Normalizer;
+import org.ehrbase.client.reflection.ReflectionHelper;
 import org.ehrbase.client.std.marshal.config.DefaultStdConfig;
 import org.ehrbase.client.std.marshal.config.StdConfig;
 import org.ehrbase.client.std.umarschal.postprozessor.Postprozessor;
@@ -50,12 +51,10 @@ import org.ehrbase.serialisation.jsonencoding.CanonicalJson;
 import org.ehrbase.serialisation.jsonencoding.JacksonUtil;
 import org.ehrbase.serialisation.util.SnakeCase;
 import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
-import org.reflections.Reflections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Modifier;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
@@ -66,7 +65,9 @@ import static org.ehrbase.client.introspect.TemplateIntrospect.TERM_DIVIDER;
 public class FlatJsonUnmarshaller {
 
     public static final DefaultStdConfig DEFAULT_STD_CONFIG = new DefaultStdConfig();
-    private static final Map<Class, StdConfig<?>> configMap = buildConfigMap();
+    private static final Map<Class<?>, StdConfig> configMap = ReflectionHelper.buildMap(StdConfig.class);
+    private static final Map<Class<?>, RMUnmarshaller> UNMARSHALLER_MAP = ReflectionHelper.buildMap(RMUnmarshaller.class);
+    private static final Map<Class<?>, Postprozessor> POSTPROCESSOR_MAP = ReflectionHelper.buildMap(Postprozessor.class);
     private static final ObjectMapper OBJECT_MAPPER = JacksonUtil.getObjectMapper();
     public static final OptSkeletonBuilder OPT_SKELETON_BUILDER = new OptSkeletonBuilder();
     public static final ArchieRMInfoLookup ARCHIE_RM_INFO_LOOKUP = ArchieRMInfoLookup.getInstance();
@@ -77,56 +78,8 @@ public class FlatJsonUnmarshaller {
 
     private Set<String> consumedPath;
 
-    private static final Map<Class, RMUnmarshaller<?>> UNMARSHALLER_MAP = buildUnmarshallerMap();
-    private static final Map<Class, Postprozessor<?>> POSTPROCESSOR_MAP = buildPostprozessorMap();
-    private Map<String, String> curentValues;
 
-
-    public static Map<Class, StdConfig<?>> buildConfigMap() {
-
-        Reflections reflections = new Reflections(StdConfig.class.getPackage().getName());
-        Set<Class<? extends StdConfig>> configs = reflections.getSubTypesOf(StdConfig.class);
-
-        return configs.stream()
-                .filter(c -> !Modifier.isAbstract(c.getModifiers()))
-                .map(c -> {
-                    try {
-                        return c.getConstructor().newInstance();
-                    } catch (Exception e) {
-                        throw new ClientException(e.getMessage(), e);
-                    }
-                }).collect(Collectors.toMap(StdConfig::getRMClass, c -> c));
-    }
-
-    private static Map<Class, RMUnmarshaller<?>> buildUnmarshallerMap() {
-        Reflections reflections = new Reflections(RMUnmarshaller.class.getPackage().getName());
-        Set<Class<? extends RMUnmarshaller>> configs = reflections.getSubTypesOf(RMUnmarshaller.class);
-
-        return configs.stream()
-                .filter(c -> !Modifier.isAbstract(c.getModifiers()))
-                .map(c -> {
-                    try {
-                        return c.getConstructor().newInstance();
-                    } catch (Exception e) {
-                        throw new ClientException(e.getMessage(), e);
-                    }
-                }).collect(Collectors.toMap(RMUnmarshaller::getRMClass, c -> c));
-    }
-
-    private static Map<Class, Postprozessor<?>> buildPostprozessorMap() {
-        Reflections reflections = new Reflections(Postprozessor.class.getPackage().getName());
-        Set<Class<? extends Postprozessor>> configs = reflections.getSubTypesOf(Postprozessor.class);
-
-        return configs.stream()
-                .filter(c -> !Modifier.isAbstract(c.getModifiers()))
-                .map(c -> {
-                    try {
-                        return c.getConstructor().newInstance();
-                    } catch (Exception e) {
-                        throw new ClientException(e.getMessage(), e);
-                    }
-                }).collect(Collectors.toMap(Postprozessor::getRMClass, c -> c));
-    }
+    private Map<String, String> currentValues;
 
 
     public Composition unmarshal(String flat, TemplateIntrospect introspect, OPERATIONALTEMPLATE operationalTemplate) {
@@ -136,15 +89,15 @@ public class FlatJsonUnmarshaller {
 
         try {
 
-            curentValues = new HashMap<>();
+            currentValues = new HashMap<>();
             for (Iterator<Map.Entry<String, JsonNode>> it = OBJECT_MAPPER.readTree(flat).fields(); it.hasNext(); ) {
                 Map.Entry<String, JsonNode> e = it.next();
-                curentValues.put(e.getKey(), e.getValue().toString());
+                currentValues.put(e.getKey(), e.getValue().toString());
 
             }
             ArchetypeNode root = introspect.getRoot();
 
-            handleEntityNode(new Context<>(root.getName(), "", generate, "", root, curentValues, null));
+            handleEntityNode(new Context<>(root.getName(), "", generate, "", root, currentValues, null));
 
         } catch (JsonProcessingException e) {
             throw new ClientException(e.getMessage());
@@ -155,8 +108,8 @@ public class FlatJsonUnmarshaller {
     }
 
     public Set<String> getUnconsumed() {
-        if (curentValues != null && consumedPath != null) {
-            HashSet<String> set = new HashSet<>(curentValues.keySet());
+        if (currentValues != null && consumedPath != null) {
+            HashSet<String> set = new HashSet<>(currentValues.keySet());
             set.removeAll(consumedPath);
             return set;
         } else {

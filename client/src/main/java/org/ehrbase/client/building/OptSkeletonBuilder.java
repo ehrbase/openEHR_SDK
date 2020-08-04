@@ -46,11 +46,11 @@ import org.apache.xmlbeans.XmlObject;
 import org.ehrbase.client.building.rmobjektskeletonbuilder.RmObjektSkeletonBuilder;
 import org.ehrbase.client.introspect.TemplateIntrospect;
 import org.ehrbase.client.introspect.config.RmIntrospectConfig;
+import org.ehrbase.client.reflection.ReflectionHelper;
 import org.ehrbase.serialisation.util.SnakeCase;
 import org.ehrbase.terminology.openehr.implementation.LocalizedTerminologies;
 import org.openehr.schemas.v1.*;
 import org.reflections.ReflectionUtils;
-import org.reflections.Reflections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -59,7 +59,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class OptSkeletonBuilder {
 
@@ -75,29 +74,10 @@ public class OptSkeletonBuilder {
         }
     }
 
+    private static final Map<Class<?>, RmIntrospectConfig> configMap = ReflectionHelper.buildMap(RmIntrospectConfig.class);
+    private static final Map<Class<?>, RmObjektSkeletonBuilder> builderMap = ReflectionHelper.buildMap(RmObjektSkeletonBuilder.class);
+
     private final Logger log = LoggerFactory.getLogger(getClass());
-    private final Map<Class, RmIntrospectConfig> configMap;
-
-
-    private final Map<Class, RmObjektSkeletonBuilder> builderMap;
-
-    public OptSkeletonBuilder() {
-        configMap = TemplateIntrospect.buildConfigMap();
-        builderMap = buildBuilderMap();
-    }
-
-    private static Map<Class, RmObjektSkeletonBuilder> buildBuilderMap() {
-        Reflections reflections = new Reflections(RmObjektSkeletonBuilder.class.getPackage().getName());
-        Set<Class<? extends RmObjektSkeletonBuilder>> configs = reflections.getSubTypesOf(RmObjektSkeletonBuilder.class);
-
-        return configs.stream().map(c -> {
-            try {
-                return c.getConstructor().newInstance();
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        }).collect(Collectors.toMap(RmObjektSkeletonBuilder::getXmlClass, c -> c));
-    }
 
 
     private Object buildSkeletonForTerminalRmObjekts(XmlObject cpo) {
@@ -263,7 +243,7 @@ public class OptSkeletonBuilder {
                     .forEach(f -> {
                         try {
 
-                           final Object value;
+                            final Object value;
                             if (f.getType().equals(PartyProxy.class)) {
                                 value = new PartyIdentified();
                             } else if (List.class.isAssignableFrom(f.getType())) {

@@ -22,7 +22,7 @@ import org.openehr.schemas.v1.CDATETIME;
 
 public class DvDateTimeSkeletonBuilder implements RmObjektSkeletonBuilder<CDATETIME, DvDateTime> {
     @Override
-    public Class<CDATETIME> getXmlClass() {
+    public Class<CDATETIME> getAssociatedClass() {
         return CDATETIME.class;
     }
 

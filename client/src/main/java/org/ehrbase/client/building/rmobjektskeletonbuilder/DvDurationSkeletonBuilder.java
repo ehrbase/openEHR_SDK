@@ -22,7 +22,7 @@ import org.openehr.schemas.v1.CDURATION;
 
 public class DvDurationSkeletonBuilder implements RmObjektSkeletonBuilder<CDURATION, DvDuration> {
     @Override
-    public Class<CDURATION> getXmlClass() {
+    public Class<CDURATION> getAssociatedClass() {
         return CDURATION.class;
     }
 

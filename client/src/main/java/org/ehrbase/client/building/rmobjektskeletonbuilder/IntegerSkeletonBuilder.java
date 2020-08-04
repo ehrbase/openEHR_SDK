@@ -21,7 +21,7 @@ import org.openehr.schemas.v1.CINTEGER;
 
 public class IntegerSkeletonBuilder implements RmObjektSkeletonBuilder<CINTEGER, Integer> {
     @Override
-    public Class<CINTEGER> getXmlClass() {
+    public Class<CINTEGER> getAssociatedClass() {
         return CINTEGER.class;
     }
 

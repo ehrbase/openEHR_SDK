@@ -23,7 +23,7 @@ import org.openehr.schemas.v1.DVQUANTITY;
 
 public class DvQuantitySkeletonBuilder implements RmObjektSkeletonBuilder<CDVQUANTITY, DvQuantity> {
     @Override
-    public Class<CDVQUANTITY> getXmlClass() {
+    public Class<CDVQUANTITY> getAssociatedClass() {
         return CDVQUANTITY.class;
     }
 

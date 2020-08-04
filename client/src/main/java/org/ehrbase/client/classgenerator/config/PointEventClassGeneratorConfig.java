@@ -25,7 +25,7 @@ import java.util.Set;
 public class PointEventClassGeneratorConfig implements RmClassGeneratorConfig {
 
     @Override
-    public Class getRMClass() {
+    public Class getAssociatedClass() {
         return PointEvent.class;
     }
 

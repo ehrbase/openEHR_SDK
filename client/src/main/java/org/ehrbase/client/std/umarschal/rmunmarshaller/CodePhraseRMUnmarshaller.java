@@ -27,7 +27,7 @@ import java.util.Map;
 public class CodePhraseRMUnmarshaller extends AbstractRMUnmarshaller<CodePhrase> {
 
     @Override
-    public Class<CodePhrase> getRMClass() {
+    public Class<CodePhrase> getAssociatedClass() {
         return CodePhrase.class;
     }
 

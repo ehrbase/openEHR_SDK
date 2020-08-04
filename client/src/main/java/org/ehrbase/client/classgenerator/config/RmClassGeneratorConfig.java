@@ -20,12 +20,13 @@
 package org.ehrbase.client.classgenerator.config;
 
 import org.apache.commons.collections4.CollectionUtils;
+import org.ehrbase.client.reflection.ClassDependent;
 
 import java.util.Set;
 
-public interface RmClassGeneratorConfig {
+public interface RmClassGeneratorConfig extends ClassDependent<Object> {
 
-    Class getRMClass();
+    Class getAssociatedClass();
 
     default boolean isExpandField() {
         return CollectionUtils.isNotEmpty(getExpandFields());

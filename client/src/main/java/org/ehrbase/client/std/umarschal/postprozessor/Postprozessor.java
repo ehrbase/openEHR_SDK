@@ -20,15 +20,16 @@
 package org.ehrbase.client.std.umarschal.postprozessor;
 
 import com.nedap.archie.rm.RMObject;
+import org.ehrbase.client.reflection.ClassDependent;
 
 import java.util.Map;
 import java.util.Set;
 
-public interface Postprozessor<T extends RMObject> {
+public interface Postprozessor<T extends RMObject> extends ClassDependent<T> {
 
     void prozess(String term, T rmObject, Map<String, String> values);
 
     Set<String> getConsumedPaths();
 
-    Class<T> getRMClass();
+    Class<T> getAssociatedClass();
 }

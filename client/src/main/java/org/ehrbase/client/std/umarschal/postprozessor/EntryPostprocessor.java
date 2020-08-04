@@ -51,7 +51,7 @@ public class EntryPostprocessor extends AbstractPostprozessor<Entry> {
 
 
     @Override
-    public Class<Entry> getRMClass() {
+    public Class<Entry> getAssociatedClass() {
         return Entry.class;
     }
 }

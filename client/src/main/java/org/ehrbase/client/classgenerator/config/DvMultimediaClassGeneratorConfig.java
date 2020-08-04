@@ -25,7 +25,7 @@ import java.util.Set;
 public class DvMultimediaClassGeneratorConfig implements RmClassGeneratorConfig {
 
     @Override
-    public Class getRMClass() {
+    public Class getAssociatedClass() {
         return DvMultimedia.class;
     }
 

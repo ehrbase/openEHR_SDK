@@ -28,7 +28,7 @@ public class PointEventIntrospectConfig implements RmIntrospectConfig {
     private static final Set<String> FIELDS = Stream.of("time").collect(Collectors.toSet());
 
     @Override
-    public Class getRMClass() {
+    public Class getAssociatedClass() {
         return PointEvent.class;
     }
 

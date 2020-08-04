@@ -52,7 +52,7 @@ public class ObservationPostprocessor extends AbstractPostprozessor<Observation>
 
 
     @Override
-    public Class<Observation> getRMClass() {
+    public Class<Observation> getAssociatedClass() {
         return Observation.class;
     }
 }

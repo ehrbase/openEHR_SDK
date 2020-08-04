@@ -17,14 +17,14 @@
 
 package org.ehrbase.client.introspect.config;
 
+import org.ehrbase.client.reflection.ClassDependent;
 import org.ehrbase.client.terminology.ValueSet;
 
 import java.util.Collections;
 import java.util.Set;
 
-public interface RmIntrospectConfig {
+public interface RmIntrospectConfig extends ClassDependent<Object> {
 
-    Class getRMClass();
 
     Set<String> getNonTemplateFields();
 

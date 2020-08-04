@@ -28,7 +28,7 @@ public class ActionIntrospectConfig extends CareEntryIntrospectConfig implements
     private static final Set<String> FIELDS = Stream.of("time").collect(Collectors.toSet());
 
     @Override
-    public Class getRMClass() {
+    public Class getAssociatedClass() {
         return Action.class;
     }
 

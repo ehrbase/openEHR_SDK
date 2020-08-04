@@ -23,7 +23,7 @@ import com.nedap.archie.rm.RMObject;
 
 public class DefaultRMUnmarshaller extends AbstractRMUnmarshaller<RMObject> {
     @Override
-    public Class<RMObject> getRMClass() {
+    public Class<RMObject> getAssociatedClass() {
         return RMObject.class;
     }
 }

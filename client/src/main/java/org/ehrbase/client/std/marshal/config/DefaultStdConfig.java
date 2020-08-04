@@ -24,7 +24,7 @@ import com.nedap.archie.rm.RMObject;
 public class DefaultStdConfig extends AbstractsStdConfig<RMObject> {
 
     @Override
-    public Class<RMObject> getRMClass() {
+    public Class<RMObject> getAssociatedClass() {
         return RMObject.class;
     }
 

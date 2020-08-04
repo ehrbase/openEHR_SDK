@@ -25,7 +25,7 @@ import java.util.Set;
 public class DvOrdinalClassGeneratorConfig implements RmClassGeneratorConfig {
 
     @Override
-    public Class getRMClass() {
+    public Class getAssociatedClass() {
         return DvOrdinal.class;
     }
 

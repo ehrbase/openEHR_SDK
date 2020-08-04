@@ -55,7 +55,7 @@ public class ObservationPostprocessor implements Postprozessor<Observation> {
     }
 
     @Override
-    public Class<Observation> getRMClass() {
+    public Class<Observation> getAssociatedClass() {
         return Observation.class;
     }
 }

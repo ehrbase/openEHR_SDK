@@ -10,7 +10,7 @@ public class DVCountClassGeneratorConfig implements RmClassGeneratorConfig {
     private static final Set<String> FIELDS = Stream.of("magnitude").collect(Collectors.toSet());
 
     @Override
-    public Class getRMClass() {
+    public Class getAssociatedClass() {
         return DvCount.class;
     }
 

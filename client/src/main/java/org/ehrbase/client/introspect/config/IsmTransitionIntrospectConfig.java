@@ -32,7 +32,7 @@ public class IsmTransitionIntrospectConfig implements RmIntrospectConfig {
     private static final Set<String> FIELDS = Stream.of("currentState", "transition").collect(Collectors.toSet());
 
     @Override
-    public Class getRMClass() {
+    public Class getAssociatedClass() {
         return IsmTransition.class;
     }
 

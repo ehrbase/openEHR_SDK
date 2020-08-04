@@ -26,7 +26,7 @@ public class DvParsableClassGeneratorConfig implements RmClassGeneratorConfig {
 
 
     @Override
-    public Class getRMClass() {
+    public Class getAssociatedClass() {
         return DvParsable.class;
     }
 

@@ -20,15 +20,15 @@
 package org.ehrbase.client.std.marshal.config;
 
 import com.nedap.archie.rm.RMObject;
+import org.ehrbase.client.reflection.ClassDependent;
 
 import java.util.List;
 import java.util.Map;
 
-public interface StdConfig<T extends RMObject> {
+public interface StdConfig<T extends RMObject> extends ClassDependent<T> {
 
     Map<String, Object> buildChildValues(String termLoop, T child);
 
-    Class<T> getRMClass();
 
     List<Integer> valueCount(Class<T> clazz);
 }

@@ -25,7 +25,7 @@ import java.util.Set;
 public class CodePhraseClassGeneratorConfig implements RmClassGeneratorConfig {
 
     @Override
-    public Class getRMClass() {
+    public Class getAssociatedClass() {
         return CodePhrase.class;
     }
 

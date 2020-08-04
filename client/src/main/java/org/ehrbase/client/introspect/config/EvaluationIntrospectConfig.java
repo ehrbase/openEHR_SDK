@@ -28,7 +28,7 @@ public class EvaluationIntrospectConfig extends CareEntryIntrospectConfig implem
     private static final Set<String> FIELDS = Stream.of("time").collect(Collectors.toSet());
 
     @Override
-    public Class getRMClass() {
+    public Class getAssociatedClass() {
         return Evaluation.class;
     }
 

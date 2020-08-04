@@ -26,7 +26,7 @@ public class PartyProxyClassGeneratorConfig implements RmClassGeneratorConfig {
 
 
     @Override
-    public Class getRMClass() {
+    public Class getAssociatedClass() {
         return PartyProxy.class;
     }
 

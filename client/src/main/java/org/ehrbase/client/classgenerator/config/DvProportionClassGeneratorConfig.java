@@ -25,7 +25,7 @@ import java.util.Set;
 public class DvProportionClassGeneratorConfig implements RmClassGeneratorConfig {
 
     @Override
-    public Class getRMClass() {
+    public Class getAssociatedClass() {
         return DvProportion.class;
     }
 

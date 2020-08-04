@@ -22,29 +22,15 @@ package org.ehrbase.client.std.marshal.config;
 import com.nedap.archie.rm.RMObject;
 import org.ehrbase.client.classgenerator.config.RmClassGeneratorConfig;
 import org.ehrbase.client.exception.ClientException;
-import org.reflections.Reflections;
+import org.ehrbase.client.reflection.ReflectionHelper;
 
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public abstract class AbstractsStdConfig<T extends RMObject> implements StdConfig<T> {
-    private static final Map<Class, RmClassGeneratorConfig> configMap = AbstractsStdConfig.buildConfigMap();
-
-    private static Map<Class, RmClassGeneratorConfig> buildConfigMap() {
-        Reflections reflections = new Reflections(RmClassGeneratorConfig.class.getPackage().getName());
-        Set<Class<? extends RmClassGeneratorConfig>> configs = reflections.getSubTypesOf(RmClassGeneratorConfig.class);
-
-        return configs.stream().map(c -> {
-            try {
-                return c.getConstructor().newInstance();
-            } catch (Exception e) {
-                throw new ClientException(e.getMessage(), e);
-            }
-        }).collect(Collectors.toMap(RmClassGeneratorConfig::getRMClass, c -> c));
-    }
+    private static final Map<Class<?>, RmClassGeneratorConfig> configMap = ReflectionHelper.buildMap(RmClassGeneratorConfig.class);
 
     @Override
     public Map<String, Object> buildChildValues(String termLoop, T child) {

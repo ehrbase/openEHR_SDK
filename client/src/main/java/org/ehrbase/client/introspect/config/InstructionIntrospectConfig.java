@@ -28,7 +28,7 @@ public class InstructionIntrospectConfig extends CareEntryIntrospectConfig imple
     private static final Set<String> FIELDS = Stream.of("narrative").collect(Collectors.toSet());
 
     @Override
-    public Class getRMClass() {
+    public Class getAssociatedClass() {
         return Instruction.class;
     }
 

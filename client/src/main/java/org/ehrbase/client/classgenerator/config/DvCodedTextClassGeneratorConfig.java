@@ -27,7 +27,7 @@ public class DvCodedTextClassGeneratorConfig implements RmClassGeneratorConfig {
     private static final Set<String> FIELDS = Stream.of("definingCode").collect(Collectors.toSet());
 
     @Override
-    public Class getRMClass() {
+    public Class getAssociatedClass() {
         return DvCodedText.class;
     }
 

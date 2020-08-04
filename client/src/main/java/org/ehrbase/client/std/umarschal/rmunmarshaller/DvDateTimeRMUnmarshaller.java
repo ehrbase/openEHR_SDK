@@ -28,7 +28,7 @@ import java.util.Map;
 public class DvDateTimeRMUnmarshaller extends AbstractRMUnmarshaller<DvDateTime> {
 
     @Override
-    public Class<DvDateTime> getRMClass() {
+    public Class<DvDateTime> getAssociatedClass() {
         return DvDateTime.class;
     }
 

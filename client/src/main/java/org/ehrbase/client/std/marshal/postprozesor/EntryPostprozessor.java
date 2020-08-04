@@ -33,7 +33,7 @@ public class EntryPostprozessor implements Postprozessor<Entry> {
     }
 
     @Override
-    public Class<Entry> getRMClass() {
+    public Class<Entry> getAssociatedClass() {
         return Entry.class;
     }
 }

@@ -27,7 +27,7 @@ public class DvItemStructureClassGeneratorConfig implements RmClassGeneratorConf
     private static final Set<String> FIELDS = Stream.of("value").collect(Collectors.toSet());
 
     @Override
-    public Class getRMClass() {
+    public Class getAssociatedClass() {
         return ItemSingle.class;
     }
 

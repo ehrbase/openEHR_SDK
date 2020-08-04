@@ -17,18 +17,9 @@
  *
  */
 
-package org.ehrbase.client.std.umarschal.rmunmarshaller;
+package org.ehrbase.client.reflection;
 
-import com.nedap.archie.rm.RMObject;
-import org.ehrbase.client.reflection.ClassDependent;
+public interface ClassDependent<T> {
 
-import java.util.Map;
-import java.util.Set;
-
-public interface RMUnmarshaller<T extends RMObject> extends ClassDependent<T> {
-
-    void handle(String termLoop, T child, Map<String, String> values);
-
-    Set<String> getConsumedPaths();
-
+    Class<T> getAssociatedClass();
 }

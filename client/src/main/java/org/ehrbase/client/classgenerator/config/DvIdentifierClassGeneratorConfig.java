@@ -26,7 +26,7 @@ public class DvIdentifierClassGeneratorConfig implements RmClassGeneratorConfig 
 
 
     @Override
-    public Class getRMClass() {
+    public Class getAssociatedClass() {
         return DvIdentifier.class;
     }
 
