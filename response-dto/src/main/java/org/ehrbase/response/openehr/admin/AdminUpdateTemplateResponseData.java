@@ -17,8 +17,10 @@
  */
 package org.ehrbase.response.openehr.admin;
 
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 import org.ehrbase.response.openehr.ResponseData;
 
+@JacksonXmlRootElement(localName = "template")
 public class AdminUpdateTemplateResponseData implements ResponseData<String> {
 
     private String template;
