@@ -25,7 +25,7 @@ public class AdminUpdateTemplateResponseData implements ResponseData<String> {
 
     private String template;
 
-    AdminUpdateTemplateResponseData(String template) {
+    public AdminUpdateTemplateResponseData(String template) {
         this.template = template;
     }
 
