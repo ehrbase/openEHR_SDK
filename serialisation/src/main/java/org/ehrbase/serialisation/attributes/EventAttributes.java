@@ -46,7 +46,7 @@ public class EventAttributes extends LocatableAttributes {
         }
 
 
-        if (event.getTime() != null && event.getTime().equals(new DvDateTime())) {
+        if (event.getTime() != null) {
             map = toMap(TAG_TIME, event.getTime(), event.getName());
         }
 
