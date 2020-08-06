@@ -99,8 +99,8 @@ public class DefaultRestAqlEndpointTestIT {
         assertThat(result).
                 extracting(objectVersionIdOffsetDateTimeRecord2 -> objectVersionIdOffsetDateTimeRecord2.value1(), Record2::value2)
                 .containsExactlyInAnyOrder(
-                        new Tuple(22d, OffsetDateTime.of(2019, 04, 04, 00, 00, 00, 00, ZoneOffset.UTC)),
-                        new Tuple(22d, OffsetDateTime.of(2019, 04, 04, 00, 00, 00, 00, ZoneOffset.UTC))
+                        new Tuple(22d, OffsetDateTime.of(2019, 04, 03, 22, 00, 00, 00, ZoneOffset.UTC)),
+                        new Tuple(22d, OffsetDateTime.of(2019, 04, 03, 22, 00, 00, 00, ZoneOffset.UTC))
                 );
 
     }
@@ -121,8 +121,8 @@ public class DefaultRestAqlEndpointTestIT {
         assertThat(result).
                 extracting(objectVersionIdOffsetDateTimeRecord2 -> objectVersionIdOffsetDateTimeRecord2.value1().toString(), Record2::value2)
                 .containsExactlyInAnyOrder(
-                        new Tuple(comp1.getVersionUid().toString(), OffsetDateTime.of(2019, 04, 04, 00, 00, 00, 00, ZoneOffset.UTC)),
-                        new Tuple(comp2.getVersionUid().toString(), OffsetDateTime.of(2019, 04, 04, 00, 00, 00, 00, ZoneOffset.UTC))
+                        new Tuple(comp1.getVersionUid().toString(), OffsetDateTime.of(2019, 04, 03, 22, 00, 00, 00, ZoneOffset.UTC)),
+                        new Tuple(comp2.getVersionUid().toString(), OffsetDateTime.of(2019, 04, 03, 22, 00, 00, 00, ZoneOffset.UTC))
                 );
 
     }
@@ -155,7 +155,7 @@ public class DefaultRestAqlEndpointTestIT {
         assertThat(actual).size().isEqualTo(2);
 
         Record3<TemporalAccessor, BloodPressureTrainingSampleObservation, CuffSizeDefiningcode> record1 = actual.get(0);
-        assertThat(record1.value1()).isEqualTo(OffsetDateTime.of(2019, 04, 04, 00, 00, 00, 00, ZoneOffset.UTC));
+        assertThat(record1.value1()).isEqualTo(OffsetDateTime.of(2019, 04, 03, 22, 00, 00, 00, ZoneOffset.UTC));
         assertThat(record1.value2().getKorotkoffSoundsDefiningcode()).isEqualTo(KorotkoffSoundsDefiningcode.FIFTH_SOUND);
         assertThat(record1.value3()).isEqualTo(CuffSizeDefiningcode.ADULT);
 
