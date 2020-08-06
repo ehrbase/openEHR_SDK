@@ -15,27 +15,27 @@ public class EpisodeofcareDiagnosisCluster {
     @Path("/items[at0019]/value")
     private DvEHRURI diagnosisEntry;
 
-    public Long getRankMagnitude() {
-        return this.rankMagnitude;
-    }
-
     public void setRankMagnitude(Long rankMagnitude) {
         this.rankMagnitude = rankMagnitude;
     }
 
-    public String getRoleValue() {
-        return this.roleValue;
+    public Long getRankMagnitude() {
+        return this.rankMagnitude;
     }
 
     public void setRoleValue(String roleValue) {
         this.roleValue = roleValue;
     }
 
-    public DvEHRURI getDiagnosisEntry() {
-        return this.diagnosisEntry;
+    public String getRoleValue() {
+        return this.roleValue;
     }
 
     public void setDiagnosisEntry(DvEHRURI diagnosisEntry) {
         this.diagnosisEntry = diagnosisEntry;
+    }
+
+    public DvEHRURI getDiagnosisEntry() {
+        return this.diagnosisEntry;
     }
 }

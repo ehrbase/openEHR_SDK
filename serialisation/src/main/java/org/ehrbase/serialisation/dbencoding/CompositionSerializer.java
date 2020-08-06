@@ -114,6 +114,7 @@ public class CompositionSerializer {
     public static final DvText NO_NAME = null;
 
 
+
     public CompositionSerializer() {
         this.tagMode = WalkerOutputMode.PATH;
     }

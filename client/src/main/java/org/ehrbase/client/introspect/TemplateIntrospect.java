@@ -266,7 +266,7 @@ public class TemplateIntrospect {
     }
 
     private ValueSet buildTermSet(COBJECT cobject, Map<String, TermDefinition> termDef) {
-        final ValueSet valueSet;
+        ValueSet valueSet;
         if (cobject instanceof CCODEPHRASE) {
 
             CCODEPHRASE ccodephrase = (CCODEPHRASE) cobject;
@@ -275,8 +275,18 @@ public class TemplateIntrospect {
                 valueSet = new ValueSet(terminologyId, Arrays.stream(ccodephrase.getCodeListArray()).filter(termDef::containsKey).map(termDef::get).collect(Collectors.toSet()));
             } else if (StringUtils.isNotBlank(terminologyId)) {
                 valueSet = TerminologyProvider.findOpenEhrValueSet(terminologyId, ccodephrase.getCodeListArray());
+                String id = valueSet.getId();
+                if (valueSet.getTherms().stream().map(TermDefinition::getCode).anyMatch(termDef::containsKey)) {
+                    id = id + ":local";
+                }
+                Set<TermDefinition> termDefinitions = valueSet.getTherms().stream()
+                        .map(t -> termDef.getOrDefault(t.getCode(), t)).collect(Collectors.toSet());
+
+                valueSet = new ValueSet(id, termDefinitions);
             } else {
                 valueSet = EMPTY_VALUE_SET;
+
+
             }
         } else {
             valueSet = EMPTY_VALUE_SET;

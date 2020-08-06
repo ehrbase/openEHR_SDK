@@ -10,11 +10,11 @@ public class BodyTemperatureBodyExposureDvtextState implements BodyTemperatureBo
     @Path("|value")
     private String bodyExposureValue;
 
-    public String getBodyExposureValue() {
-        return this.bodyExposureValue;
-    }
-
     public void setBodyExposureValue(String bodyExposureValue) {
         this.bodyExposureValue = bodyExposureValue;
+    }
+
+    public String getBodyExposureValue() {
+        return this.bodyExposureValue;
     }
 }

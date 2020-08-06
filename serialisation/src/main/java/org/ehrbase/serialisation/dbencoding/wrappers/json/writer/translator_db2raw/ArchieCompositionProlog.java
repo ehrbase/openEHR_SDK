@@ -20,9 +20,11 @@ package org.ehrbase.serialisation.dbencoding.wrappers.json.writer.translator_db2
 
 public class ArchieCompositionProlog {
     String compositionRoot;
+    String compositionName;
 
-    public ArchieCompositionProlog(String compositionRoot) {
+    public ArchieCompositionProlog(String compositionRoot, String compositionName) {
         this.compositionRoot = compositionRoot;
+        this.compositionName = compositionName;
     }
 
     public String toString() {
@@ -32,7 +34,6 @@ public class ArchieCompositionProlog {
             return "";
 
         String archetypeNodeId = predicate;
-        String name = compositionRoot.substring(compositionRoot.indexOf("=") + 1, compositionRoot.indexOf("]")).replace("'", "");
 
         StringBuffer prolog = new StringBuffer();
         prolog.append("{");
@@ -40,7 +41,7 @@ public class ArchieCompositionProlog {
         prolog.append("\"_type\":").append("\"COMPOSITION\"").append(",");
         prolog.append("\"name\" : {\n" +
                 "    \"_type\" : \"DV_TEXT\",\n" +
-                "    \"value\" : ").append("\"").append(name).append("\"").append("}").append(",");
+                "    \"value\" : ").append("\"").append(compositionName).append("\"").append("}").append(",");
 
         return prolog.toString();
     }

@@ -74,48 +74,44 @@ public class TestAllTypesEnV1Composition {
         this.versionUid = versionUid;
     }
 
-    public TemporalAccessor getEndTimeValue() {
-        return this.endTimeValue;
-    }
-
     public void setEndTimeValue(TemporalAccessor endTimeValue) {
         this.endTimeValue = endTimeValue;
     }
 
-    public List<Participation> getParticipations() {
-        return this.participations;
+    public TemporalAccessor getEndTimeValue() {
+        return this.endTimeValue;
     }
 
     public void setParticipations(List<Participation> participations) {
         this.participations = participations;
     }
 
-    public Language getLanguage() {
-        return this.language;
+    public List<Participation> getParticipations() {
+        return this.participations;
     }
 
     public void setLanguage(Language language) {
         this.language = language;
     }
 
-    public PartyIdentified getHealthCareFacility() {
-        return this.healthCareFacility;
+    public Language getLanguage() {
+        return this.language;
     }
 
     public void setHealthCareFacility(PartyIdentified healthCareFacility) {
         this.healthCareFacility = healthCareFacility;
     }
 
-    public Territory getTerritory() {
-        return this.territory;
+    public PartyIdentified getHealthCareFacility() {
+        return this.healthCareFacility;
     }
 
     public void setTerritory(Territory territory) {
         this.territory = territory;
     }
 
-    public ContextCodedTextDefiningcode getContextCodedTextDefiningcode() {
-        return this.contextCodedTextDefiningcode;
+    public Territory getTerritory() {
+        return this.territory;
     }
 
     public void setContextCodedTextDefiningcode(
@@ -123,24 +119,24 @@ public class TestAllTypesEnV1Composition {
         this.contextCodedTextDefiningcode = contextCodedTextDefiningcode;
     }
 
-    public TemporalAccessor getStartTimeValue() {
-        return this.startTimeValue;
+    public ContextCodedTextDefiningcode getContextCodedTextDefiningcode() {
+        return this.contextCodedTextDefiningcode;
     }
 
     public void setStartTimeValue(TemporalAccessor startTimeValue) {
         this.startTimeValue = startTimeValue;
     }
 
-    public List<TestAllTypesEvaluation> getTestAllTypes() {
-        return this.testAllTypes;
+    public TemporalAccessor getStartTimeValue() {
+        return this.startTimeValue;
     }
 
     public void setTestAllTypes(List<TestAllTypesEvaluation> testAllTypes) {
         this.testAllTypes = testAllTypes;
     }
 
-    public List<TestAllTypesSection> getTestAllTypesContentOpenehrEhrSectionTestAllTypesV1() {
-        return this.testAllTypesContentOpenehrEhrSectionTestAllTypesV1;
+    public List<TestAllTypesEvaluation> getTestAllTypes() {
+        return this.testAllTypes;
     }
 
     public void setTestAllTypesContentOpenehrEhrSectionTestAllTypesV1(
@@ -148,24 +144,24 @@ public class TestAllTypesEnV1Composition {
         this.testAllTypesContentOpenehrEhrSectionTestAllTypesV1 = testAllTypesContentOpenehrEhrSectionTestAllTypesV1;
     }
 
-    public PartyProxy getComposer() {
-        return this.composer;
+    public List<TestAllTypesSection> getTestAllTypesContentOpenehrEhrSectionTestAllTypesV1() {
+        return this.testAllTypesContentOpenehrEhrSectionTestAllTypesV1;
     }
 
     public void setComposer(PartyProxy composer) {
         this.composer = composer;
     }
 
-    public SettingDefiningcode getSettingDefiningcode() {
-        return this.settingDefiningcode;
+    public PartyProxy getComposer() {
+        return this.composer;
     }
 
     public void setSettingDefiningcode(SettingDefiningcode settingDefiningcode) {
         this.settingDefiningcode = settingDefiningcode;
     }
 
-    public List<TestAllTypesObservation> getTestAllTypesContentOpenehrEhrObservationTestAllTypesV1() {
-        return this.testAllTypesContentOpenehrEhrObservationTestAllTypesV1;
+    public SettingDefiningcode getSettingDefiningcode() {
+        return this.settingDefiningcode;
     }
 
     public void setTestAllTypesContentOpenehrEhrObservationTestAllTypesV1(
@@ -173,19 +169,23 @@ public class TestAllTypesEnV1Composition {
         this.testAllTypesContentOpenehrEhrObservationTestAllTypesV1 = testAllTypesContentOpenehrEhrObservationTestAllTypesV1;
     }
 
-    public String getLocation() {
-        return this.location;
+    public List<TestAllTypesObservation> getTestAllTypesContentOpenehrEhrObservationTestAllTypesV1() {
+        return this.testAllTypesContentOpenehrEhrObservationTestAllTypesV1;
     }
 
     public void setLocation(String location) {
         this.location = location;
     }
 
-    public CategoryDefiningcode getCategoryDefiningcode() {
-        return this.categoryDefiningcode;
+    public String getLocation() {
+        return this.location;
     }
 
     public void setCategoryDefiningcode(CategoryDefiningcode categoryDefiningcode) {
         this.categoryDefiningcode = categoryDefiningcode;
+    }
+
+    public CategoryDefiningcode getCategoryDefiningcode() {
+        return this.categoryDefiningcode;
     }
 }

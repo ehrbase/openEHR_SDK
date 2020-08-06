@@ -18,16 +18,12 @@ public class TestAllTypesSection {
     @Path("/items[at0001]/items[openEHR-EHR-ADMIN_ENTRY.test_all_types.v1]")
     private List<TestAllTypesAdminEntry> testAllTypesItemsOpenehrEhrAdminEntryTestAllTypesV1;
 
-    public List<TestAllTypesAction> getTestAllTypes() {
-        return this.testAllTypes;
-    }
-
     public void setTestAllTypes(List<TestAllTypesAction> testAllTypes) {
         this.testAllTypes = testAllTypes;
     }
 
-    public List<TestAllTypesInstruction> getTestAllTypesItemsOpenehrEhrInstructionTestAllTypesV1() {
-        return this.testAllTypesItemsOpenehrEhrInstructionTestAllTypesV1;
+    public List<TestAllTypesAction> getTestAllTypes() {
+        return this.testAllTypes;
     }
 
     public void setTestAllTypesItemsOpenehrEhrInstructionTestAllTypesV1(
@@ -35,12 +31,16 @@ public class TestAllTypesSection {
         this.testAllTypesItemsOpenehrEhrInstructionTestAllTypesV1 = testAllTypesItemsOpenehrEhrInstructionTestAllTypesV1;
     }
 
-    public List<TestAllTypesAdminEntry> getTestAllTypesItemsOpenehrEhrAdminEntryTestAllTypesV1() {
-        return this.testAllTypesItemsOpenehrEhrAdminEntryTestAllTypesV1;
+    public List<TestAllTypesInstruction> getTestAllTypesItemsOpenehrEhrInstructionTestAllTypesV1() {
+        return this.testAllTypesItemsOpenehrEhrInstructionTestAllTypesV1;
     }
 
     public void setTestAllTypesItemsOpenehrEhrAdminEntryTestAllTypesV1(
             List<TestAllTypesAdminEntry> testAllTypesItemsOpenehrEhrAdminEntryTestAllTypesV1) {
         this.testAllTypesItemsOpenehrEhrAdminEntryTestAllTypesV1 = testAllTypesItemsOpenehrEhrAdminEntryTestAllTypesV1;
+    }
+
+    public List<TestAllTypesAdminEntry> getTestAllTypesItemsOpenehrEhrAdminEntryTestAllTypesV1() {
+        return this.testAllTypesItemsOpenehrEhrAdminEntryTestAllTypesV1;
     }
 }

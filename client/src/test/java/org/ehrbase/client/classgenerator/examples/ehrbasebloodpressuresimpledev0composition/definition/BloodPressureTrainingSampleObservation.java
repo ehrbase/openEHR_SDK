@@ -76,48 +76,44 @@ public class BloodPressureTrainingSampleObservation {
     @Path("/protocol[at0011]/items[at0014]/value|defining_code")
     private LocationOfMeasurementDefiningcode locationOfMeasurementDefiningcode;
 
-    public List<Cluster> getDevice() {
-        return this.device;
-    }
-
     public void setDevice(List<Cluster> device) {
         this.device = device;
     }
 
-    public Language getLanguage() {
-        return this.language;
+    public List<Cluster> getDevice() {
+        return this.device;
     }
 
     public void setLanguage(Language language) {
         this.language = language;
     }
 
-    public List<Cluster> getLevelOfExertion() {
-        return this.levelOfExertion;
+    public Language getLanguage() {
+        return this.language;
     }
 
     public void setLevelOfExertion(List<Cluster> levelOfExertion) {
         this.levelOfExertion = levelOfExertion;
     }
 
-    public String getCommentValue() {
-        return this.commentValue;
+    public List<Cluster> getLevelOfExertion() {
+        return this.levelOfExertion;
     }
 
     public void setCommentValue(String commentValue) {
         this.commentValue = commentValue;
     }
 
-    public CuffSizeDefiningcode getCuffSizeDefiningcode() {
-        return this.cuffSizeDefiningcode;
+    public String getCommentValue() {
+        return this.commentValue;
     }
 
     public void setCuffSizeDefiningcode(CuffSizeDefiningcode cuffSizeDefiningcode) {
         this.cuffSizeDefiningcode = cuffSizeDefiningcode;
     }
 
-    public KorotkoffSoundsDefiningcode getKorotkoffSoundsDefiningcode() {
-        return this.korotkoffSoundsDefiningcode;
+    public CuffSizeDefiningcode getCuffSizeDefiningcode() {
+        return this.cuffSizeDefiningcode;
     }
 
     public void setKorotkoffSoundsDefiningcode(
@@ -125,124 +121,128 @@ public class BloodPressureTrainingSampleObservation {
         this.korotkoffSoundsDefiningcode = korotkoffSoundsDefiningcode;
     }
 
-    public Double getSystolicMagnitude() {
-        return this.systolicMagnitude;
+    public KorotkoffSoundsDefiningcode getKorotkoffSoundsDefiningcode() {
+        return this.korotkoffSoundsDefiningcode;
     }
 
     public void setSystolicMagnitude(Double systolicMagnitude) {
         this.systolicMagnitude = systolicMagnitude;
     }
 
-    public String getSystolicUnits() {
-        return this.systolicUnits;
+    public Double getSystolicMagnitude() {
+        return this.systolicMagnitude;
     }
 
     public void setSystolicUnits(String systolicUnits) {
         this.systolicUnits = systolicUnits;
     }
 
-    public Double getDiastolicMagnitude() {
-        return this.diastolicMagnitude;
+    public String getSystolicUnits() {
+        return this.systolicUnits;
     }
 
     public void setDiastolicMagnitude(Double diastolicMagnitude) {
         this.diastolicMagnitude = diastolicMagnitude;
     }
 
-    public String getDiastolicUnits() {
-        return this.diastolicUnits;
+    public Double getDiastolicMagnitude() {
+        return this.diastolicMagnitude;
     }
 
     public void setDiastolicUnits(String diastolicUnits) {
         this.diastolicUnits = diastolicUnits;
     }
 
-    public PositionDefiningcode getPositionDefiningcode() {
-        return this.positionDefiningcode;
+    public String getDiastolicUnits() {
+        return this.diastolicUnits;
     }
 
     public void setPositionDefiningcode(PositionDefiningcode positionDefiningcode) {
         this.positionDefiningcode = positionDefiningcode;
     }
 
-    public Double getTiltMagnitude() {
-        return this.tiltMagnitude;
+    public PositionDefiningcode getPositionDefiningcode() {
+        return this.positionDefiningcode;
     }
 
     public void setTiltMagnitude(Double tiltMagnitude) {
         this.tiltMagnitude = tiltMagnitude;
     }
 
-    public String getTiltUnits() {
-        return this.tiltUnits;
+    public Double getTiltMagnitude() {
+        return this.tiltMagnitude;
     }
 
     public void setTiltUnits(String tiltUnits) {
         this.tiltUnits = tiltUnits;
     }
 
-    public Double getMeanArterialPressureMagnitude() {
-        return this.meanArterialPressureMagnitude;
+    public String getTiltUnits() {
+        return this.tiltUnits;
     }
 
     public void setMeanArterialPressureMagnitude(Double meanArterialPressureMagnitude) {
         this.meanArterialPressureMagnitude = meanArterialPressureMagnitude;
     }
 
-    public String getMeanArterialPressureUnits() {
-        return this.meanArterialPressureUnits;
+    public Double getMeanArterialPressureMagnitude() {
+        return this.meanArterialPressureMagnitude;
     }
 
     public void setMeanArterialPressureUnits(String meanArterialPressureUnits) {
         this.meanArterialPressureUnits = meanArterialPressureUnits;
     }
 
-    public TemporalAccessor getTimeValue() {
-        return this.timeValue;
+    public String getMeanArterialPressureUnits() {
+        return this.meanArterialPressureUnits;
     }
 
     public void setTimeValue(TemporalAccessor timeValue) {
         this.timeValue = timeValue;
     }
 
-    public PartyProxy getSubject() {
-        return this.subject;
+    public TemporalAccessor getTimeValue() {
+        return this.timeValue;
     }
 
     public void setSubject(PartyProxy subject) {
         this.subject = subject;
     }
 
-    public TemporalAccessor getOriginValue() {
-        return this.originValue;
+    public PartyProxy getSubject() {
+        return this.subject;
     }
 
     public void setOriginValue(TemporalAccessor originValue) {
         this.originValue = originValue;
     }
 
-    public Double getPulsePressureMagnitude() {
-        return this.pulsePressureMagnitude;
+    public TemporalAccessor getOriginValue() {
+        return this.originValue;
     }
 
     public void setPulsePressureMagnitude(Double pulsePressureMagnitude) {
         this.pulsePressureMagnitude = pulsePressureMagnitude;
     }
 
-    public String getPulsePressureUnits() {
-        return this.pulsePressureUnits;
+    public Double getPulsePressureMagnitude() {
+        return this.pulsePressureMagnitude;
     }
 
     public void setPulsePressureUnits(String pulsePressureUnits) {
         this.pulsePressureUnits = pulsePressureUnits;
     }
 
-    public LocationOfMeasurementDefiningcode getLocationOfMeasurementDefiningcode() {
-        return this.locationOfMeasurementDefiningcode;
+    public String getPulsePressureUnits() {
+        return this.pulsePressureUnits;
     }
 
     public void setLocationOfMeasurementDefiningcode(
             LocationOfMeasurementDefiningcode locationOfMeasurementDefiningcode) {
         this.locationOfMeasurementDefiningcode = locationOfMeasurementDefiningcode;
+    }
+
+    public LocationOfMeasurementDefiningcode getLocationOfMeasurementDefiningcode() {
+        return this.locationOfMeasurementDefiningcode;
     }
 }
