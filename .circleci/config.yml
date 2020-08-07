@@ -24,6 +24,14 @@ workflows:
                 - develop
                 - release
 
+      - test-openEHR_SDK:
+          filters:
+            branches:
+              ignore:
+                - master
+                - develop
+                - release
+
       - build-EHRbase:
           requires:
             - build-openEHR_SDK
@@ -243,6 +251,7 @@ jobs:
 
 
   build-openEHR_SDK:
+    description: Build and unit test the SDK.
     executor: docker-python3-java11
     # executor: vm-ubuntu-1604                          # (use for pipeline debugging only)
     steps:
@@ -256,6 +265,25 @@ jobs:
       # - run: echo mock build SDK        # 
       # - cache-out-sdk-workspace         #
       # - cache-in-sdk-workspace          #
+  
+
+  test-openEHR_SDK:
+    description: Build and run openEHR_SDK's Java integration tests (w/ EHRbase + DB running).
+    executor: docker-py3-java11-postgres
+    steps:
+      - checkout
+      - cache-out-sdk-m2-dependencies
+      - build-sdk
+      - git-clone-ehrbase-repo
+      - cache-out-ehrbase-m2-dependencies
+      - force-ehrbase-to-use-local-sdk-version
+      - run-java-integration-tests-of-sdk
+      - cache-in-ehrbase-m2-dependencies      
+      - cache-in-sdk-m2-dependencies
+      - save-sdk-unittest-results
+      - save-sdk-integrationtest-results
+      - save-sdk-workspace
+
 
   run-static-code-analysis:
     description: |
@@ -453,6 +481,7 @@ jobs:
           test-suite-path: "QUERY_SERVICE_TESTS"
           test-suite-name: "ADHOC-QUERY-2"
 
+
   ROBOT-TEST-REPORT:
     executor: docker-py3-java11-postgres
     # executor: vm-ubuntu-1604                          # (use for pipeline debugging only)
@@ -518,7 +547,7 @@ commands:
 
   update-and-publish-snapshot-release-version:
     steps:
-      - run: sudo apt install maven -y
+      - install-maven
       - run:
           name: Update Snapshot Release Version
           command: |
@@ -583,7 +612,7 @@ commands:
 
   publish-release-version:
     steps:
-      - run: sudo apt install maven -y
+      - install-maven
       - run:
           name: Create and push release version tag
           command: |
@@ -636,15 +665,30 @@ commands:
 
 
 
+
   # ///////////////////////////////////////////////////////////////////////////
   # /// SDK COMMANDS                                                        ///
   # ///////////////////////////////////////////////////////////////////////////
   
+  build-sdk:
+    steps:
+      - install-maven
+      - run:
+          name: Maven build, install openEHR_SDK (skip Tests!)
+          command: mvn install -Dmaven.javadoc.skip=true -Dmaven.test.skip
+      - run:
+          name: Save the version number of locally installed SDK into a file
+          command: |
+            SDK_VERSION=$(mvn -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive exec:exec)
+            echo $SDK_VERSION > SDK_VERSION
+            cat SDK_VERSION
+
+
   build-and-test-sdk:
     steps:
-      - run: sudo apt install maven -y
+      - install-maven
       - run:
-          name: Maven build, test, install openEHR_SDK
+          name: Maven build, test (ONLY unit tests), install openEHR_SDK
           command: mvn install dependency:go-offline -Dmaven.javadoc.skip=true
       - run:
           name: Save the version number of locally installed SDK into a file
@@ -652,6 +696,45 @@ commands:
             SDK_VERSION=$(mvn -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive exec:exec)
             echo $SDK_VERSION > SDK_VERSION
             cat SDK_VERSION
+
+
+  build-and-integration-test-sdk:
+    steps:
+      - install-maven
+      - run:
+          name: Maven run only Java integration tests of openEHR_SDK
+          description: |
+            Runs maven test phase using 'slow' profile defined in parent pom.xml
+            This way only the Java integration tests are executed.
+          command: |
+            jps
+            mvn test -Pslow -Dmaven.javadoc.skip=true
+
+
+  run-java-integration-tests-of-sdk:
+    steps:
+      - install-maven
+      - run:
+          name: Maven build EHRbase
+          command: |
+            cd ~/projects/ehrbase
+            mvn package -Dmaven.javadoc.skip=true -Dmaven.test.skip
+      - run:
+          name: Start EHRbase server and run SDK's integration tests
+          description: |
+            Runs maven test phase using 'slow' profile defined in parent pom.xml
+            This way only the Java integration tests are executed.
+          command: |
+            ls -la
+            cd ~/projects/ehrbase
+            EHRbase_VERSION=$(mvn -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive exec:exec)
+            echo ${EHRbase_VERSION}
+            java -jar application/target/application-${EHRbase_VERSION}.jar --cache.enabled=false > log &
+            grep -m 1 "Started EhrBase in" <(tail -f log)
+            cd ..
+            jps
+            mvn test -Pslow -Dmaven.javadoc.skip=true
+
 
   cache-out-sdk-m2-dependencies:
     steps:
@@ -661,18 +744,43 @@ commands:
       - restore_cache:
           key: openEHR_SDK-
 
+
   cache-in-sdk-m2-dependencies:
     steps:
       - save_cache:
           key: openEHR_SDK-{{ checksum "/tmp/openEHR_SDK_maven_cache_seed" }}
           paths:
           - ~/.m2
-  
+
+
   save-sdk-unittest-results:
     steps:
+      - run:
+          name: Save unit test results
+          command: |
+            mkdir -p ~/test-results/unit/
+            find . -type f -regex ".*/target/surefire-reports/.*xml" -exec cp {} ~/test-results/unit/ \;
+          when: always
       - store_test_results:
-          path: client/target/surefire-reports
+          path: ~/test-results
+      - store_artifacts:
+          path: ~/test-results/unit
   
+
+  save-sdk-integrationtest-results:
+    steps:
+      - run:
+          name: Save integration test results
+          command: |
+            mkdir -p ~/test-results/integration/
+            find . -type f -regex ".*/target/surefire-reports/.*xml" -exec cp {} ~/test-results/integration/ \;
+          when: always
+      - store_test_results:
+          path: ~/test-results
+      - store_artifacts:
+          path: ~/test-results/integration
+  
+
   save-sdk-workspace:
     steps:
       - persist_to_workspace:
@@ -681,10 +789,13 @@ commands:
             - .m2
             - projects
 
+
   restore-sdk-workspace:
     steps:
       - attach_workspace:
           at: /home/circleci/
+
+
 
   # WARNING: don't use these two steps in production
   #          use them for pipeline debugging only!
@@ -715,14 +826,16 @@ commands:
             git clone git@github.com:ehrbase/ehrbase.git
             ls -la
   
+
   build-and-test-ehrbase:
     steps:
-      - run: sudo apt install maven -y
+      - install-maven
       - run:
           name: Maven build EHRbase
           command: |
             cd ~/projects/ehrbase
             mvn package dependency:go-offline -Dmaven.javadoc.skip=true
+
 
   cache-in-ehrbase-m2-dependencies:
     steps:
@@ -730,7 +843,8 @@ commands:
           key: EHRbase-{{ checksum "/tmp/EHRbase_maven_cache_seed" }}
           paths:
             - ~/.m2
-  
+
+
   cache-out-ehrbase-m2-dependencies:
     steps:
       - run:
@@ -739,12 +853,14 @@ commands:
       - restore_cache:
           key: EHRbase-
 
+
   save-ehrbase-workspace:
     steps:
     - persist_to_workspace:
         root: /home/circleci
         paths:
           - projects/ehrbase
+
 
   restore-ehrbase-workspace:
     description: Attach EHRbase repo containing target folder and tests back to workspace
@@ -753,6 +869,7 @@ commands:
       - attach_workspace:
           at: /home/circleci/
       - run: ls -la ehrbase
+
 
   force-ehrbase-to-use-local-sdk-version:
     steps:
@@ -764,7 +881,9 @@ commands:
             echo $SDK_VERSION
             cd ~/projects/ehrbase
             xmlstarlet edit --inplace -N my=http://maven.apache.org/POM/4.0.0 -u my:project/my:version -v $SDK_VERSION pom.xml
-    
+  
+
+
   # WARNING: don't use these two steps in production
   #          use them for pipeline debugging only!
   cache-in-ehrbase-workspace:
@@ -777,6 +896,22 @@ commands:
     steps:
       - restore_cache:
           key: ehrbase-workspace-cache-v3
+
+
+
+
+
+# ///////////////////////////////////////////////////////////////////////////
+# /// HELPER COMMANDS                                                    ///
+# ///////////////////////////////////////////////////////////////////////////
+
+  install-maven:
+    description: Install Maven tool only if it's not already installed
+    steps:
+      - run: 
+          name: Install Maven tool
+          command: |
+            [ -f /usr/bin/mvn ] && echo "Maven is already installed." || sudo apt install maven -y
 
 
 
@@ -799,7 +934,8 @@ commands:
     steps:
       # - openjdk-install/openjdk:    # (use w/ machine executor only)
       #     version: 11               #
-      - run: sudo apt install maven -y
+      # - run: sudo apt install maven -y
+      - install-maven
       - run:
           name: Start EHRbase server
           background: true
@@ -1042,7 +1178,7 @@ executors:
 
   vm-ubuntu-1604:
     working_directory: ~/projects
-    # working_directory: /mnt/ramdisk      # TODO: @wlad TEST THIS FOR POSIBLE
+    # working_directory: /mnt/ramdisk      # TODO: @wlad TEST THIS FOR POSSIBLE
     machine:                               #             SPEED IMPROVEMENT !!!
       image: ubuntu-1604:201903-01
 
