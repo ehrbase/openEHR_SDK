@@ -233,7 +233,9 @@ public class CompositionSerializer {
                     return prefix;
                 else {
                     String path = prefix + "[" + node.getArchetypeNodeId() + "]";
-                    if (!container.getClass().equals(MultiValueMap.class) && (!(path.startsWith(CompositionSerializer.TAG_DESCRIPTION)))) {
+                    if (!container.getClass().equals(MultiValueMap.class)
+                            && (!(path.startsWith(CompositionSerializer.TAG_DESCRIPTION)))
+                            && (!(path.startsWith(CompositionSerializer.TAG_COMPOSITION)))) {
                         if (path.contains("[openEHR-") || path.contains(CompositionSerializer.TAG_ACTIVITIES) || path.contains(CompositionSerializer.TAG_ITEMS) || path.contains(CompositionSerializer.TAG_EVENTS)) {
                             //expand name in key
                             String name = node.getName().getValue();

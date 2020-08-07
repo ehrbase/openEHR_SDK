@@ -58,6 +58,7 @@ public enum CompositionTestDataCanonicalJson {
         return getClass().getResourceAsStream("/composition/canonical_json/" + filename);
     }
 
+    @Override
     public String toString() {
         return this.description;
     }
