@@ -3,10 +3,11 @@ version: 2.1
 # OVERVIEW - What this CI pipeline does:
 # 1. build & (unit)test the SDK
 # 2. build & (unit)test EHRbase w/ SDK (as local dependency)
-# 3. run all integation tests suites
-#    - setup test environment
-#    - execute robot tests
-# 4. publish snapshot & release versions on jitpack.io
+# 3. run SDK's Java integration tests
+# 4. conduct (static) code analysis w/ Sonar scanner and send results to sonarcloud.io
+#    - this includes code coverage from unit & integration tests (written in Java)
+# 5. run Robot integation tests (from EHRbase's repo)
+# 6. publish snapshot & release versions on jitpack.io
 #    - after manually creating a release (via Github UI) based on one of these versions
 #    - jitpack will build related artifacts on demand
 
@@ -184,14 +185,17 @@ workflows:
                 - develop
                 - release
 
-      # - run-static-code-analysis:
-      #     context: org-global
-      #     filters:
-      #       branches:
-      #         ignore:
-      #           - master
-      #           - develop
-      #           - release
+      - run-static-code-analysis:
+          context: org-global
+          requires:
+            - build-openEHR_SDK
+            - test-openEHR_SDK
+          filters:
+            branches:
+              ignore:
+                - master
+                - develop
+                - release
 
 
 
@@ -280,7 +284,6 @@ jobs:
       - run-java-integration-tests-of-sdk
       - cache-in-ehrbase-m2-dependencies      
       - cache-in-sdk-m2-dependencies
-      - save-sdk-unittest-results
       - save-sdk-integrationtest-results
       - save-sdk-workspace
 
@@ -760,6 +763,7 @@ commands:
           command: |
             mkdir -p ~/test-results/unit/
             find . -type f -regex ".*/target/surefire-reports/.*xml" -exec cp {} ~/test-results/unit/ \;
+            find . -type f -regex ".*/target/surefire-reports/.*txt" -exec cp {} ~/test-results/integration/ \;
           when: always
       - store_test_results:
           path: ~/test-results
@@ -774,6 +778,7 @@ commands:
           command: |
             mkdir -p ~/test-results/integration/
             find . -type f -regex ".*/target/surefire-reports/.*xml" -exec cp {} ~/test-results/integration/ \;
+            find . -type f -regex ".*/target/surefire-reports/.*txt" -exec cp {} ~/test-results/integration/ \;
           when: always
       - store_test_results:
           path: ~/test-results
@@ -934,7 +939,6 @@ commands:
     steps:
       # - openjdk-install/openjdk:    # (use w/ machine executor only)
       #     version: 11               #
-      # - run: sudo apt install maven -y
       - install-maven
       - run:
           name: Start EHRbase server
@@ -1171,7 +1175,7 @@ executors:
     working_directory: ~/projects
     docker:
       - image: circleci/python@sha256:e1c98a85c5ee62ac52a2779fe5abe2677f021c8e3158e4fb2d569c7b9c6ac073
-      - image: ehrbaseorg/ehrbase-postgres:latest
+      - image: ehrbaseorg/ehrbase-postgres:10
         environment:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
