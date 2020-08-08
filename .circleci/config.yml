@@ -1,20 +1,21 @@
 version: 2.1
 
 # OVERVIEW - What this CI pipeline does:
+#
 # 1. build & (unit)test the SDK
 # 2. build & (unit)test EHRbase w/ SDK (as local dependency)
 # 3. run SDK's Java integration tests
 # 4. conduct (static) code analysis w/ Sonar scanner and send results to sonarcloud.io
 #    - this includes code coverage from unit & integration tests (written in Java)
 # 5. run Robot integation tests (from EHRbase's repo)
-# 6. publish snapshot & release versions on jitpack.io
-#    - after manually creating a release (via Github UI) based on one of these versions
+# 6. publish git tag based snapshot & release versions on jitpack.io
+#    - requires manually creating a release (via Github UI) from a given git tag
 #    - jitpack will build related artifacts on demand
 
 
 workflows:
 
-  # WORKFLOW 1/4) Build & Test the SDK
+  # WORKFLOW 1/5) Build & Test the SDK
   build_and_test_SDK:
     jobs:
       - build-openEHR_SDK:
@@ -33,173 +34,161 @@ workflows:
                 - develop
                 - release
 
-      - build-EHRbase:
-          requires:
-            - build-openEHR_SDK
-          filters:
-            branches:
-              ignore:
-                - master
-                - develop
-                - release
+      # - build-EHRbase:
+      #     requires:
+      #       - build-openEHR_SDK
+      #     filters:
+      #       branches:
+      #         ignore:
+      #           - master
+      #           - develop
+      #           - release
 
-      - COMPOSITION-tests-1:
-          context: org-global
-          requires:
-            - build-EHRbase
-          filters:
-            branches:
-              ignore:
-                - master
-                - develop
-                - release
+      # - COMPOSITION-tests-1:
+      #     context: org-global
+      #     requires:
+      #       - build-EHRbase
+      #     filters:
+      #       branches:
+      #         ignore:
+      #           - master
+      #           - develop
+      #           - release
 
-      - COMPOSITION-tests-2:
-          context: org-global
-          requires:
-            - build-EHRbase
-          filters:
-            branches:
-              ignore:
-                - master
-                - develop
-                - release
+      # - COMPOSITION-tests-2:
+      #     context: org-global
+      #     requires:
+      #       - build-EHRbase
+      #     filters:
+      #       branches:
+      #         ignore:
+      #           - master
+      #           - develop
+      #           - release
 
-      - COMPOSITION-tests-3:
-          context: org-global
-          requires:
-            - build-EHRbase
-          filters:
-            branches:
-              ignore:
-                - master
-                - develop
-                - release
+      # - COMPOSITION-tests-3:
+      #     context: org-global
+      #     requires:
+      #       - build-EHRbase
+      #     filters:
+      #       branches:
+      #         ignore:
+      #           - master
+      #           - develop
+      #           - release
 
-      - COMPOSITION-tests-4:
-          context: org-global
-          requires:
-            - build-EHRbase
-          filters:
-            branches:
-              ignore:
-                - master
-                - develop
-                - release
+      # - COMPOSITION-tests-4:
+      #     context: org-global
+      #     requires:
+      #       - build-EHRbase
+      #     filters:
+      #       branches:
+      #         ignore:
+      #           - master
+      #           - develop
+      #           - release
 
-      - CONTRIBUTION-tests:
-          context: org-global
-          requires:
-            - build-EHRbase
-          filters:
-            branches:
-              ignore:
-                - master
-                - develop
-                - release
+      # - CONTRIBUTION-tests:
+      #     context: org-global
+      #     requires:
+      #       - build-EHRbase
+      #     filters:
+      #       branches:
+      #         ignore:
+      #           - master
+      #           - develop
+      #           - release
 
-      - DIRECTORY-tests:
-          context: org-global
-          requires:
-            - build-EHRbase
-          filters:
-            branches:
-              ignore:
-                - master
-                - develop
-                - release
+      # - DIRECTORY-tests:
+      #     context: org-global
+      #     requires:
+      #       - build-EHRbase
+      #     filters:
+      #       branches:
+      #         ignore:
+      #           - master
+      #           - develop
+      #           - release
 
-      - EHRSERVICE-tests:
-          context: org-global
-          requires:
-            - build-EHRbase
-          filters:
-            branches:
-              ignore:
-                - master
-                - develop
-                - release
+      # - EHRSERVICE-tests:
+      #     context: org-global
+      #     requires:
+      #       - build-EHRbase
+      #     filters:
+      #       branches:
+      #         ignore:
+      #           - master
+      #           - develop
+      #           - release
       
-      - EHRSTATUS-tests:
-          context: org-global
-          requires:
-            - build-EHRbase
-          filters:
-            branches:
-              ignore:
-                - master
-                - develop
-                - release
+      # - EHRSTATUS-tests:
+      #     context: org-global
+      #     requires:
+      #       - build-EHRbase
+      #     filters:
+      #       branches:
+      #         ignore:
+      #           - master
+      #           - develop
+      #           - release
       
-      - KNOWLEDGE-tests:
-          context: org-global
-          requires:
-            - build-EHRbase
-          filters:
-            branches:
-              ignore:
-                - master
-                - develop
-                - release
+      # - KNOWLEDGE-tests:
+      #     context: org-global
+      #     requires:
+      #       - build-EHRbase
+      #     filters:
+      #       branches:
+      #         ignore:
+      #           - master
+      #           - develop
+      #           - release
 
-      - QUERYSERVICE-tests-1:
-          context: org-global
-          requires:
-            - build-EHRbase
-          filters:
-            branches:
-              ignore:
-                - master
-                - develop
-                - release
+      # - QUERYSERVICE-tests-1:
+      #     context: org-global
+      #     requires:
+      #       - build-EHRbase
+      #     filters:
+      #       branches:
+      #         ignore:
+      #           - master
+      #           - develop
+      #           - release
 
-      - QUERYSERVICE-tests-2:
-          context: org-global
-          requires:
-            - build-EHRbase
-          filters:
-            branches:
-              ignore:
-                - master
-                - develop
-                - release
+      # - QUERYSERVICE-tests-2:
+      #     context: org-global
+      #     requires:
+      #       - build-EHRbase
+      #     filters:
+      #       branches:
+      #         ignore:
+      #           - master
+      #           - develop
+      #           - release
 
-      - ROBOT-TEST-REPORT:
-          context: org-global
-          requires:
-            - COMPOSITION-tests-1
-            - COMPOSITION-tests-2
-            - COMPOSITION-tests-3
-            - COMPOSITION-tests-4
-            - CONTRIBUTION-tests
-            - DIRECTORY-tests
-            - EHRSERVICE-tests
-            - EHRSTATUS-tests
-            - KNOWLEDGE-tests
-            - QUERYSERVICE-tests-1
-            - QUERYSERVICE-tests-2
-          filters:
-            branches:
-              ignore:
-                - master
-                - develop
-                - release
-
-      - run-static-code-analysis:
-          context: org-global
-          requires:
-            - build-openEHR_SDK
-            - test-openEHR_SDK
-          filters:
-            branches:
-              ignore:
-                - master
-                - develop
-                - release
+      # - ROBOT-TEST-REPORT:
+      #     context: org-global
+      #     requires:
+      #       - COMPOSITION-tests-1
+      #       - COMPOSITION-tests-2
+      #       - COMPOSITION-tests-3
+      #       - COMPOSITION-tests-4
+      #       - CONTRIBUTION-tests
+      #       - DIRECTORY-tests
+      #       - EHRSERVICE-tests
+      #       - EHRSTATUS-tests
+      #       - KNOWLEDGE-tests
+      #       - QUERYSERVICE-tests-1
+      #       - QUERYSERVICE-tests-2
+      #     filters:
+      #       branches:
+      #         ignore:
+      #           - master
+      #           - develop
+      #           - release
 
 
 
-  # WORKFLOW 2/4) Publish Git tags for SNAPSHOT releases
+  # WORKFLOW 2/5) Publish Git tags for SNAPSHOT releases
   deploy-snapshot-release:
     when:
       and:
@@ -215,7 +204,7 @@ workflows:
 
 
 
-  # WORKFLOW 3/4) Publish Git tag for (stable) releases
+  # WORKFLOW 3/5) Publish Git tag for (stable) releases
   deploy-stable-release:
     when:
       and:
@@ -225,7 +214,7 @@ workflows:
 
 
 
-  # # WORKFLOW 4/4) Update SDK version in EHRbase's POM /w lastest stable release
+  # # WORKFLOW 4/5) Update SDK version in EHRbase's POM /w lastest stable release
   # update-ehrbase-sdk-dependency:
   #   when:
   #     and:
@@ -236,6 +225,20 @@ workflows:
   #     - update-ehrbase-sdk-dependency:
   #         requires:
   #           - approve-sdk-version-update
+
+
+
+  # WORKFLOW 5/5) Code analysis w/ SonarCloud.io 
+  sonar-code-analysis:
+    jobs:
+      - run-code-analysis:
+          context: org-global
+          # filters:
+          #   branches:
+          #     ignore:
+          #       - master
+          #       - develop
+          #       - release
 
 
 
@@ -263,7 +266,8 @@ jobs:
       - cache-out-sdk-m2-dependencies
       - build-and-test-sdk
       - cache-in-sdk-m2-dependencies
-      - save-sdk-unittest-results
+      - collect-sdk-unittest-results
+      - save-skd-test-results
       - save-sdk-workspace
       #-----------------------------------#---------------(use this steps for pipeline debugging only)
       # - run: echo mock build SDK        # 
@@ -280,26 +284,12 @@ jobs:
       - build-sdk
       - git-clone-ehrbase-repo
       - cache-out-ehrbase-m2-dependencies
-      - force-ehrbase-to-use-local-sdk-version
-      - run-java-integration-tests-of-sdk
+      - force-ehrbase-build-to-use-local-sdk-version
+      - start-ehrbase-and-run-all-tests-of-sdk
       - cache-in-ehrbase-m2-dependencies      
       - cache-in-sdk-m2-dependencies
-      - save-sdk-integrationtest-results
-      - save-sdk-workspace
-
-
-  run-static-code-analysis:
-    description: |
-      Runs code analysis w/ SonarCloud via CircleCI Orb provided by sonarsource team.
-      Orb documentation: https://circleci.com/orbs/registry/orb/sonarsource/sonarcloud
-      Scanner configuration happens in file sonar-project.properties in project's root folder.
-    executor: docker-python3-java11
-    steps:
-      - checkout
-      - cache-out-sdk-m2-dependencies
-      - build-and-test-sdk
-      - sonarcloud/scan:
-          cache_version: 1       # NOTE: increment this to force cache rebuild
+      - collect-sdk-integrationtest-results
+      - save-skd-test-results
 
 
   build-EHRbase:
@@ -310,7 +300,7 @@ jobs:
       - restore-sdk-workspace
       - git-clone-ehrbase-repo
       - cache-out-ehrbase-m2-dependencies
-      - force-ehrbase-to-use-local-sdk-version
+      - force-ehrbase-build-to-use-local-sdk-version
       - build-and-test-ehrbase
       - cache-in-ehrbase-m2-dependencies
       - save-ehrbase-workspace
@@ -501,6 +491,10 @@ jobs:
   publish-snapshot:
     executor: docker-python3-java11
     # executor: vm-ubuntu-1604                          # (use for pipeline debugging only!)
+    description: |
+      Publishes a SNAPSHOT release version via jitpack.io
+      whenever one of these keywords: [major], [minor] or [patch]
+      is used in a PR's merge commit title when merging a feature branch into develop.
     steps:
       - checkout
       - configure-git-for-ci-bot
@@ -512,6 +506,9 @@ jobs:
   publish-release:
     executor: docker-python3-java11
     # executor: vm-ubuntu-1604                          # (use for pipeline debugging only!)
+    description: |
+      Publishes a (stable) release version via jitpack.io
+      whenever a 'release' branch is pushed to remote.
     steps:
       - checkout
       - configure-git-for-ci-bot
@@ -530,6 +527,30 @@ jobs:
       # - checkout
       # - configure-git-for-ci-bot
       # - cache-out-versionupdater-dependencies
+
+
+  run-code-analysis:
+    description: |
+      Runs code analysis w/ SonarCloud via CircleCI Orb provided by sonarsource team.
+      Orb documentation: https://circleci.com/orbs/registry/orb/sonarsource/sonarcloud
+      Scanner configuration happens in file sonar-project.properties in project's root folder.
+    executor: docker-py3-java11-postgres
+    steps:
+      - checkout
+      - cache-out-sdk-m2-dependencies
+      - build-sdk
+      - git-clone-ehrbase-repo
+      - cache-out-ehrbase-m2-dependencies
+      - force-ehrbase-build-to-use-local-sdk-version
+      - start-ehrbase-and-run-all-tests-of-sdk
+      - cache-in-ehrbase-m2-dependencies      
+      - cache-in-sdk-m2-dependencies
+      - collect-sdk-unittest-results
+      - collect-sdk-integrationtest-results
+      - save-skd-test-results
+      - save-jacoco-coverage-report
+      - sonarcloud/scan:
+          cache_version: 1       # NOTE: increment this value to force cache rebuild
 
 
 
@@ -618,6 +639,18 @@ commands:
       - install-maven
       - run:
           name: Create and push release version tag
+          description: |
+            Use this command only in a job that is triggered by push of a 'release' branch to remote.
+            Don't do any commits on that 'release' branch. Just push it!
+            The CI pipeline will then
+            - (--hard) reset 'master' to the state of 'release' branch
+            - and delete 'release' branch on remote
+            Nothing is ever merged back into develop (BECAUSE THERE IS NO NEED FOR THAT!).
+            Everything flows in one direction: from feature to develop from develop to master.
+            The idea is to have one main branch (develop) that holds everything, including releases,
+            and 'master' branch serves as backup of last (know as working) 'develop' branch.
+            Besides serving as a backup 'master' can further be used to trigger other workflows
+            i.e. deployments into production.
           command: |
             git branch
             SDK_VERSION=$(mvn -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive exec:exec)
@@ -625,7 +658,7 @@ commands:
             git fetch
             git checkout master
             git reset --hard release
-            git push origin :release
+            git push origin :release    # NOTE: this deletes realse branch on remote
             git tag -a v${SDK_VERSION} -m "v${SDK_VERSION} (stable) release"
             git push --force --set-upstream origin master v${SDK_VERSION}
 
@@ -702,6 +735,8 @@ commands:
 
 
   build-and-integration-test-sdk:
+    description: |
+      WARNING: this command requires EHRbase to be up and running 
     steps:
       - install-maven
       - run:
@@ -714,7 +749,10 @@ commands:
             mvn test -Pslow -Dmaven.javadoc.skip=true
 
 
-  run-java-integration-tests-of-sdk:
+  start-ehrbase-and-run-all-tests-of-sdk:
+    description: |
+      Executes all SDK java test (unit and integration)
+      This requires EHRbase + DB to be running during test execution.
     steps:
       - install-maven
       - run:
@@ -723,10 +761,7 @@ commands:
             cd ~/projects/ehrbase
             mvn package -Dmaven.javadoc.skip=true -Dmaven.test.skip
       - run:
-          name: Start EHRbase server and run SDK's integration tests
-          description: |
-            Runs maven test phase using 'slow' profile defined in parent pom.xml
-            This way only the Java integration tests are executed.
+          name: Start EHRbase server and run all test of SDK
           command: |
             ls -la
             cd ~/projects/ehrbase
@@ -736,7 +771,7 @@ commands:
             grep -m 1 "Started EhrBase in" <(tail -f log)
             cd ..
             jps
-            mvn test -Pslow -Dmaven.javadoc.skip=true
+            mvn verify -DskipIntegrationTests=false -Dmaven.javadoc.skip=true
 
 
   cache-out-sdk-m2-dependencies:
@@ -756,35 +791,48 @@ commands:
           - ~/.m2
 
 
-  save-sdk-unittest-results:
+  collect-sdk-unittest-results:
     steps:
       - run:
           name: Save unit test results
           command: |
-            mkdir -p ~/test-results/unit/
-            find . -type f -regex ".*/target/surefire-reports/.*xml" -exec cp {} ~/test-results/unit/ \;
-            find . -type f -regex ".*/target/surefire-reports/.*txt" -exec cp {} ~/test-results/integration/ \;
+            mkdir -p ~/test-results/unit-tests/
+            find . -type f -regex ".*/target/surefire-reports/.*xml" -exec cp {} ~/test-results/unit-tests/ \;
+            find . -type f -regex ".*/target/surefire-reports/.*txt" -exec cp {} ~/test-results/unit-tests/ \;
           when: always
-      - store_test_results:
-          path: ~/test-results
-      - store_artifacts:
-          path: ~/test-results/unit
   
 
-  save-sdk-integrationtest-results:
+  collect-sdk-integrationtest-results:
     steps:
       - run:
           name: Save integration test results
           command: |
-            mkdir -p ~/test-results/integration/
-            find . -type f -regex ".*/target/surefire-reports/.*xml" -exec cp {} ~/test-results/integration/ \;
-            find . -type f -regex ".*/target/surefire-reports/.*txt" -exec cp {} ~/test-results/integration/ \;
+            mkdir -p ~/test-results/integration-tests/
+            find . -type f -regex ".*/target/failsafe-reports/.*xml" -exec cp {} ~/test-results/integration-tests/ \;
+            find . -type f -regex ".*/target/failsafe-reports/.*txt" -exec cp {} ~/test-results/integration-tests/ \;
           when: always
+
+    
+  save-skd-test-results:
+    steps:
       - store_test_results:
           path: ~/test-results
       - store_artifacts:
-          path: ~/test-results/integration
-  
+          path: ~/test-results
+
+
+  save-jacoco-coverage-report:
+    description: |
+      Uploads the overall coverage report as circleci artifact
+      The separate reports for unit and integration coverage are not required.
+    steps:
+      # - store_artifacts:
+      #     path: test-coverage/target/site/jacoco-ut-coverage
+      # - store_artifacts:
+      #     path: test-coverage/target/site/jacoco-it-coverage
+      - store_artifacts:
+          path: test-coverage/target/site/jacoco-overall-coverage
+      
 
   save-sdk-workspace:
     steps:
@@ -796,6 +844,11 @@ commands:
 
 
   restore-sdk-workspace:
+    description: |
+      Restores any file / folder that was previously persisted w/ 'persist_to_workspace'.
+      NOTE: best practise is to persist files or folders very selectively.
+            Do not persist root or the whole workspace at one, otherwise concurrent jobs
+            may fail to restore that stuff.
     steps:
       - attach_workspace:
           at: /home/circleci/
@@ -876,7 +929,7 @@ commands:
       - run: ls -la ehrbase
 
 
-  force-ehrbase-to-use-local-sdk-version:
+  force-ehrbase-build-to-use-local-sdk-version:
     steps:
       - install-xml-cli-tool
       - run:
@@ -1219,7 +1272,7 @@ executors:
 
 
 
-  # force-ehrbase-to-use-local-sdk-version:
+  # force-ehrbase-build-to-use-local-sdk-version:
   #   steps:
   #     - run: sudo apt install maven -y
   #     - run:
@@ -1266,3 +1319,40 @@ executors:
   #               echo -n "It's there."
   #               ;;
   #           esac
+
+
+
+  #   save-jacoco-unit-coverage:
+  #   steps:
+  #     - run:
+  #         name: Save Jacoco code coverage (unit tests)
+  #         command: |
+  #           mkdir -p ~/code-coverage/
+  #           cp -r test-coverage/target/site/jacoco-ut-coverage ~/code-coverage/
+  #     - store_artifacts:
+  #         path: ~/code-coverage/jacoco-ut-coverage
+
+  # save-jacoco-integration-coverage:
+  #   steps:
+  #     - run:
+  #         name: Save Jacoco code coverage (overall & integration tests)
+  #         command: |
+  #           mkdir -p ~/code-coverage/
+  #           cp -r test-coverage/target/site/jacoco-it-coverage ~/code-coverage/
+  #           cp -r test-coverage/target/site/jacoco-overall-coverage ~/code-coverage/
+  #     - store_artifacts:
+  #         path: ~/code-coverage/jacoco-it-coverage
+  
+  # save-jacoco-overall-coverage:
+  #   steps:
+  #     - run:
+  #         name: Save Jacoco's overall code coverage report (w/ unit & integr. tests)
+  #         command: |
+  #           mkdir -p ~/code-coverage/
+  #           cp -r test-coverage/target/site/jacoco-overall-coverage ~/code-coverage/
+  #     - store_artifacts:
+  #         path: ~/code-coverage/jacoco-overall-coverage
+  #     # - persist_to_workspace:
+  #     #     root: /home/circleci
+  #     #     paths:
+  #     #       - code-coverage/jacoco-overall-coverage

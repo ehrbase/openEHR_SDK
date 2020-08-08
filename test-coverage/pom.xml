@@ -64,12 +64,19 @@
 
                 <configuration>
                     <!-- TODO: CLARIFY W/ @S.SPISKA IF IT'S OK TO EXCLUDE THIS STUFF! -->
+                    <!-- This exclues the following bundles/modules:
+                        opt-14
+                        response-dto
+                        test-data -->
                     <excludes>
                         <exclude>com/oceaninformatics/characterMapping/**/*</exclude>
                         <exclude>openEHR/v1/template/**/*</exclude>
                         <exclude>org/openehr/schemas/v1/**/*</exclude>
                         <exclude>schemaorg_apache_xmlbeans/**/*</exclude>
                         <exclude>org/ehrbase/response/**/*</exclude>
+                        <exclude>org/ehrbase/response/ehrscape</exclude>
+                        <exclude>org/ehrbase/response/openehr</exclude>
+                        <exclude>org/ehrbase/test_data</exclude>
                     </excludes>
                 </configuration>
 
