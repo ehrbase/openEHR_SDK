@@ -31,7 +31,7 @@ public class ContainmentPath implements ContainmentExpression {
 
     @Override
     public String buildAQL() {
-        return "( " + root.buildAQL() + " )";
+        return root.buildAQL();
     }
 
     @Override
