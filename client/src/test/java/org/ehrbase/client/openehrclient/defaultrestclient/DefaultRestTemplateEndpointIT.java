@@ -58,6 +58,8 @@ public class DefaultRestTemplateEndpointIT {
 
     @Test
     public void testCreate() throws URISyntaxException, IOException, XmlException {
+
+
         DefaultRestClient cut = (DefaultRestClient) DefaultRestClientTestHelper.setupDefaultRestClient();
         OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(OperationalTemplateTestData.BLOOD_PRESSURE_SIMPLE.getStream()).getTemplate();
         String templateId = "ehrbase_blood_pressure_simple.de.v" + RandomStringUtils.randomNumeric(10);
@@ -65,5 +67,6 @@ public class DefaultRestTemplateEndpointIT {
         template.getUid().setValue(UUID.randomUUID().toString());
         String actual = new DefaultRestTemplateEndpoint(cut).upload(template);
         assertThat(actual).isEqualTo(templateId);
+
     }
 }
