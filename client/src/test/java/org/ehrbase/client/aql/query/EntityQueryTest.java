@@ -61,7 +61,7 @@ public class EntityQueryTest {
 
         assertThat(entityQuery.buildAql()).isEqualTo("Select c0/context/start_time/value as F0, o1 as F1, o1/protocol[at0011]/items[at0013]/value/defining_code as F2 " +
                 "from EHR e  " +
-                "contains ( COMPOSITION c0[openEHR-EHR-COMPOSITION.sample_encounter.v1] contains OBSERVATION o1[openEHR-EHR-OBSERVATION.sample_blood_pressure.v1] ) " +
+                "contains COMPOSITION c0[openEHR-EHR-COMPOSITION.sample_encounter.v1] contains OBSERVATION o1[openEHR-EHR-OBSERVATION.sample_blood_pressure.v1] " +
                 "where (e/ehr_id/value = $parm0 and o1/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/magnitude >= 22.0) " +
                 "order by c0/context/start_time/value ASCENDING, o1/data[at0001]/events[at0002]/time/value DESCENDING");
 
