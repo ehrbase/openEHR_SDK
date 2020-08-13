@@ -33,18 +33,21 @@ public abstract class AbstractsStdConfig<T extends RMObject> implements StdConfi
     private static final Map<Class<?>, RmClassGeneratorConfig> configMap = ReflectionHelper.buildMap(RmClassGeneratorConfig.class);
 
     @Override
-    public Map<String, Object> buildChildValues(String termLoop, T child) {
+    /**
+     * {@inheritDoc}
+     */
+    public Map<String, Object> buildChildValues(String currentTerm, T rmObject) {
         Map<String, Object> result = new HashMap<>();
-        RmClassGeneratorConfig rmClassGeneratorConfig = configMap.get(child.getClass());
+        RmClassGeneratorConfig rmClassGeneratorConfig = configMap.get(rmObject.getClass());
         if (rmClassGeneratorConfig != null && rmClassGeneratorConfig.isExpandField()) {
 
             Set<String> expandFields = rmClassGeneratorConfig.getExpandFields();
             if (expandFields.size() == 1 && expandFields.contains("value")) {
 
                 try {
-                    PropertyDescriptor propertyDescriptor = new PropertyDescriptor("value", child.getClass());
-                    Object property = propertyDescriptor.getReadMethod().invoke(child);
-                    result.put(termLoop, property);
+                    PropertyDescriptor propertyDescriptor = new PropertyDescriptor("value", rmObject.getClass());
+                    Object property = propertyDescriptor.getReadMethod().invoke(rmObject);
+                    result.put(currentTerm, property);
                 } catch (IllegalAccessException | InvocationTargetException | IntrospectionException e) {
                     throw new ClientException(e.getMessage(), e);
                 }
@@ -52,9 +55,9 @@ public abstract class AbstractsStdConfig<T extends RMObject> implements StdConfi
             } else {
                 for (String propertyName : expandFields) {
                     try {
-                        PropertyDescriptor propertyDescriptor = new PropertyDescriptor(propertyName, child.getClass());
-                        Object property = propertyDescriptor.getReadMethod().invoke(child);
-                        result.put(termLoop + "|" + propertyName, property);
+                        PropertyDescriptor propertyDescriptor = new PropertyDescriptor(propertyName, rmObject.getClass());
+                        Object property = propertyDescriptor.getReadMethod().invoke(rmObject);
+                        result.put(currentTerm + "|" + propertyName, property);
                     } catch (IllegalAccessException | InvocationTargetException | IntrospectionException e) {
                         throw new ClientException(e.getMessage(), e);
                     }
@@ -62,7 +65,7 @@ public abstract class AbstractsStdConfig<T extends RMObject> implements StdConfi
             }
 
         } else {
-            result.put(termLoop, child);
+            result.put(currentTerm, rmObject);
         }
         return result;
     }
@@ -75,6 +78,9 @@ public abstract class AbstractsStdConfig<T extends RMObject> implements StdConfi
     }
 
     @Override
+    /**
+     * {@inheritDoc}
+     */
     public List<Integer> valueCount(Class<T> clazz) {
         RmClassGeneratorConfig rmClassGeneratorConfig = configMap.get(clazz);
         return Collections.singletonList(Optional.ofNullable(rmClassGeneratorConfig).map(RmClassGeneratorConfig::getExpandFields).map(Set::size).orElse(1));

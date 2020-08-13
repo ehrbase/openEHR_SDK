@@ -17,20 +17,34 @@
  *
  */
 
-package org.ehrbase.client.std.marshal.postprozesor;
+package org.ehrbase.client.std.umarschal.postprozessor;
 
 import com.nedap.archie.rm.composition.Composition;
+import com.nedap.archie.rm.support.identification.HierObjectId;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.Map;
 
 import static org.ehrbase.client.introspect.TemplateIntrospect.PATH_DIVIDER;
 
-public class CompositionPostprozessor implements Postprozessor<Composition> {
+public class CompositionUnmarshalPostprozessor extends AbstractUnmarshalPostprozessor<Composition> {
+
+    /**
+     * {@inheritDoc}
+     * Unmarshalls {@link Composition#setUid}
+     */
     @Override
-    public void prozess(String term, Composition rmObject, Map<String, Object> values) {
-        values.put(term + PATH_DIVIDER + "_uid", rmObject.getUid().getValue());
+    public void prozess(String term, Composition rmObject, Map<String, String> values) {
+        String strip = StringUtils.strip(values.get(term + PATH_DIVIDER + "_uid") + "", "\"");
+        if (StringUtils.isNotBlank(strip)) {
+            rmObject.setUid(new HierObjectId(strip));
+        }
+        consumedPath.add(term + PATH_DIVIDER + "_uid");
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Class<Composition> getAssociatedClass() {
         return Composition.class;

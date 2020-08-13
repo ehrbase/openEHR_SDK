@@ -29,20 +29,29 @@ import java.util.Map;
 public class CodePhraseStdConfig extends AbstractsStdConfig<CodePhrase> {
 
     @Override
-    public Map<String, Object> buildChildValues(String termLoop, CodePhrase child) {
+    /**
+     * {@inheritDoc}
+     */
+    public Map<String, Object> buildChildValues(String currentTerm, CodePhrase rmObject) {
         Map<String, Object> result = new HashMap<>();
-        addValue(result, termLoop, "code", child.getCodeString());
-        addValue(result, termLoop, "terminology", child.getTerminologyId().getValue());
+        addValue(result, currentTerm, "code", rmObject.getCodeString());
+        addValue(result, currentTerm, "terminology", rmObject.getTerminologyId().getValue());
 
         return result;
     }
 
     @Override
+    /**
+     * {@inheritDoc}
+     */
     public Class<CodePhrase> getAssociatedClass() {
         return CodePhrase.class;
     }
 
     @Override
+    /**
+     * {@inheritDoc}
+     */
     public List<Integer> valueCount(Class<CodePhrase> clazz) {
         return Collections.singletonList(2);
     }

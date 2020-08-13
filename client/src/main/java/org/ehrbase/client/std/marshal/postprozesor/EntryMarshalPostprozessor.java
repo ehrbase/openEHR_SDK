@@ -17,29 +17,32 @@
  *
  */
 
-package org.ehrbase.client.std.umarschal.postprozessor;
+package org.ehrbase.client.std.marshal.postprozesor;
 
-import com.nedap.archie.rm.composition.Composition;
-import com.nedap.archie.rm.support.identification.HierObjectId;
-import org.apache.commons.lang3.StringUtils;
+import com.nedap.archie.rm.composition.Entry;
 
 import java.util.Map;
 
 import static org.ehrbase.client.introspect.TemplateIntrospect.PATH_DIVIDER;
 
-public class CompositionPostprozessor extends AbstractPostprozessor<Composition> {
+public class EntryMarshalPostprozessor implements MarshalPostprozessor<Entry> {
 
+
+    /**
+     * {@inheritDoc}
+     * Adds the encoding information
+     */
     @Override
-    public void prozess(String term, Composition rmObject, Map<String, String> values) {
-        String strip = StringUtils.strip(values.get(term + PATH_DIVIDER + "_uid") + "", "\"");
-        if (StringUtils.isNotBlank(strip)) {
-            rmObject.setUid(new HierObjectId(strip));
-        }
-        consumedPath.add(term + PATH_DIVIDER + "_uid");
+    public void prozess(String term, Entry rmObject, Map<String, Object> values) {
+        values.put(term + PATH_DIVIDER + "encoding|code", "UTF-8");
+        values.put(term + PATH_DIVIDER + "encoding|terminology", "IANA_character-sets");
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public Class<Composition> getAssociatedClass() {
-        return Composition.class;
+    public Class<Entry> getAssociatedClass() {
+        return Entry.class;
     }
 }

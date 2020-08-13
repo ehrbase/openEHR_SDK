@@ -27,20 +27,30 @@ import java.util.List;
 import java.util.Map;
 
 public class PartyIdentifiedStdConfig extends AbstractsStdConfig<PartyIdentified> {
+
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Class<PartyIdentified> getAssociatedClass() {
         return PartyIdentified.class;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public Map<String, Object> buildChildValues(String termLoop, PartyIdentified child) {
+    public Map<String, Object> buildChildValues(String currentTerm, PartyIdentified rmObject) {
 
         Map<String, Object> result = new HashMap<>();
-        addValue(result, termLoop, "name", child.getName());
+        addValue(result, currentTerm, "name", rmObject.getName());
 
         return result;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<Integer> valueCount(Class<PartyIdentified> clazz) {
         return Collections.singletonList(1);

@@ -21,9 +21,13 @@ package org.ehrbase.client.std.marshal.config;
 
 import com.nedap.archie.rm.RMObject;
 
+
 public class DefaultStdConfig extends AbstractsStdConfig<RMObject> {
 
     @Override
+    /**
+     * {@inheritDoc}
+     */
     public Class<RMObject> getAssociatedClass() {
         return RMObject.class;
     }

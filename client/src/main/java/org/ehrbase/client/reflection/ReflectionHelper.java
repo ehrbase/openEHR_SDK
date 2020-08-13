@@ -27,11 +27,22 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+/**
+ * Helper class to find Configurations classes in the classpath.
+ */
 public class ReflectionHelper {
 
     private ReflectionHelper() {
     }
 
+    /**
+     * Returns a Map containing all implementing classes of the interface {@code root} with key the class they are associated to as subclass of {@link ClassDependent}
+     *
+     * @param root A Interface extending {@link ClassDependent }
+     * @param <T>
+     * @param <S>
+     * @return
+     */
     public static <T, S extends ClassDependent<T>> Map<Class<? extends T>, S> buildMap(Class<S> root) {
         Reflections reflections = new Reflections(root.getPackage().getName());
         Set<Class<? extends S>> configs = reflections.getSubTypesOf(root);

@@ -21,6 +21,9 @@ package org.ehrbase.client.std;
 
 import org.ehrbase.client.templateprovider.TemplateProvider;
 
+/**
+ * Used to build the {@link org.ehrbase.serialisation.RMDataFormat} for flat jason for a template.
+ */
 public class FlatJasonProvider {
 
     private final TemplateProvider templateProvider;

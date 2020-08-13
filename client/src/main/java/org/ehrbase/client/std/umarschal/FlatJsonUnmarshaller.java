@@ -44,7 +44,7 @@ import org.ehrbase.client.normalizer.Normalizer;
 import org.ehrbase.client.reflection.ReflectionHelper;
 import org.ehrbase.client.std.marshal.config.DefaultStdConfig;
 import org.ehrbase.client.std.marshal.config.StdConfig;
-import org.ehrbase.client.std.umarschal.postprozessor.Postprozessor;
+import org.ehrbase.client.std.umarschal.postprozessor.UnmarshalPostprozessor;
 import org.ehrbase.client.std.umarschal.rmunmarshaller.DefaultRMUnmarshaller;
 import org.ehrbase.client.std.umarschal.rmunmarshaller.RMUnmarshaller;
 import org.ehrbase.serialisation.jsonencoding.CanonicalJson;
@@ -67,7 +67,7 @@ public class FlatJsonUnmarshaller {
     public static final DefaultStdConfig DEFAULT_STD_CONFIG = new DefaultStdConfig();
     private static final Map<Class<?>, StdConfig> configMap = ReflectionHelper.buildMap(StdConfig.class);
     private static final Map<Class<?>, RMUnmarshaller> UNMARSHALLER_MAP = ReflectionHelper.buildMap(RMUnmarshaller.class);
-    private static final Map<Class<?>, Postprozessor> POSTPROCESSOR_MAP = ReflectionHelper.buildMap(Postprozessor.class);
+    private static final Map<Class<?>, UnmarshalPostprozessor> POSTPROCESSOR_MAP = ReflectionHelper.buildMap(UnmarshalPostprozessor.class);
     private static final ObjectMapper OBJECT_MAPPER = JacksonUtil.getObjectMapper();
     public static final OptSkeletonBuilder OPT_SKELETON_BUILDER = new OptSkeletonBuilder();
     public static final ArchieRMInfoLookup ARCHIE_RM_INFO_LOOKUP = ArchieRMInfoLookup.getInstance();
@@ -135,10 +135,10 @@ public class FlatJsonUnmarshaller {
 
     private <T extends RMObject> void postprocess(String term, Map<String, String> values, T locatable) {
 
-        List<Postprozessor<? super T>> postprocessor = Stream.concat(Stream.of(locatable.getClass()), ClassUtils.getAllSuperclasses(locatable.getClass()).stream())
+        List<UnmarshalPostprozessor<? super T>> postprocessor = Stream.concat(Stream.of(locatable.getClass()), ClassUtils.getAllSuperclasses(locatable.getClass()).stream())
                 .map(POSTPROCESSOR_MAP::get)
                 .filter(Objects::nonNull)
-                .map(p -> (Postprozessor<? super T>) p)
+                .map(p -> (UnmarshalPostprozessor<? super T>) p)
                 .collect(Collectors.toList());
         postprocessor.forEach(p -> {
             p.prozess(term, locatable, values);

@@ -29,8 +29,11 @@ import java.util.Map;
 
 import static org.ehrbase.client.introspect.TemplateIntrospect.PATH_DIVIDER;
 
-public class EntryPostprocessor extends AbstractPostprozessor<Entry> {
+public class EntryPostprocessor extends AbstractUnmarshalPostprozessor<Entry> {
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void prozess(String term, Entry rmObject, Map<String, String> values) {
         consumedPath.add(term + PATH_DIVIDER + "encoding|code");
@@ -49,7 +52,9 @@ public class EntryPostprocessor extends AbstractPostprozessor<Entry> {
         }
     }
 
-
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Class<Entry> getAssociatedClass() {
         return Entry.class;

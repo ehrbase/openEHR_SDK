@@ -32,7 +32,12 @@ import java.util.Optional;
 
 import static org.ehrbase.client.introspect.TemplateIntrospect.TERM_DIVIDER;
 
-public class ObservationPostprocessor implements Postprozessor<Observation> {
+public class ObservationPostprocessor implements MarshalPostprozessor<Observation> {
+
+    /**
+     * {@inheritDoc}
+     * Removes the {@link History#getOrigin} if it is equal to fist {@link Event#getTime()}
+     */
     @Override
     public void prozess(String term, Observation rmObject, Map<String, Object> values) {
         if (rmObject.getData() != null && rmObject.getData().getOrigin().getValue() != null) {
@@ -54,6 +59,9 @@ public class ObservationPostprocessor implements Postprozessor<Observation> {
                 t -> values.remove(term + TERM_DIVIDER + "origin"));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Class<Observation> getAssociatedClass() {
         return Observation.class;

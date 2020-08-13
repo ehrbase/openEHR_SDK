@@ -17,19 +17,29 @@
  *
  */
 
-package org.ehrbase.client.std.umarschal.postprozessor;
+package org.ehrbase.client.std.marshal.postprozesor;
 
 import com.nedap.archie.rm.RMObject;
+import org.ehrbase.client.introspect.node.EntityNode;
 import org.ehrbase.client.reflection.ClassDependent;
 
 import java.util.Map;
-import java.util.Set;
 
-public interface Postprozessor<T extends RMObject> extends ClassDependent<T> {
+/**
+ * Will be automatically  called during marshal after encountering a {@link EntityNode} with {@link EntityNode#getRmName()} is the RMName of {@code T}.
+ *
+ * @param <T>
+ */
+public interface MarshalPostprozessor<T extends RMObject> extends ClassDependent<T> {
 
-    void prozess(String term, T rmObject, Map<String, String> values);
+    /**
+     * Adds or removes Values from {@code values} depending on {@code rmObject}.
+     *
+     * @param term     current term in the marshal recursion.
+     * @param rmObject current rmObject in the marshal recursion.
+     * @param values   current values in the marshal recursion.
+     */
+    void prozess(String term, T rmObject, Map<String, Object> values);
 
-    Set<String> getConsumedPaths();
 
-    Class<T> getAssociatedClass();
 }

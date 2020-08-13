@@ -28,22 +28,31 @@ import java.util.Map;
 
 public class DvCodedTextStdConfiguration extends AbstractsStdConfig<DvCodedText> {
     @Override
+    /**
+     * {@inheritDoc}
+     */
     public Class<DvCodedText> getAssociatedClass() {
         return DvCodedText.class;
     }
 
     @Override
-    public Map<String, Object> buildChildValues(String termLoop, DvCodedText child) {
+    /**
+     * {@inheritDoc}
+     */
+    public Map<String, Object> buildChildValues(String currentTerm, DvCodedText rmObject) {
 
         Map<String, Object> result = new HashMap<>();
-        addValue(result, termLoop, "code", child.getDefiningCode().getCodeString());
-        addValue(result, termLoop, "terminology", child.getDefiningCode().getTerminologyId().getValue());
-        addValue(result, termLoop, "value", child.getValue());
+        addValue(result, currentTerm, "code", rmObject.getDefiningCode().getCodeString());
+        addValue(result, currentTerm, "terminology", rmObject.getDefiningCode().getTerminologyId().getValue());
+        addValue(result, currentTerm, "value", rmObject.getValue());
 
         return result;
     }
 
     @Override
+    /**
+     * {@inheritDoc}
+     */
     public List<Integer> valueCount(Class<DvCodedText> clazz) {
         return Collections.singletonList(3);
     }

@@ -27,17 +27,27 @@ import java.util.Map;
 
 public class PartySelfStdConfig extends AbstractsStdConfig<PartySelf> {
 
+
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Class<PartySelf> getAssociatedClass() {
         return PartySelf.class;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public Map<String, Object> buildChildValues(String termLoop, PartySelf child) {
+    public Map<String, Object> buildChildValues(String currentTerm, PartySelf rmObject) {
 
         return Collections.emptyMap();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<Integer> valueCount(Class<PartySelf> clazz) {
         return List.of(0, 1);

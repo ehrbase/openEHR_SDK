@@ -24,10 +24,12 @@ import com.nedap.archie.rm.RMObject;
 import java.util.HashSet;
 import java.util.Set;
 
-public abstract class AbstractPostprozessor<T extends RMObject> implements Postprozessor<T> {
+public abstract class AbstractUnmarshalPostprozessor<T extends RMObject> implements UnmarshalPostprozessor<T> {
     protected final Set<String> consumedPath = new HashSet<>();
 
-
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Set<String> getConsumedPaths() {
         return consumedPath;

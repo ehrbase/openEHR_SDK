@@ -30,7 +30,11 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-public class ObservationPostprocessor extends AbstractPostprozessor<Observation> {
+public class ObservationPostprocessor extends AbstractUnmarshalPostprozessor<Observation> {
+
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void prozess(String term, Observation rmObject, Map<String, String> values) {
         if (rmObject.getData() != null && rmObject.getData().getOrigin().getValue() == null) {
@@ -51,6 +55,9 @@ public class ObservationPostprocessor extends AbstractPostprozessor<Observation>
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Class<Observation> getAssociatedClass() {
         return Observation.class;

@@ -19,21 +19,27 @@
 
 package org.ehrbase.client.std.marshal.postprozesor;
 
-import com.nedap.archie.rm.composition.Entry;
+import com.nedap.archie.rm.composition.Composition;
 
 import java.util.Map;
 
 import static org.ehrbase.client.introspect.TemplateIntrospect.PATH_DIVIDER;
 
-public class EntryPostprozessor implements Postprozessor<Entry> {
+public class CompositionMarshalPostprozessor implements MarshalPostprozessor<Composition> {
+
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public void prozess(String term, Entry rmObject, Map<String, Object> values) {
-        values.put(term + PATH_DIVIDER + "encoding|code", "UTF-8");
-        values.put(term + PATH_DIVIDER + "encoding|terminology", "IANA_character-sets");
+    public void prozess(String term, Composition rmObject, Map<String, Object> values) {
+        values.put(term + PATH_DIVIDER + "_uid", rmObject.getUid().getValue());
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public Class<Entry> getAssociatedClass() {
-        return Entry.class;
+    public Class<Composition> getAssociatedClass() {
+        return Composition.class;
     }
 }
