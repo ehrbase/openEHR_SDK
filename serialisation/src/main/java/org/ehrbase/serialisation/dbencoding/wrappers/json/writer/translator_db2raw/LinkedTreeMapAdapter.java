@@ -96,11 +96,6 @@ public class LinkedTreeMapAdapter extends TypeAdapter<LinkedTreeMap> implements 
 
                 map.remove(CompositionSerializer.TAG_CLASS);
             }
-        } else if (isMultiContent) {
-            if (map.containsKey(I_DvTypeAdapter.ARCHETYPE_NODE_ID)) {
-                parentItemsArchetypeNodeId = (String) map.get(I_DvTypeAdapter.ARCHETYPE_NODE_ID);
-                map.remove(I_DvTypeAdapter.ARCHETYPE_NODE_ID);
-            }
         }
 
         if (isItemsOnly) {
