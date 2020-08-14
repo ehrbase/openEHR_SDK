@@ -17,26 +17,26 @@
 
 package org.ehrbase.serialisation.dbencoding;
 
-import com.nedap.archie.rm.datastructures.Element;
+import org.apache.commons.collections4.MapUtils;
+import org.apache.commons.collections4.PredicateUtils;
 
-/**
- * utility to deal with Element content check
- */
-public class Elements {
+import java.util.Map;
+import java.util.TreeMap;
 
-    private Element element;
+public class PathMap {
 
-    public Elements(Element element) {
-        this.element = element;
+
+    public PathMap() {
+        throw new IllegalStateException("Use only static method in this class");
     }
-
     /**
-     * check if an element is containing any significant values to be serialized (e.g. stored) to DB
+     * to remain consistent regarding datastructure, we use a map which prevents duplicated keys... and throw
+     * an exception if one is detected...
      *
      * @return
      */
-    public boolean isVoid() {
-        return (element.getValue() == null &&
-                element.getNullFlavour() == null);
+    @SuppressWarnings("unchecked")
+    public static Map<String, Object> getInstance() {
+        return MapUtils.predicatedMap(new TreeMap<>(), PredicateUtils.uniquePredicate(), null);
     }
 }

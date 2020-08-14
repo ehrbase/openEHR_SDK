@@ -21,7 +21,9 @@ import com.nedap.archie.rm.generic.PartyRelated;
 import org.ehrbase.serialisation.dbencoding.CompositionSerializer;
 
 import java.util.Map;
-
+/**
+ * populate the attributes for RM PartyRelated
+ */
 public class PartyRelatedAttributes implements I_SubjectAttributes {
 
     PartyRelated partyRelated;

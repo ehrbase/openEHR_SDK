@@ -17,26 +17,20 @@
 
 package org.ehrbase.serialisation.dbencoding;
 
-import com.nedap.archie.rm.datastructures.Element;
+import org.apache.commons.collections.map.MultiValueMap;
+
+import java.util.Map;
 
 /**
- * utility to deal with Element content check
+ * trivial wrapper for multivaluemap
  */
-public class Elements {
+public class MultiMap {
 
-    private Element element;
-
-    public Elements(Element element) {
-        this.element = element;
+    private MultiMap() {
+        throw new IllegalStateException("Use only static method in this class");
     }
 
-    /**
-     * check if an element is containing any significant values to be serialized (e.g. stored) to DB
-     *
-     * @return
-     */
-    public boolean isVoid() {
-        return (element.getValue() == null &&
-                element.getNullFlavour() == null);
+    public static Map<String, Object> getInstance() {
+        return new MultiValueMap();
     }
 }

@@ -34,7 +34,8 @@ public enum CompositionTestDataCanonicalXML {
     REGISTRO_DE_ATENDIMENTO("Duplicate section headings with different name", "Registro_de_Atendimento_Clinico.xml"),
     ALL_TYPES_FIXED("test all node types without archetype details at the moment", "test_all_types.fixed.v1.xml"),
     ALL_TYPES_INVALID_PARTICIPATIONS("simple test with participations holding a wrong value", "test_all_types_participations_invalid.xml"),
-    ALL_TYPES_NO_CONTENT("a composition with null content", "test_all_no_content.xml");
+    ALL_TYPES_NO_CONTENT("a composition with null content", "test_all_no_content.xml"),
+    FEEDER_AUDIT("a composition with feeder audit", "adverse_reac_with_feeder_audit.xml");
 
 
     private final String filename;

@@ -62,7 +62,7 @@ public class ArrayListAdapter extends TypeAdapter<ArrayList> implements I_DvType
         for (Object entry : arrayList) {
             if (entry instanceof LinkedTreeMap) {
                 LinkedTreeMap itemMap = (LinkedTreeMap) entry;
-                String path = new PathAttribute().findPath(itemMap);
+//                String path = new PathAttribute().findPath(itemMap);
                 new LinkedTreeMapAdapter().write(writer, itemMap);
             } else
                 throw new IllegalArgumentException("unhandled item in array:" + entry);

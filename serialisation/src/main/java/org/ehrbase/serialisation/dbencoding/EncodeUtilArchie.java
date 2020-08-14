@@ -45,13 +45,17 @@ import java.util.ArrayList;
  */
 public class EncodeUtilArchie {
 
+    private EncodeUtilArchie() {
+        throw new IllegalStateException("Use static calls instead");
+    }
+
     /**
      * utility to make sure writer adapter are set consistently
      *
      * @return GsonBuilder
      */
     public static GsonBuilder getGsonBuilderInstance() {
-        GsonBuilder builder = new GsonBuilder()
+        return new GsonBuilder()
                 .registerTypeAdapter(DvDateTime.class, new DvDateTimeAdapter())
                 .registerTypeAdapter(DvDate.class, new DvDateAdapter())
                 .registerTypeAdapter(DvTime.class, new DvTimeAdapter())
@@ -62,7 +66,6 @@ public class EncodeUtilArchie {
                 .registerTypeAdapter(Participation.class, new ParticipationAdapter())
                 .registerTypeAdapter(PartyIdentified.class, new PartyIdentifiedAdapter())
                 .registerTypeAdapter(PartyRef.class, new PartyRefAdapter());
-        return builder;
     }
 
     public static GsonBuilder getGsonBuilderInstance(I_DvTypeAdapter.AdapterType dbjson2rawjson) {
@@ -74,7 +77,7 @@ public class EncodeUtilArchie {
                         .registerTypeAdapter(ArrayList.class, new ArrayListAdapter());
                 return builder;
             default:
-                throw new RuntimeException();
+                throw new IllegalStateException("Invalid/unsupported json converter:"+dbjson2rawjson);
         }
     }
 }

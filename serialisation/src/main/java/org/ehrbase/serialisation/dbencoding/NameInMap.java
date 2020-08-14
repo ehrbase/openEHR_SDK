@@ -17,26 +17,27 @@
 
 package org.ehrbase.serialisation.dbencoding;
 
-import com.nedap.archie.rm.datastructures.Element;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 /**
- * utility to deal with Element content check
+ * encode a RM object name in an array of name values
  */
-public class Elements {
+public class NameInMap {
 
-    private Element element;
+    private Map<String, Object> map;
+    private Map<String, Object> nameValues;
 
-    public Elements(Element element) {
-        this.element = element;
+    public NameInMap(Map<String, Object> map, Map<String, Object> nameValues) {
+        this.map = map;
+        this.nameValues = nameValues;
     }
 
-    /**
-     * check if an element is containing any significant values to be serialized (e.g. stored) to DB
-     *
-     * @return
-     */
-    public boolean isVoid() {
-        return (element.getValue() == null &&
-                element.getNullFlavour() == null);
+    public Map<String, Object> toMap() {
+        List<Map<String, Object>> nameListMap = new ArrayList<>();
+        nameListMap.add(nameValues);
+        map.put(CompositionSerializer.TAG_NAME, nameListMap);
+        return map;
     }
 }

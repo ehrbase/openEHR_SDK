@@ -15,28 +15,25 @@
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
-package org.ehrbase.serialisation.dbencoding;
+package org.ehrbase.serialisation.dbencoding.rmobject;
 
-import com.nedap.archie.rm.datastructures.Element;
+import com.nedap.archie.rm.archetyped.FeederAudit;
+import org.ehrbase.serialisation.attributes.FeederAuditAttributes;
+
+import java.util.Map;
 
 /**
- * utility to deal with Element content check
+ * Encode/decode a FeederAudit object as a json structure.
+ * Should be used to support FeederAudit at DB level (f.e. Composition Entry)
  */
-public class Elements {
+public class FeederAuditEncoding extends RMObjectEncoding{
 
-    private Element element;
-
-    public Elements(Element element) {
-        this.element = element;
+    public String toDB(FeederAudit feederAudit) {
+        Map<String, Object> objectMap = new FeederAuditAttributes(feederAudit).toMap();
+        return super.toDB(objectMap);
     }
 
-    /**
-     * check if an element is containing any significant values to be serialized (e.g. stored) to DB
-     *
-     * @return
-     */
-    public boolean isVoid() {
-        return (element.getValue() == null &&
-                element.getNullFlavour() == null);
+    public FeederAudit fromDB(String dbJonRepresentation) {
+        return (FeederAudit)super.fromDB(FeederAudit.class, dbJonRepresentation);
     }
 }

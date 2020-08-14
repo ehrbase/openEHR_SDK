@@ -15,28 +15,19 @@
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
-package org.ehrbase.serialisation.dbencoding;
+package org.ehrbase.serialisation.attributes;
 
-import com.nedap.archie.rm.datastructures.Element;
+import org.ehrbase.serialisation.dbencoding.CompositionSerializer;
+import org.ehrbase.serialisation.dbencoding.ItemStack;
+
+import java.util.Map;
 
 /**
- * utility to deal with Element content check
+ * populate the attributes for RM Item
  */
-public class Elements {
+public class ItemAttributes extends LocatableAttributes {
 
-    private Element element;
-
-    public Elements(Element element) {
-        this.element = element;
-    }
-
-    /**
-     * check if an element is containing any significant values to be serialized (e.g. stored) to DB
-     *
-     * @return
-     */
-    public boolean isVoid() {
-        return (element.getValue() == null &&
-                element.getNullFlavour() == null);
+    public ItemAttributes(CompositionSerializer compositionSerializer, ItemStack itemStack, Map<String, Object> map) {
+        super(compositionSerializer, itemStack, map);
     }
 }

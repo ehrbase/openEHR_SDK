@@ -17,26 +17,18 @@
 
 package org.ehrbase.serialisation.dbencoding;
 
-import com.nedap.archie.rm.datastructures.Element;
-
 /**
- * utility to deal with Element content check
+ * simple wrapper to get the class name of an object
  */
-public class Elements {
+public class SimpleClassName {
 
-    private Element element;
+    Object object;
 
-    public Elements(Element element) {
-        this.element = element;
+    public SimpleClassName(Object object) {
+        this.object = object;
     }
 
-    /**
-     * check if an element is containing any significant values to be serialized (e.g. stored) to DB
-     *
-     * @return
-     */
-    public boolean isVoid() {
-        return (element.getValue() == null &&
-                element.getNullFlavour() == null);
+    public String toString(){
+        return object.getClass().getSimpleName();
     }
 }
