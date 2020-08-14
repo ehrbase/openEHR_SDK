@@ -20,8 +20,16 @@ public class NodeEncoding {
                     return prefix;
                 else {
                     String path = prefix + "[" + node.getArchetypeNodeId() + "]";
-                    if (!container.getClass().equals(MultiValueMap.class) && (!(path.startsWith(TAG_DESCRIPTION)))
-                            && (path.contains("[openEHR-") || path.contains(TAG_ACTIVITIES) || path.contains(TAG_ITEMS) || path.contains(TAG_EVENTS))) {
+                    if (!container.getClass().equals(MultiValueMap.class)
+                            && !(path.startsWith(TAG_DESCRIPTION))
+                            && !(path.startsWith(TAG_COMPOSITION))
+                            && (
+                                    path.contains("[openEHR-")
+                                            || path.contains(TAG_ACTIVITIES)
+                                            || path.contains(TAG_ITEMS)
+                                            || path.contains(TAG_EVENTS)
+                               )
+                        ) {
 
                         //expand name in key
                         String name = node.getName().getValue();
