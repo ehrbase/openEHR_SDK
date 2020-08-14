@@ -46,22 +46,25 @@ public abstract class AbstractRMUnmarshaller<T extends RMObject> implements RMUn
 
     protected final Set<String> consumedPath = new HashSet<>();
 
-
+    /**
+     * {@inheritDoc}
+     * Use {@link RmClassGeneratorConfig} to find die properties which needs to be set
+     */
     @Override
-    public void handle(String termLoop, T child, Map<String, String> values) {
+    public void handle(String currentTerm, T rmObject, Map<String, String> currentValues) {
 
-        RmClassGeneratorConfig rmClassGeneratorConfig = configMap.get(child.getClass());
+        RmClassGeneratorConfig rmClassGeneratorConfig = configMap.get(rmObject.getClass());
         if (rmClassGeneratorConfig != null && rmClassGeneratorConfig.isExpandField()) {
 
             Set<String> expandFields = rmClassGeneratorConfig.getExpandFields();
             if (expandFields.size() == 1 && expandFields.contains("value")) {
 
                 try {
-                    PropertyDescriptor propertyDescriptor = new PropertyDescriptor("value", child.getClass());
+                    PropertyDescriptor propertyDescriptor = new PropertyDescriptor("value", rmObject.getClass());
 
-                    setValue(termLoop, null, values, s -> {
+                    setValue(currentTerm, null, currentValues, s -> {
                         try {
-                            propertyDescriptor.getWriteMethod().invoke(child, s);
+                            propertyDescriptor.getWriteMethod().invoke(rmObject, s);
                         } catch (IllegalAccessException | InvocationTargetException e) {
                             throw new ClientException(e.getMessage(), e);
                         }
@@ -73,10 +76,10 @@ public abstract class AbstractRMUnmarshaller<T extends RMObject> implements RMUn
             } else {
                 for (String propertyName : expandFields) {
                     try {
-                        PropertyDescriptor propertyDescriptor = new PropertyDescriptor(propertyName, child.getClass());
-                        setValue(termLoop, propertyName, values, s -> {
+                        PropertyDescriptor propertyDescriptor = new PropertyDescriptor(propertyName, rmObject.getClass());
+                        setValue(currentTerm, propertyName, currentValues, s -> {
                             try {
-                                propertyDescriptor.getWriteMethod().invoke(child, s);
+                                propertyDescriptor.getWriteMethod().invoke(rmObject, s);
                             } catch (IllegalAccessException | InvocationTargetException e) {
                                 throw new ClientException(e.getMessage(), e);
                             }
@@ -90,6 +93,16 @@ public abstract class AbstractRMUnmarshaller<T extends RMObject> implements RMUn
         }
     }
 
+    /**
+     * Sets the {@code consumer} to the value in {@code values} corresponding to {@code term} and {@code propertyName}
+     *
+     * @param term
+     * @param propertyName
+     * @param values
+     * @param consumer
+     * @param clazz
+     * @param <S>
+     */
     protected <S> void setValue(String term, String propertyName, Map<String, String> values, Consumer<S> consumer, Class<S> clazz) {
         String key = propertyName != null ? term + "|" + propertyName : term;
         String jasonValue = values.get(key);

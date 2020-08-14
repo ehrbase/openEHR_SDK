@@ -33,11 +33,11 @@ public class DvDurationRMUnmarshaller extends AbstractRMUnmarshaller<DvDuration>
     }
 
     @Override
-    public void handle(String termLoop, DvDuration child, Map<String, String> values) {
-        String s = values.get(termLoop);
+    public void handle(String currentTerm, DvDuration rmObject, Map<String, String> currentValues) {
+        String s = currentValues.get(currentTerm);
         if (StringUtils.isNotBlank(s)) {
-            child.setValue(DateTimeParsers.parseDurationValue(StringUtils.strip(s, "\"")));
-            consumedPath.add(termLoop);
+            rmObject.setValue(DateTimeParsers.parseDurationValue(StringUtils.strip(s, "\"")));
+            consumedPath.add(currentTerm);
         }
     }
 }

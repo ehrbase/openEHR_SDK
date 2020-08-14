@@ -30,7 +30,7 @@ public class PartyIdentifiedRMUnmarshaller extends AbstractRMUnmarshaller<PartyI
     }
 
     @Override
-    public void handle(String termLoop, PartyIdentified child, Map<String, String> values) {
-        setValue(termLoop, "name", values, child::setName, String.class);
+    public void handle(String currentTerm, PartyIdentified rmObject, Map<String, String> currentValues) {
+        setValue(currentTerm, "name", currentValues, rmObject::setName, String.class);
     }
 }

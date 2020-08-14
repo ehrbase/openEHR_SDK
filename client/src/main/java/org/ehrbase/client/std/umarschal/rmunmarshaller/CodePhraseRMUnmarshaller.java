@@ -26,15 +26,21 @@ import java.util.Map;
 
 public class CodePhraseRMUnmarshaller extends AbstractRMUnmarshaller<CodePhrase> {
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Class<CodePhrase> getAssociatedClass() {
         return CodePhrase.class;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public void handle(String termLoop, CodePhrase child, Map<String, String> values) {
-        setValue(termLoop, "code", values, child::setCodeString, String.class);
-        child.setTerminologyId(new TerminologyId());
-        setValue(termLoop, "terminology", values, t -> child.getTerminologyId().setValue(t), String.class);
+    public void handle(String currentTerm, CodePhrase rmObject, Map<String, String> currentValues) {
+        setValue(currentTerm, "code", currentValues, rmObject::setCodeString, String.class);
+        rmObject.setTerminologyId(new TerminologyId());
+        setValue(currentTerm, "terminology", currentValues, t -> rmObject.getTerminologyId().setValue(t), String.class);
     }
 }

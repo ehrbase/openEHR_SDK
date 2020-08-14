@@ -27,17 +27,23 @@ import java.util.Map;
 
 public class DvCodedTextRMUnmarshaller extends AbstractRMUnmarshaller<DvCodedText> {
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Class<DvCodedText> getAssociatedClass() {
         return DvCodedText.class;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public void handle(String termLoop, DvCodedText child, Map<String, String> values) {
-        setValue(termLoop, "value", values, child::setValue, String.class);
-        child.setDefiningCode(new CodePhrase());
-        setValue(termLoop, "code", values, c -> child.getDefiningCode().setCodeString(c), String.class);
-        child.getDefiningCode().setTerminologyId(new TerminologyId());
-        setValue(termLoop, "terminology", values, t -> child.getDefiningCode().getTerminologyId().setValue(t), String.class);
+    public void handle(String currentTerm, DvCodedText rmObject, Map<String, String> currentValues) {
+        setValue(currentTerm, "value", currentValues, rmObject::setValue, String.class);
+        rmObject.setDefiningCode(new CodePhrase());
+        setValue(currentTerm, "code", currentValues, c -> rmObject.getDefiningCode().setCodeString(c), String.class);
+        rmObject.getDefiningCode().setTerminologyId(new TerminologyId());
+        setValue(currentTerm, "terminology", currentValues, t -> rmObject.getDefiningCode().getTerminologyId().setValue(t), String.class);
     }
 }

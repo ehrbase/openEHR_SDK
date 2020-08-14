@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Defines how terminal RMObjekts will be serialised to flat json
+ * Defines how terminal RMObjekts will be marshalled to flat json
  */
 public interface StdConfig<T extends RMObject> extends ClassDependent<T> {
 

@@ -81,11 +81,17 @@ public class FlatJsonUnmarshaller {
 
     private Map<String, String> currentValues;
 
-
+    /**
+     * Unmarshal flat Json to Composition
+     *
+     * @param flat                the flat Json
+     * @param introspect          the introspect belonging to the template
+     * @param operationalTemplate the template of the flat json
+     * @return
+     */
     public Composition unmarshal(String flat, TemplateIntrospect introspect, OPERATIONALTEMPLATE operationalTemplate) {
 
         consumedPath = new HashSet<>();
-        Composition generate = (Composition) OPT_SKELETON_BUILDER.generate(operationalTemplate);
 
         try {
 
@@ -96,14 +102,14 @@ public class FlatJsonUnmarshaller {
 
             }
             ArchetypeNode root = introspect.getRoot();
+            Composition generate = (Composition) OPT_SKELETON_BUILDER.generate(operationalTemplate);
 
             handleEntityNode(new Context<>(root.getName(), "", generate, "", root, currentValues, null));
-
+            return NORMALIZER.normalize(generate);
         } catch (JsonProcessingException e) {
             throw new ClientException(e.getMessage());
         }
 
-        return NORMALIZER.normalize(generate);
 
     }
 
@@ -118,7 +124,9 @@ public class FlatJsonUnmarshaller {
     }
 
     private void handleEntityNode(Context<EntityNode, Locatable> context) {
+
         String termLoop = context.getCurrentTerm();
+
         if (context.getOuterCount() != null) {
             termLoop = termLoop + ":" + context.getOuterCount();
         }

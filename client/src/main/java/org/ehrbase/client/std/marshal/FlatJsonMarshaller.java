@@ -60,7 +60,12 @@ public class FlatJsonMarshaller {
         this.introspect = introspect;
     }
 
-
+    /**
+     * Marschal the composition to flat json
+     *
+     * @param composition
+     * @return
+     */
     public String toFlatJson(Composition composition) {
 
         Map<String, Object> result = new HashMap<>(handleEntityNode(new Context<>(introspect.getRootName(), "", composition, "", introspect.getRoot(), null)));
@@ -72,7 +77,7 @@ public class FlatJsonMarshaller {
         }
     }
 
-    Map<String, Object> handleEntityNode(Context<EntityNode, Locatable> context) {
+    private Map<String, Object> handleEntityNode(Context<EntityNode, Locatable> context) {
         Map<String, Object> result = new HashMap<>();
 
         final String term;

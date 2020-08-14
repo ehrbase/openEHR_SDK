@@ -19,6 +19,7 @@
 
 package org.ehrbase.client.std;
 
+import org.ehrbase.client.exception.ClientException;
 import org.ehrbase.client.templateprovider.TemplateProvider;
 
 /**
@@ -32,8 +33,23 @@ public class FlatJasonProvider {
         this.templateProvider = templateProvider;
     }
 
+    /**
+     * Builds a {@link FlatJson} for the template with {@code templateId} and {@link FlatFormat} {@code format}
+     *
+     * @param format
+     * @param templateId
+     * @return
+     */
     public FlatJson buildFlatJson(FlatFormat format, String templateId) {
-        return new FlatJson(this, templateId);
+
+        switch (format) {
+            case SIM_SDT:
+                return new FlatJson(this, templateId);
+            default:
+                throw new ClientException(String.format("Format %s not supported", format));
+        }
+
+
     }
 
     TemplateProvider getTemplateProvider() {
