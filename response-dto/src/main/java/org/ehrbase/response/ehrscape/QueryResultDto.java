@@ -18,6 +18,8 @@
 
 package org.ehrbase.response.ehrscape;
 
+import org.ehrbase.response.ehrscape.query.ResultHolder;
+
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -26,13 +28,13 @@ public class QueryResultDto {
     private String executedAQL;
     private List<List<String>> explain;
     private Map<String, String> variables;
-    private List<Map<String, Object>> resultSet;
+    private List<ResultHolder> resultSet;
 
-    public List<Map<String, Object>> getResultSet() {
+    public List<ResultHolder> getResultSet() {
         return resultSet;
     }
 
-    public void setResultSet(List<Map<String, Object>> resultSet) {
+    public void setResultSet(List<ResultHolder> resultSet) {
         this.resultSet = resultSet;
     }
 

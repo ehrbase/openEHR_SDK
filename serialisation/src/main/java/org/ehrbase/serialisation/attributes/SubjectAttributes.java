@@ -25,23 +25,26 @@ import org.ehrbase.serialisation.dbencoding.CompositionSerializer;
 
 import java.util.Map;
 
+/**
+ * populate the attributes for RM PartyProxy specialization
+ */
 public class SubjectAttributes {
 
-    private I_SubjectAttributes subjectAttributes;
+    private final I_SubjectAttributes iSubjectAttributes;
 
     public SubjectAttributes(Object subject, CompositionSerializer compositionSerializer) {
 
         if (subject instanceof PartySelf)
-            subjectAttributes = new PartySelfAttributes((PartySelf)subject, compositionSerializer);
+            iSubjectAttributes = new PartySelfAttributes((PartySelf)subject, compositionSerializer);
         else if (subject instanceof PartyRelated)
-            subjectAttributes = new PartyRelatedAttributes((PartyRelated)subject, compositionSerializer);
+            iSubjectAttributes = new PartyRelatedAttributes((PartyRelated)subject, compositionSerializer);
         else if (subject instanceof PartyIdentified)
-            subjectAttributes = new PartyIdentifiedAttributes((PartyIdentified)subject, compositionSerializer);
+            iSubjectAttributes = new PartyIdentifiedAttributes((PartyIdentified)subject, compositionSerializer);
         else
             throw new IllegalStateException("Could not handle subject of type:"+subject.getClass());
     }
 
     public Map<String, Object> toMap(){
-        return subjectAttributes.toMap();
+        return iSubjectAttributes.toMap();
     }
 }

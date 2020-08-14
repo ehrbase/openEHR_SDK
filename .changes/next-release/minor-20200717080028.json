@@ -1,0 +1,4 @@
+{
+  "type": "minor",
+  "description": "Admin API response DTOs Status, PUT and DELETE (see: https://github.com/ehrbase/openEHR_SDK/pull/56)"
+}
