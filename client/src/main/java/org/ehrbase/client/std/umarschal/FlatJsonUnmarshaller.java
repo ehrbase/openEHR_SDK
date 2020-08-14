@@ -161,7 +161,7 @@ public class FlatJsonUnmarshaller {
 
 
         Map<String, String> subValues = context.getCurrentValues().entrySet().stream()
-                .filter(e -> e.getKey().startsWith(context.getCurrentTerm()))
+                .filter(e -> e.getKey().startsWith(termLoop))
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
         if (context.getNode() instanceof EntityNode) {
@@ -337,7 +337,13 @@ public class FlatJsonUnmarshaller {
     }
 
     private static class Context<T extends Node, V> {
+        /**
+         * current name based path
+         */
         private final String currentPath;
+        /**
+         * current aql based path
+         */
         private final String currentTerm;
         private final String pathToNode;
         private final T node;

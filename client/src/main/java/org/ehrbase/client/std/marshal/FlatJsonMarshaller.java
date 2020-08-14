@@ -61,7 +61,7 @@ public class FlatJsonMarshaller {
     }
 
     /**
-     * Marschal the composition to flat json
+     * Marshal the composition to flat json
      *
      * @param composition
      * @return
@@ -115,7 +115,7 @@ public class FlatJsonMarshaller {
         if (context.getNode() instanceof EndNode) {
 
             Object child = new ItemExtractor(context.getCurrentObject(), context.getPathToNode(), ((EndNode) context.getNode()).isMulti()).getChild();
-            result.putAll(handleMulti(new Context<>(termLoop, pathloop, child, "", (EndNode) context.getNode(), null), this::buildChildValues));
+            result.putAll(handleMulti(new Context<>(termLoop, pathloop, child, "", (EndNode) context.getNode(), null), this::handleEndNode));
 
         } else if (context.getNode() instanceof EntityNode) {
 
@@ -162,7 +162,7 @@ public class FlatJsonMarshaller {
         return new HashMap<>(handleNode(new Context<>(context.getCurrentTerm(), context.getCurrentPath(), (Locatable) context.getCurrentObject(), "", endNode, context.getOuterCount())));
     }
 
-    private Map<String, Object> buildChildValues(Context<EndNode, Object> context) {
+    private Map<String, Object> handleEndNode(Context<EndNode, Object> context) {
 
         final String term;
         if (context.outerCount != null) {
@@ -185,7 +185,13 @@ public class FlatJsonMarshaller {
 
 
     private static class Context<T extends Node, V> {
+        /**
+         * current name based path
+         */
         private final String currentTerm;
+        /**
+         * current aql based path
+         */
         private final String currentPath;
         private final V currentObject;
         private final String pathToNode;

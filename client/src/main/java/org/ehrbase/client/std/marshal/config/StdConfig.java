@@ -38,7 +38,7 @@ public interface StdConfig<T extends RMObject> extends ClassDependent<T> {
     Map<String, Object> buildChildValues(String currentTerm, T rmObject);
 
     /**
-     * Returns the maximum count of flat values a Object of class {@code clazz} can have.
+     * Returns the list of count of flat values a Object of class {@code clazz} can have.
      *
      * @param clazz
      * @return
