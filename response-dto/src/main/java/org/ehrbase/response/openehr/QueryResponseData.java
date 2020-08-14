@@ -22,6 +22,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 import org.ehrbase.response.ehrscape.QueryResultDto;
+import org.ehrbase.response.ehrscape.query.ResultHolder;
 
 import java.util.*;
 
@@ -52,12 +53,12 @@ public class QueryResponseData {
 
         //set the columns definitions
         if (!queryResultDto.variablesIsEmpty()) {
-            if (queryResultDto.getResultSet().size() > 0) {
+            if (!queryResultDto.getResultSet().isEmpty()) {
                 //the order of the column definitions is set by the resultSet ordering
-                Map<String, Object> record = queryResultDto.getResultSet().get(0);
+                ResultHolder record = queryResultDto.getResultSet().get(0);
                 int count = 0;
 
-                for (String columnId : record.keySet()) {
+                for (String columnId : record.columnIds()) {
                     Map<String, String> fieldMap = new HashMap<>();
 
                     if (queryResultDto.variablesContainsColumnId(columnId)) {
@@ -90,9 +91,8 @@ public class QueryResponseData {
             }
 
             //set the row results
-            for (Map valueSet : queryResultDto.getResultSet()) {
-                List values = new ArrayList(valueSet.values());
-                rows.add(values);
+            for (ResultHolder valueSet : queryResultDto.getResultSet()) {
+                rows.add(valueSet.values());
             }
         }
     }

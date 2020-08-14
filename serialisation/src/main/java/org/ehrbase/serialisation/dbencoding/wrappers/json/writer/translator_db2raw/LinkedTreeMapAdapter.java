@@ -94,9 +94,6 @@ public class LinkedTreeMapAdapter extends TypeAdapter<LinkedTreeMap<String, Obje
 
                 map.remove(TAG_CLASS);
             }
-        } else if (isMultiContent && map.containsKey(I_DvTypeAdapter.ARCHETYPE_NODE_ID)) {
-            parentItemsArchetypeNodeId = (String) map.get(I_DvTypeAdapter.ARCHETYPE_NODE_ID);
-            map.remove(I_DvTypeAdapter.ARCHETYPE_NODE_ID);
         }
 
         if (isItemsOnly) {

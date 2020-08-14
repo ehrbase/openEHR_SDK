@@ -119,7 +119,7 @@ public class CoronaTestIT {
         List<Record4<VorhandenDefiningcode, VorhandenDefiningcode, VorhandenDefiningcode, Language>> actual = openEhrClient.aqlEndpoint().execute(entityQuery, ehrIdParameter.setValue(ehr));
 
         assertThat(actual).extracting(Record4::value1, Record4::value2, Record4::value3, Record4::value4)
-                .containsExactlyInAnyOrder(new Tuple(VorhandenDefiningcode.VORHANDEN, VorhandenDefiningcode.VORHANDEN, null, Language.DE));
+                .containsExactlyInAnyOrder(new Tuple(VorhandenDefiningcode.VORHANDEN, VorhandenDefiningcode.VORHANDEN, VorhandenDefiningcode.VORHANDEN, Language.DE));
 
 
     }
