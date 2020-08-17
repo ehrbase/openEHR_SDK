@@ -44,147 +44,147 @@ workflows:
                 - develop
                 - release
 
-      - COMPOSITION-tests-1:
-          context: org-global
-          requires:
-            - build-EHRbase
-          filters:
-            branches:
-              ignore:
-                - master
-                - develop
-                - release
+      # - COMPOSITION-tests-1:
+      #     context: org-global
+      #     requires:
+      #       - build-EHRbase
+      #     filters:
+      #       branches:
+      #         ignore:
+      #           - master
+      #           - develop
+      #           - release
 
-      - COMPOSITION-tests-2:
-          context: org-global
-          requires:
-            - build-EHRbase
-          filters:
-            branches:
-              ignore:
-                - master
-                - develop
-                - release
+      # - COMPOSITION-tests-2:
+      #     context: org-global
+      #     requires:
+      #       - build-EHRbase
+      #     filters:
+      #       branches:
+      #         ignore:
+      #           - master
+      #           - develop
+      #           - release
 
-      - COMPOSITION-tests-3:
-          context: org-global
-          requires:
-            - build-EHRbase
-          filters:
-            branches:
-              ignore:
-                - master
-                - develop
-                - release
+      # - COMPOSITION-tests-3:
+      #     context: org-global
+      #     requires:
+      #       - build-EHRbase
+      #     filters:
+      #       branches:
+      #         ignore:
+      #           - master
+      #           - develop
+      #           - release
 
-      - COMPOSITION-tests-4:
-          context: org-global
-          requires:
-            - build-EHRbase
-          filters:
-            branches:
-              ignore:
-                - master
-                - develop
-                - release
+      # - COMPOSITION-tests-4:
+      #     context: org-global
+      #     requires:
+      #       - build-EHRbase
+      #     filters:
+      #       branches:
+      #         ignore:
+      #           - master
+      #           - develop
+      #           - release
 
-      - CONTRIBUTION-tests:
-          context: org-global
-          requires:
-            - build-EHRbase
-          filters:
-            branches:
-              ignore:
-                - master
-                - develop
-                - release
+      # - CONTRIBUTION-tests:
+      #     context: org-global
+      #     requires:
+      #       - build-EHRbase
+      #     filters:
+      #       branches:
+      #         ignore:
+      #           - master
+      #           - develop
+      #           - release
 
-      - DIRECTORY-tests:
-          context: org-global
-          requires:
-            - build-EHRbase
-          filters:
-            branches:
-              ignore:
-                - master
-                - develop
-                - release
+      # - DIRECTORY-tests:
+      #     context: org-global
+      #     requires:
+      #       - build-EHRbase
+      #     filters:
+      #       branches:
+      #         ignore:
+      #           - master
+      #           - develop
+      #           - release
 
-      - EHRSERVICE-tests:
-          context: org-global
-          requires:
-            - build-EHRbase
-          filters:
-            branches:
-              ignore:
-                - master
-                - develop
-                - release
+      # - EHRSERVICE-tests:
+      #     context: org-global
+      #     requires:
+      #       - build-EHRbase
+      #     filters:
+      #       branches:
+      #         ignore:
+      #           - master
+      #           - develop
+      #           - release
       
-      - EHRSTATUS-tests:
-          context: org-global
-          requires:
-            - build-EHRbase
-          filters:
-            branches:
-              ignore:
-                - master
-                - develop
-                - release
+      # - EHRSTATUS-tests:
+      #     context: org-global
+      #     requires:
+      #       - build-EHRbase
+      #     filters:
+      #       branches:
+      #         ignore:
+      #           - master
+      #           - develop
+      #           - release
       
-      - KNOWLEDGE-tests:
-          context: org-global
-          requires:
-            - build-EHRbase
-          filters:
-            branches:
-              ignore:
-                - master
-                - develop
-                - release
+      # - KNOWLEDGE-tests:
+      #     context: org-global
+      #     requires:
+      #       - build-EHRbase
+      #     filters:
+      #       branches:
+      #         ignore:
+      #           - master
+      #           - develop
+      #           - release
 
-      - QUERYSERVICE-tests-1:
-          context: org-global
-          requires:
-            - build-EHRbase
-          filters:
-            branches:
-              ignore:
-                - master
-                - develop
-                - release
+      # - QUERYSERVICE-tests-1:
+      #     context: org-global
+      #     requires:
+      #       - build-EHRbase
+      #     filters:
+      #       branches:
+      #         ignore:
+      #           - master
+      #           - develop
+      #           - release
 
-      - QUERYSERVICE-tests-2:
-          context: org-global
-          requires:
-            - build-EHRbase
-          filters:
-            branches:
-              ignore:
-                - master
-                - develop
-                - release
+      # - QUERYSERVICE-tests-2:
+      #     context: org-global
+      #     requires:
+      #       - build-EHRbase
+      #     filters:
+      #       branches:
+      #         ignore:
+      #           - master
+      #           - develop
+      #           - release
 
-      - ROBOT-TEST-REPORT:
-          context: org-global
-          requires:
-            - COMPOSITION-tests-1
-            - COMPOSITION-tests-2
-            - COMPOSITION-tests-3
-            - COMPOSITION-tests-4
-            - CONTRIBUTION-tests
-            - DIRECTORY-tests
-            - EHRSERVICE-tests
-            - EHRSTATUS-tests
-            - KNOWLEDGE-tests
-            - QUERYSERVICE-tests-1
-            - QUERYSERVICE-tests-2
-          filters:
-            branches:
-              ignore:
-                - master
-                - develop
-                - release
+      # - ROBOT-TEST-REPORT:
+      #     context: org-global
+      #     requires:
+      #       - COMPOSITION-tests-1
+      #       - COMPOSITION-tests-2
+      #       - COMPOSITION-tests-3
+      #       - COMPOSITION-tests-4
+      #       - CONTRIBUTION-tests
+      #       - DIRECTORY-tests
+      #       - EHRSERVICE-tests
+      #       - EHRSTATUS-tests
+      #       - KNOWLEDGE-tests
+      #       - QUERYSERVICE-tests-1
+      #       - QUERYSERVICE-tests-2
+      #     filters:
+      #       branches:
+      #         ignore:
+      #           - master
+      #           - develop
+      #           - release
 
 
 
@@ -228,17 +228,17 @@ workflows:
 
 
 
-  # # WORKFLOW 5/5) Code analysis w/ SonarCloud.io 
-  # sonar-code-analysis:
-  #   jobs:
-  #     - run-code-analysis:
-  #         context: org-global
-  #         # filters:
-  #         #   branches:
-  #         #     ignore:
-  #         #       - master
-  #         #       - develop
-  #         #       - release
+  # WORKFLOW 5/5) Code analysis w/ SonarCloud.io 
+  sonar-code-analysis:
+    jobs:
+      - run-code-analysis:
+          context: org-global
+          # filters:
+          #   branches:
+          #     ignore:
+          #       - master
+          #       - develop
+          #       - release
 
 
 
@@ -667,7 +667,7 @@ commands:
     steps:
       - add_ssh_keys:
           fingerprints:
-            - b7:59:8b:46:65:4e:37:d9:b1:21:30:90:df:9c:c8:dd
+            - 3e:42:46:e1:9e:40:4d:ae:33:ab:db:0a:95:24:d2:99
       - run:
           name: Configure GIT
           command: |
