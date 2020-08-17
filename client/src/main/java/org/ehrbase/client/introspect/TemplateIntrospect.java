@@ -17,6 +17,7 @@
 
 package org.ehrbase.client.introspect;
 
+import com.google.common.reflect.TypeToken;
 import com.nedap.archie.rm.archetyped.Pathable;
 import com.nedap.archie.rm.composition.Composition;
 import com.nedap.archie.rm.composition.EventContext;
@@ -41,7 +42,6 @@ import org.ehrbase.client.terminology.TerminologyProvider;
 import org.ehrbase.client.terminology.ValueSet;
 import org.ehrbase.serialisation.util.SnakeCase;
 import org.openehr.schemas.v1.*;
-import org.reflections.ReflectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -363,7 +363,7 @@ public class TemplateIntrospect {
         if (List.class.isAssignableFrom(field.getType())) {
             Type actualTypeArgument = ((ParameterizedType) field.getGenericType()).getActualTypeArguments()[0];
 
-            return ReflectionUtils.forName(actualTypeArgument.getTypeName(), this.getClass().getClassLoader());
+            return TypeToken.of(actualTypeArgument).getRawType();
         } else {
             return field.getType();
         }

@@ -19,18 +19,20 @@
 
 package org.ehrbase.client.reflection;
 
+import io.github.classgraph.ClassGraph;
+import io.github.classgraph.ScanResult;
 import org.ehrbase.client.exception.ClientException;
-import org.reflections.Reflections;
 
-import java.lang.reflect.Modifier;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
  * Helper class to find Configurations classes in the classpath.
  */
 public class ReflectionHelper {
+
+    private static Map<Class<?>, Map> cache = new HashMap<>();
 
     private ReflectionHelper() {
     }
@@ -44,18 +46,36 @@ public class ReflectionHelper {
      * @return
      */
     public static <T, S extends ClassDependent<T>> Map<Class<? extends T>, S> buildMap(Class<S> root) {
-        Reflections reflections = new Reflections(root.getPackage().getName());
-        Set<Class<? extends S>> configs = reflections.getSubTypesOf(root);
 
-        return configs.stream()
-                .filter(c -> !Modifier.isAbstract(c.getModifiers()))
-                .map(c -> {
-                    try {
-                        return c.getConstructor().newInstance();
-                    } catch (Exception e) {
-                        throw new ClientException(e.getMessage(), e);
-                    }
-                }).collect(Collectors.toMap(S::getAssociatedClass, c -> c));
 
+        Map<Class<? extends T>, S> classSMap = cache.get(root);
+
+        if (classSMap == null) {
+            classSMap = buildInternal(root);
+            cache.put(root, classSMap);
+        }
+        return classSMap;
+    }
+
+    public static <T, S extends ClassDependent<T>> Map<Class<? extends T>, S> buildInternal(Class<?> root) {
+        Map<Class<? extends T>, S> classSMap;
+        try (ScanResult result = new ClassGraph().enableClassInfo().enableAnnotationInfo()
+                .whitelistPackages(root.getPackage().getName()).scan()) {
+
+            classSMap = result.getClassesImplementing(root.getName()).stream()
+                    .filter(c -> !c.isAbstract())
+                    .map(c -> {
+                        try {
+                            return c.loadClass().getConstructor().newInstance();
+                        } catch (Exception e) {
+                            throw new ClientException(e.getMessage(), e);
+                        }
+                    })
+                    .map(o -> (S) o)
+                    .collect(Collectors.toMap(S::getAssociatedClass, c -> c));
+            cache.put(root, classSMap);
+
+        }
+        return classSMap;
     }
 }

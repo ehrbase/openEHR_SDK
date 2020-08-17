@@ -17,6 +17,7 @@
 
 package org.ehrbase.client.flattener;
 
+import com.google.common.reflect.TypeToken;
 import com.nedap.archie.aom.CComplexObject;
 import com.nedap.archie.creation.RMObjectCreator;
 import com.nedap.archie.rm.RMObject;
@@ -43,7 +44,6 @@ import org.ehrbase.client.normalizer.Normalizer;
 import org.ehrbase.client.templateprovider.TemplateProvider;
 import org.ehrbase.serialisation.jsonencoding.CanonicalJson;
 import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
-import org.reflections.ReflectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -196,7 +196,7 @@ public class Unflattener {
             if (List.class.isAssignableFrom(field.getType())) {
                 Type actualTypeArgument = ((ParameterizedType) field.getGenericType()).getActualTypeArguments()[0];
 
-                Class<?> aClass = ReflectionUtils.forName(actualTypeArgument.getTypeName(), this.getClass().getClassLoader());
+                Class<?> aClass = TypeToken.of(actualTypeArgument).getRawType();
                 if (aClass != null) {
                     return aClass;
                 } else {

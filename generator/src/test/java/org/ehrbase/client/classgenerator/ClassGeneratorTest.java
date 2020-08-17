@@ -51,7 +51,13 @@ public class ClassGeneratorTest {
     public void testGenerate() throws IOException, XmlException {
         OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(OperationalTemplateTestData.BLOOD_PRESSURE_SIMPLE.getStream()).getTemplate();
         ClassGenerator cut = new ClassGenerator();
-        ClassGeneratorResult generate = cut.generate(PACKAGE_NAME, template);
+        ClassGeneratorResult generate = null;
+        try {
+
+            generate = cut.generate(PACKAGE_NAME, template);
+        } catch (Throwable t) {
+            System.out.println(t.getStackTrace());
+        }
 
 
         List<FieldSpec> fieldSpecs = generate.getClasses().values().stream()

@@ -209,17 +209,6 @@
                                 <include>${include.tests}</include>
                             </includes>
 
-
-                            <!--
-                                NOTE: @S.SPISKA FIX ME!
-                                I had to exclude this test cause it conflicts w/ jacoco
-                                issue: "duplicate key $jacocodata"
-                            -->
-                            <excludes>
-                                <exclude>**/ClassGeneratorTest.java</exclude>
-                            </excludes>
-
-
                         </configuration>
                     </execution>
 
@@ -255,14 +244,6 @@
                             </includes>
 
 
-                            <!--
-                                NOTE: @S.SPISKA FIX ME!
-                                I had to exclude this test cause it conflicts w/ jacoco
-                                issue: "duplicate key $jacocodata"
-                            -->
-                            <excludes>
-                                <exclude>**/ClassGeneratorTest.java</exclude>
-                            </excludes>
 
 
                         </configuration>
@@ -368,6 +349,11 @@
                 <version>0.9.12</version>
             </dependency>
             <dependency>
+                <groupId>com.google.guava</groupId>
+                <artifactId>guava</artifactId>
+                <version>29.0-jre</version>
+            </dependency>
+            <dependency>
                 <groupId>javax.cache</groupId>
                 <artifactId>cache-api</artifactId>
                 <version>1.1.1</version>
@@ -421,6 +407,11 @@
                 <groupId>com.squareup</groupId>
                 <artifactId>javapoet</artifactId>
                 <version>1.11.1</version>
+            </dependency>
+            <dependency>
+                <groupId>io.github.classgraph</groupId>
+                <artifactId>classgraph</artifactId>
+                <version>4.8.78</version>
             </dependency>
             <dependency>
                 <groupId>org.slf4j</groupId>

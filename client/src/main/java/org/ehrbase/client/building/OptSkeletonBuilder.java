@@ -20,6 +20,7 @@
  */
 package org.ehrbase.client.building;
 
+import com.google.common.reflect.TypeToken;
 import com.nedap.archie.aom.CComplexObject;
 import com.nedap.archie.creation.RMObjectCreator;
 import com.nedap.archie.rm.RMObject;
@@ -50,7 +51,6 @@ import org.ehrbase.client.reflection.ReflectionHelper;
 import org.ehrbase.serialisation.util.SnakeCase;
 import org.ehrbase.terminology.openehr.implementation.LocalizedTerminologies;
 import org.openehr.schemas.v1.*;
-import org.reflections.ReflectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -271,7 +271,7 @@ public class OptSkeletonBuilder {
         if (List.class.isAssignableFrom(field.getType())) {
             Type actualTypeArgument = ((ParameterizedType) field.getGenericType()).getActualTypeArguments()[0];
 
-            return ReflectionUtils.forName(actualTypeArgument.getTypeName(), this.getClass().getClassLoader());
+            return TypeToken.of(actualTypeArgument).getRawType();
         } else {
             return field.getType();
         }
