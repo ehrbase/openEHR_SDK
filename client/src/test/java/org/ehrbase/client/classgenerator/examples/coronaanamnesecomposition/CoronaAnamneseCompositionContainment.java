@@ -32,7 +32,7 @@ public class CoronaAnamneseCompositionContainment extends Containment {
 
   public SelectAqlField<String> STATUS_VALUE = new AqlFieldImp<String>(CoronaAnamneseComposition.class, "/context/other_context[at0001]/items[at0005]/value|value", "statusValue", String.class, this);
 
-  public ListSelectAqlField<HistorieObservation> HISTORIE = new ListAqlFieldImp<HistorieObservation>(CoronaAnamneseComposition.class, "/content[openEHR-EHR-OBSERVATION.story.v1]", "historie", HistorieObservation.class, this);
+  public ListSelectAqlField<GeschichteHistorieObservation> GESCHICHTE_HISTORIE = new ListAqlFieldImp<GeschichteHistorieObservation>(CoronaAnamneseComposition.class, "/content[openEHR-EHR-OBSERVATION.story.v1]", "geschichteHistorie", GeschichteHistorieObservation.class, this);
 
   public SelectAqlField<AllgemeineAngabenSection> ALLGEMEINE_ANGABEN = new AqlFieldImp<AllgemeineAngabenSection>(CoronaAnamneseComposition.class, "/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Allgemeine Angaben']", "allgemeineAngaben", AllgemeineAngabenSection.class, this);
 

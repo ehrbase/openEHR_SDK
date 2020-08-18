@@ -24,8 +24,6 @@ public class BewertungDesGesundheitsrisikosEvaluationContainment extends Contain
 
   public SelectAqlField<String> GESUNDHEITSRISIKO_VALUE = new AqlFieldImp<String>(BewertungDesGesundheitsrisikosEvaluation.class, "/data[at0001]/items[at0002]/value|value", "gesundheitsrisikoValue", String.class, this);
 
-  public SelectAqlField<BewertungDesGesundheitsrisikosRisikofaktorenChoice> RISIKOFAKTOREN = new AqlFieldImp<BewertungDesGesundheitsrisikosRisikofaktorenChoice>(BewertungDesGesundheitsrisikosEvaluation.class, "/data[at0001]/items[at0016]/name", "risikofaktoren", BewertungDesGesundheitsrisikosRisikofaktorenChoice.class, this);
-
   public SelectAqlField<Language> LANGUAGE = new AqlFieldImp<Language>(BewertungDesGesundheitsrisikosEvaluation.class, "/language", "language", Language.class, this);
 
   public SelectAqlField<BewertungDesGesundheitsrisikosVorhandenseinChoice> VORHANDENSEIN = new AqlFieldImp<BewertungDesGesundheitsrisikosVorhandenseinChoice>(BewertungDesGesundheitsrisikosEvaluation.class, "/data[at0001]/items[at0016]/items[at0017]/value", "vorhandensein", BewertungDesGesundheitsrisikosVorhandenseinChoice.class, this);

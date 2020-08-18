@@ -5,25 +5,25 @@ import org.ehrbase.client.classgenerator.EnumValueSet;
 public enum MathFunctionDefiningcode implements EnumValueSet {
   DECREASE("decrease", "decrease", "openehr", "521"),
 
-  INCREASE("increase", "increase", "openehr", "522"),
-
-  CHANGE("change", "change", "openehr", "147"),
-
-  MEDIAN("median", "median", "openehr", "268"),
-
   TOTAL("total", "total", "openehr", "148"),
-
-  MINIMUM("minimum", "minimum", "openehr", "145"),
-
-  MODE("mode", "mode", "openehr", "267"),
-
-  MEAN("mean", "mean", "openehr", "146"),
-
-  ACTUAL("actual", "actual", "openehr", "640"),
 
   MAXIMUM("maximum", "maximum", "openehr", "144"),
 
-  VARIATION("variation", "variation", "openehr", "149");
+  MODE("mode", "mode", "openehr", "267"),
+
+  INCREASE("increase", "increase", "openehr", "522"),
+
+  ACTUAL("actual", "actual", "openehr", "640"),
+
+  VARIATION("variation", "variation", "openehr", "149"),
+
+  MINIMUM("minimum", "minimum", "openehr", "145"),
+
+  CHANGE("change", "change", "openehr", "147"),
+
+  MEAN("mean", "mean", "openehr", "146"),
+
+  MEDIAN("median", "median", "openehr", "268");
 
   private String value;
 

@@ -17,6 +17,7 @@
 
 package org.ehrbase.client.templateprovider;
 
+import org.ehrbase.client.introspect.TemplateIntrospect;
 import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
 
 import javax.cache.Cache;
@@ -28,27 +29,52 @@ import java.util.Optional;
 public class CachedTemplateProvider implements TemplateProvider {
 
     private final TemplateProvider rootTemplateProvider;
-    private final Cache<String, OPERATIONALTEMPLATE> cache;
+    private final Cache<String, OPERATIONALTEMPLATE> templateCache;
+    private final Cache<String, TemplateIntrospect> introspectCache;
 
     /**
      * @param rootTemplateProvider The warped {@link TemplateProvider}
-     * @param cache                The {@link Cache} which is used for caching.
+     * @param templateCache        The {@link Cache} which is used for caching the templates.
+     * @deprecated use {@link CachedTemplateProvider#CachedTemplateProvider(TemplateProvider, Cache, Cache)}
      */
-    public CachedTemplateProvider(TemplateProvider rootTemplateProvider, Cache<String, OPERATIONALTEMPLATE> cache) {
+    @Deprecated
+    public CachedTemplateProvider(TemplateProvider rootTemplateProvider, Cache<String, OPERATIONALTEMPLATE> templateCache) {
 
         this.rootTemplateProvider = rootTemplateProvider;
-        this.cache = cache;
+        this.templateCache = templateCache;
+        this.introspectCache = null;
+    }
+
+    /**
+     * @param rootTemplateProvider The warped {@link TemplateProvider}
+     * @param templateCache        The {@link Cache} which is used for caching the templates.
+     * @param introspectCache      The {@link Cache} which is used for caching the templates.
+     */
+    public CachedTemplateProvider(TemplateProvider rootTemplateProvider, Cache<String, OPERATIONALTEMPLATE> templateCache, Cache<String, TemplateIntrospect> introspectCache) {
+        this.rootTemplateProvider = rootTemplateProvider;
+        this.templateCache = templateCache;
+        this.introspectCache = introspectCache;
     }
 
     @Override
     public Optional<OPERATIONALTEMPLATE> find(String templateId) {
 
-        Optional<OPERATIONALTEMPLATE> operationaltemplate = Optional.ofNullable(cache.get(templateId));
+        Optional<OPERATIONALTEMPLATE> operationaltemplate = Optional.ofNullable(templateCache.get(templateId));
 
         if (!operationaltemplate.isPresent()) {
             operationaltemplate = rootTemplateProvider.find(templateId);
-            operationaltemplate.ifPresent(o -> cache.put(templateId, o));
+            operationaltemplate.ifPresent(o -> templateCache.put(templateId, o));
         }
         return operationaltemplate;
+    }
+
+    @Override
+    public Optional<TemplateIntrospect> buildIntrospect(String templateId) {
+        TemplateIntrospect templateIntrospect = introspectCache.get(templateId);
+        if (templateIntrospect == null) {
+            templateIntrospect = find(templateId).map(TemplateIntrospect::new).orElse(null);
+        }
+
+        return Optional.ofNullable(templateIntrospect);
     }
 }

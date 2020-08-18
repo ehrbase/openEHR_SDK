@@ -19,6 +19,8 @@
 
 package org.ehrbase.client.terminology;
 
+import java.util.Objects;
+
 public class TermDefinition {
     private final String code;
     private final String value;
@@ -40,5 +42,20 @@ public class TermDefinition {
 
     public String getDescription() {
         return description;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        TermDefinition that = (TermDefinition) o;
+        return Objects.equals(code, that.code) &&
+                Objects.equals(value, that.value) &&
+                Objects.equals(description, that.description);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(code, value, description);
     }
 }

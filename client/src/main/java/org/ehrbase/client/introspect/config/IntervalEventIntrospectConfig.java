@@ -30,7 +30,7 @@ public class IntervalEventIntrospectConfig implements RmIntrospectConfig {
     private static final Set<String> FIELDS = Stream.of("time", "width", "mathFunction").collect(Collectors.toSet());
 
     @Override
-    public Class getRMClass() {
+    public Class getAssociatedClass() {
         return IntervalEvent.class;
     }
 

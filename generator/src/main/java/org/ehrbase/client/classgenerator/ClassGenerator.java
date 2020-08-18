@@ -28,20 +28,21 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.text.CaseUtils;
 import org.apache.xmlbeans.XmlException;
 import org.ehrbase.client.annotations.*;
 import org.ehrbase.client.classgenerator.config.RmClassGeneratorConfig;
-import org.ehrbase.client.exception.ClientException;
 import org.ehrbase.client.flattener.PathExtractor;
 import org.ehrbase.client.introspect.TemplateIntrospect;
 import org.ehrbase.client.introspect.node.*;
 import org.ehrbase.client.openehrclient.VersionUid;
+import org.ehrbase.client.reflection.ReflectionHelper;
 import org.ehrbase.client.terminology.ValueSet;
 import org.ehrbase.serialisation.util.SnakeCase;
 import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
 import org.openehr.schemas.v1.TemplateDocument;
-import org.reflections.Reflections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -57,24 +58,23 @@ public class ClassGenerator {
 
     private static final Options OPTIONS = new Options();
     private static final ArchieRMInfoLookup RM_INFO_LOOKUP = ArchieRMInfoLookup.getInstance();
+    public static final String ABBREV_MARKER = "_";
+    public static final int CLASS_NAME_MAX_WIDTH = 80;
+    private static final Map<Class<?>, RmClassGeneratorConfig> configMap = ReflectionHelper.buildMap(RmClassGeneratorConfig.class);
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
-    private final Map<Class, RmClassGeneratorConfig> configMap;
 
 
     private Map<String, Integer> currentFieldNameMap = new HashMap<>();
     private Map<String, Integer> currentClassNameMap = new HashMap<>();
     private Map<EntityNode, TypeSpec> currentTypeSpec;
+    private Map<Pair<String, ValueSet>, TypeSpec> currentEnums;
 
     private ClassGeneratorResult currentResult;
     private String currentPackageName;
     private String currentMainClass;
     private String currentArchetypeName = "";
 
-
-    public ClassGenerator() {
-        configMap = buildConfigMap();
-    }
 
     private static String normalise(String name, boolean capitalizeFirstLetter) {
         if (StringUtils.isBlank(name) || name.equals("_")) {
@@ -129,21 +129,9 @@ public class ClassGenerator {
 
     }
 
-    private Map<Class, RmClassGeneratorConfig> buildConfigMap() {
-        Reflections reflections = new Reflections(RmClassGeneratorConfig.class.getPackage().getName());
-        Set<Class<? extends RmClassGeneratorConfig>> configs = reflections.getSubTypesOf(RmClassGeneratorConfig.class);
-
-        return configs.stream().map(c -> {
-            try {
-                return c.getConstructor().newInstance();
-            } catch (Exception e) {
-                throw new ClientException(e.getMessage(), e);
-            }
-        }).collect(Collectors.toMap(RmClassGeneratorConfig::getRMClass, c -> c));
-    }
-
     public ClassGeneratorResult generate(String packageName, OPERATIONALTEMPLATE operationalTemplate) {
         currentTypeSpec = new HashMap<>();
+        currentEnums = new HashMap<>();
         currentResult = new ClassGeneratorResult();
         currentPackageName = packageName;
         currentMainClass = "";
@@ -211,7 +199,8 @@ public class ClassGenerator {
     }
 
     private void addChoiceField(TypeSpec.Builder classBuilder, String path, ChoiceNode choiceNode) {
-        TypeSpec interfaceSpec = TypeSpec.interfaceBuilder(buildClassName(new SnakeCase(currentArchetypeName) + "_" + choiceNode.getName() + "_choice"))
+
+        TypeSpec interfaceSpec = TypeSpec.interfaceBuilder(buildClassName(choiceNode.getName() + "_choice"))
                 .addModifiers(Modifier.PUBLIC)
                 .build();
 
@@ -316,7 +305,7 @@ public class ClassGenerator {
 
     private TypeSpec buildEnumValueSet(String name, ValueSet valuset) {
         TypeSpec.Builder enumBuilder = TypeSpec
-                .enumBuilder(normalise(extractSubName(name), true))
+                .enumBuilder(StringUtils.abbreviate(normalise(extractSubName(name), true), ABBREV_MARKER, CLASS_NAME_MAX_WIDTH))
                 .addSuperinterface(EnumValueSet.class)
                 .addModifiers(Modifier.PUBLIC);
         FieldSpec fieldSpec1 = FieldSpec.builder(ClassName.get(String.class), "value").addModifiers(Modifier.PRIVATE).build();
@@ -356,7 +345,8 @@ public class ClassGenerator {
 
         if (CodePhrase.class.getName().equals(className.toString()) && CollectionUtils.isNotEmpty(valueSet.getTherms())) {
 
-            TypeSpec enumValueSet = buildEnumValueSet(name, valueSet);
+            final TypeSpec enumValueSet = currentEnums.computeIfAbsent(new ImmutablePair<>(name, valueSet), n -> buildEnumValueSet(n.getKey(), n.getValue()));
+
             String enumPackage;
             if (valueSet.getId().contains("local")) {
                 enumPackage = currentPackageName + "." + currentMainClass.toLowerCase() + ".definition";
@@ -415,7 +405,7 @@ public class ClassGenerator {
         String nonNormalized = "";
         for (int i = 0; i < strings.length; i++) {
             nonNormalized = nonNormalized + "_" + strings[strings.length - (i + 1)];
-            fieldName = normalise(new SnakeCase(currentArchetypeName).camelToSnake() + "_" + nonNormalized, true);
+            fieldName = StringUtils.abbreviate(normalise(new SnakeCase(currentArchetypeName).camelToSnake() + "_" + nonNormalized, true), ABBREV_MARKER, CLASS_NAME_MAX_WIDTH);
             if (!currentClassNameMap.containsKey(fieldName) && SourceVersion.isName(fieldName)) {
                 break;
             }

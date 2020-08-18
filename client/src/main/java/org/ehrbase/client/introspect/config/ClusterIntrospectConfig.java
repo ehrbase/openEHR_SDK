@@ -26,7 +26,7 @@ public class ClusterIntrospectConfig implements RmIntrospectConfig {
 
 
     @Override
-    public Class getRMClass() {
+    public Class getAssociatedClass() {
         return Cluster.class;
     }
 

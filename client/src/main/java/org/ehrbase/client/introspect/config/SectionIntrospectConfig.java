@@ -26,7 +26,7 @@ public class SectionIntrospectConfig implements RmIntrospectConfig {
 
 
     @Override
-    public Class getRMClass() {
+    public Class getAssociatedClass() {
         return Section.class;
     }
 

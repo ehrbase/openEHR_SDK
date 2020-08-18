@@ -30,7 +30,7 @@ public class CompositionIntrospectConfig implements RmIntrospectConfig {
     private static final Set<String> FIELDS = Stream.of("language", "territory", "composer", "category").collect(Collectors.toSet());
 
     @Override
-    public Class getRMClass() {
+    public Class getAssociatedClass() {
         return Composition.class;
     }
 

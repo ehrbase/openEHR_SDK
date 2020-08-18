@@ -24,10 +24,10 @@ public abstract class BinaryLogicalOperator implements Condition {
     private final Condition condition1;
     private final Condition condition2;
 
-     BinaryLogicalOperator(Condition condition1, Condition condition2) {
-         this.condition1 = condition1;
-         this.condition2 = condition2;
-     }
+    BinaryLogicalOperator(Condition condition1, Condition condition2) {
+        this.condition1 = condition1;
+        this.condition2 = condition2;
+    }
 
     @Override
     public String buildAql() {

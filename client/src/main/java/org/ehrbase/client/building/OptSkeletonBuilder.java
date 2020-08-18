@@ -43,14 +43,14 @@ import com.nedap.archie.rminfo.ArchieRMInfoLookup;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.apache.xmlbeans.XmlObject;
-import org.ehrbase.client.building.rmobjektskeletonbuilder.RmObjektSkeletonBuilder;
+import org.ehrbase.client.building.rmobjectskeletonbuilder.RmObjectSkeletonBuilder;
 import org.ehrbase.client.introspect.TemplateIntrospect;
 import org.ehrbase.client.introspect.config.RmIntrospectConfig;
+import org.ehrbase.client.reflection.ReflectionHelper;
 import org.ehrbase.serialisation.util.SnakeCase;
 import org.ehrbase.terminology.openehr.implementation.LocalizedTerminologies;
 import org.openehr.schemas.v1.*;
 import org.reflections.ReflectionUtils;
-import org.reflections.Reflections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -59,7 +59,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class OptSkeletonBuilder {
 
@@ -75,41 +74,22 @@ public class OptSkeletonBuilder {
         }
     }
 
+    private static final Map<Class<?>, RmIntrospectConfig> configMap = ReflectionHelper.buildMap(RmIntrospectConfig.class);
+    private static final Map<Class<?>, RmObjectSkeletonBuilder> builderMap = ReflectionHelper.buildMap(RmObjectSkeletonBuilder.class);
+
     private final Logger log = LoggerFactory.getLogger(getClass());
-    private final Map<Class, RmIntrospectConfig> configMap;
 
 
-    private final Map<Class, RmObjektSkeletonBuilder> builderMap;
+    private Object buildSkeletonForTerminalRmObjects(XmlObject cpo) {
 
-    public OptSkeletonBuilder() {
-        configMap = TemplateIntrospect.buildConfigMap();
-        builderMap = buildBuilderMap();
-    }
-
-    private static Map<Class, RmObjektSkeletonBuilder> buildBuilderMap() {
-        Reflections reflections = new Reflections(RmObjektSkeletonBuilder.class.getPackage().getName());
-        Set<Class<? extends RmObjektSkeletonBuilder>> configs = reflections.getSubTypesOf(RmObjektSkeletonBuilder.class);
-
-        return configs.stream().map(c -> {
-            try {
-                return c.getConstructor().newInstance();
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        }).collect(Collectors.toMap(RmObjektSkeletonBuilder::getXmlClass, c -> c));
-    }
-
-
-    private Object buildSkeletonForTerminalRmObjekts(XmlObject cpo) {
-
-        RmObjektSkeletonBuilder rmObjektSkeletonBuilder = builderMap
+        RmObjectSkeletonBuilder rmObjectSkeletonBuilder = builderMap
                 .entrySet()
                 .stream()
                 .filter(e -> e.getKey().isAssignableFrom(cpo.getClass()))
                 .findAny()
                 .map(Map.Entry::getValue)
                 .orElseThrow(() -> new RuntimeException(String.format("No builder for {%s}", cpo.getClass())));
-        return rmObjektSkeletonBuilder.getRmObjekt(cpo);
+        return rmObjectSkeletonBuilder.getRmObject(cpo);
     }
 
 
@@ -263,15 +243,17 @@ public class OptSkeletonBuilder {
                     .forEach(f -> {
                         try {
 
-                            Object value;
+                            final Object value;
                             if (f.getType().equals(PartyProxy.class)) {
                                 value = new PartyIdentified();
                             } else if (List.class.isAssignableFrom(f.getType())) {
                                 value = new ArrayList<>();
                                 Class unwarap = unwarap(f);
                                 ((List) value).add(unwarap.getConstructor().newInstance());
-                            } else {
+                            } else if (!f.getType().isPrimitive() && !f.getType().equals(String.class)) {
                                 value = f.getType().getConstructor().newInstance();
+                            } else {
+                                value = null;
                             }
                             valueMap.computeIfAbsent(new SnakeCase(f.getName()).camelToSnake(), k -> value);
                         } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
@@ -316,8 +298,8 @@ public class OptSkeletonBuilder {
         if (obj instanceof Entry) {
             ((Entry) obj).setEncoding(new CodePhrase(new TerminologyId("IANA_character-sets"), "UTF-8"));
         }
-        if (obj instanceof Locatable && StringUtils.isBlank(((Locatable) obj).getName().getValue())){
-            ((Locatable) obj).getName().setValue(valueMap.getOrDefault("name","").toString());
+        if (obj instanceof Locatable && StringUtils.isBlank(((Locatable) obj).getName().getValue())) {
+            ((Locatable) obj).getName().setValue(valueMap.getOrDefault("name", "").toString());
         }
         if (obj instanceof Composition) {
             Archetyped archetypeDetails = new Archetyped();
@@ -375,7 +357,7 @@ public class OptSkeletonBuilder {
                         .getValue());
                 valueMap.put("archetype_node_id", ((CARCHETYPEROOT) ccobj)
                         .getArchetypeId().getValue());
-                Optional<String> name = OptNameHelper.extractName((CARCHETYPEROOT) ccobj);
+                Optional<String> name = OptNameHelper.extractName(ccobj);
                 String termName = name.orElse(termDef.get(nodeId));
                 if (termName != null) {
                     txtName = new DvText(termName);
@@ -412,7 +394,7 @@ public class OptSkeletonBuilder {
             log.debug("CARCHETYPEROOT path={}", path);
             return handleArchetypeRoot(opt, (CARCHETYPEROOT) cobj, path);
         } else if (cobj instanceof CDOMAINTYPE) {
-            return buildSkeletonForTerminalRmObjekts((CDOMAINTYPE) cobj);
+            return buildSkeletonForTerminalRmObjects((CDOMAINTYPE) cobj);
         } else if (cobj instanceof CCOMPLEXOBJECT) {
             // Skip when path is /category and /context
             if ("/category".equalsIgnoreCase(path)) {
@@ -433,7 +415,7 @@ public class OptSkeletonBuilder {
             return null;
 
         } else if (cobj instanceof CPRIMITIVEOBJECT) {
-            return buildSkeletonForTerminalRmObjekts(cobj);
+            return buildSkeletonForTerminalRmObjects(cobj);
         } else {
             if (cobj.getNodeId() == null) {
                 log.debug("NodeId is null : {}", cobj);

@@ -19,7 +19,10 @@
 
 package org.ehrbase.client.building;
 
-import org.openehr.schemas.v1.*;
+import org.openehr.schemas.v1.CCOMPLEXOBJECT;
+import org.openehr.schemas.v1.CPRIMITIVEOBJECT;
+import org.openehr.schemas.v1.CSINGLEATTRIBUTE;
+import org.openehr.schemas.v1.CSTRING;
 
 import java.util.Arrays;
 import java.util.Optional;
@@ -29,8 +32,8 @@ public class OptNameHelper {
     private OptNameHelper() {
     }
 
-    public static Optional<String> extractName(CARCHETYPEROOT carchetyperoot) {
-        return Arrays.stream(carchetyperoot.getAttributesArray())
+    public static Optional<String> extractName(CCOMPLEXOBJECT ccomplexobject) {
+        return Arrays.stream(ccomplexobject.getAttributesArray())
                 .filter(a -> CSINGLEATTRIBUTE.class.isAssignableFrom(a.getClass()))
                 .map(a -> (CSINGLEATTRIBUTE) a)
                 .filter(a -> a.getRmAttributeName().equals("name"))

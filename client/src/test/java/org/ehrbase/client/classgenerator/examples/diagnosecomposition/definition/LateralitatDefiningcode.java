@@ -5,9 +5,9 @@ import org.ehrbase.client.classgenerator.EnumValueSet;
 public enum LateralitatDefiningcode implements EnumValueSet {
   LINKS_UND_RECHTS("Links und Rechts", "Beide Körperseiten.", "local", "at0086"),
 
-  RECHTS("Rechts", "Die rechte Körperseite.", "local", "at0004"),
+  LINKS("Links", "Die linke Körperseite.", "local", "at0003"),
 
-  LINKS("Links", "Die linke Körperseite.", "local", "at0003");
+  RECHTS("Rechts", "Die rechte Körperseite.", "local", "at0004");
 
   private String value;
 

@@ -11,7 +11,7 @@ import java.util.List;
 @Archetype("openEHR-EHR-CLUSTER.occupation_record.v1")
 public class BeschaftigungCluster {
     @Path("/items[at0005]/value|value")
-    private String rolleValue;
+    private String berufsbezeichnungRolleValue;
 
     @Path("/items[openEHR-EHR-CLUSTER.organisation_cc.v0]")
     private List<OrganisationCluster> organisation;
@@ -19,12 +19,12 @@ public class BeschaftigungCluster {
     @Path("/items[at0018]")
     private List<Cluster> zusatzlicheAngaben;
 
-    public void setRolleValue(String rolleValue) {
-        this.rolleValue = rolleValue;
+    public void setBerufsbezeichnungRolleValue(String berufsbezeichnungRolleValue) {
+        this.berufsbezeichnungRolleValue = berufsbezeichnungRolleValue;
     }
 
-    public String getRolleValue() {
-        return this.rolleValue;
+    public String getBerufsbezeichnungRolleValue() {
+        return this.berufsbezeichnungRolleValue;
     }
 
     public void setOrganisation(List<OrganisationCluster> organisation) {

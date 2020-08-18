@@ -30,10 +30,6 @@ public class BewertungDesGesundheitsrisikosEvaluation {
     @Path("/data[at0001]/items[at0002]/value|value")
     private String gesundheitsrisikoValue;
 
-    @Path("/data[at0001]/items[at0016]/name")
-    @Choice
-    private BewertungDesGesundheitsrisikosRisikofaktorenChoice risikofaktoren;
-
     @Path("/language")
     private Language language;
 
@@ -89,14 +85,6 @@ public class BewertungDesGesundheitsrisikosEvaluation {
 
     public String getGesundheitsrisikoValue() {
         return this.gesundheitsrisikoValue;
-    }
-
-    public void setRisikofaktoren(BewertungDesGesundheitsrisikosRisikofaktorenChoice risikofaktoren) {
-        this.risikofaktoren = risikofaktoren;
-    }
-
-    public BewertungDesGesundheitsrisikosRisikofaktorenChoice getRisikofaktoren() {
-        return this.risikofaktoren;
     }
 
     public void setLanguage(Language language) {

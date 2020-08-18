@@ -23,7 +23,6 @@ import com.nedap.archie.rm.generic.PartyRelated;
 import com.nedap.archie.rm.generic.PartySelf;
 import org.ehrbase.serialisation.dbencoding.CompositionSerializer;
 
-
 import java.util.Map;
 
 /**

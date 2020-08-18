@@ -20,7 +20,6 @@ package org.ehrbase.serialisation.dbencoding.wrappers.json.writer.translator_db2
 import com.google.gson.internal.LinkedTreeMap;
 import com.google.gson.stream.JsonWriter;
 
-
 import java.io.IOException;
 
 public class NameValue {

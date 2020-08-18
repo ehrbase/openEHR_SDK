@@ -41,7 +41,7 @@ public class CoronaAnamneseComposition {
     private String statusValue;
 
     @Path("/content[openEHR-EHR-OBSERVATION.story.v1]")
-    private List<HistorieObservation> historie;
+    private List<GeschichteHistorieObservation> geschichteHistorie;
 
     @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Allgemeine Angaben']")
     private AllgemeineAngabenSection allgemeineAngaben;
@@ -132,12 +132,12 @@ public class CoronaAnamneseComposition {
         return this.statusValue;
     }
 
-    public void setHistorie(List<HistorieObservation> historie) {
-        this.historie = historie;
+    public void setGeschichteHistorie(List<GeschichteHistorieObservation> geschichteHistorie) {
+        this.geschichteHistorie = geschichteHistorie;
     }
 
-    public List<HistorieObservation> getHistorie() {
-        return this.historie;
+    public List<GeschichteHistorieObservation> getGeschichteHistorie() {
+        return this.geschichteHistorie;
     }
 
     public void setAllgemeineAngaben(AllgemeineAngabenSection allgemeineAngaben) {

@@ -10,11 +10,9 @@ import org.ehrbase.client.aql.field.SelectAqlField;
 public class OrganisationClusterContainment extends Containment {
   public SelectAqlField<OrganisationCluster> ORGANISATION_CLUSTER = new AqlFieldImp<OrganisationCluster>(OrganisationCluster.class, "", "OrganisationCluster", OrganisationCluster.class, this);
 
-  public SelectAqlField<String> NAME_VALUE = new AqlFieldImp<String>(OrganisationCluster.class, "/items[at0012]/name|value", "nameValue", String.class, this);
-
   public ListSelectAqlField<Cluster> TELEFON = new ListAqlFieldImp<Cluster>(OrganisationCluster.class, "/items[at0014]", "telefon", Cluster.class, this);
 
-  public SelectAqlField<String> NAME_VALUE_VALUE = new AqlFieldImp<String>(OrganisationCluster.class, "/items[at0012]/value|value", "nameValueValue", String.class, this);
+  public SelectAqlField<String> NAME_DER_EINRICHTUNG_VALUE = new AqlFieldImp<String>(OrganisationCluster.class, "/items[at0012]/value|value", "nameDerEinrichtungValue", String.class, this);
 
   public ListSelectAqlField<Cluster> TEIL_VON = new ListAqlFieldImp<Cluster>(OrganisationCluster.class, "/items[at0017]", "teilVon", Cluster.class, this);
 

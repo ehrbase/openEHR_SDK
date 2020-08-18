@@ -26,7 +26,7 @@ public class ItemSingletIntrospectConfig implements RmIntrospectConfig {
 
 
     @Override
-    public Class getRMClass() {
+    public Class getAssociatedClass() {
         return ItemSingle.class;
     }
 

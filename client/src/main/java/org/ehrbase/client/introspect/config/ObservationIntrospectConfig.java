@@ -23,7 +23,7 @@ public class ObservationIntrospectConfig extends CareEntryIntrospectConfig imple
 
 
     @Override
-    public Class getRMClass() {
+    public Class getAssociatedClass() {
         return Observation.class;
     }
 

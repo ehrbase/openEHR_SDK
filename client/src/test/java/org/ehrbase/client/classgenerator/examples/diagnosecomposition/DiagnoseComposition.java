@@ -4,8 +4,8 @@ import com.nedap.archie.rm.generic.Participation;
 import com.nedap.archie.rm.generic.PartyIdentified;
 import com.nedap.archie.rm.generic.PartyProxy;
 import org.ehrbase.client.annotations.*;
-import org.ehrbase.client.classgenerator.examples.diagnosecomposition.definition.DiagnoseEvaluation;
 import org.ehrbase.client.classgenerator.examples.diagnosecomposition.definition.FallidentifikationCluster;
+import org.ehrbase.client.classgenerator.examples.diagnosecomposition.definition.ProblemDiagnoseEvaluation;
 import org.ehrbase.client.classgenerator.examples.shareddefinition.CategoryDefiningcode;
 import org.ehrbase.client.classgenerator.examples.shareddefinition.Language;
 import org.ehrbase.client.classgenerator.examples.shareddefinition.SettingDefiningcode;
@@ -29,7 +29,7 @@ public class DiagnoseComposition {
     private List<Participation> participations;
 
     @Path("/content[openEHR-EHR-EVALUATION.problem_diagnosis.v1]")
-    private DiagnoseEvaluation diagnose;
+    private ProblemDiagnoseEvaluation problemDiagnose;
 
     @Path("/language")
     private Language language;
@@ -85,12 +85,12 @@ public class DiagnoseComposition {
         return this.participations;
     }
 
-    public void setDiagnose(DiagnoseEvaluation diagnose) {
-        this.diagnose = diagnose;
+    public void setProblemDiagnose(ProblemDiagnoseEvaluation problemDiagnose) {
+        this.problemDiagnose = problemDiagnose;
     }
 
-    public DiagnoseEvaluation getDiagnose() {
-        return this.diagnose;
+    public ProblemDiagnoseEvaluation getProblemDiagnose() {
+        return this.problemDiagnose;
     }
 
     public void setLanguage(Language language) {

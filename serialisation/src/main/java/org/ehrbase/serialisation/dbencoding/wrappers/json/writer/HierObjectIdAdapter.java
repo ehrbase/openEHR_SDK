@@ -22,7 +22,6 @@ import com.google.gson.stream.JsonWriter;
 import com.nedap.archie.rm.support.identification.HierObjectId;
 import org.ehrbase.serialisation.dbencoding.CompositionSerializer;
 
-
 import java.io.IOException;
 
 /**

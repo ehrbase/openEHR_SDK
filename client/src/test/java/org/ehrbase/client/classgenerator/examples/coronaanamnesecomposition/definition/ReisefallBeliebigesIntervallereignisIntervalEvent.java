@@ -16,22 +16,19 @@ public class ReisefallBeliebigesIntervallereignisIntervalEvent implements Reisef
     private TemporalAccessor timeValue;
 
     @Path("/data[at0003]/items[at0004]/value|defining_code")
-    private ReiseDefiningcode reiseDefiningcode;
-
-    @Path("/data[at0003]/items[at0008]")
-    private List<ReisefallBestimmteReiseClusterTree> bestimmteReise;
-
-    @Path("/width|value")
-    private TemporalAmount widthValue;
-
-    @Path("/data[at0003]/items[at0004]/name|value")
-    private String reiseValue;
+    private LetzteReiseDefiningcode letzteReiseDefiningcode;
 
     @Path("/math_function|defining_code")
     private MathFunctionDefiningcode mathFunctionDefiningcode;
 
+    @Path("/data[at0003]/items[at0008]")
+    private List<ReisefallBestimmteReiseCluster> bestimmteReise;
+
+    @Path("/width|value")
+    private TemporalAmount widthValue;
+
     @Path("/data[at0003]/items[at0026]/value|defining_code")
-    private AuslandDefiningcode auslandDefiningcode;
+    private InlandAuslandDefiningcode inlandAuslandDefiningcode;
 
     public void setTimeValue(TemporalAccessor timeValue) {
         this.timeValue = timeValue;
@@ -41,19 +38,27 @@ public class ReisefallBeliebigesIntervallereignisIntervalEvent implements Reisef
         return this.timeValue;
     }
 
-    public void setReiseDefiningcode(ReiseDefiningcode reiseDefiningcode) {
-        this.reiseDefiningcode = reiseDefiningcode;
+    public void setLetzteReiseDefiningcode(LetzteReiseDefiningcode letzteReiseDefiningcode) {
+        this.letzteReiseDefiningcode = letzteReiseDefiningcode;
     }
 
-    public ReiseDefiningcode getReiseDefiningcode() {
-        return this.reiseDefiningcode;
+    public LetzteReiseDefiningcode getLetzteReiseDefiningcode() {
+        return this.letzteReiseDefiningcode;
     }
 
-    public void setBestimmteReise(List<ReisefallBestimmteReiseClusterTree> bestimmteReise) {
+    public void setMathFunctionDefiningcode(MathFunctionDefiningcode mathFunctionDefiningcode) {
+        this.mathFunctionDefiningcode = mathFunctionDefiningcode;
+    }
+
+    public MathFunctionDefiningcode getMathFunctionDefiningcode() {
+        return this.mathFunctionDefiningcode;
+    }
+
+    public void setBestimmteReise(List<ReisefallBestimmteReiseCluster> bestimmteReise) {
         this.bestimmteReise = bestimmteReise;
     }
 
-    public List<ReisefallBestimmteReiseClusterTree> getBestimmteReise() {
+    public List<ReisefallBestimmteReiseCluster> getBestimmteReise() {
         return this.bestimmteReise;
     }
 
@@ -65,27 +70,11 @@ public class ReisefallBeliebigesIntervallereignisIntervalEvent implements Reisef
         return this.widthValue;
     }
 
-    public void setReiseValue(String reiseValue) {
-        this.reiseValue = reiseValue;
+    public void setInlandAuslandDefiningcode(InlandAuslandDefiningcode inlandAuslandDefiningcode) {
+        this.inlandAuslandDefiningcode = inlandAuslandDefiningcode;
     }
 
-    public String getReiseValue() {
-        return this.reiseValue;
-    }
-
-    public void setMathFunctionDefiningcode(MathFunctionDefiningcode mathFunctionDefiningcode) {
-        this.mathFunctionDefiningcode = mathFunctionDefiningcode;
-    }
-
-    public MathFunctionDefiningcode getMathFunctionDefiningcode() {
-        return this.mathFunctionDefiningcode;
-    }
-
-    public void setAuslandDefiningcode(AuslandDefiningcode auslandDefiningcode) {
-        this.auslandDefiningcode = auslandDefiningcode;
-    }
-
-    public AuslandDefiningcode getAuslandDefiningcode() {
-        return this.auslandDefiningcode;
+    public InlandAuslandDefiningcode getInlandAuslandDefiningcode() {
+        return this.inlandAuslandDefiningcode;
     }
 }

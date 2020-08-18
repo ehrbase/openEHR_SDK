@@ -15,7 +15,7 @@ public class ReisefallBestimmtesReisezielCluster {
     private List<Cluster> zusatzlicheAngabenZumZielort;
 
     @Path("/items[at0012]/value|value")
-    private String regionValue;
+    private String bundeslandRegionValue;
 
     @Path("/items[at0011]/value|value")
     private String landValue;
@@ -39,12 +39,12 @@ public class ReisefallBestimmtesReisezielCluster {
         return this.zusatzlicheAngabenZumZielort;
     }
 
-    public void setRegionValue(String regionValue) {
-        this.regionValue = regionValue;
+    public void setBundeslandRegionValue(String bundeslandRegionValue) {
+        this.bundeslandRegionValue = bundeslandRegionValue;
     }
 
-    public String getRegionValue() {
-        return this.regionValue;
+    public String getBundeslandRegionValue() {
+        return this.bundeslandRegionValue;
     }
 
     public void setLandValue(String landValue) {

@@ -32,7 +32,7 @@ import java.beans.PropertyDescriptor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
-class ItemExtractor {
+public class ItemExtractor {
 
     private Logger logger = LoggerFactory.getLogger(ItemExtractor.class);
 

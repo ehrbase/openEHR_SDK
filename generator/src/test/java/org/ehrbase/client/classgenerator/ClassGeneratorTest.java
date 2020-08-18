@@ -22,6 +22,7 @@ package org.ehrbase.client.classgenerator;
 import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.TypeSpec;
+import org.apache.commons.io.FileUtils;
 import org.apache.xmlbeans.XmlException;
 import org.assertj.core.groups.Tuple;
 import org.ehrbase.test_data.operationaltemplate.OperationalTemplateTestData;
@@ -116,7 +117,16 @@ public class ClassGeneratorTest {
     private void writeFiles(ClassGeneratorResult generate) throws IOException {
         if (WRITE_FILES) {
             Path path = Paths.get("..", "client/src/test/java/");
-            // FileUtils.cleanDirectory(Paths.get(path,PACKAGE_NAME.replace("..","/")).toFile());
+            generate.getClasses().keySet().stream().filter(s -> !s.contains("definition")).findFirst().ifPresent(
+                    s ->
+                    {
+                        try {
+                            FileUtils.cleanDirectory(Paths.get(String.valueOf(path), s.replace(".", "/")).toFile());
+                        } catch (Exception e) {
+                            //NOP
+                        }
+                    }
+            );
             List<JavaFile> generateFiles = generate.writeFiles(path);
 
             FieldGenerator fieldGenerator = new FieldGenerator();
@@ -202,7 +212,7 @@ public class ClassGeneratorTest {
         Set<String> derDiagnoseDefiningcode = generate.getClasses()
                 .get("org.ehrbase.client.classgenerator.examples.diagnosecomposition.definition")
                 .stream()
-                .filter(t -> t.name.equals("DerDiagnoseDefiningcode"))
+                .filter(t -> t.name.equals("NameDesProblemsDerDiagnoseDefiningcode"))
                 .findAny()
                 .get()
                 .enumConstants
@@ -292,7 +302,7 @@ public class ClassGeneratorTest {
                         new Tuple("currentDayOfMenstrualCycleMagnitude", "java.lang.Long"),
                         new Tuple("environmentalConditions", "java.util.List<com.nedap.archie.rm.datastructures.Cluster>"),
                         new Tuple("widthValue", "java.time.temporal.TemporalAmount"),
-                        new Tuple("bodyExposure", "org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1composition.definition.BodyTemperatureBodyExposureChoiceState"),
+                        new Tuple("bodyExposure", "org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1composition.definition.BodyTemperatureBodyExposureChoice2"),
                         new Tuple("mathFunctionDefiningcode", "org.ehrbase.client.classgenerator.examples.shareddefinition.MathFunctionDefiningcode"),
                         new Tuple("anyEvent", "java.util.List<org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1composition.definition.BodyTemperatureAnyEventChoice>"),
                         new Tuple("participations", "java.util.List<com.nedap.archie.rm.generic.Participation>")
@@ -333,7 +343,7 @@ public class ClassGeneratorTest {
                 .filter(t -> !t.kind.equals(TypeSpec.Kind.ENUM))
                 .map(t -> t.fieldSpecs).flatMap(List::stream).collect(Collectors.toList());
 
-        assertThat(fieldSpecs).size().isEqualTo(316L);
+        assertThat(fieldSpecs).size().isEqualTo(304L);
 
         writeFiles(generate);
 

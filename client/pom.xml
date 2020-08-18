@@ -58,6 +58,7 @@
             <groupId>com.github.ehrbase.openEHR_SDK</groupId>
             <artifactId>terminology</artifactId>
         </dependency>
+
         <dependency>
             <groupId>com.github.ehrbase.openEHR_SDK</groupId>
             <artifactId>response-dto</artifactId>
@@ -91,8 +92,14 @@
             <artifactId>test-data</artifactId>
         </dependency>
         <dependency>
+            <groupId>com.github.ehrbase.openEHR_SDK</groupId>
+            <artifactId>validation</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>org.ehcache</groupId>
             <artifactId>ehcache</artifactId>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 

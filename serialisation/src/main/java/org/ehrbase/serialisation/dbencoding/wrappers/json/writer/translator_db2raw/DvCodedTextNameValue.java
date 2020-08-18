@@ -21,7 +21,6 @@ import com.google.gson.internal.LinkedTreeMap;
 import com.google.gson.stream.JsonWriter;
 import org.ehrbase.serialisation.dbencoding.wrappers.json.I_DvTypeAdapter;
 
-
 import java.io.IOException;
 import java.util.Map;
 

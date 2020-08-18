@@ -14,7 +14,7 @@ public class WeitereSymptomeBeliebigesEreignisPointEvent implements WeitereSympt
     private TemporalAccessor timeValue;
 
     @Path("/data[at0003]/items[at0022]")
-    private List<WeitereSymptomeAnzeichenCluster> anzeichen;
+    private List<WeitereSymptomeSpezifischesSymptomAnzeichenCluster> spezifischesSymptomAnzeichen;
 
     public void setTimeValue(TemporalAccessor timeValue) {
         this.timeValue = timeValue;
@@ -24,11 +24,13 @@ public class WeitereSymptomeBeliebigesEreignisPointEvent implements WeitereSympt
         return this.timeValue;
     }
 
-    public void setAnzeichen(List<WeitereSymptomeAnzeichenCluster> anzeichen) {
-        this.anzeichen = anzeichen;
+    public void setSpezifischesSymptomAnzeichen(
+            List<WeitereSymptomeSpezifischesSymptomAnzeichenCluster> spezifischesSymptomAnzeichen) {
+        this.spezifischesSymptomAnzeichen = spezifischesSymptomAnzeichen;
     }
 
-    public List<WeitereSymptomeAnzeichenCluster> getAnzeichen() {
-        return this.anzeichen;
+    public List<WeitereSymptomeSpezifischesSymptomAnzeichenCluster> getSpezifischesSymptomAnzeichen(
+    ) {
+        return this.spezifischesSymptomAnzeichen;
     }
 }

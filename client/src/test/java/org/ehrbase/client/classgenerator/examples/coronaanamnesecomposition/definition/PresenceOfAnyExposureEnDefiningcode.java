@@ -3,11 +3,11 @@ package org.ehrbase.client.classgenerator.examples.coronaanamnesecomposition.def
 import org.ehrbase.client.classgenerator.EnumValueSet;
 
 public enum PresenceOfAnyExposureEnDefiningcode implements EnumValueSet {
+  ABSENT_EN("*Absent (en)", "*Exposure is or has been absent at or during the event. (en)", "local", "at0059"),
+
   UNKNOWN_EN("*Unknown (en)", "*It is not known whether any exposure is or has been present or absent at or during the event. (en)", "local", "at0060"),
 
-  PRESENT_EN("*Present (en)", "*Exposure is or has been present at or during the event. (en)", "local", "at0058"),
-
-  ABSENT_EN("*Absent (en)", "*Exposure is or has been absent at or during the event. (en)", "local", "at0059");
+  PRESENT_EN("*Present (en)", "*Exposure is or has been present at or during the event. (en)", "local", "at0058");
 
   private String value;
 

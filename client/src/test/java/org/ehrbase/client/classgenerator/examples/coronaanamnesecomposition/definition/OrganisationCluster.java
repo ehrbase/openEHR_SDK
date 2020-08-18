@@ -10,14 +10,11 @@ import java.util.List;
 @Entity
 @Archetype("openEHR-EHR-CLUSTER.organisation_cc.v0")
 public class OrganisationCluster {
-    @Path("/items[at0012]/name|value")
-    private String nameValue;
-
     @Path("/items[at0014]")
     private List<Cluster> telefon;
 
     @Path("/items[at0012]/value|value")
-    private String nameValueValue;
+    private String nameDerEinrichtungValue;
 
     @Path("/items[at0017]")
     private List<Cluster> teilVon;
@@ -31,14 +28,6 @@ public class OrganisationCluster {
     @Path("/items[at0018]")
     private List<Cluster> identifier;
 
-    public void setNameValue(String nameValue) {
-        this.nameValue = nameValue;
-    }
-
-    public String getNameValue() {
-        return this.nameValue;
-    }
-
     public void setTelefon(List<Cluster> telefon) {
         this.telefon = telefon;
     }
@@ -47,12 +36,12 @@ public class OrganisationCluster {
         return this.telefon;
     }
 
-    public void setNameValueValue(String nameValueValue) {
-        this.nameValueValue = nameValueValue;
+    public void setNameDerEinrichtungValue(String nameDerEinrichtungValue) {
+        this.nameDerEinrichtungValue = nameDerEinrichtungValue;
     }
 
-    public String getNameValueValue() {
-        return this.nameValueValue;
+    public String getNameDerEinrichtungValue() {
+        return this.nameDerEinrichtungValue;
     }
 
     public void setTeilVon(List<Cluster> teilVon) {
