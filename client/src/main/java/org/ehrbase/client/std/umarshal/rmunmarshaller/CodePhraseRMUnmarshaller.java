@@ -17,31 +17,30 @@
  *
  */
 
-package org.ehrbase.client.std.marshal.config;
+package org.ehrbase.client.std.umarshal.rmunmarshaller;
 
-import com.nedap.archie.rm.RMObject;
-import org.ehrbase.client.reflection.ClassDependent;
+import com.nedap.archie.rm.datatypes.CodePhrase;
+import com.nedap.archie.rm.support.identification.TerminologyId;
 
-import java.util.List;
 import java.util.Map;
 
-/**
- * Defines how terminal RMObjects will be marshalled to flat json
- */
-public interface StdConfig<T extends RMObject> extends ClassDependent<T> {
+public class CodePhraseRMUnmarshaller extends AbstractRMUnmarshaller<CodePhrase> {
 
     /**
-     * @param currentTerm current flat term path
-     * @param rmObject    The {@link RMObject} to flatten
-     * @return Map containing the flat representation of {@code rmObject}
+     * {@inheritDoc}
      */
-    Map<String, Object> buildChildValues(String currentTerm, T rmObject);
+    @Override
+    public Class<CodePhrase> getAssociatedClass() {
+        return CodePhrase.class;
+    }
 
     /**
-     * Returns the list of count of flat values a Object of class {@code clazz} can have.
-     *
-     * @param clazz
-     * @return
+     * {@inheritDoc}
      */
-    List<Integer> valueCount(Class<T> clazz);
+    @Override
+    public void handle(String currentTerm, CodePhrase rmObject, Map<String, String> currentValues) {
+        setValue(currentTerm, "code", currentValues, rmObject::setCodeString, String.class);
+        rmObject.setTerminologyId(new TerminologyId());
+        setValue(currentTerm, "terminology", currentValues, t -> rmObject.getTerminologyId().setValue(t), String.class);
+    }
 }

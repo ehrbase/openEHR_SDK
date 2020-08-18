@@ -17,31 +17,29 @@
  *
  */
 
-package org.ehrbase.client.std.marshal.config;
+package org.ehrbase.client.std.marshal.postprocessor;
 
 import com.nedap.archie.rm.RMObject;
+import org.ehrbase.client.introspect.node.EntityNode;
 import org.ehrbase.client.reflection.ClassDependent;
 
-import java.util.List;
 import java.util.Map;
 
 /**
- * Defines how terminal RMObjects will be marshalled to flat json
+ * Will be automatically called during marshal after encountering a {@link EntityNode} with {@link EntityNode#getRmName()} is the RMName of {@code T}.
+ *
+ * @param <T>
  */
-public interface StdConfig<T extends RMObject> extends ClassDependent<T> {
+public interface MarshalPostprocessor<T extends RMObject> extends ClassDependent<T> {
 
     /**
-     * @param currentTerm current flat term path
-     * @param rmObject    The {@link RMObject} to flatten
-     * @return Map containing the flat representation of {@code rmObject}
-     */
-    Map<String, Object> buildChildValues(String currentTerm, T rmObject);
-
-    /**
-     * Returns the list of count of flat values a Object of class {@code clazz} can have.
+     * Adds or removes Values from {@code values} depending on {@code rmObject}.
      *
-     * @param clazz
-     * @return
+     * @param term     current term in the marshal recursion.
+     * @param rmObject current rmObject in the marshal recursion.
+     * @param values   current values in the marshal recursion.
      */
-    List<Integer> valueCount(Class<T> clazz);
+    void process(String term, T rmObject, Map<String, Object> values);
+
+
 }

@@ -36,7 +36,7 @@ import org.ehrbase.client.introspect.node.Node;
 import org.ehrbase.client.reflection.ReflectionHelper;
 import org.ehrbase.client.std.marshal.config.DefaultStdConfig;
 import org.ehrbase.client.std.marshal.config.StdConfig;
-import org.ehrbase.client.std.marshal.postprozesor.MarshalPostprozessor;
+import org.ehrbase.client.std.marshal.postprocessor.MarshalPostprocessor;
 import org.ehrbase.serialisation.jsonencoding.JacksonUtil;
 import org.ehrbase.serialisation.util.SnakeCase;
 
@@ -52,7 +52,7 @@ public class FlatJsonMarshaller {
     public static final DefaultStdConfig DEFAULT_STD_CONFIG = new DefaultStdConfig();
     private static final ObjectMapper OBJECT_MAPPER = JacksonUtil.getObjectMapper();
     private static final Map<Class<? extends RMObject>, StdConfig> configMap = ReflectionHelper.buildMap(StdConfig.class);
-    private static final Map<Class<? extends RMObject>, MarshalPostprozessor> POSTPROCESSOR_MAP = ReflectionHelper.buildMap(MarshalPostprozessor.class);
+    private static final Map<Class<? extends RMObject>, MarshalPostprocessor> POSTPROCESSOR_MAP = ReflectionHelper.buildMap(MarshalPostprocessor.class);
 
     private final TemplateIntrospect introspect;
 
@@ -92,12 +92,12 @@ public class FlatJsonMarshaller {
 
         }
 
-        List<MarshalPostprozessor> postprocessor = Stream.concat(Stream.of(context.getCurrentObject().getClass()), ClassUtils.getAllSuperclasses(context.getCurrentObject().getClass()).stream())
+        List<MarshalPostprocessor> postprocessor = Stream.concat(Stream.of(context.getCurrentObject().getClass()), ClassUtils.getAllSuperclasses(context.getCurrentObject().getClass()).stream())
                 .map(POSTPROCESSOR_MAP::get)
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
 
-        postprocessor.forEach(p -> p.prozess(term, context.getCurrentObject(), result));
+        postprocessor.forEach(p -> p.process(term, context.getCurrentObject(), result));
 
         return result;
     }

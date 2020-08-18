@@ -17,31 +17,36 @@
  *
  */
 
-package org.ehrbase.client.std.marshal.config;
+package org.ehrbase.client.std.umarshal.postprocessor;
 
 import com.nedap.archie.rm.RMObject;
+import org.ehrbase.client.introspect.node.EntityNode;
 import org.ehrbase.client.reflection.ClassDependent;
 
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
- * Defines how terminal RMObjects will be marshalled to flat json
+ * Will be automatically called during unmarshal after encountering a {@link EntityNode} with {@link EntityNode#getRmName()} is the RMName of {@code T}.
+ *
+ * @param <T>
  */
-public interface StdConfig<T extends RMObject> extends ClassDependent<T> {
+public interface UnmarshalPostprocessor<T extends RMObject> extends ClassDependent<T> {
 
     /**
-     * @param currentTerm current flat term path
-     * @param rmObject    The {@link RMObject} to flatten
-     * @return Map containing the flat representation of {@code rmObject}
-     */
-    Map<String, Object> buildChildValues(String currentTerm, T rmObject);
-
-    /**
-     * Returns the list of count of flat values a Object of class {@code clazz} can have.
+     * Adds or removes Values from {@code values} depending on {@code rmObject}.
      *
-     * @param clazz
+     * @param term     current term in the unmarshal recursion.
+     * @param rmObject current rmObject in the unmarshal recursion.
+     * @param values   current values in the unmarshal recursion.
+     */
+    void process(String term, T rmObject, Map<String, String> values);
+
+    /**
+     * Can be called after {@code process} to get the set of consumed paths.
+     *
      * @return
      */
-    List<Integer> valueCount(Class<T> clazz);
+    Set<String> getConsumedPaths();
+
 }

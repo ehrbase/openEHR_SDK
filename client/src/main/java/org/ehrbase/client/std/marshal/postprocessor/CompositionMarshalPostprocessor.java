@@ -17,31 +17,29 @@
  *
  */
 
-package org.ehrbase.client.std.marshal.config;
+package org.ehrbase.client.std.marshal.postprocessor;
 
-import com.nedap.archie.rm.RMObject;
-import org.ehrbase.client.reflection.ClassDependent;
+import com.nedap.archie.rm.composition.Composition;
 
-import java.util.List;
 import java.util.Map;
 
-/**
- * Defines how terminal RMObjects will be marshalled to flat json
- */
-public interface StdConfig<T extends RMObject> extends ClassDependent<T> {
+import static org.ehrbase.client.introspect.TemplateIntrospect.PATH_DIVIDER;
+
+public class CompositionMarshalPostprocessor implements MarshalPostprocessor<Composition> {
 
     /**
-     * @param currentTerm current flat term path
-     * @param rmObject    The {@link RMObject} to flatten
-     * @return Map containing the flat representation of {@code rmObject}
+     * {@inheritDoc}
      */
-    Map<String, Object> buildChildValues(String currentTerm, T rmObject);
+    @Override
+    public void process(String term, Composition rmObject, Map<String, Object> values) {
+        values.put(term + PATH_DIVIDER + "_uid", rmObject.getUid().getValue());
+    }
 
     /**
-     * Returns the list of count of flat values a Object of class {@code clazz} can have.
-     *
-     * @param clazz
-     * @return
+     * {@inheritDoc}
      */
-    List<Integer> valueCount(Class<T> clazz);
+    @Override
+    public Class<Composition> getAssociatedClass() {
+        return Composition.class;
+    }
 }

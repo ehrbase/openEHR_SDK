@@ -17,31 +17,21 @@
  *
  */
 
-package org.ehrbase.client.std.marshal.config;
+package org.ehrbase.client.std.umarshal.postprocessor;
 
 import com.nedap.archie.rm.RMObject;
-import org.ehrbase.client.reflection.ClassDependent;
 
-import java.util.List;
-import java.util.Map;
+import java.util.HashSet;
+import java.util.Set;
 
-/**
- * Defines how terminal RMObjects will be marshalled to flat json
- */
-public interface StdConfig<T extends RMObject> extends ClassDependent<T> {
+public abstract class AbstractUnmarshalPostprocessor<T extends RMObject> implements UnmarshalPostprocessor<T> {
+    protected final Set<String> consumedPath = new HashSet<>();
 
     /**
-     * @param currentTerm current flat term path
-     * @param rmObject    The {@link RMObject} to flatten
-     * @return Map containing the flat representation of {@code rmObject}
+     * {@inheritDoc}
      */
-    Map<String, Object> buildChildValues(String currentTerm, T rmObject);
-
-    /**
-     * Returns the list of count of flat values a Object of class {@code clazz} can have.
-     *
-     * @param clazz
-     * @return
-     */
-    List<Integer> valueCount(Class<T> clazz);
+    @Override
+    public Set<String> getConsumedPaths() {
+        return consumedPath;
+    }
 }

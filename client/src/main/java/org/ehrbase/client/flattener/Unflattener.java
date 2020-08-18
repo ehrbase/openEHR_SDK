@@ -225,9 +225,9 @@ public class Unflattener {
         }
     }
 
-    private <T extends RMObject> T deepClone(RMObject rmObjekt) {
+    private <T extends RMObject> T deepClone(RMObject rmObject) {
         CanonicalJson canonicalXML = new CanonicalJson();
-        return (T) canonicalXML.unmarshal(canonicalXML.marshal(rmObjekt), rmObjekt.getClass());
+        return (T) canonicalXML.unmarshal(canonicalXML.marshal(rmObject), rmObject.getClass());
     }
 
     private Map<String, Object> buildValueMap(Object dto) {

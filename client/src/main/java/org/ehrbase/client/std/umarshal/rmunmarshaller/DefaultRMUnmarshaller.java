@@ -17,31 +17,17 @@
  *
  */
 
-package org.ehrbase.client.std.marshal.config;
+package org.ehrbase.client.std.umarshal.rmunmarshaller;
 
 import com.nedap.archie.rm.RMObject;
-import org.ehrbase.client.reflection.ClassDependent;
 
-import java.util.List;
-import java.util.Map;
-
-/**
- * Defines how terminal RMObjects will be marshalled to flat json
- */
-public interface StdConfig<T extends RMObject> extends ClassDependent<T> {
+public class DefaultRMUnmarshaller extends AbstractRMUnmarshaller<RMObject> {
 
     /**
-     * @param currentTerm current flat term path
-     * @param rmObject    The {@link RMObject} to flatten
-     * @return Map containing the flat representation of {@code rmObject}
+     * {@inheritDoc}
      */
-    Map<String, Object> buildChildValues(String currentTerm, T rmObject);
-
-    /**
-     * Returns the list of count of flat values a Object of class {@code clazz} can have.
-     *
-     * @param clazz
-     * @return
-     */
-    List<Integer> valueCount(Class<T> clazz);
+    @Override
+    public Class<RMObject> getAssociatedClass() {
+        return RMObject.class;
+    }
 }

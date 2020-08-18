@@ -25,7 +25,7 @@ import com.nedap.archie.rm.generic.PartySelf;
 import org.apache.commons.io.IOUtils;
 import org.apache.xmlbeans.XmlException;
 import org.ehrbase.client.introspect.TemplateIntrospect;
-import org.ehrbase.client.std.umarschal.FlatJsonUnmarshaller;
+import org.ehrbase.client.std.umarshal.FlatJsonUnmarshaller;
 import org.ehrbase.test_data.composition.CompositionTestDataSimSDTJson;
 import org.ehrbase.test_data.operationaltemplate.OperationalTemplateTestData;
 import org.ehrbase.validation.Validator;
