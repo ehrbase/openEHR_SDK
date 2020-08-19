@@ -146,7 +146,7 @@ public class DefaultRestCompositionEndpointIT {
 
         Optional<EpisodeOfCareComposition> actual = compositionEndpoint.find(version1.getVersionUid().getUuid(), EpisodeOfCareComposition.class);
         assertTrue(actual.isPresent());
-        assertThat(actual.get().getVersionUid()).extracting(v -> v.getUuid().toString(), VersionUid::getSystem, VersionUid::getVersion).containsExactly(version1.getVersionUid().getUuid().toString(), "local.ehrbase.org", 1L);
+        assertThat(actual.get().getVersionUid()).extracting(v -> v.getUuid().toString(), VersionUid::getVersion).containsExactly(version1.getVersionUid().getUuid().toString(), 1L);
         assertThat(actual.get().getEpisodeofcare()).size().isEqualTo(1);
 
         EpisodeofcareAdminEntry episodeofcareAdminEntry = actual.get().getEpisodeofcare().get(0);
