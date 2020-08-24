@@ -265,7 +265,7 @@ public class ClassGenerator {
 
             addField(classBuilder, path, endNode.getName(), className, endNode.getValuset(), false);
         } else {
-            Map<String, Field> fieldMap = Arrays.stream(FieldUtils.getAllFields(endNode.getClazz())).collect(Collectors.toMap(Field::getName, f -> f));
+            Map<String, Field> fieldMap = Arrays.stream(FieldUtils.getAllFields(endNode.getClazz())).filter(f -> !f.isSynthetic()).collect(Collectors.toMap(Field::getName, f -> f));
             classGeneratorConfig.getExpandFields().forEach(fieldName -> addField(classBuilder, path + "|" + new SnakeCase(fieldName).camelToSnake(), endNode.getName() + "_" + fieldName, ClassName.get(fieldMap.get(fieldName).getType()), endNode.getValuset(), false));
         }
     }

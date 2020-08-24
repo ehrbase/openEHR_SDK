@@ -17,19 +17,21 @@
 
 package org.ehrbase.client.flattener;
 
+import com.google.common.reflect.TypeToken;
 import com.nedap.archie.rm.RMObject;
 import com.nedap.archie.rm.datatypes.CodePhrase;
 import com.nedap.archie.rm.support.identification.ObjectId;
 import com.nedap.archie.rminfo.ArchieRMInfoLookup;
 import com.nedap.archie.rminfo.RMTypeInfo;
+import io.github.classgraph.ClassGraph;
+import io.github.classgraph.ClassInfo;
+import io.github.classgraph.ScanResult;
 import org.ehrbase.client.annotations.Choice;
 import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.OptionFor;
 import org.ehrbase.client.annotations.Path;
 import org.ehrbase.client.classgenerator.EnumValueSet;
 import org.ehrbase.client.exception.ClientException;
-import org.reflections.ReflectionUtils;
-import org.reflections.Reflections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,7 +48,7 @@ public class Flattener {
     private static final ArchieRMInfoLookup RM_INFO_LOOKUP = ArchieRMInfoLookup.getInstance();
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
-    private Reflections reflections;
+    private ScanResult classgraph;
 
     private static <T> T createInstance(Class<T> aClass) {
         try {
@@ -57,10 +59,15 @@ public class Flattener {
     }
 
     public <T> T flatten(RMObject locatable, Class<T> clazz) {
-        reflections = new Reflections(clazz.getPackage().getName());
-        T dto = createInstance(clazz);
-        mapEntityToDto(locatable, dto);
-        return dto;
+        try {
+            classgraph = new ClassGraph().enableAllInfo().whitelistPackages(clazz.getPackageName()).scan();
+
+            T dto = createInstance(clazz);
+            mapEntityToDto(locatable, dto);
+            return dto;
+        } finally {
+            classgraph.close();
+        }
     }
 
     private <T> void mapEntityToDto(RMObject locatable, T dto) {
@@ -90,7 +97,8 @@ public class Flattener {
 
             Type actualTypeArgument = ((ParameterizedType) field.getGenericType()).getActualTypeArguments()[0];
 
-            Class<?> aClass = ReflectionUtils.forName(actualTypeArgument.getTypeName(), this.getClass().getClassLoader());
+            Class<?> aClass = TypeToken.of(actualTypeArgument).getRawType();
+
             for (Object childItem : childList) {
 
                 if (aClass.isAnnotationPresent(Entity.class)) {
@@ -100,11 +108,7 @@ public class Flattener {
                     dtoList.add(dtoItem);
                 } else if (field.isAnnotationPresent(Choice.class)) {
                     String simpleName = Optional.ofNullable(childItem).map(Object::getClass).map(RM_INFO_LOOKUP::getTypeInfo).map(RMTypeInfo::getRmName).orElse("");
-                    Class<?> type = reflections.getSubTypesOf((Class<?>) actualTypeArgument)
-                            .stream()
-                            .filter(c -> c.isAnnotationPresent(OptionFor.class))
-                            .filter(c -> c.getAnnotation(OptionFor.class).value().equals(simpleName))
-                            .findAny()
+                    Class<?> type = findActual((Class<?>) actualTypeArgument, simpleName)
                             .orElseThrow(() -> new ClientException(String.format("No Option for %s ", simpleName)));
                     Object dtoItem = createInstance(type);
                     mapEntityToDto((RMObject) childItem, dtoItem);
@@ -126,6 +130,17 @@ public class Flattener {
 
     }
 
+
+    private Optional<? extends Class<?>> findActual(Class<?> actualTypeArgument, String simpleName) {
+        return classgraph.getClassesImplementing(actualTypeArgument.getName())
+                .stream()
+                .map(ClassInfo::loadClass)
+                .map(c -> (Class<?>) c)
+                .filter(c -> c.isAnnotationPresent(OptionFor.class))
+                .filter(c -> c.getAnnotation(OptionFor.class).value().equals(simpleName))
+                .findAny();
+    }
+
     private void writeField(Field field, Object dto, Object dtoList) {
 
         try {
@@ -142,11 +157,7 @@ public class Flattener {
 
         if (field.isAnnotationPresent(Choice.class)) {
             String simpleName = Optional.ofNullable(child).map(Object::getClass).map(RM_INFO_LOOKUP::getTypeInfo).map(RMTypeInfo::getRmName).orElse("");
-            Class<?> type = reflections.getSubTypesOf(fieldType)
-                    .stream()
-                    .filter(c -> c.isAnnotationPresent(OptionFor.class))
-                    .filter(c -> c.getAnnotation(OptionFor.class).value().equals(simpleName))
-                    .findAny()
+            Class<?> type = findActual(fieldType, simpleName)
                     .orElse(null);
             if (type != null) {
                 fieldType = type;
