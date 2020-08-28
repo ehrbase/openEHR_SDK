@@ -23,6 +23,7 @@ package org.ehrbase.serialisation.dbencoding.wrappers.json.writer;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 import com.nedap.archie.rm.datavalues.quantity.datetime.DvTime;
+import org.ehrbase.serialisation.attributes.datavalues.datetime.time.DvTimeAttributes;
 import org.ehrbase.serialisation.dbencoding.wrappers.json.I_DvTypeAdapter;
 import org.ehrbase.serialisation.util.ObjectSnakeCase;
 
@@ -42,8 +43,7 @@ public class DvTimeAdapter extends DvTypeAdapter<DvTime> {
     }
 
     @Override
-    public DvTime read(JsonReader arg0) throws IOException {
-        // TODO Auto-generated method stub
+    public DvTime read(JsonReader arg0) {
         return null;
     }
 
@@ -54,15 +54,17 @@ public class DvTimeAdapter extends DvTypeAdapter<DvTime> {
             return;
         }
 
+        DvTimeAttributes dvTimeAttributes = DvTimeAttributes.instanceFromValue(dvalue);
+
         if (adapterType == AdapterType.PG_JSONB) {
             writer.beginObject();
-            writer.name("value").value(dvalue.getValue().toString());
-            writer.name("epoch_offset").value(dvalue.getValue().toString());
+            writer.name(VALUE).value(dvTimeAttributes.getValueAsProvided().toString());
+            writer.name(EPOCH_OFFSET).value(dvTimeAttributes.getTimeStamp());
             writer.endObject();
         } else if (adapterType == AdapterType.RAW_JSON) {
             writer.beginObject();
             writer.name(I_DvTypeAdapter.TAG_CLASS_RAW_JSON).value(new ObjectSnakeCase(dvalue).camelToUpperSnake());
-            writer.name("value").value(dvalue.getValue().toString());
+            writer.name(VALUE).value(dvalue.getValue().toString());
             writer.endObject();
 
         }

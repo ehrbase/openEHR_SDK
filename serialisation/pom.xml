@@ -53,8 +53,12 @@
             <artifactId>json</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.github.openEHR</groupId>
-            <artifactId>archie</artifactId>
+            <groupId>com.nedap.healthcare.archie</groupId>
+            <artifactId>archie-all</artifactId>
+
+            <!--                <groupId>com.github.openEHR</groupId>-->
+            <!--                <artifactId>archie</artifactId>-->
+            <!--                <version>738152e</version>-->
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>

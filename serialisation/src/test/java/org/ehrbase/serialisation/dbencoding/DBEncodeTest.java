@@ -284,6 +284,38 @@ public class DBEncodeTest {
     }
 
     @Test
+    public void testDateTimeEncodeDecode() throws IOException {
+        Composition composition = new CanonicalJson().unmarshal(IOUtils.resourceToString("/composition/canonical_json/datetime_tests.json", UTF_8), Composition.class);
+
+        assertNotNull(composition);
+
+        CompositionSerializer compositionSerializerRawJson = new CompositionSerializer();
+
+        String db_encoded = compositionSerializerRawJson.dbEncode(composition);
+        assertNotNull(db_encoded);
+
+        JsonElement converted = new LightRawJsonEncoder(db_encoded).encodeContentAsJson("composition");
+
+        //see if this can be interpreted by Archie
+        Composition composition2 = new CanonicalJson().unmarshal(converted.toString(), Composition.class);
+
+        assertNotNull(composition2);
+
+        String dvtestPrefix = "/content[openEHR-EHR-OBSERVATION.test_all_types.v1]/data[at0001]/events[at0002]/data[at0003]";
+
+        assertEquals("2019-01-28", composition2.itemsAtPath(dvtestPrefix+"/items[at0010.1]/value/value").get(0).toString());
+        assertEquals("2019-01-28T10:00", composition2.itemsAtPath(dvtestPrefix+"/items[at0010.2]/value/value").get(0).toString());
+        assertEquals("2019-01-28T10:00+07:00", composition2.itemsAtPath(dvtestPrefix+"/items[at0010.21]/value/value").get(0).toString());
+        assertEquals("2019-01", composition2.itemsAtPath(dvtestPrefix+"/items[at0010.3]/value/value").get(0).toString());
+        assertEquals("2019", composition2.itemsAtPath(dvtestPrefix+"/items[at0010.4]/value/value").get(0).toString());
+        assertEquals("2019-01-28T21:22:49.427+07:00", composition2.itemsAtPath(dvtestPrefix+"/items[at0011]/value/value").get(0).toString());
+        assertEquals("18:36:49", composition2.itemsAtPath(dvtestPrefix+"/items[at0012.1]/value/value").get(0).toString());
+        assertEquals("18:36", composition2.itemsAtPath(dvtestPrefix+"/items[at0012.2]/value/value").get(0).toString());
+        assertEquals("18:00", composition2.itemsAtPath(dvtestPrefix+"/items[at0012.3]/value/value").get(0).toString());
+        assertEquals("18:36+07:00", composition2.itemsAtPath(dvtestPrefix+"/items[at0012.4]/value/value").get(0).toString());
+    }
+
+    @Test
     public void testNestedLanguageSubjectPartyIdentified() throws IOException {
         Composition composition = new CanonicalJson().unmarshal(IOUtils.toString(CompositionTestDataCanonicalJson.SUBJECT_PARTY_IDENTIFIED.getStream(), UTF_8),Composition.class);
 
