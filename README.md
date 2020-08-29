@@ -20,6 +20,11 @@ Generic openEHR Client and Objekt-mapper:
 ## serialisation (Beta)
 * map Compositions from and to JSON;XML
 
+## Release Notes (v0.3.6)
+* CircleCI pipeline w/ Jacoco code coverage and sonarcloud.io analysis
+* semi automated version updating via [major] / [minor] / [patch] flags in merge commit title of Github PR
+* updated test dependencies to use Junit5
+
 ## Release Notes (v0.3.0)
 * RestClient for DIRECTORY endpoint
 * Improved clean-up of empty elements
