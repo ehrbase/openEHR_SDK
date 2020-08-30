@@ -233,12 +233,12 @@ workflows:
     jobs:
       - run-code-analysis:
           context: org-global
-          # filters:
-          #   branches:
-          #     ignore:
-          #       - master
-          #       - develop
-          #       - release
+          filters:
+            branches:
+              ignore:
+                # - master
+                # - develop
+                - release
 
 
 
