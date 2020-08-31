@@ -324,13 +324,13 @@
             <!-- external -->
 
             <dependency>
-                <groupId>com.nedap.healthcare.archie</groupId>
-                <artifactId>archie-all</artifactId>
-                <version>0.10.0</version>
+<!--                <groupId>com.nedap.healthcare.archie</groupId>-->
+<!--                <artifactId>archie-all</artifactId>-->
+<!--                <version>0.10.0</version>-->
 
-<!--                <groupId>com.github.openEHR</groupId>-->
-<!--                <artifactId>archie</artifactId>-->
-<!--                <version>738152e</version>-->
+                <groupId>com.github.openEHR</groupId>
+                <artifactId>archie</artifactId>
+                <version>0ab5fd8</version>
             </dependency>
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
