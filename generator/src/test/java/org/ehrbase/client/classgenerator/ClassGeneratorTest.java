@@ -111,7 +111,8 @@ public class ClassGeneratorTest {
                         new Tuple("deviceDetailsTrainingSample", "java.util.List<org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev0composition.definition.DeviceDetailsTrainingSampleCluster>"),
                         new Tuple("categoryDefiningcode", "org.ehrbase.client.classgenerator.examples.shareddefinition.CategoryDefiningcode"),
                         new Tuple("startTimeValue", "java.time.temporal.TemporalAccessor"),
-                        new Tuple("participations", "java.util.List<com.nedap.archie.rm.generic.Participation>")
+                        new Tuple("participations", "java.util.List<com.nedap.archie.rm.generic.Participation>"),
+                        new Tuple("feederAudit", "com.nedap.archie.rm.archetyped.FeederAudit")
                 );
 
 
@@ -201,7 +202,8 @@ public class ClassGeneratorTest {
                         new Tuple("erweiterung", "java.util.List<com.nedap.archie.rm.datastructures.Cluster>"),
                         new Tuple("location", "java.lang.String"),
                         new Tuple("categoryDefiningcode", "org.ehrbase.client.classgenerator.examples.shareddefinition.CategoryDefiningcode"),
-                        new Tuple("participations", "java.util.List<com.nedap.archie.rm.generic.Participation>")
+                        new Tuple("participations", "java.util.List<com.nedap.archie.rm.generic.Participation>"),
+                        new Tuple("feederAudit", "com.nedap.archie.rm.archetyped.FeederAudit")
                 );
 
         writeFiles(generate);
@@ -244,7 +246,7 @@ public class ClassGeneratorTest {
                 .filter(t -> !t.kind.equals(TypeSpec.Kind.ENUM))
                 .map(t -> t.fieldSpecs).flatMap(List::stream).collect(Collectors.toList());
 
-        assertThat(fieldSpecs).size().isEqualTo(27);
+        assertThat(fieldSpecs).size().isEqualTo(28);
 
         writeFiles(generate);
 
@@ -311,7 +313,8 @@ public class ClassGeneratorTest {
                         new Tuple("bodyExposure", "org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1composition.definition.BodyTemperatureBodyExposureChoice2"),
                         new Tuple("mathFunctionDefiningcode", "org.ehrbase.client.classgenerator.examples.shareddefinition.MathFunctionDefiningcode"),
                         new Tuple("anyEvent", "java.util.List<org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1composition.definition.BodyTemperatureAnyEventChoice>"),
-                        new Tuple("participations", "java.util.List<com.nedap.archie.rm.generic.Participation>")
+                        new Tuple("participations", "java.util.List<com.nedap.archie.rm.generic.Participation>"),
+                        new Tuple("feederAudit", "com.nedap.archie.rm.archetyped.FeederAudit")
                 );
 
 
@@ -331,7 +334,7 @@ public class ClassGeneratorTest {
                 .filter(t -> !t.kind.equals(TypeSpec.Kind.ENUM))
                 .map(t -> t.fieldSpecs).flatMap(List::stream).collect(Collectors.toList());
 
-        assertThat(fieldSpecs).size().isEqualTo(73L);
+        assertThat(fieldSpecs).size().isEqualTo(74L);
 
         writeFiles(generate);
 
@@ -349,7 +352,7 @@ public class ClassGeneratorTest {
                 .filter(t -> !t.kind.equals(TypeSpec.Kind.ENUM))
                 .map(t -> t.fieldSpecs).flatMap(List::stream).collect(Collectors.toList());
 
-        assertThat(fieldSpecs).size().isEqualTo(304L);
+        assertThat(fieldSpecs).size().isEqualTo(305);
 
         writeFiles(generate);
 

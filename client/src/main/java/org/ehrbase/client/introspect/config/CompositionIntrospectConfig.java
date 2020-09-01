@@ -27,7 +27,7 @@ import java.util.stream.Stream;
 
 public class CompositionIntrospectConfig implements RmIntrospectConfig {
 
-    private static final Set<String> FIELDS = Stream.of("language", "territory", "composer", "category").collect(Collectors.toSet());
+    private static final Set<String> FIELDS = Stream.of("language", "territory", "composer", "category", "feederAudit").collect(Collectors.toSet());
 
     @Override
     public Class getAssociatedClass() {

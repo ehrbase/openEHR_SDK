@@ -1,10 +1,15 @@
 package org.ehrbase.client.classgenerator.examples.alternativeeventscomposition;
 
+import com.nedap.archie.rm.archetyped.FeederAudit;
 import com.nedap.archie.rm.datastructures.Cluster;
 import com.nedap.archie.rm.generic.Participation;
 import com.nedap.archie.rm.generic.PartyIdentified;
 import com.nedap.archie.rm.generic.PartyProxy;
-import org.ehrbase.client.annotations.*;
+import org.ehrbase.client.annotations.Archetype;
+import org.ehrbase.client.annotations.Entity;
+import org.ehrbase.client.annotations.Id;
+import org.ehrbase.client.annotations.Path;
+import org.ehrbase.client.annotations.Template;
 import org.ehrbase.client.classgenerator.examples.alternativeeventscomposition.definition.KorpergewichtObservation;
 import org.ehrbase.client.classgenerator.examples.shareddefinition.CategoryDefiningcode;
 import org.ehrbase.client.classgenerator.examples.shareddefinition.Language;
@@ -54,6 +59,9 @@ public class AlternativeEventsComposition {
 
     @Path("/content[openEHR-EHR-OBSERVATION.body_weight.v2]")
     private List<KorpergewichtObservation> korpergewicht;
+
+    @Path("/feeder_audit")
+    private FeederAudit feederAudit;
 
     @Path("/context/other_context[at0001]/items[at0006]")
     private List<Cluster> erweiterung;
@@ -158,6 +166,14 @@ public class AlternativeEventsComposition {
 
     public List<KorpergewichtObservation> getKorpergewicht() {
         return this.korpergewicht;
+    }
+
+    public void setFeederAudit(FeederAudit feederAudit) {
+        this.feederAudit = feederAudit;
+    }
+
+    public FeederAudit getFeederAudit() {
+        return this.feederAudit;
     }
 
     public void setErweiterung(List<Cluster> erweiterung) {

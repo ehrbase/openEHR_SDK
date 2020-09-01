@@ -24,7 +24,12 @@ import org.ehrbase.client.TestData;
 import org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev0composition.EhrbaseBloodPressureSimpleDeV0Composition;
 import org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev0composition.definition.KorotkoffSoundsDefiningcode;
 import org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1composition.EhrbaseMultiOccurrenceDeV1Composition;
-import org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1composition.definition.*;
+import org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1composition.definition.BodyTemperatureAnyEventPointEvent;
+import org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1composition.definition.BodyTemperatureLocationOfMeasurementChoice;
+import org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1composition.definition.BodyTemperatureLocationOfMeasurementDvcodedtext;
+import org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1composition.definition.BodyTemperatureLocationOfMeasurementDvtext;
+import org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1composition.definition.BodyTemperatureObservation;
+import org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1composition.definition.LocationOfMeasurementDefiningcode;
 import org.ehrbase.client.classgenerator.examples.episodeofcarecomposition.EpisodeOfCareComposition;
 import org.ehrbase.client.classgenerator.examples.episodeofcarecomposition.definition.EpisodeofcareAdminEntry;
 import org.ehrbase.client.classgenerator.examples.episodeofcarecomposition.definition.EpisodeofcareTeamElement;
@@ -147,6 +152,11 @@ public class DefaultRestCompositionEndpointIT {
         Optional<EpisodeOfCareComposition> actual = compositionEndpoint.find(version1.getVersionUid().getUuid(), EpisodeOfCareComposition.class);
         assertTrue(actual.isPresent());
         assertThat(actual.get().getVersionUid()).extracting(v -> v.getUuid().toString(), VersionUid::getVersion).containsExactly(version1.getVersionUid().getUuid().toString(), 1L);
+        assertThat(actual.get().getFeederAudit()).isNotNull()
+                .extracting(feederAudit -> feederAudit.getFeederSystemAudit().getSystemId(), feederAudit1 -> feederAudit1.getOriginatingSystemAudit().getSystemId())
+                .containsExactly("System 1", "System 2");
+
+
         assertThat(actual.get().getEpisodeofcare()).size().isEqualTo(1);
 
         EpisodeofcareAdminEntry episodeofcareAdminEntry = actual.get().getEpisodeofcare().get(0);
@@ -154,6 +164,7 @@ public class DefaultRestCompositionEndpointIT {
         assertThat(episodeofcareAdminEntry.getIdentifier()).extracting(e -> e.getValue().getId()).containsExactlyInAnyOrder("123", "456");
 
         assertThat(episodeofcareAdminEntry.getTeam()).extracting(EpisodeofcareTeamElement::getValue).containsExactlyInAnyOrder(URI.create("https://github.com/ehrbase"));
+
 
     }
 

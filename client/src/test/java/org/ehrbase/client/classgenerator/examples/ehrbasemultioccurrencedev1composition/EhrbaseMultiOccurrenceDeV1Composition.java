@@ -1,10 +1,15 @@
 package org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1composition;
 
+import com.nedap.archie.rm.archetyped.FeederAudit;
 import com.nedap.archie.rm.datastructures.Cluster;
 import com.nedap.archie.rm.generic.Participation;
 import com.nedap.archie.rm.generic.PartyIdentified;
 import com.nedap.archie.rm.generic.PartyProxy;
-import org.ehrbase.client.annotations.*;
+import org.ehrbase.client.annotations.Archetype;
+import org.ehrbase.client.annotations.Entity;
+import org.ehrbase.client.annotations.Id;
+import org.ehrbase.client.annotations.Path;
+import org.ehrbase.client.annotations.Template;
 import org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1composition.definition.BodyTemperatureObservation;
 import org.ehrbase.client.classgenerator.examples.shareddefinition.CategoryDefiningcode;
 import org.ehrbase.client.classgenerator.examples.shareddefinition.Language;
@@ -34,14 +39,20 @@ public class EhrbaseMultiOccurrenceDeV1Composition {
     @Path("/context/health_care_facility")
     private PartyIdentified healthCareFacility;
 
+    @Path("/territory")
+    private Territory territory;
+
+    @Path("/context/start_time|value")
+    private TemporalAccessor startTimeValue;
+
     @Path("/composer")
     private PartyProxy composer;
 
     @Path("/context/setting|defining_code")
     private SettingDefiningcode settingDefiningcode;
 
-    @Path("/territory")
-    private Territory territory;
+    @Path("/feeder_audit")
+    private FeederAudit feederAudit;
 
     @Path("/content[openEHR-EHR-OBSERVATION.body_temperature.v2]")
     private List<BodyTemperatureObservation> bodyTemperature;
@@ -51,9 +62,6 @@ public class EhrbaseMultiOccurrenceDeV1Composition {
 
     @Path("/category|defining_code")
     private CategoryDefiningcode categoryDefiningcode;
-
-    @Path("/context/start_time|value")
-    private TemporalAccessor startTimeValue;
 
     @Path("/context/other_context[at0001]/items[at0002]")
     private List<Cluster> extension;
@@ -98,6 +106,22 @@ public class EhrbaseMultiOccurrenceDeV1Composition {
         return this.healthCareFacility;
     }
 
+    public void setTerritory(Territory territory) {
+        this.territory = territory;
+    }
+
+    public Territory getTerritory() {
+        return this.territory;
+    }
+
+    public void setStartTimeValue(TemporalAccessor startTimeValue) {
+        this.startTimeValue = startTimeValue;
+    }
+
+    public TemporalAccessor getStartTimeValue() {
+        return this.startTimeValue;
+    }
+
     public void setComposer(PartyProxy composer) {
         this.composer = composer;
     }
@@ -114,12 +138,12 @@ public class EhrbaseMultiOccurrenceDeV1Composition {
         return this.settingDefiningcode;
     }
 
-    public void setTerritory(Territory territory) {
-        this.territory = territory;
+    public void setFeederAudit(FeederAudit feederAudit) {
+        this.feederAudit = feederAudit;
     }
 
-    public Territory getTerritory() {
-        return this.territory;
+    public FeederAudit getFeederAudit() {
+        return this.feederAudit;
     }
 
     public void setBodyTemperature(List<BodyTemperatureObservation> bodyTemperature) {
@@ -144,14 +168,6 @@ public class EhrbaseMultiOccurrenceDeV1Composition {
 
     public CategoryDefiningcode getCategoryDefiningcode() {
         return this.categoryDefiningcode;
-    }
-
-    public void setStartTimeValue(TemporalAccessor startTimeValue) {
-        this.startTimeValue = startTimeValue;
-    }
-
-    public TemporalAccessor getStartTimeValue() {
-        return this.startTimeValue;
     }
 
     public void setExtension(List<Cluster> extension) {

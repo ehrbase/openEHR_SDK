@@ -1,5 +1,6 @@
 package org.ehrbase.client.classgenerator.examples.alternativeeventscomposition;
 
+import com.nedap.archie.rm.archetyped.FeederAudit;
 import com.nedap.archie.rm.datastructures.Cluster;
 import com.nedap.archie.rm.generic.Participation;
 import com.nedap.archie.rm.generic.PartyIdentified;
@@ -41,6 +42,8 @@ public class AlternativeEventsCompositionContainment extends Containment {
   public SelectAqlField<SettingDefiningcode> SETTING_DEFININGCODE = new AqlFieldImp<SettingDefiningcode>(AlternativeEventsComposition.class, "/context/setting|defining_code", "settingDefiningcode", SettingDefiningcode.class, this);
 
   public ListSelectAqlField<KorpergewichtObservation> KORPERGEWICHT = new ListAqlFieldImp<KorpergewichtObservation>(AlternativeEventsComposition.class, "/content[openEHR-EHR-OBSERVATION.body_weight.v2]", "korpergewicht", KorpergewichtObservation.class, this);
+
+  public SelectAqlField<FeederAudit> FEEDER_AUDIT = new AqlFieldImp<FeederAudit>(AlternativeEventsComposition.class, "/feeder_audit", "feederAudit", FeederAudit.class, this);
 
   public ListSelectAqlField<Cluster> ERWEITERUNG = new ListAqlFieldImp<Cluster>(AlternativeEventsComposition.class, "/context/other_context[at0001]/items[at0006]", "erweiterung", Cluster.class, this);
 

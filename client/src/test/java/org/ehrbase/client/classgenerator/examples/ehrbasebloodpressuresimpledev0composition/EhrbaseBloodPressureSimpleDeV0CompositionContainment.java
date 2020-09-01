@@ -1,5 +1,6 @@
 package org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev0composition;
 
+import com.nedap.archie.rm.archetyped.FeederAudit;
 import com.nedap.archie.rm.generic.Participation;
 import com.nedap.archie.rm.generic.PartyIdentified;
 import com.nedap.archie.rm.generic.PartyProxy;
@@ -28,21 +29,23 @@ public class EhrbaseBloodPressureSimpleDeV0CompositionContainment extends Contai
 
   public SelectAqlField<PartyIdentified> HEALTH_CARE_FACILITY = new AqlFieldImp<PartyIdentified>(EhrbaseBloodPressureSimpleDeV0Composition.class, "/context/health_care_facility", "healthCareFacility", PartyIdentified.class, this);
 
+  public SelectAqlField<Territory> TERRITORY = new AqlFieldImp<Territory>(EhrbaseBloodPressureSimpleDeV0Composition.class, "/territory", "territory", Territory.class, this);
+
+  public ListSelectAqlField<DeviceDetailsTrainingSampleCluster> DEVICE_DETAILS_TRAINING_SAMPLE = new ListAqlFieldImp<DeviceDetailsTrainingSampleCluster>(EhrbaseBloodPressureSimpleDeV0Composition.class, "/context/other_context[at0001]/items[at0006]/items[openEHR-EHR-CLUSTER.sample_device.v1]", "deviceDetailsTrainingSample", DeviceDetailsTrainingSampleCluster.class, this);
+
+  public SelectAqlField<TemporalAccessor> START_TIME_VALUE = new AqlFieldImp<TemporalAccessor>(EhrbaseBloodPressureSimpleDeV0Composition.class, "/context/start_time|value", "startTimeValue", TemporalAccessor.class, this);
+
   public SelectAqlField<PartyProxy> COMPOSER = new AqlFieldImp<PartyProxy>(EhrbaseBloodPressureSimpleDeV0Composition.class, "/composer", "composer", PartyProxy.class, this);
 
   public SelectAqlField<SettingDefiningcode> SETTING_DEFININGCODE = new AqlFieldImp<SettingDefiningcode>(EhrbaseBloodPressureSimpleDeV0Composition.class, "/context/setting|defining_code", "settingDefiningcode", SettingDefiningcode.class, this);
 
-  public SelectAqlField<Territory> TERRITORY = new AqlFieldImp<Territory>(EhrbaseBloodPressureSimpleDeV0Composition.class, "/territory", "territory", Territory.class, this);
+  public SelectAqlField<FeederAudit> FEEDER_AUDIT = new AqlFieldImp<FeederAudit>(EhrbaseBloodPressureSimpleDeV0Composition.class, "/feeder_audit", "feederAudit", FeederAudit.class, this);
 
   public ListSelectAqlField<BloodPressureTrainingSampleObservation> BLOOD_PRESSURE_TRAINING_SAMPLE = new ListAqlFieldImp<BloodPressureTrainingSampleObservation>(EhrbaseBloodPressureSimpleDeV0Composition.class, "/content[openEHR-EHR-OBSERVATION.sample_blood_pressure.v1]", "bloodPressureTrainingSample", BloodPressureTrainingSampleObservation.class, this);
 
   public SelectAqlField<String> LOCATION = new AqlFieldImp<String>(EhrbaseBloodPressureSimpleDeV0Composition.class, "/context/location", "location", String.class, this);
 
   public SelectAqlField<CategoryDefiningcode> CATEGORY_DEFININGCODE = new AqlFieldImp<CategoryDefiningcode>(EhrbaseBloodPressureSimpleDeV0Composition.class, "/category|defining_code", "categoryDefiningcode", CategoryDefiningcode.class, this);
-
-  public ListSelectAqlField<DeviceDetailsTrainingSampleCluster> DEVICE_DETAILS_TRAINING_SAMPLE = new ListAqlFieldImp<DeviceDetailsTrainingSampleCluster>(EhrbaseBloodPressureSimpleDeV0Composition.class, "/context/other_context[at0001]/items[at0006]/items[openEHR-EHR-CLUSTER.sample_device.v1]", "deviceDetailsTrainingSample", DeviceDetailsTrainingSampleCluster.class, this);
-
-  public SelectAqlField<TemporalAccessor> START_TIME_VALUE = new AqlFieldImp<TemporalAccessor>(EhrbaseBloodPressureSimpleDeV0Composition.class, "/context/start_time|value", "startTimeValue", TemporalAccessor.class, this);
 
   private EhrbaseBloodPressureSimpleDeV0CompositionContainment() {
     super("openEHR-EHR-COMPOSITION.sample_encounter.v1");

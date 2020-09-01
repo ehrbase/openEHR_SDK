@@ -1,9 +1,14 @@
 package org.ehrbase.client.classgenerator.examples.testalltypesenv1composition;
 
+import com.nedap.archie.rm.archetyped.FeederAudit;
 import com.nedap.archie.rm.generic.Participation;
 import com.nedap.archie.rm.generic.PartyIdentified;
 import com.nedap.archie.rm.generic.PartyProxy;
-import org.ehrbase.client.annotations.*;
+import org.ehrbase.client.annotations.Archetype;
+import org.ehrbase.client.annotations.Entity;
+import org.ehrbase.client.annotations.Id;
+import org.ehrbase.client.annotations.Path;
+import org.ehrbase.client.annotations.Template;
 import org.ehrbase.client.classgenerator.examples.shareddefinition.CategoryDefiningcode;
 import org.ehrbase.client.classgenerator.examples.shareddefinition.Language;
 import org.ehrbase.client.classgenerator.examples.shareddefinition.SettingDefiningcode;
@@ -56,6 +61,9 @@ public class TestAllTypesEnV1Composition {
 
     @Path("/context/setting|defining_code")
     private SettingDefiningcode settingDefiningcode;
+
+    @Path("/feeder_audit")
+    private FeederAudit feederAudit;
 
     @Path("/content[openEHR-EHR-OBSERVATION.test_all_types.v1]")
     private List<TestAllTypesObservation> testAllTypesContentOpenehrEhrObservationTestAllTypesV1;
@@ -162,6 +170,14 @@ public class TestAllTypesEnV1Composition {
 
     public SettingDefiningcode getSettingDefiningcode() {
         return this.settingDefiningcode;
+    }
+
+    public void setFeederAudit(FeederAudit feederAudit) {
+        this.feederAudit = feederAudit;
+    }
+
+    public FeederAudit getFeederAudit() {
+        return this.feederAudit;
     }
 
     public void setTestAllTypesContentOpenehrEhrObservationTestAllTypesV1(
