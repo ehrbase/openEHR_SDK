@@ -66,7 +66,7 @@
         <profile>
             <id>slow</id>
             <properties>
-                <include.tests>**/*TestIT.java</include.tests>
+                <include.tests>**/*IT.java</include.tests>
                 <test.profile>integration</test.profile>
             </properties>
         </profile>
