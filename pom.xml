@@ -250,7 +250,7 @@
                             <argLine>${failsafeArgLine}</argLine>
 
                             <includes>
-                                <include>**/*TestIT.java</include>
+                                <include>**/*IT.java</include>
                             </includes>
 
 
