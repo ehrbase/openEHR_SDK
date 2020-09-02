@@ -22,8 +22,20 @@ package org.ehrbase.client.classgenerator;
 import com.nedap.archie.rm.datatypes.CodePhrase;
 import com.nedap.archie.rminfo.ArchieRMInfoLookup;
 import com.nedap.archie.rminfo.RMTypeInfo;
-import com.squareup.javapoet.*;
-import org.apache.commons.cli.*;
+import com.squareup.javapoet.AnnotationSpec;
+import com.squareup.javapoet.ClassName;
+import com.squareup.javapoet.FieldSpec;
+import com.squareup.javapoet.JavaFile;
+import com.squareup.javapoet.MethodSpec;
+import com.squareup.javapoet.ParameterizedTypeName;
+import com.squareup.javapoet.TypeName;
+import com.squareup.javapoet.TypeSpec;
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.HelpFormatter;
+import org.apache.commons.cli.Options;
+import org.apache.commons.cli.ParseException;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -32,11 +44,23 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.text.CaseUtils;
 import org.apache.xmlbeans.XmlException;
-import org.ehrbase.client.annotations.*;
+import org.ehrbase.client.annotations.Archetype;
+import org.ehrbase.client.annotations.Choice;
+import org.ehrbase.client.annotations.Entity;
+import org.ehrbase.client.annotations.Id;
+import org.ehrbase.client.annotations.OptionFor;
+import org.ehrbase.client.annotations.Path;
+import org.ehrbase.client.annotations.Template;
 import org.ehrbase.client.classgenerator.config.RmClassGeneratorConfig;
 import org.ehrbase.client.flattener.PathExtractor;
 import org.ehrbase.client.introspect.TemplateIntrospect;
-import org.ehrbase.client.introspect.node.*;
+import org.ehrbase.client.introspect.node.ArchetypeNode;
+import org.ehrbase.client.introspect.node.ChoiceNode;
+import org.ehrbase.client.introspect.node.EndNode;
+import org.ehrbase.client.introspect.node.EntityNode;
+import org.ehrbase.client.introspect.node.Node;
+import org.ehrbase.client.introspect.node.SlotNode;
+import org.ehrbase.client.introspect.node.TemplateNode;
 import org.ehrbase.client.openehrclient.VersionUid;
 import org.ehrbase.client.reflection.ReflectionHelper;
 import org.ehrbase.client.terminology.ValueSet;
@@ -51,7 +75,12 @@ import javax.lang.model.element.Modifier;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class ClassGenerator {
@@ -80,7 +109,7 @@ public class ClassGenerator {
         if (StringUtils.isBlank(name) || name.equals("_")) {
             return RandomStringUtils.randomAlphabetic(10);
         }
-        String normalisedString = StringUtils.strip(StringUtils.stripAccents(name).replaceAll("[^A-Za-z0-9]", "_"), "_");
+        String normalisedString = StringUtils.strip(StringUtils.stripAccents(name).replace("ß", "ss").replaceAll("[^A-Za-z0-9]", "_"), "_");
         return CaseUtils.toCamelCase(normalisedString, capitalizeFirstLetter, '_');
     }
 
