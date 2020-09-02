@@ -1,5 +1,6 @@
 package org.ehrbase.client.classgenerator.examples.testalltypesenv1composition;
 
+import com.nedap.archie.rm.archetyped.FeederAudit;
 import com.nedap.archie.rm.generic.Participation;
 import com.nedap.archie.rm.generic.PartyIdentified;
 import com.nedap.archie.rm.generic.PartyProxy;
@@ -43,6 +44,8 @@ public class TestAllTypesEnV1CompositionContainment extends Containment {
   public SelectAqlField<PartyProxy> COMPOSER = new AqlFieldImp<PartyProxy>(TestAllTypesEnV1Composition.class, "/composer", "composer", PartyProxy.class, this);
 
   public SelectAqlField<SettingDefiningcode> SETTING_DEFININGCODE = new AqlFieldImp<SettingDefiningcode>(TestAllTypesEnV1Composition.class, "/context/setting|defining_code", "settingDefiningcode", SettingDefiningcode.class, this);
+
+  public SelectAqlField<FeederAudit> FEEDER_AUDIT = new AqlFieldImp<FeederAudit>(TestAllTypesEnV1Composition.class, "/feeder_audit", "feederAudit", FeederAudit.class, this);
 
   public ListSelectAqlField<TestAllTypesObservation> TEST_ALL_TYPES_CONTENT_OPENEHR_EHR_OBSERVATION_TEST_ALL_TYPES_V1 = new ListAqlFieldImp<TestAllTypesObservation>(TestAllTypesEnV1Composition.class, "/content[openEHR-EHR-OBSERVATION.test_all_types.v1]", "testAllTypesContentOpenehrEhrObservationTestAllTypesV1", TestAllTypesObservation.class, this);
 

@@ -1,5 +1,6 @@
 package org.ehrbase.client.classgenerator.examples.coronaanamnesecomposition;
 
+import com.nedap.archie.rm.archetyped.FeederAudit;
 import com.nedap.archie.rm.datastructures.Cluster;
 import com.nedap.archie.rm.generic.Participation;
 import com.nedap.archie.rm.generic.PartyIdentified;
@@ -9,7 +10,11 @@ import org.ehrbase.client.aql.field.AqlFieldImp;
 import org.ehrbase.client.aql.field.ListAqlFieldImp;
 import org.ehrbase.client.aql.field.ListSelectAqlField;
 import org.ehrbase.client.aql.field.SelectAqlField;
-import org.ehrbase.client.classgenerator.examples.coronaanamnesecomposition.definition.*;
+import org.ehrbase.client.classgenerator.examples.coronaanamnesecomposition.definition.AllgemeineAngabenSection;
+import org.ehrbase.client.classgenerator.examples.coronaanamnesecomposition.definition.GeschichteHistorieObservation;
+import org.ehrbase.client.classgenerator.examples.coronaanamnesecomposition.definition.KontaktSection;
+import org.ehrbase.client.classgenerator.examples.coronaanamnesecomposition.definition.RisikogebietSection;
+import org.ehrbase.client.classgenerator.examples.coronaanamnesecomposition.definition.SymptomeSection;
 import org.ehrbase.client.classgenerator.examples.shareddefinition.CategoryDefiningcode;
 import org.ehrbase.client.classgenerator.examples.shareddefinition.Language;
 import org.ehrbase.client.classgenerator.examples.shareddefinition.SettingDefiningcode;
@@ -49,6 +54,8 @@ public class CoronaAnamneseCompositionContainment extends Containment {
   public SelectAqlField<PartyProxy> COMPOSER = new AqlFieldImp<PartyProxy>(CoronaAnamneseComposition.class, "/composer", "composer", PartyProxy.class, this);
 
   public SelectAqlField<SettingDefiningcode> SETTING_DEFININGCODE = new AqlFieldImp<SettingDefiningcode>(CoronaAnamneseComposition.class, "/context/setting|defining_code", "settingDefiningcode", SettingDefiningcode.class, this);
+
+  public SelectAqlField<FeederAudit> FEEDER_AUDIT = new AqlFieldImp<FeederAudit>(CoronaAnamneseComposition.class, "/feeder_audit", "feederAudit", FeederAudit.class, this);
 
   public ListSelectAqlField<Cluster> ERWEITERUNG = new ListAqlFieldImp<Cluster>(CoronaAnamneseComposition.class, "/context/other_context[at0001]/items[at0006]", "erweiterung", Cluster.class, this);
 

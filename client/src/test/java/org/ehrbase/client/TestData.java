@@ -16,6 +16,8 @@
  */
 package org.ehrbase.client;
 
+import com.nedap.archie.rm.archetyped.FeederAudit;
+import com.nedap.archie.rm.archetyped.FeederAuditDetails;
 import com.nedap.archie.rm.datavalues.DvIdentifier;
 import com.nedap.archie.rm.datavalues.DvText;
 import com.nedap.archie.rm.datavalues.quantity.DvInterval;
@@ -42,7 +44,11 @@ import org.ehrbase.client.classgenerator.examples.episodeofcarecomposition.Episo
 import org.ehrbase.client.classgenerator.examples.episodeofcarecomposition.definition.EpisodeofcareAdminEntry;
 import org.ehrbase.client.classgenerator.examples.episodeofcarecomposition.definition.EpisodeofcareIdentifierElement;
 import org.ehrbase.client.classgenerator.examples.episodeofcarecomposition.definition.EpisodeofcareTeamElement;
-import org.ehrbase.client.classgenerator.examples.shareddefinition.*;
+import org.ehrbase.client.classgenerator.examples.shareddefinition.CategoryDefiningcode;
+import org.ehrbase.client.classgenerator.examples.shareddefinition.Language;
+import org.ehrbase.client.classgenerator.examples.shareddefinition.MathFunctionDefiningcode;
+import org.ehrbase.client.classgenerator.examples.shareddefinition.SettingDefiningcode;
+import org.ehrbase.client.classgenerator.examples.shareddefinition.Territory;
 import org.ehrbase.client.flattener.BloodpressureListDe;
 
 import java.net.URI;
@@ -225,6 +231,13 @@ public class TestData {
         episode.setEpisodeofcare(new ArrayList<>());
         episode.setStartTimeValue(OffsetDateTime.now());
         episode.setSettingDefiningcode(SettingDefiningcode.NURSING_HOME_CARE);
+
+        FeederAudit audit = new FeederAudit();
+        audit.setFeederSystemAudit(new FeederAuditDetails());
+        audit.getFeederSystemAudit().setSystemId("System 1");
+        audit.setOriginatingSystemAudit(new FeederAuditDetails());
+        audit.getOriginatingSystemAudit().setSystemId("System 2");
+        episode.setFeederAudit(audit);
 
         EpisodeofcareAdminEntry episodeofcareAdminEntry = new EpisodeofcareAdminEntry();
 

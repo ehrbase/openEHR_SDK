@@ -33,7 +33,7 @@ public enum StatusDefiningcode implements EnumValueSet {
   }
 
   public String getValue() {
-    return this.value;
+     return this.value;
   }
 
   public String getDescription() {

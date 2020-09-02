@@ -1,5 +1,6 @@
 package org.ehrbase.client.classgenerator.examples.diagnosecomposition;
 
+import com.nedap.archie.rm.archetyped.FeederAudit;
 import com.nedap.archie.rm.generic.Participation;
 import com.nedap.archie.rm.generic.PartyIdentified;
 import com.nedap.archie.rm.generic.PartyProxy;
@@ -41,6 +42,8 @@ public class DiagnoseCompositionContainment extends Containment {
   public SelectAqlField<PartyProxy> COMPOSER = new AqlFieldImp<PartyProxy>(DiagnoseComposition.class, "/composer", "composer", PartyProxy.class, this);
 
   public SelectAqlField<SettingDefiningcode> SETTING_DEFININGCODE = new AqlFieldImp<SettingDefiningcode>(DiagnoseComposition.class, "/context/setting|defining_code", "settingDefiningcode", SettingDefiningcode.class, this);
+
+  public SelectAqlField<FeederAudit> FEEDER_AUDIT = new AqlFieldImp<FeederAudit>(DiagnoseComposition.class, "/feeder_audit", "feederAudit", FeederAudit.class, this);
 
   public SelectAqlField<String> LOCATION = new AqlFieldImp<String>(DiagnoseComposition.class, "/context/location", "location", String.class, this);
 

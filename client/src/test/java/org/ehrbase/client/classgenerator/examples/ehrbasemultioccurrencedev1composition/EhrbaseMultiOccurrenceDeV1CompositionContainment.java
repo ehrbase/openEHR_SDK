@@ -1,5 +1,6 @@
 package org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1composition;
 
+import com.nedap.archie.rm.archetyped.FeederAudit;
 import com.nedap.archie.rm.datastructures.Cluster;
 import com.nedap.archie.rm.generic.Participation;
 import com.nedap.archie.rm.generic.PartyIdentified;
@@ -28,19 +29,21 @@ public class EhrbaseMultiOccurrenceDeV1CompositionContainment extends Containmen
 
   public SelectAqlField<PartyIdentified> HEALTH_CARE_FACILITY = new AqlFieldImp<PartyIdentified>(EhrbaseMultiOccurrenceDeV1Composition.class, "/context/health_care_facility", "healthCareFacility", PartyIdentified.class, this);
 
+  public SelectAqlField<Territory> TERRITORY = new AqlFieldImp<Territory>(EhrbaseMultiOccurrenceDeV1Composition.class, "/territory", "territory", Territory.class, this);
+
+  public SelectAqlField<TemporalAccessor> START_TIME_VALUE = new AqlFieldImp<TemporalAccessor>(EhrbaseMultiOccurrenceDeV1Composition.class, "/context/start_time|value", "startTimeValue", TemporalAccessor.class, this);
+
   public SelectAqlField<PartyProxy> COMPOSER = new AqlFieldImp<PartyProxy>(EhrbaseMultiOccurrenceDeV1Composition.class, "/composer", "composer", PartyProxy.class, this);
 
   public SelectAqlField<SettingDefiningcode> SETTING_DEFININGCODE = new AqlFieldImp<SettingDefiningcode>(EhrbaseMultiOccurrenceDeV1Composition.class, "/context/setting|defining_code", "settingDefiningcode", SettingDefiningcode.class, this);
 
-  public SelectAqlField<Territory> TERRITORY = new AqlFieldImp<Territory>(EhrbaseMultiOccurrenceDeV1Composition.class, "/territory", "territory", Territory.class, this);
+  public SelectAqlField<FeederAudit> FEEDER_AUDIT = new AqlFieldImp<FeederAudit>(EhrbaseMultiOccurrenceDeV1Composition.class, "/feeder_audit", "feederAudit", FeederAudit.class, this);
 
   public ListSelectAqlField<BodyTemperatureObservation> BODY_TEMPERATURE = new ListAqlFieldImp<BodyTemperatureObservation>(EhrbaseMultiOccurrenceDeV1Composition.class, "/content[openEHR-EHR-OBSERVATION.body_temperature.v2]", "bodyTemperature", BodyTemperatureObservation.class, this);
 
   public SelectAqlField<String> LOCATION = new AqlFieldImp<String>(EhrbaseMultiOccurrenceDeV1Composition.class, "/context/location", "location", String.class, this);
 
   public SelectAqlField<CategoryDefiningcode> CATEGORY_DEFININGCODE = new AqlFieldImp<CategoryDefiningcode>(EhrbaseMultiOccurrenceDeV1Composition.class, "/category|defining_code", "categoryDefiningcode", CategoryDefiningcode.class, this);
-
-  public SelectAqlField<TemporalAccessor> START_TIME_VALUE = new AqlFieldImp<TemporalAccessor>(EhrbaseMultiOccurrenceDeV1Composition.class, "/context/start_time|value", "startTimeValue", TemporalAccessor.class, this);
 
   public ListSelectAqlField<Cluster> EXTENSION = new ListAqlFieldImp<Cluster>(EhrbaseMultiOccurrenceDeV1Composition.class, "/context/other_context[at0001]/items[at0002]", "extension", Cluster.class, this);
 

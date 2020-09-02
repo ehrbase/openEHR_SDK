@@ -1,11 +1,20 @@
 package org.ehrbase.client.classgenerator.examples.coronaanamnesecomposition;
 
+import com.nedap.archie.rm.archetyped.FeederAudit;
 import com.nedap.archie.rm.datastructures.Cluster;
 import com.nedap.archie.rm.generic.Participation;
 import com.nedap.archie.rm.generic.PartyIdentified;
 import com.nedap.archie.rm.generic.PartyProxy;
-import org.ehrbase.client.annotations.*;
-import org.ehrbase.client.classgenerator.examples.coronaanamnesecomposition.definition.*;
+import org.ehrbase.client.annotations.Archetype;
+import org.ehrbase.client.annotations.Entity;
+import org.ehrbase.client.annotations.Id;
+import org.ehrbase.client.annotations.Path;
+import org.ehrbase.client.annotations.Template;
+import org.ehrbase.client.classgenerator.examples.coronaanamnesecomposition.definition.AllgemeineAngabenSection;
+import org.ehrbase.client.classgenerator.examples.coronaanamnesecomposition.definition.GeschichteHistorieObservation;
+import org.ehrbase.client.classgenerator.examples.coronaanamnesecomposition.definition.KontaktSection;
+import org.ehrbase.client.classgenerator.examples.coronaanamnesecomposition.definition.RisikogebietSection;
+import org.ehrbase.client.classgenerator.examples.coronaanamnesecomposition.definition.SymptomeSection;
 import org.ehrbase.client.classgenerator.examples.shareddefinition.CategoryDefiningcode;
 import org.ehrbase.client.classgenerator.examples.shareddefinition.Language;
 import org.ehrbase.client.classgenerator.examples.shareddefinition.SettingDefiningcode;
@@ -66,6 +75,9 @@ public class CoronaAnamneseComposition {
 
     @Path("/context/setting|defining_code")
     private SettingDefiningcode settingDefiningcode;
+
+    @Path("/feeder_audit")
+    private FeederAudit feederAudit;
 
     @Path("/context/other_context[at0001]/items[at0006]")
     private List<Cluster> erweiterung;
@@ -202,6 +214,14 @@ public class CoronaAnamneseComposition {
 
     public SettingDefiningcode getSettingDefiningcode() {
         return this.settingDefiningcode;
+    }
+
+    public void setFeederAudit(FeederAudit feederAudit) {
+        this.feederAudit = feederAudit;
+    }
+
+    public FeederAudit getFeederAudit() {
+        return this.feederAudit;
     }
 
     public void setErweiterung(List<Cluster> erweiterung) {

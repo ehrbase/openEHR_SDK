@@ -19,7 +19,11 @@ package org.ehrbase.client.introspect;
 
 import org.apache.xmlbeans.XmlException;
 import org.assertj.core.groups.Tuple;
-import org.ehrbase.client.introspect.node.*;
+import org.ehrbase.client.introspect.node.ArchetypeNode;
+import org.ehrbase.client.introspect.node.ChoiceNode;
+import org.ehrbase.client.introspect.node.EndNode;
+import org.ehrbase.client.introspect.node.Node;
+import org.ehrbase.client.introspect.node.SlotNode;
 import org.ehrbase.client.terminology.TermDefinition;
 import org.ehrbase.client.terminology.ValueSet;
 import org.ehrbase.test_data.operationaltemplate.OperationalTemplateTestData;
@@ -58,7 +62,8 @@ public class TemplateIntrospectTest {
                         "/context/location",
                         "/category",
                         "/context/start_time",
-                        "/context/participations"
+                        "/context/participations",
+                        "/feeder_audit"
                 );
 
         Map<Class, Long> classes = findAll(actual).stream()
@@ -76,11 +81,12 @@ public class TemplateIntrospectTest {
                         new Tuple("DvText", 7L),
                         new Tuple("Cluster", 3L),
                         new Tuple("String", 1L),
-                        new Tuple("Participation", 1L)
+                        new Tuple("Participation", 1L),
+                        new Tuple("FeederAudit", 1L)
                 );
 
         assertThat(countNodes(actual, ArchetypeNode.class)).isEqualTo(2l);
-        assertThat(countNodes(actual, EndNode.class)).isEqualTo(35l);
+        assertThat(countNodes(actual, EndNode.class)).isEqualTo(36l);
         assertThat(countNodes(actual, SlotNode.class)).isEqualTo(3l);
         assertThat(countNodes(actual, ChoiceNode.class)).isEqualTo(0l);
     }
@@ -129,7 +135,8 @@ public class TemplateIntrospectTest {
                         "/context/location",
                         "/category",
                         "/context/start_time",
-                        "/context/participations"
+                        "/context/participations",
+                        "/feeder_audit"
                 );
 
         Map<Class, Long> classes = findAll(actual).stream()
@@ -147,11 +154,12 @@ public class TemplateIntrospectTest {
                         new Tuple("DvText", 1L),
                         new Tuple("String", 1L),
                         new Tuple("DvInterval", 1L),
-                        new Tuple("Participation", 1L)
+                        new Tuple("Participation", 1L),
+                        new Tuple("FeederAudit", 1L)
                 );
 
         assertThat(countNodes(actual, ArchetypeNode.class)).isEqualTo(1L);
-        assertThat(countNodes(actual, EndNode.class)).isEqualTo(17L);
+        assertThat(countNodes(actual, EndNode.class)).isEqualTo(18L);
         assertThat(countNodes(actual, SlotNode.class)).isEqualTo(0L);
         assertThat(countNodes(actual, ChoiceNode.class)).isEqualTo(0l);
     }
@@ -179,7 +187,8 @@ public class TemplateIntrospectTest {
                         "/context/other_context[at0001]/items[at0005]/value",
                         "/context/other_context[at0001]/items[at0002]/value",
                         "/context/other_context[at0001]/items[at0006]",
-                        "/context/participations"
+                        "/context/participations",
+                        "/feeder_audit"
                 );
 
         Map<Class, Long> classes = findAll(actual).stream()
@@ -196,11 +205,12 @@ public class TemplateIntrospectTest {
                         new Tuple("DvText", 2L),
                         new Tuple("Cluster", 3L),
                         new Tuple("String", 1L),
-                        new Tuple("Participation", 1L)
+                        new Tuple("Participation", 1L),
+                        new Tuple("FeederAudit", 1L)
                 );
 
         assertThat(countNodes(actual, ArchetypeNode.class)).isEqualTo(1L);
-        assertThat(countNodes(actual, EndNode.class)).isEqualTo(20L);
+        assertThat(countNodes(actual, EndNode.class)).isEqualTo(21L);
         assertThat(countNodes(actual, SlotNode.class)).isEqualTo(5L);
         assertThat(countNodes(actual, ChoiceNode.class)).isEqualTo(1L);
     }
@@ -226,7 +236,8 @@ public class TemplateIntrospectTest {
                         "/context/location",
                         "/category",
                         "/context/start_time",
-                        "/context/participations"
+                        "/context/participations",
+                        "/feeder_audit"
                 );
         Map<Class, Long> classes = findAll(actual).stream()
                 .collect(Collectors.groupingBy(EndNode::getClazz, Collectors.counting()));
@@ -242,11 +253,12 @@ public class TemplateIntrospectTest {
                         new Tuple("DvDateTime", 3L),
                         new Tuple("Cluster", 4L),
                         new Tuple("String", 1L),
-                        new Tuple("Participation", 1L)
+                        new Tuple("Participation", 1L),
+                        new Tuple("FeederAudit", 1L)
                 );
 
         assertThat(countNodes(actual, ArchetypeNode.class)).isEqualTo(1l);
-        assertThat(countNodes(actual, EndNode.class)).isEqualTo(21l);
+        assertThat(countNodes(actual, EndNode.class)).isEqualTo(22l);
         assertThat(countNodes(actual, SlotNode.class)).isEqualTo(8l);
         assertThat(countNodes(actual, ChoiceNode.class)).isEqualTo(2l);
     }
@@ -277,7 +289,8 @@ public class TemplateIntrospectTest {
                         "/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Symptome']",
                         "/context/other_context[at0001]/items[at0006]",
                         "/context/location",
-                        "/category"
+                        "/category",
+                        "/feeder_audit"
                 );
 
     }
@@ -305,7 +318,8 @@ public class TemplateIntrospectTest {
                         "/context/location",
                         "/category",
                         "/context/start_time",
-                        "/context/participations"
+                        "/context/participations",
+                        "/feeder_audit"
                 );
         assertThat(((ArchetypeNode) actual.get("/content[openEHR-EHR-SECTION.test_all_types.v1]")).getChildren().keySet())
                 .containsExactlyInAnyOrder(
@@ -342,11 +356,12 @@ public class TemplateIntrospectTest {
                         new Tuple("DvIdentifier", 1L),
                         new Tuple("ItemStructure", 1L),
                         new Tuple("Participation", 1L),
-                        new Tuple("DataValue", 1L)
+                        new Tuple("DataValue", 1L),
+                        new Tuple("FeederAudit", 1L)
                 );
 
         assertThat(countNodes(actual, ArchetypeNode.class)).isEqualTo(7l);
-        assertThat(countNodes(actual, EndNode.class)).isEqualTo(62l);
+        assertThat(countNodes(actual, EndNode.class)).isEqualTo(63l);
         assertThat(countNodes(actual, SlotNode.class)).isEqualTo(2l);
         assertThat(countNodes(actual, ChoiceNode.class)).isEqualTo(1l);
     }

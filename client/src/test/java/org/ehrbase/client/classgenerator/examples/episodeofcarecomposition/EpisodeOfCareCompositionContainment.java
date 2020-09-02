@@ -1,5 +1,6 @@
 package org.ehrbase.client.classgenerator.examples.episodeofcarecomposition;
 
+import com.nedap.archie.rm.archetyped.FeederAudit;
 import com.nedap.archie.rm.generic.Participation;
 import com.nedap.archie.rm.generic.PartyIdentified;
 import com.nedap.archie.rm.generic.PartyProxy;
@@ -34,6 +35,8 @@ public class EpisodeOfCareCompositionContainment extends Containment {
   public SelectAqlField<SettingDefiningcode> SETTING_DEFININGCODE = new AqlFieldImp<SettingDefiningcode>(EpisodeOfCareComposition.class, "/context/setting|defining_code", "settingDefiningcode", SettingDefiningcode.class, this);
 
   public SelectAqlField<Territory> TERRITORY = new AqlFieldImp<Territory>(EpisodeOfCareComposition.class, "/territory", "territory", Territory.class, this);
+
+  public SelectAqlField<FeederAudit> FEEDER_AUDIT = new AqlFieldImp<FeederAudit>(EpisodeOfCareComposition.class, "/feeder_audit", "feederAudit", FeederAudit.class, this);
 
   public SelectAqlField<String> LOCATION = new AqlFieldImp<String>(EpisodeOfCareComposition.class, "/context/location", "location", String.class, this);
 

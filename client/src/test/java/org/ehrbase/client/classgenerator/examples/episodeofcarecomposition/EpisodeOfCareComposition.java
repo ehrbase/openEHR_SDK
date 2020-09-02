@@ -1,9 +1,14 @@
 package org.ehrbase.client.classgenerator.examples.episodeofcarecomposition;
 
+import com.nedap.archie.rm.archetyped.FeederAudit;
 import com.nedap.archie.rm.generic.Participation;
 import com.nedap.archie.rm.generic.PartyIdentified;
 import com.nedap.archie.rm.generic.PartyProxy;
-import org.ehrbase.client.annotations.*;
+import org.ehrbase.client.annotations.Archetype;
+import org.ehrbase.client.annotations.Entity;
+import org.ehrbase.client.annotations.Id;
+import org.ehrbase.client.annotations.Path;
+import org.ehrbase.client.annotations.Template;
 import org.ehrbase.client.classgenerator.examples.episodeofcarecomposition.definition.EpisodeofcareAdminEntry;
 import org.ehrbase.client.classgenerator.examples.shareddefinition.CategoryDefiningcode;
 import org.ehrbase.client.classgenerator.examples.shareddefinition.Language;
@@ -44,6 +49,9 @@ public class EpisodeOfCareComposition {
 
     @Path("/territory")
     private Territory territory;
+
+    @Path("/feeder_audit")
+    private FeederAudit feederAudit;
 
     @Path("/context/location")
     private String location;
@@ -124,6 +132,14 @@ public class EpisodeOfCareComposition {
 
     public Territory getTerritory() {
         return this.territory;
+    }
+
+    public void setFeederAudit(FeederAudit feederAudit) {
+        this.feederAudit = feederAudit;
+    }
+
+    public FeederAudit getFeederAudit() {
+        return this.feederAudit;
     }
 
     public void setLocation(String location) {
