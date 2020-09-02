@@ -82,6 +82,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class ClassGenerator {
@@ -110,7 +116,7 @@ public class ClassGenerator {
         if (StringUtils.isBlank(name) || name.equals("_")) {
             return RandomStringUtils.randomAlphabetic(10);
         }
-        String normalisedString = StringUtils.strip(StringUtils.stripAccents(name).replaceAll("[^A-Za-z0-9]", "_"), "_");
+        String normalisedString = StringUtils.strip(StringUtils.stripAccents(name).replace("ß", "ss").replaceAll("[^A-Za-z0-9]", "_"), "_");
         return CaseUtils.toCamelCase(normalisedString, capitalizeFirstLetter, '_');
     }
 
