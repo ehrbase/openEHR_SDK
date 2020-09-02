@@ -328,10 +328,19 @@ public class ClassGenerator {
      * @return normalized fieldName for Java naming convention
      */
     private String toEnumName(String fieldName) {
-        if (Character.isDigit(fieldName.charAt(0))) {
-            fieldName = "n" + fieldName;
-        }
+        fieldName = sanitizeNumber(fieldName);
         return new SnakeCase(normalise(fieldName, false)).camelToUpperSnake();
+    }
+
+    private String sanitizeNumber(String fieldName) {
+        if (Character.isDigit(fieldName.charAt(0))) {
+            if (Character.isLowerCase(fieldName.charAt(0))) {
+                fieldName = "n" + fieldName;
+            } else {
+                fieldName = "N" + fieldName;
+            }
+        }
+        return fieldName;
     }
 
     private TypeSpec buildEnumValueSet(String name, ValueSet valuset) {
@@ -427,6 +436,7 @@ public class ClassGenerator {
         } else {
             currentFieldNameMap.put(fieldName, 1);
         }
+        fieldName = sanitizeNumber(fieldName);
         return fieldName;
     }
 
@@ -448,6 +458,7 @@ public class ClassGenerator {
         } else {
             currentClassNameMap.put(fieldName, 1);
         }
+        fieldName = sanitizeNumber(fieldName);
         return fieldName;
     }
 
