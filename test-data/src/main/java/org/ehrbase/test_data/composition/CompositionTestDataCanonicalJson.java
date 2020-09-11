@@ -42,7 +42,8 @@ public enum CompositionTestDataCanonicalJson {
     SUBJECT_PARTY_IDENTIFIED("Nested subject PARTY_IDENTIFIED", "compo_with_nested_party_identified.json"),
     SUBJECT_PARTY_SELF("Nested subject PARTY_SELF", "compo_with_nested_party_self.json"),
     SUBJECT_PARTY_RELATED("Nested subject PARTY_RELATED", "compo_with_nested_party_related.json"),
-    NESTED_PROVIDER("Nested provider PARTY_IDENTIFIED", "compo_with_nested_provider.json");
+    NESTED_PROVIDER("Nested provider PARTY_IDENTIFIED", "compo_with_nested_provider.json"),
+    DATE_TIME_TESTS("Composition with multiple partial and full date/time", "datetime_tests.json");
 
 
     private final String filename;

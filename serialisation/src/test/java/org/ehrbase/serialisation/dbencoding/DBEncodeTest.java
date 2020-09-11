@@ -285,7 +285,7 @@ public class DBEncodeTest {
 
     @Test
     public void testDateTimeEncodeDecode() throws IOException {
-        Composition composition = new CanonicalJson().unmarshal(IOUtils.resourceToString("/composition/canonical_json/datetime_tests.json", UTF_8), Composition.class);
+        Composition composition =  new CanonicalJson().unmarshal(IOUtils.toString(CompositionTestDataCanonicalJson.DATE_TIME_TESTS.getStream(), UTF_8), Composition.class);
 
         assertNotNull(composition);
 

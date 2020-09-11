@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 public class CanonicalJsonMarshallingTest {
@@ -57,6 +58,8 @@ public class CanonicalJsonMarshallingTest {
         DvDate dvDate = cut.unmarshal(value, DvDate.class);
 
         assertNotNull(dvDate);
+
+        assertEquals("2020-08", dvDate.getValue().toString());
     }
 
     @Test
@@ -68,5 +71,8 @@ public class CanonicalJsonMarshallingTest {
         DvDateTime dvDateTime = cut.unmarshal(value, DvDateTime.class);
 
         assertNotNull(dvDateTime);
+
+        //NB. partial time (e.g. '10') is defaulted to '10:00' due to Java API handling of time values
+        assertEquals("2020-08-01T10:00", dvDateTime.getValue().toString());
     }
 }
