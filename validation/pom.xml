@@ -41,6 +41,9 @@
             <artifactId>opt-1.4</artifactId>
         </dependency>
         <dependency>
+<!--            <groupId>com.nedap.healthcare.archie</groupId>-->
+<!--            <artifactId>archie-all</artifactId>-->
+
             <groupId>com.github.openEHR</groupId>
             <artifactId>archie</artifactId>
         </dependency>

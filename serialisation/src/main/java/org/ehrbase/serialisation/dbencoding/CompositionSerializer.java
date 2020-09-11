@@ -438,7 +438,7 @@ public class CompositionSerializer {
      * @param item
      * @param uppertag
      */
-    private Map<String, Object> traverse(ItemStructure<?> item, String uppertag) {
+    private Map<String, Object> traverse(ItemStructure item, String uppertag) {
 
         Map<String, Object> retmap = null;
 
@@ -553,7 +553,7 @@ public class CompositionSerializer {
             Map<String, Object> ltree = MultiMap.getInstance();
             itemStack.pushStacks(tag + "[" + item.getArchetypeNodeId() + "]", item.getNameAsString());
 
-            Cluster<?> cluster = (Cluster) item;
+            Cluster cluster = (Cluster) item;
             boolean hasContent = false;
 
             if (cluster.getItems() != null) {

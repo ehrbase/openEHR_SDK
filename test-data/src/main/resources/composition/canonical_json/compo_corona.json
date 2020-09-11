@@ -1341,7 +1341,7 @@
                 },
                 "width": {
                   "_type": "DV_DURATION",
-                  "value": "PT0S"
+                  "value": "P0D"
                 },
                 "math_function": {
                   "_type": "DV_CODED_TEXT",

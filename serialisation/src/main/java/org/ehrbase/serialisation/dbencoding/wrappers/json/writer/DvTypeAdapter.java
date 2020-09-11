@@ -33,7 +33,10 @@ import java.io.IOException;
  */
 public abstract class DvTypeAdapter<T> extends TypeAdapter<T> implements I_DvTypeAdapter {
 
-    protected AdapterType adapterType = AdapterType.PG_JSONB;
+    protected AdapterType adapterType;
+
+    protected static final String VALUE = "value";
+    protected static final String EPOCH_OFFSET = "epoch_offset";
 
     public DvTypeAdapter(AdapterType adapterType) {
         super();
@@ -47,13 +50,11 @@ public abstract class DvTypeAdapter<T> extends TypeAdapter<T> implements I_DvTyp
 
     //	@Override
     public T read(JsonReader arg0) throws IOException {
-        // TODO Auto-generated method stub
         return null;
     }
 
     //	@Override
     public void write(JsonWriter writer, T dvalue) throws IOException {
-        return;
     }
 
 }
