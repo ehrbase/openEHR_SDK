@@ -35,7 +35,8 @@ public enum OperationalTemplateTestData {
     AVERAGE_24("Template with  a Interval Events", "24StundenDurchschnitt.opt", "24StundenDurchschnitt"),
     EPISODE_OF_CARE("EpisodeOfCare", "EpisodeOfCare.opt", "EpisodeOfCare"),
     CORONA_ANAMMNESE("Corona_Anamnese", "corona_anamnese.opt", "Corona_Anamnese"),
-    DIAGNOSE("Diagnose", "Diagnose.opt", "Diagnose");
+    DIAGNOSE("Diagnose", "Diagnose.opt", "Diagnose"),
+    OPEN_E_REACT_CARE("open_eREACT-Care", "open_eREACT-Care.opt", "open_eREACT-Care");
 
     private final String filename;
     private final String templateId;
