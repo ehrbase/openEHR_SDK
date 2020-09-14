@@ -5,7 +5,7 @@ Note: version releases in the 0.x.y range may introduce breaking changes.
 ### Added
 - Basic support for flat formats (see https://github.com/ehrbase/openEHR_SDK/pull/67) 
 ### Fixed
-- Error when extracting name from a template where name has more than one child 
+- Error when extracting name from a template where name has more than one child (see https://github.com/ehrbase/openEHR_SDK/pull/78)
 
 ## 0.3.5
 
