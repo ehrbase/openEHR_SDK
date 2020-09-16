@@ -1,6 +1,6 @@
 /*
  *
- *  *  Copyright (c) 2019  Stefan Spiska (Vitasystems GmbH) and Hannover Medical School
+ *  *  Copyright (c) 2020  Stefan Spiska (Vitasystems GmbH) and Hannover Medical School
  *  *  This file is part of Project EHRbase
  *  *
  *  *  Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,7 +17,7 @@
  *
  */
 
-package org.ehrbase.client.terminology;
+package org.ehrbase.webtemplate;
 
 import java.util.Objects;
 

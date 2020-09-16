@@ -24,6 +24,7 @@ import com.nedap.archie.rm.support.identification.TerminologyId;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.ehrbase.terminology.openehr.implementation.LocalizedTerminologies;
+import org.ehrbase.webtemplate.TermDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
