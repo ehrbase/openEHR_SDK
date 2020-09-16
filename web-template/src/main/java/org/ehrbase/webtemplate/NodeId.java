@@ -21,9 +21,12 @@ package org.ehrbase.webtemplate;
 
 import org.apache.commons.lang3.StringUtils;
 
+import java.io.Serializable;
 import java.util.Objects;
 
-public class NodeId {
+public class NodeId implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private final String className;
     private final String nodeId;
