@@ -82,31 +82,7 @@ public class WebTemplate implements Serializable {
         return tree.findMatching(c -> aql.equals(c.getAqlPath())).stream().findAny();
     }
 
-    public String type(String aql) {
-        Optional<WebTemplateNode> node = findByAqlPath(aql);
-        if (node.isEmpty()) {
-            return null;
-        }
-        if (node.get().getRmType().equals("ELEMENT")) {
-            //for element unwrap
-            return node.get().getChildren().get(0).getRmType();
-        } else {
-            return node.get().getRmType();
-        }
-    }
 
-    public String category(String aql) {
-        Optional<WebTemplateNode> node = findByAqlPath(aql);
-        if (node.isEmpty()) {
-            return null;
-        }
-        if (aql.endsWith("/value")) {
-            //for element unwrap
-            return findByAqlPath(aql.replace("/value", "")).filter(n -> n.getRmType().equals("ELEMENT")).map(n -> "ELEMENT").orElse("DATA_STRUCTURE");
-        } else {
-            return "DATA_STRUCTURE";
-        }
-    }
 
     public Set<Set<NodeId>> findAllContainmentCombinations() {
         return findAllContainmentCombinations(tree);

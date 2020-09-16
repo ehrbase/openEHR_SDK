@@ -41,10 +41,12 @@ class OPTParserTest {
 
         OPTParser cut = new OPTParser(template);
         WebTemplate actual = cut.parse();
+        assertThat(actual).isNotNull();
+        assertThat(actual.getTree().getChildren()).size().isEqualTo(6);
     }
 
     @Test
-    public void testQueryUpperUnbounded() throws IOException, XmlException {
+    void testQueryUpperUnbounded() throws IOException, XmlException {
         OPERATIONALTEMPLATE operationaltemplate = TemplateDocument.Factory.parse(OperationalTemplateTestData.IDCR_PROBLEM_LIST.getStream()).getTemplate();
         List<WebTemplateNode> result = new OPTParser(operationaltemplate).parse().upperNotBounded();
 
@@ -54,7 +56,7 @@ class OPTParserTest {
     }
 
     @Test
-    public void testQueryUpperUnbounded2() throws IOException, XmlException {
+    void testQueryUpperUnbounded2() throws IOException, XmlException {
         OPERATIONALTEMPLATE operationaltemplate = TemplateDocument.Factory.parse(OperationalTemplateTestData.IDCR_LABORATORY_TEST.getStream()).getTemplate();
         List<WebTemplateNode> result = new OPTParser(operationaltemplate).parse().upperNotBounded();
 
@@ -63,28 +65,9 @@ class OPTParserTest {
         assertEquals(15, result.size());
     }
 
-    @Test
-    public void testQueryType() throws IOException, XmlException {
-
-        OPERATIONALTEMPLATE operationaltemplate = TemplateDocument.Factory.parse(OperationalTemplateTestData.IDCR_PROBLEM_LIST.getStream()).getTemplate();
-
-        String result = new OPTParser(operationaltemplate).parse().type("/content[openEHR-EHR-SECTION.problems_issues_rcp.v1]/items[openEHR-EHR-EVALUATION.problem_diagnosis.v1]/data[at0001]/items[at0012]");
-
-        assertEquals("DV_TEXT", result);
-    }
 
     @Test
-    public void testQueryType2() throws IOException, XmlException {
-
-        OPERATIONALTEMPLATE operationaltemplate = TemplateDocument.Factory.parse(OperationalTemplateTestData.BLOOD_PRESSURE_SIMPLE.getStream()).getTemplate();
-
-        String result = new OPTParser(operationaltemplate).parse().type("/content[openEHR-EHR-OBSERVATION.sample_blood_pressure.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0004]");
-
-        assertEquals("DV_QUANTITY", result);
-    }
-
-    @Test
-    public void findAllContainmentCombinations() throws IOException, XmlException {
+    void findAllContainmentCombinations() throws IOException, XmlException {
         OPERATIONALTEMPLATE operationaltemplate = TemplateDocument.Factory.parse(OperationalTemplateTestData.BLOOD_PRESSURE_SIMPLE.getStream()).getTemplate();
         Set<Set<NodeId>> actual = new OPTParser(operationaltemplate).parse().findAllContainmentCombinations();
 
