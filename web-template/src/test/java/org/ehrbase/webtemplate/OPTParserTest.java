@@ -27,7 +27,9 @@ import org.openehr.schemas.v1.TemplateDocument;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Set;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
@@ -79,5 +81,13 @@ class OPTParserTest {
         String result = new OPTParser(operationaltemplate).parse().type("/content[openEHR-EHR-OBSERVATION.sample_blood_pressure.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0004]");
 
         assertEquals("DV_QUANTITY", result);
+    }
+
+    @Test
+    public void findAllContainmentCombinations() throws IOException, XmlException {
+        OPERATIONALTEMPLATE operationaltemplate = TemplateDocument.Factory.parse(OperationalTemplateTestData.BLOOD_PRESSURE_SIMPLE.getStream()).getTemplate();
+        Set<Set<NodeId>> actual = new OPTParser(operationaltemplate).parse().findAllContainmentCombinations();
+
+        assertThat(actual).size().isEqualTo(5);
     }
 }

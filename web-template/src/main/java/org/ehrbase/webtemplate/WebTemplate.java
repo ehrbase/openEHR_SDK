@@ -21,8 +21,11 @@ package org.ehrbase.webtemplate;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class WebTemplate implements Serializable {
     private String templateId;
@@ -103,5 +106,44 @@ public class WebTemplate implements Serializable {
         } else {
             return "DATA_STRUCTURE";
         }
+    }
+
+    public Set<Set<NodeId>> findAllContainmentCombinations() {
+        return findAllContainmentCombinations(tree);
+    }
+
+    private Set<Set<NodeId>> findAllContainmentCombinations(WebTemplateNode tree) {
+        Set<Set<NodeId>> containments = new LinkedHashSet<>();
+        final NodeId currentContainment;
+        if (tree.getNodeId() != null && new NodeId(tree.getNodeId()).isArchetypeId()) {
+
+
+            currentContainment = new NodeId(tree.getNodeId());
+
+
+            containments.add(new LinkedHashSet<>(Set.of(currentContainment)));
+
+        } else {
+            currentContainment = null;
+        }
+
+        for (WebTemplateNode child : tree.getChildren()) {
+            Set<Set<NodeId>> subSets = findAllContainmentCombinations(child);
+
+            containments.addAll(subSets);
+            if (currentContainment != null) {
+                containments.addAll(subSets.stream()
+                        .map(s -> {
+                            Set<NodeId> list = new LinkedHashSet<>(Set.of(currentContainment));
+                            list.addAll(s);
+                            return list;
+                        })
+                        .collect(Collectors.toSet()));
+            }
+
+        }
+
+
+        return containments;
     }
 }
