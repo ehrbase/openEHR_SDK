@@ -37,6 +37,16 @@ public class FlatPathTest {
     }
 
     @Test
+    public void testFlatPathWithAndinName() {
+        String path = "/content[openEHR-EHR-OBSERVATION.laboratory_test_result.v1 and name/value='Einsenderstandort']/protocol[at0004]/items[at0094]/items[openEHR-EHR-CLUSTER.location.v1]";
+        FlatPath cut = new FlatPath(path);
+        assertThat(cut).isNotNull();
+        assertThat(cut.getAtCode()).isEqualTo("openEHR-EHR-OBSERVATION.laboratory_test_result.v1");
+        assertThat(cut.getName()).isEqualTo("content");
+        assertThat(cut.toString()).isEqualTo(path);
+    }
+
+    @Test
     public void testFlatPathWithAttribute() {
         String path = "/context/end_time|value";
         FlatPath cut = new FlatPath(path);

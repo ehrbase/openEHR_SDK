@@ -65,7 +65,7 @@ public class FlatPath {
 
         if (split.length == 2) {
             String node = StringUtils.substringBefore(split[1], "]");
-            String[] ands = node.split("and");
+            String[] ands = node.split("\\sand\\s");
             atCode = ands[0].trim();
             otherPredicates = Arrays.stream(ands)
                     .skip(1)
