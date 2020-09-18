@@ -75,7 +75,7 @@ public class WebTemplate implements Serializable {
     }
 
     public List<WebTemplateNode> multiValued() {
-        return tree.findMatching(t -> t.getMax() != 1);
+       return tree.multiValued();
     }
 
     public Optional<WebTemplateNode> findByAqlPath(String aql) {

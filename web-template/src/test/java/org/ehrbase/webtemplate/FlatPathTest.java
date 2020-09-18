@@ -17,7 +17,7 @@
  *
  */
 
-package org.ehrbase.client.flatpath;
+package org.ehrbase.webtemplate;
 
 import org.junit.Test;
 

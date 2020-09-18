@@ -62,7 +62,17 @@ class OPTParserTest {
 
         assertNotNull(result);
 
-        assertEquals(15, result.size());
+        assertEquals(42, result.size());
+    }
+
+    @Test
+    void testMultiValued() throws IOException, XmlException {
+        OPERATIONALTEMPLATE operationaltemplate = TemplateDocument.Factory.parse(OperationalTemplateTestData.CORONA_ANAMMNESE.getStream()).getTemplate();
+        List<WebTemplateNode> result = new OPTParser(operationaltemplate).parse().multiValued();
+
+        assertNotNull(result);
+
+        assertEquals(42, result.size());
     }
 
 

@@ -17,12 +17,13 @@
  *
  */
 
-package org.ehrbase.client.flatpath;
+package org.ehrbase.webtemplate;
 
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -39,7 +40,7 @@ public class FlatPath {
             name = "";
             atCode = null;
             child = null;
-            otherPredicates = Collections.emptyMap();
+            otherPredicates = new HashMap<>();
             attributeName = null;
             startWithSlash = false;
             return;
@@ -110,6 +111,10 @@ public class FlatPath {
 
     public String findOtherPredicate(String name) {
         return otherPredicates.get(name);
+    }
+
+    public void addOtherPredicate(String name, String value) {
+        otherPredicates.put(name, value);
     }
 
 

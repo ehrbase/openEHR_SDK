@@ -80,4 +80,12 @@ public class NodeId implements Serializable {
     public int hashCode() {
         return Objects.hash(className, nodeId);
     }
+
+    @Override
+    public String toString() {
+        return "NodeId{" +
+                "className='" + className + '\'' +
+                ", nodeId='" + nodeId + '\'' +
+                '}';
+    }
 }

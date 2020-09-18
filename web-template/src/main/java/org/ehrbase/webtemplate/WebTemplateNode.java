@@ -109,6 +109,10 @@ public class WebTemplateNode implements Serializable {
         return aqlPath;
     }
 
+    public String getAqlPath(boolean withOtherPredicates) {
+        return new FlatPath(aqlPath).format(withOtherPredicates);
+    }
+
     public void setAqlPath(String aqlPath) {
         this.aqlPath = aqlPath;
     }
@@ -128,4 +132,19 @@ public class WebTemplateNode implements Serializable {
         return matching;
     }
 
+    public List<WebTemplateNode> multiValued() {
+        List<WebTemplateNode> matching = new ArrayList<>(children.stream().map(WebTemplateNode::multiValued).flatMap(List::stream).collect(Collectors.toList()));
+        if (this.max != 1) {
+            matching.add(this);
+        }
+
+        // Add all which are multi if ignoring name
+        Map<String, List<WebTemplateNode>> collect = children.stream().collect(Collectors.groupingBy(n -> new FlatPath(n.getAqlPath()).format(false)));
+        collect.forEach((k, v) -> {
+            if (v.size() > 1) {
+                matching.addAll(v.stream().filter(n -> n.max == 1).collect(Collectors.toList()));
+            }
+        });
+        return matching;
+    }
 }

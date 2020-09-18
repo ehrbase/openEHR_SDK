@@ -34,6 +34,7 @@ import org.openehr.schemas.v1.StringDictionaryItem;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class OPTParser {
@@ -93,7 +94,13 @@ public class OPTParser {
 
         String nodeId = ccomplexobject.getNodeId();
         if (StringUtils.isNotBlank(nodeId)) {
-            String name = OptNameHelper.extractName(ccomplexobject).orElse(termDefinitionMap.get(nodeId).get(defaultLanguage).getValue());
+            Optional<String> expliziteName = OptNameHelper.extractName(ccomplexobject);
+            if (expliziteName.isPresent()) {
+                FlatPath path = new FlatPath(node.getAqlPath());
+                path.addOtherPredicate("name/value", expliziteName.get());
+                node.setAqlPath(path.format(true));
+            }
+            String name = expliziteName.orElse(termDefinitionMap.get(nodeId).get(defaultLanguage).getValue());
             node.setName(name);
             node.setId(buildId(name));
             node.setNodeId(nodeId);
@@ -155,6 +162,9 @@ public class OPTParser {
             WebTemplateNode node = new WebTemplateNode();
             node.setAqlPath(pathLoop);
             node.setRmType(cobject.getRmTypeName());
+            IntervalOfInteger occurrences = cobject.getOccurrences();
+            node.setMin(occurrences.getLower());
+            node.setMax(occurrences.getUpperUnbounded() ? -1 : occurrences.getUpper());
             return node;
         }
 
