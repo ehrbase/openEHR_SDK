@@ -46,6 +46,17 @@ class OPTParserTest {
     }
 
     @Test
+    void testFindByAqlPath() throws IOException, XmlException {
+        OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(OperationalTemplateTestData.CORONA_ANAMMNESE.getStream()).getTemplate();
+
+        OPTParser cut = new OPTParser(template);
+        WebTemplate actual = cut.parse();
+
+        assertThat(actual.findByAqlPath("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Symptome']").isPresent()).isTrue();
+        assertThat(actual.findByAqlPath("/content[openEHR-EHR-SECTION.adhoc.v1]").isPresent()).isTrue();
+    }
+
+    @Test
     void testQueryUpperUnbounded() throws IOException, XmlException {
         OPERATIONALTEMPLATE operationaltemplate = TemplateDocument.Factory.parse(OperationalTemplateTestData.IDCR_PROBLEM_LIST.getStream()).getTemplate();
         List<WebTemplateNode> result = new OPTParser(operationaltemplate).parse().upperNotBounded();

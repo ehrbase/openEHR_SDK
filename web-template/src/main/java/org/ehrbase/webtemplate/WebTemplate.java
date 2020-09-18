@@ -79,7 +79,9 @@ public class WebTemplate implements Serializable {
     }
 
     public Optional<WebTemplateNode> findByAqlPath(String aql) {
-        return tree.findMatching(c -> aql.equals(c.getAqlPath())).stream().findAny();
+        return tree.findMatching(c -> aql.equals(c.getAqlPath())
+                //Compere without name attributes
+                || new FlatPath(aql).format(false).equals(new FlatPath(c.getAqlPath()).format(false))).stream().findAny();
     }
 
 
