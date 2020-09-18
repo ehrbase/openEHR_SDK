@@ -33,7 +33,13 @@ import org.ehrbase.client.aql.record.Record3;
 import org.ehrbase.client.aql.record.Record4;
 import org.ehrbase.client.classgenerator.examples.coronaanamnesecomposition.CoronaAnamneseComposition;
 import org.ehrbase.client.classgenerator.examples.coronaanamnesecomposition.CoronaAnamneseCompositionContainment;
-import org.ehrbase.client.classgenerator.examples.coronaanamnesecomposition.definition.*;
+import org.ehrbase.client.classgenerator.examples.coronaanamnesecomposition.definition.FieberOderErhohteKorpertemperaturObservationContainment;
+import org.ehrbase.client.classgenerator.examples.coronaanamnesecomposition.definition.HeiserkeitObservationContainment;
+import org.ehrbase.client.classgenerator.examples.coronaanamnesecomposition.definition.HustenObservationContainment;
+import org.ehrbase.client.classgenerator.examples.coronaanamnesecomposition.definition.ReisefallObservationContainment;
+import org.ehrbase.client.classgenerator.examples.coronaanamnesecomposition.definition.RisikogebietSectionContainment;
+import org.ehrbase.client.classgenerator.examples.coronaanamnesecomposition.definition.SymptomeSectionContainment;
+import org.ehrbase.client.classgenerator.examples.coronaanamnesecomposition.definition.VorhandenDefiningcode;
 import org.ehrbase.client.classgenerator.examples.shareddefinition.Language;
 import org.ehrbase.client.flattener.Flattener;
 import org.ehrbase.client.openehrclient.OpenEhrClient;
@@ -61,6 +67,7 @@ public class CoronaTestIT {
     }
 
     @Test
+    @Ignore("see https://github.com/ehrbase/project_management/issues/376")
     public void testCorona() throws IOException {
 
         UUID ehr = openEhrClient.ehrEndpoint().createEhr();
@@ -119,7 +126,9 @@ public class CoronaTestIT {
         List<Record4<VorhandenDefiningcode, VorhandenDefiningcode, VorhandenDefiningcode, Language>> actual = openEhrClient.aqlEndpoint().execute(entityQuery, ehrIdParameter.setValue(ehr));
 
         assertThat(actual).extracting(Record4::value1, Record4::value2, Record4::value3, Record4::value4)
-                .containsExactlyInAnyOrder(new Tuple(VorhandenDefiningcode.VORHANDEN, VorhandenDefiningcode.VORHANDEN, VorhandenDefiningcode.VORHANDEN, Language.DE));
+                .containsExactlyInAnyOrder(
+                        new Tuple(VorhandenDefiningcode.VORHANDEN, VorhandenDefiningcode.VORHANDEN, VorhandenDefiningcode.NICHT_VORHANDEN, Language.DE)
+                );
 
 
     }

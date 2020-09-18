@@ -35,6 +35,7 @@
         <module>test-data</module>
         <module>validation</module>
         <module>test-coverage</module>
+        <module>web-template</module>
     </modules>
 
 
@@ -304,6 +305,16 @@
                 <groupId>com.github.ehrbase.openEHR_SDK</groupId>
                 <artifactId>validation</artifactId>
                 <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.ehrbase.openEHR_SDK</groupId>
+                <artifactId>web-template</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.jayway.jsonpath</groupId>
+                <artifactId>json-path</artifactId>
+                <version>2.4.0</version>
             </dependency>
             <dependency>
                 <groupId>com.github.ehrbase.openEHR_SDK</groupId>

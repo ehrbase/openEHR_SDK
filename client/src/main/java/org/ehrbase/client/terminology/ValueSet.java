@@ -19,6 +19,8 @@
 
 package org.ehrbase.client.terminology;
 
+import org.ehrbase.webtemplate.TermDefinition;
+
 import java.util.Collections;
 import java.util.Objects;
 import java.util.Set;
