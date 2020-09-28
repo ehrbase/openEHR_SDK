@@ -49,6 +49,12 @@ import org.ehrbase.client.classgenerator.examples.shareddefinition.Language;
 import org.ehrbase.client.classgenerator.examples.shareddefinition.MathFunctionDefiningcode;
 import org.ehrbase.client.classgenerator.examples.shareddefinition.SettingDefiningcode;
 import org.ehrbase.client.classgenerator.examples.shareddefinition.Territory;
+import org.ehrbase.client.classgenerator.examples.virologischerbefundcomposition.VirologischerBefundComposition;
+import org.ehrbase.client.classgenerator.examples.virologischerbefundcomposition.definition.BefundObservation;
+import org.ehrbase.client.classgenerator.examples.virologischerbefundcomposition.definition.FallidentifikationCluster;
+import org.ehrbase.client.classgenerator.examples.virologischerbefundcomposition.definition.KulturCluster;
+import org.ehrbase.client.classgenerator.examples.virologischerbefundcomposition.definition.ProVirusCluster;
+import org.ehrbase.client.classgenerator.examples.virologischerbefundcomposition.definition.ProbeCluster;
 import org.ehrbase.client.flattener.BloodpressureListDe;
 
 import java.net.URI;
@@ -268,5 +274,66 @@ public class TestData {
 
         episode.getEpisodeofcare().add(episodeofcareAdminEntry);
         return episode;
+    }
+
+    public static VirologischerBefundComposition buildTestVirologischerBefundComposition() {
+
+        //openEHR-EHR-COMPOSITION.report-result.v1
+        VirologischerBefundComposition virologischerBefundComposition = new VirologischerBefundComposition();
+
+        virologischerBefundComposition.setComposer(new PartyIdentified(null, "Test", null));
+        virologischerBefundComposition.setCategoryDefiningcode(CategoryDefiningcode.EVENT);
+        virologischerBefundComposition.setLanguage(Language.DE);
+        virologischerBefundComposition.setTerritory(Territory.DE);
+        virologischerBefundComposition.setStartTimeValue(OffsetDateTime.now());
+        virologischerBefundComposition.setSettingDefiningcode(SettingDefiningcode.SECONDARY_MEDICAL_CARE);
+
+        //context, other_context
+        FallidentifikationCluster fallidentifikationCluster = new FallidentifikationCluster();
+        fallidentifikationCluster.setFallKennungValue("9251377");
+        virologischerBefundComposition.setFallidentifikation(fallidentifikationCluster);
+        virologischerBefundComposition.setBerichtIdValue("15a69a62-1ea7-4111-98a5-28aeae854bcd");
+        virologischerBefundComposition.setStatusValue("Endbefund");
+
+
+        //openEHR-EHR-CLUSTER.specimen.v1
+        ProbeCluster probeCluster = new ProbeCluster();
+        probeCluster.setZeitpunktDerProbenentnahmeValue(new DvDateTime("2020-04-01T12:00:00Z").getValue());
+        probeCluster.setProbenartValue("Blut");
+        probeCluster.setZeitpunktDesProbeneingangsValue(new DvDateTime("2020-04-02T09:00:00Z").getValue());
+        probeCluster.setKommentarDesProbennehmersValue("Kommentar zur Probe");
+        probeCluster.setKommentarValue("Kommentar");
+
+        //openEHR-EHR-CLUSTER.laboratory_test_analyte.v1
+        ProVirusCluster proVirusCluster1 = new ProVirusCluster();
+        proVirusCluster1.setVirusValue("SARS-Cov-2");
+        proVirusCluster1.setAnalyseergebnisReihenfolgeMagnitude(Long.valueOf(32));
+
+        ProVirusCluster proVirusCluster2 = new ProVirusCluster();
+        proVirusCluster2.setVirusValue("SARS-Cov-2");
+        proVirusCluster2.setAnalyseergebnisReihenfolgeMagnitude(Long.valueOf(34));
+
+        //openEHR-EHR-CLUSTER.laboratory_test_panel.v0
+        KulturCluster kulturCluster = new KulturCluster();
+        kulturCluster.setProVirus(new ArrayList<>());
+        kulturCluster.getProVirus().add(proVirusCluster1);
+        kulturCluster.getProVirus().add(proVirusCluster2);
+
+        //openEHR-EHR-OBSERVATION.laboratory_test_result.v1
+        BefundObservation befundObservation = new BefundObservation();
+        //set clusters in observation
+        befundObservation.setKultur(new ArrayList<>());
+        befundObservation.getKultur().add(kulturCluster);
+        befundObservation.setProbe(new ArrayList<>());
+        befundObservation.getProbe().add(probeCluster);
+        befundObservation.setOriginValue(new DvDateTime("2020-04-02T12:00:00Z").getValue());
+        befundObservation.setTimeValue(new DvDateTime("2020-04-02T14:00:00Z").getValue());
+        befundObservation.setLabortestBezeichnungValue("Virologische Untersuchung");
+        befundObservation.setSubject(new PartySelf());
+        befundObservation.setLanguage(Language.DE);
+
+        virologischerBefundComposition.setBefund(befundObservation);
+
+        return virologischerBefundComposition;
     }
 }
