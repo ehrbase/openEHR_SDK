@@ -45,7 +45,7 @@ public class ClassGeneratorTest {
 
     public static final String PACKAGE_NAME = "org.ehrbase.client.classgenerator.examples";
 
-    private static final boolean WRITE_FILES = false;
+    private static final boolean WRITE_FILES = true;
 
     @Test
     public void testGenerate() throws IOException, XmlException {
@@ -334,7 +334,7 @@ public class ClassGeneratorTest {
                 .filter(t -> !t.kind.equals(TypeSpec.Kind.ENUM))
                 .map(t -> t.fieldSpecs).flatMap(List::stream).collect(Collectors.toList());
 
-        assertThat(fieldSpecs).size().isEqualTo(74L);
+        assertThat(fieldSpecs).size().isEqualTo(76L);
 
         writeFiles(generate);
 
@@ -377,7 +377,7 @@ public class ClassGeneratorTest {
                 .filter(t -> !t.kind.equals(TypeSpec.Kind.ENUM))
                 .map(t -> t.fieldSpecs).flatMap(List::stream).collect(Collectors.toList());
 
-        assertThat(fieldSpecs).size().isEqualTo(350);
+        assertThat(fieldSpecs).size().isEqualTo(352);
 
         writeFiles(generate);
     }

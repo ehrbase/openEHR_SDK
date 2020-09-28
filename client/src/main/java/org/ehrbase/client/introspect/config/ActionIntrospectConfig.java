@@ -34,6 +34,7 @@ public class ActionIntrospectConfig extends CareEntryIntrospectConfig implements
 
     @Override
     public Set<String> getNonTemplateFields() {
+        FIELDS.addAll(super.getNonTemplateFields());
         return FIELDS;
     }
 }
