@@ -17,8 +17,11 @@
 
 package org.ehrbase.client.openehrclient.defaultrestclient;
 
+import com.nedap.archie.rm.composition.Composition;
 import com.nedap.archie.rm.generic.PartyIdentified;
 import com.nedap.archie.rm.generic.PartySelf;
+import org.apache.commons.io.IOUtils;
+import org.assertj.core.groups.Tuple;
 import org.ehrbase.client.Integration;
 import org.ehrbase.client.TestData;
 import org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev0composition.EhrbaseBloodPressureSimpleDeV0Composition;
@@ -34,16 +37,23 @@ import org.ehrbase.client.classgenerator.examples.episodeofcarecomposition.Episo
 import org.ehrbase.client.classgenerator.examples.episodeofcarecomposition.definition.EpisodeofcareAdminEntry;
 import org.ehrbase.client.classgenerator.examples.episodeofcarecomposition.definition.EpisodeofcareTeamElement;
 import org.ehrbase.client.classgenerator.examples.shareddefinition.SettingDefiningcode;
+import org.ehrbase.client.classgenerator.examples.virologischerbefundcomposition.VirologischerBefundComposition;
+import org.ehrbase.client.classgenerator.examples.virologischerbefundcomposition.definition.ProVirusCluster;
 import org.ehrbase.client.exception.OptimisticLockException;
+import org.ehrbase.client.flattener.Flattener;
 import org.ehrbase.client.openehrclient.CompositionEndpoint;
 import org.ehrbase.client.openehrclient.OpenEhrClient;
 import org.ehrbase.client.openehrclient.VersionUid;
+import org.ehrbase.serialisation.jsonencoding.CanonicalJson;
+import org.ehrbase.test_data.composition.CompositionTestDataCanonicalJson;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -165,6 +175,36 @@ public class DefaultRestCompositionEndpointIT {
 
         assertThat(episodeofcareAdminEntry.getTeam()).extracting(EpisodeofcareTeamElement::getValue).containsExactlyInAnyOrder(URI.create("https://github.com/ehrbase"));
 
+
+    }
+
+    @Test
+    public void testVirologischerBefund() throws IOException {
+        Composition composition = new CanonicalJson().unmarshal(IOUtils.toString(CompositionTestDataCanonicalJson.VIROLOGY_FINDING_WITH_SPECIMEN.getStream(), StandardCharsets.UTF_8), Composition.class);
+
+        assertThat(composition.itemsAtPath("/content[openEHR-EHR-OBSERVATION.laboratory_test_result.v1]/data[at0001]/events[at0002]/data[at0003]")).isNotNull();
+
+        Flattener flattener = new Flattener();
+
+        VirologischerBefundComposition virologischerBefundComposition = flattener.flatten(composition, VirologischerBefundComposition.class);
+        assertThat(virologischerBefundComposition.getBefund()).isNotNull();
+
+        //with the test data
+        virologischerBefundComposition = TestData.buildTestVirologischerBefundComposition();
+        assertThat(virologischerBefundComposition.getBefund()).isNotNull();
+
+        UUID ehr = openEhrClient.ehrEndpoint().createEhr();
+        VirologischerBefundComposition version1 = openEhrClient.compositionEndpoint(ehr).mergeCompositionEntity(virologischerBefundComposition);
+        Optional<VirologischerBefundComposition> actual = openEhrClient.compositionEndpoint(ehr).find(version1.getVersionUid().getUuid(), VirologischerBefundComposition.class);
+        assertThat(actual).isPresent();
+        assertThat(actual.get().getBefund()).isNotNull();
+
+        assertThat(actual.get().getBefund().getKultur().get(0).getProVirus())
+                .extracting(ProVirusCluster::getVirusValue, ProVirusCluster::getAnalyseergebnisReihenfolgeMagnitude)
+                .containsExactlyInAnyOrder(
+                        new Tuple("SARS-Cov-2", 32L),
+                        new Tuple("SARS-Cov-2", 34L)
+                );
 
     }
 

@@ -31,6 +31,7 @@ import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class ItemExtractor {
 
@@ -94,9 +95,11 @@ public class ItemExtractor {
             if (StringUtils.isNotBlank(childPath.findOtherPredicate("name/value")) && child instanceof List) {
                 child = ((List) child).stream()
                         .filter(c -> childPath.findOtherPredicate("name/value").equals(((Locatable) c).getNameAsString()))
-                        .findAny()
-                        .orElse(null);
-
+                        .collect(Collectors.toList());
+                // if name not found return null
+                if (((List<?>) child).isEmpty()) {
+                    child = null;
+                }
             }
 
             if (!multi && child instanceof List && ((List) child).size() == 1) {

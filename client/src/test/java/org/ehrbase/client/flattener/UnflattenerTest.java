@@ -61,7 +61,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.ehrbase.client.TestData.*;
+import static org.ehrbase.client.TestData.buildAlternativeEventsComposition;
+import static org.ehrbase.client.TestData.buildEhrbaseBloodPressureSimpleDeV0;
+import static org.ehrbase.client.TestData.buildEpisodeOfCareComposition;
+import static org.ehrbase.client.TestData.buildExampleBloodpressureListDe;
 import static org.junit.Assert.assertFalse;
 
 public class UnflattenerTest {
