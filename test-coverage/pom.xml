@@ -49,6 +49,11 @@
             <artifactId>validation</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.github.ehrbase.openEHR_SDK</groupId>
+            <artifactId>web-template</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
 
 
