@@ -35,6 +35,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -359,9 +360,47 @@ public class ClassGeneratorTest {
     }
 
     @Test
+    public void testGenerateSchwangerschaftsstatus() throws IOException, XmlException {
+        OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(OperationalTemplateTestData.SCHWANGERSCHAFTSSTATUS.getStream()).getTemplate();
+        ClassGenerator cut = new ClassGenerator();
+        ClassGeneratorResult generate = cut.generate(PACKAGE_NAME, template);
+
+
+        List<FieldSpec> fieldSpecs = generate.getClasses().values().stream()
+                .flatMap(Collection::stream)
+                .filter(t -> !t.kind.equals(TypeSpec.Kind.ENUM))
+                .map(t -> t.fieldSpecs).flatMap(List::stream).collect(Collectors.toList());
+
+        assertThat(fieldSpecs).size().isEqualTo(22);
+
+
+        Optional<TypeSpec> status1 = generate.getClasses().values().stream()
+                .flatMap(Collection::stream).filter(s -> s.name.equals("StatusDefiningcode")).findAny();
+        assertThat(status1).isPresent();
+        assertThat(status1.get().enumConstants.keySet()).containsExactlyInAnyOrder(
+                "VORLAUFIG",
+                "FINAL",
+                "REGISTRIERT",
+                "GEANDERT"
+        );
+
+        Optional<TypeSpec> status2 = generate.getClasses().values().stream()
+                .flatMap(Collection::stream).filter(s -> s.name.equals("StatusDefiningcode2")).findAny();
+        assertThat(status2).isPresent();
+        assertThat(status2.get().enumConstants.keySet()).containsExactlyInAnyOrder(
+                "SCHWANGER",
+                "NICHT_SCHWANGER",
+                "UNBEKANNT"
+        );
+
+        writeFiles(generate);
+
+    }
+
+    @Test
     public void testCreateName() {
         ClassGenerator cut = new ClassGenerator();
-        String className = cut.buildClassName("/_state structure/*_confounding factors(en)_ELEMENT");
+        String className = cut.buildClassName("/_state structure/*_confounding factors(en)_ELEMENT", true);
 
         assertThat(className).isEqualTo("ConfoundingFactorsEnElement");
     }

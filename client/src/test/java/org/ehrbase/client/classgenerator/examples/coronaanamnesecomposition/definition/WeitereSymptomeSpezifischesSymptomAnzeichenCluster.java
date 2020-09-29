@@ -9,7 +9,7 @@ import java.util.List;
 @Entity
 public class WeitereSymptomeSpezifischesSymptomAnzeichenCluster {
     @Path("/items[at0005]/value|defining_code")
-    private VorhandenDefiningcode vorhandenDefiningcode;
+    private VorhandenDefiningcode2 vorhandenDefiningcode;
 
     @Path("/items[at0004]/value|value")
     private String bezeichnungDesSymptomsOderAnzeichensValue;
@@ -20,11 +20,11 @@ public class WeitereSymptomeSpezifischesSymptomAnzeichenCluster {
     @Path("/items[at0026]")
     private List<Cluster> anzeichen;
 
-    public void setVorhandenDefiningcode(VorhandenDefiningcode vorhandenDefiningcode) {
+    public void setVorhandenDefiningcode(VorhandenDefiningcode2 vorhandenDefiningcode) {
         this.vorhandenDefiningcode = vorhandenDefiningcode;
     }
 
-    public VorhandenDefiningcode getVorhandenDefiningcode() {
+    public VorhandenDefiningcode2 getVorhandenDefiningcode() {
         return this.vorhandenDefiningcode;
     }
 

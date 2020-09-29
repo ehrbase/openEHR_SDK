@@ -36,7 +36,8 @@ public enum OperationalTemplateTestData {
     EPISODE_OF_CARE("EpisodeOfCare", "EpisodeOfCare.opt", "EpisodeOfCare"),
     CORONA_ANAMMNESE("Corona_Anamnese", "corona_anamnese.opt", "Corona_Anamnese"),
     DIAGNOSE("Diagnose", "Diagnose.opt", "Diagnose"),
-    OPEN_E_REACT_CARE("open_eREACT-Care", "open_eREACT-Care.opt", "open_eREACT-Care");
+    OPEN_E_REACT_CARE("open_eREACT-Care", "open_eREACT-Care.opt", "open_eREACT-Care"),
+    SCHWANGERSCHAFTSSTATUS("Schwangerschaftsstatus", "Schwangerschaftsstatus.opt", "Schwangerschaftsstatus");
 
     private final String filename;
     private final String templateId;

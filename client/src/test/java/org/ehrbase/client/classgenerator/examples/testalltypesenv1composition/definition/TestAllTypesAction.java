@@ -24,19 +24,19 @@ public class TestAllTypesAction {
     private CompletedDefiningcode completedDefiningcode;
 
     @Path("/ism_transition[at0005]/current_state|defining_code")
-    private org.ehrbase.client.classgenerator.examples.shareddefinition.CompletedDefiningcode completedDefiningcodeCurrentState;
+    private CompletedDefiningcode2 completedDefiningcodeCurrentState;
 
     @Path("/ism_transition[at0003]/current_state|defining_code")
-    private org.ehrbase.client.classgenerator.examples.shareddefinition.PlannedDefiningcode plannedDefiningcode;
+    private PlannedDefiningcode plannedDefiningcode;
 
     @Path("/ism_transition[at0004]/current_state|defining_code")
-    private org.ehrbase.client.classgenerator.examples.shareddefinition.ActiveDefiningcode activeDefiningcode;
+    private ActiveDefiningcode activeDefiningcode;
 
     @Path("/ism_transition[at0003]/careflow_step|defining_code")
-    private PlannedDefiningcode plannedDefiningcodeCareflowStep;
+    private PlannedDefiningcode2 plannedDefiningcodeCareflowStep;
 
     @Path("/ism_transition[at0004]/careflow_step|defining_code")
-    private ActiveDefiningcode activeDefiningcodeCareflowStep;
+    private ActiveDefiningcode2 activeDefiningcodeCareflowStep;
 
     @Path("/ism_transition[at0003]/transition|defining_code")
     private TransitionDefiningcode transitionDefiningcodePlanned;
@@ -78,49 +78,45 @@ public class TestAllTypesAction {
     }
 
     public void setCompletedDefiningcodeCurrentState(
-            org.ehrbase.client.classgenerator.examples.shareddefinition.CompletedDefiningcode completedDefiningcodeCurrentState) {
+            CompletedDefiningcode2 completedDefiningcodeCurrentState) {
         this.completedDefiningcodeCurrentState = completedDefiningcodeCurrentState;
     }
 
-    public org.ehrbase.client.classgenerator.examples.shareddefinition.CompletedDefiningcode getCompletedDefiningcodeCurrentState(
-    ) {
+    public CompletedDefiningcode2 getCompletedDefiningcodeCurrentState() {
         return this.completedDefiningcodeCurrentState;
     }
 
-    public void setPlannedDefiningcode(
-            org.ehrbase.client.classgenerator.examples.shareddefinition.PlannedDefiningcode plannedDefiningcode) {
+    public void setPlannedDefiningcode(PlannedDefiningcode plannedDefiningcode) {
         this.plannedDefiningcode = plannedDefiningcode;
     }
 
-    public org.ehrbase.client.classgenerator.examples.shareddefinition.PlannedDefiningcode getPlannedDefiningcode(
-    ) {
+    public PlannedDefiningcode getPlannedDefiningcode() {
         return this.plannedDefiningcode;
     }
 
-    public void setActiveDefiningcode(
-            org.ehrbase.client.classgenerator.examples.shareddefinition.ActiveDefiningcode activeDefiningcode) {
+    public void setActiveDefiningcode(ActiveDefiningcode activeDefiningcode) {
         this.activeDefiningcode = activeDefiningcode;
     }
 
-    public org.ehrbase.client.classgenerator.examples.shareddefinition.ActiveDefiningcode getActiveDefiningcode(
-    ) {
+    public ActiveDefiningcode getActiveDefiningcode() {
         return this.activeDefiningcode;
     }
 
     public void setPlannedDefiningcodeCareflowStep(
-            PlannedDefiningcode plannedDefiningcodeCareflowStep) {
+            PlannedDefiningcode2 plannedDefiningcodeCareflowStep) {
         this.plannedDefiningcodeCareflowStep = plannedDefiningcodeCareflowStep;
     }
 
-    public PlannedDefiningcode getPlannedDefiningcodeCareflowStep() {
+    public PlannedDefiningcode2 getPlannedDefiningcodeCareflowStep() {
         return this.plannedDefiningcodeCareflowStep;
     }
 
-    public void setActiveDefiningcodeCareflowStep(ActiveDefiningcode activeDefiningcodeCareflowStep) {
+    public void setActiveDefiningcodeCareflowStep(
+            ActiveDefiningcode2 activeDefiningcodeCareflowStep) {
         this.activeDefiningcodeCareflowStep = activeDefiningcodeCareflowStep;
     }
 
-    public ActiveDefiningcode getActiveDefiningcodeCareflowStep() {
+    public ActiveDefiningcode2 getActiveDefiningcodeCareflowStep() {
         return this.activeDefiningcodeCareflowStep;
     }
 

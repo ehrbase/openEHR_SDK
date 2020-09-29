@@ -20,15 +20,15 @@ public class TestAllTypesActionContainment extends Containment {
 
   public SelectAqlField<CompletedDefiningcode> COMPLETED_DEFININGCODE = new AqlFieldImp<CompletedDefiningcode>(TestAllTypesAction.class, "/ism_transition[at0005]/careflow_step|defining_code", "completedDefiningcode", CompletedDefiningcode.class, this);
 
-  public SelectAqlField<org.ehrbase.client.classgenerator.examples.shareddefinition.CompletedDefiningcode> COMPLETED_DEFININGCODE_CURRENT_STATE = new AqlFieldImp<org.ehrbase.client.classgenerator.examples.shareddefinition.CompletedDefiningcode>(TestAllTypesAction.class, "/ism_transition[at0005]/current_state|defining_code", "completedDefiningcodeCurrentState", org.ehrbase.client.classgenerator.examples.shareddefinition.CompletedDefiningcode.class, this);
+  public SelectAqlField<CompletedDefiningcode2> COMPLETED_DEFININGCODE_CURRENT_STATE = new AqlFieldImp<CompletedDefiningcode2>(TestAllTypesAction.class, "/ism_transition[at0005]/current_state|defining_code", "completedDefiningcodeCurrentState", CompletedDefiningcode2.class, this);
 
-  public SelectAqlField<org.ehrbase.client.classgenerator.examples.shareddefinition.PlannedDefiningcode> PLANNED_DEFININGCODE = new AqlFieldImp<org.ehrbase.client.classgenerator.examples.shareddefinition.PlannedDefiningcode>(TestAllTypesAction.class, "/ism_transition[at0003]/current_state|defining_code", "plannedDefiningcode", org.ehrbase.client.classgenerator.examples.shareddefinition.PlannedDefiningcode.class, this);
+  public SelectAqlField<PlannedDefiningcode> PLANNED_DEFININGCODE = new AqlFieldImp<PlannedDefiningcode>(TestAllTypesAction.class, "/ism_transition[at0003]/current_state|defining_code", "plannedDefiningcode", PlannedDefiningcode.class, this);
 
-  public SelectAqlField<org.ehrbase.client.classgenerator.examples.shareddefinition.ActiveDefiningcode> ACTIVE_DEFININGCODE = new AqlFieldImp<org.ehrbase.client.classgenerator.examples.shareddefinition.ActiveDefiningcode>(TestAllTypesAction.class, "/ism_transition[at0004]/current_state|defining_code", "activeDefiningcode", org.ehrbase.client.classgenerator.examples.shareddefinition.ActiveDefiningcode.class, this);
+  public SelectAqlField<ActiveDefiningcode> ACTIVE_DEFININGCODE = new AqlFieldImp<ActiveDefiningcode>(TestAllTypesAction.class, "/ism_transition[at0004]/current_state|defining_code", "activeDefiningcode", ActiveDefiningcode.class, this);
 
-  public SelectAqlField<PlannedDefiningcode> PLANNED_DEFININGCODE_CAREFLOW_STEP = new AqlFieldImp<PlannedDefiningcode>(TestAllTypesAction.class, "/ism_transition[at0003]/careflow_step|defining_code", "plannedDefiningcodeCareflowStep", PlannedDefiningcode.class, this);
+  public SelectAqlField<PlannedDefiningcode2> PLANNED_DEFININGCODE_CAREFLOW_STEP = new AqlFieldImp<PlannedDefiningcode2>(TestAllTypesAction.class, "/ism_transition[at0003]/careflow_step|defining_code", "plannedDefiningcodeCareflowStep", PlannedDefiningcode2.class, this);
 
-  public SelectAqlField<ActiveDefiningcode> ACTIVE_DEFININGCODE_CAREFLOW_STEP = new AqlFieldImp<ActiveDefiningcode>(TestAllTypesAction.class, "/ism_transition[at0004]/careflow_step|defining_code", "activeDefiningcodeCareflowStep", ActiveDefiningcode.class, this);
+  public SelectAqlField<ActiveDefiningcode2> ACTIVE_DEFININGCODE_CAREFLOW_STEP = new AqlFieldImp<ActiveDefiningcode2>(TestAllTypesAction.class, "/ism_transition[at0004]/careflow_step|defining_code", "activeDefiningcodeCareflowStep", ActiveDefiningcode2.class, this);
 
   public SelectAqlField<TransitionDefiningcode> TRANSITION_DEFININGCODE_PLANNED = new AqlFieldImp<TransitionDefiningcode>(TestAllTypesAction.class, "/ism_transition[at0003]/transition|defining_code", "transitionDefiningcodePlanned", TransitionDefiningcode.class, this);
 
