@@ -29,6 +29,6 @@ public interface RmIntrospectConfig extends ClassDependent<Object> {
     Set<String> getNonTemplateFields();
 
     default ValueSet findExternalValueSet(String fieldName) {
-        return new ValueSet(ValueSet.LOCAL, Collections.emptySet());
+        return new ValueSet(ValueSet.LOCAL, ValueSet.LOCAL, Collections.emptySet());
     }
 }

@@ -20,7 +20,7 @@ public class AufenthaltInGesundheitseinrichtungObservationContainment extends Co
 
   public SelectAqlField<String> EXPOSURE_EN_VALUE = new AqlFieldImp<String>(AufenthaltInGesundheitseinrichtungObservation.class, "/data[at0001]/events[at0002]/data[at0042]/items[at0044]/items[at0045]/value|value", "exposureEnValue", String.class, this);
 
-  public SelectAqlField<VorhandenseinDefiningcode> VORHANDENSEIN_DEFININGCODE = new AqlFieldImp<VorhandenseinDefiningcode>(AufenthaltInGesundheitseinrichtungObservation.class, "/data[at0001]/events[at0002]/data[at0042]/items[at0044]/items[at0046]/value|defining_code", "vorhandenseinDefiningcode", VorhandenseinDefiningcode.class, this);
+  public SelectAqlField<VorhandenseinDefiningcodeSpecificExposureEn> VORHANDENSEIN_DEFININGCODE = new AqlFieldImp<VorhandenseinDefiningcodeSpecificExposureEn>(AufenthaltInGesundheitseinrichtungObservation.class, "/data[at0001]/events[at0002]/data[at0042]/items[at0044]/items[at0046]/value|defining_code", "vorhandenseinDefiningcode", VorhandenseinDefiningcodeSpecificExposureEn.class, this);
 
   public SelectAqlField<Language> LANGUAGE = new AqlFieldImp<Language>(AufenthaltInGesundheitseinrichtungObservation.class, "/language", "language", Language.class, this);
 

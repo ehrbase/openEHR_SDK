@@ -40,8 +40,6 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.text.CaseUtils;
 import org.apache.xmlbeans.XmlException;
 import org.ehrbase.client.annotations.Archetype;
@@ -82,12 +80,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class ClassGenerator {
@@ -104,7 +96,7 @@ public class ClassGenerator {
     private Map<String, Integer> currentFieldNameMap = new HashMap<>();
     private Map<String, Integer> currentClassNameMap = new HashMap<>();
     private Map<EntityNode, TypeSpec> currentTypeSpec;
-    private Map<Pair<String, ValueSet>, TypeSpec> currentEnums;
+    private Map<ValueSet, TypeSpec> currentEnums;
 
     private ClassGeneratorResult currentResult;
     private String currentPackageName;
@@ -189,7 +181,7 @@ public class ClassGenerator {
         }
         name = new SnakeCase(archetypeNode.getName()).camelToSnake() + "_" + archetypeNode.getRmName();
 
-        String className = buildClassName(name);
+        String className = buildClassName(name, true);
         if (ArchetypeNode.class.isAssignableFrom(archetypeNode.getClass())) {
             currentArchetypeName = archetypeNode.getName();
         }
@@ -236,7 +228,7 @@ public class ClassGenerator {
 
     private void addChoiceField(TypeSpec.Builder classBuilder, String path, ChoiceNode choiceNode) {
 
-        TypeSpec interfaceSpec = TypeSpec.interfaceBuilder(buildClassName(choiceNode.getName() + "_choice"))
+        TypeSpec interfaceSpec = TypeSpec.interfaceBuilder(buildClassName(choiceNode.getName() + "_choice", true))
                 .addModifiers(Modifier.PUBLIC)
                 .build();
 
@@ -251,7 +243,7 @@ public class ClassGenerator {
             if (EndNode.class.isAssignableFrom(node.getClass())) {
                 EndNode endNode = (EndNode) node;
                 RMTypeInfo typeInfo = RM_INFO_LOOKUP.getTypeInfo(endNode.getClazz());
-                TypeSpec.Builder builder = TypeSpec.classBuilder(buildClassName(choiceNode.getName() + "_" + endNode.getClazz().getSimpleName()))
+                TypeSpec.Builder builder = TypeSpec.classBuilder(buildClassName(choiceNode.getName() + "_" + endNode.getClazz().getSimpleName(), true))
                         .addSuperinterface(interfaceClassName)
                         .addModifiers(Modifier.PUBLIC)
                         .addAnnotation(AnnotationSpec.builder(Entity.class).build())
@@ -279,7 +271,7 @@ public class ClassGenerator {
             interfaceClassName = ParameterizedTypeName.get(ClassName.get(List.class), interfaceClassName);
         }
 
-        addField(classBuilder, path, choiceNode.getName(), interfaceClassName, new ValueSet(ValueSet.LOCAL, Collections.emptySet()), true);
+        addField(classBuilder, path, choiceNode.getName(), interfaceClassName, new ValueSet(ValueSet.LOCAL, ValueSet.LOCAL, Collections.emptySet()), true);
     }
 
     private void addSimpleField(TypeSpec.Builder classBuilder, String path, EndNode endNode) {
@@ -324,7 +316,7 @@ public class ClassGenerator {
         if (node.isMulti()) {
             className = ParameterizedTypeName.get(ClassName.get(List.class), className);
         }
-        addField(classBuilder, path, node.getName(), className, new ValueSet(ValueSet.LOCAL, Collections.emptySet()), false);
+        addField(classBuilder, path, node.getName(), className, new ValueSet(ValueSet.LOCAL, ValueSet.LOCAL, Collections.emptySet()), false);
     }
 
     /**
@@ -349,9 +341,9 @@ public class ClassGenerator {
         return fieldName;
     }
 
-    private TypeSpec buildEnumValueSet(String name, ValueSet valuset) {
+    private TypeSpec buildEnumValueSet(String name, ValueSet valueSet) {
         TypeSpec.Builder enumBuilder = TypeSpec
-                .enumBuilder(StringUtils.abbreviate(normalise(extractSubName(name), true), ABBREV_MARKER, CLASS_NAME_MAX_WIDTH))
+                .enumBuilder(buildClassName(name, false))
                 .addSuperinterface(EnumValueSet.class)
                 .addModifiers(Modifier.PUBLIC);
         FieldSpec fieldSpec1 = FieldSpec.builder(ClassName.get(String.class), "value").addModifiers(Modifier.PRIVATE).build();
@@ -365,9 +357,9 @@ public class ClassGenerator {
 
         MethodSpec constructor = buildConstructor(fieldSpec1, fieldSpec2, fieldSpec3, fieldSpec4);
         enumBuilder.addMethod(constructor);
-        valuset.getTherms().forEach(t -> {
+        valueSet.getTherms().forEach(t -> {
             String fieldName = extractSubName(t.getValue());
-            enumBuilder.addEnumConstant(toEnumName(fieldName), TypeSpec.anonymousClassBuilder("$S, $S, $S, $S", t.getValue(), t.getDescription(), StringUtils.substringBefore(valuset.getId(), ":"), t.getCode()).build());
+            enumBuilder.addEnumConstant(toEnumName(fieldName), TypeSpec.anonymousClassBuilder("$S, $S, $S, $S", t.getValue(), t.getDescription(), StringUtils.substringBefore(valueSet.getTerminologyId(), ":"), t.getCode()).build());
         });
 
         enumBuilder.addMethod(buildGetter(fieldSpec1));
@@ -391,10 +383,10 @@ public class ClassGenerator {
 
         if (CodePhrase.class.getName().equals(className.toString()) && CollectionUtils.isNotEmpty(valueSet.getTherms())) {
 
-            final TypeSpec enumValueSet = currentEnums.computeIfAbsent(new ImmutablePair<>(name, valueSet), n -> buildEnumValueSet(n.getKey(), n.getValue()));
+            final TypeSpec enumValueSet = currentEnums.computeIfAbsent(valueSet, vs -> buildEnumValueSet(name, vs));
 
             String enumPackage;
-            if (valueSet.getId().contains("local")) {
+            if (valueSet.getId().equals("local") || valueSet.getTerminologyId().equals("local")) {
                 enumPackage = currentPackageName + "." + currentMainClass.toLowerCase() + ".definition";
             } else {
                 enumPackage = currentPackageName + ".shareddefinition";
@@ -446,13 +438,16 @@ public class ClassGenerator {
         return fieldName;
     }
 
-    String buildClassName(String name) {
+    String buildClassName(String name, boolean addArchetypeName) {
         String[] strings = Arrays.stream(name.split(TemplateIntrospect.TERM_DIVIDER)).filter(StringUtils::isNotBlank).toArray(String[]::new);
         String fieldName = "";
         String nonNormalized = "";
         for (int i = 0; i < strings.length; i++) {
             nonNormalized = nonNormalized + "_" + strings[strings.length - (i + 1)];
-            fieldName = StringUtils.abbreviate(normalise(new SnakeCase(currentArchetypeName).camelToSnake() + "_" + nonNormalized, true), ABBREV_MARKER, CLASS_NAME_MAX_WIDTH);
+            if (addArchetypeName) {
+                nonNormalized = new SnakeCase(currentArchetypeName).camelToSnake() + "_" + nonNormalized;
+            }
+            fieldName = StringUtils.abbreviate(normalise(nonNormalized, true), ABBREV_MARKER, CLASS_NAME_MAX_WIDTH);
             if (!currentClassNameMap.containsKey(fieldName) && SourceVersion.isName(fieldName)) {
                 break;
             }
