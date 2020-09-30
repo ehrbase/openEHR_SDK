@@ -364,12 +364,12 @@ public class TemplateIntrospectTest {
         assertThat(classes.entrySet())
                 .extracting(e -> e.getKey().getSimpleName(), Map.Entry::getValue)
                 .containsExactlyInAnyOrder(
-                        new Tuple("PartyProxy", 5L),
+                        new Tuple("PartyProxy", 6L),
                         new Tuple("DvDate", 2L),
                         new Tuple("DvMultimedia", 1L),
                         new Tuple("DvCodedText", 14L),
                         new Tuple("DvURI", 1L),
-                        new Tuple("CodePhrase", 6L),
+                        new Tuple("CodePhrase", 7L),
                         new Tuple("DvParsable", 1L),
                         new Tuple("DvOrdinal", 1L),
                         new Tuple("DvCount", 3L),
@@ -391,7 +391,7 @@ public class TemplateIntrospectTest {
                 );
 
         assertThat(countNodes(actual, ArchetypeNode.class)).isEqualTo(7l);
-        assertThat(countNodes(actual, EndNode.class)).isEqualTo(63l);
+        assertThat(countNodes(actual, EndNode.class)).isEqualTo(65l);
         assertThat(countNodes(actual, SlotNode.class)).isEqualTo(2l);
         assertThat(countNodes(actual, ChoiceNode.class)).isEqualTo(1l);
     }
