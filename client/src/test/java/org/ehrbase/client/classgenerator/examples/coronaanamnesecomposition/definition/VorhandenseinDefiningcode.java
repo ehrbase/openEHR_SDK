@@ -3,9 +3,11 @@ package org.ehrbase.client.classgenerator.examples.coronaanamnesecomposition.def
 import org.ehrbase.client.classgenerator.EnumValueSet;
 
 public enum VorhandenseinDefiningcode implements EnumValueSet {
-  NICHT_VORHANDEN("Nicht vorhanden", "*The specific exposure is or has been absent at or during the event.(en)", "local", "at0049"),
+  VORHANDEN("Vorhanden", "Der Risikofaktor wurde bei der Person identifiziert.", "local", "at0018"),
 
-  VORHANDEN("Vorhanden", "*The specific exposure is or has been present at or during the event.(en)", "local", "at0047");
+  UNBESTIMMT("Unbestimmt", "Es ist nicht möglich festzustellen, ob der Risikofaktor vorhanden oder nicht vorhanden ist.", "local", "at0026"),
+
+  NICHT_VORHANDEN("Nicht vorhanden", "Der Risikofaktor wurde bei der Person nicht festgestellt.", "local", "at0019");
 
   private String value;
 
@@ -23,7 +25,7 @@ public enum VorhandenseinDefiningcode implements EnumValueSet {
   }
 
   public String getValue() {
-     return this.value;
+    return this.value;
   }
 
   public String getDescription() {

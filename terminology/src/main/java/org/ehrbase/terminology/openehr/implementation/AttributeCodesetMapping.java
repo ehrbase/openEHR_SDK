@@ -23,6 +23,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
+import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.InputStream;
@@ -71,6 +72,8 @@ public class AttributeCodesetMapping {
                 throw new TerminologyResourceException("Could not access filename:" + filename);
 
             final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            factory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+            factory.setAttribute(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
             final DocumentBuilder documentBuilder = factory.newDocumentBuilder();
             final Document document = documentBuilder.parse(resourceAsStream);
             Element root = document.getDocumentElement();

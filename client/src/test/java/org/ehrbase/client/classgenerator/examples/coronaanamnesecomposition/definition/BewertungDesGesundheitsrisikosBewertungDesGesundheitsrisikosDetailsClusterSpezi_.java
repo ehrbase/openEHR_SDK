@@ -9,7 +9,7 @@ import java.util.List;
 
 @Entity
 @OptionFor("CLUSTER")
-public class BewertungDesGesundheitsrisikosDetailsClusterSpezifischerRisikofaktor implements BewertungDesGesundheitsrisikosDetailsChoice {
+public class BewertungDesGesundheitsrisikosBewertungDesGesundheitsrisikosDetailsClusterSpezi_ implements BewertungDesGesundheitsrisikosDetailsChoice {
     @Path("")
     private List<Cluster> details;
 

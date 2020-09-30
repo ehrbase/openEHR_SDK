@@ -8,13 +8,14 @@ import org.ehrbase.client.annotations.Path;
 @OptionFor("DV_CODED_TEXT")
 public class Covid19ExposurePresenceDvcodedtext implements Covid19ExposurePresenceChoice {
     @Path("|defining_code")
-    private PresenceDefiningcode presenceDefiningcode;
+    private PresenceDefiningcodeCareHomeHasSuspectedConfirmedCovid19 presenceDefiningcode;
 
-    public void setPresenceDefiningcode(PresenceDefiningcode presenceDefiningcode) {
+    public void setPresenceDefiningcode(
+            PresenceDefiningcodeCareHomeHasSuspectedConfirmedCovid19 presenceDefiningcode) {
         this.presenceDefiningcode = presenceDefiningcode;
     }
 
-    public PresenceDefiningcode getPresenceDefiningcode() {
+    public PresenceDefiningcodeCareHomeHasSuspectedConfirmedCovid19 getPresenceDefiningcode() {
         return this.presenceDefiningcode;
     }
 }

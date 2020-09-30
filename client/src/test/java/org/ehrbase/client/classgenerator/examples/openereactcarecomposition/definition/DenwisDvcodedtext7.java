@@ -8,13 +8,13 @@ import org.ehrbase.client.annotations.Path;
 @OptionFor("DV_CODED_TEXT")
 public class DenwisDvcodedtext7 implements DenwisChoice7 {
     @Path("|defining_code")
-    private Definingcode definingcode;
+    private Definingcode15 definingcode;
 
-    public void setDefiningcode(Definingcode definingcode) {
+    public void setDefiningcode(Definingcode15 definingcode) {
         this.definingcode = definingcode;
     }
 
-    public Definingcode getDefiningcode() {
+    public Definingcode15 getDefiningcode() {
         return this.definingcode;
     }
 }

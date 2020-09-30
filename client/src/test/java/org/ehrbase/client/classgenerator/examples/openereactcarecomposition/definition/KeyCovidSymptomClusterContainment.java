@@ -6,7 +6,6 @@ import org.ehrbase.client.aql.field.AqlFieldImp;
 import org.ehrbase.client.aql.field.ListAqlFieldImp;
 import org.ehrbase.client.aql.field.ListSelectAqlField;
 import org.ehrbase.client.aql.field.SelectAqlField;
-import org.ehrbase.client.classgenerator.examples.shareddefinition.SymptomSignNameDefiningcode;
 
 public class KeyCovidSymptomClusterContainment extends Containment {
     public SelectAqlField<KeyCovidSymptomCluster> KEY_COVID_SYMPTOM_CLUSTER = new AqlFieldImp<KeyCovidSymptomCluster>(KeyCovidSymptomCluster.class, "", "KeyCovidSymptomCluster", KeyCovidSymptomCluster.class, this);
@@ -15,7 +14,7 @@ public class KeyCovidSymptomClusterContainment extends Containment {
 
     public ListSelectAqlField<Cluster> SPECIFIC_DETAILS = new ListAqlFieldImp<Cluster>(KeyCovidSymptomCluster.class, "/items[at0153]", "specificDetails", Cluster.class, this);
 
-    public SelectAqlField<SymptomSignNameDefiningcode> SYMPTOM_SIGN_NAME_DEFININGCODE = new AqlFieldImp<SymptomSignNameDefiningcode>(KeyCovidSymptomCluster.class, "/items[at0001.1]/value|defining_code", "symptomSignNameDefiningcode", SymptomSignNameDefiningcode.class, this);
+    public SelectAqlField<SymptomSignNameDefiningcode3> SYMPTOM_SIGN_NAME_DEFININGCODE = new AqlFieldImp<SymptomSignNameDefiningcode3>(KeyCovidSymptomCluster.class, "/items[at0001.1]/value|defining_code", "symptomSignNameDefiningcode", SymptomSignNameDefiningcode3.class, this);
 
     public ListSelectAqlField<Cluster> PREVIOUS_EPISODES = new ListAqlFieldImp<Cluster>(KeyCovidSymptomCluster.class, "/items[at0146]", "previousEpisodes", Cluster.class, this);
 

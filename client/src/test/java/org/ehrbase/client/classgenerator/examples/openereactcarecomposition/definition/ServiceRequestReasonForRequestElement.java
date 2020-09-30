@@ -2,7 +2,6 @@ package org.ehrbase.client.classgenerator.examples.openereactcarecomposition.def
 
 import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.Path;
-import org.ehrbase.client.classgenerator.examples.shareddefinition.Definingcode;
 
 @Entity
 public class ServiceRequestReasonForRequestElement {

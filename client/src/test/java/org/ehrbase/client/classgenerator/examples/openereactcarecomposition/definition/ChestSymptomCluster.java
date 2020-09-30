@@ -4,7 +4,6 @@ import com.nedap.archie.rm.datastructures.Cluster;
 import org.ehrbase.client.annotations.Archetype;
 import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.Path;
-import org.ehrbase.client.classgenerator.examples.shareddefinition.SymptomSignNameDefiningcode;
 
 import java.util.List;
 
@@ -18,7 +17,7 @@ public class ChestSymptomCluster {
     private List<Cluster> specificDetails;
 
     @Path("/items[at0001.1]/value|defining_code")
-    private SymptomSignNameDefiningcode symptomSignNameDefiningcode;
+    private SymptomSignNameDefiningcode2 symptomSignNameDefiningcode;
 
     @Path("/items[at0146]")
     private List<Cluster> previousEpisodes;
@@ -46,11 +45,11 @@ public class ChestSymptomCluster {
     }
 
     public void setSymptomSignNameDefiningcode(
-            SymptomSignNameDefiningcode symptomSignNameDefiningcode) {
+            SymptomSignNameDefiningcode2 symptomSignNameDefiningcode) {
         this.symptomSignNameDefiningcode = symptomSignNameDefiningcode;
     }
 
-    public SymptomSignNameDefiningcode getSymptomSignNameDefiningcode() {
+    public SymptomSignNameDefiningcode2 getSymptomSignNameDefiningcode() {
         return this.symptomSignNameDefiningcode;
     }
 

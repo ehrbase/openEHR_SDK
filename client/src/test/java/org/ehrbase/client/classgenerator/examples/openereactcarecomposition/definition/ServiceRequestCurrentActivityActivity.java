@@ -4,7 +4,6 @@ import com.nedap.archie.rm.datastructures.Cluster;
 import com.nedap.archie.rm.datastructures.ItemStructure;
 import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.Path;
-import org.ehrbase.client.classgenerator.examples.shareddefinition.ServiceNameDefiningcode;
 
 import java.time.temporal.TemporalAccessor;
 import java.util.List;

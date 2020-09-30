@@ -1,9 +1,11 @@
-package org.ehrbase.client.classgenerator.examples.shareddefinition;
+package org.ehrbase.client.classgenerator.examples.openereactcarecomposition.definition;
 
 import org.ehrbase.client.classgenerator.EnumValueSet;
 
-public enum PlannedDefiningcode implements EnumValueSet {
-  PLANNED("planned", "planned", "openehr", "526");
+public enum ServiceNameDefiningcode implements EnumValueSet {
+  N170499009("170499009", "170499009", "SNOMED-CT", "170499009"),
+
+  N225368008("225368008", "225368008", "SNOMED-CT", "225368008");
 
   private String value;
 
@@ -13,7 +15,7 @@ public enum PlannedDefiningcode implements EnumValueSet {
 
   private String code;
 
-  PlannedDefiningcode(String value, String description, String terminologyId, String code) {
+  ServiceNameDefiningcode(String value, String description, String terminologyId, String code) {
     this.value = value;
     this.description = description;
     this.terminologyId = terminologyId;
@@ -21,7 +23,7 @@ public enum PlannedDefiningcode implements EnumValueSet {
   }
 
   public String getValue() {
-     return this.value;
+    return this.value;
   }
 
   public String getDescription() {

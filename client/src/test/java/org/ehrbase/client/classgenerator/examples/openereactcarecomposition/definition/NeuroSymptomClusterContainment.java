@@ -6,7 +6,6 @@ import org.ehrbase.client.aql.field.AqlFieldImp;
 import org.ehrbase.client.aql.field.ListAqlFieldImp;
 import org.ehrbase.client.aql.field.ListSelectAqlField;
 import org.ehrbase.client.aql.field.SelectAqlField;
-import org.ehrbase.client.classgenerator.examples.shareddefinition.SymptomSignNameDefiningcode;
 
 public class NeuroSymptomClusterContainment extends Containment {
     public SelectAqlField<NeuroSymptomCluster> NEURO_SYMPTOM_CLUSTER = new AqlFieldImp<NeuroSymptomCluster>(NeuroSymptomCluster.class, "", "NeuroSymptomCluster", NeuroSymptomCluster.class, this);

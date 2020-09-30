@@ -3,7 +3,7 @@ package org.ehrbase.client.classgenerator.examples.openereactcarecomposition.def
 import org.ehrbase.client.classgenerator.EnumValueSet;
 
 public enum RiskFactorDefiningcode implements EnumValueSet {
-  OTHER_HOUSEHOLD_MEMBERS_ARE_ILL("Other household members are ill", "The patient is in a house with other household members who are ill", "local", "at0.19");
+  POTENTIAL_CONTACT_EXPOSURE_BASED_ON_LOCATION("Potential contact exposure based on location", "Potential contact exposure based on location.", "local", "at0.14");
 
   private String value;
 

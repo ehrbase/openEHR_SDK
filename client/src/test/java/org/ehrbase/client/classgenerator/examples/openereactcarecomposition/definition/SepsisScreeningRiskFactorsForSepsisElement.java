@@ -6,13 +6,13 @@ import org.ehrbase.client.annotations.Path;
 @Entity
 public class SepsisScreeningRiskFactorsForSepsisElement {
     @Path("/value|defining_code")
-    private Definingcode definingcode;
+    private Definingcode2 definingcode;
 
-    public void setDefiningcode(Definingcode definingcode) {
+    public void setDefiningcode(Definingcode2 definingcode) {
         this.definingcode = definingcode;
     }
 
-    public Definingcode getDefiningcode() {
+    public Definingcode2 getDefiningcode() {
         return this.definingcode;
     }
 }

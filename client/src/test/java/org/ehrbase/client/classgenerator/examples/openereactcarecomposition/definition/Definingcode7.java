@@ -1,9 +1,11 @@
-package org.ehrbase.client.classgenerator.examples.shareddefinition;
+package org.ehrbase.client.classgenerator.examples.openereactcarecomposition.definition;
 
 import org.ehrbase.client.classgenerator.EnumValueSet;
 
-public enum ActiveDefiningcode implements EnumValueSet {
-  ACTIVE("active", "active", "openehr", "245");
+public enum Definingcode7 implements EnumValueSet {
+  FEELING_OF_IMPENDING_DOOM("Feeling of impending doom", "Feeling of impending doom.", "local", "at0111"),
+
+  NOT_FEELING_WELL("Not feeling well", "Not feeling well.", "local", "at0110");
 
   private String value;
 
@@ -13,7 +15,7 @@ public enum ActiveDefiningcode implements EnumValueSet {
 
   private String code;
 
-  ActiveDefiningcode(String value, String description, String terminologyId, String code) {
+  Definingcode7(String value, String description, String terminologyId, String code) {
     this.value = value;
     this.description = description;
     this.terminologyId = terminologyId;
@@ -21,7 +23,7 @@ public enum ActiveDefiningcode implements EnumValueSet {
   }
 
   public String getValue() {
-     return this.value;
+    return this.value;
   }
 
   public String getDescription() {

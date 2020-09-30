@@ -4,7 +4,6 @@ import com.nedap.archie.rm.datastructures.Cluster;
 import org.ehrbase.client.annotations.Archetype;
 import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.Path;
-import org.ehrbase.client.classgenerator.examples.shareddefinition.SymptomSignNameDefiningcode;
 
 import java.time.temporal.TemporalAccessor;
 import java.time.temporal.TemporalAmount;
@@ -23,7 +22,7 @@ public class FirstSymptomsCluster {
     private List<Cluster> specificDetails;
 
     @Path("/items[at0001.1]/value|defining_code")
-    private SymptomSignNameDefiningcode symptomSignNameDefiningcode;
+    private SymptomSignNameDefiningcode5 symptomSignNameDefiningcode;
 
     @Path("/items[at0180]/value|defining_code")
     private TrendDefiningcode trendDefiningcode;
@@ -68,11 +67,11 @@ public class FirstSymptomsCluster {
     }
 
     public void setSymptomSignNameDefiningcode(
-            SymptomSignNameDefiningcode symptomSignNameDefiningcode) {
+            SymptomSignNameDefiningcode5 symptomSignNameDefiningcode) {
         this.symptomSignNameDefiningcode = symptomSignNameDefiningcode;
     }
 
-    public SymptomSignNameDefiningcode getSymptomSignNameDefiningcode() {
+    public SymptomSignNameDefiningcode5 getSymptomSignNameDefiningcode() {
         return this.symptomSignNameDefiningcode;
     }
 

@@ -265,7 +265,7 @@ public class TemplateIntrospect {
                     term = term + TERM_DIVIDER + termDef.get(cobject.getNodeId()).getValue();
                 }
             }
-            return Collections.singletonMap(path, new SlotNode(findJavaClass(cobject.getRmTypeName()), term, new ValueSet(LOCAL, Collections.emptySet()), multi));
+            return Collections.singletonMap(path, new SlotNode(findJavaClass(cobject.getRmTypeName()), term, new ValueSet(LOCAL, LOCAL, Collections.emptySet()), multi));
 
         } else {
 
@@ -313,17 +313,14 @@ public class TemplateIntrospect {
             CCODEPHRASE ccodephrase = (CCODEPHRASE) cobject;
             String terminologyId = Optional.of(ccodephrase).map(CCODEPHRASE::getTerminologyId).map(OBJECTID::getValue).orElse("");
             if (terminologyId.equals("local")) {
-                valueSet = new ValueSet(terminologyId, Arrays.stream(ccodephrase.getCodeListArray()).filter(termDef::containsKey).map(termDef::get).collect(Collectors.toSet()));
+                valueSet = new ValueSet(terminologyId, LOCAL, Arrays.stream(ccodephrase.getCodeListArray()).filter(termDef::containsKey).map(termDef::get).collect(Collectors.toSet()));
             } else if (StringUtils.isNotBlank(terminologyId)) {
                 valueSet = TerminologyProvider.findOpenEhrValueSet(terminologyId, ccodephrase.getCodeListArray());
-                String id = valueSet.getId();
-                if (valueSet.getTherms().stream().map(TermDefinition::getCode).anyMatch(termDef::containsKey)) {
-                    id = id + ":local";
-                }
+
                 Set<TermDefinition> termDefinitions = valueSet.getTherms().stream()
                         .map(t -> termDef.getOrDefault(t.getCode(), t)).collect(Collectors.toSet());
 
-                valueSet = new ValueSet(id, termDefinitions);
+                valueSet = new ValueSet(valueSet.getTerminologyId(), LOCAL, termDefinitions);
             } else {
                 valueSet = EMPTY_VALUE_SET;
 

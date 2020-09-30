@@ -7,6 +7,7 @@ Note: version releases in the 0.x.y range may introduce breaking changes.
 - Web-Templates (see https://github.com/ehrbase/openEHR_SDK/pull/81)
 ### Fixed
 - Error when extracting name from a template where name has more than one child (see https://github.com/ehrbase/openEHR_SDK/pull/79)
+- Enums where not correctly generated for value-sets (see https://github.com/ehrbase/openEHR_SDK/pull/92)  
 
 ## 0.3.5
 

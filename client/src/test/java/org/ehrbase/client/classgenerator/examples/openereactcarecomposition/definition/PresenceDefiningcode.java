@@ -3,11 +3,11 @@ package org.ehrbase.client.classgenerator.examples.openereactcarecomposition.def
 import org.ehrbase.client.classgenerator.EnumValueSet;
 
 public enum PresenceDefiningcode implements EnumValueSet {
-  PRESENT("Present", "The risk factor has been identified for this individual.", "local", "at0018"),
+  UNKNOWN("Unknown", "It is not known if the symptom is present.", "local", "at0.4"),
 
-  UNKNOWN("Unknown", "No information is available for this risk factor.", "local", "at0.15"),
+  ABSENT("Absent", "The symptom is absent.", "local", "at0.3"),
 
-  ABSENT("Absent", "The risk factor has not been identified for this individual.", "local", "at0019");
+  PRESENT("Present", "The symptom is present.", "local", "at0.2");
 
   private String value;
 

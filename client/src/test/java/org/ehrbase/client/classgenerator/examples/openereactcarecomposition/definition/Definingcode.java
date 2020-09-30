@@ -3,7 +3,11 @@ package org.ehrbase.client.classgenerator.examples.openereactcarecomposition.def
 import org.ehrbase.client.classgenerator.EnumValueSet;
 
 public enum Definingcode implements EnumValueSet {
-  RIGORS("Rigors", "Rigors.", "local", "at0100");
+  N840544004("840544004", "840544004", "SNOMED-CT", "840544004"),
+
+  N840539006("840539006", "840539006", "SNOMED-CT", "840539006"),
+
+  N840546002("840546002", "840546002", "SNOMED-CT", "840546002");
 
   private String value;
 

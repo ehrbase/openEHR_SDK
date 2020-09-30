@@ -19,14 +19,15 @@
 
 package org.ehrbase.webtemplate;
 
-import org.junit.jupiter.api.Test;
+
+import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class NodeIdTest {
+public class NodeIdTest {
 
     @Test
-    void isArchetypeId() {
+    public void isArchetypeId() {
         NodeId nodeId1 = new NodeId("openEHR-EHR-SECTION.adhoc.v1");
         assertThat(nodeId1.isArchetypeId()).isTrue();
         NodeId nodeId2 = new NodeId("at0004");
@@ -34,7 +35,7 @@ class NodeIdTest {
     }
 
     @Test
-    void testEquals() {
+    public void testEquals() {
         NodeId nodeId1 = new NodeId("openEHR-EHR-SECTION.adhoc.v1");
         NodeId nodeId2 = new NodeId("at0004");
         NodeId nodeId3 = new NodeId("SECTION");
@@ -49,7 +50,7 @@ class NodeIdTest {
     }
 
     @Test
-    void testGetClassName() {
+    public void testGetClassName() {
         NodeId nodeId1 = new NodeId("openEHR-EHR-SECTION.adhoc.v1");
         assertThat(nodeId1.getClassName()).isEqualTo("SECTION");
 

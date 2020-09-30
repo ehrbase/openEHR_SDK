@@ -21,7 +21,7 @@ package org.ehrbase.webtemplate;
 
 import org.apache.xmlbeans.XmlException;
 import org.ehrbase.test_data.operationaltemplate.OperationalTemplateTestData;
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
 import org.openehr.schemas.v1.TemplateDocument;
 
@@ -33,10 +33,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-class OPTParserTest {
+public class OPTParserTest {
 
     @Test
-    void parse() throws IOException, XmlException {
+    public void parse() throws IOException, XmlException {
         OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(OperationalTemplateTestData.CORONA_ANAMMNESE.getStream()).getTemplate();
 
         OPTParser cut = new OPTParser(template);
@@ -46,7 +46,7 @@ class OPTParserTest {
     }
 
     @Test
-    void testFindByAqlPath() throws IOException, XmlException {
+    public void testFindByAqlPath() throws IOException, XmlException {
         OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(OperationalTemplateTestData.CORONA_ANAMMNESE.getStream()).getTemplate();
 
         OPTParser cut = new OPTParser(template);
@@ -57,7 +57,7 @@ class OPTParserTest {
     }
 
     @Test
-    void testQueryUpperUnbounded() throws IOException, XmlException {
+    public void testQueryUpperUnbounded() throws IOException, XmlException {
         OPERATIONALTEMPLATE operationaltemplate = TemplateDocument.Factory.parse(OperationalTemplateTestData.IDCR_PROBLEM_LIST.getStream()).getTemplate();
         List<WebTemplateNode> result = new OPTParser(operationaltemplate).parse().upperNotBounded();
 
@@ -67,17 +67,17 @@ class OPTParserTest {
     }
 
     @Test
-    void testQueryUpperUnbounded2() throws IOException, XmlException {
+    public void testQueryUpperUnbounded2() throws IOException, XmlException {
         OPERATIONALTEMPLATE operationaltemplate = TemplateDocument.Factory.parse(OperationalTemplateTestData.IDCR_LABORATORY_TEST.getStream()).getTemplate();
         List<WebTemplateNode> result = new OPTParser(operationaltemplate).parse().upperNotBounded();
 
         assertNotNull(result);
 
-        assertEquals(42, result.size());
+        assertEquals(15, result.size());
     }
 
     @Test
-    void testMultiValued() throws IOException, XmlException {
+    public void testMultiValued() throws IOException, XmlException {
         OPERATIONALTEMPLATE operationaltemplate = TemplateDocument.Factory.parse(OperationalTemplateTestData.CORONA_ANAMMNESE.getStream()).getTemplate();
         List<WebTemplateNode> result = new OPTParser(operationaltemplate).parse().multiValued();
 
@@ -88,7 +88,7 @@ class OPTParserTest {
 
 
     @Test
-    void findAllContainmentCombinations() throws IOException, XmlException {
+    public void findAllContainmentCombinations() throws IOException, XmlException {
         OPERATIONALTEMPLATE operationaltemplate = TemplateDocument.Factory.parse(OperationalTemplateTestData.BLOOD_PRESSURE_SIMPLE.getStream()).getTemplate();
         Set<Set<NodeId>> actual = new OPTParser(operationaltemplate).parse().findAllContainmentCombinations();
 

@@ -1,9 +1,9 @@
-package org.ehrbase.client.classgenerator.examples.shareddefinition;
+package org.ehrbase.client.classgenerator.examples.openereactcarecomposition.definition;
 
 import org.ehrbase.client.classgenerator.EnumValueSet;
 
-public enum CompletedDefiningcode implements EnumValueSet {
-  COMPLETED("completed", "completed", "openehr", "532");
+public enum ServicePlannedDefiningcode2 implements EnumValueSet {
+  PLANNED("planned", "planned", "openehr", "526");
 
   private String value;
 
@@ -13,7 +13,7 @@ public enum CompletedDefiningcode implements EnumValueSet {
 
   private String code;
 
-  CompletedDefiningcode(String value, String description, String terminologyId, String code) {
+  ServicePlannedDefiningcode2(String value, String description, String terminologyId, String code) {
     this.value = value;
     this.description = description;
     this.terminologyId = terminologyId;
@@ -21,7 +21,7 @@ public enum CompletedDefiningcode implements EnumValueSet {
   }
 
   public String getValue() {
-     return this.value;
+    return this.value;
   }
 
   public String getDescription() {

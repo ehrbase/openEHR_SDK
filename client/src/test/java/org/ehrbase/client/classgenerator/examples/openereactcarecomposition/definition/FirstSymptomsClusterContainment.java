@@ -6,7 +6,6 @@ import org.ehrbase.client.aql.field.AqlFieldImp;
 import org.ehrbase.client.aql.field.ListAqlFieldImp;
 import org.ehrbase.client.aql.field.ListSelectAqlField;
 import org.ehrbase.client.aql.field.SelectAqlField;
-import org.ehrbase.client.classgenerator.examples.shareddefinition.SymptomSignNameDefiningcode;
 
 import java.time.temporal.TemporalAccessor;
 import java.time.temporal.TemporalAmount;
@@ -20,7 +19,7 @@ public class FirstSymptomsClusterContainment extends Containment {
 
   public ListSelectAqlField<Cluster> SPECIFIC_DETAILS = new ListAqlFieldImp<Cluster>(FirstSymptomsCluster.class, "/items[at0153]", "specificDetails", Cluster.class, this);
 
-  public SelectAqlField<SymptomSignNameDefiningcode> SYMPTOM_SIGN_NAME_DEFININGCODE = new AqlFieldImp<SymptomSignNameDefiningcode>(FirstSymptomsCluster.class, "/items[at0001.1]/value|defining_code", "symptomSignNameDefiningcode", SymptomSignNameDefiningcode.class, this);
+  public SelectAqlField<SymptomSignNameDefiningcode5> SYMPTOM_SIGN_NAME_DEFININGCODE = new AqlFieldImp<SymptomSignNameDefiningcode5>(FirstSymptomsCluster.class, "/items[at0001.1]/value|defining_code", "symptomSignNameDefiningcode", SymptomSignNameDefiningcode5.class, this);
 
   public SelectAqlField<TrendDefiningcode> TREND_DEFININGCODE = new AqlFieldImp<TrendDefiningcode>(FirstSymptomsCluster.class, "/items[at0180]/value|defining_code", "trendDefiningcode", TrendDefiningcode.class, this);
 

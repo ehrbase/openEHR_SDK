@@ -1,12 +1,9 @@
 package org.ehrbase.client.classgenerator.examples.openereactcarecomposition.definition;
 
 import com.nedap.archie.rm.datastructures.Cluster;
-import com.nedap.archie.rm.generic.PartyProxy;
 import org.ehrbase.client.annotations.Archetype;
 import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.Path;
-import org.ehrbase.client.classgenerator.examples.shareddefinition.Language;
-import org.ehrbase.client.classgenerator.examples.shareddefinition.ServiceNameDefiningcode;
 import org.ehrbase.client.classgenerator.examples.shareddefinition.TransitionDefiningcode;
 
 import java.time.temporal.TemporalAccessor;
@@ -27,17 +24,11 @@ public class ServiceAction {
     @Path("/protocol[at0015]/items[at0019]")
     private List<Cluster> receiver;
 
-    @Path("/language")
-    private Language language;
-
     @Path("/ism_transition[at0002]/current_state|defining_code")
-    private org.ehrbase.client.classgenerator.examples.shareddefinition.ServicePlannedDefiningcode servicePlannedDefiningcodeCurrentState;
+    private ServicePlannedDefiningcode2 servicePlannedDefiningcodeCurrentState;
 
     @Path("/ism_transition[at0002]/transition|defining_code")
     private TransitionDefiningcode transitionDefiningcode;
-
-    @Path("/subject")
-    private PartyProxy subject;
 
     @Path("/description[at0001]/items[at0011]/value|defining_code")
     private ServiceNameDefiningcode serviceNameDefiningcode;
@@ -83,21 +74,12 @@ public class ServiceAction {
         return this.receiver;
     }
 
-    public void setLanguage(Language language) {
-        this.language = language;
-    }
-
-    public Language getLanguage() {
-        return this.language;
-    }
-
     public void setServicePlannedDefiningcodeCurrentState(
-            org.ehrbase.client.classgenerator.examples.shareddefinition.ServicePlannedDefiningcode servicePlannedDefiningcodeCurrentState) {
+            ServicePlannedDefiningcode2 servicePlannedDefiningcodeCurrentState) {
         this.servicePlannedDefiningcodeCurrentState = servicePlannedDefiningcodeCurrentState;
     }
 
-    public org.ehrbase.client.classgenerator.examples.shareddefinition.ServicePlannedDefiningcode getServicePlannedDefiningcodeCurrentState(
-    ) {
+    public ServicePlannedDefiningcode2 getServicePlannedDefiningcodeCurrentState() {
         return this.servicePlannedDefiningcodeCurrentState;
     }
 
@@ -107,14 +89,6 @@ public class ServiceAction {
 
     public TransitionDefiningcode getTransitionDefiningcode() {
         return this.transitionDefiningcode;
-    }
-
-    public void setSubject(PartyProxy subject) {
-        this.subject = subject;
-    }
-
-    public PartyProxy getSubject() {
-        return this.subject;
     }
 
     public void setServiceNameDefiningcode(ServiceNameDefiningcode serviceNameDefiningcode) {
