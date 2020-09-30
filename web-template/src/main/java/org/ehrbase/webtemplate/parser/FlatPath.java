@@ -65,12 +65,26 @@ public class FlatPath {
 
         if (split.length == 2) {
             String node = StringUtils.substringBefore(split[1], "]");
-            String[] ands = node.split("\\sand\\s");
-            atCode = ands[0].trim();
-            otherPredicates = Arrays.stream(ands)
-                    .skip(1)
-                    .map(s -> s.split("="))
-                    .collect(Collectors.toMap(s -> s[0].trim(), s -> s[1].replace("'", "").trim()));
+
+            String regex;
+            if (node.matches(".*\\sand\\s.*")) {
+                regex = "\\sand\\s";
+                String[] ands = node.split(regex);
+                atCode = ands[0].trim();
+                otherPredicates = Arrays.stream(ands)
+                        .skip(1)
+                        .map(s -> s.split("="))
+                        .collect(Collectors.toMap(s -> s[0].trim(), s -> s[1].replace("'", "").trim()));
+            } else {
+                regex = ",";
+                String[] ands = node.split(regex);
+                atCode = ands[0].trim();
+                otherPredicates = new HashMap<>();
+                if (ands.length > 1) {
+                    otherPredicates.put("name/value", ands[1].replace("'", "").trim());
+                }
+            }
+
         } else {
             atCode = null;
             otherPredicates = Collections.emptyMap();

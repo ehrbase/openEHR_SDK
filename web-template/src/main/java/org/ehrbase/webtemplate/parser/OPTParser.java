@@ -100,8 +100,13 @@ public class OPTParser {
             Optional<String> expliziteName = OptNameHelper.extractName(ccomplexobject);
             if (expliziteName.isPresent()) {
                 FlatPath path = new FlatPath(node.getAqlPath());
-                path.addOtherPredicate("name/value", expliziteName.get());
+                FlatPath lastSegment = path;
+                while (lastSegment.getChild() != null) {
+                    lastSegment = lastSegment.getChild();
+                }
+                lastSegment.addOtherPredicate("name/value", expliziteName.get());
                 node.setAqlPath(path.format(true));
+                aqlPath = path.format(true);
             }
             String name = expliziteName.orElse(termDefinitionMap.get(nodeId).get(defaultLanguage).getValue());
             node.setName(name);
@@ -130,6 +135,12 @@ public class OPTParser {
             }
         }
         node.getChildren().addAll(multiValuedMap.values());
+        //Inherit name for Element values
+        if (node.getRmType().equals("ELEMENT")) {
+            WebTemplateNode value = node.getChildren().get(0);
+            value.setId(node.getId());
+            value.setName(node.getName());
+        }
         return node;
     }
 

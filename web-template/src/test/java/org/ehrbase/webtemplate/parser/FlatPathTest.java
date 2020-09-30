@@ -37,7 +37,7 @@ public class FlatPathTest {
     }
 
     @Test
-    public void testFlatPathWithAndinName() {
+    public void testFlatPathWithAndInName() {
         String path = "/content[openEHR-EHR-OBSERVATION.laboratory_test_result.v1 and name/value='Einsenderstandort']/protocol[at0004]/items[at0094]/items[openEHR-EHR-CLUSTER.location.v1]";
         FlatPath cut = new FlatPath(path);
         assertThat(cut).isNotNull();
@@ -66,6 +66,18 @@ public class FlatPathTest {
         assertThat(cut.getName()).isEqualTo("content");
         assertThat(cut.findOtherPredicate("name/value")).isEqualTo("Allgemeine Angaben");
         assertThat(cut.toString()).isEqualTo(path);
+        assertThat(cut.format(false)).isEqualTo("/content[openEHR-EHR-SECTION.adhoc.v1]");
+    }
+
+    @Test
+    public void testFlatPathWithPredicateInShortForm() {
+        String path = "/content[openEHR-EHR-SECTION.adhoc.v1,'Symptome']";
+        FlatPath cut = new FlatPath(path);
+        assertThat(cut).isNotNull();
+        assertThat(cut.getAtCode()).isEqualTo("openEHR-EHR-SECTION.adhoc.v1");
+        assertThat(cut.getName()).isEqualTo("content");
+        assertThat(cut.findOtherPredicate("name/value")).isEqualTo("Symptome");
+        assertThat(cut.toString()).isEqualTo("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Symptome']");
         assertThat(cut.format(false)).isEqualTo("/content[openEHR-EHR-SECTION.adhoc.v1]");
     }
 
