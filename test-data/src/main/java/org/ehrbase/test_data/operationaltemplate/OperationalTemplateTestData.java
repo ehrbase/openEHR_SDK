@@ -37,6 +37,7 @@ public enum OperationalTemplateTestData {
     CORONA_ANAMMNESE("Corona_Anamnese", "corona_anamnese.opt", "Corona_Anamnese"),
     DIAGNOSE("Diagnose", "Diagnose.opt", "Diagnose"),
     OPEN_E_REACT_CARE("open_eREACT-Care", "open_eREACT-Care.opt", "open_eREACT-Care"),
+    SCHWANGERSCHAFTSSTATUS("Schwangerschaftsstatus", "Schwangerschaftsstatus.opt", "Schwangerschaftsstatus"),
     VIROLOGY_FINDING("Virologischer Befund", "Virologischer_Befund.opt", "Virologischer Befund");
 
     private final String filename;

@@ -20,7 +20,7 @@ public class PersonenkontaktObservationContainment extends Containment {
 
   public SelectAqlField<String> EXPOSURE_EN_VALUE = new AqlFieldImp<String>(PersonenkontaktObservation.class, "/data[at0001]/events[at0002]/data[at0042]/items[at0044]/items[at0045]/value|value", "exposureEnValue", String.class, this);
 
-  public SelectAqlField<VorhandenseinDefiningcode> VORHANDENSEIN_DEFININGCODE = new AqlFieldImp<VorhandenseinDefiningcode>(PersonenkontaktObservation.class, "/data[at0001]/events[at0002]/data[at0042]/items[at0044]/items[at0046]/value|defining_code", "vorhandenseinDefiningcode", VorhandenseinDefiningcode.class, this);
+  public SelectAqlField<VorhandenseinDefiningcodeSpecificExposureEn> VORHANDENSEIN_DEFININGCODE = new AqlFieldImp<VorhandenseinDefiningcodeSpecificExposureEn>(PersonenkontaktObservation.class, "/data[at0001]/events[at0002]/data[at0042]/items[at0044]/items[at0046]/value|defining_code", "vorhandenseinDefiningcode", VorhandenseinDefiningcodeSpecificExposureEn.class, this);
 
   public SelectAqlField<Language> LANGUAGE = new AqlFieldImp<Language>(PersonenkontaktObservation.class, "/language", "language", Language.class, this);
 

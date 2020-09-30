@@ -23,7 +23,7 @@ public class PersonenkontaktObservation {
     private String exposureEnValue;
 
     @Path("/data[at0001]/events[at0002]/data[at0042]/items[at0044]/items[at0046]/value|defining_code")
-    private VorhandenseinDefiningcode vorhandenseinDefiningcode;
+    private VorhandenseinDefiningcodeSpecificExposureEn vorhandenseinDefiningcode;
 
     @Path("/language")
     private Language language;
@@ -67,11 +67,12 @@ public class PersonenkontaktObservation {
         return this.exposureEnValue;
     }
 
-    public void setVorhandenseinDefiningcode(VorhandenseinDefiningcode vorhandenseinDefiningcode) {
+    public void setVorhandenseinDefiningcode(
+            VorhandenseinDefiningcodeSpecificExposureEn vorhandenseinDefiningcode) {
         this.vorhandenseinDefiningcode = vorhandenseinDefiningcode;
     }
 
-    public VorhandenseinDefiningcode getVorhandenseinDefiningcode() {
+    public VorhandenseinDefiningcodeSpecificExposureEn getVorhandenseinDefiningcode() {
         return this.vorhandenseinDefiningcode;
     }
 

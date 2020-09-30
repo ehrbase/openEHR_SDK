@@ -3,7 +3,7 @@ package org.ehrbase.client.classgenerator.examples.testalltypesenv1composition.d
 import org.ehrbase.client.classgenerator.EnumValueSet;
 
 public enum ActiveDefiningcode implements EnumValueSet {
-  ACTIVE("Active", "*", "local", "at0004");
+  ACTIVE("active", "active", "openehr", "245");
 
   private String value;
 
@@ -21,7 +21,7 @@ public enum ActiveDefiningcode implements EnumValueSet {
   }
 
   public String getValue() {
-     return this.value;
+    return this.value;
   }
 
   public String getDescription() {

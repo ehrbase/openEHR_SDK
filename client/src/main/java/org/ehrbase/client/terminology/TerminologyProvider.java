@@ -47,9 +47,9 @@ public class TerminologyProvider {
     public static ValueSet findOpenEhrValueSet(String id, String group) {
         try {
             if (StringUtils.isNotBlank(group)) {
-                return new ValueSet(id + ":" + group, LOCALIZED_TERMINOLOGIES.getDefault().terminology(id).codesForGroupId(group).stream().map((CodePhrase cp) -> convert(id, cp)).collect(Collectors.toSet()));
+                return new ValueSet(id, group, LOCALIZED_TERMINOLOGIES.getDefault().terminology(id).codesForGroupId(group).stream().map((CodePhrase cp) -> convert(id, cp)).collect(Collectors.toSet()));
             } else {
-                return new ValueSet(id + ":all", LOCALIZED_TERMINOLOGIES.getDefault().codeSet(id).allCodes().stream().map((CodePhrase cp) -> convert(id, cp)).collect(Collectors.toSet()));
+                return new ValueSet(id, "all", LOCALIZED_TERMINOLOGIES.getDefault().codeSet(id).allCodes().stream().map((CodePhrase cp) -> convert(id, cp)).collect(Collectors.toSet()));
             }
         } catch (RuntimeException e) {
             LOGGER.warn("Unknown  group {} in Terminology {}", group, id);
@@ -60,9 +60,9 @@ public class TerminologyProvider {
     public static ValueSet findOpenEhrValueSet(String id, String[] values) {
         try {
             if (ArrayUtils.isNotEmpty(values)) {
-                return new ValueSet(id + ":" + values.toString(), Arrays.stream(values).map(v -> new CodePhrase(new TerminologyId(id), v)).map((CodePhrase cp) -> convert(id, cp)).collect(Collectors.toSet()));
+                return new ValueSet(id, "local", Arrays.stream(values).map(v -> new CodePhrase(new TerminologyId(id), v)).map((CodePhrase cp) -> convert(id, cp)).collect(Collectors.toSet()));
             } else {
-                return new ValueSet(id + ":all", LOCALIZED_TERMINOLOGIES.getDefault().codeSet(id).allCodes().stream().map((CodePhrase cp) -> convert(id, cp)).collect(Collectors.toSet()));
+                return new ValueSet(id, "all", LOCALIZED_TERMINOLOGIES.getDefault().codeSet(id).allCodes().stream().map((CodePhrase cp) -> convert(id, cp)).collect(Collectors.toSet()));
             }
         } catch (RuntimeException e) {
             LOGGER.warn("Unknown  value {} in Terminology {}", values, id);

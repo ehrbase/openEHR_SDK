@@ -114,6 +114,36 @@ public class TemplateIntrospectTest {
 
     }
 
+    @Test
+    public void introspectSchwangerschaftsstatus() throws IOException, XmlException {
+        OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(OperationalTemplateTestData.SCHWANGERSCHAFTSSTATUS.getStream()).getTemplate();
+        TemplateIntrospect cut = new TemplateIntrospect(template);
+
+        Map<String, Node> actual = cut.getRoot().getChildren();
+
+        assertThat(actual).isNotEmpty();
+
+        EndNode status1 = (EndNode) actual.get("/context/other_context[at0001]/items[at0004]/value");
+        assertThat(status1.getValuset().getTerminologyId()).isEqualTo("local");
+        assertThat(status1.getValuset().getTherms())
+                .extracting(TermDefinition::getValue, TermDefinition::getCode)
+                .containsExactlyInAnyOrder(
+                        new Tuple("vorläufig", "at0011"),
+                        new Tuple("final", "at0012"),
+                        new Tuple("registriert", "at0010"),
+                        new Tuple("geändert", "at0013")
+                );
+
+        EndNode status2 = (EndNode) ((ArchetypeNode) actual.get("/content[openEHR-EHR-OBSERVATION.pregnancy_status.v0]")).getChildren().get("/data[at0001]/events[at0002]/data[at0003]/items[at0011]/value");
+        assertThat(status2.getValuset().getTerminologyId()).isEqualTo("local");
+        assertThat(status2.getValuset().getTherms())
+                .extracting(TermDefinition::getValue, TermDefinition::getCode)
+                .containsExactlyInAnyOrder(
+                        new Tuple("Schwanger", "at0012"),
+                        new Tuple("Nicht schwanger", "at0013"),
+                        new Tuple("Unbekannt", "at0014")
+                );
+    }
 
     @Test
     public void introspectEpisodeOfCare() throws IOException, XmlException {
@@ -334,12 +364,12 @@ public class TemplateIntrospectTest {
         assertThat(classes.entrySet())
                 .extracting(e -> e.getKey().getSimpleName(), Map.Entry::getValue)
                 .containsExactlyInAnyOrder(
-                        new Tuple("PartyProxy", 5L),
+                        new Tuple("PartyProxy", 6L),
                         new Tuple("DvDate", 2L),
                         new Tuple("DvMultimedia", 1L),
                         new Tuple("DvCodedText", 14L),
                         new Tuple("DvURI", 1L),
-                        new Tuple("CodePhrase", 6L),
+                        new Tuple("CodePhrase", 7L),
                         new Tuple("DvParsable", 1L),
                         new Tuple("DvOrdinal", 1L),
                         new Tuple("DvCount", 3L),
@@ -361,7 +391,7 @@ public class TemplateIntrospectTest {
                 );
 
         assertThat(countNodes(actual, ArchetypeNode.class)).isEqualTo(7l);
-        assertThat(countNodes(actual, EndNode.class)).isEqualTo(63l);
+        assertThat(countNodes(actual, EndNode.class)).isEqualTo(65l);
         assertThat(countNodes(actual, SlotNode.class)).isEqualTo(2l);
         assertThat(countNodes(actual, ChoiceNode.class)).isEqualTo(1l);
     }
