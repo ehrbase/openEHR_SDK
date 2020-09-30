@@ -17,7 +17,7 @@
  *
  */
 
-package org.ehrbase.webtemplate;
+package org.ehrbase.webtemplate.parser;
 
 import org.openehr.schemas.v1.CCOMPLEXOBJECT;
 import org.openehr.schemas.v1.CPRIMITIVEOBJECT;

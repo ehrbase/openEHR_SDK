@@ -19,7 +19,7 @@
 
 package org.ehrbase.client.terminology;
 
-import org.ehrbase.webtemplate.TermDefinition;
+import org.ehrbase.webtemplate.parser.TermDefinition;
 
 import java.util.Collections;
 import java.util.Objects;

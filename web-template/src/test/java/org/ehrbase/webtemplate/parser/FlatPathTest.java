@@ -17,7 +17,7 @@
  *
  */
 
-package org.ehrbase.webtemplate;
+package org.ehrbase.webtemplate.parser;
 
 import org.junit.Test;
 

@@ -17,16 +17,24 @@
  *
  */
 
-package org.ehrbase.webtemplate;
+package org.ehrbase.webtemplate.parser;
 
+import com.nedap.archie.rminfo.ArchieRMInfoLookup;
 import org.apache.commons.collections4.ListValuedMap;
 import org.apache.commons.collections4.multimap.ArrayListValuedHashMap;
 import org.apache.commons.lang3.StringUtils;
+import org.ehrbase.webtemplate.model.WebTemplate;
+import org.ehrbase.webtemplate.model.WebTemplateInput;
+import org.ehrbase.webtemplate.model.WebTemplateNode;
 import org.openehr.schemas.v1.ARCHETYPETERM;
 import org.openehr.schemas.v1.CARCHETYPEROOT;
 import org.openehr.schemas.v1.CATTRIBUTE;
+import org.openehr.schemas.v1.CCODEPHRASE;
 import org.openehr.schemas.v1.CCOMPLEXOBJECT;
 import org.openehr.schemas.v1.CDOMAINTYPE;
+import org.openehr.schemas.v1.CDVORDINAL;
+import org.openehr.schemas.v1.CDVQUANTITY;
+import org.openehr.schemas.v1.CDVSTATE;
 import org.openehr.schemas.v1.COBJECT;
 import org.openehr.schemas.v1.IntervalOfInteger;
 import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
@@ -39,6 +47,7 @@ import java.util.stream.Collectors;
 
 public class OPTParser {
     public static final String PATH_DIVIDER = "/";
+    public static final ArchieRMInfoLookup ARCHIE_RM_INFO_LOOKUP = ArchieRMInfoLookup.getInstance();
 
     private final OPERATIONALTEMPLATE operationaltemplate;
     private final String defaultLanguage;
@@ -53,6 +62,7 @@ public class OPTParser {
 
         webTemplate.setTemplateId(operationaltemplate.getTemplateId().getValue());
         webTemplate.setDefaultLanguage(defaultLanguage);
+        webTemplate.setVersion("2.3");
         webTemplate.setTree(parseCARCHETYPEROO(operationaltemplate.getDefinition(), ""));
         return webTemplate;
     }
@@ -73,8 +83,7 @@ public class OPTParser {
                 if ("description".equals(item.getId()))
                     description = item.getStringValue();
             }
-            String language = defaultLanguage;
-            termDefinitionMap.computeIfAbsent(code, c -> new HashMap<>()).put(language, new TermDefinition(code, value, description));
+            termDefinitionMap.computeIfAbsent(code, c -> new HashMap<>()).put(defaultLanguage, new TermDefinition(code, value, description));
 
         }
         WebTemplateNode node = parseCCOMPLEXOBJECT(carchetyperoot, aqlPath, termDefinitionMap);
@@ -83,15 +92,9 @@ public class OPTParser {
     }
 
     private WebTemplateNode parseCCOMPLEXOBJECT(CCOMPLEXOBJECT ccomplexobject, String aqlPath, Map<String, Map<String, TermDefinition>> termDefinitionMap) {
-        WebTemplateNode node = new WebTemplateNode();
-        node.setRmType(ccomplexobject.getRmTypeName());
-        CATTRIBUTE[] cattributes = ccomplexobject.getAttributesArray();
+
+        WebTemplateNode node = buildNode(ccomplexobject);
         node.setAqlPath(aqlPath);
-
-        IntervalOfInteger occurrences = ccomplexobject.getOccurrences();
-        node.setMin(occurrences.getLower());
-        node.setMax(occurrences.getUpperUnbounded() ? -1 : occurrences.getUpper());
-
         String nodeId = ccomplexobject.getNodeId();
         if (StringUtils.isNotBlank(nodeId)) {
             Optional<String> expliziteName = OptNameHelper.extractName(ccomplexobject);
@@ -112,6 +115,7 @@ public class OPTParser {
         }
 
         ListValuedMap<String, WebTemplateNode> multiValuedMap = new ArrayListValuedHashMap<>();
+        CATTRIBUTE[] cattributes = ccomplexobject.getAttributesArray();
         for (CATTRIBUTE cattribute : cattributes) {
             String pathLoop = aqlPath + PATH_DIVIDER + cattribute.getRmAttributeName();
             if (pathLoop.equals("/category") || pathLoop.endsWith("/name")) {
@@ -130,9 +134,10 @@ public class OPTParser {
     }
 
     private WebTemplateNode parseCOBJECT(COBJECT cobject, String aqlPath, Map<String, Map<String, TermDefinition>> termDefinitionMap) {
+
         if (cobject instanceof CARCHETYPEROOT) {
             String nodeId = StringUtils.isNotBlank(((CARCHETYPEROOT) cobject).getArchetypeId().getValue()) ? ((CARCHETYPEROOT) cobject).getArchetypeId().getValue() : cobject.getNodeId();
-            String pathLoop;
+            final String pathLoop;
             if (StringUtils.isNotBlank(nodeId)) {
 
                 pathLoop = aqlPath + "[" + nodeId + "]";
@@ -144,7 +149,7 @@ public class OPTParser {
         } else if (cobject instanceof CCOMPLEXOBJECT) {
 
             String nodeId = cobject.getNodeId();
-            String pathLoop;
+            final String pathLoop;
             if (StringUtils.isNotBlank(nodeId)) {
                 pathLoop = aqlPath + "[" + nodeId + "]";
             } else {
@@ -152,23 +157,52 @@ public class OPTParser {
             }
             return parseCCOMPLEXOBJECT((CCOMPLEXOBJECT) cobject, pathLoop, termDefinitionMap);
         } else if (cobject instanceof CDOMAINTYPE) {
-            String nodeId = cobject.getNodeId();
-            String pathLoop;
-            if (StringUtils.isNotBlank(nodeId)) {
-                pathLoop = aqlPath + "[" + nodeId + "]";
-            } else {
-                pathLoop = aqlPath;
-            }
-            WebTemplateNode node = new WebTemplateNode();
-            node.setAqlPath(pathLoop);
-            node.setRmType(cobject.getRmTypeName());
-            IntervalOfInteger occurrences = cobject.getOccurrences();
-            node.setMin(occurrences.getLower());
-            node.setMax(occurrences.getUpperUnbounded() ? -1 : occurrences.getUpper());
-            return node;
+            return parseCDOMAINTYPE((CDOMAINTYPE) cobject, aqlPath, termDefinitionMap);
         }
-
         return null;
+    }
+
+    private WebTemplateNode parseCDOMAINTYPE(CDOMAINTYPE cdomaintype, String aqlPath, Map<String, Map<String, TermDefinition>> termDefinitionMap) {
+        String nodeId = cdomaintype.getNodeId();
+        final String pathLoop;
+        if (StringUtils.isNotBlank(nodeId)) {
+            pathLoop = aqlPath + "[" + nodeId + "]";
+        } else {
+            pathLoop = aqlPath;
+        }
+        WebTemplateNode node = buildNode(cdomaintype);
+        node.setAqlPath(pathLoop);
+        if (cdomaintype instanceof CDVSTATE) {
+
+        } else if (cdomaintype instanceof CDVQUANTITY) {
+
+            WebTemplateInput magnitude = new WebTemplateInput();
+            magnitude.setSuffix("magnitude");
+            magnitude.setType("DECIMAL");
+            node.getInputs().add(magnitude);
+
+            WebTemplateInput unit = new WebTemplateInput();
+            unit.setSuffix("unit");
+            unit.setType("CODED_TEXT");
+            node.getInputs().add(unit);
+
+        } else if (cdomaintype instanceof CDVORDINAL) {
+            System.out.println("!");
+        } else if (cdomaintype instanceof CCODEPHRASE) {
+
+        } else {
+            throw new RuntimeException(String.format("Unexpected class: %s", cdomaintype.getClass().getSimpleName()));
+        }
+        return node;
+    }
+
+    private WebTemplateNode buildNode(COBJECT cobject) {
+        WebTemplateNode node = new WebTemplateNode();
+        node.setRmType(cobject.getRmTypeName());
+        IntervalOfInteger occurrences = cobject.getOccurrences();
+        node.setMin(occurrences.getLowerUnbounded() ? -1 : occurrences.getLower());
+        node.setMax(occurrences.getUpperUnbounded() ? -1 : occurrences.getUpper());
+        return node;
     }
 
     private String buildId(String term) {

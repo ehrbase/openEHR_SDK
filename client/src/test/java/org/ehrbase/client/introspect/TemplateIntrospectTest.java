@@ -26,7 +26,7 @@ import org.ehrbase.client.introspect.node.Node;
 import org.ehrbase.client.introspect.node.SlotNode;
 import org.ehrbase.client.terminology.ValueSet;
 import org.ehrbase.test_data.operationaltemplate.OperationalTemplateTestData;
-import org.ehrbase.webtemplate.TermDefinition;
+import org.ehrbase.webtemplate.parser.TermDefinition;
 import org.junit.Test;
 import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
 import org.openehr.schemas.v1.TemplateDocument;

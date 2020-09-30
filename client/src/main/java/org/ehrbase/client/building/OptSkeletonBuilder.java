@@ -50,7 +50,7 @@ import org.ehrbase.client.introspect.config.RmIntrospectConfig;
 import org.ehrbase.client.reflection.ReflectionHelper;
 import org.ehrbase.serialisation.util.SnakeCase;
 import org.ehrbase.terminology.openehr.implementation.LocalizedTerminologies;
-import org.ehrbase.webtemplate.OptNameHelper;
+import org.ehrbase.webtemplate.parser.OptNameHelper;
 import org.openehr.schemas.v1.ARCHETYPESLOT;
 import org.openehr.schemas.v1.ARCHETYPETERM;
 import org.openehr.schemas.v1.CARCHETYPEROOT;

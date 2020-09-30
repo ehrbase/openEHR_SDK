@@ -17,17 +17,22 @@
  *
  */
 
-package org.ehrbase.webtemplate;
+package org.ehrbase.webtemplate.model;
+
+import org.ehrbase.webtemplate.parser.FlatPath;
+import org.ehrbase.webtemplate.parser.NodeId;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 public class WebTemplate implements Serializable {
+
     private String templateId;
     private String version;
     private String defaultLanguage;
@@ -75,7 +80,7 @@ public class WebTemplate implements Serializable {
     }
 
     public List<WebTemplateNode> multiValued() {
-       return tree.multiValued();
+        return tree.multiValued();
     }
 
     public Optional<WebTemplateNode> findByAqlPath(String aql) {
@@ -83,7 +88,6 @@ public class WebTemplate implements Serializable {
                 //Compere without name attributes
                 || new FlatPath(aql).format(false).equals(new FlatPath(c.getAqlPath()).format(false))).stream().findAny();
     }
-
 
 
     public Set<Set<NodeId>> findAllContainmentCombinations() {
@@ -123,5 +127,22 @@ public class WebTemplate implements Serializable {
 
 
         return containments;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        WebTemplate that = (WebTemplate) o;
+        return Objects.equals(templateId, that.templateId) &&
+                Objects.equals(version, that.version) &&
+                Objects.equals(defaultLanguage, that.defaultLanguage) &&
+                languages.equals(that.languages) &&
+                Objects.equals(tree, that.tree);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(templateId, version, defaultLanguage, languages, tree);
     }
 }

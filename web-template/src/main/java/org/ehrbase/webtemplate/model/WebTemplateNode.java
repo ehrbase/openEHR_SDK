@@ -17,7 +17,9 @@
  *
  */
 
-package org.ehrbase.webtemplate;
+package org.ehrbase.webtemplate.model;
+
+import org.ehrbase.webtemplate.parser.FlatPath;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -40,6 +42,11 @@ public class WebTemplateNode implements Serializable {
     private final Map<String, String> localizedDescriptions = new HashMap<>();
     private String aqlPath;
     private final List<WebTemplateNode> children = new ArrayList<>();
+    private final List<WebTemplateInput> inputs = new ArrayList<>();
+    private Boolean inContext;
+    private final Map<String, WebTemplateTerminology> termBindings = new HashMap<>();
+    private List<String> dependsOn = new ArrayList<>();
+    private WebTemplateAnnotation annotations;
 
     public String getId() {
         return id;
@@ -121,6 +128,29 @@ public class WebTemplateNode implements Serializable {
         return children;
     }
 
+    public List<WebTemplateInput> getInputs() {
+        return inputs;
+    }
+
+    public Boolean getInContext() {
+        return inContext;
+    }
+
+    public void setInContext(Boolean inContext) {
+        this.inContext = inContext;
+    }
+
+    public Map<String, WebTemplateTerminology> getTermBindings() {
+        return termBindings;
+    }
+
+    public List<String> getDependsOn() {
+        return dependsOn;
+    }
+
+    public WebTemplateAnnotation getAnnotations() {
+        return annotations;
+    }
 
     public List<WebTemplateNode> findMatching(Predicate<WebTemplateNode> filter) {
 

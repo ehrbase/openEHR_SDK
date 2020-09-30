@@ -17,7 +17,7 @@
  *
  */
 
-package org.ehrbase.webtemplate;
+package org.ehrbase.webtemplate.parser;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -55,7 +55,7 @@ public class NodeId implements Serializable {
         this.nodeId = nodeId;
     }
 
-    boolean isArchetypeId() {
+    public boolean isArchetypeId() {
         return StringUtils.isNotBlank(className) && StringUtils.isNotBlank(nodeId);
     }
 

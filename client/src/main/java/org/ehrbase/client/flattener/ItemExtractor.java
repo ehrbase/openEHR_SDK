@@ -23,7 +23,7 @@ import com.nedap.archie.rm.datastructures.Element;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.CaseUtils;
 import org.ehrbase.client.exception.ClientException;
-import org.ehrbase.webtemplate.FlatPath;
+import org.ehrbase.webtemplate.parser.FlatPath;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
