@@ -51,10 +51,15 @@ public class Filter {
     }
 
     private boolean skip(WebTemplateNode node, WebTemplate context) {
-        if (List.of("HISTORY", "ITEM_TREE", "ITEM_LIST", "ITEM_SINGLE", "ITEM_TABLE", "ITEM_STRUCTURE", "ELEMENT", "CODE_PHRASE").contains(node.getRmType())) {
+        if (List.of("HISTORY", "ITEM_TREE", "ITEM_LIST", "ITEM_SINGLE", "ITEM_TABLE", "ITEM_STRUCTURE").contains(node.getRmType())) {
             return true;
         } else if (node.getRmType().equals("EVENT")) {
             return context.findAllByAqlPath(node.getAqlPath(), false).size() == 1 && node.getMax() == 1;
+        } else if (node.getRmType().equals("ELEMENT")) {
+            return node.getChildren().size() == 1;
+        } else if (node.getRmType().equals("CODE_PHRASE")) {
+            List<WebTemplateNode> matching = context.getTree().findMatching(n -> n.getChildren().contains(node));
+            return matching.get(0).getRmType().equals("DV_CODED_TEXT");
         }
         return false;
     }

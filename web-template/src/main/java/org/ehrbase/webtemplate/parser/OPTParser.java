@@ -19,7 +19,10 @@
 
 package org.ehrbase.webtemplate.parser;
 
+import com.nedap.archie.rm.archetyped.Locatable;
 import com.nedap.archie.rminfo.ArchieRMInfoLookup;
+import com.nedap.archie.rminfo.RMAttributeInfo;
+import com.nedap.archie.rminfo.RMTypeInfo;
 import org.apache.commons.collections4.ListValuedMap;
 import org.apache.commons.collections4.multimap.ArrayListValuedHashMap;
 import org.apache.commons.lang3.StringUtils;
@@ -41,6 +44,7 @@ import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
 import org.openehr.schemas.v1.StringDictionaryItem;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -137,10 +141,33 @@ public class OPTParser {
         node.getChildren().addAll(multiValuedMap.values());
         //Inherit name for Element values
         if (node.getRmType().equals("ELEMENT")) {
-            WebTemplateNode value = node.getChildren().get(0);
-            value.setId(node.getId());
-            value.setName(node.getName());
+            if (node.getChildren().size() == 1) {
+                WebTemplateNode value = node.getChildren().get(0);
+                value.setId(node.getId());
+                value.setName(node.getName());
+            }
         }
+
+        //Add RM Attributes
+        RMTypeInfo typeInfo = ARCHIE_RM_INFO_LOOKUP.getTypeInfo(node.getRmType());
+        if (typeInfo != null && Locatable.class.isAssignableFrom(typeInfo.getJavaClass())) {
+            String finalAqlPath = aqlPath;
+            node.getChildren().addAll(typeInfo.getAttributes()
+                    .values()
+                    .stream()
+                    .filter(s -> List.of("language", "time", "subject", "encoding", "territory", "composer", "math_function", "width").contains(s.getRmName()))
+                    .map(i -> buildNodeForAttribute(i, finalAqlPath, termDefinitionMap))
+                    .collect(Collectors.toList()));
+        }
+        return node;
+    }
+
+    private WebTemplateNode buildNodeForAttribute(RMAttributeInfo attributeInfo, String aqlPath, Map<String, Map<String, TermDefinition>> termDefinitionMap) {
+        WebTemplateNode node = new WebTemplateNode();
+        node.setAqlPath(aqlPath + PATH_DIVIDER + attributeInfo.getRmName());
+        node.setName(attributeInfo.getRmName());
+        node.setId(buildId(attributeInfo.getRmName()));
+        node.setRmType(attributeInfo.getTypeNameInCollection());
         return node;
     }
 
