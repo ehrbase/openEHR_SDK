@@ -225,7 +225,7 @@ public class OPTParser {
             node.getInputs().add(unit);
 
         } else if (cdomaintype instanceof CDVORDINAL) {
-            System.out.println("!");
+
         } else if (cdomaintype instanceof CCODEPHRASE) {
 
         } else {
