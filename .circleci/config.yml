@@ -657,10 +657,13 @@ commands:
             echo $SDK_VERSION
             git fetch
             git checkout master
-            git reset --hard release
-            git push origin :release    # NOTE: this deletes realse branch on remote
+            git merge release --no-ff -m "NEW RELEASE VERSION: v${SDK_VERSION} [skip ci]"
+            git push origin --delete release    # NOTE: this deletes realse branch on remote
             git tag -a v${SDK_VERSION} -m "v${SDK_VERSION} (stable) release"
-            git push --force --set-upstream origin master v${SDK_VERSION}
+            git push --set-upstream origin master v${SDK_VERSION}
+            git checkout develop
+            git merge master
+            git push --set-upstream origin develop v${SDK_VERSION}
 
 
   configure-git-for-ci-bot:
