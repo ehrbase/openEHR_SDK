@@ -9,10 +9,10 @@
         <version>0.3.7</version>
     </parent>
 
-    <artifactId>code-coverage</artifactId>
+    <artifactId>test-coverage</artifactId>
 
 
-
+    <!-- MODULES TO INCLUDE INTO CODE-COVERAGE ANALISYS -->
     <dependencies>
         <dependency>
             <groupId>com.github.ehrbase.openEHR_SDK</groupId>
