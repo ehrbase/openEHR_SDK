@@ -38,6 +38,9 @@ import org.apache.commons.io.IOUtils;
 import org.assertj.core.groups.Tuple;
 import org.ehrbase.client.TestData;
 import org.ehrbase.client.classgenerator.examples.alternativeeventscomposition.AlternativeEventsComposition;
+import org.ehrbase.client.classgenerator.examples.befundderblutgasanalysecomposition.BefundDerBlutgasanalyseComposition;
+import org.ehrbase.client.classgenerator.examples.befundderblutgasanalysecomposition.definition.KohlendioxidpartialdruckCluster;
+import org.ehrbase.client.classgenerator.examples.befundderblutgasanalysecomposition.definition.LaborergebnisObservation;
 import org.ehrbase.client.classgenerator.examples.coronaanamnesecomposition.CoronaAnamneseComposition;
 import org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev0composition.EhrbaseBloodPressureSimpleDeV0Composition;
 import org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1composition.EhrbaseMultiOccurrenceDeV1Composition;
@@ -92,6 +95,28 @@ public class UnflattenerTest {
 
         assertThat(systolischValues).containsExactlyInAnyOrder(12d, 22d);
     }
+    @Test
+    public void testUnflattenBefundDerBlutgasanalyse() {
+        Unflattener cut = new Unflattener(new TestDataTemplateProvider());
+
+        BefundDerBlutgasanalyseComposition dto = new BefundDerBlutgasanalyseComposition();
+
+
+        LaborergebnisObservation laborergebnisObservation = new LaborergebnisObservation();
+        KohlendioxidpartialdruckCluster kohlendioxidpartialdruck = new KohlendioxidpartialdruckCluster();
+        kohlendioxidpartialdruck.setAnalytResultatMagnitude(22d);
+        laborergebnisObservation.setKohlendioxidpartialdruck(kohlendioxidpartialdruck);
+        dto.setLaborergebnis(laborergebnisObservation);
+
+
+        Composition rmObject = (Composition) cut.unflatten(dto);
+
+        assertThat(rmObject).isNotNull();
+        List<Object> clusters = rmObject.itemsAtPath("/content[openEHR-EHR-OBSERVATION.laboratory_test_result.v1]/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.laboratory_test_analyte.v1]");
+        assertThat(clusters).size().isEqualTo(1);
+
+    }
+
 
     @Test
     public void testUnflattenEhrbaseBloodPressureSimpleDeV0() {

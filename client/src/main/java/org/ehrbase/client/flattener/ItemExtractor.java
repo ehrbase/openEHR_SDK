@@ -92,9 +92,10 @@ public class ItemExtractor {
                 child = locatable.itemAtPath(childPath.format(false));
             }
 
-            if (StringUtils.isNotBlank(childPath.findOtherPredicate("name/value")) && child instanceof List) {
+            FlatPath relativPath = new FlatPath(StringUtils.removeStart(pathExtractor.getChildPath(),parentPath ));
+            if (StringUtils.isNotBlank(relativPath.findOtherPredicate("name/value")) && child instanceof List) {
                 child = ((List) child).stream()
-                        .filter(c -> childPath.findOtherPredicate("name/value").equals(((Locatable) c).getNameAsString()))
+                        .filter(c -> relativPath.findOtherPredicate("name/value").equals(((Locatable) c).getNameAsString()))
                         .collect(Collectors.toList());
                 // if name not found return null
                 if (((List<?>) child).isEmpty()) {
@@ -102,8 +103,8 @@ public class ItemExtractor {
                 }
             }
 
-            if (!multi && child instanceof List && ((List) child).size() == 1) {
-                child = ((List) child).get(0);
+            if (!multi && child instanceof List ) {
+                child = ((List) child).stream().findAny().orElse(null);
             }
 
 
