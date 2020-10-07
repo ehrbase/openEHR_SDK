@@ -158,6 +158,7 @@ public class OPTParser {
                 .values()
                 .stream()
                 .flatMap(List::stream)
+                .filter(n -> n.getRmType().startsWith("DV_"))
                 .forEach(n -> n.setId(n.getRmType().replace("DV_", "").toLowerCase() + "_value"));
 
         addRMAttributes(node, aqlPath, termDefinitionMap);
