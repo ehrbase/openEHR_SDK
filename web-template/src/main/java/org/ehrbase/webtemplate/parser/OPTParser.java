@@ -20,6 +20,7 @@
 package org.ehrbase.webtemplate.parser;
 
 import com.nedap.archie.rm.archetyped.Locatable;
+import com.nedap.archie.rm.composition.EventContext;
 import com.nedap.archie.rminfo.ArchieRMInfoLookup;
 import com.nedap.archie.rminfo.RMAttributeInfo;
 import com.nedap.archie.rminfo.RMTypeInfo;
@@ -90,12 +91,13 @@ public class OPTParser {
             termDefinitionMap.computeIfAbsent(code, c -> new HashMap<>()).put(defaultLanguage, new TermDefinition(code, value, description));
 
         }
-        WebTemplateNode node = parseCCOMPLEXOBJECT(carchetyperoot, aqlPath, termDefinitionMap);
+        WebTemplateNode node = parseCCOMPLEXOBJECT(carchetyperoot, aqlPath, termDefinitionMap, null);
         node.setNodeId(carchetyperoot.getArchetypeId().getValue());
+        addRMAttributes(node, aqlPath, termDefinitionMap);
         return node;
     }
 
-    private WebTemplateNode parseCCOMPLEXOBJECT(CCOMPLEXOBJECT ccomplexobject, String aqlPath, Map<String, Map<String, TermDefinition>> termDefinitionMap) {
+    private WebTemplateNode parseCCOMPLEXOBJECT(CCOMPLEXOBJECT ccomplexobject, String aqlPath, Map<String, Map<String, TermDefinition>> termDefinitionMap, String rmAttributeName) {
 
         WebTemplateNode node = buildNode(ccomplexobject);
         node.setAqlPath(aqlPath);
@@ -120,19 +122,23 @@ public class OPTParser {
             node.getLocalizedNames().putAll(termDefinitionMap.get(nodeId).entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().getValue())));
             node.getLocalizedDescriptions().putAll(termDefinitionMap.get(nodeId).entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().getDescription())));
         } else {
-            node.setId(buildId(ccomplexobject.getRmTypeName()));
+            node.setId(buildId(StringUtils.isNotBlank(rmAttributeName) ? rmAttributeName : ccomplexobject.getRmTypeName()));
         }
 
         ListValuedMap<String, WebTemplateNode> multiValuedMap = new ArrayListValuedHashMap<>();
         CATTRIBUTE[] cattributes = ccomplexobject.getAttributesArray();
+
         for (CATTRIBUTE cattribute : cattributes) {
             String pathLoop = aqlPath + PATH_DIVIDER + cattribute.getRmAttributeName();
-            if (pathLoop.equals("/category") || pathLoop.endsWith("/name")) {
+            if (
+                //Will be set via Attributes
+                    pathLoop.equals("/category")
+                            || pathLoop.endsWith("/name")) {
                 continue;
             }
 
             for (COBJECT cobject : cattribute.getChildrenArray()) {
-                WebTemplateNode childNode = parseCOBJECT(cobject, pathLoop, termDefinitionMap);
+                WebTemplateNode childNode = parseCOBJECT(cobject, pathLoop, termDefinitionMap, cattribute.getRmAttributeName());
                 if (childNode != null) {
                     multiValuedMap.put(childNode.getAqlPath(), childNode);
                 }
@@ -145,21 +151,33 @@ public class OPTParser {
                 WebTemplateNode value = node.getChildren().get(0);
                 value.setId(node.getId());
                 value.setName(node.getName());
+                value.setMax(node.getMax());
             }
         }
+        node.getChoicesInChildren()
+                .values()
+                .stream()
+                .flatMap(List::stream)
+                .forEach(n -> n.setId(n.getRmType().replace("DV_", "").toLowerCase() + "_value"));
 
+        addRMAttributes(node, aqlPath, termDefinitionMap);
+        return node;
+    }
+
+    private void addRMAttributes(WebTemplateNode node, String aqlPath, Map<String, Map<String, TermDefinition>> termDefinitionMap) {
         //Add RM Attributes
         RMTypeInfo typeInfo = ARCHIE_RM_INFO_LOOKUP.getTypeInfo(node.getRmType());
-        if (typeInfo != null && Locatable.class.isAssignableFrom(typeInfo.getJavaClass())) {
+        if (typeInfo != null && (Locatable.class.isAssignableFrom(typeInfo.getJavaClass()) || EventContext.class.isAssignableFrom(typeInfo.getJavaClass()))) {
             String finalAqlPath = aqlPath;
             node.getChildren().addAll(typeInfo.getAttributes()
                     .values()
                     .stream()
-                    .filter(s -> List.of("language", "time", "subject", "encoding", "territory", "composer", "math_function", "width").contains(s.getRmName()))
+                    .filter(s -> List.of("language", "time", "subject", "encoding", "territory", "composer", "math_function", "width", "category", "setting", "start_time").contains(s.getRmName()))
                     .map(i -> buildNodeForAttribute(i, finalAqlPath, termDefinitionMap))
+                    //only add if not already there
+                    .filter(n -> node.getChildren().stream().map(WebTemplateNode::getId).noneMatch(s -> s.equals(n.getId())))
                     .collect(Collectors.toList()));
         }
-        return node;
     }
 
     private WebTemplateNode buildNodeForAttribute(RMAttributeInfo attributeInfo, String aqlPath, Map<String, Map<String, TermDefinition>> termDefinitionMap) {
@@ -168,10 +186,12 @@ public class OPTParser {
         node.setName(attributeInfo.getRmName());
         node.setId(buildId(attributeInfo.getRmName()));
         node.setRmType(attributeInfo.getTypeNameInCollection());
+        node.setMax(1);
+        node.setMin(0);
         return node;
     }
 
-    private WebTemplateNode parseCOBJECT(COBJECT cobject, String aqlPath, Map<String, Map<String, TermDefinition>> termDefinitionMap) {
+    private WebTemplateNode parseCOBJECT(COBJECT cobject, String aqlPath, Map<String, Map<String, TermDefinition>> termDefinitionMap, String rmAttributeName) {
 
         if (cobject instanceof CARCHETYPEROOT) {
             String nodeId = StringUtils.isNotBlank(((CARCHETYPEROOT) cobject).getArchetypeId().getValue()) ? ((CARCHETYPEROOT) cobject).getArchetypeId().getValue() : cobject.getNodeId();
@@ -193,7 +213,7 @@ public class OPTParser {
             } else {
                 pathLoop = aqlPath;
             }
-            return parseCCOMPLEXOBJECT((CCOMPLEXOBJECT) cobject, pathLoop, termDefinitionMap);
+            return parseCCOMPLEXOBJECT((CCOMPLEXOBJECT) cobject, pathLoop, termDefinitionMap, rmAttributeName);
         } else if (cobject instanceof CDOMAINTYPE) {
             return parseCDOMAINTYPE((CDOMAINTYPE) cobject, aqlPath, termDefinitionMap);
         }

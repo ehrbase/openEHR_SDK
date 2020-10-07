@@ -1,0 +1,597 @@
+{
+  "templateId": "ehrbase_multi_occurrence.de.v1",
+  "version": "2.3",
+  "defaultLanguage": "en",
+  "languages": [
+    "en"
+  ],
+  "tree": {
+    "id": "encounter",
+    "name": "Encounter",
+    "localizedName": "Encounter",
+    "rmType": "COMPOSITION",
+    "nodeId": "openEHR-EHR-COMPOSITION.encounter.v1",
+    "min": 1,
+    "max": 1,
+    "localizedNames": {
+      "en": "Encounter"
+    },
+    "localizedDescriptions": {
+      "en": "Interaction, contact or care event between a subject of care and healthcare                 provider(s).             "
+    },
+    "aqlPath": "",
+    "children": [
+      {
+        "id": "context",
+        "rmType": "EVENT_CONTEXT",
+        "nodeId": "",
+        "min": 1,
+        "max": 1,
+        "aqlPath": "/context",
+        "children": [
+          {
+            "id": "start_time",
+            "name": "Start_time",
+            "rmType": "DV_DATE_TIME",
+            "min": 0,
+            "max": 1,
+            "aqlPath": "/context/start_time",
+            "inputs": [
+              {
+                "type": "DATETIME"
+              }
+            ],
+            "inContext": true
+          },
+          {
+            "id": "setting",
+            "name": "Setting",
+            "rmType": "DV_CODED_TEXT",
+            "min": 0,
+            "max": 1,
+            "aqlPath": "/context/setting",
+            "inputs": [
+              {
+                "suffix": "code",
+                "type": "TEXT"
+              },
+              {
+                "suffix": "value",
+                "type": "TEXT"
+              }
+            ],
+            "inContext": true
+          }
+        ]
+      },
+      {
+        "id": "body_temperature",
+        "name": "Body temperature",
+        "localizedName": "Body temperature",
+        "rmType": "OBSERVATION",
+        "nodeId": "openEHR-EHR-OBSERVATION.body_temperature.v2",
+        "min": 0,
+        "max": -1,
+        "localizedNames": {
+          "en": "Body temperature"
+        },
+        "localizedDescriptions": {
+          "en": "A measurement of the body temperature, which is a surrogate for the core                         body temperature of the individual.                     "
+        },
+        "aqlPath": "/content[openEHR-EHR-OBSERVATION.body_temperature.v2]",
+        "children": [
+          {
+            "id": "any_event",
+            "name": "Any event",
+            "localizedName": "Any event",
+            "rmType": "EVENT",
+            "nodeId": "at0003",
+            "min": 0,
+            "max": -1,
+            "localizedNames": {
+              "en": "Any event"
+            },
+            "localizedDescriptions": {
+              "en": "Default, unspecified point in time or interval event which may be explicitly                         defined in a template or at run-time.                     "
+            },
+            "aqlPath": "/content[openEHR-EHR-OBSERVATION.body_temperature.v2]/data[at0002]/events[at0003]",
+            "children": [
+              {
+                "id": "temperature",
+                "name": "Temperature",
+                "localizedName": "Temperature",
+                "rmType": "DV_QUANTITY",
+                "nodeId": "at0004",
+                "min": 1,
+                "max": 1,
+                "localizedNames": {
+                  "en": "Temperature"
+                },
+                "localizedDescriptions": {
+                  "en": "The measured body temperature (as a surrogate for the core of the body).                     "
+                },
+                "aqlPath": "/content[openEHR-EHR-OBSERVATION.body_temperature.v2]/data[at0002]/events[at0003]/data[at0001]/items[at0004]/value",
+                "inputs": [
+                  {
+                    "suffix": "magnitude",
+                    "type": "DECIMAL"
+                  },
+                  {
+                    "suffix": "unit",
+                    "type": "CODED_TEXT",
+                    "list": [
+                      {
+                        "value": "Cel",
+                        "label": "Cel",
+                        "validation": {
+                          "range": {
+                            "minOp": ">=",
+                            "min": 0,
+                            "maxOp": "<",
+                            "max": 100
+                          },
+                          "precision": {
+                            "minOp": ">=",
+                            "min": 1,
+                            "maxOp": "<=",
+                            "max": 1
+                          }
+                        }
+                      },
+                      {
+                        "value": "[degF]",
+                        "label": "[degF]",
+                        "validation": {
+                          "range": {
+                            "minOp": ">=",
+                            "min": 30,
+                            "maxOp": "<",
+                            "max": 200
+                          },
+                          "precision": {
+                            "minOp": ">=",
+                            "min": 1,
+                            "maxOp": "<=",
+                            "max": 1
+                          }
+                        }
+                      }
+                    ]
+                  }
+                ],
+                "termBindings": {
+                  "LNC205": {
+                    "value": "8310-5",
+                    "terminologyId": "LNC205"
+                  },
+                  "SNOMED-CT": {
+                    "value": "386725007",
+                    "terminologyId": "SNOMED-CT"
+                  }
+                }
+              },
+              {
+                "id": "body_exposure",
+                "name": "Body exposure",
+                "localizedName": "Body exposure",
+                "rmType": "DV_CODED_TEXT",
+                "nodeId": "at0030",
+                "min": 0,
+                "max": 1,
+                "dependsOn": [
+                  "temperature"
+                ],
+                "localizedNames": {
+                  "en": "Body exposure"
+                },
+                "localizedDescriptions": {
+                  "en": "The degree of exposure of the individual at the time of measurement."
+                },
+                "aqlPath": "/content[openEHR-EHR-OBSERVATION.body_temperature.v2]/data[at0002]/events[at0003]/state[at0029]/items[at0030]/value",
+                "inputs": [
+                  {
+                    "suffix": "code",
+                    "type": "CODED_TEXT",
+                    "list": [
+                      {
+                        "value": "at0031",
+                        "label": "Naked",
+                        "localizedLabels": {
+                          "en": "Naked"
+                        },
+                        "localizedDescriptions": {
+                          "en": "No clothing, bedding or covering."
+                        }
+                      },
+                      {
+                        "value": "at0032",
+                        "label": "Reduced clothing/bedding",
+                        "localizedLabels": {
+                          "en": "Reduced clothing/bedding"
+                        },
+                        "localizedDescriptions": {
+                          "en": "The person is covered by a lesser amount of clothing or bedding than deemed                         appropriate for the environmental circumstances.                     "
+                        }
+                      },
+                      {
+                        "value": "at0033",
+                        "label": "Appropriate clothing/bedding",
+                        "localizedLabels": {
+                          "en": "Appropriate clothing/bedding"
+                        },
+                        "localizedDescriptions": {
+                          "en": "The person is covered by an amount of clothing or bedding deemed appropriate                         for the environmental circumstances.                     "
+                        }
+                      },
+                      {
+                        "value": "at0034",
+                        "label": "Increased clothing/bedding",
+                        "localizedLabels": {
+                          "en": "Increased clothing/bedding"
+                        },
+                        "localizedDescriptions": {
+                          "en": "The person is covered by an increased amount of clothing or bedding than                         deemed appropriate for the environmental circumstances.                     "
+                        }
+                      }
+                    ],
+                    "listOpen": true,
+                    "defaultValue": "at0033"
+                  },
+                  {
+                    "suffix": "other",
+                    "type": "TEXT"
+                  }
+                ]
+              },
+              {
+                "id": "description_of_thermal_stress",
+                "name": "Description of thermal stress",
+                "localizedName": "Description of thermal stress",
+                "rmType": "DV_TEXT",
+                "nodeId": "at0041",
+                "min": 0,
+                "max": 1,
+                "dependsOn": [
+                  "temperature"
+                ],
+                "localizedNames": {
+                  "en": "Description of thermal stress"
+                },
+                "localizedDescriptions": {
+                  "en": "Description of the conditions applied to the subject that might influence                         their measured body temperature.                     "
+                },
+                "aqlPath": "/content[openEHR-EHR-OBSERVATION.body_temperature.v2]/data[at0002]/events[at0003]/state[at0029]/items[at0041]/value",
+                "inputs": [
+                  {
+                    "type": "TEXT"
+                  }
+                ]
+              },
+              {
+                "id": "current_day_of_menstrual_cycle",
+                "name": "Current day of menstrual cycle",
+                "localizedName": "Current day of menstrual cycle",
+                "rmType": "DV_COUNT",
+                "nodeId": "at0065",
+                "min": 0,
+                "max": 1,
+                "dependsOn": [
+                  "temperature"
+                ],
+                "localizedNames": {
+                  "en": "Current day of menstrual cycle"
+                },
+                "localizedDescriptions": {
+                  "en": "Number of days since onset of last normal menstrual period."
+                },
+                "aqlPath": "/content[openEHR-EHR-OBSERVATION.body_temperature.v2]/data[at0002]/events[at0003]/state[at0029]/items[at0065]/value",
+                "inputs": [
+                  {
+                    "type": "INTEGER",
+                    "validation": {
+                      "range": {
+                        "minOp": ">=",
+                        "min": 1
+                      }
+                    }
+                  }
+                ]
+              },
+              {
+                "id": "time",
+                "name": "Time",
+                "rmType": "DV_DATE_TIME",
+                "min": 0,
+                "max": 1,
+                "aqlPath": "/content[openEHR-EHR-OBSERVATION.body_temperature.v2]/data[at0002]/events[at0003]/time",
+                "inputs": [
+                  {
+                    "type": "DATETIME"
+                  }
+                ],
+                "inContext": true
+              }
+            ]
+          },
+          {
+            "id": "location_of_measurement",
+            "name": "Location of measurement",
+            "localizedName": "Location of measurement",
+            "rmType": "DV_CODED_TEXT",
+            "nodeId": "at0021",
+            "min": 0,
+            "max": 1,
+            "dependsOn": [
+              "any_event"
+            ],
+            "localizedNames": {
+              "en": "Location of measurement"
+            },
+            "localizedDescriptions": {
+              "en": "The anatomical site of measurement of the temperature."
+            },
+            "aqlPath": "/content[openEHR-EHR-OBSERVATION.body_temperature.v2]/protocol[at0020]/items[at0021]/value",
+            "inputs": [
+              {
+                "suffix": "code",
+                "type": "CODED_TEXT",
+                "list": [
+                  {
+                    "value": "at0025",
+                    "label": "Rectum",
+                    "localizedLabels": {
+                      "en": "Rectum"
+                    },
+                    "localizedDescriptions": {
+                      "en": "Temperature measured within the rectum."
+                    }
+                  },
+                  {
+                    "value": "at0024",
+                    "label": "Axilla",
+                    "localizedLabels": {
+                      "en": "Axilla"
+                    },
+                    "localizedDescriptions": {
+                      "en": "Temperature is measured from the skin of the axilla with the arm positioned                         down by the side.                     "
+                    }
+                  },
+                  {
+                    "value": "at0023",
+                    "label": "Ear canal",
+                    "localizedLabels": {
+                      "en": "Ear canal"
+                    },
+                    "localizedDescriptions": {
+                      "en": "Temperature is measured from within the external auditory canal."
+                    }
+                  },
+                  {
+                    "value": "at0061",
+                    "label": "Forehead",
+                    "localizedLabels": {
+                      "en": "Forehead"
+                    },
+                    "localizedDescriptions": {
+                      "en": "Temperature is measured on the forehead."
+                    }
+                  },
+                  {
+                    "value": "at0022",
+                    "label": "Mouth",
+                    "localizedLabels": {
+                      "en": "Mouth"
+                    },
+                    "localizedDescriptions": {
+                      "en": "Temperature is measured within the mouth."
+                    }
+                  },
+                  {
+                    "value": "at0026",
+                    "label": "Nasopharynx",
+                    "localizedLabels": {
+                      "en": "Nasopharynx"
+                    },
+                    "localizedDescriptions": {
+                      "en": "Temperature is measured within the nasopharynx."
+                    }
+                  },
+                  {
+                    "value": "at0027",
+                    "label": "Urinary bladder",
+                    "localizedLabels": {
+                      "en": "Urinary bladder"
+                    },
+                    "localizedDescriptions": {
+                      "en": "Temperature is measured in the urinary bladder."
+                    }
+                  },
+                  {
+                    "value": "at0028",
+                    "label": "Intravascular",
+                    "localizedLabels": {
+                      "en": "Intravascular"
+                    },
+                    "localizedDescriptions": {
+                      "en": "Temperature is measured within the vascular system."
+                    }
+                  },
+                  {
+                    "value": "at0043",
+                    "label": "Skin",
+                    "localizedLabels": {
+                      "en": "Skin"
+                    },
+                    "localizedDescriptions": {
+                      "en": "Temperature is measured from exposed skin."
+                    }
+                  },
+                  {
+                    "value": "at0051",
+                    "label": "Vagina",
+                    "localizedLabels": {
+                      "en": "Vagina"
+                    },
+                    "localizedDescriptions": {
+                      "en": "Temperature is measured within the vagina."
+                    }
+                  },
+                  {
+                    "value": "at0054",
+                    "label": "Oesophagus",
+                    "localizedLabels": {
+                      "en": "Oesophagus"
+                    },
+                    "localizedDescriptions": {
+                      "en": "Temperatue is measured within the oesophagus."
+                    }
+                  },
+                  {
+                    "value": "at0055",
+                    "label": "Inguinal skin crease",
+                    "localizedLabels": {
+                      "en": "Inguinal skin crease"
+                    },
+                    "localizedDescriptions": {
+                      "en": "Temperature is measured in the inguinal skin crease between the leg and                         abdominal wall.                     "
+                    }
+                  },
+                  {
+                    "value": "at0060",
+                    "label": "Temple",
+                    "localizedLabels": {
+                      "en": "Temple"
+                    },
+                    "localizedDescriptions": {
+                      "en": "Temperature is measured at the temple, over the superficial temporal                         artery.                     "
+                    }
+                  }
+                ],
+                "listOpen": true
+              },
+              {
+                "suffix": "other",
+                "type": "TEXT"
+              }
+            ]
+          },
+          {
+            "id": "language",
+            "name": "Language",
+            "rmType": "CODE_PHRASE",
+            "min": 0,
+            "max": 1,
+            "aqlPath": "/content[openEHR-EHR-OBSERVATION.body_temperature.v2]/language",
+            "inContext": true
+          },
+          {
+            "id": "encoding",
+            "name": "Encoding",
+            "rmType": "CODE_PHRASE",
+            "min": 0,
+            "max": 1,
+            "aqlPath": "/content[openEHR-EHR-OBSERVATION.body_temperature.v2]/encoding",
+            "inContext": true
+          },
+          {
+            "id": "subject",
+            "name": "Subject",
+            "rmType": "PARTY_PROXY",
+            "min": 0,
+            "max": 1,
+            "aqlPath": "/content[openEHR-EHR-OBSERVATION.body_temperature.v2]/subject",
+            "inputs": [
+              {
+                "suffix": "id",
+                "type": "TEXT"
+              },
+              {
+                "suffix": "id_scheme",
+                "type": "TEXT"
+              },
+              {
+                "suffix": "id_namespace",
+                "type": "TEXT"
+              },
+              {
+                "suffix": "name",
+                "type": "TEXT"
+              }
+            ],
+            "inContext": true
+          }
+        ]
+      },
+      {
+        "id": "category",
+        "rmType": "DV_CODED_TEXT",
+        "nodeId": "",
+        "min": 1,
+        "max": 1,
+        "aqlPath": "/category",
+        "inputs": [
+          {
+            "suffix": "code",
+            "type": "CODED_TEXT",
+            "list": [
+              {
+                "value": "433",
+                "label": "event",
+                "localizedLabels": {
+                  "en": "event"
+                }
+              }
+            ],
+            "terminology": "openehr"
+          }
+        ],
+        "inContext": true
+      },
+      {
+        "id": "language",
+        "name": "Language",
+        "rmType": "CODE_PHRASE",
+        "min": 0,
+        "max": 1,
+        "aqlPath": "/language",
+        "inContext": true
+      },
+      {
+        "id": "territory",
+        "name": "Territory",
+        "rmType": "CODE_PHRASE",
+        "min": 0,
+        "max": 1,
+        "aqlPath": "/territory",
+        "inContext": true
+      },
+      {
+        "id": "composer",
+        "name": "Composer",
+        "rmType": "PARTY_PROXY",
+        "min": 0,
+        "max": 1,
+        "aqlPath": "/composer",
+        "inputs": [
+          {
+            "suffix": "id",
+            "type": "TEXT"
+          },
+          {
+            "suffix": "id_scheme",
+            "type": "TEXT"
+          },
+          {
+            "suffix": "id_namespace",
+            "type": "TEXT"
+          },
+          {
+            "suffix": "name",
+            "type": "TEXT"
+          }
+        ],
+        "inContext": true
+      }
+    ]
+  }
+}

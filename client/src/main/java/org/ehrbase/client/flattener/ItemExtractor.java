@@ -72,14 +72,28 @@ public class ItemExtractor {
     }
 
     private ItemExtractor invoke() {
-        PathExtractor pathExtractor = new PathExtractor(path);
-        FlatPath childPath = new FlatPath(pathExtractor.getChildPath());
+        FlatPath childPath;
+        String attributeName;
+        String parentPath;
+        if (Locatable.class.isAssignableFrom(rmObject.getClass())) {
+            PathExtractor pathExtractor = new PathExtractor(path);
 
-        String attributeName = pathExtractor.getAttributeName();
-        String parentPath = pathExtractor.getParentPath();
+            childPath = new FlatPath(pathExtractor.getChildPath());
+
+
+            attributeName = pathExtractor.getAttributeName();
+
+            parentPath = pathExtractor.getParentPath();
+            childName = pathExtractor.getChildName();
+        } else {
+            parentPath = "/";
+            childPath = new FlatPath("");
+            attributeName = path.replace("/", "").replace("|", "");
+
+        }
 
         if (StringUtils.isNotBlank(childPath.format(false))) {
-            childName = pathExtractor.getChildName();
+
             //childPath not empty implies  rmObject is Locatable
             if (!Locatable.class.isAssignableFrom(rmObject.getClass())) {
                 throw new ClientException(String.format("Locatable not assignable from %s", rmObject.getClass()));

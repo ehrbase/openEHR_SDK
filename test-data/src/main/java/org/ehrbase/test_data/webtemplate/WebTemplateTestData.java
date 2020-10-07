@@ -23,7 +23,10 @@ import java.io.InputStream;
 
 public enum WebTemplateTestData {
 
-    CORONA("Corona", "corona_anamnese.json");
+    ALTERNATIVE_EVENTS("AlternativeEvents", "AlternativeEvents.json"),
+    CORONA("Corona", "corona_anamnese.json"),
+    MULTI_OCCURRENCE("multi_occurrence", "multi_occurrence.json"),
+    TEST_ALL_TYPES("test_all_types", "test_all_types.json");
 
 
     private final String filename;

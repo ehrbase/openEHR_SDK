@@ -1,0 +1,108 @@
+/*
+ *
+ *  *  Copyright (c) 2020  Stefan Spiska (Vitasystems GmbH) and Hannover Medical School
+ *  *  This file is part of Project EHRbase
+ *  *
+ *  *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  *  you may not use this file except in compliance with the License.
+ *  *  You may obtain a copy of the License at
+ *  *
+ *  *  http://www.apache.org/licenses/LICENSE-2.0
+ *  *
+ *  *  Unless required by applicable law or agreed to in writing, software
+ *  *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  *  See the License for the specific language governing permissions and
+ *  *  limitations under the License.
+ *
+ */
+
+package org.ehrbase.client.std.umarshal;
+
+import com.nedap.archie.rm.RMObject;
+import com.nedap.archie.rminfo.ArchieRMInfoLookup;
+import org.apache.commons.lang3.ClassUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.ehrbase.client.reflection.ReflectionHelper;
+import org.ehrbase.client.std.umarshal.postprocessor.UnmarshalPostprocessor;
+import org.ehrbase.client.std.umarshal.rmunmarshaller.DefaultRMUnmarshaller;
+import org.ehrbase.client.std.umarshal.rmunmarshaller.RMUnmarshaller;
+import org.ehrbase.client.walker.Context;
+import org.ehrbase.client.walker.Walker;
+import org.ehrbase.webtemplate.model.WebTemplateNode;
+
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import static org.ehrbase.client.introspect.TemplateIntrospect.TERM_DIVIDER;
+
+public class FlatWalker extends Walker<Map<String, String>> {
+
+    public static final ArchieRMInfoLookup ARCHIE_RM_INFO_LOOKUP = ArchieRMInfoLookup.getInstance();
+    private static final Map<Class<?>, RMUnmarshaller> UNMARSHALLER_MAP = ReflectionHelper.buildMap(RMUnmarshaller.class);
+    private static final Map<Class<?>, UnmarshalPostprocessor> POSTPROCESSOR_MAP = ReflectionHelper.buildMap(UnmarshalPostprocessor.class);
+
+    @Override
+    protected RMObject extractFromList(List<RMObject> child, int i) {
+        RMObject currentChild;
+        List<RMObject> childList = child;
+        if (i > 0) {
+            RMObject deepClone = deepClone(childList.get(0));
+            childList.add(deepClone);
+            currentChild = deepClone;
+        } else {
+            currentChild = childList.get(0);
+        }
+        return currentChild;
+    }
+
+    @Override
+    protected Map<String, String> extract(Context<Map<String, String>> context, WebTemplateNode child, Integer count) {
+        String path = buildNamePath(context) + "/" + child.getId();
+        if (count != null) {
+            path = path + ":" + count;
+        }
+
+        String finalPath = path;
+        return context.getObjectDeque().peek().entrySet().stream().filter(e -> e.getKey().startsWith(finalPath)).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+    }
+
+    @Override
+    protected void preHandle(Context<Map<String, String>> context) {
+
+        //Handle if at a End-Node
+        if (!visitChildren(context.getNodeDeque().peek())) {
+            RMUnmarshaller rmUnmarshaller = UNMARSHALLER_MAP.getOrDefault(context.getRmObjectDeque().peek().getClass(), new DefaultRMUnmarshaller());
+            rmUnmarshaller.handle(buildNamePath(context), context.getRmObjectDeque().peek(), context.getObjectDeque().peek());
+        }
+    }
+
+    @Override
+    protected void postHandle(Context<Map<String, String>> context) {
+        List<UnmarshalPostprocessor<? super RMObject>> postprocessor = Stream.concat(Stream.of(context.getRmObjectDeque().peek().getClass()), ClassUtils.getAllSuperclasses(context.getRmObjectDeque().peek().getClass()).stream())
+                .map(POSTPROCESSOR_MAP::get)
+                .filter(Objects::nonNull)
+                .map(p -> (UnmarshalPostprocessor<? super RMObject>) p)
+                .collect(Collectors.toList());
+        postprocessor.forEach(p -> {
+            p.process(buildNamePath(context), context.getRmObjectDeque().peek(), context.getObjectDeque().peek());
+            //  consumedPath.addAll(p.getConsumedPaths());
+        });
+    }
+
+    @Override
+    protected int calculateSize(Context<Map<String, String>> context, Object child) {
+        return context.getObjectDeque().peek().keySet().stream()
+                .map(s -> StringUtils.substringBetween(s, buildNamePath(context) + ":", TERM_DIVIDER))
+                .filter(StringUtils::isNotBlank)
+                .map(Integer::parseInt)
+                .sorted()
+                .reduce((first, second) -> second)
+                .orElse(0);
+    }
+
+
+}

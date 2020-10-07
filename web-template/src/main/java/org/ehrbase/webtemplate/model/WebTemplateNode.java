@@ -128,6 +128,15 @@ public class WebTemplateNode implements Serializable {
         return children;
     }
 
+    public Map<String, List<WebTemplateNode>> getChoicesInChildren() {
+        return children.stream()
+                .collect(Collectors.groupingBy(WebTemplateNode::getAqlPath))
+                .entrySet()
+                .stream()
+                .filter(e -> e.getValue().size() > 1)
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+    }
+
     public List<WebTemplateInput> getInputs() {
         return inputs;
     }
