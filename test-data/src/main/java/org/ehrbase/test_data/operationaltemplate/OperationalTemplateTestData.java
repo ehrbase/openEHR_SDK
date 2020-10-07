@@ -34,7 +34,7 @@ public enum OperationalTemplateTestData {
     TWO_EVENTS("Template with two Events", "TwoEvents.opt", "SingleEvent"),
     AVERAGE_24("Template with  a Interval Events", "24StundenDurchschnitt.opt", "24StundenDurchschnitt"),
     EPISODE_OF_CARE("EpisodeOfCare", "EpisodeOfCare.opt", "EpisodeOfCare"),
-    CORONA_ANAMMNESE("Corona_Anamnese", "corona_anamnese.opt", "Corona_Anamnese"),
+    CORONA_ANAMNESE("Corona_Anamnese", "corona_anamnese.opt", "Corona_Anamnese"),
     DIAGNOSE("Diagnose", "Diagnose.opt", "Diagnose"),
     OPEN_E_REACT_CARE("open_eREACT-Care", "open_eREACT-Care.opt", "open_eREACT-Care"),
     SCHWANGERSCHAFTSSTATUS("Schwangerschaftsstatus", "Schwangerschaftsstatus.opt", "Schwangerschaftsstatus"),

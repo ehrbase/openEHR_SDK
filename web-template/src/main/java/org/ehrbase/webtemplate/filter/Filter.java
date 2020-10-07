@@ -21,6 +21,7 @@ package org.ehrbase.webtemplate.filter;
 
 import org.ehrbase.webtemplate.model.WebTemplate;
 import org.ehrbase.webtemplate.model.WebTemplateNode;
+import org.ehrbase.webtemplate.parser.OPTParser;
 
 import java.util.Collections;
 import java.util.List;
@@ -47,6 +48,7 @@ public class Filter {
             node.getChildren().clear();
             node.getChildren().addAll(filteredChildren);
         }
+        OPTParser.makeIdUnique(node);
         return nodes;
     }
 

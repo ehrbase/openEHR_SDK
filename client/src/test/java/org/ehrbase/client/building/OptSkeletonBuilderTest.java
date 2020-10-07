@@ -48,7 +48,7 @@ public class OptSkeletonBuilderTest {
     @Test
     public void testGenerateCorona() throws Exception {
 
-        org.openehr.schemas.v1.TemplateDocument document = org.openehr.schemas.v1.TemplateDocument.Factory.parse(OperationalTemplateTestData.CORONA_ANAMMNESE.getStream());
+        org.openehr.schemas.v1.TemplateDocument document = org.openehr.schemas.v1.TemplateDocument.Factory.parse(OperationalTemplateTestData.CORONA_ANAMNESE.getStream());
         OPERATIONALTEMPLATE operationaltemplate = document.getTemplate();
         OptSkeletonBuilder cut = new OptSkeletonBuilder();
 

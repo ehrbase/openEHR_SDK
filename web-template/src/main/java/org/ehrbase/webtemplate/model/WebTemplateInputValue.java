@@ -19,7 +19,9 @@
 
 package org.ehrbase.webtemplate.model;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -31,6 +33,8 @@ public class WebTemplateInputValue {
     private final Map<String, String> localizedDescriptions = new HashMap<>();
     private String terminology;
     private final Map<String, WebTemplateTerminology> termBindings = new HashMap<>();
+    private Integer ordinal;
+    private final List<String> currentStates = new ArrayList<>();
 
     public String getValue() {
         return value;
@@ -66,6 +70,18 @@ public class WebTemplateInputValue {
 
     public Map<String, WebTemplateTerminology> getTermBindings() {
         return termBindings;
+    }
+
+    public Integer getOrdinal() {
+        return ordinal;
+    }
+
+    public void setOrdinal(Integer ordinal) {
+        this.ordinal = ordinal;
+    }
+
+    public List<String> getCurrentStates() {
+        return currentStates;
     }
 
     @Override

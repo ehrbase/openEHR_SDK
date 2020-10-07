@@ -47,7 +47,7 @@ public class FlatJsonMarshallerTest {
     @Test
     public void toFlatJson() throws IOException, XmlException {
 
-        OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(OperationalTemplateTestData.CORONA_ANAMMNESE.getStream()).getTemplate();
+        OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(OperationalTemplateTestData.CORONA_ANAMNESE.getStream()).getTemplate();
         TemplateIntrospect introspect = new TemplateIntrospect(template);
         Composition composition = new CanonicalJson().unmarshal(IOUtils.toString(CompositionTestDataCanonicalJson.CORONA.getStream(), StandardCharsets.UTF_8), Composition.class);
         FlatJsonMarshaller cut = new FlatJsonMarshaller(introspect);

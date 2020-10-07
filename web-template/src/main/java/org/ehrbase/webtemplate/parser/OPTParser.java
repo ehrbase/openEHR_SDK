@@ -24,8 +24,6 @@ import com.nedap.archie.rm.composition.EventContext;
 import com.nedap.archie.rminfo.ArchieRMInfoLookup;
 import com.nedap.archie.rminfo.RMAttributeInfo;
 import com.nedap.archie.rminfo.RMTypeInfo;
-import org.apache.commons.collections4.ListValuedMap;
-import org.apache.commons.collections4.multimap.ArrayListValuedHashMap;
 import org.apache.commons.lang3.StringUtils;
 import org.ehrbase.webtemplate.model.WebTemplate;
 import org.ehrbase.webtemplate.model.WebTemplateInput;
@@ -99,33 +97,21 @@ public class OPTParser {
 
     private WebTemplateNode parseCCOMPLEXOBJECT(CCOMPLEXOBJECT ccomplexobject, String aqlPath, Map<String, Map<String, TermDefinition>> termDefinitionMap, String rmAttributeName) {
 
-        WebTemplateNode node = buildNode(ccomplexobject);
+        Optional<String> expliziteName = OptNameHelper.extractName(ccomplexobject);
+        WebTemplateNode node = buildNode(ccomplexobject, rmAttributeName, termDefinitionMap);
         node.setAqlPath(aqlPath);
-        String nodeId = ccomplexobject.getNodeId();
-        if (StringUtils.isNotBlank(nodeId)) {
-            Optional<String> expliziteName = OptNameHelper.extractName(ccomplexobject);
-            if (expliziteName.isPresent()) {
-                FlatPath path = new FlatPath(node.getAqlPath());
-                FlatPath lastSegment = path;
-                while (lastSegment.getChild() != null) {
-                    lastSegment = lastSegment.getChild();
-                }
-                lastSegment.addOtherPredicate("name/value", expliziteName.get());
-                node.setAqlPath(path.format(true));
-                aqlPath = path.format(true);
+
+        if (StringUtils.isNotBlank(ccomplexobject.getNodeId()) && expliziteName.isPresent()) {
+            FlatPath path = new FlatPath(node.getAqlPath());
+            FlatPath lastSegment = path;
+            while (lastSegment.getChild() != null) {
+                lastSegment = lastSegment.getChild();
             }
-            String name = expliziteName.orElse(termDefinitionMap.get(nodeId).get(defaultLanguage).getValue());
-            node.setName(name);
-            node.setId(buildId(name));
-            node.setNodeId(nodeId);
-            node.setLocalizedName(name);
-            node.getLocalizedNames().putAll(termDefinitionMap.get(nodeId).entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().getValue())));
-            node.getLocalizedDescriptions().putAll(termDefinitionMap.get(nodeId).entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().getDescription())));
-        } else {
-            node.setId(buildId(StringUtils.isNotBlank(rmAttributeName) ? rmAttributeName : ccomplexobject.getRmTypeName()));
+            lastSegment.addOtherPredicate("name/value", expliziteName.get());
+            node.setAqlPath(path.format(true));
+            aqlPath = path.format(true);
         }
 
-        ListValuedMap<String, WebTemplateNode> multiValuedMap = new ArrayListValuedHashMap<>();
         CATTRIBUTE[] cattributes = ccomplexobject.getAttributesArray();
 
         for (CATTRIBUTE cattribute : cattributes) {
@@ -140,11 +126,11 @@ public class OPTParser {
             for (COBJECT cobject : cattribute.getChildrenArray()) {
                 WebTemplateNode childNode = parseCOBJECT(cobject, pathLoop, termDefinitionMap, cattribute.getRmAttributeName());
                 if (childNode != null) {
-                    multiValuedMap.put(childNode.getAqlPath(), childNode);
+                    node.getChildren().add(childNode);
                 }
             }
         }
-        node.getChildren().addAll(multiValuedMap.values());
+
         //Inherit name for Element values
         if (node.getRmType().equals("ELEMENT")) {
             if (node.getChildren().size() == 1) {
@@ -162,7 +148,27 @@ public class OPTParser {
                 .forEach(n -> n.setId(n.getRmType().replace("DV_", "").toLowerCase() + "_value"));
 
         addRMAttributes(node, aqlPath, termDefinitionMap);
+
+        makeIdUnique(node);
         return node;
+    }
+
+    public static void makeIdUnique(WebTemplateNode node) {
+        //Make ids unique in for a children
+        node.getChildren().stream()
+                .collect(Collectors.groupingBy(WebTemplateNode::getId))
+                .values()
+                .stream()
+                .filter(l -> l.size() > 1)
+                .forEach(l -> {
+                            for (int i = 0; i < l.size(); i++) {
+                                if (i > 0) {
+                                    WebTemplateNode n = l.get(i);
+                                    n.setId(n.getId() + (i + 1));
+                                }
+                            }
+                        }
+                );
     }
 
     private void addRMAttributes(WebTemplateNode node, String aqlPath, Map<String, Map<String, TermDefinition>> termDefinitionMap) {
@@ -194,19 +200,18 @@ public class OPTParser {
 
     private WebTemplateNode parseCOBJECT(COBJECT cobject, String aqlPath, Map<String, Map<String, TermDefinition>> termDefinitionMap, String rmAttributeName) {
 
+
         if (cobject instanceof CARCHETYPEROOT) {
-            String nodeId = StringUtils.isNotBlank(((CARCHETYPEROOT) cobject).getArchetypeId().getValue()) ? ((CARCHETYPEROOT) cobject).getArchetypeId().getValue() : cobject.getNodeId();
+            String nodeId = ((CARCHETYPEROOT) cobject).getArchetypeId().getValue();
             final String pathLoop;
             if (StringUtils.isNotBlank(nodeId)) {
-
                 pathLoop = aqlPath + "[" + nodeId + "]";
             } else {
                 pathLoop = aqlPath;
             }
-
             return parseCARCHETYPEROO((CARCHETYPEROOT) cobject, pathLoop);
-        } else if (cobject instanceof CCOMPLEXOBJECT) {
 
+        } else if (cobject instanceof CCOMPLEXOBJECT) {
             String nodeId = cobject.getNodeId();
             final String pathLoop;
             if (StringUtils.isNotBlank(nodeId)) {
@@ -215,22 +220,24 @@ public class OPTParser {
                 pathLoop = aqlPath;
             }
             return parseCCOMPLEXOBJECT((CCOMPLEXOBJECT) cobject, pathLoop, termDefinitionMap, rmAttributeName);
+
         } else if (cobject instanceof CDOMAINTYPE) {
-            return parseCDOMAINTYPE((CDOMAINTYPE) cobject, aqlPath, termDefinitionMap);
+            String nodeId = cobject.getNodeId();
+            final String pathLoop;
+            if (StringUtils.isNotBlank(nodeId)) {
+                pathLoop = aqlPath + "[" + nodeId + "]";
+            } else {
+                pathLoop = aqlPath;
+            }
+            return parseCDOMAINTYPE((CDOMAINTYPE) cobject, pathLoop, termDefinitionMap, rmAttributeName);
         }
         return null;
     }
 
-    private WebTemplateNode parseCDOMAINTYPE(CDOMAINTYPE cdomaintype, String aqlPath, Map<String, Map<String, TermDefinition>> termDefinitionMap) {
-        String nodeId = cdomaintype.getNodeId();
-        final String pathLoop;
-        if (StringUtils.isNotBlank(nodeId)) {
-            pathLoop = aqlPath + "[" + nodeId + "]";
-        } else {
-            pathLoop = aqlPath;
-        }
-        WebTemplateNode node = buildNode(cdomaintype);
-        node.setAqlPath(pathLoop);
+    private WebTemplateNode parseCDOMAINTYPE(CDOMAINTYPE cdomaintype, String aqlPath, Map<String, Map<String, TermDefinition>> termDefinitionMap, String rmAttributeName) {
+
+        WebTemplateNode node = buildNode(cdomaintype, rmAttributeName, termDefinitionMap);
+        node.setAqlPath(aqlPath);
         if (cdomaintype instanceof CDVSTATE) {
 
         } else if (cdomaintype instanceof CDVQUANTITY) {
@@ -255,12 +262,35 @@ public class OPTParser {
         return node;
     }
 
-    private WebTemplateNode buildNode(COBJECT cobject) {
+    private WebTemplateNode buildNode(COBJECT cobject, String rmAttributeName, Map<String, Map<String, TermDefinition>> termDefinitionMap) {
         WebTemplateNode node = new WebTemplateNode();
         node.setRmType(cobject.getRmTypeName());
         IntervalOfInteger occurrences = cobject.getOccurrences();
         node.setMin(occurrences.getLowerUnbounded() ? -1 : occurrences.getLower());
         node.setMax(occurrences.getUpperUnbounded() ? -1 : occurrences.getUpper());
+        String nodeId = cobject.getNodeId();
+        if (StringUtils.isNotBlank(nodeId)) {
+
+            Optional<String> expliziteName;
+            if (cobject instanceof CCOMPLEXOBJECT) {
+                expliziteName = OptNameHelper.extractName((CCOMPLEXOBJECT) cobject);
+            } else {
+                expliziteName = Optional.empty();
+            }
+
+            String name = expliziteName.orElse(termDefinitionMap.get(nodeId).get(defaultLanguage).getValue());
+            node.setName(name);
+            node.setId(buildId(name));
+            node.setNodeId(nodeId);
+            node.setLocalizedName(name);
+            node.getLocalizedNames().putAll(termDefinitionMap.get(nodeId).entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().getValue())));
+            node.getLocalizedDescriptions().putAll(termDefinitionMap.get(nodeId).entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().getDescription())));
+        } else {
+            String name = StringUtils.isNotBlank(rmAttributeName) ? rmAttributeName : cobject.getRmTypeName();
+            node.setId(buildId(name));
+            node.setName(name);
+            node.setLocalizedName(name);
+        }
         return node;
     }
 

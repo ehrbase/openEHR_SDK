@@ -295,7 +295,7 @@ public class TemplateIntrospectTest {
 
     @Test
     public void introspectCorona() throws IOException, XmlException {
-        OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(OperationalTemplateTestData.CORONA_ANAMMNESE.getStream()).getTemplate();
+        OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(OperationalTemplateTestData.CORONA_ANAMNESE.getStream()).getTemplate();
         TemplateIntrospect cut = new TemplateIntrospect(template);
 
         Map<String, Node> actual = cut.getRoot().getChildren();

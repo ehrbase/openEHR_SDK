@@ -52,7 +52,7 @@ public class WebTemplateTest {
 
     @Test
     public void testFindByAqlPath() throws IOException, XmlException {
-        OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(OperationalTemplateTestData.CORONA_ANAMMNESE.getStream()).getTemplate();
+        OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(OperationalTemplateTestData.CORONA_ANAMNESE.getStream()).getTemplate();
 
         OPTParser cut = new OPTParser(template);
         WebTemplate actual = cut.parse();
@@ -83,7 +83,7 @@ public class WebTemplateTest {
 
     @Test
     public void testMultiValued() throws IOException, XmlException {
-        OPERATIONALTEMPLATE operationaltemplate = TemplateDocument.Factory.parse(OperationalTemplateTestData.CORONA_ANAMMNESE.getStream()).getTemplate();
+        OPERATIONALTEMPLATE operationaltemplate = TemplateDocument.Factory.parse(OperationalTemplateTestData.CORONA_ANAMNESE.getStream()).getTemplate();
         List<WebTemplateNode> result = new OPTParser(operationaltemplate).parse().multiValued();
 
         assertNotNull(result);

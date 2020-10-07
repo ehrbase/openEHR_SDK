@@ -47,6 +47,7 @@ public class WebTemplateNode implements Serializable {
     private final Map<String, WebTemplateTerminology> termBindings = new HashMap<>();
     private List<String> dependsOn = new ArrayList<>();
     private WebTemplateAnnotation annotations;
+    private final List<String> proportionTypes = new ArrayList<>();
 
     public String getId() {
         return id;
@@ -159,6 +160,14 @@ public class WebTemplateNode implements Serializable {
 
     public WebTemplateAnnotation getAnnotations() {
         return annotations;
+    }
+
+    public void setAnnotations(WebTemplateAnnotation annotations) {
+        this.annotations = annotations;
+    }
+
+    public List<String> getProportionTypes() {
+        return proportionTypes;
     }
 
     public List<WebTemplateNode> findMatching(Predicate<WebTemplateNode> filter) {

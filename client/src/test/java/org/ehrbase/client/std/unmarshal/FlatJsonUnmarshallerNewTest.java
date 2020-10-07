@@ -44,7 +44,7 @@ public class FlatJsonUnmarshallerNewTest {
 
     @Test
     public void unmarshal() throws IOException, XmlException {
-        OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(OperationalTemplateTestData.CORONA_ANAMMNESE.getStream()).getTemplate();
+        OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(OperationalTemplateTestData.CORONA_ANAMNESE.getStream()).getTemplate();
         WebTemplate webTemplate = new Filter().filter(new OPTParser(template).parse());
 
         FlatJsonUnmarshallerNew cut = new FlatJsonUnmarshallerNew();
