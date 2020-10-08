@@ -5,12 +5,15 @@ import com.nedap.archie.rm.datastructures.ItemTree;
 import com.nedap.archie.rm.datavalues.encapsulated.DvMultimedia;
 import com.nedap.archie.rm.datavalues.quantity.datetime.DvDate;
 import com.nedap.archie.rm.datavalues.quantity.datetime.DvDateTime;
+import com.nedap.archie.rm.datavalues.quantity.datetime.DvDuration;
 import org.junit.Test;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.time.Duration;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
@@ -61,6 +64,19 @@ public class CanonicalJsonMarshallingTest {
 
         assertEquals("2020-08", dvDate.getValue().toString());
     }
+
+    @Test
+    public void MarshalDuration() {
+        DvDuration duration = new DvDuration(Duration.ofDays(30L));
+        CanonicalJson cut = new CanonicalJson();
+        String actual = cut.marshal(duration);
+        assertThat(actual).isEqualToIgnoringWhitespace("{" +
+                "  \"_type\" : \"DV_DURATION\"," +
+                "  \"value\" : \"PT720H\"" +
+                "}");
+
+    }
+
 
     @Test
     public void UnmarshalPartialDateTime() throws IOException {

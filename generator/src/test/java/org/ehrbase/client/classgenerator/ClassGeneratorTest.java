@@ -46,7 +46,7 @@ public class ClassGeneratorTest {
 
     public static final String PACKAGE_NAME = "org.ehrbase.client.classgenerator.examples";
 
-    private static final boolean WRITE_FILES = true;
+    private static final boolean WRITE_FILES = false;
 
     @Test
     public void testGenerate() throws IOException, XmlException {

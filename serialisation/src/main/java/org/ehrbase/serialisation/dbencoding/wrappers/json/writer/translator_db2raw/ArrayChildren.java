@@ -21,16 +21,16 @@ package org.ehrbase.serialisation.dbencoding.wrappers.json.writer.translator_db2
 import com.google.gson.internal.LinkedTreeMap;
 import org.ehrbase.serialisation.dbencoding.CompositionSerializer;
 
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by christian on 3/12/2018.
  */
 public class ArrayChildren {
 
-    ArrayList arrayList;
+    List arrayList;
 
-    public ArrayChildren(ArrayList value) {
+    public ArrayChildren(List value) {
         this.arrayList = value;
     }
 
@@ -43,5 +43,17 @@ public class ArrayChildren {
             }
         }
         return false;
+    }
+
+    /**
+     * check if all elements are null
+     * @return
+     */
+    public boolean isNull(){
+        for (Object entry : arrayList) {
+            if (entry != null)
+                return false;
+        }
+        return true;
     }
 }
