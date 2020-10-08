@@ -576,4 +576,63 @@ public class DBEncodeTest {
         assertEquals(feederAudit.getOriginatingSystemAudit().getSystemId(), decodedFromDB.getOriginatingSystemAudit().getSystemId());
 
     }
+
+    @Test
+    public void testEncodeTimeAsJson(){
+        String fromDB = "{\"/value\": {\"value\": \"2020-04-02T12:00Z\", \"epoch_offset\": 1585828800}, \"/$CLASS$\": \"DvDateTime\"}";
+
+        JsonElement converted = new LightRawJsonEncoder(fromDB).encodeContentAsJson("value");
+
+        assertNotNull(converted);
+
+    }
+
+    @Test
+    public void testEncodeDvTextAsJson(){
+        String fromDB = "{\n" +
+                "                      \"/$CLASS$\": \"DvText\",\n" +
+                "                      \"/$PATH$\": \"/items[at0041]/data[at0003]/events[at0002 and name/value\\u003d\\u0027Point in time\\u0027]/data[at0001]/content[openEHR-EHR-OBSERVATION.yhscn_diadem_assessment.v0 and name/value\\u003d\\u0027YHSCN - DiADeM assessment\\u0027]\",\n" +
+                "                      \"/name\": [\n" +
+                "                        {\n" +
+                "                          \"value\": \"Blood test recommendation\"\n" +
+                "                        }\n" +
+                "                      ],\n" +
+                "                      \"/value\": {\n" +
+                "                        \"value\": \"Consider Referral for Blood Test\",\n" +
+                "                        \"_type\": \"DV_TEXT\"\n" +
+                "                      }\n" +
+                "                    }";
+
+        JsonElement converted = new LightRawJsonEncoder(fromDB).encodeContentAsJson("value");
+
+        assertThat(converted.getAsJsonObject().get("_type").getAsString()).isEqualTo("DV_TEXT");
+
+        fromDB = "{\n" +
+                "                      \"/$CLASS$\": \"DvCodedText\",\n" +
+                "                      \"/$PATH$\": \"/items[at0009]/data[at0003]/events[at0002 and name/value\\u003d\\u0027Point in time\\u0027]/data[at0001]/content[openEHR-EHR-OBSERVATION.yhscn_diadem_assessment.v0 and name/value\\u003d\\u0027YHSCN - DiADeM assessment\\u0027]\",\n" +
+                "                      \"/name\": [\n" +
+                "                        {\n" +
+                "                          \"value\": \"Exclusion criteria\"\n" +
+                "                        }\n" +
+                "                      ],\n" +
+                "                      \"/value\": {\n" +
+                "                        \"value\": \"True\",\n" +
+                "                        \"_type\": \"DV_CODED_TEXT\",\n" +
+                "                        \"definingCode\": {\n" +
+                "                          \"codeString\": \"at0014\",\n" +
+                "                          \"terminologyId\": {\n" +
+                "                            \"name\": \"local\",\n" +
+                "                            \"value\": \"local\",\n" +
+                "                            \"_type\": \"TERMINOLOGY_ID\"\n" +
+                "                          },\n" +
+                "                          \"_type\": \"CODE_PHRASE\"\n" +
+                "                        }\n" +
+                "                      }\n" +
+                "                    }";
+
+
+        converted = new LightRawJsonEncoder(fromDB).encodeContentAsJson("value");
+
+        assertThat(converted.getAsJsonObject().get("_type").getAsString()).isEqualTo("DV_CODED_TEXT");
+    }
 }
