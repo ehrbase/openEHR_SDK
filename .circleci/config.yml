@@ -1004,7 +1004,7 @@ commands:
             cd ehrbase
             EHRbase_VERSION=$(mvn -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive exec:exec)
             echo ${EHRbase_VERSION}
-            java -jar application/target/application-${EHRbase_VERSION}.jar --cache.enabled=false > log
+            java -jar application/target/application-${EHRbase_VERSION}.jar --cache.enabled=true > log
 
 
   # USE THIS COMMAND W/ DOCKER EXECUTOR ONLY!!! 
