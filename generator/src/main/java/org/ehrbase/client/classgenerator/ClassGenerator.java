@@ -19,6 +19,7 @@
 
 package org.ehrbase.client.classgenerator;
 
+import com.google.common.base.CharMatcher;
 import com.nedap.archie.rm.datatypes.CodePhrase;
 import com.nedap.archie.rminfo.ArchieRMInfoLookup;
 import com.nedap.archie.rminfo.RMTypeInfo;
@@ -108,8 +109,15 @@ public class ClassGenerator {
         if (StringUtils.isBlank(name) || name.equals("_")) {
             return RandomStringUtils.randomAlphabetic(10);
         }
+        name = norwegianNormalize(name);
         String normalisedString = StringUtils.strip(StringUtils.stripAccents(name).replace("ß", "ss").replaceAll("[^A-Za-z0-9]", "_"), "_");
         return CaseUtils.toCamelCase(normalisedString, capitalizeFirstLetter, '_');
+    }
+    private static String norwegianNormalize(String s){
+        s = CharMatcher.is('æ').replaceFrom(s, "ae");
+        s = CharMatcher.is('ø').replaceFrom(s, "oe");
+        s = CharMatcher.is('å').replaceFrom(s, "aa");
+        return s;
     }
 
     public static void main(String[] args) throws IOException, XmlException {
