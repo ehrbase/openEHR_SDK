@@ -28,9 +28,9 @@ import org.ehrbase.client.std.umarshal.postprocessor.UnmarshalPostprocessor;
 import org.ehrbase.client.std.umarshal.rmunmarshaller.DefaultRMUnmarshaller;
 import org.ehrbase.client.std.umarshal.rmunmarshaller.RMUnmarshaller;
 import org.ehrbase.client.walker.Context;
-import org.ehrbase.client.walker.Walker;
 import org.ehrbase.webtemplate.model.WebTemplateNode;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -39,35 +39,35 @@ import java.util.stream.Stream;
 
 import static org.ehrbase.client.introspect.TemplateIntrospect.TERM_DIVIDER;
 
-public class FlatWalker extends Walker<Map<String, String>> {
+public class StdToCompositionWalker extends ToCompositionWalker<Map<String, String>> {
 
     public static final ArchieRMInfoLookup ARCHIE_RM_INFO_LOOKUP = ArchieRMInfoLookup.getInstance();
+
     private static final Map<Class<?>, RMUnmarshaller> UNMARSHALLER_MAP = ReflectionHelper.buildMap(RMUnmarshaller.class);
     private static final Map<Class<?>, UnmarshalPostprocessor> POSTPROCESSOR_MAP = ReflectionHelper.buildMap(UnmarshalPostprocessor.class);
 
     @Override
-    protected RMObject extractFromList(List<RMObject> child, int i) {
-        RMObject currentChild;
-        List<RMObject> childList = child;
-        if (i > 0) {
-            RMObject deepClone = deepClone(childList.get(0));
-            childList.add(deepClone);
-            currentChild = deepClone;
-        } else {
-            currentChild = childList.get(0);
-        }
-        return currentChild;
-    }
-
-    @Override
-    protected Map<String, String> extract(Context<Map<String, String>> context, WebTemplateNode child, Integer count) {
+    protected Map<String, String> extract(Context<Map<String, String>> context, WebTemplateNode child, boolean isChoice, Integer count) {
         String path = buildNamePath(context) + "/" + child.getId();
         if (count != null) {
             path = path + ":" + count;
         }
 
         String finalPath = path;
-        return context.getObjectDeque().peek().entrySet().stream().filter(e -> e.getKey().startsWith(finalPath)).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+        Map<String, String> subValues = context.getObjectDeque().peek().entrySet().stream().filter(e -> e.getKey().startsWith(finalPath)).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+        if (isChoice && !isMatchingNode(subValues, context.getNodeDeque().peek())) {
+            subValues = Collections.emptyMap();
+        }
+
+        if (!subValues.isEmpty()) {
+            return subValues;
+        } else {
+            return null;
+        }
+    }
+
+    private boolean isMatchingNode(Map<String, String> subValues, WebTemplateNode peek) {
+        return true;
     }
 
     @Override
@@ -94,14 +94,17 @@ public class FlatWalker extends Walker<Map<String, String>> {
     }
 
     @Override
-    protected int calculateSize(Context<Map<String, String>> context, Object child) {
-        return context.getObjectDeque().peek().keySet().stream()
+    protected int calculateSize(Context<Map<String, String>> context, WebTemplateNode childNode) {
+        context.getNodeDeque().push(childNode);
+        Integer count = context.getObjectDeque().peek().keySet().stream()
                 .map(s -> StringUtils.substringBetween(s, buildNamePath(context) + ":", TERM_DIVIDER))
                 .filter(StringUtils::isNotBlank)
                 .map(Integer::parseInt)
                 .sorted()
                 .reduce((first, second) -> second)
                 .orElse(0);
+        context.getNodeDeque().poll();
+        return count;
     }
 
 

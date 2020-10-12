@@ -25,7 +25,7 @@ public enum CompositionTestDataSimSDTJson {
     ALTERNATIVE_EVENTS("AlternativeEvents", "AlternativeEvents.json"),
     CORONA("Corona", "corona.json"),
     MULTI_OCCURRENCE("multi_occurrence", "multi_occurrence.json"),
-    TEST_ALL_TYPES("test_all_types", "test_all_types.json");
+    ALL_TYPES("test_all_types", "test_all_types.json");
 
 
     private final String filename;

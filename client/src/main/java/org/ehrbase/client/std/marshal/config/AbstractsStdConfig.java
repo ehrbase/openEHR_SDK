@@ -20,6 +20,7 @@
 package org.ehrbase.client.std.marshal.config;
 
 import com.nedap.archie.rm.RMObject;
+import org.apache.commons.lang3.StringUtils;
 import org.ehrbase.client.classgenerator.config.RmClassGeneratorConfig;
 import org.ehrbase.client.exception.ClientException;
 import org.ehrbase.client.reflection.ReflectionHelper;
@@ -27,7 +28,12 @@ import org.ehrbase.client.reflection.ReflectionHelper;
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 
 public abstract class AbstractsStdConfig<T extends RMObject> implements StdConfig<T> {
     private static final Map<Class<?>, RmClassGeneratorConfig> configMap = ReflectionHelper.buildMap(RmClassGeneratorConfig.class);
@@ -71,9 +77,15 @@ public abstract class AbstractsStdConfig<T extends RMObject> implements StdConfi
     }
 
 
-    protected void addValue(Map<String, Object> result, String termLoop, String propertyName, String value) {
+    protected void addValue(Map<String, Object> result, String termLoop, String propertyName, Object value) {
         if (value != null) {
-            result.put(termLoop + "|" + propertyName, value);
+            String key;
+            if (StringUtils.isNotBlank(propertyName)) {
+                key = termLoop + "|" + propertyName;
+            } else {
+                key = termLoop;
+            }
+            result.put(key, value);
         }
     }
 

@@ -60,7 +60,7 @@ public class FlatJsonMarshallerNew {
         Map<String, Object> result = new HashMap<>();
 
 
-        new FlatWalker().walk(composition, result, new Filter().filter(webTemplate));
+        new StdFromCompositionWalker().walk(composition, result, new Filter().filter(webTemplate));
 
         try {
             return OBJECT_MAPPER.writeValueAsString(result);

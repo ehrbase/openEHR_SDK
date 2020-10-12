@@ -30,7 +30,7 @@ import java.util.stream.Collectors;
 public class FlatPath {
     private final String name;
     private final String atCode;
-    private final FlatPath child;
+    private FlatPath child;
     private final Map<String, String> otherPredicates;
     private final String attributeName;
     private final boolean startWithSlash;

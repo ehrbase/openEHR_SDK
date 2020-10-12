@@ -24,10 +24,13 @@ import com.nedap.archie.rm.archetyped.Locatable;
 import com.nedap.archie.rm.archetyped.Pathable;
 import com.nedap.archie.rm.composition.Composition;
 import com.nedap.archie.rm.composition.EventContext;
+import com.nedap.archie.rm.composition.IsmTransition;
 import com.nedap.archie.rm.datastructures.Element;
+import com.nedap.archie.rm.datavalues.quantity.DvInterval;
 import com.nedap.archie.rminfo.ArchieRMInfoLookup;
 import com.nedap.archie.rminfo.RMTypeInfo;
 import org.apache.commons.lang3.StringUtils;
+import org.ehrbase.client.exception.ClientException;
 import org.ehrbase.serialisation.jsonencoding.CanonicalJson;
 import org.ehrbase.webtemplate.model.WebTemplate;
 import org.ehrbase.webtemplate.model.WebTemplateNode;
@@ -69,35 +72,33 @@ public abstract class Walker<T> {
                 } else {
                     rmType = null;
                 }
-                Object child = extractRMChild(context.getRmObjectDeque().peek(), currentNode, childNode, rmType);
-                if (child != null) {
-                    if (childNode.getMax() == 1) {
-                        T childObject = extract(context, childNode, null);
+                if (childNode.getMax() == 1) {
+                    Object child = extractRMChild(context.getRmObjectDeque().peek(), currentNode, childNode, choices.containsKey(childNode.getAqlPath()), null);
+                    T childObject = extract(context, childNode, choices.containsKey(childNode.getAqlPath()), null);
+                    if (child != null && childObject != null) {
                         context.getNodeDeque().push(childNode);
                         context.getObjectDeque().push(childObject);
                         context.getRmObjectDeque().push((RMObject) child);
                         handle(context);
-                    } else {
-
-                        int size = calculateSize(context, child);
-
-
-                        RMObject currentChild = null;
-
-                        for (int i = 0; i <= size; i++) {
-                            currentChild = extractFromList((List<RMObject>) child, i);
-                            T childObject = extract(context, childNode, i);
-
+                    }
+                } else {
+                    int size = calculateSize(context, childNode);
+                    RMObject currentChild = null;
+                    for (int i = 0; i <= size; i++) {
+                        currentChild = (RMObject) extractRMChild(context.getRmObjectDeque().peek(), currentNode, childNode, choices.containsKey(childNode.getAqlPath()), i);
+                        T childObject = extract(context, childNode, choices.containsKey(childNode.getAqlPath()), i);
+                        if (currentChild != null && childObject != null) {
                             context.getNodeDeque().push(childNode);
                             context.getObjectDeque().push(childObject);
                             context.getRmObjectDeque().push(currentChild);
                             context.getCountMap().put(childNode, i);
                             handle(context);
                         }
-
                     }
+
                 }
             }
+
         }
         postHandle(context);
         context.getRmObjectDeque().remove();
@@ -105,55 +106,21 @@ public abstract class Walker<T> {
         context.getObjectDeque().remove();
     }
 
-    protected abstract RMObject extractFromList(List<RMObject> child, int i);
 
-
-    protected Object extractRMChild(RMObject currentRM, WebTemplateNode currentNode, WebTemplateNode childNode, String rmType) {
-        final String relativeAql = StringUtils.removeEnd(StringUtils.removeStart(childNode.getAqlPath(), currentNode.getAqlPath()), "/");
-        Object child;
-
-        FlatPath childPath = new FlatPath(relativeAql);
-        child = ((Pathable) currentRM).itemsAtPath(childPath.format(false));
-
-        if (child == null || ((List) child).isEmpty()) {
-            child = ((Pathable) currentRM).itemAtPath(childPath.format(false));
-        }
-
-        if (StringUtils.isNotBlank(childPath.findOtherPredicate("name/value")) && child instanceof List && Locatable.class.isAssignableFrom(ARCHIE_RM_INFO_LOOKUP.getClass(childNode.getRmType()))) {
-            child = ((List) child).stream()
-                    .filter(c -> childPath.findOtherPredicate("name/value").equals(((Locatable) c).getNameAsString()))
-                    .collect(Collectors.toList());
-            // if name not found return null
-            if (((List<?>) child).isEmpty()) {
-                child = null;
-            }
-        }
-
-        if (childNode.getMax() == 1 && child instanceof List) {
-            child = ((List) child).get(0);
-        }
-
-        if (child instanceof Element && !childNode.getRmType().equals("ELEMENT")) {
-            child = ((Element) child).getValue();
-        }
-        if (StringUtils.isNotBlank(rmType)) {
-            System.out.println("");
-        }
-        return child;
-    }
+    protected abstract Object extractRMChild(RMObject currentRM, WebTemplateNode currentNode, WebTemplateNode childNode, boolean isChoice, Integer count);
 
     protected boolean visitChildren(WebTemplateNode node) {
         RMTypeInfo typeInfo = ARCHIE_RM_INFO_LOOKUP.getTypeInfo(node.getRmType());
-        return typeInfo != null && (Locatable.class.isAssignableFrom(typeInfo.getJavaClass()) || EventContext.class.isAssignableFrom(typeInfo.getJavaClass()));
+        return typeInfo != null && (Locatable.class.isAssignableFrom(typeInfo.getJavaClass()) || EventContext.class.isAssignableFrom(typeInfo.getJavaClass()) || IsmTransition.class.isAssignableFrom(typeInfo.getJavaClass()) || DvInterval.class.isAssignableFrom(typeInfo.getJavaClass()));
     }
 
-    protected abstract T extract(Context<T> context, WebTemplateNode child, Integer i);
+    protected abstract T extract(Context<T> context, WebTemplateNode child, boolean isChoice, Integer i);
 
     protected abstract void preHandle(Context<T> context);
 
     protected abstract void postHandle(Context<T> context);
 
-    protected abstract int calculateSize(Context<T> context, Object child);
+    protected abstract int calculateSize(Context<T> context, WebTemplateNode childNode);
 
     protected RMObject deepClone(RMObject rmObject) {
         CanonicalJson canonicalXML = new CanonicalJson();
@@ -174,5 +141,90 @@ public abstract class Walker<T> {
             }
         }
         return sb.toString();
+    }
+
+    protected class ItemExtractor {
+        private RMObject currentRM;
+        private WebTemplateNode currentNode;
+        private WebTemplateNode childNode;
+        private boolean isChoice;
+        private String relativeAql;
+        private Object child;
+        private String parentAql;
+        private Object parent;
+
+        public ItemExtractor(RMObject currentRM, WebTemplateNode currentNode, WebTemplateNode childNode, boolean isChoice) {
+            this.currentRM = currentRM;
+            this.currentNode = currentNode;
+            this.childNode = childNode;
+            this.isChoice = isChoice;
+        }
+
+        public FlatPath getRelativeAql() {
+            return new FlatPath(relativeAql);
+        }
+
+        public Object getChild() {
+            return child;
+        }
+
+        public ItemExtractor invoke() {
+            relativeAql = StringUtils.removeEnd(StringUtils.removeStart(childNode.getAqlPath(), currentNode.getAqlPath()), "/");
+            FlatPath childPath = new FlatPath(relativeAql);
+            parentAql = StringUtils.removeEnd(childPath.format(false), childPath.format(false).substring(childPath.format(false).lastIndexOf("/")));
+            if (StringUtils.isBlank(parentAql)) {
+                parentAql = "/";
+            }
+
+            if (currentRM instanceof Pathable) {
+                child = ((Pathable) currentRM).itemsAtPath(childPath.format(false));
+                if (child == null || ((List) child).isEmpty()) {
+                    child = ((Pathable) currentRM).itemAtPath(childPath.format(false));
+                }
+                parent = ((Pathable) currentRM).itemAtPath(parentAql);
+            } else if (currentRM instanceof DvInterval) {
+                child = relativeAql.contains("lower") ? ((DvInterval<?>) currentRM).getLower() : ((DvInterval<?>) currentRM).getUpper();
+                parent = currentRM;
+            } else {
+                throw new ClientException(String.format("Can not extract from class %s", currentRM.getClass().getSimpleName()));
+            }
+
+
+            if (StringUtils.isNotBlank(childPath.findOtherPredicate("name/value")) && child instanceof List && Locatable.class.isAssignableFrom(ARCHIE_RM_INFO_LOOKUP.getClass(childNode.getRmType()))) {
+                child = ((List) child).stream()
+                        .filter(c -> childPath.findOtherPredicate("name/value").equals(((Locatable) c).getNameAsString()))
+                        .collect(Collectors.toList());
+                // if name not found return null
+                if (((List<?>) child).isEmpty()) {
+                    child = null;
+                }
+            }
+            if (isChoice && child instanceof List) {
+                child = ((List) child).stream()
+                        .filter(c -> ARCHIE_RM_INFO_LOOKUP.getTypeInfo(c.getClass()).getRmName().equals(childNode.getRmType()))
+                        .collect(Collectors.toList());
+                // if rmType not found return null
+                if (((List<?>) child).isEmpty()) {
+                    child = null;
+                }
+            }
+
+            if (childNode.getMax() == 1 && child instanceof List) {
+                child = ((List) child).get(0);
+            }
+
+            if (child instanceof Element && !childNode.getRmType().equals("ELEMENT")) {
+                child = ((Element) child).getValue();
+            }
+            return this;
+        }
+
+        public FlatPath getParentAql() {
+            return new FlatPath(parentAql);
+        }
+
+        public Object getParent() {
+            return parent;
+        }
     }
 }

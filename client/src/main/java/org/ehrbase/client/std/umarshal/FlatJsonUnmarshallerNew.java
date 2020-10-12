@@ -87,7 +87,7 @@ public class FlatJsonUnmarshallerNew {
 
             Composition generate = (Composition) OPT_SKELETON_BUILDER.generate(operationalTemplate);
 
-            new FlatWalker().walk(generate, currentValues, introspect);
+            new StdToCompositionWalker().walk(generate, currentValues, introspect);
             return NORMALIZER.normalize(generate);
         } catch (JsonProcessingException e) {
             throw new ClientException(e.getMessage());

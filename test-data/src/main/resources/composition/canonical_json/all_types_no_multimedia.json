@@ -19,7 +19,7 @@
   "archetype_node_id": "openEHR-EHR-COMPOSITION.test_all_types.v1",
   "uid": {
     "_type": "OBJECT_VERSION_ID",
-    "value": "__THIS_SHOULD_BE_MODIFIED_BY_THE_TEST_::piri.ehrscape.com::1"
+    "value": "bb015b91-68c0-460f-a458-8ef06869b53c::piri.ehrscape.com::1"
   },
   "language": {
     "_type": "CODE_PHRASE",
@@ -66,7 +66,7 @@
     "_type": "EVENT_CONTEXT",
     "start_time": {
       "_type": "DV_DATE_TIME",
-      "value": "2019-01-28T21:22:49,294+00:00"
+      "value": "2019-01-14T18:36:49,294+00:00"
     },
     "setting": {
       "_type": "DV_CODED_TEXT",
@@ -310,6 +310,42 @@
                   "value": {
                     "_type": "DV_DURATION",
                     "value": "PT30M"
+                  }
+                },
+                {
+                  "_type": "ELEMENT",
+                  "name": {
+                    "_type": "DV_TEXT",
+                    "value": "duration any"
+                  },
+                  "archetype_node_id": "at0018",
+                  "value": {
+                    "_type": "DV_DURATION",
+                    "value": "P1Y2M10DT2H30M"
+                  }
+                },
+                {
+                  "_type": "ELEMENT",
+                  "name": {
+                    "_type": "DV_TEXT",
+                    "value": "multimedia any"
+                  },
+                  "archetype_node_id": "at0019",
+                  "value": {
+                    "_type": "DV_MULTIMEDIA",
+                    "uri": {
+                      "_type": "DV_URI",
+                      "value": "www.iana.org"
+                    },
+                    "media_type": {
+                      "_type": "CODE_PHRASE",
+                      "terminology_id": {
+                        "_type": "TERMINOLOGY_ID",
+                        "value": "IANA_media-types"
+                      },
+                      "code_string": "image/jpeg"
+                    },
+                    "size": 177628
                   }
                 },
                 {

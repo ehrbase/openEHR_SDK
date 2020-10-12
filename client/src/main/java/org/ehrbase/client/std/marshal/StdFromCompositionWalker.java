@@ -26,7 +26,6 @@ import org.ehrbase.client.std.marshal.config.DefaultStdConfig;
 import org.ehrbase.client.std.marshal.config.StdConfig;
 import org.ehrbase.client.std.marshal.postprocessor.MarshalPostprocessor;
 import org.ehrbase.client.walker.Context;
-import org.ehrbase.client.walker.Walker;
 import org.ehrbase.webtemplate.model.WebTemplateNode;
 
 import java.util.List;
@@ -35,19 +34,15 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class FlatWalker extends Walker<Map<String, Object>> {
+public class StdFromCompositionWalker extends FromCompositionWalker<Map<String, Object>> {
 
     private static final Map<Class<? extends RMObject>, StdConfig> configMap = ReflectionHelper.buildMap(StdConfig.class);
     private static final Map<Class<? extends RMObject>, MarshalPostprocessor> POSTPROCESSOR_MAP = ReflectionHelper.buildMap(MarshalPostprocessor.class);
     public static final DefaultStdConfig DEFAULT_STD_CONFIG = new DefaultStdConfig();
 
-    @Override
-    protected RMObject extractFromList(List<RMObject> child, int i) {
-        return child.get(i);
-    }
 
     @Override
-    protected Map<String, Object> extract(Context<Map<String, Object>> context, WebTemplateNode child, Integer i) {
+    protected Map<String, Object> extract(Context<Map<String, Object>> context, WebTemplateNode child, boolean isChoice, Integer i) {
 
         return context.getObjectDeque().peek();
     }
@@ -77,8 +72,4 @@ public class FlatWalker extends Walker<Map<String, Object>> {
         postprocessor.forEach(p -> p.process(buildNamePath(context), context.getRmObjectDeque().peek(), context.getObjectDeque().peek()));
     }
 
-    @Override
-    protected int calculateSize(Context<Map<String, Object>> context, Object child) {
-        return ((List) child).size() - 1;
-    }
 }
