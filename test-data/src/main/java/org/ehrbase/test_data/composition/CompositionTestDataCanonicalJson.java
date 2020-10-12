@@ -44,6 +44,7 @@ public enum CompositionTestDataCanonicalJson {
     SUBJECT_PARTY_RELATED("Nested subject PARTY_RELATED", "compo_with_nested_party_related.json"),
     NESTED_PROVIDER("Nested provider PARTY_IDENTIFIED", "compo_with_nested_provider.json"),
     DATE_TIME_TESTS("Composition with multiple partial and full date/time", "datetime_tests.json"),
+    DURATION_TESTS("Composition with multiple DvDuration", "duration_tests.json"),
     VIROLOGY_FINDING_WITH_SPECIMEN("virology finding with specimen", "virology_finding_with_specimen.json");
 
 
