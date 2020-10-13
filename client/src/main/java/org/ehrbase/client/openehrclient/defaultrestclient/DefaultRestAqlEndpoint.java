@@ -94,7 +94,7 @@ public class DefaultRestAqlEndpoint implements AqlEndpoint {
                     .addHeader(HttpHeaders.ACCEPT, ACCEPT_APPLICATION_JSON)
                     .bodyString(OBJECT_MAPPER.writeValueAsString(qMap), ContentType.APPLICATION_JSON)
                     .execute().returnResponse();
-            checkStatus(response, HttpStatus.SC_OK, HttpStatus.SC_CREATED, HttpStatus.SC_NO_CONTENT);
+            defaultRestClient.checkStatus(response, HttpStatus.SC_OK, HttpStatus.SC_CREATED, HttpStatus.SC_NO_CONTENT);
             String value = EntityUtils.toString(response.getEntity());
             JsonObject asJsonObject = JsonParser.parseString(value).getAsJsonObject();
             JsonArray rows = asJsonObject.get("rows").getAsJsonArray();

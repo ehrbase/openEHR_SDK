@@ -66,7 +66,7 @@ public class DefaultRestTemplateEndpoint implements TemplateEndpoint {
                     .execute()
                     .returnResponse();
 
-            DefaultRestClient.checkStatus(httpResponse, HttpStatus.SC_OK, HttpStatus.SC_NOT_FOUND);
+            defaultRestClient.checkStatus(httpResponse, HttpStatus.SC_OK, HttpStatus.SC_NOT_FOUND);
             if (httpResponse.getStatusLine().getStatusCode() == HttpStatus.SC_NOT_FOUND) {
                 return Optional.empty();
             }
@@ -107,7 +107,7 @@ public class DefaultRestTemplateEndpoint implements TemplateEndpoint {
                     .addHeader(HttpHeaders.ACCEPT, ACCEPT_APPLICATION_JSON).bodyString(
                             operationaltemplate.xmlText(opts), ContentType.APPLICATION_XML)
                     .execute().returnResponse();
-            DefaultRestClient.checkStatus(response, HttpStatus.SC_OK, HttpStatus.SC_CREATED, HttpStatus.SC_NO_CONTENT);
+            defaultRestClient.checkStatus(response, HttpStatus.SC_OK, HttpStatus.SC_CREATED, HttpStatus.SC_NO_CONTENT);
             Header location = response.getFirstHeader(HttpHeaders.LOCATION);
             return location.getValue().substring(location.getValue().lastIndexOf('/') + 1);
         } catch (IOException e) {
