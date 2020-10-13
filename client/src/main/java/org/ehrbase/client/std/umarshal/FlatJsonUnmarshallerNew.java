@@ -39,6 +39,7 @@ import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -87,7 +88,10 @@ public class FlatJsonUnmarshallerNew {
 
             Composition generate = (Composition) OPT_SKELETON_BUILDER.generate(operationalTemplate);
 
-            new StdToCompositionWalker().walk(generate, currentValues, introspect);
+            StdToCompositionWalker walker = new StdToCompositionWalker();
+            walker.walk(generate, currentValues, introspect);
+            consumedPath = walker.getConsumedPaths();
+
             return NORMALIZER.normalize(generate);
         } catch (JsonProcessingException e) {
             throw new ClientException(e.getMessage());
@@ -96,5 +100,14 @@ public class FlatJsonUnmarshallerNew {
 
     }
 
+    public Set<String> getUnconsumed() {
+        if (currentValues != null && consumedPath != null) {
+            HashSet<String> set = new HashSet<>(currentValues.keySet());
+            set.removeAll(consumedPath);
+            return set;
+        } else {
+            return Collections.emptySet();
+        }
+    }
 
 }

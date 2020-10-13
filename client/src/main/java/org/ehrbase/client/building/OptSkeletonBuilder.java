@@ -68,6 +68,7 @@ import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -268,7 +269,7 @@ public class OptSkeletonBuilder {
                                 value = new ArrayList<>();
                                 Class unwarap = unwarap(f);
                                 ((List) value).add(unwarap.getConstructor().newInstance());
-                            } else if (!f.getType().isPrimitive() && !f.getType().equals(String.class)) {
+                            } else if (!f.getType().isPrimitive() && !Modifier.isAbstract(f.getType().getModifiers()) && !f.getType().equals(String.class)) {
                                 value = f.getType().getConstructor().newInstance();
                             } else {
                                 value = null;
@@ -309,7 +310,15 @@ public class OptSkeletonBuilder {
                     RM_CREATOR.addElementToListOrSetSingleValues(obj, e.getKey(), v);
                 }
             } catch (Exception e2) {
-                log.warn(e2.getMessage());
+
+                if (
+                    //Known and irrelevant errors
+                        !e2.getMessage().startsWith("Attribute template_id") &&
+                                !e2.getMessage().startsWith("Attribute archetype_node_id") &&
+                                !e2.getMessage().startsWith("Attribute name")
+                ) {
+                    log.warn(e2.getMessage());
+                }
             }
         }
 

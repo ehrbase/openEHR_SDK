@@ -66,12 +66,7 @@ public abstract class Walker<T> {
 
             Map<String, List<WebTemplateNode>> choices = currentNode.getChoicesInChildren();
             for (WebTemplateNode childNode : currentNode.getChildren()) {
-                final String rmType;
-                if (choices.containsKey(childNode.getAqlPath())) {
-                    rmType = childNode.getRmType();
-                } else {
-                    rmType = null;
-                }
+
                 if (childNode.getMax() == 1) {
                     Object child = extractRMChild(context.getRmObjectDeque().peek(), currentNode, childNode, choices.containsKey(childNode.getAqlPath()), null);
                     T childObject = extract(context, childNode, choices.containsKey(childNode.getAqlPath()), null);

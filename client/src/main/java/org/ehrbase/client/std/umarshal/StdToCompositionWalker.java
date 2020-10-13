@@ -20,20 +20,26 @@
 package org.ehrbase.client.std.umarshal;
 
 import com.nedap.archie.rm.RMObject;
+import com.nedap.archie.rm.composition.Composition;
 import com.nedap.archie.rminfo.ArchieRMInfoLookup;
 import org.apache.commons.lang3.ClassUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.ehrbase.client.reflection.ReflectionHelper;
+import org.ehrbase.client.std.marshal.config.DefaultStdConfig;
+import org.ehrbase.client.std.marshal.config.StdConfig;
 import org.ehrbase.client.std.umarshal.postprocessor.UnmarshalPostprocessor;
 import org.ehrbase.client.std.umarshal.rmunmarshaller.DefaultRMUnmarshaller;
 import org.ehrbase.client.std.umarshal.rmunmarshaller.RMUnmarshaller;
 import org.ehrbase.client.walker.Context;
+import org.ehrbase.webtemplate.model.WebTemplate;
 import org.ehrbase.webtemplate.model.WebTemplateNode;
 
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -46,16 +52,27 @@ public class StdToCompositionWalker extends ToCompositionWalker<Map<String, Stri
     private static final Map<Class<?>, RMUnmarshaller> UNMARSHALLER_MAP = ReflectionHelper.buildMap(RMUnmarshaller.class);
     private static final Map<Class<?>, UnmarshalPostprocessor> POSTPROCESSOR_MAP = ReflectionHelper.buildMap(UnmarshalPostprocessor.class);
 
+    private static final Map<Class<? extends RMObject>, StdConfig> configMap = ReflectionHelper.buildMap(StdConfig.class);
+    public static final DefaultStdConfig DEFAULT_STD_CONFIG = new DefaultStdConfig();
+
+
+    private Set<String> consumedPaths;
+
+    @Override
+    public void walk(Composition composition, Map<String, String> object, WebTemplate webTemplate) {
+        consumedPaths = new HashSet<>();
+        super.walk(composition, object, webTemplate);
+    }
+
     @Override
     protected Map<String, String> extract(Context<Map<String, String>> context, WebTemplateNode child, boolean isChoice, Integer count) {
-        String path = buildNamePath(context) + "/" + child.getId();
-        if (count != null) {
-            path = path + ":" + count;
-        }
 
-        String finalPath = path;
-        Map<String, String> subValues = context.getObjectDeque().peek().entrySet().stream().filter(e -> e.getKey().startsWith(finalPath)).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-        if (isChoice && !isMatchingNode(subValues, context.getNodeDeque().peek())) {
+        context.getNodeDeque().push(child);
+        String path = buildNamePath(context);
+        context.getNodeDeque().remove();
+
+        Map<String, String> subValues = context.getObjectDeque().peek().entrySet().stream().filter(e -> e.getKey().startsWith(path)).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+        if (isChoice && !isMatchingNode(subValues, context, child)) {
             subValues = Collections.emptyMap();
         }
 
@@ -66,8 +83,25 @@ public class StdToCompositionWalker extends ToCompositionWalker<Map<String, Stri
         }
     }
 
-    private boolean isMatchingNode(Map<String, String> subValues, WebTemplateNode peek) {
-        return true;
+    private boolean isMatchingNode(Map<String, String> subValues, Context<Map<String, String>> context, WebTemplateNode child) {
+
+        if (visitChildren(child)) {
+            for (WebTemplateNode n : child.getChildren()) {
+                context.getNodeDeque().push(n);
+                String path = buildNamePath(context);
+                context.getNodeDeque().remove();
+                subValues = subValues.entrySet().stream()
+                        .filter(e -> !e.getKey().startsWith(path))
+                        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+            }
+
+            return subValues.isEmpty();
+        } else {
+            // End Nodes witch are Choice always have unique flat paths
+            return true;
+        }
+
+
     }
 
     @Override
@@ -77,6 +111,7 @@ public class StdToCompositionWalker extends ToCompositionWalker<Map<String, Stri
         if (!visitChildren(context.getNodeDeque().peek())) {
             RMUnmarshaller rmUnmarshaller = UNMARSHALLER_MAP.getOrDefault(context.getRmObjectDeque().peek().getClass(), new DefaultRMUnmarshaller());
             rmUnmarshaller.handle(buildNamePath(context), context.getRmObjectDeque().peek(), context.getObjectDeque().peek());
+            consumedPaths.addAll(rmUnmarshaller.getConsumedPaths());
         }
     }
 
@@ -89,7 +124,7 @@ public class StdToCompositionWalker extends ToCompositionWalker<Map<String, Stri
                 .collect(Collectors.toList());
         postprocessor.forEach(p -> {
             p.process(buildNamePath(context), context.getRmObjectDeque().peek(), context.getObjectDeque().peek());
-            //  consumedPath.addAll(p.getConsumedPaths());
+            consumedPaths.addAll(p.getConsumedPaths());
         });
     }
 
@@ -107,5 +142,8 @@ public class StdToCompositionWalker extends ToCompositionWalker<Map<String, Stri
         return count;
     }
 
+    public Set<String> getConsumedPaths() {
+        return consumedPaths;
+    }
 
 }

@@ -50,8 +50,7 @@ public class PartyIdentifiedStdConfig extends AbstractsStdConfig<PartyIdentified
         addValue(result, currentTerm, "name", rmObject.getName());
         addValue(result, currentTerm, "id", Optional.of(rmObject).map(PartyProxy::getExternalRef).map(ObjectRef::getId).map(ObjectId::getValue).orElse(null));
         addValue(result, currentTerm, "id_namespace", Optional.of(rmObject).map(PartyProxy::getExternalRef).map(ObjectRef::getNamespace).orElse(null));
-        addValue(result, currentTerm, "id_namespace", Optional.of(rmObject).map(PartyProxy::getExternalRef).map(ObjectRef::getNamespace).orElse(null));
-        return result;
+       return result;
     }
 
     /**
