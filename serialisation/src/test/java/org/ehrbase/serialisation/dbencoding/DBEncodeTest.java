@@ -316,6 +316,33 @@ public class DBEncodeTest {
     }
 
     @Test
+    public void testDurationEncodeDecode() throws IOException {
+        Composition composition =  new CanonicalJson().unmarshal(IOUtils.toString(CompositionTestDataCanonicalJson.DURATION_TESTS.getStream(), UTF_8), Composition.class);
+
+        assertNotNull(composition);
+
+        CompositionSerializer compositionSerializerRawJson = new CompositionSerializer();
+
+        String db_encoded = compositionSerializerRawJson.dbEncode(composition);
+        assertNotNull(db_encoded);
+
+        JsonElement converted = new LightRawJsonEncoder(db_encoded).encodeContentAsJson("composition");
+
+        //see if this can be interpreted by Archie
+        Composition composition2 = new CanonicalJson().unmarshal(converted.toString(), Composition.class);
+
+        assertNotNull(composition2);
+
+        String dvtestPrefix = "/content[openEHR-EHR-OBSERVATION.test_all_types.v1]/data[at0001]/events[at0002]/data[at0003]";
+
+        assertEquals("P12DT23H51M59S", composition2.itemsAtPath(dvtestPrefix+"/items[at0010.1]/value/value").get(0).toString());
+        assertEquals("P10Y1M12DT23H51M59S", composition2.itemsAtPath(dvtestPrefix+"/items[at0010.2]/value/value").get(0).toString());
+        //not yet working as of 12.10.20
+//        assertEquals("-P10Y10DT12H20S", composition2.itemsAtPath(dvtestPrefix+"/items[at0010.3]/value/value").get(0).toString());
+
+    }
+
+    @Test
     public void testNestedLanguageSubjectPartyIdentified() throws IOException {
         Composition composition = new CanonicalJson().unmarshal(IOUtils.toString(CompositionTestDataCanonicalJson.SUBJECT_PARTY_IDENTIFIED.getStream(), UTF_8),Composition.class);
 

@@ -1,13 +1,11 @@
-package org.ehrbase.client.classgenerator.examples.shareddefinition;
+package org.ehrbase.client.classgenerator.examples.befundderblutgasanalysecomposition.definition;
 
 import org.ehrbase.client.classgenerator.EnumValueSet;
 
-public enum CategoryDefiningcode implements EnumValueSet {
-  EVENT("event", "event", "openehr", "433"),
+public enum UntersuchterAnalytDefiningcode4 implements EnumValueSet {
+  OXYGEN_SATURATION_IN_ARTERIAL_BLOOD("Oxygen saturation in Arterial blood", null, "LOINC", "2708-6"),
 
-  EPISODIC("episodic", "episodic", "openehr", "435"),
-
-  PERSISTENT("persistent", "persistent", "openehr", "431");
+  OXYGEN_SATURATION_IN_BLOOD("Oxygen saturation in Blood", null, "LOINC", "20564-1");
 
   private String value;
 
@@ -17,7 +15,8 @@ public enum CategoryDefiningcode implements EnumValueSet {
 
   private String code;
 
-  CategoryDefiningcode(String value, String description, String terminologyId, String code) {
+  UntersuchterAnalytDefiningcode4(String value, String description, String terminologyId,
+      String code) {
     this.value = value;
     this.description = description;
     this.terminologyId = terminologyId;

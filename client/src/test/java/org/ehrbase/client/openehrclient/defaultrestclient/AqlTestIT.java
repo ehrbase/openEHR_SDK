@@ -30,7 +30,13 @@ import org.apache.commons.io.IOUtils;
 import org.assertj.core.groups.Tuple;
 import org.ehrbase.client.Integration;
 import org.ehrbase.client.TestData;
+import org.ehrbase.client.aql.condition.Condition;
+import org.ehrbase.client.aql.containment.Containment;
+import org.ehrbase.client.aql.field.EhrFields;
+import org.ehrbase.client.aql.field.NativeSelectAqlField;
+import org.ehrbase.client.aql.parameter.Parameter;
 import org.ehrbase.client.aql.parameter.ParameterValue;
+import org.ehrbase.client.aql.query.EntityQuery;
 import org.ehrbase.client.aql.query.Query;
 import org.ehrbase.client.aql.record.Record2;
 import org.ehrbase.client.classgenerator.examples.coronaanamnesecomposition.CoronaAnamneseComposition;
@@ -392,6 +398,43 @@ public class AqlTestIT {
                         new Tuple("Nicht vorhanden", "Durchfall")
                 );
 
+
+    }
+
+    @Test
+    public void testExecute12() {
+
+        UUID ehr = openEhrClient.ehrEndpoint().createEhr();
+
+        openEhrClient.compositionEndpoint(ehr).mergeCompositionEntity(TestData.buildEhrbaseBloodPressureSimpleDeV0());
+
+        EhrbaseBloodPressureSimpleDeV0Composition pressureSimple1 = TestData.buildEhrbaseBloodPressureSimpleDeV0();
+        pressureSimple1.getBloodPressureTrainingSample().get(0).setSystolicMagnitude(1.1);
+        openEhrClient.compositionEndpoint(ehr).mergeCompositionEntity(pressureSimple1);
+
+        EhrbaseBloodPressureSimpleDeV0Composition pressureSimple2 = TestData.buildEhrbaseBloodPressureSimpleDeV0();
+        pressureSimple2.getBloodPressureTrainingSample().get(0).setSystolicMagnitude(1.1);
+        openEhrClient.compositionEndpoint(ehr).mergeCompositionEntity(pressureSimple2);
+
+        Containment observationContainment = new Containment("OBSERVATION");
+
+        NativeSelectAqlField<Double> magnitudeField = new NativeSelectAqlField<>(observationContainment, "/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/magnitude", Double.class);
+        EntityQuery<Record2<UUID, Double>> entityQuery = Query.buildEntityQuery(
+                observationContainment,
+                EhrFields.EHR_ID(),
+                magnitudeField
+        );
+
+        Parameter<UUID> ehrIdParameter = entityQuery.buildParameter();
+        entityQuery.where(
+                Condition.equal(EhrFields.EHR_ID(), ehrIdParameter)
+                        .and(Condition.equal(magnitudeField, 1.1d))
+        );
+
+        List<Record2<UUID, Double>> result = openEhrClient.aqlEndpoint().execute(entityQuery, ehrIdParameter.setValue(ehr));
+        assertThat(result)
+                .isNotNull()
+                .size().isEqualTo(2);
 
     }
 }

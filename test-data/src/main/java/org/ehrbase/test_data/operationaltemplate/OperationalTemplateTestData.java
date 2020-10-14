@@ -38,7 +38,8 @@ public enum OperationalTemplateTestData {
     DIAGNOSE("Diagnose", "Diagnose.opt", "Diagnose"),
     OPEN_E_REACT_CARE("open_eREACT-Care", "open_eREACT-Care.opt", "open_eREACT-Care"),
     SCHWANGERSCHAFTSSTATUS("Schwangerschaftsstatus", "Schwangerschaftsstatus.opt", "Schwangerschaftsstatus"),
-    VIROLOGY_FINDING("Virologischer Befund", "Virologischer_Befund.opt", "Virologischer Befund");
+    VIROLOGY_FINDING("Virologischer Befund", "Virologischer_Befund.opt", "Virologischer Befund"),
+    BEFUND_DER_BLUTGASANALYSE("Befund der Blutgasanalyse", "Befund_der_Blutgasanalyse.opt", "Befund der Blutgasanalyse");
 
     private final String filename;
     private final String templateId;
