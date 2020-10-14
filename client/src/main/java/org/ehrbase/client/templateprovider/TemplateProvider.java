@@ -17,7 +17,8 @@
 
 package org.ehrbase.client.templateprovider;
 
-import org.ehrbase.client.introspect.TemplateIntrospect;
+import org.ehrbase.webtemplate.model.WebTemplate;
+import org.ehrbase.webtemplate.parser.OPTParser;
 import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
 
 import java.util.Optional;
@@ -26,7 +27,7 @@ public interface TemplateProvider {
 
     Optional<OPERATIONALTEMPLATE> find(String templateId);
 
-    default Optional<TemplateIntrospect> buildIntrospect(String templateId) {
-        return find(templateId).map(TemplateIntrospect::new);
+    default Optional<WebTemplate> buildIntrospect(String templateId) {
+        return find(templateId).map(t -> new OPTParser(t).parse());
     }
 }

@@ -48,7 +48,7 @@ public class FlatJsonTest {
 
         String expected = IOUtils.toString(CompositionTestDataSimSDTJson.CORONA.getStream(), StandardCharsets.UTF_8);
 
-        compere(actual, expected, c -> true, c1 -> true);
+        compere(actual, expected);
     }
 
 }

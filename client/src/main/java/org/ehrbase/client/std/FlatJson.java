@@ -22,16 +22,16 @@ package org.ehrbase.client.std;
 import com.nedap.archie.rm.RMObject;
 import com.nedap.archie.rm.composition.Composition;
 import org.ehrbase.client.exception.ClientException;
-import org.ehrbase.client.introspect.TemplateIntrospect;
 import org.ehrbase.client.std.marshal.FlatJsonMarshaller;
 import org.ehrbase.client.std.umarshal.FlatJsonUnmarshaller;
 import org.ehrbase.serialisation.RMDataFormat;
+import org.ehrbase.webtemplate.model.WebTemplate;
 import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
 
 public class FlatJson implements RMDataFormat {
 
     private final OPERATIONALTEMPLATE operationaltemplate;
-    private final TemplateIntrospect templateIntrospect;
+    private final WebTemplate templateIntrospect;
     private final FlatJsonMarshaller flatJsonMarshaller;
     private final FlatJsonUnmarshaller flatJsonUnmarshaller;
 
@@ -41,14 +41,14 @@ public class FlatJson implements RMDataFormat {
 
         flatJsonUnmarshaller = new FlatJsonUnmarshaller();
         templateIntrospect = flatJasonProvider.getTemplateProvider().buildIntrospect(templateId).orElseThrow(() -> new ClientException(String.format("Template %s not found", templateId)));
-        flatJsonMarshaller = new FlatJsonMarshaller(templateIntrospect);
+        flatJsonMarshaller = new FlatJsonMarshaller();
 
     }
 
     @Override
     public String marshal(RMObject rmObject) {
         if (rmObject instanceof Composition) {
-            return flatJsonMarshaller.toFlatJson((Composition) rmObject);
+            return flatJsonMarshaller.toFlatJson((Composition) rmObject, templateIntrospect);
         } else {
             throw new ClientException(String.format("Class %s not supported in flat format", rmObject.getClass().getSimpleName()));
         }

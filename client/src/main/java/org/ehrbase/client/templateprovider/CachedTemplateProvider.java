@@ -17,7 +17,8 @@
 
 package org.ehrbase.client.templateprovider;
 
-import org.ehrbase.client.introspect.TemplateIntrospect;
+import org.ehrbase.webtemplate.model.WebTemplate;
+import org.ehrbase.webtemplate.parser.OPTParser;
 import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
 
 import javax.cache.Cache;
@@ -30,7 +31,7 @@ public class CachedTemplateProvider implements TemplateProvider {
 
     private final TemplateProvider rootTemplateProvider;
     private final Cache<String, OPERATIONALTEMPLATE> templateCache;
-    private final Cache<String, TemplateIntrospect> introspectCache;
+    private final Cache<String, WebTemplate> introspectCache;
 
     /**
      * @param rootTemplateProvider The warped {@link TemplateProvider}
@@ -50,7 +51,7 @@ public class CachedTemplateProvider implements TemplateProvider {
      * @param templateCache        The {@link Cache} which is used for caching the templates.
      * @param introspectCache      The {@link Cache} which is used for caching the templates.
      */
-    public CachedTemplateProvider(TemplateProvider rootTemplateProvider, Cache<String, OPERATIONALTEMPLATE> templateCache, Cache<String, TemplateIntrospect> introspectCache) {
+    public CachedTemplateProvider(TemplateProvider rootTemplateProvider, Cache<String, OPERATIONALTEMPLATE> templateCache, Cache<String, WebTemplate> introspectCache) {
         this.rootTemplateProvider = rootTemplateProvider;
         this.templateCache = templateCache;
         this.introspectCache = introspectCache;
@@ -69,10 +70,10 @@ public class CachedTemplateProvider implements TemplateProvider {
     }
 
     @Override
-    public Optional<TemplateIntrospect> buildIntrospect(String templateId) {
-        TemplateIntrospect templateIntrospect = introspectCache.get(templateId);
+    public Optional<WebTemplate> buildIntrospect(String templateId) {
+        WebTemplate templateIntrospect = introspectCache.get(templateId);
         if (templateIntrospect == null) {
-            templateIntrospect = find(templateId).map(TemplateIntrospect::new).orElse(null);
+            templateIntrospect = find(templateId).map(t -> new OPTParser(t).parse()).orElse(null);
         }
 
         return Optional.ofNullable(templateIntrospect);
