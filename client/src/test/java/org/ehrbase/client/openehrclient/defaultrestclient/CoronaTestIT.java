@@ -25,8 +25,10 @@ import org.apache.commons.io.IOUtils;
 import org.assertj.core.groups.Tuple;
 import org.ehrbase.client.TestData;
 import org.ehrbase.client.aql.condition.Condition;
+import org.ehrbase.client.aql.containment.Containment;
 import org.ehrbase.client.aql.containment.ContainmentExpression;
 import org.ehrbase.client.aql.field.EhrFields;
+import org.ehrbase.client.aql.field.NativeSelectAqlField;
 import org.ehrbase.client.aql.parameter.Parameter;
 import org.ehrbase.client.aql.query.EntityQuery;
 import org.ehrbase.client.aql.query.Query;
@@ -421,20 +423,21 @@ public class CoronaTestIT {
 
 
     /**
-     * NB. There is no way to resolve the first line
+     * see https://wiki.vitagroup.ag/display/NUM/Research+Repository
+     *
+     * Containment test UC 8:
+     *
      * contains COMPOSITION c
      * contains OBSERVATION v[openEHR-EHR-OBSERVATION.laboratory_test_result.v1]
      * contains (
      * CLUSTER h[openEHR-EHR-CLUSTER.laboratory_test_panel.v0] and
      * CLUSTER x[openEHR-EHR-CLUSTER.specimen.v1] and
      * CLUSTER q[openEHR-EHR-CLUSTER.laboratory_test_analyte.v1])
-     * @throws IOException
      */
     @Test
 //    @Ignore
-    public void testNUMResearchCase_7() throws IOException {
-//        Should use: TestData.buildTestVirologischerBefundComposition();
-        //with the test data
+    public void testNUMResearchCase_8() {
+
         VirologischerBefundComposition virologischerBefundComposition = TestData.buildTestVirologischerBefundComposition();
         assertThat(virologischerBefundComposition.getBefund()).isNotNull();
 
@@ -442,24 +445,30 @@ public class CoronaTestIT {
         openEhrClient.compositionEndpoint(ehr).mergeCompositionEntity(virologischerBefundComposition);
 
         //build AQL expression
+        Containment compositionContainment = new Containment("COMPOSITION");
         BefundObservationContainment befundObservationContainment = BefundObservationContainment.getInstance();
         ProbeClusterContainment probeClusterContainment = ProbeClusterContainment.getInstance();
         KulturClusterContainment kulturClusterContainment = KulturClusterContainment.getInstance();
         ProVirusClusterContainment proVirusClusterContainment = ProVirusClusterContainment.getInstance();
 
         ContainmentExpression containmentExpression =
-                befundObservationContainment.contains(
-                        kulturClusterContainment.and(
-                                probeClusterContainment.and(proVirusClusterContainment))
+                compositionContainment.contains(
+                    befundObservationContainment.contains(
+                            kulturClusterContainment.and(
+                                    probeClusterContainment.and(proVirusClusterContainment))
+                    )
                 );
 
         EntityQuery<Record2<String, Long>> entityQuery = Query.buildEntityQuery(
                 containmentExpression,
                 proVirusClusterContainment.VIRUS_VALUE,
-                proVirusClusterContainment.ANALYSEERGEBNIS_REIHENFOLGE_MAGNITUDE);
+                proVirusClusterContainment.ANALYSEERGEBNIS_REIHENFOLGE_MAGNITUDE
+                );
 
         Parameter<UUID> ehrIdParameter = entityQuery.buildParameter();
-        entityQuery.where(Condition.equal(EhrFields.EHR_ID(), ehrIdParameter));
+        entityQuery.where(Condition.equal(EhrFields.EHR_ID(), ehrIdParameter).and(
+                Condition.equal(new NativeSelectAqlField<>(compositionContainment, "/name/value", String.class), "Virologischer Befund")
+        ));
 
         List<Record2<String, Long>> actual = openEhrClient.aqlEndpoint().execute(entityQuery, ehrIdParameter.setValue(ehr));
 
