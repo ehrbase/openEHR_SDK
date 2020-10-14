@@ -106,7 +106,7 @@ public class ItemExtractor {
                 child = locatable.itemAtPath(childPath.format(false));
             }
 
-            FlatPath relativPath = new FlatPath(StringUtils.removeStart(pathExtractor.getChildPath(),parentPath ));
+            FlatPath relativPath = new FlatPath(StringUtils.removeStart(childPath.format(true), parentPath));
             if (StringUtils.isNotBlank(relativPath.findOtherPredicate("name/value")) && child instanceof List) {
                 child = ((List) child).stream()
                         .filter(c -> relativPath.findOtherPredicate("name/value").equals(((Locatable) c).getNameAsString()))
