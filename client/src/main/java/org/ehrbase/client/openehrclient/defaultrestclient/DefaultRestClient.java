@@ -101,11 +101,11 @@ public class DefaultRestClient implements OpenEhrClient {
         return objectMapper;
     }
 
-    public VersionUid httpPost(URI uri, RMObject body) {
+    protected VersionUid httpPost(URI uri, RMObject body) {
         return httpPost(uri, body, null);
     }
 
-    public VersionUid httpPost(URI uri, RMObject body, Map<String, String> headers) {
+    protected VersionUid httpPost(URI uri, RMObject body, Map<String, String> headers) {
         try {
             Request request = Request.Post(uri)
                     .addHeader(HttpHeaders.ACCEPT, ACCEPT_APPLICATION_JSON)
@@ -122,11 +122,11 @@ public class DefaultRestClient implements OpenEhrClient {
         }
     }
 
-    public VersionUid httpPut(URI uri, Locatable body, VersionUid versionUid) {
+    protected VersionUid httpPut(URI uri, Locatable body, VersionUid versionUid) {
         return httpPut(uri, body, versionUid, null);
     }
 
-    public VersionUid httpPut(URI uri, Locatable body, VersionUid versionUid, Map<String, String> headers) {
+    protected VersionUid httpPut(URI uri, Locatable body, VersionUid versionUid, Map<String, String> headers) {
         try {
             Request request = Request.Put(uri)
                     .addHeader(HttpHeaders.ACCEPT, ACCEPT_APPLICATION_JSON)
@@ -147,11 +147,11 @@ public class DefaultRestClient implements OpenEhrClient {
         }
     }
 
-    public <T> Optional<T> httpGet(URI uri, Class<T> valueType) {
+    protected <T> Optional<T> httpGet(URI uri, Class<T> valueType) {
         return httpGet(uri, valueType, null);
     }
 
-    public <T> Optional<T> httpGet(URI uri, Class<T> valueType, Map<String, String> headers) {
+    protected <T> Optional<T> httpGet(URI uri, Class<T> valueType, Map<String, String> headers) {
         try {
             Request request = Request.Get(uri)
                     .addHeader(HttpHeaders.ACCEPT, ACCEPT_APPLICATION_JSON);
