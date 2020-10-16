@@ -102,10 +102,17 @@ public class DefaultRestClient implements OpenEhrClient {
     }
 
     public VersionUid httpPost(URI uri, RMObject body) {
+        return httpPost(uri, body, null);
+    }
+
+    public VersionUid httpPost(URI uri, RMObject body, Map<String, String> headers) {
         try {
             Request request = Request.Post(uri)
                     .addHeader(HttpHeaders.ACCEPT, ACCEPT_APPLICATION_JSON)
                     .bodyString(new CanonicalJson().marshal(body), ContentType.APPLICATION_JSON);
+            if (headers != null) {
+                headers.forEach(request::addHeader);
+            }
             HttpResponse response = executor.execute(request).returnResponse();
             checkStatus(response, HttpStatus.SC_OK, HttpStatus.SC_CREATED, HttpStatus.SC_NO_CONTENT);
             Header eTag = response.getFirstHeader(HttpHeaders.ETAG);
@@ -116,11 +123,18 @@ public class DefaultRestClient implements OpenEhrClient {
     }
 
     public VersionUid httpPut(URI uri, Locatable body, VersionUid versionUid) {
+        return httpPut(uri, body, versionUid, null);
+    }
+
+    public VersionUid httpPut(URI uri, Locatable body, VersionUid versionUid, Map<String, String> headers) {
         try {
             Request request = Request.Put(uri)
                     .addHeader(HttpHeaders.ACCEPT, ACCEPT_APPLICATION_JSON)
                     .addHeader(HttpHeaders.IF_MATCH, versionUid.toString())
                     .bodyString(new CanonicalJson().marshal(body), ContentType.APPLICATION_JSON);
+            if (headers != null) {
+                headers.forEach(request::addHeader);
+            }
             HttpResponse response = executor.execute(request).returnResponse();
             checkStatus(response, HttpStatus.SC_OK, HttpStatus.SC_NO_CONTENT, HttpStatus.SC_PRECONDITION_FAILED);
             if (HttpStatus.SC_PRECONDITION_FAILED == response.getStatusLine().getStatusCode()) {
@@ -134,9 +148,16 @@ public class DefaultRestClient implements OpenEhrClient {
     }
 
     public <T> Optional<T> httpGet(URI uri, Class<T> valueType) {
+        return httpGet(uri, valueType, null);
+    }
+
+    public <T> Optional<T> httpGet(URI uri, Class<T> valueType, Map<String, String> headers) {
         try {
             Request request = Request.Get(uri)
                     .addHeader(HttpHeaders.ACCEPT, ACCEPT_APPLICATION_JSON);
+            if (headers != null) {
+                headers.forEach(request::addHeader);
+            }
             HttpResponse response = executor.execute(request).returnResponse();
             checkStatus(response, HttpStatus.SC_OK, HttpStatus.SC_NOT_FOUND);
             if (response.getStatusLine().getStatusCode() == HttpStatus.SC_NOT_FOUND) {

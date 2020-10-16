@@ -17,7 +17,8 @@
   -->
 
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.github.ehrbase.openEHR_SDK</groupId>
@@ -49,6 +50,7 @@
 
         <skipIntegrationTests>true</skipIntegrationTests>
         <include.tests>**/*Test.java</include.tests>
+        <exclude.tests></exclude.tests>
         <test.profile>unit</test.profile>
     </properties>
 
@@ -77,7 +79,17 @@
             <id>full</id>
             <properties>
                 <include.tests>**/*</include.tests>
+                <exclude.tests>**/DefaultRestClientITCustom.java</exclude.tests>
                 <test.profile>all</test.profile>
+            </properties>
+        </profile>
+
+        <!-- RUN INTEGRATION TESTS ONLY -->
+        <profile>
+            <id>custom</id>
+            <properties>
+                <include.tests>**/*DefaultRestClientITCustom.java</include.tests>
+                <test.profile>integration</test.profile>
             </properties>
         </profile>
     </profiles>
@@ -219,7 +231,9 @@
                             <includes>
                                 <include>${include.tests}</include>
                             </includes>
-
+                            <excludes>
+                                <exclude>${exclude.tests}</exclude>
+                            </excludes>
                         </configuration>
                     </execution>
 
@@ -253,9 +267,6 @@
                             <includes>
                                 <include>**/*IT.java</include>
                             </includes>
-
-
-
 
                         </configuration>
                     </execution>
@@ -326,9 +337,9 @@
             <!-- external -->
 
             <dependency>
-<!--                <groupId>com.nedap.healthcare.archie</groupId>-->
-<!--                <artifactId>archie-all</artifactId>-->
-<!--                <version>0.10.0</version>-->
+                <!--                <groupId>com.nedap.healthcare.archie</groupId>-->
+                <!--                <artifactId>archie-all</artifactId>-->
+                <!--                <version>0.10.0</version>-->
 
                 <groupId>com.github.openEHR</groupId>
                 <artifactId>archie</artifactId>
@@ -442,7 +453,6 @@
             </dependency>
 
 
-
             <!-- NOTE: does not work properly when inside dependencyManagement -->
             <!-- 
             <dependency>
@@ -451,7 +461,6 @@
                 <version>4.12</version>
                 <scope>test</scope>
             </dependency> -->
-
 
 
             <dependency>
