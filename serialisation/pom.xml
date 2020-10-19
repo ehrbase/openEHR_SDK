@@ -92,6 +92,10 @@
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.github.ehrbase.openEHR_SDK</groupId>
+            <artifactId>util</artifactId>
+        </dependency>
     </dependencies>
 
 </project>

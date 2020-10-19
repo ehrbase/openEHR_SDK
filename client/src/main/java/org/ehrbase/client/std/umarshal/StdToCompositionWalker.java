@@ -24,13 +24,13 @@ import com.nedap.archie.rm.composition.Composition;
 import com.nedap.archie.rminfo.ArchieRMInfoLookup;
 import org.apache.commons.lang3.ClassUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.ehrbase.client.reflection.ReflectionHelper;
 import org.ehrbase.client.std.marshal.config.DefaultStdConfig;
 import org.ehrbase.client.std.marshal.config.StdConfig;
 import org.ehrbase.client.std.umarshal.postprocessor.UnmarshalPostprocessor;
 import org.ehrbase.client.std.umarshal.rmunmarshaller.DefaultRMUnmarshaller;
 import org.ehrbase.client.std.umarshal.rmunmarshaller.RMUnmarshaller;
 import org.ehrbase.client.walker.Context;
+import org.ehrbase.util.reflection.ReflectionHelper;
 import org.ehrbase.webtemplate.model.WebTemplate;
 import org.ehrbase.webtemplate.model.WebTemplateNode;
 

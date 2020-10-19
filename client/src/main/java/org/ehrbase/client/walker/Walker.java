@@ -24,7 +24,6 @@ import com.nedap.archie.rm.archetyped.Locatable;
 import com.nedap.archie.rm.archetyped.Pathable;
 import com.nedap.archie.rm.composition.Composition;
 import com.nedap.archie.rm.composition.EventContext;
-import com.nedap.archie.rm.composition.IsmTransition;
 import com.nedap.archie.rm.datastructures.Element;
 import com.nedap.archie.rm.datavalues.quantity.DvInterval;
 import com.nedap.archie.rminfo.ArchieRMInfoLookup;
@@ -106,7 +105,7 @@ public abstract class Walker<T> {
 
     protected boolean visitChildren(WebTemplateNode node) {
         RMTypeInfo typeInfo = ARCHIE_RM_INFO_LOOKUP.getTypeInfo(node.getRmType());
-        return typeInfo != null && (Locatable.class.isAssignableFrom(typeInfo.getJavaClass()) || EventContext.class.isAssignableFrom(typeInfo.getJavaClass()) || IsmTransition.class.isAssignableFrom(typeInfo.getJavaClass()) || DvInterval.class.isAssignableFrom(typeInfo.getJavaClass()));
+        return typeInfo != null && (Locatable.class.isAssignableFrom(typeInfo.getJavaClass()) || EventContext.class.isAssignableFrom(typeInfo.getJavaClass()) || DvInterval.class.isAssignableFrom(typeInfo.getJavaClass()));
     }
 
     protected abstract T extract(Context<T> context, WebTemplateNode child, boolean isChoice, Integer i);
@@ -205,7 +204,12 @@ public abstract class Walker<T> {
             }
 
             if (childNode.getMax() == 1 && child instanceof List) {
-                child = ((List) child).get(0);
+
+                if (((List<?>) child).isEmpty()) {
+                    child = null;
+                } else {
+                    child = ((List) child).get(0);
+                }
             }
 
             if (child instanceof Element && !childNode.getRmType().equals("ELEMENT")) {

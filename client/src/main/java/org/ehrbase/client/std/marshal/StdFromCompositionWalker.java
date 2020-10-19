@@ -21,11 +21,11 @@ package org.ehrbase.client.std.marshal;
 
 import com.nedap.archie.rm.RMObject;
 import org.apache.commons.lang3.ClassUtils;
-import org.ehrbase.client.reflection.ReflectionHelper;
 import org.ehrbase.client.std.marshal.config.DefaultStdConfig;
 import org.ehrbase.client.std.marshal.config.StdConfig;
 import org.ehrbase.client.std.marshal.postprocessor.MarshalPostprocessor;
 import org.ehrbase.client.walker.Context;
+import org.ehrbase.util.reflection.ReflectionHelper;
 import org.ehrbase.webtemplate.model.WebTemplateNode;
 
 import java.util.List;

@@ -1,6 +1,6 @@
 package org.ehrbase.client.introspect.node;
 
-import org.ehrbase.client.terminology.ValueSet;
+import org.ehrbase.terminology.client.terminology.ValueSet;
 
 public class SlotNode extends EndNode {
 

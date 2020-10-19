@@ -19,32 +19,51 @@
 
 package org.ehrbase.webtemplate.filter;
 
+import com.nedap.archie.rminfo.ArchieRMInfoLookup;
+import com.nedap.archie.rminfo.RMTypeInfo;
+import org.apache.commons.collections4.SetUtils;
+import org.ehrbase.serialisation.util.SnakeCase;
+import org.ehrbase.util.reflection.ReflectionHelper;
 import org.ehrbase.webtemplate.model.WebTemplate;
 import org.ehrbase.webtemplate.model.WebTemplateNode;
 import org.ehrbase.webtemplate.parser.OPTParser;
+import org.ehrbase.webtemplate.parser.config.RmIntrospectConfig;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class Filter {
 
+    private static final Map<Class<?>, RmIntrospectConfig> configMap = ReflectionHelper.buildMap(RmIntrospectConfig.class);
+    public static final ArchieRMInfoLookup ARCHIE_RM_INFO_LOOKUP = ArchieRMInfoLookup.getInstance();
+
     public WebTemplate filter(WebTemplate webTemplate) {
-        List<WebTemplateNode> filteredChildren = webTemplate.getTree().getChildren().stream().map(n -> filter(n, webTemplate)).flatMap(List::stream).collect(Collectors.toList());
-        webTemplate.getTree().getChildren().clear();
-        webTemplate.getTree().getChildren().addAll(filteredChildren);
+        List<WebTemplateNode> filteredChildren = filter(webTemplate.getTree(), webTemplate, null);
+        webTemplate.setTree(filteredChildren.get(0));
 
         return webTemplate;
     }
 
-    private List<WebTemplateNode> filter(WebTemplateNode node, WebTemplate context) {
+    private List<WebTemplateNode> filter(WebTemplateNode node, WebTemplate context, WebTemplateNode parent) {
         List<WebTemplateNode> nodes;
-        if (skip(node, context)) {
-            nodes = node.getChildren().stream().map(n -> filter(n, context)).flatMap(List::stream).collect(Collectors.toList());
+        List<WebTemplateNode> ismTransitionList = node.getChildren().stream()
+                .filter(n -> "ISM_TRANSITION".equals(n.getRmType()))
+                .collect(Collectors.toList());
+        if (!ismTransitionList.isEmpty()) {
+            node.getChildren().removeAll(ismTransitionList);
+            node.getChildren().add(ismTransitionList.get(0));
+        }
+
+        if (skip(node, context, parent)) {
+            nodes = node.getChildren().stream().map(n -> filter(n, context, node)).flatMap(List::stream).collect(Collectors.toList());
 
         } else {
             nodes = Collections.singletonList(node);
-            List<WebTemplateNode> filteredChildren = node.getChildren().stream().map(n -> filter(n, context)).flatMap(List::stream).collect(Collectors.toList());
+            List<WebTemplateNode> filteredChildren = node.getChildren().stream().map(n -> filter(n, context, node)).flatMap(List::stream).collect(Collectors.toList());
             node.getChildren().clear();
             node.getChildren().addAll(filteredChildren);
         }
@@ -52,7 +71,25 @@ public class Filter {
         return nodes;
     }
 
-    private boolean skip(WebTemplateNode node, WebTemplate context) {
+    private boolean skip(WebTemplateNode node, WebTemplate context, WebTemplateNode parent) {
+        if (List.of("origin", "participations", "location", "feeder_audit").contains(node.getName())) {
+            return true;
+        }
+        if (parent != null) {
+            RMTypeInfo typeInfo = ARCHIE_RM_INFO_LOOKUP.getTypeInfo(parent.getRmType());
+            Set<String> attributeNames = Optional.ofNullable(configMap.get(typeInfo.getJavaClass())).map(RmIntrospectConfig::getNonTemplateFields).orElse(Collections.emptySet()).stream().map(s -> new SnakeCase(s).camelToSnake()).collect(Collectors.toSet());
+            attributeNames.add("context");
+            attributeNames.add("encoding");
+            attributeNames.add("timing");
+            attributeNames.add("expiry_time");
+            attributeNames.add("lower");
+            attributeNames.add("upper");
+            attributeNames.add("ism_transition");
+            SetUtils.SetView<String> difference = SetUtils.difference(typeInfo.getAttributes().keySet(), attributeNames);
+            if (difference.contains(node.getName())) {
+                return true;
+            }
+        }
         if (List.of("HISTORY", "ITEM_TREE", "ITEM_LIST", "ITEM_SINGLE", "ITEM_TABLE", "ITEM_STRUCTURE").contains(node.getRmType())) {
             return true;
         } else if (node.getRmType().equals("EVENT")) {

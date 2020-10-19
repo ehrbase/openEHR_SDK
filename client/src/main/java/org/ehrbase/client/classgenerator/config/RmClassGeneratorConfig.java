@@ -20,7 +20,7 @@
 package org.ehrbase.client.classgenerator.config;
 
 import org.apache.commons.collections4.CollectionUtils;
-import org.ehrbase.client.reflection.ClassDependent;
+import org.ehrbase.util.reflection.ClassDependent;
 
 import java.util.Set;
 

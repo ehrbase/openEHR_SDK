@@ -21,13 +21,17 @@ package org.ehrbase.webtemplate.parser;
 
 import com.nedap.archie.rm.archetyped.Locatable;
 import com.nedap.archie.rm.composition.EventContext;
+import com.nedap.archie.rm.datastructures.Element;
 import com.nedap.archie.rminfo.ArchieRMInfoLookup;
 import com.nedap.archie.rminfo.RMAttributeInfo;
 import com.nedap.archie.rminfo.RMTypeInfo;
 import org.apache.commons.lang3.StringUtils;
+import org.ehrbase.terminology.client.terminology.TermDefinition;
+import org.ehrbase.util.reflection.ReflectionHelper;
 import org.ehrbase.webtemplate.model.WebTemplate;
 import org.ehrbase.webtemplate.model.WebTemplateInput;
 import org.ehrbase.webtemplate.model.WebTemplateNode;
+import org.ehrbase.webtemplate.parser.config.RmIntrospectConfig;
 import org.openehr.schemas.v1.ARCHETYPETERM;
 import org.openehr.schemas.v1.CARCHETYPEROOT;
 import org.openehr.schemas.v1.CATTRIBUTE;
@@ -42,15 +46,19 @@ import org.openehr.schemas.v1.IntervalOfInteger;
 import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
 import org.openehr.schemas.v1.StringDictionaryItem;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class OPTParser {
     public static final String PATH_DIVIDER = "/";
     public static final ArchieRMInfoLookup ARCHIE_RM_INFO_LOOKUP = ArchieRMInfoLookup.getInstance();
+    private static final Map<Class<?>, RmIntrospectConfig> configMap = ReflectionHelper.buildMap(RmIntrospectConfig.class);
 
     private final OPERATIONALTEMPLATE operationaltemplate;
     private final String defaultLanguage;
@@ -122,13 +130,30 @@ public class OPTParser {
                             || pathLoop.endsWith("/name")) {
                 continue;
             }
-
+            List<WebTemplateNode> newChildren = new ArrayList<>();
             for (COBJECT cobject : cattribute.getChildrenArray()) {
                 WebTemplateNode childNode = parseCOBJECT(cobject, pathLoop, termDefinitionMap, cattribute.getRmAttributeName());
                 if (childNode != null) {
-                    node.getChildren().add(childNode);
+                    newChildren.add(childNode);
                 }
             }
+
+            List<WebTemplateNode> ismTransitionList = newChildren.stream()
+                    .filter(n -> "ISM_TRANSITION".equals(n.getRmType()))
+                    .collect(Collectors.toList());
+            if (!ismTransitionList.isEmpty()) {
+
+                WebTemplateNode ismTransition = new WebTemplateNode();
+                ismTransition.setName(cattribute.getRmAttributeName());
+                ismTransition.setId(buildId(cattribute.getRmAttributeName()));
+                ismTransition.setMin(ismTransitionList.get(0).getMin());
+                ismTransition.setMax(ismTransitionList.get(0).getMax());
+                ismTransition.setRmType("ISM_TRANSITION");
+                ismTransition.setAqlPath(aqlPath + "/" + cattribute.getRmAttributeName());
+                node.getChildren().add(ismTransition);
+            }
+
+            node.getChildren().addAll(newChildren);
         }
 
         //Inherit name for Element values
@@ -150,6 +175,8 @@ public class OPTParser {
         addRMAttributes(node, aqlPath, termDefinitionMap);
 
         makeIdUnique(node);
+
+
         return node;
     }
 
@@ -174,13 +201,17 @@ public class OPTParser {
     private void addRMAttributes(WebTemplateNode node, String aqlPath, Map<String, Map<String, TermDefinition>> termDefinitionMap) {
         //Add RM Attributes
         RMTypeInfo typeInfo = ARCHIE_RM_INFO_LOOKUP.getTypeInfo(node.getRmType());
-        if (typeInfo != null && (Locatable.class.isAssignableFrom(typeInfo.getJavaClass()) || EventContext.class.isAssignableFrom(typeInfo.getJavaClass()))) {
-            String finalAqlPath = aqlPath;
+        if (typeInfo != null && (Locatable.class.isAssignableFrom(typeInfo.getJavaClass()) || EventContext.class.isAssignableFrom(typeInfo.getJavaClass())) && !Element.class.isAssignableFrom(typeInfo.getJavaClass())) {
+            Set<String> attributeNames = Optional.of(configMap.get(typeInfo.getJavaClass())).map(RmIntrospectConfig::getNonTemplateFields).orElse(Collections.emptySet());
+
             node.getChildren().addAll(typeInfo.getAttributes()
                     .values()
                     .stream()
-                    .filter(s -> List.of("language", "time", "subject", "encoding", "territory", "composer", "math_function", "width", "category", "setting", "start_time").contains(s.getRmName()))
-                    .map(i -> buildNodeForAttribute(i, finalAqlPath, termDefinitionMap))
+                    //      .filter(s ->attributeNames.contains(s.getRmName()))
+                    .filter(s -> !List.of("value").contains(s.getRmName()))
+                    .filter(s -> !Locatable.class.isAssignableFrom(s.getTypeInCollection()))
+                    //   .filter(s -> List.of("language", "time", "subject", "encoding", "territory", "composer", "math_function", "width", "category", "setting", "start_time","timing","narrative").contains(s.getRmName()))
+                    .map(i -> buildNodeForAttribute(i, aqlPath, termDefinitionMap))
                     //only add if not already there
                     .filter(n -> node.getChildren().stream().map(WebTemplateNode::getId).noneMatch(s -> s.equals(n.getId())))
                     .collect(Collectors.toList()));

@@ -18,7 +18,7 @@
 package org.ehrbase.client.building.rmobjectskeletonbuilder;
 
 import org.apache.xmlbeans.XmlObject;
-import org.ehrbase.client.reflection.ClassDependent;
+import org.ehrbase.util.reflection.ClassDependent;
 
 public interface RmObjectSkeletonBuilder<T extends XmlObject, R> extends ClassDependent<T> {
 

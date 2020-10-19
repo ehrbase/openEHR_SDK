@@ -17,11 +17,11 @@
 
 package org.ehrbase.client.introspect.node;
 
-import org.ehrbase.client.terminology.ValueSet;
+import org.ehrbase.terminology.client.terminology.ValueSet;
 
 import java.util.Objects;
 
-import static org.ehrbase.client.terminology.ValueSet.EMPTY_VALUE_SET;
+import static org.ehrbase.terminology.client.terminology.ValueSet.EMPTY_VALUE_SET;
 
 public class EndNode implements Node {
 

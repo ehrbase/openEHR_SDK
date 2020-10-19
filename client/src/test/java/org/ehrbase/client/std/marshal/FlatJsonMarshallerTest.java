@@ -24,7 +24,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nedap.archie.rm.composition.Composition;
 import org.apache.commons.io.IOUtils;
 import org.apache.xmlbeans.XmlException;
-import org.ehrbase.client.introspect.TemplateIntrospect;
 import org.ehrbase.serialisation.jsonencoding.CanonicalJson;
 import org.ehrbase.serialisation.jsonencoding.JacksonUtil;
 import org.ehrbase.test_data.composition.CompositionTestDataCanonicalJson;
@@ -50,7 +49,6 @@ public class FlatJsonMarshallerTest {
     public void toFlatJson() throws IOException, XmlException {
 
         OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(OperationalTemplateTestData.CORONA_ANAMNESE.getStream()).getTemplate();
-        TemplateIntrospect introspect = new TemplateIntrospect(template);
         Composition composition = new CanonicalJson().unmarshal(IOUtils.toString(CompositionTestDataCanonicalJson.CORONA.getStream(), StandardCharsets.UTF_8), Composition.class);
         FlatJsonMarshaller cut = new FlatJsonMarshaller();
         String actual = cut.toFlatJson(composition, new OPTParser(template).parse());
@@ -73,7 +71,7 @@ public class FlatJsonMarshallerTest {
     public void toFlatJsonAllTypes() throws IOException, XmlException {
 
         OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(OperationalTemplateTestData.ALL_TYPES.getStream()).getTemplate();
-        TemplateIntrospect introspect = new TemplateIntrospect(template);
+
         Composition composition = new CanonicalJson().unmarshal(IOUtils.toString(CompositionTestDataCanonicalJson.ALL_TYPES.getStream(), StandardCharsets.UTF_8), Composition.class);
         FlatJsonMarshaller cut = new FlatJsonMarshaller();
         String actual = cut.toFlatJson(composition, new OPTParser(template).parse());
@@ -86,18 +84,9 @@ public class FlatJsonMarshallerTest {
         assertThat(errors)
                 .filteredOn(s -> s.startsWith("Missing"))
                 .containsExactlyInAnyOrder(
-                        "Missing path: test_all_types/test_all_types3:0/section_2/section_3/test_all_types2:0/active/current_state|terminology, value: openehr",
-                        "Missing path: test_all_types/test_all_types3:0/section_2/section_3/test_all_types2:0/active/current_state|value, value: planned",
-                        "Missing path: test_all_types/test_all_types3:0/section_2/section_3/test_all_types2:0/completed/current_state|value, value: planned",
-                        "Missing path: test_all_types/test_all_types3:0/section_2/section_3/test_all_types2:0/planned/current_state|value, value: planned",
                         "Missing path: test_all_types/test_all_types:0/identifier|id, value: 55175056",
-                        "Missing path: test_all_types/test_all_types3:0/section_2/section_3/test_all_types2:0/planned/current_state|code, value: 526",
-                        "Missing path: test_all_types/test_all_types3:0/section_2/section_3/test_all_types2:0/completed/current_state|code, value: 526",
-                        "Missing path: test_all_types/test_all_types3:0/section_2/section_3/test_all_types2:0/planned/current_state|terminology, value: openehr",
-                        "Missing path: test_all_types/test_all_types3:0/section_2/section_3/test_all_types2:0/completed/current_state|terminology, value: openehr",
                         "Missing path: test_all_types/test_all_types:0/ordinal|code, value: at0014",
-                        "Missing path: test_all_types/test_all_types:0/proportion_any|type, value: 1",
-                        "Missing path: test_all_types/test_all_types3:0/section_2/section_3/test_all_types2:0/active/current_state|code, value: 526"
+                        "Missing path: test_all_types/test_all_types:0/proportion_any|type, value: 1"
                 );
 
         assertThat(errors)
@@ -107,13 +96,7 @@ public class FlatJsonMarshallerTest {
                         "Extra path: test_all_types/test_all_types:0/ordinal|value, value: NIQAMVFFOQMQOOM",
                         "Extra path: test_all_types/test_all_types:0/ordinal|ordinal, value: 1",
                         "Extra path: test_all_types/test_all_types:0/identifier, value: 55175056",
-                        "Extra path: test_all_types/test_all_types:0/proportion_any|type, value: 1.0",
-                        "Extra path: test_all_types/test_all_types3:0/section_2/section_3/test_all_types:0/current_activity/timing, value: P1D",
-                        "Extra path: test_all_types/test_all_types3:0/section_2/section_3/test_all_types:0/current_activity/timing|formalism, value: ISO8601",
-                        "Extra path: test_all_types/test_all_types3:0/section_2/section_3/test_all_types:0/narrative, value: WAZotVojPPlPDKcOwCqQGlJjRdMC.ujKPgVAmyWABEoOgtrRSznogUWokmqmfgxjZOYmUEAcyvmnfz,KhtTC FrpwevrLJFNiJKzkzOwfOPRFQJjRmQCTW,ewdqvscogOkayvONWrOTPcCFnZsUod CAQ fuhLaBA.pFWdEyzyFgDODbueIlUjIGBdnIDDpMfjzWivfUDSEvTUsncmCgPdHnpONCuNGXUwFTaiSHHHJBZYssxGne.BLIbBQzXhG",
-                        "Extra path: test_all_types/test_all_types3:0/section_2/section_3/test_all_types2:0/ism_transition/current_state|code, value: 526",
-                        "Extra path: test_all_types/test_all_types3:0/section_2/section_3/test_all_types2:0/ism_transition/current_state|value, value: planned",
-                        "Extra path: test_all_types/test_all_types3:0/section_2/section_3/test_all_types2:0/ism_transition/current_state|terminology, value: openehr"
+                        "Extra path: test_all_types/test_all_types:0/proportion_any|type, value: 1.0"
                 );
     }
 

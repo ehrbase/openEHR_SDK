@@ -23,7 +23,7 @@ import com.nedap.archie.rm.RMObject;
 import org.apache.commons.lang3.StringUtils;
 import org.ehrbase.client.classgenerator.config.RmClassGeneratorConfig;
 import org.ehrbase.client.exception.ClientException;
-import org.ehrbase.client.reflection.ReflectionHelper;
+import org.ehrbase.util.reflection.ReflectionHelper;
 
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
