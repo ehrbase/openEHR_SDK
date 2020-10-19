@@ -3,23 +3,17 @@ package org.ehrbase.client.classgenerator.examples.openereactcarecomposition.def
 import org.ehrbase.client.classgenerator.EnumValueSet;
 
 public enum Definingcode4 implements EnumValueSet {
-  RESPIRATORY_RATE25_PER_MINUTE("Respiratory rate ≥ 25 per minute", "Respiratory rate ≥ 25 per minute", "local", "at0077"),
+  I_FEEL_I_MIGHT_DIE("‘I feel I might die’", "The patient stated ‘I feel I might die’.", "local", "at0041"),
 
-  SYSTOLIC_BP90_MMHG_OR_DROP_OF40_FROM_NORMAL("Systolic BP ≤ 90 mmHg (or drop of >40 from normal)", "Systolic BP ≤ 90 mmHg (or drop of >40 from normal)", "local", "at0075"),
+  EXTREME_SHIVERING_OR_MUSCLE_PAIN("Extreme shivering or muscle pain", "The patient has extreme shivering or muscle pain.", "local", "at0038"),
 
-  NEEDS_O2_TO_KEEP_SPO29288_IN_COPD("Needs O2 to keep SpO2 ≥ 92% (88% in COPD)", "Needs O2 to keep SpO2 ≥ 92% (88% in COPD)", "local", "at0078"),
+  SEVERE_BREATHLESSNESS("Severe breathlessness", "The patient has severe breathlessness.", "local", "at0040"),
 
-  RECENT_CHEMOTHERAPY("Recent chemotherapy", "Recent chemotherapy", "local", "at0081"),
+  SKIN_MOTTLED_ASHEN_BLUE_OR_VERY_PALE("Skin mottled, ashen, blue or very pale", "The patient has skin which is mottled, ashen, blue or very pale.", "local", "at0042"),
 
-  HR_IF_CATHETERISED("Not passed urine in 18 hours (<0.5ml/kg/hr if catheterised)", "Not passed urine in 18 hours (<0.5ml/kg/hr if catheterised)", "local", "at0082"),
+  SLURRED_SPEECH_OR_CONFUSION("Slurred speech or confusion", "The patient has slurred speech or confusion.", "local", "at0037"),
 
-  HEART_RATE130_PER_MINUTE("Heart rate ≥ 130 per minute", "Heart rate ≥ 130 per minute", "local", "at0076"),
-
-  L("Lactate ≥ 2 mmol/l", "Lactate ≥ 2 mmol/l", "local", "at0080"),
-
-  OBJECTIVE_EVIDENCE_OF_NEW_OR_ALTERED_MENTAL_STATE("Objective evidence of new or altered mental state", "Objective evidence of new or altered mental state", "local", "at0074"),
-
-  CYANOTIC("Non-blanching rash / mottled / ashen / cyanotic", "Non-blanching rash / mottled / ashen / cyanotic", "local", "at0079");
+  PASSING_NO_URINE_IN_A_DAY("Passing no urine (in a day)", "The patient is passing no urine (in a day).", "local", "at0039");
 
   private String value;
 

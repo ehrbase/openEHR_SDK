@@ -2,10 +2,8 @@ package org.ehrbase.client.classgenerator.examples.openereactcarecomposition.def
 
 import org.ehrbase.client.classgenerator.EnumValueSet;
 
-public enum Definingcode11 implements EnumValueSet {
-  DOESN_T_LOOK_GOOD("Doesn't look good", "Doesn't look good.", "local", "at0113"),
-
-  CHANGE_IN_BEHAVIOUR("Change in behaviour", "Change in behaviour.", "local", "at0112");
+public enum ValueDefiningcode8 implements EnumValueSet {
+  RIGORS("Rigors", "Rigors.", "local", "at0100");
 
   private String value;
 
@@ -15,7 +13,7 @@ public enum Definingcode11 implements EnumValueSet {
 
   private String code;
 
-  Definingcode11(String value, String description, String terminologyId, String code) {
+  ValueDefiningcode8(String value, String description, String terminologyId, String code) {
     this.value = value;
     this.description = description;
     this.terminologyId = terminologyId;

@@ -8,13 +8,13 @@ import org.ehrbase.client.annotations.Path;
 @OptionFor("DV_CODED_TEXT")
 public class AtiopathogeneseDvcodedtext implements AtiopathogeneseChoice {
     @Path("|defining_code")
-    private Definingcode definingcode;
+    private ValueDefiningcode valueDefiningcode;
 
-    public void setDefiningcode(Definingcode definingcode) {
-        this.definingcode = definingcode;
+    public void setValueDefiningcode(ValueDefiningcode valueDefiningcode) {
+        this.valueDefiningcode = valueDefiningcode;
     }
 
-    public Definingcode getDefiningcode() {
-        return this.definingcode;
+    public ValueDefiningcode getValueDefiningcode() {
+        return this.valueDefiningcode;
     }
 }
