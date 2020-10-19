@@ -25,6 +25,7 @@ import org.ehrbase.client.exception.ClientException;
 import org.ehrbase.client.std.marshal.FlatJsonMarshaller;
 import org.ehrbase.client.std.umarshal.FlatJsonUnmarshaller;
 import org.ehrbase.serialisation.RMDataFormat;
+import org.ehrbase.webtemplate.filter.Filter;
 import org.ehrbase.webtemplate.model.WebTemplate;
 import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
 
@@ -40,7 +41,7 @@ public class FlatJson implements RMDataFormat {
         operationaltemplate = flatJasonProvider.getTemplateProvider().find(templateId).orElseThrow(() -> new ClientException(String.format("Template %s not found", templateId)));
 
         flatJsonUnmarshaller = new FlatJsonUnmarshaller();
-        templateIntrospect = flatJasonProvider.getTemplateProvider().buildIntrospect(templateId).orElseThrow(() -> new ClientException(String.format("Template %s not found", templateId)));
+        templateIntrospect = flatJasonProvider.getTemplateProvider().buildIntrospect(templateId).map(t -> new Filter().filter(t)).orElseThrow(() -> new ClientException(String.format("Template %s not found", templateId)));
         flatJsonMarshaller = new FlatJsonMarshaller();
 
     }

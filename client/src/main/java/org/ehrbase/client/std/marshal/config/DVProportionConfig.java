@@ -20,6 +20,7 @@
 package org.ehrbase.client.std.marshal.config;
 
 import com.nedap.archie.rm.datavalues.quantity.DvProportion;
+import org.ehrbase.client.walker.Context;
 
 import java.util.HashMap;
 import java.util.List;
@@ -40,7 +41,7 @@ public class DVProportionConfig extends AbstractsStdConfig<DvProportion> {
      * {@inheritDoc}
      */
     @Override
-    public Map<String, Object> buildChildValues(String currentTerm, DvProportion rmObject) {
+    public Map<String, Object> buildChildValues(String currentTerm, DvProportion rmObject, Context<Map<String, Object>> context) {
         Map<String, Object> result = new HashMap<>();
         addValue(result, currentTerm, "numerator", rmObject.getNumerator());
         addValue(result, currentTerm, "denominator", rmObject.getDenominator());

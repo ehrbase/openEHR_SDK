@@ -23,10 +23,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.xmlbeans.XmlException;
+import org.assertj.core.groups.Tuple;
 import org.ehrbase.test_data.operationaltemplate.OperationalTemplateTestData;
 import org.ehrbase.test_data.webtemplate.WebTemplateTestData;
 import org.ehrbase.webtemplate.filter.Filter;
 import org.ehrbase.webtemplate.model.WebTemplate;
+import org.ehrbase.webtemplate.model.WebTemplateInput;
+import org.ehrbase.webtemplate.model.WebTemplateInputValue;
 import org.ehrbase.webtemplate.model.WebTemplateNode;
 import org.junit.Test;
 import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
@@ -91,6 +94,16 @@ public class OPTParserTest {
         ObjectMapper objectMapper = new ObjectMapper();
         WebTemplate expected = objectMapper.readValue(IOUtils.toString(WebTemplateTestData.ALL_TYPES.getStream(), StandardCharsets.UTF_8), WebTemplate.class);
 
+        List<WebTemplateNode> dvOrdinalList = expected.getTree().findMatching(n -> n.getRmType().equals("DV_ORDINAL"));
+        assertThat(dvOrdinalList).size().isEqualTo(1);
+        assertThat(dvOrdinalList.get(0).getInputs())
+                .flatExtracting(WebTemplateInput::getList)
+                .extracting(WebTemplateInputValue::getLabel, WebTemplateInputValue::getValue, WebTemplateInputValue::getOrdinal)
+                .containsExactlyInAnyOrder(
+                        new Tuple("ord1", "at0014", 0),
+                        new Tuple("ord1", "at0015", 1),
+                        new Tuple("ord3", "at0016", 2)
+                );
 
         List<String> errors = compareWebTemplate(actual, expected);
 

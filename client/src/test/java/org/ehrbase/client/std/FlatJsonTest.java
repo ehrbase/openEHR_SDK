@@ -28,6 +28,7 @@ import org.junit.Test;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.ehrbase.client.std.marshal.FlatJsonMarshallerTest.compere;
@@ -48,7 +49,15 @@ public class FlatJsonTest {
 
         String expected = IOUtils.toString(CompositionTestDataSimSDTJson.CORONA.getStream(), StandardCharsets.UTF_8);
 
-        compere(actual, expected);
+        List<String> errors = compere(actual, expected);
+
+        assertThat(errors)
+                .filteredOn(s -> s.startsWith("Missing"))
+                .containsExactlyInAnyOrder();
+
+        assertThat(errors)
+                .filteredOn(s -> s.startsWith("Extra"))
+                .containsExactlyInAnyOrder();
     }
 
 }

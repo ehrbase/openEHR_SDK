@@ -20,6 +20,7 @@
 package org.ehrbase.client.std.marshal.config;
 
 import com.nedap.archie.rm.datavalues.DvCodedText;
+import org.ehrbase.client.walker.Context;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -39,7 +40,7 @@ public class DvCodedTextStdConfiguration extends AbstractsStdConfig<DvCodedText>
     /**
      * {@inheritDoc}
      */
-    public Map<String, Object> buildChildValues(String currentTerm, DvCodedText rmObject) {
+    public Map<String, Object> buildChildValues(String currentTerm, DvCodedText rmObject, Context<Map<String, Object>> context) {
 
         Map<String, Object> result = new HashMap<>();
         addValue(result, currentTerm, "code", rmObject.getDefiningCode().getCodeString());

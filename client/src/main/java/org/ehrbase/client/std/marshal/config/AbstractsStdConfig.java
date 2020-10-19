@@ -23,6 +23,7 @@ import com.nedap.archie.rm.RMObject;
 import org.apache.commons.lang3.StringUtils;
 import org.ehrbase.client.classgenerator.config.RmClassGeneratorConfig;
 import org.ehrbase.client.exception.ClientException;
+import org.ehrbase.client.walker.Context;
 import org.ehrbase.util.reflection.ReflectionHelper;
 
 import java.beans.IntrospectionException;
@@ -42,7 +43,7 @@ public abstract class AbstractsStdConfig<T extends RMObject> implements StdConfi
     /**
      * {@inheritDoc}
      */
-    public Map<String, Object> buildChildValues(String currentTerm, T rmObject) {
+    public Map<String, Object> buildChildValues(String currentTerm, T rmObject, Context<Map<String, Object>> context) {
         Map<String, Object> result = new HashMap<>();
         RmClassGeneratorConfig rmClassGeneratorConfig = configMap.get(rmObject.getClass());
         if (rmClassGeneratorConfig != null && rmClassGeneratorConfig.isExpandField()) {

@@ -20,6 +20,7 @@
 package org.ehrbase.client.std.umarshal.rmunmarshaller;
 
 import com.nedap.archie.rm.datavalues.quantity.DvProportion;
+import org.ehrbase.client.walker.Context;
 
 import java.util.Map;
 
@@ -37,7 +38,7 @@ public class DvProportionRMUnmarshaller extends AbstractRMUnmarshaller<DvProport
      * {@inheritDoc}
      */
     @Override
-    public void handle(String currentTerm, DvProportion rmObject, Map<String, String> currentValues) {
+    public void handle(String currentTerm, DvProportion rmObject, Map<String, String> currentValues, Context<Map<String, String>> context) {
 
         setValue(currentTerm, "numerator", currentValues, rmObject::setNumerator, Double.class);
         setValue(currentTerm, "denominator", currentValues, rmObject::setDenominator, Double.class);

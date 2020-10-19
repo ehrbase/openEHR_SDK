@@ -20,6 +20,9 @@
 package org.ehrbase.client.std.marshal.config;
 
 import com.nedap.archie.rm.datavalues.quantity.DvOrdinal;
+import org.ehrbase.client.walker.Context;
+import org.ehrbase.util.exception.SdkException;
+import org.ehrbase.webtemplate.model.WebTemplateInputValue;
 
 import java.util.HashMap;
 import java.util.List;
@@ -40,10 +43,23 @@ public class DvOrdinalConfig extends AbstractsStdConfig<DvOrdinal> {
      * {@inheritDoc}
      */
     @Override
-    public Map<String, Object> buildChildValues(String currentTerm, DvOrdinal rmObject) {
+    public Map<String, Object> buildChildValues(String currentTerm, DvOrdinal rmObject, Context<Map<String, Object>> context) {
         Map<String, Object> result = new HashMap<>();
-        addValue(result, currentTerm, "code", rmObject.getSymbol().getDefiningCode().getCodeString());
-        //@TODO set value and ordinal
+        String codeString = rmObject.getSymbol().getDefiningCode().getCodeString();
+        addValue(result, currentTerm, "code", codeString);
+
+        WebTemplateInputValue value = context.getNodeDeque().peek()
+                .getInputs()
+                .get(0)
+                .getList()
+                .stream()
+                .filter(o -> o.getValue().equals(codeString))
+                .findAny()
+                .orElseThrow(() -> new SdkException(String.format("Unknown Ordinal with code %s", codeString)));
+
+        addValue(result, currentTerm, "ordinal", value.getOrdinal());
+        addValue(result, currentTerm, "value", value.getLabel());
+
         return result;
     }
 

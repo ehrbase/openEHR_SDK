@@ -22,6 +22,7 @@ package org.ehrbase.client.std.umarshal.rmunmarshaller;
 import com.nedap.archie.rm.generic.PartyIdentified;
 import com.nedap.archie.rm.support.identification.ObjectVersionId;
 import com.nedap.archie.rm.support.identification.PartyRef;
+import org.ehrbase.client.walker.Context;
 
 import java.util.Map;
 
@@ -32,7 +33,7 @@ public class PartyIdentifiedRMUnmarshaller extends AbstractRMUnmarshaller<PartyI
     }
 
     @Override
-    public void handle(String currentTerm, PartyIdentified rmObject, Map<String, String> currentValues) {
+    public void handle(String currentTerm, PartyIdentified rmObject, Map<String, String> currentValues, Context<Map<String, String>> context) {
         setValue(currentTerm, "name", currentValues, rmObject::setName, String.class);
         rmObject.setExternalRef(new PartyRef());
         rmObject.getExternalRef().setId(new ObjectVersionId());

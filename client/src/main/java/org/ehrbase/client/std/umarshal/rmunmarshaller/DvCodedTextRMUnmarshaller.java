@@ -22,6 +22,7 @@ package org.ehrbase.client.std.umarshal.rmunmarshaller;
 import com.nedap.archie.rm.datatypes.CodePhrase;
 import com.nedap.archie.rm.datavalues.DvCodedText;
 import com.nedap.archie.rm.support.identification.TerminologyId;
+import org.ehrbase.client.walker.Context;
 
 import java.util.Map;
 
@@ -39,7 +40,7 @@ public class DvCodedTextRMUnmarshaller extends AbstractRMUnmarshaller<DvCodedTex
      * {@inheritDoc}
      */
     @Override
-    public void handle(String currentTerm, DvCodedText rmObject, Map<String, String> currentValues) {
+    public void handle(String currentTerm, DvCodedText rmObject, Map<String, String> currentValues, Context<Map<String, String>> context) {
         setValue(currentTerm, "value", currentValues, rmObject::setValue, String.class);
         rmObject.setDefiningCode(new CodePhrase());
         setValue(currentTerm, "code", currentValues, c -> rmObject.getDefiningCode().setCodeString(c), String.class);

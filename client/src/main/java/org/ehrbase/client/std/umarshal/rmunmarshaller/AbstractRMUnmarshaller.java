@@ -25,6 +25,7 @@ import com.nedap.archie.rm.RMObject;
 import org.apache.commons.lang3.StringUtils;
 import org.ehrbase.client.classgenerator.config.RmClassGeneratorConfig;
 import org.ehrbase.client.exception.ClientException;
+import org.ehrbase.client.walker.Context;
 import org.ehrbase.serialisation.jsonencoding.JacksonUtil;
 import org.ehrbase.util.reflection.ReflectionHelper;
 import org.slf4j.Logger;
@@ -46,12 +47,12 @@ public abstract class AbstractRMUnmarshaller<T extends RMObject> implements RMUn
 
     protected final Set<String> consumedPath = new HashSet<>();
 
+
     /**
      * {@inheritDoc}
      * Use {@link RmClassGeneratorConfig} to find die properties which needs to be set
      */
-    @Override
-    public void handle(String currentTerm, T rmObject, Map<String, String> currentValues) {
+    public void handle(String currentTerm, T rmObject, Map<String, String> currentValues, Context<Map<String, String>> context) {
 
         RmClassGeneratorConfig rmClassGeneratorConfig = configMap.get(rmObject.getClass());
         if (rmClassGeneratorConfig != null && rmClassGeneratorConfig.isExpandField()) {

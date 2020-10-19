@@ -20,6 +20,7 @@
 package org.ehrbase.client.std.marshal.config;
 
 import com.nedap.archie.rm.datavalues.DvIdentifier;
+import org.ehrbase.client.walker.Context;
 
 import java.util.HashMap;
 import java.util.List;
@@ -40,7 +41,7 @@ public class DvIdentifierConfig extends AbstractsStdConfig<DvIdentifier> {
      * {@inheritDoc}
      */
     @Override
-    public Map<String, Object> buildChildValues(String currentTerm, DvIdentifier rmObject) {
+    public Map<String, Object> buildChildValues(String currentTerm, DvIdentifier rmObject, Context<Map<String, Object>> context) {
         Map<String, Object> result = new HashMap<>();
         addValue(result, currentTerm, "id", rmObject.getId());
         addValue(result, currentTerm, "issuer", rmObject.getIssuer());

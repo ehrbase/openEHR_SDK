@@ -23,6 +23,7 @@ import com.nedap.archie.rm.generic.PartyIdentified;
 import com.nedap.archie.rm.generic.PartyProxy;
 import com.nedap.archie.rm.support.identification.ObjectId;
 import com.nedap.archie.rm.support.identification.ObjectRef;
+import org.ehrbase.client.walker.Context;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -44,13 +45,13 @@ public class PartyIdentifiedStdConfig extends AbstractsStdConfig<PartyIdentified
      * {@inheritDoc}
      */
     @Override
-    public Map<String, Object> buildChildValues(String currentTerm, PartyIdentified rmObject) {
+    public Map<String, Object> buildChildValues(String currentTerm, PartyIdentified rmObject, Context<Map<String, Object>> context) {
 
         Map<String, Object> result = new HashMap<>();
         addValue(result, currentTerm, "name", rmObject.getName());
         addValue(result, currentTerm, "id", Optional.of(rmObject).map(PartyProxy::getExternalRef).map(ObjectRef::getId).map(ObjectId::getValue).orElse(null));
         addValue(result, currentTerm, "id_namespace", Optional.of(rmObject).map(PartyProxy::getExternalRef).map(ObjectRef::getNamespace).orElse(null));
-       return result;
+        return result;
     }
 
     /**

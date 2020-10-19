@@ -30,6 +30,7 @@ import org.ehrbase.terminology.client.terminology.TermDefinition;
 import org.ehrbase.util.reflection.ReflectionHelper;
 import org.ehrbase.webtemplate.model.WebTemplate;
 import org.ehrbase.webtemplate.model.WebTemplateInput;
+import org.ehrbase.webtemplate.model.WebTemplateInputValue;
 import org.ehrbase.webtemplate.model.WebTemplateNode;
 import org.ehrbase.webtemplate.parser.config.RmIntrospectConfig;
 import org.openehr.schemas.v1.ARCHETYPETERM;
@@ -47,6 +48,7 @@ import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
 import org.openehr.schemas.v1.StringDictionaryItem;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -284,6 +286,26 @@ public class OPTParser {
             node.getInputs().add(unit);
 
         } else if (cdomaintype instanceof CDVORDINAL) {
+            WebTemplateInput code = new WebTemplateInput();
+            code.setType("CODED_TEXT");
+            node.getInputs().add(code);
+            Arrays.stream(((CDVORDINAL) cdomaintype).getListArray()).forEach(
+                    o -> {
+                        WebTemplateInputValue value = new WebTemplateInputValue();
+                        value.setOrdinal(o.getValue());
+                        value.setValue(o.getSymbol().getDefiningCode().getCodeString());
+                        value.getLocalizedLabels().putAll(
+                                Optional.ofNullable(termDefinitionMap.get(value.getValue()))
+                                        .map(Map::entrySet)
+                                        .stream()
+                                        .flatMap(Set::stream)
+                                        .collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().getValue()))
+                        );
+                        value.setLabel(value.getLocalizedLabels().get(defaultLanguage));
+                        code.getList().add(value);
+                    }
+            );
+
 
         } else if (cdomaintype instanceof CCODEPHRASE) {
 

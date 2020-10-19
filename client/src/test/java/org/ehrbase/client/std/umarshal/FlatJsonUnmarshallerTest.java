@@ -91,13 +91,6 @@ public class FlatJsonUnmarshallerTest {
         assertThat(((DvQuantity) choice).getUnits()).isEqualTo("mm[H20]");
 
         assertThat(cut.getUnconsumed()).containsExactlyInAnyOrder(
-                "test_all_types/test_all_types3:0/section_2/section_3/test_all_types:0/current_activity/timing|formalism",
-                "test_all_types/test_all_types:0/ordinal|ordinal",
-                "test_all_types/test_all_types3:0/section_2/section_3/test_all_types2:0/ism_transition/current_state|terminology",
-                "test_all_types/test_all_types:0/ordinal|value",
-                "test_all_types/test_all_types3:0/section_2/section_3/test_all_types:0/current_activity/timing",
-                "test_all_types/test_all_types3:0/section_2/section_3/test_all_types2:0/ism_transition/current_state|value",
-                "test_all_types/test_all_types3:0/section_2/section_3/test_all_types2:0/ism_transition/current_state|code"
         );
 
         try {

@@ -20,6 +20,7 @@
 package org.ehrbase.client.std.marshal.config;
 
 import com.nedap.archie.rm.RMObject;
+import org.ehrbase.client.walker.Context;
 import org.ehrbase.util.reflection.ClassDependent;
 
 import java.util.List;
@@ -33,9 +34,10 @@ public interface StdConfig<T extends RMObject> extends ClassDependent<T> {
     /**
      * @param currentTerm current flat term path
      * @param rmObject    The {@link RMObject} to flatten
+     * @param context
      * @return Map containing the flat representation of {@code rmObject}
      */
-    Map<String, Object> buildChildValues(String currentTerm, T rmObject);
+    Map<String, Object> buildChildValues(String currentTerm, T rmObject, Context<Map<String, Object>> context);
 
     /**
      * Returns the list of count of flat values a Object of class {@code clazz} can have.

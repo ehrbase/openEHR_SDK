@@ -28,12 +28,14 @@ import com.nedap.archie.rm.archetyped.Archetyped;
 import com.nedap.archie.rm.archetyped.Locatable;
 import com.nedap.archie.rm.archetyped.Pathable;
 import com.nedap.archie.rm.archetyped.TemplateId;
+import com.nedap.archie.rm.composition.Activity;
 import com.nedap.archie.rm.composition.Composition;
 import com.nedap.archie.rm.composition.Entry;
 import com.nedap.archie.rm.composition.EventContext;
 import com.nedap.archie.rm.datatypes.CodePhrase;
 import com.nedap.archie.rm.datavalues.DvCodedText;
 import com.nedap.archie.rm.datavalues.DvText;
+import com.nedap.archie.rm.datavalues.encapsulated.DvParsable;
 import com.nedap.archie.rm.datavalues.quantity.datetime.DvDateTime;
 import com.nedap.archie.rm.generic.Participation;
 import com.nedap.archie.rm.generic.PartyIdentified;
@@ -327,6 +329,9 @@ public class OptSkeletonBuilder {
         }
         if (obj instanceof Locatable && StringUtils.isBlank(((Locatable) obj).getName().getValue())) {
             ((Locatable) obj).getName().setValue(valueMap.getOrDefault("name", "").toString());
+        }
+        if (obj instanceof Activity) {
+            ((Activity) obj).setTiming(new DvParsable());
         }
         if (obj instanceof Composition) {
             Archetyped archetypeDetails = new Archetyped();

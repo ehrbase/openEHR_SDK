@@ -20,7 +20,10 @@
 package org.ehrbase.client.std.umarshal.rmunmarshaller;
 
 import com.nedap.archie.rm.composition.IsmTransition;
-import org.apache.commons.lang3.StringUtils;
+import com.nedap.archie.rm.datatypes.CodePhrase;
+import com.nedap.archie.rm.datavalues.DvCodedText;
+import com.nedap.archie.rm.support.identification.TerminologyId;
+import org.ehrbase.client.walker.Context;
 
 import java.util.Map;
 
@@ -32,11 +35,13 @@ public class IsmTransitionRMUnmarshaller extends AbstractRMUnmarshaller<IsmTrans
     }
 
     @Override
-    public void handle(String currentTerm, IsmTransition rmObject, Map<String, String> currentValues) {
-        String s = currentValues.get(currentTerm);
-        if (StringUtils.isNotBlank(s)) {
-            // rmObject.setValue(DateTimeParsers.parseDurationValue(StringUtils.strip(s, "\"")));
-            consumedPath.add(currentTerm);
-        }
+    public void handle(String currentTerm, IsmTransition rmObject, Map<String, String> currentValues, Context<Map<String, String>> context) {
+        rmObject.setCurrentState(new DvCodedText());
+        rmObject.getCurrentState().setDefiningCode(new CodePhrase());
+        rmObject.getCurrentState().getDefiningCode().setTerminologyId(new TerminologyId());
+        setValue(currentTerm + "/current_state", "code", currentValues, rmObject.getCurrentState().getDefiningCode()::setCodeString, String.class);
+        setValue(currentTerm + "/current_state", "value", currentValues, rmObject.getCurrentState()::setValue, String.class);
+        setValue(currentTerm + "/current_state", "terminology", currentValues, rmObject.getCurrentState().getDefiningCode().getTerminologyId()::setValue, String.class);
+
     }
 }

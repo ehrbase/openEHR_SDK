@@ -20,6 +20,7 @@
 package org.ehrbase.client.std.marshal.config;
 
 import com.nedap.archie.rm.composition.IsmTransition;
+import org.ehrbase.client.walker.Context;
 
 import java.util.HashMap;
 import java.util.List;
@@ -40,7 +41,7 @@ public class IsmTransitionConfig extends AbstractsStdConfig<IsmTransition> {
      * {@inheritDoc}
      */
     @Override
-    public Map<String, Object> buildChildValues(String currentTerm, IsmTransition rmObject) {
+    public Map<String, Object> buildChildValues(String currentTerm, IsmTransition rmObject, Context<Map<String, Object>> context) {
         Map<String, Object> result = new HashMap<>();
         addValue(result, currentTerm + "/current_state", "code", rmObject.getCurrentState().getDefiningCode().getCodeString());
         addValue(result, currentTerm + "/current_state", "value", rmObject.getCurrentState().getValue());

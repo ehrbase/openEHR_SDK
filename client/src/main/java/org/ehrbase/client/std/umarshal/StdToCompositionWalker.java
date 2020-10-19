@@ -21,11 +21,8 @@ package org.ehrbase.client.std.umarshal;
 
 import com.nedap.archie.rm.RMObject;
 import com.nedap.archie.rm.composition.Composition;
-import com.nedap.archie.rminfo.ArchieRMInfoLookup;
 import org.apache.commons.lang3.ClassUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.ehrbase.client.std.marshal.config.DefaultStdConfig;
-import org.ehrbase.client.std.marshal.config.StdConfig;
 import org.ehrbase.client.std.umarshal.postprocessor.UnmarshalPostprocessor;
 import org.ehrbase.client.std.umarshal.rmunmarshaller.DefaultRMUnmarshaller;
 import org.ehrbase.client.std.umarshal.rmunmarshaller.RMUnmarshaller;
@@ -47,13 +44,9 @@ import static org.ehrbase.client.introspect.TemplateIntrospect.TERM_DIVIDER;
 
 public class StdToCompositionWalker extends ToCompositionWalker<Map<String, String>> {
 
-    public static final ArchieRMInfoLookup ARCHIE_RM_INFO_LOOKUP = ArchieRMInfoLookup.getInstance();
-
     private static final Map<Class<?>, RMUnmarshaller> UNMARSHALLER_MAP = ReflectionHelper.buildMap(RMUnmarshaller.class);
     private static final Map<Class<?>, UnmarshalPostprocessor> POSTPROCESSOR_MAP = ReflectionHelper.buildMap(UnmarshalPostprocessor.class);
 
-    private static final Map<Class<? extends RMObject>, StdConfig> configMap = ReflectionHelper.buildMap(StdConfig.class);
-    public static final DefaultStdConfig DEFAULT_STD_CONFIG = new DefaultStdConfig();
 
 
     private Set<String> consumedPaths;
@@ -97,7 +90,7 @@ public class StdToCompositionWalker extends ToCompositionWalker<Map<String, Stri
 
             return subValues.isEmpty();
         } else {
-            // End Nodes witch are Choice always have unique flat paths
+            // End Nodes which are Choice always have unique flat paths
             return true;
         }
 
@@ -110,7 +103,7 @@ public class StdToCompositionWalker extends ToCompositionWalker<Map<String, Stri
         //Handle if at a End-Node
         if (!visitChildren(context.getNodeDeque().peek())) {
             RMUnmarshaller rmUnmarshaller = UNMARSHALLER_MAP.getOrDefault(context.getRmObjectDeque().peek().getClass(), new DefaultRMUnmarshaller());
-            rmUnmarshaller.handle(buildNamePath(context), context.getRmObjectDeque().peek(), context.getObjectDeque().peek());
+            rmUnmarshaller.handle(buildNamePath(context), context.getRmObjectDeque().peek(), context.getObjectDeque().peek(), context);
             consumedPaths.addAll(rmUnmarshaller.getConsumedPaths());
         }
     }

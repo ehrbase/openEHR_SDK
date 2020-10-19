@@ -20,6 +20,7 @@
 package org.ehrbase.client.std.marshal.config;
 
 import com.nedap.archie.rm.datatypes.CodePhrase;
+import org.ehrbase.client.walker.Context;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -32,7 +33,7 @@ public class CodePhraseStdConfig extends AbstractsStdConfig<CodePhrase> {
     /**
      * {@inheritDoc}
      */
-    public Map<String, Object> buildChildValues(String currentTerm, CodePhrase rmObject) {
+    public Map<String, Object> buildChildValues(String currentTerm, CodePhrase rmObject, Context<Map<String, Object>> context) {
         Map<String, Object> result = new HashMap<>();
         addValue(result, currentTerm, "code", rmObject.getCodeString());
         addValue(result, currentTerm, "terminology", rmObject.getTerminologyId().getValue());

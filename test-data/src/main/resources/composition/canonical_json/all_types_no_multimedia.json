@@ -273,7 +273,7 @@
                   "archetype_node_id": "at0013",
                   "value": {
                     "_type": "DV_ORDINAL",
-                    "value": 0,
+                    "value": 1,
                     "symbol": {
                       "_type": "DV_CODED_TEXT",
                       "value": "ord1",
@@ -283,7 +283,7 @@
                           "_type": "TERMINOLOGY_ID",
                           "value": "local"
                         },
-                        "code_string": "at0014"
+                        "code_string": "at0015"
                       }
                     }
                   }

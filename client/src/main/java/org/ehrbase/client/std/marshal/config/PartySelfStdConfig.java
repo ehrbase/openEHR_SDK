@@ -20,6 +20,7 @@
 package org.ehrbase.client.std.marshal.config;
 
 import com.nedap.archie.rm.generic.PartySelf;
+import org.ehrbase.client.walker.Context;
 
 import java.util.Collections;
 import java.util.List;
@@ -40,7 +41,7 @@ public class PartySelfStdConfig extends AbstractsStdConfig<PartySelf> {
      * {@inheritDoc}
      */
     @Override
-    public Map<String, Object> buildChildValues(String currentTerm, PartySelf rmObject) {
+    public Map<String, Object> buildChildValues(String currentTerm, PartySelf rmObject, Context<Map<String, Object>> context) {
 
         return Collections.emptyMap();
     }

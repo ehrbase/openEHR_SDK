@@ -23,7 +23,7 @@
   "test_all_types/test_all_types:0/datetime_any": "2019-01-28T21:22:49.427Z",
   "test_all_types/test_all_types:0/time": "18:36:49",
   "test_all_types/test_all_types:0/ordinal|code": "at0015",
-  "test_all_types/test_all_types:0/ordinal|value": "NIQAMVFFOQMQOOM",
+  "test_all_types/test_all_types:0/ordinal|value": "ord1",
   "test_all_types/test_all_types:0/ordinal|ordinal": 1,
   "test_all_types/test_all_types:0/boolean": true,
   "test_all_types/test_all_types:0/duration_any": "PT30M",

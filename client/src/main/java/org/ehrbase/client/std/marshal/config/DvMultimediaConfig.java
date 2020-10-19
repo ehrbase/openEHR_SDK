@@ -20,6 +20,7 @@
 package org.ehrbase.client.std.marshal.config;
 
 import com.nedap.archie.rm.datavalues.encapsulated.DvMultimedia;
+import org.ehrbase.client.walker.Context;
 
 import java.util.HashMap;
 import java.util.List;
@@ -40,7 +41,7 @@ public class DvMultimediaConfig extends AbstractsStdConfig<DvMultimedia> {
      * {@inheritDoc}
      */
     @Override
-    public Map<String, Object> buildChildValues(String currentTerm, DvMultimedia rmObject) {
+    public Map<String, Object> buildChildValues(String currentTerm, DvMultimedia rmObject, Context<Map<String, Object>> context) {
         Map<String, Object> result = new HashMap<>();
         addValue(result, currentTerm, null, rmObject.getUri().getValue());
         addValue(result, currentTerm, "mediatype", rmObject.getMediaType().getCodeString());

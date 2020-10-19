@@ -20,6 +20,7 @@
 package org.ehrbase.client.std.umarshal.rmunmarshaller;
 
 import com.nedap.archie.rm.RMObject;
+import org.ehrbase.client.walker.Context;
 import org.ehrbase.util.reflection.ClassDependent;
 
 import java.util.Map;
@@ -35,8 +36,9 @@ public interface RMUnmarshaller<T extends RMObject> extends ClassDependent<T> {
      * @param currentTerm
      * @param rmObject
      * @param currentValues
+     * @param context
      */
-    void handle(String currentTerm, T rmObject, Map<String, String> currentValues);
+    void handle(String currentTerm, T rmObject, Map<String, String> currentValues, Context<Map<String, String>> context);
 
     /**
      * @return The parts consumed by this RMUnmarshaller

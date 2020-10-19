@@ -85,16 +85,12 @@ public class FlatJsonMarshallerTest {
                 .filteredOn(s -> s.startsWith("Missing"))
                 .containsExactlyInAnyOrder(
                         "Missing path: test_all_types/test_all_types:0/identifier|id, value: 55175056",
-                        "Missing path: test_all_types/test_all_types:0/ordinal|code, value: at0014",
                         "Missing path: test_all_types/test_all_types:0/proportion_any|type, value: 1"
                 );
 
         assertThat(errors)
                 .filteredOn(s -> s.startsWith("Extra"))
                 .containsExactlyInAnyOrder(
-                        "Extra path: test_all_types/test_all_types:0/ordinal|code, value: at0015",
-                        "Extra path: test_all_types/test_all_types:0/ordinal|value, value: NIQAMVFFOQMQOOM",
-                        "Extra path: test_all_types/test_all_types:0/ordinal|ordinal, value: 1",
                         "Extra path: test_all_types/test_all_types:0/identifier, value: 55175056",
                         "Extra path: test_all_types/test_all_types:0/proportion_any|type, value: 1.0"
                 );
@@ -106,16 +102,7 @@ public class FlatJsonMarshallerTest {
 
         Map<String, Object> actual = objectMapper.readValue(actualJson, Map.class);
         Map<String, Object> expected = objectMapper.readValue(expectedJson, Map.class);
-/*
-        Assertions.assertThat(actual.entrySet())
-                .filteredOn(actualFilter)
-                .extracting(Map.Entry::getKey, Map.Entry::getValue)
-                .containsExactlyInAnyOrder(expected.entrySet().stream()
-                        .filter(expectedFilter)
-                        .map(e -> new Tuple(e.getKey(), e.getValue()))
-                        .toArray(Tuple[]::new)
-                );
-*/
+
         actual.forEach((key, value) -> {
             if (!expected.containsKey(key) || !expected.get(key).equals(value)) {
                 errors.add(String.format("Missing path: %s, value: %s", key, value));

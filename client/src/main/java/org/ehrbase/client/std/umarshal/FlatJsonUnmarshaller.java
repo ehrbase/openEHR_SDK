@@ -22,22 +22,13 @@ package org.ehrbase.client.std.umarshal;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.nedap.archie.creation.RMObjectCreator;
 import com.nedap.archie.rm.composition.Composition;
-import com.nedap.archie.rminfo.ArchieRMInfoLookup;
 import org.ehrbase.client.building.OptSkeletonBuilder;
 import org.ehrbase.client.exception.ClientException;
 import org.ehrbase.client.normalizer.Normalizer;
-import org.ehrbase.client.std.marshal.config.DefaultStdConfig;
-import org.ehrbase.client.std.marshal.config.StdConfig;
-import org.ehrbase.client.std.umarshal.postprocessor.UnmarshalPostprocessor;
-import org.ehrbase.client.std.umarshal.rmunmarshaller.RMUnmarshaller;
 import org.ehrbase.serialisation.jsonencoding.JacksonUtil;
-import org.ehrbase.util.reflection.ReflectionHelper;
 import org.ehrbase.webtemplate.model.WebTemplate;
 import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -48,17 +39,10 @@ import java.util.Set;
 
 public class FlatJsonUnmarshaller {
 
-    public static final DefaultStdConfig DEFAULT_STD_CONFIG = new DefaultStdConfig();
-    private static final Map<Class<?>, StdConfig> configMap = ReflectionHelper.buildMap(StdConfig.class);
-    private static final Map<Class<?>, RMUnmarshaller> UNMARSHALLER_MAP = ReflectionHelper.buildMap(RMUnmarshaller.class);
-    private static final Map<Class<?>, UnmarshalPostprocessor> POSTPROCESSOR_MAP = ReflectionHelper.buildMap(UnmarshalPostprocessor.class);
-    private static final ObjectMapper OBJECT_MAPPER = JacksonUtil.getObjectMapper();
+   private static final ObjectMapper OBJECT_MAPPER = JacksonUtil.getObjectMapper();
     public static final OptSkeletonBuilder OPT_SKELETON_BUILDER = new OptSkeletonBuilder();
-    public static final ArchieRMInfoLookup ARCHIE_RM_INFO_LOOKUP = ArchieRMInfoLookup.getInstance();
-    private static final RMObjectCreator RM_OBJECT_CREATOR = new RMObjectCreator(ARCHIE_RM_INFO_LOOKUP);
     public static final Normalizer NORMALIZER = new Normalizer();
 
-    private final Logger log = LoggerFactory.getLogger(getClass());
 
     private Set<String> consumedPath;
 

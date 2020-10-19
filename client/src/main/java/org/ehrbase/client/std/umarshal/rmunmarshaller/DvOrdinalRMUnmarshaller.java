@@ -23,8 +23,12 @@ import com.nedap.archie.rm.datatypes.CodePhrase;
 import com.nedap.archie.rm.datavalues.DvCodedText;
 import com.nedap.archie.rm.datavalues.quantity.DvOrdinal;
 import com.nedap.archie.rm.support.identification.TerminologyId;
+import org.ehrbase.client.walker.Context;
+import org.ehrbase.util.exception.SdkException;
+import org.ehrbase.webtemplate.model.WebTemplateInputValue;
 
 import java.util.Map;
+import java.util.function.Consumer;
 
 public class DvOrdinalRMUnmarshaller extends AbstractRMUnmarshaller<DvOrdinal> {
 
@@ -40,15 +44,26 @@ public class DvOrdinalRMUnmarshaller extends AbstractRMUnmarshaller<DvOrdinal> {
      * {@inheritDoc}
      */
     @Override
-    public void handle(String currentTerm, DvOrdinal rmObject, Map<String, String> currentValues) {
+    public void handle(String currentTerm, DvOrdinal rmObject, Map<String, String> currentValues, Context<Map<String, String>> context) {
 
         rmObject.setSymbol(new DvCodedText());
         rmObject.getSymbol().setDefiningCode(new CodePhrase());
         rmObject.getSymbol().getDefiningCode().setTerminologyId(new TerminologyId("local"));
         setValue(currentTerm, "code", currentValues, rmObject.getSymbol().getDefiningCode()::setCodeString, String.class);
 
-        //@TODO set correct value
-        rmObject.getSymbol().setValue("ord1");
-        rmObject.setValue(1l);
+        WebTemplateInputValue value = context.getNodeDeque().peek()
+                .getInputs()
+                .get(0)
+                .getList()
+                .stream()
+                .filter(o -> o.getValue().equals(rmObject.getSymbol().getDefiningCode().getCodeString()))
+                .findAny()
+                .orElseThrow(() -> new SdkException(String.format("Unknown Ordinal with code %s", (Consumer<String>) rmObject.getSymbol().getDefiningCode()::setCodeString)));
+
+        rmObject.setValue(Long.valueOf(value.getOrdinal()));
+        consumedPath.add(currentTerm + "|ordinal");
+        rmObject.getSymbol().setValue(value.getLabel());
+        consumedPath.add(currentTerm + "|value");
+
     }
 }

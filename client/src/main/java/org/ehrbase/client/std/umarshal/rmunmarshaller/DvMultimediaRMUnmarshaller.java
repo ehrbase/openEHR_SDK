@@ -23,6 +23,7 @@ import com.nedap.archie.rm.datatypes.CodePhrase;
 import com.nedap.archie.rm.datavalues.DvURI;
 import com.nedap.archie.rm.datavalues.encapsulated.DvMultimedia;
 import com.nedap.archie.rm.support.identification.TerminologyId;
+import org.ehrbase.client.walker.Context;
 
 import java.net.URI;
 import java.util.Map;
@@ -41,7 +42,7 @@ public class DvMultimediaRMUnmarshaller extends AbstractRMUnmarshaller<DvMultime
      * {@inheritDoc}
      */
     @Override
-    public void handle(String currentTerm, DvMultimedia rmObject, Map<String, String> currentValues) {
+    public void handle(String currentTerm, DvMultimedia rmObject, Map<String, String> currentValues, Context<Map<String, String>> context) {
         rmObject.setUri(new DvURI());
         rmObject.setMediaType(new CodePhrase());
         rmObject.getMediaType().setTerminologyId(new TerminologyId("IANA_media-types"));

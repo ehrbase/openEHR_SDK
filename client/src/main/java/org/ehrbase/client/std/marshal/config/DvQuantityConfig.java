@@ -20,6 +20,7 @@
 package org.ehrbase.client.std.marshal.config;
 
 import com.nedap.archie.rm.datavalues.quantity.DvQuantity;
+import org.ehrbase.client.walker.Context;
 
 import java.util.HashMap;
 import java.util.List;
@@ -40,7 +41,7 @@ public class DvQuantityConfig extends AbstractsStdConfig<DvQuantity> {
      * {@inheritDoc}
      */
     @Override
-    public Map<String, Object> buildChildValues(String currentTerm, DvQuantity rmObject) {
+    public Map<String, Object> buildChildValues(String currentTerm, DvQuantity rmObject, Context<Map<String, Object>> context) {
         Map<String, Object> result = new HashMap<>();
         addValue(result, currentTerm, "magnitude", rmObject.getMagnitude());
         addValue(result, currentTerm, "unit", rmObject.getUnits());

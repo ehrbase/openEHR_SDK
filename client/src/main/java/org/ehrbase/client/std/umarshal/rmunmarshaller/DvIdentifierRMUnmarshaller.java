@@ -21,6 +21,7 @@ package org.ehrbase.client.std.umarshal.rmunmarshaller;
 
 import com.nedap.archie.rm.datavalues.DvIdentifier;
 import org.apache.commons.lang3.StringUtils;
+import org.ehrbase.client.walker.Context;
 
 import java.util.Map;
 
@@ -38,7 +39,7 @@ public class DvIdentifierRMUnmarshaller extends AbstractRMUnmarshaller<DvIdentif
      * {@inheritDoc}
      */
     @Override
-    public void handle(String currentTerm, DvIdentifier rmObject, Map<String, String> currentValues) {
+    public void handle(String currentTerm, DvIdentifier rmObject, Map<String, String> currentValues, Context<Map<String, String>> context) {
 
         setValue(currentTerm, "id", currentValues, rmObject::setId, String.class);
         if (StringUtils.isBlank(rmObject.getId())) {

@@ -20,6 +20,7 @@
 package org.ehrbase.client.std.umarshal.rmunmarshaller;
 
 import com.nedap.archie.rm.datavalues.encapsulated.DvParsable;
+import org.ehrbase.client.walker.Context;
 
 import java.util.Map;
 
@@ -37,7 +38,7 @@ public class DvParsableRMUnmarshaller extends AbstractRMUnmarshaller<DvParsable>
      * {@inheritDoc}
      */
     @Override
-    public void handle(String currentTerm, DvParsable rmObject, Map<String, String> currentValues) {
+    public void handle(String currentTerm, DvParsable rmObject, Map<String, String> currentValues, Context<Map<String, String>> context) {
 
         setValue(currentTerm, null, currentValues, rmObject::setValue, String.class);
         setValue(currentTerm, "formalism", currentValues, rmObject::setFormalism, String.class);
