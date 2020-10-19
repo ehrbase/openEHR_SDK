@@ -22,58 +22,34 @@
         <artifactId>root</artifactId>
         <groupId>com.github.ehrbase.openEHR_SDK</groupId>
         <version>0.3.7</version>
-        <relativePath>../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>web-template</artifactId>
-
+    <artifactId>building</artifactId>
     <dependencies>
         <dependency>
-            <groupId>com.github.ehrbase.openEHR_SDK</groupId>
-            <artifactId>opt-1.4</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.github.ehrbase.openEHR_SDK</groupId>
-            <artifactId>util</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.github.ehrbase.openEHR_SDK</groupId>
-            <artifactId>terminology</artifactId>
+            <groupId>com.github.openEHR.archie</groupId>
+            <artifactId>openehr-rm</artifactId>
+            <version>2ef8389</version>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-collections4</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-lang3</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.jayway.jsonpath</groupId>
-            <artifactId>json-path</artifactId>
+            <groupId>com.github.ehrbase.openEHR_SDK</groupId>
+            <artifactId>opt-1.4</artifactId>
         </dependency>
         <dependency>
             <groupId>com.github.ehrbase.openEHR_SDK</groupId>
-            <artifactId>test-data</artifactId>
+            <artifactId>terminology</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.assertj</groupId>
-            <artifactId>assertj-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.github.openEHR</groupId>
-            <artifactId>archie</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>javax.cache</groupId>
-            <artifactId>cache-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.ehcache</groupId>
-            <artifactId>ehcache</artifactId>
-            <scope>test</scope>
+            <groupId>com.github.ehrbase.openEHR_SDK</groupId>
+            <artifactId>web-template</artifactId>
         </dependency>
     </dependencies>
+
 
 </project>

@@ -37,6 +37,7 @@
         <module>test-coverage</module>
         <module>web-template</module>
         <module>util</module>
+        <module>building</module>
     </modules>
 
 
@@ -291,6 +292,11 @@
             <dependency>
                 <groupId>com.github.ehrbase.openEHR_SDK</groupId>
                 <artifactId>opt-1.4</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.ehrbase.openEHR_SDK</groupId>
+                <artifactId>building</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>

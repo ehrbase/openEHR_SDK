@@ -21,6 +21,7 @@ package org.ehrbase.client.building;
 import com.nedap.archie.rm.archetyped.Locatable;
 import com.nedap.archie.rm.composition.Composition;
 import com.nedap.archie.rm.datavalues.DvText;
+import org.ehrbase.building.OptSkeletonBuilder;
 import org.ehrbase.test_data.operationaltemplate.OperationalTemplateTestData;
 import org.junit.Test;
 import org.openehr.schemas.v1.OPERATIONALTEMPLATE;

@@ -19,19 +19,9 @@
 package org.ehrbase.validation;
 
 import com.nedap.archie.rm.composition.Composition;
-import com.nedap.archie.rm.datastructures.ItemTree;
-import com.nedap.archie.rm.datavalues.DvText;
-import com.nedap.archie.rm.ehr.EhrStatus;
-import com.nedap.archie.rm.generic.PartySelf;
-import com.nedap.archie.rm.support.identification.PartyRef;
 import com.nedap.archie.xml.JAXBUtil;
-import org.apache.commons.io.IOUtils;
-import org.ehrbase.serialisation.jsonencoding.CanonicalJson;
-import org.ehrbase.serialisation.xmlencoding.CanonicalXML;
 import org.ehrbase.terminology.openehr.implementation.AttributeCodesetMapping;
 import org.ehrbase.terminology.openehr.implementation.LocalizedTerminologies;
-import org.ehrbase.test_data.composition.CompositionTestDataCanonicalXML;
-import org.ehrbase.test_data.item_structure.ItemStruktureTestDataCanonicalJson;
 import org.ehrbase.validation.terminology.ItemStructureVisitor;
 import org.junit.Before;
 import org.junit.Test;
@@ -39,12 +29,9 @@ import org.junit.Test;
 import javax.xml.bind.Unmarshaller;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertTrue;
-import static org.junit.Assert.fail;
 
 public class ItemStructureVisitorTest {
 
@@ -96,6 +83,7 @@ public class ItemStructureVisitorTest {
 
     }
 
+    /*
 
     @Test
     public void ehrVisitorTest() throws Throwable {
@@ -124,5 +112,5 @@ public class ItemStructureVisitorTest {
         }
     }
 
-
+*/
 }
