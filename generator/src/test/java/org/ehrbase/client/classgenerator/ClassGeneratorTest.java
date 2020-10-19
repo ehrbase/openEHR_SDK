@@ -255,6 +255,23 @@ public class ClassGeneratorTest {
     }
 
     @Test
+    public void testGenerateSmICS() throws IOException, XmlException {
+        OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(OperationalTemplateTestData.SM_I_C_S_BEFUND.getStream()).getTemplate();
+        ClassGenerator cut = new ClassGenerator();
+        ClassGeneratorResult generate = cut.generate(PACKAGE_NAME, template);
+        List<FieldSpec> fieldSpecs = generate.getClasses().values().stream()
+                .flatMap(Collection::stream)
+                .filter(t -> !t.kind.equals(TypeSpec.Kind.ENUM))
+                .map(t -> t.fieldSpecs).flatMap(List::stream).collect(Collectors.toList());
+
+        assertThat(fieldSpecs).size().isEqualTo(80);
+
+        writeFiles(generate);
+
+
+    }
+
+    @Test
     public void testGenerateBefundDerBlutgasanalyse() throws IOException, XmlException {
         OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(OperationalTemplateTestData.BEFUND_DER_BLUTGASANALYSE.getStream()).getTemplate();
         ClassGenerator cut = new ClassGenerator();
