@@ -18,20 +18,35 @@
 
 package org.ehrbase.validation;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.nedap.archie.json.JacksonUtil;
+import com.nedap.archie.json.RMJacksonConfiguration;
 import com.nedap.archie.rm.composition.Composition;
+import com.nedap.archie.rm.datastructures.ItemTree;
+import com.nedap.archie.rm.datavalues.DvText;
+import com.nedap.archie.rm.ehr.EhrStatus;
+import com.nedap.archie.rm.generic.PartySelf;
+import com.nedap.archie.rm.support.identification.PartyRef;
 import com.nedap.archie.xml.JAXBUtil;
+import org.apache.commons.io.IOUtils;
 import org.ehrbase.terminology.openehr.implementation.AttributeCodesetMapping;
 import org.ehrbase.terminology.openehr.implementation.LocalizedTerminologies;
+import org.ehrbase.test_data.composition.CompositionTestDataCanonicalXML;
+import org.ehrbase.test_data.item_structure.ItemStruktureTestDataCanonicalJson;
 import org.ehrbase.validation.terminology.ItemStructureVisitor;
 import org.junit.Before;
 import org.junit.Test;
 
+import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class ItemStructureVisitorTest {
 
@@ -83,15 +98,16 @@ public class ItemStructureVisitorTest {
 
     }
 
-    /*
 
     @Test
     public void ehrVisitorTest() throws Throwable {
         String value = IOUtils.toString(ItemStruktureTestDataCanonicalJson.SIMPLE_EHR_OTHER_Details.getStream(), UTF_8);
 
-        CanonicalJson cut = new CanonicalJson();
+        RMJacksonConfiguration configuration = new RMJacksonConfiguration();
+        configuration.setTypePropertyName("_type");
+        ObjectMapper objectMapper = JacksonUtil.getObjectMapper(configuration);
 
-        ItemTree otherDetails = cut.unmarshal(value, ItemTree.class);
+        ItemTree otherDetails = objectMapper.readValue(value, ItemTree.class);
 
         EhrStatus ehrStatus = new EhrStatus("ehr_status", new DvText("ehr_status"), new PartySelf(new PartyRef()), true, true, otherDetails);
 
@@ -101,16 +117,17 @@ public class ItemStructureVisitorTest {
     }
 
     @Test
-    public void testValidateTestAllTypesWithInvalidParticipations() throws IOException {
-        Composition composition = new CanonicalXML().unmarshal(IOUtils.toString(CompositionTestDataCanonicalXML.ALL_TYPES_INVALID_PARTICIPATIONS.getStream(), UTF_8),Composition.class);
+    public void testValidateTestAllTypesWithInvalidParticipations() throws IOException, JAXBException {
+        Unmarshaller unmarshaller = JAXBUtil.getArchieJAXBContext().createUnmarshaller();
+        Composition composition = (Composition) unmarshaller.unmarshal(CompositionTestDataCanonicalXML.ALL_TYPES_INVALID_PARTICIPATIONS.getStream());
 
         try {
             itemStructureVisitor.validate(composition);
             fail("invalid value in participations not detected");
-        }catch (Exception e){
+        } catch (Exception e) {
 
         }
     }
 
-*/
+
 }
