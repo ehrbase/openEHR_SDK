@@ -94,7 +94,7 @@ public class OPTParserTest {
         ObjectMapper objectMapper = new ObjectMapper();
         WebTemplate expected = objectMapper.readValue(IOUtils.toString(WebTemplateTestData.ALL_TYPES.getStream(), StandardCharsets.UTF_8), WebTemplate.class);
 
-        List<WebTemplateNode> dvOrdinalList = expected.getTree().findMatching(n -> n.getRmType().equals("DV_ORDINAL"));
+        List<WebTemplateNode> dvOrdinalList = actual.getTree().findMatching(n -> n.getRmType().equals("DV_ORDINAL"));
         assertThat(dvOrdinalList).size().isEqualTo(1);
         assertThat(dvOrdinalList.get(0).getInputs())
                 .flatExtracting(WebTemplateInput::getList)
@@ -103,6 +103,29 @@ public class OPTParserTest {
                         new Tuple("ord1", "at0014", 0),
                         new Tuple("ord1", "at0015", 1),
                         new Tuple("ord3", "at0016", 2)
+                );
+
+        List<WebTemplateNode> dvQuantityList = actual.getTree().findMatching(n -> n.getRmType().equals("DV_QUANTITY"));
+        assertThat(dvQuantityList)
+                .flatExtracting(WebTemplateNode::getInputs)
+                .flatExtracting(WebTemplateInput::getList)
+                .extracting(WebTemplateInputValue::getLabel, WebTemplateInputValue::getValue)
+                .containsExactlyInAnyOrder(
+                        new Tuple("mg", "mg"),
+                        new Tuple("kg", "kg"),
+                        new Tuple("mm[H20]", "mm[H20]"),
+                        new Tuple("mm[Hg]", "mm[Hg]")
+                );
+        List<WebTemplateNode> dvCodedTextList = actual.getTree().findMatching(n -> n.getRmType().equals("DV_CODED_TEXT"));
+        assertThat(dvCodedTextList)
+                .flatExtracting(WebTemplateNode::getInputs)
+                .extracting(WebTemplateInput::getTerminology, i -> i.getList().stream().map(v -> v.getValue() + ":" + v.getLabel()).collect(Collectors.joining(";")))
+                .containsExactlyInAnyOrder(
+                        new Tuple("local", "at0006:value1;at0007:value2;at0008:value3"),
+                        new Tuple("local", ""),
+                        new Tuple("SNOMED-CT", ""),
+                        new Tuple(null, "at0003:Planned;at0004:Active;at0005:Completed"),
+                        new Tuple(null, "526:planned;245:active;532:completed")
                 );
 
         List<String> errors = compareWebTemplate(actual, expected);
@@ -120,10 +143,8 @@ public class OPTParserTest {
         assertThat(errors)
                 .filteredOn(s -> s.contains("Missing Node"))
                 .containsExactlyInAnyOrder(
-                        "Missing Node id=action_archetype_id aql=/content[openEHR-EHR-SECTION.test_all_types.v1]/items[at0001]/items[at0002]/items[openEHR-EHR-INSTRUCTION.test_all_types.v1]/activities[at0001]/action_archetype_id",
-                        "Missing Node id=current_state aql=/content[openEHR-EHR-SECTION.test_all_types.v1]/items[at0001]/items[at0002]/items[openEHR-EHR-ACTION.test_all_types.v1]/ism_transition/current_state",
-                        "Missing Node id=careflow_step aql=/content[openEHR-EHR-SECTION.test_all_types.v1]/items[at0001]/items[at0002]/items[openEHR-EHR-ACTION.test_all_types.v1]/ism_transition/careflow_step",
-                        "Missing Node id=transition aql=/content[openEHR-EHR-SECTION.test_all_types.v1]/items[at0001]/items[at0002]/items[openEHR-EHR-ACTION.test_all_types.v1]/ism_transition/transition");
+                        "Missing Node id=action_archetype_id aql=/content[openEHR-EHR-SECTION.test_all_types.v1]/items[at0001]/items[at0002]/items[openEHR-EHR-INSTRUCTION.test_all_types.v1]/activities[at0001]/action_archetype_id"
+                );
     }
 
     public List<String> compareWebTemplate(WebTemplate actual, WebTemplate expected) {

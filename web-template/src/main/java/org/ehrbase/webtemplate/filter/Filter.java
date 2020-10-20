@@ -97,8 +97,7 @@ public class Filter {
         } else if (node.getRmType().equals("ELEMENT")) {
             return node.getChildren().size() == 1;
         } else if (node.getRmType().equals("CODE_PHRASE")) {
-            List<WebTemplateNode> matching = context.getTree().findMatching(n -> n.getChildren().contains(node));
-            return matching.get(0).getRmType().equals("DV_CODED_TEXT");
+            return parent.getRmType().equals("DV_CODED_TEXT");
         }
         return false;
     }

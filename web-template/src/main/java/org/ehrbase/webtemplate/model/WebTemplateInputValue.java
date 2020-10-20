@@ -31,7 +31,6 @@ public class WebTemplateInputValue {
     private String label;
     private final Map<String, String> localizedLabels = new HashMap<>();
     private final Map<String, String> localizedDescriptions = new HashMap<>();
-    private String terminology;
     private final Map<String, WebTemplateTerminology> termBindings = new HashMap<>();
     private Integer ordinal;
     private final List<String> currentStates = new ArrayList<>();
@@ -60,14 +59,6 @@ public class WebTemplateInputValue {
         return localizedDescriptions;
     }
 
-    public String getTerminology() {
-        return terminology;
-    }
-
-    public void setTerminology(String terminology) {
-        this.terminology = terminology;
-    }
-
     public Map<String, WebTemplateTerminology> getTermBindings() {
         return termBindings;
     }
@@ -91,12 +82,11 @@ public class WebTemplateInputValue {
         WebTemplateInputValue that = (WebTemplateInputValue) o;
         return Objects.equals(value, that.value) &&
                 Objects.equals(label, that.label) &&
-                localizedLabels.equals(that.localizedLabels) &&
-                Objects.equals(terminology, that.terminology);
+                localizedLabels.equals(that.localizedLabels);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(value, label, localizedLabels, terminology);
+        return Objects.hash(value, label, localizedLabels);
     }
 }

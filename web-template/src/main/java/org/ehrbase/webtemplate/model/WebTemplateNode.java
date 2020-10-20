@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -168,6 +169,10 @@ public class WebTemplateNode implements Serializable {
 
     public List<String> getProportionTypes() {
         return proportionTypes;
+    }
+
+    public Optional<WebTemplateNode> findChildById(String id) {
+        return children.stream().filter(n -> n.getId().equals(id)).findAny();
     }
 
     public List<WebTemplateNode> findMatching(Predicate<WebTemplateNode> filter) {
