@@ -35,12 +35,21 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.apache.http.Header;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.fluent.Executor;
 import org.apache.http.client.fluent.Request;
 import org.apache.http.entity.ContentType;
 import org.apache.http.util.EntityUtils;
 import org.ehrbase.client.exception.ClientException;
 import org.ehrbase.client.exception.OptimisticLockException;
 import org.ehrbase.client.exception.WrongStatusCodeException;
+import org.ehrbase.client.openehrclient.AqlEndpoint;
+import org.ehrbase.client.openehrclient.CompositionEndpoint;
+import org.ehrbase.client.openehrclient.FolderDAO;
+import org.ehrbase.client.openehrclient.OpenEhrClient;
+import org.ehrbase.client.openehrclient.OpenEhrClientConfig;
+import org.ehrbase.client.openehrclient.TemplateEndpoint;
+import org.ehrbase.client.openehrclient.VersionUid;
 import org.ehrbase.client.openehrclient.AqlEndpoint;
 import org.ehrbase.client.openehrclient.CompositionEndpoint;
 import org.ehrbase.client.openehrclient.FolderDAO;
@@ -66,13 +75,19 @@ public class DefaultRestClient implements OpenEhrClient {
     static final ObjectMapper OBJECT_MAPPER = createObjectMapper();
     private final OpenEhrClientConfig config;
     private final TemplateProvider templateProvider;
+    private final Executor executor;
     private final DefaultRestEhrEndpoint defaultRestEhrEndpoint;
     private final Map<UUID, DefaultRestDirectoryEndpoint> directoryEndpointMap = new WeakHashMap<>();
 
 
     public DefaultRestClient(OpenEhrClientConfig config, TemplateProvider templateProvider) {
+        this(config, templateProvider, null);
+    }
+
+    public DefaultRestClient(OpenEhrClientConfig config, TemplateProvider templateProvider, HttpClient httpClient) {
         this.config = config;
         this.templateProvider = templateProvider;
+        executor = Executor.newInstance(httpClient);
         defaultRestEhrEndpoint = new DefaultRestEhrEndpoint(this);
     }
 
@@ -93,12 +108,19 @@ public class DefaultRestClient implements OpenEhrClient {
         return objectMapper;
     }
 
-    static VersionUid httpPost(URI uri, RMObject body) {
+    protected VersionUid httpPost(URI uri, RMObject body) {
+        return httpPost(uri, body, null);
+    }
+
+    protected VersionUid httpPost(URI uri, RMObject body, Map<String, String> headers) {
         try {
-            HttpResponse response = Request.Post(uri)
+            Request request = Request.Post(uri)
                     .addHeader(HttpHeaders.ACCEPT, ACCEPT_APPLICATION_JSON)
-                    .bodyString(new CanonicalJson().marshal(body), ContentType.APPLICATION_JSON)
-                    .execute().returnResponse();
+                    .bodyString(new CanonicalJson().marshal(body), ContentType.APPLICATION_JSON);
+            if (headers != null) {
+                headers.forEach(request::addHeader);
+            }
+            HttpResponse response = executor.execute(request).returnResponse();
             checkStatus(response, HttpStatus.SC_OK, HttpStatus.SC_CREATED, HttpStatus.SC_NO_CONTENT);
             Header eTag = response.getFirstHeader(HttpHeaders.ETAG);
             return new VersionUid(eTag.getValue().replace("\"", ""));
@@ -107,13 +129,20 @@ public class DefaultRestClient implements OpenEhrClient {
         }
     }
 
-    static VersionUid httpPut(URI uri, Locatable body, VersionUid versionUid) {
+    protected VersionUid httpPut(URI uri, Locatable body, VersionUid versionUid) {
+        return httpPut(uri, body, versionUid, null);
+    }
+
+    protected VersionUid httpPut(URI uri, Locatable body, VersionUid versionUid, Map<String, String> headers) {
         try {
-            HttpResponse response = Request.Put(uri)
+            Request request = Request.Put(uri)
                     .addHeader(HttpHeaders.ACCEPT, ACCEPT_APPLICATION_JSON)
                     .addHeader(HttpHeaders.IF_MATCH, versionUid.toString())
-                    .bodyString(new CanonicalJson().marshal(body), ContentType.APPLICATION_JSON)
-                    .execute().returnResponse();
+                    .bodyString(new CanonicalJson().marshal(body), ContentType.APPLICATION_JSON);
+            if (headers != null) {
+                headers.forEach(request::addHeader);
+            }
+            HttpResponse response = executor.execute(request).returnResponse();
             checkStatus(response, HttpStatus.SC_OK, HttpStatus.SC_NO_CONTENT, HttpStatus.SC_PRECONDITION_FAILED);
             if (HttpStatus.SC_PRECONDITION_FAILED == response.getStatusLine().getStatusCode()) {
                 throw new OptimisticLockException("Entity outdated");
@@ -125,11 +154,18 @@ public class DefaultRestClient implements OpenEhrClient {
         }
     }
 
-    static <T> Optional<T> httpGet(URI uri, Class<T> valueType) {
+    protected <T> Optional<T> httpGet(URI uri, Class<T> valueType) {
+        return httpGet(uri, valueType, null);
+    }
+
+    protected <T> Optional<T> httpGet(URI uri, Class<T> valueType, Map<String, String> headers) {
         try {
-            HttpResponse response = Request.Get(uri)
-                    .addHeader(HttpHeaders.ACCEPT, ACCEPT_APPLICATION_JSON)
-                    .execute().returnResponse();
+            Request request = Request.Get(uri)
+                    .addHeader(HttpHeaders.ACCEPT, ACCEPT_APPLICATION_JSON);
+            if (headers != null) {
+                headers.forEach(request::addHeader);
+            }
+            HttpResponse response = executor.execute(request).returnResponse();
             checkStatus(response, HttpStatus.SC_OK, HttpStatus.SC_NOT_FOUND);
             if (response.getStatusLine().getStatusCode() == HttpStatus.SC_NOT_FOUND) {
                 return Optional.empty();
@@ -141,7 +177,7 @@ public class DefaultRestClient implements OpenEhrClient {
         }
     }
 
-    static void checkStatus(HttpResponse httpResponse, int... expected) {
+    void checkStatus(HttpResponse httpResponse, int... expected) {
         if (!ArrayUtils.contains(expected, httpResponse.getStatusLine().getStatusCode())) {
             String message = Optional.of(httpResponse)
                     .map(HttpResponse::getEntity)
@@ -160,6 +196,10 @@ public class DefaultRestClient implements OpenEhrClient {
 
     OpenEhrClientConfig getConfig() {
         return config;
+    }
+
+    public Executor getExecutor() {
+        return executor;
     }
 
     @Override

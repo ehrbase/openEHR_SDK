@@ -55,12 +55,12 @@ public class DefaultRestDirectoryEndpoint {
         if (root == null) {
             createRoot();
         }
-        Optional<DirectoryResponseData> directoryResponseData = httpGet(resolve(""), DirectoryResponseData.class);
+        Optional<DirectoryResponseData> directoryResponseData = defaultRestClient.httpGet(resolve(""), DirectoryResponseData.class);
         copyToFolder(root, directoryResponseData.orElseThrow());
     }
 
     synchronized void saveToDb() {
-        rootVersion = httpPut(resolve(""), root, rootVersion);
+        rootVersion = defaultRestClient.httpPut(resolve(""), root, rootVersion);
         syncFromDb();
     }
 
@@ -100,7 +100,7 @@ public class DefaultRestDirectoryEndpoint {
         root = new Folder();
         root.setName(new DvText("root"));
         root.setArchetypeNodeId("openEHR-EHR-FOLDER.generic.v1");
-        VersionUid versionUid = httpPost(resolve(""), root);
+        VersionUid versionUid = defaultRestClient.httpPost(resolve(""), root);
         rootVersion = versionUid;
     }
 

@@ -44,11 +44,19 @@ import org.ehrbase.client.classgenerator.examples.episodeofcarecomposition.Episo
 import org.ehrbase.client.classgenerator.examples.episodeofcarecomposition.definition.EpisodeofcareAdminEntry;
 import org.ehrbase.client.classgenerator.examples.episodeofcarecomposition.definition.EpisodeofcareIdentifierElement;
 import org.ehrbase.client.classgenerator.examples.episodeofcarecomposition.definition.EpisodeofcareTeamElement;
+import org.ehrbase.client.classgenerator.examples.patientenaufenthaltcomposition.PatientenaufenthaltComposition;
+import org.ehrbase.client.classgenerator.examples.patientenaufenthaltcomposition.definition.StandortCluster;
+import org.ehrbase.client.classgenerator.examples.patientenaufenthaltcomposition.definition.StandortschlusselDefiningcode;
+import org.ehrbase.client.classgenerator.examples.patientenaufenthaltcomposition.definition.VersorgungsortAdminEntry;
 import org.ehrbase.client.classgenerator.examples.shareddefinition.CategoryDefiningcode;
 import org.ehrbase.client.classgenerator.examples.shareddefinition.Language;
 import org.ehrbase.client.classgenerator.examples.shareddefinition.MathFunctionDefiningcode;
 import org.ehrbase.client.classgenerator.examples.shareddefinition.SettingDefiningcode;
 import org.ehrbase.client.classgenerator.examples.shareddefinition.Territory;
+import org.ehrbase.client.classgenerator.examples.stationarerversorgungsfallcomposition.StationarerVersorgungsfallComposition;
+import org.ehrbase.client.classgenerator.examples.stationarerversorgungsfallcomposition.definition.AufnahmedatenAdminEntry;
+import org.ehrbase.client.classgenerator.examples.stationarerversorgungsfallcomposition.definition.EntlassungsdatenAdminEntry;
+import org.ehrbase.client.classgenerator.examples.stationarerversorgungsfallcomposition.definition.KlinischerZustandDesPatientenDefiningcode;
 import org.ehrbase.client.classgenerator.examples.virologischerbefundcomposition.VirologischerBefundComposition;
 import org.ehrbase.client.classgenerator.examples.virologischerbefundcomposition.definition.BefundObservation;
 import org.ehrbase.client.classgenerator.examples.virologischerbefundcomposition.definition.FallidentifikationCluster;
@@ -280,6 +288,35 @@ public class TestData {
         return episode;
     }
 
+    public static PatientenaufenthaltComposition buildTestPatientenaufenthaltComposition(){
+        PatientenaufenthaltComposition patientenaufenthaltComposition = new PatientenaufenthaltComposition();
+
+        patientenaufenthaltComposition.setComposer(new PartyIdentified(null, "Test", null));
+        patientenaufenthaltComposition.setCategoryDefiningcode(CategoryDefiningcode.EVENT);
+        patientenaufenthaltComposition.setLanguage(Language.DE);
+        patientenaufenthaltComposition.setTerritory(Territory.DE);
+        patientenaufenthaltComposition.setStartTimeValue(OffsetDateTime.now());
+        patientenaufenthaltComposition.setSettingDefiningcode(SettingDefiningcode.NURSING_HOME_CARE);
+
+        VersorgungsortAdminEntry versorgungsortAdminEntry = new VersorgungsortAdminEntry();
+        StandortCluster standortCluster = new StandortCluster();
+        standortCluster.setStandorttypValue("Test");
+        standortCluster.setStandortbeschreibungValue("Beschreibung");
+        standortCluster.setStandortschlusselDefiningcode(StandortschlusselDefiningcode.ANGIOLOGIE);
+        standortCluster.setBettplatzkennungValue("Platz 2");
+
+        versorgungsortAdminEntry.setStandort(standortCluster);
+        versorgungsortAdminEntry.setBeginnValue(new DvDateTime("2020-01-01T10:00Z").getValue());
+        versorgungsortAdminEntry.setEndeValue(new DvDateTime("2020-01-01T12:00Z").getValue());
+        versorgungsortAdminEntry.setGrundDesAufenthaltesValue("test value");
+        versorgungsortAdminEntry.setLanguage(Language.DE);
+        versorgungsortAdminEntry.setSubject(new PartySelf());
+
+        patientenaufenthaltComposition.setVersorgungsort(versorgungsortAdminEntry);
+
+        return patientenaufenthaltComposition;
+    }
+
     public static VirologischerBefundComposition buildTestVirologischerBefundComposition() {
 
         //openEHR-EHR-COMPOSITION.report-result.v1
@@ -317,6 +354,7 @@ public class TestData {
         proVirusCluster2.setVirusValue("SARS-Cov-2");
         proVirusCluster2.setAnalyseergebnisReihenfolgeMagnitude(Long.valueOf(34));
 
+
         //openEHR-EHR-CLUSTER.laboratory_test_panel.v0
         KulturCluster kulturCluster = new KulturCluster();
         kulturCluster.setProVirus(new ArrayList<>());
@@ -339,5 +377,40 @@ public class TestData {
         virologischerBefundComposition.setBefund(befundObservation);
 
         return virologischerBefundComposition;
+    }
+
+
+    public static StationarerVersorgungsfallComposition buildTestStationarerVersorgungsfallComposition(){
+        StationarerVersorgungsfallComposition stationarerVersorgungsfallComposition = new StationarerVersorgungsfallComposition();
+
+        stationarerVersorgungsfallComposition.setComposer(new PartyIdentified(null, "Test", null));
+        stationarerVersorgungsfallComposition.setCategoryDefiningcode(CategoryDefiningcode.EVENT);
+        stationarerVersorgungsfallComposition.setLanguage(Language.DE);
+        stationarerVersorgungsfallComposition.setTerritory(Territory.DE);
+
+        //context
+        stationarerVersorgungsfallComposition.setStartTimeValue(new DvDateTime("2020-04-02T12:00:00Z").getValue());
+        stationarerVersorgungsfallComposition.setSettingDefiningcode(SettingDefiningcode.NURSING_HOME_CARE);
+        //other_context
+        stationarerVersorgungsfallComposition.setFallKennungValue("45657678");
+
+        //openEHR-EHR-ADMIN_ENTRY.admission.v0
+        AufnahmedatenAdminEntry aufnahmedatenAdminEntry = new AufnahmedatenAdminEntry();
+        aufnahmedatenAdminEntry.setDatumUhrzeitDerAufnahmeValue(new DvDateTime("2020-04-02T12:00:00Z").getValue());
+        aufnahmedatenAdminEntry.setLanguage(Language.DE);
+        aufnahmedatenAdminEntry.setSubject(new PartySelf());
+
+        //openEHR-EHR-ADMIN_ENTRY.discharge_summary.v0
+        EntlassungsdatenAdminEntry entlassungsdatenAdminEntry = new EntlassungsdatenAdminEntry();
+        entlassungsdatenAdminEntry.setLanguage(Language.DE);
+        entlassungsdatenAdminEntry.setSubject(new PartySelf());
+        entlassungsdatenAdminEntry.setKlinischerZustandDesPatientenDefiningcode(KlinischerZustandDesPatientenDefiningcode.UNBESTIMMT);
+        entlassungsdatenAdminEntry.setDatumUhrzeitDerEntlassungValue(new DvDateTime("2020-04-02T12:00:00Z").getValue());
+
+        //assemble
+        stationarerVersorgungsfallComposition.setAufnahmedaten(aufnahmedatenAdminEntry);
+        stationarerVersorgungsfallComposition.setEntlassungsdaten(entlassungsdatenAdminEntry);
+
+        return stationarerVersorgungsfallComposition;
     }
 }

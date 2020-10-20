@@ -127,13 +127,14 @@ public class DefaultRestFolderDAO implements FolderDAO {
         aqlString = aqlString.replace("$TEMPLATEID$", extractTemplateId(clazz));
         aqlString = aqlString.replace("$COMPOSITIONID$", extractCompositionId(clazz));
         qMap.put("q", aqlString);
-        URI uri = directoryEndpoint.getDefaultRestClient().getConfig().getBaseUri().resolve("query/aql");
+        DefaultRestClient defaultRestClient = directoryEndpoint.getDefaultRestClient();
+        URI uri = defaultRestClient.getConfig().getBaseUri().resolve("query/aql");
         try {
-            HttpResponse response = Request.Post(uri)
+            Request request = Request.Post(uri)
                     .addHeader(HttpHeaders.ACCEPT, ACCEPT_APPLICATION_JSON)
-                    .bodyString(OBJECT_MAPPER.writeValueAsString(qMap), ContentType.APPLICATION_JSON)
-                    .execute().returnResponse();
-            checkStatus(response, HttpStatus.SC_OK, HttpStatus.SC_CREATED, HttpStatus.SC_NO_CONTENT);
+                    .bodyString(OBJECT_MAPPER.writeValueAsString(qMap), ContentType.APPLICATION_JSON);
+            HttpResponse response = defaultRestClient.getExecutor().execute(request).returnResponse();
+            defaultRestClient.checkStatus(response, HttpStatus.SC_OK, HttpStatus.SC_CREATED, HttpStatus.SC_NO_CONTENT);
             String value = EntityUtils.toString(response.getEntity());
             JsonObject asJsonObject = JsonParser.parseString(value).getAsJsonObject();
             JsonArray rows = asJsonObject.get("rows").getAsJsonArray();
