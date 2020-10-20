@@ -18,9 +18,15 @@
 
 package org.ehrbase.serialisation.exception;
 
-public class MarshalException extends RuntimeException {
+import org.ehrbase.util.exception.SdkException;
+
+public class MarshalException extends SdkException {
 
     public MarshalException(String message, Throwable cause) {
         super(message, cause);
+    }
+
+    public MarshalException(String message) {
+        super(message);
     }
 }
