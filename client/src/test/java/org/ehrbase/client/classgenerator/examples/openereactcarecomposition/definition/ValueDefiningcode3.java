@@ -2,14 +2,10 @@ package org.ehrbase.client.classgenerator.examples.openereactcarecomposition.def
 
 import org.ehrbase.client.classgenerator.EnumValueSet;
 
-public enum Definingcode13 implements EnumValueSet {
-  UNABLE_TO_SPEAK_FULL_SENTENCES("Unable to speak full sentences", "Unable to speak in full sentences.", "local", "at0069"),
+public enum ValueDefiningcode3 implements EnumValueSet {
+  BLEEDING("Abdominal distension/nausea/bleeding", "Abdominal distension/nausea/bleeding.", "local", "at0109"),
 
-  NOISY_BREATHING("Noisy breathing", "Noisy breathing.", "local", "at0067"),
-
-  SHORT_OF_BREATH("Short of breath", "Short of breath.", "local", "at0068"),
-
-  USE_ACCESSORY_MUSCLES("Use accessory muscles", "Use accessory muscles.", "local", "at0070");
+  NO_PROGRESS("No progress", "No progress.", "local", "at0108");
 
   private String value;
 
@@ -19,7 +15,7 @@ public enum Definingcode13 implements EnumValueSet {
 
   private String code;
 
-  Definingcode13(String value, String description, String terminologyId, String code) {
+  ValueDefiningcode3(String value, String description, String terminologyId, String code) {
     this.value = value;
     this.description = description;
     this.terminologyId = terminologyId;

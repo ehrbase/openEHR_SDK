@@ -6,13 +6,13 @@ import org.ehrbase.client.annotations.Path;
 @Entity
 public class SepsisScreeningAmberFlagAcuteElement {
     @Path("/value|defining_code")
-    private Definingcode6 definingcode;
+    private Definingcode5 definingcode;
 
-    public void setDefiningcode(Definingcode6 definingcode) {
+    public void setDefiningcode(Definingcode5 definingcode) {
         this.definingcode = definingcode;
     }
 
-    public Definingcode6 getDefiningcode() {
+    public Definingcode5 getDefiningcode() {
         return this.definingcode;
     }
 }

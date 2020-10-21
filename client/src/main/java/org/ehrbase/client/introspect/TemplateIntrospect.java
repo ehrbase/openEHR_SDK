@@ -169,12 +169,18 @@ public class TemplateIntrospect {
                             if (value.size() == 1) {
                                 localNodeMap.put(key, value.iterator().next());
                             } else {
-                                localNodeMap.put(key,
-                                        new ChoiceNode(
-                                                value.iterator().next().getName(),
-                                                new ArrayList<>(value),
-                                                value.stream().filter(n -> EntityNode.class.isAssignableFrom(n.getClass())).map(n -> (EntityNode) n).anyMatch(EntityNode::isMulti))
-                                );
+                                ChoiceNode choiceNode = new ChoiceNode(
+                                        value.iterator().next().getName(),
+                                        new ArrayList<>(value),
+                                        value.stream().filter(n -> EntityNode.class.isAssignableFrom(n.getClass())).map(n -> (EntityNode) n).anyMatch(EntityNode::isMulti));
+                                localNodeMap.put(key, choiceNode);
+
+                                choiceNode.getNodes().stream()
+                                        .filter(n -> EndNode.class.isAssignableFrom(n.getClass()))
+                                        .map(n -> (EndNode) n)
+                                        .filter(n -> StringUtils.isBlank(n.getName()))
+                                        .forEach(n -> n.setName(key));
+
                             }
                         });
 

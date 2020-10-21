@@ -3,17 +3,21 @@ package org.ehrbase.client.classgenerator.examples.openereactcarecomposition.def
 import org.ehrbase.client.classgenerator.EnumValueSet;
 
 public enum Definingcode5 implements EnumValueSet {
-  I_FEEL_I_MIGHT_DIE("‘I feel I might die’", "The patient stated ‘I feel I might die’.", "local", "at0041"),
+  ACUTE_DETERIORATION_IN_FUNCTIONAL_ABILITY("Acute deterioration in functional ability", "Acute deterioration in functional ability", "local", "at0091"),
 
-  EXTREME_SHIVERING_OR_MUSCLE_PAIN("Extreme shivering or muscle pain", "The patient has extreme shivering or muscle pain.", "local", "at0038"),
+  HEART_RATE91130_OR_NEW_DYSRHYTHMIA("Heart rate 91-130 or new dysrhythmia", "Heart rate 91-130 or new dysrhythmia", "local", "at0095"),
 
-  SEVERE_BREATHLESSNESS("Severe breathlessness", "The patient has severe breathlessness.", "local", "at0040"),
+  CLINICAL_SIGNS_OF_WOUND_INFECTION("Clinical signs of wound infection", "Clinical signs of wound infection", "local", "at0097"),
 
-  SKIN_MOTTLED_ASHEN_BLUE_OR_VERY_PALE("Skin mottled, ashen, blue or very pale", "The patient has skin which is mottled, ashen, blue or very pale.", "local", "at0042"),
+  SYSTOLIC_BP91100_MMHG("Systolic BP 91-100 mmHg", "Systolic BP 91-100 mmHg", "local", "at0094"),
 
-  SLURRED_SPEECH_OR_CONFUSION("Slurred speech or confusion", "The patient has slurred speech or confusion.", "local", "at0037"),
+  TEMPERATURE36_C("Temperature <36°C", "Temperature <36°C", "local", "at0096"),
 
-  PASSING_NO_URINE_IN_A_DAY("Passing no urine (in a day)", "The patient is passing no urine (in a day).", "local", "at0039");
+  RELATIVES_CONCERNED_ABOUT_MENTAL_STATUS_REQUIRED("Relatives concerned about mental status REQUIRED:", "Relatives concerned about mental status REQUIRED:", "local", "at0090"),
+
+  RESPIRATORY_RATE2124("Respiratory rate 21-24", "Respiratory rate 21-24", "local", "at0093"),
+
+  PROCEDURE_IN_LAST8_WEEKS("Trauma / surgery / procedure in last 8 weeks", "Trauma / surgery / procedure in last 8 weeks", "local", "at0092");
 
   private String value;
 

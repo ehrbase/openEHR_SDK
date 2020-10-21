@@ -8,13 +8,13 @@ import org.ehrbase.client.annotations.Path;
 @OptionFor("DV_CODED_TEXT")
 public class SepsisScreeningDvcodedtext implements SepsisScreeningChoice {
     @Path("|defining_code")
-    private Definingcode3 definingcode;
+    private ValueDefiningcode valueDefiningcode;
 
-    public void setDefiningcode(Definingcode3 definingcode) {
-        this.definingcode = definingcode;
+    public void setValueDefiningcode(ValueDefiningcode valueDefiningcode) {
+        this.valueDefiningcode = valueDefiningcode;
     }
 
-    public Definingcode3 getDefiningcode() {
-        return this.definingcode;
+    public ValueDefiningcode getValueDefiningcode() {
+        return this.valueDefiningcode;
     }
 }

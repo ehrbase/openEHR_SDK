@@ -8,13 +8,13 @@ import org.ehrbase.client.annotations.Path;
 @OptionFor("DV_TEXT")
 public class DenwisDvtext4 implements DenwisChoice4 {
     @Path("|value")
-    private String value;
+    private String valueValue;
 
-    public void setValue(String value) {
-        this.value = value;
+    public void setValueValue(String valueValue) {
+        this.valueValue = valueValue;
     }
 
-    public String getValue() {
-        return this.value;
+    public String getValueValue() {
+        return this.valueValue;
     }
 }

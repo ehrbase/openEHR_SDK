@@ -3,7 +3,7 @@ package org.ehrbase.client.classgenerator.examples.testalltypesenv1composition.d
 import org.ehrbase.client.classgenerator.EnumValueSet;
 
 public enum PlannedDefiningcode implements EnumValueSet {
-  PLANNED("planned", "planned", "openehr", "526");
+  PLANNED("Planned", "*", "local", "at0003");
 
   private String value;
 

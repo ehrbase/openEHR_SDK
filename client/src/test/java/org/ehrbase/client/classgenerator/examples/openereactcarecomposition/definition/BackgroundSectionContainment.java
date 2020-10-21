@@ -5,7 +5,7 @@ import org.ehrbase.client.aql.field.AqlFieldImp;
 import org.ehrbase.client.aql.field.SelectAqlField;
 
 public class BackgroundSectionContainment extends Containment {
-    public SelectAqlField<BackgroundSection> BACKGROUND_SECTION = new AqlFieldImp<BackgroundSection>(BackgroundSection.class, "", "BackgroundSection", BackgroundSection.class, this);
+  public SelectAqlField<BackgroundSection> BACKGROUND_SECTION = new AqlFieldImp<BackgroundSection>(BackgroundSection.class, "", "BackgroundSection", BackgroundSection.class, this);
 
     public SelectAqlField<MedicationEvaluation> MEDICATION = new AqlFieldImp<MedicationEvaluation>(BackgroundSection.class, "/items[openEHR-EHR-EVALUATION.clinical_synopsis.v1 and name/value='Medication']", "medication", MedicationEvaluation.class, this);
 

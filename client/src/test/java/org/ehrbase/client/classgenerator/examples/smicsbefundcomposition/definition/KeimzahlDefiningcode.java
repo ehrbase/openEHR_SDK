@@ -1,11 +1,15 @@
-package org.ehrbase.client.classgenerator.examples.openereactcarecomposition.definition;
+package org.ehrbase.client.classgenerator.examples.smicsbefundcomposition.definition;
 
 import org.ehrbase.client.classgenerator.EnumValueSet;
 
-public enum Definingcode8 implements EnumValueSet {
-  BLEEDING("Abdominal distension/nausea/bleeding", "Abdominal distension/nausea/bleeding.", "local", "at0109"),
+public enum KeimzahlDefiningcode implements EnumValueSet {
+  UNKNOWN("unknown", "unknown", "openehr", "253"),
 
-  NO_PROGRESS("No progress", "No progress.", "local", "at0108");
+  NO_INFORMATION("no information", "no information", "openehr", "271"),
+
+  MASKED("masked", "masked", "openehr", "272"),
+
+  NOT_APPLICABLE("not applicable", "not applicable", "openehr", "273");
 
   private String value;
 
@@ -15,7 +19,7 @@ public enum Definingcode8 implements EnumValueSet {
 
   private String code;
 
-  Definingcode8(String value, String description, String terminologyId, String code) {
+  KeimzahlDefiningcode(String value, String description, String terminologyId, String code) {
     this.value = value;
     this.description = description;
     this.terminologyId = terminologyId;
