@@ -19,6 +19,7 @@
 
 package org.ehrbase.webtemplate.model;
 
+import net.minidev.json.annotate.JsonIgnore;
 import org.ehrbase.webtemplate.parser.FlatPath;
 
 import java.io.Serializable;
@@ -33,6 +34,8 @@ import java.util.stream.Collectors;
 public class WebTemplateNode implements Serializable {
 
     private String id;
+    @JsonIgnore
+    private Integer optionalIdNumber;
     private String name;
     private String localizedName;
     private String rmType;
@@ -51,7 +54,19 @@ public class WebTemplateNode implements Serializable {
     private final List<String> proportionTypes = new ArrayList<>();
 
     public String getId() {
-        return id;
+        return getId(true);
+    }
+
+    public String getId(boolean withOptionalIdNumber) {
+        if (withOptionalIdNumber && optionalIdNumber != null) {
+            return id + optionalIdNumber;
+        } else {
+            return id;
+        }
+    }
+
+    public void setOptionalIdNumber(Integer optionalIdNumber) {
+        this.optionalIdNumber = optionalIdNumber;
     }
 
     public void setId(String id) {

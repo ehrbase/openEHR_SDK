@@ -251,16 +251,18 @@ public class OPTParser {
     public static void makeIdUnique(WebTemplateNode node) {
         //Make ids unique in for a children
         node.getChildren().stream()
-                .collect(Collectors.groupingBy(WebTemplateNode::getId))
+                .collect(Collectors.groupingBy(node1 -> node1.getId(false)))
                 .values()
-                .stream()
-                .filter(l -> l.size() > 1)
                 .forEach(l -> {
-                            for (int i = 0; i < l.size(); i++) {
-                                if (i > 0) {
-                                    WebTemplateNode n = l.get(i);
-                                    n.setId(n.getId() + (i + 1));
+                            if (l.size() > 1) {
+                                for (int i = 0; i < l.size(); i++) {
+                                    if (i > 0) {
+                                        WebTemplateNode n = l.get(i);
+                                        n.setOptionalIdNumber((i + 1));
+                                    }
                                 }
+                            } else {
+                                l.get(0).setOptionalIdNumber(null);
                             }
                         }
                 );
