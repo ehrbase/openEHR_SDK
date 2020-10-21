@@ -40,7 +40,9 @@ public enum OperationalTemplateTestData {
     SCHWANGERSCHAFTSSTATUS("Schwangerschaftsstatus", "Schwangerschaftsstatus.opt", "Schwangerschaftsstatus"),
     VIROLOGY_FINDING("Virologischer Befund", "Virologischer_Befund.opt", "Virologischer Befund"),
     BEFUND_DER_BLUTGASANALYSE("Befund der Blutgasanalyse", "Befund_der_Blutgasanalyse.opt", "Befund der Blutgasanalyse"),
-    SM_I_C_S_BEFUND("SmICS-Befund", "SmICS-Befund.opt", "SmICS-Befund");
+    SM_I_C_S_BEFUND("SmICS-Befund", "SmICS-Befund.opt", "SmICS-Befund")
+    PATIENTEN_AUFENTHALT("NUM test hospitalization", "Patientenaufenthalt.opt", "Patientenaufenthalt"),
+    EPISODE_SUMMARY("Stationärer Versorgungsfall", "stationärer_versorgungsfall.opt", "Stationärer Versorgungsfall");
 
     private final String filename;
     private final String templateId;
