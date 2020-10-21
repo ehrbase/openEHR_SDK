@@ -22,7 +22,6 @@ package org.ehrbase.client.openehrclient.defaultrestclient;
 import com.fasterxml.jackson.core.Version;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
-import com.google.common.net.HttpHeaders;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -33,9 +32,6 @@ import com.nedap.archie.rm.datatypes.CodePhrase;
 import com.nedap.archie.rm.datavalues.DvCodedText;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
-import org.apache.http.client.fluent.Request;
-import org.apache.http.entity.ContentType;
 import org.apache.http.util.EntityUtils;
 import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.aql.field.AqlField;
@@ -54,9 +50,13 @@ import org.ehrbase.serialisation.jsonencoding.JacksonUtil;
 import java.io.IOException;
 import java.net.URI;
 import java.time.temporal.TemporalAccessor;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-import static org.ehrbase.client.openehrclient.defaultrestclient.DefaultRestClient.*;
+import static org.ehrbase.client.openehrclient.defaultrestclient.DefaultRestClient.OBJECT_MAPPER;
 import static org.ehrbase.client.openehrclient.defaultrestclient.DefaultRestCompositionEndpoint.addVersion;
 
 public class DefaultRestAqlEndpoint implements AqlEndpoint {
@@ -90,11 +90,14 @@ public class DefaultRestAqlEndpoint implements AqlEndpoint {
         qMap.put("q", aql);
         URI uri = defaultRestClient.getConfig().getBaseUri().resolve("query/aql");
         try {
+         /*
             HttpResponse response = Request.Post(uri)
                     .addHeader(HttpHeaders.ACCEPT, ACCEPT_APPLICATION_JSON)
                     .bodyString(OBJECT_MAPPER.writeValueAsString(qMap), ContentType.APPLICATION_JSON)
                     .execute().returnResponse();
             defaultRestClient.checkStatus(response, HttpStatus.SC_OK, HttpStatus.SC_CREATED, HttpStatus.SC_NO_CONTENT);
+          */
+            HttpResponse response = defaultRestClient.internalPost(uri, null, OBJECT_MAPPER.writeValueAsString(qMap));
             String value = EntityUtils.toString(response.getEntity());
             JsonObject asJsonObject = JsonParser.parseString(value).getAsJsonObject();
             JsonArray rows = asJsonObject.get("rows").getAsJsonArray();

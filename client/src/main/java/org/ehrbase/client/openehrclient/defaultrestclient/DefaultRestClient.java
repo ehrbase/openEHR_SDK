@@ -106,20 +106,30 @@ public class DefaultRestClient implements OpenEhrClient {
     }
 
     protected VersionUid httpPost(URI uri, RMObject body, Map<String, String> headers) {
+        HttpResponse response;
+        String bodyString = new CanonicalJson().marshal(body);
+        response = internalPost(uri, headers, bodyString);
+        Header eTag = response.getFirstHeader(HttpHeaders.ETAG);
+        return new VersionUid(eTag.getValue().replace("\"", ""));
+
+    }
+
+    protected HttpResponse internalPost(URI uri, Map<String, String> headers, String bodyString) {
+        HttpResponse response;
         try {
+
             Request request = Request.Post(uri)
                     .addHeader(HttpHeaders.ACCEPT, ACCEPT_APPLICATION_JSON)
-                    .bodyString(new CanonicalJson().marshal(body), ContentType.APPLICATION_JSON);
+                    .bodyString(bodyString, ContentType.APPLICATION_JSON);
             if (headers != null) {
                 headers.forEach(request::addHeader);
             }
-            HttpResponse response = executor.execute(request).returnResponse();
+            response = executor.execute(request).returnResponse();
             checkStatus(response, HttpStatus.SC_OK, HttpStatus.SC_CREATED, HttpStatus.SC_NO_CONTENT);
-            Header eTag = response.getFirstHeader(HttpHeaders.ETAG);
-            return new VersionUid(eTag.getValue().replace("\"", ""));
         } catch (IOException e) {
             throw new ClientException(e.getMessage(), e);
         }
+        return response;
     }
 
     protected VersionUid httpPut(URI uri, Locatable body, VersionUid versionUid) {
