@@ -32,6 +32,7 @@ import com.nedap.archie.rm.datatypes.CodePhrase;
 import com.nedap.archie.rm.datavalues.DvCodedText;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpResponse;
+import org.apache.http.entity.ContentType;
 import org.apache.http.util.EntityUtils;
 import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.aql.field.AqlField;
@@ -60,7 +61,7 @@ import static org.ehrbase.client.openehrclient.defaultrestclient.DefaultRestClie
 import static org.ehrbase.client.openehrclient.defaultrestclient.DefaultRestCompositionEndpoint.addVersion;
 
 public class DefaultRestAqlEndpoint implements AqlEndpoint {
-    public static final String AQL_PATH = "/query/aql/";
+    public static final String AQL_PATH = "query/aql/";
     public static final ObjectMapper AQL_OBJECT_MAPPER = buildAqlObjectMapper();
     private final DefaultRestClient defaultRestClient;
 
@@ -88,16 +89,10 @@ public class DefaultRestAqlEndpoint implements AqlEndpoint {
         }
 
         qMap.put("q", aql);
-        URI uri = defaultRestClient.getConfig().getBaseUri().resolve("query/aql");
+        URI uri = defaultRestClient.getConfig().getBaseUri().resolve(AQL_PATH);
         try {
-         /*
-            HttpResponse response = Request.Post(uri)
-                    .addHeader(HttpHeaders.ACCEPT, ACCEPT_APPLICATION_JSON)
-                    .bodyString(OBJECT_MAPPER.writeValueAsString(qMap), ContentType.APPLICATION_JSON)
-                    .execute().returnResponse();
-            defaultRestClient.checkStatus(response, HttpStatus.SC_OK, HttpStatus.SC_CREATED, HttpStatus.SC_NO_CONTENT);
-          */
-            HttpResponse response = defaultRestClient.internalPost(uri, null, OBJECT_MAPPER.writeValueAsString(qMap));
+
+            HttpResponse response = defaultRestClient.internalPost(uri, null, OBJECT_MAPPER.writeValueAsString(qMap), ContentType.APPLICATION_JSON, DefaultRestClient.ACCEPT_APPLICATION_JSON);
             String value = EntityUtils.toString(response.getEntity());
             JsonObject asJsonObject = JsonParser.parseString(value).getAsJsonObject();
             JsonArray rows = asJsonObject.get("rows").getAsJsonArray();

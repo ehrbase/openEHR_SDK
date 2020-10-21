@@ -20,36 +20,30 @@
 package org.ehrbase.client.openehrclient.defaultrestclient;
 
 
-import com.google.common.net.HttpHeaders;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import com.nedap.archie.rm.composition.Composition;
 import com.nedap.archie.rm.datavalues.DvText;
 import com.nedap.archie.rm.directory.Folder;
 import com.nedap.archie.rm.support.identification.ObjectRef;
 import com.nedap.archie.rm.support.identification.ObjectVersionId;
-import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
-import org.apache.http.client.fluent.Request;
-import org.apache.http.entity.ContentType;
-import org.apache.http.util.EntityUtils;
-import org.ehrbase.client.annotations.Archetype;
 import org.ehrbase.client.annotations.Template;
+import org.ehrbase.client.aql.condition.Condition;
+import org.ehrbase.client.aql.containment.Containment;
+import org.ehrbase.client.aql.field.EhrFields;
+import org.ehrbase.client.aql.field.NativeSelectAqlField;
+import org.ehrbase.client.aql.query.EntityQuery;
+import org.ehrbase.client.aql.query.Query;
+import org.ehrbase.client.aql.record.Record1;
 import org.ehrbase.client.exception.ClientException;
-import org.ehrbase.client.flattener.Flattener;
 import org.ehrbase.client.openehrclient.FolderDAO;
 
-import java.io.IOException;
-import java.net.URI;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
-import static org.ehrbase.client.openehrclient.defaultrestclient.DefaultRestClient.*;
 
 public class DefaultRestFolderDAO implements FolderDAO {
 
@@ -116,39 +110,20 @@ public class DefaultRestFolderDAO implements FolderDAO {
 
     @Override
     public <T> List<T> find(Class<T> clazz) {
-        List<T> result = new ArrayList<>();
-        if (CollectionUtils.isEmpty(getFolder().getItems())) {
-            return result;
-        }
-        Map<String, String> qMap = new HashMap<>();
-        String aqlString = "select a/uid/value, a/template_id, a from EHR e [ehr_id/value = '$EHRID$'] contains COMPOSITION a [$COMPOSITIONID$] where a/uid/value matches {$MATCHES$} and a/template_id='$TEMPLATEID$'";
-        aqlString = aqlString.replace("$MATCHES$", buildMatches());
-        aqlString = aqlString.replace("$EHRID$", directoryEndpoint.getEhrId().toString());
-        aqlString = aqlString.replace("$TEMPLATEID$", extractTemplateId(clazz));
-        aqlString = aqlString.replace("$COMPOSITIONID$", extractCompositionId(clazz));
-        qMap.put("q", aqlString);
-        DefaultRestClient defaultRestClient = directoryEndpoint.getDefaultRestClient();
-        URI uri = defaultRestClient.getConfig().getBaseUri().resolve("query/aql");
-        try {
-            Request request = Request.Post(uri)
-                    .addHeader(HttpHeaders.ACCEPT, ACCEPT_APPLICATION_JSON)
-                    .bodyString(OBJECT_MAPPER.writeValueAsString(qMap), ContentType.APPLICATION_JSON);
-            HttpResponse response = defaultRestClient.getExecutor().execute(request).returnResponse();
-            defaultRestClient.checkStatus(response, HttpStatus.SC_OK, HttpStatus.SC_CREATED, HttpStatus.SC_NO_CONTENT);
-            String value = EntityUtils.toString(response.getEntity());
-            JsonObject asJsonObject = JsonParser.parseString(value).getAsJsonObject();
-            JsonArray rows = asJsonObject.get("rows").getAsJsonArray();
-            for (JsonElement jresult : rows) {
-                String valueAsString = ((JsonArray) jresult).get(2).toString();
-                Composition composition = OBJECT_MAPPER.readValue(valueAsString, Composition.class);
-                T flatten = new Flattener().flatten(composition, clazz);
-                result.add(flatten);
-            }
 
-        } catch (IOException e) {
-            throw new ClientException(e.getMessage(), e);
-        }
-        return result;
+        Containment compositionContainment = new Containment("COMPOSITION");
+
+        EntityQuery<Record1<T>> query = Query.buildEntityQuery(compositionContainment, new NativeSelectAqlField<>(compositionContainment, "", clazz));
+
+        query.where(
+                Condition.equal(EhrFields.EHR_ID(), directoryEndpoint.getEhrId())
+                        .and(Condition.equal(new NativeSelectAqlField<>(compositionContainment, "/template_id", String.class), extractTemplateId(clazz)))
+                        .and(Condition.matches(new NativeSelectAqlField<>(compositionContainment, "/uid/value", String.class), getFolder().getItems().stream().map(ObjectRef::getId).map(Object::toString).toArray(String[]::new)))
+        );
+
+        List<Record1<T>> execute = directoryEndpoint.getDefaultRestClient().aqlEndpoint().execute(query);
+
+        return execute.stream().map(Record1::value1).collect(Collectors.toList());
     }
 
     void sync() {
@@ -156,17 +131,9 @@ public class DefaultRestFolderDAO implements FolderDAO {
         directoryEndpoint.saveToDb();
     }
 
-    private String buildMatches() {
-        return getFolder().getItems().stream().map(ObjectRef::getId).map(Object::toString).map(s -> "'" + s + "'").collect(Collectors.joining(","));
-    }
-
     private String extractTemplateId(Class clazz) {
         Template annotation = (Template) clazz.getAnnotation(Template.class);
         return annotation.value();
     }
 
-    private String extractCompositionId(Class clazz) {
-        Archetype annotation = (Archetype) clazz.getAnnotation(Archetype.class);
-        return annotation.value();
-    }
 }
