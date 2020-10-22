@@ -78,7 +78,7 @@ public class WebTemplateTest {
 
         assertNotNull(result);
 
-        assertEquals(21, result.size());
+        assertEquals(23, result.size());
     }
 
     @Test
@@ -88,7 +88,7 @@ public class WebTemplateTest {
 
         assertNotNull(result);
 
-        assertEquals(45, result.size());
+        assertEquals(46, result.size());
     }
 
 

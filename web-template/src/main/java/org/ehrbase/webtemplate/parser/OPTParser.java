@@ -181,7 +181,7 @@ public class OPTParser {
                 WebTemplateNode currentStateProto = ismTransitionList.get(0).findMatching(n -> n.getId().equals("current_state")).get(0);
                 currentState.setMin(currentStateProto.getMin());
                 currentState.setMax(currentStateProto.getMin());
-                currentState.setRmType("DV_TEXT");
+                currentState.setRmType("DV_CODED_TEXT");
                 currentState.setName("Current_state");
                 currentState.setId("current_state");
                 currentState.setAqlPath(aqlPath + "/" + cattribute.getRmAttributeName() + "/" + "current_state");
