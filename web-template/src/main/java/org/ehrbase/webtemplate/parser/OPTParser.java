@@ -181,7 +181,7 @@ public class OPTParser {
                 WebTemplateNode currentStateProto = ismTransitionList.get(0).findMatching(n -> n.getId().equals("current_state")).get(0);
                 currentState.setMin(currentStateProto.getMin());
                 currentState.setMax(currentStateProto.getMin());
-                currentState.setRmType("DV_CODED_TEXT");
+                currentState.setRmType("DV_TEXT");
                 currentState.setName("Current_state");
                 currentState.setId("current_state");
                 currentState.setAqlPath(aqlPath + "/" + cattribute.getRmAttributeName() + "/" + "current_state");
@@ -208,16 +208,48 @@ public class OPTParser {
 
             node.getChildren().addAll(newChildren);
         }
+        // Handle choice children
+        node.getChoicesInChildren()
+                .values()
+                .stream()
+                .flatMap(List::stream)
+                .filter(n -> n.getRmType().startsWith("DV_"))
+                .forEach(n -> n.setId(n.getRmType().replace("DV_", "").toLowerCase() + "_value"));
 
         //Inherit name for Element values
         if (node.getRmType().equals("ELEMENT")) {
             if (node.getChildren().size() == 1) {
                 WebTemplateNode value = node.getChildren().get(0);
-                value.setId(node.getId());
+                value.setId(node.getId(false));
                 value.setName(node.getName());
                 value.setMax(node.getMax());
+                value.setMin(node.getMin());
+                value.getLocalizedDescriptions().putAll(node.getLocalizedDescriptions());
+                value.getLocalizedNames().putAll(node.getLocalizedNames());
+                value.setLocalizedName(node.getLocalizedName());
+                // If contains a choice of DV_TEXT and DV_CODED_TEXT add a merged node
+            } else if (node.getChildren().size() == 2 && node.getChildren().stream().map(WebTemplateNode::getRmType).collect(Collectors.toList()).containsAll(List.of("DV_TEXT", "DV_CODED_TEXT"))) {
+                WebTemplateNode merged = new WebTemplateNode();
+                merged.setId(node.getId(false));
+                merged.setName(node.getName());
+                merged.setMax(node.getMax());
+                merged.setMin(node.getMin());
+                merged.setRmType("DV_CODED_TEXT");
+                WebTemplateNode codedTextValue = node.findChildById("coded_text_value").orElseThrow();
+                merged.getInputs().addAll(codedTextValue.getInputs());
+                merged.setAqlPath(codedTextValue.getAqlPath());
+                merged.getLocalizedDescriptions().putAll(node.getLocalizedDescriptions());
+                merged.getLocalizedNames().putAll(node.getLocalizedNames());
+                merged.setLocalizedName(node.getLocalizedName());
+                WebTemplateInput other = new WebTemplateInput();
+                other.setType("TEXT");
+                other.setSuffix("other");
+                merged.getInputs().add(other);
+                node.getChildren().add(merged);
             }
         }
+
+
         //Push inputs for DV_CODED_TEXT up
         if (node.getRmType().equals("DV_CODED_TEXT")) {
             List<WebTemplateNode> matching = node.findMatching(n -> n.getRmType().equals("CODE_PHRASE"));
@@ -233,12 +265,6 @@ public class OPTParser {
             }
         }
 
-        node.getChoicesInChildren()
-                .values()
-                .stream()
-                .flatMap(List::stream)
-                .filter(n -> n.getRmType().startsWith("DV_"))
-                .forEach(n -> n.setId(n.getRmType().replace("DV_", "").toLowerCase() + "_value"));
 
         addRMAttributes(node, aqlPath, termDefinitionMap);
 

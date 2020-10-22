@@ -68,6 +68,40 @@ public class FlatJsonMarshallerTest {
     }
 
     @Test
+    public void toFlatJsonMultiOccurrence() throws IOException, XmlException {
+
+        OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(OperationalTemplateTestData.MULTI_OCCURRENCE.getStream()).getTemplate();
+        Composition composition = new CanonicalJson().unmarshal(IOUtils.toString(CompositionTestDataCanonicalJson.MULTI_OCCURRENCE.getStream(), StandardCharsets.UTF_8), Composition.class);
+        FlatJsonMarshaller cut = new FlatJsonMarshaller();
+        String actual = cut.toFlatJson(composition, new OPTParser(template).parse());
+        assertThat(actual).isNotNull();
+
+        String expected = IOUtils.toString(CompositionTestDataSimSDTJson.MULTI_OCCURRENCE.getStream(), StandardCharsets.UTF_8);
+
+        List<String> errors = compere(actual, expected);
+
+        assertThat(errors)
+                .filteredOn(s -> s.startsWith("Missing"))
+                .containsExactlyInAnyOrder(
+                        "Missing path: encounter/body_temperature:1/any_event:0/temperature|magnitude, value: 22.0",
+                        "Missing path: encounter/body_temperature:1/any_event:1/temperature|magnitude, value: 11.0",
+                        "Missing path: encounter/context/end_time, value: 2020-10-06T13:30:34.317875+02:00",
+                        "Missing path: encounter/body_temperature:0/any_event:0/temperature|magnitude, value: 22.0",
+                        "Missing path: encounter/body_temperature:0/any_event:1/temperature|magnitude, value: 11.0"
+                );
+
+        assertThat(errors)
+                .filteredOn(s -> s.startsWith("Extra"))
+                .containsExactlyInAnyOrder(
+                        "Extra path: encounter/context/_end_time, value: 2020-10-06T13:30:34.317875+02:00",
+                        "Extra path: encounter/body_temperature:0/any_event:0/temperature|magnitude, value: 22",
+                        "Extra path: encounter/body_temperature:0/any_event:1/temperature|magnitude, value: 11",
+                        "Extra path: encounter/body_temperature:1/any_event:0/temperature|magnitude, value: 22",
+                        "Extra path: encounter/body_temperature:1/any_event:1/temperature|magnitude, value: 11"
+                );
+    }
+
+    @Test
     public void toFlatJsonAllTypes() throws IOException, XmlException {
 
         OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(OperationalTemplateTestData.ALL_TYPES.getStream()).getTemplate();

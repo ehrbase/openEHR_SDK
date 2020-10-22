@@ -58,6 +58,12 @@ public class Filter {
             node.getChildren().add(ismTransitionList.get(0));
         }
 
+        if (node.getRmType().equals("ELEMENT") && node.getChildren().size() == 3 && node.getChildren().stream().map(WebTemplateNode::getRmType).collect(Collectors.toList()).containsAll(List.of("DV_TEXT", "DV_CODED_TEXT"))) {
+            WebTemplateNode merged = node.findChildById(node.getId(false)).orElseThrow();
+            node.getChildren().clear();
+            node.getChildren().add(merged);
+        }
+
         if (skip(node, context, parent)) {
             nodes = node.getChildren().stream().map(n -> filter(n, context, node)).flatMap(List::stream).collect(Collectors.toList());
 

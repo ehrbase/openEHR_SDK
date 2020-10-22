@@ -31,6 +31,7 @@ public class WebTemplateInput {
     private Boolean listOpen;
     private WebTemplateValidation validation;
     private String terminology;
+    private String defaultValue;
 
     public String getSuffix() {
         return suffix;
@@ -74,6 +75,14 @@ public class WebTemplateInput {
 
     public void setTerminology(String terminology) {
         this.terminology = terminology;
+    }
+
+    public String getDefaultValue() {
+        return defaultValue;
+    }
+
+    public void setDefaultValue(String defaultValue) {
+        this.defaultValue = defaultValue;
     }
 
     @Override

@@ -29,12 +29,16 @@ import com.nedap.archie.rm.datavalues.quantity.DvInterval;
 import com.nedap.archie.rminfo.ArchieRMInfoLookup;
 import com.nedap.archie.rminfo.RMTypeInfo;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.ehrbase.serialisation.jsonencoding.CanonicalJson;
 import org.ehrbase.util.exception.SdkException;
 import org.ehrbase.webtemplate.model.WebTemplate;
+import org.ehrbase.webtemplate.model.WebTemplateInput;
 import org.ehrbase.webtemplate.model.WebTemplateNode;
 import org.ehrbase.webtemplate.parser.FlatPath;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -64,11 +68,23 @@ public abstract class Walker<T> {
         if (visitChildren(currentNode)) {
 
             Map<String, List<WebTemplateNode>> choices = currentNode.getChoicesInChildren();
-            for (WebTemplateNode childNode : currentNode.getChildren()) {
+            List<WebTemplateNode> children = new ArrayList<>(currentNode.getChildren());
+            if (children.stream().filter(n -> n.getRmType().equals("DV_CODED_TEXT")).map(WebTemplateNode::getInputs).flatMap(List::stream).map(WebTemplateInput::getSuffix).anyMatch("other"::equals)) {
+                WebTemplateNode codeNode = children.stream().filter(n -> n.getRmType().equals("DV_CODED_TEXT")).findAny().get();
+                WebTemplateNode textNode = new WebTemplateNode(codeNode);
+                textNode.setRmType("DV_TEXT");
+                choices.put(textNode.getAqlPath(), List.of(codeNode));
+                children.add(textNode);
+            }
+            for (WebTemplateNode childNode : children) {
 
                 if (childNode.getMax() == 1) {
-                    Object child = extractRMChild(context.getRmObjectDeque().peek(), currentNode, childNode, choices.containsKey(childNode.getAqlPath()), null);
                     T childObject = extract(context, childNode, choices.containsKey(childNode.getAqlPath()), null);
+                    Object child = null;
+                    if (childObject != null) {
+                        child = extractRMChild(context.getRmObjectDeque().peek(), currentNode, childNode, choices.containsKey(childNode.getAqlPath()), null);
+                    }
+
                     if (child != null && childObject != null) {
                         context.getNodeDeque().push(childNode);
                         context.getObjectDeque().push(childObject);
@@ -78,9 +94,22 @@ public abstract class Walker<T> {
                 } else {
                     int size = calculateSize(context, childNode);
                     RMObject currentChild = null;
+                    T childObject = null;
+                    List<Pair<T, RMObject>> pairs = new ArrayList<>();
                     for (int i = 0; i <= size; i++) {
-                        currentChild = (RMObject) extractRMChild(context.getRmObjectDeque().peek(), currentNode, childNode, choices.containsKey(childNode.getAqlPath()), i);
-                        T childObject = extract(context, childNode, choices.containsKey(childNode.getAqlPath()), i);
+
+                        childObject = extract(context, childNode, choices.containsKey(childNode.getAqlPath()), i);
+                        if (childObject != null) {
+                            currentChild = (RMObject) extractRMChild(context.getRmObjectDeque().peek(), currentNode, childNode, choices.containsKey(childNode.getAqlPath()), i);
+                        }
+
+                        pairs.add(new ImmutablePair<>(childObject, currentChild));
+
+
+                    }
+                    for (int i = 0; i <= size; i++) {
+                        childObject = pairs.get(i).getLeft();
+                        currentChild = pairs.get(i).getRight();
                         if (currentChild != null && childObject != null) {
                             context.getNodeDeque().push(childNode);
                             context.getObjectDeque().push(childObject);
@@ -88,6 +117,8 @@ public abstract class Walker<T> {
                             context.getCountMap().put(childNode, i);
                             handle(context);
                         }
+
+
                     }
 
                 }

@@ -55,6 +55,7 @@ public class StdFromCompositionWalker extends FromCompositionWalker<Map<String, 
         if (!visitChildren(context.getNodeDeque().peek())) {
             RMObject currentObject = context.getRmObjectDeque().peek();
 
+
             StdConfig stdConfig = configMap.getOrDefault(currentObject.getClass(), DEFAULT_STD_CONFIG);
 
             context.getObjectDeque().peek().putAll(stdConfig.buildChildValues(buildNamePath(context), currentObject, context));

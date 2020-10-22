@@ -53,6 +53,25 @@ public class WebTemplateNode implements Serializable {
     private WebTemplateAnnotation annotations;
     private final List<String> proportionTypes = new ArrayList<>();
 
+    public WebTemplateNode() {
+    }
+
+    public WebTemplateNode(WebTemplateNode other) {
+        this.id = other.id;
+        this.optionalIdNumber = other.optionalIdNumber;
+        this.name = other.name;
+        this.localizedName = other.localizedName;
+        this.rmType = other.rmType;
+        this.nodeId = other.nodeId;
+        this.min = other.min;
+        this.max = other.max;
+        this.aqlPath = other.aqlPath;
+        this.inContext = other.inContext;
+        this.dependsOn = other.dependsOn;
+        this.annotations = other.annotations;
+        this.inputs.addAll(other.getInputs());
+    }
+
     public String getId() {
         return getId(true);
     }
@@ -215,4 +234,6 @@ public class WebTemplateNode implements Serializable {
         });
         return matching;
     }
+
+
 }

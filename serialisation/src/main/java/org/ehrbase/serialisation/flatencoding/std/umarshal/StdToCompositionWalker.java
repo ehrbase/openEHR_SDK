@@ -42,12 +42,10 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 
-
 public class StdToCompositionWalker extends ToCompositionWalker<Map<String, String>> {
 
     private static final Map<Class<?>, RMUnmarshaller> UNMARSHALLER_MAP = ReflectionHelper.buildMap(RMUnmarshaller.class);
     private static final Map<Class<?>, UnmarshalPostprocessor> POSTPROCESSOR_MAP = ReflectionHelper.buildMap(UnmarshalPostprocessor.class);
-
 
 
     private Set<String> consumedPaths;
@@ -62,8 +60,17 @@ public class StdToCompositionWalker extends ToCompositionWalker<Map<String, Stri
     protected Map<String, String> extract(Context<Map<String, String>> context, WebTemplateNode child, boolean isChoice, Integer count) {
 
         context.getNodeDeque().push(child);
+        Integer oldCount = null;
+        if (count != null) {
+            oldCount = context.getCountMap().get(child);
+            context.getCountMap().put(child, count);
+        }
         String path = buildNamePath(context);
         context.getNodeDeque().remove();
+        context.getCountMap().remove(child);
+        if (oldCount != null) {
+            context.getCountMap().put(child, oldCount);
+        }
 
         Map<String, String> subValues = context.getObjectDeque().peek().entrySet().stream().filter(e -> e.getKey().startsWith(path)).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
         if (isChoice && !isMatchingNode(subValues, context, child)) {
@@ -90,6 +97,10 @@ public class StdToCompositionWalker extends ToCompositionWalker<Map<String, Stri
             }
 
             return subValues.isEmpty();
+        } else if (child.getRmType().equals("DV_CODED_TEXT")) {
+            return subValues.entrySet().stream().anyMatch(e -> e.getKey().endsWith("code"));
+        } else if (child.getRmType().equals("DV_TEXT")) {
+            return subValues.entrySet().stream().allMatch((e -> !e.getKey().endsWith("code")));
         } else {
             // End Nodes which are Choice always have unique flat paths
             return true;
@@ -124,6 +135,9 @@ public class StdToCompositionWalker extends ToCompositionWalker<Map<String, Stri
 
     @Override
     protected int calculateSize(Context<Map<String, String>> context, WebTemplateNode childNode) {
+
+        Integer oldCount = context.getCountMap().get(childNode);
+        context.getCountMap().remove(childNode);
         context.getNodeDeque().push(childNode);
         Integer count = context.getObjectDeque().peek().keySet().stream()
                 .map(s -> StringUtils.substringBetween(s, buildNamePath(context) + ":", "/"))
@@ -133,6 +147,9 @@ public class StdToCompositionWalker extends ToCompositionWalker<Map<String, Stri
                 .reduce((first, second) -> second)
                 .orElse(0);
         context.getNodeDeque().poll();
+        if (oldCount != null) {
+            context.getCountMap().put(childNode, oldCount);
+        }
         return count;
     }
 

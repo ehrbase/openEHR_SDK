@@ -60,4 +60,40 @@ public class FlatJsonTest {
                 .containsExactlyInAnyOrder();
     }
 
+    @Test
+    public void roundTripMulti() throws IOException {
+        TestDataTemplateProvider templateProvider = new TestDataTemplateProvider();
+        FlatJson cut = new FlatJasonProvider(templateProvider).buildFlatJson(FlatFormat.SIM_SDT, "ehrbase_multi_occurrence.de.v1");
+
+        String flat = IOUtils.toString(CompositionTestDataSimSDTJson.MULTI_OCCURRENCE.getStream(), StandardCharsets.UTF_8);
+        Composition unmarshal = cut.unmarshal(flat);
+
+        assertThat(unmarshal).isNotNull();
+
+        String actual = cut.marshal(unmarshal);
+
+        String expected = IOUtils.toString(CompositionTestDataSimSDTJson.MULTI_OCCURRENCE.getStream(), StandardCharsets.UTF_8);
+
+        List<String> errors = compere(actual, expected);
+
+        assertThat(errors)
+                .filteredOn(s -> s.startsWith("Missing"))
+                .containsExactlyInAnyOrder(
+                        "Missing path: encounter/body_temperature:0/any_event:0/temperature|magnitude, value: 22.0",
+                        "Missing path: encounter/body_temperature:0/any_event:1/temperature|magnitude, value: 11.0",
+                        "Missing path: encounter/body_temperature:1/any_event:0/temperature|magnitude, value: 22.0",
+                        "Missing path: encounter/body_temperature:1/any_event:1/temperature|magnitude, value: 11.0"
+                );
+
+        assertThat(errors)
+                .filteredOn(s -> s.startsWith("Extra"))
+                .containsExactlyInAnyOrder(
+                        "Extra path: encounter/context/_end_time, value: 2020-10-06T13:30:34.317875+02:00",
+                        "Extra path: encounter/body_temperature:0/any_event:0/temperature|magnitude, value: 22",
+                        "Extra path: encounter/body_temperature:0/any_event:1/temperature|magnitude, value: 11",
+                        "Extra path: encounter/body_temperature:1/any_event:0/temperature|magnitude, value: 22",
+                        "Extra path: encounter/body_temperature:1/any_event:1/temperature|magnitude, value: 11"
+                );
+    }
+
 }

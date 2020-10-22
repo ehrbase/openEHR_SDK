@@ -32,7 +32,7 @@ import org.ehrbase.util.reflection.ReflectionHelper;
 import org.ehrbase.webtemplate.filter.Filter;
 import org.ehrbase.webtemplate.model.WebTemplate;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class FlatJsonMarshaller {
@@ -55,7 +55,7 @@ public class FlatJsonMarshaller {
      */
     public String toFlatJson(Composition composition, WebTemplate webTemplate) {
 
-        Map<String, Object> result = new HashMap<>();
+        Map<String, Object> result = new LinkedHashMap<>();
 
 
         new StdFromCompositionWalker().walk(composition, result, new Filter().filter(webTemplate));

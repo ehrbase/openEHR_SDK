@@ -34,6 +34,7 @@ public class WebTemplateInputValue {
     private final Map<String, WebTemplateTerminology> termBindings = new HashMap<>();
     private Integer ordinal;
     private final List<String> currentStates = new ArrayList<>();
+    private WebTemplateValidation validation;
 
     public String getValue() {
         return value;
@@ -73,6 +74,14 @@ public class WebTemplateInputValue {
 
     public List<String> getCurrentStates() {
         return currentStates;
+    }
+
+    public WebTemplateValidation getValidation() {
+        return validation;
+    }
+
+    public void setValidation(WebTemplateValidation validation) {
+        this.validation = validation;
     }
 
     @Override
