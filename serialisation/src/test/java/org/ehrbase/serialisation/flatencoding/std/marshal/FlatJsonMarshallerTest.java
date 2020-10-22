@@ -76,7 +76,7 @@ public class FlatJsonMarshallerTest {
         String actual = cut.toFlatJson(composition, new OPTParser(template).parse());
         assertThat(actual).isNotNull();
 
-        String expected = IOUtils.toString(CompositionTestDataSimSDTJson.ALTERNATIVE_EVENTS.getStream(), StandardCharsets.UTF_8);
+        String expected = IOUtils.toString(CompositionTestDataSimSDTJson.ALTERNATIVE_EVENTS_2.getStream(), StandardCharsets.UTF_8);
 
         List<String> errors = compere(actual, expected);
 

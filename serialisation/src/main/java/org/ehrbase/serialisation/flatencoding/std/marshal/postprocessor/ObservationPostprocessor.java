@@ -50,6 +50,7 @@ public class ObservationPostprocessor implements MarshalPostprocessor<Observatio
 
     public void removeOrigin(String term, History<ItemStructure> history, Map<String, Object> values) {
         Optional<TemporalAccessor> first = history.getEvents().stream().map(Event::getTime)
+                .filter(Objects::nonNull)
                 .map(DvDateTime::getValue)
                 .filter(Objects::nonNull)
                 .sorted()

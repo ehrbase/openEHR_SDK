@@ -24,8 +24,10 @@ import com.nedap.archie.creation.RMObjectCreator;
 import com.nedap.archie.rm.RMObject;
 import com.nedap.archie.rm.datastructures.Event;
 import com.nedap.archie.rm.datastructures.IntervalEvent;
+import com.nedap.archie.rm.datastructures.ItemStructure;
 import com.nedap.archie.rm.datastructures.PointEvent;
 import com.nedap.archie.rm.datavalues.DvCodedText;
+import com.nedap.archie.rm.datavalues.quantity.datetime.DvDateTime;
 import com.nedap.archie.rm.datavalues.quantity.datetime.DvDuration;
 import com.nedap.archie.rminfo.RMAttributeInfo;
 import org.apache.commons.lang3.StringUtils;
@@ -71,20 +73,21 @@ public abstract class ToCompositionWalker<T> extends Walker<T> {
         String rmclass = childNode.getRmType();
         if (child == null
                 || (child.getClass().equals(PointEvent.class) && !childNode.getRmType().equals("POINT_EVENT"))
-                || (child.getClass().equals(IntervalEvent.class) && !childNode.getRmType().equals("INTERVAL_EVENT"))
+                || (child.getClass().equals(IntervalEvent.class) && !childNode.getRmType().equals("INTERVAL_EVENT")
+        )
         ) {
             CComplexObject elementConstraint = new CComplexObject();
             elementConstraint.setRmTypeName(rmclass);
             Object newChild = RM_OBJECT_CREATOR.create(elementConstraint);
             if (Event.class.isAssignableFrom(newChild.getClass())) {
                 Event newEvent = (Event) newChild;
-                Event oldEvent = (Event) deepClone((RMObject) child);
-                newEvent.setState(oldEvent.getState());
-                newEvent.setData(oldEvent.getData());
+                Event oldEvent = (Event) child;
+                newEvent.setState((ItemStructure) deepClone(oldEvent.getState()));
+                newEvent.setData((ItemStructure) deepClone(oldEvent.getData()));
                 newEvent.setArchetypeDetails(oldEvent.getArchetypeDetails());
                 newEvent.setArchetypeNodeId(oldEvent.getArchetypeNodeId());
                 newEvent.setName(oldEvent.getName());
-                newEvent.setTime(oldEvent.getTime());
+                newEvent.setTime(new DvDateTime());
                 if (IntervalEvent.class.isAssignableFrom(newEvent.getClass())) {
                     ((IntervalEvent) newEvent).setWidth(new DvDuration());
                     ((IntervalEvent<?>) newEvent).setMathFunction(new DvCodedText());
@@ -92,7 +95,7 @@ public abstract class ToCompositionWalker<T> extends Walker<T> {
 
             }
             RMAttributeInfo attributeInfo = ARCHIE_RM_INFO_LOOKUP.getAttributeInfo(parent.getClass(), attributeName);
-            if (attributeInfo.isMultipleValued()) {
+            if (attributeInfo.isMultipleValued() && (count == null || count != 1)) {
                 try {
                     Object invoke = attributeInfo.getGetMethod().invoke(parent);
                     if (Collection.class.isAssignableFrom(invoke.getClass())) {

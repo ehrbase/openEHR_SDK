@@ -80,8 +80,10 @@ public class FlatJsonTest {
                 .filteredOn(s -> s.startsWith("Missing"))
                 .containsExactlyInAnyOrder(
                         "Missing path: bericht/körpergewicht:0/birth_en/gewicht|magnitude, value: 30.0",
+                        "Missing path: bericht/körpergewicht:0/any_event_en:1/gewicht|magnitude, value: 60.0",
+                        "Missing path: bericht/körpergewicht:0/any_event_en:2/gewicht|magnitude, value: 61.0",
                         "Missing path: bericht/körpergewicht:0/any_event_en:0/gewicht|magnitude, value: 55.0",
-                        "Missing path: bericht/körpergewicht:0/any_event_en:1/gewicht|magnitude, value: 60.0"
+                        "Missing path: bericht/körpergewicht:0/any_event_en:3/gewicht|magnitude, value: 62.0"
                 );
 
         assertThat(errors)
@@ -89,6 +91,8 @@ public class FlatJsonTest {
                 .containsExactlyInAnyOrder(
                         "Extra path: bericht/körpergewicht:0/any_event_en:0/gewicht|magnitude, value: 55",
                         "Extra path: bericht/körpergewicht:0/any_event_en:1/gewicht|magnitude, value: 60",
+                        "Extra path: bericht/körpergewicht:0/any_event_en:2/gewicht|magnitude, value: 61",
+                        "Extra path: bericht/körpergewicht:0/any_event_en:3/gewicht|magnitude, value: 62",
                         "Extra path: bericht/körpergewicht:0/birth_en/gewicht|magnitude, value: 30"
                 );
     }
