@@ -68,6 +68,36 @@ public class FlatJsonMarshallerTest {
     }
 
     @Test
+    public void toFlatJsonAltEvents() throws IOException, XmlException {
+
+        OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(OperationalTemplateTestData.ALT_EVENTS.getStream()).getTemplate();
+        Composition composition = new CanonicalJson().unmarshal(IOUtils.toString(CompositionTestDataCanonicalJson.ALTERNATIVE_EVENTS.getStream(), StandardCharsets.UTF_8), Composition.class);
+        FlatJsonMarshaller cut = new FlatJsonMarshaller();
+        String actual = cut.toFlatJson(composition, new OPTParser(template).parse());
+        assertThat(actual).isNotNull();
+
+        String expected = IOUtils.toString(CompositionTestDataSimSDTJson.ALTERNATIVE_EVENTS.getStream(), StandardCharsets.UTF_8);
+
+        List<String> errors = compere(actual, expected);
+
+        assertThat(errors)
+                .filteredOn(s -> s.startsWith("Missing"))
+                .containsExactlyInAnyOrder(
+                        "Missing path: bericht/körpergewicht:0/any_event_en:0/gewicht|magnitude, value: 55.0",
+                        "Missing path: bericht/körpergewicht:0/any_event_en:1/gewicht|magnitude, value: 60.0",
+                        "Missing path: bericht/körpergewicht:0/birth_en/gewicht|magnitude, value: 30.0"
+                );
+
+        assertThat(errors)
+                .filteredOn(s -> s.startsWith("Extra"))
+                .containsExactlyInAnyOrder(
+                        "Extra path: bericht/körpergewicht:0/any_event_en:0/gewicht|magnitude, value: 55",
+                        "Extra path: bericht/körpergewicht:0/any_event_en:1/gewicht|magnitude, value: 60",
+                        "Extra path: bericht/körpergewicht:0/birth_en/gewicht|magnitude, value: 30"
+                );
+    }
+
+    @Test
     public void toFlatJsonMultiOccurrence() throws IOException, XmlException {
 
         OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(OperationalTemplateTestData.MULTI_OCCURRENCE.getStream()).getTemplate();
@@ -100,6 +130,7 @@ public class FlatJsonMarshallerTest {
                         "Extra path: encounter/body_temperature:1/any_event:1/temperature|magnitude, value: 11"
                 );
     }
+
 
     @Test
     public void toFlatJsonAllTypes() throws IOException, XmlException {

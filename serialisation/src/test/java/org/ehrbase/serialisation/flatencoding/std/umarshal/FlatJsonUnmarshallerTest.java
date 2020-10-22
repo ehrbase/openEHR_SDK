@@ -93,6 +93,27 @@ public class FlatJsonUnmarshallerTest {
     }
 
     @Test
+    public void unmarshalAlt() throws IOException, XmlException {
+        OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(OperationalTemplateTestData.ALT_EVENTS.getStream()).getTemplate();
+        WebTemplate webTemplate = new Filter().filter(new OPTParser(template).parse());
+
+        FlatJsonUnmarshaller cut = new FlatJsonUnmarshaller();
+
+        String flat = IOUtils.toString(CompositionTestDataSimSDTJson.ALTERNATIVE_EVENTS.getStream(), StandardCharsets.UTF_8);
+
+        Composition actual = cut.unmarshal(flat, webTemplate, template);
+
+        assertThat(actual).isNotNull();
+        assertThat(cut.getUnconsumed()).containsExactlyInAnyOrder(
+        );
+        try {
+            new Validator(template).check(actual);
+        } catch (Exception e) {
+            Assert.fail(e.getMessage());
+        }
+    }
+
+    @Test
     public void unmarshalAllTypes() throws IOException, XmlException {
         OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(OperationalTemplateTestData.ALL_TYPES.getStream()).getTemplate();
         WebTemplate webTemplate = new Filter().filter(new OPTParser(template).parse());

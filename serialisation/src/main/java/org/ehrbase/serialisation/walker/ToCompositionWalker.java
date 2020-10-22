@@ -24,6 +24,7 @@ import com.nedap.archie.creation.RMObjectCreator;
 import com.nedap.archie.rm.RMObject;
 import com.nedap.archie.rm.datastructures.Event;
 import com.nedap.archie.rm.datastructures.IntervalEvent;
+import com.nedap.archie.rm.datastructures.PointEvent;
 import com.nedap.archie.rm.datavalues.DvCodedText;
 import com.nedap.archie.rm.datavalues.quantity.datetime.DvDuration;
 import com.nedap.archie.rminfo.RMAttributeInfo;
@@ -46,7 +47,8 @@ public abstract class ToCompositionWalker<T> extends Walker<T> {
     @Override
     protected Object extractRMChild(RMObject currentRM, WebTemplateNode currentNode, WebTemplateNode childNode, boolean isChoice, Integer count) {
 
-        ItemExtractor itemExtractor = new ItemExtractor(currentRM, currentNode, childNode, isChoice).invoke();
+
+        ItemExtractor itemExtractor = new ItemExtractor(currentRM, currentNode, childNode, isChoice && !List.of("POINT_EVENT", "INTERVAL_EVENT").contains(childNode.getRmType())).invoke();
 
         Object child = itemExtractor.getChild();
         Object parent = itemExtractor.getParent();
@@ -67,13 +69,16 @@ public abstract class ToCompositionWalker<T> extends Walker<T> {
             child = currentChild;
         }
         String rmclass = childNode.getRmType();
-        if (child == null) {
+        if (child == null
+                || (child.getClass().equals(PointEvent.class) && !childNode.getRmType().equals("POINT_EVENT"))
+                || (child.getClass().equals(IntervalEvent.class) && !childNode.getRmType().equals("INTERVAL_EVENT"))
+        ) {
             CComplexObject elementConstraint = new CComplexObject();
             elementConstraint.setRmTypeName(rmclass);
             Object newChild = RM_OBJECT_CREATOR.create(elementConstraint);
             if (Event.class.isAssignableFrom(newChild.getClass())) {
                 Event newEvent = (Event) newChild;
-                Event oldEvent = (Event) child;
+                Event oldEvent = (Event) deepClone((RMObject) child);
                 newEvent.setState(oldEvent.getState());
                 newEvent.setData(oldEvent.getData());
                 newEvent.setArchetypeDetails(oldEvent.getArchetypeDetails());

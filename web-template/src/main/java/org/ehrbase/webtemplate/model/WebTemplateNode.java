@@ -70,6 +70,7 @@ public class WebTemplateNode implements Serializable {
         this.dependsOn = other.dependsOn;
         this.annotations = other.annotations;
         this.inputs.addAll(other.getInputs());
+        this.getChildren().addAll(other.children.stream().map(WebTemplateNode::new).collect(Collectors.toList()));
     }
 
     public String getId() {

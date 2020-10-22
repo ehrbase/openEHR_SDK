@@ -61,6 +61,39 @@ public class FlatJsonTest {
     }
 
     @Test
+    public void roundTripAlt() throws IOException {
+        TestDataTemplateProvider templateProvider = new TestDataTemplateProvider();
+        FlatJson cut = new FlatJasonProvider(templateProvider).buildFlatJson(FlatFormat.SIM_SDT, "AlternativeEvents");
+
+        String flat = IOUtils.toString(CompositionTestDataSimSDTJson.ALTERNATIVE_EVENTS.getStream(), StandardCharsets.UTF_8);
+        Composition unmarshal = cut.unmarshal(flat);
+
+        assertThat(unmarshal).isNotNull();
+
+        String actual = cut.marshal(unmarshal);
+
+        String expected = IOUtils.toString(CompositionTestDataSimSDTJson.ALTERNATIVE_EVENTS.getStream(), StandardCharsets.UTF_8);
+
+        List<String> errors = compere(actual, expected);
+
+        assertThat(errors)
+                .filteredOn(s -> s.startsWith("Missing"))
+                .containsExactlyInAnyOrder(
+                        "Missing path: bericht/körpergewicht:0/birth_en/gewicht|magnitude, value: 30.0",
+                        "Missing path: bericht/körpergewicht:0/any_event_en:0/gewicht|magnitude, value: 55.0",
+                        "Missing path: bericht/körpergewicht:0/any_event_en:1/gewicht|magnitude, value: 60.0"
+                );
+
+        assertThat(errors)
+                .filteredOn(s -> s.startsWith("Extra"))
+                .containsExactlyInAnyOrder(
+                        "Extra path: bericht/körpergewicht:0/any_event_en:0/gewicht|magnitude, value: 55",
+                        "Extra path: bericht/körpergewicht:0/any_event_en:1/gewicht|magnitude, value: 60",
+                        "Extra path: bericht/körpergewicht:0/birth_en/gewicht|magnitude, value: 30"
+                );
+    }
+
+    @Test
     public void roundTripMulti() throws IOException {
         TestDataTemplateProvider templateProvider = new TestDataTemplateProvider();
         FlatJson cut = new FlatJasonProvider(templateProvider).buildFlatJson(FlatFormat.SIM_SDT, "ehrbase_multi_occurrence.de.v1");

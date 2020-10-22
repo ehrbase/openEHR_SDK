@@ -86,7 +86,11 @@ public class StdToCompositionWalker extends ToCompositionWalker<Map<String, Stri
 
     private boolean isMatchingNode(Map<String, String> subValues, Context<Map<String, String>> context, WebTemplateNode child) {
 
-        if (visitChildren(child)) {
+        if (child.getRmType().equals("POINT_EVENT")) {
+            return subValues.entrySet().stream().allMatch((e -> !e.getKey().endsWith("width")));
+        } else if (child.getRmType().equals("INTERVAL_EVENT")) {
+            return subValues.entrySet().stream().anyMatch((e -> e.getKey().endsWith("width")));
+        } else if (visitChildren(child)) {
             for (WebTemplateNode n : child.getChildren()) {
                 context.getNodeDeque().push(n);
                 String path = buildNamePath(context);

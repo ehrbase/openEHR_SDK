@@ -39,10 +39,10 @@ public class ObservationPostprocessor implements MarshalPostprocessor<Observatio
      */
     @Override
     public void process(String term, Observation rmObject, Map<String, Object> values) {
-        if (rmObject.getData() != null && rmObject.getData().getOrigin().getValue() != null) {
+        if (rmObject.getData() != null && rmObject.getData().getOrigin() != null && rmObject.getData().getOrigin().getValue() != null) {
             removeOrigin(term, rmObject.getData(), values);
         }
-        if (rmObject.getState() != null && rmObject.getState().getOrigin().getValue() != null) {
+        if (rmObject.getState() != null && rmObject.getState().getOrigin() != null && rmObject.getState().getOrigin().getValue() != null) {
             removeOrigin(term, rmObject.getState(), values);
         }
     }

@@ -20,19 +20,26 @@
 package org.ehrbase.serialisation.walker;
 
 import com.nedap.archie.rm.RMObject;
+import com.nedap.archie.rminfo.ArchieRMInfoLookup;
 import org.ehrbase.webtemplate.model.WebTemplateNode;
 
 import java.util.List;
 
 public abstract class FromCompositionWalker<T> extends Walker<T> {
+    public static final ArchieRMInfoLookup ARCHIE_RM_INFO_LOOKUP = ArchieRMInfoLookup.getInstance();
+
     protected Object extractRMChild(RMObject currentRM, WebTemplateNode currentNode, WebTemplateNode childNode, boolean isChoice, Integer count) {
 
-        ItemExtractor itemExtractor = new ItemExtractor(currentRM, currentNode, childNode, isChoice).invoke();
+        ItemExtractor itemExtractor = new ItemExtractor(currentRM, currentNode, childNode, isChoice && count == null).invoke();
 
         Object child = itemExtractor.getChild();
 
         if (count != null && child instanceof List) {
+
             child = ((List<RMObject>) child).get(count);
+            if (isChoice && !ARCHIE_RM_INFO_LOOKUP.getTypeInfo(childNode.getRmType()).getJavaClass().isAssignableFrom(child.getClass())) {
+                child = null;
+            }
         }
 
         return child;

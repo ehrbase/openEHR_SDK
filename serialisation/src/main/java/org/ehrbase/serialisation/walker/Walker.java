@@ -73,8 +73,25 @@ public abstract class Walker<T> {
                 WebTemplateNode codeNode = children.stream().filter(n -> n.getRmType().equals("DV_CODED_TEXT")).findAny().get();
                 WebTemplateNode textNode = new WebTemplateNode(codeNode);
                 textNode.setRmType("DV_TEXT");
-                choices.put(textNode.getAqlPath(), List.of(codeNode));
+                choices.put(textNode.getAqlPath(), List.of(codeNode, textNode));
                 children.add(textNode);
+            }
+            if (children.stream().anyMatch(n -> n.getRmType().equals("EVENT"))) {
+                WebTemplateNode event = children.stream().filter(n -> n.getRmType().equals("EVENT")).findAny().get();
+                WebTemplateNode pointEvent = new WebTemplateNode(event);
+                WebTemplateNode intervalEvent = new WebTemplateNode(event);
+                pointEvent.setRmType("POINT_EVENT");
+                intervalEvent.setRmType("INTERVAL_EVENT");
+                WebTemplateNode width = new WebTemplateNode();
+                width.setId("width");
+                width.setRmType("DV_DURATION");
+                width.setMax(1);
+                width.setAqlPath(event.getAqlPath() + "/width");
+                intervalEvent.getChildren().add(width);
+                choices.put(intervalEvent.getAqlPath(), List.of(intervalEvent, pointEvent));
+                children.add(intervalEvent);
+                children.add(pointEvent);
+                children.remove(event);
             }
             for (WebTemplateNode childNode : children) {
 
