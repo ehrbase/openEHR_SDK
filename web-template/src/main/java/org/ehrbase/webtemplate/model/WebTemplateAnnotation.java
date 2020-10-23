@@ -19,11 +19,34 @@
 
 package org.ehrbase.webtemplate.model;
 
-public class WebTemplateAnnotation {
+import java.io.Serializable;
+import java.util.Objects;
+
+public class WebTemplateAnnotation implements Serializable {
 
     private String comment;
 
+    public WebTemplateAnnotation() {
+    }
+
+    public WebTemplateAnnotation(WebTemplateAnnotation other) {
+        this.comment = other.comment;
+    }
+
     public String getComment() {
         return comment;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        WebTemplateAnnotation that = (WebTemplateAnnotation) o;
+        return Objects.equals(comment, that.comment);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(comment);
     }
 }

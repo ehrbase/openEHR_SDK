@@ -19,19 +19,38 @@
 
 package org.ehrbase.webtemplate.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
-public class WebTemplateInput {
+public class WebTemplateInput implements Serializable {
 
     private String suffix;
     private String type;
-    private final List<WebTemplateInputValue> list = new ArrayList();
+    private final List<WebTemplateInputValue> list = new ArrayList<>();
     private Boolean listOpen;
     private WebTemplateValidation validation;
     private String terminology;
     private String defaultValue;
+
+    public WebTemplateInput() {
+    }
+
+    public WebTemplateInput(WebTemplateInput other) {
+        this.suffix = other.suffix;
+        this.type = other.type;
+        this.listOpen = other.listOpen;
+        if (other.validation != null) {
+            this.validation = new WebTemplateValidation(other.validation);
+        } else {
+            this.validation = null;
+        }
+        this.terminology = other.terminology;
+        this.defaultValue = other.defaultValue;
+        this.list.addAll(other.list.stream().map(WebTemplateInputValue::new).collect(Collectors.toList()));
+    }
 
     public String getSuffix() {
         return suffix;
@@ -89,14 +108,18 @@ public class WebTemplateInput {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        WebTemplateInput that = (WebTemplateInput) o;
-        return Objects.equals(suffix, that.suffix) &&
-                Objects.equals(type, that.type) &&
-                list.equals(that.list);
+        WebTemplateInput input = (WebTemplateInput) o;
+        return Objects.equals(suffix, input.suffix) &&
+                Objects.equals(type, input.type) &&
+                Objects.equals(list, input.list) &&
+                Objects.equals(listOpen, input.listOpen) &&
+                Objects.equals(validation, input.validation) &&
+                Objects.equals(terminology, input.terminology) &&
+                Objects.equals(defaultValue, input.defaultValue);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(suffix, type, list);
+        return Objects.hash(suffix, type, list, listOpen, validation, terminology, defaultValue);
     }
 }

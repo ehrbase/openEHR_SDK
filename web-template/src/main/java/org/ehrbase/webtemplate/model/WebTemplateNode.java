@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -42,14 +43,14 @@ public class WebTemplateNode implements Serializable {
     private String nodeId;
     private int min;
     private int max;
-    private final Map<String, String> localizedNames = new HashMap();
+    private final Map<String, String> localizedNames = new HashMap<>();
     private final Map<String, String> localizedDescriptions = new HashMap<>();
     private String aqlPath;
     private final List<WebTemplateNode> children = new ArrayList<>();
     private final List<WebTemplateInput> inputs = new ArrayList<>();
     private Boolean inContext;
     private final Map<String, WebTemplateTerminology> termBindings = new HashMap<>();
-    private List<String> dependsOn = new ArrayList<>();
+    private final List<String> dependsOn = new ArrayList<>();
     private WebTemplateAnnotation annotations;
     private final List<String> proportionTypes = new ArrayList<>();
 
@@ -67,10 +68,18 @@ public class WebTemplateNode implements Serializable {
         this.max = other.max;
         this.aqlPath = other.aqlPath;
         this.inContext = other.inContext;
-        this.dependsOn = other.dependsOn;
-        this.annotations = other.annotations;
-        this.inputs.addAll(other.getInputs());
+        this.dependsOn.addAll(other.dependsOn);
+        if (other.annotations != null) {
+            this.annotations = new WebTemplateAnnotation(other.annotations);
+        } else {
+            this.annotations = null;
+        }
+        this.inputs.addAll(other.getInputs().stream().map(WebTemplateInput::new).collect(Collectors.toList()));
         this.getChildren().addAll(other.children.stream().map(WebTemplateNode::new).collect(Collectors.toList()));
+        this.localizedNames.putAll(other.localizedNames);
+        this.localizedDescriptions.putAll(other.localizedDescriptions);
+        this.proportionTypes.addAll(other.getProportionTypes());
+        this.termBindings.putAll(other.termBindings.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> new WebTemplateTerminology(e.getValue()))));
     }
 
     public String getId() {
@@ -236,5 +245,33 @@ public class WebTemplateNode implements Serializable {
         return matching;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        WebTemplateNode node = (WebTemplateNode) o;
+        return min == node.min &&
+                max == node.max &&
+                Objects.equals(id, node.id) &&
+                Objects.equals(optionalIdNumber, node.optionalIdNumber) &&
+                Objects.equals(name, node.name) &&
+                Objects.equals(localizedName, node.localizedName) &&
+                Objects.equals(rmType, node.rmType) &&
+                Objects.equals(nodeId, node.nodeId) &&
+                Objects.equals(localizedNames, node.localizedNames) &&
+                Objects.equals(localizedDescriptions, node.localizedDescriptions) &&
+                Objects.equals(aqlPath, node.aqlPath) &&
+                Objects.equals(children, node.children) &&
+                Objects.equals(inputs, node.inputs) &&
+                Objects.equals(inContext, node.inContext) &&
+                Objects.equals(termBindings, node.termBindings) &&
+                Objects.equals(dependsOn, node.dependsOn) &&
+                Objects.equals(annotations, node.annotations) &&
+                Objects.equals(proportionTypes, node.proportionTypes);
+    }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, optionalIdNumber, name, localizedName, rmType, nodeId, min, max, localizedNames, localizedDescriptions, aqlPath, children, inputs, inContext, termBindings, dependsOn, annotations, proportionTypes);
+    }
 }

@@ -39,6 +39,21 @@ public class WebTemplate implements Serializable {
     private final List<String> languages = new ArrayList<>();
     private WebTemplateNode tree;
 
+    public WebTemplate() {
+    }
+
+    public WebTemplate(WebTemplate other) {
+        this.templateId = other.templateId;
+        this.version = other.version;
+        this.defaultLanguage = other.defaultLanguage;
+        if (other.tree != null) {
+            this.tree = new WebTemplateNode(other.tree);
+        } else {
+            this.tree = null;
+        }
+        this.languages.addAll(other.languages);
+    }
+
     public String getTemplateId() {
         return templateId;
     }

@@ -42,10 +42,11 @@ public class Filter {
     public static final ArchieRMInfoLookup ARCHIE_RM_INFO_LOOKUP = ArchieRMInfoLookup.getInstance();
 
     public WebTemplate filter(WebTemplate webTemplate) {
-        List<WebTemplateNode> filteredChildren = filter(webTemplate.getTree(), webTemplate, null);
-        webTemplate.setTree(filteredChildren.get(0));
+        WebTemplate clone = new WebTemplate(webTemplate);
+        List<WebTemplateNode> filteredChildren = filter(clone.getTree(), webTemplate, null);
+        clone.setTree(filteredChildren.get(0));
 
-        return webTemplate;
+        return clone;
     }
 
     private List<WebTemplateNode> filter(WebTemplateNode node, WebTemplate context, WebTemplateNode parent) {
