@@ -26,13 +26,13 @@ workflows:
                 - develop
                 - release
 
-      # - test-openEHR_SDK:
-      #     filters:
-      #       branches:
-      #         ignore:
-      #           - master
-      #           - develop
-      #           - release
+      - test-openEHR_SDK:
+          filters:
+            branches:
+              ignore:
+                - master
+                - develop
+                - release
 
       - build-EHRbase:
           requires:
@@ -55,49 +55,49 @@ workflows:
                 - develop
                 - release
 
-      # - COMPOSITION-tests-2:
-      #     context: org-global
-      #     requires:
-      #       - build-EHRbase
-      #     filters:
-      #       branches:
-      #         ignore:
-      #           - master
-      #           - develop
-      #           - release
+      - COMPOSITION-tests-2:
+          context: org-global
+          requires:
+            - build-EHRbase
+          filters:
+            branches:
+              ignore:
+                - master
+                - develop
+                - release
 
-      # - COMPOSITION-tests-3:
-      #     context: org-global
-      #     requires:
-      #       - build-EHRbase
-      #     filters:
-      #       branches:
-      #         ignore:
-      #           - master
-      #           - develop
-      #           - release
+      - COMPOSITION-tests-3:
+          context: org-global
+          requires:
+            - build-EHRbase
+          filters:
+            branches:
+              ignore:
+                - master
+                - develop
+                - release
 
-      # - COMPOSITION-tests-4:
-      #     context: org-global
-      #     requires:
-      #       - build-EHRbase
-      #     filters:
-      #       branches:
-      #         ignore:
-      #           - master
-      #           - develop
-      #           - release
+      - COMPOSITION-tests-4:
+          context: org-global
+          requires:
+            - build-EHRbase
+          filters:
+            branches:
+              ignore:
+                - master
+                - develop
+                - release
 
-      # - CONTRIBUTION-tests:
-      #     context: org-global
-      #     requires:
-      #       - build-EHRbase
-      #     filters:
-      #       branches:
-      #         ignore:
-      #           - master
-      #           - develop
-      #           - release
+      - CONTRIBUTION-tests:
+          context: org-global
+          requires:
+            - build-EHRbase
+          filters:
+            branches:
+              ignore:
+                - master
+                - develop
+                - release
 
       - DIRECTORY-tests:
           context: org-global
@@ -110,38 +110,38 @@ workflows:
                 - develop
                 - release
 
-      # - EHRSERVICE-tests:
-      #     context: org-global
-      #     requires:
-      #       - build-EHRbase
-      #     filters:
-      #       branches:
-      #         ignore:
-      #           - master
-      #           - develop
-      #           - release
+      - EHRSERVICE-tests:
+          context: org-global
+          requires:
+            - build-EHRbase
+          filters:
+            branches:
+              ignore:
+                - master
+                - develop
+                - release
       
-      # - EHRSTATUS-tests:
-      #     context: org-global
-      #     requires:
-      #       - build-EHRbase
-      #     filters:
-      #       branches:
-      #         ignore:
-      #           - master
-      #           - develop
-      #           - release
+      - EHRSTATUS-tests:
+          context: org-global
+          requires:
+            - build-EHRbase
+          filters:
+            branches:
+              ignore:
+                - master
+                - develop
+                - release
       
-      # - KNOWLEDGE-tests:
-      #     context: org-global
-      #     requires:
-      #       - build-EHRbase
-      #     filters:
-      #       branches:
-      #         ignore:
-      #           - master
-      #           - develop
-      #           - release
+      - KNOWLEDGE-tests:
+          context: org-global
+          requires:
+            - build-EHRbase
+          filters:
+            branches:
+              ignore:
+                - master
+                - develop
+                - release
 
       - QUERYSERVICE-tests-1:
           context: org-global
@@ -169,14 +169,14 @@ workflows:
           context: org-global
           requires:
             - COMPOSITION-tests-1
-            # - COMPOSITION-tests-2
-            # - COMPOSITION-tests-3
-            # - COMPOSITION-tests-4
-            # - CONTRIBUTION-tests
+            - COMPOSITION-tests-2
+            - COMPOSITION-tests-3
+            - COMPOSITION-tests-4
+            - CONTRIBUTION-tests
             - DIRECTORY-tests
-            # - EHRSERVICE-tests
-            # - EHRSTATUS-tests
-            # - KNOWLEDGE-tests
+            - EHRSERVICE-tests
+            - EHRSTATUS-tests
+            - KNOWLEDGE-tests
             - QUERYSERVICE-tests-1
             - QUERYSERVICE-tests-2
           filters:
@@ -228,17 +228,17 @@ workflows:
 
 
 
-  # # WORKFLOW 5/5) Code analysis w/ SonarCloud.io 
-  # sonar-code-analysis:
-  #   jobs:
-  #     - run-code-analysis:
-  #         context: org-global
-  #         filters:
-  #           branches:
-  #             ignore:
-  #               - master
-  #               # - develop
-  #               - release
+  # WORKFLOW 5/5) Code analysis w/ SonarCloud.io 
+  sonar-code-analysis:
+    jobs:
+      - run-code-analysis:
+          context: org-global
+          filters:
+            branches:
+              ignore:
+                - master
+                # - develop
+                - release
 
 
 
@@ -260,7 +260,7 @@ jobs:
   build-openEHR_SDK:
     description: Build and unit test the SDK.
     executor: docker-python3-java11
-    # executor: vm-ubuntu-1604                          # (use for pipeline debugging only)
+    # executor: machine-ubuntu-2004                          # (use for pipeline debugging only)
     steps:
       - checkout
       - cache-out-sdk-m2-dependencies
@@ -294,7 +294,7 @@ jobs:
 
   build-EHRbase:
     executor: docker-py3-java11-postgres
-    # executor: vm-ubuntu-1604                          # (use for pipeline debugging only)
+    # executor: machine-ubuntu-2004                          # (use for pipeline debugging only)
     steps:
       - checkout
       - restore-sdk-workspace
@@ -311,7 +311,7 @@ jobs:
 
   COMPOSITION-tests-1:
     executor: docker-py3-java11-postgres
-    # executor: vm-ubuntu-1604                          # (use for pipeline debugging only)
+    # executor: machine-ubuntu-2004                          # (use for pipeline debugging only)
     steps:
       #-----------------------------------#---------------(use for pipeline debugging only)
       # - run: echo MOCKED JOB            # 
@@ -326,7 +326,7 @@ jobs:
 
   COMPOSITION-tests-2:
     executor: docker-py3-java11-postgres
-    # executor: vm-ubuntu-1604                          # (use for pipeline debugging only)
+    # executor: machine-ubuntu-2004                          # (use for pipeline debugging only)
     steps:
       #-----------------------------------#---------------(use for pipeline debugging only)
       # - run: echo MOCKED JOB            # 
@@ -341,7 +341,7 @@ jobs:
 
   COMPOSITION-tests-3:
     executor: docker-py3-java11-postgres
-    # executor: vm-ubuntu-1604                          # (use for pipeline debugging only)
+    # executor: machine-ubuntu-2004                          # (use for pipeline debugging only)
     steps:
       #-----------------------------------#---------------(use for pipeline debugging only)
       # - run: echo MOCKED JOB            # 
@@ -356,7 +356,7 @@ jobs:
 
   COMPOSITION-tests-4:
     executor: docker-py3-java11-postgres
-    # executor: vm-ubuntu-1604                          # (use for pipeline debugging only)
+    # executor: machine-ubuntu-2004                          # (use for pipeline debugging only)
     steps:
       #-----------------------------------#---------------(use for pipeline debugging only)
       # - run: echo MOCKED JOB            # 
@@ -371,7 +371,7 @@ jobs:
 
   CONTRIBUTION-tests:
     executor: docker-py3-java11-postgres
-    # executor: vm-ubuntu-1604                          # (use for pipeline debugging only)
+    # executor: machine-ubuntu-2004                          # (use for pipeline debugging only)
     steps:
       #-----------------------------------#---------------(use for pipeline debugging only)
       # - run: echo MOCKED JOB            # 
@@ -386,7 +386,7 @@ jobs:
 
   DIRECTORY-tests:
     executor: docker-py3-java11-postgres
-    # executor: vm-ubuntu-1604                          # (use for pipeline debugging only)
+    # executor: machine-ubuntu-2004                          # (use for pipeline debugging only)
     steps:
       #-----------------------------------#---------------(use for pipeline debugging only)
       # - run: echo MOCKED JOB            # 
@@ -401,7 +401,7 @@ jobs:
 
   EHRSERVICE-tests:
     executor: docker-py3-java11-postgres
-    # executor: vm-ubuntu-1604                          # (use for pipeline debugging only)
+    # executor: machine-ubuntu-2004                          # (use for pipeline debugging only)
     steps:
       #-----------------------------------#---------------(use for pipeline debugging only)
       # - run: echo MOCKED JOB            # 
@@ -416,7 +416,7 @@ jobs:
 
   EHRSTATUS-tests:
     executor: docker-py3-java11-postgres
-    # executor: vm-ubuntu-1604                          # (use for pipeline debugging only)
+    # executor: machine-ubuntu-2004                          # (use for pipeline debugging only)
     steps:
       #-----------------------------------#---------------(use for pipeline debugging only)
       # - run: echo MOCKED JOB            # 
@@ -431,7 +431,7 @@ jobs:
 
   KNOWLEDGE-tests:
     executor: docker-py3-java11-postgres
-    # executor: vm-ubuntu-1604                          # (use for pipeline debugging only)
+    # executor: machine-ubuntu-2004                          # (use for pipeline debugging only)
     steps:
       #-----------------------------------#---------------(use for pipeline debugging only)
       # - run: echo MOCKED JOB            # 
@@ -446,7 +446,7 @@ jobs:
 
   QUERYSERVICE-tests-1:
     executor: docker-py3-java11-postgres
-    # executor: vm-ubuntu-1604                          # (use for pipeline debugging only)
+    # executor: machine-ubuntu-2004                          # (use for pipeline debugging only)
     steps:
       #-----------------------------------#---------------(use for pipeline debugging only)
       # - run: echo MOCKED JOB            # 
@@ -515,7 +515,7 @@ jobs:
 
   ROBOT-TEST-REPORT:
     executor: docker-py3-java11-postgres
-    # executor: vm-ubuntu-1604                          # (use for pipeline debugging only)
+    # executor: machine-ubuntu-2004                          # (use for pipeline debugging only)
     steps:
       #-----------------------------------#---------------(use for pipeline debugging only)
       # - run: echo MOCKED JOB            # 
@@ -528,7 +528,7 @@ jobs:
 
   publish-snapshot:
     executor: docker-python3-java11
-    # executor: vm-ubuntu-1604                          # (use for pipeline debugging only!)
+    # executor: machine-ubuntu-2004                          # (use for pipeline debugging only!)
     description: |
       Publishes a SNAPSHOT release version via jitpack.io
       whenever one of these keywords: [major], [minor] or [patch]
@@ -543,7 +543,7 @@ jobs:
 
   publish-release:
     executor: docker-python3-java11
-    # executor: vm-ubuntu-1604                          # (use for pipeline debugging only!)
+    # executor: machine-ubuntu-2004                          # (use for pipeline debugging only!)
     description: |
       Publishes a (stable) release version via jitpack.io
       whenever a 'release' branch is pushed to remote.
@@ -556,7 +556,7 @@ jobs:
 
   update-ehrbase-sdk-dependency:
     executor: docker-python3-java11
-    # executor: vm-ubuntu-1604                          # (use for pipeline debugging only!)
+    # executor: machine-ubuntu-2004                          # (use for pipeline debugging only!)
     steps:
       #-----------------------------------#---------------(use for pipeline debugging only)
       - run: echo MOCKED JOB            # 
@@ -1171,18 +1171,6 @@ commands:
             - pip-v1-
 
 
-  # save-test-results-folder:
-  #   description: Persist Robot tests folder to workspace
-  #   steps:
-  #     - run:
-  #         when: always
-  #         command: |
-  #           echo "persist test results"
-  #     - persist_to_workspace:
-  #         root: /home/circleci
-  #         paths:
-  #           - projects/ehrbase/tests/results
-
   save-test-results-folder:
     description: Persist Robot tests folder to workspace
     parameters:
@@ -1281,12 +1269,6 @@ executors:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
 
-  vm-ubuntu-1604:
-    working_directory: ~/projects
-    # working_directory: /mnt/ramdisk      # TODO: @wlad TEST THIS FOR POSSIBLE
-    machine:                               #             SPEED IMPROVEMENT !!!
-      image: ubuntu-1604:201903-01
-
   machine-ubuntu-2004:
     description: |
       Ubuntu 20.04 VM (machine executor)
@@ -1313,7 +1295,8 @@ executors:
       - sbt 1.3.13
       - yarn 1.22.4
     working_directory: ~/projects
-    environment:
+    # working_directory: /mnt/ramdisk      # TODO: @wlad TEST THIS FOR POSSIBLE
+    environment:                           #             SPEED IMPROVEMENT !!!
       PIPELINE_ID: << pipeline.id >>
       BRANCH_NAME: << pipeline.git.branch >>
     machine:
@@ -1339,7 +1322,7 @@ executors:
 # [ BACKUP ]
 
   # Example-how-to-use-INSTALL-JAVA11-ORB:
-  #   executor: vm-ubuntu-1604
+  #   executor: machine-ubuntu-2004
   #   steps:
   #     - run: echo "run integration tests job mock"
   #     - openjdk-install/openjdk:
