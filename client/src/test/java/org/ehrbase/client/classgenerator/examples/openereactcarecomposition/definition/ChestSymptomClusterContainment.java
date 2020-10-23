@@ -8,7 +8,7 @@ import org.ehrbase.client.aql.field.ListSelectAqlField;
 import org.ehrbase.client.aql.field.SelectAqlField;
 
 public class ChestSymptomClusterContainment extends Containment {
-    public SelectAqlField<ChestSymptomCluster> CHEST_SYMPTOM_CLUSTER = new AqlFieldImp<ChestSymptomCluster>(ChestSymptomCluster.class, "", "ChestSymptomCluster", ChestSymptomCluster.class, this);
+  public SelectAqlField<ChestSymptomCluster> CHEST_SYMPTOM_CLUSTER = new AqlFieldImp<ChestSymptomCluster>(ChestSymptomCluster.class, "", "ChestSymptomCluster", ChestSymptomCluster.class, this);
 
     public ListSelectAqlField<Cluster> SIGN = new ListAqlFieldImp<Cluster>(ChestSymptomCluster.class, "/items[at0063]", "sign", Cluster.class, this);
 

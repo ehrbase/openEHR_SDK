@@ -3,9 +3,13 @@ package org.ehrbase.client.classgenerator.examples.openereactcarecomposition.def
 import org.ehrbase.client.classgenerator.EnumValueSet;
 
 public enum Definingcode7 implements EnumValueSet {
-  FEELING_OF_IMPENDING_DOOM("Feeling of impending doom", "Feeling of impending doom.", "local", "at0111"),
+  UNABLE_TO_SPEAK_FULL_SENTENCES("Unable to speak full sentences", "Unable to speak in full sentences.", "local", "at0069"),
 
-  NOT_FEELING_WELL("Not feeling well", "Not feeling well.", "local", "at0110");
+  NOISY_BREATHING("Noisy breathing", "Noisy breathing.", "local", "at0067"),
+
+  SHORT_OF_BREATH("Short of breath", "Short of breath.", "local", "at0068"),
+
+  USE_ACCESSORY_MUSCLES("Use accessory muscles", "Use accessory muscles.", "local", "at0070");
 
   private String value;
 

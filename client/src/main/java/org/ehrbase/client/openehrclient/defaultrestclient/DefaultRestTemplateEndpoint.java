@@ -21,7 +21,6 @@ import org.apache.http.Header;
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
-import org.apache.http.client.fluent.Request;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.entity.ContentType;
 import org.apache.xmlbeans.XmlException;
@@ -40,7 +39,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Optional;
 
-import static org.ehrbase.client.openehrclient.defaultrestclient.DefaultRestClient.ACCEPT_APPLICATION_JSON;
 import static org.ehrbase.client.openehrclient.defaultrestclient.DefaultRestClient.ACCEPT_APPLICATION_XML;
 
 public class DefaultRestTemplateEndpoint implements TemplateEndpoint {
@@ -57,19 +55,15 @@ public class DefaultRestTemplateEndpoint implements TemplateEndpoint {
     @Override
     public Optional<OPERATIONALTEMPLATE> findTemplate(String templateId) {
         final TemplateDocument templateDocument;
+
         try {
-
             URI uri = defaultRestClient.getConfig().getBaseUri().resolve(new URIBuilder().setPath(defaultRestClient.getConfig().getBaseUri().getPath() + DEFINITION_TEMPLATE_ADL_1_4_PATH + templateId).build());
-            logger.debug("Calling Get {}", uri);
-            HttpResponse httpResponse = Request.Get(uri)
-                    .addHeader(HttpHeaders.ACCEPT, ACCEPT_APPLICATION_XML)
-                    .execute()
-                    .returnResponse();
+            HttpResponse httpResponse = defaultRestClient.internalGet(uri, null, ACCEPT_APPLICATION_XML);
 
-            defaultRestClient.checkStatus(httpResponse, HttpStatus.SC_OK, HttpStatus.SC_NOT_FOUND);
             if (httpResponse.getStatusLine().getStatusCode() == HttpStatus.SC_NOT_FOUND) {
                 return Optional.empty();
             }
+
             templateDocument = TemplateDocument.Factory.parse(httpResponse.getEntity().getContent());
         } catch (IOException | XmlException | URISyntaxException e) {
             throw new ClientException(e.getMessage(), e);
@@ -102,16 +96,12 @@ public class DefaultRestTemplateEndpoint implements TemplateEndpoint {
         URI uri = defaultRestClient.getConfig().getBaseUri().resolve(DEFINITION_TEMPLATE_ADL_1_4_PATH);
         XmlOptions opts = new XmlOptions();
         opts.setSaveSyntheticDocumentElement(new QName("http://schemas.openehr.org/v1", "template"));
-        try {
-            HttpResponse response = Request.Post(uri)
-                    .addHeader(HttpHeaders.ACCEPT, ACCEPT_APPLICATION_JSON).bodyString(
-                            operationaltemplate.xmlText(opts), ContentType.APPLICATION_XML)
-                    .execute().returnResponse();
-            defaultRestClient.checkStatus(response, HttpStatus.SC_OK, HttpStatus.SC_CREATED, HttpStatus.SC_NO_CONTENT);
-            Header location = response.getFirstHeader(HttpHeaders.LOCATION);
-            return location.getValue().substring(location.getValue().lastIndexOf('/') + 1);
-        } catch (IOException e) {
-            throw new ClientException(e.getMessage(), e);
-        }
+
+        HttpResponse response =
+                defaultRestClient.internalPost(uri, null, operationaltemplate.xmlText(opts), ContentType.APPLICATION_XML, ACCEPT_APPLICATION_XML);
+
+        Header etag = response.getFirstHeader(HttpHeaders.ETAG);
+        return etag.getValue().replace("\"", "");
+
     }
 }

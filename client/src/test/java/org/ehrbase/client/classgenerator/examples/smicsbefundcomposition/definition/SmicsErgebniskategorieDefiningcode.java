@@ -1,9 +1,13 @@
-package org.ehrbase.client.classgenerator.examples.openereactcarecomposition.definition;
+package org.ehrbase.client.classgenerator.examples.smicsbefundcomposition.definition;
 
 import org.ehrbase.client.classgenerator.EnumValueSet;
 
-public enum Definingcode15 implements EnumValueSet {
-  RIGORS("Rigors", "Rigors.", "local", "at0100");
+public enum SmicsErgebniskategorieDefiningcode implements EnumValueSet {
+  ANDERE("Andere", "*", "local", "at0028"),
+
+  HAUFUNG("Häufung", "*", "local", "at0026"),
+
+  AUSBRUCH("Ausbruch", "*", "local", "at0027");
 
   private String value;
 
@@ -13,7 +17,8 @@ public enum Definingcode15 implements EnumValueSet {
 
   private String code;
 
-  Definingcode15(String value, String description, String terminologyId, String code) {
+  SmicsErgebniskategorieDefiningcode(String value, String description, String terminologyId,
+                                     String code) {
     this.value = value;
     this.description = description;
     this.terminologyId = terminologyId;

@@ -3,21 +3,13 @@ package org.ehrbase.client.classgenerator.examples.openereactcarecomposition.def
 import org.ehrbase.client.classgenerator.EnumValueSet;
 
 public enum Definingcode6 implements EnumValueSet {
-  ACUTE_DETERIORATION_IN_FUNCTIONAL_ABILITY("Acute deterioration in functional ability", "Acute deterioration in functional ability", "local", "at0091"),
+  COLDNESS("Coldness", "Coldness.", "local", "at0098"),
 
-  HEART_RATE91130_OR_NEW_DYSRHYTHMIA("Heart rate 91-130 or new dysrhythmia", "Heart rate 91-130 or new dysrhythmia", "local", "at0095"),
+  IMPAIRED_PERFUSION("Impaired perfusion", "Impaired perfusion.", "local", "at0099"),
 
-  CLINICAL_SIGNS_OF_WOUND_INFECTION("Clinical signs of wound infection", "Clinical signs of wound infection", "local", "at0097"),
+  CLAMMY("Sweaty/clammy", "Sweaty/clammy.", "local", "at0097"),
 
-  SYSTOLIC_BP91100_MMHG("Systolic BP 91-100 mmHg", "Systolic BP 91-100 mmHg", "local", "at0094"),
-
-  TEMPERATURE36_C("Temperature <36°C", "Temperature <36°C", "local", "at0096"),
-
-  RELATIVES_CONCERNED_ABOUT_MENTAL_STATUS_REQUIRED("Relatives concerned about mental status REQUIRED:", "Relatives concerned about mental status REQUIRED:", "local", "at0090"),
-
-  RESPIRATORY_RATE2124("Respiratory rate 21-24", "Respiratory rate 21-24", "local", "at0093"),
-
-  PROCEDURE_IN_LAST8_WEEKS("Trauma / surgery / procedure in last 8 weeks", "Trauma / surgery / procedure in last 8 weeks", "local", "at0092");
+  COLOUR_CHANGES_PALE_GREY("Colour changes: pale, grey", "Colour changes: pale, grey.", "local", "at0096");
 
   private String value;
 

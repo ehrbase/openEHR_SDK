@@ -2,7 +2,7 @@ package org.ehrbase.client.classgenerator.examples.diagnosecomposition.definitio
 
 import org.ehrbase.client.classgenerator.EnumValueSet;
 
-public enum Definingcode implements EnumValueSet {
+public enum ValueDefiningcode implements EnumValueSet {
   LEBENSWANDEL_BEZOGENE_FAKTOREN("Lebenswandel-bezogene Faktoren", "z. B. Rauchen, Alkoholismus", "local", "at0013"),
 
   GENETISCHE_HERKUNFT("Genetische Herkunft", "z. B Sichelzellenanämie", "local", "at0009"),
@@ -37,7 +37,7 @@ public enum Definingcode implements EnumValueSet {
 
   private String code;
 
-  Definingcode(String value, String description, String terminologyId, String code) {
+  ValueDefiningcode(String value, String description, String terminologyId, String code) {
     this.value = value;
     this.description = description;
     this.terminologyId = terminologyId;
@@ -45,7 +45,7 @@ public enum Definingcode implements EnumValueSet {
   }
 
   public String getValue() {
-     return this.value;
+    return this.value;
   }
 
   public String getDescription() {

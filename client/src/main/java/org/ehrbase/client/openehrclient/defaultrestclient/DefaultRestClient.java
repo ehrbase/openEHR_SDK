@@ -113,20 +113,30 @@ public class DefaultRestClient implements OpenEhrClient {
     }
 
     protected VersionUid httpPost(URI uri, RMObject body, Map<String, String> headers) {
+        HttpResponse response;
+        String bodyString = new CanonicalJson().marshal(body);
+        response = internalPost(uri, headers, bodyString, ContentType.APPLICATION_JSON, ACCEPT_APPLICATION_JSON);
+        Header eTag = response.getFirstHeader(HttpHeaders.ETAG);
+        return new VersionUid(eTag.getValue().replace("\"", ""));
+
+    }
+
+    protected HttpResponse internalPost(URI uri, Map<String, String> headers, String bodyString, ContentType contentType, String accept) {
+        HttpResponse response;
         try {
+
             Request request = Request.Post(uri)
-                    .addHeader(HttpHeaders.ACCEPT, ACCEPT_APPLICATION_JSON)
-                    .bodyString(new CanonicalJson().marshal(body), ContentType.APPLICATION_JSON);
+                    .addHeader(HttpHeaders.ACCEPT, accept)
+                    .bodyString(bodyString, contentType);
             if (headers != null) {
                 headers.forEach(request::addHeader);
             }
-            HttpResponse response = executor.execute(request).returnResponse();
+            response = executor.execute(request).returnResponse();
             checkStatus(response, HttpStatus.SC_OK, HttpStatus.SC_CREATED, HttpStatus.SC_NO_CONTENT);
-            Header eTag = response.getFirstHeader(HttpHeaders.ETAG);
-            return new VersionUid(eTag.getValue().replace("\"", ""));
         } catch (IOException e) {
             throw new ClientException(e.getMessage(), e);
         }
+        return response;
     }
 
     protected VersionUid httpPut(URI uri, Locatable body, VersionUid versionUid) {
@@ -159,23 +169,38 @@ public class DefaultRestClient implements OpenEhrClient {
     }
 
     protected <T> Optional<T> httpGet(URI uri, Class<T> valueType, Map<String, String> headers) {
+        HttpResponse response;
+        response = internalGet(uri, headers, ACCEPT_APPLICATION_JSON);
+
+        if (response.getStatusLine().getStatusCode() == HttpStatus.SC_NOT_FOUND) {
+            return Optional.empty();
+        }
         try {
-            Request request = Request.Get(uri)
-                    .addHeader(HttpHeaders.ACCEPT, ACCEPT_APPLICATION_JSON);
-            if (headers != null) {
-                headers.forEach(request::addHeader);
-            }
-            HttpResponse response = executor.execute(request).returnResponse();
-            checkStatus(response, HttpStatus.SC_OK, HttpStatus.SC_NOT_FOUND);
-            if (response.getStatusLine().getStatusCode() == HttpStatus.SC_NOT_FOUND) {
-                return Optional.empty();
-            }
             String value = EntityUtils.toString(response.getEntity());
             return Optional.of(OBJECT_MAPPER.readValue(value, valueType));
         } catch (IOException e) {
             throw new ClientException(e.getMessage(), e);
         }
     }
+
+    protected HttpResponse internalGet(URI uri, Map<String, String> headers, String accept) {
+        HttpResponse response;
+        try {
+            Request request = Request.Get(uri)
+                    .addHeader(HttpHeaders.ACCEPT, accept);
+            if (headers != null) {
+                headers.forEach(request::addHeader);
+            }
+
+            response = executor.execute(request).returnResponse();
+            checkStatus(response, HttpStatus.SC_OK, HttpStatus.SC_NOT_FOUND);
+
+        } catch (IOException e) {
+            throw new ClientException(e.getMessage(), e);
+        }
+        return response;
+    }
+
 
     void checkStatus(HttpResponse httpResponse, int... expected) {
         if (!ArrayUtils.contains(expected, httpResponse.getStatusLine().getStatusCode())) {

@@ -54,8 +54,7 @@ public class DvCodedTextAdapter extends DvTypeAdapter<DvCodedText> {
     }
 
     @Override
-    public DvCodedText read(JsonReader arg0) throws IOException {
-        // TODO Auto-generated method stub
+    public DvCodedText read(JsonReader arg0) {
         return null;
     }
 
@@ -79,6 +78,7 @@ public class DvCodedTextAdapter extends DvTypeAdapter<DvCodedText> {
         if (adapterType == I_DvTypeAdapter.AdapterType.PG_JSONB) {
             writer.beginObject();
             writer.name("value").value(dvalue.getValue());
+            writer.name(I_DvTypeAdapter.TAG_CLASS_RAW_JSON).value(new SnakeCase(DvCodedText.class.getSimpleName()).camelToUpperSnake());
             writer.name("definingCode");
             writer.beginObject();
             writer.name("codeString").value(dvalue.getDefiningCode().getCodeString());
@@ -93,14 +93,13 @@ public class DvCodedTextAdapter extends DvTypeAdapter<DvCodedText> {
             termMappingAdapter.write(writer, dvalue.getMappings());
             writer.endObject();
         } else if (adapterType == I_DvTypeAdapter.AdapterType.RAW_JSON) {
-            //===
-            writer.beginObject(); //{
+            writer.beginObject();
             writer.name(I_DvTypeAdapter.TAG_CLASS_RAW_JSON).value(new ObjectSnakeCase(dvalue).camelToUpperSnake());
             writer.name("value").value(dvalue.getValue());
             CodePhrase codePhrase = dvalue.getDefiningCode();
             writer.name("defining_code").value(gson.toJson(codePhrase));
             writer.name(I_DvTypeAdapter.TAG_CLASS_RAW_JSON).value(new SnakeCase(CodePhrase.class.getSimpleName()).camelToUpperSnake());
-            writer.endObject(); //}
+            writer.endObject();
         }
 
     }
