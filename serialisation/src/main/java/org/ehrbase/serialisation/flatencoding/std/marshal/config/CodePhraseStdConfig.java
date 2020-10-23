@@ -20,10 +20,12 @@
 package org.ehrbase.serialisation.flatencoding.std.marshal.config;
 
 import com.nedap.archie.rm.datatypes.CodePhrase;
+import com.nedap.archie.rm.support.identification.ObjectId;
 import org.ehrbase.serialisation.walker.Context;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 public class CodePhraseStdConfig extends AbstractsStdConfig<CodePhrase> {
 
@@ -34,7 +36,7 @@ public class CodePhraseStdConfig extends AbstractsStdConfig<CodePhrase> {
     public Map<String, Object> buildChildValues(String currentTerm, CodePhrase rmObject, Context<Map<String, Object>> context) {
         Map<String, Object> result = new HashMap<>();
         addValue(result, currentTerm, "code", rmObject.getCodeString());
-        addValue(result, currentTerm, "terminology", rmObject.getTerminologyId().getValue());
+        addValue(result, currentTerm, "terminology", Optional.of(rmObject.getTerminologyId()).map(ObjectId::getValue).orElse(null));
 
         return result;
     }

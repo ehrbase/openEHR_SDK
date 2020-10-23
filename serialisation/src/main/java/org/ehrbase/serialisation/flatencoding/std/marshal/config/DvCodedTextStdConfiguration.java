@@ -19,11 +19,14 @@
 
 package org.ehrbase.serialisation.flatencoding.std.marshal.config;
 
+import com.nedap.archie.rm.datatypes.CodePhrase;
 import com.nedap.archie.rm.datavalues.DvCodedText;
+import com.nedap.archie.rm.support.identification.ObjectId;
 import org.ehrbase.serialisation.walker.Context;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 public class DvCodedTextStdConfiguration extends AbstractsStdConfig<DvCodedText> {
     @Override
@@ -41,8 +44,8 @@ public class DvCodedTextStdConfiguration extends AbstractsStdConfig<DvCodedText>
     public Map<String, Object> buildChildValues(String currentTerm, DvCodedText rmObject, Context<Map<String, Object>> context) {
 
         Map<String, Object> result = new HashMap<>();
-        addValue(result, currentTerm, "code", rmObject.getDefiningCode().getCodeString());
-        addValue(result, currentTerm, "terminology", rmObject.getDefiningCode().getTerminologyId().getValue());
+        addValue(result, currentTerm, "code", Optional.of(rmObject).map(DvCodedText::getDefiningCode).map(CodePhrase::getCodeString).orElse(null));
+        addValue(result, currentTerm, "terminology", Optional.of(rmObject).map(DvCodedText::getDefiningCode).map(CodePhrase::getTerminologyId).map(ObjectId::getValue).orElse(null));
         addValue(result, currentTerm, "value", rmObject.getValue());
 
         return result;

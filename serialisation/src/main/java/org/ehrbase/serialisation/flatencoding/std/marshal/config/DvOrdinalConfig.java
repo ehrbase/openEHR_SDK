@@ -19,6 +19,8 @@
 
 package org.ehrbase.serialisation.flatencoding.std.marshal.config;
 
+import com.nedap.archie.rm.datatypes.CodePhrase;
+import com.nedap.archie.rm.datavalues.DvCodedText;
 import com.nedap.archie.rm.datavalues.quantity.DvOrdinal;
 import org.ehrbase.serialisation.walker.Context;
 import org.ehrbase.util.exception.SdkException;
@@ -26,6 +28,7 @@ import org.ehrbase.webtemplate.model.WebTemplateInputValue;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 public class DvOrdinalConfig extends AbstractsStdConfig<DvOrdinal> {
 
@@ -44,7 +47,7 @@ public class DvOrdinalConfig extends AbstractsStdConfig<DvOrdinal> {
     @Override
     public Map<String, Object> buildChildValues(String currentTerm, DvOrdinal rmObject, Context<Map<String, Object>> context) {
         Map<String, Object> result = new HashMap<>();
-        String codeString = rmObject.getSymbol().getDefiningCode().getCodeString();
+        String codeString = Optional.of(rmObject).map(DvOrdinal::getSymbol).map(DvCodedText::getDefiningCode).map(CodePhrase::getCodeString).orElse(null);
         addValue(result, currentTerm, "code", codeString);
 
         WebTemplateInputValue value = context.getNodeDeque().peek()

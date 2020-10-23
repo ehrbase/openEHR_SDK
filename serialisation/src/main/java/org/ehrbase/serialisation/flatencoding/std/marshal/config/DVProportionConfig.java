@@ -45,7 +45,9 @@ public class DVProportionConfig extends AbstractsStdConfig<DvProportion> {
         addValue(result, currentTerm, "numerator", rmObject.getNumerator());
         addValue(result, currentTerm, "denominator", rmObject.getDenominator());
         addValue(result, currentTerm, "type", rmObject.getType());
-        addValue(result, currentTerm, null, rmObject.getNumerator() / rmObject.getDenominator());
+        if (rmObject.getNumerator() != null && rmObject.getDenominator() != null) {
+            addValue(result, currentTerm, null, rmObject.getNumerator() / rmObject.getDenominator());
+        }
 
         return result;
     }
