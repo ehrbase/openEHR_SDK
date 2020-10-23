@@ -44,115 +44,115 @@ workflows:
                 - develop
                 - release
 
-      - COMPOSITION-tests-1:
-          context: org-global
-          requires:
-            - build-EHRbase
-          filters:
-            branches:
-              ignore:
-                - master
-                - develop
-                - release
+      # - COMPOSITION-tests-1:
+      #     context: org-global
+      #     requires:
+      #       - build-EHRbase
+      #     filters:
+      #       branches:
+      #         ignore:
+      #           - master
+      #           - develop
+      #           - release
 
-      - COMPOSITION-tests-2:
-          context: org-global
-          requires:
-            - build-EHRbase
-          filters:
-            branches:
-              ignore:
-                - master
-                - develop
-                - release
+      # - COMPOSITION-tests-2:
+      #     context: org-global
+      #     requires:
+      #       - build-EHRbase
+      #     filters:
+      #       branches:
+      #         ignore:
+      #           - master
+      #           - develop
+      #           - release
 
-      - COMPOSITION-tests-3:
-          context: org-global
-          requires:
-            - build-EHRbase
-          filters:
-            branches:
-              ignore:
-                - master
-                - develop
-                - release
+      # - COMPOSITION-tests-3:
+      #     context: org-global
+      #     requires:
+      #       - build-EHRbase
+      #     filters:
+      #       branches:
+      #         ignore:
+      #           - master
+      #           - develop
+      #           - release
 
-      - COMPOSITION-tests-4:
-          context: org-global
-          requires:
-            - build-EHRbase
-          filters:
-            branches:
-              ignore:
-                - master
-                - develop
-                - release
+      # - COMPOSITION-tests-4:
+      #     context: org-global
+      #     requires:
+      #       - build-EHRbase
+      #     filters:
+      #       branches:
+      #         ignore:
+      #           - master
+      #           - develop
+      #           - release
 
-      - CONTRIBUTION-tests:
-          context: org-global
-          requires:
-            - build-EHRbase
-          filters:
-            branches:
-              ignore:
-                - master
-                - develop
-                - release
+      # - CONTRIBUTION-tests:
+      #     context: org-global
+      #     requires:
+      #       - build-EHRbase
+      #     filters:
+      #       branches:
+      #         ignore:
+      #           - master
+      #           - develop
+      #           - release
 
-      - DIRECTORY-tests:
-          context: org-global
-          requires:
-            - build-EHRbase
-          filters:
-            branches:
-              ignore:
-                - master
-                - develop
-                - release
+      # - DIRECTORY-tests:
+      #     context: org-global
+      #     requires:
+      #       - build-EHRbase
+      #     filters:
+      #       branches:
+      #         ignore:
+      #           - master
+      #           - develop
+      #           - release
 
-      - EHRSERVICE-tests:
-          context: org-global
-          requires:
-            - build-EHRbase
-          filters:
-            branches:
-              ignore:
-                - master
-                - develop
-                - release
+      # - EHRSERVICE-tests:
+      #     context: org-global
+      #     requires:
+      #       - build-EHRbase
+      #     filters:
+      #       branches:
+      #         ignore:
+      #           - master
+      #           - develop
+      #           - release
       
-      - EHRSTATUS-tests:
-          context: org-global
-          requires:
-            - build-EHRbase
-          filters:
-            branches:
-              ignore:
-                - master
-                - develop
-                - release
+      # - EHRSTATUS-tests:
+      #     context: org-global
+      #     requires:
+      #       - build-EHRbase
+      #     filters:
+      #       branches:
+      #         ignore:
+      #           - master
+      #           - develop
+      #           - release
       
-      - KNOWLEDGE-tests:
-          context: org-global
-          requires:
-            - build-EHRbase
-          filters:
-            branches:
-              ignore:
-                - master
-                - develop
-                - release
+      # - KNOWLEDGE-tests:
+      #     context: org-global
+      #     requires:
+      #       - build-EHRbase
+      #     filters:
+      #       branches:
+      #         ignore:
+      #           - master
+      #           - develop
+      #           - release
 
-      - QUERYSERVICE-tests-1:
-          context: org-global
-          requires:
-            - build-EHRbase
-          filters:
-            branches:
-              ignore:
-                - master
-                - develop
-                - release
+      # - QUERYSERVICE-tests-1:
+      #     context: org-global
+      #     requires:
+      #       - build-EHRbase
+      #     filters:
+      #       branches:
+      #         ignore:
+      #           - master
+      #           - develop
+      #           - release
 
       - QUERYSERVICE-tests-2:
           context: org-global
@@ -168,16 +168,16 @@ workflows:
       - ROBOT-TEST-REPORT:
           context: org-global
           requires:
-            - COMPOSITION-tests-1
-            - COMPOSITION-tests-2
-            - COMPOSITION-tests-3
-            - COMPOSITION-tests-4
-            - CONTRIBUTION-tests
-            - DIRECTORY-tests
-            - EHRSERVICE-tests
-            - EHRSTATUS-tests
-            - KNOWLEDGE-tests
-            - QUERYSERVICE-tests-1
+            # - COMPOSITION-tests-1
+            # - COMPOSITION-tests-2
+            # - COMPOSITION-tests-3
+            # - COMPOSITION-tests-4
+            # - CONTRIBUTION-tests
+            # - DIRECTORY-tests
+            # - EHRSERVICE-tests
+            # - EHRSTATUS-tests
+            # - KNOWLEDGE-tests
+            # - QUERYSERVICE-tests-1
             - QUERYSERVICE-tests-2
           filters:
             branches:
@@ -459,20 +459,74 @@ jobs:
           test-suite-path: "QUERY_SERVICE_TESTS"
           test-suite-name: "ADHOC-QUERY-1"
 
+  # QUERYSERVICE-tests-2:
+  #   executor: docker-py3-java11-postgres
+  #   # executor: vm-ubuntu-1604                          # (use for pipeline debugging only)
+  #   steps:
+  #     #-----------------------------------#---------------(use for pipeline debugging only)
+  #     # - run: echo MOCKED JOB            # 
+  #     # - cache-out-ehrbase-workspace     #
+  #     #-----------------------------------#
+  #     - restore-ehrbase-workspace
+  #     - start-ehrbase-server
+  #     - run-robot-tests:
+  #         include-tags: "aql_adhoc-queryANDloaded_db"
+  #         test-suite-path: "QUERY_SERVICE_TESTS"
+  #         test-suite-name: "ADHOC-QUERY-2"
+
   QUERYSERVICE-tests-2:
-    executor: docker-py3-java11-postgres
-    # executor: vm-ubuntu-1604                          # (use for pipeline debugging only)
+    executor: machine-ubuntu-2004                          # (use for pipeline debugging only)
     steps:
       #-----------------------------------#---------------(use for pipeline debugging only)
       # - run: echo MOCKED JOB            # 
       # - cache-out-ehrbase-workspace     #
       #-----------------------------------#
       - restore-ehrbase-workspace
-      - start-ehrbase-server
+      - restore_cache:
+          keys:
+            - expected-results-loaded-db-v5
+      - run:
+          name: list files after restore of cache
+          command: |
+            ls -la tests/robot/_resources/test_data_sets/query/aql_queries_valid/A/
+            ls -la tests/robot/_resources/test_data_sets/query/aql_queries_valid/B/
+            ls -la tests/robot/_resources/test_data_sets/query/aql_queries_valid/C/
+            ls -la tests/robot/_resources/test_data_sets/query/aql_queries_valid/D/
+      - restore_cache:
+          keys:
+            - ehrbasedb-dump-v2
+      # COMMENT: USE THE NEXT LINE ONLY TO FORCE TEST-DATA REGENERATION! Otherwise comment it out!
+      - run: echo "FORCE GENERATION OF TEST-DATA AND EXPECTED RESULTS!" > /tmp/DATA_CHANGED_NOTICE
+      - run: 
+          name: CHECK IF EXPECTED-RESULT TEMPLATES HAVE CHANGED AND REGENERATE TEST-DATA IF NEEDED
+          command: |
+            find tests/robot/_resources/test_data_sets/query/expected_results/loaded_db/ -type f ! -name *.tmp.json | sort | xargs cat > /tmp/expected-results-loaded_db-seed
+            sha256sum /tmp/expected-results-loaded_db-seed
+            ACTUAL_HASH="$(sha256sum /tmp/expected-results-loaded_db-seed | cat)"
+            EXPECTED_HASH="f5ee5a9a55c50687dafc3c3acff66089759f1577d7a5dd71aff6e60793ce91c2  /tmp/expected-results-loaded_db-seed"
+            [ "$ACTUAL_HASH" = "$EXPECTED_HASH" ] && echo "Expected results unchanged!  Don't regenerate test-data!" || echo "Expected result data-sets changed. Regenerate!" > /tmp/DATA_CHANGED_NOTICE
       - run-robot-tests:
+          sut: "SUT:TEST"
           include-tags: "aql_adhoc-queryANDloaded_db"
           test-suite-path: "QUERY_SERVICE_TESTS"
           test-suite-name: "ADHOC-QUERY-2"
+      - save_cache:
+          key: expected-results-loaded-db-v5-{{ checksum "/tmp/expected-results-loaded_db-seed" }}
+          paths:
+            - tests/robot/_resources/test_data_sets/query/expected_results/loaded_db/
+            - tests/robot/_resources/test_data_sets/query/aql_queries_valid/
+      - run:
+          name: list files after save of cache
+          command: |
+            ls -la tests/robot/_resources/test_data_sets/query/aql_queries_valid/A/
+            ls -la tests/robot/_resources/test_data_sets/query/aql_queries_valid/B/
+            ls -la tests/robot/_resources/test_data_sets/query/aql_queries_valid/C/
+            ls -la tests/robot/_resources/test_data_sets/query/aql_queries_valid/D/
+      - save_cache:
+          key: ehrbasedb-dump-v2-{{ checksum "/tmp/ehrbasedb_dump.sql" }}
+          paths:
+            - /tmp/ehrbasedb_dump.sql
+
 
 
   ROBOT-TEST-REPORT:
@@ -975,6 +1029,14 @@ commands:
             [ -f /usr/bin/mvn ] && echo "Maven is already installed." || sudo apt install maven -y
 
 
+  install-python3-requirements:
+    description: Install Python requirements
+    steps:
+      - run:
+          name: Install Python requirements
+          command: |
+            python3 -c "import site; print(site.getsitepackages())"
+            pip3 install -r ~/projects/tests/requirements.txt
 
 
 
@@ -1007,33 +1069,62 @@ commands:
             java -jar application/target/application-${EHRbase_VERSION}.jar --cache.enabled=false > log
 
 
-  # USE THIS COMMAND W/ DOCKER EXECUTOR ONLY!!! 
   run-robot-tests:
     description: Run integration tests written in Robot Framework
     parameters:
+      sut:
+        description: SUT - System Under Test Config
+        enum: ["SUT:DEV", "SUT:DEV -v AUTH_TYPE:OAUTH", "SUT:ADMIN-DEV", "SUT:TEST", "SUT:TEST -v AUTH_TYPE:OAUTH", "SUT:ADMIN-TEST"]
+        default: "SUT:DEV"
+        type: enum
+
       include-tags:
         description: Which tests to inclue by TAGs (Robot syntax applies!)
         type: string
+
       test-suite-path:
         description: Target test-suite given by it's folder name e.g. COMPOSITION_TESTS
         type: string
+        default: ""
+
       test-suite-name:
         description: Titel of generated Robot Log/Report.html
         type: string
+
     steps:
       # - cache-out-python-requirements
-      - install-python-requirements
-      - run: jps
+      - install-maven
+      - install-python3-requirements
+      # - run: jps
+      # - run:
+      #     name: Wait until EHRbase server is ready
+      #     command: |
+      #       grep -m 1 "Started EhrBase in" <(tail -f log)
       - run:
-          name: Wait until EHRbase server is ready
-          command: |
-            cd ehrbase
-            grep -m 1 "Started EhrBase in" <(tail -f log)
-      - run:
-          name: EXECUTE ROBOT COMMAND
+          name: START EHRBASE SERVER AND EXECUTE ROBOT TESTS
           no_output_timeout: 30m
           command: |
-            cd ~/projects/ehrbase/tests
+            echo "SUT: $SUT"
+            echo "ADMINAPI_ACTIVE: $ADMINAPI_ACTIVE"
+            echo "SECURITY_AUTHTYPE: $SECURITY_AUTHTYPE"
+            echo "OAUTH_RESRCSERVER_URL: $SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUERURI"
+            ls -la
+            if [ "${SUT}" != "TEST" ]; then
+              EHRbase_VERSION=$(mvn -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive exec:exec)
+              echo ${EHRbase_VERSION}
+              java -jar "application/target/application-${EHRbase_VERSION}.jar" \
+                  --cache.enabled=false >log & app_pid=$!
+              if ! tail -f log | timeout 30s grep -m 1 "Started EhrBase in"; then
+                echo "WARNING: Did not see a startup message even after waiting 30s" >&2
+                if kill -0 "$app_pid"; then
+                  echo "...although EHRbase is still running" >&2
+                else
+                  echo "...and EHRbase did not successfully start" >&2
+                fi
+              fi
+            fi
+            jps
+            cd ~/projects/tests
             robot --include << parameters.include-tags >> \
                   --exclude TODO -e future -e obsolete -e libtest \
                   --console dotted \
@@ -1043,15 +1134,64 @@ commands:
                   --flattenkeywords foritem \
                   --flattenkeywords name:_resources.* \
                   --outputdir results/<< parameters.test-suite-name >> \
+                  --timestampoutputs \
                   --name << parameters.test-suite-name >> \
-                  -v nodocker \
-                  robot/<< parameters.test-suite-path >>/
+                  -v << parameters.sut >> \
+                  robot/<< parameters.test-suite-path >>
       # - cache-in-python-requirements
-      - save-test-results-folder
+      - save-test-results-folder:
+          suite-results-folder-name: << parameters.test-suite-name >>
       - store_test_results:
-          path: ~/projects/ehrbase/tests/results/
+          path: ~/projects/tests/results/
       - store_artifacts:
-          path: ~/projects/ehrbase/tests/results/
+          path: ~/projects/tests/results/
+
+
+  # # USE THIS COMMAND W/ DOCKER EXECUTOR ONLY!!! 
+  # run-robot-tests:
+  #   description: Run integration tests written in Robot Framework
+  #   parameters:
+  #     include-tags:
+  #       description: Which tests to inclue by TAGs (Robot syntax applies!)
+  #       type: string
+  #     test-suite-path:
+  #       description: Target test-suite given by it's folder name e.g. COMPOSITION_TESTS
+  #       type: string
+  #     test-suite-name:
+  #       description: Titel of generated Robot Log/Report.html
+  #       type: string
+  #   steps:
+  #     # - cache-out-python-requirements
+  #     - install-python-requirements
+  #     - run: jps
+  #     - run:
+  #         name: Wait until EHRbase server is ready
+  #         command: |
+  #           cd ehrbase
+  #           grep -m 1 "Started EhrBase in" <(tail -f log)
+  #     - run:
+  #         name: EXECUTE ROBOT COMMAND
+  #         no_output_timeout: 30m
+  #         command: |
+  #           cd ~/projects/ehrbase/tests
+  #           robot --include << parameters.include-tags >> \
+  #                 --exclude TODO -e future -e obsolete -e libtest \
+  #                 --console dotted \
+  #                 --loglevel TRACE \
+  #                 --noncritical not-ready \
+  #                 --flattenkeywords for \
+  #                 --flattenkeywords foritem \
+  #                 --flattenkeywords name:_resources.* \
+  #                 --outputdir results/<< parameters.test-suite-name >> \
+  #                 --name << parameters.test-suite-name >> \
+  #                 -v nodocker \
+  #                 robot/<< parameters.test-suite-path >>/
+  #     # - cache-in-python-requirements
+  #     - save-test-results-folder
+  #     - store_test_results:
+  #         path: ~/projects/ehrbase/tests/results/
+  #     - store_artifacts:
+  #         path: ~/projects/ehrbase/tests/results/
 
 
   # # USE THIS COMMAND W/ MACHINE EXECUTOR ONLY!!!
@@ -1142,17 +1282,33 @@ commands:
             - pip-v1-
 
 
+  # save-test-results-folder:
+  #   description: Persist Robot tests folder to workspace
+  #   steps:
+  #     - run:
+  #         when: always
+  #         command: |
+  #           echo "persist test results"
+  #     - persist_to_workspace:
+  #         root: /home/circleci
+  #         paths:
+  #           - projects/ehrbase/tests/results
+
   save-test-results-folder:
     description: Persist Robot tests folder to workspace
+    parameters:
+      suite-results-folder-name:
+        description: Titel of generated Robot Outputs
+        type: string
     steps:
       - run:
+          name: PERSIST ROBOT TEST RESULTS
           when: always
-          command: |
-            echo "persist test results"
+          command: echo "persist test results"
       - persist_to_workspace:
           root: /home/circleci
           paths:
-            - projects/ehrbase/tests/results
+            - projects/tests/results/<< parameters.suite-results-folder-name >>
 
 
   restore-test-results-folder:
@@ -1201,7 +1357,8 @@ commands:
                   --log NONE \
                   --report NONE \
                   results/EHRbase-output.xml
-      - save-test-results-folder
+      - save-test-results-folder:
+          suite-results-folder-name: "0"
       - store_test_results:
           path: ~/projects/ehrbase/tests/results/
       - store_artifacts:
@@ -1241,6 +1398,38 @@ executors:
     # working_directory: /mnt/ramdisk      # TODO: @wlad TEST THIS FOR POSSIBLE
     machine:                               #             SPEED IMPROVEMENT !!!
       image: ubuntu-1604:201903-01
+
+  machine-ubuntu-2004:
+    description: |
+      Ubuntu 20.04 VM (machine executor)
+      - openjdk 1.8
+      - openjdk 11.0.8 (default)
+      - maven 3.6.3
+      - gradle 6.6
+      - python 2.7.17
+      - python 3.8.5
+      - pip/pip3
+      - docker 19.03.12
+      - docker-compose 1.26.2
+      - aws-cli 2.0.43
+      - google cloud sdk 307.0.0
+      - heroku 7.42.12
+      - chrome 85.0.4183
+      - chromedriver 85.0.4183
+      - firefox 80.0.0
+      - go 1.15
+      - leiningen 2.9.4
+      - node 12.18.3 (default)
+      - node 14.8.0
+      - ruby 2.7.1
+      - sbt 1.3.13
+      - yarn 1.22.4
+    working_directory: ~/projects
+    environment:
+      PIPELINE_ID: << pipeline.id >>
+      BRANCH_NAME: << pipeline.git.branch >>
+    machine:
+      image: ubuntu-2004:202008-01
 
 
 
