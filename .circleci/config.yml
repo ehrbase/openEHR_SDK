@@ -26,13 +26,13 @@ workflows:
                 - develop
                 - release
 
-      - test-openEHR_SDK:
-          filters:
-            branches:
-              ignore:
-                - master
-                - develop
-                - release
+      # - test-openEHR_SDK:
+      #     filters:
+      #       branches:
+      #         ignore:
+      #           - master
+      #           - develop
+      #           - release
 
       - build-EHRbase:
           requires:
@@ -228,17 +228,17 @@ workflows:
 
 
 
-  # WORKFLOW 5/5) Code analysis w/ SonarCloud.io 
-  sonar-code-analysis:
-    jobs:
-      - run-code-analysis:
-          context: org-global
-          filters:
-            branches:
-              ignore:
-                - master
-                # - develop
-                - release
+  # # WORKFLOW 5/5) Code analysis w/ SonarCloud.io 
+  # sonar-code-analysis:
+  #   jobs:
+  #     - run-code-analysis:
+  #         context: org-global
+  #         filters:
+  #           branches:
+  #             ignore:
+  #               - master
+  #               # - develop
+  #               - release
 
 
 
@@ -488,6 +488,7 @@ jobs:
       - run:
           name: list files after restore of cache
           command: |
+            cd ehrbase
             ls -la tests/robot/_resources/test_data_sets/query/aql_queries_valid/A/
             ls -la tests/robot/_resources/test_data_sets/query/aql_queries_valid/B/
             ls -la tests/robot/_resources/test_data_sets/query/aql_queries_valid/C/
@@ -500,6 +501,7 @@ jobs:
       - run: 
           name: CHECK IF EXPECTED-RESULT TEMPLATES HAVE CHANGED AND REGENERATE TEST-DATA IF NEEDED
           command: |
+            cd ehrbase
             find tests/robot/_resources/test_data_sets/query/expected_results/loaded_db/ -type f ! -name *.tmp.json | sort | xargs cat > /tmp/expected-results-loaded_db-seed
             sha256sum /tmp/expected-results-loaded_db-seed
             ACTUAL_HASH="$(sha256sum /tmp/expected-results-loaded_db-seed | cat)"
@@ -513,11 +515,12 @@ jobs:
       - save_cache:
           key: expected-results-loaded-db-v5-{{ checksum "/tmp/expected-results-loaded_db-seed" }}
           paths:
-            - tests/robot/_resources/test_data_sets/query/expected_results/loaded_db/
-            - tests/robot/_resources/test_data_sets/query/aql_queries_valid/
+            - ehrbase/tests/robot/_resources/test_data_sets/query/expected_results/loaded_db/
+            - ehrbase/tests/robot/_resources/test_data_sets/query/aql_queries_valid/
       - run:
           name: list files after save of cache
           command: |
+            cd ehrbase
             ls -la tests/robot/_resources/test_data_sets/query/aql_queries_valid/A/
             ls -la tests/robot/_resources/test_data_sets/query/aql_queries_valid/B/
             ls -la tests/robot/_resources/test_data_sets/query/aql_queries_valid/C/
@@ -1036,7 +1039,7 @@ commands:
           name: Install Python requirements
           command: |
             python3 -c "import site; print(site.getsitepackages())"
-            pip3 install -r ~/projects/tests/requirements.txt
+            pip3 install -r ~/projects/ehrbase/tests/requirements.txt
 
 
 
@@ -1108,6 +1111,7 @@ commands:
             echo "ADMINAPI_ACTIVE: $ADMINAPI_ACTIVE"
             echo "SECURITY_AUTHTYPE: $SECURITY_AUTHTYPE"
             echo "OAUTH_RESRCSERVER_URL: $SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUERURI"
+            cd ehrbase/
             ls -la
             if [ "${SUT}" != "TEST" ]; then
               EHRbase_VERSION=$(mvn -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive exec:exec)
@@ -1124,7 +1128,7 @@ commands:
               fi
             fi
             jps
-            cd ~/projects/tests
+            cd ~/projects/ehrbase/tests
             robot --include << parameters.include-tags >> \
                   --exclude TODO -e future -e obsolete -e libtest \
                   --console dotted \
@@ -1142,9 +1146,9 @@ commands:
       - save-test-results-folder:
           suite-results-folder-name: << parameters.test-suite-name >>
       - store_test_results:
-          path: ~/projects/tests/results/
+          path: ~/projects/ehrbase/tests/results/
       - store_artifacts:
-          path: ~/projects/tests/results/
+          path: ~/projects/ehrbase/tests/results/
 
 
   # # USE THIS COMMAND W/ DOCKER EXECUTOR ONLY!!! 
