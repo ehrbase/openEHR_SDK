@@ -61,6 +61,37 @@ public class FlatJsonTest {
     }
 
     @Test
+    public void roundTripAll() throws IOException {
+        TestDataTemplateProvider templateProvider = new TestDataTemplateProvider();
+        FlatJson cut = new FlatJasonProvider(templateProvider).buildFlatJson(FlatFormat.SIM_SDT, "test_all_types.en.v1");
+
+        String flat = IOUtils.toString(CompositionTestDataSimSDTJson.ALL_TYPES.getStream(), StandardCharsets.UTF_8);
+        Composition unmarshal = cut.unmarshal(flat);
+
+        assertThat(unmarshal).isNotNull();
+
+        String actual = cut.marshal(unmarshal);
+
+        String expected = IOUtils.toString(CompositionTestDataSimSDTJson.ALL_TYPES.getStream(), StandardCharsets.UTF_8);
+
+        List<String> errors = compere(actual, expected);
+
+        assertThat(errors)
+                .filteredOn(s -> s.startsWith("Missing"))
+                .containsExactlyInAnyOrder(
+                        "Missing path: test_all_types/test_all_types:0/identifier|id, value: 55175056",
+                        "Missing path: test_all_types/test_all_types:0/proportion_any|type, value: 1"
+                );
+
+        assertThat(errors)
+                .filteredOn(s -> s.startsWith("Extra"))
+                .containsExactlyInAnyOrder(
+                        "Extra path: test_all_types/test_all_types:0/identifier, value: 55175056",
+                        "Extra path: test_all_types/test_all_types:0/proportion_any|type, value: 1.0"
+                );
+    }
+
+    @Test
     public void roundTripAlt() throws IOException {
         TestDataTemplateProvider templateProvider = new TestDataTemplateProvider();
         FlatJson cut = new FlatJasonProvider(templateProvider).buildFlatJson(FlatFormat.SIM_SDT, "AlternativeEvents");
