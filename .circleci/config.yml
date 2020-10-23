@@ -1029,6 +1029,8 @@ commands:
       - run: 
           name: Install Maven tool
           command: |
+            sudo killall -9 apt-get || true
+            sudo apt -y update
             [ -f /usr/bin/mvn ] && echo "Maven is already installed." || sudo apt install maven -y
 
 
