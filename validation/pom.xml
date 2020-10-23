@@ -52,11 +52,6 @@
             <artifactId>test-data</artifactId>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>com.github.ehrbase.openEHR_SDK</groupId>
-            <artifactId>serialisation</artifactId>
-            <scope>test</scope>
-        </dependency>
     </dependencies>
 
 </project>

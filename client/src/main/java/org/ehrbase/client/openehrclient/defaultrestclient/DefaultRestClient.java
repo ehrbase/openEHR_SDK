@@ -50,9 +50,16 @@ import org.ehrbase.client.openehrclient.OpenEhrClient;
 import org.ehrbase.client.openehrclient.OpenEhrClientConfig;
 import org.ehrbase.client.openehrclient.TemplateEndpoint;
 import org.ehrbase.client.openehrclient.VersionUid;
-import org.ehrbase.client.templateprovider.TemplateProvider;
+import org.ehrbase.client.openehrclient.AqlEndpoint;
+import org.ehrbase.client.openehrclient.CompositionEndpoint;
+import org.ehrbase.client.openehrclient.FolderDAO;
+import org.ehrbase.client.openehrclient.OpenEhrClient;
+import org.ehrbase.client.openehrclient.OpenEhrClientConfig;
+import org.ehrbase.client.openehrclient.TemplateEndpoint;
+import org.ehrbase.client.openehrclient.VersionUid;
 import org.ehrbase.serialisation.jsonencoding.CanonicalJson;
 import org.ehrbase.serialisation.mapper.RmObjectJsonDeSerializer;
+import org.ehrbase.webtemplate.templateprovider.TemplateProvider;
 
 import java.io.IOException;
 import java.net.URI;

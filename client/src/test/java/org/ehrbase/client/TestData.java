@@ -208,8 +208,12 @@ public class TestData {
         alternativeEventsComposition.setLanguage(Language.EN);
         alternativeEventsComposition.setTerritory(Territory.DE);
         alternativeEventsComposition.setCategoryDefiningcode(CategoryDefiningcode.EVENT);
+        alternativeEventsComposition.setSettingDefiningcode(SettingDefiningcode.COMPLEMENTARY_HEALTH_CARE);
         alternativeEventsComposition.setKorpergewicht(new ArrayList<>());
         KorpergewichtObservation korpergewichtObservation = new KorpergewichtObservation();
+        korpergewichtObservation.setLanguage(Language.EN);
+        korpergewichtObservation.setSubject(new PartySelf());
+        korpergewichtObservation.setOriginValue(OffsetDateTime.of(1990, 11, 02, 12, 00, 00, 00, ZoneOffset.UTC));
         alternativeEventsComposition.getKorpergewicht().add(korpergewichtObservation);
 
         KorpergewichtBirthEnEvent birthEnEvent = new KorpergewichtBirthEnEvent();

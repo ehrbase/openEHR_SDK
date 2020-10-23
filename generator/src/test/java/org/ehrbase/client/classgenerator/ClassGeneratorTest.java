@@ -369,7 +369,7 @@ public class ClassGeneratorTest {
                 .filter(t -> !t.kind.equals(TypeSpec.Kind.ENUM))
                 .map(t -> t.fieldSpecs).flatMap(List::stream).collect(Collectors.toList());
 
-        assertThat(fieldSpecs).size().isEqualTo(76L);
+        assertThat(fieldSpecs).size().isEqualTo(75L);
 
         writeFiles(generate);
 
@@ -395,7 +395,7 @@ public class ClassGeneratorTest {
 
     @Test
     public void testGenerateCorona() throws IOException, XmlException {
-        OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(OperationalTemplateTestData.CORONA_ANAMMNESE.getStream()).getTemplate();
+        OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(OperationalTemplateTestData.CORONA_ANAMNESE.getStream()).getTemplate();
         ClassGenerator cut = new ClassGenerator();
         ClassGeneratorResult generate = cut.generate(PACKAGE_NAME, template);
 

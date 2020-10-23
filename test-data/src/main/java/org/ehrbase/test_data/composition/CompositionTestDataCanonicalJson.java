@@ -45,7 +45,9 @@ public enum CompositionTestDataCanonicalJson {
     NESTED_PROVIDER("Nested provider PARTY_IDENTIFIED", "compo_with_nested_provider.json"),
     DATE_TIME_TESTS("Composition with multiple partial and full date/time", "datetime_tests.json"),
     DURATION_TESTS("Composition with multiple DvDuration", "duration_tests.json"),
-    VIROLOGY_FINDING_WITH_SPECIMEN("virology finding with specimen", "virology_finding_with_specimen.json");
+    VIROLOGY_FINDING_WITH_SPECIMEN("virology finding with specimen", "virology_finding_with_specimen.json"),
+    MULTI_OCCURRENCE("multi occurrence", "multi_occurrence.json"),
+    ALTERNATIVE_EVENTS("Contains Event with mixed point and interval", "alternative_events.json");;
 
 
     private final String filename;

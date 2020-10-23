@@ -34,6 +34,14 @@
             <artifactId>opt-1.4</artifactId>
         </dependency>
         <dependency>
+            <groupId>com.github.ehrbase.openEHR_SDK</groupId>
+            <artifactId>util</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.github.ehrbase.openEHR_SDK</groupId>
+            <artifactId>terminology</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-collections4</artifactId>
         </dependency>
@@ -52,6 +60,19 @@
         <dependency>
             <groupId>org.assertj</groupId>
             <artifactId>assertj-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.github.openEHR</groupId>
+            <artifactId>archie</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>javax.cache</groupId>
+            <artifactId>cache-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.ehcache</groupId>
+            <artifactId>ehcache</artifactId>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 

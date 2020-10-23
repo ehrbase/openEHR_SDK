@@ -37,6 +37,8 @@
         <module>validation</module>
         <module>test-coverage</module>
         <module>web-template</module>
+        <module>util</module>
+        <module>building</module>
     </modules>
 
 
@@ -93,6 +95,7 @@
 
 
     <dependencies>
+
 
         <!-- https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-api -->
         <dependency>
@@ -294,6 +297,11 @@
             </dependency>
             <dependency>
                 <groupId>com.github.ehrbase.openEHR_SDK</groupId>
+                <artifactId>building</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.ehrbase.openEHR_SDK</groupId>
                 <artifactId>serialisation</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -313,9 +321,9 @@
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.jayway.jsonpath</groupId>
-                <artifactId>json-path</artifactId>
-                <version>2.4.0</version>
+                <groupId>com.github.ehrbase.openEHR_SDK</groupId>
+                <artifactId>util</artifactId>
+                <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.github.ehrbase.openEHR_SDK</groupId>
@@ -327,13 +335,18 @@
             <!-- external -->
 
             <dependency>
-<!--                <groupId>com.nedap.healthcare.archie</groupId>-->
-<!--                <artifactId>archie-all</artifactId>-->
-<!--                <version>0.10.0</version>-->
+                <!--                <groupId>com.nedap.healthcare.archie</groupId>-->
+                <!--                <artifactId>archie-all</artifactId>-->
+                <!--                <version>0.10.0</version>-->
 
                 <groupId>com.github.openEHR</groupId>
                 <artifactId>archie</artifactId>
                 <version>2ef8389</version>
+            </dependency>
+            <dependency>
+                <groupId>com.jayway.jsonpath</groupId>
+                <artifactId>json-path</artifactId>
+                <version>2.4.0</version>
             </dependency>
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
