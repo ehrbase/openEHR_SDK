@@ -497,7 +497,7 @@ jobs:
           keys:
             - ehrbasedb-dump-v2
       # COMMENT: USE THE NEXT LINE ONLY TO FORCE TEST-DATA REGENERATION! Otherwise comment it out!
-      - run: echo "FORCE GENERATION OF TEST-DATA AND EXPECTED RESULTS!" > /tmp/DATA_CHANGED_NOTICE
+      # - run: echo "FORCE GENERATION OF TEST-DATA AND EXPECTED RESULTS!" > /tmp/DATA_CHANGED_NOTICE
       - run: 
           name: CHECK IF EXPECTED-RESULT TEMPLATES HAVE CHANGED AND REGENERATE TEST-DATA IF NEEDED
           command: |
@@ -1327,7 +1327,6 @@ commands:
   merge-robot-outputs:
     description: Merge Robot Results from Parallel Tests
     steps:
-      # - configure-python-version                    # (use w/ machine executor only)
       - run:
           command: |
             pip install robotframework
@@ -1338,7 +1337,7 @@ commands:
             cd ehrbase/tests
 
             # Create Log/Report with ALL DETAILS
-            rebot --outputdir results \
+            rebot --outputdir results/0 \
                   --name EHRbase \
                   --exclude TODO -e future -e obsolete -e libtest \
                   --removekeywords for \
@@ -1356,13 +1355,13 @@ commands:
             cd ehrbase/tests
 
             # Create JUNIT report from merged results
-            rebot --outputdir results \
+            rebot --outputdir results/robot-tests \
                   --exclude TODO -e future -e obsolete -e libtest \
                   --noncritical not-ready \
                   --xunit junit-output.xml --xunitskipnoncritical \
                   --log NONE \
                   --report NONE \
-                  results/EHRbase-output.xml
+                  results/0/EHRbase-output.xml
       - save-test-results-folder:
           suite-results-folder-name: "0"
       - store_test_results:
