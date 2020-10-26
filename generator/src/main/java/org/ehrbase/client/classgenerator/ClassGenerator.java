@@ -331,7 +331,7 @@ public class ClassGenerator {
     }
 
     private String sanitizeNumber(String fieldName) {
-        if (Character.isDigit(fieldName.charAt(0))) {
+        if (!Character.isAlphabetic(fieldName.charAt(0))) {
             if (Character.isLowerCase(fieldName.charAt(0))) {
                 fieldName = "n" + fieldName;
             } else {
@@ -359,7 +359,7 @@ public class ClassGenerator {
         enumBuilder.addMethod(constructor);
         valueSet.getTherms().forEach(t -> {
             String fieldName = extractSubName(t.getValue());
-            enumBuilder.addEnumConstant(toEnumName(fieldName), TypeSpec.anonymousClassBuilder("$S, $S, $S, $S", t.getValue(), t.getDescription(), StringUtils.substringBefore(valueSet.getTerminologyId(), ":"), t.getCode()).build());
+            enumBuilder.addEnumConstant(toEnumName(fieldName), TypeSpec.anonymousClassBuilder("$S, $S, $S, $S", t.getValue(), t.getDescription(), valueSet.getTerminologyId(), t.getCode()).build());
         });
 
         enumBuilder.addMethod(buildGetter(fieldSpec1));
