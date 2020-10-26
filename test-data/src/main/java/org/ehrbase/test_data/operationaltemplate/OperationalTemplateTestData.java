@@ -42,7 +42,8 @@ public enum OperationalTemplateTestData {
     BEFUND_DER_BLUTGASANALYSE("Befund der Blutgasanalyse", "Befund_der_Blutgasanalyse.opt", "Befund der Blutgasanalyse"),
     SM_I_C_S_BEFUND("SmICS-Befund", "SmICS-Befund.opt", "SmICS-Befund"),
     PATIENTEN_AUFENTHALT("NUM test hospitalization", "Patientenaufenthalt.opt", "Patientenaufenthalt"),
-    EPISODE_SUMMARY("Stationärer Versorgungsfall", "stationärer_versorgungsfall.opt", "Stationärer Versorgungsfall");
+    EPISODE_SUMMARY("Stationärer Versorgungsfall", "stationärer_versorgungsfall.opt", "Stationärer Versorgungsfall"),
+    D4L_QUESTIONNAIRE("D4L_questionnaire", "D4L_questionnaire.opt", "D4L_questionnaire");
 
     private final String filename;
     private final String templateId;

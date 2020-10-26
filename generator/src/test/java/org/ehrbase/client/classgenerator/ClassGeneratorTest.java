@@ -272,6 +272,20 @@ public class ClassGeneratorTest {
     }
 
     @Test
+    public void testGenerateD4LQuestionnaire() throws IOException, XmlException {
+        OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(OperationalTemplateTestData.D4L_QUESTIONNAIRE.getStream()).getTemplate();
+        ClassGenerator cut = new ClassGenerator();
+        ClassGeneratorResult generate = cut.generate(PACKAGE_NAME, template);
+        List<FieldSpec> fieldSpecs = generate.getClasses().values().stream()
+                .flatMap(Collection::stream)
+                .filter(t -> !t.kind.equals(TypeSpec.Kind.ENUM))
+                .map(t -> t.fieldSpecs).flatMap(List::stream).collect(Collectors.toList());
+
+        assertThat(fieldSpecs).size().isEqualTo(348);
+
+    }
+
+    @Test
     public void testGenerateBefundDerBlutgasanalyse() throws IOException, XmlException {
         OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(OperationalTemplateTestData.BEFUND_DER_BLUTGASANALYSE.getStream()).getTemplate();
         ClassGenerator cut = new ClassGenerator();
