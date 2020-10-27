@@ -18,7 +18,11 @@
 
 package org.ehrbase.serialisation.dbencoding;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
+import com.nedap.archie.json.JacksonUtil;
 import com.nedap.archie.rm.archetyped.FeederAudit;
 import com.nedap.archie.rm.archetyped.FeederAuditDetails;
 import com.nedap.archie.rm.composition.AdminEntry;
@@ -30,20 +34,31 @@ import com.nedap.archie.rm.datastructures.PointEvent;
 import com.nedap.archie.rm.datavalues.quantity.DvInterval;
 import com.nedap.archie.rm.datavalues.quantity.datetime.DvDateTime;
 import org.apache.commons.io.IOUtils;
+import org.apache.xmlbeans.XmlException;
 import org.ehrbase.serialisation.dbencoding.rawjson.LightRawJsonEncoder;
 import org.ehrbase.serialisation.dbencoding.rmobject.FeederAuditEncoding;
 import org.ehrbase.serialisation.jsonencoding.CanonicalJson;
 import org.ehrbase.serialisation.xmlencoding.CanonicalXML;
 import org.ehrbase.test_data.composition.CompositionTestDataCanonicalJson;
 import org.ehrbase.test_data.composition.CompositionTestDataCanonicalXML;
+import org.ehrbase.test_data.operationaltemplate.OperationalTemplateTestData;
+import org.ehrbase.test_data.webtemplate.WebTemplateTestData;
+import org.ehrbase.validation.Validator;
+import org.ehrbase.webtemplate.model.WebTemplate;
+import org.ehrbase.webtemplate.parser.OPTParser;
 import org.junit.Test;
+import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
+import org.openehr.schemas.v1.TemplateDocument;
 
+import javax.xml.bind.JAXBException;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
 public class DBEncodeTest {
 
@@ -661,5 +676,20 @@ public class DBEncodeTest {
         converted = new LightRawJsonEncoder(fromDB).encodeContentAsJson("value");
 
         assertThat(converted.getAsJsonObject().get("_type").getAsString()).isEqualTo("DV_CODED_TEXT");
+    }
+
+    @Test
+    public void testValidateElementWithChoice() throws JAXBException, IOException, XmlException {
+        Composition composition = new CanonicalJson().unmarshal(IOUtils.toString(CompositionTestDataCanonicalJson.CHOICE_ELEMENT.getStream(), UTF_8),Composition.class);
+        OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(IOUtils.toString(OperationalTemplateTestData.VIROLOGY_FINDING.getStream(), UTF_8)).getTemplate();
+        WebTemplate actual = new OPTParser(template).parse();
+
+        String humanReadableWebTemplate = new GsonBuilder().create().toJson(actual);
+
+        try {
+            new Validator(template).check(composition);
+        }catch (Exception e){
+            fail(e.getMessage());
+        }
     }
 }

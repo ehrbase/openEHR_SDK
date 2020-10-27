@@ -47,7 +47,8 @@ public enum CompositionTestDataCanonicalJson {
     DURATION_TESTS("Composition with multiple DvDuration", "duration_tests.json"),
     VIROLOGY_FINDING_WITH_SPECIMEN("virology finding with specimen", "virology_finding_with_specimen.json"),
     MULTI_OCCURRENCE("multi occurrence", "multi_occurrence.json"),
-    ALTERNATIVE_EVENTS("Contains Event with mixed point and interval", "alternative_events.json");;
+    ALTERNATIVE_EVENTS("Contains Event with mixed point and interval", "alternative_events.json"),
+    CHOICE_ELEMENT("element containing multiple choice to test validation", "choice_validation_test.json");
 
 
     private final String filename;
