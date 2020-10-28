@@ -23,6 +23,7 @@ import com.nedap.archie.rm.archetyped.FeederAudit;
 import com.nedap.archie.rm.archetyped.FeederAuditDetails;
 import com.nedap.archie.rm.composition.AdminEntry;
 import com.nedap.archie.rm.composition.Composition;
+import com.nedap.archie.rm.composition.Section;
 import com.nedap.archie.rm.datastructures.Element;
 import com.nedap.archie.rm.datastructures.History;
 import com.nedap.archie.rm.datastructures.ItemStructure;
@@ -33,12 +34,15 @@ import org.apache.commons.io.IOUtils;
 import org.ehrbase.serialisation.dbencoding.rawjson.LightRawJsonEncoder;
 import org.ehrbase.serialisation.dbencoding.rmobject.FeederAuditEncoding;
 import org.ehrbase.serialisation.jsonencoding.CanonicalJson;
+import org.ehrbase.serialisation.jsonencoding.JacksonUtil;
 import org.ehrbase.serialisation.xmlencoding.CanonicalXML;
 import org.ehrbase.test_data.composition.CompositionTestDataCanonicalJson;
 import org.ehrbase.test_data.composition.CompositionTestDataCanonicalXML;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -661,5 +665,21 @@ public class DBEncodeTest {
         converted = new LightRawJsonEncoder(fromDB).encodeContentAsJson("value");
 
         assertThat(converted.getAsJsonObject().get("_type").getAsString()).isEqualTo("DV_CODED_TEXT");
+    }
+
+    @Test
+    public void testDBDecodeIssue350() throws Exception {
+
+        String db_encoded = new String(Files.readAllBytes(Paths.get("src/test/resources/sample_data/bug350_missing_data.json")));
+        assertNotNull(db_encoded);
+
+        //see if this can be interpreted by Archie
+        Composition object = new RawJson().unmarshal(db_encoded, Composition.class);
+
+        assertEquals(8, ((Section)object.itemsAtPath("/content[openEHR-EHR-SECTION.respect_headings.v0]").get(0)).getItems().size());
+
+        String interpreted = new CanonicalXML().marshal(object);
+
+        assertNotNull(interpreted);
     }
 }
