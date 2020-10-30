@@ -25,6 +25,9 @@ public interface OrderByExpression {
 
     String buildAql();
 
+    default OrderByExpression andThen(OrderByExpression other) {
+        return new AndThen(this, other);
+    }
 
     default OrderByExpression andThenAscending(SelectAqlField<?> field) {
         return new AndThen(this, new Ascending(field));
