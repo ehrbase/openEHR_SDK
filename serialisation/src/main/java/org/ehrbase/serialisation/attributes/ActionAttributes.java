@@ -53,20 +53,14 @@ public class ActionAttributes extends CareEntryAttributes {
 
         if (action.getInstructionDetails() != null) {
             InstructionDetails instructionDetails = action.getInstructionDetails();
-            map = toMap(TAG_INSTRUCTION_DETAILS + TAG_ACTIVITY_ID, instructionDetails.getActivityId(), action.getName());
-            map = toMap(TAG_INSTRUCTION_DETAILS + TAG_INSTRUCTION_ID, instructionDetails.getInstructionId(), action.getName());
+            map.put("instruction_details", new InstructionDetailsAttributes(instructionDetails).toMap());
         }
 
 
         if (action.getIsmTransition() != null) {
             IsmTransition ismTransition = action.getIsmTransition();
-            if (ismTransition != null && ismTransition.getCareflowStep() != null) {
-                if (ismTransition.getCurrentState() != null)
-                    map = toMap(TAG_ISM_TRANSITION + TAG_CURRENT_STATE, ismTransition.getCurrentState(), action.getName());
-                if (ismTransition.getTransition() != null)
-                    map = toMap(TAG_ISM_TRANSITION + TAG_TRANSITION, ismTransition.getTransition(), action.getName());
-                if (ismTransition.getCareflowStep() != null)
-                    map = toMap(TAG_ISM_TRANSITION + TAG_CAREFLOW_STEP, ismTransition.getCareflowStep(), action.getName());
+            if (ismTransition != null) {
+                map.put("ism_transition", new IsmTransitionAttributes(ismTransition).toMap());
             }
         }
 
