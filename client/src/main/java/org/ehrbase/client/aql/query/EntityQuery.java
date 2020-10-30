@@ -79,7 +79,7 @@ public class EntityQuery<T extends Record> implements Query<T> {
 
     return field.buildAQL()
         + " as "
-        + (StringUtils.isNotBlank(field.getName()) ? field.getName() : "F" + selectCount);
+        + (StringUtils.isNotBlank(field.getName()) ? field.getName().replaceAll("[^A-Za-z0-9]", "_") : "F" + selectCount);
   }
 
   @Override
