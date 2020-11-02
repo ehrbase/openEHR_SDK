@@ -28,4 +28,11 @@ public class And extends BinaryLogicalOperator {
     protected String getSymbol() {
         return "and";
     }
+
+    @Override
+    public Condition and(Condition condition) {
+
+        conditionList.add(condition);
+        return this;
+    }
 }

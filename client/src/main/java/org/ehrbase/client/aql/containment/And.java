@@ -21,12 +21,19 @@ package org.ehrbase.client.aql.containment;
 
 public class And extends BinaryLogicalOperator {
 
-    protected And(ContainmentExpression containmentExpression1, ContainmentExpression containmentExpression2) {
-        super(containmentExpression1, containmentExpression2);
-    }
+  protected And(
+      ContainmentExpression containmentExpression1, ContainmentExpression containmentExpression2) {
+    super(containmentExpression1, containmentExpression2);
+  }
 
-    @Override
-    protected String getSymbol() {
-        return "and";
-    }
+  @Override
+  protected String getSymbol() {
+    return "and";
+  }
+
+  @Override
+  public ContainmentExpression and(ContainmentExpression containmentExpression) {
+    containmentExpressionList.add(containmentExpression);
+    return this;
+  }
 }
