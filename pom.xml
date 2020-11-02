@@ -39,6 +39,7 @@
         <module>web-template</module>
         <module>util</module>
         <module>building</module>
+        <module>aql</module>
     </modules>
 
 
@@ -323,6 +324,11 @@
             <dependency>
                 <groupId>com.github.ehrbase.openEHR_SDK</groupId>
                 <artifactId>util</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.ehrbase.openEHR_SDK</groupId>
+                <artifactId>aql</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>

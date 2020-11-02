@@ -24,6 +24,10 @@
         </dependency>
         <dependency>
             <groupId>com.github.ehrbase.openEHR_SDK</groupId>
+            <artifactId>aql</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.github.ehrbase.openEHR_SDK</groupId>
             <artifactId>response-dto</artifactId>
         </dependency>
         <dependency>
