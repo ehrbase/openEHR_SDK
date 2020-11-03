@@ -28,9 +28,13 @@
     <artifactId>aql</artifactId>
 
     <dependencies>
-    <dependency>
-        <groupId>com.github.ehrbase.openEHR_SDK</groupId>
-        <artifactId>client</artifactId>
-    </dependency>
+        <dependency>
+            <groupId>com.github.ehrbase.openEHR_SDK</groupId>
+            <artifactId>client</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+        </dependency>
     </dependencies>
 </project>

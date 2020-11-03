@@ -23,6 +23,7 @@ package org.ehrbase.aql.binder;
 import org.ehrbase.aql.dto.orderby.OrderByExpressionDto;
 import org.ehrbase.client.aql.containment.Containment;
 import org.ehrbase.client.aql.orderby.OrderByExpression;
+import org.ehrbase.util.exception.SdkException;
 
 import java.util.List;
 import java.util.Map;
@@ -55,7 +56,7 @@ public class OrderByBinder {
             OrderByExpression.descending(selectBinder.bind(dto.getStatement(), containmentMap));
         break;
       default:
-        throw new RuntimeException();
+        throw new SdkException(String.format("Unknown Symbol %s", dto.getSymbol()));
     }
     return orderByExpression;
   }

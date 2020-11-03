@@ -53,12 +53,13 @@ public class WhereBinder {
       condition = pair.getLeft();
       parameterList.addAll(pair.getRight());
     } else if (dto instanceof ConditionLogicalOperatorDto) {
+
       Pair<Condition, List<ParameterValue>> pair =
           handleConditionLogicalOperator((ConditionLogicalOperatorDto) dto, containmentMap);
       condition = pair.getLeft();
       parameterList.addAll(pair.getRight());
     } else {
-      throw new RuntimeException();
+      throw new SdkException(String.format("Unexpected class: %s", dto.getClass().getSimpleName()));
     }
 
     return new ImmutablePair<>(condition, parameterList);
@@ -84,7 +85,7 @@ public class WhereBinder {
       ConditionComparisonOperatorDto dto, Map<Integer, Containment> containmentMap) {
 
     Condition condition;
-    final Class valueClass;
+    final Class<?> valueClass;
     final Object value;
     List<ParameterValue> parameterList = new ArrayList<>();
     if (dto.getValue() instanceof SimpleValue) {
@@ -95,7 +96,7 @@ public class WhereBinder {
       value = new Parameter<>(((ParameterValue) dto.getValue()).getName());
       parameterList.add(((ParameterValue) dto.getValue()));
     } else {
-      throw new RuntimeException();
+      throw new SdkException(String.format("Unexpected class %s", dto.getClass().getSimpleName()));
     }
     Method method = null;
     try {
@@ -128,7 +129,7 @@ public class WhereBinder {
         containmentExpression = pair1.getLeft().and(pair2.getLeft());
         break;
       default:
-        throw new RuntimeException();
+        throw new SdkException(String.format("Unknown Symbol %s", symbol));
     }
     pair1.getRight().addAll(pair2.getRight());
     return new ImmutablePair<>(containmentExpression, pair1.getRight());
