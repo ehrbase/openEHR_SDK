@@ -68,6 +68,8 @@ public class LinkedTreeMapAdapter extends TypeAdapter<LinkedTreeMap<String, Obje
     @SuppressWarnings("unchecked")
     private void writeInternal(JsonWriter writer, LinkedTreeMap<String, Object> map) throws IOException {
 
+        map = new Children(map).removeDuplicateArchetypeNodeId();
+
         boolean isItemsOnly = new Children(map).isItemsOnly();
         boolean isMultiEvents = new Children(map).isEvents();
         boolean isMultiContent = new Children(map).isMultiContent();

@@ -23,6 +23,7 @@ import com.nedap.archie.rm.archetyped.FeederAudit;
 import com.nedap.archie.rm.archetyped.FeederAuditDetails;
 import com.nedap.archie.rm.composition.AdminEntry;
 import com.nedap.archie.rm.composition.Composition;
+import com.nedap.archie.rm.composition.Section;
 import com.nedap.archie.rm.datastructures.Element;
 import com.nedap.archie.rm.datastructures.History;
 import com.nedap.archie.rm.datastructures.ItemStructure;
@@ -33,12 +34,15 @@ import org.apache.commons.io.IOUtils;
 import org.ehrbase.serialisation.dbencoding.rawjson.LightRawJsonEncoder;
 import org.ehrbase.serialisation.dbencoding.rmobject.FeederAuditEncoding;
 import org.ehrbase.serialisation.jsonencoding.CanonicalJson;
+import org.ehrbase.serialisation.jsonencoding.JacksonUtil;
 import org.ehrbase.serialisation.xmlencoding.CanonicalXML;
 import org.ehrbase.test_data.composition.CompositionTestDataCanonicalJson;
 import org.ehrbase.test_data.composition.CompositionTestDataCanonicalXML;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -317,7 +321,7 @@ public class DBEncodeTest {
 
     @Test
     public void testDurationEncodeDecode() throws IOException {
-        Composition composition =  new CanonicalJson().unmarshal(IOUtils.toString(CompositionTestDataCanonicalJson.DURATION_TESTS.getStream(), UTF_8), Composition.class);
+        Composition composition = new CanonicalJson().unmarshal(IOUtils.toString(CompositionTestDataCanonicalJson.DURATION_TESTS.getStream(), UTF_8), Composition.class);
 
         assertNotNull(composition);
 
@@ -335,8 +339,8 @@ public class DBEncodeTest {
 
         String dvtestPrefix = "/content[openEHR-EHR-OBSERVATION.test_all_types.v1]/data[at0001]/events[at0002]/data[at0003]";
 
-        assertEquals("P12DT23H51M59S", composition2.itemsAtPath(dvtestPrefix+"/items[at0010.1]/value/value").get(0).toString());
-        assertEquals("P10Y1M12DT23H51M59S", composition2.itemsAtPath(dvtestPrefix+"/items[at0010.2]/value/value").get(0).toString());
+        assertEquals("P12DT23H51M59S", composition2.itemsAtPath(dvtestPrefix + "/items[at0010.1]/value/value").get(0).toString());
+        assertEquals("P10Y1M12DT23H51M59S", composition2.itemsAtPath(dvtestPrefix + "/items[at0010.2]/value/value").get(0).toString());
         //not yet working as of 12.10.20
 //        assertEquals("-P10Y10DT12H20S", composition2.itemsAtPath(dvtestPrefix+"/items[at0010.3]/value/value").get(0).toString());
 
@@ -344,7 +348,7 @@ public class DBEncodeTest {
 
     @Test
     public void testNestedLanguageSubjectPartyIdentified() throws IOException {
-        Composition composition = new CanonicalJson().unmarshal(IOUtils.toString(CompositionTestDataCanonicalJson.SUBJECT_PARTY_IDENTIFIED.getStream(), UTF_8),Composition.class);
+        Composition composition = new CanonicalJson().unmarshal(IOUtils.toString(CompositionTestDataCanonicalJson.SUBJECT_PARTY_IDENTIFIED.getStream(), UTF_8), Composition.class);
 
         assertNotNull(composition);
 
@@ -360,12 +364,12 @@ public class DBEncodeTest {
 
         assertNotNull(composition2);
 
-        assertEquals("1",composition2.itemsAtPath("/content[openEHR-EHR-SECTION.allgemeine_angaben.v1]/items[openEHR-EHR-EVALUATION.problem_diagnosis_covid.v1]/subject/external_ref/id/value").get(0).toString());
+        assertEquals("1", composition2.itemsAtPath("/content[openEHR-EHR-SECTION.allgemeine_angaben.v1]/items[openEHR-EHR-EVALUATION.problem_diagnosis_covid.v1]/subject/external_ref/id/value").get(0).toString());
     }
 
     @Test
     public void testNestedLanguageSubjectPartySelf() throws IOException {
-        Composition composition = new CanonicalJson().unmarshal(IOUtils.toString(CompositionTestDataCanonicalJson.SUBJECT_PARTY_SELF.getStream(), UTF_8),Composition.class);
+        Composition composition = new CanonicalJson().unmarshal(IOUtils.toString(CompositionTestDataCanonicalJson.SUBJECT_PARTY_SELF.getStream(), UTF_8), Composition.class);
 
         assertNotNull(composition);
 
@@ -381,12 +385,12 @@ public class DBEncodeTest {
 
         assertNotNull(composition2);
 
-        assertEquals("PartySelf",composition2.itemsAtPath("/content[openEHR-EHR-SECTION.allgemeine_angaben.v1]/items[openEHR-EHR-EVALUATION.problem_diagnosis_covid.v1]/subject").get(0).getClass().getSimpleName());
+        assertEquals("PartySelf", composition2.itemsAtPath("/content[openEHR-EHR-SECTION.allgemeine_angaben.v1]/items[openEHR-EHR-EVALUATION.problem_diagnosis_covid.v1]/subject").get(0).getClass().getSimpleName());
     }
 
     @Test
     public void testNestedLanguage() throws IOException {
-        Composition composition = new CanonicalJson().unmarshal(IOUtils.toString(CompositionTestDataCanonicalJson.SUBJECT_PARTY_SELF.getStream(), UTF_8),Composition.class);
+        Composition composition = new CanonicalJson().unmarshal(IOUtils.toString(CompositionTestDataCanonicalJson.SUBJECT_PARTY_SELF.getStream(), UTF_8), Composition.class);
 
         assertNotNull(composition);
 
@@ -402,13 +406,13 @@ public class DBEncodeTest {
 
         assertNotNull(composition2);
 
-        assertEquals("de",composition2.itemsAtPath("/content[openEHR-EHR-SECTION.allgemeine_angaben.v1]/items[openEHR-EHR-EVALUATION.problem_diagnosis_covid.v1]/language/code_string").get(0).toString());
+        assertEquals("de", composition2.itemsAtPath("/content[openEHR-EHR-SECTION.allgemeine_angaben.v1]/items[openEHR-EHR-EVALUATION.problem_diagnosis_covid.v1]/language/code_string").get(0).toString());
     }
 
 
     @Test
     public void testNestedLanguageSubjectPartyRelated() throws IOException {
-        Composition composition = new CanonicalJson().unmarshal(IOUtils.toString(CompositionTestDataCanonicalJson.SUBJECT_PARTY_RELATED.getStream(), UTF_8),Composition.class);
+        Composition composition = new CanonicalJson().unmarshal(IOUtils.toString(CompositionTestDataCanonicalJson.SUBJECT_PARTY_RELATED.getStream(), UTF_8), Composition.class);
 
         assertNotNull(composition);
 
@@ -424,13 +428,13 @@ public class DBEncodeTest {
 
         assertNotNull(composition2);
 
-        assertEquals("someone",composition2.itemsAtPath("/content[openEHR-EHR-SECTION.allgemeine_angaben.v1]/items[openEHR-EHR-EVALUATION.problem_diagnosis_covid.v1]/subject/relationship/value").get(0).toString());
+        assertEquals("someone", composition2.itemsAtPath("/content[openEHR-EHR-SECTION.allgemeine_angaben.v1]/items[openEHR-EHR-EVALUATION.problem_diagnosis_covid.v1]/subject/relationship/value").get(0).toString());
     }
 
 
     @Test
     public void testNestedProvider() throws IOException {
-        Composition composition = new CanonicalJson().unmarshal(IOUtils.toString(CompositionTestDataCanonicalJson.NESTED_PROVIDER.getStream(), UTF_8),Composition.class);
+        Composition composition = new CanonicalJson().unmarshal(IOUtils.toString(CompositionTestDataCanonicalJson.NESTED_PROVIDER.getStream(), UTF_8), Composition.class);
 
         assertNotNull(composition);
 
@@ -446,12 +450,12 @@ public class DBEncodeTest {
 
         assertNotNull(composition2);
 
-        assertEquals("zzzz",composition2.itemsAtPath("/content[openEHR-EHR-SECTION.allgemeine_angaben.v1]/items[openEHR-EHR-EVALUATION.problem_diagnosis_covid.v1]/provider/external_ref/id/value").get(0).toString());
+        assertEquals("zzzz", composition2.itemsAtPath("/content[openEHR-EHR-SECTION.allgemeine_angaben.v1]/items[openEHR-EHR-EVALUATION.problem_diagnosis_covid.v1]/provider/external_ref/id/value").get(0).toString());
     }
 
     @Test
     public void testNestedEncoding() throws IOException {
-        Composition composition = new CanonicalJson().unmarshal(IOUtils.toString(CompositionTestDataCanonicalJson.SUBJECT_PARTY_SELF.getStream(), UTF_8),Composition.class);
+        Composition composition = new CanonicalJson().unmarshal(IOUtils.toString(CompositionTestDataCanonicalJson.SUBJECT_PARTY_SELF.getStream(), UTF_8), Composition.class);
 
         assertNotNull(composition);
 
@@ -467,7 +471,7 @@ public class DBEncodeTest {
 
         assertNotNull(composition2);
 
-        assertEquals("UTF-8",composition2.itemsAtPath("/content[openEHR-EHR-SECTION.allgemeine_angaben.v1]/items[openEHR-EHR-EVALUATION.problem_diagnosis_covid.v1]/encoding/code_string").get(0).toString());
+        assertEquals("UTF-8", composition2.itemsAtPath("/content[openEHR-EHR-SECTION.allgemeine_angaben.v1]/items[openEHR-EHR-EVALUATION.problem_diagnosis_covid.v1]/encoding/code_string").get(0).toString());
     }
 
 
@@ -529,9 +533,9 @@ public class DBEncodeTest {
         assertNotNull(converted);
 
         //see if this can be interpreted by Archie
-        Composition object = new CanonicalJson().unmarshal(converted,Composition.class);
+        Composition object = new CanonicalJson().unmarshal(converted, Composition.class);
 
-        assertEquals("1234",object.itemsAtPath("/content[openEHR-EHR-EVALUATION.minimal.v1]/data[at0001]/name/defining_code/code_string").get(0).toString());
+        assertEquals("1234", object.itemsAtPath("/content[openEHR-EHR-EVALUATION.minimal.v1]/data[at0001]/name/defining_code/code_string").get(0).toString());
 
         assertNotNull(object);
 
@@ -559,10 +563,10 @@ public class DBEncodeTest {
         assertNotNull(converted);
 
         //see if this can be interpreted by Archie
-        Composition object = new CanonicalJson().unmarshal(converted,Composition.class);
+        Composition object = new CanonicalJson().unmarshal(converted, Composition.class);
 
         //check the feeder_audit values in evaluation
-        assertEquals("EMIS",object.itemsAtPath("/content[openEHR-EHR-SECTION.allergies_adverse_reactions_rcp.v1]/items[openEHR-EHR-EVALUATION.adverse_reaction_risk.v1]/feeder_audit/originating_system_audit/system_id").get(0).toString());
+        assertEquals("EMIS", object.itemsAtPath("/content[openEHR-EHR-SECTION.allergies_adverse_reactions_rcp.v1]/items[openEHR-EHR-EVALUATION.adverse_reaction_risk.v1]/feeder_audit/originating_system_audit/system_id").get(0).toString());
 
 
         assertNotNull(object);
@@ -573,7 +577,7 @@ public class DBEncodeTest {
     }
 
     @Test
-    public void testEncodeDecodeFeederAudit(){
+    public void testEncodeDecodeFeederAudit() {
         String jsonFeederAudit = "{\n" +
                 "              \"originating_system_item_ids\": [\n" +
                 "                {\n" +
@@ -605,7 +609,7 @@ public class DBEncodeTest {
     }
 
     @Test
-    public void testEncodeTimeAsJson(){
+    public void testEncodeTimeAsJson() {
         String fromDB = "{\"/value\": {\"value\": \"2020-04-02T12:00Z\", \"epoch_offset\": 1585828800}, \"/$CLASS$\": \"DvDateTime\"}";
 
         JsonElement converted = new LightRawJsonEncoder(fromDB).encodeContentAsJson("value");
@@ -615,7 +619,7 @@ public class DBEncodeTest {
     }
 
     @Test
-    public void testEncodeDvTextAsJson(){
+    public void testEncodeDvTextAsJson() {
         String fromDB = "{\n" +
                 "                      \"/$CLASS$\": \"DvText\",\n" +
                 "                      \"/$PATH$\": \"/items[at0041]/data[at0003]/events[at0002 and name/value\\u003d\\u0027Point in time\\u0027]/data[at0001]/content[openEHR-EHR-OBSERVATION.yhscn_diadem_assessment.v0 and name/value\\u003d\\u0027YHSCN - DiADeM assessment\\u0027]\",\n" +
@@ -661,5 +665,21 @@ public class DBEncodeTest {
         converted = new LightRawJsonEncoder(fromDB).encodeContentAsJson("value");
 
         assertThat(converted.getAsJsonObject().get("_type").getAsString()).isEqualTo("DV_CODED_TEXT");
+    }
+
+    @Test
+    public void testDBDecodeIssue350() throws Exception {
+
+        String db_encoded = new String(Files.readAllBytes(Paths.get("src/test/resources/sample_data/bug350_missing_data.json")));
+        assertNotNull(db_encoded);
+
+        //see if this can be interpreted by Archie
+        Composition object = new RawJson().unmarshal(db_encoded, Composition.class);
+
+        assertEquals(8, ((Section)object.itemsAtPath("/content[openEHR-EHR-SECTION.respect_headings.v0]").get(0)).getItems().size());
+
+        String interpreted = new CanonicalXML().marshal(object);
+
+        assertNotNull(interpreted);
     }
 }

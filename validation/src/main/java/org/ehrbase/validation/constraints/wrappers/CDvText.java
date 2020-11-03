@@ -48,41 +48,8 @@ public class CDvText extends CConstraint implements I_CArchetypeConstraintValida
 
     @Override
     public void validate(String path, Object aValue, ARCHETYPECONSTRAINT archetypeconstraint) throws IllegalArgumentException {
-
-        DvText checkValue = (DvText) aValue;
-
-        if (!(archetypeconstraint instanceof CSINGLEATTRIBUTE))
-            ValidationException.raise(path, "Constraint for DvCodedText is not applicable:" + archetypeconstraint, "SYS01");
-        CSINGLEATTRIBUTE csingleattribute = (CSINGLEATTRIBUTE) archetypeconstraint;
-
-        Object object = csingleattribute.getChildrenArray(0);
-
-        if (!(object instanceof CCODEPHRASE)) {
-            if (object instanceof CONSTRAINTREF) //safely ignore it!
-            {
-                logger.warn("Constraint reference is not supported, path:" + path);
-                return;
-            }
-            ValidationException.raise(path, "Constraint child is not a code phrase constraint:" + object, "SYS01");
-        }
-        CCODEPHRASE ccodephrase = (CCODEPHRASE) object;
-
-        if (ccodephrase.getCodeListArray().length == 0)
-            return;
-
-
-        for (String termKey : ccodephrase.getCodeListArray()) {
-            String matcher = localTerminologyLookup.get(lookupPath(path)).get(termKey);
-            if (matcher.equals(checkValue.getValue()))
-                return;
-        }
-        ValidationException.raise(path, "Value does not match any defined codes,found:" + aValue, "TEXT01");
+        //no specific validation for a DvText
+        return;
     }
 
-    private String lookupPath(String path) {
-        int last = path.lastIndexOf("[openEHR-");
-        last = path.indexOf("]", last);
-
-        return path.substring(0, last + 1);
-    }
 }
