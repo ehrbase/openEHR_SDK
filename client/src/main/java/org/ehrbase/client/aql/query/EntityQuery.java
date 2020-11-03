@@ -19,6 +19,7 @@
 
 package org.ehrbase.client.aql.query;
 
+import org.apache.commons.lang3.StringUtils;
 import org.ehrbase.client.aql.condition.Condition;
 import org.ehrbase.client.aql.containment.Containment;
 import org.ehrbase.client.aql.containment.ContainmentExpression;
@@ -35,90 +36,91 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class EntityQuery<T extends Record> implements Query<T> {
-    private final SelectAqlField<Object>[] fields;
-    private final ContainmentExpression containmentExpression;
-    private int variabelCount = 0;
-    private int parameterCount = 0;
-    private int selectCount = 0;
-    private Map<Containment, String> variablesMap = new HashMap<>();
-    private Condition where;
-    private OrderByExpression orderByExpression;
-    private TopExpresion topExpresion;
+  private final SelectAqlField<Object>[] fields;
+  private final ContainmentExpression containmentExpression;
+  private int variabelCount = 0;
+  private int parameterCount = 0;
+  private int selectCount = 0;
+  private Map<Containment, String> variablesMap = new HashMap<>();
+  private Condition where;
+  private OrderByExpression orderByExpression;
+  private TopExpresion topExpresion;
 
-    protected EntityQuery(ContainmentExpression containmentExpression, SelectAqlField<?>... fields) {
-        this.fields = (SelectAqlField<Object>[]) fields;
-        this.containmentExpression = containmentExpression;
-        containmentExpression.bindQuery(this);
+  protected EntityQuery(ContainmentExpression containmentExpression, SelectAqlField<?>... fields) {
+    this.fields = (SelectAqlField<Object>[]) fields;
+    this.containmentExpression = containmentExpression;
+    containmentExpression.bindQuery(this);
+  }
+
+  @Override
+  public String buildAql() {
+    StringBuilder sb = new StringBuilder();
+    sb.append("Select ");
+    if (topExpresion != null) {
+      sb.append(topExpresion.buildAql()).append(" ");
     }
 
-
-    @Override
-    public String buildAql() {
-        StringBuilder sb = new StringBuilder();
-        sb
-                .append("Select ");
-        if (topExpresion != null) {
-            sb.append(topExpresion.buildAql()).append(" ");
-        }
-
-        sb.append(Arrays.stream(fields).map(SelectAqlField::buildAQL).map(s -> s + " as F" + selectCount++).collect(Collectors.joining(", ")))
-                .append(" from EHR e ");
-        if (containmentExpression != null) {
-            sb
-                    .append(" contains ")
-                    .append(containmentExpression.buildAQL());
-        }
-        if (where != null) {
-            sb
-                    .append(" where ")
-                    .append(where.buildAql());
-        }
-        if (orderByExpression != null) {
-            sb
-                    .append(" order by ")
-                    .append(orderByExpression.buildAql());
-        }
-        return sb.toString();
+    sb.append(Arrays.stream(fields).map(this::buildFieldAql).collect(Collectors.joining(", ")))
+        .append(" from EHR e ");
+    if (containmentExpression != null) {
+      sb.append(" contains ").append(containmentExpression.buildAQL());
     }
-
-    @Override
-    public AqlField<Object>[] fields() {
-        return fields;
+    if (where != null) {
+      sb.append(" where ").append(where.buildAql());
     }
-
-    public String buildVariabelName(Containment containment) {
-
-        return variablesMap.computeIfAbsent(containment, this::buildVariablesNameIntern);
+    if (orderByExpression != null) {
+      sb.append(" order by ").append(orderByExpression.buildAql());
     }
+    return sb.toString();
+  }
 
-    private String buildVariablesNameIntern(Containment containment) {
-        String name = containment.getType().getSimpleName().substring(0, 1).toLowerCase() + variabelCount;
-        variabelCount++;
-        return name;
-    }
+  private String buildFieldAql(SelectAqlField<?> field) {
+    selectCount++;
 
-    public EntityQuery<T> where(Condition where) {
-        this.where = where;
-        return this;
-    }
+    return field.buildAQL()
+        + " as "
+        + (StringUtils.isNotBlank(field.getName()) ? field.getName().replaceAll("[^A-Za-z0-9]", "_") : "F" + selectCount);
+  }
 
-    public EntityQuery<T> orderBy(OrderByExpression orderByExpression) {
-        this.orderByExpression = orderByExpression;
-        return this;
-    }
+  @Override
+  public AqlField<Object>[] fields() {
+    return fields;
+  }
 
-    public EntityQuery<T> top(TopExpresion topExpresion) {
-        this.topExpresion = topExpresion;
-        return this;
-    }
+  public String buildVariabelName(Containment containment) {
 
-    public String buildParameterName() {
-        String name = "parm" + parameterCount;
-        parameterCount++;
-        return name;
-    }
+    return variablesMap.computeIfAbsent(containment, this::buildVariablesNameIntern);
+  }
 
-    public <V> Parameter<V> buildParameter() {
-        return new Parameter<>(this);
-    }
+  private String buildVariablesNameIntern(Containment containment) {
+    String name =
+        containment.getType().getSimpleName().substring(0, 1).toLowerCase() + variabelCount;
+    variabelCount++;
+    return name;
+  }
+
+  public EntityQuery<T> where(Condition where) {
+    this.where = where;
+    return this;
+  }
+
+  public EntityQuery<T> orderBy(OrderByExpression orderByExpression) {
+    this.orderByExpression = orderByExpression;
+    return this;
+  }
+
+  public EntityQuery<T> top(TopExpresion topExpresion) {
+    this.topExpresion = topExpresion;
+    return this;
+  }
+
+  public String buildParameterName() {
+    String name = "parm" + parameterCount;
+    parameterCount++;
+    return name;
+  }
+
+  public <V> Parameter<V> buildParameter() {
+    return new Parameter<>(this);
+  }
 }
