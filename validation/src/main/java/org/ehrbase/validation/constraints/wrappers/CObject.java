@@ -21,11 +21,9 @@
 
 package org.ehrbase.validation.constraints.wrappers;
 
+import com.nedap.archie.rminfo.ArchieRMInfoLookup;
 import org.apache.xmlbeans.SchemaType;
-import org.openehr.schemas.v1.ARCHETYPECONSTRAINT;
-import org.openehr.schemas.v1.CCOMPLEXOBJECT;
-import org.openehr.schemas.v1.CDOMAINTYPE;
-import org.openehr.schemas.v1.CPRIMITIVEOBJECT;
+import org.openehr.schemas.v1.*;
 
 import java.util.Map;
 
@@ -43,19 +41,27 @@ public class CObject extends CConstraint implements I_CArchetypeConstraintValida
     }
 
     @Override
-    public void validate(String path, Object aValue, ARCHETYPECONSTRAINT archetypeconstraint) throws IllegalArgumentException {
+    public void validate(String path, Object aValue, ARCHETYPECONSTRAINT archetypeconstraint) {
 
         SchemaType type = I_CArchetypeConstraintValidate.findSchemaType(I_CArchetypeConstraintValidate.getXmlType(archetypeconstraint));
         Object constraint = archetypeconstraint.changeType(type);
 
-        if (constraint instanceof CCOMPLEXOBJECT)
-            new CComplexObject(localTerminologyLookup).validate(path, aValue, (CCOMPLEXOBJECT) constraint);
+        if (constraint instanceof CCOMPLEXOBJECT) {
+            if (aValue.getClass().equals(valueRmType(((CCOMPLEXOBJECT)constraint)))) {
+                new CComplexObject(localTerminologyLookup).validate(path, aValue, (CCOMPLEXOBJECT) constraint);
+            }
+        }
         else if (constraint instanceof CPRIMITIVEOBJECT)
             new CPrimitive(localTerminologyLookup).validate(path, aValue, (CPRIMITIVEOBJECT) constraint);
         else if (constraint instanceof CDOMAINTYPE)
             new CDomainType(localTerminologyLookup).validate(path, aValue, (CDOMAINTYPE) constraint);
         else
-            throw new IllegalStateException("INTERNAL: unsupported COBJECT:" + archetypeconstraint);
+            ValidationException.raise(path, "INTERNAL: unsupported COBJECT:" + archetypeconstraint, "COBJ01");
 
+    }
+
+    private Class valueRmType(CCOMPLEXOBJECT ccomplexobject){
+        String rmTypeName = ccomplexobject.getRmTypeName();
+        return ArchieRMInfoLookup.getInstance().getClass(rmTypeName);
     }
 }

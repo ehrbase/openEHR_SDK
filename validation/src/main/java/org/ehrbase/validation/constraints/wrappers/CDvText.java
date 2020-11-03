@@ -23,11 +23,6 @@ package org.ehrbase.validation.constraints.wrappers;
 
 import com.nedap.archie.rm.datavalues.DvText;
 import org.openehr.schemas.v1.ARCHETYPECONSTRAINT;
-import org.openehr.schemas.v1.CCODEPHRASE;
-import org.openehr.schemas.v1.CONSTRAINTREF;
-import org.openehr.schemas.v1.CSINGLEATTRIBUTE;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 
@@ -40,49 +35,12 @@ import java.util.Map;
  */
 public class CDvText extends CConstraint implements I_CArchetypeConstraintValidate {
 
-    private Logger logger = LoggerFactory.getLogger(CDvText.class);
-
     CDvText(Map<String, Map<String, String>> localTerminologyLookup) {
         super(localTerminologyLookup);
     }
 
     @Override
-    public void validate(String path, Object aValue, ARCHETYPECONSTRAINT archetypeconstraint) throws IllegalArgumentException {
-
-        DvText checkValue = (DvText) aValue;
-
-        if (!(archetypeconstraint instanceof CSINGLEATTRIBUTE))
-            ValidationException.raise(path, "Constraint for DvCodedText is not applicable:" + archetypeconstraint, "SYS01");
-        CSINGLEATTRIBUTE csingleattribute = (CSINGLEATTRIBUTE) archetypeconstraint;
-
-        Object object = csingleattribute.getChildrenArray(0);
-
-        if (!(object instanceof CCODEPHRASE)) {
-            if (object instanceof CONSTRAINTREF) //safely ignore it!
-            {
-                logger.warn("Constraint reference is not supported, path:" + path);
-                return;
-            }
-            ValidationException.raise(path, "Constraint child is not a code phrase constraint:" + object, "SYS01");
-        }
-        CCODEPHRASE ccodephrase = (CCODEPHRASE) object;
-
-        if (ccodephrase.getCodeListArray().length == 0)
-            return;
-
-
-        for (String termKey : ccodephrase.getCodeListArray()) {
-            String matcher = localTerminologyLookup.get(lookupPath(path)).get(termKey);
-            if (matcher.equals(checkValue.getValue()))
-                return;
-        }
-        ValidationException.raise(path, "Value does not match any defined codes,found:" + aValue, "TEXT01");
-    }
-
-    private String lookupPath(String path) {
-        int last = path.lastIndexOf("[openEHR-");
-        last = path.indexOf("]", last);
-
-        return path.substring(0, last + 1);
+    public void validate(String path, Object aValue, ARCHETYPECONSTRAINT archetypeconstraint) {
+        //check pattern is done as primitive level
     }
 }
