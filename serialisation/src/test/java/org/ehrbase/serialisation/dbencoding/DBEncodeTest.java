@@ -18,11 +18,12 @@
 
 package org.ehrbase.serialisation.dbencoding;
 
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.nedap.archie.rm.archetyped.FeederAudit;
-import com.nedap.archie.rm.archetyped.FeederAuditDetails;
 import com.nedap.archie.rm.composition.AdminEntry;
 import com.nedap.archie.rm.composition.Composition;
+import com.nedap.archie.rm.composition.Section;
 import com.nedap.archie.rm.datastructures.Element;
 import com.nedap.archie.rm.datastructures.History;
 import com.nedap.archie.rm.datastructures.ItemStructure;
@@ -30,15 +31,14 @@ import com.nedap.archie.rm.datastructures.PointEvent;
 import com.nedap.archie.rm.datavalues.quantity.DvInterval;
 import com.nedap.archie.rm.datavalues.quantity.datetime.DvDateTime;
 import org.apache.commons.io.IOUtils;
+import org.apache.xmlbeans.XmlException;
 import org.ehrbase.serialisation.dbencoding.rawjson.LightRawJsonEncoder;
 import org.ehrbase.serialisation.dbencoding.rmobject.FeederAuditEncoding;
 import org.ehrbase.serialisation.jsonencoding.CanonicalJson;
-import org.ehrbase.serialisation.jsonencoding.JacksonUtil;
 import org.ehrbase.serialisation.xmlencoding.CanonicalXML;
 import org.ehrbase.test_data.composition.CompositionTestDataCanonicalJson;
 import org.ehrbase.test_data.composition.CompositionTestDataCanonicalXML;
 import org.ehrbase.test_data.operationaltemplate.OperationalTemplateTestData;
-import org.ehrbase.test_data.webtemplate.WebTemplateTestData;
 import org.ehrbase.validation.Validator;
 import org.ehrbase.webtemplate.model.WebTemplate;
 import org.ehrbase.webtemplate.parser.OPTParser;
@@ -47,8 +47,6 @@ import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
 import org.openehr.schemas.v1.TemplateDocument;
 
 import javax.xml.bind.JAXBException;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
