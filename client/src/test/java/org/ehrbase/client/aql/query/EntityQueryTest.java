@@ -65,7 +65,7 @@ public class EntityQueryTest {
                 .where(Condition.equal(EhrFields.EHR_ID(), ehrIdParameter).and(Condition.greaterOrEqual(containmentObservation.SYSTOLIC_MAGNITUDE, 22d)))
                 .orderBy(OrderByExpression.ascending(containmentComposition.START_TIME_VALUE).andThenDescending(containmentObservation.TIME_VALUE));
 
-        assertThat(entityQuery.buildAql()).isEqualTo("Select c0/context/start_time/value as F0, o1 as F1, o1/protocol[at0011]/items[at0013]/value/defining_code as F2 " +
+        assertThat(entityQuery.buildAql()).isEqualTo("Select c0/context/start_time/value as startTimeValue, o1 as BloodPressureTrainingSampleObservation, o1/protocol[at0011]/items[at0013]/value/defining_code as cuffSizeDefiningcode " +
                 "from EHR e  " +
                 "contains COMPOSITION c0[openEHR-EHR-COMPOSITION.sample_encounter.v1] contains OBSERVATION o1[openEHR-EHR-OBSERVATION.sample_blood_pressure.v1] " +
                 "where (e/ehr_id/value = $parm0 and o1/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/magnitude >= 22.0) " +
@@ -86,14 +86,14 @@ public class EntityQueryTest {
                 containment,
                 proVirusClusterContainment.VIRUS_VALUE,
                 probeClusterContainment.ZEITPUNKT_DER_PROBENENTNAHME_VALUE,
-                new NativeSelectAqlField<>(compositionContainment, "/uid/value", UUID.class)
+                new NativeSelectAqlField<>(compositionContainment, "/uid/value","uid", UUID.class)
         );
 
         entityQuery
                 .where(Condition.equal(new NativeSelectAqlField<>(compositionContainment, "/name/value", String.class), "Mikrobiologischer Befund"));
 
         assertThat(entityQuery.buildAql()).isEqualTo(
-                "Select c0/items[at0024]/value/value as F0, c1/items[at0015]/value/value as F1, c2/uid/value as F2 " +
+                "Select c0/items[at0024]/value/value as virusValue, c1/items[at0015]/value/value as zeitpunktDerProbenentnahmeValue, c2/uid/value as uid " +
                         "from EHR e  " +
                         "contains COMPOSITION c2 " +
                         "contains OBSERVATION o3[openEHR-EHR-OBSERVATION.laboratory_test_result.v1] " +

@@ -40,7 +40,9 @@ public class CDvText extends CConstraint implements I_CArchetypeConstraintValida
     }
 
     @Override
-    public void validate(String path, Object aValue, ARCHETYPECONSTRAINT archetypeconstraint) {
-        //check pattern is done as primitive level
+    public void validate(String path, Object aValue, ARCHETYPECONSTRAINT archetypeconstraint) throws IllegalArgumentException {
+        //no specific validation for a DvText
+        return;
     }
+
 }

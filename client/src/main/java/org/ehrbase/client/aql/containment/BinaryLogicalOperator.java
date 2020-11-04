@@ -21,36 +21,35 @@ package org.ehrbase.client.aql.containment;
 
 import org.ehrbase.client.aql.query.EntityQuery;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
 public abstract class BinaryLogicalOperator implements ContainmentExpression {
 
-    private final ContainmentExpression containmentExpression1;
-    private final ContainmentExpression containmentExpression2;
+  protected final List<ContainmentExpression> containmentExpressionList = new ArrayList<>();
 
-    protected BinaryLogicalOperator(ContainmentExpression containmentExpression1, ContainmentExpression containmentExpression2) {
-        this.containmentExpression1 = containmentExpression1;
-        this.containmentExpression2 = containmentExpression2;
-    }
+  protected BinaryLogicalOperator(
+      ContainmentExpression containmentExpression1, ContainmentExpression containmentExpression2) {
+    containmentExpressionList.add(containmentExpression1);
+    containmentExpressionList.add(containmentExpression2);
+  }
 
-    @Override
-    public String buildAQL() {
-        StringBuilder sb = new StringBuilder();
-        sb
-                .append("(")
-                .append(containmentExpression1.buildAQL())
-                .append(" ")
-                .append(getSymbol())
-                .append(" ")
-                .append(containmentExpression2.buildAQL())
-                .append(")");
+  @Override
+  public String buildAQL() {
 
-        return sb.toString();
-    }
 
-    @Override
-    public void bindQuery(EntityQuery<?> query) {
-        containmentExpression1.bindQuery(query);
-        containmentExpression2.bindQuery(query);
-    }
+    return "(" +
+            containmentExpressionList.stream()
+                    .map(containmentExpression -> containmentExpression.buildAQL())
+                    .collect(Collectors.joining(" " + getSymbol() + " ")) +
+            ")";
+  }
 
-    protected abstract String getSymbol();
+  @Override
+  public void bindQuery(EntityQuery<?> query) {
+    containmentExpressionList.forEach(c -> c.bindQuery(query));
+  }
+
+  protected abstract String getSymbol();
 }

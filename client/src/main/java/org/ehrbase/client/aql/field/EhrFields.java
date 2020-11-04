@@ -25,7 +25,7 @@ import java.util.UUID;
 
 public class EhrFields {
 
-    private static final Containment EHR_CONTAINMENT = new Containment("EHR") {
+    public static final Containment EHR_CONTAINMENT = new Containment("EHR") {
         @Override
         public String getVariableName() {
             return "e";

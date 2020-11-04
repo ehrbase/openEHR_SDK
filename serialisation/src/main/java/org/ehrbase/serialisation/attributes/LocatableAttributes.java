@@ -65,4 +65,13 @@ public abstract class LocatableAttributes extends RMAttributes {
 
         return map;
     }
+
+    public static boolean isLocatableAttribute(String key){
+        return (key.equals(TAG_ARCHETYPE_NODE_ID) ||
+                key.equals(TAG_ARCHETYPE_DETAILS) ||
+                key.equals(TAG_FEEDER_AUDIT)||
+                key.equals(TAG_UID)||
+                key.equals(TAG_LINKS) ||
+                key.equals(TAG_NAME));
+    }
 }

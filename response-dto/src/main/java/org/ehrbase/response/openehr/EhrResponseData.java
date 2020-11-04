@@ -20,6 +20,7 @@ package org.ehrbase.response.openehr;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
+import com.nedap.archie.rm.datavalues.quantity.datetime.DvDateTime;
 import com.nedap.archie.rm.ehr.EhrStatus;
 import com.nedap.archie.rm.support.identification.HierObjectId;
 import org.ehrbase.response.ehrscape.CompositionDto;
@@ -41,7 +42,7 @@ public class EhrResponseData {
     @JsonProperty(value = "ehr_status")
     private EhrStatus ehrStatus;
     @JsonProperty(value = "time_created")
-    private String timeCreated;
+    private DvDateTime timeCreated;
     @JsonProperty
     private List<CompositionDto> compositions;
     @JsonProperty
@@ -71,12 +72,16 @@ public class EhrResponseData {
         this.ehrStatus = ehrStatus;
     }
 
-    public String getTimeCreated() {
+    public DvDateTime  getTimeCreated() {
         return timeCreated;
     }
 
     public void setTimeCreated(String timeCreated) {
-        this.timeCreated = timeCreated;
+        this.timeCreated = new DvDateTime( timeCreated);
+    }
+
+    public void setTimeCreated(DvDateTime timeCreated) {
+        this.timeCreated =  timeCreated;
     }
 
     public List<CompositionDto> getCompositions() {

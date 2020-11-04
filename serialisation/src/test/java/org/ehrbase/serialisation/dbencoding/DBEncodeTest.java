@@ -18,11 +18,7 @@
 
 package org.ehrbase.serialisation.dbencoding;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
-import com.nedap.archie.json.JacksonUtil;
 import com.nedap.archie.rm.archetyped.FeederAudit;
 import com.nedap.archie.rm.archetyped.FeederAuditDetails;
 import com.nedap.archie.rm.composition.AdminEntry;
@@ -34,10 +30,10 @@ import com.nedap.archie.rm.datastructures.PointEvent;
 import com.nedap.archie.rm.datavalues.quantity.DvInterval;
 import com.nedap.archie.rm.datavalues.quantity.datetime.DvDateTime;
 import org.apache.commons.io.IOUtils;
-import org.apache.xmlbeans.XmlException;
 import org.ehrbase.serialisation.dbencoding.rawjson.LightRawJsonEncoder;
 import org.ehrbase.serialisation.dbencoding.rmobject.FeederAuditEncoding;
 import org.ehrbase.serialisation.jsonencoding.CanonicalJson;
+import org.ehrbase.serialisation.jsonencoding.JacksonUtil;
 import org.ehrbase.serialisation.xmlencoding.CanonicalXML;
 import org.ehrbase.test_data.composition.CompositionTestDataCanonicalJson;
 import org.ehrbase.test_data.composition.CompositionTestDataCanonicalXML;
@@ -54,7 +50,8 @@ import javax.xml.bind.JAXBException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -691,5 +688,21 @@ public class DBEncodeTest {
         }catch (Exception e){
             fail(e.getMessage());
         }
+    }
+
+    @Test
+    public void testDBDecodeIssue350() throws Exception {
+
+        String db_encoded = new String(Files.readAllBytes(Paths.get("src/test/resources/sample_data/bug350_missing_data.json")));
+        assertNotNull(db_encoded);
+
+        //see if this can be interpreted by Archie
+        Composition object = new RawJson().unmarshal(db_encoded, Composition.class);
+
+        assertEquals(8, ((Section)object.itemsAtPath("/content[openEHR-EHR-SECTION.respect_headings.v0]").get(0)).getItems().size());
+
+        String interpreted = new CanonicalXML().marshal(object);
+
+        assertNotNull(interpreted);
     }
 }
