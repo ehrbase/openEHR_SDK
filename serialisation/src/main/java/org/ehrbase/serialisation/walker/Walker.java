@@ -76,6 +76,7 @@ public abstract class Walker<T> {
                 choices.put(textNode.getAqlPath(), List.of(codeNode, textNode));
                 children.add(textNode);
             }
+
             if (children.stream().anyMatch(n -> n.getRmType().equals("EVENT"))) {
                 WebTemplateNode event = children.stream().filter(n -> n.getRmType().equals("EVENT")).findAny().get();
                 WebTemplateNode pointEvent = new WebTemplateNode(event);
@@ -88,11 +89,19 @@ public abstract class Walker<T> {
                 width.setMax(1);
                 width.setAqlPath(event.getAqlPath() + "/width");
                 intervalEvent.getChildren().add(width);
+                WebTemplateNode math = new WebTemplateNode();
+                math.setId("math_function");
+                math.setRmType("DV_CODED_TEXT");
+                math.setMax(1);
+                math.setAqlPath(event.getAqlPath() + "/math_function");
+                intervalEvent.getChildren().add(math);
                 choices.put(intervalEvent.getAqlPath(), List.of(intervalEvent, pointEvent));
                 children.add(intervalEvent);
                 children.add(pointEvent);
                 children.remove(event);
             }
+
+
             for (WebTemplateNode childNode : children) {
 
                 if (childNode.getMax() == 1) {
@@ -113,7 +122,7 @@ public abstract class Walker<T> {
                     RMObject currentChild = null;
                     T childObject = null;
                     List<Pair<T, RMObject>> pairs = new ArrayList<>();
-                    for (int i = 0; i <= size; i++) {
+                    for (int i = 0; i < size; i++) {
 
                         childObject = extract(context, childNode, choices.containsKey(childNode.getAqlPath()), i);
                         if (childObject != null) {
@@ -124,7 +133,7 @@ public abstract class Walker<T> {
 
 
                     }
-                    for (int i = 0; i <= size; i++) {
+                    for (int i = 0; i < size; i++) {
                         childObject = pairs.get(i).getLeft();
                         currentChild = pairs.get(i).getRight();
                         if (currentChild != null && childObject != null) {
@@ -165,6 +174,9 @@ public abstract class Walker<T> {
     protected abstract int calculateSize(Context<T> context, WebTemplateNode childNode);
 
     protected RMObject deepClone(RMObject rmObject) {
+        if (rmObject == null){
+            return null;
+        }
         CanonicalJson canonicalXML = new CanonicalJson();
         return canonicalXML.unmarshal(canonicalXML.marshal(rmObject), rmObject.getClass());
     }

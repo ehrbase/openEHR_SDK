@@ -2,13 +2,13 @@ package org.ehrbase.client.classgenerator.examples.stationarerversorgungsfallcom
 
 import com.nedap.archie.rm.datastructures.Cluster;
 import com.nedap.archie.rm.generic.PartyProxy;
-import java.lang.String;
-import java.time.temporal.TemporalAccessor;
-import java.util.List;
 import org.ehrbase.client.annotations.Archetype;
 import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.Path;
 import org.ehrbase.client.classgenerator.examples.shareddefinition.Language;
+
+import java.time.temporal.TemporalAccessor;
+import java.util.List;
 
 @Entity
 @Archetype("openEHR-EHR-ADMIN_ENTRY.discharge_summary.v0")
@@ -34,7 +34,7 @@ public class EntlassungsdatenAdminEntry {
   @Path("/data[at0001]/items[at0040]/value|value")
   private String artDerEntlassungValue;
 
-  @Path("/data[at0001]/items[at0011]/value|value")
+  @Path("/data[at0001]/items[at0011 and name/value='Datum/Uhrzeit der Entlassung']/value|value")
   private TemporalAccessor datumUhrzeitDerEntlassungValue;
 
   public void setLetzterPatientenstandort(List<Cluster> letzterPatientenstandort) {

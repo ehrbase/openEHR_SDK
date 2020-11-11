@@ -144,11 +144,14 @@ public class StdToCompositionWalker extends ToCompositionWalker<Map<String, Stri
         context.getCountMap().remove(childNode);
         context.getNodeDeque().push(childNode);
         Integer count = context.getObjectDeque().peek().keySet().stream()
-                .map(s -> StringUtils.substringBetween(s, buildNamePath(context) + ":", "/"))
+                .filter(s -> StringUtils.startsWith(s,buildNamePath(context)))
+                .map(s -> StringUtils.substringAfter(s, buildNamePath(context) + ":"))
+                .map(s -> StringUtils.substringBefore(s,"/"))
                 .filter(StringUtils::isNotBlank)
                 .map(Integer::parseInt)
                 .sorted()
                 .reduce((first, second) -> second)
+                .map(i -> i+1)
                 .orElse(0);
         context.getNodeDeque().poll();
         if (oldCount != null) {

@@ -85,6 +85,9 @@ public class FlatJsonMarshallerTest {
                 .containsExactlyInAnyOrder(
                         "Missing path: bericht/körpergewicht:0/any_event_en:0/gewicht|magnitude, value: 55.0",
                         "Missing path: bericht/körpergewicht:0/any_event_en:1/gewicht|magnitude, value: 60.0",
+                        "Missing path: bericht/körpergewicht:0/any_event_en:1/math_function|value, value: mean",
+                        "Missing path: bericht/körpergewicht:0/any_event_en:1/math_function|terminology, value: openehr",
+                        "Missing path: bericht/körpergewicht:0/any_event_en:1/math_function|code, value: 146",
                         "Missing path: bericht/körpergewicht:0/birth_en/gewicht|magnitude, value: 30.0"
                 );
 

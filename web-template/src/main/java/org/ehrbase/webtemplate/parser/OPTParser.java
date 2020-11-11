@@ -208,6 +208,7 @@ public class OPTParser {
 
             node.getChildren().addAll(newChildren);
         }
+
         // Handle choice children
         node.getChoicesInChildren()
                 .values()
@@ -317,7 +318,7 @@ public class OPTParser {
         node.setName(attributeInfo.getRmName());
         node.setId(buildId(attributeInfo.getRmName()));
         node.setRmType(attributeInfo.getTypeNameInCollection());
-        node.setMax(1);
+        node.setMax(attributeInfo.isMultipleValued() ? -1:1);
         node.setMin(0);
         return node;
     }

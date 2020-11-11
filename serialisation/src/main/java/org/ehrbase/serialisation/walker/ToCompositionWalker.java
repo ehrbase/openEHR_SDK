@@ -78,7 +78,11 @@ public abstract class ToCompositionWalker<T> extends Walker<T> {
         ) {
             CComplexObject elementConstraint = new CComplexObject();
             elementConstraint.setRmTypeName(rmclass);
-            Object newChild = RM_OBJECT_CREATOR.create(elementConstraint);
+            Object newChild;
+            try{
+
+              newChild = RM_OBJECT_CREATOR.create(elementConstraint);
+
             if (Event.class.isAssignableFrom(newChild.getClass())) {
                 Event newEvent = (Event) newChild;
                 Event oldEvent = (Event) child;
@@ -107,6 +111,10 @@ public abstract class ToCompositionWalker<T> extends Walker<T> {
             }
 
             RM_OBJECT_CREATOR.addElementToListOrSetSingleValues(parent, attributeName, Collections.singletonList(newChild));
+            } catch (IllegalArgumentException e){
+                newChild = null;
+
+            }
             child = newChild;
         }
 

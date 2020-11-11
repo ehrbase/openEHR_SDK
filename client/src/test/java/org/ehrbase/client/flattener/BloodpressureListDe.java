@@ -30,11 +30,8 @@ import java.util.List;
 @Entity
 public class BloodpressureListDe {
 
-    public static final String START_TIME = "startTime";
-    public static final String TEMPLATE_ID = "templateId";
-    public static final String BLOODPRESSURES = "bloodpressures";
-    public static final String BLOODPRESSURE_SYSTOLISCH_VALUE = "systolischValue";
-    @Path(value = "/context/start_time/value")
+
+    @Path(value = "/context/start_time|value")
     private OffsetDateTime startTime;
     @Path(value = "/content[openEHR-EHR-OBSERVATION.sample_blood_pressure.v1]")
     private List<Bloodpressure> bloodpressures;
@@ -59,7 +56,7 @@ public class BloodpressureListDe {
     @Entity
     public static class Bloodpressure {
 
-        @Path(value = "/data[at0001]/events[at0002]/data[at0003]/items[at0004]|magnitude")
+        @Path(value = "/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value|magnitude")
         private Double systolischValue;
 
         public Double getSystolischValue() {

@@ -5,9 +5,6 @@ import com.nedap.archie.rm.datastructures.Cluster;
 import com.nedap.archie.rm.generic.Participation;
 import com.nedap.archie.rm.generic.PartyIdentified;
 import com.nedap.archie.rm.generic.PartyProxy;
-import java.lang.String;
-import java.time.temporal.TemporalAccessor;
-import java.util.List;
 import org.ehrbase.client.annotations.Archetype;
 import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.Id;
@@ -21,6 +18,9 @@ import org.ehrbase.client.classgenerator.examples.stationarerversorgungsfallcomp
 import org.ehrbase.client.classgenerator.examples.stationarerversorgungsfallcomposition.definition.EntlassungsdatenAdminEntry;
 import org.ehrbase.client.classgenerator.examples.stationarerversorgungsfallcomposition.definition.FalltypDefiningcode;
 import org.ehrbase.client.openehrclient.VersionUid;
+
+import java.time.temporal.TemporalAccessor;
+import java.util.List;
 
 @Entity
 @Archetype("openEHR-EHR-COMPOSITION.fall.v0")
@@ -50,7 +50,7 @@ public class StationarerVersorgungsfallComposition {
   @Path("/context/other_context[at0001]/items[at0004]/value|value")
   private String fallklasseValue;
 
-  @Path("/context/other_context[at0001]/items[at0003]/value|value")
+  @Path("/context/other_context[at0001]/items[at0003 and name/value='Fall-Kennung']/value|value")
   private String fallKennungValue;
 
   @Path("/territory")

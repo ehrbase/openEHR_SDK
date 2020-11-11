@@ -49,7 +49,7 @@ public abstract class FromCompositionWalker<T> extends Walker<T> {
     protected int calculateSize(Context<T> context, WebTemplateNode childNode) {
         Object child = extractRMChild(context.getRmObjectDeque().peek(), context.getNodeDeque().peek(), childNode, false, null);
         if (child instanceof List) {
-            return ((List) child).size() - 1;
+            return ((List) child).size() ;
         } else {
             return 0;
         }
