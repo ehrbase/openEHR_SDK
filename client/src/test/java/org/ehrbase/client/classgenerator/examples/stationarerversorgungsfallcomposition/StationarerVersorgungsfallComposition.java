@@ -50,7 +50,7 @@ public class StationarerVersorgungsfallComposition {
   @Path("/context/other_context[at0001]/items[at0004]/value|value")
   private String fallklasseValue;
 
-  @Path("/context/other_context[at0001]/items[at0003 and name/value='Fall-Kennung']/value|value")
+  @Path("/context/other_context[at0001]/items[at0003]/value|value")
   private String fallKennungValue;
 
   @Path("/territory")

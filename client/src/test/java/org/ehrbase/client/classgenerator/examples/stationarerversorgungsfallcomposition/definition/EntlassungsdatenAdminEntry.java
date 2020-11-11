@@ -34,7 +34,7 @@ public class EntlassungsdatenAdminEntry {
   @Path("/data[at0001]/items[at0040]/value|value")
   private String artDerEntlassungValue;
 
-  @Path("/data[at0001]/items[at0011 and name/value='Datum/Uhrzeit der Entlassung']/value|value")
+  @Path("/data[at0001]/items[at0011]/value|value")
   private TemporalAccessor datumUhrzeitDerEntlassungValue;
 
   public void setLetzterPatientenstandort(List<Cluster> letzterPatientenstandort) {

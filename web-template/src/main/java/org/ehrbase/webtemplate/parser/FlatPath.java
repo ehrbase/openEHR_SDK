@@ -169,6 +169,11 @@ public class FlatPath {
     return new FlatPath(StringUtils.removeEnd(path.toString(), remove.toString()));
   }
 
+  public static FlatPath removeStart(FlatPath path, FlatPath remove) {
+    return new FlatPath(StringUtils.removeStart(path.toString(), remove.toString()));
+  }
+
+
   public static FlatPath addEnd(FlatPath path, FlatPath add) {
     return new FlatPath(path.toString()+"/"+ StringUtils.removeStart( add.toString(),"/"));
   }

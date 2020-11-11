@@ -12,7 +12,7 @@ import java.util.List;
 @Entity
 @Archetype("openEHR-EHR-CLUSTER.laboratory_test_analyte.v1")
 public class ProVirusCluster {
-    @Path("/items[at0024 and name/value='Virus']/value|value")
+    @Path("/items[at0024]/value|value")
     private String virusValue;
 
     @Path("/items[at0003]/value|value")

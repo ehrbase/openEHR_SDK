@@ -27,6 +27,7 @@ import com.nedap.archie.rm.support.identification.TerminologyId;
 import com.nedap.archie.rminfo.ArchieRMInfoLookup;
 import com.nedap.archie.rminfo.RMAttributeInfo;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.OptionFor;
 import org.ehrbase.client.annotations.Path;
@@ -35,6 +36,7 @@ import org.ehrbase.client.exception.ClientException;
 import org.ehrbase.serialisation.walker.Context;
 import org.ehrbase.serialisation.walker.ToCompositionWalker;
 import org.ehrbase.webtemplate.model.WebTemplateNode;
+import org.ehrbase.webtemplate.parser.FlatPath;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,6 +49,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -62,10 +65,7 @@ public class DtoToCompositionWalker extends ToCompositionWalker<Map<String, Obje
   @Override
   protected Map<String, Object> extract(
       Context<Map<String, Object>> context, WebTemplateNode child, boolean isChoice, Integer i) {
-    Map<String, Object> subValues =
-        context.getObjectDeque().peek().entrySet().stream()
-            .filter(e -> matchesPath(context, child, e))
-            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+    Map<String, Object> subValues = filterValues(context, child);
 
     if (subValues.isEmpty()) {
       return null;
@@ -106,7 +106,7 @@ public class DtoToCompositionWalker extends ToCompositionWalker<Map<String, Obje
       } else {
         String path = subValues.keySet().stream().findAny().get();
         if (value.getClass().isAnnotationPresent(Entity.class)
-            && new PathExtractor(path).getChildPath().equals(child.getAqlPath())) {
+            && new PathExtractor(path).getChildPath().equals("")) {
 
           Map<String, Object> newValues =
               findEntity(value).entrySet().stream()
@@ -119,25 +119,39 @@ public class DtoToCompositionWalker extends ToCompositionWalker<Map<String, Obje
     }
   }
 
-  private boolean matchesPath(
+  private Map<String, Object> filterValues(
+      Context<Map<String, Object>> context, WebTemplateNode child) {
+    return context.getObjectDeque().peek().entrySet().stream()
+        .map(e -> new ImmutablePair<>(matchesPath(context, child, e), e.getValue()))
+        .filter(p -> p.getLeft() != null)
+        .collect(Collectors.toMap(ImmutablePair::getLeft, ImmutablePair::getRight));
+  }
+
+  private String matchesPath(
       Context<Map<String, Object>> context, WebTemplateNode child, Map.Entry<String, Object> e) {
-    if (StringUtils.startsWith(e.getKey(), child.getAqlPath())) {
-      return true;
-    } else
-    /*
-    {
-    FlatPath childPath = new FlatPath(child.getAqlPath());
-    FlatPath pathLast = childPath.getLast();
-    FlatPath pathWithoutLastName =
-        FlatPath.addEnd(
-            FlatPath.removeEnd(childPath, pathLast), new FlatPath(pathLast.format(false)));
-    if (StringUtils.startsWith(e.getKey(), pathWithoutLastName.toString())) {
-      return true;
-    }
-
-    else */ {
-
-      return false;
+    String aqlPath =
+        FlatPath.removeStart(
+                new FlatPath(child.getAqlPath()),
+                new FlatPath(context.getNodeDeque().peek().getAqlPath()))
+            .toString();
+    if (StringUtils.startsWith(e.getKey(), aqlPath)) {
+      return StringUtils.removeStart(e.getKey(), aqlPath);
+    } else {
+      FlatPath childPath = new FlatPath(aqlPath);
+      FlatPath pathLast = childPath.getLast();
+      FlatPath pathWithoutLastName =
+          FlatPath.addEnd(
+              FlatPath.removeEnd(childPath, pathLast), new FlatPath(pathLast.format(false)));
+      if (StringUtils.startsWith(e.getKey(), pathWithoutLastName.toString())
+          && context.getNodeDeque().peek().getChildren().stream()
+                  .filter(n -> Objects.equals(n.getNodeId(), child.getNodeId()))
+                  .count()
+              == 1) {
+        logger.warn("name/value not set in dto for {}",child.getAqlPath());
+        return StringUtils.removeStart(e.getKey(), pathWithoutLastName.toString());
+      } else {
+        return null;
+      }
     }
   }
 
@@ -149,7 +163,7 @@ public class DtoToCompositionWalker extends ToCompositionWalker<Map<String, Obje
     for (Map.Entry<String, Object> objectEntry : values.entrySet()) {
 
       PathExtractor extractor = new PathExtractor(objectEntry.getKey());
-      if (extractor.getChildPath().equals(context.getNodeDeque().peek().getAqlPath())) {
+      if (StringUtils.isBlank(extractor.getChildPath())) {
         if (StringUtils.isNotBlank(extractor.getAttributeName())) {
           handleSingleValue(
               objectEntry.getValue(),
@@ -160,7 +174,7 @@ public class DtoToCompositionWalker extends ToCompositionWalker<Map<String, Obje
           RMObject child = context.getRmObjectDeque().poll();
           handleSingleValue(
               objectEntry.getValue(),
-              extractor.getChildName(),
+              new FlatPath(context.getNodeDeque().peek().getAqlPath()).getLast().getName(),
               child,
               context.getRmObjectDeque().peek());
           context.getRmObjectDeque().push(child);
@@ -175,15 +189,12 @@ public class DtoToCompositionWalker extends ToCompositionWalker<Map<String, Obje
   @Override
   protected int calculateSize(Context<Map<String, Object>> context, WebTemplateNode childNode) {
 
-    Map<String, Object> values =
-        context.getObjectDeque().peek().entrySet().stream()
-            .filter(e -> matchesPath(context, childNode, e))
-            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+    Map<String, Object> values = filterValues(context, childNode);
     if (values.size() == 1) {
       Object value = values.values().stream().findAny().get();
       if (value instanceof List) {
         return ((List<?>) value).size();
-      }else {
+      } else {
         return 1;
       }
     }
