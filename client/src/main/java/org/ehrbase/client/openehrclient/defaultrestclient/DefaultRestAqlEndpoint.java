@@ -92,7 +92,7 @@ public class DefaultRestAqlEndpoint implements AqlEndpoint {
         URI uri = defaultRestClient.getConfig().getBaseUri().resolve(AQL_PATH);
         try {
 
-            HttpResponse response = defaultRestClient.internalPost(uri, null, OBJECT_MAPPER.writeValueAsString(qMap), ContentType.APPLICATION_JSON, DefaultRestClient.ACCEPT_APPLICATION_JSON);
+            HttpResponse response = defaultRestClient.internalPost(uri, null, OBJECT_MAPPER.writeValueAsString(qMap), ContentType.APPLICATION_JSON, ContentType.APPLICATION_JSON.getMimeType());
             String value = EntityUtils.toString(response.getEntity());
             JsonObject asJsonObject = JsonParser.parseString(value).getAsJsonObject();
             JsonArray rows = asJsonObject.get("rows").getAsJsonArray();
