@@ -19,8 +19,10 @@ package org.ehrbase.client.openehrclient;
 
 import org.ehrbase.client.exception.ClientException;
 import org.ehrbase.client.exception.WrongStatusCodeException;
+import org.ehrbase.response.openehr.TemplatesResponseData;
 import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface TemplateEndpoint {
@@ -34,6 +36,13 @@ public interface TemplateEndpoint {
      * @throws WrongStatusCodeException
      */
     Optional<OPERATIONALTEMPLATE> findTemplate(String templateId);
+
+    /**
+     * Retrieves a list of templates
+     *
+     * @return
+     */
+    TemplatesResponseData findAllTemplates();
 
     /**
      * Ensure that the Template with {@code templateId} exists in the remote system.
