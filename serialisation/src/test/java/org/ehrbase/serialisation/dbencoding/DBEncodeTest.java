@@ -46,8 +46,7 @@ import java.nio.file.Paths;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
 public class DBEncodeTest {
 
@@ -682,4 +681,33 @@ public class DBEncodeTest {
 
         assertNotNull(interpreted);
     }
+    @Test
+    public void compositionEncodingArchetypeDetails() throws Exception {
+        String value = IOUtils.toString(CompositionTestDataCanonicalJson.DEMO_VITALS.getStream(), UTF_8);
+        CanonicalJson cut = new CanonicalJson();
+        Composition composition = cut.unmarshal(value, Composition.class);
+
+        assertNotNull(composition);
+
+        CompositionSerializer compositionSerializerRawJson = new CompositionSerializer();
+
+        String db_encoded = compositionSerializerRawJson.dbEncode(composition);
+        //check that ITEM_TREE name is serialized
+        assertNotNull(db_encoded);
+
+        String converted = new LightRawJsonEncoder(db_encoded).encodeCompositionAsString();
+
+        assertNotNull(converted);
+
+        //see if this can be interpreted by Archie
+        Composition object = new CanonicalJson().unmarshal(converted, Composition.class);
+
+        assertTrue(object.itemsAtPath("/content[openEHR-EHR-SECTION.ispek_dialog.v1]/items[openEHR-EHR-OBSERVATION.body_temperature-zn.v1]/archetype_details/archetype_id").size() > 0);
+
+        assertEquals("openEHR-EHR-OBSERVATION.body_temperature-zn.v1", object.itemsAtPath("/content[openEHR-EHR-SECTION.ispek_dialog.v1]/items[openEHR-EHR-OBSERVATION.body_temperature-zn.v1]/archetype_details/archetype_id").get(0).toString());
+
+        assertNotNull(object);
+    }
+
+
 }
