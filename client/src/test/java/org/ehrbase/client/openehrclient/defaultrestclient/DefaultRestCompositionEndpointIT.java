@@ -44,6 +44,7 @@ import org.ehrbase.client.flattener.Flattener;
 import org.ehrbase.client.openehrclient.CompositionEndpoint;
 import org.ehrbase.client.openehrclient.OpenEhrClient;
 import org.ehrbase.client.openehrclient.VersionUid;
+import org.ehrbase.client.templateprovider.TestDataTemplateProvider;
 import org.ehrbase.serialisation.jsonencoding.CanonicalJson;
 import org.ehrbase.test_data.composition.CompositionTestDataCanonicalJson;
 import org.junit.BeforeClass;
@@ -184,7 +185,7 @@ public class DefaultRestCompositionEndpointIT {
 
         assertThat(composition.itemsAtPath("/content[openEHR-EHR-OBSERVATION.laboratory_test_result.v1]/data[at0001]/events[at0002]/data[at0003]")).isNotNull();
 
-        Flattener flattener = new Flattener();
+        Flattener flattener = new Flattener(new TestDataTemplateProvider());
 
         VirologischerBefundComposition virologischerBefundComposition = flattener.flatten(composition, VirologischerBefundComposition.class);
         assertThat(virologischerBefundComposition.getBefund()).isNotNull();

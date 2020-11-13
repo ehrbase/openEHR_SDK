@@ -303,6 +303,7 @@ public class OPTParser {
             node.getChildren().addAll(typeInfo.getAttributes()
                     .values()
                     .stream()
+                    .filter(s -> !s.isComputed())
                     .filter(s -> !List.of("value").contains(s.getRmName()))
                     .filter(s -> !Locatable.class.isAssignableFrom(s.getTypeInCollection()))
                     .map(i -> buildNodeForAttribute(i, aqlPath, termDefinitionMap))

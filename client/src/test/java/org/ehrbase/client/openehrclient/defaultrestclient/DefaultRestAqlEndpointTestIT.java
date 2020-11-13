@@ -43,6 +43,7 @@ import org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev0
 import org.ehrbase.client.openehrclient.OpenEhrClient;
 import org.ehrbase.client.openehrclient.VersionUid;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -129,6 +130,7 @@ public class DefaultRestAqlEndpointTestIT {
 
 
     @Test
+    @Ignore
     public void testExecuteEntityQuery() {
 
         UUID ehr = openEhrClient.ehrEndpoint().createEhr();
@@ -163,6 +165,7 @@ public class DefaultRestAqlEndpointTestIT {
 
 
     @Test
+    @Ignore
     public void testExecuteEntityQueryWhere() {
 
         UUID ehr = openEhrClient.ehrEndpoint().createEhr();

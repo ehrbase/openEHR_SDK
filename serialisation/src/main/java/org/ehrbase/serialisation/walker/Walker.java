@@ -105,11 +105,10 @@ public abstract class Walker<T> {
             for (WebTemplateNode childNode : children) {
 
                 if (childNode.getMax() == 1) {
-                    T childObject = extract(context, childNode, choices.containsKey(childNode.getAqlPath()), null);
-                    Object child = null;
-                    if (childObject != null) {
-                        child = extractRMChild(context.getRmObjectDeque().peek(), currentNode, childNode, choices.containsKey(childNode.getAqlPath()), null);
-                    }
+
+                    ImmutablePair<T, RMObject> pair = extractPair(context, currentNode, choices, childNode, null);
+                    T childObject = pair.getLeft();
+                    Object child = pair.getRight();
 
                     if (child != null && childObject != null) {
                         context.getNodeDeque().push(childNode);
@@ -119,21 +118,19 @@ public abstract class Walker<T> {
                     }
                 } else {
                     int size = calculateSize(context, childNode);
-                    RMObject currentChild = null;
-                    T childObject = null;
+
                     List<Pair<T, RMObject>> pairs = new ArrayList<>();
                     for (int i = 0; i < size; i++) {
+                        ImmutablePair<T, RMObject> pair = extractPair(context, currentNode, choices, childNode, i);
 
-                        childObject = extract(context, childNode, choices.containsKey(childNode.getAqlPath()), i);
-                        if (childObject != null) {
-                            currentChild = (RMObject) extractRMChild(context.getRmObjectDeque().peek(), currentNode, childNode, choices.containsKey(childNode.getAqlPath()), i);
-                        }
-
-                        pairs.add(new ImmutablePair<>(childObject, currentChild));
+                        pairs.add(pair);
 
 
                     }
+
                     for (int i = 0; i < size; i++) {
+                        RMObject currentChild = null;
+                        T childObject = null;
                         childObject = pairs.get(i).getLeft();
                         currentChild = pairs.get(i).getRight();
                         if (currentChild != null && childObject != null) {
@@ -156,6 +153,8 @@ public abstract class Walker<T> {
         context.getNodeDeque().remove();
         context.getObjectDeque().remove();
     }
+
+    protected abstract ImmutablePair<T, RMObject> extractPair(Context<T> context, WebTemplateNode currentNode, Map<String, List<WebTemplateNode>> choices, WebTemplateNode childNode, Integer i);
 
 
     protected abstract Object extractRMChild(RMObject currentRM, WebTemplateNode currentNode, WebTemplateNode childNode, boolean isChoice, Integer count);
@@ -231,9 +230,12 @@ public abstract class Walker<T> {
             }
 
             if (currentRM instanceof Pathable) {
+                try{
                 child = ((Pathable) currentRM).itemsAtPath(childPath.format(false));
                 if (child == null || ((List) child).isEmpty()) {
                     child = ((Pathable) currentRM).itemAtPath(childPath.format(false));
+                }} catch (RuntimeException e){
+                    child = null;
                 }
                 parent = ((Pathable) currentRM).itemAtPath(parentAql);
             } else if (currentRM instanceof DvInterval) {

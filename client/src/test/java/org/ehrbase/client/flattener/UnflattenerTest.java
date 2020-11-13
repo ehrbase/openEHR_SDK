@@ -152,7 +152,7 @@ public class UnflattenerTest {
     @Test
     public void testUnflattenCorona() throws IOException {
         Composition expected = new CanonicalJson().unmarshal(IOUtils.toString(CompositionTestDataCanonicalJson.CORONA.getStream(), StandardCharsets.UTF_8), Composition.class);
-        Flattener flattener = new Flattener();
+        Flattener flattener = new Flattener(new TestDataTemplateProvider());
         CoronaAnamneseComposition coronaAnamneseComposition = flattener.flatten(expected, CoronaAnamneseComposition.class);
 
         Unflattener cut = new Unflattener(new TestDataTemplateProvider());
@@ -202,7 +202,7 @@ public class UnflattenerTest {
     @Test
     public void testUnflattenAllTypes() throws IOException {
         Composition composition = new CanonicalXML().unmarshal(IOUtils.toString(CompositionTestDataCanonicalXML.ALL_TYPES.getStream(), StandardCharsets.UTF_8), Composition.class);
-        Flattener flattener = new Flattener();
+        Flattener flattener = new Flattener(new TestDataTemplateProvider());
         TestAllTypesEnV1Composition testAllTypesEnV1 = flattener.flatten(composition, TestAllTypesEnV1Composition.class);
 
         TestAllTypesChoiceDvquantity choiceDvquantity = new TestAllTypesChoiceDvquantity();

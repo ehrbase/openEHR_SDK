@@ -71,7 +71,7 @@ public class FlattenerTest {
 
     @Test
     public void testFlatten() {
-        Flattener cut = new Flattener();
+        Flattener cut = new Flattener(new TestDataTemplateProvider());
         BloodpressureListDe bloodpressureListDe = TestData.buildExampleBloodpressureListDe();
 
         RMObject rmObject = new Unflattener(new TestDataTemplateProvider()).unflatten(bloodpressureListDe);
@@ -87,7 +87,7 @@ public class FlattenerTest {
 
     @Test
     public void testFlattenEhrbaseBloodPressureSimpleDeV0() {
-        Flattener cut = new Flattener();
+        Flattener cut = new Flattener(new TestDataTemplateProvider());
         EhrbaseBloodPressureSimpleDeV0Composition bloodPressureSimpleDeV0 = TestData.buildEhrbaseBloodPressureSimpleDeV0();
         RMObject rmObject = new Unflattener(new TestDataTemplateProvider()).unflatten(bloodPressureSimpleDeV0);
 
@@ -119,7 +119,7 @@ public class FlattenerTest {
 
     @Test
     public void testFlattenEhrbaseMultiOccurrenceDeV1() {
-        Flattener cut = new Flattener();
+        Flattener cut = new Flattener(new TestDataTemplateProvider());
         EhrbaseMultiOccurrenceDeV1Composition bloodPressureSimpleDeV0 = TestData.buildEhrbaseMultiOccurrenceDeV1();
         RMObject rmObject = new Unflattener(new TestDataTemplateProvider()).unflatten(bloodPressureSimpleDeV0);
 
@@ -146,7 +146,7 @@ public class FlattenerTest {
     @Test
     public void testFlattenAllTypes() throws IOException {
         Composition composition = new CanonicalXML().unmarshal(IOUtils.toString(CompositionTestDataCanonicalXML.ALL_TYPES.getStream(), StandardCharsets.UTF_8), Composition.class);
-        Flattener cut = new Flattener();
+        Flattener cut = new Flattener(new TestDataTemplateProvider());
         TestAllTypesEnV1Composition actual = cut.flatten(composition, TestAllTypesEnV1Composition.class);
         assertThat(actual).isNotNull();
         assertThat(actual.getTestAllTypes().get(0).getChoice().getClass()).isEqualTo(TestAllTypesChoiceDvcount.class);
@@ -156,7 +156,7 @@ public class FlattenerTest {
     @Test
     public void testFlattenCorona() throws IOException {
         Composition composition = new CanonicalJson().unmarshal(IOUtils.toString(CompositionTestDataCanonicalJson.CORONA.getStream(), StandardCharsets.UTF_8), Composition.class);
-        Flattener cut = new Flattener();
+        Flattener cut = new Flattener(new TestDataTemplateProvider());
         CoronaAnamneseComposition actual = cut.flatten(composition, CoronaAnamneseComposition.class);
         assertThat(actual).isNotNull();
         assertThat(actual.getSymptome()).isNotNull();
@@ -167,7 +167,7 @@ public class FlattenerTest {
     @Test
     public void testFlattenAltEvents() {
         Composition composition = (Composition) new Unflattener(new TestDataTemplateProvider()).unflatten(buildAlternativeEventsComposition());
-        Flattener cut = new Flattener();
+        Flattener cut = new Flattener(new TestDataTemplateProvider());
         AlternativeEventsComposition actual = cut.flatten(composition, AlternativeEventsComposition.class);
         assertThat(actual).isNotNull();
         assertThat(actual.getKorpergewicht()).size().isEqualTo(1);
@@ -195,7 +195,7 @@ public class FlattenerTest {
     @Test
     public void testFlattenEpisodeOfCare() {
         Composition composition = (Composition) new Unflattener(new TestDataTemplateProvider()).unflatten(buildEpisodeOfCareComposition());
-        Flattener cut = new Flattener();
+        Flattener cut = new Flattener(new TestDataTemplateProvider());
         EpisodeOfCareComposition actual = cut.flatten(composition, EpisodeOfCareComposition.class);
         assertThat(actual).isNotNull();
         assertThat(actual.getEpisodeofcare()).size().isEqualTo(1);

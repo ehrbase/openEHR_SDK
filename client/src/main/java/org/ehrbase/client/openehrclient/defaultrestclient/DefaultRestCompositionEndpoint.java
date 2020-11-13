@@ -33,7 +33,6 @@ import java.util.Arrays;
 import java.util.Optional;
 import java.util.UUID;
 
-import static org.ehrbase.client.openehrclient.defaultrestclient.DefaultRestClient.*;
 import static org.ehrbase.client.openehrclient.defaultrestclient.DefaultRestEhrEndpoint.EHR_PATH;
 
 public class DefaultRestCompositionEndpoint implements CompositionEndpoint {
@@ -95,8 +94,9 @@ public class DefaultRestCompositionEndpoint implements CompositionEndpoint {
     @Override
     public <T> Optional<T> find(UUID compositionId, Class<T> clazz) {
         Optional<Composition> composition = defaultRestClient.httpGet(defaultRestClient.getConfig().getBaseUri().resolve(EHR_PATH + ehrId.toString() + COMPOSITION_PATH + compositionId.toString()), Composition.class);
-        Optional<T> t = composition
-                .map(c -> new Flattener().flatten(c, clazz));
+    Optional<T> t =
+        composition.map(
+            c -> new Flattener(defaultRestClient.getTemplateProvider()).flatten(c, clazz));
         if (t.isPresent()) {
             addVersion(t.get(), new VersionUid(composition.get().getUid().getValue()));
         }

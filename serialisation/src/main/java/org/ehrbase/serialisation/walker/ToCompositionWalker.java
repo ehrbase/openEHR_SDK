@@ -31,6 +31,7 @@ import com.nedap.archie.rm.datavalues.quantity.datetime.DvDateTime;
 import com.nedap.archie.rm.datavalues.quantity.datetime.DvDuration;
 import com.nedap.archie.rminfo.RMAttributeInfo;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.ehrbase.webtemplate.model.WebTemplateNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,6 +40,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 public abstract class ToCompositionWalker<T> extends Walker<T> {
 
@@ -119,5 +121,17 @@ public abstract class ToCompositionWalker<T> extends Walker<T> {
         }
 
         return child;
+    }
+
+    protected ImmutablePair<T, RMObject> extractPair(Context<T> context, WebTemplateNode currentNode, Map<String, List<WebTemplateNode>> choices, WebTemplateNode childNode, Integer i) {
+        RMObject currentChild = null;
+        T childObject = null;
+        childObject = extract(context, childNode, choices.containsKey(childNode.getAqlPath()), i);
+        if (childObject != null) {
+            currentChild = (RMObject) extractRMChild(context.getRmObjectDeque().peek(), currentNode, childNode, choices.containsKey(childNode.getAqlPath()), i);
+        }
+
+        ImmutablePair<T, RMObject> pair = new ImmutablePair<>(childObject, currentChild);
+        return pair;
     }
 }

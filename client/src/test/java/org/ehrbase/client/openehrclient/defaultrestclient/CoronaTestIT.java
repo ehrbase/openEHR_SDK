@@ -52,13 +52,14 @@ import org.ehrbase.client.classgenerator.examples.patientenaufenthaltcomposition
 import org.ehrbase.client.classgenerator.examples.shareddefinition.Language;
 import org.ehrbase.client.classgenerator.examples.stationarerversorgungsfallcomposition.StationarerVersorgungsfallCompositionContainment;
 import org.ehrbase.client.classgenerator.examples.stationarerversorgungsfallcomposition.definition.AufnahmedatenAdminEntryContainment;
-import org.ehrbase.client.classgenerator.examples.stationarerversorgungsfallcomposition.definition.EntlassungsdatenAdminEntry;
 import org.ehrbase.client.classgenerator.examples.stationarerversorgungsfallcomposition.definition.EntlassungsdatenAdminEntryContainment;
 import org.ehrbase.client.classgenerator.examples.virologischerbefundcomposition.VirologischerBefundComposition;
 import org.ehrbase.client.classgenerator.examples.virologischerbefundcomposition.VirologischerBefundCompositionContainment;
-import org.ehrbase.client.classgenerator.examples.virologischerbefundcomposition.definition.*;
+import org.ehrbase.client.classgenerator.examples.virologischerbefundcomposition.definition.BefundObservationContainment;
+import org.ehrbase.client.classgenerator.examples.virologischerbefundcomposition.definition.KulturClusterContainment;
+import org.ehrbase.client.classgenerator.examples.virologischerbefundcomposition.definition.ProVirusClusterContainment;
+import org.ehrbase.client.classgenerator.examples.virologischerbefundcomposition.definition.ProbeClusterContainment;
 import org.ehrbase.client.flattener.Flattener;
-import org.ehrbase.client.flattener.Unflattener;
 import org.ehrbase.client.openehrclient.OpenEhrClient;
 import org.ehrbase.client.templateprovider.TestDataTemplateProvider;
 import org.ehrbase.serialisation.jsonencoding.CanonicalJson;
@@ -92,7 +93,7 @@ public class CoronaTestIT {
         UUID ehr = openEhrClient.ehrEndpoint().createEhr();
 
         Composition composition = new CanonicalJson().unmarshal(IOUtils.toString(CompositionTestDataCanonicalJson.CORONA.getStream(), StandardCharsets.UTF_8), Composition.class);
-        Flattener flattener = new Flattener();
+        Flattener flattener = new Flattener(new TestDataTemplateProvider());
         CoronaAnamneseComposition coronaAnamneseComposition = flattener.flatten(composition, CoronaAnamneseComposition.class);
         openEhrClient.compositionEndpoint(ehr).mergeCompositionEntity(coronaAnamneseComposition);
 
@@ -159,7 +160,7 @@ public class CoronaTestIT {
         UUID ehr = openEhrClient.ehrEndpoint().createEhr();
 
         Composition composition = new CanonicalJson().unmarshal(IOUtils.toString(CompositionTestDataCanonicalJson.CORONA.getStream(), StandardCharsets.UTF_8), Composition.class);
-        Flattener flattener = new Flattener();
+        Flattener flattener = new Flattener(new TestDataTemplateProvider());
         CoronaAnamneseComposition coronaAnamneseComposition = flattener.flatten(composition, CoronaAnamneseComposition.class);
         openEhrClient.compositionEndpoint(ehr).mergeCompositionEntity(coronaAnamneseComposition);
         openEhrClient.compositionEndpoint(ehr).mergeCompositionEntity(TestData.buildEhrbaseBloodPressureSimpleDeV0());

@@ -127,8 +127,8 @@ public class DtoToCompositionWalker extends ToCompositionWalker<Map<String, Obje
         .collect(Collectors.toMap(ImmutablePair::getLeft, ImmutablePair::getRight));
   }
 
-  private String matchesPath(
-      Context<Map<String, Object>> context, WebTemplateNode child, Map.Entry<String, Object> e) {
+   static String matchesPath(
+      Context<?> context, WebTemplateNode child, Map.Entry<String, ?> e) {
     String aqlPath =
         FlatPath.removeStart(
                 new FlatPath(child.getAqlPath()),
@@ -147,7 +147,7 @@ public class DtoToCompositionWalker extends ToCompositionWalker<Map<String, Obje
                   .filter(n -> Objects.equals(n.getNodeId(), child.getNodeId()))
                   .count()
               == 1) {
-        logger.warn("name/value not set in dto for {}",child.getAqlPath());
+        //logger.warn("name/value not set in dto for {}",child.getAqlPath());
         return StringUtils.removeStart(e.getKey(), pathWithoutLastName.toString());
       } else {
         return null;

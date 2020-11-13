@@ -139,7 +139,7 @@ public class DefaultRestAqlEndpoint implements AqlEndpoint {
             object = null;
         } else if (aClass.isAnnotationPresent(Entity.class)) {
             RMObject locatable = AQL_OBJECT_MAPPER.readValue(valueAsString, RMObject.class);
-            object = new Flattener().flatten(locatable, aClass);
+            object = new Flattener(defaultRestClient.getTemplateProvider()).flatten(locatable, aClass);
             if (locatable instanceof Composition) {
                 addVersion(object, new VersionUid(((Composition) locatable).getUid().getValue()));
             }
