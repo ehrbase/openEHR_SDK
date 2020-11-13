@@ -19,7 +19,6 @@ package org.ehrbase.client.flattener;
 
 import com.google.common.reflect.TypeToken;
 import com.nedap.archie.rm.RMObject;
-import com.nedap.archie.rm.composition.Composition;
 import com.nedap.archie.rm.datatypes.CodePhrase;
 import com.nedap.archie.rm.support.identification.ObjectId;
 import com.nedap.archie.rminfo.ArchieRMInfoLookup;
@@ -27,6 +26,8 @@ import com.nedap.archie.rminfo.RMTypeInfo;
 import io.github.classgraph.ClassGraph;
 import io.github.classgraph.ClassInfo;
 import io.github.classgraph.ScanResult;
+import org.apache.commons.lang3.StringUtils;
+import org.ehrbase.client.annotations.Archetype;
 import org.ehrbase.client.annotations.Choice;
 import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.OptionFor;
@@ -34,6 +35,7 @@ import org.ehrbase.client.annotations.Path;
 import org.ehrbase.client.annotations.Template;
 import org.ehrbase.client.classgenerator.EnumValueSet;
 import org.ehrbase.client.exception.ClientException;
+import org.ehrbase.webtemplate.model.WebTemplateNode;
 import org.ehrbase.webtemplate.templateprovider.TemplateProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,6 +52,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 public class Flattener {
@@ -78,15 +81,19 @@ public class Flattener {
 
   public <T> T flatten(RMObject locatable, Class<T> clazz) {
     try {
-      classgraph = new ClassGraph().enableClassInfo().acceptPackages(clazz.getPackageName()).scan();
+      classgraph = new ClassGraph().enableClassInfo().enableAnnotationInfo().acceptPackages(StringUtils.removeEnd( clazz.getPackageName(),".definition")).scan();
+      String templateId = classgraph.getClassesWithAnnotation(Template.class.getName()).loadClasses().get(0).getAnnotation(Template.class).value();
 
       T dto = createInstance(clazz);
+      String archetypeValue = clazz.getAnnotation(Archetype.class).value();
+      WebTemplateNode root = templateProvider.buildIntrospect(templateId).get().getTree().findMatching(n -> Objects.equals(n.getNodeId(), archetypeValue)).get(0);
       new DtoFromCompositionWalker()
           .walk(
-              (Composition) locatable,
+              locatable,
               new DtoWithMatchingFields(
                   dto, DtoFromCompositionWalker.buildFieldByPathMap(dto.getClass())),
-              templateProvider.buildIntrospect(clazz.getAnnotation(Template.class).value()).get());
+                  root
+          );
       return dto;
     } finally {
       classgraph.close();

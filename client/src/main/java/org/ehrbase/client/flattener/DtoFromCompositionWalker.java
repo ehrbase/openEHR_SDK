@@ -21,7 +21,7 @@ package org.ehrbase.client.flattener;
 
 import com.google.common.reflect.TypeToken;
 import com.nedap.archie.creation.RMObjectCreator;
-import com.nedap.archie.rm.composition.Composition;
+import com.nedap.archie.rm.RMObject;
 import com.nedap.archie.rm.datatypes.CodePhrase;
 import com.nedap.archie.rm.support.identification.ObjectId;
 import com.nedap.archie.rminfo.ArchieRMInfoLookup;
@@ -38,7 +38,6 @@ import org.ehrbase.serialisation.walker.FromCompositionWalker;
 import org.ehrbase.serialisation.walker.RmString;
 import org.ehrbase.util.exception.SdkException;
 import org.ehrbase.util.reflection.ReflectionHelper;
-import org.ehrbase.webtemplate.model.WebTemplate;
 import org.ehrbase.webtemplate.model.WebTemplateNode;
 import org.ehrbase.webtemplate.parser.FlatPath;
 import org.slf4j.Logger;
@@ -82,7 +81,7 @@ public class DtoFromCompositionWalker extends FromCompositionWalker<DtoWithMatch
   private List<Class<?>> dtoList;
 
   @Override
-  public void walk(Composition composition, DtoWithMatchingFields object, WebTemplate webTemplate) {
+  public void walk(RMObject composition, DtoWithMatchingFields object, WebTemplateNode webTemplate) {
     dtoList = ReflectionHelper.findAll(object.getDto().getClass().getPackageName());
     super.walk(composition, object, webTemplate);
   }
