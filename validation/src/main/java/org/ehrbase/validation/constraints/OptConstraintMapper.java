@@ -28,6 +28,8 @@ import org.openehr.schemas.v1.CMULTIPLEATTRIBUTE;
 import org.openehr.schemas.v1.CSINGLEATTRIBUTE;
 import org.openehr.schemas.v1.IntervalOfInteger;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -40,7 +42,7 @@ public class OptConstraintMapper extends ConstraintMapper {
     }
 
     public class OptConstraintItem extends ConstraintItem {
-        private CCOMPLEXOBJECT ccomplexobject;
+        transient CCOMPLEXOBJECT ccomplexobject;
 
         OptConstraintItem(String path, CCOMPLEXOBJECT ccomplexobject) {
             super(path);
@@ -60,8 +62,13 @@ public class OptConstraintMapper extends ConstraintMapper {
         }
     }
 
-    public void bind(String path, CCOMPLEXOBJECT ccobj) throws IllegalArgumentException {
-        elementConstraintMap.put(path, new OptConstraintItem(path, ccobj));
+    public void bind(String path, CCOMPLEXOBJECT ccobj)  {
+        if (!elementConstraintMap.containsKey(path)){
+            List<ConstraintItem> optConstraints = new ArrayList<>();
+            elementConstraintMap.put(path, optConstraints);
+        }
+
+        elementConstraintMap.get(path).add(new OptConstraintItem(path, ccobj));
     }
 
     void addToValidPath(String path) {
