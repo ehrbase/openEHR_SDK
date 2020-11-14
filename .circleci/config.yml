@@ -1,14 +1,15 @@
 version: 2.1
 
 # OVERVIEW - What this CI pipeline does:
+# - QUALITY GATE I for fast feedback
+# - QUALITY GATE II for indepth test and analysis
 #
-# 1. build & (unit)test the SDK
-# 2. build & (unit)test EHRbase w/ SDK (as local dependency)
-# 3. run SDK's Java integration tests
-# 4. conduct (static) code analysis w/ Sonar scanner and send results to sonarcloud.io
+# 1. build & test the SDK
+# 2. build & test EHRbase w/ SDK (as local dependency)
+# 3. conduct (static) code analysis w/ Sonar scanner and send results to sonarcloud.io
 #    - this includes code coverage from unit & integration tests (written in Java)
-# 5. run Robot integation tests (from EHRbase's repo)
-# 6. publish git tag based snapshot & release versions on jitpack.io
+# 4. run Robot integation tests (from EHRbase's repo)
+# 5. publish git tag based snapshot & release versions on jitpack.io
 #    - requires manually creating a release (via Github UI) from a given git tag
 #    - jitpack will build related artifacts on demand
 
@@ -18,14 +19,6 @@ workflows:
   # WORKFLOW 1/5) Build & Test the SDK
   QUALITY-GATE-I:
     jobs:
-      # - build-openEHR_SDK:
-      #     filters:
-      #       branches:
-      #         ignore:
-      #           - master
-      #           - develop
-      #           - release
-
       - build-and-test-openEHR_SDK:
           filters:
             branches:
@@ -33,16 +26,6 @@ workflows:
                 - master
                 - develop
                 - release
-
-      # - build-EHRbase:
-      #     requires:
-      #       - build-openEHR_SDK
-      #     filters:
-      #       branches:
-      #         ignore:
-      #           - master
-      #           - develop
-      #           - release
 
       - COMPOSITION-tests-1:
           context: org-global
@@ -257,22 +240,22 @@ jobs:
   #    "Y8888P"     `"Y8888Y"'    88888888P"    "Y88888P"
 
 
-  build-openEHR_SDK:
-    description: Build and unit test the SDK.
-    executor: docker-python3-java11
-    # executor: machine-ubuntu-2004                          # (use for pipeline debugging only)
-    steps:
-      - checkout
-      - cache-out-sdk-m2-dependencies
-      - build-and-test-sdk
-      - cache-in-sdk-m2-dependencies
-      - collect-sdk-unittest-results
-      - save-skd-test-results
-      - save-sdk-workspace
-      #-----------------------------------#---------------(use this steps for pipeline debugging only)
-      # - run: echo mock build SDK        # 
-      # - cache-out-sdk-workspace         #
-      # - cache-in-sdk-workspace          #
+  # build-openEHR_SDK:
+  #   description: Build and unit test the SDK.
+  #   executor: docker-python3-java11
+  #   # executor: machine-ubuntu-2004                          # (use for pipeline debugging only)
+  #   steps:
+  #     - checkout
+  #     - cache-out-sdk-m2-dependencies
+  #     - build-and-test-sdk
+  #     - cache-in-sdk-m2-dependencies
+  #     - collect-sdk-unittest-results
+  #     - save-skd-test-results
+  #     - save-sdk-workspace
+  #     #-----------------------------------#---------------(use this steps for pipeline debugging only)
+  #     # - run: echo mock build SDK        # 
+  #     # - cache-out-sdk-workspace         #
+  #     # - cache-in-sdk-workspace          #
   
 
   build-and-test-openEHR_SDK:
@@ -292,23 +275,6 @@ jobs:
       - collect-sdk-integrationtest-results
       - save-skd-test-results
       - save-sdk-workspace
-
-
-  # build-EHRbase:
-  #   executor: docker-py3-java11-postgres
-  #   # executor: machine-ubuntu-2004                          # (use for pipeline debugging only)
-  #   steps:
-  #     - checkout
-  #     - restore-sdk-workspace
-  #     - git-clone-ehrbase-repo
-  #     - cache-out-ehrbase-m2-dependencies
-  #     - force-ehrbase-build-to-use-local-sdk-version
-  #     - build-and-test-ehrbase
-  #     - cache-in-ehrbase-m2-dependencies
-  #     - save-ehrbase-workspace
-  #     #-----------------------------------#---------------(use this steps for pipeline debugging only
-  #     # - run: echo MOCKED JOB            #
-  #     # - cache-in-ehrbase-workspace      #
 
 
   COMPOSITION-tests-1:
@@ -1003,7 +969,6 @@ commands:
             SDK_VERSION=$(cat ~/projects/SDK_VERSION)
             echo $SDK_VERSION
             cd ~/projects/ehrbase
-            # xmlstarlet edit --inplace -N my=http://maven.apache.org/POM/4.0.0 -u my:project/my:version -v $SDK_VERSION pom.xml
             xmlstarlet edit --inplace -u project/properties/ehrbase.sdk.version -v $SDK_VERSION pom.xml
   
 
@@ -1283,12 +1248,12 @@ executors:
   docker-python3-java11:
     working_directory: ~/projects
     docker:
-      - image: circleci/python@sha256:e1c98a85c5ee62ac52a2779fe5abe2677f021c8e3158e4fb2d569c7b9c6ac073
+      - image: circleci/python:3.8.5-node-browsers
 
   docker-py3-java11-postgres:
     working_directory: ~/projects
     docker:
-      - image: circleci/python@sha256:e1c98a85c5ee62ac52a2779fe5abe2677f021c8e3158e4fb2d569c7b9c6ac073
+      - image: circleci/python:3.8.5-node-browsers
       - image: ehrbaseorg/ehrbase-postgres:10
         environment:
           POSTGRES_USER: postgres
