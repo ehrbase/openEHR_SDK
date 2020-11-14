@@ -238,24 +238,6 @@ jobs:
   #           88  Y8,        ,8P  88      `8b          `8b
   #   88,   ,d88   Y8a.    .a8P   88      a8P  Y8a     a8P
   #    "Y8888P"     `"Y8888Y"'    88888888P"    "Y88888P"
-
-
-  # build-openEHR_SDK:
-  #   description: Build and unit test the SDK.
-  #   executor: docker-python3-java11
-  #   # executor: machine-ubuntu-2004                          # (use for pipeline debugging only)
-  #   steps:
-  #     - checkout
-  #     - cache-out-sdk-m2-dependencies
-  #     - build-and-test-sdk
-  #     - cache-in-sdk-m2-dependencies
-  #     - collect-sdk-unittest-results
-  #     - save-skd-test-results
-  #     - save-sdk-workspace
-  #     #-----------------------------------#---------------(use this steps for pipeline debugging only)
-  #     # - run: echo mock build SDK        # 
-  #     # - cache-out-sdk-workspace         #
-  #     # - cache-in-sdk-workspace          #
   
 
   build-and-test-openEHR_SDK:
