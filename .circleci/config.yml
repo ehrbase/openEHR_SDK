@@ -288,6 +288,7 @@ jobs:
       - build-and-run-ehrbase-then-run-all-sdk-java-tests
       - cache-in-ehrbase-m2-dependencies      
       - cache-in-sdk-m2-dependencies
+      - collect-sdk-unittest-results
       - collect-sdk-integrationtest-results
       - save-skd-test-results
       - save-sdk-workspace
@@ -584,6 +585,7 @@ jobs:
       - build-and-run-ehrbase-then-run-all-sdk-java-tests:
           skip-jacoco: false
           skip-tests: false
+          skip-javadoc: false
       - cache-in-ehrbase-m2-dependencies      
       - cache-in-sdk-m2-dependencies
       - collect-sdk-unittest-results
@@ -810,13 +812,19 @@ commands:
         description: Do Not Compile And Do Not Run Test Code
         type: boolean
         default: true
+      skip-javadoc:
+        description: Skip Java Docs Generation
+        type: boolean
+        default: true
     steps:
       - install-maven
       - run:
           name: Maven build EHRbase
           command: |
             cd ~/projects/ehrbase
-            mvn package -Dmaven.javadoc.skip=true -Djacoco.skip=<< parameters.skip-jacoco >> -Dmaven.test.skip=<< parameters.skip-tests >>
+            mvn package -Dmaven.javadoc.skip=<< parameters.skip-javadoc >> \
+                        -Djacoco.skip=<< parameters.skip-jacoco >> \
+                        -Dmaven.test.skip=<< parameters.skip-tests >>
       - run:
           name: Start EHRbase server and run all test of SDK
           command: |
