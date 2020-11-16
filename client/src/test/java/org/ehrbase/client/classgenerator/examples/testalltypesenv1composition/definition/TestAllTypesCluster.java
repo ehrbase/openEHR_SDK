@@ -11,8 +11,7 @@ public class TestAllTypesCluster {
     @Path("/items[at0001]/items[at0002]/items[at0003]/value")
     private DataValue value;
 
-    @Path("/items[at0001]/items[at0002]/items[at0003]/value\n"
-            + "                                                                                    |value")
+    @Path("/items[at0001]/items[at0002]/items[at0003]/value|value")
     private Boolean boolean2Value;
 
     public void setValue(DataValue value) {

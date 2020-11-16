@@ -111,6 +111,7 @@ public class DtoFromCompositionWalker extends FromCompositionWalker<DtoWithMatch
       return new DtoWithMatchingFields(context.getObjectDeque().peek().getDto(), subValues);
     } else {
       Field field = subValues.values().stream().findAny().get();
+      String path = subValues.keySet().stream().findAny().get();
       Class<?> type = field.getType();
       if (List.class.isAssignableFrom(type)) {
         type =
@@ -120,7 +121,7 @@ public class DtoFromCompositionWalker extends FromCompositionWalker<DtoWithMatch
       if (isChoice) {
         type = findActual(type, child.getRmType()).get();
       }
-      if (type.isAnnotationPresent(Entity.class)) {
+      if (type.isAnnotationPresent(Entity.class) && StringUtils.isBlank(path)) {
         Object dto = create(type);
 
         writeField(field, context.getObjectDeque().peek().getDto(), dto);

@@ -20,15 +20,24 @@ package org.ehrbase.client.flattener;
 import com.nedap.archie.creation.RMObjectCreator;
 import com.nedap.archie.rm.RMObject;
 import com.nedap.archie.rm.composition.Composition;
+import com.nedap.archie.rm.support.identification.HierObjectId;
 import com.nedap.archie.rminfo.ArchieRMInfoLookup;
 import org.ehrbase.building.OptSkeletonBuilder;
+import org.ehrbase.client.annotations.Id;
 import org.ehrbase.client.annotations.Template;
 import org.ehrbase.client.exception.ClientException;
+import org.ehrbase.client.openehrclient.VersionUid;
 import org.ehrbase.normalizer.Normalizer;
 import org.ehrbase.webtemplate.templateprovider.TemplateProvider;
 import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.beans.IntrospectionException;
+import java.beans.PropertyDescriptor;
+import java.lang.reflect.InvocationTargetException;
+import java.util.Arrays;
+import java.util.Optional;
 
 import static org.ehrbase.client.flattener.DtoToCompositionWalker.findEntity;
 
@@ -59,8 +68,25 @@ public class Unflattener {
 
     new DtoToCompositionWalker()
         .walk(generate, findEntity( dto), templateProvider.buildIntrospect(template.value()).get());
+    Optional<VersionUid> versionUid = extractVersionUid(dto);
+    if(versionUid.isPresent()){
+      generate.setUid(new HierObjectId(versionUid.get().toString()));
+    }
     return NORMALIZER.normalize(generate);
   }
 
-
+  static Optional<VersionUid> extractVersionUid(Object entity) {
+    return Arrays.stream(entity.getClass().getDeclaredFields())
+            .filter(f -> f.isAnnotationPresent(Id.class))
+            .findAny()
+            .map(idField -> {
+                      try {
+                        PropertyDescriptor propertyDescriptor = new PropertyDescriptor(idField.getName(), entity.getClass());
+                        return (VersionUid) propertyDescriptor.getReadMethod().invoke(entity);
+                      } catch (IllegalAccessException | InvocationTargetException | IntrospectionException e) {
+                        throw new ClientException(e.getMessage(), e);
+                      }
+                    }
+            );
+  }
 }

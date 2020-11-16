@@ -42,7 +42,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.ehrbase.serialisation.flatencoding.std.marshal.FlatJsonMarshallerTest.compere;
 import static org.junit.Assert.assertNotNull;
 
-//@Ignore("see https://github.com/ehrbase/openEHR_SDK/issues/117")
+
 public class DBEncodeRoundTripTest {
 
     class TestCase {

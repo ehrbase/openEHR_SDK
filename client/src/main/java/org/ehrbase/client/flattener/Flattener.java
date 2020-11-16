@@ -17,24 +17,17 @@
 
 package org.ehrbase.client.flattener;
 
-import com.google.common.reflect.TypeToken;
 import com.nedap.archie.rm.RMObject;
-import com.nedap.archie.rm.datatypes.CodePhrase;
-import com.nedap.archie.rm.support.identification.ObjectId;
+import com.nedap.archie.rm.composition.Composition;
 import com.nedap.archie.rminfo.ArchieRMInfoLookup;
-import com.nedap.archie.rminfo.RMTypeInfo;
 import io.github.classgraph.ClassGraph;
-import io.github.classgraph.ClassInfo;
 import io.github.classgraph.ScanResult;
 import org.apache.commons.lang3.StringUtils;
 import org.ehrbase.client.annotations.Archetype;
-import org.ehrbase.client.annotations.Choice;
-import org.ehrbase.client.annotations.Entity;
-import org.ehrbase.client.annotations.OptionFor;
-import org.ehrbase.client.annotations.Path;
+import org.ehrbase.client.annotations.Id;
 import org.ehrbase.client.annotations.Template;
-import org.ehrbase.client.classgenerator.EnumValueSet;
 import org.ehrbase.client.exception.ClientException;
+import org.ehrbase.client.openehrclient.VersionUid;
 import org.ehrbase.webtemplate.model.WebTemplateNode;
 import org.ehrbase.webtemplate.templateprovider.TemplateProvider;
 import org.slf4j.Logger;
@@ -44,14 +37,7 @@ import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -94,163 +80,29 @@ public class Flattener {
                   dto, DtoFromCompositionWalker.buildFieldByPathMap(dto.getClass())),
                   root
           );
+      if (locatable instanceof Composition){
+        addVersion(dto, new VersionUid(((Composition) locatable).getUid().toString()));
+      }
       return dto;
     } finally {
       classgraph.close();
     }
   }
 
-  private <T> void mapEntityToDto(RMObject locatable, T dto) {
-    Map<String, Field> fieldMap = buildFieldMap(dto);
-    fieldMap.forEach((key, value) -> setFieldFromPath(dto, locatable, key, value));
-  }
-
-  private void setFieldFromPath(Object dto, RMObject locatable, String path, Field field) {
-    boolean multi = List.class.isAssignableFrom(field.getType());
-    ItemExtractor itemExtractor = new ItemExtractor(locatable, path, multi);
-    Object child = itemExtractor.getChild();
-
-    if (multi) {
-
-      final List<Object> childList;
-
-      if (child == null) {
-        childList = Collections.emptyList();
-      } else if (List.class.isAssignableFrom(child.getClass())) {
-        childList = (List<Object>) child;
-      } else {
-        childList = Collections.singletonList(child);
-      }
-
-      List<Object> dtoList = new ArrayList<>();
-
-      Type actualTypeArgument =
-          ((ParameterizedType) field.getGenericType()).getActualTypeArguments()[0];
-
-      Class<?> aClass = TypeToken.of(actualTypeArgument).getRawType();
-
-      for (Object childItem : childList) {
-
-        if (aClass.isAnnotationPresent(Entity.class)) {
-
-          Object dtoItem = createInstance(aClass);
-          mapEntityToDto((RMObject) childItem, dtoItem);
-          dtoList.add(dtoItem);
-        } else if (field.isAnnotationPresent(Choice.class)) {
-          String simpleName =
-              Optional.ofNullable(childItem)
-                  .map(Object::getClass)
-                  .map(RM_INFO_LOOKUP::getTypeInfo)
-                  .map(RMTypeInfo::getRmName)
-                  .orElse("");
-          Class<?> type =
-              findActual((Class<?>) actualTypeArgument, simpleName)
-                  .orElseThrow(
-                      () -> new ClientException(String.format("No Option for %s ", simpleName)));
-          Object dtoItem = createInstance(type);
-          mapEntityToDto((RMObject) childItem, dtoItem);
-          dtoList.add(dtoItem);
-        } else if (aClass.isAssignableFrom(childItem.getClass())) {
-
-          dtoList.add(childItem);
-        } else {
-          logger.warn("Incompatible Typ {} {}", aClass, child != null ? child.getClass() : "null");
-        }
-      }
-      writeField(field, dto, dtoList);
-    } else {
-      if (child == null) // field is done
-      return;
-      handleSingleField(dto, field, child);
-    }
-  }
-
-  private Optional<? extends Class<?>> findActual(Class<?> actualTypeArgument, String simpleName) {
-    return classgraph.getClassesImplementing(actualTypeArgument.getName()).stream()
-        .map(ClassInfo::loadClass)
-        .map(c -> (Class<?>) c)
-        .filter(c -> c.isAnnotationPresent(OptionFor.class))
-        .filter(c -> c.getAnnotation(OptionFor.class).value().equals(simpleName))
-        .findAny();
-  }
-
-  private void writeField(Field field, Object dto, Object dtoList) {
-
-    try {
-      PropertyDescriptor propertyDescriptor =
-          new PropertyDescriptor(field.getName(), dto.getClass());
-      propertyDescriptor.getWriteMethod().invoke(dto, dtoList);
-    } catch (IllegalAccessException | InvocationTargetException | IntrospectionException e) {
-      throw new ClientException(e.getMessage(), e);
-    }
-  }
-
-  private void handleSingleField(Object dto, Field field, Object child) {
-
-    Class<?> fieldType = field.getType();
-
-    if (field.isAnnotationPresent(Choice.class)) {
-      String simpleName =
-          Optional.ofNullable(child)
-              .map(Object::getClass)
-              .map(RM_INFO_LOOKUP::getTypeInfo)
-              .map(RMTypeInfo::getRmName)
-              .orElse("");
-      Class<?> type = findActual(fieldType, simpleName).orElse(null);
-      if (type != null) {
-        fieldType = type;
-      } else {
-        logger.warn("No implementation of {} for {}", fieldType, simpleName);
-      }
-    }
-
-    if (fieldType.isAnnotationPresent(Entity.class)) {
-
-      Object subDto = createInstance(fieldType);
+  static <T> void addVersion(T entity, VersionUid versionUid) {
+    Optional<Field> idField = Arrays.stream(entity.getClass().getDeclaredFields())
+            .filter(f -> f.isAnnotationPresent(Id.class))
+            .findAny();
+    if (idField.isPresent()) {
       try {
-
-        mapEntityToDto((RMObject) child, subDto);
-      } catch (RuntimeException e) {
-        throw e;
+        PropertyDescriptor propertyDescriptor = new PropertyDescriptor(idField.get().getName(), entity.getClass());
+        propertyDescriptor.getWriteMethod().invoke(entity, versionUid);
+      } catch (IllegalAccessException | InvocationTargetException | IntrospectionException e) {
+        throw new ClientException(e.getMessage(), e);
       }
-      writeField(field, dto, subDto);
-
-    } else if (EnumValueSet.class.isAssignableFrom(fieldType)
-        && child != null
-        && CodePhrase.class.isAssignableFrom(child.getClass())) {
-      CodePhrase codePhrase = (CodePhrase) child;
-      EnumValueSet enumValueSet =
-          Arrays.stream(fieldType.getEnumConstants())
-              .map(o -> (EnumValueSet) o)
-              .filter(
-                  v -> {
-                    String terminologyId =
-                        Optional.ofNullable(codePhrase.getTerminologyId())
-                            .map(ObjectId::getValue)
-                            .orElse(null);
-                    return v.getTerminologyId().equals(terminologyId);
-                  })
-              .filter(v -> v.getCode().equals(codePhrase.getCodeString()))
-              .findAny()
-              .orElse(null);
-      writeField(field, dto, enumValueSet);
-    } else if (child == null || fieldType.isAssignableFrom(child.getClass())) {
-
-      writeField(field, dto, child);
-    } else {
-      logger.warn("Incompatible Typ {} {}", fieldType, child.getClass());
     }
   }
 
-  private Map<String, Field> buildFieldMap(Object dto) {
-    Map<String, Field> fieldMap = new HashMap<>();
 
-    for (Field field : dto.getClass().getDeclaredFields()) {
-      Path path = field.getAnnotation(Path.class);
-      if (path != null) {
-        fieldMap.put(path.value(), field);
-      }
-    }
-    return fieldMap;
-  }
+
 }
