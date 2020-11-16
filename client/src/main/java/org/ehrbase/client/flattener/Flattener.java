@@ -80,7 +80,7 @@ public class Flattener {
                   dto, DtoFromCompositionWalker.buildFieldByPathMap(dto.getClass())),
                   root
           );
-      if (locatable instanceof Composition){
+      if (locatable instanceof Composition && ((Composition) locatable).getUid() != null) {
         addVersion(dto, new VersionUid(((Composition) locatable).getUid().toString()));
       }
       return dto;
