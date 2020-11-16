@@ -37,6 +37,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -66,12 +67,12 @@ public class ConstraintChecker {
         cardinality = new Cardinality(constraintMapper, locatable, lenient);
     }
 
-    private void validateElement(String path, Element referenceElement) throws IllegalArgumentException {
+    private void validateElement(String path, Element referenceElement) {
 
         if (lenient) return;
 
-        ConstraintMapper.ConstraintItem constraint = constraintMapper.getConstraintItem(LocatableHelper.siblingPath(path));
-        if (constraint == null) {
+        List<ConstraintMapper.ConstraintItem> constraints = constraintMapper.getConstraintItem(LocatableHelper.siblingPath(path));
+        if (constraints == null) {
             String tentativePath = LocatableHelper.simplifyPath(path);
             Object tentativeElement = locatable.itemAtPath(tentativePath);
             if (tentativeElement == null)
@@ -79,28 +80,43 @@ public class ConstraintChecker {
             else {
                 //we should have an ElementWrapper here...
                 if (tentativeElement instanceof Element) {
-                    constraint = constraintMapper.getConstraintItem(tentativePath);
-                    if (constraint == null)
+                    constraints = constraintMapper.getConstraintItem(tentativePath);
+                    if (constraints == null)
                         log.debug("No constraint matching element:" + tentativeElement);
                     else {
-                        if (constraint instanceof OptConstraintMapper.OptConstraintItem) {
-
-                            new CArchetypeConstraint(constraintMapper.getLocalTerminologyLookup()).validate(constraint.getPath(), referenceElement, ((OptConstraintMapper.OptConstraintItem) constraint).getConstraint());
-                        }
+                        checkElementConstraints(constraints, path, referenceElement);
                     }
                 } else
                     log.debug("identified node is not an Element..." + tentativeElement);
             }
 
         } else {
-            if (constraint instanceof OptConstraintMapper.OptConstraintItem) {
-                new CArchetypeConstraint(constraintMapper.getLocalTerminologyLookup()).validate(constraint.getPath(), referenceElement, ((OptConstraintMapper.OptConstraintItem) constraint).getConstraint());
-            }
+            checkElementConstraints(constraints, path, referenceElement);
         }
 
     }
 
-    private void validateItem(String path, Object item) throws IllegalArgumentException {
+    private void checkElementConstraints(List<ConstraintMapper.ConstraintItem> constraints, String path, Element referenceElement){
+        Exception exception = null;
+
+        for (ConstraintMapper.ConstraintItem constraintItem : constraints) {
+            try {
+                if (constraintItem instanceof OptConstraintMapper.OptConstraintItem) {
+                    OptConstraintMapper.OptConstraintItem optConstraintItem = (OptConstraintMapper.OptConstraintItem) constraintItem;
+                    new CArchetypeConstraint(constraintMapper.getLocalTerminologyLookup()).validate(optConstraintItem.getPath(), referenceElement, optConstraintItem.getConstraint());
+                    exception = null; //reset exception
+                    break;
+                } else
+                    throw new IllegalStateException("Unhandled constraint");
+            } catch (ValidationException e) {
+                exception = e;
+            }
+        }
+        if (exception != null)
+            ValidationException.raise(path, exception.getMessage(), "ELT02");
+    }
+
+    private void validateItem(String path, Object item) {
         if (lenient || item == null) return;
 
         if (item instanceof History)
@@ -108,22 +124,22 @@ public class ConstraintChecker {
         else if (item instanceof Element)
             validateElement(path, (Element) item);
         else
-            throw new IllegalStateException("Unhandled specific data type:" + item);
+            ValidationException.raise(path, "Unhandled specific data type:" + item, "HIST01");
     }
 
-    private String validateElements() throws IllegalArgumentException {
+    private String validateElements() {
         if (lenient) return "";
 
         if (constraintMapper == null) return "";
 
         StringBuilder validationException = new StringBuilder();
 
-        Iterator<Map.Entry<String, ConstraintMapper.ConstraintItem>> iterator = constraintMapper.getElementConstraintIterator();
+        Iterator<Map.Entry<String, List<ConstraintMapper.ConstraintItem>>> iterator = constraintMapper.getElementConstraintIterator();
         int count = 0;
         while (iterator.hasNext()) {
             count++;
             //check Cardinality
-            Map.Entry<String, ConstraintMapper.ConstraintItem> watch = iterator.next();
+            Map.Entry<String, List<ConstraintMapper.ConstraintItem>> watch = iterator.next();
             String path = watch.getKey();
 
             for (Object pathItem : locatable.itemsAtPath(path))
@@ -151,7 +167,7 @@ public class ConstraintChecker {
         return validationException.toString();
     }
 
-    public void validate() throws IllegalArgumentException {
+    public void validate() {
         StringBuilder exceptions = new StringBuilder();
         exceptions.append(validateElements());
         exceptions.append(cardinality.validate());

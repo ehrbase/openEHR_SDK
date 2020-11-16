@@ -23,11 +23,6 @@ package org.ehrbase.validation.constraints.wrappers;
 
 import com.nedap.archie.rm.datavalues.DvText;
 import org.openehr.schemas.v1.ARCHETYPECONSTRAINT;
-import org.openehr.schemas.v1.CCODEPHRASE;
-import org.openehr.schemas.v1.CONSTRAINTREF;
-import org.openehr.schemas.v1.CSINGLEATTRIBUTE;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 
@@ -40,15 +35,13 @@ import java.util.Map;
  */
 public class CDvText extends CConstraint implements I_CArchetypeConstraintValidate {
 
-    private Logger logger = LoggerFactory.getLogger(CDvText.class);
-
     CDvText(Map<String, Map<String, String>> localTerminologyLookup) {
         super(localTerminologyLookup);
     }
 
     @Override
-    public void validate(String path, Object aValue, ARCHETYPECONSTRAINT archetypeconstraint) throws IllegalArgumentException {
-        //no specific validation for a DvText
+    public void validate(String path, Object aValue, ARCHETYPECONSTRAINT archetypeconstraint) {
+        //no specific validation for a DvText, pattern is handled at primitive level
         return;
     }
 
