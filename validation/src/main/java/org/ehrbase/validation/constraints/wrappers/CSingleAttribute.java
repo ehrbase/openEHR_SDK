@@ -41,7 +41,7 @@ public class CSingleAttribute extends CConstraint implements I_CArchetypeConstra
     }
 
     @Override
-    public void validate(String path, Object aValue, ARCHETYPECONSTRAINT archetypeconstraint) throws IllegalArgumentException {
+    public void validate(String path, Object aValue, ARCHETYPECONSTRAINT archetypeconstraint) {
 
         CSINGLEATTRIBUTE csingleattribute = (CSINGLEATTRIBUTE) archetypeconstraint;
 
@@ -60,7 +60,7 @@ public class CSingleAttribute extends CConstraint implements I_CArchetypeConstra
                 }
             }
             if (rulecount == 0) {
-                throw new IllegalArgumentException(messageBuffer.toString());
+                throw new ValidationException(path, messageBuffer.toString());
             }
         }
     }

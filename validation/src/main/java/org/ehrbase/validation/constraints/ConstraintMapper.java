@@ -22,12 +22,6 @@
 package org.ehrbase.validation.constraints;
 
 import com.nedap.archie.base.MultiplicityInterval;
-import com.nedap.archie.rm.archetyped.Locatable;
-import com.nedap.archie.rm.composition.Composition;
-import org.ehrbase.validation.constraints.wrappers.IntervalComparator;
-import org.ehrbase.validation.constraints.wrappers.ValidationException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.Serializable;
 import java.util.*;
@@ -37,10 +31,7 @@ import java.util.*;
  */
 public abstract class ConstraintMapper implements Serializable {
 
-    private Logger logger = LoggerFactory.getLogger(ConstraintMapper.class);
-
     protected Map<String, Map<String, String>> localTerminologyLookup;
-    private boolean lenient;
 
     public class OccurrenceItem implements Serializable {
         private ConstraintOccurrences constraintOccurrences;
@@ -78,10 +69,10 @@ public abstract class ConstraintMapper implements Serializable {
         }
     }
 
-    Map<String, OccurrenceItem> watchList = new HashMap<>(); //required nodes
-    Set<String> validNodeList = new HashSet<>(); //valid nodes
-    Map<String, CardinalityItem> cardinalityList = new HashMap<>(); //valid nodes
-    Map<String, ConstraintOccurrences> occurrencesMap = new HashMap<>(); //transitive list of occurrences
+    protected Map<String, OccurrenceItem> watchList = new HashMap<>(); //required nodes
+    protected Set<String> validNodeList = new HashSet<>(); //valid nodes
+    protected Map<String, CardinalityItem> cardinalityList = new HashMap<>(); //valid nodes
+    protected Map<String, ConstraintOccurrences> occurrencesMap = new HashMap<>(); //transitive list of occurrences
 
     public Map<String, CardinalityItem> getCardinalityList() {
         return cardinalityList;
@@ -99,9 +90,9 @@ public abstract class ConstraintMapper implements Serializable {
         }
     }
 
-    Map<String, ConstraintItem> elementConstraintMap = new HashMap<>();
+    Map<String, List<ConstraintItem>> elementConstraintMap = new HashMap<>();
 
-    public ConstraintItem getConstraintItem(String key) {
+    public List<ConstraintItem> getConstraintItem(String key) {
         return elementConstraintMap.get(key);
     }
 
@@ -118,52 +109,8 @@ public abstract class ConstraintMapper implements Serializable {
         watchList.remove(path);
     }
 
-    public void _validateCardinality(Composition composition) throws IllegalArgumentException {
-        for (Map.Entry<String, CardinalityItem> entry : cardinalityList.entrySet()) {
-            //get the corresponding node
-            Object locatable = composition.itemAtPath(entry.getKey());
-
-            int childOccurrence;
-
-            //TODO: traverse the locatable to find out what is actually existing (e.g. dirtyBit set!)
-            if (locatable instanceof List) {
-                childOccurrence = ((List) locatable).size();
-            } else
-                childOccurrence = 1;
-            try {
-                IntervalComparator.isWithinBoundaries(childOccurrence, entry.getValue().getCardinality());
-            } catch (Exception e) {
-                //check if this is optional (occurence)
-                if (!(entry.getValue().getExistence().isOptional())) {
-                    ValidationException.raise(entry.getKey(), "Cardinality not matched, expected:" + IntervalComparator.toString(entry.getValue().getCardinality().asInterval()) + ", actual:" + childOccurrence, "CAR01");
-                }
-            }
-        }
-    }
-
-    public void validateWatchList(Composition composition) {
-
-        for (Map.Entry<String, OccurrenceItem> watch : watchList.entrySet()) {
-            String path = watch.getKey();
-
-            Locatable item = (Locatable) composition.itemAtPath(path);
-
-            if (item == null) {
-                ValidationException.raise(path, "Mandatory element not found", "ELM01");
-            }
-//            if (item instanceof ElementWrapper){
-//
-//            }
-        }
-    }
-
-    Iterator<Map.Entry<String, ConstraintItem>> getElementConstraintIterator() {
+    Iterator<Map.Entry<String, List<ConstraintItem>>> getElementConstraintIterator() {
         return elementConstraintMap.entrySet().iterator();
-    }
-
-
-    public void setLenient(boolean lenient) {
-        this.lenient = lenient;
     }
 
     public Map<String, ConstraintOccurrences> getOccurrencesMap() {
