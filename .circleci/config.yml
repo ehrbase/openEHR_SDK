@@ -1,14 +1,15 @@
 version: 2.1
 
 # OVERVIEW - What this CI pipeline does:
+# - QUALITY GATE I for fast feedback
+# - QUALITY GATE II for indepth test and analysis
 #
-# 1. build & (unit)test the SDK
-# 2. build & (unit)test EHRbase w/ SDK (as local dependency)
-# 3. run SDK's Java integration tests
-# 4. conduct (static) code analysis w/ Sonar scanner and send results to sonarcloud.io
+# 1. build & test the SDK
+# 2. build & test EHRbase w/ SDK (as local dependency)
+# 3. conduct (static) code analysis w/ Sonar scanner and send results to sonarcloud.io
 #    - this includes code coverage from unit & integration tests (written in Java)
-# 5. run Robot integation tests (from EHRbase's repo)
-# 6. publish git tag based snapshot & release versions on jitpack.io
+# 4. run Robot integation tests (from EHRbase's repo)
+# 5. publish git tag based snapshot & release versions on jitpack.io
 #    - requires manually creating a release (via Github UI) from a given git tag
 #    - jitpack will build related artifacts on demand
 
@@ -16,27 +17,9 @@ version: 2.1
 workflows:
 
   # WORKFLOW 1/5) Build & Test the SDK
-  build_and_test_SDK:
+  QUALITY-GATE-I:
     jobs:
-      - build-openEHR_SDK:
-          filters:
-            branches:
-              ignore:
-                - master
-                - develop
-                - release
-
-      - test-openEHR_SDK:
-          filters:
-            branches:
-              ignore:
-                - master
-                - develop
-                - release
-
-      - build-EHRbase:
-          requires:
-            - build-openEHR_SDK
+      - build-and-test-openEHR_SDK:
           filters:
             branches:
               ignore:
@@ -47,7 +30,7 @@ workflows:
       - COMPOSITION-tests-1:
           context: org-global
           requires:
-            - build-EHRbase
+            - build-and-test-openEHR_SDK
           filters:
             branches:
               ignore:
@@ -58,7 +41,7 @@ workflows:
       - COMPOSITION-tests-2:
           context: org-global
           requires:
-            - build-EHRbase
+            - build-and-test-openEHR_SDK
           filters:
             branches:
               ignore:
@@ -69,7 +52,7 @@ workflows:
       - COMPOSITION-tests-3:
           context: org-global
           requires:
-            - build-EHRbase
+            - build-and-test-openEHR_SDK
           filters:
             branches:
               ignore:
@@ -80,7 +63,7 @@ workflows:
       - COMPOSITION-tests-4:
           context: org-global
           requires:
-            - build-EHRbase
+            - build-and-test-openEHR_SDK
           filters:
             branches:
               ignore:
@@ -91,7 +74,7 @@ workflows:
       - CONTRIBUTION-tests:
           context: org-global
           requires:
-            - build-EHRbase
+            - build-and-test-openEHR_SDK
           filters:
             branches:
               ignore:
@@ -102,7 +85,7 @@ workflows:
       - DIRECTORY-tests:
           context: org-global
           requires:
-            - build-EHRbase
+            - build-and-test-openEHR_SDK
           filters:
             branches:
               ignore:
@@ -113,7 +96,7 @@ workflows:
       - EHRSERVICE-tests:
           context: org-global
           requires:
-            - build-EHRbase
+            - build-and-test-openEHR_SDK
           filters:
             branches:
               ignore:
@@ -124,7 +107,7 @@ workflows:
       - EHRSTATUS-tests:
           context: org-global
           requires:
-            - build-EHRbase
+            - build-and-test-openEHR_SDK
           filters:
             branches:
               ignore:
@@ -135,7 +118,7 @@ workflows:
       - KNOWLEDGE-tests:
           context: org-global
           requires:
-            - build-EHRbase
+            - build-and-test-openEHR_SDK
           filters:
             branches:
               ignore:
@@ -146,7 +129,7 @@ workflows:
       - QUERYSERVICE-tests-1:
           context: org-global
           requires:
-            - build-EHRbase
+            - build-and-test-openEHR_SDK
           filters:
             branches:
               ignore:
@@ -157,7 +140,7 @@ workflows:
       - QUERYSERVICE-tests-2:
           context: org-global
           requires:
-            - build-EHRbase
+            - build-and-test-openEHR_SDK
           filters:
             branches:
               ignore:
@@ -229,9 +212,9 @@ workflows:
 
 
   # WORKFLOW 5/5) Code analysis w/ SonarCloud.io 
-  sonar-code-analysis:
+  QUALITY-GATE-II:
     jobs:
-      - run-code-analysis:
+      - build-test-and-analyse-openEHR_SDK:
           context: org-global
           filters:
             branches:
@@ -255,28 +238,10 @@ jobs:
   #           88  Y8,        ,8P  88      `8b          `8b
   #   88,   ,d88   Y8a.    .a8P   88      a8P  Y8a     a8P
   #    "Y8888P"     `"Y8888Y"'    88888888P"    "Y88888P"
-
-
-  build-openEHR_SDK:
-    description: Build and unit test the SDK.
-    executor: docker-python3-java11
-    # executor: machine-ubuntu-2004                          # (use for pipeline debugging only)
-    steps:
-      - checkout
-      - cache-out-sdk-m2-dependencies
-      - build-and-test-sdk
-      - cache-in-sdk-m2-dependencies
-      - collect-sdk-unittest-results
-      - save-skd-test-results
-      - save-sdk-workspace
-      #-----------------------------------#---------------(use this steps for pipeline debugging only)
-      # - run: echo mock build SDK        # 
-      # - cache-out-sdk-workspace         #
-      # - cache-in-sdk-workspace          #
   
 
-  test-openEHR_SDK:
-    description: Build and run openEHR_SDK's Java integration tests (w/ EHRbase + DB running).
+  build-and-test-openEHR_SDK:
+    description: Build and run all openEHR_SDK Java tests (unit and integration tests w/ EHRbase + DB running).
     executor: docker-py3-java11-postgres
     steps:
       - checkout
@@ -285,28 +250,13 @@ jobs:
       - git-clone-ehrbase-repo
       - cache-out-ehrbase-m2-dependencies
       - force-ehrbase-build-to-use-local-sdk-version
-      - start-ehrbase-and-run-all-tests-of-sdk
+      - build-and-run-ehrbase-then-run-all-sdk-java-tests
       - cache-in-ehrbase-m2-dependencies      
       - cache-in-sdk-m2-dependencies
+      - collect-sdk-unittest-results
       - collect-sdk-integrationtest-results
       - save-skd-test-results
-
-
-  build-EHRbase:
-    executor: docker-py3-java11-postgres
-    # executor: machine-ubuntu-2004                          # (use for pipeline debugging only)
-    steps:
-      - checkout
-      - restore-sdk-workspace
-      - git-clone-ehrbase-repo
-      - cache-out-ehrbase-m2-dependencies
-      - force-ehrbase-build-to-use-local-sdk-version
-      - build-and-test-ehrbase
-      - cache-in-ehrbase-m2-dependencies
-      - save-ehrbase-workspace
-      #-----------------------------------#---------------(use this steps for pipeline debugging only
-      # - run: echo MOCKED JOB            #
-      # - cache-in-ehrbase-workspace      #
+      - save-sdk-workspace
 
 
   COMPOSITION-tests-1:
@@ -465,7 +415,7 @@ jobs:
       - restore-ehrbase-workspace
       - restore_cache:
           keys:
-            - expected-results-loaded-db-v5
+            - expected-results-loaded-db-v7
       - run:
           name: list files after restore of cache
           command: |
@@ -476,7 +426,7 @@ jobs:
             ls -la tests/robot/_resources/test_data_sets/query/aql_queries_valid/D/
       - restore_cache:
           keys:
-            - ehrbasedb-dump-v2
+            - ehrbasedb-dump-v7
       # COMMENT: USE THE NEXT LINE ONLY TO FORCE TEST-DATA REGENERATION! Otherwise comment it out!
       # - run: echo "FORCE GENERATION OF TEST-DATA AND EXPECTED RESULTS!" > /tmp/DATA_CHANGED_NOTICE
       - run: 
@@ -494,7 +444,7 @@ jobs:
           test-suite-path: "QUERY_SERVICE_TESTS"
           test-suite-name: "ADHOC-QUERY-2"
       - save_cache:
-          key: expected-results-loaded-db-v5-{{ checksum "/tmp/expected-results-loaded_db-seed" }}
+          key: expected-results-loaded-db-v7-{{ checksum "/tmp/expected-results-loaded_db-seed" }}
           paths:
             - ehrbase/tests/robot/_resources/test_data_sets/query/expected_results/loaded_db/
             - ehrbase/tests/robot/_resources/test_data_sets/query/aql_queries_valid/
@@ -507,7 +457,7 @@ jobs:
             ls -la tests/robot/_resources/test_data_sets/query/aql_queries_valid/C/
             ls -la tests/robot/_resources/test_data_sets/query/aql_queries_valid/D/
       - save_cache:
-          key: ehrbasedb-dump-v2-{{ checksum "/tmp/ehrbasedb_dump.sql" }}
+          key: ehrbasedb-dump-v7-{{ checksum "/tmp/ehrbasedb_dump.sql" }}
           paths:
             - /tmp/ehrbasedb_dump.sql
 
@@ -567,7 +517,7 @@ jobs:
       # - cache-out-versionupdater-dependencies
 
 
-  run-code-analysis:
+  build-test-and-analyse-openEHR_SDK:
     description: |
       Runs code analysis w/ SonarCloud via CircleCI Orb provided by sonarsource team.
       Orb documentation: https://circleci.com/orbs/registry/orb/sonarsource/sonarcloud
@@ -580,7 +530,10 @@ jobs:
       - git-clone-ehrbase-repo
       - cache-out-ehrbase-m2-dependencies
       - force-ehrbase-build-to-use-local-sdk-version
-      - start-ehrbase-and-run-all-tests-of-sdk
+      - build-and-run-ehrbase-then-run-all-sdk-java-tests:
+          skip-jacoco: false
+          skip-tests: false
+          skip-javadoc: false
       - cache-in-ehrbase-m2-dependencies      
       - cache-in-sdk-m2-dependencies
       - collect-sdk-unittest-results
@@ -752,7 +705,9 @@ commands:
       - install-maven
       - run:
           name: Maven build, install openEHR_SDK (skip Tests!)
-          command: mvn install -Dmaven.javadoc.skip=true -Dmaven.test.skip
+          command: |
+            mvn build-helper:parse-version versions:set -DnewVersion=\${project.version}-LOCAL versions:commit
+            mvn install -Dmaven.javadoc.skip=true -Djacoco.skip=true -Dmaven.test.skip
       - run:
           name: Save the version number of locally installed SDK into a file
           command: |
@@ -766,7 +721,9 @@ commands:
       - install-maven
       - run:
           name: Maven build, test (ONLY unit tests), install openEHR_SDK
-          command: mvn install dependency:go-offline -Dmaven.javadoc.skip=true
+          command: |
+            mvn build-helper:parse-version versions:set -DnewVersion=\${project.version}-LOCAL versions:commit
+            mvn install dependency:go-offline -Djacoco.skip=true -Dmaven.javadoc.skip=true
       - run:
           name: Save the version number of locally installed SDK into a file
           command: |
@@ -790,17 +747,32 @@ commands:
             mvn test -Pslow -Dmaven.javadoc.skip=true
 
 
-  start-ehrbase-and-run-all-tests-of-sdk:
+  build-and-run-ehrbase-then-run-all-sdk-java-tests:
     description: |
       Executes all SDK java test (unit and integration)
       This requires EHRbase + DB to be running during test execution.
+    parameters:
+      skip-jacoco:
+        description: Skip Jacoco's Code Instrumentation For Coverage Analysis
+        type: boolean
+        default: true 
+      skip-tests:
+        description: Do Not Compile And Do Not Run Test Code
+        type: boolean
+        default: true
+      skip-javadoc:
+        description: Skip Java Docs Generation
+        type: boolean
+        default: true
     steps:
       - install-maven
       - run:
           name: Maven build EHRbase
           command: |
             cd ~/projects/ehrbase
-            mvn package -Dmaven.javadoc.skip=true -Dmaven.test.skip
+            mvn package -Dmaven.javadoc.skip=<< parameters.skip-javadoc >> \
+                        -Djacoco.skip=<< parameters.skip-jacoco >> \
+                        -Dmaven.test.skip=<< parameters.skip-tests >>
       - run:
           name: Start EHRbase server and run all test of SDK
           command: |
@@ -812,22 +784,22 @@ commands:
             grep -m 1 "Started EhrBase in" <(tail -f log)
             cd ..
             jps
-            mvn verify -DskipIntegrationTests=false -Dmaven.javadoc.skip=true
+            mvn verify -DskipIntegrationTests=false -Dmaven.javadoc.skip=true -Djacoco.skip=<< parameters.skip-jacoco >>
 
 
   cache-out-sdk-m2-dependencies:
     steps:
       - run:
           name: Generate Cache Checksum for openEHR_SDK Dependencies
-          command: find . -name 'pom.xml' | sort | xargs cat > /tmp/openEHR_SDK_maven_cache_seed
+          command: find . -type f -name *.java | sort | xargs cat > /tmp/openEHR_SDK_maven_cache_seed
       - restore_cache:
-          key: openEHR_SDK-
+          key: openEHR_SDK-v1
 
 
   cache-in-sdk-m2-dependencies:
     steps:
       - save_cache:
-          key: openEHR_SDK-{{ checksum "/tmp/openEHR_SDK_maven_cache_seed" }}
+          key: openEHR_SDK-v1-{{ checksum "/tmp/openEHR_SDK_maven_cache_seed" }}
           paths:
           - ~/.m2
 
@@ -939,9 +911,9 @@ commands:
   cache-in-ehrbase-m2-dependencies:
     steps:
       - save_cache:
-          key: EHRbase-{{ checksum "/tmp/EHRbase_maven_cache_seed" }}
+          key: EHRbase-v1-{{ checksum "/tmp/EHRbase_maven_cache_seed" }}
           paths:
-            - ~/.m2
+            - ~/.m2/repository/org/ehrbase/openehr/
 
 
   cache-out-ehrbase-m2-dependencies:
@@ -950,7 +922,7 @@ commands:
           name: Generate Cache Checksum for EHRbase Dependencies
           command: find ~/projects/ehrbase -name 'pom.xml' | sort | xargs cat > /tmp/EHRbase_maven_cache_seed
       - restore_cache:
-          key: EHRbase-
+          key: EHRbase-v1
 
 
   save-ehrbase-workspace:
@@ -979,7 +951,7 @@ commands:
             SDK_VERSION=$(cat ~/projects/SDK_VERSION)
             echo $SDK_VERSION
             cd ~/projects/ehrbase
-            xmlstarlet edit --inplace -N my=http://maven.apache.org/POM/4.0.0 -u my:project/my:version -v $SDK_VERSION pom.xml
+            xmlstarlet edit --inplace -u project/properties/ehrbase.sdk.version -v $SDK_VERSION pom.xml
   
 
 
@@ -1258,12 +1230,12 @@ executors:
   docker-python3-java11:
     working_directory: ~/projects
     docker:
-      - image: circleci/python@sha256:e1c98a85c5ee62ac52a2779fe5abe2677f021c8e3158e4fb2d569c7b9c6ac073
+      - image: circleci/python:3.8.5-node-browsers
 
   docker-py3-java11-postgres:
     working_directory: ~/projects
     docker:
-      - image: circleci/python@sha256:e1c98a85c5ee62ac52a2779fe5abe2677f021c8e3158e4fb2d569c7b9c6ac073
+      - image: circleci/python:3.8.5-node-browsers
       - image: ehrbaseorg/ehrbase-postgres:10
         environment:
           POSTGRES_USER: postgres
