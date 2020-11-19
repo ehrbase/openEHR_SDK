@@ -49,7 +49,7 @@ public class Filter {
         return clone;
     }
 
-    private List<WebTemplateNode> filter(WebTemplateNode node, WebTemplate context, WebTemplateNode parent) {
+    protected List<WebTemplateNode> filter(WebTemplateNode node, WebTemplate context, WebTemplateNode parent) {
         List<WebTemplateNode> nodes;
         List<WebTemplateNode> ismTransitionList = node.getChildren().stream()
                 .filter(n -> "ISM_TRANSITION".equals(n.getRmType()))
@@ -64,21 +64,24 @@ public class Filter {
             node.getChildren().clear();
             node.getChildren().add(merged);
         }
-
+        List<WebTemplateNode> filteredChildren = node.getChildren().stream().map(n -> filter(n, context, node)).flatMap(List::stream).collect(Collectors.toList());
+        node.getChildren().clear();
+        node.getChildren().addAll(filteredChildren);
         if (skip(node, context, parent)) {
-            nodes = node.getChildren().stream().map(n -> filter(n, context, node)).flatMap(List::stream).collect(Collectors.toList());
+            nodes = filteredChildren;
 
         } else {
             nodes = Collections.singletonList(node);
-            List<WebTemplateNode> filteredChildren = node.getChildren().stream().map(n -> filter(n, context, node)).flatMap(List::stream).collect(Collectors.toList());
-            node.getChildren().clear();
-            node.getChildren().addAll(filteredChildren);
+
         }
         OPTParser.makeIdUnique(node);
         return nodes;
     }
 
-    private boolean skip(WebTemplateNode node, WebTemplate context, WebTemplateNode parent) {
+    protected boolean skip(WebTemplateNode node, WebTemplate context, WebTemplateNode parent) {
+        if (node.isArchetypeSlot()){
+            return true;
+        }
         if (List.of("origin", "participations", "location", "feeder_audit").contains(node.getName())) {
             return true;
         }

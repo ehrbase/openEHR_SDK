@@ -34,6 +34,7 @@ import org.ehrbase.webtemplate.model.WebTemplate;
 import org.ehrbase.webtemplate.model.WebTemplateInput;
 import org.ehrbase.webtemplate.model.WebTemplateInputValue;
 import org.ehrbase.webtemplate.model.WebTemplateNode;
+import org.openehr.schemas.v1.ARCHETYPESLOT;
 import org.openehr.schemas.v1.ARCHETYPETERM;
 import org.openehr.schemas.v1.CARCHETYPEROOT;
 import org.openehr.schemas.v1.CATTRIBUTE;
@@ -356,8 +357,24 @@ public class OPTParser {
                 pathLoop = aqlPath;
             }
             return parseCDOMAINTYPE((CDOMAINTYPE) cobject, pathLoop, termDefinitionMap, rmAttributeName);
+        }else if (cobject instanceof ARCHETYPESLOT){
+            String nodeId = cobject.getNodeId();
+            final String pathLoop;
+            if (StringUtils.isNotBlank(nodeId)) {
+                pathLoop = aqlPath + "[" + nodeId + "]";
+            } else {
+                pathLoop = aqlPath;
+            }
+            return parseARCHETYPESLOT((ARCHETYPESLOT) cobject, pathLoop, termDefinitionMap, rmAttributeName);
         }
         return null;
+    }
+
+    private WebTemplateNode parseARCHETYPESLOT(ARCHETYPESLOT cobject, String pathLoop, Map<String, Map<String, TermDefinition>> termDefinitionMap, String rmAttributeName) {
+        WebTemplateNode node = buildNode(cobject, rmAttributeName, termDefinitionMap);
+        node.setAqlPath(pathLoop);
+        return node;
+
     }
 
     private WebTemplateNode parseCDOMAINTYPE(CDOMAINTYPE cdomaintype, String aqlPath, Map<String, Map<String, TermDefinition>> termDefinitionMap, String rmAttributeName) {
@@ -425,6 +442,8 @@ public class OPTParser {
                             TermDefinition termDefinition = termDefinitionMap.get(o).get(defaultLanguage);
                             value.setValue(termDefinition.getCode());
                             value.setLabel(termDefinition.getValue());
+                            value.getLocalizedDescriptions().put(defaultLanguage,termDefinition.getDescription());
+                            value.getLocalizedLabels().put(defaultLanguage,termDefinition.getValue());
                             code.getList().add(value);
                         }
 
