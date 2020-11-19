@@ -281,6 +281,74 @@ workflows:
               only:
                 - /^sync\/.*/
                 - /^feature\/sync\/.*/
+      - COMPOSITION-tests-1:
+          context: org-global
+          requires:
+            - build-and-test-synced-branches-of-EHRbase-and-openEHR_SDK
+      - COMPOSITION-tests-2:
+          context: org-global
+          requires:
+            - build-and-test-synced-branches-of-EHRbase-and-openEHR_SDK
+      - COMPOSITION-tests-3:
+          context: org-global
+          requires:
+            - build-and-test-synced-branches-of-EHRbase-and-openEHR_SDK
+      - COMPOSITION-tests-4:
+          context: org-global
+          requires:
+            - build-and-test-synced-branches-of-EHRbase-and-openEHR_SDK
+      - CONTRIBUTION-tests:
+          context: org-global
+          requires:
+            - build-and-test-synced-branches-of-EHRbase-and-openEHR_SDK
+      - DIRECTORY-tests:
+          context: org-global
+          requires:
+            - build-and-test-synced-branches-of-EHRbase-and-openEHR_SDK
+      - EHRSERVICE-tests:
+          context: org-global
+          requires:
+            - build-and-test-synced-branches-of-EHRbase-and-openEHR_SDK
+      - EHRSTATUS-tests:
+          context: org-global
+          requires:
+            - build-and-test-synced-branches-of-EHRbase-and-openEHR_SDK
+      - KNOWLEDGE-tests:
+          context: org-global
+          requires:
+            - build-and-test-synced-branches-of-EHRbase-and-openEHR_SDK
+      - QUERYSERVICE-tests-1:
+          context: org-global
+          requires:
+            - build-and-test-synced-branches-of-EHRbase-and-openEHR_SDK
+      - QUERYSERVICE-tests-2:
+          context: org-global
+          requires:
+            - build-and-test-synced-branches-of-EHRbase-and-openEHR_SDK
+      # - SECURITY-test:
+      #     context: org-global
+      #     requires:
+      #       - build-and-test-synced-branches-of-EHRbase-and-openEHR_SDK
+      # - ADMIN-test:
+      #     context: org-global
+      #     requires:
+      #       - build-and-test-synced-branches-of-EHRbase-and-openEHR_SDK
+      - ROBOT-TEST-REPORT:
+          context: org-global
+          requires:
+            - COMPOSITION-tests-1
+            - COMPOSITION-tests-2
+            - COMPOSITION-tests-3
+            - COMPOSITION-tests-4
+            - CONTRIBUTION-tests
+            - DIRECTORY-tests
+            - EHRSERVICE-tests
+            - EHRSTATUS-tests
+            - KNOWLEDGE-tests
+            - QUERYSERVICE-tests-1
+            - QUERYSERVICE-tests-2
+            # - SECURITY-test
+            # - ADMIN-test
 
 
 
