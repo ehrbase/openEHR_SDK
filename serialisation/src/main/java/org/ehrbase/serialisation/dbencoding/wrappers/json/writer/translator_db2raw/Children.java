@@ -19,6 +19,7 @@
 package org.ehrbase.serialisation.dbencoding.wrappers.json.writer.translator_db2raw;
 
 import com.google.gson.internal.LinkedTreeMap;
+import org.ehrbase.serialisation.attributes.LocatableAttributes;
 import org.ehrbase.serialisation.dbencoding.CompositionSerializer;
 import org.ehrbase.serialisation.dbencoding.wrappers.json.I_DvTypeAdapter;
 
@@ -50,10 +51,9 @@ public class Children {
 
         for (String key : linkedTreeMap.keySet()) {
             if (!key.startsWith(CompositionSerializer.TAG_ITEMS)
-                    && !key.startsWith(CompositionSerializer.TAG_NAME)
                     && !key.equals(I_DvTypeAdapter.ARCHETYPE_NODE_ID)
-                    && !key.equals(CompositionSerializer.TAG_ARCHETYPE_NODE_ID)
                     && !key.equals(I_DvTypeAdapter.AT_CLASS)
+                    && !LocatableAttributes.isLocatableAttribute(key)
                     && !key.equals(CompositionSerializer.TAG_CLASS)) {
                return  false;
             }
@@ -201,6 +201,13 @@ public class Children {
         return retMap;
     }
 
+    public LinkedTreeMap removeDuplicateArchetypeNodeId() {
+        LinkedTreeMap retMap = new LinkedTreeMap();
+        retMap.putAll(linkedTreeMap);
+        if (linkedTreeMap.containsKey(I_DvTypeAdapter.ARCHETYPE_NODE_ID) && linkedTreeMap.containsKey(CompositionSerializer.TAG_ARCHETYPE_NODE_ID))
+                retMap.remove(CompositionSerializer.TAG_ARCHETYPE_NODE_ID);
+        return retMap;
+    }
     private boolean containsKeyStartingWith(String key){
        return linkedTreeMap.keySet().stream().filter(s -> s.startsWith(key)).collect(Collectors.toSet()).size() > 0;
     }

@@ -24,9 +24,9 @@ import org.ehrbase.client.introspect.node.ChoiceNode;
 import org.ehrbase.client.introspect.node.EndNode;
 import org.ehrbase.client.introspect.node.Node;
 import org.ehrbase.client.introspect.node.SlotNode;
-import org.ehrbase.client.terminology.ValueSet;
+import org.ehrbase.terminology.client.terminology.TermDefinition;
+import org.ehrbase.terminology.client.terminology.ValueSet;
 import org.ehrbase.test_data.operationaltemplate.OperationalTemplateTestData;
-import org.ehrbase.webtemplate.TermDefinition;
 import org.junit.Test;
 import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
 import org.openehr.schemas.v1.TemplateDocument;
@@ -295,7 +295,7 @@ public class TemplateIntrospectTest {
 
     @Test
     public void introspectCorona() throws IOException, XmlException {
-        OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(OperationalTemplateTestData.CORONA_ANAMMNESE.getStream()).getTemplate();
+        OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(OperationalTemplateTestData.CORONA_ANAMNESE.getStream()).getTemplate();
         TemplateIntrospect cut = new TemplateIntrospect(template);
 
         Map<String, Node> actual = cut.getRoot().getChildren();
@@ -386,12 +386,11 @@ public class TemplateIntrospectTest {
                         new Tuple("DvIdentifier", 1L),
                         new Tuple("ItemStructure", 1L),
                         new Tuple("Participation", 1L),
-                        new Tuple("DataValue", 1L),
                         new Tuple("FeederAudit", 1L)
                 );
 
         assertThat(countNodes(actual, ArchetypeNode.class)).isEqualTo(7l);
-        assertThat(countNodes(actual, EndNode.class)).isEqualTo(65l);
+        assertThat(countNodes(actual, EndNode.class)).isEqualTo(64l);
         assertThat(countNodes(actual, SlotNode.class)).isEqualTo(2l);
         assertThat(countNodes(actual, ChoiceNode.class)).isEqualTo(1l);
     }

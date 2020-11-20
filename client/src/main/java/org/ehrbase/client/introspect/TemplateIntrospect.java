@@ -38,20 +38,20 @@ import org.apache.commons.collections4.multimap.ArrayListValuedHashMap;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
-import org.ehrbase.client.introspect.config.RmIntrospectConfig;
 import org.ehrbase.client.introspect.node.ArchetypeNode;
 import org.ehrbase.client.introspect.node.ChoiceNode;
 import org.ehrbase.client.introspect.node.EndNode;
 import org.ehrbase.client.introspect.node.EntityNode;
 import org.ehrbase.client.introspect.node.Node;
 import org.ehrbase.client.introspect.node.SlotNode;
-import org.ehrbase.client.reflection.ReflectionHelper;
-import org.ehrbase.client.terminology.TerminologyProvider;
-import org.ehrbase.client.terminology.ValueSet;
 import org.ehrbase.serialisation.util.SnakeCase;
-import org.ehrbase.webtemplate.FlatPath;
-import org.ehrbase.webtemplate.OptNameHelper;
-import org.ehrbase.webtemplate.TermDefinition;
+import org.ehrbase.terminology.client.terminology.TermDefinition;
+import org.ehrbase.terminology.client.terminology.TerminologyProvider;
+import org.ehrbase.terminology.client.terminology.ValueSet;
+import org.ehrbase.util.reflection.ReflectionHelper;
+import org.ehrbase.webtemplate.parser.FlatPath;
+import org.ehrbase.webtemplate.parser.OptNameHelper;
+import org.ehrbase.webtemplate.parser.config.RmIntrospectConfig;
 import org.openehr.schemas.v1.ARCHETYPESLOT;
 import org.openehr.schemas.v1.ARCHETYPETERM;
 import org.openehr.schemas.v1.CARCHETYPEROOT;
@@ -79,9 +79,9 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static org.ehrbase.client.terminology.TerminologyProvider.OPENEHR;
-import static org.ehrbase.client.terminology.ValueSet.EMPTY_VALUE_SET;
-import static org.ehrbase.client.terminology.ValueSet.LOCAL;
+import static org.ehrbase.terminology.client.terminology.TerminologyProvider.OPENEHR;
+import static org.ehrbase.terminology.client.terminology.ValueSet.EMPTY_VALUE_SET;
+import static org.ehrbase.terminology.client.terminology.ValueSet.LOCAL;
 
 public class TemplateIntrospect {
 
@@ -169,12 +169,18 @@ public class TemplateIntrospect {
                             if (value.size() == 1) {
                                 localNodeMap.put(key, value.iterator().next());
                             } else {
-                                localNodeMap.put(key,
-                                        new ChoiceNode(
-                                                value.iterator().next().getName(),
-                                                new ArrayList<>(value),
-                                                value.stream().filter(n -> EntityNode.class.isAssignableFrom(n.getClass())).map(n -> (EntityNode) n).anyMatch(EntityNode::isMulti))
-                                );
+                                ChoiceNode choiceNode = new ChoiceNode(
+                                        value.iterator().next().getName(),
+                                        new ArrayList<>(value),
+                                        value.stream().filter(n -> EntityNode.class.isAssignableFrom(n.getClass())).map(n -> (EntityNode) n).anyMatch(EntityNode::isMulti));
+                                localNodeMap.put(key, choiceNode);
+
+                                choiceNode.getNodes().stream()
+                                        .filter(n -> EndNode.class.isAssignableFrom(n.getClass()))
+                                        .map(n -> (EndNode) n)
+                                        .filter(n -> StringUtils.isBlank(n.getName()))
+                                        .forEach(n -> n.setName(key));
+
                             }
                         });
 

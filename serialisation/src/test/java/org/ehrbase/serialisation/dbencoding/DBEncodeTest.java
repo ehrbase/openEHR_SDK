@@ -18,11 +18,12 @@
 
 package org.ehrbase.serialisation.dbencoding;
 
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.nedap.archie.rm.archetyped.FeederAudit;
-import com.nedap.archie.rm.archetyped.FeederAuditDetails;
 import com.nedap.archie.rm.composition.AdminEntry;
 import com.nedap.archie.rm.composition.Composition;
+import com.nedap.archie.rm.composition.Section;
 import com.nedap.archie.rm.datastructures.Element;
 import com.nedap.archie.rm.datastructures.History;
 import com.nedap.archie.rm.datastructures.ItemStructure;
@@ -30,20 +31,29 @@ import com.nedap.archie.rm.datastructures.PointEvent;
 import com.nedap.archie.rm.datavalues.quantity.DvInterval;
 import com.nedap.archie.rm.datavalues.quantity.datetime.DvDateTime;
 import org.apache.commons.io.IOUtils;
+import org.apache.xmlbeans.XmlException;
 import org.ehrbase.serialisation.dbencoding.rawjson.LightRawJsonEncoder;
 import org.ehrbase.serialisation.dbencoding.rmobject.FeederAuditEncoding;
 import org.ehrbase.serialisation.jsonencoding.CanonicalJson;
 import org.ehrbase.serialisation.xmlencoding.CanonicalXML;
 import org.ehrbase.test_data.composition.CompositionTestDataCanonicalJson;
 import org.ehrbase.test_data.composition.CompositionTestDataCanonicalXML;
+import org.ehrbase.test_data.operationaltemplate.OperationalTemplateTestData;
+import org.ehrbase.validation.Validator;
+import org.ehrbase.webtemplate.model.WebTemplate;
+import org.ehrbase.webtemplate.parser.OPTParser;
 import org.junit.Test;
+import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
+import org.openehr.schemas.v1.TemplateDocument;
 
+import javax.xml.bind.JAXBException;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
 public class DBEncodeTest {
 
@@ -316,6 +326,33 @@ public class DBEncodeTest {
     }
 
     @Test
+    public void testDurationEncodeDecode() throws IOException {
+        Composition composition =  new CanonicalJson().unmarshal(IOUtils.toString(CompositionTestDataCanonicalJson.DURATION_TESTS.getStream(), UTF_8), Composition.class);
+
+        assertNotNull(composition);
+
+        CompositionSerializer compositionSerializerRawJson = new CompositionSerializer();
+
+        String db_encoded = compositionSerializerRawJson.dbEncode(composition);
+        assertNotNull(db_encoded);
+
+        JsonElement converted = new LightRawJsonEncoder(db_encoded).encodeContentAsJson("composition");
+
+        //see if this can be interpreted by Archie
+        Composition composition2 = new CanonicalJson().unmarshal(converted.toString(), Composition.class);
+
+        assertNotNull(composition2);
+
+        String dvtestPrefix = "/content[openEHR-EHR-OBSERVATION.test_all_types.v1]/data[at0001]/events[at0002]/data[at0003]";
+
+        assertEquals("P12DT23H51M59S", composition2.itemsAtPath(dvtestPrefix+"/items[at0010.1]/value/value").get(0).toString());
+        assertEquals("P10Y1M12DT23H51M59S", composition2.itemsAtPath(dvtestPrefix+"/items[at0010.2]/value/value").get(0).toString());
+        //not yet working as of 12.10.20
+//        assertEquals("-P10Y10DT12H20S", composition2.itemsAtPath(dvtestPrefix+"/items[at0010.3]/value/value").get(0).toString());
+
+    }
+
+    @Test
     public void testNestedLanguageSubjectPartyIdentified() throws IOException {
         Composition composition = new CanonicalJson().unmarshal(IOUtils.toString(CompositionTestDataCanonicalJson.SUBJECT_PARTY_IDENTIFIED.getStream(), UTF_8),Composition.class);
 
@@ -576,4 +613,123 @@ public class DBEncodeTest {
         assertEquals(feederAudit.getOriginatingSystemAudit().getSystemId(), decodedFromDB.getOriginatingSystemAudit().getSystemId());
 
     }
+
+    @Test
+    public void testEncodeTimeAsJson(){
+        String fromDB = "{\"/value\": {\"value\": \"2020-04-02T12:00Z\", \"epoch_offset\": 1585828800}, \"/$CLASS$\": \"DvDateTime\"}";
+
+        JsonElement converted = new LightRawJsonEncoder(fromDB).encodeContentAsJson("value");
+
+        assertNotNull(converted);
+
+    }
+
+    @Test
+    public void testEncodeDvTextAsJson(){
+        String fromDB = "{\n" +
+                "                      \"/$CLASS$\": \"DvText\",\n" +
+                "                      \"/$PATH$\": \"/items[at0041]/data[at0003]/events[at0002 and name/value\\u003d\\u0027Point in time\\u0027]/data[at0001]/content[openEHR-EHR-OBSERVATION.yhscn_diadem_assessment.v0 and name/value\\u003d\\u0027YHSCN - DiADeM assessment\\u0027]\",\n" +
+                "                      \"/name\": [\n" +
+                "                        {\n" +
+                "                          \"value\": \"Blood test recommendation\"\n" +
+                "                        }\n" +
+                "                      ],\n" +
+                "                      \"/value\": {\n" +
+                "                        \"value\": \"Consider Referral for Blood Test\",\n" +
+                "                        \"_type\": \"DV_TEXT\"\n" +
+                "                      }\n" +
+                "                    }";
+
+        JsonElement converted = new LightRawJsonEncoder(fromDB).encodeContentAsJson("value");
+
+        assertThat(converted.getAsJsonObject().get("_type").getAsString()).isEqualTo("DV_TEXT");
+
+        fromDB = "{\n" +
+                "                      \"/$CLASS$\": \"DvCodedText\",\n" +
+                "                      \"/$PATH$\": \"/items[at0009]/data[at0003]/events[at0002 and name/value\\u003d\\u0027Point in time\\u0027]/data[at0001]/content[openEHR-EHR-OBSERVATION.yhscn_diadem_assessment.v0 and name/value\\u003d\\u0027YHSCN - DiADeM assessment\\u0027]\",\n" +
+                "                      \"/name\": [\n" +
+                "                        {\n" +
+                "                          \"value\": \"Exclusion criteria\"\n" +
+                "                        }\n" +
+                "                      ],\n" +
+                "                      \"/value\": {\n" +
+                "                        \"value\": \"True\",\n" +
+                "                        \"_type\": \"DV_CODED_TEXT\",\n" +
+                "                        \"definingCode\": {\n" +
+                "                          \"codeString\": \"at0014\",\n" +
+                "                          \"terminologyId\": {\n" +
+                "                            \"name\": \"local\",\n" +
+                "                            \"value\": \"local\",\n" +
+                "                            \"_type\": \"TERMINOLOGY_ID\"\n" +
+                "                          },\n" +
+                "                          \"_type\": \"CODE_PHRASE\"\n" +
+                "                        }\n" +
+                "                      }\n" +
+                "                    }";
+
+
+        converted = new LightRawJsonEncoder(fromDB).encodeContentAsJson("value");
+
+        assertThat(converted.getAsJsonObject().get("_type").getAsString()).isEqualTo("DV_CODED_TEXT");
+    }
+
+    @Test
+    public void testValidateElementWithChoice() throws JAXBException, IOException, XmlException {
+        Composition composition = new CanonicalJson().unmarshal(IOUtils.toString(CompositionTestDataCanonicalJson.CHOICE_ELEMENT.getStream(), UTF_8),Composition.class);
+        OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(IOUtils.toString(OperationalTemplateTestData.VIROLOGY_FINDING.getStream(), UTF_8)).getTemplate();
+        WebTemplate actual = new OPTParser(template).parse();
+
+        String humanReadableWebTemplate = new GsonBuilder().create().toJson(actual);
+
+        try {
+            new Validator(template).check(composition);
+        }catch (Exception e){
+            fail(e.getMessage());
+        }
+    }
+
+    @Test
+    public void testDBDecodeIssue350() throws Exception {
+
+        String db_encoded = new String(Files.readAllBytes(Paths.get("src/test/resources/sample_data/bug350_missing_data.json")));
+        assertNotNull(db_encoded);
+
+        //see if this can be interpreted by Archie
+        Composition object = new RawJson().unmarshal(db_encoded, Composition.class);
+
+        assertEquals(8, ((Section)object.itemsAtPath("/content[openEHR-EHR-SECTION.respect_headings.v0]").get(0)).getItems().size());
+
+        String interpreted = new CanonicalXML().marshal(object);
+
+        assertNotNull(interpreted);
+    }
+    @Test
+    public void compositionEncodingArchetypeDetails() throws Exception {
+        String value = IOUtils.toString(CompositionTestDataCanonicalJson.DEMO_VITALS.getStream(), UTF_8);
+        CanonicalJson cut = new CanonicalJson();
+        Composition composition = cut.unmarshal(value, Composition.class);
+
+        assertNotNull(composition);
+
+        CompositionSerializer compositionSerializerRawJson = new CompositionSerializer();
+
+        String db_encoded = compositionSerializerRawJson.dbEncode(composition);
+        //check that ITEM_TREE name is serialized
+        assertNotNull(db_encoded);
+
+        String converted = new LightRawJsonEncoder(db_encoded).encodeCompositionAsString();
+
+        assertNotNull(converted);
+
+        //see if this can be interpreted by Archie
+        Composition object = new CanonicalJson().unmarshal(converted, Composition.class);
+
+        assertTrue(object.itemsAtPath("/content[openEHR-EHR-SECTION.ispek_dialog.v1]/items[openEHR-EHR-OBSERVATION.body_temperature-zn.v1]/archetype_details/archetype_id").size() > 0);
+
+        assertEquals("openEHR-EHR-OBSERVATION.body_temperature-zn.v1", object.itemsAtPath("/content[openEHR-EHR-SECTION.ispek_dialog.v1]/items[openEHR-EHR-OBSERVATION.body_temperature-zn.v1]/archetype_details/archetype_id").get(0).toString());
+
+        assertNotNull(object);
+    }
+
+
 }

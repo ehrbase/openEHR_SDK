@@ -5,7 +5,7 @@ import org.ehrbase.client.aql.field.AqlFieldImp;
 import org.ehrbase.client.aql.field.SelectAqlField;
 
 public class News2SectionContainment extends Containment {
-    public SelectAqlField<News2Section> NEWS2_SECTION = new AqlFieldImp<News2Section>(News2Section.class, "", "News2Section", News2Section.class, this);
+  public SelectAqlField<News2Section> NEWS2_SECTION = new AqlFieldImp<News2Section>(News2Section.class, "", "News2Section", News2Section.class, this);
 
     public SelectAqlField<PulseOximetryObservation> PULSE_OXIMETRY = new AqlFieldImp<PulseOximetryObservation>(News2Section.class, "/items[openEHR-EHR-OBSERVATION.pulse_oximetry.v1]", "pulseOximetry", PulseOximetryObservation.class, this);
 

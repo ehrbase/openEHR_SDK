@@ -25,6 +25,7 @@ import com.google.gson.stream.JsonWriter;
 import com.nedap.archie.rm.datavalues.DvText;
 import org.ehrbase.serialisation.dbencoding.wrappers.json.I_DvTypeAdapter;
 import org.ehrbase.serialisation.util.ObjectSnakeCase;
+import org.ehrbase.serialisation.util.SnakeCase;
 
 import java.io.IOException;
 
@@ -42,8 +43,7 @@ public class DvTextAdapter extends DvTypeAdapter<DvText> {
     }
 
     @Override
-    public DvText read(JsonReader arg0) throws IOException {
-        // TODO Auto-generated method stub
+    public DvText read(JsonReader arg0) {
         return null;
     }
 
@@ -58,6 +58,7 @@ public class DvTextAdapter extends DvTypeAdapter<DvText> {
             TermMappingAdapter termMappingAdapter = new TermMappingAdapter();
             writer.beginObject();
             writer.name("value").value(dvalue.getValue());
+            writer.name(I_DvTypeAdapter.TAG_CLASS_RAW_JSON).value(new SnakeCase(DvText.class.getSimpleName()).camelToUpperSnake());
             termMappingAdapter.write(writer, dvalue.getMappings());
             writer.endObject();
         } else if (adapterType == I_DvTypeAdapter.AdapterType.RAW_JSON) {

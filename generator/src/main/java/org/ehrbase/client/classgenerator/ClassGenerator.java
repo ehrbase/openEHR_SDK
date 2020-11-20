@@ -60,9 +60,9 @@ import org.ehrbase.client.introspect.node.Node;
 import org.ehrbase.client.introspect.node.SlotNode;
 import org.ehrbase.client.introspect.node.TemplateNode;
 import org.ehrbase.client.openehrclient.VersionUid;
-import org.ehrbase.client.reflection.ReflectionHelper;
-import org.ehrbase.client.terminology.ValueSet;
 import org.ehrbase.serialisation.util.SnakeCase;
+import org.ehrbase.terminology.client.terminology.ValueSet;
+import org.ehrbase.util.reflection.ReflectionHelper;
 import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
 import org.openehr.schemas.v1.TemplateDocument;
 import org.slf4j.Logger;
@@ -331,7 +331,7 @@ public class ClassGenerator {
     }
 
     private String sanitizeNumber(String fieldName) {
-        if (Character.isDigit(fieldName.charAt(0))) {
+        if (!Character.isAlphabetic(fieldName.charAt(0))) {
             if (Character.isLowerCase(fieldName.charAt(0))) {
                 fieldName = "n" + fieldName;
             } else {
@@ -359,7 +359,7 @@ public class ClassGenerator {
         enumBuilder.addMethod(constructor);
         valueSet.getTherms().forEach(t -> {
             String fieldName = extractSubName(t.getValue());
-            enumBuilder.addEnumConstant(toEnumName(fieldName), TypeSpec.anonymousClassBuilder("$S, $S, $S, $S", t.getValue(), t.getDescription(), StringUtils.substringBefore(valueSet.getTerminologyId(), ":"), t.getCode()).build());
+            enumBuilder.addEnumConstant(toEnumName(fieldName), TypeSpec.anonymousClassBuilder("$S, $S, $S, $S", t.getValue(), t.getDescription(), valueSet.getTerminologyId(), t.getCode()).build());
         });
 
         enumBuilder.addMethod(buildGetter(fieldSpec1));

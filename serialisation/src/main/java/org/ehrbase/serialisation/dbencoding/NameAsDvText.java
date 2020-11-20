@@ -2,6 +2,8 @@ package org.ehrbase.serialisation.dbencoding;
 
 import com.nedap.archie.rm.datavalues.DvCodedText;
 import com.nedap.archie.rm.datavalues.DvText;
+import org.ehrbase.serialisation.dbencoding.wrappers.json.I_DvTypeAdapter;
+import org.ehrbase.serialisation.util.SnakeCase;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -25,6 +27,7 @@ public class NameAsDvText {
         if (aName != null) {
             nameMap.put("value", aName.getValue());
         }
+        nameMap.put(I_DvTypeAdapter.AT_TYPE, new SnakeCase(DvText.class.getSimpleName()).camelToUpperSnake());
         return nameMap;
     }
 }

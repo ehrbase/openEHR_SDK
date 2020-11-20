@@ -33,16 +33,16 @@ import com.nedap.archie.rminfo.RMAttributeInfo;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.apache.commons.text.CaseUtils;
+import org.ehrbase.building.OptSkeletonBuilder;
 import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.OptionFor;
 import org.ehrbase.client.annotations.Path;
 import org.ehrbase.client.annotations.Template;
-import org.ehrbase.client.building.OptSkeletonBuilder;
 import org.ehrbase.client.classgenerator.EnumValueSet;
 import org.ehrbase.client.exception.ClientException;
-import org.ehrbase.client.normalizer.Normalizer;
-import org.ehrbase.client.templateprovider.TemplateProvider;
+import org.ehrbase.normalizer.Normalizer;
 import org.ehrbase.serialisation.jsonencoding.CanonicalJson;
+import org.ehrbase.webtemplate.templateprovider.TemplateProvider;
 import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,7 +53,14 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 public class Unflattener {
 

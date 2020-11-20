@@ -30,6 +30,8 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 
+import static org.ehrbase.validation.constraints.wrappers.ValidationException.raise;
+
 /**
  * Validate a complex object
  *
@@ -46,39 +48,25 @@ public class CComplexObject extends CConstraint implements I_CArchetypeConstrain
         super(localTerminologyLookup);
     }
 
-    public void validate(String path, Object value, ARCHETYPECONSTRAINT constraint) throws IllegalArgumentException {
+    public void validate(String path, Object value, ARCHETYPECONSTRAINT constraint) {
 
         CCOMPLEXOBJECT ccomplexobject = (CCOMPLEXOBJECT) constraint;
 
         int attributeCount = ccomplexobject.sizeOfAttributesArray();
         int failCount = 0;
-        IllegalArgumentException lastException = null;
+        Exception lastException = null;
 
         for (CATTRIBUTE cattribute : ccomplexobject.getAttributesArray()) {
-//            if (cattribute.getRmAttributeName().equals("DV_CODED_TEXT") && (value instanceof DvText)){
-//                //validate this DvText as a DvCodedText... (just check the value == matching local terminology entry
-//                new CDvText(localTerminologyLookup).validate(path, value, cattribute);
-//            }
-//            else
             try {
                 new CAttribute(localTerminologyLookup).validate(path, value, cattribute);
             } catch (ValidationException e) {
                 lastException = e;
                 ++failCount;
             }
-//            if (attribute instanceof CSINGLEATTRIBUTE)
-//                new CSingleAttribute().validate(path, value, (CSINGLEATTRIBUTE)attribute);
-//            else if (attribute instanceof CMULTIPLEATTRIBUTE)
-//                new CMultipleAttribute().validate(path, value, (CMULTIPLEATTRIBUTE)attribute);
-//            else
-//                throw new IllegalArgumentException("INTERNAL: could not validate attribute:"+cattribute);
         }
 
         if (attributeCount > 0 && failCount > 0) {
-            if (lastException != null)
-                throw lastException;
-            else
-                ValidationException.raise(path, "Value could not be validated (multiple rules)", "MULT01");
+                raise(path, lastException.getMessage(), "ELT01");
         }
 
     }

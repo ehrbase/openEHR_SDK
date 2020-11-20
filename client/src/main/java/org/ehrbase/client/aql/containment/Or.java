@@ -21,13 +21,20 @@ package org.ehrbase.client.aql.containment;
 
 public class Or extends BinaryLogicalOperator {
 
+  public Or(
+      ContainmentExpression containmentExpression1, ContainmentExpression containmentExpression2) {
+    super(containmentExpression1, containmentExpression2);
+  }
 
-    public Or(ContainmentExpression containmentExpression1, ContainmentExpression containmentExpression2) {
-        super(containmentExpression1, containmentExpression2);
-    }
+  @Override
+  protected String getSymbol() {
+    return "or";
+  }
 
-    @Override
-    protected String getSymbol() {
-        return "or";
-    }
+
+  @Override
+  public ContainmentExpression or(ContainmentExpression containmentExpression) {
+    containmentExpressionList.add(containmentExpression);
+    return this;
+  }
 }

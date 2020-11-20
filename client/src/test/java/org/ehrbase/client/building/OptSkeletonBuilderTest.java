@@ -21,6 +21,7 @@ package org.ehrbase.client.building;
 import com.nedap.archie.rm.archetyped.Locatable;
 import com.nedap.archie.rm.composition.Composition;
 import com.nedap.archie.rm.datavalues.DvText;
+import org.ehrbase.building.OptSkeletonBuilder;
 import org.ehrbase.test_data.operationaltemplate.OperationalTemplateTestData;
 import org.junit.Test;
 import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
@@ -45,10 +46,11 @@ public class OptSkeletonBuilderTest {
         assertThat(generate.itemAtPath("/content[openEHR-EHR-OBSERVATION.sample_blood_pressure.v1]/data[at0001]/events[at0002]/state[at0007]/items[at1005]/value")).isNotNull();
     }
 
+
     @Test
     public void testGenerateCorona() throws Exception {
 
-        org.openehr.schemas.v1.TemplateDocument document = org.openehr.schemas.v1.TemplateDocument.Factory.parse(OperationalTemplateTestData.CORONA_ANAMMNESE.getStream());
+        org.openehr.schemas.v1.TemplateDocument document = org.openehr.schemas.v1.TemplateDocument.Factory.parse(OperationalTemplateTestData.CORONA_ANAMNESE.getStream());
         OPERATIONALTEMPLATE operationaltemplate = document.getTemplate();
         OptSkeletonBuilder cut = new OptSkeletonBuilder();
 

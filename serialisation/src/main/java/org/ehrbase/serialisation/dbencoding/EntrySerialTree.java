@@ -123,6 +123,10 @@ public class EntrySerialTree extends SerialTree {
             case TAG_ACTIVITIES:
                 retMap = super.insert(activity, new NodeEncoding(tagMode).tag(TAG_ACTIVITIES, activity, map), addStructure);
                 break;
+            case TAG_DESCRIPTION:
+                retMap = super.insert(activity, new NodeEncoding(tagMode).tag(TAG_DESCRIPTION, activity.getDescription(), map), addStructure);
+                break;
+
             default:
                 retMap = map;
         }

@@ -33,6 +33,7 @@ class EmbeddedValue {
     }
 
     private LinkedTreeMap<String, Object> formatForTag(String tag) {
+
         if (valueMap.containsKey(tag)) {
             LinkedTreeMap<String, Object> treeMap = (LinkedTreeMap<String, Object>) valueMap.get(tag);
             //get the value

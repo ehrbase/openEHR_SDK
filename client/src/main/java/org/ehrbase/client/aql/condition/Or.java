@@ -28,4 +28,11 @@ public class Or extends BinaryLogicalOperator {
     protected String getSymbol() {
         return "or";
     }
+
+    @Override
+    public Condition or(Condition condition) {
+
+        conditionList.add(condition);
+        return this;
+    }
 }

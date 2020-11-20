@@ -59,30 +59,23 @@ public class ElementAttributes extends ItemAttributes {
             } else
                 return ltree;
         }
+        Map<String, Object> valuemap = PathMap.getInstance();
 
-        if (element.getValue() != null && !element.getValue().toString().isEmpty()
-        ) {
+        if (element.getValue() != null && !element.getValue().toString().isEmpty()) {
             log.debug(itemStack.pathStackDump() + "=" + element.getValue());
-            Map<String, Object> valuemap = PathMap.getInstance();
 
             if (element.getValue() != null && !element.getValue().toString().isEmpty())
                 valuemap = new SerialTree(valuemap).insert(new CompositeClassName(element.getValue()).toString(), element, TAG_VALUE, new ElementValue(element.getValue()).normalize());
-
-            //set path
-            valuemap = new PathItem(valuemap, tagMode, itemStack).encode(null);
-
-            ltree.put(TAG_VALUE, valuemap);
         }
         else if (element.getNullFlavour() != null){
-            Map<String, Object> valuemap = PathMap.getInstance();
-
             valuemap = new SerialTree(valuemap).insert(null, element, TAG_NULL_FLAVOUR, new ElementValue(element.getNullFlavour()).normalize());
-
-            //set path
-            valuemap = new PathItem(valuemap, tagMode, itemStack).encode(null);
-
-            ltree.put(TAG_VALUE, valuemap);
         }
+
+
+        //set path
+        valuemap = new PathItem(valuemap, tagMode, itemStack).encode(null);
+
+        ltree.put(TAG_VALUE, valuemap);
 
         return ltree;
     }

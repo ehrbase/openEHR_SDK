@@ -10,7 +10,7 @@ import org.ehrbase.client.aql.field.SelectAqlField;
 import org.ehrbase.client.classgenerator.examples.shareddefinition.Language;
 
 public class Covid19ExposureEvaluationContainment extends Containment {
-    public SelectAqlField<Covid19ExposureEvaluation> COVID19_EXPOSURE_EVALUATION = new AqlFieldImp<Covid19ExposureEvaluation>(Covid19ExposureEvaluation.class, "", "Covid19ExposureEvaluation", Covid19ExposureEvaluation.class, this);
+  public SelectAqlField<Covid19ExposureEvaluation> COVID19_EXPOSURE_EVALUATION = new AqlFieldImp<Covid19ExposureEvaluation>(Covid19ExposureEvaluation.class, "", "Covid19ExposureEvaluation", Covid19ExposureEvaluation.class, this);
 
     public SelectAqlField<Covid19ExposureRiskFactorChoice> RISK_FACTOR = new AqlFieldImp<Covid19ExposureRiskFactorChoice>(Covid19ExposureEvaluation.class, "/data[at0001]/items[at0016]/items[at0013.1]/value", "riskFactor", Covid19ExposureRiskFactorChoice.class, this);
 

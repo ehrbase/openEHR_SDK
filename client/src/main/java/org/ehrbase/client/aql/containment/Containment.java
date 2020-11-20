@@ -43,11 +43,14 @@ public class Containment implements ContainmentExpression {
      * @param archetype The Archetype HRID. Sie <a href="https://specifications.openehr.org/releases/AM/latest/Overview.html#_identification_and_the_virtual_archetype_space">Identification and the Virtual Archetype Space</a>
      */
     public Containment(String archetype) {
-        this.archetype = archetype;
+
         typeName = StringUtils.substringBetween(archetype, "openEHR-EHR-", ".");
         if (StringUtils.isBlank(typeName)) {
             typeName = archetype;
+            archetype = null;
         }
+        this.archetype = archetype;
+
         if ("EHR".equals(typeName)) {
             type = null;
         } else {
@@ -61,8 +64,10 @@ public class Containment implements ContainmentExpression {
         sb
                 .append(typeName.toUpperCase())
                 .append(" ")
-                .append(getVariableName())
-                .append("[").append(archetype).append("]");
+                .append(getVariableName());
+        if (archetype != null) {
+            sb.append("[").append(archetype).append("]");
+        }
         if (contains != null) {
             sb
                     .append(" contains ")

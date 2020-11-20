@@ -24,15 +24,14 @@ import java.util.List;
 
 public class TemplatesResponseData implements ResponseData<List<TemplateMetaDataDto>> {
 
-    public TemplatesResponseData() {
+    List<TemplateMetaDataDto> templates;
 
+    public TemplatesResponseData() {
     }
 
     public TemplatesResponseData(List<TemplateMetaDataDto> templates) {
         this.templates = templates;
     }
-
-    List<TemplateMetaDataDto> templates;
 
     public List<TemplateMetaDataDto> get() {
         return templates;

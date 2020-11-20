@@ -19,38 +19,30 @@
 
 package org.ehrbase.client.aql.condition;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
 public abstract class BinaryLogicalOperator implements Condition {
 
-    private final Condition condition1;
-    private final Condition condition2;
+  protected final List<Condition> conditionList = new ArrayList<>();
 
-    BinaryLogicalOperator(Condition condition1, Condition condition2) {
-        this.condition1 = condition1;
-        this.condition2 = condition2;
-    }
+  BinaryLogicalOperator(Condition condition1, Condition condition2) {
+    conditionList.add(condition1);
+    conditionList.add(condition2);
+  }
 
     @Override
     public String buildAql() {
-        StringBuilder sb = new StringBuilder();
-        sb
-                .append("(")
-                .append(condition1.buildAql())
-                .append(" ")
-                .append(getSymbol())
-                .append(" ")
-                .append(condition2.buildAql())
-                .append(")");
 
-        return sb.toString();
+        return "(" +
+                conditionList.stream()
+                        .map(Condition::buildAql)
+                        .collect(Collectors.joining(" " + getSymbol() + " ")) +
+                ")";
     }
 
-    protected abstract String getSymbol();
 
-    protected Condition getCondition1() {
-        return condition1;
-    }
+  protected abstract String getSymbol();
 
-    protected Condition getCondition2() {
-        return condition2;
-    }
 }

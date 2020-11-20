@@ -83,9 +83,9 @@ public class DefaultRestCompositionEndpoint implements CompositionEndpoint {
 
         final VersionUid updatedVersion;
         if (versionUid.isEmpty()) {
-            updatedVersion = httpPost(defaultRestClient.getConfig().getBaseUri().resolve(EHR_PATH + ehrId.toString() + COMPOSITION_PATH), composition);
+            updatedVersion = defaultRestClient.httpPost(defaultRestClient.getConfig().getBaseUri().resolve(EHR_PATH + ehrId.toString() + COMPOSITION_PATH), composition);
         } else {
-            updatedVersion = httpPut(defaultRestClient.getConfig().getBaseUri().resolve(EHR_PATH + ehrId.toString() + COMPOSITION_PATH + versionUid.get().getUuid()), composition, versionUid.get());
+            updatedVersion = defaultRestClient.httpPut(defaultRestClient.getConfig().getBaseUri().resolve(EHR_PATH + ehrId.toString() + COMPOSITION_PATH + versionUid.get().getUuid()), composition, versionUid.get());
         }
         addVersion(entity, updatedVersion);
 
@@ -94,7 +94,7 @@ public class DefaultRestCompositionEndpoint implements CompositionEndpoint {
 
     @Override
     public <T> Optional<T> find(UUID compositionId, Class<T> clazz) {
-        Optional<Composition> composition = httpGet(defaultRestClient.getConfig().getBaseUri().resolve(EHR_PATH + ehrId.toString() + COMPOSITION_PATH + compositionId.toString()), Composition.class);
+        Optional<Composition> composition = defaultRestClient.httpGet(defaultRestClient.getConfig().getBaseUri().resolve(EHR_PATH + ehrId.toString() + COMPOSITION_PATH + compositionId.toString()), Composition.class);
         Optional<T> t = composition
                 .map(c -> new Flattener().flatten(c, clazz));
         if (t.isPresent()) {

@@ -18,7 +18,7 @@
 package org.ehrbase.client.flattener;
 
 import org.apache.commons.lang3.StringUtils;
-import org.ehrbase.webtemplate.FlatPath;
+import org.ehrbase.webtemplate.parser.FlatPath;
 
 import java.util.Optional;
 

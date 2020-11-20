@@ -23,7 +23,7 @@ import com.nedap.archie.rm.datastructures.Element;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.CaseUtils;
 import org.ehrbase.client.exception.ClientException;
-import org.ehrbase.webtemplate.FlatPath;
+import org.ehrbase.webtemplate.parser.FlatPath;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -72,14 +72,28 @@ public class ItemExtractor {
     }
 
     private ItemExtractor invoke() {
-        PathExtractor pathExtractor = new PathExtractor(path);
-        FlatPath childPath = new FlatPath(pathExtractor.getChildPath());
+        FlatPath childPath;
+        String attributeName;
+        String parentPath;
+        if (Locatable.class.isAssignableFrom(rmObject.getClass())) {
+            PathExtractor pathExtractor = new PathExtractor(path);
 
-        String attributeName = pathExtractor.getAttributeName();
-        String parentPath = pathExtractor.getParentPath();
+            childPath = new FlatPath(pathExtractor.getChildPath());
+
+
+            attributeName = pathExtractor.getAttributeName();
+
+            parentPath = pathExtractor.getParentPath();
+            childName = pathExtractor.getChildName();
+        } else {
+            parentPath = "/";
+            childPath = new FlatPath("");
+            attributeName = path.replace("/", "").replace("|", "");
+
+        }
 
         if (StringUtils.isNotBlank(childPath.format(false))) {
-            childName = pathExtractor.getChildName();
+
             //childPath not empty implies  rmObject is Locatable
             if (!Locatable.class.isAssignableFrom(rmObject.getClass())) {
                 throw new ClientException(String.format("Locatable not assignable from %s", rmObject.getClass()));
@@ -92,9 +106,10 @@ public class ItemExtractor {
                 child = locatable.itemAtPath(childPath.format(false));
             }
 
-            if (StringUtils.isNotBlank(childPath.findOtherPredicate("name/value")) && child instanceof List) {
+            FlatPath relativPath = new FlatPath(StringUtils.removeStart(childPath.format(true), parentPath));
+            if (StringUtils.isNotBlank(relativPath.findOtherPredicate("name/value")) && child instanceof List) {
                 child = ((List) child).stream()
-                        .filter(c -> childPath.findOtherPredicate("name/value").equals(((Locatable) c).getNameAsString()))
+                        .filter(c -> relativPath.findOtherPredicate("name/value").equals(((Locatable) c).getNameAsString()))
                         .collect(Collectors.toList());
                 // if name not found return null
                 if (((List<?>) child).isEmpty()) {
@@ -102,8 +117,8 @@ public class ItemExtractor {
                 }
             }
 
-            if (!multi && child instanceof List && ((List) child).size() == 1) {
-                child = ((List) child).get(0);
+            if (!multi && child instanceof List ) {
+                child = ((List) child).stream().findAny().orElse(null);
             }
 
 
