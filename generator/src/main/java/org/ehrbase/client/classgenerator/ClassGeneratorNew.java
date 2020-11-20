@@ -38,11 +38,19 @@ import org.apache.commons.text.CaseUtils;
 import org.ehrbase.client.annotations.Archetype;
 import org.ehrbase.client.annotations.Choice;
 import org.ehrbase.client.annotations.Entity;
+import org.ehrbase.client.annotations.Id;
+import org.ehrbase.client.annotations.OptionFor;
 import org.ehrbase.client.annotations.Path;
 import org.ehrbase.client.annotations.Template;
 import org.ehrbase.client.classgenerator.config.RmClassGeneratorConfig;
+import org.ehrbase.client.classgenerator.shareddefinition.CategoryDefiningcode;
+import org.ehrbase.client.classgenerator.shareddefinition.Language;
+import org.ehrbase.client.classgenerator.shareddefinition.MathFunctionDefiningcode;
+import org.ehrbase.client.classgenerator.shareddefinition.SettingDefiningcode;
+import org.ehrbase.client.classgenerator.shareddefinition.Territory;
 import org.ehrbase.client.flattener.PathExtractor;
 import org.ehrbase.client.introspect.TemplateIntrospect;
+import org.ehrbase.client.openehrclient.VersionUid;
 import org.ehrbase.serialisation.util.SnakeCase;
 import org.ehrbase.terminology.client.terminology.TermDefinition;
 import org.ehrbase.terminology.client.terminology.ValueSet;
@@ -80,6 +88,7 @@ public class ClassGeneratorNew {
   private static class Context {
     final MultiValuedMap<String, TypeSpec> classes = new ArrayListValuedHashMap<>();
     final Deque<WebTemplateNode> nodeDeque = new ArrayDeque<>();
+    final Map<WebTemplateNode, TypeSpec> currentTypeSpec = new HashMap<>();
     String currentMainClass;
     final Deque<String> currentArchetypeName = new ArrayDeque<>();
     final Map<String, Integer> currentClassNameMap = new HashMap<>();
@@ -103,6 +112,7 @@ public class ClassGeneratorNew {
             .addMember(Template.VALUE, "$S", webTemplate.getTemplateId())
             .build();
     builder.addAnnotation(templateAnnotation);
+    addVersionUid(builder);
 
     context.classes.put(
         packageName + "." + context.currentMainClass.toLowerCase(), builder.build());
@@ -110,6 +120,16 @@ public class ClassGeneratorNew {
     ClassGeneratorResult generatorResult = new ClassGeneratorResult();
     context.classes.entries().forEach(e -> generatorResult.addClass(e.getKey(), e.getValue()));
     return generatorResult;
+  }
+
+  private void addVersionUid(TypeSpec.Builder classBuilder) {
+    FieldSpec versionUid =
+        FieldSpec.builder(VersionUid.class, "versionUid", Modifier.PRIVATE)
+            .addAnnotation(Id.class)
+            .build();
+    classBuilder.addField(versionUid);
+    classBuilder.addMethod(buildGetter(versionUid));
+    classBuilder.addMethod(buildSetter(versionUid));
   }
 
   private TypeSpec.Builder build(Context context, WebTemplateNode next) {
@@ -128,7 +148,7 @@ public class ClassGeneratorNew {
     }
 
     context.currentFieldNameMap.push(new HashMap<>());
-
+    context.nodeDeque.push(next);
 
     TypeSpec.Builder classBuilder = TypeSpec.classBuilder(className);
     if (StringUtils.isBlank(context.currentMainClass)) {
@@ -146,7 +166,39 @@ public class ClassGeneratorNew {
     }
 
     Map<String, List<WebTemplateNode>> choices = next.getChoicesInChildren();
-    for (WebTemplateNode child : next.getChildren()) {
+    List<WebTemplateNode> children =
+        next.getChildren().stream()
+            .filter(c -> !choices.containsValue(c))
+            .collect(Collectors.toList());
+
+    if (children.stream().anyMatch(n -> n.getRmType().equals("EVENT"))) {
+      WebTemplateNode event =
+              children.stream().filter(n -> n.getRmType().equals("EVENT")).findAny().get();
+      WebTemplateNode pointEvent = new WebTemplateNode(event);
+      WebTemplateNode intervalEvent = new WebTemplateNode(event);
+      pointEvent.setRmType("POINT_EVENT");
+      intervalEvent.setRmType("INTERVAL_EVENT");
+      WebTemplateNode width = new WebTemplateNode();
+      width.setId("width");
+      width.setName("width");
+      width.setRmType("DV_DURATION");
+      width.setMax(1);
+      width.setAqlPath(event.getAqlPath() + "/width");
+      intervalEvent.getChildren().add(width);
+      WebTemplateNode math = new WebTemplateNode();
+      math.setId("math_function");
+      math.setName("math_function");
+      math.setRmType("DV_CODED_TEXT");
+      math.setMax(1);
+      math.setAqlPath(event.getAqlPath() + "/math_function");
+      intervalEvent.getChildren().add(math);
+      choices.put(intervalEvent.getAqlPath(), List.of(intervalEvent, pointEvent));
+      children.add(intervalEvent);
+      children.add(pointEvent);
+      children.remove(event);
+    }
+
+    for (WebTemplateNode child : children) {
       String relativPath =
           FlatPath.removeStart(new FlatPath(child.getAqlPath()), new FlatPath(next.getAqlPath()))
               .toString();
@@ -156,6 +208,46 @@ public class ClassGeneratorNew {
       } else if (!choices.containsKey(child.getAqlPath())) {
         addComplexField(context, classBuilder, relativPath, child);
       }
+    }
+
+    for (List<WebTemplateNode> choice : choices.values()) {
+      TypeSpec interfaceSpec =
+          TypeSpec.interfaceBuilder(
+                  buildClassName(context, choice.get(0).getName() + "_choice", true))
+              .addModifiers(Modifier.PUBLIC)
+              .build();
+
+      String interfacePackage =
+          context.currentPackageName + "." + context.currentMainClass.toLowerCase() + ".definition";
+      context.classes.put(interfacePackage, interfaceSpec);
+      TypeName interfaceClassName = ClassName.get(interfacePackage, interfaceSpec.name);
+
+      for (WebTemplateNode child : choice) {
+        TypeSpec.Builder build = build(context, child);
+        build
+            .addSuperinterface(interfaceClassName)
+            .addAnnotation(
+                AnnotationSpec.builder(OptionFor.class)
+                    .addMember(OptionFor.VALUE, "$S", child.getRmType())
+                    .build());
+        context.classes.put(interfacePackage, build.build());
+      }
+      if (choice.stream().anyMatch(WebTemplateNode::isMulti)) {
+        interfaceClassName =
+            ParameterizedTypeName.get(ClassName.get(List.class), interfaceClassName);
+      }
+      String relativPath =
+          FlatPath.removeStart(
+                  new FlatPath(choice.get(0).getAqlPath()), new FlatPath(next.getAqlPath()))
+              .toString();
+      addField(
+          context,
+          classBuilder,
+          relativPath,
+          choice.get(0).getName(),
+          interfaceClassName,
+          new ValueSet(ValueSet.LOCAL, ValueSet.LOCAL, Collections.emptySet()),
+          true);
     }
     if (next.isArchetype()) {
       context.currentArchetypeName.poll();
@@ -220,7 +312,25 @@ public class ClassGeneratorNew {
   private void addComplexField(
       Context context, TypeSpec.Builder classBuilder, String path, WebTemplateNode node) {
 
-    TypeSpec subSpec = build(context, node).build();
+    final TypeSpec subSpec;
+
+    WebTemplateNode relativeNode = new WebTemplateNode(node);
+
+    List<WebTemplateNode> matching = relativeNode.findMatching(n -> true);
+    matching.add(relativeNode);
+    matching.forEach(n -> {
+      String relativPath =
+              FlatPath.removeStart(new FlatPath(n.getAqlPath()), new FlatPath(context.nodeDeque.peek().getAqlPath()))
+                      .toString();
+      n.setAqlPath(relativPath);
+    });
+
+    if (context.currentTypeSpec.containsKey(relativeNode)) {
+      subSpec = context.currentTypeSpec.get(relativeNode);
+    } else {
+      subSpec = build(context,node).build();
+      context.currentTypeSpec.put(relativeNode, subSpec);
+    }
     String subSpecPackage =
         context.currentPackageName + "." + context.currentMainClass.toLowerCase() + ".definition";
 
@@ -242,7 +352,7 @@ public class ClassGeneratorNew {
   private void addSimpleField(
       Context context, TypeSpec.Builder classBuilder, String path, WebTemplateNode endNode) {
 
-    Class clazz = RM_INFO_LOOKUP.getClass(endNode.getRmType());
+    Class clazz = extractClass(endNode);
     if (clazz == null) {
       logger.warn("No class for path {} ", path);
       return;
@@ -281,6 +391,13 @@ public class ClassGeneratorNew {
     }
   }
 
+  private Class extractClass(WebTemplateNode endNode) {
+    if ("STRING".equals(endNode.getRmType())) {
+      return String.class;
+    }
+    return RM_INFO_LOOKUP.getClass(endNode.getRmType());
+  }
+
   private ValueSet buildValueSet(WebTemplateNode endNode) {
 
     Optional<WebTemplateInput> input =
@@ -314,26 +431,40 @@ public class ClassGeneratorNew {
       ValueSet valueSet,
       boolean addChoiceAnnotation) {
 
-    if (CodePhrase.class.getName().equals(className.toString())
-        && CollectionUtils.isNotEmpty(valueSet.getTherms())) {
+    if (CodePhrase.class.getName().equals(className.toString()))
+      switch (name) {
+        case "language":
+          className = ClassName.get(Language.class);
+          break;
+        case "setting_definingCode":
+          className = ClassName.get(SettingDefiningcode.class);
+          break;
+        case "category_definingCode":
+          className = ClassName.get(CategoryDefiningcode.class);
+          break;
+        case "territory":
+          className = ClassName.get(Territory.class);
+          break;
+        case "math_function_definingCode":
+          className = ClassName.get(MathFunctionDefiningcode.class);
+          break;
+        default:
+          if (CollectionUtils.isNotEmpty(valueSet.getTherms())) {
 
-      final TypeSpec enumValueSet =
-          context.currentEnums.computeIfAbsent(
-              valueSet, vs -> buildEnumValueSet(context, name, vs));
+            final TypeSpec enumValueSet =
+                context.currentEnums.computeIfAbsent(
+                    valueSet, vs -> buildEnumValueSet(context, name, vs));
 
-      String enumPackage;
-      if (valueSet.getId().equals("local") || valueSet.getTerminologyId().equals("local")) {
-        enumPackage =
-            context.currentPackageName
-                + "."
-                + context.currentMainClass.toLowerCase()
-                + ".definition";
-      } else {
-        enumPackage = context.currentPackageName + ".shareddefinition";
+            String enumPackage =
+                context.currentPackageName
+                    + "."
+                    + context.currentMainClass.toLowerCase()
+                    + ".definition";
+
+            context.classes.put(enumPackage, enumValueSet);
+            className = ClassName.get(enumPackage, enumValueSet.name);
+          }
       }
-      context.classes.put(enumPackage, enumValueSet);
-      className = ClassName.get(enumPackage, enumValueSet.name);
-    }
 
     PathExtractor pathExtractor = new PathExtractor(path);
     String parentPath = pathExtractor.getParentPath();

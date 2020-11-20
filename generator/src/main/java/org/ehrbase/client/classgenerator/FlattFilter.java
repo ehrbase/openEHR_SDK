@@ -19,6 +19,7 @@
 
 package org.ehrbase.client.classgenerator;
 
+import com.nedap.archie.rm.datastructures.Event;
 import com.nedap.archie.rminfo.RMTypeInfo;
 import org.apache.commons.collections4.SetUtils;
 import org.ehrbase.serialisation.util.SnakeCase;
@@ -39,19 +40,19 @@ public class FlattFilter extends Filter {
 
   @Override
   protected boolean skip(WebTemplateNode node, WebTemplate context, WebTemplateNode parent) {
-    if (!node.getChildren().isEmpty() && node.getMax() == 1 && !node.isArchetype()) {
+    if (!node.getChildren().isEmpty() && node.getMax() == 1 && !node.isArchetype() && (  !isEvent(node) || parent.getChildren().stream().filter(this::isEvent).count() == 1)){
       return true;
     } else {
       if (parent != null) {
         RMTypeInfo typeInfo = ARCHIE_RM_INFO_LOOKUP.getTypeInfo(parent.getRmType());
         Set<String> attributeNames = Optional.ofNullable(configMap.get(typeInfo.getJavaClass())).map(RmIntrospectConfig::getNonTemplateFields).orElse(Collections.emptySet()).stream().map(s -> new SnakeCase(s).camelToSnake()).collect(Collectors.toSet());
         attributeNames.add("context");
-        attributeNames.add("encoding");
         attributeNames.add("timing");
         attributeNames.add("expiry_time");
         attributeNames.add("lower");
         attributeNames.add("upper");
         attributeNames.add("ism_transition");
+        attributeNames.add("location");
         SetUtils.SetView<String> difference = SetUtils.difference(typeInfo.getAttributes().keySet(), attributeNames);
         if (difference.contains(node.getName())) {
           return true;
@@ -59,5 +60,10 @@ public class FlattFilter extends Filter {
       }
       return false;
     }
+  }
+
+  private boolean isEvent(WebTemplateNode node){
+    RMTypeInfo typeInfo = ARCHIE_RM_INFO_LOOKUP.getTypeInfo(node.getRmType());
+    return typeInfo != null && Event.class.isAssignableFrom(typeInfo.getJavaClass());
   }
 }
