@@ -2,6 +2,7 @@ package org.ehrbase.client.classgenerator.examples2.alternativeeventscomposition
 
 import com.nedap.archie.rm.datastructures.Cluster;
 import com.nedap.archie.rm.generic.PartyProxy;
+import java.time.temporal.TemporalAccessor;
 import org.ehrbase.client.aql.containment.Containment;
 import org.ehrbase.client.aql.field.AqlFieldImp;
 import org.ehrbase.client.aql.field.ListAqlFieldImp;
@@ -9,12 +10,10 @@ import org.ehrbase.client.aql.field.ListSelectAqlField;
 import org.ehrbase.client.aql.field.SelectAqlField;
 import org.ehrbase.client.classgenerator.shareddefinition.Language;
 
-import java.time.temporal.TemporalAccessor;
-
 public class KorpergewichtObservationContainment extends Containment {
   public SelectAqlField<KorpergewichtObservation> KORPERGEWICHT_OBSERVATION = new AqlFieldImp<KorpergewichtObservation>(KorpergewichtObservation.class, "", "KorpergewichtObservation", KorpergewichtObservation.class, this);
 
-  public SelectAqlField<BirthEnPointEvent> BIRTH_EN = new AqlFieldImp<BirthEnPointEvent>(KorpergewichtObservation.class, "/data[at0002]/events[at0026]", "birthEn", BirthEnPointEvent.class, this);
+  public SelectAqlField<KorpergewichtBirthEnPointEvent> BIRTH_EN = new AqlFieldImp<KorpergewichtBirthEnPointEvent>(KorpergewichtObservation.class, "/data[at0002]/events[at0026]", "birthEn", KorpergewichtBirthEnPointEvent.class, this);
 
   public SelectAqlField<TemporalAccessor> ORIGIN_VALUE = new AqlFieldImp<TemporalAccessor>(KorpergewichtObservation.class, "/data[at0002]/origin|value", "originValue", TemporalAccessor.class, this);
 

@@ -36,11 +36,12 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class Filter {
+public class Filter implements WebtemplateFilter {
 
     private static final Map<Class<?>, RmIntrospectConfig> configMap = ReflectionHelper.buildMap(RmIntrospectConfig.class);
     public static final ArchieRMInfoLookup ARCHIE_RM_INFO_LOOKUP = ArchieRMInfoLookup.getInstance();
 
+    @Override
     public WebTemplate filter(WebTemplate webTemplate) {
         WebTemplate clone = new WebTemplate(webTemplate);
         List<WebTemplateNode> filteredChildren = filter(clone.getTree(), webTemplate, null);
@@ -50,6 +51,23 @@ public class Filter {
     }
 
     protected List<WebTemplateNode> filter(WebTemplateNode node, WebTemplate context, WebTemplateNode parent) {
+        preHandle(node);
+        List<WebTemplateNode> nodes;
+        List<WebTemplateNode> filteredChildren = node.getChildren().stream().map(n -> filter(n, context, node)).flatMap(List::stream).collect(Collectors.toList());
+        node.getChildren().clear();
+        node.getChildren().addAll(filteredChildren);
+        if (skip(node, context, parent)) {
+            nodes = filteredChildren;
+
+        } else {
+            nodes = Collections.singletonList(node);
+
+        }
+        OPTParser.makeIdUnique(node);
+        return nodes;
+    }
+
+    protected void preHandle(WebTemplateNode node) {
         List<WebTemplateNode> nodes;
         List<WebTemplateNode> ismTransitionList = node.getChildren().stream()
                 .filter(n -> "ISM_TRANSITION".equals(n.getRmType()))
@@ -64,18 +82,6 @@ public class Filter {
             node.getChildren().clear();
             node.getChildren().add(merged);
         }
-        List<WebTemplateNode> filteredChildren = node.getChildren().stream().map(n -> filter(n, context, node)).flatMap(List::stream).collect(Collectors.toList());
-        node.getChildren().clear();
-        node.getChildren().addAll(filteredChildren);
-        if (skip(node, context, parent)) {
-            nodes = filteredChildren;
-
-        } else {
-            nodes = Collections.singletonList(node);
-
-        }
-        OPTParser.makeIdUnique(node);
-        return nodes;
     }
 
     protected boolean skip(WebTemplateNode node, WebTemplate context, WebTemplateNode parent) {
@@ -95,6 +101,8 @@ public class Filter {
             attributeNames.add("lower");
             attributeNames.add("upper");
             attributeNames.add("ism_transition");
+
+
             SetUtils.SetView<String> difference = SetUtils.difference(typeInfo.getAttributes().keySet(), attributeNames);
             if (difference.contains(node.getName())) {
                 return true;

@@ -30,6 +30,7 @@ import org.ehrbase.webtemplate.model.WebTemplateNode;
 import org.ehrbase.webtemplate.parser.config.RmIntrospectConfig;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -53,6 +54,9 @@ public class FlattFilter extends Filter {
         attributeNames.add("upper");
         attributeNames.add("ism_transition");
         attributeNames.add("location");
+        attributeNames.add("lower_included");
+        attributeNames.add("upper_included");
+
         SetUtils.SetView<String> difference = SetUtils.difference(typeInfo.getAttributes().keySet(), attributeNames);
         if (difference.contains(node.getName())) {
           return true;
@@ -65,5 +69,22 @@ public class FlattFilter extends Filter {
   private boolean isEvent(WebTemplateNode node){
     RMTypeInfo typeInfo = ARCHIE_RM_INFO_LOOKUP.getTypeInfo(node.getRmType());
     return typeInfo != null && Event.class.isAssignableFrom(typeInfo.getJavaClass());
+  }
+
+  protected void preHandle(WebTemplateNode node) {
+
+    List<WebTemplateNode> ismTransitionList = node.getChildren().stream()
+            .filter(n -> "ISM_TRANSITION".equals(n.getRmType()))
+            .collect(Collectors.toList());
+    if (!ismTransitionList.isEmpty()) {
+      node.getChildren().removeAll(ismTransitionList);
+      node.getChildren().add(ismTransitionList.get(0));
+    }
+
+    if (node.getRmType().equals("ELEMENT") && node.getChildren().size() == 3 && node.getChildren().stream().map(WebTemplateNode::getRmType).collect(Collectors.toList()).containsAll(List.of("DV_TEXT", "DV_CODED_TEXT"))) {
+      WebTemplateNode merged = node.findChildById(node.getId(false)).orElseThrow();
+
+      node.getChildren().remove(merged);
+    }
   }
 }

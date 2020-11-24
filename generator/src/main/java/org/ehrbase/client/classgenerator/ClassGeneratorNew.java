@@ -55,6 +55,7 @@ import org.ehrbase.serialisation.util.SnakeCase;
 import org.ehrbase.terminology.client.terminology.TermDefinition;
 import org.ehrbase.terminology.client.terminology.ValueSet;
 import org.ehrbase.util.reflection.ReflectionHelper;
+import org.ehrbase.webtemplate.filter.WebtemplateFilter;
 import org.ehrbase.webtemplate.model.WebTemplate;
 import org.ehrbase.webtemplate.model.WebTemplateInput;
 import org.ehrbase.webtemplate.model.WebTemplateInputValue;
@@ -100,13 +101,20 @@ public class ClassGeneratorNew {
 
   private Logger logger = LoggerFactory.getLogger(this.getClass());
 
+  private final WebtemplateFilter filter;
+
+  public ClassGeneratorNew(ClassGeneratorConfig config) {
+
+    filter = new FlattFilter();
+  }
+
   public ClassGeneratorResult generate(String packageName, WebTemplate webTemplate) {
 
     Context context = new Context();
     context.templateId = webTemplate.getTemplateId();
     context.currentPackageName = packageName;
 
-    TypeSpec.Builder builder = build(context, webTemplate.getTree());
+    TypeSpec.Builder builder = build(context, filter.filter(webTemplate).getTree());
     AnnotationSpec templateAnnotation =
         AnnotationSpec.builder(Template.class)
             .addMember(Template.VALUE, "$S", webTemplate.getTemplateId())
@@ -141,7 +149,7 @@ public class ClassGeneratorNew {
       className = buildClassName(context, name, false);
     } else {
       name = new SnakeCase(next.getName()).camelToSnake() + "_" + next.getRmType();
-      className = buildClassName(context, name, false);
+      className = buildClassName(context, name, context.nodeDeque.size() > 1);
     }
     if (next.isArchetype()) {
       context.currentArchetypeName.push(next.getName());
@@ -173,7 +181,7 @@ public class ClassGeneratorNew {
 
     if (children.stream().anyMatch(n -> n.getRmType().equals("EVENT"))) {
       WebTemplateNode event =
-              children.stream().filter(n -> n.getRmType().equals("EVENT")).findAny().get();
+          children.stream().filter(n -> n.getRmType().equals("EVENT")).findAny().get();
       WebTemplateNode pointEvent = new WebTemplateNode(event);
       WebTemplateNode intervalEvent = new WebTemplateNode(event);
       pointEvent.setRmType("POINT_EVENT");
@@ -209,28 +217,54 @@ public class ClassGeneratorNew {
         addComplexField(context, classBuilder, relativPath, child);
       }
     }
+    if (children.isEmpty()){
+      addSimpleField(context, classBuilder, "", next);
+    }
 
     for (List<WebTemplateNode> choice : choices.values()) {
-      TypeSpec interfaceSpec =
-          TypeSpec.interfaceBuilder(
-                  buildClassName(context, choice.get(0).getName() + "_choice", true))
-              .addModifiers(Modifier.PUBLIC)
-              .build();
 
-      String interfacePackage =
-          context.currentPackageName + "." + context.currentMainClass.toLowerCase() + ".definition";
-      context.classes.put(interfacePackage, interfaceSpec);
-      TypeName interfaceClassName = ClassName.get(interfacePackage, interfaceSpec.name);
 
-      for (WebTemplateNode child : choice) {
-        TypeSpec.Builder build = build(context, child);
-        build
-            .addSuperinterface(interfaceClassName)
-            .addAnnotation(
-                AnnotationSpec.builder(OptionFor.class)
-                    .addMember(OptionFor.VALUE, "$S", child.getRmType())
-                    .build());
-        context.classes.put(interfacePackage, build.build());
+
+      WebTemplateNode node = choice.get(0);
+      WebTemplateNode relativeNode = buildRelativeNode(context, node);
+
+      TypeSpec interfaceSpec;
+      TypeName interfaceClassName;
+      if (context.currentTypeSpec.containsKey(relativeNode)) {
+        interfaceSpec = context.currentTypeSpec.get(relativeNode);
+        String interfacePackage =
+                context.currentPackageName
+                        + "."
+                        + context.currentMainClass.toLowerCase()
+                        + ".definition";
+        context.classes.put(interfacePackage, interfaceSpec);
+
+        interfaceClassName = ClassName.get(interfacePackage, interfaceSpec.name);
+      } else {
+        interfaceSpec =
+            TypeSpec.interfaceBuilder(buildClassName(context, node.getName() + "_choice", true))
+                .addModifiers(Modifier.PUBLIC)
+                .build();
+        context.currentTypeSpec.put(relativeNode, interfaceSpec);
+
+        String interfacePackage =
+            context.currentPackageName
+                + "."
+                + context.currentMainClass.toLowerCase()
+                + ".definition";
+        context.classes.put(interfacePackage, interfaceSpec);
+         interfaceClassName = ClassName.get(interfacePackage, interfaceSpec.name);
+
+        for (WebTemplateNode child : choice) {
+          TypeSpec.Builder build = build(context, child);
+          build
+              .addSuperinterface(interfaceClassName)
+              .addAnnotation(
+                  AnnotationSpec.builder(OptionFor.class)
+                      .addMember(OptionFor.VALUE, "$S", child.getRmType())
+                      .build());
+          context.classes.put(interfacePackage, build.build());
+        }
       }
       if (choice.stream().anyMatch(WebTemplateNode::isMulti)) {
         interfaceClassName =
@@ -238,13 +272,13 @@ public class ClassGeneratorNew {
       }
       String relativPath =
           FlatPath.removeStart(
-                  new FlatPath(choice.get(0).getAqlPath()), new FlatPath(next.getAqlPath()))
+                  new FlatPath(node.getAqlPath()), new FlatPath(next.getAqlPath()))
               .toString();
       addField(
           context,
           classBuilder,
           relativPath,
-          choice.get(0).getName(),
+          node.getName(),
           interfaceClassName,
           new ValueSet(ValueSet.LOCAL, ValueSet.LOCAL, Collections.emptySet()),
           true);
@@ -314,21 +348,12 @@ public class ClassGeneratorNew {
 
     final TypeSpec subSpec;
 
-    WebTemplateNode relativeNode = new WebTemplateNode(node);
-
-    List<WebTemplateNode> matching = relativeNode.findMatching(n -> true);
-    matching.add(relativeNode);
-    matching.forEach(n -> {
-      String relativPath =
-              FlatPath.removeStart(new FlatPath(n.getAqlPath()), new FlatPath(context.nodeDeque.peek().getAqlPath()))
-                      .toString();
-      n.setAqlPath(relativPath);
-    });
+    WebTemplateNode relativeNode = buildRelativeNode(context, node);
 
     if (context.currentTypeSpec.containsKey(relativeNode)) {
       subSpec = context.currentTypeSpec.get(relativeNode);
     } else {
-      subSpec = build(context,node).build();
+      subSpec = build(context, node).build();
       context.currentTypeSpec.put(relativeNode, subSpec);
     }
     String subSpecPackage =
@@ -347,6 +372,23 @@ public class ClassGeneratorNew {
         className,
         new ValueSet(ValueSet.LOCAL, ValueSet.LOCAL, Collections.emptySet()),
         false);
+  }
+
+  private WebTemplateNode buildRelativeNode(Context context, WebTemplateNode node) {
+    WebTemplateNode relativeNode = new WebTemplateNode(node);
+
+    List<WebTemplateNode> matching = relativeNode.findMatching(n -> true);
+    matching.add(relativeNode);
+    matching.forEach(
+        n -> {
+          String relativPath =
+              FlatPath.removeStart(
+                      new FlatPath(n.getAqlPath()),
+                      new FlatPath(context.nodeDeque.peek().getAqlPath()))
+                  .toString();
+          n.setAqlPath(relativPath);
+        });
+    return relativeNode;
   }
 
   private void addSimpleField(
@@ -391,11 +433,17 @@ public class ClassGeneratorNew {
     }
   }
 
-  private Class extractClass(WebTemplateNode endNode) {
-    if ("STRING".equals(endNode.getRmType())) {
-      return String.class;
+  private Class<?> extractClass(WebTemplateNode endNode) {
+    switch (endNode.getRmType()) {
+      case "STRING":
+        return String.class;
+      case "BOOLEAN":
+        return Boolean.class;
+      case "INTEGER":
+        return Long.class;
+      default:
+        return RM_INFO_LOOKUP.getClass(endNode.getRmType());
     }
-    return RM_INFO_LOOKUP.getClass(endNode.getRmType());
   }
 
   private ValueSet buildValueSet(WebTemplateNode endNode) {
@@ -572,6 +620,14 @@ public class ClassGeneratorNew {
   }
 
   private String buildFieldName(Context context, String name) {
+    if(name.equals( "value")){
+      name = context.nodeDeque.peek().getName();
+    }
+    if (context.nodeDeque.peek().getRmType().equals("ELEMENT")) {
+      name = "value";
+    }
+
+
     String[] strings =
         Arrays.stream(name.split(TemplateIntrospect.TERM_DIVIDER))
             .filter(StringUtils::isNotBlank)
@@ -579,6 +635,7 @@ public class ClassGeneratorNew {
 
     String fieldName = "";
     String nonNormalized = "";
+
     for (int i = 0; i < strings.length; i++) {
       nonNormalized = nonNormalized + "_" + strings[strings.length - (i + 1)];
       fieldName = normalise(nonNormalized, false);

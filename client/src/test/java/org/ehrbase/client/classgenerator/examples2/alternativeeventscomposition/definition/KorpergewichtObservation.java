@@ -2,20 +2,19 @@ package org.ehrbase.client.classgenerator.examples2.alternativeeventscomposition
 
 import com.nedap.archie.rm.datastructures.Cluster;
 import com.nedap.archie.rm.generic.PartyProxy;
+import java.time.temporal.TemporalAccessor;
+import java.util.List;
 import org.ehrbase.client.annotations.Archetype;
 import org.ehrbase.client.annotations.Choice;
 import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.Path;
 import org.ehrbase.client.classgenerator.shareddefinition.Language;
 
-import java.time.temporal.TemporalAccessor;
-import java.util.List;
-
 @Entity
 @Archetype("openEHR-EHR-OBSERVATION.body_weight.v2")
 public class KorpergewichtObservation {
   @Path("/data[at0002]/events[at0026]")
-  private BirthEnPointEvent birthEn;
+  private KorpergewichtBirthEnPointEvent birthEn;
 
   @Path("/data[at0002]/origin|value")
   private TemporalAccessor originValue;
@@ -36,11 +35,11 @@ public class KorpergewichtObservation {
   @Choice
   private List<KorpergewichtAnyEventEnChoice> anyEventEn;
 
-  public void setBirthEn(BirthEnPointEvent birthEn) {
+  public void setBirthEn(KorpergewichtBirthEnPointEvent birthEn) {
      this.birthEn = birthEn;
   }
 
-  public BirthEnPointEvent getBirthEn() {
+  public KorpergewichtBirthEnPointEvent getBirthEn() {
      return this.birthEn ;
   }
 

@@ -242,12 +242,41 @@ public class ClassGeneratorTest {
         OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(OperationalTemplateTestData.EPISODE_OF_CARE.getStream()).getTemplate();
         ClassGenerator cut = new ClassGenerator();
         ClassGeneratorResult generate = cut.generate(PACKAGE_NAME, template);
-        List<FieldSpec> fieldSpecs = generate.getClasses().values().stream()
+        List<String> fieldSpecs = generate.getClasses().values().stream()
                 .flatMap(Collection::stream)
                 .filter(t -> !t.kind.equals(TypeSpec.Kind.ENUM))
-                .map(t -> t.fieldSpecs).flatMap(List::stream).collect(Collectors.toList());
+                .map(t -> t.fieldSpecs).flatMap(List::stream).map(f -> f.name).collect(Collectors.toList());
 
-        assertThat(fieldSpecs).size().isEqualTo(28);
+        assertThat(fieldSpecs).containsExactlyInAnyOrder(
+                "value",
+                "value",
+                "rankMagnitude",
+                "roleValue",
+                "diagnosisEntry",
+                "identifier",
+                "team",
+                "statusDefiningcode",
+                "language",
+                "diagnosis",
+                "subject",
+                "managingOrganizationValue",
+                "typeValue",
+                "period",
+                "careManagerValue",
+                "versionUid",
+                "episodeofcare",
+                "endTimeValue",
+                "participations",
+                "language",
+                "healthcarefacility",
+                "composer",
+                "settingDefiningcode",
+                "territory",
+                "feederAudit",
+                "location",
+                "categoryDefiningcode",
+                "startTimeValue"
+        );
 
         writeFiles(generate);
 
@@ -259,12 +288,93 @@ public class ClassGeneratorTest {
         OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(OperationalTemplateTestData.SM_I_C_S_BEFUND.getStream()).getTemplate();
         ClassGenerator cut = new ClassGenerator();
         ClassGeneratorResult generate = cut.generate(PACKAGE_NAME, template);
-        List<FieldSpec> fieldSpecs = generate.getClasses().values().stream()
+        List<String> fieldSpecs = generate.getClasses().values().stream()
                 .flatMap(Collection::stream)
                 .filter(t -> !t.kind.equals(TypeSpec.Kind.ENUM))
-                .map(t -> t.fieldSpecs).flatMap(List::stream).collect(Collectors.toList());
+                .map(t -> t.fieldSpecs).flatMap(List::stream).map(f -> f.name).collect(Collectors.toList());
 
-        assertThat(fieldSpecs).size().isEqualTo(80);
+        assertThat(fieldSpecs).containsExactlyInAnyOrder(
+                "value",
+                "valueValue",
+                "value",
+                "idDerPerson",
+                "artDerPersonValue",
+                "kommentarValue",
+                "fallKategorieValue",
+                "fallidentifikationValue",
+                "fallArtValue",
+                "beteiligtePersonen",
+                "zimmerValue",
+                "stationValue",
+                "details",
+                "standorttypValue",
+                "standortbeschreibungValue",
+                "standortschlusselValue",
+                "antibiotikumDefiningcode",
+                "resistenzValue",
+                "kommentarValue",
+                "minimaleHemmkonzentrationMagnitude",
+                "minimaleHemmkonzentrationUnits",
+                "analyseergebnisDetails",
+                "laboranalytResultat",
+                "resistenzmechanismusBezeichnungValue",
+                "value",
+                "antibiogramm",
+                "haufigkeit",
+                "kommentarValue",
+                "resistenzmechanismus",
+                "keimzahlMagnitude",
+                "keimzahlUnits",
+                "weitereErganzungen",
+                "keimSubtyp",
+                "keimzahlDefiningcode",
+                "virulenzfaktorValue",
+                "mreKlasseDefiningcode",
+                "magnitude",
+                "definingcode",
+                "value",
+                "bewertungValue",
+                "kommentarValue",
+                "artDerTypisierung",
+                "ergebnis",
+                "erregernameDefiningcode",
+                "language",
+                "standort",
+                "zeitpunktDesErstenErregernachweisesValue",
+                "zeitpunktDesLetztenErregernachweisesValue",
+                "transmissionswegValue",
+                "ubertragungswegValue",
+                "erregerdetails",
+                "smicsErgebniskategorieDefiningcode",
+                "multispeziesValue",
+                "anzahlDerErregernachweise",
+                "timeValue",
+                "beginnValue",
+                "beginnDerUntersuchungValue",
+                "endeValue",
+                "dauerValue",
+                "subject",
+                "originValue",
+                "erregertypisierung",
+                "kommentarValue",
+                "kommentarValueArtDerUbertragung",
+                "versionUid",
+                "endTimeValue",
+                "participations",
+                "language",
+                "healthCareFacility",
+                "statusValue",
+                "berichtIdValue",
+                "territory",
+                "eventsummary",
+                "startTimeValue",
+                "smicsErgebnis",
+                "composer",
+                "settingDefiningcode",
+                "feederAudit",
+                "location",
+                "categoryDefiningcode"
+        );
 
         writeFiles(generate);
 

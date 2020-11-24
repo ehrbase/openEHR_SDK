@@ -5,6 +5,8 @@ import com.nedap.archie.rm.datastructures.Cluster;
 import com.nedap.archie.rm.generic.Participation;
 import com.nedap.archie.rm.generic.PartyIdentified;
 import com.nedap.archie.rm.generic.PartyProxy;
+import java.lang.String;
+import java.time.temporal.TemporalAccessor;
 import org.ehrbase.client.aql.containment.Containment;
 import org.ehrbase.client.aql.field.AqlFieldImp;
 import org.ehrbase.client.aql.field.ListAqlFieldImp;
@@ -15,8 +17,6 @@ import org.ehrbase.client.classgenerator.shareddefinition.CategoryDefiningcode;
 import org.ehrbase.client.classgenerator.shareddefinition.Language;
 import org.ehrbase.client.classgenerator.shareddefinition.SettingDefiningcode;
 import org.ehrbase.client.classgenerator.shareddefinition.Territory;
-
-import java.time.temporal.TemporalAccessor;
 
 public class AlternativeEventsCompositionContainment extends Containment {
   public SelectAqlField<AlternativeEventsComposition> ALTERNATIVE_EVENTS_COMPOSITION = new AqlFieldImp<AlternativeEventsComposition>(AlternativeEventsComposition.class, "", "AlternativeEventsComposition", AlternativeEventsComposition.class, this);
