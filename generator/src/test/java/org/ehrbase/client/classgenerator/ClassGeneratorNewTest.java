@@ -49,7 +49,7 @@ public class ClassGeneratorNewTest {
 
   public static final String PACKAGE_NAME = "org.ehrbase.client.classgenerator.examples2";
 
-  private static final boolean WRITE_FILES = true;
+  private static final boolean WRITE_FILES = false;
 
   @Test
   public void testGenerate() throws IOException, XmlException {
@@ -193,8 +193,8 @@ public class ClassGeneratorNewTest {
                 "java.util.List<org.ehrbase.client.classgenerator.examples2.alternativeeventscomposition.definition.KorpergewichtConfoundingFactorsEnElement>"),
             new Tuple("commentEnValue", "java.lang.String"),
             new Tuple(
-                "stateOfDressEnDefiningcode",
-                "org.ehrbase.client.classgenerator.examples2.alternativeeventscomposition.definition.StateOfDressEnDefiningcode"),
+                "stateOfDressEnDefiningCode",
+                "org.ehrbase.client.classgenerator.examples2.alternativeeventscomposition.definition.StateOfDressEnDefiningCode"),
             new Tuple("value", "java.lang.String"),
             new Tuple("timeValue", "java.time.temporal.TemporalAccessor"),
             new Tuple("gewichtMagnitude", "java.lang.Double"),
@@ -204,8 +204,8 @@ public class ClassGeneratorNewTest {
                 "java.util.List<org.ehrbase.client.classgenerator.examples2.alternativeeventscomposition.definition.KorpergewichtConfoundingFactorsEnElement>"),
             new Tuple("commentEnValue", "java.lang.String"),
             new Tuple(
-                "stateOfDressEnDefiningcode",
-                "org.ehrbase.client.classgenerator.examples2.alternativeeventscomposition.definition.StateOfDressEnDefiningcode"),
+                "stateOfDressEnDefiningCode",
+                "org.ehrbase.client.classgenerator.examples2.alternativeeventscomposition.definition.StateOfDressEnDefiningCode"),
             new Tuple("value", "java.lang.String"),
             new Tuple("timeValue", "java.time.temporal.TemporalAccessor"),
             new Tuple("gewichtMagnitude", "java.lang.Double"),
@@ -216,11 +216,11 @@ public class ClassGeneratorNewTest {
             new Tuple("widthValue", "java.time.temporal.TemporalAmount"),
             new Tuple("commentEnValue", "java.lang.String"),
             new Tuple(
-                "stateOfDressEnDefiningcode",
-                "org.ehrbase.client.classgenerator.examples2.alternativeeventscomposition.definition.StateOfDressEnDefiningcode"),
+                "stateOfDressEnDefiningCode",
+                "org.ehrbase.client.classgenerator.examples2.alternativeeventscomposition.definition.StateOfDressEnDefiningCode"),
             new Tuple(
-                "mathFunctionDefiningcode",
-                "org.ehrbase.client.classgenerator.shareddefinition.MathFunctionDefiningcode"),
+                "mathFunctionDefiningCode",
+                "org.ehrbase.client.classgenerator.shareddefinition.MathFunction"),
             new Tuple(
                 "birthEn",
                 "org.ehrbase.client.classgenerator.examples2.alternativeeventscomposition.definition.KorpergewichtBirthEnPointEvent"),
@@ -246,16 +246,16 @@ public class ClassGeneratorNewTest {
             new Tuple("startTimeValue", "java.time.temporal.TemporalAccessor"),
             new Tuple("composer", "com.nedap.archie.rm.generic.PartyProxy"),
             new Tuple(
-                "settingDefiningcode",
-                "org.ehrbase.client.classgenerator.shareddefinition.SettingDefiningcode"),
+                "settingDefiningCode",
+                "org.ehrbase.client.classgenerator.shareddefinition.Setting"),
             new Tuple(
                 "korpergewicht",
                 "java.util.List<org.ehrbase.client.classgenerator.examples2.alternativeeventscomposition.definition.KorpergewichtObservation>"),
             new Tuple("erweiterung", "java.util.List<com.nedap.archie.rm.datastructures.Cluster>"),
             new Tuple("location", "java.lang.String"),
             new Tuple(
-                "categoryDefiningcode",
-                "org.ehrbase.client.classgenerator.shareddefinition.CategoryDefiningcode"),
+                "categoryDefiningCode",
+                "org.ehrbase.client.classgenerator.shareddefinition.Category"),
             new Tuple(
                 "participations", "java.util.List<com.nedap.archie.rm.generic.Participation>"),
             new Tuple("feederAudit", "com.nedap.archie.rm.archetyped.FeederAudit"));

@@ -76,7 +76,7 @@ public class FlattenerTest {
 
         RMObject rmObject = new Unflattener(new TestDataTemplateProvider()).unflatten(bloodpressureListDe);
 
-        BloodpressureListDe expected = cut.flatten((Locatable) rmObject, BloodpressureListDe.class);
+        BloodpressureListDe expected = cut.flatten(rmObject, BloodpressureListDe.class);
 
         assertThat(expected).isNotNull();
         assertThat(expected.getStartTime()).isEqualTo(bloodpressureListDe.getStartTime());

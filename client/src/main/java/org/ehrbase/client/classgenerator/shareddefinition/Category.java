@@ -2,7 +2,7 @@ package org.ehrbase.client.classgenerator.shareddefinition;
 
 import org.ehrbase.client.classgenerator.EnumValueSet;
 
-public enum CategoryDefiningcode implements EnumValueSet {
+public enum Category implements EnumValueSet {
   EVENT("event", "event", "openehr", "433"),
 
   EPISODIC("episodic", "episodic", "openehr", "435"),
@@ -17,7 +17,7 @@ public enum CategoryDefiningcode implements EnumValueSet {
 
   private String code;
 
-  CategoryDefiningcode(String value, String description, String terminologyId, String code) {
+  Category(String value, String description, String terminologyId, String code) {
     this.value = value;
     this.description = description;
     this.terminologyId = terminologyId;

@@ -31,10 +31,8 @@ import com.squareup.javapoet.TypeSpec;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MultiValuedMap;
 import org.apache.commons.collections4.multimap.ArrayListValuedHashMap;
-import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
-import org.apache.commons.text.CaseUtils;
 import org.ehrbase.client.annotations.Archetype;
 import org.ehrbase.client.annotations.Choice;
 import org.ehrbase.client.annotations.Entity;
@@ -43,13 +41,11 @@ import org.ehrbase.client.annotations.OptionFor;
 import org.ehrbase.client.annotations.Path;
 import org.ehrbase.client.annotations.Template;
 import org.ehrbase.client.classgenerator.config.RmClassGeneratorConfig;
-import org.ehrbase.client.classgenerator.shareddefinition.CategoryDefiningcode;
+import org.ehrbase.client.classgenerator.shareddefinition.Category;
 import org.ehrbase.client.classgenerator.shareddefinition.Language;
-import org.ehrbase.client.classgenerator.shareddefinition.MathFunctionDefiningcode;
-import org.ehrbase.client.classgenerator.shareddefinition.SettingDefiningcode;
+import org.ehrbase.client.classgenerator.shareddefinition.MathFunction;
+import org.ehrbase.client.classgenerator.shareddefinition.Setting;
 import org.ehrbase.client.classgenerator.shareddefinition.Territory;
-import org.ehrbase.client.flattener.PathExtractor;
-import org.ehrbase.client.introspect.TemplateIntrospect;
 import org.ehrbase.client.openehrclient.VersionUid;
 import org.ehrbase.serialisation.util.SnakeCase;
 import org.ehrbase.terminology.client.terminology.TermDefinition;
@@ -64,7 +60,6 @@ import org.ehrbase.webtemplate.parser.FlatPath;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Modifier;
 import java.lang.reflect.Field;
 import java.util.ArrayDeque;
@@ -85,8 +80,9 @@ public class ClassGeneratorNew {
   public static final int CLASS_NAME_MAX_WIDTH = 80;
   private static final Map<Class<?>, RmClassGeneratorConfig> configMap =
       ReflectionHelper.buildMap(RmClassGeneratorConfig.class);
+  private final DefaultNamingStrategy defaultNamingStrategy = new DefaultNamingStrategy();
 
-  private static class Context {
+  static class Context {
     final MultiValuedMap<String, TypeSpec> classes = new ArrayListValuedHashMap<>();
     final Deque<WebTemplateNode> nodeDeque = new ArrayDeque<>();
     final Map<WebTemplateNode, TypeSpec> currentTypeSpec = new HashMap<>();
@@ -142,18 +138,8 @@ public class ClassGeneratorNew {
 
   private TypeSpec.Builder build(Context context, WebTemplateNode next) {
 
-    String name;
-    String className;
-    if (context.currentArchetypeName.isEmpty()) {
-      name = new SnakeCase(context.templateId).camelToSnake() + "_" + next.getRmType();
-      className = buildClassName(context, name, false);
-    } else {
-      name = new SnakeCase(next.getName()).camelToSnake() + "_" + next.getRmType();
-      className = buildClassName(context, name, context.nodeDeque.size() > 1);
-    }
-    if (next.isArchetype()) {
-      context.currentArchetypeName.push(next.getName());
-    }
+
+    String className = defaultNamingStrategy.buildClassName(context, next, false);;
 
     context.currentFieldNameMap.push(new HashMap<>());
     context.nodeDeque.push(next);
@@ -173,15 +159,11 @@ public class ClassGeneratorNew {
       classBuilder.addAnnotation(archetypeAnnotation);
     }
 
-    Map<String, List<WebTemplateNode>> choices = next.getChoicesInChildren();
-    List<WebTemplateNode> children =
-        next.getChildren().stream()
-            .filter(c -> !choices.containsValue(c))
-            .collect(Collectors.toList());
 
-    if (children.stream().anyMatch(n -> n.getRmType().equals("EVENT"))) {
+
+    if (next.getChildren().stream().anyMatch(n -> n.getRmType().equals("EVENT"))) {
       WebTemplateNode event =
-          children.stream().filter(n -> n.getRmType().equals("EVENT")).findAny().get();
+              next.getChildren().stream().filter(n -> n.getRmType().equals("EVENT")).findAny().get();
       WebTemplateNode pointEvent = new WebTemplateNode(event);
       WebTemplateNode intervalEvent = new WebTemplateNode(event);
       pointEvent.setRmType("POINT_EVENT");
@@ -200,12 +182,15 @@ public class ClassGeneratorNew {
       math.setMax(1);
       math.setAqlPath(event.getAqlPath() + "/math_function");
       intervalEvent.getChildren().add(math);
-      choices.put(intervalEvent.getAqlPath(), List.of(intervalEvent, pointEvent));
-      children.add(intervalEvent);
-      children.add(pointEvent);
-      children.remove(event);
+      next.getChildren().add(intervalEvent);
+      next.getChildren().add(pointEvent);
+      next.getChildren().remove(event);
     }
-
+    Map<String, List<WebTemplateNode>> choices = next.getChoicesInChildren();
+    List<WebTemplateNode> children =
+            next.getChildren().stream()
+                    .filter(c -> choices.values().stream().flatMap(List::stream).noneMatch(l -> l.equals(c)))
+                    .collect(Collectors.toList());
     for (WebTemplateNode child : children) {
       String relativPath =
           FlatPath.removeStart(new FlatPath(child.getAqlPath()), new FlatPath(next.getAqlPath()))
@@ -242,7 +227,7 @@ public class ClassGeneratorNew {
         interfaceClassName = ClassName.get(interfacePackage, interfaceSpec.name);
       } else {
         interfaceSpec =
-            TypeSpec.interfaceBuilder(buildClassName(context, node.getName() + "_choice", true))
+            TypeSpec.interfaceBuilder(defaultNamingStrategy.buildClassName(context, choice.get(0), true))
                 .addModifiers(Modifier.PUBLIC)
                 .build();
         context.currentTypeSpec.put(relativeNode, interfaceSpec);
@@ -278,7 +263,7 @@ public class ClassGeneratorNew {
           context,
           classBuilder,
           relativPath,
-          node.getName(),
+          node,
           interfaceClassName,
           new ValueSet(ValueSet.LOCAL, ValueSet.LOCAL, Collections.emptySet()),
           true);
@@ -291,57 +276,9 @@ public class ClassGeneratorNew {
     return classBuilder;
   }
 
-  private static String normalise(String name, boolean capitalizeFirstLetter) {
-    if (StringUtils.isBlank(name) || name.equals("_")) {
-      return RandomStringUtils.randomAlphabetic(10);
-    }
-    String normalisedString =
-        StringUtils.strip(
-            StringUtils.stripAccents(name).replace("ß", "ss").replaceAll("[^A-Za-z0-9]", "_"), "_");
-    return CaseUtils.toCamelCase(normalisedString, capitalizeFirstLetter, '_');
-  }
 
-  String buildClassName(Context context, String name, boolean addArchetypeName) {
-    String[] strings =
-        Arrays.stream(name.split(TemplateIntrospect.TERM_DIVIDER))
-            .filter(StringUtils::isNotBlank)
-            .toArray(String[]::new);
-    String fieldName = "";
-    String nonNormalized = "";
-    for (int i = 0; i < strings.length; i++) {
-      nonNormalized = nonNormalized + "_" + strings[strings.length - (i + 1)];
-      if (addArchetypeName) {
-        nonNormalized =
-            new SnakeCase(context.currentArchetypeName.peek()).camelToSnake() + "_" + nonNormalized;
-      }
-      fieldName =
-          StringUtils.abbreviate(
-              normalise(nonNormalized, true), ABBREV_MARKER, CLASS_NAME_MAX_WIDTH);
-      if (!context.currentClassNameMap.containsKey(fieldName) && SourceVersion.isName(fieldName)) {
-        break;
-      }
-    }
 
-    if (context.currentClassNameMap.containsKey(fieldName)) {
-      context.currentClassNameMap.put(fieldName, context.currentClassNameMap.get(fieldName) + 1);
-      fieldName = fieldName + context.currentClassNameMap.get(fieldName);
-    } else {
-      context.currentClassNameMap.put(fieldName, 1);
-    }
-    fieldName = sanitizeNumber(fieldName);
-    return fieldName;
-  }
 
-  private String sanitizeNumber(String fieldName) {
-    if (!Character.isAlphabetic(fieldName.charAt(0))) {
-      if (Character.isLowerCase(fieldName.charAt(0))) {
-        fieldName = "n" + fieldName;
-      } else {
-        fieldName = "N" + fieldName;
-      }
-    }
-    return fieldName;
-  }
 
   private void addComplexField(
       Context context, TypeSpec.Builder classBuilder, String path, WebTemplateNode node) {
@@ -368,7 +305,7 @@ public class ClassGeneratorNew {
         context,
         classBuilder,
         path,
-        node.getName(),
+        node,
         className,
         new ValueSet(ValueSet.LOCAL, ValueSet.LOCAL, Collections.emptySet()),
         false);
@@ -413,7 +350,7 @@ public class ClassGeneratorNew {
         className = ParameterizedTypeName.get(ClassName.get(List.class), className);
       }
 
-      addField(context, classBuilder, path, endNode.getName(), className, valueSet, false);
+      addField(context, classBuilder, path, endNode, className, valueSet, false);
     } else {
       Map<String, Field> fieldMap =
           Arrays.stream(FieldUtils.getAllFields(clazz))
@@ -426,7 +363,7 @@ public class ClassGeneratorNew {
                   context,
                   classBuilder,
                   path + "|" + new SnakeCase(fieldName).camelToSnake(),
-                  endNode.getName() + "_" + fieldName,
+                  endNode,
                   ClassName.get(fieldMap.get(fieldName).getType()),
                   valueSet,
                   false));
@@ -474,27 +411,27 @@ public class ClassGeneratorNew {
       Context context,
       TypeSpec.Builder classBuilder,
       String path,
-      String name,
+      WebTemplateNode name,
       TypeName className,
       ValueSet valueSet,
       boolean addChoiceAnnotation) {
 
     if (CodePhrase.class.getName().equals(className.toString()))
-      switch (name) {
+      switch (name.getName()) {
         case "language":
           className = ClassName.get(Language.class);
           break;
-        case "setting_definingCode":
-          className = ClassName.get(SettingDefiningcode.class);
+        case "setting":
+          className = ClassName.get(Setting.class);
           break;
-        case "category_definingCode":
-          className = ClassName.get(CategoryDefiningcode.class);
+        case "category":
+          className = ClassName.get(Category.class);
           break;
         case "territory":
           className = ClassName.get(Territory.class);
           break;
-        case "math_function_definingCode":
-          className = ClassName.get(MathFunctionDefiningcode.class);
+        case "math_function":
+          className = ClassName.get(MathFunction.class);
           break;
         default:
           if (CollectionUtils.isNotEmpty(valueSet.getTherms())) {
@@ -514,17 +451,10 @@ public class ClassGeneratorNew {
           }
       }
 
-    PathExtractor pathExtractor = new PathExtractor(path);
-    String parentPath = pathExtractor.getParentPath();
-    String childPath = pathExtractor.getChildPath();
     String fieldName =
-        buildFieldName(
-            context,
-            parentPath
-                + TemplateIntrospect.TERM_DIVIDER
-                + childPath
-                + TemplateIntrospect.TERM_DIVIDER
-                + name);
+            defaultNamingStrategy.buildFieldName(
+                    context,
+                    path, name);
     FieldSpec.Builder builder =
         FieldSpec.builder(className, fieldName)
             .addAnnotation(
@@ -542,9 +472,9 @@ public class ClassGeneratorNew {
     classBuilder.addMethod(buildGetter(fieldSpec));
   }
 
-  private TypeSpec buildEnumValueSet(Context context, String name, ValueSet valueSet) {
+  private TypeSpec buildEnumValueSet(Context context, WebTemplateNode node, ValueSet valueSet) {
     TypeSpec.Builder enumBuilder =
-        TypeSpec.enumBuilder(buildClassName(context, name, false))
+        TypeSpec.enumBuilder(defaultNamingStrategy.buildClassName(context, node, false))
             .addSuperinterface(EnumValueSet.class)
             .addModifiers(Modifier.PUBLIC);
     FieldSpec fieldSpec1 =
@@ -574,9 +504,8 @@ public class ClassGeneratorNew {
         .getTherms()
         .forEach(
             t -> {
-              String fieldName = extractSubName(t.getValue());
               enumBuilder.addEnumConstant(
-                  toEnumName(fieldName),
+                      defaultNamingStrategy.toEnumName(t.getValue()),
                   TypeSpec.anonymousClassBuilder(
                           "$S, $S, $S, $S",
                           t.getValue(),
@@ -603,60 +532,7 @@ public class ClassGeneratorNew {
     return builder.build();
   }
 
-  private String extractSubName(String name) {
-    String[] strings = name.split(TemplateIntrospect.TERM_DIVIDER);
-    return strings[strings.length - 1];
-  }
 
-  /**
-   * Manipulate the fieldName to remove or replace illegal characters
-   *
-   * @param fieldName
-   * @return normalized fieldName for Java naming convention
-   */
-  private String toEnumName(String fieldName) {
-    fieldName = sanitizeNumber(fieldName);
-    return new SnakeCase(normalise(fieldName, false)).camelToUpperSnake();
-  }
-
-  private String buildFieldName(Context context, String name) {
-    if(name.equals( "value")){
-      name = context.nodeDeque.peek().getName();
-    }
-    if (context.nodeDeque.peek().getRmType().equals("ELEMENT")) {
-      name = "value";
-    }
-
-
-    String[] strings =
-        Arrays.stream(name.split(TemplateIntrospect.TERM_DIVIDER))
-            .filter(StringUtils::isNotBlank)
-            .toArray(String[]::new);
-
-    String fieldName = "";
-    String nonNormalized = "";
-
-    for (int i = 0; i < strings.length; i++) {
-      nonNormalized = nonNormalized + "_" + strings[strings.length - (i + 1)];
-      fieldName = normalise(nonNormalized, false);
-      if (!context.currentFieldNameMap.peek().containsKey(fieldName)
-          && SourceVersion.isName(fieldName)) {
-        break;
-      }
-    }
-
-    if (context.currentFieldNameMap.peek().containsKey(fieldName)) {
-      context
-          .currentFieldNameMap
-          .peek()
-          .put(fieldName, context.currentFieldNameMap.peek().get(fieldName) + 1);
-      fieldName = fieldName + context.currentFieldNameMap.peek().get(fieldName);
-    } else {
-      context.currentFieldNameMap.peek().put(fieldName, 1);
-    }
-    fieldName = sanitizeNumber(fieldName);
-    return fieldName;
-  }
 
   private MethodSpec buildSetter(FieldSpec fieldSpec) {
 

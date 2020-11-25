@@ -2,7 +2,7 @@ package org.ehrbase.client.classgenerator.shareddefinition;
 
 import org.ehrbase.client.classgenerator.EnumValueSet;
 
-public enum SettingDefiningcode implements EnumValueSet {
+public enum Setting implements EnumValueSet {
   COMPLEMENTARY_HEALTH_CARE("complementary health care", "complementary health care", "openehr", "235"),
 
   HOME("home", "home", "openehr", "225"),
@@ -37,7 +37,7 @@ public enum SettingDefiningcode implements EnumValueSet {
 
   private String code;
 
-  SettingDefiningcode(String value, String description, String terminologyId, String code) {
+  Setting(String value, String description, String terminologyId, String code) {
     this.value = value;
     this.description = description;
     this.terminologyId = terminologyId;

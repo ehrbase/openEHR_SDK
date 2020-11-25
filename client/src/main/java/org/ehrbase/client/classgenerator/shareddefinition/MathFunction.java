@@ -2,7 +2,7 @@ package org.ehrbase.client.classgenerator.shareddefinition;
 
 import org.ehrbase.client.classgenerator.EnumValueSet;
 
-public enum MathFunctionDefiningcode implements EnumValueSet {
+public enum MathFunction implements EnumValueSet {
   DECREASE("decrease", "decrease", "openehr", "521"),
 
   TOTAL("total", "total", "openehr", "148"),
@@ -33,7 +33,7 @@ public enum MathFunctionDefiningcode implements EnumValueSet {
 
   private String code;
 
-  MathFunctionDefiningcode(String value, String description, String terminologyId, String code) {
+  MathFunction(String value, String description, String terminologyId, String code) {
     this.value = value;
     this.description = description;
     this.terminologyId = terminologyId;
