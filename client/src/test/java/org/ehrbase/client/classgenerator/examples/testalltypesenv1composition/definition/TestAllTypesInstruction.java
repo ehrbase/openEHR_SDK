@@ -1,11 +1,11 @@
 package org.ehrbase.client.classgenerator.examples.testalltypesenv1composition.definition;
 
-import com.nedap.archie.rm.datastructures.ItemStructure;
+import com.nedap.archie.rm.datavalues.encapsulated.DvParsable;
 import com.nedap.archie.rm.generic.PartyProxy;
 import org.ehrbase.client.annotations.Archetype;
 import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.Path;
-import org.ehrbase.client.classgenerator.examples.shareddefinition.Language;
+import org.ehrbase.client.classgenerator.shareddefinition.Language;
 
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAccessor;
@@ -13,80 +13,80 @@ import java.time.temporal.TemporalAccessor;
 @Entity
 @Archetype("openEHR-EHR-INSTRUCTION.test_all_types.v1")
 public class TestAllTypesInstruction {
-    @Path("/narrative|value")
-    private String narrativeValue;
+  @Path("/activities[at0001]/description[at0002]/items[at0003]/value|value")
+  private Temporal partialDateValue;
 
-    @Path("/language")
-    private Language language;
+  @Path("/activities[at0001]/description[at0002]/items[at0004]/value|value")
+  private TemporalAccessor partialDatetimeValue;
 
-    @Path("/activities[at0001]/description")
-    private ItemStructure description;
+  @Path("/activities[at0001]/timing")
+  private DvParsable timing;
 
-    @Path("/activities[at0001]/description[at0002]/items[at0003]/value|value")
-    private Temporal partialDateValue;
+  @Path("/subject")
+  private PartyProxy subject;
 
-    @Path("/subject")
-    private PartyProxy subject;
+  @Path("/narrative|value")
+  private String narrativeValue;
 
-    @Path("/activities[at0001]/action_archetype_id")
-    private String currentActivity;
+  @Path("/language")
+  private Language language;
 
-    @Path("/activities[at0001]/description[at0002]/items[at0004]/value|value")
-    private TemporalAccessor partialDatetimeValue;
+  @Path("/expiry_time|value")
+  private TemporalAccessor expiryTimeValue;
 
-    public void setNarrativeValue(String narrativeValue) {
-        this.narrativeValue = narrativeValue;
-    }
+  public void setPartialDateValue(Temporal partialDateValue) {
+     this.partialDateValue = partialDateValue;
+  }
 
-    public String getNarrativeValue() {
-        return this.narrativeValue;
-    }
+  public Temporal getPartialDateValue() {
+     return this.partialDateValue ;
+  }
 
-    public void setLanguage(Language language) {
-        this.language = language;
-    }
+  public void setPartialDatetimeValue(TemporalAccessor partialDatetimeValue) {
+     this.partialDatetimeValue = partialDatetimeValue;
+  }
 
-    public Language getLanguage() {
-        return this.language;
-    }
+  public TemporalAccessor getPartialDatetimeValue() {
+     return this.partialDatetimeValue ;
+  }
 
-    public void setDescription(ItemStructure description) {
-        this.description = description;
-    }
+  public void setTiming(DvParsable timing) {
+     this.timing = timing;
+  }
 
-    public ItemStructure getDescription() {
-        return this.description;
-    }
+  public DvParsable getTiming() {
+     return this.timing ;
+  }
 
-    public void setPartialDateValue(Temporal partialDateValue) {
-        this.partialDateValue = partialDateValue;
-    }
+  public void setSubject(PartyProxy subject) {
+     this.subject = subject;
+  }
 
-    public Temporal getPartialDateValue() {
-        return this.partialDateValue;
-    }
+  public PartyProxy getSubject() {
+     return this.subject ;
+  }
 
-    public void setSubject(PartyProxy subject) {
-        this.subject = subject;
-    }
+  public void setNarrativeValue(String narrativeValue) {
+     this.narrativeValue = narrativeValue;
+  }
 
-    public PartyProxy getSubject() {
-        return this.subject;
-    }
+  public String getNarrativeValue() {
+     return this.narrativeValue ;
+  }
 
-    public void setCurrentActivity(String currentActivity) {
-        this.currentActivity = currentActivity;
-    }
+  public void setLanguage(Language language) {
+     this.language = language;
+  }
 
-    public String getCurrentActivity() {
-        return this.currentActivity;
-    }
+  public Language getLanguage() {
+     return this.language ;
+  }
 
-    public void setPartialDatetimeValue(TemporalAccessor partialDatetimeValue) {
-        this.partialDatetimeValue = partialDatetimeValue;
-    }
+  public void setExpiryTimeValue(TemporalAccessor expiryTimeValue) {
+     this.expiryTimeValue = expiryTimeValue;
+  }
 
-    public TemporalAccessor getPartialDatetimeValue() {
-        return this.partialDatetimeValue;
-    }
+  public TemporalAccessor getExpiryTimeValue() {
+     return this.expiryTimeValue ;
+  }
 }

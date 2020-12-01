@@ -5,14 +5,14 @@ import org.ehrbase.client.annotations.Path;
 
 @Entity
 public class DenwisCirculationIndicatorElement {
-    @Path("/value|defining_code")
-    private Definingcode6 definingcode;
+  @Path("/value|defining_code")
+  private CirculationIndicatorDefiningCode value;
 
-    public void setDefiningcode(Definingcode6 definingcode) {
-        this.definingcode = definingcode;
-    }
+  public void setValue(CirculationIndicatorDefiningCode value) {
+     this.value = value;
+  }
 
-    public Definingcode6 getDefiningcode() {
-        return this.definingcode;
-    }
+  public CirculationIndicatorDefiningCode getValue() {
+     return this.value ;
+  }
 }

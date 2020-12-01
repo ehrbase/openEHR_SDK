@@ -6,16 +6,16 @@ import org.ehrbase.client.annotations.Path;
 
 @Entity
 @OptionFor("DV_CODED_TEXT")
-public class BodyTemperatureLocationOfMeasurementDvcodedtext implements BodyTemperatureLocationOfMeasurementChoice {
-    @Path("|defining_code")
-    private LocationOfMeasurementDefiningcode locationOfMeasurementDefiningcode;
+public class BodyTemperatureLocationOfMeasurementDvCodedText implements BodyTemperatureLocationOfMeasurementChoice {
+  @Path("|defining_code")
+  private LocationOfMeasurementDefiningCode locationOfMeasurementDefiningCode;
 
-    public void setLocationOfMeasurementDefiningcode(
-            LocationOfMeasurementDefiningcode locationOfMeasurementDefiningcode) {
-        this.locationOfMeasurementDefiningcode = locationOfMeasurementDefiningcode;
-    }
+  public void setLocationOfMeasurementDefiningCode(
+      LocationOfMeasurementDefiningCode locationOfMeasurementDefiningCode) {
+     this.locationOfMeasurementDefiningCode = locationOfMeasurementDefiningCode;
+  }
 
-    public LocationOfMeasurementDefiningcode getLocationOfMeasurementDefiningcode() {
-        return this.locationOfMeasurementDefiningcode;
-    }
+  public LocationOfMeasurementDefiningCode getLocationOfMeasurementDefiningCode() {
+     return this.locationOfMeasurementDefiningCode ;
+  }
 }

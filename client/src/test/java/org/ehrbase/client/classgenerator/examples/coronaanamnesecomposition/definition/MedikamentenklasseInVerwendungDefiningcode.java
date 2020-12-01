@@ -2,7 +2,7 @@ package org.ehrbase.client.classgenerator.examples.coronaanamnesecomposition.def
 
 import org.ehrbase.client.classgenerator.EnumValueSet;
 
-public enum MedikamentenklasseInVerwendungDefiningcode implements EnumValueSet {
+public enum MedikamentenklasseInVerwendungDefiningCode implements EnumValueSet {
   IN_VERWENDUNG("In Verwendung", "Die Person verwendet die Medikamentenklasse zum Zeitpunkt des Ergebnis oder währendessen oder hat sie verwendet.", "local", "at0028"),
 
   UNBEKANNT("Unbekannt", "Es ist unbekannt, ob die Person die Medikamentenklasse zum Zeitpunkt des Ergebnis oder währendessen verwendet oder sie verwendet hat.", "local", "at0030"),
@@ -17,8 +17,8 @@ public enum MedikamentenklasseInVerwendungDefiningcode implements EnumValueSet {
 
   private String code;
 
-  MedikamentenklasseInVerwendungDefiningcode(String value, String description, String terminologyId,
-                                             String code) {
+  MedikamentenklasseInVerwendungDefiningCode(String value, String description, String terminologyId,
+      String code) {
     this.value = value;
     this.description = description;
     this.terminologyId = terminologyId;
@@ -26,18 +26,18 @@ public enum MedikamentenklasseInVerwendungDefiningcode implements EnumValueSet {
   }
 
   public String getValue() {
-    return this.value;
+     return this.value ;
   }
 
   public String getDescription() {
-    return this.description;
+     return this.description ;
   }
 
   public String getTerminologyId() {
-    return this.terminologyId;
+     return this.terminologyId ;
   }
 
   public String getCode() {
-    return this.code;
+     return this.code ;
   }
 }

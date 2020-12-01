@@ -11,36 +11,36 @@ import java.util.List;
 @Entity
 @OptionFor("POINT_EVENT")
 public class GeschichteHistorieBeliebigesEreignisPointEvent implements GeschichteHistorieBeliebigesEreignisChoice {
-    @Path("/time|value")
-    private TemporalAccessor timeValue;
+  @Path("/data[at0003]/items[at0004]")
+  private List<GeschichteHistorieGeschichteElement> geschichte;
 
-    @Path("/data[at0003]/items[at0004]")
-    private List<GeschichteHistorieGeschichteElement> geschichte;
+  @Path("/data[at0003]/items[at0006]")
+  private List<Cluster> strukturierteAngabe;
 
-    @Path("/data[at0003]/items[at0006]")
-    private List<Cluster> strukturierteAngabe;
+  @Path("/time|value")
+  private TemporalAccessor timeValue;
 
-    public void setTimeValue(TemporalAccessor timeValue) {
-        this.timeValue = timeValue;
-    }
+  public void setGeschichte(List<GeschichteHistorieGeschichteElement> geschichte) {
+     this.geschichte = geschichte;
+  }
 
-    public TemporalAccessor getTimeValue() {
-        return this.timeValue;
-    }
+  public List<GeschichteHistorieGeschichteElement> getGeschichte() {
+     return this.geschichte ;
+  }
 
-    public void setGeschichte(List<GeschichteHistorieGeschichteElement> geschichte) {
-        this.geschichte = geschichte;
-    }
+  public void setStrukturierteAngabe(List<Cluster> strukturierteAngabe) {
+     this.strukturierteAngabe = strukturierteAngabe;
+  }
 
-    public List<GeschichteHistorieGeschichteElement> getGeschichte() {
-        return this.geschichte;
-    }
+  public List<Cluster> getStrukturierteAngabe() {
+     return this.strukturierteAngabe ;
+  }
 
-    public void setStrukturierteAngabe(List<Cluster> strukturierteAngabe) {
-        this.strukturierteAngabe = strukturierteAngabe;
-    }
+  public void setTimeValue(TemporalAccessor timeValue) {
+     this.timeValue = timeValue;
+  }
 
-    public List<Cluster> getStrukturierteAngabe() {
-        return this.strukturierteAngabe;
-    }
+  public TemporalAccessor getTimeValue() {
+     return this.timeValue ;
+  }
 }

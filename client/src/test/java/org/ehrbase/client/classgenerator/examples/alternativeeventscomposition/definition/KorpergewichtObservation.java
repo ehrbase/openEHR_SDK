@@ -6,7 +6,7 @@ import org.ehrbase.client.annotations.Archetype;
 import org.ehrbase.client.annotations.Choice;
 import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.Path;
-import org.ehrbase.client.classgenerator.examples.shareddefinition.Language;
+import org.ehrbase.client.classgenerator.shareddefinition.Language;
 
 import java.time.temporal.TemporalAccessor;
 import java.util.List;
@@ -14,81 +14,81 @@ import java.util.List;
 @Entity
 @Archetype("openEHR-EHR-OBSERVATION.body_weight.v2")
 public class KorpergewichtObservation {
-    @Path("/data[at0002]/events[at0026]")
-    private KorpergewichtBirthEnEvent birthEn;
+  @Path("/data[at0002]/events[at0026]")
+  private KorpergewichtBirthEnPointEvent birthEn;
 
-    @Path("/data[at0002]/events[at0003]")
-    @Choice
-    private List<KorpergewichtAnyEventEnChoice> anyEventEn;
+  @Path("/data[at0002]/origin|value")
+  private TemporalAccessor originValue;
 
-    @Path("/protocol[at0015]/items[at0027]")
-    private List<Cluster> extensionEn;
+  @Path("/protocol[at0015]/items[at0020]")
+  private Cluster gerat;
 
-    @Path("/language")
-    private Language language;
+  @Path("/protocol[at0015]/items[at0027]")
+  private List<Cluster> extensionEn;
 
-    @Path("/data[at0002]/origin|value")
-    private TemporalAccessor originValue;
+  @Path("/subject")
+  private PartyProxy subject;
 
-    @Path("/protocol[at0015]/items[at0020]")
-    private Cluster gerat;
+  @Path("/language")
+  private Language language;
 
-    @Path("/subject")
-    private PartyProxy subject;
+  @Path("/data[at0002]/events[at0003]")
+  @Choice
+  private List<KorpergewichtAnyEventEnChoice> anyEventEn;
 
-    public void setBirthEn(KorpergewichtBirthEnEvent birthEn) {
-        this.birthEn = birthEn;
-    }
+  public void setBirthEn(KorpergewichtBirthEnPointEvent birthEn) {
+     this.birthEn = birthEn;
+  }
 
-    public KorpergewichtBirthEnEvent getBirthEn() {
-        return this.birthEn;
-    }
+  public KorpergewichtBirthEnPointEvent getBirthEn() {
+     return this.birthEn ;
+  }
 
-    public void setAnyEventEn(List<KorpergewichtAnyEventEnChoice> anyEventEn) {
-        this.anyEventEn = anyEventEn;
-    }
+  public void setOriginValue(TemporalAccessor originValue) {
+     this.originValue = originValue;
+  }
 
-    public List<KorpergewichtAnyEventEnChoice> getAnyEventEn() {
-        return this.anyEventEn;
-    }
+  public TemporalAccessor getOriginValue() {
+     return this.originValue ;
+  }
 
-    public void setExtensionEn(List<Cluster> extensionEn) {
-        this.extensionEn = extensionEn;
-    }
+  public void setGerat(Cluster gerat) {
+     this.gerat = gerat;
+  }
 
-    public List<Cluster> getExtensionEn() {
-        return this.extensionEn;
-    }
+  public Cluster getGerat() {
+     return this.gerat ;
+  }
 
-    public void setLanguage(Language language) {
-        this.language = language;
-    }
+  public void setExtensionEn(List<Cluster> extensionEn) {
+     this.extensionEn = extensionEn;
+  }
 
-    public Language getLanguage() {
-        return this.language;
-    }
+  public List<Cluster> getExtensionEn() {
+     return this.extensionEn ;
+  }
 
-    public void setOriginValue(TemporalAccessor originValue) {
-        this.originValue = originValue;
-    }
+  public void setSubject(PartyProxy subject) {
+     this.subject = subject;
+  }
 
-    public TemporalAccessor getOriginValue() {
-        return this.originValue;
-    }
+  public PartyProxy getSubject() {
+     return this.subject ;
+  }
 
-    public void setGerat(Cluster gerat) {
-        this.gerat = gerat;
-    }
+  public void setLanguage(Language language) {
+     this.language = language;
+  }
 
-    public Cluster getGerat() {
-        return this.gerat;
-    }
+  public Language getLanguage() {
+     return this.language ;
+  }
 
-    public void setSubject(PartyProxy subject) {
-        this.subject = subject;
-    }
+  public void setAnyEventEn(List<KorpergewichtAnyEventEnChoice> anyEventEn) {
+     this.anyEventEn = anyEventEn;
+  }
 
-    public PartyProxy getSubject() {
-        return this.subject;
-    }
+  public List<KorpergewichtAnyEventEnChoice> getAnyEventEn() {
+     return this.anyEventEn ;
+  }
 }

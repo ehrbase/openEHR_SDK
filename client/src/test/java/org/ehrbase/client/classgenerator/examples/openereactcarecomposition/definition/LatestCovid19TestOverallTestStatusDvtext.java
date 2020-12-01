@@ -6,15 +6,15 @@ import org.ehrbase.client.annotations.Path;
 
 @Entity
 @OptionFor("DV_TEXT")
-public class LatestCovid19TestOverallTestStatusDvtext implements LatestCovid19TestOverallTestStatusChoice {
-    @Path("|value")
-    private String overallTestStatusValue;
+public class LatestCovid19TestOverallTestStatusDvText implements LatestCovid19TestOverallTestStatusChoice {
+  @Path("|value")
+  private String overallTestStatusValue;
 
-    public void setOverallTestStatusValue(String overallTestStatusValue) {
-        this.overallTestStatusValue = overallTestStatusValue;
-    }
+  public void setOverallTestStatusValue(String overallTestStatusValue) {
+     this.overallTestStatusValue = overallTestStatusValue;
+  }
 
-    public String getOverallTestStatusValue() {
-        return this.overallTestStatusValue;
-    }
+  public String getOverallTestStatusValue() {
+     return this.overallTestStatusValue ;
+  }
 }

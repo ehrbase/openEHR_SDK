@@ -5,15 +5,15 @@ import org.ehrbase.client.aql.field.AqlFieldImp;
 import org.ehrbase.client.aql.field.SelectAqlField;
 
 public class SepsisSectionContainment extends Containment {
-    public SelectAqlField<SepsisSection> SEPSIS_SECTION = new AqlFieldImp<SepsisSection>(SepsisSection.class, "", "SepsisSection", SepsisSection.class, this);
+  public SelectAqlField<SepsisSection> SEPSIS_SECTION = new AqlFieldImp<SepsisSection>(SepsisSection.class, "", "SepsisSection", SepsisSection.class, this);
 
-    public SelectAqlField<SepsisScreeningObservation> SEPSIS_SCREENING = new AqlFieldImp<SepsisScreeningObservation>(SepsisSection.class, "/items[openEHR-EHR-OBSERVATION.sepsis_screening_tool.v0 and name/value='Sepsis screening']", "sepsisScreening", SepsisScreeningObservation.class, this);
+  public SelectAqlField<SepsisScreeningObservation> SEPSIS_SCREENING = new AqlFieldImp<SepsisScreeningObservation>(SepsisSection.class, "/items[openEHR-EHR-OBSERVATION.sepsis_screening_tool.v0]", "sepsisScreening", SepsisScreeningObservation.class, this);
 
-    private SepsisSectionContainment() {
-        super("openEHR-EHR-SECTION.adhoc.v1");
-    }
+  private SepsisSectionContainment() {
+    super("openEHR-EHR-SECTION.adhoc.v1");
+  }
 
-    public static SepsisSectionContainment getInstance() {
-        return new SepsisSectionContainment();
-    }
+  public static SepsisSectionContainment getInstance() {
+    return new SepsisSectionContainment();
+  }
 }

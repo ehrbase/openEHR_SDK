@@ -2,10 +2,10 @@ package org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev
 
 import org.ehrbase.client.classgenerator.EnumValueSet;
 
-public enum CuffSizeDefiningcode implements EnumValueSet {
-  CHILD("Paediatric/Child", "A cuff that is appropriate for a child or thin arm - bladder approx 8cm x 21\n"
-          + "                        cm\n"
-          + "                    ", "local", "at0017"),
+public enum CuffSizeDefiningCode implements EnumValueSet {
+  PAEDIATRIC_CHILD("Paediatric/Child", "A cuff that is appropriate for a child or thin arm - bladder approx 8cm x 21\n"
+      + "                        cm\n"
+      + "                    ", "local", "at0017"),
 
   ADULT_THIGH("Adult Thigh", "A cuff used for an adult thigh - bladder approx 20cm x 42 cm", "local", "at1008"),
 
@@ -27,7 +27,7 @@ public enum CuffSizeDefiningcode implements EnumValueSet {
 
   private String code;
 
-  CuffSizeDefiningcode(String value, String description, String terminologyId, String code) {
+  CuffSizeDefiningCode(String value, String description, String terminologyId, String code) {
     this.value = value;
     this.description = description;
     this.terminologyId = terminologyId;
@@ -35,18 +35,18 @@ public enum CuffSizeDefiningcode implements EnumValueSet {
   }
 
   public String getValue() {
-    return this.value;
+     return this.value ;
   }
 
   public String getDescription() {
-    return this.description;
+     return this.description ;
   }
 
   public String getTerminologyId() {
-    return this.terminologyId;
+     return this.terminologyId ;
   }
 
   public String getCode() {
-    return this.code;
+     return this.code ;
   }
 }

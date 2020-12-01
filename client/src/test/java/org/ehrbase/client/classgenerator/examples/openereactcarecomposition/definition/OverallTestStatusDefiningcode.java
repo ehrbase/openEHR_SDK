@@ -2,7 +2,7 @@ package org.ehrbase.client.classgenerator.examples.openereactcarecomposition.def
 
 import org.ehrbase.client.classgenerator.EnumValueSet;
 
-public enum OverallTestStatusDefiningcode implements EnumValueSet {
+public enum OverallTestStatusDefiningCode implements EnumValueSet {
   AMENDED("Amended", "The result has been modified subsequent to being Final, and is complete and verified by the responsible pathologist, and result data has been changed.", "local", "at0040"),
 
   PRELIMINARY("Preliminary", "Verified early results are available, but not all results are final. This is a sub-category of 'Partial'.", "local", "at0120"),
@@ -27,8 +27,8 @@ public enum OverallTestStatusDefiningcode implements EnumValueSet {
 
   private String code;
 
-  OverallTestStatusDefiningcode(String value, String description, String terminologyId,
-                                String code) {
+  OverallTestStatusDefiningCode(String value, String description, String terminologyId,
+      String code) {
     this.value = value;
     this.description = description;
     this.terminologyId = terminologyId;
@@ -36,18 +36,18 @@ public enum OverallTestStatusDefiningcode implements EnumValueSet {
   }
 
   public String getValue() {
-    return this.value;
+     return this.value ;
   }
 
   public String getDescription() {
-    return this.description;
+     return this.description ;
   }
 
   public String getTerminologyId() {
-    return this.terminologyId;
+     return this.terminologyId ;
   }
 
   public String getCode() {
-    return this.code;
+     return this.code ;
   }
 }

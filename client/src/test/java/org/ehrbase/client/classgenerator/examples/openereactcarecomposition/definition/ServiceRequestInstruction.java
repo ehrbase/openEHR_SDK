@@ -5,98 +5,110 @@ import com.nedap.archie.rm.generic.PartyProxy;
 import org.ehrbase.client.annotations.Archetype;
 import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.Path;
-import org.ehrbase.client.classgenerator.examples.shareddefinition.Language;
+import org.ehrbase.client.classgenerator.shareddefinition.Language;
 
+import java.time.temporal.TemporalAccessor;
 import java.util.List;
 
 @Entity
 @Archetype("openEHR-EHR-INSTRUCTION.service_request.v1")
 public class ServiceRequestInstruction {
-    @Path("/narrative|value")
-    private String narrativeValue;
+  @Path("/activities[at0001]")
+  private List<ServiceRequestCurrentActivityActivity> currentActivity;
 
-    @Path("/language")
-    private Language language;
+  @Path("/protocol[at0008]/items[at0141]")
+  private Cluster requester;
 
-    @Path("/protocol[at0008]/items[at0142]")
-    private Cluster receiver;
+  @Path("/protocol[at0008]/items[at0142]")
+  private Cluster receiver;
 
-    @Path("/protocol[at0008]/items[at0112]")
-    private List<Cluster> extension;
+  @Path("/protocol[at0008]/items[at0128]")
+  private List<Cluster> distributionList;
 
-    @Path("/protocol[at0008]/items[at0141]")
-    private Cluster requester;
+  @Path("/protocol[at0008]/items[at0112]")
+  private List<Cluster> extension;
 
-    @Path("/subject")
-    private PartyProxy subject;
+  @Path("/subject")
+  private PartyProxy subject;
 
-    @Path("/activities[at0001]")
-    private List<ServiceRequestCurrentActivityActivity> currentActivity;
+  @Path("/narrative|value")
+  private String narrativeValue;
 
-    @Path("/protocol[at0008]/items[at0128]")
-    private List<Cluster> distributionList;
+  @Path("/language")
+  private Language language;
 
-    public void setNarrativeValue(String narrativeValue) {
-        this.narrativeValue = narrativeValue;
-    }
+  @Path("/expiry_time|value")
+  private TemporalAccessor expiryTimeValue;
 
-    public String getNarrativeValue() {
-        return this.narrativeValue;
-    }
+  public void setCurrentActivity(List<ServiceRequestCurrentActivityActivity> currentActivity) {
+     this.currentActivity = currentActivity;
+  }
 
-    public void setLanguage(Language language) {
-        this.language = language;
-    }
+  public List<ServiceRequestCurrentActivityActivity> getCurrentActivity() {
+     return this.currentActivity ;
+  }
 
-    public Language getLanguage() {
-        return this.language;
-    }
+  public void setRequester(Cluster requester) {
+     this.requester = requester;
+  }
 
-    public void setReceiver(Cluster receiver) {
-        this.receiver = receiver;
-    }
+  public Cluster getRequester() {
+     return this.requester ;
+  }
 
-    public Cluster getReceiver() {
-        return this.receiver;
-    }
+  public void setReceiver(Cluster receiver) {
+     this.receiver = receiver;
+  }
 
-    public void setExtension(List<Cluster> extension) {
-        this.extension = extension;
-    }
+  public Cluster getReceiver() {
+     return this.receiver ;
+  }
 
-    public List<Cluster> getExtension() {
-        return this.extension;
-    }
+  public void setDistributionList(List<Cluster> distributionList) {
+     this.distributionList = distributionList;
+  }
 
-    public void setRequester(Cluster requester) {
-        this.requester = requester;
-    }
+  public List<Cluster> getDistributionList() {
+     return this.distributionList ;
+  }
 
-    public Cluster getRequester() {
-        return this.requester;
-    }
+  public void setExtension(List<Cluster> extension) {
+     this.extension = extension;
+  }
 
-    public void setSubject(PartyProxy subject) {
-        this.subject = subject;
-    }
+  public List<Cluster> getExtension() {
+     return this.extension ;
+  }
 
-    public PartyProxy getSubject() {
-        return this.subject;
-    }
+  public void setSubject(PartyProxy subject) {
+     this.subject = subject;
+  }
 
-    public void setCurrentActivity(List<ServiceRequestCurrentActivityActivity> currentActivity) {
-        this.currentActivity = currentActivity;
-    }
+  public PartyProxy getSubject() {
+     return this.subject ;
+  }
 
-    public List<ServiceRequestCurrentActivityActivity> getCurrentActivity() {
-        return this.currentActivity;
-    }
+  public void setNarrativeValue(String narrativeValue) {
+     this.narrativeValue = narrativeValue;
+  }
 
-    public void setDistributionList(List<Cluster> distributionList) {
-        this.distributionList = distributionList;
-    }
+  public String getNarrativeValue() {
+     return this.narrativeValue ;
+  }
 
-    public List<Cluster> getDistributionList() {
-        return this.distributionList;
-    }
+  public void setLanguage(Language language) {
+     this.language = language;
+  }
+
+  public Language getLanguage() {
+     return this.language ;
+  }
+
+  public void setExpiryTimeValue(TemporalAccessor expiryTimeValue) {
+     this.expiryTimeValue = expiryTimeValue;
+  }
+
+  public TemporalAccessor getExpiryTimeValue() {
+     return this.expiryTimeValue ;
+  }
 }

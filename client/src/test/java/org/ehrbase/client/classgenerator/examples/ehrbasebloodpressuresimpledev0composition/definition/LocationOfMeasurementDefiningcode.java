@@ -2,7 +2,7 @@ package org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev
 
 import org.ehrbase.client.classgenerator.EnumValueSet;
 
-public enum LocationOfMeasurementDefiningcode implements EnumValueSet {
+public enum LocationOfMeasurementDefiningCode implements EnumValueSet {
   LEFT_THIGH("Left thigh", "The left thigh of the person", "local", "at0028"),
 
   INTRA_ARTERIAL("Intra-arterial", "Blood pressure monitored via an intra-arterial line", "local", "at0032"),
@@ -31,8 +31,8 @@ public enum LocationOfMeasurementDefiningcode implements EnumValueSet {
 
   private String code;
 
-  LocationOfMeasurementDefiningcode(String value, String description, String terminologyId,
-                                    String code) {
+  LocationOfMeasurementDefiningCode(String value, String description, String terminologyId,
+      String code) {
     this.value = value;
     this.description = description;
     this.terminologyId = terminologyId;
@@ -40,18 +40,18 @@ public enum LocationOfMeasurementDefiningcode implements EnumValueSet {
   }
 
   public String getValue() {
-    return this.value;
+     return this.value ;
   }
 
   public String getDescription() {
-    return this.description;
+     return this.description ;
   }
 
   public String getTerminologyId() {
-    return this.terminologyId;
+     return this.terminologyId ;
   }
 
   public String getCode() {
-    return this.code;
+     return this.code ;
   }
 }

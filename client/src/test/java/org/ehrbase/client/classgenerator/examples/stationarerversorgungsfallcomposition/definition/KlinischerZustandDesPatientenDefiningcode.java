@@ -1,9 +1,8 @@
 package org.ehrbase.client.classgenerator.examples.stationarerversorgungsfallcomposition.definition;
 
-import java.lang.String;
 import org.ehrbase.client.classgenerator.EnumValueSet;
 
-public enum KlinischerZustandDesPatientenDefiningcode implements EnumValueSet {
+public enum KlinischerZustandDesPatientenDefiningCode implements EnumValueSet {
   IDENTISCHER_ZUSTAND("Identischer Zustand", "Der Gesundheitszustand des Patienten ist identisch, wie bei der Aufnahme.", "local", "at0005"),
 
   UNBESTIMMT("Unbestimmt", "Unbestimmt.", "local", "at0008"),
@@ -26,7 +25,7 @@ public enum KlinischerZustandDesPatientenDefiningcode implements EnumValueSet {
 
   private String code;
 
-  KlinischerZustandDesPatientenDefiningcode(String value, String description, String terminologyId,
+  KlinischerZustandDesPatientenDefiningCode(String value, String description, String terminologyId,
       String code) {
     this.value = value;
     this.description = description;

@@ -115,7 +115,7 @@
                             <classpathPrefix>libs/</classpathPrefix>
                             <useUniqueVersions>false</useUniqueVersions>
                             <mainClass>
-                                org.ehrbase.client.classgenerator.ClassGenerator
+                                org.ehrbase.client.classgenerator.ClassGeneratorRunner
                             </mainClass>
                         </manifest>
                     </archive>

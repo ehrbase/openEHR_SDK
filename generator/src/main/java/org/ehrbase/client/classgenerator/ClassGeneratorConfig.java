@@ -19,5 +19,4 @@
 
 package org.ehrbase.client.classgenerator;
 
-public class ClassGeneratorConfig {
-}
+public class ClassGeneratorConfig {}

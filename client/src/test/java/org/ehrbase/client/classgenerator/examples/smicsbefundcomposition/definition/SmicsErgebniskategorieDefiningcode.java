@@ -2,7 +2,7 @@ package org.ehrbase.client.classgenerator.examples.smicsbefundcomposition.defini
 
 import org.ehrbase.client.classgenerator.EnumValueSet;
 
-public enum SmicsErgebniskategorieDefiningcode implements EnumValueSet {
+public enum SmicsErgebniskategorieDefiningCode implements EnumValueSet {
   ANDERE("Andere", "*", "local", "at0028"),
 
   HAUFUNG("Häufung", "*", "local", "at0026"),
@@ -17,8 +17,8 @@ public enum SmicsErgebniskategorieDefiningcode implements EnumValueSet {
 
   private String code;
 
-  SmicsErgebniskategorieDefiningcode(String value, String description, String terminologyId,
-                                     String code) {
+  SmicsErgebniskategorieDefiningCode(String value, String description, String terminologyId,
+      String code) {
     this.value = value;
     this.description = description;
     this.terminologyId = terminologyId;
@@ -26,18 +26,18 @@ public enum SmicsErgebniskategorieDefiningcode implements EnumValueSet {
   }
 
   public String getValue() {
-    return this.value;
+     return this.value ;
   }
 
   public String getDescription() {
-    return this.description;
+     return this.description ;
   }
 
   public String getTerminologyId() {
-    return this.terminologyId;
+     return this.terminologyId ;
   }
 
   public String getCode() {
-    return this.code;
+     return this.code ;
   }
 }

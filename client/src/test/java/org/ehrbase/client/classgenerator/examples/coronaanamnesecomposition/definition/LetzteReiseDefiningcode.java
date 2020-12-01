@@ -2,7 +2,7 @@ package org.ehrbase.client.classgenerator.examples.coronaanamnesecomposition.def
 
 import org.ehrbase.client.classgenerator.EnumValueSet;
 
-public enum LetzteReiseDefiningcode implements EnumValueSet {
+public enum LetzteReiseDefiningCode implements EnumValueSet {
   NEIN("Nein", "Die Person ist nicht innerhalb des angegebenen Zeitraums gereist.", "local", "at0005"),
 
   UNBEKANNT("Unbekannt", "Es ist nicht bekannt, ob die Person innerhalb des angegebenen Zeitinraumss gereist ist.", "local", "at0027"),
@@ -17,7 +17,7 @@ public enum LetzteReiseDefiningcode implements EnumValueSet {
 
   private String code;
 
-  LetzteReiseDefiningcode(String value, String description, String terminologyId, String code) {
+  LetzteReiseDefiningCode(String value, String description, String terminologyId, String code) {
     this.value = value;
     this.description = description;
     this.terminologyId = terminologyId;
@@ -25,18 +25,18 @@ public enum LetzteReiseDefiningcode implements EnumValueSet {
   }
 
   public String getValue() {
-     return this.value;
+     return this.value ;
   }
 
   public String getDescription() {
-    return this.description;
+     return this.description ;
   }
 
   public String getTerminologyId() {
-    return this.terminologyId;
+     return this.terminologyId ;
   }
 
   public String getCode() {
-    return this.code;
+     return this.code ;
   }
 }

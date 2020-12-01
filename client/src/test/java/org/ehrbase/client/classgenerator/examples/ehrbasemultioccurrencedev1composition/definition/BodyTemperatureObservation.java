@@ -6,7 +6,7 @@ import org.ehrbase.client.annotations.Archetype;
 import org.ehrbase.client.annotations.Choice;
 import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.Path;
-import org.ehrbase.client.classgenerator.examples.shareddefinition.Language;
+import org.ehrbase.client.classgenerator.shareddefinition.Language;
 
 import java.time.temporal.TemporalAccessor;
 import java.util.List;
@@ -14,94 +14,94 @@ import java.util.List;
 @Entity
 @Archetype("openEHR-EHR-OBSERVATION.body_temperature.v2")
 public class BodyTemperatureObservation {
-    @Path("/data[at0002]/events[at0003]")
-    @Choice
-    private List<BodyTemperatureAnyEventChoice> anyEvent;
+  @Path("/data[at0002]/origin|value")
+  private TemporalAccessor originValue;
 
-    @Path("/protocol[at0020]/items[at0062]")
-    private List<Cluster> extension;
+  @Path("/protocol[at0020]/items[at0064]")
+  private List<Cluster> structuredMeasurementLocation;
 
-    @Path("/language")
-    private Language language;
+  @Path("/protocol[at0020]/items[at0059]")
+  private Cluster device;
 
-    @Path("/protocol[at0020]/items[at0064]")
-    private List<Cluster> structuredMeasurementLocation;
+  @Path("/protocol[at0020]/items[at0062]")
+  private List<Cluster> extension;
 
-    @Path("/data[at0002]/origin|value")
-    private TemporalAccessor originValue;
+  @Path("/subject")
+  private PartyProxy subject;
 
-    @Path("/protocol[at0020]/items[at0059]")
-    private Cluster device;
+  @Path("/language")
+  private Language language;
 
-    @Path("/subject")
-    private PartyProxy subject;
+  @Path("/protocol[at0020]/items[at0021]/value")
+  @Choice
+  private BodyTemperatureLocationOfMeasurementChoice locationOfMeasurement;
 
-    @Path("/protocol[at0020]/items[at0021]/value")
-    @Choice
-    private BodyTemperatureLocationOfMeasurementChoice locationOfMeasurement;
+  @Path("/data[at0002]/events[at0003]")
+  @Choice
+  private List<BodyTemperatureAnyEventChoice> anyEvent;
 
-    public void setAnyEvent(List<BodyTemperatureAnyEventChoice> anyEvent) {
-        this.anyEvent = anyEvent;
-    }
+  public void setOriginValue(TemporalAccessor originValue) {
+     this.originValue = originValue;
+  }
 
-    public List<BodyTemperatureAnyEventChoice> getAnyEvent() {
-        return this.anyEvent;
-    }
+  public TemporalAccessor getOriginValue() {
+     return this.originValue ;
+  }
 
-    public void setExtension(List<Cluster> extension) {
-        this.extension = extension;
-    }
+  public void setStructuredMeasurementLocation(List<Cluster> structuredMeasurementLocation) {
+     this.structuredMeasurementLocation = structuredMeasurementLocation;
+  }
 
-    public List<Cluster> getExtension() {
-        return this.extension;
-    }
+  public List<Cluster> getStructuredMeasurementLocation() {
+     return this.structuredMeasurementLocation ;
+  }
 
-    public void setLanguage(Language language) {
-        this.language = language;
-    }
+  public void setDevice(Cluster device) {
+     this.device = device;
+  }
 
-    public Language getLanguage() {
-        return this.language;
-    }
+  public Cluster getDevice() {
+     return this.device ;
+  }
 
-    public void setStructuredMeasurementLocation(List<Cluster> structuredMeasurementLocation) {
-        this.structuredMeasurementLocation = structuredMeasurementLocation;
-    }
+  public void setExtension(List<Cluster> extension) {
+     this.extension = extension;
+  }
 
-    public List<Cluster> getStructuredMeasurementLocation() {
-        return this.structuredMeasurementLocation;
-    }
+  public List<Cluster> getExtension() {
+     return this.extension ;
+  }
 
-    public void setOriginValue(TemporalAccessor originValue) {
-        this.originValue = originValue;
-    }
+  public void setSubject(PartyProxy subject) {
+     this.subject = subject;
+  }
 
-    public TemporalAccessor getOriginValue() {
-        return this.originValue;
-    }
+  public PartyProxy getSubject() {
+     return this.subject ;
+  }
 
-    public void setDevice(Cluster device) {
-        this.device = device;
-    }
+  public void setLanguage(Language language) {
+     this.language = language;
+  }
 
-    public Cluster getDevice() {
-        return this.device;
-    }
+  public Language getLanguage() {
+     return this.language ;
+  }
 
-    public void setSubject(PartyProxy subject) {
-        this.subject = subject;
-    }
+  public void setLocationOfMeasurement(
+      BodyTemperatureLocationOfMeasurementChoice locationOfMeasurement) {
+     this.locationOfMeasurement = locationOfMeasurement;
+  }
 
-    public PartyProxy getSubject() {
-        return this.subject;
-    }
+  public BodyTemperatureLocationOfMeasurementChoice getLocationOfMeasurement() {
+     return this.locationOfMeasurement ;
+  }
 
-    public void setLocationOfMeasurement(
-            BodyTemperatureLocationOfMeasurementChoice locationOfMeasurement) {
-        this.locationOfMeasurement = locationOfMeasurement;
-    }
+  public void setAnyEvent(List<BodyTemperatureAnyEventChoice> anyEvent) {
+     this.anyEvent = anyEvent;
+  }
 
-    public BodyTemperatureLocationOfMeasurementChoice getLocationOfMeasurement() {
-        return this.locationOfMeasurement;
-    }
+  public List<BodyTemperatureAnyEventChoice> getAnyEvent() {
+     return this.anyEvent ;
+  }
 }

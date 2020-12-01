@@ -5,7 +5,7 @@ import com.nedap.archie.rm.generic.PartyProxy;
 import org.ehrbase.client.annotations.Archetype;
 import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.Path;
-import org.ehrbase.client.classgenerator.examples.shareddefinition.Language;
+import org.ehrbase.client.classgenerator.shareddefinition.Language;
 
 import java.time.temporal.TemporalAccessor;
 import java.util.List;
@@ -13,102 +13,102 @@ import java.util.List;
 @Entity
 @Archetype("openEHR-EHR-OBSERVATION.pulse.v1")
 public class PulseObservation {
-    @Path("/protocol[at0010]/items[at1056]")
-    private List<Cluster> extension;
+  @Path("/data[at0002]/events[at0003]/data[at0001]/items[at0004 and name/value='Pulse Rate']/value|magnitude")
+  private Double pulseRateMagnitude;
 
-    @Path("/language")
-    private Language language;
+  @Path("/data[at0002]/events[at0003]/data[at0001]/items[at0004 and name/value='Pulse Rate']/value|units")
+  private String pulseRateUnits;
 
-    @Path("/protocol[at0010]/items[at1013]")
-    private Cluster device;
+  @Path("/data[at0002]/events[at0003]/state[at0012]/items[at1017]")
+  private List<Cluster> exertion;
 
-    @Path("/data[at0002]/origin|value")
-    private TemporalAccessor originValue;
+  @Path("/data[at0002]/events[at0003]/time|value")
+  private TemporalAccessor timeValue;
 
-    @Path("/data[at0002]/events[at0003]/state[at0012]/items[at1017]")
-    private List<Cluster> exertion;
+  @Path("/data[at0002]/origin|value")
+  private TemporalAccessor originValue;
 
-    @Path("/data[at0002]/events[at0003]/data[at0001]/items[at0004]/value|magnitude")
-    private Double pulseRateMagnitude;
+  @Path("/protocol[at0010]/items[at1013]")
+  private Cluster device;
 
-    @Path("/data[at0002]/events[at0003]/data[at0001]/items[at0004]/value|units")
-    private String pulseRateUnits;
+  @Path("/protocol[at0010]/items[at1056]")
+  private List<Cluster> extension;
 
-    @Path("/subject")
-    private PartyProxy subject;
+  @Path("/subject")
+  private PartyProxy subject;
 
-    @Path("/data[at0002]/events[at0003]/time|value")
-    private TemporalAccessor timeValue;
+  @Path("/language")
+  private Language language;
 
-    public void setExtension(List<Cluster> extension) {
-        this.extension = extension;
-    }
+  public void setPulseRateMagnitude(Double pulseRateMagnitude) {
+     this.pulseRateMagnitude = pulseRateMagnitude;
+  }
 
-    public List<Cluster> getExtension() {
-        return this.extension;
-    }
+  public Double getPulseRateMagnitude() {
+     return this.pulseRateMagnitude ;
+  }
 
-    public void setLanguage(Language language) {
-        this.language = language;
-    }
+  public void setPulseRateUnits(String pulseRateUnits) {
+     this.pulseRateUnits = pulseRateUnits;
+  }
 
-    public Language getLanguage() {
-        return this.language;
-    }
+  public String getPulseRateUnits() {
+     return this.pulseRateUnits ;
+  }
 
-    public void setDevice(Cluster device) {
-        this.device = device;
-    }
+  public void setExertion(List<Cluster> exertion) {
+     this.exertion = exertion;
+  }
 
-    public Cluster getDevice() {
-        return this.device;
-    }
+  public List<Cluster> getExertion() {
+     return this.exertion ;
+  }
 
-    public void setOriginValue(TemporalAccessor originValue) {
-        this.originValue = originValue;
-    }
+  public void setTimeValue(TemporalAccessor timeValue) {
+     this.timeValue = timeValue;
+  }
 
-    public TemporalAccessor getOriginValue() {
-        return this.originValue;
-    }
+  public TemporalAccessor getTimeValue() {
+     return this.timeValue ;
+  }
 
-    public void setExertion(List<Cluster> exertion) {
-        this.exertion = exertion;
-    }
+  public void setOriginValue(TemporalAccessor originValue) {
+     this.originValue = originValue;
+  }
 
-    public List<Cluster> getExertion() {
-        return this.exertion;
-    }
+  public TemporalAccessor getOriginValue() {
+     return this.originValue ;
+  }
 
-    public void setPulseRateMagnitude(Double pulseRateMagnitude) {
-        this.pulseRateMagnitude = pulseRateMagnitude;
-    }
+  public void setDevice(Cluster device) {
+     this.device = device;
+  }
 
-    public Double getPulseRateMagnitude() {
-        return this.pulseRateMagnitude;
-    }
+  public Cluster getDevice() {
+     return this.device ;
+  }
 
-    public void setPulseRateUnits(String pulseRateUnits) {
-        this.pulseRateUnits = pulseRateUnits;
-    }
+  public void setExtension(List<Cluster> extension) {
+     this.extension = extension;
+  }
 
-    public String getPulseRateUnits() {
-        return this.pulseRateUnits;
-    }
+  public List<Cluster> getExtension() {
+     return this.extension ;
+  }
 
-    public void setSubject(PartyProxy subject) {
-        this.subject = subject;
-    }
+  public void setSubject(PartyProxy subject) {
+     this.subject = subject;
+  }
 
-    public PartyProxy getSubject() {
-        return this.subject;
-    }
+  public PartyProxy getSubject() {
+     return this.subject ;
+  }
 
-    public void setTimeValue(TemporalAccessor timeValue) {
-        this.timeValue = timeValue;
-    }
+  public void setLanguage(Language language) {
+     this.language = language;
+  }
 
-    public TemporalAccessor getTimeValue() {
-        return this.timeValue;
-    }
+  public Language getLanguage() {
+     return this.language ;
+  }
 }

@@ -6,15 +6,15 @@ import org.ehrbase.client.annotations.Path;
 
 @Entity
 @OptionFor("DV_TEXT")
-public class BodyTemperatureLocationOfMeasurementDvtext implements BodyTemperatureLocationOfMeasurementChoice {
-    @Path("|value")
-    private String locationOfMeasurementValue;
+public class BodyTemperatureLocationOfMeasurementDvText implements BodyTemperatureLocationOfMeasurementChoice {
+  @Path("|value")
+  private String locationOfMeasurementValue;
 
-    public void setLocationOfMeasurementValue(String locationOfMeasurementValue) {
-        this.locationOfMeasurementValue = locationOfMeasurementValue;
-    }
+  public void setLocationOfMeasurementValue(String locationOfMeasurementValue) {
+     this.locationOfMeasurementValue = locationOfMeasurementValue;
+  }
 
-    public String getLocationOfMeasurementValue() {
-        return this.locationOfMeasurementValue;
-    }
+  public String getLocationOfMeasurementValue() {
+     return this.locationOfMeasurementValue ;
+  }
 }

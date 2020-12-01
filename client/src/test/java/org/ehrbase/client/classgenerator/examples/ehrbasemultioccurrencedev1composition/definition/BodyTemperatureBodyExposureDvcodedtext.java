@@ -6,15 +6,15 @@ import org.ehrbase.client.annotations.Path;
 
 @Entity
 @OptionFor("DV_CODED_TEXT")
-public class BodyTemperatureBodyExposureDvcodedtext implements BodyTemperatureBodyExposureChoice {
-    @Path("|defining_code")
-    private BodyExposureDefiningcode bodyExposureDefiningcode;
+public class BodyTemperatureBodyExposureDvCodedText implements BodyTemperatureBodyExposureChoice {
+  @Path("|defining_code")
+  private BodyExposureDefiningCode bodyExposureDefiningCode;
 
-    public void setBodyExposureDefiningcode(BodyExposureDefiningcode bodyExposureDefiningcode) {
-        this.bodyExposureDefiningcode = bodyExposureDefiningcode;
-    }
+  public void setBodyExposureDefiningCode(BodyExposureDefiningCode bodyExposureDefiningCode) {
+     this.bodyExposureDefiningCode = bodyExposureDefiningCode;
+  }
 
-    public BodyExposureDefiningcode getBodyExposureDefiningcode() {
-        return this.bodyExposureDefiningcode;
-    }
+  public BodyExposureDefiningCode getBodyExposureDefiningCode() {
+     return this.bodyExposureDefiningCode ;
+  }
 }

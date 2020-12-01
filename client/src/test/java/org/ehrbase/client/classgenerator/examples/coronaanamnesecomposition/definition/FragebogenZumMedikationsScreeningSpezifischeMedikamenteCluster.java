@@ -5,26 +5,26 @@ import org.ehrbase.client.annotations.Path;
 
 @Entity
 public class FragebogenZumMedikationsScreeningSpezifischeMedikamenteCluster {
-    @Path("/items[at0021]/value|value")
-    private String nameDesMedikamentsValue;
+  @Path("/items[at0021]/value|value")
+  private String nameDesMedikamentsValue;
 
-    @Path("/items[at0024]/value|defining_code")
-    private MedikamentInVerwendungDefiningcode medikamentInVerwendungDefiningcode;
+  @Path("/items[at0024]/value|defining_code")
+  private MedikamentInVerwendungDefiningCode medikamentInVerwendungDefiningCode;
 
-    public void setNameDesMedikamentsValue(String nameDesMedikamentsValue) {
-        this.nameDesMedikamentsValue = nameDesMedikamentsValue;
-    }
+  public void setNameDesMedikamentsValue(String nameDesMedikamentsValue) {
+     this.nameDesMedikamentsValue = nameDesMedikamentsValue;
+  }
 
-    public String getNameDesMedikamentsValue() {
-        return this.nameDesMedikamentsValue;
-    }
+  public String getNameDesMedikamentsValue() {
+     return this.nameDesMedikamentsValue ;
+  }
 
-    public void setMedikamentInVerwendungDefiningcode(
-            MedikamentInVerwendungDefiningcode medikamentInVerwendungDefiningcode) {
-        this.medikamentInVerwendungDefiningcode = medikamentInVerwendungDefiningcode;
-    }
+  public void setMedikamentInVerwendungDefiningCode(
+      MedikamentInVerwendungDefiningCode medikamentInVerwendungDefiningCode) {
+     this.medikamentInVerwendungDefiningCode = medikamentInVerwendungDefiningCode;
+  }
 
-    public MedikamentInVerwendungDefiningcode getMedikamentInVerwendungDefiningcode() {
-        return this.medikamentInVerwendungDefiningcode;
-    }
+  public MedikamentInVerwendungDefiningCode getMedikamentInVerwendungDefiningCode() {
+     return this.medikamentInVerwendungDefiningCode ;
+  }
 }

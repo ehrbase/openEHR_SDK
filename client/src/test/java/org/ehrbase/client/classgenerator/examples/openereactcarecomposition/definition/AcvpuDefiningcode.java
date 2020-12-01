@@ -2,7 +2,7 @@ package org.ehrbase.client.classgenerator.examples.openereactcarecomposition.def
 
 import org.ehrbase.client.classgenerator.EnumValueSet;
 
-public enum AcvpuDefiningcode implements EnumValueSet {
+public enum AcvpuDefiningCode implements EnumValueSet {
   CONFUSION("Confusion", "A new onset or worsening confusion, delirium or any other altered mentation.", "local", "at0015"),
 
   UNRESPONSIVE("Unresponsive", "No response to voice or pain stimuli.", "local", "at0008"),
@@ -21,7 +21,7 @@ public enum AcvpuDefiningcode implements EnumValueSet {
 
   private String code;
 
-  AcvpuDefiningcode(String value, String description, String terminologyId, String code) {
+  AcvpuDefiningCode(String value, String description, String terminologyId, String code) {
     this.value = value;
     this.description = description;
     this.terminologyId = terminologyId;
@@ -29,18 +29,18 @@ public enum AcvpuDefiningcode implements EnumValueSet {
   }
 
   public String getValue() {
-     return this.value;
+     return this.value ;
   }
 
   public String getDescription() {
-    return this.description;
+     return this.description ;
   }
 
   public String getTerminologyId() {
-    return this.terminologyId;
+     return this.terminologyId ;
   }
 
   public String getCode() {
-    return this.code;
+     return this.code ;
   }
 }

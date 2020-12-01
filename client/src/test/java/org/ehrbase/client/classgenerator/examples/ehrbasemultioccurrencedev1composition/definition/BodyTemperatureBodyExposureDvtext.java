@@ -6,15 +6,15 @@ import org.ehrbase.client.annotations.Path;
 
 @Entity
 @OptionFor("DV_TEXT")
-public class BodyTemperatureBodyExposureDvtext implements BodyTemperatureBodyExposureChoice {
-    @Path("|value")
-    private String bodyExposureValue;
+public class BodyTemperatureBodyExposureDvText implements BodyTemperatureBodyExposureChoice {
+  @Path("|value")
+  private String bodyExposureValue;
 
-    public void setBodyExposureValue(String bodyExposureValue) {
-        this.bodyExposureValue = bodyExposureValue;
-    }
+  public void setBodyExposureValue(String bodyExposureValue) {
+     this.bodyExposureValue = bodyExposureValue;
+  }
 
-    public String getBodyExposureValue() {
-        return this.bodyExposureValue;
-    }
+  public String getBodyExposureValue() {
+     return this.bodyExposureValue ;
+  }
 }

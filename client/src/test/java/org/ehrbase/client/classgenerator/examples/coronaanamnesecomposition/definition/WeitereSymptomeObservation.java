@@ -6,7 +6,7 @@ import org.ehrbase.client.annotations.Archetype;
 import org.ehrbase.client.annotations.Choice;
 import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.Path;
-import org.ehrbase.client.classgenerator.examples.shareddefinition.Language;
+import org.ehrbase.client.classgenerator.shareddefinition.Language;
 
 import java.time.temporal.TemporalAccessor;
 import java.util.List;
@@ -14,60 +14,60 @@ import java.util.List;
 @Entity
 @Archetype("openEHR-EHR-OBSERVATION.symptom_sign_screening.v0")
 public class WeitereSymptomeObservation {
-    @Path("/protocol[at0007]/items[at0021]")
-    private List<Cluster> erweiterung;
+  @Path("/data[at0001]/origin|value")
+  private TemporalAccessor originValue;
 
-    @Path("/subject")
-    private PartyProxy subject;
+  @Path("/protocol[at0007]/items[at0021]")
+  private List<Cluster> erweiterung;
 
-    @Path("/data[at0001]/origin|value")
-    private TemporalAccessor originValue;
+  @Path("/subject")
+  private PartyProxy subject;
 
-    @Path("/data[at0001]/events[at0002]")
-    @Choice
-    private List<WeitereSymptomeBeliebigesEreignisChoice> beliebigesEreignis;
+  @Path("/language")
+  private Language language;
 
-    @Path("/language")
-    private Language language;
+  @Path("/data[at0001]/events[at0002]")
+  @Choice
+  private List<WeitereSymptomeBeliebigesEreignisChoice> beliebigesEreignis;
 
-    public void setErweiterung(List<Cluster> erweiterung) {
-        this.erweiterung = erweiterung;
-    }
+  public void setOriginValue(TemporalAccessor originValue) {
+     this.originValue = originValue;
+  }
 
-    public List<Cluster> getErweiterung() {
-        return this.erweiterung;
-    }
+  public TemporalAccessor getOriginValue() {
+     return this.originValue ;
+  }
 
-    public void setSubject(PartyProxy subject) {
-        this.subject = subject;
-    }
+  public void setErweiterung(List<Cluster> erweiterung) {
+     this.erweiterung = erweiterung;
+  }
 
-    public PartyProxy getSubject() {
-        return this.subject;
-    }
+  public List<Cluster> getErweiterung() {
+     return this.erweiterung ;
+  }
 
-    public void setOriginValue(TemporalAccessor originValue) {
-        this.originValue = originValue;
-    }
+  public void setSubject(PartyProxy subject) {
+     this.subject = subject;
+  }
 
-    public TemporalAccessor getOriginValue() {
-        return this.originValue;
-    }
+  public PartyProxy getSubject() {
+     return this.subject ;
+  }
 
-    public void setBeliebigesEreignis(
-            List<WeitereSymptomeBeliebigesEreignisChoice> beliebigesEreignis) {
-        this.beliebigesEreignis = beliebigesEreignis;
-    }
+  public void setLanguage(Language language) {
+     this.language = language;
+  }
 
-    public List<WeitereSymptomeBeliebigesEreignisChoice> getBeliebigesEreignis() {
-        return this.beliebigesEreignis;
-    }
+  public Language getLanguage() {
+     return this.language ;
+  }
 
-    public void setLanguage(Language language) {
-        this.language = language;
-    }
+  public void setBeliebigesEreignis(
+      List<WeitereSymptomeBeliebigesEreignisChoice> beliebigesEreignis) {
+     this.beliebigesEreignis = beliebigesEreignis;
+  }
 
-    public Language getLanguage() {
-        return this.language;
-    }
+  public List<WeitereSymptomeBeliebigesEreignisChoice> getBeliebigesEreignis() {
+     return this.beliebigesEreignis ;
+  }
 }

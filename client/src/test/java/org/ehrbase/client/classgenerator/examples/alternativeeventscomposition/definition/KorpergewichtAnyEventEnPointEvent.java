@@ -10,70 +10,70 @@ import java.util.List;
 @Entity
 @OptionFor("POINT_EVENT")
 public class KorpergewichtAnyEventEnPointEvent implements KorpergewichtAnyEventEnChoice {
-    @Path("/time|value")
-    private TemporalAccessor timeValue;
+  @Path("/data[at0001]/items[at0004]/value|magnitude")
+  private Double gewichtMagnitude;
 
-    @Path("/data[at0001]/items[at0004]/value|magnitude")
-    private Double gewichtMagnitude;
+  @Path("/data[at0001]/items[at0004]/value|units")
+  private String gewichtUnits;
 
-    @Path("/data[at0001]/items[at0004]/value|units")
-    private String gewichtUnits;
+  @Path("/data[at0001]/items[at0024]/value|value")
+  private String commentEnValue;
 
-    @Path("/state[at0008]/items[at0025]")
-    private List<KorpergewichtConfoundingFactorsEnElement> confoundingFactorsEn;
+  @Path("/state[at0008]/items[at0009]/value|defining_code")
+  private StateOfDressEnDefiningCode stateOfDressEnDefiningCode;
 
-    @Path("/data[at0001]/items[at0024]/value|value")
-    private String commentEnValue;
+  @Path("/state[at0008]/items[at0025]")
+  private List<KorpergewichtConfoundingFactorsEnElement> confoundingFactorsEn;
 
-    @Path("/state[at0008]/items[at0009]/value|defining_code")
-    private StateOfDressEnDefiningcode stateOfDressEnDefiningcode;
+  @Path("/time|value")
+  private TemporalAccessor timeValue;
 
-    public void setTimeValue(TemporalAccessor timeValue) {
-        this.timeValue = timeValue;
-    }
+  public void setGewichtMagnitude(Double gewichtMagnitude) {
+     this.gewichtMagnitude = gewichtMagnitude;
+  }
 
-    public TemporalAccessor getTimeValue() {
-        return this.timeValue;
-    }
+  public Double getGewichtMagnitude() {
+     return this.gewichtMagnitude ;
+  }
 
-    public void setGewichtMagnitude(Double gewichtMagnitude) {
-        this.gewichtMagnitude = gewichtMagnitude;
-    }
+  public void setGewichtUnits(String gewichtUnits) {
+     this.gewichtUnits = gewichtUnits;
+  }
 
-    public Double getGewichtMagnitude() {
-        return this.gewichtMagnitude;
-    }
+  public String getGewichtUnits() {
+     return this.gewichtUnits ;
+  }
 
-    public void setGewichtUnits(String gewichtUnits) {
-        this.gewichtUnits = gewichtUnits;
-    }
+  public void setCommentEnValue(String commentEnValue) {
+     this.commentEnValue = commentEnValue;
+  }
 
-    public String getGewichtUnits() {
-        return this.gewichtUnits;
-    }
+  public String getCommentEnValue() {
+     return this.commentEnValue ;
+  }
 
-    public void setConfoundingFactorsEn(
-            List<KorpergewichtConfoundingFactorsEnElement> confoundingFactorsEn) {
-        this.confoundingFactorsEn = confoundingFactorsEn;
-    }
+  public void setStateOfDressEnDefiningCode(StateOfDressEnDefiningCode stateOfDressEnDefiningCode) {
+     this.stateOfDressEnDefiningCode = stateOfDressEnDefiningCode;
+  }
 
-    public List<KorpergewichtConfoundingFactorsEnElement> getConfoundingFactorsEn() {
-        return this.confoundingFactorsEn;
-    }
+  public StateOfDressEnDefiningCode getStateOfDressEnDefiningCode() {
+     return this.stateOfDressEnDefiningCode ;
+  }
 
-    public void setCommentEnValue(String commentEnValue) {
-        this.commentEnValue = commentEnValue;
-    }
+  public void setConfoundingFactorsEn(
+      List<KorpergewichtConfoundingFactorsEnElement> confoundingFactorsEn) {
+     this.confoundingFactorsEn = confoundingFactorsEn;
+  }
 
-    public String getCommentEnValue() {
-        return this.commentEnValue;
-    }
+  public List<KorpergewichtConfoundingFactorsEnElement> getConfoundingFactorsEn() {
+     return this.confoundingFactorsEn ;
+  }
 
-    public void setStateOfDressEnDefiningcode(StateOfDressEnDefiningcode stateOfDressEnDefiningcode) {
-        this.stateOfDressEnDefiningcode = stateOfDressEnDefiningcode;
-    }
+  public void setTimeValue(TemporalAccessor timeValue) {
+     this.timeValue = timeValue;
+  }
 
-    public StateOfDressEnDefiningcode getStateOfDressEnDefiningcode() {
-        return this.stateOfDressEnDefiningcode;
-    }
+  public TemporalAccessor getTimeValue() {
+     return this.timeValue ;
+  }
 }

@@ -2,7 +2,7 @@ package org.ehrbase.client.classgenerator.examples.openereactcarecomposition.def
 
 import org.ehrbase.client.classgenerator.EnumValueSet;
 
-public enum PresenceDefiningcode implements EnumValueSet {
+public enum PresenceDefiningCode implements EnumValueSet {
   UNKNOWN("Unknown", "It is not known if the symptom is present.", "local", "at0.4"),
 
   ABSENT("Absent", "The symptom is absent.", "local", "at0.3"),
@@ -17,7 +17,7 @@ public enum PresenceDefiningcode implements EnumValueSet {
 
   private String code;
 
-  PresenceDefiningcode(String value, String description, String terminologyId, String code) {
+  PresenceDefiningCode(String value, String description, String terminologyId, String code) {
     this.value = value;
     this.description = description;
     this.terminologyId = terminologyId;
@@ -25,18 +25,18 @@ public enum PresenceDefiningcode implements EnumValueSet {
   }
 
   public String getValue() {
-     return this.value;
+     return this.value ;
   }
 
   public String getDescription() {
-    return this.description;
+     return this.description ;
   }
 
   public String getTerminologyId() {
-    return this.terminologyId;
+     return this.terminologyId ;
   }
 
   public String getCode() {
-    return this.code;
+     return this.code ;
   }
 }

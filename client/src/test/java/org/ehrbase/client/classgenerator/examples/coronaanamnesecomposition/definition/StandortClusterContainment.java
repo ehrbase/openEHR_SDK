@@ -10,9 +10,9 @@ import org.ehrbase.client.aql.field.SelectAqlField;
 public class StandortClusterContainment extends Containment {
   public SelectAqlField<StandortCluster> STANDORT_CLUSTER = new AqlFieldImp<StandortCluster>(StandortCluster.class, "", "StandortCluster", StandortCluster.class, this);
 
-  public ListSelectAqlField<Cluster> DETAILS = new ListAqlFieldImp<Cluster>(StandortCluster.class, "/items[at0047]", "details", Cluster.class, this);
-
   public SelectAqlField<String> STANDORTBESCHREIBUNG_VALUE = new AqlFieldImp<String>(StandortCluster.class, "/items[at0046]/value|value", "standortbeschreibungValue", String.class, this);
+
+  public ListSelectAqlField<Cluster> DETAILS = new ListAqlFieldImp<Cluster>(StandortCluster.class, "/items[at0047]", "details", Cluster.class, this);
 
   private StandortClusterContainment() {
     super("openEHR-EHR-CLUSTER.location.v1");

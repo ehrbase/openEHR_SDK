@@ -6,16 +6,16 @@ import org.ehrbase.client.annotations.Path;
 
 @Entity
 @OptionFor("DV_CODED_TEXT")
-public class LatestCovid19TestOverallTestStatusDvcodedtext implements LatestCovid19TestOverallTestStatusChoice {
-    @Path("|defining_code")
-    private OverallTestStatusDefiningcode overallTestStatusDefiningcode;
+public class LatestCovid19TestOverallTestStatusDvCodedText implements LatestCovid19TestOverallTestStatusChoice {
+  @Path("|defining_code")
+  private OverallTestStatusDefiningCode overallTestStatusDefiningCode;
 
-    public void setOverallTestStatusDefiningcode(
-            OverallTestStatusDefiningcode overallTestStatusDefiningcode) {
-        this.overallTestStatusDefiningcode = overallTestStatusDefiningcode;
-    }
+  public void setOverallTestStatusDefiningCode(
+      OverallTestStatusDefiningCode overallTestStatusDefiningCode) {
+     this.overallTestStatusDefiningCode = overallTestStatusDefiningCode;
+  }
 
-    public OverallTestStatusDefiningcode getOverallTestStatusDefiningcode() {
-        return this.overallTestStatusDefiningcode;
-    }
+  public OverallTestStatusDefiningCode getOverallTestStatusDefiningCode() {
+     return this.overallTestStatusDefiningCode ;
+  }
 }

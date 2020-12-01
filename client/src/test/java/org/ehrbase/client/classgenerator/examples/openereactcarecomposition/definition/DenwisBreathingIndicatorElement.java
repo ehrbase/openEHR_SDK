@@ -5,14 +5,14 @@ import org.ehrbase.client.annotations.Path;
 
 @Entity
 public class DenwisBreathingIndicatorElement {
-    @Path("/value|defining_code")
-    private Definingcode7 definingcode;
+  @Path("/value|defining_code")
+  private BreathingIndicatorDefiningCode value;
 
-    public void setDefiningcode(Definingcode7 definingcode) {
-        this.definingcode = definingcode;
-    }
+  public void setValue(BreathingIndicatorDefiningCode value) {
+     this.value = value;
+  }
 
-    public Definingcode7 getDefiningcode() {
-        return this.definingcode;
-    }
+  public BreathingIndicatorDefiningCode getValue() {
+     return this.value ;
+  }
 }

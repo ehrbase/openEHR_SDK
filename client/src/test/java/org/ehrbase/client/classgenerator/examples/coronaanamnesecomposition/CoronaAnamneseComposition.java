@@ -15,10 +15,10 @@ import org.ehrbase.client.classgenerator.examples.coronaanamnesecomposition.defi
 import org.ehrbase.client.classgenerator.examples.coronaanamnesecomposition.definition.KontaktSection;
 import org.ehrbase.client.classgenerator.examples.coronaanamnesecomposition.definition.RisikogebietSection;
 import org.ehrbase.client.classgenerator.examples.coronaanamnesecomposition.definition.SymptomeSection;
-import org.ehrbase.client.classgenerator.examples.shareddefinition.CategoryDefiningcode;
-import org.ehrbase.client.classgenerator.examples.shareddefinition.Language;
-import org.ehrbase.client.classgenerator.examples.shareddefinition.SettingDefiningcode;
-import org.ehrbase.client.classgenerator.examples.shareddefinition.Territory;
+import org.ehrbase.client.classgenerator.shareddefinition.Category;
+import org.ehrbase.client.classgenerator.shareddefinition.Language;
+import org.ehrbase.client.classgenerator.shareddefinition.Setting;
+import org.ehrbase.client.classgenerator.shareddefinition.Territory;
 import org.ehrbase.client.openehrclient.VersionUid;
 
 import java.time.temporal.TemporalAccessor;
@@ -28,223 +28,223 @@ import java.util.List;
 @Archetype("openEHR-EHR-COMPOSITION.report.v1")
 @Template("Corona_Anamnese")
 public class CoronaAnamneseComposition {
-    @Id
-    private VersionUid versionUid;
+  @Path("/context/other_context[at0001]/items[at0002]/value|value")
+  private String berichtIdValue;
 
-    @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Risikogebiet']")
-    private RisikogebietSection risikogebiet;
+  @Path("/context/other_context[at0001]/items[at0005]/value|value")
+  private String statusValue;
 
-    @Path("/context/end_time|value")
-    private TemporalAccessor endTimeValue;
+  @Path("/context/other_context[at0001]/items[at0006]")
+  private List<Cluster> erweiterung;
 
-    @Path("/context/participations")
-    private List<Participation> participations;
+  @Path("/context/start_time|value")
+  private TemporalAccessor startTimeValue;
 
-    @Path("/language")
-    private Language language;
+  @Path("/context/participations")
+  private List<Participation> participations;
 
-    @Path("/context/health_care_facility")
-    private PartyIdentified healthCareFacility;
+  @Path("/context/end_time|value")
+  private TemporalAccessor endTimeValue;
 
-    @Path("/context/other_context[at0001]/items[at0005]/value|value")
-    private String statusValue;
+  @Path("/context/location")
+  private String location;
 
-    @Path("/content[openEHR-EHR-OBSERVATION.story.v1]")
-    private List<GeschichteHistorieObservation> geschichteHistorie;
+  @Path("/context/health_care_facility")
+  private PartyIdentified healthCareFacility;
 
-    @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Allgemeine Angaben']")
-    private AllgemeineAngabenSection allgemeineAngaben;
+  @Path("/context/setting|defining_code")
+  private Setting settingDefiningCode;
 
-    @Path("/context/other_context[at0001]/items[at0002]/value|value")
-    private String berichtIdValue;
+  @Path("/content[openEHR-EHR-OBSERVATION.story.v1]")
+  private List<GeschichteHistorieObservation> geschichteHistorie;
 
-    @Path("/territory")
-    private Territory territory;
+  @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Symptome']")
+  private SymptomeSection symptome;
 
-    @Path("/context/start_time|value")
-    private TemporalAccessor startTimeValue;
+  @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Kontakt']")
+  private KontaktSection kontakt;
 
-    @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Symptome']")
-    private SymptomeSection symptome;
+  @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Risikogebiet']")
+  private RisikogebietSection risikogebiet;
 
-    @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Kontakt']")
-    private KontaktSection kontakt;
+  @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Allgemeine Angaben']")
+  private AllgemeineAngabenSection allgemeineAngaben;
 
-    @Path("/composer")
-    private PartyProxy composer;
+  @Path("/composer")
+  private PartyProxy composer;
 
-    @Path("/context/setting|defining_code")
-    private SettingDefiningcode settingDefiningcode;
+  @Path("/language")
+  private Language language;
 
-    @Path("/feeder_audit")
-    private FeederAudit feederAudit;
+  @Path("/feeder_audit")
+  private FeederAudit feederAudit;
 
-    @Path("/context/other_context[at0001]/items[at0006]")
-    private List<Cluster> erweiterung;
+  @Path("/category|defining_code")
+  private Category categoryDefiningCode;
 
-    @Path("/context/location")
-    private String location;
+  @Path("/territory")
+  private Territory territory;
 
-    @Path("/category|defining_code")
-    private CategoryDefiningcode categoryDefiningcode;
+  @Id
+  private VersionUid versionUid;
 
-    public VersionUid getVersionUid() {
-        return this.versionUid;
-    }
+  public void setBerichtIdValue(String berichtIdValue) {
+     this.berichtIdValue = berichtIdValue;
+  }
 
-    public void setVersionUid(VersionUid versionUid) {
-        this.versionUid = versionUid;
-    }
+  public String getBerichtIdValue() {
+     return this.berichtIdValue ;
+  }
 
-    public void setRisikogebiet(RisikogebietSection risikogebiet) {
-        this.risikogebiet = risikogebiet;
-    }
+  public void setStatusValue(String statusValue) {
+     this.statusValue = statusValue;
+  }
 
-    public RisikogebietSection getRisikogebiet() {
-        return this.risikogebiet;
-    }
+  public String getStatusValue() {
+     return this.statusValue ;
+  }
 
-    public void setEndTimeValue(TemporalAccessor endTimeValue) {
-        this.endTimeValue = endTimeValue;
-    }
+  public void setErweiterung(List<Cluster> erweiterung) {
+     this.erweiterung = erweiterung;
+  }
 
-    public TemporalAccessor getEndTimeValue() {
-        return this.endTimeValue;
-    }
+  public List<Cluster> getErweiterung() {
+     return this.erweiterung ;
+  }
 
-    public void setParticipations(List<Participation> participations) {
-        this.participations = participations;
-    }
+  public void setStartTimeValue(TemporalAccessor startTimeValue) {
+     this.startTimeValue = startTimeValue;
+  }
 
-    public List<Participation> getParticipations() {
-        return this.participations;
-    }
+  public TemporalAccessor getStartTimeValue() {
+     return this.startTimeValue ;
+  }
 
-    public void setLanguage(Language language) {
-        this.language = language;
-    }
+  public void setParticipations(List<Participation> participations) {
+     this.participations = participations;
+  }
 
-    public Language getLanguage() {
-        return this.language;
-    }
+  public List<Participation> getParticipations() {
+     return this.participations ;
+  }
 
-    public void setHealthCareFacility(PartyIdentified healthCareFacility) {
-        this.healthCareFacility = healthCareFacility;
-    }
+  public void setEndTimeValue(TemporalAccessor endTimeValue) {
+     this.endTimeValue = endTimeValue;
+  }
 
-    public PartyIdentified getHealthCareFacility() {
-        return this.healthCareFacility;
-    }
+  public TemporalAccessor getEndTimeValue() {
+     return this.endTimeValue ;
+  }
 
-    public void setStatusValue(String statusValue) {
-        this.statusValue = statusValue;
-    }
+  public void setLocation(String location) {
+     this.location = location;
+  }
 
-    public String getStatusValue() {
-        return this.statusValue;
-    }
+  public String getLocation() {
+     return this.location ;
+  }
 
-    public void setGeschichteHistorie(List<GeschichteHistorieObservation> geschichteHistorie) {
-        this.geschichteHistorie = geschichteHistorie;
-    }
+  public void setHealthCareFacility(PartyIdentified healthCareFacility) {
+     this.healthCareFacility = healthCareFacility;
+  }
 
-    public List<GeschichteHistorieObservation> getGeschichteHistorie() {
-        return this.geschichteHistorie;
-    }
+  public PartyIdentified getHealthCareFacility() {
+     return this.healthCareFacility ;
+  }
 
-    public void setAllgemeineAngaben(AllgemeineAngabenSection allgemeineAngaben) {
-        this.allgemeineAngaben = allgemeineAngaben;
-    }
+  public void setSettingDefiningCode(Setting settingDefiningCode) {
+     this.settingDefiningCode = settingDefiningCode;
+  }
 
-    public AllgemeineAngabenSection getAllgemeineAngaben() {
-        return this.allgemeineAngaben;
-    }
+  public Setting getSettingDefiningCode() {
+     return this.settingDefiningCode ;
+  }
 
-    public void setBerichtIdValue(String berichtIdValue) {
-        this.berichtIdValue = berichtIdValue;
-    }
+  public void setGeschichteHistorie(List<GeschichteHistorieObservation> geschichteHistorie) {
+     this.geschichteHistorie = geschichteHistorie;
+  }
 
-    public String getBerichtIdValue() {
-        return this.berichtIdValue;
-    }
+  public List<GeschichteHistorieObservation> getGeschichteHistorie() {
+     return this.geschichteHistorie ;
+  }
 
-    public void setTerritory(Territory territory) {
-        this.territory = territory;
-    }
+  public void setSymptome(SymptomeSection symptome) {
+     this.symptome = symptome;
+  }
 
-    public Territory getTerritory() {
-        return this.territory;
-    }
+  public SymptomeSection getSymptome() {
+     return this.symptome ;
+  }
 
-    public void setStartTimeValue(TemporalAccessor startTimeValue) {
-        this.startTimeValue = startTimeValue;
-    }
+  public void setKontakt(KontaktSection kontakt) {
+     this.kontakt = kontakt;
+  }
 
-    public TemporalAccessor getStartTimeValue() {
-        return this.startTimeValue;
-    }
+  public KontaktSection getKontakt() {
+     return this.kontakt ;
+  }
 
-    public void setSymptome(SymptomeSection symptome) {
-        this.symptome = symptome;
-    }
+  public void setRisikogebiet(RisikogebietSection risikogebiet) {
+     this.risikogebiet = risikogebiet;
+  }
 
-    public SymptomeSection getSymptome() {
-        return this.symptome;
-    }
+  public RisikogebietSection getRisikogebiet() {
+     return this.risikogebiet ;
+  }
 
-    public void setKontakt(KontaktSection kontakt) {
-        this.kontakt = kontakt;
-    }
+  public void setAllgemeineAngaben(AllgemeineAngabenSection allgemeineAngaben) {
+     this.allgemeineAngaben = allgemeineAngaben;
+  }
 
-    public KontaktSection getKontakt() {
-        return this.kontakt;
-    }
+  public AllgemeineAngabenSection getAllgemeineAngaben() {
+     return this.allgemeineAngaben ;
+  }
 
-    public void setComposer(PartyProxy composer) {
-        this.composer = composer;
-    }
+  public void setComposer(PartyProxy composer) {
+     this.composer = composer;
+  }
 
-    public PartyProxy getComposer() {
-        return this.composer;
-    }
+  public PartyProxy getComposer() {
+     return this.composer ;
+  }
 
-    public void setSettingDefiningcode(SettingDefiningcode settingDefiningcode) {
-        this.settingDefiningcode = settingDefiningcode;
-    }
+  public void setLanguage(Language language) {
+     this.language = language;
+  }
 
-    public SettingDefiningcode getSettingDefiningcode() {
-        return this.settingDefiningcode;
-    }
+  public Language getLanguage() {
+     return this.language ;
+  }
 
-    public void setFeederAudit(FeederAudit feederAudit) {
-        this.feederAudit = feederAudit;
-    }
+  public void setFeederAudit(FeederAudit feederAudit) {
+     this.feederAudit = feederAudit;
+  }
 
-    public FeederAudit getFeederAudit() {
-        return this.feederAudit;
-    }
+  public FeederAudit getFeederAudit() {
+     return this.feederAudit ;
+  }
 
-    public void setErweiterung(List<Cluster> erweiterung) {
-        this.erweiterung = erweiterung;
-    }
+  public void setCategoryDefiningCode(Category categoryDefiningCode) {
+     this.categoryDefiningCode = categoryDefiningCode;
+  }
 
-    public List<Cluster> getErweiterung() {
-        return this.erweiterung;
-    }
+  public Category getCategoryDefiningCode() {
+     return this.categoryDefiningCode ;
+  }
 
-    public void setLocation(String location) {
-        this.location = location;
-    }
+  public void setTerritory(Territory territory) {
+     this.territory = territory;
+  }
 
-    public String getLocation() {
-        return this.location;
-    }
+  public Territory getTerritory() {
+     return this.territory ;
+  }
 
-    public void setCategoryDefiningcode(CategoryDefiningcode categoryDefiningcode) {
-        this.categoryDefiningcode = categoryDefiningcode;
-    }
+  public VersionUid getVersionUid() {
+     return this.versionUid ;
+  }
 
-    public CategoryDefiningcode getCategoryDefiningcode() {
-        return this.categoryDefiningcode;
-    }
+  public void setVersionUid(VersionUid versionUid) {
+     this.versionUid = versionUid;
+  }
 }

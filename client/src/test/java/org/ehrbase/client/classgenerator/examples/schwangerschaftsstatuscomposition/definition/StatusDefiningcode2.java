@@ -2,7 +2,7 @@ package org.ehrbase.client.classgenerator.examples.schwangerschaftsstatuscomposi
 
 import org.ehrbase.client.classgenerator.EnumValueSet;
 
-public enum StatusDefiningcode2 implements EnumValueSet {
+public enum StatusDefiningCode2 implements EnumValueSet {
   SCHWANGER("Schwanger", "Die Person ist schwanger.", "local", "at0012"),
 
   NICHT_SCHWANGER("Nicht schwanger", "Die Person ist nicht schwanger.", "local", "at0013"),
@@ -17,7 +17,7 @@ public enum StatusDefiningcode2 implements EnumValueSet {
 
   private String code;
 
-  StatusDefiningcode2(String value, String description, String terminologyId, String code) {
+  StatusDefiningCode2(String value, String description, String terminologyId, String code) {
     this.value = value;
     this.description = description;
     this.terminologyId = terminologyId;
@@ -25,18 +25,18 @@ public enum StatusDefiningcode2 implements EnumValueSet {
   }
 
   public String getValue() {
-     return this.value;
+     return this.value ;
   }
 
   public String getDescription() {
-    return this.description;
+     return this.description ;
   }
 
   public String getTerminologyId() {
-    return this.terminologyId;
+     return this.terminologyId ;
   }
 
   public String getCode() {
-    return this.code;
+     return this.code ;
   }
 }

@@ -8,25 +8,25 @@ import java.util.List;
 
 @Entity
 public class LatestCovid19TestTestRequestDetailsCluster {
-    @Path("/items[at0035]")
-    private List<Cluster> distributionList;
+  @Path("/items[at0090]")
+  private Cluster requester;
 
-    @Path("/items[at0090]")
-    private Cluster requester;
+  @Path("/items[at0035]")
+  private List<Cluster> distributionList;
 
-    public void setDistributionList(List<Cluster> distributionList) {
-        this.distributionList = distributionList;
-    }
+  public void setRequester(Cluster requester) {
+     this.requester = requester;
+  }
 
-    public List<Cluster> getDistributionList() {
-        return this.distributionList;
-    }
+  public Cluster getRequester() {
+     return this.requester ;
+  }
 
-    public void setRequester(Cluster requester) {
-        this.requester = requester;
-    }
+  public void setDistributionList(List<Cluster> distributionList) {
+     this.distributionList = distributionList;
+  }
 
-    public Cluster getRequester() {
-        return this.requester;
-    }
+  public List<Cluster> getDistributionList() {
+     return this.distributionList ;
+  }
 }

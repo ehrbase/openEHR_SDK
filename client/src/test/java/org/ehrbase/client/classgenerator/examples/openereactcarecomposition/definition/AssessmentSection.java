@@ -7,47 +7,47 @@ import org.ehrbase.client.annotations.Path;
 @Entity
 @Archetype("openEHR-EHR-SECTION.adhoc.v1")
 public class AssessmentSection {
-    @Path("/items[openEHR-EHR-SECTION.adhoc.v1 and name/value='Sepsis']")
-    private SepsisSection sepsis;
+  @Path("/items[openEHR-EHR-OBSERVATION.denwis.v0]")
+  private DenwisObservation denwis;
 
-    @Path("/items[openEHR-EHR-OBSERVATION.denwis.v0]")
-    private DenwisObservation denwis;
+  @Path("/items[openEHR-EHR-SECTION.adhoc.v1 and name/value='Sepsis']")
+  private SepsisSection sepsis;
 
-    @Path("/items[openEHR-EHR-SECTION.adhoc.v1 and name/value='NEWS2']")
-    private News2Section news2;
+  @Path("/items[openEHR-EHR-SECTION.adhoc.v1 and name/value='Covid']")
+  private CovidSection covid;
 
-    @Path("/items[openEHR-EHR-SECTION.adhoc.v1 and name/value='Covid']")
-    private CovidSection covid;
+  @Path("/items[openEHR-EHR-SECTION.adhoc.v1 and name/value='NEWS2']")
+  private News2Section news2;
 
-    public void setSepsis(SepsisSection sepsis) {
-        this.sepsis = sepsis;
-    }
+  public void setDenwis(DenwisObservation denwis) {
+     this.denwis = denwis;
+  }
 
-    public SepsisSection getSepsis() {
-        return this.sepsis;
-    }
+  public DenwisObservation getDenwis() {
+     return this.denwis ;
+  }
 
-    public void setDenwis(DenwisObservation denwis) {
-        this.denwis = denwis;
-    }
+  public void setSepsis(SepsisSection sepsis) {
+     this.sepsis = sepsis;
+  }
 
-    public DenwisObservation getDenwis() {
-        return this.denwis;
-    }
+  public SepsisSection getSepsis() {
+     return this.sepsis ;
+  }
 
-    public void setNews2(News2Section news2) {
-        this.news2 = news2;
-    }
+  public void setCovid(CovidSection covid) {
+     this.covid = covid;
+  }
 
-    public News2Section getNews2() {
-        return this.news2;
-    }
+  public CovidSection getCovid() {
+     return this.covid ;
+  }
 
-    public void setCovid(CovidSection covid) {
-        this.covid = covid;
-    }
+  public void setNews2(News2Section news2) {
+     this.news2 = news2;
+  }
 
-    public CovidSection getCovid() {
-        return this.covid;
-    }
+  public News2Section getNews2() {
+     return this.news2 ;
+  }
 }

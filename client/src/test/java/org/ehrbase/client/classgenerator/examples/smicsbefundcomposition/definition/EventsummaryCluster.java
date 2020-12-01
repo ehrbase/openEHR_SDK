@@ -9,59 +9,59 @@ import java.util.List;
 @Entity
 @Archetype("openEHR-EHR-CLUSTER.eventsummary.v0")
 public class EventsummaryCluster {
-    @Path("/items[at0006]/value|value")
-    private String kommentarValue;
+  @Path("/items[at0001 and name/value='Fallidentifikation']/value|value")
+  private String fallidentifikationValue;
 
-    @Path("/items[at0004]/value|value")
-    private String fallKategorieValue;
+  @Path("/items[at0002 and name/value='Fall-Art']/value|value")
+  private String fallArtValue;
 
-    @Path("/items[at0001]/value|value")
-    private String fallidentifikationValue;
+  @Path("/items[at0007]")
+  private List<EventsummaryBeteiligtePersonenCluster> beteiligtePersonen;
 
-    @Path("/items[at0002]/value|value")
-    private String fallArtValue;
+  @Path("/items[at0004 and name/value='Fall-Kategorie']/value|value")
+  private String fallKategorieValue;
 
-    @Path("/items[at0007]")
-    private List<ContextEventsummaryBeteiligtePersonenCluster> beteiligtePersonen;
+  @Path("/items[at0006]/value|value")
+  private String kommentarValue;
 
-    public void setKommentarValue(String kommentarValue) {
-        this.kommentarValue = kommentarValue;
-    }
+  public void setFallidentifikationValue(String fallidentifikationValue) {
+     this.fallidentifikationValue = fallidentifikationValue;
+  }
 
-    public String getKommentarValue() {
-        return this.kommentarValue;
-    }
+  public String getFallidentifikationValue() {
+     return this.fallidentifikationValue ;
+  }
 
-    public void setFallKategorieValue(String fallKategorieValue) {
-        this.fallKategorieValue = fallKategorieValue;
-    }
+  public void setFallArtValue(String fallArtValue) {
+     this.fallArtValue = fallArtValue;
+  }
 
-    public String getFallKategorieValue() {
-        return this.fallKategorieValue;
-    }
+  public String getFallArtValue() {
+     return this.fallArtValue ;
+  }
 
-    public void setFallidentifikationValue(String fallidentifikationValue) {
-        this.fallidentifikationValue = fallidentifikationValue;
-    }
+  public void setBeteiligtePersonen(
+      List<EventsummaryBeteiligtePersonenCluster> beteiligtePersonen) {
+     this.beteiligtePersonen = beteiligtePersonen;
+  }
 
-    public String getFallidentifikationValue() {
-        return this.fallidentifikationValue;
-    }
+  public List<EventsummaryBeteiligtePersonenCluster> getBeteiligtePersonen() {
+     return this.beteiligtePersonen ;
+  }
 
-    public void setFallArtValue(String fallArtValue) {
-        this.fallArtValue = fallArtValue;
-    }
+  public void setFallKategorieValue(String fallKategorieValue) {
+     this.fallKategorieValue = fallKategorieValue;
+  }
 
-    public String getFallArtValue() {
-        return this.fallArtValue;
-    }
+  public String getFallKategorieValue() {
+     return this.fallKategorieValue ;
+  }
 
-    public void setBeteiligtePersonen(
-            List<ContextEventsummaryBeteiligtePersonenCluster> beteiligtePersonen) {
-        this.beteiligtePersonen = beteiligtePersonen;
-    }
+  public void setKommentarValue(String kommentarValue) {
+     this.kommentarValue = kommentarValue;
+  }
 
-    public List<ContextEventsummaryBeteiligtePersonenCluster> getBeteiligtePersonen() {
-        return this.beteiligtePersonen;
-    }
+  public String getKommentarValue() {
+     return this.kommentarValue ;
+  }
 }

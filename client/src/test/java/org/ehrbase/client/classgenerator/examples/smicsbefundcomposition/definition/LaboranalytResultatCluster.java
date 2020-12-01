@@ -10,69 +10,69 @@ import java.util.List;
 @Entity
 @Archetype("openEHR-EHR-CLUSTER.laboratory_test_analyte.v1")
 public class LaboranalytResultatCluster {
-    @Path("/items[at0024]/value|defining_code")
-    private AntibiotikumDefiningcode antibiotikumDefiningcode;
+  @Path("/items[at0024 and name/value='Antibiotikum']/value|defining_code")
+  private AntibiotikumDefiningCode antibiotikumDefiningCode;
 
-    @Path("/items[at0004]/value|value")
-    private String resistenzValue;
+  @Path("/items[at0001 and name/value='Minimale Hemmkonzentration']/value|magnitude")
+  private Double minimaleHemmkonzentrationMagnitude;
 
-    @Path("/items[at0003]/value|value")
-    private String kommentarValue;
+  @Path("/items[at0001 and name/value='Minimale Hemmkonzentration']/value|units")
+  private String minimaleHemmkonzentrationUnits;
 
-    @Path("/items[at0001]/value|magnitude")
-    private Double minimaleHemmkonzentrationMagnitude;
+  @Path("/items[at0014]")
+  private List<Cluster> analyseergebnisDetails;
 
-    @Path("/items[at0001]/value|units")
-    private String minimaleHemmkonzentrationUnits;
+  @Path("/items[at0004 and name/value='Resistenz']/value|value")
+  private String resistenzValue;
 
-    @Path("/items[at0014]")
-    private List<Cluster> analyseergebnisDetails;
+  @Path("/items[at0003]/value|value")
+  private String kommentarValue;
 
-    public void setAntibiotikumDefiningcode(AntibiotikumDefiningcode antibiotikumDefiningcode) {
-        this.antibiotikumDefiningcode = antibiotikumDefiningcode;
-    }
+  public void setAntibiotikumDefiningCode(AntibiotikumDefiningCode antibiotikumDefiningCode) {
+     this.antibiotikumDefiningCode = antibiotikumDefiningCode;
+  }
 
-    public AntibiotikumDefiningcode getAntibiotikumDefiningcode() {
-        return this.antibiotikumDefiningcode;
-    }
+  public AntibiotikumDefiningCode getAntibiotikumDefiningCode() {
+     return this.antibiotikumDefiningCode ;
+  }
 
-    public void setResistenzValue(String resistenzValue) {
-        this.resistenzValue = resistenzValue;
-    }
+  public void setMinimaleHemmkonzentrationMagnitude(Double minimaleHemmkonzentrationMagnitude) {
+     this.minimaleHemmkonzentrationMagnitude = minimaleHemmkonzentrationMagnitude;
+  }
 
-    public String getResistenzValue() {
-        return this.resistenzValue;
-    }
+  public Double getMinimaleHemmkonzentrationMagnitude() {
+     return this.minimaleHemmkonzentrationMagnitude ;
+  }
 
-    public void setKommentarValue(String kommentarValue) {
-        this.kommentarValue = kommentarValue;
-    }
+  public void setMinimaleHemmkonzentrationUnits(String minimaleHemmkonzentrationUnits) {
+     this.minimaleHemmkonzentrationUnits = minimaleHemmkonzentrationUnits;
+  }
 
-    public String getKommentarValue() {
-        return this.kommentarValue;
-    }
+  public String getMinimaleHemmkonzentrationUnits() {
+     return this.minimaleHemmkonzentrationUnits ;
+  }
 
-    public void setMinimaleHemmkonzentrationMagnitude(Double minimaleHemmkonzentrationMagnitude) {
-        this.minimaleHemmkonzentrationMagnitude = minimaleHemmkonzentrationMagnitude;
-    }
+  public void setAnalyseergebnisDetails(List<Cluster> analyseergebnisDetails) {
+     this.analyseergebnisDetails = analyseergebnisDetails;
+  }
 
-    public Double getMinimaleHemmkonzentrationMagnitude() {
-        return this.minimaleHemmkonzentrationMagnitude;
-    }
+  public List<Cluster> getAnalyseergebnisDetails() {
+     return this.analyseergebnisDetails ;
+  }
 
-    public void setMinimaleHemmkonzentrationUnits(String minimaleHemmkonzentrationUnits) {
-        this.minimaleHemmkonzentrationUnits = minimaleHemmkonzentrationUnits;
-    }
+  public void setResistenzValue(String resistenzValue) {
+     this.resistenzValue = resistenzValue;
+  }
 
-    public String getMinimaleHemmkonzentrationUnits() {
-        return this.minimaleHemmkonzentrationUnits;
-    }
+  public String getResistenzValue() {
+     return this.resistenzValue ;
+  }
 
-    public void setAnalyseergebnisDetails(List<Cluster> analyseergebnisDetails) {
-        this.analyseergebnisDetails = analyseergebnisDetails;
-    }
+  public void setKommentarValue(String kommentarValue) {
+     this.kommentarValue = kommentarValue;
+  }
 
-    public List<Cluster> getAnalyseergebnisDetails() {
-        return this.analyseergebnisDetails;
-    }
+  public String getKommentarValue() {
+     return this.kommentarValue ;
+  }
 }

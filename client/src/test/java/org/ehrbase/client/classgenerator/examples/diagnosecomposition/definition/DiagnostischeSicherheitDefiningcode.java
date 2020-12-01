@@ -2,7 +2,7 @@ package org.ehrbase.client.classgenerator.examples.diagnosecomposition.definitio
 
 import org.ehrbase.client.classgenerator.EnumValueSet;
 
-public enum DiagnostischeSicherheitDefiningcode implements EnumValueSet {
+public enum DiagnostischeSicherheitDefiningCode implements EnumValueSet {
   WAHRSCHEINLICH("Wahrscheinlich", "Die Diagnose wurde mit einem hohen Maß an Sicherheit gestellt.", "local", "at0075"),
 
   VERMUTET("Vermutet", "Die Diagnose wurde mit einem niedrigen Grad an Sicherheit gestellt.", "local", "at0074"),
@@ -17,8 +17,8 @@ public enum DiagnostischeSicherheitDefiningcode implements EnumValueSet {
 
   private String code;
 
-  DiagnostischeSicherheitDefiningcode(String value, String description, String terminologyId,
-                                      String code) {
+  DiagnostischeSicherheitDefiningCode(String value, String description, String terminologyId,
+      String code) {
     this.value = value;
     this.description = description;
     this.terminologyId = terminologyId;
@@ -26,18 +26,18 @@ public enum DiagnostischeSicherheitDefiningcode implements EnumValueSet {
   }
 
   public String getValue() {
-    return this.value;
+     return this.value ;
   }
 
   public String getDescription() {
-    return this.description;
+     return this.description ;
   }
 
   public String getTerminologyId() {
-    return this.terminologyId;
+     return this.terminologyId ;
   }
 
   public String getCode() {
-    return this.code;
+     return this.code ;
   }
 }

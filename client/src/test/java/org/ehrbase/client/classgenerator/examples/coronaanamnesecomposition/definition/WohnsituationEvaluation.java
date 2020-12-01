@@ -5,76 +5,76 @@ import com.nedap.archie.rm.generic.PartyProxy;
 import org.ehrbase.client.annotations.Archetype;
 import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.Path;
-import org.ehrbase.client.classgenerator.examples.shareddefinition.Language;
+import org.ehrbase.client.classgenerator.shareddefinition.Language;
 
 import java.util.List;
 
 @Entity
 @Archetype("openEHR-EHR-EVALUATION.living_arrangement.v0")
 public class WohnsituationEvaluation {
-    @Path("/data[at0001]/items[openEHR-EHR-CLUSTER.dwelling.v0]")
-    private List<WohnstatteCluster> wohnstatte;
+  @Path("/data[at0001]/items[at0003]/value|value")
+  private String beschreibungValue;
 
-    @Path("/data[at0001]/items[at0003]/value|value")
-    private String beschreibungValue;
+  @Path("/data[at0001]/items[at0007]/value|magnitude")
+  private Long anzahlDerHaushaltsmitgliederMagnitude;
 
-    @Path("/data[at0001]/items[at0007]/value|magnitude")
-    private Long anzahlDerHaushaltsmitgliederMagnitude;
+  @Path("/data[at0001]/items[openEHR-EHR-CLUSTER.dwelling.v0]")
+  private List<WohnstatteCluster> wohnstatte;
 
-    @Path("/protocol[at0002]/items[at0011]")
-    private List<Cluster> erweiterung;
+  @Path("/protocol[at0002]/items[at0011]")
+  private List<Cluster> erweiterung;
 
-    @Path("/subject")
-    private PartyProxy subject;
+  @Path("/subject")
+  private PartyProxy subject;
 
-    @Path("/language")
-    private Language language;
+  @Path("/language")
+  private Language language;
 
-    public void setWohnstatte(List<WohnstatteCluster> wohnstatte) {
-        this.wohnstatte = wohnstatte;
-    }
+  public void setBeschreibungValue(String beschreibungValue) {
+     this.beschreibungValue = beschreibungValue;
+  }
 
-    public List<WohnstatteCluster> getWohnstatte() {
-        return this.wohnstatte;
-    }
+  public String getBeschreibungValue() {
+     return this.beschreibungValue ;
+  }
 
-    public void setBeschreibungValue(String beschreibungValue) {
-        this.beschreibungValue = beschreibungValue;
-    }
+  public void setAnzahlDerHaushaltsmitgliederMagnitude(Long anzahlDerHaushaltsmitgliederMagnitude) {
+     this.anzahlDerHaushaltsmitgliederMagnitude = anzahlDerHaushaltsmitgliederMagnitude;
+  }
 
-    public String getBeschreibungValue() {
-        return this.beschreibungValue;
-    }
+  public Long getAnzahlDerHaushaltsmitgliederMagnitude() {
+     return this.anzahlDerHaushaltsmitgliederMagnitude ;
+  }
 
-    public void setAnzahlDerHaushaltsmitgliederMagnitude(Long anzahlDerHaushaltsmitgliederMagnitude) {
-        this.anzahlDerHaushaltsmitgliederMagnitude = anzahlDerHaushaltsmitgliederMagnitude;
-    }
+  public void setWohnstatte(List<WohnstatteCluster> wohnstatte) {
+     this.wohnstatte = wohnstatte;
+  }
 
-    public Long getAnzahlDerHaushaltsmitgliederMagnitude() {
-        return this.anzahlDerHaushaltsmitgliederMagnitude;
-    }
+  public List<WohnstatteCluster> getWohnstatte() {
+     return this.wohnstatte ;
+  }
 
-    public void setErweiterung(List<Cluster> erweiterung) {
-        this.erweiterung = erweiterung;
-    }
+  public void setErweiterung(List<Cluster> erweiterung) {
+     this.erweiterung = erweiterung;
+  }
 
-    public List<Cluster> getErweiterung() {
-        return this.erweiterung;
-    }
+  public List<Cluster> getErweiterung() {
+     return this.erweiterung ;
+  }
 
-    public void setSubject(PartyProxy subject) {
-        this.subject = subject;
-    }
+  public void setSubject(PartyProxy subject) {
+     this.subject = subject;
+  }
 
-    public PartyProxy getSubject() {
-        return this.subject;
-    }
+  public PartyProxy getSubject() {
+     return this.subject ;
+  }
 
-    public void setLanguage(Language language) {
-        this.language = language;
-    }
+  public void setLanguage(Language language) {
+     this.language = language;
+  }
 
-    public Language getLanguage() {
-        return this.language;
-    }
+  public Language getLanguage() {
+     return this.language ;
+  }
 }

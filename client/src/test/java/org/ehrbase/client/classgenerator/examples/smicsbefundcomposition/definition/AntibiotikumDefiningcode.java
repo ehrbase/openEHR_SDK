@@ -2,350 +2,366 @@ package org.ehrbase.client.classgenerator.examples.smicsbefundcomposition.defini
 
 import org.ehrbase.client.classgenerator.EnumValueSet;
 
-public enum AntibiotikumDefiningcode implements EnumValueSet {
-  TEMOCILLIN("Temocillin", null, "LOINC", "18991-0"),
+public enum AntibiotikumDefiningCode implements EnumValueSet {
+  RAMOPLANIN("Ramoplanin", "Ramoplanin", "LOINC", "41737-8"),
 
-  SULBACTAM("Cefoperazon/Sulbactam", null, "LOINC", "54166-4"),
+  MOXALACTAM_LATAMOXEF("Moxalactam (Latamoxef)", "Moxalactam (Latamoxef)", "LOINC", "18950-6"),
 
-  SPARFLOXACIN("Sparfloxacin", null, "LOINC", "23628-1"),
+  MUPIROCIN("Mupirocin", "Mupirocin", "LOINC", "20389-3"),
 
-  POSACONAZOL_E_TEST("Posaconazol (E-Test)", null, "LOINC", "54186-2"),
+  TRIMETHOPRIM("Trimethoprim", "Trimethoprim", "LOINC", "18997-7"),
 
-  CLAVULANSAURE("Amoxycillin/Clavulansäure", null, "LOINC", "18862-3"),
+  CEFSULODIN("Cefsulodin", "Cefsulodin", "LOINC", "18892-0"),
 
-  CEFTIZOXIM("Ceftizoxim", null, "LOINC", "18894-6"),
+  SOLITHROMYCIN("Solithromycin", "Solithromycin", "LOINC", "73587-8"),
 
-  CEFOXITIN("Cefoxitin", null, "LOINC", "18888-8"),
+  CEFONICID("Cefonicid", "Cefonicid", "LOINC", "18883-9"),
 
-  VORICONAZOL("Voriconazol", null, "LOINC", "32379-0"),
+  CEFTIZOXIM("Ceftizoxim", "Ceftizoxim", "LOINC", "18894-6"),
 
-  GENTAMICIN("Gentamicin", null, "LOINC", "18928-2"),
+  TEMOCILLIN("Temocillin", "Temocillin", "LOINC", "18991-0"),
 
-  SPECTINOMYCIN("Spectinomycin", null, "LOINC", "18980-3"),
+  STAVUDIN("Stavudin", "Stavudin", "LOINC", "30302-4"),
 
-  NETILMICIN("Netilmicin", null, "LOINC", "18954-8"),
+  CEFTAROLIN("Ceftarolin", "Ceftarolin", "LOINC", "73605-8"),
 
-  PYRAZINAMID("Pyrazinamid", null, "LOINC", "18973-8"),
+  NOVOBIOCIN("Novobiocin", "Novobiocin", "LOINC", "18957-1"),
 
-  SOLITHROMYCIN("Solithromycin", null, "LOINC", "73587-8"),
+  AMPICILLIN_SULBACTAM("Ampicillin/Sulbactam", "Ampicillin/Sulbactam", "LOINC", "18865-6"),
 
-  AVIBACTAM("Ceftazidim/Avibactam", null, "LOINC", "73603-3"),
+  GENTAMICIN("Gentamicin", "Gentamicin", "LOINC", "18928-2"),
 
-  NITROCEPHIN("Nitrocephin", null, "LOINC", "6985-6"),
+  FIDAXOMICIN("Fidaxomicin", "Fidaxomicin", "LOINC", "73599-3"),
 
-  CASPOFUNGIN_E_TEST("Caspofungin (E-Test)", null, "LOINC", "54185-4"),
+  ETHAMBUTOL("Ethambutol", "Ethambutol", "LOINC", "18921-7"),
 
-  CEFCAPEN("Cefcapen", null, "LOINC", "76143-7"),
+  OMADACYCLIN("Omadacyclin", "Omadacyclin", "LOINC", "73594-4"),
 
-  MEROPENEM("Meropenem", null, "LOINC", "18943-1"),
+  FOSFOMYCIN("Fosfomycin", "Fosfomycin", "LOINC", "25596-8"),
 
-  CEPHALEXIN("Cephalexin", null, "LOINC", "18897-9"),
+  CEFAMANDOL("Cefamandol", "Cefamandol", "LOINC", "18876-3"),
 
-  NALIDIXINSAURE("Nalidixinsäure", null, "LOINC", "18952-2"),
+  N5_FLUOROCYTOSIN("5-Fluorocytosin", "5-Fluorocytosin", "LOINC", "18855-7"),
 
-  VABORBACTAM("Meropenem/Vaborbactam", null, "LOINC", "88892-5"),
+  AZITHROMYCIN("Azithromycin", "Azithromycin", "LOINC", "18866-4"),
 
-  MECILLINAM_AMDINOCILLIN("Mecillinam (Amdinocillin)", null, "LOINC", "18859-9"),
+  NAFCILLIN("Nafcillin", "Nafcillin", "LOINC", "18951-4"),
 
-  DIFLOXACIN("Difloxacin", null, "LOINC", "35792-1"),
+  ZALCITABIN("Zalcitabin", "Zalcitabin", "LOINC", "30301-6"),
 
-  CEFAMANDOL("Cefamandol", null, "LOINC", "18876-3"),
+  CEFDITOREN("Cefditoren", "Cefditoren", "LOINC", "35762-4"),
 
-  FINAFLOXACIN("Finafloxacin", null, "LOINC", "73598-5"),
+  MEZLOCILLIN("Mezlocillin", "Mezlocillin", "LOINC", "18947-2"),
 
-  CEFOTIAM("Cefotiam", null, "LOINC", "32374-1"),
+  POLYMYXIN_B("Polymyxin B", "Polymyxin B", "LOINC", "421-8"),
 
-  OFLOXACIN("Ofloxacin", null, "LOINC", "18959-7"),
+  TIGECYCLIN("Tigecyclin", "Tigecyclin", "LOINC", "42357-4"),
 
-  ROXITHROMYCIN("Roxithromycin", null, "LOINC", "18978-7"),
+  CEFPODOXIM("Cefpodoxim", "Cefpodoxim", "LOINC", "18890-4"),
 
-  FOSFOMYCIN("Fosfomycin", null, "LOINC", "25596-8"),
+  SPARFLOXACIN("Sparfloxacin", "Sparfloxacin", "LOINC", "23628-1"),
 
-  DIDANOSIN("Didanosin", null, "LOINC", "30300-8"),
+  TEMAFLOXACIN("Temafloxacin", "Temafloxacin", "LOINC", "18990-2"),
 
-  SULOPENEM("Sulopenem", null, "LOINC", "55289-3"),
+  CEFAZOLIN("Cefazolin", "Cefazolin", "LOINC", "18878-9"),
 
-  CLARITHROMYCIN("Clarithromycin", null, "LOINC", "18907-6"),
+  NETILMICIN("Netilmicin", "Netilmicin", "LOINC", "18954-8"),
 
-  CEFOTETAN("Cefotetan", null, "LOINC", "18887-0"),
+  TELITHROMYCIN("Telithromycin", "Telithromycin", "LOINC", "35845-7"),
 
-  ANIDULAFUNGIN("Anidulafungin", null, "LOINC", "57095-2"),
+  CINOXACIN("Cinoxacin", "Cinoxacin", "LOINC", "18905-0"),
 
-  ICLAPRIM("Iclaprim", null, "LOINC", "73597-7"),
+  FUSIDINSAURE("Fusidinsäure", "Fusidinsäure", "LOINC", "18927-4"),
 
-  IMIPENEM("Imipenem", null, "LOINC", "18932-4"),
+  CEFIXIM("Cefixim", "Cefixim", "LOINC", "18880-5"),
 
-  ESBL_TESTUNG("ESBL - Testung", null, "LOINC", "6984-9"),
+  GATIFLOXACIN("Gatifloxacin", "Gatifloxacin", "LOINC", "31038-3"),
 
-  MOXALACTAM_LATAMOXEF("Moxalactam (Latamoxef)", null, "LOINC", "18950-6"),
+  ICLAPRIM("Iclaprim", "Iclaprim", "LOINC", "73597-7"),
 
-  TIGECYCLIN("Tigecyclin", null, "LOINC", "42357-4"),
+  PREMAFLOXACIN("Premafloxacin", "Premafloxacin", "LOINC", "73591-0"),
 
-  PENICILLIN("Penicillin", null, "LOINC", "18964-7"),
+  SULFISOXAZOL("Sulfisoxazol", "Sulfisoxazol", "LOINC", "18986-0"),
 
-  ERTAPENEM("Ertapenem", null, "LOINC", "35802-8"),
+  ITRACONAZOL("Itraconazol", "Itraconazol", "LOINC", "32603-3"),
 
-  DANOFLOXACIN("Danofloxacin", null, "LOINC", "73601-7"),
+  CLARITHROMYCIN("Clarithromycin", "Clarithromycin", "LOINC", "18907-6"),
 
-  ENOXACIN("Enoxacin", null, "LOINC", "18918-3"),
+  CEFEPIM("Cefepim", "Cefepim", "LOINC", "18879-7"),
 
-  STREPTOMYCIN_HIGH("Streptomycin-High", null, "LOINC", "18983-7"),
+  ENOXACIN("Enoxacin", "Enoxacin", "LOINC", "18918-3"),
 
-  ERYTHROMYCIN("Erythromycin", null, "LOINC", "18919-1"),
+  COLISTIN("Colistin", "Colistin", "LOINC", "18912-6"),
 
-  BACITRACIN("Bacitracin", null, "LOINC", "18870-6"),
+  MECILLINAM_AMDINOCILLIN("Mecillinam (Amdinocillin)", "Mecillinam (Amdinocillin)", "LOINC", "8-3"),
 
-  NYSTATIN("Nystatin", null, "LOINC", "10697-1"),
+  CEFTAROLIN_AVIBACTAM("Ceftarolin/Avibactam", "Ceftarolin/Avibactam", "LOINC", "73604-1"),
 
-  DALBAVANCIN("Dalbavancin", null, "LOINC", "41734-5"),
+  GENTAMICIN_HIGH_LEVEL("Gentamicin High-Level", "Gentamicin High-Level", "LOINC", "18929-0"),
 
-  DAPTOMYCIN("Daptomycin", null, "LOINC", "35789-7"),
+  ISAVUCONAZOL("Isavuconazol", "Isavuconazol", "LOINC", "88887-5"),
 
-  TROVAFLOXACIN("Trovafloxacin", null, "LOINC", "23642-2"),
+  OFLOXACIN("Ofloxacin", "Ofloxacin", "LOINC", "18959-7"),
 
-  TICARCILLIN("Ticarcillin", null, "LOINC", "18994-4"),
+  TOBRAMYCIN("Tobramycin", "Tobramycin", "LOINC", "18996-9"),
 
-  KANAMYCIN_HIGH("Kanamycin-High", null, "LOINC", "18936-5"),
+  KANAMYCIN("Kanamycin", "Kanamycin", "LOINC", "18935-7"),
 
-  ORITAVANCIN("Oritavancin", null, "LOINC", "41736-0"),
+  CEFTAZIDIM_CLAVULANSAURE("Ceftazidim/Clavulansäure", "Ceftazidim/Clavulansäure", "LOINC", "35776-4"),
 
-  RAZUPENEM("Razupenem", null, "LOINC", "73590-2"),
+  PENICILLIN("Penicillin", "Penicillin", "LOINC", "18964-7"),
 
-  PIPERACILLIN("Piperacillin", null, "LOINC", "18969-6"),
+  DIRITHROMYCIN("Dirithromycin", "Dirithromycin", "LOINC", "35795-4"),
 
-  CEFSULODIN("Cefsulodin", null, "LOINC", "18892-0"),
+  DALBAVANCIN("Dalbavancin", "Dalbavancin", "LOINC", "41734-5"),
 
-  CEFPIROM("Cefpirom", null, "LOINC", "18889-6"),
+  TOSUFLOXACIN("Tosufloxacin", "Tosufloxacin", "LOINC", "76146-0"),
 
-  TRIMETHOPRIM_COTRIMOXAZOL("Sulfamethoxazol/Trimethoprim (Cotrimoxazol)", null, "LOINC", "18998-5"),
+  VORICONAZOL("Voriconazol", "Voriconazol", "LOINC", "32379-0"),
 
-  CEFUROXIM("Cefuroxim", null, "LOINC", "51724-3"),
+  CEFTRIAXON("Ceftriaxon", "Ceftriaxon", "LOINC", "18895-3"),
 
-  CEFPROZIL("Cefprozil", null, "LOINC", "18891-2"),
+  VANCOMYCIN("Vancomycin", "Vancomycin", "LOINC", "19000-9"),
 
-  RIFAMPIN("Rifampin", null, "LOINC", "18974-6"),
+  CEFCAPEN("Cefcapen", "Cefcapen", "LOINC", "76143-7"),
 
-  GATIFLOXACIN("Gatifloxacin", null, "LOINC", "31038-3"),
+  STREPTOMYCIN_HIGH("Streptomycin-High", "Streptomycin-High", "LOINC", "18983-7"),
 
-  PARA_AMINO_SALICYLSAURE("para-Amino-Salicylsäure", null, "LOINC", "23629-9"),
+  RAZUPENEM("Razupenem", "Razupenem", "LOINC", "73590-2"),
 
-  CEFADROXIL("Cefadroxil", null, "LOINC", "18875-5"),
+  OXACILLIN("Oxacillin", "Oxacillin", "LOINC", "18961-3"),
 
-  TELAVANCIN("Telavancin", null, "LOINC", "88886-7"),
+  SULFONAMID("Sulfonamid", "Sulfonamid", "LOINC", "18987-8"),
 
-  PENICILLIN_G("Penicillin G", null, "LOINC", "18965-4"),
+  PIPERACILLIN_TAZOBACTAM("Piperacillin/Tazobactam", "Piperacillin/Tazobactam", "LOINC", "18970-4"),
 
-  FLUCLOXACILLIN("Flucloxacillin", null, "LOINC", "18923-3"),
+  BESIFLOXACIN("Besifloxacin", "Besifloxacin", "LOINC", "73606-6"),
 
-  STREPTOMYCIN("Streptomycin", null, "LOINC", "18982-9"),
+  METHICILLIN("Methicillin", "Methicillin", "LOINC", "18945-6"),
 
-  SARAFLOXACIN("Sarafloxacin", null, "LOINC", "73588-6"),
+  CEFOPERAZON("Cefoperazon", "Cefoperazon", "LOINC", "18884-7"),
 
-  FOSCARNET("Foscarnet", null, "LOINC", "256-8"),
+  CLOFAZIMIN("Clofazimin", "Clofazimin", "LOINC", "23627-3"),
 
-  GEMIFLOXACIN("Gemifloxacin", null, "LOINC", "35816-8"),
+  QUINUPRISTIN_DALFOPRISTIN("Quinupristin/Dalfopristin", "Quinupristin/Dalfopristin", "LOINC", "23640-6"),
 
-  NITROFURANTOIN("Nitrofurantoin", null, "LOINC", "18955-5"),
+  CEFOTAXIM("Cefotaxim", "Cefotaxim", "LOINC", "18886-2"),
 
-  FLORFENICOL("Florfenicol", null, "LOINC", "23740-4"),
+  CLINAFLOXACIN("Clinafloxacin", "Clinafloxacin", "LOINC", "32376-6"),
 
-  POLYMYXIN_B("Polymyxin B", null, "LOINC", "421-8"),
+  GREPAFLOXACIN("Grepafloxacin", "Grepafloxacin", "LOINC", "23638-0"),
 
-  CLOFAZIMIN("Clofazimin", null, "LOINC", "23627-3"),
+  AMPHOTERICIN_B("Amphotericin B", "Amphotericin B", "LOINC", "18863-1"),
 
-  FLEROXACIN("Fleroxacin", null, "LOINC", "32372-5"),
+  JOSAMYCIN("Josamycin", "Josamycin", "LOINC", "25597-6"),
 
-  AMPHOTERICIN_B("Amphotericin B", null, "LOINC", "18863-1"),
+  ERYTHROMYCIN("Erythromycin", "Erythromycin", "LOINC", "18919-1"),
 
-  NAFCILLIN("Nafcillin", null, "LOINC", "18951-4"),
+  LAMIVUDIN("Lamivudin", "Lamivudin", "LOINC", "30298-4"),
 
-  RIFABUTIN("Rifabutin", null, "LOINC", "19149-4"),
+  CEPHALEXIN("Cephalexin", "Cephalexin", "LOINC", "18897-9"),
 
-  PENICILLIN_V("Penicillin V", null, "LOINC", "18966-2"),
+  DANOFLOXACIN("Danofloxacin", "Danofloxacin", "LOINC", "73601-7"),
 
-  CEFDITOREN("Cefditoren", null, "LOINC", "35762-4"),
+  DOXYCYCLIN("Doxycyclin", "Doxycyclin", "LOINC", "18917-5"),
 
-  DOXYCYCLIN("Doxycyclin", null, "LOINC", "18917-5"),
+  ERTAPENEM("Ertapenem", "Ertapenem", "LOINC", "35802-8"),
 
-  TOBRAMYCIN("Tobramycin", null, "LOINC", "18996-9"),
+  SULBACTAM("Sulbactam", "Sulbactam", "LOINC", "55614-2"),
 
-  FLUCONAZOL("Fluconazol", null, "LOINC", "18924-1"),
+  CEFOTIAM("Cefotiam", "Cefotiam", "LOINC", "32374-1"),
 
-  MINOCYCLIN("Minocyclin", null, "LOINC", "18948-0"),
+  NORFLOXACIN("Norfloxacin", "Norfloxacin", "LOINC", "18956-3"),
 
-  LORACARBEF("Loracarbef", null, "LOINC", "18940-7"),
+  CEFTOBIPROL("Ceftobiprol", "Ceftobiprol", "LOINC", "43272-4"),
 
-  CEFTAROLIN("Ceftarolin", null, "LOINC", "73605-8"),
+  FLORFENICOL("Florfenicol", "Florfenicol", "LOINC", "23740-4"),
 
-  OMADACYCLIN("Omadacyclin", null, "LOINC", "73594-4"),
+  LINCOMYCIN("Lincomycin", "Lincomycin", "LOINC", "18938-1"),
 
-  TAZOBACTAM("Piperacillin/Tazobactam", null, "LOINC", "18970-4"),
+  ROXITHROMYCIN("Roxithromycin", "Roxithromycin", "LOINC", "18978-7"),
 
-  TRIMETHOPRIM("Trimethoprim", null, "LOINC", "18997-7"),
+  CLINDAMYCIN("Clindamycin", "Clindamycin", "LOINC", "18908-4"),
 
-  CEFACLOR("Cefaclor", null, "LOINC", "18874-8"),
+  MEROPENEM_VABORBACTAM("Meropenem/Vaborbactam", "Meropenem/Vaborbactam", "LOINC", "88892-5"),
 
-  PROTIONAMID("Protionamid", null, "LOINC", "63565-6"),
+  ANIDULAFUNGIN("Anidulafungin", "Anidulafungin", "LOINC", "57095-2"),
 
-  AZLOCILLIN("Azlocillin", null, "LOINC", "18867-2"),
+  DORIPENEM("Doripenem", "Doripenem", "LOINC", "60535-2"),
 
-  CEFIXIM("Cefixim", null, "LOINC", "18880-5"),
+  PLAZOMICIN("Plazomicin", "Plazomicin", "LOINC", "73592-8"),
 
-  CEPHALOTHIN("Cephalothin", null, "LOINC", "18900-1"),
+  CEFACLOR("Cefaclor", "Cefaclor", "LOINC", "18874-8"),
 
-  CEFTIBUTEN("Ceftibuten", null, "LOINC", "35779-8"),
+  SPECTINOMYCIN("Spectinomycin", "Spectinomycin", "LOINC", "18980-3"),
 
-  CEFDINIR("Cefdinir", null, "LOINC", "23636-4"),
+  MINOCYCLIN("Minocyclin", "Minocyclin", "LOINC", "18948-0"),
 
-  ZALCITABIN("Zalcitabin", null, "LOINC", "30301-6"),
+  TICARCILLIN_CLAVULANSAURE("Ticarcillin/Clavulansäure", "Ticarcillin/Clavulansäure", "LOINC", "18995-1"),
 
-  MICAFUNGIN_E_TEST("Micafungin (E-Test)", null, "LOINC", "85048-7"),
+  CARBENICILLIN("Carbenicillin", "Carbenicillin", "LOINC", "18873-0"),
 
-  GARENOXACIN("Garenoxacin", null, "LOINC", "35813-5"),
+  CEFTAZIDIM("Ceftazidim", "Ceftazidim", "LOINC", "18893-8"),
 
-  AZITHROMYCIN("Azithromycin", null, "LOINC", "18866-4"),
+  CEFETAMET("Cefetamet", "Cefetamet", "LOINC", "32377-4"),
 
-  LOMEFLOXACIN("Lomefloxacin", null, "LOINC", "18939-9"),
+  FINAFLOXACIN("Finafloxacin", "Finafloxacin", "LOINC", "73598-5"),
 
-  TEMAFLOXACIN("Temafloxacin", null, "LOINC", "18990-2"),
+  ZIDOVUDIN("Zidovudin", "Zidovudin", "LOINC", "531-4"),
 
-  CARBENICILLIN("Carbenicillin", null, "LOINC", "18873-0"),
+  AZTREONAM("Aztreonam", "Aztreonam", "LOINC", "18868-0"),
 
-  SULFAMETHOXAZOL("Sulfamethoxazol", null, "LOINC", "18985-2"),
+  NITROFURANTOIN("Nitrofurantoin", "Nitrofurantoin", "LOINC", "18955-5"),
 
-  COLISTIN("Colistin", null, "LOINC", "18912-6"),
+  AMPICILLIN("Ampicillin", "Ampicillin", "LOINC", "18864-9"),
 
-  FAROPENEM("Faropenem", null, "LOINC", "73600-9"),
+  DIDANOSIN("Didanosin", "Didanosin", "LOINC", "30300-8"),
 
-  AMPICILLIN("Ampicillin", null, "LOINC", "18864-9"),
+  TEICOPLANIN("Teicoplanin", "Teicoplanin", "LOINC", "18989-4"),
 
-  ZIDOVUDIN("Zidovudin", null, "LOINC", "531-4"),
+  GARENOXACIN("Garenoxacin", "Garenoxacin", "LOINC", "35813-5"),
 
-  CEFEPIM("Cefepim", null, "LOINC", "18879-7"),
+  PIPERACILLIN_SULBACTAM("Piperacillin/Sulbactam", "Piperacillin/Sulbactam", "LOINC", "54197-9"),
 
-  BESIFLOXACIN("Besifloxacin", null, "LOINC", "73606-6"),
+  PENICILLIN_G("Penicillin G", "Penicillin G", "LOINC", "18965-4"),
 
-  NORFLOXACIN("Norfloxacin", null, "LOINC", "18956-3"),
+  LORACARBEF("Loracarbef", "Loracarbef", "LOINC", "18940-7"),
 
-  ETHAMBUTOL("Ethambutol", null, "LOINC", "18921-7"),
+  PARA_AMINO_SALICYLSAURE("para-Amino-Salicylsäure", "para-Amino-Salicylsäure", "LOINC", "23629-9"),
 
-  CIPROFLOXACIN("Ciprofloxacin", null, "LOINC", "18906-8"),
+  AMOXYCILLIN_CLAVULANSAURE("Amoxycillin/Clavulansäure", "Amoxycillin/Clavulansäure", "LOINC", "18862-3"),
 
-  MUPIROCIN("Mupirocin", null, "LOINC", "20389-3"),
+  FAROPENEM("Faropenem", "Faropenem", "LOINC", "73600-9"),
 
-  ISONIAZID("Isoniazid", null, "LOINC", "18934-0"),
+  NITROCEPHIN("Nitrocephin", "Nitrocephin", "LOINC", "6985-6"),
 
-  TEICOPLANIN("Teicoplanin", null, "LOINC", "18989-4"),
+  LINEZOLID("Linezolid", "Linezolid", "LOINC", "29258-1"),
 
-  CEFTOBIPROL("Ceftobiprol", null, "LOINC", "43272-4"),
+  LEVOFLOXACIN("Levofloxacin", "Levofloxacin", "LOINC", "20629-2"),
 
-  AMOXICILLIN("Amoxicillin", null, "LOINC", "18861-5"),
+  RIFAMPIN("Rifampin", "Rifampin", "LOINC", "18974-6"),
 
-  CEFAZOLIN("Cefazolin", null, "LOINC", "18878-9"),
+  CAPREOMYCIN("Capreomycin", "Capreomycin", "LOINC", "18872-2"),
 
-  FUSIDINSAURE("Fusidinsäure", null, "LOINC", "18927-4"),
+  CASPOFUNGIN_E_TEST("Caspofungin (E-Test)", "Caspofungin (E-Test)", "LOINC", "54185-4"),
 
-  MOXIFLOXACIN("Moxifloxacin", null, "LOINC", "31039-1"),
+  TELAVANCIN("Telavancin", "Telavancin", "LOINC", "88886-7"),
 
-  DIRITHROMYCIN("Dirithromycin", null, "LOINC", "35795-4"),
+  ESBL_TESTUNG("ESBL - Testung", "ESBL - Testung", "LOINC", "6984-9"),
 
-  AMIKACIN("Amikacin", null, "LOINC", "18860-7"),
+  BACITRACIN("Bacitracin", "Bacitracin", "LOINC", "18870-6"),
 
-  CEFMETAZOL("Cefmetazol", null, "LOINC", "18881-3"),
+  CEFPIROM("Cefpirom", "Cefpirom", "LOINC", "18889-6"),
 
-  VANCOMYCIN("Vancomycin", null, "LOINC", "19000-9"),
+  KANAMYCIN_HIGH("Kanamycin-High", "Kanamycin-High", "LOINC", "18936-5"),
 
-  PLAZOMICIN("Plazomicin", null, "LOINC", "73592-8"),
+  PIPERACILLIN("Piperacillin", "Piperacillin", "LOINC", "18969-6"),
 
-  KANAMYCIN("Kanamycin", null, "LOINC", "18935-7"),
+  CEPHALOTHIN("Cephalothin", "Cephalothin", "LOINC", "18900-1"),
 
-  NOVOBIOCIN("Novobiocin", null, "LOINC", "18957-1"),
+  SULFAMETHOXAZOL("Sulfamethoxazol", "Sulfamethoxazol", "LOINC", "18985-2"),
 
-  GREPAFLOXACIN("Grepafloxacin", null, "LOINC", "23638-0"),
+  CIPROFLOXACIN("Ciprofloxacin", "Ciprofloxacin", "LOINC", "18906-8"),
 
-  CYCLOSERIN("Cycloserin", null, "LOINC", "18914-2"),
+  ISONIAZID("Isoniazid", "Isoniazid", "LOINC", "18934-0"),
 
-  DALFOPRISTIN("Quinupristin/Dalfopristin", null, "LOINC", "23640-6"),
+  MICAFUNGIN_E_TEST("Micafungin (E-Test)", "Micafungin (E-Test)", "LOINC", "85048-7"),
 
-  CINOXACIN("Cinoxacin", null, "LOINC", "18905-0"),
+  PROTIONAMID("Protionamid", "Protionamid", "LOINC", "63565-6"),
 
-  MEZLOCILLIN("Mezlocillin", null, "LOINC", "18947-2"),
+  CEFMETAZOL("Cefmetazol", "Cefmetazol", "LOINC", "18881-3"),
 
-  CEFOTAXIM("Cefotaxim", null, "LOINC", "18886-2"),
+  CEFTOLOZAN_TAZOBACTAM("Ceftolozan/Tazobactam", "Ceftolozan/Tazobactam", "LOINC", "73602-5"),
 
-  LINEZOLID("Linezolid", null, "LOINC", "29258-1"),
+  BEDAQUILINE("Bedaquiline", "Bedaquiline", "LOINC", "88703-4"),
 
-  TELITHROMYCIN("Telithromycin", null, "LOINC", "35845-7"),
+  FLUCONAZOL("Fluconazol", "Fluconazol", "LOINC", "18924-1"),
 
-  CEFTERAM("Cefteram", null, "LOINC", "76144-5"),
+  CEFOXITIN("Cefoxitin", "Cefoxitin", "LOINC", "18888-8"),
 
-  BEDAQUILINE("Bedaquiline", null, "LOINC", "88703-4"),
+  NEOMYCIN("Neomycin", "Neomycin", "LOINC", "18953-0"),
 
-  PRISTINAMYCIN("Pristinamycin", null, "LOINC", "32383-2"),
+  PRISTINAMYCIN("Pristinamycin", "Pristinamycin", "LOINC", "32383-2"),
 
-  TETRACYCLIN("Tetracyclin", null, "LOINC", "18993-6"),
+  CEFDINIR("Cefdinir", "Cefdinir", "LOINC", "23636-4"),
 
-  PREMAFLOXACIN("Premafloxacin", null, "LOINC", "73591-0"),
+  LOMEFLOXACIN("Lomefloxacin", "Lomefloxacin", "LOINC", "18939-9"),
 
-  AZTREONAM("Aztreonam", null, "LOINC", "18868-0"),
+  DAPTOMYCIN("Daptomycin", "Daptomycin", "LOINC", "35789-7"),
 
-  CHLORAMPHENICOL("Chloramphenicol", null, "LOINC", "18903-5"),
+  AMIKACIN("Amikacin", "Amikacin", "LOINC", "18860-7"),
 
-  ISAVUCONAZOL("Isavuconazol", null, "LOINC", "88887-5"),
+  CEFUROXIM("Cefuroxim", "Cefuroxim", "LOINC", "51724-3"),
 
-  CLINAFLOXACIN("Clinafloxacin", null, "LOINC", "32376-6"),
+  RIFABUTIN("Rifabutin", "Rifabutin", "LOINC", "19149-4"),
 
-  CEFETAMET("Cefetamet", null, "LOINC", "32377-4"),
+  TETRACYCLIN("Tetracyclin", "Tetracyclin", "LOINC", "18993-6"),
 
-  NEOMYCIN("Neomycin", null, "LOINC", "18953-0"),
+  CEFOTETAN("Cefotetan", "Cefotetan", "LOINC", "18887-0"),
 
-  TOSUFLOXACIN("Tosufloxacin", null, "LOINC", "76146-0"),
+  CYCLOSERIN("Cycloserin", "Cycloserin", "LOINC", "18914-2"),
 
-  CEFONICID("Cefonicid", null, "LOINC", "18883-9"),
+  CEFTAZIDIM_AVIBACTAM("Ceftazidim/Avibactam", "Ceftazidim/Avibactam", "LOINC", "73603-3"),
 
-  FIDAXOMICIN("Fidaxomicin", null, "LOINC", "73599-3"),
+  SULOPENEM("Sulopenem", "Sulopenem", "LOINC", "55289-3"),
 
-  SULFISOXAZOL("Sulfisoxazol", null, "LOINC", "18986-0"),
+  STREPTOMYCIN("Streptomycin", "Streptomycin", "LOINC", "18982-9"),
 
-  JOSAMYCIN("Josamycin", null, "LOINC", "25597-6"),
+  CEFTERAM("Cefteram", "Cefteram", "LOINC", "76144-5"),
 
-  LAMIVUDIN("Lamivudin", null, "LOINC", "30298-4"),
+  PENICILLIN_V("Penicillin V", "Penicillin V", "LOINC", "18966-2"),
 
-  LINCOMYCIN("Lincomycin", null, "LOINC", "18938-1"),
+  FOSCARNET("Foscarnet", "Foscarnet", "LOINC", "256-8"),
 
-  LEVOFLOXACIN("Levofloxacin", null, "LOINC", "20629-2"),
+  CEFOTAXIM_CLAVULANSAURE("Cefotaxim/Clavulansäure", "Cefotaxim/Clavulansäure", "LOINC", "35771-5"),
 
-  CEFTAZIDIM("Ceftazidim", null, "LOINC", "18893-8"),
+  TICARCILLIN("Ticarcillin", "Ticarcillin", "LOINC", "18994-4"),
 
-  RAMOPLANIN("Ramoplanin", null, "LOINC", "41737-8"),
+  METRONIDAZOL("Metronidazol", "Metronidazol", "LOINC", "18946-4"),
 
-  GENTAMICIN_HIGH_LEVEL("Gentamicin High-Level", null, "LOINC", "18929-0"),
+  SULFAMETHOXAZOL_TRIMETHOPRIM_COTRIMOXAZOL("Sulfamethoxazol/Trimethoprim (Cotrimoxazol)", "Sulfamethoxazol/Trimethoprim (Cotrimoxazol)", "LOINC", "18998-5"),
 
-  CAPREOMYCIN("Capreomycin", null, "LOINC", "18872-2"),
+  NALIDIXINSAURE("Nalidixinsäure", "Nalidixinsäure", "LOINC", "18952-2"),
 
-  ITRACONAZOL("Itraconazol", null, "LOINC", "32603-3"),
+  DIFLOXACIN("Difloxacin", "Difloxacin", "LOINC", "35792-1"),
 
-  SULFONAMID("Sulfonamid", null, "LOINC", "18987-8"),
+  CEFADROXIL("Cefadroxil", "Cefadroxil", "LOINC", "18875-5"),
 
-  CLINDAMYCIN("Clindamycin", null, "LOINC", "18908-4"),
+  IMIPENEM("Imipenem", "Imipenem", "LOINC", "18932-4"),
 
-  STAVUDIN("Stavudin", null, "LOINC", "30302-4"),
+  CEFTIBUTEN("Ceftibuten", "Ceftibuten", "LOINC", "35779-8"),
 
-  CEFTRIAXON("Ceftriaxon", null, "LOINC", "18895-3"),
+  NYSTATIN("Nystatin", "Nystatin", "LOINC", "10697-1"),
 
-  N5_FLUOROCYTOSIN("5-Fluorocytosin", null, "LOINC", "18855-7"),
+  CHLORAMPHENICOL("Chloramphenicol", "Chloramphenicol", "LOINC", "18903-5"),
 
-  METRONIDAZOL("Metronidazol", null, "LOINC", "18946-4"),
+  PYRAZINAMID("Pyrazinamid", "Pyrazinamid", "LOINC", "18973-8"),
 
-  OXACILLIN("Oxacillin", null, "LOINC", "18961-3"),
+  CEFPROZIL("Cefprozil", "Cefprozil", "LOINC", "18891-2"),
 
-  METHICILLIN("Methicillin", null, "LOINC", "18945-6"),
+  FLEROXACIN("Fleroxacin", "Fleroxacin", "LOINC", "32372-5"),
 
-  CEFPODOXIM("Cefpodoxim", null, "LOINC", "18890-4"),
+  FLUCLOXACILLIN("Flucloxacillin", "Flucloxacillin", "LOINC", "18923-3"),
 
-  DORIPENEM("Doripenem", null, "LOINC", "60535-2"),
+  TROVAFLOXACIN("Trovafloxacin", "Trovafloxacin", "LOINC", "23642-2"),
 
-  CEFOPERAZON("Cefoperazon", null, "LOINC", "18884-7");
+  ORITAVANCIN("Oritavancin", "Oritavancin", "LOINC", "41736-0"),
+
+  AZLOCILLIN("Azlocillin", "Azlocillin", "LOINC", "18867-2"),
+
+  MEROPENEM("Meropenem", "Meropenem", "LOINC", "18943-1"),
+
+  MOXIFLOXACIN("Moxifloxacin", "Moxifloxacin", "LOINC", "31039-1"),
+
+  POSACONAZOL_E_TEST("Posaconazol (E-Test)", "Posaconazol (E-Test)", "LOINC", "54186-2"),
+
+  AMOXICILLIN("Amoxicillin", "Amoxicillin", "LOINC", "18861-5"),
+
+  CEFOPERAZON_SULBACTAM("Cefoperazon/Sulbactam", "Cefoperazon/Sulbactam", "LOINC", "54166-4"),
+
+  SARAFLOXACIN("Sarafloxacin", "Sarafloxacin", "LOINC", "73588-6"),
+
+  GEMIFLOXACIN("Gemifloxacin", "Gemifloxacin", "LOINC", "35816-8");
 
   private String value;
 
@@ -355,7 +371,7 @@ public enum AntibiotikumDefiningcode implements EnumValueSet {
 
   private String code;
 
-  AntibiotikumDefiningcode(String value, String description, String terminologyId, String code) {
+  AntibiotikumDefiningCode(String value, String description, String terminologyId, String code) {
     this.value = value;
     this.description = description;
     this.terminologyId = terminologyId;
@@ -363,18 +379,18 @@ public enum AntibiotikumDefiningcode implements EnumValueSet {
   }
 
   public String getValue() {
-    return this.value;
+     return this.value ;
   }
 
   public String getDescription() {
-    return this.description;
+     return this.description ;
   }
 
   public String getTerminologyId() {
-    return this.terminologyId;
+     return this.terminologyId ;
   }
 
   public String getCode() {
-    return this.code;
+     return this.code ;
   }
 }

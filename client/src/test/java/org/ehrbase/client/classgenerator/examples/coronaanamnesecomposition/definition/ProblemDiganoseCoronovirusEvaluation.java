@@ -6,7 +6,7 @@ import org.ehrbase.client.annotations.Archetype;
 import org.ehrbase.client.annotations.Choice;
 import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.Path;
-import org.ehrbase.client.classgenerator.examples.shareddefinition.Language;
+import org.ehrbase.client.classgenerator.shareddefinition.Language;
 
 import java.time.temporal.TemporalAccessor;
 import java.util.List;
@@ -14,115 +14,115 @@ import java.util.List;
 @Entity
 @Archetype("openEHR-EHR-EVALUATION.problem_diagnosis_covid.v1")
 public class ProblemDiganoseCoronovirusEvaluation {
-    @Path("/protocol[at0032]/items[at0071]")
-    private List<Cluster> erweiterung;
+  @Path("/data[at0001]/items[at0002]/value|value")
+  private String nameDesProblemsDerDiagnoseValue;
 
-    @Path("/data[at0001]/items[at0069]/value|value")
-    private String kommentarValue;
+  @Path("/data[at0001]/items[at0039]")
+  private List<Cluster> anatomischeStelleStrukturiert;
 
-    @Path("/data[at0001]/items[at0002]/value|value")
-    private String nameDesProblemsDerDiagnoseValue;
+  @Path("/data[at0001]/items[at0043]")
+  private List<Cluster> spezifischeAngaben;
 
-    @Path("/data[at0001]/items[at0039]")
-    private List<Cluster> anatomischeStelleStrukturiert;
+  @Path("/data[at0001]/items[openEHR-EHR-CLUSTER.problem_qualifier.v1 and name/value='Status']")
+  private StatusCluster status;
 
-    @Path("/language")
-    private Language language;
+  @Path("/data[at0001]/items[at0069]/value|value")
+  private String kommentarValue;
 
-    @Path("/data[at0001]/items[openEHR-EHR-CLUSTER.problem_qualifier.v1 and name/value='Status']")
-    private StatusCluster status;
+  @Path("/protocol[at0032]/items[at0070]/value|value")
+  private TemporalAccessor zuletztAktualisiertValue;
 
-    @Path("/protocol[at0032]/items[at0070]/value|value")
-    private TemporalAccessor zuletztAktualisiertValue;
+  @Path("/protocol[at0032]/items[at0071]")
+  private List<Cluster> erweiterung;
 
-    @Path("/subject")
-    private PartyProxy subject;
+  @Path("/subject")
+  private PartyProxy subject;
 
-    @Path("/data[at0001]/items[at0043]")
-    private List<Cluster> spezifischeAngaben;
+  @Path("/language")
+  private Language language;
 
-    @Path("/data[at0001]/items[at0073]/value")
-    @Choice
-    private StatusDiagnostischeSicherheitChoice diagnostischeSicherheit;
+  @Path("/data[at0001]/items[at0073]/value")
+  @Choice
+  private ProblemDiganoseCoronovirusDiagnostischeSicherheitChoice diagnostischeSicherheit;
 
-    public void setErweiterung(List<Cluster> erweiterung) {
-        this.erweiterung = erweiterung;
-    }
+  public void setNameDesProblemsDerDiagnoseValue(String nameDesProblemsDerDiagnoseValue) {
+     this.nameDesProblemsDerDiagnoseValue = nameDesProblemsDerDiagnoseValue;
+  }
 
-    public List<Cluster> getErweiterung() {
-        return this.erweiterung;
-    }
+  public String getNameDesProblemsDerDiagnoseValue() {
+     return this.nameDesProblemsDerDiagnoseValue ;
+  }
 
-    public void setKommentarValue(String kommentarValue) {
-        this.kommentarValue = kommentarValue;
-    }
+  public void setAnatomischeStelleStrukturiert(List<Cluster> anatomischeStelleStrukturiert) {
+     this.anatomischeStelleStrukturiert = anatomischeStelleStrukturiert;
+  }
 
-    public String getKommentarValue() {
-        return this.kommentarValue;
-    }
+  public List<Cluster> getAnatomischeStelleStrukturiert() {
+     return this.anatomischeStelleStrukturiert ;
+  }
 
-    public void setNameDesProblemsDerDiagnoseValue(String nameDesProblemsDerDiagnoseValue) {
-        this.nameDesProblemsDerDiagnoseValue = nameDesProblemsDerDiagnoseValue;
-    }
+  public void setSpezifischeAngaben(List<Cluster> spezifischeAngaben) {
+     this.spezifischeAngaben = spezifischeAngaben;
+  }
 
-    public String getNameDesProblemsDerDiagnoseValue() {
-        return this.nameDesProblemsDerDiagnoseValue;
-    }
+  public List<Cluster> getSpezifischeAngaben() {
+     return this.spezifischeAngaben ;
+  }
 
-    public void setAnatomischeStelleStrukturiert(List<Cluster> anatomischeStelleStrukturiert) {
-        this.anatomischeStelleStrukturiert = anatomischeStelleStrukturiert;
-    }
+  public void setStatus(StatusCluster status) {
+     this.status = status;
+  }
 
-    public List<Cluster> getAnatomischeStelleStrukturiert() {
-        return this.anatomischeStelleStrukturiert;
-    }
+  public StatusCluster getStatus() {
+     return this.status ;
+  }
 
-    public void setLanguage(Language language) {
-        this.language = language;
-    }
+  public void setKommentarValue(String kommentarValue) {
+     this.kommentarValue = kommentarValue;
+  }
 
-    public Language getLanguage() {
-        return this.language;
-    }
+  public String getKommentarValue() {
+     return this.kommentarValue ;
+  }
 
-    public void setStatus(StatusCluster status) {
-        this.status = status;
-    }
+  public void setZuletztAktualisiertValue(TemporalAccessor zuletztAktualisiertValue) {
+     this.zuletztAktualisiertValue = zuletztAktualisiertValue;
+  }
 
-    public StatusCluster getStatus() {
-        return this.status;
-    }
+  public TemporalAccessor getZuletztAktualisiertValue() {
+     return this.zuletztAktualisiertValue ;
+  }
 
-    public void setZuletztAktualisiertValue(TemporalAccessor zuletztAktualisiertValue) {
-        this.zuletztAktualisiertValue = zuletztAktualisiertValue;
-    }
+  public void setErweiterung(List<Cluster> erweiterung) {
+     this.erweiterung = erweiterung;
+  }
 
-    public TemporalAccessor getZuletztAktualisiertValue() {
-        return this.zuletztAktualisiertValue;
-    }
+  public List<Cluster> getErweiterung() {
+     return this.erweiterung ;
+  }
 
-    public void setSubject(PartyProxy subject) {
-        this.subject = subject;
-    }
+  public void setSubject(PartyProxy subject) {
+     this.subject = subject;
+  }
 
-    public PartyProxy getSubject() {
-        return this.subject;
-    }
+  public PartyProxy getSubject() {
+     return this.subject ;
+  }
 
-    public void setSpezifischeAngaben(List<Cluster> spezifischeAngaben) {
-        this.spezifischeAngaben = spezifischeAngaben;
-    }
+  public void setLanguage(Language language) {
+     this.language = language;
+  }
 
-    public List<Cluster> getSpezifischeAngaben() {
-        return this.spezifischeAngaben;
-    }
+  public Language getLanguage() {
+     return this.language ;
+  }
 
-    public void setDiagnostischeSicherheit(
-            StatusDiagnostischeSicherheitChoice diagnostischeSicherheit) {
-        this.diagnostischeSicherheit = diagnostischeSicherheit;
-    }
+  public void setDiagnostischeSicherheit(
+      ProblemDiganoseCoronovirusDiagnostischeSicherheitChoice diagnostischeSicherheit) {
+     this.diagnostischeSicherheit = diagnostischeSicherheit;
+  }
 
-    public StatusDiagnostischeSicherheitChoice getDiagnostischeSicherheit() {
-        return this.diagnostischeSicherheit;
-    }
+  public ProblemDiganoseCoronovirusDiagnostischeSicherheitChoice getDiagnostischeSicherheit() {
+     return this.diagnostischeSicherheit ;
+  }
 }

@@ -10,11 +10,8 @@ import java.util.List;
 @Entity
 @Archetype("openEHR-EHR-CLUSTER.laboratory_test_analyte.v1")
 public class SauerstoffsattigungCluster {
-  @Path("/items[at0005]/value|value")
-  private String ergebnisStatusValue;
-
   @Path("/items[at0024]/value|defining_code")
-  private UntersuchterAnalytDefiningcode4 untersuchterAnalytDefiningcode;
+  private UntersuchterAnalytDefiningCode4 untersuchterAnalytDefiningCode;
 
   @Path("/items[at0001]/value|magnitude")
   private Double analytResultatMagnitude;
@@ -25,21 +22,16 @@ public class SauerstoffsattigungCluster {
   @Path("/items[at0014]")
   private List<Cluster> analyseergebnisDetails;
 
-  public void setErgebnisStatusValue(String ergebnisStatusValue) {
-     this.ergebnisStatusValue = ergebnisStatusValue;
+  @Path("/items[at0005]/value|value")
+  private String ergebnisStatusValue;
+
+  public void setUntersuchterAnalytDefiningCode(
+      UntersuchterAnalytDefiningCode4 untersuchterAnalytDefiningCode) {
+     this.untersuchterAnalytDefiningCode = untersuchterAnalytDefiningCode;
   }
 
-  public String getErgebnisStatusValue() {
-     return this.ergebnisStatusValue ;
-  }
-
-  public void setUntersuchterAnalytDefiningcode(
-      UntersuchterAnalytDefiningcode4 untersuchterAnalytDefiningcode) {
-     this.untersuchterAnalytDefiningcode = untersuchterAnalytDefiningcode;
-  }
-
-  public UntersuchterAnalytDefiningcode4 getUntersuchterAnalytDefiningcode() {
-     return this.untersuchterAnalytDefiningcode ;
+  public UntersuchterAnalytDefiningCode4 getUntersuchterAnalytDefiningCode() {
+     return this.untersuchterAnalytDefiningCode ;
   }
 
   public void setAnalytResultatMagnitude(Double analytResultatMagnitude) {
@@ -64,5 +56,13 @@ public class SauerstoffsattigungCluster {
 
   public List<Cluster> getAnalyseergebnisDetails() {
      return this.analyseergebnisDetails ;
+  }
+
+  public void setErgebnisStatusValue(String ergebnisStatusValue) {
+     this.ergebnisStatusValue = ergebnisStatusValue;
+  }
+
+  public String getErgebnisStatusValue() {
+     return this.ergebnisStatusValue ;
   }
 }

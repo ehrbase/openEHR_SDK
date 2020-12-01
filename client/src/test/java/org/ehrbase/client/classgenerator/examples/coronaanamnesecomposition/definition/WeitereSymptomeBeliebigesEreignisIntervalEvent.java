@@ -3,7 +3,7 @@ package org.ehrbase.client.classgenerator.examples.coronaanamnesecomposition.def
 import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.OptionFor;
 import org.ehrbase.client.annotations.Path;
-import org.ehrbase.client.classgenerator.examples.shareddefinition.MathFunctionDefiningcode;
+import org.ehrbase.client.classgenerator.shareddefinition.MathFunction;
 
 import java.time.temporal.TemporalAccessor;
 import java.time.temporal.TemporalAmount;
@@ -12,49 +12,49 @@ import java.util.List;
 @Entity
 @OptionFor("INTERVAL_EVENT")
 public class WeitereSymptomeBeliebigesEreignisIntervalEvent implements WeitereSymptomeBeliebigesEreignisChoice {
-    @Path("/time|value")
-    private TemporalAccessor timeValue;
+  @Path("/data[at0003]/items[at0022]")
+  private List<WeitereSymptomeSpezifischesSymptomAnzeichenCluster> spezifischesSymptomAnzeichen;
 
-    @Path("/math_function|defining_code")
-    private MathFunctionDefiningcode mathFunctionDefiningcode;
+  @Path("/time|value")
+  private TemporalAccessor timeValue;
 
-    @Path("/data[at0003]/items[at0022]")
-    private List<WeitereSymptomeSpezifischesSymptomAnzeichenCluster> spezifischesSymptomAnzeichen;
+  @Path("/width|value")
+  private TemporalAmount widthValue;
 
-    @Path("/width|value")
-    private TemporalAmount widthValue;
+  @Path("/math_function|defining_code")
+  private MathFunction mathFunctionDefiningCode;
 
-    public void setTimeValue(TemporalAccessor timeValue) {
-        this.timeValue = timeValue;
-    }
+  public void setSpezifischesSymptomAnzeichen(
+      List<WeitereSymptomeSpezifischesSymptomAnzeichenCluster> spezifischesSymptomAnzeichen) {
+     this.spezifischesSymptomAnzeichen = spezifischesSymptomAnzeichen;
+  }
 
-    public TemporalAccessor getTimeValue() {
-        return this.timeValue;
-    }
+  public List<WeitereSymptomeSpezifischesSymptomAnzeichenCluster> getSpezifischesSymptomAnzeichen(
+      ) {
+     return this.spezifischesSymptomAnzeichen ;
+  }
 
-    public void setMathFunctionDefiningcode(MathFunctionDefiningcode mathFunctionDefiningcode) {
-        this.mathFunctionDefiningcode = mathFunctionDefiningcode;
-    }
+  public void setTimeValue(TemporalAccessor timeValue) {
+     this.timeValue = timeValue;
+  }
 
-    public MathFunctionDefiningcode getMathFunctionDefiningcode() {
-        return this.mathFunctionDefiningcode;
-    }
+  public TemporalAccessor getTimeValue() {
+     return this.timeValue ;
+  }
 
-    public void setSpezifischesSymptomAnzeichen(
-            List<WeitereSymptomeSpezifischesSymptomAnzeichenCluster> spezifischesSymptomAnzeichen) {
-        this.spezifischesSymptomAnzeichen = spezifischesSymptomAnzeichen;
-    }
+  public void setWidthValue(TemporalAmount widthValue) {
+     this.widthValue = widthValue;
+  }
 
-    public List<WeitereSymptomeSpezifischesSymptomAnzeichenCluster> getSpezifischesSymptomAnzeichen(
-    ) {
-        return this.spezifischesSymptomAnzeichen;
-    }
+  public TemporalAmount getWidthValue() {
+     return this.widthValue ;
+  }
 
-    public void setWidthValue(TemporalAmount widthValue) {
-        this.widthValue = widthValue;
-    }
+  public void setMathFunctionDefiningCode(MathFunction mathFunctionDefiningCode) {
+     this.mathFunctionDefiningCode = mathFunctionDefiningCode;
+  }
 
-    public TemporalAmount getWidthValue() {
-        return this.widthValue;
-    }
+  public MathFunction getMathFunctionDefiningCode() {
+     return this.mathFunctionDefiningCode ;
+  }
 }

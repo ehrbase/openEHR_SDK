@@ -2,7 +2,7 @@ package org.ehrbase.client.classgenerator.examples.smicsbefundcomposition.defini
 
 import org.ehrbase.client.classgenerator.EnumValueSet;
 
-public enum MreKlasseDefiningcode implements EnumValueSet {
+public enum MreKlasseDefiningCode implements EnumValueSet {
   N3MRGN("3MRGN", "Multiresistente Gramnegative Bakterien (Resistenz gegen 3 der 4 Antibiotikagruppen)", "local", "at0065"),
 
   N2MRGN("2MRGN", "Multiresistente Gramnegative Bakterien (Resistenz gegen 2 der 4 Antibiotikagruppen)", "local", "at0048"),
@@ -25,7 +25,7 @@ public enum MreKlasseDefiningcode implements EnumValueSet {
 
   private String code;
 
-  MreKlasseDefiningcode(String value, String description, String terminologyId, String code) {
+  MreKlasseDefiningCode(String value, String description, String terminologyId, String code) {
     this.value = value;
     this.description = description;
     this.terminologyId = terminologyId;
@@ -33,18 +33,18 @@ public enum MreKlasseDefiningcode implements EnumValueSet {
   }
 
   public String getValue() {
-    return this.value;
+     return this.value ;
   }
 
   public String getDescription() {
-    return this.description;
+     return this.description ;
   }
 
   public String getTerminologyId() {
-    return this.terminologyId;
+     return this.terminologyId ;
   }
 
   public String getCode() {
-    return this.code;
+     return this.code ;
   }
 }

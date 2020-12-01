@@ -10,36 +10,36 @@ import java.util.List;
 @Entity
 @Archetype("openEHR-EHR-CLUSTER.anatomical_location.v1")
 public class AnatomischeLokalisationCluster {
-    @Path("/items[at0053]")
-    private List<Cluster> alternativeStruktur;
+  @Path("/items[at0001]/value|value")
+  private String nameDerKorperstelleValue;
 
-    @Path("/items[at0001]/value|value")
-    private String nameDerKorperstelleValue;
+  @Path("/items[at0053]")
+  private List<Cluster> alternativeStruktur;
 
-    @Path("/items[at0054]")
-    private List<Cluster> multimedialeDarstellung;
+  @Path("/items[at0054]")
+  private List<Cluster> multimedialeDarstellung;
 
-    public void setAlternativeStruktur(List<Cluster> alternativeStruktur) {
-        this.alternativeStruktur = alternativeStruktur;
-    }
+  public void setNameDerKorperstelleValue(String nameDerKorperstelleValue) {
+     this.nameDerKorperstelleValue = nameDerKorperstelleValue;
+  }
 
-    public List<Cluster> getAlternativeStruktur() {
-        return this.alternativeStruktur;
-    }
+  public String getNameDerKorperstelleValue() {
+     return this.nameDerKorperstelleValue ;
+  }
 
-    public void setNameDerKorperstelleValue(String nameDerKorperstelleValue) {
-        this.nameDerKorperstelleValue = nameDerKorperstelleValue;
-    }
+  public void setAlternativeStruktur(List<Cluster> alternativeStruktur) {
+     this.alternativeStruktur = alternativeStruktur;
+  }
 
-    public String getNameDerKorperstelleValue() {
-        return this.nameDerKorperstelleValue;
-    }
+  public List<Cluster> getAlternativeStruktur() {
+     return this.alternativeStruktur ;
+  }
 
-    public void setMultimedialeDarstellung(List<Cluster> multimedialeDarstellung) {
-        this.multimedialeDarstellung = multimedialeDarstellung;
-    }
+  public void setMultimedialeDarstellung(List<Cluster> multimedialeDarstellung) {
+     this.multimedialeDarstellung = multimedialeDarstellung;
+  }
 
-    public List<Cluster> getMultimedialeDarstellung() {
-        return this.multimedialeDarstellung;
-    }
+  public List<Cluster> getMultimedialeDarstellung() {
+     return this.multimedialeDarstellung ;
+  }
 }

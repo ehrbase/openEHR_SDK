@@ -45,9 +45,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class ClassGeneratorNewTest {
 
-  public static final String PACKAGE_NAME = "org.ehrbase.client.classgenerator.examples2";
+  public static final String PACKAGE_NAME = "org.ehrbase.client.classgenerator.examples";
 
-  private static final boolean WRITE_FILES = true;
+  private static final boolean WRITE_FILES = false;
 
   @Test
   public void testGenerate() throws IOException, XmlException {
@@ -80,17 +80,17 @@ public class ClassGeneratorNewTest {
             new Tuple("commentValue", "java.lang.String"),
             new Tuple(
                 "cuffSizeDefiningCode",
-                "org.ehrbase.client.classgenerator.examples2.ehrbasebloodpressuresimpledev0composition.definition.CuffSizeDefiningCode"),
+                "org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev0composition.definition.CuffSizeDefiningCode"),
             new Tuple(
                 "korotkoffSoundsDefiningCode",
-                "org.ehrbase.client.classgenerator.examples2.ehrbasebloodpressuresimpledev0composition.definition.KorotkoffSoundsDefiningCode"),
+                "org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev0composition.definition.KorotkoffSoundsDefiningCode"),
             new Tuple("systolicMagnitude", "java.lang.Double"),
             new Tuple("systolicUnits", "java.lang.String"),
             new Tuple("diastolicMagnitude", "java.lang.Double"),
             new Tuple("diastolicUnits", "java.lang.String"),
             new Tuple(
                 "positionDefiningCode",
-                "org.ehrbase.client.classgenerator.examples2.ehrbasebloodpressuresimpledev0composition.definition.PositionDefiningCode"),
+                "org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev0composition.definition.PositionDefiningCode"),
             new Tuple("tiltMagnitude", "java.lang.Double"),
             new Tuple("tiltUnits", "java.lang.String"),
             new Tuple("meanArterialPressureMagnitude", "java.lang.Double"),
@@ -102,7 +102,7 @@ public class ClassGeneratorNewTest {
             new Tuple("pulsePressureUnits", "java.lang.String"),
             new Tuple(
                 "locationOfMeasurementDefiningCode",
-                "org.ehrbase.client.classgenerator.examples2.ehrbasebloodpressuresimpledev0composition.definition.LocationOfMeasurementDefiningCode"),
+                "org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev0composition.definition.LocationOfMeasurementDefiningCode"),
             new Tuple("modelValue", "java.lang.String"),
             new Tuple("serialNumberValue", "java.lang.String"),
             new Tuple("dateLastServicedValue", "java.time.temporal.TemporalAccessor"),
@@ -122,11 +122,11 @@ public class ClassGeneratorNewTest {
             new Tuple("territory", "org.ehrbase.client.classgenerator.shareddefinition.Territory"),
             new Tuple(
                 "bloodPressureTrainingSample",
-                "java.util.List<org.ehrbase.client.classgenerator.examples2.ehrbasebloodpressuresimpledev0composition.definition.BloodPressureTrainingSampleObservation>"),
+                "java.util.List<org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev0composition.definition.BloodPressureTrainingSampleObservation>"),
             //   new Tuple("location", "java.lang.String"),
             new Tuple(
                 "deviceDetailsTrainingSample",
-                "java.util.List<org.ehrbase.client.classgenerator.examples2.ehrbasebloodpressuresimpledev0composition.definition.DeviceDetailsTrainingSampleCluster>"),
+                "java.util.List<org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev0composition.definition.DeviceDetailsTrainingSampleCluster>"),
             new Tuple(
                 "categoryDefiningCode",
                 "org.ehrbase.client.classgenerator.shareddefinition.Category"),
@@ -188,43 +188,43 @@ public class ClassGeneratorNewTest {
             new Tuple("gewichtUnits", "java.lang.String"),
             new Tuple(
                 "confoundingFactorsEn",
-                "java.util.List<org.ehrbase.client.classgenerator.examples2.alternativeeventscomposition.definition.KorpergewichtConfoundingFactorsEnElement>"),
+                "java.util.List<org.ehrbase.client.classgenerator.examples.alternativeeventscomposition.definition.KorpergewichtConfoundingFactorsEnElement>"),
             new Tuple("commentEnValue", "java.lang.String"),
             new Tuple(
                 "stateOfDressEnDefiningCode",
-                "org.ehrbase.client.classgenerator.examples2.alternativeeventscomposition.definition.StateOfDressEnDefiningCode"),
+                "org.ehrbase.client.classgenerator.examples.alternativeeventscomposition.definition.StateOfDressEnDefiningCode"),
             new Tuple("value", "java.lang.String"),
             new Tuple("timeValue", "java.time.temporal.TemporalAccessor"),
             new Tuple("gewichtMagnitude", "java.lang.Double"),
             new Tuple("gewichtUnits", "java.lang.String"),
             new Tuple(
                 "confoundingFactorsEn",
-                "java.util.List<org.ehrbase.client.classgenerator.examples2.alternativeeventscomposition.definition.KorpergewichtConfoundingFactorsEnElement>"),
+                "java.util.List<org.ehrbase.client.classgenerator.examples.alternativeeventscomposition.definition.KorpergewichtConfoundingFactorsEnElement>"),
             new Tuple("commentEnValue", "java.lang.String"),
             new Tuple(
                 "stateOfDressEnDefiningCode",
-                "org.ehrbase.client.classgenerator.examples2.alternativeeventscomposition.definition.StateOfDressEnDefiningCode"),
+                "org.ehrbase.client.classgenerator.examples.alternativeeventscomposition.definition.StateOfDressEnDefiningCode"),
             new Tuple("value", "java.lang.String"),
             new Tuple("timeValue", "java.time.temporal.TemporalAccessor"),
             new Tuple("gewichtMagnitude", "java.lang.Double"),
             new Tuple("gewichtUnits", "java.lang.String"),
             new Tuple(
                 "confoundingFactorsEn",
-                "java.util.List<org.ehrbase.client.classgenerator.examples2.alternativeeventscomposition.definition.KorpergewichtConfoundingFactorsEnElement>"),
+                "java.util.List<org.ehrbase.client.classgenerator.examples.alternativeeventscomposition.definition.KorpergewichtConfoundingFactorsEnElement>"),
             new Tuple("widthValue", "java.time.temporal.TemporalAmount"),
             new Tuple("commentEnValue", "java.lang.String"),
             new Tuple(
                 "stateOfDressEnDefiningCode",
-                "org.ehrbase.client.classgenerator.examples2.alternativeeventscomposition.definition.StateOfDressEnDefiningCode"),
+                "org.ehrbase.client.classgenerator.examples.alternativeeventscomposition.definition.StateOfDressEnDefiningCode"),
             new Tuple(
                 "mathFunctionDefiningCode",
                 "org.ehrbase.client.classgenerator.shareddefinition.MathFunction"),
             new Tuple(
                 "birthEn",
-                "org.ehrbase.client.classgenerator.examples2.alternativeeventscomposition.definition.KorpergewichtBirthEnPointEvent"),
+                "org.ehrbase.client.classgenerator.examples.alternativeeventscomposition.definition.KorpergewichtBirthEnPointEvent"),
             new Tuple(
                 "anyEventEn",
-                "java.util.List<org.ehrbase.client.classgenerator.examples2.alternativeeventscomposition.definition.KorpergewichtAnyEventEnChoice>"),
+                "java.util.List<org.ehrbase.client.classgenerator.examples.alternativeeventscomposition.definition.KorpergewichtAnyEventEnChoice>"),
             new Tuple("extensionEn", "java.util.List<com.nedap.archie.rm.datastructures.Cluster>"),
             new Tuple("language", "org.ehrbase.client.classgenerator.shareddefinition.Language"),
             new Tuple("originValue", "java.time.temporal.TemporalAccessor"),
@@ -244,7 +244,7 @@ public class ClassGeneratorNewTest {
                 "org.ehrbase.client.classgenerator.shareddefinition.Setting"),
             new Tuple(
                 "korpergewicht",
-                "java.util.List<org.ehrbase.client.classgenerator.examples2.alternativeeventscomposition.definition.KorpergewichtObservation>"),
+                "java.util.List<org.ehrbase.client.classgenerator.examples.alternativeeventscomposition.definition.KorpergewichtObservation>"),
             new Tuple("erweiterung", "java.util.List<com.nedap.archie.rm.datastructures.Cluster>"),
             new Tuple("location", "java.lang.String"),
             new Tuple(
@@ -268,7 +268,7 @@ public class ClassGeneratorNewTest {
     Set<String> derDiagnoseDefiningCode =
         generate
             .getClasses()
-            .get("org.ehrbase.client.classgenerator.examples2.diagnosecomposition.definition")
+            .get("org.ehrbase.client.classgenerator.examples.diagnosecomposition.definition")
             .stream()
             .filter(t -> t.name.equals("NameDesProblemsDerDiagnoseDefiningCode"))
             .findAny()
@@ -460,6 +460,46 @@ public class ClassGeneratorNewTest {
   }
 
   @Test
+  public void testGeneratePatientenaufenthalt() throws IOException, XmlException {
+    OPERATIONALTEMPLATE template =
+        TemplateDocument.Factory.parse(OperationalTemplateTestData.PATIENTEN_AUFENTHALT.getStream())
+            .getTemplate();
+    ClassGeneratorNew cut = new ClassGeneratorNew(new ClassGeneratorConfig());
+    ClassGeneratorResult generate = cut.generate(PACKAGE_NAME, new OPTParser(template).parse());
+
+    List<FieldSpec> fieldSpecs =
+        generate.getClasses().values().stream()
+            .flatMap(Collection::stream)
+            .filter(t -> !t.kind.equals(TypeSpec.Kind.ENUM))
+            .map(t -> t.fieldSpecs)
+            .flatMap(List::stream)
+            .collect(Collectors.toList());
+
+    assertThat(fieldSpecs).size().isEqualTo(42);
+    writeFiles(generate);
+  }
+
+  @Test
+  public void testGenerateStationaererVersorgungsfall() throws IOException, XmlException {
+    OPERATIONALTEMPLATE template =
+        TemplateDocument.Factory.parse(OperationalTemplateTestData.EPISODE_SUMMARY.getStream())
+            .getTemplate();
+    ClassGeneratorNew cut = new ClassGeneratorNew(new ClassGeneratorConfig());
+    ClassGeneratorResult generate = cut.generate(PACKAGE_NAME, new OPTParser(template).parse());
+
+    List<FieldSpec> fieldSpecs =
+        generate.getClasses().values().stream()
+            .flatMap(Collection::stream)
+            .filter(t -> !t.kind.equals(TypeSpec.Kind.ENUM))
+            .map(t -> t.fieldSpecs)
+            .flatMap(List::stream)
+            .collect(Collectors.toList());
+
+    assertThat(fieldSpecs).size().isEqualTo(33);
+    writeFiles(generate);
+  }
+
+  @Test
   public void testGenerateBefundDerBlutgasanalyse() throws IOException, XmlException {
     OPERATIONALTEMPLATE template =
         TemplateDocument.Factory.parse(
@@ -467,12 +507,17 @@ public class ClassGeneratorNewTest {
             .getTemplate();
     ClassGeneratorNew cut = new ClassGeneratorNew(new ClassGeneratorConfig());
     ClassGeneratorResult generate = cut.generate(PACKAGE_NAME, new OPTParser(template).parse());
-    List<String> fieldSpecs = generate.getClasses().values().stream()
+    List<String> fieldSpecs =
+        generate.getClasses().values().stream()
             .flatMap(Collection::stream)
             .filter(t -> !t.kind.equals(TypeSpec.Kind.ENUM))
-            .map(t -> t.fieldSpecs).flatMap(List::stream).map(f -> f.name).collect(Collectors.toList());
+            .map(t -> t.fieldSpecs)
+            .flatMap(List::stream)
+            .map(f -> f.name)
+            .collect(Collectors.toList());
 
-    assertThat(fieldSpecs).containsExactlyInAnyOrder(
+    assertThat(fieldSpecs)
+        .containsExactlyInAnyOrder(
             "versionUid",
             "endTimeValue",
             "participations",
@@ -524,8 +569,7 @@ public class ClassGeneratorNewTest {
             "probendetail",
             "subject",
             "originValue",
-            "laborWelchesDenUntersuchungsauftragAnnimmt"
-    );
+            "laborWelchesDenUntersuchungsauftragAnnimmt");
 
     writeFiles(generate);
   }
@@ -563,11 +607,11 @@ public class ClassGeneratorNewTest {
             new Tuple("subject", "com.nedap.archie.rm.generic.PartyProxy"),
             new Tuple(
                 "locationOfMeasurementDefiningCode",
-                "org.ehrbase.client.classgenerator.examples2.ehrbasemultioccurrencedev1composition.definition.LocationOfMeasurementDefiningCode"),
+                "org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1composition.definition.LocationOfMeasurementDefiningCode"),
             new Tuple("locationOfMeasurementValue", "java.lang.String"),
             new Tuple(
                 "bodyExposureDefiningCode",
-                "org.ehrbase.client.classgenerator.examples2.ehrbasemultioccurrencedev1composition.definition.BodyExposureDefiningCode"),
+                "org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1composition.definition.BodyExposureDefiningCode"),
             new Tuple("bodyExposureValue", "java.lang.String"),
             new Tuple("temperatureMagnitude", "java.lang.Double"),
             new Tuple("temperatureUnits", "java.lang.String"),
@@ -581,7 +625,7 @@ public class ClassGeneratorNewTest {
             new Tuple("territory", "org.ehrbase.client.classgenerator.shareddefinition.Territory"),
             new Tuple(
                 "bodyTemperature",
-                "java.util.List<org.ehrbase.client.classgenerator.examples2.ehrbasemultioccurrencedev1composition.definition.BodyTemperatureObservation>"),
+                "java.util.List<org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1composition.definition.BodyTemperatureObservation>"),
             new Tuple("location", "java.lang.String"),
             new Tuple("startTimeValue", "java.time.temporal.TemporalAccessor"),
             new Tuple("currentDayOfMenstrualCycleMagnitude", "java.lang.Long"),
@@ -590,13 +634,13 @@ public class ClassGeneratorNewTest {
                 "java.util.List<com.nedap.archie.rm.datastructures.Cluster>"),
             new Tuple(
                 "bodyExposure",
-                "org.ehrbase.client.classgenerator.examples2.ehrbasemultioccurrencedev1composition.definition.BodyTemperatureBodyExposureChoice"),
+                "org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1composition.definition.BodyTemperatureBodyExposureChoice"),
             new Tuple(
                 "bodyExposure",
-                "org.ehrbase.client.classgenerator.examples2.ehrbasemultioccurrencedev1composition.definition.BodyTemperatureBodyExposureChoice"),
+                "org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1composition.definition.BodyTemperatureBodyExposureChoice"),
             new Tuple(
                 "locationOfMeasurement",
-                "org.ehrbase.client.classgenerator.examples2.ehrbasemultioccurrencedev1composition.definition.BodyTemperatureLocationOfMeasurementChoice"),
+                "org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1composition.definition.BodyTemperatureLocationOfMeasurementChoice"),
             new Tuple(
                 "categoryDefiningCode",
                 "org.ehrbase.client.classgenerator.shareddefinition.Category"),
@@ -616,7 +660,7 @@ public class ClassGeneratorNewTest {
                 "org.ehrbase.client.classgenerator.shareddefinition.MathFunction"),
             new Tuple(
                 "anyEvent",
-                "java.util.List<org.ehrbase.client.classgenerator.examples2.ehrbasemultioccurrencedev1composition.definition.BodyTemperatureAnyEventChoice>"),
+                "java.util.List<org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1composition.definition.BodyTemperatureAnyEventChoice>"),
             new Tuple(
                 "participations", "java.util.List<com.nedap.archie.rm.generic.Participation>"),
             new Tuple("feederAudit", "com.nedap.archie.rm.archetyped.FeederAudit"));
@@ -653,12 +697,18 @@ public class ClassGeneratorNewTest {
     ClassGeneratorNew cut = new ClassGeneratorNew(new ClassGeneratorConfig());
     ClassGeneratorResult generate = cut.generate(PACKAGE_NAME, new OPTParser(template).parse());
 
-    List<String> fieldSpecs = generate.getClasses().values().stream()
+    List<String> fieldSpecs =
+        generate.getClasses().values().stream()
             .flatMap(Collection::stream)
             .filter(t -> !t.kind.equals(TypeSpec.Kind.ENUM))
-            .map(t -> t.fieldSpecs).flatMap(List::stream).map(f -> f.name).collect(Collectors.toList());
+            .map(t -> t.fieldSpecs)
+            .flatMap(List::stream)
+            .map(f -> f.name)
+            .collect(Collectors.toList());
 
-    assertThat(fieldSpecs).containsExactlyInAnyOrder("alternativeStruktur",
+    assertThat(fieldSpecs)
+        .containsExactlyInAnyOrder(
+            "alternativeStruktur",
             "nameDerKorperstelleValue",
             "multimedialeDarstellung",
             "kommentarDesProbennehmersValue",
@@ -766,12 +816,17 @@ public class ClassGeneratorNewTest {
     ClassGeneratorNew cut = new ClassGeneratorNew(new ClassGeneratorConfig());
     ClassGeneratorResult generate = cut.generate(PACKAGE_NAME, new OPTParser(template).parse());
 
-    List<String> fieldSpecs = generate.getClasses().values().stream()
+    List<String> fieldSpecs =
+        generate.getClasses().values().stream()
             .flatMap(Collection::stream)
             .filter(t -> !t.kind.equals(TypeSpec.Kind.ENUM))
-            .map(t -> t.fieldSpecs).flatMap(List::stream).map(f -> f.name).collect(Collectors.toList());
+            .map(t -> t.fieldSpecs)
+            .flatMap(List::stream)
+            .map(f -> f.name)
+            .collect(Collectors.toList());
 
-    assertThat(fieldSpecs).containsExactlyInAnyOrder(
+    assertThat(fieldSpecs)
+        .containsExactlyInAnyOrder(
             "versionUid",
             "endTimeValue",
             "participations",
@@ -793,9 +848,7 @@ public class ClassGeneratorNewTest {
             "originValue",
             "language",
             "erweiterungen",
-            "statusDefiningCode"
-    );
-
+            "statusDefiningCode");
 
     Optional<TypeSpec> status1 =
         generate.getClasses().values().stream()
@@ -816,15 +869,6 @@ public class ClassGeneratorNewTest {
         .containsExactlyInAnyOrder("SCHWANGER", "NICHT_SCHWANGER", "UNBEKANNT");
 
     writeFiles(generate);
-  }
-
-  @Test
-  public void testCreateName() {
-    ClassGenerator cut = new ClassGenerator();
-    String className =
-        cut.buildClassName("/_state structure/*_confounding factors(en)_ELEMENT", true);
-
-    assertThat(className).isEqualTo("ConfoundingFactorsEnElement");
   }
 
   @Test

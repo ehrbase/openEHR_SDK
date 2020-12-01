@@ -32,48 +32,44 @@ import java.util.List;
 import java.util.Map;
 
 public class ClassGeneratorResult {
-    private final MultiValuedMap<String, TypeSpec> classes = new ArrayListValuedHashMap<>();
+  private final MultiValuedMap<String, TypeSpec> classes = new ArrayListValuedHashMap<>();
 
-    public void addClass(String path, TypeSpec typeSpec) {
-        classes.put(path, typeSpec);
+  public void addClass(String path, TypeSpec typeSpec) {
+    classes.put(path, typeSpec);
+  }
+
+  public Map<String, Collection<TypeSpec>> getClasses() {
+    return classes.asMap();
+  }
+
+  public List<JavaFile> writeFiles(Path root) throws IOException {
+    List<JavaFile> javaFiles = createFiles();
+
+    for (JavaFile j : javaFiles) {
+      j.writeTo(root);
     }
+    return javaFiles;
+  }
 
-    public Map<String, Collection<TypeSpec>> getClasses() {
-        return classes.asMap();
+  public List<JavaFile> createFiles() {
+    List<JavaFile> files = new ArrayList<>();
+
+    for (Map.Entry<String, Collection<TypeSpec>> entry : classes.asMap().entrySet()) {
+      String s = entry.getKey();
+      Collection<TypeSpec> typeSpecs = entry.getValue();
+      List<JavaFile> filesInternal = createFilesInternal(s, typeSpecs);
+      files.addAll(filesInternal);
     }
+    return files;
+  }
 
-    public List<JavaFile> writeFiles(Path root) throws IOException {
-        List<JavaFile> javaFiles = createFiles();
+  private List<JavaFile> createFilesInternal(String packageName, Collection<TypeSpec> typeSpecs) {
+    List<JavaFile> files = new ArrayList<>();
+    for (TypeSpec t : typeSpecs) {
 
-        for (JavaFile j : javaFiles) {
-            j.writeTo(root);
-        }
-        return javaFiles;
+      JavaFile javaFile = JavaFile.builder(packageName, t).build();
+      files.add(javaFile);
     }
-
-    public List<JavaFile> createFiles() {
-        List<JavaFile> files = new ArrayList<>();
-
-        for (Map.Entry<String, Collection<TypeSpec>> entry : classes.asMap().entrySet()) {
-            String s = entry.getKey();
-            Collection<TypeSpec> typeSpecs = entry.getValue();
-            List<JavaFile> filesInternal = createFilesInternal(s, typeSpecs);
-            files.addAll(filesInternal);
-        }
-        return files;
-    }
-
-
-    private List<JavaFile> createFilesInternal(String packageName, Collection<TypeSpec> typeSpecs) {
-        List<JavaFile> files = new ArrayList<>();
-        for (TypeSpec t : typeSpecs) {
-
-
-            JavaFile javaFile = JavaFile.builder(packageName, t)
-                    .build();
-            files.add(javaFile);
-        }
-        return files;
-    }
-
+    return files;
+  }
 }

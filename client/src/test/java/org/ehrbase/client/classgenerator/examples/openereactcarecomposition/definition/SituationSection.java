@@ -7,14 +7,14 @@ import org.ehrbase.client.annotations.Path;
 @Entity
 @Archetype("openEHR-EHR-SECTION.adhoc.v1")
 public class SituationSection {
-    @Path("/items[openEHR-EHR-OBSERVATION.story.v1]")
-    private StoryHistoryObservation storyHistory;
+  @Path("/items[openEHR-EHR-OBSERVATION.story.v1]")
+  private StoryHistoryObservation storyHistory;
 
-    public void setStoryHistory(StoryHistoryObservation storyHistory) {
-        this.storyHistory = storyHistory;
-    }
+  public void setStoryHistory(StoryHistoryObservation storyHistory) {
+     this.storyHistory = storyHistory;
+  }
 
-    public StoryHistoryObservation getStoryHistory() {
-        return this.storyHistory;
-    }
+  public StoryHistoryObservation getStoryHistory() {
+     return this.storyHistory ;
+  }
 }

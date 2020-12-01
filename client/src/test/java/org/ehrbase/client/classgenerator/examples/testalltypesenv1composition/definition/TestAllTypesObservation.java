@@ -10,7 +10,7 @@ import com.nedap.archie.rm.generic.PartyProxy;
 import org.ehrbase.client.annotations.Archetype;
 import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.Path;
-import org.ehrbase.client.classgenerator.examples.shareddefinition.Language;
+import org.ehrbase.client.classgenerator.shareddefinition.Language;
 
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAccessor;
@@ -19,234 +19,234 @@ import java.time.temporal.TemporalAmount;
 @Entity
 @Archetype("openEHR-EHR-OBSERVATION.test_all_types.v1")
 public class TestAllTypesObservation {
-    @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0019]/value")
-    private DvMultimedia multimediaAny;
+  @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value|value")
+  private String textValue;
 
-    @Path("/language")
-    private Language language;
+  @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0005]/value|defining_code")
+  private CodePhrase codedTextDefiningCode;
 
-    @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0012]/value|value")
-    private TemporalAccessor timeValue;
+  @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0006]/value|defining_code")
+  private CodePhrase codedTextTerminologyDefiningCode;
 
-    @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0020]/value")
-    private DvParsable parsableAny;
+  @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0007]/value|magnitude")
+  private Double quantityMagnitude;
 
-    @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0021]/value")
-    private DvIdentifier identifier;
+  @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0007]/value|units")
+  private String quantityUnits;
 
-    @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value|value")
-    private String textValue;
+  @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0008]/value|magnitude")
+  private Long countMagnitude;
 
-    @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0005]/value|defining_code")
-    private CodePhrase codedTextDefiningcode;
+  @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0009]/value|value")
+  private Temporal dateValue;
 
-    @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0022]/value")
-    private DvProportion proportionAny;
+  @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0010]/value|value")
+  private TemporalAccessor datetimeValue;
 
-    @Path("/data[at0001]/events[at0002]/time|value")
-    private TemporalAccessor timeValueTime;
+  @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0011]/value|value")
+  private TemporalAccessor datetimeAnyValue;
 
-    @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0006]/value|defining_code")
-    private CodePhrase codedTextTerminologyDefiningcode;
+  @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0012]/value|value")
+  private TemporalAccessor arbolTimeValue;
 
-    @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0007]/value|magnitude")
-    private Double quantityMagnitude;
+  @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0013]/value")
+  private DvOrdinal ordinal;
 
-    @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0007]/value|units")
-    private String quantityUnits;
+  @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0017]/value|value")
+  private Boolean booleanValue;
 
-    @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0008]/value|magnitude")
-    private Long countMagnitude;
+  @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0018]/value|value")
+  private TemporalAmount durationAnyValue;
 
-    @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0009]/value|value")
-    private Temporal dateValue;
+  @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0019]/value")
+  private DvMultimedia multimediaAny;
 
-    @Path("/subject")
-    private PartyProxy subject;
+  @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0020]/value")
+  private DvParsable parsableAny;
 
-    @Path("/data[at0001]/origin|value")
-    private TemporalAccessor originValue;
+  @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0021]/value")
+  private DvIdentifier identifier;
 
-    @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0018]/value|value")
-    private TemporalAmount durationAnyValue;
+  @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0022]/value")
+  private DvProportion proportionAny;
 
-    @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0013]/value")
-    private DvOrdinal ordinal;
+  @Path("/data[at0001]/events[at0002]/time|value")
+  private TemporalAccessor cualquierEventoTimeValue;
 
-    @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0017]/value|value")
-    private Boolean booleanValue;
+  @Path("/data[at0001]/origin|value")
+  private TemporalAccessor originValue;
 
-    @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0010]/value|value")
-    private TemporalAccessor datetimeValue;
+  @Path("/subject")
+  private PartyProxy subject;
 
-    @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0011]/value|value")
-    private TemporalAccessor datetimeAnyValue;
+  @Path("/language")
+  private Language language;
 
-    public void setMultimediaAny(DvMultimedia multimediaAny) {
-        this.multimediaAny = multimediaAny;
-    }
+  public void setTextValue(String textValue) {
+     this.textValue = textValue;
+  }
 
-    public DvMultimedia getMultimediaAny() {
-        return this.multimediaAny;
-    }
+  public String getTextValue() {
+     return this.textValue ;
+  }
 
-    public void setLanguage(Language language) {
-        this.language = language;
-    }
+  public void setCodedTextDefiningCode(CodePhrase codedTextDefiningCode) {
+     this.codedTextDefiningCode = codedTextDefiningCode;
+  }
 
-    public Language getLanguage() {
-        return this.language;
-    }
+  public CodePhrase getCodedTextDefiningCode() {
+     return this.codedTextDefiningCode ;
+  }
 
-    public void setTimeValue(TemporalAccessor timeValue) {
-        this.timeValue = timeValue;
-    }
+  public void setCodedTextTerminologyDefiningCode(CodePhrase codedTextTerminologyDefiningCode) {
+     this.codedTextTerminologyDefiningCode = codedTextTerminologyDefiningCode;
+  }
 
-    public TemporalAccessor getTimeValue() {
-        return this.timeValue;
-    }
+  public CodePhrase getCodedTextTerminologyDefiningCode() {
+     return this.codedTextTerminologyDefiningCode ;
+  }
 
-    public void setParsableAny(DvParsable parsableAny) {
-        this.parsableAny = parsableAny;
-    }
+  public void setQuantityMagnitude(Double quantityMagnitude) {
+     this.quantityMagnitude = quantityMagnitude;
+  }
 
-    public DvParsable getParsableAny() {
-        return this.parsableAny;
-    }
+  public Double getQuantityMagnitude() {
+     return this.quantityMagnitude ;
+  }
 
-    public void setIdentifier(DvIdentifier identifier) {
-        this.identifier = identifier;
-    }
+  public void setQuantityUnits(String quantityUnits) {
+     this.quantityUnits = quantityUnits;
+  }
 
-    public DvIdentifier getIdentifier() {
-        return this.identifier;
-    }
+  public String getQuantityUnits() {
+     return this.quantityUnits ;
+  }
 
-    public void setTextValue(String textValue) {
-        this.textValue = textValue;
-    }
+  public void setCountMagnitude(Long countMagnitude) {
+     this.countMagnitude = countMagnitude;
+  }
 
-    public String getTextValue() {
-        return this.textValue;
-    }
+  public Long getCountMagnitude() {
+     return this.countMagnitude ;
+  }
 
-    public void setCodedTextDefiningcode(CodePhrase codedTextDefiningcode) {
-        this.codedTextDefiningcode = codedTextDefiningcode;
-    }
+  public void setDateValue(Temporal dateValue) {
+     this.dateValue = dateValue;
+  }
 
-    public CodePhrase getCodedTextDefiningcode() {
-        return this.codedTextDefiningcode;
-    }
+  public Temporal getDateValue() {
+     return this.dateValue ;
+  }
 
-    public void setProportionAny(DvProportion proportionAny) {
-        this.proportionAny = proportionAny;
-    }
+  public void setDatetimeValue(TemporalAccessor datetimeValue) {
+     this.datetimeValue = datetimeValue;
+  }
 
-    public DvProportion getProportionAny() {
-        return this.proportionAny;
-    }
+  public TemporalAccessor getDatetimeValue() {
+     return this.datetimeValue ;
+  }
 
-    public void setTimeValueTime(TemporalAccessor timeValueTime) {
-        this.timeValueTime = timeValueTime;
-    }
+  public void setDatetimeAnyValue(TemporalAccessor datetimeAnyValue) {
+     this.datetimeAnyValue = datetimeAnyValue;
+  }
 
-    public TemporalAccessor getTimeValueTime() {
-        return this.timeValueTime;
-    }
+  public TemporalAccessor getDatetimeAnyValue() {
+     return this.datetimeAnyValue ;
+  }
 
-    public void setCodedTextTerminologyDefiningcode(CodePhrase codedTextTerminologyDefiningcode) {
-        this.codedTextTerminologyDefiningcode = codedTextTerminologyDefiningcode;
-    }
+  public void setArbolTimeValue(TemporalAccessor arbolTimeValue) {
+     this.arbolTimeValue = arbolTimeValue;
+  }
 
-    public CodePhrase getCodedTextTerminologyDefiningcode() {
-        return this.codedTextTerminologyDefiningcode;
-    }
+  public TemporalAccessor getArbolTimeValue() {
+     return this.arbolTimeValue ;
+  }
 
-    public void setQuantityMagnitude(Double quantityMagnitude) {
-        this.quantityMagnitude = quantityMagnitude;
-    }
+  public void setOrdinal(DvOrdinal ordinal) {
+     this.ordinal = ordinal;
+  }
 
-    public Double getQuantityMagnitude() {
-        return this.quantityMagnitude;
-    }
+  public DvOrdinal getOrdinal() {
+     return this.ordinal ;
+  }
 
-    public void setQuantityUnits(String quantityUnits) {
-        this.quantityUnits = quantityUnits;
-    }
+  public void setBooleanValue(Boolean booleanValue) {
+     this.booleanValue = booleanValue;
+  }
 
-    public String getQuantityUnits() {
-        return this.quantityUnits;
-    }
+  public Boolean isBooleanValue() {
+     return this.booleanValue ;
+  }
 
-    public void setCountMagnitude(Long countMagnitude) {
-        this.countMagnitude = countMagnitude;
-    }
+  public void setDurationAnyValue(TemporalAmount durationAnyValue) {
+     this.durationAnyValue = durationAnyValue;
+  }
 
-    public Long getCountMagnitude() {
-        return this.countMagnitude;
-    }
+  public TemporalAmount getDurationAnyValue() {
+     return this.durationAnyValue ;
+  }
 
-    public void setDateValue(Temporal dateValue) {
-        this.dateValue = dateValue;
-    }
+  public void setMultimediaAny(DvMultimedia multimediaAny) {
+     this.multimediaAny = multimediaAny;
+  }
 
-    public Temporal getDateValue() {
-        return this.dateValue;
-    }
+  public DvMultimedia getMultimediaAny() {
+     return this.multimediaAny ;
+  }
 
-    public void setSubject(PartyProxy subject) {
-        this.subject = subject;
-    }
+  public void setParsableAny(DvParsable parsableAny) {
+     this.parsableAny = parsableAny;
+  }
 
-    public PartyProxy getSubject() {
-        return this.subject;
-    }
+  public DvParsable getParsableAny() {
+     return this.parsableAny ;
+  }
 
-    public void setOriginValue(TemporalAccessor originValue) {
-        this.originValue = originValue;
-    }
+  public void setIdentifier(DvIdentifier identifier) {
+     this.identifier = identifier;
+  }
 
-    public TemporalAccessor getOriginValue() {
-        return this.originValue;
-    }
+  public DvIdentifier getIdentifier() {
+     return this.identifier ;
+  }
 
-    public void setDurationAnyValue(TemporalAmount durationAnyValue) {
-        this.durationAnyValue = durationAnyValue;
-    }
+  public void setProportionAny(DvProportion proportionAny) {
+     this.proportionAny = proportionAny;
+  }
 
-    public TemporalAmount getDurationAnyValue() {
-        return this.durationAnyValue;
-    }
+  public DvProportion getProportionAny() {
+     return this.proportionAny ;
+  }
 
-    public void setOrdinal(DvOrdinal ordinal) {
-        this.ordinal = ordinal;
-    }
+  public void setCualquierEventoTimeValue(TemporalAccessor cualquierEventoTimeValue) {
+     this.cualquierEventoTimeValue = cualquierEventoTimeValue;
+  }
 
-    public DvOrdinal getOrdinal() {
-        return this.ordinal;
-    }
+  public TemporalAccessor getCualquierEventoTimeValue() {
+     return this.cualquierEventoTimeValue ;
+  }
 
-    public void setBooleanValue(Boolean booleanValue) {
-        this.booleanValue = booleanValue;
-    }
+  public void setOriginValue(TemporalAccessor originValue) {
+     this.originValue = originValue;
+  }
 
-    public Boolean isBooleanValue() {
-        return this.booleanValue;
-    }
+  public TemporalAccessor getOriginValue() {
+     return this.originValue ;
+  }
 
-    public void setDatetimeValue(TemporalAccessor datetimeValue) {
-        this.datetimeValue = datetimeValue;
-    }
+  public void setSubject(PartyProxy subject) {
+     this.subject = subject;
+  }
 
-    public TemporalAccessor getDatetimeValue() {
-        return this.datetimeValue;
-    }
+  public PartyProxy getSubject() {
+     return this.subject ;
+  }
 
-    public void setDatetimeAnyValue(TemporalAccessor datetimeAnyValue) {
-        this.datetimeAnyValue = datetimeAnyValue;
-    }
+  public void setLanguage(Language language) {
+     this.language = language;
+  }
 
-    public TemporalAccessor getDatetimeAnyValue() {
-        return this.datetimeAnyValue;
-    }
+  public Language getLanguage() {
+     return this.language ;
+  }
 }

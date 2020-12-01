@@ -32,7 +32,6 @@ import java.util.ArrayList;
 import java.util.Optional;
 import java.util.UUID;
 
-import static org.ehrbase.client.openehrclient.defaultrestclient.DefaultRestClient.*;
 import static org.ehrbase.client.openehrclient.defaultrestclient.DefaultRestEhrEndpoint.EHR_PATH;
 
 public class DefaultRestDirectoryEndpoint {

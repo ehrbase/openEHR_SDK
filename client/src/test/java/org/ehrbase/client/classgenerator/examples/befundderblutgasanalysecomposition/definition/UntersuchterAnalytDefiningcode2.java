@@ -2,12 +2,12 @@ package org.ehrbase.client.classgenerator.examples.befundderblutgasanalysecompos
 
 import org.ehrbase.client.classgenerator.EnumValueSet;
 
-public enum UntersuchterAnalytDefiningcode2 implements EnumValueSet {
-  OXYGEN_PARTIAL_PRESSURE_IN_ARTERIAL_BLOOD("Oxygen [Partial pressure] in Arterial blood", null, "LOINC", "2703-7"),
+public enum UntersuchterAnalytDefiningCode2 implements EnumValueSet {
+  OXYGEN_PARTIAL_PRESSURE_IN_BLOOD("Oxygen [Partial pressure] in Blood", "Oxygen [Partial pressure] in Blood", "LOINC", "11556-8"),
 
-  OXYGEN_PARTIAL_PRESSURE_IN_BLOOD("Oxygen [Partial pressure] in Blood", null, "LOINC", "11556-8"),
+  OXYGEN_PARTIAL_PRESSURE_IN_ARTERIAL_BLOOD("Oxygen [Partial pressure] in Arterial blood", "Oxygen [Partial pressure] in Arterial blood", "LOINC", "2703-7"),
 
-  OXYGEN_PARTIAL_PRESSURE_IN_CAPILLARY_BLOOD("Oxygen [Partial pressure] in Capillary blood", null, "LOINC", "2704-5");
+  OXYGEN_PARTIAL_PRESSURE_IN_CAPILLARY_BLOOD("Oxygen [Partial pressure] in Capillary blood", "Oxygen [Partial pressure] in Capillary blood", "LOINC", "2704-5");
 
   private String value;
 
@@ -17,7 +17,7 @@ public enum UntersuchterAnalytDefiningcode2 implements EnumValueSet {
 
   private String code;
 
-  UntersuchterAnalytDefiningcode2(String value, String description, String terminologyId,
+  UntersuchterAnalytDefiningCode2(String value, String description, String terminologyId,
       String code) {
     this.value = value;
     this.description = description;

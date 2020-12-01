@@ -6,15 +6,15 @@ import org.ehrbase.client.annotations.Path;
 
 @Entity
 @OptionFor("DV_COUNT")
-public class TestAllTypesChoiceDvcount implements TestAllTypesChoiceChoice {
-    @Path("|magnitude")
-    private Long choiceMagnitude;
+public class TestAllTypesChoiceDvCount implements TestAllTypesChoiceChoice {
+  @Path("|magnitude")
+  private Long choiceMagnitude;
 
-    public void setChoiceMagnitude(Long choiceMagnitude) {
-        this.choiceMagnitude = choiceMagnitude;
-    }
+  public void setChoiceMagnitude(Long choiceMagnitude) {
+     this.choiceMagnitude = choiceMagnitude;
+  }
 
-    public Long getChoiceMagnitude() {
-        return this.choiceMagnitude;
-    }
+  public Long getChoiceMagnitude() {
+     return this.choiceMagnitude ;
+  }
 }

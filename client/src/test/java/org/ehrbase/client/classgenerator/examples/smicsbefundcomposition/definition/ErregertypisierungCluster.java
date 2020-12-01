@@ -9,50 +9,48 @@ import java.util.List;
 @Entity
 @Archetype("openEHR-EHR-CLUSTER.molekulare_typisierung.v0")
 public class ErregertypisierungCluster {
-    @Path("/items[at0009]/value|value")
-    private String bewertungValue;
+  @Path("/items[at0001]")
+  private List<ErregertypisierungArtDerTypisierungElement> artDerTypisierung;
 
-    @Path("/items[at0002]/value|value")
-    private String kommentarValue;
+  @Path("/items[at0008]")
+  private List<ErregertypisierungErgebnisElement> ergebnis;
 
-    @Path("/items[at0001]")
-    private List<EigenschaftenDesBeteiligtenErregersErregertypisierungArtDerTypisierungElement> artDerTypisierung;
+  @Path("/items[at0009]/value|value")
+  private String bewertungValue;
 
-    @Path("/items[at0008]")
-    private List<EigenschaftenDesBeteiligtenErregersErregertypisierungErgebnisElement> ergebnis;
+  @Path("/items[at0002]/value|value")
+  private String kommentarValue;
 
-    public void setBewertungValue(String bewertungValue) {
-        this.bewertungValue = bewertungValue;
-    }
+  public void setArtDerTypisierung(
+      List<ErregertypisierungArtDerTypisierungElement> artDerTypisierung) {
+     this.artDerTypisierung = artDerTypisierung;
+  }
 
-    public String getBewertungValue() {
-        return this.bewertungValue;
-    }
+  public List<ErregertypisierungArtDerTypisierungElement> getArtDerTypisierung() {
+     return this.artDerTypisierung ;
+  }
 
-    public void setKommentarValue(String kommentarValue) {
-        this.kommentarValue = kommentarValue;
-    }
+  public void setErgebnis(List<ErregertypisierungErgebnisElement> ergebnis) {
+     this.ergebnis = ergebnis;
+  }
 
-    public String getKommentarValue() {
-        return this.kommentarValue;
-    }
+  public List<ErregertypisierungErgebnisElement> getErgebnis() {
+     return this.ergebnis ;
+  }
 
-    public void setArtDerTypisierung(
-            List<EigenschaftenDesBeteiligtenErregersErregertypisierungArtDerTypisierungElement> artDerTypisierung) {
-        this.artDerTypisierung = artDerTypisierung;
-    }
+  public void setBewertungValue(String bewertungValue) {
+     this.bewertungValue = bewertungValue;
+  }
 
-    public List<EigenschaftenDesBeteiligtenErregersErregertypisierungArtDerTypisierungElement> getArtDerTypisierung(
-    ) {
-        return this.artDerTypisierung;
-    }
+  public String getBewertungValue() {
+     return this.bewertungValue ;
+  }
 
-    public void setErgebnis(
-            List<EigenschaftenDesBeteiligtenErregersErregertypisierungErgebnisElement> ergebnis) {
-        this.ergebnis = ergebnis;
-    }
+  public void setKommentarValue(String kommentarValue) {
+     this.kommentarValue = kommentarValue;
+  }
 
-    public List<EigenschaftenDesBeteiligtenErregersErregertypisierungErgebnisElement> getErgebnis() {
-        return this.ergebnis;
-    }
+  public String getKommentarValue() {
+     return this.kommentarValue ;
+  }
 }

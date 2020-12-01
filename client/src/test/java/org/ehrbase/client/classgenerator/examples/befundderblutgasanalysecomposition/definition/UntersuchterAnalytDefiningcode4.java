@@ -2,10 +2,10 @@ package org.ehrbase.client.classgenerator.examples.befundderblutgasanalysecompos
 
 import org.ehrbase.client.classgenerator.EnumValueSet;
 
-public enum UntersuchterAnalytDefiningcode4 implements EnumValueSet {
-  OXYGEN_SATURATION_IN_ARTERIAL_BLOOD("Oxygen saturation in Arterial blood", null, "LOINC", "2708-6"),
+public enum UntersuchterAnalytDefiningCode4 implements EnumValueSet {
+  OXYGEN_SATURATION_IN_BLOOD("Oxygen saturation in Blood", "Oxygen saturation in Blood", "LOINC", "20564-1"),
 
-  OXYGEN_SATURATION_IN_BLOOD("Oxygen saturation in Blood", null, "LOINC", "20564-1");
+  OXYGEN_SATURATION_IN_ARTERIAL_BLOOD("Oxygen saturation in Arterial blood", "Oxygen saturation in Arterial blood", "LOINC", "2708-6");
 
   private String value;
 
@@ -15,7 +15,7 @@ public enum UntersuchterAnalytDefiningcode4 implements EnumValueSet {
 
   private String code;
 
-  UntersuchterAnalytDefiningcode4(String value, String description, String terminologyId,
+  UntersuchterAnalytDefiningCode4(String value, String description, String terminologyId,
       String code) {
     this.value = value;
     this.description = description;

@@ -142,7 +142,6 @@ public class ClassGeneratorNew {
 
   private TypeSpec.Builder build(Context context, WebTemplateNode next) {
 
-
     String className = defaultNamingStrategy.buildClassName(context, next, false, false);
 
     context.currentFieldNameMap.push(new HashMap<>());
@@ -165,11 +164,9 @@ public class ClassGeneratorNew {
       classBuilder.addAnnotation(archetypeAnnotation);
     }
 
-
-
     if (next.getChildren().stream().anyMatch(n -> n.getRmType().equals("EVENT"))) {
       WebTemplateNode event =
-              next.getChildren().stream().filter(n -> n.getRmType().equals("EVENT")).findAny().get();
+          next.getChildren().stream().filter(n -> n.getRmType().equals("EVENT")).findAny().get();
       WebTemplateNode pointEvent = new WebTemplateNode(event);
       WebTemplateNode intervalEvent = new WebTemplateNode(event);
       pointEvent.setRmType("POINT_EVENT");
@@ -194,9 +191,10 @@ public class ClassGeneratorNew {
     }
     Map<String, List<WebTemplateNode>> choices = next.getChoicesInChildren();
     List<WebTemplateNode> children =
-            next.getChildren().stream()
-                    .filter(c -> choices.values().stream().flatMap(List::stream).noneMatch(l -> l.equals(c)))
-                    .collect(Collectors.toList());
+        next.getChildren().stream()
+            .filter(
+                c -> choices.values().stream().flatMap(List::stream).noneMatch(l -> l.equals(c)))
+            .collect(Collectors.toList());
     for (WebTemplateNode child : children) {
 
       Deque<WebTemplateNode> filtersNodes = pushToUnfiltered(context, child);
@@ -210,14 +208,12 @@ public class ClassGeneratorNew {
       } else if (!choices.containsKey(child.getAqlPath())) {
         addComplexField(context, classBuilder, relativPath, child);
       }
-      if (!CollectionUtils.isEmpty(filtersNodes)){
+      if (!CollectionUtils.isEmpty(filtersNodes)) {
         filtersNodes.forEach(n -> context.unFilteredNodeDeque.poll());
       }
     }
 
     for (List<WebTemplateNode> choice : choices.values()) {
-
-
 
       WebTemplateNode node = choice.get(0);
       WebTemplateNode relativeNode = buildRelativeNode(context, node);
@@ -227,16 +223,17 @@ public class ClassGeneratorNew {
       if (context.currentTypeSpec.containsKey(relativeNode)) {
         interfaceSpec = context.currentTypeSpec.get(relativeNode);
         String interfacePackage =
-                context.currentPackageName
-                        + "."
-                        + context.currentMainClass.toLowerCase()
-                        + ".definition";
+            context.currentPackageName
+                + "."
+                + context.currentMainClass.toLowerCase()
+                + ".definition";
         context.classes.put(interfacePackage, interfaceSpec);
 
         interfaceClassName = ClassName.get(interfacePackage, interfaceSpec.name);
       } else {
         interfaceSpec =
-            TypeSpec.interfaceBuilder(defaultNamingStrategy.buildClassName(context, choice.get(0), true, false))
+            TypeSpec.interfaceBuilder(
+                    defaultNamingStrategy.buildClassName(context, choice.get(0), true, false))
                 .addModifiers(Modifier.PUBLIC)
                 .build();
         context.currentTypeSpec.put(relativeNode, interfaceSpec);
@@ -247,7 +244,7 @@ public class ClassGeneratorNew {
                 + context.currentMainClass.toLowerCase()
                 + ".definition";
         context.classes.put(interfacePackage, interfaceSpec);
-         interfaceClassName = ClassName.get(interfacePackage, interfaceSpec.name);
+        interfaceClassName = ClassName.get(interfacePackage, interfaceSpec.name);
 
         for (WebTemplateNode child : choice) {
           TypeSpec.Builder build = build(context, child);
@@ -265,8 +262,7 @@ public class ClassGeneratorNew {
             ParameterizedTypeName.get(ClassName.get(List.class), interfaceClassName);
       }
       String relativPath =
-          FlatPath.removeStart(
-                  new FlatPath(node.getAqlPath()), new FlatPath(next.getAqlPath()))
+          FlatPath.removeStart(new FlatPath(node.getAqlPath()), new FlatPath(next.getAqlPath()))
               .toString();
       addField(
           context,
@@ -277,7 +273,7 @@ public class ClassGeneratorNew {
           new ValueSet(ValueSet.LOCAL, ValueSet.LOCAL, Collections.emptySet()),
           true);
 
-      if (!CollectionUtils.isEmpty(filtersNodes)){
+      if (!CollectionUtils.isEmpty(filtersNodes)) {
         filtersNodes.forEach(n -> context.unFilteredNodeDeque.poll());
       }
     }
@@ -285,10 +281,9 @@ public class ClassGeneratorNew {
       context.currentArchetypeName.poll();
     }
 
-    if (children.isEmpty() && choices.isEmpty()){
+    if (children.isEmpty() && choices.isEmpty()) {
       addSimpleField(context, classBuilder, "", next);
     }
-
 
     context.currentFieldNameMap.poll();
     context.nodeDeque.poll();
@@ -300,11 +295,10 @@ public class ClassGeneratorNew {
   private Deque<WebTemplateNode> pushToUnfiltered(Context context, WebTemplateNode node) {
     Deque<WebTemplateNode> filtersNodes = context.webTemplate.findFiltersNodes(node);
     if (!CollectionUtils.isEmpty(filtersNodes)) {
-     filtersNodes.descendingIterator().forEachRemaining(context.unFilteredNodeDeque::push);
+      filtersNodes.descendingIterator().forEachRemaining(context.unFilteredNodeDeque::push);
     }
     return filtersNodes;
   }
-
 
   private void addComplexField(
       Context context, TypeSpec.Builder classBuilder, String path, WebTemplateNode node) {
@@ -372,7 +366,7 @@ public class ClassGeneratorNew {
     if (classGeneratorConfig == null || !classGeneratorConfig.isExpandField()) {
 
       TypeName className = ClassName.get(Optional.ofNullable(clazz).orElse(Object.class));
-      if (endNode.getMax() != 1) {
+      if (endNode.isMulti() && !context.nodeDeque.peek().getRmType().equals("ELEMENT")) {
         className = ParameterizedTypeName.get(ClassName.get(List.class), className);
       }
 
@@ -477,10 +471,7 @@ public class ClassGeneratorNew {
           }
       }
 
-     String fieldName =
-            defaultNamingStrategy.buildFieldName(
-                    context,
-                    path, node);
+    String fieldName = defaultNamingStrategy.buildFieldName(context, path, node);
     FieldSpec.Builder builder =
         FieldSpec.builder(className, fieldName)
             .addAnnotation(
@@ -531,7 +522,7 @@ public class ClassGeneratorNew {
         .forEach(
             t -> {
               enumBuilder.addEnumConstant(
-                      defaultNamingStrategy.toEnumName(t.getValue()),
+                  defaultNamingStrategy.toEnumName(t.getValue()),
                   TypeSpec.anonymousClassBuilder(
                           "$S, $S, $S, $S",
                           t.getValue(),
@@ -557,8 +548,6 @@ public class ClassGeneratorNew {
     }
     return builder.build();
   }
-
-
 
   private MethodSpec buildSetter(FieldSpec fieldSpec) {
 

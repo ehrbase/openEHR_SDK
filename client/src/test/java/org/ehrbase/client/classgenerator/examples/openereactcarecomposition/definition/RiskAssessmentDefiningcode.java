@@ -2,7 +2,7 @@ package org.ehrbase.client.classgenerator.examples.openereactcarecomposition.def
 
 import org.ehrbase.client.classgenerator.EnumValueSet;
 
-public enum RiskAssessmentDefiningcode implements EnumValueSet {
+public enum RiskAssessmentDefiningCode implements EnumValueSet {
   LOW_RISK("Low risk", "The risk of the a patient having a Covid-19 infection is assessed to be low.", "local", "at0.16"),
 
   HIGH_RISK("High risk", "The risk of the a patient having a Covid-19 infection is assessed to be high.", "local", "at0.17");
@@ -15,7 +15,7 @@ public enum RiskAssessmentDefiningcode implements EnumValueSet {
 
   private String code;
 
-  RiskAssessmentDefiningcode(String value, String description, String terminologyId, String code) {
+  RiskAssessmentDefiningCode(String value, String description, String terminologyId, String code) {
     this.value = value;
     this.description = description;
     this.terminologyId = terminologyId;
@@ -23,18 +23,18 @@ public enum RiskAssessmentDefiningcode implements EnumValueSet {
   }
 
   public String getValue() {
-     return this.value;
+     return this.value ;
   }
 
   public String getDescription() {
-    return this.description;
+     return this.description ;
   }
 
   public String getTerminologyId() {
-    return this.terminologyId;
+     return this.terminologyId ;
   }
 
   public String getCode() {
-    return this.code;
+     return this.code ;
   }
 }

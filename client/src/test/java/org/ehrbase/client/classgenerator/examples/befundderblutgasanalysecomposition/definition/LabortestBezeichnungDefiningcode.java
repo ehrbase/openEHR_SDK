@@ -2,12 +2,12 @@ package org.ehrbase.client.classgenerator.examples.befundderblutgasanalysecompos
 
 import org.ehrbase.client.classgenerator.EnumValueSet;
 
-public enum LabortestBezeichnungDefiningcode implements EnumValueSet {
-  GAS_PANEL_BLOOD("Gas panel - Blood", null, "LOINC", "24338-6"),
+public enum LabortestBezeichnungDefiningCode implements EnumValueSet {
+  GAS_PANEL_CAPILLARY_BLOOD("Gas panel - Capillary blood", "Gas panel - Capillary blood", "LOINC", "24337-8"),
 
-  GAS_PANEL_CAPILLARY_BLOOD("Gas panel - Capillary blood", null, "LOINC", "24337-8"),
+  GAS_PANEL_ARTERIAL_BLOOD("Gas panel - Arterial blood", "Gas panel - Arterial blood", "LOINC", "24336-0"),
 
-  GAS_PANEL_ARTERIAL_BLOOD("Gas panel - Arterial blood", null, "LOINC", "24336-0");
+  GAS_PANEL_BLOOD("Gas panel - Blood", "Gas panel - Blood", "LOINC", "24338-6");
 
   private String value;
 
@@ -17,7 +17,7 @@ public enum LabortestBezeichnungDefiningcode implements EnumValueSet {
 
   private String code;
 
-  LabortestBezeichnungDefiningcode(String value, String description, String terminologyId,
+  LabortestBezeichnungDefiningCode(String value, String description, String terminologyId,
       String code) {
     this.value = value;
     this.description = description;

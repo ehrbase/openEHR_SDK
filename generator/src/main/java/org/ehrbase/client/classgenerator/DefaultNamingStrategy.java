@@ -43,7 +43,7 @@ public class DefaultNamingStrategy {
 
     String name = replaceElementName(context, node);
     if (context.nodeDeque.isEmpty()) {
-      name = context.webTemplate.getTemplateId();
+      name = new SnakeCase(context.webTemplate.getTemplateId()).camelToSnake();
     } else {
 
       if (!node.isArchetype() && !isEnum) {

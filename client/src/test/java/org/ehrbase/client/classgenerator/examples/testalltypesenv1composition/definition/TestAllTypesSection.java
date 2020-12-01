@@ -9,36 +9,36 @@ import java.util.List;
 @Entity
 @Archetype("openEHR-EHR-SECTION.test_all_types.v1")
 public class TestAllTypesSection {
-    @Path("/items[at0001]/items[at0002]/items[openEHR-EHR-ACTION.test_all_types.v1]")
-    private List<TestAllTypesAction> testAllTypes;
+  @Path("/items[at0001]/items[at0002]/items[openEHR-EHR-INSTRUCTION.test_all_types.v1]")
+  private List<TestAllTypesInstruction> section3TestAllTypes;
 
-    @Path("/items[at0001]/items[at0002]/items[openEHR-EHR-INSTRUCTION.test_all_types.v1]")
-    private List<TestAllTypesInstruction> testAllTypesSection3;
+  @Path("/items[at0001]/items[at0002]/items[openEHR-EHR-ACTION.test_all_types.v1]")
+  private List<TestAllTypesAction> section3TestAllTypes2;
 
-    @Path("/items[at0001]/items[openEHR-EHR-ADMIN_ENTRY.test_all_types.v1]")
-    private List<TestAllTypesAdminEntry> testAllTypesSection2;
+  @Path("/items[at0001]/items[openEHR-EHR-ADMIN_ENTRY.test_all_types.v1]")
+  private List<TestAllTypesAdminEntry> section2TestAllTypes;
 
-    public void setTestAllTypes(List<TestAllTypesAction> testAllTypes) {
-        this.testAllTypes = testAllTypes;
-    }
+  public void setSection3TestAllTypes(List<TestAllTypesInstruction> section3TestAllTypes) {
+     this.section3TestAllTypes = section3TestAllTypes;
+  }
 
-    public List<TestAllTypesAction> getTestAllTypes() {
-        return this.testAllTypes;
-    }
+  public List<TestAllTypesInstruction> getSection3TestAllTypes() {
+     return this.section3TestAllTypes ;
+  }
 
-    public void setTestAllTypesSection3(List<TestAllTypesInstruction> testAllTypesSection3) {
-        this.testAllTypesSection3 = testAllTypesSection3;
-    }
+  public void setSection3TestAllTypes2(List<TestAllTypesAction> section3TestAllTypes2) {
+     this.section3TestAllTypes2 = section3TestAllTypes2;
+  }
 
-    public List<TestAllTypesInstruction> getTestAllTypesSection3() {
-        return this.testAllTypesSection3;
-    }
+  public List<TestAllTypesAction> getSection3TestAllTypes2() {
+     return this.section3TestAllTypes2 ;
+  }
 
-    public void setTestAllTypesSection2(List<TestAllTypesAdminEntry> testAllTypesSection2) {
-        this.testAllTypesSection2 = testAllTypesSection2;
-    }
+  public void setSection2TestAllTypes(List<TestAllTypesAdminEntry> section2TestAllTypes) {
+     this.section2TestAllTypes = section2TestAllTypes;
+  }
 
-    public List<TestAllTypesAdminEntry> getTestAllTypesSection2() {
-        return this.testAllTypesSection2;
-    }
+  public List<TestAllTypesAdminEntry> getSection2TestAllTypes() {
+     return this.section2TestAllTypes ;
+  }
 }

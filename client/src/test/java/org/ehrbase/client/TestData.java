@@ -20,7 +20,6 @@ import com.nedap.archie.rm.archetyped.FeederAudit;
 import com.nedap.archie.rm.archetyped.FeederAuditDetails;
 import com.nedap.archie.rm.datavalues.DvIdentifier;
 import com.nedap.archie.rm.datavalues.DvText;
-import com.nedap.archie.rm.datavalues.quantity.DvInterval;
 import com.nedap.archie.rm.datavalues.quantity.datetime.DvDateTime;
 import com.nedap.archie.rm.generic.Participation;
 import com.nedap.archie.rm.generic.PartyIdentified;
@@ -28,17 +27,17 @@ import com.nedap.archie.rm.generic.PartySelf;
 import org.ehrbase.client.classgenerator.examples.alternativeeventscomposition.AlternativeEventsComposition;
 import org.ehrbase.client.classgenerator.examples.alternativeeventscomposition.definition.KorpergewichtAnyEventEnIntervalEvent;
 import org.ehrbase.client.classgenerator.examples.alternativeeventscomposition.definition.KorpergewichtAnyEventEnPointEvent;
-import org.ehrbase.client.classgenerator.examples.alternativeeventscomposition.definition.KorpergewichtBirthEnEvent;
+import org.ehrbase.client.classgenerator.examples.alternativeeventscomposition.definition.KorpergewichtBirthEnPointEvent;
 import org.ehrbase.client.classgenerator.examples.alternativeeventscomposition.definition.KorpergewichtObservation;
 import org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev0composition.EhrbaseBloodPressureSimpleDeV0Composition;
 import org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev0composition.definition.BloodPressureTrainingSampleObservation;
-import org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev0composition.definition.CuffSizeDefiningcode;
-import org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev0composition.definition.KorotkoffSoundsDefiningcode;
-import org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev0composition.definition.LocationOfMeasurementDefiningcode;
+import org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev0composition.definition.CuffSizeDefiningCode;
+import org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev0composition.definition.KorotkoffSoundsDefiningCode;
+import org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev0composition.definition.LocationOfMeasurementDefiningCode;
 import org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1composition.EhrbaseMultiOccurrenceDeV1Composition;
 import org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1composition.definition.BodyTemperatureAnyEventPointEvent;
-import org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1composition.definition.BodyTemperatureLocationOfMeasurementDvcodedtext;
-import org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1composition.definition.BodyTemperatureLocationOfMeasurementDvtext;
+import org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1composition.definition.BodyTemperatureLocationOfMeasurementDvCodedText;
+import org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1composition.definition.BodyTemperatureLocationOfMeasurementDvText;
 import org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1composition.definition.BodyTemperatureObservation;
 import org.ehrbase.client.classgenerator.examples.episodeofcarecomposition.EpisodeOfCareComposition;
 import org.ehrbase.client.classgenerator.examples.episodeofcarecomposition.definition.EpisodeofcareAdminEntry;
@@ -46,23 +45,23 @@ import org.ehrbase.client.classgenerator.examples.episodeofcarecomposition.defin
 import org.ehrbase.client.classgenerator.examples.episodeofcarecomposition.definition.EpisodeofcareTeamElement;
 import org.ehrbase.client.classgenerator.examples.patientenaufenthaltcomposition.PatientenaufenthaltComposition;
 import org.ehrbase.client.classgenerator.examples.patientenaufenthaltcomposition.definition.StandortCluster;
-import org.ehrbase.client.classgenerator.examples.patientenaufenthaltcomposition.definition.StandortschlusselDefiningcode;
+import org.ehrbase.client.classgenerator.examples.patientenaufenthaltcomposition.definition.StandortschlusselDefiningCode;
 import org.ehrbase.client.classgenerator.examples.patientenaufenthaltcomposition.definition.VersorgungsortAdminEntry;
-import org.ehrbase.client.classgenerator.examples.shareddefinition.CategoryDefiningcode;
-import org.ehrbase.client.classgenerator.examples.shareddefinition.Language;
-import org.ehrbase.client.classgenerator.examples.shareddefinition.MathFunctionDefiningcode;
-import org.ehrbase.client.classgenerator.examples.shareddefinition.SettingDefiningcode;
-import org.ehrbase.client.classgenerator.examples.shareddefinition.Territory;
 import org.ehrbase.client.classgenerator.examples.stationarerversorgungsfallcomposition.StationarerVersorgungsfallComposition;
 import org.ehrbase.client.classgenerator.examples.stationarerversorgungsfallcomposition.definition.AufnahmedatenAdminEntry;
 import org.ehrbase.client.classgenerator.examples.stationarerversorgungsfallcomposition.definition.EntlassungsdatenAdminEntry;
-import org.ehrbase.client.classgenerator.examples.stationarerversorgungsfallcomposition.definition.KlinischerZustandDesPatientenDefiningcode;
+import org.ehrbase.client.classgenerator.examples.stationarerversorgungsfallcomposition.definition.KlinischerZustandDesPatientenDefiningCode;
 import org.ehrbase.client.classgenerator.examples.virologischerbefundcomposition.VirologischerBefundComposition;
 import org.ehrbase.client.classgenerator.examples.virologischerbefundcomposition.definition.BefundObservation;
 import org.ehrbase.client.classgenerator.examples.virologischerbefundcomposition.definition.FallidentifikationCluster;
 import org.ehrbase.client.classgenerator.examples.virologischerbefundcomposition.definition.KulturCluster;
 import org.ehrbase.client.classgenerator.examples.virologischerbefundcomposition.definition.ProVirusCluster;
 import org.ehrbase.client.classgenerator.examples.virologischerbefundcomposition.definition.ProbeCluster;
+import org.ehrbase.client.classgenerator.shareddefinition.Category;
+import org.ehrbase.client.classgenerator.shareddefinition.Language;
+import org.ehrbase.client.classgenerator.shareddefinition.MathFunction;
+import org.ehrbase.client.classgenerator.shareddefinition.Setting;
+import org.ehrbase.client.classgenerator.shareddefinition.Territory;
 import org.ehrbase.client.flattener.BloodpressureListDe;
 
 import java.net.URI;
@@ -101,8 +100,8 @@ public class TestData {
         bloodPressureSimpleDeV0.setBloodPressureTrainingSample(new ArrayList<>());
         bloodPressureSimpleDeV0.setLanguage(Language.DE);
         bloodPressureSimpleDeV0.setTerritory(Territory.DE);
-        bloodPressureSimpleDeV0.setCategoryDefiningcode(CategoryDefiningcode.EVENT);
-        bloodPressureSimpleDeV0.setSettingDefiningcode(SettingDefiningcode.NURSING_HOME_CARE);
+        bloodPressureSimpleDeV0.setCategoryDefiningCode (Category.EVENT);
+        bloodPressureSimpleDeV0.setSettingDefiningCode(Setting.NURSING_HOME_CARE);
         bloodPressureSimpleDeV0.setComposer(new PartyIdentified(null, "Test", null));
         bloodPressureSimpleDeV0.setParticipations(new ArrayList<>());
         bloodPressureSimpleDeV0.getParticipations().add(new Participation(new PartyIdentified(null, "Test", null), new DvText("Pos1"), null, null));
@@ -126,9 +125,9 @@ public class TestData {
         bloodPressureTrainingSample.setMeanArterialPressureUnits("mm[Hg]");
         bloodPressureTrainingSample.setPulsePressureMagnitude(22d);
         bloodPressureTrainingSample.setPulsePressureUnits("mm[Hg]");
-        bloodPressureTrainingSample.setKorotkoffSoundsDefiningcode(KorotkoffSoundsDefiningcode.FIFTH_SOUND);
-        bloodPressureTrainingSample.setCuffSizeDefiningcode(CuffSizeDefiningcode.ADULT);
-        bloodPressureTrainingSample.setLocationOfMeasurementDefiningcode(LocationOfMeasurementDefiningcode.FINGER);
+        bloodPressureTrainingSample.setKorotkoffSoundsDefiningCode(KorotkoffSoundsDefiningCode.FIFTH_SOUND);
+        bloodPressureTrainingSample.setCuffSizeDefiningCode(CuffSizeDefiningCode.ADULT);
+        bloodPressureTrainingSample.setLocationOfMeasurementDefiningCode(LocationOfMeasurementDefiningCode.FINGER);
         return bloodPressureTrainingSample;
     }
 
@@ -139,8 +138,8 @@ public class TestData {
         dto.setEndTimeValue(OffsetDateTime.now());
         dto.setLanguage(Language.DE);
         dto.setTerritory(Territory.DE);
-        dto.setSettingDefiningcode(SettingDefiningcode.DENTAL_CARE);
-        dto.setCategoryDefiningcode(CategoryDefiningcode.EVENT);
+        dto.setSettingDefiningCode(Setting.DENTAL_CARE);
+        dto.setCategoryDefiningCode(Category.EVENT);
         dto.setComposer(new PartyIdentified(null, "Test", null));
         dto.setBodyTemperature(new ArrayList<>());
 
@@ -155,8 +154,8 @@ public class TestData {
         bodyTemperature.setSubject(new PartySelf());
         bodyTemperature.setOriginValue(OffsetDateTime.now());
         bodyTemperature.setAnyEvent(new ArrayList<>());
-        BodyTemperatureLocationOfMeasurementDvcodedtext locationOfMeasurement = new BodyTemperatureLocationOfMeasurementDvcodedtext();
-        locationOfMeasurement.setLocationOfMeasurementDefiningcode(org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1composition.definition.LocationOfMeasurementDefiningcode.FOREHEAD);
+        BodyTemperatureLocationOfMeasurementDvCodedText locationOfMeasurement = new BodyTemperatureLocationOfMeasurementDvCodedText();
+        locationOfMeasurement.setLocationOfMeasurementDefiningCode (org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1composition.definition.LocationOfMeasurementDefiningCode.FOREHEAD);
         bodyTemperature.setLocationOfMeasurement(locationOfMeasurement);
 
         BodyTemperatureAnyEventPointEvent history1 = new BodyTemperatureAnyEventPointEvent();
@@ -181,7 +180,7 @@ public class TestData {
         bodyTemperature.setSubject(new PartySelf());
         bodyTemperature.setOriginValue(OffsetDateTime.now());
         bodyTemperature.setAnyEvent(new ArrayList<>());
-        BodyTemperatureLocationOfMeasurementDvtext locationOfMeasurement = new BodyTemperatureLocationOfMeasurementDvtext();
+        BodyTemperatureLocationOfMeasurementDvText locationOfMeasurement = new BodyTemperatureLocationOfMeasurementDvText();
         locationOfMeasurement.setLocationOfMeasurementValue("location");
         bodyTemperature.setLocationOfMeasurement(locationOfMeasurement);
 
@@ -207,8 +206,8 @@ public class TestData {
         alternativeEventsComposition.setComposer(new PartyIdentified(null, "Test", null));
         alternativeEventsComposition.setLanguage(Language.EN);
         alternativeEventsComposition.setTerritory(Territory.DE);
-        alternativeEventsComposition.setCategoryDefiningcode(CategoryDefiningcode.EVENT);
-        alternativeEventsComposition.setSettingDefiningcode(SettingDefiningcode.COMPLEMENTARY_HEALTH_CARE);
+        alternativeEventsComposition.setCategoryDefiningCode(Category.EVENT);
+        alternativeEventsComposition.setSettingDefiningCode(Setting.COMPLEMENTARY_HEALTH_CARE);
         alternativeEventsComposition.setKorpergewicht(new ArrayList<>());
         KorpergewichtObservation korpergewichtObservation = new KorpergewichtObservation();
         korpergewichtObservation.setLanguage(Language.EN);
@@ -216,7 +215,8 @@ public class TestData {
         korpergewichtObservation.setOriginValue(OffsetDateTime.of(1990, 11, 02, 12, 00, 00, 00, ZoneOffset.UTC));
         alternativeEventsComposition.getKorpergewicht().add(korpergewichtObservation);
 
-        KorpergewichtBirthEnEvent birthEnEvent = new KorpergewichtBirthEnEvent();
+
+        KorpergewichtBirthEnPointEvent birthEnEvent = new KorpergewichtBirthEnPointEvent();
         birthEnEvent.setGewichtMagnitude(30d);
         birthEnEvent.setGewichtUnits("kg");
         birthEnEvent.setTimeValue(OffsetDateTime.of(1990, 11, 02, 12, 00, 00, 00, ZoneOffset.UTC));
@@ -235,7 +235,7 @@ public class TestData {
         intervalEvent.setGewichtUnits("kg");
         intervalEvent.setTimeValue(OffsetDateTime.of(2015, 11, 02, 12, 00, 00, 00, ZoneOffset.UTC));
         intervalEvent.setWidthValue(Duration.ofDays(30));
-        intervalEvent.setMathFunctionDefiningcode(MathFunctionDefiningcode.MEAN);
+        intervalEvent.setMathFunctionDefiningCode(MathFunction.MEAN);
         korpergewichtObservation.getAnyEventEn().add(intervalEvent);
         return alternativeEventsComposition;
     }
@@ -243,12 +243,12 @@ public class TestData {
     public static EpisodeOfCareComposition buildEpisodeOfCareComposition() {
         EpisodeOfCareComposition episode = new EpisodeOfCareComposition();
         episode.setComposer(new PartyIdentified(null, "Test", null));
-        episode.setCategoryDefiningcode(CategoryDefiningcode.EVENT);
+        episode.setCategoryDefiningCode(Category.EVENT);
         episode.setLanguage(Language.DE);
         episode.setTerritory(Territory.DE);
         episode.setEpisodeofcare(new ArrayList<>());
         episode.setStartTimeValue(OffsetDateTime.now());
-        episode.setSettingDefiningcode(SettingDefiningcode.NURSING_HOME_CARE);
+        episode.setSettingDefiningCode(Setting.NURSING_HOME_CARE);
 
         FeederAudit audit = new FeederAudit();
         audit.setFeederSystemAudit(new FeederAuditDetails());
@@ -259,10 +259,9 @@ public class TestData {
 
         EpisodeofcareAdminEntry episodeofcareAdminEntry = new EpisodeofcareAdminEntry();
 
-        DvInterval<DvDateTime> periode = new DvInterval<>();
-        periode.setLower(new DvDateTime(OffsetDateTime.now()));
-        periode.setUpper(new DvDateTime(OffsetDateTime.now()));
-        episodeofcareAdminEntry.setPeriod(periode);
+
+        episodeofcareAdminEntry.setUpperValue(OffsetDateTime.now());
+        episodeofcareAdminEntry.setLowerValue (OffsetDateTime.now());
         episodeofcareAdminEntry.setLanguage(Language.DE);
         episodeofcareAdminEntry.setSubject(new PartySelf());
         episodeofcareAdminEntry.setIdentifier(new ArrayList<>());
@@ -292,17 +291,17 @@ public class TestData {
         PatientenaufenthaltComposition patientenaufenthaltComposition = new PatientenaufenthaltComposition();
 
         patientenaufenthaltComposition.setComposer(new PartyIdentified(null, "Test", null));
-        patientenaufenthaltComposition.setCategoryDefiningcode(CategoryDefiningcode.EVENT);
+        patientenaufenthaltComposition.setCategoryDefiningCode (Category.EVENT);
         patientenaufenthaltComposition.setLanguage(Language.DE);
         patientenaufenthaltComposition.setTerritory(Territory.DE);
         patientenaufenthaltComposition.setStartTimeValue(OffsetDateTime.now());
-        patientenaufenthaltComposition.setSettingDefiningcode(SettingDefiningcode.NURSING_HOME_CARE);
+        patientenaufenthaltComposition.setSettingDefiningCode(Setting.NURSING_HOME_CARE);
 
         VersorgungsortAdminEntry versorgungsortAdminEntry = new VersorgungsortAdminEntry();
         StandortCluster standortCluster = new StandortCluster();
         standortCluster.setStandorttypValue("Test");
         standortCluster.setStandortbeschreibungValue("Beschreibung");
-        standortCluster.setStandortschlusselDefiningcode(StandortschlusselDefiningcode.ANGIOLOGIE);
+        standortCluster.setStandortschlusselDefiningCode(StandortschlusselDefiningCode.ANGIOLOGIE.ANGIOLOGIE);
         standortCluster.setBettplatzkennungValue("Platz 2");
 
         versorgungsortAdminEntry.setStandort(standortCluster);
@@ -317,17 +316,19 @@ public class TestData {
         return patientenaufenthaltComposition;
     }
 
+
+
     public static VirologischerBefundComposition buildTestVirologischerBefundComposition() {
 
         //openEHR-EHR-COMPOSITION.report-result.v1
         VirologischerBefundComposition virologischerBefundComposition = new VirologischerBefundComposition();
 
         virologischerBefundComposition.setComposer(new PartyIdentified(null, "Test", null));
-        virologischerBefundComposition.setCategoryDefiningcode(CategoryDefiningcode.EVENT);
+        virologischerBefundComposition.setCategoryDefiningCode(Category.EVENT);
         virologischerBefundComposition.setLanguage(Language.DE);
         virologischerBefundComposition.setTerritory(Territory.DE);
         virologischerBefundComposition.setStartTimeValue(OffsetDateTime.now());
-        virologischerBefundComposition.setSettingDefiningcode(SettingDefiningcode.SECONDARY_MEDICAL_CARE);
+        virologischerBefundComposition.setSettingDefiningCode(Setting.SECONDARY_MEDICAL_CARE);
 
         //context, other_context
         FallidentifikationCluster fallidentifikationCluster = new FallidentifikationCluster();
@@ -384,13 +385,13 @@ public class TestData {
         StationarerVersorgungsfallComposition stationarerVersorgungsfallComposition = new StationarerVersorgungsfallComposition();
 
         stationarerVersorgungsfallComposition.setComposer(new PartyIdentified(null, "Test", null));
-        stationarerVersorgungsfallComposition.setCategoryDefiningcode(CategoryDefiningcode.EVENT);
+        stationarerVersorgungsfallComposition.setCategoryDefiningCode(Category.EVENT);
         stationarerVersorgungsfallComposition.setLanguage(Language.DE);
         stationarerVersorgungsfallComposition.setTerritory(Territory.DE);
 
         //context
         stationarerVersorgungsfallComposition.setStartTimeValue(new DvDateTime("2020-04-02T12:00:00Z").getValue());
-        stationarerVersorgungsfallComposition.setSettingDefiningcode(SettingDefiningcode.NURSING_HOME_CARE);
+        stationarerVersorgungsfallComposition.setSettingDefiningCode(Setting.NURSING_HOME_CARE);
         //other_context
         stationarerVersorgungsfallComposition.setFallKennungValue("45657678");
 
@@ -404,7 +405,7 @@ public class TestData {
         EntlassungsdatenAdminEntry entlassungsdatenAdminEntry = new EntlassungsdatenAdminEntry();
         entlassungsdatenAdminEntry.setLanguage(Language.DE);
         entlassungsdatenAdminEntry.setSubject(new PartySelf());
-        entlassungsdatenAdminEntry.setKlinischerZustandDesPatientenDefiningcode(KlinischerZustandDesPatientenDefiningcode.UNBESTIMMT);
+        entlassungsdatenAdminEntry.setKlinischerZustandDesPatientenDefiningCode(KlinischerZustandDesPatientenDefiningCode.UNBESTIMMT);
         entlassungsdatenAdminEntry.setDatumUhrzeitDerEntlassungValue(new DvDateTime("2020-04-02T12:00:00Z").getValue());
 
         //assemble
@@ -413,4 +414,6 @@ public class TestData {
 
         return stationarerVersorgungsfallComposition;
     }
+
+
 }

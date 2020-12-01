@@ -2,7 +2,7 @@ package org.ehrbase.client.classgenerator.examples.openereactcarecomposition.def
 
 import org.ehrbase.client.classgenerator.EnumValueSet;
 
-public enum RiskFactorDefiningcode implements EnumValueSet {
+public enum RiskFactorDefiningCode implements EnumValueSet {
   POTENTIAL_CONTACT_EXPOSURE_BASED_ON_LOCATION("Potential contact exposure based on location", "Potential contact exposure based on location.", "local", "at0.14");
 
   private String value;
@@ -13,7 +13,7 @@ public enum RiskFactorDefiningcode implements EnumValueSet {
 
   private String code;
 
-  RiskFactorDefiningcode(String value, String description, String terminologyId, String code) {
+  RiskFactorDefiningCode(String value, String description, String terminologyId, String code) {
     this.value = value;
     this.description = description;
     this.terminologyId = terminologyId;
@@ -21,18 +21,18 @@ public enum RiskFactorDefiningcode implements EnumValueSet {
   }
 
   public String getValue() {
-     return this.value;
+     return this.value ;
   }
 
   public String getDescription() {
-    return this.description;
+     return this.description ;
   }
 
   public String getTerminologyId() {
-    return this.terminologyId;
+     return this.terminologyId ;
   }
 
   public String getCode() {
-    return this.code;
+     return this.code ;
   }
 }

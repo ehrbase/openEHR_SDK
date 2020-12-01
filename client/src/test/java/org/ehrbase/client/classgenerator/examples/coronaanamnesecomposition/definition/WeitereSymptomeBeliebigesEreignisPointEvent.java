@@ -10,27 +10,27 @@ import java.util.List;
 @Entity
 @OptionFor("POINT_EVENT")
 public class WeitereSymptomeBeliebigesEreignisPointEvent implements WeitereSymptomeBeliebigesEreignisChoice {
-    @Path("/time|value")
-    private TemporalAccessor timeValue;
+  @Path("/data[at0003]/items[at0022]")
+  private List<WeitereSymptomeSpezifischesSymptomAnzeichenCluster> spezifischesSymptomAnzeichen;
 
-    @Path("/data[at0003]/items[at0022]")
-    private List<WeitereSymptomeSpezifischesSymptomAnzeichenCluster> spezifischesSymptomAnzeichen;
+  @Path("/time|value")
+  private TemporalAccessor timeValue;
 
-    public void setTimeValue(TemporalAccessor timeValue) {
-        this.timeValue = timeValue;
-    }
+  public void setSpezifischesSymptomAnzeichen(
+      List<WeitereSymptomeSpezifischesSymptomAnzeichenCluster> spezifischesSymptomAnzeichen) {
+     this.spezifischesSymptomAnzeichen = spezifischesSymptomAnzeichen;
+  }
 
-    public TemporalAccessor getTimeValue() {
-        return this.timeValue;
-    }
+  public List<WeitereSymptomeSpezifischesSymptomAnzeichenCluster> getSpezifischesSymptomAnzeichen(
+      ) {
+     return this.spezifischesSymptomAnzeichen ;
+  }
 
-    public void setSpezifischesSymptomAnzeichen(
-            List<WeitereSymptomeSpezifischesSymptomAnzeichenCluster> spezifischesSymptomAnzeichen) {
-        this.spezifischesSymptomAnzeichen = spezifischesSymptomAnzeichen;
-    }
+  public void setTimeValue(TemporalAccessor timeValue) {
+     this.timeValue = timeValue;
+  }
 
-    public List<WeitereSymptomeSpezifischesSymptomAnzeichenCluster> getSpezifischesSymptomAnzeichen(
-    ) {
-        return this.spezifischesSymptomAnzeichen;
-    }
+  public TemporalAccessor getTimeValue() {
+     return this.timeValue ;
+  }
 }

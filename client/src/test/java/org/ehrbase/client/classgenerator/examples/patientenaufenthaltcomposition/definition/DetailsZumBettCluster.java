@@ -2,26 +2,32 @@ package org.ehrbase.client.classgenerator.examples.patientenaufenthaltcompositio
 
 import com.nedap.archie.rm.datastructures.Cluster;
 import com.nedap.archie.rm.datavalues.DvIdentifier;
-import java.lang.String;
-import java.util.List;
 import org.ehrbase.client.annotations.Archetype;
 import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.Path;
 
+import java.util.List;
+
 @Entity
 @Archetype("openEHR-EHR-CLUSTER.device.v1")
 public class DetailsZumBettCluster {
+  @Path("/items[at0001]/value|value")
+  private String geratenameValue;
+
+  @Path("/items[at0003]/value|value")
+  private String geratetypValue;
+
   @Path("/items[at0009]")
   private List<Cluster> eigenschaften;
 
   @Path("/items[at0021]/value")
   private DvIdentifier eindeutigeIdentifikationsnummerId;
 
-  @Path("/items[at0003]/value|value")
-  private String geratetypValue;
+  @Path("/items[at0019]")
+  private List<Cluster> gerateverwaltung;
 
-  @Path("/items[at0001]/value|value")
-  private String geratenameValue;
+  @Path("/items[at0018]")
+  private List<Cluster> komponenten;
 
   @Path("/items[at0026]")
   private List<Cluster> erweiterung;
@@ -29,11 +35,21 @@ public class DetailsZumBettCluster {
   @Path("/items[at0027]")
   private List<Cluster> multimedia;
 
-  @Path("/items[at0019]")
-  private List<Cluster> gerateverwaltung;
+  public void setGeratenameValue(String geratenameValue) {
+     this.geratenameValue = geratenameValue;
+  }
 
-  @Path("/items[at0018]")
-  private List<Cluster> komponenten;
+  public String getGeratenameValue() {
+     return this.geratenameValue ;
+  }
+
+  public void setGeratetypValue(String geratetypValue) {
+     this.geratetypValue = geratetypValue;
+  }
+
+  public String getGeratetypValue() {
+     return this.geratetypValue ;
+  }
 
   public void setEigenschaften(List<Cluster> eigenschaften) {
      this.eigenschaften = eigenschaften;
@@ -51,20 +67,20 @@ public class DetailsZumBettCluster {
      return this.eindeutigeIdentifikationsnummerId ;
   }
 
-  public void setGeratetypValue(String geratetypValue) {
-     this.geratetypValue = geratetypValue;
+  public void setGerateverwaltung(List<Cluster> gerateverwaltung) {
+     this.gerateverwaltung = gerateverwaltung;
   }
 
-  public String getGeratetypValue() {
-     return this.geratetypValue ;
+  public List<Cluster> getGerateverwaltung() {
+     return this.gerateverwaltung ;
   }
 
-  public void setGeratenameValue(String geratenameValue) {
-     this.geratenameValue = geratenameValue;
+  public void setKomponenten(List<Cluster> komponenten) {
+     this.komponenten = komponenten;
   }
 
-  public String getGeratenameValue() {
-     return this.geratenameValue ;
+  public List<Cluster> getKomponenten() {
+     return this.komponenten ;
   }
 
   public void setErweiterung(List<Cluster> erweiterung) {
@@ -81,21 +97,5 @@ public class DetailsZumBettCluster {
 
   public List<Cluster> getMultimedia() {
      return this.multimedia ;
-  }
-
-  public void setGerateverwaltung(List<Cluster> gerateverwaltung) {
-     this.gerateverwaltung = gerateverwaltung;
-  }
-
-  public List<Cluster> getGerateverwaltung() {
-     return this.gerateverwaltung ;
-  }
-
-  public void setKomponenten(List<Cluster> komponenten) {
-     this.komponenten = komponenten;
-  }
-
-  public List<Cluster> getKomponenten() {
-     return this.komponenten ;
   }
 }

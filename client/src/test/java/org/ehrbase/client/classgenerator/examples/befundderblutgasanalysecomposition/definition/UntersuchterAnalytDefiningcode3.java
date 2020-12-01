@@ -2,12 +2,18 @@ package org.ehrbase.client.classgenerator.examples.befundderblutgasanalysecompos
 
 import org.ehrbase.client.classgenerator.EnumValueSet;
 
-public enum UntersuchterAnalytDefiningcode3 implements EnumValueSet {
-  CARBON_DIOXIDE_PARTIAL_PRESSURE_IN_CAPILLARY_BLOOD("Carbon dioxide [Partial pressure] in Capillary blood", null, "LOINC", "2020-6"),
+public enum UntersuchterAnalytDefiningCode3 implements EnumValueSet {
+  PH_OF_VENOUS_BLOOD("pH of Venous blood", "pH of Venous blood", "LOINC", "2746-6"),
 
-  CARBON_DIOXIDE_PARTIAL_PRESSURE_IN_ARTERIAL_BLOOD("Carbon dioxide [Partial pressure] in Arterial blood", null, "LOINC", "2019-8"),
+  PH_OF_CAPILLARY_BLOOD("pH of Capillary blood", "pH of Capillary blood", "LOINC", "2745-8"),
 
-  CARBON_DIOXIDE_PARTIAL_PRESSURE_IN_BLOOD("Carbon dioxide [Partial pressure] in Blood", null, "LOINC", "11557-6");
+  PH_OF_ARTERIAL_BLOOD("pH of Arterial blood", "pH of Arterial blood", "LOINC", "2744-1"),
+
+  PH_OF_MIXED_VENOUS_BLOOD("pH of Mixed venous blood", "pH of Mixed venous blood", "LOINC", "19213-8"),
+
+  PH_OF_SERUM_OR_PLASMA("pH of Serum or Plasma", "pH of Serum or Plasma", "LOINC", "2753-2"),
+
+  PH_OF_BLOOD("pH of Blood", "pH of Blood", "LOINC", "11558-4");
 
   private String value;
 
@@ -17,7 +23,7 @@ public enum UntersuchterAnalytDefiningcode3 implements EnumValueSet {
 
   private String code;
 
-  UntersuchterAnalytDefiningcode3(String value, String description, String terminologyId,
+  UntersuchterAnalytDefiningCode3(String value, String description, String terminologyId,
       String code) {
     this.value = value;
     this.description = description;

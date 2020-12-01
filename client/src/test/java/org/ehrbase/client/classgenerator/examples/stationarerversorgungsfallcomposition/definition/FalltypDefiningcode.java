@@ -1,9 +1,8 @@
 package org.ehrbase.client.classgenerator.examples.stationarerversorgungsfallcomposition.definition;
 
-import java.lang.String;
 import org.ehrbase.client.classgenerator.EnumValueSet;
 
-public enum FalltypDefiningcode implements EnumValueSet {
+public enum FalltypDefiningCode implements EnumValueSet {
   VERSORGUNGSFALL("Versorgungsfall", "Versorgungsfall", "local", "at0006");
 
   private String value;
@@ -14,7 +13,7 @@ public enum FalltypDefiningcode implements EnumValueSet {
 
   private String code;
 
-  FalltypDefiningcode(String value, String description, String terminologyId, String code) {
+  FalltypDefiningCode(String value, String description, String terminologyId, String code) {
     this.value = value;
     this.description = description;
     this.terminologyId = terminologyId;

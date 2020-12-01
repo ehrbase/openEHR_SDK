@@ -2,10 +2,10 @@ package org.ehrbase.client.classgenerator.examples.openereactcarecomposition.def
 
 import org.ehrbase.client.classgenerator.EnumValueSet;
 
-public enum ValueDefiningcode2 implements EnumValueSet {
-  FEELING_OF_IMPENDING_DOOM("Feeling of impending doom", "Feeling of impending doom.", "local", "at0111"),
+public enum ValueDefiningCode2 implements EnumValueSet {
+  LETHARGIC("Lethargic", "Lethargic.", "local", "at0101"),
 
-  NOT_FEELING_WELL("Not feeling well", "Not feeling well.", "local", "at0110");
+  CONFUSED("Confused", "Confused.", "local", "at0102");
 
   private String value;
 
@@ -15,7 +15,7 @@ public enum ValueDefiningcode2 implements EnumValueSet {
 
   private String code;
 
-  ValueDefiningcode2(String value, String description, String terminologyId, String code) {
+  ValueDefiningCode2(String value, String description, String terminologyId, String code) {
     this.value = value;
     this.description = description;
     this.terminologyId = terminologyId;
@@ -23,18 +23,18 @@ public enum ValueDefiningcode2 implements EnumValueSet {
   }
 
   public String getValue() {
-    return this.value;
+     return this.value ;
   }
 
   public String getDescription() {
-    return this.description;
+     return this.description ;
   }
 
   public String getTerminologyId() {
-    return this.terminologyId;
+     return this.terminologyId ;
   }
 
   public String getCode() {
-    return this.code;
+     return this.code ;
   }
 }

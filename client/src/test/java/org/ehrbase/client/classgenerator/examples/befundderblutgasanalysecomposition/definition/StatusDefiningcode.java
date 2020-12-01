@@ -2,7 +2,7 @@ package org.ehrbase.client.classgenerator.examples.befundderblutgasanalysecompos
 
 import org.ehrbase.client.classgenerator.EnumValueSet;
 
-public enum StatusDefiningcode implements EnumValueSet {
+public enum StatusDefiningCode implements EnumValueSet {
   VORLAUFIG("vorläufig", "*", "local", "at0011"),
 
   FINAL("final", "*", "local", "at0012"),
@@ -19,7 +19,7 @@ public enum StatusDefiningcode implements EnumValueSet {
 
   private String code;
 
-  StatusDefiningcode(String value, String description, String terminologyId, String code) {
+  StatusDefiningCode(String value, String description, String terminologyId, String code) {
     this.value = value;
     this.description = description;
     this.terminologyId = terminologyId;

@@ -10,47 +10,47 @@ import java.util.List;
 @Entity
 @Archetype("openEHR-EHR-CLUSTER.location.v1")
 public class EmpfangerstandortCluster {
-    @Path("/items[at0047]")
-    private List<Cluster> details;
+  @Path("/items[at0040]/value|value")
+  private String standorttypValue;
 
-    @Path("/items[at0040]/value|value")
-    private String standorttypValue;
+  @Path("/items[at0046]/value|value")
+  private String standortbeschreibungValue;
 
-    @Path("/items[at0046]/value|value")
-    private String standortbeschreibungValue;
+  @Path("/items[at0048]/value|value")
+  private String standortschlusselValue;
 
-    @Path("/items[at0048]/value|value")
-    private String standortschlusselValue;
+  @Path("/items[at0047]")
+  private List<Cluster> details;
 
-    public void setDetails(List<Cluster> details) {
-        this.details = details;
-    }
+  public void setStandorttypValue(String standorttypValue) {
+     this.standorttypValue = standorttypValue;
+  }
 
-    public List<Cluster> getDetails() {
-        return this.details;
-    }
+  public String getStandorttypValue() {
+     return this.standorttypValue ;
+  }
 
-    public void setStandorttypValue(String standorttypValue) {
-        this.standorttypValue = standorttypValue;
-    }
+  public void setStandortbeschreibungValue(String standortbeschreibungValue) {
+     this.standortbeschreibungValue = standortbeschreibungValue;
+  }
 
-    public String getStandorttypValue() {
-        return this.standorttypValue;
-    }
+  public String getStandortbeschreibungValue() {
+     return this.standortbeschreibungValue ;
+  }
 
-    public void setStandortbeschreibungValue(String standortbeschreibungValue) {
-        this.standortbeschreibungValue = standortbeschreibungValue;
-    }
+  public void setStandortschlusselValue(String standortschlusselValue) {
+     this.standortschlusselValue = standortschlusselValue;
+  }
 
-    public String getStandortbeschreibungValue() {
-        return this.standortbeschreibungValue;
-    }
+  public String getStandortschlusselValue() {
+     return this.standortschlusselValue ;
+  }
 
-    public void setStandortschlusselValue(String standortschlusselValue) {
-        this.standortschlusselValue = standortschlusselValue;
-    }
+  public void setDetails(List<Cluster> details) {
+     this.details = details;
+  }
 
-    public String getStandortschlusselValue() {
-        return this.standortschlusselValue;
-    }
+  public List<Cluster> getDetails() {
+     return this.details ;
+  }
 }

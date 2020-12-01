@@ -7,69 +7,69 @@ import org.ehrbase.client.annotations.Path;
 @Entity
 @Archetype("openEHR-EHR-SECTION.adhoc.v1")
 public class BackgroundSection {
-    @Path("/items[openEHR-EHR-EVALUATION.clinical_synopsis.v1 and name/value='Medication']")
-    private MedicationEvaluation medication;
+  @Path("/items[openEHR-EHR-OBSERVATION.height.v2 and name/value='Height']")
+  private HeightObservation height;
 
-    @Path("/items[openEHR-EHR-OBSERVATION.body_weight.v2 and name/value='Weight']")
-    private WeightObservation weight;
+  @Path("/items[openEHR-EHR-OBSERVATION.body_weight.v2 and name/value='Weight']")
+  private WeightObservation weight;
 
-    @Path("/items[openEHR-EHR-OBSERVATION.clinical_frailty_scale.v1 and name/value='Frailty']")
-    private FrailtyObservation frailty;
+  @Path("/items[openEHR-EHR-OBSERVATION.clinical_frailty_scale.v1 and name/value='Frailty']")
+  private FrailtyObservation frailty;
 
-    @Path("/items[openEHR-EHR-OBSERVATION.height.v2 and name/value='Height']")
-    private HeightObservation height;
+  @Path("/items[openEHR-EHR-EVALUATION.clinical_synopsis.v1 and name/value='Past history']")
+  private PastHistoryEvaluation pastHistory;
 
-    @Path("/items[openEHR-EHR-EVALUATION.clinical_synopsis.v1 and name/value='Allergies']")
-    private AllergiesEvaluation allergies;
+  @Path("/items[openEHR-EHR-EVALUATION.clinical_synopsis.v1 and name/value='Medication']")
+  private MedicationEvaluation medication;
 
-    @Path("/items[openEHR-EHR-EVALUATION.clinical_synopsis.v1 and name/value='Past history']")
-    private PastHistoryEvaluation pastHistory;
+  @Path("/items[openEHR-EHR-EVALUATION.clinical_synopsis.v1 and name/value='Allergies']")
+  private AllergiesEvaluation allergies;
 
-    public void setMedication(MedicationEvaluation medication) {
-        this.medication = medication;
-    }
+  public void setHeight(HeightObservation height) {
+     this.height = height;
+  }
 
-    public MedicationEvaluation getMedication() {
-        return this.medication;
-    }
+  public HeightObservation getHeight() {
+     return this.height ;
+  }
 
-    public void setWeight(WeightObservation weight) {
-        this.weight = weight;
-    }
+  public void setWeight(WeightObservation weight) {
+     this.weight = weight;
+  }
 
-    public WeightObservation getWeight() {
-        return this.weight;
-    }
+  public WeightObservation getWeight() {
+     return this.weight ;
+  }
 
-    public void setFrailty(FrailtyObservation frailty) {
-        this.frailty = frailty;
-    }
+  public void setFrailty(FrailtyObservation frailty) {
+     this.frailty = frailty;
+  }
 
-    public FrailtyObservation getFrailty() {
-        return this.frailty;
-    }
+  public FrailtyObservation getFrailty() {
+     return this.frailty ;
+  }
 
-    public void setHeight(HeightObservation height) {
-        this.height = height;
-    }
+  public void setPastHistory(PastHistoryEvaluation pastHistory) {
+     this.pastHistory = pastHistory;
+  }
 
-    public HeightObservation getHeight() {
-        return this.height;
-    }
+  public PastHistoryEvaluation getPastHistory() {
+     return this.pastHistory ;
+  }
 
-    public void setAllergies(AllergiesEvaluation allergies) {
-        this.allergies = allergies;
-    }
+  public void setMedication(MedicationEvaluation medication) {
+     this.medication = medication;
+  }
 
-    public AllergiesEvaluation getAllergies() {
-        return this.allergies;
-    }
+  public MedicationEvaluation getMedication() {
+     return this.medication ;
+  }
 
-    public void setPastHistory(PastHistoryEvaluation pastHistory) {
-        this.pastHistory = pastHistory;
-    }
+  public void setAllergies(AllergiesEvaluation allergies) {
+     this.allergies = allergies;
+  }
 
-    public PastHistoryEvaluation getPastHistory() {
-        return this.pastHistory;
-    }
+  public AllergiesEvaluation getAllergies() {
+     return this.allergies ;
+  }
 }
