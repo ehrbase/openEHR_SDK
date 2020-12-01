@@ -28,7 +28,6 @@ import org.assertj.core.groups.Tuple;
 import org.ehrbase.test_data.operationaltemplate.OperationalTemplateTestData;
 import org.ehrbase.webtemplate.model.WebTemplate;
 import org.ehrbase.webtemplate.parser.OPTParser;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
 import org.openehr.schemas.v1.TemplateDocument;
@@ -44,7 +43,6 @@ import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@Ignore
 public class ClassGeneratorNewTest {
 
   public static final String PACKAGE_NAME = "org.ehrbase.client.classgenerator.examples2";
@@ -57,7 +55,7 @@ public class ClassGeneratorNewTest {
         TemplateDocument.Factory.parse(
                 OperationalTemplateTestData.BLOOD_PRESSURE_SIMPLE.getStream())
             .getTemplate();
-    WebTemplate webTemplate =new OPTParser(template).parse();
+    WebTemplate webTemplate = new OPTParser(template).parse();
     ClassGeneratorNew cut = new ClassGeneratorNew(new ClassGeneratorConfig());
     ClassGeneratorResult generate = null;
 
@@ -81,18 +79,18 @@ public class ClassGeneratorNewTest {
                 "levelOfExertion", "java.util.List<com.nedap.archie.rm.datastructures.Cluster>"),
             new Tuple("commentValue", "java.lang.String"),
             new Tuple(
-                "cuffSizeDefiningcode",
-                "org.ehrbase.client.classgenerator.examples2.ehrbasebloodpressuresimpledev0composition.definition.CuffSizeDefiningcode"),
+                "cuffSizeDefiningCode",
+                "org.ehrbase.client.classgenerator.examples2.ehrbasebloodpressuresimpledev0composition.definition.CuffSizeDefiningCode"),
             new Tuple(
-                "korotkoffSoundsDefiningcode",
-                "org.ehrbase.client.classgenerator.examples2.ehrbasebloodpressuresimpledev0composition.definition.KorotkoffSoundsDefiningcode"),
+                "korotkoffSoundsDefiningCode",
+                "org.ehrbase.client.classgenerator.examples2.ehrbasebloodpressuresimpledev0composition.definition.KorotkoffSoundsDefiningCode"),
             new Tuple("systolicMagnitude", "java.lang.Double"),
             new Tuple("systolicUnits", "java.lang.String"),
             new Tuple("diastolicMagnitude", "java.lang.Double"),
             new Tuple("diastolicUnits", "java.lang.String"),
             new Tuple(
-                "positionDefiningcode",
-                "org.ehrbase.client.classgenerator.examples2.ehrbasebloodpressuresimpledev0composition.definition.PositionDefiningcode"),
+                "positionDefiningCode",
+                "org.ehrbase.client.classgenerator.examples2.ehrbasebloodpressuresimpledev0composition.definition.PositionDefiningCode"),
             new Tuple("tiltMagnitude", "java.lang.Double"),
             new Tuple("tiltUnits", "java.lang.String"),
             new Tuple("meanArterialPressureMagnitude", "java.lang.Double"),
@@ -103,8 +101,8 @@ public class ClassGeneratorNewTest {
             new Tuple("pulsePressureMagnitude", "java.lang.Double"),
             new Tuple("pulsePressureUnits", "java.lang.String"),
             new Tuple(
-                "locationOfMeasurementDefiningcode",
-                "org.ehrbase.client.classgenerator.examples2.ehrbasebloodpressuresimpledev0composition.definition.LocationOfMeasurementDefiningcode"),
+                "locationOfMeasurementDefiningCode",
+                "org.ehrbase.client.classgenerator.examples2.ehrbasebloodpressuresimpledev0composition.definition.LocationOfMeasurementDefiningCode"),
             new Tuple("modelValue", "java.lang.String"),
             new Tuple("serialNumberValue", "java.lang.String"),
             new Tuple("dateLastServicedValue", "java.time.temporal.TemporalAccessor"),
@@ -119,8 +117,8 @@ public class ClassGeneratorNewTest {
             new Tuple("healthCareFacility", "com.nedap.archie.rm.generic.PartyIdentified"),
             new Tuple("composer", "com.nedap.archie.rm.generic.PartyProxy"),
             new Tuple(
-                "settingDefiningcode",
-                "org.ehrbase.client.classgenerator.shareddefinition.SettingDefiningcode"),
+                "settingDefiningCode",
+                "org.ehrbase.client.classgenerator.shareddefinition.Setting"),
             new Tuple("territory", "org.ehrbase.client.classgenerator.shareddefinition.Territory"),
             new Tuple(
                 "bloodPressureTrainingSample",
@@ -130,8 +128,8 @@ public class ClassGeneratorNewTest {
                 "deviceDetailsTrainingSample",
                 "java.util.List<org.ehrbase.client.classgenerator.examples2.ehrbasebloodpressuresimpledev0composition.definition.DeviceDetailsTrainingSampleCluster>"),
             new Tuple(
-                "categoryDefiningcode",
-                "org.ehrbase.client.classgenerator.shareddefinition.CategoryDefiningcode"),
+                "categoryDefiningCode",
+                "org.ehrbase.client.classgenerator.shareddefinition.Category"),
             new Tuple("startTimeValue", "java.time.temporal.TemporalAccessor"),
             new Tuple(
                 "participations", "java.util.List<com.nedap.archie.rm.generic.Participation>"),
@@ -228,21 +226,17 @@ public class ClassGeneratorNewTest {
                 "anyEventEn",
                 "java.util.List<org.ehrbase.client.classgenerator.examples2.alternativeeventscomposition.definition.KorpergewichtAnyEventEnChoice>"),
             new Tuple("extensionEn", "java.util.List<com.nedap.archie.rm.datastructures.Cluster>"),
-            new Tuple(
-                "language", "org.ehrbase.client.classgenerator.shareddefinition.Language"),
+            new Tuple("language", "org.ehrbase.client.classgenerator.shareddefinition.Language"),
             new Tuple("originValue", "java.time.temporal.TemporalAccessor"),
             new Tuple("gerat", "com.nedap.archie.rm.datastructures.Cluster"),
             new Tuple("subject", "com.nedap.archie.rm.generic.PartyProxy"),
             new Tuple("versionUid", "org.ehrbase.client.openehrclient.VersionUid"),
             new Tuple("endTimeValue", "java.time.temporal.TemporalAccessor"),
-            new Tuple(
-                "language", "org.ehrbase.client.classgenerator.shareddefinition.Language"),
+            new Tuple("language", "org.ehrbase.client.classgenerator.shareddefinition.Language"),
             new Tuple("healthCareFacility", "com.nedap.archie.rm.generic.PartyIdentified"),
             new Tuple("statusValue", "java.lang.String"),
             new Tuple("berichtIdValue", "java.lang.String"),
-            new Tuple(
-                "territory",
-                "org.ehrbase.client.classgenerator.shareddefinition.Territory"),
+            new Tuple("territory", "org.ehrbase.client.classgenerator.shareddefinition.Territory"),
             new Tuple("startTimeValue", "java.time.temporal.TemporalAccessor"),
             new Tuple("composer", "com.nedap.archie.rm.generic.PartyProxy"),
             new Tuple(
@@ -269,27 +263,25 @@ public class ClassGeneratorNewTest {
         TemplateDocument.Factory.parse(OperationalTemplateTestData.DIAGNOSE.getStream())
             .getTemplate();
     ClassGeneratorNew cut = new ClassGeneratorNew(new ClassGeneratorConfig());
-    ClassGeneratorResult generate = cut.generate(PACKAGE_NAME, new OPTParser( template).parse());
+    ClassGeneratorResult generate = cut.generate(PACKAGE_NAME, new OPTParser(template).parse());
 
-
-    Set<String> derDiagnoseDefiningcode =
+    Set<String> derDiagnoseDefiningCode =
         generate
             .getClasses()
             .get("org.ehrbase.client.classgenerator.examples2.diagnosecomposition.definition")
             .stream()
-            .filter(t -> t.name.equals("DerDiagnoseDefiningcode"))
+            .filter(t -> t.name.equals("NameDesProblemsDerDiagnoseDefiningCode"))
             .findAny()
             .get()
             .enumConstants
             .keySet();
 
-    assertThat(derDiagnoseDefiningcode)
+    assertThat(derDiagnoseDefiningCode)
         .containsExactlyInAnyOrder(
             "KORONAVIREN_ALS_URSACHE_VON_KRANKHEITEN_DIE_IN_ANDEREN_KAPITELN_KLASSIFIZIERT_SIND",
             "COVID19_VIRUS_NICHT_NACHGEWIESEN",
             "COVID19_VIRUS_NACHGEWIESEN",
             "INFEKTION_DURCH_KORONAVIREN_NICHT_NAHER_BEZEICHNETER_LOKALISATION");
-
 
     writeFiles(generate);
   }
@@ -300,14 +292,18 @@ public class ClassGeneratorNewTest {
         TemplateDocument.Factory.parse(OperationalTemplateTestData.EPISODE_OF_CARE.getStream())
             .getTemplate();
     ClassGeneratorNew cut = new ClassGeneratorNew(new ClassGeneratorConfig());
-    ClassGeneratorResult generate = cut.generate(PACKAGE_NAME, new OPTParser( template).parse());
-    List<String> fieldSpecs = generate.getClasses().values().stream()
+    ClassGeneratorResult generate = cut.generate(PACKAGE_NAME, new OPTParser(template).parse());
+    List<String> fieldSpecs =
+        generate.getClasses().values().stream()
             .flatMap(Collection::stream)
             .filter(t -> !t.kind.equals(TypeSpec.Kind.ENUM))
-            .map(t -> t.fieldSpecs).flatMap(List::stream).map(f -> f.name).collect(Collectors.toList());
+            .map(t -> t.fieldSpecs)
+            .flatMap(List::stream)
+            .map(f -> f.name)
+            .collect(Collectors.toList());
 
-
-    assertThat(fieldSpecs).containsExactlyInAnyOrder(
+    assertThat(fieldSpecs)
+        .containsExactlyInAnyOrder(
             "value",
             "value",
             "rankMagnitude",
@@ -315,7 +311,7 @@ public class ClassGeneratorNewTest {
             "diagnosisEntry",
             "identifier",
             "team",
-            "statusDefiningcode",
+            "statusDefiningCode",
             "language",
             "diagnosis",
             "subject",
@@ -328,18 +324,17 @@ public class ClassGeneratorNewTest {
             "participations",
             "language",
             "composer",
-            "settingDefiningcode",
+            "settingDefiningCode",
             "territory",
             "feederAudit",
             "location",
-            "categoryDefiningcode",
+            "categoryDefiningCode",
             "startTimeValue",
             "upperValue",
             "lowerValue",
             "lowerIncluded",
             "upperIncluded",
-            "healthCareFacility"
-    );
+            "healthCareFacility");
 
     writeFiles(generate);
   }
@@ -350,13 +345,18 @@ public class ClassGeneratorNewTest {
         TemplateDocument.Factory.parse(OperationalTemplateTestData.SM_I_C_S_BEFUND.getStream())
             .getTemplate();
     ClassGeneratorNew cut = new ClassGeneratorNew(new ClassGeneratorConfig());
-    ClassGeneratorResult generate = cut.generate(PACKAGE_NAME, new OPTParser( template).parse());
-    List<String> fieldSpecs = generate.getClasses().values().stream()
+    ClassGeneratorResult generate = cut.generate(PACKAGE_NAME, new OPTParser(template).parse());
+    List<String> fieldSpecs =
+        generate.getClasses().values().stream()
             .flatMap(Collection::stream)
             .filter(t -> !t.kind.equals(TypeSpec.Kind.ENUM))
-            .map(t -> t.fieldSpecs).flatMap(List::stream).map(f -> f.name).collect(Collectors.toList());
+            .map(t -> t.fieldSpecs)
+            .flatMap(List::stream)
+            .map(f -> f.name)
+            .collect(Collectors.toList());
 
-    assertThat(fieldSpecs).containsExactlyInAnyOrder(
+    assertThat(fieldSpecs)
+        .containsExactlyInAnyOrder(
             "value",
             "valueValue",
             "value",
@@ -373,7 +373,7 @@ public class ClassGeneratorNewTest {
             "standorttypValue",
             "standortbeschreibungValue",
             "standortschlusselValue",
-            "antibiotikumDefiningcode",
+            "antibiotikumDefiningCode",
             "resistenzValue",
             "kommentarValue",
             "minimaleHemmkonzentrationMagnitude",
@@ -386,12 +386,12 @@ public class ClassGeneratorNewTest {
             "haufigkeit",
             "kommentarValue",
             "resistenzmechanismus",
-            "valueMagnitude",
-            "valueUnits",
+            "keimzahlMagnitude",
+            "keimzahlUnits",
             "weitereErganzungen",
             "keimSubtyp",
             "virulenzfaktorValue",
-            "mreKlasseDefiningcode",
+            "mreKlasseDefiningCode",
             "value",
             "value",
             "value",
@@ -399,7 +399,7 @@ public class ClassGeneratorNewTest {
             "kommentarValue",
             "artDerTypisierung",
             "ergebnis",
-            "erregernameDefiningcode",
+            "erregernameDefiningCode",
             "language",
             "standort",
             "zeitpunktDesErstenErregernachweisesValue",
@@ -407,7 +407,7 @@ public class ClassGeneratorNewTest {
             "transmissionswegValue",
             "ubertragungswegValue",
             "erregerdetails",
-            "smicsErgebniskategorieDefiningcode",
+            "smicsErgebniskategorieDefiningCode",
             "multispeziesValue",
             "anzahlDerErregernachweise",
             "timeValue",
@@ -418,8 +418,8 @@ public class ClassGeneratorNewTest {
             "subject",
             "originValue",
             "erregertypisierung",
-            "kommentarValue",
-            "kommentarValueValue",
+            "baumKommentarValue",
+            "artDerUbertragungKommentarValue",
             "versionUid",
             "endTimeValue",
             "participations",
@@ -432,11 +432,10 @@ public class ClassGeneratorNewTest {
             "startTimeValue",
             "smicsErgebnis",
             "composer",
-            "settingDefiningcode",
+            "settingDefiningCode",
             "feederAudit",
             "location",
-            "categoryDefiningcode"
-    );
+            "categoryDefiningCode");
 
     writeFiles(generate);
   }
@@ -446,8 +445,9 @@ public class ClassGeneratorNewTest {
     OPERATIONALTEMPLATE template =
         TemplateDocument.Factory.parse(OperationalTemplateTestData.D4L_QUESTIONNAIRE.getStream())
             .getTemplate();
-    ClassGenerator cut = new ClassGenerator();
-    ClassGeneratorResult generate = cut.generate(PACKAGE_NAME, template);
+    ClassGeneratorNew cut = new ClassGeneratorNew(new ClassGeneratorConfig());
+    ClassGeneratorResult generate = cut.generate(PACKAGE_NAME, new OPTParser(template).parse());
+
     List<FieldSpec> fieldSpecs =
         generate.getClasses().values().stream()
             .flatMap(Collection::stream)
@@ -456,7 +456,7 @@ public class ClassGeneratorNewTest {
             .flatMap(List::stream)
             .collect(Collectors.toList());
 
-    assertThat(fieldSpecs).size().isEqualTo(348);
+    assertThat(fieldSpecs).size().isEqualTo(248);
   }
 
   @Test
@@ -466,7 +466,7 @@ public class ClassGeneratorNewTest {
                 OperationalTemplateTestData.BEFUND_DER_BLUTGASANALYSE.getStream())
             .getTemplate();
     ClassGeneratorNew cut = new ClassGeneratorNew(new ClassGeneratorConfig());
-    ClassGeneratorResult generate = cut.generate(PACKAGE_NAME, new OPTParser( template).parse());
+    ClassGeneratorResult generate = cut.generate(PACKAGE_NAME, new OPTParser(template).parse());
     List<FieldSpec> fieldSpecs =
         generate.getClasses().values().stream()
             .flatMap(Collection::stream)
@@ -486,7 +486,7 @@ public class ClassGeneratorNewTest {
         TemplateDocument.Factory.parse(OperationalTemplateTestData.MULTI_OCCURRENCE.getStream())
             .getTemplate();
     ClassGeneratorNew cut = new ClassGeneratorNew(new ClassGeneratorConfig());
-    ClassGeneratorResult generate = cut.generate(PACKAGE_NAME, new OPTParser( template).parse());
+    ClassGeneratorResult generate = cut.generate(PACKAGE_NAME, new OPTParser(template).parse());
 
     List<FieldSpec> fieldSpecs =
         generate.getClasses().values().stream()
@@ -495,17 +495,16 @@ public class ClassGeneratorNewTest {
             .map(t -> t.fieldSpecs)
             .flatMap(List::stream)
             .collect(Collectors.toList());
-/*
+
     assertThat(fieldSpecs)
         .extracting(f -> f.name, f -> f.type.toString())
         .containsExactlyInAnyOrder(
             new Tuple("versionUid", "org.ehrbase.client.openehrclient.VersionUid"),
             new Tuple("extension", "java.util.List<com.nedap.archie.rm.datastructures.Cluster>"),
+            new Tuple("language", "org.ehrbase.client.classgenerator.shareddefinition.Language"),
             new Tuple(
-                "language", "org.ehrbase.client.classgenerator.shareddefinition.Language"),
-            new Tuple(
-                "settingDefiningcode",
-                "org.ehrbase.client.classgenerator.shareddefinition.SettingDefiningcode"),
+                "settingDefiningCode",
+                "org.ehrbase.client.classgenerator.shareddefinition.Setting"),
             new Tuple(
                 "structuredMeasurementLocation",
                 "java.util.List<com.nedap.archie.rm.datastructures.Cluster>"),
@@ -513,12 +512,12 @@ public class ClassGeneratorNewTest {
             new Tuple("device", "com.nedap.archie.rm.datastructures.Cluster"),
             new Tuple("subject", "com.nedap.archie.rm.generic.PartyProxy"),
             new Tuple(
-                "locationOfMeasurementDefiningcode",
-                "org.ehrbase.client.classgenerator.examples2.ehrbasemultioccurrencedev1composition.definition.LocationOfMeasurementDefiningcode"),
+                "locationOfMeasurementDefiningCode",
+                "org.ehrbase.client.classgenerator.examples2.ehrbasemultioccurrencedev1composition.definition.LocationOfMeasurementDefiningCode"),
             new Tuple("locationOfMeasurementValue", "java.lang.String"),
             new Tuple(
-                "bodyExposureDefiningcode",
-                "org.ehrbase.client.classgenerator.examples2.ehrbasemultioccurrencedev1composition.definition.BodyExposureDefiningcode"),
+                "bodyExposureDefiningCode",
+                "org.ehrbase.client.classgenerator.examples2.ehrbasemultioccurrencedev1composition.definition.BodyExposureDefiningCode"),
             new Tuple("bodyExposureValue", "java.lang.String"),
             new Tuple("temperatureMagnitude", "java.lang.Double"),
             new Tuple("temperatureUnits", "java.lang.String"),
@@ -526,13 +525,10 @@ public class ClassGeneratorNewTest {
             new Tuple("exertion", "com.nedap.archie.rm.datastructures.Cluster"),
             new Tuple("timeValue", "java.time.temporal.TemporalAccessor"),
             new Tuple("endTimeValue", "java.time.temporal.TemporalAccessor"),
-            new Tuple(
-                "language", "org.ehrbase.client.classgenerator.shareddefinition.Language"),
+            new Tuple("language", "org.ehrbase.client.classgenerator.shareddefinition.Language"),
             new Tuple("healthCareFacility", "com.nedap.archie.rm.generic.PartyIdentified"),
             new Tuple("composer", "com.nedap.archie.rm.generic.PartyProxy"),
-            new Tuple(
-                "territory",
-                "org.ehrbase.client.classgenerator.shareddefinition.Territory"),
+            new Tuple("territory", "org.ehrbase.client.classgenerator.shareddefinition.Territory"),
             new Tuple(
                 "bodyTemperature",
                 "java.util.List<org.ehrbase.client.classgenerator.examples2.ehrbasemultioccurrencedev1composition.definition.BodyTemperatureObservation>"),
@@ -546,16 +542,15 @@ public class ClassGeneratorNewTest {
                 "bodyExposure",
                 "org.ehrbase.client.classgenerator.examples2.ehrbasemultioccurrencedev1composition.definition.BodyTemperatureBodyExposureChoice"),
             new Tuple(
+                "bodyExposure",
+                "org.ehrbase.client.classgenerator.examples2.ehrbasemultioccurrencedev1composition.definition.BodyTemperatureBodyExposureChoice"),
+            new Tuple(
                 "locationOfMeasurement",
                 "org.ehrbase.client.classgenerator.examples2.ehrbasemultioccurrencedev1composition.definition.BodyTemperatureLocationOfMeasurementChoice"),
             new Tuple(
-                "categoryDefiningcode",
-                "org.ehrbase.client.classgenerator.shareddefinition.CategoryDefiningcode"),
+                "categoryDefiningCode",
+                "org.ehrbase.client.classgenerator.shareddefinition.Category"),
             new Tuple("extension", "java.util.List<com.nedap.archie.rm.datastructures.Cluster>"),
-            new Tuple(
-                "bodyExposureDefiningcode",
-                "org.ehrbase.client.classgenerator.examples2.ehrbasemultioccurrencedev1composition.definition.BodyExposureDefiningcode"),
-            new Tuple("bodyExposureValue", "java.lang.String"),
             new Tuple("timeValue", "java.time.temporal.TemporalAccessor"),
             new Tuple("temperatureMagnitude", "java.lang.Double"),
             new Tuple("temperatureUnits", "java.lang.String"),
@@ -567,18 +562,15 @@ public class ClassGeneratorNewTest {
                 "java.util.List<com.nedap.archie.rm.datastructures.Cluster>"),
             new Tuple("widthValue", "java.time.temporal.TemporalAmount"),
             new Tuple(
-                "bodyExposure",
-                "org.ehrbase.client.classgenerator.examples2.ehrbasemultioccurrencedev1composition.definition.BodyTemperatureBodyExposureChoice2"),
-            new Tuple(
-                "mathFunctionDefiningcode",
-                "org.ehrbase.client.classgenerator.shareddefinition.MathFunctionDefiningcode"),
+                "mathFunctionDefiningCode",
+                "org.ehrbase.client.classgenerator.shareddefinition.MathFunction"),
             new Tuple(
                 "anyEvent",
                 "java.util.List<org.ehrbase.client.classgenerator.examples2.ehrbasemultioccurrencedev1composition.definition.BodyTemperatureAnyEventChoice>"),
             new Tuple(
                 "participations", "java.util.List<com.nedap.archie.rm.generic.Participation>"),
             new Tuple("feederAudit", "com.nedap.archie.rm.archetyped.FeederAudit"));
-*/
+
     writeFiles(generate);
   }
 
@@ -587,8 +579,8 @@ public class ClassGeneratorNewTest {
     OPERATIONALTEMPLATE template =
         TemplateDocument.Factory.parse(OperationalTemplateTestData.ALL_TYPES.getStream())
             .getTemplate();
-    ClassGenerator cut = new ClassGenerator();
-    ClassGeneratorResult generate = cut.generate(PACKAGE_NAME, template);
+    ClassGeneratorNew cut = new ClassGeneratorNew(new ClassGeneratorConfig());
+    ClassGeneratorResult generate = cut.generate(PACKAGE_NAME, new OPTParser(template).parse());
 
     List<FieldSpec> fieldSpecs =
         generate.getClasses().values().stream()
@@ -598,7 +590,7 @@ public class ClassGeneratorNewTest {
             .flatMap(List::stream)
             .collect(Collectors.toList());
 
-    assertThat(fieldSpecs).size().isEqualTo(75L);
+    assertThat(fieldSpecs).size().isEqualTo(80L);
 
     writeFiles(generate);
   }
@@ -608,8 +600,8 @@ public class ClassGeneratorNewTest {
     OPERATIONALTEMPLATE template =
         TemplateDocument.Factory.parse(OperationalTemplateTestData.VIROLOGY_FINDING.getStream())
             .getTemplate();
-    ClassGenerator cut = new ClassGenerator();
-    ClassGeneratorResult generate = cut.generate(PACKAGE_NAME, template);
+    ClassGeneratorNew cut = new ClassGeneratorNew(new ClassGeneratorConfig());
+    ClassGeneratorResult generate = cut.generate(PACKAGE_NAME, new OPTParser(template).parse());
 
     List<FieldSpec> fieldSpecs =
         generate.getClasses().values().stream()
@@ -619,7 +611,7 @@ public class ClassGeneratorNewTest {
             .flatMap(List::stream)
             .collect(Collectors.toList());
 
-    assertThat(fieldSpecs).size().isEqualTo(75L);
+    assertThat(fieldSpecs).size().isEqualTo(74L);
 
     writeFiles(generate);
   }
@@ -629,8 +621,8 @@ public class ClassGeneratorNewTest {
     OPERATIONALTEMPLATE template =
         TemplateDocument.Factory.parse(OperationalTemplateTestData.CORONA_ANAMNESE.getStream())
             .getTemplate();
-    ClassGenerator cut = new ClassGenerator();
-    ClassGeneratorResult generate = cut.generate(PACKAGE_NAME, template);
+    ClassGeneratorNew cut = new ClassGeneratorNew(new ClassGeneratorConfig());
+    ClassGeneratorResult generate = cut.generate(PACKAGE_NAME, new OPTParser(template).parse());
 
     List<FieldSpec> fieldSpecs =
         generate.getClasses().values().stream()
@@ -640,7 +632,7 @@ public class ClassGeneratorNewTest {
             .flatMap(List::stream)
             .collect(Collectors.toList());
 
-    assertThat(fieldSpecs).size().isEqualTo(305);
+    assertThat(fieldSpecs).size().isEqualTo(296);
 
     writeFiles(generate);
   }
@@ -651,8 +643,8 @@ public class ClassGeneratorNewTest {
         TemplateDocument.Factory.parse(
                 OperationalTemplateTestData.SCHWANGERSCHAFTSSTATUS.getStream())
             .getTemplate();
-    ClassGenerator cut = new ClassGenerator();
-    ClassGeneratorResult generate = cut.generate(PACKAGE_NAME, template);
+    ClassGeneratorNew cut = new ClassGeneratorNew(new ClassGeneratorConfig());
+    ClassGeneratorResult generate = cut.generate(PACKAGE_NAME, new OPTParser(template).parse());
 
     List<FieldSpec> fieldSpecs =
         generate.getClasses().values().stream()
@@ -667,7 +659,7 @@ public class ClassGeneratorNewTest {
     Optional<TypeSpec> status1 =
         generate.getClasses().values().stream()
             .flatMap(Collection::stream)
-            .filter(s -> s.name.equals("StatusDefiningcode"))
+            .filter(s -> s.name.equals("StatusDefiningCode"))
             .findAny();
     assertThat(status1).isPresent();
     assertThat(status1.get().enumConstants.keySet())
@@ -676,7 +668,7 @@ public class ClassGeneratorNewTest {
     Optional<TypeSpec> status2 =
         generate.getClasses().values().stream()
             .flatMap(Collection::stream)
-            .filter(s -> s.name.equals("StatusDefiningcode2"))
+            .filter(s -> s.name.equals("StatusDefiningCode2"))
             .findAny();
     assertThat(status2).isPresent();
     assertThat(status2.get().enumConstants.keySet())
@@ -699,8 +691,8 @@ public class ClassGeneratorNewTest {
     OPERATIONALTEMPLATE template =
         TemplateDocument.Factory.parse(OperationalTemplateTestData.OPEN_E_REACT_CARE.getStream())
             .getTemplate();
-    ClassGenerator cut = new ClassGenerator();
-    ClassGeneratorResult generate = cut.generate(PACKAGE_NAME, template);
+    ClassGeneratorNew cut = new ClassGeneratorNew(new ClassGeneratorConfig());
+    ClassGeneratorResult generate = cut.generate(PACKAGE_NAME, new OPTParser(template).parse());
 
     List<FieldSpec> fieldSpecs =
         generate.getClasses().values().stream()

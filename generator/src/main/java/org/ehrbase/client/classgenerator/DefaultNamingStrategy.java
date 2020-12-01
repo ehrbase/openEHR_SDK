@@ -29,6 +29,8 @@ import org.ehrbase.webtemplate.parser.FlatPath;
 import java.util.Deque;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 public class DefaultNamingStrategy {
 
@@ -37,22 +39,22 @@ public class DefaultNamingStrategy {
   public DefaultNamingStrategy() {}
 
   String buildClassName(
-          ClassGeneratorNew.Context context, WebTemplateNode node, boolean isChoice) {
+      ClassGeneratorNew.Context context, WebTemplateNode node, boolean isChoice, boolean isEnum) {
 
-    String name = node.getName();
+    String name = replaceElementName(context, node);
     if (context.nodeDeque.isEmpty()) {
-      name = context.templateId;
-    }
-    if (!context.nodeDeque.isEmpty() && !node.isArchetype() && !node.getRmType().equals("DV_CODED_TEXT")) {
-      name = findLastArchetype(context.nodeDeque).getName() + TERM_DIVIDER + name;
-    }
+      name = context.webTemplate.getTemplateId();
+    } else {
 
-    if (!context.nodeDeque.isEmpty()
-        && isChoice) {
+      if (!node.isArchetype() && !isEnum) {
+        name = findLastArchetype(context.nodeDeque).getName() + TERM_DIVIDER + name;
+      }
+    }
+    if (isChoice) {
       name = name + TERM_DIVIDER + "choice";
-    } else if(node.getRmType().equals("DV_CODED_TEXT")) {
+    } else if (node.getRmType().equals("DV_CODED_TEXT") && isEnum) {
       name = name + TERM_DIVIDER + "defining_code";
-    }else{
+    } else {
       name = name + TERM_DIVIDER + node.getRmType();
     }
 
@@ -72,10 +74,47 @@ public class DefaultNamingStrategy {
     return fieldName;
   }
 
+  private String makeNameUnique(ClassGeneratorNew.Context context, WebTemplateNode node) {
+
+    WebTemplateNode parent = context.nodeDeque.peek();
+    String name = replaceElementName(context, node);
+    String finalName = name;
+    if (parent.getChildren().stream()
+            .filter(
+                n ->
+                    replaceElementName(context, n).equals(finalName)
+                        && !Objects.equals(node.getAqlPath(), n.getAqlPath()))
+            .count()
+        > 0) {
+      if (!Objects.equals(context.unFilteredNodeDeque.peek().getRmType(), "ELEMENT")) {
+        name = context.unFilteredNodeDeque.peek().getName() + TERM_DIVIDER + name;
+      } else {
+        WebTemplateNode poll = context.unFilteredNodeDeque.poll();
+        name = context.unFilteredNodeDeque.peek().getName() + TERM_DIVIDER + name;
+        context.unFilteredNodeDeque.push(poll);
+      }
+    }
+
+    return name;
+  }
+
+  private String replaceElementName(ClassGeneratorNew.Context context, WebTemplateNode node) {
+    String name = node.getName();
+    WebTemplateNode trueParent =
+        Optional.ofNullable(context.webTemplate.findFiltersNodes(node))
+            .map(Deque::peek)
+            .orElse(null);
+    if (Objects.equals(
+        Optional.ofNullable(trueParent).map(WebTemplateNode::getRmType).orElse(null), "ELEMENT")) {
+      name = trueParent.getName();
+    }
+    return name;
+  }
+
   private boolean isInChoice(WebTemplateNode parent, WebTemplateNode node) {
     return parent.getChoicesInChildren().values().stream()
-            .flatMap(List::stream)
-            .anyMatch(l -> l.equals(node));
+        .flatMap(List::stream)
+        .anyMatch(l -> l.equals(node));
   }
 
   String sanitizeNumber(String fieldName) {
@@ -113,6 +152,15 @@ public class DefaultNamingStrategy {
   String buildFieldName(ClassGeneratorNew.Context context, String path, WebTemplateNode node) {
     String name = node.getName();
     String attributeName = new FlatPath(path).getLast().getAttributeName();
+
+    if (!context.nodeDeque.isEmpty()) {
+      if (StringUtils.isBlank(attributeName) || attributeName.equals("value")) {
+        name = makeNameUnique(context, node);
+      } else {
+        name = replaceElementName(context, node);
+      }
+    }
+
     if (StringUtils.isNotBlank(attributeName)) {
       name = name + TERM_DIVIDER + attributeName;
     }

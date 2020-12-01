@@ -17,10 +17,27 @@
  *
  */
 
-package org.ehrbase.webtemplate.filter;
+package org.ehrbase.webtemplate.model;
 
-import org.ehrbase.webtemplate.model.WebTemplate;
+import net.minidev.json.annotate.JsonIgnore;
 
-public interface WebtemplateFilter {
-    WebTemplate filter(WebTemplate webTemplate);
+import java.util.Deque;
+import java.util.Map;
+
+public class FilteredWebTemplate extends WebTemplate{
+
+    public FilteredWebTemplate(WebTemplate other) {
+        super(other);
+    }
+
+    @JsonIgnore
+    private Map<WebTemplateNode, Deque<WebTemplateNode>> filteredNodeMap;
+
+    public void setFilteredNodeMap(Map<WebTemplateNode, Deque<WebTemplateNode>> filteredNodeMap) {
+        this.filteredNodeMap = filteredNodeMap;
+    }
+
+    public Deque<WebTemplateNode> findFiltersNodes(WebTemplateNode  node){
+        return filteredNodeMap.get(node);
+    }
 }

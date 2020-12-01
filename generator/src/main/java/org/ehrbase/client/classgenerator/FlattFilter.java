@@ -37,16 +37,26 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public class FlattFilter extends Filter {
-  private static final Map<Class<?>, RmIntrospectConfig> configMap = ReflectionHelper.buildMap(RmIntrospectConfig.class);
+  private static final Map<Class<?>, RmIntrospectConfig> configMap =
+      ReflectionHelper.buildMap(RmIntrospectConfig.class);
 
   @Override
   protected boolean skip(WebTemplateNode node, WebTemplate context, WebTemplateNode parent) {
-    if (!node.getChildren().isEmpty() && node.getMax() == 1 && !node.isArchetype() && (  !isEvent(node) || parent.getChildren().stream().filter(this::isEvent).count() == 1)){
+    if (!node.getChildren().isEmpty()
+        && node.getMax() == 1
+        && !node.isArchetype()
+        && (!isEvent(node) || parent.getChildren().stream().filter(this::isEvent).count() == 1)) {
       return true;
     } else {
       if (parent != null) {
         RMTypeInfo typeInfo = ARCHIE_RM_INFO_LOOKUP.getTypeInfo(parent.getRmType());
-        Set<String> attributeNames = Optional.ofNullable(configMap.get(typeInfo.getJavaClass())).map(RmIntrospectConfig::getNonTemplateFields).orElse(Collections.emptySet()).stream().map(s -> new SnakeCase(s).camelToSnake()).collect(Collectors.toSet());
+        Set<String> attributeNames =
+            Optional.ofNullable(configMap.get(typeInfo.getJavaClass()))
+                .map(RmIntrospectConfig::getNonTemplateFields)
+                .orElse(Collections.emptySet())
+                .stream()
+                .map(s -> new SnakeCase(s).camelToSnake())
+                .collect(Collectors.toSet());
         attributeNames.add("context");
         attributeNames.add("timing");
         attributeNames.add("expiry_time");
@@ -57,7 +67,8 @@ public class FlattFilter extends Filter {
         attributeNames.add("lower_included");
         attributeNames.add("upper_included");
 
-        SetUtils.SetView<String> difference = SetUtils.difference(typeInfo.getAttributes().keySet(), attributeNames);
+        SetUtils.SetView<String> difference =
+            SetUtils.difference(typeInfo.getAttributes().keySet(), attributeNames);
         if (difference.contains(node.getName())) {
           return true;
         }
@@ -66,14 +77,15 @@ public class FlattFilter extends Filter {
     }
   }
 
-  private boolean isEvent(WebTemplateNode node){
+  private boolean isEvent(WebTemplateNode node) {
     RMTypeInfo typeInfo = ARCHIE_RM_INFO_LOOKUP.getTypeInfo(node.getRmType());
     return typeInfo != null && Event.class.isAssignableFrom(typeInfo.getJavaClass());
   }
 
   protected void preHandle(WebTemplateNode node) {
 
-    List<WebTemplateNode> ismTransitionList = node.getChildren().stream()
+    List<WebTemplateNode> ismTransitionList =
+        node.getChildren().stream()
             .filter(n -> "ISM_TRANSITION".equals(n.getRmType()))
             .collect(Collectors.toList());
     if (!ismTransitionList.isEmpty()) {
@@ -81,7 +93,12 @@ public class FlattFilter extends Filter {
       node.getChildren().add(ismTransitionList.get(0));
     }
 
-    if (node.getRmType().equals("ELEMENT") && node.getChildren().size() == 3 && node.getChildren().stream().map(WebTemplateNode::getRmType).collect(Collectors.toList()).containsAll(List.of("DV_TEXT", "DV_CODED_TEXT"))) {
+    if (node.getRmType().equals("ELEMENT")
+        && node.getChildren().size() == 3
+        && node.getChildren().stream()
+            .map(WebTemplateNode::getRmType)
+            .collect(Collectors.toList())
+            .containsAll(List.of("DV_TEXT", "DV_CODED_TEXT"))) {
       WebTemplateNode merged = node.findChildById(node.getId(false)).orElseThrow();
 
       node.getChildren().remove(merged);

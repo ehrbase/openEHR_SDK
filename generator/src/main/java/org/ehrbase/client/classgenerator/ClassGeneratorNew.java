@@ -51,7 +51,8 @@ import org.ehrbase.serialisation.util.SnakeCase;
 import org.ehrbase.terminology.client.terminology.TermDefinition;
 import org.ehrbase.terminology.client.terminology.ValueSet;
 import org.ehrbase.util.reflection.ReflectionHelper;
-import org.ehrbase.webtemplate.filter.WebtemplateFilter;
+import org.ehrbase.webtemplate.filter.WebTemplateFilter;
+import org.ehrbase.webtemplate.model.FilteredWebTemplate;
 import org.ehrbase.webtemplate.model.WebTemplate;
 import org.ehrbase.webtemplate.model.WebTemplateInput;
 import org.ehrbase.webtemplate.model.WebTemplateInputValue;
@@ -85,6 +86,7 @@ public class ClassGeneratorNew {
   static class Context {
     final MultiValuedMap<String, TypeSpec> classes = new ArrayListValuedHashMap<>();
     final Deque<WebTemplateNode> nodeDeque = new ArrayDeque<>();
+    final Deque<WebTemplateNode> unFilteredNodeDeque = new ArrayDeque<>();
     final Map<WebTemplateNode, TypeSpec> currentTypeSpec = new HashMap<>();
     String currentMainClass;
     final Deque<String> currentArchetypeName = new ArrayDeque<>();
@@ -92,12 +94,12 @@ public class ClassGeneratorNew {
     String currentPackageName;
     final Map<ValueSet, TypeSpec> currentEnums = new HashMap<>();
     final Deque<Map<String, Integer>> currentFieldNameMap = new ArrayDeque<>();
-    String templateId;
+    FilteredWebTemplate webTemplate;
   }
 
   private Logger logger = LoggerFactory.getLogger(this.getClass());
 
-  private final WebtemplateFilter filter;
+  private final WebTemplateFilter filter;
 
   public ClassGeneratorNew(ClassGeneratorConfig config) {
 
@@ -107,10 +109,12 @@ public class ClassGeneratorNew {
   public ClassGeneratorResult generate(String packageName, WebTemplate webTemplate) {
 
     Context context = new Context();
-    context.templateId = webTemplate.getTemplateId();
+
     context.currentPackageName = packageName;
 
-    TypeSpec.Builder builder = build(context, filter.filter(webTemplate).getTree());
+    FilteredWebTemplate filteredWebTemplate = this.filter.filter(webTemplate);
+    context.webTemplate = filteredWebTemplate;
+    TypeSpec.Builder builder = build(context, filteredWebTemplate.getTree());
     AnnotationSpec templateAnnotation =
         AnnotationSpec.builder(Template.class)
             .addMember(Template.VALUE, "$S", webTemplate.getTemplateId())
@@ -139,10 +143,12 @@ public class ClassGeneratorNew {
   private TypeSpec.Builder build(Context context, WebTemplateNode next) {
 
 
-    String className = defaultNamingStrategy.buildClassName(context, next, false);;
+    String className = defaultNamingStrategy.buildClassName(context, next, false, false);
 
     context.currentFieldNameMap.push(new HashMap<>());
+
     context.nodeDeque.push(next);
+    context.unFilteredNodeDeque.push(next);
 
     TypeSpec.Builder classBuilder = TypeSpec.classBuilder(className);
     if (StringUtils.isBlank(context.currentMainClass)) {
@@ -192,6 +198,9 @@ public class ClassGeneratorNew {
                     .filter(c -> choices.values().stream().flatMap(List::stream).noneMatch(l -> l.equals(c)))
                     .collect(Collectors.toList());
     for (WebTemplateNode child : children) {
+
+      Deque<WebTemplateNode> filtersNodes = pushToUnfiltered(context, child);
+
       String relativPath =
           FlatPath.removeStart(new FlatPath(child.getAqlPath()), new FlatPath(next.getAqlPath()))
               .toString();
@@ -201,9 +210,9 @@ public class ClassGeneratorNew {
       } else if (!choices.containsKey(child.getAqlPath())) {
         addComplexField(context, classBuilder, relativPath, child);
       }
-    }
-    if (children.isEmpty()){
-      addSimpleField(context, classBuilder, "", next);
+      if (!CollectionUtils.isEmpty(filtersNodes)){
+        filtersNodes.forEach(n -> context.unFilteredNodeDeque.poll());
+      }
     }
 
     for (List<WebTemplateNode> choice : choices.values()) {
@@ -212,7 +221,7 @@ public class ClassGeneratorNew {
 
       WebTemplateNode node = choice.get(0);
       WebTemplateNode relativeNode = buildRelativeNode(context, node);
-
+      Deque<WebTemplateNode> filtersNodes = pushToUnfiltered(context, node);
       TypeSpec interfaceSpec;
       TypeName interfaceClassName;
       if (context.currentTypeSpec.containsKey(relativeNode)) {
@@ -227,7 +236,7 @@ public class ClassGeneratorNew {
         interfaceClassName = ClassName.get(interfacePackage, interfaceSpec.name);
       } else {
         interfaceSpec =
-            TypeSpec.interfaceBuilder(defaultNamingStrategy.buildClassName(context, choice.get(0), true))
+            TypeSpec.interfaceBuilder(defaultNamingStrategy.buildClassName(context, choice.get(0), true, false))
                 .addModifiers(Modifier.PUBLIC)
                 .build();
         context.currentTypeSpec.put(relativeNode, interfaceSpec);
@@ -267,17 +276,34 @@ public class ClassGeneratorNew {
           interfaceClassName,
           new ValueSet(ValueSet.LOCAL, ValueSet.LOCAL, Collections.emptySet()),
           true);
+
+      if (!CollectionUtils.isEmpty(filtersNodes)){
+        filtersNodes.forEach(n -> context.unFilteredNodeDeque.poll());
+      }
     }
     if (next.isArchetype()) {
       context.currentArchetypeName.poll();
     }
+
+    if (children.isEmpty() && choices.isEmpty()){
+      addSimpleField(context, classBuilder, "", next);
+    }
+
+
     context.currentFieldNameMap.poll();
     context.nodeDeque.poll();
+
+    context.unFilteredNodeDeque.poll();
     return classBuilder;
   }
 
-
-
+  private Deque<WebTemplateNode> pushToUnfiltered(Context context, WebTemplateNode node) {
+    Deque<WebTemplateNode> filtersNodes = context.webTemplate.findFiltersNodes(node);
+    if (!CollectionUtils.isEmpty(filtersNodes)) {
+     filtersNodes.descendingIterator().forEachRemaining(context.unFilteredNodeDeque::push);
+    }
+    return filtersNodes;
+  }
 
 
   private void addComplexField(
@@ -411,13 +437,13 @@ public class ClassGeneratorNew {
       Context context,
       TypeSpec.Builder classBuilder,
       String path,
-      WebTemplateNode name,
+      WebTemplateNode node,
       TypeName className,
       ValueSet valueSet,
       boolean addChoiceAnnotation) {
 
     if (CodePhrase.class.getName().equals(className.toString()))
-      switch (name.getName()) {
+      switch (node.getName()) {
         case "language":
           className = ClassName.get(Language.class);
           break;
@@ -438,7 +464,7 @@ public class ClassGeneratorNew {
 
             final TypeSpec enumValueSet =
                 context.currentEnums.computeIfAbsent(
-                    valueSet, vs -> buildEnumValueSet(context, name, vs));
+                    valueSet, vs -> buildEnumValueSet(context, node, vs));
 
             String enumPackage =
                 context.currentPackageName
@@ -451,10 +477,10 @@ public class ClassGeneratorNew {
           }
       }
 
-    String fieldName =
+     String fieldName =
             defaultNamingStrategy.buildFieldName(
                     context,
-                    path, name);
+                    path, node);
     FieldSpec.Builder builder =
         FieldSpec.builder(className, fieldName)
             .addAnnotation(
@@ -474,7 +500,7 @@ public class ClassGeneratorNew {
 
   private TypeSpec buildEnumValueSet(Context context, WebTemplateNode node, ValueSet valueSet) {
     TypeSpec.Builder enumBuilder =
-        TypeSpec.enumBuilder(defaultNamingStrategy.buildClassName(context, node, false))
+        TypeSpec.enumBuilder(defaultNamingStrategy.buildClassName(context, node, false, true))
             .addSuperinterface(EnumValueSet.class)
             .addModifiers(Modifier.PUBLIC);
     FieldSpec fieldSpec1 =
