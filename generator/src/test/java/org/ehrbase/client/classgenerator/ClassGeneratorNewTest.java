@@ -467,15 +467,65 @@ public class ClassGeneratorNewTest {
             .getTemplate();
     ClassGeneratorNew cut = new ClassGeneratorNew(new ClassGeneratorConfig());
     ClassGeneratorResult generate = cut.generate(PACKAGE_NAME, new OPTParser(template).parse());
-    List<FieldSpec> fieldSpecs =
-        generate.getClasses().values().stream()
+    List<String> fieldSpecs = generate.getClasses().values().stream()
             .flatMap(Collection::stream)
             .filter(t -> !t.kind.equals(TypeSpec.Kind.ENUM))
-            .map(t -> t.fieldSpecs)
-            .flatMap(List::stream)
-            .collect(Collectors.toList());
+            .map(t -> t.fieldSpecs).flatMap(List::stream).map(f -> f.name).collect(Collectors.toList());
 
-    assertThat(fieldSpecs).size().isEqualTo(52);
+    assertThat(fieldSpecs).containsExactlyInAnyOrder(
+            "versionUid",
+            "endTimeValue",
+            "participations",
+            "language",
+            "healthCareFacility",
+            "statusDefiningCode",
+            "kategorieValue",
+            "territory",
+            "startTimeValue",
+            "composer",
+            "settingDefiningCode",
+            "feederAudit",
+            "location",
+            "categoryDefiningCode",
+            "erweiterung",
+            "laborergebnis",
+            "ergebnisStatusValue",
+            "untersuchterAnalytDefiningCode",
+            "analytResultatMagnitude",
+            "analytResultatUnits",
+            "analyseergebnisDetails",
+            "ergebnisStatusValue",
+            "untersuchterAnalytDefiningCode",
+            "analytResultatMagnitude",
+            "analytResultatUnits",
+            "analyseergebnisDetails",
+            "ergebnisStatusValue",
+            "untersuchterAnalytDefiningCode",
+            "analytResultatMagnitude",
+            "analytResultatUnits",
+            "analyseergebnisDetails",
+            "ergebnisStatusValue",
+            "untersuchterAnalytDefiningCode",
+            "analytResultatMagnitude",
+            "analytResultatUnits",
+            "analyseergebnisDetails",
+            "testDetails",
+            "phWert",
+            "language",
+            "sauerstoffpartialdruck",
+            "multimediaDarstellung",
+            "labortestBezeichnungDefiningCode",
+            "strukturierteErfassungDerStorfaktoren",
+            "strukturierteTestdiagnostik",
+            "kohlendioxidpartialdruck",
+            "sauerstoffsattigung",
+            "erweiterung",
+            "timeValue",
+            "probendetail",
+            "subject",
+            "originValue",
+            "laborWelchesDenUntersuchungsauftragAnnimmt"
+    );
 
     writeFiles(generate);
   }
@@ -603,15 +653,85 @@ public class ClassGeneratorNewTest {
     ClassGeneratorNew cut = new ClassGeneratorNew(new ClassGeneratorConfig());
     ClassGeneratorResult generate = cut.generate(PACKAGE_NAME, new OPTParser(template).parse());
 
-    List<FieldSpec> fieldSpecs =
-        generate.getClasses().values().stream()
+    List<String> fieldSpecs = generate.getClasses().values().stream()
             .flatMap(Collection::stream)
             .filter(t -> !t.kind.equals(TypeSpec.Kind.ENUM))
-            .map(t -> t.fieldSpecs)
-            .flatMap(List::stream)
-            .collect(Collectors.toList());
+            .map(t -> t.fieldSpecs).flatMap(List::stream).map(f -> f.name).collect(Collectors.toList());
 
-    assertThat(fieldSpecs).size().isEqualTo(74L);
+    assertThat(fieldSpecs).containsExactlyInAnyOrder("alternativeStruktur",
+            "nameDerKorperstelleValue",
+            "multimedialeDarstellung",
+            "kommentarDesProbennehmersValue",
+            "angabenZumProbennehmer",
+            "angabenZumTransport",
+            "externerIdentifikator",
+            "probenentnahmestelleValue",
+            "zusatzlicheAngabenZurProbennahme",
+            "behalterDetails",
+            "digitaleDarstellung",
+            "identifikatorDerUbergeordnetenProbe",
+            "zeitpunktDesProbeneingangsValue",
+            "kommentarValue",
+            "probenartValue",
+            "anatomischeLokalisation",
+            "laborprobenidentifikator",
+            "angabenZurVerarbeitung",
+            "identifikatorDesProbennehmers",
+            "physischeEigenschaften",
+            "zeitpunktDerProbenentnahmeValue",
+            "details",
+            "standorttypValue",
+            "standortbeschreibungValue",
+            "standortschlusselValue",
+            "nachweisValue",
+            "viruslastCtWertMagnitude",
+            "viruslastCtWertUnits",
+            "virusValue",
+            "kommentarValue",
+            "zugehorigeLaborprobe",
+            "analyseergebnisReihenfolgeMagnitude",
+            "analyseergebnisDetails",
+            "proVirus",
+            "details",
+            "standorttypValue",
+            "standortbeschreibungValue",
+            "standortschlusselValue",
+            "value",
+            "testDetails",
+            "probe",
+            "language",
+            "einsenderstandort",
+            "kultur",
+            "multimediaDarstellung",
+            "auftragsIdDesAnforderndenEinsendendenSystems",
+            "auftragsIdEmpfanger",
+            "labortestBezeichnungValue",
+            "strukturierteErfassungDerStorfaktoren",
+            "strukturierteTestdiagnostik",
+            "empfangerstandort",
+            "erweiterung",
+            "timeValue",
+            "anforderung",
+            "subject",
+            "originValue",
+            "verteilerliste",
+            "fallKennungValue",
+            "versionUid",
+            "endTimeValue",
+            "befund",
+            "participations",
+            "language",
+            "healthCareFacility",
+            "statusValue",
+            "berichtIdValue",
+            "territory",
+            "startTimeValue",
+            "fallidentifikation",
+            "composer",
+            "settingDefiningCode",
+            "feederAudit",
+            "location",
+            "categoryDefiningCode");
 
     writeFiles(generate);
   }
@@ -646,15 +766,36 @@ public class ClassGeneratorNewTest {
     ClassGeneratorNew cut = new ClassGeneratorNew(new ClassGeneratorConfig());
     ClassGeneratorResult generate = cut.generate(PACKAGE_NAME, new OPTParser(template).parse());
 
-    List<FieldSpec> fieldSpecs =
-        generate.getClasses().values().stream()
+    List<String> fieldSpecs = generate.getClasses().values().stream()
             .flatMap(Collection::stream)
             .filter(t -> !t.kind.equals(TypeSpec.Kind.ENUM))
-            .map(t -> t.fieldSpecs)
-            .flatMap(List::stream)
-            .collect(Collectors.toList());
+            .map(t -> t.fieldSpecs).flatMap(List::stream).map(f -> f.name).collect(Collectors.toList());
 
-    assertThat(fieldSpecs).size().isEqualTo(22);
+    assertThat(fieldSpecs).containsExactlyInAnyOrder(
+            "versionUid",
+            "endTimeValue",
+            "participations",
+            "language",
+            "healthCareFacility",
+            "statusDefiningCode",
+            "kategorieValue",
+            "territory",
+            "startTimeValue",
+            "composer",
+            "settingDefiningCode",
+            "schwangerschaftsstatus",
+            "feederAudit",
+            "location",
+            "categoryDefiningCode",
+            "erweiterung",
+            "timeValue",
+            "subject",
+            "originValue",
+            "language",
+            "erweiterungen",
+            "statusDefiningCode"
+    );
+
 
     Optional<TypeSpec> status1 =
         generate.getClasses().values().stream()
