@@ -4,11 +4,11 @@ import java.lang.String;
 import org.ehrbase.client.classgenerator.EnumValueSet;
 
 public enum CareflowStepDefiningCode implements EnumValueSet {
-  PLANNED("Planned", "*", null, "at0003"),
+  PLANNED("Planned", "*", "openehr", "at0003"),
 
-  ACTIVE("Active", "*", null, "at0004"),
+  ACTIVE("Active", "*", "openehr", "at0004"),
 
-  COMPLETED("Completed", "*", null, "at0005");
+  COMPLETED("Completed", "*", "openehr", "at0005");
 
   private String value;
 

@@ -152,7 +152,7 @@ public class DtoFromCompositionWalker extends FromCompositionWalker<DtoWithMatch
                                           Optional.ofNullable(codePhrase.getTerminologyId())
                                                   .map(ObjectId::getValue)
                                                   .orElse(null);
-                                  return v.getTerminologyId().equals(terminologyId);
+                                    return v.getTerminologyId().equals(terminologyId);
                                 })
                         .filter(v -> v.getCode().equals(codePhrase.getCodeString()))
                         .findAny()

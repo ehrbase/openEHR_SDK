@@ -4,7 +4,7 @@ import java.lang.String;
 import org.ehrbase.client.classgenerator.EnumValueSet;
 
 public enum CareflowStepDefiningCode implements EnumValueSet {
-  SERVICE_PLANNED("Service planned", "Service request to healthcare provider is planned.", null, "at0002");
+  SERVICE_PLANNED("Service planned", "Service request to healthcare provider is planned.", "openehr", "at0002");
 
   private String value;
 

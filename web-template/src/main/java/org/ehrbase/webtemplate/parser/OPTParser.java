@@ -174,6 +174,7 @@ public class OPTParser {
         WebTemplateInput code = new WebTemplateInput();
         code.setSuffix("code");
         code.setType("CODED_TEXT");
+        code.setTerminology("openehr");
 
         ismTransitionList.forEach(
             i -> {
@@ -203,6 +204,7 @@ public class OPTParser {
         WebTemplateInput code2 = new WebTemplateInput();
         code2.setSuffix("code");
         code2.setType("CODED_TEXT");
+        code2.setTerminology("openehr");
         code2
             .getList()
             .addAll(

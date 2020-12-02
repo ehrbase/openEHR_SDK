@@ -4,11 +4,11 @@ import java.lang.String;
 import org.ehrbase.client.classgenerator.EnumValueSet;
 
 public enum CurrentStateDefiningCode implements EnumValueSet {
-  COMPLETED("completed", "completed", null, "532"),
+  COMPLETED("completed", "completed", "openehr", "532"),
 
-  PLANNED("planned", "planned", null, "526"),
+  PLANNED("planned", "planned", "openehr", "526"),
 
-  ACTIVE("active", "active", null, "245");
+  ACTIVE("active", "active", "openehr", "245");
 
   private String value;
 

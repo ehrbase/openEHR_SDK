@@ -4,7 +4,7 @@ import java.lang.String;
 import org.ehrbase.client.classgenerator.EnumValueSet;
 
 public enum CurrentStateDefiningCode implements EnumValueSet {
-  PLANNED("planned", "planned", null, "526");
+  PLANNED("planned", "planned", "openehr", "526");
 
   private String value;
 
