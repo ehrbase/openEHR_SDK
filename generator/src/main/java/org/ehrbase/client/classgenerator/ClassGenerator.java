@@ -366,7 +366,7 @@ public class ClassGenerator {
     }
     boolean expand = classGeneratorConfig != null && classGeneratorConfig.isExpandField();
 
-    if (endNode.getRmType().equals("DV_CODED_TEXT") && !endNode.getId().equals("transition")) {
+    if (endNode.getRmType().equals("DV_CODED_TEXT") && !List.of("transition","language","setting","category","territory","math_function").contains(endNode.getId(false))) {
       expand =
           expand
               && endNode.getInputs().stream()

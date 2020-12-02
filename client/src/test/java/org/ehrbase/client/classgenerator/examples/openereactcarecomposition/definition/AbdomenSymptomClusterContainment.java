@@ -1,7 +1,7 @@
 package org.ehrbase.client.classgenerator.examples.openereactcarecomposition.definition;
 
 import com.nedap.archie.rm.datastructures.Cluster;
-import com.nedap.archie.rm.datatypes.CodePhrase;
+import com.nedap.archie.rm.datavalues.DvCodedText;
 import org.ehrbase.client.aql.containment.Containment;
 import org.ehrbase.client.aql.field.AqlFieldImp;
 import org.ehrbase.client.aql.field.ListAqlFieldImp;
@@ -11,7 +11,7 @@ import org.ehrbase.client.aql.field.SelectAqlField;
 public class AbdomenSymptomClusterContainment extends Containment {
   public SelectAqlField<AbdomenSymptomCluster> ABDOMEN_SYMPTOM_CLUSTER = new AqlFieldImp<AbdomenSymptomCluster>(AbdomenSymptomCluster.class, "", "AbdomenSymptomCluster", AbdomenSymptomCluster.class, this);
 
-  public SelectAqlField<CodePhrase> SYMPTOM_SIGN_NAME_DEFINING_CODE = new AqlFieldImp<CodePhrase>(AbdomenSymptomCluster.class, "/items[at0001.1]/value|defining_code", "symptomSignNameDefiningCode", CodePhrase.class, this);
+  public SelectAqlField<DvCodedText> SYMPTOM_SIGN_NAME = new AqlFieldImp<DvCodedText>(AbdomenSymptomCluster.class, "/items[at0001.1]/value", "symptomSignName", DvCodedText.class, this);
 
   public ListSelectAqlField<Cluster> STRUCTURED_BODY_SITE = new ListAqlFieldImp<Cluster>(AbdomenSymptomCluster.class, "/items[at0147]", "structuredBodySite", Cluster.class, this);
 

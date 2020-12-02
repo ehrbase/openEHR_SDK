@@ -1,7 +1,7 @@
 package org.ehrbase.client.classgenerator.examples.openereactcarecomposition.definition;
 
 import com.nedap.archie.rm.datastructures.Cluster;
-import com.nedap.archie.rm.datatypes.CodePhrase;
+import com.nedap.archie.rm.datavalues.DvCodedText;
 import java.util.List;
 import org.ehrbase.client.annotations.Archetype;
 import org.ehrbase.client.annotations.Entity;
@@ -10,8 +10,8 @@ import org.ehrbase.client.annotations.Path;
 @Entity
 @Archetype("openEHR-EHR-CLUSTER.symptom_sign-cvid.v0")
 public class AbdomenSymptomCluster {
-  @Path("/items[at0001.1]/value|defining_code")
-  private CodePhrase symptomSignNameDefiningCode;
+  @Path("/items[at0001.1]/value")
+  private DvCodedText symptomSignName;
 
   @Path("/items[at0147]")
   private List<Cluster> structuredBodySite;
@@ -28,12 +28,12 @@ public class AbdomenSymptomCluster {
   @Path("/items[at0.1 and name/value='Presence']/value|defining_code")
   private PresenceDefiningCode presenceDefiningCode;
 
-  public void setSymptomSignNameDefiningCode(CodePhrase symptomSignNameDefiningCode) {
-     this.symptomSignNameDefiningCode = symptomSignNameDefiningCode;
+  public void setSymptomSignName(DvCodedText symptomSignName) {
+     this.symptomSignName = symptomSignName;
   }
 
-  public CodePhrase getSymptomSignNameDefiningCode() {
-     return this.symptomSignNameDefiningCode ;
+  public DvCodedText getSymptomSignName() {
+     return this.symptomSignName ;
   }
 
   public void setStructuredBodySite(List<Cluster> structuredBodySite) {

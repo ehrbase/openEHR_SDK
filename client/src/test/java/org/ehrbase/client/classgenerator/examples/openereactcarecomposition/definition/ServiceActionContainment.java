@@ -1,7 +1,7 @@
 package org.ehrbase.client.classgenerator.examples.openereactcarecomposition.definition;
 
 import com.nedap.archie.rm.datastructures.Cluster;
-import com.nedap.archie.rm.datatypes.CodePhrase;
+import com.nedap.archie.rm.datavalues.DvCodedText;
 import com.nedap.archie.rm.generic.PartyProxy;
 import java.lang.String;
 import java.time.temporal.TemporalAccessor;
@@ -11,11 +11,12 @@ import org.ehrbase.client.aql.field.ListAqlFieldImp;
 import org.ehrbase.client.aql.field.ListSelectAqlField;
 import org.ehrbase.client.aql.field.SelectAqlField;
 import org.ehrbase.client.classgenerator.shareddefinition.Language;
+import org.ehrbase.client.classgenerator.shareddefinition.Transition;
 
 public class ServiceActionContainment extends Containment {
   public SelectAqlField<ServiceAction> SERVICE_ACTION = new AqlFieldImp<ServiceAction>(ServiceAction.class, "", "ServiceAction", ServiceAction.class, this);
 
-  public SelectAqlField<CodePhrase> SERVICE_NAME_DEFINING_CODE = new AqlFieldImp<CodePhrase>(ServiceAction.class, "/description[at0001]/items[at0011]/value|defining_code", "serviceNameDefiningCode", CodePhrase.class, this);
+  public SelectAqlField<DvCodedText> SERVICE_NAME = new AqlFieldImp<DvCodedText>(ServiceAction.class, "/description[at0001]/items[at0011]/value", "serviceName", DvCodedText.class, this);
 
   public SelectAqlField<String> DESCRIPTION_VALUE = new AqlFieldImp<String>(ServiceAction.class, "/description[at0001]/items[at0013]/value|value", "descriptionValue", String.class, this);
 
@@ -37,7 +38,7 @@ public class ServiceActionContainment extends Containment {
 
   public SelectAqlField<CurrentStateDefiningCode> CURRENT_STATE_DEFINING_CODE = new AqlFieldImp<CurrentStateDefiningCode>(ServiceAction.class, "/ism_transition/current_state|defining_code", "currentStateDefiningCode", CurrentStateDefiningCode.class, this);
 
-  public SelectAqlField<CodePhrase> TRANSITION_DEFINING_CODE = new AqlFieldImp<CodePhrase>(ServiceAction.class, "/ism_transition/transition|defining_code", "transitionDefiningCode", CodePhrase.class, this);
+  public SelectAqlField<Transition> TRANSITION_DEFINING_CODE = new AqlFieldImp<Transition>(ServiceAction.class, "/ism_transition/transition|defining_code", "transitionDefiningCode", Transition.class, this);
 
   private ServiceActionContainment() {
     super("openEHR-EHR-ACTION.service.v0");

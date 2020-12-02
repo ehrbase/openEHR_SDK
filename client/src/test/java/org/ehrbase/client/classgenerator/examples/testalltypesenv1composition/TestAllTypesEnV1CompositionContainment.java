@@ -1,7 +1,6 @@
 package org.ehrbase.client.classgenerator.examples.testalltypesenv1composition;
 
 import com.nedap.archie.rm.archetyped.FeederAudit;
-import com.nedap.archie.rm.datavalues.DvCodedText;
 import com.nedap.archie.rm.generic.Participation;
 import com.nedap.archie.rm.generic.PartyIdentified;
 import com.nedap.archie.rm.generic.PartyProxy;
@@ -16,7 +15,9 @@ import org.ehrbase.client.classgenerator.examples.testalltypesenv1composition.de
 import org.ehrbase.client.classgenerator.examples.testalltypesenv1composition.definition.TestAllTypesEvaluation;
 import org.ehrbase.client.classgenerator.examples.testalltypesenv1composition.definition.TestAllTypesObservation;
 import org.ehrbase.client.classgenerator.examples.testalltypesenv1composition.definition.TestAllTypesSection;
+import org.ehrbase.client.classgenerator.shareddefinition.Category;
 import org.ehrbase.client.classgenerator.shareddefinition.Language;
+import org.ehrbase.client.classgenerator.shareddefinition.Setting;
 import org.ehrbase.client.classgenerator.shareddefinition.Territory;
 
 public class TestAllTypesEnV1CompositionContainment extends Containment {
@@ -34,7 +35,7 @@ public class TestAllTypesEnV1CompositionContainment extends Containment {
 
   public SelectAqlField<PartyIdentified> HEALTH_CARE_FACILITY = new AqlFieldImp<PartyIdentified>(TestAllTypesEnV1Composition.class, "/context/health_care_facility", "healthCareFacility", PartyIdentified.class, this);
 
-  public SelectAqlField<DvCodedText> SETTING = new AqlFieldImp<DvCodedText>(TestAllTypesEnV1Composition.class, "/context/setting", "setting", DvCodedText.class, this);
+  public SelectAqlField<Setting> SETTING_DEFINING_CODE = new AqlFieldImp<Setting>(TestAllTypesEnV1Composition.class, "/context/setting|defining_code", "settingDefiningCode", Setting.class, this);
 
   public ListSelectAqlField<TestAllTypesObservation> TEST_ALL_TYPES_TEST_ALL_TYPES = new ListAqlFieldImp<TestAllTypesObservation>(TestAllTypesEnV1Composition.class, "/content[openEHR-EHR-OBSERVATION.test_all_types.v1]", "testAllTypesTestAllTypes", TestAllTypesObservation.class, this);
 
@@ -48,7 +49,7 @@ public class TestAllTypesEnV1CompositionContainment extends Containment {
 
   public SelectAqlField<FeederAudit> FEEDER_AUDIT = new AqlFieldImp<FeederAudit>(TestAllTypesEnV1Composition.class, "/feeder_audit", "feederAudit", FeederAudit.class, this);
 
-  public SelectAqlField<DvCodedText> CATEGORY = new AqlFieldImp<DvCodedText>(TestAllTypesEnV1Composition.class, "/category", "category", DvCodedText.class, this);
+  public SelectAqlField<Category> CATEGORY_DEFINING_CODE = new AqlFieldImp<Category>(TestAllTypesEnV1Composition.class, "/category|defining_code", "categoryDefiningCode", Category.class, this);
 
   public SelectAqlField<Territory> TERRITORY = new AqlFieldImp<Territory>(TestAllTypesEnV1Composition.class, "/territory", "territory", Territory.class, this);
 

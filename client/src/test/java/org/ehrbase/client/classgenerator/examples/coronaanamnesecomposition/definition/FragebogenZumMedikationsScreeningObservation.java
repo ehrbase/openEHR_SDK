@@ -1,7 +1,7 @@
 package org.ehrbase.client.classgenerator.examples.coronaanamnesecomposition.definition;
 
 import com.nedap.archie.rm.datastructures.Cluster;
-import com.nedap.archie.rm.datatypes.CodePhrase;
+import com.nedap.archie.rm.datavalues.DvCodedText;
 import com.nedap.archie.rm.generic.PartyProxy;
 import java.lang.String;
 import java.time.temporal.TemporalAccessor;
@@ -14,8 +14,8 @@ import org.ehrbase.client.classgenerator.shareddefinition.Language;
 @Entity
 @Archetype("openEHR-EHR-OBSERVATION.medication_use.v0")
 public class FragebogenZumMedikationsScreeningObservation {
-  @Path("/data[at0022]/events[at0023]/data[at0001]/items[at0027]/value|defining_code")
-  private CodePhrase medikamenteInVerwendungDefiningCode;
+  @Path("/data[at0022]/events[at0023]/data[at0001]/items[at0027]/value")
+  private DvCodedText medikamenteInVerwendung;
 
   @Path("/data[at0022]/events[at0023]/data[at0001]/items[at0026]/items[at0002]/value|value")
   private String nameDerMedikamentenklasseValue;
@@ -41,13 +41,12 @@ public class FragebogenZumMedikationsScreeningObservation {
   @Path("/language")
   private Language language;
 
-  public void setMedikamenteInVerwendungDefiningCode(
-      CodePhrase medikamenteInVerwendungDefiningCode) {
-     this.medikamenteInVerwendungDefiningCode = medikamenteInVerwendungDefiningCode;
+  public void setMedikamenteInVerwendung(DvCodedText medikamenteInVerwendung) {
+     this.medikamenteInVerwendung = medikamenteInVerwendung;
   }
 
-  public CodePhrase getMedikamenteInVerwendungDefiningCode() {
-     return this.medikamenteInVerwendungDefiningCode ;
+  public DvCodedText getMedikamenteInVerwendung() {
+     return this.medikamenteInVerwendung ;
   }
 
   public void setNameDerMedikamentenklasseValue(String nameDerMedikamentenklasseValue) {

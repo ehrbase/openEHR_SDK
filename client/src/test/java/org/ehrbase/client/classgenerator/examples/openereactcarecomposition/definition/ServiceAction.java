@@ -1,7 +1,7 @@
 package org.ehrbase.client.classgenerator.examples.openereactcarecomposition.definition;
 
 import com.nedap.archie.rm.datastructures.Cluster;
-import com.nedap.archie.rm.datatypes.CodePhrase;
+import com.nedap.archie.rm.datavalues.DvCodedText;
 import com.nedap.archie.rm.generic.PartyProxy;
 import java.lang.String;
 import java.time.temporal.TemporalAccessor;
@@ -10,12 +10,13 @@ import org.ehrbase.client.annotations.Archetype;
 import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.Path;
 import org.ehrbase.client.classgenerator.shareddefinition.Language;
+import org.ehrbase.client.classgenerator.shareddefinition.Transition;
 
 @Entity
 @Archetype("openEHR-EHR-ACTION.service.v0")
 public class ServiceAction {
-  @Path("/description[at0001]/items[at0011]/value|defining_code")
-  private CodePhrase serviceNameDefiningCode;
+  @Path("/description[at0001]/items[at0011]/value")
+  private DvCodedText serviceName;
 
   @Path("/description[at0001]/items[at0013]/value|value")
   private String descriptionValue;
@@ -48,14 +49,14 @@ public class ServiceAction {
   private CurrentStateDefiningCode currentStateDefiningCode;
 
   @Path("/ism_transition/transition|defining_code")
-  private CodePhrase transitionDefiningCode;
+  private Transition transitionDefiningCode;
 
-  public void setServiceNameDefiningCode(CodePhrase serviceNameDefiningCode) {
-     this.serviceNameDefiningCode = serviceNameDefiningCode;
+  public void setServiceName(DvCodedText serviceName) {
+     this.serviceName = serviceName;
   }
 
-  public CodePhrase getServiceNameDefiningCode() {
-     return this.serviceNameDefiningCode ;
+  public DvCodedText getServiceName() {
+     return this.serviceName ;
   }
 
   public void setDescriptionValue(String descriptionValue) {
@@ -138,11 +139,11 @@ public class ServiceAction {
      return this.currentStateDefiningCode ;
   }
 
-  public void setTransitionDefiningCode(CodePhrase transitionDefiningCode) {
+  public void setTransitionDefiningCode(Transition transitionDefiningCode) {
      this.transitionDefiningCode = transitionDefiningCode;
   }
 
-  public CodePhrase getTransitionDefiningCode() {
+  public Transition getTransitionDefiningCode() {
      return this.transitionDefiningCode ;
   }
 }

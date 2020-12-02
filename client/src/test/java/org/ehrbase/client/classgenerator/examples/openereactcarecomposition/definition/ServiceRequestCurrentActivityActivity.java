@@ -1,7 +1,7 @@
 package org.ehrbase.client.classgenerator.examples.openereactcarecomposition.definition;
 
 import com.nedap.archie.rm.datastructures.Cluster;
-import com.nedap.archie.rm.datatypes.CodePhrase;
+import com.nedap.archie.rm.datavalues.DvCodedText;
 import com.nedap.archie.rm.datavalues.encapsulated.DvParsable;
 import java.lang.String;
 import java.time.temporal.TemporalAccessor;
@@ -11,8 +11,8 @@ import org.ehrbase.client.annotations.Path;
 
 @Entity
 public class ServiceRequestCurrentActivityActivity {
-  @Path("/description[at0009]/items[at0121]/value|defining_code")
-  private CodePhrase serviceNameDefiningCode;
+  @Path("/description[at0009]/items[at0121]/value")
+  private DvCodedText serviceName;
 
   @Path("/description[at0009]/items[at0062]")
   private List<ServiceRequestReasonForRequestElement> reasonForRequest;
@@ -41,12 +41,12 @@ public class ServiceRequestCurrentActivityActivity {
   @Path("/timing")
   private DvParsable timing;
 
-  public void setServiceNameDefiningCode(CodePhrase serviceNameDefiningCode) {
-     this.serviceNameDefiningCode = serviceNameDefiningCode;
+  public void setServiceName(DvCodedText serviceName) {
+     this.serviceName = serviceName;
   }
 
-  public CodePhrase getServiceNameDefiningCode() {
-     return this.serviceNameDefiningCode ;
+  public DvCodedText getServiceName() {
+     return this.serviceName ;
   }
 
   public void setReasonForRequest(List<ServiceRequestReasonForRequestElement> reasonForRequest) {

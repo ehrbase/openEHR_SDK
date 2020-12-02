@@ -1,7 +1,7 @@
 package org.ehrbase.client.classgenerator.examples.openereactcarecomposition.definition;
 
 import com.nedap.archie.rm.datastructures.Cluster;
-import com.nedap.archie.rm.datatypes.CodePhrase;
+import com.nedap.archie.rm.datavalues.DvCodedText;
 import java.lang.String;
 import java.time.temporal.TemporalAccessor;
 import java.time.temporal.TemporalAmount;
@@ -14,7 +14,7 @@ import org.ehrbase.client.aql.field.SelectAqlField;
 public class FirstSymptomsClusterContainment extends Containment {
   public SelectAqlField<FirstSymptomsCluster> FIRST_SYMPTOMS_CLUSTER = new AqlFieldImp<FirstSymptomsCluster>(FirstSymptomsCluster.class, "", "FirstSymptomsCluster", FirstSymptomsCluster.class, this);
 
-  public SelectAqlField<CodePhrase> SYMPTOM_SIGN_NAME_DEFINING_CODE = new AqlFieldImp<CodePhrase>(FirstSymptomsCluster.class, "/items[at0001.1]/value|defining_code", "symptomSignNameDefiningCode", CodePhrase.class, this);
+  public SelectAqlField<DvCodedText> SYMPTOM_SIGN_NAME = new AqlFieldImp<DvCodedText>(FirstSymptomsCluster.class, "/items[at0001.1]/value", "symptomSignName", DvCodedText.class, this);
 
   public ListSelectAqlField<Cluster> STRUCTURED_BODY_SITE = new ListAqlFieldImp<Cluster>(FirstSymptomsCluster.class, "/items[at0147]", "structuredBodySite", Cluster.class, this);
 

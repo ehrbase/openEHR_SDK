@@ -1,7 +1,7 @@
 package org.ehrbase.client.classgenerator.examples.coronaanamnesecomposition.definition;
 
 import com.nedap.archie.rm.datastructures.Cluster;
-import com.nedap.archie.rm.datatypes.CodePhrase;
+import com.nedap.archie.rm.datavalues.DvCodedText;
 import com.nedap.archie.rm.generic.PartyProxy;
 import java.lang.String;
 import java.time.temporal.TemporalAccessor;
@@ -15,7 +15,7 @@ import org.ehrbase.client.classgenerator.shareddefinition.Language;
 public class FragebogenZumMedikationsScreeningObservationContainment extends Containment {
   public SelectAqlField<FragebogenZumMedikationsScreeningObservation> FRAGEBOGEN_ZUM_MEDIKATIONS_SCREENING_OBSERVATION = new AqlFieldImp<FragebogenZumMedikationsScreeningObservation>(FragebogenZumMedikationsScreeningObservation.class, "", "FragebogenZumMedikationsScreeningObservation", FragebogenZumMedikationsScreeningObservation.class, this);
 
-  public SelectAqlField<CodePhrase> MEDIKAMENTE_IN_VERWENDUNG_DEFINING_CODE = new AqlFieldImp<CodePhrase>(FragebogenZumMedikationsScreeningObservation.class, "/data[at0022]/events[at0023]/data[at0001]/items[at0027]/value|defining_code", "medikamenteInVerwendungDefiningCode", CodePhrase.class, this);
+  public SelectAqlField<DvCodedText> MEDIKAMENTE_IN_VERWENDUNG = new AqlFieldImp<DvCodedText>(FragebogenZumMedikationsScreeningObservation.class, "/data[at0022]/events[at0023]/data[at0001]/items[at0027]/value", "medikamenteInVerwendung", DvCodedText.class, this);
 
   public SelectAqlField<String> NAME_DER_MEDIKAMENTENKLASSE_VALUE = new AqlFieldImp<String>(FragebogenZumMedikationsScreeningObservation.class, "/data[at0022]/events[at0023]/data[at0001]/items[at0026]/items[at0002]/value|value", "nameDerMedikamentenklasseValue", String.class, this);
 
