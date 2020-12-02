@@ -19,16 +19,7 @@
 
 package org.ehrbase.serialisation.walker;
 
-import com.nedap.archie.rm.RMObject;
+public interface RmPrimitive <T>{
 
-public class RmString extends RMObject implements RmPrimitive<String> {
-   final String value;
-
-    public RmString(String value) {
-        this.value = value;
-    }
-
-    public String getValue() {
-        return value;
-    }
+    T getValue();
 }

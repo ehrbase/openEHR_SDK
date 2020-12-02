@@ -44,7 +44,7 @@ import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@Ignore
+
 public class ClassGeneratorTest {
 
   public static final String PACKAGE_NAME = "org.ehrbase.client.classgenerator.examples";

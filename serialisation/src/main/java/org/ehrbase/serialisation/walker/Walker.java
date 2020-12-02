@@ -267,10 +267,15 @@ public abstract class Walker<T> {
         }
         parent = ((Pathable) currentRM).itemAtPath(parentAql);
       } else if (currentRM instanceof DvInterval) {
-        child =
-            relativeAql.contains("lower")
-                ? ((DvInterval<?>) currentRM).getLower()
-                : ((DvInterval<?>) currentRM).getUpper();
+        if (relativeAql.contains("upper_included")) {
+          child = new RmBoolean(((DvInterval<?>) currentRM).isUpperIncluded());
+        } else if (relativeAql.contains("lower_included")) {
+          child = new RmBoolean(((DvInterval<?>) currentRM).isLowerIncluded());
+        } else if (relativeAql.contains("lower")) {
+          child = ((DvInterval<?>) currentRM).getLower();
+        } else if (relativeAql.contains("upper")) {
+          child = ((DvInterval<?>) currentRM).getUpper();
+        }
         parent = currentRM;
       } else {
         throw new SdkException(

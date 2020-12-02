@@ -35,6 +35,7 @@ import org.ehrbase.client.classgenerator.EnumValueSet;
 import org.ehrbase.client.exception.ClientException;
 import org.ehrbase.serialisation.walker.Context;
 import org.ehrbase.serialisation.walker.FromCompositionWalker;
+import org.ehrbase.serialisation.walker.RmPrimitive;
 import org.ehrbase.serialisation.walker.RmString;
 import org.ehrbase.util.exception.SdkException;
 import org.ehrbase.util.reflection.ReflectionHelper;
@@ -158,8 +159,8 @@ public class DtoFromCompositionWalker extends FromCompositionWalker<DtoWithMatch
                         .orElse(null);
     dtoList = enumValueSet;
       }
-      if (dtoList instanceof RmString){
-        dtoList = ((RmString) dtoList).getValue();
+      if (dtoList instanceof RmPrimitive){
+        dtoList = ((RmPrimitive<?>) dtoList).getValue();
       }
       if (List.class.isAssignableFrom(field.getType())) {
         dtoList = propertyDescriptor.getReadMethod().invoke(dto);
@@ -169,7 +170,7 @@ public class DtoFromCompositionWalker extends FromCompositionWalker<DtoWithMatch
         ((List) dtoList).add(value);
       }
       propertyDescriptor.getWriteMethod().invoke(dto, dtoList);
-    } catch (IllegalAccessException | InvocationTargetException | IntrospectionException e) {
+    } catch (IllegalAccessException | InvocationTargetException | IntrospectionException | IllegalArgumentException e) {
       throw new ClientException(e.getMessage(), e);
     }
   }

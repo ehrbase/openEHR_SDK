@@ -182,7 +182,6 @@ public class FlattenerTest {
     }
 
     @Test
-    @Ignore
     public void testFlattenEpisodeOfCare() {
         Composition composition = (Composition) new Unflattener(new TestDataTemplateProvider()).unflatten(buildEpisodeOfCareComposition());
         Flattener cut = new Flattener(new TestDataTemplateProvider());

@@ -153,7 +153,6 @@ public class DefaultRestCompositionEndpointIT {
     }
 
     @Test
-    @Ignore
     public void testEpisodeOfCare() {
 
         UUID ehr = openEhrClient.ehrEndpoint().createEhr();
