@@ -63,7 +63,7 @@ public class ClassGeneratorRunner {
     }
     OPERATIONALTEMPLATE template =
         TemplateDocument.Factory.parse(Paths.get(cmd.getOptionValue("opt")).toFile()).getTemplate();
-    ClassGeneratorNew cut = new ClassGeneratorNew(new ClassGeneratorConfig());
+    ClassGenerator cut = new ClassGenerator(new ClassGeneratorConfig());
     ClassGeneratorResult generate =
         cut.generate(cmd.getOptionValue("package"), new OPTParser(template).parse());
 

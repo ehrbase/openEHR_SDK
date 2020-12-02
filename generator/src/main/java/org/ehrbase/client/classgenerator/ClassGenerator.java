@@ -74,7 +74,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class ClassGeneratorNew {
+public class ClassGenerator {
 
   private static final ArchieRMInfoLookup RM_INFO_LOOKUP = ArchieRMInfoLookup.getInstance();
   public static final String ABBREV_MARKER = "_";
@@ -101,7 +101,7 @@ public class ClassGeneratorNew {
 
   private final WebTemplateFilter filter;
 
-  public ClassGeneratorNew(ClassGeneratorConfig config) {
+  public ClassGenerator(ClassGeneratorConfig config) {
 
     filter = new FlattFilter();
   }

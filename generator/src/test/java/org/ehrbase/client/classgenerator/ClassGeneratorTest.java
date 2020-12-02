@@ -43,7 +43,7 @@ import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class ClassGeneratorNewTest {
+public class ClassGeneratorTest {
 
   public static final String PACKAGE_NAME = "org.ehrbase.client.classgenerator.examples";
 
@@ -56,7 +56,7 @@ public class ClassGeneratorNewTest {
                 OperationalTemplateTestData.BLOOD_PRESSURE_SIMPLE.getStream())
             .getTemplate();
     WebTemplate webTemplate = new OPTParser(template).parse();
-    ClassGeneratorNew cut = new ClassGeneratorNew(new ClassGeneratorConfig());
+    ClassGenerator cut = new ClassGenerator(new ClassGeneratorConfig());
     ClassGeneratorResult generate = null;
 
     generate = cut.generate(PACKAGE_NAME, webTemplate);
@@ -167,7 +167,7 @@ public class ClassGeneratorNewTest {
         TemplateDocument.Factory.parse(OperationalTemplateTestData.ALT_EVENTS.getStream())
             .getTemplate();
     WebTemplate webTemplate = new OPTParser(template).parse();
-    ClassGeneratorNew cut = new ClassGeneratorNew(new ClassGeneratorConfig());
+    ClassGenerator cut = new ClassGenerator(new ClassGeneratorConfig());
 
     ClassGeneratorResult generate = cut.generate(PACKAGE_NAME, webTemplate);
 
@@ -262,7 +262,7 @@ public class ClassGeneratorNewTest {
     OPERATIONALTEMPLATE template =
         TemplateDocument.Factory.parse(OperationalTemplateTestData.DIAGNOSE.getStream())
             .getTemplate();
-    ClassGeneratorNew cut = new ClassGeneratorNew(new ClassGeneratorConfig());
+    ClassGenerator cut = new ClassGenerator(new ClassGeneratorConfig());
     ClassGeneratorResult generate = cut.generate(PACKAGE_NAME, new OPTParser(template).parse());
 
     Set<String> derDiagnoseDefiningCode =
@@ -291,7 +291,7 @@ public class ClassGeneratorNewTest {
     OPERATIONALTEMPLATE template =
         TemplateDocument.Factory.parse(OperationalTemplateTestData.EPISODE_OF_CARE.getStream())
             .getTemplate();
-    ClassGeneratorNew cut = new ClassGeneratorNew(new ClassGeneratorConfig());
+    ClassGenerator cut = new ClassGenerator(new ClassGeneratorConfig());
     ClassGeneratorResult generate = cut.generate(PACKAGE_NAME, new OPTParser(template).parse());
     List<String> fieldSpecs =
         generate.getClasses().values().stream()
@@ -344,7 +344,7 @@ public class ClassGeneratorNewTest {
     OPERATIONALTEMPLATE template =
         TemplateDocument.Factory.parse(OperationalTemplateTestData.SM_I_C_S_BEFUND.getStream())
             .getTemplate();
-    ClassGeneratorNew cut = new ClassGeneratorNew(new ClassGeneratorConfig());
+    ClassGenerator cut = new ClassGenerator(new ClassGeneratorConfig());
     ClassGeneratorResult generate = cut.generate(PACKAGE_NAME, new OPTParser(template).parse());
     List<String> fieldSpecs =
         generate.getClasses().values().stream()
@@ -445,7 +445,7 @@ public class ClassGeneratorNewTest {
     OPERATIONALTEMPLATE template =
         TemplateDocument.Factory.parse(OperationalTemplateTestData.D4L_QUESTIONNAIRE.getStream())
             .getTemplate();
-    ClassGeneratorNew cut = new ClassGeneratorNew(new ClassGeneratorConfig());
+    ClassGenerator cut = new ClassGenerator(new ClassGeneratorConfig());
     ClassGeneratorResult generate = cut.generate(PACKAGE_NAME, new OPTParser(template).parse());
 
     List<FieldSpec> fieldSpecs =
@@ -464,7 +464,7 @@ public class ClassGeneratorNewTest {
     OPERATIONALTEMPLATE template =
         TemplateDocument.Factory.parse(OperationalTemplateTestData.PATIENTEN_AUFENTHALT.getStream())
             .getTemplate();
-    ClassGeneratorNew cut = new ClassGeneratorNew(new ClassGeneratorConfig());
+    ClassGenerator cut = new ClassGenerator(new ClassGeneratorConfig());
     ClassGeneratorResult generate = cut.generate(PACKAGE_NAME, new OPTParser(template).parse());
 
     List<FieldSpec> fieldSpecs =
@@ -484,7 +484,7 @@ public class ClassGeneratorNewTest {
     OPERATIONALTEMPLATE template =
         TemplateDocument.Factory.parse(OperationalTemplateTestData.EPISODE_SUMMARY.getStream())
             .getTemplate();
-    ClassGeneratorNew cut = new ClassGeneratorNew(new ClassGeneratorConfig());
+    ClassGenerator cut = new ClassGenerator(new ClassGeneratorConfig());
     ClassGeneratorResult generate = cut.generate(PACKAGE_NAME, new OPTParser(template).parse());
 
     List<FieldSpec> fieldSpecs =
@@ -505,7 +505,7 @@ public class ClassGeneratorNewTest {
         TemplateDocument.Factory.parse(
                 OperationalTemplateTestData.BEFUND_DER_BLUTGASANALYSE.getStream())
             .getTemplate();
-    ClassGeneratorNew cut = new ClassGeneratorNew(new ClassGeneratorConfig());
+    ClassGenerator cut = new ClassGenerator(new ClassGeneratorConfig());
     ClassGeneratorResult generate = cut.generate(PACKAGE_NAME, new OPTParser(template).parse());
     List<String> fieldSpecs =
         generate.getClasses().values().stream()
@@ -579,7 +579,7 @@ public class ClassGeneratorNewTest {
     OPERATIONALTEMPLATE template =
         TemplateDocument.Factory.parse(OperationalTemplateTestData.MULTI_OCCURRENCE.getStream())
             .getTemplate();
-    ClassGeneratorNew cut = new ClassGeneratorNew(new ClassGeneratorConfig());
+    ClassGenerator cut = new ClassGenerator(new ClassGeneratorConfig());
     ClassGeneratorResult generate = cut.generate(PACKAGE_NAME, new OPTParser(template).parse());
 
     List<FieldSpec> fieldSpecs =
@@ -673,7 +673,7 @@ public class ClassGeneratorNewTest {
     OPERATIONALTEMPLATE template =
         TemplateDocument.Factory.parse(OperationalTemplateTestData.ALL_TYPES.getStream())
             .getTemplate();
-    ClassGeneratorNew cut = new ClassGeneratorNew(new ClassGeneratorConfig());
+    ClassGenerator cut = new ClassGenerator(new ClassGeneratorConfig());
     ClassGeneratorResult generate = cut.generate(PACKAGE_NAME, new OPTParser(template).parse());
 
     List<FieldSpec> fieldSpecs =
@@ -694,7 +694,7 @@ public class ClassGeneratorNewTest {
     OPERATIONALTEMPLATE template =
         TemplateDocument.Factory.parse(OperationalTemplateTestData.VIROLOGY_FINDING.getStream())
             .getTemplate();
-    ClassGeneratorNew cut = new ClassGeneratorNew(new ClassGeneratorConfig());
+    ClassGenerator cut = new ClassGenerator(new ClassGeneratorConfig());
     ClassGeneratorResult generate = cut.generate(PACKAGE_NAME, new OPTParser(template).parse());
 
     List<String> fieldSpecs =
@@ -791,7 +791,7 @@ public class ClassGeneratorNewTest {
     OPERATIONALTEMPLATE template =
         TemplateDocument.Factory.parse(OperationalTemplateTestData.CORONA_ANAMNESE.getStream())
             .getTemplate();
-    ClassGeneratorNew cut = new ClassGeneratorNew(new ClassGeneratorConfig());
+    ClassGenerator cut = new ClassGenerator(new ClassGeneratorConfig());
     ClassGeneratorResult generate = cut.generate(PACKAGE_NAME, new OPTParser(template).parse());
 
     List<FieldSpec> fieldSpecs =
@@ -813,7 +813,7 @@ public class ClassGeneratorNewTest {
         TemplateDocument.Factory.parse(
                 OperationalTemplateTestData.SCHWANGERSCHAFTSSTATUS.getStream())
             .getTemplate();
-    ClassGeneratorNew cut = new ClassGeneratorNew(new ClassGeneratorConfig());
+    ClassGenerator cut = new ClassGenerator(new ClassGeneratorConfig());
     ClassGeneratorResult generate = cut.generate(PACKAGE_NAME, new OPTParser(template).parse());
 
     List<String> fieldSpecs =
@@ -876,7 +876,7 @@ public class ClassGeneratorNewTest {
     OPERATIONALTEMPLATE template =
         TemplateDocument.Factory.parse(OperationalTemplateTestData.OPEN_E_REACT_CARE.getStream())
             .getTemplate();
-    ClassGeneratorNew cut = new ClassGeneratorNew(new ClassGeneratorConfig());
+    ClassGenerator cut = new ClassGenerator(new ClassGeneratorConfig());
     ClassGeneratorResult generate = cut.generate(PACKAGE_NAME, new OPTParser(template).parse());
 
     List<FieldSpec> fieldSpecs =

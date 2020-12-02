@@ -39,7 +39,7 @@ public class DefaultNamingStrategy {
   public DefaultNamingStrategy() {}
 
   String buildClassName(
-      ClassGeneratorNew.Context context, WebTemplateNode node, boolean isChoice, boolean isEnum) {
+          ClassGenerator.Context context, WebTemplateNode node, boolean isChoice, boolean isEnum) {
 
     String name = replaceElementName(context, node);
     if (context.nodeDeque.isEmpty()) {
@@ -61,8 +61,8 @@ public class DefaultNamingStrategy {
     String fieldName =
         StringUtils.abbreviate(
             normalise(name, true),
-            ClassGeneratorNew.ABBREV_MARKER,
-            ClassGeneratorNew.CLASS_NAME_MAX_WIDTH);
+            ClassGenerator.ABBREV_MARKER,
+            ClassGenerator.CLASS_NAME_MAX_WIDTH);
 
     if (context.currentClassNameMap.containsKey(fieldName)) {
       context.currentClassNameMap.put(fieldName, context.currentClassNameMap.get(fieldName) + 1);
@@ -74,7 +74,7 @@ public class DefaultNamingStrategy {
     return fieldName;
   }
 
-  private String makeNameUnique(ClassGeneratorNew.Context context, WebTemplateNode node) {
+  private String makeNameUnique(ClassGenerator.Context context, WebTemplateNode node) {
 
     WebTemplateNode parent = context.nodeDeque.peek();
     String name = replaceElementName(context, node);
@@ -98,7 +98,7 @@ public class DefaultNamingStrategy {
     return name;
   }
 
-  private String replaceElementName(ClassGeneratorNew.Context context, WebTemplateNode node) {
+  private String replaceElementName(ClassGenerator.Context context, WebTemplateNode node) {
     String name = node.getName();
     WebTemplateNode trueParent =
         Optional.ofNullable(context.webTemplate.findFiltersNodes(node))
@@ -149,7 +149,7 @@ public class DefaultNamingStrategy {
     return new SnakeCase(normalise(fieldName, false)).camelToUpperSnake();
   }
 
-  String buildFieldName(ClassGeneratorNew.Context context, String path, WebTemplateNode node) {
+  String buildFieldName(ClassGenerator.Context context, String path, WebTemplateNode node) {
     String name = node.getName();
     String attributeName = new FlatPath(path).getLast().getAttributeName();
 
