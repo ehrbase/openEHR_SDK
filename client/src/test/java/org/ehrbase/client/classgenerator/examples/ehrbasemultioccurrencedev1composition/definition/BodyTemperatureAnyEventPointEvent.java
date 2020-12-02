@@ -1,13 +1,15 @@
 package org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1composition.definition;
 
 import com.nedap.archie.rm.datastructures.Cluster;
+import java.lang.Double;
+import java.lang.Long;
+import java.lang.String;
+import java.time.temporal.TemporalAccessor;
+import java.util.List;
 import org.ehrbase.client.annotations.Choice;
 import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.OptionFor;
 import org.ehrbase.client.annotations.Path;
-
-import java.time.temporal.TemporalAccessor;
-import java.util.List;
 
 @Entity
 @OptionFor("POINT_EVENT")

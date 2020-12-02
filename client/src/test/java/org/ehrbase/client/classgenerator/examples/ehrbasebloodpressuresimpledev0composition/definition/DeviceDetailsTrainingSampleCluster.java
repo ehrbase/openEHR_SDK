@@ -1,11 +1,11 @@
 package org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev0composition.definition;
 
 import com.nedap.archie.rm.datastructures.Cluster;
+import java.lang.String;
+import java.time.temporal.TemporalAccessor;
 import org.ehrbase.client.annotations.Archetype;
 import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.Path;
-
-import java.time.temporal.TemporalAccessor;
 
 @Entity
 @Archetype("openEHR-EHR-CLUSTER.sample_device.v1")

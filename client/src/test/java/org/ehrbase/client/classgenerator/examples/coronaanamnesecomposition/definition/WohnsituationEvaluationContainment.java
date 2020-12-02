@@ -2,6 +2,8 @@ package org.ehrbase.client.classgenerator.examples.coronaanamnesecomposition.def
 
 import com.nedap.archie.rm.datastructures.Cluster;
 import com.nedap.archie.rm.generic.PartyProxy;
+import java.lang.Long;
+import java.lang.String;
 import org.ehrbase.client.aql.containment.Containment;
 import org.ehrbase.client.aql.field.AqlFieldImp;
 import org.ehrbase.client.aql.field.ListAqlFieldImp;

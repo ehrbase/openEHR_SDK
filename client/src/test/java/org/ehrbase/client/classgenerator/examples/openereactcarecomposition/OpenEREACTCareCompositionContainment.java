@@ -5,6 +5,8 @@ import com.nedap.archie.rm.datastructures.Cluster;
 import com.nedap.archie.rm.generic.Participation;
 import com.nedap.archie.rm.generic.PartyIdentified;
 import com.nedap.archie.rm.generic.PartyProxy;
+import java.lang.String;
+import java.time.temporal.TemporalAccessor;
 import org.ehrbase.client.aql.containment.Containment;
 import org.ehrbase.client.aql.field.AqlFieldImp;
 import org.ehrbase.client.aql.field.ListAqlFieldImp;
@@ -18,8 +20,6 @@ import org.ehrbase.client.classgenerator.shareddefinition.Category;
 import org.ehrbase.client.classgenerator.shareddefinition.Language;
 import org.ehrbase.client.classgenerator.shareddefinition.Setting;
 import org.ehrbase.client.classgenerator.shareddefinition.Territory;
-
-import java.time.temporal.TemporalAccessor;
 
 public class OpenEREACTCareCompositionContainment extends Containment {
   public SelectAqlField<OpenEREACTCareComposition> OPEN_E_R_E_A_C_T_CARE_COMPOSITION = new AqlFieldImp<OpenEREACTCareComposition>(OpenEREACTCareComposition.class, "", "OpenEREACTCareComposition", OpenEREACTCareComposition.class, this);

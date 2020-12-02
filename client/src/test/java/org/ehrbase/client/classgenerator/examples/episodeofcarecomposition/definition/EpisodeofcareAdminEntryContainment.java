@@ -1,15 +1,16 @@
 package org.ehrbase.client.classgenerator.examples.episodeofcarecomposition.definition;
 
 import com.nedap.archie.rm.generic.PartyProxy;
+import java.lang.Boolean;
+import java.lang.String;
+import java.net.URI;
+import java.time.temporal.TemporalAccessor;
 import org.ehrbase.client.aql.containment.Containment;
 import org.ehrbase.client.aql.field.AqlFieldImp;
 import org.ehrbase.client.aql.field.ListAqlFieldImp;
 import org.ehrbase.client.aql.field.ListSelectAqlField;
 import org.ehrbase.client.aql.field.SelectAqlField;
 import org.ehrbase.client.classgenerator.shareddefinition.Language;
-
-import java.net.URI;
-import java.time.temporal.TemporalAccessor;
 
 public class EpisodeofcareAdminEntryContainment extends Containment {
   public SelectAqlField<EpisodeofcareAdminEntry> EPISODEOFCARE_ADMIN_ENTRY = new AqlFieldImp<EpisodeofcareAdminEntry>(EpisodeofcareAdminEntry.class, "", "EpisodeofcareAdminEntry", EpisodeofcareAdminEntry.class, this);

@@ -1,5 +1,6 @@
 package org.ehrbase.client.classgenerator.examples.diagnosecomposition.definition;
 
+import java.lang.String;
 import org.ehrbase.client.classgenerator.EnumValueSet;
 
 public enum NameDesProblemsDerDiagnoseDefiningCode implements EnumValueSet {

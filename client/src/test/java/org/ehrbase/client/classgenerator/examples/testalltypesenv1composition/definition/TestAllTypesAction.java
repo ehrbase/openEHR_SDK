@@ -2,13 +2,12 @@ package org.ehrbase.client.classgenerator.examples.testalltypesenv1composition.d
 
 import com.nedap.archie.rm.datatypes.CodePhrase;
 import com.nedap.archie.rm.generic.PartyProxy;
+import java.time.temporal.TemporalAccessor;
+import java.util.List;
 import org.ehrbase.client.annotations.Archetype;
 import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.Path;
 import org.ehrbase.client.classgenerator.shareddefinition.Language;
-
-import java.time.temporal.TemporalAccessor;
-import java.util.List;
 
 @Entity
 @Archetype("openEHR-EHR-ACTION.test_all_types.v1")

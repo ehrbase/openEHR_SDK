@@ -4,6 +4,8 @@ import com.nedap.archie.rm.archetyped.FeederAudit;
 import com.nedap.archie.rm.generic.Participation;
 import com.nedap.archie.rm.generic.PartyIdentified;
 import com.nedap.archie.rm.generic.PartyProxy;
+import java.lang.String;
+import java.time.temporal.TemporalAccessor;
 import org.ehrbase.client.aql.containment.Containment;
 import org.ehrbase.client.aql.field.AqlFieldImp;
 import org.ehrbase.client.aql.field.ListAqlFieldImp;
@@ -15,8 +17,6 @@ import org.ehrbase.client.classgenerator.shareddefinition.Category;
 import org.ehrbase.client.classgenerator.shareddefinition.Language;
 import org.ehrbase.client.classgenerator.shareddefinition.Setting;
 import org.ehrbase.client.classgenerator.shareddefinition.Territory;
-
-import java.time.temporal.TemporalAccessor;
 
 public class EhrbaseBloodPressureSimpleDeV0CompositionContainment extends Containment {
   public SelectAqlField<EhrbaseBloodPressureSimpleDeV0Composition> EHRBASE_BLOOD_PRESSURE_SIMPLE_DE_V0_COMPOSITION = new AqlFieldImp<EhrbaseBloodPressureSimpleDeV0Composition>(EhrbaseBloodPressureSimpleDeV0Composition.class, "", "EhrbaseBloodPressureSimpleDeV0Composition", EhrbaseBloodPressureSimpleDeV0Composition.class, this);

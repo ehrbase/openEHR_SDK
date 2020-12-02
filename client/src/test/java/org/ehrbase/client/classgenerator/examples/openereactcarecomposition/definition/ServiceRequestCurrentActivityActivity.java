@@ -3,11 +3,11 @@ package org.ehrbase.client.classgenerator.examples.openereactcarecomposition.def
 import com.nedap.archie.rm.datastructures.Cluster;
 import com.nedap.archie.rm.datatypes.CodePhrase;
 import com.nedap.archie.rm.datavalues.encapsulated.DvParsable;
-import org.ehrbase.client.annotations.Entity;
-import org.ehrbase.client.annotations.Path;
-
+import java.lang.String;
 import java.time.temporal.TemporalAccessor;
 import java.util.List;
+import org.ehrbase.client.annotations.Entity;
+import org.ehrbase.client.annotations.Path;
 
 @Entity
 public class ServiceRequestCurrentActivityActivity {

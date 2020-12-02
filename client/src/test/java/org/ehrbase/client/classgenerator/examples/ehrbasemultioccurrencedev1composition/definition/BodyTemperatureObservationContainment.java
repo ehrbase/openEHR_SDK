@@ -2,14 +2,13 @@ package org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1com
 
 import com.nedap.archie.rm.datastructures.Cluster;
 import com.nedap.archie.rm.generic.PartyProxy;
+import java.time.temporal.TemporalAccessor;
 import org.ehrbase.client.aql.containment.Containment;
 import org.ehrbase.client.aql.field.AqlFieldImp;
 import org.ehrbase.client.aql.field.ListAqlFieldImp;
 import org.ehrbase.client.aql.field.ListSelectAqlField;
 import org.ehrbase.client.aql.field.SelectAqlField;
 import org.ehrbase.client.classgenerator.shareddefinition.Language;
-
-import java.time.temporal.TemporalAccessor;
 
 public class BodyTemperatureObservationContainment extends Containment {
   public SelectAqlField<BodyTemperatureObservation> BODY_TEMPERATURE_OBSERVATION = new AqlFieldImp<BodyTemperatureObservation>(BodyTemperatureObservation.class, "", "BodyTemperatureObservation", BodyTemperatureObservation.class, this);

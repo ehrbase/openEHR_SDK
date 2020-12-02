@@ -1,15 +1,16 @@
 package org.ehrbase.client.classgenerator.examples.smicsbefundcomposition.definition;
 
 import com.nedap.archie.rm.generic.PartyProxy;
+import java.lang.Boolean;
+import java.lang.String;
+import java.time.temporal.TemporalAccessor;
+import java.time.temporal.TemporalAmount;
 import org.ehrbase.client.aql.containment.Containment;
 import org.ehrbase.client.aql.field.AqlFieldImp;
 import org.ehrbase.client.aql.field.ListAqlFieldImp;
 import org.ehrbase.client.aql.field.ListSelectAqlField;
 import org.ehrbase.client.aql.field.SelectAqlField;
 import org.ehrbase.client.classgenerator.shareddefinition.Language;
-
-import java.time.temporal.TemporalAccessor;
-import java.time.temporal.TemporalAmount;
 
 public class SmicsErgebnisObservationContainment extends Containment {
   public SelectAqlField<SmicsErgebnisObservation> SMICS_ERGEBNIS_OBSERVATION = new AqlFieldImp<SmicsErgebnisObservation>(SmicsErgebnisObservation.class, "", "SmicsErgebnisObservation", SmicsErgebnisObservation.class, this);

@@ -1,12 +1,12 @@
 package org.ehrbase.client.classgenerator.examples.patientenaufenthaltcomposition.definition;
 
 import com.nedap.archie.rm.generic.PartyProxy;
+import java.lang.String;
+import java.time.temporal.TemporalAccessor;
 import org.ehrbase.client.aql.containment.Containment;
 import org.ehrbase.client.aql.field.AqlFieldImp;
 import org.ehrbase.client.aql.field.SelectAqlField;
 import org.ehrbase.client.classgenerator.shareddefinition.Language;
-
-import java.time.temporal.TemporalAccessor;
 
 public class VersorgungsortAdminEntryContainment extends Containment {
   public SelectAqlField<VersorgungsortAdminEntry> VERSORGUNGSORT_ADMIN_ENTRY = new AqlFieldImp<VersorgungsortAdminEntry>(VersorgungsortAdminEntry.class, "", "VersorgungsortAdminEntry", VersorgungsortAdminEntry.class, this);

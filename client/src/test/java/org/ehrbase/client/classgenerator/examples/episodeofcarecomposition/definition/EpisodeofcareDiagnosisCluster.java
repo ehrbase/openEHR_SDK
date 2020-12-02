@@ -1,6 +1,8 @@
 package org.ehrbase.client.classgenerator.examples.episodeofcarecomposition.definition;
 
 import com.nedap.archie.rm.datavalues.DvEHRURI;
+import java.lang.Long;
+import java.lang.String;
 import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.Path;
 

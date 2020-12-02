@@ -1,5 +1,6 @@
 package org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev0composition.definition;
 
+import java.lang.String;
 import org.ehrbase.client.classgenerator.EnumValueSet;
 
 public enum LocationOfMeasurementDefiningCode implements EnumValueSet {

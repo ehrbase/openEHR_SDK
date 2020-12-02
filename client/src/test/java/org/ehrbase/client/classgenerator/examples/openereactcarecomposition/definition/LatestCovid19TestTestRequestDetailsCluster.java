@@ -1,10 +1,9 @@
 package org.ehrbase.client.classgenerator.examples.openereactcarecomposition.definition;
 
 import com.nedap.archie.rm.datastructures.Cluster;
+import java.util.List;
 import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.Path;
-
-import java.util.List;
 
 @Entity
 public class LatestCovid19TestTestRequestDetailsCluster {

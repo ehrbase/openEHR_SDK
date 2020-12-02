@@ -1,11 +1,11 @@
 package org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev0composition.definition;
 
 import com.nedap.archie.rm.datastructures.Cluster;
+import java.lang.String;
+import java.time.temporal.TemporalAccessor;
 import org.ehrbase.client.aql.containment.Containment;
 import org.ehrbase.client.aql.field.AqlFieldImp;
 import org.ehrbase.client.aql.field.SelectAqlField;
-
-import java.time.temporal.TemporalAccessor;
 
 public class DeviceDetailsTrainingSampleClusterContainment extends Containment {
   public SelectAqlField<DeviceDetailsTrainingSampleCluster> DEVICE_DETAILS_TRAINING_SAMPLE_CLUSTER = new AqlFieldImp<DeviceDetailsTrainingSampleCluster>(DeviceDetailsTrainingSampleCluster.class, "", "DeviceDetailsTrainingSampleCluster", DeviceDetailsTrainingSampleCluster.class, this);

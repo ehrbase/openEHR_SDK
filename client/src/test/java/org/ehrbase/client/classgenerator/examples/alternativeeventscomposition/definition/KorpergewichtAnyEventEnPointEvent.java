@@ -1,11 +1,12 @@
 package org.ehrbase.client.classgenerator.examples.alternativeeventscomposition.definition;
 
+import java.lang.Double;
+import java.lang.String;
+import java.time.temporal.TemporalAccessor;
+import java.util.List;
 import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.OptionFor;
 import org.ehrbase.client.annotations.Path;
-
-import java.time.temporal.TemporalAccessor;
-import java.util.List;
 
 @Entity
 @OptionFor("POINT_EVENT")

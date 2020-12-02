@@ -1,10 +1,10 @@
 package org.ehrbase.client.classgenerator.examples.coronaanamnesecomposition.definition;
 
 import com.nedap.archie.rm.datastructures.Cluster;
+import java.lang.String;
+import java.util.List;
 import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.Path;
-
-import java.util.List;
 
 @Entity
 public class ReisefallBestimmtesReisezielCluster {

@@ -1,5 +1,7 @@
 package org.ehrbase.client.classgenerator.examples.diagnosecomposition.definition;
 
+import java.lang.Boolean;
+import java.lang.String;
 import org.ehrbase.client.annotations.Archetype;
 import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.Path;

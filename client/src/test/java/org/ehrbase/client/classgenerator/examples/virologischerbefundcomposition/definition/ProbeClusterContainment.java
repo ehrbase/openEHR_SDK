@@ -2,13 +2,13 @@ package org.ehrbase.client.classgenerator.examples.virologischerbefundcompositio
 
 import com.nedap.archie.rm.datastructures.Cluster;
 import com.nedap.archie.rm.datavalues.DvIdentifier;
+import java.lang.String;
+import java.time.temporal.TemporalAccessor;
 import org.ehrbase.client.aql.containment.Containment;
 import org.ehrbase.client.aql.field.AqlFieldImp;
 import org.ehrbase.client.aql.field.ListAqlFieldImp;
 import org.ehrbase.client.aql.field.ListSelectAqlField;
 import org.ehrbase.client.aql.field.SelectAqlField;
-
-import java.time.temporal.TemporalAccessor;
 
 public class ProbeClusterContainment extends Containment {
   public SelectAqlField<ProbeCluster> PROBE_CLUSTER = new AqlFieldImp<ProbeCluster>(ProbeCluster.class, "", "ProbeCluster", ProbeCluster.class, this);

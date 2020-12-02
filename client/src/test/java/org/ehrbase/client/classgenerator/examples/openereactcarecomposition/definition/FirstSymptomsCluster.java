@@ -2,13 +2,13 @@ package org.ehrbase.client.classgenerator.examples.openereactcarecomposition.def
 
 import com.nedap.archie.rm.datastructures.Cluster;
 import com.nedap.archie.rm.datatypes.CodePhrase;
-import org.ehrbase.client.annotations.Archetype;
-import org.ehrbase.client.annotations.Entity;
-import org.ehrbase.client.annotations.Path;
-
+import java.lang.String;
 import java.time.temporal.TemporalAccessor;
 import java.time.temporal.TemporalAmount;
 import java.util.List;
+import org.ehrbase.client.annotations.Archetype;
+import org.ehrbase.client.annotations.Entity;
+import org.ehrbase.client.annotations.Path;
 
 @Entity
 @Archetype("openEHR-EHR-CLUSTER.symptom_sign-cvid.v0")

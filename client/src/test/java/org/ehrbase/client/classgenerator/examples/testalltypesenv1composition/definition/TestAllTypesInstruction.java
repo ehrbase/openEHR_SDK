@@ -2,13 +2,13 @@ package org.ehrbase.client.classgenerator.examples.testalltypesenv1composition.d
 
 import com.nedap.archie.rm.datavalues.encapsulated.DvParsable;
 import com.nedap.archie.rm.generic.PartyProxy;
+import java.lang.String;
+import java.time.temporal.Temporal;
+import java.time.temporal.TemporalAccessor;
 import org.ehrbase.client.annotations.Archetype;
 import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.Path;
 import org.ehrbase.client.classgenerator.shareddefinition.Language;
-
-import java.time.temporal.Temporal;
-import java.time.temporal.TemporalAccessor;
 
 @Entity
 @Archetype("openEHR-EHR-INSTRUCTION.test_all_types.v1")

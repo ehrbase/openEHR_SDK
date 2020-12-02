@@ -1,14 +1,15 @@
 package org.ehrbase.client.classgenerator.examples.smicsbefundcomposition.definition;
 
 import com.nedap.archie.rm.generic.PartyProxy;
+import java.lang.Boolean;
+import java.lang.String;
+import java.time.temporal.TemporalAccessor;
+import java.time.temporal.TemporalAmount;
+import java.util.List;
 import org.ehrbase.client.annotations.Archetype;
 import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.Path;
 import org.ehrbase.client.classgenerator.shareddefinition.Language;
-
-import java.time.temporal.TemporalAccessor;
-import java.time.temporal.TemporalAmount;
-import java.util.List;
 
 @Entity
 @Archetype("openEHR-EHR-OBSERVATION.smics_befund.v1")

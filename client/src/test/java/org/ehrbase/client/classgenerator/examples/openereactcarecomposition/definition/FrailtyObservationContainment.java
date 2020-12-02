@@ -3,14 +3,13 @@ package org.ehrbase.client.classgenerator.examples.openereactcarecomposition.def
 import com.nedap.archie.rm.datastructures.Cluster;
 import com.nedap.archie.rm.datavalues.quantity.DvOrdinal;
 import com.nedap.archie.rm.generic.PartyProxy;
+import java.time.temporal.TemporalAccessor;
 import org.ehrbase.client.aql.containment.Containment;
 import org.ehrbase.client.aql.field.AqlFieldImp;
 import org.ehrbase.client.aql.field.ListAqlFieldImp;
 import org.ehrbase.client.aql.field.ListSelectAqlField;
 import org.ehrbase.client.aql.field.SelectAqlField;
 import org.ehrbase.client.classgenerator.shareddefinition.Language;
-
-import java.time.temporal.TemporalAccessor;
 
 public class FrailtyObservationContainment extends Containment {
   public SelectAqlField<FrailtyObservation> FRAILTY_OBSERVATION = new AqlFieldImp<FrailtyObservation>(FrailtyObservation.class, "", "FrailtyObservation", FrailtyObservation.class, this);

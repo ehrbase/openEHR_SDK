@@ -1,5 +1,6 @@
 package org.ehrbase.client.classgenerator.examples.schwangerschaftsstatuscomposition.definition;
 
+import java.lang.String;
 import org.ehrbase.client.classgenerator.EnumValueSet;
 
 public enum StatusDefiningCode implements EnumValueSet {

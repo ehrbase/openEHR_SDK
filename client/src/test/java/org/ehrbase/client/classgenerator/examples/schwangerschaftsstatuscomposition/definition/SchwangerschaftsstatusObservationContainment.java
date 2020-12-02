@@ -2,14 +2,13 @@ package org.ehrbase.client.classgenerator.examples.schwangerschaftsstatuscomposi
 
 import com.nedap.archie.rm.datastructures.Cluster;
 import com.nedap.archie.rm.generic.PartyProxy;
+import java.time.temporal.TemporalAccessor;
 import org.ehrbase.client.aql.containment.Containment;
 import org.ehrbase.client.aql.field.AqlFieldImp;
 import org.ehrbase.client.aql.field.ListAqlFieldImp;
 import org.ehrbase.client.aql.field.ListSelectAqlField;
 import org.ehrbase.client.aql.field.SelectAqlField;
 import org.ehrbase.client.classgenerator.shareddefinition.Language;
-
-import java.time.temporal.TemporalAccessor;
 
 public class SchwangerschaftsstatusObservationContainment extends Containment {
   public SelectAqlField<SchwangerschaftsstatusObservation> SCHWANGERSCHAFTSSTATUS_OBSERVATION = new AqlFieldImp<SchwangerschaftsstatusObservation>(SchwangerschaftsstatusObservation.class, "", "SchwangerschaftsstatusObservation", SchwangerschaftsstatusObservation.class, this);

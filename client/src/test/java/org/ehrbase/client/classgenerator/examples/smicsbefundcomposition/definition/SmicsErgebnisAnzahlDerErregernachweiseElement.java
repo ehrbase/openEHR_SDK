@@ -1,5 +1,6 @@
 package org.ehrbase.client.classgenerator.examples.smicsbefundcomposition.definition;
 
+import java.lang.Long;
 import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.Path;
 

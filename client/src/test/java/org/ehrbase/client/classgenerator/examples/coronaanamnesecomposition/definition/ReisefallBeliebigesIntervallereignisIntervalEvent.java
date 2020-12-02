@@ -1,12 +1,11 @@
 package org.ehrbase.client.classgenerator.examples.coronaanamnesecomposition.definition;
 
-import org.ehrbase.client.annotations.Entity;
-import org.ehrbase.client.annotations.Path;
-import org.ehrbase.client.classgenerator.shareddefinition.MathFunction;
-
 import java.time.temporal.TemporalAccessor;
 import java.time.temporal.TemporalAmount;
 import java.util.List;
+import org.ehrbase.client.annotations.Entity;
+import org.ehrbase.client.annotations.Path;
+import org.ehrbase.client.classgenerator.shareddefinition.MathFunction;
 
 @Entity
 public class ReisefallBeliebigesIntervallereignisIntervalEvent {

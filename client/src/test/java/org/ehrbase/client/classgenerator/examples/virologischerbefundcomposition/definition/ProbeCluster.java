@@ -2,12 +2,12 @@ package org.ehrbase.client.classgenerator.examples.virologischerbefundcompositio
 
 import com.nedap.archie.rm.datastructures.Cluster;
 import com.nedap.archie.rm.datavalues.DvIdentifier;
+import java.lang.String;
+import java.time.temporal.TemporalAccessor;
+import java.util.List;
 import org.ehrbase.client.annotations.Archetype;
 import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.Path;
-
-import java.time.temporal.TemporalAccessor;
-import java.util.List;
 
 @Entity
 @Archetype("openEHR-EHR-CLUSTER.specimen.v1")

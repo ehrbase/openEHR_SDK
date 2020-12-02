@@ -3,12 +3,13 @@ package org.ehrbase.client.classgenerator.examples.openereactcarecomposition.def
 import com.nedap.archie.rm.datastructures.Cluster;
 import com.nedap.archie.rm.datastructures.Element;
 import com.nedap.archie.rm.generic.PartyProxy;
+import java.lang.Double;
+import java.lang.String;
+import java.time.temporal.TemporalAccessor;
 import org.ehrbase.client.annotations.Archetype;
 import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.Path;
 import org.ehrbase.client.classgenerator.shareddefinition.Language;
-
-import java.time.temporal.TemporalAccessor;
 
 @Entity
 @Archetype("openEHR-EHR-OBSERVATION.body_temperature.v1")

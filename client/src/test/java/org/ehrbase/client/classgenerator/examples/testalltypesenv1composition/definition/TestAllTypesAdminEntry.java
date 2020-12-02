@@ -1,6 +1,7 @@
 package org.ehrbase.client.classgenerator.examples.testalltypesenv1composition.definition;
 
 import com.nedap.archie.rm.generic.PartyProxy;
+import java.lang.Long;
 import org.ehrbase.client.annotations.Archetype;
 import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.Path;

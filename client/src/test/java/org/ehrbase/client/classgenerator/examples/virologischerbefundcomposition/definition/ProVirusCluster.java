@@ -2,11 +2,13 @@ package org.ehrbase.client.classgenerator.examples.virologischerbefundcompositio
 
 import com.nedap.archie.rm.datastructures.Cluster;
 import com.nedap.archie.rm.datavalues.DvIdentifier;
+import java.lang.Double;
+import java.lang.Long;
+import java.lang.String;
+import java.util.List;
 import org.ehrbase.client.annotations.Archetype;
 import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.Path;
-
-import java.util.List;
 
 @Entity
 @Archetype("openEHR-EHR-CLUSTER.laboratory_test_analyte.v1")

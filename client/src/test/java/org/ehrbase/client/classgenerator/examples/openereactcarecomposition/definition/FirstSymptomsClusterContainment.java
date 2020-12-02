@@ -2,14 +2,14 @@ package org.ehrbase.client.classgenerator.examples.openereactcarecomposition.def
 
 import com.nedap.archie.rm.datastructures.Cluster;
 import com.nedap.archie.rm.datatypes.CodePhrase;
+import java.lang.String;
+import java.time.temporal.TemporalAccessor;
+import java.time.temporal.TemporalAmount;
 import org.ehrbase.client.aql.containment.Containment;
 import org.ehrbase.client.aql.field.AqlFieldImp;
 import org.ehrbase.client.aql.field.ListAqlFieldImp;
 import org.ehrbase.client.aql.field.ListSelectAqlField;
 import org.ehrbase.client.aql.field.SelectAqlField;
-
-import java.time.temporal.TemporalAccessor;
-import java.time.temporal.TemporalAmount;
 
 public class FirstSymptomsClusterContainment extends Containment {
   public SelectAqlField<FirstSymptomsCluster> FIRST_SYMPTOMS_CLUSTER = new AqlFieldImp<FirstSymptomsCluster>(FirstSymptomsCluster.class, "", "FirstSymptomsCluster", FirstSymptomsCluster.class, this);
