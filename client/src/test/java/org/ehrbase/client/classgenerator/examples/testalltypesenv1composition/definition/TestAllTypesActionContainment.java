@@ -1,6 +1,5 @@
 package org.ehrbase.client.classgenerator.examples.testalltypesenv1composition.definition;
 
-import com.nedap.archie.rm.datatypes.CodePhrase;
 import com.nedap.archie.rm.generic.PartyProxy;
 import java.time.temporal.TemporalAccessor;
 import org.ehrbase.client.aql.containment.Containment;
@@ -9,6 +8,7 @@ import org.ehrbase.client.aql.field.ListAqlFieldImp;
 import org.ehrbase.client.aql.field.ListSelectAqlField;
 import org.ehrbase.client.aql.field.SelectAqlField;
 import org.ehrbase.client.classgenerator.shareddefinition.Language;
+import org.ehrbase.client.classgenerator.shareddefinition.Transition;
 
 public class TestAllTypesActionContainment extends Containment {
   public SelectAqlField<TestAllTypesAction> TEST_ALL_TYPES_ACTION = new AqlFieldImp<TestAllTypesAction>(TestAllTypesAction.class, "", "TestAllTypesAction", TestAllTypesAction.class, this);
@@ -25,7 +25,7 @@ public class TestAllTypesActionContainment extends Containment {
 
   public SelectAqlField<CurrentStateDefiningCode> CURRENT_STATE_DEFINING_CODE = new AqlFieldImp<CurrentStateDefiningCode>(TestAllTypesAction.class, "/ism_transition/current_state|defining_code", "currentStateDefiningCode", CurrentStateDefiningCode.class, this);
 
-  public SelectAqlField<CodePhrase> TRANSITION_DEFINING_CODE = new AqlFieldImp<CodePhrase>(TestAllTypesAction.class, "/ism_transition/transition|defining_code", "transitionDefiningCode", CodePhrase.class, this);
+  public SelectAqlField<Transition> TRANSITION_DEFINING_CODE = new AqlFieldImp<Transition>(TestAllTypesAction.class, "/ism_transition/transition|defining_code", "transitionDefiningCode", Transition.class, this);
 
   private TestAllTypesActionContainment() {
     super("openEHR-EHR-ACTION.test_all_types.v1");

@@ -1,6 +1,7 @@
 package org.ehrbase.client.classgenerator.examples.testalltypesenv1composition;
 
 import com.nedap.archie.rm.archetyped.FeederAudit;
+import com.nedap.archie.rm.datavalues.DvCodedText;
 import com.nedap.archie.rm.generic.Participation;
 import com.nedap.archie.rm.generic.PartyIdentified;
 import com.nedap.archie.rm.generic.PartyProxy;
@@ -16,9 +17,7 @@ import org.ehrbase.client.classgenerator.examples.testalltypesenv1composition.de
 import org.ehrbase.client.classgenerator.examples.testalltypesenv1composition.definition.TestAllTypesEvaluation;
 import org.ehrbase.client.classgenerator.examples.testalltypesenv1composition.definition.TestAllTypesObservation;
 import org.ehrbase.client.classgenerator.examples.testalltypesenv1composition.definition.TestAllTypesSection;
-import org.ehrbase.client.classgenerator.shareddefinition.Category;
 import org.ehrbase.client.classgenerator.shareddefinition.Language;
-import org.ehrbase.client.classgenerator.shareddefinition.Setting;
 import org.ehrbase.client.classgenerator.shareddefinition.Territory;
 import org.ehrbase.client.openehrclient.VersionUid;
 
@@ -44,8 +43,8 @@ public class TestAllTypesEnV1Composition {
   @Path("/context/health_care_facility")
   private PartyIdentified healthCareFacility;
 
-  @Path("/context/setting|defining_code")
-  private Setting settingDefiningCode;
+  @Path("/context/setting")
+  private DvCodedText setting;
 
   @Path("/content[openEHR-EHR-OBSERVATION.test_all_types.v1]")
   private List<TestAllTypesObservation> testAllTypesTestAllTypes;
@@ -65,8 +64,8 @@ public class TestAllTypesEnV1Composition {
   @Path("/feeder_audit")
   private FeederAudit feederAudit;
 
-  @Path("/category|defining_code")
-  private Category categoryDefiningCode;
+  @Path("/category")
+  private DvCodedText category;
 
   @Path("/territory")
   private Territory territory;
@@ -123,12 +122,12 @@ public class TestAllTypesEnV1Composition {
      return this.healthCareFacility ;
   }
 
-  public void setSettingDefiningCode(Setting settingDefiningCode) {
-     this.settingDefiningCode = settingDefiningCode;
+  public void setSetting(DvCodedText setting) {
+     this.setting = setting;
   }
 
-  public Setting getSettingDefiningCode() {
-     return this.settingDefiningCode ;
+  public DvCodedText getSetting() {
+     return this.setting ;
   }
 
   public void setTestAllTypesTestAllTypes(List<TestAllTypesObservation> testAllTypesTestAllTypes) {
@@ -179,12 +178,12 @@ public class TestAllTypesEnV1Composition {
      return this.feederAudit ;
   }
 
-  public void setCategoryDefiningCode(Category categoryDefiningCode) {
-     this.categoryDefiningCode = categoryDefiningCode;
+  public void setCategory(DvCodedText category) {
+     this.category = category;
   }
 
-  public Category getCategoryDefiningCode() {
-     return this.categoryDefiningCode ;
+  public DvCodedText getCategory() {
+     return this.category ;
   }
 
   public void setTerritory(Territory territory) {

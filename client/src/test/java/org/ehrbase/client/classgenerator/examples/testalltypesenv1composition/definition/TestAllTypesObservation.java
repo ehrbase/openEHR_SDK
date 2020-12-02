@@ -1,6 +1,6 @@
 package org.ehrbase.client.classgenerator.examples.testalltypesenv1composition.definition;
 
-import com.nedap.archie.rm.datatypes.CodePhrase;
+import com.nedap.archie.rm.datavalues.DvCodedText;
 import com.nedap.archie.rm.datavalues.DvIdentifier;
 import com.nedap.archie.rm.datavalues.encapsulated.DvMultimedia;
 import com.nedap.archie.rm.datavalues.encapsulated.DvParsable;
@@ -25,11 +25,11 @@ public class TestAllTypesObservation {
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value|value")
   private String textValue;
 
-  @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0005]/value|defining_code")
-  private CodePhrase codedTextDefiningCode;
+  @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0005]/value")
+  private DvCodedText codedText;
 
-  @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0006]/value|defining_code")
-  private CodePhrase codedTextTerminologyDefiningCode;
+  @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0006]/value")
+  private DvCodedText codedTextTerminology;
 
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0007]/value|magnitude")
   private Double quantityMagnitude;
@@ -93,20 +93,20 @@ public class TestAllTypesObservation {
      return this.textValue ;
   }
 
-  public void setCodedTextDefiningCode(CodePhrase codedTextDefiningCode) {
-     this.codedTextDefiningCode = codedTextDefiningCode;
+  public void setCodedText(DvCodedText codedText) {
+     this.codedText = codedText;
   }
 
-  public CodePhrase getCodedTextDefiningCode() {
-     return this.codedTextDefiningCode ;
+  public DvCodedText getCodedText() {
+     return this.codedText ;
   }
 
-  public void setCodedTextTerminologyDefiningCode(CodePhrase codedTextTerminologyDefiningCode) {
-     this.codedTextTerminologyDefiningCode = codedTextTerminologyDefiningCode;
+  public void setCodedTextTerminology(DvCodedText codedTextTerminology) {
+     this.codedTextTerminology = codedTextTerminology;
   }
 
-  public CodePhrase getCodedTextTerminologyDefiningCode() {
-     return this.codedTextTerminologyDefiningCode ;
+  public DvCodedText getCodedTextTerminology() {
+     return this.codedTextTerminology ;
   }
 
   public void setQuantityMagnitude(Double quantityMagnitude) {

@@ -88,8 +88,6 @@ public class RoundTripTest {
             new String[] {
                     "Extra path: test_all_types/test_all_types:0/identifier, value: 55175056",
                     "Extra path: test_all_types/test_all_types:0/proportion_any|type, value: 1.0",
-                    "Extra path: test_all_types/test_all_types:0/coded_text|value, value: value1",
-                    "Extra path: test_all_types/test_all_types:0/coded_text_terminology|value, value: .HCXbqCyQtseLkDyKS,QLpOdDZxrEJ",
                     "Extra path: test_all_types/test_all_types3:0/section_2/section_3/test_all_types2:0/ism_transition/current_state|code, value: 526",
                     "Extra path: test_all_types/test_all_types3:0/section_2/section_3/test_all_types2:0/ism_transition/current_state|value, value: planned",
                     "Extra path: test_all_types/test_all_types3:0/section_2/section_3/test_all_types2:0/ism_transition/current_state|terminology, value: openehr",
@@ -130,8 +128,6 @@ public class RoundTripTest {
                     testCase.missing
             );
 
-    String[] extra = {"Extra path: test_all_types/test_all_types:0/identifier, value: 55175056",
-            "Extra path: test_all_types/test_all_types:0/proportion_any|type, value: 1.0"};
     softly.assertThat(errors)
             .filteredOn(s -> s.startsWith("Extra"))
             .as("Test Case %s", testCase.id)

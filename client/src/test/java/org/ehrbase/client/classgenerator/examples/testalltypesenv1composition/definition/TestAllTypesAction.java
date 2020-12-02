@@ -1,6 +1,5 @@
 package org.ehrbase.client.classgenerator.examples.testalltypesenv1composition.definition;
 
-import com.nedap.archie.rm.datatypes.CodePhrase;
 import com.nedap.archie.rm.generic.PartyProxy;
 import java.time.temporal.TemporalAccessor;
 import java.util.List;
@@ -8,6 +7,7 @@ import org.ehrbase.client.annotations.Archetype;
 import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.Path;
 import org.ehrbase.client.classgenerator.shareddefinition.Language;
+import org.ehrbase.client.classgenerator.shareddefinition.Transition;
 
 @Entity
 @Archetype("openEHR-EHR-ACTION.test_all_types.v1")
@@ -31,7 +31,7 @@ public class TestAllTypesAction {
   private CurrentStateDefiningCode currentStateDefiningCode;
 
   @Path("/ism_transition/transition|defining_code")
-  private CodePhrase transitionDefiningCode;
+  private Transition transitionDefiningCode;
 
   public void setTestAllTypes(List<TestAllTypesCluster> testAllTypes) {
      this.testAllTypes = testAllTypes;
@@ -81,11 +81,11 @@ public class TestAllTypesAction {
      return this.currentStateDefiningCode ;
   }
 
-  public void setTransitionDefiningCode(CodePhrase transitionDefiningCode) {
+  public void setTransitionDefiningCode(Transition transitionDefiningCode) {
      this.transitionDefiningCode = transitionDefiningCode;
   }
 
-  public CodePhrase getTransitionDefiningCode() {
+  public Transition getTransitionDefiningCode() {
      return this.transitionDefiningCode ;
   }
 }

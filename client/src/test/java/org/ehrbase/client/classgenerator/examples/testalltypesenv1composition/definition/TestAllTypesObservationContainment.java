@@ -1,6 +1,6 @@
 package org.ehrbase.client.classgenerator.examples.testalltypesenv1composition.definition;
 
-import com.nedap.archie.rm.datatypes.CodePhrase;
+import com.nedap.archie.rm.datavalues.DvCodedText;
 import com.nedap.archie.rm.datavalues.DvIdentifier;
 import com.nedap.archie.rm.datavalues.encapsulated.DvMultimedia;
 import com.nedap.archie.rm.datavalues.encapsulated.DvParsable;
@@ -24,9 +24,9 @@ public class TestAllTypesObservationContainment extends Containment {
 
   public SelectAqlField<String> TEXT_VALUE = new AqlFieldImp<String>(TestAllTypesObservation.class, "/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value|value", "textValue", String.class, this);
 
-  public SelectAqlField<CodePhrase> CODED_TEXT_DEFINING_CODE = new AqlFieldImp<CodePhrase>(TestAllTypesObservation.class, "/data[at0001]/events[at0002]/data[at0003]/items[at0005]/value|defining_code", "codedTextDefiningCode", CodePhrase.class, this);
+  public SelectAqlField<DvCodedText> CODED_TEXT = new AqlFieldImp<DvCodedText>(TestAllTypesObservation.class, "/data[at0001]/events[at0002]/data[at0003]/items[at0005]/value", "codedText", DvCodedText.class, this);
 
-  public SelectAqlField<CodePhrase> CODED_TEXT_TERMINOLOGY_DEFINING_CODE = new AqlFieldImp<CodePhrase>(TestAllTypesObservation.class, "/data[at0001]/events[at0002]/data[at0003]/items[at0006]/value|defining_code", "codedTextTerminologyDefiningCode", CodePhrase.class, this);
+  public SelectAqlField<DvCodedText> CODED_TEXT_TERMINOLOGY = new AqlFieldImp<DvCodedText>(TestAllTypesObservation.class, "/data[at0001]/events[at0002]/data[at0003]/items[at0006]/value", "codedTextTerminology", DvCodedText.class, this);
 
   public SelectAqlField<Double> QUANTITY_MAGNITUDE = new AqlFieldImp<Double>(TestAllTypesObservation.class, "/data[at0001]/events[at0002]/data[at0003]/items[at0007]/value|magnitude", "quantityMagnitude", Double.class, this);
 

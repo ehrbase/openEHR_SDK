@@ -46,6 +46,7 @@ import org.ehrbase.client.classgenerator.shareddefinition.Language;
 import org.ehrbase.client.classgenerator.shareddefinition.MathFunction;
 import org.ehrbase.client.classgenerator.shareddefinition.Setting;
 import org.ehrbase.client.classgenerator.shareddefinition.Territory;
+import org.ehrbase.client.classgenerator.shareddefinition.Transition;
 import org.ehrbase.client.openehrclient.VersionUid;
 import org.ehrbase.serialisation.util.SnakeCase;
 import org.ehrbase.terminology.client.terminology.TermDefinition;
@@ -363,7 +364,21 @@ public class ClassGenerator {
     if (classGeneratorConfig == null && !clazz.getName().contains("java.lang")) {
       logger.debug("No ClassGenerator for {}", clazz);
     }
-    if (classGeneratorConfig == null || !classGeneratorConfig.isExpandField()) {
+    boolean expand = classGeneratorConfig != null && classGeneratorConfig.isExpandField();
+
+    if (endNode.getRmType().equals("DV_CODED_TEXT") && !endNode.getId().equals("transition")) {
+      expand =
+          expand
+              && endNode.getInputs().stream()
+                  .filter(i -> i.getType().equals("CODED_TEXT"))
+                  .map(WebTemplateInput::getList)
+                  .flatMap(List::stream)
+                  .findAny()
+                  .isPresent();
+      }
+
+
+    if (!expand) {
 
       TypeName className = ClassName.get(Optional.ofNullable(clazz).orElse(Object.class));
       if (endNode.isMulti() && !context.nodeDeque.peek().getRmType().equals("ELEMENT")) {
@@ -452,6 +467,9 @@ public class ClassGenerator {
           break;
         case "math_function":
           className = ClassName.get(MathFunction.class);
+          break;
+        case "transition":
+          className = ClassName.get(Transition.class);
           break;
         default:
           if (CollectionUtils.isNotEmpty(valueSet.getTherms())) {
