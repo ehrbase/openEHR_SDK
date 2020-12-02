@@ -1,20 +1,18 @@
 package org.ehrbase.client.classgenerator.examples.befundderblutgasanalysecomposition.definition;
 
 import com.nedap.archie.rm.datastructures.Cluster;
+import java.lang.Double;
+import java.lang.String;
+import java.util.List;
 import org.ehrbase.client.annotations.Archetype;
 import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.Path;
 
-import java.util.List;
-
 @Entity
 @Archetype("openEHR-EHR-CLUSTER.laboratory_test_analyte.v1")
 public class KohlendioxidpartialdruckCluster {
-  @Path("/items[at0005]/value|value")
-  private String ergebnisStatusValue;
-
   @Path("/items[at0024]/value|defining_code")
-  private UntersuchterAnalytDefiningcode3 untersuchterAnalytDefiningcode;
+  private UntersuchterAnalytDefiningCode untersuchterAnalytDefiningCode;
 
   @Path("/items[at0001]/value|magnitude")
   private Double analytResultatMagnitude;
@@ -25,21 +23,16 @@ public class KohlendioxidpartialdruckCluster {
   @Path("/items[at0014]")
   private List<Cluster> analyseergebnisDetails;
 
-  public void setErgebnisStatusValue(String ergebnisStatusValue) {
-     this.ergebnisStatusValue = ergebnisStatusValue;
+  @Path("/items[at0005]/value|value")
+  private String ergebnisStatusValue;
+
+  public void setUntersuchterAnalytDefiningCode(
+      UntersuchterAnalytDefiningCode untersuchterAnalytDefiningCode) {
+     this.untersuchterAnalytDefiningCode = untersuchterAnalytDefiningCode;
   }
 
-  public String getErgebnisStatusValue() {
-     return this.ergebnisStatusValue ;
-  }
-
-  public void setUntersuchterAnalytDefiningcode(
-      UntersuchterAnalytDefiningcode3 untersuchterAnalytDefiningcode) {
-     this.untersuchterAnalytDefiningcode = untersuchterAnalytDefiningcode;
-  }
-
-  public UntersuchterAnalytDefiningcode3 getUntersuchterAnalytDefiningcode() {
-     return this.untersuchterAnalytDefiningcode ;
+  public UntersuchterAnalytDefiningCode getUntersuchterAnalytDefiningCode() {
+     return this.untersuchterAnalytDefiningCode ;
   }
 
   public void setAnalytResultatMagnitude(Double analytResultatMagnitude) {
@@ -64,5 +57,13 @@ public class KohlendioxidpartialdruckCluster {
 
   public List<Cluster> getAnalyseergebnisDetails() {
      return this.analyseergebnisDetails ;
+  }
+
+  public void setErgebnisStatusValue(String ergebnisStatusValue) {
+     this.ergebnisStatusValue = ergebnisStatusValue;
+  }
+
+  public String getErgebnisStatusValue() {
+     return this.ergebnisStatusValue ;
   }
 }

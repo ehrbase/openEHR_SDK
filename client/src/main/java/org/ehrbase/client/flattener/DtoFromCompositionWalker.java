@@ -35,6 +35,7 @@ import org.ehrbase.client.classgenerator.EnumValueSet;
 import org.ehrbase.client.exception.ClientException;
 import org.ehrbase.serialisation.walker.Context;
 import org.ehrbase.serialisation.walker.FromCompositionWalker;
+import org.ehrbase.serialisation.walker.RmPrimitive;
 import org.ehrbase.serialisation.walker.RmString;
 import org.ehrbase.util.exception.SdkException;
 import org.ehrbase.util.reflection.ReflectionHelper;
@@ -111,6 +112,7 @@ public class DtoFromCompositionWalker extends FromCompositionWalker<DtoWithMatch
       return new DtoWithMatchingFields(context.getObjectDeque().peek().getDto(), subValues);
     } else {
       Field field = subValues.values().stream().findAny().get();
+      String path = subValues.keySet().stream().findAny().get();
       Class<?> type = field.getType();
       if (List.class.isAssignableFrom(type)) {
         type =
@@ -120,7 +122,7 @@ public class DtoFromCompositionWalker extends FromCompositionWalker<DtoWithMatch
       if (isChoice) {
         type = findActual(type, child.getRmType()).get();
       }
-      if (type.isAnnotationPresent(Entity.class)) {
+      if (type.isAnnotationPresent(Entity.class) && StringUtils.isBlank(path)) {
         Object dto = create(type);
 
         writeField(field, context.getObjectDeque().peek().getDto(), dto);
@@ -150,15 +152,15 @@ public class DtoFromCompositionWalker extends FromCompositionWalker<DtoWithMatch
                                           Optional.ofNullable(codePhrase.getTerminologyId())
                                                   .map(ObjectId::getValue)
                                                   .orElse(null);
-                                  return v.getTerminologyId().equals(terminologyId);
+                                    return v.getTerminologyId().equals(terminologyId);
                                 })
                         .filter(v -> v.getCode().equals(codePhrase.getCodeString()))
                         .findAny()
                         .orElse(null);
     dtoList = enumValueSet;
       }
-      if (dtoList instanceof RmString){
-        dtoList = ((RmString) dtoList).getValue();
+      if (dtoList instanceof RmPrimitive){
+        dtoList = ((RmPrimitive<?>) dtoList).getValue();
       }
       if (List.class.isAssignableFrom(field.getType())) {
         dtoList = propertyDescriptor.getReadMethod().invoke(dto);
@@ -168,7 +170,7 @@ public class DtoFromCompositionWalker extends FromCompositionWalker<DtoWithMatch
         ((List) dtoList).add(value);
       }
       propertyDescriptor.getWriteMethod().invoke(dto, dtoList);
-    } catch (IllegalAccessException | InvocationTargetException | IntrospectionException e) {
+    } catch (IllegalAccessException | InvocationTargetException | IntrospectionException | IllegalArgumentException e) {
       throw new ClientException(e.getMessage(), e);
     }
   }

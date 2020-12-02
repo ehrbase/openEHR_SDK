@@ -1,149 +1,149 @@
 package org.ehrbase.client.classgenerator.examples.openereactcarecomposition.definition;
 
 import com.nedap.archie.rm.datastructures.Cluster;
+import com.nedap.archie.rm.datavalues.DvCodedText;
 import com.nedap.archie.rm.generic.PartyProxy;
+import java.lang.String;
+import java.time.temporal.TemporalAccessor;
+import java.util.List;
 import org.ehrbase.client.annotations.Archetype;
 import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.Path;
-import org.ehrbase.client.classgenerator.examples.shareddefinition.Language;
-import org.ehrbase.client.classgenerator.examples.shareddefinition.TransitionDefiningcode;
-
-import java.time.temporal.TemporalAccessor;
-import java.util.List;
+import org.ehrbase.client.classgenerator.shareddefinition.Language;
+import org.ehrbase.client.classgenerator.shareddefinition.Transition;
 
 @Entity
 @Archetype("openEHR-EHR-ACTION.service.v0")
 public class ServiceAction {
-    @Path("/time|value")
-    private TemporalAccessor timeValue;
+  @Path("/description[at0001]/items[at0011]/value")
+  private DvCodedText serviceName;
 
-    @Path("/protocol[at0015]/items[at0017]")
-    private List<Cluster> requestor;
+  @Path("/description[at0001]/items[at0013]/value|value")
+  private String descriptionValue;
 
-    @Path("/ism_transition[at0002]/careflow_step|defining_code")
-    private ServicePlannedDefiningcode servicePlannedDefiningcode;
+  @Path("/description[at0001]/items[at0027]")
+  private List<Cluster> serviceDetail;
 
-    @Path("/protocol[at0015]/items[at0019]")
-    private List<Cluster> receiver;
+  @Path("/description[at0001]/items[at0029]")
+  private List<Cluster> multimedia;
 
-    @Path("/language")
-    private Language language;
+  @Path("/protocol[at0015]/items[at0017]")
+  private List<Cluster> requestor;
 
-    @Path("/ism_transition[at0002]/current_state|defining_code")
-    private ServicePlannedDefiningcode2 servicePlannedDefiningcodeCurrentState;
+  @Path("/protocol[at0015]/items[at0019]")
+  private List<Cluster> receiver;
 
-    @Path("/ism_transition[at0002]/transition|defining_code")
-    private TransitionDefiningcode transitionDefiningcode;
+  @Path("/subject")
+  private PartyProxy subject;
 
-    @Path("/subject")
-    private PartyProxy subject;
+  @Path("/language")
+  private Language language;
 
-    @Path("/description[at0001]/items[at0011]/value|defining_code")
-    private ServiceNameDefiningcode serviceNameDefiningcode;
+  @Path("/time|value")
+  private TemporalAccessor timeValue;
 
-    @Path("/description[at0001]/items[at0027]")
-    private List<Cluster> serviceDetail;
+  @Path("/ism_transition/careflow_step|defining_code")
+  private CareflowStepDefiningCode careflowStepDefiningCode;
 
-    @Path("/description[at0001]/items[at0029]")
-    private List<Cluster> multimedia;
+  @Path("/ism_transition/current_state|defining_code")
+  private CurrentStateDefiningCode currentStateDefiningCode;
 
-    @Path("/description[at0001]/items[at0013]/value|value")
-    private String descriptionValue;
+  @Path("/ism_transition/transition|defining_code")
+  private Transition transitionDefiningCode;
 
-    public void setTimeValue(TemporalAccessor timeValue) {
-        this.timeValue = timeValue;
-    }
+  public void setServiceName(DvCodedText serviceName) {
+     this.serviceName = serviceName;
+  }
 
-    public TemporalAccessor getTimeValue() {
-        return this.timeValue;
-    }
+  public DvCodedText getServiceName() {
+     return this.serviceName ;
+  }
 
-    public void setRequestor(List<Cluster> requestor) {
-        this.requestor = requestor;
-    }
+  public void setDescriptionValue(String descriptionValue) {
+     this.descriptionValue = descriptionValue;
+  }
 
-    public List<Cluster> getRequestor() {
-        return this.requestor;
-    }
+  public String getDescriptionValue() {
+     return this.descriptionValue ;
+  }
 
-    public void setServicePlannedDefiningcode(ServicePlannedDefiningcode servicePlannedDefiningcode) {
-        this.servicePlannedDefiningcode = servicePlannedDefiningcode;
-    }
+  public void setServiceDetail(List<Cluster> serviceDetail) {
+     this.serviceDetail = serviceDetail;
+  }
 
-    public ServicePlannedDefiningcode getServicePlannedDefiningcode() {
-        return this.servicePlannedDefiningcode;
-    }
+  public List<Cluster> getServiceDetail() {
+     return this.serviceDetail ;
+  }
 
-    public void setReceiver(List<Cluster> receiver) {
-        this.receiver = receiver;
-    }
+  public void setMultimedia(List<Cluster> multimedia) {
+     this.multimedia = multimedia;
+  }
 
-    public List<Cluster> getReceiver() {
-        return this.receiver;
-    }
+  public List<Cluster> getMultimedia() {
+     return this.multimedia ;
+  }
 
-    public void setLanguage(Language language) {
-        this.language = language;
-    }
+  public void setRequestor(List<Cluster> requestor) {
+     this.requestor = requestor;
+  }
 
-    public Language getLanguage() {
-        return this.language;
-    }
+  public List<Cluster> getRequestor() {
+     return this.requestor ;
+  }
 
-    public void setServicePlannedDefiningcodeCurrentState(
-            ServicePlannedDefiningcode2 servicePlannedDefiningcodeCurrentState) {
-        this.servicePlannedDefiningcodeCurrentState = servicePlannedDefiningcodeCurrentState;
-    }
+  public void setReceiver(List<Cluster> receiver) {
+     this.receiver = receiver;
+  }
 
-    public ServicePlannedDefiningcode2 getServicePlannedDefiningcodeCurrentState() {
-        return this.servicePlannedDefiningcodeCurrentState;
-    }
+  public List<Cluster> getReceiver() {
+     return this.receiver ;
+  }
 
-    public void setTransitionDefiningcode(TransitionDefiningcode transitionDefiningcode) {
-        this.transitionDefiningcode = transitionDefiningcode;
-    }
+  public void setSubject(PartyProxy subject) {
+     this.subject = subject;
+  }
 
-    public TransitionDefiningcode getTransitionDefiningcode() {
-        return this.transitionDefiningcode;
-    }
+  public PartyProxy getSubject() {
+     return this.subject ;
+  }
 
-    public void setSubject(PartyProxy subject) {
-        this.subject = subject;
-    }
+  public void setLanguage(Language language) {
+     this.language = language;
+  }
 
-    public PartyProxy getSubject() {
-        return this.subject;
-    }
+  public Language getLanguage() {
+     return this.language ;
+  }
 
-    public void setServiceNameDefiningcode(ServiceNameDefiningcode serviceNameDefiningcode) {
-        this.serviceNameDefiningcode = serviceNameDefiningcode;
-    }
+  public void setTimeValue(TemporalAccessor timeValue) {
+     this.timeValue = timeValue;
+  }
 
-    public ServiceNameDefiningcode getServiceNameDefiningcode() {
-        return this.serviceNameDefiningcode;
-    }
+  public TemporalAccessor getTimeValue() {
+     return this.timeValue ;
+  }
 
-    public void setServiceDetail(List<Cluster> serviceDetail) {
-        this.serviceDetail = serviceDetail;
-    }
+  public void setCareflowStepDefiningCode(CareflowStepDefiningCode careflowStepDefiningCode) {
+     this.careflowStepDefiningCode = careflowStepDefiningCode;
+  }
 
-    public List<Cluster> getServiceDetail() {
-        return this.serviceDetail;
-    }
+  public CareflowStepDefiningCode getCareflowStepDefiningCode() {
+     return this.careflowStepDefiningCode ;
+  }
 
-    public void setMultimedia(List<Cluster> multimedia) {
-        this.multimedia = multimedia;
-    }
+  public void setCurrentStateDefiningCode(CurrentStateDefiningCode currentStateDefiningCode) {
+     this.currentStateDefiningCode = currentStateDefiningCode;
+  }
 
-    public List<Cluster> getMultimedia() {
-        return this.multimedia;
-    }
+  public CurrentStateDefiningCode getCurrentStateDefiningCode() {
+     return this.currentStateDefiningCode ;
+  }
 
-    public void setDescriptionValue(String descriptionValue) {
-        this.descriptionValue = descriptionValue;
-    }
+  public void setTransitionDefiningCode(Transition transitionDefiningCode) {
+     this.transitionDefiningCode = transitionDefiningCode;
+  }
 
-    public String getDescriptionValue() {
-        return this.descriptionValue;
-    }
+  public Transition getTransitionDefiningCode() {
+     return this.transitionDefiningCode ;
+  }
 }

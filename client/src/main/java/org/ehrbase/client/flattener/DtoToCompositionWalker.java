@@ -65,6 +65,7 @@ public class DtoToCompositionWalker extends ToCompositionWalker<Map<String, Obje
   @Override
   protected Map<String, Object> extract(
       Context<Map<String, Object>> context, WebTemplateNode child, boolean isChoice, Integer i) {
+
     Map<String, Object> subValues = filterValues(context, child);
 
     if (subValues.isEmpty()) {
@@ -164,6 +165,10 @@ public class DtoToCompositionWalker extends ToCompositionWalker<Map<String, Obje
 
       PathExtractor extractor = new PathExtractor(objectEntry.getKey());
       if (StringUtils.isBlank(extractor.getChildPath())) {
+        if ("uuid".equals(extractor.getAttributeName())){
+          System.out.println("d");
+        }
+          else
         if (StringUtils.isNotBlank(extractor.getAttributeName())) {
           handleSingleValue(
               objectEntry.getValue(),
@@ -200,6 +205,7 @@ public class DtoToCompositionWalker extends ToCompositionWalker<Map<String, Obje
     }
     return 0;
   }
+
 
   static Map<String, Object> findEntity(Object dto) {
 

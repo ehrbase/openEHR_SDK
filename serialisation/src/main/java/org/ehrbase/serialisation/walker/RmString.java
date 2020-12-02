@@ -21,7 +21,7 @@ package org.ehrbase.serialisation.walker;
 
 import com.nedap.archie.rm.RMObject;
 
-public class RmString extends RMObject {
+public class RmString extends RMObject implements RmPrimitive<String> {
    final String value;
 
     public RmString(String value) {

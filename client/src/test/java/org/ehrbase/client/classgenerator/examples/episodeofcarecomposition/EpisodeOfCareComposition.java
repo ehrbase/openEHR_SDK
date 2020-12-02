@@ -4,165 +4,165 @@ import com.nedap.archie.rm.archetyped.FeederAudit;
 import com.nedap.archie.rm.generic.Participation;
 import com.nedap.archie.rm.generic.PartyIdentified;
 import com.nedap.archie.rm.generic.PartyProxy;
+import java.lang.String;
+import java.time.temporal.TemporalAccessor;
+import java.util.List;
 import org.ehrbase.client.annotations.Archetype;
 import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.Id;
 import org.ehrbase.client.annotations.Path;
 import org.ehrbase.client.annotations.Template;
 import org.ehrbase.client.classgenerator.examples.episodeofcarecomposition.definition.EpisodeofcareAdminEntry;
-import org.ehrbase.client.classgenerator.examples.shareddefinition.CategoryDefiningcode;
-import org.ehrbase.client.classgenerator.examples.shareddefinition.Language;
-import org.ehrbase.client.classgenerator.examples.shareddefinition.SettingDefiningcode;
-import org.ehrbase.client.classgenerator.examples.shareddefinition.Territory;
+import org.ehrbase.client.classgenerator.shareddefinition.Category;
+import org.ehrbase.client.classgenerator.shareddefinition.Language;
+import org.ehrbase.client.classgenerator.shareddefinition.Setting;
+import org.ehrbase.client.classgenerator.shareddefinition.Territory;
 import org.ehrbase.client.openehrclient.VersionUid;
-
-import java.time.temporal.TemporalAccessor;
-import java.util.List;
 
 @Entity
 @Archetype("openEHR-EHR-COMPOSITION.versorgungsfall.v0")
 @Template("EpisodeOfCare")
 public class EpisodeOfCareComposition {
-    @Id
-    private VersionUid versionUid;
+  @Path("/content[openEHR-EHR-ADMIN_ENTRY.episodeofcare.v0]")
+  private List<EpisodeofcareAdminEntry> episodeofcare;
 
-    @Path("/content[openEHR-EHR-ADMIN_ENTRY.episodeofcare.v0]")
-    private List<EpisodeofcareAdminEntry> episodeofcare;
+  @Path("/composer")
+  private PartyProxy composer;
 
-    @Path("/context/end_time|value")
-    private TemporalAccessor endTimeValue;
+  @Path("/language")
+  private Language language;
 
-    @Path("/context/participations")
-    private List<Participation> participations;
+  @Path("/context/start_time|value")
+  private TemporalAccessor startTimeValue;
 
-    @Path("/language")
-    private Language language;
+  @Path("/context/participations")
+  private List<Participation> participations;
 
-    @Path("/context/health_care_facility")
-    private PartyIdentified healthcarefacility;
+  @Path("/context/end_time|value")
+  private TemporalAccessor endTimeValue;
 
-    @Path("/composer")
-    private PartyProxy composer;
+  @Path("/context/location")
+  private String location;
 
-    @Path("/context/setting|defining_code")
-    private SettingDefiningcode settingDefiningcode;
+  @Path("/context/health_care_facility")
+  private PartyIdentified healthCareFacility;
 
-    @Path("/territory")
-    private Territory territory;
+  @Path("/context/setting|defining_code")
+  private Setting settingDefiningCode;
 
-    @Path("/feeder_audit")
-    private FeederAudit feederAudit;
+  @Path("/feeder_audit")
+  private FeederAudit feederAudit;
 
-    @Path("/context/location")
-    private String location;
+  @Path("/category|defining_code")
+  private Category categoryDefiningCode;
 
-    @Path("/category|defining_code")
-    private CategoryDefiningcode categoryDefiningcode;
+  @Path("/territory")
+  private Territory territory;
 
-    @Path("/context/start_time|value")
-    private TemporalAccessor startTimeValue;
+  @Id
+  private VersionUid versionUid;
 
-    public VersionUid getVersionUid() {
-        return this.versionUid;
-    }
+  public void setEpisodeofcare(List<EpisodeofcareAdminEntry> episodeofcare) {
+     this.episodeofcare = episodeofcare;
+  }
 
-    public void setVersionUid(VersionUid versionUid) {
-        this.versionUid = versionUid;
-    }
+  public List<EpisodeofcareAdminEntry> getEpisodeofcare() {
+     return this.episodeofcare ;
+  }
 
-    public void setEpisodeofcare(List<EpisodeofcareAdminEntry> episodeofcare) {
-        this.episodeofcare = episodeofcare;
-    }
+  public void setComposer(PartyProxy composer) {
+     this.composer = composer;
+  }
 
-    public List<EpisodeofcareAdminEntry> getEpisodeofcare() {
-        return this.episodeofcare;
-    }
+  public PartyProxy getComposer() {
+     return this.composer ;
+  }
 
-    public void setEndTimeValue(TemporalAccessor endTimeValue) {
-        this.endTimeValue = endTimeValue;
-    }
+  public void setLanguage(Language language) {
+     this.language = language;
+  }
 
-    public TemporalAccessor getEndTimeValue() {
-        return this.endTimeValue;
-    }
+  public Language getLanguage() {
+     return this.language ;
+  }
 
-    public void setParticipations(List<Participation> participations) {
-        this.participations = participations;
-    }
+  public void setStartTimeValue(TemporalAccessor startTimeValue) {
+     this.startTimeValue = startTimeValue;
+  }
 
-    public List<Participation> getParticipations() {
-        return this.participations;
-    }
+  public TemporalAccessor getStartTimeValue() {
+     return this.startTimeValue ;
+  }
 
-    public void setLanguage(Language language) {
-        this.language = language;
-    }
+  public void setParticipations(List<Participation> participations) {
+     this.participations = participations;
+  }
 
-    public Language getLanguage() {
-        return this.language;
-    }
+  public List<Participation> getParticipations() {
+     return this.participations ;
+  }
 
-    public void setHealthcarefacility(PartyIdentified healthcarefacility) {
-        this.healthcarefacility = healthcarefacility;
-    }
+  public void setEndTimeValue(TemporalAccessor endTimeValue) {
+     this.endTimeValue = endTimeValue;
+  }
 
-    public PartyIdentified getHealthcarefacility() {
-        return this.healthcarefacility;
-    }
+  public TemporalAccessor getEndTimeValue() {
+     return this.endTimeValue ;
+  }
 
-    public void setComposer(PartyProxy composer) {
-        this.composer = composer;
-    }
+  public void setLocation(String location) {
+     this.location = location;
+  }
 
-    public PartyProxy getComposer() {
-        return this.composer;
-    }
+  public String getLocation() {
+     return this.location ;
+  }
 
-    public void setSettingDefiningcode(SettingDefiningcode settingDefiningcode) {
-        this.settingDefiningcode = settingDefiningcode;
-    }
+  public void setHealthCareFacility(PartyIdentified healthCareFacility) {
+     this.healthCareFacility = healthCareFacility;
+  }
 
-    public SettingDefiningcode getSettingDefiningcode() {
-        return this.settingDefiningcode;
-    }
+  public PartyIdentified getHealthCareFacility() {
+     return this.healthCareFacility ;
+  }
 
-    public void setTerritory(Territory territory) {
-        this.territory = territory;
-    }
+  public void setSettingDefiningCode(Setting settingDefiningCode) {
+     this.settingDefiningCode = settingDefiningCode;
+  }
 
-    public Territory getTerritory() {
-        return this.territory;
-    }
+  public Setting getSettingDefiningCode() {
+     return this.settingDefiningCode ;
+  }
 
-    public void setFeederAudit(FeederAudit feederAudit) {
-        this.feederAudit = feederAudit;
-    }
+  public void setFeederAudit(FeederAudit feederAudit) {
+     this.feederAudit = feederAudit;
+  }
 
-    public FeederAudit getFeederAudit() {
-        return this.feederAudit;
-    }
+  public FeederAudit getFeederAudit() {
+     return this.feederAudit ;
+  }
 
-    public void setLocation(String location) {
-        this.location = location;
-    }
+  public void setCategoryDefiningCode(Category categoryDefiningCode) {
+     this.categoryDefiningCode = categoryDefiningCode;
+  }
 
-    public String getLocation() {
-        return this.location;
-    }
+  public Category getCategoryDefiningCode() {
+     return this.categoryDefiningCode ;
+  }
 
-    public void setCategoryDefiningcode(CategoryDefiningcode categoryDefiningcode) {
-        this.categoryDefiningcode = categoryDefiningcode;
-    }
+  public void setTerritory(Territory territory) {
+     this.territory = territory;
+  }
 
-    public CategoryDefiningcode getCategoryDefiningcode() {
-        return this.categoryDefiningcode;
-    }
+  public Territory getTerritory() {
+     return this.territory ;
+  }
 
-    public void setStartTimeValue(TemporalAccessor startTimeValue) {
-        this.startTimeValue = startTimeValue;
-    }
+  public VersionUid getVersionUid() {
+     return this.versionUid ;
+  }
 
-    public TemporalAccessor getStartTimeValue() {
-        return this.startTimeValue;
-    }
+  public void setVersionUid(VersionUid versionUid) {
+     this.versionUid = versionUid;
+  }
 }

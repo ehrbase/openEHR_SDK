@@ -2,193 +2,193 @@ package org.ehrbase.client.classgenerator.examples.openereactcarecomposition.def
 
 import com.nedap.archie.rm.datastructures.Cluster;
 import com.nedap.archie.rm.generic.PartyProxy;
+import java.lang.String;
+import java.time.temporal.TemporalAccessor;
+import java.util.List;
 import org.ehrbase.client.annotations.Archetype;
 import org.ehrbase.client.annotations.Choice;
 import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.Path;
-import org.ehrbase.client.classgenerator.examples.shareddefinition.Language;
-
-import java.time.temporal.TemporalAccessor;
-import java.util.List;
+import org.ehrbase.client.classgenerator.shareddefinition.Language;
 
 @Entity
 @Archetype("openEHR-EHR-OBSERVATION.laboratory_test_result.v1")
 public class LatestCovid19TestObservation {
-    @Path("/protocol[at0004]/items[at0110]")
-    private List<Cluster> testingDetails;
+  @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0005]/value|value")
+  private String testNameValue;
 
-    @Path("/protocol[at0004]/items[at0094]")
-    private List<LatestCovid19TestTestRequestDetailsCluster> testRequestDetails;
+  @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0065]")
+  private List<Cluster> specimenDetail;
 
-    @Path("/language")
-    private Language language;
+  @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0097]")
+  private List<Cluster> testResult;
 
-    @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0098]/value|value")
-    private String testDiagnosisValue;
+  @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0098]/value|value")
+  private String testDiagnosisValue;
 
-    @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0118]")
-    private List<Cluster> multimediaRepresentation;
+  @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0122]")
+  private List<Cluster> structuredTestDiagnosis;
 
-    @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0005]/value|value")
-    private String testNameValue;
+  @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0118]")
+  private List<Cluster> multimediaRepresentation;
 
-    @Path("/data[at0001]/events[at0002]/state[at0112]/items[at0114]")
-    private List<Cluster> structuredConfoundingFactors;
+  @Path("/data[at0001]/events[at0002]/state[at0112]/items[at0114]")
+  private List<Cluster> structuredConfoundingFactors;
 
-    @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0122]")
-    private List<Cluster> structuredTestDiagnosis;
+  @Path("/data[at0001]/events[at0002]/time|value")
+  private TemporalAccessor timeValue;
 
-    @Path("/protocol[at0004]/items[at0117]")
-    private List<Cluster> extension;
+  @Path("/data[at0001]/origin|value")
+  private TemporalAccessor originValue;
 
-    @Path("/data[at0001]/events[at0002]/time|value")
-    private TemporalAccessor timeValue;
+  @Path("/protocol[at0004]/items[at0017]")
+  private Cluster receivingLaboratory;
 
-    @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0065]")
-    private List<Cluster> specimenDetail;
+  @Path("/protocol[at0004]/items[at0094]")
+  private List<LatestCovid19TestTestRequestDetailsCluster> testRequestDetails;
 
-    @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0097]")
-    private List<Cluster> testResult;
+  @Path("/protocol[at0004]/items[at0110]")
+  private List<Cluster> testingDetails;
 
-    @Path("/subject")
-    private PartyProxy subject;
+  @Path("/protocol[at0004]/items[at0117]")
+  private List<Cluster> extension;
 
-    @Path("/data[at0001]/origin|value")
-    private TemporalAccessor originValue;
+  @Path("/subject")
+  private PartyProxy subject;
 
-    @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0073]/value")
-    @Choice
-    private LatestCovid19TestOverallTestStatusChoice overallTestStatus;
+  @Path("/language")
+  private Language language;
 
-    @Path("/protocol[at0004]/items[at0017]")
-    private Cluster receivingLaboratory;
+  @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0073]/value")
+  @Choice
+  private LatestCovid19TestOverallTestStatusChoice overallTestStatus;
 
-    public void setTestingDetails(List<Cluster> testingDetails) {
-        this.testingDetails = testingDetails;
-    }
+  public void setTestNameValue(String testNameValue) {
+     this.testNameValue = testNameValue;
+  }
 
-    public List<Cluster> getTestingDetails() {
-        return this.testingDetails;
-    }
+  public String getTestNameValue() {
+     return this.testNameValue ;
+  }
 
-    public void setTestRequestDetails(
-            List<LatestCovid19TestTestRequestDetailsCluster> testRequestDetails) {
-        this.testRequestDetails = testRequestDetails;
-    }
+  public void setSpecimenDetail(List<Cluster> specimenDetail) {
+     this.specimenDetail = specimenDetail;
+  }
 
-    public List<LatestCovid19TestTestRequestDetailsCluster> getTestRequestDetails() {
-        return this.testRequestDetails;
-    }
+  public List<Cluster> getSpecimenDetail() {
+     return this.specimenDetail ;
+  }
 
-    public void setLanguage(Language language) {
-        this.language = language;
-    }
+  public void setTestResult(List<Cluster> testResult) {
+     this.testResult = testResult;
+  }
 
-    public Language getLanguage() {
-        return this.language;
-    }
+  public List<Cluster> getTestResult() {
+     return this.testResult ;
+  }
 
-    public void setTestDiagnosisValue(String testDiagnosisValue) {
-        this.testDiagnosisValue = testDiagnosisValue;
-    }
+  public void setTestDiagnosisValue(String testDiagnosisValue) {
+     this.testDiagnosisValue = testDiagnosisValue;
+  }
 
-    public String getTestDiagnosisValue() {
-        return this.testDiagnosisValue;
-    }
+  public String getTestDiagnosisValue() {
+     return this.testDiagnosisValue ;
+  }
 
-    public void setMultimediaRepresentation(List<Cluster> multimediaRepresentation) {
-        this.multimediaRepresentation = multimediaRepresentation;
-    }
+  public void setStructuredTestDiagnosis(List<Cluster> structuredTestDiagnosis) {
+     this.structuredTestDiagnosis = structuredTestDiagnosis;
+  }
 
-    public List<Cluster> getMultimediaRepresentation() {
-        return this.multimediaRepresentation;
-    }
+  public List<Cluster> getStructuredTestDiagnosis() {
+     return this.structuredTestDiagnosis ;
+  }
 
-    public void setTestNameValue(String testNameValue) {
-        this.testNameValue = testNameValue;
-    }
+  public void setMultimediaRepresentation(List<Cluster> multimediaRepresentation) {
+     this.multimediaRepresentation = multimediaRepresentation;
+  }
 
-    public String getTestNameValue() {
-        return this.testNameValue;
-    }
+  public List<Cluster> getMultimediaRepresentation() {
+     return this.multimediaRepresentation ;
+  }
 
-    public void setStructuredConfoundingFactors(List<Cluster> structuredConfoundingFactors) {
-        this.structuredConfoundingFactors = structuredConfoundingFactors;
-    }
+  public void setStructuredConfoundingFactors(List<Cluster> structuredConfoundingFactors) {
+     this.structuredConfoundingFactors = structuredConfoundingFactors;
+  }
 
-    public List<Cluster> getStructuredConfoundingFactors() {
-        return this.structuredConfoundingFactors;
-    }
+  public List<Cluster> getStructuredConfoundingFactors() {
+     return this.structuredConfoundingFactors ;
+  }
 
-    public void setStructuredTestDiagnosis(List<Cluster> structuredTestDiagnosis) {
-        this.structuredTestDiagnosis = structuredTestDiagnosis;
-    }
+  public void setTimeValue(TemporalAccessor timeValue) {
+     this.timeValue = timeValue;
+  }
 
-    public List<Cluster> getStructuredTestDiagnosis() {
-        return this.structuredTestDiagnosis;
-    }
+  public TemporalAccessor getTimeValue() {
+     return this.timeValue ;
+  }
 
-    public void setExtension(List<Cluster> extension) {
-        this.extension = extension;
-    }
+  public void setOriginValue(TemporalAccessor originValue) {
+     this.originValue = originValue;
+  }
 
-    public List<Cluster> getExtension() {
-        return this.extension;
-    }
+  public TemporalAccessor getOriginValue() {
+     return this.originValue ;
+  }
 
-    public void setTimeValue(TemporalAccessor timeValue) {
-        this.timeValue = timeValue;
-    }
+  public void setReceivingLaboratory(Cluster receivingLaboratory) {
+     this.receivingLaboratory = receivingLaboratory;
+  }
 
-    public TemporalAccessor getTimeValue() {
-        return this.timeValue;
-    }
+  public Cluster getReceivingLaboratory() {
+     return this.receivingLaboratory ;
+  }
 
-    public void setSpecimenDetail(List<Cluster> specimenDetail) {
-        this.specimenDetail = specimenDetail;
-    }
+  public void setTestRequestDetails(
+      List<LatestCovid19TestTestRequestDetailsCluster> testRequestDetails) {
+     this.testRequestDetails = testRequestDetails;
+  }
 
-    public List<Cluster> getSpecimenDetail() {
-        return this.specimenDetail;
-    }
+  public List<LatestCovid19TestTestRequestDetailsCluster> getTestRequestDetails() {
+     return this.testRequestDetails ;
+  }
 
-    public void setTestResult(List<Cluster> testResult) {
-        this.testResult = testResult;
-    }
+  public void setTestingDetails(List<Cluster> testingDetails) {
+     this.testingDetails = testingDetails;
+  }
 
-    public List<Cluster> getTestResult() {
-        return this.testResult;
-    }
+  public List<Cluster> getTestingDetails() {
+     return this.testingDetails ;
+  }
 
-    public void setSubject(PartyProxy subject) {
-        this.subject = subject;
-    }
+  public void setExtension(List<Cluster> extension) {
+     this.extension = extension;
+  }
 
-    public PartyProxy getSubject() {
-        return this.subject;
-    }
+  public List<Cluster> getExtension() {
+     return this.extension ;
+  }
 
-    public void setOriginValue(TemporalAccessor originValue) {
-        this.originValue = originValue;
-    }
+  public void setSubject(PartyProxy subject) {
+     this.subject = subject;
+  }
 
-    public TemporalAccessor getOriginValue() {
-        return this.originValue;
-    }
+  public PartyProxy getSubject() {
+     return this.subject ;
+  }
 
-    public void setOverallTestStatus(LatestCovid19TestOverallTestStatusChoice overallTestStatus) {
-        this.overallTestStatus = overallTestStatus;
-    }
+  public void setLanguage(Language language) {
+     this.language = language;
+  }
 
-    public LatestCovid19TestOverallTestStatusChoice getOverallTestStatus() {
-        return this.overallTestStatus;
-    }
+  public Language getLanguage() {
+     return this.language ;
+  }
 
-    public void setReceivingLaboratory(Cluster receivingLaboratory) {
-        this.receivingLaboratory = receivingLaboratory;
-    }
+  public void setOverallTestStatus(LatestCovid19TestOverallTestStatusChoice overallTestStatus) {
+     this.overallTestStatus = overallTestStatus;
+  }
 
-    public Cluster getReceivingLaboratory() {
-        return this.receivingLaboratory;
-    }
+  public LatestCovid19TestOverallTestStatusChoice getOverallTestStatus() {
+     return this.overallTestStatus ;
+  }
 }

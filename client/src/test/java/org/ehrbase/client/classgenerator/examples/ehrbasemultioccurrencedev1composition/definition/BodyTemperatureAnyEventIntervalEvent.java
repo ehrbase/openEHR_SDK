@@ -1,127 +1,129 @@
 package org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1composition.definition;
 
 import com.nedap.archie.rm.datastructures.Cluster;
+import java.lang.Double;
+import java.lang.Long;
+import java.lang.String;
+import java.time.temporal.TemporalAccessor;
+import java.time.temporal.TemporalAmount;
+import java.util.List;
 import org.ehrbase.client.annotations.Choice;
 import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.OptionFor;
 import org.ehrbase.client.annotations.Path;
-import org.ehrbase.client.classgenerator.examples.shareddefinition.MathFunctionDefiningcode;
-
-import java.time.temporal.TemporalAccessor;
-import java.time.temporal.TemporalAmount;
-import java.util.List;
+import org.ehrbase.client.classgenerator.shareddefinition.MathFunction;
 
 @Entity
 @OptionFor("INTERVAL_EVENT")
 public class BodyTemperatureAnyEventIntervalEvent implements BodyTemperatureAnyEventChoice {
-    @Path("/time|value")
-    private TemporalAccessor timeValue;
+  @Path("/data[at0001]/items[at0004]/value|magnitude")
+  private Double temperatureMagnitude;
 
-    @Path("/data[at0001]/items[at0004]/value|magnitude")
-    private Double temperatureMagnitude;
+  @Path("/data[at0001]/items[at0004]/value|units")
+  private String temperatureUnits;
 
-    @Path("/data[at0001]/items[at0004]/value|units")
-    private String temperatureUnits;
+  @Path("/state[at0029]/items[at0041]/value|value")
+  private String descriptionOfThermalStressValue;
 
-    @Path("/state[at0029]/items[at0041]/value|value")
-    private String descriptionOfThermalStressValue;
+  @Path("/state[at0029]/items[at0065]/value|magnitude")
+  private Long currentDayOfMenstrualCycleMagnitude;
 
-    @Path("/state[at0029]/items[at0057]")
-    private Cluster exertion;
+  @Path("/state[at0029]/items[at0056]")
+  private List<Cluster> environmentalConditions;
 
-    @Path("/state[at0029]/items[at0065]/value|magnitude")
-    private Long currentDayOfMenstrualCycleMagnitude;
+  @Path("/state[at0029]/items[at0057]")
+  private Cluster exertion;
 
-    @Path("/state[at0029]/items[at0056]")
-    private List<Cluster> environmentalConditions;
+  @Path("/time|value")
+  private TemporalAccessor timeValue;
 
-    @Path("/width|value")
-    private TemporalAmount widthValue;
+  @Path("/width|value")
+  private TemporalAmount widthValue;
 
-    @Path("/state[at0029]/items[at0030]/value")
-    @Choice
-    private BodyTemperatureBodyExposureChoice2 bodyExposure;
+  @Path("/math_function|defining_code")
+  private MathFunction mathFunctionDefiningCode;
 
-    @Path("/math_function|defining_code")
-    private MathFunctionDefiningcode mathFunctionDefiningcode;
+  @Path("/state[at0029]/items[at0030]/value")
+  @Choice
+  private BodyTemperatureBodyExposureChoice bodyExposure;
 
-    public void setTimeValue(TemporalAccessor timeValue) {
-        this.timeValue = timeValue;
-    }
+  public void setTemperatureMagnitude(Double temperatureMagnitude) {
+     this.temperatureMagnitude = temperatureMagnitude;
+  }
 
-    public TemporalAccessor getTimeValue() {
-        return this.timeValue;
-    }
+  public Double getTemperatureMagnitude() {
+     return this.temperatureMagnitude ;
+  }
 
-    public void setTemperatureMagnitude(Double temperatureMagnitude) {
-        this.temperatureMagnitude = temperatureMagnitude;
-    }
+  public void setTemperatureUnits(String temperatureUnits) {
+     this.temperatureUnits = temperatureUnits;
+  }
 
-    public Double getTemperatureMagnitude() {
-        return this.temperatureMagnitude;
-    }
+  public String getTemperatureUnits() {
+     return this.temperatureUnits ;
+  }
 
-    public void setTemperatureUnits(String temperatureUnits) {
-        this.temperatureUnits = temperatureUnits;
-    }
+  public void setDescriptionOfThermalStressValue(String descriptionOfThermalStressValue) {
+     this.descriptionOfThermalStressValue = descriptionOfThermalStressValue;
+  }
 
-    public String getTemperatureUnits() {
-        return this.temperatureUnits;
-    }
+  public String getDescriptionOfThermalStressValue() {
+     return this.descriptionOfThermalStressValue ;
+  }
 
-    public void setDescriptionOfThermalStressValue(String descriptionOfThermalStressValue) {
-        this.descriptionOfThermalStressValue = descriptionOfThermalStressValue;
-    }
+  public void setCurrentDayOfMenstrualCycleMagnitude(Long currentDayOfMenstrualCycleMagnitude) {
+     this.currentDayOfMenstrualCycleMagnitude = currentDayOfMenstrualCycleMagnitude;
+  }
 
-    public String getDescriptionOfThermalStressValue() {
-        return this.descriptionOfThermalStressValue;
-    }
+  public Long getCurrentDayOfMenstrualCycleMagnitude() {
+     return this.currentDayOfMenstrualCycleMagnitude ;
+  }
 
-    public void setExertion(Cluster exertion) {
-        this.exertion = exertion;
-    }
+  public void setEnvironmentalConditions(List<Cluster> environmentalConditions) {
+     this.environmentalConditions = environmentalConditions;
+  }
 
-    public Cluster getExertion() {
-        return this.exertion;
-    }
+  public List<Cluster> getEnvironmentalConditions() {
+     return this.environmentalConditions ;
+  }
 
-    public void setCurrentDayOfMenstrualCycleMagnitude(Long currentDayOfMenstrualCycleMagnitude) {
-        this.currentDayOfMenstrualCycleMagnitude = currentDayOfMenstrualCycleMagnitude;
-    }
+  public void setExertion(Cluster exertion) {
+     this.exertion = exertion;
+  }
 
-    public Long getCurrentDayOfMenstrualCycleMagnitude() {
-        return this.currentDayOfMenstrualCycleMagnitude;
-    }
+  public Cluster getExertion() {
+     return this.exertion ;
+  }
 
-    public void setEnvironmentalConditions(List<Cluster> environmentalConditions) {
-        this.environmentalConditions = environmentalConditions;
-    }
+  public void setTimeValue(TemporalAccessor timeValue) {
+     this.timeValue = timeValue;
+  }
 
-    public List<Cluster> getEnvironmentalConditions() {
-        return this.environmentalConditions;
-    }
+  public TemporalAccessor getTimeValue() {
+     return this.timeValue ;
+  }
 
-    public void setWidthValue(TemporalAmount widthValue) {
-        this.widthValue = widthValue;
-    }
+  public void setWidthValue(TemporalAmount widthValue) {
+     this.widthValue = widthValue;
+  }
 
-    public TemporalAmount getWidthValue() {
-        return this.widthValue;
-    }
+  public TemporalAmount getWidthValue() {
+     return this.widthValue ;
+  }
 
-    public void setBodyExposure(BodyTemperatureBodyExposureChoice2 bodyExposure) {
-        this.bodyExposure = bodyExposure;
-    }
+  public void setMathFunctionDefiningCode(MathFunction mathFunctionDefiningCode) {
+     this.mathFunctionDefiningCode = mathFunctionDefiningCode;
+  }
 
-    public BodyTemperatureBodyExposureChoice2 getBodyExposure() {
-        return this.bodyExposure;
-    }
+  public MathFunction getMathFunctionDefiningCode() {
+     return this.mathFunctionDefiningCode ;
+  }
 
-    public void setMathFunctionDefiningcode(MathFunctionDefiningcode mathFunctionDefiningcode) {
-        this.mathFunctionDefiningcode = mathFunctionDefiningcode;
-    }
+  public void setBodyExposure(BodyTemperatureBodyExposureChoice bodyExposure) {
+     this.bodyExposure = bodyExposure;
+  }
 
-    public MathFunctionDefiningcode getMathFunctionDefiningcode() {
-        return this.mathFunctionDefiningcode;
-    }
+  public BodyTemperatureBodyExposureChoice getBodyExposure() {
+     return this.bodyExposure ;
+  }
 }

@@ -183,8 +183,8 @@ public class OPTParserTest {
                         new Tuple("local", "at0006:value1;at0007:value2;at0008:value3"),
                         new Tuple("local", ""),
                         new Tuple("SNOMED-CT", ""),
-                        new Tuple(null, "at0003:Planned;at0004:Active;at0005:Completed"),
-                        new Tuple(null, "526:planned;245:active;532:completed")
+                        new Tuple("openehr", "at0003:Planned;at0004:Active;at0005:Completed"),
+                        new Tuple("openehr", "526:planned;245:active;532:completed")
                 );
 
         List<String> errors = compareWebTemplate(actual, expected);

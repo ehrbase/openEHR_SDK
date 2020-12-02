@@ -1,80 +1,77 @@
 package org.ehrbase.client.classgenerator.examples.coronaanamnesecomposition.definition;
 
-import org.ehrbase.client.annotations.Entity;
-import org.ehrbase.client.annotations.OptionFor;
-import org.ehrbase.client.annotations.Path;
-import org.ehrbase.client.classgenerator.examples.shareddefinition.MathFunctionDefiningcode;
-
 import java.time.temporal.TemporalAccessor;
 import java.time.temporal.TemporalAmount;
 import java.util.List;
+import org.ehrbase.client.annotations.Entity;
+import org.ehrbase.client.annotations.Path;
+import org.ehrbase.client.classgenerator.shareddefinition.MathFunction;
 
 @Entity
-@OptionFor("INTERVAL_EVENT")
-public class ReisefallBeliebigesIntervallereignisIntervalEvent implements ReisefallBeliebigesIntervallereignisChoice {
-    @Path("/time|value")
-    private TemporalAccessor timeValue;
+public class ReisefallBeliebigesIntervallereignisIntervalEvent {
+  @Path("/data[at0003]/items[at0004 and name/value='Letzte Reise?']/value|defining_code")
+  private LetzteReiseDefiningCode letzteReiseDefiningCode;
 
-    @Path("/data[at0003]/items[at0004]/value|defining_code")
-    private LetzteReiseDefiningcode letzteReiseDefiningcode;
+  @Path("/data[at0003]/items[at0026]/value|defining_code")
+  private InlandAuslandDefiningCode inlandAuslandDefiningCode;
 
-    @Path("/math_function|defining_code")
-    private MathFunctionDefiningcode mathFunctionDefiningcode;
+  @Path("/data[at0003]/items[at0008]")
+  private List<ReisefallBestimmteReiseCluster> bestimmteReise;
 
-    @Path("/data[at0003]/items[at0008]")
-    private List<ReisefallBestimmteReiseCluster> bestimmteReise;
+  @Path("/math_function|defining_code")
+  private MathFunction mathFunctionDefiningCode;
 
-    @Path("/width|value")
-    private TemporalAmount widthValue;
+  @Path("/width|value")
+  private TemporalAmount widthValue;
 
-    @Path("/data[at0003]/items[at0026]/value|defining_code")
-    private InlandAuslandDefiningcode inlandAuslandDefiningcode;
+  @Path("/time|value")
+  private TemporalAccessor timeValue;
 
-    public void setTimeValue(TemporalAccessor timeValue) {
-        this.timeValue = timeValue;
-    }
+  public void setLetzteReiseDefiningCode(LetzteReiseDefiningCode letzteReiseDefiningCode) {
+     this.letzteReiseDefiningCode = letzteReiseDefiningCode;
+  }
 
-    public TemporalAccessor getTimeValue() {
-        return this.timeValue;
-    }
+  public LetzteReiseDefiningCode getLetzteReiseDefiningCode() {
+     return this.letzteReiseDefiningCode ;
+  }
 
-    public void setLetzteReiseDefiningcode(LetzteReiseDefiningcode letzteReiseDefiningcode) {
-        this.letzteReiseDefiningcode = letzteReiseDefiningcode;
-    }
+  public void setInlandAuslandDefiningCode(InlandAuslandDefiningCode inlandAuslandDefiningCode) {
+     this.inlandAuslandDefiningCode = inlandAuslandDefiningCode;
+  }
 
-    public LetzteReiseDefiningcode getLetzteReiseDefiningcode() {
-        return this.letzteReiseDefiningcode;
-    }
+  public InlandAuslandDefiningCode getInlandAuslandDefiningCode() {
+     return this.inlandAuslandDefiningCode ;
+  }
 
-    public void setMathFunctionDefiningcode(MathFunctionDefiningcode mathFunctionDefiningcode) {
-        this.mathFunctionDefiningcode = mathFunctionDefiningcode;
-    }
+  public void setBestimmteReise(List<ReisefallBestimmteReiseCluster> bestimmteReise) {
+     this.bestimmteReise = bestimmteReise;
+  }
 
-    public MathFunctionDefiningcode getMathFunctionDefiningcode() {
-        return this.mathFunctionDefiningcode;
-    }
+  public List<ReisefallBestimmteReiseCluster> getBestimmteReise() {
+     return this.bestimmteReise ;
+  }
 
-    public void setBestimmteReise(List<ReisefallBestimmteReiseCluster> bestimmteReise) {
-        this.bestimmteReise = bestimmteReise;
-    }
+  public void setMathFunctionDefiningCode(MathFunction mathFunctionDefiningCode) {
+     this.mathFunctionDefiningCode = mathFunctionDefiningCode;
+  }
 
-    public List<ReisefallBestimmteReiseCluster> getBestimmteReise() {
-        return this.bestimmteReise;
-    }
+  public MathFunction getMathFunctionDefiningCode() {
+     return this.mathFunctionDefiningCode ;
+  }
 
-    public void setWidthValue(TemporalAmount widthValue) {
-        this.widthValue = widthValue;
-    }
+  public void setWidthValue(TemporalAmount widthValue) {
+     this.widthValue = widthValue;
+  }
 
-    public TemporalAmount getWidthValue() {
-        return this.widthValue;
-    }
+  public TemporalAmount getWidthValue() {
+     return this.widthValue ;
+  }
 
-    public void setInlandAuslandDefiningcode(InlandAuslandDefiningcode inlandAuslandDefiningcode) {
-        this.inlandAuslandDefiningcode = inlandAuslandDefiningcode;
-    }
+  public void setTimeValue(TemporalAccessor timeValue) {
+     this.timeValue = timeValue;
+  }
 
-    public InlandAuslandDefiningcode getInlandAuslandDefiningcode() {
-        return this.inlandAuslandDefiningcode;
-    }
+  public TemporalAccessor getTimeValue() {
+     return this.timeValue ;
+  }
 }

@@ -3,135 +3,134 @@ package org.ehrbase.client.classgenerator.examples.openereactcarecomposition.def
 import com.nedap.archie.rm.datastructures.Cluster;
 import com.nedap.archie.rm.datavalues.quantity.DvProportion;
 import com.nedap.archie.rm.generic.PartyProxy;
+import java.time.temporal.TemporalAccessor;
+import java.util.List;
 import org.ehrbase.client.annotations.Archetype;
 import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.Path;
-import org.ehrbase.client.classgenerator.examples.shareddefinition.Language;
-
-import java.time.temporal.TemporalAccessor;
-import java.util.List;
+import org.ehrbase.client.classgenerator.shareddefinition.Language;
 
 @Entity
 @Archetype("openEHR-EHR-OBSERVATION.pulse_oximetry.v1")
 public class PulseOximetryObservation {
-    @Path("/data[at0001]/events[at0002]/state[at0014]/items[at0034]")
-    private Cluster exertion;
+  @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0006]/value")
+  private DvProportion spo;
 
-    @Path("/protocol[at0007]/items[at0018]")
-    private Cluster oximetryDevice;
+  @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0054]")
+  private List<Cluster> waveform;
 
-    @Path("/data[at0001]/events[at0002]/state[at0014]/items[at0015]")
-    private Cluster inspiredOxygen;
+  @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0060]")
+  private List<Cluster> multimediaImage;
 
-    @Path("/protocol[at0007]/items[at0059]")
-    private List<Cluster> extension;
+  @Path("/data[at0001]/events[at0002]/state[at0014]/items[at0034]")
+  private Cluster exertion;
 
-    @Path("/language")
-    private Language language;
+  @Path("/data[at0001]/events[at0002]/state[at0014]/items[at0015]")
+  private Cluster inspiredOxygen;
 
-    @Path("/data[at0001]/events[at0002]/time|value")
-    private TemporalAccessor timeValue;
+  @Path("/data[at0001]/events[at0002]/time|value")
+  private TemporalAccessor timeValue;
 
-    @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0054]")
-    private List<Cluster> waveform;
+  @Path("/data[at0001]/origin|value")
+  private TemporalAccessor originValue;
 
-    @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0006]/value")
-    private DvProportion spo;
+  @Path("/protocol[at0007]/items[at0018]")
+  private Cluster oximetryDevice;
 
-    @Path("/subject")
-    private PartyProxy subject;
+  @Path("/protocol[at0007]/items[at0059]")
+  private List<Cluster> extension;
 
-    @Path("/data[at0001]/origin|value")
-    private TemporalAccessor originValue;
+  @Path("/subject")
+  private PartyProxy subject;
 
-    @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0060]")
-    private List<Cluster> multimediaImage;
+  @Path("/language")
+  private Language language;
 
-    public void setExertion(Cluster exertion) {
-        this.exertion = exertion;
-    }
+  public void setSpo(DvProportion spo) {
+     this.spo = spo;
+  }
 
-    public Cluster getExertion() {
-        return this.exertion;
-    }
+  public DvProportion getSpo() {
+     return this.spo ;
+  }
 
-    public void setOximetryDevice(Cluster oximetryDevice) {
-        this.oximetryDevice = oximetryDevice;
-    }
+  public void setWaveform(List<Cluster> waveform) {
+     this.waveform = waveform;
+  }
 
-    public Cluster getOximetryDevice() {
-        return this.oximetryDevice;
-    }
+  public List<Cluster> getWaveform() {
+     return this.waveform ;
+  }
 
-    public void setInspiredOxygen(Cluster inspiredOxygen) {
-        this.inspiredOxygen = inspiredOxygen;
-    }
+  public void setMultimediaImage(List<Cluster> multimediaImage) {
+     this.multimediaImage = multimediaImage;
+  }
 
-    public Cluster getInspiredOxygen() {
-        return this.inspiredOxygen;
-    }
+  public List<Cluster> getMultimediaImage() {
+     return this.multimediaImage ;
+  }
 
-    public void setExtension(List<Cluster> extension) {
-        this.extension = extension;
-    }
+  public void setExertion(Cluster exertion) {
+     this.exertion = exertion;
+  }
 
-    public List<Cluster> getExtension() {
-        return this.extension;
-    }
+  public Cluster getExertion() {
+     return this.exertion ;
+  }
 
-    public void setLanguage(Language language) {
-        this.language = language;
-    }
+  public void setInspiredOxygen(Cluster inspiredOxygen) {
+     this.inspiredOxygen = inspiredOxygen;
+  }
 
-    public Language getLanguage() {
-        return this.language;
-    }
+  public Cluster getInspiredOxygen() {
+     return this.inspiredOxygen ;
+  }
 
-    public void setTimeValue(TemporalAccessor timeValue) {
-        this.timeValue = timeValue;
-    }
+  public void setTimeValue(TemporalAccessor timeValue) {
+     this.timeValue = timeValue;
+  }
 
-    public TemporalAccessor getTimeValue() {
-        return this.timeValue;
-    }
+  public TemporalAccessor getTimeValue() {
+     return this.timeValue ;
+  }
 
-    public void setWaveform(List<Cluster> waveform) {
-        this.waveform = waveform;
-    }
+  public void setOriginValue(TemporalAccessor originValue) {
+     this.originValue = originValue;
+  }
 
-    public List<Cluster> getWaveform() {
-        return this.waveform;
-    }
+  public TemporalAccessor getOriginValue() {
+     return this.originValue ;
+  }
 
-    public void setSpo(DvProportion spo) {
-        this.spo = spo;
-    }
+  public void setOximetryDevice(Cluster oximetryDevice) {
+     this.oximetryDevice = oximetryDevice;
+  }
 
-    public DvProportion getSpo() {
-        return this.spo;
-    }
+  public Cluster getOximetryDevice() {
+     return this.oximetryDevice ;
+  }
 
-    public void setSubject(PartyProxy subject) {
-        this.subject = subject;
-    }
+  public void setExtension(List<Cluster> extension) {
+     this.extension = extension;
+  }
 
-    public PartyProxy getSubject() {
-        return this.subject;
-    }
+  public List<Cluster> getExtension() {
+     return this.extension ;
+  }
 
-    public void setOriginValue(TemporalAccessor originValue) {
-        this.originValue = originValue;
-    }
+  public void setSubject(PartyProxy subject) {
+     this.subject = subject;
+  }
 
-    public TemporalAccessor getOriginValue() {
-        return this.originValue;
-    }
+  public PartyProxy getSubject() {
+     return this.subject ;
+  }
 
-    public void setMultimediaImage(List<Cluster> multimediaImage) {
-        this.multimediaImage = multimediaImage;
-    }
+  public void setLanguage(Language language) {
+     this.language = language;
+  }
 
-    public List<Cluster> getMultimediaImage() {
-        return this.multimediaImage;
-    }
+  public Language getLanguage() {
+     return this.language ;
+  }
 }

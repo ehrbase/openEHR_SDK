@@ -22,7 +22,6 @@ import org.ehrbase.client.exception.WrongStatusCodeException;
 import org.ehrbase.response.openehr.TemplatesResponseData;
 import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
 
-import java.util.List;
 import java.util.Optional;
 
 public interface TemplateEndpoint {

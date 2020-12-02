@@ -24,6 +24,7 @@ import com.nedap.archie.rm.archetyped.Locatable;
 import com.nedap.archie.rm.archetyped.Pathable;
 import com.nedap.archie.rm.composition.Composition;
 import com.nedap.archie.rm.composition.EventContext;
+import com.nedap.archie.rm.composition.IsmTransition;
 import com.nedap.archie.rm.datastructures.Element;
 import com.nedap.archie.rm.datavalues.quantity.DvInterval;
 import com.nedap.archie.rminfo.ArchieRMInfoLookup;
@@ -178,7 +179,8 @@ public abstract class Walker<T> {
     return typeInfo != null
         && (Locatable.class.isAssignableFrom(typeInfo.getJavaClass())
             || EventContext.class.isAssignableFrom(typeInfo.getJavaClass())
-            || DvInterval.class.isAssignableFrom(typeInfo.getJavaClass()));
+            || DvInterval.class.isAssignableFrom(typeInfo.getJavaClass())
+    || IsmTransition.class.isAssignableFrom(typeInfo.getJavaClass()));
   }
 
   protected abstract T extract(
@@ -267,10 +269,15 @@ public abstract class Walker<T> {
         }
         parent = ((Pathable) currentRM).itemAtPath(parentAql);
       } else if (currentRM instanceof DvInterval) {
-        child =
-            relativeAql.contains("lower")
-                ? ((DvInterval<?>) currentRM).getLower()
-                : ((DvInterval<?>) currentRM).getUpper();
+        if (relativeAql.contains("upper_included")) {
+          child = new RmBoolean(((DvInterval<?>) currentRM).isUpperIncluded());
+        } else if (relativeAql.contains("lower_included")) {
+          child = new RmBoolean(((DvInterval<?>) currentRM).isLowerIncluded());
+        } else if (relativeAql.contains("lower")) {
+          child = ((DvInterval<?>) currentRM).getLower();
+        } else if (relativeAql.contains("upper")) {
+          child = ((DvInterval<?>) currentRM).getUpper();
+        }
         parent = currentRM;
       } else {
         throw new SdkException(

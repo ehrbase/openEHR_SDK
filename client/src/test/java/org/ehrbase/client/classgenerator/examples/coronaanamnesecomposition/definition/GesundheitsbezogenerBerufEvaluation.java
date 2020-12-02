@@ -2,79 +2,79 @@ package org.ehrbase.client.classgenerator.examples.coronaanamnesecomposition.def
 
 import com.nedap.archie.rm.datastructures.Cluster;
 import com.nedap.archie.rm.generic.PartyProxy;
+import java.lang.String;
+import java.util.List;
 import org.ehrbase.client.annotations.Archetype;
 import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.Path;
-import org.ehrbase.client.classgenerator.examples.shareddefinition.Language;
-
-import java.util.List;
+import org.ehrbase.client.classgenerator.shareddefinition.Language;
 
 @Entity
 @Archetype("openEHR-EHR-EVALUATION.occupation_summary.v1")
 public class GesundheitsbezogenerBerufEvaluation {
-    @Path("/data[at0001]/items[at0004]/value|value")
-    private String beschaftigungsstatusValue;
+  @Path("/data[at0001]/items[at0004]/value|value")
+  private String beschaftigungsstatusValue;
 
-    @Path("/subject")
-    private PartyProxy subject;
+  @Path("/data[at0001]/items[openEHR-EHR-CLUSTER.occupation_record.v1]")
+  private List<BeschaftigungCluster> beschaftigung;
 
-    @Path("/language")
-    private Language language;
+  @Path("/data[at0001]/items[at0005]")
+  private List<Cluster> zusatzlicheAngaben;
 
-    @Path("/data[at0001]/items[openEHR-EHR-CLUSTER.occupation_record.v1]")
-    private List<BeschaftigungCluster> beschaftigung;
+  @Path("/protocol[at0007]/items[at0008]")
+  private List<Cluster> erweiterung;
 
-    @Path("/data[at0001]/items[at0005]")
-    private List<Cluster> zusatzlicheAngaben;
+  @Path("/subject")
+  private PartyProxy subject;
 
-    @Path("/protocol[at0007]/items[at0008]")
-    private List<Cluster> erweiterung;
+  @Path("/language")
+  private Language language;
 
-    public void setBeschaftigungsstatusValue(String beschaftigungsstatusValue) {
-        this.beschaftigungsstatusValue = beschaftigungsstatusValue;
-    }
+  public void setBeschaftigungsstatusValue(String beschaftigungsstatusValue) {
+     this.beschaftigungsstatusValue = beschaftigungsstatusValue;
+  }
 
-    public String getBeschaftigungsstatusValue() {
-        return this.beschaftigungsstatusValue;
-    }
+  public String getBeschaftigungsstatusValue() {
+     return this.beschaftigungsstatusValue ;
+  }
 
-    public void setSubject(PartyProxy subject) {
-        this.subject = subject;
-    }
+  public void setBeschaftigung(List<BeschaftigungCluster> beschaftigung) {
+     this.beschaftigung = beschaftigung;
+  }
 
-    public PartyProxy getSubject() {
-        return this.subject;
-    }
+  public List<BeschaftigungCluster> getBeschaftigung() {
+     return this.beschaftigung ;
+  }
 
-    public void setLanguage(Language language) {
-        this.language = language;
-    }
+  public void setZusatzlicheAngaben(List<Cluster> zusatzlicheAngaben) {
+     this.zusatzlicheAngaben = zusatzlicheAngaben;
+  }
 
-    public Language getLanguage() {
-        return this.language;
-    }
+  public List<Cluster> getZusatzlicheAngaben() {
+     return this.zusatzlicheAngaben ;
+  }
 
-    public void setBeschaftigung(List<BeschaftigungCluster> beschaftigung) {
-        this.beschaftigung = beschaftigung;
-    }
+  public void setErweiterung(List<Cluster> erweiterung) {
+     this.erweiterung = erweiterung;
+  }
 
-    public List<BeschaftigungCluster> getBeschaftigung() {
-        return this.beschaftigung;
-    }
+  public List<Cluster> getErweiterung() {
+     return this.erweiterung ;
+  }
 
-    public void setZusatzlicheAngaben(List<Cluster> zusatzlicheAngaben) {
-        this.zusatzlicheAngaben = zusatzlicheAngaben;
-    }
+  public void setSubject(PartyProxy subject) {
+     this.subject = subject;
+  }
 
-    public List<Cluster> getZusatzlicheAngaben() {
-        return this.zusatzlicheAngaben;
-    }
+  public PartyProxy getSubject() {
+     return this.subject ;
+  }
 
-    public void setErweiterung(List<Cluster> erweiterung) {
-        this.erweiterung = erweiterung;
-    }
+  public void setLanguage(Language language) {
+     this.language = language;
+  }
 
-    public List<Cluster> getErweiterung() {
-        return this.erweiterung;
-    }
+  public Language getLanguage() {
+     return this.language ;
+  }
 }

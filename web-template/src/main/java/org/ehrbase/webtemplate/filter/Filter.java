@@ -22,35 +22,70 @@ package org.ehrbase.webtemplate.filter;
 import com.nedap.archie.rminfo.ArchieRMInfoLookup;
 import com.nedap.archie.rminfo.RMTypeInfo;
 import org.apache.commons.collections4.SetUtils;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.ehrbase.serialisation.util.SnakeCase;
 import org.ehrbase.util.reflection.ReflectionHelper;
+import org.ehrbase.webtemplate.model.FilteredWebTemplate;
 import org.ehrbase.webtemplate.model.WebTemplate;
 import org.ehrbase.webtemplate.model.WebTemplateNode;
 import org.ehrbase.webtemplate.parser.OPTParser;
 import org.ehrbase.webtemplate.parser.config.RmIntrospectConfig;
 
+import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Deque;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class Filter {
+public class Filter implements WebTemplateFilter {
 
     private static final Map<Class<?>, RmIntrospectConfig> configMap = ReflectionHelper.buildMap(RmIntrospectConfig.class);
     public static final ArchieRMInfoLookup ARCHIE_RM_INFO_LOOKUP = ArchieRMInfoLookup.getInstance();
 
-    public WebTemplate filter(WebTemplate webTemplate) {
-        WebTemplate clone = new WebTemplate(webTemplate);
-        List<WebTemplateNode> filteredChildren = filter(clone.getTree(), webTemplate, null);
-        clone.setTree(filteredChildren.get(0));
+    @Override
+    public FilteredWebTemplate filter(WebTemplate webTemplate) {
+        FilteredWebTemplate clone = new FilteredWebTemplate(webTemplate);
+        Pair<List<WebTemplateNode>, Map<WebTemplateNode, Deque<WebTemplateNode>>> filter = filter(clone.getTree(), webTemplate, null);
+        clone.setTree(filter.getLeft().get(0));
+        clone.setFilteredNodeMap(filter.getRight());
 
         return clone;
     }
 
-    private List<WebTemplateNode> filter(WebTemplateNode node, WebTemplate context, WebTemplateNode parent) {
+    protected Pair< List<WebTemplateNode>, Map<WebTemplateNode, Deque<WebTemplateNode>> > filter(WebTemplateNode node, WebTemplate context, WebTemplateNode parent) {
+      WebTemplateNode oldNode = new WebTemplateNode(node);
+       preHandle(node);
         List<WebTemplateNode> nodes;
+        List<WebTemplateNode>  filteredChildren = new ArrayList<>();
+        Map<WebTemplateNode,Deque<WebTemplateNode> > nodeMap = new HashMap<>();
+       node.getChildren().stream().map(n -> filter(n, context, node)).forEach(p -> {
+           filteredChildren.addAll(p.getLeft());
+           nodeMap.putAll(p.getRight());
+       });
+        node.getChildren().clear();
+        node.getChildren().addAll(filteredChildren);
+        if (skip(node, context, parent)) {
+            nodes = filteredChildren;
+           for( WebTemplateNode child: filteredChildren){
+               nodeMap.get(child).addLast(oldNode);
+           }
+        } else {
+            nodes = Collections.singletonList(node);
+            nodeMap.put(node,new ArrayDeque<>());
+
+        }
+        OPTParser.makeIdUnique(node);
+        return new ImmutablePair<>(nodes, nodeMap);
+    }
+
+    protected void preHandle(WebTemplateNode node) {
+
         List<WebTemplateNode> ismTransitionList = node.getChildren().stream()
                 .filter(n -> "ISM_TRANSITION".equals(n.getRmType()))
                 .collect(Collectors.toList());
@@ -64,21 +99,12 @@ public class Filter {
             node.getChildren().clear();
             node.getChildren().add(merged);
         }
-
-        if (skip(node, context, parent)) {
-            nodes = node.getChildren().stream().map(n -> filter(n, context, node)).flatMap(List::stream).collect(Collectors.toList());
-
-        } else {
-            nodes = Collections.singletonList(node);
-            List<WebTemplateNode> filteredChildren = node.getChildren().stream().map(n -> filter(n, context, node)).flatMap(List::stream).collect(Collectors.toList());
-            node.getChildren().clear();
-            node.getChildren().addAll(filteredChildren);
-        }
-        OPTParser.makeIdUnique(node);
-        return nodes;
     }
 
-    private boolean skip(WebTemplateNode node, WebTemplate context, WebTemplateNode parent) {
+    protected boolean skip(WebTemplateNode node, WebTemplate context, WebTemplateNode parent) {
+        if (node.isArchetypeSlot()){
+            return true;
+        }
         if (List.of("origin", "participations", "location", "feeder_audit").contains(node.getName())) {
             return true;
         }
@@ -92,6 +118,8 @@ public class Filter {
             attributeNames.add("lower");
             attributeNames.add("upper");
             attributeNames.add("ism_transition");
+
+
             SetUtils.SetView<String> difference = SetUtils.difference(typeInfo.getAttributes().keySet(), attributeNames);
             if (difference.contains(node.getName())) {
                 return true;

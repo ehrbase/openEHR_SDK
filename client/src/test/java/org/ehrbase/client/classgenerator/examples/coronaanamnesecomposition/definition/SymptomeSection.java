@@ -7,104 +7,104 @@ import org.ehrbase.client.annotations.Path;
 @Entity
 @Archetype("openEHR-EHR-SECTION.adhoc.v1")
 public class SymptomeSection {
-    @Path("/items[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0 and name/value='Weitere Symptome']")
-    private WeitereSymptomeObservation weitereSymptome;
+  @Path("/items[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0 and name/value='Husten']")
+  private HustenObservation husten;
 
-    @Path("/items[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0 and name/value='Fieber oder erhöhte Körpertemperatur']")
-    private FieberOderErhohteKorpertemperaturObservation fieberOderErhohteKorpertemperatur;
+  @Path("/items[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0 and name/value='Schnupfen']")
+  private SchnupfenObservation schnupfen;
 
-    @Path("/items[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0 and name/value='Gestörter Geschmackssinn']")
-    private GestorterGeschmackssinnObservation gestorterGeschmackssinn;
+  @Path("/items[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0 and name/value='Heiserkeit']")
+  private HeiserkeitObservation heiserkeit;
 
-    @Path("/items[openEHR-EHR-OBSERVATION.body_temperature.v2]")
-    private KorpertemperaturObservation korpertemperatur;
+  @Path("/items[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0 and name/value='Fieber oder erhöhte Körpertemperatur']")
+  private FieberOderErhohteKorpertemperaturObservation fieberOderErhohteKorpertemperatur;
 
-    @Path("/items[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0 and name/value='Heiserkeit']")
-    private HeiserkeitObservation heiserkeit;
+  @Path("/items[openEHR-EHR-OBSERVATION.body_temperature.v2]")
+  private KorpertemperaturObservation korpertemperatur;
 
-    @Path("/items[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0 and name/value='Husten']")
-    private HustenObservation husten;
+  @Path("/items[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0 and name/value='Gestörter Geruchssinn']")
+  private GestorterGeruchssinnObservation gestorterGeruchssinn;
 
-    @Path("/items[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0 and name/value='Gestörter Geruchssinn']")
-    private GestorterGeruchssinnObservation gestorterGeruchssinn;
+  @Path("/items[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0 and name/value='Gestörter Geschmackssinn']")
+  private GestorterGeschmackssinnObservation gestorterGeschmackssinn;
 
-    @Path("/items[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0 and name/value='Durchfall']")
-    private DurchfallObservation durchfall;
+  @Path("/items[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0 and name/value='Durchfall']")
+  private DurchfallObservation durchfall;
 
-    @Path("/items[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0 and name/value='Schnupfen']")
-    private SchnupfenObservation schnupfen;
+  @Path("/items[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0 and name/value='Weitere Symptome']")
+  private WeitereSymptomeObservation weitereSymptome;
 
-    public void setWeitereSymptome(WeitereSymptomeObservation weitereSymptome) {
-        this.weitereSymptome = weitereSymptome;
-    }
+  public void setHusten(HustenObservation husten) {
+     this.husten = husten;
+  }
 
-    public WeitereSymptomeObservation getWeitereSymptome() {
-        return this.weitereSymptome;
-    }
+  public HustenObservation getHusten() {
+     return this.husten ;
+  }
 
-    public void setFieberOderErhohteKorpertemperatur(
-            FieberOderErhohteKorpertemperaturObservation fieberOderErhohteKorpertemperatur) {
-        this.fieberOderErhohteKorpertemperatur = fieberOderErhohteKorpertemperatur;
-    }
+  public void setSchnupfen(SchnupfenObservation schnupfen) {
+     this.schnupfen = schnupfen;
+  }
 
-    public FieberOderErhohteKorpertemperaturObservation getFieberOderErhohteKorpertemperatur() {
-        return this.fieberOderErhohteKorpertemperatur;
-    }
+  public SchnupfenObservation getSchnupfen() {
+     return this.schnupfen ;
+  }
 
-    public void setGestorterGeschmackssinn(
-            GestorterGeschmackssinnObservation gestorterGeschmackssinn) {
-        this.gestorterGeschmackssinn = gestorterGeschmackssinn;
-    }
+  public void setHeiserkeit(HeiserkeitObservation heiserkeit) {
+     this.heiserkeit = heiserkeit;
+  }
 
-    public GestorterGeschmackssinnObservation getGestorterGeschmackssinn() {
-        return this.gestorterGeschmackssinn;
-    }
+  public HeiserkeitObservation getHeiserkeit() {
+     return this.heiserkeit ;
+  }
 
-    public void setKorpertemperatur(KorpertemperaturObservation korpertemperatur) {
-        this.korpertemperatur = korpertemperatur;
-    }
+  public void setFieberOderErhohteKorpertemperatur(
+      FieberOderErhohteKorpertemperaturObservation fieberOderErhohteKorpertemperatur) {
+     this.fieberOderErhohteKorpertemperatur = fieberOderErhohteKorpertemperatur;
+  }
 
-    public KorpertemperaturObservation getKorpertemperatur() {
-        return this.korpertemperatur;
-    }
+  public FieberOderErhohteKorpertemperaturObservation getFieberOderErhohteKorpertemperatur() {
+     return this.fieberOderErhohteKorpertemperatur ;
+  }
 
-    public void setHeiserkeit(HeiserkeitObservation heiserkeit) {
-        this.heiserkeit = heiserkeit;
-    }
+  public void setKorpertemperatur(KorpertemperaturObservation korpertemperatur) {
+     this.korpertemperatur = korpertemperatur;
+  }
 
-    public HeiserkeitObservation getHeiserkeit() {
-        return this.heiserkeit;
-    }
+  public KorpertemperaturObservation getKorpertemperatur() {
+     return this.korpertemperatur ;
+  }
 
-    public void setHusten(HustenObservation husten) {
-        this.husten = husten;
-    }
+  public void setGestorterGeruchssinn(GestorterGeruchssinnObservation gestorterGeruchssinn) {
+     this.gestorterGeruchssinn = gestorterGeruchssinn;
+  }
 
-    public HustenObservation getHusten() {
-        return this.husten;
-    }
+  public GestorterGeruchssinnObservation getGestorterGeruchssinn() {
+     return this.gestorterGeruchssinn ;
+  }
 
-    public void setGestorterGeruchssinn(GestorterGeruchssinnObservation gestorterGeruchssinn) {
-        this.gestorterGeruchssinn = gestorterGeruchssinn;
-    }
+  public void setGestorterGeschmackssinn(
+      GestorterGeschmackssinnObservation gestorterGeschmackssinn) {
+     this.gestorterGeschmackssinn = gestorterGeschmackssinn;
+  }
 
-    public GestorterGeruchssinnObservation getGestorterGeruchssinn() {
-        return this.gestorterGeruchssinn;
-    }
+  public GestorterGeschmackssinnObservation getGestorterGeschmackssinn() {
+     return this.gestorterGeschmackssinn ;
+  }
 
-    public void setDurchfall(DurchfallObservation durchfall) {
-        this.durchfall = durchfall;
-    }
+  public void setDurchfall(DurchfallObservation durchfall) {
+     this.durchfall = durchfall;
+  }
 
-    public DurchfallObservation getDurchfall() {
-        return this.durchfall;
-    }
+  public DurchfallObservation getDurchfall() {
+     return this.durchfall ;
+  }
 
-    public void setSchnupfen(SchnupfenObservation schnupfen) {
-        this.schnupfen = schnupfen;
-    }
+  public void setWeitereSymptome(WeitereSymptomeObservation weitereSymptome) {
+     this.weitereSymptome = weitereSymptome;
+  }
 
-    public SchnupfenObservation getSchnupfen() {
-        return this.schnupfen;
-    }
+  public WeitereSymptomeObservation getWeitereSymptome() {
+     return this.weitereSymptome ;
+  }
 }

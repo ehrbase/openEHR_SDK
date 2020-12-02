@@ -3,214 +3,214 @@ package org.ehrbase.client.classgenerator.examples.virologischerbefundcompositio
 import com.nedap.archie.rm.datastructures.Cluster;
 import com.nedap.archie.rm.datavalues.DvIdentifier;
 import com.nedap.archie.rm.generic.PartyProxy;
+import java.lang.String;
+import java.time.temporal.TemporalAccessor;
+import java.util.List;
 import org.ehrbase.client.annotations.Archetype;
 import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.Path;
-import org.ehrbase.client.classgenerator.examples.shareddefinition.Language;
-
-import java.time.temporal.TemporalAccessor;
-import java.util.List;
+import org.ehrbase.client.classgenerator.shareddefinition.Language;
 
 @Entity
 @Archetype("openEHR-EHR-OBSERVATION.laboratory_test_result.v1")
 public class BefundObservation {
-    @Path("/protocol[at0004]/items[at0110]")
-    private List<Cluster> testDetails;
+  @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0005]/value|value")
+  private String labortestBezeichnungValue;
 
-    @Path("/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.specimen.v1]")
-    private List<ProbeCluster> probe;
+  @Path("/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.specimen.v1]")
+  private List<ProbeCluster> probe;
 
-    @Path("/language")
-    private Language language;
+  @Path("/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.laboratory_test_panel.v0 and name/value='Kultur']")
+  private List<KulturCluster> kultur;
 
-    @Path("/protocol[at0004]/items[at0094]/items[openEHR-EHR-CLUSTER.location.v1 and name/value='Einsenderstandort']")
-    private EinsenderstandortCluster einsenderstandort;
+  @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0122]")
+  private List<Cluster> strukturierteTestdiagnostik;
 
-    @Path("/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.laboratory_test_panel.v0 and name/value='Kultur']")
-    private List<KulturCluster> kultur;
+  @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0118]")
+  private List<Cluster> multimediaDarstellung;
 
-    @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0118]")
-    private List<Cluster> multimediaDarstellung;
+  @Path("/data[at0001]/events[at0002]/state[at0112]/items[at0114]")
+  private List<Cluster> strukturierteErfassungDerStorfaktoren;
 
-    @Path("/protocol[at0004]/items[at0094]/items[at0062]/value")
-    private DvIdentifier auftragsIdDesAnforderndenEinsendendenSystems;
+  @Path("/data[at0001]/events[at0002]/time|value")
+  private TemporalAccessor timeValue;
 
-    @Path("/protocol[at0004]/items[at0094]/items[at0063]/value")
-    private DvIdentifier auftragsIdEmpfanger;
+  @Path("/data[at0001]/origin|value")
+  private TemporalAccessor originValue;
 
-    @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0005]/value|value")
-    private String labortestBezeichnungValue;
+  @Path("/protocol[at0004]/items[openEHR-EHR-CLUSTER.location.v1 and name/value='Empfängerstandort']")
+  private EmpfangerstandortCluster empfangerstandort;
 
-    @Path("/data[at0001]/events[at0002]/state[at0112]/items[at0114]")
-    private List<Cluster> strukturierteErfassungDerStorfaktoren;
+  @Path("/protocol[at0004]/items[at0094]/items[at0106 and name/value='Anforderung']")
+  private List<BefundAnforderungElement> anforderung;
 
-    @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0122]")
-    private List<Cluster> strukturierteTestdiagnostik;
+  @Path("/protocol[at0004]/items[at0094]/items[at0062]/value")
+  private DvIdentifier auftragsIdDesAnforderndenEinsendendenSystems;
 
-    @Path("/protocol[at0004]/items[openEHR-EHR-CLUSTER.location.v1 and name/value='Empfängerstandort']")
-    private EmpfangerstandortCluster empfangerstandort;
+  @Path("/protocol[at0004]/items[at0094]/items[at0063]/value")
+  private DvIdentifier auftragsIdEmpfanger;
 
-    @Path("/protocol[at0004]/items[at0117]")
-    private List<Cluster> erweiterung;
+  @Path("/protocol[at0004]/items[at0094]/items[openEHR-EHR-CLUSTER.location.v1 and name/value='Einsenderstandort']")
+  private EinsenderstandortCluster einsenderstandort;
 
-    @Path("/data[at0001]/events[at0002]/time|value")
-    private TemporalAccessor timeValue;
+  @Path("/protocol[at0004]/items[at0094]/items[at0035]")
+  private List<Cluster> verteilerliste;
 
-    @Path("/protocol[at0004]/items[at0094]/items[at0106]")
-    private List<EmpfangerstandortAnforderungElement> anforderung;
+  @Path("/protocol[at0004]/items[at0110]")
+  private List<Cluster> testDetails;
 
-    @Path("/subject")
-    private PartyProxy subject;
+  @Path("/protocol[at0004]/items[at0117]")
+  private List<Cluster> erweiterung;
 
-    @Path("/data[at0001]/origin|value")
-    private TemporalAccessor originValue;
+  @Path("/subject")
+  private PartyProxy subject;
 
-    @Path("/protocol[at0004]/items[at0094]/items[at0035]")
-    private List<Cluster> verteilerliste;
+  @Path("/language")
+  private Language language;
 
-    public void setTestDetails(List<Cluster> testDetails) {
-        this.testDetails = testDetails;
-    }
+  public void setLabortestBezeichnungValue(String labortestBezeichnungValue) {
+     this.labortestBezeichnungValue = labortestBezeichnungValue;
+  }
 
-    public List<Cluster> getTestDetails() {
-        return this.testDetails;
-    }
+  public String getLabortestBezeichnungValue() {
+     return this.labortestBezeichnungValue ;
+  }
 
-    public void setProbe(List<ProbeCluster> probe) {
-        this.probe = probe;
-    }
+  public void setProbe(List<ProbeCluster> probe) {
+     this.probe = probe;
+  }
 
-    public List<ProbeCluster> getProbe() {
-        return this.probe;
-    }
+  public List<ProbeCluster> getProbe() {
+     return this.probe ;
+  }
 
-    public void setLanguage(Language language) {
-        this.language = language;
-    }
+  public void setKultur(List<KulturCluster> kultur) {
+     this.kultur = kultur;
+  }
 
-    public Language getLanguage() {
-        return this.language;
-    }
+  public List<KulturCluster> getKultur() {
+     return this.kultur ;
+  }
 
-    public void setEinsenderstandort(EinsenderstandortCluster einsenderstandort) {
-        this.einsenderstandort = einsenderstandort;
-    }
+  public void setStrukturierteTestdiagnostik(List<Cluster> strukturierteTestdiagnostik) {
+     this.strukturierteTestdiagnostik = strukturierteTestdiagnostik;
+  }
 
-    public EinsenderstandortCluster getEinsenderstandort() {
-        return this.einsenderstandort;
-    }
+  public List<Cluster> getStrukturierteTestdiagnostik() {
+     return this.strukturierteTestdiagnostik ;
+  }
 
-    public void setKultur(List<KulturCluster> kultur) {
-        this.kultur = kultur;
-    }
+  public void setMultimediaDarstellung(List<Cluster> multimediaDarstellung) {
+     this.multimediaDarstellung = multimediaDarstellung;
+  }
 
-    public List<KulturCluster> getKultur() {
-        return this.kultur;
-    }
+  public List<Cluster> getMultimediaDarstellung() {
+     return this.multimediaDarstellung ;
+  }
 
-    public void setMultimediaDarstellung(List<Cluster> multimediaDarstellung) {
-        this.multimediaDarstellung = multimediaDarstellung;
-    }
+  public void setStrukturierteErfassungDerStorfaktoren(
+      List<Cluster> strukturierteErfassungDerStorfaktoren) {
+     this.strukturierteErfassungDerStorfaktoren = strukturierteErfassungDerStorfaktoren;
+  }
 
-    public List<Cluster> getMultimediaDarstellung() {
-        return this.multimediaDarstellung;
-    }
+  public List<Cluster> getStrukturierteErfassungDerStorfaktoren() {
+     return this.strukturierteErfassungDerStorfaktoren ;
+  }
 
-    public void setAuftragsIdDesAnforderndenEinsendendenSystems(
-            DvIdentifier auftragsIdDesAnforderndenEinsendendenSystems) {
-        this.auftragsIdDesAnforderndenEinsendendenSystems = auftragsIdDesAnforderndenEinsendendenSystems;
-    }
+  public void setTimeValue(TemporalAccessor timeValue) {
+     this.timeValue = timeValue;
+  }
 
-    public DvIdentifier getAuftragsIdDesAnforderndenEinsendendenSystems() {
-        return this.auftragsIdDesAnforderndenEinsendendenSystems;
-    }
+  public TemporalAccessor getTimeValue() {
+     return this.timeValue ;
+  }
 
-    public void setAuftragsIdEmpfanger(DvIdentifier auftragsIdEmpfanger) {
-        this.auftragsIdEmpfanger = auftragsIdEmpfanger;
-    }
+  public void setOriginValue(TemporalAccessor originValue) {
+     this.originValue = originValue;
+  }
 
-    public DvIdentifier getAuftragsIdEmpfanger() {
-        return this.auftragsIdEmpfanger;
-    }
+  public TemporalAccessor getOriginValue() {
+     return this.originValue ;
+  }
 
-    public void setLabortestBezeichnungValue(String labortestBezeichnungValue) {
-        this.labortestBezeichnungValue = labortestBezeichnungValue;
-    }
+  public void setEmpfangerstandort(EmpfangerstandortCluster empfangerstandort) {
+     this.empfangerstandort = empfangerstandort;
+  }
 
-    public String getLabortestBezeichnungValue() {
-        return this.labortestBezeichnungValue;
-    }
+  public EmpfangerstandortCluster getEmpfangerstandort() {
+     return this.empfangerstandort ;
+  }
 
-    public void setStrukturierteErfassungDerStorfaktoren(
-            List<Cluster> strukturierteErfassungDerStorfaktoren) {
-        this.strukturierteErfassungDerStorfaktoren = strukturierteErfassungDerStorfaktoren;
-    }
+  public void setAnforderung(List<BefundAnforderungElement> anforderung) {
+     this.anforderung = anforderung;
+  }
 
-    public List<Cluster> getStrukturierteErfassungDerStorfaktoren() {
-        return this.strukturierteErfassungDerStorfaktoren;
-    }
+  public List<BefundAnforderungElement> getAnforderung() {
+     return this.anforderung ;
+  }
 
-    public void setStrukturierteTestdiagnostik(List<Cluster> strukturierteTestdiagnostik) {
-        this.strukturierteTestdiagnostik = strukturierteTestdiagnostik;
-    }
+  public void setAuftragsIdDesAnforderndenEinsendendenSystems(
+      DvIdentifier auftragsIdDesAnforderndenEinsendendenSystems) {
+     this.auftragsIdDesAnforderndenEinsendendenSystems = auftragsIdDesAnforderndenEinsendendenSystems;
+  }
 
-    public List<Cluster> getStrukturierteTestdiagnostik() {
-        return this.strukturierteTestdiagnostik;
-    }
+  public DvIdentifier getAuftragsIdDesAnforderndenEinsendendenSystems() {
+     return this.auftragsIdDesAnforderndenEinsendendenSystems ;
+  }
 
-    public void setEmpfangerstandort(EmpfangerstandortCluster empfangerstandort) {
-        this.empfangerstandort = empfangerstandort;
-    }
+  public void setAuftragsIdEmpfanger(DvIdentifier auftragsIdEmpfanger) {
+     this.auftragsIdEmpfanger = auftragsIdEmpfanger;
+  }
 
-    public EmpfangerstandortCluster getEmpfangerstandort() {
-        return this.empfangerstandort;
-    }
+  public DvIdentifier getAuftragsIdEmpfanger() {
+     return this.auftragsIdEmpfanger ;
+  }
 
-    public void setErweiterung(List<Cluster> erweiterung) {
-        this.erweiterung = erweiterung;
-    }
+  public void setEinsenderstandort(EinsenderstandortCluster einsenderstandort) {
+     this.einsenderstandort = einsenderstandort;
+  }
 
-    public List<Cluster> getErweiterung() {
-        return this.erweiterung;
-    }
+  public EinsenderstandortCluster getEinsenderstandort() {
+     return this.einsenderstandort ;
+  }
 
-    public void setTimeValue(TemporalAccessor timeValue) {
-        this.timeValue = timeValue;
-    }
+  public void setVerteilerliste(List<Cluster> verteilerliste) {
+     this.verteilerliste = verteilerliste;
+  }
 
-    public TemporalAccessor getTimeValue() {
-        return this.timeValue;
-    }
+  public List<Cluster> getVerteilerliste() {
+     return this.verteilerliste ;
+  }
 
-    public void setAnforderung(List<EmpfangerstandortAnforderungElement> anforderung) {
-        this.anforderung = anforderung;
-    }
+  public void setTestDetails(List<Cluster> testDetails) {
+     this.testDetails = testDetails;
+  }
 
-    public List<EmpfangerstandortAnforderungElement> getAnforderung() {
-        return this.anforderung;
-    }
+  public List<Cluster> getTestDetails() {
+     return this.testDetails ;
+  }
 
-    public void setSubject(PartyProxy subject) {
-        this.subject = subject;
-    }
+  public void setErweiterung(List<Cluster> erweiterung) {
+     this.erweiterung = erweiterung;
+  }
 
-    public PartyProxy getSubject() {
-        return this.subject;
-    }
+  public List<Cluster> getErweiterung() {
+     return this.erweiterung ;
+  }
 
-    public void setOriginValue(TemporalAccessor originValue) {
-        this.originValue = originValue;
-    }
+  public void setSubject(PartyProxy subject) {
+     this.subject = subject;
+  }
 
-    public TemporalAccessor getOriginValue() {
-        return this.originValue;
-    }
+  public PartyProxy getSubject() {
+     return this.subject ;
+  }
 
-    public void setVerteilerliste(List<Cluster> verteilerliste) {
-        this.verteilerliste = verteilerliste;
-    }
+  public void setLanguage(Language language) {
+     this.language = language;
+  }
 
-    public List<Cluster> getVerteilerliste() {
-        return this.verteilerliste;
-    }
+  public Language getLanguage() {
+     return this.language ;
+  }
 }

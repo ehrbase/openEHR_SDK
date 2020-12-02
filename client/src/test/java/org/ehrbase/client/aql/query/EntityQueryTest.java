@@ -31,7 +31,7 @@ import org.ehrbase.client.aql.record.Record3;
 import org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev0composition.EhrbaseBloodPressureSimpleDeV0CompositionContainment;
 import org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev0composition.definition.BloodPressureTrainingSampleObservation;
 import org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev0composition.definition.BloodPressureTrainingSampleObservationContainment;
-import org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev0composition.definition.CuffSizeDefiningcode;
+import org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev0composition.definition.CuffSizeDefiningCode;
 import org.ehrbase.client.classgenerator.examples.virologischerbefundcomposition.definition.BefundObservationContainment;
 import org.ehrbase.client.classgenerator.examples.virologischerbefundcomposition.definition.ProVirusClusterContainment;
 import org.ehrbase.client.classgenerator.examples.virologischerbefundcomposition.definition.ProbeClusterContainment;
@@ -54,18 +54,18 @@ public class EntityQueryTest {
 
         ContainmentPath contains = containmentComposition.contains(containmentObservation);
 
-        EntityQuery<Record3<TemporalAccessor, BloodPressureTrainingSampleObservation, CuffSizeDefiningcode>> entityQuery = Query.buildEntityQuery(
+        EntityQuery<Record3<TemporalAccessor, BloodPressureTrainingSampleObservation, CuffSizeDefiningCode>> entityQuery = Query.buildEntityQuery(
                 contains,
                 containmentComposition.START_TIME_VALUE,
                 containmentObservation.BLOOD_PRESSURE_TRAINING_SAMPLE_OBSERVATION,
-                containmentObservation.CUFF_SIZE_DEFININGCODE
+                containmentObservation.CUFF_SIZE_DEFINING_CODE
         );
         Parameter<UUID> ehrIdParameter = entityQuery.buildParameter();
         entityQuery
                 .where(Condition.equal(EhrFields.EHR_ID(), ehrIdParameter).and(Condition.greaterOrEqual(containmentObservation.SYSTOLIC_MAGNITUDE, 22d)))
                 .orderBy(OrderByExpression.ascending(containmentComposition.START_TIME_VALUE).andThenDescending(containmentObservation.TIME_VALUE));
 
-        assertThat(entityQuery.buildAql()).isEqualTo("Select c0/context/start_time/value as startTimeValue, o1 as BloodPressureTrainingSampleObservation, o1/protocol[at0011]/items[at0013]/value/defining_code as cuffSizeDefiningcode " +
+        assertThat(entityQuery.buildAql()).isEqualTo("Select c0/context/start_time/value as startTimeValue, o1 as BloodPressureTrainingSampleObservation, o1/protocol[at0011]/items[at0013]/value/defining_code as cuffSizeDefiningCode " +
                 "from EHR e  " +
                 "contains COMPOSITION c0[openEHR-EHR-COMPOSITION.sample_encounter.v1] contains OBSERVATION o1[openEHR-EHR-OBSERVATION.sample_blood_pressure.v1] " +
                 "where (e/ehr_id/value = $parm0 and o1/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/magnitude >= 22.0) " +

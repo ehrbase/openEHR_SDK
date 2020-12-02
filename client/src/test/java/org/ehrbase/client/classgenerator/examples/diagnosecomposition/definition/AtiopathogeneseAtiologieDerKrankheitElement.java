@@ -6,15 +6,15 @@ import org.ehrbase.client.annotations.Path;
 
 @Entity
 public class AtiopathogeneseAtiologieDerKrankheitElement {
-    @Path("/value")
-    @Choice
-    private AtiopathogeneseChoice value;
+  @Path("/value")
+  @Choice
+  private AtiopathogeneseValueChoice value;
 
-    public void setValue(AtiopathogeneseChoice value) {
-        this.value = value;
-    }
+  public void setValue(AtiopathogeneseValueChoice value) {
+     this.value = value;
+  }
 
-    public AtiopathogeneseChoice getValue() {
-        return this.value;
-    }
+  public AtiopathogeneseValueChoice getValue() {
+     return this.value ;
+  }
 }

@@ -5,14 +5,14 @@ import org.ehrbase.client.annotations.Path;
 
 @Entity
 public class SepsisScreeningAmberFlagAcuteElement {
-    @Path("/value|defining_code")
-    private Definingcode5 definingcode;
+  @Path("/value|defining_code")
+  private AmberFlagAcuteDefiningCode value;
 
-    public void setDefiningcode(Definingcode5 definingcode) {
-        this.definingcode = definingcode;
-    }
+  public void setValue(AmberFlagAcuteDefiningCode value) {
+     this.value = value;
+  }
 
-    public Definingcode5 getDefiningcode() {
-        return this.definingcode;
-    }
+  public AmberFlagAcuteDefiningCode getValue() {
+     return this.value ;
+  }
 }

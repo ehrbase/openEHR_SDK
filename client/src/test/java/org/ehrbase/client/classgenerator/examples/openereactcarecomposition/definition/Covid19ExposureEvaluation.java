@@ -2,105 +2,168 @@ package org.ehrbase.client.classgenerator.examples.openereactcarecomposition.def
 
 import com.nedap.archie.rm.datastructures.Cluster;
 import com.nedap.archie.rm.generic.PartyProxy;
+import java.util.List;
 import org.ehrbase.client.annotations.Archetype;
-import org.ehrbase.client.annotations.Choice;
 import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.Path;
-import org.ehrbase.client.classgenerator.examples.shareddefinition.Language;
-
-import java.util.List;
+import org.ehrbase.client.classgenerator.shareddefinition.Language;
 
 @Entity
 @Archetype("openEHR-EHR-EVALUATION.health_risk-covid.v0")
 public class Covid19ExposureEvaluation {
-    @Path("/data[at0001]/items[at0016]/items[at0013.1]/value")
-    @Choice
-    private Covid19ExposureRiskFactorChoice riskFactor;
+  @Path("/data[at0001]/items[at0002.1]/value|defining_code")
+  private HealthRiskDefiningCode healthRiskDefiningCode;
 
-    @Path("/data[at0001]/items[at0016]/items[at0027.1]")
-    @Choice
-    private Covid19ExposureDetailChoice detail;
+  @Path("/data[at0001]/items[at0016 and name/value='Care home has suspected/confirmed Covid-19']/items[at0013.1]/value|defining_code")
+  private RiskFactorDefiningCode riskFactorDefiningCode;
 
-    @Path("/data[at0001]/items[at0002.1]/value|defining_code")
-    private HealthRiskDefiningcode healthRiskDefiningcode;
+  @Path("/data[at0001]/items[at0016 and name/value='Care home has suspected/confirmed Covid-19']/items[at0017.1]/value|defining_code")
+  private PresenceDefiningCode2 presenceDefiningCode;
 
-    @Path("/protocol[at0010]/items[at0011]")
-    private List<Cluster> extension;
+  @Path("/data[at0001]/items[at0016 and name/value='Care home has suspected/confirmed Covid-19']/items[at0027.1]")
+  private List<Cluster> careHomeHasSuspectedConfirmedCovid19Detail;
 
-    @Path("/language")
-    private Language language;
+  @Path("/data[at0001]/items[at0016 and name/value='Contact with confirmed case']/items[at0013.1]/value|defining_code")
+  private RiskFactorDefiningCode2 riskFactorDefiningCode2;
 
-    @Path("/subject")
-    private PartyProxy subject;
+  @Path("/data[at0001]/items[at0016 and name/value='Contact with confirmed case']/items[at0017.1]/value|defining_code")
+  private PresenceDefiningCode2 presenceDefiningCode2;
 
-    @Path("/data[at0001]/items[at0003.1]/value|defining_code")
-    private RiskAssessmentDefiningcode riskAssessmentDefiningcode;
+  @Path("/data[at0001]/items[at0016 and name/value='Contact with confirmed case']/items[at0027.1]")
+  private List<Cluster> contactWithConfirmedCaseDetail;
 
-    @Path("/data[at0001]/items[at0016]/items[at0017.1]/value")
-    @Choice
-    private Covid19ExposurePresenceChoice presence;
+  @Path("/data[at0001]/items[at0016 and name/value='Other residents/household members unwell']/items[at0013.1]/value|defining_code")
+  private RiskFactorDefiningCode3 riskFactorDefiningCode3;
 
-    public void setRiskFactor(Covid19ExposureRiskFactorChoice riskFactor) {
-        this.riskFactor = riskFactor;
-    }
+  @Path("/data[at0001]/items[at0016 and name/value='Other residents/household members unwell']/items[at0017.1]/value|defining_code")
+  private PresenceDefiningCode2 presenceDefiningCode3;
 
-    public Covid19ExposureRiskFactorChoice getRiskFactor() {
-        return this.riskFactor;
-    }
+  @Path("/data[at0001]/items[at0016 and name/value='Other residents/household members unwell']/items[at0027.1]")
+  private List<Cluster> otherResidentsHouseholdMembersUnwellDetail;
 
-    public void setDetail(Covid19ExposureDetailChoice detail) {
-        this.detail = detail;
-    }
+  @Path("/data[at0001]/items[at0003.1]/value|defining_code")
+  private RiskAssessmentDefiningCode riskAssessmentDefiningCode;
 
-    public Covid19ExposureDetailChoice getDetail() {
-        return this.detail;
-    }
+  @Path("/protocol[at0010]/items[at0011]")
+  private List<Cluster> extension;
 
-    public void setHealthRiskDefiningcode(HealthRiskDefiningcode healthRiskDefiningcode) {
-        this.healthRiskDefiningcode = healthRiskDefiningcode;
-    }
+  @Path("/subject")
+  private PartyProxy subject;
 
-    public HealthRiskDefiningcode getHealthRiskDefiningcode() {
-        return this.healthRiskDefiningcode;
-    }
+  @Path("/language")
+  private Language language;
 
-    public void setExtension(List<Cluster> extension) {
-        this.extension = extension;
-    }
+  public void setHealthRiskDefiningCode(HealthRiskDefiningCode healthRiskDefiningCode) {
+     this.healthRiskDefiningCode = healthRiskDefiningCode;
+  }
 
-    public List<Cluster> getExtension() {
-        return this.extension;
-    }
+  public HealthRiskDefiningCode getHealthRiskDefiningCode() {
+     return this.healthRiskDefiningCode ;
+  }
 
-    public void setLanguage(Language language) {
-        this.language = language;
-    }
+  public void setRiskFactorDefiningCode(RiskFactorDefiningCode riskFactorDefiningCode) {
+     this.riskFactorDefiningCode = riskFactorDefiningCode;
+  }
 
-    public Language getLanguage() {
-        return this.language;
-    }
+  public RiskFactorDefiningCode getRiskFactorDefiningCode() {
+     return this.riskFactorDefiningCode ;
+  }
 
-    public void setSubject(PartyProxy subject) {
-        this.subject = subject;
-    }
+  public void setPresenceDefiningCode(PresenceDefiningCode2 presenceDefiningCode) {
+     this.presenceDefiningCode = presenceDefiningCode;
+  }
 
-    public PartyProxy getSubject() {
-        return this.subject;
-    }
+  public PresenceDefiningCode2 getPresenceDefiningCode() {
+     return this.presenceDefiningCode ;
+  }
 
-    public void setRiskAssessmentDefiningcode(RiskAssessmentDefiningcode riskAssessmentDefiningcode) {
-        this.riskAssessmentDefiningcode = riskAssessmentDefiningcode;
-    }
+  public void setCareHomeHasSuspectedConfirmedCovid19Detail(
+      List<Cluster> careHomeHasSuspectedConfirmedCovid19Detail) {
+     this.careHomeHasSuspectedConfirmedCovid19Detail = careHomeHasSuspectedConfirmedCovid19Detail;
+  }
 
-    public RiskAssessmentDefiningcode getRiskAssessmentDefiningcode() {
-        return this.riskAssessmentDefiningcode;
-    }
+  public List<Cluster> getCareHomeHasSuspectedConfirmedCovid19Detail() {
+     return this.careHomeHasSuspectedConfirmedCovid19Detail ;
+  }
 
-    public void setPresence(Covid19ExposurePresenceChoice presence) {
-        this.presence = presence;
-    }
+  public void setRiskFactorDefiningCode2(RiskFactorDefiningCode2 riskFactorDefiningCode2) {
+     this.riskFactorDefiningCode2 = riskFactorDefiningCode2;
+  }
 
-    public Covid19ExposurePresenceChoice getPresence() {
-        return this.presence;
-    }
+  public RiskFactorDefiningCode2 getRiskFactorDefiningCode2() {
+     return this.riskFactorDefiningCode2 ;
+  }
+
+  public void setPresenceDefiningCode2(PresenceDefiningCode2 presenceDefiningCode2) {
+     this.presenceDefiningCode2 = presenceDefiningCode2;
+  }
+
+  public PresenceDefiningCode2 getPresenceDefiningCode2() {
+     return this.presenceDefiningCode2 ;
+  }
+
+  public void setContactWithConfirmedCaseDetail(List<Cluster> contactWithConfirmedCaseDetail) {
+     this.contactWithConfirmedCaseDetail = contactWithConfirmedCaseDetail;
+  }
+
+  public List<Cluster> getContactWithConfirmedCaseDetail() {
+     return this.contactWithConfirmedCaseDetail ;
+  }
+
+  public void setRiskFactorDefiningCode3(RiskFactorDefiningCode3 riskFactorDefiningCode3) {
+     this.riskFactorDefiningCode3 = riskFactorDefiningCode3;
+  }
+
+  public RiskFactorDefiningCode3 getRiskFactorDefiningCode3() {
+     return this.riskFactorDefiningCode3 ;
+  }
+
+  public void setPresenceDefiningCode3(PresenceDefiningCode2 presenceDefiningCode3) {
+     this.presenceDefiningCode3 = presenceDefiningCode3;
+  }
+
+  public PresenceDefiningCode2 getPresenceDefiningCode3() {
+     return this.presenceDefiningCode3 ;
+  }
+
+  public void setOtherResidentsHouseholdMembersUnwellDetail(
+      List<Cluster> otherResidentsHouseholdMembersUnwellDetail) {
+     this.otherResidentsHouseholdMembersUnwellDetail = otherResidentsHouseholdMembersUnwellDetail;
+  }
+
+  public List<Cluster> getOtherResidentsHouseholdMembersUnwellDetail() {
+     return this.otherResidentsHouseholdMembersUnwellDetail ;
+  }
+
+  public void setRiskAssessmentDefiningCode(RiskAssessmentDefiningCode riskAssessmentDefiningCode) {
+     this.riskAssessmentDefiningCode = riskAssessmentDefiningCode;
+  }
+
+  public RiskAssessmentDefiningCode getRiskAssessmentDefiningCode() {
+     return this.riskAssessmentDefiningCode ;
+  }
+
+  public void setExtension(List<Cluster> extension) {
+     this.extension = extension;
+  }
+
+  public List<Cluster> getExtension() {
+     return this.extension ;
+  }
+
+  public void setSubject(PartyProxy subject) {
+     this.subject = subject;
+  }
+
+  public PartyProxy getSubject() {
+     return this.subject ;
+  }
+
+  public void setLanguage(Language language) {
+     this.language = language;
+  }
+
+  public Language getLanguage() {
+     return this.language ;
+  }
 }

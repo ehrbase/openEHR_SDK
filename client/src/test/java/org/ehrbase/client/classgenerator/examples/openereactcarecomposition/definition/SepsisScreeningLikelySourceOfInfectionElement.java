@@ -6,15 +6,15 @@ import org.ehrbase.client.annotations.Path;
 
 @Entity
 public class SepsisScreeningLikelySourceOfInfectionElement {
-    @Path("/value")
-    @Choice
-    private SepsisScreeningChoice value;
+  @Path("/value")
+  @Choice
+  private SepsisScreeningValueChoice value;
 
-    public void setValue(SepsisScreeningChoice value) {
-        this.value = value;
-    }
+  public void setValue(SepsisScreeningValueChoice value) {
+     this.value = value;
+  }
 
-    public SepsisScreeningChoice getValue() {
-        return this.value;
-    }
+  public SepsisScreeningValueChoice getValue() {
+     return this.value ;
+  }
 }

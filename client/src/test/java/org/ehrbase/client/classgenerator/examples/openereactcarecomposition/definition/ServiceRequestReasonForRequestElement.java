@@ -1,18 +1,19 @@
 package org.ehrbase.client.classgenerator.examples.openereactcarecomposition.definition;
 
+import com.nedap.archie.rm.datavalues.DvCodedText;
 import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.Path;
 
 @Entity
 public class ServiceRequestReasonForRequestElement {
-    @Path("/value|defining_code")
-    private Definingcode definingcode;
+  @Path("/value")
+  private DvCodedText value;
 
-    public void setDefiningcode(Definingcode definingcode) {
-        this.definingcode = definingcode;
-    }
+  public void setValue(DvCodedText value) {
+     this.value = value;
+  }
 
-    public Definingcode getDefiningcode() {
-        return this.definingcode;
-    }
+  public DvCodedText getValue() {
+     return this.value ;
+  }
 }

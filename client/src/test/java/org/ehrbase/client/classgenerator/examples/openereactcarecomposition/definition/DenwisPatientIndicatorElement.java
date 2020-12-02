@@ -6,15 +6,15 @@ import org.ehrbase.client.annotations.Path;
 
 @Entity
 public class DenwisPatientIndicatorElement {
-    @Path("/value")
-    @Choice
-    private DenwisChoice value;
+  @Path("/value")
+  @Choice
+  private DenwisValueChoice5 value;
 
-    public void setValue(DenwisChoice value) {
-        this.value = value;
-    }
+  public void setValue(DenwisValueChoice5 value) {
+     this.value = value;
+  }
 
-    public DenwisChoice getValue() {
-        return this.value;
-    }
+  public DenwisValueChoice5 getValue() {
+     return this.value ;
+  }
 }

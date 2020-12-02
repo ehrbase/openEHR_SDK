@@ -2,126 +2,125 @@ package org.ehrbase.client.classgenerator.examples.coronaanamnesecomposition.def
 
 import com.nedap.archie.rm.datastructures.Cluster;
 import com.nedap.archie.rm.generic.PartyProxy;
+import java.lang.String;
+import java.time.temporal.TemporalAccessor;
+import java.util.List;
 import org.ehrbase.client.annotations.Archetype;
 import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.Path;
-import org.ehrbase.client.classgenerator.examples.shareddefinition.Language;
-
-import java.time.temporal.TemporalAccessor;
-import java.util.List;
+import org.ehrbase.client.classgenerator.shareddefinition.Language;
 
 @Entity
 @Archetype("openEHR-EHR-OBSERVATION.exposure_assessment.v0")
 public class AufenthaltInGesundheitseinrichtungObservation {
-    @Path("/data[at0001]/events[at0002]/data[at0042]/items[at0055]/value|value")
-    private String kommentarValue;
+  @Path("/data[at0001]/events[at0002]/data[at0042]/items[at0043]/value|value")
+  private String agentEnValue;
 
-    @Path("/protocol[at0004]/items[at0056]")
-    private List<Cluster> erweiterung;
+  @Path("/data[at0001]/events[at0002]/data[at0042]/items[at0057]/value|defining_code")
+  private PresenceOfAnyExposureEnDefiningCode presenceOfAnyExposureEnDefiningCode;
 
-    @Path("/data[at0001]/events[at0002]/data[at0042]/items[at0044]/items[at0045]/value|value")
-    private String exposureEnValue;
+  @Path("/data[at0001]/events[at0002]/data[at0042]/items[at0044]/items[at0045]/value|value")
+  private String exposureEnValue;
 
-    @Path("/data[at0001]/events[at0002]/data[at0042]/items[at0044]/items[at0046]/value|defining_code")
-    private VorhandenseinDefiningcodeSpecificExposureEn vorhandenseinDefiningcode;
+  @Path("/data[at0001]/events[at0002]/data[at0042]/items[at0044]/items[at0046]/value|defining_code")
+  private VorhandenseinDefiningCode vorhandenseinDefiningCode;
 
-    @Path("/language")
-    private Language language;
+  @Path("/data[at0001]/events[at0002]/data[at0042]/items[at0055]/value|value")
+  private String kommentarValue;
 
-    @Path("/data[at0001]/events[at0002]/data[at0042]/items[at0043]/value|value")
-    private String agentEnValue;
+  @Path("/data[at0001]/events[at0002]/time|value")
+  private TemporalAccessor timeValue;
 
-    @Path("/data[at0001]/events[at0002]/time|value")
-    private TemporalAccessor timeValue;
+  @Path("/data[at0001]/origin|value")
+  private TemporalAccessor originValue;
 
-    @Path("/subject")
-    private PartyProxy subject;
+  @Path("/protocol[at0004]/items[at0056]")
+  private List<Cluster> erweiterung;
 
-    @Path("/data[at0001]/origin|value")
-    private TemporalAccessor originValue;
+  @Path("/subject")
+  private PartyProxy subject;
 
-    @Path("/data[at0001]/events[at0002]/data[at0042]/items[at0057]/value|defining_code")
-    private PresenceOfAnyExposureEnDefiningcode presenceOfAnyExposureEnDefiningcode;
+  @Path("/language")
+  private Language language;
 
-    public void setKommentarValue(String kommentarValue) {
-        this.kommentarValue = kommentarValue;
-    }
+  public void setAgentEnValue(String agentEnValue) {
+     this.agentEnValue = agentEnValue;
+  }
 
-    public String getKommentarValue() {
-        return this.kommentarValue;
-    }
+  public String getAgentEnValue() {
+     return this.agentEnValue ;
+  }
 
-    public void setErweiterung(List<Cluster> erweiterung) {
-        this.erweiterung = erweiterung;
-    }
+  public void setPresenceOfAnyExposureEnDefiningCode(
+      PresenceOfAnyExposureEnDefiningCode presenceOfAnyExposureEnDefiningCode) {
+     this.presenceOfAnyExposureEnDefiningCode = presenceOfAnyExposureEnDefiningCode;
+  }
 
-    public List<Cluster> getErweiterung() {
-        return this.erweiterung;
-    }
+  public PresenceOfAnyExposureEnDefiningCode getPresenceOfAnyExposureEnDefiningCode() {
+     return this.presenceOfAnyExposureEnDefiningCode ;
+  }
 
-    public void setExposureEnValue(String exposureEnValue) {
-        this.exposureEnValue = exposureEnValue;
-    }
+  public void setExposureEnValue(String exposureEnValue) {
+     this.exposureEnValue = exposureEnValue;
+  }
 
-    public String getExposureEnValue() {
-        return this.exposureEnValue;
-    }
+  public String getExposureEnValue() {
+     return this.exposureEnValue ;
+  }
 
-    public void setVorhandenseinDefiningcode(
-            VorhandenseinDefiningcodeSpecificExposureEn vorhandenseinDefiningcode) {
-        this.vorhandenseinDefiningcode = vorhandenseinDefiningcode;
-    }
+  public void setVorhandenseinDefiningCode(VorhandenseinDefiningCode vorhandenseinDefiningCode) {
+     this.vorhandenseinDefiningCode = vorhandenseinDefiningCode;
+  }
 
-    public VorhandenseinDefiningcodeSpecificExposureEn getVorhandenseinDefiningcode() {
-        return this.vorhandenseinDefiningcode;
-    }
+  public VorhandenseinDefiningCode getVorhandenseinDefiningCode() {
+     return this.vorhandenseinDefiningCode ;
+  }
 
-    public void setLanguage(Language language) {
-        this.language = language;
-    }
+  public void setKommentarValue(String kommentarValue) {
+     this.kommentarValue = kommentarValue;
+  }
 
-    public Language getLanguage() {
-        return this.language;
-    }
+  public String getKommentarValue() {
+     return this.kommentarValue ;
+  }
 
-    public void setAgentEnValue(String agentEnValue) {
-        this.agentEnValue = agentEnValue;
-    }
+  public void setTimeValue(TemporalAccessor timeValue) {
+     this.timeValue = timeValue;
+  }
 
-    public String getAgentEnValue() {
-        return this.agentEnValue;
-    }
+  public TemporalAccessor getTimeValue() {
+     return this.timeValue ;
+  }
 
-    public void setTimeValue(TemporalAccessor timeValue) {
-        this.timeValue = timeValue;
-    }
+  public void setOriginValue(TemporalAccessor originValue) {
+     this.originValue = originValue;
+  }
 
-    public TemporalAccessor getTimeValue() {
-        return this.timeValue;
-    }
+  public TemporalAccessor getOriginValue() {
+     return this.originValue ;
+  }
 
-    public void setSubject(PartyProxy subject) {
-        this.subject = subject;
-    }
+  public void setErweiterung(List<Cluster> erweiterung) {
+     this.erweiterung = erweiterung;
+  }
 
-    public PartyProxy getSubject() {
-        return this.subject;
-    }
+  public List<Cluster> getErweiterung() {
+     return this.erweiterung ;
+  }
 
-    public void setOriginValue(TemporalAccessor originValue) {
-        this.originValue = originValue;
-    }
+  public void setSubject(PartyProxy subject) {
+     this.subject = subject;
+  }
 
-    public TemporalAccessor getOriginValue() {
-        return this.originValue;
-    }
+  public PartyProxy getSubject() {
+     return this.subject ;
+  }
 
-    public void setPresenceOfAnyExposureEnDefiningcode(
-            PresenceOfAnyExposureEnDefiningcode presenceOfAnyExposureEnDefiningcode) {
-        this.presenceOfAnyExposureEnDefiningcode = presenceOfAnyExposureEnDefiningcode;
-    }
+  public void setLanguage(Language language) {
+     this.language = language;
+  }
 
-    public PresenceOfAnyExposureEnDefiningcode getPresenceOfAnyExposureEnDefiningcode() {
-        return this.presenceOfAnyExposureEnDefiningcode;
-    }
+  public Language getLanguage() {
+     return this.language ;
+  }
 }

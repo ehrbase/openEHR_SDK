@@ -1,103 +1,116 @@
 package org.ehrbase.client.classgenerator.examples.openereactcarecomposition.definition;
 
 import com.nedap.archie.rm.datastructures.Cluster;
+import com.nedap.archie.rm.datastructures.ItemTree;
 import com.nedap.archie.rm.generic.PartyProxy;
+import java.lang.Double;
+import java.lang.String;
+import java.time.temporal.TemporalAccessor;
+import java.util.List;
 import org.ehrbase.client.annotations.Archetype;
 import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.Path;
-import org.ehrbase.client.classgenerator.examples.shareddefinition.Language;
-
-import java.time.temporal.TemporalAccessor;
-import java.util.List;
+import org.ehrbase.client.classgenerator.shareddefinition.Language;
 
 @Entity
 @Archetype("openEHR-EHR-OBSERVATION.height.v2")
 public class HeightObservation {
-    @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value|magnitude")
-    private Double heightLengthMagnitude;
+  @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value|magnitude")
+  private Double heightLengthMagnitude;
 
-    @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value|units")
-    private String heightLengthUnits;
+  @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value|units")
+  private String heightLengthUnits;
 
-    @Path("/language")
-    private Language language;
+  @Path("/data[at0001]/events[at0002]/state[at0013]")
+  private ItemTree tree;
 
-    @Path("/protocol[at0007]/items[at0011]")
-    private Cluster device;
+  @Path("/data[at0001]/events[at0002]/time|value")
+  private TemporalAccessor timeValue;
 
-    @Path("/protocol[at0007]/items[at0022]")
-    private List<Cluster> extension;
+  @Path("/data[at0001]/origin|value")
+  private TemporalAccessor originValue;
 
-    @Path("/data[at0001]/events[at0002]/time|value")
-    private TemporalAccessor timeValue;
+  @Path("/protocol[at0007]/items[at0011]")
+  private Cluster device;
 
-    @Path("/subject")
-    private PartyProxy subject;
+  @Path("/protocol[at0007]/items[at0022]")
+  private List<Cluster> extension;
 
-    @Path("/data[at0001]/origin|value")
-    private TemporalAccessor originValue;
+  @Path("/subject")
+  private PartyProxy subject;
 
-    public void setHeightLengthMagnitude(Double heightLengthMagnitude) {
-        this.heightLengthMagnitude = heightLengthMagnitude;
-    }
+  @Path("/language")
+  private Language language;
 
-    public Double getHeightLengthMagnitude() {
-        return this.heightLengthMagnitude;
-    }
+  public void setHeightLengthMagnitude(Double heightLengthMagnitude) {
+     this.heightLengthMagnitude = heightLengthMagnitude;
+  }
 
-    public void setHeightLengthUnits(String heightLengthUnits) {
-        this.heightLengthUnits = heightLengthUnits;
-    }
+  public Double getHeightLengthMagnitude() {
+     return this.heightLengthMagnitude ;
+  }
 
-    public String getHeightLengthUnits() {
-        return this.heightLengthUnits;
-    }
+  public void setHeightLengthUnits(String heightLengthUnits) {
+     this.heightLengthUnits = heightLengthUnits;
+  }
 
-    public void setLanguage(Language language) {
-        this.language = language;
-    }
+  public String getHeightLengthUnits() {
+     return this.heightLengthUnits ;
+  }
 
-    public Language getLanguage() {
-        return this.language;
-    }
+  public void setTree(ItemTree tree) {
+     this.tree = tree;
+  }
 
-    public void setDevice(Cluster device) {
-        this.device = device;
-    }
+  public ItemTree getTree() {
+     return this.tree ;
+  }
 
-    public Cluster getDevice() {
-        return this.device;
-    }
+  public void setTimeValue(TemporalAccessor timeValue) {
+     this.timeValue = timeValue;
+  }
 
-    public void setExtension(List<Cluster> extension) {
-        this.extension = extension;
-    }
+  public TemporalAccessor getTimeValue() {
+     return this.timeValue ;
+  }
 
-    public List<Cluster> getExtension() {
-        return this.extension;
-    }
+  public void setOriginValue(TemporalAccessor originValue) {
+     this.originValue = originValue;
+  }
 
-    public void setTimeValue(TemporalAccessor timeValue) {
-        this.timeValue = timeValue;
-    }
+  public TemporalAccessor getOriginValue() {
+     return this.originValue ;
+  }
 
-    public TemporalAccessor getTimeValue() {
-        return this.timeValue;
-    }
+  public void setDevice(Cluster device) {
+     this.device = device;
+  }
 
-    public void setSubject(PartyProxy subject) {
-        this.subject = subject;
-    }
+  public Cluster getDevice() {
+     return this.device ;
+  }
 
-    public PartyProxy getSubject() {
-        return this.subject;
-    }
+  public void setExtension(List<Cluster> extension) {
+     this.extension = extension;
+  }
 
-    public void setOriginValue(TemporalAccessor originValue) {
-        this.originValue = originValue;
-    }
+  public List<Cluster> getExtension() {
+     return this.extension ;
+  }
 
-    public TemporalAccessor getOriginValue() {
-        return this.originValue;
-    }
+  public void setSubject(PartyProxy subject) {
+     this.subject = subject;
+  }
+
+  public PartyProxy getSubject() {
+     return this.subject ;
+  }
+
+  public void setLanguage(Language language) {
+     this.language = language;
+  }
+
+  public Language getLanguage() {
+     return this.language ;
+  }
 }
