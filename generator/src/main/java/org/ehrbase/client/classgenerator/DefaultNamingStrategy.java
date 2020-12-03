@@ -28,18 +28,22 @@ import org.ehrbase.webtemplate.parser.FlatPath;
 
 import java.util.Deque;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-public class DefaultNamingStrategy {
+public class DefaultNamingStrategy implements NamingStrategy {
 
   public static final String TERM_DIVIDER = "_";
+  private ClassGeneratorConfig config;
 
-  public DefaultNamingStrategy() {}
+  public DefaultNamingStrategy(ClassGeneratorConfig config) {
 
-  String buildClassName(
-          ClassGenerator.Context context, WebTemplateNode node, boolean isChoice, boolean isEnum) {
+    this.config = config;
+  }
+
+  @Override
+  public String buildClassName(
+      ClassGeneratorContext context, WebTemplateNode node, boolean isChoice, boolean isEnum) {
 
     String name = replaceElementName(context, node);
     if (context.nodeDeque.isEmpty()) {
@@ -74,7 +78,7 @@ public class DefaultNamingStrategy {
     return fieldName;
   }
 
-  private String makeNameUnique(ClassGenerator.Context context, WebTemplateNode node) {
+  private String makeNameUnique(ClassGeneratorContext context, WebTemplateNode node) {
 
     WebTemplateNode parent = context.nodeDeque.peek();
     String name = replaceElementName(context, node);
@@ -98,7 +102,7 @@ public class DefaultNamingStrategy {
     return name;
   }
 
-  private String replaceElementName(ClassGenerator.Context context, WebTemplateNode node) {
+  private String replaceElementName(ClassGeneratorContext context, WebTemplateNode node) {
     String name = node.getName();
     WebTemplateNode trueParent =
         Optional.ofNullable(context.webTemplate.findFiltersNodes(node))
@@ -111,13 +115,7 @@ public class DefaultNamingStrategy {
     return name;
   }
 
-  private boolean isInChoice(WebTemplateNode parent, WebTemplateNode node) {
-    return parent.getChoicesInChildren().values().stream()
-        .flatMap(List::stream)
-        .anyMatch(l -> l.equals(node));
-  }
-
-  String sanitizeNumber(String fieldName) {
+  private String sanitizeNumber(String fieldName) {
     if (!Character.isAlphabetic(fieldName.charAt(0))) {
       if (Character.isLowerCase(fieldName.charAt(0))) {
         fieldName = "n" + fieldName;
@@ -128,7 +126,7 @@ public class DefaultNamingStrategy {
     return fieldName;
   }
 
-  WebTemplateNode findLastArchetype(Deque<WebTemplateNode> nodeDeque) {
+  private WebTemplateNode findLastArchetype(Deque<WebTemplateNode> nodeDeque) {
     for (Iterator<WebTemplateNode> it = nodeDeque.iterator(); it.hasNext(); ) {
       WebTemplateNode node = it.next();
       if (node.isArchetype()) {
@@ -138,18 +136,14 @@ public class DefaultNamingStrategy {
     return null;
   }
 
-  /**
-   * Manipulate the fieldName to remove or replace illegal characters
-   *
-   * @param fieldName
-   * @return normalized fieldName for Java naming convention
-   */
-  String toEnumName(String fieldName) {
+  @Override
+  public String toEnumName(String fieldName) {
     fieldName = sanitizeNumber(fieldName);
     return new SnakeCase(normalise(fieldName, false)).camelToUpperSnake();
   }
 
-  String buildFieldName(ClassGenerator.Context context, String path, WebTemplateNode node) {
+  @Override
+  public String buildFieldName(ClassGeneratorContext context, String path, WebTemplateNode node) {
     String name = node.getName();
     String attributeName = new FlatPath(path).getLast().getAttributeName();
 
@@ -188,7 +182,7 @@ public class DefaultNamingStrategy {
     return fieldName;
   }
 
-  private static String normalise(String name, boolean capitalizeFirstLetter) {
+  private String normalise(String name, boolean capitalizeFirstLetter) {
     if (StringUtils.isBlank(name) || name.equals("_")) {
       return RandomStringUtils.randomAlphabetic(10);
     }

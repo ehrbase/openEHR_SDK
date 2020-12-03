@@ -107,7 +107,7 @@ public class DtoToCompositionWalker extends ToCompositionWalker<Map<String, Obje
       } else {
         String path = subValues.keySet().stream().findAny().get();
         if (value.getClass().isAnnotationPresent(Entity.class)
-            && new PathExtractor(path).getChildPath().equals("")) {
+            && new FlatPath(path).getPath().equals("")) {
 
           Map<String, Object> newValues =
               findEntity(value).entrySet().stream()
@@ -163,16 +163,16 @@ public class DtoToCompositionWalker extends ToCompositionWalker<Map<String, Obje
 
     for (Map.Entry<String, Object> objectEntry : values.entrySet()) {
 
-      PathExtractor extractor = new PathExtractor(objectEntry.getKey());
-      if (StringUtils.isBlank(extractor.getChildPath())) {
-        if ("uuid".equals(extractor.getAttributeName())){
+      FlatPath flatPath = new FlatPath(objectEntry.getKey());
+      if (StringUtils.isBlank(flatPath.getPath())) {
+        if ("uuid".equals(flatPath.getAttributeName())){
           System.out.println("d");
         }
           else
-        if (StringUtils.isNotBlank(extractor.getAttributeName())) {
+        if (StringUtils.isNotBlank(flatPath.getAttributeName())) {
           handleSingleValue(
               objectEntry.getValue(),
-              extractor.getAttributeName(),
+              flatPath.getAttributeName(),
               null,
               context.getRmObjectDeque().peek());
         } else {

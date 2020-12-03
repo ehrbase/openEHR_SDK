@@ -116,6 +116,10 @@ public class FlatPath {
     return child;
   }
 
+  public String getPath(){
+    return StringUtils.removeEnd( toString(),"|"+getLast().getAttributeName());
+  }
+
   public String getAttributeName() {
     return attributeName;
   }
