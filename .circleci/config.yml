@@ -603,6 +603,8 @@ jobs:
           include-tags: "KNOWLEDGE"
           test-suite-path: "KNOWLEDGE_TESTS"
           test-suite-name: "KNOWLEDGE"
+          allow-template-overwrite: false
+          cache-enabled: false
 
   QUERYSERVICE-tests-1:
     executor: docker-py3-java11-postgres
@@ -621,6 +623,8 @@ jobs:
 
   QUERYSERVICE-tests-2:
     executor: machine-ubuntu-2004
+    environment:
+      SUT: TEST
     steps:
       - restore-ehrbase-workspace
       - restore_cache:
@@ -649,7 +653,7 @@ jobs:
             EXPECTED_HASH="f5ee5a9a55c50687dafc3c3acff66089759f1577d7a5dd71aff6e60793ce91c2  /tmp/expected-results-loaded_db-seed"
             [ "$ACTUAL_HASH" = "$EXPECTED_HASH" ] && echo "Expected results unchanged!  Don't regenerate test-data!" || echo "Expected result data-sets changed. Regenerate!" > /tmp/DATA_CHANGED_NOTICE
       - run-robot-tests:
-          sut: "SUT:TEST"
+          sut: "TEST"
           include-tags: "aql_adhoc-queryANDloaded_db"
           test-suite-path: "QUERY_SERVICE_TESTS"
           test-suite-name: "ADHOC-QUERY-2"
@@ -1249,16 +1253,36 @@ commands:
     parameters:
       sut:
         description: SUT - System Under Test Config
-        enum: ["SUT:DEV", "SUT:DEV -v AUTH_TYPE:OAUTH", "SUT:ADMIN-DEV", "SUT:TEST", "SUT:TEST -v AUTH_TYPE:OAUTH", "SUT:ADMIN-TEST"]
-        default: "SUT:DEV"
+        enum: ["DEV", "DEV -v AUTH_TYPE:OAUTH", "ADMIN-DEV", "TEST", "TEST -v AUTH_TYPE:OAUTH", "ADMIN-TEST"]
+        default: "DEV"
         type: enum
+      
+      nodename:
+        description: | 
+          EHRbase's "CREATING_SYSTEM_ID". It can be set from cli when starting server .jar, i.e.:
+          `java -jar application.jar --server.nodename=local.ehrbase.org`
+        default: "circleci.ehrbase.org"
+        type: string
+      
+      allow-template-overwrite:
+        description:  Sets EHRbase's cli option `--system.allow-template-overwrite=true`
+        default: true
+        type: boolean
+
+      cache-enabled:
+        description: Sets EHRbase's cli option `--cache.enabled=true`
+        default: true
+        type: boolean
+
       include-tags:
         description: Which tests to inclue by TAGs (Robot syntax applies!)
         type: string
+
       test-suite-path:
         description: Target test-suite given by it's folder name e.g. COMPOSITION_TESTS
-        type: string
         default: ""
+        type: string
+
       test-suite-name:
         description: Titel of generated Robot Log/Report.html
         type: string
@@ -1280,7 +1304,9 @@ commands:
               EHRbase_VERSION=$(mvn -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive exec:exec)
               echo ${EHRbase_VERSION}
               java -jar "application/target/application-${EHRbase_VERSION}.jar" \
-                  --cache.enabled=false >log & app_pid=$!
+                   --system.allow-template-overwrite=<< parameters.allow-template-overwrite >> \
+                   --server.nodename=<< parameters.nodename >> \
+                   --cache.enabled=<< parameters.cache-enabled >> > log & app_pid=$!
               if ! tail -f log | timeout 30s grep -m 1 "Started EhrBase in"; then
                 echo "WARNING: Did not see a startup message even after waiting 30s" >&2
                 if kill -0 "$app_pid"; then
@@ -1303,7 +1329,9 @@ commands:
                   --outputdir results/<< parameters.test-suite-name >> \
                   --timestampoutputs \
                   --name << parameters.test-suite-name >> \
-                  -v << parameters.sut >> \
+                  -v SUT:<< parameters.sut >> \
+                  -v NODENAME:<< parameters.nodename >> \
+                  -v ALLOW-TEMPLATE-OVERWRITE:<< parameters.allow-template-overwrite >> \
                   robot/<< parameters.test-suite-path >>
       # - cache-in-python-requirements
       - save-test-results-folder:
