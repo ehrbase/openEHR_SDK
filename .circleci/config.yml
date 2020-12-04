@@ -492,7 +492,6 @@ jobs:
       # - cache-out-ehrbase-workspace     #
       #-----------------------------------#
       - restore-ehrbase-workspace
-      # - start-ehrbase-server
       - run-robot-tests:
           include-tags: "compositionANDjson2"
           test-suite-path: "COMPOSITION_TESTS"
@@ -507,7 +506,6 @@ jobs:
       # - cache-out-ehrbase-workspace     #
       #-----------------------------------#
       - restore-ehrbase-workspace
-      # - start-ehrbase-server
       - run-robot-tests:
           include-tags: "compositionANDxml1"
           test-suite-path: "COMPOSITION_TESTS"
@@ -522,7 +520,6 @@ jobs:
       # - cache-out-ehrbase-workspace     #
       #-----------------------------------#
       - restore-ehrbase-workspace
-      # - start-ehrbase-server
       - run-robot-tests:
           include-tags: "compositionANDxml2"
           test-suite-path: "COMPOSITION_TESTS"
@@ -537,7 +534,6 @@ jobs:
       # - cache-out-ehrbase-workspace     #
       #-----------------------------------#
       - restore-ehrbase-workspace
-      # - start-ehrbase-server
       - run-robot-tests:
           include-tags: "CONTRIBUTION"
           test-suite-path: "CONTRIBUTION_TESTS"
@@ -552,7 +548,6 @@ jobs:
       # - cache-out-ehrbase-workspace     #
       #-----------------------------------#
       - restore-ehrbase-workspace
-      # - start-ehrbase-server
       - run-robot-tests:
           include-tags: "directory"
           test-suite-path: "DIRECTORY_TESTS"
@@ -567,7 +562,6 @@ jobs:
       # - cache-out-ehrbase-workspace     #
       #-----------------------------------#
       - restore-ehrbase-workspace
-      # - start-ehrbase-server
       - run-robot-tests:
           include-tags: "EHR_SERVICE"
           test-suite-path: "EHR_SERVICE_TESTS"
@@ -582,7 +576,6 @@ jobs:
       # - cache-out-ehrbase-workspace     #
       #-----------------------------------#
       - restore-ehrbase-workspace
-      # - start-ehrbase-server
       - run-robot-tests:
           include-tags: "EHR_STATUS"
           test-suite-path: "EHR_STATUS_TESTS"
@@ -597,7 +590,6 @@ jobs:
       # - cache-out-ehrbase-workspace     #
       #-----------------------------------#
       - restore-ehrbase-workspace
-      # - start-ehrbase-server
       - run-robot-tests:
           include-tags: "KNOWLEDGE"
           test-suite-path: "KNOWLEDGE_TESTS"
@@ -614,7 +606,6 @@ jobs:
       # - cache-out-ehrbase-workspace     #
       #-----------------------------------#
       - restore-ehrbase-workspace
-      # - start-ehrbase-server
       - run-robot-tests:
           include-tags: "aql_adhoc-queryANDempty_db"
           test-suite-path: "QUERY_SERVICE_TESTS"
@@ -628,7 +619,7 @@ jobs:
       - restore-ehrbase-workspace
       - restore_cache:
           keys:
-            - expected-results-loaded-db-v7
+            - expected-results-loaded-db-v8
       - run:
           name: list files after restore of cache
           command: |
@@ -639,7 +630,7 @@ jobs:
             ls -la tests/robot/_resources/test_data_sets/query/aql_queries_valid/D/
       - restore_cache:
           keys:
-            - ehrbasedb-dump-v7
+            - ehrbasedb-dump-v8
       # COMMENT: USE THE NEXT LINE ONLY TO FORCE TEST-DATA REGENERATION! Otherwise comment it out!
       # - run: echo "FORCE GENERATION OF TEST-DATA AND EXPECTED RESULTS!" > /tmp/DATA_CHANGED_NOTICE
       - run: 
@@ -657,7 +648,7 @@ jobs:
           test-suite-path: "QUERY_SERVICE_TESTS"
           test-suite-name: "ADHOC-QUERY-2"
       - save_cache:
-          key: expected-results-loaded-db-v7-{{ checksum "/tmp/expected-results-loaded_db-seed" }}
+          key: expected-results-loaded-db-v8-{{ checksum "/tmp/expected-results-loaded_db-seed" }}
           paths:
             - ehrbase/tests/robot/_resources/test_data_sets/query/expected_results/loaded_db/
             - ehrbase/tests/robot/_resources/test_data_sets/query/aql_queries_valid/
@@ -670,7 +661,7 @@ jobs:
             ls -la tests/robot/_resources/test_data_sets/query/aql_queries_valid/C/
             ls -la tests/robot/_resources/test_data_sets/query/aql_queries_valid/D/
       - save_cache:
-          key: ehrbasedb-dump-v7-{{ checksum "/tmp/ehrbasedb_dump.sql" }}
+          key: ehrbasedb-dump-v8-{{ checksum "/tmp/ehrbasedb_dump.sql" }}
           paths:
             - /tmp/ehrbasedb_dump.sql
 
