@@ -109,6 +109,7 @@ public class FlatPathTest {
         assertThat(cut).isNotNull();
         assertThat(cut.getAtCode()).isEqualTo("at0001");
         assertThat(cut.getName()).isEqualTo("data");
+        assertThat(cut.getPath()).isEqualTo("/data[at0001]/events[at0002]/data[at0003]/items[at0004]");
         assertThat(cut.toString()).isEqualTo(path);
     }
 

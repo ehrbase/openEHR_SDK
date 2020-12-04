@@ -31,7 +31,9 @@ import com.nedap.archie.rminfo.ArchieRMInfoLookup;
 import com.nedap.archie.rminfo.RMTypeInfo;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.ImmutableTriple;
 import org.apache.commons.lang3.tuple.Pair;
+import org.apache.commons.lang3.tuple.Triple;
 import org.ehrbase.serialisation.jsonencoding.CanonicalJson;
 import org.ehrbase.util.exception.SdkException;
 import org.ehrbase.webtemplate.model.WebTemplate;
@@ -40,6 +42,7 @@ import org.ehrbase.webtemplate.model.WebTemplateNode;
 import org.ehrbase.webtemplate.parser.FlatPath;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -112,37 +115,51 @@ public abstract class Walker<T> {
         children.remove(event);
       }
 
-      for (WebTemplateNode childNode : children) {
+      Collection<List<WebTemplateNode>> childChoices = children.stream()
+              .collect(Collectors.groupingBy(WebTemplateNode::getAqlPath))
+              .entrySet()
+              .stream()
+              .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue))
+              .values();
 
-        if (childNode.getMax() == 1) {
+      for (List<WebTemplateNode> choces : childChoices) {
 
-          ImmutablePair<T, RMObject> pair =
-              extractPair(context, currentNode, choices, childNode, null);
-          T childObject = pair.getLeft();
-          Object child = pair.getRight();
+        if (choces.stream().noneMatch(WebTemplateNode::isMulti)) {
 
-          if (child != null && childObject != null) {
-            context.getNodeDeque().push(childNode);
-            context.getObjectDeque().push(childObject);
-            context.getRmObjectDeque().push((RMObject) child);
-            handle(context);
+          for (WebTemplateNode childNode : choces) {
+            ImmutablePair<T, RMObject> pair =
+                extractPair(context, currentNode, choices, childNode, null);
+            T childObject = pair.getLeft();
+            Object child = pair.getRight();
+
+            if (child != null && childObject != null) {
+              context.getNodeDeque().push(childNode);
+              context.getObjectDeque().push(childObject);
+              context.getRmObjectDeque().push((RMObject) child);
+              handle(context);
+            }
           }
         } else {
-          int size = calculateSize(context, childNode);
+          int size = calculateSize(context, choces.get(0));
 
-          List<Pair<T, RMObject>> pairs = new ArrayList<>();
+
+          List<Triple<T, RMObject,WebTemplateNode>> pairs = new ArrayList<>();
           for (int i = 0; i < size; i++) {
-            ImmutablePair<T, RMObject> pair =
-                extractPair(context, currentNode, choices, childNode, i);
-
-            pairs.add(pair);
+            for (WebTemplateNode childNode : choces) {
+              ImmutablePair<T, RMObject> pair =
+                  extractPair(context, currentNode, choices, childNode, i);
+              if (pair.getLeft() != null && pair.getRight() != null) {
+                pairs.add(new ImmutableTriple<>(pair.getLeft(),pair.getRight(),childNode));
+              }
+            }
           }
 
           for (int i = 0; i < size; i++) {
             RMObject currentChild = null;
             T childObject = null;
             childObject = pairs.get(i).getLeft();
-            currentChild = pairs.get(i).getRight();
+            currentChild = pairs.get(i).getMiddle();
+            WebTemplateNode childNode = pairs.get(i).getRight();
             if (currentChild != null && childObject != null) {
               context.getNodeDeque().push(childNode);
               context.getObjectDeque().push(childObject);
@@ -216,130 +233,4 @@ public abstract class Walker<T> {
     return sb.toString();
   }
 
-  protected class ItemExtractor {
-    private RMObject currentRM;
-    private WebTemplateNode currentNode;
-    private WebTemplateNode childNode;
-    private boolean isChoice;
-    private String relativeAql;
-    private Object child;
-    private String parentAql;
-    private Object parent;
-
-    public ItemExtractor(
-        RMObject currentRM,
-        WebTemplateNode currentNode,
-        WebTemplateNode childNode,
-        boolean isChoice) {
-      this.currentRM = currentRM;
-      this.currentNode = currentNode;
-      this.childNode = childNode;
-      this.isChoice = isChoice;
-    }
-
-    public FlatPath getRelativeAql() {
-      return new FlatPath(relativeAql);
-    }
-
-    public Object getChild() {
-      return child;
-    }
-
-    public ItemExtractor invoke() {
-      relativeAql =
-          StringUtils.removeEnd(
-              StringUtils.removeStart(childNode.getAqlPath(), currentNode.getAqlPath()), "/");
-      FlatPath childPath = new FlatPath(relativeAql);
-      parentAql =
-          StringUtils.removeEnd(
-              childPath.format(false),
-              childPath.format(false).substring(childPath.format(false).lastIndexOf("/")));
-      if (StringUtils.isBlank(parentAql)) {
-        parentAql = "/";
-      }
-
-      if (currentRM instanceof Pathable) {
-        try {
-          child = ((Pathable) currentRM).itemsAtPath(childPath.format(false));
-          if (child == null || ((List) child).isEmpty()) {
-            child = ((Pathable) currentRM).itemAtPath(childPath.format(false));
-          }
-        } catch (RuntimeException e) {
-          child = null;
-        }
-        parent = ((Pathable) currentRM).itemAtPath(parentAql);
-      } else if (currentRM instanceof DvInterval) {
-        if (relativeAql.contains("upper_included")) {
-          child = new RmBoolean(((DvInterval<?>) currentRM).isUpperIncluded());
-        } else if (relativeAql.contains("lower_included")) {
-          child = new RmBoolean(((DvInterval<?>) currentRM).isLowerIncluded());
-        } else if (relativeAql.contains("lower")) {
-          child = ((DvInterval<?>) currentRM).getLower();
-        } else if (relativeAql.contains("upper")) {
-          child = ((DvInterval<?>) currentRM).getUpper();
-        }
-        parent = currentRM;
-      } else {
-        throw new SdkException(
-            String.format("Can not extract from class %s", currentRM.getClass().getSimpleName()));
-      }
-
-      if (StringUtils.isNotBlank(childPath.findOtherPredicate("name/value"))
-          && child instanceof List
-          && Locatable.class.isAssignableFrom(
-              ARCHIE_RM_INFO_LOOKUP.getClass(childNode.getRmType()))) {
-        child =
-            ((List) child)
-                .stream()
-                    .filter(
-                        c ->
-                            childPath
-                                .findOtherPredicate("name/value")
-                                .equals(((Locatable) c).getNameAsString()))
-                    .collect(Collectors.toList());
-        // if name not found return null
-        if (((List<?>) child).isEmpty()) {
-          child = null;
-        }
-      }
-      if (isChoice && child instanceof List) {
-        child =
-            ((List) child)
-                .stream()
-                    .filter(
-                        c ->
-                            ARCHIE_RM_INFO_LOOKUP
-                                .getTypeInfo(c.getClass())
-                                .getRmName()
-                                .equals(childNode.getRmType()))
-                    .collect(Collectors.toList());
-        // if rmType not found return null
-        if (((List<?>) child).isEmpty()) {
-          child = null;
-        }
-      }
-
-      if (childNode.getMax() == 1 && child instanceof List) {
-
-        if (((List<?>) child).isEmpty()) {
-          child = null;
-        } else {
-          child = ((List) child).get(0);
-        }
-      }
-
-      if (child instanceof Element && !childNode.getRmType().equals("ELEMENT")) {
-        child = ((Element) child).getValue();
-      }
-      return this;
-    }
-
-    public FlatPath getParentAql() {
-      return new FlatPath(parentAql);
-    }
-
-    public Object getParent() {
-      return parent;
-    }
-  }
 }

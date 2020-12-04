@@ -37,8 +37,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.Collection;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -47,6 +48,7 @@ public abstract class ToCompositionWalker<T> extends Walker<T> {
     private static final RMObjectCreator RM_OBJECT_CREATOR = new RMObjectCreator(ARCHIE_RM_INFO_LOOKUP);
 
     private final Logger log = LoggerFactory.getLogger(getClass());
+    private final Map<String, List<RMObject>> cloneMap = new HashMap<>();
 
     @Override
     protected Object extractRMChild(RMObject currentRM, WebTemplateNode currentNode, WebTemplateNode childNode, boolean isChoice, Integer count) {
@@ -60,16 +62,25 @@ public abstract class ToCompositionWalker<T> extends Walker<T> {
 
         if (count != null && child instanceof List) {
             RMObject currentChild;
-            List<RMObject> childList = (List<RMObject>) child;
-            if (count > 0) {
-                RMObject deepClone = deepClone(childList.get(0));
-                childList.add(deepClone);
+            List<RMObject> childList;
+
+           if (count == 0){
+               childList = (List<RMObject>) child;
+               cloneMap.put(childNode.getAqlPath(),childList);
+               childList.forEach(c -> removeProto(count,c,parent,attributeName));
+           }else{
+               childList = cloneMap.get(childNode.getAqlPath());;
+           }
+
+
+
+       RMObject proto =  childList.get(0);
+            RMObject deepClone = deepClone(proto);
+
                 currentChild = deepClone;
 
                 RM_OBJECT_CREATOR.addElementToListOrSetSingleValues(parent, attributeName, deepClone);
-            } else {
-                currentChild = childList.get(0);
-            }
+
             child = currentChild;
         }
         String rmclass = childNode.getRmType();
@@ -98,21 +109,11 @@ public abstract class ToCompositionWalker<T> extends Walker<T> {
                     ((IntervalEvent) newEvent).setWidth(new DvDuration());
                     ((IntervalEvent<?>) newEvent).setMathFunction(new DvCodedText());
                 }
-
-            }
-            RMAttributeInfo attributeInfo = ARCHIE_RM_INFO_LOOKUP.getAttributeInfo(parent.getClass(), attributeName);
-            if (attributeInfo.isMultipleValued() && (count == null || count != 1)) {
-                try {
-                    Object invoke = attributeInfo.getGetMethod().invoke(parent);
-                    if (Collection.class.isAssignableFrom(invoke.getClass())) {
-                        ((Collection) invoke).remove(child);
-                    }
-                } catch (IllegalAccessException | InvocationTargetException e) {
-                    log.warn(e.getMessage(), e);
-                }
+                removeProto(count, child, parent, attributeName);
             }
 
-            RM_OBJECT_CREATOR.addElementToListOrSetSingleValues(parent, attributeName, Collections.singletonList(newChild));
+
+                RM_OBJECT_CREATOR.addElementToListOrSetSingleValues(parent, attributeName, Collections.singletonList(newChild));
             } catch (IllegalArgumentException e){
                 newChild = null;
 
@@ -121,6 +122,20 @@ public abstract class ToCompositionWalker<T> extends Walker<T> {
         }
 
         return child;
+    }
+
+    private void removeProto(Integer count, Object child, Object parent, String attributeName) {
+        RMAttributeInfo attributeInfo = ARCHIE_RM_INFO_LOOKUP.getAttributeInfo(parent.getClass(), attributeName);
+        if (attributeInfo.isMultipleValued() ) {
+            try {
+                Object invoke = attributeInfo.getGetMethod().invoke(parent);
+                if (ArrayList.class.isAssignableFrom(invoke.getClass())) {
+                    ((List) invoke).remove(((ArrayList<?>) invoke).lastIndexOf(child));
+                }
+            } catch (IllegalAccessException | InvocationTargetException e) {
+                log.warn(e.getMessage(), e);
+            }
+        }
     }
 
     protected ImmutablePair<T, RMObject> extractPair(Context<T> context, WebTemplateNode currentNode, Map<String, List<WebTemplateNode>> choices, WebTemplateNode childNode, Integer i) {

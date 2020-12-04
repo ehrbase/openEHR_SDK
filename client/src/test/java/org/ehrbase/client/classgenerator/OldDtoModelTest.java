@@ -31,6 +31,7 @@ import org.ehrbase.client.classgenerator.olddtoexamples.coronaanamnesecompositio
 import org.ehrbase.client.classgenerator.olddtoexamples.coronaanamnesecomposition.definition.VorhandenDefiningcode;
 import org.ehrbase.client.classgenerator.olddtoexamples.testalltypesenv1composition.TestAllTypesEnV1Composition;
 import org.ehrbase.client.flattener.Flattener;
+import org.ehrbase.client.flattener.RoundTripTest;
 import org.ehrbase.client.flattener.Unflattener;
 import org.ehrbase.client.templateprovider.TestDataTemplateProvider;
 import org.ehrbase.serialisation.flatencoding.FlatFormat;
@@ -101,6 +102,16 @@ public class OldDtoModelTest {
                     "Extra path: test_all_types/test_all_types3:0/section_2/section_3/test_all_types:0/current_activity/timing, value: P1D",
                     "Extra path: test_all_types/test_all_types3:0/section_2/section_3/test_all_types:0/current_activity/timing|formalism, value: ISO8601",
             }));
+    testCaseList.add(
+            new TestCase(
+                    2,
+                    CompositionTestDataSimSDTJson.CORONA,
+                    "Corona_Anamnese",
+                    CoronaAnamneseComposition.class,
+                    new String[] {
+                    },
+                    new String[] {
+                    }));
 
     SoftAssertions softly = new SoftAssertions();
 
@@ -170,8 +181,7 @@ public class OldDtoModelTest {
                     testCase.missing
             );
 
-    String[] extra = {"Extra path: test_all_types/test_all_types:0/identifier, value: 55175056",
-            "Extra path: test_all_types/test_all_types:0/proportion_any|type, value: 1.0"};
+
     softly.assertThat(errors)
             .filteredOn(s -> s.startsWith("Extra"))
             .as("Test Case %s", testCase.id)

@@ -26,7 +26,6 @@ import org.ehrbase.serialisation.util.SnakeCase;
 import org.ehrbase.util.reflection.ReflectionHelper;
 import org.ehrbase.webtemplate.filter.Filter;
 import org.ehrbase.webtemplate.model.WebTemplate;
-import org.ehrbase.webtemplate.model.WebTemplateInput;
 import org.ehrbase.webtemplate.model.WebTemplateNode;
 import org.ehrbase.webtemplate.parser.config.RmIntrospectConfig;
 
@@ -40,6 +39,12 @@ import java.util.stream.Collectors;
 public class FlattFilter extends Filter {
   private static final Map<Class<?>, RmIntrospectConfig> configMap =
       ReflectionHelper.buildMap(RmIntrospectConfig.class);
+  private ClassGeneratorConfig config;
+
+  public FlattFilter(ClassGeneratorConfig config) {
+
+    this.config = config;
+  }
 
   @Override
   protected boolean skip(WebTemplateNode node, WebTemplate context, WebTemplateNode parent) {

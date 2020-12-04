@@ -29,8 +29,6 @@ import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.collections4.MultiValuedMap;
-import org.apache.commons.collections4.multimap.ArrayListValuedHashMap;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.ehrbase.client.annotations.Archetype;
@@ -64,7 +62,6 @@ import org.slf4j.LoggerFactory;
 
 import javax.lang.model.element.Modifier;
 import java.lang.reflect.Field;
-import java.util.ArrayDeque;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Deque;
@@ -82,34 +79,25 @@ public class ClassGenerator {
   public static final int CLASS_NAME_MAX_WIDTH = 80;
   private static final Map<Class<?>, RmClassGeneratorConfig> configMap =
       ReflectionHelper.buildMap(RmClassGeneratorConfig.class);
-  private final DefaultNamingStrategy defaultNamingStrategy = new DefaultNamingStrategy();
 
-  static class Context {
-    final MultiValuedMap<String, TypeSpec> classes = new ArrayListValuedHashMap<>();
-    final Deque<WebTemplateNode> nodeDeque = new ArrayDeque<>();
-    final Deque<WebTemplateNode> unFilteredNodeDeque = new ArrayDeque<>();
-    final Map<WebTemplateNode, TypeSpec> currentTypeSpec = new HashMap<>();
-    String currentMainClass;
-    final Deque<String> currentArchetypeName = new ArrayDeque<>();
-    final Map<String, Integer> currentClassNameMap = new HashMap<>();
-    String currentPackageName;
-    final Map<ValueSet, TypeSpec> currentEnums = new HashMap<>();
-    final Deque<Map<String, Integer>> currentFieldNameMap = new ArrayDeque<>();
-    FilteredWebTemplate webTemplate;
-  }
-
-  private Logger logger = LoggerFactory.getLogger(this.getClass());
+  private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
   private final WebTemplateFilter filter;
+  private final NamingStrategy defaultNamingStrategy;
+
+  public ClassGenerator(WebTemplateFilter filter, NamingStrategy defaultNamingStrategy) {
+    this.filter = filter;
+    this.defaultNamingStrategy = defaultNamingStrategy;
+  }
 
   public ClassGenerator(ClassGeneratorConfig config) {
 
-    filter = new FlattFilter();
+    this(new FlattFilter(config), new DefaultNamingStrategy(config));
   }
 
   public ClassGeneratorResult generate(String packageName, WebTemplate webTemplate) {
 
-    Context context = new Context();
+    ClassGeneratorContext context = new ClassGeneratorContext();
 
     context.currentPackageName = packageName;
 
@@ -141,7 +129,7 @@ public class ClassGenerator {
     classBuilder.addMethod(buildSetter(versionUid));
   }
 
-  private TypeSpec.Builder build(Context context, WebTemplateNode next) {
+  private TypeSpec.Builder build(ClassGeneratorContext context, WebTemplateNode next) {
 
     String className = defaultNamingStrategy.buildClassName(context, next, false, false);
 
@@ -293,7 +281,8 @@ public class ClassGenerator {
     return classBuilder;
   }
 
-  private Deque<WebTemplateNode> pushToUnfiltered(Context context, WebTemplateNode node) {
+  private Deque<WebTemplateNode> pushToUnfiltered(
+      ClassGeneratorContext context, WebTemplateNode node) {
     Deque<WebTemplateNode> filtersNodes = context.webTemplate.findFiltersNodes(node);
     if (!CollectionUtils.isEmpty(filtersNodes)) {
       filtersNodes.descendingIterator().forEachRemaining(context.unFilteredNodeDeque::push);
@@ -302,7 +291,10 @@ public class ClassGenerator {
   }
 
   private void addComplexField(
-      Context context, TypeSpec.Builder classBuilder, String path, WebTemplateNode node) {
+      ClassGeneratorContext context,
+      TypeSpec.Builder classBuilder,
+      String path,
+      WebTemplateNode node) {
 
     final TypeSpec subSpec;
 
@@ -332,7 +324,7 @@ public class ClassGenerator {
         false);
   }
 
-  private WebTemplateNode buildRelativeNode(Context context, WebTemplateNode node) {
+  private WebTemplateNode buildRelativeNode(ClassGeneratorContext context, WebTemplateNode node) {
     WebTemplateNode relativeNode = new WebTemplateNode(node);
 
     List<WebTemplateNode> matching = relativeNode.findMatching(n -> true);
@@ -350,7 +342,10 @@ public class ClassGenerator {
   }
 
   private void addSimpleField(
-      Context context, TypeSpec.Builder classBuilder, String path, WebTemplateNode endNode) {
+      ClassGeneratorContext context,
+      TypeSpec.Builder classBuilder,
+      String path,
+      WebTemplateNode endNode) {
 
     Class clazz = extractClass(endNode);
     if (clazz == null) {
@@ -366,7 +361,9 @@ public class ClassGenerator {
     }
     boolean expand = classGeneratorConfig != null && classGeneratorConfig.isExpandField();
 
-    if (endNode.getRmType().equals("DV_CODED_TEXT") && !List.of("transition","language","setting","category","territory","math_function").contains(endNode.getId(false))) {
+    if (endNode.getRmType().equals("DV_CODED_TEXT")
+        && !List.of("transition", "language", "setting", "category", "territory", "math_function")
+            .contains(endNode.getId(false))) {
       expand =
           expand
               && endNode.getInputs().stream()
@@ -375,8 +372,7 @@ public class ClassGenerator {
                   .flatMap(List::stream)
                   .findAny()
                   .isPresent();
-      }
-
+    }
 
     if (!expand) {
 
@@ -443,7 +439,7 @@ public class ClassGenerator {
   }
 
   private void addField(
-      Context context,
+      ClassGeneratorContext context,
       TypeSpec.Builder classBuilder,
       String path,
       WebTemplateNode node,
@@ -507,7 +503,8 @@ public class ClassGenerator {
     classBuilder.addMethod(buildGetter(fieldSpec));
   }
 
-  private TypeSpec buildEnumValueSet(Context context, WebTemplateNode node, ValueSet valueSet) {
+  private TypeSpec buildEnumValueSet(
+      ClassGeneratorContext context, WebTemplateNode node, ValueSet valueSet) {
     TypeSpec.Builder enumBuilder =
         TypeSpec.enumBuilder(defaultNamingStrategy.buildClassName(context, node, false, true))
             .addSuperinterface(EnumValueSet.class)
