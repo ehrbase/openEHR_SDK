@@ -477,7 +477,7 @@ jobs:
       # - cache-out-ehrbase-workspace     #
       #-----------------------------------#
       - restore-ehrbase-workspace
-      - start-ehrbase-server
+      # - start-ehrbase-server
       - run-robot-tests:
           include-tags: "compositionANDjson1"
           test-suite-path: "COMPOSITION_TESTS"
@@ -492,7 +492,7 @@ jobs:
       # - cache-out-ehrbase-workspace     #
       #-----------------------------------#
       - restore-ehrbase-workspace
-      - start-ehrbase-server
+      # - start-ehrbase-server
       - run-robot-tests:
           include-tags: "compositionANDjson2"
           test-suite-path: "COMPOSITION_TESTS"
@@ -507,7 +507,7 @@ jobs:
       # - cache-out-ehrbase-workspace     #
       #-----------------------------------#
       - restore-ehrbase-workspace
-      - start-ehrbase-server
+      # - start-ehrbase-server
       - run-robot-tests:
           include-tags: "compositionANDxml1"
           test-suite-path: "COMPOSITION_TESTS"
@@ -522,7 +522,7 @@ jobs:
       # - cache-out-ehrbase-workspace     #
       #-----------------------------------#
       - restore-ehrbase-workspace
-      - start-ehrbase-server
+      # - start-ehrbase-server
       - run-robot-tests:
           include-tags: "compositionANDxml2"
           test-suite-path: "COMPOSITION_TESTS"
@@ -537,7 +537,7 @@ jobs:
       # - cache-out-ehrbase-workspace     #
       #-----------------------------------#
       - restore-ehrbase-workspace
-      - start-ehrbase-server
+      # - start-ehrbase-server
       - run-robot-tests:
           include-tags: "CONTRIBUTION"
           test-suite-path: "CONTRIBUTION_TESTS"
@@ -552,7 +552,7 @@ jobs:
       # - cache-out-ehrbase-workspace     #
       #-----------------------------------#
       - restore-ehrbase-workspace
-      - start-ehrbase-server
+      # - start-ehrbase-server
       - run-robot-tests:
           include-tags: "directory"
           test-suite-path: "DIRECTORY_TESTS"
@@ -567,7 +567,7 @@ jobs:
       # - cache-out-ehrbase-workspace     #
       #-----------------------------------#
       - restore-ehrbase-workspace
-      - start-ehrbase-server
+      # - start-ehrbase-server
       - run-robot-tests:
           include-tags: "EHR_SERVICE"
           test-suite-path: "EHR_SERVICE_TESTS"
@@ -582,7 +582,7 @@ jobs:
       # - cache-out-ehrbase-workspace     #
       #-----------------------------------#
       - restore-ehrbase-workspace
-      - start-ehrbase-server
+      # - start-ehrbase-server
       - run-robot-tests:
           include-tags: "EHR_STATUS"
           test-suite-path: "EHR_STATUS_TESTS"
@@ -597,7 +597,7 @@ jobs:
       # - cache-out-ehrbase-workspace     #
       #-----------------------------------#
       - restore-ehrbase-workspace
-      - start-ehrbase-server
+      # - start-ehrbase-server
       - run-robot-tests:
           include-tags: "KNOWLEDGE"
           test-suite-path: "KNOWLEDGE_TESTS"
@@ -614,7 +614,7 @@ jobs:
       # - cache-out-ehrbase-workspace     #
       #-----------------------------------#
       - restore-ehrbase-workspace
-      - start-ehrbase-server
+      # - start-ehrbase-server
       - run-robot-tests:
           include-tags: "aql_adhoc-queryANDempty_db"
           test-suite-path: "QUERY_SERVICE_TESTS"
