@@ -15,39 +15,75 @@ import org.ehrbase.client.classgenerator.shareddefinition.Transition;
 @Entity
 @Archetype("openEHR-EHR-ACTION.service.v0")
 public class ServiceAction {
+  /**
+   * open_eREACT-Care/Response/Service/Service name
+   */
   @Path("/description[at0001]/items[at0011]/value")
   private DvCodedText serviceName;
 
+  /**
+   * open_eREACT-Care/Response/Service/Description
+   */
   @Path("/description[at0001]/items[at0013]/value|value")
   private String descriptionValue;
 
+  /**
+   * open_eREACT-Care/Response/Service/Service detail
+   */
   @Path("/description[at0001]/items[at0027]")
   private List<Cluster> serviceDetail;
 
+  /**
+   * open_eREACT-Care/Response/Service/Multimedia
+   */
   @Path("/description[at0001]/items[at0029]")
   private List<Cluster> multimedia;
 
+  /**
+   * open_eREACT-Care/Response/Service/Requestor
+   */
   @Path("/protocol[at0015]/items[at0017]")
   private List<Cluster> requestor;
 
+  /**
+   * open_eREACT-Care/Response/Service/Receiver
+   */
   @Path("/protocol[at0015]/items[at0019]")
   private List<Cluster> receiver;
 
+  /**
+   * open_eREACT-Care/Response/Service/subject
+   */
   @Path("/subject")
   private PartyProxy subject;
 
+  /**
+   * open_eREACT-Care/Response/Service/language
+   */
   @Path("/language")
   private Language language;
 
+  /**
+   * open_eREACT-Care/Response/Service/time
+   */
   @Path("/time|value")
   private TemporalAccessor timeValue;
 
+  /**
+   * open_eREACT-Care/Response/Service/ism_transition/Careflow_step
+   */
   @Path("/ism_transition/careflow_step|defining_code")
   private CareflowStepDefiningCode careflowStepDefiningCode;
 
+  /**
+   * open_eREACT-Care/Response/Service/ism_transition/Current_state
+   */
   @Path("/ism_transition/current_state|defining_code")
   private CurrentStateDefiningCode currentStateDefiningCode;
 
+  /**
+   * open_eREACT-Care/Response/Service/ism_transition/transition
+   */
   @Path("/ism_transition/transition|defining_code")
   private Transition transitionDefiningCode;
 

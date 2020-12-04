@@ -8,18 +8,33 @@ import org.ehrbase.client.annotations.Path;
 
 @Entity
 public class ReisefallBestimmtesReisezielCluster {
+  /**
+   * Bericht/Risikogebiet/Reisefall/Beliebiges Intervallereignis/Bestimmte Reise/Bestimmtes Reiseziel/Land
+   */
   @Path("/items[at0011]/value|value")
   private String landValue;
 
+  /**
+   * Bericht/Risikogebiet/Reisefall/Beliebiges Intervallereignis/Bestimmte Reise/Bestimmtes Reiseziel/Bundesland / Region
+   */
   @Path("/items[at0012]/value|value")
   private String bundeslandRegionValue;
 
+  /**
+   * Bericht/Risikogebiet/Reisefall/Beliebiges Intervallereignis/Bestimmte Reise/Bestimmtes Reiseziel/Stadt
+   */
   @Path("/items[at0013]/value|value")
   private String stadtValue;
 
+  /**
+   * Bericht/Risikogebiet/Reisefall/Beliebiges Intervallereignis/Bestimmte Reise/Bestimmtes Reiseziel/Bestimmte Gegend
+   */
   @Path("/items[at0031]/value|value")
   private String bestimmteGegendValue;
 
+  /**
+   * Bericht/Risikogebiet/Reisefall/Beliebiges Intervallereignis/Bestimmte Reise/Bestimmtes Reiseziel/Zusätzliche Angaben zum Zielort
+   */
   @Path("/items[at0024]")
   private List<Cluster> zusatzlicheAngabenZumZielort;
 

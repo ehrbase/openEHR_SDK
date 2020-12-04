@@ -8,9 +8,15 @@ import org.ehrbase.client.annotations.Path;
 @Entity
 @Archetype("openEHR-EHR-CLUSTER.address_cc.v0")
 public class AdresseCluster {
+  /**
+   * Bericht/Allgemeine Angaben/Gesundheitsbezogener Beruf/Beschäftigung/Organisation/Adresse/Stadt
+   */
   @Path("/items[at0012]/value|value")
   private String stadtValue;
 
+  /**
+   * Bericht/Allgemeine Angaben/Gesundheitsbezogener Beruf/Beschäftigung/Organisation/Adresse/Land
+   */
   @Path("/items[at0015]/value|value")
   private String landValue;
 

@@ -66,10 +66,12 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Deque;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.StringJoiner;
 import java.util.stream.Collectors;
 
 public class ClassGenerator {
@@ -283,6 +285,7 @@ public class ClassGenerator {
 
   private Deque<WebTemplateNode> pushToUnfiltered(
       ClassGeneratorContext context, WebTemplateNode node) {
+
     Deque<WebTemplateNode> filtersNodes = context.webTemplate.findFiltersNodes(node);
     if (!CollectionUtils.isEmpty(filtersNodes)) {
       filtersNodes.descendingIterator().forEachRemaining(context.unFilteredNodeDeque::push);
@@ -490,7 +493,9 @@ public class ClassGenerator {
         FieldSpec.builder(className, fieldName)
             .addAnnotation(
                 AnnotationSpec.builder(Path.class).addMember(Path.VALUE, "$S", path).build())
-            .addModifiers(Modifier.PRIVATE);
+            .addModifiers(Modifier.PRIVATE)
+            .addJavadoc(
+                    buildFieldJavadoc(context, node));
 
     if (addChoiceAnnotation) {
       builder.addAnnotation(Choice.class);
@@ -501,6 +506,26 @@ public class ClassGenerator {
 
     classBuilder.addMethod(buildSetter(fieldSpec));
     classBuilder.addMethod(buildGetter(fieldSpec));
+  }
+
+  private String buildFieldJavadoc(ClassGeneratorContext context, WebTemplateNode node) {
+    StringJoiner joiner = new StringJoiner("/");
+    for (Iterator<WebTemplateNode> it = context.unFilteredNodeDeque.descendingIterator(); it.hasNext(); ) {
+      WebTemplateNode n = it.next();
+      if (!List.of(
+              "HISTORY",
+              "ITEM_TREE",
+              "ITEM_LIST",
+              "ITEM_SINGLE",
+              "ITEM_TABLE",
+              "ITEM_STRUCTURE",
+              "ELEMENT")
+              .contains(n.getRmType())) {
+        joiner.add(n.getName());
+      }
+    }
+    joiner.add(node.getName());
+    return joiner.toString();
   }
 
   private TypeSpec buildEnumValueSet(

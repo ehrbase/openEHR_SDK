@@ -7,6 +7,9 @@ import org.ehrbase.client.annotations.Path;
 @Entity
 @OptionFor("DV_CODED_TEXT")
 public class ProblemDiganoseCoronovirusDiagnostischeSicherheitDvCodedText implements ProblemDiganoseCoronovirusDiagnostischeSicherheitChoice {
+  /**
+   * Bericht/Allgemeine Angaben/Problem/Diganose Coronovirus/value/value
+   */
   @Path("|defining_code")
   private DiagnostischeSicherheitDefiningCode diagnostischeSicherheitDefiningCode;
 

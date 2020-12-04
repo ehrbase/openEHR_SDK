@@ -5,6 +5,9 @@ import org.ehrbase.client.annotations.Path;
 
 @Entity
 public class DenwisBreathingIndicatorElement {
+  /**
+   * open_eREACT-Care/Assessment/DENWIS/Point in time/Breathing indicator
+   */
   @Path("/value|defining_code")
   private BreathingIndicatorDefiningCode value;
 

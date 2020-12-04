@@ -11,27 +11,51 @@ import org.ehrbase.client.annotations.Path;
 @Entity
 @Archetype("openEHR-EHR-CLUSTER.device.v1")
 public class DetailsZumBettCluster {
+  /**
+   * Patientenaufenthalt/Versorgungsort/Standort/Details zum Bett/Gerätename
+   */
   @Path("/items[at0001]/value|value")
   private String geratenameValue;
 
+  /**
+   * Patientenaufenthalt/Versorgungsort/Standort/Details zum Bett/Gerätetyp
+   */
   @Path("/items[at0003]/value|value")
   private String geratetypValue;
 
+  /**
+   * Patientenaufenthalt/Versorgungsort/Standort/Details zum Bett/Eigenschaften
+   */
   @Path("/items[at0009]")
   private List<Cluster> eigenschaften;
 
+  /**
+   * Patientenaufenthalt/Versorgungsort/Standort/Details zum Bett/Eindeutige Identifikationsnummer (ID)
+   */
   @Path("/items[at0021]/value")
   private DvIdentifier eindeutigeIdentifikationsnummerId;
 
+  /**
+   * Patientenaufenthalt/Versorgungsort/Standort/Details zum Bett/Geräteverwaltung
+   */
   @Path("/items[at0019]")
   private List<Cluster> gerateverwaltung;
 
+  /**
+   * Patientenaufenthalt/Versorgungsort/Standort/Details zum Bett/Komponenten
+   */
   @Path("/items[at0018]")
   private List<Cluster> komponenten;
 
+  /**
+   * Patientenaufenthalt/Versorgungsort/Standort/Details zum Bett/Erweiterung
+   */
   @Path("/items[at0026]")
   private List<Cluster> erweiterung;
 
+  /**
+   * Patientenaufenthalt/Versorgungsort/Standort/Details zum Bett/Multimedia
+   */
   @Path("/items[at0027]")
   private List<Cluster> multimedia;
 

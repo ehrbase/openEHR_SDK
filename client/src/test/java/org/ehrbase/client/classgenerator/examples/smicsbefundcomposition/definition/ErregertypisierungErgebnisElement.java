@@ -6,6 +6,9 @@ import org.ehrbase.client.annotations.Path;
 
 @Entity
 public class ErregertypisierungErgebnisElement {
+  /**
+   * SmICS Befund/SmICS-Ergebnis/Jedes Ereignis/Eigenschaften des beteiligten Erregers/Erregertypisierung/Ergebnis
+   */
   @Path("/value")
   private DvMultimedia value;
 

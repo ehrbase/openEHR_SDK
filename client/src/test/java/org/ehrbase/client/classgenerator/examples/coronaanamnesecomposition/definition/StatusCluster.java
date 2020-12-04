@@ -7,6 +7,9 @@ import org.ehrbase.client.annotations.Path;
 @Entity
 @Archetype("openEHR-EHR-CLUSTER.problem_qualifier.v1")
 public class StatusCluster {
+  /**
+   * Bericht/Allgemeine Angaben/Problem/Diganose Coronovirus/Status/Diagnosestatus
+   */
   @Path("/items[at0004]/value|defining_code")
   private DiagnosestatusDefiningCode diagnosestatusDefiningCode;
 

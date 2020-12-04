@@ -8,6 +8,9 @@ import org.ehrbase.client.annotations.Path;
 @Entity
 @OptionFor("DV_IDENTIFIER")
 public class EventsummaryValueDvIdentifier implements EventsummaryValueChoice {
+  /**
+   * SmICS Befund/context/Eventsummary/Beteiligte Personen/value/value
+   */
   @Path("")
   private DvIdentifier value;
 

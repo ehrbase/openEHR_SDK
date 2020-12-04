@@ -15,30 +15,57 @@ import org.ehrbase.client.classgenerator.shareddefinition.Language;
 @Entity
 @Archetype("openEHR-EHR-OBSERVATION.body_weight.v2")
 public class WeightObservation {
+  /**
+   * open_eREACT-Care/Background/Weight/Any event/Weight
+   */
   @Path("/data[at0002]/events[at0003]/data[at0001]/items[at0004]/value|magnitude")
   private Double weightMagnitude;
 
+  /**
+   * open_eREACT-Care/Background/Weight/Any event/Weight
+   */
   @Path("/data[at0002]/events[at0003]/data[at0001]/items[at0004]/value|units")
   private String weightUnits;
 
+  /**
+   * open_eREACT-Care/Background/Weight/Any event/state structure
+   */
   @Path("/data[at0002]/events[at0003]/state[at0008]")
   private ItemTree stateStructure;
 
+  /**
+   * open_eREACT-Care/Background/Weight/Any event/time
+   */
   @Path("/data[at0002]/events[at0003]/time|value")
   private TemporalAccessor timeValue;
 
+  /**
+   * open_eREACT-Care/Background/Weight/origin
+   */
   @Path("/data[at0002]/origin|value")
   private TemporalAccessor originValue;
 
+  /**
+   * open_eREACT-Care/Background/Weight/Device
+   */
   @Path("/protocol[at0015]/items[at0020]")
   private Cluster device;
 
+  /**
+   * open_eREACT-Care/Background/Weight/Extension
+   */
   @Path("/protocol[at0015]/items[at0027]")
   private List<Cluster> extension;
 
+  /**
+   * open_eREACT-Care/Background/Weight/subject
+   */
   @Path("/subject")
   private PartyProxy subject;
 
+  /**
+   * open_eREACT-Care/Background/Weight/language
+   */
   @Path("/language")
   private Language language;
 

@@ -13,30 +13,57 @@ import org.ehrbase.client.classgenerator.shareddefinition.Language;
 @Entity
 @Archetype("openEHR-EHR-INSTRUCTION.service_request.v1")
 public class DienstleistungInstruction {
+  /**
+   * Bericht/Allgemeine Angaben/Dienstleistung/Aktuelle Aktivität
+   */
   @Path("/activities[at0001]")
   private List<DienstleistungAktuelleAktivitatActivity> aktuelleAktivitat;
 
+  /**
+   * Bericht/Allgemeine Angaben/Dienstleistung/Einsender
+   */
   @Path("/protocol[at0008]/items[at0141]")
   private Cluster einsender;
 
+  /**
+   * Bericht/Allgemeine Angaben/Dienstleistung/Empfänger
+   */
   @Path("/protocol[at0008]/items[at0142]")
   private Cluster empfanger;
 
+  /**
+   * Bericht/Allgemeine Angaben/Dienstleistung/Verteilerliste
+   */
   @Path("/protocol[at0008]/items[at0128]")
   private List<Cluster> verteilerliste;
 
+  /**
+   * Bericht/Allgemeine Angaben/Dienstleistung/Erweiterung
+   */
   @Path("/protocol[at0008]/items[at0112]")
   private List<Cluster> erweiterung;
 
+  /**
+   * Bericht/Allgemeine Angaben/Dienstleistung/subject
+   */
   @Path("/subject")
   private PartyProxy subject;
 
+  /**
+   * Bericht/Allgemeine Angaben/Dienstleistung/narrative
+   */
   @Path("/narrative|value")
   private String narrativeValue;
 
+  /**
+   * Bericht/Allgemeine Angaben/Dienstleistung/language
+   */
   @Path("/language")
   private Language language;
 
+  /**
+   * Bericht/Allgemeine Angaben/Dienstleistung/expiry_time
+   */
   @Path("/expiry_time|value")
   private TemporalAccessor expiryTimeValue;
 

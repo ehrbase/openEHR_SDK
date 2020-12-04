@@ -13,21 +13,39 @@ import org.ehrbase.client.classgenerator.shareddefinition.Language;
 @Entity
 @Archetype("openEHR-EHR-OBSERVATION.clinical_frailty_scale.v1")
 public class FrailtyObservation {
+  /**
+   * open_eREACT-Care/Background/Frailty/Any point in time event/Assessment
+   */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value")
   private DvOrdinal assessment;
 
+  /**
+   * open_eREACT-Care/Background/Frailty/Any point in time event/time
+   */
   @Path("/data[at0001]/events[at0002]/time|value")
   private TemporalAccessor timeValue;
 
+  /**
+   * open_eREACT-Care/Background/Frailty/origin
+   */
   @Path("/data[at0001]/origin|value")
   private TemporalAccessor originValue;
 
+  /**
+   * open_eREACT-Care/Background/Frailty/Extension
+   */
   @Path("/protocol[at0014]/items[at0015]")
   private List<Cluster> extension;
 
+  /**
+   * open_eREACT-Care/Background/Frailty/subject
+   */
   @Path("/subject")
   private PartyProxy subject;
 
+  /**
+   * open_eREACT-Care/Background/Frailty/language
+   */
   @Path("/language")
   private Language language;
 

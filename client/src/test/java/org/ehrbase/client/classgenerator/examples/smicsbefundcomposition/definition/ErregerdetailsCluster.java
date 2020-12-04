@@ -12,33 +12,63 @@ import org.ehrbase.client.annotations.Path;
 @Entity
 @Archetype("openEHR-EHR-CLUSTER.erregerdetails.v1")
 public class ErregerdetailsCluster {
+  /**
+   * SmICS Befund/SmICS-Ergebnis/Jedes Ereignis/Eigenschaften des beteiligten Erregers/Erregerdetails/Keim Subtyp
+   */
   @Path("/items[at0047]")
   private List<ErregerdetailsKeimSubtypElement> keimSubtyp;
 
+  /**
+   * SmICS Befund/SmICS-Ergebnis/Jedes Ereignis/Eigenschaften des beteiligten Erregers/Erregerdetails/value
+   */
   @Path("/items[at0035]/value|magnitude")
   private Double keimzahlMagnitude;
 
+  /**
+   * SmICS Befund/SmICS-Ergebnis/Jedes Ereignis/Eigenschaften des beteiligten Erregers/Erregerdetails/value
+   */
   @Path("/items[at0035]/value|units")
   private String keimzahlUnits;
 
+  /**
+   * SmICS Befund/SmICS-Ergebnis/Jedes Ereignis/Eigenschaften des beteiligten Erregers/Erregerdetails/Häufigkeit
+   */
   @Path("/items[at0003]/value")
   private DvOrdinal haufigkeit;
 
+  /**
+   * SmICS Befund/SmICS-Ergebnis/Jedes Ereignis/Eigenschaften des beteiligten Erregers/Erregerdetails/Virulenzfaktor
+   */
   @Path("/items[at0016]/value|value")
   private String virulenzfaktorValue;
 
+  /**
+   * SmICS Befund/SmICS-Ergebnis/Jedes Ereignis/Eigenschaften des beteiligten Erregers/Erregerdetails/Antibiogramm
+   */
   @Path("/items[openEHR-EHR-CLUSTER.laboratory_test_panel.v0 and name/value='Antibiogramm']")
   private AntibiogrammCluster antibiogramm;
 
+  /**
+   * SmICS Befund/SmICS-Ergebnis/Jedes Ereignis/Eigenschaften des beteiligten Erregers/Erregerdetails/Resistenzmechanismus
+   */
   @Path("/items[at0057]")
   private List<ErregerdetailsResistenzmechanismusCluster> resistenzmechanismus;
 
+  /**
+   * SmICS Befund/SmICS-Ergebnis/Jedes Ereignis/Eigenschaften des beteiligten Erregers/Erregerdetails/MRE Klasse
+   */
   @Path("/items[at0018]/value|defining_code")
   private MreKlasseDefiningCode mreKlasseDefiningCode;
 
+  /**
+   * SmICS Befund/SmICS-Ergebnis/Jedes Ereignis/Eigenschaften des beteiligten Erregers/Erregerdetails/Kommentar
+   */
   @Path("/items[at0062]/value|value")
   private String kommentarValue;
 
+  /**
+   * SmICS Befund/SmICS-Ergebnis/Jedes Ereignis/Eigenschaften des beteiligten Erregers/Erregerdetails/Weitere Ergänzungen
+   */
   @Path("/items[at0059]")
   private List<Cluster> weitereErganzungen;
 

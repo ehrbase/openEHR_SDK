@@ -14,33 +14,63 @@ import org.ehrbase.client.classgenerator.shareddefinition.Language;
 @Entity
 @Archetype("openEHR-EHR-OBSERVATION.body_temperature.v1")
 public class TemperatureObservation {
+  /**
+   * open_eREACT-Care/Assessment/NEWS2/Temperature/Any event/Temperature
+   */
   @Path("/data[at0002]/events[at0003]/data[at0001]/items[at0004]/value|magnitude")
   private Double temperatureMagnitude;
 
+  /**
+   * open_eREACT-Care/Assessment/NEWS2/Temperature/Any event/Temperature
+   */
   @Path("/data[at0002]/events[at0003]/data[at0001]/items[at0004]/value|units")
   private String temperatureUnits;
 
+  /**
+   * open_eREACT-Care/Assessment/NEWS2/Temperature/Any event/Environmental Conditions
+   */
   @Path("/data[at0002]/events[at0003]/state[at0029]/items[at0056]")
   private Cluster environmentalConditions;
 
+  /**
+   * open_eREACT-Care/Assessment/NEWS2/Temperature/Any event/Exertion
+   */
   @Path("/data[at0002]/events[at0003]/state[at0029]/items[at0057]")
   private Cluster exertion;
 
+  /**
+   * open_eREACT-Care/Assessment/NEWS2/Temperature/Any event/Menstrual Cycle
+   */
   @Path("/data[at0002]/events[at0003]/state[at0029]/items[at0058]")
   private Element menstrualCycle;
 
+  /**
+   * open_eREACT-Care/Assessment/NEWS2/Temperature/Any event/time
+   */
   @Path("/data[at0002]/events[at0003]/time|value")
   private TemporalAccessor timeValue;
 
+  /**
+   * open_eREACT-Care/Assessment/NEWS2/Temperature/origin
+   */
   @Path("/data[at0002]/origin|value")
   private TemporalAccessor originValue;
 
+  /**
+   * open_eREACT-Care/Assessment/NEWS2/Temperature/Device
+   */
   @Path("/protocol[at0020]/items[at0059]")
   private Cluster device;
 
+  /**
+   * open_eREACT-Care/Assessment/NEWS2/Temperature/subject
+   */
   @Path("/subject")
   private PartyProxy subject;
 
+  /**
+   * open_eREACT-Care/Assessment/NEWS2/Temperature/language
+   */
   @Path("/language")
   private Language language;
 

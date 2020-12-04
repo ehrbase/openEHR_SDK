@@ -12,51 +12,99 @@ import org.ehrbase.client.classgenerator.shareddefinition.Language;
 @Entity
 @Archetype("openEHR-EHR-OBSERVATION.laboratory_test_result.v1")
 public class LaborergebnisObservation {
+  /**
+   * Befund der Blutgasanalyse/Laborergebnis/Jedes Ereignis/Labortest-Bezeichnung
+   */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0005]/value|defining_code")
   private LabortestBezeichnungDefiningCode labortestBezeichnungDefiningCode;
 
+  /**
+   * Befund der Blutgasanalyse/Laborergebnis/Jedes Ereignis/Probendetail
+   */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0065]")
   private List<Cluster> probendetail;
 
+  /**
+   * Befund der Blutgasanalyse/Laborergebnis/Jedes Ereignis/Kohlendioxidpartialdruck
+   */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.laboratory_test_analyte.v1 and name/value='Kohlendioxidpartialdruck']")
   private KohlendioxidpartialdruckCluster kohlendioxidpartialdruck;
 
+  /**
+   * Befund der Blutgasanalyse/Laborergebnis/Jedes Ereignis/Sauerstoffpartialdruck
+   */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.laboratory_test_analyte.v1 and name/value='Sauerstoffpartialdruck']")
   private SauerstoffpartialdruckCluster sauerstoffpartialdruck;
 
+  /**
+   * Befund der Blutgasanalyse/Laborergebnis/Jedes Ereignis/pH-Wert
+   */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.laboratory_test_analyte.v1 and name/value='pH-Wert']")
   private PhWertCluster phWert;
 
+  /**
+   * Befund der Blutgasanalyse/Laborergebnis/Jedes Ereignis/Sauerstoffsättigung
+   */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.laboratory_test_analyte.v1 and name/value='Sauerstoffsättigung']")
   private SauerstoffsattigungCluster sauerstoffsattigung;
 
+  /**
+   * Befund der Blutgasanalyse/Laborergebnis/Jedes Ereignis/Strukturierte Testdiagnostik
+   */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0122]")
   private List<Cluster> strukturierteTestdiagnostik;
 
+  /**
+   * Befund der Blutgasanalyse/Laborergebnis/Jedes Ereignis/Multimedia-Darstellung
+   */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0118]")
   private List<Cluster> multimediaDarstellung;
 
+  /**
+   * Befund der Blutgasanalyse/Laborergebnis/Jedes Ereignis/Strukturierte Erfassung der Störfaktoren
+   */
   @Path("/data[at0001]/events[at0002]/state[at0112]/items[at0114]")
   private List<Cluster> strukturierteErfassungDerStorfaktoren;
 
+  /**
+   * Befund der Blutgasanalyse/Laborergebnis/Jedes Ereignis/time
+   */
   @Path("/data[at0001]/events[at0002]/time|value")
   private TemporalAccessor timeValue;
 
+  /**
+   * Befund der Blutgasanalyse/Laborergebnis/origin
+   */
   @Path("/data[at0001]/origin|value")
   private TemporalAccessor originValue;
 
+  /**
+   * Befund der Blutgasanalyse/Laborergebnis/Labor, welches den Untersuchungsauftrag annimmt
+   */
   @Path("/protocol[at0004]/items[at0017]")
   private Cluster laborWelchesDenUntersuchungsauftragAnnimmt;
 
+  /**
+   * Befund der Blutgasanalyse/Laborergebnis/Test Details
+   */
   @Path("/protocol[at0004]/items[at0110]")
   private List<Cluster> testDetails;
 
+  /**
+   * Befund der Blutgasanalyse/Laborergebnis/Erweiterung
+   */
   @Path("/protocol[at0004]/items[at0117]")
   private List<Cluster> erweiterung;
 
+  /**
+   * Befund der Blutgasanalyse/Laborergebnis/subject
+   */
   @Path("/subject")
   private PartyProxy subject;
 
+  /**
+   * Befund der Blutgasanalyse/Laborergebnis/language
+   */
   @Path("/language")
   private Language language;
 

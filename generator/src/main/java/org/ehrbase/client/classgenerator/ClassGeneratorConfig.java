@@ -19,4 +19,15 @@
 
 package org.ehrbase.client.classgenerator;
 
-public class ClassGeneratorConfig {}
+public class ClassGeneratorConfig {
+
+    private OptimizerSetting optimizerSetting = OptimizerSetting.NONE;
+
+    public OptimizerSetting getOptimizerSetting() {
+        return optimizerSetting;
+    }
+
+    public void setOptimizerSetting(OptimizerSetting optimizerSetting) {
+        this.optimizerSetting = optimizerSetting;
+    }
+}

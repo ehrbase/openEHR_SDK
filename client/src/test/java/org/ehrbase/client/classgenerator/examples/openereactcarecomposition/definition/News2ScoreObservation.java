@@ -14,48 +14,93 @@ import org.ehrbase.client.classgenerator.shareddefinition.Language;
 @Entity
 @Archetype("openEHR-EHR-OBSERVATION.news2.v1")
 public class News2ScoreObservation {
+  /**
+   * open_eREACT-Care/Assessment/NEWS2/NEWS2 Score/Any point in time event/Respiration rate
+   */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0006]/value")
   private DvOrdinal respirationRate;
 
+  /**
+   * open_eREACT-Care/Assessment/NEWS2/NEWS2 Score/Any point in time event/SpO₂ Scale 1
+   */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0029]/value")
   private DvOrdinal spoScale1;
 
+  /**
+   * open_eREACT-Care/Assessment/NEWS2/NEWS2 Score/Any point in time event/SpO₂ Scale 2
+   */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0047]/value")
   private DvOrdinal spoScale2;
 
+  /**
+   * open_eREACT-Care/Assessment/NEWS2/NEWS2 Score/Any point in time event/Air or oxygen?
+   */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0034]/value")
   private DvOrdinal airOrOxygen;
 
+  /**
+   * open_eREACT-Care/Assessment/NEWS2/NEWS2 Score/Any point in time event/Systolic blood pressure
+   */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value")
   private DvOrdinal systolicBloodPressure;
 
+  /**
+   * open_eREACT-Care/Assessment/NEWS2/NEWS2 Score/Any point in time event/Pulse
+   */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0005]/value")
   private DvOrdinal pulse;
 
+  /**
+   * open_eREACT-Care/Assessment/NEWS2/NEWS2 Score/Any point in time event/Consciousness
+   */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0008]/value")
   private DvOrdinal consciousness;
 
+  /**
+   * open_eREACT-Care/Assessment/NEWS2/NEWS2 Score/Any point in time event/Temperature
+   */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0007]/value")
   private DvOrdinal temperature;
 
+  /**
+   * open_eREACT-Care/Assessment/NEWS2/NEWS2 Score/Any point in time event/Total score
+   */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0028]/value|magnitude")
   private Long totalScoreMagnitude;
 
+  /**
+   * open_eREACT-Care/Assessment/NEWS2/NEWS2 Score/Any point in time event/Clinical risk category
+   */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0056]/value|defining_code")
   private ClinicalRiskCategoryDefiningCode clinicalRiskCategoryDefiningCode;
 
+  /**
+   * open_eREACT-Care/Assessment/NEWS2/NEWS2 Score/Any point in time event/time
+   */
   @Path("/data[at0001]/events[at0002]/time|value")
   private TemporalAccessor timeValue;
 
+  /**
+   * open_eREACT-Care/Assessment/NEWS2/NEWS2 Score/origin
+   */
   @Path("/data[at0001]/origin|value")
   private TemporalAccessor originValue;
 
+  /**
+   * open_eREACT-Care/Assessment/NEWS2/NEWS2 Score/Extension
+   */
   @Path("/protocol[at0045]/items[at0046]")
   private List<Cluster> extension;
 
+  /**
+   * open_eREACT-Care/Assessment/NEWS2/NEWS2 Score/subject
+   */
   @Path("/subject")
   private PartyProxy subject;
 
+  /**
+   * open_eREACT-Care/Assessment/NEWS2/NEWS2 Score/language
+   */
   @Path("/language")
   private Language language;
 

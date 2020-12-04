@@ -1,9 +1,6 @@
 version: 2.1
 
 # OVERVIEW - What this CI pipeline does:
-# - QUALITY GATE I for fast feedback
-# - QUALITY GATE II for indepth test and analysis
-#
 # 1. build & test the SDK
 # 2. build & test EHRbase w/ SDK (as local dependency)
 # 3. conduct (static) code analysis w/ Sonar scanner and send results to sonarcloud.io
@@ -13,10 +10,27 @@ version: 2.1
 #    - requires manually creating a release (via Github UI) from a given git tag
 #    - jitpack will build related artifacts on demand
 
+# QUALITY GATE I for fast feedback
+# - builds and tests SDK as fast as possible for fast feedback
+# - ehrbase build w/o any tests (mvn even doesn't compile any test code)
+# - no Jacoco code instrumentation
+# - no code coverage metrics and related storage/upload of artifacts
+# - no Java Doc generation
+# - needs less than 50% of time before Robot integration test can start than would be the case in Quality Gate 2
+
+# QUALITY GATE II for indepth test and analysis
+# - Jacoco code instrumentation enabled to get coverage metrics
+# - ehrbase builds with tests enabled
+# - Java docs generation enabled
+# - Sonar code analysis enabled and results uploaded to sonarcloud.io
+# - TODO: enable scheduled execution(?)
+# - TODO: add security test suite(?)
+
+
 
 workflows:
 
-  # WORKFLOW 1/5) Build & Test the SDK
+  # WORKFLOW 1/6) Build & Test the SDK
   QUALITY-GATE-I:
     jobs:
       - build-and-test-openEHR_SDK:
@@ -26,6 +40,8 @@ workflows:
                 - master
                 - develop
                 - release
+                - /sync\/.*/
+                - /feature/sync\/.*/
 
       - COMPOSITION-tests-1:
           context: org-global
@@ -37,6 +53,8 @@ workflows:
                 - master
                 - develop
                 - release
+                - /sync\/.*/
+                - /feature/sync\/.*/
 
       - COMPOSITION-tests-2:
           context: org-global
@@ -48,6 +66,8 @@ workflows:
                 - master
                 - develop
                 - release
+                - /sync\/.*/
+                - /feature/sync\/.*/
 
       - COMPOSITION-tests-3:
           context: org-global
@@ -59,6 +79,8 @@ workflows:
                 - master
                 - develop
                 - release
+                - /sync\/.*/
+                - /feature/sync\/.*/
 
       - COMPOSITION-tests-4:
           context: org-global
@@ -70,6 +92,8 @@ workflows:
                 - master
                 - develop
                 - release
+                - /sync\/.*/
+                - /feature/sync\/.*/
 
       - CONTRIBUTION-tests:
           context: org-global
@@ -81,6 +105,8 @@ workflows:
                 - master
                 - develop
                 - release
+                - /sync\/.*/
+                - /feature/sync\/.*/
 
       - DIRECTORY-tests:
           context: org-global
@@ -92,6 +118,8 @@ workflows:
                 - master
                 - develop
                 - release
+                - /sync\/.*/
+                - /feature/sync\/.*/
 
       - EHRSERVICE-tests:
           context: org-global
@@ -103,6 +131,8 @@ workflows:
                 - master
                 - develop
                 - release
+                - /sync\/.*/
+                - /feature/sync\/.*/
       
       - EHRSTATUS-tests:
           context: org-global
@@ -114,6 +144,8 @@ workflows:
                 - master
                 - develop
                 - release
+                - /sync\/.*/
+                - /feature/sync\/.*/
       
       - KNOWLEDGE-tests:
           context: org-global
@@ -125,6 +157,8 @@ workflows:
                 - master
                 - develop
                 - release
+                - /sync\/.*/
+                - /feature/sync\/.*/
 
       - QUERYSERVICE-tests-1:
           context: org-global
@@ -136,6 +170,8 @@ workflows:
                 - master
                 - develop
                 - release
+                - /sync\/.*/
+                - /feature/sync\/.*/
 
       - QUERYSERVICE-tests-2:
           context: org-global
@@ -147,6 +183,8 @@ workflows:
                 - master
                 - develop
                 - release
+                - /sync\/.*/
+                - /feature/sync\/.*/
 
       - ROBOT-TEST-REPORT:
           context: org-global
@@ -168,10 +206,12 @@ workflows:
                 - master
                 - develop
                 - release
+                - /sync\/.*/
+                - /feature/sync\/.*/
 
 
 
-  # WORKFLOW 2/5) Publish Git tags for SNAPSHOT releases
+  # WORKFLOW 2/6) Publish Git tags for SNAPSHOT releases
   deploy-snapshot-release:
     when:
       and:
@@ -187,7 +227,7 @@ workflows:
 
 
 
-  # WORKFLOW 3/5) Publish Git tag for (stable) releases
+  # WORKFLOW 3/6) Publish Git tag for (stable) releases
   deploy-stable-release:
     when:
       and:
@@ -211,7 +251,7 @@ workflows:
 
 
 
-  # WORKFLOW 5/5) Code analysis w/ SonarCloud.io 
+  # WORKFLOW 5/6) Code analysis w/ SonarCloud.io 
   QUALITY-GATE-II:
     jobs:
       - build-test-and-analyse-openEHR_SDK:
@@ -222,8 +262,155 @@ workflows:
                 - master
                 # - develop
                 - release
+                - /sync\/.*/
+                - /feature/sync\/.*/
 
 
+  # WORKFLOW 6/6) 
+  synced-feature-check:
+    description: |
+      WHAT THIS WORKFLOW DOES
+      =======================
+
+      Build and run all openEHR_SDK Java tests (unit and integration tests)
+      with EHRbase being checked out from a branch named sync/* or sync/feature/*
+
+      Consider the following scenarios
+      --------------------------------
+
+      code change in repo |
+      EHRBASE	    SDK     |   BRANCH          |   CI ACTION       |   COMMENT
+      --------------------|-------------------|-------------------|---------------------------------------------------------------------
+
+      YES	        NO	        feature/*           default build	      ehrbase uses SDK referenced in it's parent pom.xml	(commit hash)
+      NO	        YES	        feature/*	          default build	      sdk uses EHRBASE (built) from develop branch
+
+      YES	        YES	        feature/*	          SHOULD FAIL		      default builds triggered on both CIs do not take into account
+                                                                      respective changes in the featue branch of the other repository
+                                                                      NOTE: if the build does NOT fail on ehrbase's and/or sdk's CI
+                                                                            then proper Java unit/integration tests are missing!
+
+      YES	        NO	        sync/feature/*	    SHOULD FAIL	        ehrbase's CI fails to checkout sync/feature/* branch from sdk repo
+      NO 	        YES	        sync/feature/*	    SHOULD FAIL	        sdk's CI fails to checkout sync/feature/* branch from ehrbase repo
+
+      YES	        YES	        sync/feature/*	    synced build	      - ehrbase's CI uses SDK from sync/feature/* branch
+                                                                      - sdk's CI uses EHRBASE from sync/feature/* branch
+
+      explanations        
+      --------------------	
+      default build (ehrbase)		EHRbase is build using SDK version given in it's parent pom.xml
+      default build (sdk)		    SDK is build and tested using EHRbase build from develop branch
+
+      synced build                both CIs take into account respective changes in sync/feature/*
+                                  branch of each repository
+
+      Find detailed steps description for this workflow in
+      "build-and-test-synced-branches-of-EHRbase-and-openEHR_SDK" job.
+
+
+      HOW TO USE THIS WORKFLOW?
+      =========================
+
+      1. create TWO branches "sync/[issue-id]_name branches" respectively in
+
+        - ehrbase repo       --> i.e.    sync/123_example-issue
+        - openehr_sdk repo   --> i.e.    sync/123_example-issue
+
+      2. apply and commit your code changes (!!! in both repositories)
+      3. push to openehr_sdk repo (CI will trigger this workflow)
+      4. push to ehrbase repo (ehrbase's CI will trigger a similar workflow)
+
+       NOTE: at this point 'synced build' will be trigger on both CIs
+
+      5. create TWO PRs (one in ehrbase, one in openehr_sdk)
+      6. merge bot PRs (WARNING):
+
+      ///////////////////////////////////////////////////////////////////////
+      ///                                                                 ///
+      ///  - make sure that both PRs are reviewed and ready to be merged  ///
+      ///    at the same time!                                            ///
+      ///  - make sure to sync both PRs w/ develop before merging!        ///
+      ///  - open each PR in it's own browser window                      ///
+      ///  - MERGE BOTH PRs AT THE SAME TIME!                             ///
+      ///                                                                 ///
+      //////////////////////////////////////////////////////////////////////
+
+    jobs:
+      - build-and-test-synced-branches-of-EHRbase-and-openEHR_SDK:
+          context: org-global
+          filters:
+            branches:
+              only:
+                - /^sync\/.*/
+                - /^feature\/sync\/.*/
+      - COMPOSITION-tests-1:
+          context: org-global
+          requires:
+            - build-and-test-synced-branches-of-EHRbase-and-openEHR_SDK
+      - COMPOSITION-tests-2:
+          context: org-global
+          requires:
+            - build-and-test-synced-branches-of-EHRbase-and-openEHR_SDK
+      - COMPOSITION-tests-3:
+          context: org-global
+          requires:
+            - build-and-test-synced-branches-of-EHRbase-and-openEHR_SDK
+      - COMPOSITION-tests-4:
+          context: org-global
+          requires:
+            - build-and-test-synced-branches-of-EHRbase-and-openEHR_SDK
+      - CONTRIBUTION-tests:
+          context: org-global
+          requires:
+            - build-and-test-synced-branches-of-EHRbase-and-openEHR_SDK
+      - DIRECTORY-tests:
+          context: org-global
+          requires:
+            - build-and-test-synced-branches-of-EHRbase-and-openEHR_SDK
+      - EHRSERVICE-tests:
+          context: org-global
+          requires:
+            - build-and-test-synced-branches-of-EHRbase-and-openEHR_SDK
+      - EHRSTATUS-tests:
+          context: org-global
+          requires:
+            - build-and-test-synced-branches-of-EHRbase-and-openEHR_SDK
+      - KNOWLEDGE-tests:
+          context: org-global
+          requires:
+            - build-and-test-synced-branches-of-EHRbase-and-openEHR_SDK
+      - QUERYSERVICE-tests-1:
+          context: org-global
+          requires:
+            - build-and-test-synced-branches-of-EHRbase-and-openEHR_SDK
+      - QUERYSERVICE-tests-2:
+          context: org-global
+          requires:
+            - build-and-test-synced-branches-of-EHRbase-and-openEHR_SDK
+      # - SECURITY-test:
+      #     context: org-global
+      #     requires:
+      #       - build-and-test-synced-branches-of-EHRbase-and-openEHR_SDK
+      # - ADMIN-test:
+      #     context: org-global
+      #     requires:
+      #       - build-and-test-synced-branches-of-EHRbase-and-openEHR_SDK
+      - ROBOT-TEST-REPORT:
+          context: org-global
+          requires:
+            - COMPOSITION-tests-1
+            - COMPOSITION-tests-2
+            - COMPOSITION-tests-3
+            - COMPOSITION-tests-4
+            - CONTRIBUTION-tests
+            - DIRECTORY-tests
+            - EHRSERVICE-tests
+            - EHRSTATUS-tests
+            - KNOWLEDGE-tests
+            - QUERYSERVICE-tests-1
+            - QUERYSERVICE-tests-2
+            # - SECURITY-test
+            # - ADMIN-test
 
 
 
@@ -259,6 +446,28 @@ jobs:
       - save-sdk-workspace
 
 
+  build-and-test-synced-branches-of-EHRbase-and-openEHR_SDK:
+    description: |
+      Build and run all openEHR_SDK Java tests (unit and integration tests)
+      w/ EHRbase being checked out from a sync/*-branch or feature/sync/*-branch 
+    executor: docker-py3-java11-postgres
+    steps:
+      - checkout
+      - cache-out-sdk-m2-dependencies
+      - build-sdk
+      - git-clone-ehrbase-repo:
+          branch: ${CIRCLE_BRANCH}
+      - cache-out-ehrbase-m2-dependencies
+      - force-ehrbase-build-to-use-local-sdk-version
+      - build-and-run-ehrbase-then-run-all-sdk-java-tests
+      - cache-in-ehrbase-m2-dependencies      
+      - cache-in-sdk-m2-dependencies
+      - collect-sdk-unittest-results
+      - collect-sdk-integrationtest-results
+      - save-skd-test-results
+      - save-sdk-workspace
+
+
   COMPOSITION-tests-1:
     executor: docker-py3-java11-postgres
     # executor: machine-ubuntu-2004                          # (use for pipeline debugging only)
@@ -268,7 +477,7 @@ jobs:
       # - cache-out-ehrbase-workspace     #
       #-----------------------------------#
       - restore-ehrbase-workspace
-      - start-ehrbase-server
+      # - start-ehrbase-server
       - run-robot-tests:
           include-tags: "compositionANDjson1"
           test-suite-path: "COMPOSITION_TESTS"
@@ -283,7 +492,6 @@ jobs:
       # - cache-out-ehrbase-workspace     #
       #-----------------------------------#
       - restore-ehrbase-workspace
-      - start-ehrbase-server
       - run-robot-tests:
           include-tags: "compositionANDjson2"
           test-suite-path: "COMPOSITION_TESTS"
@@ -298,7 +506,6 @@ jobs:
       # - cache-out-ehrbase-workspace     #
       #-----------------------------------#
       - restore-ehrbase-workspace
-      - start-ehrbase-server
       - run-robot-tests:
           include-tags: "compositionANDxml1"
           test-suite-path: "COMPOSITION_TESTS"
@@ -313,7 +520,6 @@ jobs:
       # - cache-out-ehrbase-workspace     #
       #-----------------------------------#
       - restore-ehrbase-workspace
-      - start-ehrbase-server
       - run-robot-tests:
           include-tags: "compositionANDxml2"
           test-suite-path: "COMPOSITION_TESTS"
@@ -328,7 +534,6 @@ jobs:
       # - cache-out-ehrbase-workspace     #
       #-----------------------------------#
       - restore-ehrbase-workspace
-      - start-ehrbase-server
       - run-robot-tests:
           include-tags: "CONTRIBUTION"
           test-suite-path: "CONTRIBUTION_TESTS"
@@ -343,7 +548,6 @@ jobs:
       # - cache-out-ehrbase-workspace     #
       #-----------------------------------#
       - restore-ehrbase-workspace
-      - start-ehrbase-server
       - run-robot-tests:
           include-tags: "directory"
           test-suite-path: "DIRECTORY_TESTS"
@@ -358,7 +562,6 @@ jobs:
       # - cache-out-ehrbase-workspace     #
       #-----------------------------------#
       - restore-ehrbase-workspace
-      - start-ehrbase-server
       - run-robot-tests:
           include-tags: "EHR_SERVICE"
           test-suite-path: "EHR_SERVICE_TESTS"
@@ -373,7 +576,6 @@ jobs:
       # - cache-out-ehrbase-workspace     #
       #-----------------------------------#
       - restore-ehrbase-workspace
-      - start-ehrbase-server
       - run-robot-tests:
           include-tags: "EHR_STATUS"
           test-suite-path: "EHR_STATUS_TESTS"
@@ -388,11 +590,12 @@ jobs:
       # - cache-out-ehrbase-workspace     #
       #-----------------------------------#
       - restore-ehrbase-workspace
-      - start-ehrbase-server
       - run-robot-tests:
           include-tags: "KNOWLEDGE"
           test-suite-path: "KNOWLEDGE_TESTS"
           test-suite-name: "KNOWLEDGE"
+          allow-template-overwrite: false
+          cache-enabled: false
 
   QUERYSERVICE-tests-1:
     executor: docker-py3-java11-postgres
@@ -403,7 +606,6 @@ jobs:
       # - cache-out-ehrbase-workspace     #
       #-----------------------------------#
       - restore-ehrbase-workspace
-      - start-ehrbase-server
       - run-robot-tests:
           include-tags: "aql_adhoc-queryANDempty_db"
           test-suite-path: "QUERY_SERVICE_TESTS"
@@ -411,11 +613,13 @@ jobs:
 
   QUERYSERVICE-tests-2:
     executor: machine-ubuntu-2004
+    environment:
+      SUT: TEST
     steps:
       - restore-ehrbase-workspace
       - restore_cache:
           keys:
-            - expected-results-loaded-db-v7
+            - expected-results-loaded-db-v8
       - run:
           name: list files after restore of cache
           command: |
@@ -426,9 +630,9 @@ jobs:
             ls -la tests/robot/_resources/test_data_sets/query/aql_queries_valid/D/
       - restore_cache:
           keys:
-            - ehrbasedb-dump-v7
+            - ehrbasedb-dump-v8
       # COMMENT: USE THE NEXT LINE ONLY TO FORCE TEST-DATA REGENERATION! Otherwise comment it out!
-      - run: echo "FORCE GENERATION OF TEST-DATA AND EXPECTED RESULTS!" > /tmp/DATA_CHANGED_NOTICE
+      # - run: echo "FORCE GENERATION OF TEST-DATA AND EXPECTED RESULTS!" > /tmp/DATA_CHANGED_NOTICE
       - run: 
           name: CHECK IF EXPECTED-RESULT TEMPLATES HAVE CHANGED AND REGENERATE TEST-DATA IF NEEDED
           command: |
@@ -439,12 +643,12 @@ jobs:
             EXPECTED_HASH="f5ee5a9a55c50687dafc3c3acff66089759f1577d7a5dd71aff6e60793ce91c2  /tmp/expected-results-loaded_db-seed"
             [ "$ACTUAL_HASH" = "$EXPECTED_HASH" ] && echo "Expected results unchanged!  Don't regenerate test-data!" || echo "Expected result data-sets changed. Regenerate!" > /tmp/DATA_CHANGED_NOTICE
       - run-robot-tests:
-          sut: "SUT:TEST"
+          sut: "TEST"
           include-tags: "aql_adhoc-queryANDloaded_db"
           test-suite-path: "QUERY_SERVICE_TESTS"
           test-suite-name: "ADHOC-QUERY-2"
       - save_cache:
-          key: expected-results-loaded-db-v7-{{ checksum "/tmp/expected-results-loaded_db-seed" }}
+          key: expected-results-loaded-db-v8-{{ checksum "/tmp/expected-results-loaded_db-seed" }}
           paths:
             - ehrbase/tests/robot/_resources/test_data_sets/query/expected_results/loaded_db/
             - ehrbase/tests/robot/_resources/test_data_sets/query/aql_queries_valid/
@@ -457,7 +661,7 @@ jobs:
             ls -la tests/robot/_resources/test_data_sets/query/aql_queries_valid/C/
             ls -la tests/robot/_resources/test_data_sets/query/aql_queries_valid/D/
       - save_cache:
-          key: ehrbasedb-dump-v7-{{ checksum "/tmp/ehrbasedb_dump.sql" }}
+          key: ehrbasedb-dump-v8-{{ checksum "/tmp/ehrbasedb_dump.sql" }}
           paths:
             - /tmp/ehrbasedb_dump.sql
 
@@ -780,7 +984,7 @@ commands:
             cd ~/projects/ehrbase
             EHRbase_VERSION=$(mvn -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive exec:exec)
             echo ${EHRbase_VERSION}
-            java -jar application/target/application-${EHRbase_VERSION}.jar --cache.enabled=false > log &
+            java -jar application/target/application-${EHRbase_VERSION}.jar --cache.enabled=true > log &
             grep -m 1 "Started EhrBase in" <(tail -f log)
             cd ..
             jps
@@ -890,12 +1094,19 @@ commands:
   # ///////////////////////////////////////////////////////////////////////////
 
   git-clone-ehrbase-repo:
+    parameters:
+      branch:
+        description: Git branch to checkout
+        type: string
+        default: develop
     steps:
       - run:
           name: Git clone EHRbase repo
           command: |
             git clone git@github.com:ehrbase/ehrbase.git
             ls -la
+            cd ehrbase
+            git checkout << parameters.branch >>
   
 
   build-and-test-ehrbase:
@@ -1024,7 +1235,7 @@ commands:
             cd ehrbase
             EHRbase_VERSION=$(mvn -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive exec:exec)
             echo ${EHRbase_VERSION}
-            java -jar application/target/application-${EHRbase_VERSION}.jar --cache.enabled=false > log
+            java -jar application/target/application-${EHRbase_VERSION}.jar --cache.enabled=true > log
 
 
   run-robot-tests:
@@ -1032,16 +1243,36 @@ commands:
     parameters:
       sut:
         description: SUT - System Under Test Config
-        enum: ["SUT:DEV", "SUT:DEV -v AUTH_TYPE:OAUTH", "SUT:ADMIN-DEV", "SUT:TEST", "SUT:TEST -v AUTH_TYPE:OAUTH", "SUT:ADMIN-TEST"]
-        default: "SUT:DEV"
+        enum: ["DEV", "DEV -v AUTH_TYPE:OAUTH", "ADMIN-DEV", "TEST", "TEST -v AUTH_TYPE:OAUTH", "ADMIN-TEST"]
+        default: "DEV"
         type: enum
+      
+      nodename:
+        description: | 
+          EHRbase's "CREATING_SYSTEM_ID". It can be set from cli when starting server .jar, i.e.:
+          `java -jar application.jar --server.nodename=local.ehrbase.org`
+        default: "circleci.ehrbase.org"
+        type: string
+      
+      allow-template-overwrite:
+        description:  Sets EHRbase's cli option `--system.allow-template-overwrite=true`
+        default: true
+        type: boolean
+
+      cache-enabled:
+        description: Sets EHRbase's cli option `--cache.enabled=true`
+        default: true
+        type: boolean
+
       include-tags:
         description: Which tests to inclue by TAGs (Robot syntax applies!)
         type: string
+
       test-suite-path:
         description: Target test-suite given by it's folder name e.g. COMPOSITION_TESTS
-        type: string
         default: ""
+        type: string
+
       test-suite-name:
         description: Titel of generated Robot Log/Report.html
         type: string
@@ -1063,7 +1294,9 @@ commands:
               EHRbase_VERSION=$(mvn -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive exec:exec)
               echo ${EHRbase_VERSION}
               java -jar "application/target/application-${EHRbase_VERSION}.jar" \
-                  --cache.enabled=false >log & app_pid=$!
+                   --system.allow-template-overwrite=<< parameters.allow-template-overwrite >> \
+                   --server.nodename=<< parameters.nodename >> \
+                   --cache.enabled=<< parameters.cache-enabled >> > log & app_pid=$!
               if ! tail -f log | timeout 30s grep -m 1 "Started EhrBase in"; then
                 echo "WARNING: Did not see a startup message even after waiting 30s" >&2
                 if kill -0 "$app_pid"; then
@@ -1086,7 +1319,9 @@ commands:
                   --outputdir results/<< parameters.test-suite-name >> \
                   --timestampoutputs \
                   --name << parameters.test-suite-name >> \
-                  -v << parameters.sut >> \
+                  -v SUT:<< parameters.sut >> \
+                  -v NODENAME:<< parameters.nodename >> \
+                  -v ALLOW-TEMPLATE-OVERWRITE:<< parameters.allow-template-overwrite >> \
                   robot/<< parameters.test-suite-path >>
       # - cache-in-python-requirements
       - save-test-results-folder:

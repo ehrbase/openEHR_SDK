@@ -27,51 +27,99 @@ import org.ehrbase.client.openehrclient.VersionUid;
 @Archetype("openEHR-EHR-COMPOSITION.encounter.v1")
 @Template("open_eREACT-Care")
 public class OpenEREACTCareComposition {
+  /**
+   * open_eREACT-Care/context/Extension
+   */
   @Path("/context/other_context[at0001]/items[at0002]")
   private List<Cluster> extension;
 
+  /**
+   * open_eREACT-Care/context/start_time
+   */
   @Path("/context/start_time|value")
   private TemporalAccessor startTimeValue;
 
+  /**
+   * open_eREACT-Care/context/participations
+   */
   @Path("/context/participations")
   private List<Participation> participations;
 
+  /**
+   * open_eREACT-Care/context/end_time
+   */
   @Path("/context/end_time|value")
   private TemporalAccessor endTimeValue;
 
+  /**
+   * open_eREACT-Care/context/location
+   */
   @Path("/context/location")
   private String location;
 
+  /**
+   * open_eREACT-Care/context/health_care_facility
+   */
   @Path("/context/health_care_facility")
   private PartyIdentified healthCareFacility;
 
+  /**
+   * open_eREACT-Care/context/setting
+   */
   @Path("/context/setting|defining_code")
   private Setting settingDefiningCode;
 
+  /**
+   * open_eREACT-Care/Situation
+   */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Situation']")
   private SituationSection situation;
 
+  /**
+   * open_eREACT-Care/Background
+   */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Background']")
   private BackgroundSection background;
 
+  /**
+   * open_eREACT-Care/Assessment
+   */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Assessment']")
   private AssessmentSection assessment;
 
+  /**
+   * open_eREACT-Care/Response
+   */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Response']")
   private ResponseSection response;
 
+  /**
+   * open_eREACT-Care/composer
+   */
   @Path("/composer")
   private PartyProxy composer;
 
+  /**
+   * open_eREACT-Care/language
+   */
   @Path("/language")
   private Language language;
 
+  /**
+   * open_eREACT-Care/feeder_audit
+   */
   @Path("/feeder_audit")
   private FeederAudit feederAudit;
 
+  /**
+   * open_eREACT-Care/category
+   */
   @Path("/category|defining_code")
   private Category categoryDefiningCode;
 
+  /**
+   * open_eREACT-Care/territory
+   */
   @Path("/territory")
   private Territory territory;
 

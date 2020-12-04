@@ -6,6 +6,9 @@ import org.ehrbase.client.annotations.Path;
 
 @Entity
 public class AtiopathogeneseBeschreibungDesEntstehensElement {
+  /**
+   * COVID-19-Diagnose/Problem/Diagnose/Ätiopathogenese/Beschreibung des Entstehens
+   */
   @Path("/value|value")
   private String value;
 

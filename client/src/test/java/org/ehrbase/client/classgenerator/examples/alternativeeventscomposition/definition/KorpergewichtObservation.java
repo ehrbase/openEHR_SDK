@@ -13,24 +13,45 @@ import org.ehrbase.client.classgenerator.shareddefinition.Language;
 @Entity
 @Archetype("openEHR-EHR-OBSERVATION.body_weight.v2")
 public class KorpergewichtObservation {
+  /**
+   * Bericht/Körpergewicht/*Birth(en)
+   */
   @Path("/data[at0002]/events[at0026]")
   private KorpergewichtBirthEnPointEvent birthEn;
 
+  /**
+   * Bericht/Körpergewicht/origin
+   */
   @Path("/data[at0002]/origin|value")
   private TemporalAccessor originValue;
 
+  /**
+   * Bericht/Körpergewicht/Gerät
+   */
   @Path("/protocol[at0015]/items[at0020]")
   private Cluster gerat;
 
+  /**
+   * Bericht/Körpergewicht/*Extension(en)
+   */
   @Path("/protocol[at0015]/items[at0027]")
   private List<Cluster> extensionEn;
 
+  /**
+   * Bericht/Körpergewicht/subject
+   */
   @Path("/subject")
   private PartyProxy subject;
 
+  /**
+   * Bericht/Körpergewicht/language
+   */
   @Path("/language")
   private Language language;
 
+  /**
+   * Bericht/Körpergewicht/*Any event(en)
+   */
   @Path("/data[at0002]/events[at0003]")
   @Choice
   private List<KorpergewichtAnyEventEnChoice> anyEventEn;

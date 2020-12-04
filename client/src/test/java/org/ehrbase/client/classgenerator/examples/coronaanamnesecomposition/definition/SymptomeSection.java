@@ -7,30 +7,57 @@ import org.ehrbase.client.annotations.Path;
 @Entity
 @Archetype("openEHR-EHR-SECTION.adhoc.v1")
 public class SymptomeSection {
+  /**
+   * Bericht/Symptome/Husten
+   */
   @Path("/items[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0 and name/value='Husten']")
   private HustenObservation husten;
 
+  /**
+   * Bericht/Symptome/Schnupfen
+   */
   @Path("/items[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0 and name/value='Schnupfen']")
   private SchnupfenObservation schnupfen;
 
+  /**
+   * Bericht/Symptome/Heiserkeit
+   */
   @Path("/items[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0 and name/value='Heiserkeit']")
   private HeiserkeitObservation heiserkeit;
 
+  /**
+   * Bericht/Symptome/Fieber oder erhöhte Körpertemperatur
+   */
   @Path("/items[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0 and name/value='Fieber oder erhöhte Körpertemperatur']")
   private FieberOderErhohteKorpertemperaturObservation fieberOderErhohteKorpertemperatur;
 
+  /**
+   * Bericht/Symptome/Körpertemperatur
+   */
   @Path("/items[openEHR-EHR-OBSERVATION.body_temperature.v2]")
   private KorpertemperaturObservation korpertemperatur;
 
+  /**
+   * Bericht/Symptome/Gestörter Geruchssinn
+   */
   @Path("/items[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0 and name/value='Gestörter Geruchssinn']")
   private GestorterGeruchssinnObservation gestorterGeruchssinn;
 
+  /**
+   * Bericht/Symptome/Gestörter Geschmackssinn
+   */
   @Path("/items[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0 and name/value='Gestörter Geschmackssinn']")
   private GestorterGeschmackssinnObservation gestorterGeschmackssinn;
 
+  /**
+   * Bericht/Symptome/Durchfall
+   */
   @Path("/items[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0 and name/value='Durchfall']")
   private DurchfallObservation durchfall;
 
+  /**
+   * Bericht/Symptome/Weitere Symptome
+   */
   @Path("/items[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0 and name/value='Weitere Symptome']")
   private WeitereSymptomeObservation weitereSymptome;
 

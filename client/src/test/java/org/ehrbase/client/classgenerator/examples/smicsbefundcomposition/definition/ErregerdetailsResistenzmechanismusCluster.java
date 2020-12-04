@@ -6,6 +6,9 @@ import org.ehrbase.client.annotations.Path;
 
 @Entity
 public class ErregerdetailsResistenzmechanismusCluster {
+  /**
+   * SmICS Befund/SmICS-Ergebnis/Jedes Ereignis/Eigenschaften des beteiligten Erregers/Erregerdetails/Resistenzmechanismus/Resistenzmechanismus Bezeichnung
+   */
   @Path("/items[at0017]/value|value")
   private String resistenzmechanismusBezeichnungValue;
 

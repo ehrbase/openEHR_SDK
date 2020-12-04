@@ -8,9 +8,15 @@ import org.ehrbase.client.annotations.Path;
 @Entity
 @Archetype("openEHR-EHR-SECTION.adhoc.v1")
 public class RisikogebietSection {
+  /**
+   * Bericht/Risikogebiet/Historie der Reise
+   */
   @Path("/items[openEHR-EHR-OBSERVATION.travel_history.v0]")
   private List<HistorieDerReiseObservation> historieDerReise;
 
+  /**
+   * Bericht/Risikogebiet/Reisefall
+   */
   @Path("/items[openEHR-EHR-OBSERVATION.travel_event.v0]")
   private List<ReisefallObservation> reisefall;
 

@@ -13,18 +13,33 @@ import org.ehrbase.client.classgenerator.shareddefinition.Language;
 @Entity
 @Archetype("openEHR-EHR-OBSERVATION.symptom_sign_screening.v0")
 public class WeitereSymptomeObservation {
+  /**
+   * Bericht/Symptome/Weitere Symptome/origin
+   */
   @Path("/data[at0001]/origin|value")
   private TemporalAccessor originValue;
 
+  /**
+   * Bericht/Symptome/Weitere Symptome/Erweiterung
+   */
   @Path("/protocol[at0007]/items[at0021]")
   private List<Cluster> erweiterung;
 
+  /**
+   * Bericht/Symptome/Weitere Symptome/subject
+   */
   @Path("/subject")
   private PartyProxy subject;
 
+  /**
+   * Bericht/Symptome/Weitere Symptome/language
+   */
   @Path("/language")
   private Language language;
 
+  /**
+   * Bericht/Symptome/Weitere Symptome/Beliebiges Ereignis
+   */
   @Path("/data[at0001]/events[at0002]")
   @Choice
   private List<WeitereSymptomeBeliebigesEreignisChoice> beliebigesEreignis;

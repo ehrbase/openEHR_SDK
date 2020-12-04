@@ -25,45 +25,87 @@ import org.ehrbase.client.openehrclient.VersionUid;
 @Archetype("openEHR-EHR-COMPOSITION.event_summary.v0")
 @Template("Patientenaufenthalt")
 public class PatientenaufenthaltComposition {
+  /**
+   * Patientenaufenthalt/context/Versorgungsfall
+   */
   @Path("/context/other_context[at0001]/items[openEHR-EHR-CLUSTER.case_identification.v0 and name/value='Versorgungsfall']")
   private VersorgungsfallCluster versorgungsfall;
 
+  /**
+   * Patientenaufenthalt/context/Abteilungsfall
+   */
   @Path("/context/other_context[at0001]/items[openEHR-EHR-CLUSTER.case_identification.v0 and name/value='Abteilungsfall']")
   private AbteilungsfallCluster abteilungsfall;
 
+  /**
+   * Patientenaufenthalt/context/start_time
+   */
   @Path("/context/start_time|value")
   private TemporalAccessor startTimeValue;
 
+  /**
+   * Patientenaufenthalt/context/participations
+   */
   @Path("/context/participations")
   private List<Participation> participations;
 
+  /**
+   * Patientenaufenthalt/context/end_time
+   */
   @Path("/context/end_time|value")
   private TemporalAccessor endTimeValue;
 
+  /**
+   * Patientenaufenthalt/context/location
+   */
   @Path("/context/location")
   private String location;
 
+  /**
+   * Patientenaufenthalt/context/health_care_facility
+   */
   @Path("/context/health_care_facility")
   private PartyIdentified healthCareFacility;
 
+  /**
+   * Patientenaufenthalt/context/setting
+   */
   @Path("/context/setting|defining_code")
   private Setting settingDefiningCode;
 
+  /**
+   * Patientenaufenthalt/Versorgungsort
+   */
   @Path("/content[openEHR-EHR-ADMIN_ENTRY.hospitalization.v0 and name/value='Versorgungsort']")
   private VersorgungsortAdminEntry versorgungsort;
 
+  /**
+   * Patientenaufenthalt/composer
+   */
   @Path("/composer")
   private PartyProxy composer;
 
+  /**
+   * Patientenaufenthalt/language
+   */
   @Path("/language")
   private Language language;
 
+  /**
+   * Patientenaufenthalt/feeder_audit
+   */
   @Path("/feeder_audit")
   private FeederAudit feederAudit;
 
+  /**
+   * Patientenaufenthalt/category
+   */
   @Path("/category|defining_code")
   private Category categoryDefiningCode;
 
+  /**
+   * Patientenaufenthalt/territory
+   */
   @Path("/territory")
   private Territory territory;
 

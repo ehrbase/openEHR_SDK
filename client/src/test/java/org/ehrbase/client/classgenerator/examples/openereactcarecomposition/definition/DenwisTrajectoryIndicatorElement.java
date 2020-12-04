@@ -6,6 +6,9 @@ import org.ehrbase.client.annotations.Path;
 
 @Entity
 public class DenwisTrajectoryIndicatorElement {
+  /**
+   * open_eREACT-Care/Assessment/DENWIS/Point in time/value
+   */
   @Path("/value")
   @Choice
   private DenwisValueChoice4 value;

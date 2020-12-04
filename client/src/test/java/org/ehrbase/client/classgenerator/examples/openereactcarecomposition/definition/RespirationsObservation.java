@@ -14,30 +14,57 @@ import org.ehrbase.client.classgenerator.shareddefinition.Language;
 @Entity
 @Archetype("openEHR-EHR-OBSERVATION.respiration.v1")
 public class RespirationsObservation {
+  /**
+   * open_eREACT-Care/Assessment/NEWS2/Respirations/Any event/Rate
+   */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value|magnitude")
   private Double rateMagnitude;
 
+  /**
+   * open_eREACT-Care/Assessment/NEWS2/Respirations/Any event/Rate
+   */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value|units")
   private String rateUnits;
 
+  /**
+   * open_eREACT-Care/Assessment/NEWS2/Respirations/Any event/Inspired oxygen
+   */
   @Path("/data[at0001]/events[at0002]/state[at0022]/items[at0055]")
   private Cluster inspiredOxygen;
 
+  /**
+   * open_eREACT-Care/Assessment/NEWS2/Respirations/Any event/Exertion
+   */
   @Path("/data[at0001]/events[at0002]/state[at0022]/items[at0037]")
   private Cluster exertion;
 
+  /**
+   * open_eREACT-Care/Assessment/NEWS2/Respirations/Any event/time
+   */
   @Path("/data[at0001]/events[at0002]/time|value")
   private TemporalAccessor timeValue;
 
+  /**
+   * open_eREACT-Care/Assessment/NEWS2/Respirations/origin
+   */
   @Path("/data[at0001]/origin|value")
   private TemporalAccessor originValue;
 
+  /**
+   * open_eREACT-Care/Assessment/NEWS2/Respirations/Extension
+   */
   @Path("/protocol[at0057]/items[at0058]")
   private List<Cluster> extension;
 
+  /**
+   * open_eREACT-Care/Assessment/NEWS2/Respirations/subject
+   */
   @Path("/subject")
   private PartyProxy subject;
 
+  /**
+   * open_eREACT-Care/Assessment/NEWS2/Respirations/language
+   */
   @Path("/language")
   private Language language;
 

@@ -24,48 +24,93 @@ import org.ehrbase.client.openehrclient.VersionUid;
 @Archetype("openEHR-EHR-COMPOSITION.report.v1")
 @Template("AlternativeEvents")
 public class AlternativeEventsComposition {
+  /**
+   * Bericht/context/Bericht ID
+   */
   @Path("/context/other_context[at0001]/items[at0002]/value|value")
   private String berichtIdValue;
 
+  /**
+   * Bericht/context/Status
+   */
   @Path("/context/other_context[at0001]/items[at0005]/value|value")
   private String statusValue;
 
+  /**
+   * Bericht/context/Erweiterung
+   */
   @Path("/context/other_context[at0001]/items[at0006]")
   private List<Cluster> erweiterung;
 
+  /**
+   * Bericht/context/start_time
+   */
   @Path("/context/start_time|value")
   private TemporalAccessor startTimeValue;
 
+  /**
+   * Bericht/context/participations
+   */
   @Path("/context/participations")
   private List<Participation> participations;
 
+  /**
+   * Bericht/context/end_time
+   */
   @Path("/context/end_time|value")
   private TemporalAccessor endTimeValue;
 
+  /**
+   * Bericht/context/location
+   */
   @Path("/context/location")
   private String location;
 
+  /**
+   * Bericht/context/health_care_facility
+   */
   @Path("/context/health_care_facility")
   private PartyIdentified healthCareFacility;
 
+  /**
+   * Bericht/context/setting
+   */
   @Path("/context/setting|defining_code")
   private Setting settingDefiningCode;
 
+  /**
+   * Bericht/Körpergewicht
+   */
   @Path("/content[openEHR-EHR-OBSERVATION.body_weight.v2]")
   private List<KorpergewichtObservation> korpergewicht;
 
+  /**
+   * Bericht/composer
+   */
   @Path("/composer")
   private PartyProxy composer;
 
+  /**
+   * Bericht/language
+   */
   @Path("/language")
   private Language language;
 
+  /**
+   * Bericht/feeder_audit
+   */
   @Path("/feeder_audit")
   private FeederAudit feederAudit;
 
+  /**
+   * Bericht/category
+   */
   @Path("/category|defining_code")
   private Category categoryDefiningCode;
 
+  /**
+   * Bericht/territory
+   */
   @Path("/territory")
   private Territory territory;
 

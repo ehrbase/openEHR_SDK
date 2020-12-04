@@ -25,48 +25,93 @@ import org.ehrbase.client.openehrclient.VersionUid;
 @Archetype("openEHR-EHR-COMPOSITION.registereintrag.v1")
 @Template("Befund der Blutgasanalyse")
 public class BefundDerBlutgasanalyseComposition {
+  /**
+   * Befund der Blutgasanalyse/context/Erweiterung
+   */
   @Path("/context/other_context[at0001]/items[at0002]")
   private List<Cluster> erweiterung;
 
+  /**
+   * Befund der Blutgasanalyse/context/Status
+   */
   @Path("/context/other_context[at0001]/items[at0004]/value|defining_code")
   private StatusDefiningCode statusDefiningCode;
 
+  /**
+   * Befund der Blutgasanalyse/context/Kategorie
+   */
   @Path("/context/other_context[at0001]/items[at0005]/value|value")
   private String kategorieValue;
 
+  /**
+   * Befund der Blutgasanalyse/context/start_time
+   */
   @Path("/context/start_time|value")
   private TemporalAccessor startTimeValue;
 
+  /**
+   * Befund der Blutgasanalyse/context/participations
+   */
   @Path("/context/participations")
   private List<Participation> participations;
 
+  /**
+   * Befund der Blutgasanalyse/context/end_time
+   */
   @Path("/context/end_time|value")
   private TemporalAccessor endTimeValue;
 
+  /**
+   * Befund der Blutgasanalyse/context/location
+   */
   @Path("/context/location")
   private String location;
 
+  /**
+   * Befund der Blutgasanalyse/context/health_care_facility
+   */
   @Path("/context/health_care_facility")
   private PartyIdentified healthCareFacility;
 
+  /**
+   * Befund der Blutgasanalyse/context/setting
+   */
   @Path("/context/setting|defining_code")
   private Setting settingDefiningCode;
 
+  /**
+   * Befund der Blutgasanalyse/Laborergebnis
+   */
   @Path("/content[openEHR-EHR-OBSERVATION.laboratory_test_result.v1]")
   private LaborergebnisObservation laborergebnis;
 
+  /**
+   * Befund der Blutgasanalyse/composer
+   */
   @Path("/composer")
   private PartyProxy composer;
 
+  /**
+   * Befund der Blutgasanalyse/language
+   */
   @Path("/language")
   private Language language;
 
+  /**
+   * Befund der Blutgasanalyse/feeder_audit
+   */
   @Path("/feeder_audit")
   private FeederAudit feederAudit;
 
+  /**
+   * Befund der Blutgasanalyse/category
+   */
   @Path("/category|defining_code")
   private Category categoryDefiningCode;
 
+  /**
+   * Befund der Blutgasanalyse/territory
+   */
   @Path("/territory")
   private Territory territory;
 

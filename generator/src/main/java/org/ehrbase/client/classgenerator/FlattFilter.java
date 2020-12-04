@@ -48,10 +48,7 @@ public class FlattFilter extends Filter {
 
   @Override
   protected boolean skip(WebTemplateNode node, WebTemplate context, WebTemplateNode parent) {
-    if (!node.getChildren().isEmpty()
-        && node.getMax() == 1
-        && !node.isArchetype()
-        && (!isEvent(node) || parent.getChildren().stream().filter(this::isEvent).count() == 1)) {
+    if (isTrivialNode(node, parent)) {
       return true;
     } else {
       if (parent != null) {
@@ -80,6 +77,27 @@ public class FlattFilter extends Filter {
         }
       }
       return false;
+    }
+  }
+
+  private boolean isTrivialNode(WebTemplateNode node, WebTemplateNode parent) {
+
+    switch (config.getOptimizerSetting()) {
+      case ALL:
+        return !node.getChildren().isEmpty()
+            && node.getMax() == 1
+            && !node.getRmType().equals("COMPOSITION")
+            && (!isEvent(node) || parent.getChildren().stream().filter(this::isEvent).count() == 1);
+      case SECTION:
+        return !node.getChildren().isEmpty()
+            && node.getMax() == 1
+            && (!node.isArchetype() || node.getRmType().equals("SECTION"))
+            && (!isEvent(node) || parent.getChildren().stream().filter(this::isEvent).count() == 1);
+      default:
+        return !node.getChildren().isEmpty()
+            && node.getMax() == 1
+            && !node.isArchetype()
+            && (!isEvent(node) || parent.getChildren().stream().filter(this::isEvent).count() == 1);
     }
   }
 

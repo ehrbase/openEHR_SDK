@@ -6,6 +6,9 @@ import org.ehrbase.client.annotations.Path;
 
 @Entity
 public class RecommendationRecommendationElement {
+  /**
+   * open_eREACT-Care/Response/Recommendation/Recommendation
+   */
   @Path("/value|value")
   private String value;
 

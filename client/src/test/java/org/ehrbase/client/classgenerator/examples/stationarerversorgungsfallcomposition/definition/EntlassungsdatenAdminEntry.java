@@ -13,27 +13,51 @@ import org.ehrbase.client.classgenerator.shareddefinition.Language;
 @Entity
 @Archetype("openEHR-EHR-ADMIN_ENTRY.discharge_summary.v0")
 public class EntlassungsdatenAdminEntry {
+  /**
+   * Stationärer Versorgungsfall/Entlassungsdaten/Art der Entlassung
+   */
   @Path("/data[at0001]/items[at0040]/value|value")
   private String artDerEntlassungValue;
 
+  /**
+   * Stationärer Versorgungsfall/Entlassungsdaten/Klinischer Zustand des Patienten
+   */
   @Path("/data[at0001]/items[at0002]/value|defining_code")
   private KlinischerZustandDesPatientenDefiningCode klinischerZustandDesPatientenDefiningCode;
 
+  /**
+   * Stationärer Versorgungsfall/Entlassungsdaten/Datum/Uhrzeit der Entlassung
+   */
   @Path("/data[at0001]/items[at0011 and name/value='Datum/Uhrzeit der Entlassung']/value|value")
   private TemporalAccessor datumUhrzeitDerEntlassungValue;
 
+  /**
+   * Stationärer Versorgungsfall/Entlassungsdaten/Zusätzliche Informationen
+   */
   @Path("/data[at0001]/items[at0050]/value|value")
   private String zusatzlicheInformationenValue;
 
+  /**
+   * Stationärer Versorgungsfall/Entlassungsdaten/Letzter Patientenstandort
+   */
   @Path("/data[at0001]/items[at0066]")
   private List<Cluster> letzterPatientenstandort;
 
+  /**
+   * Stationärer Versorgungsfall/Entlassungsdaten/Zugewiesener Patientenstandort
+   */
   @Path("/data[at0001]/items[at0067]")
   private List<Cluster> zugewiesenerPatientenstandort;
 
+  /**
+   * Stationärer Versorgungsfall/Entlassungsdaten/subject
+   */
   @Path("/subject")
   private PartyProxy subject;
 
+  /**
+   * Stationärer Versorgungsfall/Entlassungsdaten/language
+   */
   @Path("/language")
   private Language language;
 

@@ -28,6 +28,7 @@ import org.ehrbase.webtemplate.parser.FlatPath;
 
 import java.util.Deque;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -51,7 +52,7 @@ public class DefaultNamingStrategy implements NamingStrategy {
     } else {
 
       if (!node.isArchetype() && !isEnum) {
-        name = findLastArchetype(context.nodeDeque).getName() + TERM_DIVIDER + name;
+        name = findLastArchetype(context.unFilteredNodeDeque).getName() + TERM_DIVIDER + name;
       }
     }
     if (isChoice) {
@@ -91,11 +92,20 @@ public class DefaultNamingStrategy implements NamingStrategy {
             .count()
         > 0) {
       if (!Objects.equals(context.unFilteredNodeDeque.peek().getRmType(), "ELEMENT")) {
-        name = context.unFilteredNodeDeque.peek().getName() + TERM_DIVIDER + name;
+        if (config.getOptimizerSetting().equals(OptimizerSetting.ALL)&& !context.unFilteredNodeDeque.isEmpty()){
+          name = findLastArchetype(context.unFilteredNodeDeque).getName() + TERM_DIVIDER + name;
+        } else {
+          name = context.unFilteredNodeDeque.peek().getName() + TERM_DIVIDER + name;
+}
       } else {
-        WebTemplateNode poll = context.unFilteredNodeDeque.poll();
-        name = context.unFilteredNodeDeque.peek().getName() + TERM_DIVIDER + name;
-        context.unFilteredNodeDeque.push(poll);
+        if (config.getOptimizerSetting().equals(OptimizerSetting.ALL)&& !context.unFilteredNodeDeque.isEmpty()){
+          name = findLastArchetype(context.unFilteredNodeDeque).getName() + TERM_DIVIDER + name;
+        } else {
+          WebTemplateNode poll = context.unFilteredNodeDeque.poll();
+          name = context.unFilteredNodeDeque.peek().getName() + TERM_DIVIDER + name;
+          context.unFilteredNodeDeque.push(poll);
+          }
+
       }
     }
 
@@ -112,6 +122,8 @@ public class DefaultNamingStrategy implements NamingStrategy {
         Optional.ofNullable(trueParent).map(WebTemplateNode::getRmType).orElse(null), "ELEMENT")) {
       name = trueParent.getName();
     }
+
+
     return name;
   }
 
@@ -148,7 +160,7 @@ public class DefaultNamingStrategy implements NamingStrategy {
     String attributeName = new FlatPath(path).getLast().getAttributeName();
 
     if (!context.nodeDeque.isEmpty()) {
-      if (StringUtils.isBlank(attributeName) || attributeName.equals("value")) {
+      if (StringUtils.isBlank(attributeName) || List.of("defining_code","value").contains(attributeName) ) {
         name = makeNameUnique(context, node);
       } else {
         name = replaceElementName(context, node);

@@ -7,6 +7,9 @@ import org.ehrbase.client.annotations.Path;
 @Entity
 @OptionFor("DV_CODED_TEXT")
 public class DenwisValueDvCodedText4 implements DenwisValueChoice4 {
+  /**
+   * open_eREACT-Care/Assessment/DENWIS/Point in time/value/value
+   */
   @Path("|defining_code")
   private ValueDefiningCode4 valueDefiningCode;
 

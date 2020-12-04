@@ -6,6 +6,9 @@ import org.ehrbase.client.annotations.Path;
 
 @Entity
 public class DienstleistungGrundFurDieAnforderungElement {
+  /**
+   * Bericht/Allgemeine Angaben/Dienstleistung/Aktuelle Aktivität/Grund für die Anforderung
+   */
   @Path("/value|value")
   private String value;
 

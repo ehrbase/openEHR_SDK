@@ -808,6 +808,58 @@ public class ClassGeneratorTest {
   }
 
   @Test
+  public void testGenerateCoronaOptimizerSettingSection() throws IOException, XmlException {
+    OPERATIONALTEMPLATE template =
+        TemplateDocument.Factory.parse(OperationalTemplateTestData.CORONA_ANAMNESE.getStream())
+            .getTemplate();
+    ClassGeneratorConfig config = new ClassGeneratorConfig();
+    config.setOptimizerSetting(OptimizerSetting.SECTION);
+    ClassGenerator cut = new ClassGenerator(config);
+    ClassGeneratorResult generate =
+        cut.generate(
+            PACKAGE_NAME.replace("example", "exampleoptimizersettingsection"),
+            new OPTParser(template).parse());
+
+    List<FieldSpec> fieldSpecs =
+        generate.getClasses().values().stream()
+            .flatMap(Collection::stream)
+            .filter(t -> !t.kind.equals(TypeSpec.Kind.ENUM))
+            .map(t -> t.fieldSpecs)
+            .flatMap(List::stream)
+            .collect(Collectors.toList());
+
+    assertThat(fieldSpecs).size().isEqualTo(292);
+
+    writeFiles(generate);
+  }
+
+  @Test
+  public void testGenerateCoronaOptimizerSettingAll() throws IOException, XmlException {
+    OPERATIONALTEMPLATE template =
+        TemplateDocument.Factory.parse(OperationalTemplateTestData.CORONA_ANAMNESE.getStream())
+            .getTemplate();
+    ClassGeneratorConfig config = new ClassGeneratorConfig();
+    config.setOptimizerSetting(OptimizerSetting.ALL);
+    ClassGenerator cut = new ClassGenerator(config);
+    ClassGeneratorResult generate =
+        cut.generate(
+            PACKAGE_NAME.replace("example", "exampleoptimizersettingall"),
+            new OPTParser(template).parse());
+
+    List<FieldSpec> fieldSpecs =
+        generate.getClasses().values().stream()
+            .flatMap(Collection::stream)
+            .filter(t -> !t.kind.equals(TypeSpec.Kind.ENUM))
+            .map(t -> t.fieldSpecs)
+            .flatMap(List::stream)
+            .collect(Collectors.toList());
+
+    assertThat(fieldSpecs).size().isEqualTo(274);
+
+    writeFiles(generate);
+  }
+
+  @Test
   public void testGenerateSchwangerschaftsstatus() throws IOException, XmlException {
     OPERATIONALTEMPLATE template =
         TemplateDocument.Factory.parse(

@@ -8,30 +8,57 @@ import org.ehrbase.client.annotations.Path;
 @Entity
 @Archetype("openEHR-EHR-SECTION.adhoc.v1")
 public class AllgemeineAngabenSection {
+  /**
+   * Bericht/Allgemeine Angaben/Andere aktuelle Erkrankungen
+   */
   @Path("/items[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0 and name/value='Andere aktuelle Erkrankungen']")
   private AndereAktuelleErkrankungenObservation andereAktuelleErkrankungen;
 
+  /**
+   * Bericht/Allgemeine Angaben/Chronische Erkrankungen
+   */
   @Path("/items[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0 and name/value='Chronische Erkrankungen']")
   private ChronischeErkrankungenObservation chronischeErkrankungen;
 
+  /**
+   * Bericht/Allgemeine Angaben/Problem/Diagnose
+   */
   @Path("/items[openEHR-EHR-EVALUATION.problem_diagnosis.v1]")
   private List<ProblemDiagnoseEvaluation> problemDiagnose;
 
+  /**
+   * Bericht/Allgemeine Angaben/Fragebogen zum Medikations-Screening
+   */
   @Path("/items[openEHR-EHR-OBSERVATION.medication_use.v0]")
   private FragebogenZumMedikationsScreeningObservation fragebogenZumMedikationsScreening;
 
+  /**
+   * Bericht/Allgemeine Angaben/Gesundheitsbezogener Beruf
+   */
   @Path("/items[openEHR-EHR-EVALUATION.occupation_summary.v1 and name/value='Gesundheitsbezogener Beruf']")
   private GesundheitsbezogenerBerufEvaluation gesundheitsbezogenerBeruf;
 
+  /**
+   * Bericht/Allgemeine Angaben/Wohnsituation
+   */
   @Path("/items[openEHR-EHR-EVALUATION.living_arrangement.v0]")
   private List<WohnsituationEvaluation> wohnsituation;
 
+  /**
+   * Bericht/Allgemeine Angaben/Bewertung des Gesundheitsrisikos
+   */
   @Path("/items[openEHR-EHR-EVALUATION.health_risk.v1]")
   private List<BewertungDesGesundheitsrisikosEvaluation> bewertungDesGesundheitsrisikos;
 
+  /**
+   * Bericht/Allgemeine Angaben/Problem/Diganose Coronovirus
+   */
   @Path("/items[openEHR-EHR-EVALUATION.problem_diagnosis_covid.v1 and name/value='Problem/Diganose Coronovirus']")
   private ProblemDiganoseCoronovirusEvaluation problemDiganoseCoronovirus;
 
+  /**
+   * Bericht/Allgemeine Angaben/Dienstleistung
+   */
   @Path("/items[openEHR-EHR-INSTRUCTION.service_request.v1]")
   private List<DienstleistungInstruction> dienstleistung;
 

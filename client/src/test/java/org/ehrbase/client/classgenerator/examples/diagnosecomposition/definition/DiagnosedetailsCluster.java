@@ -9,15 +9,27 @@ import org.ehrbase.client.annotations.Path;
 @Entity
 @Archetype("openEHR-EHR-CLUSTER.diagnose_details.v0")
 public class DiagnosedetailsCluster {
+  /**
+   * COVID-19-Diagnose/Problem/Diagnose/Diagnosedetails/Begründung von Ausnahmen
+   */
   @Path("/items[at0001]/value|value")
   private String begrundungVonAusnahmenValue;
 
+  /**
+   * COVID-19-Diagnose/Problem/Diagnose/Diagnosedetails/Diagnosetyp
+   */
   @Path("/items[at0002]/value|value")
   private String diagnosetypValue;
 
+  /**
+   * COVID-19-Diagnose/Problem/Diagnose/Diagnosedetails/Vorhanden bei Aufnahme
+   */
   @Path("/items[at0016]/value|value")
   private Boolean vorhandenBeiAufnahmeValue;
 
+  /**
+   * COVID-19-Diagnose/Problem/Diagnose/Diagnosedetails/Vorhanden bei Entlassung
+   */
   @Path("/items[at0017]/value|value")
   private Boolean vorhandenBeiEntlassungValue;
 

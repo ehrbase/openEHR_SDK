@@ -11,24 +11,45 @@ import org.ehrbase.client.classgenerator.shareddefinition.Language;
 @Entity
 @Archetype("openEHR-EHR-ADMIN_ENTRY.hospitalization.v0")
 public class VersorgungsortAdminEntry {
+  /**
+   * Patientenaufenthalt/Versorgungsort/Beginn
+   */
   @Path("/data[at0001]/items[at0004]/value|value")
   private TemporalAccessor beginnValue;
 
+  /**
+   * Patientenaufenthalt/Versorgungsort/Ende
+   */
   @Path("/data[at0001]/items[at0005]/value|value")
   private TemporalAccessor endeValue;
 
+  /**
+   * Patientenaufenthalt/Versorgungsort/Grund des Aufenthaltes
+   */
   @Path("/data[at0001]/items[at0006]/value|value")
   private String grundDesAufenthaltesValue;
 
+  /**
+   * Patientenaufenthalt/Versorgungsort/Standort
+   */
   @Path("/data[at0001]/items[openEHR-EHR-CLUSTER.location.v1]")
   private StandortCluster standort;
 
+  /**
+   * Patientenaufenthalt/Versorgungsort/Kommentar
+   */
   @Path("/data[at0001]/items[at0009]/value|value")
   private String kommentarValue;
 
+  /**
+   * Patientenaufenthalt/Versorgungsort/subject
+   */
   @Path("/subject")
   private PartyProxy subject;
 
+  /**
+   * Patientenaufenthalt/Versorgungsort/language
+   */
   @Path("/language")
   private Language language;
 

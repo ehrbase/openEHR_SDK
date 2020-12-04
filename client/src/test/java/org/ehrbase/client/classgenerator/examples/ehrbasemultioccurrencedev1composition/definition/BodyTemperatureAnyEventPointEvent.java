@@ -14,27 +14,51 @@ import org.ehrbase.client.annotations.Path;
 @Entity
 @OptionFor("POINT_EVENT")
 public class BodyTemperatureAnyEventPointEvent implements BodyTemperatureAnyEventChoice {
+  /**
+   * Encounter/Body temperature/Any event/Temperature
+   */
   @Path("/data[at0001]/items[at0004]/value|magnitude")
   private Double temperatureMagnitude;
 
+  /**
+   * Encounter/Body temperature/Any event/Temperature
+   */
   @Path("/data[at0001]/items[at0004]/value|units")
   private String temperatureUnits;
 
+  /**
+   * Encounter/Body temperature/Any event/Description of thermal stress
+   */
   @Path("/state[at0029]/items[at0041]/value|value")
   private String descriptionOfThermalStressValue;
 
+  /**
+   * Encounter/Body temperature/Any event/Current day of menstrual cycle
+   */
   @Path("/state[at0029]/items[at0065]/value|magnitude")
   private Long currentDayOfMenstrualCycleMagnitude;
 
+  /**
+   * Encounter/Body temperature/Any event/Environmental conditions
+   */
   @Path("/state[at0029]/items[at0056]")
   private List<Cluster> environmentalConditions;
 
+  /**
+   * Encounter/Body temperature/Any event/Exertion
+   */
   @Path("/state[at0029]/items[at0057]")
   private Cluster exertion;
 
+  /**
+   * Encounter/Body temperature/Any event/time
+   */
   @Path("/time|value")
   private TemporalAccessor timeValue;
 
+  /**
+   * Encounter/Body temperature/Any event/value
+   */
   @Path("/state[at0029]/items[at0030]/value")
   @Choice
   private BodyTemperatureBodyExposureChoice bodyExposure;

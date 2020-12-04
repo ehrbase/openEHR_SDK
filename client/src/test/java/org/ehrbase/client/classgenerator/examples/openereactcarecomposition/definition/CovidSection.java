@@ -7,15 +7,27 @@ import org.ehrbase.client.annotations.Path;
 @Entity
 @Archetype("openEHR-EHR-SECTION.adhoc.v1")
 public class CovidSection {
+  /**
+   * open_eREACT-Care/Assessment/Covid/Covid symptoms
+   */
   @Path("/items[openEHR-EHR-OBSERVATION.story.v1 and name/value='Covid symptoms']")
   private CovidSymptomsObservation covidSymptoms;
 
+  /**
+   * open_eREACT-Care/Assessment/Covid/Covid-19 exposure
+   */
   @Path("/items[openEHR-EHR-EVALUATION.health_risk-covid.v0 and name/value='Covid-19 exposure']")
   private Covid19ExposureEvaluation covid19Exposure;
 
+  /**
+   * open_eREACT-Care/Assessment/Covid/Latest Covid-19 test
+   */
   @Path("/items[openEHR-EHR-OBSERVATION.laboratory_test_result.v1 and name/value='Latest Covid-19 test']")
   private LatestCovid19TestObservation latestCovid19Test;
 
+  /**
+   * open_eREACT-Care/Assessment/Covid/Covid notes
+   */
   @Path("/items[openEHR-EHR-EVALUATION.clinical_synopsis.v1 and name/value='Covid notes']")
   private CovidNotesEvaluation covidNotes;
 

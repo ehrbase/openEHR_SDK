@@ -6,6 +6,9 @@ import org.ehrbase.client.annotations.Path;
 
 @Entity
 public class EventsummaryIdDerPersonElement {
+  /**
+   * SmICS Befund/context/Eventsummary/Beteiligte Personen/value
+   */
   @Path("/value")
   @Choice
   private EventsummaryValueChoice value;

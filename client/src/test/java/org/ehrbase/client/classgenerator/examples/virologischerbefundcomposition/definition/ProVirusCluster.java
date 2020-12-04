@@ -13,27 +13,51 @@ import org.ehrbase.client.annotations.Path;
 @Entity
 @Archetype("openEHR-EHR-CLUSTER.laboratory_test_analyte.v1")
 public class ProVirusCluster {
+  /**
+   * Virologischer Befund/Befund/Jedes Ereignis/Kultur/Pro Virus/Analyseergebnis-Reihenfolge
+   */
   @Path("/items[at0027]/value|magnitude")
   private Long analyseergebnisReihenfolgeMagnitude;
 
+  /**
+   * Virologischer Befund/Befund/Jedes Ereignis/Kultur/Pro Virus/Virus
+   */
   @Path("/items[at0024 and name/value='Virus']/value|value")
   private String virusValue;
 
+  /**
+   * Virologischer Befund/Befund/Jedes Ereignis/Kultur/Pro Virus/Nachweis
+   */
   @Path("/items[at0001 and name/value='Nachweis']/value|value")
   private String nachweisValue;
 
+  /**
+   * Virologischer Befund/Befund/Jedes Ereignis/Kultur/Pro Virus/Viruslast (ct-Wert)
+   */
   @Path("/items[at0001 and name/value='Viruslast (ct-Wert)']/value|magnitude")
   private Double viruslastCtWertMagnitude;
 
+  /**
+   * Virologischer Befund/Befund/Jedes Ereignis/Kultur/Pro Virus/Viruslast (ct-Wert)
+   */
   @Path("/items[at0001 and name/value='Viruslast (ct-Wert)']/value|units")
   private String viruslastCtWertUnits;
 
+  /**
+   * Virologischer Befund/Befund/Jedes Ereignis/Kultur/Pro Virus/Analyseergebnis-Details
+   */
   @Path("/items[at0014]")
   private List<Cluster> analyseergebnisDetails;
 
+  /**
+   * Virologischer Befund/Befund/Jedes Ereignis/Kultur/Pro Virus/Zugehörige Laborprobe
+   */
   @Path("/items[at0026 and name/value='Zugehörige Laborprobe']/value")
   private DvIdentifier zugehorigeLaborprobe;
 
+  /**
+   * Virologischer Befund/Befund/Jedes Ereignis/Kultur/Pro Virus/Kommentar
+   */
   @Path("/items[at0003]/value|value")
   private String kommentarValue;
 

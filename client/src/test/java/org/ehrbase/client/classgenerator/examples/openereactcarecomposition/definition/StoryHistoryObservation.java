@@ -13,27 +13,51 @@ import org.ehrbase.client.classgenerator.shareddefinition.Language;
 @Entity
 @Archetype("openEHR-EHR-OBSERVATION.story.v1")
 public class StoryHistoryObservation {
+  /**
+   * open_eREACT-Care/Situation/Story/History/Any event/Soft signs
+   */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0004 and name/value='Soft signs']")
   private List<StoryHistorySoftSignsElement> softSigns;
 
+  /**
+   * open_eREACT-Care/Situation/Story/History/Any event/Notes
+   */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0004 and name/value='Notes']/value|value")
   private String notesValue;
 
+  /**
+   * open_eREACT-Care/Situation/Story/History/Any event/Structured detail
+   */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0006]")
   private List<Cluster> structuredDetail;
 
+  /**
+   * open_eREACT-Care/Situation/Story/History/Any event/time
+   */
   @Path("/data[at0001]/events[at0002]/time|value")
   private TemporalAccessor timeValue;
 
+  /**
+   * open_eREACT-Care/Situation/Story/History/origin
+   */
   @Path("/data[at0001]/origin|value")
   private TemporalAccessor originValue;
 
+  /**
+   * open_eREACT-Care/Situation/Story/History/Extension
+   */
   @Path("/protocol[at0007]/items[at0008]")
   private List<Cluster> extension;
 
+  /**
+   * open_eREACT-Care/Situation/Story/History/subject
+   */
   @Path("/subject")
   private PartyProxy subject;
 
+  /**
+   * open_eREACT-Care/Situation/Story/History/language
+   */
   @Path("/language")
   private Language language;
 

@@ -14,33 +14,63 @@ import org.ehrbase.client.classgenerator.shareddefinition.Language;
 @Entity
 @Archetype("openEHR-EHR-EVALUATION.problem_diagnosis_covid.v1")
 public class ProblemDiganoseCoronovirusEvaluation {
+  /**
+   * Bericht/Allgemeine Angaben/Problem/Diganose Coronovirus/Name des Problems/ der Diagnose
+   */
   @Path("/data[at0001]/items[at0002]/value|value")
   private String nameDesProblemsDerDiagnoseValue;
 
+  /**
+   * Bericht/Allgemeine Angaben/Problem/Diganose Coronovirus/Anatomische Stelle (strukturiert)
+   */
   @Path("/data[at0001]/items[at0039]")
   private List<Cluster> anatomischeStelleStrukturiert;
 
+  /**
+   * Bericht/Allgemeine Angaben/Problem/Diganose Coronovirus/Spezifische Angaben
+   */
   @Path("/data[at0001]/items[at0043]")
   private List<Cluster> spezifischeAngaben;
 
+  /**
+   * Bericht/Allgemeine Angaben/Problem/Diganose Coronovirus/Status
+   */
   @Path("/data[at0001]/items[openEHR-EHR-CLUSTER.problem_qualifier.v1 and name/value='Status']")
   private StatusCluster status;
 
+  /**
+   * Bericht/Allgemeine Angaben/Problem/Diganose Coronovirus/Kommentar
+   */
   @Path("/data[at0001]/items[at0069]/value|value")
   private String kommentarValue;
 
+  /**
+   * Bericht/Allgemeine Angaben/Problem/Diganose Coronovirus/Zuletzt aktualisiert
+   */
   @Path("/protocol[at0032]/items[at0070]/value|value")
   private TemporalAccessor zuletztAktualisiertValue;
 
+  /**
+   * Bericht/Allgemeine Angaben/Problem/Diganose Coronovirus/Erweiterung
+   */
   @Path("/protocol[at0032]/items[at0071]")
   private List<Cluster> erweiterung;
 
+  /**
+   * Bericht/Allgemeine Angaben/Problem/Diganose Coronovirus/subject
+   */
   @Path("/subject")
   private PartyProxy subject;
 
+  /**
+   * Bericht/Allgemeine Angaben/Problem/Diganose Coronovirus/language
+   */
   @Path("/language")
   private Language language;
 
+  /**
+   * Bericht/Allgemeine Angaben/Problem/Diganose Coronovirus/value
+   */
   @Path("/data[at0001]/items[at0073]/value")
   @Choice
   private ProblemDiganoseCoronovirusDiagnostischeSicherheitChoice diagnostischeSicherheit;

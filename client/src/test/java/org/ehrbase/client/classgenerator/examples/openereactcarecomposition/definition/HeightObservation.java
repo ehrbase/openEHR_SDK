@@ -15,30 +15,57 @@ import org.ehrbase.client.classgenerator.shareddefinition.Language;
 @Entity
 @Archetype("openEHR-EHR-OBSERVATION.height.v2")
 public class HeightObservation {
+  /**
+   * open_eREACT-Care/Background/Height/Any event/Height/Length
+   */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value|magnitude")
   private Double heightLengthMagnitude;
 
+  /**
+   * open_eREACT-Care/Background/Height/Any event/Height/Length
+   */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value|units")
   private String heightLengthUnits;
 
+  /**
+   * open_eREACT-Care/Background/Height/Any event/Tree
+   */
   @Path("/data[at0001]/events[at0002]/state[at0013]")
   private ItemTree tree;
 
+  /**
+   * open_eREACT-Care/Background/Height/Any event/time
+   */
   @Path("/data[at0001]/events[at0002]/time|value")
   private TemporalAccessor timeValue;
 
+  /**
+   * open_eREACT-Care/Background/Height/origin
+   */
   @Path("/data[at0001]/origin|value")
   private TemporalAccessor originValue;
 
+  /**
+   * open_eREACT-Care/Background/Height/Device
+   */
   @Path("/protocol[at0007]/items[at0011]")
   private Cluster device;
 
+  /**
+   * open_eREACT-Care/Background/Height/Extension
+   */
   @Path("/protocol[at0007]/items[at0022]")
   private List<Cluster> extension;
 
+  /**
+   * open_eREACT-Care/Background/Height/subject
+   */
   @Path("/subject")
   private PartyProxy subject;
 
+  /**
+   * open_eREACT-Care/Background/Height/language
+   */
   @Path("/language")
   private Language language;
 

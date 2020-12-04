@@ -9,18 +9,33 @@ import org.ehrbase.client.annotations.Path;
 @Entity
 @Archetype("openEHR-EHR-CLUSTER.eventsummary.v0")
 public class EventsummaryCluster {
+  /**
+   * SmICS Befund/context/Eventsummary/Fallidentifikation
+   */
   @Path("/items[at0001 and name/value='Fallidentifikation']/value|value")
   private String fallidentifikationValue;
 
+  /**
+   * SmICS Befund/context/Eventsummary/Fall-Art
+   */
   @Path("/items[at0002 and name/value='Fall-Art']/value|value")
   private String fallArtValue;
 
+  /**
+   * SmICS Befund/context/Eventsummary/Beteiligte Personen
+   */
   @Path("/items[at0007]")
   private List<EventsummaryBeteiligtePersonenCluster> beteiligtePersonen;
 
+  /**
+   * SmICS Befund/context/Eventsummary/Fall-Kategorie
+   */
   @Path("/items[at0004 and name/value='Fall-Kategorie']/value|value")
   private String fallKategorieValue;
 
+  /**
+   * SmICS Befund/context/Eventsummary/Kommentar
+   */
   @Path("/items[at0006]/value|value")
   private String kommentarValue;
 

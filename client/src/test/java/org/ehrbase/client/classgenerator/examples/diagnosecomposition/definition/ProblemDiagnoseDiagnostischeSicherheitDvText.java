@@ -8,6 +8,9 @@ import org.ehrbase.client.annotations.Path;
 @Entity
 @OptionFor("DV_TEXT")
 public class ProblemDiagnoseDiagnostischeSicherheitDvText implements ProblemDiagnoseDiagnostischeSicherheitChoice {
+  /**
+   * COVID-19-Diagnose/Problem/Diagnose/value/value
+   */
   @Path("|value")
   private String diagnostischeSicherheitValue;
 

@@ -8,6 +8,9 @@ import org.ehrbase.client.annotations.Path;
 @Entity
 @OptionFor("DV_TEXT")
 public class SepsisScreeningValueDvText implements SepsisScreeningValueChoice {
+  /**
+   * open_eREACT-Care/Assessment/Sepsis/Sepsis screening/Any event/value/value
+   */
   @Path("|value")
   private String valueValue;
 

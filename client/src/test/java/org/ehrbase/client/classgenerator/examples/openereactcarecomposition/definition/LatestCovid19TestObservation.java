@@ -14,51 +14,99 @@ import org.ehrbase.client.classgenerator.shareddefinition.Language;
 @Entity
 @Archetype("openEHR-EHR-OBSERVATION.laboratory_test_result.v1")
 public class LatestCovid19TestObservation {
+  /**
+   * open_eREACT-Care/Assessment/Covid/Latest Covid-19 test/Any event/Test name
+   */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0005]/value|value")
   private String testNameValue;
 
+  /**
+   * open_eREACT-Care/Assessment/Covid/Latest Covid-19 test/Any event/Specimen detail
+   */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0065]")
   private List<Cluster> specimenDetail;
 
+  /**
+   * open_eREACT-Care/Assessment/Covid/Latest Covid-19 test/Any event/Test result
+   */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0097]")
   private List<Cluster> testResult;
 
+  /**
+   * open_eREACT-Care/Assessment/Covid/Latest Covid-19 test/Any event/Test diagnosis
+   */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0098]/value|value")
   private String testDiagnosisValue;
 
+  /**
+   * open_eREACT-Care/Assessment/Covid/Latest Covid-19 test/Any event/Structured test diagnosis
+   */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0122]")
   private List<Cluster> structuredTestDiagnosis;
 
+  /**
+   * open_eREACT-Care/Assessment/Covid/Latest Covid-19 test/Any event/Multimedia representation
+   */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0118]")
   private List<Cluster> multimediaRepresentation;
 
+  /**
+   * open_eREACT-Care/Assessment/Covid/Latest Covid-19 test/Any event/Structured confounding factors
+   */
   @Path("/data[at0001]/events[at0002]/state[at0112]/items[at0114]")
   private List<Cluster> structuredConfoundingFactors;
 
+  /**
+   * open_eREACT-Care/Assessment/Covid/Latest Covid-19 test/Any event/time
+   */
   @Path("/data[at0001]/events[at0002]/time|value")
   private TemporalAccessor timeValue;
 
+  /**
+   * open_eREACT-Care/Assessment/Covid/Latest Covid-19 test/origin
+   */
   @Path("/data[at0001]/origin|value")
   private TemporalAccessor originValue;
 
+  /**
+   * open_eREACT-Care/Assessment/Covid/Latest Covid-19 test/Receiving laboratory
+   */
   @Path("/protocol[at0004]/items[at0017]")
   private Cluster receivingLaboratory;
 
+  /**
+   * open_eREACT-Care/Assessment/Covid/Latest Covid-19 test/Test request details
+   */
   @Path("/protocol[at0004]/items[at0094]")
   private List<LatestCovid19TestTestRequestDetailsCluster> testRequestDetails;
 
+  /**
+   * open_eREACT-Care/Assessment/Covid/Latest Covid-19 test/Testing details
+   */
   @Path("/protocol[at0004]/items[at0110]")
   private List<Cluster> testingDetails;
 
+  /**
+   * open_eREACT-Care/Assessment/Covid/Latest Covid-19 test/Extension
+   */
   @Path("/protocol[at0004]/items[at0117]")
   private List<Cluster> extension;
 
+  /**
+   * open_eREACT-Care/Assessment/Covid/Latest Covid-19 test/subject
+   */
   @Path("/subject")
   private PartyProxy subject;
 
+  /**
+   * open_eREACT-Care/Assessment/Covid/Latest Covid-19 test/language
+   */
   @Path("/language")
   private Language language;
 
+  /**
+   * open_eREACT-Care/Assessment/Covid/Latest Covid-19 test/Any event/value
+   */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0073]/value")
   @Choice
   private LatestCovid19TestOverallTestStatusChoice overallTestStatus;

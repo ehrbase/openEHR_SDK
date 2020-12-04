@@ -9,9 +9,15 @@ import org.ehrbase.client.annotations.Path;
 @Entity
 @OptionFor("POINT_EVENT")
 public class WeitereSymptomeBeliebigesEreignisPointEvent implements WeitereSymptomeBeliebigesEreignisChoice {
+  /**
+   * Bericht/Symptome/Weitere Symptome/Beliebiges Ereignis/Spezifisches Symptom/Anzeichen
+   */
   @Path("/data[at0003]/items[at0022]")
   private List<WeitereSymptomeSpezifischesSymptomAnzeichenCluster> spezifischesSymptomAnzeichen;
 
+  /**
+   * Bericht/Symptome/Weitere Symptome/Beliebiges Ereignis/time
+   */
   @Path("/time|value")
   private TemporalAccessor timeValue;
 

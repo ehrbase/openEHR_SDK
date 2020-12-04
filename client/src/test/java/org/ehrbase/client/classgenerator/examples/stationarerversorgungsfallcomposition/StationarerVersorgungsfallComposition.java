@@ -26,54 +26,105 @@ import org.ehrbase.client.openehrclient.VersionUid;
 @Archetype("openEHR-EHR-COMPOSITION.fall.v0")
 @Template("Stationärer Versorgungsfall")
 public class StationarerVersorgungsfallComposition {
+  /**
+   * Stationärer Versorgungsfall/context/Falltyp
+   */
   @Path("/context/other_context[at0001]/items[at0005]/value|defining_code")
   private FalltypDefiningCode falltypDefiningCode;
 
+  /**
+   * Stationärer Versorgungsfall/context/Fallklasse
+   */
   @Path("/context/other_context[at0001]/items[at0004]/value|value")
   private String fallklasseValue;
 
+  /**
+   * Stationärer Versorgungsfall/context/Fall-Kennung
+   */
   @Path("/context/other_context[at0001]/items[at0003 and name/value='Fall-Kennung']/value|value")
   private String fallKennungValue;
 
+  /**
+   * Stationärer Versorgungsfall/context/Erweiterung
+   */
   @Path("/context/other_context[at0001]/items[at0002]")
   private List<Cluster> erweiterung;
 
+  /**
+   * Stationärer Versorgungsfall/context/start_time
+   */
   @Path("/context/start_time|value")
   private TemporalAccessor startTimeValue;
 
+  /**
+   * Stationärer Versorgungsfall/context/participations
+   */
   @Path("/context/participations")
   private List<Participation> participations;
 
+  /**
+   * Stationärer Versorgungsfall/context/end_time
+   */
   @Path("/context/end_time|value")
   private TemporalAccessor endTimeValue;
 
+  /**
+   * Stationärer Versorgungsfall/context/location
+   */
   @Path("/context/location")
   private String location;
 
+  /**
+   * Stationärer Versorgungsfall/context/health_care_facility
+   */
   @Path("/context/health_care_facility")
   private PartyIdentified healthCareFacility;
 
+  /**
+   * Stationärer Versorgungsfall/context/setting
+   */
   @Path("/context/setting|defining_code")
   private Setting settingDefiningCode;
 
+  /**
+   * Stationärer Versorgungsfall/Aufnahmedaten
+   */
   @Path("/content[openEHR-EHR-ADMIN_ENTRY.admission.v0 and name/value='Aufnahmedaten']")
   private AufnahmedatenAdminEntry aufnahmedaten;
 
+  /**
+   * Stationärer Versorgungsfall/Entlassungsdaten
+   */
   @Path("/content[openEHR-EHR-ADMIN_ENTRY.discharge_summary.v0]")
   private EntlassungsdatenAdminEntry entlassungsdaten;
 
+  /**
+   * Stationärer Versorgungsfall/composer
+   */
   @Path("/composer")
   private PartyProxy composer;
 
+  /**
+   * Stationärer Versorgungsfall/language
+   */
   @Path("/language")
   private Language language;
 
+  /**
+   * Stationärer Versorgungsfall/feeder_audit
+   */
   @Path("/feeder_audit")
   private FeederAudit feederAudit;
 
+  /**
+   * Stationärer Versorgungsfall/category
+   */
   @Path("/category|defining_code")
   private Category categoryDefiningCode;
 
+  /**
+   * Stationärer Versorgungsfall/territory
+   */
   @Path("/territory")
   private Territory territory;
 

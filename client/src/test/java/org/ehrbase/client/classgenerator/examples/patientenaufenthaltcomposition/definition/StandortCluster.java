@@ -8,33 +8,63 @@ import org.ehrbase.client.annotations.Path;
 @Entity
 @Archetype("openEHR-EHR-CLUSTER.location.v1")
 public class StandortCluster {
+  /**
+   * Patientenaufenthalt/Versorgungsort/Standort/Standorttyp
+   */
   @Path("/items[at0040]/value|value")
   private String standorttypValue;
 
+  /**
+   * Patientenaufenthalt/Versorgungsort/Standort/Standortbeschreibung
+   */
   @Path("/items[at0046]/value|value")
   private String standortbeschreibungValue;
 
+  /**
+   * Patientenaufenthalt/Versorgungsort/Standort/Standortschlüssel
+   */
   @Path("/items[at0048]/value|defining_code")
   private StandortschlusselDefiningCode standortschlusselDefiningCode;
 
+  /**
+   * Patientenaufenthalt/Versorgungsort/Standort/Campus
+   */
   @Path("/items[at0024]/value|value")
   private String campusValue;
 
+  /**
+   * Patientenaufenthalt/Versorgungsort/Standort/Gebäudegruppe
+   */
   @Path("/items[at0025]/value|value")
   private String gebaudegruppeValue;
 
+  /**
+   * Patientenaufenthalt/Versorgungsort/Standort/Ebene
+   */
   @Path("/items[at0028]/value|value")
   private String ebeneValue;
 
+  /**
+   * Patientenaufenthalt/Versorgungsort/Standort/Stationskennung
+   */
   @Path("/items[at0027 and name/value='Stationskennung']/value|value")
   private String stationskennungValue;
 
+  /**
+   * Patientenaufenthalt/Versorgungsort/Standort/Zimmerkennung
+   */
   @Path("/items[at0029 and name/value='Zimmerkennung']/value|value")
   private String zimmerkennungValue;
 
+  /**
+   * Patientenaufenthalt/Versorgungsort/Standort/Bettplatzkennung
+   */
   @Path("/items[at0034 and name/value='Bettplatzkennung']/value|value")
   private String bettplatzkennungValue;
 
+  /**
+   * Patientenaufenthalt/Versorgungsort/Standort/Details zum Bett
+   */
   @Path("/items[openEHR-EHR-CLUSTER.device.v1 and name/value='Details zum Bett']")
   private DetailsZumBettCluster detailsZumBett;
 

@@ -11,18 +11,33 @@ import org.ehrbase.client.annotations.Path;
 @Entity
 @Archetype("openEHR-EHR-CLUSTER.laboratory_test_analyte.v1")
 public class SauerstoffpartialdruckCluster {
+  /**
+   * Befund der Blutgasanalyse/Laborergebnis/Jedes Ereignis/Sauerstoffpartialdruck/untersuchter Analyt
+   */
   @Path("/items[at0024]/value|defining_code")
   private UntersuchterAnalytDefiningCode2 untersuchterAnalytDefiningCode;
 
+  /**
+   * Befund der Blutgasanalyse/Laborergebnis/Jedes Ereignis/Sauerstoffpartialdruck/Analyt-Resultat
+   */
   @Path("/items[at0001]/value|magnitude")
   private Double analytResultatMagnitude;
 
+  /**
+   * Befund der Blutgasanalyse/Laborergebnis/Jedes Ereignis/Sauerstoffpartialdruck/Analyt-Resultat
+   */
   @Path("/items[at0001]/value|units")
   private String analytResultatUnits;
 
+  /**
+   * Befund der Blutgasanalyse/Laborergebnis/Jedes Ereignis/Sauerstoffpartialdruck/Analyseergebnis-Details
+   */
   @Path("/items[at0014]")
   private List<Cluster> analyseergebnisDetails;
 
+  /**
+   * Befund der Blutgasanalyse/Laborergebnis/Jedes Ereignis/Sauerstoffpartialdruck/Ergebnis-Status
+   */
   @Path("/items[at0005]/value|value")
   private String ergebnisStatusValue;
 

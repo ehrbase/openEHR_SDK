@@ -13,27 +13,51 @@ import org.ehrbase.client.classgenerator.shareddefinition.Language;
 @Entity
 @Archetype("openEHR-EHR-OBSERVATION.symptom_sign_screening.v0")
 public class SchnupfenObservation {
+  /**
+   * Bericht/Symptome/Schnupfen/Beliebiges Ereignis/Spezifisches Symptom/Anzeichen/Bezeichnung des Symptoms oder Anzeichens.
+   */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0022]/items[at0004]/value|value")
   private String bezeichnungDesSymptomsOderAnzeichensValue;
 
+  /**
+   * Bericht/Symptome/Schnupfen/Beliebiges Ereignis/Spezifisches Symptom/Anzeichen/Vorhanden?
+   */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0022]/items[at0005]/value|defining_code")
   private VorhandenDefiningCode vorhandenDefiningCode;
 
+  /**
+   * Bericht/Symptome/Schnupfen/Beliebiges Ereignis/Spezifisches Symptom/Anzeichen/Detaillierte Angaben zum Symptom/Anzeichen
+   */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0022]/items[at0026]")
   private List<Cluster> detaillierteAngabenZumSymptomAnzeichen;
 
+  /**
+   * Bericht/Symptome/Schnupfen/Beliebiges Ereignis/time
+   */
   @Path("/data[at0001]/events[at0002]/time|value")
   private TemporalAccessor timeValue;
 
+  /**
+   * Bericht/Symptome/Schnupfen/origin
+   */
   @Path("/data[at0001]/origin|value")
   private TemporalAccessor originValue;
 
+  /**
+   * Bericht/Symptome/Schnupfen/Erweiterung
+   */
   @Path("/protocol[at0007]/items[at0021]")
   private List<Cluster> erweiterung;
 
+  /**
+   * Bericht/Symptome/Schnupfen/subject
+   */
   @Path("/subject")
   private PartyProxy subject;
 
+  /**
+   * Bericht/Symptome/Schnupfen/language
+   */
   @Path("/language")
   private Language language;
 

@@ -10,15 +10,27 @@ import org.ehrbase.client.annotations.Path;
 @Entity
 @Archetype("openEHR-EHR-CLUSTER.anatomical_location.v1")
 public class AnatomischeLokalisationCluster {
+  /**
+   * COVID-19-Diagnose/Problem/Diagnose/Anatomische Lokalisation/Name der Körperstelle
+   */
   @Path("/items[at0001]/value|value")
   private String nameDerKorperstelleValue;
 
+  /**
+   * COVID-19-Diagnose/Problem/Diagnose/Anatomische Lokalisation/Lateralität
+   */
   @Path("/items[at0002]/value|defining_code")
   private LateralitatDefiningCode lateralitatDefiningCode;
 
+  /**
+   * COVID-19-Diagnose/Problem/Diagnose/Anatomische Lokalisation/Alternative Struktur
+   */
   @Path("/items[at0053]")
   private List<Cluster> alternativeStruktur;
 
+  /**
+   * COVID-19-Diagnose/Problem/Diagnose/Anatomische Lokalisation/Multimediale Darstellung
+   */
   @Path("/items[at0054]")
   private List<Cluster> multimedialeDarstellung;
 

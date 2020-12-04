@@ -51,19 +51,19 @@ public class Filter implements WebTemplateFilter {
     @Override
     public FilteredWebTemplate filter(WebTemplate webTemplate) {
         FilteredWebTemplate clone = new FilteredWebTemplate(webTemplate);
-        Pair<List<WebTemplateNode>, Map<WebTemplateNode, Deque<WebTemplateNode>>> filter = filter(clone.getTree(), webTemplate, null);
+        Pair<List<WebTemplateNode>, Map<Pair<String,String>, Deque<WebTemplateNode>>> filter = filter(clone.getTree(), webTemplate, null);
         clone.setTree(filter.getLeft().get(0));
         clone.setFilteredNodeMap(filter.getRight());
 
         return clone;
     }
 
-    protected Pair< List<WebTemplateNode>, Map<WebTemplateNode, Deque<WebTemplateNode>> > filter(WebTemplateNode node, WebTemplate context, WebTemplateNode parent) {
+    protected Pair< List<WebTemplateNode>, Map<Pair<String,String>, Deque<WebTemplateNode>> > filter(WebTemplateNode node, WebTemplate context, WebTemplateNode parent) {
       WebTemplateNode oldNode = new WebTemplateNode(node);
        preHandle(node);
         List<WebTemplateNode> nodes;
         List<WebTemplateNode>  filteredChildren = new ArrayList<>();
-        Map<WebTemplateNode,Deque<WebTemplateNode> > nodeMap = new HashMap<>();
+        Map<Pair<String,String>,Deque<WebTemplateNode> > nodeMap = new HashMap<>();
        node.getChildren().stream().map(n -> filter(n, context, node)).forEach(p -> {
            filteredChildren.addAll(p.getLeft());
            nodeMap.putAll(p.getRight());
@@ -73,11 +73,11 @@ public class Filter implements WebTemplateFilter {
         if (skip(node, context, parent)) {
             nodes = filteredChildren;
            for( WebTemplateNode child: filteredChildren){
-               nodeMap.get(child).addLast(oldNode);
+               nodeMap.get(new ImmutablePair<>(child.getAqlPath(),child.getRmType())).addLast(oldNode);
            }
         } else {
             nodes = Collections.singletonList(node);
-            nodeMap.put(node,new ArrayDeque<>());
+            nodeMap.put(new ImmutablePair<>(node.getAqlPath(),node.getRmType()),new ArrayDeque<>());
 
         }
         OPTParser.makeIdUnique(node);

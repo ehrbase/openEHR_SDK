@@ -10,12 +10,21 @@ import org.ehrbase.client.annotations.Path;
 @Entity
 @Archetype("openEHR-EHR-CLUSTER.anatomical_location.v1")
 public class AnatomischeLokalisationCluster {
+  /**
+   * Virologischer Befund/Befund/Jedes Ereignis/Probe/Anatomische Lokalisation/Name der Körperstelle
+   */
   @Path("/items[at0001]/value|value")
   private String nameDerKorperstelleValue;
 
+  /**
+   * Virologischer Befund/Befund/Jedes Ereignis/Probe/Anatomische Lokalisation/Alternative Struktur
+   */
   @Path("/items[at0053]")
   private List<Cluster> alternativeStruktur;
 
+  /**
+   * Virologischer Befund/Befund/Jedes Ereignis/Probe/Anatomische Lokalisation/Multimediale Darstellung
+   */
   @Path("/items[at0054]")
   private List<Cluster> multimedialeDarstellung;
 

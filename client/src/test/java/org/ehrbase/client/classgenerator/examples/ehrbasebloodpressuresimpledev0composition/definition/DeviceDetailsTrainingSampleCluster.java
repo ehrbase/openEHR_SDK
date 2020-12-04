@@ -10,30 +10,57 @@ import org.ehrbase.client.annotations.Path;
 @Entity
 @Archetype("openEHR-EHR-CLUSTER.sample_device.v1")
 public class DeviceDetailsTrainingSampleCluster {
+  /**
+   * Encounter (training sample)/context/Admin detail/Device details (training sample)/Name
+   */
   @Path("/items[at0001]/value|value")
   private String nameValue;
 
+  /**
+   * Encounter (training sample)/context/Admin detail/Device details (training sample)/Description
+   */
   @Path("/items[at0002]/value|value")
   private String descriptionValue;
 
+  /**
+   * Encounter (training sample)/context/Admin detail/Device details (training sample)/Manufacturer details/Manufacturer
+   */
   @Path("/items[at0004]/items[at0003]/value|value")
   private String manufacturerValue;
 
+  /**
+   * Encounter (training sample)/context/Admin detail/Device details (training sample)/Manufacturer details/Model
+   */
   @Path("/items[at0004]/items[at0005]/value|value")
   private String modelValue;
 
+  /**
+   * Encounter (training sample)/context/Admin detail/Device details (training sample)/Manufacturer details/Serial number
+   */
   @Path("/items[at0004]/items[at0006]/value|value")
   private String serialNumberValue;
 
+  /**
+   * Encounter (training sample)/context/Admin detail/Device details (training sample)/Components
+   */
   @Path("/items[at0007]")
   private Cluster components;
 
+  /**
+   * Encounter (training sample)/context/Admin detail/Device details (training sample)/Servicing/Date last serviced
+   */
   @Path("/items[at0008]/items[at0009]/value|value")
   private TemporalAccessor dateLastServicedValue;
 
+  /**
+   * Encounter (training sample)/context/Admin detail/Device details (training sample)/Servicing/Date last calibration
+   */
   @Path("/items[at0008]/items[at0010]/value|value")
   private TemporalAccessor dateLastCalibrationValue;
 
+  /**
+   * Encounter (training sample)/context/Admin detail/Device details (training sample)/Servicing/Serviced by
+   */
   @Path("/items[at0008]/items[at0011]/value|value")
   private String servicedByValue;
 

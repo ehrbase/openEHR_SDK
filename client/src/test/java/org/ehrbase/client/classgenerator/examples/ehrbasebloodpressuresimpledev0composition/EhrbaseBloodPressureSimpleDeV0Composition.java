@@ -24,42 +24,81 @@ import org.ehrbase.client.openehrclient.VersionUid;
 @Archetype("openEHR-EHR-COMPOSITION.sample_encounter.v1")
 @Template("ehrbase_blood_pressure_simple.de.v0")
 public class EhrbaseBloodPressureSimpleDeV0Composition {
+  /**
+   * Encounter (training sample)/context/Admin detail/Device details (training sample)
+   */
   @Path("/context/other_context[at0001]/items[at0006]/items[openEHR-EHR-CLUSTER.sample_device.v1]")
   private List<DeviceDetailsTrainingSampleCluster> deviceDetailsTrainingSample;
 
+  /**
+   * Encounter (training sample)/context/start_time
+   */
   @Path("/context/start_time|value")
   private TemporalAccessor startTimeValue;
 
+  /**
+   * Encounter (training sample)/context/participations
+   */
   @Path("/context/participations")
   private List<Participation> participations;
 
+  /**
+   * Encounter (training sample)/context/end_time
+   */
   @Path("/context/end_time|value")
   private TemporalAccessor endTimeValue;
 
+  /**
+   * Encounter (training sample)/context/location
+   */
   @Path("/context/location")
   private String location;
 
+  /**
+   * Encounter (training sample)/context/health_care_facility
+   */
   @Path("/context/health_care_facility")
   private PartyIdentified healthCareFacility;
 
+  /**
+   * Encounter (training sample)/context/setting
+   */
   @Path("/context/setting|defining_code")
   private Setting settingDefiningCode;
 
+  /**
+   * Encounter (training sample)/Blood pressure (Training sample)
+   */
   @Path("/content[openEHR-EHR-OBSERVATION.sample_blood_pressure.v1]")
   private List<BloodPressureTrainingSampleObservation> bloodPressureTrainingSample;
 
+  /**
+   * Encounter (training sample)/composer
+   */
   @Path("/composer")
   private PartyProxy composer;
 
+  /**
+   * Encounter (training sample)/language
+   */
   @Path("/language")
   private Language language;
 
+  /**
+   * Encounter (training sample)/feeder_audit
+   */
   @Path("/feeder_audit")
   private FeederAudit feederAudit;
 
+  /**
+   * Encounter (training sample)/category
+   */
   @Path("/category|defining_code")
   private Category categoryDefiningCode;
 
+  /**
+   * Encounter (training sample)/territory
+   */
   @Path("/territory")
   private Territory territory;
 

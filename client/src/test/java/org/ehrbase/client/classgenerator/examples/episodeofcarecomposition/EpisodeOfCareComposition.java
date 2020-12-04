@@ -23,39 +23,75 @@ import org.ehrbase.client.openehrclient.VersionUid;
 @Archetype("openEHR-EHR-COMPOSITION.versorgungsfall.v0")
 @Template("EpisodeOfCare")
 public class EpisodeOfCareComposition {
+  /**
+   * EpisodeOfCare/Episodeofcare
+   */
   @Path("/content[openEHR-EHR-ADMIN_ENTRY.episodeofcare.v0]")
   private List<EpisodeofcareAdminEntry> episodeofcare;
 
+  /**
+   * EpisodeOfCare/composer
+   */
   @Path("/composer")
   private PartyProxy composer;
 
+  /**
+   * EpisodeOfCare/language
+   */
   @Path("/language")
   private Language language;
 
+  /**
+   * EpisodeOfCare/context/start_time
+   */
   @Path("/context/start_time|value")
   private TemporalAccessor startTimeValue;
 
+  /**
+   * EpisodeOfCare/context/participations
+   */
   @Path("/context/participations")
   private List<Participation> participations;
 
+  /**
+   * EpisodeOfCare/context/end_time
+   */
   @Path("/context/end_time|value")
   private TemporalAccessor endTimeValue;
 
+  /**
+   * EpisodeOfCare/context/location
+   */
   @Path("/context/location")
   private String location;
 
+  /**
+   * EpisodeOfCare/context/health_care_facility
+   */
   @Path("/context/health_care_facility")
   private PartyIdentified healthCareFacility;
 
+  /**
+   * EpisodeOfCare/context/setting
+   */
   @Path("/context/setting|defining_code")
   private Setting settingDefiningCode;
 
+  /**
+   * EpisodeOfCare/feeder_audit
+   */
   @Path("/feeder_audit")
   private FeederAudit feederAudit;
 
+  /**
+   * EpisodeOfCare/category
+   */
   @Path("/category|defining_code")
   private Category categoryDefiningCode;
 
+  /**
+   * EpisodeOfCare/territory
+   */
   @Path("/territory")
   private Territory territory;
 

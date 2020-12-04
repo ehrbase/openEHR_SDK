@@ -13,24 +13,45 @@ import org.ehrbase.client.classgenerator.shareddefinition.Language;
 @Entity
 @Archetype("openEHR-EHR-ADMIN_ENTRY.admission.v0")
 public class AufnahmedatenAdminEntry {
+  /**
+   * Stationärer Versorgungsfall/Aufnahmedaten/Versorgungsfallgrund
+   */
   @Path("/data[at0001]/items[at0013 and name/value='Versorgungsfallgrund']/value|value")
   private String versorgungsfallgrundValue;
 
+  /**
+   * Stationärer Versorgungsfall/Aufnahmedaten/Art der Aufnahme
+   */
   @Path("/data[at0001]/items[at0049]/value|value")
   private String artDerAufnahmeValue;
 
+  /**
+   * Stationärer Versorgungsfall/Aufnahmedaten/Datum/Uhrzeit der Aufnahme
+   */
   @Path("/data[at0001]/items[at0071]/value|value")
   private TemporalAccessor datumUhrzeitDerAufnahmeValue;
 
+  /**
+   * Stationärer Versorgungsfall/Aufnahmedaten/Zugewiesener Patientenstandort
+   */
   @Path("/data[at0001]/items[at0131]")
   private List<Cluster> zugewiesenerPatientenstandort;
 
+  /**
+   * Stationärer Versorgungsfall/Aufnahmedaten/Vorheriger Patientenstandort
+   */
   @Path("/data[at0001]/items[at0132]")
   private List<Cluster> vorherigerPatientenstandort;
 
+  /**
+   * Stationärer Versorgungsfall/Aufnahmedaten/subject
+   */
   @Path("/subject")
   private PartyProxy subject;
 
+  /**
+   * Stationärer Versorgungsfall/Aufnahmedaten/language
+   */
   @Path("/language")
   private Language language;
 

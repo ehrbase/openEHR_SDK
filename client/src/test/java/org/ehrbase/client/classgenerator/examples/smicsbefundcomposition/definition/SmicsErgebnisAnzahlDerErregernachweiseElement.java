@@ -6,6 +6,9 @@ import org.ehrbase.client.annotations.Path;
 
 @Entity
 public class SmicsErgebnisAnzahlDerErregernachweiseElement {
+  /**
+   * SmICS Befund/SmICS-Ergebnis/Jedes Ereignis/Eigenschaften des beteiligten Erregers/Anzahl der Erregernachweise
+   */
   @Path("/value|magnitude")
   private Long value;
 

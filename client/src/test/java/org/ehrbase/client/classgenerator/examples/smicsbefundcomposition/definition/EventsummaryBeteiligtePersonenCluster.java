@@ -7,9 +7,15 @@ import org.ehrbase.client.annotations.Path;
 
 @Entity
 public class EventsummaryBeteiligtePersonenCluster {
+  /**
+   * SmICS Befund/context/Eventsummary/Beteiligte Personen/Art der Person
+   */
   @Path("/items[at0011]/value|value")
   private String artDerPersonValue;
 
+  /**
+   * SmICS Befund/context/Eventsummary/Beteiligte Personen/ID der Person
+   */
   @Path("/items[at0010]")
   private List<EventsummaryIdDerPersonElement> idDerPerson;
 

@@ -8,6 +8,9 @@ import org.ehrbase.client.annotations.Path;
 @Entity
 @Archetype("openEHR-EHR-CLUSTER.case_identification.v0")
 public class FallidentifikationCluster {
+  /**
+   * Virologischer Befund/context/Fallidentifikation/Fall-Kennung
+   */
   @Path("/items[at0001]/value|value")
   private String fallKennungValue;
 

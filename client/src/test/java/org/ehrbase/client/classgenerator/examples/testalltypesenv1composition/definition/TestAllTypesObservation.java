@@ -22,66 +22,129 @@ import org.ehrbase.client.classgenerator.shareddefinition.Language;
 @Entity
 @Archetype("openEHR-EHR-OBSERVATION.test_all_types.v1")
 public class TestAllTypesObservation {
+  /**
+   * Test all types/Test all types/Cualquier evento/text
+   */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value|value")
   private String textValue;
 
+  /**
+   * Test all types/Test all types/Cualquier evento/coded text
+   */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0005]/value")
   private DvCodedText codedText;
 
+  /**
+   * Test all types/Test all types/Cualquier evento/coded text terminology
+   */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0006]/value")
   private DvCodedText codedTextTerminology;
 
+  /**
+   * Test all types/Test all types/Cualquier evento/quantity
+   */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0007]/value|magnitude")
   private Double quantityMagnitude;
 
+  /**
+   * Test all types/Test all types/Cualquier evento/quantity
+   */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0007]/value|units")
   private String quantityUnits;
 
+  /**
+   * Test all types/Test all types/Cualquier evento/count
+   */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0008]/value|magnitude")
   private Long countMagnitude;
 
+  /**
+   * Test all types/Test all types/Cualquier evento/date
+   */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0009]/value|value")
   private Temporal dateValue;
 
+  /**
+   * Test all types/Test all types/Cualquier evento/datetime
+   */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0010]/value|value")
   private TemporalAccessor datetimeValue;
 
+  /**
+   * Test all types/Test all types/Cualquier evento/datetime any
+   */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0011]/value|value")
   private TemporalAccessor datetimeAnyValue;
 
+  /**
+   * Test all types/Test all types/Cualquier evento/time
+   */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0012]/value|value")
   private TemporalAccessor arbolTimeValue;
 
+  /**
+   * Test all types/Test all types/Cualquier evento/ordinal
+   */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0013]/value")
   private DvOrdinal ordinal;
 
+  /**
+   * Test all types/Test all types/Cualquier evento/boolean
+   */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0017]/value|value")
   private Boolean booleanValue;
 
+  /**
+   * Test all types/Test all types/Cualquier evento/duration any
+   */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0018]/value|value")
   private TemporalAmount durationAnyValue;
 
+  /**
+   * Test all types/Test all types/Cualquier evento/multimedia any
+   */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0019]/value")
   private DvMultimedia multimediaAny;
 
+  /**
+   * Test all types/Test all types/Cualquier evento/parsable any
+   */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0020]/value")
   private DvParsable parsableAny;
 
+  /**
+   * Test all types/Test all types/Cualquier evento/identifier
+   */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0021]/value")
   private DvIdentifier identifier;
 
+  /**
+   * Test all types/Test all types/Cualquier evento/proportion any
+   */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0022]/value")
   private DvProportion proportionAny;
 
+  /**
+   * Test all types/Test all types/Cualquier evento/time
+   */
   @Path("/data[at0001]/events[at0002]/time|value")
   private TemporalAccessor cualquierEventoTimeValue;
 
+  /**
+   * Test all types/Test all types/origin
+   */
   @Path("/data[at0001]/origin|value")
   private TemporalAccessor originValue;
 
+  /**
+   * Test all types/Test all types/subject
+   */
   @Path("/subject")
   private PartyProxy subject;
 
+  /**
+   * Test all types/Test all types/language
+   */
   @Path("/language")
   private Language language;
 

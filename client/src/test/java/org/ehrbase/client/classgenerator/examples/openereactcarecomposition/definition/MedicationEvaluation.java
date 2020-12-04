@@ -12,15 +12,27 @@ import org.ehrbase.client.classgenerator.shareddefinition.Language;
 @Entity
 @Archetype("openEHR-EHR-EVALUATION.clinical_synopsis.v1")
 public class MedicationEvaluation {
+  /**
+   * open_eREACT-Care/Background/Medication/Synopsis
+   */
   @Path("/data[at0001]/items[at0002]/value|value")
   private String synopsisValue;
 
+  /**
+   * open_eREACT-Care/Background/Medication/Extension
+   */
   @Path("/protocol[at0003]/items[at0004]")
   private List<Cluster> extension;
 
+  /**
+   * open_eREACT-Care/Background/Medication/subject
+   */
   @Path("/subject")
   private PartyProxy subject;
 
+  /**
+   * open_eREACT-Care/Background/Medication/language
+   */
   @Path("/language")
   private Language language;
 

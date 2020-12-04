@@ -12,24 +12,45 @@ import org.ehrbase.client.classgenerator.shareddefinition.Transition;
 @Entity
 @Archetype("openEHR-EHR-ACTION.test_all_types.v1")
 public class TestAllTypesAction {
+  /**
+   * Test all types/Test all types/section 2/section 3/Test all types/Test all types
+   */
   @Path("/description[at0001]/items[openEHR-EHR-CLUSTER.test_all_types.v1]")
   private List<TestAllTypesCluster> testAllTypes;
 
+  /**
+   * Test all types/Test all types/section 2/section 3/Test all types/subject
+   */
   @Path("/subject")
   private PartyProxy subject;
 
+  /**
+   * Test all types/Test all types/section 2/section 3/Test all types/language
+   */
   @Path("/language")
   private Language language;
 
+  /**
+   * Test all types/Test all types/section 2/section 3/Test all types/time
+   */
   @Path("/time|value")
   private TemporalAccessor timeValue;
 
+  /**
+   * Test all types/Test all types/section 2/section 3/Test all types/ism_transition/Careflow_step
+   */
   @Path("/ism_transition/careflow_step|defining_code")
   private CareflowStepDefiningCode careflowStepDefiningCode;
 
+  /**
+   * Test all types/Test all types/section 2/section 3/Test all types/ism_transition/Current_state
+   */
   @Path("/ism_transition/current_state|defining_code")
   private CurrentStateDefiningCode currentStateDefiningCode;
 
+  /**
+   * Test all types/Test all types/section 2/section 3/Test all types/ism_transition/transition
+   */
   @Path("/ism_transition/transition|defining_code")
   private Transition transitionDefiningCode;
 

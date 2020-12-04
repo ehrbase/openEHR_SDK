@@ -6,6 +6,9 @@ import org.ehrbase.client.annotations.Path;
 
 @Entity
 public class KorpertemperaturStorfaktorenElement {
+  /**
+   * Bericht/Symptome/Körpertemperatur/Beliebiges Ereignis/Störfaktoren
+   */
   @Path("/value|value")
   private String value;
 

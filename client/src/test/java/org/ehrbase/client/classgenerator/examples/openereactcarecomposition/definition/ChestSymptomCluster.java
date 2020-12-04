@@ -10,21 +10,39 @@ import org.ehrbase.client.annotations.Path;
 @Entity
 @Archetype("openEHR-EHR-CLUSTER.symptom_sign-cvid.v0")
 public class ChestSymptomCluster {
+  /**
+   * open_eREACT-Care/Assessment/Covid/Covid symptoms/Any event/Chest symptom/Symptom/Sign name
+   */
   @Path("/items[at0001.1]/value")
   private DvCodedText symptomSignName;
 
+  /**
+   * open_eREACT-Care/Assessment/Covid/Covid symptoms/Any event/Chest symptom/Structured body site
+   */
   @Path("/items[at0147]")
   private List<Cluster> structuredBodySite;
 
+  /**
+   * open_eREACT-Care/Assessment/Covid/Covid symptoms/Any event/Chest symptom/Specific details
+   */
   @Path("/items[at0153]")
   private List<Cluster> specificDetails;
 
+  /**
+   * open_eREACT-Care/Assessment/Covid/Covid symptoms/Any event/Chest symptom/Previous episodes
+   */
   @Path("/items[at0146]")
   private List<Cluster> previousEpisodes;
 
+  /**
+   * open_eREACT-Care/Assessment/Covid/Covid symptoms/Any event/Chest symptom/Associated symptom/sign
+   */
   @Path("/items[at0063]")
   private List<Cluster> associatedSymptomSign;
 
+  /**
+   * open_eREACT-Care/Assessment/Covid/Covid symptoms/Any event/Chest symptom/Presence
+   */
   @Path("/items[at0.1 and name/value='Presence']/value|defining_code")
   private PresenceDefiningCode presenceDefiningCode;
 

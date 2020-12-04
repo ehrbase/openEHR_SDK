@@ -6,6 +6,9 @@ import org.ehrbase.client.annotations.Path;
 
 @Entity
 public class GeschichteHistorieGeschichteElement {
+  /**
+   * Bericht/Geschichte/Historie/Beliebiges Ereignis/Geschichte
+   */
   @Path("/value|value")
   private String value;
 

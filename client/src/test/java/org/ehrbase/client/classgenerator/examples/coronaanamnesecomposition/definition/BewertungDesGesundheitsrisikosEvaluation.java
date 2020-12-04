@@ -13,42 +13,81 @@ import org.ehrbase.client.classgenerator.shareddefinition.Language;
 @Entity
 @Archetype("openEHR-EHR-EVALUATION.health_risk.v1")
 public class BewertungDesGesundheitsrisikosEvaluation {
+  /**
+   * Bericht/Allgemeine Angaben/Bewertung des Gesundheitsrisikos/Gesundheitsrisiko
+   */
   @Path("/data[at0001]/items[at0002]/value|value")
   private String gesundheitsrisikoValue;
 
+  /**
+   * Bericht/Allgemeine Angaben/Bewertung des Gesundheitsrisikos/Spezifischer Risikofaktor/Risikofaktor
+   */
   @Path("/data[at0001]/items[at0016 and name/value='Spezifischer Risikofaktor']/items[at0013]/value|value")
   private String spezifischerRisikofaktorRisikofaktorValue;
 
+  /**
+   * Bericht/Allgemeine Angaben/Bewertung des Gesundheitsrisikos/Spezifischer Risikofaktor/Vorhandensein
+   */
   @Path("/data[at0001]/items[at0016 and name/value='Spezifischer Risikofaktor']/items[at0017]/value|defining_code")
-  private VorhandenseinDefiningCode2 vorhandenseinDefiningCode;
+  private VorhandenseinDefiningCode2 spezifischerRisikofaktorVorhandenseinDefiningCode;
 
+  /**
+   * Bericht/Allgemeine Angaben/Bewertung des Gesundheitsrisikos/Spezifischer Risikofaktor/Details
+   */
   @Path("/data[at0001]/items[at0016 and name/value='Spezifischer Risikofaktor']/items[at0027]")
   private List<Cluster> spezifischerRisikofaktorDetails;
 
+  /**
+   * Bericht/Allgemeine Angaben/Bewertung des Gesundheitsrisikos/Andere Risikofaktoren/Risikofaktor
+   */
   @Path("/data[at0001]/items[at0016 and name/value='Andere Risikofaktoren']/items[at0013]/value|value")
   private String andereRisikofaktorenRisikofaktorValue;
 
+  /**
+   * Bericht/Allgemeine Angaben/Bewertung des Gesundheitsrisikos/Andere Risikofaktoren/Vorhandensein
+   */
   @Path("/data[at0001]/items[at0016 and name/value='Andere Risikofaktoren']/items[at0017]/value|defining_code")
-  private VorhandenseinDefiningCode2 vorhandenseinDefiningCode2;
+  private VorhandenseinDefiningCode2 andereRisikofaktorenVorhandenseinDefiningCode;
 
+  /**
+   * Bericht/Allgemeine Angaben/Bewertung des Gesundheitsrisikos/Andere Risikofaktoren/Details
+   */
   @Path("/data[at0001]/items[at0016 and name/value='Andere Risikofaktoren']/items[at0027]")
   private List<Cluster> andereRisikofaktorenDetails;
 
+  /**
+   * Bericht/Allgemeine Angaben/Bewertung des Gesundheitsrisikos/Risikobewertung
+   */
   @Path("/data[at0001]/items[at0003]/value|value")
   private String risikobewertungValue;
 
+  /**
+   * Bericht/Allgemeine Angaben/Bewertung des Gesundheitsrisikos/Letzte Aktualisierung
+   */
   @Path("/protocol[at0010]/items[at0024]/value|value")
   private TemporalAccessor letzteAktualisierungValue;
 
+  /**
+   * Bericht/Allgemeine Angaben/Bewertung des Gesundheitsrisikos/Bewertungsmethode
+   */
   @Path("/protocol[at0010]/items[at0025]/value|value")
   private String bewertungsmethodeValue;
 
+  /**
+   * Bericht/Allgemeine Angaben/Bewertung des Gesundheitsrisikos/Erweiterung
+   */
   @Path("/protocol[at0010]/items[at0011]")
   private List<Cluster> erweiterung;
 
+  /**
+   * Bericht/Allgemeine Angaben/Bewertung des Gesundheitsrisikos/subject
+   */
   @Path("/subject")
   private PartyProxy subject;
 
+  /**
+   * Bericht/Allgemeine Angaben/Bewertung des Gesundheitsrisikos/language
+   */
   @Path("/language")
   private Language language;
 
@@ -69,12 +108,13 @@ public class BewertungDesGesundheitsrisikosEvaluation {
      return this.spezifischerRisikofaktorRisikofaktorValue ;
   }
 
-  public void setVorhandenseinDefiningCode(VorhandenseinDefiningCode2 vorhandenseinDefiningCode) {
-     this.vorhandenseinDefiningCode = vorhandenseinDefiningCode;
+  public void setSpezifischerRisikofaktorVorhandenseinDefiningCode(
+      VorhandenseinDefiningCode2 spezifischerRisikofaktorVorhandenseinDefiningCode) {
+     this.spezifischerRisikofaktorVorhandenseinDefiningCode = spezifischerRisikofaktorVorhandenseinDefiningCode;
   }
 
-  public VorhandenseinDefiningCode2 getVorhandenseinDefiningCode() {
-     return this.vorhandenseinDefiningCode ;
+  public VorhandenseinDefiningCode2 getSpezifischerRisikofaktorVorhandenseinDefiningCode() {
+     return this.spezifischerRisikofaktorVorhandenseinDefiningCode ;
   }
 
   public void setSpezifischerRisikofaktorDetails(List<Cluster> spezifischerRisikofaktorDetails) {
@@ -94,12 +134,13 @@ public class BewertungDesGesundheitsrisikosEvaluation {
      return this.andereRisikofaktorenRisikofaktorValue ;
   }
 
-  public void setVorhandenseinDefiningCode2(VorhandenseinDefiningCode2 vorhandenseinDefiningCode2) {
-     this.vorhandenseinDefiningCode2 = vorhandenseinDefiningCode2;
+  public void setAndereRisikofaktorenVorhandenseinDefiningCode(
+      VorhandenseinDefiningCode2 andereRisikofaktorenVorhandenseinDefiningCode) {
+     this.andereRisikofaktorenVorhandenseinDefiningCode = andereRisikofaktorenVorhandenseinDefiningCode;
   }
 
-  public VorhandenseinDefiningCode2 getVorhandenseinDefiningCode2() {
-     return this.vorhandenseinDefiningCode2 ;
+  public VorhandenseinDefiningCode2 getAndereRisikofaktorenVorhandenseinDefiningCode() {
+     return this.andereRisikofaktorenVorhandenseinDefiningCode ;
   }
 
   public void setAndereRisikofaktorenDetails(List<Cluster> andereRisikofaktorenDetails) {

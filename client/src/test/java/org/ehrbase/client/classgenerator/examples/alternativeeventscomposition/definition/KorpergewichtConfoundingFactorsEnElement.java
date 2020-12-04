@@ -6,6 +6,9 @@ import org.ehrbase.client.annotations.Path;
 
 @Entity
 public class KorpergewichtConfoundingFactorsEnElement {
+  /**
+   * Bericht/Körpergewicht/*Birth(en)/*Confounding factors(en)
+   */
   @Path("/value|value")
   private String value;
 
