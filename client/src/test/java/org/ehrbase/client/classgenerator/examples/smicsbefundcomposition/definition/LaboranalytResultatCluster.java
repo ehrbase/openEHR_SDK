@@ -1,5 +1,6 @@
 package org.ehrbase.client.classgenerator.examples.smicsbefundcomposition.definition;
 
+import com.nedap.archie.rm.archetyped.FeederAudit;
 import com.nedap.archie.rm.datastructures.Cluster;
 import java.lang.Double;
 import java.lang.String;
@@ -47,6 +48,12 @@ public class LaboranalytResultatCluster {
   @Path("/items[at0003]/value|value")
   private String kommentarValue;
 
+  /**
+   * SmICS Befund/SmICS-Ergebnis/Jedes Ereignis/Eigenschaften des beteiligten Erregers/Erregerdetails/Antibiogramm/Laboranalyt-Resultat/feeder_audit
+   */
+  @Path("/feeder_audit")
+  private FeederAudit feederAudit;
+
   public void setAntibiotikumDefiningCode(AntibiotikumDefiningCode antibiotikumDefiningCode) {
      this.antibiotikumDefiningCode = antibiotikumDefiningCode;
   }
@@ -93,5 +100,13 @@ public class LaboranalytResultatCluster {
 
   public String getKommentarValue() {
      return this.kommentarValue ;
+  }
+
+  public void setFeederAudit(FeederAudit feederAudit) {
+     this.feederAudit = feederAudit;
+  }
+
+  public FeederAudit getFeederAudit() {
+     return this.feederAudit ;
   }
 }

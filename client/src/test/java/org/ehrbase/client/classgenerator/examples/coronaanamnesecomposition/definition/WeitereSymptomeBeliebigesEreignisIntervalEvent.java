@@ -1,5 +1,6 @@
 package org.ehrbase.client.classgenerator.examples.coronaanamnesecomposition.definition;
 
+import com.nedap.archie.rm.archetyped.FeederAudit;
 import java.time.temporal.TemporalAccessor;
 import java.time.temporal.TemporalAmount;
 import java.util.List;
@@ -16,6 +17,12 @@ public class WeitereSymptomeBeliebigesEreignisIntervalEvent implements WeitereSy
    */
   @Path("/data[at0003]/items[at0022]")
   private List<WeitereSymptomeSpezifischesSymptomAnzeichenCluster> spezifischesSymptomAnzeichen;
+
+  /**
+   * Bericht/Symptome/Weitere Symptome/Beliebiges Ereignis/feeder_audit
+   */
+  @Path("/feeder_audit")
+  private FeederAudit feederAudit;
 
   /**
    * Bericht/Symptome/Weitere Symptome/Beliebiges Ereignis/time
@@ -43,6 +50,14 @@ public class WeitereSymptomeBeliebigesEreignisIntervalEvent implements WeitereSy
   public List<WeitereSymptomeSpezifischesSymptomAnzeichenCluster> getSpezifischesSymptomAnzeichen(
       ) {
      return this.spezifischesSymptomAnzeichen ;
+  }
+
+  public void setFeederAudit(FeederAudit feederAudit) {
+     this.feederAudit = feederAudit;
+  }
+
+  public FeederAudit getFeederAudit() {
+     return this.feederAudit ;
   }
 
   public void setTimeValue(TemporalAccessor timeValue) {

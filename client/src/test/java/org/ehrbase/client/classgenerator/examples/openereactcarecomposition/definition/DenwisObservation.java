@@ -1,5 +1,6 @@
 package org.ehrbase.client.classgenerator.examples.openereactcarecomposition.definition;
 
+import com.nedap.archie.rm.archetyped.FeederAudit;
 import com.nedap.archie.rm.datastructures.Cluster;
 import com.nedap.archie.rm.datastructures.ItemTree;
 import com.nedap.archie.rm.datavalues.quantity.DvOrdinal;
@@ -171,6 +172,12 @@ public class DenwisObservation {
    */
   @Path("/language")
   private Language language;
+
+  /**
+   * open_eREACT-Care/Assessment/DENWIS/feeder_audit
+   */
+  @Path("/feeder_audit")
+  private FeederAudit feederAudit;
 
   public void setQ1Breathing(DvOrdinal q1Breathing) {
      this.q1Breathing = q1Breathing;
@@ -381,5 +388,13 @@ public class DenwisObservation {
 
   public Language getLanguage() {
      return this.language ;
+  }
+
+  public void setFeederAudit(FeederAudit feederAudit) {
+     this.feederAudit = feederAudit;
+  }
+
+  public FeederAudit getFeederAudit() {
+     return this.feederAudit ;
   }
 }

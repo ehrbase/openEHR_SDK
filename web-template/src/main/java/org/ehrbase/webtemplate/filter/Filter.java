@@ -51,26 +51,29 @@ public class Filter implements WebTemplateFilter {
     @Override
     public FilteredWebTemplate filter(WebTemplate webTemplate) {
         FilteredWebTemplate clone = new FilteredWebTemplate(webTemplate);
-        Pair<List<WebTemplateNode>, Map<Pair<String,String>, Deque<WebTemplateNode>>> filter = filter(clone.getTree(), webTemplate, null);
+        Pair<List<WebTemplateNode>, Map<Pair<String,String>, Deque<WebTemplateNode>>> filter = filter(clone.getTree(), webTemplate, new ArrayDeque<>());
         clone.setTree(filter.getLeft().get(0));
         clone.setFilteredNodeMap(filter.getRight());
 
         return clone;
     }
 
-    protected Pair< List<WebTemplateNode>, Map<Pair<String,String>, Deque<WebTemplateNode>> > filter(WebTemplateNode node, WebTemplate context, WebTemplateNode parent) {
-      WebTemplateNode oldNode = new WebTemplateNode(node);
+    protected Pair< List<WebTemplateNode>, Map<Pair<String,String>, Deque<WebTemplateNode>> > filter(WebTemplateNode node, WebTemplate context, Deque<WebTemplateNode> deque) {
+
+        WebTemplateNode oldNode = new WebTemplateNode(node);
        preHandle(node);
         List<WebTemplateNode> nodes;
         List<WebTemplateNode>  filteredChildren = new ArrayList<>();
         Map<Pair<String,String>,Deque<WebTemplateNode> > nodeMap = new HashMap<>();
-       node.getChildren().stream().map(n -> filter(n, context, node)).forEach(p -> {
+        deque.push(node);
+       node.getChildren().stream().map(n -> filter(n, context, deque)).forEach(p -> {
            filteredChildren.addAll(p.getLeft());
            nodeMap.putAll(p.getRight());
        });
+       deque.poll();
         node.getChildren().clear();
         node.getChildren().addAll(filteredChildren);
-        if (skip(node, context, parent)) {
+        if (skip(node, context, deque)) {
             nodes = filteredChildren;
            for( WebTemplateNode child: filteredChildren){
                nodeMap.get(new ImmutablePair<>(child.getAqlPath(),child.getRmType())).addLast(oldNode);
@@ -101,7 +104,8 @@ public class Filter implements WebTemplateFilter {
         }
     }
 
-    protected boolean skip(WebTemplateNode node, WebTemplate context, WebTemplateNode parent) {
+    protected boolean skip(WebTemplateNode node, WebTemplate context, Deque<WebTemplateNode> deque ) {
+        WebTemplateNode parent = deque.peek();
         if (node.isArchetypeSlot()){
             return true;
         }

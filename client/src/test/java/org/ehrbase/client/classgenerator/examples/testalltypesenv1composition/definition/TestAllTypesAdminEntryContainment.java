@@ -1,5 +1,6 @@
 package org.ehrbase.client.classgenerator.examples.testalltypesenv1composition.definition;
 
+import com.nedap.archie.rm.archetyped.FeederAudit;
 import com.nedap.archie.rm.generic.PartyProxy;
 import java.lang.Long;
 import org.ehrbase.client.aql.containment.Containment;
@@ -15,6 +16,8 @@ public class TestAllTypesAdminEntryContainment extends Containment {
   public SelectAqlField<PartyProxy> SUBJECT = new AqlFieldImp<PartyProxy>(TestAllTypesAdminEntry.class, "/subject", "subject", PartyProxy.class, this);
 
   public SelectAqlField<Language> LANGUAGE = new AqlFieldImp<Language>(TestAllTypesAdminEntry.class, "/language", "language", Language.class, this);
+
+  public SelectAqlField<FeederAudit> FEEDER_AUDIT = new AqlFieldImp<FeederAudit>(TestAllTypesAdminEntry.class, "/feeder_audit", "feederAudit", FeederAudit.class, this);
 
   private TestAllTypesAdminEntryContainment() {
     super("openEHR-EHR-ADMIN_ENTRY.test_all_types.v1");

@@ -1,5 +1,6 @@
 package org.ehrbase.client.classgenerator.examples.diagnosecomposition.definition;
 
+import com.nedap.archie.rm.archetyped.FeederAudit;
 import java.util.List;
 import org.ehrbase.client.annotations.Archetype;
 import org.ehrbase.client.annotations.Entity;
@@ -20,6 +21,12 @@ public class AtiopathogeneseCluster {
   @Path("/items[at0017]")
   private List<AtiopathogeneseBeschreibungDesEntstehensElement> beschreibungDesEntstehens;
 
+  /**
+   * COVID-19-Diagnose/Problem/Diagnose/Ätiopathogenese/feeder_audit
+   */
+  @Path("/feeder_audit")
+  private FeederAudit feederAudit;
+
   public void setAtiologieDerKrankheit(
       List<AtiopathogeneseAtiologieDerKrankheitElement> atiologieDerKrankheit) {
      this.atiologieDerKrankheit = atiologieDerKrankheit;
@@ -36,5 +43,13 @@ public class AtiopathogeneseCluster {
 
   public List<AtiopathogeneseBeschreibungDesEntstehensElement> getBeschreibungDesEntstehens() {
      return this.beschreibungDesEntstehens ;
+  }
+
+  public void setFeederAudit(FeederAudit feederAudit) {
+     this.feederAudit = feederAudit;
+  }
+
+  public FeederAudit getFeederAudit() {
+     return this.feederAudit ;
   }
 }

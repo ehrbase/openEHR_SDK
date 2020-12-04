@@ -1,5 +1,6 @@
 package org.ehrbase.client.classgenerator.examples.testalltypesenv1composition.definition;
 
+import com.nedap.archie.rm.archetyped.FeederAudit;
 import com.nedap.archie.rm.datavalues.encapsulated.DvParsable;
 import com.nedap.archie.rm.generic.PartyProxy;
 import java.lang.String;
@@ -48,6 +49,12 @@ public class TestAllTypesInstruction {
    */
   @Path("/language")
   private Language language;
+
+  /**
+   * Test all types/Test all types/section 2/section 3/Test all types/feeder_audit
+   */
+  @Path("/feeder_audit")
+  private FeederAudit feederAudit;
 
   /**
    * Test all types/Test all types/section 2/section 3/Test all types/expiry_time
@@ -101,6 +108,14 @@ public class TestAllTypesInstruction {
 
   public Language getLanguage() {
      return this.language ;
+  }
+
+  public void setFeederAudit(FeederAudit feederAudit) {
+     this.feederAudit = feederAudit;
+  }
+
+  public FeederAudit getFeederAudit() {
+     return this.feederAudit ;
   }
 
   public void setExpiryTimeValue(TemporalAccessor expiryTimeValue) {

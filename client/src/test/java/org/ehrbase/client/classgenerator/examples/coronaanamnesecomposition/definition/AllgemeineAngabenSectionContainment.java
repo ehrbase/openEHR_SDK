@@ -1,5 +1,6 @@
 package org.ehrbase.client.classgenerator.examples.coronaanamnesecomposition.definition;
 
+import com.nedap.archie.rm.archetyped.FeederAudit;
 import org.ehrbase.client.aql.containment.Containment;
 import org.ehrbase.client.aql.field.AqlFieldImp;
 import org.ehrbase.client.aql.field.ListAqlFieldImp;
@@ -26,6 +27,8 @@ public class AllgemeineAngabenSectionContainment extends Containment {
   public SelectAqlField<ProblemDiganoseCoronovirusEvaluation> PROBLEM_DIGANOSE_CORONOVIRUS = new AqlFieldImp<ProblemDiganoseCoronovirusEvaluation>(AllgemeineAngabenSection.class, "/items[openEHR-EHR-EVALUATION.problem_diagnosis_covid.v1]", "problemDiganoseCoronovirus", ProblemDiganoseCoronovirusEvaluation.class, this);
 
   public ListSelectAqlField<DienstleistungInstruction> DIENSTLEISTUNG = new ListAqlFieldImp<DienstleistungInstruction>(AllgemeineAngabenSection.class, "/items[openEHR-EHR-INSTRUCTION.service_request.v1]", "dienstleistung", DienstleistungInstruction.class, this);
+
+  public SelectAqlField<FeederAudit> FEEDER_AUDIT = new AqlFieldImp<FeederAudit>(AllgemeineAngabenSection.class, "/feeder_audit", "feederAudit", FeederAudit.class, this);
 
   private AllgemeineAngabenSectionContainment() {
     super("openEHR-EHR-SECTION.adhoc.v1");

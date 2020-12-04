@@ -1,5 +1,6 @@
 package org.ehrbase.client.classgenerator.examples.openereactcarecomposition.definition;
 
+import com.nedap.archie.rm.archetyped.FeederAudit;
 import org.ehrbase.client.annotations.Archetype;
 import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.Path;
@@ -31,6 +32,12 @@ public class AssessmentSection {
   @Path("/items[openEHR-EHR-SECTION.adhoc.v1 and name/value='NEWS2']")
   private News2Section news2;
 
+  /**
+   * open_eREACT-Care/Assessment/feeder_audit
+   */
+  @Path("/feeder_audit")
+  private FeederAudit feederAudit;
+
   public void setDenwis(DenwisObservation denwis) {
      this.denwis = denwis;
   }
@@ -61,5 +68,13 @@ public class AssessmentSection {
 
   public News2Section getNews2() {
      return this.news2 ;
+  }
+
+  public void setFeederAudit(FeederAudit feederAudit) {
+     this.feederAudit = feederAudit;
+  }
+
+  public FeederAudit getFeederAudit() {
+     return this.feederAudit ;
   }
 }

@@ -1,5 +1,6 @@
 package org.ehrbase.client.classgenerator.examples.coronaanamnesecomposition.definition;
 
+import com.nedap.archie.rm.archetyped.FeederAudit;
 import com.nedap.archie.rm.datastructures.Cluster;
 import com.nedap.archie.rm.datavalues.encapsulated.DvParsable;
 import java.lang.String;
@@ -50,6 +51,12 @@ public class DienstleistungAktuelleAktivitatActivity {
    */
   @Path("/timing")
   private DvParsable timing;
+
+  /**
+   * Bericht/Allgemeine Angaben/Dienstleistung/Aktuelle Aktivität/feeder_audit
+   */
+  @Path("/feeder_audit")
+  private FeederAudit feederAudit;
 
   public void setNameDerDienstleistungValue(String nameDerDienstleistungValue) {
      this.nameDerDienstleistungValue = nameDerDienstleistungValue;
@@ -106,5 +113,13 @@ public class DienstleistungAktuelleAktivitatActivity {
 
   public DvParsable getTiming() {
      return this.timing ;
+  }
+
+  public void setFeederAudit(FeederAudit feederAudit) {
+     this.feederAudit = feederAudit;
+  }
+
+  public FeederAudit getFeederAudit() {
+     return this.feederAudit ;
   }
 }

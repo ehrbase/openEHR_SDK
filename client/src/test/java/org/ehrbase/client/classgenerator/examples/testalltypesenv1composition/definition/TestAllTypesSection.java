@@ -1,5 +1,6 @@
 package org.ehrbase.client.classgenerator.examples.testalltypesenv1composition.definition;
 
+import com.nedap.archie.rm.archetyped.FeederAudit;
 import java.util.List;
 import org.ehrbase.client.annotations.Archetype;
 import org.ehrbase.client.annotations.Entity;
@@ -26,6 +27,12 @@ public class TestAllTypesSection {
   @Path("/items[at0001]/items[openEHR-EHR-ADMIN_ENTRY.test_all_types.v1]")
   private List<TestAllTypesAdminEntry> section2TestAllTypes;
 
+  /**
+   * Test all types/Test all types/feeder_audit
+   */
+  @Path("/feeder_audit")
+  private FeederAudit feederAudit;
+
   public void setSection3TestAllTypes(List<TestAllTypesInstruction> section3TestAllTypes) {
      this.section3TestAllTypes = section3TestAllTypes;
   }
@@ -48,5 +55,13 @@ public class TestAllTypesSection {
 
   public List<TestAllTypesAdminEntry> getSection2TestAllTypes() {
      return this.section2TestAllTypes ;
+  }
+
+  public void setFeederAudit(FeederAudit feederAudit) {
+     this.feederAudit = feederAudit;
+  }
+
+  public FeederAudit getFeederAudit() {
+     return this.feederAudit ;
   }
 }

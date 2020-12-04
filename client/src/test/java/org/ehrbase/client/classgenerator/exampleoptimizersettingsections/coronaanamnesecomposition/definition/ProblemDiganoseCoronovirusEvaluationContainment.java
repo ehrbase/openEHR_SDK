@@ -1,5 +1,6 @@
 package org.ehrbase.client.classgenerator.exampleoptimizersettingsections.coronaanamnesecomposition.definition;
 
+import com.nedap.archie.rm.archetyped.FeederAudit;
 import com.nedap.archie.rm.datastructures.Cluster;
 import com.nedap.archie.rm.generic.PartyProxy;
 import java.lang.String;
@@ -31,6 +32,8 @@ public class ProblemDiganoseCoronovirusEvaluationContainment extends Containment
   public SelectAqlField<PartyProxy> SUBJECT = new AqlFieldImp<PartyProxy>(ProblemDiganoseCoronovirusEvaluation.class, "/subject", "subject", PartyProxy.class, this);
 
   public SelectAqlField<Language> LANGUAGE = new AqlFieldImp<Language>(ProblemDiganoseCoronovirusEvaluation.class, "/language", "language", Language.class, this);
+
+  public SelectAqlField<FeederAudit> FEEDER_AUDIT = new AqlFieldImp<FeederAudit>(ProblemDiganoseCoronovirusEvaluation.class, "/feeder_audit", "feederAudit", FeederAudit.class, this);
 
   public SelectAqlField<ProblemDiganoseCoronovirusDiagnostischeSicherheitChoice> DIAGNOSTISCHE_SICHERHEIT = new AqlFieldImp<ProblemDiganoseCoronovirusDiagnostischeSicherheitChoice>(ProblemDiganoseCoronovirusEvaluation.class, "/data[at0001]/items[at0073]/value", "diagnostischeSicherheit", ProblemDiganoseCoronovirusDiagnostischeSicherheitChoice.class, this);
 

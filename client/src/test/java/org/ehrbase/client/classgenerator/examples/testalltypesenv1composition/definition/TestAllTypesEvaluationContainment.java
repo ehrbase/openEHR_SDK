@@ -1,5 +1,6 @@
 package org.ehrbase.client.classgenerator.examples.testalltypesenv1composition.definition;
 
+import com.nedap.archie.rm.archetyped.FeederAudit;
 import com.nedap.archie.rm.generic.PartyProxy;
 import java.lang.Boolean;
 import java.lang.Double;
@@ -50,6 +51,8 @@ public class TestAllTypesEvaluationContainment extends Containment {
   public SelectAqlField<PartyProxy> SUBJECT = new AqlFieldImp<PartyProxy>(TestAllTypesEvaluation.class, "/subject", "subject", PartyProxy.class, this);
 
   public SelectAqlField<Language> LANGUAGE = new AqlFieldImp<Language>(TestAllTypesEvaluation.class, "/language", "language", Language.class, this);
+
+  public SelectAqlField<FeederAudit> FEEDER_AUDIT = new AqlFieldImp<FeederAudit>(TestAllTypesEvaluation.class, "/feeder_audit", "feederAudit", FeederAudit.class, this);
 
   public SelectAqlField<TestAllTypesChoiceChoice> CHOICE = new AqlFieldImp<TestAllTypesChoiceChoice>(TestAllTypesEvaluation.class, "/data[at0001]/items[at0009]/value", "choice", TestAllTypesChoiceChoice.class, this);
 

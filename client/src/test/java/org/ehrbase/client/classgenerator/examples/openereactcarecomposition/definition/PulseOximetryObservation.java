@@ -1,5 +1,6 @@
 package org.ehrbase.client.classgenerator.examples.openereactcarecomposition.definition;
 
+import com.nedap.archie.rm.archetyped.FeederAudit;
 import com.nedap.archie.rm.datastructures.Cluster;
 import com.nedap.archie.rm.datavalues.quantity.DvProportion;
 import com.nedap.archie.rm.generic.PartyProxy;
@@ -78,6 +79,12 @@ public class PulseOximetryObservation {
    */
   @Path("/language")
   private Language language;
+
+  /**
+   * open_eREACT-Care/Assessment/NEWS2/Pulse oximetry/feeder_audit
+   */
+  @Path("/feeder_audit")
+  private FeederAudit feederAudit;
 
   public void setSpo(DvProportion spo) {
      this.spo = spo;
@@ -165,5 +172,13 @@ public class PulseOximetryObservation {
 
   public Language getLanguage() {
      return this.language ;
+  }
+
+  public void setFeederAudit(FeederAudit feederAudit) {
+     this.feederAudit = feederAudit;
+  }
+
+  public FeederAudit getFeederAudit() {
+     return this.feederAudit ;
   }
 }

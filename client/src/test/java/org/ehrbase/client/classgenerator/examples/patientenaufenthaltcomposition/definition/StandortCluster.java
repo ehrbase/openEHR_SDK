@@ -1,5 +1,6 @@
 package org.ehrbase.client.classgenerator.examples.patientenaufenthaltcomposition.definition;
 
+import com.nedap.archie.rm.archetyped.FeederAudit;
 import java.lang.String;
 import org.ehrbase.client.annotations.Archetype;
 import org.ehrbase.client.annotations.Entity;
@@ -67,6 +68,12 @@ public class StandortCluster {
    */
   @Path("/items[openEHR-EHR-CLUSTER.device.v1 and name/value='Details zum Bett']")
   private DetailsZumBettCluster detailsZumBett;
+
+  /**
+   * Patientenaufenthalt/Versorgungsort/Standort/feeder_audit
+   */
+  @Path("/feeder_audit")
+  private FeederAudit feederAudit;
 
   public void setStandorttypValue(String standorttypValue) {
      this.standorttypValue = standorttypValue;
@@ -147,5 +154,13 @@ public class StandortCluster {
 
   public DetailsZumBettCluster getDetailsZumBett() {
      return this.detailsZumBett ;
+  }
+
+  public void setFeederAudit(FeederAudit feederAudit) {
+     this.feederAudit = feederAudit;
+  }
+
+  public FeederAudit getFeederAudit() {
+     return this.feederAudit ;
   }
 }

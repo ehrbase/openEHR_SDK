@@ -1,5 +1,6 @@
 package org.ehrbase.client.classgenerator.examples.stationarerversorgungsfallcomposition.definition;
 
+import com.nedap.archie.rm.archetyped.FeederAudit;
 import com.nedap.archie.rm.datastructures.Cluster;
 import com.nedap.archie.rm.generic.PartyProxy;
 import java.lang.String;
@@ -27,6 +28,8 @@ public class AufnahmedatenAdminEntryContainment extends Containment {
   public SelectAqlField<PartyProxy> SUBJECT = new AqlFieldImp<PartyProxy>(AufnahmedatenAdminEntry.class, "/subject", "subject", PartyProxy.class, this);
 
   public SelectAqlField<Language> LANGUAGE = new AqlFieldImp<Language>(AufnahmedatenAdminEntry.class, "/language", "language", Language.class, this);
+
+  public SelectAqlField<FeederAudit> FEEDER_AUDIT = new AqlFieldImp<FeederAudit>(AufnahmedatenAdminEntry.class, "/feeder_audit", "feederAudit", FeederAudit.class, this);
 
   private AufnahmedatenAdminEntryContainment() {
     super("openEHR-EHR-ADMIN_ENTRY.admission.v0");

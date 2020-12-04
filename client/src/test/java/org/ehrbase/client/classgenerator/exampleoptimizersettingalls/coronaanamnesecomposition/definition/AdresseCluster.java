@@ -1,5 +1,6 @@
 package org.ehrbase.client.classgenerator.exampleoptimizersettingalls.coronaanamnesecomposition.definition;
 
+import com.nedap.archie.rm.archetyped.FeederAudit;
 import java.lang.String;
 import org.ehrbase.client.annotations.Archetype;
 import org.ehrbase.client.annotations.Entity;
@@ -20,6 +21,12 @@ public class AdresseCluster {
   @Path("/items[at0015]/value|value")
   private String landValue;
 
+  /**
+   * Bericht/Allgemeine Angaben/Gesundheitsbezogener Beruf/Beschäftigung/Organisation/Adresse/feeder_audit
+   */
+  @Path("/feeder_audit")
+  private FeederAudit feederAudit;
+
   public void setStadtValue(String stadtValue) {
      this.stadtValue = stadtValue;
   }
@@ -34,5 +41,13 @@ public class AdresseCluster {
 
   public String getLandValue() {
      return this.landValue ;
+  }
+
+  public void setFeederAudit(FeederAudit feederAudit) {
+     this.feederAudit = feederAudit;
+  }
+
+  public FeederAudit getFeederAudit() {
+     return this.feederAudit ;
   }
 }

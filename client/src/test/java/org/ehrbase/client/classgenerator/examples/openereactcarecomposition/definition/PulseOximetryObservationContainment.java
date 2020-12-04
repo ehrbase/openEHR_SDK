@@ -1,5 +1,6 @@
 package org.ehrbase.client.classgenerator.examples.openereactcarecomposition.definition;
 
+import com.nedap.archie.rm.archetyped.FeederAudit;
 import com.nedap.archie.rm.datastructures.Cluster;
 import com.nedap.archie.rm.datavalues.quantity.DvProportion;
 import com.nedap.archie.rm.generic.PartyProxy;
@@ -35,6 +36,8 @@ public class PulseOximetryObservationContainment extends Containment {
   public SelectAqlField<PartyProxy> SUBJECT = new AqlFieldImp<PartyProxy>(PulseOximetryObservation.class, "/subject", "subject", PartyProxy.class, this);
 
   public SelectAqlField<Language> LANGUAGE = new AqlFieldImp<Language>(PulseOximetryObservation.class, "/language", "language", Language.class, this);
+
+  public SelectAqlField<FeederAudit> FEEDER_AUDIT = new AqlFieldImp<FeederAudit>(PulseOximetryObservation.class, "/feeder_audit", "feederAudit", FeederAudit.class, this);
 
   private PulseOximetryObservationContainment() {
     super("openEHR-EHR-OBSERVATION.pulse_oximetry.v1");

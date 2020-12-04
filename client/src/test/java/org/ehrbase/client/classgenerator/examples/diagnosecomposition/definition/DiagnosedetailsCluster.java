@@ -1,5 +1,6 @@
 package org.ehrbase.client.classgenerator.examples.diagnosecomposition.definition;
 
+import com.nedap.archie.rm.archetyped.FeederAudit;
 import java.lang.Boolean;
 import java.lang.String;
 import org.ehrbase.client.annotations.Archetype;
@@ -33,6 +34,12 @@ public class DiagnosedetailsCluster {
   @Path("/items[at0017]/value|value")
   private Boolean vorhandenBeiEntlassungValue;
 
+  /**
+   * COVID-19-Diagnose/Problem/Diagnose/Diagnosedetails/feeder_audit
+   */
+  @Path("/feeder_audit")
+  private FeederAudit feederAudit;
+
   public void setBegrundungVonAusnahmenValue(String begrundungVonAusnahmenValue) {
      this.begrundungVonAusnahmenValue = begrundungVonAusnahmenValue;
   }
@@ -63,5 +70,13 @@ public class DiagnosedetailsCluster {
 
   public Boolean isVorhandenBeiEntlassungValue() {
      return this.vorhandenBeiEntlassungValue ;
+  }
+
+  public void setFeederAudit(FeederAudit feederAudit) {
+     this.feederAudit = feederAudit;
+  }
+
+  public FeederAudit getFeederAudit() {
+     return this.feederAudit ;
   }
 }

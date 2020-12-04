@@ -1,5 +1,6 @@
 package org.ehrbase.client.classgenerator.examples.episodeofcarecomposition.definition;
 
+import com.nedap.archie.rm.archetyped.FeederAudit;
 import com.nedap.archie.rm.datavalues.DvEHRURI;
 import java.lang.Long;
 import java.lang.String;
@@ -26,6 +27,12 @@ public class EpisodeofcareDiagnosisCluster {
   @Path("/items[at0021]/value|magnitude")
   private Long rankMagnitude;
 
+  /**
+   * EpisodeOfCare/Episodeofcare/diagnosis/feeder_audit
+   */
+  @Path("/feeder_audit")
+  private FeederAudit feederAudit;
+
   public void setDiagnosisEntry(DvEHRURI diagnosisEntry) {
      this.diagnosisEntry = diagnosisEntry;
   }
@@ -48,5 +55,13 @@ public class EpisodeofcareDiagnosisCluster {
 
   public Long getRankMagnitude() {
      return this.rankMagnitude ;
+  }
+
+  public void setFeederAudit(FeederAudit feederAudit) {
+     this.feederAudit = feederAudit;
+  }
+
+  public FeederAudit getFeederAudit() {
+     return this.feederAudit ;
   }
 }

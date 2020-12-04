@@ -1,5 +1,6 @@
 package org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1composition.definition;
 
+import com.nedap.archie.rm.archetyped.FeederAudit;
 import com.nedap.archie.rm.datastructures.Cluster;
 import com.nedap.archie.rm.generic.PartyProxy;
 import java.time.temporal.TemporalAccessor;
@@ -48,6 +49,12 @@ public class BodyTemperatureObservation {
    */
   @Path("/language")
   private Language language;
+
+  /**
+   * Encounter/Body temperature/feeder_audit
+   */
+  @Path("/feeder_audit")
+  private FeederAudit feederAudit;
 
   /**
    * Encounter/Body temperature/value
@@ -109,6 +116,14 @@ public class BodyTemperatureObservation {
 
   public Language getLanguage() {
      return this.language ;
+  }
+
+  public void setFeederAudit(FeederAudit feederAudit) {
+     this.feederAudit = feederAudit;
+  }
+
+  public FeederAudit getFeederAudit() {
+     return this.feederAudit ;
   }
 
   public void setLocationOfMeasurement(

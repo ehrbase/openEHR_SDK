@@ -1,5 +1,6 @@
 package org.ehrbase.client.classgenerator.examples.openereactcarecomposition.definition;
 
+import com.nedap.archie.rm.archetyped.FeederAudit;
 import com.nedap.archie.rm.datastructures.Cluster;
 import java.lang.String;
 import java.util.List;
@@ -45,6 +46,12 @@ public class OtherSymptomCluster {
    */
   @Path("/items[at0.1 and name/value='Presence']/value|defining_code")
   private PresenceDefiningCode presenceDefiningCode;
+
+  /**
+   * open_eREACT-Care/Assessment/Covid/Covid symptoms/Any event/Other symptom/feeder_audit
+   */
+  @Path("/feeder_audit")
+  private FeederAudit feederAudit;
 
   public void setSymptomSignNameValue(String symptomSignNameValue) {
      this.symptomSignNameValue = symptomSignNameValue;
@@ -92,5 +99,13 @@ public class OtherSymptomCluster {
 
   public PresenceDefiningCode getPresenceDefiningCode() {
      return this.presenceDefiningCode ;
+  }
+
+  public void setFeederAudit(FeederAudit feederAudit) {
+     this.feederAudit = feederAudit;
+  }
+
+  public FeederAudit getFeederAudit() {
+     return this.feederAudit ;
   }
 }

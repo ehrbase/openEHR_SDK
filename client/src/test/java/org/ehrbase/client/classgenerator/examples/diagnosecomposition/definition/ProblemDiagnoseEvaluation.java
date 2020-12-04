@@ -1,5 +1,6 @@
 package org.ehrbase.client.classgenerator.examples.diagnosecomposition.definition;
 
+import com.nedap.archie.rm.archetyped.FeederAudit;
 import com.nedap.archie.rm.datastructures.Cluster;
 import com.nedap.archie.rm.generic.PartyProxy;
 import java.lang.String;
@@ -103,6 +104,12 @@ public class ProblemDiagnoseEvaluation {
    */
   @Path("/language")
   private Language language;
+
+  /**
+   * COVID-19-Diagnose/Problem/Diagnose/feeder_audit
+   */
+  @Path("/feeder_audit")
+  private FeederAudit feederAudit;
 
   /**
    * COVID-19-Diagnose/Problem/Diagnose/value
@@ -239,6 +246,14 @@ public class ProblemDiagnoseEvaluation {
 
   public Language getLanguage() {
      return this.language ;
+  }
+
+  public void setFeederAudit(FeederAudit feederAudit) {
+     this.feederAudit = feederAudit;
+  }
+
+  public FeederAudit getFeederAudit() {
+     return this.feederAudit ;
   }
 
   public void setDiagnostischeSicherheit(

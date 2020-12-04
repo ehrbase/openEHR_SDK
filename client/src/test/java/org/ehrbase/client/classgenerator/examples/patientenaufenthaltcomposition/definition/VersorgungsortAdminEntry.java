@@ -1,5 +1,6 @@
 package org.ehrbase.client.classgenerator.examples.patientenaufenthaltcomposition.definition;
 
+import com.nedap.archie.rm.archetyped.FeederAudit;
 import com.nedap.archie.rm.generic.PartyProxy;
 import java.lang.String;
 import java.time.temporal.TemporalAccessor;
@@ -52,6 +53,12 @@ public class VersorgungsortAdminEntry {
    */
   @Path("/language")
   private Language language;
+
+  /**
+   * Patientenaufenthalt/Versorgungsort/feeder_audit
+   */
+  @Path("/feeder_audit")
+  private FeederAudit feederAudit;
 
   public void setBeginnValue(TemporalAccessor beginnValue) {
      this.beginnValue = beginnValue;
@@ -107,5 +114,13 @@ public class VersorgungsortAdminEntry {
 
   public Language getLanguage() {
      return this.language ;
+  }
+
+  public void setFeederAudit(FeederAudit feederAudit) {
+     this.feederAudit = feederAudit;
+  }
+
+  public FeederAudit getFeederAudit() {
+     return this.feederAudit ;
   }
 }

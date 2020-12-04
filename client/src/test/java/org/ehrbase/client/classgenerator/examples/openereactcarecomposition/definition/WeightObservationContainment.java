@@ -1,5 +1,6 @@
 package org.ehrbase.client.classgenerator.examples.openereactcarecomposition.definition;
 
+import com.nedap.archie.rm.archetyped.FeederAudit;
 import com.nedap.archie.rm.datastructures.Cluster;
 import com.nedap.archie.rm.datastructures.ItemTree;
 import com.nedap.archie.rm.generic.PartyProxy;
@@ -33,6 +34,8 @@ public class WeightObservationContainment extends Containment {
   public SelectAqlField<PartyProxy> SUBJECT = new AqlFieldImp<PartyProxy>(WeightObservation.class, "/subject", "subject", PartyProxy.class, this);
 
   public SelectAqlField<Language> LANGUAGE = new AqlFieldImp<Language>(WeightObservation.class, "/language", "language", Language.class, this);
+
+  public SelectAqlField<FeederAudit> FEEDER_AUDIT = new AqlFieldImp<FeederAudit>(WeightObservation.class, "/feeder_audit", "feederAudit", FeederAudit.class, this);
 
   private WeightObservationContainment() {
     super("openEHR-EHR-OBSERVATION.body_weight.v2");

@@ -1,5 +1,6 @@
 package org.ehrbase.client.classgenerator.exampleoptimizersettingsections.coronaanamnesecomposition.definition;
 
+import com.nedap.archie.rm.archetyped.FeederAudit;
 import com.nedap.archie.rm.datastructures.Cluster;
 import com.nedap.archie.rm.datavalues.DvCodedText;
 import com.nedap.archie.rm.generic.PartyProxy;
@@ -67,6 +68,12 @@ public class FragebogenZumMedikationsScreeningObservation {
    */
   @Path("/language")
   private Language language;
+
+  /**
+   * Bericht/Allgemeine Angaben/Fragebogen zum Medikations-Screening/feeder_audit
+   */
+  @Path("/feeder_audit")
+  private FeederAudit feederAudit;
 
   public void setMedikamenteInVerwendung(DvCodedText medikamenteInVerwendung) {
      this.medikamenteInVerwendung = medikamenteInVerwendung;
@@ -142,5 +149,13 @@ public class FragebogenZumMedikationsScreeningObservation {
 
   public Language getLanguage() {
      return this.language ;
+  }
+
+  public void setFeederAudit(FeederAudit feederAudit) {
+     this.feederAudit = feederAudit;
+  }
+
+  public FeederAudit getFeederAudit() {
+     return this.feederAudit ;
   }
 }

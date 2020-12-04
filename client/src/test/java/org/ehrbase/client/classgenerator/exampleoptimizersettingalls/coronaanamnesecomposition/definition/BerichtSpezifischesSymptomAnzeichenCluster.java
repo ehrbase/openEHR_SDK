@@ -1,5 +1,6 @@
 package org.ehrbase.client.classgenerator.exampleoptimizersettingalls.coronaanamnesecomposition.definition;
 
+import com.nedap.archie.rm.archetyped.FeederAudit;
 import com.nedap.archie.rm.datastructures.Cluster;
 import java.lang.String;
 import java.util.List;
@@ -31,6 +32,12 @@ public class BerichtSpezifischesSymptomAnzeichenCluster {
    */
   @Path("/items[at0035]/value|value")
   private String kommentarValue;
+
+  /**
+   * Bericht/Beliebiges Ereignis/Spezifisches Symptom/Anzeichen/feeder_audit
+   */
+  @Path("/feeder_audit")
+  private FeederAudit feederAudit;
 
   public void setBezeichnungDesSymptomsOderAnzeichensValue(
       String bezeichnungDesSymptomsOderAnzeichensValue) {
@@ -64,5 +71,13 @@ public class BerichtSpezifischesSymptomAnzeichenCluster {
 
   public String getKommentarValue() {
      return this.kommentarValue ;
+  }
+
+  public void setFeederAudit(FeederAudit feederAudit) {
+     this.feederAudit = feederAudit;
+  }
+
+  public FeederAudit getFeederAudit() {
+     return this.feederAudit ;
   }
 }

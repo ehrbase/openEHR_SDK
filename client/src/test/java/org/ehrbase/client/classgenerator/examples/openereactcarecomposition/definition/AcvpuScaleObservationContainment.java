@@ -1,5 +1,6 @@
 package org.ehrbase.client.classgenerator.examples.openereactcarecomposition.definition;
 
+import com.nedap.archie.rm.archetyped.FeederAudit;
 import com.nedap.archie.rm.datastructures.Cluster;
 import com.nedap.archie.rm.datastructures.ItemTree;
 import com.nedap.archie.rm.generic.PartyProxy;
@@ -27,6 +28,8 @@ public class AcvpuScaleObservationContainment extends Containment {
   public SelectAqlField<PartyProxy> SUBJECT = new AqlFieldImp<PartyProxy>(AcvpuScaleObservation.class, "/subject", "subject", PartyProxy.class, this);
 
   public SelectAqlField<Language> LANGUAGE = new AqlFieldImp<Language>(AcvpuScaleObservation.class, "/language", "language", Language.class, this);
+
+  public SelectAqlField<FeederAudit> FEEDER_AUDIT = new AqlFieldImp<FeederAudit>(AcvpuScaleObservation.class, "/feeder_audit", "feederAudit", FeederAudit.class, this);
 
   private AcvpuScaleObservationContainment() {
     super("openEHR-EHR-OBSERVATION.acvpu.v0");

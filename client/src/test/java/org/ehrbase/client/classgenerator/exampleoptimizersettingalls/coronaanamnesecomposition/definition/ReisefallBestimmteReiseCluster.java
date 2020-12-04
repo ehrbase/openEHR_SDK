@@ -1,5 +1,6 @@
 package org.ehrbase.client.classgenerator.exampleoptimizersettingalls.coronaanamnesecomposition.definition;
 
+import com.nedap.archie.rm.archetyped.FeederAudit;
 import com.nedap.archie.rm.datastructures.Cluster;
 import java.time.temporal.TemporalAccessor;
 import java.util.List;
@@ -26,6 +27,12 @@ public class ReisefallBestimmteReiseCluster {
   @Path("/items[at0019]/value|value")
   private TemporalAccessor ruckreisedatumValue;
 
+  /**
+   * Bericht/Risikogebiet/Reisefall/Beliebiges Intervallereignis/Bestimmte Reise/feeder_audit
+   */
+  @Path("/feeder_audit")
+  private FeederAudit feederAudit;
+
   public void setBestimmtesReiseziel(
       List<ReisefallBestimmtesReisezielCluster> bestimmtesReiseziel) {
      this.bestimmtesReiseziel = bestimmtesReiseziel;
@@ -49,5 +56,13 @@ public class ReisefallBestimmteReiseCluster {
 
   public TemporalAccessor getRuckreisedatumValue() {
      return this.ruckreisedatumValue ;
+  }
+
+  public void setFeederAudit(FeederAudit feederAudit) {
+     this.feederAudit = feederAudit;
+  }
+
+  public FeederAudit getFeederAudit() {
+     return this.feederAudit ;
   }
 }

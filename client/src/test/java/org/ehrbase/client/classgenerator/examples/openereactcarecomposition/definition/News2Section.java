@@ -1,5 +1,6 @@
 package org.ehrbase.client.classgenerator.examples.openereactcarecomposition.definition;
 
+import com.nedap.archie.rm.archetyped.FeederAudit;
 import org.ehrbase.client.annotations.Archetype;
 import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.Path;
@@ -48,6 +49,12 @@ public class News2Section {
    */
   @Path("/items[openEHR-EHR-OBSERVATION.news2.v1]")
   private News2ScoreObservation news2Score;
+
+  /**
+   * open_eREACT-Care/Assessment/NEWS2/feeder_audit
+   */
+  @Path("/feeder_audit")
+  private FeederAudit feederAudit;
 
   public void setTemperature(TemperatureObservation temperature) {
      this.temperature = temperature;
@@ -103,5 +110,13 @@ public class News2Section {
 
   public News2ScoreObservation getNews2Score() {
      return this.news2Score ;
+  }
+
+  public void setFeederAudit(FeederAudit feederAudit) {
+     this.feederAudit = feederAudit;
+  }
+
+  public FeederAudit getFeederAudit() {
+     return this.feederAudit ;
   }
 }

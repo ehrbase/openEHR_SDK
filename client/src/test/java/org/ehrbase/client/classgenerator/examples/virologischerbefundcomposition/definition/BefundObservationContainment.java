@@ -1,5 +1,6 @@
 package org.ehrbase.client.classgenerator.examples.virologischerbefundcomposition.definition;
 
+import com.nedap.archie.rm.archetyped.FeederAudit;
 import com.nedap.archie.rm.datastructures.Cluster;
 import com.nedap.archie.rm.datavalues.DvIdentifier;
 import com.nedap.archie.rm.generic.PartyProxy;
@@ -50,6 +51,8 @@ public class BefundObservationContainment extends Containment {
   public SelectAqlField<PartyProxy> SUBJECT = new AqlFieldImp<PartyProxy>(BefundObservation.class, "/subject", "subject", PartyProxy.class, this);
 
   public SelectAqlField<Language> LANGUAGE = new AqlFieldImp<Language>(BefundObservation.class, "/language", "language", Language.class, this);
+
+  public SelectAqlField<FeederAudit> FEEDER_AUDIT = new AqlFieldImp<FeederAudit>(BefundObservation.class, "/feeder_audit", "feederAudit", FeederAudit.class, this);
 
   private BefundObservationContainment() {
     super("openEHR-EHR-OBSERVATION.laboratory_test_result.v1");

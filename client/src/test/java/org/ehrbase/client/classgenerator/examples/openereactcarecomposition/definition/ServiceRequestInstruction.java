@@ -1,5 +1,6 @@
 package org.ehrbase.client.classgenerator.examples.openereactcarecomposition.definition;
 
+import com.nedap.archie.rm.archetyped.FeederAudit;
 import com.nedap.archie.rm.datastructures.Cluster;
 import com.nedap.archie.rm.generic.PartyProxy;
 import java.lang.String;
@@ -60,6 +61,12 @@ public class ServiceRequestInstruction {
    */
   @Path("/language")
   private Language language;
+
+  /**
+   * open_eREACT-Care/Response/Service request/feeder_audit
+   */
+  @Path("/feeder_audit")
+  private FeederAudit feederAudit;
 
   /**
    * open_eREACT-Care/Response/Service request/expiry_time
@@ -129,6 +136,14 @@ public class ServiceRequestInstruction {
 
   public Language getLanguage() {
      return this.language ;
+  }
+
+  public void setFeederAudit(FeederAudit feederAudit) {
+     this.feederAudit = feederAudit;
+  }
+
+  public FeederAudit getFeederAudit() {
+     return this.feederAudit ;
   }
 
   public void setExpiryTimeValue(TemporalAccessor expiryTimeValue) {

@@ -1,5 +1,6 @@
 package org.ehrbase.client.classgenerator.examples.coronaanamnesecomposition.definition;
 
+import com.nedap.archie.rm.archetyped.FeederAudit;
 import com.nedap.archie.rm.datastructures.Cluster;
 import com.nedap.archie.rm.generic.PartyProxy;
 import java.time.temporal.TemporalAccessor;
@@ -22,6 +23,8 @@ public class ReisefallObservationContainment extends Containment {
   public SelectAqlField<PartyProxy> SUBJECT = new AqlFieldImp<PartyProxy>(ReisefallObservation.class, "/subject", "subject", PartyProxy.class, this);
 
   public SelectAqlField<Language> LANGUAGE = new AqlFieldImp<Language>(ReisefallObservation.class, "/language", "language", Language.class, this);
+
+  public SelectAqlField<FeederAudit> FEEDER_AUDIT = new AqlFieldImp<FeederAudit>(ReisefallObservation.class, "/feeder_audit", "feederAudit", FeederAudit.class, this);
 
   private ReisefallObservationContainment() {
     super("openEHR-EHR-OBSERVATION.travel_event.v0");

@@ -1,5 +1,6 @@
 package org.ehrbase.client.classgenerator.examples.testalltypesenv1composition.definition;
 
+import com.nedap.archie.rm.archetyped.FeederAudit;
 import com.nedap.archie.rm.generic.PartyProxy;
 import java.lang.Long;
 import org.ehrbase.client.annotations.Archetype;
@@ -28,6 +29,12 @@ public class TestAllTypesAdminEntry {
   @Path("/language")
   private Language language;
 
+  /**
+   * Test all types/Test all types/section 2/Test all types/feeder_audit
+   */
+  @Path("/feeder_audit")
+  private FeederAudit feederAudit;
+
   public void setCount3Magnitude(Long count3Magnitude) {
      this.count3Magnitude = count3Magnitude;
   }
@@ -50,5 +57,13 @@ public class TestAllTypesAdminEntry {
 
   public Language getLanguage() {
      return this.language ;
+  }
+
+  public void setFeederAudit(FeederAudit feederAudit) {
+     this.feederAudit = feederAudit;
+  }
+
+  public FeederAudit getFeederAudit() {
+     return this.feederAudit ;
   }
 }

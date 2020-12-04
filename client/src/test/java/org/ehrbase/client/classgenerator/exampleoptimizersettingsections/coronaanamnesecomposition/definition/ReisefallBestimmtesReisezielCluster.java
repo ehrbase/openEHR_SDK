@@ -1,5 +1,6 @@
 package org.ehrbase.client.classgenerator.exampleoptimizersettingsections.coronaanamnesecomposition.definition;
 
+import com.nedap.archie.rm.archetyped.FeederAudit;
 import com.nedap.archie.rm.datastructures.Cluster;
 import java.lang.String;
 import java.util.List;
@@ -37,6 +38,12 @@ public class ReisefallBestimmtesReisezielCluster {
    */
   @Path("/items[at0024]")
   private List<Cluster> zusatzlicheAngabenZumZielort;
+
+  /**
+   * Bericht/Risikogebiet/Reisefall/Beliebiges Intervallereignis/Bestimmte Reise/Bestimmtes Reiseziel/feeder_audit
+   */
+  @Path("/feeder_audit")
+  private FeederAudit feederAudit;
 
   public void setLandValue(String landValue) {
      this.landValue = landValue;
@@ -76,5 +83,13 @@ public class ReisefallBestimmtesReisezielCluster {
 
   public List<Cluster> getZusatzlicheAngabenZumZielort() {
      return this.zusatzlicheAngabenZumZielort ;
+  }
+
+  public void setFeederAudit(FeederAudit feederAudit) {
+     this.feederAudit = feederAudit;
+  }
+
+  public FeederAudit getFeederAudit() {
+     return this.feederAudit ;
   }
 }

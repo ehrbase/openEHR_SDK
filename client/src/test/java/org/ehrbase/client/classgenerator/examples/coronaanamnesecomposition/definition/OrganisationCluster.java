@@ -1,5 +1,6 @@
 package org.ehrbase.client.classgenerator.examples.coronaanamnesecomposition.definition;
 
+import com.nedap.archie.rm.archetyped.FeederAudit;
 import com.nedap.archie.rm.datastructures.Cluster;
 import java.lang.String;
 import java.util.List;
@@ -45,6 +46,12 @@ public class OrganisationCluster {
    */
   @Path("/items[at0016]")
   private List<Cluster> kontakt;
+
+  /**
+   * Bericht/Allgemeine Angaben/Gesundheitsbezogener Beruf/Beschäftigung/Organisation/feeder_audit
+   */
+  @Path("/feeder_audit")
+  private FeederAudit feederAudit;
 
   public void setIdentifier(List<Cluster> identifier) {
      this.identifier = identifier;
@@ -92,5 +99,13 @@ public class OrganisationCluster {
 
   public List<Cluster> getKontakt() {
      return this.kontakt ;
+  }
+
+  public void setFeederAudit(FeederAudit feederAudit) {
+     this.feederAudit = feederAudit;
+  }
+
+  public FeederAudit getFeederAudit() {
+     return this.feederAudit ;
   }
 }

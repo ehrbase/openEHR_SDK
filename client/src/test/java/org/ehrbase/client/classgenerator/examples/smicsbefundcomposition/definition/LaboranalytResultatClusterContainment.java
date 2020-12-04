@@ -1,5 +1,6 @@
 package org.ehrbase.client.classgenerator.examples.smicsbefundcomposition.definition;
 
+import com.nedap.archie.rm.archetyped.FeederAudit;
 import com.nedap.archie.rm.datastructures.Cluster;
 import java.lang.Double;
 import java.lang.String;
@@ -23,6 +24,8 @@ public class LaboranalytResultatClusterContainment extends Containment {
   public SelectAqlField<String> RESISTENZ_VALUE = new AqlFieldImp<String>(LaboranalytResultatCluster.class, "/items[at0004]/value|value", "resistenzValue", String.class, this);
 
   public SelectAqlField<String> KOMMENTAR_VALUE = new AqlFieldImp<String>(LaboranalytResultatCluster.class, "/items[at0003]/value|value", "kommentarValue", String.class, this);
+
+  public SelectAqlField<FeederAudit> FEEDER_AUDIT = new AqlFieldImp<FeederAudit>(LaboranalytResultatCluster.class, "/feeder_audit", "feederAudit", FeederAudit.class, this);
 
   private LaboranalytResultatClusterContainment() {
     super("openEHR-EHR-CLUSTER.laboratory_test_analyte.v1");

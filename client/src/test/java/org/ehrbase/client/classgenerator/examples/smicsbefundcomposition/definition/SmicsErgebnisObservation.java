@@ -1,5 +1,6 @@
 package org.ehrbase.client.classgenerator.examples.smicsbefundcomposition.definition;
 
+import com.nedap.archie.rm.archetyped.FeederAudit;
 import com.nedap.archie.rm.generic.PartyProxy;
 import java.lang.Boolean;
 import java.lang.String;
@@ -139,6 +140,12 @@ public class SmicsErgebnisObservation {
    */
   @Path("/language")
   private Language language;
+
+  /**
+   * SmICS Befund/SmICS-Ergebnis/feeder_audit
+   */
+  @Path("/feeder_audit")
+  private FeederAudit feederAudit;
 
   public void setSmicsErgebniskategorieDefiningCode(
       SmicsErgebniskategorieDefiningCode smicsErgebniskategorieDefiningCode) {
@@ -310,5 +317,13 @@ public class SmicsErgebnisObservation {
 
   public Language getLanguage() {
      return this.language ;
+  }
+
+  public void setFeederAudit(FeederAudit feederAudit) {
+     this.feederAudit = feederAudit;
+  }
+
+  public FeederAudit getFeederAudit() {
+     return this.feederAudit ;
   }
 }

@@ -1,5 +1,6 @@
 package org.ehrbase.client.classgenerator.exampleoptimizersettingsections.coronaanamnesecomposition.definition;
 
+import com.nedap.archie.rm.archetyped.FeederAudit;
 import com.nedap.archie.rm.datastructures.Cluster;
 import com.nedap.archie.rm.generic.PartyProxy;
 import java.time.temporal.TemporalAccessor;
@@ -42,6 +43,12 @@ public class ReisefallObservation {
   @Path("/language")
   private Language language;
 
+  /**
+   * Bericht/Risikogebiet/Reisefall/feeder_audit
+   */
+  @Path("/feeder_audit")
+  private FeederAudit feederAudit;
+
   public void setBeliebigesIntervallereignis(
       List<ReisefallBeliebigesIntervallereignisIntervalEvent> beliebigesIntervallereignis) {
      this.beliebigesIntervallereignis = beliebigesIntervallereignis;
@@ -81,5 +88,13 @@ public class ReisefallObservation {
 
   public Language getLanguage() {
      return this.language ;
+  }
+
+  public void setFeederAudit(FeederAudit feederAudit) {
+     this.feederAudit = feederAudit;
+  }
+
+  public FeederAudit getFeederAudit() {
+     return this.feederAudit ;
   }
 }

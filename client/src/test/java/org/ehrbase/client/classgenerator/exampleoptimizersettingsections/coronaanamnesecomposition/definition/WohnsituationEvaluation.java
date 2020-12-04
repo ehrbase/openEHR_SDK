@@ -1,5 +1,6 @@
 package org.ehrbase.client.classgenerator.exampleoptimizersettingsections.coronaanamnesecomposition.definition;
 
+import com.nedap.archie.rm.archetyped.FeederAudit;
 import com.nedap.archie.rm.datastructures.Cluster;
 import com.nedap.archie.rm.generic.PartyProxy;
 import java.lang.Long;
@@ -49,6 +50,12 @@ public class WohnsituationEvaluation {
   @Path("/language")
   private Language language;
 
+  /**
+   * Bericht/Allgemeine Angaben/Wohnsituation/feeder_audit
+   */
+  @Path("/feeder_audit")
+  private FeederAudit feederAudit;
+
   public void setBeschreibungValue(String beschreibungValue) {
      this.beschreibungValue = beschreibungValue;
   }
@@ -95,5 +102,13 @@ public class WohnsituationEvaluation {
 
   public Language getLanguage() {
      return this.language ;
+  }
+
+  public void setFeederAudit(FeederAudit feederAudit) {
+     this.feederAudit = feederAudit;
+  }
+
+  public FeederAudit getFeederAudit() {
+     return this.feederAudit ;
   }
 }

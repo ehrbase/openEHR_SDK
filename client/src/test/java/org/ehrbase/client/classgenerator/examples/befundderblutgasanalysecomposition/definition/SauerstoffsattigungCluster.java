@@ -1,5 +1,6 @@
 package org.ehrbase.client.classgenerator.examples.befundderblutgasanalysecomposition.definition;
 
+import com.nedap.archie.rm.archetyped.FeederAudit;
 import com.nedap.archie.rm.datastructures.Cluster;
 import java.lang.Double;
 import java.lang.String;
@@ -41,6 +42,12 @@ public class SauerstoffsattigungCluster {
   @Path("/items[at0005]/value|value")
   private String ergebnisStatusValue;
 
+  /**
+   * Befund der Blutgasanalyse/Laborergebnis/Jedes Ereignis/Sauerstoffsättigung/feeder_audit
+   */
+  @Path("/feeder_audit")
+  private FeederAudit feederAudit;
+
   public void setUntersuchterAnalytDefiningCode(
       UntersuchterAnalytDefiningCode4 untersuchterAnalytDefiningCode) {
      this.untersuchterAnalytDefiningCode = untersuchterAnalytDefiningCode;
@@ -80,5 +87,13 @@ public class SauerstoffsattigungCluster {
 
   public String getErgebnisStatusValue() {
      return this.ergebnisStatusValue ;
+  }
+
+  public void setFeederAudit(FeederAudit feederAudit) {
+     this.feederAudit = feederAudit;
+  }
+
+  public FeederAudit getFeederAudit() {
+     return this.feederAudit ;
   }
 }

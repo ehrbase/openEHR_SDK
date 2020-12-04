@@ -1,5 +1,6 @@
 package org.ehrbase.client.classgenerator.examples.coronaanamnesecomposition.definition;
 
+import com.nedap.archie.rm.archetyped.FeederAudit;
 import com.nedap.archie.rm.datastructures.Cluster;
 import java.lang.String;
 import java.util.List;
@@ -22,6 +23,12 @@ public class StandortCluster {
   @Path("/items[at0047]")
   private List<Cluster> details;
 
+  /**
+   * Bericht/Risikogebiet/Historie der Reise/Jedes Ereignis/Ortsbeschreibung/Standort/feeder_audit
+   */
+  @Path("/feeder_audit")
+  private FeederAudit feederAudit;
+
   public void setStandortbeschreibungValue(String standortbeschreibungValue) {
      this.standortbeschreibungValue = standortbeschreibungValue;
   }
@@ -36,5 +43,13 @@ public class StandortCluster {
 
   public List<Cluster> getDetails() {
      return this.details ;
+  }
+
+  public void setFeederAudit(FeederAudit feederAudit) {
+     this.feederAudit = feederAudit;
+  }
+
+  public FeederAudit getFeederAudit() {
+     return this.feederAudit ;
   }
 }

@@ -1,5 +1,6 @@
 package org.ehrbase.client.classgenerator.exampleoptimizersettingalls.coronaanamnesecomposition.definition;
 
+import com.nedap.archie.rm.archetyped.FeederAudit;
 import com.nedap.archie.rm.datastructures.Cluster;
 import com.nedap.archie.rm.generic.PartyProxy;
 import java.lang.String;
@@ -90,6 +91,12 @@ public class BewertungDesGesundheitsrisikosEvaluation {
    */
   @Path("/language")
   private Language language;
+
+  /**
+   * Bericht/Allgemeine Angaben/Bewertung des Gesundheitsrisikos/feeder_audit
+   */
+  @Path("/feeder_audit")
+  private FeederAudit feederAudit;
 
   public void setGesundheitsrisikoValue(String gesundheitsrisikoValue) {
      this.gesundheitsrisikoValue = gesundheitsrisikoValue;
@@ -199,5 +206,13 @@ public class BewertungDesGesundheitsrisikosEvaluation {
 
   public Language getLanguage() {
      return this.language ;
+  }
+
+  public void setFeederAudit(FeederAudit feederAudit) {
+     this.feederAudit = feederAudit;
+  }
+
+  public FeederAudit getFeederAudit() {
+     return this.feederAudit ;
   }
 }

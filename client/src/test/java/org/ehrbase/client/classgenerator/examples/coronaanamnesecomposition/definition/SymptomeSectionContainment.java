@@ -1,5 +1,6 @@
 package org.ehrbase.client.classgenerator.examples.coronaanamnesecomposition.definition;
 
+import com.nedap.archie.rm.archetyped.FeederAudit;
 import org.ehrbase.client.aql.containment.Containment;
 import org.ehrbase.client.aql.field.AqlFieldImp;
 import org.ehrbase.client.aql.field.SelectAqlField;
@@ -24,6 +25,8 @@ public class SymptomeSectionContainment extends Containment {
   public SelectAqlField<DurchfallObservation> DURCHFALL = new AqlFieldImp<DurchfallObservation>(SymptomeSection.class, "/items[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0]", "durchfall", DurchfallObservation.class, this);
 
   public SelectAqlField<WeitereSymptomeObservation> WEITERE_SYMPTOME = new AqlFieldImp<WeitereSymptomeObservation>(SymptomeSection.class, "/items[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0]", "weitereSymptome", WeitereSymptomeObservation.class, this);
+
+  public SelectAqlField<FeederAudit> FEEDER_AUDIT = new AqlFieldImp<FeederAudit>(SymptomeSection.class, "/feeder_audit", "feederAudit", FeederAudit.class, this);
 
   private SymptomeSectionContainment() {
     super("openEHR-EHR-SECTION.adhoc.v1");

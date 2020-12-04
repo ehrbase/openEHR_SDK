@@ -1,5 +1,6 @@
 package org.ehrbase.client.classgenerator.examples.befundderblutgasanalysecomposition.definition;
 
+import com.nedap.archie.rm.archetyped.FeederAudit;
 import com.nedap.archie.rm.datastructures.Cluster;
 import java.lang.Double;
 import java.lang.String;
@@ -21,6 +22,8 @@ public class KohlendioxidpartialdruckClusterContainment extends Containment {
   public ListSelectAqlField<Cluster> ANALYSEERGEBNIS_DETAILS = new ListAqlFieldImp<Cluster>(KohlendioxidpartialdruckCluster.class, "/items[at0014]", "analyseergebnisDetails", Cluster.class, this);
 
   public SelectAqlField<String> ERGEBNIS_STATUS_VALUE = new AqlFieldImp<String>(KohlendioxidpartialdruckCluster.class, "/items[at0005]/value|value", "ergebnisStatusValue", String.class, this);
+
+  public SelectAqlField<FeederAudit> FEEDER_AUDIT = new AqlFieldImp<FeederAudit>(KohlendioxidpartialdruckCluster.class, "/feeder_audit", "feederAudit", FeederAudit.class, this);
 
   private KohlendioxidpartialdruckClusterContainment() {
     super("openEHR-EHR-CLUSTER.laboratory_test_analyte.v1");

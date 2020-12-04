@@ -1,5 +1,6 @@
 package org.ehrbase.client.classgenerator.examples.schwangerschaftsstatuscomposition.definition;
 
+import com.nedap.archie.rm.archetyped.FeederAudit;
 import com.nedap.archie.rm.datastructures.Cluster;
 import com.nedap.archie.rm.generic.PartyProxy;
 import java.time.temporal.TemporalAccessor;
@@ -48,6 +49,12 @@ public class SchwangerschaftsstatusObservation {
   @Path("/language")
   private Language language;
 
+  /**
+   * Schwangerschaftsstatus/Schwangerschaftsstatus/feeder_audit
+   */
+  @Path("/feeder_audit")
+  private FeederAudit feederAudit;
+
   public void setStatusDefiningCode(StatusDefiningCode2 statusDefiningCode) {
      this.statusDefiningCode = statusDefiningCode;
   }
@@ -94,5 +101,13 @@ public class SchwangerschaftsstatusObservation {
 
   public Language getLanguage() {
      return this.language ;
+  }
+
+  public void setFeederAudit(FeederAudit feederAudit) {
+     this.feederAudit = feederAudit;
+  }
+
+  public FeederAudit getFeederAudit() {
+     return this.feederAudit ;
   }
 }

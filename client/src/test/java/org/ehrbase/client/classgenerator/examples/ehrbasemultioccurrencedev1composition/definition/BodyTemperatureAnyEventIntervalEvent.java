@@ -1,5 +1,6 @@
 package org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1composition.definition;
 
+import com.nedap.archie.rm.archetyped.FeederAudit;
 import com.nedap.archie.rm.datastructures.Cluster;
 import java.lang.Double;
 import java.lang.Long;
@@ -51,6 +52,12 @@ public class BodyTemperatureAnyEventIntervalEvent implements BodyTemperatureAnyE
    */
   @Path("/state[at0029]/items[at0057]")
   private Cluster exertion;
+
+  /**
+   * Encounter/Body temperature/Any event/feeder_audit
+   */
+  @Path("/feeder_audit")
+  private FeederAudit feederAudit;
 
   /**
    * Encounter/Body temperature/Any event/time
@@ -123,6 +130,14 @@ public class BodyTemperatureAnyEventIntervalEvent implements BodyTemperatureAnyE
 
   public Cluster getExertion() {
      return this.exertion ;
+  }
+
+  public void setFeederAudit(FeederAudit feederAudit) {
+     this.feederAudit = feederAudit;
+  }
+
+  public FeederAudit getFeederAudit() {
+     return this.feederAudit ;
   }
 
   public void setTimeValue(TemporalAccessor timeValue) {

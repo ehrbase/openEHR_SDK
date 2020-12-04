@@ -1,5 +1,6 @@
 package org.ehrbase.client.classgenerator.exampleoptimizersettingalls.coronaanamnesecomposition.definition;
 
+import com.nedap.archie.rm.archetyped.FeederAudit;
 import com.nedap.archie.rm.datastructures.Cluster;
 import com.nedap.archie.rm.generic.PartyProxy;
 import java.lang.String;
@@ -39,6 +40,8 @@ public class BewertungDesGesundheitsrisikosEvaluationContainment extends Contain
   public SelectAqlField<PartyProxy> SUBJECT = new AqlFieldImp<PartyProxy>(BewertungDesGesundheitsrisikosEvaluation.class, "/subject", "subject", PartyProxy.class, this);
 
   public SelectAqlField<Language> LANGUAGE = new AqlFieldImp<Language>(BewertungDesGesundheitsrisikosEvaluation.class, "/language", "language", Language.class, this);
+
+  public SelectAqlField<FeederAudit> FEEDER_AUDIT = new AqlFieldImp<FeederAudit>(BewertungDesGesundheitsrisikosEvaluation.class, "/feeder_audit", "feederAudit", FeederAudit.class, this);
 
   private BewertungDesGesundheitsrisikosEvaluationContainment() {
     super("openEHR-EHR-EVALUATION.health_risk.v1");

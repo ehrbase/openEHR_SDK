@@ -1,5 +1,6 @@
 package org.ehrbase.client.classgenerator.exampleoptimizersettingsections.coronaanamnesecomposition.definition;
 
+import com.nedap.archie.rm.archetyped.FeederAudit;
 import com.nedap.archie.rm.datastructures.Cluster;
 import com.nedap.archie.rm.generic.PartyProxy;
 import java.lang.String;
@@ -24,6 +25,8 @@ public class GesundheitsbezogenerBerufEvaluationContainment extends Containment 
   public SelectAqlField<PartyProxy> SUBJECT = new AqlFieldImp<PartyProxy>(GesundheitsbezogenerBerufEvaluation.class, "/subject", "subject", PartyProxy.class, this);
 
   public SelectAqlField<Language> LANGUAGE = new AqlFieldImp<Language>(GesundheitsbezogenerBerufEvaluation.class, "/language", "language", Language.class, this);
+
+  public SelectAqlField<FeederAudit> FEEDER_AUDIT = new AqlFieldImp<FeederAudit>(GesundheitsbezogenerBerufEvaluation.class, "/feeder_audit", "feederAudit", FeederAudit.class, this);
 
   private GesundheitsbezogenerBerufEvaluationContainment() {
     super("openEHR-EHR-EVALUATION.occupation_summary.v1");

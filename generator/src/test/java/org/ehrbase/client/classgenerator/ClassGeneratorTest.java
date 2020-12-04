@@ -134,7 +134,9 @@ public class ClassGeneratorTest {
             new Tuple(
                 "participations", "java.util.List<com.nedap.archie.rm.generic.Participation>"),
             new Tuple("feederAudit", "com.nedap.archie.rm.archetyped.FeederAudit"),
-            new Tuple("location", "java.lang.String"));
+            new Tuple("location", "java.lang.String"),
+            new Tuple("feederAudit", "com.nedap.archie.rm.archetyped.FeederAudit"),
+            new Tuple("feederAudit", "com.nedap.archie.rm.archetyped.FeederAudit"));
 
     writeFiles(generate);
   }
@@ -252,6 +254,10 @@ public class ClassGeneratorTest {
                 "org.ehrbase.client.classgenerator.shareddefinition.Category"),
             new Tuple(
                 "participations", "java.util.List<com.nedap.archie.rm.generic.Participation>"),
+            new Tuple("feederAudit", "com.nedap.archie.rm.archetyped.FeederAudit"),
+            new Tuple("feederAudit", "com.nedap.archie.rm.archetyped.FeederAudit"),
+            new Tuple("feederAudit", "com.nedap.archie.rm.archetyped.FeederAudit"),
+            new Tuple("feederAudit", "com.nedap.archie.rm.archetyped.FeederAudit"),
             new Tuple("feederAudit", "com.nedap.archie.rm.archetyped.FeederAudit"));
 
     writeFiles(generate);
@@ -334,7 +340,9 @@ public class ClassGeneratorTest {
             "lowerValue",
             "lowerIncluded",
             "upperIncluded",
-            "healthCareFacility");
+            "healthCareFacility",
+            "feederAudit",
+            "feederAudit");
 
     writeFiles(generate);
   }
@@ -435,7 +443,16 @@ public class ClassGeneratorTest {
             "settingDefiningCode",
             "feederAudit",
             "location",
-            "categoryDefiningCode");
+            "categoryDefiningCode",
+            "feederAudit",
+            "feederAudit",
+            "feederAudit",
+            "feederAudit",
+            "feederAudit",
+            "feederAudit",
+            "feederAudit",
+            "feederAudit",
+            "feederAudit");
 
     writeFiles(generate);
   }
@@ -456,7 +473,7 @@ public class ClassGeneratorTest {
             .flatMap(List::stream)
             .collect(Collectors.toList());
 
-    assertThat(fieldSpecs).size().isEqualTo(248);
+    assertThat(fieldSpecs).size().isEqualTo(285);
   }
 
   @Test
@@ -475,7 +492,7 @@ public class ClassGeneratorTest {
             .flatMap(List::stream)
             .collect(Collectors.toList());
 
-    assertThat(fieldSpecs).size().isEqualTo(42);
+    assertThat(fieldSpecs).size().isEqualTo(47);
     writeFiles(generate);
   }
 
@@ -495,7 +512,7 @@ public class ClassGeneratorTest {
             .flatMap(List::stream)
             .collect(Collectors.toList());
 
-    assertThat(fieldSpecs).size().isEqualTo(33);
+    assertThat(fieldSpecs).size().isEqualTo(35);
     writeFiles(generate);
   }
 
@@ -569,7 +586,12 @@ public class ClassGeneratorTest {
             "probendetail",
             "subject",
             "originValue",
-            "laborWelchesDenUntersuchungsauftragAnnimmt");
+            "laborWelchesDenUntersuchungsauftragAnnimmt",
+            "feederAudit",
+            "feederAudit",
+            "feederAudit",
+            "feederAudit",
+            "feederAudit");
 
     writeFiles(generate);
   }
@@ -663,6 +685,9 @@ public class ClassGeneratorTest {
                 "java.util.List<org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1composition.definition.BodyTemperatureAnyEventChoice>"),
             new Tuple(
                 "participations", "java.util.List<com.nedap.archie.rm.generic.Participation>"),
+            new Tuple("feederAudit", "com.nedap.archie.rm.archetyped.FeederAudit"),
+            new Tuple("feederAudit", "com.nedap.archie.rm.archetyped.FeederAudit"),
+            new Tuple("feederAudit", "com.nedap.archie.rm.archetyped.FeederAudit"),
             new Tuple("feederAudit", "com.nedap.archie.rm.archetyped.FeederAudit"));
 
     writeFiles(generate);
@@ -684,7 +709,7 @@ public class ClassGeneratorTest {
             .flatMap(List::stream)
             .collect(Collectors.toList());
 
-    assertThat(fieldSpecs).size().isEqualTo(80L);
+    assertThat(fieldSpecs).size().isEqualTo(87L);
 
     writeFiles(generate);
   }
@@ -781,7 +806,15 @@ public class ClassGeneratorTest {
             "settingDefiningCode",
             "feederAudit",
             "location",
-            "categoryDefiningCode");
+            "categoryDefiningCode",
+            "feederAudit",
+            "feederAudit",
+            "feederAudit",
+            "feederAudit",
+            "feederAudit",
+            "feederAudit",
+            "feederAudit",
+            "feederAudit");
 
     writeFiles(generate);
   }
@@ -802,7 +835,7 @@ public class ClassGeneratorTest {
             .flatMap(List::stream)
             .collect(Collectors.toList());
 
-    assertThat(fieldSpecs).size().isEqualTo(296);
+    assertThat(fieldSpecs).size().isEqualTo(340);
 
     writeFiles(generate);
   }
@@ -828,7 +861,7 @@ public class ClassGeneratorTest {
             .flatMap(List::stream)
             .collect(Collectors.toList());
 
-    assertThat(fieldSpecs).size().isEqualTo(292);
+    assertThat(fieldSpecs).size().isEqualTo(332);
 
     writeFiles(generate);
   }
@@ -854,7 +887,7 @@ public class ClassGeneratorTest {
             .flatMap(List::stream)
             .collect(Collectors.toList());
 
-    assertThat(fieldSpecs).size().isEqualTo(274);
+    assertThat(fieldSpecs).size().isEqualTo(296);
 
     writeFiles(generate);
   }
@@ -900,7 +933,8 @@ public class ClassGeneratorTest {
             "originValue",
             "language",
             "erweiterungen",
-            "statusDefiningCode");
+            "statusDefiningCode",
+            "feederAudit");
 
     Optional<TypeSpec> status1 =
         generate.getClasses().values().stream()
@@ -939,7 +973,7 @@ public class ClassGeneratorTest {
             .flatMap(List::stream)
             .collect(Collectors.toList());
 
-    assertThat(fieldSpecs).size().isEqualTo(352);
+    assertThat(fieldSpecs).size().isEqualTo(390);
 
     writeFiles(generate);
   }

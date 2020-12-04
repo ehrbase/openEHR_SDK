@@ -1,5 +1,6 @@
 package org.ehrbase.client.classgenerator.examples.coronaanamnesecomposition.definition;
 
+import com.nedap.archie.rm.archetyped.FeederAudit;
 import com.nedap.archie.rm.datastructures.Cluster;
 import com.nedap.archie.rm.generic.PartyProxy;
 import java.lang.String;
@@ -29,6 +30,8 @@ public class GestorterGeruchssinnObservationContainment extends Containment {
   public SelectAqlField<PartyProxy> SUBJECT = new AqlFieldImp<PartyProxy>(GestorterGeruchssinnObservation.class, "/subject", "subject", PartyProxy.class, this);
 
   public SelectAqlField<Language> LANGUAGE = new AqlFieldImp<Language>(GestorterGeruchssinnObservation.class, "/language", "language", Language.class, this);
+
+  public SelectAqlField<FeederAudit> FEEDER_AUDIT = new AqlFieldImp<FeederAudit>(GestorterGeruchssinnObservation.class, "/feeder_audit", "feederAudit", FeederAudit.class, this);
 
   private GestorterGeruchssinnObservationContainment() {
     super("openEHR-EHR-OBSERVATION.symptom_sign_screening.v0");

@@ -1,5 +1,6 @@
 package org.ehrbase.client.classgenerator.examples.smicsbefundcomposition.definition;
 
+import com.nedap.archie.rm.archetyped.FeederAudit;
 import com.nedap.archie.rm.datastructures.Cluster;
 import com.nedap.archie.rm.datavalues.quantity.DvOrdinal;
 import java.lang.Double;
@@ -71,6 +72,12 @@ public class ErregerdetailsCluster {
    */
   @Path("/items[at0059]")
   private List<Cluster> weitereErganzungen;
+
+  /**
+   * SmICS Befund/SmICS-Ergebnis/Jedes Ereignis/Eigenschaften des beteiligten Erregers/Erregerdetails/feeder_audit
+   */
+  @Path("/feeder_audit")
+  private FeederAudit feederAudit;
 
   public void setKeimSubtyp(List<ErregerdetailsKeimSubtypElement> keimSubtyp) {
      this.keimSubtyp = keimSubtyp;
@@ -151,5 +158,13 @@ public class ErregerdetailsCluster {
 
   public List<Cluster> getWeitereErganzungen() {
      return this.weitereErganzungen ;
+  }
+
+  public void setFeederAudit(FeederAudit feederAudit) {
+     this.feederAudit = feederAudit;
+  }
+
+  public FeederAudit getFeederAudit() {
+     return this.feederAudit ;
   }
 }

@@ -1,5 +1,6 @@
 package org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev0composition.definition;
 
+import com.nedap.archie.rm.archetyped.FeederAudit;
 import com.nedap.archie.rm.datastructures.Cluster;
 import java.lang.String;
 import java.time.temporal.TemporalAccessor;
@@ -63,6 +64,12 @@ public class DeviceDetailsTrainingSampleCluster {
    */
   @Path("/items[at0008]/items[at0011]/value|value")
   private String servicedByValue;
+
+  /**
+   * Encounter (training sample)/context/Admin detail/Device details (training sample)/feeder_audit
+   */
+  @Path("/feeder_audit")
+  private FeederAudit feederAudit;
 
   public void setNameValue(String nameValue) {
      this.nameValue = nameValue;
@@ -134,5 +141,13 @@ public class DeviceDetailsTrainingSampleCluster {
 
   public String getServicedByValue() {
      return this.servicedByValue ;
+  }
+
+  public void setFeederAudit(FeederAudit feederAudit) {
+     this.feederAudit = feederAudit;
+  }
+
+  public FeederAudit getFeederAudit() {
+     return this.feederAudit ;
   }
 }

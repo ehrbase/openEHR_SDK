@@ -1,5 +1,6 @@
 package org.ehrbase.client.classgenerator.examples.openereactcarecomposition.definition;
 
+import com.nedap.archie.rm.archetyped.FeederAudit;
 import org.ehrbase.client.aql.containment.Containment;
 import org.ehrbase.client.aql.field.AqlFieldImp;
 import org.ehrbase.client.aql.field.SelectAqlField;
@@ -20,6 +21,8 @@ public class News2SectionContainment extends Containment {
   public SelectAqlField<BloodPressureObservation> BLOOD_PRESSURE = new AqlFieldImp<BloodPressureObservation>(News2Section.class, "/items[openEHR-EHR-OBSERVATION.blood_pressure.v2]", "bloodPressure", BloodPressureObservation.class, this);
 
   public SelectAqlField<News2ScoreObservation> NEWS2_SCORE = new AqlFieldImp<News2ScoreObservation>(News2Section.class, "/items[openEHR-EHR-OBSERVATION.news2.v1]", "news2Score", News2ScoreObservation.class, this);
+
+  public SelectAqlField<FeederAudit> FEEDER_AUDIT = new AqlFieldImp<FeederAudit>(News2Section.class, "/feeder_audit", "feederAudit", FeederAudit.class, this);
 
   private News2SectionContainment() {
     super("openEHR-EHR-SECTION.adhoc.v1");

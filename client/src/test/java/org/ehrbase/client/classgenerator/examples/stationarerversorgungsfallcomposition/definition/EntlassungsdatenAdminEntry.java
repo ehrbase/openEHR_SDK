@@ -1,5 +1,6 @@
 package org.ehrbase.client.classgenerator.examples.stationarerversorgungsfallcomposition.definition;
 
+import com.nedap.archie.rm.archetyped.FeederAudit;
 import com.nedap.archie.rm.datastructures.Cluster;
 import com.nedap.archie.rm.generic.PartyProxy;
 import java.lang.String;
@@ -60,6 +61,12 @@ public class EntlassungsdatenAdminEntry {
    */
   @Path("/language")
   private Language language;
+
+  /**
+   * Stationärer Versorgungsfall/Entlassungsdaten/feeder_audit
+   */
+  @Path("/feeder_audit")
+  private FeederAudit feederAudit;
 
   public void setArtDerEntlassungValue(String artDerEntlassungValue) {
      this.artDerEntlassungValue = artDerEntlassungValue;
@@ -124,5 +131,13 @@ public class EntlassungsdatenAdminEntry {
 
   public Language getLanguage() {
      return this.language ;
+  }
+
+  public void setFeederAudit(FeederAudit feederAudit) {
+     this.feederAudit = feederAudit;
+  }
+
+  public FeederAudit getFeederAudit() {
+     return this.feederAudit ;
   }
 }

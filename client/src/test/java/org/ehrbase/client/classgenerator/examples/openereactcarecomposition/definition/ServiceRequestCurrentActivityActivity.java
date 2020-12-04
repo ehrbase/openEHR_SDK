@@ -1,5 +1,6 @@
 package org.ehrbase.client.classgenerator.examples.openereactcarecomposition.definition;
 
+import com.nedap.archie.rm.archetyped.FeederAudit;
 import com.nedap.archie.rm.datastructures.Cluster;
 import com.nedap.archie.rm.datavalues.DvCodedText;
 import com.nedap.archie.rm.datavalues.encapsulated.DvParsable;
@@ -70,6 +71,12 @@ public class ServiceRequestCurrentActivityActivity {
    */
   @Path("/timing")
   private DvParsable timing;
+
+  /**
+   * open_eREACT-Care/Response/Service request/Current Activity/feeder_audit
+   */
+  @Path("/feeder_audit")
+  private FeederAudit feederAudit;
 
   public void setServiceName(DvCodedText serviceName) {
      this.serviceName = serviceName;
@@ -149,5 +156,13 @@ public class ServiceRequestCurrentActivityActivity {
 
   public DvParsable getTiming() {
      return this.timing ;
+  }
+
+  public void setFeederAudit(FeederAudit feederAudit) {
+     this.feederAudit = feederAudit;
+  }
+
+  public FeederAudit getFeederAudit() {
+     return this.feederAudit ;
   }
 }

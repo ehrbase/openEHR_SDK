@@ -1,5 +1,6 @@
 package org.ehrbase.client.classgenerator.examples.coronaanamnesecomposition.definition;
 
+import com.nedap.archie.rm.archetyped.FeederAudit;
 import com.nedap.archie.rm.datastructures.Cluster;
 import com.nedap.archie.rm.datavalues.DvCodedText;
 import com.nedap.archie.rm.generic.PartyProxy;
@@ -32,6 +33,8 @@ public class FragebogenZumMedikationsScreeningObservationContainment extends Con
   public SelectAqlField<PartyProxy> SUBJECT = new AqlFieldImp<PartyProxy>(FragebogenZumMedikationsScreeningObservation.class, "/subject", "subject", PartyProxy.class, this);
 
   public SelectAqlField<Language> LANGUAGE = new AqlFieldImp<Language>(FragebogenZumMedikationsScreeningObservation.class, "/language", "language", Language.class, this);
+
+  public SelectAqlField<FeederAudit> FEEDER_AUDIT = new AqlFieldImp<FeederAudit>(FragebogenZumMedikationsScreeningObservation.class, "/feeder_audit", "feederAudit", FeederAudit.class, this);
 
   private FragebogenZumMedikationsScreeningObservationContainment() {
     super("openEHR-EHR-OBSERVATION.medication_use.v0");

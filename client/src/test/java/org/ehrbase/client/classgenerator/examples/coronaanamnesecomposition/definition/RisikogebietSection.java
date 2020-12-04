@@ -1,5 +1,6 @@
 package org.ehrbase.client.classgenerator.examples.coronaanamnesecomposition.definition;
 
+import com.nedap.archie.rm.archetyped.FeederAudit;
 import java.util.List;
 import org.ehrbase.client.annotations.Archetype;
 import org.ehrbase.client.annotations.Entity;
@@ -20,6 +21,12 @@ public class RisikogebietSection {
   @Path("/items[openEHR-EHR-OBSERVATION.travel_event.v0]")
   private List<ReisefallObservation> reisefall;
 
+  /**
+   * Bericht/Risikogebiet/feeder_audit
+   */
+  @Path("/feeder_audit")
+  private FeederAudit feederAudit;
+
   public void setHistorieDerReise(List<HistorieDerReiseObservation> historieDerReise) {
      this.historieDerReise = historieDerReise;
   }
@@ -34,5 +41,13 @@ public class RisikogebietSection {
 
   public List<ReisefallObservation> getReisefall() {
      return this.reisefall ;
+  }
+
+  public void setFeederAudit(FeederAudit feederAudit) {
+     this.feederAudit = feederAudit;
+  }
+
+  public FeederAudit getFeederAudit() {
+     return this.feederAudit ;
   }
 }

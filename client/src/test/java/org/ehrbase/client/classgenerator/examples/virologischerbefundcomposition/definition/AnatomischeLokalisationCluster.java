@@ -1,5 +1,6 @@
 package org.ehrbase.client.classgenerator.examples.virologischerbefundcomposition.definition;
 
+import com.nedap.archie.rm.archetyped.FeederAudit;
 import com.nedap.archie.rm.datastructures.Cluster;
 import java.lang.String;
 import java.util.List;
@@ -28,6 +29,12 @@ public class AnatomischeLokalisationCluster {
   @Path("/items[at0054]")
   private List<Cluster> multimedialeDarstellung;
 
+  /**
+   * Virologischer Befund/Befund/Jedes Ereignis/Probe/Anatomische Lokalisation/feeder_audit
+   */
+  @Path("/feeder_audit")
+  private FeederAudit feederAudit;
+
   public void setNameDerKorperstelleValue(String nameDerKorperstelleValue) {
      this.nameDerKorperstelleValue = nameDerKorperstelleValue;
   }
@@ -50,5 +57,13 @@ public class AnatomischeLokalisationCluster {
 
   public List<Cluster> getMultimedialeDarstellung() {
      return this.multimedialeDarstellung ;
+  }
+
+  public void setFeederAudit(FeederAudit feederAudit) {
+     this.feederAudit = feederAudit;
+  }
+
+  public FeederAudit getFeederAudit() {
+     return this.feederAudit ;
   }
 }

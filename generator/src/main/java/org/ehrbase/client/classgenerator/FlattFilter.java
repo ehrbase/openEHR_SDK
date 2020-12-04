@@ -19,6 +19,7 @@
 
 package org.ehrbase.client.classgenerator;
 
+import com.nedap.archie.rm.archetyped.Locatable;
 import com.nedap.archie.rm.datastructures.Event;
 import com.nedap.archie.rminfo.RMTypeInfo;
 import org.apache.commons.collections4.SetUtils;
@@ -30,6 +31,7 @@ import org.ehrbase.webtemplate.model.WebTemplateNode;
 import org.ehrbase.webtemplate.parser.config.RmIntrospectConfig;
 
 import java.util.Collections;
+import java.util.Deque;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -47,7 +49,9 @@ public class FlattFilter extends Filter {
   }
 
   @Override
-  protected boolean skip(WebTemplateNode node, WebTemplate context, WebTemplateNode parent) {
+  protected boolean skip(WebTemplateNode node, WebTemplate context, Deque<WebTemplateNode> deque ) {
+    WebTemplateNode parent = deque.peek();
+
     if (isTrivialNode(node, parent)) {
       return true;
     } else {
@@ -69,6 +73,12 @@ public class FlattFilter extends Filter {
         attributeNames.add("location");
         attributeNames.add("lower_included");
         attributeNames.add("upper_included");
+
+        deque.poll();
+        if(!isTrivialNode(parent,deque.peek()) && Locatable.class.isAssignableFrom( typeInfo.getJavaClass())){
+          attributeNames.add("feeder_audit");
+        }
+        deque.push(parent);
 
         SetUtils.SetView<String> difference =
             SetUtils.difference(typeInfo.getAttributes().keySet(), attributeNames);

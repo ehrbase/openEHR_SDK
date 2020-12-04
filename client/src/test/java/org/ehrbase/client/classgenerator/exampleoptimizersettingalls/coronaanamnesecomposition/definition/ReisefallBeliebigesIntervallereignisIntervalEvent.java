@@ -1,5 +1,6 @@
 package org.ehrbase.client.classgenerator.exampleoptimizersettingalls.coronaanamnesecomposition.definition;
 
+import com.nedap.archie.rm.archetyped.FeederAudit;
 import java.time.temporal.TemporalAccessor;
 import java.time.temporal.TemporalAmount;
 import java.util.List;
@@ -38,6 +39,12 @@ public class ReisefallBeliebigesIntervallereignisIntervalEvent {
    */
   @Path("/width|value")
   private TemporalAmount widthValue;
+
+  /**
+   * Bericht/Risikogebiet/Reisefall/Beliebiges Intervallereignis/feeder_audit
+   */
+  @Path("/feeder_audit")
+  private FeederAudit feederAudit;
 
   /**
    * Bericht/Risikogebiet/Reisefall/Beliebiges Intervallereignis/time
@@ -83,6 +90,14 @@ public class ReisefallBeliebigesIntervallereignisIntervalEvent {
 
   public TemporalAmount getWidthValue() {
      return this.widthValue ;
+  }
+
+  public void setFeederAudit(FeederAudit feederAudit) {
+     this.feederAudit = feederAudit;
+  }
+
+  public FeederAudit getFeederAudit() {
+     return this.feederAudit ;
   }
 
   public void setTimeValue(TemporalAccessor timeValue) {

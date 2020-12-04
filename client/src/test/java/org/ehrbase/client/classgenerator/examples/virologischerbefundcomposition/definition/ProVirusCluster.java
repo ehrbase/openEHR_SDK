@@ -1,5 +1,6 @@
 package org.ehrbase.client.classgenerator.examples.virologischerbefundcomposition.definition;
 
+import com.nedap.archie.rm.archetyped.FeederAudit;
 import com.nedap.archie.rm.datastructures.Cluster;
 import com.nedap.archie.rm.datavalues.DvIdentifier;
 import java.lang.Double;
@@ -60,6 +61,12 @@ public class ProVirusCluster {
    */
   @Path("/items[at0003]/value|value")
   private String kommentarValue;
+
+  /**
+   * Virologischer Befund/Befund/Jedes Ereignis/Kultur/Pro Virus/feeder_audit
+   */
+  @Path("/feeder_audit")
+  private FeederAudit feederAudit;
 
   public void setAnalyseergebnisReihenfolgeMagnitude(Long analyseergebnisReihenfolgeMagnitude) {
      this.analyseergebnisReihenfolgeMagnitude = analyseergebnisReihenfolgeMagnitude;
@@ -123,5 +130,13 @@ public class ProVirusCluster {
 
   public String getKommentarValue() {
      return this.kommentarValue ;
+  }
+
+  public void setFeederAudit(FeederAudit feederAudit) {
+     this.feederAudit = feederAudit;
+  }
+
+  public FeederAudit getFeederAudit() {
+     return this.feederAudit ;
   }
 }

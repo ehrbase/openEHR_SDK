@@ -1,5 +1,6 @@
 package org.ehrbase.client.classgenerator.exampleoptimizersettingsections.coronaanamnesecomposition.definition;
 
+import com.nedap.archie.rm.archetyped.FeederAudit;
 import com.nedap.archie.rm.datastructures.Cluster;
 import com.nedap.archie.rm.generic.PartyProxy;
 import java.lang.Long;
@@ -25,6 +26,8 @@ public class WohnsituationEvaluationContainment extends Containment {
   public SelectAqlField<PartyProxy> SUBJECT = new AqlFieldImp<PartyProxy>(WohnsituationEvaluation.class, "/subject", "subject", PartyProxy.class, this);
 
   public SelectAqlField<Language> LANGUAGE = new AqlFieldImp<Language>(WohnsituationEvaluation.class, "/language", "language", Language.class, this);
+
+  public SelectAqlField<FeederAudit> FEEDER_AUDIT = new AqlFieldImp<FeederAudit>(WohnsituationEvaluation.class, "/feeder_audit", "feederAudit", FeederAudit.class, this);
 
   private WohnsituationEvaluationContainment() {
     super("openEHR-EHR-EVALUATION.living_arrangement.v0");

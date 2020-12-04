@@ -1,5 +1,6 @@
 package org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev0composition.definition;
 
+import com.nedap.archie.rm.archetyped.FeederAudit;
 import com.nedap.archie.rm.datastructures.Cluster;
 import java.lang.String;
 import java.time.temporal.TemporalAccessor;
@@ -27,6 +28,8 @@ public class DeviceDetailsTrainingSampleClusterContainment extends Containment {
   public SelectAqlField<TemporalAccessor> DATE_LAST_CALIBRATION_VALUE = new AqlFieldImp<TemporalAccessor>(DeviceDetailsTrainingSampleCluster.class, "/items[at0008]/items[at0010]/value|value", "dateLastCalibrationValue", TemporalAccessor.class, this);
 
   public SelectAqlField<String> SERVICED_BY_VALUE = new AqlFieldImp<String>(DeviceDetailsTrainingSampleCluster.class, "/items[at0008]/items[at0011]/value|value", "servicedByValue", String.class, this);
+
+  public SelectAqlField<FeederAudit> FEEDER_AUDIT = new AqlFieldImp<FeederAudit>(DeviceDetailsTrainingSampleCluster.class, "/feeder_audit", "feederAudit", FeederAudit.class, this);
 
   private DeviceDetailsTrainingSampleClusterContainment() {
     super("openEHR-EHR-CLUSTER.sample_device.v1");

@@ -1,5 +1,6 @@
 package org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev0composition.definition;
 
+import com.nedap.archie.rm.archetyped.FeederAudit;
 import com.nedap.archie.rm.datastructures.Cluster;
 import com.nedap.archie.rm.generic.PartyProxy;
 import java.lang.Double;
@@ -139,6 +140,12 @@ public class BloodPressureTrainingSampleObservation {
    */
   @Path("/language")
   private Language language;
+
+  /**
+   * Encounter (training sample)/Blood pressure (Training sample)/feeder_audit
+   */
+  @Path("/feeder_audit")
+  private FeederAudit feederAudit;
 
   public void setSystolicMagnitude(Double systolicMagnitude) {
      this.systolicMagnitude = systolicMagnitude;
@@ -308,5 +315,13 @@ public class BloodPressureTrainingSampleObservation {
 
   public Language getLanguage() {
      return this.language ;
+  }
+
+  public void setFeederAudit(FeederAudit feederAudit) {
+     this.feederAudit = feederAudit;
+  }
+
+  public FeederAudit getFeederAudit() {
+     return this.feederAudit ;
   }
 }

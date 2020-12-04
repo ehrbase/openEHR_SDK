@@ -1,5 +1,6 @@
 package org.ehrbase.client.classgenerator.examples.smicsbefundcomposition.definition;
 
+import com.nedap.archie.rm.archetyped.FeederAudit;
 import java.lang.String;
 import java.util.List;
 import org.ehrbase.client.annotations.Archetype;
@@ -38,6 +39,12 @@ public class EventsummaryCluster {
    */
   @Path("/items[at0006]/value|value")
   private String kommentarValue;
+
+  /**
+   * SmICS Befund/context/Eventsummary/feeder_audit
+   */
+  @Path("/feeder_audit")
+  private FeederAudit feederAudit;
 
   public void setFallidentifikationValue(String fallidentifikationValue) {
      this.fallidentifikationValue = fallidentifikationValue;
@@ -78,5 +85,13 @@ public class EventsummaryCluster {
 
   public String getKommentarValue() {
      return this.kommentarValue ;
+  }
+
+  public void setFeederAudit(FeederAudit feederAudit) {
+     this.feederAudit = feederAudit;
+  }
+
+  public FeederAudit getFeederAudit() {
+     return this.feederAudit ;
   }
 }

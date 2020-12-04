@@ -1,5 +1,6 @@
 package org.ehrbase.client.classgenerator.examples.virologischerbefundcomposition.definition;
 
+import com.nedap.archie.rm.archetyped.FeederAudit;
 import com.nedap.archie.rm.datastructures.Cluster;
 import com.nedap.archie.rm.datavalues.DvIdentifier;
 import com.nedap.archie.rm.generic.PartyProxy;
@@ -121,6 +122,12 @@ public class BefundObservation {
    */
   @Path("/language")
   private Language language;
+
+  /**
+   * Virologischer Befund/Befund/feeder_audit
+   */
+  @Path("/feeder_audit")
+  private FeederAudit feederAudit;
 
   public void setLabortestBezeichnungValue(String labortestBezeichnungValue) {
      this.labortestBezeichnungValue = labortestBezeichnungValue;
@@ -266,5 +273,13 @@ public class BefundObservation {
 
   public Language getLanguage() {
      return this.language ;
+  }
+
+  public void setFeederAudit(FeederAudit feederAudit) {
+     this.feederAudit = feederAudit;
+  }
+
+  public FeederAudit getFeederAudit() {
+     return this.feederAudit ;
   }
 }

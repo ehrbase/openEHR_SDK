@@ -1,5 +1,6 @@
 package org.ehrbase.client.classgenerator.examples.smicsbefundcomposition.definition;
 
+import com.nedap.archie.rm.archetyped.FeederAudit;
 import java.lang.String;
 import java.util.List;
 import org.ehrbase.client.annotations.Archetype;
@@ -33,6 +34,12 @@ public class ErregertypisierungCluster {
   @Path("/items[at0002]/value|value")
   private String kommentarValue;
 
+  /**
+   * SmICS Befund/SmICS-Ergebnis/Jedes Ereignis/Eigenschaften des beteiligten Erregers/Erregertypisierung/feeder_audit
+   */
+  @Path("/feeder_audit")
+  private FeederAudit feederAudit;
+
   public void setArtDerTypisierung(
       List<ErregertypisierungArtDerTypisierungElement> artDerTypisierung) {
      this.artDerTypisierung = artDerTypisierung;
@@ -64,5 +71,13 @@ public class ErregertypisierungCluster {
 
   public String getKommentarValue() {
      return this.kommentarValue ;
+  }
+
+  public void setFeederAudit(FeederAudit feederAudit) {
+     this.feederAudit = feederAudit;
+  }
+
+  public FeederAudit getFeederAudit() {
+     return this.feederAudit ;
   }
 }

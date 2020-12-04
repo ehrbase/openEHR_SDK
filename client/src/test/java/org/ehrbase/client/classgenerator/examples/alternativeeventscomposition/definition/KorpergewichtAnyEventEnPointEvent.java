@@ -1,5 +1,6 @@
 package org.ehrbase.client.classgenerator.examples.alternativeeventscomposition.definition;
 
+import com.nedap.archie.rm.archetyped.FeederAudit;
 import java.lang.Double;
 import java.lang.String;
 import java.time.temporal.TemporalAccessor;
@@ -40,6 +41,12 @@ public class KorpergewichtAnyEventEnPointEvent implements KorpergewichtAnyEventE
    */
   @Path("/state[at0008]/items[at0025]")
   private List<KorpergewichtConfoundingFactorsEnElement> confoundingFactorsEn;
+
+  /**
+   * Bericht/Körpergewicht/*Any event(en)/feeder_audit
+   */
+  @Path("/feeder_audit")
+  private FeederAudit feederAudit;
 
   /**
    * Bericht/Körpergewicht/*Any event(en)/time
@@ -86,6 +93,14 @@ public class KorpergewichtAnyEventEnPointEvent implements KorpergewichtAnyEventE
 
   public List<KorpergewichtConfoundingFactorsEnElement> getConfoundingFactorsEn() {
      return this.confoundingFactorsEn ;
+  }
+
+  public void setFeederAudit(FeederAudit feederAudit) {
+     this.feederAudit = feederAudit;
+  }
+
+  public FeederAudit getFeederAudit() {
+     return this.feederAudit ;
   }
 
   public void setTimeValue(TemporalAccessor timeValue) {

@@ -1,5 +1,6 @@
 package org.ehrbase.client.classgenerator.examples.testalltypesenv1composition.definition;
 
+import com.nedap.archie.rm.archetyped.FeederAudit;
 import com.nedap.archie.rm.datavalues.DvCodedText;
 import com.nedap.archie.rm.datavalues.DvIdentifier;
 import com.nedap.archie.rm.datavalues.encapsulated.DvMultimedia;
@@ -147,6 +148,12 @@ public class TestAllTypesObservation {
    */
   @Path("/language")
   private Language language;
+
+  /**
+   * Test all types/Test all types/feeder_audit
+   */
+  @Path("/feeder_audit")
+  private FeederAudit feederAudit;
 
   public void setTextValue(String textValue) {
      this.textValue = textValue;
@@ -314,5 +321,13 @@ public class TestAllTypesObservation {
 
   public Language getLanguage() {
      return this.language ;
+  }
+
+  public void setFeederAudit(FeederAudit feederAudit) {
+     this.feederAudit = feederAudit;
+  }
+
+  public FeederAudit getFeederAudit() {
+     return this.feederAudit ;
   }
 }

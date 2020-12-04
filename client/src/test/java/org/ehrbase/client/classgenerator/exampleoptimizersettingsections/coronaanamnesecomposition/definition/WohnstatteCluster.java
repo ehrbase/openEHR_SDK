@@ -1,5 +1,6 @@
 package org.ehrbase.client.classgenerator.exampleoptimizersettingsections.coronaanamnesecomposition.definition;
 
+import com.nedap.archie.rm.archetyped.FeederAudit;
 import com.nedap.archie.rm.datastructures.Cluster;
 import java.lang.Long;
 import java.util.List;
@@ -22,6 +23,12 @@ public class WohnstatteCluster {
   @Path("/items[at0003]")
   private List<Cluster> erganzendeDetails;
 
+  /**
+   * Bericht/Allgemeine Angaben/Wohnsituation/Wohnstätte/feeder_audit
+   */
+  @Path("/feeder_audit")
+  private FeederAudit feederAudit;
+
   public void setAnzahlDerSchlafzimmerMagnitude(Long anzahlDerSchlafzimmerMagnitude) {
      this.anzahlDerSchlafzimmerMagnitude = anzahlDerSchlafzimmerMagnitude;
   }
@@ -36,5 +43,13 @@ public class WohnstatteCluster {
 
   public List<Cluster> getErganzendeDetails() {
      return this.erganzendeDetails ;
+  }
+
+  public void setFeederAudit(FeederAudit feederAudit) {
+     this.feederAudit = feederAudit;
+  }
+
+  public FeederAudit getFeederAudit() {
+     return this.feederAudit ;
   }
 }

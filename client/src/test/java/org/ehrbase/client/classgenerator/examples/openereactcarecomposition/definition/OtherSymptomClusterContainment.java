@@ -1,5 +1,6 @@
 package org.ehrbase.client.classgenerator.examples.openereactcarecomposition.definition;
 
+import com.nedap.archie.rm.archetyped.FeederAudit;
 import com.nedap.archie.rm.datastructures.Cluster;
 import java.lang.String;
 import org.ehrbase.client.aql.containment.Containment;
@@ -22,6 +23,8 @@ public class OtherSymptomClusterContainment extends Containment {
   public ListSelectAqlField<Cluster> ASSOCIATED_SYMPTOM_SIGN = new ListAqlFieldImp<Cluster>(OtherSymptomCluster.class, "/items[at0063]", "associatedSymptomSign", Cluster.class, this);
 
   public SelectAqlField<PresenceDefiningCode> PRESENCE_DEFINING_CODE = new AqlFieldImp<PresenceDefiningCode>(OtherSymptomCluster.class, "/items[at0.1]/value|defining_code", "presenceDefiningCode", PresenceDefiningCode.class, this);
+
+  public SelectAqlField<FeederAudit> FEEDER_AUDIT = new AqlFieldImp<FeederAudit>(OtherSymptomCluster.class, "/feeder_audit", "feederAudit", FeederAudit.class, this);
 
   private OtherSymptomClusterContainment() {
     super("openEHR-EHR-CLUSTER.symptom_sign-cvid.v0");

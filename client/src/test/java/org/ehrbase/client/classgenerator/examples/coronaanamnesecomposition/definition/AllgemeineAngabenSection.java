@@ -1,5 +1,6 @@
 package org.ehrbase.client.classgenerator.examples.coronaanamnesecomposition.definition;
 
+import com.nedap.archie.rm.archetyped.FeederAudit;
 import java.util.List;
 import org.ehrbase.client.annotations.Archetype;
 import org.ehrbase.client.annotations.Entity;
@@ -61,6 +62,12 @@ public class AllgemeineAngabenSection {
    */
   @Path("/items[openEHR-EHR-INSTRUCTION.service_request.v1]")
   private List<DienstleistungInstruction> dienstleistung;
+
+  /**
+   * Bericht/Allgemeine Angaben/feeder_audit
+   */
+  @Path("/feeder_audit")
+  private FeederAudit feederAudit;
 
   public void setAndereAktuelleErkrankungen(
       AndereAktuelleErkrankungenObservation andereAktuelleErkrankungen) {
@@ -137,5 +144,13 @@ public class AllgemeineAngabenSection {
 
   public List<DienstleistungInstruction> getDienstleistung() {
      return this.dienstleistung ;
+  }
+
+  public void setFeederAudit(FeederAudit feederAudit) {
+     this.feederAudit = feederAudit;
+  }
+
+  public FeederAudit getFeederAudit() {
+     return this.feederAudit ;
   }
 }

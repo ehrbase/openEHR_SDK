@@ -1,5 +1,6 @@
 package org.ehrbase.client.classgenerator.examples.testalltypesenv1composition.definition;
 
+import com.nedap.archie.rm.archetyped.FeederAudit;
 import com.nedap.archie.rm.generic.PartyProxy;
 import java.time.temporal.TemporalAccessor;
 import java.util.List;
@@ -29,6 +30,12 @@ public class TestAllTypesAction {
    */
   @Path("/language")
   private Language language;
+
+  /**
+   * Test all types/Test all types/section 2/section 3/Test all types/feeder_audit
+   */
+  @Path("/feeder_audit")
+  private FeederAudit feederAudit;
 
   /**
    * Test all types/Test all types/section 2/section 3/Test all types/time
@@ -76,6 +83,14 @@ public class TestAllTypesAction {
 
   public Language getLanguage() {
      return this.language ;
+  }
+
+  public void setFeederAudit(FeederAudit feederAudit) {
+     this.feederAudit = feederAudit;
+  }
+
+  public FeederAudit getFeederAudit() {
+     return this.feederAudit ;
   }
 
   public void setTimeValue(TemporalAccessor timeValue) {

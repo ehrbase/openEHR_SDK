@@ -1,5 +1,6 @@
 package org.ehrbase.client.classgenerator.examples.coronaanamnesecomposition.definition;
 
+import com.nedap.archie.rm.archetyped.FeederAudit;
 import com.nedap.archie.rm.datastructures.Cluster;
 import java.time.temporal.TemporalAccessor;
 import java.time.temporal.TemporalAmount;
@@ -23,6 +24,12 @@ public class GeschichteHistorieBeliebigesEreignisIntervalEvent implements Geschi
    */
   @Path("/data[at0003]/items[at0006]")
   private List<Cluster> strukturierteAngabe;
+
+  /**
+   * Bericht/Geschichte/Historie/Beliebiges Ereignis/feeder_audit
+   */
+  @Path("/feeder_audit")
+  private FeederAudit feederAudit;
 
   /**
    * Bericht/Geschichte/Historie/Beliebiges Ereignis/time
@@ -56,6 +63,14 @@ public class GeschichteHistorieBeliebigesEreignisIntervalEvent implements Geschi
 
   public List<Cluster> getStrukturierteAngabe() {
      return this.strukturierteAngabe ;
+  }
+
+  public void setFeederAudit(FeederAudit feederAudit) {
+     this.feederAudit = feederAudit;
+  }
+
+  public FeederAudit getFeederAudit() {
+     return this.feederAudit ;
   }
 
   public void setTimeValue(TemporalAccessor timeValue) {

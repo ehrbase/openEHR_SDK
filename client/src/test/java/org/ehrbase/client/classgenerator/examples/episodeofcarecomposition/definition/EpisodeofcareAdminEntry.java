@@ -1,5 +1,6 @@
 package org.ehrbase.client.classgenerator.examples.episodeofcarecomposition.definition;
 
+import com.nedap.archie.rm.archetyped.FeederAudit;
 import com.nedap.archie.rm.generic.PartyProxy;
 import java.lang.Boolean;
 import java.lang.String;
@@ -91,6 +92,12 @@ public class EpisodeofcareAdminEntry {
    */
   @Path("/language")
   private Language language;
+
+  /**
+   * EpisodeOfCare/Episodeofcare/feeder_audit
+   */
+  @Path("/feeder_audit")
+  private FeederAudit feederAudit;
 
   public void setIdentifier(List<EpisodeofcareIdentifierElement> identifier) {
      this.identifier = identifier;
@@ -194,5 +201,13 @@ public class EpisodeofcareAdminEntry {
 
   public Language getLanguage() {
      return this.language ;
+  }
+
+  public void setFeederAudit(FeederAudit feederAudit) {
+     this.feederAudit = feederAudit;
+  }
+
+  public FeederAudit getFeederAudit() {
+     return this.feederAudit ;
   }
 }

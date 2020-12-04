@@ -1,5 +1,6 @@
 package org.ehrbase.client.classgenerator.examples.testalltypesenv1composition.definition;
 
+import com.nedap.archie.rm.archetyped.FeederAudit;
 import com.nedap.archie.rm.datavalues.DvCodedText;
 import com.nedap.archie.rm.datavalues.DvIdentifier;
 import com.nedap.archie.rm.datavalues.encapsulated.DvMultimedia;
@@ -63,6 +64,8 @@ public class TestAllTypesObservationContainment extends Containment {
   public SelectAqlField<PartyProxy> SUBJECT = new AqlFieldImp<PartyProxy>(TestAllTypesObservation.class, "/subject", "subject", PartyProxy.class, this);
 
   public SelectAqlField<Language> LANGUAGE = new AqlFieldImp<Language>(TestAllTypesObservation.class, "/language", "language", Language.class, this);
+
+  public SelectAqlField<FeederAudit> FEEDER_AUDIT = new AqlFieldImp<FeederAudit>(TestAllTypesObservation.class, "/feeder_audit", "feederAudit", FeederAudit.class, this);
 
   private TestAllTypesObservationContainment() {
     super("openEHR-EHR-OBSERVATION.test_all_types.v1");

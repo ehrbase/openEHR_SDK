@@ -1,5 +1,6 @@
 package org.ehrbase.client.classgenerator.examples.testalltypesenv1composition.definition;
 
+import com.nedap.archie.rm.archetyped.FeederAudit;
 import com.nedap.archie.rm.datavalues.encapsulated.DvParsable;
 import com.nedap.archie.rm.generic.PartyProxy;
 import java.lang.String;
@@ -24,6 +25,8 @@ public class TestAllTypesInstructionContainment extends Containment {
   public SelectAqlField<String> NARRATIVE_VALUE = new AqlFieldImp<String>(TestAllTypesInstruction.class, "/narrative|value", "narrativeValue", String.class, this);
 
   public SelectAqlField<Language> LANGUAGE = new AqlFieldImp<Language>(TestAllTypesInstruction.class, "/language", "language", Language.class, this);
+
+  public SelectAqlField<FeederAudit> FEEDER_AUDIT = new AqlFieldImp<FeederAudit>(TestAllTypesInstruction.class, "/feeder_audit", "feederAudit", FeederAudit.class, this);
 
   public SelectAqlField<TemporalAccessor> EXPIRY_TIME_VALUE = new AqlFieldImp<TemporalAccessor>(TestAllTypesInstruction.class, "/expiry_time|value", "expiryTimeValue", TemporalAccessor.class, this);
 
