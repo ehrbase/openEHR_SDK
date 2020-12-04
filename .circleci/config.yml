@@ -335,7 +335,6 @@ workflows:
       ///                                                                 ///
       //////////////////////////////////////////////////////////////////////
 
-
     jobs:
       - build-and-test-synced-branches-of-EHRbase-and-openEHR_SDK:
           context: org-global

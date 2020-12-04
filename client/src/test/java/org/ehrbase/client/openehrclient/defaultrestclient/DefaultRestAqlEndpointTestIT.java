@@ -384,4 +384,28 @@ public class DefaultRestAqlEndpointTestIT {
 
 
     }
+
+    @Test
+    public void testQueryCount() {
+
+        UUID ehr = openEhrClient.ehrEndpoint().createEhr();
+
+        openEhrClient.compositionEndpoint(ehr).mergeCompositionEntity(TestData.buildEhrbaseBloodPressureSimpleDeV0());
+        openEhrClient.compositionEndpoint(ehr).mergeCompositionEntity(TestData.buildEhrbaseBloodPressureSimpleDeV0());
+
+        Query<Record1<Integer>> query = Query.buildNativeQuery("select  count(e/ehr_id/value) from EHR e contains composition c", Integer.class);
+
+        List<Record1<Integer>> result = openEhrClient.aqlEndpoint().execute(query);
+        assertThat(result).isNotNull();
+        assertThat(result.get(0).value1() > 0);
+
+        query = Query.buildNativeQuery("select  count(c/uid/value) from EHR e contains composition c", Integer.class);
+
+        result = openEhrClient.aqlEndpoint().execute(query);
+        assertThat(result).isNotNull();
+        assertThat(result.get(0).value1() > 0);
+//        assertThat(result).size().isEqualTo(2);
+
+
+    }
 }
