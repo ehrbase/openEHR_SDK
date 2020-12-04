@@ -21,13 +21,13 @@ public class Covid19ExposureEvaluation {
    * open_eREACT-Care/Assessment/Covid/Covid-19 exposure/Care home has suspected/confirmed Covid-19/Risk factor
    */
   @Path("/data[at0001]/items[at0016 and name/value='Care home has suspected/confirmed Covid-19']/items[at0013.1]/value|defining_code")
-  private RiskFactorDefiningCode riskFactorDefiningCode;
+  private RiskFactorDefiningCode careHomeHasSuspectedConfirmedCovid19RiskFactorDefiningCode;
 
   /**
    * open_eREACT-Care/Assessment/Covid/Covid-19 exposure/Care home has suspected/confirmed Covid-19/Presence
    */
   @Path("/data[at0001]/items[at0016 and name/value='Care home has suspected/confirmed Covid-19']/items[at0017.1]/value|defining_code")
-  private PresenceDefiningCode2 presenceDefiningCode;
+  private PresenceDefiningCode2 careHomeHasSuspectedConfirmedCovid19PresenceDefiningCode;
 
   /**
    * open_eREACT-Care/Assessment/Covid/Covid-19 exposure/Care home has suspected/confirmed Covid-19/Detail
@@ -39,13 +39,13 @@ public class Covid19ExposureEvaluation {
    * open_eREACT-Care/Assessment/Covid/Covid-19 exposure/Contact with confirmed case/Risk factor
    */
   @Path("/data[at0001]/items[at0016 and name/value='Contact with confirmed case']/items[at0013.1]/value|defining_code")
-  private RiskFactorDefiningCode2 riskFactorDefiningCode2;
+  private RiskFactorDefiningCode2 contactWithConfirmedCaseRiskFactorDefiningCode;
 
   /**
    * open_eREACT-Care/Assessment/Covid/Covid-19 exposure/Contact with confirmed case/Presence
    */
   @Path("/data[at0001]/items[at0016 and name/value='Contact with confirmed case']/items[at0017.1]/value|defining_code")
-  private PresenceDefiningCode2 presenceDefiningCode2;
+  private PresenceDefiningCode2 contactWithConfirmedCasePresenceDefiningCode;
 
   /**
    * open_eREACT-Care/Assessment/Covid/Covid-19 exposure/Contact with confirmed case/Detail
@@ -57,13 +57,13 @@ public class Covid19ExposureEvaluation {
    * open_eREACT-Care/Assessment/Covid/Covid-19 exposure/Other residents/household members unwell/Risk factor
    */
   @Path("/data[at0001]/items[at0016 and name/value='Other residents/household members unwell']/items[at0013.1]/value|defining_code")
-  private RiskFactorDefiningCode3 riskFactorDefiningCode3;
+  private RiskFactorDefiningCode3 otherResidentsHouseholdMembersUnwellRiskFactorDefiningCode;
 
   /**
    * open_eREACT-Care/Assessment/Covid/Covid-19 exposure/Other residents/household members unwell/Presence
    */
   @Path("/data[at0001]/items[at0016 and name/value='Other residents/household members unwell']/items[at0017.1]/value|defining_code")
-  private PresenceDefiningCode2 presenceDefiningCode3;
+  private PresenceDefiningCode2 otherResidentsHouseholdMembersUnwellPresenceDefiningCode;
 
   /**
    * open_eREACT-Care/Assessment/Covid/Covid-19 exposure/Other residents/household members unwell/Detail
@@ -103,20 +103,22 @@ public class Covid19ExposureEvaluation {
      return this.healthRiskDefiningCode ;
   }
 
-  public void setRiskFactorDefiningCode(RiskFactorDefiningCode riskFactorDefiningCode) {
-     this.riskFactorDefiningCode = riskFactorDefiningCode;
+  public void setCareHomeHasSuspectedConfirmedCovid19RiskFactorDefiningCode(
+      RiskFactorDefiningCode careHomeHasSuspectedConfirmedCovid19RiskFactorDefiningCode) {
+     this.careHomeHasSuspectedConfirmedCovid19RiskFactorDefiningCode = careHomeHasSuspectedConfirmedCovid19RiskFactorDefiningCode;
   }
 
-  public RiskFactorDefiningCode getRiskFactorDefiningCode() {
-     return this.riskFactorDefiningCode ;
+  public RiskFactorDefiningCode getCareHomeHasSuspectedConfirmedCovid19RiskFactorDefiningCode() {
+     return this.careHomeHasSuspectedConfirmedCovid19RiskFactorDefiningCode ;
   }
 
-  public void setPresenceDefiningCode(PresenceDefiningCode2 presenceDefiningCode) {
-     this.presenceDefiningCode = presenceDefiningCode;
+  public void setCareHomeHasSuspectedConfirmedCovid19PresenceDefiningCode(
+      PresenceDefiningCode2 careHomeHasSuspectedConfirmedCovid19PresenceDefiningCode) {
+     this.careHomeHasSuspectedConfirmedCovid19PresenceDefiningCode = careHomeHasSuspectedConfirmedCovid19PresenceDefiningCode;
   }
 
-  public PresenceDefiningCode2 getPresenceDefiningCode() {
-     return this.presenceDefiningCode ;
+  public PresenceDefiningCode2 getCareHomeHasSuspectedConfirmedCovid19PresenceDefiningCode() {
+     return this.careHomeHasSuspectedConfirmedCovid19PresenceDefiningCode ;
   }
 
   public void setCareHomeHasSuspectedConfirmedCovid19Detail(
@@ -128,20 +130,22 @@ public class Covid19ExposureEvaluation {
      return this.careHomeHasSuspectedConfirmedCovid19Detail ;
   }
 
-  public void setRiskFactorDefiningCode2(RiskFactorDefiningCode2 riskFactorDefiningCode2) {
-     this.riskFactorDefiningCode2 = riskFactorDefiningCode2;
+  public void setContactWithConfirmedCaseRiskFactorDefiningCode(
+      RiskFactorDefiningCode2 contactWithConfirmedCaseRiskFactorDefiningCode) {
+     this.contactWithConfirmedCaseRiskFactorDefiningCode = contactWithConfirmedCaseRiskFactorDefiningCode;
   }
 
-  public RiskFactorDefiningCode2 getRiskFactorDefiningCode2() {
-     return this.riskFactorDefiningCode2 ;
+  public RiskFactorDefiningCode2 getContactWithConfirmedCaseRiskFactorDefiningCode() {
+     return this.contactWithConfirmedCaseRiskFactorDefiningCode ;
   }
 
-  public void setPresenceDefiningCode2(PresenceDefiningCode2 presenceDefiningCode2) {
-     this.presenceDefiningCode2 = presenceDefiningCode2;
+  public void setContactWithConfirmedCasePresenceDefiningCode(
+      PresenceDefiningCode2 contactWithConfirmedCasePresenceDefiningCode) {
+     this.contactWithConfirmedCasePresenceDefiningCode = contactWithConfirmedCasePresenceDefiningCode;
   }
 
-  public PresenceDefiningCode2 getPresenceDefiningCode2() {
-     return this.presenceDefiningCode2 ;
+  public PresenceDefiningCode2 getContactWithConfirmedCasePresenceDefiningCode() {
+     return this.contactWithConfirmedCasePresenceDefiningCode ;
   }
 
   public void setContactWithConfirmedCaseDetail(List<Cluster> contactWithConfirmedCaseDetail) {
@@ -152,20 +156,22 @@ public class Covid19ExposureEvaluation {
      return this.contactWithConfirmedCaseDetail ;
   }
 
-  public void setRiskFactorDefiningCode3(RiskFactorDefiningCode3 riskFactorDefiningCode3) {
-     this.riskFactorDefiningCode3 = riskFactorDefiningCode3;
+  public void setOtherResidentsHouseholdMembersUnwellRiskFactorDefiningCode(
+      RiskFactorDefiningCode3 otherResidentsHouseholdMembersUnwellRiskFactorDefiningCode) {
+     this.otherResidentsHouseholdMembersUnwellRiskFactorDefiningCode = otherResidentsHouseholdMembersUnwellRiskFactorDefiningCode;
   }
 
-  public RiskFactorDefiningCode3 getRiskFactorDefiningCode3() {
-     return this.riskFactorDefiningCode3 ;
+  public RiskFactorDefiningCode3 getOtherResidentsHouseholdMembersUnwellRiskFactorDefiningCode() {
+     return this.otherResidentsHouseholdMembersUnwellRiskFactorDefiningCode ;
   }
 
-  public void setPresenceDefiningCode3(PresenceDefiningCode2 presenceDefiningCode3) {
-     this.presenceDefiningCode3 = presenceDefiningCode3;
+  public void setOtherResidentsHouseholdMembersUnwellPresenceDefiningCode(
+      PresenceDefiningCode2 otherResidentsHouseholdMembersUnwellPresenceDefiningCode) {
+     this.otherResidentsHouseholdMembersUnwellPresenceDefiningCode = otherResidentsHouseholdMembersUnwellPresenceDefiningCode;
   }
 
-  public PresenceDefiningCode2 getPresenceDefiningCode3() {
-     return this.presenceDefiningCode3 ;
+  public PresenceDefiningCode2 getOtherResidentsHouseholdMembersUnwellPresenceDefiningCode() {
+     return this.otherResidentsHouseholdMembersUnwellPresenceDefiningCode ;
   }
 
   public void setOtherResidentsHouseholdMembersUnwellDetail(

@@ -14,21 +14,21 @@ public class Covid19ExposureEvaluationContainment extends Containment {
 
   public SelectAqlField<HealthRiskDefiningCode> HEALTH_RISK_DEFINING_CODE = new AqlFieldImp<HealthRiskDefiningCode>(Covid19ExposureEvaluation.class, "/data[at0001]/items[at0002.1]/value|defining_code", "healthRiskDefiningCode", HealthRiskDefiningCode.class, this);
 
-  public SelectAqlField<RiskFactorDefiningCode> RISK_FACTOR_DEFINING_CODE = new AqlFieldImp<RiskFactorDefiningCode>(Covid19ExposureEvaluation.class, "/data[at0001]/items[at0016]/items[at0013.1]/value|defining_code", "riskFactorDefiningCode", RiskFactorDefiningCode.class, this);
+  public SelectAqlField<RiskFactorDefiningCode> CARE_HOME_HAS_SUSPECTED_CONFIRMED_COVID19_RISK_FACTOR_DEFINING_CODE = new AqlFieldImp<RiskFactorDefiningCode>(Covid19ExposureEvaluation.class, "/data[at0001]/items[at0016]/items[at0013.1]/value|defining_code", "careHomeHasSuspectedConfirmedCovid19RiskFactorDefiningCode", RiskFactorDefiningCode.class, this);
 
-  public SelectAqlField<PresenceDefiningCode2> PRESENCE_DEFINING_CODE = new AqlFieldImp<PresenceDefiningCode2>(Covid19ExposureEvaluation.class, "/data[at0001]/items[at0016]/items[at0017.1]/value|defining_code", "presenceDefiningCode", PresenceDefiningCode2.class, this);
+  public SelectAqlField<PresenceDefiningCode2> CARE_HOME_HAS_SUSPECTED_CONFIRMED_COVID19_PRESENCE_DEFINING_CODE = new AqlFieldImp<PresenceDefiningCode2>(Covid19ExposureEvaluation.class, "/data[at0001]/items[at0016]/items[at0017.1]/value|defining_code", "careHomeHasSuspectedConfirmedCovid19PresenceDefiningCode", PresenceDefiningCode2.class, this);
 
   public ListSelectAqlField<Cluster> CARE_HOME_HAS_SUSPECTED_CONFIRMED_COVID19_DETAIL = new ListAqlFieldImp<Cluster>(Covid19ExposureEvaluation.class, "/data[at0001]/items[at0016]/items[at0027.1]", "careHomeHasSuspectedConfirmedCovid19Detail", Cluster.class, this);
 
-  public SelectAqlField<RiskFactorDefiningCode2> RISK_FACTOR_DEFINING_CODE2 = new AqlFieldImp<RiskFactorDefiningCode2>(Covid19ExposureEvaluation.class, "/data[at0001]/items[at0016]/items[at0013.1]/value|defining_code", "riskFactorDefiningCode2", RiskFactorDefiningCode2.class, this);
+  public SelectAqlField<RiskFactorDefiningCode2> CONTACT_WITH_CONFIRMED_CASE_RISK_FACTOR_DEFINING_CODE = new AqlFieldImp<RiskFactorDefiningCode2>(Covid19ExposureEvaluation.class, "/data[at0001]/items[at0016]/items[at0013.1]/value|defining_code", "contactWithConfirmedCaseRiskFactorDefiningCode", RiskFactorDefiningCode2.class, this);
 
-  public SelectAqlField<PresenceDefiningCode2> PRESENCE_DEFINING_CODE2 = new AqlFieldImp<PresenceDefiningCode2>(Covid19ExposureEvaluation.class, "/data[at0001]/items[at0016]/items[at0017.1]/value|defining_code", "presenceDefiningCode2", PresenceDefiningCode2.class, this);
+  public SelectAqlField<PresenceDefiningCode2> CONTACT_WITH_CONFIRMED_CASE_PRESENCE_DEFINING_CODE = new AqlFieldImp<PresenceDefiningCode2>(Covid19ExposureEvaluation.class, "/data[at0001]/items[at0016]/items[at0017.1]/value|defining_code", "contactWithConfirmedCasePresenceDefiningCode", PresenceDefiningCode2.class, this);
 
   public ListSelectAqlField<Cluster> CONTACT_WITH_CONFIRMED_CASE_DETAIL = new ListAqlFieldImp<Cluster>(Covid19ExposureEvaluation.class, "/data[at0001]/items[at0016]/items[at0027.1]", "contactWithConfirmedCaseDetail", Cluster.class, this);
 
-  public SelectAqlField<RiskFactorDefiningCode3> RISK_FACTOR_DEFINING_CODE3 = new AqlFieldImp<RiskFactorDefiningCode3>(Covid19ExposureEvaluation.class, "/data[at0001]/items[at0016]/items[at0013.1]/value|defining_code", "riskFactorDefiningCode3", RiskFactorDefiningCode3.class, this);
+  public SelectAqlField<RiskFactorDefiningCode3> OTHER_RESIDENTS_HOUSEHOLD_MEMBERS_UNWELL_RISK_FACTOR_DEFINING_CODE = new AqlFieldImp<RiskFactorDefiningCode3>(Covid19ExposureEvaluation.class, "/data[at0001]/items[at0016]/items[at0013.1]/value|defining_code", "otherResidentsHouseholdMembersUnwellRiskFactorDefiningCode", RiskFactorDefiningCode3.class, this);
 
-  public SelectAqlField<PresenceDefiningCode2> PRESENCE_DEFINING_CODE3 = new AqlFieldImp<PresenceDefiningCode2>(Covid19ExposureEvaluation.class, "/data[at0001]/items[at0016]/items[at0017.1]/value|defining_code", "presenceDefiningCode3", PresenceDefiningCode2.class, this);
+  public SelectAqlField<PresenceDefiningCode2> OTHER_RESIDENTS_HOUSEHOLD_MEMBERS_UNWELL_PRESENCE_DEFINING_CODE = new AqlFieldImp<PresenceDefiningCode2>(Covid19ExposureEvaluation.class, "/data[at0001]/items[at0016]/items[at0017.1]/value|defining_code", "otherResidentsHouseholdMembersUnwellPresenceDefiningCode", PresenceDefiningCode2.class, this);
 
   public ListSelectAqlField<Cluster> OTHER_RESIDENTS_HOUSEHOLD_MEMBERS_UNWELL_DETAIL = new ListAqlFieldImp<Cluster>(Covid19ExposureEvaluation.class, "/data[at0001]/items[at0016]/items[at0027.1]", "otherResidentsHouseholdMembersUnwellDetail", Cluster.class, this);
 

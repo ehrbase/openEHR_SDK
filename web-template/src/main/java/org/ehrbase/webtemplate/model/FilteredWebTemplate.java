@@ -20,9 +20,12 @@
 package org.ehrbase.webtemplate.model;
 
 import net.minidev.json.annotate.JsonIgnore;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.Deque;
 import java.util.Map;
+import java.util.Objects;
 
 public class FilteredWebTemplate extends WebTemplate{
 
@@ -31,13 +34,14 @@ public class FilteredWebTemplate extends WebTemplate{
     }
 
     @JsonIgnore
-    private Map<WebTemplateNode, Deque<WebTemplateNode>> filteredNodeMap;
+    public Map<Pair<String,String>, Deque<WebTemplateNode>> filteredNodeMap;
 
-    public void setFilteredNodeMap(Map<WebTemplateNode, Deque<WebTemplateNode>> filteredNodeMap) {
+    public void setFilteredNodeMap(Map<Pair<String,String>, Deque<WebTemplateNode>> filteredNodeMap) {
         this.filteredNodeMap = filteredNodeMap;
     }
 
     public Deque<WebTemplateNode> findFiltersNodes(WebTemplateNode  node){
-        return filteredNodeMap.get(node);
+
+       return filteredNodeMap.get(new ImmutablePair<>(node.getAqlPath(),node.getRmType()));
     }
 }

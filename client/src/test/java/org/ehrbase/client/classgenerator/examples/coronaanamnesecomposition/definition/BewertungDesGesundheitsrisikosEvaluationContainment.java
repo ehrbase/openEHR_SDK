@@ -18,13 +18,13 @@ public class BewertungDesGesundheitsrisikosEvaluationContainment extends Contain
 
   public SelectAqlField<String> SPEZIFISCHER_RISIKOFAKTOR_RISIKOFAKTOR_VALUE = new AqlFieldImp<String>(BewertungDesGesundheitsrisikosEvaluation.class, "/data[at0001]/items[at0016]/items[at0013]/value|value", "spezifischerRisikofaktorRisikofaktorValue", String.class, this);
 
-  public SelectAqlField<VorhandenseinDefiningCode2> VORHANDENSEIN_DEFINING_CODE = new AqlFieldImp<VorhandenseinDefiningCode2>(BewertungDesGesundheitsrisikosEvaluation.class, "/data[at0001]/items[at0016]/items[at0017]/value|defining_code", "vorhandenseinDefiningCode", VorhandenseinDefiningCode2.class, this);
+  public SelectAqlField<VorhandenseinDefiningCode2> SPEZIFISCHER_RISIKOFAKTOR_VORHANDENSEIN_DEFINING_CODE = new AqlFieldImp<VorhandenseinDefiningCode2>(BewertungDesGesundheitsrisikosEvaluation.class, "/data[at0001]/items[at0016]/items[at0017]/value|defining_code", "spezifischerRisikofaktorVorhandenseinDefiningCode", VorhandenseinDefiningCode2.class, this);
 
   public ListSelectAqlField<Cluster> SPEZIFISCHER_RISIKOFAKTOR_DETAILS = new ListAqlFieldImp<Cluster>(BewertungDesGesundheitsrisikosEvaluation.class, "/data[at0001]/items[at0016]/items[at0027]", "spezifischerRisikofaktorDetails", Cluster.class, this);
 
   public SelectAqlField<String> ANDERE_RISIKOFAKTOREN_RISIKOFAKTOR_VALUE = new AqlFieldImp<String>(BewertungDesGesundheitsrisikosEvaluation.class, "/data[at0001]/items[at0016]/items[at0013]/value|value", "andereRisikofaktorenRisikofaktorValue", String.class, this);
 
-  public SelectAqlField<VorhandenseinDefiningCode2> VORHANDENSEIN_DEFINING_CODE2 = new AqlFieldImp<VorhandenseinDefiningCode2>(BewertungDesGesundheitsrisikosEvaluation.class, "/data[at0001]/items[at0016]/items[at0017]/value|defining_code", "vorhandenseinDefiningCode2", VorhandenseinDefiningCode2.class, this);
+  public SelectAqlField<VorhandenseinDefiningCode2> ANDERE_RISIKOFAKTOREN_VORHANDENSEIN_DEFINING_CODE = new AqlFieldImp<VorhandenseinDefiningCode2>(BewertungDesGesundheitsrisikosEvaluation.class, "/data[at0001]/items[at0016]/items[at0017]/value|defining_code", "andereRisikofaktorenVorhandenseinDefiningCode", VorhandenseinDefiningCode2.class, this);
 
   public ListSelectAqlField<Cluster> ANDERE_RISIKOFAKTOREN_DETAILS = new ListAqlFieldImp<Cluster>(BewertungDesGesundheitsrisikosEvaluation.class, "/data[at0001]/items[at0016]/items[at0027]", "andereRisikofaktorenDetails", Cluster.class, this);
 

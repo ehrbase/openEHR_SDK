@@ -140,6 +140,24 @@ public class RoundTripTest {
               "Extra path: encounter/body_temperature:1/any_event:1/temperature|magnitude, value: 11"
             }));
 
+    testCaseList.add(
+            new TestCase(
+                    5,
+                    CompositionTestDataSimSDTJson.CORONA,
+                    "Corona_Anamnese",
+                    org.ehrbase.client.classgenerator.exampleoptimizersettingsections.coronaanamnesecomposition.CoronaAnamneseComposition.class,
+                    new String[] {},
+                    new String[] {}));
+
+    testCaseList.add(
+            new TestCase(
+                    6,
+                    CompositionTestDataSimSDTJson.CORONA,
+                    "Corona_Anamnese",
+                    org.ehrbase.client.classgenerator.exampleoptimizersettingalls.coronaanamnesecomposition.CoronaAnamneseComposition.class,
+                    new String[] {},
+                    new String[] {}));
+
     SoftAssertions softly = new SoftAssertions();
 
     for (TestCase testCase : testCaseList) {

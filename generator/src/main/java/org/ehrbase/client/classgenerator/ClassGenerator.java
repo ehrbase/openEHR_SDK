@@ -285,6 +285,7 @@ public class ClassGenerator {
 
   private Deque<WebTemplateNode> pushToUnfiltered(
       ClassGeneratorContext context, WebTemplateNode node) {
+
     Deque<WebTemplateNode> filtersNodes = context.webTemplate.findFiltersNodes(node);
     if (!CollectionUtils.isEmpty(filtersNodes)) {
       filtersNodes.descendingIterator().forEachRemaining(context.unFilteredNodeDeque::push);
