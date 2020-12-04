@@ -478,7 +478,7 @@
                 <groupId>org.assertj</groupId>
                 <artifactId>assertj-core</artifactId>
                 <scope>test</scope>
-                <version>3.17.2</version>
+                <version>3.18.0</version>
             </dependency>
             <dependency>
                 <groupId>org.mockito</groupId>
