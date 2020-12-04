@@ -7,6 +7,9 @@ import org.ehrbase.client.annotations.Path;
 @Entity
 @OptionFor("DV_CODED_TEXT")
 public class AtiopathogeneseValueDvCodedText implements AtiopathogeneseValueChoice {
+  /**
+   * COVID-19-Diagnose/Problem/Diagnose/Ätiopathogenese/value/value
+   */
   @Path("|defining_code")
   private ValueDefiningCode valueDefiningCode;
 

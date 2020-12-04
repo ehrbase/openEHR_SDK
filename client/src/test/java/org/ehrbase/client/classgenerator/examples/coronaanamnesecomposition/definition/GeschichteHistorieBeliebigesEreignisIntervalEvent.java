@@ -12,18 +12,33 @@ import org.ehrbase.client.classgenerator.shareddefinition.MathFunction;
 @Entity
 @OptionFor("INTERVAL_EVENT")
 public class GeschichteHistorieBeliebigesEreignisIntervalEvent implements GeschichteHistorieBeliebigesEreignisChoice {
+  /**
+   * Bericht/Geschichte/Historie/Beliebiges Ereignis/Geschichte
+   */
   @Path("/data[at0003]/items[at0004]")
   private List<GeschichteHistorieGeschichteElement> geschichte;
 
+  /**
+   * Bericht/Geschichte/Historie/Beliebiges Ereignis/Strukturierte Angabe
+   */
   @Path("/data[at0003]/items[at0006]")
   private List<Cluster> strukturierteAngabe;
 
+  /**
+   * Bericht/Geschichte/Historie/Beliebiges Ereignis/time
+   */
   @Path("/time|value")
   private TemporalAccessor timeValue;
 
+  /**
+   * Bericht/Geschichte/Historie/Beliebiges Ereignis/width
+   */
   @Path("/width|value")
   private TemporalAmount widthValue;
 
+  /**
+   * Bericht/Geschichte/Historie/Beliebiges Ereignis/math_function
+   */
   @Path("/math_function|defining_code")
   private MathFunction mathFunctionDefiningCode;
 

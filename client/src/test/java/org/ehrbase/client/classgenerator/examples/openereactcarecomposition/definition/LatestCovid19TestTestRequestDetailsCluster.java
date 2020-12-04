@@ -7,9 +7,15 @@ import org.ehrbase.client.annotations.Path;
 
 @Entity
 public class LatestCovid19TestTestRequestDetailsCluster {
+  /**
+   * open_eREACT-Care/Assessment/Covid/Latest Covid-19 test/Test request details/Requester
+   */
   @Path("/items[at0090]")
   private Cluster requester;
 
+  /**
+   * open_eREACT-Care/Assessment/Covid/Latest Covid-19 test/Test request details/Distribution list
+   */
   @Path("/items[at0035]")
   private List<Cluster> distributionList;
 

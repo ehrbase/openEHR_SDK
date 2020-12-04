@@ -10,9 +10,15 @@ import org.ehrbase.client.annotations.Path;
 @Entity
 @Archetype("openEHR-EHR-CLUSTER.location.v1")
 public class StandortCluster {
+  /**
+   * Bericht/Risikogebiet/Historie der Reise/Jedes Ereignis/Ortsbeschreibung/Standort/Standortbeschreibung
+   */
   @Path("/items[at0046]/value|value")
   private String standortbeschreibungValue;
 
+  /**
+   * Bericht/Risikogebiet/Historie der Reise/Jedes Ereignis/Ortsbeschreibung/Standort/Details
+   */
   @Path("/items[at0047]")
   private List<Cluster> details;
 

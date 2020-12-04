@@ -6,6 +6,9 @@ import org.ehrbase.client.annotations.Path;
 
 @Entity
 public class EpisodeofcareTeamElement {
+  /**
+   * EpisodeOfCare/Episodeofcare/team
+   */
   @Path("/value|value")
   private URI value;
 

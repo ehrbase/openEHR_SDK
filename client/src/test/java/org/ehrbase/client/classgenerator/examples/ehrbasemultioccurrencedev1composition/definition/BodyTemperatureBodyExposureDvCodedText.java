@@ -7,6 +7,9 @@ import org.ehrbase.client.annotations.Path;
 @Entity
 @OptionFor("DV_CODED_TEXT")
 public class BodyTemperatureBodyExposureDvCodedText implements BodyTemperatureBodyExposureChoice {
+  /**
+   * Encounter/Body temperature/Any event/value/value
+   */
   @Path("|defining_code")
   private BodyExposureDefiningCode bodyExposureDefiningCode;
 

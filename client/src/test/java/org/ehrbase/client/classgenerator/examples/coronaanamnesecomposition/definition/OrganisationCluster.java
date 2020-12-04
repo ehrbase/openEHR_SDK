@@ -10,21 +10,39 @@ import org.ehrbase.client.annotations.Path;
 @Entity
 @Archetype("openEHR-EHR-CLUSTER.organisation_cc.v0")
 public class OrganisationCluster {
+  /**
+   * Bericht/Allgemeine Angaben/Gesundheitsbezogener Beruf/Beschäftigung/Organisation/Identifier
+   */
   @Path("/items[at0018]")
   private List<Cluster> identifier;
 
+  /**
+   * Bericht/Allgemeine Angaben/Gesundheitsbezogener Beruf/Beschäftigung/Organisation/Name der Einrichtung
+   */
   @Path("/items[at0012 and name/value='Name der Einrichtung']/value|value")
   private String nameDerEinrichtungValue;
 
+  /**
+   * Bericht/Allgemeine Angaben/Gesundheitsbezogener Beruf/Beschäftigung/Organisation/Telefon
+   */
   @Path("/items[at0014]")
   private List<Cluster> telefon;
 
+  /**
+   * Bericht/Allgemeine Angaben/Gesundheitsbezogener Beruf/Beschäftigung/Organisation/Adresse
+   */
   @Path("/items[openEHR-EHR-CLUSTER.address_cc.v0]")
   private List<AdresseCluster> adresse;
 
+  /**
+   * Bericht/Allgemeine Angaben/Gesundheitsbezogener Beruf/Beschäftigung/Organisation/Teil von
+   */
   @Path("/items[at0017]")
   private List<Cluster> teilVon;
 
+  /**
+   * Bericht/Allgemeine Angaben/Gesundheitsbezogener Beruf/Beschäftigung/Organisation/Kontakt
+   */
   @Path("/items[at0016]")
   private List<Cluster> kontakt;
 

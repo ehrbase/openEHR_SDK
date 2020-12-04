@@ -8,12 +8,21 @@ import org.ehrbase.client.annotations.Path;
 @Entity
 @Archetype("openEHR-EHR-SECTION.adhoc.v1")
 public class ResponseSection {
+  /**
+   * open_eREACT-Care/Response/Recommendation
+   */
   @Path("/items[openEHR-EHR-EVALUATION.recommendation.v1]")
   private RecommendationEvaluation recommendation;
 
+  /**
+   * open_eREACT-Care/Response/Service request
+   */
   @Path("/items[openEHR-EHR-INSTRUCTION.service_request.v1]")
   private List<ServiceRequestInstruction> serviceRequest;
 
+  /**
+   * open_eREACT-Care/Response/Service
+   */
   @Path("/items[openEHR-EHR-ACTION.service.v0]")
   private List<ServiceAction> service;
 

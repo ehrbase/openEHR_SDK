@@ -8,6 +8,9 @@ import org.ehrbase.client.annotations.Path;
 @Entity
 @OptionFor("DV_URI")
 public class EventsummaryValueDvUri implements EventsummaryValueChoice {
+  /**
+   * SmICS Befund/context/Eventsummary/Beteiligte Personen/value/value
+   */
   @Path("|value")
   private URI valueValue;
 

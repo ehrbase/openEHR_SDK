@@ -6,6 +6,9 @@ import org.ehrbase.client.annotations.Path;
 
 @Entity
 public class SepsisScreeningLikelySourceOfInfectionElement {
+  /**
+   * open_eREACT-Care/Assessment/Sepsis/Sepsis screening/Any event/value
+   */
   @Path("/value")
   @Choice
   private SepsisScreeningValueChoice value;

@@ -8,12 +8,21 @@ import org.ehrbase.client.annotations.Path;
 
 @Entity
 public class EpisodeofcareDiagnosisCluster {
+  /**
+   * EpisodeOfCare/Episodeofcare/diagnosis/diagnosis entry
+   */
   @Path("/items[at0019]/value")
   private DvEHRURI diagnosisEntry;
 
+  /**
+   * EpisodeOfCare/Episodeofcare/diagnosis/role
+   */
   @Path("/items[at0020]/value|value")
   private String roleValue;
 
+  /**
+   * EpisodeOfCare/Episodeofcare/diagnosis/rank
+   */
   @Path("/items[at0021]/value|magnitude")
   private Long rankMagnitude;
 

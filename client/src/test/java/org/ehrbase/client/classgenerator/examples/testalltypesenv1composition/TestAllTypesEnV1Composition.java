@@ -26,48 +26,93 @@ import org.ehrbase.client.openehrclient.VersionUid;
 @Archetype("openEHR-EHR-COMPOSITION.test_all_types.v1")
 @Template("test_all_types.en.v1")
 public class TestAllTypesEnV1Composition {
+  /**
+   * Test all types/context/context coded text
+   */
   @Path("/context/other_context[at0004]/item[at0005]/value|defining_code")
   private ContextCodedTextDefiningCode contextCodedTextDefiningCode;
 
+  /**
+   * Test all types/context/start_time
+   */
   @Path("/context/start_time|value")
   private TemporalAccessor startTimeValue;
 
+  /**
+   * Test all types/context/participations
+   */
   @Path("/context/participations")
   private List<Participation> participations;
 
+  /**
+   * Test all types/context/end_time
+   */
   @Path("/context/end_time|value")
   private TemporalAccessor endTimeValue;
 
+  /**
+   * Test all types/context/location
+   */
   @Path("/context/location")
   private String location;
 
+  /**
+   * Test all types/context/health_care_facility
+   */
   @Path("/context/health_care_facility")
   private PartyIdentified healthCareFacility;
 
+  /**
+   * Test all types/context/setting
+   */
   @Path("/context/setting|defining_code")
   private Setting settingDefiningCode;
 
+  /**
+   * Test all types/Test all types
+   */
   @Path("/content[openEHR-EHR-OBSERVATION.test_all_types.v1]")
   private List<TestAllTypesObservation> testAllTypesTestAllTypes;
 
+  /**
+   * Test all types/Test all types
+   */
   @Path("/content[openEHR-EHR-EVALUATION.test_all_types.v1]")
   private List<TestAllTypesEvaluation> testAllTypesTestAllTypes2;
 
+  /**
+   * Test all types/Test all types
+   */
   @Path("/content[openEHR-EHR-SECTION.test_all_types.v1]")
   private List<TestAllTypesSection> testAllTypesTestAllTypes3;
 
+  /**
+   * Test all types/composer
+   */
   @Path("/composer")
   private PartyProxy composer;
 
+  /**
+   * Test all types/language
+   */
   @Path("/language")
   private Language language;
 
+  /**
+   * Test all types/feeder_audit
+   */
   @Path("/feeder_audit")
   private FeederAudit feederAudit;
 
+  /**
+   * Test all types/category
+   */
   @Path("/category|defining_code")
   private Category categoryDefiningCode;
 
+  /**
+   * Test all types/territory
+   */
   @Path("/territory")
   private Territory territory;
 

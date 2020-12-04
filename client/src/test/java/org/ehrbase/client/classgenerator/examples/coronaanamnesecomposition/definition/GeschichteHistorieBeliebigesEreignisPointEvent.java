@@ -10,12 +10,21 @@ import org.ehrbase.client.annotations.Path;
 @Entity
 @OptionFor("POINT_EVENT")
 public class GeschichteHistorieBeliebigesEreignisPointEvent implements GeschichteHistorieBeliebigesEreignisChoice {
+  /**
+   * Bericht/Geschichte/Historie/Beliebiges Ereignis/Geschichte
+   */
   @Path("/data[at0003]/items[at0004]")
   private List<GeschichteHistorieGeschichteElement> geschichte;
 
+  /**
+   * Bericht/Geschichte/Historie/Beliebiges Ereignis/Strukturierte Angabe
+   */
   @Path("/data[at0003]/items[at0006]")
   private List<Cluster> strukturierteAngabe;
 
+  /**
+   * Bericht/Geschichte/Historie/Beliebiges Ereignis/time
+   */
   @Path("/time|value")
   private TemporalAccessor timeValue;
 

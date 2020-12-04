@@ -16,81 +16,159 @@ import org.ehrbase.client.classgenerator.shareddefinition.Language;
 @Entity
 @Archetype("openEHR-EHR-OBSERVATION.denwis.v0")
 public class DenwisObservation {
+  /**
+   * open_eREACT-Care/Assessment/DENWIS/Point in time/Q1 Breathing
+   */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0028]/value")
   private DvOrdinal q1Breathing;
 
+  /**
+   * open_eREACT-Care/Assessment/DENWIS/Point in time/Breathing indicator
+   */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0062]")
   private List<DenwisBreathingIndicatorElement> breathingIndicator;
 
+  /**
+   * open_eREACT-Care/Assessment/DENWIS/Point in time/Q2 Circulation
+   */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0033]/value")
   private DvOrdinal q2Circulation;
 
+  /**
+   * open_eREACT-Care/Assessment/DENWIS/Point in time/Circulation indicator
+   */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0071]")
   private List<DenwisCirculationIndicatorElement> circulationIndicator;
 
+  /**
+   * open_eREACT-Care/Assessment/DENWIS/Point in time/Q3 Temperature
+   */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0038]/value")
   private DvOrdinal q3Temperature;
 
+  /**
+   * open_eREACT-Care/Assessment/DENWIS/Point in time/Temperature indicator
+   */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0076]")
   private List<DenwisTemperatureIndicatorElement> temperatureIndicator;
 
+  /**
+   * open_eREACT-Care/Assessment/DENWIS/Point in time/Q4 Mentation
+   */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0043]/value")
   private DvOrdinal q4Mentation;
 
+  /**
+   * open_eREACT-Care/Assessment/DENWIS/Point in time/Mentation indicator
+   */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0078]")
   private List<DenwisMentationIndicatorElement> mentationIndicator;
 
+  /**
+   * open_eREACT-Care/Assessment/DENWIS/Point in time/Q5 Agitation
+   */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0047]/value")
   private DvOrdinal q5Agitation;
 
+  /**
+   * open_eREACT-Care/Assessment/DENWIS/Point in time/Agitation indicator
+   */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0081]")
   private List<DenwisAgitationIndicatorElement> agitationIndicator;
 
+  /**
+   * open_eREACT-Care/Assessment/DENWIS/Point in time/Q6 Pain
+   */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0050]/value")
   private DvOrdinal q6Pain;
 
+  /**
+   * open_eREACT-Care/Assessment/DENWIS/Point in time/Pain indicator
+   */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0084]")
   private List<DenwisPainIndicatorElement> painIndicator;
 
+  /**
+   * open_eREACT-Care/Assessment/DENWIS/Point in time/Q7 Trajectory
+   */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0053]/value")
   private DvOrdinal q7Trajectory;
 
+  /**
+   * open_eREACT-Care/Assessment/DENWIS/Point in time/Trajectory indicator
+   */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0087]")
   private List<DenwisTrajectoryIndicatorElement> trajectoryIndicator;
 
+  /**
+   * open_eREACT-Care/Assessment/DENWIS/Point in time/Q8 Patient subjective
+   */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0056]/value")
   private DvOrdinal q8PatientSubjective;
 
+  /**
+   * open_eREACT-Care/Assessment/DENWIS/Point in time/Patient indicator
+   */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0090]")
   private List<DenwisPatientIndicatorElement> patientIndicator;
 
+  /**
+   * open_eREACT-Care/Assessment/DENWIS/Point in time/Q9 Nurse subjective
+   */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0059]/value")
   private DvOrdinal q9NurseSubjective;
 
+  /**
+   * open_eREACT-Care/Assessment/DENWIS/Point in time/Nurse subjective indicator
+   */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0093]")
   private List<DenwisNurseSubjectiveIndicatorElement> nurseSubjectiveIndicator;
 
+  /**
+   * open_eREACT-Care/Assessment/DENWIS/Point in time/Q 10 Other comment
+   */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0027]/value|value")
   private String q10OtherCommentValue;
 
+  /**
+   * open_eREACT-Care/Assessment/DENWIS/Point in time/Total score
+   */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0008]/value|magnitude")
   private Long totalScoreMagnitude;
 
+  /**
+   * open_eREACT-Care/Assessment/DENWIS/Point in time/Tree
+   */
   @Path("/data[at0001]/events[at0002]/state[at0006]")
   private ItemTree tree;
 
+  /**
+   * open_eREACT-Care/Assessment/DENWIS/Point in time/time
+   */
   @Path("/data[at0001]/events[at0002]/time|value")
   private TemporalAccessor timeValue;
 
+  /**
+   * open_eREACT-Care/Assessment/DENWIS/origin
+   */
   @Path("/data[at0001]/origin|value")
   private TemporalAccessor originValue;
 
+  /**
+   * open_eREACT-Care/Assessment/DENWIS/Extension
+   */
   @Path("/protocol[at0004]/items[at0005]")
   private List<Cluster> extension;
 
+  /**
+   * open_eREACT-Care/Assessment/DENWIS/subject
+   */
   @Path("/subject")
   private PartyProxy subject;
 
+  /**
+   * open_eREACT-Care/Assessment/DENWIS/language
+   */
   @Path("/language")
   private Language language;
 

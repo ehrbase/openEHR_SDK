@@ -12,57 +12,111 @@ import org.ehrbase.client.annotations.Path;
 @Entity
 @Archetype("openEHR-EHR-CLUSTER.specimen.v1")
 public class ProbeCluster {
+  /**
+   * Virologischer Befund/Befund/Jedes Ereignis/Probe/Probenart
+   */
   @Path("/items[at0029]/value|value")
   private String probenartValue;
 
+  /**
+   * Virologischer Befund/Befund/Jedes Ereignis/Probe/Laborprobenidentifikator
+   */
   @Path("/items[at0001]/value")
   private DvIdentifier laborprobenidentifikator;
 
+  /**
+   * Virologischer Befund/Befund/Jedes Ereignis/Probe/Externer Identifikator
+   */
   @Path("/items[at0088]/value")
   private DvIdentifier externerIdentifikator;
 
+  /**
+   * Virologischer Befund/Befund/Jedes Ereignis/Probe/Zeitpunkt des Probeneingangs
+   */
   @Path("/items[at0034]/value|value")
   private TemporalAccessor zeitpunktDesProbeneingangsValue;
 
+  /**
+   * Virologischer Befund/Befund/Jedes Ereignis/Probe/Physische Eigenschaften
+   */
   @Path("/items[at0027]")
   private List<Cluster> physischeEigenschaften;
 
+  /**
+   * Virologischer Befund/Befund/Jedes Ereignis/Probe/Kommentar des Probennehmers
+   */
   @Path("/items[at0079]/value|value")
   private String kommentarDesProbennehmersValue;
 
+  /**
+   * Virologischer Befund/Befund/Jedes Ereignis/Probe/Probenentnahmestelle
+   */
   @Path("/items[at0087]/value|value")
   private String probenentnahmestelleValue;
 
+  /**
+   * Virologischer Befund/Befund/Jedes Ereignis/Probe/Anatomische Lokalisation
+   */
   @Path("/items[openEHR-EHR-CLUSTER.anatomical_location.v1]")
   private AnatomischeLokalisationCluster anatomischeLokalisation;
 
+  /**
+   * Virologischer Befund/Befund/Jedes Ereignis/Probe/Zeitpunkt der Probenentnahme
+   */
   @Path("/items[at0015]/value|value")
   private TemporalAccessor zeitpunktDerProbenentnahmeValue;
 
+  /**
+   * Virologischer Befund/Befund/Jedes Ereignis/Probe/Identifikator des Probennehmers
+   */
   @Path("/items[at0070]/value")
   private DvIdentifier identifikatorDesProbennehmers;
 
+  /**
+   * Virologischer Befund/Befund/Jedes Ereignis/Probe/Angaben zum Probennehmer
+   */
   @Path("/items[at0071]")
   private List<Cluster> angabenZumProbennehmer;
 
+  /**
+   * Virologischer Befund/Befund/Jedes Ereignis/Probe/Zusätzliche Angaben zur Probennahme
+   */
   @Path("/items[at0083]")
   private List<Cluster> zusatzlicheAngabenZurProbennahme;
 
+  /**
+   * Virologischer Befund/Befund/Jedes Ereignis/Probe/Behälter Details
+   */
   @Path("/items[at0085]")
   private List<Cluster> behalterDetails;
 
+  /**
+   * Virologischer Befund/Befund/Jedes Ereignis/Probe/Angaben zur Verarbeitung
+   */
   @Path("/items[at0068]")
   private List<Cluster> angabenZurVerarbeitung;
 
+  /**
+   * Virologischer Befund/Befund/Jedes Ereignis/Probe/Angaben zum Transport
+   */
   @Path("/items[at0093]")
   private List<Cluster> angabenZumTransport;
 
+  /**
+   * Virologischer Befund/Befund/Jedes Ereignis/Probe/Digitale Darstellung
+   */
   @Path("/items[at0096]")
   private List<Cluster> digitaleDarstellung;
 
+  /**
+   * Virologischer Befund/Befund/Jedes Ereignis/Probe/Identifikator der übergeordneten Probe
+   */
   @Path("/items[at0003]/value")
   private DvIdentifier identifikatorDerUbergeordnetenProbe;
 
+  /**
+   * Virologischer Befund/Befund/Jedes Ereignis/Probe/Kommentar
+   */
   @Path("/items[at0045]/value|value")
   private String kommentarValue;
 

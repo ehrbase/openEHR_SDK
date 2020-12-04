@@ -7,24 +7,45 @@ import org.ehrbase.client.annotations.Path;
 @Entity
 @Archetype("openEHR-EHR-SECTION.adhoc.v1")
 public class News2Section {
+  /**
+   * open_eREACT-Care/Assessment/NEWS2/Temperature
+   */
   @Path("/items[openEHR-EHR-OBSERVATION.body_temperature.v1 and name/value='Temperature']")
   private TemperatureObservation temperature;
 
+  /**
+   * open_eREACT-Care/Assessment/NEWS2/Pulse oximetry
+   */
   @Path("/items[openEHR-EHR-OBSERVATION.pulse_oximetry.v1]")
   private PulseOximetryObservation pulseOximetry;
 
+  /**
+   * open_eREACT-Care/Assessment/NEWS2/Pulse
+   */
   @Path("/items[openEHR-EHR-OBSERVATION.pulse.v1 and name/value='Pulse']")
   private PulseObservation pulse;
 
+  /**
+   * open_eREACT-Care/Assessment/NEWS2/Respirations
+   */
   @Path("/items[openEHR-EHR-OBSERVATION.respiration.v1]")
   private RespirationsObservation respirations;
 
+  /**
+   * open_eREACT-Care/Assessment/NEWS2/ACVPU scale
+   */
   @Path("/items[openEHR-EHR-OBSERVATION.acvpu.v0]")
   private AcvpuScaleObservation acvpuScale;
 
+  /**
+   * open_eREACT-Care/Assessment/NEWS2/Blood pressure
+   */
   @Path("/items[openEHR-EHR-OBSERVATION.blood_pressure.v2]")
   private BloodPressureObservation bloodPressure;
 
+  /**
+   * open_eREACT-Care/Assessment/NEWS2/NEWS2 Score
+   */
   @Path("/items[openEHR-EHR-OBSERVATION.news2.v1]")
   private News2ScoreObservation news2Score;
 

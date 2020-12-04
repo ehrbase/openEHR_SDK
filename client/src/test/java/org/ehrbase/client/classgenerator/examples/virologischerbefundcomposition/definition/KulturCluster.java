@@ -8,6 +8,9 @@ import org.ehrbase.client.annotations.Path;
 @Entity
 @Archetype("openEHR-EHR-CLUSTER.laboratory_test_panel.v0")
 public class KulturCluster {
+  /**
+   * Virologischer Befund/Befund/Jedes Ereignis/Kultur/Pro Virus
+   */
   @Path("/items[openEHR-EHR-CLUSTER.laboratory_test_analyte.v1 and name/value='Pro Virus']")
   private List<ProVirusCluster> proVirus;
 

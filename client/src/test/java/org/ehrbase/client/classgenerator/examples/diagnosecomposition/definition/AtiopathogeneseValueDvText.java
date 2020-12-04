@@ -8,6 +8,9 @@ import org.ehrbase.client.annotations.Path;
 @Entity
 @OptionFor("DV_TEXT")
 public class AtiopathogeneseValueDvText implements AtiopathogeneseValueChoice {
+  /**
+   * COVID-19-Diagnose/Problem/Diagnose/Ätiopathogenese/value/value
+   */
   @Path("|value")
   private String valueValue;
 

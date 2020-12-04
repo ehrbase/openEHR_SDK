@@ -8,12 +8,21 @@ import org.ehrbase.client.annotations.Path;
 
 @Entity
 public class ReisefallBestimmteReiseCluster {
+  /**
+   * Bericht/Risikogebiet/Reisefall/Beliebiges Intervallereignis/Bestimmte Reise/Bestimmtes Reiseziel
+   */
   @Path("/items[at0010]")
   private List<ReisefallBestimmtesReisezielCluster> bestimmtesReiseziel;
 
+  /**
+   * Bericht/Risikogebiet/Reisefall/Beliebiges Intervallereignis/Bestimmte Reise/Zusätzliche Reisedetails
+   */
   @Path("/items[at0025]")
   private List<Cluster> zusatzlicheReisedetails;
 
+  /**
+   * Bericht/Risikogebiet/Reisefall/Beliebiges Intervallereignis/Bestimmte Reise/Rückreisedatum
+   */
   @Path("/items[at0019]/value|value")
   private TemporalAccessor ruckreisedatumValue;
 

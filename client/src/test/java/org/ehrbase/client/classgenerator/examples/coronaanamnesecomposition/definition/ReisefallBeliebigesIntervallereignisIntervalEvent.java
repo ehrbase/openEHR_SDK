@@ -9,21 +9,39 @@ import org.ehrbase.client.classgenerator.shareddefinition.MathFunction;
 
 @Entity
 public class ReisefallBeliebigesIntervallereignisIntervalEvent {
+  /**
+   * Bericht/Risikogebiet/Reisefall/Beliebiges Intervallereignis/Letzte Reise?
+   */
   @Path("/data[at0003]/items[at0004 and name/value='Letzte Reise?']/value|defining_code")
   private LetzteReiseDefiningCode letzteReiseDefiningCode;
 
+  /**
+   * Bericht/Risikogebiet/Reisefall/Beliebiges Intervallereignis/Inland/Ausland
+   */
   @Path("/data[at0003]/items[at0026]/value|defining_code")
   private InlandAuslandDefiningCode inlandAuslandDefiningCode;
 
+  /**
+   * Bericht/Risikogebiet/Reisefall/Beliebiges Intervallereignis/Bestimmte Reise
+   */
   @Path("/data[at0003]/items[at0008]")
   private List<ReisefallBestimmteReiseCluster> bestimmteReise;
 
+  /**
+   * Bericht/Risikogebiet/Reisefall/Beliebiges Intervallereignis/math_function
+   */
   @Path("/math_function|defining_code")
   private MathFunction mathFunctionDefiningCode;
 
+  /**
+   * Bericht/Risikogebiet/Reisefall/Beliebiges Intervallereignis/width
+   */
   @Path("/width|value")
   private TemporalAmount widthValue;
 
+  /**
+   * Bericht/Risikogebiet/Reisefall/Beliebiges Intervallereignis/time
+   */
   @Path("/time|value")
   private TemporalAccessor timeValue;
 

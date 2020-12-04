@@ -24,42 +24,81 @@ import org.ehrbase.client.openehrclient.VersionUid;
 @Archetype("openEHR-EHR-COMPOSITION.encounter.v1")
 @Template("ehrbase_multi_occurrence.de.v1")
 public class EhrbaseMultiOccurrenceDeV1Composition {
+  /**
+   * Encounter/context/Extension
+   */
   @Path("/context/other_context[at0001]/items[at0002]")
   private List<Cluster> extension;
 
+  /**
+   * Encounter/context/start_time
+   */
   @Path("/context/start_time|value")
   private TemporalAccessor startTimeValue;
 
+  /**
+   * Encounter/context/participations
+   */
   @Path("/context/participations")
   private List<Participation> participations;
 
+  /**
+   * Encounter/context/end_time
+   */
   @Path("/context/end_time|value")
   private TemporalAccessor endTimeValue;
 
+  /**
+   * Encounter/context/location
+   */
   @Path("/context/location")
   private String location;
 
+  /**
+   * Encounter/context/health_care_facility
+   */
   @Path("/context/health_care_facility")
   private PartyIdentified healthCareFacility;
 
+  /**
+   * Encounter/context/setting
+   */
   @Path("/context/setting|defining_code")
   private Setting settingDefiningCode;
 
+  /**
+   * Encounter/Body temperature
+   */
   @Path("/content[openEHR-EHR-OBSERVATION.body_temperature.v2]")
   private List<BodyTemperatureObservation> bodyTemperature;
 
+  /**
+   * Encounter/composer
+   */
   @Path("/composer")
   private PartyProxy composer;
 
+  /**
+   * Encounter/language
+   */
   @Path("/language")
   private Language language;
 
+  /**
+   * Encounter/feeder_audit
+   */
   @Path("/feeder_audit")
   private FeederAudit feederAudit;
 
+  /**
+   * Encounter/category
+   */
   @Path("/category|defining_code")
   private Category categoryDefiningCode;
 
+  /**
+   * Encounter/territory
+   */
   @Path("/territory")
   private Territory territory;
 

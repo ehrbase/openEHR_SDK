@@ -13,28 +13,52 @@ import org.ehrbase.client.classgenerator.shareddefinition.Language;
 @Entity
 @Archetype("openEHR-EHR-OBSERVATION.body_temperature.v2")
 public class BodyTemperatureObservation {
+  /**
+   * Encounter/Body temperature/origin
+   */
   @Path("/data[at0002]/origin|value")
   private TemporalAccessor originValue;
 
+  /**
+   * Encounter/Body temperature/Structured measurement location
+   */
   @Path("/protocol[at0020]/items[at0064]")
   private List<Cluster> structuredMeasurementLocation;
 
+  /**
+   * Encounter/Body temperature/Device
+   */
   @Path("/protocol[at0020]/items[at0059]")
   private Cluster device;
 
+  /**
+   * Encounter/Body temperature/Extension
+   */
   @Path("/protocol[at0020]/items[at0062]")
   private List<Cluster> extension;
 
+  /**
+   * Encounter/Body temperature/subject
+   */
   @Path("/subject")
   private PartyProxy subject;
 
+  /**
+   * Encounter/Body temperature/language
+   */
   @Path("/language")
   private Language language;
 
+  /**
+   * Encounter/Body temperature/value
+   */
   @Path("/protocol[at0020]/items[at0021]/value")
   @Choice
   private BodyTemperatureLocationOfMeasurementChoice locationOfMeasurement;
 
+  /**
+   * Encounter/Body temperature/Any event
+   */
   @Path("/data[at0002]/events[at0003]")
   @Choice
   private List<BodyTemperatureAnyEventChoice> anyEvent;

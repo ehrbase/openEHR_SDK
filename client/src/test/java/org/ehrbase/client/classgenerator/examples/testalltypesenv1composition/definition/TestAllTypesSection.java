@@ -8,12 +8,21 @@ import org.ehrbase.client.annotations.Path;
 @Entity
 @Archetype("openEHR-EHR-SECTION.test_all_types.v1")
 public class TestAllTypesSection {
+  /**
+   * Test all types/Test all types/section 2/section 3/Test all types
+   */
   @Path("/items[at0001]/items[at0002]/items[openEHR-EHR-INSTRUCTION.test_all_types.v1]")
   private List<TestAllTypesInstruction> section3TestAllTypes;
 
+  /**
+   * Test all types/Test all types/section 2/section 3/Test all types
+   */
   @Path("/items[at0001]/items[at0002]/items[openEHR-EHR-ACTION.test_all_types.v1]")
   private List<TestAllTypesAction> section3TestAllTypes2;
 
+  /**
+   * Test all types/Test all types/section 2/Test all types
+   */
   @Path("/items[at0001]/items[openEHR-EHR-ADMIN_ENTRY.test_all_types.v1]")
   private List<TestAllTypesAdminEntry> section2TestAllTypes;
 

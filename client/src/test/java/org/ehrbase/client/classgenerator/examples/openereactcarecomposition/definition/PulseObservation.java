@@ -14,30 +14,57 @@ import org.ehrbase.client.classgenerator.shareddefinition.Language;
 @Entity
 @Archetype("openEHR-EHR-OBSERVATION.pulse.v1")
 public class PulseObservation {
+  /**
+   * open_eREACT-Care/Assessment/NEWS2/Pulse/Any event/Pulse Rate
+   */
   @Path("/data[at0002]/events[at0003]/data[at0001]/items[at0004 and name/value='Pulse Rate']/value|magnitude")
   private Double pulseRateMagnitude;
 
+  /**
+   * open_eREACT-Care/Assessment/NEWS2/Pulse/Any event/Pulse Rate
+   */
   @Path("/data[at0002]/events[at0003]/data[at0001]/items[at0004 and name/value='Pulse Rate']/value|units")
   private String pulseRateUnits;
 
+  /**
+   * open_eREACT-Care/Assessment/NEWS2/Pulse/Any event/Exertion
+   */
   @Path("/data[at0002]/events[at0003]/state[at0012]/items[at1017]")
   private List<Cluster> exertion;
 
+  /**
+   * open_eREACT-Care/Assessment/NEWS2/Pulse/Any event/time
+   */
   @Path("/data[at0002]/events[at0003]/time|value")
   private TemporalAccessor timeValue;
 
+  /**
+   * open_eREACT-Care/Assessment/NEWS2/Pulse/origin
+   */
   @Path("/data[at0002]/origin|value")
   private TemporalAccessor originValue;
 
+  /**
+   * open_eREACT-Care/Assessment/NEWS2/Pulse/Device
+   */
   @Path("/protocol[at0010]/items[at1013]")
   private Cluster device;
 
+  /**
+   * open_eREACT-Care/Assessment/NEWS2/Pulse/Extension
+   */
   @Path("/protocol[at0010]/items[at1056]")
   private List<Cluster> extension;
 
+  /**
+   * open_eREACT-Care/Assessment/NEWS2/Pulse/subject
+   */
   @Path("/subject")
   private PartyProxy subject;
 
+  /**
+   * open_eREACT-Care/Assessment/NEWS2/Pulse/language
+   */
   @Path("/language")
   private Language language;
 

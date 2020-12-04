@@ -13,39 +13,75 @@ import org.ehrbase.client.classgenerator.shareddefinition.Language;
 @Entity
 @Archetype("openEHR-EHR-OBSERVATION.story.v1")
 public class CovidSymptomsObservation {
+  /**
+   * open_eREACT-Care/Assessment/Covid/Covid symptoms/Any event/Story
+   */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value|value")
   private String storyValue;
 
+  /**
+   * open_eREACT-Care/Assessment/Covid/Covid symptoms/Any event/First symptoms
+   */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.symptom_sign-cvid.v0 and name/value='First symptoms']")
   private FirstSymptomsCluster firstSymptoms;
 
+  /**
+   * open_eREACT-Care/Assessment/Covid/Covid symptoms/Any event/Key Covid symptom
+   */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.symptom_sign-cvid.v0 and name/value='Key Covid symptom']")
   private List<KeyCovidSymptomCluster> keyCovidSymptom;
 
+  /**
+   * open_eREACT-Care/Assessment/Covid/Covid symptoms/Any event/Chest symptom
+   */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.symptom_sign-cvid.v0 and name/value='Chest symptom']")
   private List<ChestSymptomCluster> chestSymptom;
 
+  /**
+   * open_eREACT-Care/Assessment/Covid/Covid symptoms/Any event/Abdomen symptom
+   */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.symptom_sign-cvid.v0 and name/value='Abdomen symptom']")
   private List<AbdomenSymptomCluster> abdomenSymptom;
 
+  /**
+   * open_eREACT-Care/Assessment/Covid/Covid symptoms/Any event/Neuro symptom
+   */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.symptom_sign-cvid.v0 and name/value='Neuro symptom']")
   private List<NeuroSymptomCluster> neuroSymptom;
 
+  /**
+   * open_eREACT-Care/Assessment/Covid/Covid symptoms/Any event/Other symptom
+   */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.symptom_sign-cvid.v0 and name/value='Other symptom']")
   private List<OtherSymptomCluster> otherSymptom;
 
+  /**
+   * open_eREACT-Care/Assessment/Covid/Covid symptoms/Any event/time
+   */
   @Path("/data[at0001]/events[at0002]/time|value")
   private TemporalAccessor timeValue;
 
+  /**
+   * open_eREACT-Care/Assessment/Covid/Covid symptoms/origin
+   */
   @Path("/data[at0001]/origin|value")
   private TemporalAccessor originValue;
 
+  /**
+   * open_eREACT-Care/Assessment/Covid/Covid symptoms/Extension
+   */
   @Path("/protocol[at0007]/items[at0008]")
   private List<Cluster> extension;
 
+  /**
+   * open_eREACT-Care/Assessment/Covid/Covid symptoms/subject
+   */
   @Path("/subject")
   private PartyProxy subject;
 
+  /**
+   * open_eREACT-Care/Assessment/Covid/Covid symptoms/language
+   */
   @Path("/language")
   private Language language;
 

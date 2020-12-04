@@ -12,21 +12,39 @@ import org.ehrbase.client.classgenerator.shareddefinition.Language;
 @Entity
 @Archetype("openEHR-EHR-OBSERVATION.pregnancy_status.v0")
 public class SchwangerschaftsstatusObservation {
+  /**
+   * Schwangerschaftsstatus/Schwangerschaftsstatus/Beliebiges Ereignis/Status
+   */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0011]/value|defining_code")
   private StatusDefiningCode2 statusDefiningCode;
 
+  /**
+   * Schwangerschaftsstatus/Schwangerschaftsstatus/Beliebiges Ereignis/time
+   */
   @Path("/data[at0001]/events[at0002]/time|value")
   private TemporalAccessor timeValue;
 
+  /**
+   * Schwangerschaftsstatus/Schwangerschaftsstatus/origin
+   */
   @Path("/data[at0001]/origin|value")
   private TemporalAccessor originValue;
 
+  /**
+   * Schwangerschaftsstatus/Schwangerschaftsstatus/Erweiterungen
+   */
   @Path("/protocol[at0021]/items[at0022]")
   private List<Cluster> erweiterungen;
 
+  /**
+   * Schwangerschaftsstatus/Schwangerschaftsstatus/subject
+   */
   @Path("/subject")
   private PartyProxy subject;
 
+  /**
+   * Schwangerschaftsstatus/Schwangerschaftsstatus/language
+   */
   @Path("/language")
   private Language language;
 

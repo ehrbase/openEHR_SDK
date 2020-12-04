@@ -8,6 +8,9 @@ import org.ehrbase.client.annotations.Path;
 @Entity
 @OptionFor("DV_TEXT")
 public class LatestCovid19TestOverallTestStatusDvText implements LatestCovid19TestOverallTestStatusChoice {
+  /**
+   * open_eREACT-Care/Assessment/Covid/Latest Covid-19 test/Any event/value/value
+   */
   @Path("|value")
   private String overallTestStatusValue;
 

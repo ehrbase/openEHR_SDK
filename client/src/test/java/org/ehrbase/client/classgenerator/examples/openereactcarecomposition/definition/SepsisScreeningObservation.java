@@ -12,33 +12,63 @@ import org.ehrbase.client.classgenerator.shareddefinition.Language;
 @Entity
 @Archetype("openEHR-EHR-OBSERVATION.sepsis_screening_tool.v0")
 public class SepsisScreeningObservation {
+  /**
+   * open_eREACT-Care/Assessment/Sepsis/Sepsis screening/Any event/Risk factors for sepsis
+   */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0006]")
   private List<SepsisScreeningRiskFactorsForSepsisElement> riskFactorsForSepsis;
 
+  /**
+   * open_eREACT-Care/Assessment/Sepsis/Sepsis screening/Any event/Likely source of infection
+   */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0011]")
   private List<SepsisScreeningLikelySourceOfInfectionElement> likelySourceOfInfection;
 
+  /**
+   * open_eREACT-Care/Assessment/Sepsis/Sepsis screening/Any event/Red flag (acute)
+   */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0058]")
   private List<SepsisScreeningRedFlagAcuteElement> redFlagAcute;
 
+  /**
+   * open_eREACT-Care/Assessment/Sepsis/Sepsis screening/Any event/Amber flag (acute)
+   */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0083]")
   private List<SepsisScreeningAmberFlagAcuteElement> amberFlagAcute;
 
+  /**
+   * open_eREACT-Care/Assessment/Sepsis/Sepsis screening/Any event/999 Flag
+   */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0036]")
   private List<SepsisScreening999FlagElement> N999Flag;
 
+  /**
+   * open_eREACT-Care/Assessment/Sepsis/Sepsis screening/Any event/time
+   */
   @Path("/data[at0001]/events[at0002]/time|value")
   private TemporalAccessor timeValue;
 
+  /**
+   * open_eREACT-Care/Assessment/Sepsis/Sepsis screening/origin
+   */
   @Path("/data[at0001]/origin|value")
   private TemporalAccessor originValue;
 
+  /**
+   * open_eREACT-Care/Assessment/Sepsis/Sepsis screening/Extension
+   */
   @Path("/protocol[at0004]/items[at0005]")
   private List<Cluster> extension;
 
+  /**
+   * open_eREACT-Care/Assessment/Sepsis/Sepsis screening/subject
+   */
   @Path("/subject")
   private PartyProxy subject;
 
+  /**
+   * open_eREACT-Care/Assessment/Sepsis/Sepsis screening/language
+   */
   @Path("/language")
   private Language language;
 

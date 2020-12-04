@@ -7,6 +7,9 @@ import org.ehrbase.client.annotations.Path;
 @Entity
 @Archetype("openEHR-EHR-SECTION.adhoc.v1")
 public class SituationSection {
+  /**
+   * open_eREACT-Care/Situation/Story/History
+   */
   @Path("/items[openEHR-EHR-OBSERVATION.story.v1]")
   private StoryHistoryObservation storyHistory;
 

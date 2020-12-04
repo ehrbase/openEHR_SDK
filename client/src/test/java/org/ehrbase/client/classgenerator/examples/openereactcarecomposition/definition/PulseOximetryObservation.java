@@ -13,36 +13,69 @@ import org.ehrbase.client.classgenerator.shareddefinition.Language;
 @Entity
 @Archetype("openEHR-EHR-OBSERVATION.pulse_oximetry.v1")
 public class PulseOximetryObservation {
+  /**
+   * open_eREACT-Care/Assessment/NEWS2/Pulse oximetry/Any event/SpO₂
+   */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0006]/value")
   private DvProportion spo;
 
+  /**
+   * open_eREACT-Care/Assessment/NEWS2/Pulse oximetry/Any event/Waveform
+   */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0054]")
   private List<Cluster> waveform;
 
+  /**
+   * open_eREACT-Care/Assessment/NEWS2/Pulse oximetry/Any event/Multimedia image
+   */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0060]")
   private List<Cluster> multimediaImage;
 
+  /**
+   * open_eREACT-Care/Assessment/NEWS2/Pulse oximetry/Any event/Exertion
+   */
   @Path("/data[at0001]/events[at0002]/state[at0014]/items[at0034]")
   private Cluster exertion;
 
+  /**
+   * open_eREACT-Care/Assessment/NEWS2/Pulse oximetry/Any event/Inspired oxygen
+   */
   @Path("/data[at0001]/events[at0002]/state[at0014]/items[at0015]")
   private Cluster inspiredOxygen;
 
+  /**
+   * open_eREACT-Care/Assessment/NEWS2/Pulse oximetry/Any event/time
+   */
   @Path("/data[at0001]/events[at0002]/time|value")
   private TemporalAccessor timeValue;
 
+  /**
+   * open_eREACT-Care/Assessment/NEWS2/Pulse oximetry/origin
+   */
   @Path("/data[at0001]/origin|value")
   private TemporalAccessor originValue;
 
+  /**
+   * open_eREACT-Care/Assessment/NEWS2/Pulse oximetry/Oximetry device
+   */
   @Path("/protocol[at0007]/items[at0018]")
   private Cluster oximetryDevice;
 
+  /**
+   * open_eREACT-Care/Assessment/NEWS2/Pulse oximetry/Extension
+   */
   @Path("/protocol[at0007]/items[at0059]")
   private List<Cluster> extension;
 
+  /**
+   * open_eREACT-Care/Assessment/NEWS2/Pulse oximetry/subject
+   */
   @Path("/subject")
   private PartyProxy subject;
 
+  /**
+   * open_eREACT-Care/Assessment/NEWS2/Pulse oximetry/language
+   */
   @Path("/language")
   private Language language;
 

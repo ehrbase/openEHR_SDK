@@ -13,24 +13,45 @@ import org.ehrbase.client.classgenerator.shareddefinition.Language;
 @Entity
 @Archetype("openEHR-EHR-INSTRUCTION.test_all_types.v1")
 public class TestAllTypesInstruction {
+  /**
+   * Test all types/Test all types/section 2/section 3/Test all types/Current Activity/partial date
+   */
   @Path("/activities[at0001]/description[at0002]/items[at0003]/value|value")
   private Temporal partialDateValue;
 
+  /**
+   * Test all types/Test all types/section 2/section 3/Test all types/Current Activity/partial datetime
+   */
   @Path("/activities[at0001]/description[at0002]/items[at0004]/value|value")
   private TemporalAccessor partialDatetimeValue;
 
+  /**
+   * Test all types/Test all types/section 2/section 3/Test all types/Current Activity/timing
+   */
   @Path("/activities[at0001]/timing")
   private DvParsable timing;
 
+  /**
+   * Test all types/Test all types/section 2/section 3/Test all types/subject
+   */
   @Path("/subject")
   private PartyProxy subject;
 
+  /**
+   * Test all types/Test all types/section 2/section 3/Test all types/narrative
+   */
   @Path("/narrative|value")
   private String narrativeValue;
 
+  /**
+   * Test all types/Test all types/section 2/section 3/Test all types/language
+   */
   @Path("/language")
   private Language language;
 
+  /**
+   * Test all types/Test all types/section 2/section 3/Test all types/expiry_time
+   */
   @Path("/expiry_time|value")
   private TemporalAccessor expiryTimeValue;
 

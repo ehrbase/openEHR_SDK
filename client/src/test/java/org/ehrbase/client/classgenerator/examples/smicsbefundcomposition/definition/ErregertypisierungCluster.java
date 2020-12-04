@@ -9,15 +9,27 @@ import org.ehrbase.client.annotations.Path;
 @Entity
 @Archetype("openEHR-EHR-CLUSTER.molekulare_typisierung.v0")
 public class ErregertypisierungCluster {
+  /**
+   * SmICS Befund/SmICS-Ergebnis/Jedes Ereignis/Eigenschaften des beteiligten Erregers/Erregertypisierung/Art der Typisierung
+   */
   @Path("/items[at0001]")
   private List<ErregertypisierungArtDerTypisierungElement> artDerTypisierung;
 
+  /**
+   * SmICS Befund/SmICS-Ergebnis/Jedes Ereignis/Eigenschaften des beteiligten Erregers/Erregertypisierung/Ergebnis
+   */
   @Path("/items[at0008]")
   private List<ErregertypisierungErgebnisElement> ergebnis;
 
+  /**
+   * SmICS Befund/SmICS-Ergebnis/Jedes Ereignis/Eigenschaften des beteiligten Erregers/Erregertypisierung/Bewertung
+   */
   @Path("/items[at0009]/value|value")
   private String bewertungValue;
 
+  /**
+   * SmICS Befund/SmICS-Ergebnis/Jedes Ereignis/Eigenschaften des beteiligten Erregers/Erregertypisierung/Kommentar
+   */
   @Path("/items[at0002]/value|value")
   private String kommentarValue;
 

@@ -25,48 +25,93 @@ import org.ehrbase.client.openehrclient.VersionUid;
 @Archetype("openEHR-EHR-COMPOSITION.registereintrag.v1")
 @Template("Schwangerschaftsstatus")
 public class SchwangerschaftsstatusComposition {
+  /**
+   * Schwangerschaftsstatus/context/Erweiterung
+   */
   @Path("/context/other_context[at0001]/items[at0002]")
   private List<Cluster> erweiterung;
 
+  /**
+   * Schwangerschaftsstatus/context/Status
+   */
   @Path("/context/other_context[at0001]/items[at0004]/value|defining_code")
   private StatusDefiningCode statusDefiningCode;
 
+  /**
+   * Schwangerschaftsstatus/context/Kategorie
+   */
   @Path("/context/other_context[at0001]/items[at0005]/value|value")
   private String kategorieValue;
 
+  /**
+   * Schwangerschaftsstatus/context/start_time
+   */
   @Path("/context/start_time|value")
   private TemporalAccessor startTimeValue;
 
+  /**
+   * Schwangerschaftsstatus/context/participations
+   */
   @Path("/context/participations")
   private List<Participation> participations;
 
+  /**
+   * Schwangerschaftsstatus/context/end_time
+   */
   @Path("/context/end_time|value")
   private TemporalAccessor endTimeValue;
 
+  /**
+   * Schwangerschaftsstatus/context/location
+   */
   @Path("/context/location")
   private String location;
 
+  /**
+   * Schwangerschaftsstatus/context/health_care_facility
+   */
   @Path("/context/health_care_facility")
   private PartyIdentified healthCareFacility;
 
+  /**
+   * Schwangerschaftsstatus/context/setting
+   */
   @Path("/context/setting|defining_code")
   private Setting settingDefiningCode;
 
+  /**
+   * Schwangerschaftsstatus/Schwangerschaftsstatus
+   */
   @Path("/content[openEHR-EHR-OBSERVATION.pregnancy_status.v0]")
   private SchwangerschaftsstatusObservation schwangerschaftsstatus;
 
+  /**
+   * Schwangerschaftsstatus/composer
+   */
   @Path("/composer")
   private PartyProxy composer;
 
+  /**
+   * Schwangerschaftsstatus/language
+   */
   @Path("/language")
   private Language language;
 
+  /**
+   * Schwangerschaftsstatus/feeder_audit
+   */
   @Path("/feeder_audit")
   private FeederAudit feederAudit;
 
+  /**
+   * Schwangerschaftsstatus/category
+   */
   @Path("/category|defining_code")
   private Category categoryDefiningCode;
 
+  /**
+   * Schwangerschaftsstatus/territory
+   */
   @Path("/territory")
   private Territory territory;
 

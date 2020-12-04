@@ -11,15 +11,27 @@ import org.ehrbase.client.classgenerator.shareddefinition.Language;
 @Entity
 @Archetype("openEHR-EHR-EVALUATION.recommendation.v1")
 public class RecommendationEvaluation {
+  /**
+   * open_eREACT-Care/Response/Recommendation/Recommendation
+   */
   @Path("/data[at0001]/items[at0002]")
   private List<RecommendationRecommendationElement> recommendation;
 
+  /**
+   * open_eREACT-Care/Response/Recommendation/Extension
+   */
   @Path("/protocol[at0004]/items[at0005]")
   private List<Cluster> extension;
 
+  /**
+   * open_eREACT-Care/Response/Recommendation/subject
+   */
   @Path("/subject")
   private PartyProxy subject;
 
+  /**
+   * open_eREACT-Care/Response/Recommendation/language
+   */
   @Path("/language")
   private Language language;
 

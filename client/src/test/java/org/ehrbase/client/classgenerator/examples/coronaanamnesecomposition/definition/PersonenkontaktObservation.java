@@ -13,33 +13,63 @@ import org.ehrbase.client.classgenerator.shareddefinition.Language;
 @Entity
 @Archetype("openEHR-EHR-OBSERVATION.exposure_assessment.v0")
 public class PersonenkontaktObservation {
+  /**
+   * Bericht/Kontakt/Personenkontakt/Beliebiges Ereignis/*Agent (en)
+   */
   @Path("/data[at0001]/events[at0002]/data[at0042]/items[at0043]/value|value")
   private String agentEnValue;
 
+  /**
+   * Bericht/Kontakt/Personenkontakt/Beliebiges Ereignis/*Presence of any exposure? (en)
+   */
   @Path("/data[at0001]/events[at0002]/data[at0042]/items[at0057]/value|defining_code")
   private PresenceOfAnyExposureEnDefiningCode presenceOfAnyExposureEnDefiningCode;
 
+  /**
+   * Bericht/Kontakt/Personenkontakt/Beliebiges Ereignis/*Specific exposure (en)/*Exposure (en)
+   */
   @Path("/data[at0001]/events[at0002]/data[at0042]/items[at0044]/items[at0045]/value|value")
   private String exposureEnValue;
 
+  /**
+   * Bericht/Kontakt/Personenkontakt/Beliebiges Ereignis/*Specific exposure (en)/Vorhandensein
+   */
   @Path("/data[at0001]/events[at0002]/data[at0042]/items[at0044]/items[at0046]/value|defining_code")
   private VorhandenseinDefiningCode vorhandenseinDefiningCode;
 
+  /**
+   * Bericht/Kontakt/Personenkontakt/Beliebiges Ereignis/Kommentar
+   */
   @Path("/data[at0001]/events[at0002]/data[at0042]/items[at0055]/value|value")
   private String kommentarValue;
 
+  /**
+   * Bericht/Kontakt/Personenkontakt/Beliebiges Ereignis/time
+   */
   @Path("/data[at0001]/events[at0002]/time|value")
   private TemporalAccessor timeValue;
 
+  /**
+   * Bericht/Kontakt/Personenkontakt/origin
+   */
   @Path("/data[at0001]/origin|value")
   private TemporalAccessor originValue;
 
+  /**
+   * Bericht/Kontakt/Personenkontakt/Erweiterung
+   */
   @Path("/protocol[at0004]/items[at0056]")
   private List<Cluster> erweiterung;
 
+  /**
+   * Bericht/Kontakt/Personenkontakt/subject
+   */
   @Path("/subject")
   private PartyProxy subject;
 
+  /**
+   * Bericht/Kontakt/Personenkontakt/language
+   */
   @Path("/language")
   private Language language;
 

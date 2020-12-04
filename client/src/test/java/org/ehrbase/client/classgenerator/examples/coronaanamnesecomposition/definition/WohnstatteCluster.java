@@ -10,9 +10,15 @@ import org.ehrbase.client.annotations.Path;
 @Entity
 @Archetype("openEHR-EHR-CLUSTER.dwelling.v0")
 public class WohnstatteCluster {
+  /**
+   * Bericht/Allgemeine Angaben/Wohnsituation/Wohnstätte/Anzahl der Schlafzimmer
+   */
   @Path("/items[at0028]/value|magnitude")
   private Long anzahlDerSchlafzimmerMagnitude;
 
+  /**
+   * Bericht/Allgemeine Angaben/Wohnsituation/Wohnstätte/Ergänzende Details
+   */
   @Path("/items[at0003]")
   private List<Cluster> erganzendeDetails;
 

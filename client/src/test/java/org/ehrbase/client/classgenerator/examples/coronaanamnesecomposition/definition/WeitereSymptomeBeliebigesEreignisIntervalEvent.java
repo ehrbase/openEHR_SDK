@@ -11,15 +11,27 @@ import org.ehrbase.client.classgenerator.shareddefinition.MathFunction;
 @Entity
 @OptionFor("INTERVAL_EVENT")
 public class WeitereSymptomeBeliebigesEreignisIntervalEvent implements WeitereSymptomeBeliebigesEreignisChoice {
+  /**
+   * Bericht/Symptome/Weitere Symptome/Beliebiges Ereignis/Spezifisches Symptom/Anzeichen
+   */
   @Path("/data[at0003]/items[at0022]")
   private List<WeitereSymptomeSpezifischesSymptomAnzeichenCluster> spezifischesSymptomAnzeichen;
 
+  /**
+   * Bericht/Symptome/Weitere Symptome/Beliebiges Ereignis/time
+   */
   @Path("/time|value")
   private TemporalAccessor timeValue;
 
+  /**
+   * Bericht/Symptome/Weitere Symptome/Beliebiges Ereignis/width
+   */
   @Path("/width|value")
   private TemporalAmount widthValue;
 
+  /**
+   * Bericht/Symptome/Weitere Symptome/Beliebiges Ereignis/math_function
+   */
   @Path("/math_function|defining_code")
   private MathFunction mathFunctionDefiningCode;
 

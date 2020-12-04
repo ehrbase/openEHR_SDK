@@ -8,6 +8,9 @@ import org.ehrbase.client.annotations.Path;
 @Entity
 @Archetype("openEHR-EHR-CLUSTER.case_identification.v0")
 public class VersorgungsfallCluster {
+  /**
+   * Patientenaufenthalt/context/Versorgungsfall/Zugehörige Versorgungsfall-Kennung
+   */
   @Path("/items[at0001 and name/value='Zugehörige Versorgungsfall-Kennung']/value|value")
   private String zugehorigeVersorgungsfallKennungValue;
 

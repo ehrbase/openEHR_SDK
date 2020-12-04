@@ -24,48 +24,93 @@ import org.ehrbase.client.openehrclient.VersionUid;
 @Archetype("openEHR-EHR-COMPOSITION.report-result.v1")
 @Template("Virologischer Befund")
 public class VirologischerBefundComposition {
+  /**
+   * Virologischer Befund/context/Bericht-ID
+   */
   @Path("/context/other_context[at0001]/items[at0002]/value|value")
   private String berichtIdValue;
 
+  /**
+   * Virologischer Befund/context/Status
+   */
   @Path("/context/other_context[at0001]/items[at0005]/value|value")
   private String statusValue;
 
+  /**
+   * Virologischer Befund/context/Fallidentifikation
+   */
   @Path("/context/other_context[at0001]/items[openEHR-EHR-CLUSTER.case_identification.v0]")
   private FallidentifikationCluster fallidentifikation;
 
+  /**
+   * Virologischer Befund/context/start_time
+   */
   @Path("/context/start_time|value")
   private TemporalAccessor startTimeValue;
 
+  /**
+   * Virologischer Befund/context/participations
+   */
   @Path("/context/participations")
   private List<Participation> participations;
 
+  /**
+   * Virologischer Befund/context/end_time
+   */
   @Path("/context/end_time|value")
   private TemporalAccessor endTimeValue;
 
+  /**
+   * Virologischer Befund/context/location
+   */
   @Path("/context/location")
   private String location;
 
+  /**
+   * Virologischer Befund/context/health_care_facility
+   */
   @Path("/context/health_care_facility")
   private PartyIdentified healthCareFacility;
 
+  /**
+   * Virologischer Befund/context/setting
+   */
   @Path("/context/setting|defining_code")
   private Setting settingDefiningCode;
 
+  /**
+   * Virologischer Befund/Befund
+   */
   @Path("/content[openEHR-EHR-OBSERVATION.laboratory_test_result.v1 and name/value='Befund']")
   private BefundObservation befund;
 
+  /**
+   * Virologischer Befund/composer
+   */
   @Path("/composer")
   private PartyProxy composer;
 
+  /**
+   * Virologischer Befund/language
+   */
   @Path("/language")
   private Language language;
 
+  /**
+   * Virologischer Befund/feeder_audit
+   */
   @Path("/feeder_audit")
   private FeederAudit feederAudit;
 
+  /**
+   * Virologischer Befund/category
+   */
   @Path("/category|defining_code")
   private Category categoryDefiningCode;
 
+  /**
+   * Virologischer Befund/territory
+   */
   @Path("/territory")
   private Territory territory;
 

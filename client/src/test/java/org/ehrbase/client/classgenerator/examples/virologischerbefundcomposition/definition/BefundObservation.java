@@ -14,57 +14,111 @@ import org.ehrbase.client.classgenerator.shareddefinition.Language;
 @Entity
 @Archetype("openEHR-EHR-OBSERVATION.laboratory_test_result.v1")
 public class BefundObservation {
+  /**
+   * Virologischer Befund/Befund/Jedes Ereignis/Labortest-Bezeichnung
+   */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0005]/value|value")
   private String labortestBezeichnungValue;
 
+  /**
+   * Virologischer Befund/Befund/Jedes Ereignis/Probe
+   */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.specimen.v1]")
   private List<ProbeCluster> probe;
 
+  /**
+   * Virologischer Befund/Befund/Jedes Ereignis/Kultur
+   */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.laboratory_test_panel.v0 and name/value='Kultur']")
   private List<KulturCluster> kultur;
 
+  /**
+   * Virologischer Befund/Befund/Jedes Ereignis/Strukturierte Testdiagnostik
+   */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0122]")
   private List<Cluster> strukturierteTestdiagnostik;
 
+  /**
+   * Virologischer Befund/Befund/Jedes Ereignis/Multimedia-Darstellung
+   */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0118]")
   private List<Cluster> multimediaDarstellung;
 
+  /**
+   * Virologischer Befund/Befund/Jedes Ereignis/Strukturierte Erfassung der Störfaktoren
+   */
   @Path("/data[at0001]/events[at0002]/state[at0112]/items[at0114]")
   private List<Cluster> strukturierteErfassungDerStorfaktoren;
 
+  /**
+   * Virologischer Befund/Befund/Jedes Ereignis/time
+   */
   @Path("/data[at0001]/events[at0002]/time|value")
   private TemporalAccessor timeValue;
 
+  /**
+   * Virologischer Befund/Befund/origin
+   */
   @Path("/data[at0001]/origin|value")
   private TemporalAccessor originValue;
 
+  /**
+   * Virologischer Befund/Befund/Empfängerstandort
+   */
   @Path("/protocol[at0004]/items[openEHR-EHR-CLUSTER.location.v1 and name/value='Empfängerstandort']")
   private EmpfangerstandortCluster empfangerstandort;
 
+  /**
+   * Virologischer Befund/Befund/Details der Testanforderung/Anforderung
+   */
   @Path("/protocol[at0004]/items[at0094]/items[at0106 and name/value='Anforderung']")
   private List<BefundAnforderungElement> anforderung;
 
+  /**
+   * Virologischer Befund/Befund/Details der Testanforderung/Auftrags-ID des anfordernden/einsendenden Systems
+   */
   @Path("/protocol[at0004]/items[at0094]/items[at0062]/value")
   private DvIdentifier auftragsIdDesAnforderndenEinsendendenSystems;
 
+  /**
+   * Virologischer Befund/Befund/Details der Testanforderung/Auftrags-ID (Empfänger)
+   */
   @Path("/protocol[at0004]/items[at0094]/items[at0063]/value")
   private DvIdentifier auftragsIdEmpfanger;
 
+  /**
+   * Virologischer Befund/Befund/Details der Testanforderung/Einsenderstandort
+   */
   @Path("/protocol[at0004]/items[at0094]/items[openEHR-EHR-CLUSTER.location.v1 and name/value='Einsenderstandort']")
   private EinsenderstandortCluster einsenderstandort;
 
+  /**
+   * Virologischer Befund/Befund/Details der Testanforderung/Verteilerliste
+   */
   @Path("/protocol[at0004]/items[at0094]/items[at0035]")
   private List<Cluster> verteilerliste;
 
+  /**
+   * Virologischer Befund/Befund/Test Details
+   */
   @Path("/protocol[at0004]/items[at0110]")
   private List<Cluster> testDetails;
 
+  /**
+   * Virologischer Befund/Befund/Erweiterung
+   */
   @Path("/protocol[at0004]/items[at0117]")
   private List<Cluster> erweiterung;
 
+  /**
+   * Virologischer Befund/Befund/subject
+   */
   @Path("/subject")
   private PartyProxy subject;
 
+  /**
+   * Virologischer Befund/Befund/language
+   */
   @Path("/language")
   private Language language;
 

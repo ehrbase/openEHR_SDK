@@ -10,15 +10,27 @@ import org.ehrbase.client.annotations.Path;
 @Entity
 @Archetype("openEHR-EHR-CLUSTER.location.v1")
 public class EinsenderstandortCluster {
+  /**
+   * Virologischer Befund/Befund/Details der Testanforderung/Einsenderstandort/Standorttyp
+   */
   @Path("/items[at0040]/value|value")
   private String standorttypValue;
 
+  /**
+   * Virologischer Befund/Befund/Details der Testanforderung/Einsenderstandort/Standortbeschreibung
+   */
   @Path("/items[at0046]/value|value")
   private String standortbeschreibungValue;
 
+  /**
+   * Virologischer Befund/Befund/Details der Testanforderung/Einsenderstandort/Standortschlüssel
+   */
   @Path("/items[at0048]/value|value")
   private String standortschlusselValue;
 
+  /**
+   * Virologischer Befund/Befund/Details der Testanforderung/Einsenderstandort/Details
+   */
   @Path("/items[at0047]")
   private List<Cluster> details;
 

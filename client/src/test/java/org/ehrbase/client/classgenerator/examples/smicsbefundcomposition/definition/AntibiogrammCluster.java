@@ -8,6 +8,9 @@ import org.ehrbase.client.annotations.Path;
 @Entity
 @Archetype("openEHR-EHR-CLUSTER.laboratory_test_panel.v0")
 public class AntibiogrammCluster {
+  /**
+   * SmICS Befund/SmICS-Ergebnis/Jedes Ereignis/Eigenschaften des beteiligten Erregers/Erregerdetails/Antibiogramm/Laboranalyt-Resultat
+   */
   @Path("/items[openEHR-EHR-CLUSTER.laboratory_test_analyte.v1]")
   private List<LaboranalytResultatCluster> laboranalytResultat;
 

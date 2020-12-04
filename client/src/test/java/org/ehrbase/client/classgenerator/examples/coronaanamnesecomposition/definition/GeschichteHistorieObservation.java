@@ -13,18 +13,33 @@ import org.ehrbase.client.classgenerator.shareddefinition.Language;
 @Entity
 @Archetype("openEHR-EHR-OBSERVATION.story.v1")
 public class GeschichteHistorieObservation {
+  /**
+   * Bericht/Geschichte/Historie/origin
+   */
   @Path("/data[at0001]/origin|value")
   private TemporalAccessor originValue;
 
+  /**
+   * Bericht/Geschichte/Historie/Erweiterung
+   */
   @Path("/protocol[at0007]/items[at0008]")
   private List<Cluster> erweiterung;
 
+  /**
+   * Bericht/Geschichte/Historie/subject
+   */
   @Path("/subject")
   private PartyProxy subject;
 
+  /**
+   * Bericht/Geschichte/Historie/language
+   */
   @Path("/language")
   private Language language;
 
+  /**
+   * Bericht/Geschichte/Historie/Beliebiges Ereignis
+   */
   @Path("/data[at0001]/events[at0002]")
   @Choice
   private List<GeschichteHistorieBeliebigesEreignisChoice> beliebigesEreignis;

@@ -8,6 +8,9 @@ import org.ehrbase.client.annotations.Path;
 @Entity
 @Archetype("openEHR-EHR-CLUSTER.test_all_types.v1")
 public class TestAllTypesCluster {
+  /**
+   * Test all types/Test all types/section 2/section 3/Test all types/Test all types/cluster 5/cluster 6/boolean 2
+   */
   @Path("/items[at0001]/items[at0002]/items[at0003]/value|value")
   private Boolean boolean2Value;
 

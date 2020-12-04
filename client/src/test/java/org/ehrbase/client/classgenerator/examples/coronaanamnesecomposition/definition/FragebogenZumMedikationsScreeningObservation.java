@@ -14,30 +14,57 @@ import org.ehrbase.client.classgenerator.shareddefinition.Language;
 @Entity
 @Archetype("openEHR-EHR-OBSERVATION.medication_use.v0")
 public class FragebogenZumMedikationsScreeningObservation {
+  /**
+   * Bericht/Allgemeine Angaben/Fragebogen zum Medikations-Screening/Beliebiges Ereignis/Medikamente in Verwendung?
+   */
   @Path("/data[at0022]/events[at0023]/data[at0001]/items[at0027]/value")
   private DvCodedText medikamenteInVerwendung;
 
+  /**
+   * Bericht/Allgemeine Angaben/Fragebogen zum Medikations-Screening/Beliebiges Ereignis/Spezifische Medikamentenklasse/Name der Medikamentenklasse
+   */
   @Path("/data[at0022]/events[at0023]/data[at0001]/items[at0026]/items[at0002]/value|value")
   private String nameDerMedikamentenklasseValue;
 
+  /**
+   * Bericht/Allgemeine Angaben/Fragebogen zum Medikations-Screening/Beliebiges Ereignis/Spezifische Medikamentenklasse/Medikamentenklasse in Verwendung?
+   */
   @Path("/data[at0022]/events[at0023]/data[at0001]/items[at0026]/items[at0003]/value|defining_code")
   private MedikamentenklasseInVerwendungDefiningCode medikamentenklasseInVerwendungDefiningCode;
 
+  /**
+   * Bericht/Allgemeine Angaben/Fragebogen zum Medikations-Screening/Beliebiges Ereignis/Spezifische Medikamentenklasse/Spezifische Medikamente
+   */
   @Path("/data[at0022]/events[at0023]/data[at0001]/items[at0026]/items[at0008]")
   private List<FragebogenZumMedikationsScreeningSpezifischeMedikamenteCluster> spezifischeMedikamente;
 
+  /**
+   * Bericht/Allgemeine Angaben/Fragebogen zum Medikations-Screening/Beliebiges Ereignis/time
+   */
   @Path("/data[at0022]/events[at0023]/time|value")
   private TemporalAccessor timeValue;
 
+  /**
+   * Bericht/Allgemeine Angaben/Fragebogen zum Medikations-Screening/origin
+   */
   @Path("/data[at0022]/origin|value")
   private TemporalAccessor originValue;
 
+  /**
+   * Bericht/Allgemeine Angaben/Fragebogen zum Medikations-Screening/Erweiterung
+   */
   @Path("/protocol[at0005]/items[at0019]")
   private List<Cluster> erweiterung;
 
+  /**
+   * Bericht/Allgemeine Angaben/Fragebogen zum Medikations-Screening/subject
+   */
   @Path("/subject")
   private PartyProxy subject;
 
+  /**
+   * Bericht/Allgemeine Angaben/Fragebogen zum Medikations-Screening/language
+   */
   @Path("/language")
   private Language language;
 

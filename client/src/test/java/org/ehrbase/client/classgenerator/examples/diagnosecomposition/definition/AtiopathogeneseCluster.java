@@ -8,9 +8,15 @@ import org.ehrbase.client.annotations.Path;
 @Entity
 @Archetype("openEHR-EHR-CLUSTER.etiology.v1")
 public class AtiopathogeneseCluster {
+  /**
+   * COVID-19-Diagnose/Problem/Diagnose/Ätiopathogenese/Ätiologie der Krankheit
+   */
   @Path("/items[at0001]")
   private List<AtiopathogeneseAtiologieDerKrankheitElement> atiologieDerKrankheit;
 
+  /**
+   * COVID-19-Diagnose/Problem/Diagnose/Ätiopathogenese/Beschreibung des Entstehens
+   */
   @Path("/items[at0017]")
   private List<AtiopathogeneseBeschreibungDesEntstehensElement> beschreibungDesEntstehens;
 

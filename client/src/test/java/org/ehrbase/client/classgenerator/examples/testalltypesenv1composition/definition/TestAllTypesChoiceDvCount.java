@@ -8,6 +8,9 @@ import org.ehrbase.client.annotations.Path;
 @Entity
 @OptionFor("DV_COUNT")
 public class TestAllTypesChoiceDvCount implements TestAllTypesChoiceChoice {
+  /**
+   * Test all types/Test all types/value/value
+   */
   @Path("|magnitude")
   private Long choiceMagnitude;
 

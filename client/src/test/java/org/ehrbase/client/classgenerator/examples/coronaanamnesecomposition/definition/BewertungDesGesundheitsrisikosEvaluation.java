@@ -13,42 +13,81 @@ import org.ehrbase.client.classgenerator.shareddefinition.Language;
 @Entity
 @Archetype("openEHR-EHR-EVALUATION.health_risk.v1")
 public class BewertungDesGesundheitsrisikosEvaluation {
+  /**
+   * Bericht/Allgemeine Angaben/Bewertung des Gesundheitsrisikos/Gesundheitsrisiko
+   */
   @Path("/data[at0001]/items[at0002]/value|value")
   private String gesundheitsrisikoValue;
 
+  /**
+   * Bericht/Allgemeine Angaben/Bewertung des Gesundheitsrisikos/Spezifischer Risikofaktor/Risikofaktor
+   */
   @Path("/data[at0001]/items[at0016 and name/value='Spezifischer Risikofaktor']/items[at0013]/value|value")
   private String spezifischerRisikofaktorRisikofaktorValue;
 
+  /**
+   * Bericht/Allgemeine Angaben/Bewertung des Gesundheitsrisikos/Spezifischer Risikofaktor/Vorhandensein
+   */
   @Path("/data[at0001]/items[at0016 and name/value='Spezifischer Risikofaktor']/items[at0017]/value|defining_code")
   private VorhandenseinDefiningCode2 vorhandenseinDefiningCode;
 
+  /**
+   * Bericht/Allgemeine Angaben/Bewertung des Gesundheitsrisikos/Spezifischer Risikofaktor/Details
+   */
   @Path("/data[at0001]/items[at0016 and name/value='Spezifischer Risikofaktor']/items[at0027]")
   private List<Cluster> spezifischerRisikofaktorDetails;
 
+  /**
+   * Bericht/Allgemeine Angaben/Bewertung des Gesundheitsrisikos/Andere Risikofaktoren/Risikofaktor
+   */
   @Path("/data[at0001]/items[at0016 and name/value='Andere Risikofaktoren']/items[at0013]/value|value")
   private String andereRisikofaktorenRisikofaktorValue;
 
+  /**
+   * Bericht/Allgemeine Angaben/Bewertung des Gesundheitsrisikos/Andere Risikofaktoren/Vorhandensein
+   */
   @Path("/data[at0001]/items[at0016 and name/value='Andere Risikofaktoren']/items[at0017]/value|defining_code")
   private VorhandenseinDefiningCode2 vorhandenseinDefiningCode2;
 
+  /**
+   * Bericht/Allgemeine Angaben/Bewertung des Gesundheitsrisikos/Andere Risikofaktoren/Details
+   */
   @Path("/data[at0001]/items[at0016 and name/value='Andere Risikofaktoren']/items[at0027]")
   private List<Cluster> andereRisikofaktorenDetails;
 
+  /**
+   * Bericht/Allgemeine Angaben/Bewertung des Gesundheitsrisikos/Risikobewertung
+   */
   @Path("/data[at0001]/items[at0003]/value|value")
   private String risikobewertungValue;
 
+  /**
+   * Bericht/Allgemeine Angaben/Bewertung des Gesundheitsrisikos/Letzte Aktualisierung
+   */
   @Path("/protocol[at0010]/items[at0024]/value|value")
   private TemporalAccessor letzteAktualisierungValue;
 
+  /**
+   * Bericht/Allgemeine Angaben/Bewertung des Gesundheitsrisikos/Bewertungsmethode
+   */
   @Path("/protocol[at0010]/items[at0025]/value|value")
   private String bewertungsmethodeValue;
 
+  /**
+   * Bericht/Allgemeine Angaben/Bewertung des Gesundheitsrisikos/Erweiterung
+   */
   @Path("/protocol[at0010]/items[at0011]")
   private List<Cluster> erweiterung;
 
+  /**
+   * Bericht/Allgemeine Angaben/Bewertung des Gesundheitsrisikos/subject
+   */
   @Path("/subject")
   private PartyProxy subject;
 
+  /**
+   * Bericht/Allgemeine Angaben/Bewertung des Gesundheitsrisikos/language
+   */
   @Path("/language")
   private Language language;
 

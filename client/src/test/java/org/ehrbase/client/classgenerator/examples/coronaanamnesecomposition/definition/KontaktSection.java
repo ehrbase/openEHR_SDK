@@ -7,9 +7,15 @@ import org.ehrbase.client.annotations.Path;
 @Entity
 @Archetype("openEHR-EHR-SECTION.adhoc.v1")
 public class KontaktSection {
+  /**
+   * Bericht/Kontakt/Personenkontakt
+   */
   @Path("/items[openEHR-EHR-OBSERVATION.exposure_assessment.v0 and name/value='Personenkontakt']")
   private PersonenkontaktObservation personenkontakt;
 
+  /**
+   * Bericht/Kontakt/Aufenthalt in Gesundheitseinrichtung
+   */
   @Path("/items[openEHR-EHR-OBSERVATION.exposure_assessment.v0 and name/value='Aufenthalt in Gesundheitseinrichtung']")
   private AufenthaltInGesundheitseinrichtungObservation aufenthaltInGesundheitseinrichtung;
 

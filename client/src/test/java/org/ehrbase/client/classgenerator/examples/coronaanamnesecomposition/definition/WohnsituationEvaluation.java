@@ -13,21 +13,39 @@ import org.ehrbase.client.classgenerator.shareddefinition.Language;
 @Entity
 @Archetype("openEHR-EHR-EVALUATION.living_arrangement.v0")
 public class WohnsituationEvaluation {
+  /**
+   * Bericht/Allgemeine Angaben/Wohnsituation/Beschreibung
+   */
   @Path("/data[at0001]/items[at0003]/value|value")
   private String beschreibungValue;
 
+  /**
+   * Bericht/Allgemeine Angaben/Wohnsituation/Anzahl der Haushaltsmitglieder
+   */
   @Path("/data[at0001]/items[at0007]/value|magnitude")
   private Long anzahlDerHaushaltsmitgliederMagnitude;
 
+  /**
+   * Bericht/Allgemeine Angaben/Wohnsituation/Wohnstätte
+   */
   @Path("/data[at0001]/items[openEHR-EHR-CLUSTER.dwelling.v0]")
   private List<WohnstatteCluster> wohnstatte;
 
+  /**
+   * Bericht/Allgemeine Angaben/Wohnsituation/Erweiterung
+   */
   @Path("/protocol[at0002]/items[at0011]")
   private List<Cluster> erweiterung;
 
+  /**
+   * Bericht/Allgemeine Angaben/Wohnsituation/subject
+   */
   @Path("/subject")
   private PartyProxy subject;
 
+  /**
+   * Bericht/Allgemeine Angaben/Wohnsituation/language
+   */
   @Path("/language")
   private Language language;
 

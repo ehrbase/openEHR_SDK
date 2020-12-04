@@ -8,6 +8,9 @@ import org.ehrbase.client.annotations.Path;
 @Entity
 @OptionFor("DV_TEXT")
 public class DenwisValueDvText6 implements DenwisValueChoice6 {
+  /**
+   * open_eREACT-Care/Assessment/DENWIS/Point in time/value/value
+   */
   @Path("|value")
   private String valueValue;
 

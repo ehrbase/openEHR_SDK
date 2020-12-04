@@ -6,6 +6,9 @@ import org.ehrbase.client.annotations.Path;
 
 @Entity
 public class StoryHistorySoftSignsElement {
+  /**
+   * open_eREACT-Care/Situation/Story/History/Any event/Soft signs
+   */
   @Path("/value|value")
   private String value;
 

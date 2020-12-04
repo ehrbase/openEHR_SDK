@@ -11,45 +11,87 @@ import org.ehrbase.client.classgenerator.shareddefinition.Language;
 @Entity
 @Archetype("openEHR-EHR-EVALUATION.health_risk-covid.v0")
 public class Covid19ExposureEvaluation {
+  /**
+   * open_eREACT-Care/Assessment/Covid/Covid-19 exposure/Health risk
+   */
   @Path("/data[at0001]/items[at0002.1]/value|defining_code")
   private HealthRiskDefiningCode healthRiskDefiningCode;
 
+  /**
+   * open_eREACT-Care/Assessment/Covid/Covid-19 exposure/Care home has suspected/confirmed Covid-19/Risk factor
+   */
   @Path("/data[at0001]/items[at0016 and name/value='Care home has suspected/confirmed Covid-19']/items[at0013.1]/value|defining_code")
   private RiskFactorDefiningCode riskFactorDefiningCode;
 
+  /**
+   * open_eREACT-Care/Assessment/Covid/Covid-19 exposure/Care home has suspected/confirmed Covid-19/Presence
+   */
   @Path("/data[at0001]/items[at0016 and name/value='Care home has suspected/confirmed Covid-19']/items[at0017.1]/value|defining_code")
   private PresenceDefiningCode2 presenceDefiningCode;
 
+  /**
+   * open_eREACT-Care/Assessment/Covid/Covid-19 exposure/Care home has suspected/confirmed Covid-19/Detail
+   */
   @Path("/data[at0001]/items[at0016 and name/value='Care home has suspected/confirmed Covid-19']/items[at0027.1]")
   private List<Cluster> careHomeHasSuspectedConfirmedCovid19Detail;
 
+  /**
+   * open_eREACT-Care/Assessment/Covid/Covid-19 exposure/Contact with confirmed case/Risk factor
+   */
   @Path("/data[at0001]/items[at0016 and name/value='Contact with confirmed case']/items[at0013.1]/value|defining_code")
   private RiskFactorDefiningCode2 riskFactorDefiningCode2;
 
+  /**
+   * open_eREACT-Care/Assessment/Covid/Covid-19 exposure/Contact with confirmed case/Presence
+   */
   @Path("/data[at0001]/items[at0016 and name/value='Contact with confirmed case']/items[at0017.1]/value|defining_code")
   private PresenceDefiningCode2 presenceDefiningCode2;
 
+  /**
+   * open_eREACT-Care/Assessment/Covid/Covid-19 exposure/Contact with confirmed case/Detail
+   */
   @Path("/data[at0001]/items[at0016 and name/value='Contact with confirmed case']/items[at0027.1]")
   private List<Cluster> contactWithConfirmedCaseDetail;
 
+  /**
+   * open_eREACT-Care/Assessment/Covid/Covid-19 exposure/Other residents/household members unwell/Risk factor
+   */
   @Path("/data[at0001]/items[at0016 and name/value='Other residents/household members unwell']/items[at0013.1]/value|defining_code")
   private RiskFactorDefiningCode3 riskFactorDefiningCode3;
 
+  /**
+   * open_eREACT-Care/Assessment/Covid/Covid-19 exposure/Other residents/household members unwell/Presence
+   */
   @Path("/data[at0001]/items[at0016 and name/value='Other residents/household members unwell']/items[at0017.1]/value|defining_code")
   private PresenceDefiningCode2 presenceDefiningCode3;
 
+  /**
+   * open_eREACT-Care/Assessment/Covid/Covid-19 exposure/Other residents/household members unwell/Detail
+   */
   @Path("/data[at0001]/items[at0016 and name/value='Other residents/household members unwell']/items[at0027.1]")
   private List<Cluster> otherResidentsHouseholdMembersUnwellDetail;
 
+  /**
+   * open_eREACT-Care/Assessment/Covid/Covid-19 exposure/Risk assessment
+   */
   @Path("/data[at0001]/items[at0003.1]/value|defining_code")
   private RiskAssessmentDefiningCode riskAssessmentDefiningCode;
 
+  /**
+   * open_eREACT-Care/Assessment/Covid/Covid-19 exposure/Extension
+   */
   @Path("/protocol[at0010]/items[at0011]")
   private List<Cluster> extension;
 
+  /**
+   * open_eREACT-Care/Assessment/Covid/Covid-19 exposure/subject
+   */
   @Path("/subject")
   private PartyProxy subject;
 
+  /**
+   * open_eREACT-Care/Assessment/Covid/Covid-19 exposure/language
+   */
   @Path("/language")
   private Language language;
 

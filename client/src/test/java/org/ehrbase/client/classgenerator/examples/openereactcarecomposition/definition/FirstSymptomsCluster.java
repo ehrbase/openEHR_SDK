@@ -13,33 +13,63 @@ import org.ehrbase.client.annotations.Path;
 @Entity
 @Archetype("openEHR-EHR-CLUSTER.symptom_sign-cvid.v0")
 public class FirstSymptomsCluster {
+  /**
+   * open_eREACT-Care/Assessment/Covid/Covid symptoms/Any event/First symptoms/Symptom/Sign name
+   */
   @Path("/items[at0001.1]/value")
   private DvCodedText symptomSignName;
 
+  /**
+   * open_eREACT-Care/Assessment/Covid/Covid symptoms/Any event/First symptoms/Structured body site
+   */
   @Path("/items[at0147]")
   private List<Cluster> structuredBodySite;
 
+  /**
+   * open_eREACT-Care/Assessment/Covid/Covid symptoms/Any event/First symptoms/Date of onset of first symptoms
+   */
   @Path("/items[at0152 and name/value='Date of onset of first symptoms']/value|value")
   private TemporalAccessor dateOfOnsetOfFirstSymptomsValue;
 
+  /**
+   * open_eREACT-Care/Assessment/Covid/Covid symptoms/Any event/First symptoms/Duration
+   */
   @Path("/items[at0028]/value|value")
   private TemporalAmount durationValue;
 
+  /**
+   * open_eREACT-Care/Assessment/Covid/Covid symptoms/Any event/First symptoms/Trend
+   */
   @Path("/items[at0180 and name/value='Trend']/value|defining_code")
   private TrendDefiningCode trendDefiningCode;
 
+  /**
+   * open_eREACT-Care/Assessment/Covid/Covid symptoms/Any event/First symptoms/Impact
+   */
   @Path("/items[at0155]/value|value")
   private String impactValue;
 
+  /**
+   * open_eREACT-Care/Assessment/Covid/Covid symptoms/Any event/First symptoms/Specific details
+   */
   @Path("/items[at0153]")
   private List<Cluster> specificDetails;
 
+  /**
+   * open_eREACT-Care/Assessment/Covid/Covid symptoms/Any event/First symptoms/Previous episodes
+   */
   @Path("/items[at0146]")
   private List<Cluster> previousEpisodes;
 
+  /**
+   * open_eREACT-Care/Assessment/Covid/Covid symptoms/Any event/First symptoms/Associated symptom/sign
+   */
   @Path("/items[at0063]")
   private List<Cluster> associatedSymptomSign;
 
+  /**
+   * open_eREACT-Care/Assessment/Covid/Covid symptoms/Any event/First symptoms/Presence
+   */
   @Path("/items[at0.1]/value|defining_code")
   private PresenceDefiningCode presenceDefiningCode;
 

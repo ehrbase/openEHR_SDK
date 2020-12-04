@@ -6,6 +6,9 @@ import org.ehrbase.client.annotations.Path;
 
 @Entity
 public class ServiceRequestReasonForRequestElement {
+  /**
+   * open_eREACT-Care/Response/Service request/Current Activity/Reason for request
+   */
   @Path("/value")
   private DvCodedText value;
 

@@ -7,6 +7,9 @@ import org.ehrbase.client.annotations.Path;
 @Entity
 @OptionFor("DV_CODED_TEXT")
 public class BodyTemperatureLocationOfMeasurementDvCodedText implements BodyTemperatureLocationOfMeasurementChoice {
+  /**
+   * Encounter/Body temperature/value/value
+   */
   @Path("|defining_code")
   private LocationOfMeasurementDefiningCode locationOfMeasurementDefiningCode;
 

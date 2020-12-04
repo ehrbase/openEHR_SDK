@@ -14,39 +14,75 @@ import org.ehrbase.client.classgenerator.shareddefinition.Language;
 @Entity
 @Archetype("openEHR-EHR-OBSERVATION.blood_pressure.v2")
 public class BloodPressureObservation {
+  /**
+   * open_eREACT-Care/Assessment/NEWS2/Blood pressure/Any event/Systolic
+   */
   @Path("/data[at0001]/events[at0006]/data[at0003]/items[at0004]/value|magnitude")
   private Double systolicMagnitude;
 
+  /**
+   * open_eREACT-Care/Assessment/NEWS2/Blood pressure/Any event/Systolic
+   */
   @Path("/data[at0001]/events[at0006]/data[at0003]/items[at0004]/value|units")
   private String systolicUnits;
 
+  /**
+   * open_eREACT-Care/Assessment/NEWS2/Blood pressure/Any event/Diastolic
+   */
   @Path("/data[at0001]/events[at0006]/data[at0003]/items[at0005]/value|magnitude")
   private Double diastolicMagnitude;
 
+  /**
+   * open_eREACT-Care/Assessment/NEWS2/Blood pressure/Any event/Diastolic
+   */
   @Path("/data[at0001]/events[at0006]/data[at0003]/items[at0005]/value|units")
   private String diastolicUnits;
 
+  /**
+   * open_eREACT-Care/Assessment/NEWS2/Blood pressure/Any event/Exertion
+   */
   @Path("/data[at0001]/events[at0006]/state[at0007]/items[at1030]")
   private Cluster exertion;
 
+  /**
+   * open_eREACT-Care/Assessment/NEWS2/Blood pressure/Any event/time
+   */
   @Path("/data[at0001]/events[at0006]/time|value")
   private TemporalAccessor timeValue;
 
+  /**
+   * open_eREACT-Care/Assessment/NEWS2/Blood pressure/origin
+   */
   @Path("/data[at0001]/origin|value")
   private TemporalAccessor originValue;
 
+  /**
+   * open_eREACT-Care/Assessment/NEWS2/Blood pressure/Structured measurement location
+   */
   @Path("/protocol[at0011]/items[at1057]")
   private List<Cluster> structuredMeasurementLocation;
 
+  /**
+   * open_eREACT-Care/Assessment/NEWS2/Blood pressure/Device
+   */
   @Path("/protocol[at0011]/items[at1025]")
   private Cluster device;
 
+  /**
+   * open_eREACT-Care/Assessment/NEWS2/Blood pressure/Extension
+   */
   @Path("/protocol[at0011]/items[at1058]")
   private List<Cluster> extension;
 
+  /**
+   * open_eREACT-Care/Assessment/NEWS2/Blood pressure/subject
+   */
   @Path("/subject")
   private PartyProxy subject;
 
+  /**
+   * open_eREACT-Care/Assessment/NEWS2/Blood pressure/language
+   */
   @Path("/language")
   private Language language;
 

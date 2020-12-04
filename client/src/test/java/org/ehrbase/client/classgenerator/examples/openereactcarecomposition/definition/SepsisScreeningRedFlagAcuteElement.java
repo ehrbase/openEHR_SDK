@@ -5,6 +5,9 @@ import org.ehrbase.client.annotations.Path;
 
 @Entity
 public class SepsisScreeningRedFlagAcuteElement {
+  /**
+   * open_eREACT-Care/Assessment/Sepsis/Sepsis screening/Any event/Red flag (acute)
+   */
   @Path("/value|defining_code")
   private RedFlagAcuteDefiningCode value;
 

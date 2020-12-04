@@ -9,9 +9,15 @@ import org.ehrbase.client.annotations.Path;
 @Entity
 @OptionFor("DV_QUANTITY")
 public class TestAllTypesChoiceDvQuantity implements TestAllTypesChoiceChoice {
+  /**
+   * Test all types/Test all types/value/value
+   */
   @Path("|magnitude")
   private Double choiceMagnitude;
 
+  /**
+   * Test all types/Test all types/value/value
+   */
   @Path("|units")
   private String choiceUnits;
 

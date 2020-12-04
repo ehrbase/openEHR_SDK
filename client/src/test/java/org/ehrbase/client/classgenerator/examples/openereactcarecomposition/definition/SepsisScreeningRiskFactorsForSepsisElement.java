@@ -5,6 +5,9 @@ import org.ehrbase.client.annotations.Path;
 
 @Entity
 public class SepsisScreeningRiskFactorsForSepsisElement {
+  /**
+   * open_eREACT-Care/Assessment/Sepsis/Sepsis screening/Any event/Risk factors for sepsis
+   */
   @Path("/value|defining_code")
   private RiskFactorsForSepsisDefiningCode value;
 

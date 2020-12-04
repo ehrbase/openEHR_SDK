@@ -14,42 +14,81 @@ import org.ehrbase.client.classgenerator.shareddefinition.Language;
 @Entity
 @Archetype("openEHR-EHR-ADMIN_ENTRY.episodeofcare.v0")
 public class EpisodeofcareAdminEntry {
+  /**
+   * EpisodeOfCare/Episodeofcare/identifier
+   */
   @Path("/data[at0001]/items[at0002]")
   private List<EpisodeofcareIdentifierElement> identifier;
 
+  /**
+   * EpisodeOfCare/Episodeofcare/status
+   */
   @Path("/data[at0001]/items[at0003]/value|defining_code")
   private StatusDefiningCode statusDefiningCode;
 
+  /**
+   * EpisodeOfCare/Episodeofcare/type
+   */
   @Path("/data[at0001]/items[at0011]/value|value")
   private String typeValue;
 
+  /**
+   * EpisodeOfCare/Episodeofcare/period/upper
+   */
   @Path("/data[at0001]/items[at0014]/value/upper|value")
   private TemporalAccessor upperValue;
 
+  /**
+   * EpisodeOfCare/Episodeofcare/period/lower
+   */
   @Path("/data[at0001]/items[at0014]/value/lower|value")
   private TemporalAccessor lowerValue;
 
+  /**
+   * EpisodeOfCare/Episodeofcare/period/lower_included
+   */
   @Path("/data[at0001]/items[at0014]/value/lower_included")
   private Boolean lowerIncluded;
 
+  /**
+   * EpisodeOfCare/Episodeofcare/period/upper_included
+   */
   @Path("/data[at0001]/items[at0014]/value/upper_included")
   private Boolean upperIncluded;
 
+  /**
+   * EpisodeOfCare/Episodeofcare/diagnosis
+   */
   @Path("/data[at0001]/items[at0018]")
   private List<EpisodeofcareDiagnosisCluster> diagnosis;
 
+  /**
+   * EpisodeOfCare/Episodeofcare/care manager
+   */
   @Path("/data[at0001]/items[at0012]/value|value")
   private URI careManagerValue;
 
+  /**
+   * EpisodeOfCare/Episodeofcare/managing organization
+   */
   @Path("/data[at0001]/items[at0017]/value|value")
   private URI managingOrganizationValue;
 
+  /**
+   * EpisodeOfCare/Episodeofcare/team
+   */
   @Path("/data[at0001]/items[at0013]")
   private List<EpisodeofcareTeamElement> team;
 
+  /**
+   * EpisodeOfCare/Episodeofcare/subject
+   */
   @Path("/subject")
   private PartyProxy subject;
 
+  /**
+   * EpisodeOfCare/Episodeofcare/language
+   */
   @Path("/language")
   private Language language;
 

@@ -12,24 +12,45 @@ import org.ehrbase.client.classgenerator.shareddefinition.Language;
 @Entity
 @Archetype("openEHR-EHR-EVALUATION.problem_diagnosis.v1")
 public class ProblemDiagnoseEvaluation {
+  /**
+   * Bericht/Allgemeine Angaben/Problem/Diagnose/Name des Problems/ der Diagnose
+   */
   @Path("/data[at0001]/items[at0002]/value|value")
   private String nameDesProblemsDerDiagnoseValue;
 
+  /**
+   * Bericht/Allgemeine Angaben/Problem/Diagnose/Anatomische Stelle (strukturiert)
+   */
   @Path("/data[at0001]/items[at0039]")
   private List<Cluster> anatomischeStelleStrukturiert;
 
+  /**
+   * Bericht/Allgemeine Angaben/Problem/Diagnose/Spezifische Angaben
+   */
   @Path("/data[at0001]/items[at0043]")
   private List<Cluster> spezifischeAngaben;
 
+  /**
+   * Bericht/Allgemeine Angaben/Problem/Diagnose/Status
+   */
   @Path("/data[at0001]/items[at0046]")
   private List<Cluster> status;
 
+  /**
+   * Bericht/Allgemeine Angaben/Problem/Diagnose/Erweiterung
+   */
   @Path("/protocol[at0032]/items[at0071]")
   private List<Cluster> erweiterung;
 
+  /**
+   * Bericht/Allgemeine Angaben/Problem/Diagnose/subject
+   */
   @Path("/subject")
   private PartyProxy subject;
 
+  /**
+   * Bericht/Allgemeine Angaben/Problem/Diagnose/language
+   */
   @Path("/language")
   private Language language;
 

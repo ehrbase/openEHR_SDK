@@ -7,21 +7,39 @@ import org.ehrbase.client.annotations.Path;
 @Entity
 @Archetype("openEHR-EHR-SECTION.adhoc.v1")
 public class BackgroundSection {
+  /**
+   * open_eREACT-Care/Background/Height
+   */
   @Path("/items[openEHR-EHR-OBSERVATION.height.v2 and name/value='Height']")
   private HeightObservation height;
 
+  /**
+   * open_eREACT-Care/Background/Weight
+   */
   @Path("/items[openEHR-EHR-OBSERVATION.body_weight.v2 and name/value='Weight']")
   private WeightObservation weight;
 
+  /**
+   * open_eREACT-Care/Background/Frailty
+   */
   @Path("/items[openEHR-EHR-OBSERVATION.clinical_frailty_scale.v1 and name/value='Frailty']")
   private FrailtyObservation frailty;
 
+  /**
+   * open_eREACT-Care/Background/Past history
+   */
   @Path("/items[openEHR-EHR-EVALUATION.clinical_synopsis.v1 and name/value='Past history']")
   private PastHistoryEvaluation pastHistory;
 
+  /**
+   * open_eREACT-Care/Background/Medication
+   */
   @Path("/items[openEHR-EHR-EVALUATION.clinical_synopsis.v1 and name/value='Medication']")
   private MedicationEvaluation medication;
 
+  /**
+   * open_eREACT-Care/Background/Allergies
+   */
   @Path("/items[openEHR-EHR-EVALUATION.clinical_synopsis.v1 and name/value='Allergies']")
   private AllergiesEvaluation allergies;
 

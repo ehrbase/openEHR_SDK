@@ -12,18 +12,33 @@ import org.ehrbase.client.classgenerator.shareddefinition.Language;
 @Entity
 @Archetype("openEHR-EHR-OBSERVATION.travel_event.v0")
 public class ReisefallObservation {
+  /**
+   * Bericht/Risikogebiet/Reisefall/Beliebiges Intervallereignis
+   */
   @Path("/data[at0001]/events[at0002]")
   private List<ReisefallBeliebigesIntervallereignisIntervalEvent> beliebigesIntervallereignis;
 
+  /**
+   * Bericht/Risikogebiet/Reisefall/origin
+   */
   @Path("/data[at0001]/origin|value")
   private TemporalAccessor originValue;
 
+  /**
+   * Bericht/Risikogebiet/Reisefall/Erweiterung
+   */
   @Path("/protocol[at0007]/items[at0021]")
   private List<Cluster> erweiterung;
 
+  /**
+   * Bericht/Risikogebiet/Reisefall/subject
+   */
   @Path("/subject")
   private PartyProxy subject;
 
+  /**
+   * Bericht/Risikogebiet/Reisefall/language
+   */
   @Path("/language")
   private Language language;
 

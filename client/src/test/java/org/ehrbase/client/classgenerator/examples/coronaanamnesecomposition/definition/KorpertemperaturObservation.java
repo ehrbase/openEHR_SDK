@@ -14,39 +14,75 @@ import org.ehrbase.client.classgenerator.shareddefinition.Language;
 @Entity
 @Archetype("openEHR-EHR-OBSERVATION.body_temperature.v2")
 public class KorpertemperaturObservation {
+  /**
+   * Bericht/Symptome/Körpertemperatur/Beliebiges Ereignis/Temperatur
+   */
   @Path("/data[at0002]/events[at0003]/data[at0001]/items[at0004]/value|magnitude")
   private Double temperaturMagnitude;
 
+  /**
+   * Bericht/Symptome/Körpertemperatur/Beliebiges Ereignis/Temperatur
+   */
   @Path("/data[at0002]/events[at0003]/data[at0001]/items[at0004]/value|units")
   private String temperaturUnits;
 
+  /**
+   * Bericht/Symptome/Körpertemperatur/Beliebiges Ereignis/Störfaktoren
+   */
   @Path("/data[at0002]/events[at0003]/state[at0029]/items[at0066]")
   private List<KorpertemperaturStorfaktorenElement> storfaktoren;
 
+  /**
+   * Bericht/Symptome/Körpertemperatur/Beliebiges Ereignis/Umgebungsbedingungen
+   */
   @Path("/data[at0002]/events[at0003]/state[at0029]/items[at0056]")
   private List<Cluster> umgebungsbedingungen;
 
+  /**
+   * Bericht/Symptome/Körpertemperatur/Beliebiges Ereignis/Betätigung
+   */
   @Path("/data[at0002]/events[at0003]/state[at0029]/items[at0057]")
   private Cluster betatigung;
 
+  /**
+   * Bericht/Symptome/Körpertemperatur/Beliebiges Ereignis/time
+   */
   @Path("/data[at0002]/events[at0003]/time|value")
   private TemporalAccessor timeValue;
 
+  /**
+   * Bericht/Symptome/Körpertemperatur/origin
+   */
   @Path("/data[at0002]/origin|value")
   private TemporalAccessor originValue;
 
+  /**
+   * Bericht/Symptome/Körpertemperatur/Strukturierte Lokalisation der Messung
+   */
   @Path("/protocol[at0020]/items[at0064]")
   private List<Cluster> strukturierteLokalisationDerMessung;
 
+  /**
+   * Bericht/Symptome/Körpertemperatur/Gerät
+   */
   @Path("/protocol[at0020]/items[at0059]")
   private Cluster gerat;
 
+  /**
+   * Bericht/Symptome/Körpertemperatur/Erweiterung
+   */
   @Path("/protocol[at0020]/items[at0062]")
   private List<Cluster> erweiterung;
 
+  /**
+   * Bericht/Symptome/Körpertemperatur/subject
+   */
   @Path("/subject")
   private PartyProxy subject;
 
+  /**
+   * Bericht/Symptome/Körpertemperatur/language
+   */
   @Path("/language")
   private Language language;
 

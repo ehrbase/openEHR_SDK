@@ -14,66 +14,129 @@ import org.ehrbase.client.classgenerator.shareddefinition.Language;
 @Entity
 @Archetype("openEHR-EHR-OBSERVATION.smics_befund.v1")
 public class SmicsErgebnisObservation {
+  /**
+   * SmICS Befund/SmICS-Ergebnis/Jedes Ereignis/SmICS Ergebniskategorie
+   */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value|defining_code")
   private SmicsErgebniskategorieDefiningCode smicsErgebniskategorieDefiningCode;
 
+  /**
+   * SmICS Befund/SmICS-Ergebnis/Jedes Ereignis/Multispezies
+   */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0005]/value|value")
   private Boolean multispeziesValue;
 
+  /**
+   * SmICS Befund/SmICS-Ergebnis/Jedes Ereignis/Beginn
+   */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0006]/value|value")
   private TemporalAccessor beginnValue;
 
+  /**
+   * SmICS Befund/SmICS-Ergebnis/Jedes Ereignis/Beginn der Untersuchung
+   */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0007]/value|value")
   private TemporalAccessor beginnDerUntersuchungValue;
 
+  /**
+   * SmICS Befund/SmICS-Ergebnis/Jedes Ereignis/Ende
+   */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0008]/value|value")
   private TemporalAccessor endeValue;
 
+  /**
+   * SmICS Befund/SmICS-Ergebnis/Jedes Ereignis/Dauer
+   */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0009]/value|value")
   private TemporalAmount dauerValue;
 
+  /**
+   * SmICS Befund/SmICS-Ergebnis/Jedes Ereignis/Standort
+   */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.location.v1]")
   private List<StandortCluster> standort;
 
+  /**
+   * SmICS Befund/SmICS-Ergebnis/Jedes Ereignis/Kommentar
+   */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0011]/value|value")
   private String baumKommentarValue;
 
+  /**
+   * SmICS Befund/SmICS-Ergebnis/Jedes Ereignis/Art der Übertragung/Übertragungsweg
+   */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0012]/items[at0014]/value|value")
   private String ubertragungswegValue;
 
+  /**
+   * SmICS Befund/SmICS-Ergebnis/Jedes Ereignis/Art der Übertragung/Transmissionsweg
+   */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0012]/items[at0013]/value|value")
   private String transmissionswegValue;
 
+  /**
+   * SmICS Befund/SmICS-Ergebnis/Jedes Ereignis/Art der Übertragung/Kommentar
+   */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0012]/items[at0038]/value|value")
   private String artDerUbertragungKommentarValue;
 
+  /**
+   * SmICS Befund/SmICS-Ergebnis/Jedes Ereignis/Eigenschaften des beteiligten Erregers/Erregername
+   */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0015]/items[at0016]/value|defining_code")
   private ErregernameDefiningCode erregernameDefiningCode;
 
+  /**
+   * SmICS Befund/SmICS-Ergebnis/Jedes Ereignis/Eigenschaften des beteiligten Erregers/Anzahl der Erregernachweise
+   */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0015]/items[at0037]")
   private List<SmicsErgebnisAnzahlDerErregernachweiseElement> anzahlDerErregernachweise;
 
+  /**
+   * SmICS Befund/SmICS-Ergebnis/Jedes Ereignis/Eigenschaften des beteiligten Erregers/Erregerdetails
+   */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0015]/items[openEHR-EHR-CLUSTER.erregerdetails.v1]")
   private ErregerdetailsCluster erregerdetails;
 
+  /**
+   * SmICS Befund/SmICS-Ergebnis/Jedes Ereignis/Eigenschaften des beteiligten Erregers/Erregertypisierung
+   */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0015]/items[openEHR-EHR-CLUSTER.molekulare_typisierung.v0 and name/value='Erregertypisierung']")
   private ErregertypisierungCluster erregertypisierung;
 
+  /**
+   * SmICS Befund/SmICS-Ergebnis/Jedes Ereignis/Eigenschaften des beteiligten Erregers/Zeitpunkt des ersten Erregernachweises
+   */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0015]/items[at0021]/value|value")
   private TemporalAccessor zeitpunktDesErstenErregernachweisesValue;
 
+  /**
+   * SmICS Befund/SmICS-Ergebnis/Jedes Ereignis/Eigenschaften des beteiligten Erregers/Zeitpunkt des letzten Erregernachweises
+   */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0015]/items[at0020]/value|value")
   private TemporalAccessor zeitpunktDesLetztenErregernachweisesValue;
 
+  /**
+   * SmICS Befund/SmICS-Ergebnis/Jedes Ereignis/time
+   */
   @Path("/data[at0001]/events[at0002]/time|value")
   private TemporalAccessor timeValue;
 
+  /**
+   * SmICS Befund/SmICS-Ergebnis/origin
+   */
   @Path("/data[at0001]/origin|value")
   private TemporalAccessor originValue;
 
+  /**
+   * SmICS Befund/SmICS-Ergebnis/subject
+   */
   @Path("/subject")
   private PartyProxy subject;
 
+  /**
+   * SmICS Befund/SmICS-Ergebnis/language
+   */
   @Path("/language")
   private Language language;
 
