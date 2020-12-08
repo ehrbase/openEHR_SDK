@@ -9,11 +9,12 @@ import java.util.List;
 import org.ehrbase.client.annotations.Archetype;
 import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.Path;
+import org.ehrbase.client.classgenerator.interfaces.EntryEntity;
 import org.ehrbase.client.classgenerator.shareddefinition.Language;
 
 @Entity
 @Archetype("openEHR-EHR-OBSERVATION.story.v1")
-public class CovidSymptomsObservation {
+public class CovidSymptomsObservation implements EntryEntity {
   /**
    * open_eREACT-Care/Assessment/Covid/Covid symptoms/Any event/Story
    */

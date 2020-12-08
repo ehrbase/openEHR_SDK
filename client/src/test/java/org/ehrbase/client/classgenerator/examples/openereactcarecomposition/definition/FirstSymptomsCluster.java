@@ -10,10 +10,11 @@ import java.util.List;
 import org.ehrbase.client.annotations.Archetype;
 import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.Path;
+import org.ehrbase.client.classgenerator.interfaces.LocatableEntity;
 
 @Entity
 @Archetype("openEHR-EHR-CLUSTER.symptom_sign-cvid.v0")
-public class FirstSymptomsCluster {
+public class FirstSymptomsCluster implements LocatableEntity {
   /**
    * open_eREACT-Care/Assessment/Covid/Covid symptoms/Any event/First symptoms/Symptom/Sign name
    */

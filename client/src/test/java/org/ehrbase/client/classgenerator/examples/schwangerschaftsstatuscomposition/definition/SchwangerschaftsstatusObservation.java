@@ -8,11 +8,12 @@ import java.util.List;
 import org.ehrbase.client.annotations.Archetype;
 import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.Path;
+import org.ehrbase.client.classgenerator.interfaces.EntryEntity;
 import org.ehrbase.client.classgenerator.shareddefinition.Language;
 
 @Entity
 @Archetype("openEHR-EHR-OBSERVATION.pregnancy_status.v0")
-public class SchwangerschaftsstatusObservation {
+public class SchwangerschaftsstatusObservation implements EntryEntity {
   /**
    * Schwangerschaftsstatus/Schwangerschaftsstatus/Beliebiges Ereignis/Status
    */

@@ -14,6 +14,7 @@ import org.ehrbase.client.annotations.Path;
 import org.ehrbase.client.annotations.Template;
 import org.ehrbase.client.classgenerator.examples.virologischerbefundcomposition.definition.BefundObservation;
 import org.ehrbase.client.classgenerator.examples.virologischerbefundcomposition.definition.FallidentifikationCluster;
+import org.ehrbase.client.classgenerator.interfaces.CompositionEntity;
 import org.ehrbase.client.classgenerator.shareddefinition.Category;
 import org.ehrbase.client.classgenerator.shareddefinition.Language;
 import org.ehrbase.client.classgenerator.shareddefinition.Setting;
@@ -23,7 +24,7 @@ import org.ehrbase.client.openehrclient.VersionUid;
 @Entity
 @Archetype("openEHR-EHR-COMPOSITION.report-result.v1")
 @Template("Virologischer Befund")
-public class VirologischerBefundComposition {
+public class VirologischerBefundComposition implements CompositionEntity {
   /**
    * Virologischer Befund/context/Bericht-ID
    */

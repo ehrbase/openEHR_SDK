@@ -9,11 +9,12 @@ import java.util.List;
 import org.ehrbase.client.annotations.Archetype;
 import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.Path;
+import org.ehrbase.client.classgenerator.interfaces.EntryEntity;
 import org.ehrbase.client.classgenerator.shareddefinition.Language;
 
 @Entity
 @Archetype("openEHR-EHR-ADMIN_ENTRY.admission.v0")
-public class AufnahmedatenAdminEntry {
+public class AufnahmedatenAdminEntry implements EntryEntity {
   /**
    * Stationärer Versorgungsfall/Aufnahmedaten/Versorgungsfallgrund
    */

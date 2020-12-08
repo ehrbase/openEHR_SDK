@@ -7,11 +7,12 @@ import java.time.temporal.TemporalAccessor;
 import org.ehrbase.client.annotations.Archetype;
 import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.Path;
+import org.ehrbase.client.classgenerator.interfaces.EntryEntity;
 import org.ehrbase.client.classgenerator.shareddefinition.Language;
 
 @Entity
 @Archetype("openEHR-EHR-ADMIN_ENTRY.hospitalization.v0")
-public class VersorgungsortAdminEntry {
+public class VersorgungsortAdminEntry implements EntryEntity {
   /**
    * Patientenaufenthalt/Versorgungsort/Beginn
    */

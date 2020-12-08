@@ -9,11 +9,12 @@ import java.time.temporal.TemporalAccessor;
 import org.ehrbase.client.annotations.Archetype;
 import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.Path;
+import org.ehrbase.client.classgenerator.interfaces.EntryEntity;
 import org.ehrbase.client.classgenerator.shareddefinition.Language;
 
 @Entity
 @Archetype("openEHR-EHR-INSTRUCTION.test_all_types.v1")
-public class TestAllTypesInstruction {
+public class TestAllTypesInstruction implements EntryEntity {
   /**
    * Test all types/Test all types/section 2/section 3/Test all types/Current Activity/partial date
    */

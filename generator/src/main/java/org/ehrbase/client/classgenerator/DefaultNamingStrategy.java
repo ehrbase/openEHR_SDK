@@ -19,6 +19,8 @@
 
 package org.ehrbase.client.classgenerator;
 
+import com.nedap.archie.rminfo.ArchieRMInfoLookup;
+import com.nedap.archie.rminfo.RMTypeInfo;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.CaseUtils;
@@ -34,6 +36,7 @@ import java.util.Optional;
 
 public class DefaultNamingStrategy implements NamingStrategy {
 
+  private static final ArchieRMInfoLookup RM_INFO_LOOKUP = ArchieRMInfoLookup.getInstance();
   public static final String TERM_DIVIDER = "_";
   private ClassGeneratorConfig config;
 
@@ -160,7 +163,7 @@ public class DefaultNamingStrategy implements NamingStrategy {
     String attributeName = new FlatPath(path).getLast().getAttributeName();
 
     if (!context.nodeDeque.isEmpty()) {
-      if (StringUtils.isBlank(attributeName) || List.of("defining_code","value").contains(attributeName) ) {
+      if ((StringUtils.isBlank(attributeName)||  List.of("defining_code","value").contains(attributeName)) && !isEntityAttribute(context,node) ) {
         name = makeNameUnique(context, node);
       } else {
         name = replaceElementName(context, node);
@@ -173,7 +176,7 @@ public class DefaultNamingStrategy implements NamingStrategy {
     if (name.equals("value")) {
       name = context.nodeDeque.peek().getName();
     }
-    if (context.nodeDeque.peek().getRmType().equals("ELEMENT")) {
+    if (context.nodeDeque.peek().getRmType().equals("ELEMENT") && !name.equals("feeder_audit")) {
       name = "value";
     }
 
@@ -192,6 +195,13 @@ public class DefaultNamingStrategy implements NamingStrategy {
     }
     fieldName = sanitizeNumber(fieldName);
     return fieldName;
+  }
+
+  private boolean isEntityAttribute(ClassGeneratorContext context, WebTemplateNode node) {
+    FlatPath relativPath = new FlatPath( context.nodeDeque.peek().buildRelativPath(node));
+    RMTypeInfo typeInfo = RM_INFO_LOOKUP.getTypeInfo(context.nodeDeque.peek().getRmType());
+
+    return relativPath.getChild() == null && typeInfo != null && typeInfo.getAttributes().containsKey(relativPath.getName());
   }
 
   private String normalise(String name, boolean capitalizeFirstLetter) {

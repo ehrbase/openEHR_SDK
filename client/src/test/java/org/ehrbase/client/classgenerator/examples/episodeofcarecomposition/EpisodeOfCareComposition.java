@@ -13,6 +13,7 @@ import org.ehrbase.client.annotations.Id;
 import org.ehrbase.client.annotations.Path;
 import org.ehrbase.client.annotations.Template;
 import org.ehrbase.client.classgenerator.examples.episodeofcarecomposition.definition.EpisodeofcareAdminEntry;
+import org.ehrbase.client.classgenerator.interfaces.CompositionEntity;
 import org.ehrbase.client.classgenerator.shareddefinition.Category;
 import org.ehrbase.client.classgenerator.shareddefinition.Language;
 import org.ehrbase.client.classgenerator.shareddefinition.Setting;
@@ -22,7 +23,7 @@ import org.ehrbase.client.openehrclient.VersionUid;
 @Entity
 @Archetype("openEHR-EHR-COMPOSITION.versorgungsfall.v0")
 @Template("EpisodeOfCare")
-public class EpisodeOfCareComposition {
+public class EpisodeOfCareComposition implements CompositionEntity {
   /**
    * EpisodeOfCare/Episodeofcare
    */

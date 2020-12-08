@@ -5,10 +5,11 @@ import java.lang.Boolean;
 import org.ehrbase.client.annotations.Archetype;
 import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.Path;
+import org.ehrbase.client.classgenerator.interfaces.LocatableEntity;
 
 @Entity
 @Archetype("openEHR-EHR-CLUSTER.test_all_types.v1")
-public class TestAllTypesCluster {
+public class TestAllTypesCluster implements LocatableEntity {
   /**
    * Test all types/Test all types/section 2/section 3/Test all types/Test all types/cluster 5/cluster 6/boolean 2
    */

@@ -4,10 +4,11 @@ import java.lang.String;
 import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.OptionFor;
 import org.ehrbase.client.annotations.Path;
+import org.ehrbase.client.classgenerator.interfaces.RMEntity;
 
 @Entity
 @OptionFor("DV_TEXT")
-public class DenwisValueDvText2 implements DenwisValueChoice2 {
+public class DenwisValueDvText2 implements RMEntity, DenwisValueChoice2 {
   /**
    * open_eREACT-Care/Assessment/DENWIS/Point in time/value/value
    */

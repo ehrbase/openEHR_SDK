@@ -10,11 +10,12 @@ import java.util.List;
 import org.ehrbase.client.annotations.Archetype;
 import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.Path;
+import org.ehrbase.client.classgenerator.interfaces.EntryEntity;
 import org.ehrbase.client.classgenerator.shareddefinition.Language;
 
 @Entity
 @Archetype("openEHR-EHR-OBSERVATION.news2.v1")
-public class News2ScoreObservation {
+public class News2ScoreObservation implements EntryEntity {
   /**
    * open_eREACT-Care/Assessment/NEWS2/NEWS2 Score/Any point in time event/Respiration rate
    */

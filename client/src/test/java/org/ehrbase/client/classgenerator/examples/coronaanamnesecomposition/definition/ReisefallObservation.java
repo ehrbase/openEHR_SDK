@@ -8,11 +8,12 @@ import java.util.List;
 import org.ehrbase.client.annotations.Archetype;
 import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.Path;
+import org.ehrbase.client.classgenerator.interfaces.EntryEntity;
 import org.ehrbase.client.classgenerator.shareddefinition.Language;
 
 @Entity
 @Archetype("openEHR-EHR-OBSERVATION.travel_event.v0")
-public class ReisefallObservation {
+public class ReisefallObservation implements EntryEntity {
   /**
    * Bericht/Risikogebiet/Reisefall/Beliebiges Intervallereignis
    */

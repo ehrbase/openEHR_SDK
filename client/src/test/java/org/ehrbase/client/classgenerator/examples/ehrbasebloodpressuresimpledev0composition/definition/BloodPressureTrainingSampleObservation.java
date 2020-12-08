@@ -10,11 +10,12 @@ import java.util.List;
 import org.ehrbase.client.annotations.Archetype;
 import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.Path;
+import org.ehrbase.client.classgenerator.interfaces.EntryEntity;
 import org.ehrbase.client.classgenerator.shareddefinition.Language;
 
 @Entity
 @Archetype("openEHR-EHR-OBSERVATION.sample_blood_pressure.v1")
-public class BloodPressureTrainingSampleObservation {
+public class BloodPressureTrainingSampleObservation implements EntryEntity {
   /**
    * Encounter (training sample)/Blood pressure (Training sample)/Baseline reading/Systolic
    */

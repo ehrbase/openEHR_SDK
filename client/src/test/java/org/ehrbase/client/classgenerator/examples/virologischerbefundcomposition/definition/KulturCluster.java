@@ -5,10 +5,11 @@ import java.util.List;
 import org.ehrbase.client.annotations.Archetype;
 import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.Path;
+import org.ehrbase.client.classgenerator.interfaces.LocatableEntity;
 
 @Entity
 @Archetype("openEHR-EHR-CLUSTER.laboratory_test_panel.v0")
-public class KulturCluster {
+public class KulturCluster implements LocatableEntity {
   /**
    * Virologischer Befund/Befund/Jedes Ereignis/Kultur/Pro Virus
    */

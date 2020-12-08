@@ -337,7 +337,7 @@ public class CoronaAnamneseCompositionContainment extends Containment {
 
   public SelectAqlField<PartyProxy> COMPOSER = new AqlFieldImp<PartyProxy>(CoronaAnamneseComposition.class, "/composer", "composer", PartyProxy.class, this);
 
-  public SelectAqlField<Language> BERICHT_LANGUAGE = new AqlFieldImp<Language>(CoronaAnamneseComposition.class, "/language", "berichtLanguage", Language.class, this);
+  public SelectAqlField<Language> LANGUAGE = new AqlFieldImp<Language>(CoronaAnamneseComposition.class, "/language", "language", Language.class, this);
 
   public SelectAqlField<FeederAudit> FEEDER_AUDIT = new AqlFieldImp<FeederAudit>(CoronaAnamneseComposition.class, "/feeder_audit", "feederAudit", FeederAudit.class, this);
 

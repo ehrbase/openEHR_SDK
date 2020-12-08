@@ -11,11 +11,12 @@ import java.util.List;
 import org.ehrbase.client.annotations.Archetype;
 import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.Path;
+import org.ehrbase.client.classgenerator.interfaces.EntryEntity;
 import org.ehrbase.client.classgenerator.shareddefinition.Language;
 
 @Entity
 @Archetype("openEHR-EHR-OBSERVATION.height.v2")
-public class HeightObservation {
+public class HeightObservation implements EntryEntity {
   /**
    * open_eREACT-Care/Background/Height/Any event/Height/Length
    */

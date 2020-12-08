@@ -14,6 +14,7 @@ import org.ehrbase.client.annotations.Path;
 import org.ehrbase.client.annotations.Template;
 import org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev0composition.definition.BloodPressureTrainingSampleObservation;
 import org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev0composition.definition.DeviceDetailsTrainingSampleCluster;
+import org.ehrbase.client.classgenerator.interfaces.CompositionEntity;
 import org.ehrbase.client.classgenerator.shareddefinition.Category;
 import org.ehrbase.client.classgenerator.shareddefinition.Language;
 import org.ehrbase.client.classgenerator.shareddefinition.Setting;
@@ -23,7 +24,7 @@ import org.ehrbase.client.openehrclient.VersionUid;
 @Entity
 @Archetype("openEHR-EHR-COMPOSITION.sample_encounter.v1")
 @Template("ehrbase_blood_pressure_simple.de.v0")
-public class EhrbaseBloodPressureSimpleDeV0Composition {
+public class EhrbaseBloodPressureSimpleDeV0Composition implements CompositionEntity {
   /**
    * Encounter (training sample)/context/Admin detail/Device details (training sample)
    */

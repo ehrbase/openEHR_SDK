@@ -73,6 +73,7 @@ public class FlattFilter extends Filter {
         attributeNames.add("location");
         attributeNames.add("lower_included");
         attributeNames.add("upper_included");
+        attributeNames.add("sample_count");
 
         deque.poll();
         if(!isTrivialNode(parent,deque.peek()) && Locatable.class.isAssignableFrom( typeInfo.getJavaClass())){
@@ -128,7 +129,7 @@ public class FlattFilter extends Filter {
     }
 
     if (node.getRmType().equals("ELEMENT")
-        && node.getChildren().size() == 3
+        && node.getChildren().size() == 4
         && node.getChildren().stream()
             .map(WebTemplateNode::getRmType)
             .collect(Collectors.toList())

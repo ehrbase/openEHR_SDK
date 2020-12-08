@@ -10,11 +10,12 @@ import java.util.List;
 import org.ehrbase.client.annotations.Archetype;
 import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.Path;
+import org.ehrbase.client.classgenerator.interfaces.EntryEntity;
 import org.ehrbase.client.classgenerator.shareddefinition.Language;
 
 @Entity
 @Archetype("openEHR-EHR-OBSERVATION.blood_pressure.v2")
-public class BloodPressureObservation {
+public class BloodPressureObservation implements EntryEntity {
   /**
    * open_eREACT-Care/Assessment/NEWS2/Blood pressure/Any event/Systolic
    */

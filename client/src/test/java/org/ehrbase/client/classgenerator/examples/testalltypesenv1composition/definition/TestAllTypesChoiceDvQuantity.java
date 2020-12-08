@@ -5,10 +5,11 @@ import java.lang.String;
 import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.OptionFor;
 import org.ehrbase.client.annotations.Path;
+import org.ehrbase.client.classgenerator.interfaces.RMEntity;
 
 @Entity
 @OptionFor("DV_QUANTITY")
-public class TestAllTypesChoiceDvQuantity implements TestAllTypesChoiceChoice {
+public class TestAllTypesChoiceDvQuantity implements RMEntity, TestAllTypesChoiceChoice {
   /**
    * Test all types/Test all types/value/value
    */

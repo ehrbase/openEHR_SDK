@@ -322,13 +322,13 @@ public class OPTParser {
         && (Locatable.class.isAssignableFrom(typeInfo.getJavaClass())
             || EventContext.class.isAssignableFrom(typeInfo.getJavaClass())
             || DvInterval.class.isAssignableFrom(typeInfo.getJavaClass())
-            || IsmTransition.class.isAssignableFrom(typeInfo.getJavaClass()))
-        && !Element.class.isAssignableFrom(typeInfo.getJavaClass())) {
+            || IsmTransition.class.isAssignableFrom(typeInfo.getJavaClass()))) {
 
       node.getChildren()
           .addAll(
               typeInfo.getAttributes().values().stream()
                   .filter(s -> !s.isComputed())
+                 .filter(s -> !Element.class.isAssignableFrom(typeInfo.getJavaClass()) || s.getRmName().equals("feeder_audit"))
                   .filter(s -> !List.of("value").contains(s.getRmName()))
                   .filter(s -> !Locatable.class.isAssignableFrom(s.getTypeInCollection()))
                   .map(i -> buildNodeForAttribute(i, aqlPath, termDefinitionMap))

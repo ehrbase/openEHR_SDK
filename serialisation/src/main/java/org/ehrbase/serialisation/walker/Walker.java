@@ -21,25 +21,19 @@ package org.ehrbase.serialisation.walker;
 
 import com.nedap.archie.rm.RMObject;
 import com.nedap.archie.rm.archetyped.Locatable;
-import com.nedap.archie.rm.archetyped.Pathable;
 import com.nedap.archie.rm.composition.Composition;
 import com.nedap.archie.rm.composition.EventContext;
 import com.nedap.archie.rm.composition.IsmTransition;
-import com.nedap.archie.rm.datastructures.Element;
 import com.nedap.archie.rm.datavalues.quantity.DvInterval;
 import com.nedap.archie.rminfo.ArchieRMInfoLookup;
 import com.nedap.archie.rminfo.RMTypeInfo;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.ImmutableTriple;
-import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
 import org.ehrbase.serialisation.jsonencoding.CanonicalJson;
-import org.ehrbase.util.exception.SdkException;
 import org.ehrbase.webtemplate.model.WebTemplate;
 import org.ehrbase.webtemplate.model.WebTemplateInput;
 import org.ehrbase.webtemplate.model.WebTemplateNode;
-import org.ehrbase.webtemplate.parser.FlatPath;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -93,22 +87,10 @@ public abstract class Walker<T> {
       if (children.stream().anyMatch(n -> n.getRmType().equals("EVENT"))) {
         WebTemplateNode event =
             children.stream().filter(n -> n.getRmType().equals("EVENT")).findAny().get();
-        WebTemplateNode pointEvent = new WebTemplateNode(event);
-        WebTemplateNode intervalEvent = new WebTemplateNode(event);
-        pointEvent.setRmType("POINT_EVENT");
-        intervalEvent.setRmType("INTERVAL_EVENT");
-        WebTemplateNode width = new WebTemplateNode();
-        width.setId("width");
-        width.setRmType("DV_DURATION");
-        width.setMax(1);
-        width.setAqlPath(event.getAqlPath() + "/width");
-        intervalEvent.getChildren().add(width);
-        WebTemplateNode math = new WebTemplateNode();
-        math.setId("math_function");
-        math.setRmType("DV_CODED_TEXT");
-        math.setMax(1);
-        math.setAqlPath(event.getAqlPath() + "/math_function");
-        intervalEvent.getChildren().add(math);
+
+        EventHelper eventHelper = new EventHelper(event).invoke();
+        WebTemplateNode pointEvent = eventHelper.getPointEvent();
+        WebTemplateNode intervalEvent = eventHelper.getIntervalEvent();
         choices.put(intervalEvent.getAqlPath(), List.of(intervalEvent, pointEvent));
         children.add(intervalEvent);
         children.add(pointEvent);
@@ -233,4 +215,54 @@ public abstract class Walker<T> {
     return sb.toString();
   }
 
+  public static class EventHelper {
+    private WebTemplateNode event;
+    private WebTemplateNode pointEvent;
+    private WebTemplateNode intervalEvent;
+
+    public EventHelper(WebTemplateNode event) {
+      this.event = event;
+    }
+
+    public WebTemplateNode getPointEvent() {
+      return pointEvent;
+    }
+
+    public WebTemplateNode getIntervalEvent() {
+      return intervalEvent;
+    }
+
+    public EventHelper invoke() {
+      pointEvent = new WebTemplateNode(event);
+      intervalEvent = new WebTemplateNode(event);
+      pointEvent.setRmType("POINT_EVENT");
+      intervalEvent.setRmType("INTERVAL_EVENT");
+
+      WebTemplateNode width = new WebTemplateNode();
+      width.setId("width");
+      width.setName("width");
+      width.setRmType("DV_DURATION");
+      width.setMax(1);
+      width.setAqlPath(event.getAqlPath() + "/width");
+      intervalEvent.getChildren().add(width);
+
+      WebTemplateNode math = new WebTemplateNode();
+      math.setId("math_function");
+      math.setName("math_function");
+      math.setRmType("DV_CODED_TEXT");
+      math.setMax(1);
+      math.setAqlPath(event.getAqlPath() + "/math_function");
+      intervalEvent.getChildren().add(math);
+
+      WebTemplateNode sampleCount = new WebTemplateNode();
+      sampleCount.setId("sample_count");
+      sampleCount.setName("sample_count");
+      sampleCount.setRmType("LONG");
+      sampleCount.setMax(1);
+      sampleCount.setAqlPath(event.getAqlPath() + "/sample_count");
+      intervalEvent.getChildren().add(sampleCount);
+
+      return this;
+    }
+  }
 }

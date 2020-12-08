@@ -9,11 +9,12 @@ import java.util.List;
 import org.ehrbase.client.annotations.Archetype;
 import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.Path;
+import org.ehrbase.client.classgenerator.interfaces.EntryEntity;
 import org.ehrbase.client.classgenerator.shareddefinition.Language;
 
 @Entity
 @Archetype("openEHR-EHR-ADMIN_ENTRY.discharge_summary.v0")
-public class EntlassungsdatenAdminEntry {
+public class EntlassungsdatenAdminEntry implements EntryEntity {
   /**
    * Stationärer Versorgungsfall/Entlassungsdaten/Art der Entlassung
    */

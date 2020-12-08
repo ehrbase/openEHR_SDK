@@ -8,10 +8,11 @@ import java.util.List;
 import org.ehrbase.client.annotations.Archetype;
 import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.Path;
+import org.ehrbase.client.classgenerator.interfaces.LocatableEntity;
 
 @Entity
 @Archetype("openEHR-EHR-CLUSTER.device.v1")
-public class DetailsZumBettCluster {
+public class DetailsZumBettCluster implements LocatableEntity {
   /**
    * Patientenaufenthalt/Versorgungsort/Standort/Details zum Bett/Gerätename
    */

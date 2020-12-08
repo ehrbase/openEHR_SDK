@@ -1,17 +1,19 @@
 package org.ehrbase.client.classgenerator.exampleoptimizersettingalls.coronaanamnesecomposition.definition;
 
 import com.nedap.archie.rm.archetyped.FeederAudit;
+import java.lang.Long;
 import java.time.temporal.TemporalAccessor;
 import java.time.temporal.TemporalAmount;
 import java.util.List;
 import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.OptionFor;
 import org.ehrbase.client.annotations.Path;
+import org.ehrbase.client.classgenerator.interfaces.IntervalEventEntity;
 import org.ehrbase.client.classgenerator.shareddefinition.MathFunction;
 
 @Entity
 @OptionFor("INTERVAL_EVENT")
-public class BerichtBeliebigesEreignisIntervalEvent implements BerichtBeliebigesEreignisChoice {
+public class BerichtBeliebigesEreignisIntervalEvent implements IntervalEventEntity, BerichtBeliebigesEreignisChoice {
   /**
    * Bericht/Beliebiges Ereignis/Spezifisches Symptom/Anzeichen
    */
@@ -41,6 +43,12 @@ public class BerichtBeliebigesEreignisIntervalEvent implements BerichtBeliebiges
    */
   @Path("/math_function|defining_code")
   private MathFunction mathFunctionDefiningCode;
+
+  /**
+   * Bericht/Beliebiges Ereignis/sample_count
+   */
+  @Path("/sample_count")
+  private Long sampleCount;
 
   public void setSpezifischesSymptomAnzeichen(
       List<BerichtSpezifischesSymptomAnzeichenCluster> spezifischesSymptomAnzeichen) {
@@ -81,5 +89,13 @@ public class BerichtBeliebigesEreignisIntervalEvent implements BerichtBeliebiges
 
   public MathFunction getMathFunctionDefiningCode() {
      return this.mathFunctionDefiningCode ;
+  }
+
+  public void setSampleCount(Long sampleCount) {
+     this.sampleCount = sampleCount;
+  }
+
+  public Long getSampleCount() {
+     return this.sampleCount ;
   }
 }

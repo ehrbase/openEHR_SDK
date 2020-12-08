@@ -10,11 +10,12 @@ import java.time.temporal.TemporalAccessor;
 import org.ehrbase.client.annotations.Archetype;
 import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.Path;
+import org.ehrbase.client.classgenerator.interfaces.EntryEntity;
 import org.ehrbase.client.classgenerator.shareddefinition.Language;
 
 @Entity
 @Archetype("openEHR-EHR-OBSERVATION.body_temperature.v1")
-public class TemperatureObservation {
+public class TemperatureObservation implements EntryEntity {
   /**
    * open_eREACT-Care/Assessment/NEWS2/Temperature/Any event/Temperature
    */

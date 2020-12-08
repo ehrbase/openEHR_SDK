@@ -7,10 +7,11 @@ import java.time.temporal.TemporalAccessor;
 import org.ehrbase.client.annotations.Archetype;
 import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.Path;
+import org.ehrbase.client.classgenerator.interfaces.LocatableEntity;
 
 @Entity
 @Archetype("openEHR-EHR-CLUSTER.sample_device.v1")
-public class DeviceDetailsTrainingSampleCluster {
+public class DeviceDetailsTrainingSampleCluster implements LocatableEntity {
   /**
    * Encounter (training sample)/context/Admin detail/Device details (training sample)/Name
    */

@@ -7,12 +7,13 @@ import java.util.List;
 import org.ehrbase.client.annotations.Archetype;
 import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.Path;
+import org.ehrbase.client.classgenerator.interfaces.EntryEntity;
 import org.ehrbase.client.classgenerator.shareddefinition.Language;
 import org.ehrbase.client.classgenerator.shareddefinition.Transition;
 
 @Entity
 @Archetype("openEHR-EHR-ACTION.test_all_types.v1")
-public class TestAllTypesAction {
+public class TestAllTypesAction implements EntryEntity {
   /**
    * Test all types/Test all types/section 2/section 3/Test all types/Test all types
    */

@@ -9,11 +9,12 @@ import java.util.List;
 import org.ehrbase.client.annotations.Archetype;
 import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.Path;
+import org.ehrbase.client.classgenerator.interfaces.EntryEntity;
 import org.ehrbase.client.classgenerator.shareddefinition.Language;
 
 @Entity
 @Archetype("openEHR-EHR-OBSERVATION.pulse_oximetry.v1")
-public class PulseOximetryObservation {
+public class PulseOximetryObservation implements EntryEntity {
   /**
    * open_eREACT-Care/Assessment/NEWS2/Pulse oximetry/Any event/SpO₂
    */

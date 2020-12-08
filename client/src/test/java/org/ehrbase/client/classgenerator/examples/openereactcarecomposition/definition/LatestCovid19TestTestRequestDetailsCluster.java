@@ -5,9 +5,10 @@ import com.nedap.archie.rm.datastructures.Cluster;
 import java.util.List;
 import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.Path;
+import org.ehrbase.client.classgenerator.interfaces.LocatableEntity;
 
 @Entity
-public class LatestCovid19TestTestRequestDetailsCluster {
+public class LatestCovid19TestTestRequestDetailsCluster implements LocatableEntity {
   /**
    * open_eREACT-Care/Assessment/Covid/Latest Covid-19 test/Test request details/Requester
    */

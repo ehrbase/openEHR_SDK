@@ -16,6 +16,7 @@ import org.ehrbase.client.classgenerator.examples.testalltypesenv1composition.de
 import org.ehrbase.client.classgenerator.examples.testalltypesenv1composition.definition.TestAllTypesEvaluation;
 import org.ehrbase.client.classgenerator.examples.testalltypesenv1composition.definition.TestAllTypesObservation;
 import org.ehrbase.client.classgenerator.examples.testalltypesenv1composition.definition.TestAllTypesSection;
+import org.ehrbase.client.classgenerator.interfaces.CompositionEntity;
 import org.ehrbase.client.classgenerator.shareddefinition.Category;
 import org.ehrbase.client.classgenerator.shareddefinition.Language;
 import org.ehrbase.client.classgenerator.shareddefinition.Setting;
@@ -25,7 +26,7 @@ import org.ehrbase.client.openehrclient.VersionUid;
 @Entity
 @Archetype("openEHR-EHR-COMPOSITION.test_all_types.v1")
 @Template("test_all_types.en.v1")
-public class TestAllTypesEnV1Composition {
+public class TestAllTypesEnV1Composition implements CompositionEntity {
   /**
    * Test all types/context/context coded text
    */
@@ -72,19 +73,19 @@ public class TestAllTypesEnV1Composition {
    * Test all types/Test all types
    */
   @Path("/content[openEHR-EHR-OBSERVATION.test_all_types.v1]")
-  private List<TestAllTypesObservation> testAllTypesTestAllTypes;
+  private List<TestAllTypesObservation> testAllTypes;
 
   /**
    * Test all types/Test all types
    */
   @Path("/content[openEHR-EHR-EVALUATION.test_all_types.v1]")
-  private List<TestAllTypesEvaluation> testAllTypesTestAllTypes2;
+  private List<TestAllTypesEvaluation> testAllTypes2;
 
   /**
    * Test all types/Test all types
    */
   @Path("/content[openEHR-EHR-SECTION.test_all_types.v1]")
-  private List<TestAllTypesSection> testAllTypesTestAllTypes3;
+  private List<TestAllTypesSection> testAllTypes3;
 
   /**
    * Test all types/composer
@@ -176,28 +177,28 @@ public class TestAllTypesEnV1Composition {
      return this.settingDefiningCode ;
   }
 
-  public void setTestAllTypesTestAllTypes(List<TestAllTypesObservation> testAllTypesTestAllTypes) {
-     this.testAllTypesTestAllTypes = testAllTypesTestAllTypes;
+  public void setTestAllTypes(List<TestAllTypesObservation> testAllTypes) {
+     this.testAllTypes = testAllTypes;
   }
 
-  public List<TestAllTypesObservation> getTestAllTypesTestAllTypes() {
-     return this.testAllTypesTestAllTypes ;
+  public List<TestAllTypesObservation> getTestAllTypes() {
+     return this.testAllTypes ;
   }
 
-  public void setTestAllTypesTestAllTypes2(List<TestAllTypesEvaluation> testAllTypesTestAllTypes2) {
-     this.testAllTypesTestAllTypes2 = testAllTypesTestAllTypes2;
+  public void setTestAllTypes2(List<TestAllTypesEvaluation> testAllTypes2) {
+     this.testAllTypes2 = testAllTypes2;
   }
 
-  public List<TestAllTypesEvaluation> getTestAllTypesTestAllTypes2() {
-     return this.testAllTypesTestAllTypes2 ;
+  public List<TestAllTypesEvaluation> getTestAllTypes2() {
+     return this.testAllTypes2 ;
   }
 
-  public void setTestAllTypesTestAllTypes3(List<TestAllTypesSection> testAllTypesTestAllTypes3) {
-     this.testAllTypesTestAllTypes3 = testAllTypesTestAllTypes3;
+  public void setTestAllTypes3(List<TestAllTypesSection> testAllTypes3) {
+     this.testAllTypes3 = testAllTypes3;
   }
 
-  public List<TestAllTypesSection> getTestAllTypesTestAllTypes3() {
-     return this.testAllTypesTestAllTypes3 ;
+  public List<TestAllTypesSection> getTestAllTypes3() {
+     return this.testAllTypes3 ;
   }
 
   public void setComposer(PartyProxy composer) {

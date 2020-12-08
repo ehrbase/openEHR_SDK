@@ -4,9 +4,10 @@ import com.nedap.archie.rm.archetyped.FeederAudit;
 import java.lang.String;
 import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.Path;
+import org.ehrbase.client.classgenerator.interfaces.LocatableEntity;
 
 @Entity
-public class FragebogenZumMedikationsScreeningSpezifischeMedikamenteCluster {
+public class FragebogenZumMedikationsScreeningSpezifischeMedikamenteCluster implements LocatableEntity {
   /**
    * Bericht/Allgemeine Angaben/Fragebogen zum Medikations-Screening/Beliebiges Ereignis/Spezifische Medikamentenklasse/Spezifische Medikamente/Name des Medikaments
    */

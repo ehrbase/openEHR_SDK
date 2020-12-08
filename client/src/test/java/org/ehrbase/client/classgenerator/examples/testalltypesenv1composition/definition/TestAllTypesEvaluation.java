@@ -12,11 +12,12 @@ import org.ehrbase.client.annotations.Archetype;
 import org.ehrbase.client.annotations.Choice;
 import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.Path;
+import org.ehrbase.client.classgenerator.interfaces.EntryEntity;
 import org.ehrbase.client.classgenerator.shareddefinition.Language;
 
 @Entity
 @Archetype("openEHR-EHR-EVALUATION.test_all_types.v1")
-public class TestAllTypesEvaluation {
+public class TestAllTypesEvaluation implements EntryEntity {
   /**
    * Test all types/Test all types/uri
    */

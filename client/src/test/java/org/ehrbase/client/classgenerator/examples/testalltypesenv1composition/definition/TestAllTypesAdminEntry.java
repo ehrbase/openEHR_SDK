@@ -6,11 +6,12 @@ import java.lang.Long;
 import org.ehrbase.client.annotations.Archetype;
 import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.Path;
+import org.ehrbase.client.classgenerator.interfaces.EntryEntity;
 import org.ehrbase.client.classgenerator.shareddefinition.Language;
 
 @Entity
 @Archetype("openEHR-EHR-ADMIN_ENTRY.test_all_types.v1")
-public class TestAllTypesAdminEntry {
+public class TestAllTypesAdminEntry implements EntryEntity {
   /**
    * Test all types/Test all types/section 2/Test all types/count 3
    */

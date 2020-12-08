@@ -15,6 +15,7 @@ import org.ehrbase.client.annotations.Path;
 import org.ehrbase.client.annotations.Template;
 import org.ehrbase.client.classgenerator.examples.schwangerschaftsstatuscomposition.definition.SchwangerschaftsstatusObservation;
 import org.ehrbase.client.classgenerator.examples.schwangerschaftsstatuscomposition.definition.StatusDefiningCode;
+import org.ehrbase.client.classgenerator.interfaces.CompositionEntity;
 import org.ehrbase.client.classgenerator.shareddefinition.Category;
 import org.ehrbase.client.classgenerator.shareddefinition.Language;
 import org.ehrbase.client.classgenerator.shareddefinition.Setting;
@@ -24,7 +25,7 @@ import org.ehrbase.client.openehrclient.VersionUid;
 @Entity
 @Archetype("openEHR-EHR-COMPOSITION.registereintrag.v1")
 @Template("Schwangerschaftsstatus")
-public class SchwangerschaftsstatusComposition {
+public class SchwangerschaftsstatusComposition implements CompositionEntity {
   /**
    * Schwangerschaftsstatus/context/Erweiterung
    */

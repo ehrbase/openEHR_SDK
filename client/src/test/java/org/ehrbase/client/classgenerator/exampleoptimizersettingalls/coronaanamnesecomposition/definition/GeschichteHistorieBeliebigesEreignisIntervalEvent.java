@@ -2,17 +2,19 @@ package org.ehrbase.client.classgenerator.exampleoptimizersettingalls.coronaanam
 
 import com.nedap.archie.rm.archetyped.FeederAudit;
 import com.nedap.archie.rm.datastructures.Cluster;
+import java.lang.Long;
 import java.time.temporal.TemporalAccessor;
 import java.time.temporal.TemporalAmount;
 import java.util.List;
 import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.OptionFor;
 import org.ehrbase.client.annotations.Path;
+import org.ehrbase.client.classgenerator.interfaces.IntervalEventEntity;
 import org.ehrbase.client.classgenerator.shareddefinition.MathFunction;
 
 @Entity
 @OptionFor("INTERVAL_EVENT")
-public class GeschichteHistorieBeliebigesEreignisIntervalEvent implements GeschichteHistorieBeliebigesEreignisChoice {
+public class GeschichteHistorieBeliebigesEreignisIntervalEvent implements IntervalEventEntity, GeschichteHistorieBeliebigesEreignisChoice {
   /**
    * Bericht/Geschichte/Historie/Beliebiges Ereignis/Geschichte
    */
@@ -48,6 +50,12 @@ public class GeschichteHistorieBeliebigesEreignisIntervalEvent implements Geschi
    */
   @Path("/math_function|defining_code")
   private MathFunction mathFunctionDefiningCode;
+
+  /**
+   * Bericht/Geschichte/Historie/Beliebiges Ereignis/sample_count
+   */
+  @Path("/sample_count")
+  private Long sampleCount;
 
   public void setGeschichte(List<GeschichteHistorieGeschichteElement> geschichte) {
      this.geschichte = geschichte;
@@ -95,5 +103,13 @@ public class GeschichteHistorieBeliebigesEreignisIntervalEvent implements Geschi
 
   public MathFunction getMathFunctionDefiningCode() {
      return this.mathFunctionDefiningCode ;
+  }
+
+  public void setSampleCount(Long sampleCount) {
+     this.sampleCount = sampleCount;
+  }
+
+  public Long getSampleCount() {
+     return this.sampleCount ;
   }
 }

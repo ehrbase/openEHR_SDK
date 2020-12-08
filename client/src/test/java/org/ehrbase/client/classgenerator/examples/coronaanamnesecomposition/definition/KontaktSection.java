@@ -4,10 +4,11 @@ import com.nedap.archie.rm.archetyped.FeederAudit;
 import org.ehrbase.client.annotations.Archetype;
 import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.Path;
+import org.ehrbase.client.classgenerator.interfaces.LocatableEntity;
 
 @Entity
 @Archetype("openEHR-EHR-SECTION.adhoc.v1")
-public class KontaktSection {
+public class KontaktSection implements LocatableEntity {
   /**
    * Bericht/Kontakt/Personenkontakt
    */

@@ -1,15 +1,17 @@
 package org.ehrbase.client.classgenerator.examples.coronaanamnesecomposition.definition;
 
 import com.nedap.archie.rm.archetyped.FeederAudit;
+import java.lang.Long;
 import java.time.temporal.TemporalAccessor;
 import java.time.temporal.TemporalAmount;
 import java.util.List;
 import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.Path;
+import org.ehrbase.client.classgenerator.interfaces.IntervalEventEntity;
 import org.ehrbase.client.classgenerator.shareddefinition.MathFunction;
 
 @Entity
-public class ReisefallBeliebigesIntervallereignisIntervalEvent {
+public class ReisefallBeliebigesIntervallereignisIntervalEvent implements IntervalEventEntity {
   /**
    * Bericht/Risikogebiet/Reisefall/Beliebiges Intervallereignis/Letzte Reise?
    */
@@ -33,6 +35,12 @@ public class ReisefallBeliebigesIntervallereignisIntervalEvent {
    */
   @Path("/math_function|defining_code")
   private MathFunction mathFunctionDefiningCode;
+
+  /**
+   * Bericht/Risikogebiet/Reisefall/Beliebiges Intervallereignis/sample_count
+   */
+  @Path("/sample_count")
+  private Long sampleCount;
 
   /**
    * Bericht/Risikogebiet/Reisefall/Beliebiges Intervallereignis/width
@@ -82,6 +90,14 @@ public class ReisefallBeliebigesIntervallereignisIntervalEvent {
 
   public MathFunction getMathFunctionDefiningCode() {
      return this.mathFunctionDefiningCode ;
+  }
+
+  public void setSampleCount(Long sampleCount) {
+     this.sampleCount = sampleCount;
+  }
+
+  public Long getSampleCount() {
+     return this.sampleCount ;
   }
 
   public void setWidthValue(TemporalAmount widthValue) {

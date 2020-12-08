@@ -9,11 +9,12 @@ import org.ehrbase.client.annotations.Archetype;
 import org.ehrbase.client.annotations.Choice;
 import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.Path;
+import org.ehrbase.client.classgenerator.interfaces.EntryEntity;
 import org.ehrbase.client.classgenerator.shareddefinition.Language;
 
 @Entity
 @Archetype("openEHR-EHR-OBSERVATION.body_weight.v2")
-public class KorpergewichtObservation {
+public class KorpergewichtObservation implements EntryEntity {
   /**
    * Bericht/Körpergewicht/*Birth(en)
    */

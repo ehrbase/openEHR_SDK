@@ -2,6 +2,7 @@ package org.ehrbase.client.classgenerator.examples.alternativeeventscomposition.
 
 import com.nedap.archie.rm.archetyped.FeederAudit;
 import java.lang.Double;
+import java.lang.Long;
 import java.lang.String;
 import java.time.temporal.TemporalAccessor;
 import java.time.temporal.TemporalAmount;
@@ -9,11 +10,12 @@ import java.util.List;
 import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.OptionFor;
 import org.ehrbase.client.annotations.Path;
+import org.ehrbase.client.classgenerator.interfaces.IntervalEventEntity;
 import org.ehrbase.client.classgenerator.shareddefinition.MathFunction;
 
 @Entity
 @OptionFor("INTERVAL_EVENT")
-public class KorpergewichtAnyEventEnIntervalEvent implements KorpergewichtAnyEventEnChoice {
+public class KorpergewichtAnyEventEnIntervalEvent implements IntervalEventEntity, KorpergewichtAnyEventEnChoice {
   /**
    * Bericht/Körpergewicht/*Any event(en)/Gewicht
    */
@@ -67,6 +69,12 @@ public class KorpergewichtAnyEventEnIntervalEvent implements KorpergewichtAnyEve
    */
   @Path("/math_function|defining_code")
   private MathFunction mathFunctionDefiningCode;
+
+  /**
+   * Bericht/Körpergewicht/*Any event(en)/sample_count
+   */
+  @Path("/sample_count")
+  private Long sampleCount;
 
   public void setGewichtMagnitude(Double gewichtMagnitude) {
      this.gewichtMagnitude = gewichtMagnitude;
@@ -139,5 +147,13 @@ public class KorpergewichtAnyEventEnIntervalEvent implements KorpergewichtAnyEve
 
   public MathFunction getMathFunctionDefiningCode() {
      return this.mathFunctionDefiningCode ;
+  }
+
+  public void setSampleCount(Long sampleCount) {
+     this.sampleCount = sampleCount;
+  }
+
+  public Long getSampleCount() {
+     return this.sampleCount ;
   }
 }

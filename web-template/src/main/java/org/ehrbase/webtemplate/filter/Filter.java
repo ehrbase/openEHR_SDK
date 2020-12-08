@@ -97,7 +97,7 @@ public class Filter implements WebTemplateFilter {
             node.getChildren().add(ismTransitionList.get(0));
         }
 
-        if (node.getRmType().equals("ELEMENT") && node.getChildren().size() == 3 && node.getChildren().stream().map(WebTemplateNode::getRmType).collect(Collectors.toList()).containsAll(List.of("DV_TEXT", "DV_CODED_TEXT"))) {
+        if (node.getRmType().equals("ELEMENT") && node.getChildren().size() == 4 && node.getChildren().stream().map(WebTemplateNode::getRmType).collect(Collectors.toList()).containsAll(List.of("DV_TEXT", "DV_CODED_TEXT"))) {
             WebTemplateNode merged = node.findChildById(node.getId(false)).orElseThrow();
             node.getChildren().clear();
             node.getChildren().add(merged);

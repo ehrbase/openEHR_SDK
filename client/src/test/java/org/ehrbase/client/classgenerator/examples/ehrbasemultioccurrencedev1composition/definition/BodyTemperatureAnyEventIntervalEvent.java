@@ -12,11 +12,12 @@ import org.ehrbase.client.annotations.Choice;
 import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.OptionFor;
 import org.ehrbase.client.annotations.Path;
+import org.ehrbase.client.classgenerator.interfaces.IntervalEventEntity;
 import org.ehrbase.client.classgenerator.shareddefinition.MathFunction;
 
 @Entity
 @OptionFor("INTERVAL_EVENT")
-public class BodyTemperatureAnyEventIntervalEvent implements BodyTemperatureAnyEventChoice {
+public class BodyTemperatureAnyEventIntervalEvent implements IntervalEventEntity, BodyTemperatureAnyEventChoice {
   /**
    * Encounter/Body temperature/Any event/Temperature
    */
@@ -76,6 +77,12 @@ public class BodyTemperatureAnyEventIntervalEvent implements BodyTemperatureAnyE
    */
   @Path("/math_function|defining_code")
   private MathFunction mathFunctionDefiningCode;
+
+  /**
+   * Encounter/Body temperature/Any event/sample_count
+   */
+  @Path("/sample_count")
+  private Long sampleCount;
 
   /**
    * Encounter/Body temperature/Any event/value
@@ -162,6 +169,14 @@ public class BodyTemperatureAnyEventIntervalEvent implements BodyTemperatureAnyE
 
   public MathFunction getMathFunctionDefiningCode() {
      return this.mathFunctionDefiningCode ;
+  }
+
+  public void setSampleCount(Long sampleCount) {
+     this.sampleCount = sampleCount;
+  }
+
+  public Long getSampleCount() {
+     return this.sampleCount ;
   }
 
   public void setBodyExposure(BodyTemperatureBodyExposureChoice bodyExposure) {

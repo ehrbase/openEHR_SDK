@@ -17,6 +17,7 @@ import org.ehrbase.client.classgenerator.examples.openereactcarecomposition.defi
 import org.ehrbase.client.classgenerator.examples.openereactcarecomposition.definition.BackgroundSection;
 import org.ehrbase.client.classgenerator.examples.openereactcarecomposition.definition.ResponseSection;
 import org.ehrbase.client.classgenerator.examples.openereactcarecomposition.definition.SituationSection;
+import org.ehrbase.client.classgenerator.interfaces.CompositionEntity;
 import org.ehrbase.client.classgenerator.shareddefinition.Category;
 import org.ehrbase.client.classgenerator.shareddefinition.Language;
 import org.ehrbase.client.classgenerator.shareddefinition.Setting;
@@ -26,7 +27,7 @@ import org.ehrbase.client.openehrclient.VersionUid;
 @Entity
 @Archetype("openEHR-EHR-COMPOSITION.encounter.v1")
 @Template("open_eREACT-Care")
-public class OpenEREACTCareComposition {
+public class OpenEREACTCareComposition implements CompositionEntity {
   /**
    * open_eREACT-Care/context/Extension
    */

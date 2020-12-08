@@ -19,6 +19,11 @@
 
 package org.ehrbase.client.classgenerator;
 
+import com.nedap.archie.rm.archetyped.Locatable;
+import com.nedap.archie.rm.composition.Composition;
+import com.nedap.archie.rm.composition.Entry;
+import com.nedap.archie.rm.datastructures.IntervalEvent;
+import com.nedap.archie.rm.datastructures.PointEvent;
 import com.nedap.archie.rm.datatypes.CodePhrase;
 import com.nedap.archie.rminfo.ArchieRMInfoLookup;
 import com.squareup.javapoet.AnnotationSpec;
@@ -39,6 +44,12 @@ import org.ehrbase.client.annotations.OptionFor;
 import org.ehrbase.client.annotations.Path;
 import org.ehrbase.client.annotations.Template;
 import org.ehrbase.client.classgenerator.config.RmClassGeneratorConfig;
+import org.ehrbase.client.classgenerator.interfaces.CompositionEntity;
+import org.ehrbase.client.classgenerator.interfaces.EntryEntity;
+import org.ehrbase.client.classgenerator.interfaces.IntervalEventEntity;
+import org.ehrbase.client.classgenerator.interfaces.LocatableEntity;
+import org.ehrbase.client.classgenerator.interfaces.PointEventEntity;
+import org.ehrbase.client.classgenerator.interfaces.RMEntity;
 import org.ehrbase.client.classgenerator.shareddefinition.Category;
 import org.ehrbase.client.classgenerator.shareddefinition.Language;
 import org.ehrbase.client.classgenerator.shareddefinition.MathFunction;
@@ -47,6 +58,7 @@ import org.ehrbase.client.classgenerator.shareddefinition.Territory;
 import org.ehrbase.client.classgenerator.shareddefinition.Transition;
 import org.ehrbase.client.openehrclient.VersionUid;
 import org.ehrbase.serialisation.util.SnakeCase;
+import org.ehrbase.serialisation.walker.Walker;
 import org.ehrbase.terminology.client.terminology.TermDefinition;
 import org.ehrbase.terminology.client.terminology.ValueSet;
 import org.ehrbase.util.reflection.ReflectionHelper;
@@ -62,6 +74,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.lang.model.element.Modifier;
 import java.lang.reflect.Field;
+import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Deque;
@@ -155,27 +168,16 @@ public class ClassGenerator {
       classBuilder.addAnnotation(archetypeAnnotation);
     }
 
+    classBuilder.addSuperinterface(findRMInterface(next));
+
     if (next.getChildren().stream().anyMatch(n -> n.getRmType().equals("EVENT"))) {
       WebTemplateNode event =
           next.getChildren().stream().filter(n -> n.getRmType().equals("EVENT")).findAny().get();
-      WebTemplateNode pointEvent = new WebTemplateNode(event);
-      WebTemplateNode intervalEvent = new WebTemplateNode(event);
-      pointEvent.setRmType("POINT_EVENT");
-      intervalEvent.setRmType("INTERVAL_EVENT");
-      WebTemplateNode width = new WebTemplateNode();
-      width.setId("width");
-      width.setName("width");
-      width.setRmType("DV_DURATION");
-      width.setMax(1);
-      width.setAqlPath(event.getAqlPath() + "/width");
-      intervalEvent.getChildren().add(width);
-      WebTemplateNode math = new WebTemplateNode();
-      math.setId("math_function");
-      math.setName("math_function");
-      math.setRmType("DV_CODED_TEXT");
-      math.setMax(1);
-      math.setAqlPath(event.getAqlPath() + "/math_function");
-      intervalEvent.getChildren().add(math);
+
+      Walker.EventHelper eventHelper = new Walker.EventHelper(event).invoke();
+      WebTemplateNode pointEvent = eventHelper.getPointEvent();
+      WebTemplateNode intervalEvent = eventHelper.getIntervalEvent();
+
       next.getChildren().add(intervalEvent);
       next.getChildren().add(pointEvent);
       next.getChildren().remove(event);
@@ -283,6 +285,26 @@ public class ClassGenerator {
     return classBuilder;
   }
 
+  private Type findRMInterface(WebTemplateNode next) {
+
+    Class classToBeCreated = RM_INFO_LOOKUP.getClassToBeCreated(next.getRmType());
+
+    if (Composition.class.isAssignableFrom(classToBeCreated)) {
+      return CompositionEntity.class;
+    } else if (Entry.class.isAssignableFrom(classToBeCreated)) {
+      return EntryEntity.class;
+    } else if (IntervalEvent.class.isAssignableFrom(classToBeCreated)) {
+      return IntervalEventEntity.class;
+    } else if (PointEvent.class.isAssignableFrom(classToBeCreated)) {
+      return PointEventEntity.class;
+    } else if (Locatable.class.isAssignableFrom(classToBeCreated)) {
+      return LocatableEntity.class;
+    } else {
+
+      return RMEntity.class;
+    }
+  }
+
   private Deque<WebTemplateNode> pushToUnfiltered(
       ClassGeneratorContext context, WebTemplateNode node) {
 
@@ -335,10 +357,7 @@ public class ClassGenerator {
     matching.forEach(
         n -> {
           String relativPath =
-              FlatPath.removeStart(
-                      new FlatPath(n.getAqlPath()),
-                      new FlatPath(context.nodeDeque.peek().getAqlPath()))
-                  .toString();
+              context.nodeDeque.peek().buildRelativPath(n);
           n.setAqlPath(relativPath);
         });
     return relativeNode;
@@ -411,6 +430,8 @@ public class ClassGenerator {
       case "BOOLEAN":
         return Boolean.class;
       case "INTEGER":
+        return Integer.class;
+      case "LONG":
         return Long.class;
       default:
         return RM_INFO_LOOKUP.getClass(endNode.getRmType());
@@ -494,8 +515,7 @@ public class ClassGenerator {
             .addAnnotation(
                 AnnotationSpec.builder(Path.class).addMember(Path.VALUE, "$S", path).build())
             .addModifiers(Modifier.PRIVATE)
-            .addJavadoc(
-                    buildFieldJavadoc(context, node));
+            .addJavadoc(buildFieldJavadoc(context, node));
 
     if (addChoiceAnnotation) {
       builder.addAnnotation(Choice.class);
@@ -510,7 +530,8 @@ public class ClassGenerator {
 
   private String buildFieldJavadoc(ClassGeneratorContext context, WebTemplateNode node) {
     StringJoiner joiner = new StringJoiner("/");
-    for (Iterator<WebTemplateNode> it = context.unFilteredNodeDeque.descendingIterator(); it.hasNext(); ) {
+    for (Iterator<WebTemplateNode> it = context.unFilteredNodeDeque.descendingIterator();
+        it.hasNext(); ) {
       WebTemplateNode n = it.next();
       if (!List.of(
               "HISTORY",
@@ -520,7 +541,7 @@ public class ClassGenerator {
               "ITEM_TABLE",
               "ITEM_STRUCTURE",
               "ELEMENT")
-              .contains(n.getRmType())) {
+          .contains(n.getRmType())) {
         joiner.add(n.getName());
       }
     }

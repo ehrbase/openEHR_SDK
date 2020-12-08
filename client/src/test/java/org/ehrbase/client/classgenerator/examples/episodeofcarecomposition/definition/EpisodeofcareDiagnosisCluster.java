@@ -6,9 +6,10 @@ import java.lang.Long;
 import java.lang.String;
 import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.Path;
+import org.ehrbase.client.classgenerator.interfaces.LocatableEntity;
 
 @Entity
-public class EpisodeofcareDiagnosisCluster {
+public class EpisodeofcareDiagnosisCluster implements LocatableEntity {
   /**
    * EpisodeOfCare/Episodeofcare/diagnosis/diagnosis entry
    */

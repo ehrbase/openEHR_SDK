@@ -12,11 +12,12 @@ import java.util.List;
 import org.ehrbase.client.annotations.Archetype;
 import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.Path;
+import org.ehrbase.client.classgenerator.interfaces.EntryEntity;
 import org.ehrbase.client.classgenerator.shareddefinition.Language;
 
 @Entity
 @Archetype("openEHR-EHR-OBSERVATION.denwis.v0")
-public class DenwisObservation {
+public class DenwisObservation implements EntryEntity {
   /**
    * open_eREACT-Care/Assessment/DENWIS/Point in time/Q1 Breathing
    */

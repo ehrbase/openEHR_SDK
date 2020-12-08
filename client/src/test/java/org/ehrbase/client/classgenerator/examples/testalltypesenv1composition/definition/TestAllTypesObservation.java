@@ -18,11 +18,12 @@ import java.time.temporal.TemporalAmount;
 import org.ehrbase.client.annotations.Archetype;
 import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.Path;
+import org.ehrbase.client.classgenerator.interfaces.EntryEntity;
 import org.ehrbase.client.classgenerator.shareddefinition.Language;
 
 @Entity
 @Archetype("openEHR-EHR-OBSERVATION.test_all_types.v1")
-public class TestAllTypesObservation {
+public class TestAllTypesObservation implements EntryEntity {
   /**
    * Test all types/Test all types/Cualquier evento/text
    */

@@ -9,11 +9,12 @@ import java.util.List;
 import org.ehrbase.client.annotations.Archetype;
 import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.Path;
+import org.ehrbase.client.classgenerator.interfaces.EntryEntity;
 import org.ehrbase.client.classgenerator.shareddefinition.Language;
 
 @Entity
 @Archetype("openEHR-EHR-OBSERVATION.clinical_frailty_scale.v1")
-public class FrailtyObservation {
+public class FrailtyObservation implements EntryEntity {
   /**
    * open_eREACT-Care/Background/Frailty/Any point in time event/Assessment
    */

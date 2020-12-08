@@ -5,10 +5,11 @@ import java.lang.String;
 import org.ehrbase.client.annotations.Archetype;
 import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.Path;
+import org.ehrbase.client.classgenerator.interfaces.LocatableEntity;
 
 @Entity
 @Archetype("openEHR-EHR-CLUSTER.case_identification.v0")
-public class AbteilungsfallCluster {
+public class AbteilungsfallCluster implements LocatableEntity {
   /**
    * Patientenaufenthalt/context/Abteilungsfall/Zugehörige Abteilungsfall-Kennung
    */

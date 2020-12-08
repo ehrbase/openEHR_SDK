@@ -36,6 +36,7 @@ import org.ehrbase.client.classgenerator.exampleoptimizersettingsections.coronaa
 import org.ehrbase.client.classgenerator.exampleoptimizersettingsections.coronaanamnesecomposition.definition.SchnupfenObservation;
 import org.ehrbase.client.classgenerator.exampleoptimizersettingsections.coronaanamnesecomposition.definition.WeitereSymptomeObservation;
 import org.ehrbase.client.classgenerator.exampleoptimizersettingsections.coronaanamnesecomposition.definition.WohnsituationEvaluation;
+import org.ehrbase.client.classgenerator.interfaces.CompositionEntity;
 import org.ehrbase.client.classgenerator.shareddefinition.Category;
 import org.ehrbase.client.classgenerator.shareddefinition.Language;
 import org.ehrbase.client.classgenerator.shareddefinition.Setting;
@@ -45,7 +46,7 @@ import org.ehrbase.client.openehrclient.VersionUid;
 @Entity
 @Archetype("openEHR-EHR-COMPOSITION.report.v1")
 @Template("Corona_Anamnese")
-public class CoronaAnamneseComposition {
+public class CoronaAnamneseComposition implements CompositionEntity {
   /**
    * Bericht/context/Bericht ID
    */

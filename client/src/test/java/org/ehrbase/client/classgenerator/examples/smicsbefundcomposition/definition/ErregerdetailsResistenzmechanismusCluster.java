@@ -4,9 +4,10 @@ import com.nedap.archie.rm.archetyped.FeederAudit;
 import java.lang.String;
 import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.Path;
+import org.ehrbase.client.classgenerator.interfaces.LocatableEntity;
 
 @Entity
-public class ErregerdetailsResistenzmechanismusCluster {
+public class ErregerdetailsResistenzmechanismusCluster implements LocatableEntity {
   /**
    * SmICS Befund/SmICS-Ergebnis/Jedes Ereignis/Eigenschaften des beteiligten Erregers/Erregerdetails/Resistenzmechanismus/Resistenzmechanismus Bezeichnung
    */

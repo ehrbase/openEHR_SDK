@@ -9,9 +9,10 @@ import java.time.temporal.TemporalAccessor;
 import java.util.List;
 import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.Path;
+import org.ehrbase.client.classgenerator.interfaces.LocatableEntity;
 
 @Entity
-public class ServiceRequestCurrentActivityActivity {
+public class ServiceRequestCurrentActivityActivity implements LocatableEntity {
   /**
    * open_eREACT-Care/Response/Service request/Current Activity/Service name
    */

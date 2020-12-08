@@ -6,10 +6,11 @@ import java.util.List;
 import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.OptionFor;
 import org.ehrbase.client.annotations.Path;
+import org.ehrbase.client.classgenerator.interfaces.PointEventEntity;
 
 @Entity
 @OptionFor("POINT_EVENT")
-public class WeitereSymptomeBeliebigesEreignisPointEvent implements WeitereSymptomeBeliebigesEreignisChoice {
+public class WeitereSymptomeBeliebigesEreignisPointEvent implements PointEventEntity, WeitereSymptomeBeliebigesEreignisChoice {
   /**
    * Bericht/Symptome/Weitere Symptome/Beliebiges Ereignis/Spezifisches Symptom/Anzeichen
    */

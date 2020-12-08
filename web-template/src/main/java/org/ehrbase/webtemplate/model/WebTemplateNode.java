@@ -228,6 +228,12 @@ public class WebTemplateNode implements Serializable {
     return children.stream().filter(n -> n.getId().equals(id)).findAny();
   }
 
+  public String buildRelativPath(WebTemplateNode child){
+    return FlatPath.removeStart(
+            new FlatPath(child.getAqlPath()),
+            new FlatPath(this.getAqlPath()))
+            .toString();
+  }
   public List<WebTemplateNode> findMatching(Predicate<WebTemplateNode> filter) {
 
     List<WebTemplateNode> matching =

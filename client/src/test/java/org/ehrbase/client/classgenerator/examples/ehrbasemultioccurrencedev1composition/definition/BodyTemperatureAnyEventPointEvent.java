@@ -11,10 +11,11 @@ import org.ehrbase.client.annotations.Choice;
 import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.OptionFor;
 import org.ehrbase.client.annotations.Path;
+import org.ehrbase.client.classgenerator.interfaces.PointEventEntity;
 
 @Entity
 @OptionFor("POINT_EVENT")
-public class BodyTemperatureAnyEventPointEvent implements BodyTemperatureAnyEventChoice {
+public class BodyTemperatureAnyEventPointEvent implements PointEventEntity, BodyTemperatureAnyEventChoice {
   /**
    * Encounter/Body temperature/Any event/Temperature
    */

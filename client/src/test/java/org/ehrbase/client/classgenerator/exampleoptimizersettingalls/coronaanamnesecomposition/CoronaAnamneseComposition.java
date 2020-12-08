@@ -33,6 +33,7 @@ import org.ehrbase.client.classgenerator.exampleoptimizersettingalls.coronaanamn
 import org.ehrbase.client.classgenerator.exampleoptimizersettingalls.coronaanamnesecomposition.definition.VorhandenDefiningCode;
 import org.ehrbase.client.classgenerator.exampleoptimizersettingalls.coronaanamnesecomposition.definition.VorhandenseinDefiningCode;
 import org.ehrbase.client.classgenerator.exampleoptimizersettingalls.coronaanamnesecomposition.definition.WohnsituationEvaluation;
+import org.ehrbase.client.classgenerator.interfaces.CompositionEntity;
 import org.ehrbase.client.classgenerator.shareddefinition.Category;
 import org.ehrbase.client.classgenerator.shareddefinition.Language;
 import org.ehrbase.client.classgenerator.shareddefinition.Setting;
@@ -42,7 +43,7 @@ import org.ehrbase.client.openehrclient.VersionUid;
 @Entity
 @Archetype("openEHR-EHR-COMPOSITION.report.v1")
 @Template("Corona_Anamnese")
-public class CoronaAnamneseComposition {
+public class CoronaAnamneseComposition implements CompositionEntity {
   /**
    * Bericht/context/Bericht ID
    */
@@ -941,7 +942,7 @@ public class CoronaAnamneseComposition {
    * Bericht/language
    */
   @Path("/language")
-  private Language berichtLanguage;
+  private Language language;
 
   /**
    * Bericht/feeder_audit
@@ -2239,12 +2240,12 @@ public class CoronaAnamneseComposition {
      return this.composer ;
   }
 
-  public void setBerichtLanguage(Language berichtLanguage) {
-     this.berichtLanguage = berichtLanguage;
+  public void setLanguage(Language language) {
+     this.language = language;
   }
 
-  public Language getBerichtLanguage() {
-     return this.berichtLanguage ;
+  public Language getLanguage() {
+     return this.language ;
   }
 
   public void setFeederAudit(FeederAudit feederAudit) {

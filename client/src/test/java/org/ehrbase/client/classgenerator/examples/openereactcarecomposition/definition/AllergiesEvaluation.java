@@ -8,11 +8,12 @@ import java.util.List;
 import org.ehrbase.client.annotations.Archetype;
 import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.Path;
+import org.ehrbase.client.classgenerator.interfaces.EntryEntity;
 import org.ehrbase.client.classgenerator.shareddefinition.Language;
 
 @Entity
 @Archetype("openEHR-EHR-EVALUATION.clinical_synopsis.v1")
-public class AllergiesEvaluation {
+public class AllergiesEvaluation implements EntryEntity {
   /**
    * open_eREACT-Care/Background/Allergies/Synopsis
    */

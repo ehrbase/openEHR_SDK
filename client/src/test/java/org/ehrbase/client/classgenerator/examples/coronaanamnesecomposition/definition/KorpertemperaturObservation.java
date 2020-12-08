@@ -10,11 +10,12 @@ import java.util.List;
 import org.ehrbase.client.annotations.Archetype;
 import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.Path;
+import org.ehrbase.client.classgenerator.interfaces.EntryEntity;
 import org.ehrbase.client.classgenerator.shareddefinition.Language;
 
 @Entity
 @Archetype("openEHR-EHR-OBSERVATION.body_temperature.v2")
-public class KorpertemperaturObservation {
+public class KorpertemperaturObservation implements EntryEntity {
   /**
    * Bericht/Symptome/Körpertemperatur/Beliebiges Ereignis/Temperatur
    */

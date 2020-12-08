@@ -7,10 +7,11 @@ import java.util.List;
 import org.ehrbase.client.annotations.Archetype;
 import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.Path;
+import org.ehrbase.client.classgenerator.interfaces.LocatableEntity;
 
 @Entity
 @Archetype("openEHR-EHR-CLUSTER.location.v1")
-public class EinsenderstandortCluster {
+public class EinsenderstandortCluster implements LocatableEntity {
   /**
    * Virologischer Befund/Befund/Details der Testanforderung/Einsenderstandort/Standorttyp
    */

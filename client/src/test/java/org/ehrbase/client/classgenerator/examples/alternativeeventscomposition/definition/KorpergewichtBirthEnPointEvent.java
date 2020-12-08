@@ -7,9 +7,10 @@ import java.time.temporal.TemporalAccessor;
 import java.util.List;
 import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.Path;
+import org.ehrbase.client.classgenerator.interfaces.PointEventEntity;
 
 @Entity
-public class KorpergewichtBirthEnPointEvent {
+public class KorpergewichtBirthEnPointEvent implements PointEventEntity {
   /**
    * Bericht/Körpergewicht/*Birth(en)/Gewicht
    */
