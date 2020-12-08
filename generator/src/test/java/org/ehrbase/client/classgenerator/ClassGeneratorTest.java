@@ -257,7 +257,11 @@ public class ClassGeneratorTest {
             new Tuple("feederAudit", "com.nedap.archie.rm.archetyped.FeederAudit"),
             new Tuple("feederAudit", "com.nedap.archie.rm.archetyped.FeederAudit"),
             new Tuple("feederAudit", "com.nedap.archie.rm.archetyped.FeederAudit"),
-            new Tuple("feederAudit", "com.nedap.archie.rm.archetyped.FeederAudit"), new Tuple("sampleCount", "java.lang.Long"),  new Tuple("feederAudit", "com.nedap.archie.rm.archetyped.FeederAudit"),  new Tuple("feederAudit", "com.nedap.archie.rm.archetyped.FeederAudit"),  new Tuple("feederAudit", "com.nedap.archie.rm.archetyped.FeederAudit"));
+            new Tuple("feederAudit", "com.nedap.archie.rm.archetyped.FeederAudit"),
+            new Tuple("sampleCount", "java.lang.Long"),
+            new Tuple("feederAudit", "com.nedap.archie.rm.archetyped.FeederAudit"),
+            new Tuple("feederAudit", "com.nedap.archie.rm.archetyped.FeederAudit"),
+            new Tuple("feederAudit", "com.nedap.archie.rm.archetyped.FeederAudit"));
 
     writeFiles(generate);
   }
@@ -340,7 +344,9 @@ public class ClassGeneratorTest {
             "upperIncluded",
             "healthCareFacility",
             "feederAudit",
-            "feederAudit", "feederAudit", "feederAudit");
+            "feederAudit",
+            "feederAudit",
+            "feederAudit");
 
     writeFiles(generate);
   }
@@ -450,7 +456,12 @@ public class ClassGeneratorTest {
             "feederAudit",
             "feederAudit",
             "feederAudit",
-            "feederAudit","feederAudit","feederAudit","feederAudit","feederAudit","feederAudit");
+            "feederAudit",
+            "feederAudit",
+            "feederAudit",
+            "feederAudit",
+            "feederAudit",
+            "feederAudit");
 
     writeFiles(generate);
   }
@@ -686,7 +697,8 @@ public class ClassGeneratorTest {
             new Tuple("feederAudit", "com.nedap.archie.rm.archetyped.FeederAudit"),
             new Tuple("feederAudit", "com.nedap.archie.rm.archetyped.FeederAudit"),
             new Tuple("feederAudit", "com.nedap.archie.rm.archetyped.FeederAudit"),
-            new Tuple("feederAudit", "com.nedap.archie.rm.archetyped.FeederAudit"),new Tuple("sampleCount", "java.lang.Long"));
+            new Tuple("feederAudit", "com.nedap.archie.rm.archetyped.FeederAudit"),
+            new Tuple("sampleCount", "java.lang.Long"));
 
     writeFiles(generate);
   }
@@ -812,7 +824,8 @@ public class ClassGeneratorTest {
             "feederAudit",
             "feederAudit",
             "feederAudit",
-            "feederAudit",    "feederAudit");
+            "feederAudit",
+            "feederAudit");
 
     writeFiles(generate);
   }
