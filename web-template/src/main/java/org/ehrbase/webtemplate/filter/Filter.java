@@ -104,7 +104,7 @@ public class Filter implements WebTemplateFilter {
 
     if (node.getRmType().equals("ELEMENT")
         && node.getChildren().stream()
-            .filter(n -> !node.isAttribute(n))
+            .filter(n -> !List.of("null_flavour", "feeder_audit").contains(n.getName()))
             .map(WebTemplateNode::getRmType)
             .collect(Collectors.toList())
             .containsAll(List.of("DV_TEXT", "DV_CODED_TEXT"))) {

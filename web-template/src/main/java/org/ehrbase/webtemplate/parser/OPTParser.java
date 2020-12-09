@@ -236,7 +236,7 @@ public class OPTParser {
     if (node.getRmType().equals("ELEMENT")) {
       List<WebTemplateNode> trueChildren =
           node.getChildren().stream()
-              .filter(n -> !node.isAttribute(n))
+              .filter(n -> !List.of("null_flavour", "feeder_audit").contains(n.getName()))
               .collect(Collectors.toList());
       if (trueChildren.size() == 1) {
         WebTemplateNode value = trueChildren.get(0);

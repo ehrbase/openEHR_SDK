@@ -21,7 +21,6 @@ package org.ehrbase.webtemplate.model;
 
 import com.nedap.archie.rm.archetyped.Locatable;
 import com.nedap.archie.rminfo.ArchieRMInfoLookup;
-import com.nedap.archie.rminfo.RMTypeInfo;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -270,12 +269,6 @@ public class WebTemplateNode implements Serializable {
           }
         });
     return matching;
-  }
-
-  public boolean isAttribute(WebTemplateNode child) {
-    RMTypeInfo typeInfo = RM_INFO_LOOKUP.getTypeInfo(getRmType());
-
-    return typeInfo.getAttributes().containsKey(child.name);
   }
 
   public boolean isArchetype() {
