@@ -3,6 +3,7 @@ package org.ehrbase.client.classgenerator.examples.diagnosecomposition.definitio
 import com.nedap.archie.rm.archetyped.FeederAudit;
 import java.lang.Boolean;
 import java.lang.String;
+import javax.annotation.processing.Generated;
 import org.ehrbase.client.annotations.Archetype;
 import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.Path;
@@ -10,6 +11,11 @@ import org.ehrbase.client.classgenerator.interfaces.LocatableEntity;
 
 @Entity
 @Archetype("openEHR-EHR-CLUSTER.diagnose_details.v0")
+@Generated(
+    value = "org.ehrbase.client.classgenerator.ClassGenerator",
+    date = "2020-12-09T11:37:52.386760900+01:00",
+    comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
+)
 public class DiagnosedetailsCluster implements LocatableEntity {
   /**
    * COVID-19-Diagnose/Problem/Diagnose/Diagnosedetails/Begründung von Ausnahmen

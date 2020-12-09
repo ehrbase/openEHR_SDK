@@ -5,6 +5,7 @@ import com.nedap.archie.rm.datastructures.Cluster;
 import com.nedap.archie.rm.generic.PartyProxy;
 import java.time.temporal.TemporalAccessor;
 import java.util.List;
+import javax.annotation.processing.Generated;
 import org.ehrbase.client.annotations.Archetype;
 import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.Path;
@@ -13,6 +14,11 @@ import org.ehrbase.client.classgenerator.shareddefinition.Language;
 
 @Entity
 @Archetype("openEHR-EHR-OBSERVATION.laboratory_test_result.v1")
+@Generated(
+    value = "org.ehrbase.client.classgenerator.ClassGenerator",
+    date = "2020-12-09T11:37:51.255761200+01:00",
+    comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
+)
 public class LaborergebnisObservation implements EntryEntity {
   /**
    * Befund der Blutgasanalyse/Laborergebnis/Jedes Ereignis/Labortest-Bezeichnung

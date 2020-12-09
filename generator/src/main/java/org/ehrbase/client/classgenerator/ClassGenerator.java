@@ -35,6 +35,7 @@ import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -48,6 +49,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.StringJoiner;
 import java.util.stream.Collectors;
+import javax.annotation.processing.Generated;
 import javax.lang.model.element.Modifier;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.SetUtils;
@@ -172,6 +174,9 @@ public class ClassGenerator {
       classBuilder.addAnnotation(archetypeAnnotation);
     }
 
+    AnnotationSpec generatedAnnotation = buildGenratedAnnotation();
+    classBuilder.addAnnotation(generatedAnnotation);
+
     classBuilder.addSuperinterface(findRMInterface(next));
 
     if (next.getChildren().stream().anyMatch(n -> n.getRmType().equals("EVENT"))) {
@@ -239,6 +244,8 @@ public class ClassGenerator {
             TypeSpec.interfaceBuilder(
                     defaultNamingStrategy.buildClassName(context, choice.get(0), true, false))
                 .addModifiers(Modifier.PUBLIC);
+
+        interfaceBuilder.addAnnotation(buildGenratedAnnotation());
 
         Set<FieldSpec> cowmenField = null;
         for (Set<FieldSpec> fields :
@@ -320,6 +327,16 @@ public class ClassGenerator {
 
     context.unFilteredNodeDeque.poll();
     return classBuilder;
+  }
+
+  private AnnotationSpec buildGenratedAnnotation() {
+    AnnotationSpec generatedAnnotation =
+            AnnotationSpec.builder(Generated.class)
+                    .addMember("value", "$S", getClass().getName())
+                    .addMember("date", "$S", OffsetDateTime.now().toString())
+                    .addMember("comments", "$S", "https://github.com/ehrbase/openEHR_SDK Version: "+getClass().getPackage().getImplementationVersion())
+                    .build();
+    return generatedAnnotation;
   }
 
   private Type findRMInterface(WebTemplateNode next) {

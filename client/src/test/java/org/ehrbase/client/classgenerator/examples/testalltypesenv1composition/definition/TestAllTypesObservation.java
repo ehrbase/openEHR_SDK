@@ -15,6 +15,7 @@ import java.lang.String;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAccessor;
 import java.time.temporal.TemporalAmount;
+import javax.annotation.processing.Generated;
 import org.ehrbase.client.annotations.Archetype;
 import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.Path;
@@ -23,6 +24,11 @@ import org.ehrbase.client.classgenerator.shareddefinition.Language;
 
 @Entity
 @Archetype("openEHR-EHR-OBSERVATION.test_all_types.v1")
+@Generated(
+    value = "org.ehrbase.client.classgenerator.ClassGenerator",
+    date = "2020-12-09T11:37:50.964760500+01:00",
+    comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
+)
 public class TestAllTypesObservation implements EntryEntity {
   /**
    * Test all types/Test all types/Cualquier evento/text

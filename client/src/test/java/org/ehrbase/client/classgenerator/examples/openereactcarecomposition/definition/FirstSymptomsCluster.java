@@ -7,6 +7,7 @@ import java.lang.String;
 import java.time.temporal.TemporalAccessor;
 import java.time.temporal.TemporalAmount;
 import java.util.List;
+import javax.annotation.processing.Generated;
 import org.ehrbase.client.annotations.Archetype;
 import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.Path;
@@ -14,6 +15,11 @@ import org.ehrbase.client.classgenerator.interfaces.LocatableEntity;
 
 @Entity
 @Archetype("openEHR-EHR-CLUSTER.symptom_sign-cvid.v0")
+@Generated(
+    value = "org.ehrbase.client.classgenerator.ClassGenerator",
+    date = "2020-12-09T11:37:51.606761+01:00",
+    comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
+)
 public class FirstSymptomsCluster implements LocatableEntity {
   /**
    * open_eREACT-Care/Assessment/Covid/Covid symptoms/Any event/First symptoms/Symptom/Sign name

@@ -8,6 +8,7 @@ import java.lang.Long;
 import java.lang.String;
 import java.net.URI;
 import java.time.temporal.TemporalAccessor;
+import javax.annotation.processing.Generated;
 import org.ehrbase.client.annotations.Archetype;
 import org.ehrbase.client.annotations.Choice;
 import org.ehrbase.client.annotations.Entity;
@@ -17,6 +18,11 @@ import org.ehrbase.client.classgenerator.shareddefinition.Language;
 
 @Entity
 @Archetype("openEHR-EHR-EVALUATION.test_all_types.v1")
+@Generated(
+    value = "org.ehrbase.client.classgenerator.ClassGenerator",
+    date = "2020-12-09T11:37:50.973760800+01:00",
+    comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
+)
 public class TestAllTypesEvaluation implements EntryEntity {
   /**
    * Test all types/Test all types/uri

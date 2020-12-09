@@ -8,6 +8,7 @@ import java.lang.Double;
 import java.lang.String;
 import java.time.temporal.TemporalAccessor;
 import java.util.List;
+import javax.annotation.processing.Generated;
 import org.ehrbase.client.annotations.Archetype;
 import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.Path;
@@ -16,6 +17,11 @@ import org.ehrbase.client.classgenerator.shareddefinition.Language;
 
 @Entity
 @Archetype("openEHR-EHR-OBSERVATION.body_weight.v2")
+@Generated(
+    value = "org.ehrbase.client.classgenerator.ClassGenerator",
+    date = "2020-12-09T11:37:51.535762400+01:00",
+    comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
+)
 public class WeightObservation implements EntryEntity {
   /**
    * open_eREACT-Care/Background/Weight/Any event/Weight

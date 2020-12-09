@@ -6,6 +6,7 @@ import com.nedap.archie.rm.generic.PartyProxy;
 import java.lang.String;
 import java.time.temporal.TemporalAccessor;
 import java.util.List;
+import javax.annotation.processing.Generated;
 import org.ehrbase.client.annotations.Archetype;
 import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.Path;
@@ -14,6 +15,11 @@ import org.ehrbase.client.classgenerator.shareddefinition.Language;
 
 @Entity
 @Archetype("openEHR-EHR-OBSERVATION.exposure_assessment.v0")
+@Generated(
+    value = "org.ehrbase.client.classgenerator.ClassGenerator",
+    date = "2020-12-09T11:37:53.392287300+01:00",
+    comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
+)
 public class PersonenkontaktObservation implements EntryEntity {
   /**
    * Bericht/Kontakt/Personenkontakt/Beliebiges Ereignis/*Agent (en)

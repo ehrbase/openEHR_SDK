@@ -2,11 +2,17 @@ package org.ehrbase.client.classgenerator.exampleoptimizersettingsections.corona
 
 import com.nedap.archie.rm.archetyped.FeederAudit;
 import java.lang.String;
+import javax.annotation.processing.Generated;
 import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.Path;
 import org.ehrbase.client.classgenerator.interfaces.LocatableEntity;
 
 @Entity
+@Generated(
+    value = "org.ehrbase.client.classgenerator.ClassGenerator",
+    date = "2020-12-09T11:37:53.411285600+01:00",
+    comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
+)
 public class FragebogenZumMedikationsScreeningSpezifischeMedikamenteCluster implements LocatableEntity {
   /**
    * Bericht/Allgemeine Angaben/Fragebogen zum Medikations-Screening/Beliebiges Ereignis/Spezifische Medikamentenklasse/Spezifische Medikamente/Name des Medikaments

@@ -2,6 +2,7 @@ package org.ehrbase.client.classgenerator.examples.testalltypesenv1composition.d
 
 import com.nedap.archie.rm.archetyped.FeederAudit;
 import java.util.List;
+import javax.annotation.processing.Generated;
 import org.ehrbase.client.annotations.Archetype;
 import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.Path;
@@ -9,6 +10,11 @@ import org.ehrbase.client.classgenerator.interfaces.LocatableEntity;
 
 @Entity
 @Archetype("openEHR-EHR-SECTION.test_all_types.v1")
+@Generated(
+    value = "org.ehrbase.client.classgenerator.ClassGenerator",
+    date = "2020-12-09T11:37:50.982759400+01:00",
+    comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
+)
 public class TestAllTypesSection implements LocatableEntity {
   /**
    * Test all types/Test all types/section 2/section 3/Test all types

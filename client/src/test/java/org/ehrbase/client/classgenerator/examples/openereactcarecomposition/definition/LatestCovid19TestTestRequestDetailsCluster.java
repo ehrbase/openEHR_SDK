@@ -3,11 +3,17 @@ package org.ehrbase.client.classgenerator.examples.openereactcarecomposition.def
 import com.nedap.archie.rm.archetyped.FeederAudit;
 import com.nedap.archie.rm.datastructures.Cluster;
 import java.util.List;
+import javax.annotation.processing.Generated;
 import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.Path;
 import org.ehrbase.client.classgenerator.interfaces.LocatableEntity;
 
 @Entity
+@Generated(
+    value = "org.ehrbase.client.classgenerator.ClassGenerator",
+    date = "2020-12-09T11:37:51.638759200+01:00",
+    comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
+)
 public class LatestCovid19TestTestRequestDetailsCluster implements LocatableEntity {
   /**
    * open_eREACT-Care/Assessment/Covid/Latest Covid-19 test/Test request details/Requester

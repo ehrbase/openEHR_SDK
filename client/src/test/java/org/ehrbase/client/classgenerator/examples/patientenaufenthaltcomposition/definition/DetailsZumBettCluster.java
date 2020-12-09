@@ -5,6 +5,7 @@ import com.nedap.archie.rm.datastructures.Cluster;
 import com.nedap.archie.rm.datavalues.DvIdentifier;
 import java.lang.String;
 import java.util.List;
+import javax.annotation.processing.Generated;
 import org.ehrbase.client.annotations.Archetype;
 import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.Path;
@@ -12,6 +13,11 @@ import org.ehrbase.client.classgenerator.interfaces.LocatableEntity;
 
 @Entity
 @Archetype("openEHR-EHR-CLUSTER.device.v1")
+@Generated(
+    value = "org.ehrbase.client.classgenerator.ClassGenerator",
+    date = "2020-12-09T11:37:52.910763+01:00",
+    comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
+)
 public class DetailsZumBettCluster implements LocatableEntity {
   /**
    * Patientenaufenthalt/Versorgungsort/Standort/Details zum Bett/Gerätename

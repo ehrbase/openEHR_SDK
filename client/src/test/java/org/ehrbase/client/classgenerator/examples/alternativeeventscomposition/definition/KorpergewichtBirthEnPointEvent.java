@@ -5,11 +5,17 @@ import java.lang.Double;
 import java.lang.String;
 import java.time.temporal.TemporalAccessor;
 import java.util.List;
+import javax.annotation.processing.Generated;
 import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.Path;
 import org.ehrbase.client.classgenerator.interfaces.PointEventEntity;
 
 @Entity
+@Generated(
+    value = "org.ehrbase.client.classgenerator.ClassGenerator",
+    date = "2020-12-09T11:37:50.027758400+01:00",
+    comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
+)
 public class KorpergewichtBirthEnPointEvent implements PointEventEntity {
   /**
    * Bericht/Körpergewicht/*Birth(en)/Gewicht

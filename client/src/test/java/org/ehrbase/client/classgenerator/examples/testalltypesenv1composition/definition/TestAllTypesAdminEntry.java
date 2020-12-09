@@ -3,6 +3,7 @@ package org.ehrbase.client.classgenerator.examples.testalltypesenv1composition.d
 import com.nedap.archie.rm.archetyped.FeederAudit;
 import com.nedap.archie.rm.generic.PartyProxy;
 import java.lang.Long;
+import javax.annotation.processing.Generated;
 import org.ehrbase.client.annotations.Archetype;
 import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.Path;
@@ -11,6 +12,11 @@ import org.ehrbase.client.classgenerator.shareddefinition.Language;
 
 @Entity
 @Archetype("openEHR-EHR-ADMIN_ENTRY.test_all_types.v1")
+@Generated(
+    value = "org.ehrbase.client.classgenerator.ClassGenerator",
+    date = "2020-12-09T11:37:50.990761700+01:00",
+    comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
+)
 public class TestAllTypesAdminEntry implements EntryEntity {
   /**
    * Test all types/Test all types/section 2/Test all types/count 3

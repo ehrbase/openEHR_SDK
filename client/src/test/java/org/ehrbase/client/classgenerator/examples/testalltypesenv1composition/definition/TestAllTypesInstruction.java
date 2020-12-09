@@ -6,6 +6,7 @@ import com.nedap.archie.rm.generic.PartyProxy;
 import java.lang.String;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAccessor;
+import javax.annotation.processing.Generated;
 import org.ehrbase.client.annotations.Archetype;
 import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.Path;
@@ -14,6 +15,11 @@ import org.ehrbase.client.classgenerator.shareddefinition.Language;
 
 @Entity
 @Archetype("openEHR-EHR-INSTRUCTION.test_all_types.v1")
+@Generated(
+    value = "org.ehrbase.client.classgenerator.ClassGenerator",
+    date = "2020-12-09T11:37:50.983760100+01:00",
+    comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
+)
 public class TestAllTypesInstruction implements EntryEntity {
   /**
    * Test all types/Test all types/section 2/section 3/Test all types/Current Activity/partial date

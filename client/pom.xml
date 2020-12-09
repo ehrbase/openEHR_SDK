@@ -43,6 +43,10 @@
             <artifactId>cache-api</artifactId>
         </dependency>
         <dependency>
+            <groupId>javax.annotation</groupId>
+            <artifactId>javax.annotation-api</artifactId>
+        </dependency>
+        <dependency>
             <groupId>com.github.ehrbase.openEHR_SDK</groupId>
             <artifactId>opt-1.4</artifactId>
         </dependency>

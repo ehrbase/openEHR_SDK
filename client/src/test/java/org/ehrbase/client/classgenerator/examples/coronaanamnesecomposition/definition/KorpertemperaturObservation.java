@@ -7,6 +7,7 @@ import java.lang.Double;
 import java.lang.String;
 import java.time.temporal.TemporalAccessor;
 import java.util.List;
+import javax.annotation.processing.Generated;
 import org.ehrbase.client.annotations.Archetype;
 import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.Path;
@@ -15,6 +16,11 @@ import org.ehrbase.client.classgenerator.shareddefinition.Language;
 
 @Entity
 @Archetype("openEHR-EHR-OBSERVATION.body_temperature.v2")
+@Generated(
+    value = "org.ehrbase.client.classgenerator.ClassGenerator",
+    date = "2020-12-09T11:37:52.579760800+01:00",
+    comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
+)
 public class KorpertemperaturObservation implements EntryEntity {
   /**
    * Bericht/Symptome/Körpertemperatur/Beliebiges Ereignis/Temperatur
