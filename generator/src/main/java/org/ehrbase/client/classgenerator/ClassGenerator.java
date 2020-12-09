@@ -74,6 +74,7 @@ import org.ehrbase.client.classgenerator.interfaces.RMEntity;
 import org.ehrbase.client.classgenerator.shareddefinition.Category;
 import org.ehrbase.client.classgenerator.shareddefinition.Language;
 import org.ehrbase.client.classgenerator.shareddefinition.MathFunction;
+import org.ehrbase.client.classgenerator.shareddefinition.NullFlavour;
 import org.ehrbase.client.classgenerator.shareddefinition.Setting;
 import org.ehrbase.client.classgenerator.shareddefinition.Territory;
 import org.ehrbase.client.classgenerator.shareddefinition.Transition;
@@ -174,7 +175,7 @@ public class ClassGenerator {
       classBuilder.addAnnotation(archetypeAnnotation);
     }
 
-    AnnotationSpec generatedAnnotation = buildGenratedAnnotation();
+    AnnotationSpec generatedAnnotation = buildGeneratedAnnotation();
     classBuilder.addAnnotation(generatedAnnotation);
 
     classBuilder.addSuperinterface(findRMInterface(next));
@@ -245,7 +246,7 @@ public class ClassGenerator {
                     defaultNamingStrategy.buildClassName(context, choice.get(0), true, false))
                 .addModifiers(Modifier.PUBLIC);
 
-        interfaceBuilder.addAnnotation(buildGenratedAnnotation());
+        interfaceBuilder.addAnnotation(buildGeneratedAnnotation());
 
         Set<FieldSpec> cowmenField = null;
         for (Set<FieldSpec> fields :
@@ -329,14 +330,16 @@ public class ClassGenerator {
     return classBuilder;
   }
 
-  private AnnotationSpec buildGenratedAnnotation() {
-    AnnotationSpec generatedAnnotation =
-            AnnotationSpec.builder(Generated.class)
-                    .addMember("value", "$S", getClass().getName())
-                    .addMember("date", "$S", OffsetDateTime.now().toString())
-                    .addMember("comments", "$S", "https://github.com/ehrbase/openEHR_SDK Version: "+getClass().getPackage().getImplementationVersion())
-                    .build();
-    return generatedAnnotation;
+  private AnnotationSpec buildGeneratedAnnotation() {
+    return AnnotationSpec.builder(Generated.class)
+        .addMember("value", "$S", getClass().getName())
+        .addMember("date", "$S", OffsetDateTime.now().toString())
+        .addMember(
+            "comments",
+            "$S",
+            "https://github.com/ehrbase/openEHR_SDK Version: "
+                + getClass().getPackage().getImplementationVersion())
+        .build();
   }
 
   private Type findRMInterface(WebTemplateNode next) {
@@ -437,7 +440,14 @@ public class ClassGenerator {
     boolean expand = classGeneratorConfig != null && classGeneratorConfig.isExpandField();
 
     if (endNode.getRmType().equals("DV_CODED_TEXT")
-        && !List.of("transition", "language", "setting", "category", "territory", "math_function")
+        && !List.of(
+                "transition",
+                "language",
+                "setting",
+                "category",
+                "territory",
+                "math_function",
+                "null_flavour")
             .contains(endNode.getId(false))) {
       expand =
           expand
@@ -544,6 +554,9 @@ public class ClassGenerator {
         case "transition":
           className = ClassName.get(Transition.class);
           break;
+        case "null_flavour":
+          className = ClassName.get(NullFlavour.class);
+          break;
         default:
           if (CollectionUtils.isNotEmpty(valueSet.getTherms())) {
 
@@ -587,14 +600,15 @@ public class ClassGenerator {
         it.hasNext(); ) {
       WebTemplateNode n = it.next();
       if (!List.of(
-              "HISTORY",
-              "ITEM_TREE",
-              "ITEM_LIST",
-              "ITEM_SINGLE",
-              "ITEM_TABLE",
-              "ITEM_STRUCTURE",
-              "ELEMENT")
-          .contains(n.getRmType())) {
+                      "HISTORY",
+                      "ITEM_TREE",
+                      "ITEM_LIST",
+                      "ITEM_SINGLE",
+                      "ITEM_TABLE",
+                      "ITEM_STRUCTURE")
+                  .contains(n.getRmType())
+              && (!n.getRmType().equals("ELEMENT"))
+          || node.getName().equals("null_flavour")) {
         joiner.add(n.getName());
       }
     }

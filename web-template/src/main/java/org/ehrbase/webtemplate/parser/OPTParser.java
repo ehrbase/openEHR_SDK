@@ -27,6 +27,14 @@ import com.nedap.archie.rm.datavalues.quantity.DvInterval;
 import com.nedap.archie.rminfo.ArchieRMInfoLookup;
 import com.nedap.archie.rminfo.RMAttributeInfo;
 import com.nedap.archie.rminfo.RMTypeInfo;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import org.ehrbase.terminology.client.terminology.TermDefinition;
 import org.ehrbase.terminology.client.terminology.TerminologyProvider;
@@ -51,15 +59,6 @@ import org.openehr.schemas.v1.IntervalOfInteger;
 import org.openehr.schemas.v1.OBJECTID;
 import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
 import org.openehr.schemas.v1.StringDictionaryItem;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 public class OPTParser {
   public static final String PATH_DIVIDER = "/";
@@ -235,8 +234,12 @@ public class OPTParser {
 
     // Inherit name for Element values
     if (node.getRmType().equals("ELEMENT")) {
-      if (node.getChildren().size() == 1) {
-        WebTemplateNode value = node.getChildren().get(0);
+      List<WebTemplateNode> trueChildren =
+          node.getChildren().stream()
+              .filter(n -> !node.isAttribute(n))
+              .collect(Collectors.toList());
+      if (trueChildren.size() == 1) {
+        WebTemplateNode value = trueChildren.get(0);
         value.setId(node.getId(false));
         value.setName(node.getName());
         value.setMax(node.getMax());
@@ -245,11 +248,10 @@ public class OPTParser {
         value.getLocalizedNames().putAll(node.getLocalizedNames());
         value.setLocalizedName(node.getLocalizedName());
         // If contains a choice of DV_TEXT and DV_CODED_TEXT add a merged node
-      } else if (node.getChildren().size() == 2
-          && node.getChildren().stream()
-              .map(WebTemplateNode::getRmType)
-              .collect(Collectors.toList())
-              .containsAll(List.of("DV_TEXT", "DV_CODED_TEXT"))) {
+      } else if (trueChildren.stream()
+          .map(WebTemplateNode::getRmType)
+          .collect(Collectors.toList())
+          .containsAll(List.of("DV_TEXT", "DV_CODED_TEXT"))) {
         WebTemplateNode merged = new WebTemplateNode();
         merged.setId(node.getId(false));
         merged.setName(node.getName());
@@ -328,7 +330,10 @@ public class OPTParser {
           .addAll(
               typeInfo.getAttributes().values().stream()
                   .filter(s -> !s.isComputed())
-                 .filter(s -> !Element.class.isAssignableFrom(typeInfo.getJavaClass()) || s.getRmName().equals("feeder_audit"))
+                  .filter(
+                      s ->
+                          !Element.class.isAssignableFrom(typeInfo.getJavaClass())
+                              || List.of("feeder_audit", "null_flavour").contains(s.getRmName()))
                   .filter(s -> !List.of("value").contains(s.getRmName()))
                   .filter(s -> !Locatable.class.isAssignableFrom(s.getTypeInCollection()))
                   .map(i -> buildNodeForAttribute(i, aqlPath, termDefinitionMap))
@@ -462,8 +467,7 @@ public class OPTParser {
                     .getLocalizedLabels()
                     .putAll(
                         Optional.ofNullable(termDefinitionMap.get(value.getValue()))
-                            .map(Map::entrySet)
-                            .stream()
+                            .map(Map::entrySet).stream()
                             .flatMap(Set::stream)
                             .collect(
                                 Collectors.toMap(Map.Entry::getKey, e -> e.getValue().getValue())));

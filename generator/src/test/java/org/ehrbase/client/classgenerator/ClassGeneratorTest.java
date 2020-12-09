@@ -55,7 +55,9 @@ public class ClassGeneratorTest {
                 OperationalTemplateTestData.BLOOD_PRESSURE_SIMPLE.getStream())
             .getTemplate();
     WebTemplate webTemplate = new OPTParser(template).parse();
-    ClassGenerator cut = new ClassGenerator(new ClassGeneratorConfig());
+    ClassGeneratorConfig config = new ClassGeneratorConfig();
+    config.setAddNullFlavor(true);
+    ClassGenerator cut = new ClassGenerator(config);
     ClassGeneratorResult generate = null;
 
     generate = cut.generate(PACKAGE_NAME, webTemplate);
@@ -135,7 +137,61 @@ public class ClassGeneratorTest {
             new Tuple("feederAudit", "com.nedap.archie.rm.archetyped.FeederAudit"),
             new Tuple("location", "java.lang.String"),
             new Tuple("feederAudit", "com.nedap.archie.rm.archetyped.FeederAudit"),
-            new Tuple("feederAudit", "com.nedap.archie.rm.archetyped.FeederAudit"));
+            new Tuple("feederAudit", "com.nedap.archie.rm.archetyped.FeederAudit"),
+            new Tuple(
+                "nameNullFlavourDefiningCode",
+                "org.ehrbase.client.classgenerator.shareddefinition.NullFlavour"),
+            new Tuple(
+                "descriptionNullFlavourDefiningCode",
+                "org.ehrbase.client.classgenerator.shareddefinition.NullFlavour"),
+            new Tuple(
+                "manufacturerNullFlavourDefiningCode",
+                "org.ehrbase.client.classgenerator.shareddefinition.NullFlavour"),
+            new Tuple(
+                "modelNullFlavourDefiningCode",
+                "org.ehrbase.client.classgenerator.shareddefinition.NullFlavour"),
+            new Tuple(
+                "serialNumberNullFlavourDefiningCode",
+                "org.ehrbase.client.classgenerator.shareddefinition.NullFlavour"),
+            new Tuple(
+                "dateLastServicedNullFlavourDefiningCode",
+                "org.ehrbase.client.classgenerator.shareddefinition.NullFlavour"),
+            new Tuple(
+                "dateLastCalibrationNullFlavourDefiningCode",
+                "org.ehrbase.client.classgenerator.shareddefinition.NullFlavour"),
+            new Tuple(
+                "servicedByNullFlavourDefiningCode",
+                "org.ehrbase.client.classgenerator.shareddefinition.NullFlavour"),
+            new Tuple(
+                "systolicNullFlavourDefiningCode",
+                "org.ehrbase.client.classgenerator.shareddefinition.NullFlavour"),
+            new Tuple(
+                "diastolicNullFlavourDefiningCode",
+                "org.ehrbase.client.classgenerator.shareddefinition.NullFlavour"),
+            new Tuple(
+                "meanArterialPressureNullFlavourDefiningCode",
+                "org.ehrbase.client.classgenerator.shareddefinition.NullFlavour"),
+            new Tuple(
+                "pulsePressureNullFlavourDefiningCode",
+                "org.ehrbase.client.classgenerator.shareddefinition.NullFlavour"),
+            new Tuple(
+                "commentNullFlavourDefiningCode",
+                "org.ehrbase.client.classgenerator.shareddefinition.NullFlavour"),
+            new Tuple(
+                "positionNullFlavourDefiningCode",
+                "org.ehrbase.client.classgenerator.shareddefinition.NullFlavour"),
+            new Tuple(
+                "tiltNullFlavourDefiningCode",
+                "org.ehrbase.client.classgenerator.shareddefinition.NullFlavour"),
+            new Tuple(
+                "cuffSizeNullFlavourDefiningCode",
+                "org.ehrbase.client.classgenerator.shareddefinition.NullFlavour"),
+            new Tuple(
+                "locationOfMeasurementNullFlavourDefiningCode",
+                "org.ehrbase.client.classgenerator.shareddefinition.NullFlavour"),
+            new Tuple(
+                "korotkoffSoundsNullFlavourDefiningCode",
+                "org.ehrbase.client.classgenerator.shareddefinition.NullFlavour"));
 
     writeFiles(generate);
   }

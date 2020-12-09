@@ -21,13 +21,22 @@ package org.ehrbase.client.classgenerator;
 
 public class ClassGeneratorConfig {
 
-    private OptimizerSetting optimizerSetting = OptimizerSetting.NONE;
+  private OptimizerSetting optimizerSetting = OptimizerSetting.NONE;
+  private boolean addNullFlavor = false;
 
-    public OptimizerSetting getOptimizerSetting() {
-        return optimizerSetting;
-    }
+  public OptimizerSetting getOptimizerSetting() {
+    return optimizerSetting;
+  }
 
-    public void setOptimizerSetting(OptimizerSetting optimizerSetting) {
-        this.optimizerSetting = optimizerSetting;
-    }
+  public void setOptimizerSetting(OptimizerSetting optimizerSetting) {
+    this.optimizerSetting = optimizerSetting;
+  }
+
+  public boolean isAddNullFlavor() {
+    return addNullFlavor;
+  }
+
+  public void setAddNullFlavor(boolean addNullFlavor) {
+    this.addNullFlavor = addNullFlavor;
+  }
 }
