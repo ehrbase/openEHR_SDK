@@ -12,24 +12,26 @@ import org.ehrbase.client.classgenerator.interfaces.LocatableEntity;
 @Archetype("openEHR-EHR-CLUSTER.address_cc.v0")
 @Generated(
     value = "org.ehrbase.client.classgenerator.ClassGenerator",
-    date = "2020-12-09T11:37:52.631764500+01:00",
+    date = "2020-12-10T13:06:12.612025+01:00",
     comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
 )
 public class AdresseCluster implements LocatableEntity {
   /**
-   * Bericht/Allgemeine Angaben/Gesundheitsbezogener Beruf/Beschäftigung/Organisation/Adresse/Stadt
+   * Path: Bericht/Allgemeine Angaben/Gesundheitsbezogener Beruf/Beschäftigung/Organisation/Adresse/Stadt
+   * Description: Der Name der Stadt, des Ortes, des Dorfes oder einer anderen Gemeinde oder eines Lieferzentrums.
    */
   @Path("/items[at0012]/value|value")
   private String stadtValue;
 
   /**
-   * Bericht/Allgemeine Angaben/Gesundheitsbezogener Beruf/Beschäftigung/Organisation/Adresse/Land
+   * Path: Bericht/Allgemeine Angaben/Gesundheitsbezogener Beruf/Beschäftigung/Organisation/Adresse/Land
+   * Description: Land - eine Nation, wie allgemein verstanden oder allgemein akzeptiert.
    */
   @Path("/items[at0015]/value|value")
   private String landValue;
 
   /**
-   * Bericht/Allgemeine Angaben/Gesundheitsbezogener Beruf/Beschäftigung/Organisation/Adresse/feeder_audit
+   * Path: Bericht/Allgemeine Angaben/Gesundheitsbezogener Beruf/Beschäftigung/Organisation/Adresse/feeder_audit
    */
   @Path("/feeder_audit")
   private FeederAudit feederAudit;

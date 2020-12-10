@@ -7,14 +7,10 @@ import javax.annotation.processing.Generated;
 
 @Generated(
     value = "org.ehrbase.client.classgenerator.ClassGenerator",
-    date = "2020-12-09T11:37:53.136288100+01:00",
+    date = "2020-12-10T13:06:13.134030500+01:00",
     comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
 )
 public interface BerichtBeliebigesEreignisChoice {
-  TemporalAccessor getTimeValue();
-
-  void setTimeValue(TemporalAccessor timeValue);
-
   FeederAudit getFeederAudit();
 
   void setFeederAudit(FeederAudit feederAudit);
@@ -23,4 +19,8 @@ public interface BerichtBeliebigesEreignisChoice {
 
   void setSpezifischesSymptomAnzeichen(
       List<BerichtSpezifischesSymptomAnzeichenCluster> spezifischesSymptomAnzeichen);
+
+  TemporalAccessor getTimeValue();
+
+  void setTimeValue(TemporalAccessor timeValue);
 }

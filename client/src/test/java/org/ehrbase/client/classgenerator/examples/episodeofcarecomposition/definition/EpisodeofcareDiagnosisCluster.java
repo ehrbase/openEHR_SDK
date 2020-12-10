@@ -12,30 +12,36 @@ import org.ehrbase.client.classgenerator.interfaces.LocatableEntity;
 @Entity
 @Generated(
     value = "org.ehrbase.client.classgenerator.ClassGenerator",
-    date = "2020-12-09T11:37:51.338761+01:00",
+    date = "2020-12-10T13:06:11.183500400+01:00",
     comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
 )
 public class EpisodeofcareDiagnosisCluster implements LocatableEntity {
   /**
-   * EpisodeOfCare/Episodeofcare/diagnosis/diagnosis entry
+   * Path: EpisodeOfCare/Episodeofcare/diagnosis/diagnosis entry
+   * Description: Conditions/problems/diagnoses this episode of care is for
    */
   @Path("/items[at0019]/value")
   private DvEHRURI diagnosisEntry;
 
   /**
-   * EpisodeOfCare/Episodeofcare/diagnosis/role
+   * Path: EpisodeOfCare/Episodeofcare/diagnosis/role
+   * Description: Role that this diagnosis has within the episode of care (e.g. admission,
+   *                         billing,
+   *                         discharge...)
+   *                     
    */
   @Path("/items[at0020]/value|value")
   private String roleValue;
 
   /**
-   * EpisodeOfCare/Episodeofcare/diagnosis/rank
+   * Path: EpisodeOfCare/Episodeofcare/diagnosis/rank
+   * Description: Ranking of the diagnosis (for each role type)
    */
   @Path("/items[at0021]/value|magnitude")
   private Long rankMagnitude;
 
   /**
-   * EpisodeOfCare/Episodeofcare/diagnosis/feeder_audit
+   * Path: EpisodeOfCare/Episodeofcare/diagnosis/feeder_audit
    */
   @Path("/feeder_audit")
   private FeederAudit feederAudit;

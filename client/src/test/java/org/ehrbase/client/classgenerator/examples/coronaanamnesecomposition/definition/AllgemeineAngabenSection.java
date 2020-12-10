@@ -12,66 +12,78 @@ import org.ehrbase.client.classgenerator.interfaces.LocatableEntity;
 @Archetype("openEHR-EHR-SECTION.adhoc.v1")
 @Generated(
     value = "org.ehrbase.client.classgenerator.ClassGenerator",
-    date = "2020-12-09T11:37:52.618762300+01:00",
+    date = "2020-12-10T13:06:12.592024900+01:00",
     comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
 )
 public class AllgemeineAngabenSection implements LocatableEntity {
   /**
-   * Bericht/Allgemeine Angaben/Andere aktuelle Erkrankungen
+   * Path: Bericht/Allgemeine Angaben/Andere aktuelle Erkrankungen
+   * Description: Ein Personen- oder Selbstbeurteilungs-Screening-Fragebogen zur Ermittlung von Symptomen und Anzeichen.
    */
   @Path("/items[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0 and name/value='Andere aktuelle Erkrankungen']")
   private AndereAktuelleErkrankungenObservation andereAktuelleErkrankungen;
 
   /**
-   * Bericht/Allgemeine Angaben/Chronische Erkrankungen
+   * Path: Bericht/Allgemeine Angaben/Chronische Erkrankungen
+   * Description: Ein Personen- oder Selbstbeurteilungs-Screening-Fragebogen zur Ermittlung von Symptomen und Anzeichen.
    */
   @Path("/items[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0 and name/value='Chronische Erkrankungen']")
   private ChronischeErkrankungenObservation chronischeErkrankungen;
 
   /**
-   * Bericht/Allgemeine Angaben/Problem/Diagnose
+   * Path: Bericht/Allgemeine Angaben/Problem/Diagnose
+   * Description: Angaben über einen einzelnen identifizierten Gesundheitszustand, eine Verletzung, eine Behinderung oder ein Problem, welches das körperliche, geistige und/oder soziale Wohlergehen einer Einzelperson beeinträchtigt.
+   * Comment: Eine klare Abgrenzung zwischen Problem und Diagnose ist in der Praxis nicht einfach zu erreichen. Für die Zwecke der klinischen Dokumentation mit diesem Archetyp werden Problem und Diagnose als ein Kontinuum betrachtet, mit zunehmendem Detaillierungsgrad und unterstützenden Beweisen, die in der Regel dem Etikett "Diagnose" Gewicht verleihen.
    */
   @Path("/items[openEHR-EHR-EVALUATION.problem_diagnosis.v1]")
   private List<ProblemDiagnoseEvaluation> problemDiagnose;
 
   /**
-   * Bericht/Allgemeine Angaben/Fragebogen zum Medikations-Screening
+   * Path: Bericht/Allgemeine Angaben/Fragebogen zum Medikations-Screening
+   * Description: Aggregierte Informationen über die Verabreichung oder die Einnahme eines bestimmten Medikaments oder einer bestimmten Art/Klasse von Medikamenten bei oder während eines Ereignisses, wie z.B. einem bestimmten Zeitpunkt oder einer bestimmten Zeitdauer.
    */
   @Path("/items[openEHR-EHR-OBSERVATION.medication_use.v0]")
   private FragebogenZumMedikationsScreeningObservation fragebogenZumMedikationsScreening;
 
   /**
-   * Bericht/Allgemeine Angaben/Gesundheitsbezogener Beruf
+   * Path: Bericht/Allgemeine Angaben/Gesundheitsbezogener Beruf
+   * Description: Zusammenfassung oder beständige Information zu aktuellen und früheren Jobs und / oder Rollen einer Person.
    */
   @Path("/items[openEHR-EHR-EVALUATION.occupation_summary.v1 and name/value='Gesundheitsbezogener Beruf']")
   private GesundheitsbezogenerBerufEvaluation gesundheitsbezogenerBeruf;
 
   /**
-   * Bericht/Allgemeine Angaben/Wohnsituation
+   * Path: Bericht/Allgemeine Angaben/Wohnsituation
+   * Description: Die Umstände über eine Person, das allein oder mit anderen zusammen lebt.
+   * Comment: Diese Information bietet einen Einblick in die tägliche Unterstützung, zu der eine Person in ihrer häuslichen Umgebung - sowohl körperlich als auch emotional - Zugang hat.
    */
   @Path("/items[openEHR-EHR-EVALUATION.living_arrangement.v0]")
   private List<WohnsituationEvaluation> wohnsituation;
 
   /**
-   * Bericht/Allgemeine Angaben/Bewertung des Gesundheitsrisikos
+   * Path: Bericht/Allgemeine Angaben/Bewertung des Gesundheitsrisikos
+   * Description: Bewertung der möglichen und wahrscheinlichen gesundheitsschädigenden Wirkungen anhand der identifizierten Risikofaktoren.
    */
   @Path("/items[openEHR-EHR-EVALUATION.health_risk.v1]")
   private List<BewertungDesGesundheitsrisikosEvaluation> bewertungDesGesundheitsrisikos;
 
   /**
-   * Bericht/Allgemeine Angaben/Problem/Diganose Coronovirus
+   * Path: Bericht/Allgemeine Angaben/Problem/Diganose Coronovirus
+   * Description: Angaben über einen einzelnen identifizierten Gesundheitszustand, eine Verletzung, eine Behinderung oder ein Problem, welches das körperliche, geistige und/oder soziale Wohlergehen einer Einzelperson beeinträchtigt.
+   * Comment: Eine klare Abgrenzung zwischen Problem und Diagnose ist in der Praxis nicht einfach zu erreichen. Für die Zwecke der klinischen Dokumentation mit diesem Archetyp werden Problem und Diagnose als ein Kontinuum betrachtet, mit zunehmendem Detaillierungsgrad und unterstützenden Beweisen, die in der Regel dem Etikett "Diagnose" Gewicht verleihen.
    */
   @Path("/items[openEHR-EHR-EVALUATION.problem_diagnosis_covid.v1 and name/value='Problem/Diganose Coronovirus']")
   private ProblemDiganoseCoronovirusEvaluation problemDiganoseCoronovirus;
 
   /**
-   * Bericht/Allgemeine Angaben/Dienstleistung
+   * Path: Bericht/Allgemeine Angaben/Dienstleistung
+   * Description: Antrag auf eine gesundheitsbezogene Dienstleistung oder Aktivität, die von einem Kliniker, einer Klinik oder einer Einrichtung erbracht werden soll.
    */
   @Path("/items[openEHR-EHR-INSTRUCTION.service_request.v1]")
   private List<DienstleistungInstruction> dienstleistung;
 
   /**
-   * Bericht/Allgemeine Angaben/feeder_audit
+   * Path: Bericht/Allgemeine Angaben/feeder_audit
    */
   @Path("/feeder_audit")
   private FeederAudit feederAudit;

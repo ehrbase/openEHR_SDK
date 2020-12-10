@@ -11,24 +11,26 @@ import org.ehrbase.client.classgenerator.interfaces.LocatableEntity;
 @Archetype("openEHR-EHR-SECTION.adhoc.v1")
 @Generated(
     value = "org.ehrbase.client.classgenerator.ClassGenerator",
-    date = "2020-12-09T11:37:52.597764300+01:00",
+    date = "2020-12-10T13:06:12.552026100+01:00",
     comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
 )
 public class KontaktSection implements LocatableEntity {
   /**
-   * Bericht/Kontakt/Personenkontakt
+   * Path: Bericht/Kontakt/Personenkontakt
+   * Description: *An individual- or self-reported questionnaire screening for exposure to a chemical, physical or biological agent which has caused or may cause harm to an individual.(en)
    */
   @Path("/items[openEHR-EHR-OBSERVATION.exposure_assessment.v0 and name/value='Personenkontakt']")
   private PersonenkontaktObservation personenkontakt;
 
   /**
-   * Bericht/Kontakt/Aufenthalt in Gesundheitseinrichtung
+   * Path: Bericht/Kontakt/Aufenthalt in Gesundheitseinrichtung
+   * Description: *An individual- or self-reported questionnaire screening for exposure to a chemical, physical or biological agent which has caused or may cause harm to an individual.(en)
    */
   @Path("/items[openEHR-EHR-OBSERVATION.exposure_assessment.v0 and name/value='Aufenthalt in Gesundheitseinrichtung']")
   private AufenthaltInGesundheitseinrichtungObservation aufenthaltInGesundheitseinrichtung;
 
   /**
-   * Bericht/Kontakt/feeder_audit
+   * Path: Bericht/Kontakt/feeder_audit
    */
   @Path("/feeder_audit")
   private FeederAudit feederAudit;

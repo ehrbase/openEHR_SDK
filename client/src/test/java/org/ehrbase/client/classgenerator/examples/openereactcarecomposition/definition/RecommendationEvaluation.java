@@ -15,36 +15,40 @@ import org.ehrbase.client.classgenerator.shareddefinition.Language;
 @Archetype("openEHR-EHR-EVALUATION.recommendation.v1")
 @Generated(
     value = "org.ehrbase.client.classgenerator.ClassGenerator",
-    date = "2020-12-09T11:37:51.678762200+01:00",
+    date = "2020-12-10T13:06:11.584502400+01:00",
     comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
 )
 public class RecommendationEvaluation implements EntryEntity {
   /**
-   * open_eREACT-Care/Response/Recommendation/Recommendation
+   * Path: open_eREACT-Care/Response/Recommendation/Recommendation
+   * Description: Narrative description of the recommendation.
+   * Comment: May be coded, using a terminology, if required.
    */
   @Path("/data[at0001]/items[at0002]")
   private List<RecommendationRecommendationElement> recommendation;
 
   /**
-   * open_eREACT-Care/Response/Recommendation/Extension
+   * Path: open_eREACT-Care/Response/Recommendation/Extension
+   * Description: Additional information required to capture local content or to align with other reference models/formalisms.
+   * Comment: For example: local information requirements or additional metadata to align with FHIR or CIMI equivalents.
    */
   @Path("/protocol[at0004]/items[at0005]")
   private List<Cluster> extension;
 
   /**
-   * open_eREACT-Care/Response/Recommendation/subject
+   * Path: open_eREACT-Care/Response/Recommendation/subject
    */
   @Path("/subject")
   private PartyProxy subject;
 
   /**
-   * open_eREACT-Care/Response/Recommendation/language
+   * Path: open_eREACT-Care/Response/Recommendation/language
    */
   @Path("/language")
   private Language language;
 
   /**
-   * open_eREACT-Care/Response/Recommendation/feeder_audit
+   * Path: open_eREACT-Care/Response/Recommendation/feeder_audit
    */
   @Path("/feeder_audit")
   private FeederAudit feederAudit;

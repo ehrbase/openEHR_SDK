@@ -16,48 +16,53 @@ import org.ehrbase.client.classgenerator.shareddefinition.Language;
 @Archetype("openEHR-EHR-EVALUATION.occupation_summary.v1")
 @Generated(
     value = "org.ehrbase.client.classgenerator.ClassGenerator",
-    date = "2020-12-10T09:57:06.123356100+01:00",
+    date = "2020-12-10T13:06:13.469034100+01:00",
     comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
 )
 public class GesundheitsbezogenerBerufEvaluation implements EntryEntity {
   /**
-   * Bericht/Allgemeine Angaben/Gesundheitsbezogener Beruf/Beschäftigungsstatus
+   * Path: Bericht/Allgemeine Angaben/Gesundheitsbezogener Beruf/Beschäftigungsstatus
+   * Description: Aussage über die aktuelle Beschäftigung der Person.
    */
   @Path("/data[at0001]/items[at0004]/value|value")
   private String beschaeftigungsstatusValue;
 
   /**
-   * Bericht/Allgemeine Angaben/Gesundheitsbezogener Beruf/Beschäftigung
+   * Path: Bericht/Allgemeine Angaben/Gesundheitsbezogener Beruf/Beschäftigung
+   * Description: Ein einzelner Job oder eine einzelne Rolle, die von einer Person während eines bestimmten Zeitraums ausgeführt wurde.
    */
   @Path("/data[at0001]/items[openEHR-EHR-CLUSTER.occupation_record.v1]")
   private List<BeschaeftigungCluster> beschaeftigung;
 
   /**
-   * Bericht/Allgemeine Angaben/Gesundheitsbezogener Beruf/Zusätzliche Angaben
+   * Path: Bericht/Allgemeine Angaben/Gesundheitsbezogener Beruf/Zusätzliche Angaben
+   * Description: Weitere Angaben zu den aktuellen Jobs oder Rollen oder zum vorherigen Beschäftigungsverlauf einer Person.
    */
   @Path("/data[at0001]/items[at0005]")
   private List<Cluster> zusaetzlicheAngaben;
 
   /**
-   * Bericht/Allgemeine Angaben/Gesundheitsbezogener Beruf/Erweiterung
+   * Path: Bericht/Allgemeine Angaben/Gesundheitsbezogener Beruf/Erweiterung
+   * Description: Zusätzliche Informationen zur Erfassung lokaler Inhalte oder Anpassung an andere Referenzmodelle/Formalismen.
+   * Comment: Zum Beispiel: Lokaler Informationsbedarf oder zusätzliche Metadaten zur Anpassung an FHIR-Ressourcen oder CIMI-Modelle.
    */
   @Path("/protocol[at0007]/items[at0008]")
   private List<Cluster> erweiterung;
 
   /**
-   * Bericht/Allgemeine Angaben/Gesundheitsbezogener Beruf/subject
+   * Path: Bericht/Allgemeine Angaben/Gesundheitsbezogener Beruf/subject
    */
   @Path("/subject")
   private PartyProxy subject;
 
   /**
-   * Bericht/Allgemeine Angaben/Gesundheitsbezogener Beruf/language
+   * Path: Bericht/Allgemeine Angaben/Gesundheitsbezogener Beruf/language
    */
   @Path("/language")
   private Language language;
 
   /**
-   * Bericht/Allgemeine Angaben/Gesundheitsbezogener Beruf/feeder_audit
+   * Path: Bericht/Allgemeine Angaben/Gesundheitsbezogener Beruf/feeder_audit
    */
   @Path("/feeder_audit")
   private FeederAudit feederAudit;

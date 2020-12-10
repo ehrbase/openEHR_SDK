@@ -10,18 +10,19 @@ import org.ehrbase.client.classgenerator.interfaces.LocatableEntity;
 @Entity
 @Generated(
     value = "org.ehrbase.client.classgenerator.ClassGenerator",
-    date = "2020-12-09T11:37:51.336760400+01:00",
+    date = "2020-12-10T13:06:11.181498500+01:00",
     comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
 )
 public class EpisodeofcareIdentifierElement implements LocatableEntity {
   /**
-   * EpisodeOfCare/Episodeofcare/identifier
+   * Path: EpisodeOfCare/Episodeofcare/identifier
+   * Description: Business Identifier(s) relevant for this EpisodeOfCare
    */
   @Path("/value")
   private DvIdentifier value;
 
   /**
-   * EpisodeOfCare/Episodeofcare/feeder_audit
+   * Path: EpisodeOfCare/Episodeofcare/feeder_audit
    */
   @Path("/feeder_audit")
   private FeederAudit feederAudit;

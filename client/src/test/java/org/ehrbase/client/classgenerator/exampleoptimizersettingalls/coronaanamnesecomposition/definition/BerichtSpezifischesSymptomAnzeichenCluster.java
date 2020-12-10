@@ -12,36 +12,40 @@ import org.ehrbase.client.classgenerator.interfaces.LocatableEntity;
 @Entity
 @Generated(
     value = "org.ehrbase.client.classgenerator.ClassGenerator",
-    date = "2020-12-09T11:37:53.132283300+01:00",
+    date = "2020-12-10T13:06:13.131030600+01:00",
     comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
 )
 public class BerichtSpezifischesSymptomAnzeichenCluster implements LocatableEntity {
   /**
-   * Bericht/Beliebiges Ereignis/Spezifisches Symptom/Anzeichen/Bezeichnung des Symptoms oder Anzeichens.
+   * Path: Bericht/Beliebiges Ereignis/Spezifisches Symptom/Anzeichen/Bezeichnung des Symptoms oder Anzeichens.
+   * Description: Name des Symptoms oder Anzeichens, das geprüft wird.
    */
   @Path("/items[at0004]/value|value")
   private String bezeichnungDesSymptomsOderAnzeichensValue;
 
   /**
-   * Bericht/Beliebiges Ereignis/Spezifisches Symptom/Anzeichen/Vorhanden?
+   * Path: Bericht/Beliebiges Ereignis/Spezifisches Symptom/Anzeichen/Vorhanden?
+   * Description: Das Symptom oder Anzeichen ist vorhanden.
    */
   @Path("/items[at0005]/value|defining_code")
   private VorhandenDefiningCode2 vorhandenDefiningCode;
 
   /**
-   * Bericht/Beliebiges Ereignis/Spezifisches Symptom/Anzeichen/Detaillierte Angaben zum Symptom/Anzeichen
+   * Path: Bericht/Beliebiges Ereignis/Spezifisches Symptom/Anzeichen/Detaillierte Angaben zum Symptom/Anzeichen
+   * Description: Zusätzliche strukturierte Informationen zu einem bestimmten Symptom oder Anzeichen.
    */
   @Path("/items[at0026]")
   private List<Cluster> detaillierteAngabenZumSymptomAnzeichen;
 
   /**
-   * Bericht/Beliebiges Ereignis/Spezifisches Symptom/Anzeichen/Kommentar
+   * Path: Bericht/Beliebiges Ereignis/Spezifisches Symptom/Anzeichen/Kommentar
+   * Description: Zusätzliche Informationen über das spezifische Symptom oder Anzeichen, die nicht in anderen Bereichen dargestellt wurden.
    */
   @Path("/items[at0035]/value|value")
   private String kommentarValue;
 
   /**
-   * Bericht/Beliebiges Ereignis/Spezifisches Symptom/Anzeichen/feeder_audit
+   * Path: Bericht/Beliebiges Ereignis/Spezifisches Symptom/Anzeichen/feeder_audit
    */
   @Path("/feeder_audit")
   private FeederAudit feederAudit;

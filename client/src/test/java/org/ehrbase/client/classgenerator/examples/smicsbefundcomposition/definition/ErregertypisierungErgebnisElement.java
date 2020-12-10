@@ -10,18 +10,19 @@ import org.ehrbase.client.classgenerator.interfaces.LocatableEntity;
 @Entity
 @Generated(
     value = "org.ehrbase.client.classgenerator.ClassGenerator",
-    date = "2020-12-09T11:37:52.210762600+01:00",
+    date = "2020-12-10T13:06:12.163026100+01:00",
     comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
 )
 public class ErregertypisierungErgebnisElement implements LocatableEntity {
   /**
-   * SmICS Befund/SmICS-Ergebnis/Jedes Ereignis/Eigenschaften des beteiligten Erregers/Erregertypisierung/Ergebnis
+   * Path: SmICS Befund/SmICS-Ergebnis/Jedes Ereignis/Eigenschaften des beteiligten Erregers/Erregertypisierung/Ergebnis
+   * Description: Ergebnisse der Bilddateien der Molekularen Typisierung.
    */
   @Path("/value")
   private DvMultimedia value;
 
   /**
-   * SmICS Befund/SmICS-Ergebnis/Jedes Ereignis/Eigenschaften des beteiligten Erregers/Erregertypisierung/feeder_audit
+   * Path: SmICS Befund/SmICS-Ergebnis/Jedes Ereignis/Eigenschaften des beteiligten Erregers/Erregertypisierung/feeder_audit
    */
   @Path("/feeder_audit")
   private FeederAudit feederAudit;

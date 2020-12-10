@@ -17,60 +17,65 @@ import org.ehrbase.client.classgenerator.shareddefinition.Language;
 @Archetype("openEHR-EHR-OBSERVATION.symptom_sign_screening.v0")
 @Generated(
     value = "org.ehrbase.client.classgenerator.ClassGenerator",
-    date = "2020-12-09T11:37:52.621762300+01:00",
+    date = "2020-12-10T13:06:12.596024900+01:00",
     comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
 )
 public class ChronischeErkrankungenObservation implements EntryEntity {
   /**
-   * Bericht/Allgemeine Angaben/Chronische Erkrankungen/Beliebiges Ereignis/Spezifisches Symptom/Anzeichen/Bezeichnung des Symptoms oder Anzeichens.
+   * Path: Bericht/Allgemeine Angaben/Chronische Erkrankungen/Beliebiges Ereignis/Spezifisches Symptom/Anzeichen/Bezeichnung des Symptoms oder Anzeichens.
+   * Description: Name des Symptoms oder Anzeichens, das geprüft wird.
    */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0022]/items[at0004]/value|value")
   private String bezeichnungDesSymptomsOderAnzeichensValue;
 
   /**
-   * Bericht/Allgemeine Angaben/Chronische Erkrankungen/Beliebiges Ereignis/Spezifisches Symptom/Anzeichen/Vorhanden?
+   * Path: Bericht/Allgemeine Angaben/Chronische Erkrankungen/Beliebiges Ereignis/Spezifisches Symptom/Anzeichen/Vorhanden?
+   * Description: Das Symptom oder Anzeichen ist vorhanden.
    */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0022]/items[at0005]/value|defining_code")
   private VorhandenDefiningCode vorhandenDefiningCode;
 
   /**
-   * Bericht/Allgemeine Angaben/Chronische Erkrankungen/Beliebiges Ereignis/Spezifisches Symptom/Anzeichen/Detaillierte Angaben zum Symptom/Anzeichen
+   * Path: Bericht/Allgemeine Angaben/Chronische Erkrankungen/Beliebiges Ereignis/Spezifisches Symptom/Anzeichen/Detaillierte Angaben zum Symptom/Anzeichen
+   * Description: Zusätzliche strukturierte Informationen zu einem bestimmten Symptom oder Anzeichen.
    */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0022]/items[at0026]")
   private List<Cluster> detaillierteAngabenZumSymptomAnzeichen;
 
   /**
-   * Bericht/Allgemeine Angaben/Chronische Erkrankungen/Beliebiges Ereignis/time
+   * Path: Bericht/Allgemeine Angaben/Chronische Erkrankungen/Beliebiges Ereignis/time
    */
   @Path("/data[at0001]/events[at0002]/time|value")
   private TemporalAccessor timeValue;
 
   /**
-   * Bericht/Allgemeine Angaben/Chronische Erkrankungen/origin
+   * Path: Bericht/Allgemeine Angaben/Chronische Erkrankungen/origin
    */
   @Path("/data[at0001]/origin|value")
   private TemporalAccessor originValue;
 
   /**
-   * Bericht/Allgemeine Angaben/Chronische Erkrankungen/Erweiterung
+   * Path: Bericht/Allgemeine Angaben/Chronische Erkrankungen/Erweiterung
+   * Description: Zusätzliche Informationen zur Erfassung lokaler Inhalte oder Anpassung an andere Referenzmodelle/Formalismen.
+   * Comment: Zum Beispiel: Lokaler Informationsbedarf oder zusätzliche Metadaten zur Anpassung an FHIR-Ressourcen oder CIMI-Modelle.
    */
   @Path("/protocol[at0007]/items[at0021]")
   private List<Cluster> erweiterung;
 
   /**
-   * Bericht/Allgemeine Angaben/Chronische Erkrankungen/subject
+   * Path: Bericht/Allgemeine Angaben/Chronische Erkrankungen/subject
    */
   @Path("/subject")
   private PartyProxy subject;
 
   /**
-   * Bericht/Allgemeine Angaben/Chronische Erkrankungen/language
+   * Path: Bericht/Allgemeine Angaben/Chronische Erkrankungen/language
    */
   @Path("/language")
   private Language language;
 
   /**
-   * Bericht/Allgemeine Angaben/Chronische Erkrankungen/feeder_audit
+   * Path: Bericht/Allgemeine Angaben/Chronische Erkrankungen/feeder_audit
    */
   @Path("/feeder_audit")
   private FeederAudit feederAudit;

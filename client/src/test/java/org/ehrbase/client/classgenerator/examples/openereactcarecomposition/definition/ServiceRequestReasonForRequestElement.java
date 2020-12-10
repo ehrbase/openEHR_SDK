@@ -10,18 +10,19 @@ import org.ehrbase.client.classgenerator.interfaces.LocatableEntity;
 @Entity
 @Generated(
     value = "org.ehrbase.client.classgenerator.ClassGenerator",
-    date = "2020-12-09T11:37:51.682761900+01:00",
+    date = "2020-12-10T13:06:11.590502+01:00",
     comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
 )
 public class ServiceRequestReasonForRequestElement implements LocatableEntity {
   /**
-   * open_eREACT-Care/Response/Service request/Current Activity/Reason for request
+   * Path: open_eREACT-Care/Response/Service request/Current Activity/Reason for request
+   * Description: A short phrase describing the reason for the request.
    */
   @Path("/value")
   private DvCodedText value;
 
   /**
-   * open_eREACT-Care/Response/Service request/Current Activity/feeder_audit
+   * Path: open_eREACT-Care/Response/Service request/Current Activity/feeder_audit
    */
   @Path("/feeder_audit")
   private FeederAudit feederAudit;

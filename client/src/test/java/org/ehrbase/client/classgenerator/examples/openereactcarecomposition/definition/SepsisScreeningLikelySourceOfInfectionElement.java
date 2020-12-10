@@ -10,18 +10,18 @@ import org.ehrbase.client.classgenerator.interfaces.LocatableEntity;
 @Entity
 @Generated(
     value = "org.ehrbase.client.classgenerator.ClassGenerator",
-    date = "2020-12-09T11:37:51.583761300+01:00",
+    date = "2020-12-10T13:06:11.411499600+01:00",
     comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
 )
 public class SepsisScreeningLikelySourceOfInfectionElement implements LocatableEntity {
   /**
-   * open_eREACT-Care/Assessment/Sepsis/Sepsis screening/Any event/feeder_audit
+   * Path: open_eREACT-Care/Assessment/Sepsis/Sepsis screening/Any event/feeder_audit
    */
   @Path("/feeder_audit")
   private FeederAudit feederAudit;
 
   /**
-   * open_eREACT-Care/Assessment/Sepsis/Sepsis screening/Any event/value
+   * Path: open_eREACT-Care/Assessment/Sepsis/Sepsis screening/Any event/value
    */
   @Path("/value")
   @Choice

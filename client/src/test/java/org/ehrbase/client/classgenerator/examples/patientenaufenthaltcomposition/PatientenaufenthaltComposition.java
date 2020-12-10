@@ -27,91 +27,94 @@ import org.ehrbase.client.openehrclient.VersionUid;
 @Archetype("openEHR-EHR-COMPOSITION.event_summary.v0")
 @Generated(
     value = "org.ehrbase.client.classgenerator.ClassGenerator",
-    date = "2020-12-09T11:37:52.901761600+01:00",
+    date = "2020-12-10T13:06:12.891029400+01:00",
     comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
 )
 @Template("Patientenaufenthalt")
 public class PatientenaufenthaltComposition implements CompositionEntity {
   /**
-   * Patientenaufenthalt/context/Versorgungsfall
+   * Path: Patientenaufenthalt/context/Versorgungsfall
+   * Description: Zur Erfassung von Details zur Identifikation eines Falls im Gesundheitswesen.
    */
   @Path("/context/other_context[at0001]/items[openEHR-EHR-CLUSTER.case_identification.v0 and name/value='Versorgungsfall']")
   private VersorgungsfallCluster versorgungsfall;
 
   /**
-   * Patientenaufenthalt/context/Abteilungsfall
+   * Path: Patientenaufenthalt/context/Abteilungsfall
+   * Description: Zur Erfassung von Details zur Identifikation eines Falls im Gesundheitswesen.
    */
   @Path("/context/other_context[at0001]/items[openEHR-EHR-CLUSTER.case_identification.v0 and name/value='Abteilungsfall']")
   private AbteilungsfallCluster abteilungsfall;
 
   /**
-   * Patientenaufenthalt/context/start_time
+   * Path: Patientenaufenthalt/context/start_time
    */
   @Path("/context/start_time|value")
   private TemporalAccessor startTimeValue;
 
   /**
-   * Patientenaufenthalt/context/participations
+   * Path: Patientenaufenthalt/context/participations
    */
   @Path("/context/participations")
   private List<Participation> participations;
 
   /**
-   * Patientenaufenthalt/context/end_time
+   * Path: Patientenaufenthalt/context/end_time
    */
   @Path("/context/end_time|value")
   private TemporalAccessor endTimeValue;
 
   /**
-   * Patientenaufenthalt/context/location
+   * Path: Patientenaufenthalt/context/location
    */
   @Path("/context/location")
   private String location;
 
   /**
-   * Patientenaufenthalt/context/health_care_facility
+   * Path: Patientenaufenthalt/context/health_care_facility
    */
   @Path("/context/health_care_facility")
   private PartyIdentified healthCareFacility;
 
   /**
-   * Patientenaufenthalt/context/setting
+   * Path: Patientenaufenthalt/context/setting
    */
   @Path("/context/setting|defining_code")
   private Setting settingDefiningCode;
 
   /**
-   * Patientenaufenthalt/Versorgungsort
+   * Path: Patientenaufenthalt/Versorgungsort
+   * Description: Zur Erfassung der administrativen Aufenthaltsdaten eines Patienten.
    */
   @Path("/content[openEHR-EHR-ADMIN_ENTRY.hospitalization.v0 and name/value='Versorgungsort']")
   private VersorgungsortAdminEntry versorgungsort;
 
   /**
-   * Patientenaufenthalt/composer
+   * Path: Patientenaufenthalt/composer
    */
   @Path("/composer")
   private PartyProxy composer;
 
   /**
-   * Patientenaufenthalt/language
+   * Path: Patientenaufenthalt/language
    */
   @Path("/language")
   private Language language;
 
   /**
-   * Patientenaufenthalt/feeder_audit
+   * Path: Patientenaufenthalt/feeder_audit
    */
   @Path("/feeder_audit")
   private FeederAudit feederAudit;
 
   /**
-   * Patientenaufenthalt/category
+   * Path: Patientenaufenthalt/category
    */
   @Path("/category|defining_code")
   private Category categoryDefiningCode;
 
   /**
-   * Patientenaufenthalt/territory
+   * Path: Patientenaufenthalt/territory
    */
   @Path("/territory")
   private Territory territory;

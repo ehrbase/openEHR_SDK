@@ -16,36 +16,39 @@ import org.ehrbase.client.classgenerator.shareddefinition.Language;
 @Archetype("openEHR-EHR-EVALUATION.clinical_synopsis.v1")
 @Generated(
     value = "org.ehrbase.client.classgenerator.ClassGenerator",
-    date = "2020-12-09T11:37:51.541761900+01:00",
+    date = "2020-12-10T13:06:11.336497500+01:00",
     comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
 )
 public class AllergiesEvaluation implements EntryEntity {
   /**
-   * open_eREACT-Care/Background/Allergies/Synopsis
+   * Path: open_eREACT-Care/Background/Allergies/Synopsis
+   * Description: The summary, assessment, conclusions or evaluation of the clinical findings.
    */
   @Path("/data[at0001]/items[at0002]/value|value")
   private String synopsisValue;
 
   /**
-   * open_eREACT-Care/Background/Allergies/Extension
+   * Path: open_eREACT-Care/Background/Allergies/Extension
+   * Description: Additional information required to capture local content or to align with other reference models/formalisms.
+   * Comment: For example: local information requirements or additional metadata to align with FHIR or CIMI equivalents.
    */
   @Path("/protocol[at0003]/items[at0004]")
   private List<Cluster> extension;
 
   /**
-   * open_eREACT-Care/Background/Allergies/subject
+   * Path: open_eREACT-Care/Background/Allergies/subject
    */
   @Path("/subject")
   private PartyProxy subject;
 
   /**
-   * open_eREACT-Care/Background/Allergies/language
+   * Path: open_eREACT-Care/Background/Allergies/language
    */
   @Path("/language")
   private Language language;
 
   /**
-   * open_eREACT-Care/Background/Allergies/feeder_audit
+   * Path: open_eREACT-Care/Background/Allergies/feeder_audit
    */
   @Path("/feeder_audit")
   private FeederAudit feederAudit;

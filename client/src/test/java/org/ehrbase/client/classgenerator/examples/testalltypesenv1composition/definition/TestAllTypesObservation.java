@@ -26,138 +26,155 @@ import org.ehrbase.client.classgenerator.shareddefinition.Language;
 @Archetype("openEHR-EHR-OBSERVATION.test_all_types.v1")
 @Generated(
     value = "org.ehrbase.client.classgenerator.ClassGenerator",
-    date = "2020-12-09T11:37:50.964760500+01:00",
+    date = "2020-12-10T13:06:10.796496400+01:00",
     comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
 )
 public class TestAllTypesObservation implements EntryEntity {
   /**
-   * Test all types/Test all types/Cualquier evento/text
+   * Path: Test all types/Test all types/Cualquier evento/text
+   * Description: *
    */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value|value")
   private String textValue;
 
   /**
-   * Test all types/Test all types/Cualquier evento/coded text
+   * Path: Test all types/Test all types/Cualquier evento/coded text
+   * Description: *
    */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0005]/value")
   private DvCodedText codedText;
 
   /**
-   * Test all types/Test all types/Cualquier evento/coded text terminology
+   * Path: Test all types/Test all types/Cualquier evento/coded text terminology
+   * Description: *
    */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0006]/value")
   private DvCodedText codedTextTerminology;
 
   /**
-   * Test all types/Test all types/Cualquier evento/quantity
+   * Path: Test all types/Test all types/Cualquier evento/quantity
+   * Description: *
    */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0007]/value|magnitude")
   private Double quantityMagnitude;
 
   /**
-   * Test all types/Test all types/Cualquier evento/quantity
+   * Path: Test all types/Test all types/Cualquier evento/quantity
+   * Description: *
    */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0007]/value|units")
   private String quantityUnits;
 
   /**
-   * Test all types/Test all types/Cualquier evento/count
+   * Path: Test all types/Test all types/Cualquier evento/count
+   * Description: *
    */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0008]/value|magnitude")
   private Long countMagnitude;
 
   /**
-   * Test all types/Test all types/Cualquier evento/date
+   * Path: Test all types/Test all types/Cualquier evento/date
+   * Description: *
    */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0009]/value|value")
   private Temporal dateValue;
 
   /**
-   * Test all types/Test all types/Cualquier evento/datetime
+   * Path: Test all types/Test all types/Cualquier evento/datetime
+   * Description: *
    */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0010]/value|value")
   private TemporalAccessor datetimeValue;
 
   /**
-   * Test all types/Test all types/Cualquier evento/datetime any
+   * Path: Test all types/Test all types/Cualquier evento/datetime any
+   * Description: *
    */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0011]/value|value")
   private TemporalAccessor datetimeAnyValue;
 
   /**
-   * Test all types/Test all types/Cualquier evento/time
+   * Path: Test all types/Test all types/Cualquier evento/time
+   * Description: *
    */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0012]/value|value")
   private TemporalAccessor arbolTimeValue;
 
   /**
-   * Test all types/Test all types/Cualquier evento/ordinal
+   * Path: Test all types/Test all types/Cualquier evento/ordinal
+   * Description: *
    */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0013]/value")
   private DvOrdinal ordinal;
 
   /**
-   * Test all types/Test all types/Cualquier evento/boolean
+   * Path: Test all types/Test all types/Cualquier evento/boolean
+   * Description: *
    */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0017]/value|value")
   private Boolean booleanValue;
 
   /**
-   * Test all types/Test all types/Cualquier evento/duration any
+   * Path: Test all types/Test all types/Cualquier evento/duration any
+   * Description: *
    */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0018]/value|value")
   private TemporalAmount durationAnyValue;
 
   /**
-   * Test all types/Test all types/Cualquier evento/multimedia any
+   * Path: Test all types/Test all types/Cualquier evento/multimedia any
+   * Description: *
    */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0019]/value")
   private DvMultimedia multimediaAny;
 
   /**
-   * Test all types/Test all types/Cualquier evento/parsable any
+   * Path: Test all types/Test all types/Cualquier evento/parsable any
+   * Description: *
    */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0020]/value")
   private DvParsable parsableAny;
 
   /**
-   * Test all types/Test all types/Cualquier evento/identifier
+   * Path: Test all types/Test all types/Cualquier evento/identifier
+   * Description: *
    */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0021]/value")
   private DvIdentifier identifier;
 
   /**
-   * Test all types/Test all types/Cualquier evento/proportion any
+   * Path: Test all types/Test all types/Cualquier evento/proportion any
+   * Description: *
    */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0022]/value")
   private DvProportion proportionAny;
 
   /**
-   * Test all types/Test all types/Cualquier evento/time
+   * Path: Test all types/Test all types/Cualquier evento/time
    */
   @Path("/data[at0001]/events[at0002]/time|value")
   private TemporalAccessor cualquierEventoTimeValue;
 
   /**
-   * Test all types/Test all types/origin
+   * Path: Test all types/Test all types/origin
    */
   @Path("/data[at0001]/origin|value")
   private TemporalAccessor originValue;
 
   /**
-   * Test all types/Test all types/subject
+   * Path: Test all types/Test all types/subject
    */
   @Path("/subject")
   private PartyProxy subject;
 
   /**
-   * Test all types/Test all types/language
+   * Path: Test all types/Test all types/language
    */
   @Path("/language")
   private Language language;
 
   /**
-   * Test all types/Test all types/feeder_audit
+   * Path: Test all types/Test all types/feeder_audit
    */
   @Path("/feeder_audit")
   private FeederAudit feederAudit;

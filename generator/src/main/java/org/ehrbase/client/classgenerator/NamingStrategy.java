@@ -34,5 +34,7 @@ public interface NamingStrategy {
    */
   String toEnumName(String fieldName);
 
-  String buildFieldName(ClassGeneratorContext context, String path, WebTemplateNode node);
+    String buildFieldJavadoc(ClassGeneratorContext context, WebTemplateNode node);
+
+    String buildFieldName(ClassGeneratorContext context, String path, WebTemplateNode node);
 }

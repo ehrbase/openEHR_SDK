@@ -9,13 +9,13 @@ import org.ehrbase.client.classgenerator.interfaces.RMEntity;
 @Entity
 @Generated(
     value = "org.ehrbase.client.classgenerator.ClassGenerator",
-    date = "2020-12-10T09:57:06.153357700+01:00",
+    date = "2020-12-10T13:06:13.491032300+01:00",
     comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
 )
 @OptionFor("DV_CODED_TEXT")
 public class ProblemDiganoseCoronovirusDiagnostischeSicherheitDvCodedText implements RMEntity, ProblemDiganoseCoronovirusDiagnostischeSicherheitChoice {
   /**
-   * Bericht/Allgemeine Angaben/Problem/Diganose Coronovirus/value/value
+   * Path: Bericht/Allgemeine Angaben/Problem/Diganose Coronovirus/value/value
    */
   @Path("|defining_code")
   private DiagnostischeSicherheitDefiningCode diagnostischeSicherheitDefiningCode;

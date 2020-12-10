@@ -10,18 +10,19 @@ import org.ehrbase.client.classgenerator.interfaces.LocatableEntity;
 @Entity
 @Generated(
     value = "org.ehrbase.client.classgenerator.ClassGenerator",
-    date = "2020-12-09T11:37:52.580760800+01:00",
+    date = "2020-12-10T13:06:12.521027400+01:00",
     comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
 )
 public class KorpertemperaturStorfaktorenElement implements LocatableEntity {
   /**
-   * Bericht/Symptome/Körpertemperatur/Beliebiges Ereignis/Störfaktoren
+   * Path: Bericht/Symptome/Körpertemperatur/Beliebiges Ereignis/Störfaktoren
+   * Description: Zusätzliche Probleme oder Faktoren, die sich auf die Messung der Körpertemperatur auswirken können und in anderen Bereichen nicht dargestellt werden.
    */
   @Path("/value|value")
   private String value;
 
   /**
-   * Bericht/Symptome/Körpertemperatur/Beliebiges Ereignis/feeder_audit
+   * Path: Bericht/Symptome/Körpertemperatur/Beliebiges Ereignis/feeder_audit
    */
   @Path("/feeder_audit")
   private FeederAudit feederAudit;

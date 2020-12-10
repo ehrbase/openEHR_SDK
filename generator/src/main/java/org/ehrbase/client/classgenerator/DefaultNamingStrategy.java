@@ -22,18 +22,21 @@ package org.ehrbase.client.classgenerator;
 import com.google.common.base.CharMatcher;
 import com.nedap.archie.rminfo.ArchieRMInfoLookup;
 import com.nedap.archie.rminfo.RMTypeInfo;
+import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.text.CaseUtils;
+import org.ehrbase.serialisation.util.SnakeCase;
+import org.ehrbase.webtemplate.model.WebTemplateAnnotation;
+import org.ehrbase.webtemplate.model.WebTemplateNode;
+import org.ehrbase.webtemplate.parser.FlatPath;
+
 import java.util.Deque;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import org.apache.commons.lang3.RandomStringUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.text.CaseUtils;
-import org.ehrbase.serialisation.util.SnakeCase;
-import org.ehrbase.webtemplate.model.WebTemplateNode;
-import org.ehrbase.webtemplate.parser.FlatPath;
+import java.util.StringJoiner;
 
 public class DefaultNamingStrategy implements NamingStrategy {
 
@@ -163,6 +166,43 @@ public class DefaultNamingStrategy implements NamingStrategy {
   }
 
   @Override
+  public String buildFieldJavadoc(ClassGeneratorContext context, WebTemplateNode node) {
+    StringJoiner joiner = new StringJoiner("/");
+    for (Iterator<WebTemplateNode> it = context.unFilteredNodeDeque.descendingIterator();
+        it.hasNext(); ) {
+      WebTemplateNode n = it.next();
+      if (!List.of(
+                      "HISTORY",
+                      "ITEM_TREE",
+                      "ITEM_LIST",
+                      "ITEM_SINGLE",
+                      "ITEM_TABLE",
+                      "ITEM_STRUCTURE")
+                  .contains(n.getRmType())
+              && (!n.getRmType().equals("ELEMENT"))
+          || node.getName().equals("null_flavour")) {
+        joiner.add(n.getName());
+      }
+    }
+    joiner.add(node.getName());
+    String path = joiner.toString();
+    StringBuilder sb = new StringBuilder();
+    sb.append("Path: ").append(path);
+    if (StringUtils.isNotBlank(
+        node.getLocalizedDescriptions().get(context.webTemplate.getDefaultLanguage()))) {
+      sb.append("\n")
+          .append("Description: ")
+          .append(node.getLocalizedDescriptions().get(context.webTemplate.getDefaultLanguage()));
+    }
+    if(Optional.of(node).map(WebTemplateNode::getAnnotations).map(WebTemplateAnnotation::getComment).isPresent()){
+      sb.append("\n")
+              .append("Comment: ")
+              .append(node.getAnnotations().getComment());
+    }
+    return sb.toString();
+  }
+
+  @Override
   public String buildFieldName(ClassGeneratorContext context, String path, WebTemplateNode node) {
     String name = node.getName();
     String attributeName = new FlatPath(path).getLast().getAttributeName();
@@ -215,7 +255,7 @@ public class DefaultNamingStrategy implements NamingStrategy {
 
   private String normalise(String name, boolean capitalizeFirstLetter) {
     for (Map.Entry<Character, String> entry : config.getReplaceChars().entrySet()) {
-     name= CharMatcher.is(entry.getKey()).replaceFrom(name, entry.getValue());
+      name = CharMatcher.is(entry.getKey()).replaceFrom(name, entry.getValue());
     }
     if (StringUtils.isBlank(name) || name.equals("_")) {
       return RandomStringUtils.randomAlphabetic(10);

@@ -17,60 +17,68 @@ import org.ehrbase.client.classgenerator.interfaces.LocatableEntity;
 @Archetype("openEHR-EHR-CLUSTER.laboratory_test_analyte.v1")
 @Generated(
     value = "org.ehrbase.client.classgenerator.ClassGenerator",
-    date = "2020-12-09T11:37:53.634287500+01:00",
+    date = "2020-12-10T13:06:13.770035700+01:00",
     comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
 )
 public class ProVirusCluster implements LocatableEntity {
   /**
-   * Virologischer Befund/Befund/Jedes Ereignis/Kultur/Pro Virus/Analyseergebnis-Reihenfolge
+   * Path: Virologischer Befund/Befund/Jedes Ereignis/Kultur/Pro Virus/Analyseergebnis-Reihenfolge
+   * Description: Die beabsichtigte Position dieses Analyseergebnisses in der Reihenfolge aller Analyseergebnisse
    */
   @Path("/items[at0027]/value|magnitude")
   private Long analyseergebnisReihenfolgeMagnitude;
 
   /**
-   * Virologischer Befund/Befund/Jedes Ereignis/Kultur/Pro Virus/Virus
+   * Path: Virologischer Befund/Befund/Jedes Ereignis/Kultur/Pro Virus/Virus
+   * Description: Die Bezeichnung des Analyt-Resultats
    */
   @Path("/items[at0024 and name/value='Virus']/value|value")
   private String virusValue;
 
   /**
-   * Virologischer Befund/Befund/Jedes Ereignis/Kultur/Pro Virus/Nachweis
+   * Path: Virologischer Befund/Befund/Jedes Ereignis/Kultur/Pro Virus/Nachweis
+   * Description: (Mess-)Wert des Analyt-Resultats.
    */
   @Path("/items[at0001 and name/value='Nachweis']/value|value")
   private String nachweisValue;
 
   /**
-   * Virologischer Befund/Befund/Jedes Ereignis/Kultur/Pro Virus/Viruslast (ct-Wert)
+   * Path: Virologischer Befund/Befund/Jedes Ereignis/Kultur/Pro Virus/Viruslast (ct-Wert)
+   * Description: (Mess-)Wert des Analyt-Resultats.
    */
   @Path("/items[at0001 and name/value='Viruslast (ct-Wert)']/value|magnitude")
   private Double viruslastCtWertMagnitude;
 
   /**
-   * Virologischer Befund/Befund/Jedes Ereignis/Kultur/Pro Virus/Viruslast (ct-Wert)
+   * Path: Virologischer Befund/Befund/Jedes Ereignis/Kultur/Pro Virus/Viruslast (ct-Wert)
+   * Description: (Mess-)Wert des Analyt-Resultats.
    */
   @Path("/items[at0001 and name/value='Viruslast (ct-Wert)']/value|units")
   private String viruslastCtWertUnits;
 
   /**
-   * Virologischer Befund/Befund/Jedes Ereignis/Kultur/Pro Virus/Analyseergebnis-Details
+   * Path: Virologischer Befund/Befund/Jedes Ereignis/Kultur/Pro Virus/Analyseergebnis-Details
+   * Description: Weitere Details zu einem einzelnen Ergebnis.
    */
   @Path("/items[at0014]")
   private List<Cluster> analyseergebnisDetails;
 
   /**
-   * Virologischer Befund/Befund/Jedes Ereignis/Kultur/Pro Virus/Zugehörige Laborprobe
+   * Path: Virologischer Befund/Befund/Jedes Ereignis/Kultur/Pro Virus/Zugehörige Laborprobe
+   * Description: Kennung der Probe, die für das Analyseergebnis verwendet wurde.
    */
   @Path("/items[at0026 and name/value='Zugehörige Laborprobe']/value")
   private DvIdentifier zugehorigeLaborprobe;
 
   /**
-   * Virologischer Befund/Befund/Jedes Ereignis/Kultur/Pro Virus/Kommentar
+   * Path: Virologischer Befund/Befund/Jedes Ereignis/Kultur/Pro Virus/Kommentar
+   * Description: Kommentar zum Analyt-Resultat, soweit noch nicht in anderen Feldern erfasst.
    */
   @Path("/items[at0003]/value|value")
   private String kommentarValue;
 
   /**
-   * Virologischer Befund/Befund/Jedes Ereignis/Kultur/Pro Virus/feeder_audit
+   * Path: Virologischer Befund/Befund/Jedes Ereignis/Kultur/Pro Virus/feeder_audit
    */
   @Path("/feeder_audit")
   private FeederAudit feederAudit;

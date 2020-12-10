@@ -12,30 +12,33 @@ import org.ehrbase.client.classgenerator.interfaces.LocatableEntity;
 @Archetype("openEHR-EHR-SECTION.adhoc.v1")
 @Generated(
     value = "org.ehrbase.client.classgenerator.ClassGenerator",
-    date = "2020-12-09T11:37:51.678762200+01:00",
+    date = "2020-12-10T13:06:11.583501700+01:00",
     comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
 )
 public class ResponseSection implements LocatableEntity {
   /**
-   * open_eREACT-Care/Response/Recommendation
+   * Path: open_eREACT-Care/Response/Recommendation
+   * Description: A suggestion, advice or proposal for clinical management.
    */
   @Path("/items[openEHR-EHR-EVALUATION.recommendation.v1]")
   private RecommendationEvaluation recommendation;
 
   /**
-   * open_eREACT-Care/Response/Service request
+   * Path: open_eREACT-Care/Response/Service request
+   * Description: Request for a health-related service or activity to be delivered by a clinician, organisation or agency.
    */
   @Path("/items[openEHR-EHR-INSTRUCTION.service_request.v1]")
   private List<ServiceRequestInstruction> serviceRequest;
 
   /**
-   * open_eREACT-Care/Response/Service
+   * Path: open_eREACT-Care/Response/Service
+   * Description: A general clinical activity carried out for the patient to receive a specified service, advice or care from an expert healthcare provider.
    */
   @Path("/items[openEHR-EHR-ACTION.service.v0]")
   private List<ServiceAction> service;
 
   /**
-   * open_eREACT-Care/Response/feeder_audit
+   * Path: open_eREACT-Care/Response/feeder_audit
    */
   @Path("/feeder_audit")
   private FeederAudit feederAudit;

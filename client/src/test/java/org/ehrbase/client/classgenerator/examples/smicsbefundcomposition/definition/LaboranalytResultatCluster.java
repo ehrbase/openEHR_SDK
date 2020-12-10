@@ -15,48 +15,54 @@ import org.ehrbase.client.classgenerator.interfaces.LocatableEntity;
 @Archetype("openEHR-EHR-CLUSTER.laboratory_test_analyte.v1")
 @Generated(
     value = "org.ehrbase.client.classgenerator.ClassGenerator",
-    date = "2020-12-09T11:37:52.199763700+01:00",
+    date = "2020-12-10T13:06:12.147024700+01:00",
     comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
 )
 public class LaboranalytResultatCluster implements LocatableEntity {
   /**
-   * SmICS Befund/SmICS-Ergebnis/Jedes Ereignis/Eigenschaften des beteiligten Erregers/Erregerdetails/Antibiogramm/Laboranalyt-Resultat/Antibiotikum
+   * Path: SmICS Befund/SmICS-Ergebnis/Jedes Ereignis/Eigenschaften des beteiligten Erregers/Erregerdetails/Antibiogramm/Laboranalyt-Resultat/Antibiotikum
+   * Description: Die Bezeichnung des Analyt-Resultats
    */
   @Path("/items[at0024 and name/value='Antibiotikum']/value|defining_code")
   private AntibiotikumDefiningCode antibiotikumDefiningCode;
 
   /**
-   * SmICS Befund/SmICS-Ergebnis/Jedes Ereignis/Eigenschaften des beteiligten Erregers/Erregerdetails/Antibiogramm/Laboranalyt-Resultat/Minimale Hemmkonzentration
+   * Path: SmICS Befund/SmICS-Ergebnis/Jedes Ereignis/Eigenschaften des beteiligten Erregers/Erregerdetails/Antibiogramm/Laboranalyt-Resultat/Minimale Hemmkonzentration
+   * Description: (Mess-)Wert des Analyt-Resultats.
    */
   @Path("/items[at0001 and name/value='Minimale Hemmkonzentration']/value|magnitude")
   private Double minimaleHemmkonzentrationMagnitude;
 
   /**
-   * SmICS Befund/SmICS-Ergebnis/Jedes Ereignis/Eigenschaften des beteiligten Erregers/Erregerdetails/Antibiogramm/Laboranalyt-Resultat/Minimale Hemmkonzentration
+   * Path: SmICS Befund/SmICS-Ergebnis/Jedes Ereignis/Eigenschaften des beteiligten Erregers/Erregerdetails/Antibiogramm/Laboranalyt-Resultat/Minimale Hemmkonzentration
+   * Description: (Mess-)Wert des Analyt-Resultats.
    */
   @Path("/items[at0001 and name/value='Minimale Hemmkonzentration']/value|units")
   private String minimaleHemmkonzentrationUnits;
 
   /**
-   * SmICS Befund/SmICS-Ergebnis/Jedes Ereignis/Eigenschaften des beteiligten Erregers/Erregerdetails/Antibiogramm/Laboranalyt-Resultat/Analyseergebnis-Details
+   * Path: SmICS Befund/SmICS-Ergebnis/Jedes Ereignis/Eigenschaften des beteiligten Erregers/Erregerdetails/Antibiogramm/Laboranalyt-Resultat/Analyseergebnis-Details
+   * Description: Weitere Details zu einem einzelnen Ergebnis.
    */
   @Path("/items[at0014]")
   private List<Cluster> analyseergebnisDetails;
 
   /**
-   * SmICS Befund/SmICS-Ergebnis/Jedes Ereignis/Eigenschaften des beteiligten Erregers/Erregerdetails/Antibiogramm/Laboranalyt-Resultat/Resistenz
+   * Path: SmICS Befund/SmICS-Ergebnis/Jedes Ereignis/Eigenschaften des beteiligten Erregers/Erregerdetails/Antibiogramm/Laboranalyt-Resultat/Resistenz
+   * Description: Zusätzliche Hinweise zur Anwendbarkeit des Referenzbereichs für dieses Resultat oder (codierter) Text, ob das Resultat im Referenzbereich ist oder nicht.
    */
   @Path("/items[at0004 and name/value='Resistenz']/value|value")
   private String resistenzValue;
 
   /**
-   * SmICS Befund/SmICS-Ergebnis/Jedes Ereignis/Eigenschaften des beteiligten Erregers/Erregerdetails/Antibiogramm/Laboranalyt-Resultat/Kommentar
+   * Path: SmICS Befund/SmICS-Ergebnis/Jedes Ereignis/Eigenschaften des beteiligten Erregers/Erregerdetails/Antibiogramm/Laboranalyt-Resultat/Kommentar
+   * Description: Kommentar zum Analyt-Resultat, soweit noch nicht in anderen Feldern erfasst.
    */
   @Path("/items[at0003]/value|value")
   private String kommentarValue;
 
   /**
-   * SmICS Befund/SmICS-Ergebnis/Jedes Ereignis/Eigenschaften des beteiligten Erregers/Erregerdetails/Antibiogramm/Laboranalyt-Resultat/feeder_audit
+   * Path: SmICS Befund/SmICS-Ergebnis/Jedes Ereignis/Eigenschaften des beteiligten Erregers/Erregerdetails/Antibiogramm/Laboranalyt-Resultat/feeder_audit
    */
   @Path("/feeder_audit")
   private FeederAudit feederAudit;

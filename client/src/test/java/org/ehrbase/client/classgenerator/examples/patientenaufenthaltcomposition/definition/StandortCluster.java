@@ -12,72 +12,84 @@ import org.ehrbase.client.classgenerator.interfaces.LocatableEntity;
 @Archetype("openEHR-EHR-CLUSTER.location.v1")
 @Generated(
     value = "org.ehrbase.client.classgenerator.ClassGenerator",
-    date = "2020-12-09T11:37:52.904762300+01:00",
+    date = "2020-12-10T13:06:12.899031+01:00",
     comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
 )
 public class StandortCluster implements LocatableEntity {
   /**
-   * Patientenaufenthalt/Versorgungsort/Standort/Standorttyp
+   * Path: Patientenaufenthalt/Versorgungsort/Standort/Standorttyp
+   * Description: Kategorisierung des Standorttyps, z.B. Klinik, zu Hause.
    */
   @Path("/items[at0040]/value|value")
   private String standorttypValue;
 
   /**
-   * Patientenaufenthalt/Versorgungsort/Standort/Standortbeschreibung
+   * Path: Patientenaufenthalt/Versorgungsort/Standort/Standortbeschreibung
+   * Description: Das Feld enthält die Freitextbeschreibung des Standorts, z.B. Throax-, Herz- und Gefäßchirurgie.
    */
   @Path("/items[at0046]/value|value")
   private String standortbeschreibungValue;
 
   /**
-   * Patientenaufenthalt/Versorgungsort/Standort/Standortschlüssel
+   * Path: Patientenaufenthalt/Versorgungsort/Standort/Standortschlüssel
+   * Description: Kodierung des Standortes, z.B. der Fachabteilungsschlüssel (z. B. 2000 Thoraxchirurgie).
    */
   @Path("/items[at0048]/value|defining_code")
   private StandortschlusselDefiningCode standortschlusselDefiningCode;
 
   /**
-   * Patientenaufenthalt/Versorgungsort/Standort/Campus
+   * Path: Patientenaufenthalt/Versorgungsort/Standort/Campus
+   * Description: Eine Gruppe von Gebäuden an anderen Orten, wie ein örtlich entfernter Campus, der außerhalb der Einrichtung liegt, aber zur Institution gehört.
    */
   @Path("/items[at0024]/value|value")
   private String campusValue;
 
   /**
-   * Patientenaufenthalt/Versorgungsort/Standort/Gebäudegruppe
+   * Path: Patientenaufenthalt/Versorgungsort/Standort/Gebäudegruppe
+   * Description: Ein Gebäude oder Bauwerk. Dazu können Räume, Flure, Flügel, etc. gehören. Es hat möglicherweise keine Wände oder ein Dach, wird aber dennoch als definierter/zugeordneter Raum angesehen.
    */
   @Path("/items[at0025]/value|value")
   private String gebaudegruppeValue;
 
   /**
-   * Patientenaufenthalt/Versorgungsort/Standort/Ebene
+   * Path: Patientenaufenthalt/Versorgungsort/Standort/Ebene
+   * Description: Die Ebene in einem mehrstöckigen Gebäude/Bauwerk.
    */
   @Path("/items[at0028]/value|value")
   private String ebeneValue;
 
   /**
-   * Patientenaufenthalt/Versorgungsort/Standort/Stationskennung
+   * Path: Patientenaufenthalt/Versorgungsort/Standort/Stationskennung
+   * Description: Eine Station ist Teil einer medizinischen Einrichtung, die Räume und andere Arten von Orten enthalten kann.
    */
   @Path("/items[at0027 and name/value='Stationskennung']/value|value")
   private String stationskennungValue;
 
   /**
-   * Patientenaufenthalt/Versorgungsort/Standort/Zimmerkennung
+   * Path: Patientenaufenthalt/Versorgungsort/Standort/Zimmerkennung
+   * Description: Ein Ort, der als Zimmer deklariert wurde. Bei einigen Standorten kann das Zimmer im Flur liegen zB: Station XYZ Flur 2. Hierbei liegt der Bettstellplatz 2 auf dem Flur der jeweiligen Station.
    */
   @Path("/items[at0029 and name/value='Zimmerkennung']/value|value")
   private String zimmerkennungValue;
 
   /**
-   * Patientenaufenthalt/Versorgungsort/Standort/Bettplatzkennung
+   * Path: Patientenaufenthalt/Versorgungsort/Standort/Bettplatzkennung
+   * Description: Beschreibung des Bettstellplatzes z.B. Bett stand neben dem Fenster oder neben der Tür.
    */
   @Path("/items[at0034 and name/value='Bettplatzkennung']/value|value")
   private String bettplatzkennungValue;
 
   /**
-   * Patientenaufenthalt/Versorgungsort/Standort/Details zum Bett
+   * Path: Patientenaufenthalt/Versorgungsort/Standort/Details zum Bett
+   * Description: Ein Instrument, ein Gerät, ein Implantat, ein Material oder ähnliches, das für die Bereitstellung von Gesundheitsleistungen verwendet wird. In diesem Zusammenhang umfasst ein medizinisches Gerät eine breite Palette von Geräten, die auf verschiedene physikalische, mechanische, thermische oder ähnliche Weise wirken, schließt jedoch insbesondere Geräte aus, die auf medizinischem Wege wirken, wie zum Beispiel pharmakologische, metabolische oder immunologische Methoden. Der Geltungsbereich umfasst
+   *                                                 Einweggeräte sowie langlebige oder dauerhafte Geräte, die nachverfolgt,
+   *                                                 gewartet oder regelmäßig kalibriert werden müssen, wobei zu berücksichtigen ist, dass für jeden Gerätetyp bestimmte Datenaufzeichnungsanforderungen gelten.
    */
   @Path("/items[openEHR-EHR-CLUSTER.device.v1 and name/value='Details zum Bett']")
   private DetailsZumBettCluster detailsZumBett;
 
   /**
-   * Patientenaufenthalt/Versorgungsort/Standort/feeder_audit
+   * Path: Patientenaufenthalt/Versorgungsort/Standort/feeder_audit
    */
   @Path("/feeder_audit")
   private FeederAudit feederAudit;

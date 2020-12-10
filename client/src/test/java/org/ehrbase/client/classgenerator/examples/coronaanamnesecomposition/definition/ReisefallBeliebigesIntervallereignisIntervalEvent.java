@@ -14,54 +14,58 @@ import org.ehrbase.client.classgenerator.shareddefinition.MathFunction;
 @Entity
 @Generated(
     value = "org.ehrbase.client.classgenerator.ClassGenerator",
-    date = "2020-12-09T11:37:52.610762500+01:00",
+    date = "2020-12-10T13:06:12.578024800+01:00",
     comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
 )
 public class ReisefallBeliebigesIntervallereignisIntervalEvent implements IntervalEventEntity {
   /**
-   * Bericht/Risikogebiet/Reisefall/Beliebiges Intervallereignis/Letzte Reise?
+   * Path: Bericht/Risikogebiet/Reisefall/Beliebiges Intervallereignis/Letzte Reise?
+   * Description: Ist die Person während des angegebenen Zeitraums gereist?
    */
   @Path("/data[at0003]/items[at0004 and name/value='Letzte Reise?']/value|defining_code")
   private LetzteReiseDefiningCode letzteReiseDefiningCode;
 
   /**
-   * Bericht/Risikogebiet/Reisefall/Beliebiges Intervallereignis/Inland/Ausland
+   * Path: Bericht/Risikogebiet/Reisefall/Beliebiges Intervallereignis/Inland/Ausland
+   * Description: War die Reise inländisch, international oder beides?
    */
   @Path("/data[at0003]/items[at0026]/value|defining_code")
   private InlandAuslandDefiningCode inlandAuslandDefiningCode;
 
   /**
-   * Bericht/Risikogebiet/Reisefall/Beliebiges Intervallereignis/Bestimmte Reise
+   * Path: Bericht/Risikogebiet/Reisefall/Beliebiges Intervallereignis/Bestimmte Reise
+   * Description: Details zu einer einzelnen Reise außerhalb vom Heimatstandort.
+   * Comment: Die Reise hat ein einziges Abreise- und Rückreisedatum von/zu dem Heimatstandort. Eine Reise kann den Besuch vieler einzelner Orte beinhalten. Diese Details sollten im Cluster für bestimmtes Reiseziel dargestellt werden.
    */
   @Path("/data[at0003]/items[at0008]")
   private List<ReisefallBestimmteReiseCluster> bestimmteReise;
 
   /**
-   * Bericht/Risikogebiet/Reisefall/Beliebiges Intervallereignis/math_function
+   * Path: Bericht/Risikogebiet/Reisefall/Beliebiges Intervallereignis/math_function
    */
   @Path("/math_function|defining_code")
   private MathFunction mathFunctionDefiningCode;
 
   /**
-   * Bericht/Risikogebiet/Reisefall/Beliebiges Intervallereignis/sample_count
+   * Path: Bericht/Risikogebiet/Reisefall/Beliebiges Intervallereignis/sample_count
    */
   @Path("/sample_count")
   private Long sampleCount;
 
   /**
-   * Bericht/Risikogebiet/Reisefall/Beliebiges Intervallereignis/width
+   * Path: Bericht/Risikogebiet/Reisefall/Beliebiges Intervallereignis/width
    */
   @Path("/width|value")
   private TemporalAmount widthValue;
 
   /**
-   * Bericht/Risikogebiet/Reisefall/Beliebiges Intervallereignis/feeder_audit
+   * Path: Bericht/Risikogebiet/Reisefall/Beliebiges Intervallereignis/feeder_audit
    */
   @Path("/feeder_audit")
   private FeederAudit feederAudit;
 
   /**
-   * Bericht/Risikogebiet/Reisefall/Beliebiges Intervallereignis/time
+   * Path: Bericht/Risikogebiet/Reisefall/Beliebiges Intervallereignis/time
    */
   @Path("/time|value")
   private TemporalAccessor timeValue;

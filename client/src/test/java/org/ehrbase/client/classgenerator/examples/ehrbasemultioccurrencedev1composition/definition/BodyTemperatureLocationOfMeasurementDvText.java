@@ -10,13 +10,13 @@ import org.ehrbase.client.classgenerator.interfaces.RMEntity;
 @Entity
 @Generated(
     value = "org.ehrbase.client.classgenerator.ClassGenerator",
-    date = "2020-12-09T11:37:51.163762200+01:00",
+    date = "2020-12-10T13:06:11.012496400+01:00",
     comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
 )
 @OptionFor("DV_TEXT")
 public class BodyTemperatureLocationOfMeasurementDvText implements RMEntity, BodyTemperatureLocationOfMeasurementChoice {
   /**
-   * Encounter/Body temperature/value/value
+   * Path: Encounter/Body temperature/value/value
    */
   @Path("|value")
   private String locationOfMeasurementValue;

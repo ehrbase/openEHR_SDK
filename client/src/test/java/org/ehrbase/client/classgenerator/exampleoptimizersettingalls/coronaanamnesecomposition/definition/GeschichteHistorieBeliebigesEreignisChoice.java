@@ -8,23 +8,23 @@ import javax.annotation.processing.Generated;
 
 @Generated(
     value = "org.ehrbase.client.classgenerator.ClassGenerator",
-    date = "2020-12-09T11:37:53.056764900+01:00",
+    date = "2020-12-10T13:06:13.049066600+01:00",
     comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
 )
 public interface GeschichteHistorieBeliebigesEreignisChoice {
-  List<GeschichteHistorieGeschichteElement> getGeschichte();
+  List<Cluster> getStrukturierteAngabe();
 
-  void setGeschichte(List<GeschichteHistorieGeschichteElement> geschichte);
+  void setStrukturierteAngabe(List<Cluster> strukturierteAngabe);
 
   FeederAudit getFeederAudit();
 
   void setFeederAudit(FeederAudit feederAudit);
 
+  List<GeschichteHistorieGeschichteElement> getGeschichte();
+
+  void setGeschichte(List<GeschichteHistorieGeschichteElement> geschichte);
+
   TemporalAccessor getTimeValue();
 
   void setTimeValue(TemporalAccessor timeValue);
-
-  List<Cluster> getStrukturierteAngabe();
-
-  void setStrukturierteAngabe(List<Cluster> strukturierteAngabe);
 }

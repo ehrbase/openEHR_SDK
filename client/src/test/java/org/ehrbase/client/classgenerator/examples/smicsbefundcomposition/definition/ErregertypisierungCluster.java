@@ -13,36 +13,40 @@ import org.ehrbase.client.classgenerator.interfaces.LocatableEntity;
 @Archetype("openEHR-EHR-CLUSTER.molekulare_typisierung.v0")
 @Generated(
     value = "org.ehrbase.client.classgenerator.ClassGenerator",
-    date = "2020-12-09T11:37:52.208764700+01:00",
+    date = "2020-12-10T13:06:12.159025500+01:00",
     comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
 )
 public class ErregertypisierungCluster implements LocatableEntity {
   /**
-   * SmICS Befund/SmICS-Ergebnis/Jedes Ereignis/Eigenschaften des beteiligten Erregers/Erregertypisierung/Art der Typisierung
+   * Path: SmICS Befund/SmICS-Ergebnis/Jedes Ereignis/Eigenschaften des beteiligten Erregers/Erregertypisierung/Art der Typisierung
+   * Description: Angaben zu den durchgeführten Typisierungsverfahren in der Infektionskontrolle.
    */
   @Path("/items[at0001]")
   private List<ErregertypisierungArtDerTypisierungElement> artDerTypisierung;
 
   /**
-   * SmICS Befund/SmICS-Ergebnis/Jedes Ereignis/Eigenschaften des beteiligten Erregers/Erregertypisierung/Ergebnis
+   * Path: SmICS Befund/SmICS-Ergebnis/Jedes Ereignis/Eigenschaften des beteiligten Erregers/Erregertypisierung/Ergebnis
+   * Description: Ergebnisse der Bilddateien der Molekularen Typisierung.
    */
   @Path("/items[at0008]")
   private List<ErregertypisierungErgebnisElement> ergebnis;
 
   /**
-   * SmICS Befund/SmICS-Ergebnis/Jedes Ereignis/Eigenschaften des beteiligten Erregers/Erregertypisierung/Bewertung
+   * Path: SmICS Befund/SmICS-Ergebnis/Jedes Ereignis/Eigenschaften des beteiligten Erregers/Erregertypisierung/Bewertung
+   * Description: Das Ergebnis bzw. die Bewertung der Molekularen Typisierung.
    */
   @Path("/items[at0009]/value|value")
   private String bewertungValue;
 
   /**
-   * SmICS Befund/SmICS-Ergebnis/Jedes Ereignis/Eigenschaften des beteiligten Erregers/Erregertypisierung/Kommentar
+   * Path: SmICS Befund/SmICS-Ergebnis/Jedes Ereignis/Eigenschaften des beteiligten Erregers/Erregertypisierung/Kommentar
+   * Description: Zusätzliche Angaben zu der Molekularen Typisierung.
    */
   @Path("/items[at0002]/value|value")
   private String kommentarValue;
 
   /**
-   * SmICS Befund/SmICS-Ergebnis/Jedes Ereignis/Eigenschaften des beteiligten Erregers/Erregertypisierung/feeder_audit
+   * Path: SmICS Befund/SmICS-Ergebnis/Jedes Ereignis/Eigenschaften des beteiligten Erregers/Erregertypisierung/feeder_audit
    */
   @Path("/feeder_audit")
   private FeederAudit feederAudit;

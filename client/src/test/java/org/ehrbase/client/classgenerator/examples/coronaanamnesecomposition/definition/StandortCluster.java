@@ -14,24 +14,26 @@ import org.ehrbase.client.classgenerator.interfaces.LocatableEntity;
 @Archetype("openEHR-EHR-CLUSTER.location.v1")
 @Generated(
     value = "org.ehrbase.client.classgenerator.ClassGenerator",
-    date = "2020-12-09T11:37:52.606761900+01:00",
+    date = "2020-12-10T13:06:12.573026200+01:00",
     comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
 )
 public class StandortCluster implements LocatableEntity {
   /**
-   * Bericht/Risikogebiet/Historie der Reise/Jedes Ereignis/Ortsbeschreibung/Standort/Standortbeschreibung
+   * Path: Bericht/Risikogebiet/Historie der Reise/Jedes Ereignis/Ortsbeschreibung/Standort/Standortbeschreibung
+   * Description: Das Feld enthält die Freitextbeschreibung des Standorts, z.B. Throax-, Herz- und Gefäßchirurgie.
    */
   @Path("/items[at0046]/value|value")
   private String standortbeschreibungValue;
 
   /**
-   * Bericht/Risikogebiet/Historie der Reise/Jedes Ereignis/Ortsbeschreibung/Standort/Details
+   * Path: Bericht/Risikogebiet/Historie der Reise/Jedes Ereignis/Ortsbeschreibung/Standort/Details
+   * Description: Für die Erfassung weiterer Angaben über das Bett oder der Adresse. Verwenden Sie dazu den Archetyp CLUSTER.device oder CLUSTER.address.
    */
   @Path("/items[at0047]")
   private List<Cluster> details;
 
   /**
-   * Bericht/Risikogebiet/Historie der Reise/Jedes Ereignis/Ortsbeschreibung/Standort/feeder_audit
+   * Path: Bericht/Risikogebiet/Historie der Reise/Jedes Ereignis/Ortsbeschreibung/Standort/feeder_audit
    */
   @Path("/feeder_audit")
   private FeederAudit feederAudit;

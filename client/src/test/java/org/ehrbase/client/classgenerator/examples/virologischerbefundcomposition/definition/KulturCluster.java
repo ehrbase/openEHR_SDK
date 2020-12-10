@@ -12,18 +12,20 @@ import org.ehrbase.client.classgenerator.interfaces.LocatableEntity;
 @Archetype("openEHR-EHR-CLUSTER.laboratory_test_panel.v0")
 @Generated(
     value = "org.ehrbase.client.classgenerator.ClassGenerator",
-    date = "2020-12-09T11:37:53.633287300+01:00",
+    date = "2020-12-10T13:06:13.769035+01:00",
     comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
 )
 public class KulturCluster implements LocatableEntity {
   /**
-   * Virologischer Befund/Befund/Jedes Ereignis/Kultur/Pro Virus
+   * Path: Virologischer Befund/Befund/Jedes Ereignis/Kultur/Pro Virus
+   * Description: Ergebnis eines Labortests für einen bestimmten Analytwert.
+   * Comment: Beispiele: 'Natrium', 'Leukozytenzahl', 'T3'. Üblicherweise über eine externe Terminologie codiert.
    */
   @Path("/items[openEHR-EHR-CLUSTER.laboratory_test_analyte.v1 and name/value='Pro Virus']")
   private List<ProVirusCluster> proVirus;
 
   /**
-   * Virologischer Befund/Befund/Jedes Ereignis/Kultur/feeder_audit
+   * Path: Virologischer Befund/Befund/Jedes Ereignis/Kultur/feeder_audit
    */
   @Path("/feeder_audit")
   private FeederAudit feederAudit;

@@ -14,36 +14,41 @@ import org.ehrbase.client.classgenerator.interfaces.LocatableEntity;
 @Archetype("openEHR-EHR-CLUSTER.anatomical_location.v1")
 @Generated(
     value = "org.ehrbase.client.classgenerator.ClassGenerator",
-    date = "2020-12-09T11:37:52.384761900+01:00",
+    date = "2020-12-10T13:06:12.346027900+01:00",
     comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
 )
 public class AnatomischeLokalisationCluster implements LocatableEntity {
   /**
-   * COVID-19-Diagnose/Problem/Diagnose/Anatomische Lokalisation/Name der Körperstelle
+   * Path: COVID-19-Diagnose/Problem/Diagnose/Anatomische Lokalisation/Name der Körperstelle
+   * Description: Identifikation einer einzelnen physischen Stelle entweder am oder innerhalb des menschlichen Körpers.
    */
   @Path("/items[at0001]/value|value")
   private String nameDerKorperstelleValue;
 
   /**
-   * COVID-19-Diagnose/Problem/Diagnose/Anatomische Lokalisation/Lateralität
+   * Path: COVID-19-Diagnose/Problem/Diagnose/Anatomische Lokalisation/Lateralität
+   * Description: Die Seite des Körpers, an der sich die identifizierte Körperstelle befindet.
    */
   @Path("/items[at0002]/value|defining_code")
   private LateralitatDefiningCode lateralitatDefiningCode;
 
   /**
-   * COVID-19-Diagnose/Problem/Diagnose/Anatomische Lokalisation/Alternative Struktur
+   * Path: COVID-19-Diagnose/Problem/Diagnose/Anatomische Lokalisation/Alternative Struktur
+   * Description: Zusätzliche Informationen über die anatomische Lage mit alternativen Ansätzen zur Beschreibung der gleichen Körperstelle.
+   * Comment: Zum Beispiel, relative oder exakte Positionen unter Verwendung von Koordinaten.
    */
   @Path("/items[at0053]")
   private List<Cluster> alternativeStruktur;
 
   /**
-   * COVID-19-Diagnose/Problem/Diagnose/Anatomische Lokalisation/Multimediale Darstellung
+   * Path: COVID-19-Diagnose/Problem/Diagnose/Anatomische Lokalisation/Multimediale Darstellung
+   * Description: Bilder oder andere Medien, die der Identifizierung der Körperstelle dienen.
    */
   @Path("/items[at0054]")
   private List<Cluster> multimedialeDarstellung;
 
   /**
-   * COVID-19-Diagnose/Problem/Diagnose/Anatomische Lokalisation/feeder_audit
+   * Path: COVID-19-Diagnose/Problem/Diagnose/Anatomische Lokalisation/feeder_audit
    */
   @Path("/feeder_audit")
   private FeederAudit feederAudit;

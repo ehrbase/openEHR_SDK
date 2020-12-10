@@ -16,72 +16,89 @@ import org.ehrbase.client.classgenerator.interfaces.LocatableEntity;
 @Archetype("openEHR-EHR-CLUSTER.erregerdetails.v1")
 @Generated(
     value = "org.ehrbase.client.classgenerator.ClassGenerator",
-    date = "2020-12-09T11:37:52.195763300+01:00",
+    date = "2020-12-10T13:06:12.141022800+01:00",
     comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
 )
 public class ErregerdetailsCluster implements LocatableEntity {
   /**
-   * SmICS Befund/SmICS-Ergebnis/Jedes Ereignis/Eigenschaften des beteiligten Erregers/Erregerdetails/Keim Subtyp
+   * Path: SmICS Befund/SmICS-Ergebnis/Jedes Ereignis/Eigenschaften des beteiligten Erregers/Erregerdetails/Keim Subtyp
+   * Description: Subtyp, welcher zusätzlich zur Speziesidentifizierung zur weiteren Kennzeichnung des Erregers genutzt werden kann, z.B. spa-Typ im Falle von S. aureus oder MLST-Typ.
+   * Comment: Bestimmte Keimsubtypen beeinflussen die Wirtsreaktion bzw. Immunantwort.
+   *                                                                 Beispielsweise ein Resultat einer spa-Typsierung bei einem S. aureus oder anderen Typsierungen wie MLST.
+   *                                                             
    */
   @Path("/items[at0047]")
   private List<ErregerdetailsKeimSubtypElement> keimSubtyp;
 
   /**
-   * SmICS Befund/SmICS-Ergebnis/Jedes Ereignis/Eigenschaften des beteiligten Erregers/Erregerdetails/value
+   * Path: SmICS Befund/SmICS-Ergebnis/Jedes Ereignis/Eigenschaften des beteiligten Erregers/Erregerdetails/Keimzahl
+   * Description: Quantitative Angabe zur Keimzahl, z.B. bei Urinen
    */
   @Path("/items[at0035]/value|magnitude")
   private Double keimzahlMagnitude;
 
   /**
-   * SmICS Befund/SmICS-Ergebnis/Jedes Ereignis/Eigenschaften des beteiligten Erregers/Erregerdetails/value
+   * Path: SmICS Befund/SmICS-Ergebnis/Jedes Ereignis/Eigenschaften des beteiligten Erregers/Erregerdetails/Keimzahl
+   * Description: Quantitative Angabe zur Keimzahl, z.B. bei Urinen
    */
   @Path("/items[at0035]/value|units")
   private String keimzahlUnits;
 
   /**
-   * SmICS Befund/SmICS-Ergebnis/Jedes Ereignis/Eigenschaften des beteiligten Erregers/Erregerdetails/Häufigkeit
+   * Path: SmICS Befund/SmICS-Ergebnis/Jedes Ereignis/Eigenschaften des beteiligten Erregers/Erregerdetails/Häufigkeit
+   * Description: Semiquantitative Angabe zur Keimzahl.
    */
   @Path("/items[at0003]/value")
   private DvOrdinal haufigkeit;
 
   /**
-   * SmICS Befund/SmICS-Ergebnis/Jedes Ereignis/Eigenschaften des beteiligten Erregers/Erregerdetails/Virulenzfaktor
+   * Path: SmICS Befund/SmICS-Ergebnis/Jedes Ereignis/Eigenschaften des beteiligten Erregers/Erregerdetails/Virulenzfaktor
+   * Description: Angabe zu untersuchten
+   *                                                                 Virulenzeigenschaften oder -genen, z.B. PVL bei S. aureus oder EHEC bei E. coli.
+   *                                                             
    */
   @Path("/items[at0016]/value|value")
   private String virulenzfaktorValue;
 
   /**
-   * SmICS Befund/SmICS-Ergebnis/Jedes Ereignis/Eigenschaften des beteiligten Erregers/Erregerdetails/Antibiogramm
+   * Path: SmICS Befund/SmICS-Ergebnis/Jedes Ereignis/Eigenschaften des beteiligten Erregers/Erregerdetails/Antibiogramm
+   * Description: Laborergebnis als Panel/Profil von Einzelresultaten. Verbreitet im medizinischen Labor.
    */
   @Path("/items[openEHR-EHR-CLUSTER.laboratory_test_panel.v0 and name/value='Antibiogramm']")
   private AntibiogrammCluster antibiogramm;
 
   /**
-   * SmICS Befund/SmICS-Ergebnis/Jedes Ereignis/Eigenschaften des beteiligten Erregers/Erregerdetails/Resistenzmechanismus
+   * Path: SmICS Befund/SmICS-Ergebnis/Jedes Ereignis/Eigenschaften des beteiligten Erregers/Erregerdetails/Resistenzmechanismus
+   * Description: Angabe der bei dem Erreger vorliegenden Resistenzmechanismen, z.B. ESBL oder Carbapenemase.
    */
   @Path("/items[at0057]")
   private List<ErregerdetailsResistenzmechanismusCluster> resistenzmechanismus;
 
   /**
-   * SmICS Befund/SmICS-Ergebnis/Jedes Ereignis/Eigenschaften des beteiligten Erregers/Erregerdetails/MRE Klasse
+   * Path: SmICS Befund/SmICS-Ergebnis/Jedes Ereignis/Eigenschaften des beteiligten Erregers/Erregerdetails/MRE Klasse
+   * Description: Angabe zur MRE-Klassifikation des
+   *                                                                 Erregers, z.B. 3MRGN oder 4MRGN. Bei VRE und MRSA kann es zu einer Redundanz zum Resistenzmechanismus "Methicillin-resistenz" kommen, dies ist aber problemlos.
+   *                                                             
    */
   @Path("/items[at0018]/value|defining_code")
   private MreKlasseDefiningCode mreKlasseDefiningCode;
 
   /**
-   * SmICS Befund/SmICS-Ergebnis/Jedes Ereignis/Eigenschaften des beteiligten Erregers/Erregerdetails/Kommentar
+   * Path: SmICS Befund/SmICS-Ergebnis/Jedes Ereignis/Eigenschaften des beteiligten Erregers/Erregerdetails/Kommentar
+   * Description: Zusätzliche Infomationen zum Erreger.
    */
   @Path("/items[at0062]/value|value")
   private String kommentarValue;
 
   /**
-   * SmICS Befund/SmICS-Ergebnis/Jedes Ereignis/Eigenschaften des beteiligten Erregers/Erregerdetails/Weitere Ergänzungen
+   * Path: SmICS Befund/SmICS-Ergebnis/Jedes Ereignis/Eigenschaften des beteiligten Erregers/Erregerdetails/Weitere Ergänzungen
+   * Description: Der Cluster dient dazu, weitere Ergänzungen zum Archetyp Erregerdetails aufzunehmen.
    */
   @Path("/items[at0059]")
   private List<Cluster> weitereErganzungen;
 
   /**
-   * SmICS Befund/SmICS-Ergebnis/Jedes Ereignis/Eigenschaften des beteiligten Erregers/Erregerdetails/feeder_audit
+   * Path: SmICS Befund/SmICS-Ergebnis/Jedes Ereignis/Eigenschaften des beteiligten Erregers/Erregerdetails/feeder_audit
    */
   @Path("/feeder_audit")
   private FeederAudit feederAudit;

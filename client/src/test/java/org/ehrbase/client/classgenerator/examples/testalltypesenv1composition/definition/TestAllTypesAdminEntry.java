@@ -14,30 +14,31 @@ import org.ehrbase.client.classgenerator.shareddefinition.Language;
 @Archetype("openEHR-EHR-ADMIN_ENTRY.test_all_types.v1")
 @Generated(
     value = "org.ehrbase.client.classgenerator.ClassGenerator",
-    date = "2020-12-09T11:37:50.990761700+01:00",
+    date = "2020-12-10T13:06:10.822497300+01:00",
     comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
 )
 public class TestAllTypesAdminEntry implements EntryEntity {
   /**
-   * Test all types/Test all types/section 2/Test all types/count 3
+   * Path: Test all types/Test all types/section 2/Test all types/count 3
+   * Description: *
    */
   @Path("/data[at0001]/item[at0002]/value|magnitude")
   private Long count3Magnitude;
 
   /**
-   * Test all types/Test all types/section 2/Test all types/subject
+   * Path: Test all types/Test all types/section 2/Test all types/subject
    */
   @Path("/subject")
   private PartyProxy subject;
 
   /**
-   * Test all types/Test all types/section 2/Test all types/language
+   * Path: Test all types/Test all types/section 2/Test all types/language
    */
   @Path("/language")
   private Language language;
 
   /**
-   * Test all types/Test all types/section 2/Test all types/feeder_audit
+   * Path: Test all types/Test all types/section 2/Test all types/feeder_audit
    */
   @Path("/feeder_audit")
   private FeederAudit feederAudit;

@@ -18,66 +18,72 @@ import org.ehrbase.client.classgenerator.shareddefinition.Language;
 @Archetype("openEHR-EHR-OBSERVATION.pulse.v1")
 @Generated(
     value = "org.ehrbase.client.classgenerator.ClassGenerator",
-    date = "2020-12-09T11:37:51.659761200+01:00",
+    date = "2020-12-10T13:06:11.551502600+01:00",
     comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
 )
 public class PulseObservation implements EntryEntity {
   /**
-   * open_eREACT-Care/Assessment/NEWS2/Pulse/Any event/Pulse Rate
+   * Path: open_eREACT-Care/Assessment/NEWS2/Pulse/Any event/Pulse Rate
+   * Description: The rate, measured in beats per minute.
    */
   @Path("/data[at0002]/events[at0003]/data[at0001]/items[at0004 and name/value='Pulse Rate']/value|magnitude")
   private Double pulseRateMagnitude;
 
   /**
-   * open_eREACT-Care/Assessment/NEWS2/Pulse/Any event/Pulse Rate
+   * Path: open_eREACT-Care/Assessment/NEWS2/Pulse/Any event/Pulse Rate
+   * Description: The rate, measured in beats per minute.
    */
   @Path("/data[at0002]/events[at0003]/data[at0001]/items[at0004 and name/value='Pulse Rate']/value|units")
   private String pulseRateUnits;
 
   /**
-   * open_eREACT-Care/Assessment/NEWS2/Pulse/Any event/Exertion
+   * Path: open_eREACT-Care/Assessment/NEWS2/Pulse/Any event/Exertion
+   * Description: Details about physical exertion being undertaken during the examination.
    */
   @Path("/data[at0002]/events[at0003]/state[at0012]/items[at1017]")
   private List<Cluster> exertion;
 
   /**
-   * open_eREACT-Care/Assessment/NEWS2/Pulse/Any event/time
+   * Path: open_eREACT-Care/Assessment/NEWS2/Pulse/Any event/time
    */
   @Path("/data[at0002]/events[at0003]/time|value")
   private TemporalAccessor timeValue;
 
   /**
-   * open_eREACT-Care/Assessment/NEWS2/Pulse/origin
+   * Path: open_eREACT-Care/Assessment/NEWS2/Pulse/origin
    */
   @Path("/data[at0002]/origin|value")
   private TemporalAccessor originValue;
 
   /**
-   * open_eREACT-Care/Assessment/NEWS2/Pulse/Device
+   * Path: open_eREACT-Care/Assessment/NEWS2/Pulse/Device
+   * Description: Details about the device used to measure the pulse rate or heart rate.
    */
   @Path("/protocol[at0010]/items[at1013]")
   private Cluster device;
 
   /**
-   * open_eREACT-Care/Assessment/NEWS2/Pulse/Extension
+   * Path: open_eREACT-Care/Assessment/NEWS2/Pulse/Extension
+   * Description: Additional information required to capture local content or to align with other reference models/formalisms.
+   * Comment: For example: local information requirements or additional metadata to align with FHIR or CIMI equivalents.
    */
   @Path("/protocol[at0010]/items[at1056]")
   private List<Cluster> extension;
 
   /**
-   * open_eREACT-Care/Assessment/NEWS2/Pulse/subject
+   * Path: open_eREACT-Care/Assessment/NEWS2/Pulse/subject
    */
   @Path("/subject")
   private PartyProxy subject;
 
   /**
-   * open_eREACT-Care/Assessment/NEWS2/Pulse/language
+   * Path: open_eREACT-Care/Assessment/NEWS2/Pulse/language
    */
   @Path("/language")
   private Language language;
 
   /**
-   * open_eREACT-Care/Assessment/NEWS2/Pulse/feeder_audit
+   * Path: open_eREACT-Care/Assessment/NEWS2/Pulse/feeder_audit
    */
   @Path("/feeder_audit")
   private FeederAudit feederAudit;

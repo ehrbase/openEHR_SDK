@@ -15,54 +15,59 @@ import org.ehrbase.client.classgenerator.shareddefinition.Language;
 @Archetype("openEHR-EHR-ADMIN_ENTRY.hospitalization.v0")
 @Generated(
     value = "org.ehrbase.client.classgenerator.ClassGenerator",
-    date = "2020-12-09T11:37:52.903763200+01:00",
+    date = "2020-12-10T13:06:12.896030200+01:00",
     comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
 )
 public class VersorgungsortAdminEntry implements EntryEntity {
   /**
-   * Patientenaufenthalt/Versorgungsort/Beginn
+   * Path: Patientenaufenthalt/Versorgungsort/Beginn
+   * Description: Zeitlicher Beginn des Aufenthaltes am beschriebenen Ort.
    */
   @Path("/data[at0001]/items[at0004]/value|value")
   private TemporalAccessor beginnValue;
 
   /**
-   * Patientenaufenthalt/Versorgungsort/Ende
+   * Path: Patientenaufenthalt/Versorgungsort/Ende
+   * Description: Zeitliches Ende des Aufenthaltes am beschriebenen Ort.
    */
   @Path("/data[at0001]/items[at0005]/value|value")
   private TemporalAccessor endeValue;
 
   /**
-   * Patientenaufenthalt/Versorgungsort/Grund des Aufenthaltes
+   * Path: Patientenaufenthalt/Versorgungsort/Grund des Aufenthaltes
+   * Description: Grund des Aufenthaltes
    */
   @Path("/data[at0001]/items[at0006]/value|value")
   private String grundDesAufenthaltesValue;
 
   /**
-   * Patientenaufenthalt/Versorgungsort/Standort
+   * Path: Patientenaufenthalt/Versorgungsort/Standort
+   * Description: Standort umfasst sowohl beiläufige Orte (ein Ort, der für die medizinische Versorgung ohne vorherige Benennung oder Genehmigung genutzt wird) als auch spezielle, offiziell benannte Orte. Die Standorte können privat, öffentlich, mobil oder stationär sein.
    */
   @Path("/data[at0001]/items[openEHR-EHR-CLUSTER.location.v1]")
   private StandortCluster standort;
 
   /**
-   * Patientenaufenthalt/Versorgungsort/Kommentar
+   * Path: Patientenaufenthalt/Versorgungsort/Kommentar
+   * Description: Zusätzliche Kommentare.
    */
   @Path("/data[at0001]/items[at0009]/value|value")
   private String kommentarValue;
 
   /**
-   * Patientenaufenthalt/Versorgungsort/subject
+   * Path: Patientenaufenthalt/Versorgungsort/subject
    */
   @Path("/subject")
   private PartyProxy subject;
 
   /**
-   * Patientenaufenthalt/Versorgungsort/language
+   * Path: Patientenaufenthalt/Versorgungsort/language
    */
   @Path("/language")
   private Language language;
 
   /**
-   * Patientenaufenthalt/Versorgungsort/feeder_audit
+   * Path: Patientenaufenthalt/Versorgungsort/feeder_audit
    */
   @Path("/feeder_audit")
   private FeederAudit feederAudit;

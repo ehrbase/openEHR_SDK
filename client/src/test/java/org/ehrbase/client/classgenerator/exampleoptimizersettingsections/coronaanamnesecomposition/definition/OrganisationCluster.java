@@ -14,48 +14,54 @@ import org.ehrbase.client.classgenerator.interfaces.LocatableEntity;
 @Archetype("openEHR-EHR-CLUSTER.organisation_cc.v0")
 @Generated(
     value = "org.ehrbase.client.classgenerator.ClassGenerator",
-    date = "2020-12-10T09:57:06.127358400+01:00",
+    date = "2020-12-10T13:06:13.472033300+01:00",
     comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
 )
 public class OrganisationCluster implements LocatableEntity {
   /**
-   * Bericht/Allgemeine Angaben/Gesundheitsbezogener Beruf/Beschäftigung/Organisation/Identifier
+   * Path: Bericht/Allgemeine Angaben/Gesundheitsbezogener Beruf/Beschäftigung/Organisation/Identifier
+   * Description: Die Kennung(en) der Organisation.
    */
   @Path("/items[at0018]")
   private List<Cluster> identifier;
 
   /**
-   * Bericht/Allgemeine Angaben/Gesundheitsbezogener Beruf/Beschäftigung/Organisation/Name der Einrichtung
+   * Path: Bericht/Allgemeine Angaben/Gesundheitsbezogener Beruf/Beschäftigung/Organisation/Name der Einrichtung
+   * Description: Der Name, der der Organisation zugeordnet ist.
    */
   @Path("/items[at0012 and name/value='Name der Einrichtung']/value|value")
   private String nameDerEinrichtungValue;
 
   /**
-   * Bericht/Allgemeine Angaben/Gesundheitsbezogener Beruf/Beschäftigung/Organisation/Telefon
+   * Path: Bericht/Allgemeine Angaben/Gesundheitsbezogener Beruf/Beschäftigung/Organisation/Telefon
+   * Description: Kontaktdaten für die Organisation.
    */
   @Path("/items[at0014]")
   private List<Cluster> telefon;
 
   /**
-   * Bericht/Allgemeine Angaben/Gesundheitsbezogener Beruf/Beschäftigung/Organisation/Adresse
+   * Path: Bericht/Allgemeine Angaben/Gesundheitsbezogener Beruf/Beschäftigung/Organisation/Adresse
+   * Description: Details zur Adresse abgestimmt mit FHIR-Ressource.
    */
   @Path("/items[openEHR-EHR-CLUSTER.address_cc.v0]")
   private List<AdresseCluster> adresse;
 
   /**
-   * Bericht/Allgemeine Angaben/Gesundheitsbezogener Beruf/Beschäftigung/Organisation/Teil von
+   * Path: Bericht/Allgemeine Angaben/Gesundheitsbezogener Beruf/Beschäftigung/Organisation/Teil von
+   * Description: Die Organisation, zu der diese Organisation gehört.
    */
   @Path("/items[at0017]")
   private List<Cluster> teilVon;
 
   /**
-   * Bericht/Allgemeine Angaben/Gesundheitsbezogener Beruf/Beschäftigung/Organisation/Kontakt
+   * Path: Bericht/Allgemeine Angaben/Gesundheitsbezogener Beruf/Beschäftigung/Organisation/Kontakt
+   * Description: Ansprechpartner für die Organisation für einen bestimmten Zweck.
    */
   @Path("/items[at0016]")
   private List<Cluster> kontakt;
 
   /**
-   * Bericht/Allgemeine Angaben/Gesundheitsbezogener Beruf/Beschäftigung/Organisation/feeder_audit
+   * Path: Bericht/Allgemeine Angaben/Gesundheitsbezogener Beruf/Beschäftigung/Organisation/feeder_audit
    */
   @Path("/feeder_audit")
   private FeederAudit feederAudit;

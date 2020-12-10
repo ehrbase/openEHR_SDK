@@ -17,66 +17,72 @@ import org.ehrbase.client.classgenerator.shareddefinition.Language;
 @Archetype("openEHR-EHR-INSTRUCTION.service_request.v1")
 @Generated(
     value = "org.ehrbase.client.classgenerator.ClassGenerator",
-    date = "2020-12-09T11:37:51.681762500+01:00",
+    date = "2020-12-10T13:06:11.588500300+01:00",
     comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
 )
 public class ServiceRequestInstruction implements EntryEntity {
   /**
-   * open_eREACT-Care/Response/Service request/Current Activity
+   * Path: open_eREACT-Care/Response/Service request/Current Activity
+   * Description: Current Activity.
    */
   @Path("/activities[at0001]")
   private List<ServiceRequestCurrentActivityActivity> currentActivity;
 
   /**
-   * open_eREACT-Care/Response/Service request/Requester
+   * Path: open_eREACT-Care/Response/Service request/Requester
+   * Description: Details about the clinician or organisation requesting the service.
    */
   @Path("/protocol[at0008]/items[at0141]")
   private Cluster requester;
 
   /**
-   * open_eREACT-Care/Response/Service request/Receiver
+   * Path: open_eREACT-Care/Response/Service request/Receiver
+   * Description: Details about the clinician or organisation receiving the request for service.
    */
   @Path("/protocol[at0008]/items[at0142]")
   private Cluster receiver;
 
   /**
-   * open_eREACT-Care/Response/Service request/Distribution list
+   * Path: open_eREACT-Care/Response/Service request/Distribution list
+   * Description: Details of additional clinicians, organisations or agencies who require copies of any communication.
    */
   @Path("/protocol[at0008]/items[at0128]")
   private List<Cluster> distributionList;
 
   /**
-   * open_eREACT-Care/Response/Service request/Extension
+   * Path: open_eREACT-Care/Response/Service request/Extension
+   * Description: Additional information required to capture local content or to align with other reference models/formalisms.
+   * Comment: For example: local information requirements or additional metadata to align with FHIR or CIMI equivalents.
    */
   @Path("/protocol[at0008]/items[at0112]")
   private List<Cluster> extension;
 
   /**
-   * open_eREACT-Care/Response/Service request/subject
+   * Path: open_eREACT-Care/Response/Service request/subject
    */
   @Path("/subject")
   private PartyProxy subject;
 
   /**
-   * open_eREACT-Care/Response/Service request/narrative
+   * Path: open_eREACT-Care/Response/Service request/narrative
    */
   @Path("/narrative|value")
   private String narrativeValue;
 
   /**
-   * open_eREACT-Care/Response/Service request/language
+   * Path: open_eREACT-Care/Response/Service request/language
    */
   @Path("/language")
   private Language language;
 
   /**
-   * open_eREACT-Care/Response/Service request/feeder_audit
+   * Path: open_eREACT-Care/Response/Service request/feeder_audit
    */
   @Path("/feeder_audit")
   private FeederAudit feederAudit;
 
   /**
-   * open_eREACT-Care/Response/Service request/expiry_time
+   * Path: open_eREACT-Care/Response/Service request/expiry_time
    */
   @Path("/expiry_time|value")
   private TemporalAccessor expiryTimeValue;

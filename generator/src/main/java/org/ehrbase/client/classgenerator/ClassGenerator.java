@@ -581,7 +581,7 @@ public class ClassGenerator {
             .addAnnotation(
                 AnnotationSpec.builder(Path.class).addMember(Path.VALUE, "$S", path).build())
             .addModifiers(Modifier.PRIVATE)
-            .addJavadoc(buildFieldJavadoc(context, node));
+            .addJavadoc(defaultNamingStrategy.buildFieldJavadoc(context, node));
 
     if (addChoiceAnnotation) {
       builder.addAnnotation(Choice.class);
@@ -594,27 +594,7 @@ public class ClassGenerator {
     classBuilder.addMethod(buildGetter(fieldSpec, false));
   }
 
-  private String buildFieldJavadoc(ClassGeneratorContext context, WebTemplateNode node) {
-    StringJoiner joiner = new StringJoiner("/");
-    for (Iterator<WebTemplateNode> it = context.unFilteredNodeDeque.descendingIterator();
-        it.hasNext(); ) {
-      WebTemplateNode n = it.next();
-      if (!List.of(
-                      "HISTORY",
-                      "ITEM_TREE",
-                      "ITEM_LIST",
-                      "ITEM_SINGLE",
-                      "ITEM_TABLE",
-                      "ITEM_STRUCTURE")
-                  .contains(n.getRmType())
-              && (!n.getRmType().equals("ELEMENT"))
-          || node.getName().equals("null_flavour")) {
-        joiner.add(n.getName());
-      }
-    }
-    joiner.add(node.getName());
-    return joiner.toString();
-  }
+
 
   private TypeSpec buildEnumValueSet(
       ClassGeneratorContext context, WebTemplateNode node, ValueSet valueSet) {

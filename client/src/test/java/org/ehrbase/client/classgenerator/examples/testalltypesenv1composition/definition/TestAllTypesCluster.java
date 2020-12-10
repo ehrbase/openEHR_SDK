@@ -12,18 +12,19 @@ import org.ehrbase.client.classgenerator.interfaces.LocatableEntity;
 @Archetype("openEHR-EHR-CLUSTER.test_all_types.v1")
 @Generated(
     value = "org.ehrbase.client.classgenerator.ClassGenerator",
-    date = "2020-12-09T11:37:50.986760500+01:00",
+    date = "2020-12-10T13:06:10.818494500+01:00",
     comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
 )
 public class TestAllTypesCluster implements LocatableEntity {
   /**
-   * Test all types/Test all types/section 2/section 3/Test all types/Test all types/cluster 5/cluster 6/boolean 2
+   * Path: Test all types/Test all types/section 2/section 3/Test all types/Test all types/cluster 5/cluster 6/boolean 2
+   * Description: *
    */
   @Path("/items[at0001]/items[at0002]/items[at0003]/value|value")
   private Boolean boolean2Value;
 
   /**
-   * Test all types/Test all types/section 2/section 3/Test all types/Test all types/feeder_audit
+   * Path: Test all types/Test all types/section 2/section 3/Test all types/Test all types/feeder_audit
    */
   @Path("/feeder_audit")
   private FeederAudit feederAudit;

@@ -18,72 +18,82 @@ import org.ehrbase.client.classgenerator.shareddefinition.Language;
 @Archetype("openEHR-EHR-EVALUATION.problem_diagnosis_covid.v1")
 @Generated(
     value = "org.ehrbase.client.classgenerator.ClassGenerator",
-    date = "2020-12-09T11:37:52.640762+01:00",
+    date = "2020-12-10T13:06:12.623062200+01:00",
     comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
 )
 public class ProblemDiganoseCoronovirusEvaluation implements EntryEntity {
   /**
-   * Bericht/Allgemeine Angaben/Problem/Diganose Coronovirus/Name des Problems/ der Diagnose
+   * Path: Bericht/Allgemeine Angaben/Problem/Diganose Coronovirus/Name des Problems/ der Diagnose
+   * Description: Namentliche Identifikation des Problems oder der Diagnose.
    */
   @Path("/data[at0001]/items[at0002]/value|value")
   private String nameDesProblemsDerDiagnoseValue;
 
   /**
-   * Bericht/Allgemeine Angaben/Problem/Diganose Coronovirus/Anatomische Stelle (strukturiert)
+   * Path: Bericht/Allgemeine Angaben/Problem/Diganose Coronovirus/Anatomische Stelle (strukturiert)
+   * Description: Eine strukturierte anatomische Lokalisation des Problems oder der Diagnose.
+   * Comment: Verwenden Sie diesen SLOT, um die Archetypen CLUSTER.anatomical_location oder CLUSTER.relative_location einzufügen, wenn die Anforderungen für die Aufnahme der anatomischen Position zur Laufzeit der Anwendung bestimmt werden oder komplexere Modellierungen wie z.B. relative Positionen erforderlich sind. Ist die anatomische Lokalisation über präkoordinierte Codes im Namen des Problems/Diagnose enthalten, wird die Verwendung dieses SLOT überflüssig.
    */
   @Path("/data[at0001]/items[at0039]")
   private List<Cluster> anatomischeStelleStrukturiert;
 
   /**
-   * Bericht/Allgemeine Angaben/Problem/Diganose Coronovirus/Spezifische Angaben
+   * Path: Bericht/Allgemeine Angaben/Problem/Diganose Coronovirus/Spezifische Angaben
+   * Description: Zusätzlich benötigte Angaben, welche als eindeutige Merkmale des Problem/der Diagnose erfasst werden sollten.
+   * Comment: Hier können strukturierte Angaben über die Einstufung oder das Stadium der Diagnose enthalten sein; diagnostische Kriterien, Klassifizierungskriterien oder formale Bewertungen des Schweregrades wie z.B. "Common Terminology Criteria for Adverse Events".
    */
   @Path("/data[at0001]/items[at0043]")
   private List<Cluster> spezifischeAngaben;
 
   /**
-   * Bericht/Allgemeine Angaben/Problem/Diganose Coronovirus/Status
+   * Path: Bericht/Allgemeine Angaben/Problem/Diganose Coronovirus/Status
+   * Description: Kontextuelles oder zeitliches Attribut für ein spezifisches Problem oder eine spezifische Diagnose.
    */
   @Path("/data[at0001]/items[openEHR-EHR-CLUSTER.problem_qualifier.v1 and name/value='Status']")
   private StatusCluster status;
 
   /**
-   * Bericht/Allgemeine Angaben/Problem/Diganose Coronovirus/Kommentar
+   * Path: Bericht/Allgemeine Angaben/Problem/Diganose Coronovirus/Kommentar
+   * Description: Ergänzende Beschreibung des Problems oder der Diagnose, die nicht anderweitig erfasst wurde.
    */
   @Path("/data[at0001]/items[at0069]/value|value")
   private String kommentarValue;
 
   /**
-   * Bericht/Allgemeine Angaben/Problem/Diganose Coronovirus/Zuletzt aktualisiert
+   * Path: Bericht/Allgemeine Angaben/Problem/Diganose Coronovirus/Zuletzt aktualisiert
+   * Description: Datum der letzten Aktualisierung der Diagnose bzw. des Problems.
    */
   @Path("/protocol[at0032]/items[at0070]/value|value")
   private TemporalAccessor zuletztAktualisiertValue;
 
   /**
-   * Bericht/Allgemeine Angaben/Problem/Diganose Coronovirus/Erweiterung
+   * Path: Bericht/Allgemeine Angaben/Problem/Diganose Coronovirus/Erweiterung
+   * Description: Zusätzliche Informationen zur Erfassung lokaler Inhalte oder Anpassung an andere Referenzmodelle/Formalismen.
+   * Comment: Zum Beispiel: Lokaler Informationsbedarf oder zusätzliche Metadaten zur Anpassung an FHIR-Ressourcen oder CIMI-Modelle.
    */
   @Path("/protocol[at0032]/items[at0071]")
   private List<Cluster> erweiterung;
 
   /**
-   * Bericht/Allgemeine Angaben/Problem/Diganose Coronovirus/subject
+   * Path: Bericht/Allgemeine Angaben/Problem/Diganose Coronovirus/subject
    */
   @Path("/subject")
   private PartyProxy subject;
 
   /**
-   * Bericht/Allgemeine Angaben/Problem/Diganose Coronovirus/language
+   * Path: Bericht/Allgemeine Angaben/Problem/Diganose Coronovirus/language
    */
   @Path("/language")
   private Language language;
 
   /**
-   * Bericht/Allgemeine Angaben/Problem/Diganose Coronovirus/feeder_audit
+   * Path: Bericht/Allgemeine Angaben/Problem/Diganose Coronovirus/feeder_audit
    */
   @Path("/feeder_audit")
   private FeederAudit feederAudit;
 
   /**
-   * Bericht/Allgemeine Angaben/Problem/Diganose Coronovirus/value
+   * Path: Bericht/Allgemeine Angaben/Problem/Diganose Coronovirus/value
    */
   @Path("/data[at0001]/items[at0073]/value")
   @Choice

@@ -12,18 +12,19 @@ import org.ehrbase.client.classgenerator.interfaces.LocatableEntity;
 @Archetype("openEHR-EHR-CLUSTER.case_identification.v0")
 @Generated(
     value = "org.ehrbase.client.classgenerator.ClassGenerator",
-    date = "2020-12-09T11:37:52.902762200+01:00",
+    date = "2020-12-10T13:06:12.892029300+01:00",
     comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
 )
 public class AbteilungsfallCluster implements LocatableEntity {
   /**
-   * Patientenaufenthalt/context/Abteilungsfall/Zugehörige Abteilungsfall-Kennung
+   * Path: Patientenaufenthalt/context/Abteilungsfall/Zugehörige Abteilungsfall-Kennung
+   * Description: Der Bezeichner/die Kennung dieses Falls.
    */
   @Path("/items[at0001 and name/value='Zugehörige Abteilungsfall-Kennung']/value|value")
   private String zugehorigeAbteilungsfallKennungValue;
 
   /**
-   * Patientenaufenthalt/context/Abteilungsfall/feeder_audit
+   * Path: Patientenaufenthalt/context/Abteilungsfall/feeder_audit
    */
   @Path("/feeder_audit")
   private FeederAudit feederAudit;

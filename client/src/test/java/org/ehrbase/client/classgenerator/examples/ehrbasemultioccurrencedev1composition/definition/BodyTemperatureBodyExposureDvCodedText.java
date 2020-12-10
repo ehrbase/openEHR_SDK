@@ -9,13 +9,13 @@ import org.ehrbase.client.classgenerator.interfaces.RMEntity;
 @Entity
 @Generated(
     value = "org.ehrbase.client.classgenerator.ClassGenerator",
-    date = "2020-12-09T11:37:51.165759900+01:00",
+    date = "2020-12-10T13:06:11.016497700+01:00",
     comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
 )
 @OptionFor("DV_CODED_TEXT")
 public class BodyTemperatureBodyExposureDvCodedText implements RMEntity, BodyTemperatureBodyExposureChoice {
   /**
-   * Encounter/Body temperature/Any event/value/value
+   * Path: Encounter/Body temperature/Any event/value/value
    */
   @Path("|defining_code")
   private BodyExposureDefiningCode bodyExposureDefiningCode;

@@ -14,30 +14,34 @@ import org.ehrbase.client.classgenerator.interfaces.LocatableEntity;
 @Archetype("openEHR-EHR-CLUSTER.occupation_record.v1")
 @Generated(
     value = "org.ehrbase.client.classgenerator.ClassGenerator",
-    date = "2020-12-10T09:57:06.125355100+01:00",
+    date = "2020-12-10T13:06:13.470033300+01:00",
     comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
 )
 public class BeschaeftigungCluster implements LocatableEntity {
   /**
-   * Bericht/Allgemeine Angaben/Gesundheitsbezogener Beruf/Beschäftigung/Berufsbezeichnung/Rolle
+   * Path: Bericht/Allgemeine Angaben/Gesundheitsbezogener Beruf/Beschäftigung/Berufsbezeichnung/Rolle
+   * Description: Die Hauptberufsbezeichnung oder die Rolle der Person.
    */
   @Path("/items[at0005]/value|value")
   private String berufsbezeichnungRolleValue;
 
   /**
-   * Bericht/Allgemeine Angaben/Gesundheitsbezogener Beruf/Beschäftigung/Organisation
+   * Path: Bericht/Allgemeine Angaben/Gesundheitsbezogener Beruf/Beschäftigung/Organisation
+   * Description: Mit FHIR-Ressource abgestimmt Details zur Organisation.
    */
   @Path("/items[openEHR-EHR-CLUSTER.organisation_cc.v0]")
   private List<OrganisationCluster> organisation;
 
   /**
-   * Bericht/Allgemeine Angaben/Gesundheitsbezogener Beruf/Beschäftigung/Zusätzliche Angaben
+   * Path: Bericht/Allgemeine Angaben/Gesundheitsbezogener Beruf/Beschäftigung/Zusätzliche Angaben
+   * Description: Weitere Angaben zu einer Beschäftigung.
+   * Comment: Zum Beispiel: Standort und Bedingungen am Arbeitsplatz oder Kampfzonenerfahrung.
    */
   @Path("/items[at0018]")
   private List<Cluster> zusaetzlicheAngaben;
 
   /**
-   * Bericht/Allgemeine Angaben/Gesundheitsbezogener Beruf/Beschäftigung/feeder_audit
+   * Path: Bericht/Allgemeine Angaben/Gesundheitsbezogener Beruf/Beschäftigung/feeder_audit
    */
   @Path("/feeder_audit")
   private FeederAudit feederAudit;

@@ -17,78 +17,87 @@ import org.ehrbase.client.classgenerator.shareddefinition.Language;
 @Archetype("openEHR-EHR-OBSERVATION.pulse_oximetry.v1")
 @Generated(
     value = "org.ehrbase.client.classgenerator.ClassGenerator",
-    date = "2020-12-09T11:37:51.655760900+01:00",
+    date = "2020-12-10T13:06:11.543500900+01:00",
     comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
 )
 public class PulseOximetryObservation implements EntryEntity {
   /**
-   * open_eREACT-Care/Assessment/NEWS2/Pulse oximetry/Any event/SpO₂
+   * Path: open_eREACT-Care/Assessment/NEWS2/Pulse oximetry/Any event/SpO₂
+   * Description: The saturation of oxygen in the peripheral blood, measured via pulse oximetry.
    */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0006]/value")
   private DvProportion spo;
 
   /**
-   * open_eREACT-Care/Assessment/NEWS2/Pulse oximetry/Any event/Waveform
+   * Path: open_eREACT-Care/Assessment/NEWS2/Pulse oximetry/Any event/Waveform
+   * Description: A waveform reading associated with the oximetry measurement.
    */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0054]")
   private List<Cluster> waveform;
 
   /**
-   * open_eREACT-Care/Assessment/NEWS2/Pulse oximetry/Any event/Multimedia image
+   * Path: open_eREACT-Care/Assessment/NEWS2/Pulse oximetry/Any event/Multimedia image
+   * Description: Details of a series of oximetry readings, other than waveforms, expressed as a multimedia image or series of images. Waveforms should be recorded using the Waveform slot and associated cluster archetype.
    */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0060]")
   private List<Cluster> multimediaImage;
 
   /**
-   * open_eREACT-Care/Assessment/NEWS2/Pulse oximetry/Any event/Exertion
+   * Path: open_eREACT-Care/Assessment/NEWS2/Pulse oximetry/Any event/Exertion
+   * Description: Details about physical activity undertaken at the time of measurement.
    */
   @Path("/data[at0001]/events[at0002]/state[at0014]/items[at0034]")
   private Cluster exertion;
 
   /**
-   * open_eREACT-Care/Assessment/NEWS2/Pulse oximetry/Any event/Inspired oxygen
+   * Path: open_eREACT-Care/Assessment/NEWS2/Pulse oximetry/Any event/Inspired oxygen
+   * Description: Details of the amount of oxygen available to the subject at the time of observation.
+   * Comment: Assumed values of 21% oxygen concentration, Fi0₂ of 0.21 and oxygen flow rate of 0 l/min or 0 ml/min.
    */
   @Path("/data[at0001]/events[at0002]/state[at0014]/items[at0015]")
   private Cluster inspiredOxygen;
 
   /**
-   * open_eREACT-Care/Assessment/NEWS2/Pulse oximetry/Any event/time
+   * Path: open_eREACT-Care/Assessment/NEWS2/Pulse oximetry/Any event/time
    */
   @Path("/data[at0001]/events[at0002]/time|value")
   private TemporalAccessor timeValue;
 
   /**
-   * open_eREACT-Care/Assessment/NEWS2/Pulse oximetry/origin
+   * Path: open_eREACT-Care/Assessment/NEWS2/Pulse oximetry/origin
    */
   @Path("/data[at0001]/origin|value")
   private TemporalAccessor originValue;
 
   /**
-   * open_eREACT-Care/Assessment/NEWS2/Pulse oximetry/Oximetry device
+   * Path: open_eREACT-Care/Assessment/NEWS2/Pulse oximetry/Oximetry device
+   * Description: Details of the non-invasive oximetry device used.
    */
   @Path("/protocol[at0007]/items[at0018]")
   private Cluster oximetryDevice;
 
   /**
-   * open_eREACT-Care/Assessment/NEWS2/Pulse oximetry/Extension
+   * Path: open_eREACT-Care/Assessment/NEWS2/Pulse oximetry/Extension
+   * Description: Additional information required to capture local context or to align with other reference models/formalisms.
+   * Comment: e.g. Local hospital departmental infomation or additional metadata to align with HL7 or CDISC equivalents.
    */
   @Path("/protocol[at0007]/items[at0059]")
   private List<Cluster> extension;
 
   /**
-   * open_eREACT-Care/Assessment/NEWS2/Pulse oximetry/subject
+   * Path: open_eREACT-Care/Assessment/NEWS2/Pulse oximetry/subject
    */
   @Path("/subject")
   private PartyProxy subject;
 
   /**
-   * open_eREACT-Care/Assessment/NEWS2/Pulse oximetry/language
+   * Path: open_eREACT-Care/Assessment/NEWS2/Pulse oximetry/language
    */
   @Path("/language")
   private Language language;
 
   /**
-   * open_eREACT-Care/Assessment/NEWS2/Pulse oximetry/feeder_audit
+   * Path: open_eREACT-Care/Assessment/NEWS2/Pulse oximetry/feeder_audit
    */
   @Path("/feeder_audit")
   private FeederAudit feederAudit;

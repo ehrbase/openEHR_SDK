@@ -17,54 +17,56 @@ import org.ehrbase.client.classgenerator.shareddefinition.Language;
 @Archetype("openEHR-EHR-INSTRUCTION.test_all_types.v1")
 @Generated(
     value = "org.ehrbase.client.classgenerator.ClassGenerator",
-    date = "2020-12-09T11:37:50.983760100+01:00",
+    date = "2020-12-10T13:06:10.813499700+01:00",
     comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
 )
 public class TestAllTypesInstruction implements EntryEntity {
   /**
-   * Test all types/Test all types/section 2/section 3/Test all types/Current Activity/partial date
+   * Path: Test all types/Test all types/section 2/section 3/Test all types/Current Activity/partial date
+   * Description: *
    */
   @Path("/activities[at0001]/description[at0002]/items[at0003]/value|value")
   private Temporal partialDateValue;
 
   /**
-   * Test all types/Test all types/section 2/section 3/Test all types/Current Activity/partial datetime
+   * Path: Test all types/Test all types/section 2/section 3/Test all types/Current Activity/partial datetime
+   * Description: *
    */
   @Path("/activities[at0001]/description[at0002]/items[at0004]/value|value")
   private TemporalAccessor partialDatetimeValue;
 
   /**
-   * Test all types/Test all types/section 2/section 3/Test all types/Current Activity/timing
+   * Path: Test all types/Test all types/section 2/section 3/Test all types/Current Activity/timing
    */
   @Path("/activities[at0001]/timing")
   private DvParsable timing;
 
   /**
-   * Test all types/Test all types/section 2/section 3/Test all types/subject
+   * Path: Test all types/Test all types/section 2/section 3/Test all types/subject
    */
   @Path("/subject")
   private PartyProxy subject;
 
   /**
-   * Test all types/Test all types/section 2/section 3/Test all types/narrative
+   * Path: Test all types/Test all types/section 2/section 3/Test all types/narrative
    */
   @Path("/narrative|value")
   private String narrativeValue;
 
   /**
-   * Test all types/Test all types/section 2/section 3/Test all types/language
+   * Path: Test all types/Test all types/section 2/section 3/Test all types/language
    */
   @Path("/language")
   private Language language;
 
   /**
-   * Test all types/Test all types/section 2/section 3/Test all types/feeder_audit
+   * Path: Test all types/Test all types/section 2/section 3/Test all types/feeder_audit
    */
   @Path("/feeder_audit")
   private FeederAudit feederAudit;
 
   /**
-   * Test all types/Test all types/section 2/section 3/Test all types/expiry_time
+   * Path: Test all types/Test all types/section 2/section 3/Test all types/expiry_time
    */
   @Path("/expiry_time|value")
   private TemporalAccessor expiryTimeValue;

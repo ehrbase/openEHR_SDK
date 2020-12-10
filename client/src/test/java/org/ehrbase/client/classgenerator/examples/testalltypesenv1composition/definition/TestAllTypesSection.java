@@ -12,30 +12,33 @@ import org.ehrbase.client.classgenerator.interfaces.LocatableEntity;
 @Archetype("openEHR-EHR-SECTION.test_all_types.v1")
 @Generated(
     value = "org.ehrbase.client.classgenerator.ClassGenerator",
-    date = "2020-12-09T11:37:50.982759400+01:00",
+    date = "2020-12-10T13:06:10.812496900+01:00",
     comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
 )
 public class TestAllTypesSection implements LocatableEntity {
   /**
-   * Test all types/Test all types/section 2/section 3/Test all types
+   * Path: Test all types/Test all types/section 2/section 3/Test all types
+   * Description: unknown
    */
   @Path("/items[at0001]/items[at0002]/items[openEHR-EHR-INSTRUCTION.test_all_types.v1]")
   private List<TestAllTypesInstruction> section3TestAllTypes;
 
   /**
-   * Test all types/Test all types/section 2/section 3/Test all types
+   * Path: Test all types/Test all types/section 2/section 3/Test all types
+   * Description: unknown
    */
   @Path("/items[at0001]/items[at0002]/items[openEHR-EHR-ACTION.test_all_types.v1]")
   private List<TestAllTypesAction> section3TestAllTypes2;
 
   /**
-   * Test all types/Test all types/section 2/Test all types
+   * Path: Test all types/Test all types/section 2/Test all types
+   * Description: unknown
    */
   @Path("/items[at0001]/items[openEHR-EHR-ADMIN_ENTRY.test_all_types.v1]")
   private List<TestAllTypesAdminEntry> section2TestAllTypes;
 
   /**
-   * Test all types/Test all types/feeder_audit
+   * Path: Test all types/Test all types/feeder_audit
    */
   @Path("/feeder_audit")
   private FeederAudit feederAudit;

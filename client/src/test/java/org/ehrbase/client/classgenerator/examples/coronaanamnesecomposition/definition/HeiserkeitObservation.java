@@ -17,60 +17,65 @@ import org.ehrbase.client.classgenerator.shareddefinition.Language;
 @Archetype("openEHR-EHR-OBSERVATION.symptom_sign_screening.v0")
 @Generated(
     value = "org.ehrbase.client.classgenerator.ClassGenerator",
-    date = "2020-12-09T11:37:52.574763400+01:00",
+    date = "2020-12-10T13:06:12.514028800+01:00",
     comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
 )
 public class HeiserkeitObservation implements EntryEntity {
   /**
-   * Bericht/Symptome/Heiserkeit/Beliebiges Ereignis/Spezifisches Symptom/Anzeichen/Bezeichnung des Symptoms oder Anzeichens.
+   * Path: Bericht/Symptome/Heiserkeit/Beliebiges Ereignis/Spezifisches Symptom/Anzeichen/Bezeichnung des Symptoms oder Anzeichens.
+   * Description: Name des Symptoms oder Anzeichens, das geprüft wird.
    */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0022]/items[at0004]/value|value")
   private String bezeichnungDesSymptomsOderAnzeichensValue;
 
   /**
-   * Bericht/Symptome/Heiserkeit/Beliebiges Ereignis/Spezifisches Symptom/Anzeichen/Vorhanden?
+   * Path: Bericht/Symptome/Heiserkeit/Beliebiges Ereignis/Spezifisches Symptom/Anzeichen/Vorhanden?
+   * Description: Das Symptom oder Anzeichen ist vorhanden.
    */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0022]/items[at0005]/value|defining_code")
   private VorhandenDefiningCode vorhandenDefiningCode;
 
   /**
-   * Bericht/Symptome/Heiserkeit/Beliebiges Ereignis/Spezifisches Symptom/Anzeichen/Detaillierte Angaben zum Symptom/Anzeichen
+   * Path: Bericht/Symptome/Heiserkeit/Beliebiges Ereignis/Spezifisches Symptom/Anzeichen/Detaillierte Angaben zum Symptom/Anzeichen
+   * Description: Zusätzliche strukturierte Informationen zu einem bestimmten Symptom oder Anzeichen.
    */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0022]/items[at0026]")
   private List<Cluster> detaillierteAngabenZumSymptomAnzeichen;
 
   /**
-   * Bericht/Symptome/Heiserkeit/Beliebiges Ereignis/time
+   * Path: Bericht/Symptome/Heiserkeit/Beliebiges Ereignis/time
    */
   @Path("/data[at0001]/events[at0002]/time|value")
   private TemporalAccessor timeValue;
 
   /**
-   * Bericht/Symptome/Heiserkeit/origin
+   * Path: Bericht/Symptome/Heiserkeit/origin
    */
   @Path("/data[at0001]/origin|value")
   private TemporalAccessor originValue;
 
   /**
-   * Bericht/Symptome/Heiserkeit/Erweiterung
+   * Path: Bericht/Symptome/Heiserkeit/Erweiterung
+   * Description: Zusätzliche Informationen zur Erfassung lokaler Inhalte oder Anpassung an andere Referenzmodelle/Formalismen.
+   * Comment: Zum Beispiel: Lokaler Informationsbedarf oder zusätzliche Metadaten zur Anpassung an FHIR-Ressourcen oder CIMI-Modelle.
    */
   @Path("/protocol[at0007]/items[at0021]")
   private List<Cluster> erweiterung;
 
   /**
-   * Bericht/Symptome/Heiserkeit/subject
+   * Path: Bericht/Symptome/Heiserkeit/subject
    */
   @Path("/subject")
   private PartyProxy subject;
 
   /**
-   * Bericht/Symptome/Heiserkeit/language
+   * Path: Bericht/Symptome/Heiserkeit/language
    */
   @Path("/language")
   private Language language;
 
   /**
-   * Bericht/Symptome/Heiserkeit/feeder_audit
+   * Path: Bericht/Symptome/Heiserkeit/feeder_audit
    */
   @Path("/feeder_audit")
   private FeederAudit feederAudit;

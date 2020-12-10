@@ -19,66 +19,72 @@ import org.ehrbase.client.classgenerator.shareddefinition.Language;
 @Archetype("openEHR-EHR-OBSERVATION.body_weight.v2")
 @Generated(
     value = "org.ehrbase.client.classgenerator.ClassGenerator",
-    date = "2020-12-09T11:37:51.535762400+01:00",
+    date = "2020-12-10T13:06:11.327497900+01:00",
     comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
 )
 public class WeightObservation implements EntryEntity {
   /**
-   * open_eREACT-Care/Background/Weight/Any event/Weight
+   * Path: open_eREACT-Care/Background/Weight/Any event/Weight
+   * Description: The weight of the individual.
    */
   @Path("/data[at0002]/events[at0003]/data[at0001]/items[at0004]/value|magnitude")
   private Double weightMagnitude;
 
   /**
-   * open_eREACT-Care/Background/Weight/Any event/Weight
+   * Path: open_eREACT-Care/Background/Weight/Any event/Weight
+   * Description: The weight of the individual.
    */
   @Path("/data[at0002]/events[at0003]/data[at0001]/items[at0004]/value|units")
   private String weightUnits;
 
   /**
-   * open_eREACT-Care/Background/Weight/Any event/state structure
+   * Path: open_eREACT-Care/Background/Weight/Any event/state structure
+   * Description: @ internal @
    */
   @Path("/data[at0002]/events[at0003]/state[at0008]")
   private ItemTree stateStructure;
 
   /**
-   * open_eREACT-Care/Background/Weight/Any event/time
+   * Path: open_eREACT-Care/Background/Weight/Any event/time
    */
   @Path("/data[at0002]/events[at0003]/time|value")
   private TemporalAccessor timeValue;
 
   /**
-   * open_eREACT-Care/Background/Weight/origin
+   * Path: open_eREACT-Care/Background/Weight/origin
    */
   @Path("/data[at0002]/origin|value")
   private TemporalAccessor originValue;
 
   /**
-   * open_eREACT-Care/Background/Weight/Device
+   * Path: open_eREACT-Care/Background/Weight/Device
+   * Description: Details about the weighing device.
    */
   @Path("/protocol[at0015]/items[at0020]")
   private Cluster device;
 
   /**
-   * open_eREACT-Care/Background/Weight/Extension
+   * Path: open_eREACT-Care/Background/Weight/Extension
+   * Description: Additional information required to capture local content or to align with other reference models/formalisms.
+   * Comment: For example: local information requirements or additional metadata to align with FHIR or CIMI equivalents.
    */
   @Path("/protocol[at0015]/items[at0027]")
   private List<Cluster> extension;
 
   /**
-   * open_eREACT-Care/Background/Weight/subject
+   * Path: open_eREACT-Care/Background/Weight/subject
    */
   @Path("/subject")
   private PartyProxy subject;
 
   /**
-   * open_eREACT-Care/Background/Weight/language
+   * Path: open_eREACT-Care/Background/Weight/language
    */
   @Path("/language")
   private Language language;
 
   /**
-   * open_eREACT-Care/Background/Weight/feeder_audit
+   * Path: open_eREACT-Care/Background/Weight/feeder_audit
    */
   @Path("/feeder_audit")
   private FeederAudit feederAudit;

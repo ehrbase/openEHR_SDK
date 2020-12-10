@@ -18,90 +18,97 @@ import org.ehrbase.client.classgenerator.shareddefinition.Language;
 @Archetype("openEHR-EHR-ADMIN_ENTRY.episodeofcare.v0")
 @Generated(
     value = "org.ehrbase.client.classgenerator.ClassGenerator",
-    date = "2020-12-09T11:37:51.336760400+01:00",
+    date = "2020-12-10T13:06:11.181498500+01:00",
     comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
 )
 public class EpisodeofcareAdminEntry implements EntryEntity {
   /**
-   * EpisodeOfCare/Episodeofcare/identifier
+   * Path: EpisodeOfCare/Episodeofcare/identifier
+   * Description: Business Identifier(s) relevant for this EpisodeOfCare
    */
   @Path("/data[at0001]/items[at0002]")
   private List<EpisodeofcareIdentifierElement> identifier;
 
   /**
-   * EpisodeOfCare/Episodeofcare/status
+   * Path: EpisodeOfCare/Episodeofcare/status
+   * Description: *
    */
   @Path("/data[at0001]/items[at0003]/value|defining_code")
   private StatusDefiningCode statusDefiningCode;
 
   /**
-   * EpisodeOfCare/Episodeofcare/type
+   * Path: EpisodeOfCare/Episodeofcare/type
+   * Description: Type/class - e.g. specialist referral, disease management
    */
   @Path("/data[at0001]/items[at0011]/value|value")
   private String typeValue;
 
   /**
-   * EpisodeOfCare/Episodeofcare/period/upper
+   * Path: EpisodeOfCare/Episodeofcare/period/upper
    */
   @Path("/data[at0001]/items[at0014]/value/upper|value")
   private TemporalAccessor upperValue;
 
   /**
-   * EpisodeOfCare/Episodeofcare/period/lower
+   * Path: EpisodeOfCare/Episodeofcare/period/lower
    */
   @Path("/data[at0001]/items[at0014]/value/lower|value")
   private TemporalAccessor lowerValue;
 
   /**
-   * EpisodeOfCare/Episodeofcare/period/lower_included
+   * Path: EpisodeOfCare/Episodeofcare/period/lower_included
    */
   @Path("/data[at0001]/items[at0014]/value/lower_included")
   private Boolean lowerIncluded;
 
   /**
-   * EpisodeOfCare/Episodeofcare/period/upper_included
+   * Path: EpisodeOfCare/Episodeofcare/period/upper_included
    */
   @Path("/data[at0001]/items[at0014]/value/upper_included")
   private Boolean upperIncluded;
 
   /**
-   * EpisodeOfCare/Episodeofcare/diagnosis
+   * Path: EpisodeOfCare/Episodeofcare/diagnosis
+   * Description: The list of diagnosis relevant to this episode of care
    */
   @Path("/data[at0001]/items[at0018]")
   private List<EpisodeofcareDiagnosisCluster> diagnosis;
 
   /**
-   * EpisodeOfCare/Episodeofcare/care manager
+   * Path: EpisodeOfCare/Episodeofcare/care manager
+   * Description: Care manager/care coordinator for the patient
    */
   @Path("/data[at0001]/items[at0012]/value|value")
   private URI careManagerValue;
 
   /**
-   * EpisodeOfCare/Episodeofcare/managing organization
+   * Path: EpisodeOfCare/Episodeofcare/managing organization
+   * Description: *
    */
   @Path("/data[at0001]/items[at0017]/value|value")
   private URI managingOrganizationValue;
 
   /**
-   * EpisodeOfCare/Episodeofcare/team
+   * Path: EpisodeOfCare/Episodeofcare/team
+   * Description: Other practitioners facilitating this episode of care
    */
   @Path("/data[at0001]/items[at0013]")
   private List<EpisodeofcareTeamElement> team;
 
   /**
-   * EpisodeOfCare/Episodeofcare/subject
+   * Path: EpisodeOfCare/Episodeofcare/subject
    */
   @Path("/subject")
   private PartyProxy subject;
 
   /**
-   * EpisodeOfCare/Episodeofcare/language
+   * Path: EpisodeOfCare/Episodeofcare/language
    */
   @Path("/language")
   private Language language;
 
   /**
-   * EpisodeOfCare/Episodeofcare/feeder_audit
+   * Path: EpisodeOfCare/Episodeofcare/feeder_audit
    */
   @Path("/feeder_audit")
   private FeederAudit feederAudit;

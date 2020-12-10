@@ -17,66 +17,72 @@ import org.ehrbase.client.classgenerator.shareddefinition.Language;
 @Archetype("openEHR-EHR-INSTRUCTION.service_request.v1")
 @Generated(
     value = "org.ehrbase.client.classgenerator.ClassGenerator",
-    date = "2020-12-09T11:37:53.119287+01:00",
+    date = "2020-12-10T13:06:13.123030700+01:00",
     comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
 )
 public class DienstleistungInstruction implements EntryEntity {
   /**
-   * Bericht/Allgemeine Angaben/Dienstleistung/Aktuelle Aktivität
+   * Path: Bericht/Allgemeine Angaben/Dienstleistung/Aktuelle Aktivität
+   * Description: Aktuelle Aktivität
    */
   @Path("/activities[at0001]")
   private List<DienstleistungAktuelleAktivitatActivity> aktuelleAktivitat;
 
   /**
-   * Bericht/Allgemeine Angaben/Dienstleistung/Einsender
+   * Path: Bericht/Allgemeine Angaben/Dienstleistung/Einsender
+   * Description: Details über den Kliniker oder die Abteilung, die die Dienstleistung anfordert.
    */
   @Path("/protocol[at0008]/items[at0141]")
   private Cluster einsender;
 
   /**
-   * Bericht/Allgemeine Angaben/Dienstleistung/Empfänger
+   * Path: Bericht/Allgemeine Angaben/Dienstleistung/Empfänger
+   * Description: Details über den Kliniker oder die Abteilung, die die Dienstleistung erhält.
    */
   @Path("/protocol[at0008]/items[at0142]")
   private Cluster empfanger;
 
   /**
-   * Bericht/Allgemeine Angaben/Dienstleistung/Verteilerliste
+   * Path: Bericht/Allgemeine Angaben/Dienstleistung/Verteilerliste
+   * Description: Details über weitere Kliniker, Organisationen oder Einrichtungen, die Kopien aller Mitteilungen benötigen.
    */
   @Path("/protocol[at0008]/items[at0128]")
   private List<Cluster> verteilerliste;
 
   /**
-   * Bericht/Allgemeine Angaben/Dienstleistung/Erweiterung
+   * Path: Bericht/Allgemeine Angaben/Dienstleistung/Erweiterung
+   * Description: Zusätzliche Informationen zur Erfassung lokaler Inhalte oder Anpassung an andere Referenzmodelle/Formalismen.
+   * Comment: Zum Beispiel: Lokaler Informationsbedarf oder zusätzliche Metadaten zur Anpassung an FHIR-Ressourcen oder CIMI-Modelle.
    */
   @Path("/protocol[at0008]/items[at0112]")
   private List<Cluster> erweiterung;
 
   /**
-   * Bericht/Allgemeine Angaben/Dienstleistung/subject
+   * Path: Bericht/Allgemeine Angaben/Dienstleistung/subject
    */
   @Path("/subject")
   private PartyProxy subject;
 
   /**
-   * Bericht/Allgemeine Angaben/Dienstleistung/narrative
+   * Path: Bericht/Allgemeine Angaben/Dienstleistung/narrative
    */
   @Path("/narrative|value")
   private String narrativeValue;
 
   /**
-   * Bericht/Allgemeine Angaben/Dienstleistung/language
+   * Path: Bericht/Allgemeine Angaben/Dienstleistung/language
    */
   @Path("/language")
   private Language language;
 
   /**
-   * Bericht/Allgemeine Angaben/Dienstleistung/feeder_audit
+   * Path: Bericht/Allgemeine Angaben/Dienstleistung/feeder_audit
    */
   @Path("/feeder_audit")
   private FeederAudit feederAudit;
 
   /**
-   * Bericht/Allgemeine Angaben/Dienstleistung/expiry_time
+   * Path: Bericht/Allgemeine Angaben/Dienstleistung/expiry_time
    */
   @Path("/expiry_time|value")
   private TemporalAccessor expiryTimeValue;

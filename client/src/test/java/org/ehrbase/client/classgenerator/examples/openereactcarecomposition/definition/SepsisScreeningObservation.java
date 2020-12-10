@@ -16,72 +16,82 @@ import org.ehrbase.client.classgenerator.shareddefinition.Language;
 @Archetype("openEHR-EHR-OBSERVATION.sepsis_screening_tool.v0")
 @Generated(
     value = "org.ehrbase.client.classgenerator.ClassGenerator",
-    date = "2020-12-09T11:37:51.581762800+01:00",
+    date = "2020-12-10T13:06:11.409498500+01:00",
     comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
 )
 public class SepsisScreeningObservation implements EntryEntity {
   /**
-   * open_eREACT-Care/Assessment/Sepsis/Sepsis screening/Any event/Risk factors for sepsis
+   * Path: open_eREACT-Care/Assessment/Sepsis/Sepsis screening/Any event/Risk factors for sepsis
+   * Description: Used to record details of suspicion of any serious illness from the sepsis screening tool.
+   * Comment: Q1: ARE THERE CLUES THAT THE PATIENT MAY BE SERIOUSLY ILL?
    */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0006]")
   private List<SepsisScreeningRiskFactorsForSepsisElement> riskFactorsForSepsis;
 
   /**
-   * open_eREACT-Care/Assessment/Sepsis/Sepsis screening/Any event/Likely source of infection
+   * Path: open_eREACT-Care/Assessment/Sepsis/Sepsis screening/Any event/Likely source of infection
+   * Description: Used to record details of source of any infection from the sepsis screening tool.
+   * Comment: Q2: COULD THIS BE DUE TO AN INFECTION?
    */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0011]")
   private List<SepsisScreeningLikelySourceOfInfectionElement> likelySourceOfInfection;
 
   /**
-   * open_eREACT-Care/Assessment/Sepsis/Sepsis screening/Any event/Red flag (acute)
+   * Path: open_eREACT-Care/Assessment/Sepsis/Sepsis screening/Any event/Red flag (acute)
+   * Description: Used to record details of any red flag indicators from the sepsis screening tool.
+   * Comment: Q3: ANY RED FLAG PRESENT?
    */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0058]")
   private List<SepsisScreeningRedFlagAcuteElement> redFlagAcute;
 
   /**
-   * open_eREACT-Care/Assessment/Sepsis/Sepsis screening/Any event/Amber flag (acute)
+   * Path: open_eREACT-Care/Assessment/Sepsis/Sepsis screening/Any event/Amber flag (acute)
+   * Description: Used to record details of any amber flag indicators from the sepsis screening tool.
+   * Comment: Q4: ANY AMBER FLAG PRESENT?
    */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0083]")
   private List<SepsisScreeningAmberFlagAcuteElement> amberFlagAcute;
 
   /**
-   * open_eREACT-Care/Assessment/Sepsis/Sepsis screening/Any event/999 Flag
+   * Path: open_eREACT-Care/Assessment/Sepsis/Sepsis screening/Any event/999 Flag
+   * Description: *
    */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0036]")
   private List<SepsisScreening999FlagElement> N999Flag;
 
   /**
-   * open_eREACT-Care/Assessment/Sepsis/Sepsis screening/Any event/time
+   * Path: open_eREACT-Care/Assessment/Sepsis/Sepsis screening/Any event/time
    */
   @Path("/data[at0001]/events[at0002]/time|value")
   private TemporalAccessor timeValue;
 
   /**
-   * open_eREACT-Care/Assessment/Sepsis/Sepsis screening/origin
+   * Path: open_eREACT-Care/Assessment/Sepsis/Sepsis screening/origin
    */
   @Path("/data[at0001]/origin|value")
   private TemporalAccessor originValue;
 
   /**
-   * open_eREACT-Care/Assessment/Sepsis/Sepsis screening/Extension
+   * Path: open_eREACT-Care/Assessment/Sepsis/Sepsis screening/Extension
+   * Description: *
    */
   @Path("/protocol[at0004]/items[at0005]")
   private List<Cluster> extension;
 
   /**
-   * open_eREACT-Care/Assessment/Sepsis/Sepsis screening/subject
+   * Path: open_eREACT-Care/Assessment/Sepsis/Sepsis screening/subject
    */
   @Path("/subject")
   private PartyProxy subject;
 
   /**
-   * open_eREACT-Care/Assessment/Sepsis/Sepsis screening/language
+   * Path: open_eREACT-Care/Assessment/Sepsis/Sepsis screening/language
    */
   @Path("/language")
   private Language language;
 
   /**
-   * open_eREACT-Care/Assessment/Sepsis/Sepsis screening/feeder_audit
+   * Path: open_eREACT-Care/Assessment/Sepsis/Sepsis screening/feeder_audit
    */
   @Path("/feeder_audit")
   private FeederAudit feederAudit;

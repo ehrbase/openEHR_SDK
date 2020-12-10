@@ -15,43 +15,44 @@ import org.ehrbase.client.classgenerator.shareddefinition.MathFunction;
 @Entity
 @Generated(
     value = "org.ehrbase.client.classgenerator.ClassGenerator",
-    date = "2020-12-09T11:37:53.125284700+01:00",
+    date = "2020-12-10T13:06:13.130031100+01:00",
     comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
 )
 @OptionFor("INTERVAL_EVENT")
 public class BerichtBeliebigesEreignisIntervalEvent implements IntervalEventEntity, BerichtBeliebigesEreignisChoice {
   /**
-   * Bericht/Beliebiges Ereignis/Spezifisches Symptom/Anzeichen
+   * Path: Bericht/Beliebiges Ereignis/Spezifisches Symptom/Anzeichen
+   * Description: Gruppierung von Datenelementen bezogen auf Screening auf ein einzelnes Symptom oder Anzeichen.
    */
   @Path("/data[at0003]/items[at0022]")
   private List<BerichtSpezifischesSymptomAnzeichenCluster> spezifischesSymptomAnzeichen;
 
   /**
-   * Bericht/Beliebiges Ereignis/feeder_audit
+   * Path: Bericht/Beliebiges Ereignis/feeder_audit
    */
   @Path("/feeder_audit")
   private FeederAudit feederAudit;
 
   /**
-   * Bericht/Beliebiges Ereignis/time
+   * Path: Bericht/Beliebiges Ereignis/time
    */
   @Path("/time|value")
   private TemporalAccessor timeValue;
 
   /**
-   * Bericht/Beliebiges Ereignis/width
+   * Path: Bericht/Beliebiges Ereignis/width
    */
   @Path("/width|value")
   private TemporalAmount widthValue;
 
   /**
-   * Bericht/Beliebiges Ereignis/math_function
+   * Path: Bericht/Beliebiges Ereignis/math_function
    */
   @Path("/math_function|defining_code")
   private MathFunction mathFunctionDefiningCode;
 
   /**
-   * Bericht/Beliebiges Ereignis/sample_count
+   * Path: Bericht/Beliebiges Ereignis/sample_count
    */
   @Path("/sample_count")
   private Long sampleCount;

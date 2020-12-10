@@ -11,24 +11,27 @@ import org.ehrbase.client.classgenerator.interfaces.LocatableEntity;
 @Entity
 @Generated(
     value = "org.ehrbase.client.classgenerator.ClassGenerator",
-    date = "2020-12-09T11:37:51.638759200+01:00",
+    date = "2020-12-10T13:06:11.512505100+01:00",
     comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
 )
 public class LatestCovid19TestTestRequestDetailsCluster implements LocatableEntity {
   /**
-   * open_eREACT-Care/Assessment/Covid/Latest Covid-19 test/Test request details/Requester
+   * Path: open_eREACT-Care/Assessment/Covid/Latest Covid-19 test/Test request details/Requester
+   * Description: Details of the clinician or organisation requesting the laboratory test result.
    */
   @Path("/items[at0090]")
   private Cluster requester;
 
   /**
-   * open_eREACT-Care/Assessment/Covid/Latest Covid-19 test/Test request details/Distribution list
+   * Path: open_eREACT-Care/Assessment/Covid/Latest Covid-19 test/Test request details/Distribution list
+   * Description: Details of additional clinicians or organisations who require a copy of the test result.
+   * Comment: The 'Distribution list' is for information-only, and that the primary recipient of the report is the person intended to act on the information.
    */
   @Path("/items[at0035]")
   private List<Cluster> distributionList;
 
   /**
-   * open_eREACT-Care/Assessment/Covid/Latest Covid-19 test/Test request details/feeder_audit
+   * Path: open_eREACT-Care/Assessment/Covid/Latest Covid-19 test/Test request details/feeder_audit
    */
   @Path("/feeder_audit")
   private FeederAudit feederAudit;

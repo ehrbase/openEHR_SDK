@@ -9,18 +9,19 @@ import org.ehrbase.client.classgenerator.interfaces.LocatableEntity;
 @Entity
 @Generated(
     value = "org.ehrbase.client.classgenerator.ClassGenerator",
-    date = "2020-12-09T11:37:51.585763300+01:00",
+    date = "2020-12-10T13:06:11.413499100+01:00",
     comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
 )
 public class SepsisScreeningRedFlagAcuteElement implements LocatableEntity {
   /**
-   * open_eREACT-Care/Assessment/Sepsis/Sepsis screening/Any event/Red flag (acute)
+   * Path: open_eREACT-Care/Assessment/Sepsis/Sepsis screening/Any event/Red flag (acute)
+   * Description: Used to record details of any red flag indicators from the sepsis screening tool.
    */
   @Path("/value|defining_code")
   private RedFlagAcuteDefiningCode value;
 
   /**
-   * open_eREACT-Care/Assessment/Sepsis/Sepsis screening/Any event/feeder_audit
+   * Path: open_eREACT-Care/Assessment/Sepsis/Sepsis screening/Any event/feeder_audit
    */
   @Path("/feeder_audit")
   private FeederAudit feederAudit;

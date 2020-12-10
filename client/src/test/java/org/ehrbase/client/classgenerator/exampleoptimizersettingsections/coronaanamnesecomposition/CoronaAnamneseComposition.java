@@ -48,229 +48,259 @@ import org.ehrbase.client.openehrclient.VersionUid;
 @Archetype("openEHR-EHR-COMPOSITION.report.v1")
 @Generated(
     value = "org.ehrbase.client.classgenerator.ClassGenerator",
-    date = "2020-12-10T09:57:05.958356200+01:00",
+    date = "2020-12-10T13:06:13.359036500+01:00",
     comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
 )
 @Template("Corona_Anamnese")
 public class CoronaAnamneseComposition implements CompositionEntity {
   /**
-   * Bericht/context/Bericht ID
+   * Path: Bericht/context/Bericht ID
+   * Description: Identifizierungsmerkmal des Berichts.
    */
   @Path("/context/other_context[at0001]/items[at0002]/value|value")
   private String berichtIdValue;
 
   /**
-   * Bericht/context/Status
+   * Path: Bericht/context/Status
+   * Description: Der Status des gesamten Berichts. Hinweis: Dies ist nicht der Status einer Berichtskomponente.
    */
   @Path("/context/other_context[at0001]/items[at0005]/value|value")
   private String statusValue;
 
   /**
-   * Bericht/context/Erweiterung
+   * Path: Bericht/context/Erweiterung
+   * Description: Zusätzliche Informationen zur Erfassung lokaler Inhalte oder Anpassung an andere Referenzmodelle/Formalismen.
+   * Comment: Zum Beispiel: lokaler Informationsbedarf oder zusätzliche Metadaten zur Anpassung an FHIR-Ressourcen oder CIMI-Modelle.
    */
   @Path("/context/other_context[at0001]/items[at0006]")
   private List<Cluster> erweiterung;
 
   /**
-   * Bericht/context/start_time
+   * Path: Bericht/context/start_time
    */
   @Path("/context/start_time|value")
   private TemporalAccessor startTimeValue;
 
   /**
-   * Bericht/context/participations
+   * Path: Bericht/context/participations
    */
   @Path("/context/participations")
   private List<Participation> participations;
 
   /**
-   * Bericht/context/end_time
+   * Path: Bericht/context/end_time
    */
   @Path("/context/end_time|value")
   private TemporalAccessor endTimeValue;
 
   /**
-   * Bericht/context/location
+   * Path: Bericht/context/location
    */
   @Path("/context/location")
   private String location;
 
   /**
-   * Bericht/context/health_care_facility
+   * Path: Bericht/context/health_care_facility
    */
   @Path("/context/health_care_facility")
   private PartyIdentified healthCareFacility;
 
   /**
-   * Bericht/context/setting
+   * Path: Bericht/context/setting
    */
   @Path("/context/setting|defining_code")
   private Setting settingDefiningCode;
 
   /**
-   * Bericht/Geschichte/Historie
+   * Path: Bericht/Geschichte/Historie
+   * Description: Die subjektive klinische Vorgeschichte des Pflegebedürftigen, wie sie direkt von der Person erfasst oder einem Kliniker von der Person oder einem Pfleger gemeldet wurde.
    */
   @Path("/content[openEHR-EHR-OBSERVATION.story.v1]")
   private List<GeschichteHistorieObservation> geschichteHistorie;
 
   /**
-   * Bericht/Symptome/Husten
+   * Path: Bericht/Symptome/Husten
+   * Description: Ein Personen- oder Selbstbeurteilungs-Screening-Fragebogen zur Ermittlung von Symptomen und Anzeichen.
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Symptome']/items[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0 and name/value='Husten']")
   private HustenObservation husten;
 
   /**
-   * Bericht/Symptome/Schnupfen
+   * Path: Bericht/Symptome/Schnupfen
+   * Description: Ein Personen- oder Selbstbeurteilungs-Screening-Fragebogen zur Ermittlung von Symptomen und Anzeichen.
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Symptome']/items[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0 and name/value='Schnupfen']")
   private SchnupfenObservation schnupfen;
 
   /**
-   * Bericht/Symptome/Heiserkeit
+   * Path: Bericht/Symptome/Heiserkeit
+   * Description: Ein Personen- oder Selbstbeurteilungs-Screening-Fragebogen zur Ermittlung von Symptomen und Anzeichen.
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Symptome']/items[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0 and name/value='Heiserkeit']")
   private HeiserkeitObservation heiserkeit;
 
   /**
-   * Bericht/Symptome/Fieber oder erhöhte Körpertemperatur
+   * Path: Bericht/Symptome/Fieber oder erhöhte Körpertemperatur
+   * Description: Ein Personen- oder Selbstbeurteilungs-Screening-Fragebogen zur Ermittlung von Symptomen und Anzeichen.
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Symptome']/items[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0 and name/value='Fieber oder erhöhte Körpertemperatur']")
   private FieberOderErhoehteKoerpertemperaturObservation fieberOderErhoehteKoerpertemperatur;
 
   /**
-   * Bericht/Symptome/Körpertemperatur
+   * Path: Bericht/Symptome/Körpertemperatur
+   * Description: Eine Messung der Körpertemperatur, als Surrogat für die Temperatur des gesamten Körper der Person.
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Symptome']/items[openEHR-EHR-OBSERVATION.body_temperature.v2]")
   private KoerpertemperaturObservation koerpertemperatur;
 
   /**
-   * Bericht/Symptome/Gestörter Geruchssinn
+   * Path: Bericht/Symptome/Gestörter Geruchssinn
+   * Description: Ein Personen- oder Selbstbeurteilungs-Screening-Fragebogen zur Ermittlung von Symptomen und Anzeichen.
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Symptome']/items[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0 and name/value='Gestörter Geruchssinn']")
   private GestoerterGeruchssinnObservation gestoerterGeruchssinn;
 
   /**
-   * Bericht/Symptome/Gestörter Geschmackssinn
+   * Path: Bericht/Symptome/Gestörter Geschmackssinn
+   * Description: Ein Personen- oder Selbstbeurteilungs-Screening-Fragebogen zur Ermittlung von Symptomen und Anzeichen.
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Symptome']/items[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0 and name/value='Gestörter Geschmackssinn']")
   private GestoerterGeschmackssinnObservation gestoerterGeschmackssinn;
 
   /**
-   * Bericht/Symptome/Durchfall
+   * Path: Bericht/Symptome/Durchfall
+   * Description: Ein Personen- oder Selbstbeurteilungs-Screening-Fragebogen zur Ermittlung von Symptomen und Anzeichen.
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Symptome']/items[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0 and name/value='Durchfall']")
   private DurchfallObservation durchfall;
 
   /**
-   * Bericht/Symptome/Weitere Symptome
+   * Path: Bericht/Symptome/Weitere Symptome
+   * Description: Ein Personen- oder Selbstbeurteilungs-Screening-Fragebogen zur Ermittlung von Symptomen und Anzeichen.
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Symptome']/items[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0 and name/value='Weitere Symptome']")
   private WeitereSymptomeObservation weitereSymptome;
 
   /**
-   * Bericht/Kontakt/Personenkontakt
+   * Path: Bericht/Kontakt/Personenkontakt
+   * Description: *An individual- or self-reported questionnaire screening for exposure to a chemical, physical or biological agent which has caused or may cause harm to an individual.(en)
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Kontakt']/items[openEHR-EHR-OBSERVATION.exposure_assessment.v0 and name/value='Personenkontakt']")
   private PersonenkontaktObservation personenkontakt;
 
   /**
-   * Bericht/Kontakt/Aufenthalt in Gesundheitseinrichtung
+   * Path: Bericht/Kontakt/Aufenthalt in Gesundheitseinrichtung
+   * Description: *An individual- or self-reported questionnaire screening for exposure to a chemical, physical or biological agent which has caused or may cause harm to an individual.(en)
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Kontakt']/items[openEHR-EHR-OBSERVATION.exposure_assessment.v0 and name/value='Aufenthalt in Gesundheitseinrichtung']")
   private AufenthaltInGesundheitseinrichtungObservation aufenthaltInGesundheitseinrichtung;
 
   /**
-   * Bericht/Risikogebiet/Historie der Reise
+   * Path: Bericht/Risikogebiet/Historie der Reise
+   * Description: Einzelheiten einer Reise im Hinblick auf die Exposition gegenüber potenziellen Risiken.
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Risikogebiet']/items[openEHR-EHR-OBSERVATION.travel_history.v0]")
   private List<HistorieDerReiseObservation> historieDerReise;
 
   /**
-   * Bericht/Risikogebiet/Reisefall
+   * Path: Bericht/Risikogebiet/Reisefall
+   * Description: Details zur Reise während eines bestimmten Zeitraums.
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Risikogebiet']/items[openEHR-EHR-OBSERVATION.travel_event.v0]")
   private List<ReisefallObservation> reisefall;
 
   /**
-   * Bericht/Allgemeine Angaben/Andere aktuelle Erkrankungen
+   * Path: Bericht/Allgemeine Angaben/Andere aktuelle Erkrankungen
+   * Description: Ein Personen- oder Selbstbeurteilungs-Screening-Fragebogen zur Ermittlung von Symptomen und Anzeichen.
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Allgemeine Angaben']/items[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0 and name/value='Andere aktuelle Erkrankungen']")
   private AndereAktuelleErkrankungenObservation andereAktuelleErkrankungen;
 
   /**
-   * Bericht/Allgemeine Angaben/Chronische Erkrankungen
+   * Path: Bericht/Allgemeine Angaben/Chronische Erkrankungen
+   * Description: Ein Personen- oder Selbstbeurteilungs-Screening-Fragebogen zur Ermittlung von Symptomen und Anzeichen.
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Allgemeine Angaben']/items[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0 and name/value='Chronische Erkrankungen']")
   private ChronischeErkrankungenObservation chronischeErkrankungen;
 
   /**
-   * Bericht/Allgemeine Angaben/Problem/Diagnose
+   * Path: Bericht/Allgemeine Angaben/Problem/Diagnose
+   * Description: Angaben über einen einzelnen identifizierten Gesundheitszustand, eine Verletzung, eine Behinderung oder ein Problem, welches das körperliche, geistige und/oder soziale Wohlergehen einer Einzelperson beeinträchtigt.
+   * Comment: Eine klare Abgrenzung zwischen Problem und Diagnose ist in der Praxis nicht einfach zu erreichen. Für die Zwecke der klinischen Dokumentation mit diesem Archetyp werden Problem und Diagnose als ein Kontinuum betrachtet, mit zunehmendem Detaillierungsgrad und unterstützenden Beweisen, die in der Regel dem Etikett "Diagnose" Gewicht verleihen.
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Allgemeine Angaben']/items[openEHR-EHR-EVALUATION.problem_diagnosis.v1]")
   private List<ProblemDiagnoseEvaluation> problemDiagnose;
 
   /**
-   * Bericht/Allgemeine Angaben/Fragebogen zum Medikations-Screening
+   * Path: Bericht/Allgemeine Angaben/Fragebogen zum Medikations-Screening
+   * Description: Aggregierte Informationen über die Verabreichung oder die Einnahme eines bestimmten Medikaments oder einer bestimmten Art/Klasse von Medikamenten bei oder während eines Ereignisses, wie z.B. einem bestimmten Zeitpunkt oder einer bestimmten Zeitdauer.
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Allgemeine Angaben']/items[openEHR-EHR-OBSERVATION.medication_use.v0]")
   private FragebogenZumMedikationsScreeningObservation fragebogenZumMedikationsScreening;
 
   /**
-   * Bericht/Allgemeine Angaben/Gesundheitsbezogener Beruf
+   * Path: Bericht/Allgemeine Angaben/Gesundheitsbezogener Beruf
+   * Description: Zusammenfassung oder beständige Information zu aktuellen und früheren Jobs und / oder Rollen einer Person.
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Allgemeine Angaben']/items[openEHR-EHR-EVALUATION.occupation_summary.v1 and name/value='Gesundheitsbezogener Beruf']")
   private GesundheitsbezogenerBerufEvaluation gesundheitsbezogenerBeruf;
 
   /**
-   * Bericht/Allgemeine Angaben/Wohnsituation
+   * Path: Bericht/Allgemeine Angaben/Wohnsituation
+   * Description: Die Umstände über eine Person, das allein oder mit anderen zusammen lebt.
+   * Comment: Diese Information bietet einen Einblick in die tägliche Unterstützung, zu der eine Person in ihrer häuslichen Umgebung - sowohl körperlich als auch emotional - Zugang hat.
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Allgemeine Angaben']/items[openEHR-EHR-EVALUATION.living_arrangement.v0]")
   private List<WohnsituationEvaluation> wohnsituation;
 
   /**
-   * Bericht/Allgemeine Angaben/Bewertung des Gesundheitsrisikos
+   * Path: Bericht/Allgemeine Angaben/Bewertung des Gesundheitsrisikos
+   * Description: Bewertung der möglichen und wahrscheinlichen gesundheitsschädigenden Wirkungen anhand der identifizierten Risikofaktoren.
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Allgemeine Angaben']/items[openEHR-EHR-EVALUATION.health_risk.v1]")
   private List<BewertungDesGesundheitsrisikosEvaluation> bewertungDesGesundheitsrisikos;
 
   /**
-   * Bericht/Allgemeine Angaben/Problem/Diganose Coronovirus
+   * Path: Bericht/Allgemeine Angaben/Problem/Diganose Coronovirus
+   * Description: Angaben über einen einzelnen identifizierten Gesundheitszustand, eine Verletzung, eine Behinderung oder ein Problem, welches das körperliche, geistige und/oder soziale Wohlergehen einer Einzelperson beeinträchtigt.
+   * Comment: Eine klare Abgrenzung zwischen Problem und Diagnose ist in der Praxis nicht einfach zu erreichen. Für die Zwecke der klinischen Dokumentation mit diesem Archetyp werden Problem und Diagnose als ein Kontinuum betrachtet, mit zunehmendem Detaillierungsgrad und unterstützenden Beweisen, die in der Regel dem Etikett "Diagnose" Gewicht verleihen.
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Allgemeine Angaben']/items[openEHR-EHR-EVALUATION.problem_diagnosis_covid.v1 and name/value='Problem/Diganose Coronovirus']")
   private ProblemDiganoseCoronovirusEvaluation problemDiganoseCoronovirus;
 
   /**
-   * Bericht/Allgemeine Angaben/Dienstleistung
+   * Path: Bericht/Allgemeine Angaben/Dienstleistung
+   * Description: Antrag auf eine gesundheitsbezogene Dienstleistung oder Aktivität, die von einem Kliniker, einer Klinik oder einer Einrichtung erbracht werden soll.
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Allgemeine Angaben']/items[openEHR-EHR-INSTRUCTION.service_request.v1]")
   private List<DienstleistungInstruction> dienstleistung;
 
   /**
-   * Bericht/composer
+   * Path: Bericht/composer
    */
   @Path("/composer")
   private PartyProxy composer;
 
   /**
-   * Bericht/language
+   * Path: Bericht/language
    */
   @Path("/language")
   private Language language;
 
   /**
-   * Bericht/feeder_audit
+   * Path: Bericht/feeder_audit
    */
   @Path("/feeder_audit")
   private FeederAudit feederAudit;
 
   /**
-   * Bericht/category
+   * Path: Bericht/category
    */
   @Path("/category|defining_code")
   private Category categoryDefiningCode;
 
   /**
-   * Bericht/territory
+   * Path: Bericht/territory
    */
   @Path("/territory")
   private Territory territory;

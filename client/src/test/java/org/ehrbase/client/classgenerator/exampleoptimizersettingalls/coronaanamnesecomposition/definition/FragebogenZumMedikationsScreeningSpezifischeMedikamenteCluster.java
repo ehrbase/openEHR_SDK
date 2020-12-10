@@ -10,24 +10,26 @@ import org.ehrbase.client.classgenerator.interfaces.LocatableEntity;
 @Entity
 @Generated(
     value = "org.ehrbase.client.classgenerator.ClassGenerator",
-    date = "2020-12-09T11:37:53.099285500+01:00",
+    date = "2020-12-10T13:06:13.099065600+01:00",
     comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
 )
 public class FragebogenZumMedikationsScreeningSpezifischeMedikamenteCluster implements LocatableEntity {
   /**
-   * Bericht/Allgemeine Angaben/Fragebogen zum Medikations-Screening/Beliebiges Ereignis/Spezifische Medikamentenklasse/Spezifische Medikamente/Name des Medikaments
+   * Path: Bericht/Allgemeine Angaben/Fragebogen zum Medikations-Screening/Beliebiges Ereignis/Spezifische Medikamentenklasse/Spezifische Medikamente/Name des Medikaments
+   * Description: Name des Medikaments oder der Medikamentenunterklasse.
    */
   @Path("/items[at0021]/value|value")
   private String nameDesMedikamentsValue;
 
   /**
-   * Bericht/Allgemeine Angaben/Fragebogen zum Medikations-Screening/Beliebiges Ereignis/Spezifische Medikamentenklasse/Spezifische Medikamente/Medikament in Verwendung?
+   * Path: Bericht/Allgemeine Angaben/Fragebogen zum Medikations-Screening/Beliebiges Ereignis/Spezifische Medikamentenklasse/Spezifische Medikamente/Medikament in Verwendung?
+   * Description: Wendet die Person das Medikament oder Unterklasse des Medikaments bei oder während des genannten Ereignisses an?
    */
   @Path("/items[at0024]/value|defining_code")
   private MedikamentInVerwendungDefiningCode medikamentInVerwendungDefiningCode;
 
   /**
-   * Bericht/Allgemeine Angaben/Fragebogen zum Medikations-Screening/Beliebiges Ereignis/Spezifische Medikamentenklasse/Spezifische Medikamente/feeder_audit
+   * Path: Bericht/Allgemeine Angaben/Fragebogen zum Medikations-Screening/Beliebiges Ereignis/Spezifische Medikamentenklasse/Spezifische Medikamente/feeder_audit
    */
   @Path("/feeder_audit")
   private FeederAudit feederAudit;

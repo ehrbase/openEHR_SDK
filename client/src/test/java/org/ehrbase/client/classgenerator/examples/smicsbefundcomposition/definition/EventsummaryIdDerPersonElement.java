@@ -10,18 +10,18 @@ import org.ehrbase.client.classgenerator.interfaces.LocatableEntity;
 @Entity
 @Generated(
     value = "org.ehrbase.client.classgenerator.ClassGenerator",
-    date = "2020-12-09T11:37:52.164762200+01:00",
+    date = "2020-12-10T13:06:12.109023800+01:00",
     comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
 )
 public class EventsummaryIdDerPersonElement implements LocatableEntity {
   /**
-   * SmICS Befund/context/Eventsummary/Beteiligte Personen/feeder_audit
+   * Path: SmICS Befund/context/Eventsummary/Beteiligte Personen/feeder_audit
    */
   @Path("/feeder_audit")
   private FeederAudit feederAudit;
 
   /**
-   * SmICS Befund/context/Eventsummary/Beteiligte Personen/value
+   * Path: SmICS Befund/context/Eventsummary/Beteiligte Personen/value
    */
   @Path("/value")
   @Choice

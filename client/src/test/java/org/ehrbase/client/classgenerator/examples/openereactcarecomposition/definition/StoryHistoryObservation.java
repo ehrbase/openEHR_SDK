@@ -17,60 +17,66 @@ import org.ehrbase.client.classgenerator.shareddefinition.Language;
 @Archetype("openEHR-EHR-OBSERVATION.story.v1")
 @Generated(
     value = "org.ehrbase.client.classgenerator.ClassGenerator",
-    date = "2020-12-09T11:37:51.527762700+01:00",
+    date = "2020-12-10T13:06:11.315497800+01:00",
     comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
 )
 public class StoryHistoryObservation implements EntryEntity {
   /**
-   * open_eREACT-Care/Situation/Story/History/Any event/Soft signs
+   * Path: open_eREACT-Care/Situation/Story/History/Any event/Soft signs
+   * Description: Narrative description of the story or clinical history for the subject of care.
    */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0004 and name/value='Soft signs']")
   private List<StoryHistorySoftSignsElement> softSigns;
 
   /**
-   * open_eREACT-Care/Situation/Story/History/Any event/Notes
+   * Path: open_eREACT-Care/Situation/Story/History/Any event/Notes
+   * Description: Narrative description of the story or clinical history for the subject of care.
    */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0004 and name/value='Notes']/value|value")
   private String notesValue;
 
   /**
-   * open_eREACT-Care/Situation/Story/History/Any event/Structured detail
+   * Path: open_eREACT-Care/Situation/Story/History/Any event/Structured detail
+   * Description: Structured detail about the individual's story or patient's history.
+   * Comment: For example: a specific symptom such as nausea or pain; an event such as a fall off a bicycle; or an issue such as a desire to quit using tobacco.
    */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0006]")
   private List<Cluster> structuredDetail;
 
   /**
-   * open_eREACT-Care/Situation/Story/History/Any event/time
+   * Path: open_eREACT-Care/Situation/Story/History/Any event/time
    */
   @Path("/data[at0001]/events[at0002]/time|value")
   private TemporalAccessor timeValue;
 
   /**
-   * open_eREACT-Care/Situation/Story/History/origin
+   * Path: open_eREACT-Care/Situation/Story/History/origin
    */
   @Path("/data[at0001]/origin|value")
   private TemporalAccessor originValue;
 
   /**
-   * open_eREACT-Care/Situation/Story/History/Extension
+   * Path: open_eREACT-Care/Situation/Story/History/Extension
+   * Description: Additional information required to capture local content or to align with other reference models/formalisms.
+   * Comment: For example: Local information requirements or additional metadata to align with FHIR or CIMI equivalents.
    */
   @Path("/protocol[at0007]/items[at0008]")
   private List<Cluster> extension;
 
   /**
-   * open_eREACT-Care/Situation/Story/History/subject
+   * Path: open_eREACT-Care/Situation/Story/History/subject
    */
   @Path("/subject")
   private PartyProxy subject;
 
   /**
-   * open_eREACT-Care/Situation/Story/History/language
+   * Path: open_eREACT-Care/Situation/Story/History/language
    */
   @Path("/language")
   private Language language;
 
   /**
-   * open_eREACT-Care/Situation/Story/History/feeder_audit
+   * Path: open_eREACT-Care/Situation/Story/History/feeder_audit
    */
   @Path("/feeder_audit")
   private FeederAudit feederAudit;

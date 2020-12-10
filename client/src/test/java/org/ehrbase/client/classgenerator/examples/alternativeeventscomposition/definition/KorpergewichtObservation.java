@@ -17,54 +17,68 @@ import org.ehrbase.client.classgenerator.shareddefinition.Language;
 @Archetype("openEHR-EHR-OBSERVATION.body_weight.v2")
 @Generated(
     value = "org.ehrbase.client.classgenerator.ClassGenerator",
-    date = "2020-12-09T11:37:50.019760200+01:00",
+    date = "2020-12-10T13:06:10.076492400+01:00",
     comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
 )
 public class KorpergewichtObservation implements EntryEntity {
   /**
-   * Bericht/Körpergewicht/*Birth(en)
+   * Path: Bericht/Körpergewicht/*Birth(en)
+   * Description: *Usually the first weight, measured soon after birth. This event will only
+   *                         be used once per health record
+   *                         .(en)
+   *                     
    */
   @Path("/data[at0002]/events[at0026]")
   private KorpergewichtBirthEnPointEvent birthEn;
 
   /**
-   * Bericht/Körpergewicht/origin
+   * Path: Bericht/Körpergewicht/origin
    */
   @Path("/data[at0002]/origin|value")
   private TemporalAccessor originValue;
 
   /**
-   * Bericht/Körpergewicht/Gerät
+   * Path: Bericht/Körpergewicht/Gerät
+   * Description: Details über die benutzte Waage.
    */
   @Path("/protocol[at0015]/items[at0020]")
   private Cluster gerat;
 
   /**
-   * Bericht/Körpergewicht/*Extension(en)
+   * Path: Bericht/Körpergewicht/*Extension(en)
+   * Description: *Additional information required to capture local content or to align with
+   *                         other reference models/formalisms.(en)
+   *                     
+   * Comment: *For example: local information requirements or additional metadata to align
+   *                         with FHIR or CIMI equivalents.(en)
+   *                     
    */
   @Path("/protocol[at0015]/items[at0027]")
   private List<Cluster> extensionEn;
 
   /**
-   * Bericht/Körpergewicht/subject
+   * Path: Bericht/Körpergewicht/subject
    */
   @Path("/subject")
   private PartyProxy subject;
 
   /**
-   * Bericht/Körpergewicht/language
+   * Path: Bericht/Körpergewicht/language
    */
   @Path("/language")
   private Language language;
 
   /**
-   * Bericht/Körpergewicht/feeder_audit
+   * Path: Bericht/Körpergewicht/feeder_audit
    */
   @Path("/feeder_audit")
   private FeederAudit feederAudit;
 
   /**
-   * Bericht/Körpergewicht/*Any event(en)
+   * Path: Bericht/Körpergewicht/*Any event(en)
+   * Description: *Default, unspecified point in time or interval event which may be
+   *                         explicitly defined in a template or at run-time.(en)
+   *                     
    */
   @Path("/data[at0002]/events[at0003]")
   @Choice

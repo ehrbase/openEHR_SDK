@@ -15,72 +15,84 @@ import org.ehrbase.client.classgenerator.interfaces.LocatableEntity;
 @Entity
 @Generated(
     value = "org.ehrbase.client.classgenerator.ClassGenerator",
-    date = "2020-12-09T11:37:51.682761900+01:00",
+    date = "2020-12-10T13:06:11.589502500+01:00",
     comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
 )
 public class ServiceRequestCurrentActivityActivity implements LocatableEntity {
   /**
-   * open_eREACT-Care/Response/Service request/Current Activity/Service name
+   * Path: open_eREACT-Care/Response/Service request/Current Activity/Service name
+   * Description: The name of the single service or activity requested.
    */
   @Path("/description[at0009]/items[at0121]/value")
   private DvCodedText serviceName;
 
   /**
-   * open_eREACT-Care/Response/Service request/Current Activity/Reason for request
+   * Path: open_eREACT-Care/Response/Service request/Current Activity/Reason for request
+   * Description: A short phrase describing the reason for the request.
+   * Comment: Coding of the 'Reason for request' with a coding system is desirable, if available. This data element allows multiple occurrences to enable the user to record a multiple responses, if required. For example: 'manage diabetes complications'.
    */
   @Path("/description[at0009]/items[at0062]")
   private List<ServiceRequestReasonForRequestElement> reasonForRequest;
 
   /**
-   * open_eREACT-Care/Response/Service request/Current Activity/Reason for isolation
+   * Path: open_eREACT-Care/Response/Service request/Current Activity/Reason for isolation
+   * Description: Narrative description about the reason for request.
    */
   @Path("/description[at0009]/items[at0064 and name/value='Reason for isolation']/value|value")
   private String reasonForIsolationValue;
 
   /**
-   * open_eREACT-Care/Response/Service request/Current Activity/Complex timing
+   * Path: open_eREACT-Care/Response/Service request/Current Activity/Complex timing
+   * Description: Details about a complex service request requiring a sequence of timings.
+   * Comment: For example: 'hourly vital signs observations for 4 hours, then 4 hourly for 20 hours' or 'every third Wednesday for 3 visits' or .
    */
   @Path("/description[at0009]/items[at0151]")
   private List<Cluster> complexTiming;
 
   /**
-   * open_eREACT-Care/Response/Service request/Current Activity/Date isolation due to start
+   * Path: open_eREACT-Care/Response/Service request/Current Activity/Date isolation due to start
+   * Description: The date/time that marks the beginning of the valid period of time for delivery of this service.
    */
   @Path("/description[at0009]/items[at0145 and name/value='Date isolation due to start']/value|value")
   private TemporalAccessor dateIsolationDueToStartValue;
 
   /**
-   * open_eREACT-Care/Response/Service request/Current Activity/Date isolation due to end
+   * Path: open_eREACT-Care/Response/Service request/Current Activity/Date isolation due to end
+   * Description: The date/time that marks the conclusion of the clinically valid period of time for delivery of this service.
    */
   @Path("/description[at0009]/items[at0144 and name/value='Date isolation due to end']/value|value")
   private TemporalAccessor dateIsolationDueToEndValue;
 
   /**
-   * open_eREACT-Care/Response/Service request/Current Activity/Specific details
+   * Path: open_eREACT-Care/Response/Service request/Current Activity/Specific details
+   * Description: Additional detail about the service requested.
+   * Comment: For example: Specimen details for a laboratory test request, or anatomical location for a procedure request.
    */
   @Path("/description[at0009]/items[at0132]")
   private List<Cluster> specificDetails;
 
   /**
-   * open_eREACT-Care/Response/Service request/Current Activity/Supporting information
+   * Path: open_eREACT-Care/Response/Service request/Current Activity/Supporting information
+   * Description: Digital document, image, video or diagram supplied as additional information to support or inform the request.
    */
   @Path("/description[at0009]/items[at0149]")
   private List<Cluster> supportingInformation;
 
   /**
-   * open_eREACT-Care/Response/Service request/Current Activity/Patient requirements
+   * Path: open_eREACT-Care/Response/Service request/Current Activity/Patient requirements
+   * Description: Language, transport or other personal requirements to support the patient's attendance or participation in provision of the service.
    */
   @Path("/description[at0009]/items[at0116]")
   private List<Cluster> patientRequirements;
 
   /**
-   * open_eREACT-Care/Response/Service request/Current Activity/timing
+   * Path: open_eREACT-Care/Response/Service request/Current Activity/timing
    */
   @Path("/timing")
   private DvParsable timing;
 
   /**
-   * open_eREACT-Care/Response/Service request/Current Activity/feeder_audit
+   * Path: open_eREACT-Care/Response/Service request/Current Activity/feeder_audit
    */
   @Path("/feeder_audit")
   private FeederAudit feederAudit;

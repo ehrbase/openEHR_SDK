@@ -17,67 +17,78 @@ import org.ehrbase.client.classgenerator.shareddefinition.MathFunction;
 @Entity
 @Generated(
     value = "org.ehrbase.client.classgenerator.ClassGenerator",
-    date = "2020-12-09T11:37:50.057758400+01:00",
+    date = "2020-12-10T13:06:10.104492600+01:00",
     comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
 )
 @OptionFor("INTERVAL_EVENT")
 public class KorpergewichtAnyEventEnIntervalEvent implements IntervalEventEntity, KorpergewichtAnyEventEnChoice {
   /**
-   * Bericht/Körpergewicht/*Any event(en)/Gewicht
+   * Path: Bericht/Körpergewicht/*Any event(en)/Gewicht
+   * Description: Das Gewicht eines Individuums.
    */
   @Path("/data[at0001]/items[at0004]/value|magnitude")
   private Double gewichtMagnitude;
 
   /**
-   * Bericht/Körpergewicht/*Any event(en)/Gewicht
+   * Path: Bericht/Körpergewicht/*Any event(en)/Gewicht
+   * Description: Das Gewicht eines Individuums.
    */
   @Path("/data[at0001]/items[at0004]/value|units")
   private String gewichtUnits;
 
   /**
-   * Bericht/Körpergewicht/*Any event(en)/*Comment(en)
+   * Path: Bericht/Körpergewicht/*Any event(en)/*Comment(en)
+   * Description: *Additional narrative about the measurement of Body weight, not captured in
+   *                         other fields.(en)
+   *                     
    */
   @Path("/data[at0001]/items[at0024]/value|value")
   private String commentEnValue;
 
   /**
-   * Bericht/Körpergewicht/*Any event(en)/*State of dress(en)
+   * Path: Bericht/Körpergewicht/*Any event(en)/*State of dress(en)
+   * Description: *Description of the state of dress of the person at the time of
+   *                         weighing.(en)
+   *                     
    */
   @Path("/state[at0008]/items[at0009]/value|defining_code")
   private StateOfDressEnDefiningCode stateOfDressEnDefiningCode;
 
   /**
-   * Bericht/Körpergewicht/*Any event(en)/*Confounding factors(en)
+   * Path: Bericht/Körpergewicht/*Any event(en)/*Confounding factors(en)
+   * Description: *Record any issues or factors that may impact on the measurement of body
+   *                         weight eg timing in menstrual cycle, timing of recent bowel motion or noting of amputation.(en)
+   *                     
    */
   @Path("/state[at0008]/items[at0025]")
   private List<KorpergewichtConfoundingFactorsEnElement> confoundingFactorsEn;
 
   /**
-   * Bericht/Körpergewicht/*Any event(en)/feeder_audit
+   * Path: Bericht/Körpergewicht/*Any event(en)/feeder_audit
    */
   @Path("/feeder_audit")
   private FeederAudit feederAudit;
 
   /**
-   * Bericht/Körpergewicht/*Any event(en)/time
+   * Path: Bericht/Körpergewicht/*Any event(en)/time
    */
   @Path("/time|value")
   private TemporalAccessor timeValue;
 
   /**
-   * Bericht/Körpergewicht/*Any event(en)/width
+   * Path: Bericht/Körpergewicht/*Any event(en)/width
    */
   @Path("/width|value")
   private TemporalAmount widthValue;
 
   /**
-   * Bericht/Körpergewicht/*Any event(en)/math_function
+   * Path: Bericht/Körpergewicht/*Any event(en)/math_function
    */
   @Path("/math_function|defining_code")
   private MathFunction mathFunctionDefiningCode;
 
   /**
-   * Bericht/Körpergewicht/*Any event(en)/sample_count
+   * Path: Bericht/Körpergewicht/*Any event(en)/sample_count
    */
   @Path("/sample_count")
   private Long sampleCount;

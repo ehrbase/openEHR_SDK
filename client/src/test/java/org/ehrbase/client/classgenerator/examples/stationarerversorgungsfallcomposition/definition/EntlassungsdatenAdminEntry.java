@@ -17,60 +17,66 @@ import org.ehrbase.client.classgenerator.shareddefinition.Language;
 @Archetype("openEHR-EHR-ADMIN_ENTRY.discharge_summary.v0")
 @Generated(
     value = "org.ehrbase.client.classgenerator.ClassGenerator",
-    date = "2020-12-09T11:37:52.959763200+01:00",
+    date = "2020-12-10T13:06:12.963031500+01:00",
     comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
 )
 public class EntlassungsdatenAdminEntry implements EntryEntity {
   /**
-   * Stationärer Versorgungsfall/Entlassungsdaten/Art der Entlassung
+   * Path: Stationärer Versorgungsfall/Entlassungsdaten/Art der Entlassung
+   * Description: Grund der Entlassung
    */
   @Path("/data[at0001]/items[at0040]/value|value")
   private String artDerEntlassungValue;
 
   /**
-   * Stationärer Versorgungsfall/Entlassungsdaten/Klinischer Zustand des Patienten
+   * Path: Stationärer Versorgungsfall/Entlassungsdaten/Klinischer Zustand des Patienten
+   * Description: Klinischer Zustand des Patienten.
    */
   @Path("/data[at0001]/items[at0002]/value|defining_code")
   private KlinischerZustandDesPatientenDefiningCode klinischerZustandDesPatientenDefiningCode;
 
   /**
-   * Stationärer Versorgungsfall/Entlassungsdaten/Datum/Uhrzeit der Entlassung
+   * Path: Stationärer Versorgungsfall/Entlassungsdaten/Datum/Uhrzeit der Entlassung
+   * Description: Datum/Uhrzeit, an dem der Patient entlassen wurde.
    */
   @Path("/data[at0001]/items[at0011 and name/value='Datum/Uhrzeit der Entlassung']/value|value")
   private TemporalAccessor datumUhrzeitDerEntlassungValue;
 
   /**
-   * Stationärer Versorgungsfall/Entlassungsdaten/Zusätzliche Informationen
+   * Path: Stationärer Versorgungsfall/Entlassungsdaten/Zusätzliche Informationen
+   * Description: Kommentare
    */
   @Path("/data[at0001]/items[at0050]/value|value")
   private String zusatzlicheInformationenValue;
 
   /**
-   * Stationärer Versorgungsfall/Entlassungsdaten/Letzter Patientenstandort
+   * Path: Stationärer Versorgungsfall/Entlassungsdaten/Letzter Patientenstandort
+   * Description: *
    */
   @Path("/data[at0001]/items[at0066]")
   private List<Cluster> letzterPatientenstandort;
 
   /**
-   * Stationärer Versorgungsfall/Entlassungsdaten/Zugewiesener Patientenstandort
+   * Path: Stationärer Versorgungsfall/Entlassungsdaten/Zugewiesener Patientenstandort
+   * Description: Für die lokale Verwendung enthält dieses Feld den Typ der Organisationseinheit oder der klinischen Einheit.
    */
   @Path("/data[at0001]/items[at0067]")
   private List<Cluster> zugewiesenerPatientenstandort;
 
   /**
-   * Stationärer Versorgungsfall/Entlassungsdaten/subject
+   * Path: Stationärer Versorgungsfall/Entlassungsdaten/subject
    */
   @Path("/subject")
   private PartyProxy subject;
 
   /**
-   * Stationärer Versorgungsfall/Entlassungsdaten/language
+   * Path: Stationärer Versorgungsfall/Entlassungsdaten/language
    */
   @Path("/language")
   private Language language;
 
   /**
-   * Stationärer Versorgungsfall/Entlassungsdaten/feeder_audit
+   * Path: Stationärer Versorgungsfall/Entlassungsdaten/feeder_audit
    */
   @Path("/feeder_audit")
   private FeederAudit feederAudit;

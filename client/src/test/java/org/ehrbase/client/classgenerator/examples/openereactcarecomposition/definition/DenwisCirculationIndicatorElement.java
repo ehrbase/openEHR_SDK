@@ -9,18 +9,19 @@ import org.ehrbase.client.classgenerator.interfaces.LocatableEntity;
 @Entity
 @Generated(
     value = "org.ehrbase.client.classgenerator.ClassGenerator",
-    date = "2020-12-09T11:37:51.564760500+01:00",
+    date = "2020-12-10T13:06:11.385500900+01:00",
     comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
 )
 public class DenwisCirculationIndicatorElement implements LocatableEntity {
   /**
-   * open_eREACT-Care/Assessment/DENWIS/Point in time/Circulation indicator
+   * Path: open_eREACT-Care/Assessment/DENWIS/Point in time/Circulation indicator
+   * Description: Nurse recorded changes in circulation.
    */
   @Path("/value|defining_code")
   private CirculationIndicatorDefiningCode value;
 
   /**
-   * open_eREACT-Care/Assessment/DENWIS/Point in time/feeder_audit
+   * Path: open_eREACT-Care/Assessment/DENWIS/Point in time/feeder_audit
    */
   @Path("/feeder_audit")
   private FeederAudit feederAudit;

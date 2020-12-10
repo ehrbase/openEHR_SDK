@@ -17,61 +17,72 @@ import org.ehrbase.client.classgenerator.shareddefinition.Language;
 @Archetype("openEHR-EHR-OBSERVATION.body_temperature.v2")
 @Generated(
     value = "org.ehrbase.client.classgenerator.ClassGenerator",
-    date = "2020-12-09T11:37:51.161759400+01:00",
+    date = "2020-12-10T13:06:11.010497300+01:00",
     comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
 )
 public class BodyTemperatureObservation implements EntryEntity {
   /**
-   * Encounter/Body temperature/origin
+   * Path: Encounter/Body temperature/origin
    */
   @Path("/data[at0002]/origin|value")
   private TemporalAccessor originValue;
 
   /**
-   * Encounter/Body temperature/Structured measurement location
+   * Path: Encounter/Body temperature/Structured measurement location
+   * Description: Structured anatomical location of where the measurement was taken.
    */
   @Path("/protocol[at0020]/items[at0064]")
   private List<Cluster> structuredMeasurementLocation;
 
   /**
-   * Encounter/Body temperature/Device
+   * Path: Encounter/Body temperature/Device
+   * Description: Details about the device use to measure body temperature.
    */
   @Path("/protocol[at0020]/items[at0059]")
   private Cluster device;
 
   /**
-   * Encounter/Body temperature/Extension
+   * Path: Encounter/Body temperature/Extension
+   * Description: Additional information required to capture local content or to align with
+   *                         other reference models/formalisms.
+   *                     
+   * Comment: e.g. Local information requirements or additional metadata to align with FHIR or
+   *                         CIMI equivalents.
+   *                     
    */
   @Path("/protocol[at0020]/items[at0062]")
   private List<Cluster> extension;
 
   /**
-   * Encounter/Body temperature/subject
+   * Path: Encounter/Body temperature/subject
    */
   @Path("/subject")
   private PartyProxy subject;
 
   /**
-   * Encounter/Body temperature/language
+   * Path: Encounter/Body temperature/language
    */
   @Path("/language")
   private Language language;
 
   /**
-   * Encounter/Body temperature/feeder_audit
+   * Path: Encounter/Body temperature/feeder_audit
    */
   @Path("/feeder_audit")
   private FeederAudit feederAudit;
 
   /**
-   * Encounter/Body temperature/value
+   * Path: Encounter/Body temperature/value
    */
   @Path("/protocol[at0020]/items[at0021]/value")
   @Choice
   private BodyTemperatureLocationOfMeasurementChoice locationOfMeasurement;
 
   /**
-   * Encounter/Body temperature/Any event
+   * Path: Encounter/Body temperature/Any event
+   * Description: Default, unspecified point in time or interval event which may be explicitly
+   *                         defined in a template or at run-time.
+   *                     
    */
   @Path("/data[at0002]/events[at0003]")
   @Choice

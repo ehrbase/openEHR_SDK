@@ -17,54 +17,59 @@ import org.ehrbase.client.classgenerator.shareddefinition.Language;
 @Archetype("openEHR-EHR-ADMIN_ENTRY.admission.v0")
 @Generated(
     value = "org.ehrbase.client.classgenerator.ClassGenerator",
-    date = "2020-12-09T11:37:52.957764900+01:00",
+    date = "2020-12-10T13:06:12.961033700+01:00",
     comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
 )
 public class AufnahmedatenAdminEntry implements EntryEntity {
   /**
-   * Stationärer Versorgungsfall/Aufnahmedaten/Versorgungsfallgrund
+   * Path: Stationärer Versorgungsfall/Aufnahmedaten/Versorgungsfallgrund
+   * Description: Der Umstand, unter dem der Patient aufgenommen wird.
    */
   @Path("/data[at0001]/items[at0013 and name/value='Versorgungsfallgrund']/value|value")
   private String versorgungsfallgrundValue;
 
   /**
-   * Stationärer Versorgungsfall/Aufnahmedaten/Art der Aufnahme
+   * Path: Stationärer Versorgungsfall/Aufnahmedaten/Art der Aufnahme
+   * Description: Nähere Beschreibung der Art der Aufnahme, z.B. Unfall oder Notfall.
    */
   @Path("/data[at0001]/items[at0049]/value|value")
   private String artDerAufnahmeValue;
 
   /**
-   * Stationärer Versorgungsfall/Aufnahmedaten/Datum/Uhrzeit der Aufnahme
+   * Path: Stationärer Versorgungsfall/Aufnahmedaten/Datum/Uhrzeit der Aufnahme
+   * Description: Datum/Zeit, an dem der Patient aufgenommen wurde.
    */
   @Path("/data[at0001]/items[at0071]/value|value")
   private TemporalAccessor datumUhrzeitDerAufnahmeValue;
 
   /**
-   * Stationärer Versorgungsfall/Aufnahmedaten/Zugewiesener Patientenstandort
+   * Path: Stationärer Versorgungsfall/Aufnahmedaten/Zugewiesener Patientenstandort
+   * Description: Zugewiesener Patientenstandort
    */
   @Path("/data[at0001]/items[at0131]")
   private List<Cluster> zugewiesenerPatientenstandort;
 
   /**
-   * Stationärer Versorgungsfall/Aufnahmedaten/Vorheriger Patientenstandort
+   * Path: Stationärer Versorgungsfall/Aufnahmedaten/Vorheriger Patientenstandort
+   * Description: Vorheriger Patientenstandort
    */
   @Path("/data[at0001]/items[at0132]")
   private List<Cluster> vorherigerPatientenstandort;
 
   /**
-   * Stationärer Versorgungsfall/Aufnahmedaten/subject
+   * Path: Stationärer Versorgungsfall/Aufnahmedaten/subject
    */
   @Path("/subject")
   private PartyProxy subject;
 
   /**
-   * Stationärer Versorgungsfall/Aufnahmedaten/language
+   * Path: Stationärer Versorgungsfall/Aufnahmedaten/language
    */
   @Path("/language")
   private Language language;
 
   /**
-   * Stationärer Versorgungsfall/Aufnahmedaten/feeder_audit
+   * Path: Stationärer Versorgungsfall/Aufnahmedaten/feeder_audit
    */
   @Path("/feeder_audit")
   private FeederAudit feederAudit;

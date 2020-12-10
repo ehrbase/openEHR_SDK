@@ -40,6 +40,7 @@ import org.ehrbase.terminology.client.terminology.TermDefinition;
 import org.ehrbase.terminology.client.terminology.TerminologyProvider;
 import org.ehrbase.terminology.client.terminology.ValueSet;
 import org.ehrbase.webtemplate.model.WebTemplate;
+import org.ehrbase.webtemplate.model.WebTemplateAnnotation;
 import org.ehrbase.webtemplate.model.WebTemplateInput;
 import org.ehrbase.webtemplate.model.WebTemplateInputValue;
 import org.ehrbase.webtemplate.model.WebTemplateNode;
@@ -91,15 +92,19 @@ public class OPTParser {
       String code = term.getCode();
       String value = null;
       String description = null;
+      Map<String,String> otherMap = new HashMap<>();
       for (StringDictionaryItem item : term.getItemsArray()) {
         if ("text".equals(item.getId())) {
           value = item.getStringValue();
+        }else
+        if ("description".equals(item.getId())) {description = item.getStringValue();
+        }else{
+          otherMap.put(item.getId(),item.getStringValue());
         }
-        if ("description".equals(item.getId())) description = item.getStringValue();
       }
       termDefinitionMap
           .computeIfAbsent(code, c -> new HashMap<>())
-          .put(defaultLanguage, new TermDefinition(code, value, description));
+          .put(defaultLanguage, new TermDefinition(code, value, description,otherMap));
     }
     WebTemplateNode node = parseCCOMPLEXOBJECT(carchetyperoot, aqlPath, termDefinitionMap, null);
     node.setNodeId(carchetyperoot.getArchetypeId().getValue());
@@ -575,6 +580,11 @@ public class OPTParser {
               termDefinitionMap.get(nodeId).entrySet().stream()
                   .collect(
                       Collectors.toMap(Map.Entry::getKey, e -> e.getValue().getDescription())));
+
+      Optional.of(termDefinitionMap.get(nodeId)).map(m -> m.get(defaultLanguage)).map(TermDefinition::getOther).map(m ->m.get("comment")).ifPresent(s -> {
+        node.setAnnotations(new WebTemplateAnnotation());
+        node.getAnnotations().setComment(s);
+      });
     } else {
       String name =
           StringUtils.isNotBlank(rmAttributeName) ? rmAttributeName : cobject.getRmTypeName();

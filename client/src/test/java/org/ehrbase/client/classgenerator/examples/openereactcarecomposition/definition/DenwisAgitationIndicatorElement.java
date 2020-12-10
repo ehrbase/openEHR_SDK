@@ -10,18 +10,18 @@ import org.ehrbase.client.classgenerator.interfaces.LocatableEntity;
 @Entity
 @Generated(
     value = "org.ehrbase.client.classgenerator.ClassGenerator",
-    date = "2020-12-09T11:37:51.569762500+01:00",
+    date = "2020-12-10T13:06:11.391502500+01:00",
     comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
 )
 public class DenwisAgitationIndicatorElement implements LocatableEntity {
   /**
-   * open_eREACT-Care/Assessment/DENWIS/Point in time/feeder_audit
+   * Path: open_eREACT-Care/Assessment/DENWIS/Point in time/feeder_audit
    */
   @Path("/feeder_audit")
   private FeederAudit feederAudit;
 
   /**
-   * open_eREACT-Care/Assessment/DENWIS/Point in time/value
+   * Path: open_eREACT-Care/Assessment/DENWIS/Point in time/value
    */
   @Path("/value")
   @Choice

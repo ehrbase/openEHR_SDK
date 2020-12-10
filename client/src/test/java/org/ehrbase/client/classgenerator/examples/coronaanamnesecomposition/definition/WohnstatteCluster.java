@@ -14,24 +14,27 @@ import org.ehrbase.client.classgenerator.interfaces.LocatableEntity;
 @Archetype("openEHR-EHR-CLUSTER.dwelling.v0")
 @Generated(
     value = "org.ehrbase.client.classgenerator.ClassGenerator",
-    date = "2020-12-09T11:37:52.634762900+01:00",
+    date = "2020-12-10T13:06:12.617025900+01:00",
     comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
 )
 public class WohnstatteCluster implements LocatableEntity {
   /**
-   * Bericht/Allgemeine Angaben/Wohnsituation/Wohnstätte/Anzahl der Schlafzimmer
+   * Path: Bericht/Allgemeine Angaben/Wohnsituation/Wohnstätte/Anzahl der Schlafzimmer
+   * Description: Die Anzahl der Schlafzimmer innerhalb der Wohnstätte.
    */
   @Path("/items[at0028]/value|magnitude")
   private Long anzahlDerSchlafzimmerMagnitude;
 
   /**
-   * Bericht/Allgemeine Angaben/Wohnsituation/Wohnstätte/Ergänzende Details
+   * Path: Bericht/Allgemeine Angaben/Wohnsituation/Wohnstätte/Ergänzende Details
+   * Description: Weitere strukturierte Details zur Wohnstätte.
+   * Comment: Dieser SLOT kann verwendet werden, um weitere Archetypen zu verschachteln, die die Wohnstätte mit ergänzenden Details beschreiben und einem lokalen Zuständigkeitsbereich angehören können.
    */
   @Path("/items[at0003]")
   private List<Cluster> erganzendeDetails;
 
   /**
-   * Bericht/Allgemeine Angaben/Wohnsituation/Wohnstätte/feeder_audit
+   * Path: Bericht/Allgemeine Angaben/Wohnsituation/Wohnstätte/feeder_audit
    */
   @Path("/feeder_audit")
   private FeederAudit feederAudit;

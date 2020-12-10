@@ -30,121 +30,130 @@ import org.ehrbase.client.openehrclient.VersionUid;
 @Archetype("openEHR-EHR-COMPOSITION.report.v1")
 @Generated(
     value = "org.ehrbase.client.classgenerator.ClassGenerator",
-    date = "2020-12-09T11:37:52.558762500+01:00",
+    date = "2020-12-10T13:06:12.486026500+01:00",
     comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
 )
 @Template("Corona_Anamnese")
 public class CoronaAnamneseComposition implements CompositionEntity {
   /**
-   * Bericht/context/Bericht ID
+   * Path: Bericht/context/Bericht ID
+   * Description: Identifizierungsmerkmal des Berichts.
    */
   @Path("/context/other_context[at0001]/items[at0002]/value|value")
   private String berichtIdValue;
 
   /**
-   * Bericht/context/Status
+   * Path: Bericht/context/Status
+   * Description: Der Status des gesamten Berichts. Hinweis: Dies ist nicht der Status einer Berichtskomponente.
    */
   @Path("/context/other_context[at0001]/items[at0005]/value|value")
   private String statusValue;
 
   /**
-   * Bericht/context/Erweiterung
+   * Path: Bericht/context/Erweiterung
+   * Description: Zusätzliche Informationen zur Erfassung lokaler Inhalte oder Anpassung an andere Referenzmodelle/Formalismen.
+   * Comment: Zum Beispiel: lokaler Informationsbedarf oder zusätzliche Metadaten zur Anpassung an FHIR-Ressourcen oder CIMI-Modelle.
    */
   @Path("/context/other_context[at0001]/items[at0006]")
   private List<Cluster> erweiterung;
 
   /**
-   * Bericht/context/start_time
+   * Path: Bericht/context/start_time
    */
   @Path("/context/start_time|value")
   private TemporalAccessor startTimeValue;
 
   /**
-   * Bericht/context/participations
+   * Path: Bericht/context/participations
    */
   @Path("/context/participations")
   private List<Participation> participations;
 
   /**
-   * Bericht/context/end_time
+   * Path: Bericht/context/end_time
    */
   @Path("/context/end_time|value")
   private TemporalAccessor endTimeValue;
 
   /**
-   * Bericht/context/location
+   * Path: Bericht/context/location
    */
   @Path("/context/location")
   private String location;
 
   /**
-   * Bericht/context/health_care_facility
+   * Path: Bericht/context/health_care_facility
    */
   @Path("/context/health_care_facility")
   private PartyIdentified healthCareFacility;
 
   /**
-   * Bericht/context/setting
+   * Path: Bericht/context/setting
    */
   @Path("/context/setting|defining_code")
   private Setting settingDefiningCode;
 
   /**
-   * Bericht/Geschichte/Historie
+   * Path: Bericht/Geschichte/Historie
+   * Description: Die subjektive klinische Vorgeschichte des Pflegebedürftigen, wie sie direkt von der Person erfasst oder einem Kliniker von der Person oder einem Pfleger gemeldet wurde.
    */
   @Path("/content[openEHR-EHR-OBSERVATION.story.v1]")
   private List<GeschichteHistorieObservation> geschichteHistorie;
 
   /**
-   * Bericht/Symptome
+   * Path: Bericht/Symptome
+   * Description: Eine generische Abschnittsüberschrift eines Templates, welche entsprechend dem spezifischen klinischen Kontext umbenannt werden sollte.
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Symptome']")
   private SymptomeSection symptome;
 
   /**
-   * Bericht/Kontakt
+   * Path: Bericht/Kontakt
+   * Description: Eine generische Abschnittsüberschrift eines Templates, welche entsprechend dem spezifischen klinischen Kontext umbenannt werden sollte.
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Kontakt']")
   private KontaktSection kontakt;
 
   /**
-   * Bericht/Risikogebiet
+   * Path: Bericht/Risikogebiet
+   * Description: Eine generische Abschnittsüberschrift eines Templates, welche entsprechend dem spezifischen klinischen Kontext umbenannt werden sollte.
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Risikogebiet']")
   private RisikogebietSection risikogebiet;
 
   /**
-   * Bericht/Allgemeine Angaben
+   * Path: Bericht/Allgemeine Angaben
+   * Description: Eine generische Abschnittsüberschrift eines Templates, welche entsprechend dem spezifischen klinischen Kontext umbenannt werden sollte.
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Allgemeine Angaben']")
   private AllgemeineAngabenSection allgemeineAngaben;
 
   /**
-   * Bericht/composer
+   * Path: Bericht/composer
    */
   @Path("/composer")
   private PartyProxy composer;
 
   /**
-   * Bericht/language
+   * Path: Bericht/language
    */
   @Path("/language")
   private Language language;
 
   /**
-   * Bericht/feeder_audit
+   * Path: Bericht/feeder_audit
    */
   @Path("/feeder_audit")
   private FeederAudit feederAudit;
 
   /**
-   * Bericht/category
+   * Path: Bericht/category
    */
   @Path("/category|defining_code")
   private Category categoryDefiningCode;
 
   /**
-   * Bericht/territory
+   * Path: Bericht/territory
    */
   @Path("/territory")
   private Territory territory;

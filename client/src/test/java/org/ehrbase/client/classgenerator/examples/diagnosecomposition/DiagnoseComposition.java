@@ -26,91 +26,95 @@ import org.ehrbase.client.openehrclient.VersionUid;
 @Archetype("openEHR-EHR-COMPOSITION.report.v1")
 @Generated(
     value = "org.ehrbase.client.classgenerator.ClassGenerator",
-    date = "2020-12-09T11:37:52.381760600+01:00",
+    date = "2020-12-10T13:06:12.339026+01:00",
     comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
 )
 @Template("Diagnose")
 public class DiagnoseComposition implements CompositionEntity {
   /**
-   * COVID-19-Diagnose/context/Bericht ID
+   * Path: COVID-19-Diagnose/context/Bericht ID
+   * Description: Identifizierungsmerkmal des Berichts.
    */
   @Path("/context/other_context[at0001]/items[at0002]/value|value")
   private String berichtIdValue;
 
   /**
-   * COVID-19-Diagnose/context/Fallidentifikation
+   * Path: COVID-19-Diagnose/context/Fallidentifikation
+   * Description: Zur Erfassung von Details zur Identifikation eines Falls im Gesundheitswesen.
    */
   @Path("/context/other_context[at0001]/items[openEHR-EHR-CLUSTER.case_identification.v0]")
   private FallidentifikationCluster fallidentifikation;
 
   /**
-   * COVID-19-Diagnose/context/start_time
+   * Path: COVID-19-Diagnose/context/start_time
    */
   @Path("/context/start_time|value")
   private TemporalAccessor startTimeValue;
 
   /**
-   * COVID-19-Diagnose/context/participations
+   * Path: COVID-19-Diagnose/context/participations
    */
   @Path("/context/participations")
   private List<Participation> participations;
 
   /**
-   * COVID-19-Diagnose/context/end_time
+   * Path: COVID-19-Diagnose/context/end_time
    */
   @Path("/context/end_time|value")
   private TemporalAccessor endTimeValue;
 
   /**
-   * COVID-19-Diagnose/context/location
+   * Path: COVID-19-Diagnose/context/location
    */
   @Path("/context/location")
   private String location;
 
   /**
-   * COVID-19-Diagnose/context/health_care_facility
+   * Path: COVID-19-Diagnose/context/health_care_facility
    */
   @Path("/context/health_care_facility")
   private PartyIdentified healthCareFacility;
 
   /**
-   * COVID-19-Diagnose/context/setting
+   * Path: COVID-19-Diagnose/context/setting
    */
   @Path("/context/setting|defining_code")
   private Setting settingDefiningCode;
 
   /**
-   * COVID-19-Diagnose/Problem/Diagnose
+   * Path: COVID-19-Diagnose/Problem/Diagnose
+   * Description: Angaben über einen einzelnen identifizierten Gesundheitszustand, eine Verletzung, eine Behinderung oder ein Problem, welches das körperliche, geistige und/oder soziale Wohlergehen einer Einzelperson beeinträchtigt.
+   * Comment: Eine klare Abgrenzung zwischen Problem und Diagnose ist in der Praxis nicht einfach zu erreichen. Für die Zwecke der klinischen Dokumentation mit diesem Archetyp werden Problem und Diagnose als ein Kontinuum betrachtet, mit zunehmendem Detaillierungsgrad und unterstützenden Beweisen, die in der Regel dem Etikett "Diagnose" Gewicht verleihen.
    */
   @Path("/content[openEHR-EHR-EVALUATION.problem_diagnosis.v1]")
   private ProblemDiagnoseEvaluation problemDiagnose;
 
   /**
-   * COVID-19-Diagnose/composer
+   * Path: COVID-19-Diagnose/composer
    */
   @Path("/composer")
   private PartyProxy composer;
 
   /**
-   * COVID-19-Diagnose/language
+   * Path: COVID-19-Diagnose/language
    */
   @Path("/language")
   private Language language;
 
   /**
-   * COVID-19-Diagnose/feeder_audit
+   * Path: COVID-19-Diagnose/feeder_audit
    */
   @Path("/feeder_audit")
   private FeederAudit feederAudit;
 
   /**
-   * COVID-19-Diagnose/category
+   * Path: COVID-19-Diagnose/category
    */
   @Path("/category|defining_code")
   private Category categoryDefiningCode;
 
   /**
-   * COVID-19-Diagnose/territory
+   * Path: COVID-19-Diagnose/territory
    */
   @Path("/territory")
   private Territory territory;

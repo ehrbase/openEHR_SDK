@@ -26,85 +26,94 @@ import org.ehrbase.client.openehrclient.VersionUid;
 @Archetype("openEHR-EHR-COMPOSITION.encounter.v1")
 @Generated(
     value = "org.ehrbase.client.classgenerator.ClassGenerator",
-    date = "2020-12-09T11:37:51.159759700+01:00",
+    date = "2020-12-10T13:06:11.008495400+01:00",
     comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
 )
 @Template("ehrbase_multi_occurrence.de.v1")
 public class EhrbaseMultiOccurrenceDeV1Composition implements CompositionEntity {
   /**
-   * Encounter/context/Extension
+   * Path: Encounter/context/Extension
+   * Description: Additional information required to capture local context or to align with other
+   *                 reference models/formalisms.
+   *             
+   * Comment: e.g. Local hospital departmental infomation or additional metadata to align with FHIR or
+   *                 CIMI equivalents.
+   *             
    */
   @Path("/context/other_context[at0001]/items[at0002]")
   private List<Cluster> extension;
 
   /**
-   * Encounter/context/start_time
+   * Path: Encounter/context/start_time
    */
   @Path("/context/start_time|value")
   private TemporalAccessor startTimeValue;
 
   /**
-   * Encounter/context/participations
+   * Path: Encounter/context/participations
    */
   @Path("/context/participations")
   private List<Participation> participations;
 
   /**
-   * Encounter/context/end_time
+   * Path: Encounter/context/end_time
    */
   @Path("/context/end_time|value")
   private TemporalAccessor endTimeValue;
 
   /**
-   * Encounter/context/location
+   * Path: Encounter/context/location
    */
   @Path("/context/location")
   private String location;
 
   /**
-   * Encounter/context/health_care_facility
+   * Path: Encounter/context/health_care_facility
    */
   @Path("/context/health_care_facility")
   private PartyIdentified healthCareFacility;
 
   /**
-   * Encounter/context/setting
+   * Path: Encounter/context/setting
    */
   @Path("/context/setting|defining_code")
   private Setting settingDefiningCode;
 
   /**
-   * Encounter/Body temperature
+   * Path: Encounter/Body temperature
+   * Description: A measurement of the body temperature, which is a surrogate for the core
+   *                         body temperature of the individual.
+   *                     
    */
   @Path("/content[openEHR-EHR-OBSERVATION.body_temperature.v2]")
   private List<BodyTemperatureObservation> bodyTemperature;
 
   /**
-   * Encounter/composer
+   * Path: Encounter/composer
    */
   @Path("/composer")
   private PartyProxy composer;
 
   /**
-   * Encounter/language
+   * Path: Encounter/language
    */
   @Path("/language")
   private Language language;
 
   /**
-   * Encounter/feeder_audit
+   * Path: Encounter/feeder_audit
    */
   @Path("/feeder_audit")
   private FeederAudit feederAudit;
 
   /**
-   * Encounter/category
+   * Path: Encounter/category
    */
   @Path("/category|defining_code")
   private Category categoryDefiningCode;
 
   /**
-   * Encounter/territory
+   * Path: Encounter/territory
    */
   @Path("/territory")
   private Territory territory;

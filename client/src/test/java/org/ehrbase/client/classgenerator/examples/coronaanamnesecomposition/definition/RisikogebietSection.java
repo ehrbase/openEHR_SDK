@@ -12,24 +12,26 @@ import org.ehrbase.client.classgenerator.interfaces.LocatableEntity;
 @Archetype("openEHR-EHR-SECTION.adhoc.v1")
 @Generated(
     value = "org.ehrbase.client.classgenerator.ClassGenerator",
-    date = "2020-12-09T11:37:52.604762700+01:00",
+    date = "2020-12-10T13:06:12.569028100+01:00",
     comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
 )
 public class RisikogebietSection implements LocatableEntity {
   /**
-   * Bericht/Risikogebiet/Historie der Reise
+   * Path: Bericht/Risikogebiet/Historie der Reise
+   * Description: Einzelheiten einer Reise im Hinblick auf die Exposition gegenüber potenziellen Risiken.
    */
   @Path("/items[openEHR-EHR-OBSERVATION.travel_history.v0]")
   private List<HistorieDerReiseObservation> historieDerReise;
 
   /**
-   * Bericht/Risikogebiet/Reisefall
+   * Path: Bericht/Risikogebiet/Reisefall
+   * Description: Details zur Reise während eines bestimmten Zeitraums.
    */
   @Path("/items[openEHR-EHR-OBSERVATION.travel_event.v0]")
   private List<ReisefallObservation> reisefall;
 
   /**
-   * Bericht/Risikogebiet/feeder_audit
+   * Path: Bericht/Risikogebiet/feeder_audit
    */
   @Path("/feeder_audit")
   private FeederAudit feederAudit;

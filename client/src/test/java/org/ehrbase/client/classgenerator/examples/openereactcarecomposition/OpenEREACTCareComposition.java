@@ -29,103 +29,109 @@ import org.ehrbase.client.openehrclient.VersionUid;
 @Archetype("openEHR-EHR-COMPOSITION.encounter.v1")
 @Generated(
     value = "org.ehrbase.client.classgenerator.ClassGenerator",
-    date = "2020-12-09T11:37:51.524761300+01:00",
+    date = "2020-12-10T13:06:11.310500500+01:00",
     comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
 )
 @Template("open_eREACT-Care")
 public class OpenEREACTCareComposition implements CompositionEntity {
   /**
-   * open_eREACT-Care/context/Extension
+   * Path: open_eREACT-Care/context/Extension
+   * Description: Additional information required to capture local context or to align with other reference models/formalisms.
+   * Comment: e.g. Local hospital departmental infomation or additional metadata to align with FHIR or CIMI equivalents.
    */
   @Path("/context/other_context[at0001]/items[at0002]")
   private List<Cluster> extension;
 
   /**
-   * open_eREACT-Care/context/start_time
+   * Path: open_eREACT-Care/context/start_time
    */
   @Path("/context/start_time|value")
   private TemporalAccessor startTimeValue;
 
   /**
-   * open_eREACT-Care/context/participations
+   * Path: open_eREACT-Care/context/participations
    */
   @Path("/context/participations")
   private List<Participation> participations;
 
   /**
-   * open_eREACT-Care/context/end_time
+   * Path: open_eREACT-Care/context/end_time
    */
   @Path("/context/end_time|value")
   private TemporalAccessor endTimeValue;
 
   /**
-   * open_eREACT-Care/context/location
+   * Path: open_eREACT-Care/context/location
    */
   @Path("/context/location")
   private String location;
 
   /**
-   * open_eREACT-Care/context/health_care_facility
+   * Path: open_eREACT-Care/context/health_care_facility
    */
   @Path("/context/health_care_facility")
   private PartyIdentified healthCareFacility;
 
   /**
-   * open_eREACT-Care/context/setting
+   * Path: open_eREACT-Care/context/setting
    */
   @Path("/context/setting|defining_code")
   private Setting settingDefiningCode;
 
   /**
-   * open_eREACT-Care/Situation
+   * Path: open_eREACT-Care/Situation
+   * Description: A generic section header which should be renamed in a template to suit a specific clinical context.
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Situation']")
   private SituationSection situation;
 
   /**
-   * open_eREACT-Care/Background
+   * Path: open_eREACT-Care/Background
+   * Description: A generic section header which should be renamed in a template to suit a specific clinical context.
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Background']")
   private BackgroundSection background;
 
   /**
-   * open_eREACT-Care/Assessment
+   * Path: open_eREACT-Care/Assessment
+   * Description: A generic section header which should be renamed in a template to suit a specific clinical context.
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Assessment']")
   private AssessmentSection assessment;
 
   /**
-   * open_eREACT-Care/Response
+   * Path: open_eREACT-Care/Response
+   * Description: A generic section header which should be renamed in a template to suit a specific clinical context.
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Response']")
   private ResponseSection response;
 
   /**
-   * open_eREACT-Care/composer
+   * Path: open_eREACT-Care/composer
    */
   @Path("/composer")
   private PartyProxy composer;
 
   /**
-   * open_eREACT-Care/language
+   * Path: open_eREACT-Care/language
    */
   @Path("/language")
   private Language language;
 
   /**
-   * open_eREACT-Care/feeder_audit
+   * Path: open_eREACT-Care/feeder_audit
    */
   @Path("/feeder_audit")
   private FeederAudit feederAudit;
 
   /**
-   * open_eREACT-Care/category
+   * Path: open_eREACT-Care/category
    */
   @Path("/category|defining_code")
   private Category categoryDefiningCode;
 
   /**
-   * open_eREACT-Care/territory
+   * Path: open_eREACT-Care/territory
    */
   @Path("/territory")
   private Territory territory;

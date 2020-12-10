@@ -17,42 +17,45 @@ import org.ehrbase.client.classgenerator.shareddefinition.Language;
 @Archetype("openEHR-EHR-OBSERVATION.story.v1")
 @Generated(
     value = "org.ehrbase.client.classgenerator.ClassGenerator",
-    date = "2020-12-10T09:57:05.984357+01:00",
+    date = "2020-12-10T13:06:13.361034+01:00",
     comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
 )
 public class GeschichteHistorieObservation implements EntryEntity {
   /**
-   * Bericht/Geschichte/Historie/origin
+   * Path: Bericht/Geschichte/Historie/origin
    */
   @Path("/data[at0001]/origin|value")
   private TemporalAccessor originValue;
 
   /**
-   * Bericht/Geschichte/Historie/Erweiterung
+   * Path: Bericht/Geschichte/Historie/Erweiterung
+   * Description: Zusätzliche Informationen, die zur Erfassung lokaler Inhalte oder zur Anpassung an andere Referenzmodelle/Formalismen erforderlich sind.
+   * Comment: Zum Beispiel: Lokale Informationsanforderungen oder zusätzliche Metadaten, um Verknüpfungen mit FHIR oder CIMI Äquivalenten herzustellen.
    */
   @Path("/protocol[at0007]/items[at0008]")
   private List<Cluster> erweiterung;
 
   /**
-   * Bericht/Geschichte/Historie/subject
+   * Path: Bericht/Geschichte/Historie/subject
    */
   @Path("/subject")
   private PartyProxy subject;
 
   /**
-   * Bericht/Geschichte/Historie/language
+   * Path: Bericht/Geschichte/Historie/language
    */
   @Path("/language")
   private Language language;
 
   /**
-   * Bericht/Geschichte/Historie/feeder_audit
+   * Path: Bericht/Geschichte/Historie/feeder_audit
    */
   @Path("/feeder_audit")
   private FeederAudit feederAudit;
 
   /**
-   * Bericht/Geschichte/Historie/Beliebiges Ereignis
+   * Path: Bericht/Geschichte/Historie/Beliebiges Ereignis
+   * Description: Standardmäßiger, nicht näher beschriebener Zeitpunkt oder Intervall Ereignis welches in einem Template oder bei der Anwendung genauer definiert werden kann.
    */
   @Path("/data[at0001]/events[at0002]")
   @Choice

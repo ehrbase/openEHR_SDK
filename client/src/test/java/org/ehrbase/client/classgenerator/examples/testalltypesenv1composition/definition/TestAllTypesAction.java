@@ -16,54 +16,55 @@ import org.ehrbase.client.classgenerator.shareddefinition.Transition;
 @Archetype("openEHR-EHR-ACTION.test_all_types.v1")
 @Generated(
     value = "org.ehrbase.client.classgenerator.ClassGenerator",
-    date = "2020-12-09T11:37:50.986760500+01:00",
+    date = "2020-12-10T13:06:10.818494500+01:00",
     comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
 )
 public class TestAllTypesAction implements EntryEntity {
   /**
-   * Test all types/Test all types/section 2/section 3/Test all types/Test all types
+   * Path: Test all types/Test all types/section 2/section 3/Test all types/Test all types
+   * Description: unknown
    */
   @Path("/description[at0001]/items[openEHR-EHR-CLUSTER.test_all_types.v1]")
   private List<TestAllTypesCluster> testAllTypes;
 
   /**
-   * Test all types/Test all types/section 2/section 3/Test all types/subject
+   * Path: Test all types/Test all types/section 2/section 3/Test all types/subject
    */
   @Path("/subject")
   private PartyProxy subject;
 
   /**
-   * Test all types/Test all types/section 2/section 3/Test all types/language
+   * Path: Test all types/Test all types/section 2/section 3/Test all types/language
    */
   @Path("/language")
   private Language language;
 
   /**
-   * Test all types/Test all types/section 2/section 3/Test all types/feeder_audit
+   * Path: Test all types/Test all types/section 2/section 3/Test all types/feeder_audit
    */
   @Path("/feeder_audit")
   private FeederAudit feederAudit;
 
   /**
-   * Test all types/Test all types/section 2/section 3/Test all types/time
+   * Path: Test all types/Test all types/section 2/section 3/Test all types/time
    */
   @Path("/time|value")
   private TemporalAccessor timeValue;
 
   /**
-   * Test all types/Test all types/section 2/section 3/Test all types/ism_transition/Careflow_step
+   * Path: Test all types/Test all types/section 2/section 3/Test all types/ism_transition/Careflow_step
    */
   @Path("/ism_transition/careflow_step|defining_code")
   private CareflowStepDefiningCode careflowStepDefiningCode;
 
   /**
-   * Test all types/Test all types/section 2/section 3/Test all types/ism_transition/Current_state
+   * Path: Test all types/Test all types/section 2/section 3/Test all types/ism_transition/Current_state
    */
   @Path("/ism_transition/current_state|defining_code")
   private CurrentStateDefiningCode currentStateDefiningCode;
 
   /**
-   * Test all types/Test all types/section 2/section 3/Test all types/ism_transition/transition
+   * Path: Test all types/Test all types/section 2/section 3/Test all types/ism_transition/transition
    */
   @Path("/ism_transition/transition|defining_code")
   private Transition transitionDefiningCode;

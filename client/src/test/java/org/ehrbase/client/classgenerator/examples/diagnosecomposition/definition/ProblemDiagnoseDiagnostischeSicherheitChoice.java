@@ -4,7 +4,7 @@ import javax.annotation.processing.Generated;
 
 @Generated(
     value = "org.ehrbase.client.classgenerator.ClassGenerator",
-    date = "2020-12-09T11:37:52.396762500+01:00",
+    date = "2020-12-10T13:06:12.358027700+01:00",
     comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
 )
 public interface ProblemDiagnoseDiagnostischeSicherheitChoice {

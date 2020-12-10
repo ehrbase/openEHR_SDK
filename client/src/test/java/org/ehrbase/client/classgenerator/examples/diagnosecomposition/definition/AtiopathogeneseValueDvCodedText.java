@@ -9,13 +9,13 @@ import org.ehrbase.client.classgenerator.interfaces.RMEntity;
 @Entity
 @Generated(
     value = "org.ehrbase.client.classgenerator.ClassGenerator",
-    date = "2020-12-09T11:37:52.391761400+01:00",
+    date = "2020-12-10T13:06:12.352026300+01:00",
     comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
 )
 @OptionFor("DV_CODED_TEXT")
 public class AtiopathogeneseValueDvCodedText implements RMEntity, AtiopathogeneseValueChoice {
   /**
-   * COVID-19-Diagnose/Problem/Diagnose/Ätiopathogenese/value/value
+   * Path: COVID-19-Diagnose/Problem/Diagnose/Ätiopathogenese/value/value
    */
   @Path("|defining_code")
   private ValueDefiningCode valueDefiningCode;

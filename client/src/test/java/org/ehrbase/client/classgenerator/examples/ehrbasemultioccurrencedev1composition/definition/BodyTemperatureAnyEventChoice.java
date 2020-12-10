@@ -11,14 +11,10 @@ import javax.annotation.processing.Generated;
 
 @Generated(
     value = "org.ehrbase.client.classgenerator.ClassGenerator",
-    date = "2020-12-09T11:37:51.167759200+01:00",
+    date = "2020-12-10T13:06:11.019496200+01:00",
     comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
 )
 public interface BodyTemperatureAnyEventChoice {
-  Double getTemperatureMagnitude();
-
-  void setTemperatureMagnitude(Double temperatureMagnitude);
-
   Cluster getExertion();
 
   void setExertion(Cluster exertion);
@@ -27,27 +23,31 @@ public interface BodyTemperatureAnyEventChoice {
 
   void setDescriptionOfThermalStressValue(String descriptionOfThermalStressValue);
 
-  TemporalAccessor getTimeValue();
+  BodyTemperatureBodyExposureChoice getBodyExposure();
 
-  void setTimeValue(TemporalAccessor timeValue);
-
-  FeederAudit getFeederAudit();
-
-  void setFeederAudit(FeederAudit feederAudit);
+  void setBodyExposure(BodyTemperatureBodyExposureChoice bodyExposure);
 
   Long getCurrentDayOfMenstrualCycleMagnitude();
 
   void setCurrentDayOfMenstrualCycleMagnitude(Long currentDayOfMenstrualCycleMagnitude);
 
-  List<Cluster> getEnvironmentalConditions();
+  Double getTemperatureMagnitude();
 
-  void setEnvironmentalConditions(List<Cluster> environmentalConditions);
+  void setTemperatureMagnitude(Double temperatureMagnitude);
 
-  BodyTemperatureBodyExposureChoice getBodyExposure();
+  FeederAudit getFeederAudit();
 
-  void setBodyExposure(BodyTemperatureBodyExposureChoice bodyExposure);
+  void setFeederAudit(FeederAudit feederAudit);
 
   String getTemperatureUnits();
 
   void setTemperatureUnits(String temperatureUnits);
+
+  TemporalAccessor getTimeValue();
+
+  void setTimeValue(TemporalAccessor timeValue);
+
+  List<Cluster> getEnvironmentalConditions();
+
+  void setEnvironmentalConditions(List<Cluster> environmentalConditions);
 }

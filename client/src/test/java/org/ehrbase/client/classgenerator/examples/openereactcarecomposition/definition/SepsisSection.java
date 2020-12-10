@@ -11,18 +11,19 @@ import org.ehrbase.client.classgenerator.interfaces.LocatableEntity;
 @Archetype("openEHR-EHR-SECTION.adhoc.v1")
 @Generated(
     value = "org.ehrbase.client.classgenerator.ClassGenerator",
-    date = "2020-12-09T11:37:51.580762700+01:00",
+    date = "2020-12-10T13:06:11.405499800+01:00",
     comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
 )
 public class SepsisSection implements LocatableEntity {
   /**
-   * open_eREACT-Care/Assessment/Sepsis/Sepsis screening
+   * Path: open_eREACT-Care/Assessment/Sepsis/Sepsis screening
+   * Description: Sepsis screening tool for ages 12 plus based on the paper forms developed by The UK Sepsis Trust.
    */
   @Path("/items[openEHR-EHR-OBSERVATION.sepsis_screening_tool.v0 and name/value='Sepsis screening']")
   private SepsisScreeningObservation sepsisScreening;
 
   /**
-   * open_eREACT-Care/Assessment/Sepsis/feeder_audit
+   * Path: open_eREACT-Care/Assessment/Sepsis/feeder_audit
    */
   @Path("/feeder_audit")
   private FeederAudit feederAudit;

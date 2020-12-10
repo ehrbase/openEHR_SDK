@@ -10,18 +10,19 @@ import org.ehrbase.client.classgenerator.interfaces.LocatableEntity;
 @Entity
 @Generated(
     value = "org.ehrbase.client.classgenerator.ClassGenerator",
-    date = "2020-12-09T11:37:52.393760800+01:00",
+    date = "2020-12-10T13:06:12.354025300+01:00",
     comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
 )
 public class AtiopathogeneseBeschreibungDesEntstehensElement implements LocatableEntity {
   /**
-   * COVID-19-Diagnose/Problem/Diagnose/Ätiopathogenese/Beschreibung des Entstehens
+   * Path: COVID-19-Diagnose/Problem/Diagnose/Ätiopathogenese/Beschreibung des Entstehens
+   * Description: Weitere Beschreibung der Ursachen oder Gründe für das Entstehen (Ätiologie) eines spezifischen Problems/einer Diagnose.
    */
   @Path("/value|value")
   private String value;
 
   /**
-   * COVID-19-Diagnose/Problem/Diagnose/Ätiopathogenese/feeder_audit
+   * Path: COVID-19-Diagnose/Problem/Diagnose/Ätiopathogenese/feeder_audit
    */
   @Path("/feeder_audit")
   private FeederAudit feederAudit;

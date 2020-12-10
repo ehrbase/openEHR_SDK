@@ -10,18 +10,19 @@ import org.ehrbase.client.classgenerator.interfaces.LocatableEntity;
 @Entity
 @Generated(
     value = "org.ehrbase.client.classgenerator.ClassGenerator",
-    date = "2020-12-09T11:37:52.561762500+01:00",
+    date = "2020-12-10T13:06:12.490027500+01:00",
     comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
 )
 public class GeschichteHistorieGeschichteElement implements LocatableEntity {
   /**
-   * Bericht/Geschichte/Historie/Beliebiges Ereignis/Geschichte
+   * Path: Bericht/Geschichte/Historie/Beliebiges Ereignis/Geschichte
+   * Description: Beschreibung der Geschichte oder der klinischen Vorgeschichte für das Fachgebiet der Pflege.
    */
   @Path("/value|value")
   private String value;
 
   /**
-   * Bericht/Geschichte/Historie/Beliebiges Ereignis/feeder_audit
+   * Path: Bericht/Geschichte/Historie/Beliebiges Ereignis/feeder_audit
    */
   @Path("/feeder_audit")
   private FeederAudit feederAudit;

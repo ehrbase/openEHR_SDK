@@ -37,6 +37,10 @@ public class WebTemplateAnnotation implements Serializable {
         return comment;
     }
 
+    public void setComment(String comment) {
+        this.comment = comment;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

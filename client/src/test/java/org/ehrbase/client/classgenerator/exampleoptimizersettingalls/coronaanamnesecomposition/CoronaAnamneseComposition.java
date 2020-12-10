@@ -45,938 +45,1043 @@ import org.ehrbase.client.openehrclient.VersionUid;
 @Archetype("openEHR-EHR-COMPOSITION.report.v1")
 @Generated(
     value = "org.ehrbase.client.classgenerator.ClassGenerator",
-    date = "2020-12-09T11:37:53.051764300+01:00",
+    date = "2020-12-10T13:06:13.044029300+01:00",
     comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
 )
 @Template("Corona_Anamnese")
 public class CoronaAnamneseComposition implements CompositionEntity {
   /**
-   * Bericht/context/Bericht ID
+   * Path: Bericht/context/Bericht ID
+   * Description: Identifizierungsmerkmal des Berichts.
    */
   @Path("/context/other_context[at0001]/items[at0002]/value|value")
   private String berichtIdValue;
 
   /**
-   * Bericht/context/Status
+   * Path: Bericht/context/Status
+   * Description: Der Status des gesamten Berichts. Hinweis: Dies ist nicht der Status einer Berichtskomponente.
    */
   @Path("/context/other_context[at0001]/items[at0005]/value|value")
   private String statusValue;
 
   /**
-   * Bericht/context/Erweiterung
+   * Path: Bericht/context/Erweiterung
+   * Description: Zusätzliche Informationen zur Erfassung lokaler Inhalte oder Anpassung an andere Referenzmodelle/Formalismen.
+   * Comment: Zum Beispiel: lokaler Informationsbedarf oder zusätzliche Metadaten zur Anpassung an FHIR-Ressourcen oder CIMI-Modelle.
    */
   @Path("/context/other_context[at0001]/items[at0006]")
   private List<Cluster> berichtErweiterung;
 
   /**
-   * Bericht/context/start_time
+   * Path: Bericht/context/start_time
    */
   @Path("/context/start_time|value")
   private TemporalAccessor startTimeValue;
 
   /**
-   * Bericht/context/participations
+   * Path: Bericht/context/participations
    */
   @Path("/context/participations")
   private List<Participation> participations;
 
   /**
-   * Bericht/context/end_time
+   * Path: Bericht/context/end_time
    */
   @Path("/context/end_time|value")
   private TemporalAccessor endTimeValue;
 
   /**
-   * Bericht/context/location
+   * Path: Bericht/context/location
    */
   @Path("/context/location")
   private String location;
 
   /**
-   * Bericht/context/health_care_facility
+   * Path: Bericht/context/health_care_facility
    */
   @Path("/context/health_care_facility")
   private PartyIdentified healthCareFacility;
 
   /**
-   * Bericht/context/setting
+   * Path: Bericht/context/setting
    */
   @Path("/context/setting|defining_code")
   private Setting settingDefiningCode;
 
   /**
-   * Bericht/Geschichte/Historie
+   * Path: Bericht/Geschichte/Historie
+   * Description: Die subjektive klinische Vorgeschichte des Pflegebedürftigen, wie sie direkt von der Person erfasst oder einem Kliniker von der Person oder einem Pfleger gemeldet wurde.
    */
   @Path("/content[openEHR-EHR-OBSERVATION.story.v1]")
   private List<GeschichteHistorieObservation> geschichteHistorie;
 
   /**
-   * Bericht/Symptome/Husten/Beliebiges Ereignis/Spezifisches Symptom/Anzeichen/Bezeichnung des Symptoms oder Anzeichens.
+   * Path: Bericht/Symptome/Husten/Beliebiges Ereignis/Spezifisches Symptom/Anzeichen/Bezeichnung des Symptoms oder Anzeichens.
+   * Description: Name des Symptoms oder Anzeichens, das geprüft wird.
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Symptome']/items[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0 and name/value='Husten']/data[at0001]/events[at0002]/data[at0003]/items[at0022]/items[at0004]/value|value")
   private String hustenBezeichnungDesSymptomsOderAnzeichensValue;
 
   /**
-   * Bericht/Symptome/Husten/Beliebiges Ereignis/Spezifisches Symptom/Anzeichen/Vorhanden?
+   * Path: Bericht/Symptome/Husten/Beliebiges Ereignis/Spezifisches Symptom/Anzeichen/Vorhanden?
+   * Description: Das Symptom oder Anzeichen ist vorhanden.
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Symptome']/items[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0 and name/value='Husten']/data[at0001]/events[at0002]/data[at0003]/items[at0022]/items[at0005]/value|defining_code")
   private VorhandenDefiningCode hustenVorhandenDefiningCode;
 
   /**
-   * Bericht/Symptome/Husten/Beliebiges Ereignis/Spezifisches Symptom/Anzeichen/Detaillierte Angaben zum Symptom/Anzeichen
+   * Path: Bericht/Symptome/Husten/Beliebiges Ereignis/Spezifisches Symptom/Anzeichen/Detaillierte Angaben zum Symptom/Anzeichen
+   * Description: Zusätzliche strukturierte Informationen zu einem bestimmten Symptom oder Anzeichen.
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Symptome']/items[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0 and name/value='Husten']/data[at0001]/events[at0002]/data[at0003]/items[at0022]/items[at0026]")
   private List<Cluster> hustenDetaillierteAngabenZumSymptomAnzeichen;
 
   /**
-   * Bericht/Symptome/Husten/Beliebiges Ereignis/time
+   * Path: Bericht/Symptome/Husten/Beliebiges Ereignis/time
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Symptome']/items[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0 and name/value='Husten']/data[at0001]/events[at0002]/time|value")
   private TemporalAccessor hustenTimeValue;
 
   /**
-   * Bericht/Symptome/Husten/origin
+   * Path: Bericht/Symptome/Husten/origin
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Symptome']/items[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0 and name/value='Husten']/data[at0001]/origin|value")
   private TemporalAccessor hustenOriginValue;
 
   /**
-   * Bericht/Symptome/Husten/Erweiterung
+   * Path: Bericht/Symptome/Husten/Erweiterung
+   * Description: Zusätzliche Informationen zur Erfassung lokaler Inhalte oder Anpassung an andere Referenzmodelle/Formalismen.
+   * Comment: Zum Beispiel: Lokaler Informationsbedarf oder zusätzliche Metadaten zur Anpassung an FHIR-Ressourcen oder CIMI-Modelle.
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Symptome']/items[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0 and name/value='Husten']/protocol[at0007]/items[at0021]")
   private List<Cluster> hustenErweiterung;
 
   /**
-   * Bericht/Symptome/Husten/subject
+   * Path: Bericht/Symptome/Husten/subject
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Symptome']/items[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0 and name/value='Husten']/subject")
   private PartyProxy hustenSubject;
 
   /**
-   * Bericht/Symptome/Husten/language
+   * Path: Bericht/Symptome/Husten/language
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Symptome']/items[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0 and name/value='Husten']/language")
   private Language hustenLanguage;
 
   /**
-   * Bericht/Symptome/Schnupfen/Beliebiges Ereignis/Spezifisches Symptom/Anzeichen/Bezeichnung des Symptoms oder Anzeichens.
+   * Path: Bericht/Symptome/Schnupfen/Beliebiges Ereignis/Spezifisches Symptom/Anzeichen/Bezeichnung des Symptoms oder Anzeichens.
+   * Description: Name des Symptoms oder Anzeichens, das geprüft wird.
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Symptome']/items[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0 and name/value='Schnupfen']/data[at0001]/events[at0002]/data[at0003]/items[at0022]/items[at0004]/value|value")
   private String schnupfenBezeichnungDesSymptomsOderAnzeichensValue;
 
   /**
-   * Bericht/Symptome/Schnupfen/Beliebiges Ereignis/Spezifisches Symptom/Anzeichen/Vorhanden?
+   * Path: Bericht/Symptome/Schnupfen/Beliebiges Ereignis/Spezifisches Symptom/Anzeichen/Vorhanden?
+   * Description: Das Symptom oder Anzeichen ist vorhanden.
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Symptome']/items[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0 and name/value='Schnupfen']/data[at0001]/events[at0002]/data[at0003]/items[at0022]/items[at0005]/value|defining_code")
   private VorhandenDefiningCode schnupfenVorhandenDefiningCode;
 
   /**
-   * Bericht/Symptome/Schnupfen/Beliebiges Ereignis/Spezifisches Symptom/Anzeichen/Detaillierte Angaben zum Symptom/Anzeichen
+   * Path: Bericht/Symptome/Schnupfen/Beliebiges Ereignis/Spezifisches Symptom/Anzeichen/Detaillierte Angaben zum Symptom/Anzeichen
+   * Description: Zusätzliche strukturierte Informationen zu einem bestimmten Symptom oder Anzeichen.
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Symptome']/items[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0 and name/value='Schnupfen']/data[at0001]/events[at0002]/data[at0003]/items[at0022]/items[at0026]")
   private List<Cluster> schnupfenDetaillierteAngabenZumSymptomAnzeichen;
 
   /**
-   * Bericht/Symptome/Schnupfen/Beliebiges Ereignis/time
+   * Path: Bericht/Symptome/Schnupfen/Beliebiges Ereignis/time
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Symptome']/items[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0 and name/value='Schnupfen']/data[at0001]/events[at0002]/time|value")
   private TemporalAccessor schnupfenTimeValue;
 
   /**
-   * Bericht/Symptome/Schnupfen/origin
+   * Path: Bericht/Symptome/Schnupfen/origin
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Symptome']/items[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0 and name/value='Schnupfen']/data[at0001]/origin|value")
   private TemporalAccessor schnupfenOriginValue;
 
   /**
-   * Bericht/Symptome/Schnupfen/Erweiterung
+   * Path: Bericht/Symptome/Schnupfen/Erweiterung
+   * Description: Zusätzliche Informationen zur Erfassung lokaler Inhalte oder Anpassung an andere Referenzmodelle/Formalismen.
+   * Comment: Zum Beispiel: Lokaler Informationsbedarf oder zusätzliche Metadaten zur Anpassung an FHIR-Ressourcen oder CIMI-Modelle.
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Symptome']/items[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0 and name/value='Schnupfen']/protocol[at0007]/items[at0021]")
   private List<Cluster> schnupfenErweiterung;
 
   /**
-   * Bericht/Symptome/Schnupfen/subject
+   * Path: Bericht/Symptome/Schnupfen/subject
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Symptome']/items[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0 and name/value='Schnupfen']/subject")
   private PartyProxy schnupfenSubject;
 
   /**
-   * Bericht/Symptome/Schnupfen/language
+   * Path: Bericht/Symptome/Schnupfen/language
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Symptome']/items[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0 and name/value='Schnupfen']/language")
   private Language schnupfenLanguage;
 
   /**
-   * Bericht/Symptome/Heiserkeit/Beliebiges Ereignis/Spezifisches Symptom/Anzeichen/Bezeichnung des Symptoms oder Anzeichens.
+   * Path: Bericht/Symptome/Heiserkeit/Beliebiges Ereignis/Spezifisches Symptom/Anzeichen/Bezeichnung des Symptoms oder Anzeichens.
+   * Description: Name des Symptoms oder Anzeichens, das geprüft wird.
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Symptome']/items[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0 and name/value='Heiserkeit']/data[at0001]/events[at0002]/data[at0003]/items[at0022]/items[at0004]/value|value")
   private String heiserkeitBezeichnungDesSymptomsOderAnzeichensValue;
 
   /**
-   * Bericht/Symptome/Heiserkeit/Beliebiges Ereignis/Spezifisches Symptom/Anzeichen/Vorhanden?
+   * Path: Bericht/Symptome/Heiserkeit/Beliebiges Ereignis/Spezifisches Symptom/Anzeichen/Vorhanden?
+   * Description: Das Symptom oder Anzeichen ist vorhanden.
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Symptome']/items[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0 and name/value='Heiserkeit']/data[at0001]/events[at0002]/data[at0003]/items[at0022]/items[at0005]/value|defining_code")
   private VorhandenDefiningCode heiserkeitVorhandenDefiningCode;
 
   /**
-   * Bericht/Symptome/Heiserkeit/Beliebiges Ereignis/Spezifisches Symptom/Anzeichen/Detaillierte Angaben zum Symptom/Anzeichen
+   * Path: Bericht/Symptome/Heiserkeit/Beliebiges Ereignis/Spezifisches Symptom/Anzeichen/Detaillierte Angaben zum Symptom/Anzeichen
+   * Description: Zusätzliche strukturierte Informationen zu einem bestimmten Symptom oder Anzeichen.
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Symptome']/items[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0 and name/value='Heiserkeit']/data[at0001]/events[at0002]/data[at0003]/items[at0022]/items[at0026]")
   private List<Cluster> heiserkeitDetaillierteAngabenZumSymptomAnzeichen;
 
   /**
-   * Bericht/Symptome/Heiserkeit/Beliebiges Ereignis/time
+   * Path: Bericht/Symptome/Heiserkeit/Beliebiges Ereignis/time
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Symptome']/items[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0 and name/value='Heiserkeit']/data[at0001]/events[at0002]/time|value")
   private TemporalAccessor heiserkeitTimeValue;
 
   /**
-   * Bericht/Symptome/Heiserkeit/origin
+   * Path: Bericht/Symptome/Heiserkeit/origin
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Symptome']/items[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0 and name/value='Heiserkeit']/data[at0001]/origin|value")
   private TemporalAccessor heiserkeitOriginValue;
 
   /**
-   * Bericht/Symptome/Heiserkeit/Erweiterung
+   * Path: Bericht/Symptome/Heiserkeit/Erweiterung
+   * Description: Zusätzliche Informationen zur Erfassung lokaler Inhalte oder Anpassung an andere Referenzmodelle/Formalismen.
+   * Comment: Zum Beispiel: Lokaler Informationsbedarf oder zusätzliche Metadaten zur Anpassung an FHIR-Ressourcen oder CIMI-Modelle.
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Symptome']/items[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0 and name/value='Heiserkeit']/protocol[at0007]/items[at0021]")
   private List<Cluster> heiserkeitErweiterung;
 
   /**
-   * Bericht/Symptome/Heiserkeit/subject
+   * Path: Bericht/Symptome/Heiserkeit/subject
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Symptome']/items[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0 and name/value='Heiserkeit']/subject")
   private PartyProxy heiserkeitSubject;
 
   /**
-   * Bericht/Symptome/Heiserkeit/language
+   * Path: Bericht/Symptome/Heiserkeit/language
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Symptome']/items[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0 and name/value='Heiserkeit']/language")
   private Language heiserkeitLanguage;
 
   /**
-   * Bericht/Symptome/Fieber oder erhöhte Körpertemperatur/Beliebiges Ereignis/Spezifisches Symptom/Anzeichen/Bezeichnung des Symptoms oder Anzeichens.
+   * Path: Bericht/Symptome/Fieber oder erhöhte Körpertemperatur/Beliebiges Ereignis/Spezifisches Symptom/Anzeichen/Bezeichnung des Symptoms oder Anzeichens.
+   * Description: Name des Symptoms oder Anzeichens, das geprüft wird.
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Symptome']/items[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0 and name/value='Fieber oder erhöhte Körpertemperatur']/data[at0001]/events[at0002]/data[at0003]/items[at0022]/items[at0004]/value|value")
   private String fieberOderErhohteKorpertemperaturBezeichnungDesSymptomsOderAnzeichensValue;
 
   /**
-   * Bericht/Symptome/Fieber oder erhöhte Körpertemperatur/Beliebiges Ereignis/Spezifisches Symptom/Anzeichen/Vorhanden?
+   * Path: Bericht/Symptome/Fieber oder erhöhte Körpertemperatur/Beliebiges Ereignis/Spezifisches Symptom/Anzeichen/Vorhanden?
+   * Description: Das Symptom oder Anzeichen ist vorhanden.
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Symptome']/items[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0 and name/value='Fieber oder erhöhte Körpertemperatur']/data[at0001]/events[at0002]/data[at0003]/items[at0022]/items[at0005]/value|defining_code")
   private VorhandenDefiningCode fieberOderErhohteKorpertemperaturVorhandenDefiningCode;
 
   /**
-   * Bericht/Symptome/Fieber oder erhöhte Körpertemperatur/Beliebiges Ereignis/Spezifisches Symptom/Anzeichen/Detaillierte Angaben zum Symptom/Anzeichen
+   * Path: Bericht/Symptome/Fieber oder erhöhte Körpertemperatur/Beliebiges Ereignis/Spezifisches Symptom/Anzeichen/Detaillierte Angaben zum Symptom/Anzeichen
+   * Description: Zusätzliche strukturierte Informationen zu einem bestimmten Symptom oder Anzeichen.
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Symptome']/items[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0 and name/value='Fieber oder erhöhte Körpertemperatur']/data[at0001]/events[at0002]/data[at0003]/items[at0022]/items[at0026]")
   private List<Cluster> fieberOderErhohteKorpertemperaturDetaillierteAngabenZumSymptomAnzeichen;
 
   /**
-   * Bericht/Symptome/Fieber oder erhöhte Körpertemperatur/Beliebiges Ereignis/time
+   * Path: Bericht/Symptome/Fieber oder erhöhte Körpertemperatur/Beliebiges Ereignis/time
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Symptome']/items[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0 and name/value='Fieber oder erhöhte Körpertemperatur']/data[at0001]/events[at0002]/time|value")
   private TemporalAccessor fieberOderErhohteKorpertemperaturTimeValue;
 
   /**
-   * Bericht/Symptome/Fieber oder erhöhte Körpertemperatur/origin
+   * Path: Bericht/Symptome/Fieber oder erhöhte Körpertemperatur/origin
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Symptome']/items[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0 and name/value='Fieber oder erhöhte Körpertemperatur']/data[at0001]/origin|value")
   private TemporalAccessor fieberOderErhohteKorpertemperaturOriginValue;
 
   /**
-   * Bericht/Symptome/Fieber oder erhöhte Körpertemperatur/Erweiterung
+   * Path: Bericht/Symptome/Fieber oder erhöhte Körpertemperatur/Erweiterung
+   * Description: Zusätzliche Informationen zur Erfassung lokaler Inhalte oder Anpassung an andere Referenzmodelle/Formalismen.
+   * Comment: Zum Beispiel: Lokaler Informationsbedarf oder zusätzliche Metadaten zur Anpassung an FHIR-Ressourcen oder CIMI-Modelle.
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Symptome']/items[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0 and name/value='Fieber oder erhöhte Körpertemperatur']/protocol[at0007]/items[at0021]")
   private List<Cluster> fieberOderErhohteKorpertemperaturErweiterung;
 
   /**
-   * Bericht/Symptome/Fieber oder erhöhte Körpertemperatur/subject
+   * Path: Bericht/Symptome/Fieber oder erhöhte Körpertemperatur/subject
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Symptome']/items[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0 and name/value='Fieber oder erhöhte Körpertemperatur']/subject")
   private PartyProxy fieberOderErhohteKorpertemperaturSubject;
 
   /**
-   * Bericht/Symptome/Fieber oder erhöhte Körpertemperatur/language
+   * Path: Bericht/Symptome/Fieber oder erhöhte Körpertemperatur/language
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Symptome']/items[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0 and name/value='Fieber oder erhöhte Körpertemperatur']/language")
   private Language fieberOderErhohteKorpertemperaturLanguage;
 
   /**
-   * Bericht/Symptome/Körpertemperatur/Beliebiges Ereignis/Temperatur
+   * Path: Bericht/Symptome/Körpertemperatur/Beliebiges Ereignis/Temperatur
+   * Description: Die gemessene Körpertemperatur.
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Symptome']/items[openEHR-EHR-OBSERVATION.body_temperature.v2]/data[at0002]/events[at0003]/data[at0001]/items[at0004]/value|magnitude")
   private Double temperaturMagnitude;
 
   /**
-   * Bericht/Symptome/Körpertemperatur/Beliebiges Ereignis/Temperatur
+   * Path: Bericht/Symptome/Körpertemperatur/Beliebiges Ereignis/Temperatur
+   * Description: Die gemessene Körpertemperatur.
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Symptome']/items[openEHR-EHR-OBSERVATION.body_temperature.v2]/data[at0002]/events[at0003]/data[at0001]/items[at0004]/value|units")
   private String temperaturUnits;
 
   /**
-   * Bericht/Symptome/Körpertemperatur/Beliebiges Ereignis/Störfaktoren
+   * Path: Bericht/Symptome/Körpertemperatur/Beliebiges Ereignis/Störfaktoren
+   * Description: Zusätzliche Probleme oder Faktoren, die sich auf die Messung der Körpertemperatur auswirken können und in anderen Bereichen nicht dargestellt werden.
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Symptome']/items[openEHR-EHR-OBSERVATION.body_temperature.v2]/data[at0002]/events[at0003]/state[at0029]/items[at0066]")
   private List<KorpertemperaturStorfaktorenElement> storfaktoren;
 
   /**
-   * Bericht/Symptome/Körpertemperatur/Beliebiges Ereignis/Umgebungsbedingungen
+   * Path: Bericht/Symptome/Körpertemperatur/Beliebiges Ereignis/Umgebungsbedingungen
+   * Description: Details über die Umgebungsbedingungen zum Zeitpunkt der Temperaturmessung
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Symptome']/items[openEHR-EHR-OBSERVATION.body_temperature.v2]/data[at0002]/events[at0003]/state[at0029]/items[at0056]")
   private List<Cluster> umgebungsbedingungen;
 
   /**
-   * Bericht/Symptome/Körpertemperatur/Beliebiges Ereignis/Betätigung
+   * Path: Bericht/Symptome/Körpertemperatur/Beliebiges Ereignis/Betätigung
+   * Description: Details über die Betätigung der Person zum Zeitpunkt der Messung der Temperatur.
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Symptome']/items[openEHR-EHR-OBSERVATION.body_temperature.v2]/data[at0002]/events[at0003]/state[at0029]/items[at0057]")
   private Cluster betatigung;
 
   /**
-   * Bericht/Symptome/Körpertemperatur/Beliebiges Ereignis/time
+   * Path: Bericht/Symptome/Körpertemperatur/Beliebiges Ereignis/time
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Symptome']/items[openEHR-EHR-OBSERVATION.body_temperature.v2]/data[at0002]/events[at0003]/time|value")
   private TemporalAccessor korpertemperaturTimeValue;
 
   /**
-   * Bericht/Symptome/Körpertemperatur/origin
+   * Path: Bericht/Symptome/Körpertemperatur/origin
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Symptome']/items[openEHR-EHR-OBSERVATION.body_temperature.v2]/data[at0002]/origin|value")
   private TemporalAccessor korpertemperaturOriginValue;
 
   /**
-   * Bericht/Symptome/Körpertemperatur/Strukturierte Lokalisation der Messung
+   * Path: Bericht/Symptome/Körpertemperatur/Strukturierte Lokalisation der Messung
+   * Description: Strukturierte anatomische Lokalisation, an dem die Messung vorgenommen wurde.
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Symptome']/items[openEHR-EHR-OBSERVATION.body_temperature.v2]/protocol[at0020]/items[at0064]")
   private List<Cluster> strukturierteLokalisationDerMessung;
 
   /**
-   * Bericht/Symptome/Körpertemperatur/Gerät
+   * Path: Bericht/Symptome/Körpertemperatur/Gerät
+   * Description: Details über das Gerät, das zur Temperaturmessung benutzt wurde.
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Symptome']/items[openEHR-EHR-OBSERVATION.body_temperature.v2]/protocol[at0020]/items[at0059]")
   private Cluster gerat;
 
   /**
-   * Bericht/Symptome/Körpertemperatur/Erweiterung
+   * Path: Bericht/Symptome/Körpertemperatur/Erweiterung
+   * Description: Zusätzliche Informationen zur Erfassung lokaler Inhalte oder Anpassung an andere Referenzmodelle/Formalismen.
+   * Comment: Zum Beispiel: Lokaler Informationsbedarf oder zusätzliche Metadaten zur Anpassung an FHIR-Ressourcen.
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Symptome']/items[openEHR-EHR-OBSERVATION.body_temperature.v2]/protocol[at0020]/items[at0062]")
   private List<Cluster> korpertemperaturErweiterung;
 
   /**
-   * Bericht/Symptome/Körpertemperatur/subject
+   * Path: Bericht/Symptome/Körpertemperatur/subject
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Symptome']/items[openEHR-EHR-OBSERVATION.body_temperature.v2]/subject")
   private PartyProxy korpertemperaturSubject;
 
   /**
-   * Bericht/Symptome/Körpertemperatur/language
+   * Path: Bericht/Symptome/Körpertemperatur/language
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Symptome']/items[openEHR-EHR-OBSERVATION.body_temperature.v2]/language")
   private Language korpertemperaturLanguage;
 
   /**
-   * Bericht/Symptome/Gestörter Geruchssinn/Beliebiges Ereignis/Spezifisches Symptom/Anzeichen/Bezeichnung des Symptoms oder Anzeichens.
+   * Path: Bericht/Symptome/Gestörter Geruchssinn/Beliebiges Ereignis/Spezifisches Symptom/Anzeichen/Bezeichnung des Symptoms oder Anzeichens.
+   * Description: Name des Symptoms oder Anzeichens, das geprüft wird.
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Symptome']/items[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0 and name/value='Gestörter Geruchssinn']/data[at0001]/events[at0002]/data[at0003]/items[at0022]/items[at0004]/value|value")
   private String gestorterGeruchssinnBezeichnungDesSymptomsOderAnzeichensValue;
 
   /**
-   * Bericht/Symptome/Gestörter Geruchssinn/Beliebiges Ereignis/Spezifisches Symptom/Anzeichen/Vorhanden?
+   * Path: Bericht/Symptome/Gestörter Geruchssinn/Beliebiges Ereignis/Spezifisches Symptom/Anzeichen/Vorhanden?
+   * Description: Das Symptom oder Anzeichen ist vorhanden.
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Symptome']/items[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0 and name/value='Gestörter Geruchssinn']/data[at0001]/events[at0002]/data[at0003]/items[at0022]/items[at0005]/value|defining_code")
   private VorhandenDefiningCode gestorterGeruchssinnVorhandenDefiningCode;
 
   /**
-   * Bericht/Symptome/Gestörter Geruchssinn/Beliebiges Ereignis/Spezifisches Symptom/Anzeichen/Detaillierte Angaben zum Symptom/Anzeichen
+   * Path: Bericht/Symptome/Gestörter Geruchssinn/Beliebiges Ereignis/Spezifisches Symptom/Anzeichen/Detaillierte Angaben zum Symptom/Anzeichen
+   * Description: Zusätzliche strukturierte Informationen zu einem bestimmten Symptom oder Anzeichen.
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Symptome']/items[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0 and name/value='Gestörter Geruchssinn']/data[at0001]/events[at0002]/data[at0003]/items[at0022]/items[at0026]")
   private List<Cluster> gestorterGeruchssinnDetaillierteAngabenZumSymptomAnzeichen;
 
   /**
-   * Bericht/Symptome/Gestörter Geruchssinn/Beliebiges Ereignis/time
+   * Path: Bericht/Symptome/Gestörter Geruchssinn/Beliebiges Ereignis/time
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Symptome']/items[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0 and name/value='Gestörter Geruchssinn']/data[at0001]/events[at0002]/time|value")
   private TemporalAccessor gestorterGeruchssinnTimeValue;
 
   /**
-   * Bericht/Symptome/Gestörter Geruchssinn/origin
+   * Path: Bericht/Symptome/Gestörter Geruchssinn/origin
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Symptome']/items[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0 and name/value='Gestörter Geruchssinn']/data[at0001]/origin|value")
   private TemporalAccessor gestorterGeruchssinnOriginValue;
 
   /**
-   * Bericht/Symptome/Gestörter Geruchssinn/Erweiterung
+   * Path: Bericht/Symptome/Gestörter Geruchssinn/Erweiterung
+   * Description: Zusätzliche Informationen zur Erfassung lokaler Inhalte oder Anpassung an andere Referenzmodelle/Formalismen.
+   * Comment: Zum Beispiel: Lokaler Informationsbedarf oder zusätzliche Metadaten zur Anpassung an FHIR-Ressourcen oder CIMI-Modelle.
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Symptome']/items[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0 and name/value='Gestörter Geruchssinn']/protocol[at0007]/items[at0021]")
   private List<Cluster> gestorterGeruchssinnErweiterung;
 
   /**
-   * Bericht/Symptome/Gestörter Geruchssinn/subject
+   * Path: Bericht/Symptome/Gestörter Geruchssinn/subject
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Symptome']/items[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0 and name/value='Gestörter Geruchssinn']/subject")
   private PartyProxy gestorterGeruchssinnSubject;
 
   /**
-   * Bericht/Symptome/Gestörter Geruchssinn/language
+   * Path: Bericht/Symptome/Gestörter Geruchssinn/language
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Symptome']/items[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0 and name/value='Gestörter Geruchssinn']/language")
   private Language gestorterGeruchssinnLanguage;
 
   /**
-   * Bericht/Symptome/Gestörter Geschmackssinn/Beliebiges Ereignis/Spezifisches Symptom/Anzeichen/Bezeichnung des Symptoms oder Anzeichens.
+   * Path: Bericht/Symptome/Gestörter Geschmackssinn/Beliebiges Ereignis/Spezifisches Symptom/Anzeichen/Bezeichnung des Symptoms oder Anzeichens.
+   * Description: Name des Symptoms oder Anzeichens, das geprüft wird.
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Symptome']/items[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0 and name/value='Gestörter Geschmackssinn']/data[at0001]/events[at0002]/data[at0003]/items[at0022]/items[at0004]/value|value")
   private String gestorterGeschmackssinnBezeichnungDesSymptomsOderAnzeichensValue;
 
   /**
-   * Bericht/Symptome/Gestörter Geschmackssinn/Beliebiges Ereignis/Spezifisches Symptom/Anzeichen/Vorhanden?
+   * Path: Bericht/Symptome/Gestörter Geschmackssinn/Beliebiges Ereignis/Spezifisches Symptom/Anzeichen/Vorhanden?
+   * Description: Das Symptom oder Anzeichen ist vorhanden.
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Symptome']/items[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0 and name/value='Gestörter Geschmackssinn']/data[at0001]/events[at0002]/data[at0003]/items[at0022]/items[at0005]/value|defining_code")
   private VorhandenDefiningCode gestorterGeschmackssinnVorhandenDefiningCode;
 
   /**
-   * Bericht/Symptome/Gestörter Geschmackssinn/Beliebiges Ereignis/Spezifisches Symptom/Anzeichen/Detaillierte Angaben zum Symptom/Anzeichen
+   * Path: Bericht/Symptome/Gestörter Geschmackssinn/Beliebiges Ereignis/Spezifisches Symptom/Anzeichen/Detaillierte Angaben zum Symptom/Anzeichen
+   * Description: Zusätzliche strukturierte Informationen zu einem bestimmten Symptom oder Anzeichen.
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Symptome']/items[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0 and name/value='Gestörter Geschmackssinn']/data[at0001]/events[at0002]/data[at0003]/items[at0022]/items[at0026]")
   private List<Cluster> gestorterGeschmackssinnDetaillierteAngabenZumSymptomAnzeichen;
 
   /**
-   * Bericht/Symptome/Gestörter Geschmackssinn/Beliebiges Ereignis/time
+   * Path: Bericht/Symptome/Gestörter Geschmackssinn/Beliebiges Ereignis/time
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Symptome']/items[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0 and name/value='Gestörter Geschmackssinn']/data[at0001]/events[at0002]/time|value")
   private TemporalAccessor gestorterGeschmackssinnTimeValue;
 
   /**
-   * Bericht/Symptome/Gestörter Geschmackssinn/origin
+   * Path: Bericht/Symptome/Gestörter Geschmackssinn/origin
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Symptome']/items[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0 and name/value='Gestörter Geschmackssinn']/data[at0001]/origin|value")
   private TemporalAccessor gestorterGeschmackssinnOriginValue;
 
   /**
-   * Bericht/Symptome/Gestörter Geschmackssinn/Erweiterung
+   * Path: Bericht/Symptome/Gestörter Geschmackssinn/Erweiterung
+   * Description: Zusätzliche Informationen zur Erfassung lokaler Inhalte oder Anpassung an andere Referenzmodelle/Formalismen.
+   * Comment: Zum Beispiel: Lokaler Informationsbedarf oder zusätzliche Metadaten zur Anpassung an FHIR-Ressourcen oder CIMI-Modelle.
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Symptome']/items[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0 and name/value='Gestörter Geschmackssinn']/protocol[at0007]/items[at0021]")
   private List<Cluster> gestorterGeschmackssinnErweiterung;
 
   /**
-   * Bericht/Symptome/Gestörter Geschmackssinn/subject
+   * Path: Bericht/Symptome/Gestörter Geschmackssinn/subject
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Symptome']/items[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0 and name/value='Gestörter Geschmackssinn']/subject")
   private PartyProxy gestorterGeschmackssinnSubject;
 
   /**
-   * Bericht/Symptome/Gestörter Geschmackssinn/language
+   * Path: Bericht/Symptome/Gestörter Geschmackssinn/language
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Symptome']/items[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0 and name/value='Gestörter Geschmackssinn']/language")
   private Language gestorterGeschmackssinnLanguage;
 
   /**
-   * Bericht/Symptome/Durchfall/Beliebiges Ereignis/Spezifisches Symptom/Anzeichen/Bezeichnung des Symptoms oder Anzeichens.
+   * Path: Bericht/Symptome/Durchfall/Beliebiges Ereignis/Spezifisches Symptom/Anzeichen/Bezeichnung des Symptoms oder Anzeichens.
+   * Description: Name des Symptoms oder Anzeichens, das geprüft wird.
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Symptome']/items[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0 and name/value='Durchfall']/data[at0001]/events[at0002]/data[at0003]/items[at0022]/items[at0004]/value|value")
   private String durchfallBezeichnungDesSymptomsOderAnzeichensValue;
 
   /**
-   * Bericht/Symptome/Durchfall/Beliebiges Ereignis/Spezifisches Symptom/Anzeichen/Vorhanden?
+   * Path: Bericht/Symptome/Durchfall/Beliebiges Ereignis/Spezifisches Symptom/Anzeichen/Vorhanden?
+   * Description: Das Symptom oder Anzeichen ist vorhanden.
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Symptome']/items[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0 and name/value='Durchfall']/data[at0001]/events[at0002]/data[at0003]/items[at0022]/items[at0005]/value|defining_code")
   private VorhandenDefiningCode durchfallVorhandenDefiningCode;
 
   /**
-   * Bericht/Symptome/Durchfall/Beliebiges Ereignis/Spezifisches Symptom/Anzeichen/Detaillierte Angaben zum Symptom/Anzeichen
+   * Path: Bericht/Symptome/Durchfall/Beliebiges Ereignis/Spezifisches Symptom/Anzeichen/Detaillierte Angaben zum Symptom/Anzeichen
+   * Description: Zusätzliche strukturierte Informationen zu einem bestimmten Symptom oder Anzeichen.
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Symptome']/items[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0 and name/value='Durchfall']/data[at0001]/events[at0002]/data[at0003]/items[at0022]/items[at0026]")
   private List<Cluster> durchfallDetaillierteAngabenZumSymptomAnzeichen;
 
   /**
-   * Bericht/Symptome/Durchfall/Beliebiges Ereignis/time
+   * Path: Bericht/Symptome/Durchfall/Beliebiges Ereignis/time
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Symptome']/items[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0 and name/value='Durchfall']/data[at0001]/events[at0002]/time|value")
   private TemporalAccessor durchfallTimeValue;
 
   /**
-   * Bericht/Symptome/Durchfall/origin
+   * Path: Bericht/Symptome/Durchfall/origin
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Symptome']/items[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0 and name/value='Durchfall']/data[at0001]/origin|value")
   private TemporalAccessor durchfallOriginValue;
 
   /**
-   * Bericht/Symptome/Durchfall/Erweiterung
+   * Path: Bericht/Symptome/Durchfall/Erweiterung
+   * Description: Zusätzliche Informationen zur Erfassung lokaler Inhalte oder Anpassung an andere Referenzmodelle/Formalismen.
+   * Comment: Zum Beispiel: Lokaler Informationsbedarf oder zusätzliche Metadaten zur Anpassung an FHIR-Ressourcen oder CIMI-Modelle.
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Symptome']/items[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0 and name/value='Durchfall']/protocol[at0007]/items[at0021]")
   private List<Cluster> durchfallErweiterung;
 
   /**
-   * Bericht/Symptome/Durchfall/subject
+   * Path: Bericht/Symptome/Durchfall/subject
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Symptome']/items[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0 and name/value='Durchfall']/subject")
   private PartyProxy durchfallSubject;
 
   /**
-   * Bericht/Symptome/Durchfall/language
+   * Path: Bericht/Symptome/Durchfall/language
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Symptome']/items[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0 and name/value='Durchfall']/language")
   private Language durchfallLanguage;
 
   /**
-   * Bericht/Symptome/Weitere Symptome/origin
+   * Path: Bericht/Symptome/Weitere Symptome/origin
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Symptome']/items[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0 and name/value='Weitere Symptome']/data[at0001]/origin|value")
   private TemporalAccessor weitereSymptomeOriginValue;
 
   /**
-   * Bericht/Symptome/Weitere Symptome/Erweiterung
+   * Path: Bericht/Symptome/Weitere Symptome/Erweiterung
+   * Description: Zusätzliche Informationen zur Erfassung lokaler Inhalte oder Anpassung an andere Referenzmodelle/Formalismen.
+   * Comment: Zum Beispiel: Lokaler Informationsbedarf oder zusätzliche Metadaten zur Anpassung an FHIR-Ressourcen oder CIMI-Modelle.
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Symptome']/items[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0 and name/value='Weitere Symptome']/protocol[at0007]/items[at0021]")
   private List<Cluster> weitereSymptomeErweiterung;
 
   /**
-   * Bericht/Symptome/Weitere Symptome/subject
+   * Path: Bericht/Symptome/Weitere Symptome/subject
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Symptome']/items[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0 and name/value='Weitere Symptome']/subject")
   private PartyProxy weitereSymptomeSubject;
 
   /**
-   * Bericht/Symptome/Weitere Symptome/language
+   * Path: Bericht/Symptome/Weitere Symptome/language
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Symptome']/items[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0 and name/value='Weitere Symptome']/language")
   private Language weitereSymptomeLanguage;
 
   /**
-   * Bericht/Kontakt/Personenkontakt/Beliebiges Ereignis/*Agent (en)
+   * Path: Bericht/Kontakt/Personenkontakt/Beliebiges Ereignis/*Agent (en)
+   * Description: Der Name des chemischen, physikalischen oder biologischen Stoffes, dem eine Person ausgesetzt gewesen sein könnte.
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Kontakt']/items[openEHR-EHR-OBSERVATION.exposure_assessment.v0 and name/value='Personenkontakt']/data[at0001]/events[at0002]/data[at0042]/items[at0043]/value|value")
   private String personenkontaktAgentEnValue;
 
   /**
-   * Bericht/Kontakt/Personenkontakt/Beliebiges Ereignis/*Presence of any exposure? (en)
+   * Path: Bericht/Kontakt/Personenkontakt/Beliebiges Ereignis/*Presence of any exposure? (en)
+   * Description: *Presence of any relevant exposure. (en)
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Kontakt']/items[openEHR-EHR-OBSERVATION.exposure_assessment.v0 and name/value='Personenkontakt']/data[at0001]/events[at0002]/data[at0042]/items[at0057]/value|defining_code")
   private PresenceOfAnyExposureEnDefiningCode personenkontaktPresenceOfAnyExposureEnDefiningCode;
 
   /**
-   * Bericht/Kontakt/Personenkontakt/Beliebiges Ereignis/*Specific exposure (en)/*Exposure (en)
+   * Path: Bericht/Kontakt/Personenkontakt/Beliebiges Ereignis/*Specific exposure (en)/*Exposure (en)
+   * Description: Bezeichnung des Expositionsrisikofaktors.
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Kontakt']/items[openEHR-EHR-OBSERVATION.exposure_assessment.v0 and name/value='Personenkontakt']/data[at0001]/events[at0002]/data[at0042]/items[at0044]/items[at0045]/value|value")
   private String personenkontaktExposureEnValue;
 
   /**
-   * Bericht/Kontakt/Personenkontakt/Beliebiges Ereignis/*Specific exposure (en)/Vorhandensein
+   * Path: Bericht/Kontakt/Personenkontakt/Beliebiges Ereignis/*Specific exposure (en)/Vorhandensein
+   * Description: *Presence of the exposure. (en)
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Kontakt']/items[openEHR-EHR-OBSERVATION.exposure_assessment.v0 and name/value='Personenkontakt']/data[at0001]/events[at0002]/data[at0042]/items[at0044]/items[at0046]/value|defining_code")
   private VorhandenseinDefiningCode personenkontaktVorhandenseinDefiningCode;
 
   /**
-   * Bericht/Kontakt/Personenkontakt/Beliebiges Ereignis/Kommentar
+   * Path: Bericht/Kontakt/Personenkontakt/Beliebiges Ereignis/Kommentar
+   * Description: *Additional narrative about the exposure screening questionnaire not captured in other fields. (en)
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Kontakt']/items[openEHR-EHR-OBSERVATION.exposure_assessment.v0 and name/value='Personenkontakt']/data[at0001]/events[at0002]/data[at0042]/items[at0055]/value|value")
   private String personenkontaktKommentarValue;
 
   /**
-   * Bericht/Kontakt/Personenkontakt/Beliebiges Ereignis/time
+   * Path: Bericht/Kontakt/Personenkontakt/Beliebiges Ereignis/time
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Kontakt']/items[openEHR-EHR-OBSERVATION.exposure_assessment.v0 and name/value='Personenkontakt']/data[at0001]/events[at0002]/time|value")
   private TemporalAccessor personenkontaktTimeValue;
 
   /**
-   * Bericht/Kontakt/Personenkontakt/origin
+   * Path: Bericht/Kontakt/Personenkontakt/origin
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Kontakt']/items[openEHR-EHR-OBSERVATION.exposure_assessment.v0 and name/value='Personenkontakt']/data[at0001]/origin|value")
   private TemporalAccessor personenkontaktOriginValue;
 
   /**
-   * Bericht/Kontakt/Personenkontakt/Erweiterung
+   * Path: Bericht/Kontakt/Personenkontakt/Erweiterung
+   * Description: Zusätzliche Informationen zur Erfassung lokaler Inhalte oder Anpassung an andere Referenzmodelle/Formalismen.
+   * Comment: Zum Beispiel: Lokaler Informationsbedarf oder zusätzliche Metadaten zur Anpassung an FHIR-Ressourcen oder CIMI-Modelle.
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Kontakt']/items[openEHR-EHR-OBSERVATION.exposure_assessment.v0 and name/value='Personenkontakt']/protocol[at0004]/items[at0056]")
   private List<Cluster> personenkontaktErweiterung;
 
   /**
-   * Bericht/Kontakt/Personenkontakt/subject
+   * Path: Bericht/Kontakt/Personenkontakt/subject
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Kontakt']/items[openEHR-EHR-OBSERVATION.exposure_assessment.v0 and name/value='Personenkontakt']/subject")
   private PartyProxy personenkontaktSubject;
 
   /**
-   * Bericht/Kontakt/Personenkontakt/language
+   * Path: Bericht/Kontakt/Personenkontakt/language
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Kontakt']/items[openEHR-EHR-OBSERVATION.exposure_assessment.v0 and name/value='Personenkontakt']/language")
   private Language personenkontaktLanguage;
 
   /**
-   * Bericht/Kontakt/Aufenthalt in Gesundheitseinrichtung/Beliebiges Ereignis/*Agent (en)
+   * Path: Bericht/Kontakt/Aufenthalt in Gesundheitseinrichtung/Beliebiges Ereignis/*Agent (en)
+   * Description: Der Name des chemischen, physikalischen oder biologischen Stoffes, dem eine Person ausgesetzt gewesen sein könnte.
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Kontakt']/items[openEHR-EHR-OBSERVATION.exposure_assessment.v0 and name/value='Aufenthalt in Gesundheitseinrichtung']/data[at0001]/events[at0002]/data[at0042]/items[at0043]/value|value")
   private String aufenthaltInGesundheitseinrichtungAgentEnValue;
 
   /**
-   * Bericht/Kontakt/Aufenthalt in Gesundheitseinrichtung/Beliebiges Ereignis/*Presence of any exposure? (en)
+   * Path: Bericht/Kontakt/Aufenthalt in Gesundheitseinrichtung/Beliebiges Ereignis/*Presence of any exposure? (en)
+   * Description: *Presence of any relevant exposure. (en)
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Kontakt']/items[openEHR-EHR-OBSERVATION.exposure_assessment.v0 and name/value='Aufenthalt in Gesundheitseinrichtung']/data[at0001]/events[at0002]/data[at0042]/items[at0057]/value|defining_code")
   private PresenceOfAnyExposureEnDefiningCode aufenthaltInGesundheitseinrichtungPresenceOfAnyExposureEnDefiningCode;
 
   /**
-   * Bericht/Kontakt/Aufenthalt in Gesundheitseinrichtung/Beliebiges Ereignis/*Specific exposure (en)/*Exposure (en)
+   * Path: Bericht/Kontakt/Aufenthalt in Gesundheitseinrichtung/Beliebiges Ereignis/*Specific exposure (en)/*Exposure (en)
+   * Description: Bezeichnung des Expositionsrisikofaktors.
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Kontakt']/items[openEHR-EHR-OBSERVATION.exposure_assessment.v0 and name/value='Aufenthalt in Gesundheitseinrichtung']/data[at0001]/events[at0002]/data[at0042]/items[at0044]/items[at0045]/value|value")
   private String aufenthaltInGesundheitseinrichtungExposureEnValue;
 
   /**
-   * Bericht/Kontakt/Aufenthalt in Gesundheitseinrichtung/Beliebiges Ereignis/*Specific exposure (en)/Vorhandensein
+   * Path: Bericht/Kontakt/Aufenthalt in Gesundheitseinrichtung/Beliebiges Ereignis/*Specific exposure (en)/Vorhandensein
+   * Description: *Presence of the exposure. (en)
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Kontakt']/items[openEHR-EHR-OBSERVATION.exposure_assessment.v0 and name/value='Aufenthalt in Gesundheitseinrichtung']/data[at0001]/events[at0002]/data[at0042]/items[at0044]/items[at0046]/value|defining_code")
   private VorhandenseinDefiningCode aufenthaltInGesundheitseinrichtungVorhandenseinDefiningCode;
 
   /**
-   * Bericht/Kontakt/Aufenthalt in Gesundheitseinrichtung/Beliebiges Ereignis/Kommentar
+   * Path: Bericht/Kontakt/Aufenthalt in Gesundheitseinrichtung/Beliebiges Ereignis/Kommentar
+   * Description: *Additional narrative about the exposure screening questionnaire not captured in other fields. (en)
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Kontakt']/items[openEHR-EHR-OBSERVATION.exposure_assessment.v0 and name/value='Aufenthalt in Gesundheitseinrichtung']/data[at0001]/events[at0002]/data[at0042]/items[at0055]/value|value")
   private String aufenthaltInGesundheitseinrichtungKommentarValue;
 
   /**
-   * Bericht/Kontakt/Aufenthalt in Gesundheitseinrichtung/Beliebiges Ereignis/time
+   * Path: Bericht/Kontakt/Aufenthalt in Gesundheitseinrichtung/Beliebiges Ereignis/time
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Kontakt']/items[openEHR-EHR-OBSERVATION.exposure_assessment.v0 and name/value='Aufenthalt in Gesundheitseinrichtung']/data[at0001]/events[at0002]/time|value")
   private TemporalAccessor aufenthaltInGesundheitseinrichtungTimeValue;
 
   /**
-   * Bericht/Kontakt/Aufenthalt in Gesundheitseinrichtung/origin
+   * Path: Bericht/Kontakt/Aufenthalt in Gesundheitseinrichtung/origin
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Kontakt']/items[openEHR-EHR-OBSERVATION.exposure_assessment.v0 and name/value='Aufenthalt in Gesundheitseinrichtung']/data[at0001]/origin|value")
   private TemporalAccessor aufenthaltInGesundheitseinrichtungOriginValue;
 
   /**
-   * Bericht/Kontakt/Aufenthalt in Gesundheitseinrichtung/Erweiterung
+   * Path: Bericht/Kontakt/Aufenthalt in Gesundheitseinrichtung/Erweiterung
+   * Description: Zusätzliche Informationen zur Erfassung lokaler Inhalte oder Anpassung an andere Referenzmodelle/Formalismen.
+   * Comment: Zum Beispiel: Lokaler Informationsbedarf oder zusätzliche Metadaten zur Anpassung an FHIR-Ressourcen oder CIMI-Modelle.
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Kontakt']/items[openEHR-EHR-OBSERVATION.exposure_assessment.v0 and name/value='Aufenthalt in Gesundheitseinrichtung']/protocol[at0004]/items[at0056]")
   private List<Cluster> aufenthaltInGesundheitseinrichtungErweiterung;
 
   /**
-   * Bericht/Kontakt/Aufenthalt in Gesundheitseinrichtung/subject
+   * Path: Bericht/Kontakt/Aufenthalt in Gesundheitseinrichtung/subject
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Kontakt']/items[openEHR-EHR-OBSERVATION.exposure_assessment.v0 and name/value='Aufenthalt in Gesundheitseinrichtung']/subject")
   private PartyProxy aufenthaltInGesundheitseinrichtungSubject;
 
   /**
-   * Bericht/Kontakt/Aufenthalt in Gesundheitseinrichtung/language
+   * Path: Bericht/Kontakt/Aufenthalt in Gesundheitseinrichtung/language
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Kontakt']/items[openEHR-EHR-OBSERVATION.exposure_assessment.v0 and name/value='Aufenthalt in Gesundheitseinrichtung']/language")
   private Language aufenthaltInGesundheitseinrichtungLanguage;
 
   /**
-   * Bericht/Risikogebiet/Historie der Reise
+   * Path: Bericht/Risikogebiet/Historie der Reise
+   * Description: Einzelheiten einer Reise im Hinblick auf die Exposition gegenüber potenziellen Risiken.
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Risikogebiet']/items[openEHR-EHR-OBSERVATION.travel_history.v0]")
   private List<HistorieDerReiseObservation> historieDerReise;
 
   /**
-   * Bericht/Risikogebiet/Reisefall
+   * Path: Bericht/Risikogebiet/Reisefall
+   * Description: Details zur Reise während eines bestimmten Zeitraums.
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Risikogebiet']/items[openEHR-EHR-OBSERVATION.travel_event.v0]")
   private List<ReisefallObservation> reisefall;
 
   /**
-   * Bericht/Allgemeine Angaben/Andere aktuelle Erkrankungen/Beliebiges Ereignis/Spezifisches Symptom/Anzeichen/Bezeichnung des Symptoms oder Anzeichens.
+   * Path: Bericht/Allgemeine Angaben/Andere aktuelle Erkrankungen/Beliebiges Ereignis/Spezifisches Symptom/Anzeichen/Bezeichnung des Symptoms oder Anzeichens.
+   * Description: Name des Symptoms oder Anzeichens, das geprüft wird.
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Allgemeine Angaben']/items[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0 and name/value='Andere aktuelle Erkrankungen']/data[at0001]/events[at0002]/data[at0003]/items[at0022]/items[at0004]/value|value")
   private String andereAktuelleErkrankungenBezeichnungDesSymptomsOderAnzeichensValue;
 
   /**
-   * Bericht/Allgemeine Angaben/Andere aktuelle Erkrankungen/Beliebiges Ereignis/Spezifisches Symptom/Anzeichen/Vorhanden?
+   * Path: Bericht/Allgemeine Angaben/Andere aktuelle Erkrankungen/Beliebiges Ereignis/Spezifisches Symptom/Anzeichen/Vorhanden?
+   * Description: Das Symptom oder Anzeichen ist vorhanden.
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Allgemeine Angaben']/items[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0 and name/value='Andere aktuelle Erkrankungen']/data[at0001]/events[at0002]/data[at0003]/items[at0022]/items[at0005]/value|defining_code")
   private VorhandenDefiningCode andereAktuelleErkrankungenVorhandenDefiningCode;
 
   /**
-   * Bericht/Allgemeine Angaben/Andere aktuelle Erkrankungen/Beliebiges Ereignis/Spezifisches Symptom/Anzeichen/Detaillierte Angaben zum Symptom/Anzeichen
+   * Path: Bericht/Allgemeine Angaben/Andere aktuelle Erkrankungen/Beliebiges Ereignis/Spezifisches Symptom/Anzeichen/Detaillierte Angaben zum Symptom/Anzeichen
+   * Description: Zusätzliche strukturierte Informationen zu einem bestimmten Symptom oder Anzeichen.
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Allgemeine Angaben']/items[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0 and name/value='Andere aktuelle Erkrankungen']/data[at0001]/events[at0002]/data[at0003]/items[at0022]/items[at0026]")
   private List<Cluster> andereAktuelleErkrankungenDetaillierteAngabenZumSymptomAnzeichen;
 
   /**
-   * Bericht/Allgemeine Angaben/Andere aktuelle Erkrankungen/Beliebiges Ereignis/time
+   * Path: Bericht/Allgemeine Angaben/Andere aktuelle Erkrankungen/Beliebiges Ereignis/time
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Allgemeine Angaben']/items[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0 and name/value='Andere aktuelle Erkrankungen']/data[at0001]/events[at0002]/time|value")
   private TemporalAccessor andereAktuelleErkrankungenTimeValue;
 
   /**
-   * Bericht/Allgemeine Angaben/Andere aktuelle Erkrankungen/origin
+   * Path: Bericht/Allgemeine Angaben/Andere aktuelle Erkrankungen/origin
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Allgemeine Angaben']/items[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0 and name/value='Andere aktuelle Erkrankungen']/data[at0001]/origin|value")
   private TemporalAccessor andereAktuelleErkrankungenOriginValue;
 
   /**
-   * Bericht/Allgemeine Angaben/Andere aktuelle Erkrankungen/Erweiterung
+   * Path: Bericht/Allgemeine Angaben/Andere aktuelle Erkrankungen/Erweiterung
+   * Description: Zusätzliche Informationen zur Erfassung lokaler Inhalte oder Anpassung an andere Referenzmodelle/Formalismen.
+   * Comment: Zum Beispiel: Lokaler Informationsbedarf oder zusätzliche Metadaten zur Anpassung an FHIR-Ressourcen oder CIMI-Modelle.
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Allgemeine Angaben']/items[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0 and name/value='Andere aktuelle Erkrankungen']/protocol[at0007]/items[at0021]")
   private List<Cluster> andereAktuelleErkrankungenErweiterung;
 
   /**
-   * Bericht/Allgemeine Angaben/Andere aktuelle Erkrankungen/subject
+   * Path: Bericht/Allgemeine Angaben/Andere aktuelle Erkrankungen/subject
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Allgemeine Angaben']/items[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0 and name/value='Andere aktuelle Erkrankungen']/subject")
   private PartyProxy andereAktuelleErkrankungenSubject;
 
   /**
-   * Bericht/Allgemeine Angaben/Andere aktuelle Erkrankungen/language
+   * Path: Bericht/Allgemeine Angaben/Andere aktuelle Erkrankungen/language
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Allgemeine Angaben']/items[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0 and name/value='Andere aktuelle Erkrankungen']/language")
   private Language andereAktuelleErkrankungenLanguage;
 
   /**
-   * Bericht/Allgemeine Angaben/Chronische Erkrankungen/Beliebiges Ereignis/Spezifisches Symptom/Anzeichen/Bezeichnung des Symptoms oder Anzeichens.
+   * Path: Bericht/Allgemeine Angaben/Chronische Erkrankungen/Beliebiges Ereignis/Spezifisches Symptom/Anzeichen/Bezeichnung des Symptoms oder Anzeichens.
+   * Description: Name des Symptoms oder Anzeichens, das geprüft wird.
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Allgemeine Angaben']/items[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0 and name/value='Chronische Erkrankungen']/data[at0001]/events[at0002]/data[at0003]/items[at0022]/items[at0004]/value|value")
   private String chronischeErkrankungenBezeichnungDesSymptomsOderAnzeichensValue;
 
   /**
-   * Bericht/Allgemeine Angaben/Chronische Erkrankungen/Beliebiges Ereignis/Spezifisches Symptom/Anzeichen/Vorhanden?
+   * Path: Bericht/Allgemeine Angaben/Chronische Erkrankungen/Beliebiges Ereignis/Spezifisches Symptom/Anzeichen/Vorhanden?
+   * Description: Das Symptom oder Anzeichen ist vorhanden.
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Allgemeine Angaben']/items[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0 and name/value='Chronische Erkrankungen']/data[at0001]/events[at0002]/data[at0003]/items[at0022]/items[at0005]/value|defining_code")
   private VorhandenDefiningCode chronischeErkrankungenVorhandenDefiningCode;
 
   /**
-   * Bericht/Allgemeine Angaben/Chronische Erkrankungen/Beliebiges Ereignis/Spezifisches Symptom/Anzeichen/Detaillierte Angaben zum Symptom/Anzeichen
+   * Path: Bericht/Allgemeine Angaben/Chronische Erkrankungen/Beliebiges Ereignis/Spezifisches Symptom/Anzeichen/Detaillierte Angaben zum Symptom/Anzeichen
+   * Description: Zusätzliche strukturierte Informationen zu einem bestimmten Symptom oder Anzeichen.
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Allgemeine Angaben']/items[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0 and name/value='Chronische Erkrankungen']/data[at0001]/events[at0002]/data[at0003]/items[at0022]/items[at0026]")
   private List<Cluster> chronischeErkrankungenDetaillierteAngabenZumSymptomAnzeichen;
 
   /**
-   * Bericht/Allgemeine Angaben/Chronische Erkrankungen/Beliebiges Ereignis/time
+   * Path: Bericht/Allgemeine Angaben/Chronische Erkrankungen/Beliebiges Ereignis/time
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Allgemeine Angaben']/items[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0 and name/value='Chronische Erkrankungen']/data[at0001]/events[at0002]/time|value")
   private TemporalAccessor chronischeErkrankungenTimeValue;
 
   /**
-   * Bericht/Allgemeine Angaben/Chronische Erkrankungen/origin
+   * Path: Bericht/Allgemeine Angaben/Chronische Erkrankungen/origin
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Allgemeine Angaben']/items[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0 and name/value='Chronische Erkrankungen']/data[at0001]/origin|value")
   private TemporalAccessor chronischeErkrankungenOriginValue;
 
   /**
-   * Bericht/Allgemeine Angaben/Chronische Erkrankungen/Erweiterung
+   * Path: Bericht/Allgemeine Angaben/Chronische Erkrankungen/Erweiterung
+   * Description: Zusätzliche Informationen zur Erfassung lokaler Inhalte oder Anpassung an andere Referenzmodelle/Formalismen.
+   * Comment: Zum Beispiel: Lokaler Informationsbedarf oder zusätzliche Metadaten zur Anpassung an FHIR-Ressourcen oder CIMI-Modelle.
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Allgemeine Angaben']/items[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0 and name/value='Chronische Erkrankungen']/protocol[at0007]/items[at0021]")
   private List<Cluster> chronischeErkrankungenErweiterung;
 
   /**
-   * Bericht/Allgemeine Angaben/Chronische Erkrankungen/subject
+   * Path: Bericht/Allgemeine Angaben/Chronische Erkrankungen/subject
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Allgemeine Angaben']/items[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0 and name/value='Chronische Erkrankungen']/subject")
   private PartyProxy chronischeErkrankungenSubject;
 
   /**
-   * Bericht/Allgemeine Angaben/Chronische Erkrankungen/language
+   * Path: Bericht/Allgemeine Angaben/Chronische Erkrankungen/language
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Allgemeine Angaben']/items[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0 and name/value='Chronische Erkrankungen']/language")
   private Language chronischeErkrankungenLanguage;
 
   /**
-   * Bericht/Allgemeine Angaben/Problem/Diagnose
+   * Path: Bericht/Allgemeine Angaben/Problem/Diagnose
+   * Description: Angaben über einen einzelnen identifizierten Gesundheitszustand, eine Verletzung, eine Behinderung oder ein Problem, welches das körperliche, geistige und/oder soziale Wohlergehen einer Einzelperson beeinträchtigt.
+   * Comment: Eine klare Abgrenzung zwischen Problem und Diagnose ist in der Praxis nicht einfach zu erreichen. Für die Zwecke der klinischen Dokumentation mit diesem Archetyp werden Problem und Diagnose als ein Kontinuum betrachtet, mit zunehmendem Detaillierungsgrad und unterstützenden Beweisen, die in der Regel dem Etikett "Diagnose" Gewicht verleihen.
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Allgemeine Angaben']/items[openEHR-EHR-EVALUATION.problem_diagnosis.v1]")
   private List<ProblemDiagnoseEvaluation> problemDiagnose;
 
   /**
-   * Bericht/Allgemeine Angaben/Fragebogen zum Medikations-Screening/Beliebiges Ereignis/Medikamente in Verwendung?
+   * Path: Bericht/Allgemeine Angaben/Fragebogen zum Medikations-Screening/Beliebiges Ereignis/Medikamente in Verwendung?
+   * Description: Wendet die Person das Medikament bei oder während des Zeitpunkts des Ergebnisses an?
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Allgemeine Angaben']/items[openEHR-EHR-OBSERVATION.medication_use.v0]/data[at0022]/events[at0023]/data[at0001]/items[at0027]/value")
   private DvCodedText medikamenteInVerwendung;
 
   /**
-   * Bericht/Allgemeine Angaben/Fragebogen zum Medikations-Screening/Beliebiges Ereignis/Spezifische Medikamentenklasse/Name der Medikamentenklasse
+   * Path: Bericht/Allgemeine Angaben/Fragebogen zum Medikations-Screening/Beliebiges Ereignis/Spezifische Medikamentenklasse/Name der Medikamentenklasse
+   * Description: Name der Klasse oder des Medikamententyps.
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Allgemeine Angaben']/items[openEHR-EHR-OBSERVATION.medication_use.v0]/data[at0022]/events[at0023]/data[at0001]/items[at0026]/items[at0002]/value|value")
   private String nameDerMedikamentenklasseValue;
 
   /**
-   * Bericht/Allgemeine Angaben/Fragebogen zum Medikations-Screening/Beliebiges Ereignis/Spezifische Medikamentenklasse/Medikamentenklasse in Verwendung?
+   * Path: Bericht/Allgemeine Angaben/Fragebogen zum Medikations-Screening/Beliebiges Ereignis/Spezifische Medikamentenklasse/Medikamentenklasse in Verwendung?
+   * Description: Wendet die Person das Medikament, die Klasse oder Art des Medikaments bei oder während des Zeitpunkts des Ergebnisses an?
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Allgemeine Angaben']/items[openEHR-EHR-OBSERVATION.medication_use.v0]/data[at0022]/events[at0023]/data[at0001]/items[at0026]/items[at0003]/value|defining_code")
   private MedikamentenklasseInVerwendungDefiningCode medikamentenklasseInVerwendungDefiningCode;
 
   /**
-   * Bericht/Allgemeine Angaben/Fragebogen zum Medikations-Screening/Beliebiges Ereignis/Spezifische Medikamentenklasse/Spezifische Medikamente
+   * Path: Bericht/Allgemeine Angaben/Fragebogen zum Medikations-Screening/Beliebiges Ereignis/Spezifische Medikamentenklasse/Spezifische Medikamente
+   * Description: Details über ein spezifisches Medikament oder eine Medikamentenunterklasse der Medikamentenklasse.
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Allgemeine Angaben']/items[openEHR-EHR-OBSERVATION.medication_use.v0]/data[at0022]/events[at0023]/data[at0001]/items[at0026]/items[at0008]")
   private List<FragebogenZumMedikationsScreeningSpezifischeMedikamenteCluster> spezifischeMedikamente;
 
   /**
-   * Bericht/Allgemeine Angaben/Fragebogen zum Medikations-Screening/Beliebiges Ereignis/time
+   * Path: Bericht/Allgemeine Angaben/Fragebogen zum Medikations-Screening/Beliebiges Ereignis/time
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Allgemeine Angaben']/items[openEHR-EHR-OBSERVATION.medication_use.v0]/data[at0022]/events[at0023]/time|value")
   private TemporalAccessor fragebogenZumMedikationsScreeningTimeValue;
 
   /**
-   * Bericht/Allgemeine Angaben/Fragebogen zum Medikations-Screening/origin
+   * Path: Bericht/Allgemeine Angaben/Fragebogen zum Medikations-Screening/origin
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Allgemeine Angaben']/items[openEHR-EHR-OBSERVATION.medication_use.v0]/data[at0022]/origin|value")
   private TemporalAccessor fragebogenZumMedikationsScreeningOriginValue;
 
   /**
-   * Bericht/Allgemeine Angaben/Fragebogen zum Medikations-Screening/Erweiterung
+   * Path: Bericht/Allgemeine Angaben/Fragebogen zum Medikations-Screening/Erweiterung
+   * Description: Zusätzliche Informationen zur Erfassung lokaler Inhalte oder Anpassung an andere Referenzmodelle/Formalismen.
+   * Comment: Zum Beispiel: Lokaler Informationsbedarf oder zusätzliche Metadaten zur Anpassung an FHIR-Ressourcen oder CIMI-Modelle.
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Allgemeine Angaben']/items[openEHR-EHR-OBSERVATION.medication_use.v0]/protocol[at0005]/items[at0019]")
   private List<Cluster> fragebogenZumMedikationsScreeningErweiterung;
 
   /**
-   * Bericht/Allgemeine Angaben/Fragebogen zum Medikations-Screening/subject
+   * Path: Bericht/Allgemeine Angaben/Fragebogen zum Medikations-Screening/subject
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Allgemeine Angaben']/items[openEHR-EHR-OBSERVATION.medication_use.v0]/subject")
   private PartyProxy fragebogenZumMedikationsScreeningSubject;
 
   /**
-   * Bericht/Allgemeine Angaben/Fragebogen zum Medikations-Screening/language
+   * Path: Bericht/Allgemeine Angaben/Fragebogen zum Medikations-Screening/language
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Allgemeine Angaben']/items[openEHR-EHR-OBSERVATION.medication_use.v0]/language")
   private Language fragebogenZumMedikationsScreeningLanguage;
 
   /**
-   * Bericht/Allgemeine Angaben/Gesundheitsbezogener Beruf/Beschäftigungsstatus
+   * Path: Bericht/Allgemeine Angaben/Gesundheitsbezogener Beruf/Beschäftigungsstatus
+   * Description: Aussage über die aktuelle Beschäftigung der Person.
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Allgemeine Angaben']/items[openEHR-EHR-EVALUATION.occupation_summary.v1 and name/value='Gesundheitsbezogener Beruf']/data[at0001]/items[at0004]/value|value")
   private String beschaftigungsstatusValue;
 
   /**
-   * Bericht/Allgemeine Angaben/Gesundheitsbezogener Beruf/Beschäftigung
+   * Path: Bericht/Allgemeine Angaben/Gesundheitsbezogener Beruf/Beschäftigung
+   * Description: Ein einzelner Job oder eine einzelne Rolle, die von einer Person während eines bestimmten Zeitraums ausgeführt wurde.
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Allgemeine Angaben']/items[openEHR-EHR-EVALUATION.occupation_summary.v1 and name/value='Gesundheitsbezogener Beruf']/data[at0001]/items[openEHR-EHR-CLUSTER.occupation_record.v1]")
   private List<BeschaftigungCluster> beschaftigung;
 
   /**
-   * Bericht/Allgemeine Angaben/Gesundheitsbezogener Beruf/Zusätzliche Angaben
+   * Path: Bericht/Allgemeine Angaben/Gesundheitsbezogener Beruf/Zusätzliche Angaben
+   * Description: Weitere Angaben zu den aktuellen Jobs oder Rollen oder zum vorherigen Beschäftigungsverlauf einer Person.
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Allgemeine Angaben']/items[openEHR-EHR-EVALUATION.occupation_summary.v1 and name/value='Gesundheitsbezogener Beruf']/data[at0001]/items[at0005]")
   private List<Cluster> zusatzlicheAngaben;
 
   /**
-   * Bericht/Allgemeine Angaben/Gesundheitsbezogener Beruf/Erweiterung
+   * Path: Bericht/Allgemeine Angaben/Gesundheitsbezogener Beruf/Erweiterung
+   * Description: Zusätzliche Informationen zur Erfassung lokaler Inhalte oder Anpassung an andere Referenzmodelle/Formalismen.
+   * Comment: Zum Beispiel: Lokaler Informationsbedarf oder zusätzliche Metadaten zur Anpassung an FHIR-Ressourcen oder CIMI-Modelle.
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Allgemeine Angaben']/items[openEHR-EHR-EVALUATION.occupation_summary.v1 and name/value='Gesundheitsbezogener Beruf']/protocol[at0007]/items[at0008]")
   private List<Cluster> gesundheitsbezogenerBerufErweiterung;
 
   /**
-   * Bericht/Allgemeine Angaben/Gesundheitsbezogener Beruf/subject
+   * Path: Bericht/Allgemeine Angaben/Gesundheitsbezogener Beruf/subject
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Allgemeine Angaben']/items[openEHR-EHR-EVALUATION.occupation_summary.v1 and name/value='Gesundheitsbezogener Beruf']/subject")
   private PartyProxy gesundheitsbezogenerBerufSubject;
 
   /**
-   * Bericht/Allgemeine Angaben/Gesundheitsbezogener Beruf/language
+   * Path: Bericht/Allgemeine Angaben/Gesundheitsbezogener Beruf/language
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Allgemeine Angaben']/items[openEHR-EHR-EVALUATION.occupation_summary.v1 and name/value='Gesundheitsbezogener Beruf']/language")
   private Language gesundheitsbezogenerBerufLanguage;
 
   /**
-   * Bericht/Allgemeine Angaben/Wohnsituation
+   * Path: Bericht/Allgemeine Angaben/Wohnsituation
+   * Description: Die Umstände über eine Person, das allein oder mit anderen zusammen lebt.
+   * Comment: Diese Information bietet einen Einblick in die tägliche Unterstützung, zu der eine Person in ihrer häuslichen Umgebung - sowohl körperlich als auch emotional - Zugang hat.
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Allgemeine Angaben']/items[openEHR-EHR-EVALUATION.living_arrangement.v0]")
   private List<WohnsituationEvaluation> wohnsituation;
 
   /**
-   * Bericht/Allgemeine Angaben/Bewertung des Gesundheitsrisikos
+   * Path: Bericht/Allgemeine Angaben/Bewertung des Gesundheitsrisikos
+   * Description: Bewertung der möglichen und wahrscheinlichen gesundheitsschädigenden Wirkungen anhand der identifizierten Risikofaktoren.
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Allgemeine Angaben']/items[openEHR-EHR-EVALUATION.health_risk.v1]")
   private List<BewertungDesGesundheitsrisikosEvaluation> bewertungDesGesundheitsrisikos;
 
   /**
-   * Bericht/Allgemeine Angaben/Problem/Diganose Coronovirus/Name des Problems/ der Diagnose
+   * Path: Bericht/Allgemeine Angaben/Problem/Diganose Coronovirus/Name des Problems/ der Diagnose
+   * Description: Namentliche Identifikation des Problems oder der Diagnose.
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Allgemeine Angaben']/items[openEHR-EHR-EVALUATION.problem_diagnosis_covid.v1 and name/value='Problem/Diganose Coronovirus']/data[at0001]/items[at0002]/value|value")
   private String nameDesProblemsDerDiagnoseValue;
 
   /**
-   * Bericht/Allgemeine Angaben/Problem/Diganose Coronovirus/Anatomische Stelle (strukturiert)
+   * Path: Bericht/Allgemeine Angaben/Problem/Diganose Coronovirus/Anatomische Stelle (strukturiert)
+   * Description: Eine strukturierte anatomische Lokalisation des Problems oder der Diagnose.
+   * Comment: Verwenden Sie diesen SLOT, um die Archetypen CLUSTER.anatomical_location oder CLUSTER.relative_location einzufügen, wenn die Anforderungen für die Aufnahme der anatomischen Position zur Laufzeit der Anwendung bestimmt werden oder komplexere Modellierungen wie z.B. relative Positionen erforderlich sind. Ist die anatomische Lokalisation über präkoordinierte Codes im Namen des Problems/Diagnose enthalten, wird die Verwendung dieses SLOT überflüssig.
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Allgemeine Angaben']/items[openEHR-EHR-EVALUATION.problem_diagnosis_covid.v1 and name/value='Problem/Diganose Coronovirus']/data[at0001]/items[at0039]")
   private List<Cluster> anatomischeStelleStrukturiert;
 
   /**
-   * Bericht/Allgemeine Angaben/Problem/Diganose Coronovirus/Spezifische Angaben
+   * Path: Bericht/Allgemeine Angaben/Problem/Diganose Coronovirus/Spezifische Angaben
+   * Description: Zusätzlich benötigte Angaben, welche als eindeutige Merkmale des Problem/der Diagnose erfasst werden sollten.
+   * Comment: Hier können strukturierte Angaben über die Einstufung oder das Stadium der Diagnose enthalten sein; diagnostische Kriterien, Klassifizierungskriterien oder formale Bewertungen des Schweregrades wie z.B. "Common Terminology Criteria for Adverse Events".
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Allgemeine Angaben']/items[openEHR-EHR-EVALUATION.problem_diagnosis_covid.v1 and name/value='Problem/Diganose Coronovirus']/data[at0001]/items[at0043]")
   private List<Cluster> spezifischeAngaben;
 
   /**
-   * Bericht/Allgemeine Angaben/Problem/Diganose Coronovirus/Status/Diagnosestatus
+   * Path: Bericht/Allgemeine Angaben/Problem/Diganose Coronovirus/Status/Diagnosestatus
+   * Description: Stadium oder Phase des diagnostischen Prozesses.
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Allgemeine Angaben']/items[openEHR-EHR-EVALUATION.problem_diagnosis_covid.v1 and name/value='Problem/Diganose Coronovirus']/data[at0001]/items[openEHR-EHR-CLUSTER.problem_qualifier.v1 and name/value='Status']/items[at0004]/value|defining_code")
   private DiagnosestatusDefiningCode diagnosestatusDefiningCode;
 
   /**
-   * Bericht/Allgemeine Angaben/Problem/Diganose Coronovirus/Kommentar
+   * Path: Bericht/Allgemeine Angaben/Problem/Diganose Coronovirus/Kommentar
+   * Description: Ergänzende Beschreibung des Problems oder der Diagnose, die nicht anderweitig erfasst wurde.
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Allgemeine Angaben']/items[openEHR-EHR-EVALUATION.problem_diagnosis_covid.v1 and name/value='Problem/Diganose Coronovirus']/data[at0001]/items[at0069]/value|value")
   private String problemDiganoseCoronovirusKommentarValue;
 
   /**
-   * Bericht/Allgemeine Angaben/Problem/Diganose Coronovirus/Zuletzt aktualisiert
+   * Path: Bericht/Allgemeine Angaben/Problem/Diganose Coronovirus/Zuletzt aktualisiert
+   * Description: Datum der letzten Aktualisierung der Diagnose bzw. des Problems.
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Allgemeine Angaben']/items[openEHR-EHR-EVALUATION.problem_diagnosis_covid.v1 and name/value='Problem/Diganose Coronovirus']/protocol[at0032]/items[at0070]/value|value")
   private TemporalAccessor zuletztAktualisiertValue;
 
   /**
-   * Bericht/Allgemeine Angaben/Problem/Diganose Coronovirus/Erweiterung
+   * Path: Bericht/Allgemeine Angaben/Problem/Diganose Coronovirus/Erweiterung
+   * Description: Zusätzliche Informationen zur Erfassung lokaler Inhalte oder Anpassung an andere Referenzmodelle/Formalismen.
+   * Comment: Zum Beispiel: Lokaler Informationsbedarf oder zusätzliche Metadaten zur Anpassung an FHIR-Ressourcen oder CIMI-Modelle.
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Allgemeine Angaben']/items[openEHR-EHR-EVALUATION.problem_diagnosis_covid.v1 and name/value='Problem/Diganose Coronovirus']/protocol[at0032]/items[at0071]")
   private List<Cluster> problemDiganoseCoronovirusErweiterung;
 
   /**
-   * Bericht/Allgemeine Angaben/Problem/Diganose Coronovirus/subject
+   * Path: Bericht/Allgemeine Angaben/Problem/Diganose Coronovirus/subject
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Allgemeine Angaben']/items[openEHR-EHR-EVALUATION.problem_diagnosis_covid.v1 and name/value='Problem/Diganose Coronovirus']/subject")
   private PartyProxy problemDiganoseCoronovirusSubject;
 
   /**
-   * Bericht/Allgemeine Angaben/Problem/Diganose Coronovirus/language
+   * Path: Bericht/Allgemeine Angaben/Problem/Diganose Coronovirus/language
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Allgemeine Angaben']/items[openEHR-EHR-EVALUATION.problem_diagnosis_covid.v1 and name/value='Problem/Diganose Coronovirus']/language")
   private Language problemDiganoseCoronovirusLanguage;
 
   /**
-   * Bericht/Allgemeine Angaben/Dienstleistung
+   * Path: Bericht/Allgemeine Angaben/Dienstleistung
+   * Description: Antrag auf eine gesundheitsbezogene Dienstleistung oder Aktivität, die von einem Kliniker, einer Klinik oder einer Einrichtung erbracht werden soll.
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Allgemeine Angaben']/items[openEHR-EHR-INSTRUCTION.service_request.v1]")
   private List<DienstleistungInstruction> dienstleistung;
 
   /**
-   * Bericht/composer
+   * Path: Bericht/composer
    */
   @Path("/composer")
   private PartyProxy composer;
 
   /**
-   * Bericht/language
+   * Path: Bericht/language
    */
   @Path("/language")
   private Language language;
 
   /**
-   * Bericht/feeder_audit
+   * Path: Bericht/feeder_audit
    */
   @Path("/feeder_audit")
   private FeederAudit feederAudit;
 
   /**
-   * Bericht/category
+   * Path: Bericht/category
    */
   @Path("/category|defining_code")
   private Category categoryDefiningCode;
 
   /**
-   * Bericht/territory
+   * Path: Bericht/territory
    */
   @Path("/territory")
   private Territory territory;
 
   /**
-   * Bericht/Allgemeine Angaben/Problem/Diganose Coronovirus/value
+   * Path: Bericht/Allgemeine Angaben/Problem/Diganose Coronovirus/value
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Allgemeine Angaben']/items[openEHR-EHR-EVALUATION.problem_diagnosis_covid.v1 and name/value='Problem/Diganose Coronovirus']/data[at0001]/items[at0073]/value")
   @Choice
   private ProblemDiganoseCoronovirusDiagnostischeSicherheitChoice diagnostischeSicherheit;
 
   /**
-   * Bericht/Beliebiges Ereignis
+   * Path: Bericht/Beliebiges Ereignis
+   * Description: Standardwert, ein undefinierter/s Zeitpunkt oder Intervallereignis, das explizit im Template oder zur Laufzeit der Anwendung definiert werden kann.
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Symptome']/items[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0 and name/value='Weitere Symptome']/data[at0001]/events[at0002]")
   @Choice

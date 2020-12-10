@@ -18,115 +18,130 @@ import org.ehrbase.client.classgenerator.shareddefinition.Language;
 @Archetype("openEHR-EHR-EVALUATION.problem_diagnosis.v1")
 @Generated(
     value = "org.ehrbase.client.classgenerator.ClassGenerator",
-    date = "2020-12-09T11:37:52.383761+01:00",
+    date = "2020-12-10T13:06:12.343026900+01:00",
     comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
 )
 public class ProblemDiagnoseEvaluation implements EntryEntity {
   /**
-   * COVID-19-Diagnose/Problem/Diagnose/Name des Problems/ der Diagnose
+   * Path: COVID-19-Diagnose/Problem/Diagnose/Name des Problems/ der Diagnose
+   * Description: Namentliche Identifikation des Problems oder der Diagnose.
    */
   @Path("/data[at0001]/items[at0002]/value|defining_code")
   private NameDesProblemsDerDiagnoseDefiningCode nameDesProblemsDerDiagnoseDefiningCode;
 
   /**
-   * COVID-19-Diagnose/Problem/Diagnose/Freitextbeschreibung
+   * Path: COVID-19-Diagnose/Problem/Diagnose/Freitextbeschreibung
+   * Description: Beschreibung des Problems oder der Diagnose.
    */
   @Path("/data[at0001]/items[at0009 and name/value='Freitextbeschreibung']/value|value")
   private String freitextbeschreibungValue;
 
   /**
-   * COVID-19-Diagnose/Problem/Diagnose/Lokalisation
+   * Path: COVID-19-Diagnose/Problem/Diagnose/Lokalisation
+   * Description: Identifikation einer einfachen Körperstelle zur Lokalisierung des Problems oder der Diagnose.
    */
   @Path("/data[at0001]/items[at0012 and name/value='Lokalisation']/value|value")
   private String lokalisationValue;
 
   /**
-   * COVID-19-Diagnose/Problem/Diagnose/Anatomische Lokalisation
+   * Path: COVID-19-Diagnose/Problem/Diagnose/Anatomische Lokalisation
+   * Description: Eine physische Stelle am oder innerhalb des menschlichen Körpers.
    */
   @Path("/data[at0001]/items[openEHR-EHR-CLUSTER.anatomical_location.v1]")
   private List<AnatomischeLokalisationCluster> anatomischeLokalisation;
 
   /**
-   * COVID-19-Diagnose/Problem/Diagnose/Datum des Auftretens/der Erstdiagnose
+   * Path: COVID-19-Diagnose/Problem/Diagnose/Datum des Auftretens/der Erstdiagnose
+   * Description: Geschätzte oder exakte Zeit (bzw. Datum), zu der die Krankheitsanzeichen oder Symptome zum ersten mal beobachtet wurden.
    */
   @Path("/data[at0001]/items[at0077 and name/value='Datum des Auftretens/der Erstdiagnose']/value|value")
   private TemporalAccessor datumDesAuftretensDerErstdiagnoseValue;
 
   /**
-   * COVID-19-Diagnose/Problem/Diagnose/Feststellungsdatum
+   * Path: COVID-19-Diagnose/Problem/Diagnose/Feststellungsdatum
+   * Description: Geschätzte oder exakte Zeit (bzw. Datum), zu der die Diagnose oder das Problem von einer medizinischen Fachkraft festgestellt wurde.
    */
   @Path("/data[at0001]/items[at0003 and name/value='Feststellungsdatum']/value|value")
   private TemporalAccessor feststellungsdatumValue;
 
   /**
-   * COVID-19-Diagnose/Problem/Diagnose/Diagnosedetails
+   * Path: COVID-19-Diagnose/Problem/Diagnose/Diagnosedetails
+   * Description: Diagnosebezogene Informationen.
    */
   @Path("/data[at0001]/items[openEHR-EHR-CLUSTER.diagnose_details.v0]")
   private DiagnosedetailsCluster diagnosedetails;
 
   /**
-   * COVID-19-Diagnose/Problem/Diagnose/Ätiopathogenese
+   * Path: COVID-19-Diagnose/Problem/Diagnose/Ätiopathogenese
+   * Description: Die Ursachen, Gründe oder Erklärung für das Entstehen eines bestimmten Problems/einer Diagnose, dessen/deren auslösenden Faktoren und Entwicklung.
    */
   @Path("/data[at0001]/items[openEHR-EHR-CLUSTER.etiology.v1]")
   private AtiopathogeneseCluster atiopathogenese;
 
   /**
-   * COVID-19-Diagnose/Problem/Diagnose/Datum/Zeitpunkt der Genesung
+   * Path: COVID-19-Diagnose/Problem/Diagnose/Datum/Zeitpunkt der Genesung
+   * Description: Geschätzte oder exakte Zeit (bzw. Datum), zu der von einer medizinischen Fachkraft die Genesung oder die Remission des Problems oder der Diagnose festgestellt wurde.
    */
   @Path("/data[at0001]/items[at0030]/value|value")
   private TemporalAccessor datumZeitpunktDerGenesungValue;
 
   /**
-   * COVID-19-Diagnose/Problem/Diagnose/Status
+   * Path: COVID-19-Diagnose/Problem/Diagnose/Status
+   * Description: Strukturierte Angaben zu standort-, domänen-, episoden- oder workflow-spezifischen Aspekten des diagnostischen Prozesses.
+   * Comment: Verwenden Sie Status- oder Kontext-Merkmale mit Vorsicht, da sie in der Praxis variabel eingesetzt werden und die Interoperabilität nicht gewährleistet werden kann, sofern die Verwendung nicht mit der Nutzungsgemeinschaft klar abgestimmt wird. Beispiel: aktiver Status - aktiv, inaktiv, genesen, in Remission; Entwicklungsstatus - initial, interim/working, final; zeitlicher Status - aktuell, vergangen; Episodenstatus - erstmalig, neu, laufend; Aufnahmestatus - Aufnahme, Entlassung; oder Prioritätsstatus - primär, sekundär.
    */
   @Path("/data[at0001]/items[at0046]")
   private List<Cluster> status;
 
   /**
-   * COVID-19-Diagnose/Problem/Diagnose/Diagnoseerläuterung
+   * Path: COVID-19-Diagnose/Problem/Diagnose/Diagnoseerläuterung
+   * Description: Ergänzende Beschreibung des Problems oder der Diagnose, die nicht anderweitig erfasst wurde.
    */
   @Path("/data[at0001]/items[at0069 and name/value='Diagnoseerläuterung']/value|value")
   private String diagnoseerlauterungValue;
 
   /**
-   * COVID-19-Diagnose/Problem/Diagnose/Letztes Dokumentationsdatum
+   * Path: COVID-19-Diagnose/Problem/Diagnose/Letztes Dokumentationsdatum
+   * Description: Datum der letzten Aktualisierung der Diagnose bzw. des Problems.
    */
   @Path("/protocol[at0032]/items[at0070 and name/value='Letztes Dokumentationsdatum']/value|value")
   private TemporalAccessor letztesDokumentationsdatumValue;
 
   /**
-   * COVID-19-Diagnose/Problem/Diagnose/Erweiterung
+   * Path: COVID-19-Diagnose/Problem/Diagnose/Erweiterung
+   * Description: Zusätzliche Informationen zur Erfassung lokaler Inhalte oder Anpassung an andere Referenzmodelle/Formalismen.
+   * Comment: Zum Beispiel: Lokaler Informationsbedarf oder zusätzliche Metadaten zur Anpassung an FHIR-Ressourcen oder CIMI-Modelle.
    */
   @Path("/protocol[at0032]/items[at0071]")
   private List<Cluster> erweiterung;
 
   /**
-   * COVID-19-Diagnose/Problem/Diagnose/subject
+   * Path: COVID-19-Diagnose/Problem/Diagnose/subject
    */
   @Path("/subject")
   private PartyProxy subject;
 
   /**
-   * COVID-19-Diagnose/Problem/Diagnose/language
+   * Path: COVID-19-Diagnose/Problem/Diagnose/language
    */
   @Path("/language")
   private Language language;
 
   /**
-   * COVID-19-Diagnose/Problem/Diagnose/feeder_audit
+   * Path: COVID-19-Diagnose/Problem/Diagnose/feeder_audit
    */
   @Path("/feeder_audit")
   private FeederAudit feederAudit;
 
   /**
-   * COVID-19-Diagnose/Problem/Diagnose/value
+   * Path: COVID-19-Diagnose/Problem/Diagnose/value
    */
   @Path("/data[at0001]/items[at0073]/value")
   @Choice
   private ProblemDiagnoseDiagnostischeSicherheitChoice diagnostischeSicherheit;
 
   /**
-   * COVID-19-Diagnose/Problem/Diagnose/value
+   * Path: COVID-19-Diagnose/Problem/Diagnose/value
    */
   @Path("/data[at0001]/items[at0005]/value")
   @Choice

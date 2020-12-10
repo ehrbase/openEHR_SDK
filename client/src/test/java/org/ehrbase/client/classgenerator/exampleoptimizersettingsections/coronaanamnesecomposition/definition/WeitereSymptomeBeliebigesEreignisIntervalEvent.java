@@ -15,43 +15,44 @@ import org.ehrbase.client.classgenerator.shareddefinition.MathFunction;
 @Entity
 @Generated(
     value = "org.ehrbase.client.classgenerator.ClassGenerator",
-    date = "2020-12-10T09:57:06.064355600+01:00",
+    date = "2020-12-10T13:06:13.410033700+01:00",
     comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
 )
 @OptionFor("INTERVAL_EVENT")
 public class WeitereSymptomeBeliebigesEreignisIntervalEvent implements IntervalEventEntity, WeitereSymptomeBeliebigesEreignisChoice {
   /**
-   * Bericht/Symptome/Weitere Symptome/Beliebiges Ereignis/Spezifisches Symptom/Anzeichen
+   * Path: Bericht/Symptome/Weitere Symptome/Beliebiges Ereignis/Spezifisches Symptom/Anzeichen
+   * Description: Gruppierung von Datenelementen bezogen auf Screening auf ein einzelnes Symptom oder Anzeichen.
    */
   @Path("/data[at0003]/items[at0022]")
   private List<WeitereSymptomeSpezifischesSymptomAnzeichenCluster> spezifischesSymptomAnzeichen;
 
   /**
-   * Bericht/Symptome/Weitere Symptome/Beliebiges Ereignis/feeder_audit
+   * Path: Bericht/Symptome/Weitere Symptome/Beliebiges Ereignis/feeder_audit
    */
   @Path("/feeder_audit")
   private FeederAudit feederAudit;
 
   /**
-   * Bericht/Symptome/Weitere Symptome/Beliebiges Ereignis/time
+   * Path: Bericht/Symptome/Weitere Symptome/Beliebiges Ereignis/time
    */
   @Path("/time|value")
   private TemporalAccessor timeValue;
 
   /**
-   * Bericht/Symptome/Weitere Symptome/Beliebiges Ereignis/width
+   * Path: Bericht/Symptome/Weitere Symptome/Beliebiges Ereignis/width
    */
   @Path("/width|value")
   private TemporalAmount widthValue;
 
   /**
-   * Bericht/Symptome/Weitere Symptome/Beliebiges Ereignis/math_function
+   * Path: Bericht/Symptome/Weitere Symptome/Beliebiges Ereignis/math_function
    */
   @Path("/math_function|defining_code")
   private MathFunction mathFunctionDefiningCode;
 
   /**
-   * Bericht/Symptome/Weitere Symptome/Beliebiges Ereignis/sample_count
+   * Path: Bericht/Symptome/Weitere Symptome/Beliebiges Ereignis/sample_count
    */
   @Path("/sample_count")
   private Long sampleCount;

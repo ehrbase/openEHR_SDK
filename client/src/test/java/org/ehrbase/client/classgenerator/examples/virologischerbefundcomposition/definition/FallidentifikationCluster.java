@@ -12,18 +12,19 @@ import org.ehrbase.client.classgenerator.interfaces.LocatableEntity;
 @Archetype("openEHR-EHR-CLUSTER.case_identification.v0")
 @Generated(
     value = "org.ehrbase.client.classgenerator.ClassGenerator",
-    date = "2020-12-09T11:37:53.627286500+01:00",
+    date = "2020-12-10T13:06:13.754035700+01:00",
     comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
 )
 public class FallidentifikationCluster implements LocatableEntity {
   /**
-   * Virologischer Befund/context/Fallidentifikation/Fall-Kennung
+   * Path: Virologischer Befund/context/Fallidentifikation/Fall-Kennung
+   * Description: Der Bezeichner/die Kennung dieses Falls.
    */
   @Path("/items[at0001]/value|value")
   private String fallKennungValue;
 
   /**
-   * Virologischer Befund/context/Fallidentifikation/feeder_audit
+   * Path: Virologischer Befund/context/Fallidentifikation/feeder_audit
    */
   @Path("/feeder_audit")
   private FeederAudit feederAudit;

@@ -11,18 +11,19 @@ import org.ehrbase.client.classgenerator.interfaces.LocatableEntity;
 @Archetype("openEHR-EHR-CLUSTER.problem_qualifier.v1")
 @Generated(
     value = "org.ehrbase.client.classgenerator.ClassGenerator",
-    date = "2020-12-10T09:57:06.150356700+01:00",
+    date = "2020-12-10T13:06:13.489034+01:00",
     comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
 )
 public class StatusCluster implements LocatableEntity {
   /**
-   * Bericht/Allgemeine Angaben/Problem/Diganose Coronovirus/Status/Diagnosestatus
+   * Path: Bericht/Allgemeine Angaben/Problem/Diganose Coronovirus/Status/Diagnosestatus
+   * Description: Stadium oder Phase des diagnostischen Prozesses.
    */
   @Path("/items[at0004]/value|defining_code")
   private DiagnosestatusDefiningCode diagnosestatusDefiningCode;
 
   /**
-   * Bericht/Allgemeine Angaben/Problem/Diganose Coronovirus/Status/feeder_audit
+   * Path: Bericht/Allgemeine Angaben/Problem/Diganose Coronovirus/Status/feeder_audit
    */
   @Path("/feeder_audit")
   private FeederAudit feederAudit;

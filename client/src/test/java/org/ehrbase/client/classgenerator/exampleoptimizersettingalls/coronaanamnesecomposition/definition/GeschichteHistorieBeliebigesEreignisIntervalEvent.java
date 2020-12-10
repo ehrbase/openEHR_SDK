@@ -16,49 +16,52 @@ import org.ehrbase.client.classgenerator.shareddefinition.MathFunction;
 @Entity
 @Generated(
     value = "org.ehrbase.client.classgenerator.ClassGenerator",
-    date = "2020-12-09T11:37:53.054764600+01:00",
+    date = "2020-12-10T13:06:13.047065+01:00",
     comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
 )
 @OptionFor("INTERVAL_EVENT")
 public class GeschichteHistorieBeliebigesEreignisIntervalEvent implements IntervalEventEntity, GeschichteHistorieBeliebigesEreignisChoice {
   /**
-   * Bericht/Geschichte/Historie/Beliebiges Ereignis/Geschichte
+   * Path: Bericht/Geschichte/Historie/Beliebiges Ereignis/Geschichte
+   * Description: Beschreibung der Geschichte oder der klinischen Vorgeschichte für das Fachgebiet der Pflege.
    */
   @Path("/data[at0003]/items[at0004]")
   private List<GeschichteHistorieGeschichteElement> geschichte;
 
   /**
-   * Bericht/Geschichte/Historie/Beliebiges Ereignis/Strukturierte Angabe
+   * Path: Bericht/Geschichte/Historie/Beliebiges Ereignis/Strukturierte Angabe
+   * Description: Strukturierte Angaben über die Geschichte der Person oder des Patienten.
+   * Comment: Zum Beispiel: ein spezifisches Symptom wie Übelkeit oder Schmerzen; ein Ereignis wie ein Sturz vom Fahrrad; oder ein Anliegen wie der Wunsch, mit dem Tabakkonsum aufzuhören.
    */
   @Path("/data[at0003]/items[at0006]")
   private List<Cluster> strukturierteAngabe;
 
   /**
-   * Bericht/Geschichte/Historie/Beliebiges Ereignis/feeder_audit
+   * Path: Bericht/Geschichte/Historie/Beliebiges Ereignis/feeder_audit
    */
   @Path("/feeder_audit")
   private FeederAudit feederAudit;
 
   /**
-   * Bericht/Geschichte/Historie/Beliebiges Ereignis/time
+   * Path: Bericht/Geschichte/Historie/Beliebiges Ereignis/time
    */
   @Path("/time|value")
   private TemporalAccessor timeValue;
 
   /**
-   * Bericht/Geschichte/Historie/Beliebiges Ereignis/width
+   * Path: Bericht/Geschichte/Historie/Beliebiges Ereignis/width
    */
   @Path("/width|value")
   private TemporalAmount widthValue;
 
   /**
-   * Bericht/Geschichte/Historie/Beliebiges Ereignis/math_function
+   * Path: Bericht/Geschichte/Historie/Beliebiges Ereignis/math_function
    */
   @Path("/math_function|defining_code")
   private MathFunction mathFunctionDefiningCode;
 
   /**
-   * Bericht/Geschichte/Historie/Beliebiges Ereignis/sample_count
+   * Path: Bericht/Geschichte/Historie/Beliebiges Ereignis/sample_count
    */
   @Path("/sample_count")
   private Long sampleCount;

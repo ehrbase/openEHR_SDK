@@ -17,90 +17,104 @@ import org.ehrbase.client.classgenerator.shareddefinition.Language;
 @Archetype("openEHR-EHR-EVALUATION.health_risk.v1")
 @Generated(
     value = "org.ehrbase.client.classgenerator.ClassGenerator",
-    date = "2020-12-09T11:37:52.636762900+01:00",
+    date = "2020-12-10T13:06:12.619026200+01:00",
     comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
 )
 public class BewertungDesGesundheitsrisikosEvaluation implements EntryEntity {
   /**
-   * Bericht/Allgemeine Angaben/Bewertung des Gesundheitsrisikos/Gesundheitsrisiko
+   * Path: Bericht/Allgemeine Angaben/Bewertung des Gesundheitsrisikos/Gesundheitsrisiko
+   * Description: Identifizierung der potenziellen zukünftigen Krankheit, des Zustands oder des Gesundheitsproblems, für die das Risiko bewertet wird.
    */
   @Path("/data[at0001]/items[at0002]/value|value")
   private String gesundheitsrisikoValue;
 
   /**
-   * Bericht/Allgemeine Angaben/Bewertung des Gesundheitsrisikos/Spezifischer Risikofaktor/Risikofaktor
+   * Path: Bericht/Allgemeine Angaben/Bewertung des Gesundheitsrisikos/Spezifischer Risikofaktor/Risikofaktor
+   * Description: Identifizierung des Risikofaktors über einen Namen.
    */
   @Path("/data[at0001]/items[at0016 and name/value='Spezifischer Risikofaktor']/items[at0013]/value|value")
   private String spezifischerRisikofaktorRisikofaktorValue;
 
   /**
-   * Bericht/Allgemeine Angaben/Bewertung des Gesundheitsrisikos/Spezifischer Risikofaktor/Vorhandensein
+   * Path: Bericht/Allgemeine Angaben/Bewertung des Gesundheitsrisikos/Spezifischer Risikofaktor/Vorhandensein
+   * Description: Vorhandensein des Risikofaktors.
    */
   @Path("/data[at0001]/items[at0016 and name/value='Spezifischer Risikofaktor']/items[at0017]/value|defining_code")
   private VorhandenseinDefiningCode2 spezifischerRisikofaktorVorhandenseinDefiningCode;
 
   /**
-   * Bericht/Allgemeine Angaben/Bewertung des Gesundheitsrisikos/Spezifischer Risikofaktor/Details
+   * Path: Bericht/Allgemeine Angaben/Bewertung des Gesundheitsrisikos/Spezifischer Risikofaktor/Details
+   * Description: Strukturierte Informationen zu anderen Aspekten der Risikofaktorenbewertung.
+   * Comment: Zum Beispiel: Prävalenz des Risikofaktors bei Familienmitgliedern.
    */
   @Path("/data[at0001]/items[at0016 and name/value='Spezifischer Risikofaktor']/items[at0027]")
   private List<Cluster> spezifischerRisikofaktorDetails;
 
   /**
-   * Bericht/Allgemeine Angaben/Bewertung des Gesundheitsrisikos/Andere Risikofaktoren/Risikofaktor
+   * Path: Bericht/Allgemeine Angaben/Bewertung des Gesundheitsrisikos/Andere Risikofaktoren/Risikofaktor
+   * Description: Identifizierung des Risikofaktors über einen Namen.
    */
   @Path("/data[at0001]/items[at0016 and name/value='Andere Risikofaktoren']/items[at0013]/value|value")
   private String andereRisikofaktorenRisikofaktorValue;
 
   /**
-   * Bericht/Allgemeine Angaben/Bewertung des Gesundheitsrisikos/Andere Risikofaktoren/Vorhandensein
+   * Path: Bericht/Allgemeine Angaben/Bewertung des Gesundheitsrisikos/Andere Risikofaktoren/Vorhandensein
+   * Description: Vorhandensein des Risikofaktors.
    */
   @Path("/data[at0001]/items[at0016 and name/value='Andere Risikofaktoren']/items[at0017]/value|defining_code")
   private VorhandenseinDefiningCode2 andereRisikofaktorenVorhandenseinDefiningCode;
 
   /**
-   * Bericht/Allgemeine Angaben/Bewertung des Gesundheitsrisikos/Andere Risikofaktoren/Details
+   * Path: Bericht/Allgemeine Angaben/Bewertung des Gesundheitsrisikos/Andere Risikofaktoren/Details
+   * Description: Strukturierte Informationen zu anderen Aspekten der Risikofaktorenbewertung.
+   * Comment: Zum Beispiel: Prävalenz des Risikofaktors bei Familienmitgliedern.
    */
   @Path("/data[at0001]/items[at0016 and name/value='Andere Risikofaktoren']/items[at0027]")
   private List<Cluster> andereRisikofaktorenDetails;
 
   /**
-   * Bericht/Allgemeine Angaben/Bewertung des Gesundheitsrisikos/Risikobewertung
+   * Path: Bericht/Allgemeine Angaben/Bewertung des Gesundheitsrisikos/Risikobewertung
+   * Description: Bewertung des Gesundheitsrisikos.
    */
   @Path("/data[at0001]/items[at0003]/value|value")
   private String risikobewertungValue;
 
   /**
-   * Bericht/Allgemeine Angaben/Bewertung des Gesundheitsrisikos/Letzte Aktualisierung
+   * Path: Bericht/Allgemeine Angaben/Bewertung des Gesundheitsrisikos/Letzte Aktualisierung
+   * Description: Das Datum an dem die Bewertung des Gesundheitsrisikos zuletzt aktualisiert wurde.
    */
   @Path("/protocol[at0010]/items[at0024]/value|value")
   private TemporalAccessor letzteAktualisierungValue;
 
   /**
-   * Bericht/Allgemeine Angaben/Bewertung des Gesundheitsrisikos/Bewertungsmethode
+   * Path: Bericht/Allgemeine Angaben/Bewertung des Gesundheitsrisikos/Bewertungsmethode
+   * Description: Identifikation des Algorithmus oder der Leitlinie, welche für die Risikobewertung verwendet wurde.
    */
   @Path("/protocol[at0010]/items[at0025]/value|value")
   private String bewertungsmethodeValue;
 
   /**
-   * Bericht/Allgemeine Angaben/Bewertung des Gesundheitsrisikos/Erweiterung
+   * Path: Bericht/Allgemeine Angaben/Bewertung des Gesundheitsrisikos/Erweiterung
+   * Description: Zusätzliche Informationen zur Erfassung lokaler Inhalte oder Anpassung an andere Referenzmodelle/Formalismen.
+   * Comment: Zum Beispiel: Lokaler Informationsbedarf oder zusätzliche Metadaten zur Anpassung an FHIR-Ressourcen oder CIMI-Modelle.
    */
   @Path("/protocol[at0010]/items[at0011]")
   private List<Cluster> erweiterung;
 
   /**
-   * Bericht/Allgemeine Angaben/Bewertung des Gesundheitsrisikos/subject
+   * Path: Bericht/Allgemeine Angaben/Bewertung des Gesundheitsrisikos/subject
    */
   @Path("/subject")
   private PartyProxy subject;
 
   /**
-   * Bericht/Allgemeine Angaben/Bewertung des Gesundheitsrisikos/language
+   * Path: Bericht/Allgemeine Angaben/Bewertung des Gesundheitsrisikos/language
    */
   @Path("/language")
   private Language language;
 
   /**
-   * Bericht/Allgemeine Angaben/Bewertung des Gesundheitsrisikos/feeder_audit
+   * Path: Bericht/Allgemeine Angaben/Bewertung des Gesundheitsrisikos/feeder_audit
    */
   @Path("/feeder_audit")
   private FeederAudit feederAudit;

@@ -15,42 +15,47 @@ import org.ehrbase.client.classgenerator.interfaces.LocatableEntity;
 @Archetype("openEHR-EHR-CLUSTER.laboratory_test_analyte.v1")
 @Generated(
     value = "org.ehrbase.client.classgenerator.ClassGenerator",
-    date = "2020-12-09T11:37:51.259761300+01:00",
+    date = "2020-12-10T13:06:11.097497800+01:00",
     comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
 )
 public class SauerstoffpartialdruckCluster implements LocatableEntity {
   /**
-   * Befund der Blutgasanalyse/Laborergebnis/Jedes Ereignis/Sauerstoffpartialdruck/untersuchter Analyt
+   * Path: Befund der Blutgasanalyse/Laborergebnis/Jedes Ereignis/Sauerstoffpartialdruck/untersuchter Analyt
+   * Description: Die Bezeichnung des Analyt-Resultats
    */
   @Path("/items[at0024]/value|defining_code")
   private UntersuchterAnalytDefiningCode2 untersuchterAnalytDefiningCode;
 
   /**
-   * Befund der Blutgasanalyse/Laborergebnis/Jedes Ereignis/Sauerstoffpartialdruck/Analyt-Resultat
+   * Path: Befund der Blutgasanalyse/Laborergebnis/Jedes Ereignis/Sauerstoffpartialdruck/Analyt-Resultat
+   * Description: (Mess-)Wert des Analyt-Resultats.
    */
   @Path("/items[at0001]/value|magnitude")
   private Double analytResultatMagnitude;
 
   /**
-   * Befund der Blutgasanalyse/Laborergebnis/Jedes Ereignis/Sauerstoffpartialdruck/Analyt-Resultat
+   * Path: Befund der Blutgasanalyse/Laborergebnis/Jedes Ereignis/Sauerstoffpartialdruck/Analyt-Resultat
+   * Description: (Mess-)Wert des Analyt-Resultats.
    */
   @Path("/items[at0001]/value|units")
   private String analytResultatUnits;
 
   /**
-   * Befund der Blutgasanalyse/Laborergebnis/Jedes Ereignis/Sauerstoffpartialdruck/Analyseergebnis-Details
+   * Path: Befund der Blutgasanalyse/Laborergebnis/Jedes Ereignis/Sauerstoffpartialdruck/Analyseergebnis-Details
+   * Description: Weitere Details zu einem einzelnen Ergebnis.
    */
   @Path("/items[at0014]")
   private List<Cluster> analyseergebnisDetails;
 
   /**
-   * Befund der Blutgasanalyse/Laborergebnis/Jedes Ereignis/Sauerstoffpartialdruck/Ergebnis-Status
+   * Path: Befund der Blutgasanalyse/Laborergebnis/Jedes Ereignis/Sauerstoffpartialdruck/Ergebnis-Status
+   * Description: Status des Analyseergebnisses.
    */
   @Path("/items[at0005]/value|value")
   private String ergebnisStatusValue;
 
   /**
-   * Befund der Blutgasanalyse/Laborergebnis/Jedes Ereignis/Sauerstoffpartialdruck/feeder_audit
+   * Path: Befund der Blutgasanalyse/Laborergebnis/Jedes Ereignis/Sauerstoffpartialdruck/feeder_audit
    */
   @Path("/feeder_audit")
   private FeederAudit feederAudit;

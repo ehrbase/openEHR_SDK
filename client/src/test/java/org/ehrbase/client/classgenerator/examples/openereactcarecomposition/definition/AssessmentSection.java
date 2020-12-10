@@ -11,36 +11,40 @@ import org.ehrbase.client.classgenerator.interfaces.LocatableEntity;
 @Archetype("openEHR-EHR-SECTION.adhoc.v1")
 @Generated(
     value = "org.ehrbase.client.classgenerator.ClassGenerator",
-    date = "2020-12-09T11:37:51.559761500+01:00",
+    date = "2020-12-10T13:06:11.366497600+01:00",
     comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
 )
 public class AssessmentSection implements LocatableEntity {
   /**
-   * open_eREACT-Care/Assessment/DENWIS
+   * Path: open_eREACT-Care/Assessment/DENWIS
+   * Description: Dutch Early Nurse Worry Indicator Score (DENWIS)
    */
   @Path("/items[openEHR-EHR-OBSERVATION.denwis.v0]")
   private DenwisObservation denwis;
 
   /**
-   * open_eREACT-Care/Assessment/Sepsis
+   * Path: open_eREACT-Care/Assessment/Sepsis
+   * Description: A generic section header which should be renamed in a template to suit a specific clinical context.
    */
   @Path("/items[openEHR-EHR-SECTION.adhoc.v1 and name/value='Sepsis']")
   private SepsisSection sepsis;
 
   /**
-   * open_eREACT-Care/Assessment/Covid
+   * Path: open_eREACT-Care/Assessment/Covid
+   * Description: A generic section header which should be renamed in a template to suit a specific clinical context.
    */
   @Path("/items[openEHR-EHR-SECTION.adhoc.v1 and name/value='Covid']")
   private CovidSection covid;
 
   /**
-   * open_eREACT-Care/Assessment/NEWS2
+   * Path: open_eREACT-Care/Assessment/NEWS2
+   * Description: A generic section header which should be renamed in a template to suit a specific clinical context.
    */
   @Path("/items[openEHR-EHR-SECTION.adhoc.v1 and name/value='NEWS2']")
   private News2Section news2;
 
   /**
-   * open_eREACT-Care/Assessment/feeder_audit
+   * Path: open_eREACT-Care/Assessment/feeder_audit
    */
   @Path("/feeder_audit")
   private FeederAudit feederAudit;

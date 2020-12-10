@@ -17,42 +17,45 @@ import org.ehrbase.client.classgenerator.shareddefinition.Language;
 @Archetype("openEHR-EHR-OBSERVATION.symptom_sign_screening.v0")
 @Generated(
     value = "org.ehrbase.client.classgenerator.ClassGenerator",
-    date = "2020-12-09T11:37:52.590761+01:00",
+    date = "2020-12-10T13:06:12.536026800+01:00",
     comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
 )
 public class WeitereSymptomeObservation implements EntryEntity {
   /**
-   * Bericht/Symptome/Weitere Symptome/origin
+   * Path: Bericht/Symptome/Weitere Symptome/origin
    */
   @Path("/data[at0001]/origin|value")
   private TemporalAccessor originValue;
 
   /**
-   * Bericht/Symptome/Weitere Symptome/Erweiterung
+   * Path: Bericht/Symptome/Weitere Symptome/Erweiterung
+   * Description: Zusätzliche Informationen zur Erfassung lokaler Inhalte oder Anpassung an andere Referenzmodelle/Formalismen.
+   * Comment: Zum Beispiel: Lokaler Informationsbedarf oder zusätzliche Metadaten zur Anpassung an FHIR-Ressourcen oder CIMI-Modelle.
    */
   @Path("/protocol[at0007]/items[at0021]")
   private List<Cluster> erweiterung;
 
   /**
-   * Bericht/Symptome/Weitere Symptome/subject
+   * Path: Bericht/Symptome/Weitere Symptome/subject
    */
   @Path("/subject")
   private PartyProxy subject;
 
   /**
-   * Bericht/Symptome/Weitere Symptome/language
+   * Path: Bericht/Symptome/Weitere Symptome/language
    */
   @Path("/language")
   private Language language;
 
   /**
-   * Bericht/Symptome/Weitere Symptome/feeder_audit
+   * Path: Bericht/Symptome/Weitere Symptome/feeder_audit
    */
   @Path("/feeder_audit")
   private FeederAudit feederAudit;
 
   /**
-   * Bericht/Symptome/Weitere Symptome/Beliebiges Ereignis
+   * Path: Bericht/Symptome/Weitere Symptome/Beliebiges Ereignis
+   * Description: Standardwert, ein undefinierter/s Zeitpunkt oder Intervallereignis, das explizit im Template oder zur Laufzeit der Anwendung definiert werden kann.
    */
   @Path("/data[at0001]/events[at0002]")
   @Choice

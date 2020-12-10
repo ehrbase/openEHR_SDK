@@ -12,25 +12,26 @@ import org.ehrbase.client.classgenerator.interfaces.PointEventEntity;
 @Entity
 @Generated(
     value = "org.ehrbase.client.classgenerator.ClassGenerator",
-    date = "2020-12-09T11:37:53.135285200+01:00",
+    date = "2020-12-10T13:06:13.133030700+01:00",
     comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
 )
 @OptionFor("POINT_EVENT")
 public class BerichtBeliebigesEreignisPointEvent implements PointEventEntity, BerichtBeliebigesEreignisChoice {
   /**
-   * Bericht/Beliebiges Ereignis/Spezifisches Symptom/Anzeichen
+   * Path: Bericht/Beliebiges Ereignis/Spezifisches Symptom/Anzeichen
+   * Description: Gruppierung von Datenelementen bezogen auf Screening auf ein einzelnes Symptom oder Anzeichen.
    */
   @Path("/data[at0003]/items[at0022]")
   private List<BerichtSpezifischesSymptomAnzeichenCluster> spezifischesSymptomAnzeichen;
 
   /**
-   * Bericht/Beliebiges Ereignis/feeder_audit
+   * Path: Bericht/Beliebiges Ereignis/feeder_audit
    */
   @Path("/feeder_audit")
   private FeederAudit feederAudit;
 
   /**
-   * Bericht/Beliebiges Ereignis/time
+   * Path: Bericht/Beliebiges Ereignis/time
    */
   @Path("/time|value")
   private TemporalAccessor timeValue;

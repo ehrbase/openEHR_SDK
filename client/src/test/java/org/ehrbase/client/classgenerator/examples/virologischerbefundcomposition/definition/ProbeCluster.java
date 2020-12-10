@@ -16,120 +16,142 @@ import org.ehrbase.client.classgenerator.interfaces.LocatableEntity;
 @Archetype("openEHR-EHR-CLUSTER.specimen.v1")
 @Generated(
     value = "org.ehrbase.client.classgenerator.ClassGenerator",
-    date = "2020-12-09T11:37:53.630286500+01:00",
+    date = "2020-12-10T13:06:13.763034400+01:00",
     comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
 )
 public class ProbeCluster implements LocatableEntity {
   /**
-   * Virologischer Befund/Befund/Jedes Ereignis/Probe/Probenart
+   * Path: Virologischer Befund/Befund/Jedes Ereignis/Probe/Probenart
+   * Description: Die Art der Probe.
    */
   @Path("/items[at0029]/value|value")
   private String probenartValue;
 
   /**
-   * Virologischer Befund/Befund/Jedes Ereignis/Probe/Laborprobenidentifikator
+   * Path: Virologischer Befund/Befund/Jedes Ereignis/Probe/Laborprobenidentifikator
+   * Description: Eine eindeutige Kennung der Probe, die normalerweise vom Labor vergeben wird.
    */
   @Path("/items[at0001]/value")
   private DvIdentifier laborprobenidentifikator;
 
   /**
-   * Virologischer Befund/Befund/Jedes Ereignis/Probe/Externer Identifikator
+   * Path: Virologischer Befund/Befund/Jedes Ereignis/Probe/Externer Identifikator
+   * Description: Eine eindeutige Kennung der Probe, die von einer Organisation außerhalb des Labors wie dem Auftraggeber zugeordnet wurde.
    */
   @Path("/items[at0088]/value")
   private DvIdentifier externerIdentifikator;
 
   /**
-   * Virologischer Befund/Befund/Jedes Ereignis/Probe/Zeitpunkt des Probeneingangs
+   * Path: Virologischer Befund/Befund/Jedes Ereignis/Probe/Zeitpunkt des Probeneingangs
+   * Description: Datum und Uhrzeit des Eingangs der Probe im Labor.
    */
   @Path("/items[at0034]/value|value")
   private TemporalAccessor zeitpunktDesProbeneingangsValue;
 
   /**
-   * Virologischer Befund/Befund/Jedes Ereignis/Probe/Physische Eigenschaften
+   * Path: Virologischer Befund/Befund/Jedes Ereignis/Probe/Physische Eigenschaften
+   * Description: Physische Größen, Masse oder nicht messbare Eigenschaften der uentnehmenden Probe.
+   * Comment: Zum Beispiel: Volumen, Masse, Umfang, Farbe, Geruch, Trübung. Mit diesem Element können die Eigenschaften der zu entnehmenden Probe im Kontext eines INSTRUCTION-Archetyps oder die Eigenschaften des zu entnehmenden Probe im Kontext eines ACTION- oder OBSERVATION-Archetyps angegeben werden. Beispielsweise kann eine INSTRUCTION die Entnahme von 20 ml Blut verlangen, während die entsprechende ACTION aufzeichnet, dass nur 15 ml entnommen wurden.
    */
   @Path("/items[at0027]")
   private List<Cluster> physischeEigenschaften;
 
   /**
-   * Virologischer Befund/Befund/Jedes Ereignis/Probe/Kommentar des Probennehmers
+   * Path: Virologischer Befund/Befund/Jedes Ereignis/Probe/Kommentar des Probennehmers
+   * Description: Ergänzende Beschreibung zur Probenentnahme.
    */
   @Path("/items[at0079]/value|value")
   private String kommentarDesProbennehmersValue;
 
   /**
-   * Virologischer Befund/Befund/Jedes Ereignis/Probe/Probenentnahmestelle
+   * Path: Virologischer Befund/Befund/Jedes Ereignis/Probe/Probenentnahmestelle
+   * Description: Identifizierung der Entnahmestelle, an der die Probe entnommen wurde.
    */
   @Path("/items[at0087]/value|value")
   private String probenentnahmestelleValue;
 
   /**
-   * Virologischer Befund/Befund/Jedes Ereignis/Probe/Anatomische Lokalisation
+   * Path: Virologischer Befund/Befund/Jedes Ereignis/Probe/Anatomische Lokalisation
+   * Description: Eine physische Stelle am oder innerhalb des menschlichen Körpers.
    */
   @Path("/items[openEHR-EHR-CLUSTER.anatomical_location.v1]")
   private AnatomischeLokalisationCluster anatomischeLokalisation;
 
   /**
-   * Virologischer Befund/Befund/Jedes Ereignis/Probe/Zeitpunkt der Probenentnahme
+   * Path: Virologischer Befund/Befund/Jedes Ereignis/Probe/Zeitpunkt der Probenentnahme
+   * Description: Das Datum und die Uhrzeit, zu der die Probennahme angeordnet wurde oder stattfand.
    */
   @Path("/items[at0015]/value|value")
   private TemporalAccessor zeitpunktDerProbenentnahmeValue;
 
   /**
-   * Virologischer Befund/Befund/Jedes Ereignis/Probe/Identifikator des Probennehmers
+   * Path: Virologischer Befund/Befund/Jedes Ereignis/Probe/Identifikator des Probennehmers
+   * Description: Die Person oder Organisation die für die Entnahme der Probe verantwortlich war.
    */
   @Path("/items[at0070]/value")
   private DvIdentifier identifikatorDesProbennehmers;
 
   /**
-   * Virologischer Befund/Befund/Jedes Ereignis/Probe/Angaben zum Probennehmer
+   * Path: Virologischer Befund/Befund/Jedes Ereignis/Probe/Angaben zum Probennehmer
+   * Description: Die Person oder Organisation, die für die Probennahme verantwortlich ist.
    */
   @Path("/items[at0071]")
   private List<Cluster> angabenZumProbennehmer;
 
   /**
-   * Virologischer Befund/Befund/Jedes Ereignis/Probe/Zusätzliche Angaben zur Probennahme
+   * Path: Virologischer Befund/Befund/Jedes Ereignis/Probe/Zusätzliche Angaben zur Probennahme
+   * Description: Zusätzliche Angaben zu bestimmten Methoden der Probennahme.
+   * Comment: Zum Beispiel Details zu Nadelbiopsien bei Prostatakrebs, bei denen sowohl die Anforderung als auch die Beschreibung über die Probe detailliert und spezifisch sind.
    */
   @Path("/items[at0083]")
   private List<Cluster> zusatzlicheAngabenZurProbennahme;
 
   /**
-   * Virologischer Befund/Befund/Jedes Ereignis/Probe/Behälter Details
+   * Path: Virologischer Befund/Befund/Jedes Ereignis/Probe/Behälter Details
+   * Description: Details über Behälter, der/die verwendet wurde/n.
    */
   @Path("/items[at0085]")
   private List<Cluster> behalterDetails;
 
   /**
-   * Virologischer Befund/Befund/Jedes Ereignis/Probe/Angaben zur Verarbeitung
+   * Path: Virologischer Befund/Befund/Jedes Ereignis/Probe/Angaben zur Verarbeitung
+   * Description: Einzelheiten zu einem normalerweise im Labor durchgeführten Vorbereitungs- oder Verarbeitungsschritt.
+   * Comment: Zum Beispiel: Färbung oder Fixierung.
    */
   @Path("/items[at0068]")
   private List<Cluster> angabenZurVerarbeitung;
 
   /**
-   * Virologischer Befund/Befund/Jedes Ereignis/Probe/Angaben zum Transport
+   * Path: Virologischer Befund/Befund/Jedes Ereignis/Probe/Angaben zum Transport
+   * Description: Angaben zum Transport der Probe.
    */
   @Path("/items[at0093]")
   private List<Cluster> angabenZumTransport;
 
   /**
-   * Virologischer Befund/Befund/Jedes Ereignis/Probe/Digitale Darstellung
+   * Path: Virologischer Befund/Befund/Jedes Ereignis/Probe/Digitale Darstellung
+   * Description: Strukturierte Details über eine digitale Darstellung des Präparates.
+   * Comment: Zum Beispiel das gescannte Bild eines Histopathologie-Dias.
    */
   @Path("/items[at0096]")
   private List<Cluster> digitaleDarstellung;
 
   /**
-   * Virologischer Befund/Befund/Jedes Ereignis/Probe/Identifikator der übergeordneten Probe
+   * Path: Virologischer Befund/Befund/Jedes Ereignis/Probe/Identifikator der übergeordneten Probe
+   * Description: Eindeutige Kennung der verwandten Probe(n), bei der die Probe in Teilproben aufgeteilt ist.
    */
   @Path("/items[at0003]/value")
   private DvIdentifier identifikatorDerUbergeordnetenProbe;
 
   /**
-   * Virologischer Befund/Befund/Jedes Ereignis/Probe/Kommentar
+   * Path: Virologischer Befund/Befund/Jedes Ereignis/Probe/Kommentar
+   * Description: Zusätzliche Beschreibungen der Probe, die nicht in anderen Feldern abgebildet werden können.
    */
   @Path("/items[at0045]/value|value")
   private String kommentarValue;
 
   /**
-   * Virologischer Befund/Befund/Jedes Ereignis/Probe/feeder_audit
+   * Path: Virologischer Befund/Befund/Jedes Ereignis/Probe/feeder_audit
    */
   @Path("/feeder_audit")
   private FeederAudit feederAudit;

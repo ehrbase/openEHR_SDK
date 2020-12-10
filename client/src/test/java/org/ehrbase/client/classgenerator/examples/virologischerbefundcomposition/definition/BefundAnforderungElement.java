@@ -10,18 +10,19 @@ import org.ehrbase.client.classgenerator.interfaces.LocatableEntity;
 @Entity
 @Generated(
     value = "org.ehrbase.client.classgenerator.ClassGenerator",
-    date = "2020-12-09T11:37:53.636287200+01:00",
+    date = "2020-12-10T13:06:13.775036+01:00",
     comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
 )
 public class BefundAnforderungElement implements LocatableEntity {
   /**
-   * Virologischer Befund/Befund/Details der Testanforderung/Anforderung
+   * Path: Virologischer Befund/Befund/Details der Testanforderung/Anforderung
+   * Description: Name des ursprünglich angeforderten Tests.
    */
   @Path("/value|value")
   private String value;
 
   /**
-   * Virologischer Befund/Befund/Details der Testanforderung/feeder_audit
+   * Path: Virologischer Befund/Befund/Details der Testanforderung/feeder_audit
    */
   @Path("/feeder_audit")
   private FeederAudit feederAudit;
