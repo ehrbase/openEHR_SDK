@@ -12,7 +12,7 @@ import org.ehrbase.client.classgenerator.interfaces.LocatableEntity;
 @Entity
 @Generated(
     value = "org.ehrbase.client.classgenerator.ClassGenerator",
-    date = "2020-12-09T11:37:53.403287500+01:00",
+    date = "2020-12-10T09:57:06.099357500+01:00",
     comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
 )
 public class ReisefallBestimmtesReisezielCluster implements LocatableEntity {
@@ -44,7 +44,7 @@ public class ReisefallBestimmtesReisezielCluster implements LocatableEntity {
    * Bericht/Risikogebiet/Reisefall/Beliebiges Intervallereignis/Bestimmte Reise/Bestimmtes Reiseziel/Zusätzliche Angaben zum Zielort
    */
   @Path("/items[at0024]")
-  private List<Cluster> zusatzlicheAngabenZumZielort;
+  private List<Cluster> zusaetzlicheAngabenZumZielort;
 
   /**
    * Bericht/Risikogebiet/Reisefall/Beliebiges Intervallereignis/Bestimmte Reise/Bestimmtes Reiseziel/feeder_audit
@@ -84,12 +84,12 @@ public class ReisefallBestimmtesReisezielCluster implements LocatableEntity {
      return this.bestimmteGegendValue ;
   }
 
-  public void setZusatzlicheAngabenZumZielort(List<Cluster> zusatzlicheAngabenZumZielort) {
-     this.zusatzlicheAngabenZumZielort = zusatzlicheAngabenZumZielort;
+  public void setZusaetzlicheAngabenZumZielort(List<Cluster> zusaetzlicheAngabenZumZielort) {
+     this.zusaetzlicheAngabenZumZielort = zusaetzlicheAngabenZumZielort;
   }
 
-  public List<Cluster> getZusatzlicheAngabenZumZielort() {
-     return this.zusatzlicheAngabenZumZielort ;
+  public List<Cluster> getZusaetzlicheAngabenZumZielort() {
+     return this.zusaetzlicheAngabenZumZielort ;
   }
 
   public void setFeederAudit(FeederAudit feederAudit) {

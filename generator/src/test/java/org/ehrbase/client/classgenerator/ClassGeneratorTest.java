@@ -29,6 +29,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -914,19 +915,31 @@ public class ClassGeneratorTest {
             .getTemplate();
     ClassGeneratorConfig config = new ClassGeneratorConfig();
     config.setOptimizerSetting(OptimizerSetting.SECTION);
+    Map<Character, String> characterStringMap = Map.of(
+            'ä', "ae",
+            'Ä', "Ae",
+            'ö', "oe",
+            'Ö', "Oe",
+            'ü', "ue",
+            'Ü', "ue"
+    );
+    config.getReplaceChars().putAll(characterStringMap);
     ClassGenerator cut = new ClassGenerator(config);
     ClassGeneratorResult generate =
         cut.generate(
             PACKAGE_NAME.replace("example", "exampleoptimizersettingsection"),
             new OPTParser(template).parse());
 
-    List<FieldSpec> fieldSpecs =
-        generate.getClasses().values().stream()
-            .flatMap(Collection::stream)
-            .filter(t -> !t.kind.equals(TypeSpec.Kind.ENUM))
-            .map(t -> t.fieldSpecs)
-            .flatMap(List::stream)
-            .collect(Collectors.toList());
+            List<String> fieldSpecs =
+                    generate.getClasses().values().stream()
+                            .flatMap(Collection::stream)
+                            .filter(t -> !t.kind.equals(TypeSpec.Kind.ENUM))
+                            .map(t -> t.fieldSpecs)
+                            .flatMap(List::stream)
+                            .map(f -> f.name)
+                            .collect(Collectors.toList());
+
+     assertThat(fieldSpecs).contains("beschaeftigung")   ;
 
     assertThat(fieldSpecs).size().isEqualTo(339);
 

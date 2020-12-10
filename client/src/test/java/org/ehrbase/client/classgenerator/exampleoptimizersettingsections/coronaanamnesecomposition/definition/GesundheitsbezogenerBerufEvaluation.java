@@ -16,7 +16,7 @@ import org.ehrbase.client.classgenerator.shareddefinition.Language;
 @Archetype("openEHR-EHR-EVALUATION.occupation_summary.v1")
 @Generated(
     value = "org.ehrbase.client.classgenerator.ClassGenerator",
-    date = "2020-12-09T11:37:53.413284900+01:00",
+    date = "2020-12-10T09:57:06.123356100+01:00",
     comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
 )
 public class GesundheitsbezogenerBerufEvaluation implements EntryEntity {
@@ -24,19 +24,19 @@ public class GesundheitsbezogenerBerufEvaluation implements EntryEntity {
    * Bericht/Allgemeine Angaben/Gesundheitsbezogener Beruf/Beschäftigungsstatus
    */
   @Path("/data[at0001]/items[at0004]/value|value")
-  private String beschaftigungsstatusValue;
+  private String beschaeftigungsstatusValue;
 
   /**
    * Bericht/Allgemeine Angaben/Gesundheitsbezogener Beruf/Beschäftigung
    */
   @Path("/data[at0001]/items[openEHR-EHR-CLUSTER.occupation_record.v1]")
-  private List<BeschaftigungCluster> beschaftigung;
+  private List<BeschaeftigungCluster> beschaeftigung;
 
   /**
    * Bericht/Allgemeine Angaben/Gesundheitsbezogener Beruf/Zusätzliche Angaben
    */
   @Path("/data[at0001]/items[at0005]")
-  private List<Cluster> zusatzlicheAngaben;
+  private List<Cluster> zusaetzlicheAngaben;
 
   /**
    * Bericht/Allgemeine Angaben/Gesundheitsbezogener Beruf/Erweiterung
@@ -62,28 +62,28 @@ public class GesundheitsbezogenerBerufEvaluation implements EntryEntity {
   @Path("/feeder_audit")
   private FeederAudit feederAudit;
 
-  public void setBeschaftigungsstatusValue(String beschaftigungsstatusValue) {
-     this.beschaftigungsstatusValue = beschaftigungsstatusValue;
+  public void setBeschaeftigungsstatusValue(String beschaeftigungsstatusValue) {
+     this.beschaeftigungsstatusValue = beschaeftigungsstatusValue;
   }
 
-  public String getBeschaftigungsstatusValue() {
-     return this.beschaftigungsstatusValue ;
+  public String getBeschaeftigungsstatusValue() {
+     return this.beschaeftigungsstatusValue ;
   }
 
-  public void setBeschaftigung(List<BeschaftigungCluster> beschaftigung) {
-     this.beschaftigung = beschaftigung;
+  public void setBeschaeftigung(List<BeschaeftigungCluster> beschaeftigung) {
+     this.beschaeftigung = beschaeftigung;
   }
 
-  public List<BeschaftigungCluster> getBeschaftigung() {
-     return this.beschaftigung ;
+  public List<BeschaeftigungCluster> getBeschaeftigung() {
+     return this.beschaeftigung ;
   }
 
-  public void setZusatzlicheAngaben(List<Cluster> zusatzlicheAngaben) {
-     this.zusatzlicheAngaben = zusatzlicheAngaben;
+  public void setZusaetzlicheAngaben(List<Cluster> zusaetzlicheAngaben) {
+     this.zusaetzlicheAngaben = zusaetzlicheAngaben;
   }
 
-  public List<Cluster> getZusatzlicheAngaben() {
-     return this.zusatzlicheAngaben ;
+  public List<Cluster> getZusaetzlicheAngaben() {
+     return this.zusaetzlicheAngaben ;
   }
 
   public void setErweiterung(List<Cluster> erweiterung) {

@@ -13,10 +13,10 @@ import org.ehrbase.client.classgenerator.interfaces.LocatableEntity;
 @Entity
 @Generated(
     value = "org.ehrbase.client.classgenerator.ClassGenerator",
-    date = "2020-12-09T11:37:53.424285500+01:00",
+    date = "2020-12-10T09:57:06.158356100+01:00",
     comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
 )
-public class DienstleistungAktuelleAktivitatActivity implements LocatableEntity {
+public class DienstleistungAktuelleAktivitaetActivity implements LocatableEntity {
   /**
    * Bericht/Allgemeine Angaben/Dienstleistung/Aktuelle Aktivität/Name der Dienstleistung
    */
@@ -27,7 +27,7 @@ public class DienstleistungAktuelleAktivitatActivity implements LocatableEntity 
    * Bericht/Allgemeine Angaben/Dienstleistung/Aktuelle Aktivität/Grund für die Anforderung
    */
   @Path("/description[at0009]/items[at0062]")
-  private List<DienstleistungGrundFurDieAnforderungElement> grundFurDieAnforderung;
+  private List<DienstleistungGrundFuerDieAnforderungElement> grundFuerDieAnforderung;
 
   /**
    * Bericht/Allgemeine Angaben/Dienstleistung/Aktuelle Aktivität/Komplexe Zeitplanung
@@ -45,7 +45,7 @@ public class DienstleistungAktuelleAktivitatActivity implements LocatableEntity 
    * Bericht/Allgemeine Angaben/Dienstleistung/Aktuelle Aktivität/Unterstützende Informationen
    */
   @Path("/description[at0009]/items[at0149]")
-  private List<Cluster> unterstutzendeInformationen;
+  private List<Cluster> unterstuetzendeInformationen;
 
   /**
    * Bericht/Allgemeine Angaben/Dienstleistung/Aktuelle Aktivität/Anforderungen an Patienten
@@ -73,13 +73,13 @@ public class DienstleistungAktuelleAktivitatActivity implements LocatableEntity 
      return this.nameDerDienstleistungValue ;
   }
 
-  public void setGrundFurDieAnforderung(
-      List<DienstleistungGrundFurDieAnforderungElement> grundFurDieAnforderung) {
-     this.grundFurDieAnforderung = grundFurDieAnforderung;
+  public void setGrundFuerDieAnforderung(
+      List<DienstleistungGrundFuerDieAnforderungElement> grundFuerDieAnforderung) {
+     this.grundFuerDieAnforderung = grundFuerDieAnforderung;
   }
 
-  public List<DienstleistungGrundFurDieAnforderungElement> getGrundFurDieAnforderung() {
-     return this.grundFurDieAnforderung ;
+  public List<DienstleistungGrundFuerDieAnforderungElement> getGrundFuerDieAnforderung() {
+     return this.grundFuerDieAnforderung ;
   }
 
   public void setKomplexeZeitplanung(List<Cluster> komplexeZeitplanung) {
@@ -98,12 +98,12 @@ public class DienstleistungAktuelleAktivitatActivity implements LocatableEntity 
      return this.spezifischeDetails ;
   }
 
-  public void setUnterstutzendeInformationen(List<Cluster> unterstutzendeInformationen) {
-     this.unterstutzendeInformationen = unterstutzendeInformationen;
+  public void setUnterstuetzendeInformationen(List<Cluster> unterstuetzendeInformationen) {
+     this.unterstuetzendeInformationen = unterstuetzendeInformationen;
   }
 
-  public List<Cluster> getUnterstutzendeInformationen() {
-     return this.unterstutzendeInformationen ;
+  public List<Cluster> getUnterstuetzendeInformationen() {
+     return this.unterstuetzendeInformationen ;
   }
 
   public void setAnforderungenAnPatienten(List<Cluster> anforderungenAnPatienten) {

@@ -8,7 +8,7 @@ import javax.annotation.processing.Generated;
 
 @Generated(
     value = "org.ehrbase.client.classgenerator.ClassGenerator",
-    date = "2020-12-09T11:37:53.369286100+01:00",
+    date = "2020-12-10T09:57:05.997359500+01:00",
     comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
 )
 public interface GeschichteHistorieBeliebigesEreignisChoice {

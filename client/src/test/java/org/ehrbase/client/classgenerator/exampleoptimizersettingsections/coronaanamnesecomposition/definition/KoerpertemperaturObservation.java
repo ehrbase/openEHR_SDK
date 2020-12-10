@@ -18,10 +18,10 @@ import org.ehrbase.client.classgenerator.shareddefinition.Language;
 @Archetype("openEHR-EHR-OBSERVATION.body_temperature.v2")
 @Generated(
     value = "org.ehrbase.client.classgenerator.ClassGenerator",
-    date = "2020-12-09T11:37:53.378285800+01:00",
+    date = "2020-12-10T09:57:06.040361500+01:00",
     comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
 )
-public class KorpertemperaturObservation implements EntryEntity {
+public class KoerpertemperaturObservation implements EntryEntity {
   /**
    * Bericht/Symptome/Körpertemperatur/Beliebiges Ereignis/Temperatur
    */
@@ -38,7 +38,7 @@ public class KorpertemperaturObservation implements EntryEntity {
    * Bericht/Symptome/Körpertemperatur/Beliebiges Ereignis/Störfaktoren
    */
   @Path("/data[at0002]/events[at0003]/state[at0029]/items[at0066]")
-  private List<KorpertemperaturStorfaktorenElement> storfaktoren;
+  private List<KoerpertemperaturStoerfaktorenElement> stoerfaktoren;
 
   /**
    * Bericht/Symptome/Körpertemperatur/Beliebiges Ereignis/Umgebungsbedingungen
@@ -50,7 +50,7 @@ public class KorpertemperaturObservation implements EntryEntity {
    * Bericht/Symptome/Körpertemperatur/Beliebiges Ereignis/Betätigung
    */
   @Path("/data[at0002]/events[at0003]/state[at0029]/items[at0057]")
-  private Cluster betatigung;
+  private Cluster betaetigung;
 
   /**
    * Bericht/Symptome/Körpertemperatur/Beliebiges Ereignis/time
@@ -74,7 +74,7 @@ public class KorpertemperaturObservation implements EntryEntity {
    * Bericht/Symptome/Körpertemperatur/Gerät
    */
   @Path("/protocol[at0020]/items[at0059]")
-  private Cluster gerat;
+  private Cluster geraet;
 
   /**
    * Bericht/Symptome/Körpertemperatur/Erweiterung
@@ -116,12 +116,12 @@ public class KorpertemperaturObservation implements EntryEntity {
      return this.temperaturUnits ;
   }
 
-  public void setStorfaktoren(List<KorpertemperaturStorfaktorenElement> storfaktoren) {
-     this.storfaktoren = storfaktoren;
+  public void setStoerfaktoren(List<KoerpertemperaturStoerfaktorenElement> stoerfaktoren) {
+     this.stoerfaktoren = stoerfaktoren;
   }
 
-  public List<KorpertemperaturStorfaktorenElement> getStorfaktoren() {
-     return this.storfaktoren ;
+  public List<KoerpertemperaturStoerfaktorenElement> getStoerfaktoren() {
+     return this.stoerfaktoren ;
   }
 
   public void setUmgebungsbedingungen(List<Cluster> umgebungsbedingungen) {
@@ -132,12 +132,12 @@ public class KorpertemperaturObservation implements EntryEntity {
      return this.umgebungsbedingungen ;
   }
 
-  public void setBetatigung(Cluster betatigung) {
-     this.betatigung = betatigung;
+  public void setBetaetigung(Cluster betaetigung) {
+     this.betaetigung = betaetigung;
   }
 
-  public Cluster getBetatigung() {
-     return this.betatigung ;
+  public Cluster getBetaetigung() {
+     return this.betaetigung ;
   }
 
   public void setTimeValue(TemporalAccessor timeValue) {
@@ -165,12 +165,12 @@ public class KorpertemperaturObservation implements EntryEntity {
      return this.strukturierteLokalisationDerMessung ;
   }
 
-  public void setGerat(Cluster gerat) {
-     this.gerat = gerat;
+  public void setGeraet(Cluster geraet) {
+     this.geraet = geraet;
   }
 
-  public Cluster getGerat() {
-     return this.gerat ;
+  public Cluster getGeraet() {
+     return this.geraet ;
   }
 
   public void setErweiterung(List<Cluster> erweiterung) {

@@ -14,11 +14,11 @@ import org.ehrbase.client.classgenerator.shareddefinition.Language;
 public class GesundheitsbezogenerBerufEvaluationContainment extends Containment {
   public SelectAqlField<GesundheitsbezogenerBerufEvaluation> GESUNDHEITSBEZOGENER_BERUF_EVALUATION = new AqlFieldImp<GesundheitsbezogenerBerufEvaluation>(GesundheitsbezogenerBerufEvaluation.class, "", "GesundheitsbezogenerBerufEvaluation", GesundheitsbezogenerBerufEvaluation.class, this);
 
-  public SelectAqlField<String> BESCHAFTIGUNGSSTATUS_VALUE = new AqlFieldImp<String>(GesundheitsbezogenerBerufEvaluation.class, "/data[at0001]/items[at0004]/value|value", "beschaftigungsstatusValue", String.class, this);
+  public SelectAqlField<String> BESCHAEFTIGUNGSSTATUS_VALUE = new AqlFieldImp<String>(GesundheitsbezogenerBerufEvaluation.class, "/data[at0001]/items[at0004]/value|value", "beschaeftigungsstatusValue", String.class, this);
 
-  public ListSelectAqlField<BeschaftigungCluster> BESCHAFTIGUNG = new ListAqlFieldImp<BeschaftigungCluster>(GesundheitsbezogenerBerufEvaluation.class, "/data[at0001]/items[openEHR-EHR-CLUSTER.occupation_record.v1]", "beschaftigung", BeschaftigungCluster.class, this);
+  public ListSelectAqlField<BeschaeftigungCluster> BESCHAEFTIGUNG = new ListAqlFieldImp<BeschaeftigungCluster>(GesundheitsbezogenerBerufEvaluation.class, "/data[at0001]/items[openEHR-EHR-CLUSTER.occupation_record.v1]", "beschaeftigung", BeschaeftigungCluster.class, this);
 
-  public ListSelectAqlField<Cluster> ZUSATZLICHE_ANGABEN = new ListAqlFieldImp<Cluster>(GesundheitsbezogenerBerufEvaluation.class, "/data[at0001]/items[at0005]", "zusatzlicheAngaben", Cluster.class, this);
+  public ListSelectAqlField<Cluster> ZUSAETZLICHE_ANGABEN = new ListAqlFieldImp<Cluster>(GesundheitsbezogenerBerufEvaluation.class, "/data[at0001]/items[at0005]", "zusaetzlicheAngaben", Cluster.class, this);
 
   public ListSelectAqlField<Cluster> ERWEITERUNG = new ListAqlFieldImp<Cluster>(GesundheitsbezogenerBerufEvaluation.class, "/protocol[at0007]/items[at0008]", "erweiterung", Cluster.class, this);
 

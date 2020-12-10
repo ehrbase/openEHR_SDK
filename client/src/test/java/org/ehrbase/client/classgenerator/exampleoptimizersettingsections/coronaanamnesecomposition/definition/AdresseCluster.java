@@ -12,7 +12,7 @@ import org.ehrbase.client.classgenerator.interfaces.LocatableEntity;
 @Archetype("openEHR-EHR-CLUSTER.address_cc.v0")
 @Generated(
     value = "org.ehrbase.client.classgenerator.ClassGenerator",
-    date = "2020-12-09T11:37:53.415284600+01:00",
+    date = "2020-12-10T09:57:06.130355200+01:00",
     comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
 )
 public class AdresseCluster implements LocatableEntity {

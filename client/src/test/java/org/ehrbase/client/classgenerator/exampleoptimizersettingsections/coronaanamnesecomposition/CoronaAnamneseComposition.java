@@ -20,16 +20,16 @@ import org.ehrbase.client.classgenerator.exampleoptimizersettingsections.coronaa
 import org.ehrbase.client.classgenerator.exampleoptimizersettingsections.coronaanamnesecomposition.definition.ChronischeErkrankungenObservation;
 import org.ehrbase.client.classgenerator.exampleoptimizersettingsections.coronaanamnesecomposition.definition.DienstleistungInstruction;
 import org.ehrbase.client.classgenerator.exampleoptimizersettingsections.coronaanamnesecomposition.definition.DurchfallObservation;
-import org.ehrbase.client.classgenerator.exampleoptimizersettingsections.coronaanamnesecomposition.definition.FieberOderErhohteKorpertemperaturObservation;
+import org.ehrbase.client.classgenerator.exampleoptimizersettingsections.coronaanamnesecomposition.definition.FieberOderErhoehteKoerpertemperaturObservation;
 import org.ehrbase.client.classgenerator.exampleoptimizersettingsections.coronaanamnesecomposition.definition.FragebogenZumMedikationsScreeningObservation;
 import org.ehrbase.client.classgenerator.exampleoptimizersettingsections.coronaanamnesecomposition.definition.GeschichteHistorieObservation;
-import org.ehrbase.client.classgenerator.exampleoptimizersettingsections.coronaanamnesecomposition.definition.GestorterGeruchssinnObservation;
-import org.ehrbase.client.classgenerator.exampleoptimizersettingsections.coronaanamnesecomposition.definition.GestorterGeschmackssinnObservation;
+import org.ehrbase.client.classgenerator.exampleoptimizersettingsections.coronaanamnesecomposition.definition.GestoerterGeruchssinnObservation;
+import org.ehrbase.client.classgenerator.exampleoptimizersettingsections.coronaanamnesecomposition.definition.GestoerterGeschmackssinnObservation;
 import org.ehrbase.client.classgenerator.exampleoptimizersettingsections.coronaanamnesecomposition.definition.GesundheitsbezogenerBerufEvaluation;
 import org.ehrbase.client.classgenerator.exampleoptimizersettingsections.coronaanamnesecomposition.definition.HeiserkeitObservation;
 import org.ehrbase.client.classgenerator.exampleoptimizersettingsections.coronaanamnesecomposition.definition.HistorieDerReiseObservation;
 import org.ehrbase.client.classgenerator.exampleoptimizersettingsections.coronaanamnesecomposition.definition.HustenObservation;
-import org.ehrbase.client.classgenerator.exampleoptimizersettingsections.coronaanamnesecomposition.definition.KorpertemperaturObservation;
+import org.ehrbase.client.classgenerator.exampleoptimizersettingsections.coronaanamnesecomposition.definition.KoerpertemperaturObservation;
 import org.ehrbase.client.classgenerator.exampleoptimizersettingsections.coronaanamnesecomposition.definition.PersonenkontaktObservation;
 import org.ehrbase.client.classgenerator.exampleoptimizersettingsections.coronaanamnesecomposition.definition.ProblemDiagnoseEvaluation;
 import org.ehrbase.client.classgenerator.exampleoptimizersettingsections.coronaanamnesecomposition.definition.ProblemDiganoseCoronovirusEvaluation;
@@ -48,7 +48,7 @@ import org.ehrbase.client.openehrclient.VersionUid;
 @Archetype("openEHR-EHR-COMPOSITION.report.v1")
 @Generated(
     value = "org.ehrbase.client.classgenerator.ClassGenerator",
-    date = "2020-12-09T11:37:53.366285600+01:00",
+    date = "2020-12-10T09:57:05.958356200+01:00",
     comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
 )
 @Template("Corona_Anamnese")
@@ -135,25 +135,25 @@ public class CoronaAnamneseComposition implements CompositionEntity {
    * Bericht/Symptome/Fieber oder erhöhte Körpertemperatur
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Symptome']/items[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0 and name/value='Fieber oder erhöhte Körpertemperatur']")
-  private FieberOderErhohteKorpertemperaturObservation fieberOderErhohteKorpertemperatur;
+  private FieberOderErhoehteKoerpertemperaturObservation fieberOderErhoehteKoerpertemperatur;
 
   /**
    * Bericht/Symptome/Körpertemperatur
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Symptome']/items[openEHR-EHR-OBSERVATION.body_temperature.v2]")
-  private KorpertemperaturObservation korpertemperatur;
+  private KoerpertemperaturObservation koerpertemperatur;
 
   /**
    * Bericht/Symptome/Gestörter Geruchssinn
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Symptome']/items[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0 and name/value='Gestörter Geruchssinn']")
-  private GestorterGeruchssinnObservation gestorterGeruchssinn;
+  private GestoerterGeruchssinnObservation gestoerterGeruchssinn;
 
   /**
    * Bericht/Symptome/Gestörter Geschmackssinn
    */
   @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Symptome']/items[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0 and name/value='Gestörter Geschmackssinn']")
-  private GestorterGeschmackssinnObservation gestorterGeschmackssinn;
+  private GestoerterGeschmackssinnObservation gestoerterGeschmackssinn;
 
   /**
    * Bericht/Symptome/Durchfall
@@ -382,38 +382,38 @@ public class CoronaAnamneseComposition implements CompositionEntity {
      return this.heiserkeit ;
   }
 
-  public void setFieberOderErhohteKorpertemperatur(
-      FieberOderErhohteKorpertemperaturObservation fieberOderErhohteKorpertemperatur) {
-     this.fieberOderErhohteKorpertemperatur = fieberOderErhohteKorpertemperatur;
+  public void setFieberOderErhoehteKoerpertemperatur(
+      FieberOderErhoehteKoerpertemperaturObservation fieberOderErhoehteKoerpertemperatur) {
+     this.fieberOderErhoehteKoerpertemperatur = fieberOderErhoehteKoerpertemperatur;
   }
 
-  public FieberOderErhohteKorpertemperaturObservation getFieberOderErhohteKorpertemperatur() {
-     return this.fieberOderErhohteKorpertemperatur ;
+  public FieberOderErhoehteKoerpertemperaturObservation getFieberOderErhoehteKoerpertemperatur() {
+     return this.fieberOderErhoehteKoerpertemperatur ;
   }
 
-  public void setKorpertemperatur(KorpertemperaturObservation korpertemperatur) {
-     this.korpertemperatur = korpertemperatur;
+  public void setKoerpertemperatur(KoerpertemperaturObservation koerpertemperatur) {
+     this.koerpertemperatur = koerpertemperatur;
   }
 
-  public KorpertemperaturObservation getKorpertemperatur() {
-     return this.korpertemperatur ;
+  public KoerpertemperaturObservation getKoerpertemperatur() {
+     return this.koerpertemperatur ;
   }
 
-  public void setGestorterGeruchssinn(GestorterGeruchssinnObservation gestorterGeruchssinn) {
-     this.gestorterGeruchssinn = gestorterGeruchssinn;
+  public void setGestoerterGeruchssinn(GestoerterGeruchssinnObservation gestoerterGeruchssinn) {
+     this.gestoerterGeruchssinn = gestoerterGeruchssinn;
   }
 
-  public GestorterGeruchssinnObservation getGestorterGeruchssinn() {
-     return this.gestorterGeruchssinn ;
+  public GestoerterGeruchssinnObservation getGestoerterGeruchssinn() {
+     return this.gestoerterGeruchssinn ;
   }
 
-  public void setGestorterGeschmackssinn(
-      GestorterGeschmackssinnObservation gestorterGeschmackssinn) {
-     this.gestorterGeschmackssinn = gestorterGeschmackssinn;
+  public void setGestoerterGeschmackssinn(
+      GestoerterGeschmackssinnObservation gestoerterGeschmackssinn) {
+     this.gestoerterGeschmackssinn = gestoerterGeschmackssinn;
   }
 
-  public GestorterGeschmackssinnObservation getGestorterGeschmackssinn() {
-     return this.gestorterGeschmackssinn ;
+  public GestoerterGeschmackssinnObservation getGestoerterGeschmackssinn() {
+     return this.gestoerterGeschmackssinn ;
   }
 
   public void setDurchfall(DurchfallObservation durchfall) {

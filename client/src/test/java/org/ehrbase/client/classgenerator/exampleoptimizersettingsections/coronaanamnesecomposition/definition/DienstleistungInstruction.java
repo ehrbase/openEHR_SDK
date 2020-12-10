@@ -17,7 +17,7 @@ import org.ehrbase.client.classgenerator.shareddefinition.Language;
 @Archetype("openEHR-EHR-INSTRUCTION.service_request.v1")
 @Generated(
     value = "org.ehrbase.client.classgenerator.ClassGenerator",
-    date = "2020-12-09T11:37:53.424285500+01:00",
+    date = "2020-12-10T09:57:06.157356700+01:00",
     comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
 )
 public class DienstleistungInstruction implements EntryEntity {
@@ -25,7 +25,7 @@ public class DienstleistungInstruction implements EntryEntity {
    * Bericht/Allgemeine Angaben/Dienstleistung/Aktuelle Aktivität
    */
   @Path("/activities[at0001]")
-  private List<DienstleistungAktuelleAktivitatActivity> aktuelleAktivitat;
+  private List<DienstleistungAktuelleAktivitaetActivity> aktuelleAktivitaet;
 
   /**
    * Bericht/Allgemeine Angaben/Dienstleistung/Einsender
@@ -37,7 +37,7 @@ public class DienstleistungInstruction implements EntryEntity {
    * Bericht/Allgemeine Angaben/Dienstleistung/Empfänger
    */
   @Path("/protocol[at0008]/items[at0142]")
-  private Cluster empfanger;
+  private Cluster empfaenger;
 
   /**
    * Bericht/Allgemeine Angaben/Dienstleistung/Verteilerliste
@@ -81,13 +81,13 @@ public class DienstleistungInstruction implements EntryEntity {
   @Path("/expiry_time|value")
   private TemporalAccessor expiryTimeValue;
 
-  public void setAktuelleAktivitat(
-      List<DienstleistungAktuelleAktivitatActivity> aktuelleAktivitat) {
-     this.aktuelleAktivitat = aktuelleAktivitat;
+  public void setAktuelleAktivitaet(
+      List<DienstleistungAktuelleAktivitaetActivity> aktuelleAktivitaet) {
+     this.aktuelleAktivitaet = aktuelleAktivitaet;
   }
 
-  public List<DienstleistungAktuelleAktivitatActivity> getAktuelleAktivitat() {
-     return this.aktuelleAktivitat ;
+  public List<DienstleistungAktuelleAktivitaetActivity> getAktuelleAktivitaet() {
+     return this.aktuelleAktivitaet ;
   }
 
   public void setEinsender(Cluster einsender) {
@@ -98,12 +98,12 @@ public class DienstleistungInstruction implements EntryEntity {
      return this.einsender ;
   }
 
-  public void setEmpfanger(Cluster empfanger) {
-     this.empfanger = empfanger;
+  public void setEmpfaenger(Cluster empfaenger) {
+     this.empfaenger = empfaenger;
   }
 
-  public Cluster getEmpfanger() {
-     return this.empfanger ;
+  public Cluster getEmpfaenger() {
+     return this.empfaenger ;
   }
 
   public void setVerteilerliste(List<Cluster> verteilerliste) {

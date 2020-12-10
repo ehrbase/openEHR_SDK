@@ -14,10 +14,10 @@ import org.ehrbase.client.classgenerator.interfaces.LocatableEntity;
 @Archetype("openEHR-EHR-CLUSTER.dwelling.v0")
 @Generated(
     value = "org.ehrbase.client.classgenerator.ClassGenerator",
-    date = "2020-12-09T11:37:53.418286800+01:00",
+    date = "2020-12-10T09:57:06.137356500+01:00",
     comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
 )
-public class WohnstatteCluster implements LocatableEntity {
+public class WohnstaetteCluster implements LocatableEntity {
   /**
    * Bericht/Allgemeine Angaben/Wohnsituation/Wohnstätte/Anzahl der Schlafzimmer
    */
@@ -28,7 +28,7 @@ public class WohnstatteCluster implements LocatableEntity {
    * Bericht/Allgemeine Angaben/Wohnsituation/Wohnstätte/Ergänzende Details
    */
   @Path("/items[at0003]")
-  private List<Cluster> erganzendeDetails;
+  private List<Cluster> ergaenzendeDetails;
 
   /**
    * Bericht/Allgemeine Angaben/Wohnsituation/Wohnstätte/feeder_audit
@@ -44,12 +44,12 @@ public class WohnstatteCluster implements LocatableEntity {
      return this.anzahlDerSchlafzimmerMagnitude ;
   }
 
-  public void setErganzendeDetails(List<Cluster> erganzendeDetails) {
-     this.erganzendeDetails = erganzendeDetails;
+  public void setErgaenzendeDetails(List<Cluster> ergaenzendeDetails) {
+     this.ergaenzendeDetails = ergaenzendeDetails;
   }
 
-  public List<Cluster> getErganzendeDetails() {
-     return this.erganzendeDetails ;
+  public List<Cluster> getErgaenzendeDetails() {
+     return this.ergaenzendeDetails ;
   }
 
   public void setFeederAudit(FeederAudit feederAudit) {

@@ -16,7 +16,7 @@ import org.ehrbase.client.classgenerator.shareddefinition.Language;
 @Archetype("openEHR-EHR-OBSERVATION.travel_history.v0")
 @Generated(
     value = "org.ehrbase.client.classgenerator.ClassGenerator",
-    date = "2020-12-09T11:37:53.397285200+01:00",
+    date = "2020-12-10T09:57:06.087356800+01:00",
     comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
 )
 public class HistorieDerReiseObservation implements EntryEntity {
@@ -24,7 +24,7 @@ public class HistorieDerReiseObservation implements EntryEntity {
    * Bericht/Risikogebiet/Historie der Reise/Jedes Ereignis/Aufenthalt in den letzten 14 Tage in einem der Risikogebiete für Coronainfektion oder Kontakt zu Menschen, die dort waren
    */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0111 and name/value='Aufenthalt in den letzten 14 Tage in einem der Risikogebiete für Coronainfektion oder Kontakt zu Menschen, die dort waren']/value|defining_code")
-  private AufenthaltInDenLetzten14TageInEinemDerRisikogebieteFurCoronainfektionOderKontak_ aufenthaltInDenLetzten14TageInEinemDerRisikogebieteFurCoronainfektionOderKontaktZuMenschenDieDortWarenDefiningCode;
+  private AufenthaltInDenLetzten14TageInEinemDerRisikogebieteFuerCoronainfektionOderKonta_ aufenthaltInDenLetzten14TageInEinemDerRisikogebieteFuerCoronainfektionOderKontaktZuMenschenDieDortWarenDefiningCode;
 
   /**
    * Bericht/Risikogebiet/Historie der Reise/Jedes Ereignis/Ortsbeschreibung/Standort
@@ -74,14 +74,14 @@ public class HistorieDerReiseObservation implements EntryEntity {
   @Path("/feeder_audit")
   private FeederAudit feederAudit;
 
-  public void setAufenthaltInDenLetzten14TageInEinemDerRisikogebieteFurCoronainfektionOderKontaktZuMenschenDieDortWarenDefiningCode(
-      AufenthaltInDenLetzten14TageInEinemDerRisikogebieteFurCoronainfektionOderKontak_ aufenthaltInDenLetzten14TageInEinemDerRisikogebieteFurCoronainfektionOderKontaktZuMenschenDieDortWarenDefiningCode) {
-     this.aufenthaltInDenLetzten14TageInEinemDerRisikogebieteFurCoronainfektionOderKontaktZuMenschenDieDortWarenDefiningCode = aufenthaltInDenLetzten14TageInEinemDerRisikogebieteFurCoronainfektionOderKontaktZuMenschenDieDortWarenDefiningCode;
+  public void setAufenthaltInDenLetzten14TageInEinemDerRisikogebieteFuerCoronainfektionOderKontaktZuMenschenDieDortWarenDefiningCode(
+      AufenthaltInDenLetzten14TageInEinemDerRisikogebieteFuerCoronainfektionOderKonta_ aufenthaltInDenLetzten14TageInEinemDerRisikogebieteFuerCoronainfektionOderKontaktZuMenschenDieDortWarenDefiningCode) {
+     this.aufenthaltInDenLetzten14TageInEinemDerRisikogebieteFuerCoronainfektionOderKontaktZuMenschenDieDortWarenDefiningCode = aufenthaltInDenLetzten14TageInEinemDerRisikogebieteFuerCoronainfektionOderKontaktZuMenschenDieDortWarenDefiningCode;
   }
 
-  public AufenthaltInDenLetzten14TageInEinemDerRisikogebieteFurCoronainfektionOderKontak_ getAufenthaltInDenLetzten14TageInEinemDerRisikogebieteFurCoronainfektionOderKontaktZuMenschenDieDortWarenDefiningCode(
+  public AufenthaltInDenLetzten14TageInEinemDerRisikogebieteFuerCoronainfektionOderKonta_ getAufenthaltInDenLetzten14TageInEinemDerRisikogebieteFuerCoronainfektionOderKontaktZuMenschenDieDortWarenDefiningCode(
       ) {
-     return this.aufenthaltInDenLetzten14TageInEinemDerRisikogebieteFurCoronainfektionOderKontaktZuMenschenDieDortWarenDefiningCode ;
+     return this.aufenthaltInDenLetzten14TageInEinemDerRisikogebieteFuerCoronainfektionOderKontaktZuMenschenDieDortWarenDefiningCode ;
   }
 
   public void setStandort(StandortCluster standort) {

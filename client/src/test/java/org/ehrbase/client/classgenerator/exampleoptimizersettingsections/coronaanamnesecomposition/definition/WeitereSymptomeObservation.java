@@ -17,7 +17,7 @@ import org.ehrbase.client.classgenerator.shareddefinition.Language;
 @Archetype("openEHR-EHR-OBSERVATION.symptom_sign_screening.v0")
 @Generated(
     value = "org.ehrbase.client.classgenerator.ClassGenerator",
-    date = "2020-12-09T11:37:53.385285300+01:00",
+    date = "2020-12-10T09:57:06.061355900+01:00",
     comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
 )
 public class WeitereSymptomeObservation implements EntryEntity {

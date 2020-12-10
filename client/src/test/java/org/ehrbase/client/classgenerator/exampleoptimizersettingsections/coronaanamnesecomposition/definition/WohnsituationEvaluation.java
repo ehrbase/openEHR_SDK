@@ -17,7 +17,7 @@ import org.ehrbase.client.classgenerator.shareddefinition.Language;
 @Archetype("openEHR-EHR-EVALUATION.living_arrangement.v0")
 @Generated(
     value = "org.ehrbase.client.classgenerator.ClassGenerator",
-    date = "2020-12-09T11:37:53.417284900+01:00",
+    date = "2020-12-10T09:57:06.136357300+01:00",
     comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
 )
 public class WohnsituationEvaluation implements EntryEntity {
@@ -37,7 +37,7 @@ public class WohnsituationEvaluation implements EntryEntity {
    * Bericht/Allgemeine Angaben/Wohnsituation/Wohnstätte
    */
   @Path("/data[at0001]/items[openEHR-EHR-CLUSTER.dwelling.v0]")
-  private List<WohnstatteCluster> wohnstatte;
+  private List<WohnstaetteCluster> wohnstaette;
 
   /**
    * Bericht/Allgemeine Angaben/Wohnsituation/Erweiterung
@@ -79,12 +79,12 @@ public class WohnsituationEvaluation implements EntryEntity {
      return this.anzahlDerHaushaltsmitgliederMagnitude ;
   }
 
-  public void setWohnstatte(List<WohnstatteCluster> wohnstatte) {
-     this.wohnstatte = wohnstatte;
+  public void setWohnstaette(List<WohnstaetteCluster> wohnstaette) {
+     this.wohnstaette = wohnstaette;
   }
 
-  public List<WohnstatteCluster> getWohnstatte() {
-     return this.wohnstatte ;
+  public List<WohnstaetteCluster> getWohnstaette() {
+     return this.wohnstaette ;
   }
 
   public void setErweiterung(List<Cluster> erweiterung) {

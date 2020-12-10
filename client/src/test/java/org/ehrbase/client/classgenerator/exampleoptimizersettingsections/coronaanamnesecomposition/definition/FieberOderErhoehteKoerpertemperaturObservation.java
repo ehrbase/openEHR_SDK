@@ -17,60 +17,60 @@ import org.ehrbase.client.classgenerator.shareddefinition.Language;
 @Archetype("openEHR-EHR-OBSERVATION.symptom_sign_screening.v0")
 @Generated(
     value = "org.ehrbase.client.classgenerator.ClassGenerator",
-    date = "2020-12-09T11:37:53.382286500+01:00",
+    date = "2020-12-10T09:57:06.034358800+01:00",
     comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
 )
-public class GestorterGeschmackssinnObservation implements EntryEntity {
+public class FieberOderErhoehteKoerpertemperaturObservation implements EntryEntity {
   /**
-   * Bericht/Symptome/Gestörter Geschmackssinn/Beliebiges Ereignis/Spezifisches Symptom/Anzeichen/Bezeichnung des Symptoms oder Anzeichens.
+   * Bericht/Symptome/Fieber oder erhöhte Körpertemperatur/Beliebiges Ereignis/Spezifisches Symptom/Anzeichen/Bezeichnung des Symptoms oder Anzeichens.
    */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0022]/items[at0004]/value|value")
   private String bezeichnungDesSymptomsOderAnzeichensValue;
 
   /**
-   * Bericht/Symptome/Gestörter Geschmackssinn/Beliebiges Ereignis/Spezifisches Symptom/Anzeichen/Vorhanden?
+   * Bericht/Symptome/Fieber oder erhöhte Körpertemperatur/Beliebiges Ereignis/Spezifisches Symptom/Anzeichen/Vorhanden?
    */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0022]/items[at0005]/value|defining_code")
   private VorhandenDefiningCode vorhandenDefiningCode;
 
   /**
-   * Bericht/Symptome/Gestörter Geschmackssinn/Beliebiges Ereignis/Spezifisches Symptom/Anzeichen/Detaillierte Angaben zum Symptom/Anzeichen
+   * Bericht/Symptome/Fieber oder erhöhte Körpertemperatur/Beliebiges Ereignis/Spezifisches Symptom/Anzeichen/Detaillierte Angaben zum Symptom/Anzeichen
    */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0022]/items[at0026]")
   private List<Cluster> detaillierteAngabenZumSymptomAnzeichen;
 
   /**
-   * Bericht/Symptome/Gestörter Geschmackssinn/Beliebiges Ereignis/time
+   * Bericht/Symptome/Fieber oder erhöhte Körpertemperatur/Beliebiges Ereignis/time
    */
   @Path("/data[at0001]/events[at0002]/time|value")
   private TemporalAccessor timeValue;
 
   /**
-   * Bericht/Symptome/Gestörter Geschmackssinn/origin
+   * Bericht/Symptome/Fieber oder erhöhte Körpertemperatur/origin
    */
   @Path("/data[at0001]/origin|value")
   private TemporalAccessor originValue;
 
   /**
-   * Bericht/Symptome/Gestörter Geschmackssinn/Erweiterung
+   * Bericht/Symptome/Fieber oder erhöhte Körpertemperatur/Erweiterung
    */
   @Path("/protocol[at0007]/items[at0021]")
   private List<Cluster> erweiterung;
 
   /**
-   * Bericht/Symptome/Gestörter Geschmackssinn/subject
+   * Bericht/Symptome/Fieber oder erhöhte Körpertemperatur/subject
    */
   @Path("/subject")
   private PartyProxy subject;
 
   /**
-   * Bericht/Symptome/Gestörter Geschmackssinn/language
+   * Bericht/Symptome/Fieber oder erhöhte Körpertemperatur/language
    */
   @Path("/language")
   private Language language;
 
   /**
-   * Bericht/Symptome/Gestörter Geschmackssinn/feeder_audit
+   * Bericht/Symptome/Fieber oder erhöhte Körpertemperatur/feeder_audit
    */
   @Path("/feeder_audit")
   private FeederAudit feederAudit;

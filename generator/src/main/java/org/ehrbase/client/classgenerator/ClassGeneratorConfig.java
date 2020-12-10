@@ -19,10 +19,15 @@
 
 package org.ehrbase.client.classgenerator;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class ClassGeneratorConfig {
 
   private OptimizerSetting optimizerSetting = OptimizerSetting.NONE;
   private boolean addNullFlavor = false;
+
+  private final Map<Character,String>  replaceChars = new HashMap<>();
 
   public OptimizerSetting getOptimizerSetting() {
     return optimizerSetting;
@@ -38,5 +43,9 @@ public class ClassGeneratorConfig {
 
   public void setAddNullFlavor(boolean addNullFlavor) {
     this.addNullFlavor = addNullFlavor;
+  }
+
+  public Map<Character, String> getReplaceChars() {
+    return replaceChars;
   }
 }

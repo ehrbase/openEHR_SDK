@@ -10,18 +10,18 @@ import org.ehrbase.client.classgenerator.interfaces.LocatableEntity;
 @Entity
 @Generated(
     value = "org.ehrbase.client.classgenerator.ClassGenerator",
-    date = "2020-12-09T11:37:53.378285800+01:00",
+    date = "2020-12-10T09:57:06.158356100+01:00",
     comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
 )
-public class KorpertemperaturStorfaktorenElement implements LocatableEntity {
+public class DienstleistungGrundFuerDieAnforderungElement implements LocatableEntity {
   /**
-   * Bericht/Symptome/Körpertemperatur/Beliebiges Ereignis/Störfaktoren
+   * Bericht/Allgemeine Angaben/Dienstleistung/Aktuelle Aktivität/Grund für die Anforderung
    */
   @Path("/value|value")
   private String value;
 
   /**
-   * Bericht/Symptome/Körpertemperatur/Beliebiges Ereignis/feeder_audit
+   * Bericht/Allgemeine Angaben/Dienstleistung/Aktuelle Aktivität/feeder_audit
    */
   @Path("/feeder_audit")
   private FeederAudit feederAudit;

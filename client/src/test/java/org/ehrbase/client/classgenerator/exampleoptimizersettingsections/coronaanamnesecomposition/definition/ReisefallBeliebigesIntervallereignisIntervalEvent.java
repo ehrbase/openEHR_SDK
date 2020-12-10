@@ -14,7 +14,7 @@ import org.ehrbase.client.classgenerator.shareddefinition.MathFunction;
 @Entity
 @Generated(
     value = "org.ehrbase.client.classgenerator.ClassGenerator",
-    date = "2020-12-09T11:37:53.401285400+01:00",
+    date = "2020-12-10T09:57:06.096355800+01:00",
     comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
 )
 public class ReisefallBeliebigesIntervallereignisIntervalEvent implements IntervalEventEntity {

@@ -17,7 +17,7 @@ import org.ehrbase.client.classgenerator.shareddefinition.Language;
 @Archetype("openEHR-EHR-OBSERVATION.story.v1")
 @Generated(
     value = "org.ehrbase.client.classgenerator.ClassGenerator",
-    date = "2020-12-09T11:37:53.368286200+01:00",
+    date = "2020-12-10T09:57:05.984357+01:00",
     comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
 )
 public class GeschichteHistorieObservation implements EntryEntity {

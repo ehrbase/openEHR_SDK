@@ -17,60 +17,60 @@ import org.ehrbase.client.classgenerator.shareddefinition.Language;
 @Archetype("openEHR-EHR-OBSERVATION.symptom_sign_screening.v0")
 @Generated(
     value = "org.ehrbase.client.classgenerator.ClassGenerator",
-    date = "2020-12-09T11:37:53.380284700+01:00",
+    date = "2020-12-10T09:57:06.050358+01:00",
     comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
 )
-public class GestorterGeruchssinnObservation implements EntryEntity {
+public class GestoerterGeschmackssinnObservation implements EntryEntity {
   /**
-   * Bericht/Symptome/Gestörter Geruchssinn/Beliebiges Ereignis/Spezifisches Symptom/Anzeichen/Bezeichnung des Symptoms oder Anzeichens.
+   * Bericht/Symptome/Gestörter Geschmackssinn/Beliebiges Ereignis/Spezifisches Symptom/Anzeichen/Bezeichnung des Symptoms oder Anzeichens.
    */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0022]/items[at0004]/value|value")
   private String bezeichnungDesSymptomsOderAnzeichensValue;
 
   /**
-   * Bericht/Symptome/Gestörter Geruchssinn/Beliebiges Ereignis/Spezifisches Symptom/Anzeichen/Vorhanden?
+   * Bericht/Symptome/Gestörter Geschmackssinn/Beliebiges Ereignis/Spezifisches Symptom/Anzeichen/Vorhanden?
    */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0022]/items[at0005]/value|defining_code")
   private VorhandenDefiningCode vorhandenDefiningCode;
 
   /**
-   * Bericht/Symptome/Gestörter Geruchssinn/Beliebiges Ereignis/Spezifisches Symptom/Anzeichen/Detaillierte Angaben zum Symptom/Anzeichen
+   * Bericht/Symptome/Gestörter Geschmackssinn/Beliebiges Ereignis/Spezifisches Symptom/Anzeichen/Detaillierte Angaben zum Symptom/Anzeichen
    */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0022]/items[at0026]")
   private List<Cluster> detaillierteAngabenZumSymptomAnzeichen;
 
   /**
-   * Bericht/Symptome/Gestörter Geruchssinn/Beliebiges Ereignis/time
+   * Bericht/Symptome/Gestörter Geschmackssinn/Beliebiges Ereignis/time
    */
   @Path("/data[at0001]/events[at0002]/time|value")
   private TemporalAccessor timeValue;
 
   /**
-   * Bericht/Symptome/Gestörter Geruchssinn/origin
+   * Bericht/Symptome/Gestörter Geschmackssinn/origin
    */
   @Path("/data[at0001]/origin|value")
   private TemporalAccessor originValue;
 
   /**
-   * Bericht/Symptome/Gestörter Geruchssinn/Erweiterung
+   * Bericht/Symptome/Gestörter Geschmackssinn/Erweiterung
    */
   @Path("/protocol[at0007]/items[at0021]")
   private List<Cluster> erweiterung;
 
   /**
-   * Bericht/Symptome/Gestörter Geruchssinn/subject
+   * Bericht/Symptome/Gestörter Geschmackssinn/subject
    */
   @Path("/subject")
   private PartyProxy subject;
 
   /**
-   * Bericht/Symptome/Gestörter Geruchssinn/language
+   * Bericht/Symptome/Gestörter Geschmackssinn/language
    */
   @Path("/language")
   private Language language;
 
   /**
-   * Bericht/Symptome/Gestörter Geruchssinn/feeder_audit
+   * Bericht/Symptome/Gestörter Geschmackssinn/feeder_audit
    */
   @Path("/feeder_audit")
   private FeederAudit feederAudit;

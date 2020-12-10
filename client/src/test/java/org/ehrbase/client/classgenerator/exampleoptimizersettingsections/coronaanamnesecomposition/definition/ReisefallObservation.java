@@ -16,7 +16,7 @@ import org.ehrbase.client.classgenerator.shareddefinition.Language;
 @Archetype("openEHR-EHR-OBSERVATION.travel_event.v0")
 @Generated(
     value = "org.ehrbase.client.classgenerator.ClassGenerator",
-    date = "2020-12-09T11:37:53.400286100+01:00",
+    date = "2020-12-10T09:57:06.095356700+01:00",
     comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
 )
 public class ReisefallObservation implements EntryEntity {

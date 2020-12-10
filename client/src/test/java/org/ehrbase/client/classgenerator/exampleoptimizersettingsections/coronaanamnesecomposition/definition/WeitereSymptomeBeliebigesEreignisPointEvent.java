@@ -12,7 +12,7 @@ import org.ehrbase.client.classgenerator.interfaces.PointEventEntity;
 @Entity
 @Generated(
     value = "org.ehrbase.client.classgenerator.ClassGenerator",
-    date = "2020-12-09T11:37:53.389287+01:00",
+    date = "2020-12-10T09:57:06.069355400+01:00",
     comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
 )
 @OptionFor("POINT_EVENT")

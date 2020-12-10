@@ -12,7 +12,7 @@ import org.ehrbase.client.classgenerator.interfaces.LocatableEntity;
 @Entity
 @Generated(
     value = "org.ehrbase.client.classgenerator.ClassGenerator",
-    date = "2020-12-09T11:37:53.402287900+01:00",
+    date = "2020-12-10T09:57:06.098356600+01:00",
     comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
 )
 public class ReisefallBestimmteReiseCluster implements LocatableEntity {
@@ -26,13 +26,13 @@ public class ReisefallBestimmteReiseCluster implements LocatableEntity {
    * Bericht/Risikogebiet/Reisefall/Beliebiges Intervallereignis/Bestimmte Reise/Zusätzliche Reisedetails
    */
   @Path("/items[at0025]")
-  private List<Cluster> zusatzlicheReisedetails;
+  private List<Cluster> zusaetzlicheReisedetails;
 
   /**
    * Bericht/Risikogebiet/Reisefall/Beliebiges Intervallereignis/Bestimmte Reise/Rückreisedatum
    */
   @Path("/items[at0019]/value|value")
-  private TemporalAccessor ruckreisedatumValue;
+  private TemporalAccessor rueckreisedatumValue;
 
   /**
    * Bericht/Risikogebiet/Reisefall/Beliebiges Intervallereignis/Bestimmte Reise/feeder_audit
@@ -49,20 +49,20 @@ public class ReisefallBestimmteReiseCluster implements LocatableEntity {
      return this.bestimmtesReiseziel ;
   }
 
-  public void setZusatzlicheReisedetails(List<Cluster> zusatzlicheReisedetails) {
-     this.zusatzlicheReisedetails = zusatzlicheReisedetails;
+  public void setZusaetzlicheReisedetails(List<Cluster> zusaetzlicheReisedetails) {
+     this.zusaetzlicheReisedetails = zusaetzlicheReisedetails;
   }
 
-  public List<Cluster> getZusatzlicheReisedetails() {
-     return this.zusatzlicheReisedetails ;
+  public List<Cluster> getZusaetzlicheReisedetails() {
+     return this.zusaetzlicheReisedetails ;
   }
 
-  public void setRuckreisedatumValue(TemporalAccessor ruckreisedatumValue) {
-     this.ruckreisedatumValue = ruckreisedatumValue;
+  public void setRueckreisedatumValue(TemporalAccessor rueckreisedatumValue) {
+     this.rueckreisedatumValue = rueckreisedatumValue;
   }
 
-  public TemporalAccessor getRuckreisedatumValue() {
-     return this.ruckreisedatumValue ;
+  public TemporalAccessor getRueckreisedatumValue() {
+     return this.rueckreisedatumValue ;
   }
 
   public void setFeederAudit(FeederAudit feederAudit) {

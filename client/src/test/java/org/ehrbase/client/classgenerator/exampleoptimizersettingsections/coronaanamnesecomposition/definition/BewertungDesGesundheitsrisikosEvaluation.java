@@ -17,7 +17,7 @@ import org.ehrbase.client.classgenerator.shareddefinition.Language;
 @Archetype("openEHR-EHR-EVALUATION.health_risk.v1")
 @Generated(
     value = "org.ehrbase.client.classgenerator.ClassGenerator",
-    date = "2020-12-09T11:37:53.419286300+01:00",
+    date = "2020-12-10T09:57:06.140356500+01:00",
     comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
 )
 public class BewertungDesGesundheitsrisikosEvaluation implements EntryEntity {

@@ -19,11 +19,13 @@
 
 package org.ehrbase.client.classgenerator;
 
+import com.google.common.base.CharMatcher;
 import com.nedap.archie.rminfo.ArchieRMInfoLookup;
 import com.nedap.archie.rminfo.RMTypeInfo;
 import java.util.Deque;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -212,6 +214,9 @@ public class DefaultNamingStrategy implements NamingStrategy {
   }
 
   private String normalise(String name, boolean capitalizeFirstLetter) {
+    for (Map.Entry<Character, String> entry : config.getReplaceChars().entrySet()) {
+     name= CharMatcher.is(entry.getKey()).replaceFrom(name, entry.getValue());
+    }
     if (StringUtils.isBlank(name) || name.equals("_")) {
       return RandomStringUtils.randomAlphabetic(10);
     }
