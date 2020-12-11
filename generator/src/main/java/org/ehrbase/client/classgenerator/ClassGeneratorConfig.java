@@ -24,10 +24,13 @@ import java.util.Map;
 
 public class ClassGeneratorConfig {
 
+  /** Defines if nodes which belong to are archetype but are single valued generate a new class. */
   private OptimizerSetting optimizerSetting = OptimizerSetting.NONE;
+  /** Whether or not to generate null flavor fields for Elements. */
   private boolean addNullFlavor = false;
 
-  private final Map<Character,String>  replaceChars = new HashMap<>();
+  /** Map to define Characters in the Node name to be replaced. */
+  private final Map<Character, String> replaceChars = new HashMap<>();
 
   public OptimizerSetting getOptimizerSetting() {
     return optimizerSetting;
