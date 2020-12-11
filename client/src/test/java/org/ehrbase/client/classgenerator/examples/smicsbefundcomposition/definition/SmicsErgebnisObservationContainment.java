@@ -1,5 +1,6 @@
 package org.ehrbase.client.classgenerator.examples.smicsbefundcomposition.definition;
 
+import com.nedap.archie.rm.archetyped.FeederAudit;
 import com.nedap.archie.rm.generic.PartyProxy;
 import java.lang.Boolean;
 import java.lang.String;
@@ -56,6 +57,8 @@ public class SmicsErgebnisObservationContainment extends Containment {
   public SelectAqlField<PartyProxy> SUBJECT = new AqlFieldImp<PartyProxy>(SmicsErgebnisObservation.class, "/subject", "subject", PartyProxy.class, this);
 
   public SelectAqlField<Language> LANGUAGE = new AqlFieldImp<Language>(SmicsErgebnisObservation.class, "/language", "language", Language.class, this);
+
+  public SelectAqlField<FeederAudit> FEEDER_AUDIT = new AqlFieldImp<FeederAudit>(SmicsErgebnisObservation.class, "/feeder_audit", "feederAudit", FeederAudit.class, this);
 
   private SmicsErgebnisObservationContainment() {
     super("openEHR-EHR-OBSERVATION.smics_befund.v1");

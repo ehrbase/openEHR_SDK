@@ -7,6 +7,7 @@ import com.nedap.archie.rm.generic.PartyProxy;
 import java.lang.String;
 import java.time.temporal.TemporalAccessor;
 import java.util.List;
+import javax.annotation.processing.Generated;
 import org.ehrbase.client.annotations.Archetype;
 import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.Id;
@@ -14,6 +15,7 @@ import org.ehrbase.client.annotations.Path;
 import org.ehrbase.client.annotations.Template;
 import org.ehrbase.client.classgenerator.examples.virologischerbefundcomposition.definition.BefundObservation;
 import org.ehrbase.client.classgenerator.examples.virologischerbefundcomposition.definition.FallidentifikationCluster;
+import org.ehrbase.client.classgenerator.interfaces.CompositionEntity;
 import org.ehrbase.client.classgenerator.shareddefinition.Category;
 import org.ehrbase.client.classgenerator.shareddefinition.Language;
 import org.ehrbase.client.classgenerator.shareddefinition.Setting;
@@ -22,94 +24,103 @@ import org.ehrbase.client.openehrclient.VersionUid;
 
 @Entity
 @Archetype("openEHR-EHR-COMPOSITION.report-result.v1")
+@Generated(
+    value = "org.ehrbase.client.classgenerator.ClassGenerator",
+    date = "2020-12-10T13:06:13.753036100+01:00",
+    comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
+)
 @Template("Virologischer Befund")
-public class VirologischerBefundComposition {
+public class VirologischerBefundComposition implements CompositionEntity {
   /**
-   * Virologischer Befund/context/Bericht-ID
+   * Path: Virologischer Befund/context/Bericht-ID
+   * Description: Eindeutige Identifikation des Berichts.
    */
   @Path("/context/other_context[at0001]/items[at0002]/value|value")
   private String berichtIdValue;
 
   /**
-   * Virologischer Befund/context/Status
+   * Path: Virologischer Befund/context/Status
+   * Description: Status des gesamten Ergebnisberichts. Hinweis: Dies ist nicht der Status einzelner Berichtskomponenten.
    */
   @Path("/context/other_context[at0001]/items[at0005]/value|value")
   private String statusValue;
 
   /**
-   * Virologischer Befund/context/Fallidentifikation
+   * Path: Virologischer Befund/context/Fallidentifikation
+   * Description: Zur Erfassung von Details zur Identifikation eines Falls im Gesundheitswesen.
    */
   @Path("/context/other_context[at0001]/items[openEHR-EHR-CLUSTER.case_identification.v0]")
   private FallidentifikationCluster fallidentifikation;
 
   /**
-   * Virologischer Befund/context/start_time
+   * Path: Virologischer Befund/context/start_time
    */
   @Path("/context/start_time|value")
   private TemporalAccessor startTimeValue;
 
   /**
-   * Virologischer Befund/context/participations
+   * Path: Virologischer Befund/context/participations
    */
   @Path("/context/participations")
   private List<Participation> participations;
 
   /**
-   * Virologischer Befund/context/end_time
+   * Path: Virologischer Befund/context/end_time
    */
   @Path("/context/end_time|value")
   private TemporalAccessor endTimeValue;
 
   /**
-   * Virologischer Befund/context/location
+   * Path: Virologischer Befund/context/location
    */
   @Path("/context/location")
   private String location;
 
   /**
-   * Virologischer Befund/context/health_care_facility
+   * Path: Virologischer Befund/context/health_care_facility
    */
   @Path("/context/health_care_facility")
   private PartyIdentified healthCareFacility;
 
   /**
-   * Virologischer Befund/context/setting
+   * Path: Virologischer Befund/context/setting
    */
   @Path("/context/setting|defining_code")
   private Setting settingDefiningCode;
 
   /**
-   * Virologischer Befund/Befund
+   * Path: Virologischer Befund/Befund
+   * Description: Das Ergebnis - einschließlich der Befunde und der Interpretation des Labors - einer Untersuchung, die an Proben durchgeführt wurde, die von einer Einzelperson stammen oder mit dieser Person zusammenhängen.
    */
   @Path("/content[openEHR-EHR-OBSERVATION.laboratory_test_result.v1 and name/value='Befund']")
   private BefundObservation befund;
 
   /**
-   * Virologischer Befund/composer
+   * Path: Virologischer Befund/composer
    */
   @Path("/composer")
   private PartyProxy composer;
 
   /**
-   * Virologischer Befund/language
+   * Path: Virologischer Befund/language
    */
   @Path("/language")
   private Language language;
 
   /**
-   * Virologischer Befund/feeder_audit
+   * Path: Virologischer Befund/feeder_audit
    */
   @Path("/feeder_audit")
   private FeederAudit feederAudit;
 
   /**
-   * Virologischer Befund/category
+   * Path: Virologischer Befund/category
    */
   @Path("/category|defining_code")
   private Category categoryDefiningCode;
 
   /**
-   * Virologischer Befund/territory
+   * Path: Virologischer Befund/territory
    */
   @Path("/territory")
   private Territory territory;

@@ -1,5 +1,6 @@
 package org.ehrbase.client.classgenerator.exampleoptimizersettingsections.coronaanamnesecomposition.definition;
 
+import com.nedap.archie.rm.archetyped.FeederAudit;
 import com.nedap.archie.rm.datastructures.Cluster;
 import com.nedap.archie.rm.generic.PartyProxy;
 import java.time.temporal.TemporalAccessor;
@@ -20,6 +21,8 @@ public class WeitereSymptomeObservationContainment extends Containment {
   public SelectAqlField<PartyProxy> SUBJECT = new AqlFieldImp<PartyProxy>(WeitereSymptomeObservation.class, "/subject", "subject", PartyProxy.class, this);
 
   public SelectAqlField<Language> LANGUAGE = new AqlFieldImp<Language>(WeitereSymptomeObservation.class, "/language", "language", Language.class, this);
+
+  public SelectAqlField<FeederAudit> FEEDER_AUDIT = new AqlFieldImp<FeederAudit>(WeitereSymptomeObservation.class, "/feeder_audit", "feederAudit", FeederAudit.class, this);
 
   public ListSelectAqlField<WeitereSymptomeBeliebigesEreignisChoice> BELIEBIGES_EREIGNIS = new ListAqlFieldImp<WeitereSymptomeBeliebigesEreignisChoice>(WeitereSymptomeObservation.class, "/data[at0001]/events[at0002]", "beliebigesEreignis", WeitereSymptomeBeliebigesEreignisChoice.class, this);
 

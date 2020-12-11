@@ -8,6 +8,7 @@ import com.nedap.archie.rm.generic.PartyProxy;
 import java.lang.String;
 import java.time.temporal.TemporalAccessor;
 import java.util.List;
+import javax.annotation.processing.Generated;
 import org.ehrbase.client.annotations.Archetype;
 import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.Id;
@@ -15,6 +16,7 @@ import org.ehrbase.client.annotations.Path;
 import org.ehrbase.client.annotations.Template;
 import org.ehrbase.client.classgenerator.examples.befundderblutgasanalysecomposition.definition.LaborergebnisObservation;
 import org.ehrbase.client.classgenerator.examples.befundderblutgasanalysecomposition.definition.StatusDefiningCode;
+import org.ehrbase.client.classgenerator.interfaces.CompositionEntity;
 import org.ehrbase.client.classgenerator.shareddefinition.Category;
 import org.ehrbase.client.classgenerator.shareddefinition.Language;
 import org.ehrbase.client.classgenerator.shareddefinition.Setting;
@@ -23,94 +25,103 @@ import org.ehrbase.client.openehrclient.VersionUid;
 
 @Entity
 @Archetype("openEHR-EHR-COMPOSITION.registereintrag.v1")
+@Generated(
+    value = "org.ehrbase.client.classgenerator.ClassGenerator",
+    date = "2020-12-10T13:06:11.087496300+01:00",
+    comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
+)
 @Template("Befund der Blutgasanalyse")
-public class BefundDerBlutgasanalyseComposition {
+public class BefundDerBlutgasanalyseComposition implements CompositionEntity {
   /**
-   * Befund der Blutgasanalyse/context/Erweiterung
+   * Path: Befund der Blutgasanalyse/context/Erweiterung
+   * Description: Ergänzende Angaben zum Registereintrag.
    */
   @Path("/context/other_context[at0001]/items[at0002]")
   private List<Cluster> erweiterung;
 
   /**
-   * Befund der Blutgasanalyse/context/Status
+   * Path: Befund der Blutgasanalyse/context/Status
+   * Description: Status der gelieferten Daten für den Registereintrag. Hinweis: Dies ist nicht der Status einzelner Komponenten.
    */
   @Path("/context/other_context[at0001]/items[at0004]/value|defining_code")
   private StatusDefiningCode statusDefiningCode;
 
   /**
-   * Befund der Blutgasanalyse/context/Kategorie
+   * Path: Befund der Blutgasanalyse/context/Kategorie
+   * Description: Die Klassifikation des Registereintrags (z.B. Typ der Observation des FHIR-Profils).
    */
   @Path("/context/other_context[at0001]/items[at0005]/value|value")
   private String kategorieValue;
 
   /**
-   * Befund der Blutgasanalyse/context/start_time
+   * Path: Befund der Blutgasanalyse/context/start_time
    */
   @Path("/context/start_time|value")
   private TemporalAccessor startTimeValue;
 
   /**
-   * Befund der Blutgasanalyse/context/participations
+   * Path: Befund der Blutgasanalyse/context/participations
    */
   @Path("/context/participations")
   private List<Participation> participations;
 
   /**
-   * Befund der Blutgasanalyse/context/end_time
+   * Path: Befund der Blutgasanalyse/context/end_time
    */
   @Path("/context/end_time|value")
   private TemporalAccessor endTimeValue;
 
   /**
-   * Befund der Blutgasanalyse/context/location
+   * Path: Befund der Blutgasanalyse/context/location
    */
   @Path("/context/location")
   private String location;
 
   /**
-   * Befund der Blutgasanalyse/context/health_care_facility
+   * Path: Befund der Blutgasanalyse/context/health_care_facility
    */
   @Path("/context/health_care_facility")
   private PartyIdentified healthCareFacility;
 
   /**
-   * Befund der Blutgasanalyse/context/setting
+   * Path: Befund der Blutgasanalyse/context/setting
    */
   @Path("/context/setting|defining_code")
   private Setting settingDefiningCode;
 
   /**
-   * Befund der Blutgasanalyse/Laborergebnis
+   * Path: Befund der Blutgasanalyse/Laborergebnis
+   * Description: Das Ergebnis - einschließlich der Befunde und der Interpretation des Labors - einer Untersuchung, die an Proben durchgeführt wurde, die von einer Einzelperson stammen oder mit dieser Person zusammenhängen.
    */
   @Path("/content[openEHR-EHR-OBSERVATION.laboratory_test_result.v1]")
   private LaborergebnisObservation laborergebnis;
 
   /**
-   * Befund der Blutgasanalyse/composer
+   * Path: Befund der Blutgasanalyse/composer
    */
   @Path("/composer")
   private PartyProxy composer;
 
   /**
-   * Befund der Blutgasanalyse/language
+   * Path: Befund der Blutgasanalyse/language
    */
   @Path("/language")
   private Language language;
 
   /**
-   * Befund der Blutgasanalyse/feeder_audit
+   * Path: Befund der Blutgasanalyse/feeder_audit
    */
   @Path("/feeder_audit")
   private FeederAudit feederAudit;
 
   /**
-   * Befund der Blutgasanalyse/category
+   * Path: Befund der Blutgasanalyse/category
    */
   @Path("/category|defining_code")
   private Category categoryDefiningCode;
 
   /**
-   * Befund der Blutgasanalyse/territory
+   * Path: Befund der Blutgasanalyse/territory
    */
   @Path("/territory")
   private Territory territory;

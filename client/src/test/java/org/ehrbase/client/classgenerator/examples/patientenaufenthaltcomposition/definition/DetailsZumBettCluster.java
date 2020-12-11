@@ -1,63 +1,89 @@
 package org.ehrbase.client.classgenerator.examples.patientenaufenthaltcomposition.definition;
 
+import com.nedap.archie.rm.archetyped.FeederAudit;
 import com.nedap.archie.rm.datastructures.Cluster;
 import com.nedap.archie.rm.datavalues.DvIdentifier;
 import java.lang.String;
 import java.util.List;
+import javax.annotation.processing.Generated;
 import org.ehrbase.client.annotations.Archetype;
 import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.Path;
+import org.ehrbase.client.classgenerator.interfaces.LocatableEntity;
 
 @Entity
 @Archetype("openEHR-EHR-CLUSTER.device.v1")
-public class DetailsZumBettCluster {
+@Generated(
+    value = "org.ehrbase.client.classgenerator.ClassGenerator",
+    date = "2020-12-10T13:06:12.906064400+01:00",
+    comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
+)
+public class DetailsZumBettCluster implements LocatableEntity {
   /**
-   * Patientenaufenthalt/Versorgungsort/Standort/Details zum Bett/Gerätename
+   * Path: Patientenaufenthalt/Versorgungsort/Standort/Details zum Bett/Gerätename
+   * Description: Identifizierung des Medizingerätes, bevorzugt durch einen allgemein
+   *                                                 gebräuchlichen Namen, einer formellen und vollständig beschreibenden Bezeichnung oder falls notwendig anhand einer Klasse oder Kategorie des Gerätes.
    */
   @Path("/items[at0001]/value|value")
   private String geratenameValue;
 
   /**
-   * Patientenaufenthalt/Versorgungsort/Standort/Details zum Bett/Gerätetyp
+   * Path: Patientenaufenthalt/Versorgungsort/Standort/Details zum Bett/Gerätetyp
+   * Description: Die Kategorie des Medizingeräts.
    */
   @Path("/items[at0003]/value|value")
   private String geratetypValue;
 
   /**
-   * Patientenaufenthalt/Versorgungsort/Standort/Details zum Bett/Eigenschaften
+   * Path: Patientenaufenthalt/Versorgungsort/Standort/Details zum Bett/Eigenschaften
+   * Description: Weitere Details zu bestimmten Eigenschaften des Medizingerätes.
    */
   @Path("/items[at0009]")
   private List<Cluster> eigenschaften;
 
   /**
-   * Patientenaufenthalt/Versorgungsort/Standort/Details zum Bett/Eindeutige Identifikationsnummer (ID)
+   * Path: Patientenaufenthalt/Versorgungsort/Standort/Details zum Bett/Eindeutige Identifikationsnummer (ID)
+   * Description: Eine numerische oder alphanumerische Zeichenfolge, die diesem Gerät in einem bestimmten System zugeordnet ist.
    */
   @Path("/items[at0021]/value")
   private DvIdentifier eindeutigeIdentifikationsnummerId;
 
   /**
-   * Patientenaufenthalt/Versorgungsort/Standort/Details zum Bett/Geräteverwaltung
+   * Path: Patientenaufenthalt/Versorgungsort/Standort/Details zum Bett/Geräteverwaltung
+   * Description: Weitere Details zur Verwaltung und Wartung des Geräts.
+   * Comment: Zum Beispiel: Eigentümer, Kontaktdaten, Standort, Netzwerkadresse, Ersetzungsdatum, Kalibrierungsdetails usw.
    */
   @Path("/items[at0019]")
   private List<Cluster> gerateverwaltung;
 
   /**
-   * Patientenaufenthalt/Versorgungsort/Standort/Details zum Bett/Komponenten
+   * Path: Patientenaufenthalt/Versorgungsort/Standort/Details zum Bett/Komponenten
+   * Description: Zusätzliche strukturierte Informationen zu identifizierten Komponenten des Geräts.
    */
   @Path("/items[at0018]")
   private List<Cluster> komponenten;
 
   /**
-   * Patientenaufenthalt/Versorgungsort/Standort/Details zum Bett/Erweiterung
+   * Path: Patientenaufenthalt/Versorgungsort/Standort/Details zum Bett/Erweiterung
+   * Description: Zusätzliche Informationen, die zur Erfassung des lokalen Kontexts oder
+   *                                                 zur Angleichung an andere Referenzmodelle/Formalismen erforderlich sind.
    */
   @Path("/items[at0026]")
   private List<Cluster> erweiterung;
 
   /**
-   * Patientenaufenthalt/Versorgungsort/Standort/Details zum Bett/Multimedia
+   * Path: Patientenaufenthalt/Versorgungsort/Standort/Details zum Bett/Multimedia
+   * Description: Digitale Repräsentation des Gerätes.
+   * Comment: Zum Beispiel: ein technisches Diagramm eines Geräts oder ein digitales Bild.
    */
   @Path("/items[at0027]")
   private List<Cluster> multimedia;
+
+  /**
+   * Path: Patientenaufenthalt/Versorgungsort/Standort/Details zum Bett/feeder_audit
+   */
+  @Path("/feeder_audit")
+  private FeederAudit feederAudit;
 
   public void setGeratenameValue(String geratenameValue) {
      this.geratenameValue = geratenameValue;
@@ -121,5 +147,13 @@ public class DetailsZumBettCluster {
 
   public List<Cluster> getMultimedia() {
      return this.multimedia ;
+  }
+
+  public void setFeederAudit(FeederAudit feederAudit) {
+     this.feederAudit = feederAudit;
+  }
+
+  public FeederAudit getFeederAudit() {
+     return this.feederAudit ;
   }
 }

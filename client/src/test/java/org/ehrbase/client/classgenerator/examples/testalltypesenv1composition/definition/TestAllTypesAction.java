@@ -1,55 +1,70 @@
 package org.ehrbase.client.classgenerator.examples.testalltypesenv1composition.definition;
 
+import com.nedap.archie.rm.archetyped.FeederAudit;
 import com.nedap.archie.rm.generic.PartyProxy;
 import java.time.temporal.TemporalAccessor;
 import java.util.List;
+import javax.annotation.processing.Generated;
 import org.ehrbase.client.annotations.Archetype;
 import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.Path;
+import org.ehrbase.client.classgenerator.interfaces.EntryEntity;
 import org.ehrbase.client.classgenerator.shareddefinition.Language;
 import org.ehrbase.client.classgenerator.shareddefinition.Transition;
 
 @Entity
 @Archetype("openEHR-EHR-ACTION.test_all_types.v1")
-public class TestAllTypesAction {
+@Generated(
+    value = "org.ehrbase.client.classgenerator.ClassGenerator",
+    date = "2020-12-10T13:06:10.818494500+01:00",
+    comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
+)
+public class TestAllTypesAction implements EntryEntity {
   /**
-   * Test all types/Test all types/section 2/section 3/Test all types/Test all types
+   * Path: Test all types/Test all types/section 2/section 3/Test all types/Test all types
+   * Description: unknown
    */
   @Path("/description[at0001]/items[openEHR-EHR-CLUSTER.test_all_types.v1]")
   private List<TestAllTypesCluster> testAllTypes;
 
   /**
-   * Test all types/Test all types/section 2/section 3/Test all types/subject
+   * Path: Test all types/Test all types/section 2/section 3/Test all types/subject
    */
   @Path("/subject")
   private PartyProxy subject;
 
   /**
-   * Test all types/Test all types/section 2/section 3/Test all types/language
+   * Path: Test all types/Test all types/section 2/section 3/Test all types/language
    */
   @Path("/language")
   private Language language;
 
   /**
-   * Test all types/Test all types/section 2/section 3/Test all types/time
+   * Path: Test all types/Test all types/section 2/section 3/Test all types/feeder_audit
+   */
+  @Path("/feeder_audit")
+  private FeederAudit feederAudit;
+
+  /**
+   * Path: Test all types/Test all types/section 2/section 3/Test all types/time
    */
   @Path("/time|value")
   private TemporalAccessor timeValue;
 
   /**
-   * Test all types/Test all types/section 2/section 3/Test all types/ism_transition/Careflow_step
+   * Path: Test all types/Test all types/section 2/section 3/Test all types/ism_transition/Careflow_step
    */
   @Path("/ism_transition/careflow_step|defining_code")
   private CareflowStepDefiningCode careflowStepDefiningCode;
 
   /**
-   * Test all types/Test all types/section 2/section 3/Test all types/ism_transition/Current_state
+   * Path: Test all types/Test all types/section 2/section 3/Test all types/ism_transition/Current_state
    */
   @Path("/ism_transition/current_state|defining_code")
   private CurrentStateDefiningCode currentStateDefiningCode;
 
   /**
-   * Test all types/Test all types/section 2/section 3/Test all types/ism_transition/transition
+   * Path: Test all types/Test all types/section 2/section 3/Test all types/ism_transition/transition
    */
   @Path("/ism_transition/transition|defining_code")
   private Transition transitionDefiningCode;
@@ -76,6 +91,14 @@ public class TestAllTypesAction {
 
   public Language getLanguage() {
      return this.language ;
+  }
+
+  public void setFeederAudit(FeederAudit feederAudit) {
+     this.feederAudit = feederAudit;
+  }
+
+  public FeederAudit getFeederAudit() {
+     return this.feederAudit ;
   }
 
   public void setTimeValue(TemporalAccessor timeValue) {

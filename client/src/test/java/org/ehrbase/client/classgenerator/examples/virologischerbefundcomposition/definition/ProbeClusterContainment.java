@@ -1,5 +1,6 @@
 package org.ehrbase.client.classgenerator.examples.virologischerbefundcomposition.definition;
 
+import com.nedap.archie.rm.archetyped.FeederAudit;
 import com.nedap.archie.rm.datastructures.Cluster;
 import com.nedap.archie.rm.datavalues.DvIdentifier;
 import java.lang.String;
@@ -48,6 +49,8 @@ public class ProbeClusterContainment extends Containment {
   public SelectAqlField<DvIdentifier> IDENTIFIKATOR_DER_UBERGEORDNETEN_PROBE = new AqlFieldImp<DvIdentifier>(ProbeCluster.class, "/items[at0003]/value", "identifikatorDerUbergeordnetenProbe", DvIdentifier.class, this);
 
   public SelectAqlField<String> KOMMENTAR_VALUE = new AqlFieldImp<String>(ProbeCluster.class, "/items[at0045]/value|value", "kommentarValue", String.class, this);
+
+  public SelectAqlField<FeederAudit> FEEDER_AUDIT = new AqlFieldImp<FeederAudit>(ProbeCluster.class, "/feeder_audit", "feederAudit", FeederAudit.class, this);
 
   private ProbeClusterContainment() {
     super("openEHR-EHR-CLUSTER.specimen.v1");

@@ -8,6 +8,7 @@ import com.nedap.archie.rm.generic.PartyProxy;
 import java.lang.String;
 import java.time.temporal.TemporalAccessor;
 import java.util.List;
+import javax.annotation.processing.Generated;
 import org.ehrbase.client.annotations.Archetype;
 import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.Id;
@@ -16,6 +17,7 @@ import org.ehrbase.client.annotations.Template;
 import org.ehrbase.client.classgenerator.examples.stationarerversorgungsfallcomposition.definition.AufnahmedatenAdminEntry;
 import org.ehrbase.client.classgenerator.examples.stationarerversorgungsfallcomposition.definition.EntlassungsdatenAdminEntry;
 import org.ehrbase.client.classgenerator.examples.stationarerversorgungsfallcomposition.definition.FalltypDefiningCode;
+import org.ehrbase.client.classgenerator.interfaces.CompositionEntity;
 import org.ehrbase.client.classgenerator.shareddefinition.Category;
 import org.ehrbase.client.classgenerator.shareddefinition.Language;
 import org.ehrbase.client.classgenerator.shareddefinition.Setting;
@@ -24,106 +26,117 @@ import org.ehrbase.client.openehrclient.VersionUid;
 
 @Entity
 @Archetype("openEHR-EHR-COMPOSITION.fall.v0")
+@Generated(
+    value = "org.ehrbase.client.classgenerator.ClassGenerator",
+    date = "2020-12-10T13:06:12.960033600+01:00",
+    comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
+)
 @Template("Stationärer Versorgungsfall")
-public class StationarerVersorgungsfallComposition {
+public class StationarerVersorgungsfallComposition implements CompositionEntity {
   /**
-   * Stationärer Versorgungsfall/context/Falltyp
+   * Path: Stationärer Versorgungsfall/context/Falltyp
+   * Description: Charaktierisierung des Falls als Versorgungs-, Abteilungs- oder Abrechnungsfall.
    */
   @Path("/context/other_context[at0001]/items[at0005]/value|defining_code")
   private FalltypDefiningCode falltypDefiningCode;
 
   /**
-   * Stationärer Versorgungsfall/context/Fallklasse
+   * Path: Stationärer Versorgungsfall/context/Fallklasse
+   * Description: Nähere Beschreibung des Falls als Fallklasse, z.B. ambulanter Besuch,  stationärer, prä- oder nachstationärer Aufenthalt.
    */
   @Path("/context/other_context[at0001]/items[at0004]/value|value")
   private String fallklasseValue;
 
   /**
-   * Stationärer Versorgungsfall/context/Fall-Kennung
+   * Path: Stationärer Versorgungsfall/context/Fall-Kennung
+   * Description: Eindeutige Identifikation des Falls, z.B. Fallnummer.
    */
   @Path("/context/other_context[at0001]/items[at0003 and name/value='Fall-Kennung']/value|value")
   private String fallKennungValue;
 
   /**
-   * Stationärer Versorgungsfall/context/Erweiterung
+   * Path: Stationärer Versorgungsfall/context/Erweiterung
+   * Description: Ergänzende Angaben zum Fall
    */
   @Path("/context/other_context[at0001]/items[at0002]")
   private List<Cluster> erweiterung;
 
   /**
-   * Stationärer Versorgungsfall/context/start_time
+   * Path: Stationärer Versorgungsfall/context/start_time
    */
   @Path("/context/start_time|value")
   private TemporalAccessor startTimeValue;
 
   /**
-   * Stationärer Versorgungsfall/context/participations
+   * Path: Stationärer Versorgungsfall/context/participations
    */
   @Path("/context/participations")
   private List<Participation> participations;
 
   /**
-   * Stationärer Versorgungsfall/context/end_time
+   * Path: Stationärer Versorgungsfall/context/end_time
    */
   @Path("/context/end_time|value")
   private TemporalAccessor endTimeValue;
 
   /**
-   * Stationärer Versorgungsfall/context/location
+   * Path: Stationärer Versorgungsfall/context/location
    */
   @Path("/context/location")
   private String location;
 
   /**
-   * Stationärer Versorgungsfall/context/health_care_facility
+   * Path: Stationärer Versorgungsfall/context/health_care_facility
    */
   @Path("/context/health_care_facility")
   private PartyIdentified healthCareFacility;
 
   /**
-   * Stationärer Versorgungsfall/context/setting
+   * Path: Stationärer Versorgungsfall/context/setting
    */
   @Path("/context/setting|defining_code")
   private Setting settingDefiningCode;
 
   /**
-   * Stationärer Versorgungsfall/Aufnahmedaten
+   * Path: Stationärer Versorgungsfall/Aufnahmedaten
+   * Description: Wird nur für aufgenommene Patienten verwendet. Es signalisiert den Beginn des Aufenthalts eines Patienten in einer Gesundheitseinrichtung.
    */
   @Path("/content[openEHR-EHR-ADMIN_ENTRY.admission.v0 and name/value='Aufnahmedaten']")
   private AufnahmedatenAdminEntry aufnahmedaten;
 
   /**
-   * Stationärer Versorgungsfall/Entlassungsdaten
+   * Path: Stationärer Versorgungsfall/Entlassungsdaten
+   * Description: Wird nur für entlassene Patienten verwendet.
    */
   @Path("/content[openEHR-EHR-ADMIN_ENTRY.discharge_summary.v0]")
   private EntlassungsdatenAdminEntry entlassungsdaten;
 
   /**
-   * Stationärer Versorgungsfall/composer
+   * Path: Stationärer Versorgungsfall/composer
    */
   @Path("/composer")
   private PartyProxy composer;
 
   /**
-   * Stationärer Versorgungsfall/language
+   * Path: Stationärer Versorgungsfall/language
    */
   @Path("/language")
   private Language language;
 
   /**
-   * Stationärer Versorgungsfall/feeder_audit
+   * Path: Stationärer Versorgungsfall/feeder_audit
    */
   @Path("/feeder_audit")
   private FeederAudit feederAudit;
 
   /**
-   * Stationärer Versorgungsfall/category
+   * Path: Stationärer Versorgungsfall/category
    */
   @Path("/category|defining_code")
   private Category categoryDefiningCode;
 
   /**
-   * Stationärer Versorgungsfall/territory
+   * Path: Stationärer Versorgungsfall/territory
    */
   @Path("/territory")
   private Territory territory;

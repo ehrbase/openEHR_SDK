@@ -18,16 +18,16 @@ import org.ehrbase.client.classgenerator.exampleoptimizersettingsections.coronaa
 import org.ehrbase.client.classgenerator.exampleoptimizersettingsections.coronaanamnesecomposition.definition.ChronischeErkrankungenObservation;
 import org.ehrbase.client.classgenerator.exampleoptimizersettingsections.coronaanamnesecomposition.definition.DienstleistungInstruction;
 import org.ehrbase.client.classgenerator.exampleoptimizersettingsections.coronaanamnesecomposition.definition.DurchfallObservation;
-import org.ehrbase.client.classgenerator.exampleoptimizersettingsections.coronaanamnesecomposition.definition.FieberOderErhohteKorpertemperaturObservation;
+import org.ehrbase.client.classgenerator.exampleoptimizersettingsections.coronaanamnesecomposition.definition.FieberOderErhoehteKoerpertemperaturObservation;
 import org.ehrbase.client.classgenerator.exampleoptimizersettingsections.coronaanamnesecomposition.definition.FragebogenZumMedikationsScreeningObservation;
 import org.ehrbase.client.classgenerator.exampleoptimizersettingsections.coronaanamnesecomposition.definition.GeschichteHistorieObservation;
-import org.ehrbase.client.classgenerator.exampleoptimizersettingsections.coronaanamnesecomposition.definition.GestorterGeruchssinnObservation;
-import org.ehrbase.client.classgenerator.exampleoptimizersettingsections.coronaanamnesecomposition.definition.GestorterGeschmackssinnObservation;
+import org.ehrbase.client.classgenerator.exampleoptimizersettingsections.coronaanamnesecomposition.definition.GestoerterGeruchssinnObservation;
+import org.ehrbase.client.classgenerator.exampleoptimizersettingsections.coronaanamnesecomposition.definition.GestoerterGeschmackssinnObservation;
 import org.ehrbase.client.classgenerator.exampleoptimizersettingsections.coronaanamnesecomposition.definition.GesundheitsbezogenerBerufEvaluation;
 import org.ehrbase.client.classgenerator.exampleoptimizersettingsections.coronaanamnesecomposition.definition.HeiserkeitObservation;
 import org.ehrbase.client.classgenerator.exampleoptimizersettingsections.coronaanamnesecomposition.definition.HistorieDerReiseObservation;
 import org.ehrbase.client.classgenerator.exampleoptimizersettingsections.coronaanamnesecomposition.definition.HustenObservation;
-import org.ehrbase.client.classgenerator.exampleoptimizersettingsections.coronaanamnesecomposition.definition.KorpertemperaturObservation;
+import org.ehrbase.client.classgenerator.exampleoptimizersettingsections.coronaanamnesecomposition.definition.KoerpertemperaturObservation;
 import org.ehrbase.client.classgenerator.exampleoptimizersettingsections.coronaanamnesecomposition.definition.PersonenkontaktObservation;
 import org.ehrbase.client.classgenerator.exampleoptimizersettingsections.coronaanamnesecomposition.definition.ProblemDiagnoseEvaluation;
 import org.ehrbase.client.classgenerator.exampleoptimizersettingsections.coronaanamnesecomposition.definition.ProblemDiganoseCoronovirusEvaluation;
@@ -69,13 +69,13 @@ public class CoronaAnamneseCompositionContainment extends Containment {
 
   public SelectAqlField<HeiserkeitObservation> HEISERKEIT = new AqlFieldImp<HeiserkeitObservation>(CoronaAnamneseComposition.class, "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0]", "heiserkeit", HeiserkeitObservation.class, this);
 
-  public SelectAqlField<FieberOderErhohteKorpertemperaturObservation> FIEBER_ODER_ERHOHTE_KORPERTEMPERATUR = new AqlFieldImp<FieberOderErhohteKorpertemperaturObservation>(CoronaAnamneseComposition.class, "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0]", "fieberOderErhohteKorpertemperatur", FieberOderErhohteKorpertemperaturObservation.class, this);
+  public SelectAqlField<FieberOderErhoehteKoerpertemperaturObservation> FIEBER_ODER_ERHOEHTE_KOERPERTEMPERATUR = new AqlFieldImp<FieberOderErhoehteKoerpertemperaturObservation>(CoronaAnamneseComposition.class, "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0]", "fieberOderErhoehteKoerpertemperatur", FieberOderErhoehteKoerpertemperaturObservation.class, this);
 
-  public SelectAqlField<KorpertemperaturObservation> KORPERTEMPERATUR = new AqlFieldImp<KorpertemperaturObservation>(CoronaAnamneseComposition.class, "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-OBSERVATION.body_temperature.v2]", "korpertemperatur", KorpertemperaturObservation.class, this);
+  public SelectAqlField<KoerpertemperaturObservation> KOERPERTEMPERATUR = new AqlFieldImp<KoerpertemperaturObservation>(CoronaAnamneseComposition.class, "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-OBSERVATION.body_temperature.v2]", "koerpertemperatur", KoerpertemperaturObservation.class, this);
 
-  public SelectAqlField<GestorterGeruchssinnObservation> GESTORTER_GERUCHSSINN = new AqlFieldImp<GestorterGeruchssinnObservation>(CoronaAnamneseComposition.class, "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0]", "gestorterGeruchssinn", GestorterGeruchssinnObservation.class, this);
+  public SelectAqlField<GestoerterGeruchssinnObservation> GESTOERTER_GERUCHSSINN = new AqlFieldImp<GestoerterGeruchssinnObservation>(CoronaAnamneseComposition.class, "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0]", "gestoerterGeruchssinn", GestoerterGeruchssinnObservation.class, this);
 
-  public SelectAqlField<GestorterGeschmackssinnObservation> GESTORTER_GESCHMACKSSINN = new AqlFieldImp<GestorterGeschmackssinnObservation>(CoronaAnamneseComposition.class, "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0]", "gestorterGeschmackssinn", GestorterGeschmackssinnObservation.class, this);
+  public SelectAqlField<GestoerterGeschmackssinnObservation> GESTOERTER_GESCHMACKSSINN = new AqlFieldImp<GestoerterGeschmackssinnObservation>(CoronaAnamneseComposition.class, "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0]", "gestoerterGeschmackssinn", GestoerterGeschmackssinnObservation.class, this);
 
   public SelectAqlField<DurchfallObservation> DURCHFALL = new AqlFieldImp<DurchfallObservation>(CoronaAnamneseComposition.class, "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0]", "durchfall", DurchfallObservation.class, this);
 

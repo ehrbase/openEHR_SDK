@@ -19,6 +19,11 @@
 
 package org.ehrbase.client.classgenerator;
 
+import com.nedap.archie.rm.archetyped.Locatable;
+import com.nedap.archie.rm.composition.Composition;
+import com.nedap.archie.rm.composition.Entry;
+import com.nedap.archie.rm.datastructures.IntervalEvent;
+import com.nedap.archie.rm.datastructures.PointEvent;
 import com.nedap.archie.rm.datatypes.CodePhrase;
 import com.nedap.archie.rminfo.ArchieRMInfoLookup;
 import com.squareup.javapoet.AnnotationSpec;
@@ -28,9 +33,28 @@ import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
+import java.lang.reflect.Field;
+import java.lang.reflect.Type;
+import java.time.OffsetDateTime;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Deque;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+import javax.annotation.processing.Generated;
+import javax.lang.model.element.Modifier;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.SetUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.ehrbase.client.annotations.Archetype;
 import org.ehrbase.client.annotations.Choice;
 import org.ehrbase.client.annotations.Entity;
@@ -39,14 +63,22 @@ import org.ehrbase.client.annotations.OptionFor;
 import org.ehrbase.client.annotations.Path;
 import org.ehrbase.client.annotations.Template;
 import org.ehrbase.client.classgenerator.config.RmClassGeneratorConfig;
+import org.ehrbase.client.classgenerator.interfaces.CompositionEntity;
+import org.ehrbase.client.classgenerator.interfaces.EntryEntity;
+import org.ehrbase.client.classgenerator.interfaces.IntervalEventEntity;
+import org.ehrbase.client.classgenerator.interfaces.LocatableEntity;
+import org.ehrbase.client.classgenerator.interfaces.PointEventEntity;
+import org.ehrbase.client.classgenerator.interfaces.RMEntity;
 import org.ehrbase.client.classgenerator.shareddefinition.Category;
 import org.ehrbase.client.classgenerator.shareddefinition.Language;
 import org.ehrbase.client.classgenerator.shareddefinition.MathFunction;
+import org.ehrbase.client.classgenerator.shareddefinition.NullFlavour;
 import org.ehrbase.client.classgenerator.shareddefinition.Setting;
 import org.ehrbase.client.classgenerator.shareddefinition.Territory;
 import org.ehrbase.client.classgenerator.shareddefinition.Transition;
 import org.ehrbase.client.openehrclient.VersionUid;
 import org.ehrbase.serialisation.util.SnakeCase;
+import org.ehrbase.serialisation.walker.Walker;
 import org.ehrbase.terminology.client.terminology.TermDefinition;
 import org.ehrbase.terminology.client.terminology.ValueSet;
 import org.ehrbase.util.reflection.ReflectionHelper;
@@ -59,20 +91,6 @@ import org.ehrbase.webtemplate.model.WebTemplateNode;
 import org.ehrbase.webtemplate.parser.FlatPath;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.lang.model.element.Modifier;
-import java.lang.reflect.Field;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Deque;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.StringJoiner;
-import java.util.stream.Collectors;
 
 public class ClassGenerator {
 
@@ -127,8 +145,8 @@ public class ClassGenerator {
             .addAnnotation(Id.class)
             .build();
     classBuilder.addField(versionUid);
-    classBuilder.addMethod(buildGetter(versionUid));
-    classBuilder.addMethod(buildSetter(versionUid));
+    classBuilder.addMethod(buildGetter(versionUid, false));
+    classBuilder.addMethod(buildSetter(versionUid, false));
   }
 
   private TypeSpec.Builder build(ClassGeneratorContext context, WebTemplateNode next) {
@@ -155,27 +173,19 @@ public class ClassGenerator {
       classBuilder.addAnnotation(archetypeAnnotation);
     }
 
+    AnnotationSpec generatedAnnotation = buildGeneratedAnnotation();
+    classBuilder.addAnnotation(generatedAnnotation);
+
+    classBuilder.addSuperinterface(findRMInterface(next));
+
     if (next.getChildren().stream().anyMatch(n -> n.getRmType().equals("EVENT"))) {
       WebTemplateNode event =
           next.getChildren().stream().filter(n -> n.getRmType().equals("EVENT")).findAny().get();
-      WebTemplateNode pointEvent = new WebTemplateNode(event);
-      WebTemplateNode intervalEvent = new WebTemplateNode(event);
-      pointEvent.setRmType("POINT_EVENT");
-      intervalEvent.setRmType("INTERVAL_EVENT");
-      WebTemplateNode width = new WebTemplateNode();
-      width.setId("width");
-      width.setName("width");
-      width.setRmType("DV_DURATION");
-      width.setMax(1);
-      width.setAqlPath(event.getAqlPath() + "/width");
-      intervalEvent.getChildren().add(width);
-      WebTemplateNode math = new WebTemplateNode();
-      math.setId("math_function");
-      math.setName("math_function");
-      math.setRmType("DV_CODED_TEXT");
-      math.setMax(1);
-      math.setAqlPath(event.getAqlPath() + "/math_function");
-      intervalEvent.getChildren().add(math);
+
+      Walker.EventHelper eventHelper = new Walker.EventHelper(event).invoke();
+      WebTemplateNode pointEvent = eventHelper.getPointEvent();
+      WebTemplateNode intervalEvent = eventHelper.getIntervalEvent();
+
       next.getChildren().add(intervalEvent);
       next.getChildren().add(pointEvent);
       next.getChildren().remove(event);
@@ -190,9 +200,7 @@ public class ClassGenerator {
 
       Deque<WebTemplateNode> filtersNodes = pushToUnfiltered(context, child);
 
-      String relativPath =
-          FlatPath.removeStart(new FlatPath(child.getAqlPath()), new FlatPath(next.getAqlPath()))
-              .toString();
+      String relativPath = context.nodeDeque.peek().buildRelativPath(child);
       if (child.getChildren().isEmpty() && !choices.containsKey(child.getAqlPath())) {
 
         addSimpleField(context, classBuilder, relativPath, child);
@@ -222,11 +230,44 @@ public class ClassGenerator {
 
         interfaceClassName = ClassName.get(interfacePackage, interfaceSpec.name);
       } else {
-        interfaceSpec =
+
+        List<Pair<TypeSpec.Builder, WebTemplateNode>> builders = new ArrayList<>();
+        for (WebTemplateNode child : choice) {
+          TypeSpec.Builder build = build(context, child);
+          builders.add(new ImmutablePair<>(build, child));
+        }
+
+        TypeSpec.Builder interfaceBuilder =
             TypeSpec.interfaceBuilder(
                     defaultNamingStrategy.buildClassName(context, choice.get(0), true, false))
-                .addModifiers(Modifier.PUBLIC)
-                .build();
+                .addModifiers(Modifier.PUBLIC);
+
+        interfaceBuilder.addAnnotation(buildGeneratedAnnotation());
+
+        Set<FieldSpec> cowmenField = null;
+        for (Set<FieldSpec> fields :
+            builders.stream()
+                .map(Pair::getLeft)
+                .map(s -> s.fieldSpecs)
+                .map(HashSet::new)
+                .collect(Collectors.toList())) {
+          if (cowmenField == null) {
+            cowmenField = fields;
+          } else {
+            cowmenField = SetUtils.intersection(cowmenField, fields);
+          }
+        }
+        if (cowmenField == null) {
+          cowmenField = Collections.emptySet();
+        }
+        cowmenField.forEach(
+            f -> {
+              interfaceBuilder.addMethod(buildGetter(f, true));
+
+              interfaceBuilder.addMethod(buildSetter(f, true));
+            });
+
+        interfaceSpec = interfaceBuilder.build();
         context.currentTypeSpec.put(relativeNode, interfaceSpec);
 
         String interfacePackage =
@@ -237,16 +278,18 @@ public class ClassGenerator {
         context.classes.put(interfacePackage, interfaceSpec);
         interfaceClassName = ClassName.get(interfacePackage, interfaceSpec.name);
 
-        for (WebTemplateNode child : choice) {
-          TypeSpec.Builder build = build(context, child);
-          build
-              .addSuperinterface(interfaceClassName)
-              .addAnnotation(
-                  AnnotationSpec.builder(OptionFor.class)
-                      .addMember(OptionFor.VALUE, "$S", child.getRmType())
-                      .build());
-          context.classes.put(interfacePackage, build.build());
-        }
+        TypeName finalInterfaceClassName = interfaceClassName;
+        builders.forEach(
+            pair -> {
+              TypeSpec.Builder builder =
+                  pair.getKey()
+                      .addSuperinterface(finalInterfaceClassName)
+                      .addAnnotation(
+                          AnnotationSpec.builder(OptionFor.class)
+                              .addMember(OptionFor.VALUE, "$S", pair.getRight().getRmType())
+                              .build());
+              context.classes.put(interfacePackage, builder.build());
+            });
       }
       if (choice.stream().anyMatch(WebTemplateNode::isMulti)) {
         interfaceClassName =
@@ -281,6 +324,38 @@ public class ClassGenerator {
 
     context.unFilteredNodeDeque.poll();
     return classBuilder;
+  }
+
+  private AnnotationSpec buildGeneratedAnnotation() {
+    return AnnotationSpec.builder(Generated.class)
+        .addMember("value", "$S", getClass().getName())
+        .addMember("date", "$S", OffsetDateTime.now().toString())
+        .addMember(
+            "comments",
+            "$S",
+            "https://github.com/ehrbase/openEHR_SDK Version: "
+                + getClass().getPackage().getImplementationVersion())
+        .build();
+  }
+
+  private Type findRMInterface(WebTemplateNode next) {
+
+    Class classToBeCreated = RM_INFO_LOOKUP.getClassToBeCreated(next.getRmType());
+
+    if (Composition.class.isAssignableFrom(classToBeCreated)) {
+      return CompositionEntity.class;
+    } else if (Entry.class.isAssignableFrom(classToBeCreated)) {
+      return EntryEntity.class;
+    } else if (IntervalEvent.class.isAssignableFrom(classToBeCreated)) {
+      return IntervalEventEntity.class;
+    } else if (PointEvent.class.isAssignableFrom(classToBeCreated)) {
+      return PointEventEntity.class;
+    } else if (Locatable.class.isAssignableFrom(classToBeCreated)) {
+      return LocatableEntity.class;
+    } else {
+
+      return RMEntity.class;
+    }
   }
 
   private Deque<WebTemplateNode> pushToUnfiltered(
@@ -332,15 +407,7 @@ public class ClassGenerator {
 
     List<WebTemplateNode> matching = relativeNode.findMatching(n -> true);
     matching.add(relativeNode);
-    matching.forEach(
-        n -> {
-          String relativPath =
-              FlatPath.removeStart(
-                      new FlatPath(n.getAqlPath()),
-                      new FlatPath(context.nodeDeque.peek().getAqlPath()))
-                  .toString();
-          n.setAqlPath(relativPath);
-        });
+    matching.forEach(n -> n.setAqlPath(context.nodeDeque.peek().buildRelativPath(n)));
     return relativeNode;
   }
 
@@ -365,7 +432,14 @@ public class ClassGenerator {
     boolean expand = classGeneratorConfig != null && classGeneratorConfig.isExpandField();
 
     if (endNode.getRmType().equals("DV_CODED_TEXT")
-        && !List.of("transition", "language", "setting", "category", "territory", "math_function")
+        && !List.of(
+                "transition",
+                "language",
+                "setting",
+                "category",
+                "territory",
+                "math_function",
+                "null_flavour")
             .contains(endNode.getId(false))) {
       expand =
           expand
@@ -411,6 +485,8 @@ public class ClassGenerator {
       case "BOOLEAN":
         return Boolean.class;
       case "INTEGER":
+        return Integer.class;
+      case "LONG":
         return Long.class;
       default:
         return RM_INFO_LOOKUP.getClass(endNode.getRmType());
@@ -470,6 +546,9 @@ public class ClassGenerator {
         case "transition":
           className = ClassName.get(Transition.class);
           break;
+        case "null_flavour":
+          className = ClassName.get(NullFlavour.class);
+          break;
         default:
           if (CollectionUtils.isNotEmpty(valueSet.getTherms())) {
 
@@ -494,8 +573,7 @@ public class ClassGenerator {
             .addAnnotation(
                 AnnotationSpec.builder(Path.class).addMember(Path.VALUE, "$S", path).build())
             .addModifiers(Modifier.PRIVATE)
-            .addJavadoc(
-                    buildFieldJavadoc(context, node));
+            .addJavadoc(defaultNamingStrategy.buildFieldJavadoc(context, node));
 
     if (addChoiceAnnotation) {
       builder.addAnnotation(Choice.class);
@@ -504,28 +582,8 @@ public class ClassGenerator {
     FieldSpec fieldSpec = builder.build();
     classBuilder.addField(fieldSpec);
 
-    classBuilder.addMethod(buildSetter(fieldSpec));
-    classBuilder.addMethod(buildGetter(fieldSpec));
-  }
-
-  private String buildFieldJavadoc(ClassGeneratorContext context, WebTemplateNode node) {
-    StringJoiner joiner = new StringJoiner("/");
-    for (Iterator<WebTemplateNode> it = context.unFilteredNodeDeque.descendingIterator(); it.hasNext(); ) {
-      WebTemplateNode n = it.next();
-      if (!List.of(
-              "HISTORY",
-              "ITEM_TREE",
-              "ITEM_LIST",
-              "ITEM_SINGLE",
-              "ITEM_TABLE",
-              "ITEM_STRUCTURE",
-              "ELEMENT")
-              .contains(n.getRmType())) {
-        joiner.add(n.getName());
-      }
-    }
-    joiner.add(node.getName());
-    return joiner.toString();
+    classBuilder.addMethod(buildSetter(fieldSpec, false));
+    classBuilder.addMethod(buildGetter(fieldSpec, false));
   }
 
   private TypeSpec buildEnumValueSet(
@@ -562,7 +620,7 @@ public class ClassGenerator {
         .forEach(
             t -> {
               enumBuilder.addEnumConstant(
-                  defaultNamingStrategy.toEnumName(t.getValue()),
+                  defaultNamingStrategy.buildEnumConstantName(context, node, t.getValue()),
                   TypeSpec.anonymousClassBuilder(
                           "$S, $S, $S, $S",
                           t.getValue(),
@@ -572,10 +630,10 @@ public class ClassGenerator {
                       .build());
             });
 
-    enumBuilder.addMethod(buildGetter(fieldSpec1));
-    enumBuilder.addMethod(buildGetter(fieldSpec2));
-    enumBuilder.addMethod(buildGetter(fieldSpec3));
-    enumBuilder.addMethod(buildGetter(fieldSpec4));
+    enumBuilder.addMethod(buildGetter(fieldSpec1, false));
+    enumBuilder.addMethod(buildGetter(fieldSpec2, false));
+    enumBuilder.addMethod(buildGetter(fieldSpec3, false));
+    enumBuilder.addMethod(buildGetter(fieldSpec4, false));
     return enumBuilder.build();
   }
 
@@ -589,26 +647,39 @@ public class ClassGenerator {
     return builder.build();
   }
 
-  private MethodSpec buildSetter(FieldSpec fieldSpec) {
+  private MethodSpec buildSetter(FieldSpec fieldSpec, boolean isAbstract) {
 
-    return MethodSpec.methodBuilder("set" + StringUtils.capitalize(fieldSpec.name))
-        .addModifiers(Modifier.PUBLIC)
-        .addStatement(" this.$N = $N", fieldSpec.name, fieldSpec.name)
-        .addParameter(fieldSpec.type, fieldSpec.name)
-        .build();
+    MethodSpec.Builder builder =
+        MethodSpec.methodBuilder("set" + StringUtils.capitalize(fieldSpec.name));
+
+    builder.addModifiers(Modifier.PUBLIC);
+    if (isAbstract) {
+      builder.addModifiers(Modifier.ABSTRACT);
+    } else {
+      builder.addStatement(" this.$N = $N", fieldSpec.name, fieldSpec.name);
+    }
+    builder.addParameter(fieldSpec.type, fieldSpec.name).build();
+    return builder.build();
   }
 
-  private MethodSpec buildGetter(FieldSpec fieldSpec) {
+  private MethodSpec buildGetter(FieldSpec fieldSpec, boolean isAbbstract) {
     String prefix;
     if (Boolean.class.getTypeName().equals(fieldSpec.type.toString())) {
       prefix = "is";
     } else {
       prefix = "get";
     }
-    return MethodSpec.methodBuilder(prefix + StringUtils.capitalize(fieldSpec.name))
-        .addModifiers(Modifier.PUBLIC)
-        .addStatement(" return this.$N ", fieldSpec.name)
-        .returns(fieldSpec.type)
-        .build();
+
+    MethodSpec.Builder builder =
+        MethodSpec.methodBuilder(prefix + StringUtils.capitalize(fieldSpec.name));
+
+    builder.addModifiers(Modifier.PUBLIC);
+    if (isAbbstract) {
+      builder.addModifiers(Modifier.ABSTRACT);
+    } else {
+      builder.addStatement(" return this.$N ", fieldSpec.name);
+    }
+    builder.returns(fieldSpec.type);
+    return builder.build();
   }
 }

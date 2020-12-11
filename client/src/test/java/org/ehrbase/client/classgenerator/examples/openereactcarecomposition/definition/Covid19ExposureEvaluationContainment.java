@@ -1,5 +1,6 @@
 package org.ehrbase.client.classgenerator.examples.openereactcarecomposition.definition;
 
+import com.nedap.archie.rm.archetyped.FeederAudit;
 import com.nedap.archie.rm.datastructures.Cluster;
 import com.nedap.archie.rm.generic.PartyProxy;
 import org.ehrbase.client.aql.containment.Containment;
@@ -39,6 +40,8 @@ public class Covid19ExposureEvaluationContainment extends Containment {
   public SelectAqlField<PartyProxy> SUBJECT = new AqlFieldImp<PartyProxy>(Covid19ExposureEvaluation.class, "/subject", "subject", PartyProxy.class, this);
 
   public SelectAqlField<Language> LANGUAGE = new AqlFieldImp<Language>(Covid19ExposureEvaluation.class, "/language", "language", Language.class, this);
+
+  public SelectAqlField<FeederAudit> FEEDER_AUDIT = new AqlFieldImp<FeederAudit>(Covid19ExposureEvaluation.class, "/feeder_audit", "feederAudit", FeederAudit.class, this);
 
   private Covid19ExposureEvaluationContainment() {
     super("openEHR-EHR-EVALUATION.health_risk-covid.v0");

@@ -1,5 +1,6 @@
 package org.ehrbase.client.classgenerator.examples.openereactcarecomposition.definition;
 
+import com.nedap.archie.rm.archetyped.FeederAudit;
 import com.nedap.archie.rm.datastructures.Cluster;
 import com.nedap.archie.rm.generic.PartyProxy;
 import java.lang.String;
@@ -43,6 +44,8 @@ public class LatestCovid19TestObservationContainment extends Containment {
   public SelectAqlField<PartyProxy> SUBJECT = new AqlFieldImp<PartyProxy>(LatestCovid19TestObservation.class, "/subject", "subject", PartyProxy.class, this);
 
   public SelectAqlField<Language> LANGUAGE = new AqlFieldImp<Language>(LatestCovid19TestObservation.class, "/language", "language", Language.class, this);
+
+  public SelectAqlField<FeederAudit> FEEDER_AUDIT = new AqlFieldImp<FeederAudit>(LatestCovid19TestObservation.class, "/feeder_audit", "feederAudit", FeederAudit.class, this);
 
   public SelectAqlField<LatestCovid19TestOverallTestStatusChoice> OVERALL_TEST_STATUS = new AqlFieldImp<LatestCovid19TestOverallTestStatusChoice>(LatestCovid19TestObservation.class, "/data[at0001]/events[at0002]/data[at0003]/items[at0073]/value", "overallTestStatus", LatestCovid19TestOverallTestStatusChoice.class, this);
 

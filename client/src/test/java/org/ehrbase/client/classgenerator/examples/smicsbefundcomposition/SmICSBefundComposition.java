@@ -7,6 +7,7 @@ import com.nedap.archie.rm.generic.PartyProxy;
 import java.lang.String;
 import java.time.temporal.TemporalAccessor;
 import java.util.List;
+import javax.annotation.processing.Generated;
 import org.ehrbase.client.annotations.Archetype;
 import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.Id;
@@ -14,6 +15,7 @@ import org.ehrbase.client.annotations.Path;
 import org.ehrbase.client.annotations.Template;
 import org.ehrbase.client.classgenerator.examples.smicsbefundcomposition.definition.EventsummaryCluster;
 import org.ehrbase.client.classgenerator.examples.smicsbefundcomposition.definition.SmicsErgebnisObservation;
+import org.ehrbase.client.classgenerator.interfaces.CompositionEntity;
 import org.ehrbase.client.classgenerator.shareddefinition.Category;
 import org.ehrbase.client.classgenerator.shareddefinition.Language;
 import org.ehrbase.client.classgenerator.shareddefinition.Setting;
@@ -22,94 +24,103 @@ import org.ehrbase.client.openehrclient.VersionUid;
 
 @Entity
 @Archetype("openEHR-EHR-COMPOSITION.report.v1")
+@Generated(
+    value = "org.ehrbase.client.classgenerator.ClassGenerator",
+    date = "2020-12-10T13:06:12.107023600+01:00",
+    comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
+)
 @Template("SmICS-Befund")
-public class SmICSBefundComposition {
+public class SmICSBefundComposition implements CompositionEntity {
   /**
-   * SmICS Befund/context/Bericht ID
+   * Path: SmICS Befund/context/Bericht ID
+   * Description: Identifizierungsmerkmal des Berichts.
    */
   @Path("/context/other_context[at0001]/items[at0002]/value|value")
   private String berichtIdValue;
 
   /**
-   * SmICS Befund/context/Status
+   * Path: SmICS Befund/context/Status
+   * Description: Der Status des gesamten Berichts. Hinweis: Dies ist nicht der Status einer Berichtskomponente.
    */
   @Path("/context/other_context[at0001]/items[at0005]/value|value")
   private String statusValue;
 
   /**
-   * SmICS Befund/context/Eventsummary
+   * Path: SmICS Befund/context/Eventsummary
+   * Description: Zur Erfassung von Details zur Identifikation eines Events im Gesundheitswesen.
    */
   @Path("/context/other_context[at0001]/items[openEHR-EHR-CLUSTER.eventsummary.v0]")
   private List<EventsummaryCluster> eventsummary;
 
   /**
-   * SmICS Befund/context/start_time
+   * Path: SmICS Befund/context/start_time
    */
   @Path("/context/start_time|value")
   private TemporalAccessor startTimeValue;
 
   /**
-   * SmICS Befund/context/participations
+   * Path: SmICS Befund/context/participations
    */
   @Path("/context/participations")
   private List<Participation> participations;
 
   /**
-   * SmICS Befund/context/end_time
+   * Path: SmICS Befund/context/end_time
    */
   @Path("/context/end_time|value")
   private TemporalAccessor endTimeValue;
 
   /**
-   * SmICS Befund/context/location
+   * Path: SmICS Befund/context/location
    */
   @Path("/context/location")
   private String location;
 
   /**
-   * SmICS Befund/context/health_care_facility
+   * Path: SmICS Befund/context/health_care_facility
    */
   @Path("/context/health_care_facility")
   private PartyIdentified healthCareFacility;
 
   /**
-   * SmICS Befund/context/setting
+   * Path: SmICS Befund/context/setting
    */
   @Path("/context/setting|defining_code")
   private Setting settingDefiningCode;
 
   /**
-   * SmICS Befund/SmICS-Ergebnis
+   * Path: SmICS Befund/SmICS-Ergebnis
+   * Description: Zur Repräsentation von Krankheiten und Erregern, welche sich durch die hohe Mobilität der Menschen über große Entfernungen und ein größeres Risikopotential für die schnelle Ausbreitung von Infektionskrankheiten und Erregern kennzeichnet.
    */
   @Path("/content[openEHR-EHR-OBSERVATION.smics_befund.v1]")
   private SmicsErgebnisObservation smicsErgebnis;
 
   /**
-   * SmICS Befund/composer
+   * Path: SmICS Befund/composer
    */
   @Path("/composer")
   private PartyProxy composer;
 
   /**
-   * SmICS Befund/language
+   * Path: SmICS Befund/language
    */
   @Path("/language")
   private Language language;
 
   /**
-   * SmICS Befund/feeder_audit
+   * Path: SmICS Befund/feeder_audit
    */
   @Path("/feeder_audit")
   private FeederAudit feederAudit;
 
   /**
-   * SmICS Befund/category
+   * Path: SmICS Befund/category
    */
   @Path("/category|defining_code")
   private Category categoryDefiningCode;
 
   /**
-   * SmICS Befund/territory
+   * Path: SmICS Befund/territory
    */
   @Path("/territory")
   private Territory territory;

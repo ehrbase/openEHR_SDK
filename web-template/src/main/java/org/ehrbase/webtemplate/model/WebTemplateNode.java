@@ -21,10 +21,6 @@ package org.ehrbase.webtemplate.model;
 
 import com.nedap.archie.rm.archetyped.Locatable;
 import com.nedap.archie.rminfo.ArchieRMInfoLookup;
-import net.minidev.json.annotate.JsonIgnore;
-import org.apache.commons.lang3.StringUtils;
-import org.ehrbase.webtemplate.parser.FlatPath;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -34,6 +30,9 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import net.minidev.json.annotate.JsonIgnore;
+import org.apache.commons.lang3.StringUtils;
+import org.ehrbase.webtemplate.parser.FlatPath;
 
 public class WebTemplateNode implements Serializable {
 
@@ -226,6 +225,11 @@ public class WebTemplateNode implements Serializable {
 
   public Optional<WebTemplateNode> findChildById(String id) {
     return children.stream().filter(n -> n.getId().equals(id)).findAny();
+  }
+
+  public String buildRelativPath(WebTemplateNode child) {
+    return FlatPath.removeStart(new FlatPath(child.getAqlPath()), new FlatPath(this.getAqlPath()))
+        .toString();
   }
 
   public List<WebTemplateNode> findMatching(Predicate<WebTemplateNode> filter) {

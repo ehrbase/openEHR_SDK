@@ -1,108 +1,134 @@
 package org.ehrbase.client.classgenerator.examples.openereactcarecomposition.definition;
 
+import com.nedap.archie.rm.archetyped.FeederAudit;
 import com.nedap.archie.rm.datastructures.Cluster;
 import com.nedap.archie.rm.datavalues.quantity.DvOrdinal;
 import com.nedap.archie.rm.generic.PartyProxy;
 import java.lang.Long;
 import java.time.temporal.TemporalAccessor;
 import java.util.List;
+import javax.annotation.processing.Generated;
 import org.ehrbase.client.annotations.Archetype;
 import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.Path;
+import org.ehrbase.client.classgenerator.interfaces.EntryEntity;
 import org.ehrbase.client.classgenerator.shareddefinition.Language;
 
 @Entity
 @Archetype("openEHR-EHR-OBSERVATION.news2.v1")
-public class News2ScoreObservation {
+@Generated(
+    value = "org.ehrbase.client.classgenerator.ClassGenerator",
+    date = "2020-12-10T13:06:11.569501700+01:00",
+    comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
+)
+public class News2ScoreObservation implements EntryEntity {
   /**
-   * open_eREACT-Care/Assessment/NEWS2/NEWS2 Score/Any point in time event/Respiration rate
+   * Path: open_eREACT-Care/Assessment/NEWS2/NEWS2 Score/Any point in time event/Respiration rate
+   * Description: Category for the respiratory rate measurement.
    */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0006]/value")
   private DvOrdinal respirationRate;
 
   /**
-   * open_eREACT-Care/Assessment/NEWS2/NEWS2 Score/Any point in time event/SpO₂ Scale 1
+   * Path: open_eREACT-Care/Assessment/NEWS2/NEWS2 Score/Any point in time event/SpO₂ Scale 1
+   * Description: Category for the oxygen saturation measurement.
    */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0029]/value")
   private DvOrdinal spoScale1;
 
   /**
-   * open_eREACT-Care/Assessment/NEWS2/NEWS2 Score/Any point in time event/SpO₂ Scale 2
+   * Path: open_eREACT-Care/Assessment/NEWS2/NEWS2 Score/Any point in time event/SpO₂ Scale 2
+   * Description: Category for the oxygen saturation measurement in patients with a target oxygen saturation range of 88–92%.
    */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0047]/value")
   private DvOrdinal spoScale2;
 
   /**
-   * open_eREACT-Care/Assessment/NEWS2/NEWS2 Score/Any point in time event/Air or oxygen?
+   * Path: open_eREACT-Care/Assessment/NEWS2/NEWS2 Score/Any point in time event/Air or oxygen?
+   * Description: Is the patient receiving supplemental oxygen?
    */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0034]/value")
   private DvOrdinal airOrOxygen;
 
   /**
-   * open_eREACT-Care/Assessment/NEWS2/NEWS2 Score/Any point in time event/Systolic blood pressure
+   * Path: open_eREACT-Care/Assessment/NEWS2/NEWS2 Score/Any point in time event/Systolic blood pressure
+   * Description: Category for the systolic blood pressure measurement.
    */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value")
   private DvOrdinal systolicBloodPressure;
 
   /**
-   * open_eREACT-Care/Assessment/NEWS2/NEWS2 Score/Any point in time event/Pulse
+   * Path: open_eREACT-Care/Assessment/NEWS2/NEWS2 Score/Any point in time event/Pulse
+   * Description: Category for the pulse measurement.
    */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0005]/value")
   private DvOrdinal pulse;
 
   /**
-   * open_eREACT-Care/Assessment/NEWS2/NEWS2 Score/Any point in time event/Consciousness
+   * Path: open_eREACT-Care/Assessment/NEWS2/NEWS2 Score/Any point in time event/Consciousness
+   * Description: Category for the observed conscious state, using the ACVPU scale.
    */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0008]/value")
   private DvOrdinal consciousness;
 
   /**
-   * open_eREACT-Care/Assessment/NEWS2/NEWS2 Score/Any point in time event/Temperature
+   * Path: open_eREACT-Care/Assessment/NEWS2/NEWS2 Score/Any point in time event/Temperature
+   * Description: Range category for the body temperature measurement.
    */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0007]/value")
   private DvOrdinal temperature;
 
   /**
-   * open_eREACT-Care/Assessment/NEWS2/NEWS2 Score/Any point in time event/Total score
+   * Path: open_eREACT-Care/Assessment/NEWS2/NEWS2 Score/Any point in time event/Total score
+   * Description: The sum of points assigned for each of the component variables.
    */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0028]/value|magnitude")
   private Long totalScoreMagnitude;
 
   /**
-   * open_eREACT-Care/Assessment/NEWS2/NEWS2 Score/Any point in time event/Clinical risk category
+   * Path: open_eREACT-Care/Assessment/NEWS2/NEWS2 Score/Any point in time event/Clinical risk category
+   * Description: Overall category representing the urgency and scale of the clinical response required in response to the physiological variables.
    */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0056]/value|defining_code")
   private ClinicalRiskCategoryDefiningCode clinicalRiskCategoryDefiningCode;
 
   /**
-   * open_eREACT-Care/Assessment/NEWS2/NEWS2 Score/Any point in time event/time
+   * Path: open_eREACT-Care/Assessment/NEWS2/NEWS2 Score/Any point in time event/time
    */
   @Path("/data[at0001]/events[at0002]/time|value")
   private TemporalAccessor timeValue;
 
   /**
-   * open_eREACT-Care/Assessment/NEWS2/NEWS2 Score/origin
+   * Path: open_eREACT-Care/Assessment/NEWS2/NEWS2 Score/origin
    */
   @Path("/data[at0001]/origin|value")
   private TemporalAccessor originValue;
 
   /**
-   * open_eREACT-Care/Assessment/NEWS2/NEWS2 Score/Extension
+   * Path: open_eREACT-Care/Assessment/NEWS2/NEWS2 Score/Extension
+   * Description: Additional information required to extend the model with local content or to align with other reference models/formalisms.
+   * Comment: For example: local information requirements; or additional metadata to align with FHIR.
    */
   @Path("/protocol[at0045]/items[at0046]")
   private List<Cluster> extension;
 
   /**
-   * open_eREACT-Care/Assessment/NEWS2/NEWS2 Score/subject
+   * Path: open_eREACT-Care/Assessment/NEWS2/NEWS2 Score/subject
    */
   @Path("/subject")
   private PartyProxy subject;
 
   /**
-   * open_eREACT-Care/Assessment/NEWS2/NEWS2 Score/language
+   * Path: open_eREACT-Care/Assessment/NEWS2/NEWS2 Score/language
    */
   @Path("/language")
   private Language language;
+
+  /**
+   * Path: open_eREACT-Care/Assessment/NEWS2/NEWS2 Score/feeder_audit
+   */
+  @Path("/feeder_audit")
+  private FeederAudit feederAudit;
 
   public void setRespirationRate(DvOrdinal respirationRate) {
      this.respirationRate = respirationRate;
@@ -223,5 +249,13 @@ public class News2ScoreObservation {
 
   public Language getLanguage() {
      return this.language ;
+  }
+
+  public void setFeederAudit(FeederAudit feederAudit) {
+     this.feederAudit = feederAudit;
+  }
+
+  public FeederAudit getFeederAudit() {
+     return this.feederAudit ;
   }
 }

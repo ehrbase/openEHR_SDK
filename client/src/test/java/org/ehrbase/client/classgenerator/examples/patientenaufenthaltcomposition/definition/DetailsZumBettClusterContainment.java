@@ -1,5 +1,6 @@
 package org.ehrbase.client.classgenerator.examples.patientenaufenthaltcomposition.definition;
 
+import com.nedap.archie.rm.archetyped.FeederAudit;
 import com.nedap.archie.rm.datastructures.Cluster;
 import com.nedap.archie.rm.datavalues.DvIdentifier;
 import java.lang.String;
@@ -27,6 +28,8 @@ public class DetailsZumBettClusterContainment extends Containment {
   public ListSelectAqlField<Cluster> ERWEITERUNG = new ListAqlFieldImp<Cluster>(DetailsZumBettCluster.class, "/items[at0026]", "erweiterung", Cluster.class, this);
 
   public ListSelectAqlField<Cluster> MULTIMEDIA = new ListAqlFieldImp<Cluster>(DetailsZumBettCluster.class, "/items[at0027]", "multimedia", Cluster.class, this);
+
+  public SelectAqlField<FeederAudit> FEEDER_AUDIT = new AqlFieldImp<FeederAudit>(DetailsZumBettCluster.class, "/feeder_audit", "feederAudit", FeederAudit.class, this);
 
   private DetailsZumBettClusterContainment() {
     super("openEHR-EHR-CLUSTER.device.v1");

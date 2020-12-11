@@ -1,30 +1,47 @@
 package org.ehrbase.client.classgenerator.examples.coronaanamnesecomposition.definition;
 
+import com.nedap.archie.rm.archetyped.FeederAudit;
 import com.nedap.archie.rm.datastructures.Cluster;
 import java.time.temporal.TemporalAccessor;
 import java.util.List;
+import javax.annotation.processing.Generated;
 import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.Path;
+import org.ehrbase.client.classgenerator.interfaces.LocatableEntity;
 
 @Entity
-public class ReisefallBestimmteReiseCluster {
+@Generated(
+    value = "org.ehrbase.client.classgenerator.ClassGenerator",
+    date = "2020-12-10T13:06:12.580025900+01:00",
+    comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
+)
+public class ReisefallBestimmteReiseCluster implements LocatableEntity {
   /**
-   * Bericht/Risikogebiet/Reisefall/Beliebiges Intervallereignis/Bestimmte Reise/Bestimmtes Reiseziel
+   * Path: Bericht/Risikogebiet/Reisefall/Beliebiges Intervallereignis/Bestimmte Reise/Bestimmtes Reiseziel
+   * Description: Angaben zu einem einzelnen Ort, der auf einer Reise besucht wurde.
    */
   @Path("/items[at0010]")
   private List<ReisefallBestimmtesReisezielCluster> bestimmtesReiseziel;
 
   /**
-   * Bericht/Risikogebiet/Reisefall/Beliebiges Intervallereignis/Bestimmte Reise/Zusätzliche Reisedetails
+   * Path: Bericht/Risikogebiet/Reisefall/Beliebiges Intervallereignis/Bestimmte Reise/Zusätzliche Reisedetails
+   * Description: Zusätzliche strukturierte Informationen zur gesamten Reise.
    */
   @Path("/items[at0025]")
   private List<Cluster> zusatzlicheReisedetails;
 
   /**
-   * Bericht/Risikogebiet/Reisefall/Beliebiges Intervallereignis/Bestimmte Reise/Rückreisedatum
+   * Path: Bericht/Risikogebiet/Reisefall/Beliebiges Intervallereignis/Bestimmte Reise/Rückreisedatum
+   * Description: Das Datum, an dem die Person zu ihrem Heimatstandort zurückkehrte.
    */
   @Path("/items[at0019]/value|value")
   private TemporalAccessor ruckreisedatumValue;
+
+  /**
+   * Path: Bericht/Risikogebiet/Reisefall/Beliebiges Intervallereignis/Bestimmte Reise/feeder_audit
+   */
+  @Path("/feeder_audit")
+  private FeederAudit feederAudit;
 
   public void setBestimmtesReiseziel(
       List<ReisefallBestimmtesReisezielCluster> bestimmtesReiseziel) {
@@ -49,5 +66,13 @@ public class ReisefallBestimmteReiseCluster {
 
   public TemporalAccessor getRuckreisedatumValue() {
      return this.ruckreisedatumValue ;
+  }
+
+  public void setFeederAudit(FeederAudit feederAudit) {
+     this.feederAudit = feederAudit;
+  }
+
+  public FeederAudit getFeederAudit() {
+     return this.feederAudit ;
   }
 }

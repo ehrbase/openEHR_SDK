@@ -1,5 +1,6 @@
 package org.ehrbase.client.classgenerator.examples.smicsbefundcomposition.definition;
 
+import com.nedap.archie.rm.archetyped.FeederAudit;
 import com.nedap.archie.rm.datastructures.Cluster;
 import com.nedap.archie.rm.datavalues.quantity.DvOrdinal;
 import java.lang.Double;
@@ -32,6 +33,8 @@ public class ErregerdetailsClusterContainment extends Containment {
   public SelectAqlField<String> KOMMENTAR_VALUE = new AqlFieldImp<String>(ErregerdetailsCluster.class, "/items[at0062]/value|value", "kommentarValue", String.class, this);
 
   public ListSelectAqlField<Cluster> WEITERE_ERGANZUNGEN = new ListAqlFieldImp<Cluster>(ErregerdetailsCluster.class, "/items[at0059]", "weitereErganzungen", Cluster.class, this);
+
+  public SelectAqlField<FeederAudit> FEEDER_AUDIT = new AqlFieldImp<FeederAudit>(ErregerdetailsCluster.class, "/feeder_audit", "feederAudit", FeederAudit.class, this);
 
   private ErregerdetailsClusterContainment() {
     super("openEHR-EHR-CLUSTER.erregerdetails.v1");

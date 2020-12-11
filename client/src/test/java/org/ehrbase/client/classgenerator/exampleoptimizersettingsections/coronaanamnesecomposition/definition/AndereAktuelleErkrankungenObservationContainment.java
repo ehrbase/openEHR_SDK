@@ -1,5 +1,6 @@
 package org.ehrbase.client.classgenerator.exampleoptimizersettingsections.coronaanamnesecomposition.definition;
 
+import com.nedap.archie.rm.archetyped.FeederAudit;
 import com.nedap.archie.rm.datastructures.Cluster;
 import com.nedap.archie.rm.generic.PartyProxy;
 import java.lang.String;
@@ -29,6 +30,8 @@ public class AndereAktuelleErkrankungenObservationContainment extends Containmen
   public SelectAqlField<PartyProxy> SUBJECT = new AqlFieldImp<PartyProxy>(AndereAktuelleErkrankungenObservation.class, "/subject", "subject", PartyProxy.class, this);
 
   public SelectAqlField<Language> LANGUAGE = new AqlFieldImp<Language>(AndereAktuelleErkrankungenObservation.class, "/language", "language", Language.class, this);
+
+  public SelectAqlField<FeederAudit> FEEDER_AUDIT = new AqlFieldImp<FeederAudit>(AndereAktuelleErkrankungenObservation.class, "/feeder_audit", "feederAudit", FeederAudit.class, this);
 
   private AndereAktuelleErkrankungenObservationContainment() {
     super("openEHR-EHR-OBSERVATION.symptom_sign_screening.v0");

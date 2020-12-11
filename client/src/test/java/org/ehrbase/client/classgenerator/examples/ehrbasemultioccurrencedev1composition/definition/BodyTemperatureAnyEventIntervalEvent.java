@@ -1,5 +1,6 @@
 package org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1composition.definition;
 
+import com.nedap.archie.rm.archetyped.FeederAudit;
 import com.nedap.archie.rm.datastructures.Cluster;
 import java.lang.Double;
 import java.lang.Long;
@@ -7,71 +8,104 @@ import java.lang.String;
 import java.time.temporal.TemporalAccessor;
 import java.time.temporal.TemporalAmount;
 import java.util.List;
+import javax.annotation.processing.Generated;
 import org.ehrbase.client.annotations.Choice;
 import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.OptionFor;
 import org.ehrbase.client.annotations.Path;
+import org.ehrbase.client.classgenerator.interfaces.IntervalEventEntity;
 import org.ehrbase.client.classgenerator.shareddefinition.MathFunction;
 
 @Entity
+@Generated(
+    value = "org.ehrbase.client.classgenerator.ClassGenerator",
+    date = "2020-12-10T13:06:11.014497+01:00",
+    comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
+)
 @OptionFor("INTERVAL_EVENT")
-public class BodyTemperatureAnyEventIntervalEvent implements BodyTemperatureAnyEventChoice {
+public class BodyTemperatureAnyEventIntervalEvent implements IntervalEventEntity, BodyTemperatureAnyEventChoice {
   /**
-   * Encounter/Body temperature/Any event/Temperature
+   * Path: Encounter/Body temperature/Any event/Temperature
+   * Description: The measured body temperature (as a surrogate for the core of the body).
+   *                     
    */
   @Path("/data[at0001]/items[at0004]/value|magnitude")
   private Double temperatureMagnitude;
 
   /**
-   * Encounter/Body temperature/Any event/Temperature
+   * Path: Encounter/Body temperature/Any event/Temperature
+   * Description: The measured body temperature (as a surrogate for the core of the body).
+   *                     
    */
   @Path("/data[at0001]/items[at0004]/value|units")
   private String temperatureUnits;
 
   /**
-   * Encounter/Body temperature/Any event/Description of thermal stress
+   * Path: Encounter/Body temperature/Any event/Description of thermal stress
+   * Description: Description of the conditions applied to the subject that might influence
+   *                         their measured body temperature.
+   *                     
    */
   @Path("/state[at0029]/items[at0041]/value|value")
   private String descriptionOfThermalStressValue;
 
   /**
-   * Encounter/Body temperature/Any event/Current day of menstrual cycle
+   * Path: Encounter/Body temperature/Any event/Current day of menstrual cycle
+   * Description: Number of days since onset of last normal menstrual period.
    */
   @Path("/state[at0029]/items[at0065]/value|magnitude")
   private Long currentDayOfMenstrualCycleMagnitude;
 
   /**
-   * Encounter/Body temperature/Any event/Environmental conditions
+   * Path: Encounter/Body temperature/Any event/Environmental conditions
+   * Description: Details about the environmental conditions at the time of temperature
+   *                         measurement.
+   *                     
    */
   @Path("/state[at0029]/items[at0056]")
   private List<Cluster> environmentalConditions;
 
   /**
-   * Encounter/Body temperature/Any event/Exertion
+   * Path: Encounter/Body temperature/Any event/Exertion
+   * Description: Details about the exertion of the person at the time of temperature
+   *                         measurement.
+   *                     
    */
   @Path("/state[at0029]/items[at0057]")
   private Cluster exertion;
 
   /**
-   * Encounter/Body temperature/Any event/time
+   * Path: Encounter/Body temperature/Any event/feeder_audit
+   */
+  @Path("/feeder_audit")
+  private FeederAudit feederAudit;
+
+  /**
+   * Path: Encounter/Body temperature/Any event/time
    */
   @Path("/time|value")
   private TemporalAccessor timeValue;
 
   /**
-   * Encounter/Body temperature/Any event/width
+   * Path: Encounter/Body temperature/Any event/width
    */
   @Path("/width|value")
   private TemporalAmount widthValue;
 
   /**
-   * Encounter/Body temperature/Any event/math_function
+   * Path: Encounter/Body temperature/Any event/math_function
    */
   @Path("/math_function|defining_code")
   private MathFunction mathFunctionDefiningCode;
 
   /**
-   * Encounter/Body temperature/Any event/value
+   * Path: Encounter/Body temperature/Any event/sample_count
+   */
+  @Path("/sample_count")
+  private Long sampleCount;
+
+  /**
+   * Path: Encounter/Body temperature/Any event/value
    */
   @Path("/state[at0029]/items[at0030]/value")
   @Choice
@@ -125,6 +159,14 @@ public class BodyTemperatureAnyEventIntervalEvent implements BodyTemperatureAnyE
      return this.exertion ;
   }
 
+  public void setFeederAudit(FeederAudit feederAudit) {
+     this.feederAudit = feederAudit;
+  }
+
+  public FeederAudit getFeederAudit() {
+     return this.feederAudit ;
+  }
+
   public void setTimeValue(TemporalAccessor timeValue) {
      this.timeValue = timeValue;
   }
@@ -147,6 +189,14 @@ public class BodyTemperatureAnyEventIntervalEvent implements BodyTemperatureAnyE
 
   public MathFunction getMathFunctionDefiningCode() {
      return this.mathFunctionDefiningCode ;
+  }
+
+  public void setSampleCount(Long sampleCount) {
+     this.sampleCount = sampleCount;
+  }
+
+  public Long getSampleCount() {
+     return this.sampleCount ;
   }
 
   public void setBodyExposure(BodyTemperatureBodyExposureChoice bodyExposure) {

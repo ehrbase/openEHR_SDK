@@ -1,99 +1,129 @@
 package org.ehrbase.client.classgenerator.examples.openereactcarecomposition.definition;
 
+import com.nedap.archie.rm.archetyped.FeederAudit;
 import com.nedap.archie.rm.datastructures.Cluster;
 import com.nedap.archie.rm.generic.PartyProxy;
 import java.util.List;
+import javax.annotation.processing.Generated;
 import org.ehrbase.client.annotations.Archetype;
 import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.Path;
+import org.ehrbase.client.classgenerator.interfaces.EntryEntity;
 import org.ehrbase.client.classgenerator.shareddefinition.Language;
 
 @Entity
 @Archetype("openEHR-EHR-EVALUATION.health_risk-covid.v0")
-public class Covid19ExposureEvaluation {
+@Generated(
+    value = "org.ehrbase.client.classgenerator.ClassGenerator",
+    date = "2020-12-10T13:06:11.499501400+01:00",
+    comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
+)
+public class Covid19ExposureEvaluation implements EntryEntity {
   /**
-   * open_eREACT-Care/Assessment/Covid/Covid-19 exposure/Health risk
+   * Path: open_eREACT-Care/Assessment/Covid/Covid-19 exposure/Health risk
+   * Description: Identification of the potential future disease, condition or health issue for which the risk is being assessed, by name.
    */
   @Path("/data[at0001]/items[at0002.1]/value|defining_code")
   private HealthRiskDefiningCode healthRiskDefiningCode;
 
   /**
-   * open_eREACT-Care/Assessment/Covid/Covid-19 exposure/Care home has suspected/confirmed Covid-19/Risk factor
+   * Path: open_eREACT-Care/Assessment/Covid/Covid-19 exposure/Care home has suspected/confirmed Covid-19/Risk factor
+   * Description: Identification of the risk factor, by name.
    */
   @Path("/data[at0001]/items[at0016 and name/value='Care home has suspected/confirmed Covid-19']/items[at0013.1]/value|defining_code")
   private RiskFactorDefiningCode careHomeHasSuspectedConfirmedCovid19RiskFactorDefiningCode;
 
   /**
-   * open_eREACT-Care/Assessment/Covid/Covid-19 exposure/Care home has suspected/confirmed Covid-19/Presence
+   * Path: open_eREACT-Care/Assessment/Covid/Covid-19 exposure/Care home has suspected/confirmed Covid-19/Presence
+   * Description: Presence of the risk factor.
    */
   @Path("/data[at0001]/items[at0016 and name/value='Care home has suspected/confirmed Covid-19']/items[at0017.1]/value|defining_code")
   private PresenceDefiningCode2 careHomeHasSuspectedConfirmedCovid19PresenceDefiningCode;
 
   /**
-   * open_eREACT-Care/Assessment/Covid/Covid-19 exposure/Care home has suspected/confirmed Covid-19/Detail
+   * Path: open_eREACT-Care/Assessment/Covid/Covid-19 exposure/Care home has suspected/confirmed Covid-19/Detail
+   * Description: Structured detail about other aspects of the risk factor assessment.
+   * Comment: For example: Prevalence of the risk factor in family members.
    */
   @Path("/data[at0001]/items[at0016 and name/value='Care home has suspected/confirmed Covid-19']/items[at0027.1]")
   private List<Cluster> careHomeHasSuspectedConfirmedCovid19Detail;
 
   /**
-   * open_eREACT-Care/Assessment/Covid/Covid-19 exposure/Contact with confirmed case/Risk factor
+   * Path: open_eREACT-Care/Assessment/Covid/Covid-19 exposure/Contact with confirmed case/Risk factor
+   * Description: Identification of the risk factor, by name.
    */
   @Path("/data[at0001]/items[at0016 and name/value='Contact with confirmed case']/items[at0013.1]/value|defining_code")
   private RiskFactorDefiningCode2 contactWithConfirmedCaseRiskFactorDefiningCode;
 
   /**
-   * open_eREACT-Care/Assessment/Covid/Covid-19 exposure/Contact with confirmed case/Presence
+   * Path: open_eREACT-Care/Assessment/Covid/Covid-19 exposure/Contact with confirmed case/Presence
+   * Description: Presence of the risk factor.
    */
   @Path("/data[at0001]/items[at0016 and name/value='Contact with confirmed case']/items[at0017.1]/value|defining_code")
   private PresenceDefiningCode2 contactWithConfirmedCasePresenceDefiningCode;
 
   /**
-   * open_eREACT-Care/Assessment/Covid/Covid-19 exposure/Contact with confirmed case/Detail
+   * Path: open_eREACT-Care/Assessment/Covid/Covid-19 exposure/Contact with confirmed case/Detail
+   * Description: Structured detail about other aspects of the risk factor assessment.
+   * Comment: For example: Prevalence of the risk factor in family members.
    */
   @Path("/data[at0001]/items[at0016 and name/value='Contact with confirmed case']/items[at0027.1]")
   private List<Cluster> contactWithConfirmedCaseDetail;
 
   /**
-   * open_eREACT-Care/Assessment/Covid/Covid-19 exposure/Other residents/household members unwell/Risk factor
+   * Path: open_eREACT-Care/Assessment/Covid/Covid-19 exposure/Other residents/household members unwell/Risk factor
+   * Description: Identification of the risk factor, by name.
    */
   @Path("/data[at0001]/items[at0016 and name/value='Other residents/household members unwell']/items[at0013.1]/value|defining_code")
   private RiskFactorDefiningCode3 otherResidentsHouseholdMembersUnwellRiskFactorDefiningCode;
 
   /**
-   * open_eREACT-Care/Assessment/Covid/Covid-19 exposure/Other residents/household members unwell/Presence
+   * Path: open_eREACT-Care/Assessment/Covid/Covid-19 exposure/Other residents/household members unwell/Presence
+   * Description: Presence of the risk factor.
    */
   @Path("/data[at0001]/items[at0016 and name/value='Other residents/household members unwell']/items[at0017.1]/value|defining_code")
   private PresenceDefiningCode2 otherResidentsHouseholdMembersUnwellPresenceDefiningCode;
 
   /**
-   * open_eREACT-Care/Assessment/Covid/Covid-19 exposure/Other residents/household members unwell/Detail
+   * Path: open_eREACT-Care/Assessment/Covid/Covid-19 exposure/Other residents/household members unwell/Detail
+   * Description: Structured detail about other aspects of the risk factor assessment.
+   * Comment: For example: Prevalence of the risk factor in family members.
    */
   @Path("/data[at0001]/items[at0016 and name/value='Other residents/household members unwell']/items[at0027.1]")
   private List<Cluster> otherResidentsHouseholdMembersUnwellDetail;
 
   /**
-   * open_eREACT-Care/Assessment/Covid/Covid-19 exposure/Risk assessment
+   * Path: open_eREACT-Care/Assessment/Covid/Covid-19 exposure/Risk assessment
+   * Description: Evaluation of the health risk.
    */
   @Path("/data[at0001]/items[at0003.1]/value|defining_code")
   private RiskAssessmentDefiningCode riskAssessmentDefiningCode;
 
   /**
-   * open_eREACT-Care/Assessment/Covid/Covid-19 exposure/Extension
+   * Path: open_eREACT-Care/Assessment/Covid/Covid-19 exposure/Extension
+   * Description: Additional information required to capture local content or to align with other reference models/formalisms.
+   * Comment: For example: local information requirements or additional metadata to align with FHIR or CIMI equivalents.
    */
   @Path("/protocol[at0010]/items[at0011]")
   private List<Cluster> extension;
 
   /**
-   * open_eREACT-Care/Assessment/Covid/Covid-19 exposure/subject
+   * Path: open_eREACT-Care/Assessment/Covid/Covid-19 exposure/subject
    */
   @Path("/subject")
   private PartyProxy subject;
 
   /**
-   * open_eREACT-Care/Assessment/Covid/Covid-19 exposure/language
+   * Path: open_eREACT-Care/Assessment/Covid/Covid-19 exposure/language
    */
   @Path("/language")
   private Language language;
+
+  /**
+   * Path: open_eREACT-Care/Assessment/Covid/Covid-19 exposure/feeder_audit
+   */
+  @Path("/feeder_audit")
+  private FeederAudit feederAudit;
 
   public void setHealthRiskDefiningCode(HealthRiskDefiningCode healthRiskDefiningCode) {
      this.healthRiskDefiningCode = healthRiskDefiningCode;
@@ -213,5 +243,13 @@ public class Covid19ExposureEvaluation {
 
   public Language getLanguage() {
      return this.language ;
+  }
+
+  public void setFeederAudit(FeederAudit feederAudit) {
+     this.feederAudit = feederAudit;
+  }
+
+  public FeederAudit getFeederAudit() {
+     return this.feederAudit ;
   }
 }

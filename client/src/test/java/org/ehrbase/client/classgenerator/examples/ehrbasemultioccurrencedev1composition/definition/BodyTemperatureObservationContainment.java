@@ -1,5 +1,6 @@
 package org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1composition.definition;
 
+import com.nedap.archie.rm.archetyped.FeederAudit;
 import com.nedap.archie.rm.datastructures.Cluster;
 import com.nedap.archie.rm.generic.PartyProxy;
 import java.time.temporal.TemporalAccessor;
@@ -24,6 +25,8 @@ public class BodyTemperatureObservationContainment extends Containment {
   public SelectAqlField<PartyProxy> SUBJECT = new AqlFieldImp<PartyProxy>(BodyTemperatureObservation.class, "/subject", "subject", PartyProxy.class, this);
 
   public SelectAqlField<Language> LANGUAGE = new AqlFieldImp<Language>(BodyTemperatureObservation.class, "/language", "language", Language.class, this);
+
+  public SelectAqlField<FeederAudit> FEEDER_AUDIT = new AqlFieldImp<FeederAudit>(BodyTemperatureObservation.class, "/feeder_audit", "feederAudit", FeederAudit.class, this);
 
   public SelectAqlField<BodyTemperatureLocationOfMeasurementChoice> LOCATION_OF_MEASUREMENT = new AqlFieldImp<BodyTemperatureLocationOfMeasurementChoice>(BodyTemperatureObservation.class, "/protocol[at0020]/items[at0021]/value", "locationOfMeasurement", BodyTemperatureLocationOfMeasurementChoice.class, this);
 

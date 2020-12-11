@@ -8,6 +8,7 @@ import com.nedap.archie.rm.generic.PartyProxy;
 import java.lang.String;
 import java.time.temporal.TemporalAccessor;
 import java.util.List;
+import javax.annotation.processing.Generated;
 import org.ehrbase.client.annotations.Archetype;
 import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.Id;
@@ -15,6 +16,7 @@ import org.ehrbase.client.annotations.Path;
 import org.ehrbase.client.annotations.Template;
 import org.ehrbase.client.classgenerator.examples.schwangerschaftsstatuscomposition.definition.SchwangerschaftsstatusObservation;
 import org.ehrbase.client.classgenerator.examples.schwangerschaftsstatuscomposition.definition.StatusDefiningCode;
+import org.ehrbase.client.classgenerator.interfaces.CompositionEntity;
 import org.ehrbase.client.classgenerator.shareddefinition.Category;
 import org.ehrbase.client.classgenerator.shareddefinition.Language;
 import org.ehrbase.client.classgenerator.shareddefinition.Setting;
@@ -23,94 +25,103 @@ import org.ehrbase.client.openehrclient.VersionUid;
 
 @Entity
 @Archetype("openEHR-EHR-COMPOSITION.registereintrag.v1")
+@Generated(
+    value = "org.ehrbase.client.classgenerator.ClassGenerator",
+    date = "2020-12-10T13:06:12.298026500+01:00",
+    comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
+)
 @Template("Schwangerschaftsstatus")
-public class SchwangerschaftsstatusComposition {
+public class SchwangerschaftsstatusComposition implements CompositionEntity {
   /**
-   * Schwangerschaftsstatus/context/Erweiterung
+   * Path: Schwangerschaftsstatus/context/Erweiterung
+   * Description: Ergänzende Angaben zum Registereintrag.
    */
   @Path("/context/other_context[at0001]/items[at0002]")
   private List<Cluster> erweiterung;
 
   /**
-   * Schwangerschaftsstatus/context/Status
+   * Path: Schwangerschaftsstatus/context/Status
+   * Description: Status der gelieferten Daten für den Registereintrag. Hinweis: Dies ist nicht der Status einzelner Komponenten.
    */
   @Path("/context/other_context[at0001]/items[at0004]/value|defining_code")
   private StatusDefiningCode statusDefiningCode;
 
   /**
-   * Schwangerschaftsstatus/context/Kategorie
+   * Path: Schwangerschaftsstatus/context/Kategorie
+   * Description: Die Klassifikation des Registereintrags (z.B. Typ der Observation des FHIR-Profils).
    */
   @Path("/context/other_context[at0001]/items[at0005]/value|value")
   private String kategorieValue;
 
   /**
-   * Schwangerschaftsstatus/context/start_time
+   * Path: Schwangerschaftsstatus/context/start_time
    */
   @Path("/context/start_time|value")
   private TemporalAccessor startTimeValue;
 
   /**
-   * Schwangerschaftsstatus/context/participations
+   * Path: Schwangerschaftsstatus/context/participations
    */
   @Path("/context/participations")
   private List<Participation> participations;
 
   /**
-   * Schwangerschaftsstatus/context/end_time
+   * Path: Schwangerschaftsstatus/context/end_time
    */
   @Path("/context/end_time|value")
   private TemporalAccessor endTimeValue;
 
   /**
-   * Schwangerschaftsstatus/context/location
+   * Path: Schwangerschaftsstatus/context/location
    */
   @Path("/context/location")
   private String location;
 
   /**
-   * Schwangerschaftsstatus/context/health_care_facility
+   * Path: Schwangerschaftsstatus/context/health_care_facility
    */
   @Path("/context/health_care_facility")
   private PartyIdentified healthCareFacility;
 
   /**
-   * Schwangerschaftsstatus/context/setting
+   * Path: Schwangerschaftsstatus/context/setting
    */
   @Path("/context/setting|defining_code")
   private Setting settingDefiningCode;
 
   /**
-   * Schwangerschaftsstatus/Schwangerschaftsstatus
+   * Path: Schwangerschaftsstatus/Schwangerschaftsstatus
+   * Description: Angabe darüber, ob die Person schwanger ist oder schwanger sein könnte oder nicht.
    */
   @Path("/content[openEHR-EHR-OBSERVATION.pregnancy_status.v0]")
   private SchwangerschaftsstatusObservation schwangerschaftsstatus;
 
   /**
-   * Schwangerschaftsstatus/composer
+   * Path: Schwangerschaftsstatus/composer
    */
   @Path("/composer")
   private PartyProxy composer;
 
   /**
-   * Schwangerschaftsstatus/language
+   * Path: Schwangerschaftsstatus/language
    */
   @Path("/language")
   private Language language;
 
   /**
-   * Schwangerschaftsstatus/feeder_audit
+   * Path: Schwangerschaftsstatus/feeder_audit
    */
   @Path("/feeder_audit")
   private FeederAudit feederAudit;
 
   /**
-   * Schwangerschaftsstatus/category
+   * Path: Schwangerschaftsstatus/category
    */
   @Path("/category|defining_code")
   private Category categoryDefiningCode;
 
   /**
-   * Schwangerschaftsstatus/territory
+   * Path: Schwangerschaftsstatus/territory
    */
   @Path("/territory")
   private Territory territory;

@@ -36,7 +36,6 @@ import org.ehrbase.client.exception.ClientException;
 import org.ehrbase.serialisation.walker.Context;
 import org.ehrbase.serialisation.walker.FromCompositionWalker;
 import org.ehrbase.serialisation.walker.RmPrimitive;
-import org.ehrbase.serialisation.walker.RmString;
 import org.ehrbase.util.exception.SdkException;
 import org.ehrbase.util.reflection.ReflectionHelper;
 import org.ehrbase.webtemplate.model.WebTemplateNode;

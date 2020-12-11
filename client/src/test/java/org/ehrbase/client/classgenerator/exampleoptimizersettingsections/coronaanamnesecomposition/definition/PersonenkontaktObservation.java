@@ -1,77 +1,98 @@
 package org.ehrbase.client.classgenerator.exampleoptimizersettingsections.coronaanamnesecomposition.definition;
 
+import com.nedap.archie.rm.archetyped.FeederAudit;
 import com.nedap.archie.rm.datastructures.Cluster;
 import com.nedap.archie.rm.generic.PartyProxy;
 import java.lang.String;
 import java.time.temporal.TemporalAccessor;
 import java.util.List;
+import javax.annotation.processing.Generated;
 import org.ehrbase.client.annotations.Archetype;
 import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.Path;
+import org.ehrbase.client.classgenerator.interfaces.EntryEntity;
 import org.ehrbase.client.classgenerator.shareddefinition.Language;
 
 @Entity
 @Archetype("openEHR-EHR-OBSERVATION.exposure_assessment.v0")
-public class PersonenkontaktObservation {
+@Generated(
+    value = "org.ehrbase.client.classgenerator.ClassGenerator",
+    date = "2020-12-10T13:06:13.420033100+01:00",
+    comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
+)
+public class PersonenkontaktObservation implements EntryEntity {
   /**
-   * Bericht/Kontakt/Personenkontakt/Beliebiges Ereignis/*Agent (en)
+   * Path: Bericht/Kontakt/Personenkontakt/Beliebiges Ereignis/*Agent (en)
+   * Description: Der Name des chemischen, physikalischen oder biologischen Stoffes, dem eine Person ausgesetzt gewesen sein könnte.
    */
   @Path("/data[at0001]/events[at0002]/data[at0042]/items[at0043]/value|value")
   private String agentEnValue;
 
   /**
-   * Bericht/Kontakt/Personenkontakt/Beliebiges Ereignis/*Presence of any exposure? (en)
+   * Path: Bericht/Kontakt/Personenkontakt/Beliebiges Ereignis/*Presence of any exposure? (en)
+   * Description: *Presence of any relevant exposure. (en)
    */
   @Path("/data[at0001]/events[at0002]/data[at0042]/items[at0057]/value|defining_code")
   private PresenceOfAnyExposureEnDefiningCode presenceOfAnyExposureEnDefiningCode;
 
   /**
-   * Bericht/Kontakt/Personenkontakt/Beliebiges Ereignis/*Specific exposure (en)/*Exposure (en)
+   * Path: Bericht/Kontakt/Personenkontakt/Beliebiges Ereignis/*Specific exposure (en)/*Exposure (en)
+   * Description: Bezeichnung des Expositionsrisikofaktors.
    */
   @Path("/data[at0001]/events[at0002]/data[at0042]/items[at0044]/items[at0045]/value|value")
   private String exposureEnValue;
 
   /**
-   * Bericht/Kontakt/Personenkontakt/Beliebiges Ereignis/*Specific exposure (en)/Vorhandensein
+   * Path: Bericht/Kontakt/Personenkontakt/Beliebiges Ereignis/*Specific exposure (en)/Vorhandensein
+   * Description: *Presence of the exposure. (en)
    */
   @Path("/data[at0001]/events[at0002]/data[at0042]/items[at0044]/items[at0046]/value|defining_code")
   private VorhandenseinDefiningCode vorhandenseinDefiningCode;
 
   /**
-   * Bericht/Kontakt/Personenkontakt/Beliebiges Ereignis/Kommentar
+   * Path: Bericht/Kontakt/Personenkontakt/Beliebiges Ereignis/Kommentar
+   * Description: *Additional narrative about the exposure screening questionnaire not captured in other fields. (en)
    */
   @Path("/data[at0001]/events[at0002]/data[at0042]/items[at0055]/value|value")
   private String kommentarValue;
 
   /**
-   * Bericht/Kontakt/Personenkontakt/Beliebiges Ereignis/time
+   * Path: Bericht/Kontakt/Personenkontakt/Beliebiges Ereignis/time
    */
   @Path("/data[at0001]/events[at0002]/time|value")
   private TemporalAccessor timeValue;
 
   /**
-   * Bericht/Kontakt/Personenkontakt/origin
+   * Path: Bericht/Kontakt/Personenkontakt/origin
    */
   @Path("/data[at0001]/origin|value")
   private TemporalAccessor originValue;
 
   /**
-   * Bericht/Kontakt/Personenkontakt/Erweiterung
+   * Path: Bericht/Kontakt/Personenkontakt/Erweiterung
+   * Description: Zusätzliche Informationen zur Erfassung lokaler Inhalte oder Anpassung an andere Referenzmodelle/Formalismen.
+   * Comment: Zum Beispiel: Lokaler Informationsbedarf oder zusätzliche Metadaten zur Anpassung an FHIR-Ressourcen oder CIMI-Modelle.
    */
   @Path("/protocol[at0004]/items[at0056]")
   private List<Cluster> erweiterung;
 
   /**
-   * Bericht/Kontakt/Personenkontakt/subject
+   * Path: Bericht/Kontakt/Personenkontakt/subject
    */
   @Path("/subject")
   private PartyProxy subject;
 
   /**
-   * Bericht/Kontakt/Personenkontakt/language
+   * Path: Bericht/Kontakt/Personenkontakt/language
    */
   @Path("/language")
   private Language language;
+
+  /**
+   * Path: Bericht/Kontakt/Personenkontakt/feeder_audit
+   */
+  @Path("/feeder_audit")
+  private FeederAudit feederAudit;
 
   public void setAgentEnValue(String agentEnValue) {
      this.agentEnValue = agentEnValue;
@@ -152,5 +173,13 @@ public class PersonenkontaktObservation {
 
   public Language getLanguage() {
      return this.language ;
+  }
+
+  public void setFeederAudit(FeederAudit feederAudit) {
+     this.feederAudit = feederAudit;
+  }
+
+  public FeederAudit getFeederAudit() {
+     return this.feederAudit ;
   }
 }

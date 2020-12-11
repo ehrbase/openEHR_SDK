@@ -1,71 +1,90 @@
 package org.ehrbase.client.classgenerator.exampleoptimizersettingalls.coronaanamnesecomposition.definition;
 
+import com.nedap.archie.rm.archetyped.FeederAudit;
 import com.nedap.archie.rm.datastructures.Cluster;
 import com.nedap.archie.rm.generic.PartyProxy;
 import java.lang.String;
 import java.time.temporal.TemporalAccessor;
 import java.util.List;
+import javax.annotation.processing.Generated;
 import org.ehrbase.client.annotations.Archetype;
 import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.Path;
+import org.ehrbase.client.classgenerator.interfaces.EntryEntity;
 import org.ehrbase.client.classgenerator.shareddefinition.Language;
 
 @Entity
 @Archetype("openEHR-EHR-OBSERVATION.travel_history.v0")
-public class HistorieDerReiseObservation {
+@Generated(
+    value = "org.ehrbase.client.classgenerator.ClassGenerator",
+    date = "2020-12-10T13:06:13.079029300+01:00",
+    comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
+)
+public class HistorieDerReiseObservation implements EntryEntity {
   /**
-   * Bericht/Risikogebiet/Historie der Reise/Jedes Ereignis/Aufenthalt in den letzten 14 Tage in einem der Risikogebiete für Coronainfektion oder Kontakt zu Menschen, die dort waren
+   * Path: Bericht/Risikogebiet/Historie der Reise/Jedes Ereignis/Aufenthalt in den letzten 14 Tage in einem der Risikogebiete für Coronainfektion oder Kontakt zu Menschen, die dort waren
+   * Description: Ist der Patient in letzter Zeit gereist? Die Definition des Begriffs "kürzlich" kann je nach den Umständen der umfangreicheren Patientengeschichte und dem bekannten Infektionsrisiko variieren.
    */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0111 and name/value='Aufenthalt in den letzten 14 Tage in einem der Risikogebiete für Coronainfektion oder Kontakt zu Menschen, die dort waren']/value|defining_code")
   private AufenthaltInDenLetzten14TageInEinemDerRisikogebieteFurCoronainfektionOderKontak_ aufenthaltInDenLetzten14TageInEinemDerRisikogebieteFurCoronainfektionOderKontaktZuMenschenDieDortWarenDefiningCode;
 
   /**
-   * Bericht/Risikogebiet/Historie der Reise/Jedes Ereignis/Ortsbeschreibung/Standort/Standortbeschreibung
+   * Path: Bericht/Risikogebiet/Historie der Reise/Jedes Ereignis/Ortsbeschreibung/Standort/Standortbeschreibung
+   * Description: Das Feld enthält die Freitextbeschreibung des Standorts, z.B. Throax-, Herz- und Gefäßchirurgie.
    */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0134]/items[openEHR-EHR-CLUSTER.location.v1]/items[at0046]/value|value")
   private String standortbeschreibungValue;
 
   /**
-   * Bericht/Risikogebiet/Historie der Reise/Jedes Ereignis/Ortsbeschreibung/Standort/Details
+   * Path: Bericht/Risikogebiet/Historie der Reise/Jedes Ereignis/Ortsbeschreibung/Standort/Details
+   * Description: Für die Erfassung weiterer Angaben über das Bett oder der Adresse. Verwenden Sie dazu den Archetyp CLUSTER.device oder CLUSTER.address.
    */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0134]/items[openEHR-EHR-CLUSTER.location.v1]/items[at0047]")
   private List<Cluster> details;
 
   /**
-   * Bericht/Risikogebiet/Historie der Reise/Jedes Ereignis/Detaillierte Angaben zur Exposition
+   * Path: Bericht/Risikogebiet/Historie der Reise/Jedes Ereignis/Detaillierte Angaben zur Exposition
+   * Description: *
    */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0109]")
   private List<Cluster> detaillierteAngabenZurExposition;
 
   /**
-   * Bericht/Risikogebiet/Historie der Reise/Jedes Ereignis/time
+   * Path: Bericht/Risikogebiet/Historie der Reise/Jedes Ereignis/time
    */
   @Path("/data[at0001]/events[at0002]/time|value")
   private TemporalAccessor timeValue;
 
   /**
-   * Bericht/Risikogebiet/Historie der Reise/origin
+   * Path: Bericht/Risikogebiet/Historie der Reise/origin
    */
   @Path("/data[at0001]/origin|value")
   private TemporalAccessor originValue;
 
   /**
-   * Bericht/Risikogebiet/Historie der Reise/*Extension(en)
+   * Path: Bericht/Risikogebiet/Historie der Reise/*Extension(en)
+   * Description: *
    */
   @Path("/protocol[at0100]/items[at0101]")
   private List<Cluster> extensionEn;
 
   /**
-   * Bericht/Risikogebiet/Historie der Reise/subject
+   * Path: Bericht/Risikogebiet/Historie der Reise/subject
    */
   @Path("/subject")
   private PartyProxy subject;
 
   /**
-   * Bericht/Risikogebiet/Historie der Reise/language
+   * Path: Bericht/Risikogebiet/Historie der Reise/language
    */
   @Path("/language")
   private Language language;
+
+  /**
+   * Path: Bericht/Risikogebiet/Historie der Reise/feeder_audit
+   */
+  @Path("/feeder_audit")
+  private FeederAudit feederAudit;
 
   public void setAufenthaltInDenLetzten14TageInEinemDerRisikogebieteFurCoronainfektionOderKontaktZuMenschenDieDortWarenDefiningCode(
       AufenthaltInDenLetzten14TageInEinemDerRisikogebieteFurCoronainfektionOderKontak_ aufenthaltInDenLetzten14TageInEinemDerRisikogebieteFurCoronainfektionOderKontaktZuMenschenDieDortWarenDefiningCode) {
@@ -139,5 +158,13 @@ public class HistorieDerReiseObservation {
 
   public Language getLanguage() {
      return this.language ;
+  }
+
+  public void setFeederAudit(FeederAudit feederAudit) {
+     this.feederAudit = feederAudit;
+  }
+
+  public FeederAudit getFeederAudit() {
+     return this.feederAudit ;
   }
 }

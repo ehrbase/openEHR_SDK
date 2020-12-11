@@ -366,6 +366,11 @@
                 <version>${jackson.version}</version>
             </dependency>
             <dependency>
+                <groupId>com.fasterxml.jackson.dataformat</groupId>
+                <artifactId>jackson-dataformat-yaml</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-annotations</artifactId>
                 <version>${jackson.version}</version>
@@ -381,11 +386,6 @@
                 <version>3.1.0</version>
             </dependency>
             <dependency>
-                <groupId>org.jooq</groupId>
-                <artifactId>joor</artifactId>
-                <version>0.9.12</version>
-            </dependency>
-            <dependency>
                 <groupId>com.google.guava</groupId>
                 <artifactId>guava</artifactId>
                 <version>29.0-jre</version>
@@ -394,6 +394,11 @@
                 <groupId>javax.cache</groupId>
                 <artifactId>cache-api</artifactId>
                 <version>1.1.1</version>
+            </dependency>
+            <dependency>
+                <groupId>javax.annotation</groupId>
+                <artifactId>javax.annotation-api</artifactId>
+                <version>1.3.2</version>
             </dependency>
             <dependency>
                 <groupId>com.github.everit-org.json-schema</groupId>
@@ -474,7 +479,7 @@
                 <groupId>org.assertj</groupId>
                 <artifactId>assertj-core</artifactId>
                 <scope>test</scope>
-                <version>3.18.0</version>
+                <version>3.18.1</version>
             </dependency>
             <dependency>
                 <groupId>org.mockito</groupId>

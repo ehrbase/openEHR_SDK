@@ -37,11 +37,11 @@ public class TestAllTypesEnV1CompositionContainment extends Containment {
 
   public SelectAqlField<Setting> SETTING_DEFINING_CODE = new AqlFieldImp<Setting>(TestAllTypesEnV1Composition.class, "/context/setting|defining_code", "settingDefiningCode", Setting.class, this);
 
-  public ListSelectAqlField<TestAllTypesObservation> TEST_ALL_TYPES_TEST_ALL_TYPES = new ListAqlFieldImp<TestAllTypesObservation>(TestAllTypesEnV1Composition.class, "/content[openEHR-EHR-OBSERVATION.test_all_types.v1]", "testAllTypesTestAllTypes", TestAllTypesObservation.class, this);
+  public ListSelectAqlField<TestAllTypesObservation> TEST_ALL_TYPES = new ListAqlFieldImp<TestAllTypesObservation>(TestAllTypesEnV1Composition.class, "/content[openEHR-EHR-OBSERVATION.test_all_types.v1]", "testAllTypes", TestAllTypesObservation.class, this);
 
-  public ListSelectAqlField<TestAllTypesEvaluation> TEST_ALL_TYPES_TEST_ALL_TYPES2 = new ListAqlFieldImp<TestAllTypesEvaluation>(TestAllTypesEnV1Composition.class, "/content[openEHR-EHR-EVALUATION.test_all_types.v1]", "testAllTypesTestAllTypes2", TestAllTypesEvaluation.class, this);
+  public ListSelectAqlField<TestAllTypesEvaluation> TEST_ALL_TYPES2 = new ListAqlFieldImp<TestAllTypesEvaluation>(TestAllTypesEnV1Composition.class, "/content[openEHR-EHR-EVALUATION.test_all_types.v1]", "testAllTypes2", TestAllTypesEvaluation.class, this);
 
-  public ListSelectAqlField<TestAllTypesSection> TEST_ALL_TYPES_TEST_ALL_TYPES3 = new ListAqlFieldImp<TestAllTypesSection>(TestAllTypesEnV1Composition.class, "/content[openEHR-EHR-SECTION.test_all_types.v1]", "testAllTypesTestAllTypes3", TestAllTypesSection.class, this);
+  public ListSelectAqlField<TestAllTypesSection> TEST_ALL_TYPES3 = new ListAqlFieldImp<TestAllTypesSection>(TestAllTypesEnV1Composition.class, "/content[openEHR-EHR-SECTION.test_all_types.v1]", "testAllTypes3", TestAllTypesSection.class, this);
 
   public SelectAqlField<PartyProxy> COMPOSER = new AqlFieldImp<PartyProxy>(TestAllTypesEnV1Composition.class, "/composer", "composer", PartyProxy.class, this);
 

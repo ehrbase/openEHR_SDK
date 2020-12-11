@@ -1,5 +1,6 @@
 package org.ehrbase.client.classgenerator.examples.schwangerschaftsstatuscomposition.definition;
 
+import com.nedap.archie.rm.archetyped.FeederAudit;
 import com.nedap.archie.rm.datastructures.Cluster;
 import com.nedap.archie.rm.generic.PartyProxy;
 import java.time.temporal.TemporalAccessor;
@@ -24,6 +25,8 @@ public class SchwangerschaftsstatusObservationContainment extends Containment {
   public SelectAqlField<PartyProxy> SUBJECT = new AqlFieldImp<PartyProxy>(SchwangerschaftsstatusObservation.class, "/subject", "subject", PartyProxy.class, this);
 
   public SelectAqlField<Language> LANGUAGE = new AqlFieldImp<Language>(SchwangerschaftsstatusObservation.class, "/language", "language", Language.class, this);
+
+  public SelectAqlField<FeederAudit> FEEDER_AUDIT = new AqlFieldImp<FeederAudit>(SchwangerschaftsstatusObservation.class, "/feeder_audit", "feederAudit", FeederAudit.class, this);
 
   private SchwangerschaftsstatusObservationContainment() {
     super("openEHR-EHR-OBSERVATION.pregnancy_status.v0");

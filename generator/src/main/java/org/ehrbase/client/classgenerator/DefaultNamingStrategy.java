@@ -19,21 +19,27 @@
 
 package org.ehrbase.client.classgenerator;
 
+import com.google.common.base.CharMatcher;
+import com.nedap.archie.rminfo.ArchieRMInfoLookup;
+import com.nedap.archie.rminfo.RMTypeInfo;
+import java.util.Deque;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.StringJoiner;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.CaseUtils;
 import org.ehrbase.serialisation.util.SnakeCase;
+import org.ehrbase.webtemplate.model.WebTemplateAnnotation;
 import org.ehrbase.webtemplate.model.WebTemplateNode;
 import org.ehrbase.webtemplate.parser.FlatPath;
 
-import java.util.Deque;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-
 public class DefaultNamingStrategy implements NamingStrategy {
 
+  private static final ArchieRMInfoLookup RM_INFO_LOOKUP = ArchieRMInfoLookup.getInstance();
   public static final String TERM_DIVIDER = "_";
   private ClassGeneratorConfig config;
 
@@ -92,20 +98,21 @@ public class DefaultNamingStrategy implements NamingStrategy {
             .count()
         > 0) {
       if (!Objects.equals(context.unFilteredNodeDeque.peek().getRmType(), "ELEMENT")) {
-        if (config.getOptimizerSetting().equals(OptimizerSetting.ALL)&& !context.unFilteredNodeDeque.isEmpty()){
+        if (config.getOptimizerSetting().equals(OptimizerSetting.ALL)
+            && !context.unFilteredNodeDeque.isEmpty()) {
           name = findLastArchetype(context.unFilteredNodeDeque).getName() + TERM_DIVIDER + name;
         } else {
           name = context.unFilteredNodeDeque.peek().getName() + TERM_DIVIDER + name;
-}
+        }
       } else {
-        if (config.getOptimizerSetting().equals(OptimizerSetting.ALL)&& !context.unFilteredNodeDeque.isEmpty()){
+        if (config.getOptimizerSetting().equals(OptimizerSetting.ALL)
+            && !context.unFilteredNodeDeque.isEmpty()) {
           name = findLastArchetype(context.unFilteredNodeDeque).getName() + TERM_DIVIDER + name;
         } else {
           WebTemplateNode poll = context.unFilteredNodeDeque.poll();
           name = context.unFilteredNodeDeque.peek().getName() + TERM_DIVIDER + name;
           context.unFilteredNodeDeque.push(poll);
-          }
-
+        }
       }
     }
 
@@ -120,9 +127,12 @@ public class DefaultNamingStrategy implements NamingStrategy {
             .orElse(null);
     if (Objects.equals(
         Optional.ofNullable(trueParent).map(WebTemplateNode::getRmType).orElse(null), "ELEMENT")) {
-      name = trueParent.getName();
+      if (name.equals("null_flavour")) {
+        name = trueParent.getName() + TERM_DIVIDER + "null_flavour";
+      } else {
+        name = trueParent.getName();
+      }
     }
-
 
     return name;
   }
@@ -149,18 +159,60 @@ public class DefaultNamingStrategy implements NamingStrategy {
   }
 
   @Override
-  public String toEnumName(String fieldName) {
-    fieldName = sanitizeNumber(fieldName);
-    return new SnakeCase(normalise(fieldName, false)).camelToUpperSnake();
+  public String buildEnumConstantName(
+      ClassGeneratorContext context, WebTemplateNode currentNode, String termName) {
+    termName = sanitizeNumber(termName);
+    return new SnakeCase(normalise(termName, false)).camelToUpperSnake();
+  }
+
+  @Override
+  public String buildFieldJavadoc(ClassGeneratorContext context, WebTemplateNode node) {
+    StringJoiner joiner = new StringJoiner("/");
+    for (Iterator<WebTemplateNode> it = context.unFilteredNodeDeque.descendingIterator();
+        it.hasNext(); ) {
+      WebTemplateNode n = it.next();
+      if (!List.of(
+                      "HISTORY",
+                      "ITEM_TREE",
+                      "ITEM_LIST",
+                      "ITEM_SINGLE",
+                      "ITEM_TABLE",
+                      "ITEM_STRUCTURE")
+                  .contains(n.getRmType())
+              && (!n.getRmType().equals("ELEMENT"))
+          || node.getName().equals("null_flavour")) {
+        joiner.add(n.getName());
+      }
+    }
+    joiner.add(node.getName());
+    String path = joiner.toString();
+    StringBuilder sb = new StringBuilder();
+    sb.append("Path: ").append(path);
+    if (StringUtils.isNotBlank(
+        node.getLocalizedDescriptions().get(context.webTemplate.getDefaultLanguage()))) {
+      sb.append("\n")
+          .append("Description: ")
+          .append(node.getLocalizedDescriptions().get(context.webTemplate.getDefaultLanguage()));
+    }
+    if (Optional.of(node)
+        .map(WebTemplateNode::getAnnotations)
+        .map(WebTemplateAnnotation::getComment)
+        .isPresent()) {
+      sb.append("\n").append("Comment: ").append(node.getAnnotations().getComment());
+    }
+    return sb.toString();
   }
 
   @Override
   public String buildFieldName(ClassGeneratorContext context, String path, WebTemplateNode node) {
+
     String name = node.getName();
     String attributeName = new FlatPath(path).getLast().getAttributeName();
 
     if (!context.nodeDeque.isEmpty()) {
-      if (StringUtils.isBlank(attributeName) || List.of("defining_code","value").contains(attributeName) ) {
+      if ((StringUtils.isBlank(attributeName)
+              || List.of("defining_code", "value").contains(attributeName))
+          && !isEntityAttribute(context, node)) {
         name = makeNameUnique(context, node);
       } else {
         name = replaceElementName(context, node);
@@ -173,7 +225,7 @@ public class DefaultNamingStrategy implements NamingStrategy {
     if (name.equals("value")) {
       name = context.nodeDeque.peek().getName();
     }
-    if (context.nodeDeque.peek().getRmType().equals("ELEMENT")) {
+    if (context.nodeDeque.peek().getRmType().equals("ELEMENT") && !name.equals("feeder_audit")) {
       name = "value";
     }
 
@@ -194,7 +246,19 @@ public class DefaultNamingStrategy implements NamingStrategy {
     return fieldName;
   }
 
+  private boolean isEntityAttribute(ClassGeneratorContext context, WebTemplateNode node) {
+    FlatPath relativPath = new FlatPath(context.nodeDeque.peek().buildRelativPath(node));
+    RMTypeInfo typeInfo = RM_INFO_LOOKUP.getTypeInfo(context.nodeDeque.peek().getRmType());
+
+    return relativPath.getChild() == null
+        && typeInfo != null
+        && typeInfo.getAttributes().containsKey(relativPath.getName());
+  }
+
   private String normalise(String name, boolean capitalizeFirstLetter) {
+    for (Map.Entry<Character, String> entry : config.getReplaceChars().entrySet()) {
+      name = CharMatcher.is(entry.getKey()).replaceFrom(name, entry.getValue());
+    }
     if (StringUtils.isBlank(name) || name.equals("_")) {
       return RandomStringUtils.randomAlphabetic(10);
     }

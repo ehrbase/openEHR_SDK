@@ -1,79 +1,99 @@
 package org.ehrbase.client.classgenerator.exampleoptimizersettingsections.coronaanamnesecomposition.definition;
 
+import com.nedap.archie.rm.archetyped.FeederAudit;
 import com.nedap.archie.rm.datastructures.Cluster;
 import com.nedap.archie.rm.generic.PartyProxy;
 import java.lang.String;
 import java.time.temporal.TemporalAccessor;
 import java.util.List;
+import javax.annotation.processing.Generated;
 import org.ehrbase.client.annotations.Archetype;
 import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.Path;
+import org.ehrbase.client.classgenerator.interfaces.EntryEntity;
 import org.ehrbase.client.classgenerator.shareddefinition.Language;
 
 @Entity
 @Archetype("openEHR-EHR-INSTRUCTION.service_request.v1")
-public class DienstleistungInstruction {
+@Generated(
+    value = "org.ehrbase.client.classgenerator.ClassGenerator",
+    date = "2020-12-10T13:06:13.493032700+01:00",
+    comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
+)
+public class DienstleistungInstruction implements EntryEntity {
   /**
-   * Bericht/Allgemeine Angaben/Dienstleistung/Aktuelle Aktivität
+   * Path: Bericht/Allgemeine Angaben/Dienstleistung/Aktuelle Aktivität
+   * Description: Aktuelle Aktivität
    */
   @Path("/activities[at0001]")
-  private List<DienstleistungAktuelleAktivitatActivity> aktuelleAktivitat;
+  private List<DienstleistungAktuelleAktivitaetActivity> aktuelleAktivitaet;
 
   /**
-   * Bericht/Allgemeine Angaben/Dienstleistung/Einsender
+   * Path: Bericht/Allgemeine Angaben/Dienstleistung/Einsender
+   * Description: Details über den Kliniker oder die Abteilung, die die Dienstleistung anfordert.
    */
   @Path("/protocol[at0008]/items[at0141]")
   private Cluster einsender;
 
   /**
-   * Bericht/Allgemeine Angaben/Dienstleistung/Empfänger
+   * Path: Bericht/Allgemeine Angaben/Dienstleistung/Empfänger
+   * Description: Details über den Kliniker oder die Abteilung, die die Dienstleistung erhält.
    */
   @Path("/protocol[at0008]/items[at0142]")
-  private Cluster empfanger;
+  private Cluster empfaenger;
 
   /**
-   * Bericht/Allgemeine Angaben/Dienstleistung/Verteilerliste
+   * Path: Bericht/Allgemeine Angaben/Dienstleistung/Verteilerliste
+   * Description: Details über weitere Kliniker, Organisationen oder Einrichtungen, die Kopien aller Mitteilungen benötigen.
    */
   @Path("/protocol[at0008]/items[at0128]")
   private List<Cluster> verteilerliste;
 
   /**
-   * Bericht/Allgemeine Angaben/Dienstleistung/Erweiterung
+   * Path: Bericht/Allgemeine Angaben/Dienstleistung/Erweiterung
+   * Description: Zusätzliche Informationen zur Erfassung lokaler Inhalte oder Anpassung an andere Referenzmodelle/Formalismen.
+   * Comment: Zum Beispiel: Lokaler Informationsbedarf oder zusätzliche Metadaten zur Anpassung an FHIR-Ressourcen oder CIMI-Modelle.
    */
   @Path("/protocol[at0008]/items[at0112]")
   private List<Cluster> erweiterung;
 
   /**
-   * Bericht/Allgemeine Angaben/Dienstleistung/subject
+   * Path: Bericht/Allgemeine Angaben/Dienstleistung/subject
    */
   @Path("/subject")
   private PartyProxy subject;
 
   /**
-   * Bericht/Allgemeine Angaben/Dienstleistung/narrative
+   * Path: Bericht/Allgemeine Angaben/Dienstleistung/narrative
    */
   @Path("/narrative|value")
   private String narrativeValue;
 
   /**
-   * Bericht/Allgemeine Angaben/Dienstleistung/language
+   * Path: Bericht/Allgemeine Angaben/Dienstleistung/language
    */
   @Path("/language")
   private Language language;
 
   /**
-   * Bericht/Allgemeine Angaben/Dienstleistung/expiry_time
+   * Path: Bericht/Allgemeine Angaben/Dienstleistung/feeder_audit
+   */
+  @Path("/feeder_audit")
+  private FeederAudit feederAudit;
+
+  /**
+   * Path: Bericht/Allgemeine Angaben/Dienstleistung/expiry_time
    */
   @Path("/expiry_time|value")
   private TemporalAccessor expiryTimeValue;
 
-  public void setAktuelleAktivitat(
-      List<DienstleistungAktuelleAktivitatActivity> aktuelleAktivitat) {
-     this.aktuelleAktivitat = aktuelleAktivitat;
+  public void setAktuelleAktivitaet(
+      List<DienstleistungAktuelleAktivitaetActivity> aktuelleAktivitaet) {
+     this.aktuelleAktivitaet = aktuelleAktivitaet;
   }
 
-  public List<DienstleistungAktuelleAktivitatActivity> getAktuelleAktivitat() {
-     return this.aktuelleAktivitat ;
+  public List<DienstleistungAktuelleAktivitaetActivity> getAktuelleAktivitaet() {
+     return this.aktuelleAktivitaet ;
   }
 
   public void setEinsender(Cluster einsender) {
@@ -84,12 +104,12 @@ public class DienstleistungInstruction {
      return this.einsender ;
   }
 
-  public void setEmpfanger(Cluster empfanger) {
-     this.empfanger = empfanger;
+  public void setEmpfaenger(Cluster empfaenger) {
+     this.empfaenger = empfaenger;
   }
 
-  public Cluster getEmpfanger() {
-     return this.empfanger ;
+  public Cluster getEmpfaenger() {
+     return this.empfaenger ;
   }
 
   public void setVerteilerliste(List<Cluster> verteilerliste) {
@@ -130,6 +150,14 @@ public class DienstleistungInstruction {
 
   public Language getLanguage() {
      return this.language ;
+  }
+
+  public void setFeederAudit(FeederAudit feederAudit) {
+     this.feederAudit = feederAudit;
+  }
+
+  public FeederAudit getFeederAudit() {
+     return this.feederAudit ;
   }
 
   public void setExpiryTimeValue(TemporalAccessor expiryTimeValue) {

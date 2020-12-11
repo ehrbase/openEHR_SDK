@@ -7,6 +7,7 @@ import com.nedap.archie.rm.generic.PartyProxy;
 import java.lang.String;
 import java.time.temporal.TemporalAccessor;
 import java.util.List;
+import javax.annotation.processing.Generated;
 import org.ehrbase.client.annotations.Archetype;
 import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.Id;
@@ -14,6 +15,7 @@ import org.ehrbase.client.annotations.Path;
 import org.ehrbase.client.annotations.Template;
 import org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev0composition.definition.BloodPressureTrainingSampleObservation;
 import org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev0composition.definition.DeviceDetailsTrainingSampleCluster;
+import org.ehrbase.client.classgenerator.interfaces.CompositionEntity;
 import org.ehrbase.client.classgenerator.shareddefinition.Category;
 import org.ehrbase.client.classgenerator.shareddefinition.Language;
 import org.ehrbase.client.classgenerator.shareddefinition.Setting;
@@ -22,82 +24,91 @@ import org.ehrbase.client.openehrclient.VersionUid;
 
 @Entity
 @Archetype("openEHR-EHR-COMPOSITION.sample_encounter.v1")
+@Generated(
+    value = "org.ehrbase.client.classgenerator.ClassGenerator",
+    date = "2020-12-10T13:06:10.937496600+01:00",
+    comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
+)
 @Template("ehrbase_blood_pressure_simple.de.v0")
-public class EhrbaseBloodPressureSimpleDeV0Composition {
+public class EhrbaseBloodPressureSimpleDeV0Composition implements CompositionEntity {
   /**
-   * Encounter (training sample)/context/Admin detail/Device details (training sample)
+   * Path: Encounter (training sample)/context/Admin detail/Device details (training sample)
+   * Description: The details of the device used
    */
   @Path("/context/other_context[at0001]/items[at0006]/items[openEHR-EHR-CLUSTER.sample_device.v1]")
   private List<DeviceDetailsTrainingSampleCluster> deviceDetailsTrainingSample;
 
   /**
-   * Encounter (training sample)/context/start_time
+   * Path: Encounter (training sample)/context/start_time
    */
   @Path("/context/start_time|value")
   private TemporalAccessor startTimeValue;
 
   /**
-   * Encounter (training sample)/context/participations
+   * Path: Encounter (training sample)/context/participations
    */
   @Path("/context/participations")
   private List<Participation> participations;
 
   /**
-   * Encounter (training sample)/context/end_time
+   * Path: Encounter (training sample)/context/end_time
    */
   @Path("/context/end_time|value")
   private TemporalAccessor endTimeValue;
 
   /**
-   * Encounter (training sample)/context/location
+   * Path: Encounter (training sample)/context/location
    */
   @Path("/context/location")
   private String location;
 
   /**
-   * Encounter (training sample)/context/health_care_facility
+   * Path: Encounter (training sample)/context/health_care_facility
    */
   @Path("/context/health_care_facility")
   private PartyIdentified healthCareFacility;
 
   /**
-   * Encounter (training sample)/context/setting
+   * Path: Encounter (training sample)/context/setting
    */
   @Path("/context/setting|defining_code")
   private Setting settingDefiningCode;
 
   /**
-   * Encounter (training sample)/Blood pressure (Training sample)
+   * Path: Encounter (training sample)/Blood pressure (Training sample)
+   * Description: The measurement of arterial blood pressure which is deemed to be a surrogate
+   *                         for arterial pressure in the systemic circulation.
+   *                     
    */
   @Path("/content[openEHR-EHR-OBSERVATION.sample_blood_pressure.v1]")
   private List<BloodPressureTrainingSampleObservation> bloodPressureTrainingSample;
 
   /**
-   * Encounter (training sample)/composer
+   * Path: Encounter (training sample)/composer
    */
   @Path("/composer")
   private PartyProxy composer;
 
   /**
-   * Encounter (training sample)/language
+   * Path: Encounter (training sample)/language
    */
   @Path("/language")
   private Language language;
 
   /**
-   * Encounter (training sample)/feeder_audit
+   * Path: Encounter (training sample)/feeder_audit
    */
   @Path("/feeder_audit")
   private FeederAudit feederAudit;
 
   /**
-   * Encounter (training sample)/category
+   * Path: Encounter (training sample)/category
    */
   @Path("/category|defining_code")
   private Category categoryDefiningCode;
 
   /**
-   * Encounter (training sample)/territory
+   * Path: Encounter (training sample)/territory
    */
   @Path("/territory")
   private Territory territory;

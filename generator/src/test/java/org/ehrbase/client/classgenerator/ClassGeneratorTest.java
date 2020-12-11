@@ -19,9 +19,20 @@
 
 package org.ehrbase.client.classgenerator;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.TypeSpec;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 import org.apache.commons.io.FileUtils;
 import org.apache.xmlbeans.XmlException;
 import org.assertj.core.groups.Tuple;
@@ -31,17 +42,6 @@ import org.ehrbase.webtemplate.parser.OPTParser;
 import org.junit.Test;
 import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
 import org.openehr.schemas.v1.TemplateDocument;
-
-import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 public class ClassGeneratorTest {
 
@@ -56,7 +56,9 @@ public class ClassGeneratorTest {
                 OperationalTemplateTestData.BLOOD_PRESSURE_SIMPLE.getStream())
             .getTemplate();
     WebTemplate webTemplate = new OPTParser(template).parse();
-    ClassGenerator cut = new ClassGenerator(new ClassGeneratorConfig());
+    ClassGeneratorConfig config = new ClassGeneratorConfig();
+    config.setAddNullFlavor(true);
+    ClassGenerator cut = new ClassGenerator(config);
     ClassGeneratorResult generate = null;
 
     generate = cut.generate(PACKAGE_NAME, webTemplate);
@@ -134,7 +136,63 @@ public class ClassGeneratorTest {
             new Tuple(
                 "participations", "java.util.List<com.nedap.archie.rm.generic.Participation>"),
             new Tuple("feederAudit", "com.nedap.archie.rm.archetyped.FeederAudit"),
-            new Tuple("location", "java.lang.String"));
+            new Tuple("location", "java.lang.String"),
+            new Tuple("feederAudit", "com.nedap.archie.rm.archetyped.FeederAudit"),
+            new Tuple("feederAudit", "com.nedap.archie.rm.archetyped.FeederAudit"),
+            new Tuple(
+                "nameNullFlavourDefiningCode",
+                "org.ehrbase.client.classgenerator.shareddefinition.NullFlavour"),
+            new Tuple(
+                "descriptionNullFlavourDefiningCode",
+                "org.ehrbase.client.classgenerator.shareddefinition.NullFlavour"),
+            new Tuple(
+                "manufacturerNullFlavourDefiningCode",
+                "org.ehrbase.client.classgenerator.shareddefinition.NullFlavour"),
+            new Tuple(
+                "modelNullFlavourDefiningCode",
+                "org.ehrbase.client.classgenerator.shareddefinition.NullFlavour"),
+            new Tuple(
+                "serialNumberNullFlavourDefiningCode",
+                "org.ehrbase.client.classgenerator.shareddefinition.NullFlavour"),
+            new Tuple(
+                "dateLastServicedNullFlavourDefiningCode",
+                "org.ehrbase.client.classgenerator.shareddefinition.NullFlavour"),
+            new Tuple(
+                "dateLastCalibrationNullFlavourDefiningCode",
+                "org.ehrbase.client.classgenerator.shareddefinition.NullFlavour"),
+            new Tuple(
+                "servicedByNullFlavourDefiningCode",
+                "org.ehrbase.client.classgenerator.shareddefinition.NullFlavour"),
+            new Tuple(
+                "systolicNullFlavourDefiningCode",
+                "org.ehrbase.client.classgenerator.shareddefinition.NullFlavour"),
+            new Tuple(
+                "diastolicNullFlavourDefiningCode",
+                "org.ehrbase.client.classgenerator.shareddefinition.NullFlavour"),
+            new Tuple(
+                "meanArterialPressureNullFlavourDefiningCode",
+                "org.ehrbase.client.classgenerator.shareddefinition.NullFlavour"),
+            new Tuple(
+                "pulsePressureNullFlavourDefiningCode",
+                "org.ehrbase.client.classgenerator.shareddefinition.NullFlavour"),
+            new Tuple(
+                "commentNullFlavourDefiningCode",
+                "org.ehrbase.client.classgenerator.shareddefinition.NullFlavour"),
+            new Tuple(
+                "positionNullFlavourDefiningCode",
+                "org.ehrbase.client.classgenerator.shareddefinition.NullFlavour"),
+            new Tuple(
+                "tiltNullFlavourDefiningCode",
+                "org.ehrbase.client.classgenerator.shareddefinition.NullFlavour"),
+            new Tuple(
+                "cuffSizeNullFlavourDefiningCode",
+                "org.ehrbase.client.classgenerator.shareddefinition.NullFlavour"),
+            new Tuple(
+                "locationOfMeasurementNullFlavourDefiningCode",
+                "org.ehrbase.client.classgenerator.shareddefinition.NullFlavour"),
+            new Tuple(
+                "korotkoffSoundsNullFlavourDefiningCode",
+                "org.ehrbase.client.classgenerator.shareddefinition.NullFlavour"));
 
     writeFiles(generate);
   }
@@ -252,6 +310,14 @@ public class ClassGeneratorTest {
                 "org.ehrbase.client.classgenerator.shareddefinition.Category"),
             new Tuple(
                 "participations", "java.util.List<com.nedap.archie.rm.generic.Participation>"),
+            new Tuple("feederAudit", "com.nedap.archie.rm.archetyped.FeederAudit"),
+            new Tuple("feederAudit", "com.nedap.archie.rm.archetyped.FeederAudit"),
+            new Tuple("feederAudit", "com.nedap.archie.rm.archetyped.FeederAudit"),
+            new Tuple("feederAudit", "com.nedap.archie.rm.archetyped.FeederAudit"),
+            new Tuple("feederAudit", "com.nedap.archie.rm.archetyped.FeederAudit"),
+            new Tuple("sampleCount", "java.lang.Long"),
+            new Tuple("feederAudit", "com.nedap.archie.rm.archetyped.FeederAudit"),
+            new Tuple("feederAudit", "com.nedap.archie.rm.archetyped.FeederAudit"),
             new Tuple("feederAudit", "com.nedap.archie.rm.archetyped.FeederAudit"));
 
     writeFiles(generate);
@@ -266,8 +332,7 @@ public class ClassGeneratorTest {
     ClassGeneratorResult generate = cut.generate(PACKAGE_NAME, new OPTParser(template).parse());
 
     Set<String> derDiagnoseDefiningCode =
-        generate
-            .getClasses()
+        generate.getClasses()
             .get("org.ehrbase.client.classgenerator.examples.diagnosecomposition.definition")
             .stream()
             .filter(t -> t.name.equals("NameDesProblemsDerDiagnoseDefiningCode"))
@@ -334,7 +399,11 @@ public class ClassGeneratorTest {
             "lowerValue",
             "lowerIncluded",
             "upperIncluded",
-            "healthCareFacility");
+            "healthCareFacility",
+            "feederAudit",
+            "feederAudit",
+            "feederAudit",
+            "feederAudit");
 
     writeFiles(generate);
   }
@@ -435,7 +504,21 @@ public class ClassGeneratorTest {
             "settingDefiningCode",
             "feederAudit",
             "location",
-            "categoryDefiningCode");
+            "categoryDefiningCode",
+            "feederAudit",
+            "feederAudit",
+            "feederAudit",
+            "feederAudit",
+            "feederAudit",
+            "feederAudit",
+            "feederAudit",
+            "feederAudit",
+            "feederAudit",
+            "feederAudit",
+            "feederAudit",
+            "feederAudit",
+            "feederAudit",
+            "feederAudit");
 
     writeFiles(generate);
   }
@@ -456,7 +539,7 @@ public class ClassGeneratorTest {
             .flatMap(List::stream)
             .collect(Collectors.toList());
 
-    assertThat(fieldSpecs).size().isEqualTo(248);
+    assertThat(fieldSpecs).size().isEqualTo(286);
   }
 
   @Test
@@ -475,7 +558,7 @@ public class ClassGeneratorTest {
             .flatMap(List::stream)
             .collect(Collectors.toList());
 
-    assertThat(fieldSpecs).size().isEqualTo(42);
+    assertThat(fieldSpecs).size().isEqualTo(47);
     writeFiles(generate);
   }
 
@@ -495,7 +578,7 @@ public class ClassGeneratorTest {
             .flatMap(List::stream)
             .collect(Collectors.toList());
 
-    assertThat(fieldSpecs).size().isEqualTo(33);
+    assertThat(fieldSpecs).size().isEqualTo(35);
     writeFiles(generate);
   }
 
@@ -569,7 +652,12 @@ public class ClassGeneratorTest {
             "probendetail",
             "subject",
             "originValue",
-            "laborWelchesDenUntersuchungsauftragAnnimmt");
+            "laborWelchesDenUntersuchungsauftragAnnimmt",
+            "feederAudit",
+            "feederAudit",
+            "feederAudit",
+            "feederAudit",
+            "feederAudit");
 
     writeFiles(generate);
   }
@@ -663,7 +751,11 @@ public class ClassGeneratorTest {
                 "java.util.List<org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1composition.definition.BodyTemperatureAnyEventChoice>"),
             new Tuple(
                 "participations", "java.util.List<com.nedap.archie.rm.generic.Participation>"),
-            new Tuple("feederAudit", "com.nedap.archie.rm.archetyped.FeederAudit"));
+            new Tuple("feederAudit", "com.nedap.archie.rm.archetyped.FeederAudit"),
+            new Tuple("feederAudit", "com.nedap.archie.rm.archetyped.FeederAudit"),
+            new Tuple("feederAudit", "com.nedap.archie.rm.archetyped.FeederAudit"),
+            new Tuple("feederAudit", "com.nedap.archie.rm.archetyped.FeederAudit"),
+            new Tuple("sampleCount", "java.lang.Long"));
 
     writeFiles(generate);
   }
@@ -684,7 +776,7 @@ public class ClassGeneratorTest {
             .flatMap(List::stream)
             .collect(Collectors.toList());
 
-    assertThat(fieldSpecs).size().isEqualTo(80L);
+    assertThat(fieldSpecs).size().isEqualTo(87L);
 
     writeFiles(generate);
   }
@@ -781,7 +873,16 @@ public class ClassGeneratorTest {
             "settingDefiningCode",
             "feederAudit",
             "location",
-            "categoryDefiningCode");
+            "categoryDefiningCode",
+            "feederAudit",
+            "feederAudit",
+            "feederAudit",
+            "feederAudit",
+            "feederAudit",
+            "feederAudit",
+            "feederAudit",
+            "feederAudit",
+            "feederAudit");
 
     writeFiles(generate);
   }
@@ -802,7 +903,7 @@ public class ClassGeneratorTest {
             .flatMap(List::stream)
             .collect(Collectors.toList());
 
-    assertThat(fieldSpecs).size().isEqualTo(296);
+    assertThat(fieldSpecs).size().isEqualTo(347);
 
     writeFiles(generate);
   }
@@ -814,21 +915,33 @@ public class ClassGeneratorTest {
             .getTemplate();
     ClassGeneratorConfig config = new ClassGeneratorConfig();
     config.setOptimizerSetting(OptimizerSetting.SECTION);
+    Map<Character, String> characterStringMap = Map.of(
+            'ä', "ae",
+            'Ä', "Ae",
+            'ö', "oe",
+            'Ö', "Oe",
+            'ü', "ue",
+            'Ü', "ue"
+    );
+    config.getReplaceChars().putAll(characterStringMap);
     ClassGenerator cut = new ClassGenerator(config);
     ClassGeneratorResult generate =
         cut.generate(
             PACKAGE_NAME.replace("example", "exampleoptimizersettingsection"),
             new OPTParser(template).parse());
 
-    List<FieldSpec> fieldSpecs =
-        generate.getClasses().values().stream()
-            .flatMap(Collection::stream)
-            .filter(t -> !t.kind.equals(TypeSpec.Kind.ENUM))
-            .map(t -> t.fieldSpecs)
-            .flatMap(List::stream)
-            .collect(Collectors.toList());
+            List<String> fieldSpecs =
+                    generate.getClasses().values().stream()
+                            .flatMap(Collection::stream)
+                            .filter(t -> !t.kind.equals(TypeSpec.Kind.ENUM))
+                            .map(t -> t.fieldSpecs)
+                            .flatMap(List::stream)
+                            .map(f -> f.name)
+                            .collect(Collectors.toList());
 
-    assertThat(fieldSpecs).size().isEqualTo(292);
+     assertThat(fieldSpecs).contains("beschaeftigung")   ;
+
+    assertThat(fieldSpecs).size().isEqualTo(339);
 
     writeFiles(generate);
   }
@@ -854,7 +967,7 @@ public class ClassGeneratorTest {
             .flatMap(List::stream)
             .collect(Collectors.toList());
 
-    assertThat(fieldSpecs).size().isEqualTo(274);
+    assertThat(fieldSpecs).size().isEqualTo(303);
 
     writeFiles(generate);
   }
@@ -900,7 +1013,8 @@ public class ClassGeneratorTest {
             "originValue",
             "language",
             "erweiterungen",
-            "statusDefiningCode");
+            "statusDefiningCode",
+            "feederAudit");
 
     Optional<TypeSpec> status1 =
         generate.getClasses().values().stream()
@@ -939,7 +1053,7 @@ public class ClassGeneratorTest {
             .flatMap(List::stream)
             .collect(Collectors.toList());
 
-    assertThat(fieldSpecs).size().isEqualTo(352);
+    assertThat(fieldSpecs).size().isEqualTo(407);
 
     writeFiles(generate);
   }

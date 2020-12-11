@@ -1,88 +1,109 @@
 package org.ehrbase.client.classgenerator.examples.openereactcarecomposition.definition;
 
+import com.nedap.archie.rm.archetyped.FeederAudit;
 import com.nedap.archie.rm.datastructures.Cluster;
 import com.nedap.archie.rm.datavalues.DvCodedText;
 import com.nedap.archie.rm.generic.PartyProxy;
 import java.lang.String;
 import java.time.temporal.TemporalAccessor;
 import java.util.List;
+import javax.annotation.processing.Generated;
 import org.ehrbase.client.annotations.Archetype;
 import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.Path;
+import org.ehrbase.client.classgenerator.interfaces.EntryEntity;
 import org.ehrbase.client.classgenerator.shareddefinition.Language;
 import org.ehrbase.client.classgenerator.shareddefinition.Transition;
 
 @Entity
 @Archetype("openEHR-EHR-ACTION.service.v0")
-public class ServiceAction {
+@Generated(
+    value = "org.ehrbase.client.classgenerator.ClassGenerator",
+    date = "2020-12-10T13:06:11.597503+01:00",
+    comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
+)
+public class ServiceAction implements EntryEntity {
   /**
-   * open_eREACT-Care/Response/Service/Service name
+   * Path: open_eREACT-Care/Response/Service/Service name
+   * Description: Identification of the clinical service to be/being carried out.
    */
   @Path("/description[at0001]/items[at0011]/value")
   private DvCodedText serviceName;
 
   /**
-   * open_eREACT-Care/Response/Service/Description
+   * Path: open_eREACT-Care/Response/Service/Description
+   * Description: Narrative description about the service, as appropriate for the pathway step.
    */
   @Path("/description[at0001]/items[at0013]/value|value")
   private String descriptionValue;
 
   /**
-   * open_eREACT-Care/Response/Service/Service detail
+   * Path: open_eREACT-Care/Response/Service/Service detail
+   * Description: Structured information about the service.
+   * Comment: Use to capture detailed, structured information about specified aspects of the service.
    */
   @Path("/description[at0001]/items[at0027]")
   private List<Cluster> serviceDetail;
 
   /**
-   * open_eREACT-Care/Response/Service/Multimedia
+   * Path: open_eREACT-Care/Response/Service/Multimedia
+   * Description: Mulitimedia representation of a performed service.
    */
   @Path("/description[at0001]/items[at0029]")
   private List<Cluster> multimedia;
 
   /**
-   * open_eREACT-Care/Response/Service/Requestor
+   * Path: open_eREACT-Care/Response/Service/Requestor
+   * Description: Details about the healthcare provider or organisation requesting the service.
    */
   @Path("/protocol[at0015]/items[at0017]")
   private List<Cluster> requestor;
 
   /**
-   * open_eREACT-Care/Response/Service/Receiver
+   * Path: open_eREACT-Care/Response/Service/Receiver
+   * Description: Details about the healthcare provider or organisation receiving the request for referral.
    */
   @Path("/protocol[at0015]/items[at0019]")
   private List<Cluster> receiver;
 
   /**
-   * open_eREACT-Care/Response/Service/subject
+   * Path: open_eREACT-Care/Response/Service/subject
    */
   @Path("/subject")
   private PartyProxy subject;
 
   /**
-   * open_eREACT-Care/Response/Service/language
+   * Path: open_eREACT-Care/Response/Service/language
    */
   @Path("/language")
   private Language language;
 
   /**
-   * open_eREACT-Care/Response/Service/time
+   * Path: open_eREACT-Care/Response/Service/feeder_audit
+   */
+  @Path("/feeder_audit")
+  private FeederAudit feederAudit;
+
+  /**
+   * Path: open_eREACT-Care/Response/Service/time
    */
   @Path("/time|value")
   private TemporalAccessor timeValue;
 
   /**
-   * open_eREACT-Care/Response/Service/ism_transition/Careflow_step
+   * Path: open_eREACT-Care/Response/Service/ism_transition/Careflow_step
    */
   @Path("/ism_transition/careflow_step|defining_code")
   private CareflowStepDefiningCode careflowStepDefiningCode;
 
   /**
-   * open_eREACT-Care/Response/Service/ism_transition/Current_state
+   * Path: open_eREACT-Care/Response/Service/ism_transition/Current_state
    */
   @Path("/ism_transition/current_state|defining_code")
   private CurrentStateDefiningCode currentStateDefiningCode;
 
   /**
-   * open_eREACT-Care/Response/Service/ism_transition/transition
+   * Path: open_eREACT-Care/Response/Service/ism_transition/transition
    */
   @Path("/ism_transition/transition|defining_code")
   private Transition transitionDefiningCode;
@@ -149,6 +170,14 @@ public class ServiceAction {
 
   public Language getLanguage() {
      return this.language ;
+  }
+
+  public void setFeederAudit(FeederAudit feederAudit) {
+     this.feederAudit = feederAudit;
+  }
+
+  public FeederAudit getFeederAudit() {
+     return this.feederAudit ;
   }
 
   public void setTimeValue(TemporalAccessor timeValue) {

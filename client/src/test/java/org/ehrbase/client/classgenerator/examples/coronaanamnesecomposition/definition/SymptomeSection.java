@@ -1,65 +1,88 @@
 package org.ehrbase.client.classgenerator.examples.coronaanamnesecomposition.definition;
 
+import com.nedap.archie.rm.archetyped.FeederAudit;
+import javax.annotation.processing.Generated;
 import org.ehrbase.client.annotations.Archetype;
 import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.Path;
+import org.ehrbase.client.classgenerator.interfaces.LocatableEntity;
 
 @Entity
 @Archetype("openEHR-EHR-SECTION.adhoc.v1")
-public class SymptomeSection {
+@Generated(
+    value = "org.ehrbase.client.classgenerator.ClassGenerator",
+    date = "2020-12-10T13:06:12.505025900+01:00",
+    comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
+)
+public class SymptomeSection implements LocatableEntity {
   /**
-   * Bericht/Symptome/Husten
+   * Path: Bericht/Symptome/Husten
+   * Description: Ein Personen- oder Selbstbeurteilungs-Screening-Fragebogen zur Ermittlung von Symptomen und Anzeichen.
    */
   @Path("/items[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0 and name/value='Husten']")
   private HustenObservation husten;
 
   /**
-   * Bericht/Symptome/Schnupfen
+   * Path: Bericht/Symptome/Schnupfen
+   * Description: Ein Personen- oder Selbstbeurteilungs-Screening-Fragebogen zur Ermittlung von Symptomen und Anzeichen.
    */
   @Path("/items[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0 and name/value='Schnupfen']")
   private SchnupfenObservation schnupfen;
 
   /**
-   * Bericht/Symptome/Heiserkeit
+   * Path: Bericht/Symptome/Heiserkeit
+   * Description: Ein Personen- oder Selbstbeurteilungs-Screening-Fragebogen zur Ermittlung von Symptomen und Anzeichen.
    */
   @Path("/items[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0 and name/value='Heiserkeit']")
   private HeiserkeitObservation heiserkeit;
 
   /**
-   * Bericht/Symptome/Fieber oder erhöhte Körpertemperatur
+   * Path: Bericht/Symptome/Fieber oder erhöhte Körpertemperatur
+   * Description: Ein Personen- oder Selbstbeurteilungs-Screening-Fragebogen zur Ermittlung von Symptomen und Anzeichen.
    */
   @Path("/items[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0 and name/value='Fieber oder erhöhte Körpertemperatur']")
   private FieberOderErhohteKorpertemperaturObservation fieberOderErhohteKorpertemperatur;
 
   /**
-   * Bericht/Symptome/Körpertemperatur
+   * Path: Bericht/Symptome/Körpertemperatur
+   * Description: Eine Messung der Körpertemperatur, als Surrogat für die Temperatur des gesamten Körper der Person.
    */
   @Path("/items[openEHR-EHR-OBSERVATION.body_temperature.v2]")
   private KorpertemperaturObservation korpertemperatur;
 
   /**
-   * Bericht/Symptome/Gestörter Geruchssinn
+   * Path: Bericht/Symptome/Gestörter Geruchssinn
+   * Description: Ein Personen- oder Selbstbeurteilungs-Screening-Fragebogen zur Ermittlung von Symptomen und Anzeichen.
    */
   @Path("/items[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0 and name/value='Gestörter Geruchssinn']")
   private GestorterGeruchssinnObservation gestorterGeruchssinn;
 
   /**
-   * Bericht/Symptome/Gestörter Geschmackssinn
+   * Path: Bericht/Symptome/Gestörter Geschmackssinn
+   * Description: Ein Personen- oder Selbstbeurteilungs-Screening-Fragebogen zur Ermittlung von Symptomen und Anzeichen.
    */
   @Path("/items[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0 and name/value='Gestörter Geschmackssinn']")
   private GestorterGeschmackssinnObservation gestorterGeschmackssinn;
 
   /**
-   * Bericht/Symptome/Durchfall
+   * Path: Bericht/Symptome/Durchfall
+   * Description: Ein Personen- oder Selbstbeurteilungs-Screening-Fragebogen zur Ermittlung von Symptomen und Anzeichen.
    */
   @Path("/items[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0 and name/value='Durchfall']")
   private DurchfallObservation durchfall;
 
   /**
-   * Bericht/Symptome/Weitere Symptome
+   * Path: Bericht/Symptome/Weitere Symptome
+   * Description: Ein Personen- oder Selbstbeurteilungs-Screening-Fragebogen zur Ermittlung von Symptomen und Anzeichen.
    */
   @Path("/items[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0 and name/value='Weitere Symptome']")
   private WeitereSymptomeObservation weitereSymptome;
+
+  /**
+   * Path: Bericht/Symptome/feeder_audit
+   */
+  @Path("/feeder_audit")
+  private FeederAudit feederAudit;
 
   public void setHusten(HustenObservation husten) {
      this.husten = husten;
@@ -133,5 +156,13 @@ public class SymptomeSection {
 
   public WeitereSymptomeObservation getWeitereSymptome() {
      return this.weitereSymptome ;
+  }
+
+  public void setFeederAudit(FeederAudit feederAudit) {
+     this.feederAudit = feederAudit;
+  }
+
+  public FeederAudit getFeederAudit() {
+     return this.feederAudit ;
   }
 }

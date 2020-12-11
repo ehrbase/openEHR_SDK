@@ -24,15 +24,12 @@ import org.ehrbase.webtemplate.model.WebTemplateNode;
 public interface NamingStrategy {
 
   String buildClassName(
-          ClassGeneratorContext context, WebTemplateNode node, boolean isChoice, boolean isEnum);
+      ClassGeneratorContext context, WebTemplateNode node, boolean isChoice, boolean isEnum);
 
-  /**
-   * Manipulate the fieldName to remove or replace illegal characters
-   *
-   * @param fieldName
-   * @return normalized fieldName for Java naming convention
-   */
-  String toEnumName(String fieldName);
+  String buildEnumConstantName(
+      ClassGeneratorContext context, WebTemplateNode currentNode, String termName);
+
+  String buildFieldJavadoc(ClassGeneratorContext context, WebTemplateNode node);
 
   String buildFieldName(ClassGeneratorContext context, String path, WebTemplateNode node);
 }

@@ -7,6 +7,7 @@ import com.nedap.archie.rm.generic.PartyProxy;
 import java.lang.String;
 import java.time.temporal.TemporalAccessor;
 import java.util.List;
+import javax.annotation.processing.Generated;
 import org.ehrbase.client.annotations.Archetype;
 import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.Id;
@@ -16,6 +17,7 @@ import org.ehrbase.client.classgenerator.examples.testalltypesenv1composition.de
 import org.ehrbase.client.classgenerator.examples.testalltypesenv1composition.definition.TestAllTypesEvaluation;
 import org.ehrbase.client.classgenerator.examples.testalltypesenv1composition.definition.TestAllTypesObservation;
 import org.ehrbase.client.classgenerator.examples.testalltypesenv1composition.definition.TestAllTypesSection;
+import org.ehrbase.client.classgenerator.interfaces.CompositionEntity;
 import org.ehrbase.client.classgenerator.shareddefinition.Category;
 import org.ehrbase.client.classgenerator.shareddefinition.Language;
 import org.ehrbase.client.classgenerator.shareddefinition.Setting;
@@ -24,94 +26,103 @@ import org.ehrbase.client.openehrclient.VersionUid;
 
 @Entity
 @Archetype("openEHR-EHR-COMPOSITION.test_all_types.v1")
+@Generated(
+    value = "org.ehrbase.client.classgenerator.ClassGenerator",
+    date = "2020-12-10T13:06:10.792494500+01:00",
+    comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
+)
 @Template("test_all_types.en.v1")
-public class TestAllTypesEnV1Composition {
+public class TestAllTypesEnV1Composition implements CompositionEntity {
   /**
-   * Test all types/context/context coded text
+   * Path: Test all types/context/context coded text
+   * Description: *
    */
   @Path("/context/other_context[at0004]/item[at0005]/value|defining_code")
   private ContextCodedTextDefiningCode contextCodedTextDefiningCode;
 
   /**
-   * Test all types/context/start_time
+   * Path: Test all types/context/start_time
    */
   @Path("/context/start_time|value")
   private TemporalAccessor startTimeValue;
 
   /**
-   * Test all types/context/participations
+   * Path: Test all types/context/participations
    */
   @Path("/context/participations")
   private List<Participation> participations;
 
   /**
-   * Test all types/context/end_time
+   * Path: Test all types/context/end_time
    */
   @Path("/context/end_time|value")
   private TemporalAccessor endTimeValue;
 
   /**
-   * Test all types/context/location
+   * Path: Test all types/context/location
    */
   @Path("/context/location")
   private String location;
 
   /**
-   * Test all types/context/health_care_facility
+   * Path: Test all types/context/health_care_facility
    */
   @Path("/context/health_care_facility")
   private PartyIdentified healthCareFacility;
 
   /**
-   * Test all types/context/setting
+   * Path: Test all types/context/setting
    */
   @Path("/context/setting|defining_code")
   private Setting settingDefiningCode;
 
   /**
-   * Test all types/Test all types
+   * Path: Test all types/Test all types
+   * Description: unknown
    */
   @Path("/content[openEHR-EHR-OBSERVATION.test_all_types.v1]")
-  private List<TestAllTypesObservation> testAllTypesTestAllTypes;
+  private List<TestAllTypesObservation> testAllTypes;
 
   /**
-   * Test all types/Test all types
+   * Path: Test all types/Test all types
+   * Description: unknown
    */
   @Path("/content[openEHR-EHR-EVALUATION.test_all_types.v1]")
-  private List<TestAllTypesEvaluation> testAllTypesTestAllTypes2;
+  private List<TestAllTypesEvaluation> testAllTypes2;
 
   /**
-   * Test all types/Test all types
+   * Path: Test all types/Test all types
+   * Description: unknown
    */
   @Path("/content[openEHR-EHR-SECTION.test_all_types.v1]")
-  private List<TestAllTypesSection> testAllTypesTestAllTypes3;
+  private List<TestAllTypesSection> testAllTypes3;
 
   /**
-   * Test all types/composer
+   * Path: Test all types/composer
    */
   @Path("/composer")
   private PartyProxy composer;
 
   /**
-   * Test all types/language
+   * Path: Test all types/language
    */
   @Path("/language")
   private Language language;
 
   /**
-   * Test all types/feeder_audit
+   * Path: Test all types/feeder_audit
    */
   @Path("/feeder_audit")
   private FeederAudit feederAudit;
 
   /**
-   * Test all types/category
+   * Path: Test all types/category
    */
   @Path("/category|defining_code")
   private Category categoryDefiningCode;
 
   /**
-   * Test all types/territory
+   * Path: Test all types/territory
    */
   @Path("/territory")
   private Territory territory;
@@ -176,28 +187,28 @@ public class TestAllTypesEnV1Composition {
      return this.settingDefiningCode ;
   }
 
-  public void setTestAllTypesTestAllTypes(List<TestAllTypesObservation> testAllTypesTestAllTypes) {
-     this.testAllTypesTestAllTypes = testAllTypesTestAllTypes;
+  public void setTestAllTypes(List<TestAllTypesObservation> testAllTypes) {
+     this.testAllTypes = testAllTypes;
   }
 
-  public List<TestAllTypesObservation> getTestAllTypesTestAllTypes() {
-     return this.testAllTypesTestAllTypes ;
+  public List<TestAllTypesObservation> getTestAllTypes() {
+     return this.testAllTypes ;
   }
 
-  public void setTestAllTypesTestAllTypes2(List<TestAllTypesEvaluation> testAllTypesTestAllTypes2) {
-     this.testAllTypesTestAllTypes2 = testAllTypesTestAllTypes2;
+  public void setTestAllTypes2(List<TestAllTypesEvaluation> testAllTypes2) {
+     this.testAllTypes2 = testAllTypes2;
   }
 
-  public List<TestAllTypesEvaluation> getTestAllTypesTestAllTypes2() {
-     return this.testAllTypesTestAllTypes2 ;
+  public List<TestAllTypesEvaluation> getTestAllTypes2() {
+     return this.testAllTypes2 ;
   }
 
-  public void setTestAllTypesTestAllTypes3(List<TestAllTypesSection> testAllTypesTestAllTypes3) {
-     this.testAllTypesTestAllTypes3 = testAllTypesTestAllTypes3;
+  public void setTestAllTypes3(List<TestAllTypesSection> testAllTypes3) {
+     this.testAllTypes3 = testAllTypes3;
   }
 
-  public List<TestAllTypesSection> getTestAllTypesTestAllTypes3() {
-     return this.testAllTypesTestAllTypes3 ;
+  public List<TestAllTypesSection> getTestAllTypes3() {
+     return this.testAllTypes3 ;
   }
 
   public void setComposer(PartyProxy composer) {

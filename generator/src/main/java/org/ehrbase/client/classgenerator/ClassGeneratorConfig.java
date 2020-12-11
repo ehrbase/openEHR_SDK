@@ -19,15 +19,36 @@
 
 package org.ehrbase.client.classgenerator;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class ClassGeneratorConfig {
 
-    private OptimizerSetting optimizerSetting = OptimizerSetting.NONE;
+  /** Defines if nodes which belong to are archetype but are single valued generate a new class. */
+  private OptimizerSetting optimizerSetting = OptimizerSetting.NONE;
+  /** Whether or not to generate null flavor fields for Elements. */
+  private boolean addNullFlavor = false;
 
-    public OptimizerSetting getOptimizerSetting() {
-        return optimizerSetting;
-    }
+  /** Map to define Characters in the Node name to be replaced. */
+  private final Map<Character, String> replaceChars = new HashMap<>();
 
-    public void setOptimizerSetting(OptimizerSetting optimizerSetting) {
-        this.optimizerSetting = optimizerSetting;
-    }
+  public OptimizerSetting getOptimizerSetting() {
+    return optimizerSetting;
+  }
+
+  public void setOptimizerSetting(OptimizerSetting optimizerSetting) {
+    this.optimizerSetting = optimizerSetting;
+  }
+
+  public boolean isAddNullFlavor() {
+    return addNullFlavor;
+  }
+
+  public void setAddNullFlavor(boolean addNullFlavor) {
+    this.addNullFlavor = addNullFlavor;
+  }
+
+  public Map<Character, String> getReplaceChars() {
+    return replaceChars;
+  }
 }

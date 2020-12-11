@@ -1,30 +1,47 @@
 package org.ehrbase.client.classgenerator.examples.testalltypesenv1composition.definition;
 
+import com.nedap.archie.rm.archetyped.FeederAudit;
 import java.util.List;
+import javax.annotation.processing.Generated;
 import org.ehrbase.client.annotations.Archetype;
 import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.Path;
+import org.ehrbase.client.classgenerator.interfaces.LocatableEntity;
 
 @Entity
 @Archetype("openEHR-EHR-SECTION.test_all_types.v1")
-public class TestAllTypesSection {
+@Generated(
+    value = "org.ehrbase.client.classgenerator.ClassGenerator",
+    date = "2020-12-10T13:06:10.812496900+01:00",
+    comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
+)
+public class TestAllTypesSection implements LocatableEntity {
   /**
-   * Test all types/Test all types/section 2/section 3/Test all types
+   * Path: Test all types/Test all types/section 2/section 3/Test all types
+   * Description: unknown
    */
   @Path("/items[at0001]/items[at0002]/items[openEHR-EHR-INSTRUCTION.test_all_types.v1]")
   private List<TestAllTypesInstruction> section3TestAllTypes;
 
   /**
-   * Test all types/Test all types/section 2/section 3/Test all types
+   * Path: Test all types/Test all types/section 2/section 3/Test all types
+   * Description: unknown
    */
   @Path("/items[at0001]/items[at0002]/items[openEHR-EHR-ACTION.test_all_types.v1]")
   private List<TestAllTypesAction> section3TestAllTypes2;
 
   /**
-   * Test all types/Test all types/section 2/Test all types
+   * Path: Test all types/Test all types/section 2/Test all types
+   * Description: unknown
    */
   @Path("/items[at0001]/items[openEHR-EHR-ADMIN_ENTRY.test_all_types.v1]")
   private List<TestAllTypesAdminEntry> section2TestAllTypes;
+
+  /**
+   * Path: Test all types/Test all types/feeder_audit
+   */
+  @Path("/feeder_audit")
+  private FeederAudit feederAudit;
 
   public void setSection3TestAllTypes(List<TestAllTypesInstruction> section3TestAllTypes) {
      this.section3TestAllTypes = section3TestAllTypes;
@@ -48,5 +65,13 @@ public class TestAllTypesSection {
 
   public List<TestAllTypesAdminEntry> getSection2TestAllTypes() {
      return this.section2TestAllTypes ;
+  }
+
+  public void setFeederAudit(FeederAudit feederAudit) {
+     this.feederAudit = feederAudit;
+  }
+
+  public FeederAudit getFeederAudit() {
+     return this.feederAudit ;
   }
 }

@@ -1,5 +1,6 @@
 package org.ehrbase.client.classgenerator.examples.coronaanamnesecomposition.definition;
 
+import com.nedap.archie.rm.archetyped.FeederAudit;
 import org.ehrbase.client.aql.containment.Containment;
 import org.ehrbase.client.aql.field.AqlFieldImp;
 import org.ehrbase.client.aql.field.ListAqlFieldImp;
@@ -12,6 +13,8 @@ public class RisikogebietSectionContainment extends Containment {
   public ListSelectAqlField<HistorieDerReiseObservation> HISTORIE_DER_REISE = new ListAqlFieldImp<HistorieDerReiseObservation>(RisikogebietSection.class, "/items[openEHR-EHR-OBSERVATION.travel_history.v0]", "historieDerReise", HistorieDerReiseObservation.class, this);
 
   public ListSelectAqlField<ReisefallObservation> REISEFALL = new ListAqlFieldImp<ReisefallObservation>(RisikogebietSection.class, "/items[openEHR-EHR-OBSERVATION.travel_event.v0]", "reisefall", ReisefallObservation.class, this);
+
+  public SelectAqlField<FeederAudit> FEEDER_AUDIT = new AqlFieldImp<FeederAudit>(RisikogebietSection.class, "/feeder_audit", "feederAudit", FeederAudit.class, this);
 
   private RisikogebietSectionContainment() {
     super("openEHR-EHR-SECTION.adhoc.v1");

@@ -1,5 +1,6 @@
 package org.ehrbase.client.classgenerator.examples.coronaanamnesecomposition.definition;
 
+import com.nedap.archie.rm.archetyped.FeederAudit;
 import com.nedap.archie.rm.datastructures.Cluster;
 import java.lang.String;
 import org.ehrbase.client.aql.containment.Containment;
@@ -22,6 +23,8 @@ public class OrganisationClusterContainment extends Containment {
   public ListSelectAqlField<Cluster> TEIL_VON = new ListAqlFieldImp<Cluster>(OrganisationCluster.class, "/items[at0017]", "teilVon", Cluster.class, this);
 
   public ListSelectAqlField<Cluster> KONTAKT = new ListAqlFieldImp<Cluster>(OrganisationCluster.class, "/items[at0016]", "kontakt", Cluster.class, this);
+
+  public SelectAqlField<FeederAudit> FEEDER_AUDIT = new AqlFieldImp<FeederAudit>(OrganisationCluster.class, "/feeder_audit", "feederAudit", FeederAudit.class, this);
 
   private OrganisationClusterContainment() {
     super("openEHR-EHR-CLUSTER.organisation_cc.v0");

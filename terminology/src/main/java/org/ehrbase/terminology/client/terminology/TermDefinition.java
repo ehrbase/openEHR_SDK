@@ -19,17 +19,28 @@
 
 package org.ehrbase.terminology.client.terminology;
 
+import java.util.Collections;
+import java.util.Map;
 import java.util.Objects;
 
 public class TermDefinition {
     private final String code;
     private final String value;
     private final String description;
+    private final Map<String,String> other;
 
     public TermDefinition(String code, String value, String description) {
         this.code = code;
         this.value = value;
         this.description = description;
+        this.other = Collections.emptyMap();
+    }
+
+    public TermDefinition(String code, String value, String description, Map<String, String> other) {
+        this.code = code;
+        this.value = value;
+        this.description = description;
+        this.other = other;
     }
 
     public String getCode() {
@@ -42,6 +53,10 @@ public class TermDefinition {
 
     public String getDescription() {
         return description;
+    }
+
+    public Map<String, String> getOther() {
+        return other;
     }
 
     @Override

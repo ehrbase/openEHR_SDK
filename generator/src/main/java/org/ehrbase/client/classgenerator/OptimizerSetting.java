@@ -20,7 +20,10 @@
 package org.ehrbase.client.classgenerator;
 
 public enum OptimizerSetting {
+  /** Always generate a class for nodes which belong to a archetype */
   NONE,
+  /** Do not generate a class for nodes which have rm-type section and are single valued */
   SECTION,
+  /** Do not generate a class for nodes which are single valued */
   ALL;
 }

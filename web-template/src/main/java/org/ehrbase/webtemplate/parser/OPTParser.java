@@ -27,11 +27,20 @@ import com.nedap.archie.rm.datavalues.quantity.DvInterval;
 import com.nedap.archie.rminfo.ArchieRMInfoLookup;
 import com.nedap.archie.rminfo.RMAttributeInfo;
 import com.nedap.archie.rminfo.RMTypeInfo;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import org.ehrbase.terminology.client.terminology.TermDefinition;
 import org.ehrbase.terminology.client.terminology.TerminologyProvider;
 import org.ehrbase.terminology.client.terminology.ValueSet;
 import org.ehrbase.webtemplate.model.WebTemplate;
+import org.ehrbase.webtemplate.model.WebTemplateAnnotation;
 import org.ehrbase.webtemplate.model.WebTemplateInput;
 import org.ehrbase.webtemplate.model.WebTemplateInputValue;
 import org.ehrbase.webtemplate.model.WebTemplateNode;
@@ -51,15 +60,6 @@ import org.openehr.schemas.v1.IntervalOfInteger;
 import org.openehr.schemas.v1.OBJECTID;
 import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
 import org.openehr.schemas.v1.StringDictionaryItem;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 public class OPTParser {
   public static final String PATH_DIVIDER = "/";
@@ -92,15 +92,19 @@ public class OPTParser {
       String code = term.getCode();
       String value = null;
       String description = null;
+      Map<String,String> otherMap = new HashMap<>();
       for (StringDictionaryItem item : term.getItemsArray()) {
         if ("text".equals(item.getId())) {
           value = item.getStringValue();
+        }else
+        if ("description".equals(item.getId())) {description = item.getStringValue();
+        }else{
+          otherMap.put(item.getId(),item.getStringValue());
         }
-        if ("description".equals(item.getId())) description = item.getStringValue();
       }
       termDefinitionMap
           .computeIfAbsent(code, c -> new HashMap<>())
-          .put(defaultLanguage, new TermDefinition(code, value, description));
+          .put(defaultLanguage, new TermDefinition(code, value, description,otherMap));
     }
     WebTemplateNode node = parseCCOMPLEXOBJECT(carchetyperoot, aqlPath, termDefinitionMap, null);
     node.setNodeId(carchetyperoot.getArchetypeId().getValue());
@@ -235,8 +239,12 @@ public class OPTParser {
 
     // Inherit name for Element values
     if (node.getRmType().equals("ELEMENT")) {
-      if (node.getChildren().size() == 1) {
-        WebTemplateNode value = node.getChildren().get(0);
+      List<WebTemplateNode> trueChildren =
+          node.getChildren().stream()
+              .filter(n -> !List.of("null_flavour", "feeder_audit").contains(n.getName()))
+              .collect(Collectors.toList());
+      if (trueChildren.size() == 1) {
+        WebTemplateNode value = trueChildren.get(0);
         value.setId(node.getId(false));
         value.setName(node.getName());
         value.setMax(node.getMax());
@@ -245,11 +253,10 @@ public class OPTParser {
         value.getLocalizedNames().putAll(node.getLocalizedNames());
         value.setLocalizedName(node.getLocalizedName());
         // If contains a choice of DV_TEXT and DV_CODED_TEXT add a merged node
-      } else if (node.getChildren().size() == 2
-          && node.getChildren().stream()
-              .map(WebTemplateNode::getRmType)
-              .collect(Collectors.toList())
-              .containsAll(List.of("DV_TEXT", "DV_CODED_TEXT"))) {
+      } else if (trueChildren.stream()
+          .map(WebTemplateNode::getRmType)
+          .collect(Collectors.toList())
+          .containsAll(List.of("DV_TEXT", "DV_CODED_TEXT"))) {
         WebTemplateNode merged = new WebTemplateNode();
         merged.setId(node.getId(false));
         merged.setName(node.getName());
@@ -322,13 +329,16 @@ public class OPTParser {
         && (Locatable.class.isAssignableFrom(typeInfo.getJavaClass())
             || EventContext.class.isAssignableFrom(typeInfo.getJavaClass())
             || DvInterval.class.isAssignableFrom(typeInfo.getJavaClass())
-            || IsmTransition.class.isAssignableFrom(typeInfo.getJavaClass()))
-        && !Element.class.isAssignableFrom(typeInfo.getJavaClass())) {
+            || IsmTransition.class.isAssignableFrom(typeInfo.getJavaClass()))) {
 
       node.getChildren()
           .addAll(
               typeInfo.getAttributes().values().stream()
                   .filter(s -> !s.isComputed())
+                  .filter(
+                      s ->
+                          !Element.class.isAssignableFrom(typeInfo.getJavaClass())
+                              || List.of("feeder_audit", "null_flavour").contains(s.getRmName()))
                   .filter(s -> !List.of("value").contains(s.getRmName()))
                   .filter(s -> !Locatable.class.isAssignableFrom(s.getTypeInCollection()))
                   .map(i -> buildNodeForAttribute(i, aqlPath, termDefinitionMap))
@@ -462,8 +472,7 @@ public class OPTParser {
                     .getLocalizedLabels()
                     .putAll(
                         Optional.ofNullable(termDefinitionMap.get(value.getValue()))
-                            .map(Map::entrySet)
-                            .stream()
+                            .map(Map::entrySet).stream()
                             .flatMap(Set::stream)
                             .collect(
                                 Collectors.toMap(Map.Entry::getKey, e -> e.getValue().getValue())));
@@ -571,6 +580,11 @@ public class OPTParser {
               termDefinitionMap.get(nodeId).entrySet().stream()
                   .collect(
                       Collectors.toMap(Map.Entry::getKey, e -> e.getValue().getDescription())));
+
+      Optional.of(termDefinitionMap.get(nodeId)).map(m -> m.get(defaultLanguage)).map(TermDefinition::getOther).map(m ->m.get("comment")).ifPresent(s -> {
+        node.setAnnotations(new WebTemplateAnnotation());
+        node.getAnnotations().setComment(s);
+      });
     } else {
       String name =
           StringUtils.isNotBlank(rmAttributeName) ? rmAttributeName : cobject.getRmTypeName();

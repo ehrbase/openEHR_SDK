@@ -7,12 +7,14 @@ import com.nedap.archie.rm.generic.PartyProxy;
 import java.lang.String;
 import java.time.temporal.TemporalAccessor;
 import java.util.List;
+import javax.annotation.processing.Generated;
 import org.ehrbase.client.annotations.Archetype;
 import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.Id;
 import org.ehrbase.client.annotations.Path;
 import org.ehrbase.client.annotations.Template;
 import org.ehrbase.client.classgenerator.examples.episodeofcarecomposition.definition.EpisodeofcareAdminEntry;
+import org.ehrbase.client.classgenerator.interfaces.CompositionEntity;
 import org.ehrbase.client.classgenerator.shareddefinition.Category;
 import org.ehrbase.client.classgenerator.shareddefinition.Language;
 import org.ehrbase.client.classgenerator.shareddefinition.Setting;
@@ -21,76 +23,82 @@ import org.ehrbase.client.openehrclient.VersionUid;
 
 @Entity
 @Archetype("openEHR-EHR-COMPOSITION.versorgungsfall.v0")
+@Generated(
+    value = "org.ehrbase.client.classgenerator.ClassGenerator",
+    date = "2020-12-10T13:06:11.180498+01:00",
+    comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
+)
 @Template("EpisodeOfCare")
-public class EpisodeOfCareComposition {
+public class EpisodeOfCareComposition implements CompositionEntity {
   /**
-   * EpisodeOfCare/Episodeofcare
+   * Path: EpisodeOfCare/Episodeofcare
+   * Description: unknown
    */
   @Path("/content[openEHR-EHR-ADMIN_ENTRY.episodeofcare.v0]")
   private List<EpisodeofcareAdminEntry> episodeofcare;
 
   /**
-   * EpisodeOfCare/composer
+   * Path: EpisodeOfCare/composer
    */
   @Path("/composer")
   private PartyProxy composer;
 
   /**
-   * EpisodeOfCare/language
+   * Path: EpisodeOfCare/language
    */
   @Path("/language")
   private Language language;
 
   /**
-   * EpisodeOfCare/context/start_time
+   * Path: EpisodeOfCare/context/start_time
    */
   @Path("/context/start_time|value")
   private TemporalAccessor startTimeValue;
 
   /**
-   * EpisodeOfCare/context/participations
+   * Path: EpisodeOfCare/context/participations
    */
   @Path("/context/participations")
   private List<Participation> participations;
 
   /**
-   * EpisodeOfCare/context/end_time
+   * Path: EpisodeOfCare/context/end_time
    */
   @Path("/context/end_time|value")
   private TemporalAccessor endTimeValue;
 
   /**
-   * EpisodeOfCare/context/location
+   * Path: EpisodeOfCare/context/location
    */
   @Path("/context/location")
   private String location;
 
   /**
-   * EpisodeOfCare/context/health_care_facility
+   * Path: EpisodeOfCare/context/health_care_facility
    */
   @Path("/context/health_care_facility")
   private PartyIdentified healthCareFacility;
 
   /**
-   * EpisodeOfCare/context/setting
+   * Path: EpisodeOfCare/context/setting
    */
   @Path("/context/setting|defining_code")
   private Setting settingDefiningCode;
 
   /**
-   * EpisodeOfCare/feeder_audit
+   * Path: EpisodeOfCare/feeder_audit
    */
   @Path("/feeder_audit")
   private FeederAudit feederAudit;
 
   /**
-   * EpisodeOfCare/category
+   * Path: EpisodeOfCare/category
    */
   @Path("/category|defining_code")
   private Category categoryDefiningCode;
 
   /**
-   * EpisodeOfCare/territory
+   * Path: EpisodeOfCare/territory
    */
   @Path("/territory")
   private Territory territory;

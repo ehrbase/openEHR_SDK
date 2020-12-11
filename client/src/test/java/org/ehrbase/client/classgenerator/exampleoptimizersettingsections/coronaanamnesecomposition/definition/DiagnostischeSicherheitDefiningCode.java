@@ -8,7 +8,7 @@ public enum DiagnostischeSicherheitDefiningCode implements EnumValueSet {
 
   VERMUTET("Vermutet", "Die Diagnose wurde mit einem niedrigen Grad an Sicherheit gestellt.", "local", "at0074"),
 
-  BESTATIGT("Bestätigt", "Die Diagnose wurde anhand anerkannter Kriterien bestätigt.", "local", "at0076");
+  BESTAETIGT("Bestätigt", "Die Diagnose wurde anhand anerkannter Kriterien bestätigt.", "local", "at0076");
 
   private String value;
 
