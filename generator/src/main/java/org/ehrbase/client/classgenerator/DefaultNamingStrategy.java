@@ -22,14 +22,6 @@ package org.ehrbase.client.classgenerator;
 import com.google.common.base.CharMatcher;
 import com.nedap.archie.rminfo.ArchieRMInfoLookup;
 import com.nedap.archie.rminfo.RMTypeInfo;
-import org.apache.commons.lang3.RandomStringUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.text.CaseUtils;
-import org.ehrbase.serialisation.util.SnakeCase;
-import org.ehrbase.webtemplate.model.WebTemplateAnnotation;
-import org.ehrbase.webtemplate.model.WebTemplateNode;
-import org.ehrbase.webtemplate.parser.FlatPath;
-
 import java.util.Deque;
 import java.util.Iterator;
 import java.util.List;
@@ -37,6 +29,13 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.StringJoiner;
+import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.text.CaseUtils;
+import org.ehrbase.serialisation.util.SnakeCase;
+import org.ehrbase.webtemplate.model.WebTemplateAnnotation;
+import org.ehrbase.webtemplate.model.WebTemplateNode;
+import org.ehrbase.webtemplate.parser.FlatPath;
 
 public class DefaultNamingStrategy implements NamingStrategy {
 
@@ -160,9 +159,10 @@ public class DefaultNamingStrategy implements NamingStrategy {
   }
 
   @Override
-  public String toEnumName(String fieldName) {
-    fieldName = sanitizeNumber(fieldName);
-    return new SnakeCase(normalise(fieldName, false)).camelToUpperSnake();
+  public String buildEnumConstantName(
+      ClassGeneratorContext context, WebTemplateNode currentNode, String termName) {
+    termName = sanitizeNumber(termName);
+    return new SnakeCase(normalise(termName, false)).camelToUpperSnake();
   }
 
   @Override
@@ -194,16 +194,18 @@ public class DefaultNamingStrategy implements NamingStrategy {
           .append("Description: ")
           .append(node.getLocalizedDescriptions().get(context.webTemplate.getDefaultLanguage()));
     }
-    if(Optional.of(node).map(WebTemplateNode::getAnnotations).map(WebTemplateAnnotation::getComment).isPresent()){
-      sb.append("\n")
-              .append("Comment: ")
-              .append(node.getAnnotations().getComment());
+    if (Optional.of(node)
+        .map(WebTemplateNode::getAnnotations)
+        .map(WebTemplateAnnotation::getComment)
+        .isPresent()) {
+      sb.append("\n").append("Comment: ").append(node.getAnnotations().getComment());
     }
     return sb.toString();
   }
 
   @Override
   public String buildFieldName(ClassGeneratorContext context, String path, WebTemplateNode node) {
+
     String name = node.getName();
     String attributeName = new FlatPath(path).getLast().getAttributeName();
 

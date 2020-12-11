@@ -42,12 +42,10 @@ import java.util.Collections;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.StringJoiner;
 import java.util.stream.Collectors;
 import javax.annotation.processing.Generated;
 import javax.lang.model.element.Modifier;
@@ -202,9 +200,7 @@ public class ClassGenerator {
 
       Deque<WebTemplateNode> filtersNodes = pushToUnfiltered(context, child);
 
-      String relativPath =
-          FlatPath.removeStart(new FlatPath(child.getAqlPath()), new FlatPath(next.getAqlPath()))
-              .toString();
+      String relativPath = context.nodeDeque.peek().buildRelativPath(child);
       if (child.getChildren().isEmpty() && !choices.containsKey(child.getAqlPath())) {
 
         addSimpleField(context, classBuilder, relativPath, child);
@@ -411,11 +407,7 @@ public class ClassGenerator {
 
     List<WebTemplateNode> matching = relativeNode.findMatching(n -> true);
     matching.add(relativeNode);
-    matching.forEach(
-        n -> {
-          String relativPath = context.nodeDeque.peek().buildRelativPath(n);
-          n.setAqlPath(relativPath);
-        });
+    matching.forEach(n -> n.setAqlPath(context.nodeDeque.peek().buildRelativPath(n)));
     return relativeNode;
   }
 
@@ -594,8 +586,6 @@ public class ClassGenerator {
     classBuilder.addMethod(buildGetter(fieldSpec, false));
   }
 
-
-
   private TypeSpec buildEnumValueSet(
       ClassGeneratorContext context, WebTemplateNode node, ValueSet valueSet) {
     TypeSpec.Builder enumBuilder =
@@ -630,7 +620,7 @@ public class ClassGenerator {
         .forEach(
             t -> {
               enumBuilder.addEnumConstant(
-                  defaultNamingStrategy.toEnumName(t.getValue()),
+                  defaultNamingStrategy.buildEnumConstantName(context, node, t.getValue()),
                   TypeSpec.anonymousClassBuilder(
                           "$S, $S, $S, $S",
                           t.getValue(),
