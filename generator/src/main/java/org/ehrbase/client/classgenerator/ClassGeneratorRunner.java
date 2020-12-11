@@ -19,7 +19,14 @@
 
 package org.ehrbase.client.classgenerator;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.squareup.javapoet.JavaFile;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Paths;
+import java.util.List;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
@@ -31,10 +38,6 @@ import org.ehrbase.webtemplate.parser.OPTParser;
 import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
 import org.openehr.schemas.v1.TemplateDocument;
 
-import java.io.IOException;
-import java.nio.file.Paths;
-import java.util.List;
-
 public class ClassGeneratorRunner {
   private static final Options OPTIONS = new Options();
 
@@ -44,6 +47,7 @@ public class ClassGeneratorRunner {
     OPTIONS.addOption("package", true, "package name");
     OPTIONS.addOption("out", true, "path to output directory");
     OPTIONS.addOption("h", false, "show help");
+    OPTIONS.addOption("config", true, "optional Path to config file");
 
     CommandLineParser parser = new DefaultParser();
     CommandLine cmd = null;
@@ -61,9 +65,10 @@ public class ClassGeneratorRunner {
     if (!cmd.hasOption("opt") || !cmd.hasOption("package") || !cmd.hasOption("out")) {
       showHelp();
     }
+
     OPERATIONALTEMPLATE template =
         TemplateDocument.Factory.parse(Paths.get(cmd.getOptionValue("opt")).toFile()).getTemplate();
-    ClassGenerator cut = new ClassGenerator(new ClassGeneratorConfig());
+    ClassGenerator cut = new ClassGenerator(getClassGeneratorConfig(cmd));
     ClassGeneratorResult generate =
         cut.generate(cmd.getOptionValue("package"), new OPTParser(template).parse());
 
@@ -72,6 +77,21 @@ public class ClassGeneratorRunner {
     List<JavaFile> generateFiles = generate.writeFiles(fsRoot);
     FieldGenerator fieldGenerator = new FieldGenerator();
     fieldGenerator.generate(generateFiles).writeFiles(fsRoot);
+  }
+
+  private static ClassGeneratorConfig getClassGeneratorConfig(CommandLine cmd) throws IOException {
+    final InputStream configFile;
+    if (cmd.hasOption("config")) {
+      configFile = new FileInputStream(cmd.getOptionValue("config"));
+    } else {
+      configFile = ClassGeneratorRunner.class.getResourceAsStream("/DefaultConfig.yaml");
+    }
+
+    ObjectMapper objectMapper = new ObjectMapper(new YAMLFactory());
+    objectMapper.findAndRegisterModules();
+
+    ClassGeneratorConfig config = objectMapper.readValue(configFile, ClassGeneratorConfig.class);
+    return config;
   }
 
   private static void showHelp() {

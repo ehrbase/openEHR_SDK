@@ -21,8 +21,8 @@ package org.ehrbase.client.classgenerator.interfaces;
 
 import com.nedap.archie.rm.archetyped.FeederAudit;
 
-public interface LocatableEntity extends RMEntity{
-  //  void setFeederAudit(FeederAudit feederAudit);
+public interface LocatableEntity extends RMEntity {
+  void setFeederAudit(FeederAudit feederAudit);
 
-//    FeederAudit getFeederAudit();
+  FeederAudit getFeederAudit();
 }
