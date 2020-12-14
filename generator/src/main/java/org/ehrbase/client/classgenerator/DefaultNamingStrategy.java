@@ -41,6 +41,9 @@ public class DefaultNamingStrategy implements NamingStrategy {
 
   private static final ArchieRMInfoLookup RM_INFO_LOOKUP = ArchieRMInfoLookup.getInstance();
   public static final String TERM_DIVIDER = "_";
+  public static final String VALUE = "value";
+  public static final String NULL_FLAVOUR = "null_flavour";
+  public static final String ELEMENT = "ELEMENT";
   private ClassGeneratorConfig config;
 
   public DefaultNamingStrategy(ClassGeneratorConfig config) {
@@ -58,7 +61,10 @@ public class DefaultNamingStrategy implements NamingStrategy {
     } else {
 
       if (!node.isArchetype() && !isEnum) {
-        name = findLastArchetype(context.unFilteredNodeDeque).getName() + TERM_DIVIDER + name;
+        name =
+            findLastArchetype(context.unFilteredNodeDeque).map(WebTemplateNode::getName).orElse("")
+                + TERM_DIVIDER
+                + name;
       }
     }
     if (isChoice) {
@@ -97,17 +103,27 @@ public class DefaultNamingStrategy implements NamingStrategy {
                         && !Objects.equals(node.getAqlPath(), n.getAqlPath()))
             .count()
         > 0) {
-      if (!Objects.equals(context.unFilteredNodeDeque.peek().getRmType(), "ELEMENT")) {
+      if (!Objects.equals(context.unFilteredNodeDeque.peek().getRmType(), ELEMENT)) {
         if (config.getOptimizerSetting().equals(OptimizerSetting.ALL)
             && !context.unFilteredNodeDeque.isEmpty()) {
-          name = findLastArchetype(context.unFilteredNodeDeque).getName() + TERM_DIVIDER + name;
+          name =
+              findLastArchetype(context.unFilteredNodeDeque)
+                      .map(WebTemplateNode::getName)
+                      .orElse("")
+                  + TERM_DIVIDER
+                  + name;
         } else {
           name = context.unFilteredNodeDeque.peek().getName() + TERM_DIVIDER + name;
         }
       } else {
         if (config.getOptimizerSetting().equals(OptimizerSetting.ALL)
             && !context.unFilteredNodeDeque.isEmpty()) {
-          name = findLastArchetype(context.unFilteredNodeDeque).getName() + TERM_DIVIDER + name;
+          name =
+              findLastArchetype(context.unFilteredNodeDeque)
+                      .map(WebTemplateNode::getName)
+                      .orElse("")
+                  + TERM_DIVIDER
+                  + name;
         } else {
           WebTemplateNode poll = context.unFilteredNodeDeque.poll();
           name = context.unFilteredNodeDeque.peek().getName() + TERM_DIVIDER + name;
@@ -121,16 +137,13 @@ public class DefaultNamingStrategy implements NamingStrategy {
 
   private String replaceElementName(ClassGeneratorContext context, WebTemplateNode node) {
     String name = node.getName();
-    WebTemplateNode trueParent =
-        Optional.ofNullable(context.webTemplate.findFiltersNodes(node))
-            .map(Deque::peek)
-            .orElse(null);
-    if (Objects.equals(
-        Optional.ofNullable(trueParent).map(WebTemplateNode::getRmType).orElse(null), "ELEMENT")) {
-      if (name.equals("null_flavour")) {
-        name = trueParent.getName() + TERM_DIVIDER + "null_flavour";
+    Optional<WebTemplateNode> trueParent =
+        Optional.ofNullable(context.webTemplate.findFiltersNodes(node)).map(Deque::peek);
+    if (Objects.equals(trueParent.map(WebTemplateNode::getRmType).orElse(null), ELEMENT)) {
+      if (name.equals(NULL_FLAVOUR)) {
+        name = trueParent.map(WebTemplateNode::getName).orElse("") + TERM_DIVIDER + NULL_FLAVOUR;
       } else {
-        name = trueParent.getName();
+        name = trueParent.map(WebTemplateNode::getName).orElse(name);
       }
     }
 
@@ -148,14 +161,14 @@ public class DefaultNamingStrategy implements NamingStrategy {
     return fieldName;
   }
 
-  private WebTemplateNode findLastArchetype(Deque<WebTemplateNode> nodeDeque) {
+  private Optional<WebTemplateNode> findLastArchetype(Deque<WebTemplateNode> nodeDeque) {
     for (Iterator<WebTemplateNode> it = nodeDeque.iterator(); it.hasNext(); ) {
       WebTemplateNode node = it.next();
       if (node.isArchetype()) {
-        return node;
+        return Optional.of(node);
       }
     }
-    return null;
+    return Optional.empty();
   }
 
   @Override
@@ -179,8 +192,8 @@ public class DefaultNamingStrategy implements NamingStrategy {
                       "ITEM_TABLE",
                       "ITEM_STRUCTURE")
                   .contains(n.getRmType())
-              && (!n.getRmType().equals("ELEMENT"))
-          || node.getName().equals("null_flavour")) {
+              && (!n.getRmType().equals(ELEMENT))
+          || node.getName().equals(NULL_FLAVOUR)) {
         joiner.add(n.getName());
       }
     }
@@ -211,7 +224,7 @@ public class DefaultNamingStrategy implements NamingStrategy {
 
     if (!context.nodeDeque.isEmpty()) {
       if ((StringUtils.isBlank(attributeName)
-              || List.of("defining_code", "value").contains(attributeName))
+              || List.of("defining_code", VALUE).contains(attributeName))
           && !isEntityAttribute(context, node)) {
         name = makeNameUnique(context, node);
       } else {
@@ -222,11 +235,11 @@ public class DefaultNamingStrategy implements NamingStrategy {
     if (StringUtils.isNotBlank(attributeName)) {
       name = name + TERM_DIVIDER + attributeName;
     }
-    if (name.equals("value")) {
+    if (name.equals(VALUE)) {
       name = context.nodeDeque.peek().getName();
     }
-    if (context.nodeDeque.peek().getRmType().equals("ELEMENT") && !name.equals("feeder_audit")) {
-      name = "value";
+    if (context.nodeDeque.peek().getRmType().equals(ELEMENT) && !name.equals("feeder_audit")) {
+      name = VALUE;
     }
 
     String fieldName = "";

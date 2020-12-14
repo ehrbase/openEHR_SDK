@@ -26,6 +26,17 @@ import com.nedap.archie.rm.datavalues.DvCodedText;
 import com.nedap.archie.rm.support.identification.TerminologyId;
 import com.nedap.archie.rminfo.ArchieRMInfoLookup;
 import com.nedap.archie.rminfo.RMAttributeInfo;
+import java.beans.IntrospectionException;
+import java.beans.PropertyDescriptor;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.ehrbase.client.annotations.Entity;
@@ -40,19 +51,6 @@ import org.ehrbase.webtemplate.parser.FlatPath;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.beans.IntrospectionException;
-import java.beans.PropertyDescriptor;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
 public class DtoToCompositionWalker extends ToCompositionWalker<Map<String, Object>> {
 
   public static final ArchieRMInfoLookup ARCHIE_RM_INFO_LOOKUP = ArchieRMInfoLookup.getInstance();
@@ -60,7 +58,9 @@ public class DtoToCompositionWalker extends ToCompositionWalker<Map<String, Obje
   private static final RMObjectCreator RM_OBJECT_CREATOR =
       new RMObjectCreator(ARCHIE_RM_INFO_LOOKUP);
 
-  private Logger logger = LoggerFactory.getLogger(getClass());
+  private static final PathMatcher PATH_MATCHER = new PathMatcher();
+
+  private final Logger logger = LoggerFactory.getLogger(getClass());
 
   @Override
   protected Map<String, Object> extract(
@@ -77,7 +77,7 @@ public class DtoToCompositionWalker extends ToCompositionWalker<Map<String, Obje
       }
       return subValues;
     } else {
-      Object value = subValues.values().stream().findAny().get();
+      Object value = subValues.values().stream().findAny().orElseThrow();
       if (value instanceof List && i != null) {
 
         value = ((List<?>) value).size() > i ? ((List<?>) value).get(i) : null;
@@ -105,7 +105,7 @@ public class DtoToCompositionWalker extends ToCompositionWalker<Map<String, Obje
       if (value == null) {
         return null;
       } else {
-        String path = subValues.keySet().stream().findAny().get();
+        String path = subValues.keySet().stream().findAny().orElseThrow();
         if (value.getClass().isAnnotationPresent(Entity.class)
             && new FlatPath(path).getPath().equals("")) {
 
@@ -123,37 +123,9 @@ public class DtoToCompositionWalker extends ToCompositionWalker<Map<String, Obje
   private Map<String, Object> filterValues(
       Context<Map<String, Object>> context, WebTemplateNode child) {
     return context.getObjectDeque().peek().entrySet().stream()
-        .map(e -> new ImmutablePair<>(matchesPath(context, child, e), e.getValue()))
+        .map(e -> new ImmutablePair<>(PATH_MATCHER.matchesPath(context, child, e), e.getValue()))
         .filter(p -> p.getLeft() != null)
         .collect(Collectors.toMap(ImmutablePair::getLeft, ImmutablePair::getRight));
-  }
-
-   static String matchesPath(
-      Context<?> context, WebTemplateNode child, Map.Entry<String, ?> e) {
-    String aqlPath =
-        FlatPath.removeStart(
-                new FlatPath(child.getAqlPath()),
-                new FlatPath(context.getNodeDeque().peek().getAqlPath()))
-            .toString();
-    if (StringUtils.startsWith(e.getKey(), aqlPath)) {
-      return StringUtils.removeStart(e.getKey(), aqlPath);
-    } else {
-      FlatPath childPath = new FlatPath(aqlPath);
-      FlatPath pathLast = childPath.getLast();
-      FlatPath pathWithoutLastName =
-          FlatPath.addEnd(
-              FlatPath.removeEnd(childPath, pathLast), new FlatPath(pathLast.format(false)));
-      if (StringUtils.startsWith(e.getKey(), pathWithoutLastName.toString())
-          && context.getNodeDeque().peek().getChildren().stream()
-                  .filter(n -> Objects.equals(n.getNodeId(), child.getNodeId()))
-                  .count()
-              == 1) {
-        //logger.warn("name/value not set in dto for {}",child.getAqlPath());
-        return StringUtils.removeStart(e.getKey(), pathWithoutLastName.toString());
-      } else {
-        return null;
-      }
-    }
   }
 
   @Override
@@ -165,11 +137,9 @@ public class DtoToCompositionWalker extends ToCompositionWalker<Map<String, Obje
 
       FlatPath flatPath = new FlatPath(objectEntry.getKey());
       if (StringUtils.isBlank(flatPath.getPath())) {
-        if ("uuid".equals(flatPath.getAttributeName())){
-          System.out.println("d");
-        }
-          else
-        if (StringUtils.isNotBlank(flatPath.getAttributeName())) {
+        if ("uuid".equals(flatPath.getAttributeName())) {
+          // NOP
+        } else if (StringUtils.isNotBlank(flatPath.getAttributeName())) {
           handleSingleValue(
               objectEntry.getValue(),
               flatPath.getAttributeName(),
@@ -189,14 +159,16 @@ public class DtoToCompositionWalker extends ToCompositionWalker<Map<String, Obje
   }
 
   @Override
-  protected void postHandle(Context<Map<String, Object>> context) {}
+  protected void postHandle(Context<Map<String, Object>> context) {
+    // NOP
+  }
 
   @Override
   protected int calculateSize(Context<Map<String, Object>> context, WebTemplateNode childNode) {
 
     Map<String, Object> values = filterValues(context, childNode);
     if (values.size() == 1) {
-      Object value = values.values().stream().findAny().get();
+      Object value = values.values().stream().findAny().orElseThrow();
       if (value instanceof List) {
         return ((List<?>) value).size();
       } else {
@@ -205,7 +177,6 @@ public class DtoToCompositionWalker extends ToCompositionWalker<Map<String, Obje
     }
     return 0;
   }
-
 
   static Map<String, Object> findEntity(Object dto) {
 
