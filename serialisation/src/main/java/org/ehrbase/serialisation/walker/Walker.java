@@ -116,12 +116,12 @@ public abstract class Walker<T> {
             ImmutablePair<T, RMObject> pair =
                 extractPair(context, currentNode, choices, childNode, null);
             T childObject = pair.getLeft();
-            Object child = pair.getRight();
+            RMObject child = pair.getRight();
 
             if (child != null && childObject != null) {
               context.getNodeDeque().push(childNode);
               context.getObjectDeque().push(childObject);
-              context.getRmObjectDeque().push((RMObject) child);
+              context.getRmObjectDeque().push(child);
               handle(context);
             }
           }

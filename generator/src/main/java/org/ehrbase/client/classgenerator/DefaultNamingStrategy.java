@@ -91,18 +91,16 @@ public class DefaultNamingStrategy implements NamingStrategy {
     return fieldName;
   }
 
-  private String makeNameUnique(ClassGeneratorContext context, WebTemplateNode node) {
+  protected String makeNameUnique(ClassGeneratorContext context, WebTemplateNode node) {
 
     WebTemplateNode parent = context.nodeDeque.peek();
     String name = replaceElementName(context, node);
     String finalName = name;
     if (parent.getChildren().stream()
-            .filter(
-                n ->
-                    replaceElementName(context, n).equals(finalName)
-                        && !Objects.equals(node.getAqlPath(), n.getAqlPath()))
-            .count()
-        > 0) {
+        .anyMatch(
+            n ->
+                replaceElementName(context, n).equals(finalName)
+                    && !Objects.equals(node.getAqlPath(), n.getAqlPath()))) {
       if (!Objects.equals(context.unFilteredNodeDeque.peek().getRmType(), ELEMENT)) {
         if (config.getOptimizerSetting().equals(OptimizerSetting.ALL)
             && !context.unFilteredNodeDeque.isEmpty()) {
@@ -135,7 +133,7 @@ public class DefaultNamingStrategy implements NamingStrategy {
     return name;
   }
 
-  private String replaceElementName(ClassGeneratorContext context, WebTemplateNode node) {
+  protected String replaceElementName(ClassGeneratorContext context, WebTemplateNode node) {
     String name = node.getName();
     Optional<WebTemplateNode> trueParent =
         Optional.ofNullable(context.webTemplate.findFiltersNodes(node)).map(Deque::peek);
@@ -150,7 +148,7 @@ public class DefaultNamingStrategy implements NamingStrategy {
     return name;
   }
 
-  private String sanitizeNumber(String fieldName) {
+  protected String sanitizeNumber(String fieldName) {
     if (!Character.isAlphabetic(fieldName.charAt(0))) {
       if (Character.isLowerCase(fieldName.charAt(0))) {
         fieldName = "n" + fieldName;
@@ -268,7 +266,7 @@ public class DefaultNamingStrategy implements NamingStrategy {
         && typeInfo.getAttributes().containsKey(relativPath.getName());
   }
 
-  private String normalise(String name, boolean capitalizeFirstLetter) {
+  protected String normalise(String name, boolean capitalizeFirstLetter) {
     for (Map.Entry<Character, String> entry : config.getReplaceChars().entrySet()) {
       name = CharMatcher.is(entry.getKey()).replaceFrom(name, entry.getValue());
     }

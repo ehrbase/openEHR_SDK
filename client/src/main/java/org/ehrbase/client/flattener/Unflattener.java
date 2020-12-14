@@ -17,38 +17,31 @@
 
 package org.ehrbase.client.flattener;
 
-import com.nedap.archie.creation.RMObjectCreator;
+import static org.ehrbase.client.flattener.DtoToCompositionWalker.findEntity;
+
 import com.nedap.archie.rm.RMObject;
 import com.nedap.archie.rm.composition.Composition;
 import com.nedap.archie.rm.support.identification.HierObjectId;
-import com.nedap.archie.rminfo.ArchieRMInfoLookup;
+import java.beans.IntrospectionException;
+import java.beans.PropertyDescriptor;
+import java.lang.reflect.InvocationTargetException;
+import java.util.Arrays;
+import java.util.Optional;
 import org.ehrbase.building.OptSkeletonBuilder;
 import org.ehrbase.client.annotations.Id;
 import org.ehrbase.client.annotations.Template;
 import org.ehrbase.client.exception.ClientException;
 import org.ehrbase.client.openehrclient.VersionUid;
 import org.ehrbase.normalizer.Normalizer;
+import org.ehrbase.util.exception.SdkException;
 import org.ehrbase.webtemplate.templateprovider.TemplateProvider;
 import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.beans.IntrospectionException;
-import java.beans.PropertyDescriptor;
-import java.lang.reflect.InvocationTargetException;
-import java.util.Arrays;
-import java.util.Optional;
-
-import static org.ehrbase.client.flattener.DtoToCompositionWalker.findEntity;
 
 public class Unflattener {
 
-  public static final ArchieRMInfoLookup ARCHIE_RM_INFO_LOOKUP = ArchieRMInfoLookup.getInstance();
   public static final Normalizer NORMALIZER = new Normalizer();
   public static final OptSkeletonBuilder OPT_SKELETON_BUILDER = new OptSkeletonBuilder();
-  private static final RMObjectCreator RM_OBJECT_CREATOR =
-      new RMObjectCreator(ARCHIE_RM_INFO_LOOKUP);
-  private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
   private final TemplateProvider templateProvider;
 
   public Unflattener(TemplateProvider templateProvider) {
@@ -67,9 +60,17 @@ public class Unflattener {
     Composition generate = (Composition) OPT_SKELETON_BUILDER.generate(operationalTemplate);
 
     new DtoToCompositionWalker()
-        .walk(generate, findEntity( dto), templateProvider.buildIntrospect(template.value()).get());
+        .walk(
+            generate,
+            findEntity(dto),
+            templateProvider
+                .buildIntrospect(template.value())
+                .orElseThrow(
+                    () ->
+                        new SdkException(
+                            String.format("Can not find Template: %s", template.value()))));
     Optional<VersionUid> versionUid = extractVersionUid(dto);
-    if(versionUid.isPresent()){
+    if (versionUid.isPresent()) {
       generate.setUid(new HierObjectId(versionUid.get().toString()));
     }
     return NORMALIZER.normalize(generate);
@@ -77,16 +78,19 @@ public class Unflattener {
 
   static Optional<VersionUid> extractVersionUid(Object entity) {
     return Arrays.stream(entity.getClass().getDeclaredFields())
-            .filter(f -> f.isAnnotationPresent(Id.class))
-            .findAny()
-            .map(idField -> {
-                      try {
-                        PropertyDescriptor propertyDescriptor = new PropertyDescriptor(idField.getName(), entity.getClass());
-                        return (VersionUid) propertyDescriptor.getReadMethod().invoke(entity);
-                      } catch (IllegalAccessException | InvocationTargetException | IntrospectionException e) {
-                        throw new ClientException(e.getMessage(), e);
-                      }
-                    }
-            );
+        .filter(f -> f.isAnnotationPresent(Id.class))
+        .findAny()
+        .map(
+            idField -> {
+              try {
+                PropertyDescriptor propertyDescriptor =
+                    new PropertyDescriptor(idField.getName(), entity.getClass());
+                return (VersionUid) propertyDescriptor.getReadMethod().invoke(entity);
+              } catch (IllegalAccessException
+                  | InvocationTargetException
+                  | IntrospectionException e) {
+                throw new ClientException(e.getMessage(), e);
+              }
+            });
   }
 }
