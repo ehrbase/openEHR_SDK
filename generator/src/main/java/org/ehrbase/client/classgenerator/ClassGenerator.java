@@ -99,6 +99,7 @@ public class ClassGenerator {
   public static final int CLASS_NAME_MAX_WIDTH = 80;
   private static final Map<Class<?>, RmClassGeneratorConfig> configMap =
       ReflectionHelper.buildMap(RmClassGeneratorConfig.class);
+  public static final String DEFINITION_PACKAGE = ".definition";
 
   private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -180,7 +181,10 @@ public class ClassGenerator {
 
     if (next.getChildren().stream().anyMatch(n -> n.getRmType().equals("EVENT"))) {
       WebTemplateNode event =
-          next.getChildren().stream().filter(n -> n.getRmType().equals("EVENT")).findAny().get();
+          next.getChildren().stream()
+              .filter(n -> n.getRmType().equals("EVENT"))
+              .findAny()
+              .orElseThrow();
 
       Walker.EventHelper eventHelper = new Walker.EventHelper(event).invoke();
       WebTemplateNode pointEvent = eventHelper.getPointEvent();
@@ -225,7 +229,7 @@ public class ClassGenerator {
             context.currentPackageName
                 + "."
                 + context.currentMainClass.toLowerCase()
-                + ".definition";
+                + DEFINITION_PACKAGE;
         context.classes.put(interfacePackage, interfaceSpec);
 
         interfaceClassName = ClassName.get(interfacePackage, interfaceSpec.name);
@@ -274,7 +278,7 @@ public class ClassGenerator {
             context.currentPackageName
                 + "."
                 + context.currentMainClass.toLowerCase()
-                + ".definition";
+                + DEFINITION_PACKAGE;
         context.classes.put(interfacePackage, interfaceSpec);
         interfaceClassName = ClassName.get(interfacePackage, interfaceSpec.name);
 
@@ -340,7 +344,7 @@ public class ClassGenerator {
 
   private Type findRMInterface(WebTemplateNode next) {
 
-    Class classToBeCreated = RM_INFO_LOOKUP.getClassToBeCreated(next.getRmType());
+    Class<?> classToBeCreated = RM_INFO_LOOKUP.getClassToBeCreated(next.getRmType());
 
     if (Composition.class.isAssignableFrom(classToBeCreated)) {
       return CompositionEntity.class;
@@ -385,7 +389,10 @@ public class ClassGenerator {
       context.currentTypeSpec.put(relativeNode, subSpec);
     }
     String subSpecPackage =
-        context.currentPackageName + "." + context.currentMainClass.toLowerCase() + ".definition";
+        context.currentPackageName
+            + "."
+            + context.currentMainClass.toLowerCase()
+            + DEFINITION_PACKAGE;
 
     context.classes.put(subSpecPackage, subSpec);
     TypeName className = ClassName.get(subSpecPackage, subSpec.name);
@@ -417,7 +424,7 @@ public class ClassGenerator {
       String path,
       WebTemplateNode endNode) {
 
-    Class clazz = extractClass(endNode);
+    Class<?> clazz = extractClass(endNode);
     if (clazz == null) {
       logger.warn("No class for path {} ", path);
       return;
@@ -452,8 +459,8 @@ public class ClassGenerator {
     }
 
     if (!expand) {
-
-      TypeName className = ClassName.get(Optional.ofNullable(clazz).orElse(Object.class));
+      TypeName className =
+          Optional.ofNullable(clazz).map(ClassName::get).orElse(ClassName.get(Object.class));
       if (endNode.isMulti() && !context.nodeDeque.peek().getRmType().equals("ELEMENT")) {
         className = ParameterizedTypeName.get(ClassName.get(List.class), className);
       }
@@ -499,12 +506,10 @@ public class ClassGenerator {
         endNode.getInputs().stream().filter(i -> i.getType().equals("CODED_TEXT")).findAny();
     if (input.isPresent()) {
 
-      ValueSet valueSet =
-          new ValueSet(
-              input.get().getTerminology(),
-              "local",
-              input.get().getList().stream().map(t -> toTerm(t)).collect(Collectors.toSet()));
-      return valueSet;
+      return new ValueSet(
+          input.get().getTerminology(),
+          "local",
+          input.get().getList().stream().map(this::toTerm).collect(Collectors.toSet()));
     }
 
     return ValueSet.EMPTY_VALUE_SET;
@@ -560,7 +565,7 @@ public class ClassGenerator {
                 context.currentPackageName
                     + "."
                     + context.currentMainClass.toLowerCase()
-                    + ".definition";
+                    + DEFINITION_PACKAGE;
 
             context.classes.put(enumPackage, enumValueSet);
             className = ClassName.get(enumPackage, enumValueSet.name);
@@ -618,17 +623,16 @@ public class ClassGenerator {
     valueSet
         .getTherms()
         .forEach(
-            t -> {
-              enumBuilder.addEnumConstant(
-                  defaultNamingStrategy.buildEnumConstantName(context, node, t.getValue()),
-                  TypeSpec.anonymousClassBuilder(
-                          "$S, $S, $S, $S",
-                          t.getValue(),
-                          t.getDescription(),
-                          valueSet.getTerminologyId(),
-                          t.getCode())
-                      .build());
-            });
+            t ->
+                enumBuilder.addEnumConstant(
+                    defaultNamingStrategy.buildEnumConstantName(context, node, t.getValue()),
+                    TypeSpec.anonymousClassBuilder(
+                            "$S, $S, $S, $S",
+                            t.getValue(),
+                            t.getDescription(),
+                            valueSet.getTerminologyId(),
+                            t.getCode())
+                        .build()));
 
     enumBuilder.addMethod(buildGetter(fieldSpec1, false));
     enumBuilder.addMethod(buildGetter(fieldSpec2, false));

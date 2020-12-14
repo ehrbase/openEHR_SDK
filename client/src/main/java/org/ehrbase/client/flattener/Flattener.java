@@ -19,20 +19,8 @@ package org.ehrbase.client.flattener;
 
 import com.nedap.archie.rm.RMObject;
 import com.nedap.archie.rm.composition.Composition;
-import com.nedap.archie.rminfo.ArchieRMInfoLookup;
 import io.github.classgraph.ClassGraph;
 import io.github.classgraph.ScanResult;
-import org.apache.commons.lang3.StringUtils;
-import org.ehrbase.client.annotations.Archetype;
-import org.ehrbase.client.annotations.Id;
-import org.ehrbase.client.annotations.Template;
-import org.ehrbase.client.exception.ClientException;
-import org.ehrbase.client.openehrclient.VersionUid;
-import org.ehrbase.webtemplate.model.WebTemplateNode;
-import org.ehrbase.webtemplate.templateprovider.TemplateProvider;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Field;
@@ -40,13 +28,19 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.Optional;
+import org.apache.commons.lang3.StringUtils;
+import org.ehrbase.client.annotations.Archetype;
+import org.ehrbase.client.annotations.Id;
+import org.ehrbase.client.annotations.Template;
+import org.ehrbase.client.exception.ClientException;
+import org.ehrbase.client.openehrclient.VersionUid;
+import org.ehrbase.util.exception.SdkException;
+import org.ehrbase.webtemplate.model.WebTemplateNode;
+import org.ehrbase.webtemplate.templateprovider.TemplateProvider;
 
 public class Flattener {
 
-  private static final ArchieRMInfoLookup RM_INFO_LOOKUP = ArchieRMInfoLookup.getInstance();
-
-  private Logger logger = LoggerFactory.getLogger(this.getClass());
-  private ScanResult classgraph;
+  private ScanResult classGraph;
 
   private final TemplateProvider templateProvider;
 
@@ -67,42 +61,58 @@ public class Flattener {
 
   public <T> T flatten(RMObject locatable, Class<T> clazz) {
     try {
-      classgraph = new ClassGraph().enableClassInfo().enableAnnotationInfo().acceptPackages(StringUtils.removeEnd( clazz.getPackageName(),".definition")).scan();
-      String templateId = classgraph.getClassesWithAnnotation(Template.class.getName()).loadClasses().get(0).getAnnotation(Template.class).value();
+      classGraph =
+          new ClassGraph()
+              .enableClassInfo()
+              .enableAnnotationInfo()
+              .acceptPackages(StringUtils.removeEnd(clazz.getPackageName(), ".definition"))
+              .scan();
+      String templateId =
+          classGraph
+              .getClassesWithAnnotation(Template.class.getName())
+              .loadClasses()
+              .get(0)
+              .getAnnotation(Template.class)
+              .value();
 
       T dto = createInstance(clazz);
       String archetypeValue = clazz.getAnnotation(Archetype.class).value();
-      WebTemplateNode root = templateProvider.buildIntrospect(templateId).get().getTree().findMatching(n -> Objects.equals(n.getNodeId(), archetypeValue)).get(0);
+      WebTemplateNode root =
+          templateProvider
+              .buildIntrospect(templateId)
+              .orElseThrow(
+                  () -> new SdkException(String.format("Can not find Template: %s", templateId)))
+              .getTree()
+              .findMatching(n -> Objects.equals(n.getNodeId(), archetypeValue))
+              .get(0);
       new DtoFromCompositionWalker()
           .walk(
               locatable,
               new DtoWithMatchingFields(
                   dto, DtoFromCompositionWalker.buildFieldByPathMap(dto.getClass())),
-                  root
-          );
+              root);
       if (locatable instanceof Composition && ((Composition) locatable).getUid() != null) {
         addVersion(dto, new VersionUid(((Composition) locatable).getUid().toString()));
       }
       return dto;
     } finally {
-      classgraph.close();
+      classGraph.close();
     }
   }
 
-  static <T> void addVersion(T entity, VersionUid versionUid) {
-    Optional<Field> idField = Arrays.stream(entity.getClass().getDeclaredFields())
+  public static <T> void addVersion(T entity, VersionUid versionUid) {
+    Optional<Field> idField =
+        Arrays.stream(entity.getClass().getDeclaredFields())
             .filter(f -> f.isAnnotationPresent(Id.class))
             .findAny();
     if (idField.isPresent()) {
       try {
-        PropertyDescriptor propertyDescriptor = new PropertyDescriptor(idField.get().getName(), entity.getClass());
+        PropertyDescriptor propertyDescriptor =
+            new PropertyDescriptor(idField.get().getName(), entity.getClass());
         propertyDescriptor.getWriteMethod().invoke(entity, versionUid);
       } catch (IllegalAccessException | InvocationTargetException | IntrospectionException e) {
         throw new ClientException(e.getMessage(), e);
       }
     }
   }
-
-
-
 }

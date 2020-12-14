@@ -27,6 +27,12 @@ import com.nedap.archie.rm.composition.IsmTransition;
 import com.nedap.archie.rm.datavalues.quantity.DvInterval;
 import com.nedap.archie.rminfo.ArchieRMInfoLookup;
 import com.nedap.archie.rminfo.RMTypeInfo;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.ImmutableTriple;
 import org.apache.commons.lang3.tuple.Triple;
@@ -35,16 +41,10 @@ import org.ehrbase.webtemplate.model.WebTemplate;
 import org.ehrbase.webtemplate.model.WebTemplateInput;
 import org.ehrbase.webtemplate.model.WebTemplateNode;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
 public abstract class Walker<T> {
 
   public static final ArchieRMInfoLookup ARCHIE_RM_INFO_LOOKUP = ArchieRMInfoLookup.getInstance();
+  public static final String DV_CODED_TEXT = "DV_CODED_TEXT";
 
   public void walk(Composition composition, T object, WebTemplate webTemplate) {
 
@@ -71,13 +71,16 @@ public abstract class Walker<T> {
       Map<String, List<WebTemplateNode>> choices = currentNode.getChoicesInChildren();
       List<WebTemplateNode> children = new ArrayList<>(currentNode.getChildren());
       if (children.stream()
-          .filter(n -> n.getRmType().equals("DV_CODED_TEXT"))
+          .filter(n -> n.getRmType().equals(DV_CODED_TEXT))
           .map(WebTemplateNode::getInputs)
           .flatMap(List::stream)
           .map(WebTemplateInput::getSuffix)
           .anyMatch("other"::equals)) {
         WebTemplateNode codeNode =
-            children.stream().filter(n -> n.getRmType().equals("DV_CODED_TEXT")).findAny().get();
+            children.stream()
+                .filter(n -> n.getRmType().equals(DV_CODED_TEXT))
+                .findAny()
+                .orElseThrow();
         WebTemplateNode textNode = new WebTemplateNode(codeNode);
         textNode.setRmType("DV_TEXT");
         choices.put(textNode.getAqlPath(), List.of(codeNode, textNode));
@@ -86,7 +89,7 @@ public abstract class Walker<T> {
 
       if (children.stream().anyMatch(n -> n.getRmType().equals("EVENT"))) {
         WebTemplateNode event =
-            children.stream().filter(n -> n.getRmType().equals("EVENT")).findAny().get();
+            children.stream().filter(n -> n.getRmType().equals("EVENT")).findAny().orElseThrow();
 
         EventHelper eventHelper = new EventHelper(event).invoke();
         WebTemplateNode pointEvent = eventHelper.getPointEvent();
@@ -97,7 +100,8 @@ public abstract class Walker<T> {
         children.remove(event);
       }
 
-      Collection<List<WebTemplateNode>> childChoices = children.stream()
+      Collection<List<WebTemplateNode>> childChoices =
+          children.stream()
               .collect(Collectors.groupingBy(WebTemplateNode::getAqlPath))
               .entrySet()
               .stream()
@@ -112,26 +116,25 @@ public abstract class Walker<T> {
             ImmutablePair<T, RMObject> pair =
                 extractPair(context, currentNode, choices, childNode, null);
             T childObject = pair.getLeft();
-            Object child = pair.getRight();
+            RMObject child = pair.getRight();
 
             if (child != null && childObject != null) {
               context.getNodeDeque().push(childNode);
               context.getObjectDeque().push(childObject);
-              context.getRmObjectDeque().push((RMObject) child);
+              context.getRmObjectDeque().push(child);
               handle(context);
             }
           }
         } else {
           int size = calculateSize(context, choces.get(0));
 
-
-          List<Triple<T, RMObject,WebTemplateNode>> pairs = new ArrayList<>();
+          List<Triple<T, RMObject, WebTemplateNode>> pairs = new ArrayList<>();
           for (int i = 0; i < size; i++) {
             for (WebTemplateNode childNode : choces) {
               ImmutablePair<T, RMObject> pair =
                   extractPair(context, currentNode, choices, childNode, i);
               if (pair.getLeft() != null && pair.getRight() != null) {
-                pairs.add(new ImmutableTriple<>(pair.getLeft(),pair.getRight(),childNode));
+                pairs.add(new ImmutableTriple<>(pair.getLeft(), pair.getRight(), childNode));
               }
             }
           }
@@ -179,7 +182,7 @@ public abstract class Walker<T> {
         && (Locatable.class.isAssignableFrom(typeInfo.getJavaClass())
             || EventContext.class.isAssignableFrom(typeInfo.getJavaClass())
             || DvInterval.class.isAssignableFrom(typeInfo.getJavaClass())
-    || IsmTransition.class.isAssignableFrom(typeInfo.getJavaClass()));
+            || IsmTransition.class.isAssignableFrom(typeInfo.getJavaClass()));
   }
 
   protected abstract T extract(
@@ -249,7 +252,7 @@ public abstract class Walker<T> {
       WebTemplateNode math = new WebTemplateNode();
       math.setId("math_function");
       math.setName("math_function");
-      math.setRmType("DV_CODED_TEXT");
+      math.setRmType(DV_CODED_TEXT);
       math.setMax(1);
       math.setAqlPath(event.getAqlPath() + "/math_function");
       intervalEvent.getChildren().add(math);

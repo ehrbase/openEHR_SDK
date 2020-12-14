@@ -20,11 +20,21 @@
 package org.ehrbase.client.flattener;
 
 import com.google.common.reflect.TypeToken;
-import com.nedap.archie.creation.RMObjectCreator;
 import com.nedap.archie.rm.RMObject;
 import com.nedap.archie.rm.datatypes.CodePhrase;
 import com.nedap.archie.rm.support.identification.ObjectId;
-import com.nedap.archie.rminfo.ArchieRMInfoLookup;
+import java.beans.IntrospectionException;
+import java.beans.PropertyDescriptor;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.ParameterizedType;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.text.CaseUtils;
@@ -43,27 +53,9 @@ import org.ehrbase.webtemplate.parser.FlatPath;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.beans.IntrospectionException;
-import java.beans.PropertyDescriptor;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.ParameterizedType;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-
-import static org.ehrbase.client.flattener.DtoToCompositionWalker.matchesPath;
-
 public class DtoFromCompositionWalker extends FromCompositionWalker<DtoWithMatchingFields> {
 
-  public static final ArchieRMInfoLookup ARCHIE_RM_INFO_LOOKUP = ArchieRMInfoLookup.getInstance();
-
-  private static final RMObjectCreator RM_OBJECT_CREATOR =
-      new RMObjectCreator(ARCHIE_RM_INFO_LOOKUP);
+  private static final PathMatcher PATH_MATCHER = new PathMatcher();
 
   private Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -78,11 +70,12 @@ public class DtoFromCompositionWalker extends FromCompositionWalker<DtoWithMatch
     }
   }
 
-  private List<Class<?>> dtoList;
+  private List<Class<?>> dtoClassList;
 
   @Override
-  public void walk(RMObject composition, DtoWithMatchingFields object, WebTemplateNode webTemplate) {
-    dtoList = ReflectionHelper.findAll(object.getDto().getClass().getPackageName());
+  public void walk(
+      RMObject composition, DtoWithMatchingFields object, WebTemplateNode webTemplate) {
+    dtoClassList = ReflectionHelper.findAll(object.getDto().getClass().getPackageName());
     super.walk(composition, object, webTemplate);
   }
 
@@ -97,7 +90,8 @@ public class DtoFromCompositionWalker extends FromCompositionWalker<DtoWithMatch
       Context<DtoWithMatchingFields> context, WebTemplateNode child, boolean isChoice, Integer i) {
     Map<String, Field> subValues =
         context.getObjectDeque().peek().getFieldByPath().entrySet().stream()
-            .map(e -> new ImmutablePair<>(matchesPath(context, child, e), e.getValue()))
+            .map(
+                e -> new ImmutablePair<>(PATH_MATCHER.matchesPath(context, child, e), e.getValue()))
             .filter(p -> p.getLeft() != null)
             .collect(Collectors.toMap(ImmutablePair::getLeft, ImmutablePair::getRight));
 
@@ -110,8 +104,8 @@ public class DtoFromCompositionWalker extends FromCompositionWalker<DtoWithMatch
       }
       return new DtoWithMatchingFields(context.getObjectDeque().peek().getDto(), subValues);
     } else {
-      Field field = subValues.values().stream().findAny().get();
-      String path = subValues.keySet().stream().findAny().get();
+      Field field = subValues.values().stream().findAny().orElseThrow();
+      String path = subValues.keySet().stream().findAny().orElseThrow();
       Class<?> type = field.getType();
       if (List.class.isAssignableFrom(type)) {
         type =
@@ -119,7 +113,7 @@ public class DtoFromCompositionWalker extends FromCompositionWalker<DtoWithMatch
                 .getRawType();
       }
       if (isChoice) {
-        type = findActual(type, child.getRmType()).get();
+        type = findActual(type, child.getRmType()).orElseThrow();
       }
       if (type.isAnnotationPresent(Entity.class) && StringUtils.isBlank(path)) {
         Object dto = create(type);
@@ -139,26 +133,26 @@ public class DtoFromCompositionWalker extends FromCompositionWalker<DtoWithMatch
           new PropertyDescriptor(field.getName(), dto.getClass());
       Object dtoList = value;
       if (EnumValueSet.class.isAssignableFrom(field.getType())
-              && value != null
-              && CodePhrase.class.isAssignableFrom(value.getClass())) {
+          && value != null
+          && CodePhrase.class.isAssignableFrom(value.getClass())) {
         CodePhrase codePhrase = (CodePhrase) value;
         EnumValueSet enumValueSet =
-                Arrays.stream(field.getType().getEnumConstants())
-                        .map(o -> (EnumValueSet) o)
-                        .filter(
-                                v -> {
-                                  String terminologyId =
-                                          Optional.ofNullable(codePhrase.getTerminologyId())
-                                                  .map(ObjectId::getValue)
-                                                  .orElse(null);
-                                    return v.getTerminologyId().equals(terminologyId);
-                                })
-                        .filter(v -> v.getCode().equals(codePhrase.getCodeString()))
-                        .findAny()
-                        .orElse(null);
-    dtoList = enumValueSet;
+            Arrays.stream(field.getType().getEnumConstants())
+                .map(o -> (EnumValueSet) o)
+                .filter(
+                    v -> {
+                      String terminologyId =
+                          Optional.ofNullable(codePhrase.getTerminologyId())
+                              .map(ObjectId::getValue)
+                              .orElse(null);
+                      return v.getTerminologyId().equals(terminologyId);
+                    })
+                .filter(v -> v.getCode().equals(codePhrase.getCodeString()))
+                .findAny()
+                .orElse(null);
+        dtoList = enumValueSet;
       }
-      if (dtoList instanceof RmPrimitive){
+      if (dtoList instanceof RmPrimitive) {
         dtoList = ((RmPrimitive<?>) dtoList).getValue();
       }
       if (List.class.isAssignableFrom(field.getType())) {
@@ -169,7 +163,10 @@ public class DtoFromCompositionWalker extends FromCompositionWalker<DtoWithMatch
         ((List) dtoList).add(value);
       }
       propertyDescriptor.getWriteMethod().invoke(dto, dtoList);
-    } catch (IllegalAccessException | InvocationTargetException | IntrospectionException | IllegalArgumentException e) {
+    } catch (IllegalAccessException
+        | InvocationTargetException
+        | IntrospectionException
+        | IllegalArgumentException e) {
       throw new ClientException(e.getMessage(), e);
     }
   }
@@ -185,7 +182,7 @@ public class DtoFromCompositionWalker extends FromCompositionWalker<DtoWithMatch
   }
 
   private Optional<? extends Class<?>> findActual(Class<?> actualTypeArgument, String simpleName) {
-    return dtoList.stream()
+    return dtoClassList.stream()
         .filter(actualTypeArgument::isAssignableFrom)
         .filter(c -> c.isAnnotationPresent(OptionFor.class))
         .filter(c -> c.getAnnotation(OptionFor.class).value().equals(simpleName))
@@ -203,7 +200,9 @@ public class DtoFromCompositionWalker extends FromCompositionWalker<DtoWithMatch
           writeField(
               entry.getValue(),
               context.getObjectDeque().peek().getDto(),
-              extractAttribute(context.getRmObjectDeque().peek(), CaseUtils.toCamelCase(path.getAttributeName(),false,'_')));
+              extractAttribute(
+                  context.getRmObjectDeque().peek(),
+                  CaseUtils.toCamelCase(path.getAttributeName(), false, '_')));
         } else {
           writeField(
               entry.getValue(),
@@ -215,5 +214,7 @@ public class DtoFromCompositionWalker extends FromCompositionWalker<DtoWithMatch
   }
 
   @Override
-  protected void postHandle(Context<DtoWithMatchingFields> context) {}
+  protected void postHandle(Context<DtoWithMatchingFields> context) {
+    // NOP
+  }
 }

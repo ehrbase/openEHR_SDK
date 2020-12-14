@@ -150,7 +150,7 @@ public class Filter implements WebTemplateFilter {
       return context.findAllByAqlPath(node.getAqlPath(), false).size() == 1 && node.getMax() == 1;
     } else if (node.getRmType().equals("ELEMENT")) {
       return node.getChildren().size() == 1;
-    } else if (node.getRmType().equals("CODE_PHRASE")) {
+    } else if (node.getRmType().equals("CODE_PHRASE") && parent != null) {
       return parent.getRmType().equals("DV_CODED_TEXT");
     }
     return false;
