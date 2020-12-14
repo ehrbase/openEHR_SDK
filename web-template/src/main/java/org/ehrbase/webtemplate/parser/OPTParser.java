@@ -175,7 +175,7 @@ public class OPTParser {
             ismTransitionList.get(0).findMatching(n -> n.getId().equals(CAREFLOW_STEP)).get(0);
         careflowStep.setMin(careflowStepProto.getMin());
         careflowStep.setMax(careflowStepProto.getMin());
-        careflowStep.setName(CAREFLOW_STEP);
+        careflowStep.setName("Careflow_step");
         careflowStep.setId(CAREFLOW_STEP);
         careflowStep.setRmType(DV_CODED_TEXT);
         careflowStep.setAqlPath(
