@@ -22,7 +22,11 @@ import java.io.InputStream;
 
 public enum CompositionTestDataSimSDTJson {
 
-    CORONA("Corona", "corona.json");
+    ALTERNATIVE_EVENTS("AlternativeEvents", "AlternativeEvents.json"),
+    ALTERNATIVE_EVENTS_2("AlternativeEvents", "AlternativeEvents2.json"),
+    CORONA("Corona", "corona.json"),
+    MULTI_OCCURRENCE("multi_occurrence", "multi_occurrence.json"),
+    ALL_TYPES("test_all_types", "test_all_types.json");
 
 
     private final String filename;

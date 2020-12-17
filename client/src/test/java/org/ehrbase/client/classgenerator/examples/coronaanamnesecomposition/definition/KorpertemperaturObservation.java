@@ -1,148 +1,216 @@
 package org.ehrbase.client.classgenerator.examples.coronaanamnesecomposition.definition;
 
+import com.nedap.archie.rm.archetyped.FeederAudit;
 import com.nedap.archie.rm.datastructures.Cluster;
 import com.nedap.archie.rm.generic.PartyProxy;
+import java.lang.Double;
+import java.lang.String;
+import java.time.temporal.TemporalAccessor;
+import java.util.List;
+import javax.annotation.processing.Generated;
 import org.ehrbase.client.annotations.Archetype;
 import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.Path;
-import org.ehrbase.client.classgenerator.examples.shareddefinition.Language;
-
-import java.time.temporal.TemporalAccessor;
-import java.util.List;
+import org.ehrbase.client.classgenerator.interfaces.EntryEntity;
+import org.ehrbase.client.classgenerator.shareddefinition.Language;
 
 @Entity
 @Archetype("openEHR-EHR-OBSERVATION.body_temperature.v2")
-public class KorpertemperaturObservation {
-    @Path("/protocol[at0020]/items[at0062]")
-    private List<Cluster> erweiterung;
+@Generated(
+    value = "org.ehrbase.client.classgenerator.ClassGenerator",
+    date = "2020-12-10T13:06:12.520026900+01:00",
+    comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
+)
+public class KorpertemperaturObservation implements EntryEntity {
+  /**
+   * Path: Bericht/Symptome/Körpertemperatur/Beliebiges Ereignis/Temperatur
+   * Description: Die gemessene Körpertemperatur.
+   */
+  @Path("/data[at0002]/events[at0003]/data[at0001]/items[at0004]/value|magnitude")
+  private Double temperaturMagnitude;
 
-    @Path("/data[at0002]/events[at0003]/state[at0029]/items[at0066]")
-    private List<KorpertemperaturStorfaktorenElement> storfaktoren;
+  /**
+   * Path: Bericht/Symptome/Körpertemperatur/Beliebiges Ereignis/Temperatur
+   * Description: Die gemessene Körpertemperatur.
+   */
+  @Path("/data[at0002]/events[at0003]/data[at0001]/items[at0004]/value|units")
+  private String temperaturUnits;
 
-    @Path("/language")
-    private Language language;
+  /**
+   * Path: Bericht/Symptome/Körpertemperatur/Beliebiges Ereignis/Störfaktoren
+   * Description: Zusätzliche Probleme oder Faktoren, die sich auf die Messung der Körpertemperatur auswirken können und in anderen Bereichen nicht dargestellt werden.
+   */
+  @Path("/data[at0002]/events[at0003]/state[at0029]/items[at0066]")
+  private List<KorpertemperaturStorfaktorenElement> storfaktoren;
 
-    @Path("/protocol[at0020]/items[at0064]")
-    private List<Cluster> strukturierteLokalisationDerMessung;
+  /**
+   * Path: Bericht/Symptome/Körpertemperatur/Beliebiges Ereignis/Umgebungsbedingungen
+   * Description: Details über die Umgebungsbedingungen zum Zeitpunkt der Temperaturmessung
+   */
+  @Path("/data[at0002]/events[at0003]/state[at0029]/items[at0056]")
+  private List<Cluster> umgebungsbedingungen;
 
-    @Path("/data[at0002]/origin|value")
-    private TemporalAccessor originValue;
+  /**
+   * Path: Bericht/Symptome/Körpertemperatur/Beliebiges Ereignis/Betätigung
+   * Description: Details über die Betätigung der Person zum Zeitpunkt der Messung der Temperatur.
+   */
+  @Path("/data[at0002]/events[at0003]/state[at0029]/items[at0057]")
+  private Cluster betatigung;
 
-    @Path("/data[at0002]/events[at0003]/state[at0029]/items[at0057]")
-    private Cluster betatigung;
+  /**
+   * Path: Bericht/Symptome/Körpertemperatur/Beliebiges Ereignis/time
+   */
+  @Path("/data[at0002]/events[at0003]/time|value")
+  private TemporalAccessor timeValue;
 
-    @Path("/data[at0002]/events[at0003]/data[at0001]/items[at0004]/value|magnitude")
-    private Double temperaturMagnitude;
+  /**
+   * Path: Bericht/Symptome/Körpertemperatur/origin
+   */
+  @Path("/data[at0002]/origin|value")
+  private TemporalAccessor originValue;
 
-    @Path("/data[at0002]/events[at0003]/data[at0001]/items[at0004]/value|units")
-    private String temperaturUnits;
+  /**
+   * Path: Bericht/Symptome/Körpertemperatur/Strukturierte Lokalisation der Messung
+   * Description: Strukturierte anatomische Lokalisation, an dem die Messung vorgenommen wurde.
+   */
+  @Path("/protocol[at0020]/items[at0064]")
+  private List<Cluster> strukturierteLokalisationDerMessung;
 
-    @Path("/data[at0002]/events[at0003]/state[at0029]/items[at0056]")
-    private List<Cluster> umgebungsbedingungen;
+  /**
+   * Path: Bericht/Symptome/Körpertemperatur/Gerät
+   * Description: Details über das Gerät, das zur Temperaturmessung benutzt wurde.
+   */
+  @Path("/protocol[at0020]/items[at0059]")
+  private Cluster gerat;
 
-    @Path("/protocol[at0020]/items[at0059]")
-    private Cluster gerat;
+  /**
+   * Path: Bericht/Symptome/Körpertemperatur/Erweiterung
+   * Description: Zusätzliche Informationen zur Erfassung lokaler Inhalte oder Anpassung an andere Referenzmodelle/Formalismen.
+   * Comment: Zum Beispiel: Lokaler Informationsbedarf oder zusätzliche Metadaten zur Anpassung an FHIR-Ressourcen.
+   */
+  @Path("/protocol[at0020]/items[at0062]")
+  private List<Cluster> erweiterung;
 
-    @Path("/subject")
-    private PartyProxy subject;
+  /**
+   * Path: Bericht/Symptome/Körpertemperatur/subject
+   */
+  @Path("/subject")
+  private PartyProxy subject;
 
-    @Path("/data[at0002]/events[at0003]/time|value")
-    private TemporalAccessor timeValue;
+  /**
+   * Path: Bericht/Symptome/Körpertemperatur/language
+   */
+  @Path("/language")
+  private Language language;
 
-    public void setErweiterung(List<Cluster> erweiterung) {
-        this.erweiterung = erweiterung;
-    }
+  /**
+   * Path: Bericht/Symptome/Körpertemperatur/feeder_audit
+   */
+  @Path("/feeder_audit")
+  private FeederAudit feederAudit;
 
-    public List<Cluster> getErweiterung() {
-        return this.erweiterung;
-    }
+  public void setTemperaturMagnitude(Double temperaturMagnitude) {
+     this.temperaturMagnitude = temperaturMagnitude;
+  }
 
-    public void setStorfaktoren(List<KorpertemperaturStorfaktorenElement> storfaktoren) {
-        this.storfaktoren = storfaktoren;
-    }
+  public Double getTemperaturMagnitude() {
+     return this.temperaturMagnitude ;
+  }
 
-    public List<KorpertemperaturStorfaktorenElement> getStorfaktoren() {
-        return this.storfaktoren;
-    }
+  public void setTemperaturUnits(String temperaturUnits) {
+     this.temperaturUnits = temperaturUnits;
+  }
 
-    public void setLanguage(Language language) {
-        this.language = language;
-    }
+  public String getTemperaturUnits() {
+     return this.temperaturUnits ;
+  }
 
-    public Language getLanguage() {
-        return this.language;
-    }
+  public void setStorfaktoren(List<KorpertemperaturStorfaktorenElement> storfaktoren) {
+     this.storfaktoren = storfaktoren;
+  }
 
-    public void setStrukturierteLokalisationDerMessung(
-            List<Cluster> strukturierteLokalisationDerMessung) {
-        this.strukturierteLokalisationDerMessung = strukturierteLokalisationDerMessung;
-    }
+  public List<KorpertemperaturStorfaktorenElement> getStorfaktoren() {
+     return this.storfaktoren ;
+  }
 
-    public List<Cluster> getStrukturierteLokalisationDerMessung() {
-        return this.strukturierteLokalisationDerMessung;
-    }
+  public void setUmgebungsbedingungen(List<Cluster> umgebungsbedingungen) {
+     this.umgebungsbedingungen = umgebungsbedingungen;
+  }
 
-    public void setOriginValue(TemporalAccessor originValue) {
-        this.originValue = originValue;
-    }
+  public List<Cluster> getUmgebungsbedingungen() {
+     return this.umgebungsbedingungen ;
+  }
 
-    public TemporalAccessor getOriginValue() {
-        return this.originValue;
-    }
+  public void setBetatigung(Cluster betatigung) {
+     this.betatigung = betatigung;
+  }
 
-    public void setBetatigung(Cluster betatigung) {
-        this.betatigung = betatigung;
-    }
+  public Cluster getBetatigung() {
+     return this.betatigung ;
+  }
 
-    public Cluster getBetatigung() {
-        return this.betatigung;
-    }
+  public void setTimeValue(TemporalAccessor timeValue) {
+     this.timeValue = timeValue;
+  }
 
-    public void setTemperaturMagnitude(Double temperaturMagnitude) {
-        this.temperaturMagnitude = temperaturMagnitude;
-    }
+  public TemporalAccessor getTimeValue() {
+     return this.timeValue ;
+  }
 
-    public Double getTemperaturMagnitude() {
-        return this.temperaturMagnitude;
-    }
+  public void setOriginValue(TemporalAccessor originValue) {
+     this.originValue = originValue;
+  }
 
-    public void setTemperaturUnits(String temperaturUnits) {
-        this.temperaturUnits = temperaturUnits;
-    }
+  public TemporalAccessor getOriginValue() {
+     return this.originValue ;
+  }
 
-    public String getTemperaturUnits() {
-        return this.temperaturUnits;
-    }
+  public void setStrukturierteLokalisationDerMessung(
+      List<Cluster> strukturierteLokalisationDerMessung) {
+     this.strukturierteLokalisationDerMessung = strukturierteLokalisationDerMessung;
+  }
 
-    public void setUmgebungsbedingungen(List<Cluster> umgebungsbedingungen) {
-        this.umgebungsbedingungen = umgebungsbedingungen;
-    }
+  public List<Cluster> getStrukturierteLokalisationDerMessung() {
+     return this.strukturierteLokalisationDerMessung ;
+  }
 
-    public List<Cluster> getUmgebungsbedingungen() {
-        return this.umgebungsbedingungen;
-    }
+  public void setGerat(Cluster gerat) {
+     this.gerat = gerat;
+  }
 
-    public void setGerat(Cluster gerat) {
-        this.gerat = gerat;
-    }
+  public Cluster getGerat() {
+     return this.gerat ;
+  }
 
-    public Cluster getGerat() {
-        return this.gerat;
-    }
+  public void setErweiterung(List<Cluster> erweiterung) {
+     this.erweiterung = erweiterung;
+  }
 
-    public void setSubject(PartyProxy subject) {
-        this.subject = subject;
-    }
+  public List<Cluster> getErweiterung() {
+     return this.erweiterung ;
+  }
 
-    public PartyProxy getSubject() {
-        return this.subject;
-    }
+  public void setSubject(PartyProxy subject) {
+     this.subject = subject;
+  }
 
-    public void setTimeValue(TemporalAccessor timeValue) {
-        this.timeValue = timeValue;
-    }
+  public PartyProxy getSubject() {
+     return this.subject ;
+  }
 
-    public TemporalAccessor getTimeValue() {
-        return this.timeValue;
-    }
+  public void setLanguage(Language language) {
+     this.language = language;
+  }
+
+  public Language getLanguage() {
+     return this.language ;
+  }
+
+  public void setFeederAudit(FeederAudit feederAudit) {
+     this.feederAudit = feederAudit;
+  }
+
+  public FeederAudit getFeederAudit() {
+     return this.feederAudit ;
+  }
 }

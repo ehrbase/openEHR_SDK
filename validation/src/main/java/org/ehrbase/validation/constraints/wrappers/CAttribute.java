@@ -53,55 +53,52 @@ public class CAttribute extends CConstraint implements I_CArchetypeConstraintVal
     }
 
     @Override
-    public void validate(String path, Object aValue, ARCHETYPECONSTRAINT archetypeconstraint) throws IllegalArgumentException {
-//        if (!(archetypeconstraint instanceof CATTRIBUTE))
-//            throw new IllegalArgumentException("INTERNAL: constraint is not a C_ATTRIBUTE");
+    public void validate(String path, Object aValue, ARCHETYPECONSTRAINT archetypeconstraint) {
 
         //change the XML type to match the XML expression
         SchemaType type = I_CArchetypeConstraintValidate.findSchemaType(I_CArchetypeConstraintValidate.getXmlType(archetypeconstraint));
 
-        CATTRIBUTE attribute = (CATTRIBUTE) archetypeconstraint.changeType(type);
+        CATTRIBUTE cattribute = (CATTRIBUTE) archetypeconstraint.changeType(type);
 
-        if (attribute.getRmAttributeName().equals("defining_code")) {
+        if (cattribute.getRmAttributeName().equals("defining_code")) {
             if (aValue instanceof DvCodedText)
                 //process this DvText as a DvCodedText
-                new CDvCodedText(localTerminologyLookup).validate(path, aValue, attribute);
+                new CDvCodedText(localTerminologyLookup).validate(path, aValue, cattribute);
             else if (aValue instanceof DvText)
-                new CDvText(localTerminologyLookup).validate(path, aValue, attribute);
+                new CDvText(localTerminologyLookup).validate(path, aValue, cattribute);
             return;
         }
 
-        Object value = findAttribute(aValue, attribute.getRmAttributeName());
+        Object value = findAttribute(aValue, cattribute.getRmAttributeName());
 
-        if (value == null && IntervalComparator.isOptional(attribute.getExistence()))
+        if (value == null && IntervalComparator.isOptional(cattribute.getExistence()))
             return;
 
         if (!isAttributeResolved && value == null) {
             //check for a function
-            value = getFunctionValue(aValue, attribute.getRmAttributeName());
+            value = getFunctionValue(aValue, cattribute.getRmAttributeName());
             if (!isAttributeResolved)
-                ValidationException.raise(path, "The following attribute:" + attribute.getRmAttributeName() + " is expected in object:" + aValue, "ATTR01");
+                ValidationException.raise(path, "The following attribute:" + cattribute.getRmAttributeName() + " is expected in object:" + aValue, "ATTR01");
         }
 
         if (value == null) {
             //resolved but missing
-            ValidationException.raise(path, "Mandatory attribute has no value:" + attribute.getRmAttributeName(), "ATTR02");
+            ValidationException.raise(path, "Mandatory attribute has no value:" + cattribute.getRmAttributeName(), "ATTR02");
         }
 
         //if value is an enum use its actual value
         if (value.getClass().isEnum()) {
-            value = getEnumValue(value);
+            value = getEnumValue(path, value);
         }
 
-        if (attribute instanceof CSINGLEATTRIBUTE) {
-            new CSingleAttribute(localTerminologyLookup).validate(path, value, attribute);
-        } else if (attribute instanceof CMULTIPLEATTRIBUTE) {
-            new CMultipleAttribute(localTerminologyLookup).validate(path, value, attribute);
+        if (cattribute instanceof CSINGLEATTRIBUTE) {
+            new CSingleAttribute(localTerminologyLookup).validate(path, value, cattribute);
+        } else if (cattribute instanceof CMULTIPLEATTRIBUTE) {
+            new CMultipleAttribute(localTerminologyLookup).validate(path, value, cattribute);
         }
     }
 
     private Object findAttribute(Object object, String attribute) {
-        Object value;
         //locate the attribute to check
         if (object instanceof Locatable) {
             return ((Locatable) object).itemAtPath("/" + attribute);
@@ -146,7 +143,7 @@ public class CAttribute extends CConstraint implements I_CArchetypeConstraintVal
         return value;
     }
 
-    private Object getEnumValue(Object obj) {
+    private Object getEnumValue(String path, Object obj) {
         Class rmClass = obj.getClass();
         Object value = null;
 
@@ -155,8 +152,7 @@ public class CAttribute extends CConstraint implements I_CArchetypeConstraintVal
             value = getter.invoke(obj);
 
         } catch (Exception e) {
-            // TODO log as kernel warning
-            // e.printStackTrace();
+            ValidationException.raise(path, "Couldn't handle enum value", e.getMessage());
         }
         return value;
     }

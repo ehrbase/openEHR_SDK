@@ -34,9 +34,16 @@ public enum OperationalTemplateTestData {
     TWO_EVENTS("Template with two Events", "TwoEvents.opt", "SingleEvent"),
     AVERAGE_24("Template with  a Interval Events", "24StundenDurchschnitt.opt", "24StundenDurchschnitt"),
     EPISODE_OF_CARE("EpisodeOfCare", "EpisodeOfCare.opt", "EpisodeOfCare"),
-    CORONA_ANAMMNESE("Corona_Anamnese", "corona_anamnese.opt", "Corona_Anamnese"),
+    CORONA_ANAMNESE("Corona_Anamnese", "corona_anamnese.opt", "Corona_Anamnese"),
     DIAGNOSE("Diagnose", "Diagnose.opt", "Diagnose"),
-    OPEN_E_REACT_CARE("open_eREACT-Care", "open_eREACT-Care.opt", "open_eREACT-Care");
+    OPEN_E_REACT_CARE("open_eREACT-Care", "open_eREACT-Care.opt", "open_eREACT-Care"),
+    SCHWANGERSCHAFTSSTATUS("Schwangerschaftsstatus", "Schwangerschaftsstatus.opt", "Schwangerschaftsstatus"),
+    VIROLOGY_FINDING("Virologischer Befund", "Virologischer_Befund.opt", "Virologischer Befund"),
+    BEFUND_DER_BLUTGASANALYSE("Befund der Blutgasanalyse", "Befund_der_Blutgasanalyse.opt", "Befund der Blutgasanalyse"),
+    SM_I_C_S_BEFUND("SmICS-Befund", "SmICS-Befund.opt", "SmICS-Befund"),
+    PATIENTEN_AUFENTHALT("NUM test hospitalization", "Patientenaufenthalt.opt", "Patientenaufenthalt"),
+    EPISODE_SUMMARY("Stationärer Versorgungsfall", "stationärer_versorgungsfall.opt", "Stationärer Versorgungsfall"),
+    D4L_QUESTIONNAIRE("D4L_questionnaire", "D4L_questionnaire.opt", "D4L_questionnaire");
 
     private final String filename;
     private final String templateId;

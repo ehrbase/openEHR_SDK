@@ -31,6 +31,10 @@ public interface ContainmentExpression {
         return and(this, containmentExpression);
     }
 
+    default ContainmentExpression or(ContainmentExpression containmentExpression) {
+        return or(this, containmentExpression);
+    }
+
     static ContainmentExpression and(ContainmentExpression containmentExpression1, ContainmentExpression containmentExpression2) {
         return new And(containmentExpression1, containmentExpression2);
     }

@@ -17,33 +17,45 @@
 
 package org.ehrbase.client.openehrclient.defaultrestclient;
 
+import com.nedap.archie.rm.composition.Composition;
 import com.nedap.archie.rm.generic.PartyIdentified;
 import com.nedap.archie.rm.generic.PartySelf;
+import org.apache.commons.io.IOUtils;
+import org.assertj.core.groups.Tuple;
 import org.ehrbase.client.Integration;
 import org.ehrbase.client.TestData;
 import org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev0composition.EhrbaseBloodPressureSimpleDeV0Composition;
-import org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev0composition.definition.KorotkoffSoundsDefiningcode;
+import org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev0composition.definition.KorotkoffSoundsDefiningCode;
 import org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1composition.EhrbaseMultiOccurrenceDeV1Composition;
 import org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1composition.definition.BodyTemperatureAnyEventPointEvent;
 import org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1composition.definition.BodyTemperatureLocationOfMeasurementChoice;
-import org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1composition.definition.BodyTemperatureLocationOfMeasurementDvcodedtext;
-import org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1composition.definition.BodyTemperatureLocationOfMeasurementDvtext;
+import org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1composition.definition.BodyTemperatureLocationOfMeasurementDvCodedText;
+import org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1composition.definition.BodyTemperatureLocationOfMeasurementDvText;
 import org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1composition.definition.BodyTemperatureObservation;
-import org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1composition.definition.LocationOfMeasurementDefiningcode;
+import org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1composition.definition.LocationOfMeasurementDefiningCode;
 import org.ehrbase.client.classgenerator.examples.episodeofcarecomposition.EpisodeOfCareComposition;
 import org.ehrbase.client.classgenerator.examples.episodeofcarecomposition.definition.EpisodeofcareAdminEntry;
 import org.ehrbase.client.classgenerator.examples.episodeofcarecomposition.definition.EpisodeofcareTeamElement;
-import org.ehrbase.client.classgenerator.examples.shareddefinition.SettingDefiningcode;
+import org.ehrbase.client.classgenerator.examples.virologischerbefundcomposition.VirologischerBefundComposition;
+import org.ehrbase.client.classgenerator.examples.virologischerbefundcomposition.definition.ProVirusCluster;
+import org.ehrbase.client.classgenerator.shareddefinition.Setting;
 import org.ehrbase.client.exception.OptimisticLockException;
+import org.ehrbase.client.flattener.Flattener;
 import org.ehrbase.client.openehrclient.CompositionEndpoint;
 import org.ehrbase.client.openehrclient.OpenEhrClient;
 import org.ehrbase.client.openehrclient.VersionUid;
+import org.ehrbase.client.templateprovider.TestDataTemplateProvider;
+import org.ehrbase.serialisation.jsonencoding.CanonicalJson;
+import org.ehrbase.test_data.composition.CompositionTestDataCanonicalJson;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -71,7 +83,7 @@ public class DefaultRestCompositionEndpointIT {
         assertThat(bloodPressureSimpleDeV0.getVersionUid()).isNotNull();
         assertThat(bloodPressureSimpleDeV0.getVersionUid().getVersion()).isEqualTo(1L);
 
-        bloodPressureSimpleDeV0.setSettingDefiningcode(SettingDefiningcode.EMERGENCY_CARE);
+        bloodPressureSimpleDeV0.setSettingDefiningCode(Setting.EMERGENCY_CARE);
         openEhrClient.compositionEndpoint(ehr).mergeCompositionEntity(bloodPressureSimpleDeV0);
         assertThat(bloodPressureSimpleDeV0.getVersionUid()).isNotNull();
         assertThat(bloodPressureSimpleDeV0.getVersionUid().getVersion()).isEqualTo(2L);
@@ -110,7 +122,7 @@ public class DefaultRestCompositionEndpointIT {
         assertThat(actual.get().getBloodPressureTrainingSample().get(0).getSubject()).isNotNull().extracting(Object::getClass).isEqualTo(PartySelf.class);
         assertThat(actual.get().getBloodPressureTrainingSample().get(0).getSystolicMagnitude()).isEqualTo(22d);
         assertThat(actual.get().getBloodPressureTrainingSample().get(0).getSystolicUnits()).isEqualTo("mm[Hg]");
-        assertThat(actual.get().getBloodPressureTrainingSample().get(0).getKorotkoffSoundsDefiningcode()).isEqualTo(KorotkoffSoundsDefiningcode.FIFTH_SOUND);
+        assertThat(actual.get().getBloodPressureTrainingSample().get(0).getKorotkoffSoundsDefiningCode()).isEqualTo(KorotkoffSoundsDefiningCode.FIFTH_SOUND);
     }
 
     @Test
@@ -130,13 +142,13 @@ public class DefaultRestCompositionEndpointIT {
                 .containsExactlyInAnyOrder(11d, 22d);
 
         BodyTemperatureLocationOfMeasurementChoice locationOfMeasurement1 = bodyTemperature1.getLocationOfMeasurement();
-        assertThat(locationOfMeasurement1.getClass()).isEqualTo(BodyTemperatureLocationOfMeasurementDvcodedtext.class);
-        assertThat(((BodyTemperatureLocationOfMeasurementDvcodedtext) locationOfMeasurement1).getLocationOfMeasurementDefiningcode()).isEqualTo(LocationOfMeasurementDefiningcode.FOREHEAD);
+        assertThat(locationOfMeasurement1.getClass()).isEqualTo(BodyTemperatureLocationOfMeasurementDvCodedText.class);
+        assertThat(((BodyTemperatureLocationOfMeasurementDvCodedText) locationOfMeasurement1).getLocationOfMeasurementDefiningCode()).isEqualTo(LocationOfMeasurementDefiningCode.FOREHEAD);
 
         BodyTemperatureObservation bodyTemperature2 = actual.get().getBodyTemperature().get(1);
         BodyTemperatureLocationOfMeasurementChoice locationOfMeasurement2 = bodyTemperature2.getLocationOfMeasurement();
-        assertThat(locationOfMeasurement2.getClass()).isEqualTo(BodyTemperatureLocationOfMeasurementDvtext.class);
-        assertThat(((BodyTemperatureLocationOfMeasurementDvtext) locationOfMeasurement2).getLocationOfMeasurementValue()).isEqualTo("location");
+        assertThat(locationOfMeasurement2.getClass()).isEqualTo(BodyTemperatureLocationOfMeasurementDvText.class);
+        assertThat(((BodyTemperatureLocationOfMeasurementDvText) locationOfMeasurement2).getLocationOfMeasurementValue()).isEqualTo("location");
 
     }
 
@@ -165,6 +177,36 @@ public class DefaultRestCompositionEndpointIT {
 
         assertThat(episodeofcareAdminEntry.getTeam()).extracting(EpisodeofcareTeamElement::getValue).containsExactlyInAnyOrder(URI.create("https://github.com/ehrbase"));
 
+
+    }
+
+    @Test
+    public void testVirologischerBefund() throws IOException {
+        Composition composition = new CanonicalJson().unmarshal(IOUtils.toString(CompositionTestDataCanonicalJson.VIROLOGY_FINDING_WITH_SPECIMEN.getStream(), StandardCharsets.UTF_8), Composition.class);
+
+        assertThat(composition.itemsAtPath("/content[openEHR-EHR-OBSERVATION.laboratory_test_result.v1]/data[at0001]/events[at0002]/data[at0003]")).isNotNull();
+
+        Flattener flattener = new Flattener(new TestDataTemplateProvider());
+
+        VirologischerBefundComposition virologischerBefundComposition = flattener.flatten(composition, VirologischerBefundComposition.class);
+        assertThat(virologischerBefundComposition.getBefund()).isNotNull();
+
+        //with the test data
+        virologischerBefundComposition = TestData.buildTestVirologischerBefundComposition();
+        assertThat(virologischerBefundComposition.getBefund()).isNotNull();
+
+        UUID ehr = openEhrClient.ehrEndpoint().createEhr();
+        VirologischerBefundComposition version1 = openEhrClient.compositionEndpoint(ehr).mergeCompositionEntity(virologischerBefundComposition);
+        Optional<VirologischerBefundComposition> actual = openEhrClient.compositionEndpoint(ehr).find(version1.getVersionUid().getUuid(), VirologischerBefundComposition.class);
+        assertThat(actual).isPresent();
+        assertThat(actual.get().getBefund()).isNotNull();
+
+        assertThat(actual.get().getBefund().getKultur().get(0).getProVirus())
+                .extracting(ProVirusCluster::getVirusValue, ProVirusCluster::getAnalyseergebnisReihenfolgeMagnitude)
+                .containsExactlyInAnyOrder(
+                        new Tuple("SARS-Cov-2", 32L),
+                        new Tuple("SARS-Cov-2", 34L)
+                );
 
     }
 

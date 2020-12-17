@@ -17,7 +17,9 @@
 
 package org.ehrbase.client.exception;
 
-public class ClientException extends RuntimeException {
+import org.ehrbase.util.exception.SdkException;
+
+public class ClientException extends SdkException {
 
     public ClientException(String message) {
         super(message);

@@ -43,7 +43,14 @@ public enum CompositionTestDataCanonicalJson {
     SUBJECT_PARTY_SELF("Nested subject PARTY_SELF", "compo_with_nested_party_self.json"),
     SUBJECT_PARTY_RELATED("Nested subject PARTY_RELATED", "compo_with_nested_party_related.json"),
     NESTED_PROVIDER("Nested provider PARTY_IDENTIFIED", "compo_with_nested_provider.json"),
-    DATE_TIME_TESTS("Composition with multiple partial and full date/time", "datetime_tests.json");
+    DATE_TIME_TESTS("Composition with multiple partial and full date/time", "datetime_tests.json"),
+    DURATION_TESTS("Composition with multiple DvDuration", "duration_tests.json"),
+    VIROLOGY_FINDING_WITH_SPECIMEN("virology finding with specimen", "virology_finding_with_specimen.json"),
+    MULTI_OCCURRENCE("multi occurrence", "multi_occurrence.json"),
+    ALTERNATIVE_EVENTS("Contains Event with mixed point and interval", "alternative_events.json"),
+    CHOICE_ELEMENT("element containing multiple choice to test validation", "choice_validation_test.json"),
+    CHOICE_DV_QUANTITY("choices in units", "dvquantity_choice.json"),
+    DEMO_VITALS("composition to test archetype_details roundtrip", "demo_vitals_352.json");
 
 
     private final String filename;

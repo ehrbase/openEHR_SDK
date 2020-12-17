@@ -20,7 +20,6 @@ package org.ehrbase.client.flattener;
 import com.nedap.archie.rm.archetyped.Locatable;
 import com.nedap.archie.rm.composition.AdminEntry;
 import com.nedap.archie.rm.composition.Composition;
-import com.nedap.archie.rm.composition.Evaluation;
 import com.nedap.archie.rm.composition.Observation;
 import com.nedap.archie.rm.datastructures.Element;
 import com.nedap.archie.rm.datastructures.IntervalEvent;
@@ -38,17 +37,16 @@ import org.apache.commons.io.IOUtils;
 import org.assertj.core.groups.Tuple;
 import org.ehrbase.client.TestData;
 import org.ehrbase.client.classgenerator.examples.alternativeeventscomposition.AlternativeEventsComposition;
+import org.ehrbase.client.classgenerator.examples.befundderblutgasanalysecomposition.BefundDerBlutgasanalyseComposition;
+import org.ehrbase.client.classgenerator.examples.befundderblutgasanalysecomposition.definition.KohlendioxidpartialdruckCluster;
+import org.ehrbase.client.classgenerator.examples.befundderblutgasanalysecomposition.definition.LaborergebnisObservation;
 import org.ehrbase.client.classgenerator.examples.coronaanamnesecomposition.CoronaAnamneseComposition;
 import org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev0composition.EhrbaseBloodPressureSimpleDeV0Composition;
 import org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1composition.EhrbaseMultiOccurrenceDeV1Composition;
 import org.ehrbase.client.classgenerator.examples.episodeofcarecomposition.EpisodeOfCareComposition;
-import org.ehrbase.client.classgenerator.examples.testalltypesenv1composition.TestAllTypesEnV1Composition;
-import org.ehrbase.client.classgenerator.examples.testalltypesenv1composition.definition.TestAllTypesChoiceDvquantity;
 import org.ehrbase.client.templateprovider.TestDataTemplateProvider;
 import org.ehrbase.serialisation.jsonencoding.CanonicalJson;
-import org.ehrbase.serialisation.xmlencoding.CanonicalXML;
 import org.ehrbase.test_data.composition.CompositionTestDataCanonicalJson;
-import org.ehrbase.test_data.composition.CompositionTestDataCanonicalXML;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -61,7 +59,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.ehrbase.client.TestData.*;
+import static org.ehrbase.client.TestData.buildAlternativeEventsComposition;
+import static org.ehrbase.client.TestData.buildEhrbaseBloodPressureSimpleDeV0;
+import static org.ehrbase.client.TestData.buildEpisodeOfCareComposition;
+import static org.ehrbase.client.TestData.buildExampleBloodpressureListDe;
 import static org.junit.Assert.assertFalse;
 
 public class UnflattenerTest {
@@ -89,6 +90,28 @@ public class UnflattenerTest {
 
         assertThat(systolischValues).containsExactlyInAnyOrder(12d, 22d);
     }
+    @Test
+    public void testUnflattenBefundDerBlutgasanalyse() {
+        Unflattener cut = new Unflattener(new TestDataTemplateProvider());
+
+        BefundDerBlutgasanalyseComposition dto = new BefundDerBlutgasanalyseComposition();
+
+
+        LaborergebnisObservation laborergebnisObservation = new LaborergebnisObservation();
+        KohlendioxidpartialdruckCluster kohlendioxidpartialdruck = new KohlendioxidpartialdruckCluster();
+        kohlendioxidpartialdruck.setAnalytResultatMagnitude(22d);
+        laborergebnisObservation.setKohlendioxidpartialdruck(kohlendioxidpartialdruck);
+        dto.setLaborergebnis(laborergebnisObservation);
+
+
+        Composition rmObject = (Composition) cut.unflatten(dto);
+
+        assertThat(rmObject).isNotNull();
+        List<Object> clusters = rmObject.itemsAtPath("/content[openEHR-EHR-OBSERVATION.laboratory_test_result.v1]/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.laboratory_test_analyte.v1]");
+        assertThat(clusters).size().isEqualTo(1);
+
+    }
+
 
     @Test
     public void testUnflattenEhrbaseBloodPressureSimpleDeV0() {
@@ -124,7 +147,7 @@ public class UnflattenerTest {
     @Test
     public void testUnflattenCorona() throws IOException {
         Composition expected = new CanonicalJson().unmarshal(IOUtils.toString(CompositionTestDataCanonicalJson.CORONA.getStream(), StandardCharsets.UTF_8), Composition.class);
-        Flattener flattener = new Flattener();
+        Flattener flattener = new Flattener(new TestDataTemplateProvider());
         CoronaAnamneseComposition coronaAnamneseComposition = flattener.flatten(expected, CoronaAnamneseComposition.class);
 
         Unflattener cut = new Unflattener(new TestDataTemplateProvider());
@@ -171,27 +194,7 @@ public class UnflattenerTest {
         assertThat(dvText.getValue()).isEqualTo("location");
     }
 
-    @Test
-    public void testUnflattenAllTypes() throws IOException {
-        Composition composition = new CanonicalXML().unmarshal(IOUtils.toString(CompositionTestDataCanonicalXML.ALL_TYPES.getStream(), StandardCharsets.UTF_8), Composition.class);
-        Flattener flattener = new Flattener();
-        TestAllTypesEnV1Composition testAllTypesEnV1 = flattener.flatten(composition, TestAllTypesEnV1Composition.class);
 
-        TestAllTypesChoiceDvquantity choiceDvquantity = new TestAllTypesChoiceDvquantity();
-        choiceDvquantity.setChoiceMagnitude(22d);
-        choiceDvquantity.setChoiceUnits("mm[Hg]");
-        testAllTypesEnV1.getTestAllTypes().get(0).setChoice(choiceDvquantity);
-
-        Unflattener cut = new Unflattener(new TestDataTemplateProvider());
-        Composition actual = (Composition) cut.unflatten(testAllTypesEnV1);
-        assertThat(actual).isNotNull();
-        Evaluation evaluation = (Evaluation) actual.itemAtPath("/content[openEHR-EHR-EVALUATION.test_all_types.v1]");
-        assertThat(evaluation).isNotNull();
-        DvQuantity dvquantity = (DvQuantity) evaluation.itemAtPath("/data[at0001]/items[at0009]/value");
-        assertThat(dvquantity).isNotNull();
-        assertThat(dvquantity.getMagnitude()).isEqualTo(22d);
-        assertThat(dvquantity.getUnits()).isEqualTo("mm[Hg]");
-    }
 
     @Test
     public void testUnflattenAltEvent() {

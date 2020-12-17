@@ -1,5 +1,8 @@
 package org.ehrbase.client.classgenerator.examples.diagnosecomposition.definition;
 
+import com.nedap.archie.rm.archetyped.FeederAudit;
+import java.lang.Boolean;
+import java.lang.String;
 import org.ehrbase.client.aql.containment.Containment;
 import org.ehrbase.client.aql.field.AqlFieldImp;
 import org.ehrbase.client.aql.field.SelectAqlField;
@@ -14,6 +17,8 @@ public class DiagnosedetailsClusterContainment extends Containment {
   public SelectAqlField<Boolean> VORHANDEN_BEI_AUFNAHME_VALUE = new AqlFieldImp<Boolean>(DiagnosedetailsCluster.class, "/items[at0016]/value|value", "vorhandenBeiAufnahmeValue", Boolean.class, this);
 
   public SelectAqlField<Boolean> VORHANDEN_BEI_ENTLASSUNG_VALUE = new AqlFieldImp<Boolean>(DiagnosedetailsCluster.class, "/items[at0017]/value|value", "vorhandenBeiEntlassungValue", Boolean.class, this);
+
+  public SelectAqlField<FeederAudit> FEEDER_AUDIT = new AqlFieldImp<FeederAudit>(DiagnosedetailsCluster.class, "/feeder_audit", "feederAudit", FeederAudit.class, this);
 
   private DiagnosedetailsClusterContainment() {
     super("openEHR-EHR-CLUSTER.diagnose_details.v0");

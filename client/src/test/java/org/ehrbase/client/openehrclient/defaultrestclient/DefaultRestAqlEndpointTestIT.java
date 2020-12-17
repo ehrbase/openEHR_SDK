@@ -38,8 +38,8 @@ import org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev0
 import org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev0composition.EhrbaseBloodPressureSimpleDeV0CompositionContainment;
 import org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev0composition.definition.BloodPressureTrainingSampleObservation;
 import org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev0composition.definition.BloodPressureTrainingSampleObservationContainment;
-import org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev0composition.definition.CuffSizeDefiningcode;
-import org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev0composition.definition.KorotkoffSoundsDefiningcode;
+import org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev0composition.definition.CuffSizeDefiningCode;
+import org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev0composition.definition.KorotkoffSoundsDefiningCode;
 import org.ehrbase.client.openehrclient.OpenEhrClient;
 import org.ehrbase.client.openehrclient.VersionUid;
 import org.junit.BeforeClass;
@@ -142,22 +142,22 @@ public class DefaultRestAqlEndpointTestIT {
 
         containmentComposition.setContains(containmentObservation);
 
-        EntityQuery<Record3<TemporalAccessor, BloodPressureTrainingSampleObservation, CuffSizeDefiningcode>> entityQuery = Query.buildEntityQuery(
+        EntityQuery<Record3<TemporalAccessor, BloodPressureTrainingSampleObservation, CuffSizeDefiningCode>> entityQuery = Query.buildEntityQuery(
                 containmentComposition,
                 containmentComposition.START_TIME_VALUE,
                 containmentObservation.BLOOD_PRESSURE_TRAINING_SAMPLE_OBSERVATION,
-                containmentObservation.CUFF_SIZE_DEFININGCODE
+                containmentObservation.CUFF_SIZE_DEFINING_CODE
         );
         Parameter<UUID> ehrIdParameter = entityQuery.buildParameter();
         entityQuery.where(Condition.equal(EhrFields.EHR_ID(), ehrIdParameter));
 
-        List<Record3<TemporalAccessor, BloodPressureTrainingSampleObservation, CuffSizeDefiningcode>> actual = openEhrClient.aqlEndpoint().execute(entityQuery, ehrIdParameter.setValue(ehr));
+        List<Record3<TemporalAccessor, BloodPressureTrainingSampleObservation, CuffSizeDefiningCode>> actual = openEhrClient.aqlEndpoint().execute(entityQuery, ehrIdParameter.setValue(ehr));
         assertThat(actual).size().isEqualTo(2);
 
-        Record3<TemporalAccessor, BloodPressureTrainingSampleObservation, CuffSizeDefiningcode> record1 = actual.get(0);
+        Record3<TemporalAccessor, BloodPressureTrainingSampleObservation, CuffSizeDefiningCode> record1 = actual.get(0);
         assertThat(record1.value1()).isEqualTo(OffsetDateTime.of(2019, 04, 03, 22, 00, 00, 00, ZoneOffset.UTC));
-        assertThat(record1.value2().getKorotkoffSoundsDefiningcode()).isEqualTo(KorotkoffSoundsDefiningcode.FIFTH_SOUND);
-        assertThat(record1.value3()).isEqualTo(CuffSizeDefiningcode.ADULT);
+        assertThat(record1.value2().getKorotkoffSoundsDefiningCode()).isEqualTo(KorotkoffSoundsDefiningCode.FIFTH_SOUND);
+        assertThat(record1.value3()).isEqualTo(CuffSizeDefiningCode.ADULT);
 
     }
 
@@ -381,6 +381,30 @@ public class DefaultRestAqlEndpointTestIT {
 
         List<Record2<TemporalAccessor, List<BloodPressureTrainingSampleObservation>>> actual = openEhrClient.aqlEndpoint().execute(entityQuery, ehrIdParameter.setValue(ehr));
         assertThat(actual).size().isEqualTo(2);
+
+
+    }
+
+    @Test
+    public void testQueryCount() {
+
+        UUID ehr = openEhrClient.ehrEndpoint().createEhr();
+
+        openEhrClient.compositionEndpoint(ehr).mergeCompositionEntity(TestData.buildEhrbaseBloodPressureSimpleDeV0());
+        openEhrClient.compositionEndpoint(ehr).mergeCompositionEntity(TestData.buildEhrbaseBloodPressureSimpleDeV0());
+
+        Query<Record1<Integer>> query = Query.buildNativeQuery("select  count(e/ehr_id/value) from EHR e contains composition c", Integer.class);
+
+        List<Record1<Integer>> result = openEhrClient.aqlEndpoint().execute(query);
+        assertThat(result).isNotNull();
+        assertThat(result.get(0).value1() > 0);
+
+        query = Query.buildNativeQuery("select  count(c/uid/value) from EHR e contains composition c", Integer.class);
+
+        result = openEhrClient.aqlEndpoint().execute(query);
+        assertThat(result).isNotNull();
+        assertThat(result.get(0).value1() > 0);
+//        assertThat(result).size().isEqualTo(2);
 
 
     }

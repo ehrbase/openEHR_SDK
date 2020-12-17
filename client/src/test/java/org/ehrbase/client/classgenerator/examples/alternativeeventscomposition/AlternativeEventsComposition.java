@@ -5,198 +5,261 @@ import com.nedap.archie.rm.datastructures.Cluster;
 import com.nedap.archie.rm.generic.Participation;
 import com.nedap.archie.rm.generic.PartyIdentified;
 import com.nedap.archie.rm.generic.PartyProxy;
+import java.lang.String;
+import java.time.temporal.TemporalAccessor;
+import java.util.List;
+import javax.annotation.processing.Generated;
 import org.ehrbase.client.annotations.Archetype;
 import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.Id;
 import org.ehrbase.client.annotations.Path;
 import org.ehrbase.client.annotations.Template;
 import org.ehrbase.client.classgenerator.examples.alternativeeventscomposition.definition.KorpergewichtObservation;
-import org.ehrbase.client.classgenerator.examples.shareddefinition.CategoryDefiningcode;
-import org.ehrbase.client.classgenerator.examples.shareddefinition.Language;
-import org.ehrbase.client.classgenerator.examples.shareddefinition.SettingDefiningcode;
-import org.ehrbase.client.classgenerator.examples.shareddefinition.Territory;
+import org.ehrbase.client.classgenerator.interfaces.CompositionEntity;
+import org.ehrbase.client.classgenerator.shareddefinition.Category;
+import org.ehrbase.client.classgenerator.shareddefinition.Language;
+import org.ehrbase.client.classgenerator.shareddefinition.Setting;
+import org.ehrbase.client.classgenerator.shareddefinition.Territory;
 import org.ehrbase.client.openehrclient.VersionUid;
-
-import java.time.temporal.TemporalAccessor;
-import java.util.List;
 
 @Entity
 @Archetype("openEHR-EHR-COMPOSITION.report.v1")
+@Generated(
+    value = "org.ehrbase.client.classgenerator.ClassGenerator",
+    date = "2020-12-10T13:06:10.025486800+01:00",
+    comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
+)
 @Template("AlternativeEvents")
-public class AlternativeEventsComposition {
-    @Id
-    private VersionUid versionUid;
+public class AlternativeEventsComposition implements CompositionEntity {
+  /**
+   * Path: Bericht/context/Bericht ID
+   * Description: Identifizierungsmerkmal des Berichts.
+   */
+  @Path("/context/other_context[at0001]/items[at0002]/value|value")
+  private String berichtIdValue;
 
-    @Path("/context/end_time|value")
-    private TemporalAccessor endTimeValue;
+  /**
+   * Path: Bericht/context/Status
+   * Description: Der Status des gesamten Berichts. Hinweis: Dies ist nicht der Status einer
+   *                 Berichtskomponente.
+   *             
+   */
+  @Path("/context/other_context[at0001]/items[at0005]/value|value")
+  private String statusValue;
 
-    @Path("/context/participations")
-    private List<Participation> participations;
+  /**
+   * Path: Bericht/context/Erweiterung
+   * Description: Zusätzliche Informationen zur Erfassung lokaler Inhalte oder Anpassung an andere
+   *                 Referenzmodelle/Formalismen.
+   *             
+   * Comment: Zum Beispiel: lokaler Informationsbedarf oder zusätzliche Metadaten zur Anpassung an
+   *                 FHIR-Ressourcen oder CIMI-Modelle.
+   *             
+   */
+  @Path("/context/other_context[at0001]/items[at0006]")
+  private List<Cluster> erweiterung;
 
-    @Path("/language")
-    private Language language;
+  /**
+   * Path: Bericht/context/start_time
+   */
+  @Path("/context/start_time|value")
+  private TemporalAccessor startTimeValue;
 
-    @Path("/context/health_care_facility")
-    private PartyIdentified healthCareFacility;
+  /**
+   * Path: Bericht/context/participations
+   */
+  @Path("/context/participations")
+  private List<Participation> participations;
 
-    @Path("/context/other_context[at0001]/items[at0005]/value|value")
-    private String statusValue;
+  /**
+   * Path: Bericht/context/end_time
+   */
+  @Path("/context/end_time|value")
+  private TemporalAccessor endTimeValue;
 
-    @Path("/context/other_context[at0001]/items[at0002]/value|value")
-    private String berichtIdValue;
+  /**
+   * Path: Bericht/context/location
+   */
+  @Path("/context/location")
+  private String location;
 
-    @Path("/territory")
-    private Territory territory;
+  /**
+   * Path: Bericht/context/health_care_facility
+   */
+  @Path("/context/health_care_facility")
+  private PartyIdentified healthCareFacility;
 
-    @Path("/context/start_time|value")
-    private TemporalAccessor startTimeValue;
+  /**
+   * Path: Bericht/context/setting
+   */
+  @Path("/context/setting|defining_code")
+  private Setting settingDefiningCode;
 
-    @Path("/composer")
-    private PartyProxy composer;
+  /**
+   * Path: Bericht/Körpergewicht
+   * Description: Messung des Körpergewichts eines Individuums.
+   */
+  @Path("/content[openEHR-EHR-OBSERVATION.body_weight.v2]")
+  private List<KorpergewichtObservation> korpergewicht;
 
-    @Path("/context/setting|defining_code")
-    private SettingDefiningcode settingDefiningcode;
+  /**
+   * Path: Bericht/composer
+   */
+  @Path("/composer")
+  private PartyProxy composer;
 
-    @Path("/content[openEHR-EHR-OBSERVATION.body_weight.v2]")
-    private List<KorpergewichtObservation> korpergewicht;
+  /**
+   * Path: Bericht/language
+   */
+  @Path("/language")
+  private Language language;
 
-    @Path("/feeder_audit")
-    private FeederAudit feederAudit;
+  /**
+   * Path: Bericht/feeder_audit
+   */
+  @Path("/feeder_audit")
+  private FeederAudit feederAudit;
 
-    @Path("/context/other_context[at0001]/items[at0006]")
-    private List<Cluster> erweiterung;
+  /**
+   * Path: Bericht/category
+   */
+  @Path("/category|defining_code")
+  private Category categoryDefiningCode;
 
-    @Path("/context/location")
-    private String location;
+  /**
+   * Path: Bericht/territory
+   */
+  @Path("/territory")
+  private Territory territory;
 
-    @Path("/category|defining_code")
-    private CategoryDefiningcode categoryDefiningcode;
+  @Id
+  private VersionUid versionUid;
 
-    public VersionUid getVersionUid() {
-        return this.versionUid;
-    }
+  public void setBerichtIdValue(String berichtIdValue) {
+     this.berichtIdValue = berichtIdValue;
+  }
 
-    public void setVersionUid(VersionUid versionUid) {
-        this.versionUid = versionUid;
-    }
+  public String getBerichtIdValue() {
+     return this.berichtIdValue ;
+  }
 
-    public void setEndTimeValue(TemporalAccessor endTimeValue) {
-        this.endTimeValue = endTimeValue;
-    }
+  public void setStatusValue(String statusValue) {
+     this.statusValue = statusValue;
+  }
 
-    public TemporalAccessor getEndTimeValue() {
-        return this.endTimeValue;
-    }
+  public String getStatusValue() {
+     return this.statusValue ;
+  }
 
-    public void setParticipations(List<Participation> participations) {
-        this.participations = participations;
-    }
+  public void setErweiterung(List<Cluster> erweiterung) {
+     this.erweiterung = erweiterung;
+  }
 
-    public List<Participation> getParticipations() {
-        return this.participations;
-    }
+  public List<Cluster> getErweiterung() {
+     return this.erweiterung ;
+  }
 
-    public void setLanguage(Language language) {
-        this.language = language;
-    }
+  public void setStartTimeValue(TemporalAccessor startTimeValue) {
+     this.startTimeValue = startTimeValue;
+  }
 
-    public Language getLanguage() {
-        return this.language;
-    }
+  public TemporalAccessor getStartTimeValue() {
+     return this.startTimeValue ;
+  }
 
-    public void setHealthCareFacility(PartyIdentified healthCareFacility) {
-        this.healthCareFacility = healthCareFacility;
-    }
+  public void setParticipations(List<Participation> participations) {
+     this.participations = participations;
+  }
 
-    public PartyIdentified getHealthCareFacility() {
-        return this.healthCareFacility;
-    }
+  public List<Participation> getParticipations() {
+     return this.participations ;
+  }
 
-    public void setStatusValue(String statusValue) {
-        this.statusValue = statusValue;
-    }
+  public void setEndTimeValue(TemporalAccessor endTimeValue) {
+     this.endTimeValue = endTimeValue;
+  }
 
-    public String getStatusValue() {
-        return this.statusValue;
-    }
+  public TemporalAccessor getEndTimeValue() {
+     return this.endTimeValue ;
+  }
 
-    public void setBerichtIdValue(String berichtIdValue) {
-        this.berichtIdValue = berichtIdValue;
-    }
+  public void setLocation(String location) {
+     this.location = location;
+  }
 
-    public String getBerichtIdValue() {
-        return this.berichtIdValue;
-    }
+  public String getLocation() {
+     return this.location ;
+  }
 
-    public void setTerritory(Territory territory) {
-        this.territory = territory;
-    }
+  public void setHealthCareFacility(PartyIdentified healthCareFacility) {
+     this.healthCareFacility = healthCareFacility;
+  }
 
-    public Territory getTerritory() {
-        return this.territory;
-    }
+  public PartyIdentified getHealthCareFacility() {
+     return this.healthCareFacility ;
+  }
 
-    public void setStartTimeValue(TemporalAccessor startTimeValue) {
-        this.startTimeValue = startTimeValue;
-    }
+  public void setSettingDefiningCode(Setting settingDefiningCode) {
+     this.settingDefiningCode = settingDefiningCode;
+  }
 
-    public TemporalAccessor getStartTimeValue() {
-        return this.startTimeValue;
-    }
+  public Setting getSettingDefiningCode() {
+     return this.settingDefiningCode ;
+  }
 
-    public void setComposer(PartyProxy composer) {
-        this.composer = composer;
-    }
+  public void setKorpergewicht(List<KorpergewichtObservation> korpergewicht) {
+     this.korpergewicht = korpergewicht;
+  }
 
-    public PartyProxy getComposer() {
-        return this.composer;
-    }
+  public List<KorpergewichtObservation> getKorpergewicht() {
+     return this.korpergewicht ;
+  }
 
-    public void setSettingDefiningcode(SettingDefiningcode settingDefiningcode) {
-        this.settingDefiningcode = settingDefiningcode;
-    }
+  public void setComposer(PartyProxy composer) {
+     this.composer = composer;
+  }
 
-    public SettingDefiningcode getSettingDefiningcode() {
-        return this.settingDefiningcode;
-    }
+  public PartyProxy getComposer() {
+     return this.composer ;
+  }
 
-    public void setKorpergewicht(List<KorpergewichtObservation> korpergewicht) {
-        this.korpergewicht = korpergewicht;
-    }
+  public void setLanguage(Language language) {
+     this.language = language;
+  }
 
-    public List<KorpergewichtObservation> getKorpergewicht() {
-        return this.korpergewicht;
-    }
+  public Language getLanguage() {
+     return this.language ;
+  }
 
-    public void setFeederAudit(FeederAudit feederAudit) {
-        this.feederAudit = feederAudit;
-    }
+  public void setFeederAudit(FeederAudit feederAudit) {
+     this.feederAudit = feederAudit;
+  }
 
-    public FeederAudit getFeederAudit() {
-        return this.feederAudit;
-    }
+  public FeederAudit getFeederAudit() {
+     return this.feederAudit ;
+  }
 
-    public void setErweiterung(List<Cluster> erweiterung) {
-        this.erweiterung = erweiterung;
-    }
+  public void setCategoryDefiningCode(Category categoryDefiningCode) {
+     this.categoryDefiningCode = categoryDefiningCode;
+  }
 
-    public List<Cluster> getErweiterung() {
-        return this.erweiterung;
-    }
+  public Category getCategoryDefiningCode() {
+     return this.categoryDefiningCode ;
+  }
 
-    public void setLocation(String location) {
-        this.location = location;
-    }
+  public void setTerritory(Territory territory) {
+     this.territory = territory;
+  }
 
-    public String getLocation() {
-        return this.location;
-    }
+  public Territory getTerritory() {
+     return this.territory ;
+  }
 
-    public void setCategoryDefiningcode(CategoryDefiningcode categoryDefiningcode) {
-        this.categoryDefiningcode = categoryDefiningcode;
-    }
+  public VersionUid getVersionUid() {
+     return this.versionUid ;
+  }
 
-    public CategoryDefiningcode getCategoryDefiningcode() {
-        return this.categoryDefiningcode;
-    }
+  public void setVersionUid(VersionUid versionUid) {
+     this.versionUid = versionUid;
+  }
 }

@@ -24,8 +24,6 @@ import org.ehrbase.client.openehrclient.VersionUid;
 import java.util.Optional;
 import java.util.UUID;
 
-import static org.ehrbase.client.openehrclient.defaultrestclient.DefaultRestClient.*;
-
 public class DefaultRestEhrEndpoint implements EhrEndpoint {
     public static final String EHR_PATH = "ehr/";
     public static final String EHR_STATUS_PATH = "/ehr_status";
@@ -37,22 +35,22 @@ public class DefaultRestEhrEndpoint implements EhrEndpoint {
 
     @Override
     public UUID createEhr() {
-        return httpPost(defaultRestClient.getConfig().getBaseUri().resolve(EHR_PATH), null).getUuid();
+        return defaultRestClient.httpPost(defaultRestClient.getConfig().getBaseUri().resolve(EHR_PATH), null).getUuid();
     }
 
     @Override
     public UUID createEhr(EhrStatus ehrStatus) {
-        return httpPost(defaultRestClient.getConfig().getBaseUri().resolve(EHR_PATH), ehrStatus).getUuid();
+        return defaultRestClient.httpPost(defaultRestClient.getConfig().getBaseUri().resolve(EHR_PATH), ehrStatus).getUuid();
     }
 
 
     @Override
     public Optional<EhrStatus> getEhrStatus(UUID ehrId) {
-        return httpGet(defaultRestClient.getConfig().getBaseUri().resolve(EHR_PATH + ehrId.toString() + EHR_STATUS_PATH), EhrStatus.class);
+        return defaultRestClient.httpGet(defaultRestClient.getConfig().getBaseUri().resolve(EHR_PATH + ehrId.toString() + EHR_STATUS_PATH), EhrStatus.class);
     }
 
     @Override
     public void updateEhrStatus(UUID ehrId, EhrStatus ehrStatus) {
-        httpPut(defaultRestClient.getConfig().getBaseUri().resolve(EHR_PATH + ehrId + EHR_STATUS_PATH), ehrStatus, new VersionUid(ehrStatus.getUid().getValue()));
+        defaultRestClient.httpPut(defaultRestClient.getConfig().getBaseUri().resolve(EHR_PATH + ehrId + EHR_STATUS_PATH), ehrStatus, new VersionUid(ehrStatus.getUid().getValue()));
     }
 }

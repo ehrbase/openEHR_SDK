@@ -91,6 +91,7 @@ public class CompositionSerializer {
     public static final String TAG_ISM_TRANSITION = "/ism_transition";
     public static final String TAG_CURRENT_STATE = "/current_state";
     public static final String TAG_CAREFLOW_STEP = "/careflow_step";
+    public static final String TAG_ISM_TRANSITION_REASON = "/careflow_step";
     public static final String TAG_TRANSITION = "/transition";
     public static final String TAG_WORKFLOW_ID = "/workflow_id";
     public static final String TAG_GUIDELINE_ID = "/guideline_id";
@@ -245,13 +246,11 @@ public class CompositionSerializer {
             Map<String, Object> ltree = PathMap.getInstance();
 
             Action action = (Action) item;
-            boolean hasActiveContent = false;
 
             if (action.getProtocol() != null) {
                 Object protocol = traverse(action.getProtocol(), TAG_PROTOCOL);
                 if (protocol != null) {
                     ltree = new EntrySerialTree(ltree, tagMode).insert(action, TAG_PROTOCOL, traverse(action.getProtocol(), TAG_PROTOCOL));
-                    hasActiveContent = true;
                 }
             }
 
@@ -259,16 +258,21 @@ public class CompositionSerializer {
                 Object description = traverse(action.getDescription(), TAG_DESCRIPTION);
                 if (description != null) {
                     ltree = new EntrySerialTree(ltree, tagMode).insert(action, TAG_DESCRIPTION, traverse(action.getDescription(), TAG_DESCRIPTION));
-                    hasActiveContent = true;
                 }
+            }
+            else {
+                //this should not occur except in test scenario as this is rejected by the validation
+                log.warn("ACTION requires attribute 'description' at node:" + itemStack.pathStackDump());
             }
 
             ltree = new ActionAttributes(this, itemStack, ltree).toMap(action);
 
-            if (hasActiveContent) //ism_transition is always set (comes from the template initially)
-                retmap = ltree;
-            else
-                retmap = null;
+            if (!ltree.containsKey(TAG_CLASS)){
+                //force class as this hasn't been completed since the action is not valid (see above comment)
+                ltree.put(TAG_CLASS, new SimpleClassName(item).toString());
+            }
+
+            retmap = ltree;
 
         } else if (item instanceof Section) {
 
@@ -297,6 +301,9 @@ public class CompositionSerializer {
             if (adminEntry.getData() != null) {
                 ltree = new SerialTree(ltree).insert(adminEntry, new NodeEncoding(tagMode).tag(TAG_DATA, adminEntry.getData(), ltree), traverse(adminEntry.getData(), TAG_DATA));
             }
+
+            ltree = new AdminEntryAttributes(this, itemStack, ltree).toMap(adminEntry);
+
             if (ltree.size() > 0)
                 retmap = ltree;
             else
@@ -392,10 +399,14 @@ public class CompositionSerializer {
 
                 if (event.getData() != null) {
                     subtree = new EntrySerialTree(subtree, tagMode).insert(event, TAG_DATA, traverse(event.getData(), TAG_DATA));
-
                 }
                 if (event.getState() != null)
                     subtree = new EntrySerialTree(subtree, tagMode).insert(event, TAG_STATE, traverse(event.getState(), TAG_STATE));
+
+                if (!subtree.containsKey(TAG_CLASS)){
+                    log.warn("Inserting class type, potentially a test case?");
+                    subtree.put(TAG_CLASS, new SimpleClassName(event).toString());
+                }
 
                 itemStack.popStacks();
 

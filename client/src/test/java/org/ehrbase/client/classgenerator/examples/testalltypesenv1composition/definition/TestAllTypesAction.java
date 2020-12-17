@@ -1,143 +1,135 @@
 package org.ehrbase.client.classgenerator.examples.testalltypesenv1composition.definition;
 
+import com.nedap.archie.rm.archetyped.FeederAudit;
+import com.nedap.archie.rm.generic.PartyProxy;
+import java.time.temporal.TemporalAccessor;
+import java.util.List;
+import javax.annotation.processing.Generated;
 import org.ehrbase.client.annotations.Archetype;
 import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.Path;
-import org.ehrbase.client.classgenerator.examples.shareddefinition.TransitionDefiningcode;
-
-import java.time.temporal.TemporalAccessor;
-import java.util.List;
+import org.ehrbase.client.classgenerator.interfaces.EntryEntity;
+import org.ehrbase.client.classgenerator.shareddefinition.Language;
+import org.ehrbase.client.classgenerator.shareddefinition.Transition;
 
 @Entity
 @Archetype("openEHR-EHR-ACTION.test_all_types.v1")
-public class TestAllTypesAction {
-    @Path("/time|value")
-    private TemporalAccessor timeValue;
+@Generated(
+    value = "org.ehrbase.client.classgenerator.ClassGenerator",
+    date = "2020-12-10T13:06:10.818494500+01:00",
+    comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
+)
+public class TestAllTypesAction implements EntryEntity {
+  /**
+   * Path: Test all types/Test all types/section 2/section 3/Test all types/Test all types
+   * Description: unknown
+   */
+  @Path("/description[at0001]/items[openEHR-EHR-CLUSTER.test_all_types.v1]")
+  private List<TestAllTypesCluster> testAllTypes;
 
-    @Path("/ism_transition[at0004]/transition|defining_code")
-    private TransitionDefiningcode transitionDefiningcode;
+  /**
+   * Path: Test all types/Test all types/section 2/section 3/Test all types/subject
+   */
+  @Path("/subject")
+  private PartyProxy subject;
 
-    @Path("/ism_transition[at0005]/transition|defining_code")
-    private TransitionDefiningcode transitionDefiningcodeCompleted;
+  /**
+   * Path: Test all types/Test all types/section 2/section 3/Test all types/language
+   */
+  @Path("/language")
+  private Language language;
 
-    @Path("/ism_transition[at0005]/careflow_step|defining_code")
-    private CompletedDefiningcode completedDefiningcode;
+  /**
+   * Path: Test all types/Test all types/section 2/section 3/Test all types/feeder_audit
+   */
+  @Path("/feeder_audit")
+  private FeederAudit feederAudit;
 
-    @Path("/ism_transition[at0005]/current_state|defining_code")
-    private org.ehrbase.client.classgenerator.examples.shareddefinition.CompletedDefiningcode completedDefiningcodeCurrentState;
+  /**
+   * Path: Test all types/Test all types/section 2/section 3/Test all types/time
+   */
+  @Path("/time|value")
+  private TemporalAccessor timeValue;
 
-    @Path("/ism_transition[at0003]/current_state|defining_code")
-    private org.ehrbase.client.classgenerator.examples.shareddefinition.PlannedDefiningcode plannedDefiningcode;
+  /**
+   * Path: Test all types/Test all types/section 2/section 3/Test all types/ism_transition/Careflow_step
+   */
+  @Path("/ism_transition/careflow_step|defining_code")
+  private CareflowStepDefiningCode careflowStepDefiningCode;
 
-    @Path("/ism_transition[at0004]/current_state|defining_code")
-    private org.ehrbase.client.classgenerator.examples.shareddefinition.ActiveDefiningcode activeDefiningcode;
+  /**
+   * Path: Test all types/Test all types/section 2/section 3/Test all types/ism_transition/Current_state
+   */
+  @Path("/ism_transition/current_state|defining_code")
+  private CurrentStateDefiningCode currentStateDefiningCode;
 
-    @Path("/ism_transition[at0003]/careflow_step|defining_code")
-    private PlannedDefiningcode plannedDefiningcodeCareflowStep;
+  /**
+   * Path: Test all types/Test all types/section 2/section 3/Test all types/ism_transition/transition
+   */
+  @Path("/ism_transition/transition|defining_code")
+  private Transition transitionDefiningCode;
 
-    @Path("/ism_transition[at0004]/careflow_step|defining_code")
-    private ActiveDefiningcode activeDefiningcodeCareflowStep;
+  public void setTestAllTypes(List<TestAllTypesCluster> testAllTypes) {
+     this.testAllTypes = testAllTypes;
+  }
 
-    @Path("/ism_transition[at0003]/transition|defining_code")
-    private TransitionDefiningcode transitionDefiningcodePlanned;
+  public List<TestAllTypesCluster> getTestAllTypes() {
+     return this.testAllTypes ;
+  }
 
-    @Path("/description[at0001]/items[openEHR-EHR-CLUSTER.test_all_types.v1]")
-    private List<TestAllTypesCluster> testAllTypes;
+  public void setSubject(PartyProxy subject) {
+     this.subject = subject;
+  }
 
-    public void setTimeValue(TemporalAccessor timeValue) {
-        this.timeValue = timeValue;
-    }
+  public PartyProxy getSubject() {
+     return this.subject ;
+  }
 
-    public TemporalAccessor getTimeValue() {
-        return this.timeValue;
-    }
+  public void setLanguage(Language language) {
+     this.language = language;
+  }
 
-    public void setTransitionDefiningcode(TransitionDefiningcode transitionDefiningcode) {
-        this.transitionDefiningcode = transitionDefiningcode;
-    }
+  public Language getLanguage() {
+     return this.language ;
+  }
 
-    public TransitionDefiningcode getTransitionDefiningcode() {
-        return this.transitionDefiningcode;
-    }
+  public void setFeederAudit(FeederAudit feederAudit) {
+     this.feederAudit = feederAudit;
+  }
 
-    public void setTransitionDefiningcodeCompleted(
-            TransitionDefiningcode transitionDefiningcodeCompleted) {
-        this.transitionDefiningcodeCompleted = transitionDefiningcodeCompleted;
-    }
+  public FeederAudit getFeederAudit() {
+     return this.feederAudit ;
+  }
 
-    public TransitionDefiningcode getTransitionDefiningcodeCompleted() {
-        return this.transitionDefiningcodeCompleted;
-    }
+  public void setTimeValue(TemporalAccessor timeValue) {
+     this.timeValue = timeValue;
+  }
 
-    public void setCompletedDefiningcode(CompletedDefiningcode completedDefiningcode) {
-        this.completedDefiningcode = completedDefiningcode;
-    }
+  public TemporalAccessor getTimeValue() {
+     return this.timeValue ;
+  }
 
-    public CompletedDefiningcode getCompletedDefiningcode() {
-        return this.completedDefiningcode;
-    }
+  public void setCareflowStepDefiningCode(CareflowStepDefiningCode careflowStepDefiningCode) {
+     this.careflowStepDefiningCode = careflowStepDefiningCode;
+  }
 
-    public void setCompletedDefiningcodeCurrentState(
-            org.ehrbase.client.classgenerator.examples.shareddefinition.CompletedDefiningcode completedDefiningcodeCurrentState) {
-        this.completedDefiningcodeCurrentState = completedDefiningcodeCurrentState;
-    }
+  public CareflowStepDefiningCode getCareflowStepDefiningCode() {
+     return this.careflowStepDefiningCode ;
+  }
 
-    public org.ehrbase.client.classgenerator.examples.shareddefinition.CompletedDefiningcode getCompletedDefiningcodeCurrentState(
-    ) {
-        return this.completedDefiningcodeCurrentState;
-    }
+  public void setCurrentStateDefiningCode(CurrentStateDefiningCode currentStateDefiningCode) {
+     this.currentStateDefiningCode = currentStateDefiningCode;
+  }
 
-    public void setPlannedDefiningcode(
-            org.ehrbase.client.classgenerator.examples.shareddefinition.PlannedDefiningcode plannedDefiningcode) {
-        this.plannedDefiningcode = plannedDefiningcode;
-    }
+  public CurrentStateDefiningCode getCurrentStateDefiningCode() {
+     return this.currentStateDefiningCode ;
+  }
 
-    public org.ehrbase.client.classgenerator.examples.shareddefinition.PlannedDefiningcode getPlannedDefiningcode(
-    ) {
-        return this.plannedDefiningcode;
-    }
+  public void setTransitionDefiningCode(Transition transitionDefiningCode) {
+     this.transitionDefiningCode = transitionDefiningCode;
+  }
 
-    public void setActiveDefiningcode(
-            org.ehrbase.client.classgenerator.examples.shareddefinition.ActiveDefiningcode activeDefiningcode) {
-        this.activeDefiningcode = activeDefiningcode;
-    }
-
-    public org.ehrbase.client.classgenerator.examples.shareddefinition.ActiveDefiningcode getActiveDefiningcode(
-    ) {
-        return this.activeDefiningcode;
-    }
-
-    public void setPlannedDefiningcodeCareflowStep(
-            PlannedDefiningcode plannedDefiningcodeCareflowStep) {
-        this.plannedDefiningcodeCareflowStep = plannedDefiningcodeCareflowStep;
-    }
-
-    public PlannedDefiningcode getPlannedDefiningcodeCareflowStep() {
-        return this.plannedDefiningcodeCareflowStep;
-    }
-
-    public void setActiveDefiningcodeCareflowStep(ActiveDefiningcode activeDefiningcodeCareflowStep) {
-        this.activeDefiningcodeCareflowStep = activeDefiningcodeCareflowStep;
-    }
-
-    public ActiveDefiningcode getActiveDefiningcodeCareflowStep() {
-        return this.activeDefiningcodeCareflowStep;
-    }
-
-    public void setTransitionDefiningcodePlanned(
-            TransitionDefiningcode transitionDefiningcodePlanned) {
-        this.transitionDefiningcodePlanned = transitionDefiningcodePlanned;
-    }
-
-    public TransitionDefiningcode getTransitionDefiningcodePlanned() {
-        return this.transitionDefiningcodePlanned;
-    }
-
-    public void setTestAllTypes(List<TestAllTypesCluster> testAllTypes) {
-        this.testAllTypes = testAllTypes;
-    }
-
-    public List<TestAllTypesCluster> getTestAllTypes() {
-        return this.testAllTypes;
-    }
+  public Transition getTransitionDefiningCode() {
+     return this.transitionDefiningCode ;
+  }
 }

@@ -1,0 +1,963 @@
+{
+  "templateId": "Befund der Blutgasanalyse",
+  "version": "2.3",
+  "defaultLanguage": "de",
+  "languages": [
+    "de"
+  ],
+  "tree": {
+    "id": "befund_der_blutgasanalyse",
+    "name": "Befund der Blutgasanalyse",
+    "localizedName": "Befund der Blutgasanalyse",
+    "rmType": "COMPOSITION",
+    "nodeId": "openEHR-EHR-COMPOSITION.registereintrag.v1",
+    "min": 1,
+    "max": 1,
+    "localizedNames": {
+      "de": "Befund der Blutgasanalyse"
+    },
+    "localizedDescriptions": {
+      "de": "Generische Zusammenstellung zur Darstellung eines Datensatzes für Forschungszwecke."
+    },
+    "aqlPath": "",
+    "children": [
+      {
+        "id": "context",
+        "rmType": "EVENT_CONTEXT",
+        "nodeId": "",
+        "min": 1,
+        "max": 1,
+        "aqlPath": "/context",
+        "children": [
+          {
+            "id": "status",
+            "name": "Status",
+            "localizedName": "Status",
+            "rmType": "DV_CODED_TEXT",
+            "nodeId": "at0004",
+            "min": 0,
+            "max": 1,
+            "localizedNames": {
+              "de": "Status"
+            },
+            "localizedDescriptions": {
+              "de": "Status der gelieferten Daten für den Registereintrag. Hinweis: Dies ist nicht der Status einzelner Komponenten."
+            },
+            "aqlPath": "/context/other_context[at0001]/items[at0004]/value",
+            "inputs": [
+              {
+                "suffix": "code",
+                "type": "CODED_TEXT",
+                "list": [
+                  {
+                    "value": "at0010",
+                    "label": "registriert",
+                    "localizedLabels": {
+                      "de": "registriert"
+                    },
+                    "localizedDescriptions": {
+                      "de": "*"
+                    }
+                  },
+                  {
+                    "value": "at0011",
+                    "label": "vorläufig",
+                    "localizedLabels": {
+                      "de": "vorläufig"
+                    },
+                    "localizedDescriptions": {
+                      "de": "*"
+                    }
+                  },
+                  {
+                    "value": "at0012",
+                    "label": "final",
+                    "localizedLabels": {
+                      "de": "final"
+                    },
+                    "localizedDescriptions": {
+                      "de": "*"
+                    }
+                  },
+                  {
+                    "value": "at0013",
+                    "label": "geändert",
+                    "localizedLabels": {
+                      "de": "geändert"
+                    },
+                    "localizedDescriptions": {
+                      "de": "*"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "kategorie",
+            "name": "Kategorie",
+            "localizedName": "Kategorie",
+            "rmType": "DV_TEXT",
+            "nodeId": "at0005",
+            "min": 0,
+            "max": 1,
+            "localizedNames": {
+              "de": "Kategorie"
+            },
+            "localizedDescriptions": {
+              "de": "Die Klassifikation des Registereintrags (z.B. Typ der Observation des FHIR-Profils)."
+            },
+            "aqlPath": "/context/other_context[at0001]/items[at0005]/value",
+            "inputs": [
+              {
+                "type": "TEXT"
+              }
+            ]
+          },
+          {
+            "id": "start_time",
+            "name": "Start_time",
+            "rmType": "DV_DATE_TIME",
+            "min": 0,
+            "max": 1,
+            "aqlPath": "/context/start_time",
+            "inputs": [
+              {
+                "type": "DATETIME"
+              }
+            ],
+            "inContext": true
+          },
+          {
+            "id": "setting",
+            "name": "Setting",
+            "rmType": "DV_CODED_TEXT",
+            "min": 0,
+            "max": 1,
+            "aqlPath": "/context/setting",
+            "inputs": [
+              {
+                "suffix": "code",
+                "type": "TEXT"
+              },
+              {
+                "suffix": "value",
+                "type": "TEXT"
+              }
+            ],
+            "inContext": true
+          }
+        ]
+      },
+      {
+        "id": "laborergebnis",
+        "name": "Laborergebnis",
+        "localizedName": "Laborergebnis",
+        "rmType": "OBSERVATION",
+        "nodeId": "openEHR-EHR-OBSERVATION.laboratory_test_result.v1",
+        "min": 0,
+        "max": 1,
+        "localizedNames": {
+          "de": "Laborergebnis"
+        },
+        "localizedDescriptions": {
+          "de": "Das Ergebnis - einschließlich der Befunde und der Interpretation des Labors - einer Untersuchung, die an Proben durchgeführt wurde, die von einer Einzelperson stammen oder mit dieser Person zusammenhängen."
+        },
+        "aqlPath": "/content[openEHR-EHR-OBSERVATION.laboratory_test_result.v1]",
+        "children": [
+          {
+            "id": "labortest-bezeichnung",
+            "name": "Labortest-Bezeichnung",
+            "localizedName": "Labortest-Bezeichnung",
+            "rmType": "DV_CODED_TEXT",
+            "nodeId": "at0005",
+            "min": 1,
+            "max": 1,
+            "localizedNames": {
+              "de": "Labortest-Bezeichnung"
+            },
+            "localizedDescriptions": {
+              "de": "Name der Laboruntersuchung, die an der/den Probe(n) durchgeführt wurde."
+            },
+            "annotations": {
+              "comment": "Ein Laborergebnis kann sich auf ein einzelnes Analyt oder eine Analytgruppe beziehen. Dazu zählen auch komplette Panel an Parametern. \nEs wird dringend empfohlen, die \"Labortest-Bezeichnung\" anhand einer Terminologie zu kodiereren, wie zum Beispiel LOINC oder SNOMED CT. Beispiel: \"Glukose\", \"Harnstoff\", \"Abstrich\", \"Cortisol\", \"Leberbiopsie\". Der Name kann u.U. auch das Probenmaterial oder den Patientenstatus (z.B. \"Blutzuckerspiegel nüchtern\") oder andere Informationen beinhalten wie \"Kalium (Blutgas)\"."
+            },
+            "aqlPath": "/content[openEHR-EHR-OBSERVATION.laboratory_test_result.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0005]/value",
+            "inputs": [
+              {
+                "suffix": "code",
+                "type": "CODED_TEXT",
+                "list": [
+                  {
+                    "value": "24338-6",
+                    "localizedLabels": {
+                      "de": "Gas panel - Blood"
+                    }
+                  },
+                  {
+                    "value": "24336-0",
+                    "localizedLabels": {
+                      "de": "Gas panel - Arterial blood"
+                    }
+                  },
+                  {
+                    "value": "24337-8",
+                    "localizedLabels": {
+                      "de": "Gas panel - Capillary blood"
+                    }
+                  }
+                ],
+                "terminology": "LOINC"
+              }
+            ]
+          },
+          {
+            "id": "kohlendioxidpartialdruck",
+            "name": "Kohlendioxidpartialdruck",
+            "localizedName": "Kohlendioxidpartialdruck",
+            "rmType": "CLUSTER",
+            "nodeId": "openEHR-EHR-CLUSTER.laboratory_test_analyte.v1",
+            "min": 0,
+            "max": 1,
+            "localizedNames": {
+              "de": "Kohlendioxidpartialdruck"
+            },
+            "localizedDescriptions": {
+              "de": "Ergebnis eines Labortests für einen bestimmten Analytwert."
+            },
+            "annotations": {
+              "comment": "Beispiele: 'Natrium', 'Leukozytenzahl', 'T3'. Üblicherweise über eine externe Terminologie codiert."
+            },
+            "aqlPath": "/content[openEHR-EHR-OBSERVATION.laboratory_test_result.v1]/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.laboratory_test_analyte.v1,'Kohlendioxidpartialdruck']",
+            "children": [
+              {
+                "id": "untersuchter_analyt",
+                "name": "untersuchter Analyt",
+                "localizedName": "untersuchter Analyt",
+                "rmType": "DV_CODED_TEXT",
+                "nodeId": "at0024",
+                "min": 0,
+                "max": 1,
+                "localizedNames": {
+                  "de": "untersuchter Analyt"
+                },
+                "localizedDescriptions": {
+                  "de": "Die Bezeichnung des Analyt-Resultats"
+                },
+                "annotations": {
+                  "comment": "Der Wert dieses Elements wird normalerweise meist durch eine Spezialisierung, durch einer Vorlage oder zur Laufzeit geliefert, um den aktuellen Analyt wiederzugeben. Zum Beispiel: 'Natrium im Serum','Hämoglobin'. \nDie Codierung mit einer externen Terminologie, wie LOINC, NPU, SNOMED-CT oder lokalen Labor-Terminologien wird dringend empfohlen.",
+                  "hl7v2_mapping": "OBX.3;OBX.3",
+                  "fhir_mapping": "Observation.code;Observation.code"
+                },
+                "aqlPath": "/content[openEHR-EHR-OBSERVATION.laboratory_test_result.v1]/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.laboratory_test_analyte.v1,'Kohlendioxidpartialdruck']/items[at0024]/value",
+                "inputs": [
+                  {
+                    "suffix": "code",
+                    "type": "CODED_TEXT",
+                    "list": [
+                      {
+                        "value": "2019-8",
+                        "localizedLabels": {
+                          "de": "Carbon dioxide [Partial pressure] in Arterial blood"
+                        }
+                      },
+                      {
+                        "value": "11557-6",
+                        "localizedLabels": {
+                          "de": "Carbon dioxide [Partial pressure] in Blood"
+                        }
+                      },
+                      {
+                        "value": "2020-6",
+                        "localizedLabels": {
+                          "de": "Carbon dioxide [Partial pressure] in Capillary blood"
+                        }
+                      }
+                    ],
+                    "terminology": "LOINC"
+                  }
+                ]
+              },
+              {
+                "id": "analyt-resultat",
+                "name": "Analyt-Resultat",
+                "localizedName": "Analyt-Resultat",
+                "rmType": "DV_QUANTITY",
+                "nodeId": "at0001",
+                "min": 0,
+                "max": 1,
+                "localizedNames": {
+                  "de": "Analyt-Resultat"
+                },
+                "localizedDescriptions": {
+                  "de": "(Mess-)Wert des Analyt-Resultats."
+                },
+                "annotations": {
+                  "comment": "z.B. '7.3 mmol/l', 'Erhöht'. Der 'Any'-Datentyp wird dann \ndurch eine Spezialisierung, eine Vorlage oder zur Laufzeit\nauf einen passenden Datentypen eingeschränkt werden müssen, um das aktuelle Analyt-Ergebnis wiederzugeben. Der 'Quantity'-Datentyp hat Referenzmodell-Attribute, wie Kennungen für normal/abnormal, Referenzbereiche und Näherungen - für weitere Details s. https://specifications.openehr.org/releases/RM/latest/data_types.html#_dv_quantity_class .",
+                  "hl7v2_mapping": "OBX.2, OBX.5, OBX.6, OBX.7, OBX.8;OBX.2, OBX.5, OBX.6, OBX.7, OBX.8",
+                  "fhir_mapping": "Observation.value[x];Observation.value[x]"
+                },
+                "aqlPath": "/content[openEHR-EHR-OBSERVATION.laboratory_test_result.v1]/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.laboratory_test_analyte.v1,'Kohlendioxidpartialdruck']/items[at0001]/value",
+                "inputs": [
+                  {
+                    "suffix": "magnitude",
+                    "type": "DECIMAL"
+                  },
+                  {
+                    "suffix": "unit",
+                    "type": "CODED_TEXT",
+                    "list": [
+                      {
+                        "value": "mmHg",
+                        "label": "mmHg"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "id": "ergebnis-status",
+                "name": "Ergebnis-Status",
+                "localizedName": "Ergebnis-Status",
+                "rmType": "DV_TEXT",
+                "nodeId": "at0005",
+                "min": 0,
+                "max": 1,
+                "localizedNames": {
+                  "de": "Ergebnis-Status"
+                },
+                "localizedDescriptions": {
+                  "de": "Status des Analyseergebnisses."
+                },
+                "annotations": {
+                  "comment": "Die Werte wurden analog zum HL7 FHIR Diagnostic Report gewählt, die wiederum aus der HL7-Praxis stammen. Andere Codes/Ausdrücke können über den Text 'choice' verwendet werden.",
+                  "hl7v2_mapping": "OBX.11;OBX.11",
+                  "fhir_mapping": "Observation.status;Observation.status"
+                },
+                "aqlPath": "/content[openEHR-EHR-OBSERVATION.laboratory_test_result.v1]/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.laboratory_test_analyte.v1,'Kohlendioxidpartialdruck']/items[at0005]/value",
+                "inputs": [
+                  {
+                    "type": "TEXT",
+                    "list": [
+                      {
+                        "value": "registriert",
+                        "label": "registriert"
+                      },
+                      {
+                        "value": "vorläufig",
+                        "label": "vorläufig"
+                      },
+                      {
+                        "value": "final",
+                        "label": "final"
+                      },
+                      {
+                        "value": "geändert",
+                        "label": "geändert"
+                      }
+                    ],
+                    "listOpen": false
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "sauerstoffpartialdruck",
+            "name": "Sauerstoffpartialdruck",
+            "localizedName": "Sauerstoffpartialdruck",
+            "rmType": "CLUSTER",
+            "nodeId": "openEHR-EHR-CLUSTER.laboratory_test_analyte.v1",
+            "min": 0,
+            "max": 1,
+            "localizedNames": {
+              "de": "Sauerstoffpartialdruck"
+            },
+            "localizedDescriptions": {
+              "de": "Ergebnis eines Labortests für einen bestimmten Analytwert."
+            },
+            "annotations": {
+              "comment": "Beispiele: 'Natrium', 'Leukozytenzahl', 'T3'. Üblicherweise über eine externe Terminologie codiert."
+            },
+            "aqlPath": "/content[openEHR-EHR-OBSERVATION.laboratory_test_result.v1]/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.laboratory_test_analyte.v1,'Sauerstoffpartialdruck']",
+            "children": [
+              {
+                "id": "untersuchter_analyt",
+                "name": "untersuchter Analyt",
+                "localizedName": "untersuchter Analyt",
+                "rmType": "DV_CODED_TEXT",
+                "nodeId": "at0024",
+                "min": 0,
+                "max": 1,
+                "localizedNames": {
+                  "de": "untersuchter Analyt"
+                },
+                "localizedDescriptions": {
+                  "de": "Die Bezeichnung des Analyt-Resultats"
+                },
+                "annotations": {
+                  "comment": "Der Wert dieses Elements wird normalerweise meist durch eine Spezialisierung, durch einer Vorlage oder zur Laufzeit geliefert, um den aktuellen Analyt wiederzugeben. Zum Beispiel: 'Natrium im Serum','Hämoglobin'. \nDie Codierung mit einer externen Terminologie, wie LOINC, NPU, SNOMED-CT oder lokalen Labor-Terminologien wird dringend empfohlen.",
+                  "hl7v2_mapping": "OBX.3;OBX.3",
+                  "fhir_mapping": "Observation.code;Observation.code"
+                },
+                "aqlPath": "/content[openEHR-EHR-OBSERVATION.laboratory_test_result.v1]/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.laboratory_test_analyte.v1,'Sauerstoffpartialdruck']/items[at0024]/value",
+                "inputs": [
+                  {
+                    "suffix": "code",
+                    "type": "CODED_TEXT",
+                    "list": [
+                      {
+                        "value": "2703-7",
+                        "localizedLabels": {
+                          "de": "Oxygen [Partial pressure] in Arterial blood"
+                        }
+                      },
+                      {
+                        "value": "11556-8",
+                        "localizedLabels": {
+                          "de": "Oxygen [Partial pressure] in Blood"
+                        }
+                      },
+                      {
+                        "value": "2704-5",
+                        "localizedLabels": {
+                          "de": "Oxygen [Partial pressure] in Capillary blood"
+                        }
+                      }
+                    ],
+                    "terminology": "LOINC"
+                  }
+                ]
+              },
+              {
+                "id": "analyt-resultat",
+                "name": "Analyt-Resultat",
+                "localizedName": "Analyt-Resultat",
+                "rmType": "DV_QUANTITY",
+                "nodeId": "at0001",
+                "min": 0,
+                "max": 1,
+                "localizedNames": {
+                  "de": "Analyt-Resultat"
+                },
+                "localizedDescriptions": {
+                  "de": "(Mess-)Wert des Analyt-Resultats."
+                },
+                "annotations": {
+                  "comment": "z.B. '7.3 mmol/l', 'Erhöht'. Der 'Any'-Datentyp wird dann \ndurch eine Spezialisierung, eine Vorlage oder zur Laufzeit\nauf einen passenden Datentypen eingeschränkt werden müssen, um das aktuelle Analyt-Ergebnis wiederzugeben. Der 'Quantity'-Datentyp hat Referenzmodell-Attribute, wie Kennungen für normal/abnormal, Referenzbereiche und Näherungen - für weitere Details s. https://specifications.openehr.org/releases/RM/latest/data_types.html#_dv_quantity_class .",
+                  "hl7v2_mapping": "OBX.2, OBX.5, OBX.6, OBX.7, OBX.8;OBX.2, OBX.5, OBX.6, OBX.7, OBX.8",
+                  "fhir_mapping": "Observation.value[x];Observation.value[x]"
+                },
+                "aqlPath": "/content[openEHR-EHR-OBSERVATION.laboratory_test_result.v1]/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.laboratory_test_analyte.v1,'Sauerstoffpartialdruck']/items[at0001]/value",
+                "inputs": [
+                  {
+                    "suffix": "magnitude",
+                    "type": "DECIMAL"
+                  },
+                  {
+                    "suffix": "unit",
+                    "type": "CODED_TEXT",
+                    "list": [
+                      {
+                        "value": "mmHg",
+                        "label": "mmHg"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "id": "ergebnis-status",
+                "name": "Ergebnis-Status",
+                "localizedName": "Ergebnis-Status",
+                "rmType": "DV_TEXT",
+                "nodeId": "at0005",
+                "min": 0,
+                "max": 1,
+                "localizedNames": {
+                  "de": "Ergebnis-Status"
+                },
+                "localizedDescriptions": {
+                  "de": "Status des Analyseergebnisses."
+                },
+                "annotations": {
+                  "comment": "Die Werte wurden analog zum HL7 FHIR Diagnostic Report gewählt, die wiederum aus der HL7-Praxis stammen. Andere Codes/Ausdrücke können über den Text 'choice' verwendet werden.",
+                  "hl7v2_mapping": "OBX.11;OBX.11",
+                  "fhir_mapping": "Observation.status;Observation.status"
+                },
+                "aqlPath": "/content[openEHR-EHR-OBSERVATION.laboratory_test_result.v1]/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.laboratory_test_analyte.v1,'Sauerstoffpartialdruck']/items[at0005]/value",
+                "inputs": [
+                  {
+                    "type": "TEXT",
+                    "list": [
+                      {
+                        "value": "registered",
+                        "label": "registered"
+                      },
+                      {
+                        "value": "preliminary",
+                        "label": "preliminary"
+                      },
+                      {
+                        "value": "final",
+                        "label": "final"
+                      },
+                      {
+                        "value": "amended",
+                        "label": "amended"
+                      }
+                    ],
+                    "listOpen": false
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "ph-wert",
+            "name": "pH-Wert",
+            "localizedName": "pH-Wert",
+            "rmType": "CLUSTER",
+            "nodeId": "openEHR-EHR-CLUSTER.laboratory_test_analyte.v1",
+            "min": 0,
+            "max": 1,
+            "localizedNames": {
+              "de": "pH-Wert"
+            },
+            "localizedDescriptions": {
+              "de": "Ergebnis eines Labortests für einen bestimmten Analytwert."
+            },
+            "annotations": {
+              "comment": "Beispiele: 'Natrium', 'Leukozytenzahl', 'T3'. Üblicherweise über eine externe Terminologie codiert."
+            },
+            "aqlPath": "/content[openEHR-EHR-OBSERVATION.laboratory_test_result.v1]/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.laboratory_test_analyte.v1,'pH-Wert']",
+            "children": [
+              {
+                "id": "untersuchter_analyt",
+                "name": "untersuchter Analyt",
+                "localizedName": "untersuchter Analyt",
+                "rmType": "DV_CODED_TEXT",
+                "nodeId": "at0024",
+                "min": 0,
+                "max": 1,
+                "localizedNames": {
+                  "de": "untersuchter Analyt"
+                },
+                "localizedDescriptions": {
+                  "de": "Die Bezeichnung des Analyt-Resultats"
+                },
+                "annotations": {
+                  "comment": "Der Wert dieses Elements wird normalerweise meist durch eine Spezialisierung, durch einer Vorlage oder zur Laufzeit geliefert, um den aktuellen Analyt wiederzugeben. Zum Beispiel: 'Natrium im Serum','Hämoglobin'. \nDie Codierung mit einer externen Terminologie, wie LOINC, NPU, SNOMED-CT oder lokalen Labor-Terminologien wird dringend empfohlen.",
+                  "hl7v2_mapping": "OBX.3;OBX.3",
+                  "fhir_mapping": "Observation.code;Observation.code"
+                },
+                "aqlPath": "/content[openEHR-EHR-OBSERVATION.laboratory_test_result.v1]/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.laboratory_test_analyte.v1,'pH-Wert']/items[at0024]/value",
+                "inputs": [
+                  {
+                    "suffix": "code",
+                    "type": "CODED_TEXT",
+                    "list": [
+                      {
+                        "value": "2753-2",
+                        "localizedLabels": {
+                          "de": "pH of Serum or Plasma"
+                        }
+                      },
+                      {
+                        "value": "2746-6",
+                        "localizedLabels": {
+                          "de": "pH of Venous blood"
+                        }
+                      },
+                      {
+                        "value": "2745-8",
+                        "localizedLabels": {
+                          "de": "pH of Capillary blood"
+                        }
+                      },
+                      {
+                        "value": "2744-1",
+                        "localizedLabels": {
+                          "de": "pH of Arterial blood"
+                        }
+                      },
+                      {
+                        "value": "19213-8",
+                        "localizedLabels": {
+                          "de": "pH of Mixed venous blood"
+                        }
+                      },
+                      {
+                        "value": "11558-4",
+                        "localizedLabels": {
+                          "de": "pH of Blood"
+                        }
+                      }
+                    ],
+                    "terminology": "LOINC"
+                  }
+                ]
+              },
+              {
+                "id": "analyt-resultat",
+                "name": "Analyt-Resultat",
+                "localizedName": "Analyt-Resultat",
+                "rmType": "DV_QUANTITY",
+                "nodeId": "at0001",
+                "min": 0,
+                "max": 1,
+                "localizedNames": {
+                  "de": "Analyt-Resultat"
+                },
+                "localizedDescriptions": {
+                  "de": "(Mess-)Wert des Analyt-Resultats."
+                },
+                "annotations": {
+                  "comment": "z.B. '7.3 mmol/l', 'Erhöht'. Der 'Any'-Datentyp wird dann \ndurch eine Spezialisierung, eine Vorlage oder zur Laufzeit\nauf einen passenden Datentypen eingeschränkt werden müssen, um das aktuelle Analyt-Ergebnis wiederzugeben. Der 'Quantity'-Datentyp hat Referenzmodell-Attribute, wie Kennungen für normal/abnormal, Referenzbereiche und Näherungen - für weitere Details s. https://specifications.openehr.org/releases/RM/latest/data_types.html#_dv_quantity_class .",
+                  "hl7v2_mapping": "OBX.2, OBX.5, OBX.6, OBX.7, OBX.8;OBX.2, OBX.5, OBX.6, OBX.7, OBX.8",
+                  "fhir_mapping": "Observation.value[x];Observation.value[x]"
+                },
+                "aqlPath": "/content[openEHR-EHR-OBSERVATION.laboratory_test_result.v1]/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.laboratory_test_analyte.v1,'pH-Wert']/items[at0001]/value",
+                "inputs": [
+                  {
+                    "suffix": "magnitude",
+                    "type": "DECIMAL"
+                  },
+                  {
+                    "suffix": "unit",
+                    "type": "CODED_TEXT",
+                    "list": [
+                      {
+                        "value": "pH",
+                        "label": "pH"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "id": "ergebnis-status",
+                "name": "Ergebnis-Status",
+                "localizedName": "Ergebnis-Status",
+                "rmType": "DV_TEXT",
+                "nodeId": "at0005",
+                "min": 0,
+                "max": 1,
+                "localizedNames": {
+                  "de": "Ergebnis-Status"
+                },
+                "localizedDescriptions": {
+                  "de": "Status des Analyseergebnisses."
+                },
+                "annotations": {
+                  "comment": "Die Werte wurden analog zum HL7 FHIR Diagnostic Report gewählt, die wiederum aus der HL7-Praxis stammen. Andere Codes/Ausdrücke können über den Text 'choice' verwendet werden.",
+                  "hl7v2_mapping": "OBX.11;OBX.11",
+                  "fhir_mapping": "Observation.status;Observation.status"
+                },
+                "aqlPath": "/content[openEHR-EHR-OBSERVATION.laboratory_test_result.v1]/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.laboratory_test_analyte.v1,'pH-Wert']/items[at0005]/value",
+                "inputs": [
+                  {
+                    "type": "TEXT",
+                    "list": [
+                      {
+                        "value": "registered",
+                        "label": "registered"
+                      },
+                      {
+                        "value": "preliminary",
+                        "label": "preliminary"
+                      },
+                      {
+                        "value": "final",
+                        "label": "final"
+                      },
+                      {
+                        "value": "amended",
+                        "label": "amended"
+                      }
+                    ],
+                    "listOpen": false
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "sauerstoffsättigung",
+            "name": "Sauerstoffsättigung",
+            "localizedName": "Sauerstoffsättigung",
+            "rmType": "CLUSTER",
+            "nodeId": "openEHR-EHR-CLUSTER.laboratory_test_analyte.v1",
+            "min": 0,
+            "max": 1,
+            "localizedNames": {
+              "de": "Sauerstoffsättigung"
+            },
+            "localizedDescriptions": {
+              "de": "Ergebnis eines Labortests für einen bestimmten Analytwert."
+            },
+            "annotations": {
+              "comment": "Beispiele: 'Natrium', 'Leukozytenzahl', 'T3'. Üblicherweise über eine externe Terminologie codiert."
+            },
+            "aqlPath": "/content[openEHR-EHR-OBSERVATION.laboratory_test_result.v1]/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.laboratory_test_analyte.v1,'Sauerstoffsättigung']",
+            "children": [
+              {
+                "id": "untersuchter_analyt",
+                "name": "untersuchter Analyt",
+                "localizedName": "untersuchter Analyt",
+                "rmType": "DV_CODED_TEXT",
+                "nodeId": "at0024",
+                "min": 0,
+                "max": 1,
+                "localizedNames": {
+                  "de": "untersuchter Analyt"
+                },
+                "localizedDescriptions": {
+                  "de": "Die Bezeichnung des Analyt-Resultats"
+                },
+                "annotations": {
+                  "comment": "Der Wert dieses Elements wird normalerweise meist durch eine Spezialisierung, durch einer Vorlage oder zur Laufzeit geliefert, um den aktuellen Analyt wiederzugeben. Zum Beispiel: 'Natrium im Serum','Hämoglobin'. \nDie Codierung mit einer externen Terminologie, wie LOINC, NPU, SNOMED-CT oder lokalen Labor-Terminologien wird dringend empfohlen.",
+                  "hl7v2_mapping": "OBX.3;OBX.3",
+                  "fhir_mapping": "Observation.code;Observation.code"
+                },
+                "aqlPath": "/content[openEHR-EHR-OBSERVATION.laboratory_test_result.v1]/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.laboratory_test_analyte.v1,'Sauerstoffsättigung']/items[at0024]/value",
+                "inputs": [
+                  {
+                    "suffix": "code",
+                    "type": "CODED_TEXT",
+                    "list": [
+                      {
+                        "value": "2708-6",
+                        "localizedLabels": {
+                          "de": "Oxygen saturation in Arterial blood"
+                        }
+                      },
+                      {
+                        "value": "20564-1",
+                        "localizedLabels": {
+                          "de": "Oxygen saturation in Blood"
+                        }
+                      }
+                    ],
+                    "terminology": "LOINC"
+                  }
+                ]
+              },
+              {
+                "id": "analyt-resultat",
+                "name": "Analyt-Resultat",
+                "localizedName": "Analyt-Resultat",
+                "rmType": "DV_QUANTITY",
+                "nodeId": "at0001",
+                "min": 0,
+                "max": 1,
+                "localizedNames": {
+                  "de": "Analyt-Resultat"
+                },
+                "localizedDescriptions": {
+                  "de": "(Mess-)Wert des Analyt-Resultats."
+                },
+                "annotations": {
+                  "comment": "z.B. '7.3 mmol/l', 'Erhöht'. Der 'Any'-Datentyp wird dann \ndurch eine Spezialisierung, eine Vorlage oder zur Laufzeit\nauf einen passenden Datentypen eingeschränkt werden müssen, um das aktuelle Analyt-Ergebnis wiederzugeben. Der 'Quantity'-Datentyp hat Referenzmodell-Attribute, wie Kennungen für normal/abnormal, Referenzbereiche und Näherungen - für weitere Details s. https://specifications.openehr.org/releases/RM/latest/data_types.html#_dv_quantity_class .",
+                  "hl7v2_mapping": "OBX.2, OBX.5, OBX.6, OBX.7, OBX.8;OBX.2, OBX.5, OBX.6, OBX.7, OBX.8",
+                  "fhir_mapping": "Observation.value[x];Observation.value[x]"
+                },
+                "aqlPath": "/content[openEHR-EHR-OBSERVATION.laboratory_test_result.v1]/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.laboratory_test_analyte.v1,'Sauerstoffsättigung']/items[at0001]/value",
+                "inputs": [
+                  {
+                    "suffix": "magnitude",
+                    "type": "DECIMAL"
+                  },
+                  {
+                    "suffix": "unit",
+                    "type": "CODED_TEXT",
+                    "list": [
+                      {
+                        "value": "%",
+                        "label": "%"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "id": "ergebnis-status",
+                "name": "Ergebnis-Status",
+                "localizedName": "Ergebnis-Status",
+                "rmType": "DV_TEXT",
+                "nodeId": "at0005",
+                "min": 0,
+                "max": 1,
+                "localizedNames": {
+                  "de": "Ergebnis-Status"
+                },
+                "localizedDescriptions": {
+                  "de": "Status des Analyseergebnisses."
+                },
+                "annotations": {
+                  "comment": "Die Werte wurden analog zum HL7 FHIR Diagnostic Report gewählt, die wiederum aus der HL7-Praxis stammen. Andere Codes/Ausdrücke können über den Text 'choice' verwendet werden.",
+                  "hl7v2_mapping": "OBX.11;OBX.11",
+                  "fhir_mapping": "Observation.status;Observation.status"
+                },
+                "aqlPath": "/content[openEHR-EHR-OBSERVATION.laboratory_test_result.v1]/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.laboratory_test_analyte.v1,'Sauerstoffsättigung']/items[at0005]/value",
+                "inputs": [
+                  {
+                    "type": "TEXT",
+                    "list": [
+                      {
+                        "value": "registered",
+                        "label": "registered"
+                      },
+                      {
+                        "value": "preliminary",
+                        "label": "preliminary"
+                      },
+                      {
+                        "value": "final",
+                        "label": "final"
+                      },
+                      {
+                        "value": "amended",
+                        "label": "amended"
+                      }
+                    ],
+                    "listOpen": false
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "time",
+            "name": "Time",
+            "rmType": "DV_DATE_TIME",
+            "min": 0,
+            "max": 1,
+            "aqlPath": "/content[openEHR-EHR-OBSERVATION.laboratory_test_result.v1]/data[at0001]/events[at0002]/time",
+            "inputs": [
+              {
+                "type": "DATETIME"
+              }
+            ],
+            "inContext": true
+          },
+          {
+            "id": "language",
+            "name": "Language",
+            "rmType": "CODE_PHRASE",
+            "min": 0,
+            "max": 1,
+            "aqlPath": "/content[openEHR-EHR-OBSERVATION.laboratory_test_result.v1]/language",
+            "inContext": true
+          },
+          {
+            "id": "encoding",
+            "name": "Encoding",
+            "rmType": "CODE_PHRASE",
+            "min": 0,
+            "max": 1,
+            "aqlPath": "/content[openEHR-EHR-OBSERVATION.laboratory_test_result.v1]/encoding",
+            "inContext": true
+          },
+          {
+            "id": "subject",
+            "name": "Subject",
+            "rmType": "PARTY_PROXY",
+            "min": 0,
+            "max": 1,
+            "aqlPath": "/content[openEHR-EHR-OBSERVATION.laboratory_test_result.v1]/subject",
+            "inputs": [
+              {
+                "suffix": "id",
+                "type": "TEXT"
+              },
+              {
+                "suffix": "id_scheme",
+                "type": "TEXT"
+              },
+              {
+                "suffix": "id_namespace",
+                "type": "TEXT"
+              },
+              {
+                "suffix": "name",
+                "type": "TEXT"
+              }
+            ],
+            "inContext": true
+          }
+        ]
+      },
+      {
+        "id": "category",
+        "rmType": "DV_CODED_TEXT",
+        "nodeId": "",
+        "min": 1,
+        "max": 1,
+        "aqlPath": "/category",
+        "inputs": [
+          {
+            "suffix": "code",
+            "type": "CODED_TEXT",
+            "list": [
+              {
+                "value": "433",
+                "label": "event",
+                "localizedLabels": {
+                  "de": ""
+                }
+              }
+            ],
+            "terminology": "openehr"
+          }
+        ],
+        "inContext": true
+      },
+      {
+        "id": "language",
+        "name": "Language",
+        "rmType": "CODE_PHRASE",
+        "min": 0,
+        "max": 1,
+        "aqlPath": "/language",
+        "inContext": true
+      },
+      {
+        "id": "territory",
+        "name": "Territory",
+        "rmType": "CODE_PHRASE",
+        "min": 0,
+        "max": 1,
+        "aqlPath": "/territory",
+        "inContext": true
+      },
+      {
+        "id": "composer",
+        "name": "Composer",
+        "rmType": "PARTY_PROXY",
+        "min": 0,
+        "max": 1,
+        "aqlPath": "/composer",
+        "inputs": [
+          {
+            "suffix": "id",
+            "type": "TEXT"
+          },
+          {
+            "suffix": "id_scheme",
+            "type": "TEXT"
+          },
+          {
+            "suffix": "id_namespace",
+            "type": "TEXT"
+          },
+          {
+            "suffix": "name",
+            "type": "TEXT"
+          }
+        ],
+        "inContext": true
+      }
+    ]
+  }
+}

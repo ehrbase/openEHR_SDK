@@ -48,7 +48,7 @@ public abstract class LocatableAttributes extends RMAttributes {
             map.put(TAG_ARCHETYPE_NODE_ID, locatable.getArchetypeNodeId());
         }
         if (locatable.getArchetypeDetails() != null){
-            map = toMap(TAG_ARCHETYPE_DETAILS, locatable.getArchetypeDetails(), NO_NAME);
+            map.put(TAG_ARCHETYPE_DETAILS, locatable.getArchetypeDetails());
         }
         if (locatable.getFeederAudit() != null){
             map.put(TAG_FEEDER_AUDIT, new FeederAuditAttributes(locatable.getFeederAudit()).toMap());
@@ -64,5 +64,14 @@ public abstract class LocatableAttributes extends RMAttributes {
         }
 
         return map;
+    }
+
+    public static boolean isLocatableAttribute(String key){
+        return (key.equals(TAG_ARCHETYPE_NODE_ID) ||
+                key.equals(TAG_ARCHETYPE_DETAILS) ||
+                key.equals(TAG_FEEDER_AUDIT)||
+                key.equals(TAG_UID)||
+                key.equals(TAG_LINKS) ||
+                key.equals(TAG_NAME));
     }
 }
