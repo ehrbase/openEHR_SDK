@@ -276,7 +276,7 @@
                 <version>4.8-1</version>
                 <configuration>
                     <listener>true</listener>
-                    <visitor>false</visitor>
+                    <visitor>true</visitor>
                 </configuration>
                 <executions>
                     <execution>

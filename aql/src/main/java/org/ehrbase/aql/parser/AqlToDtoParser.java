@@ -21,7 +21,6 @@ package org.ehrbase.aql.parser;
 
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
-import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import org.ehrbase.aql.dto.AqlDto;
 
 public class AqlToDtoParser {
@@ -30,10 +29,8 @@ public class AqlToDtoParser {
     AqlLexer aqlLexer = new AqlLexer(CharStreams.fromString(aql));
     CommonTokenStream commonTokenStream = new CommonTokenStream(aqlLexer);
     AqlParser aqlParser = new AqlParser(commonTokenStream);
-    ParseTreeWalker walker = new ParseTreeWalker();
-    AqlToDtoListener listener = new AqlToDtoListener();
-    walker.walk(listener, aqlParser.query());
 
-    return listener.getAqlDto();
+    AqlToDtoVisitor listener = new AqlToDtoVisitor();
+    return listener.visitQuery(aqlParser.query());
   }
 }
