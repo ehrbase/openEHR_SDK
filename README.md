@@ -37,6 +37,12 @@ Generic openEHR Client and Objekt-mapper:
 
 * map Compositions from and to JSON;XML
 
+## Release Notes (v1.0.0)
+
+* Support web-templates and flat-format
+* New Dto generator and Dto mapper
+
+
 ## Release Notes (v0.3.6)
 
 * CircleCI pipeline w/ Jacoco code coverage and sonarcloud.io analysis
