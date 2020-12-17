@@ -24,17 +24,26 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
+import org.apache.commons.collections4.MultiValuedMap;
+import org.apache.commons.collections4.multimap.ArrayListValuedHashMap;
+import org.apache.commons.lang3.StringUtils;
 import org.ehrbase.aql.dto.AqlDto;
 import org.ehrbase.aql.dto.EhrDto;
 import org.ehrbase.aql.dto.containment.ContainmentDto;
 import org.ehrbase.aql.dto.containment.ContainmentExpresionDto;
 import org.ehrbase.aql.dto.containment.ContainmentLogicalOperator;
 import org.ehrbase.aql.dto.containment.ContainmentLogicalOperatorSymbol;
+import org.ehrbase.aql.dto.select.SelectDto;
+import org.ehrbase.aql.dto.select.SelectFieldDto;
+import org.ehrbase.aql.dto.select.SelectStatementDto;
 
 public class AqlToDtoVisitor extends AqlBaseVisitor<Object> {
 
   private int containmentId = 0;
   private final Map<String, Integer> identifierMap = new HashMap<>();
+  private final MultiValuedMap<String, SelectFieldDto> selectFieldDtoMultiMap =
+      new ArrayListValuedHashMap<>();
 
   @Override
   public AqlDto visitQuery(AqlParser.QueryContext ctx) {
@@ -42,6 +51,15 @@ public class AqlToDtoVisitor extends AqlBaseVisitor<Object> {
 
     aqlDto.setEhr(visitFromEHR(ctx.queryExpr().from().fromEHR()));
     aqlDto.setContains(visitContainsExpression(ctx.queryExpr().from().containsExpression()));
+    aqlDto.setSelect(visitSelect(ctx.queryExpr().select()));
+
+    selectFieldDtoMultiMap
+        .entries()
+        .forEach(
+            e ->
+                e.getValue()
+                    .setContainmentId(
+                        Optional.ofNullable(identifierMap.get(e.getKey())).orElseThrow()));
     return aqlDto;
   }
 
@@ -54,6 +72,39 @@ public class AqlToDtoVisitor extends AqlBaseVisitor<Object> {
     }
 
     return ehrDto;
+  }
+
+  @Override
+  public SelectDto visitSelect(AqlParser.SelectContext ctx) {
+    SelectDto selectDto = new SelectDto();
+    selectDto.setStatement(visitSelectExpr(ctx.selectExpr()));
+    return selectDto;
+  }
+
+  @Override
+  public List<SelectStatementDto> visitSelectExpr(AqlParser.SelectExprContext ctx) {
+    List<SelectStatementDto> selectStatementDtos = new ArrayList<>();
+
+    if (ctx.identifiedPath() != null) {
+      SelectFieldDto selectFieldDto = visitIdentifiedPath(ctx.identifiedPath());
+      selectFieldDto.setName(ctx.IDENTIFIER().getText());
+      selectStatementDtos.add(selectFieldDto);
+    }
+
+    if (ctx.selectExpr() != null) {
+      selectStatementDtos.addAll(visitSelectExpr(ctx.selectExpr()));
+    }
+    return selectStatementDtos;
+  }
+
+  @Override
+  public SelectFieldDto visitIdentifiedPath(AqlParser.IdentifiedPathContext ctx) {
+    SelectFieldDto selectStatementDto = new SelectFieldDto();
+    selectFieldDtoMultiMap.put(ctx.IDENTIFIER().getText(), selectStatementDto);
+    selectStatementDto.setAqlPath(
+        StringUtils.removeStart(ctx.getText(), ctx.IDENTIFIER().getText()));
+
+    return selectStatementDto;
   }
 
   @Override
@@ -75,8 +126,7 @@ public class AqlToDtoVisitor extends AqlBaseVisitor<Object> {
     if (boolList.size() == 1) {
       return (ContainmentExpresionDto) boolList.get(0);
     } else {
-      ContainmentLogicalOperator operator = buildContainmentLogicalOperator(boolList);
-      return operator;
+      return buildContainmentLogicalOperator(boolList);
     }
   }
 

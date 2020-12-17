@@ -23,6 +23,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
+import org.ehrbase.aql.binder.AqlBinder;
 import org.ehrbase.aql.dto.AqlDto;
 import org.ehrbase.aql.dto.containment.ContainmentDto;
 import org.ehrbase.aql.dto.containment.ContainmentExpresionDto;
@@ -40,6 +41,10 @@ public class AqlToDtoParserTest {
     AqlDto actual = cut.parse(aql);
 
     assertThat(actual).isNotNull();
+
+    String actualAql = new AqlBinder().bind(actual).getLeft().buildAql();
+
+    assertThat(actualAql).isEqualTo(aql);
   }
 
   @Test
