@@ -1,135 +1,194 @@
 package org.ehrbase.client.classgenerator.examples.smicsbefundcomposition.definition;
 
+import com.nedap.archie.rm.archetyped.FeederAudit;
 import com.nedap.archie.rm.datastructures.Cluster;
 import com.nedap.archie.rm.datavalues.quantity.DvOrdinal;
+import java.lang.Double;
+import java.lang.String;
+import java.util.List;
+import javax.annotation.processing.Generated;
 import org.ehrbase.client.annotations.Archetype;
 import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.Path;
-
-import java.util.List;
+import org.ehrbase.client.classgenerator.interfaces.LocatableEntity;
 
 @Entity
 @Archetype("openEHR-EHR-CLUSTER.erregerdetails.v1")
-public class ErregerdetailsCluster {
-    @Path("/items[openEHR-EHR-CLUSTER.laboratory_test_panel.v0 and name/value='Antibiogramm']")
-    private AntibiogrammCluster antibiogramm;
+@Generated(
+    value = "org.ehrbase.client.classgenerator.ClassGenerator",
+    date = "2020-12-10T13:06:12.141022800+01:00",
+    comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
+)
+public class ErregerdetailsCluster implements LocatableEntity {
+  /**
+   * Path: SmICS Befund/SmICS-Ergebnis/Jedes Ereignis/Eigenschaften des beteiligten Erregers/Erregerdetails/Keim Subtyp
+   * Description: Subtyp, welcher zusätzlich zur Speziesidentifizierung zur weiteren Kennzeichnung des Erregers genutzt werden kann, z.B. spa-Typ im Falle von S. aureus oder MLST-Typ.
+   * Comment: Bestimmte Keimsubtypen beeinflussen die Wirtsreaktion bzw. Immunantwort.
+   *                                                                 Beispielsweise ein Resultat einer spa-Typsierung bei einem S. aureus oder anderen Typsierungen wie MLST.
+   *                                                             
+   */
+  @Path("/items[at0047]")
+  private List<ErregerdetailsKeimSubtypElement> keimSubtyp;
 
-    @Path("/items[at0003]/value")
-    private DvOrdinal haufigkeit;
+  /**
+   * Path: SmICS Befund/SmICS-Ergebnis/Jedes Ereignis/Eigenschaften des beteiligten Erregers/Erregerdetails/Keimzahl
+   * Description: Quantitative Angabe zur Keimzahl, z.B. bei Urinen
+   */
+  @Path("/items[at0035]/value|magnitude")
+  private Double keimzahlMagnitude;
 
-    @Path("/items[at0062]/value|value")
-    private String kommentarValue;
+  /**
+   * Path: SmICS Befund/SmICS-Ergebnis/Jedes Ereignis/Eigenschaften des beteiligten Erregers/Erregerdetails/Keimzahl
+   * Description: Quantitative Angabe zur Keimzahl, z.B. bei Urinen
+   */
+  @Path("/items[at0035]/value|units")
+  private String keimzahlUnits;
 
-    @Path("/items[at0057]")
-    private List<LaboranalytResultatResistenzmechanismusCluster> resistenzmechanismus;
+  /**
+   * Path: SmICS Befund/SmICS-Ergebnis/Jedes Ereignis/Eigenschaften des beteiligten Erregers/Erregerdetails/Häufigkeit
+   * Description: Semiquantitative Angabe zur Keimzahl.
+   */
+  @Path("/items[at0003]/value")
+  private DvOrdinal haufigkeit;
 
-    @Path("/items[at0035]/value|magnitude")
-    private Double keimzahlMagnitude;
+  /**
+   * Path: SmICS Befund/SmICS-Ergebnis/Jedes Ereignis/Eigenschaften des beteiligten Erregers/Erregerdetails/Virulenzfaktor
+   * Description: Angabe zu untersuchten
+   *                                                                 Virulenzeigenschaften oder -genen, z.B. PVL bei S. aureus oder EHEC bei E. coli.
+   *                                                             
+   */
+  @Path("/items[at0016]/value|value")
+  private String virulenzfaktorValue;
 
-    @Path("/items[at0035]/value|units")
-    private String keimzahlUnits;
+  /**
+   * Path: SmICS Befund/SmICS-Ergebnis/Jedes Ereignis/Eigenschaften des beteiligten Erregers/Erregerdetails/Antibiogramm
+   * Description: Laborergebnis als Panel/Profil von Einzelresultaten. Verbreitet im medizinischen Labor.
+   */
+  @Path("/items[openEHR-EHR-CLUSTER.laboratory_test_panel.v0 and name/value='Antibiogramm']")
+  private AntibiogrammCluster antibiogramm;
 
-    @Path("/items[at0059]")
-    private List<Cluster> weitereErganzungen;
+  /**
+   * Path: SmICS Befund/SmICS-Ergebnis/Jedes Ereignis/Eigenschaften des beteiligten Erregers/Erregerdetails/Resistenzmechanismus
+   * Description: Angabe der bei dem Erreger vorliegenden Resistenzmechanismen, z.B. ESBL oder Carbapenemase.
+   */
+  @Path("/items[at0057]")
+  private List<ErregerdetailsResistenzmechanismusCluster> resistenzmechanismus;
 
-    @Path("/items[at0047]")
-    private List<LaboranalytResultatKeimSubtypElement> keimSubtyp;
+  /**
+   * Path: SmICS Befund/SmICS-Ergebnis/Jedes Ereignis/Eigenschaften des beteiligten Erregers/Erregerdetails/MRE Klasse
+   * Description: Angabe zur MRE-Klassifikation des
+   *                                                                 Erregers, z.B. 3MRGN oder 4MRGN. Bei VRE und MRSA kann es zu einer Redundanz zum Resistenzmechanismus "Methicillin-resistenz" kommen, dies ist aber problemlos.
+   *                                                             
+   */
+  @Path("/items[at0018]/value|defining_code")
+  private MreKlasseDefiningCode mreKlasseDefiningCode;
 
-    @Path("/items[at0035]/null_flavour|defining_code")
-    private KeimzahlDefiningcode keimzahlDefiningcode;
+  /**
+   * Path: SmICS Befund/SmICS-Ergebnis/Jedes Ereignis/Eigenschaften des beteiligten Erregers/Erregerdetails/Kommentar
+   * Description: Zusätzliche Infomationen zum Erreger.
+   */
+  @Path("/items[at0062]/value|value")
+  private String kommentarValue;
 
-    @Path("/items[at0016]/value|value")
-    private String virulenzfaktorValue;
+  /**
+   * Path: SmICS Befund/SmICS-Ergebnis/Jedes Ereignis/Eigenschaften des beteiligten Erregers/Erregerdetails/Weitere Ergänzungen
+   * Description: Der Cluster dient dazu, weitere Ergänzungen zum Archetyp Erregerdetails aufzunehmen.
+   */
+  @Path("/items[at0059]")
+  private List<Cluster> weitereErganzungen;
 
-    @Path("/items[at0018]/value|defining_code")
-    private MreKlasseDefiningcode mreKlasseDefiningcode;
+  /**
+   * Path: SmICS Befund/SmICS-Ergebnis/Jedes Ereignis/Eigenschaften des beteiligten Erregers/Erregerdetails/feeder_audit
+   */
+  @Path("/feeder_audit")
+  private FeederAudit feederAudit;
 
-    public void setAntibiogramm(AntibiogrammCluster antibiogramm) {
-        this.antibiogramm = antibiogramm;
-    }
+  public void setKeimSubtyp(List<ErregerdetailsKeimSubtypElement> keimSubtyp) {
+     this.keimSubtyp = keimSubtyp;
+  }
 
-    public AntibiogrammCluster getAntibiogramm() {
-        return this.antibiogramm;
-    }
+  public List<ErregerdetailsKeimSubtypElement> getKeimSubtyp() {
+     return this.keimSubtyp ;
+  }
 
-    public void setHaufigkeit(DvOrdinal haufigkeit) {
-        this.haufigkeit = haufigkeit;
-    }
+  public void setKeimzahlMagnitude(Double keimzahlMagnitude) {
+     this.keimzahlMagnitude = keimzahlMagnitude;
+  }
 
-    public DvOrdinal getHaufigkeit() {
-        return this.haufigkeit;
-    }
+  public Double getKeimzahlMagnitude() {
+     return this.keimzahlMagnitude ;
+  }
 
-    public void setKommentarValue(String kommentarValue) {
-        this.kommentarValue = kommentarValue;
-    }
+  public void setKeimzahlUnits(String keimzahlUnits) {
+     this.keimzahlUnits = keimzahlUnits;
+  }
 
-    public String getKommentarValue() {
-        return this.kommentarValue;
-    }
+  public String getKeimzahlUnits() {
+     return this.keimzahlUnits ;
+  }
 
-    public void setResistenzmechanismus(
-            List<LaboranalytResultatResistenzmechanismusCluster> resistenzmechanismus) {
-        this.resistenzmechanismus = resistenzmechanismus;
-    }
+  public void setHaufigkeit(DvOrdinal haufigkeit) {
+     this.haufigkeit = haufigkeit;
+  }
 
-    public List<LaboranalytResultatResistenzmechanismusCluster> getResistenzmechanismus() {
-        return this.resistenzmechanismus;
-    }
+  public DvOrdinal getHaufigkeit() {
+     return this.haufigkeit ;
+  }
 
-    public void setKeimzahlMagnitude(Double keimzahlMagnitude) {
-        this.keimzahlMagnitude = keimzahlMagnitude;
-    }
+  public void setVirulenzfaktorValue(String virulenzfaktorValue) {
+     this.virulenzfaktorValue = virulenzfaktorValue;
+  }
 
-    public Double getKeimzahlMagnitude() {
-        return this.keimzahlMagnitude;
-    }
+  public String getVirulenzfaktorValue() {
+     return this.virulenzfaktorValue ;
+  }
 
-    public void setKeimzahlUnits(String keimzahlUnits) {
-        this.keimzahlUnits = keimzahlUnits;
-    }
+  public void setAntibiogramm(AntibiogrammCluster antibiogramm) {
+     this.antibiogramm = antibiogramm;
+  }
 
-    public String getKeimzahlUnits() {
-        return this.keimzahlUnits;
-    }
+  public AntibiogrammCluster getAntibiogramm() {
+     return this.antibiogramm ;
+  }
 
-    public void setWeitereErganzungen(List<Cluster> weitereErganzungen) {
-        this.weitereErganzungen = weitereErganzungen;
-    }
+  public void setResistenzmechanismus(
+      List<ErregerdetailsResistenzmechanismusCluster> resistenzmechanismus) {
+     this.resistenzmechanismus = resistenzmechanismus;
+  }
 
-    public List<Cluster> getWeitereErganzungen() {
-        return this.weitereErganzungen;
-    }
+  public List<ErregerdetailsResistenzmechanismusCluster> getResistenzmechanismus() {
+     return this.resistenzmechanismus ;
+  }
 
-    public void setKeimSubtyp(List<LaboranalytResultatKeimSubtypElement> keimSubtyp) {
-        this.keimSubtyp = keimSubtyp;
-    }
+  public void setMreKlasseDefiningCode(MreKlasseDefiningCode mreKlasseDefiningCode) {
+     this.mreKlasseDefiningCode = mreKlasseDefiningCode;
+  }
 
-    public List<LaboranalytResultatKeimSubtypElement> getKeimSubtyp() {
-        return this.keimSubtyp;
-    }
+  public MreKlasseDefiningCode getMreKlasseDefiningCode() {
+     return this.mreKlasseDefiningCode ;
+  }
 
-    public void setKeimzahlDefiningcode(KeimzahlDefiningcode keimzahlDefiningcode) {
-        this.keimzahlDefiningcode = keimzahlDefiningcode;
-    }
+  public void setKommentarValue(String kommentarValue) {
+     this.kommentarValue = kommentarValue;
+  }
 
-    public KeimzahlDefiningcode getKeimzahlDefiningcode() {
-        return this.keimzahlDefiningcode;
-    }
+  public String getKommentarValue() {
+     return this.kommentarValue ;
+  }
 
-    public void setVirulenzfaktorValue(String virulenzfaktorValue) {
-        this.virulenzfaktorValue = virulenzfaktorValue;
-    }
+  public void setWeitereErganzungen(List<Cluster> weitereErganzungen) {
+     this.weitereErganzungen = weitereErganzungen;
+  }
 
-    public String getVirulenzfaktorValue() {
-        return this.virulenzfaktorValue;
-    }
+  public List<Cluster> getWeitereErganzungen() {
+     return this.weitereErganzungen ;
+  }
 
-    public void setMreKlasseDefiningcode(MreKlasseDefiningcode mreKlasseDefiningcode) {
-        this.mreKlasseDefiningcode = mreKlasseDefiningcode;
-    }
+  public void setFeederAudit(FeederAudit feederAudit) {
+     this.feederAudit = feederAudit;
+  }
 
-    public MreKlasseDefiningcode getMreKlasseDefiningcode() {
-        return this.mreKlasseDefiningcode;
-    }
+  public FeederAudit getFeederAudit() {
+     return this.feederAudit ;
+  }
 }

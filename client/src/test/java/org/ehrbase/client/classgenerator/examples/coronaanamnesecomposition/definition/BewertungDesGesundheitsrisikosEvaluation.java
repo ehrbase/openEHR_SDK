@@ -1,129 +1,237 @@
 package org.ehrbase.client.classgenerator.examples.coronaanamnesecomposition.definition;
 
+import com.nedap.archie.rm.archetyped.FeederAudit;
 import com.nedap.archie.rm.datastructures.Cluster;
 import com.nedap.archie.rm.generic.PartyProxy;
-import org.ehrbase.client.annotations.Archetype;
-import org.ehrbase.client.annotations.Choice;
-import org.ehrbase.client.annotations.Entity;
-import org.ehrbase.client.annotations.Path;
-import org.ehrbase.client.classgenerator.examples.shareddefinition.Language;
-
+import java.lang.String;
 import java.time.temporal.TemporalAccessor;
 import java.util.List;
+import javax.annotation.processing.Generated;
+import org.ehrbase.client.annotations.Archetype;
+import org.ehrbase.client.annotations.Entity;
+import org.ehrbase.client.annotations.Path;
+import org.ehrbase.client.classgenerator.interfaces.EntryEntity;
+import org.ehrbase.client.classgenerator.shareddefinition.Language;
 
 @Entity
 @Archetype("openEHR-EHR-EVALUATION.health_risk.v1")
-public class BewertungDesGesundheitsrisikosEvaluation {
-    @Path("/protocol[at0010]/items[at0024]/value|value")
-    private TemporalAccessor letzteAktualisierungValue;
+@Generated(
+    value = "org.ehrbase.client.classgenerator.ClassGenerator",
+    date = "2020-12-10T13:06:12.619026200+01:00",
+    comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
+)
+public class BewertungDesGesundheitsrisikosEvaluation implements EntryEntity {
+  /**
+   * Path: Bericht/Allgemeine Angaben/Bewertung des Gesundheitsrisikos/Gesundheitsrisiko
+   * Description: Identifizierung der potenziellen zukünftigen Krankheit, des Zustands oder des Gesundheitsproblems, für die das Risiko bewertet wird.
+   */
+  @Path("/data[at0001]/items[at0002]/value|value")
+  private String gesundheitsrisikoValue;
 
-    @Path("/data[at0001]/items[at0016]/items[at0013]/value")
-    @Choice
-    private BewertungDesGesundheitsrisikosRisikofaktorChoice risikofaktor;
+  /**
+   * Path: Bericht/Allgemeine Angaben/Bewertung des Gesundheitsrisikos/Spezifischer Risikofaktor/Risikofaktor
+   * Description: Identifizierung des Risikofaktors über einen Namen.
+   */
+  @Path("/data[at0001]/items[at0016 and name/value='Spezifischer Risikofaktor']/items[at0013]/value|value")
+  private String spezifischerRisikofaktorRisikofaktorValue;
 
-    @Path("/data[at0001]/items[at0003]/value|value")
-    private String risikobewertungValue;
+  /**
+   * Path: Bericht/Allgemeine Angaben/Bewertung des Gesundheitsrisikos/Spezifischer Risikofaktor/Vorhandensein
+   * Description: Vorhandensein des Risikofaktors.
+   */
+  @Path("/data[at0001]/items[at0016 and name/value='Spezifischer Risikofaktor']/items[at0017]/value|defining_code")
+  private VorhandenseinDefiningCode2 spezifischerRisikofaktorVorhandenseinDefiningCode;
 
-    @Path("/protocol[at0010]/items[at0011]")
-    private List<Cluster> erweiterung;
+  /**
+   * Path: Bericht/Allgemeine Angaben/Bewertung des Gesundheitsrisikos/Spezifischer Risikofaktor/Details
+   * Description: Strukturierte Informationen zu anderen Aspekten der Risikofaktorenbewertung.
+   * Comment: Zum Beispiel: Prävalenz des Risikofaktors bei Familienmitgliedern.
+   */
+  @Path("/data[at0001]/items[at0016 and name/value='Spezifischer Risikofaktor']/items[at0027]")
+  private List<Cluster> spezifischerRisikofaktorDetails;
 
-    @Path("/data[at0001]/items[at0002]/value|value")
-    private String gesundheitsrisikoValue;
+  /**
+   * Path: Bericht/Allgemeine Angaben/Bewertung des Gesundheitsrisikos/Andere Risikofaktoren/Risikofaktor
+   * Description: Identifizierung des Risikofaktors über einen Namen.
+   */
+  @Path("/data[at0001]/items[at0016 and name/value='Andere Risikofaktoren']/items[at0013]/value|value")
+  private String andereRisikofaktorenRisikofaktorValue;
 
-    @Path("/language")
-    private Language language;
+  /**
+   * Path: Bericht/Allgemeine Angaben/Bewertung des Gesundheitsrisikos/Andere Risikofaktoren/Vorhandensein
+   * Description: Vorhandensein des Risikofaktors.
+   */
+  @Path("/data[at0001]/items[at0016 and name/value='Andere Risikofaktoren']/items[at0017]/value|defining_code")
+  private VorhandenseinDefiningCode2 andereRisikofaktorenVorhandenseinDefiningCode;
 
-    @Path("/data[at0001]/items[at0016]/items[at0017]/value")
-    @Choice
-    private BewertungDesGesundheitsrisikosVorhandenseinChoice vorhandensein;
+  /**
+   * Path: Bericht/Allgemeine Angaben/Bewertung des Gesundheitsrisikos/Andere Risikofaktoren/Details
+   * Description: Strukturierte Informationen zu anderen Aspekten der Risikofaktorenbewertung.
+   * Comment: Zum Beispiel: Prävalenz des Risikofaktors bei Familienmitgliedern.
+   */
+  @Path("/data[at0001]/items[at0016 and name/value='Andere Risikofaktoren']/items[at0027]")
+  private List<Cluster> andereRisikofaktorenDetails;
 
-    @Path("/subject")
-    private PartyProxy subject;
+  /**
+   * Path: Bericht/Allgemeine Angaben/Bewertung des Gesundheitsrisikos/Risikobewertung
+   * Description: Bewertung des Gesundheitsrisikos.
+   */
+  @Path("/data[at0001]/items[at0003]/value|value")
+  private String risikobewertungValue;
 
-    @Path("/protocol[at0010]/items[at0025]/value|value")
-    private String bewertungsmethodeValue;
+  /**
+   * Path: Bericht/Allgemeine Angaben/Bewertung des Gesundheitsrisikos/Letzte Aktualisierung
+   * Description: Das Datum an dem die Bewertung des Gesundheitsrisikos zuletzt aktualisiert wurde.
+   */
+  @Path("/protocol[at0010]/items[at0024]/value|value")
+  private TemporalAccessor letzteAktualisierungValue;
 
-    @Path("/data[at0001]/items[at0016]/items[at0027]")
-    @Choice
-    private BewertungDesGesundheitsrisikosDetailsChoice details;
+  /**
+   * Path: Bericht/Allgemeine Angaben/Bewertung des Gesundheitsrisikos/Bewertungsmethode
+   * Description: Identifikation des Algorithmus oder der Leitlinie, welche für die Risikobewertung verwendet wurde.
+   */
+  @Path("/protocol[at0010]/items[at0025]/value|value")
+  private String bewertungsmethodeValue;
 
-    public void setLetzteAktualisierungValue(TemporalAccessor letzteAktualisierungValue) {
-        this.letzteAktualisierungValue = letzteAktualisierungValue;
-    }
+  /**
+   * Path: Bericht/Allgemeine Angaben/Bewertung des Gesundheitsrisikos/Erweiterung
+   * Description: Zusätzliche Informationen zur Erfassung lokaler Inhalte oder Anpassung an andere Referenzmodelle/Formalismen.
+   * Comment: Zum Beispiel: Lokaler Informationsbedarf oder zusätzliche Metadaten zur Anpassung an FHIR-Ressourcen oder CIMI-Modelle.
+   */
+  @Path("/protocol[at0010]/items[at0011]")
+  private List<Cluster> erweiterung;
 
-    public TemporalAccessor getLetzteAktualisierungValue() {
-        return this.letzteAktualisierungValue;
-    }
+  /**
+   * Path: Bericht/Allgemeine Angaben/Bewertung des Gesundheitsrisikos/subject
+   */
+  @Path("/subject")
+  private PartyProxy subject;
 
-    public void setRisikofaktor(BewertungDesGesundheitsrisikosRisikofaktorChoice risikofaktor) {
-        this.risikofaktor = risikofaktor;
-    }
+  /**
+   * Path: Bericht/Allgemeine Angaben/Bewertung des Gesundheitsrisikos/language
+   */
+  @Path("/language")
+  private Language language;
 
-    public BewertungDesGesundheitsrisikosRisikofaktorChoice getRisikofaktor() {
-        return this.risikofaktor;
-    }
+  /**
+   * Path: Bericht/Allgemeine Angaben/Bewertung des Gesundheitsrisikos/feeder_audit
+   */
+  @Path("/feeder_audit")
+  private FeederAudit feederAudit;
 
-    public void setRisikobewertungValue(String risikobewertungValue) {
-        this.risikobewertungValue = risikobewertungValue;
-    }
+  public void setGesundheitsrisikoValue(String gesundheitsrisikoValue) {
+     this.gesundheitsrisikoValue = gesundheitsrisikoValue;
+  }
 
-    public String getRisikobewertungValue() {
-        return this.risikobewertungValue;
-    }
+  public String getGesundheitsrisikoValue() {
+     return this.gesundheitsrisikoValue ;
+  }
 
-    public void setErweiterung(List<Cluster> erweiterung) {
-        this.erweiterung = erweiterung;
-    }
+  public void setSpezifischerRisikofaktorRisikofaktorValue(
+      String spezifischerRisikofaktorRisikofaktorValue) {
+     this.spezifischerRisikofaktorRisikofaktorValue = spezifischerRisikofaktorRisikofaktorValue;
+  }
 
-    public List<Cluster> getErweiterung() {
-        return this.erweiterung;
-    }
+  public String getSpezifischerRisikofaktorRisikofaktorValue() {
+     return this.spezifischerRisikofaktorRisikofaktorValue ;
+  }
 
-    public void setGesundheitsrisikoValue(String gesundheitsrisikoValue) {
-        this.gesundheitsrisikoValue = gesundheitsrisikoValue;
-    }
+  public void setSpezifischerRisikofaktorVorhandenseinDefiningCode(
+      VorhandenseinDefiningCode2 spezifischerRisikofaktorVorhandenseinDefiningCode) {
+     this.spezifischerRisikofaktorVorhandenseinDefiningCode = spezifischerRisikofaktorVorhandenseinDefiningCode;
+  }
 
-    public String getGesundheitsrisikoValue() {
-        return this.gesundheitsrisikoValue;
-    }
+  public VorhandenseinDefiningCode2 getSpezifischerRisikofaktorVorhandenseinDefiningCode() {
+     return this.spezifischerRisikofaktorVorhandenseinDefiningCode ;
+  }
 
-    public void setLanguage(Language language) {
-        this.language = language;
-    }
+  public void setSpezifischerRisikofaktorDetails(List<Cluster> spezifischerRisikofaktorDetails) {
+     this.spezifischerRisikofaktorDetails = spezifischerRisikofaktorDetails;
+  }
 
-    public Language getLanguage() {
-        return this.language;
-    }
+  public List<Cluster> getSpezifischerRisikofaktorDetails() {
+     return this.spezifischerRisikofaktorDetails ;
+  }
 
-    public void setVorhandensein(BewertungDesGesundheitsrisikosVorhandenseinChoice vorhandensein) {
-        this.vorhandensein = vorhandensein;
-    }
+  public void setAndereRisikofaktorenRisikofaktorValue(
+      String andereRisikofaktorenRisikofaktorValue) {
+     this.andereRisikofaktorenRisikofaktorValue = andereRisikofaktorenRisikofaktorValue;
+  }
 
-    public BewertungDesGesundheitsrisikosVorhandenseinChoice getVorhandensein() {
-        return this.vorhandensein;
-    }
+  public String getAndereRisikofaktorenRisikofaktorValue() {
+     return this.andereRisikofaktorenRisikofaktorValue ;
+  }
 
-    public void setSubject(PartyProxy subject) {
-        this.subject = subject;
-    }
+  public void setAndereRisikofaktorenVorhandenseinDefiningCode(
+      VorhandenseinDefiningCode2 andereRisikofaktorenVorhandenseinDefiningCode) {
+     this.andereRisikofaktorenVorhandenseinDefiningCode = andereRisikofaktorenVorhandenseinDefiningCode;
+  }
 
-    public PartyProxy getSubject() {
-        return this.subject;
-    }
+  public VorhandenseinDefiningCode2 getAndereRisikofaktorenVorhandenseinDefiningCode() {
+     return this.andereRisikofaktorenVorhandenseinDefiningCode ;
+  }
 
-    public void setBewertungsmethodeValue(String bewertungsmethodeValue) {
-        this.bewertungsmethodeValue = bewertungsmethodeValue;
-    }
+  public void setAndereRisikofaktorenDetails(List<Cluster> andereRisikofaktorenDetails) {
+     this.andereRisikofaktorenDetails = andereRisikofaktorenDetails;
+  }
 
-    public String getBewertungsmethodeValue() {
-        return this.bewertungsmethodeValue;
-    }
+  public List<Cluster> getAndereRisikofaktorenDetails() {
+     return this.andereRisikofaktorenDetails ;
+  }
 
-    public void setDetails(BewertungDesGesundheitsrisikosDetailsChoice details) {
-        this.details = details;
-    }
+  public void setRisikobewertungValue(String risikobewertungValue) {
+     this.risikobewertungValue = risikobewertungValue;
+  }
 
-    public BewertungDesGesundheitsrisikosDetailsChoice getDetails() {
-        return this.details;
-    }
+  public String getRisikobewertungValue() {
+     return this.risikobewertungValue ;
+  }
+
+  public void setLetzteAktualisierungValue(TemporalAccessor letzteAktualisierungValue) {
+     this.letzteAktualisierungValue = letzteAktualisierungValue;
+  }
+
+  public TemporalAccessor getLetzteAktualisierungValue() {
+     return this.letzteAktualisierungValue ;
+  }
+
+  public void setBewertungsmethodeValue(String bewertungsmethodeValue) {
+     this.bewertungsmethodeValue = bewertungsmethodeValue;
+  }
+
+  public String getBewertungsmethodeValue() {
+     return this.bewertungsmethodeValue ;
+  }
+
+  public void setErweiterung(List<Cluster> erweiterung) {
+     this.erweiterung = erweiterung;
+  }
+
+  public List<Cluster> getErweiterung() {
+     return this.erweiterung ;
+  }
+
+  public void setSubject(PartyProxy subject) {
+     this.subject = subject;
+  }
+
+  public PartyProxy getSubject() {
+     return this.subject ;
+  }
+
+  public void setLanguage(Language language) {
+     this.language = language;
+  }
+
+  public Language getLanguage() {
+     return this.language ;
+  }
+
+  public void setFeederAudit(FeederAudit feederAudit) {
+     this.feederAudit = feederAudit;
+  }
+
+  public FeederAudit getFeederAudit() {
+     return this.feederAudit ;
+  }
 }

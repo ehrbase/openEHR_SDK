@@ -20,7 +20,6 @@ package org.ehrbase.client.flattener;
 import com.nedap.archie.rm.archetyped.Locatable;
 import com.nedap.archie.rm.composition.AdminEntry;
 import com.nedap.archie.rm.composition.Composition;
-import com.nedap.archie.rm.composition.Evaluation;
 import com.nedap.archie.rm.composition.Observation;
 import com.nedap.archie.rm.datastructures.Element;
 import com.nedap.archie.rm.datastructures.IntervalEvent;
@@ -45,13 +44,9 @@ import org.ehrbase.client.classgenerator.examples.coronaanamnesecomposition.Coro
 import org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev0composition.EhrbaseBloodPressureSimpleDeV0Composition;
 import org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1composition.EhrbaseMultiOccurrenceDeV1Composition;
 import org.ehrbase.client.classgenerator.examples.episodeofcarecomposition.EpisodeOfCareComposition;
-import org.ehrbase.client.classgenerator.examples.testalltypesenv1composition.TestAllTypesEnV1Composition;
-import org.ehrbase.client.classgenerator.examples.testalltypesenv1composition.definition.TestAllTypesChoiceDvquantity;
 import org.ehrbase.client.templateprovider.TestDataTemplateProvider;
 import org.ehrbase.serialisation.jsonencoding.CanonicalJson;
-import org.ehrbase.serialisation.xmlencoding.CanonicalXML;
 import org.ehrbase.test_data.composition.CompositionTestDataCanonicalJson;
-import org.ehrbase.test_data.composition.CompositionTestDataCanonicalXML;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -152,7 +147,7 @@ public class UnflattenerTest {
     @Test
     public void testUnflattenCorona() throws IOException {
         Composition expected = new CanonicalJson().unmarshal(IOUtils.toString(CompositionTestDataCanonicalJson.CORONA.getStream(), StandardCharsets.UTF_8), Composition.class);
-        Flattener flattener = new Flattener();
+        Flattener flattener = new Flattener(new TestDataTemplateProvider());
         CoronaAnamneseComposition coronaAnamneseComposition = flattener.flatten(expected, CoronaAnamneseComposition.class);
 
         Unflattener cut = new Unflattener(new TestDataTemplateProvider());
@@ -199,27 +194,7 @@ public class UnflattenerTest {
         assertThat(dvText.getValue()).isEqualTo("location");
     }
 
-    @Test
-    public void testUnflattenAllTypes() throws IOException {
-        Composition composition = new CanonicalXML().unmarshal(IOUtils.toString(CompositionTestDataCanonicalXML.ALL_TYPES.getStream(), StandardCharsets.UTF_8), Composition.class);
-        Flattener flattener = new Flattener();
-        TestAllTypesEnV1Composition testAllTypesEnV1 = flattener.flatten(composition, TestAllTypesEnV1Composition.class);
 
-        TestAllTypesChoiceDvquantity choiceDvquantity = new TestAllTypesChoiceDvquantity();
-        choiceDvquantity.setChoiceMagnitude(22d);
-        choiceDvquantity.setChoiceUnits("mm[Hg]");
-        testAllTypesEnV1.getTestAllTypes().get(0).setChoice(choiceDvquantity);
-
-        Unflattener cut = new Unflattener(new TestDataTemplateProvider());
-        Composition actual = (Composition) cut.unflatten(testAllTypesEnV1);
-        assertThat(actual).isNotNull();
-        Evaluation evaluation = (Evaluation) actual.itemAtPath("/content[openEHR-EHR-EVALUATION.test_all_types.v1]");
-        assertThat(evaluation).isNotNull();
-        DvQuantity dvquantity = (DvQuantity) evaluation.itemAtPath("/data[at0001]/items[at0009]/value");
-        assertThat(dvquantity).isNotNull();
-        assertThat(dvquantity.getMagnitude()).isEqualTo(22d);
-        assertThat(dvquantity.getUnits()).isEqualTo("mm[Hg]");
-    }
 
     @Test
     public void testUnflattenAltEvent() {

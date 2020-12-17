@@ -43,6 +43,7 @@ import org.ehrbase.client.classgenerator.examples.coronaanamnesecomposition.Coro
 import org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev0composition.EhrbaseBloodPressureSimpleDeV0Composition;
 import org.ehrbase.client.flattener.Flattener;
 import org.ehrbase.client.openehrclient.OpenEhrClient;
+import org.ehrbase.client.templateprovider.TestDataTemplateProvider;
 import org.ehrbase.serialisation.jsonencoding.CanonicalJson;
 import org.ehrbase.test_data.composition.CompositionTestDataCanonicalJson;
 import org.junit.BeforeClass;
@@ -373,8 +374,9 @@ public class AqlTestIT {
         UUID ehr = openEhrClient.ehrEndpoint().createEhr();
 
         Composition composition = new CanonicalJson().unmarshal(IOUtils.toString(CompositionTestDataCanonicalJson.CORONA.getStream(), StandardCharsets.UTF_8), Composition.class);
-        Flattener flattener = new Flattener();
+        Flattener flattener = new Flattener(new TestDataTemplateProvider());
         CoronaAnamneseComposition coronaAnamneseComposition = flattener.flatten(composition, CoronaAnamneseComposition.class);
+        coronaAnamneseComposition.setVersionUid(null);
         openEhrClient.compositionEndpoint(ehr).mergeCompositionEntity(coronaAnamneseComposition);
 
         Query<Record2<String, String>> query = Query.buildNativeQuery(

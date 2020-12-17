@@ -4,199 +4,255 @@ import com.nedap.archie.rm.archetyped.FeederAudit;
 import com.nedap.archie.rm.generic.Participation;
 import com.nedap.archie.rm.generic.PartyIdentified;
 import com.nedap.archie.rm.generic.PartyProxy;
+import java.lang.String;
+import java.time.temporal.TemporalAccessor;
+import java.util.List;
+import javax.annotation.processing.Generated;
 import org.ehrbase.client.annotations.Archetype;
 import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.Id;
 import org.ehrbase.client.annotations.Path;
 import org.ehrbase.client.annotations.Template;
-import org.ehrbase.client.classgenerator.examples.shareddefinition.CategoryDefiningcode;
-import org.ehrbase.client.classgenerator.examples.shareddefinition.Language;
-import org.ehrbase.client.classgenerator.examples.shareddefinition.SettingDefiningcode;
-import org.ehrbase.client.classgenerator.examples.shareddefinition.Territory;
 import org.ehrbase.client.classgenerator.examples.smicsbefundcomposition.definition.EventsummaryCluster;
 import org.ehrbase.client.classgenerator.examples.smicsbefundcomposition.definition.SmicsErgebnisObservation;
+import org.ehrbase.client.classgenerator.interfaces.CompositionEntity;
+import org.ehrbase.client.classgenerator.shareddefinition.Category;
+import org.ehrbase.client.classgenerator.shareddefinition.Language;
+import org.ehrbase.client.classgenerator.shareddefinition.Setting;
+import org.ehrbase.client.classgenerator.shareddefinition.Territory;
 import org.ehrbase.client.openehrclient.VersionUid;
-
-import java.time.temporal.TemporalAccessor;
-import java.util.List;
 
 @Entity
 @Archetype("openEHR-EHR-COMPOSITION.report.v1")
+@Generated(
+    value = "org.ehrbase.client.classgenerator.ClassGenerator",
+    date = "2020-12-10T13:06:12.107023600+01:00",
+    comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
+)
 @Template("SmICS-Befund")
-public class SmICSBefundComposition {
-    @Id
-    private VersionUid versionUid;
+public class SmICSBefundComposition implements CompositionEntity {
+  /**
+   * Path: SmICS Befund/context/Bericht ID
+   * Description: Identifizierungsmerkmal des Berichts.
+   */
+  @Path("/context/other_context[at0001]/items[at0002]/value|value")
+  private String berichtIdValue;
 
-    @Path("/context/end_time|value")
-    private TemporalAccessor endTimeValue;
+  /**
+   * Path: SmICS Befund/context/Status
+   * Description: Der Status des gesamten Berichts. Hinweis: Dies ist nicht der Status einer Berichtskomponente.
+   */
+  @Path("/context/other_context[at0001]/items[at0005]/value|value")
+  private String statusValue;
 
-    @Path("/context/participations")
-    private List<Participation> participations;
+  /**
+   * Path: SmICS Befund/context/Eventsummary
+   * Description: Zur Erfassung von Details zur Identifikation eines Events im Gesundheitswesen.
+   */
+  @Path("/context/other_context[at0001]/items[openEHR-EHR-CLUSTER.eventsummary.v0]")
+  private List<EventsummaryCluster> eventsummary;
 
-    @Path("/language")
-    private Language language;
+  /**
+   * Path: SmICS Befund/context/start_time
+   */
+  @Path("/context/start_time|value")
+  private TemporalAccessor startTimeValue;
 
-    @Path("/context/health_care_facility")
-    private PartyIdentified healthCareFacility;
+  /**
+   * Path: SmICS Befund/context/participations
+   */
+  @Path("/context/participations")
+  private List<Participation> participations;
 
-    @Path("/context/other_context[at0001]/items[at0005]/value|value")
-    private String statusValue;
+  /**
+   * Path: SmICS Befund/context/end_time
+   */
+  @Path("/context/end_time|value")
+  private TemporalAccessor endTimeValue;
 
-    @Path("/context/other_context[at0001]/items[at0002]/value|value")
-    private String berichtIdValue;
+  /**
+   * Path: SmICS Befund/context/location
+   */
+  @Path("/context/location")
+  private String location;
 
-    @Path("/territory")
-    private Territory territory;
+  /**
+   * Path: SmICS Befund/context/health_care_facility
+   */
+  @Path("/context/health_care_facility")
+  private PartyIdentified healthCareFacility;
 
-    @Path("/context/other_context[at0001]/items[openEHR-EHR-CLUSTER.eventsummary.v0]")
-    private List<EventsummaryCluster> eventsummary;
+  /**
+   * Path: SmICS Befund/context/setting
+   */
+  @Path("/context/setting|defining_code")
+  private Setting settingDefiningCode;
 
-    @Path("/context/start_time|value")
-    private TemporalAccessor startTimeValue;
+  /**
+   * Path: SmICS Befund/SmICS-Ergebnis
+   * Description: Zur Repräsentation von Krankheiten und Erregern, welche sich durch die hohe Mobilität der Menschen über große Entfernungen und ein größeres Risikopotential für die schnelle Ausbreitung von Infektionskrankheiten und Erregern kennzeichnet.
+   */
+  @Path("/content[openEHR-EHR-OBSERVATION.smics_befund.v1]")
+  private SmicsErgebnisObservation smicsErgebnis;
 
-    @Path("/content[openEHR-EHR-OBSERVATION.smics_befund.v1]")
-    private SmicsErgebnisObservation smicsErgebnis;
+  /**
+   * Path: SmICS Befund/composer
+   */
+  @Path("/composer")
+  private PartyProxy composer;
 
-    @Path("/composer")
-    private PartyProxy composer;
+  /**
+   * Path: SmICS Befund/language
+   */
+  @Path("/language")
+  private Language language;
 
-    @Path("/context/setting|defining_code")
-    private SettingDefiningcode settingDefiningcode;
+  /**
+   * Path: SmICS Befund/feeder_audit
+   */
+  @Path("/feeder_audit")
+  private FeederAudit feederAudit;
 
-    @Path("/feeder_audit")
-    private FeederAudit feederAudit;
+  /**
+   * Path: SmICS Befund/category
+   */
+  @Path("/category|defining_code")
+  private Category categoryDefiningCode;
 
-    @Path("/context/location")
-    private String location;
+  /**
+   * Path: SmICS Befund/territory
+   */
+  @Path("/territory")
+  private Territory territory;
 
-    @Path("/category|defining_code")
-    private CategoryDefiningcode categoryDefiningcode;
+  @Id
+  private VersionUid versionUid;
 
-    public VersionUid getVersionUid() {
-        return this.versionUid;
-    }
+  public void setBerichtIdValue(String berichtIdValue) {
+     this.berichtIdValue = berichtIdValue;
+  }
 
-    public void setVersionUid(VersionUid versionUid) {
-        this.versionUid = versionUid;
-    }
+  public String getBerichtIdValue() {
+     return this.berichtIdValue ;
+  }
 
-    public void setEndTimeValue(TemporalAccessor endTimeValue) {
-        this.endTimeValue = endTimeValue;
-    }
+  public void setStatusValue(String statusValue) {
+     this.statusValue = statusValue;
+  }
 
-    public TemporalAccessor getEndTimeValue() {
-        return this.endTimeValue;
-    }
+  public String getStatusValue() {
+     return this.statusValue ;
+  }
 
-    public void setParticipations(List<Participation> participations) {
-        this.participations = participations;
-    }
+  public void setEventsummary(List<EventsummaryCluster> eventsummary) {
+     this.eventsummary = eventsummary;
+  }
 
-    public List<Participation> getParticipations() {
-        return this.participations;
-    }
+  public List<EventsummaryCluster> getEventsummary() {
+     return this.eventsummary ;
+  }
 
-    public void setLanguage(Language language) {
-        this.language = language;
-    }
+  public void setStartTimeValue(TemporalAccessor startTimeValue) {
+     this.startTimeValue = startTimeValue;
+  }
 
-    public Language getLanguage() {
-        return this.language;
-    }
+  public TemporalAccessor getStartTimeValue() {
+     return this.startTimeValue ;
+  }
 
-    public void setHealthCareFacility(PartyIdentified healthCareFacility) {
-        this.healthCareFacility = healthCareFacility;
-    }
+  public void setParticipations(List<Participation> participations) {
+     this.participations = participations;
+  }
 
-    public PartyIdentified getHealthCareFacility() {
-        return this.healthCareFacility;
-    }
+  public List<Participation> getParticipations() {
+     return this.participations ;
+  }
 
-    public void setStatusValue(String statusValue) {
-        this.statusValue = statusValue;
-    }
+  public void setEndTimeValue(TemporalAccessor endTimeValue) {
+     this.endTimeValue = endTimeValue;
+  }
 
-    public String getStatusValue() {
-        return this.statusValue;
-    }
+  public TemporalAccessor getEndTimeValue() {
+     return this.endTimeValue ;
+  }
 
-    public void setBerichtIdValue(String berichtIdValue) {
-        this.berichtIdValue = berichtIdValue;
-    }
+  public void setLocation(String location) {
+     this.location = location;
+  }
 
-    public String getBerichtIdValue() {
-        return this.berichtIdValue;
-    }
+  public String getLocation() {
+     return this.location ;
+  }
 
-    public void setTerritory(Territory territory) {
-        this.territory = territory;
-    }
+  public void setHealthCareFacility(PartyIdentified healthCareFacility) {
+     this.healthCareFacility = healthCareFacility;
+  }
 
-    public Territory getTerritory() {
-        return this.territory;
-    }
+  public PartyIdentified getHealthCareFacility() {
+     return this.healthCareFacility ;
+  }
 
-    public void setEventsummary(List<EventsummaryCluster> eventsummary) {
-        this.eventsummary = eventsummary;
-    }
+  public void setSettingDefiningCode(Setting settingDefiningCode) {
+     this.settingDefiningCode = settingDefiningCode;
+  }
 
-    public List<EventsummaryCluster> getEventsummary() {
-        return this.eventsummary;
-    }
+  public Setting getSettingDefiningCode() {
+     return this.settingDefiningCode ;
+  }
 
-    public void setStartTimeValue(TemporalAccessor startTimeValue) {
-        this.startTimeValue = startTimeValue;
-    }
+  public void setSmicsErgebnis(SmicsErgebnisObservation smicsErgebnis) {
+     this.smicsErgebnis = smicsErgebnis;
+  }
 
-    public TemporalAccessor getStartTimeValue() {
-        return this.startTimeValue;
-    }
+  public SmicsErgebnisObservation getSmicsErgebnis() {
+     return this.smicsErgebnis ;
+  }
 
-    public void setSmicsErgebnis(SmicsErgebnisObservation smicsErgebnis) {
-        this.smicsErgebnis = smicsErgebnis;
-    }
+  public void setComposer(PartyProxy composer) {
+     this.composer = composer;
+  }
 
-    public SmicsErgebnisObservation getSmicsErgebnis() {
-        return this.smicsErgebnis;
-    }
+  public PartyProxy getComposer() {
+     return this.composer ;
+  }
 
-    public void setComposer(PartyProxy composer) {
-        this.composer = composer;
-    }
+  public void setLanguage(Language language) {
+     this.language = language;
+  }
 
-    public PartyProxy getComposer() {
-        return this.composer;
-    }
+  public Language getLanguage() {
+     return this.language ;
+  }
 
-    public void setSettingDefiningcode(SettingDefiningcode settingDefiningcode) {
-        this.settingDefiningcode = settingDefiningcode;
-    }
+  public void setFeederAudit(FeederAudit feederAudit) {
+     this.feederAudit = feederAudit;
+  }
 
-    public SettingDefiningcode getSettingDefiningcode() {
-        return this.settingDefiningcode;
-    }
+  public FeederAudit getFeederAudit() {
+     return this.feederAudit ;
+  }
 
-    public void setFeederAudit(FeederAudit feederAudit) {
-        this.feederAudit = feederAudit;
-    }
+  public void setCategoryDefiningCode(Category categoryDefiningCode) {
+     this.categoryDefiningCode = categoryDefiningCode;
+  }
 
-    public FeederAudit getFeederAudit() {
-        return this.feederAudit;
-    }
+  public Category getCategoryDefiningCode() {
+     return this.categoryDefiningCode ;
+  }
 
-    public void setLocation(String location) {
-        this.location = location;
-    }
+  public void setTerritory(Territory territory) {
+     this.territory = territory;
+  }
 
-    public String getLocation() {
-        return this.location;
-    }
+  public Territory getTerritory() {
+     return this.territory ;
+  }
 
-    public void setCategoryDefiningcode(CategoryDefiningcode categoryDefiningcode) {
-        this.categoryDefiningcode = categoryDefiningcode;
-    }
+  public VersionUid getVersionUid() {
+     return this.versionUid ;
+  }
 
-    public CategoryDefiningcode getCategoryDefiningcode() {
-        return this.categoryDefiningcode;
-    }
+  public void setVersionUid(VersionUid versionUid) {
+     this.versionUid = versionUid;
+  }
 }

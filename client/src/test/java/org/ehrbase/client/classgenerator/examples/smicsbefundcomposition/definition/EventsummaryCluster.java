@@ -1,67 +1,109 @@
 package org.ehrbase.client.classgenerator.examples.smicsbefundcomposition.definition;
 
+import com.nedap.archie.rm.archetyped.FeederAudit;
+import java.lang.String;
+import java.util.List;
+import javax.annotation.processing.Generated;
 import org.ehrbase.client.annotations.Archetype;
 import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.Path;
-
-import java.util.List;
+import org.ehrbase.client.classgenerator.interfaces.LocatableEntity;
 
 @Entity
 @Archetype("openEHR-EHR-CLUSTER.eventsummary.v0")
-public class EventsummaryCluster {
-    @Path("/items[at0006]/value|value")
-    private String kommentarValue;
+@Generated(
+    value = "org.ehrbase.client.classgenerator.ClassGenerator",
+    date = "2020-12-10T13:06:12.108023100+01:00",
+    comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
+)
+public class EventsummaryCluster implements LocatableEntity {
+  /**
+   * Path: SmICS Befund/context/Eventsummary/Fallidentifikation
+   * Description: *
+   */
+  @Path("/items[at0001 and name/value='Fallidentifikation']/value|value")
+  private String fallidentifikationValue;
 
-    @Path("/items[at0004]/value|value")
-    private String fallKategorieValue;
+  /**
+   * Path: SmICS Befund/context/Eventsummary/Fall-Art
+   * Description: *
+   */
+  @Path("/items[at0002 and name/value='Fall-Art']/value|value")
+  private String fallArtValue;
 
-    @Path("/items[at0001]/value|value")
-    private String fallidentifikationValue;
+  /**
+   * Path: SmICS Befund/context/Eventsummary/Beteiligte Personen
+   * Description: *
+   */
+  @Path("/items[at0007]")
+  private List<EventsummaryBeteiligtePersonenCluster> beteiligtePersonen;
 
-    @Path("/items[at0002]/value|value")
-    private String fallArtValue;
+  /**
+   * Path: SmICS Befund/context/Eventsummary/Fall-Kategorie
+   * Description: Eingruppierung des Kontaktes in Kategorien.
+   */
+  @Path("/items[at0004 and name/value='Fall-Kategorie']/value|value")
+  private String fallKategorieValue;
 
-    @Path("/items[at0007]")
-    private List<ContextEventsummaryBeteiligtePersonenCluster> beteiligtePersonen;
+  /**
+   * Path: SmICS Befund/context/Eventsummary/Kommentar
+   * Description: Zusätzliche Beschreibung der Aktivität, die in anderen Bereichen nicht erfasst wurden.
+   */
+  @Path("/items[at0006]/value|value")
+  private String kommentarValue;
 
-    public void setKommentarValue(String kommentarValue) {
-        this.kommentarValue = kommentarValue;
-    }
+  /**
+   * Path: SmICS Befund/context/Eventsummary/feeder_audit
+   */
+  @Path("/feeder_audit")
+  private FeederAudit feederAudit;
 
-    public String getKommentarValue() {
-        return this.kommentarValue;
-    }
+  public void setFallidentifikationValue(String fallidentifikationValue) {
+     this.fallidentifikationValue = fallidentifikationValue;
+  }
 
-    public void setFallKategorieValue(String fallKategorieValue) {
-        this.fallKategorieValue = fallKategorieValue;
-    }
+  public String getFallidentifikationValue() {
+     return this.fallidentifikationValue ;
+  }
 
-    public String getFallKategorieValue() {
-        return this.fallKategorieValue;
-    }
+  public void setFallArtValue(String fallArtValue) {
+     this.fallArtValue = fallArtValue;
+  }
 
-    public void setFallidentifikationValue(String fallidentifikationValue) {
-        this.fallidentifikationValue = fallidentifikationValue;
-    }
+  public String getFallArtValue() {
+     return this.fallArtValue ;
+  }
 
-    public String getFallidentifikationValue() {
-        return this.fallidentifikationValue;
-    }
+  public void setBeteiligtePersonen(
+      List<EventsummaryBeteiligtePersonenCluster> beteiligtePersonen) {
+     this.beteiligtePersonen = beteiligtePersonen;
+  }
 
-    public void setFallArtValue(String fallArtValue) {
-        this.fallArtValue = fallArtValue;
-    }
+  public List<EventsummaryBeteiligtePersonenCluster> getBeteiligtePersonen() {
+     return this.beteiligtePersonen ;
+  }
 
-    public String getFallArtValue() {
-        return this.fallArtValue;
-    }
+  public void setFallKategorieValue(String fallKategorieValue) {
+     this.fallKategorieValue = fallKategorieValue;
+  }
 
-    public void setBeteiligtePersonen(
-            List<ContextEventsummaryBeteiligtePersonenCluster> beteiligtePersonen) {
-        this.beteiligtePersonen = beteiligtePersonen;
-    }
+  public String getFallKategorieValue() {
+     return this.fallKategorieValue ;
+  }
 
-    public List<ContextEventsummaryBeteiligtePersonenCluster> getBeteiligtePersonen() {
-        return this.beteiligtePersonen;
-    }
+  public void setKommentarValue(String kommentarValue) {
+     this.kommentarValue = kommentarValue;
+  }
+
+  public String getKommentarValue() {
+     return this.kommentarValue ;
+  }
+
+  public void setFeederAudit(FeederAudit feederAudit) {
+     this.feederAudit = feederAudit;
+  }
+
+  public FeederAudit getFeederAudit() {
+     return this.feederAudit ;
+  }
 }

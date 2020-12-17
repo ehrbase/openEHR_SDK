@@ -5,6 +5,10 @@ import com.nedap.archie.rm.datastructures.Cluster;
 import com.nedap.archie.rm.generic.Participation;
 import com.nedap.archie.rm.generic.PartyIdentified;
 import com.nedap.archie.rm.generic.PartyProxy;
+import java.lang.String;
+import java.time.temporal.TemporalAccessor;
+import java.util.List;
+import javax.annotation.processing.Generated;
 import org.ehrbase.client.annotations.Archetype;
 import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.Id;
@@ -14,203 +18,260 @@ import org.ehrbase.client.classgenerator.examples.openereactcarecomposition.defi
 import org.ehrbase.client.classgenerator.examples.openereactcarecomposition.definition.BackgroundSection;
 import org.ehrbase.client.classgenerator.examples.openereactcarecomposition.definition.ResponseSection;
 import org.ehrbase.client.classgenerator.examples.openereactcarecomposition.definition.SituationSection;
-import org.ehrbase.client.classgenerator.examples.shareddefinition.CategoryDefiningcode;
-import org.ehrbase.client.classgenerator.examples.shareddefinition.Language;
-import org.ehrbase.client.classgenerator.examples.shareddefinition.SettingDefiningcode;
-import org.ehrbase.client.classgenerator.examples.shareddefinition.Territory;
+import org.ehrbase.client.classgenerator.interfaces.CompositionEntity;
+import org.ehrbase.client.classgenerator.shareddefinition.Category;
+import org.ehrbase.client.classgenerator.shareddefinition.Language;
+import org.ehrbase.client.classgenerator.shareddefinition.Setting;
+import org.ehrbase.client.classgenerator.shareddefinition.Territory;
 import org.ehrbase.client.openehrclient.VersionUid;
-
-import java.time.temporal.TemporalAccessor;
-import java.util.List;
 
 @Entity
 @Archetype("openEHR-EHR-COMPOSITION.encounter.v1")
+@Generated(
+    value = "org.ehrbase.client.classgenerator.ClassGenerator",
+    date = "2020-12-10T13:06:11.310500500+01:00",
+    comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
+)
 @Template("open_eREACT-Care")
-public class OpenEREACTCareComposition {
-    @Id
-    private VersionUid versionUid;
+public class OpenEREACTCareComposition implements CompositionEntity {
+  /**
+   * Path: open_eREACT-Care/context/Extension
+   * Description: Additional information required to capture local context or to align with other reference models/formalisms.
+   * Comment: e.g. Local hospital departmental infomation or additional metadata to align with FHIR or CIMI equivalents.
+   */
+  @Path("/context/other_context[at0001]/items[at0002]")
+  private List<Cluster> extension;
 
-    @Path("/context/end_time|value")
-    private TemporalAccessor endTimeValue;
+  /**
+   * Path: open_eREACT-Care/context/start_time
+   */
+  @Path("/context/start_time|value")
+  private TemporalAccessor startTimeValue;
 
-    @Path("/context/participations")
-    private List<Participation> participations;
+  /**
+   * Path: open_eREACT-Care/context/participations
+   */
+  @Path("/context/participations")
+  private List<Participation> participations;
 
-    @Path("/language")
-    private Language language;
+  /**
+   * Path: open_eREACT-Care/context/end_time
+   */
+  @Path("/context/end_time|value")
+  private TemporalAccessor endTimeValue;
 
-    @Path("/context/health_care_facility")
-    private PartyIdentified healthCareFacility;
+  /**
+   * Path: open_eREACT-Care/context/location
+   */
+  @Path("/context/location")
+  private String location;
 
-    @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Response']")
-    private ResponseSection response;
+  /**
+   * Path: open_eREACT-Care/context/health_care_facility
+   */
+  @Path("/context/health_care_facility")
+  private PartyIdentified healthCareFacility;
 
-    @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Assessment']")
-    private AssessmentSection assessment;
+  /**
+   * Path: open_eREACT-Care/context/setting
+   */
+  @Path("/context/setting|defining_code")
+  private Setting settingDefiningCode;
 
-    @Path("/territory")
-    private Territory territory;
+  /**
+   * Path: open_eREACT-Care/Situation
+   * Description: A generic section header which should be renamed in a template to suit a specific clinical context.
+   */
+  @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Situation']")
+  private SituationSection situation;
 
-    @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Background']")
-    private BackgroundSection background;
+  /**
+   * Path: open_eREACT-Care/Background
+   * Description: A generic section header which should be renamed in a template to suit a specific clinical context.
+   */
+  @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Background']")
+  private BackgroundSection background;
 
-    @Path("/context/start_time|value")
-    private TemporalAccessor startTimeValue;
+  /**
+   * Path: open_eREACT-Care/Assessment
+   * Description: A generic section header which should be renamed in a template to suit a specific clinical context.
+   */
+  @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Assessment']")
+  private AssessmentSection assessment;
 
-    @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Situation']")
-    private SituationSection situation;
+  /**
+   * Path: open_eREACT-Care/Response
+   * Description: A generic section header which should be renamed in a template to suit a specific clinical context.
+   */
+  @Path("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Response']")
+  private ResponseSection response;
 
-    @Path("/composer")
-    private PartyProxy composer;
+  /**
+   * Path: open_eREACT-Care/composer
+   */
+  @Path("/composer")
+  private PartyProxy composer;
 
-    @Path("/context/setting|defining_code")
-    private SettingDefiningcode settingDefiningcode;
+  /**
+   * Path: open_eREACT-Care/language
+   */
+  @Path("/language")
+  private Language language;
 
-    @Path("/feeder_audit")
-    private FeederAudit feederAudit;
+  /**
+   * Path: open_eREACT-Care/feeder_audit
+   */
+  @Path("/feeder_audit")
+  private FeederAudit feederAudit;
 
-    @Path("/context/location")
-    private String location;
+  /**
+   * Path: open_eREACT-Care/category
+   */
+  @Path("/category|defining_code")
+  private Category categoryDefiningCode;
 
-    @Path("/category|defining_code")
-    private CategoryDefiningcode categoryDefiningcode;
+  /**
+   * Path: open_eREACT-Care/territory
+   */
+  @Path("/territory")
+  private Territory territory;
 
-    @Path("/context/other_context[at0001]/items[at0002]")
-    private List<Cluster> extension;
+  @Id
+  private VersionUid versionUid;
 
-    public VersionUid getVersionUid() {
-        return this.versionUid;
-    }
+  public void setExtension(List<Cluster> extension) {
+     this.extension = extension;
+  }
 
-    public void setVersionUid(VersionUid versionUid) {
-        this.versionUid = versionUid;
-    }
+  public List<Cluster> getExtension() {
+     return this.extension ;
+  }
 
-    public void setEndTimeValue(TemporalAccessor endTimeValue) {
-        this.endTimeValue = endTimeValue;
-    }
+  public void setStartTimeValue(TemporalAccessor startTimeValue) {
+     this.startTimeValue = startTimeValue;
+  }
 
-    public TemporalAccessor getEndTimeValue() {
-        return this.endTimeValue;
-    }
+  public TemporalAccessor getStartTimeValue() {
+     return this.startTimeValue ;
+  }
 
-    public void setParticipations(List<Participation> participations) {
-        this.participations = participations;
-    }
+  public void setParticipations(List<Participation> participations) {
+     this.participations = participations;
+  }
 
-    public List<Participation> getParticipations() {
-        return this.participations;
-    }
+  public List<Participation> getParticipations() {
+     return this.participations ;
+  }
 
-    public void setLanguage(Language language) {
-        this.language = language;
-    }
+  public void setEndTimeValue(TemporalAccessor endTimeValue) {
+     this.endTimeValue = endTimeValue;
+  }
 
-    public Language getLanguage() {
-        return this.language;
-    }
+  public TemporalAccessor getEndTimeValue() {
+     return this.endTimeValue ;
+  }
 
-    public void setHealthCareFacility(PartyIdentified healthCareFacility) {
-        this.healthCareFacility = healthCareFacility;
-    }
+  public void setLocation(String location) {
+     this.location = location;
+  }
 
-    public PartyIdentified getHealthCareFacility() {
-        return this.healthCareFacility;
-    }
+  public String getLocation() {
+     return this.location ;
+  }
 
-    public void setResponse(ResponseSection response) {
-        this.response = response;
-    }
+  public void setHealthCareFacility(PartyIdentified healthCareFacility) {
+     this.healthCareFacility = healthCareFacility;
+  }
 
-    public ResponseSection getResponse() {
-        return this.response;
-    }
+  public PartyIdentified getHealthCareFacility() {
+     return this.healthCareFacility ;
+  }
 
-    public void setAssessment(AssessmentSection assessment) {
-        this.assessment = assessment;
-    }
+  public void setSettingDefiningCode(Setting settingDefiningCode) {
+     this.settingDefiningCode = settingDefiningCode;
+  }
 
-    public AssessmentSection getAssessment() {
-        return this.assessment;
-    }
+  public Setting getSettingDefiningCode() {
+     return this.settingDefiningCode ;
+  }
 
-    public void setTerritory(Territory territory) {
-        this.territory = territory;
-    }
+  public void setSituation(SituationSection situation) {
+     this.situation = situation;
+  }
 
-    public Territory getTerritory() {
-        return this.territory;
-    }
+  public SituationSection getSituation() {
+     return this.situation ;
+  }
 
-    public void setBackground(BackgroundSection background) {
-        this.background = background;
-    }
+  public void setBackground(BackgroundSection background) {
+     this.background = background;
+  }
 
-    public BackgroundSection getBackground() {
-        return this.background;
-    }
+  public BackgroundSection getBackground() {
+     return this.background ;
+  }
 
-    public void setStartTimeValue(TemporalAccessor startTimeValue) {
-        this.startTimeValue = startTimeValue;
-    }
+  public void setAssessment(AssessmentSection assessment) {
+     this.assessment = assessment;
+  }
 
-    public TemporalAccessor getStartTimeValue() {
-        return this.startTimeValue;
-    }
+  public AssessmentSection getAssessment() {
+     return this.assessment ;
+  }
 
-    public void setSituation(SituationSection situation) {
-        this.situation = situation;
-    }
+  public void setResponse(ResponseSection response) {
+     this.response = response;
+  }
 
-    public SituationSection getSituation() {
-        return this.situation;
-    }
+  public ResponseSection getResponse() {
+     return this.response ;
+  }
 
-    public void setComposer(PartyProxy composer) {
-        this.composer = composer;
-    }
+  public void setComposer(PartyProxy composer) {
+     this.composer = composer;
+  }
 
-    public PartyProxy getComposer() {
-        return this.composer;
-    }
+  public PartyProxy getComposer() {
+     return this.composer ;
+  }
 
-    public void setSettingDefiningcode(SettingDefiningcode settingDefiningcode) {
-        this.settingDefiningcode = settingDefiningcode;
-    }
+  public void setLanguage(Language language) {
+     this.language = language;
+  }
 
-    public SettingDefiningcode getSettingDefiningcode() {
-        return this.settingDefiningcode;
-    }
+  public Language getLanguage() {
+     return this.language ;
+  }
 
-    public void setFeederAudit(FeederAudit feederAudit) {
-        this.feederAudit = feederAudit;
-    }
+  public void setFeederAudit(FeederAudit feederAudit) {
+     this.feederAudit = feederAudit;
+  }
 
-    public FeederAudit getFeederAudit() {
-        return this.feederAudit;
-    }
+  public FeederAudit getFeederAudit() {
+     return this.feederAudit ;
+  }
 
-    public void setLocation(String location) {
-        this.location = location;
-    }
+  public void setCategoryDefiningCode(Category categoryDefiningCode) {
+     this.categoryDefiningCode = categoryDefiningCode;
+  }
 
-    public String getLocation() {
-        return this.location;
-    }
+  public Category getCategoryDefiningCode() {
+     return this.categoryDefiningCode ;
+  }
 
-    public void setCategoryDefiningcode(CategoryDefiningcode categoryDefiningcode) {
-        this.categoryDefiningcode = categoryDefiningcode;
-    }
+  public void setTerritory(Territory territory) {
+     this.territory = territory;
+  }
 
-    public CategoryDefiningcode getCategoryDefiningcode() {
-        return this.categoryDefiningcode;
-    }
+  public Territory getTerritory() {
+     return this.territory ;
+  }
 
-    public void setExtension(List<Cluster> extension) {
-        this.extension = extension;
-    }
+  public VersionUid getVersionUid() {
+     return this.versionUid ;
+  }
 
-    public List<Cluster> getExtension() {
-        return this.extension;
-    }
+  public void setVersionUid(VersionUid versionUid) {
+     this.versionUid = versionUid;
+  }
 }

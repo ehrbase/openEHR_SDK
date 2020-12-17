@@ -1,0 +1,15 @@
+optimizerSetting: SECTION
+addNullFlavor: true
+replaceChars:
+  #German characters
+  ä: ae
+  Ä: Ae
+  ö: oe
+  Ö: OE
+  ü: ue
+  Ü: Ue
+  ß: ss
+  # Norwegian characters
+  æ: ae
+  ø: oe
+  å: aa
