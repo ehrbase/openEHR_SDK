@@ -485,7 +485,7 @@
                 <groupId>org.mockito</groupId>
                 <artifactId>mockito-core</artifactId>
                 <scope>test</scope>
-                <version>3.6.0</version>
+                <version>3.6.28</version>
             </dependency>
             <dependency>
                 <groupId>org.ehcache</groupId>
