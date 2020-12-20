@@ -1471,7 +1471,7 @@ executors:
     working_directory: ~/projects
     docker:
       - image: circleci/python:3.8.5-node-browsers
-      - image: ehrbaseorg/ehrbase-postgres:10
+      - image: ehrbase/ehrbase-postgres:11.10
         environment:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
