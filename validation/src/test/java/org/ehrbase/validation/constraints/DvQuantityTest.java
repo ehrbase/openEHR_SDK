@@ -18,56 +18,54 @@
 
 package org.ehrbase.validation.constraints;
 
+import static org.junit.Assert.fail;
+
 import com.nedap.archie.rm.datavalues.quantity.DvQuantity;
 import org.ehrbase.validation.constraints.wrappers.CArchetypeConstraint;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.fail;
-
 public class DvQuantityTest extends ConstraintTestBase {
 
-    @Before
-    public void setUp() {
-        try {
-            setUpContext("./src/test/resources/constraints/dvquantity.xml");
-        } catch (Exception e) {
-            fail();
-        }
+  @Before
+  public void setUp() {
+    try {
+      setUpContext("./src/test/resources/constraints/dvquantity.xml");
+    } catch (Exception e) {
+      fail();
     }
+  }
 
+  @Test
+  public void testConstraintValidation() {
+    DvQuantity dvQuantity = new DvQuantity("/min", 120D, 0L);
 
-    @Test
-    public void testConstraintValidation() {
-        DvQuantity dvQuantity = new DvQuantity("/min", 120D, 0L);
-
-        try {
-            new CArchetypeConstraint(null).validate("test", dvQuantity, archetypeconstraint);
-        } catch (Exception e) {
-            fail(e.getMessage());
-        }
+    try {
+      new CArchetypeConstraint(null).validate("test", dvQuantity, archetypeconstraint);
+    } catch (Exception e) {
+      fail(e.getMessage());
     }
+  }
 
-    @Test
-    public void testConstraintValidationBadUnit() {
-        DvQuantity dvQuantity = new DvQuantity("/kg", 120D, 0L);
+  @Test
+  public void testConstraintValidationBadUnit() {
+    DvQuantity dvQuantity = new DvQuantity("/kg", 120D, 0L);
 
-        try {
-            new CArchetypeConstraint(null).validate("test", dvQuantity, archetypeconstraint);
-            fail("undetected wrong unit");
-        } catch (Exception e) {
-        }
+    try {
+      new CArchetypeConstraint(null).validate("test", dvQuantity, archetypeconstraint);
+      fail("undetected wrong unit");
+    } catch (Exception e) {
     }
+  }
 
-    @Test
-    public void testConstraintValidationValue() {
-        DvQuantity dvQuantity = new DvQuantity("/min", -120D, 0L);
+  @Test
+  public void testConstraintValidationValue() {
+    DvQuantity dvQuantity = new DvQuantity("/min", -120D, 0L);
 
-        try {
-            new CArchetypeConstraint(null).validate("test", dvQuantity, archetypeconstraint);
-            fail("undetected negative value");
-        } catch (Exception e) {
-        }
+    try {
+      new CArchetypeConstraint(null).validate("test", dvQuantity, archetypeconstraint);
+      fail("undetected negative value");
+    } catch (Exception e) {
     }
-
+  }
 }

@@ -32,17 +32,15 @@ public abstract class BinaryLogicalOperator implements Condition {
     conditionList.add(condition2);
   }
 
-    @Override
-    public String buildAql() {
+  @Override
+  public String buildAql() {
 
-        return "(" +
-                conditionList.stream()
-                        .map(Condition::buildAql)
-                        .collect(Collectors.joining(" " + getSymbol() + " ")) +
-                ")";
-    }
-
+    return "("
+        + conditionList.stream()
+            .map(Condition::buildAql)
+            .collect(Collectors.joining(" " + getSymbol() + " "))
+        + ")";
+  }
 
   protected abstract String getSymbol();
-
 }

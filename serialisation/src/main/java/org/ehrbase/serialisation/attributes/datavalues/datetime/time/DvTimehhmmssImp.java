@@ -18,23 +18,25 @@
 package org.ehrbase.serialisation.attributes.datavalues.datetime.time;
 
 import com.nedap.archie.rm.datavalues.quantity.datetime.DvTime;
-import org.ehrbase.serialisation.attributes.datavalues.datetime.TemporalAttributes;
-
 import java.time.temporal.Temporal;
+import org.ehrbase.serialisation.attributes.datavalues.datetime.TemporalAttributes;
 
 public class DvTimehhmmssImp extends DvTimeAttributesImp {
 
-    public DvTimehhmmssImp(DvTime dvTime) {
-        super(dvTime);
-    }
+  public DvTimehhmmssImp(DvTime dvTime) {
+    super(dvTime);
+  }
 
-    @Override
-    public Temporal getValueExtended() {
-        return (Temporal)dvTime.getValue();
-    }
+  @Override
+  public Temporal getValueExtended() {
+    return (Temporal) dvTime.getValue();
+  }
 
-    @Override
-    public Integer getSupportedChronoFields() {
-        return supportedChronoFields(TemporalAttributes.HOUR|TemporalAttributes.MINUTE_OF_HOUR|TemporalAttributes.SECOND_OF_MINUTE);
-    }
+  @Override
+  public Integer getSupportedChronoFields() {
+    return supportedChronoFields(
+        TemporalAttributes.HOUR
+            | TemporalAttributes.MINUTE_OF_HOUR
+            | TemporalAttributes.SECOND_OF_MINUTE);
+  }
 }

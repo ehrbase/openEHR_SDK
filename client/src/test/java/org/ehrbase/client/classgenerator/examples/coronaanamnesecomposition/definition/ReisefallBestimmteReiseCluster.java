@@ -13,26 +13,26 @@ import org.ehrbase.client.classgenerator.interfaces.LocatableEntity;
 @Generated(
     value = "org.ehrbase.client.classgenerator.ClassGenerator",
     date = "2020-12-10T13:06:12.580025900+01:00",
-    comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
-)
+    comments = "https://github.com/ehrbase/openEHR_SDK Version: null")
 public class ReisefallBestimmteReiseCluster implements LocatableEntity {
   /**
-   * Path: Bericht/Risikogebiet/Reisefall/Beliebiges Intervallereignis/Bestimmte Reise/Bestimmtes Reiseziel
-   * Description: Angaben zu einem einzelnen Ort, der auf einer Reise besucht wurde.
+   * Path: Bericht/Risikogebiet/Reisefall/Beliebiges Intervallereignis/Bestimmte Reise/Bestimmtes
+   * Reiseziel Description: Angaben zu einem einzelnen Ort, der auf einer Reise besucht wurde.
    */
   @Path("/items[at0010]")
   private List<ReisefallBestimmtesReisezielCluster> bestimmtesReiseziel;
 
   /**
-   * Path: Bericht/Risikogebiet/Reisefall/Beliebiges Intervallereignis/Bestimmte Reise/Zusätzliche Reisedetails
-   * Description: Zusätzliche strukturierte Informationen zur gesamten Reise.
+   * Path: Bericht/Risikogebiet/Reisefall/Beliebiges Intervallereignis/Bestimmte Reise/Zusätzliche
+   * Reisedetails Description: Zusätzliche strukturierte Informationen zur gesamten Reise.
    */
   @Path("/items[at0025]")
   private List<Cluster> zusatzlicheReisedetails;
 
   /**
-   * Path: Bericht/Risikogebiet/Reisefall/Beliebiges Intervallereignis/Bestimmte Reise/Rückreisedatum
-   * Description: Das Datum, an dem die Person zu ihrem Heimatstandort zurückkehrte.
+   * Path: Bericht/Risikogebiet/Reisefall/Beliebiges Intervallereignis/Bestimmte
+   * Reise/Rückreisedatum Description: Das Datum, an dem die Person zu ihrem Heimatstandort
+   * zurückkehrte.
    */
   @Path("/items[at0019]/value|value")
   private TemporalAccessor ruckreisedatumValue;
@@ -45,34 +45,34 @@ public class ReisefallBestimmteReiseCluster implements LocatableEntity {
 
   public void setBestimmtesReiseziel(
       List<ReisefallBestimmtesReisezielCluster> bestimmtesReiseziel) {
-     this.bestimmtesReiseziel = bestimmtesReiseziel;
+    this.bestimmtesReiseziel = bestimmtesReiseziel;
   }
 
   public List<ReisefallBestimmtesReisezielCluster> getBestimmtesReiseziel() {
-     return this.bestimmtesReiseziel ;
+    return this.bestimmtesReiseziel;
   }
 
   public void setZusatzlicheReisedetails(List<Cluster> zusatzlicheReisedetails) {
-     this.zusatzlicheReisedetails = zusatzlicheReisedetails;
+    this.zusatzlicheReisedetails = zusatzlicheReisedetails;
   }
 
   public List<Cluster> getZusatzlicheReisedetails() {
-     return this.zusatzlicheReisedetails ;
+    return this.zusatzlicheReisedetails;
   }
 
   public void setRuckreisedatumValue(TemporalAccessor ruckreisedatumValue) {
-     this.ruckreisedatumValue = ruckreisedatumValue;
+    this.ruckreisedatumValue = ruckreisedatumValue;
   }
 
   public TemporalAccessor getRuckreisedatumValue() {
-     return this.ruckreisedatumValue ;
+    return this.ruckreisedatumValue;
   }
 
   public void setFeederAudit(FeederAudit feederAudit) {
-     this.feederAudit = feederAudit;
+    this.feederAudit = feederAudit;
   }
 
   public FeederAudit getFeederAudit() {
-     return this.feederAudit ;
+    return this.feederAudit;
   }
 }

@@ -17,8 +17,7 @@ import org.ehrbase.client.classgenerator.shareddefinition.Transition;
 @Generated(
     value = "org.ehrbase.client.classgenerator.ClassGenerator",
     date = "2020-12-10T13:06:10.818494500+01:00",
-    comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
-)
+    comments = "https://github.com/ehrbase/openEHR_SDK Version: null")
 public class TestAllTypesAction implements EntryEntity {
   /**
    * Path: Test all types/Test all types/section 2/section 3/Test all types/Test all types
@@ -27,109 +26,104 @@ public class TestAllTypesAction implements EntryEntity {
   @Path("/description[at0001]/items[openEHR-EHR-CLUSTER.test_all_types.v1]")
   private List<TestAllTypesCluster> testAllTypes;
 
-  /**
-   * Path: Test all types/Test all types/section 2/section 3/Test all types/subject
-   */
+  /** Path: Test all types/Test all types/section 2/section 3/Test all types/subject */
   @Path("/subject")
   private PartyProxy subject;
 
-  /**
-   * Path: Test all types/Test all types/section 2/section 3/Test all types/language
-   */
+  /** Path: Test all types/Test all types/section 2/section 3/Test all types/language */
   @Path("/language")
   private Language language;
 
-  /**
-   * Path: Test all types/Test all types/section 2/section 3/Test all types/feeder_audit
-   */
+  /** Path: Test all types/Test all types/section 2/section 3/Test all types/feeder_audit */
   @Path("/feeder_audit")
   private FeederAudit feederAudit;
 
-  /**
-   * Path: Test all types/Test all types/section 2/section 3/Test all types/time
-   */
+  /** Path: Test all types/Test all types/section 2/section 3/Test all types/time */
   @Path("/time|value")
   private TemporalAccessor timeValue;
 
   /**
-   * Path: Test all types/Test all types/section 2/section 3/Test all types/ism_transition/Careflow_step
+   * Path: Test all types/Test all types/section 2/section 3/Test all
+   * types/ism_transition/Careflow_step
    */
   @Path("/ism_transition/careflow_step|defining_code")
   private CareflowStepDefiningCode careflowStepDefiningCode;
 
   /**
-   * Path: Test all types/Test all types/section 2/section 3/Test all types/ism_transition/Current_state
+   * Path: Test all types/Test all types/section 2/section 3/Test all
+   * types/ism_transition/Current_state
    */
   @Path("/ism_transition/current_state|defining_code")
   private CurrentStateDefiningCode currentStateDefiningCode;
 
   /**
-   * Path: Test all types/Test all types/section 2/section 3/Test all types/ism_transition/transition
+   * Path: Test all types/Test all types/section 2/section 3/Test all
+   * types/ism_transition/transition
    */
   @Path("/ism_transition/transition|defining_code")
   private Transition transitionDefiningCode;
 
   public void setTestAllTypes(List<TestAllTypesCluster> testAllTypes) {
-     this.testAllTypes = testAllTypes;
+    this.testAllTypes = testAllTypes;
   }
 
   public List<TestAllTypesCluster> getTestAllTypes() {
-     return this.testAllTypes ;
+    return this.testAllTypes;
   }
 
   public void setSubject(PartyProxy subject) {
-     this.subject = subject;
+    this.subject = subject;
   }
 
   public PartyProxy getSubject() {
-     return this.subject ;
+    return this.subject;
   }
 
   public void setLanguage(Language language) {
-     this.language = language;
+    this.language = language;
   }
 
   public Language getLanguage() {
-     return this.language ;
+    return this.language;
   }
 
   public void setFeederAudit(FeederAudit feederAudit) {
-     this.feederAudit = feederAudit;
+    this.feederAudit = feederAudit;
   }
 
   public FeederAudit getFeederAudit() {
-     return this.feederAudit ;
+    return this.feederAudit;
   }
 
   public void setTimeValue(TemporalAccessor timeValue) {
-     this.timeValue = timeValue;
+    this.timeValue = timeValue;
   }
 
   public TemporalAccessor getTimeValue() {
-     return this.timeValue ;
+    return this.timeValue;
   }
 
   public void setCareflowStepDefiningCode(CareflowStepDefiningCode careflowStepDefiningCode) {
-     this.careflowStepDefiningCode = careflowStepDefiningCode;
+    this.careflowStepDefiningCode = careflowStepDefiningCode;
   }
 
   public CareflowStepDefiningCode getCareflowStepDefiningCode() {
-     return this.careflowStepDefiningCode ;
+    return this.careflowStepDefiningCode;
   }
 
   public void setCurrentStateDefiningCode(CurrentStateDefiningCode currentStateDefiningCode) {
-     this.currentStateDefiningCode = currentStateDefiningCode;
+    this.currentStateDefiningCode = currentStateDefiningCode;
   }
 
   public CurrentStateDefiningCode getCurrentStateDefiningCode() {
-     return this.currentStateDefiningCode ;
+    return this.currentStateDefiningCode;
   }
 
   public void setTransitionDefiningCode(Transition transitionDefiningCode) {
-     this.transitionDefiningCode = transitionDefiningCode;
+    this.transitionDefiningCode = transitionDefiningCode;
   }
 
   public Transition getTransitionDefiningCode() {
-     return this.transitionDefiningCode ;
+    return this.transitionDefiningCode;
   }
 }

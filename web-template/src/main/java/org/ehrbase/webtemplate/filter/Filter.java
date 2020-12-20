@@ -126,7 +126,9 @@ public class Filter implements WebTemplateFilter {
       RMTypeInfo typeInfo = ARCHIE_RM_INFO_LOOKUP.getTypeInfo(parent.getRmType());
       Set<String> attributeNames =
           Optional.ofNullable(configMap.get(typeInfo.getJavaClass()))
-              .map(RmIntrospectConfig::getNonTemplateFields).orElse(Collections.emptySet()).stream()
+              .map(RmIntrospectConfig::getNonTemplateFields)
+              .orElse(Collections.emptySet())
+              .stream()
               .map(s -> new SnakeCase(s).camelToSnake())
               .collect(Collectors.toSet());
       attributeNames.add("context");

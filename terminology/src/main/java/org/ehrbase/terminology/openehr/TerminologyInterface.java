@@ -44,81 +44,75 @@ import java.util.Map;
  */
 public interface TerminologyInterface {
 
-    /**
-     * Returns a TerminologyAccess of given name
-     *
-     * @param name not empty and known to this service
-     * @return terminology
-     * @throws IllegalArgumentException if name null, empty
-     *                                  or unknown to this terminology service
-     */
-    TerminologyAccess terminology(String name);
+  /**
+   * Returns a TerminologyAccess of given name
+   *
+   * @param name not empty and known to this service
+   * @return terminology
+   * @throws IllegalArgumentException if name null, empty or unknown to this terminology service
+   */
+  TerminologyAccess terminology(String name);
 
-    /**
-     * Return an interface to the code_set identified by the
-     * *external* identifier name
-     *
-     * @param name not empty and known to this service
-     * @return codeSet
-     * @throws IllegalArgumentException if name is null, empty
-     *                                  or unknown to this terminology service
-     */
-    CodeSetAccess codeSet(String name);
+  /**
+   * Return an interface to the code_set identified by the *external* identifier name
+   *
+   * @param name not empty and known to this service
+   * @return codeSet
+   * @throws IllegalArgumentException if name is null, empty or unknown to this terminology service
+   */
+  CodeSetAccess codeSet(String name);
 
-    /**
-     * Return an interface to the code_set identified internally
-     * in openEHR by id.
-     *
-     * @param id not empty and known to this service
-     * @return codeSet
-     * @throws IllegalArgumentException if id is null, empty
-     *                                  or unknown to this terminology service
-     */
-    CodeSetAccess codeSetForId(OpenEHRCodeSetIdentifiers id);
+  /**
+   * Return an interface to the code_set identified internally in openEHR by id.
+   *
+   * @param id not empty and known to this service
+   * @return codeSet
+   * @throws IllegalArgumentException if id is null, empty or unknown to this terminology service
+   */
+  CodeSetAccess codeSetForId(OpenEHRCodeSetIdentifiers id);
 
-    /**
-     * Returns true if terminology of given name known by this service
-     *
-     * @param name not empty
-     * @return true if has given terminology
-     * @throws IllegalArgumentException if name is null or empty
-     */
-    boolean hasTerminology(String name);
+  /**
+   * Returns true if terminology of given name known by this service
+   *
+   * @param name not empty
+   * @return true if has given terminology
+   * @throws IllegalArgumentException if name is null or empty
+   */
+  boolean hasTerminology(String name);
 
-    /**
-     * Returns true if code set of given name known by this service
-     *
-     * @param name not empty
-     * @return true if has given codeset
-     * @throws IllegalArgumentException if name is null or empty
-     */
-    boolean hasCodeSet(String name);
+  /**
+   * Returns true if code set of given name known by this service
+   *
+   * @param name not empty
+   * @return true if has given codeset
+   * @throws IllegalArgumentException if name is null or empty
+   */
+  boolean hasCodeSet(String name);
 
-    /**
-     * Gets all terminology identifiers known in the terminology service.
-     *
-     * @return all terminology identifiers
-     */
-    List<String> terminologyIdentifiers();
+  /**
+   * Gets all terminology identifiers known in the terminology service.
+   *
+   * @return all terminology identifiers
+   */
+  List<String> terminologyIdentifiers();
 
-    /**
-     * Gets all code set identifiers known in the terminology service
-     *
-     * @return all code identifiers
-     */
-    List<String> codeSetIdentifiers();
+  /**
+   * Gets all code set identifiers known in the terminology service
+   *
+   * @return all code identifiers
+   */
+  List<String> codeSetIdentifiers();
 
-    /**
-     * Gets all code sets identifiers for which there is an internal
-     * openEHR name
-     *
-     * @return as a Hash of ids keyed by internal name
-     */
-    Map<String, String> openehrCodeSets();
+  /**
+   * Gets all code sets identifiers for which there is an internal openEHR name
+   *
+   * @return as a Hash of ids keyed by internal name
+   */
+  Map<String, String> openehrCodeSets();
 
-    /* static fields */
-    public static final String OPENEHR = "openehr";
-    public static final String NULL_FLAVOURS = "null flavours";
+  /* static fields */
+  public static final String OPENEHR = "openehr";
+  public static final String NULL_FLAVOURS = "null flavours";
 }
 /*
  *  ***** BEGIN LICENSE BLOCK *****

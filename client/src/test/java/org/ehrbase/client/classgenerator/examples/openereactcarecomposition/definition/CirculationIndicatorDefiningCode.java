@@ -1,6 +1,5 @@
 package org.ehrbase.client.classgenerator.examples.openereactcarecomposition.definition;
 
-import java.lang.String;
 import org.ehrbase.client.classgenerator.EnumValueSet;
 
 public enum CirculationIndicatorDefiningCode implements EnumValueSet {
@@ -10,7 +9,8 @@ public enum CirculationIndicatorDefiningCode implements EnumValueSet {
 
   SWEATY_CLAMMY("Sweaty/clammy", "Sweaty/clammy.", "local", "at0097"),
 
-  COLOUR_CHANGES_PALE_GREY("Colour changes: pale, grey", "Colour changes: pale, grey.", "local", "at0096");
+  COLOUR_CHANGES_PALE_GREY(
+      "Colour changes: pale, grey", "Colour changes: pale, grey.", "local", "at0096");
 
   private String value;
 
@@ -20,8 +20,8 @@ public enum CirculationIndicatorDefiningCode implements EnumValueSet {
 
   private String code;
 
-  CirculationIndicatorDefiningCode(String value, String description, String terminologyId,
-      String code) {
+  CirculationIndicatorDefiningCode(
+      String value, String description, String terminologyId, String code) {
     this.value = value;
     this.description = description;
     this.terminologyId = terminologyId;
@@ -29,18 +29,18 @@ public enum CirculationIndicatorDefiningCode implements EnumValueSet {
   }
 
   public String getValue() {
-     return this.value ;
+    return this.value;
   }
 
   public String getDescription() {
-     return this.description ;
+    return this.description;
   }
 
   public String getTerminologyId() {
-     return this.terminologyId ;
+    return this.terminologyId;
   }
 
   public String getCode() {
-     return this.code ;
+    return this.code;
   }
 }

@@ -17,8 +17,8 @@ public enum ContextCodedTextDefiningcode implements EnumValueSet {
 
   private String code;
 
-  ContextCodedTextDefiningcode(String value, String description, String terminologyId,
-                               String code) {
+  ContextCodedTextDefiningcode(
+      String value, String description, String terminologyId, String code) {
     this.value = value;
     this.description = description;
     this.terminologyId = terminologyId;

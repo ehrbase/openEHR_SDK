@@ -21,40 +21,33 @@ import java.util.Map;
 
 public class AttributeGroupMap {
 
-    String attribute;
-    /**
-     * well known attribute as found in the RM model
-     **/
-    ContainerType container;
-    /**
-     * codeset or openehr group (f.e. "null flavours")
-     **/
-    Map<String, String> idMap;
+  String attribute;
+  /** well known attribute as found in the RM model */
+  ContainerType container;
+  /** codeset or openehr group (f.e. "null flavours") */
+  Map<String, String> idMap;
 
-    /**
-     * maps an attribute id to a given group/codeset depending on the language
-     **/
+  /** maps an attribute id to a given group/codeset depending on the language */
+  public AttributeGroupMap(String attribute, String container, Map<String, String> idMap) {
+    this.attribute = attribute;
+    this.container = ContainerType.valueOf(container.toUpperCase());
+    this.idMap = idMap;
+  }
 
-    public AttributeGroupMap(String attribute, String container, Map<String, String> idMap) {
-        this.attribute = attribute;
-        this.container = ContainerType.valueOf(container.toUpperCase());
-        this.idMap = idMap;
-    }
+  public String getAttribute() {
+    return attribute;
+  }
 
-    public String getAttribute() {
-        return attribute;
-    }
+  /**
+   * specifies whether the codes belong to a group in a codeset or a plain codeset
+   *
+   * @return
+   */
+  public ContainerType getContainer() {
+    return container;
+  }
 
-    /**
-     * specifies whether the codes belong to a group in a codeset or a plain codeset
-     *
-     * @return
-     */
-    public ContainerType getContainer() {
-        return container;
-    }
-
-    public Map<String, String> getIdMap() {
-        return idMap;
-    }
+  public Map<String, String> getIdMap() {
+    return idMap;
+  }
 }

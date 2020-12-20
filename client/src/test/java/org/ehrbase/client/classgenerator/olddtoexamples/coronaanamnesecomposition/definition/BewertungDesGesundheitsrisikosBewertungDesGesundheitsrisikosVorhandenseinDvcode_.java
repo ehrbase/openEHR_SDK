@@ -6,15 +6,16 @@ import org.ehrbase.client.annotations.Path;
 
 @Entity
 @OptionFor("DV_CODED_TEXT")
-public class BewertungDesGesundheitsrisikosBewertungDesGesundheitsrisikosVorhandenseinDvcode_ implements BewertungDesGesundheitsrisikosVorhandenseinChoice {
-    @Path("|defining_code")
-    private VorhandenseinDefiningcode vorhandenseinDefiningcode;
+public class BewertungDesGesundheitsrisikosBewertungDesGesundheitsrisikosVorhandenseinDvcode_
+    implements BewertungDesGesundheitsrisikosVorhandenseinChoice {
+  @Path("|defining_code")
+  private VorhandenseinDefiningcode vorhandenseinDefiningcode;
 
-    public void setVorhandenseinDefiningcode(VorhandenseinDefiningcode vorhandenseinDefiningcode) {
-        this.vorhandenseinDefiningcode = vorhandenseinDefiningcode;
-    }
+  public void setVorhandenseinDefiningcode(VorhandenseinDefiningcode vorhandenseinDefiningcode) {
+    this.vorhandenseinDefiningcode = vorhandenseinDefiningcode;
+  }
 
-    public VorhandenseinDefiningcode getVorhandenseinDefiningcode() {
-        return this.vorhandenseinDefiningcode;
-    }
+  public VorhandenseinDefiningcode getVorhandenseinDefiningcode() {
+    return this.vorhandenseinDefiningcode;
+  }
 }

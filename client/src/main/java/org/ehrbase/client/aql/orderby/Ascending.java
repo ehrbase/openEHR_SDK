@@ -22,12 +22,12 @@ package org.ehrbase.client.aql.orderby;
 import org.ehrbase.client.aql.field.SelectAqlField;
 
 public class Ascending extends AbstractOrderBy {
-    Ascending(SelectAqlField<?> field) {
-        super(field);
-    }
+  Ascending(SelectAqlField<?> field) {
+    super(field);
+  }
 
-    @Override
-    public String getSymbole() {
-        return "ASCENDING";
-    }
+  @Override
+  public String getSymbole() {
+    return "ASCENDING";
+  }
 }

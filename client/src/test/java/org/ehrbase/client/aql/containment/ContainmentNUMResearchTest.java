@@ -17,36 +17,37 @@
 
 package org.ehrbase.client.aql.containment;
 
+import static org.junit.Assert.assertNotNull;
+
 import org.ehrbase.client.aql.query.Query;
 import org.ehrbase.client.classgenerator.examples.patientenaufenthaltcomposition.PatientenaufenthaltCompositionContainment;
 import org.ehrbase.client.classgenerator.examples.patientenaufenthaltcomposition.definition.StandortClusterContainment;
 import org.ehrbase.client.classgenerator.examples.patientenaufenthaltcomposition.definition.VersorgungsortAdminEntryContainment;
 import org.junit.Test;
 
-import static org.junit.Assert.assertNotNull;
-
 /**
- * test AQL containments as expressed in section 'Smart Infection Control AQL Analysis'
- * The tests are numbered according to the items of the analysis
+ * test AQL containments as expressed in section 'Smart Infection Control AQL Analysis' The tests
+ * are numbered according to the items of the analysis
  */
 public class ContainmentNUMResearchTest {
 
-    @Test
-    public void test_1(){
-        PatientenaufenthaltCompositionContainment patientenaufenthaltCompositionContainment = PatientenaufenthaltCompositionContainment.getInstance();
+  @Test
+  public void test_1() {
+    PatientenaufenthaltCompositionContainment patientenaufenthaltCompositionContainment =
+        PatientenaufenthaltCompositionContainment.getInstance();
 
-        //build AQL expression
-        VersorgungsortAdminEntryContainment versorgungsortAdminEntryContainment = VersorgungsortAdminEntryContainment.getInstance();
-        StandortClusterContainment standortClusterContainment = StandortClusterContainment.getInstance();
-        versorgungsortAdminEntryContainment.setContains(standortClusterContainment);
-        patientenaufenthaltCompositionContainment.setContains(versorgungsortAdminEntryContainment);
+    // build AQL expression
+    VersorgungsortAdminEntryContainment versorgungsortAdminEntryContainment =
+        VersorgungsortAdminEntryContainment.getInstance();
+    StandortClusterContainment standortClusterContainment =
+        StandortClusterContainment.getInstance();
+    versorgungsortAdminEntryContainment.setContains(standortClusterContainment);
+    patientenaufenthaltCompositionContainment.setContains(versorgungsortAdminEntryContainment);
 
-        Query.buildEntityQuery(patientenaufenthaltCompositionContainment);
+    Query.buildEntityQuery(patientenaufenthaltCompositionContainment);
 
-        String aql = patientenaufenthaltCompositionContainment.buildAQL();
+    String aql = patientenaufenthaltCompositionContainment.buildAQL();
 
-        assertNotNull(aql);
-
-    }
-
+    assertNotNull(aql);
+  }
 }

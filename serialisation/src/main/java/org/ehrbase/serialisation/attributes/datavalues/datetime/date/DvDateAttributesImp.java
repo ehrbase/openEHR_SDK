@@ -18,58 +18,58 @@
 package org.ehrbase.serialisation.attributes.datavalues.datetime.date;
 
 import com.nedap.archie.rm.datavalues.quantity.datetime.DvDate;
-import org.ehrbase.serialisation.attributes.datavalues.datetime.I_DateAttributes;
-import org.ehrbase.serialisation.attributes.datavalues.datetime.TemporalAttributes;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.temporal.Temporal;
+import org.ehrbase.serialisation.attributes.datavalues.datetime.I_DateAttributes;
+import org.ehrbase.serialisation.attributes.datavalues.datetime.TemporalAttributes;
 
 public abstract class DvDateAttributesImp extends TemporalAttributes implements I_DateAttributes {
 
-    protected final DvDate dvDate;
+  protected final DvDate dvDate;
 
-    public DvDateAttributesImp(DvDate dvDate) {
-        this.dvDate = dvDate;
-    }
+  public DvDateAttributesImp(DvDate dvDate) {
+    this.dvDate = dvDate;
+  }
 
-    @Override
-    public Temporal getValueAsProvided() {
-        return dvDate.getValue();
-    }
+  @Override
+  public Temporal getValueAsProvided() {
+    return dvDate.getValue();
+  }
 
-    @Override
-    public Long getMagnitude() {
-        return LocalDate.from(getValueExtended()).toEpochDay();
-    }
+  @Override
+  public Long getMagnitude() {
+    return LocalDate.from(getValueExtended()).toEpochDay();
+  }
 
-    @Override
-    public Long getTimeStamp(){
-        return LocalDateTime.from(LocalDate.parse(getValueExtended().toString()+"T00:00:00")).toEpochSecond(ZoneOffset.UTC);
-    }
+  @Override
+  public Long getTimeStamp() {
+    return LocalDateTime.from(LocalDate.parse(getValueExtended().toString() + "T00:00:00"))
+        .toEpochSecond(ZoneOffset.UTC);
+  }
 
-    public Integer supportedChronoFields(Integer chronoFieldBitmask) {
-        return TemporalAttributes.DV_DATE|chronoFieldBitmask;
-    }
+  public Integer supportedChronoFields(Integer chronoFieldBitmask) {
+    return TemporalAttributes.DV_DATE | chronoFieldBitmask;
+  }
 
-    @Override
-    public boolean isRmDvDate(){
-        return (getSupportedChronoFields() & DV_DATE) == DV_DATE;
-    }
+  @Override
+  public boolean isRmDvDate() {
+    return (getSupportedChronoFields() & DV_DATE) == DV_DATE;
+  }
 
-    @Override
-    public boolean isDateYYYY(){
-        return getSupportedChronoFields() == (DV_DATE | YEAR);
-    }
+  @Override
+  public boolean isDateYYYY() {
+    return getSupportedChronoFields() == (DV_DATE | YEAR);
+  }
 
-    @Override
-    public boolean isDateYYYYMM(){
-        return getSupportedChronoFields() == (DV_DATE | YEAR | MONTH_OF_YEAR);
-    }
+  @Override
+  public boolean isDateYYYYMM() {
+    return getSupportedChronoFields() == (DV_DATE | YEAR | MONTH_OF_YEAR);
+  }
 
-    @Override
-    public boolean isDateYYYYMMDD(){
-        return getSupportedChronoFields() == (DV_DATE | YEAR | MONTH_OF_YEAR | DAY_OF_MONTH);
-    }
+  @Override
+  public boolean isDateYYYYMMDD() {
+    return getSupportedChronoFields() == (DV_DATE | YEAR | MONTH_OF_YEAR | DAY_OF_MONTH);
+  }
 }

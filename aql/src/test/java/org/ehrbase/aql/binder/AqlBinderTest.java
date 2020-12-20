@@ -19,8 +19,13 @@
 
 package org.ehrbase.aql.binder;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import org.apache.commons.lang3.tuple.Pair;
 import org.assertj.core.groups.Tuple;
 import org.ehrbase.aql.dto.AqlDto;
@@ -28,12 +33,6 @@ import org.ehrbase.aql.dto.condition.ParameterValue;
 import org.ehrbase.client.aql.query.EntityQuery;
 import org.ehrbase.client.aql.record.Record;
 import org.junit.Test;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 public class AqlBinderTest {
   private static class TestCase {

@@ -21,24 +21,24 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 
 /**
- * Delete response data for all all DELETE requests. Contains the number of deleted target entries, i.e. if an EHR
- * has to be deleted the number of deleted EHR will be returned.
+ * Delete response data for all all DELETE requests. Contains the number of deleted target entries,
+ * i.e. if an EHR has to be deleted the number of deleted EHR will be returned.
  */
 @JacksonXmlRootElement
 public class AdminDeleteResponseData {
 
-    @JsonProperty(value = "deleted")
-    private int deleted;
+  @JsonProperty(value = "deleted")
+  private int deleted;
 
-    public AdminDeleteResponseData(int deleted) {
-        this.deleted = deleted;
-    }
+  public AdminDeleteResponseData(int deleted) {
+    this.deleted = deleted;
+  }
 
-    public void setDeleted(int deleted) {
-        this.deleted = deleted;
-    }
+  public void setDeleted(int deleted) {
+    this.deleted = deleted;
+  }
 
-    public int getDeleted() {
-        return this.deleted;
-    }
+  public int getDeleted() {
+    return this.deleted;
+  }
 }

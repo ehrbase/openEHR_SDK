@@ -20,38 +20,40 @@
 package org.ehrbase.webtemplate.parser.config;
 
 import com.nedap.archie.rm.composition.Composition;
-import org.ehrbase.terminology.client.terminology.TerminologyProvider;
-import org.ehrbase.terminology.client.terminology.ValueSet;
-
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.ehrbase.terminology.client.terminology.TerminologyProvider;
+import org.ehrbase.terminology.client.terminology.ValueSet;
 
 public class CompositionIntrospectConfig implements RmIntrospectConfig {
 
-    private static final Set<String> FIELDS = Stream.of("language", "territory", "composer", "category", "feederAudit").collect(Collectors.toSet());
+  private static final Set<String> FIELDS =
+      Stream.of("language", "territory", "composer", "category", "feederAudit")
+          .collect(Collectors.toSet());
 
-    @Override
-    public Class getAssociatedClass() {
-        return Composition.class;
-    }
+  @Override
+  public Class getAssociatedClass() {
+    return Composition.class;
+  }
 
-    @Override
-    public Set<String> getNonTemplateFields() {
-        return FIELDS;
-    }
+  @Override
+  public Set<String> getNonTemplateFields() {
+    return FIELDS;
+  }
 
-    @Override
-    public ValueSet findExternalValueSet(String fieldName) {
-        switch (fieldName) {
-            case "language":
-                return TerminologyProvider.findOpenEhrValueSet("ISO_639-1", "");
-            case "territory":
-                return TerminologyProvider.findOpenEhrValueSet("ISO_3166-1", "");
-            case "category":
-                return TerminologyProvider.findOpenEhrValueSet(TerminologyProvider.OPENEHR, "composition category");
-            default:
-                return ValueSet.EMPTY_VALUE_SET;
-        }
+  @Override
+  public ValueSet findExternalValueSet(String fieldName) {
+    switch (fieldName) {
+      case "language":
+        return TerminologyProvider.findOpenEhrValueSet("ISO_639-1", "");
+      case "territory":
+        return TerminologyProvider.findOpenEhrValueSet("ISO_3166-1", "");
+      case "category":
+        return TerminologyProvider.findOpenEhrValueSet(
+            TerminologyProvider.OPENEHR, "composition category");
+      default:
+        return ValueSet.EMPTY_VALUE_SET;
     }
+  }
 }

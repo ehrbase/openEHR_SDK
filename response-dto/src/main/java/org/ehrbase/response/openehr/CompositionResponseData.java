@@ -18,19 +18,18 @@
 
 package org.ehrbase.response.openehr;
 
-
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 import org.ehrbase.response.ehrscape.StructuredString;
 import org.ehrbase.response.ehrscape.StructuredStringFormat;
 
 /**
- * Response for composition endpoints. Most endpoints should use this class, while for some endpoints the `return=minimal` header option
- * indicates to build the response without this class.
+ * Response for composition endpoints. Most endpoints should use this class, while for some
+ * endpoints the `return=minimal` header option indicates to build the response without this class.
  */
 @JacksonXmlRootElement
 public class CompositionResponseData extends StructuredString {
 
-    public CompositionResponseData(String value, StructuredStringFormat format) {
-        super(value, format);
-    }
+  public CompositionResponseData(String value, StructuredStringFormat format) {
+    super(value, format);
+  }
 }

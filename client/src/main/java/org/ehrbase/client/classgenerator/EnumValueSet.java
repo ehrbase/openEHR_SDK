@@ -19,12 +19,11 @@ package org.ehrbase.client.classgenerator;
 
 public interface EnumValueSet {
 
-    String getValue();
+  String getValue();
 
-    String getDescription();
+  String getDescription();
 
-    String getTerminologyId();
+  String getTerminologyId();
 
-    String getCode();
-
+  String getCode();
 }

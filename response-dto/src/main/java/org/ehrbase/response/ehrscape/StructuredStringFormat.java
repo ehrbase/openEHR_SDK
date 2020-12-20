@@ -18,27 +18,23 @@
 
 package org.ehrbase.response.ehrscape;
 
-
-/**
- * Enum containing the available serialization formats compatible with {@link StructuredString}
- */
+/** Enum containing the available serialization formats compatible with {@link StructuredString} */
 public enum StructuredStringFormat {
-    XML, JSON;
+  XML,
+  JSON;
 
-    public static StructuredStringFormat fromCompositionFormat(CompositionFormat format) {
-        switch (format) {
-            case XML:
-                return XML;
-            case RAW:
-            case FLAT:
-            case ECISFLAT:
-            case EXPANDED:
-            case STRUCTURED:
-                return JSON;
-            default:
-                throw new RuntimeException("Unknown Format");
-        }
+  public static StructuredStringFormat fromCompositionFormat(CompositionFormat format) {
+    switch (format) {
+      case XML:
+        return XML;
+      case RAW:
+      case FLAT:
+      case ECISFLAT:
+      case EXPANDED:
+      case STRUCTURED:
+        return JSON;
+      default:
+        throw new RuntimeException("Unknown Format");
     }
+  }
 }
-
-

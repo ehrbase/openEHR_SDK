@@ -21,24 +21,25 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 
 /**
- * Admin API response data for successful PUT responses. Returns the number of updated elements as a response field.
- * TODO: Return updated resource data instead of number. Should be generic for all use cases, i.e. EHR, directory, etc.
+ * Admin API response data for successful PUT responses. Returns the number of updated elements as a
+ * response field. TODO: Return updated resource data instead of number. Should be generic for all
+ * use cases, i.e. EHR, directory, etc.
  */
 @JacksonXmlRootElement
 public class AdminUpdateResponseData {
 
-    @JsonProperty(value = "updated")
-    private int updated;
+  @JsonProperty(value = "updated")
+  private int updated;
 
-    public AdminUpdateResponseData(int updated) {
-        this.updated = updated;
-    }
+  public AdminUpdateResponseData(int updated) {
+    this.updated = updated;
+  }
 
-    public void setUpdated(int updated) {
-        this.updated = updated;
-    }
+  public void setUpdated(int updated) {
+    this.updated = updated;
+  }
 
-    public int getUpdated() {
-        return this.updated;
-    }
+  public int getUpdated() {
+    return this.updated;
+  }
 }

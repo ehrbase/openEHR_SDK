@@ -20,5 +20,6 @@
 package org.ehrbase.client.aql.top;
 
 public enum Direction {
-    FORWARD, BACKWARD;
+  FORWARD,
+  BACKWARD;
 }

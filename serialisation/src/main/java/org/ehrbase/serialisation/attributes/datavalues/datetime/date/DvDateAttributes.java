@@ -18,88 +18,83 @@
 package org.ehrbase.serialisation.attributes.datavalues.datetime.date;
 
 import com.nedap.archie.rm.datavalues.quantity.datetime.DvDate;
+import java.time.temporal.ChronoField;
+import java.time.temporal.Temporal;
 import org.ehrbase.serialisation.attributes.datavalues.datetime.I_DateAttributes;
 import org.ehrbase.serialisation.attributes.datavalues.datetime.TemporalAttributes;
 
-import java.time.temporal.ChronoField;
-import java.time.temporal.Temporal;
-
 /**
- * decorator for DvDate.
- * Add attributes and handling for partial date (f.e. 2019-12)
- * Provide a defaulted representation (f.e. 2019-12-01 for the above)
- * Calculate a timestamp based on the defaulted representation
+ * decorator for DvDate. Add attributes and handling for partial date (f.e. 2019-12) Provide a
+ * defaulted representation (f.e. 2019-12-01 for the above) Calculate a timestamp based on the
+ * defaulted representation
  */
 public class DvDateAttributes extends TemporalAttributes implements I_DateAttributes {
 
-    private I_DateAttributes dateAttributes;
+  private I_DateAttributes dateAttributes;
 
-    private DvDateAttributes(I_DateAttributes dateAttributes){
-        this.dateAttributes = dateAttributes;
-    }
+  private DvDateAttributes(I_DateAttributes dateAttributes) {
+    this.dateAttributes = dateAttributes;
+  }
 
+  public static DvDateAttributes instanceFromValue(DvDate dvDate) {
+    I_DateAttributes dateAttributes;
 
-    public static DvDateAttributes instanceFromValue(DvDate dvDate){
-        I_DateAttributes dateAttributes;
+    if (dvDate.getValue().isSupported(ChronoField.YEAR)
+        && dvDate.getValue().isSupported(ChronoField.MONTH_OF_YEAR)
+        && dvDate.getValue().isSupported(ChronoField.DAY_OF_MONTH)) {
+      dateAttributes = new DvDateYYYYMMDDImp(dvDate);
+    } else if (dvDate.getValue().isSupported(ChronoField.YEAR)
+        && dvDate.getValue().isSupported(ChronoField.MONTH_OF_YEAR)) {
+      dateAttributes = new DvDateYYYYMMImp(dvDate);
+    } else if (dvDate.getValue().isSupported(ChronoField.YEAR)) {
+      dateAttributes = new DvDateYYYYImp(dvDate);
+    } else throw new IllegalArgumentException("Invalid date:" + dvDate.getValue().toString());
 
-        if (dvDate.getValue().isSupported(ChronoField.YEAR) && dvDate.getValue().isSupported(ChronoField.MONTH_OF_YEAR) && dvDate.getValue().isSupported(ChronoField.DAY_OF_MONTH)){
-            dateAttributes = new DvDateYYYYMMDDImp(dvDate);
-        }
-        else if (dvDate.getValue().isSupported(ChronoField.YEAR) && dvDate.getValue().isSupported(ChronoField.MONTH_OF_YEAR)){
-            dateAttributes = new DvDateYYYYMMImp(dvDate);
-        }
-        else if (dvDate.getValue().isSupported(ChronoField.YEAR)){
-            dateAttributes = new DvDateYYYYImp(dvDate);
-        }
-        else
-            throw new IllegalArgumentException("Invalid date:"+dvDate.getValue().toString());
+    return new DvDateAttributes(dateAttributes);
+  }
 
-        return new DvDateAttributes(dateAttributes);
-    }
+  @Override
+  public Long getMagnitude() {
+    return dateAttributes.getMagnitude();
+  }
 
+  @Override
+  public Temporal getValueAsProvided() {
+    return dateAttributes.getValueAsProvided();
+  }
 
-    @Override
-    public Long getMagnitude() {
-        return dateAttributes.getMagnitude();
-    }
+  @Override
+  public Temporal getValueExtended() {
+    return dateAttributes.getValueExtended();
+  }
 
-    @Override
-    public Temporal getValueAsProvided() {
-        return dateAttributes.getValueAsProvided();
-    }
+  @Override
+  public Integer getSupportedChronoFields() {
+    return dateAttributes.getSupportedChronoFields();
+  }
 
-    @Override
-    public Temporal getValueExtended() {
-        return dateAttributes.getValueExtended();
-    }
+  @Override
+  public Long getTimeStamp() {
+    return null;
+  }
 
-    @Override
-    public Integer getSupportedChronoFields() {
-        return dateAttributes.getSupportedChronoFields();
-    }
+  @Override
+  public boolean isRmDvDate() {
+    return dateAttributes.isRmDvDate();
+  }
 
-    @Override
-    public Long getTimeStamp() {
-        return null;
-    }
+  @Override
+  public boolean isDateYYYY() {
+    return dateAttributes.isDateYYYY();
+  }
 
-    @Override
-    public boolean isRmDvDate() {
-        return dateAttributes.isRmDvDate();
-    }
+  @Override
+  public boolean isDateYYYYMM() {
+    return dateAttributes.isDateYYYYMM();
+  }
 
-    @Override
-    public boolean isDateYYYY() {
-        return dateAttributes.isDateYYYY();
-    }
-
-    @Override
-    public boolean isDateYYYYMM() {
-        return dateAttributes.isDateYYYYMM();
-    }
-
-    @Override
-    public boolean isDateYYYYMMDD() {
-        return dateAttributes.isDateYYYYMMDD();
-    }
+  @Override
+  public boolean isDateYYYYMMDD() {
+    return dateAttributes.isDateYYYYMMDD();
+  }
 }

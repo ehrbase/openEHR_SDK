@@ -24,21 +24,20 @@ import org.ehrbase.client.aql.parameter.Parameter;
 
 public class GreaterOrEqual<T> extends ComparisonOperator<T> {
 
+  protected GreaterOrEqual(SelectAqlField<T> field, T value) {
+    super(field, value);
+  }
 
-    protected GreaterOrEqual(SelectAqlField<T> field, T value) {
-        super(field, value);
-    }
+  protected GreaterOrEqual(SelectAqlField<T> field, Parameter<T> parameter) {
+    super(field, parameter);
+  }
 
-    protected GreaterOrEqual(SelectAqlField<T> field, Parameter<T> parameter) {
-        super(field, parameter);
-    }
+  protected GreaterOrEqual(SelectAqlField<T> field, SelectAqlField<T> compereField) {
+    super(field, compereField);
+  }
 
-    protected GreaterOrEqual(SelectAqlField<T> field, SelectAqlField<T> compereField) {
-        super(field, compereField);
-    }
-
-    @Override
-    protected String getSymbol() {
-        return ">=";
-    }
+  @Override
+  protected String getSymbol() {
+    return ">=";
+  }
 }

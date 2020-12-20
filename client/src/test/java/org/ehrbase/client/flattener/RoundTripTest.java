@@ -19,10 +19,16 @@
 
 package org.ehrbase.client.flattener;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nedap.archie.rm.RMObject;
 import com.nedap.archie.rm.composition.Composition;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import org.apache.commons.io.IOUtils;
 import org.assertj.core.api.SoftAssertions;
 import org.ehrbase.client.classgenerator.examples.alternativeeventscomposition.AlternativeEventsComposition;
@@ -36,13 +42,6 @@ import org.ehrbase.serialisation.flatencoding.FlatJson;
 import org.ehrbase.serialisation.jsonencoding.JacksonUtil;
 import org.ehrbase.test_data.composition.CompositionTestDataSimSDTJson;
 import org.junit.Test;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
-import static java.nio.charset.StandardCharsets.UTF_8;
 
 public class RoundTripTest {
 
@@ -141,22 +140,24 @@ public class RoundTripTest {
             }));
 
     testCaseList.add(
-            new TestCase(
-                    5,
-                    CompositionTestDataSimSDTJson.CORONA,
-                    "Corona_Anamnese",
-                    org.ehrbase.client.classgenerator.exampleoptimizersettingsections.coronaanamnesecomposition.CoronaAnamneseComposition.class,
-                    new String[] {},
-                    new String[] {}));
+        new TestCase(
+            5,
+            CompositionTestDataSimSDTJson.CORONA,
+            "Corona_Anamnese",
+            org.ehrbase.client.classgenerator.exampleoptimizersettingsections
+                .coronaanamnesecomposition.CoronaAnamneseComposition.class,
+            new String[] {},
+            new String[] {}));
 
     testCaseList.add(
-            new TestCase(
-                    6,
-                    CompositionTestDataSimSDTJson.CORONA,
-                    "Corona_Anamnese",
-                    org.ehrbase.client.classgenerator.exampleoptimizersettingalls.coronaanamnesecomposition.CoronaAnamneseComposition.class,
-                    new String[] {},
-                    new String[] {}));
+        new TestCase(
+            6,
+            CompositionTestDataSimSDTJson.CORONA,
+            "Corona_Anamnese",
+            org.ehrbase.client.classgenerator.exampleoptimizersettingalls.coronaanamnesecomposition
+                .CoronaAnamneseComposition.class,
+            new String[] {},
+            new String[] {}));
 
     SoftAssertions softly = new SoftAssertions();
 

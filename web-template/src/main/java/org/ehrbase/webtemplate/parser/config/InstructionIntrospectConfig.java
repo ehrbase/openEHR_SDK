@@ -20,23 +20,23 @@
 package org.ehrbase.webtemplate.parser.config;
 
 import com.nedap.archie.rm.composition.Instruction;
-
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class InstructionIntrospectConfig extends CareEntryIntrospectConfig implements RmIntrospectConfig {
+public class InstructionIntrospectConfig extends CareEntryIntrospectConfig
+    implements RmIntrospectConfig {
 
-    private static final Set<String> FIELDS = Stream.of("narrative").collect(Collectors.toSet());
+  private static final Set<String> FIELDS = Stream.of("narrative").collect(Collectors.toSet());
 
-    @Override
-    public Class getAssociatedClass() {
-        return Instruction.class;
-    }
+  @Override
+  public Class getAssociatedClass() {
+    return Instruction.class;
+  }
 
-    @Override
-    public Set<String> getNonTemplateFields() {
-        FIELDS.addAll(super.getNonTemplateFields());
-        return FIELDS;
-    }
+  @Override
+  public Set<String> getNonTemplateFields() {
+    FIELDS.addAll(super.getNonTemplateFields());
+    return FIELDS;
+  }
 }

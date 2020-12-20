@@ -36,18 +36,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Group {
-    Group() {
-        concepts = new ArrayList<Concept>();
-    }
+  Group() {
+    concepts = new ArrayList<Concept>();
+  }
 
-    void addConcept(Concept concept) {
-        if (!concepts.contains(concept)) {
-            concepts.add(concept);
-        }
+  void addConcept(Concept concept) {
+    if (!concepts.contains(concept)) {
+      concepts.add(concept);
     }
+  }
 
-    String name; // name in English, used also as grup id
-    List<Concept> concepts;
+  String name; // name in English, used also as grup id
+  List<Concept> concepts;
 }
 /*
  *  ***** BEGIN LICENSE BLOCK *****

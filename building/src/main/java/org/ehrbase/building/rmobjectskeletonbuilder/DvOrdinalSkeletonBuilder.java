@@ -27,28 +27,26 @@ import org.openehr.schemas.v1.CDVORDINAL;
 import org.openehr.schemas.v1.DVORDINAL;
 
 public class DvOrdinalSkeletonBuilder implements RmObjectSkeletonBuilder<CDVORDINAL, DvOrdinal> {
-    @Override
-    public Class<CDVORDINAL> getAssociatedClass() {
-        return CDVORDINAL.class;
+  @Override
+  public Class<CDVORDINAL> getAssociatedClass() {
+    return CDVORDINAL.class;
+  }
+
+  @Override
+  public DvOrdinal getRmObject(CDVORDINAL xml) {
+    DvOrdinal dvOrdinal = new DvOrdinal();
+    if (xml.isSetAssumedValue()) {
+      DVORDINAL assumedValue = xml.getAssumedValue();
+      dvOrdinal.setValue(Long.valueOf("" + assumedValue.getValue()));
+      dvOrdinal.setSymbol(
+          new DvCodedText(
+              assumedValue.getSymbol().getValue(),
+              new CodePhrase(
+                  new TerminologyId(
+                      assumedValue.getSymbol().getDefiningCode().getTerminologyId().getValue()),
+                  assumedValue.getSymbol().getDefiningCode().getCodeString())));
     }
 
-    @Override
-    public DvOrdinal getRmObject(CDVORDINAL xml) {
-        DvOrdinal dvOrdinal = new DvOrdinal();
-        if (xml.isSetAssumedValue()) {
-            DVORDINAL assumedValue = xml.getAssumedValue();
-            dvOrdinal.setValue(Long.valueOf("" + assumedValue.getValue()));
-            dvOrdinal.setSymbol(
-                    new DvCodedText(
-                            assumedValue.getSymbol().getValue(),
-                            new CodePhrase(
-                                    new TerminologyId(assumedValue.getSymbol().getDefiningCode().getTerminologyId().getValue()),
-                                    assumedValue.getSymbol().getDefiningCode().getCodeString()
-                            )
-                    )
-            );
-        }
-
-        return dvOrdinal;
-    }
+    return dvOrdinal;
+  }
 }

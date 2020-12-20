@@ -1,8 +1,6 @@
 package org.ehrbase.client.classgenerator.examples.alternativeeventscomposition.definition;
 
 import com.nedap.archie.rm.archetyped.FeederAudit;
-import java.lang.Double;
-import java.lang.String;
 import java.time.temporal.TemporalAccessor;
 import java.util.List;
 import javax.annotation.processing.Generated;
@@ -10,8 +8,7 @@ import javax.annotation.processing.Generated;
 @Generated(
     value = "org.ehrbase.client.classgenerator.ClassGenerator",
     date = "2020-12-10T13:06:10.115491200+01:00",
-    comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
-)
+    comments = "https://github.com/ehrbase/openEHR_SDK Version: null")
 public interface KorpergewichtAnyEventEnChoice {
   List<KorpergewichtConfoundingFactorsEnElement> getConfoundingFactorsEn();
 

@@ -28,129 +28,137 @@ import com.nedap.archie.rm.generic.AuditDetails;
 import com.nedap.archie.rm.support.identification.HierObjectId;
 import com.nedap.archie.rm.support.identification.ObjectRef;
 import com.nedap.archie.rm.support.identification.ObjectVersionId;
-import org.ehrbase.response.ehrscape.ContributionDto;
-
 import java.util.ArrayList;
 import java.util.List;
+import org.ehrbase.response.ehrscape.ContributionDto;
 
 @JacksonXmlRootElement(localName = "original_version")
 public class OriginalVersionResponseData<T> {
 
-    @JsonProperty(value = "_type")
-    private String type;
-    @JsonProperty(value = "uid")
-    private ObjectVersionId versionId;
-    // contribution, signature and commit_audit could be extracted to "VERSION" super class
-    private Contribution contribution;
-    private String signature;   // optional
-    @JsonProperty(value = "commit_audit")
-    private AuditDetails auditDetails;
-    @JsonProperty(value = "preceding_version_uid")
-    private ObjectVersionId precedingVersionUid;   // optional
-    @JsonProperty(value = "other_input_version_uids")
-    private List<ObjectVersionId> otherInputVersionUids; // optional
-    @JsonProperty(value = "lifecycle_state")
-    private DvCodedText lifecycleState;
-    private List<Attestation> attestations;     // optional
-    private T data;
+  @JsonProperty(value = "_type")
+  private String type;
 
-    public OriginalVersionResponseData(OriginalVersion<T> originalVersion, ContributionDto contributionDto) {
-        setType("ORIGINAL_VERSION");
-        setVersionId(originalVersion.getUid());
+  @JsonProperty(value = "uid")
+  private ObjectVersionId versionId;
+  // contribution, signature and commit_audit could be extracted to "VERSION" super class
+  private Contribution contribution;
+  private String signature; // optional
 
-        HierObjectId contributionId = new HierObjectId(contributionDto.getUuid().toString());
-        List<ObjectRef> versions = new ArrayList<>();
-        contributionDto.getObjectReferences().forEach((k, v) -> versions.add(
-                new ObjectRef<>(new HierObjectId(v), "local", k)));
-        Contribution contribution = new Contribution(contributionId, versions, contributionDto.getAuditDetails());
-        setContribution(contribution);
+  @JsonProperty(value = "commit_audit")
+  private AuditDetails auditDetails;
 
-        setSignature(originalVersion.getSignature());
-        setAuditDetails(originalVersion.getCommitAudit());
-        setPrecedingVersionUid(originalVersion.getPrecedingVersionUid());
-        setOtherInputVersionUids(originalVersion.getOtherInputVersionUids());
-        setLifecycleState(originalVersion.getLifecycleState());
-        setAttestations(originalVersion.getAttestations());
-        setData(originalVersion.getData());
-    }
+  @JsonProperty(value = "preceding_version_uid")
+  private ObjectVersionId precedingVersionUid; // optional
 
-    public String getType() {
-        return type;
-    }
+  @JsonProperty(value = "other_input_version_uids")
+  private List<ObjectVersionId> otherInputVersionUids; // optional
 
-    public void setType(String type) {
-        this.type = type;
-    }
+  @JsonProperty(value = "lifecycle_state")
+  private DvCodedText lifecycleState;
 
-    public ObjectVersionId getVersionId() {
-        return versionId;
-    }
+  private List<Attestation> attestations; // optional
+  private T data;
 
-    public void setVersionId(ObjectVersionId versionId) {
-        this.versionId = versionId;
-    }
+  public OriginalVersionResponseData(
+      OriginalVersion<T> originalVersion, ContributionDto contributionDto) {
+    setType("ORIGINAL_VERSION");
+    setVersionId(originalVersion.getUid());
 
-    public Contribution getContribution() {
-        return contribution;
-    }
+    HierObjectId contributionId = new HierObjectId(contributionDto.getUuid().toString());
+    List<ObjectRef> versions = new ArrayList<>();
+    contributionDto
+        .getObjectReferences()
+        .forEach((k, v) -> versions.add(new ObjectRef<>(new HierObjectId(v), "local", k)));
+    Contribution contribution =
+        new Contribution(contributionId, versions, contributionDto.getAuditDetails());
+    setContribution(contribution);
 
-    public void setContribution(Contribution contribution) {
-        this.contribution = contribution;
-    }
+    setSignature(originalVersion.getSignature());
+    setAuditDetails(originalVersion.getCommitAudit());
+    setPrecedingVersionUid(originalVersion.getPrecedingVersionUid());
+    setOtherInputVersionUids(originalVersion.getOtherInputVersionUids());
+    setLifecycleState(originalVersion.getLifecycleState());
+    setAttestations(originalVersion.getAttestations());
+    setData(originalVersion.getData());
+  }
 
-    public String getSignature() {
-        return signature;
-    }
+  public String getType() {
+    return type;
+  }
 
-    public void setSignature(String signature) {
-        this.signature = signature;
-    }
+  public void setType(String type) {
+    this.type = type;
+  }
 
-    public AuditDetails getAuditDetails() {
-        return auditDetails;
-    }
+  public ObjectVersionId getVersionId() {
+    return versionId;
+  }
 
-    public void setAuditDetails(AuditDetails auditDetails) {
-        this.auditDetails = auditDetails;
-    }
+  public void setVersionId(ObjectVersionId versionId) {
+    this.versionId = versionId;
+  }
 
-    public ObjectVersionId getPrecedingVersionUid() {
-        return precedingVersionUid;
-    }
+  public Contribution getContribution() {
+    return contribution;
+  }
 
-    public void setPrecedingVersionUid(ObjectVersionId precedingVersionUid) {
-        this.precedingVersionUid = precedingVersionUid;
-    }
+  public void setContribution(Contribution contribution) {
+    this.contribution = contribution;
+  }
 
-    public List<ObjectVersionId> getOtherInputVersionUids() {
-        return otherInputVersionUids;
-    }
+  public String getSignature() {
+    return signature;
+  }
 
-    public void setOtherInputVersionUids(List<ObjectVersionId> otherInputVersionUids) {
-        this.otherInputVersionUids = otherInputVersionUids;
-    }
+  public void setSignature(String signature) {
+    this.signature = signature;
+  }
 
-    public DvCodedText getLifecycleState() {
-        return lifecycleState;
-    }
+  public AuditDetails getAuditDetails() {
+    return auditDetails;
+  }
 
-    public void setLifecycleState(DvCodedText lifecycleState) {
-        this.lifecycleState = lifecycleState;
-    }
+  public void setAuditDetails(AuditDetails auditDetails) {
+    this.auditDetails = auditDetails;
+  }
 
-    public List<Attestation> getAttestations() {
-        return attestations;
-    }
+  public ObjectVersionId getPrecedingVersionUid() {
+    return precedingVersionUid;
+  }
 
-    public void setAttestations(List<Attestation> attestations) {
-        this.attestations = attestations;
-    }
+  public void setPrecedingVersionUid(ObjectVersionId precedingVersionUid) {
+    this.precedingVersionUid = precedingVersionUid;
+  }
 
-    public T getData() {
-        return data;
-    }
+  public List<ObjectVersionId> getOtherInputVersionUids() {
+    return otherInputVersionUids;
+  }
 
-    public void setData(T data) {
-        this.data = data;
-    }
+  public void setOtherInputVersionUids(List<ObjectVersionId> otherInputVersionUids) {
+    this.otherInputVersionUids = otherInputVersionUids;
+  }
+
+  public DvCodedText getLifecycleState() {
+    return lifecycleState;
+  }
+
+  public void setLifecycleState(DvCodedText lifecycleState) {
+    this.lifecycleState = lifecycleState;
+  }
+
+  public List<Attestation> getAttestations() {
+    return attestations;
+  }
+
+  public void setAttestations(List<Attestation> attestations) {
+    this.attestations = attestations;
+  }
+
+  public T getData() {
+    return data;
+  }
+
+  public void setData(T data) {
+    this.data = data;
+  }
 }

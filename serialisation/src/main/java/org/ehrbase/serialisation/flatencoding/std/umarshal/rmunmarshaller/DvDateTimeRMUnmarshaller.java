@@ -21,25 +21,28 @@ package org.ehrbase.serialisation.flatencoding.std.umarshal.rmunmarshaller;
 
 import com.nedap.archie.datetime.DateTimeParsers;
 import com.nedap.archie.rm.datavalues.quantity.datetime.DvDateTime;
+import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.ehrbase.serialisation.walker.Context;
 
-import java.util.Map;
-
 public class DvDateTimeRMUnmarshaller extends AbstractRMUnmarshaller<DvDateTime> {
 
-    @Override
-    public Class<DvDateTime> getAssociatedClass() {
-        return DvDateTime.class;
-    }
+  @Override
+  public Class<DvDateTime> getAssociatedClass() {
+    return DvDateTime.class;
+  }
 
-    @Override
-    public void handle(String currentTerm, DvDateTime rmObject, Map<String, String> currentValues, Context<Map<String, String>> context) {
+  @Override
+  public void handle(
+      String currentTerm,
+      DvDateTime rmObject,
+      Map<String, String> currentValues,
+      Context<Map<String, String>> context) {
 
-        String s = currentValues.get(currentTerm);
-        if (StringUtils.isNotBlank(s)) {
-            rmObject.setValue(DateTimeParsers.parseDateTimeValue(StringUtils.strip(s, "\"")));
-            consumedPath.add(currentTerm);
-        }
+    String s = currentValues.get(currentTerm);
+    if (StringUtils.isNotBlank(s)) {
+      rmObject.setValue(DateTimeParsers.parseDateTimeValue(StringUtils.strip(s, "\"")));
+      consumedPath.add(currentTerm);
     }
+  }
 }

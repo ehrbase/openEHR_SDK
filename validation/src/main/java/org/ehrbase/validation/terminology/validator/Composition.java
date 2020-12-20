@@ -22,20 +22,38 @@ import org.ehrbase.terminology.openehr.implementation.AttributeCodesetMapping;
 
 public class Composition extends TerminologyCheck {
 
-    public Composition() {
-        this.RM_CLASS = com.nedap.archie.rm.composition.Composition.class;
-    }
+  public Composition() {
+    this.RM_CLASS = com.nedap.archie.rm.composition.Composition.class;
+  }
 
-    public static void check(TerminologyInterface terminologyInterface, AttributeCodesetMapping codesetMapping, String context, com.nedap.archie.rm.composition.Composition composition) throws IllegalArgumentException {
-        check(terminologyInterface, codesetMapping, context, composition, "en");
-    }
+  public static void check(
+      TerminologyInterface terminologyInterface,
+      AttributeCodesetMapping codesetMapping,
+      String context,
+      com.nedap.archie.rm.composition.Composition composition)
+      throws IllegalArgumentException {
+    check(terminologyInterface, codesetMapping, context, composition, "en");
+  }
 
-    public static void check(TerminologyInterface terminologyInterface, AttributeCodesetMapping codesetMapping, String context, com.nedap.archie.rm.composition.Composition composition, String language) throws IllegalArgumentException {
-        if (composition.getCategory() != null)
-            validate(terminologyInterface, codesetMapping, "category", composition.getCategory().getDefiningCode(), language);
-        if (composition.getLanguage() != null)
-            validate(terminologyInterface, codesetMapping, "language", composition.getLanguage(), language);
-        if (composition.getTerritory() != null)
-            validate(terminologyInterface, codesetMapping, "territory", composition.getTerritory(), language);
-    }
+  public static void check(
+      TerminologyInterface terminologyInterface,
+      AttributeCodesetMapping codesetMapping,
+      String context,
+      com.nedap.archie.rm.composition.Composition composition,
+      String language)
+      throws IllegalArgumentException {
+    if (composition.getCategory() != null)
+      validate(
+          terminologyInterface,
+          codesetMapping,
+          "category",
+          composition.getCategory().getDefiningCode(),
+          language);
+    if (composition.getLanguage() != null)
+      validate(
+          terminologyInterface, codesetMapping, "language", composition.getLanguage(), language);
+    if (composition.getTerritory() != null)
+      validate(
+          terminologyInterface, codesetMapping, "territory", composition.getTerritory(), language);
+  }
 }

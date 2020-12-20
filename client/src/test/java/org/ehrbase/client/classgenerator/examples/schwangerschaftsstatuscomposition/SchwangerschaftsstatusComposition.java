@@ -5,7 +5,6 @@ import com.nedap.archie.rm.datastructures.Cluster;
 import com.nedap.archie.rm.generic.Participation;
 import com.nedap.archie.rm.generic.PartyIdentified;
 import com.nedap.archie.rm.generic.PartyProxy;
-import java.lang.String;
 import java.time.temporal.TemporalAccessor;
 import java.util.List;
 import javax.annotation.processing.Generated;
@@ -28,232 +27,208 @@ import org.ehrbase.client.openehrclient.VersionUid;
 @Generated(
     value = "org.ehrbase.client.classgenerator.ClassGenerator",
     date = "2020-12-10T13:06:12.298026500+01:00",
-    comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
-)
+    comments = "https://github.com/ehrbase/openEHR_SDK Version: null")
 @Template("Schwangerschaftsstatus")
 public class SchwangerschaftsstatusComposition implements CompositionEntity {
   /**
-   * Path: Schwangerschaftsstatus/context/Erweiterung
-   * Description: Ergänzende Angaben zum Registereintrag.
+   * Path: Schwangerschaftsstatus/context/Erweiterung Description: Ergänzende Angaben zum
+   * Registereintrag.
    */
   @Path("/context/other_context[at0001]/items[at0002]")
   private List<Cluster> erweiterung;
 
   /**
-   * Path: Schwangerschaftsstatus/context/Status
-   * Description: Status der gelieferten Daten für den Registereintrag. Hinweis: Dies ist nicht der Status einzelner Komponenten.
+   * Path: Schwangerschaftsstatus/context/Status Description: Status der gelieferten Daten für den
+   * Registereintrag. Hinweis: Dies ist nicht der Status einzelner Komponenten.
    */
   @Path("/context/other_context[at0001]/items[at0004]/value|defining_code")
   private StatusDefiningCode statusDefiningCode;
 
   /**
-   * Path: Schwangerschaftsstatus/context/Kategorie
-   * Description: Die Klassifikation des Registereintrags (z.B. Typ der Observation des FHIR-Profils).
+   * Path: Schwangerschaftsstatus/context/Kategorie Description: Die Klassifikation des
+   * Registereintrags (z.B. Typ der Observation des FHIR-Profils).
    */
   @Path("/context/other_context[at0001]/items[at0005]/value|value")
   private String kategorieValue;
 
-  /**
-   * Path: Schwangerschaftsstatus/context/start_time
-   */
+  /** Path: Schwangerschaftsstatus/context/start_time */
   @Path("/context/start_time|value")
   private TemporalAccessor startTimeValue;
 
-  /**
-   * Path: Schwangerschaftsstatus/context/participations
-   */
+  /** Path: Schwangerschaftsstatus/context/participations */
   @Path("/context/participations")
   private List<Participation> participations;
 
-  /**
-   * Path: Schwangerschaftsstatus/context/end_time
-   */
+  /** Path: Schwangerschaftsstatus/context/end_time */
   @Path("/context/end_time|value")
   private TemporalAccessor endTimeValue;
 
-  /**
-   * Path: Schwangerschaftsstatus/context/location
-   */
+  /** Path: Schwangerschaftsstatus/context/location */
   @Path("/context/location")
   private String location;
 
-  /**
-   * Path: Schwangerschaftsstatus/context/health_care_facility
-   */
+  /** Path: Schwangerschaftsstatus/context/health_care_facility */
   @Path("/context/health_care_facility")
   private PartyIdentified healthCareFacility;
 
-  /**
-   * Path: Schwangerschaftsstatus/context/setting
-   */
+  /** Path: Schwangerschaftsstatus/context/setting */
   @Path("/context/setting|defining_code")
   private Setting settingDefiningCode;
 
   /**
-   * Path: Schwangerschaftsstatus/Schwangerschaftsstatus
-   * Description: Angabe darüber, ob die Person schwanger ist oder schwanger sein könnte oder nicht.
+   * Path: Schwangerschaftsstatus/Schwangerschaftsstatus Description: Angabe darüber, ob die Person
+   * schwanger ist oder schwanger sein könnte oder nicht.
    */
   @Path("/content[openEHR-EHR-OBSERVATION.pregnancy_status.v0]")
   private SchwangerschaftsstatusObservation schwangerschaftsstatus;
 
-  /**
-   * Path: Schwangerschaftsstatus/composer
-   */
+  /** Path: Schwangerschaftsstatus/composer */
   @Path("/composer")
   private PartyProxy composer;
 
-  /**
-   * Path: Schwangerschaftsstatus/language
-   */
+  /** Path: Schwangerschaftsstatus/language */
   @Path("/language")
   private Language language;
 
-  /**
-   * Path: Schwangerschaftsstatus/feeder_audit
-   */
+  /** Path: Schwangerschaftsstatus/feeder_audit */
   @Path("/feeder_audit")
   private FeederAudit feederAudit;
 
-  /**
-   * Path: Schwangerschaftsstatus/category
-   */
+  /** Path: Schwangerschaftsstatus/category */
   @Path("/category|defining_code")
   private Category categoryDefiningCode;
 
-  /**
-   * Path: Schwangerschaftsstatus/territory
-   */
+  /** Path: Schwangerschaftsstatus/territory */
   @Path("/territory")
   private Territory territory;
 
-  @Id
-  private VersionUid versionUid;
+  @Id private VersionUid versionUid;
 
   public void setErweiterung(List<Cluster> erweiterung) {
-     this.erweiterung = erweiterung;
+    this.erweiterung = erweiterung;
   }
 
   public List<Cluster> getErweiterung() {
-     return this.erweiterung ;
+    return this.erweiterung;
   }
 
   public void setStatusDefiningCode(StatusDefiningCode statusDefiningCode) {
-     this.statusDefiningCode = statusDefiningCode;
+    this.statusDefiningCode = statusDefiningCode;
   }
 
   public StatusDefiningCode getStatusDefiningCode() {
-     return this.statusDefiningCode ;
+    return this.statusDefiningCode;
   }
 
   public void setKategorieValue(String kategorieValue) {
-     this.kategorieValue = kategorieValue;
+    this.kategorieValue = kategorieValue;
   }
 
   public String getKategorieValue() {
-     return this.kategorieValue ;
+    return this.kategorieValue;
   }
 
   public void setStartTimeValue(TemporalAccessor startTimeValue) {
-     this.startTimeValue = startTimeValue;
+    this.startTimeValue = startTimeValue;
   }
 
   public TemporalAccessor getStartTimeValue() {
-     return this.startTimeValue ;
+    return this.startTimeValue;
   }
 
   public void setParticipations(List<Participation> participations) {
-     this.participations = participations;
+    this.participations = participations;
   }
 
   public List<Participation> getParticipations() {
-     return this.participations ;
+    return this.participations;
   }
 
   public void setEndTimeValue(TemporalAccessor endTimeValue) {
-     this.endTimeValue = endTimeValue;
+    this.endTimeValue = endTimeValue;
   }
 
   public TemporalAccessor getEndTimeValue() {
-     return this.endTimeValue ;
+    return this.endTimeValue;
   }
 
   public void setLocation(String location) {
-     this.location = location;
+    this.location = location;
   }
 
   public String getLocation() {
-     return this.location ;
+    return this.location;
   }
 
   public void setHealthCareFacility(PartyIdentified healthCareFacility) {
-     this.healthCareFacility = healthCareFacility;
+    this.healthCareFacility = healthCareFacility;
   }
 
   public PartyIdentified getHealthCareFacility() {
-     return this.healthCareFacility ;
+    return this.healthCareFacility;
   }
 
   public void setSettingDefiningCode(Setting settingDefiningCode) {
-     this.settingDefiningCode = settingDefiningCode;
+    this.settingDefiningCode = settingDefiningCode;
   }
 
   public Setting getSettingDefiningCode() {
-     return this.settingDefiningCode ;
+    return this.settingDefiningCode;
   }
 
   public void setSchwangerschaftsstatus(SchwangerschaftsstatusObservation schwangerschaftsstatus) {
-     this.schwangerschaftsstatus = schwangerschaftsstatus;
+    this.schwangerschaftsstatus = schwangerschaftsstatus;
   }
 
   public SchwangerschaftsstatusObservation getSchwangerschaftsstatus() {
-     return this.schwangerschaftsstatus ;
+    return this.schwangerschaftsstatus;
   }
 
   public void setComposer(PartyProxy composer) {
-     this.composer = composer;
+    this.composer = composer;
   }
 
   public PartyProxy getComposer() {
-     return this.composer ;
+    return this.composer;
   }
 
   public void setLanguage(Language language) {
-     this.language = language;
+    this.language = language;
   }
 
   public Language getLanguage() {
-     return this.language ;
+    return this.language;
   }
 
   public void setFeederAudit(FeederAudit feederAudit) {
-     this.feederAudit = feederAudit;
+    this.feederAudit = feederAudit;
   }
 
   public FeederAudit getFeederAudit() {
-     return this.feederAudit ;
+    return this.feederAudit;
   }
 
   public void setCategoryDefiningCode(Category categoryDefiningCode) {
-     this.categoryDefiningCode = categoryDefiningCode;
+    this.categoryDefiningCode = categoryDefiningCode;
   }
 
   public Category getCategoryDefiningCode() {
-     return this.categoryDefiningCode ;
+    return this.categoryDefiningCode;
   }
 
   public void setTerritory(Territory territory) {
-     this.territory = territory;
+    this.territory = territory;
   }
 
   public Territory getTerritory() {
-     return this.territory ;
+    return this.territory;
   }
 
   public VersionUid getVersionUid() {
-     return this.versionUid ;
+    return this.versionUid;
   }
 
   public void setVersionUid(VersionUid versionUid) {
-     this.versionUid = versionUid;
+    this.versionUid = versionUid;
   }
 }

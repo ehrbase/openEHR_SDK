@@ -18,41 +18,43 @@
 
 package org.ehrbase.response.openehr;
 
-import javax.xml.bind.annotation.XmlRootElement;
 import java.util.List;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- * Error according to: https://specifications.openehr.org/releases/ITS-REST/latest/ehr.html#design-considerations-http-status-codes
+ * Error according to:
+ * https://specifications.openehr.org/releases/ITS-REST/latest/ehr.html#design-considerations-http-status-codes
  */
 @XmlRootElement
 public class ErrorResponseData {
-    String message;
-    Integer code;
-    List<String> errors;
-    // TODO should actually be DvCodedText but makes swagger-ui fail right with: Maximum call stack size exceeded
-    //List<DvCodedText> errors;
+  String message;
+  Integer code;
+  List<String> errors;
+  // TODO should actually be DvCodedText but makes swagger-ui fail right with: Maximum call stack
+  // size exceeded
+  // List<DvCodedText> errors;
 
-    public String getMessage() {
-        return message;
-    }
+  public String getMessage() {
+    return message;
+  }
 
-    public void setMessage(String message) {
-        this.message = message;
-    }
+  public void setMessage(String message) {
+    this.message = message;
+  }
 
-    public Integer getCode() {
-        return code;
-    }
+  public Integer getCode() {
+    return code;
+  }
 
-    public void setCode(Integer code) {
-        this.code = code;
-    }
+  public void setCode(Integer code) {
+    this.code = code;
+  }
 
-    public List<String> getErrors() {
-        return errors;
-    }
+  public List<String> getErrors() {
+    return errors;
+  }
 
-    public void setErrors(List<String> errors) {
-        this.errors = errors;
-    }
+  public void setErrors(List<String> errors) {
+    this.errors = errors;
+  }
 }

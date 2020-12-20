@@ -18,46 +18,44 @@
 
 package org.ehrbase.validation.constraints;
 
+import static org.junit.Assert.fail;
+
 import com.nedap.archie.rm.datavalues.quantity.DvCount;
 import org.ehrbase.validation.constraints.wrappers.CArchetypeConstraint;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.fail;
-
 public class DvCountTest extends ConstraintTestBase {
 
-    @Before
-    public void setUp() {
-        try {
-            setUpContext("./src/test/resources/constraints/dvcount.xml");
-        } catch (Exception e) {
-            fail();
-        }
+  @Before
+  public void setUp() {
+    try {
+      setUpContext("./src/test/resources/constraints/dvcount.xml");
+    } catch (Exception e) {
+      fail();
     }
+  }
 
+  @Test
+  public void testConstraintValidation() {
+    DvCount count = new DvCount(10L);
 
-    @Test
-    public void testConstraintValidation() {
-        DvCount count = new DvCount(10L);
-
-        try {
-            new CArchetypeConstraint(null).validate("test", count, archetypeconstraint);
-        } catch (Exception e) {
-            fail(e.getMessage());
-        }
+    try {
+      new CArchetypeConstraint(null).validate("test", count, archetypeconstraint);
+    } catch (Exception e) {
+      fail(e.getMessage());
     }
+  }
 
+  @Test
+  public void testConstraintValidationNullMagnitude() {
+    DvCount count = new DvCount(null);
 
-    @Test
-    public void testConstraintValidationNullMagnitude() {
-        DvCount count = new DvCount(null);
+    try {
+      new CArchetypeConstraint(null).validate("test", count, archetypeconstraint);
+      fail("mandatory element not detected");
+    } catch (Exception e) {
 
-        try {
-            new CArchetypeConstraint(null).validate("test", count, archetypeconstraint);
-            fail("mandatory element not detected");
-        } catch (Exception e) {
-
-        }
     }
+  }
 }

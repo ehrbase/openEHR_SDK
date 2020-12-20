@@ -1,7 +1,6 @@
 package org.ehrbase.client.classgenerator.exampleoptimizersettingsections.coronaanamnesecomposition.definition;
 
 import com.nedap.archie.rm.archetyped.FeederAudit;
-import java.lang.Long;
 import java.time.temporal.TemporalAccessor;
 import java.time.temporal.TemporalAmount;
 import java.util.List;
@@ -16,94 +15,85 @@ import org.ehrbase.client.classgenerator.shareddefinition.MathFunction;
 @Generated(
     value = "org.ehrbase.client.classgenerator.ClassGenerator",
     date = "2020-12-10T13:06:13.410033700+01:00",
-    comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
-)
+    comments = "https://github.com/ehrbase/openEHR_SDK Version: null")
 @OptionFor("INTERVAL_EVENT")
-public class WeitereSymptomeBeliebigesEreignisIntervalEvent implements IntervalEventEntity, WeitereSymptomeBeliebigesEreignisChoice {
+public class WeitereSymptomeBeliebigesEreignisIntervalEvent
+    implements IntervalEventEntity, WeitereSymptomeBeliebigesEreignisChoice {
   /**
    * Path: Bericht/Symptome/Weitere Symptome/Beliebiges Ereignis/Spezifisches Symptom/Anzeichen
-   * Description: Gruppierung von Datenelementen bezogen auf Screening auf ein einzelnes Symptom oder Anzeichen.
+   * Description: Gruppierung von Datenelementen bezogen auf Screening auf ein einzelnes Symptom
+   * oder Anzeichen.
    */
   @Path("/data[at0003]/items[at0022]")
   private List<WeitereSymptomeSpezifischesSymptomAnzeichenCluster> spezifischesSymptomAnzeichen;
 
-  /**
-   * Path: Bericht/Symptome/Weitere Symptome/Beliebiges Ereignis/feeder_audit
-   */
+  /** Path: Bericht/Symptome/Weitere Symptome/Beliebiges Ereignis/feeder_audit */
   @Path("/feeder_audit")
   private FeederAudit feederAudit;
 
-  /**
-   * Path: Bericht/Symptome/Weitere Symptome/Beliebiges Ereignis/time
-   */
+  /** Path: Bericht/Symptome/Weitere Symptome/Beliebiges Ereignis/time */
   @Path("/time|value")
   private TemporalAccessor timeValue;
 
-  /**
-   * Path: Bericht/Symptome/Weitere Symptome/Beliebiges Ereignis/width
-   */
+  /** Path: Bericht/Symptome/Weitere Symptome/Beliebiges Ereignis/width */
   @Path("/width|value")
   private TemporalAmount widthValue;
 
-  /**
-   * Path: Bericht/Symptome/Weitere Symptome/Beliebiges Ereignis/math_function
-   */
+  /** Path: Bericht/Symptome/Weitere Symptome/Beliebiges Ereignis/math_function */
   @Path("/math_function|defining_code")
   private MathFunction mathFunctionDefiningCode;
 
-  /**
-   * Path: Bericht/Symptome/Weitere Symptome/Beliebiges Ereignis/sample_count
-   */
+  /** Path: Bericht/Symptome/Weitere Symptome/Beliebiges Ereignis/sample_count */
   @Path("/sample_count")
   private Long sampleCount;
 
   public void setSpezifischesSymptomAnzeichen(
       List<WeitereSymptomeSpezifischesSymptomAnzeichenCluster> spezifischesSymptomAnzeichen) {
-     this.spezifischesSymptomAnzeichen = spezifischesSymptomAnzeichen;
+    this.spezifischesSymptomAnzeichen = spezifischesSymptomAnzeichen;
   }
 
-  public List<WeitereSymptomeSpezifischesSymptomAnzeichenCluster> getSpezifischesSymptomAnzeichen(
-      ) {
-     return this.spezifischesSymptomAnzeichen ;
+  public List<WeitereSymptomeSpezifischesSymptomAnzeichenCluster>
+      getSpezifischesSymptomAnzeichen() {
+    return this.spezifischesSymptomAnzeichen;
   }
 
   public void setFeederAudit(FeederAudit feederAudit) {
-     this.feederAudit = feederAudit;
+    this.feederAudit = feederAudit;
   }
 
   public FeederAudit getFeederAudit() {
-     return this.feederAudit ;
+    return this.feederAudit;
   }
 
   public void setTimeValue(TemporalAccessor timeValue) {
-     this.timeValue = timeValue;
+    this.timeValue = timeValue;
   }
 
   public TemporalAccessor getTimeValue() {
-     return this.timeValue ;
+    return this.timeValue;
   }
 
   public void setWidthValue(TemporalAmount widthValue) {
-     this.widthValue = widthValue;
+    this.widthValue = widthValue;
   }
 
   public TemporalAmount getWidthValue() {
-     return this.widthValue ;
+    return this.widthValue;
   }
 
   public void setMathFunctionDefiningCode(MathFunction mathFunctionDefiningCode) {
-     this.mathFunctionDefiningCode = mathFunctionDefiningCode;
+    this.mathFunctionDefiningCode = mathFunctionDefiningCode;
   }
 
   public MathFunction getMathFunctionDefiningCode() {
-     return this.mathFunctionDefiningCode ;
+    return this.mathFunctionDefiningCode;
   }
 
   public void setSampleCount(Long sampleCount) {
-     this.sampleCount = sampleCount;
+    this.sampleCount = sampleCount;
   }
 
   public Long getSampleCount() {
-     return this.sampleCount ;
+    return this.sampleCount;
   }
 }

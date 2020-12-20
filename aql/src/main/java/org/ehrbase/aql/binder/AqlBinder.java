@@ -19,6 +19,9 @@
 
 package org.ehrbase.aql.binder;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
@@ -34,10 +37,6 @@ import org.ehrbase.client.aql.query.Query;
 import org.ehrbase.client.aql.record.Record;
 import org.ehrbase.client.aql.top.Direction;
 import org.ehrbase.client.aql.top.TopExpresion;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 public class AqlBinder {
 

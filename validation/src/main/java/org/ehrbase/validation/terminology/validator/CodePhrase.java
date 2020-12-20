@@ -22,16 +22,26 @@ import org.ehrbase.terminology.openehr.implementation.AttributeCodesetMapping;
 
 public class CodePhrase extends TerminologyCheck {
 
-    public CodePhrase() {
-        this.RM_CLASS = com.nedap.archie.rm.datatypes.CodePhrase.class;
-    }
+  public CodePhrase() {
+    this.RM_CLASS = com.nedap.archie.rm.datatypes.CodePhrase.class;
+  }
 
+  public static void check(
+      TerminologyInterface terminologyInterface,
+      AttributeCodesetMapping codesetMapping,
+      String context,
+      com.nedap.archie.rm.datatypes.CodePhrase codePhrase)
+      throws IllegalArgumentException {
+    check(terminologyInterface, codesetMapping, context, codePhrase, "en");
+  }
 
-    public static void check(TerminologyInterface terminologyInterface, AttributeCodesetMapping codesetMapping, String context, com.nedap.archie.rm.datatypes.CodePhrase codePhrase) throws IllegalArgumentException {
-        check(terminologyInterface, codesetMapping, context, codePhrase, "en");
-    }
-
-    public static void check(TerminologyInterface terminologyInterface, AttributeCodesetMapping codesetMapping, String context, com.nedap.archie.rm.datatypes.CodePhrase codePhrase, String language) throws IllegalArgumentException {
-        validate(terminologyInterface, codesetMapping, context, codePhrase, language);
-    }
+  public static void check(
+      TerminologyInterface terminologyInterface,
+      AttributeCodesetMapping codesetMapping,
+      String context,
+      com.nedap.archie.rm.datatypes.CodePhrase codePhrase,
+      String language)
+      throws IllegalArgumentException {
+    validate(terminologyInterface, codesetMapping, context, codePhrase, language);
+  }
 }

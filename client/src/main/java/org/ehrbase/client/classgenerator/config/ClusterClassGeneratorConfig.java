@@ -18,20 +18,18 @@
 package org.ehrbase.client.classgenerator.config;
 
 import com.nedap.archie.rm.datastructures.Cluster;
-
 import java.util.Collections;
 import java.util.Set;
 
 public class ClusterClassGeneratorConfig implements RmClassGeneratorConfig {
 
-    @Override
-    public Class getAssociatedClass() {
-        return Cluster.class;
-    }
+  @Override
+  public Class getAssociatedClass() {
+    return Cluster.class;
+  }
 
-
-    @Override
-    public Set<String> getExpandFields() {
-        return Collections.emptySet();
-    }
+  @Override
+  public Set<String> getExpandFields() {
+    return Collections.emptySet();
+  }
 }

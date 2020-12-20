@@ -19,8 +19,16 @@
 
 package org.ehrbase.client.openehrclient.defaultrestclient;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import com.nedap.archie.rm.composition.Composition;
 import com.nedap.archie.rm.datavalues.quantity.datetime.DvDateTime;
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.nio.charset.StandardCharsets;
+import java.time.temporal.TemporalAccessor;
+import java.util.List;
+import java.util.UUID;
 import org.apache.commons.io.IOUtils;
 import org.assertj.core.groups.Tuple;
 import org.ehrbase.client.TestData;
@@ -68,422 +76,456 @@ import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.nio.charset.StandardCharsets;
-import java.time.temporal.TemporalAccessor;
-import java.util.List;
-import java.util.UUID;
-
-import static org.assertj.core.api.Assertions.assertThat;
-
 public class CoronaTestIT {
 
-    private static OpenEhrClient openEhrClient;
+  private static OpenEhrClient openEhrClient;
 
-    @BeforeClass
-    public static void setup() throws URISyntaxException {
-        openEhrClient = DefaultRestClientTestHelper.setupDefaultRestClient();
-    }
+  @BeforeClass
+  public static void setup() throws URISyntaxException {
+    openEhrClient = DefaultRestClientTestHelper.setupDefaultRestClient();
+  }
 
-    @Test
-    @Ignore("see https://github.com/ehrbase/project_management/issues/376")
-    public void testCorona() throws IOException {
+  @Test
+  @Ignore("see https://github.com/ehrbase/project_management/issues/376")
+  public void testCorona() throws IOException {
 
-        UUID ehr = openEhrClient.ehrEndpoint().createEhr();
+    UUID ehr = openEhrClient.ehrEndpoint().createEhr();
 
-        Composition composition = new CanonicalJson().unmarshal(IOUtils.toString(CompositionTestDataCanonicalJson.CORONA.getStream(), StandardCharsets.UTF_8), Composition.class);
-        Flattener flattener = new Flattener(new TestDataTemplateProvider());
-        CoronaAnamneseComposition coronaAnamneseComposition = flattener.flatten(composition, CoronaAnamneseComposition.class);
-        openEhrClient.compositionEndpoint(ehr).mergeCompositionEntity(coronaAnamneseComposition);
+    Composition composition =
+        new CanonicalJson()
+            .unmarshal(
+                IOUtils.toString(
+                    CompositionTestDataCanonicalJson.CORONA.getStream(), StandardCharsets.UTF_8),
+                Composition.class);
+    Flattener flattener = new Flattener(new TestDataTemplateProvider());
+    CoronaAnamneseComposition coronaAnamneseComposition =
+        flattener.flatten(composition, CoronaAnamneseComposition.class);
+    openEhrClient.compositionEndpoint(ehr).mergeCompositionEntity(coronaAnamneseComposition);
 
-        assertThat(openEhrClient.compositionEndpoint(ehr).find(coronaAnamneseComposition.getVersionUid().getUuid(), CoronaAnamneseComposition.class)).isNotNull();
+    assertThat(
+            openEhrClient
+                .compositionEndpoint(ehr)
+                .find(
+                    coronaAnamneseComposition.getVersionUid().getUuid(),
+                    CoronaAnamneseComposition.class))
+        .isNotNull();
 
-        CoronaAnamneseCompositionContainment coronaAnamneseCompositionContainment = CoronaAnamneseCompositionContainment.getInstance();
-        SymptomeSectionContainment symptomeSectionContainment = SymptomeSectionContainment.getInstance();
+    CoronaAnamneseCompositionContainment coronaAnamneseCompositionContainment =
+        CoronaAnamneseCompositionContainment.getInstance();
+    SymptomeSectionContainment symptomeSectionContainment =
+        SymptomeSectionContainment.getInstance();
 
+    HustenObservationContainment hustenObservationContainment =
+        HustenObservationContainment.getInstance();
+    FieberOderErhohteKorpertemperaturObservationContainment
+        fieberOderErhohteKorpertemperaturObservationContainment =
+            FieberOderErhohteKorpertemperaturObservationContainment.getInstance();
+    HeiserkeitObservationContainment heiserkeitObservationContainment =
+        HeiserkeitObservationContainment.getInstance();
 
-        HustenObservationContainment hustenObservationContainment = HustenObservationContainment.getInstance();
-        FieberOderErhohteKorpertemperaturObservationContainment fieberOderErhohteKorpertemperaturObservationContainment = FieberOderErhohteKorpertemperaturObservationContainment.getInstance();
-        HeiserkeitObservationContainment heiserkeitObservationContainment = HeiserkeitObservationContainment.getInstance();
+    ContainmentExpression containmentExpression =
+        coronaAnamneseCompositionContainment
+            .contains(symptomeSectionContainment)
+            .contains(
+                hustenObservationContainment
+                    .and(fieberOderErhohteKorpertemperaturObservationContainment)
+                    .and(heiserkeitObservationContainment));
 
-        ContainmentExpression containmentExpression = coronaAnamneseCompositionContainment
-                .contains(symptomeSectionContainment)
-                .contains(
-                        hustenObservationContainment
-                                .and(fieberOderErhohteKorpertemperaturObservationContainment)
-                                .and(heiserkeitObservationContainment)
-
-                );
-
-        EntityQuery<Record4<VorhandenDefiningCode, VorhandenDefiningCode, VorhandenDefiningCode, Language>> entityQuery = Query.buildEntityQuery(
+    EntityQuery<
+            Record4<VorhandenDefiningCode, VorhandenDefiningCode, VorhandenDefiningCode, Language>>
+        entityQuery =
+            Query.buildEntityQuery(
                 containmentExpression,
                 hustenObservationContainment.VORHANDEN_DEFINING_CODE,
                 fieberOderErhohteKorpertemperaturObservationContainment.VORHANDEN_DEFINING_CODE,
                 heiserkeitObservationContainment.VORHANDEN_DEFINING_CODE,
-                coronaAnamneseCompositionContainment.LANGUAGE
-        );
-        Parameter<UUID> ehrIdParameter = entityQuery.buildParameter();
-        entityQuery.where(Condition.equal(EhrFields.EHR_ID(), ehrIdParameter));
-        /*
-        Select
-              o0/data[at0001]/events[at0002]/data[at0003]/items[at0022]/items[at0005]/value/defining_Code as F0,
-              o1/data[at0001]/events[at0002]/data[at0003]/items[at0022]/items[at0005]/value/defining_Code as F1,
-              o2/data[at0001]/events[at0002]/data[at0003]/items[at0022]/items[at0005]/value/defining_Code as F2,
-              c3/language as F3
-        from EHR e
-              contains ( COMPOSITION c3[openEHR-EHR-COMPOSITION.report.v1] contains
-               SECTION s4[openEHR-EHR-SECTION.adhoc.v1] contains
-                (
-                (OBSERVATION o0[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0]
-                and
-                OBSERVATION o1[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0])
-                and
-                OBSERVATION o2[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0])
-                )
-        where e/ehr_id/value = $parm0
-         */
-        List<Record4<VorhandenDefiningCode, VorhandenDefiningCode, VorhandenDefiningCode, Language>> actual = openEhrClient.aqlEndpoint().execute(entityQuery, ehrIdParameter.setValue(ehr));
-
-        assertThat(actual).extracting(Record4::value1, Record4::value2, Record4::value3, Record4::value4)
-                .containsExactlyInAnyOrder(
-                        new Tuple(VorhandenDefiningCode.VORHANDEN, VorhandenDefiningCode.VORHANDEN, VorhandenDefiningCode.NICHT_VORHANDEN, Language.DE)
-                );
-
-
-    }
-
-    @Test
-    @Ignore
-    public void testCoronaWithJoin() throws IOException {
-
-        UUID ehr = openEhrClient.ehrEndpoint().createEhr();
-
-        Composition composition = new CanonicalJson().unmarshal(IOUtils.toString(CompositionTestDataCanonicalJson.CORONA.getStream(), StandardCharsets.UTF_8), Composition.class);
-        Flattener flattener = new Flattener(new TestDataTemplateProvider());
-        CoronaAnamneseComposition coronaAnamneseComposition = flattener.flatten(composition, CoronaAnamneseComposition.class);
-        openEhrClient.compositionEndpoint(ehr).mergeCompositionEntity(coronaAnamneseComposition);
-        openEhrClient.compositionEndpoint(ehr).mergeCompositionEntity(TestData.buildEhrbaseBloodPressureSimpleDeV0());
-
-        assertThat(openEhrClient.compositionEndpoint(ehr).find(coronaAnamneseComposition.getVersionUid().getUuid(), CoronaAnamneseComposition.class)).isNotNull();
-
-
-        CoronaAnamneseCompositionContainment coronaAnamneseCompositionContainment = CoronaAnamneseCompositionContainment.getInstance();
-        SymptomeSectionContainment symptomeSectionContainment = SymptomeSectionContainment.getInstance();
-
-
-        HustenObservationContainment hustenObservationContainment = HustenObservationContainment.getInstance();
-        FieberOderErhohteKorpertemperaturObservationContainment fieberOderErhohteKorpertemperaturObservationContainment = FieberOderErhohteKorpertemperaturObservationContainment.getInstance();
-        HeiserkeitObservationContainment heiserkeitObservationContainment = HeiserkeitObservationContainment.getInstance();
-
-        RisikogebietSectionContainment risikogebietSectionContainment = RisikogebietSectionContainment.getInstance();
-        ReisefallObservationContainment reisefallObservationContainment = ReisefallObservationContainment.getInstance();
-
-        // @formatter:off
-        ContainmentExpression containmentExpression =
-                coronaAnamneseCompositionContainment
-                        .contains(
-                                symptomeSectionContainment
-                                        .contains(hustenObservationContainment)
-                                 .and(
-                                 risikogebietSectionContainment
-                                        .contains(reisefallObservationContainment)
-                                )
-                        );
-
-        // @formatter:on
-
-        EntityQuery<Record3<VorhandenDefiningCode, Language, Language>> entityQuery = Query.buildEntityQuery(
-                containmentExpression,
-                hustenObservationContainment.VORHANDEN_DEFINING_CODE,
-                coronaAnamneseCompositionContainment.LANGUAGE,
-                reisefallObservationContainment.LANGUAGE
-        );
-        Parameter<UUID> ehrIdParameter = entityQuery.buildParameter();
-        entityQuery.where(Condition.equal(EhrFields.EHR_ID(), ehrIdParameter));
-
-        /*
-        Select
-              o0/data[at0001]/events[at0002]/data[at0003]/items[at0022]/items[at0005]/value/defining_Code as F0,
-              c1/language as F1,
-              o2/language as F2
-              from EHR e
-              contains COMPOSITION c1[openEHR-EHR-COMPOSITION.report.v1] contains (
-                                                                                    (SECTION s3[openEHR-EHR-SECTION.adhoc.v1] contains
-                                                                                                                                    OBSERVATION o0[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0] )
-                                                                                    and
-                                                                                    ( SECTION s4[openEHR-EHR-SECTION.adhoc.v1] contains
-                                                                                                                                    OBSERVATION o2[openEHR-EHR-OBSERVATION.travel_event.v0] )
-                                                                                   )
-             where e/ehr_id/value = $parm0
-         */
-        List<Record3<VorhandenDefiningCode, Language, Language>> actual = openEhrClient.aqlEndpoint().execute(entityQuery, ehrIdParameter.setValue(ehr));
-
-        assertThat(actual).extracting(Record3::value1, Record3::value2, Record3::value3)
-                .containsExactlyInAnyOrder(new Tuple(VorhandenDefiningCode.VORHANDEN, Language.DE, Language.DE));
-
-
-    }
-
-
-    /**
-     * see https://wiki.vitagroup.ag/display/NUM/Research+Repository
-     * containment test:
-     *     contains COMPOSITION c[openEHR-EHR-COMPOSITION.event_summary.v0]
-     *         contains ADMIN_ENTRY m[openEHR-EHR-ADMIN_ENTRY.hospitalization.v0]
-     *              contains CLUSTER k[openEHR-EHR-CLUSTER.location.v1]
+                coronaAnamneseCompositionContainment.LANGUAGE);
+    Parameter<UUID> ehrIdParameter = entityQuery.buildParameter();
+    entityQuery.where(Condition.equal(EhrFields.EHR_ID(), ehrIdParameter));
+    /*
+    Select
+          o0/data[at0001]/events[at0002]/data[at0003]/items[at0022]/items[at0005]/value/defining_Code as F0,
+          o1/data[at0001]/events[at0002]/data[at0003]/items[at0022]/items[at0005]/value/defining_Code as F1,
+          o2/data[at0001]/events[at0002]/data[at0003]/items[at0022]/items[at0005]/value/defining_Code as F2,
+          c3/language as F3
+    from EHR e
+          contains ( COMPOSITION c3[openEHR-EHR-COMPOSITION.report.v1] contains
+           SECTION s4[openEHR-EHR-SECTION.adhoc.v1] contains
+            (
+            (OBSERVATION o0[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0]
+            and
+            OBSERVATION o1[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0])
+            and
+            OBSERVATION o2[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0])
+            )
+    where e/ehr_id/value = $parm0
      */
+    List<Record4<VorhandenDefiningCode, VorhandenDefiningCode, VorhandenDefiningCode, Language>>
+        actual = openEhrClient.aqlEndpoint().execute(entityQuery, ehrIdParameter.setValue(ehr));
 
-    @Test
-    public void testNUMResearchCase_1_2(){
-        UUID ehr = openEhrClient.ehrEndpoint().createEhr();
+    assertThat(actual)
+        .extracting(Record4::value1, Record4::value2, Record4::value3, Record4::value4)
+        .containsExactlyInAnyOrder(
+            new Tuple(
+                VorhandenDefiningCode.VORHANDEN,
+                VorhandenDefiningCode.VORHANDEN,
+                VorhandenDefiningCode.NICHT_VORHANDEN,
+                Language.DE));
+  }
 
-        openEhrClient.compositionEndpoint(ehr).mergeCompositionEntity(TestData.buildTestPatientenaufenthaltComposition());
+  @Test
+  @Ignore
+  public void testCoronaWithJoin() throws IOException {
 
-        //build AQL
-        PatientenaufenthaltCompositionContainment patientenaufenthaltCompositionContainment = PatientenaufenthaltCompositionContainment.getInstance();
+    UUID ehr = openEhrClient.ehrEndpoint().createEhr();
 
-        VersorgungsortAdminEntryContainment versorgungsortAdminEntryContainment = VersorgungsortAdminEntryContainment.getInstance();
-        StandortClusterContainment standortClusterContainment = StandortClusterContainment.getInstance();
-        versorgungsortAdminEntryContainment.setContains(standortClusterContainment);
-        patientenaufenthaltCompositionContainment.setContains(versorgungsortAdminEntryContainment);
+    Composition composition =
+        new CanonicalJson()
+            .unmarshal(
+                IOUtils.toString(
+                    CompositionTestDataCanonicalJson.CORONA.getStream(), StandardCharsets.UTF_8),
+                Composition.class);
+    Flattener flattener = new Flattener(new TestDataTemplateProvider());
+    CoronaAnamneseComposition coronaAnamneseComposition =
+        flattener.flatten(composition, CoronaAnamneseComposition.class);
+    openEhrClient.compositionEndpoint(ehr).mergeCompositionEntity(coronaAnamneseComposition);
+    openEhrClient
+        .compositionEndpoint(ehr)
+        .mergeCompositionEntity(TestData.buildEhrbaseBloodPressureSimpleDeV0());
 
-        //select set values from test data
-        EntityQuery<Record3<String, String, StandortschlusselDefiningCode>> entityQuery = Query.buildEntityQuery(
-                patientenaufenthaltCompositionContainment,
-                standortClusterContainment.STANDORTTYP_VALUE,
-                standortClusterContainment.STANDORTBESCHREIBUNG_VALUE,
-                standortClusterContainment.STANDORTSCHLUSSEL_DEFINING_CODE);
+    assertThat(
+            openEhrClient
+                .compositionEndpoint(ehr)
+                .find(
+                    coronaAnamneseComposition.getVersionUid().getUuid(),
+                    CoronaAnamneseComposition.class))
+        .isNotNull();
 
-        Parameter<UUID> ehrIdParameter = entityQuery.buildParameter();
-        entityQuery.where(Condition.equal(EhrFields.EHR_ID(), ehrIdParameter));
+    CoronaAnamneseCompositionContainment coronaAnamneseCompositionContainment =
+        CoronaAnamneseCompositionContainment.getInstance();
+    SymptomeSectionContainment symptomeSectionContainment =
+        SymptomeSectionContainment.getInstance();
 
-        List<Record3<String, String, StandortschlusselDefiningCode>> actual = openEhrClient.aqlEndpoint().execute(entityQuery, ehrIdParameter.setValue(ehr));
+    HustenObservationContainment hustenObservationContainment =
+        HustenObservationContainment.getInstance();
+    FieberOderErhohteKorpertemperaturObservationContainment
+        fieberOderErhohteKorpertemperaturObservationContainment =
+            FieberOderErhohteKorpertemperaturObservationContainment.getInstance();
+    HeiserkeitObservationContainment heiserkeitObservationContainment =
+        HeiserkeitObservationContainment.getInstance();
 
-        assertThat(actual).extracting(Record3::value1, Record3::value2, Record3::value3)
-                .containsExactlyInAnyOrder(new Tuple("Test", "Beschreibung", StandortschlusselDefiningCode.ANGIOLOGIE));
+    RisikogebietSectionContainment risikogebietSectionContainment =
+        RisikogebietSectionContainment.getInstance();
+    ReisefallObservationContainment reisefallObservationContainment =
+        ReisefallObservationContainment.getInstance();
 
-    }
+    // @formatter:off
+    ContainmentExpression containmentExpression =
+        coronaAnamneseCompositionContainment.contains(
+            symptomeSectionContainment
+                .contains(hustenObservationContainment)
+                .and(risikogebietSectionContainment.contains(reisefallObservationContainment)));
 
+    // @formatter:on
 
-    /**
-     * see https://wiki.vitagroup.ag/display/NUM/Research+Repository
-     *
-     * Containment test:
-     *
-     * contains COMPOSITION c[openEHR-EHR-COMPOSITION.report-result.v1]
-     * contains (
-     * CLUSTER f[openEHR-EHR-CLUSTER.case_identification.v0] and
-     * CLUSTER z[openEHR-EHR-CLUSTER.specimen.v1] and
-     * CLUSTER j[openEHR-EHR-CLUSTER.laboratory_test_panel.v0]
-     * contains CLUSTER g[openEHR-EHR-CLUSTER.laboratory_test_analyte.v1])
+    EntityQuery<Record3<VorhandenDefiningCode, Language, Language>> entityQuery =
+        Query.buildEntityQuery(
+            containmentExpression,
+            hustenObservationContainment.VORHANDEN_DEFINING_CODE,
+            coronaAnamneseCompositionContainment.LANGUAGE,
+            reisefallObservationContainment.LANGUAGE);
+    Parameter<UUID> ehrIdParameter = entityQuery.buildParameter();
+    entityQuery.where(Condition.equal(EhrFields.EHR_ID(), ehrIdParameter));
+
+    /*
+    Select
+          o0/data[at0001]/events[at0002]/data[at0003]/items[at0022]/items[at0005]/value/defining_Code as F0,
+          c1/language as F1,
+          o2/language as F2
+          from EHR e
+          contains COMPOSITION c1[openEHR-EHR-COMPOSITION.report.v1] contains (
+                                                                                (SECTION s3[openEHR-EHR-SECTION.adhoc.v1] contains
+                                                                                                                                OBSERVATION o0[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0] )
+                                                                                and
+                                                                                ( SECTION s4[openEHR-EHR-SECTION.adhoc.v1] contains
+                                                                                                                                OBSERVATION o2[openEHR-EHR-OBSERVATION.travel_event.v0] )
+                                                                               )
+         where e/ehr_id/value = $parm0
      */
-    @Test
-    public void testNUMResearchCase_3() throws IOException {
-//        Should use: TestData.buildTestVirologischerBefundComposition();
-        //with the test data
-        VirologischerBefundComposition virologischerBefundComposition = TestData.buildTestVirologischerBefundComposition();
-        assertThat(virologischerBefundComposition.getBefund()).isNotNull();
+    List<Record3<VorhandenDefiningCode, Language, Language>> actual =
+        openEhrClient.aqlEndpoint().execute(entityQuery, ehrIdParameter.setValue(ehr));
 
-        UUID ehr = openEhrClient.ehrEndpoint().createEhr();
-        openEhrClient.compositionEndpoint(ehr).mergeCompositionEntity(virologischerBefundComposition);
+    assertThat(actual)
+        .extracting(Record3::value1, Record3::value2, Record3::value3)
+        .containsExactlyInAnyOrder(
+            new Tuple(VorhandenDefiningCode.VORHANDEN, Language.DE, Language.DE));
+  }
 
-        //build AQL expression
-        VirologischerBefundCompositionContainment virologischerBefundCompositionContainment = VirologischerBefundCompositionContainment.getInstance();
-        ProbeClusterContainment probeClusterContainment = ProbeClusterContainment.getInstance();
-        KulturClusterContainment kulturClusterContainment = KulturClusterContainment.getInstance();
-        ProVirusClusterContainment proVirusClusterContainment = ProVirusClusterContainment.getInstance();
+  /**
+   * see https://wiki.vitagroup.ag/display/NUM/Research+Repository containment test: contains
+   * COMPOSITION c[openEHR-EHR-COMPOSITION.event_summary.v0] contains ADMIN_ENTRY
+   * m[openEHR-EHR-ADMIN_ENTRY.hospitalization.v0] contains CLUSTER
+   * k[openEHR-EHR-CLUSTER.location.v1]
+   */
+  @Test
+  public void testNUMResearchCase_1_2() {
+    UUID ehr = openEhrClient.ehrEndpoint().createEhr();
 
-//        contains COMPOSITION c[openEHR-EHR-COMPOSITION.report-result.v1]
-//        contains (
-//                CLUSTER z[openEHR-EHR-CLUSTER.specimen.v1] and
-//                CLUSTER j[openEHR-EHR-CLUSTER.laboratory_test_panel.v0]
-//                contains CLUSTER g[openEHR-EHR-CLUSTER.laboratory_test_analyte.v1])
+    openEhrClient
+        .compositionEndpoint(ehr)
+        .mergeCompositionEntity(TestData.buildTestPatientenaufenthaltComposition());
 
-        ContainmentExpression containmentExpression =
-                virologischerBefundCompositionContainment.contains(
-                        probeClusterContainment.and(
-                                kulturClusterContainment.contains(proVirusClusterContainment))
-                );
+    // build AQL
+    PatientenaufenthaltCompositionContainment patientenaufenthaltCompositionContainment =
+        PatientenaufenthaltCompositionContainment.getInstance();
 
-        EntityQuery<Record2<String, Long>> entityQuery = Query.buildEntityQuery(
-                containmentExpression,
-                proVirusClusterContainment.VIRUS_VALUE,
-                proVirusClusterContainment.ANALYSEERGEBNIS_REIHENFOLGE_MAGNITUDE);
+    VersorgungsortAdminEntryContainment versorgungsortAdminEntryContainment =
+        VersorgungsortAdminEntryContainment.getInstance();
+    StandortClusterContainment standortClusterContainment =
+        StandortClusterContainment.getInstance();
+    versorgungsortAdminEntryContainment.setContains(standortClusterContainment);
+    patientenaufenthaltCompositionContainment.setContains(versorgungsortAdminEntryContainment);
 
-        Parameter<UUID> ehrIdParameter = entityQuery.buildParameter();
-        entityQuery.where(Condition.equal(EhrFields.EHR_ID(), ehrIdParameter));
+    // select set values from test data
+    EntityQuery<Record3<String, String, StandortschlusselDefiningCode>> entityQuery =
+        Query.buildEntityQuery(
+            patientenaufenthaltCompositionContainment,
+            standortClusterContainment.STANDORTTYP_VALUE,
+            standortClusterContainment.STANDORTBESCHREIBUNG_VALUE,
+            standortClusterContainment.STANDORTSCHLUSSEL_DEFINING_CODE);
 
-        List<Record2<String, Long>> actual = openEhrClient.aqlEndpoint().execute(entityQuery, ehrIdParameter.setValue(ehr));
+    Parameter<UUID> ehrIdParameter = entityQuery.buildParameter();
+    entityQuery.where(Condition.equal(EhrFields.EHR_ID(), ehrIdParameter));
 
-        assertThat(actual).extracting(Record2::value1, Record2::value2)
-                .containsExactlyInAnyOrder(
-                        new Tuple("SARS-Cov-2", 32L),
-                        new Tuple("SARS-Cov-2", 34L)
-                );
+    List<Record3<String, String, StandortschlusselDefiningCode>> actual =
+        openEhrClient.aqlEndpoint().execute(entityQuery, ehrIdParameter.setValue(ehr));
 
-    }
+    assertThat(actual)
+        .extracting(Record3::value1, Record3::value2, Record3::value3)
+        .containsExactlyInAnyOrder(
+            new Tuple("Test", "Beschreibung", StandortschlusselDefiningCode.ANGIOLOGIE));
+  }
 
-    /**
-     * see https://wiki.vitagroup.ag/display/NUM/Research+Repository
-     *
-     * Containment test:
-     *
-     * contains COMPOSITION c[openEHR-EHR-COMPOSITION.event_summary.v0]
-     * contains
-     * (CLUSTER n[openEHR-EHR-CLUSTER.case_identification.v0]
-     * and ADMIN_ENTRY u[openEHR-EHR-ADMIN_ENTRY.hospitalization.v0]
-     * contains (CLUSTER a[openEHR-EHR-CLUSTER.location.v1]))
-     */
+  /**
+   * see https://wiki.vitagroup.ag/display/NUM/Research+Repository
+   *
+   * <p>Containment test:
+   *
+   * <p>contains COMPOSITION c[openEHR-EHR-COMPOSITION.report-result.v1] contains ( CLUSTER
+   * f[openEHR-EHR-CLUSTER.case_identification.v0] and CLUSTER z[openEHR-EHR-CLUSTER.specimen.v1]
+   * and CLUSTER j[openEHR-EHR-CLUSTER.laboratory_test_panel.v0] contains CLUSTER
+   * g[openEHR-EHR-CLUSTER.laboratory_test_analyte.v1])
+   */
+  @Test
+  public void testNUMResearchCase_3() throws IOException {
+    //        Should use: TestData.buildTestVirologischerBefundComposition();
+    // with the test data
+    VirologischerBefundComposition virologischerBefundComposition =
+        TestData.buildTestVirologischerBefundComposition();
+    assertThat(virologischerBefundComposition.getBefund()).isNotNull();
 
-    @Test
-    public void testNUMResearchCase_5(){
-        UUID ehr = openEhrClient.ehrEndpoint().createEhr();
+    UUID ehr = openEhrClient.ehrEndpoint().createEhr();
+    openEhrClient.compositionEndpoint(ehr).mergeCompositionEntity(virologischerBefundComposition);
 
-        openEhrClient.compositionEndpoint(ehr).mergeCompositionEntity(TestData.buildTestPatientenaufenthaltComposition());
+    // build AQL expression
+    VirologischerBefundCompositionContainment virologischerBefundCompositionContainment =
+        VirologischerBefundCompositionContainment.getInstance();
+    ProbeClusterContainment probeClusterContainment = ProbeClusterContainment.getInstance();
+    KulturClusterContainment kulturClusterContainment = KulturClusterContainment.getInstance();
+    ProVirusClusterContainment proVirusClusterContainment =
+        ProVirusClusterContainment.getInstance();
 
-        //build AQL
-        PatientenaufenthaltCompositionContainment patientenaufenthaltCompositionContainment = PatientenaufenthaltCompositionContainment.getInstance();
-        AbteilungsfallClusterContainment abteilungsfallClusterContainment = AbteilungsfallClusterContainment.getInstance();
-        VersorgungsortAdminEntryContainment versorgungsortAdminEntryContainment = VersorgungsortAdminEntryContainment.getInstance();
-        StandortClusterContainment standortClusterContainment = StandortClusterContainment.getInstance();
+    //        contains COMPOSITION c[openEHR-EHR-COMPOSITION.report-result.v1]
+    //        contains (
+    //                CLUSTER z[openEHR-EHR-CLUSTER.specimen.v1] and
+    //                CLUSTER j[openEHR-EHR-CLUSTER.laboratory_test_panel.v0]
+    //                contains CLUSTER g[openEHR-EHR-CLUSTER.laboratory_test_analyte.v1])
 
-        ContainmentExpression containmentExpression =
-                patientenaufenthaltCompositionContainment.contains(
-                        abteilungsfallClusterContainment.and(
-                                versorgungsortAdminEntryContainment.contains(
-                                        standortClusterContainment
-                                )
-                        )
-                );
+    ContainmentExpression containmentExpression =
+        virologischerBefundCompositionContainment.contains(
+            probeClusterContainment.and(
+                kulturClusterContainment.contains(proVirusClusterContainment)));
 
-        //select set values from test data
-        EntityQuery<Record3<TemporalAccessor, TemporalAccessor, String>> entityQuery = Query.buildEntityQuery(
-                containmentExpression,
-                versorgungsortAdminEntryContainment.BEGINN_VALUE,
-                versorgungsortAdminEntryContainment.ENDE_VALUE,
-                versorgungsortAdminEntryContainment.GRUND_DES_AUFENTHALTES_VALUE);
+    EntityQuery<Record2<String, Long>> entityQuery =
+        Query.buildEntityQuery(
+            containmentExpression,
+            proVirusClusterContainment.VIRUS_VALUE,
+            proVirusClusterContainment.ANALYSEERGEBNIS_REIHENFOLGE_MAGNITUDE);
 
-        Parameter<UUID> ehrIdParameter = entityQuery.buildParameter();
-        entityQuery.where(Condition.equal(EhrFields.EHR_ID(), ehrIdParameter));
+    Parameter<UUID> ehrIdParameter = entityQuery.buildParameter();
+    entityQuery.where(Condition.equal(EhrFields.EHR_ID(), ehrIdParameter));
 
-        List<Record3<TemporalAccessor, TemporalAccessor, String>> actual = openEhrClient.aqlEndpoint().execute(entityQuery, ehrIdParameter.setValue(ehr));
+    List<Record2<String, Long>> actual =
+        openEhrClient.aqlEndpoint().execute(entityQuery, ehrIdParameter.setValue(ehr));
 
-        assertThat(actual).extracting(Record3::value1, Record3::value2, Record3::value3)
-                .containsExactlyInAnyOrder(new Tuple(
-                        new DvDateTime("2020-01-01T10:00Z").getValue(),
-                        new DvDateTime("2020-01-01T12:00Z").getValue(),
-                        "test value"));
+    assertThat(actual)
+        .extracting(Record2::value1, Record2::value2)
+        .containsExactlyInAnyOrder(new Tuple("SARS-Cov-2", 32L), new Tuple("SARS-Cov-2", 34L));
+  }
 
-    }
+  /**
+   * see https://wiki.vitagroup.ag/display/NUM/Research+Repository
+   *
+   * <p>Containment test:
+   *
+   * <p>contains COMPOSITION c[openEHR-EHR-COMPOSITION.event_summary.v0] contains (CLUSTER
+   * n[openEHR-EHR-CLUSTER.case_identification.v0] and ADMIN_ENTRY
+   * u[openEHR-EHR-ADMIN_ENTRY.hospitalization.v0] contains (CLUSTER
+   * a[openEHR-EHR-CLUSTER.location.v1]))
+   */
+  @Test
+  public void testNUMResearchCase_5() {
+    UUID ehr = openEhrClient.ehrEndpoint().createEhr();
 
+    openEhrClient
+        .compositionEndpoint(ehr)
+        .mergeCompositionEntity(TestData.buildTestPatientenaufenthaltComposition());
 
+    // build AQL
+    PatientenaufenthaltCompositionContainment patientenaufenthaltCompositionContainment =
+        PatientenaufenthaltCompositionContainment.getInstance();
+    AbteilungsfallClusterContainment abteilungsfallClusterContainment =
+        AbteilungsfallClusterContainment.getInstance();
+    VersorgungsortAdminEntryContainment versorgungsortAdminEntryContainment =
+        VersorgungsortAdminEntryContainment.getInstance();
+    StandortClusterContainment standortClusterContainment =
+        StandortClusterContainment.getInstance();
 
-    /**
-     * see https://wiki.vitagroup.ag/display/NUM/Research+Repository
-     *
-     * Containment test:
-     *
-     * contains COMPOSITION c[openEHR-EHR-COMPOSITION.fall.v0]
-     * contains (
-     * ADMIN_ENTRY p[openEHR-EHR-ADMIN_ENTRY.admission.v0] and
-     * ADMIN_ENTRY b[openEHR-EHR-ADMIN_ENTRY.discharge_summary.v0])
-     */
+    ContainmentExpression containmentExpression =
+        patientenaufenthaltCompositionContainment.contains(
+            abteilungsfallClusterContainment.and(
+                versorgungsortAdminEntryContainment.contains(standortClusterContainment)));
 
-    @Test
-    public void testNUMResearchCase_6(){
-        UUID ehr = openEhrClient.ehrEndpoint().createEhr();
+    // select set values from test data
+    EntityQuery<Record3<TemporalAccessor, TemporalAccessor, String>> entityQuery =
+        Query.buildEntityQuery(
+            containmentExpression,
+            versorgungsortAdminEntryContainment.BEGINN_VALUE,
+            versorgungsortAdminEntryContainment.ENDE_VALUE,
+            versorgungsortAdminEntryContainment.GRUND_DES_AUFENTHALTES_VALUE);
 
-        openEhrClient.compositionEndpoint(ehr).mergeCompositionEntity(TestData.buildTestStationarerVersorgungsfallComposition());
+    Parameter<UUID> ehrIdParameter = entityQuery.buildParameter();
+    entityQuery.where(Condition.equal(EhrFields.EHR_ID(), ehrIdParameter));
 
-        //build AQL
-        StationarerVersorgungsfallCompositionContainment stationarerVersorgungsfallCompositionContainment = StationarerVersorgungsfallCompositionContainment.getInstance();
-        AufnahmedatenAdminEntryContainment aufnahmedatenAdminEntryContainment = AufnahmedatenAdminEntryContainment.getInstance();
-        EntlassungsdatenAdminEntryContainment entlassungsdatenAdminEntryContainment = EntlassungsdatenAdminEntryContainment.getInstance();
+    List<Record3<TemporalAccessor, TemporalAccessor, String>> actual =
+        openEhrClient.aqlEndpoint().execute(entityQuery, ehrIdParameter.setValue(ehr));
 
-        ContainmentExpression containmentExpression =
-                stationarerVersorgungsfallCompositionContainment.contains(
-                        aufnahmedatenAdminEntryContainment.and(
-                                entlassungsdatenAdminEntryContainment
-                                )
-                        );
+    assertThat(actual)
+        .extracting(Record3::value1, Record3::value2, Record3::value3)
+        .containsExactlyInAnyOrder(
+            new Tuple(
+                new DvDateTime("2020-01-01T10:00Z").getValue(),
+                new DvDateTime("2020-01-01T12:00Z").getValue(),
+                "test value"));
+  }
 
+  /**
+   * see https://wiki.vitagroup.ag/display/NUM/Research+Repository
+   *
+   * <p>Containment test:
+   *
+   * <p>contains COMPOSITION c[openEHR-EHR-COMPOSITION.fall.v0] contains ( ADMIN_ENTRY
+   * p[openEHR-EHR-ADMIN_ENTRY.admission.v0] and ADMIN_ENTRY
+   * b[openEHR-EHR-ADMIN_ENTRY.discharge_summary.v0])
+   */
+  @Test
+  public void testNUMResearchCase_6() {
+    UUID ehr = openEhrClient.ehrEndpoint().createEhr();
 
-        //select set values from test data
-        EntityQuery<Record3<TemporalAccessor, TemporalAccessor, String>> entityQuery = Query.buildEntityQuery(
-                containmentExpression,
-                aufnahmedatenAdminEntryContainment.DATUM_UHRZEIT_DER_AUFNAHME_VALUE,
-                entlassungsdatenAdminEntryContainment.DATUM_UHRZEIT_DER_ENTLASSUNG_VALUE,
-                stationarerVersorgungsfallCompositionContainment.FALL_KENNUNG_VALUE);
+    openEhrClient
+        .compositionEndpoint(ehr)
+        .mergeCompositionEntity(TestData.buildTestStationarerVersorgungsfallComposition());
 
-        Parameter<UUID> ehrIdParameter = entityQuery.buildParameter();
-        entityQuery.where(Condition.equal(EhrFields.EHR_ID(), ehrIdParameter));
+    // build AQL
+    StationarerVersorgungsfallCompositionContainment
+        stationarerVersorgungsfallCompositionContainment =
+            StationarerVersorgungsfallCompositionContainment.getInstance();
+    AufnahmedatenAdminEntryContainment aufnahmedatenAdminEntryContainment =
+        AufnahmedatenAdminEntryContainment.getInstance();
+    EntlassungsdatenAdminEntryContainment entlassungsdatenAdminEntryContainment =
+        EntlassungsdatenAdminEntryContainment.getInstance();
 
-        List<Record3<TemporalAccessor, TemporalAccessor, String>> actual = openEhrClient.aqlEndpoint().execute(entityQuery, ehrIdParameter.setValue(ehr));
+    ContainmentExpression containmentExpression =
+        stationarerVersorgungsfallCompositionContainment.contains(
+            aufnahmedatenAdminEntryContainment.and(entlassungsdatenAdminEntryContainment));
 
-        assertThat(actual).extracting(Record3::value1, Record3::value2, Record3::value3)
-                .containsExactlyInAnyOrder(new Tuple(
-                        new DvDateTime("2020-04-02T12:00:00Z").getValue(),
-                        new DvDateTime("2020-04-02T12:00:00Z").getValue(),
-                        "45657678"));
+    // select set values from test data
+    EntityQuery<Record3<TemporalAccessor, TemporalAccessor, String>> entityQuery =
+        Query.buildEntityQuery(
+            containmentExpression,
+            aufnahmedatenAdminEntryContainment.DATUM_UHRZEIT_DER_AUFNAHME_VALUE,
+            entlassungsdatenAdminEntryContainment.DATUM_UHRZEIT_DER_ENTLASSUNG_VALUE,
+            stationarerVersorgungsfallCompositionContainment.FALL_KENNUNG_VALUE);
 
-    }
+    Parameter<UUID> ehrIdParameter = entityQuery.buildParameter();
+    entityQuery.where(Condition.equal(EhrFields.EHR_ID(), ehrIdParameter));
 
+    List<Record3<TemporalAccessor, TemporalAccessor, String>> actual =
+        openEhrClient.aqlEndpoint().execute(entityQuery, ehrIdParameter.setValue(ehr));
 
-    /**
-     * see https://wiki.vitagroup.ag/display/NUM/Research+Repository
-     *
-     * Containment test UC 8:
-     *
-     * contains COMPOSITION c
-     * contains OBSERVATION v[openEHR-EHR-OBSERVATION.laboratory_test_result.v1]
-     * contains (
-     * CLUSTER h[openEHR-EHR-CLUSTER.laboratory_test_panel.v0] and
-     * CLUSTER x[openEHR-EHR-CLUSTER.specimen.v1] and
-     * CLUSTER q[openEHR-EHR-CLUSTER.laboratory_test_analyte.v1])
-     */
-    @Test
-    public void testNUMResearchCase_8() {
+    assertThat(actual)
+        .extracting(Record3::value1, Record3::value2, Record3::value3)
+        .containsExactlyInAnyOrder(
+            new Tuple(
+                new DvDateTime("2020-04-02T12:00:00Z").getValue(),
+                new DvDateTime("2020-04-02T12:00:00Z").getValue(),
+                "45657678"));
+  }
 
-        VirologischerBefundComposition virologischerBefundComposition = TestData.buildTestVirologischerBefundComposition();
-        assertThat(virologischerBefundComposition.getBefund()).isNotNull();
+  /**
+   * see https://wiki.vitagroup.ag/display/NUM/Research+Repository
+   *
+   * <p>Containment test UC 8:
+   *
+   * <p>contains COMPOSITION c contains OBSERVATION
+   * v[openEHR-EHR-OBSERVATION.laboratory_test_result.v1] contains ( CLUSTER
+   * h[openEHR-EHR-CLUSTER.laboratory_test_panel.v0] and CLUSTER x[openEHR-EHR-CLUSTER.specimen.v1]
+   * and CLUSTER q[openEHR-EHR-CLUSTER.laboratory_test_analyte.v1])
+   */
+  @Test
+  public void testNUMResearchCase_8() {
 
-        UUID ehr = openEhrClient.ehrEndpoint().createEhr();
-        openEhrClient.compositionEndpoint(ehr).mergeCompositionEntity(virologischerBefundComposition);
+    VirologischerBefundComposition virologischerBefundComposition =
+        TestData.buildTestVirologischerBefundComposition();
+    assertThat(virologischerBefundComposition.getBefund()).isNotNull();
 
-        //build AQL expression
-        Containment compositionContainment = new Containment("COMPOSITION");
-        BefundObservationContainment befundObservationContainment = BefundObservationContainment.getInstance();
-        ProbeClusterContainment probeClusterContainment = ProbeClusterContainment.getInstance();
-        KulturClusterContainment kulturClusterContainment = KulturClusterContainment.getInstance();
-        ProVirusClusterContainment proVirusClusterContainment = ProVirusClusterContainment.getInstance();
+    UUID ehr = openEhrClient.ehrEndpoint().createEhr();
+    openEhrClient.compositionEndpoint(ehr).mergeCompositionEntity(virologischerBefundComposition);
 
-        ContainmentExpression containmentExpression =
-                compositionContainment.contains(
-                    befundObservationContainment.contains(
-                            kulturClusterContainment.and(
-                                    probeClusterContainment.and(proVirusClusterContainment))
-                    )
-                );
+    // build AQL expression
+    Containment compositionContainment = new Containment("COMPOSITION");
+    BefundObservationContainment befundObservationContainment =
+        BefundObservationContainment.getInstance();
+    ProbeClusterContainment probeClusterContainment = ProbeClusterContainment.getInstance();
+    KulturClusterContainment kulturClusterContainment = KulturClusterContainment.getInstance();
+    ProVirusClusterContainment proVirusClusterContainment =
+        ProVirusClusterContainment.getInstance();
 
-        EntityQuery<Record2<String, Long>> entityQuery = Query.buildEntityQuery(
-                containmentExpression,
-                proVirusClusterContainment.VIRUS_VALUE,
-                proVirusClusterContainment.ANALYSEERGEBNIS_REIHENFOLGE_MAGNITUDE
-                );
+    ContainmentExpression containmentExpression =
+        compositionContainment.contains(
+            befundObservationContainment.contains(
+                kulturClusterContainment.and(
+                    probeClusterContainment.and(proVirusClusterContainment))));
 
-        Parameter<UUID> ehrIdParameter = entityQuery.buildParameter();
-        entityQuery.where(Condition.equal(EhrFields.EHR_ID(), ehrIdParameter).and(
-                Condition.equal(new NativeSelectAqlField<>(compositionContainment, "/name/value", String.class), "Virologischer Befund")
-        ));
+    EntityQuery<Record2<String, Long>> entityQuery =
+        Query.buildEntityQuery(
+            containmentExpression,
+            proVirusClusterContainment.VIRUS_VALUE,
+            proVirusClusterContainment.ANALYSEERGEBNIS_REIHENFOLGE_MAGNITUDE);
 
-        List<Record2<String, Long>> actual = openEhrClient.aqlEndpoint().execute(entityQuery, ehrIdParameter.setValue(ehr));
+    Parameter<UUID> ehrIdParameter = entityQuery.buildParameter();
+    entityQuery.where(
+        Condition.equal(EhrFields.EHR_ID(), ehrIdParameter)
+            .and(
+                Condition.equal(
+                    new NativeSelectAqlField<>(compositionContainment, "/name/value", String.class),
+                    "Virologischer Befund")));
 
-        assertThat(actual).extracting(Record2::value1, Record2::value2)
-                .containsExactlyInAnyOrder(
-                        new Tuple("SARS-Cov-2", 32L),
-                        new Tuple("SARS-Cov-2", 34L)
-                );
+    List<Record2<String, Long>> actual =
+        openEhrClient.aqlEndpoint().execute(entityQuery, ehrIdParameter.setValue(ehr));
 
-    }
+    assertThat(actual)
+        .extracting(Record2::value1, Record2::value2)
+        .containsExactlyInAnyOrder(new Tuple("SARS-Cov-2", 32L), new Tuple("SARS-Cov-2", 34L));
+  }
 }

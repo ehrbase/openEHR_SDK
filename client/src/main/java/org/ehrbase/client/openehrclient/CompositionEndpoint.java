@@ -17,33 +17,32 @@
 
 package org.ehrbase.client.openehrclient;
 
+import java.util.Optional;
+import java.util.UUID;
 import org.ehrbase.client.annotations.Template;
 import org.ehrbase.client.exception.ClientException;
 import org.ehrbase.client.exception.WrongStatusCodeException;
 
-import java.util.Optional;
-import java.util.UUID;
-
 public interface CompositionEndpoint {
 
-    /**
-     * Save a Flat-Entity to remote systems.
-     *
-     * @param entity Flat-Entity to save. Has to be annotated with {@link Template}
-     * @return CompositionId
-     * @throws ClientException
-     * @throws WrongStatusCodeException
-     */
-    <T> T mergeCompositionEntity(T entity);
+  /**
+   * Save a Flat-Entity to remote systems.
+   *
+   * @param entity Flat-Entity to save. Has to be annotated with {@link Template}
+   * @return CompositionId
+   * @throws ClientException
+   * @throws WrongStatusCodeException
+   */
+  <T> T mergeCompositionEntity(T entity);
 
-    /**
-     * Finds a Flat-Entity by
-     *
-     * @param compositionId CompositionId of the flat-Entity to retrieve.
-     * @param clazz         class of the flat-Entity to retrieve. Has to be annotated with {@link Template}
-     * @return The Flat-Entity
-     * @throws ClientException
-     * @throws WrongStatusCodeException
-     */
-    <T> Optional<T> find(UUID compositionId, Class<T> clazz);
+  /**
+   * Finds a Flat-Entity by
+   *
+   * @param compositionId CompositionId of the flat-Entity to retrieve.
+   * @param clazz class of the flat-Entity to retrieve. Has to be annotated with {@link Template}
+   * @return The Flat-Entity
+   * @throws ClientException
+   * @throws WrongStatusCodeException
+   */
+  <T> Optional<T> find(UUID compositionId, Class<T> clazz);
 }

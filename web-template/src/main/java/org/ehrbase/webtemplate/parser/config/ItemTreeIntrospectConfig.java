@@ -20,20 +20,18 @@
 package org.ehrbase.webtemplate.parser.config;
 
 import com.nedap.archie.rm.datastructures.ItemTree;
-
 import java.util.Collections;
 import java.util.Set;
 
 public class ItemTreeIntrospectConfig implements RmIntrospectConfig {
 
+  @Override
+  public Class getAssociatedClass() {
+    return ItemTree.class;
+  }
 
-    @Override
-    public Class getAssociatedClass() {
-        return ItemTree.class;
-    }
-
-    @Override
-    public Set<String> getNonTemplateFields() {
-        return Collections.emptySet();
-    }
+  @Override
+  public Set<String> getNonTemplateFields() {
+    return Collections.emptySet();
+  }
 }

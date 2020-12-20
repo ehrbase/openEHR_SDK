@@ -23,15 +23,15 @@ import org.ehrbase.client.aql.field.SelectAqlField;
 
 class Exists implements Condition {
 
-    private final SelectAqlField<?> field;
+  private final SelectAqlField<?> field;
 
-    public Exists(SelectAqlField<?> field) {
-        this.field = field;
-    }
+  public Exists(SelectAqlField<?> field) {
+    this.field = field;
+  }
 
-    @Override
-    public String buildAql() {
-        StringBuilder sb = new StringBuilder();
-        return sb.append("EXISTS ").append(field.buildAQL()).toString();
-    }
+  @Override
+  public String buildAql() {
+    StringBuilder sb = new StringBuilder();
+    return sb.append("EXISTS ").append(field.buildAQL()).toString();
+  }
 }

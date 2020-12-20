@@ -17,120 +17,117 @@
  */
 package org.ehrbase.terminology.openehr;
 
+import java.util.Map;
 import org.ehrbase.terminology.openehr.implementation.AttributeCodesetMapping;
 import org.ehrbase.terminology.openehr.implementation.LocalizedTerminologies;
 
-import java.util.Map;
-
-
-/**
- * @link https://specifications.openehr.org/releases/RM/latest/support.html#_terminology_package
- */
+/** @link https://specifications.openehr.org/releases/RM/latest/support.html#_terminology_package */
 public interface TerminologyService {
 
-    /**
-     * Return an interface to the terminology named name.
-     *
-     * @param name
-     * @return
-     */
-    TerminologyAccess terminology(String name);
+  /**
+   * Return an interface to the terminology named name.
+   *
+   * @param name
+   * @return
+   */
+  TerminologyAccess terminology(String name);
 
-    /**
-     * Return an interface to the terminology named name for a specific language.
-     *
-     * @param name
-     * @return
-     */
-    TerminologyAccess terminology(String name, String language);
+  /**
+   * Return an interface to the terminology named name for a specific language.
+   *
+   * @param name
+   * @return
+   */
+  TerminologyAccess terminology(String name, String language);
 
-    /**
-     * Return an interface to the code_set identified by the external identifier name (e.g. ISO_639-1).
-     *
-     * @param name
-     * @return
-     */
-    CodeSetAccess codeSet(String name);
+  /**
+   * Return an interface to the code_set identified by the external identifier name (e.g.
+   * ISO_639-1).
+   *
+   * @param name
+   * @return
+   */
+  CodeSetAccess codeSet(String name);
 
-    CodeSetAccess codeSet(String name, String language);
+  CodeSetAccess codeSet(String name, String language);
 
-    /**
-     * Return an interface to the code_set identified internally in openEHR by id.
-     *
-     * @param name
-     * @return
-     */
-    CodeSetAccess codeSetForId(String name);
+  /**
+   * Return an interface to the code_set identified internally in openEHR by id.
+   *
+   * @param name
+   * @return
+   */
+  CodeSetAccess codeSetForId(String name);
 
-    CodeSetAccess codeSetForId(String name, String language);
+  CodeSetAccess codeSetForId(String name, String language);
 
-    /**
-     * True if terminology named name known by this service.
-     *
-     * @param name
-     * @return
-     */
-    Boolean hasTerminology(String name);
+  /**
+   * True if terminology named name known by this service.
+   *
+   * @param name
+   * @return
+   */
+  Boolean hasTerminology(String name);
 
-    Boolean hasTerminology(String name, String language);
+  Boolean hasTerminology(String name, String language);
 
-    /**
-     * True if code_set linked to internal name (e.g. languages ) is available.
-     *
-     * @param name
-     * @return
-     */
-    Boolean hasCodeSet(String name);
+  /**
+   * True if code_set linked to internal name (e.g. languages ) is available.
+   *
+   * @param name
+   * @return
+   */
+  Boolean hasCodeSet(String name);
 
-    Boolean hasCodeSet(String name, String language);
+  Boolean hasCodeSet(String name, String language);
 
-    /**
-     * Set of all terminology identifiers known in the terminology service.
-     *
-     * @return
-     */
-    String[] terminologyIdentifiers();
+  /**
+   * Set of all terminology identifiers known in the terminology service.
+   *
+   * @return
+   */
+  String[] terminologyIdentifiers();
 
-    String[] terminologyIdentifiers(String language);
+  String[] terminologyIdentifiers(String language);
 
-    /**
-     * Set of all code set identifiers known in the terminology service.
-     *
-     * @return
-     */
-    Map<String, String> openehrCodeSets();
+  /**
+   * Set of all code set identifiers known in the terminology service.
+   *
+   * @return
+   */
+  Map<String, String> openehrCodeSets();
 
-    Map<String, String> openehrCodeSets(String language);
+  Map<String, String> openehrCodeSets(String language);
 
-    /**
-     * Set of all code sets identifiers for which there is an internal openEHR name.
-     *
-     * @return Map of ids keyed by internal name.
-     */
-    String[] codeSetIdentifiers();
+  /**
+   * Set of all code sets identifiers for which there is an internal openEHR name.
+   *
+   * @return Map of ids keyed by internal name.
+   */
+  String[] codeSetIdentifiers();
 
-    String[] codeSetIdentifiers(String language);
+  String[] codeSetIdentifiers(String language);
 
-    /**
-     * retrieve the rubric literal for an openehr code and language
-     *
-     * @param code
-     * @param language
-     * @return
-     */
-    String getLabelForCode(String code, String language);
+  /**
+   * retrieve the rubric literal for an openehr code and language
+   *
+   * @param code
+   * @param language
+   * @return
+   */
+  String getLabelForCode(String code, String language);
 
-    /**
-     * return the mapping between RM attribute and entries in openehr terminology
-     *
-     * @return
-     */
-    AttributeCodesetMapping codesetMapping();
+  /**
+   * return the mapping between RM attribute and entries in openehr terminology
+   *
+   * @return
+   */
+  AttributeCodesetMapping codesetMapping();
 
-    /**
-     * returns the set of openehr localized terminologies as defined in their respective XML sources
-     *
-     * @return
-     */
-    LocalizedTerminologies localizedTerminologies();
+  /**
+   * returns the set of openehr localized terminologies as defined in their respective XML sources
+   *
+   * @return
+   */
+  LocalizedTerminologies localizedTerminologies();
 }

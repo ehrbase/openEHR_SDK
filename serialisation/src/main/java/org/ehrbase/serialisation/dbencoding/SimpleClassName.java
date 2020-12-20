@@ -17,18 +17,16 @@
 
 package org.ehrbase.serialisation.dbencoding;
 
-/**
- * simple wrapper to get the class name of an object
- */
+/** simple wrapper to get the class name of an object */
 public class SimpleClassName {
 
-    Object object;
+  Object object;
 
-    public SimpleClassName(Object object) {
-        this.object = object;
-    }
+  public SimpleClassName(Object object) {
+    this.object = object;
+  }
 
-    public String toString(){
-        return object.getClass().getSimpleName();
-    }
+  public String toString() {
+    return object.getClass().getSimpleName();
+  }
 }

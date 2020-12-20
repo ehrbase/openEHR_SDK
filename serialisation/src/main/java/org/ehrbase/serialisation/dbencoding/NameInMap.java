@@ -21,23 +21,21 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-/**
- * encode a RM object name in an array of name values
- */
+/** encode a RM object name in an array of name values */
 public class NameInMap {
 
-    private Map<String, Object> map;
-    private Map<String, Object> nameValues;
+  private Map<String, Object> map;
+  private Map<String, Object> nameValues;
 
-    public NameInMap(Map<String, Object> map, Map<String, Object> nameValues) {
-        this.map = map;
-        this.nameValues = nameValues;
-    }
+  public NameInMap(Map<String, Object> map, Map<String, Object> nameValues) {
+    this.map = map;
+    this.nameValues = nameValues;
+  }
 
-    public Map<String, Object> toMap() {
-        List<Map<String, Object>> nameListMap = new ArrayList<>();
-        nameListMap.add(nameValues);
-        map.put(CompositionSerializer.TAG_NAME, nameListMap);
-        return map;
-    }
+  public Map<String, Object> toMap() {
+    List<Map<String, Object>> nameListMap = new ArrayList<>();
+    nameListMap.add(nameValues);
+    map.put(CompositionSerializer.TAG_NAME, nameListMap);
+    return map;
+  }
 }

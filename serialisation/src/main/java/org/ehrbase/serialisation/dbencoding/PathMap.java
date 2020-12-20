@@ -17,26 +17,24 @@
 
 package org.ehrbase.serialisation.dbencoding;
 
+import java.util.Map;
+import java.util.TreeMap;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.collections4.PredicateUtils;
 
-import java.util.Map;
-import java.util.TreeMap;
-
 public class PathMap {
 
-
-    public PathMap() {
-        throw new IllegalStateException("Use only static method in this class");
-    }
-    /**
-     * to remain consistent regarding datastructure, we use a map which prevents duplicated keys... and throw
-     * an exception if one is detected...
-     *
-     * @return
-     */
-    @SuppressWarnings("unchecked")
-    public static Map<String, Object> getInstance() {
-        return MapUtils.predicatedMap(new TreeMap<>(), PredicateUtils.uniquePredicate(), null);
-    }
+  public PathMap() {
+    throw new IllegalStateException("Use only static method in this class");
+  }
+  /**
+   * to remain consistent regarding datastructure, we use a map which prevents duplicated keys...
+   * and throw an exception if one is detected...
+   *
+   * @return
+   */
+  @SuppressWarnings("unchecked")
+  public static Map<String, Object> getInstance() {
+    return MapUtils.predicatedMap(new TreeMap<>(), PredicateUtils.uniquePredicate(), null);
+  }
 }

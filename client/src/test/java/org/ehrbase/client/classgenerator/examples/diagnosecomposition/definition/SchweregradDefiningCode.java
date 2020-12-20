@@ -1,14 +1,25 @@
 package org.ehrbase.client.classgenerator.examples.diagnosecomposition.definition;
 
-import java.lang.String;
 import org.ehrbase.client.classgenerator.EnumValueSet;
 
 public enum SchweregradDefiningCode implements EnumValueSet {
-  SCHWER("Schwer", "Das Problem oder die Diagnose verhindert die normale Aktivität oder verursacht schwerwiegende gesundheitliche Schäden, falls es nicht behandelt wird.", "local", "at0049"),
+  SCHWER(
+      "Schwer",
+      "Das Problem oder die Diagnose verhindert die normale Aktivität oder verursacht schwerwiegende gesundheitliche Schäden, falls es nicht behandelt wird.",
+      "local",
+      "at0049"),
 
-  MASSIG("Mäßig", "Das Problem oder die Diagnose beeinträchtigt die normale Aktivität oder verursacht bleibende gesundheitliche Schäden, falls es nicht behandelt wird.", "local", "at0048"),
+  MASSIG(
+      "Mäßig",
+      "Das Problem oder die Diagnose beeinträchtigt die normale Aktivität oder verursacht bleibende gesundheitliche Schäden, falls es nicht behandelt wird.",
+      "local",
+      "at0048"),
 
-  LEICHT("Leicht", "Das Problem oder die Diagnose beeinträchtigt die normale Aktivität nicht, bzw. verursacht nicht bleibende gesundheitliche Schäden, falls es nicht behandelt wird.", "local", "at0047");
+  LEICHT(
+      "Leicht",
+      "Das Problem oder die Diagnose beeinträchtigt die normale Aktivität nicht, bzw. verursacht nicht bleibende gesundheitliche Schäden, falls es nicht behandelt wird.",
+      "local",
+      "at0047");
 
   private String value;
 
@@ -26,18 +37,18 @@ public enum SchweregradDefiningCode implements EnumValueSet {
   }
 
   public String getValue() {
-     return this.value ;
+    return this.value;
   }
 
   public String getDescription() {
-     return this.description ;
+    return this.description;
   }
 
   public String getTerminologyId() {
-     return this.terminologyId ;
+    return this.terminologyId;
   }
 
   public String getCode() {
-     return this.code ;
+    return this.code;
   }
 }

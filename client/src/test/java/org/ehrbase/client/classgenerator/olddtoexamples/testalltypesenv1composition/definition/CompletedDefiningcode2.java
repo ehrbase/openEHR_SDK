@@ -21,7 +21,7 @@ public enum CompletedDefiningcode2 implements EnumValueSet {
   }
 
   public String getValue() {
-     return this.value;
+    return this.value;
   }
 
   public String getDescription() {

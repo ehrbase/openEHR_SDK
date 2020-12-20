@@ -18,26 +18,26 @@
 package org.ehrbase.serialisation.attributes.datavalues.datetime.date;
 
 import com.nedap.archie.rm.datavalues.quantity.datetime.DvDate;
+import java.time.temporal.Temporal;
 import org.ehrbase.serialisation.attributes.datavalues.datetime.TemporalAttributes;
 
-import java.time.temporal.Temporal;
-
-/**
- * full date time representation with millisecs
- */
+/** full date time representation with millisecs */
 public class DvDateYYYYMMDDImp extends DvDateAttributesImp {
 
-    public DvDateYYYYMMDDImp(DvDate dvDate) {
-        super(dvDate);
-    }
+  public DvDateYYYYMMDDImp(DvDate dvDate) {
+    super(dvDate);
+  }
 
-    @Override
-    public Temporal getValueExtended() {
-        return dvDate.getValue();
-    }
+  @Override
+  public Temporal getValueExtended() {
+    return dvDate.getValue();
+  }
 
-    @Override
-    public Integer getSupportedChronoFields() {
-        return supportedChronoFields(TemporalAttributes.YEAR|TemporalAttributes.MONTH_OF_YEAR|TemporalAttributes.DAY_OF_MONTH);
-    }
+  @Override
+  public Integer getSupportedChronoFields() {
+    return supportedChronoFields(
+        TemporalAttributes.YEAR
+            | TemporalAttributes.MONTH_OF_YEAR
+            | TemporalAttributes.DAY_OF_MONTH);
+  }
 }

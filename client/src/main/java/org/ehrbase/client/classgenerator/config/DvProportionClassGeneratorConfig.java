@@ -18,20 +18,18 @@
 package org.ehrbase.client.classgenerator.config;
 
 import com.nedap.archie.rm.datavalues.quantity.DvProportion;
-
 import java.util.Collections;
 import java.util.Set;
 
 public class DvProportionClassGeneratorConfig implements RmClassGeneratorConfig {
 
-    @Override
-    public Class getAssociatedClass() {
-        return DvProportion.class;
-    }
+  @Override
+  public Class getAssociatedClass() {
+    return DvProportion.class;
+  }
 
-
-    @Override
-    public Set<String> getExpandFields() {
-        return Collections.emptySet();
-    }
+  @Override
+  public Set<String> getExpandFields() {
+    return Collections.emptySet();
+  }
 }

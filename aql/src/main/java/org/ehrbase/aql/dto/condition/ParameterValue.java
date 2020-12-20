@@ -24,8 +24,7 @@ public class ParameterValue implements Value {
   private String name;
   private String type;
 
-  public ParameterValue() {
-  }
+  public ParameterValue() {}
 
   public String getName() {
     return this.name;

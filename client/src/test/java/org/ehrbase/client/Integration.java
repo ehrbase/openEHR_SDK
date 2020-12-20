@@ -17,5 +17,4 @@
 
 package org.ehrbase.client;
 
-public interface Integration {
-}
+public interface Integration {}

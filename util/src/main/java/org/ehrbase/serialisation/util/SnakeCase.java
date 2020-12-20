@@ -19,33 +19,35 @@
 
 package org.ehrbase.serialisation.util;
 
-/**
- * Created by christian on 8/1/2017.
- */
+/** Created by christian on 8/1/2017. */
 public class SnakeCase {
 
-    protected String aString;
+  protected String aString;
 
-    public SnakeCase(String aString) {
-        this.aString = aString;
-    }
+  public SnakeCase(String aString) {
+    this.aString = aString;
+  }
 
-    public String camelToSnake() {
-        StringBuilder buffer = new StringBuilder();
-        for (int i = 0; i < aString.length(); i++) {
-            if (Character.isUpperCase(aString.charAt(i))) {
-                if (i > 0 && aString.charAt(i - 1) != '<') {
-                    buffer.append('_');
-                }
-                buffer.append(Character.toLowerCase(aString.charAt(i)));
-            } else {
-                buffer.append(aString.charAt(i));
-            }
+  public String camelToSnake() {
+    StringBuilder buffer = new StringBuilder();
+    for (int i = 0; i < aString.length(); i++) {
+      if (Character.isUpperCase(aString.charAt(i))) {
+        if (i > 0 && aString.charAt(i - 1) != '<') {
+          buffer.append('_');
         }
-        return buffer.toString();
+        buffer.append(Character.toLowerCase(aString.charAt(i)));
+      } else {
+        buffer.append(aString.charAt(i));
+      }
     }
+    return buffer.toString();
+  }
 
-    public String camelToUpperSnake() {
-        return camelToSnake().toUpperCase().replaceAll("I_S_M", "ISM").replaceAll("_I_D", "_ID").replaceAll("_U_R_I", "_URI");
-    }
+  public String camelToUpperSnake() {
+    return camelToSnake()
+        .toUpperCase()
+        .replaceAll("I_S_M", "ISM")
+        .replaceAll("_I_D", "_ID")
+        .replaceAll("_U_R_I", "_URI");
+  }
 }

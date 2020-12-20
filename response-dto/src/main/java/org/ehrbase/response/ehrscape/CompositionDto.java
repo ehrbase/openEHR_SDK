@@ -18,42 +18,35 @@
 
 package org.ehrbase.response.ehrscape;
 
-
 import com.nedap.archie.rm.composition.Composition;
-
 import java.util.UUID;
 
 public class CompositionDto {
-    private final Composition composition;
-    private final String templateId;
-    private final UUID uuid;
-    private final UUID ehrId;
+  private final Composition composition;
+  private final String templateId;
+  private final UUID uuid;
+  private final UUID ehrId;
 
-    public CompositionDto(
-            Composition composition,
-            String templateId,
-            UUID uuid,
-            UUID ehrId
-    ) {
-        this.composition = composition;
-        this.templateId = templateId;
-        this.uuid = uuid;
-        this.ehrId = ehrId;
-    }
+  public CompositionDto(Composition composition, String templateId, UUID uuid, UUID ehrId) {
+    this.composition = composition;
+    this.templateId = templateId;
+    this.uuid = uuid;
+    this.ehrId = ehrId;
+  }
 
-    public Composition getComposition() {
-        return composition;
-    }
+  public Composition getComposition() {
+    return composition;
+  }
 
-    public String getTemplateId() {
-        return templateId;
-    }
+  public String getTemplateId() {
+    return templateId;
+  }
 
-    public UUID getUuid() {
-        return uuid;
-    }
+  public UUID getUuid() {
+    return uuid;
+  }
 
-    public UUID getEhrId() {
-        return ehrId;
-    }
+  public UUID getEhrId() {
+    return ehrId;
+  }
 }

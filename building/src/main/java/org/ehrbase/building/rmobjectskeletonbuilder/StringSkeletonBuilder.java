@@ -22,17 +22,17 @@ package org.ehrbase.building.rmobjectskeletonbuilder;
 import org.openehr.schemas.v1.CSTRING;
 
 public class StringSkeletonBuilder implements RmObjectSkeletonBuilder<CSTRING, String> {
-    @Override
-    public Class<CSTRING> getAssociatedClass() {
-        return CSTRING.class;
-    }
+  @Override
+  public Class<CSTRING> getAssociatedClass() {
+    return CSTRING.class;
+  }
 
-    @Override
-    public String getRmObject(CSTRING xml) {
-        if (xml.isSetAssumedValue()) {
-            return xml.getAssumedValue();
-        } else {
-            return null;
-        }
+  @Override
+  public String getRmObject(CSTRING xml) {
+    if (xml.isSetAssumedValue()) {
+      return xml.getAssumedValue();
+    } else {
+      return null;
     }
+  }
 }

@@ -17,49 +17,46 @@
  */
 package org.ehrbase.terminology.openehr.implementation;
 
+import static junit.framework.TestCase.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
+import java.util.List;
+import java.util.Map;
 import org.ehrbase.terminology.openehr.CodeSetAccess;
 import org.ehrbase.terminology.openehr.OpenEHRCodeSetIdentifiers;
 import org.ehrbase.terminology.openehr.TerminologyAccess;
 import org.ehrbase.terminology.openehr.TerminologyInterface;
 import org.junit.Test;
 
-import java.util.List;
-import java.util.Map;
-
-import static junit.framework.TestCase.assertTrue;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-
 public class SimpleTerminologyInterfaceTest {
 
+  @Test
+  public void testSimpleTerminologyService() throws Exception {
+    TerminologyInterface simpleTerminologyInterface = new SimpleTerminologyInterface("en");
+    assertNotNull(simpleTerminologyInterface);
 
-    @Test
-    public void testSimpleTerminologyService() throws Exception {
-        TerminologyInterface simpleTerminologyInterface = new SimpleTerminologyInterface("en");
-        assertNotNull(simpleTerminologyInterface);
+    // test interfaces with the defined terminologies
+    TerminologyAccess terminologyAccess = simpleTerminologyInterface.terminology("openehr");
+    assertNotNull(terminologyAccess);
 
-        //test interfaces with the defined terminologies
-        TerminologyAccess terminologyAccess = simpleTerminologyInterface.terminology("openehr");
-        assertNotNull(terminologyAccess);
+    // external id
+    CodeSetAccess codeSetAccess = simpleTerminologyInterface.codeSet("openehr_normal_statuses");
+    assertNotNull(codeSetAccess);
 
-        //external id
-        CodeSetAccess codeSetAccess = simpleTerminologyInterface.codeSet("openehr_normal_statuses");
-        assertNotNull(codeSetAccess);
+    // internal (openehr) id
+    codeSetAccess =
+        simpleTerminologyInterface.codeSetForId(OpenEHRCodeSetIdentifiers.NORMAL_STATUSES);
+    assertNotNull(codeSetAccess);
 
-        //internal (openehr) id
-        codeSetAccess = simpleTerminologyInterface.codeSetForId(OpenEHRCodeSetIdentifiers.NORMAL_STATUSES);
-        assertNotNull(codeSetAccess);
+    assertTrue(simpleTerminologyInterface.hasTerminology("openehr"));
 
-        assertTrue(simpleTerminologyInterface.hasTerminology("openehr"));
+    assertTrue(simpleTerminologyInterface.hasCodeSet("normal statuses"));
 
-        assertTrue(simpleTerminologyInterface.hasCodeSet("normal statuses"));
+    List<String> terminologies = simpleTerminologyInterface.codeSetIdentifiers();
+    assertEquals(7, terminologies.size());
 
-        List<String> terminologies = simpleTerminologyInterface.codeSetIdentifiers();
-        assertEquals(7, terminologies.size());
-
-        Map<String, String> openehrCodeSets = simpleTerminologyInterface.openehrCodeSets();
-        assertEquals(7, openehrCodeSets.size());
-
-    }
-
+    Map<String, String> openehrCodeSets = simpleTerminologyInterface.openehrCodeSets();
+    assertEquals(7, openehrCodeSets.size());
+  }
 }

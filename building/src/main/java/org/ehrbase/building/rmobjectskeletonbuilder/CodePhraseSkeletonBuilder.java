@@ -25,20 +25,20 @@ import org.openehr.schemas.v1.CCODEPHRASE;
 import org.openehr.schemas.v1.CODEPHRASE;
 
 public class CodePhraseSkeletonBuilder implements RmObjectSkeletonBuilder<CCODEPHRASE, CodePhrase> {
-    @Override
-    public Class<CCODEPHRASE> getAssociatedClass() {
-        return CCODEPHRASE.class;
+  @Override
+  public Class<CCODEPHRASE> getAssociatedClass() {
+    return CCODEPHRASE.class;
+  }
+
+  @Override
+  public CodePhrase getRmObject(CCODEPHRASE xml) {
+    CodePhrase codePhrase = new CodePhrase();
+    if (xml.isSetAssumedValue()) {
+      CODEPHRASE assumedValue = xml.getAssumedValue();
+      codePhrase.setCodeString(assumedValue.getCodeString());
+      codePhrase.setTerminologyId(new TerminologyId(assumedValue.getTerminologyId().getValue()));
     }
 
-    @Override
-    public CodePhrase getRmObject(CCODEPHRASE xml) {
-        CodePhrase codePhrase = new CodePhrase();
-        if (xml.isSetAssumedValue()) {
-            CODEPHRASE assumedValue = xml.getAssumedValue();
-            codePhrase.setCodeString(assumedValue.getCodeString());
-            codePhrase.setTerminologyId(new TerminologyId(assumedValue.getTerminologyId().getValue()));
-        }
-
-        return codePhrase;
-    }
+    return codePhrase;
+  }
 }

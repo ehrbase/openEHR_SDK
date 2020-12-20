@@ -18,24 +18,26 @@
 
 package org.ehrbase.validation.constraints;
 
+import static org.junit.Assert.assertNotNull;
+
+import java.io.FileInputStream;
 import org.junit.Test;
 import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
 import org.openehr.schemas.v1.TemplateDocument;
 
-import java.io.FileInputStream;
-
-import static org.junit.Assert.assertNotNull;
-
 public class OptConstraintTest {
 
-    @Test
-    public void testLoadOperationalTemplate() throws Exception {
-        OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(new FileInputStream("./src/test/resources/operational_templates/IDCR-LaboratoryTestReport.opt")).getTemplate();
+  @Test
+  public void testLoadOperationalTemplate() throws Exception {
+    OPERATIONALTEMPLATE template =
+        TemplateDocument.Factory.parse(
+                new FileInputStream(
+                    "./src/test/resources/operational_templates/IDCR-LaboratoryTestReport.opt"))
+            .getTemplate();
 
-        //load the template and create the corresponding constraints map
-        OptConstraintMapper optConstraint = new OptConstraint().map(template);
+    // load the template and create the corresponding constraints map
+    OptConstraintMapper optConstraint = new OptConstraint().map(template);
 
-        assertNotNull(optConstraint);
-    }
-
+    assertNotNull(optConstraint);
+  }
 }

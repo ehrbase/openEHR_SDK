@@ -18,21 +18,20 @@
 package org.ehrbase.client.classgenerator.config;
 
 import com.nedap.archie.rm.datavalues.DvCodedText;
-
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class DvCodedTextClassGeneratorConfig implements RmClassGeneratorConfig {
-    private static final Set<String> FIELDS = Stream.of("definingCode").collect(Collectors.toSet());
+  private static final Set<String> FIELDS = Stream.of("definingCode").collect(Collectors.toSet());
 
-    @Override
-    public Class getAssociatedClass() {
-        return DvCodedText.class;
-    }
+  @Override
+  public Class getAssociatedClass() {
+    return DvCodedText.class;
+  }
 
-    @Override
-    public Set<String> getExpandFields() {
-        return FIELDS;
-    }
+  @Override
+  public Set<String> getExpandFields() {
+    return FIELDS;
+  }
 }

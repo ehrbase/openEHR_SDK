@@ -20,33 +20,32 @@
 package org.ehrbase.serialisation.flatencoding.std.umarshal.rmunmarshaller;
 
 import com.nedap.archie.rm.datavalues.DvIdentifier;
+import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.ehrbase.serialisation.walker.Context;
 
-import java.util.Map;
-
 public class DvIdentifierRMUnmarshaller extends AbstractRMUnmarshaller<DvIdentifier> {
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Class<DvIdentifier> getAssociatedClass() {
-        return DvIdentifier.class;
-    }
+  /** {@inheritDoc} */
+  @Override
+  public Class<DvIdentifier> getAssociatedClass() {
+    return DvIdentifier.class;
+  }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void handle(String currentTerm, DvIdentifier rmObject, Map<String, String> currentValues, Context<Map<String, String>> context) {
+  /** {@inheritDoc} */
+  @Override
+  public void handle(
+      String currentTerm,
+      DvIdentifier rmObject,
+      Map<String, String> currentValues,
+      Context<Map<String, String>> context) {
 
-        setValue(currentTerm, "id", currentValues, rmObject::setId, String.class);
-        if (StringUtils.isBlank(rmObject.getId())) {
-            setValue(currentTerm, null, currentValues, rmObject::setId, String.class);
-        }
-        setValue(currentTerm, "issuer", currentValues, rmObject::setIssuer, String.class);
-        setValue(currentTerm, "assigner", currentValues, rmObject::setAssigner, String.class);
-        setValue(currentTerm, "type", currentValues, rmObject::setType, String.class);
+    setValue(currentTerm, "id", currentValues, rmObject::setId, String.class);
+    if (StringUtils.isBlank(rmObject.getId())) {
+      setValue(currentTerm, null, currentValues, rmObject::setId, String.class);
     }
+    setValue(currentTerm, "issuer", currentValues, rmObject::setIssuer, String.class);
+    setValue(currentTerm, "assigner", currentValues, rmObject::setAssigner, String.class);
+    setValue(currentTerm, "type", currentValues, rmObject::setType, String.class);
+  }
 }

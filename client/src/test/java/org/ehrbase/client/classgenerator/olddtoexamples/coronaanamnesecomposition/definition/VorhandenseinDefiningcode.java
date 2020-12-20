@@ -5,9 +5,17 @@ import org.ehrbase.client.classgenerator.EnumValueSet;
 public enum VorhandenseinDefiningcode implements EnumValueSet {
   VORHANDEN("Vorhanden", "Der Risikofaktor wurde bei der Person identifiziert.", "local", "at0018"),
 
-  UNBESTIMMT("Unbestimmt", "Es ist nicht möglich festzustellen, ob der Risikofaktor vorhanden oder nicht vorhanden ist.", "local", "at0026"),
+  UNBESTIMMT(
+      "Unbestimmt",
+      "Es ist nicht möglich festzustellen, ob der Risikofaktor vorhanden oder nicht vorhanden ist.",
+      "local",
+      "at0026"),
 
-  NICHT_VORHANDEN("Nicht vorhanden", "Der Risikofaktor wurde bei der Person nicht festgestellt.", "local", "at0019");
+  NICHT_VORHANDEN(
+      "Nicht vorhanden",
+      "Der Risikofaktor wurde bei der Person nicht festgestellt.",
+      "local",
+      "at0019");
 
   private String value;
 
@@ -25,7 +33,7 @@ public enum VorhandenseinDefiningcode implements EnumValueSet {
   }
 
   public String getValue() {
-     return this.value;
+    return this.value;
   }
 
   public String getDescription() {

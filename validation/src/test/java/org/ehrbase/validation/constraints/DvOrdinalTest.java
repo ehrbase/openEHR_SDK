@@ -18,6 +18,8 @@
 
 package org.ehrbase.validation.constraints;
 
+import static org.junit.Assert.fail;
+
 import com.nedap.archie.rm.datatypes.CodePhrase;
 import com.nedap.archie.rm.datavalues.DvCodedText;
 import com.nedap.archie.rm.datavalues.quantity.DvOrdinal;
@@ -26,30 +28,27 @@ import org.ehrbase.validation.constraints.wrappers.CArchetypeConstraint;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.fail;
-
 public class DvOrdinalTest extends ConstraintTestBase {
 
-    @Before
-    public void setUp() {
-        try {
-            setUpContext("./src/test/resources/constraints/dvordinal.xml");
-        } catch (Exception e) {
-            fail();
-        }
+  @Before
+  public void setUp() {
+    try {
+      setUpContext("./src/test/resources/constraints/dvordinal.xml");
+    } catch (Exception e) {
+      fail();
     }
+  }
 
+  @Test
+  public void testConstraintValidation() {
+    DvCodedText symbol =
+        new DvCodedText("blah", new CodePhrase(new TerminologyId("local"), "at0040"));
+    DvOrdinal dvOrdinal = new DvOrdinal(2L, symbol);
 
-    @Test
-    public void testConstraintValidation() {
-        DvCodedText symbol  = new DvCodedText("blah", new CodePhrase(new TerminologyId("local"), "at0040"));
-        DvOrdinal dvOrdinal = new DvOrdinal(2L, symbol);
-
-        try {
-            new CArchetypeConstraint(null).validate("test", dvOrdinal, archetypeconstraint);
-        } catch (Exception e) {
-            fail(e.getMessage());
-        }
+    try {
+      new CArchetypeConstraint(null).validate("test", dvOrdinal, archetypeconstraint);
+    } catch (Exception e) {
+      fail(e.getMessage());
     }
-
+  }
 }

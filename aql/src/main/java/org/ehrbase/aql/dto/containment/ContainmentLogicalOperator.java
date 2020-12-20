@@ -25,8 +25,7 @@ public class ContainmentLogicalOperator implements ContainmentExpresionDto {
   ContainmentLogicalOperatorSymbol symbol;
   List<ContainmentExpresionDto> values;
 
-  public ContainmentLogicalOperator() {
-  }
+  public ContainmentLogicalOperator() {}
 
   public ContainmentLogicalOperatorSymbol getSymbol() {
     return this.symbol;
@@ -51,10 +50,12 @@ public class ContainmentLogicalOperator implements ContainmentExpresionDto {
     if (!other.canEqual((Object) this)) return false;
     final Object this$symbol = this.getSymbol();
     final Object other$symbol = other.getSymbol();
-    if (this$symbol == null ? other$symbol != null : !this$symbol.equals(other$symbol)) return false;
+    if (this$symbol == null ? other$symbol != null : !this$symbol.equals(other$symbol))
+      return false;
     final Object this$values = this.getValues();
     final Object other$values = other.getValues();
-    if (this$values == null ? other$values != null : !this$values.equals(other$values)) return false;
+    if (this$values == null ? other$values != null : !this$values.equals(other$values))
+      return false;
     return true;
   }
 
@@ -73,6 +74,10 @@ public class ContainmentLogicalOperator implements ContainmentExpresionDto {
   }
 
   public String toString() {
-    return "ContainmentLogicalOperator(symbol=" + this.getSymbol() + ", values=" + this.getValues() + ")";
+    return "ContainmentLogicalOperator(symbol="
+        + this.getSymbol()
+        + ", values="
+        + this.getValues()
+        + ")";
   }
 }

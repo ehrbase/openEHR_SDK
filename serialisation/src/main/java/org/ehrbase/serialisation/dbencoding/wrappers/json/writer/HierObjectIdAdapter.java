@@ -20,39 +20,33 @@ package org.ehrbase.serialisation.dbencoding.wrappers.json.writer;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 import com.nedap.archie.rm.support.identification.HierObjectId;
+import java.io.IOException;
 import org.ehrbase.serialisation.dbencoding.CompositionSerializer;
 
-import java.io.IOException;
-
-/**
- * GSON adapter for HierObjectId
- */
+/** GSON adapter for HierObjectId */
 public class HierObjectIdAdapter extends DvTypeAdapter<HierObjectId> {
 
+  public HierObjectIdAdapter(AdapterType adapterType) {
+    super(adapterType);
+  }
 
-    public HierObjectIdAdapter(AdapterType adapterType) {
-        super(adapterType);
+  @Override
+  public HierObjectId read(JsonReader arg0) throws IOException {
+    return null;
+  }
+
+  @Override
+  public void write(JsonWriter writer, HierObjectId hierObjectId) throws IOException {
+    if (hierObjectId == null) {
+      writer.nullValue();
+      return;
     }
 
-    @Override
-    public HierObjectId read(JsonReader arg0) throws IOException {
-        return null;
+    if (adapterType == AdapterType.PG_JSONB) {
+      writer.beginObject();
+      writer.name("value").value(hierObjectId.getValue());
+      writer.name(CompositionSerializer.TAG_CLASS).value(HierObjectId.class.getSimpleName());
+      writer.endObject();
     }
-
-    @Override
-    public void write(JsonWriter writer, HierObjectId hierObjectId) throws IOException {
-        if (hierObjectId == null) {
-            writer.nullValue();
-            return;
-        }
-
-        if (adapterType == AdapterType.PG_JSONB) {
-            writer.beginObject();
-            writer.name("value").value(hierObjectId.getValue());
-            writer.name(CompositionSerializer.TAG_CLASS).value(HierObjectId.class.getSimpleName());
-            writer.endObject();
-        }
-
-    }
-
+  }
 }

@@ -18,6 +18,9 @@
 
 package org.ehrbase.validation.terminology;
 
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import com.nedap.archie.rm.datatypes.CodePhrase;
 import com.nedap.archie.rm.datavalues.DvCodedText;
 import com.nedap.archie.rm.support.identification.TerminologyId;
@@ -25,28 +28,31 @@ import org.ehrbase.terminology.openehr.implementation.AttributeCodesetMapping;
 import org.ehrbase.terminology.openehr.implementation.LocalizedTerminologies;
 import org.junit.Test;
 
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
 public class ItemValidatorTest {
 
-    @Test
-    public void matchValidator() throws NoSuchMethodException, IllegalAccessException, ClassNotFoundException {
+  @Test
+  public void matchValidator()
+      throws NoSuchMethodException, IllegalAccessException, ClassNotFoundException {
 
-        ItemValidator itemValidator = new ItemValidator();
+    ItemValidator itemValidator = new ItemValidator();
 
-        itemValidator
-                .add(new org.ehrbase.validation.terminology.validator.DvCodedText());
+    itemValidator.add(new org.ehrbase.validation.terminology.validator.DvCodedText());
 
-        DvCodedText dvCodedText = new DvCodedText("secondary allied health care", new CodePhrase(new TerminologyId("openehr"), "234"));
+    DvCodedText dvCodedText =
+        new DvCodedText(
+            "secondary allied health care", new CodePhrase(new TerminologyId("openehr"), "234"));
 
-        assertTrue(itemValidator.isValidatedRmObjectType(dvCodedText));
+    assertTrue(itemValidator.isValidatedRmObjectType(dvCodedText));
 
-        try {
-            itemValidator.validate(new LocalizedTerminologies().locale("en"), AttributeCodesetMapping.getInstance(),"setting", dvCodedText, "en");
-        } catch (Throwable throwable){
-            fail();
-        }
-
+    try {
+      itemValidator.validate(
+          new LocalizedTerminologies().locale("en"),
+          AttributeCodesetMapping.getInstance(),
+          "setting",
+          dvCodedText,
+          "en");
+    } catch (Throwable throwable) {
+      fail();
     }
+  }
 }

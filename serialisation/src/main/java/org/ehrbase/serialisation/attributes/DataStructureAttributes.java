@@ -17,17 +17,15 @@
 
 package org.ehrbase.serialisation.attributes;
 
+import java.util.Map;
 import org.ehrbase.serialisation.dbencoding.CompositionSerializer;
 import org.ehrbase.serialisation.dbencoding.ItemStack;
 
-import java.util.Map;
-/**
- * populate the attributes for RM DataStructure
- */
+/** populate the attributes for RM DataStructure */
 public class DataStructureAttributes extends LocatableAttributes {
 
-    public DataStructureAttributes(CompositionSerializer compositionSerializer, ItemStack itemStack, Map<String, Object> map) {
-        super(compositionSerializer, itemStack, map);
-    }
-
+  public DataStructureAttributes(
+      CompositionSerializer compositionSerializer, ItemStack itemStack, Map<String, Object> map) {
+    super(compositionSerializer, itemStack, map);
+  }
 }

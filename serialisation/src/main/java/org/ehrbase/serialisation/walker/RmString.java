@@ -22,13 +22,13 @@ package org.ehrbase.serialisation.walker;
 import com.nedap.archie.rm.RMObject;
 
 public class RmString extends RMObject implements RmPrimitive<String> {
-   final String value;
+  final String value;
 
-    public RmString(String value) {
-        this.value = value;
-    }
+  public RmString(String value) {
+    this.value = value;
+  }
 
-    public String getValue() {
-        return value;
-    }
+  public String getValue() {
+    return value;
+  }
 }

@@ -20,18 +20,16 @@
 package org.ehrbase.serialisation.flatencoding.std.umarshal.postprocessor;
 
 import com.nedap.archie.rm.RMObject;
-
 import java.util.HashSet;
 import java.util.Set;
 
-public abstract class AbstractUnmarshalPostprocessor<T extends RMObject> implements UnmarshalPostprocessor<T> {
-    protected final Set<String> consumedPath = new HashSet<>();
+public abstract class AbstractUnmarshalPostprocessor<T extends RMObject>
+    implements UnmarshalPostprocessor<T> {
+  protected final Set<String> consumedPath = new HashSet<>();
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Set<String> getConsumedPaths() {
-        return consumedPath;
-    }
+  /** {@inheritDoc} */
+  @Override
+  public Set<String> getConsumedPaths() {
+    return consumedPath;
+  }
 }

@@ -22,58 +22,57 @@ package org.ehrbase.client.classgenerator.interfaces;
 import com.nedap.archie.rm.generic.Participation;
 import com.nedap.archie.rm.generic.PartyIdentified;
 import com.nedap.archie.rm.generic.PartyProxy;
+import java.time.temporal.TemporalAccessor;
+import java.util.List;
 import org.ehrbase.client.classgenerator.shareddefinition.Category;
 import org.ehrbase.client.classgenerator.shareddefinition.Language;
 import org.ehrbase.client.classgenerator.shareddefinition.Setting;
 import org.ehrbase.client.classgenerator.shareddefinition.Territory;
 import org.ehrbase.client.openehrclient.VersionUid;
 
-import java.time.temporal.TemporalAccessor;
-import java.util.List;
-
 public interface CompositionEntity extends LocatableEntity {
 
-    void setParticipations(List<Participation> participations);
+  void setParticipations(List<Participation> participations);
 
-    List<Participation> getParticipations();
+  List<Participation> getParticipations();
 
-    void setHealthCareFacility(PartyIdentified healthCareFacility);
+  void setHealthCareFacility(PartyIdentified healthCareFacility);
 
-    PartyIdentified getHealthCareFacility();
+  PartyIdentified getHealthCareFacility();
 
-    void setComposer(PartyProxy composer);
+  void setComposer(PartyProxy composer);
 
-    PartyProxy getComposer();
+  PartyProxy getComposer();
 
-    void setLanguage(Language language);
+  void setLanguage(Language language);
 
-    Language getLanguage();
+  Language getLanguage();
 
-    void setCategoryDefiningCode(Category categoryDefiningCode);
+  void setCategoryDefiningCode(Category categoryDefiningCode);
 
-    Category getCategoryDefiningCode();
+  Category getCategoryDefiningCode();
 
-    void setTerritory(Territory territory);
+  void setTerritory(Territory territory);
 
-    Territory getTerritory();
+  Territory getTerritory();
 
-    VersionUid getVersionUid();
+  VersionUid getVersionUid();
 
-    void setVersionUid(VersionUid versionUid);
+  void setVersionUid(VersionUid versionUid);
 
-    void setStartTimeValue(TemporalAccessor startTimeValue);
+  void setStartTimeValue(TemporalAccessor startTimeValue);
 
-    TemporalAccessor getStartTimeValue();
+  TemporalAccessor getStartTimeValue();
 
-    void setEndTimeValue(TemporalAccessor endTimeValue);
+  void setEndTimeValue(TemporalAccessor endTimeValue);
 
-    TemporalAccessor getEndTimeValue();
+  TemporalAccessor getEndTimeValue();
 
-    void setLocation(String location);
+  void setLocation(String location);
 
-    String getLocation();
+  String getLocation();
 
-    void setSettingDefiningCode(Setting settingDefiningCode);
+  void setSettingDefiningCode(Setting settingDefiningCode);
 
-    Setting getSettingDefiningCode();
+  Setting getSettingDefiningCode();
 }

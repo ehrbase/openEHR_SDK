@@ -22,29 +22,38 @@ package org.ehrbase.serialisation.flatencoding.std.umarshal.rmunmarshaller;
 import com.nedap.archie.rm.datatypes.CodePhrase;
 import com.nedap.archie.rm.datavalues.DvCodedText;
 import com.nedap.archie.rm.support.identification.TerminologyId;
-import org.ehrbase.serialisation.walker.Context;
-
 import java.util.Map;
+import org.ehrbase.serialisation.walker.Context;
 
 public class DvCodedTextRMUnmarshaller extends AbstractRMUnmarshaller<DvCodedText> {
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Class<DvCodedText> getAssociatedClass() {
-        return DvCodedText.class;
-    }
+  /** {@inheritDoc} */
+  @Override
+  public Class<DvCodedText> getAssociatedClass() {
+    return DvCodedText.class;
+  }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void handle(String currentTerm, DvCodedText rmObject, Map<String, String> currentValues, Context<Map<String, String>> context) {
-        setValue(currentTerm, "value", currentValues, rmObject::setValue, String.class);
-        rmObject.setDefiningCode(new CodePhrase());
-        setValue(currentTerm, "code", currentValues, c -> rmObject.getDefiningCode().setCodeString(c), String.class);
-        rmObject.getDefiningCode().setTerminologyId(new TerminologyId());
-        setValue(currentTerm, "terminology", currentValues, t -> rmObject.getDefiningCode().getTerminologyId().setValue(t), String.class);
-    }
+  /** {@inheritDoc} */
+  @Override
+  public void handle(
+      String currentTerm,
+      DvCodedText rmObject,
+      Map<String, String> currentValues,
+      Context<Map<String, String>> context) {
+    setValue(currentTerm, "value", currentValues, rmObject::setValue, String.class);
+    rmObject.setDefiningCode(new CodePhrase());
+    setValue(
+        currentTerm,
+        "code",
+        currentValues,
+        c -> rmObject.getDefiningCode().setCodeString(c),
+        String.class);
+    rmObject.getDefiningCode().setTerminologyId(new TerminologyId());
+    setValue(
+        currentTerm,
+        "terminology",
+        currentValues,
+        t -> rmObject.getDefiningCode().getTerminologyId().setValue(t),
+        String.class);
+  }
 }

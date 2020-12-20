@@ -19,46 +19,45 @@
 
 package org.ehrbase.client.aql.condition;
 
+import java.util.Arrays;
+import java.util.stream.Collectors;
 import org.ehrbase.client.aql.field.SelectAqlField;
 import org.ehrbase.client.aql.parameter.AqlValue;
 import org.ehrbase.client.aql.parameter.Parameter;
 
-import java.util.Arrays;
-import java.util.stream.Collectors;
-
 public class Matches<T> implements Condition {
 
-    private final SelectAqlField<T> field;
-    private final AqlValue[] values;
-    private final Parameter<T>[] parameters;
+  private final SelectAqlField<T> field;
+  private final AqlValue[] values;
+  private final Parameter<T>[] parameters;
 
-    Matches(SelectAqlField<T> field, T... values) {
-        this.field = field;
-        this.values = Arrays.stream(values).map(AqlValue::new).toArray(AqlValue[]::new);
-        this.parameters = null;
+  Matches(SelectAqlField<T> field, T... values) {
+    this.field = field;
+    this.values = Arrays.stream(values).map(AqlValue::new).toArray(AqlValue[]::new);
+    this.parameters = null;
+  }
+
+  Matches(SelectAqlField<T> field, Parameter<T>... parameters) {
+    this.field = field;
+    this.values = null;
+    this.parameters = parameters;
+  }
+
+  @Override
+  public String buildAql() {
+    StringBuilder sb = new StringBuilder();
+    sb.append(field.buildAQL()).append(" matches {");
+
+    if (values != null) {
+      sb.append(Arrays.stream(values).map(AqlValue::buildAql).collect(Collectors.joining(",")));
+    } else {
+      sb.append(
+          Arrays.stream(parameters)
+              .map(Parameter::getAqlParameter)
+              .collect(Collectors.joining(",")));
     }
+    sb.append("}");
 
-    Matches(SelectAqlField<T> field, Parameter<T>... parameters) {
-        this.field = field;
-        this.values = null;
-        this.parameters = parameters;
-    }
-
-
-    @Override
-    public String buildAql() {
-        StringBuilder sb = new StringBuilder();
-        sb
-                .append(field.buildAQL())
-                .append(" matches {");
-
-        if (values != null) {
-            sb.append(Arrays.stream(values).map(AqlValue::buildAql).collect(Collectors.joining(",")));
-        } else {
-            sb.append(Arrays.stream(parameters).map(Parameter::getAqlParameter).collect(Collectors.joining(",")));
-        }
-        sb.append("}");
-
-        return sb.toString();
-    }
+    return sb.toString();
+  }
 }

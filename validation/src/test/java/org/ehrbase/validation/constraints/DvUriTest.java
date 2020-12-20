@@ -18,34 +18,32 @@
 
 package org.ehrbase.validation.constraints;
 
+import static org.junit.Assert.fail;
+
 import com.nedap.archie.rm.datavalues.DvURI;
 import org.ehrbase.validation.constraints.wrappers.CArchetypeConstraint;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.fail;
-
 public class DvUriTest extends ConstraintTestBase {
 
-    @Before
-    public void setUp() {
-        try {
-            setUpContext("./src/test/resources/constraints/dvuri.xml");
-        } catch (Exception e) {
-            fail();
-        }
+  @Before
+  public void setUp() {
+    try {
+      setUpContext("./src/test/resources/constraints/dvuri.xml");
+    } catch (Exception e) {
+      fail();
     }
+  }
 
+  @Test
+  public void testConstraintValidation() {
+    DvURI uri = new DvURI("http://java.sun.com/j2se/1.3/");
 
-    @Test
-    public void testConstraintValidation() {
-        DvURI uri = new DvURI("http://java.sun.com/j2se/1.3/");
-
-        try {
-            new CArchetypeConstraint(null).validate("test", uri, archetypeconstraint);
-        } catch (Exception e) {
-            fail(e.getMessage());
-        }
+    try {
+      new CArchetypeConstraint(null).validate("test", uri, archetypeconstraint);
+    } catch (Exception e) {
+      fail(e.getMessage());
     }
-
+  }
 }

@@ -1,54 +1,55 @@
 package org.ehrbase.response.ehrscape;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-
 import java.time.ZonedDateTime;
 
 public class QueryDefinitionResultDto {
-    private String qualifiedName;
-    private String version;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
-    private ZonedDateTime saved;
-    private String queryText;
-    private String type;
+  private String qualifiedName;
+  private String version;
 
-    public String getQualifiedName() {
-        return qualifiedName;
-    }
+  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
+  private ZonedDateTime saved;
 
-    public void setQualifiedName(String qualifiedName) {
-        this.qualifiedName = qualifiedName;
-    }
+  private String queryText;
+  private String type;
 
-    public String getVersion() {
-        return version;
-    }
+  public String getQualifiedName() {
+    return qualifiedName;
+  }
 
-    public void setVersion(String version) {
-        this.version = version;
-    }
+  public void setQualifiedName(String qualifiedName) {
+    this.qualifiedName = qualifiedName;
+  }
 
-    public ZonedDateTime getSaved() {
-        return saved;
-    }
+  public String getVersion() {
+    return version;
+  }
 
-    public void setSaved(ZonedDateTime saved) {
-        this.saved = saved;
-    }
+  public void setVersion(String version) {
+    this.version = version;
+  }
 
-    public String getQueryText() {
-        return queryText;
-    }
+  public ZonedDateTime getSaved() {
+    return saved;
+  }
 
-    public void setQueryText(String queryText) {
-        this.queryText = queryText;
-    }
+  public void setSaved(ZonedDateTime saved) {
+    this.saved = saved;
+  }
 
-    public String getType() {
-        return type;
-    }
+  public String getQueryText() {
+    return queryText;
+  }
 
-    public void setType(String type) {
-        this.type = type;
-    }
+  public void setQueryText(String queryText) {
+    this.queryText = queryText;
+  }
+
+  public String getType() {
+    return type;
+  }
+
+  public void setType(String type) {
+    this.type = type;
+  }
 }

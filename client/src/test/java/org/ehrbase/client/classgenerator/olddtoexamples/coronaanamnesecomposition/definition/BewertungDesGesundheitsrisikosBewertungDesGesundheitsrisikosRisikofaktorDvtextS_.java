@@ -6,15 +6,16 @@ import org.ehrbase.client.annotations.Path;
 
 @Entity
 @OptionFor("DV_TEXT")
-public class BewertungDesGesundheitsrisikosBewertungDesGesundheitsrisikosRisikofaktorDvtextS_ implements BewertungDesGesundheitsrisikosRisikofaktorChoice {
-    @Path("|value")
-    private String risikofaktorValue;
+public class BewertungDesGesundheitsrisikosBewertungDesGesundheitsrisikosRisikofaktorDvtextS_
+    implements BewertungDesGesundheitsrisikosRisikofaktorChoice {
+  @Path("|value")
+  private String risikofaktorValue;
 
-    public void setRisikofaktorValue(String risikofaktorValue) {
-        this.risikofaktorValue = risikofaktorValue;
-    }
+  public void setRisikofaktorValue(String risikofaktorValue) {
+    this.risikofaktorValue = risikofaktorValue;
+  }
 
-    public String getRisikofaktorValue() {
-        return this.risikofaktorValue;
-    }
+  public String getRisikofaktorValue() {
+    return this.risikofaktorValue;
+  }
 }

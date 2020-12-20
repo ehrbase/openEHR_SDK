@@ -24,21 +24,21 @@ import org.ehrbase.client.aql.query.EntityQuery;
 
 public class Parameter<T> {
 
-    private final String name;
+  private final String name;
 
-    public Parameter(String name) {
-        this.name = name;
-    }
+  public Parameter(String name) {
+    this.name = name;
+  }
 
-    public Parameter(EntityQuery<?> query) {
-        name = query.buildParameterName();
-    }
+  public Parameter(EntityQuery<?> query) {
+    name = query.buildParameterName();
+  }
 
-    public String getAqlParameter() {
-        return "$" + StringUtils.normalizeSpace(name).replace(" ", "_");
-    }
+  public String getAqlParameter() {
+    return "$" + StringUtils.normalizeSpace(name).replace(" ", "_");
+  }
 
-    public ParameterValue<T> setValue(T value) {
-        return new ParameterValue<>(this, value);
-    }
+  public ParameterValue<T> setValue(T value) {
+    return new ParameterValue<>(this, value);
+  }
 }

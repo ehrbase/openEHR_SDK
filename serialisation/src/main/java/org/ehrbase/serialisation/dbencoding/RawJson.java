@@ -20,46 +20,45 @@ package org.ehrbase.serialisation.dbencoding;
 
 import com.nedap.archie.rm.RMObject;
 import com.nedap.archie.rm.composition.Composition;
+import java.io.IOException;
+import java.util.Map;
 import org.ehrbase.serialisation.RMDataFormat;
 import org.ehrbase.serialisation.dbencoding.rawjson.LightRawJsonEncoder;
 import org.ehrbase.serialisation.jsonencoding.JacksonUtil;
 
-import java.io.IOException;
-import java.util.Map;
-
 public class RawJson implements RMDataFormat {
 
-    private Map<String, String> ltreeMap;
+  private Map<String, String> ltreeMap;
 
-    @Override
-    public String marshal(RMObject rmObject) {
-        try {
-            CompositionSerializer compositionSerializer = new CompositionSerializer();
-            String encode = compositionSerializer.dbEncode(rmObject);
-            ltreeMap = compositionSerializer.getLtreeMap();
-            return encode;
-        } catch (Exception e) {
-            throw new IllegalArgumentException(e.getMessage(), e);
-        }
+  @Override
+  public String marshal(RMObject rmObject) {
+    try {
+      CompositionSerializer compositionSerializer = new CompositionSerializer();
+      String encode = compositionSerializer.dbEncode(rmObject);
+      ltreeMap = compositionSerializer.getLtreeMap();
+      return encode;
+    } catch (Exception e) {
+      throw new IllegalArgumentException(e.getMessage(), e);
     }
+  }
 
-    @Override
-    public <T extends RMObject> T unmarshal(String value, Class<T> clazz) {
+  @Override
+  public <T extends RMObject> T unmarshal(String value, Class<T> clazz) {
 
-        String converted;
-        if (clazz.equals(Composition.class)) {
-            converted = new LightRawJsonEncoder(value).encodeCompositionAsString();
-        } else {
-            converted = new LightRawJsonEncoder(value).encodeContentAsString(null);
-        }
-        try {
-            return JacksonUtil.getObjectMapper().readValue(converted, clazz);
-        } catch (IOException e) {
-            throw new IllegalArgumentException(e.getMessage(), e);
-        }
+    String converted;
+    if (clazz.equals(Composition.class)) {
+      converted = new LightRawJsonEncoder(value).encodeCompositionAsString();
+    } else {
+      converted = new LightRawJsonEncoder(value).encodeContentAsString(null);
     }
-
-    public Map<String, String> getLtreeMap() {
-        return ltreeMap;
+    try {
+      return JacksonUtil.getObjectMapper().readValue(converted, clazz);
+    } catch (IOException e) {
+      throw new IllegalArgumentException(e.getMessage(), e);
     }
+  }
+
+  public Map<String, String> getLtreeMap() {
+    return ltreeMap;
+  }
 }

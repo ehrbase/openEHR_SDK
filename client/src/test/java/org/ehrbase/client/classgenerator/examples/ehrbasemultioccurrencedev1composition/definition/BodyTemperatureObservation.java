@@ -18,146 +18,131 @@ import org.ehrbase.client.classgenerator.shareddefinition.Language;
 @Generated(
     value = "org.ehrbase.client.classgenerator.ClassGenerator",
     date = "2020-12-10T13:06:11.010497300+01:00",
-    comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
-)
+    comments = "https://github.com/ehrbase/openEHR_SDK Version: null")
 public class BodyTemperatureObservation implements EntryEntity {
-  /**
-   * Path: Encounter/Body temperature/origin
-   */
+  /** Path: Encounter/Body temperature/origin */
   @Path("/data[at0002]/origin|value")
   private TemporalAccessor originValue;
 
   /**
-   * Path: Encounter/Body temperature/Structured measurement location
-   * Description: Structured anatomical location of where the measurement was taken.
+   * Path: Encounter/Body temperature/Structured measurement location Description: Structured
+   * anatomical location of where the measurement was taken.
    */
   @Path("/protocol[at0020]/items[at0064]")
   private List<Cluster> structuredMeasurementLocation;
 
   /**
-   * Path: Encounter/Body temperature/Device
-   * Description: Details about the device use to measure body temperature.
+   * Path: Encounter/Body temperature/Device Description: Details about the device use to measure
+   * body temperature.
    */
   @Path("/protocol[at0020]/items[at0059]")
   private Cluster device;
 
   /**
-   * Path: Encounter/Body temperature/Extension
-   * Description: Additional information required to capture local content or to align with
-   *                         other reference models/formalisms.
-   *                     
-   * Comment: e.g. Local information requirements or additional metadata to align with FHIR or
-   *                         CIMI equivalents.
-   *                     
+   * Path: Encounter/Body temperature/Extension Description: Additional information required to
+   * capture local content or to align with other reference models/formalisms.
+   *
+   * <p>Comment: e.g. Local information requirements or additional metadata to align with FHIR or
+   * CIMI equivalents.
    */
   @Path("/protocol[at0020]/items[at0062]")
   private List<Cluster> extension;
 
-  /**
-   * Path: Encounter/Body temperature/subject
-   */
+  /** Path: Encounter/Body temperature/subject */
   @Path("/subject")
   private PartyProxy subject;
 
-  /**
-   * Path: Encounter/Body temperature/language
-   */
+  /** Path: Encounter/Body temperature/language */
   @Path("/language")
   private Language language;
 
-  /**
-   * Path: Encounter/Body temperature/feeder_audit
-   */
+  /** Path: Encounter/Body temperature/feeder_audit */
   @Path("/feeder_audit")
   private FeederAudit feederAudit;
 
-  /**
-   * Path: Encounter/Body temperature/value
-   */
+  /** Path: Encounter/Body temperature/value */
   @Path("/protocol[at0020]/items[at0021]/value")
   @Choice
   private BodyTemperatureLocationOfMeasurementChoice locationOfMeasurement;
 
   /**
-   * Path: Encounter/Body temperature/Any event
-   * Description: Default, unspecified point in time or interval event which may be explicitly
-   *                         defined in a template or at run-time.
-   *                     
+   * Path: Encounter/Body temperature/Any event Description: Default, unspecified point in time or
+   * interval event which may be explicitly defined in a template or at run-time.
    */
   @Path("/data[at0002]/events[at0003]")
   @Choice
   private List<BodyTemperatureAnyEventChoice> anyEvent;
 
   public void setOriginValue(TemporalAccessor originValue) {
-     this.originValue = originValue;
+    this.originValue = originValue;
   }
 
   public TemporalAccessor getOriginValue() {
-     return this.originValue ;
+    return this.originValue;
   }
 
   public void setStructuredMeasurementLocation(List<Cluster> structuredMeasurementLocation) {
-     this.structuredMeasurementLocation = structuredMeasurementLocation;
+    this.structuredMeasurementLocation = structuredMeasurementLocation;
   }
 
   public List<Cluster> getStructuredMeasurementLocation() {
-     return this.structuredMeasurementLocation ;
+    return this.structuredMeasurementLocation;
   }
 
   public void setDevice(Cluster device) {
-     this.device = device;
+    this.device = device;
   }
 
   public Cluster getDevice() {
-     return this.device ;
+    return this.device;
   }
 
   public void setExtension(List<Cluster> extension) {
-     this.extension = extension;
+    this.extension = extension;
   }
 
   public List<Cluster> getExtension() {
-     return this.extension ;
+    return this.extension;
   }
 
   public void setSubject(PartyProxy subject) {
-     this.subject = subject;
+    this.subject = subject;
   }
 
   public PartyProxy getSubject() {
-     return this.subject ;
+    return this.subject;
   }
 
   public void setLanguage(Language language) {
-     this.language = language;
+    this.language = language;
   }
 
   public Language getLanguage() {
-     return this.language ;
+    return this.language;
   }
 
   public void setFeederAudit(FeederAudit feederAudit) {
-     this.feederAudit = feederAudit;
+    this.feederAudit = feederAudit;
   }
 
   public FeederAudit getFeederAudit() {
-     return this.feederAudit ;
+    return this.feederAudit;
   }
 
   public void setLocationOfMeasurement(
       BodyTemperatureLocationOfMeasurementChoice locationOfMeasurement) {
-     this.locationOfMeasurement = locationOfMeasurement;
+    this.locationOfMeasurement = locationOfMeasurement;
   }
 
   public BodyTemperatureLocationOfMeasurementChoice getLocationOfMeasurement() {
-     return this.locationOfMeasurement ;
+    return this.locationOfMeasurement;
   }
 
   public void setAnyEvent(List<BodyTemperatureAnyEventChoice> anyEvent) {
-     this.anyEvent = anyEvent;
+    this.anyEvent = anyEvent;
   }
 
   public List<BodyTemperatureAnyEventChoice> getAnyEvent() {
-     return this.anyEvent ;
+    return this.anyEvent;
   }
 }

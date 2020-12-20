@@ -21,13 +21,13 @@ package org.ehrbase.building.rmobjectskeletonbuilder;
 import org.openehr.schemas.v1.CPRIMITIVEOBJECT;
 
 public class PrimitiveSkeletonBuilder implements RmObjectSkeletonBuilder<CPRIMITIVEOBJECT, Object> {
-    @Override
-    public Class<CPRIMITIVEOBJECT> getAssociatedClass() {
-        return CPRIMITIVEOBJECT.class;
-    }
+  @Override
+  public Class<CPRIMITIVEOBJECT> getAssociatedClass() {
+    return CPRIMITIVEOBJECT.class;
+  }
 
-    @Override
-    public Object getRmObject(CPRIMITIVEOBJECT xml) {
-        return null;
-    }
+  @Override
+  public Object getRmObject(CPRIMITIVEOBJECT xml) {
+    return null;
+  }
 }

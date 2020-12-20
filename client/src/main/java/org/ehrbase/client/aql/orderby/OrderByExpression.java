@@ -23,25 +23,25 @@ import org.ehrbase.client.aql.field.SelectAqlField;
 
 public interface OrderByExpression {
 
-    String buildAql();
+  String buildAql();
 
-    default OrderByExpression andThen(OrderByExpression other) {
-        return new AndThen(this, other);
-    }
+  default OrderByExpression andThen(OrderByExpression other) {
+    return new AndThen(this, other);
+  }
 
-    default OrderByExpression andThenAscending(SelectAqlField<?> field) {
-        return new AndThen(this, new Ascending(field));
-    }
+  default OrderByExpression andThenAscending(SelectAqlField<?> field) {
+    return new AndThen(this, new Ascending(field));
+  }
 
-    default OrderByExpression andThenDescending(SelectAqlField<?> field) {
-        return new AndThen(this, new Descending(field));
-    }
+  default OrderByExpression andThenDescending(SelectAqlField<?> field) {
+    return new AndThen(this, new Descending(field));
+  }
 
-    static OrderByExpression ascending(SelectAqlField<?> field) {
-        return new Ascending(field);
-    }
+  static OrderByExpression ascending(SelectAqlField<?> field) {
+    return new Ascending(field);
+  }
 
-    static OrderByExpression descending(SelectAqlField<?> field) {
-        return new Descending(field);
-    }
+  static OrderByExpression descending(SelectAqlField<?> field) {
+    return new Descending(field);
+  }
 }

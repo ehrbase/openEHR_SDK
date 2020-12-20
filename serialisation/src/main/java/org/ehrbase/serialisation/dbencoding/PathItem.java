@@ -17,45 +17,64 @@
 
 package org.ehrbase.serialisation.dbencoding;
 
-import java.util.Map;
-
 import static org.ehrbase.serialisation.dbencoding.CompositionSerializer.*;
 
-/**
- * encode the PATH attribute of an Element for the DB
- */
+import java.util.Map;
+
+/** encode the PATH attribute of an Element for the DB */
 public class PathItem {
 
-    private Map<String, Object> map;
-    private final CompositionSerializer.WalkerOutputMode tagMode;
-    private final ItemStack itemStack;
+  private Map<String, Object> map;
+  private final CompositionSerializer.WalkerOutputMode tagMode;
+  private final ItemStack itemStack;
 
+  public PathItem(Map<String, Object> map, WalkerOutputMode tagMode, ItemStack itemStack) {
+    this.map = map;
+    this.tagMode = tagMode;
+    this.itemStack = itemStack;
+  }
 
-    public PathItem(Map<String, Object> map, WalkerOutputMode tagMode, ItemStack itemStack) {
-        this.map = map;
-        this.tagMode = tagMode;
-        this.itemStack = itemStack;
+  public Map<String, Object> encode(String tag) {
+    Map<String, Object> retMap = map;
+
+    switch (tagMode) {
+      case PATH:
+        retMap =
+            new SerialTree(map)
+                .insert(
+                    null,
+                    (Object) null,
+                    TAG_PATH,
+                    tag == null ? itemStack.pathStackDump() : itemStack.pathStackDump() + tag);
+        break;
+      case NAMED:
+        retMap =
+            new SerialTree(map)
+                .insert(
+                    null,
+                    (Object) null,
+                    TAG_PATH,
+                    tag == null
+                        ? itemStack.namedStackDump()
+                        : itemStack.namedStackDump() + tag.substring(1));
+        break;
+      case EXPANDED:
+        retMap =
+            new SerialTree(map)
+                .insert(
+                    null,
+                    (Object) null,
+                    TAG_PATH,
+                    tag == null
+                        ? itemStack.expandedStackDump()
+                        : itemStack.expandedStackDump() + tag.substring(1));
+        break;
+      case RAW:
+        break;
+      default:
+        throw new IllegalArgumentException("Invalid tagging mode!");
     }
 
-    public Map<String, Object> encode(String tag){
-        Map<String, Object> retMap = map;
-
-        switch (tagMode) {
-            case PATH:
-                retMap = new SerialTree(map).insert(null, (Object)null, TAG_PATH, tag == null ? itemStack.pathStackDump() : itemStack.pathStackDump() + tag);
-                break;
-            case NAMED:
-                retMap = new SerialTree(map).insert(null, (Object)null, TAG_PATH, tag == null ? itemStack.namedStackDump() : itemStack.namedStackDump() + tag.substring(1));
-                break;
-            case EXPANDED:
-                retMap = new SerialTree(map).insert(null, (Object)null, TAG_PATH, tag == null ? itemStack.expandedStackDump() : itemStack.expandedStackDump() + tag.substring(1));
-                break;
-            case RAW:
-                break;
-            default:
-                throw new IllegalArgumentException("Invalid tagging mode!");
-        }
-
-        return retMap;
-    }
+    return retMap;
+  }
 }

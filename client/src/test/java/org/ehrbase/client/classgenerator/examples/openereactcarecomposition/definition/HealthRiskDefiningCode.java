@@ -1,10 +1,10 @@
 package org.ehrbase.client.classgenerator.examples.openereactcarecomposition.definition;
 
-import java.lang.String;
 import org.ehrbase.client.classgenerator.EnumValueSet;
 
 public enum HealthRiskDefiningCode implements EnumValueSet {
-  COVID19_RISK_ASSESSMENT("COVID-19 Risk assessment", "Assessment of risk of COVID-19 infection.", "local", "at0.1");
+  COVID19_RISK_ASSESSMENT(
+      "COVID-19 Risk assessment", "Assessment of risk of COVID-19 infection.", "local", "at0.1");
 
   private String value;
 
@@ -22,18 +22,18 @@ public enum HealthRiskDefiningCode implements EnumValueSet {
   }
 
   public String getValue() {
-     return this.value ;
+    return this.value;
   }
 
   public String getDescription() {
-     return this.description ;
+    return this.description;
   }
 
   public String getTerminologyId() {
-     return this.terminologyId ;
+    return this.terminologyId;
   }
 
   public String getCode() {
-     return this.code ;
+    return this.code;
   }
 }

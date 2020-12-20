@@ -22,22 +22,35 @@ package org.ehrbase.serialisation.flatencoding.std.umarshal.rmunmarshaller;
 import com.nedap.archie.rm.generic.PartyIdentified;
 import com.nedap.archie.rm.support.identification.ObjectVersionId;
 import com.nedap.archie.rm.support.identification.PartyRef;
+import java.util.Map;
 import org.ehrbase.serialisation.walker.Context;
 
-import java.util.Map;
-
 public class PartyIdentifiedRMUnmarshaller extends AbstractRMUnmarshaller<PartyIdentified> {
-    @Override
-    public Class<PartyIdentified> getAssociatedClass() {
-        return PartyIdentified.class;
-    }
+  @Override
+  public Class<PartyIdentified> getAssociatedClass() {
+    return PartyIdentified.class;
+  }
 
-    @Override
-    public void handle(String currentTerm, PartyIdentified rmObject, Map<String, String> currentValues, Context<Map<String, String>> context) {
-        setValue(currentTerm, "name", currentValues, rmObject::setName, String.class);
-        rmObject.setExternalRef(new PartyRef());
-        rmObject.getExternalRef().setId(new ObjectVersionId());
-        setValue(currentTerm, "id", currentValues, rmObject.getExternalRef().getId()::setValue, String.class);
-        setValue(currentTerm, "id_namespace", currentValues, rmObject.getExternalRef()::setNamespace, String.class);
-    }
+  @Override
+  public void handle(
+      String currentTerm,
+      PartyIdentified rmObject,
+      Map<String, String> currentValues,
+      Context<Map<String, String>> context) {
+    setValue(currentTerm, "name", currentValues, rmObject::setName, String.class);
+    rmObject.setExternalRef(new PartyRef());
+    rmObject.getExternalRef().setId(new ObjectVersionId());
+    setValue(
+        currentTerm,
+        "id",
+        currentValues,
+        rmObject.getExternalRef().getId()::setValue,
+        String.class);
+    setValue(
+        currentTerm,
+        "id_namespace",
+        currentValues,
+        rmObject.getExternalRef()::setNamespace,
+        String.class);
+  }
 }

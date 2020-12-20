@@ -21,12 +21,11 @@ package org.ehrbase.client.aql.field;
 
 public interface AqlField<T> {
 
+  static <Y> AqlField<Y> create(Class<Y> clazz) {
+    return new AqlFieldImp<>(clazz);
+  }
 
-    static <Y> AqlField<Y> create(Class<Y> clazz) {
-        return new AqlFieldImp<>(clazz);
-    }
+  Class<T> getValueClass();
 
-    Class<T> getValueClass();
-
-    boolean isMultiValued();
+  boolean isMultiValued();
 }

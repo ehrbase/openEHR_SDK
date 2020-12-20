@@ -24,17 +24,13 @@ import java.time.ZonedDateTime;
 
 public class ZonedDateTimeUtil {
 
-    /**
-     * @return the inferior limit for zoned date time
-     */
-    public ZonedDateTime min() {
-        return ZonedDateTime.ofInstant(Instant.MIN, ZoneId.systemDefault());
-    }
+  /** @return the inferior limit for zoned date time */
+  public ZonedDateTime min() {
+    return ZonedDateTime.ofInstant(Instant.MIN, ZoneId.systemDefault());
+  }
 
-    /**
-     * @return the superior limit for zoned date time
-     */
-    public ZonedDateTime max() {
-        return ZonedDateTime.ofInstant(Instant.MAX, ZoneId.systemDefault());
-    }
+  /** @return the superior limit for zoned date time */
+  public ZonedDateTime max() {
+    return ZonedDateTime.ofInstant(Instant.MAX, ZoneId.systemDefault());
+  }
 }

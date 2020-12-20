@@ -20,36 +20,32 @@
 package org.ehrbase.serialisation.flatencoding.std.marshal.config;
 
 import com.nedap.archie.rm.datavalues.DvText;
+import java.util.HashMap;
+import java.util.Map;
 import org.ehrbase.serialisation.walker.Context;
 import org.ehrbase.webtemplate.model.WebTemplateInput;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class DvTextStdConfiguration extends AbstractsStdConfig<DvText> {
-    @Override
-    /**
-     * {@inheritDoc}
-     */
-    public Class<DvText> getAssociatedClass() {
-        return DvText.class;
+  @Override
+  /** {@inheritDoc} */
+  public Class<DvText> getAssociatedClass() {
+    return DvText.class;
+  }
+
+  @Override
+  /** {@inheritDoc} */
+  public Map<String, Object> buildChildValues(
+      String currentTerm, DvText rmObject, Context<Map<String, Object>> context) {
+
+    Map<String, Object> result = new HashMap<>();
+    if (context.getNodeDeque().peek().getInputs().stream()
+        .map(WebTemplateInput::getSuffix)
+        .anyMatch("other"::equals)) {
+      addValue(result, currentTerm, "other", rmObject.getValue());
+    } else {
+      addValue(result, currentTerm, null, rmObject.getValue());
     }
 
-    @Override
-    /**
-     * {@inheritDoc}
-     */
-    public Map<String, Object> buildChildValues(String currentTerm, DvText rmObject, Context<Map<String, Object>> context) {
-
-        Map<String, Object> result = new HashMap<>();
-        if (context.getNodeDeque().peek().getInputs().stream().map(WebTemplateInput::getSuffix).anyMatch("other"::equals)) {
-            addValue(result, currentTerm, "other", rmObject.getValue());
-        } else {
-            addValue(result, currentTerm, null, rmObject.getValue());
-        }
-
-        return result;
-    }
-
-
+    return result;
+  }
 }

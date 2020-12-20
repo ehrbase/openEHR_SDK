@@ -23,5 +23,5 @@ import org.ehrbase.webtemplate.model.FilteredWebTemplate;
 import org.ehrbase.webtemplate.model.WebTemplate;
 
 public interface WebTemplateFilter {
-    FilteredWebTemplate filter(WebTemplate webTemplate);
+  FilteredWebTemplate filter(WebTemplate webTemplate);
 }

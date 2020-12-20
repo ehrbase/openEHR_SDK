@@ -24,53 +24,53 @@ import java.util.Map;
 import java.util.Objects;
 
 public class TermDefinition {
-    private final String code;
-    private final String value;
-    private final String description;
-    private final Map<String,String> other;
+  private final String code;
+  private final String value;
+  private final String description;
+  private final Map<String, String> other;
 
-    public TermDefinition(String code, String value, String description) {
-        this.code = code;
-        this.value = value;
-        this.description = description;
-        this.other = Collections.emptyMap();
-    }
+  public TermDefinition(String code, String value, String description) {
+    this.code = code;
+    this.value = value;
+    this.description = description;
+    this.other = Collections.emptyMap();
+  }
 
-    public TermDefinition(String code, String value, String description, Map<String, String> other) {
-        this.code = code;
-        this.value = value;
-        this.description = description;
-        this.other = other;
-    }
+  public TermDefinition(String code, String value, String description, Map<String, String> other) {
+    this.code = code;
+    this.value = value;
+    this.description = description;
+    this.other = other;
+  }
 
-    public String getCode() {
-        return code;
-    }
+  public String getCode() {
+    return code;
+  }
 
-    public String getValue() {
-        return value;
-    }
+  public String getValue() {
+    return value;
+  }
 
-    public String getDescription() {
-        return description;
-    }
+  public String getDescription() {
+    return description;
+  }
 
-    public Map<String, String> getOther() {
-        return other;
-    }
+  public Map<String, String> getOther() {
+    return other;
+  }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        TermDefinition that = (TermDefinition) o;
-        return Objects.equals(code, that.code) &&
-                Objects.equals(value, that.value) &&
-                Objects.equals(description, that.description);
-    }
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    TermDefinition that = (TermDefinition) o;
+    return Objects.equals(code, that.code)
+        && Objects.equals(value, that.value)
+        && Objects.equals(description, that.description);
+  }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(code, value, description);
-    }
+  @Override
+  public int hashCode() {
+    return Objects.hash(code, value, description);
+  }
 }

@@ -17,37 +17,35 @@
  */
 package org.ehrbase.terminology.openehr.implementation;
 
+import java.util.HashMap;
+import java.util.Map;
 import org.ehrbase.terminology.openehr.TerminologyInterface;
 import org.ehrbase.terminology.openehr.TerminologyResourceException;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class LocalizedTerminologies {
 
-    private Map<String, TerminologyInterface> terminologies = new HashMap<>();
-    private AttributeCodesetMapping codesetMapping;
+  private Map<String, TerminologyInterface> terminologies = new HashMap<>();
+  private AttributeCodesetMapping codesetMapping;
 
-    public LocalizedTerminologies() throws TerminologyResourceException {
-        terminologies.put("en", new SimpleTerminologyInterface("en"));
-        terminologies.put("ja", new SimpleTerminologyInterface("ja"));
-        terminologies.put("pt", new SimpleTerminologyInterface("pt"));
+  public LocalizedTerminologies() throws TerminologyResourceException {
+    terminologies.put("en", new SimpleTerminologyInterface("en"));
+    terminologies.put("ja", new SimpleTerminologyInterface("ja"));
+    terminologies.put("pt", new SimpleTerminologyInterface("pt"));
 
-        codesetMapping = AttributeCodesetMapping.getInstance();
-    }
+    codesetMapping = AttributeCodesetMapping.getInstance();
+  }
 
-    public TerminologyInterface locale(String language) {
-        if (!terminologies.containsKey(language))
-            return getDefault();
+  public TerminologyInterface locale(String language) {
+    if (!terminologies.containsKey(language)) return getDefault();
 
-        return terminologies.get(language);
-    }
+    return terminologies.get(language);
+  }
 
-    public TerminologyInterface getDefault() {
-        return terminologies.get("en");
-    }
+  public TerminologyInterface getDefault() {
+    return terminologies.get("en");
+  }
 
-    public AttributeCodesetMapping codesetMapping() {
-        return codesetMapping;
-    }
+  public AttributeCodesetMapping codesetMapping() {
+    return codesetMapping;
+  }
 }

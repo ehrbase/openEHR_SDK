@@ -28,81 +28,81 @@ import com.nedap.archie.rm.support.identification.UIDBasedId;
 @JacksonXmlRootElement(localName = "ehr_status")
 public class EhrStatusResponseData {
 
-    @JsonProperty(value = "_type")
-    private final String type = "EHR_STATUS";
+  @JsonProperty(value = "_type")
+  private final String type = "EHR_STATUS";
 
-    @JsonProperty(value = "archetype_node_id")
-    private String archetypeNodeId;
-    @JsonProperty
-    private DvText name;
-    @JsonProperty
-    private UIDBasedId uid;
-    @JsonProperty
-    private PartySelf subject;
-    @JsonProperty(value = "other_details")
-    private ItemStructure otherDetails;
-    private Boolean isModifiable;
-    private Boolean isQueryable;
+  @JsonProperty(value = "archetype_node_id")
+  private String archetypeNodeId;
 
-    public String getArchetypeNodeId() {
-        return archetypeNodeId;
-    }
+  @JsonProperty private DvText name;
+  @JsonProperty private UIDBasedId uid;
+  @JsonProperty private PartySelf subject;
 
-    public void setArchetypeNodeId(String archetypeNodeId) {
-        this.archetypeNodeId = archetypeNodeId;
-    }
+  @JsonProperty(value = "other_details")
+  private ItemStructure otherDetails;
 
-    public DvText getName() {
-        return name;
-    }
+  private Boolean isModifiable;
+  private Boolean isQueryable;
 
-    public void setName(DvText name) {
-        this.name = name;
-    }
+  public String getArchetypeNodeId() {
+    return archetypeNodeId;
+  }
 
-    public UIDBasedId getUid() {
-        return uid;
-    }
+  public void setArchetypeNodeId(String archetypeNodeId) {
+    this.archetypeNodeId = archetypeNodeId;
+  }
 
-    public void setUid(UIDBasedId uid) {
-        this.uid = uid;
-    }
+  public DvText getName() {
+    return name;
+  }
 
-    public PartySelf getSubject() {
-        return subject;
-    }
+  public void setName(DvText name) {
+    this.name = name;
+  }
 
-    public void setSubject(PartySelf subject) {
-        this.subject = subject;
-    }
+  public UIDBasedId getUid() {
+    return uid;
+  }
 
-    public ItemStructure getOtherDetails() {
-        return otherDetails;
-    }
+  public void setUid(UIDBasedId uid) {
+    this.uid = uid;
+  }
 
-    public void setOtherDetails(ItemStructure otherDetails) {
-        this.otherDetails = otherDetails;
-    }
+  public PartySelf getSubject() {
+    return subject;
+  }
 
-    @JsonProperty(value = "is_modifiable")
-    public Boolean getModifiable() {
-        return isModifiable;
-    }
+  public void setSubject(PartySelf subject) {
+    this.subject = subject;
+  }
 
-    public void setModifiable(Boolean modifiable) {
-        isModifiable = modifiable;
-    }
+  public ItemStructure getOtherDetails() {
+    return otherDetails;
+  }
 
-    @JsonProperty(value = "is_queryable")
-    public Boolean getQueryable() {
-        return isQueryable;
-    }
+  public void setOtherDetails(ItemStructure otherDetails) {
+    this.otherDetails = otherDetails;
+  }
 
-    public void setQueryable(Boolean queryable) {
-        isQueryable = queryable;
-    }
+  @JsonProperty(value = "is_modifiable")
+  public Boolean getModifiable() {
+    return isModifiable;
+  }
 
-    public String getType() {
-        return type;
-    }
+  public void setModifiable(Boolean modifiable) {
+    isModifiable = modifiable;
+  }
+
+  @JsonProperty(value = "is_queryable")
+  public Boolean getQueryable() {
+    return isQueryable;
+  }
+
+  public void setQueryable(Boolean queryable) {
+    isQueryable = queryable;
+  }
+
+  public String getType() {
+    return type;
+  }
 }

@@ -11,35 +11,30 @@ import org.ehrbase.client.classgenerator.interfaces.LocatableEntity;
 @Generated(
     value = "org.ehrbase.client.classgenerator.ClassGenerator",
     date = "2020-12-10T13:06:11.387501400+01:00",
-    comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
-)
+    comments = "https://github.com/ehrbase/openEHR_SDK Version: null")
 public class DenwisTemperatureIndicatorElement implements LocatableEntity {
-  /**
-   * Path: open_eREACT-Care/Assessment/DENWIS/Point in time/feeder_audit
-   */
+  /** Path: open_eREACT-Care/Assessment/DENWIS/Point in time/feeder_audit */
   @Path("/feeder_audit")
   private FeederAudit feederAudit;
 
-  /**
-   * Path: open_eREACT-Care/Assessment/DENWIS/Point in time/value
-   */
+  /** Path: open_eREACT-Care/Assessment/DENWIS/Point in time/value */
   @Path("/value")
   @Choice
   private DenwisValueChoice value;
 
   public void setFeederAudit(FeederAudit feederAudit) {
-     this.feederAudit = feederAudit;
+    this.feederAudit = feederAudit;
   }
 
   public FeederAudit getFeederAudit() {
-     return this.feederAudit ;
+    return this.feederAudit;
   }
 
   public void setValue(DenwisValueChoice value) {
-     this.value = value;
+    this.value = value;
   }
 
   public DenwisValueChoice getValue() {
-     return this.value ;
+    return this.value;
   }
 }

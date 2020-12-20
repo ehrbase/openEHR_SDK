@@ -20,26 +20,25 @@
 package org.ehrbase.serialisation.flatencoding.std.umarshal.rmunmarshaller;
 
 import com.nedap.archie.rm.datavalues.quantity.DvCount;
-import org.ehrbase.serialisation.walker.Context;
-
 import java.util.Map;
+import org.ehrbase.serialisation.walker.Context;
 
 public class DvCountRMUnmarshaller extends AbstractRMUnmarshaller<DvCount> {
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Class<DvCount> getAssociatedClass() {
-        return DvCount.class;
-    }
+  /** {@inheritDoc} */
+  @Override
+  public Class<DvCount> getAssociatedClass() {
+    return DvCount.class;
+  }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void handle(String currentTerm, DvCount rmObject, Map<String, String> currentValues, Context<Map<String, String>> context) {
+  /** {@inheritDoc} */
+  @Override
+  public void handle(
+      String currentTerm,
+      DvCount rmObject,
+      Map<String, String> currentValues,
+      Context<Map<String, String>> context) {
 
-        setValue(currentTerm, null, currentValues, rmObject::setMagnitude, Long.class);
-    }
+    setValue(currentTerm, null, currentValues, rmObject::setMagnitude, Long.class);
+  }
 }

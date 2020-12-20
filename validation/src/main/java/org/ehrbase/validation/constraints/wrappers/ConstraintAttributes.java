@@ -21,22 +21,19 @@ import org.openehr.schemas.v1.CATTRIBUTE;
 
 public class ConstraintAttributes {
 
-    private CATTRIBUTE[] attributes;
+  private CATTRIBUTE[] attributes;
 
-    public ConstraintAttributes(CATTRIBUTE[] attributesArray) {
-        this.attributes = attributesArray;
+  public ConstraintAttributes(CATTRIBUTE[] attributesArray) {
+    this.attributes = attributesArray;
+  }
+
+  public boolean isMonoAttribute() {
+    String attributeName = null;
+
+    for (CATTRIBUTE cattribute : attributes) {
+      if (attributeName == null) attributeName = cattribute.getRmAttributeName();
+      else if (!attributeName.equals(cattribute.getRmAttributeName())) return false;
     }
-
-    public boolean isMonoAttribute() {
-        String attributeName = null;
-
-        for (CATTRIBUTE cattribute: attributes){
-            if (attributeName == null)
-                attributeName = cattribute.getRmAttributeName();
-            else if (!attributeName.equals(cattribute.getRmAttributeName()))
-                return false;
-
-        }
-        return true;
-    }
+    return true;
+  }
 }

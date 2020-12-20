@@ -20,29 +20,28 @@
 package org.ehrbase.serialisation.flatencoding.std.umarshal.rmunmarshaller;
 
 import com.nedap.archie.rm.datavalues.quantity.DvQuantity;
-import org.ehrbase.serialisation.walker.Context;
-
 import java.util.Map;
+import org.ehrbase.serialisation.walker.Context;
 
 public class DvQuantityRMUnmarshaller extends AbstractRMUnmarshaller<DvQuantity> {
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Class<DvQuantity> getAssociatedClass() {
-        return DvQuantity.class;
-    }
+  /** {@inheritDoc} */
+  @Override
+  public Class<DvQuantity> getAssociatedClass() {
+    return DvQuantity.class;
+  }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void handle(String currentTerm, DvQuantity rmObject, Map<String, String> currentValues, Context<Map<String, String>> context) {
-        setValue(currentTerm, "magnitude", currentValues, rmObject::setMagnitude, Double.class);
-        setValue(currentTerm, "units", currentValues, rmObject::setUnits, String.class);
-        if (rmObject.getUnits() == null) {
-            setValue(currentTerm, "unit", currentValues, rmObject::setUnits, String.class);
-        }
+  /** {@inheritDoc} */
+  @Override
+  public void handle(
+      String currentTerm,
+      DvQuantity rmObject,
+      Map<String, String> currentValues,
+      Context<Map<String, String>> context) {
+    setValue(currentTerm, "magnitude", currentValues, rmObject::setMagnitude, Double.class);
+    setValue(currentTerm, "units", currentValues, rmObject::setUnits, String.class);
+    if (rmObject.getUnits() == null) {
+      setValue(currentTerm, "unit", currentValues, rmObject::setUnits, String.class);
     }
+  }
 }

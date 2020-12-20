@@ -1,6 +1,5 @@
 package org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev0composition.definition;
 
-import java.lang.String;
 import org.ehrbase.client.classgenerator.EnumValueSet;
 
 public enum PositionDefiningCode implements EnumValueSet {
@@ -10,15 +9,27 @@ public enum PositionDefiningCode implements EnumValueSet {
 
   RECLINING("Reclining", "Reclining at the time of blood pressure measurement", "local", "at1002"),
 
-  TRENDELENBURG("Trendelenburg", "Lying flat on the back (supine position) with the feet higher than the head\n"
-      + "                        at the time of blood pressure measurement\n"
-      + "                    ", "local", "at1013"),
+  TRENDELENBURG(
+      "Trendelenburg",
+      "Lying flat on the back (supine position) with the feet higher than the head\n"
+          + "                        at the time of blood pressure measurement\n"
+          + "                    ",
+      "local",
+      "at1013"),
 
-  LEFT_LATERAL("Left Lateral", "Lying on the left side at the time of blood pressure measurement", "local", "at1014"),
+  LEFT_LATERAL(
+      "Left Lateral",
+      "Lying on the left side at the time of blood pressure measurement",
+      "local",
+      "at1014"),
 
-  SITTING("Sitting", "Sitting (for example on bed or chair) at the time of blood pressure\n"
-      + "                        measurement\n"
-      + "                    ", "local", "at1001");
+  SITTING(
+      "Sitting",
+      "Sitting (for example on bed or chair) at the time of blood pressure\n"
+          + "                        measurement\n"
+          + "                    ",
+      "local",
+      "at1001");
 
   private String value;
 
@@ -36,18 +47,18 @@ public enum PositionDefiningCode implements EnumValueSet {
   }
 
   public String getValue() {
-     return this.value ;
+    return this.value;
   }
 
   public String getDescription() {
-     return this.description ;
+    return this.description;
   }
 
   public String getTerminologyId() {
-     return this.terminologyId ;
+    return this.terminologyId;
   }
 
   public String getCode() {
-     return this.code ;
+    return this.code;
   }
 }

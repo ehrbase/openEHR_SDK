@@ -20,34 +20,34 @@
 package org.ehrbase.webtemplate.parser.config;
 
 import com.nedap.archie.rm.datastructures.IntervalEvent;
-import org.ehrbase.terminology.client.terminology.TerminologyProvider;
-import org.ehrbase.terminology.client.terminology.ValueSet;
-
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.ehrbase.terminology.client.terminology.TerminologyProvider;
+import org.ehrbase.terminology.client.terminology.ValueSet;
 
 public class IntervalEventIntrospectConfig implements RmIntrospectConfig {
 
-    private static final Set<String> FIELDS = Stream.of("time", "width", "mathFunction").collect(Collectors.toSet());
+  private static final Set<String> FIELDS =
+      Stream.of("time", "width", "mathFunction").collect(Collectors.toSet());
 
-    @Override
-    public Class getAssociatedClass() {
-        return IntervalEvent.class;
-    }
+  @Override
+  public Class getAssociatedClass() {
+    return IntervalEvent.class;
+  }
 
-    @Override
-    public Set<String> getNonTemplateFields() {
-        return FIELDS;
-    }
+  @Override
+  public Set<String> getNonTemplateFields() {
+    return FIELDS;
+  }
 
-    @Override
-    public ValueSet findExternalValueSet(String fieldName) {
-        switch (fieldName) {
-            case "mathFunction":
-                return TerminologyProvider.findOpenEhrValueSet("openehr", "event math function");
-            default:
-                return ValueSet.EMPTY_VALUE_SET;
-        }
+  @Override
+  public ValueSet findExternalValueSet(String fieldName) {
+    switch (fieldName) {
+      case "mathFunction":
+        return TerminologyProvider.findOpenEhrValueSet("openehr", "event math function");
+      default:
+        return ValueSet.EMPTY_VALUE_SET;
     }
+  }
 }

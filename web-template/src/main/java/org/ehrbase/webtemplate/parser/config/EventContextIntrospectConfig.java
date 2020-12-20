@@ -19,37 +19,39 @@
 
 package org.ehrbase.webtemplate.parser.config;
 
-import com.nedap.archie.rm.composition.EventContext;
-import org.ehrbase.terminology.client.terminology.TerminologyProvider;
-import org.ehrbase.terminology.client.terminology.ValueSet;
+import static org.ehrbase.terminology.client.terminology.TerminologyProvider.OPENEHR;
 
+import com.nedap.archie.rm.composition.EventContext;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
-import static org.ehrbase.terminology.client.terminology.TerminologyProvider.OPENEHR;
+import org.ehrbase.terminology.client.terminology.TerminologyProvider;
+import org.ehrbase.terminology.client.terminology.ValueSet;
 
 public class EventContextIntrospectConfig implements RmIntrospectConfig {
 
-    private static final Set<String> FIELDS = Stream.of("startTime", "endTime", "location", "setting", "healthCareFacility", "participations").collect(Collectors.toSet());
+  private static final Set<String> FIELDS =
+      Stream.of(
+              "startTime", "endTime", "location", "setting", "healthCareFacility", "participations")
+          .collect(Collectors.toSet());
 
-    @Override
-    public Class getAssociatedClass() {
-        return EventContext.class;
-    }
+  @Override
+  public Class getAssociatedClass() {
+    return EventContext.class;
+  }
 
-    @Override
-    public Set<String> getNonTemplateFields() {
-        return FIELDS;
-    }
+  @Override
+  public Set<String> getNonTemplateFields() {
+    return FIELDS;
+  }
 
-    @Override
-    public ValueSet findExternalValueSet(String fieldName) {
-        switch (fieldName) {
-            case "setting":
-                return TerminologyProvider.findOpenEhrValueSet(OPENEHR, "setting");
-            default:
-                return ValueSet.EMPTY_VALUE_SET;
-        }
+  @Override
+  public ValueSet findExternalValueSet(String fieldName) {
+    switch (fieldName) {
+      case "setting":
+        return TerminologyProvider.findOpenEhrValueSet(OPENEHR, "setting");
+      default:
+        return ValueSet.EMPTY_VALUE_SET;
     }
+  }
 }

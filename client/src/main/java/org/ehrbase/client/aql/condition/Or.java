@@ -20,19 +20,19 @@
 package org.ehrbase.client.aql.condition;
 
 public class Or extends BinaryLogicalOperator {
-    protected Or(Condition condition1, Condition condition2) {
-        super(condition1, condition2);
-    }
+  protected Or(Condition condition1, Condition condition2) {
+    super(condition1, condition2);
+  }
 
-    @Override
-    protected String getSymbol() {
-        return "or";
-    }
+  @Override
+  protected String getSymbol() {
+    return "or";
+  }
 
-    @Override
-    public Condition or(Condition condition) {
+  @Override
+  public Condition or(Condition condition) {
 
-        conditionList.add(condition);
-        return this;
-    }
+    conditionList.add(condition);
+    return this;
+  }
 }

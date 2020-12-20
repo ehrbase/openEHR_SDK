@@ -23,81 +23,81 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 import com.nedap.archie.rm.datavalues.quantity.datetime.DvDateTime;
 import com.nedap.archie.rm.ehr.EhrStatus;
 import com.nedap.archie.rm.support.identification.HierObjectId;
+import java.util.List;
 import org.ehrbase.response.ehrscape.CompositionDto;
 import org.ehrbase.response.ehrscape.ContributionDto;
 
-import java.util.List;
-
 /**
- * Basic set of response data regarding EHR operations. Used as default or when `PREFER` header requests minimal response.
+ * Basic set of response data regarding EHR operations. Used as default or when `PREFER` header
+ * requests minimal response.
  */
 @JacksonXmlRootElement(localName = "ehr")
 public class EhrResponseData {
 
+  @JsonProperty(value = "system_id")
+  private HierObjectId systemId;
 
-    @JsonProperty(value = "system_id")
-    private HierObjectId systemId;
-    @JsonProperty(value = "ehr_id")
-    private HierObjectId ehrId;
-    @JsonProperty(value = "ehr_status")
-    private EhrStatus ehrStatus;
-    @JsonProperty(value = "time_created")
-    private DvDateTime timeCreated;
-    @JsonProperty
-    private List<CompositionDto> compositions;
-    @JsonProperty
-    private List<ContributionDto> contributions;
+  @JsonProperty(value = "ehr_id")
+  private HierObjectId ehrId;
 
-    public HierObjectId getSystemId() {
-        return systemId;
-    }
+  @JsonProperty(value = "ehr_status")
+  private EhrStatus ehrStatus;
 
-    public void setSystemId(HierObjectId systemId) {
-        this.systemId = systemId;
-    }
+  @JsonProperty(value = "time_created")
+  private DvDateTime timeCreated;
 
-    public HierObjectId getEhrId() {
-        return ehrId;
-    }
+  @JsonProperty private List<CompositionDto> compositions;
+  @JsonProperty private List<ContributionDto> contributions;
 
-    public void setEhrId(HierObjectId ehrId) {
-        this.ehrId = ehrId;
-    }
+  public HierObjectId getSystemId() {
+    return systemId;
+  }
 
-    public EhrStatus getEhrStatus() {
-        return ehrStatus;
-    }
+  public void setSystemId(HierObjectId systemId) {
+    this.systemId = systemId;
+  }
 
-    public void setEhrStatus(EhrStatus ehrStatus) {
-        this.ehrStatus = ehrStatus;
-    }
+  public HierObjectId getEhrId() {
+    return ehrId;
+  }
 
-    public DvDateTime  getTimeCreated() {
-        return timeCreated;
-    }
+  public void setEhrId(HierObjectId ehrId) {
+    this.ehrId = ehrId;
+  }
 
-    public void setTimeCreated(String timeCreated) {
-        this.timeCreated = new DvDateTime( timeCreated);
-    }
+  public EhrStatus getEhrStatus() {
+    return ehrStatus;
+  }
 
-    public void setTimeCreated(DvDateTime timeCreated) {
-        this.timeCreated =  timeCreated;
-    }
+  public void setEhrStatus(EhrStatus ehrStatus) {
+    this.ehrStatus = ehrStatus;
+  }
 
-    public List<CompositionDto> getCompositions() {
-        return compositions;
-    }
+  public DvDateTime getTimeCreated() {
+    return timeCreated;
+  }
 
-    public void setCompositions(List<CompositionDto> compositions) {
-        this.compositions = compositions;
-    }
+  public void setTimeCreated(String timeCreated) {
+    this.timeCreated = new DvDateTime(timeCreated);
+  }
 
-    public List<ContributionDto> getContributions() {
-        return contributions;
-    }
+  public void setTimeCreated(DvDateTime timeCreated) {
+    this.timeCreated = timeCreated;
+  }
 
-    public void setContributions(List<ContributionDto> contributions) {
-        this.contributions = contributions;
-    }
+  public List<CompositionDto> getCompositions() {
+    return compositions;
+  }
 
+  public void setCompositions(List<CompositionDto> compositions) {
+    this.compositions = compositions;
+  }
+
+  public List<ContributionDto> getContributions() {
+    return contributions;
+  }
+
+  public void setContributions(List<ContributionDto> contributions) {
+    this.contributions = contributions;
+  }
 }

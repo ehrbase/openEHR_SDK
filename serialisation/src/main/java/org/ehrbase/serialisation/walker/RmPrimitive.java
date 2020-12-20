@@ -19,7 +19,7 @@
 
 package org.ehrbase.serialisation.walker;
 
-public interface RmPrimitive <T>{
+public interface RmPrimitive<T> {
 
-    T getValue();
+  T getValue();
 }

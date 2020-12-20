@@ -18,6 +18,8 @@
 
 package org.ehrbase.validation.constraints;
 
+import static org.junit.Assert.fail;
+
 import com.nedap.archie.rm.datatypes.CodePhrase;
 import com.nedap.archie.rm.datavalues.DvCodedText;
 import com.nedap.archie.rm.support.identification.TerminologyId;
@@ -25,57 +27,52 @@ import org.ehrbase.validation.constraints.wrappers.CArchetypeConstraint;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.fail;
-
 public class DvCodedTextTest extends ConstraintTestBase {
 
-    @Before
-    public void setUp(){
-        try {
-            setUpContext("./src/test/resources/constraints/dvcodedtext.xml");
-        } catch (Exception e){
-            fail();
-        }
+  @Before
+  public void setUp() {
+    try {
+      setUpContext("./src/test/resources/constraints/dvcodedtext.xml");
+    } catch (Exception e) {
+      fail();
     }
+  }
 
-    @Test
-    public void testConstraintValidation() {
-        CodePhrase codePhrase = new CodePhrase(new TerminologyId("local"), "at0008");
-        DvCodedText dvCodedText = new DvCodedText("1234", codePhrase);
+  @Test
+  public void testConstraintValidation() {
+    CodePhrase codePhrase = new CodePhrase(new TerminologyId("local"), "at0008");
+    DvCodedText dvCodedText = new DvCodedText("1234", codePhrase);
 
-        try {
-            new CArchetypeConstraint(null).validate("test", dvCodedText, archetypeconstraint);
-        }
-        catch (Exception e){
-            System.out.println(e.getMessage());
-        }
+    try {
+      new CArchetypeConstraint(null).validate("test", dvCodedText, archetypeconstraint);
+    } catch (Exception e) {
+      System.out.println(e.getMessage());
     }
+  }
 
-    @Test
-    public void testConstraintValidationInvalidCodeString() {
-        CodePhrase codePhrase = new CodePhrase(new TerminologyId("local"), "at0022");
-        DvCodedText dvCodedText = new DvCodedText("1234", codePhrase);
+  @Test
+  public void testConstraintValidationInvalidCodeString() {
+    CodePhrase codePhrase = new CodePhrase(new TerminologyId("local"), "at0022");
+    DvCodedText dvCodedText = new DvCodedText("1234", codePhrase);
 
-        try {
-            new CArchetypeConstraint(null).validate("test", dvCodedText, archetypeconstraint);
-            fail("Undetected wrong code string");
-        }
-        catch (Exception e){
+    try {
+      new CArchetypeConstraint(null).validate("test", dvCodedText, archetypeconstraint);
+      fail("Undetected wrong code string");
+    } catch (Exception e) {
 
-        }
     }
+  }
 
-    @Test
-    public void testConstraintValidationBadOpenEHRTerminology() {
-        CodePhrase codePhrase = new CodePhrase(new TerminologyId("openehr"), "xvy1");
-        DvCodedText dvCodedText = new DvCodedText("1234", codePhrase);
+  @Test
+  public void testConstraintValidationBadOpenEHRTerminology() {
+    CodePhrase codePhrase = new CodePhrase(new TerminologyId("openehr"), "xvy1");
+    DvCodedText dvCodedText = new DvCodedText("1234", codePhrase);
 
-        try {
-            new CArchetypeConstraint(null).validate("test", dvCodedText, archetypeconstraint);
-            fail("undetected wrong terminology id");
-        }
-        catch (Exception e){
+    try {
+      new CArchetypeConstraint(null).validate("test", dvCodedText, archetypeconstraint);
+      fail("undetected wrong terminology id");
+    } catch (Exception e) {
 
-        }
     }
+  }
 }

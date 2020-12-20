@@ -18,21 +18,18 @@
 package org.ehrbase.client.classgenerator.config;
 
 import com.nedap.archie.rm.datavalues.DvIdentifier;
-
 import java.util.Collections;
 import java.util.Set;
 
 public class DvIdentifierClassGeneratorConfig implements RmClassGeneratorConfig {
 
+  @Override
+  public Class getAssociatedClass() {
+    return DvIdentifier.class;
+  }
 
-    @Override
-    public Class getAssociatedClass() {
-        return DvIdentifier.class;
-    }
-
-
-    @Override
-    public Set<String> getExpandFields() {
-        return Collections.emptySet();
-    }
+  @Override
+  public Set<String> getExpandFields() {
+    return Collections.emptySet();
+  }
 }

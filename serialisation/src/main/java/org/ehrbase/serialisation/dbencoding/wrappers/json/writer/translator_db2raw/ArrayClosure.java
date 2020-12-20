@@ -19,34 +19,29 @@
 package org.ehrbase.serialisation.dbencoding.wrappers.json.writer.translator_db2raw;
 
 import com.google.gson.stream.JsonWriter;
-import org.ehrbase.serialisation.dbencoding.wrappers.json.I_DvTypeAdapter;
-
 import java.io.IOException;
+import org.ehrbase.serialisation.dbencoding.wrappers.json.I_DvTypeAdapter;
 
 public class ArrayClosure {
 
-    JsonWriter writer;
-    private String parentItemsArchetypeNodeId;
-    private String parentItemsType;
+  JsonWriter writer;
+  private String parentItemsArchetypeNodeId;
+  private String parentItemsType;
 
-    ArrayClosure(JsonWriter writer, String parentItemsArchetypeNodeId, String parentItemsType) {
-        this.writer = writer;
-        this.parentItemsArchetypeNodeId = parentItemsArchetypeNodeId;
-        this.parentItemsType = parentItemsType;
-    }
+  ArrayClosure(JsonWriter writer, String parentItemsArchetypeNodeId, String parentItemsType) {
+    this.writer = writer;
+    this.parentItemsArchetypeNodeId = parentItemsArchetypeNodeId;
+    this.parentItemsType = parentItemsType;
+  }
 
-    /**
-     * close an item array
-     */
-    private void close() throws IOException {
-        if (parentItemsArchetypeNodeId != null)
-            writer.name(I_DvTypeAdapter.ARCHETYPE_NODE_ID).value(parentItemsArchetypeNodeId);
-        if (parentItemsType != null)
-            writer.name(I_DvTypeAdapter.AT_CLASS).value(parentItemsType);
-    }
+  /** close an item array */
+  private void close() throws IOException {
+    if (parentItemsArchetypeNodeId != null)
+      writer.name(I_DvTypeAdapter.ARCHETYPE_NODE_ID).value(parentItemsArchetypeNodeId);
+    if (parentItemsType != null) writer.name(I_DvTypeAdapter.AT_CLASS).value(parentItemsType);
+  }
 
-    public void start() throws IOException {
-        close();
-    }
+  public void start() throws IOException {
+    close();
+  }
 }
-

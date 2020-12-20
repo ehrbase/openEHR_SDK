@@ -20,30 +20,23 @@
 package org.ehrbase.serialisation.flatencoding.std.marshal.config;
 
 import com.nedap.archie.rm.generic.PartySelf;
-import org.ehrbase.serialisation.walker.Context;
-
 import java.util.Collections;
 import java.util.Map;
+import org.ehrbase.serialisation.walker.Context;
 
 public class PartySelfStdConfig extends AbstractsStdConfig<PartySelf> {
 
+  /** {@inheritDoc} */
+  @Override
+  public Class<PartySelf> getAssociatedClass() {
+    return PartySelf.class;
+  }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Class<PartySelf> getAssociatedClass() {
-        return PartySelf.class;
-    }
+  /** {@inheritDoc} */
+  @Override
+  public Map<String, Object> buildChildValues(
+      String currentTerm, PartySelf rmObject, Context<Map<String, Object>> context) {
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Map<String, Object> buildChildValues(String currentTerm, PartySelf rmObject, Context<Map<String, Object>> context) {
-
-        return Collections.emptyMap();
-    }
-
-
+    return Collections.emptyMap();
+  }
 }

@@ -19,13 +19,11 @@
 
 package org.ehrbase.aql.dto;
 
-
+import java.util.List;
 import org.ehrbase.aql.dto.condition.ConditionDto;
 import org.ehrbase.aql.dto.containment.ContainmentExpresionDto;
 import org.ehrbase.aql.dto.orderby.OrderByExpressionDto;
 import org.ehrbase.aql.dto.select.SelectDto;
-
-import java.util.List;
 
 public class AqlDto {
 
@@ -35,8 +33,7 @@ public class AqlDto {
   private ConditionDto where;
   private List<OrderByExpressionDto> orderBy;
 
-  public AqlDto() {
-  }
+  public AqlDto() {}
 
   public SelectDto getSelect() {
     return this.select;
@@ -85,19 +82,22 @@ public class AqlDto {
     if (!other.canEqual((Object) this)) return false;
     final Object this$select = this.getSelect();
     final Object other$select = other.getSelect();
-    if (this$select == null ? other$select != null : !this$select.equals(other$select)) return false;
+    if (this$select == null ? other$select != null : !this$select.equals(other$select))
+      return false;
     final Object this$ehr = this.getEhr();
     final Object other$ehr = other.getEhr();
     if (this$ehr == null ? other$ehr != null : !this$ehr.equals(other$ehr)) return false;
     final Object this$contains = this.getContains();
     final Object other$contains = other.getContains();
-    if (this$contains == null ? other$contains != null : !this$contains.equals(other$contains)) return false;
+    if (this$contains == null ? other$contains != null : !this$contains.equals(other$contains))
+      return false;
     final Object this$where = this.getWhere();
     final Object other$where = other.getWhere();
     if (this$where == null ? other$where != null : !this$where.equals(other$where)) return false;
     final Object this$orderBy = this.getOrderBy();
     final Object other$orderBy = other.getOrderBy();
-    if (this$orderBy == null ? other$orderBy != null : !this$orderBy.equals(other$orderBy)) return false;
+    if (this$orderBy == null ? other$orderBy != null : !this$orderBy.equals(other$orderBy))
+      return false;
     return true;
   }
 
@@ -122,6 +122,16 @@ public class AqlDto {
   }
 
   public String toString() {
-    return "AqlDto(select=" + this.getSelect() + ", ehr=" + this.getEhr() + ", contains=" + this.getContains() + ", where=" + this.getWhere() + ", orderBy=" + this.getOrderBy() + ")";
+    return "AqlDto(select="
+        + this.getSelect()
+        + ", ehr="
+        + this.getEhr()
+        + ", contains="
+        + this.getContains()
+        + ", where="
+        + this.getWhere()
+        + ", orderBy="
+        + this.getOrderBy()
+        + ")";
   }
 }

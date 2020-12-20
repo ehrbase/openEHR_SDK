@@ -11,35 +11,30 @@ import org.ehrbase.client.classgenerator.interfaces.LocatableEntity;
 @Generated(
     value = "org.ehrbase.client.classgenerator.ClassGenerator",
     date = "2020-12-10T13:06:12.109023800+01:00",
-    comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
-)
+    comments = "https://github.com/ehrbase/openEHR_SDK Version: null")
 public class EventsummaryIdDerPersonElement implements LocatableEntity {
-  /**
-   * Path: SmICS Befund/context/Eventsummary/Beteiligte Personen/feeder_audit
-   */
+  /** Path: SmICS Befund/context/Eventsummary/Beteiligte Personen/feeder_audit */
   @Path("/feeder_audit")
   private FeederAudit feederAudit;
 
-  /**
-   * Path: SmICS Befund/context/Eventsummary/Beteiligte Personen/value
-   */
+  /** Path: SmICS Befund/context/Eventsummary/Beteiligte Personen/value */
   @Path("/value")
   @Choice
   private EventsummaryValueChoice value;
 
   public void setFeederAudit(FeederAudit feederAudit) {
-     this.feederAudit = feederAudit;
+    this.feederAudit = feederAudit;
   }
 
   public FeederAudit getFeederAudit() {
-     return this.feederAudit ;
+    return this.feederAudit;
   }
 
   public void setValue(EventsummaryValueChoice value) {
-     this.value = value;
+    this.value = value;
   }
 
   public EventsummaryValueChoice getValue() {
-     return this.value ;
+    return this.value;
   }
 }

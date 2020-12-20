@@ -20,32 +20,25 @@
 package org.ehrbase.serialisation.flatencoding.std.marshal.config;
 
 import com.nedap.archie.rm.datavalues.quantity.DvCount;
-import org.ehrbase.serialisation.walker.Context;
-
 import java.util.HashMap;
 import java.util.Map;
+import org.ehrbase.serialisation.walker.Context;
 
 public class DVCountConfig extends AbstractsStdConfig<DvCount> {
 
+  /** {@inheritDoc} */
+  @Override
+  public Class<DvCount> getAssociatedClass() {
+    return DvCount.class;
+  }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Class<DvCount> getAssociatedClass() {
-        return DvCount.class;
-    }
+  /** {@inheritDoc} */
+  @Override
+  public Map<String, Object> buildChildValues(
+      String currentTerm, DvCount rmObject, Context<Map<String, Object>> context) {
+    Map<String, Object> result = new HashMap<>();
+    addValue(result, currentTerm, null, rmObject.getMagnitude());
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Map<String, Object> buildChildValues(String currentTerm, DvCount rmObject, Context<Map<String, Object>> context) {
-        Map<String, Object> result = new HashMap<>();
-        addValue(result, currentTerm, null, rmObject.getMagnitude());
-
-        return result;
-    }
-
-
+    return result;
+  }
 }

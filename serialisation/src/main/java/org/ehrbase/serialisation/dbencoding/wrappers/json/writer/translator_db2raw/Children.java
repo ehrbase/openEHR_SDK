@@ -18,197 +18,193 @@
 
 package org.ehrbase.serialisation.dbencoding.wrappers.json.writer.translator_db2raw;
 
+import static org.ehrbase.serialisation.dbencoding.CompositionSerializer.*;
+
 import com.google.gson.internal.LinkedTreeMap;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 import org.ehrbase.serialisation.attributes.LocatableAttributes;
 import org.ehrbase.serialisation.dbencoding.CompositionSerializer;
 import org.ehrbase.serialisation.dbencoding.wrappers.json.I_DvTypeAdapter;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
-
-import static org.ehrbase.serialisation.dbencoding.CompositionSerializer.*;
-
-
-/**
- * Created by christian on 3/13/2018.
- */
+/** Created by christian on 3/13/2018. */
 public class Children {
 
-    LinkedTreeMap<String, Object> linkedTreeMap;
+  LinkedTreeMap<String, Object> linkedTreeMap;
 
-    public Children(LinkedTreeMap<String, Object> linkedTreeMap) {
-        this.linkedTreeMap = linkedTreeMap;
+  public Children(LinkedTreeMap<String, Object> linkedTreeMap) {
+    this.linkedTreeMap = linkedTreeMap;
+  }
+
+  public boolean isItemsOnly() {
+
+    if (linkedTreeMap.keySet().stream()
+            .filter(s -> s.startsWith(TAG_ITEMS))
+            .collect(Collectors.toSet())
+            .size()
+        == 0) return false;
+
+    for (String key : linkedTreeMap.keySet()) {
+      if (!key.startsWith(CompositionSerializer.TAG_ITEMS)
+          && !key.equals(I_DvTypeAdapter.ARCHETYPE_NODE_ID)
+          && !key.equals(I_DvTypeAdapter.AT_CLASS)
+          && !LocatableAttributes.isLocatableAttribute(key)
+          && !key.equals(CompositionSerializer.TAG_CLASS)) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  public int itemsCount() {
+    int count = 0;
+
+    for (String key : linkedTreeMap.keySet()) {
+      if (key.startsWith(CompositionSerializer.TAG_ITEMS)) count++;
+    }
+    return count;
+  }
+
+  public int eventsCount() {
+    int count = 0;
+
+    for (String key : linkedTreeMap.keySet()) {
+      if (key.startsWith(CompositionSerializer.TAG_EVENTS)) count++;
+    }
+    return count;
+  }
+
+  // check for multiple items in content
+  public boolean isMultiContent() {
+
+    if (!containsKeyStartingWith(TAG_CONTENT)) return false;
+
+    int contents = 0;
+
+    for (String key : linkedTreeMap.keySet()) {
+      if (key.startsWith(TAG_CONTENT)) {
+        contents++;
+      }
+    }
+    return contents > 1;
+  }
+
+  public int contentCount() {
+    int contents = 0;
+
+    for (String key : linkedTreeMap.keySet()) {
+      if (key.startsWith(TAG_CONTENT)) {
+        contents++;
+      }
+    }
+    return contents;
+  }
+
+  public boolean isMultiData() {
+    int data = 0;
+
+    for (String key : linkedTreeMap.keySet()) {
+      if (key.startsWith(CompositionSerializer.TAG_DATA)) {
+        data++;
+      }
+    }
+    return data > 1;
+  }
+
+  public boolean isEvents() {
+    if (linkedTreeMap.keySet().stream()
+            .filter(s -> s.startsWith(TAG_EVENTS))
+            .collect(Collectors.toSet())
+            .size()
+        == 0) return false;
+
+    int isEvents = 0;
+
+    for (String key : linkedTreeMap.keySet()) {
+      if (key.startsWith(CompositionSerializer.TAG_EVENTS)) {
+        isEvents++;
+      }
+    }
+    return isEvents > 1;
+  }
+
+  public String type() {
+
+    if (linkedTreeMap.containsKey(CompositionSerializer.TAG_CLASS)) {
+      return (String) linkedTreeMap.get(CompositionSerializer.TAG_CLASS);
     }
 
-    public boolean isItemsOnly() {
+    return "*UNDEF*";
+  }
 
-        if (linkedTreeMap.keySet().stream().filter(s -> s.startsWith(TAG_ITEMS)).collect(Collectors.toSet()).size() == 0)
-            return false;
+  public ArrayList items() {
 
-        for (String key : linkedTreeMap.keySet()) {
-            if (!key.startsWith(CompositionSerializer.TAG_ITEMS)
-                    && !key.equals(I_DvTypeAdapter.ARCHETYPE_NODE_ID)
-                    && !key.equals(I_DvTypeAdapter.AT_CLASS)
-                    && !LocatableAttributes.isLocatableAttribute(key)
-                    && !key.equals(CompositionSerializer.TAG_CLASS)) {
-               return  false;
-            }
+    ArrayList items = new ArrayList();
+
+    for (String key : linkedTreeMap.keySet()) {
+      if (key.startsWith(CompositionSerializer.TAG_ITEMS)) {
+        String archetypeNodeId = new NodeId(key).predicate();
+        Object e = linkedTreeMap.get(key);
+        if (List.class.isAssignableFrom(e.getClass())) {
+          ((List) e)
+              .stream()
+                  .filter(o -> Map.class.isAssignableFrom(o.getClass()))
+                  .forEach(m -> ((Map) m).put(I_DvTypeAdapter.ARCHETYPE_NODE_ID, archetypeNodeId));
+        } else if (Map.class.isAssignableFrom(e.getClass())) {
+          ((Map) e).put(I_DvTypeAdapter.ARCHETYPE_NODE_ID, archetypeNodeId);
         }
-        return true;
+        items.add(e);
+      }
     }
 
-    public int itemsCount() {
-        int count = 0;
+    return items;
+  }
 
-        for (String key : linkedTreeMap.keySet()) {
-            if (key.startsWith(CompositionSerializer.TAG_ITEMS))
-                count++;
+  public ArrayList events() {
 
-        }
-        return count;
+    ArrayList events = new ArrayList();
+
+    for (String key : linkedTreeMap.keySet()) {
+      if (key.startsWith(CompositionSerializer.TAG_EVENTS)) events.add(linkedTreeMap.get(key));
     }
 
-    public int eventsCount() {
-        int count = 0;
+    return events;
+  }
 
-        for (String key : linkedTreeMap.keySet()) {
-            if (key.startsWith(CompositionSerializer.TAG_EVENTS))
-                count++;
+  public ArrayList contents() {
+    ArrayList contents = new ArrayList();
 
-        }
-        return count;
+    for (String key : linkedTreeMap.keySet()) {
+      if (key.startsWith(TAG_CONTENT)) contents.add(linkedTreeMap.get(key));
     }
 
-    //check for multiple items in content
-    public boolean isMultiContent() {
+    return contents;
+  }
 
-        if (!containsKeyStartingWith(TAG_CONTENT))
-            return false;
-
-        int contents = 0;
-
-        for (String key : linkedTreeMap.keySet()) {
-            if (key.startsWith(TAG_CONTENT)) {
-                contents++;
-            }
-        }
-        return contents > 1;
+  public LinkedTreeMap removeContents() {
+    LinkedTreeMap retMap = new LinkedTreeMap();
+    for (String key : linkedTreeMap.keySet()) {
+      if (!key.startsWith(TAG_CONTENT)) retMap.put(key, linkedTreeMap.get(key));
     }
+    return retMap;
+  }
 
-    public int contentCount() {
-        int contents = 0;
+  public LinkedTreeMap removeDuplicateArchetypeNodeId() {
+    LinkedTreeMap retMap = new LinkedTreeMap();
+    retMap.putAll(linkedTreeMap);
+    if (linkedTreeMap.containsKey(I_DvTypeAdapter.ARCHETYPE_NODE_ID)
+        && linkedTreeMap.containsKey(CompositionSerializer.TAG_ARCHETYPE_NODE_ID))
+      retMap.remove(CompositionSerializer.TAG_ARCHETYPE_NODE_ID);
+    return retMap;
+  }
 
-        for (String key : linkedTreeMap.keySet()) {
-            if (key.startsWith(TAG_CONTENT)) {
-                contents++;
-            }
-        }
-        return contents;
-    }
-
-    public boolean isMultiData() {
-        int data = 0;
-
-        for (String key : linkedTreeMap.keySet()) {
-            if (key.startsWith(CompositionSerializer.TAG_DATA)) {
-                data++;
-            }
-        }
-        return data > 1;
-    }
-
-    public boolean isEvents() {
-        if (linkedTreeMap.keySet().stream().filter(s -> s.startsWith(TAG_EVENTS)).collect(Collectors.toSet()).size() == 0)
-            return false;
-
-        int isEvents = 0;
-
-        for (String key : linkedTreeMap.keySet()) {
-            if (key.startsWith(CompositionSerializer.TAG_EVENTS)) {
-                isEvents++;
-            }
-        }
-        return isEvents > 1;
-    }
-
-    public String type() {
-
-        if (linkedTreeMap.containsKey(CompositionSerializer.TAG_CLASS)) {
-            return (String) linkedTreeMap.get(CompositionSerializer.TAG_CLASS);
-        }
-
-        return "*UNDEF*";
-    }
-
-    public ArrayList items() {
-
-        ArrayList items = new ArrayList();
-
-        for (String key : linkedTreeMap.keySet()) {
-            if (key.startsWith(CompositionSerializer.TAG_ITEMS)) {
-                String archetypeNodeId = new NodeId(key).predicate();
-                Object e = linkedTreeMap.get(key);
-                if (List.class.isAssignableFrom(e.getClass())) {
-                    ((List) e).stream()
-                            .filter(o -> Map.class.isAssignableFrom(o.getClass()))
-                            .forEach(m -> ((Map) m).put(I_DvTypeAdapter.ARCHETYPE_NODE_ID, archetypeNodeId));
-                } else if (Map.class.isAssignableFrom(e.getClass())) {
-                    ((Map) e).put(I_DvTypeAdapter.ARCHETYPE_NODE_ID, archetypeNodeId);
-                }
-                items.add(e);
-            }
-
-        }
-
-        return items;
-    }
-
-    public ArrayList events() {
-
-        ArrayList events = new ArrayList();
-
-        for (String key : linkedTreeMap.keySet()) {
-            if (key.startsWith(CompositionSerializer.TAG_EVENTS))
-                events.add(linkedTreeMap.get(key));
-
-        }
-
-        return events;
-    }
-
-    public ArrayList contents() {
-        ArrayList contents = new ArrayList();
-
-        for (String key : linkedTreeMap.keySet()) {
-            if (key.startsWith(TAG_CONTENT))
-                contents.add(linkedTreeMap.get(key));
-
-        }
-
-        return contents;
-    }
-
-    public LinkedTreeMap removeContents() {
-        LinkedTreeMap retMap = new LinkedTreeMap();
-        for (String key: linkedTreeMap.keySet()) {
-            if (!key.startsWith(TAG_CONTENT))
-                retMap.put(key, linkedTreeMap.get(key));
-        }
-        return retMap;
-    }
-
-    public LinkedTreeMap removeDuplicateArchetypeNodeId() {
-        LinkedTreeMap retMap = new LinkedTreeMap();
-        retMap.putAll(linkedTreeMap);
-        if (linkedTreeMap.containsKey(I_DvTypeAdapter.ARCHETYPE_NODE_ID) && linkedTreeMap.containsKey(CompositionSerializer.TAG_ARCHETYPE_NODE_ID))
-                retMap.remove(CompositionSerializer.TAG_ARCHETYPE_NODE_ID);
-        return retMap;
-    }
-    private boolean containsKeyStartingWith(String key){
-       return linkedTreeMap.keySet().stream().filter(s -> s.startsWith(key)).collect(Collectors.toSet()).size() > 0;
-    }
+  private boolean containsKeyStartingWith(String key) {
+    return linkedTreeMap.keySet().stream()
+            .filter(s -> s.startsWith(key))
+            .collect(Collectors.toSet())
+            .size()
+        > 0;
+  }
 }

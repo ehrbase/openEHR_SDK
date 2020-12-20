@@ -18,21 +18,20 @@
 package org.ehrbase.serialisation.attributes;
 
 import com.nedap.archie.rm.archetyped.Locatable;
+import java.util.Map;
 import org.ehrbase.serialisation.dbencoding.CompositionSerializer;
 import org.ehrbase.serialisation.dbencoding.ItemStack;
 
-import java.util.Map;
-/**
- * populate the attributes for RM Cluster
- */
+/** populate the attributes for RM Cluster */
 public class ClusterAttributes extends ItemAttributes {
 
-    public ClusterAttributes(CompositionSerializer compositionSerializer, ItemStack itemStack, Map<String, Object> map) {
-        super(compositionSerializer, itemStack, map);
-    }
+  public ClusterAttributes(
+      CompositionSerializer compositionSerializer, ItemStack itemStack, Map<String, Object> map) {
+    super(compositionSerializer, itemStack, map);
+  }
 
-    @Override
-    public Map<String, Object> toMap(Locatable locatable) {
-        return super.toMap(locatable);
-    }
+  @Override
+  public Map<String, Object> toMap(Locatable locatable) {
+    return super.toMap(locatable);
+  }
 }

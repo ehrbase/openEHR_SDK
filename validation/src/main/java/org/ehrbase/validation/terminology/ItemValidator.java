@@ -19,100 +19,119 @@ package org.ehrbase.validation.terminology;
 
 import com.nedap.archie.rm.RMObject;
 import com.nedap.archie.rm.datavalues.quantity.DvOrdered;
-import org.ehrbase.terminology.openehr.TerminologyInterface;
-import org.ehrbase.terminology.openehr.implementation.AttributeCodesetMapping;
-import org.ehrbase.validation.terminology.validator.I_TerminologyCheck;
-
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
 import java.util.HashMap;
 import java.util.Map;
+import org.ehrbase.terminology.openehr.TerminologyInterface;
+import org.ehrbase.terminology.openehr.implementation.AttributeCodesetMapping;
+import org.ehrbase.validation.terminology.validator.I_TerminologyCheck;
 
 public class ItemValidator {
 
-    private Map<String, ValidationHandler> validationRegistryList;
+  private Map<String, ValidationHandler> validationRegistryList;
 
-    ItemValidator() {
-        validationRegistryList = new HashMap<>();
+  ItemValidator() {
+    validationRegistryList = new HashMap<>();
+  }
+
+  public ItemValidator add(I_TerminologyCheck validator)
+      throws NoSuchMethodException, IllegalAccessException, InternalError {
+    Class rmClass = validator.rmClass();
+    if (rmClass == null) {
+      throw new IllegalStateException(
+          "Internal error:"
+              + validator.getClass()
+              + " does not define a matching RM class! (hint: RM_CLASS must be defined in validator class)");
     }
+    MethodHandle methodHandle =
+        MethodHandles.lookup()
+            .findStatic(
+                validator.getClass(),
+                "check",
+                MethodType.methodType(
+                    void.class,
+                    new Class[] {
+                      TerminologyInterface.class,
+                      AttributeCodesetMapping.class,
+                      String.class,
+                      rmClass,
+                      String.class
+                    }));
 
-    public ItemValidator add(I_TerminologyCheck validator) throws NoSuchMethodException, IllegalAccessException, InternalError {
-        Class rmClass = validator.rmClass();
-        if (rmClass == null) {
-            throw new IllegalStateException("Internal error:" + validator.getClass() + " does not define a matching RM class! (hint: RM_CLASS must be defined in validator class)");
+    validationRegistryList.put(
+        rmClass.getCanonicalName(), new ValidationHandler(rmClass, methodHandle));
+
+    return this;
+  }
+
+  boolean isValidatedRmObjectType(RMObject rmObject) {
+    if (!validationRegistryList.containsKey(rmObject.getClass().getCanonicalName())) {
+      try {
+        if (rmObject.getClass().equals(rmObject.getClass().asSubclass(DvOrdered.class))) {
+          return true;
         }
-        MethodHandle methodHandle = MethodHandles.lookup().findStatic(validator.getClass(), "check",
-                MethodType.methodType(void.class, new Class[]{TerminologyInterface.class, AttributeCodesetMapping.class, String.class, rmClass, String.class}));
-
-        validationRegistryList.put(rmClass.getCanonicalName(), new ValidationHandler(rmClass, methodHandle));
-
-        return this;
+      } catch (Exception e) {
+        return false;
+      }
     }
+    return true;
+  }
 
-    boolean isValidatedRmObjectType(RMObject rmObject) {
-        if (!validationRegistryList.containsKey(rmObject.getClass().getCanonicalName())) {
-            try {
-                if (rmObject.getClass().equals(rmObject.getClass().asSubclass(DvOrdered.class))) {
-                    return true;
-                }
-            } catch (Exception e) {
-                return false;
-            }
-        }
+  boolean isValidatedRmObjectType(Class aRmObjectClass) {
+    if (!validationRegistryList.containsKey(aRmObjectClass.getCanonicalName())) {
+      try {
+        aRmObjectClass.asSubclass(DvOrdered.class);
         return true;
+      } catch (Exception e) {
+        return false;
+      }
     }
+    return true;
+  }
 
-    boolean isValidatedRmObjectType(Class aRmObjectClass) {
-        if (!validationRegistryList.containsKey(aRmObjectClass.getCanonicalName())) {
-            try {
-                aRmObjectClass.asSubclass(DvOrdered.class);
-                return true;
-            } catch (Exception e) {
-                return false;
-            }
+  private ValidationHandler matchValidator(RMObject rmObject) {
+    String rmClassName = rmObject.getClass().getCanonicalName();
+
+    return validationRegistryList.get(rmClassName);
+  }
+
+  private ValidationHandler matchValidator(Class rmClass) {
+
+    return validationRegistryList.get(rmClass.getCanonicalName());
+  }
+
+  public void validate(
+      TerminologyInterface terminologyInterface,
+      AttributeCodesetMapping codesetMapping,
+      String fieldName,
+      RMObject rmObject,
+      String language)
+      throws IllegalArgumentException, InternalError {
+    if (rmObject == null) return;
+
+    ValidationHandler validationHandler = matchValidator(rmObject);
+
+    if (validationHandler == null) {
+      // check if this rmObject class is a subclass of DvOrdered
+      try {
+        if (rmObject.getClass().equals(rmObject.getClass().asSubclass(DvOrdered.class))) {
+          validationHandler = matchValidator(DvOrdered.class);
         }
-        return true;
+      } catch (Exception e) {
+        return;
+      }
     }
 
-    private ValidationHandler matchValidator(RMObject rmObject) {
-        String rmClassName = rmObject.getClass().getCanonicalName();
-
-        return validationRegistryList.get(rmClassName);
+    try {
+      // invoke validation
+      MethodHandle methodHandle = validationHandler.check();
+      methodHandle.invoke(terminologyInterface, codesetMapping, fieldName, rmObject, language);
+    } catch (Throwable throwable) {
+      if (throwable instanceof IllegalArgumentException)
+        throw new IllegalArgumentException(throwable.getMessage());
+      else throw new IllegalStateException(throwable.getMessage());
     }
-
-    private ValidationHandler matchValidator(Class rmClass) {
-
-        return validationRegistryList.get(rmClass.getCanonicalName());
-    }
-
-    public void validate(TerminologyInterface terminologyInterface, AttributeCodesetMapping codesetMapping, String fieldName, RMObject rmObject, String language) throws IllegalArgumentException, InternalError {
-        if (rmObject == null)
-            return;
-
-        ValidationHandler validationHandler = matchValidator(rmObject);
-
-        if (validationHandler == null) {
-            //check if this rmObject class is a subclass of DvOrdered
-            try {
-                if (rmObject.getClass().equals(rmObject.getClass().asSubclass(DvOrdered.class))) {
-                    validationHandler = matchValidator(DvOrdered.class);
-                }
-            } catch (Exception e) {
-                return;
-            }
-        }
-
-        try {
-            //invoke validation
-            MethodHandle methodHandle = validationHandler.check();
-            methodHandle.invoke(terminologyInterface, codesetMapping, fieldName, rmObject, language);
-        } catch (Throwable throwable) {
-            if (throwable instanceof IllegalArgumentException)
-                throw new IllegalArgumentException(throwable.getMessage());
-            else
-                throw new IllegalStateException(throwable.getMessage());
-        }
-
-    }
+  }
 }

@@ -17,52 +17,53 @@
 
 package org.ehrbase.client.flattener;
 
+import java.util.Optional;
 import org.apache.commons.lang3.StringUtils;
 import org.ehrbase.webtemplate.parser.FlatPath;
 
-import java.util.Optional;
-
 public class PathExtractor {
-    private String childPath;
-    private String attributeName;
-    private String parentPath;
-    private String childName;
+  private String childPath;
+  private String attributeName;
+  private String parentPath;
+  private String childName;
 
-    public PathExtractor(String path) {
-        this.childPath = path;
-        invoke();
+  public PathExtractor(String path) {
+    this.childPath = path;
+    invoke();
+  }
+
+  public String getChildPath() {
+    return childPath;
+  }
+
+  public String getAttributeName() {
+    return attributeName;
+  }
+
+  public String getParentPath() {
+    return parentPath;
+  }
+
+  public String getChildName() {
+    return childName;
+  }
+
+  private void invoke() {
+    FlatPath flatPath = new FlatPath(childPath);
+
+    while (flatPath.getChild() != null) {
+      flatPath = flatPath.getChild();
     }
 
-    public String getChildPath() {
-        return childPath;
+    parentPath = StringUtils.remove(childPath, flatPath.toString());
+    if (StringUtils.isBlank(parentPath)) {
+      parentPath = "/";
     }
-
-    public String getAttributeName() {
-        return attributeName;
-    }
-
-    public String getParentPath() {
-        return parentPath;
-    }
-
-    public String getChildName() {
-        return childName;
-    }
-
-    private void invoke() {
-        FlatPath flatPath = new FlatPath(childPath);
-
-        while (flatPath.getChild() != null) {
-            flatPath = flatPath.getChild();
-        }
-
-        parentPath = StringUtils.remove(childPath, flatPath.toString());
-        if (StringUtils.isBlank(parentPath)) {
-            parentPath = "/";
-        }
-        childPath = StringUtils.remove(childPath, Optional.ofNullable(flatPath.getAttributeName()).map(s -> "|" + s).orElse(""));
-        childName = flatPath.getName();
-        attributeName = flatPath.getAttributeName();
-
-    }
+    childPath =
+        StringUtils.remove(
+            childPath,
+            Optional.ofNullable(flatPath.getAttributeName()).map(s -> "|" + s).orElse(""));
+    childName = flatPath.getName();
+    attributeName = flatPath.getAttributeName();
+  }
 }

@@ -22,34 +22,37 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 
 @JacksonXmlRootElement
 public class VersionedCompositionResponseData {
-    // TODO only for stub for now. Need to change it to real RM versioned_composition or alike later! makes swagger-ui fail right with: Maximum call stack size exceeded
-    String versionedComposition;
-    // TODO only for stub for now. Need to change it to real RM versioned_composition or alike later! makes swagger-ui fail right with: Maximum call stack size exceeded
-    String revisionHistory;
-    // TODO only for stub for now. Need to change it to real RM version of versionedComposition or alike later! makes swagger-ui fail right with: Maximum call stack size exceeded
-    String version; // should be Version<Composition>
+  // TODO only for stub for now. Need to change it to real RM versioned_composition or alike later!
+  // makes swagger-ui fail right with: Maximum call stack size exceeded
+  String versionedComposition;
+  // TODO only for stub for now. Need to change it to real RM versioned_composition or alike later!
+  // makes swagger-ui fail right with: Maximum call stack size exceeded
+  String revisionHistory;
+  // TODO only for stub for now. Need to change it to real RM version of versionedComposition or
+  // alike later! makes swagger-ui fail right with: Maximum call stack size exceeded
+  String version; // should be Version<Composition>
 
-    public String getVersion() {
-        return version;
-    }
+  public String getVersion() {
+    return version;
+  }
 
-    public void setVersion(String version) {
-        this.version = version;
-    }
+  public void setVersion(String version) {
+    this.version = version;
+  }
 
-    public String getRevisionHistory() {
-        return revisionHistory;
-    }
+  public String getRevisionHistory() {
+    return revisionHistory;
+  }
 
-    public void setRevisionHistory(String revisionHistory) {
-        this.revisionHistory = revisionHistory;
-    }
+  public void setRevisionHistory(String revisionHistory) {
+    this.revisionHistory = revisionHistory;
+  }
 
-    public String getComposition() {
-        return versionedComposition;
-    }
+  public String getComposition() {
+    return versionedComposition;
+  }
 
-    public void setComposition(String composition) {
-        this.versionedComposition = composition;
-    }
+  public void setComposition(String composition) {
+    this.versionedComposition = composition;
+  }
 }

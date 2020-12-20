@@ -34,9 +34,8 @@ package org.ehrbase.terminology.openehr.implementation;
 
 import com.nedap.archie.rm.datatypes.CodePhrase;
 import com.nedap.archie.rm.support.identification.TerminologyId;
-import org.ehrbase.terminology.openehr.TerminologyAccess;
-
 import java.util.*;
+import org.ehrbase.terminology.openehr.TerminologyAccess;
 
 /**
  * Simple in-memory implementation of a terminology access
@@ -45,134 +44,126 @@ import java.util.*;
  */
 public class SimpleTerminologyAccess implements TerminologyAccess {
 
-    /**
-     * Creates an simple terminology access
-     *
-     * @param id
-     */
-    SimpleTerminologyAccess(String id) {
-        this.id = id;
-        this.groups = new HashMap<>();
-        this.groupLangNameToId = new HashMap<>();
-        this.codeRubrics = new HashMap<>();
+  /**
+   * Creates an simple terminology access
+   *
+   * @param id
+   */
+  SimpleTerminologyAccess(String id) {
+    this.id = id;
+    this.groups = new HashMap<>();
+    this.groupLangNameToId = new HashMap<>();
+    this.codeRubrics = new HashMap<>();
+  }
+
+  static SimpleTerminologyAccess getInstance(String id) {
+    return new SimpleTerminologyAccess(id);
+  }
+
+  /**
+   * Adds a group of codes with language dependent names
+   *
+   * @param groupId not null
+   * @param codes not null
+   * @param names <lang, name> not null
+   */
+  void addGroup(String groupId, Collection<String> codes, Map<String, String> names) {
+
+    Set<CodePhrase> group = new HashSet<>();
+    for (String c : codes) {
+      CodePhrase code = new CodePhrase(new TerminologyId(id), c);
+      group.add(code);
     }
+    groups.put(groupId, group);
+    for (Map.Entry<String, String> entry : names.entrySet()) {
+      String lang = entry.getKey();
+      Map<String, String> nameToId = groupLangNameToId.get(lang);
+      if (nameToId == null) {
+        nameToId = new HashMap<>();
+      }
+      String name = entry.getValue();
 
-    static SimpleTerminologyAccess getInstance(String id) {
-        return new SimpleTerminologyAccess(id);
+      nameToId.put(name, groupId);
+      groupLangNameToId.put(lang, nameToId);
     }
+  }
 
-    /**
-     * Adds a group of codes with language dependent names
-     *
-     * @param groupId not null
-     * @param codes   not null
-     * @param names   <lang, name>  not null
-     */
-    void addGroup(String groupId, Collection<String> codes,
-                  Map<String, String> names) {
-
-        Set<CodePhrase> group = new HashSet<>();
-        for (String c : codes) {
-            CodePhrase code = new CodePhrase(new TerminologyId(id), c);
-            group.add(code);
-        }
-        groups.put(groupId, group);
-        for (Map.Entry<String, String> entry : names.entrySet()) {
-            String lang = entry.getKey();
-            Map<String, String> nameToId = groupLangNameToId.get(lang);
-            if (nameToId == null) {
-                nameToId = new HashMap<>();
-            }
-            String name = entry.getValue();
-
-            nameToId.put(name, groupId);
-            groupLangNameToId.put(lang, nameToId);
-        }
+  /**
+   * Adds a rubric for given language and code
+   *
+   * @param lang
+   * @param code
+   * @param rubric
+   */
+  void addRubric(String lang, String code, String rubric) {
+    Map<String, String> map = codeRubrics.get(lang);
+    if (map == null) {
+      map = new HashMap<>();
+      codeRubrics.put(lang, map);
     }
+    map.put(code, rubric);
+  }
 
-    /**
-     * Adds a rubric for given language and code
-     *
-     * @param lang
-     * @param code
-     * @param rubric
-     */
-    void addRubric(String lang, String code, String rubric) {
-        Map<String, String> map = codeRubrics.get(lang);
-        if (map == null) {
-            map = new HashMap<>();
-            codeRubrics.put(lang, map);
-        }
-        map.put(code, rubric);
+  /** @returns "openehr" */
+  public String id() {
+    return id;
+  }
+
+  public Set<CodePhrase> allCodes() {
+    Set<CodePhrase> allCodes = new HashSet<>();
+    for (Set<CodePhrase> codes : groups.values()) {
+      allCodes.addAll(codes);
     }
+    return allCodes;
+  }
 
-    /**
-     * @returns "openehr"
-     */
-    public String id() {
-        return id;
+  public Set<CodePhrase> codesForGroupId(String groupID) {
+    return groups.get(groupID);
+  }
+
+  public Set<CodePhrase> codesForGroupName(String name, String language) {
+    Map<String, String> map = groupLangNameToId.get(language);
+    if (map == null) {
+      // default to English
+      map = codeRubrics.get("en");
     }
+    String groupId = map.get(name);
+    return groups.get(groupId);
+  }
 
-    public Set<CodePhrase> allCodes() {
-        Set<CodePhrase> allCodes = new HashSet<>();
-        for (Set<CodePhrase> codes : groups.values()) {
-            allCodes.addAll(codes);
-        }
-        return allCodes;
+  public String rubricForCode(String code, String language) {
+    Map<String, String> map = codeRubrics.get(language);
+    if (map == null) {
+      // default to English
+      map = codeRubrics.get("en");
     }
+    return map.get(code);
+  }
 
-    public Set<CodePhrase> codesForGroupId(String groupID) {
-        return groups.get(groupID);
+  public boolean hasCodeForGroupId(String groupId, CodePhrase code) {
+    Set<CodePhrase> group = groups.get(groupId);
+    if (group == null) {
+      return false;
     }
+    return group.contains(code);
+  }
 
-    public Set<CodePhrase> codesForGroupName(String name, String language) {
-        Map<String, String> map = groupLangNameToId.get(language);
-        if (map == null) {
-            //default to English
-            map = codeRubrics.get("en");
-        }
-        String groupId = map.get(name);
-        return groups.get(groupId);
-    }
+  /*
+   * Id of this terminology
+   */
+  private final String id;
 
-    public String rubricForCode(String code, String language) {
-        Map<String, String> map = codeRubrics.get(language);
-        if (map == null) {
-            //default to English
-            map = codeRubrics.get("en");
-        }
-        return map.get(code);
-    }
+  /*
+   * Groups indexed by group id
+   * <groupId, group of codes>
+   */
+  private final Map<String, Set<CodePhrase>> groups;
 
-    public boolean hasCodeForGroupId(String groupId, CodePhrase code) {
-        Set<CodePhrase> group = groups.get(groupId);
-        if (group == null) {
-            return false;
-        }
-        return group.contains(code);
-    }
+  /** GroupIds indexed by language and group name <language, <groupName, groupId>> */
+  private final Map<String, Map<String, String>> groupLangNameToId;
 
-    /*
-     * Id of this terminology
-     */
-    private final String id;
-
-    /*
-     * Groups indexed by group id
-     * <groupId, group of codes>
-     */
-    private final Map<String, Set<CodePhrase>> groups;
-
-    /**
-     * GroupIds indexed by language and group name
-     * <language, <groupName, groupId>>
-     */
-    private final Map<String, Map<String, String>> groupLangNameToId;
-
-    /**
-     * Code rubrics indexed by lang, code
-     */
-    private final Map<String, Map<String, String>> codeRubrics;
+  /** Code rubrics indexed by lang, code */
+  private final Map<String, Map<String, String>> codeRubrics;
 }
 /*
  *  ***** BEGIN LICENSE BLOCK *****

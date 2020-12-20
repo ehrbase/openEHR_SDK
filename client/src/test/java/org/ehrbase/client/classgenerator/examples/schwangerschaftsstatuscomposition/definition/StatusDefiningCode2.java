@@ -1,6 +1,5 @@
 package org.ehrbase.client.classgenerator.examples.schwangerschaftsstatuscomposition.definition;
 
-import java.lang.String;
 import org.ehrbase.client.classgenerator.EnumValueSet;
 
 public enum StatusDefiningCode2 implements EnumValueSet {
@@ -8,7 +7,11 @@ public enum StatusDefiningCode2 implements EnumValueSet {
 
   NICHT_SCHWANGER("Nicht schwanger", "Die Person ist nicht schwanger.", "local", "at0013"),
 
-  UNBEKANNT("Unbekannt", "Es ist nicht bekannt, ob die Person schwanger ist oder nicht.", "local", "at0014");
+  UNBEKANNT(
+      "Unbekannt",
+      "Es ist nicht bekannt, ob die Person schwanger ist oder nicht.",
+      "local",
+      "at0014");
 
   private String value;
 
@@ -26,18 +29,18 @@ public enum StatusDefiningCode2 implements EnumValueSet {
   }
 
   public String getValue() {
-     return this.value ;
+    return this.value;
   }
 
   public String getDescription() {
-     return this.description ;
+    return this.description;
   }
 
   public String getTerminologyId() {
-     return this.terminologyId ;
+    return this.terminologyId;
   }
 
   public String getCode() {
-     return this.code ;
+    return this.code;
   }
 }

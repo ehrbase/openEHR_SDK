@@ -24,43 +24,43 @@ import java.util.Objects;
 import java.util.Set;
 
 public class ValueSet {
-    public static final String LOCAL = "local";
-    public static final ValueSet EMPTY_VALUE_SET = new ValueSet(LOCAL, LOCAL, Collections.emptySet());
+  public static final String LOCAL = "local";
+  public static final ValueSet EMPTY_VALUE_SET = new ValueSet(LOCAL, LOCAL, Collections.emptySet());
 
-    private final String terminologyId;
-    private final String id;
-    private final Set<TermDefinition> therms;
+  private final String terminologyId;
+  private final String id;
+  private final Set<TermDefinition> therms;
 
-    public ValueSet(String terminologyId, String id, Set<TermDefinition> therms) {
-        this.terminologyId = terminologyId;
-        this.id = id;
-        this.therms = therms;
-    }
+  public ValueSet(String terminologyId, String id, Set<TermDefinition> therms) {
+    this.terminologyId = terminologyId;
+    this.id = id;
+    this.therms = therms;
+  }
 
-    public String getTerminologyId() {
-        return terminologyId;
-    }
+  public String getTerminologyId() {
+    return terminologyId;
+  }
 
-    public Set<TermDefinition> getTherms() {
-        return therms;
-    }
+  public Set<TermDefinition> getTherms() {
+    return therms;
+  }
 
-    public String getId() {
-        return id;
-    }
+  public String getId() {
+    return id;
+  }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        ValueSet valueSet = (ValueSet) o;
-        return terminologyId.equals(valueSet.terminologyId) &&
-                id.equals(valueSet.id) &&
-                therms.equals(valueSet.therms);
-    }
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    ValueSet valueSet = (ValueSet) o;
+    return terminologyId.equals(valueSet.terminologyId)
+        && id.equals(valueSet.id)
+        && therms.equals(valueSet.therms);
+  }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(terminologyId, id, therms);
-    }
+  @Override
+  public int hashCode() {
+    return Objects.hash(terminologyId, id, therms);
+  }
 }

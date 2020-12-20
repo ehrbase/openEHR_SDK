@@ -24,21 +24,20 @@ import org.ehrbase.client.aql.parameter.Parameter;
 
 public class LessOrEqual<T> extends ComparisonOperator<T> {
 
+  protected LessOrEqual(SelectAqlField<T> field, T value) {
+    super(field, value);
+  }
 
-    protected LessOrEqual(SelectAqlField<T> field, T value) {
-        super(field, value);
-    }
+  protected LessOrEqual(SelectAqlField<T> field, Parameter<T> parameter) {
+    super(field, parameter);
+  }
 
-    protected LessOrEqual(SelectAqlField<T> field, Parameter<T> parameter) {
-        super(field, parameter);
-    }
+  public LessOrEqual(SelectAqlField<T> field, SelectAqlField<T> compereField) {
+    super(field, compereField);
+  }
 
-    public LessOrEqual(SelectAqlField<T> field, SelectAqlField<T> compereField) {
-        super(field, compereField);
-    }
-
-    @Override
-    protected String getSymbol() {
-        return "<=";
-    }
+  @Override
+  protected String getSymbol() {
+    return "<=";
+  }
 }

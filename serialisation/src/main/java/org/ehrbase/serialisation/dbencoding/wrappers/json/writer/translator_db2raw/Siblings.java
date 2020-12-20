@@ -19,36 +19,35 @@
 package org.ehrbase.serialisation.dbencoding.wrappers.json.writer.translator_db2raw;
 
 import com.google.gson.internal.LinkedTreeMap;
+import java.util.ArrayList;
 import org.ehrbase.serialisation.dbencoding.CompositionSerializer;
 import org.ehrbase.serialisation.dbencoding.wrappers.json.I_DvTypeAdapter;
 
-import java.util.ArrayList;
-
 public class Siblings {
 
-    ArrayList<LinkedTreeMap> arrayList;
+  ArrayList<LinkedTreeMap> arrayList;
 
-    public Siblings(ArrayList<LinkedTreeMap> arrayList) {
-        this.arrayList = arrayList;
-    }
+  public Siblings(ArrayList<LinkedTreeMap> arrayList) {
+    this.arrayList = arrayList;
+  }
 
-    public String archetypeNodeId() {
-        for (LinkedTreeMap linkedTreeMap : arrayList) {
-            if (linkedTreeMap.get(I_DvTypeAdapter.ARCHETYPE_NODE_ID) != null) {
-                return (String) linkedTreeMap.get(I_DvTypeAdapter.ARCHETYPE_NODE_ID);
-            }
-        }
-        return null;
+  public String archetypeNodeId() {
+    for (LinkedTreeMap linkedTreeMap : arrayList) {
+      if (linkedTreeMap.get(I_DvTypeAdapter.ARCHETYPE_NODE_ID) != null) {
+        return (String) linkedTreeMap.get(I_DvTypeAdapter.ARCHETYPE_NODE_ID);
+      }
     }
+    return null;
+  }
 
-    public String type() {
-        for (LinkedTreeMap linkedTreeMap : arrayList) {
-            if (linkedTreeMap.get(I_DvTypeAdapter.AT_TYPE) != null) {
-                return (String) linkedTreeMap.get(I_DvTypeAdapter.AT_TYPE);
-            } else if (linkedTreeMap.get(CompositionSerializer.TAG_CLASS) != null) {
-                return (String) linkedTreeMap.get(CompositionSerializer.TAG_CLASS);
-            }
-        }
-        return null;
+  public String type() {
+    for (LinkedTreeMap linkedTreeMap : arrayList) {
+      if (linkedTreeMap.get(I_DvTypeAdapter.AT_TYPE) != null) {
+        return (String) linkedTreeMap.get(I_DvTypeAdapter.AT_TYPE);
+      } else if (linkedTreeMap.get(CompositionSerializer.TAG_CLASS) != null) {
+        return (String) linkedTreeMap.get(CompositionSerializer.TAG_CLASS);
+      }
     }
+    return null;
+  }
 }

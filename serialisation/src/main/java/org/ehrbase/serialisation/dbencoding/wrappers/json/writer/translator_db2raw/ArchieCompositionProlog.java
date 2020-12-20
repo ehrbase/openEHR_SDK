@@ -19,30 +19,38 @@
 package org.ehrbase.serialisation.dbencoding.wrappers.json.writer.translator_db2raw;
 
 public class ArchieCompositionProlog {
-    String compositionRoot;
-    String compositionName;
+  String compositionRoot;
+  String compositionName;
 
-    public ArchieCompositionProlog(String compositionRoot, String compositionName) {
-        this.compositionRoot = compositionRoot;
-        this.compositionName = compositionName;
-    }
+  public ArchieCompositionProlog(String compositionRoot, String compositionName) {
+    this.compositionRoot = compositionRoot;
+    this.compositionName = compositionName;
+  }
 
-    public String toString() {
-        String predicate = new NodeId(compositionRoot).predicate();
+  public String toString() {
+    String predicate = new NodeId(compositionRoot).predicate();
 
-        if (predicate.isEmpty())
-            return "";
+    if (predicate.isEmpty()) return "";
 
-        String archetypeNodeId = predicate;
+    String archetypeNodeId = predicate;
 
-        StringBuffer prolog = new StringBuffer();
-        prolog.append("{");
-        prolog.append("\"archetype_node_id\":").append("\"").append(archetypeNodeId).append("\"").append(",");
-        prolog.append("\"_type\":").append("\"COMPOSITION\"").append(",");
-        prolog.append("\"name\" : {\n" +
-                "    \"_type\" : \"DV_TEXT\",\n" +
-                "    \"value\" : ").append("\"").append(compositionName).append("\"").append("}").append(",");
+    StringBuffer prolog = new StringBuffer();
+    prolog.append("{");
+    prolog
+        .append("\"archetype_node_id\":")
+        .append("\"")
+        .append(archetypeNodeId)
+        .append("\"")
+        .append(",");
+    prolog.append("\"_type\":").append("\"COMPOSITION\"").append(",");
+    prolog
+        .append("\"name\" : {\n" + "    \"_type\" : \"DV_TEXT\",\n" + "    \"value\" : ")
+        .append("\"")
+        .append(compositionName)
+        .append("\"")
+        .append("}")
+        .append(",");
 
-        return prolog.toString();
-    }
+    return prolog.toString();
+  }
 }

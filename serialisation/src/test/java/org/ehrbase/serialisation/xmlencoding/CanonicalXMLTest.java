@@ -18,79 +18,81 @@
 
 package org.ehrbase.serialisation.xmlencoding;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.assertj.core.api.Assertions.assertThat;
+
 import com.nedap.archie.rm.composition.Composition;
 import com.nedap.archie.rm.datavalues.DvText;
 import com.nedap.archie.rm.directory.Folder;
 import com.nedap.archie.rm.support.identification.PartyRef;
+import java.io.IOException;
+import javax.xml.namespace.QName;
 import org.apache.commons.io.IOUtils;
 import org.ehrbase.test_data.composition.CompositionTestDataCanonicalXML;
 import org.junit.Test;
 
-import javax.xml.namespace.QName;
-import java.io.IOException;
-
-import static java.nio.charset.StandardCharsets.UTF_8;
-import static org.assertj.core.api.Assertions.assertThat;
-
 public class CanonicalXMLTest {
 
-    @Test
-    public void marshal() throws IOException {
-        String value = IOUtils.toString(CompositionTestDataCanonicalXML.ALL_TYPES.getStream(), UTF_8);
+  @Test
+  public void marshal() throws IOException {
+    String value = IOUtils.toString(CompositionTestDataCanonicalXML.ALL_TYPES.getStream(), UTF_8);
 
-        CanonicalXML cut = new CanonicalXML();
+    CanonicalXML cut = new CanonicalXML();
 
-        Composition composition = cut.unmarshal(value, Composition.class);
+    Composition composition = cut.unmarshal(value, Composition.class);
 
-        String marshal = cut.marshal(composition);
+    String marshal = cut.marshal(composition);
 
-        assertThat(marshal).isNotEmpty();
-    }
+    assertThat(marshal).isNotEmpty();
+  }
 
-    @Test
-    public void unmarshal() throws IOException {
-        String value = IOUtils.toString(CompositionTestDataCanonicalXML.ALL_TYPES.getStream(), UTF_8);
-        CanonicalXML cut = new CanonicalXML();
+  @Test
+  public void unmarshal() throws IOException {
+    String value = IOUtils.toString(CompositionTestDataCanonicalXML.ALL_TYPES.getStream(), UTF_8);
+    CanonicalXML cut = new CanonicalXML();
 
-        Composition composition = cut.unmarshal(value, Composition.class);
+    Composition composition = cut.unmarshal(value, Composition.class);
 
-        assertThat(composition).isNotNull();
-        assertThat(composition.getArchetypeDetails().getTemplateId().getValue()).isEqualTo("test_all_types.en.v1");
+    assertThat(composition).isNotNull();
+    assertThat(composition.getArchetypeDetails().getTemplateId().getValue())
+        .isEqualTo("test_all_types.en.v1");
+  }
 
-    }
+  @Test
+  public void unmarshalWithDefaultSchema() throws IOException {
+    String value =
+        IOUtils.toString(CompositionTestDataCanonicalXML.DIADEM_DEFAULT_SCHEMA.getStream(), UTF_8);
+    CanonicalXML cut = new CanonicalXML();
 
-    @Test
-    public void unmarshalWithDefaultSchema() throws IOException {
-        String value = IOUtils.toString(CompositionTestDataCanonicalXML.DIADEM_DEFAULT_SCHEMA.getStream(), UTF_8);
-        CanonicalXML cut = new CanonicalXML();
+    Composition composition = cut.unmarshal(value, Composition.class);
 
-        Composition composition = cut.unmarshal(value, Composition.class);
+    assertThat(composition).isNotNull();
+    // assertThat(composition.getArchetypeDetails().getTemplateId().getValue()).isEqualTo("test_all_types.en.v1");
 
-        assertThat(composition).isNotNull();
-        //assertThat(composition.getArchetypeDetails().getTemplateId().getValue()).isEqualTo("test_all_types.en.v1");
+  }
 
-    }
+  @Test
+  public void unmarshalWithDuplicatedSections() throws IOException {
+    String value =
+        IOUtils.toString(
+            CompositionTestDataCanonicalXML.REGISTRO_DE_ATENDIMENTO.getStream(), UTF_8);
+    CanonicalXML cut = new CanonicalXML();
 
-    @Test
-    public void unmarshalWithDuplicatedSections() throws IOException {
-        String value = IOUtils.toString(CompositionTestDataCanonicalXML.REGISTRO_DE_ATENDIMENTO.getStream(), UTF_8);
-        CanonicalXML cut = new CanonicalXML();
+    Composition composition = cut.unmarshal(value, Composition.class);
 
-        Composition composition = cut.unmarshal(value, Composition.class);
+    assertThat(composition).isNotNull();
+    // assertThat(composition.getArchetypeDetails().getTemplateId().getValue()).isEqualTo("test_all_types.en.v1");
 
-        assertThat(composition).isNotNull();
-        //assertThat(composition.getArchetypeDetails().getTemplateId().getValue()).isEqualTo("test_all_types.en.v1");
+  }
 
-    }
+  @Test
+  public void marshalInline() {
+    Folder folder = new Folder();
+    folder.setName(new DvText("folder name"));
+    folder.addItem(new PartyRef());
+    CanonicalXML canonicalXML = new CanonicalXML();
 
-    @Test
-    public void marshalInline() {
-        Folder folder = new Folder();
-        folder.setName(new DvText("folder name"));
-        folder.addItem(new PartyRef());
-        CanonicalXML canonicalXML = new CanonicalXML();
-
-        String inline = canonicalXML.marshalInline(folder, new QName(null, "folder"));
-        System.out.println(inline);
-    }
+    String inline = canonicalXML.marshalInline(folder, new QName(null, "folder"));
+    System.out.println(inline);
+  }
 }

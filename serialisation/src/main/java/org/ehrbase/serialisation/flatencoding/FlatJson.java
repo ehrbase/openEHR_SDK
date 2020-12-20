@@ -32,40 +32,53 @@ import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
 
 public class FlatJson implements RMDataFormat {
 
-    private final OPERATIONALTEMPLATE operationaltemplate;
-    private final WebTemplate templateIntrospect;
-    private final FlatJsonMarshaller flatJsonMarshaller;
-    private final FlatJsonUnmarshaller flatJsonUnmarshaller;
+  private final OPERATIONALTEMPLATE operationaltemplate;
+  private final WebTemplate templateIntrospect;
+  private final FlatJsonMarshaller flatJsonMarshaller;
+  private final FlatJsonUnmarshaller flatJsonUnmarshaller;
 
-    FlatJson(FlatJasonProvider flatJasonProvider, String templateId) {
+  FlatJson(FlatJasonProvider flatJasonProvider, String templateId) {
 
-        operationaltemplate = flatJasonProvider.getTemplateProvider().find(templateId).orElseThrow(() -> new SdkException(String.format("Template %s not found", templateId)));
+    operationaltemplate =
+        flatJasonProvider
+            .getTemplateProvider()
+            .find(templateId)
+            .orElseThrow(
+                () -> new SdkException(String.format("Template %s not found", templateId)));
 
-        flatJsonUnmarshaller = new FlatJsonUnmarshaller();
-        templateIntrospect = flatJasonProvider.getTemplateProvider().buildIntrospect(templateId).map(t -> new Filter().filter(t)).orElseThrow(() -> new SdkException(String.format("Template %s not found", templateId)));
-        flatJsonMarshaller = new FlatJsonMarshaller();
+    flatJsonUnmarshaller = new FlatJsonUnmarshaller();
+    templateIntrospect =
+        flatJasonProvider
+            .getTemplateProvider()
+            .buildIntrospect(templateId)
+            .map(t -> new Filter().filter(t))
+            .orElseThrow(
+                () -> new SdkException(String.format("Template %s not found", templateId)));
+    flatJsonMarshaller = new FlatJsonMarshaller();
+  }
 
+  @Override
+  public String marshal(RMObject rmObject) {
+    if (rmObject instanceof Composition) {
+      return flatJsonMarshaller.toFlatJson((Composition) rmObject, templateIntrospect);
+    } else {
+      throw new MarshalException(
+          String.format(
+              "Class %s not supported in flat format", rmObject.getClass().getSimpleName()));
     }
+  }
 
-    @Override
-    public String marshal(RMObject rmObject) {
-        if (rmObject instanceof Composition) {
-            return flatJsonMarshaller.toFlatJson((Composition) rmObject, templateIntrospect);
-        } else {
-            throw new MarshalException(String.format("Class %s not supported in flat format", rmObject.getClass().getSimpleName()));
-        }
+  @Override
+  public <T extends RMObject> T unmarshal(String value, Class<T> clazz) {
+    if (clazz.isAssignableFrom(Composition.class)) {
+      return (T) unmarshal(value);
+    } else {
+      throw new SdkException(
+          String.format("Class %s not supported in flat format", clazz.getSimpleName()));
     }
+  }
 
-    @Override
-    public <T extends RMObject> T unmarshal(String value, Class<T> clazz) {
-        if (clazz.isAssignableFrom(Composition.class)) {
-            return (T) unmarshal(value);
-        } else {
-            throw new SdkException(String.format("Class %s not supported in flat format", clazz.getSimpleName()));
-        }
-    }
-
-    public Composition unmarshal(String value) {
-        return flatJsonUnmarshaller.unmarshal(value, templateIntrospect, operationaltemplate);
-    }
+  public Composition unmarshal(String value) {
+    return flatJsonUnmarshaller.unmarshal(value, templateIntrospect, operationaltemplate);
+  }
 }

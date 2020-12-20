@@ -7,14 +7,14 @@ import org.ehrbase.client.annotations.Path;
 @Entity
 @Archetype("openEHR-EHR-CLUSTER.problem_qualifier.v1")
 public class StatusCluster {
-    @Path("/items[at0004]/value|defining_code")
-    private DiagnosestatusDefiningcode diagnosestatusDefiningcode;
+  @Path("/items[at0004]/value|defining_code")
+  private DiagnosestatusDefiningcode diagnosestatusDefiningcode;
 
-    public void setDiagnosestatusDefiningcode(DiagnosestatusDefiningcode diagnosestatusDefiningcode) {
-        this.diagnosestatusDefiningcode = diagnosestatusDefiningcode;
-    }
+  public void setDiagnosestatusDefiningcode(DiagnosestatusDefiningcode diagnosestatusDefiningcode) {
+    this.diagnosestatusDefiningcode = diagnosestatusDefiningcode;
+  }
 
-    public DiagnosestatusDefiningcode getDiagnosestatusDefiningcode() {
-        return this.diagnosestatusDefiningcode;
-    }
+  public DiagnosestatusDefiningcode getDiagnosestatusDefiningcode() {
+    return this.diagnosestatusDefiningcode;
+  }
 }

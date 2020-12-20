@@ -24,28 +24,28 @@ import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import com.fasterxml.jackson.dataformat.xml.deser.FromXmlParser;
 import com.nedap.archie.rm.RMObject;
+import java.io.IOException;
 import org.ehrbase.serialisation.jsonencoding.CanonicalJson;
 import org.ehrbase.serialisation.xmlencoding.CanonicalXML;
 
-import java.io.IOException;
-
 public class RmObjectJsonDeSerializer extends StdDeserializer {
 
-    public RmObjectJsonDeSerializer() {
-        this(null);
-    }
+  public RmObjectJsonDeSerializer() {
+    this(null);
+  }
 
-    public RmObjectJsonDeSerializer(Class<?> vc) {
-        super(vc);
-    }
+  public RmObjectJsonDeSerializer(Class<?> vc) {
+    super(vc);
+  }
 
-    @Override
-    public Object deserialize(JsonParser p, DeserializationContext ctxt) throws IOException, JsonProcessingException {
-        String value = p.readValueAsTree().toString();
-        if (p instanceof FromXmlParser) {
-            return new CanonicalXML().unmarshal(value, RMObject.class);
-        } else {
-            return new CanonicalJson().unmarshal(value, RMObject.class);
-        }
+  @Override
+  public Object deserialize(JsonParser p, DeserializationContext ctxt)
+      throws IOException, JsonProcessingException {
+    String value = p.readValueAsTree().toString();
+    if (p instanceof FromXmlParser) {
+      return new CanonicalXML().unmarshal(value, RMObject.class);
+    } else {
+      return new CanonicalJson().unmarshal(value, RMObject.class);
     }
+  }
 }

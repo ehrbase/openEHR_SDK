@@ -21,35 +21,25 @@ import java.time.ZoneOffset;
 
 public interface I_TimeAttributes extends I_TemporalAttributes {
 
-    /**
-     * true if time is an RM DvTime instance
-     */
-    boolean isRmDvTime();
+  /** true if time is an RM DvTime instance */
+  boolean isRmDvTime();
 
-    /**
-     * true if time is hours only
-     * NB. never true with current Java API which defaults it to HH:MM
-     */
-    boolean isTimeHH();
+  /** true if time is hours only NB. never true with current Java API which defaults it to HH:MM */
+  boolean isTimeHH();
 
-    /**
-     * true if time is hours-minutes only
-     */
-    boolean isTimeHHMM();
+  /** true if time is hours-minutes only */
+  boolean isTimeHHMM();
 
-    /**
-     * true if time is hours-minutes-seconds only
-     */
-    boolean isTimeHHMMSS();
+  /** true if time is hours-minutes-seconds only */
+  boolean isTimeHHMMSS();
 
-    /**
-     * true if time is hours-minutes-seconds-millisecs only
-     */
-    boolean isTimeHHMMSSmmm();
+  /** true if time is hours-minutes-seconds-millisecs only */
+  boolean isTimeHHMMSSmmm();
 
-    /**
-     * return the zone offset for this time if any
-     * @return ZoneOffset
-     */
-    ZoneOffset getZoneOffset();
+  /**
+   * return the zone offset for this time if any
+   *
+   * @return ZoneOffset
+   */
+  ZoneOffset getZoneOffset();
 }

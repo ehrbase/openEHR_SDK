@@ -20,31 +20,32 @@ package org.ehrbase.validation.constraints.util;
 
 public class DateTimeSyntax {
 
-    private final String dateString;
-    private final String pattern;
-    private final String path;
+  private final String dateString;
+  private final String pattern;
+  private final String path;
 
+  public DateTimeSyntax(String path, String dateString, String pattern) {
+    this.pattern = pattern;
+    this.dateString = dateString;
+    this.path = path; // used for error message
+  }
 
-    public DateTimeSyntax(String path, String dateString, String pattern) {
-        this.pattern = pattern;
-        this.dateString = dateString;
-        this.path = path; //used for error message
+  public void validate() {
+    // TODO: do a smarter test based on the supplied pattern...
+    //        if (!DvDateTime.isValidISO8601DateTime(dvDateStr))
+    //           ValidationException.raise(path, "Supplied date/time is not ISO8601 compatible:" +
+    // dvDateStr, "DATE04");
+
+    // check pattern if any
+    if (pattern != null) {
+      // check ISO8601 validity
+      //            try {
+      //
+      //                DvDateTimeParser.toDateTimeString(dvDateStr, cdatetime.getPattern());
+      //            } catch (Exception e) {
+      //                throw new ValidationException(path, "Supplied value does not match pattern:"
+      // + dvDateStr + " (expected:" + cdatetime.getPattern() + "), error:"+e);
+      //            }
     }
-
-    public void validate() {
-        //TODO: do a smarter test based on the supplied pattern...
-//        if (!DvDateTime.isValidISO8601DateTime(dvDateStr))
-//           ValidationException.raise(path, "Supplied date/time is not ISO8601 compatible:" + dvDateStr, "DATE04");
-
-        //check pattern if any
-        if (pattern != null) {
-            //check ISO8601 validity
-//            try {
-//
-//                DvDateTimeParser.toDateTimeString(dvDateStr, cdatetime.getPattern());
-//            } catch (Exception e) {
-//                throw new ValidationException(path, "Supplied value does not match pattern:" + dvDateStr + " (expected:" + cdatetime.getPattern() + "), error:"+e);
-//            }
-        }
-    }
+  }
 }

@@ -17,36 +17,31 @@
 
 package org.ehrbase.response.ehrscape.query;
 
-
 import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.Multimap;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
-/**
- * simple container to hold result records allowing duplicate column ids
- */
+/** simple container to hold result records allowing duplicate column ids */
 public class ResultHolder {
 
-    private Multimap<String, List<Object>> resultMap = LinkedListMultimap.create();
+  private Multimap<String, List<Object>> resultMap = LinkedListMultimap.create();
 
-    public void putResult(String columnId, Object result){
-        resultMap.put(columnId, Arrays.asList(result));
+  public void putResult(String columnId, Object result) {
+    resultMap.put(columnId, Arrays.asList(result));
+  }
+
+  public Collection<String> columnIds() {
+    return resultMap.keys();
+  }
+
+  public List<Object> values() {
+    List<Object> results = new ArrayList<>();
+    for (List<Object> item : resultMap.values()) {
+      results.addAll(item);
     }
-
-    public Collection<String> columnIds(){
-        return resultMap.keys();
-    }
-
-    public List<Object> values(){
-        List<Object> results = new ArrayList<>();
-        for (List<Object> item: resultMap.values()) {
-            results.addAll(item);
-        }
-        return results;
-    }
-
+    return results;
+  }
 }

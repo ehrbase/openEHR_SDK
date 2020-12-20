@@ -19,30 +19,27 @@
 
 package org.ehrbase.serialisation.flatencoding.std.marshal.postprocessor;
 
+import static org.ehrbase.webtemplate.parser.OPTParser.PATH_DIVIDER;
+
 import com.nedap.archie.rm.archetyped.Locatable;
 import com.nedap.archie.rm.composition.Composition;
 import com.nedap.archie.rm.support.identification.ObjectId;
-
 import java.util.Map;
 import java.util.Optional;
 
-import static org.ehrbase.webtemplate.parser.OPTParser.PATH_DIVIDER;
-
 public class CompositionMarshalPostprocessor implements MarshalPostprocessor<Composition> {
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void process(String term, Composition rmObject, Map<String, Object> values) {
-        values.put(term + PATH_DIVIDER + "_uid", Optional.of(rmObject).map(Locatable::getUid).map(ObjectId::getValue).orElse(null));
-    }
+  /** {@inheritDoc} */
+  @Override
+  public void process(String term, Composition rmObject, Map<String, Object> values) {
+    values.put(
+        term + PATH_DIVIDER + "_uid",
+        Optional.of(rmObject).map(Locatable::getUid).map(ObjectId::getValue).orElse(null));
+  }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Class<Composition> getAssociatedClass() {
-        return Composition.class;
-    }
+  /** {@inheritDoc} */
+  @Override
+  public Class<Composition> getAssociatedClass() {
+    return Composition.class;
+  }
 }

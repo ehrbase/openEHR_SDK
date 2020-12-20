@@ -9,36 +9,36 @@ import org.ehrbase.client.classgenerator.olddtoexamples.shareddefinition.Languag
 @Entity
 @Archetype("openEHR-EHR-ADMIN_ENTRY.test_all_types.v1")
 public class TestAllTypesAdminEntry {
-    @Path("/subject")
-    private PartyProxy subject;
+  @Path("/subject")
+  private PartyProxy subject;
 
-    @Path("/language")
-    private Language language;
+  @Path("/language")
+  private Language language;
 
-    @Path("/data[at0001]/item[at0002]/value|magnitude")
-    private Long count3Magnitude;
+  @Path("/data[at0001]/item[at0002]/value|magnitude")
+  private Long count3Magnitude;
 
-    public void setSubject(PartyProxy subject) {
-        this.subject = subject;
-    }
+  public void setSubject(PartyProxy subject) {
+    this.subject = subject;
+  }
 
-    public PartyProxy getSubject() {
-        return this.subject;
-    }
+  public PartyProxy getSubject() {
+    return this.subject;
+  }
 
-    public void setLanguage(Language language) {
-        this.language = language;
-    }
+  public void setLanguage(Language language) {
+    this.language = language;
+  }
 
-    public Language getLanguage() {
-        return this.language;
-    }
+  public Language getLanguage() {
+    return this.language;
+  }
 
-    public void setCount3Magnitude(Long count3Magnitude) {
-        this.count3Magnitude = count3Magnitude;
-    }
+  public void setCount3Magnitude(Long count3Magnitude) {
+    this.count3Magnitude = count3Magnitude;
+  }
 
-    public Long getCount3Magnitude() {
-        return this.count3Magnitude;
-    }
+  public Long getCount3Magnitude() {
+    return this.count3Magnitude;
+  }
 }

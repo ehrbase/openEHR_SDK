@@ -20,143 +20,169 @@ package org.ehrbase.serialisation.dbencoding.rmobject;
 import com.nedap.archie.rm.datavalues.quantity.datetime.DvDate;
 import com.nedap.archie.rm.datavalues.quantity.datetime.DvDateTime;
 import com.nedap.archie.rm.datavalues.quantity.datetime.DvTime;
+import java.time.YearMonth;
+import java.time.temporal.ChronoField;
 import junit.framework.TestCase;
 import org.ehrbase.serialisation.attributes.datavalues.datetime.TemporalAttributes;
 import org.ehrbase.serialisation.attributes.datavalues.datetime.date.DvDateAttributes;
 import org.ehrbase.serialisation.attributes.datavalues.datetime.datetime.DvDateTimeAttributes;
 import org.ehrbase.serialisation.attributes.datavalues.datetime.time.DvTimeAttributes;
 
-import java.time.YearMonth;
-import java.time.temporal.ChronoField;
-
 public class TemporalEncodingTest extends TestCase {
 
-    public void testChronoFieldSupport2(){
-        YearMonth yearMonth = YearMonth.parse("2020-08");
+  public void testChronoFieldSupport2() {
+    YearMonth yearMonth = YearMonth.parse("2020-08");
 
-        DvDate dvDate = new DvDate(yearMonth);
+    DvDate dvDate = new DvDate(yearMonth);
 
-        //check supported ChronoField
+    // check supported ChronoField
 
-        assertTrue(dvDate.getValue().isSupported(ChronoField.YEAR));
-        assertTrue(dvDate.getValue().isSupported(ChronoField.MONTH_OF_YEAR));
-        assertFalse(dvDate.getValue().isSupported(ChronoField.DAY_OF_MONTH));
+    assertTrue(dvDate.getValue().isSupported(ChronoField.YEAR));
+    assertTrue(dvDate.getValue().isSupported(ChronoField.MONTH_OF_YEAR));
+    assertFalse(dvDate.getValue().isSupported(ChronoField.DAY_OF_MONTH));
 
-        DvDateAttributes dvDateAttributes = DvDateAttributes.instanceFromValue(dvDate);
+    DvDateAttributes dvDateAttributes = DvDateAttributes.instanceFromValue(dvDate);
 
-        assertTrue(dvDateAttributes.isRmDvDate());
+    assertTrue(dvDateAttributes.isRmDvDate());
 
-        assertTrue(dvDateAttributes.isDateYYYYMM());
-        assertFalse(dvDateAttributes.isDateYYYY());
-        assertFalse(dvDateAttributes.isDateYYYYMMDD());
-    }
+    assertTrue(dvDateAttributes.isDateYYYYMM());
+    assertFalse(dvDateAttributes.isDateYYYY());
+    assertFalse(dvDateAttributes.isDateYYYYMMDD());
+  }
 
-    public void testChronoFieldSupport3(){
+  public void testChronoFieldSupport3() {
 
-        DvDateTime dvDateTime = new DvDateTime("2020-08-19T12:12:12.123Z");
+    DvDateTime dvDateTime = new DvDateTime("2020-08-19T12:12:12.123Z");
 
-        DvDateTimeAttributes dvDateTimeAttributes = DvDateTimeAttributes.instanceFromValue(dvDateTime);
+    DvDateTimeAttributes dvDateTimeAttributes = DvDateTimeAttributes.instanceFromValue(dvDateTime);
 
-        assertTrue(dvDateTimeAttributes.isRmDvDateTime());
-    }
+    assertTrue(dvDateTimeAttributes.isRmDvDateTime());
+  }
 
-    public void testChronoFieldSupportTime(){
+  public void testChronoFieldSupportTime() {
 
-        DvTime dvTime = new DvTime("10:10:10Z");
+    DvTime dvTime = new DvTime("10:10:10Z");
 
-        DvTimeAttributes timeAttributes = DvTimeAttributes.instanceFromValue(dvTime);
+    DvTimeAttributes timeAttributes = DvTimeAttributes.instanceFromValue(dvTime);
 
-        assertTrue(timeAttributes.isRmDvTime());
+    assertTrue(timeAttributes.isRmDvTime());
 
-        assertEquals(Long.valueOf(36610), timeAttributes.getTimeStamp());
+    assertEquals(Long.valueOf(36610), timeAttributes.getTimeStamp());
 
-        assertFalse(timeAttributes.isTimeHH());
-        assertFalse(timeAttributes.isTimeHHMM());
-        assertTrue(timeAttributes.isTimeHHMMSS());
-        assertFalse(timeAttributes.isTimeHHMMSSmmm());
-//        String encoded = new TemporalEncoding().toDB(dvDate);
-        assertEquals("10:10:10Z", timeAttributes.getValueAsProvided().toString());
+    assertFalse(timeAttributes.isTimeHH());
+    assertFalse(timeAttributes.isTimeHHMM());
+    assertTrue(timeAttributes.isTimeHHMMSS());
+    assertFalse(timeAttributes.isTimeHHMMSSmmm());
+    //        String encoded = new TemporalEncoding().toDB(dvDate);
+    assertEquals("10:10:10Z", timeAttributes.getValueAsProvided().toString());
 
-        assertEquals(Integer.valueOf(TemporalAttributes.DV_TIME|TemporalAttributes.HOUR|TemporalAttributes.MINUTE_OF_HOUR|TemporalAttributes.SECOND_OF_MINUTE), timeAttributes.getSupportedChronoFields());
+    assertEquals(
+        Integer.valueOf(
+            TemporalAttributes.DV_TIME
+                | TemporalAttributes.HOUR
+                | TemporalAttributes.MINUTE_OF_HOUR
+                | TemporalAttributes.SECOND_OF_MINUTE),
+        timeAttributes.getSupportedChronoFields());
+  }
 
-    }
+  public void testChronoFieldSupportTimeHHMM() {
 
-    public void testChronoFieldSupportTimeHHMM(){
+    DvTime dvTime = new DvTime("10:10");
 
-        DvTime dvTime = new DvTime("10:10");
+    DvTimeAttributes timeAttributes = DvTimeAttributes.instanceFromValue(dvTime);
 
-        DvTimeAttributes timeAttributes = DvTimeAttributes.instanceFromValue(dvTime);
+    assertTrue(timeAttributes.isRmDvTime());
 
-        assertTrue(timeAttributes.isRmDvTime());
+    assertFalse(timeAttributes.isTimeHH());
+    assertTrue(timeAttributes.isTimeHHMM());
+    assertFalse(timeAttributes.isTimeHHMMSS());
+    assertFalse(timeAttributes.isTimeHHMMSSmmm());
+    assertEquals("10:10", timeAttributes.getValueAsProvided().toString());
 
-        assertFalse(timeAttributes.isTimeHH());
-        assertTrue(timeAttributes.isTimeHHMM());
-        assertFalse(timeAttributes.isTimeHHMMSS());
-        assertFalse(timeAttributes.isTimeHHMMSSmmm());
-        assertEquals("10:10", timeAttributes.getValueAsProvided().toString());
+    assertEquals(
+        Integer.valueOf(
+            TemporalAttributes.DV_TIME
+                | TemporalAttributes.HOUR
+                | TemporalAttributes.MINUTE_OF_HOUR),
+        timeAttributes.getSupportedChronoFields());
+  }
 
-        assertEquals(Integer.valueOf(TemporalAttributes.DV_TIME|TemporalAttributes.HOUR|TemporalAttributes.MINUTE_OF_HOUR), timeAttributes.getSupportedChronoFields());
+  public void testChronoFieldSupportTimeHH() {
 
-    }
+    DvTime dvTime = new DvTime("10");
 
-    public void testChronoFieldSupportTimeHH(){
+    DvTimeAttributes timeAttributes = DvTimeAttributes.instanceFromValue(dvTime);
 
-        DvTime dvTime = new DvTime( "10");
+    // Archie encode this time as 10:00, should we enforce this minimalist encoding?
+    assertFalse(timeAttributes.isTimeHH());
 
-        DvTimeAttributes timeAttributes = DvTimeAttributes.instanceFromValue(dvTime);
+    assertTrue(timeAttributes.isTimeHHMM());
+    assertFalse(timeAttributes.isTimeHHMMSS());
+    assertFalse(timeAttributes.isTimeHHMMSSmmm());
+    assertEquals("10:00", timeAttributes.getValueAsProvided().toString());
 
-        //Archie encode this time as 10:00, should we enforce this minimalist encoding?
-        assertFalse(timeAttributes.isTimeHH());
+    assertEquals(
+        Integer.valueOf(
+            TemporalAttributes.DV_TIME
+                | TemporalAttributes.HOUR
+                | TemporalAttributes.MINUTE_OF_HOUR),
+        timeAttributes.getSupportedChronoFields());
 
-        assertTrue(timeAttributes.isTimeHHMM());
-        assertFalse(timeAttributes.isTimeHHMMSS());
-        assertFalse(timeAttributes.isTimeHHMMSSmmm());
-        assertEquals("10:00", timeAttributes.getValueAsProvided().toString());
+    assertEquals(
+        "YYYY-MM-DD\"T\"HH24:MI",
+        timeAttributes.getISOdateTimeSQLFormatter(timeAttributes.getSupportedChronoFields()));
+  }
 
-        assertEquals(Integer.valueOf(TemporalAttributes.DV_TIME|TemporalAttributes.HOUR|TemporalAttributes.MINUTE_OF_HOUR), timeAttributes.getSupportedChronoFields());
+  public void testChronoFieldSupportDateTimeYYYYMMDDHHMMSSTZ() {
 
-        assertEquals("YYYY-MM-DD\"T\"HH24:MI", timeAttributes.getISOdateTimeSQLFormatter(timeAttributes.getSupportedChronoFields()));
-    }
+    DvDateTime dvDateTime = new DvDateTime("2020-12-12T10:10:10Z");
 
-    public void testChronoFieldSupportDateTimeYYYYMMDDHHMMSSTZ(){
+    DvDateTimeAttributes dateTimeAttributes = DvDateTimeAttributes.instanceFromValue(dvDateTime);
 
-        DvDateTime dvDateTime = new DvDateTime("2020-12-12T10:10:10Z");
+    assertTrue(dateTimeAttributes.isRmDvDateTime());
 
-        DvDateTimeAttributes dateTimeAttributes = DvDateTimeAttributes.instanceFromValue(dvDateTime);
+    assertTrue(dateTimeAttributes.isDateTimeYYYYMMDDHHMMSS());
+    assertFalse(dateTimeAttributes.isDateTimeYYYYMM());
 
-        assertTrue(dateTimeAttributes.isRmDvDateTime());
+    assertEquals("2020-12-12T10:10:10Z", dateTimeAttributes.getValueAsProvided().toString());
+    assertEquals("2020-12-12T10:10:10Z", dateTimeAttributes.getValueExtended().toString());
 
-        assertTrue(dateTimeAttributes.isDateTimeYYYYMMDDHHMMSS());
-        assertFalse(dateTimeAttributes.isDateTimeYYYYMM());
+    // GMT: Saturday, December 12, 2020 10:10:10 AM == 1607767810 (https://www.epochconverter.com/)
+    assertEquals(Long.valueOf(1607767810), dateTimeAttributes.getTimeStamp());
 
-        assertEquals("2020-12-12T10:10:10Z", dateTimeAttributes.getValueAsProvided().toString());
-        assertEquals("2020-12-12T10:10:10Z", dateTimeAttributes.getValueExtended().toString());
+    assertEquals(
+        Integer.valueOf(
+            TemporalAttributes.DV_DATE_TIME
+                | TemporalAttributes.YEAR
+                | TemporalAttributes.MONTH_OF_YEAR
+                | TemporalAttributes.DAY_OF_MONTH
+                | TemporalAttributes.HOUR
+                | TemporalAttributes.MINUTE_OF_HOUR
+                | TemporalAttributes.SECOND_OF_MINUTE),
+        dateTimeAttributes.getSupportedChronoFields());
+  }
 
-        //GMT: Saturday, December 12, 2020 10:10:10 AM == 1607767810 (https://www.epochconverter.com/)
-        assertEquals(Long.valueOf(1607767810), dateTimeAttributes.getTimeStamp());
+  public void testChronoFieldSupportDateTimeYYYYMMDD() {
 
-        assertEquals(Integer.valueOf(TemporalAttributes.DV_DATE_TIME|
-                TemporalAttributes.YEAR|TemporalAttributes.MONTH_OF_YEAR|TemporalAttributes.DAY_OF_MONTH|
-                TemporalAttributes.HOUR|TemporalAttributes.MINUTE_OF_HOUR|TemporalAttributes.SECOND_OF_MINUTE), dateTimeAttributes.getSupportedChronoFields());
+    DvDateTime dvDateTime = new DvDateTime("2020-12-12");
 
-    }
+    DvDateTimeAttributes dateTimeAttributes = DvDateTimeAttributes.instanceFromValue(dvDateTime);
 
-    public void testChronoFieldSupportDateTimeYYYYMMDD(){
+    assertTrue(dateTimeAttributes.isDateTimeYYYYMMDD());
 
-        DvDateTime dvDateTime = new DvDateTime("2020-12-12");
+    assertFalse(dateTimeAttributes.isDateTimeYYYYMMDDHHMMSS());
+    assertFalse(dateTimeAttributes.isDateTimeYYYYMM());
+    assertEquals("2020-12-12", dateTimeAttributes.getValueAsProvided().toString());
 
-        DvDateTimeAttributes dateTimeAttributes = DvDateTimeAttributes.instanceFromValue(dvDateTime);
+    // GMT: Saturday, December 12, 2020 12:00:00 AM == 1607731200 (https://www.epochconverter.com/)
+    assertEquals(Long.valueOf(1607731200), dateTimeAttributes.getTimeStamp());
 
-        assertTrue(dateTimeAttributes.isDateTimeYYYYMMDD());
-
-        assertFalse(dateTimeAttributes.isDateTimeYYYYMMDDHHMMSS());
-        assertFalse(dateTimeAttributes.isDateTimeYYYYMM());
-        assertEquals("2020-12-12", dateTimeAttributes.getValueAsProvided().toString());
-
-        //GMT: Saturday, December 12, 2020 12:00:00 AM == 1607731200 (https://www.epochconverter.com/)
-        assertEquals(Long.valueOf(1607731200), dateTimeAttributes.getTimeStamp());
-
-        assertEquals(Integer.valueOf(TemporalAttributes.DV_DATE_TIME|TemporalAttributes.YEAR|TemporalAttributes.MONTH_OF_YEAR|TemporalAttributes.DAY_OF_MONTH), dateTimeAttributes.getSupportedChronoFields());
-
-    }
+    assertEquals(
+        Integer.valueOf(
+            TemporalAttributes.DV_DATE_TIME
+                | TemporalAttributes.YEAR
+                | TemporalAttributes.MONTH_OF_YEAR
+                | TemporalAttributes.DAY_OF_MONTH),
+        dateTimeAttributes.getSupportedChronoFields());
+  }
 }

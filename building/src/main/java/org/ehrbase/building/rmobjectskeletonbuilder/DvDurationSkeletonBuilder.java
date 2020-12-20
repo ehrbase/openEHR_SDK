@@ -23,19 +23,19 @@ import com.nedap.archie.rm.datavalues.quantity.datetime.DvDuration;
 import org.openehr.schemas.v1.CDURATION;
 
 public class DvDurationSkeletonBuilder implements RmObjectSkeletonBuilder<CDURATION, DvDuration> {
-    @Override
-    public Class<CDURATION> getAssociatedClass() {
-        return CDURATION.class;
-    }
+  @Override
+  public Class<CDURATION> getAssociatedClass() {
+    return CDURATION.class;
+  }
 
-    @Override
-    public DvDuration getRmObject(CDURATION xml) {
-        DvDuration dvDuration;
-        if (xml.isSetAssumedValue()) {
-            dvDuration = new DvDuration(xml.getAssumedValue());
-        } else {
-            dvDuration = new DvDuration();
-        }
-        return dvDuration;
+  @Override
+  public DvDuration getRmObject(CDURATION xml) {
+    DvDuration dvDuration;
+    if (xml.isSetAssumedValue()) {
+      dvDuration = new DvDuration(xml.getAssumedValue());
+    } else {
+      dvDuration = new DvDuration();
     }
+    return dvDuration;
+  }
 }

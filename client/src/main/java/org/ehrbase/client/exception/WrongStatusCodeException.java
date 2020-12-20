@@ -21,21 +21,24 @@ import java.util.Arrays;
 
 public class WrongStatusCodeException extends ClientException {
 
-    private final int actualStatusCode;
-    private final int[] expectedStatusCode;
+  private final int actualStatusCode;
+  private final int[] expectedStatusCode;
 
-    public WrongStatusCodeException(String message, int actualStatusCode, int... expectedStatusCode) {
+  public WrongStatusCodeException(String message, int actualStatusCode, int... expectedStatusCode) {
 
-        super(String.format("Wrong Status code. Expected: %s. Got: %s. Error message: %s", Arrays.toString(expectedStatusCode), actualStatusCode, message));
-        this.actualStatusCode = actualStatusCode;
-        this.expectedStatusCode = expectedStatusCode;
-    }
+    super(
+        String.format(
+            "Wrong Status code. Expected: %s. Got: %s. Error message: %s",
+            Arrays.toString(expectedStatusCode), actualStatusCode, message));
+    this.actualStatusCode = actualStatusCode;
+    this.expectedStatusCode = expectedStatusCode;
+  }
 
-    public int getActualStatusCode() {
-        return actualStatusCode;
-    }
+  public int getActualStatusCode() {
+    return actualStatusCode;
+  }
 
-    public int[] getExpectedStatusCode() {
-        return expectedStatusCode;
-    }
+  public int[] getExpectedStatusCode() {
+    return expectedStatusCode;
+  }
 }

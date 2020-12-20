@@ -19,41 +19,37 @@
 package org.ehrbase.serialisation.dbencoding.wrappers.json.writer.translator_db2raw;
 
 import com.google.gson.internal.LinkedTreeMap;
+import java.util.List;
 import org.ehrbase.serialisation.dbencoding.CompositionSerializer;
 
-import java.util.List;
-
-/**
- * Created by christian on 3/12/2018.
- */
+/** Created by christian on 3/12/2018. */
 public class ArrayChildren {
 
-    List arrayList;
+  List arrayList;
 
-    public ArrayChildren(List value) {
-        this.arrayList = value;
-    }
+  public ArrayChildren(List value) {
+    this.arrayList = value;
+  }
 
-    public boolean hasElement() {
-        for (Object entry : arrayList) {
-            if (entry instanceof LinkedTreeMap) {
-                LinkedTreeMap itemMap = (LinkedTreeMap) entry;
-                if (itemMap.containsKey(CompositionSerializer.TAG_PATH))
-                    return true;
-            }
-        }
-        return false;
+  public boolean hasElement() {
+    for (Object entry : arrayList) {
+      if (entry instanceof LinkedTreeMap) {
+        LinkedTreeMap itemMap = (LinkedTreeMap) entry;
+        if (itemMap.containsKey(CompositionSerializer.TAG_PATH)) return true;
+      }
     }
+    return false;
+  }
 
-    /**
-     * check if all elements are null
-     * @return
-     */
-    public boolean isNull(){
-        for (Object entry : arrayList) {
-            if (entry != null)
-                return false;
-        }
-        return true;
+  /**
+   * check if all elements are null
+   *
+   * @return
+   */
+  public boolean isNull() {
+    for (Object entry : arrayList) {
+      if (entry != null) return false;
     }
+    return true;
+  }
 }

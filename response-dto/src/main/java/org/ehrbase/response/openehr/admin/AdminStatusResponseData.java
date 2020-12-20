@@ -21,23 +21,24 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 
 /**
- * Admin status response data. Providing a basic success message that the admin API is configured to be available
+ * Admin status response data. Providing a basic success message that the admin API is configured to
+ * be available
  */
 @JacksonXmlRootElement
 public class AdminStatusResponseData {
 
-    @JsonProperty(value = "message")
-    private String message;
+  @JsonProperty(value = "message")
+  private String message;
 
-    public AdminStatusResponseData(String message) {
-        this.message = message;
-    }
+  public AdminStatusResponseData(String message) {
+    this.message = message;
+  }
 
-    public void setMessage(String message) {
-        this.message = message;
-    }
+  public void setMessage(String message) {
+    this.message = message;
+  }
 
-    public String getMessage() {
-        return this.message;
-    }
+  public String getMessage() {
+    return this.message;
+  }
 }

@@ -17,66 +17,74 @@
 
 package org.ehrbase.serialisation.attributes;
 
+import static org.ehrbase.serialisation.dbencoding.CompositionSerializer.TAG_NULL_FLAVOUR;
+import static org.ehrbase.serialisation.dbencoding.CompositionSerializer.TAG_VALUE;
+
 import com.nedap.archie.rm.datastructures.Element;
 import com.nedap.archie.rm.datavalues.DvText;
+import java.util.Map;
 import org.ehrbase.serialisation.dbencoding.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Map;
-
-import static org.ehrbase.serialisation.dbencoding.CompositionSerializer.TAG_NULL_FLAVOUR;
-import static org.ehrbase.serialisation.dbencoding.CompositionSerializer.TAG_VALUE;
-
-/**
- * populate the attributes for RM Elements
- */
+/** populate the attributes for RM Elements */
 public class ElementAttributes extends ItemAttributes {
 
-    private static final String INITIAL_DUMMY_PREFIX = "$*>";
+  private static final String INITIAL_DUMMY_PREFIX = "$*>";
 
-    private boolean allElements = false;
-    private Logger log = LoggerFactory.getLogger(ElementAttributes.class.getSimpleName());
+  private boolean allElements = false;
+  private Logger log = LoggerFactory.getLogger(ElementAttributes.class.getSimpleName());
 
-    public ElementAttributes(CompositionSerializer compositionSerializer, ItemStack itemStack, Map<String, Object> map) {
-        super(compositionSerializer, itemStack, map);
+  public ElementAttributes(
+      CompositionSerializer compositionSerializer, ItemStack itemStack, Map<String, Object> map) {
+    super(compositionSerializer, itemStack, map);
+  }
+
+  /**
+   * map the value or null_flavour of an Element
+   *
+   * @param element
+   * @return
+   */
+  public Map<String, Object> toMap(Element element) {
+    Map<String, Object> ltree = map;
+
+    // to deal with ITEM_SINGLE initial value
+    if (element.getName().getValue().startsWith(INITIAL_DUMMY_PREFIX)) {
+      if (allElements) { // strip the prefix since it is for an example
+        DvText elementName = element.getName();
+        elementName.setValue(elementName.getValue().substring(INITIAL_DUMMY_PREFIX.length()));
+        element.setName(elementName);
+      } else return ltree;
+    }
+    Map<String, Object> valuemap = PathMap.getInstance();
+
+    if (element.getValue() != null && !element.getValue().toString().isEmpty()) {
+      log.debug(itemStack.pathStackDump() + "=" + element.getValue());
+
+      if (element.getValue() != null && !element.getValue().toString().isEmpty())
+        valuemap =
+            new SerialTree(valuemap)
+                .insert(
+                    new CompositeClassName(element.getValue()).toString(),
+                    element,
+                    TAG_VALUE,
+                    new ElementValue(element.getValue()).normalize());
+    } else if (element.getNullFlavour() != null) {
+      valuemap =
+          new SerialTree(valuemap)
+              .insert(
+                  null,
+                  element,
+                  TAG_NULL_FLAVOUR,
+                  new ElementValue(element.getNullFlavour()).normalize());
     }
 
-    /**
-     * map the value or null_flavour of an Element
-     * @param element
-     * @return
-     */
-    public Map<String, Object> toMap(Element element) {
-        Map<String, Object> ltree = map;
+    // set path
+    valuemap = new PathItem(valuemap, tagMode, itemStack).encode(null);
 
-        //to deal with ITEM_SINGLE initial value
-        if (element.getName().getValue().startsWith(INITIAL_DUMMY_PREFIX)) {
-            if (allElements) { //strip the prefix since it is for an example
-                DvText elementName = element.getName();
-                elementName.setValue(elementName.getValue().substring(INITIAL_DUMMY_PREFIX.length()));
-                element.setName(elementName);
-            } else
-                return ltree;
-        }
-        Map<String, Object> valuemap = PathMap.getInstance();
+    ltree.put(TAG_VALUE, valuemap);
 
-        if (element.getValue() != null && !element.getValue().toString().isEmpty()) {
-            log.debug(itemStack.pathStackDump() + "=" + element.getValue());
-
-            if (element.getValue() != null && !element.getValue().toString().isEmpty())
-                valuemap = new SerialTree(valuemap).insert(new CompositeClassName(element.getValue()).toString(), element, TAG_VALUE, new ElementValue(element.getValue()).normalize());
-        }
-        else if (element.getNullFlavour() != null){
-            valuemap = new SerialTree(valuemap).insert(null, element, TAG_NULL_FLAVOUR, new ElementValue(element.getNullFlavour()).normalize());
-        }
-
-
-        //set path
-        valuemap = new PathItem(valuemap, tagMode, itemStack).encode(null);
-
-        ltree.put(TAG_VALUE, valuemap);
-
-        return ltree;
-    }
+    return ltree;
+  }
 }

@@ -19,5 +19,4 @@
 
 package org.ehrbase.client.classgenerator.interfaces;
 
-public interface RMEntity {
-}
+public interface RMEntity {}

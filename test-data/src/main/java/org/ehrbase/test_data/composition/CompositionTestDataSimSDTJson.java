@@ -21,28 +21,25 @@ package org.ehrbase.test_data.composition;
 import java.io.InputStream;
 
 public enum CompositionTestDataSimSDTJson {
+  ALTERNATIVE_EVENTS("AlternativeEvents", "AlternativeEvents.json"),
+  ALTERNATIVE_EVENTS_2("AlternativeEvents", "AlternativeEvents2.json"),
+  CORONA("Corona", "corona.json"),
+  MULTI_OCCURRENCE("multi_occurrence", "multi_occurrence.json"),
+  ALL_TYPES("test_all_types", "test_all_types.json");
 
-    ALTERNATIVE_EVENTS("AlternativeEvents", "AlternativeEvents.json"),
-    ALTERNATIVE_EVENTS_2("AlternativeEvents", "AlternativeEvents2.json"),
-    CORONA("Corona", "corona.json"),
-    MULTI_OCCURRENCE("multi_occurrence", "multi_occurrence.json"),
-    ALL_TYPES("test_all_types", "test_all_types.json");
+  private final String filename;
+  private final String description;
 
+  CompositionTestDataSimSDTJson(String description, String filename) {
+    this.filename = filename;
+    this.description = description;
+  }
 
-    private final String filename;
-    private final String description;
+  public InputStream getStream() {
+    return getClass().getResourceAsStream("/composition/flat/simSDT/" + filename);
+  }
 
-    CompositionTestDataSimSDTJson(String description, String filename) {
-        this.filename = filename;
-        this.description = description;
-    }
-
-
-    public InputStream getStream() {
-        return getClass().getResourceAsStream("/composition/flat/simSDT/" + filename);
-    }
-
-    public String toString() {
-        return this.description;
-    }
+  public String toString() {
+    return this.description;
+  }
 }

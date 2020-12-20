@@ -25,7 +25,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(value = {ElementType.TYPE})
 public @interface Template {
-    public static final String VALUE = "value";
+  public static final String VALUE = "value";
 
-    public String value();
+  public String value();
 }

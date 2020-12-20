@@ -19,30 +19,29 @@ package org.ehrbase.serialisation.attributes.datavalues.datetime.time;
 
 import com.nedap.archie.rm.datavalues.quantity.datetime.DvTime;
 
-public class StandardPartialTime extends PartialTime{
+public class StandardPartialTime extends PartialTime {
 
-    public StandardPartialTime(DvTime dvTime) {
-        super(dvTime);
-    }
+  public StandardPartialTime(DvTime dvTime) {
+    super(dvTime);
+  }
 
-    @Override
-    public boolean ishhmmssfff() {
-        return dvTimeRepresentation.length() > 8;
-    }
+  @Override
+  public boolean ishhmmssfff() {
+    return dvTimeRepresentation.length() > 8;
+  }
 
-    @Override
-    public boolean ishhmmss() {
-        return dvTimeRepresentation.length() == 8;
-    }
+  @Override
+  public boolean ishhmmss() {
+    return dvTimeRepresentation.length() == 8;
+  }
 
-    @Override
-    public boolean ishhmm() {
-        return dvTimeRepresentation.length() == 5;
-    }
+  @Override
+  public boolean ishhmm() {
+    return dvTimeRepresentation.length() == 5;
+  }
 
-    @Override
-    public boolean ishh() {
-        return dvTimeRepresentation.length() == 2;
-    }
-
+  @Override
+  public boolean ishh() {
+    return dvTimeRepresentation.length() == 2;
+  }
 }

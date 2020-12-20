@@ -17,6 +17,15 @@
 
 package org.ehrbase.client.openehrclient.defaultrestclient;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.xmlbeans.XmlException;
 import org.ehrbase.client.openehrclient.OpenEhrClient;
@@ -28,78 +37,80 @@ import org.junit.Test;
 import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
 import org.openehr.schemas.v1.TemplateDocument;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
-
 public class DefaultRestTemplateEndpointIT {
 
-    private static OpenEhrClient openEhrClient;
-    private static DefaultRestClient defaultRestClient;
+  private static OpenEhrClient openEhrClient;
+  private static DefaultRestClient defaultRestClient;
 
-    private static final String TEMPLATE_NAME_PREFIX = "ehrbase_blood_pressure_simple.de.v";
+  private static final String TEMPLATE_NAME_PREFIX = "ehrbase_blood_pressure_simple.de.v";
 
-    @BeforeClass
-    public static void setup() throws URISyntaxException {
-        openEhrClient = DefaultRestClientTestHelper.setupDefaultRestClient();
-        defaultRestClient = DefaultRestClientTestHelper.setupDefaultRestClient();
-    }
+  @BeforeClass
+  public static void setup() throws URISyntaxException {
+    openEhrClient = DefaultRestClientTestHelper.setupDefaultRestClient();
+    defaultRestClient = DefaultRestClientTestHelper.setupDefaultRestClient();
+  }
 
-    @Test
-    public void testFindTemplate() {
+  @Test
+  public void testFindTemplate() {
 
-        Optional<OPERATIONALTEMPLATE> operationalTemplate = openEhrClient.templateEndpoint()
-                .findTemplate(String.format("%s%s", TEMPLATE_NAME_PREFIX, "99999"));
+    Optional<OPERATIONALTEMPLATE> operationalTemplate =
+        openEhrClient
+            .templateEndpoint()
+            .findTemplate(String.format("%s%s", TEMPLATE_NAME_PREFIX, "99999"));
 
-        assertFalse(operationalTemplate.isPresent());
+    assertFalse(operationalTemplate.isPresent());
 
-        Optional<OPERATIONALTEMPLATE> operationalTemplateFound = openEhrClient.templateEndpoint()
-                .findTemplate(String.format("%s%s", TEMPLATE_NAME_PREFIX, "0"));
+    Optional<OPERATIONALTEMPLATE> operationalTemplateFound =
+        openEhrClient
+            .templateEndpoint()
+            .findTemplate(String.format("%s%s", TEMPLATE_NAME_PREFIX, "0"));
 
-        assertTrue(operationalTemplateFound.isPresent());
-    }
+    assertTrue(operationalTemplateFound.isPresent());
+  }
 
-    @Test
-    public void testCreateTemplate() throws IOException, XmlException {
+  @Test
+  public void testCreateTemplate() throws IOException, XmlException {
 
-        OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(OperationalTemplateTestData.BLOOD_PRESSURE_SIMPLE.getStream()).getTemplate();
+    OPERATIONALTEMPLATE template =
+        TemplateDocument.Factory.parse(
+                OperationalTemplateTestData.BLOOD_PRESSURE_SIMPLE.getStream())
+            .getTemplate();
 
-        String templateId = String.format("%s%s", TEMPLATE_NAME_PREFIX, RandomStringUtils.randomNumeric(10));
-        template.getTemplateId().setValue(templateId);
-        template.getUid().setValue(UUID.randomUUID().toString());
+    String templateId =
+        String.format("%s%s", TEMPLATE_NAME_PREFIX, RandomStringUtils.randomNumeric(10));
+    template.getTemplateId().setValue(templateId);
+    template.getUid().setValue(UUID.randomUUID().toString());
 
-        String actual = new DefaultRestTemplateEndpoint(defaultRestClient).upload(template);
-        assertThat(actual).isEqualTo(templateId);
-    }
+    String actual = new DefaultRestTemplateEndpoint(defaultRestClient).upload(template);
+    assertThat(actual).isEqualTo(templateId);
+  }
 
-    @Test
-    public void testFindAllTemplates() throws IOException, XmlException {
+  @Test
+  public void testFindAllTemplates() throws IOException, XmlException {
 
-        DefaultRestTemplateEndpoint templateEndpoint = new DefaultRestTemplateEndpoint(defaultRestClient);
+    DefaultRestTemplateEndpoint templateEndpoint =
+        new DefaultRestTemplateEndpoint(defaultRestClient);
 
-        OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(OperationalTemplateTestData.BLOOD_PRESSURE_SIMPLE.getStream()).getTemplate();
+    OPERATIONALTEMPLATE template =
+        TemplateDocument.Factory.parse(
+                OperationalTemplateTestData.BLOOD_PRESSURE_SIMPLE.getStream())
+            .getTemplate();
 
-        String templateId = String.format("%s%s", TEMPLATE_NAME_PREFIX, RandomStringUtils.randomNumeric(10));
+    String templateId =
+        String.format("%s%s", TEMPLATE_NAME_PREFIX, RandomStringUtils.randomNumeric(10));
 
-        template.getTemplateId().setValue(templateId);
-        template.getUid().setValue(UUID.randomUUID().toString());
+    template.getTemplateId().setValue(templateId);
+    template.getUid().setValue(UUID.randomUUID().toString());
 
-        String savedTemplateId = templateEndpoint.upload(template);
-        assertThat(savedTemplateId).isEqualTo(templateId);
+    String savedTemplateId = templateEndpoint.upload(template);
+    assertThat(savedTemplateId).isEqualTo(templateId);
 
-        TemplatesResponseData templatesResponseData = templateEndpoint.findAllTemplates();
-        assertThat(templatesResponseData).isNotNull();
+    TemplatesResponseData templatesResponseData = templateEndpoint.findAllTemplates();
+    assertThat(templatesResponseData).isNotNull();
 
-        List<TemplateMetaDataDto> templateMetaDataDtos = templatesResponseData.get();
-        assertThat(templateMetaDataDtos).isNotEmpty();
-        assertThat(templateMetaDataDtos.stream().anyMatch(t -> t.getTemplateId().equals(templateId))).isTrue();
-    }
-
+    List<TemplateMetaDataDto> templateMetaDataDtos = templatesResponseData.get();
+    assertThat(templateMetaDataDtos).isNotEmpty();
+    assertThat(templateMetaDataDtos.stream().anyMatch(t -> t.getTemplateId().equals(templateId)))
+        .isTrue();
+  }
 }

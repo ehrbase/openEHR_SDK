@@ -19,5 +19,4 @@
 
 package org.ehrbase.client.classgenerator.interfaces;
 
-public interface PointEventEntity extends EventEntity{
-}
+public interface PointEventEntity extends EventEntity {}

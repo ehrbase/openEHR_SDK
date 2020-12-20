@@ -910,6 +910,7 @@ commands:
       - run:
           name: Maven build, install openEHR_SDK (skip Tests!)
           command: |
+            mvn git-code-format:validate-code-format -Dgcf.globPattern=**/*
             mvn build-helper:parse-version versions:set -DnewVersion=\${project.version}-LOCAL versions:commit
             mvn install -Dmaven.javadoc.skip=true -Djacoco.skip=true -Dmaven.test.skip
       - run:

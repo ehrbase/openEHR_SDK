@@ -22,58 +22,58 @@ import java.util.List;
 import java.util.Map;
 
 public class WebTemplate {
-    String uid;
-    String defaultLanguage;
-    List<String> languages;
-    String templateId;
-    String concept;
-    Map<String, Object> tree;
+  String uid;
+  String defaultLanguage;
+  List<String> languages;
+  String templateId;
+  String concept;
+  Map<String, Object> tree;
 
-    public String getUid() {
-        return uid;
-    }
+  public String getUid() {
+    return uid;
+  }
 
-    public void setUid(String uid) {
-        this.uid = uid;
-    }
+  public void setUid(String uid) {
+    this.uid = uid;
+  }
 
-    public String getDefaultLanguage() {
-        return defaultLanguage;
-    }
+  public String getDefaultLanguage() {
+    return defaultLanguage;
+  }
 
-    public void setDefaultLanguage(String defaultLanguage) {
-        this.defaultLanguage = defaultLanguage;
-    }
+  public void setDefaultLanguage(String defaultLanguage) {
+    this.defaultLanguage = defaultLanguage;
+  }
 
-    public List<String> getLanguages() {
-        return languages;
-    }
+  public List<String> getLanguages() {
+    return languages;
+  }
 
-    public void setLanguages(List<String> languages) {
-        this.languages = languages;
-    }
+  public void setLanguages(List<String> languages) {
+    this.languages = languages;
+  }
 
-    public String getTemplateId() {
-        return templateId;
-    }
+  public String getTemplateId() {
+    return templateId;
+  }
 
-    public void setTemplateId(String templateId) {
-        this.templateId = templateId;
-    }
+  public void setTemplateId(String templateId) {
+    this.templateId = templateId;
+  }
 
-    public String getConcept() {
-        return concept;
-    }
+  public String getConcept() {
+    return concept;
+  }
 
-    public void setConcept(String concept) {
-        this.concept = concept;
-    }
+  public void setConcept(String concept) {
+    this.concept = concept;
+  }
 
-    public Map<String, Object> getTree() {
-        return tree;
-    }
+  public Map<String, Object> getTree() {
+    return tree;
+  }
 
-    public void setTree(Map<String, Object> tree) {
-        this.tree = tree;
-    }
+  public void setTree(Map<String, Object> tree) {
+    this.tree = tree;
+  }
 }

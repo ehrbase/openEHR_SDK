@@ -19,73 +19,67 @@
 
 package org.ehrbase.webtemplate.parser;
 
-import org.apache.commons.lang3.StringUtils;
-
 import java.io.Serializable;
 import java.util.Objects;
+import org.apache.commons.lang3.StringUtils;
 
 public class NodeId implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    private final String className;
-    private final String nodeId;
+  private final String className;
+  private final String nodeId;
 
-    public NodeId(String nodeId) {
-        //AtCode
-        if (nodeId.startsWith("at")) {
-            this.nodeId = nodeId;
-            className = null;
-        }
-        //ArchetypeId
-        else if (nodeId.startsWith("openEHR-EHR-")) {
-            className = StringUtils.substringBetween(nodeId, "openEHR-EHR-", ".");
-            this.nodeId = nodeId;
-        }
-        // just classname
-        else {
-            className = nodeId;
-            this.nodeId = null;
-        }
-
+  public NodeId(String nodeId) {
+    // AtCode
+    if (nodeId.startsWith("at")) {
+      this.nodeId = nodeId;
+      className = null;
     }
-
-    public NodeId(String className, String nodeId) {
-        this.className = className;
-        this.nodeId = nodeId;
+    // ArchetypeId
+    else if (nodeId.startsWith("openEHR-EHR-")) {
+      className = StringUtils.substringBetween(nodeId, "openEHR-EHR-", ".");
+      this.nodeId = nodeId;
     }
-
-    public boolean isArchetypeId() {
-        return StringUtils.isNotBlank(className) && StringUtils.isNotBlank(nodeId);
+    // just classname
+    else {
+      className = nodeId;
+      this.nodeId = null;
     }
+  }
 
-    public String getClassName() {
-        return className;
-    }
+  public NodeId(String className, String nodeId) {
+    this.className = className;
+    this.nodeId = nodeId;
+  }
 
-    public String getNodeId() {
-        return nodeId;
-    }
+  public boolean isArchetypeId() {
+    return StringUtils.isNotBlank(className) && StringUtils.isNotBlank(nodeId);
+  }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        NodeId nodeId1 = (NodeId) o;
-        return Objects.equals(className, nodeId1.className) &&
-                Objects.equals(nodeId, nodeId1.nodeId);
-    }
+  public String getClassName() {
+    return className;
+  }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(className, nodeId);
-    }
+  public String getNodeId() {
+    return nodeId;
+  }
 
-    @Override
-    public String toString() {
-        return "NodeId{" +
-                "className='" + className + '\'' +
-                ", nodeId='" + nodeId + '\'' +
-                '}';
-    }
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    NodeId nodeId1 = (NodeId) o;
+    return Objects.equals(className, nodeId1.className) && Objects.equals(nodeId, nodeId1.nodeId);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(className, nodeId);
+  }
+
+  @Override
+  public String toString() {
+    return "NodeId{" + "className='" + className + '\'' + ", nodeId='" + nodeId + '\'' + '}';
+  }
 }

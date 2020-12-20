@@ -22,27 +22,24 @@ package org.ehrbase.test_data.webtemplate;
 import java.io.InputStream;
 
 public enum WebTemplateTestData {
+  ALTERNATIVE_EVENTS("AlternativeEvents", "AlternativeEvents.json"),
+  CORONA("Corona", "corona_anamnese.json"),
+  MULTI_OCCURRENCE("multi_occurrence", "multi_occurrence.json"),
+  ALL_TYPES("test_all_types", "test_all_types.json");
 
-    ALTERNATIVE_EVENTS("AlternativeEvents", "AlternativeEvents.json"),
-    CORONA("Corona", "corona_anamnese.json"),
-    MULTI_OCCURRENCE("multi_occurrence", "multi_occurrence.json"),
-    ALL_TYPES("test_all_types", "test_all_types.json");
+  private final String filename;
+  private final String description;
 
+  WebTemplateTestData(String description, String filename) {
+    this.filename = filename;
+    this.description = description;
+  }
 
-    private final String filename;
-    private final String description;
+  public InputStream getStream() {
+    return getClass().getResourceAsStream("/webtemplate/" + filename);
+  }
 
-    WebTemplateTestData(String description, String filename) {
-        this.filename = filename;
-        this.description = description;
-    }
-
-
-    public InputStream getStream() {
-        return getClass().getResourceAsStream("/webtemplate/" + filename);
-    }
-
-    public String toString() {
-        return this.description;
-    }
+  public String toString() {
+    return this.description;
+  }
 }

@@ -19,38 +19,35 @@
 package org.ehrbase.serialisation.dbencoding.wrappers.json.writer.translator_db2raw;
 
 import com.google.gson.internal.LinkedTreeMap;
-import org.ehrbase.serialisation.dbencoding.CompositionSerializer;
-
 import java.util.ArrayList;
+import org.ehrbase.serialisation.dbencoding.CompositionSerializer;
 
 public class ArrayListPeek {
 
-    ArrayList arrayList;
+  ArrayList arrayList;
 
-    public ArrayListPeek(ArrayList arrayList) {
-        this.arrayList = arrayList;
-    }
+  public ArrayListPeek(ArrayList arrayList) {
+    this.arrayList = arrayList;
+  }
 
-    public String findClass() {
+  public String findClass() {
 
-        String classInArray = null;
+    String classInArray = null;
 
-        for (Object map : arrayList) {
+    for (Object map : arrayList) {
 
-            if (map instanceof LinkedTreeMap) {
-                if (((LinkedTreeMap) map).containsKey(CompositionSerializer.TAG_CLASS)) {
-//                                writeNameAsValue(writer, (ArrayList) value);
-                    Object classValue = (((LinkedTreeMap) map).get(CompositionSerializer.TAG_CLASS));
-                    if (classValue instanceof String)
-                        classInArray = (String) classValue;
-                    else if (classValue instanceof ArrayList)
-                        classInArray = (String) ((ArrayList) classValue).get(0);
-                    else
-                        throw new IllegalArgumentException("Could not handle class tag in array");
-                }
-            }
+      if (map instanceof LinkedTreeMap) {
+        if (((LinkedTreeMap) map).containsKey(CompositionSerializer.TAG_CLASS)) {
+          //                                writeNameAsValue(writer, (ArrayList) value);
+          Object classValue = (((LinkedTreeMap) map).get(CompositionSerializer.TAG_CLASS));
+          if (classValue instanceof String) classInArray = (String) classValue;
+          else if (classValue instanceof ArrayList)
+            classInArray = (String) ((ArrayList) classValue).get(0);
+          else throw new IllegalArgumentException("Could not handle class tag in array");
         }
-
-        return classInArray;
+      }
     }
+
+    return classInArray;
+  }
 }

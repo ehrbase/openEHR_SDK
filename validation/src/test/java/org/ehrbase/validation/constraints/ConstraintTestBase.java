@@ -18,21 +18,20 @@
 
 package org.ehrbase.validation.constraints;
 
+import static org.junit.Assert.assertNotNull;
+
+import java.io.FileInputStream;
+import java.io.IOException;
 import org.apache.xmlbeans.XmlException;
 import org.openehr.schemas.v1.ARCHETYPECONSTRAINT;
 import org.openehr.schemas.v1.CCOMPLEXOBJECT;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-
-import static org.junit.Assert.assertNotNull;
-
 public abstract class ConstraintTestBase {
 
-    ARCHETYPECONSTRAINT archetypeconstraint;
+  ARCHETYPECONSTRAINT archetypeconstraint;
 
-    protected void setUpContext(String constraintPath) throws IOException, XmlException {
-        archetypeconstraint = CCOMPLEXOBJECT.Factory.parse(new FileInputStream(constraintPath));
-        assertNotNull(archetypeconstraint);
-    }
+  protected void setUpContext(String constraintPath) throws IOException, XmlException {
+    archetypeconstraint = CCOMPLEXOBJECT.Factory.parse(new FileInputStream(constraintPath));
+    assertNotNull(archetypeconstraint);
+  }
 }

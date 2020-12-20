@@ -21,6 +21,5 @@ package org.ehrbase.client.flattener;
 
 class Dummy {
 
-    private Dummy() {
-    }
+  private Dummy() {}
 }

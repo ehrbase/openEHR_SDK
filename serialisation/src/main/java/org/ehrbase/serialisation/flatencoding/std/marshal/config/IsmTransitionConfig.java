@@ -24,34 +24,51 @@ import com.nedap.archie.rm.datatypes.CodePhrase;
 import com.nedap.archie.rm.datavalues.DvCodedText;
 import com.nedap.archie.rm.datavalues.DvText;
 import com.nedap.archie.rm.support.identification.ObjectId;
-import org.ehrbase.serialisation.walker.Context;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import org.ehrbase.serialisation.walker.Context;
 
 public class IsmTransitionConfig extends AbstractsStdConfig<IsmTransition> {
 
+  /** {@inheritDoc} */
+  @Override
+  public Class<IsmTransition> getAssociatedClass() {
+    return IsmTransition.class;
+  }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Class<IsmTransition> getAssociatedClass() {
-        return IsmTransition.class;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Map<String, Object> buildChildValues(String currentTerm, IsmTransition rmObject, Context<Map<String, Object>> context) {
-        Map<String, Object> result = new HashMap<>();
-        addValue(result, currentTerm + "/current_state", "code", Optional.of(rmObject).map(IsmTransition::getCurrentState).map(DvCodedText::getDefiningCode).map(CodePhrase::getCodeString).orElse(null));
-        addValue(result, currentTerm + "/current_state", "value", Optional.of(rmObject).map(IsmTransition::getCurrentState).map(DvText::getValue).orElse(null));
-        addValue(result, currentTerm + "/current_state", "terminology", Optional.of(rmObject).map(IsmTransition::getCurrentState).map(DvCodedText::getDefiningCode).map(CodePhrase::getTerminologyId).map(ObjectId::getValue).orElse(null));
-        return result;
-    }
-
-
+  /** {@inheritDoc} */
+  @Override
+  public Map<String, Object> buildChildValues(
+      String currentTerm, IsmTransition rmObject, Context<Map<String, Object>> context) {
+    Map<String, Object> result = new HashMap<>();
+    addValue(
+        result,
+        currentTerm + "/current_state",
+        "code",
+        Optional.of(rmObject)
+            .map(IsmTransition::getCurrentState)
+            .map(DvCodedText::getDefiningCode)
+            .map(CodePhrase::getCodeString)
+            .orElse(null));
+    addValue(
+        result,
+        currentTerm + "/current_state",
+        "value",
+        Optional.of(rmObject)
+            .map(IsmTransition::getCurrentState)
+            .map(DvText::getValue)
+            .orElse(null));
+    addValue(
+        result,
+        currentTerm + "/current_state",
+        "terminology",
+        Optional.of(rmObject)
+            .map(IsmTransition::getCurrentState)
+            .map(DvCodedText::getDefiningCode)
+            .map(CodePhrase::getTerminologyId)
+            .map(ObjectId::getValue)
+            .orElse(null));
+    return result;
+  }
 }

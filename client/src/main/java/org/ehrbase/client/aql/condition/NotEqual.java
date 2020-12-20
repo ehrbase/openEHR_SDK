@@ -24,21 +24,20 @@ import org.ehrbase.client.aql.parameter.Parameter;
 
 public class NotEqual<T> extends ComparisonOperator<T> {
 
+  protected NotEqual(SelectAqlField<T> field, T value) {
+    super(field, value);
+  }
 
-    protected NotEqual(SelectAqlField<T> field, T value) {
-        super(field, value);
-    }
+  protected NotEqual(SelectAqlField<T> field, Parameter<T> parameter) {
+    super(field, parameter);
+  }
 
-    protected NotEqual(SelectAqlField<T> field, Parameter<T> parameter) {
-        super(field, parameter);
-    }
+  public NotEqual(SelectAqlField<T> field, SelectAqlField<T> compereField) {
+    super(field, compereField);
+  }
 
-    public NotEqual(SelectAqlField<T> field, SelectAqlField<T> compereField) {
-        super(field, compereField);
-    }
-
-    @Override
-    protected String getSymbol() {
-        return "!=";
-    }
+  @Override
+  protected String getSymbol() {
+    return "!=";
+  }
 }

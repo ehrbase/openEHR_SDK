@@ -19,18 +19,16 @@
 
 package org.ehrbase.webtemplate.parser.config;
 
+import java.util.Collections;
+import java.util.Set;
 import org.ehrbase.terminology.client.terminology.ValueSet;
 import org.ehrbase.util.reflection.ClassDependent;
 
-import java.util.Collections;
-import java.util.Set;
-
 public interface RmIntrospectConfig extends ClassDependent<Object> {
 
+  Set<String> getNonTemplateFields();
 
-    Set<String> getNonTemplateFields();
-
-    default ValueSet findExternalValueSet(String fieldName) {
-        return new ValueSet(ValueSet.LOCAL, ValueSet.LOCAL, Collections.emptySet());
-    }
+  default ValueSet findExternalValueSet(String fieldName) {
+    return new ValueSet(ValueSet.LOCAL, ValueSet.LOCAL, Collections.emptySet());
+  }
 }

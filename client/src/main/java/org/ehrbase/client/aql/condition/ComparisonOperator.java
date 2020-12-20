@@ -24,49 +24,45 @@ import org.ehrbase.client.aql.parameter.AqlValue;
 import org.ehrbase.client.aql.parameter.Parameter;
 
 public abstract class ComparisonOperator<T> implements Condition {
-    protected final SelectAqlField<T> field;
-    protected final AqlValue value;
-    protected final Parameter<T> parameter;
-    protected final SelectAqlField<T> compereField;
+  protected final SelectAqlField<T> field;
+  protected final AqlValue value;
+  protected final Parameter<T> parameter;
+  protected final SelectAqlField<T> compereField;
 
-    protected ComparisonOperator(SelectAqlField<T> field, T value) {
-        this.field = field;
-        this.value = new AqlValue(value);
-        this.parameter = null;
-        this.compereField = null;
+  protected ComparisonOperator(SelectAqlField<T> field, T value) {
+    this.field = field;
+    this.value = new AqlValue(value);
+    this.parameter = null;
+    this.compereField = null;
+  }
+
+  protected ComparisonOperator(SelectAqlField<T> field, Parameter<T> parameter) {
+    this.field = field;
+    this.parameter = parameter;
+    this.value = null;
+    this.compereField = null;
+  }
+
+  protected ComparisonOperator(SelectAqlField<T> field, SelectAqlField<T> compereField) {
+    this.field = field;
+    this.value = null;
+    this.parameter = null;
+    this.compereField = compereField;
+  }
+
+  @Override
+  public String buildAql() {
+    StringBuilder sb = new StringBuilder();
+    sb.append(field.buildAQL()).append(" ").append(getSymbol()).append(" ");
+    if (value != null) {
+      sb.append(value.buildAql());
+    } else if (parameter != null) {
+      sb.append(parameter.getAqlParameter());
+    } else {
+      sb.append(compereField.buildAQL());
     }
+    return sb.toString();
+  }
 
-    protected ComparisonOperator(SelectAqlField<T> field, Parameter<T> parameter) {
-        this.field = field;
-        this.parameter = parameter;
-        this.value = null;
-        this.compereField = null;
-    }
-
-    protected ComparisonOperator(SelectAqlField<T> field, SelectAqlField<T> compereField) {
-        this.field = field;
-        this.value = null;
-        this.parameter = null;
-        this.compereField = compereField;
-    }
-
-    @Override
-    public String buildAql() {
-        StringBuilder sb = new StringBuilder();
-        sb
-                .append(field.buildAQL())
-                .append(" ")
-                .append(getSymbol())
-                .append(" ");
-        if (value != null) {
-            sb.append(value.buildAql());
-        } else if (parameter != null) {
-            sb.append(parameter.getAqlParameter());
-        } else {
-            sb.append(compereField.buildAQL());
-        }
-        return sb.toString();
-    }
-
-    protected abstract String getSymbol();
+  protected abstract String getSymbol();
 }

@@ -18,19 +18,18 @@
 package org.ehrbase.client.classgenerator.config;
 
 import com.nedap.archie.rm.datavalues.encapsulated.DvMultimedia;
-
 import java.util.Collections;
 import java.util.Set;
 
 public class DvMultimediaClassGeneratorConfig implements RmClassGeneratorConfig {
 
-    @Override
-    public Class getAssociatedClass() {
-        return DvMultimedia.class;
-    }
+  @Override
+  public Class getAssociatedClass() {
+    return DvMultimedia.class;
+  }
 
-    @Override
-    public Set<String> getExpandFields() {
-        return Collections.emptySet();
-    }
+  @Override
+  public Set<String> getExpandFields() {
+    return Collections.emptySet();
+  }
 }

@@ -20,7 +20,7 @@ package org.ehrbase.response.openehr;
 
 public interface ResponseData<T> {
 
-    T get();
+  T get();
 
-    void set(T var);
+  void set(T var);
 }

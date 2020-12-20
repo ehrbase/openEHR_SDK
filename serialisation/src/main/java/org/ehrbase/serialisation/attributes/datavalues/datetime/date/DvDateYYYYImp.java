@@ -18,33 +18,29 @@
 package org.ehrbase.serialisation.attributes.datavalues.datetime.date;
 
 import com.nedap.archie.rm.datavalues.quantity.datetime.DvDate;
-import org.ehrbase.serialisation.attributes.datavalues.datetime.TemporalAttributes;
-
 import java.time.LocalDate;
 import java.time.temporal.Temporal;
+import org.ehrbase.serialisation.attributes.datavalues.datetime.TemporalAttributes;
 
-/**
- * full date time representation with millisecs
- */
+/** full date time representation with millisecs */
 public class DvDateYYYYImp extends DvDateAttributesImp {
 
-    public DvDateYYYYImp(DvDate dvDate) {
-        super(dvDate);
-    }
+  public DvDateYYYYImp(DvDate dvDate) {
+    super(dvDate);
+  }
 
+  @Override
+  public Long getMagnitude() {
+    return null;
+  }
 
-    @Override
-    public Long getMagnitude() {
-        return null;
-    }
+  @Override
+  public Temporal getValueExtended() {
+    return LocalDate.parse(dvDate.getValue() + "-01-01");
+  }
 
-    @Override
-    public Temporal getValueExtended() {
-        return LocalDate.parse(dvDate.getValue()+"-01-01");
-    }
-
-    @Override
-    public Integer getSupportedChronoFields() {
-        return supportedChronoFields(TemporalAttributes.YEAR);
-    }
+  @Override
+  public Integer getSupportedChronoFields() {
+    return supportedChronoFields(TemporalAttributes.YEAR);
+  }
 }

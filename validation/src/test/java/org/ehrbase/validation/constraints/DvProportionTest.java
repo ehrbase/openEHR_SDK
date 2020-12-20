@@ -18,46 +18,44 @@
 
 package org.ehrbase.validation.constraints;
 
+import static org.junit.Assert.fail;
+
 import com.nedap.archie.rm.datavalues.quantity.DvProportion;
 import com.nedap.archie.rm.datavalues.quantity.ProportionKind;
 import org.ehrbase.validation.constraints.wrappers.CArchetypeConstraint;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.fail;
-
 public class DvProportionTest extends ConstraintTestBase {
 
-    @Before
-    public void setUp() {
-        try {
-            setUpContext("./src/test/resources/constraints/dvproportion.xml");
-        } catch (Exception e) {
-            fail();
-        }
+  @Before
+  public void setUp() {
+    try {
+      setUpContext("./src/test/resources/constraints/dvproportion.xml");
+    } catch (Exception e) {
+      fail();
     }
+  }
 
+  @Test
+  public void testConstraintValidation() {
+    DvProportion proportion = new DvProportion(5.4D, 10.4D, ProportionKind.RATIO.getPk());
 
-    @Test
-    public void testConstraintValidation() {
-        DvProportion proportion = new DvProportion(5.4D, 10.4D, ProportionKind.RATIO.getPk());
-
-        try {
-            new CArchetypeConstraint(null).validate("test", proportion, archetypeconstraint);
-        } catch (Exception e) {
-            fail(e.getMessage());
-        }
+    try {
+      new CArchetypeConstraint(null).validate("test", proportion, archetypeconstraint);
+    } catch (Exception e) {
+      fail(e.getMessage());
     }
+  }
 
-    @Test
-    public void testWithNullMandatoryValues(){
-        DvProportion proportion = new DvProportion(5.4D, 10.4D, null);
+  @Test
+  public void testWithNullMandatoryValues() {
+    DvProportion proportion = new DvProportion(5.4D, 10.4D, null);
 
-        try {
-            new CArchetypeConstraint(null).validate("test", proportion, archetypeconstraint);
-            fail("null type");
-        } catch (Exception e) {
-        }
+    try {
+      new CArchetypeConstraint(null).validate("test", proportion, archetypeconstraint);
+      fail("null type");
+    } catch (Exception e) {
     }
-
+  }
 }

@@ -19,13 +19,12 @@
 
 package org.ehrbase.webtemplate.parser;
 
-import org.apache.commons.lang3.StringUtils;
-
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
+import org.apache.commons.lang3.StringUtils;
 
 public class FlatPath {
   private final String name;
@@ -116,8 +115,8 @@ public class FlatPath {
     return child;
   }
 
-  public String getPath(){
-    return StringUtils.removeEnd( toString(),"|"+getLast().getAttributeName());
+  public String getPath() {
+    return StringUtils.removeEnd(toString(), "|" + getLast().getAttributeName());
   }
 
   public String getAttributeName() {
@@ -177,8 +176,7 @@ public class FlatPath {
     return new FlatPath(StringUtils.removeStart(path.toString(), remove.toString()));
   }
 
-
   public static FlatPath addEnd(FlatPath path, FlatPath add) {
-    return new FlatPath(path.toString()+"/"+ StringUtils.removeStart( add.toString(),"/"));
+    return new FlatPath(path.toString() + "/" + StringUtils.removeStart(add.toString(), "/"));
   }
 }

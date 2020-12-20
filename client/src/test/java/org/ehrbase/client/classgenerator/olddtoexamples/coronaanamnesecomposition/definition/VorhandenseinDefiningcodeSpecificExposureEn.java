@@ -3,9 +3,17 @@ package org.ehrbase.client.classgenerator.olddtoexamples.coronaanamnesecompositi
 import org.ehrbase.client.classgenerator.EnumValueSet;
 
 public enum VorhandenseinDefiningcodeSpecificExposureEn implements EnumValueSet {
-  NICHT_VORHANDEN("Nicht vorhanden", "*The specific exposure is or has been absent at or during the event.(en)", "local", "at0049"),
+  NICHT_VORHANDEN(
+      "Nicht vorhanden",
+      "*The specific exposure is or has been absent at or during the event.(en)",
+      "local",
+      "at0049"),
 
-  VORHANDEN("Vorhanden", "*The specific exposure is or has been present at or during the event.(en)", "local", "at0047");
+  VORHANDEN(
+      "Vorhanden",
+      "*The specific exposure is or has been present at or during the event.(en)",
+      "local",
+      "at0047");
 
   private String value;
 
@@ -15,8 +23,8 @@ public enum VorhandenseinDefiningcodeSpecificExposureEn implements EnumValueSet 
 
   private String code;
 
-  VorhandenseinDefiningcodeSpecificExposureEn(String value, String description,
-                                              String terminologyId, String code) {
+  VorhandenseinDefiningcodeSpecificExposureEn(
+      String value, String description, String terminologyId, String code) {
     this.value = value;
     this.description = description;
     this.terminologyId = terminologyId;

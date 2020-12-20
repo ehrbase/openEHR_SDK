@@ -19,7 +19,6 @@
 
 package org.ehrbase.serialisation.flatencoding;
 
-
 import org.ehrbase.util.exception.SdkException;
 import org.ehrbase.webtemplate.templateprovider.TemplateProvider;
 
@@ -28,32 +27,31 @@ import org.ehrbase.webtemplate.templateprovider.TemplateProvider;
  */
 public class FlatJasonProvider {
 
-    private final TemplateProvider templateProvider;
+  private final TemplateProvider templateProvider;
 
-    public FlatJasonProvider(TemplateProvider templateProvider) {
-        this.templateProvider = templateProvider;
+  public FlatJasonProvider(TemplateProvider templateProvider) {
+    this.templateProvider = templateProvider;
+  }
+
+  /**
+   * Builds a {@link FlatJson} for the template with {@code templateId} and {@link FlatFormat}
+   * {@code format}
+   *
+   * @param format
+   * @param templateId
+   * @return
+   */
+  public FlatJson buildFlatJson(FlatFormat format, String templateId) {
+
+    switch (format) {
+      case SIM_SDT:
+        return new FlatJson(this, templateId);
+      default:
+        throw new SdkException(String.format("Format %s not supported", format));
     }
+  }
 
-    /**
-     * Builds a {@link FlatJson} for the template with {@code templateId} and {@link FlatFormat} {@code format}
-     *
-     * @param format
-     * @param templateId
-     * @return
-     */
-    public FlatJson buildFlatJson(FlatFormat format, String templateId) {
-
-        switch (format) {
-            case SIM_SDT:
-                return new FlatJson(this, templateId);
-            default:
-                throw new SdkException(String.format("Format %s not supported", format));
-        }
-
-
-    }
-
-    TemplateProvider getTemplateProvider() {
-        return templateProvider;
-    }
+  TemplateProvider getTemplateProvider() {
+    return templateProvider;
+  }
 }

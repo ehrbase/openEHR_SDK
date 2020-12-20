@@ -20,52 +20,36 @@ package org.ehrbase.serialisation.attributes.datavalues.datetime;
 import java.time.ZoneOffset;
 
 public interface I_DateTimeAttributes extends I_TemporalAttributes {
-    /**
-     * @return true if the date/time is a RM DvDateTime
-     * @see com.nedap.archie.rm.datavalues.quantity.datetime.DvDateTime
-     */
-    boolean isRmDvDateTime();
+  /**
+   * @return true if the date/time is a RM DvDateTime
+   * @see com.nedap.archie.rm.datavalues.quantity.datetime.DvDateTime
+   */
+  boolean isRmDvDateTime();
 
-    /**
-     * @return true if the date/time is partial with year only
-     */
-    boolean isDateTimeYYYY();
+  /** @return true if the date/time is partial with year only */
+  boolean isDateTimeYYYY();
 
-    /**
-     * @return true if the date/time is partial with year-month only
-     */
-    boolean isDateTimeYYYYMM();
+  /** @return true if the date/time is partial with year-month only */
+  boolean isDateTimeYYYYMM();
 
-    /**
-     * @return true if the date/time is partial with year-month-day only
-     */
-    boolean isDateTimeYYYYMMDD();
+  /** @return true if the date/time is partial with year-month-day only */
+  boolean isDateTimeYYYYMMDD();
 
-    /**
-     * @return true if the date/time is partial with year-month-day-hour only
-     * NB. this is never true as a partial time with hours only is always
-     * converted to hh:00 by the Java API
-     */
-    boolean isDateTimeYYYYMMDDHH();
+  /**
+   * @return true if the date/time is partial with year-month-day-hour only NB. this is never true
+   *     as a partial time with hours only is always converted to hh:00 by the Java API
+   */
+  boolean isDateTimeYYYYMMDDHH();
 
-    /**
-     * @return true if the date/time is partial with year-month-day-hour-minutes only
-     */
-    boolean isDateTimeYYYYMMDDHHMM();
+  /** @return true if the date/time is partial with year-month-day-hour-minutes only */
+  boolean isDateTimeYYYYMMDDHHMM();
 
-    /**
-     * @return true if the date/time is partial with year-month-day-hour-minutes-seconds only
-     */
-    boolean isDateTimeYYYYMMDDHHMMSS();
+  /** @return true if the date/time is partial with year-month-day-hour-minutes-seconds only */
+  boolean isDateTimeYYYYMMDDHHMMSS();
 
-    /**
-     * @return true if the date/time is partial with year-month-day-hour-minutes-millisecs
-     */
-    boolean isDateTimeYYYYMMDDHHMMSSmmm();
+  /** @return true if the date/time is partial with year-month-day-hour-minutes-millisecs */
+  boolean isDateTimeYYYYMMDDHHMMSSmmm();
 
-    /**
-     * @return return the Zone Offset for this date/time
-     */
-    ZoneOffset getZoneOffset();
-
+  /** @return return the Zone Offset for this date/time */
+  ZoneOffset getZoneOffset();
 }

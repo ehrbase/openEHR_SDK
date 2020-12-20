@@ -23,32 +23,36 @@ import com.nedap.archie.rm.datatypes.CodePhrase;
 import com.nedap.archie.rm.datavalues.DvURI;
 import com.nedap.archie.rm.datavalues.encapsulated.DvMultimedia;
 import com.nedap.archie.rm.support.identification.TerminologyId;
-import org.ehrbase.serialisation.walker.Context;
-
 import java.net.URI;
 import java.util.Map;
+import org.ehrbase.serialisation.walker.Context;
 
 public class DvMultimediaRMUnmarshaller extends AbstractRMUnmarshaller<DvMultimedia> {
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Class<DvMultimedia> getAssociatedClass() {
-        return DvMultimedia.class;
-    }
+  /** {@inheritDoc} */
+  @Override
+  public Class<DvMultimedia> getAssociatedClass() {
+    return DvMultimedia.class;
+  }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void handle(String currentTerm, DvMultimedia rmObject, Map<String, String> currentValues, Context<Map<String, String>> context) {
-        rmObject.setUri(new DvURI());
-        rmObject.setMediaType(new CodePhrase());
-        rmObject.getMediaType().setTerminologyId(new TerminologyId("IANA_media-types"));
+  /** {@inheritDoc} */
+  @Override
+  public void handle(
+      String currentTerm,
+      DvMultimedia rmObject,
+      Map<String, String> currentValues,
+      Context<Map<String, String>> context) {
+    rmObject.setUri(new DvURI());
+    rmObject.setMediaType(new CodePhrase());
+    rmObject.getMediaType().setTerminologyId(new TerminologyId("IANA_media-types"));
 
-        setValue(currentTerm, null, currentValues, rmObject.getUri()::setValue, URI.class);
-        setValue(currentTerm, "mediatype", currentValues, rmObject.getMediaType()::setCodeString, String.class);
-        setValue(currentTerm, "size", currentValues, rmObject::setSize, Integer.class);
-    }
+    setValue(currentTerm, null, currentValues, rmObject.getUri()::setValue, URI.class);
+    setValue(
+        currentTerm,
+        "mediatype",
+        currentValues,
+        rmObject.getMediaType()::setCodeString,
+        String.class);
+    setValue(currentTerm, "size", currentValues, rmObject::setSize, Integer.class);
+  }
 }

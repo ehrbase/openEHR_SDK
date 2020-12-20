@@ -23,13 +23,12 @@ import org.junit.Test;
 
 public class StandardPartialTimeTest extends TestCase {
 
-    @Test
-    public void testPartial1(){
+  @Test
+  public void testPartial1() {
 
-        DvTime dvTime = new DvTime("10:10+02:00");
-        assertTrue(new StandardPartialTime(dvTime).isNonCompactIS8601Representation());
-        assertTrue(new StandardPartialTime(dvTime).ishhmm());
-        assertFalse(new StandardPartialTime(dvTime).ishhmmssfff());
-    }
-
+    DvTime dvTime = new DvTime("10:10+02:00");
+    assertTrue(new StandardPartialTime(dvTime).isNonCompactIS8601Representation());
+    assertTrue(new StandardPartialTime(dvTime).ishhmm());
+    assertFalse(new StandardPartialTime(dvTime).ishhmmssfff());
+  }
 }

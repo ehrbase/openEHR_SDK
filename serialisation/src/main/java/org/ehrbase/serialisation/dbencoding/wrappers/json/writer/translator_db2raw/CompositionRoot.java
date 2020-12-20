@@ -19,19 +19,21 @@
 package org.ehrbase.serialisation.dbencoding.wrappers.json.writer.translator_db2raw;
 
 public class CompositionRoot {
-    String dbEncoded;
+  String dbEncoded;
 
-    public CompositionRoot(String dbEncoded) {
-        this.dbEncoded = dbEncoded;
-    }
+  public CompositionRoot(String dbEncoded) {
+    this.dbEncoded = dbEncoded;
+  }
 
-    public String toString() {
+  public String toString() {
 
-        if (!dbEncoded.contains("/composition"))
-            return "";
+    if (!dbEncoded.contains("/composition")) return "";
 
-        int beginIndex = dbEncoded.indexOf("/composition");
-        int endIndex = dbEncoded.indexOf("]", beginIndex) + 1;
-        return dbEncoded.substring(beginIndex, endIndex).replace("\\u003d", "=").replace("\\u0027", "'");
-    }
+    int beginIndex = dbEncoded.indexOf("/composition");
+    int endIndex = dbEncoded.indexOf("]", beginIndex) + 1;
+    return dbEncoded
+        .substring(beginIndex, endIndex)
+        .replace("\\u003d", "=")
+        .replace("\\u0027", "'");
+  }
 }

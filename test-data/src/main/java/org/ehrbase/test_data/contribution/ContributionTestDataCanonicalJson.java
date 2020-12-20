@@ -21,18 +21,22 @@ package org.ehrbase.test_data.contribution;
 import java.io.InputStream;
 
 public enum ContributionTestDataCanonicalJson {
-    ONE_ENTRY_COMPOSITION("contribution-one_entry-composition.json", "Contribution with rather minimal composition entry"),
-    TWO_ENTRIES_COMPOSITION("contribution-two_entries-composition.json", "Contribution with two rather minimal composition entries");
+  ONE_ENTRY_COMPOSITION(
+      "contribution-one_entry-composition.json",
+      "Contribution with rather minimal composition entry"),
+  TWO_ENTRIES_COMPOSITION(
+      "contribution-two_entries-composition.json",
+      "Contribution with two rather minimal composition entries");
 
-    private final String filename;
-    private final String description;
+  private final String filename;
+  private final String description;
 
-    ContributionTestDataCanonicalJson(String filename, String description) {
-        this.filename = filename;
-        this.description = description;
-    }
+  ContributionTestDataCanonicalJson(String filename, String description) {
+    this.filename = filename;
+    this.description = description;
+  }
 
-    public InputStream getStream() {
-        return getClass().getResourceAsStream("/contribution/canonical_json/" + filename);
-    }
+  public InputStream getStream() {
+    return getClass().getResourceAsStream("/contribution/canonical_json/" + filename);
+  }
 }

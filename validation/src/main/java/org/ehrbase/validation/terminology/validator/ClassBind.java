@@ -2,14 +2,14 @@ package org.ehrbase.validation.terminology.validator;
 
 public class ClassBind {
 
-    private Class validatorClass;
+  private Class validatorClass;
 
-    public ClassBind(Class validatorClass) {
-        this.validatorClass = validatorClass;
-    }
+  public ClassBind(Class validatorClass) {
+    this.validatorClass = validatorClass;
+  }
 
-    public Class rmClass() {
-        validatorClass.getDeclaredFields();
-        return null;
-    }
+  public Class rmClass() {
+    validatorClass.getDeclaredFields();
+    return null;
+  }
 }

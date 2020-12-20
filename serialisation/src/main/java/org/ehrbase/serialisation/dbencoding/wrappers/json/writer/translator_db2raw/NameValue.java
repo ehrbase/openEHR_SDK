@@ -19,36 +19,32 @@ package org.ehrbase.serialisation.dbencoding.wrappers.json.writer.translator_db2
 
 import com.google.gson.internal.LinkedTreeMap;
 import com.google.gson.stream.JsonWriter;
-
 import java.io.IOException;
 
 public class NameValue {
 
-    private final I_NameValueHandler handler;
+  private final I_NameValueHandler handler;
 
-    NameValue(JsonWriter writer, String value) {
-        this.handler = new DvTextNameValue(writer, value);
-    }
+  NameValue(JsonWriter writer, String value) {
+    this.handler = new DvTextNameValue(writer, value);
+  }
 
-    NameValue(JsonWriter writer, LinkedTreeMap value) {
-        if (value.containsKey("defining_code")){
-            this.handler = new DvCodedTextNameValue(writer, value);
-        }
-        else
-            this.handler = new DvTextNameValue(writer, value);
-    }
+  NameValue(JsonWriter writer, LinkedTreeMap value) {
+    if (value.containsKey("defining_code")) {
+      this.handler = new DvCodedTextNameValue(writer, value);
+    } else this.handler = new DvTextNameValue(writer, value);
+  }
 
-
-    /**
-     * Encode a name value into the DB json structure
-     * <code>
-     * "name": {
-     * "value":...
-     * }
-     * </code>
-     * @throws IOException
-     */
-    public void write() throws IOException {
-        handler.write();
-    }
+  /**
+   * Encode a name value into the DB json structure <code>
+   * "name": {
+   * "value":...
+   * }
+   * </code>
+   *
+   * @throws IOException
+   */
+  public void write() throws IOException {
+    handler.write();
+  }
 }

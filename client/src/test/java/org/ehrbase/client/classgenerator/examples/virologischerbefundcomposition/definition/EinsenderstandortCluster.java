@@ -2,7 +2,6 @@ package org.ehrbase.client.classgenerator.examples.virologischerbefundcompositio
 
 import com.nedap.archie.rm.archetyped.FeederAudit;
 import com.nedap.archie.rm.datastructures.Cluster;
-import java.lang.String;
 import java.util.List;
 import javax.annotation.processing.Generated;
 import org.ehrbase.client.annotations.Archetype;
@@ -15,8 +14,7 @@ import org.ehrbase.client.classgenerator.interfaces.LocatableEntity;
 @Generated(
     value = "org.ehrbase.client.classgenerator.ClassGenerator",
     date = "2020-12-10T13:06:13.776036200+01:00",
-    comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
-)
+    comments = "https://github.com/ehrbase/openEHR_SDK Version: null")
 public class EinsenderstandortCluster implements LocatableEntity {
   /**
    * Path: Virologischer Befund/Befund/Details der Testanforderung/Einsenderstandort/Standorttyp
@@ -26,22 +24,25 @@ public class EinsenderstandortCluster implements LocatableEntity {
   private String standorttypValue;
 
   /**
-   * Path: Virologischer Befund/Befund/Details der Testanforderung/Einsenderstandort/Standortbeschreibung
-   * Description: Das Feld enthält die Freitextbeschreibung des Standorts, z.B. Throax-, Herz- und Gefäßchirurgie.
+   * Path: Virologischer Befund/Befund/Details der
+   * Testanforderung/Einsenderstandort/Standortbeschreibung Description: Das Feld enthält die
+   * Freitextbeschreibung des Standorts, z.B. Throax-, Herz- und Gefäßchirurgie.
    */
   @Path("/items[at0046]/value|value")
   private String standortbeschreibungValue;
 
   /**
-   * Path: Virologischer Befund/Befund/Details der Testanforderung/Einsenderstandort/Standortschlüssel
-   * Description: Kodierung des Standortes, z.B. der Fachabteilungsschlüssel (z. B. 2000 Thoraxchirurgie).
+   * Path: Virologischer Befund/Befund/Details der
+   * Testanforderung/Einsenderstandort/Standortschlüssel Description: Kodierung des Standortes, z.B.
+   * der Fachabteilungsschlüssel (z. B. 2000 Thoraxchirurgie).
    */
   @Path("/items[at0048]/value|value")
   private String standortschlusselValue;
 
   /**
    * Path: Virologischer Befund/Befund/Details der Testanforderung/Einsenderstandort/Details
-   * Description: Für die Erfassung weiterer Angaben über das Bett oder der Adresse. Verwenden Sie dazu den Archetyp CLUSTER.device oder CLUSTER.address.
+   * Description: Für die Erfassung weiterer Angaben über das Bett oder der Adresse. Verwenden Sie
+   * dazu den Archetyp CLUSTER.device oder CLUSTER.address.
    */
   @Path("/items[at0047]")
   private List<Cluster> details;
@@ -53,42 +54,42 @@ public class EinsenderstandortCluster implements LocatableEntity {
   private FeederAudit feederAudit;
 
   public void setStandorttypValue(String standorttypValue) {
-     this.standorttypValue = standorttypValue;
+    this.standorttypValue = standorttypValue;
   }
 
   public String getStandorttypValue() {
-     return this.standorttypValue ;
+    return this.standorttypValue;
   }
 
   public void setStandortbeschreibungValue(String standortbeschreibungValue) {
-     this.standortbeschreibungValue = standortbeschreibungValue;
+    this.standortbeschreibungValue = standortbeschreibungValue;
   }
 
   public String getStandortbeschreibungValue() {
-     return this.standortbeschreibungValue ;
+    return this.standortbeschreibungValue;
   }
 
   public void setStandortschlusselValue(String standortschlusselValue) {
-     this.standortschlusselValue = standortschlusselValue;
+    this.standortschlusselValue = standortschlusselValue;
   }
 
   public String getStandortschlusselValue() {
-     return this.standortschlusselValue ;
+    return this.standortschlusselValue;
   }
 
   public void setDetails(List<Cluster> details) {
-     this.details = details;
+    this.details = details;
   }
 
   public List<Cluster> getDetails() {
-     return this.details ;
+    return this.details;
   }
 
   public void setFeederAudit(FeederAudit feederAudit) {
-     this.feederAudit = feederAudit;
+    this.feederAudit = feederAudit;
   }
 
   public FeederAudit getFeederAudit() {
-     return this.feederAudit ;
+    return this.feederAudit;
   }
 }

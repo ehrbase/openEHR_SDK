@@ -3,7 +3,6 @@ package org.ehrbase.client.classgenerator.exampleoptimizersettingsections.corona
 import com.nedap.archie.rm.archetyped.FeederAudit;
 import com.nedap.archie.rm.datastructures.Cluster;
 import com.nedap.archie.rm.datavalues.encapsulated.DvParsable;
-import java.lang.String;
 import java.util.List;
 import javax.annotation.processing.Generated;
 import org.ehrbase.client.annotations.Entity;
@@ -14,8 +13,7 @@ import org.ehrbase.client.classgenerator.interfaces.LocatableEntity;
 @Generated(
     value = "org.ehrbase.client.classgenerator.ClassGenerator",
     date = "2020-12-10T13:06:13.494033100+01:00",
-    comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
-)
+    comments = "https://github.com/ehrbase/openEHR_SDK Version: null")
 public class DienstleistungAktuelleAktivitaetActivity implements LocatableEntity {
   /**
    * Path: Bericht/Allgemeine Angaben/Dienstleistung/Aktuelle Aktivität/Name der Dienstleistung
@@ -26,116 +24,119 @@ public class DienstleistungAktuelleAktivitaetActivity implements LocatableEntity
 
   /**
    * Path: Bericht/Allgemeine Angaben/Dienstleistung/Aktuelle Aktivität/Grund für die Anforderung
-   * Description: Ein kurzer Satz, der den Grund für die Anforderung beschreibt.
-   * Comment: Eine Kodierung des "Grund für die Anforderung" mit einem Kodierungssystem ist wünschenswert, sofern vorhanden. Dieses Datenelement erlaubt mehrfaches Vorkommen, so dass der Benutzer bei Bedarf eine Mehrfachantwort aufzeichnen kann. Zum Beispiel: 'Diabetes-Komplikationen behandeln'.
+   * Description: Ein kurzer Satz, der den Grund für die Anforderung beschreibt. Comment: Eine
+   * Kodierung des "Grund für die Anforderung" mit einem Kodierungssystem ist wünschenswert, sofern
+   * vorhanden. Dieses Datenelement erlaubt mehrfaches Vorkommen, so dass der Benutzer bei Bedarf
+   * eine Mehrfachantwort aufzeichnen kann. Zum Beispiel: 'Diabetes-Komplikationen behandeln'.
    */
   @Path("/description[at0009]/items[at0062]")
   private List<DienstleistungGrundFuerDieAnforderungElement> grundFuerDieAnforderung;
 
   /**
    * Path: Bericht/Allgemeine Angaben/Dienstleistung/Aktuelle Aktivität/Komplexe Zeitplanung
-   * Description: Einzelheiten über eine komplexe Dienstanforderung, die eine Abfolge von Zeitangaben erfordert.
-   * Comment: Zum Beispiel: stündliche Vitalparameterbeobachtungen für 4 Stunden, dann 4 stündliche Beobachtungen für 20 Stunden" oder "jeden dritten Mittwoch für 3 Besuche".
+   * Description: Einzelheiten über eine komplexe Dienstanforderung, die eine Abfolge von
+   * Zeitangaben erfordert. Comment: Zum Beispiel: stündliche Vitalparameterbeobachtungen für 4
+   * Stunden, dann 4 stündliche Beobachtungen für 20 Stunden" oder "jeden dritten Mittwoch für 3
+   * Besuche".
    */
   @Path("/description[at0009]/items[at0151]")
   private List<Cluster> komplexeZeitplanung;
 
   /**
    * Path: Bericht/Allgemeine Angaben/Dienstleistung/Aktuelle Aktivität/Spezifische Details
-   * Description: Zusätzliche Details über die angeforderte Dienstleistung.
-   * Comment: Zum Beispiel: Probendetails für einen Antrag auf einen Labortest oder anatomischer Ort für einen Antrag auf ein Verfahren.
+   * Description: Zusätzliche Details über die angeforderte Dienstleistung. Comment: Zum Beispiel:
+   * Probendetails für einen Antrag auf einen Labortest oder anatomischer Ort für einen Antrag auf
+   * ein Verfahren.
    */
   @Path("/description[at0009]/items[at0132]")
   private List<Cluster> spezifischeDetails;
 
   /**
    * Path: Bericht/Allgemeine Angaben/Dienstleistung/Aktuelle Aktivität/Unterstützende Informationen
-   * Description: Digitales Dokument, Bild, Video oder Diagramm als zusätzliche Information zur Unterstützung oder Information der Anforderung.
+   * Description: Digitales Dokument, Bild, Video oder Diagramm als zusätzliche Information zur
+   * Unterstützung oder Information der Anforderung.
    */
   @Path("/description[at0009]/items[at0149]")
   private List<Cluster> unterstuetzendeInformationen;
 
   /**
    * Path: Bericht/Allgemeine Angaben/Dienstleistung/Aktuelle Aktivität/Anforderungen an Patienten
-   * Description: Sprach-, Transport- oder andere persönliche Anforderungen, um die Beteiligung oder Teilnahme des Patienten an der Erbringung der Dienstleistung zu unterstützen.
+   * Description: Sprach-, Transport- oder andere persönliche Anforderungen, um die Beteiligung oder
+   * Teilnahme des Patienten an der Erbringung der Dienstleistung zu unterstützen.
    */
   @Path("/description[at0009]/items[at0116]")
   private List<Cluster> anforderungenAnPatienten;
 
-  /**
-   * Path: Bericht/Allgemeine Angaben/Dienstleistung/Aktuelle Aktivität/timing
-   */
+  /** Path: Bericht/Allgemeine Angaben/Dienstleistung/Aktuelle Aktivität/timing */
   @Path("/timing")
   private DvParsable timing;
 
-  /**
-   * Path: Bericht/Allgemeine Angaben/Dienstleistung/Aktuelle Aktivität/feeder_audit
-   */
+  /** Path: Bericht/Allgemeine Angaben/Dienstleistung/Aktuelle Aktivität/feeder_audit */
   @Path("/feeder_audit")
   private FeederAudit feederAudit;
 
   public void setNameDerDienstleistungValue(String nameDerDienstleistungValue) {
-     this.nameDerDienstleistungValue = nameDerDienstleistungValue;
+    this.nameDerDienstleistungValue = nameDerDienstleistungValue;
   }
 
   public String getNameDerDienstleistungValue() {
-     return this.nameDerDienstleistungValue ;
+    return this.nameDerDienstleistungValue;
   }
 
   public void setGrundFuerDieAnforderung(
       List<DienstleistungGrundFuerDieAnforderungElement> grundFuerDieAnforderung) {
-     this.grundFuerDieAnforderung = grundFuerDieAnforderung;
+    this.grundFuerDieAnforderung = grundFuerDieAnforderung;
   }
 
   public List<DienstleistungGrundFuerDieAnforderungElement> getGrundFuerDieAnforderung() {
-     return this.grundFuerDieAnforderung ;
+    return this.grundFuerDieAnforderung;
   }
 
   public void setKomplexeZeitplanung(List<Cluster> komplexeZeitplanung) {
-     this.komplexeZeitplanung = komplexeZeitplanung;
+    this.komplexeZeitplanung = komplexeZeitplanung;
   }
 
   public List<Cluster> getKomplexeZeitplanung() {
-     return this.komplexeZeitplanung ;
+    return this.komplexeZeitplanung;
   }
 
   public void setSpezifischeDetails(List<Cluster> spezifischeDetails) {
-     this.spezifischeDetails = spezifischeDetails;
+    this.spezifischeDetails = spezifischeDetails;
   }
 
   public List<Cluster> getSpezifischeDetails() {
-     return this.spezifischeDetails ;
+    return this.spezifischeDetails;
   }
 
   public void setUnterstuetzendeInformationen(List<Cluster> unterstuetzendeInformationen) {
-     this.unterstuetzendeInformationen = unterstuetzendeInformationen;
+    this.unterstuetzendeInformationen = unterstuetzendeInformationen;
   }
 
   public List<Cluster> getUnterstuetzendeInformationen() {
-     return this.unterstuetzendeInformationen ;
+    return this.unterstuetzendeInformationen;
   }
 
   public void setAnforderungenAnPatienten(List<Cluster> anforderungenAnPatienten) {
-     this.anforderungenAnPatienten = anforderungenAnPatienten;
+    this.anforderungenAnPatienten = anforderungenAnPatienten;
   }
 
   public List<Cluster> getAnforderungenAnPatienten() {
-     return this.anforderungenAnPatienten ;
+    return this.anforderungenAnPatienten;
   }
 
   public void setTiming(DvParsable timing) {
-     this.timing = timing;
+    this.timing = timing;
   }
 
   public DvParsable getTiming() {
-     return this.timing ;
+    return this.timing;
   }
 
   public void setFeederAudit(FeederAudit feederAudit) {
-     this.feederAudit = feederAudit;
+    this.feederAudit = feederAudit;
   }
 
   public FeederAudit getFeederAudit() {
-     return this.feederAudit ;
+    return this.feederAudit;
   }
 }

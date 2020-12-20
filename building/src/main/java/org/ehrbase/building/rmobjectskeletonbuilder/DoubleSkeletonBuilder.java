@@ -22,16 +22,16 @@ package org.ehrbase.building.rmobjectskeletonbuilder;
 import org.openehr.schemas.v1.CREAL;
 
 public class DoubleSkeletonBuilder implements RmObjectSkeletonBuilder<CREAL, Double> {
-    @Override
-    public Class<CREAL> getAssociatedClass() {
-        return CREAL.class;
-    }
+  @Override
+  public Class<CREAL> getAssociatedClass() {
+    return CREAL.class;
+  }
 
-    @Override
-    public Double getRmObject(CREAL xml) {
-        if (xml.isSetAssumedValue()) {
-            return Double.parseDouble("" + xml.getAssumedValue());
-        }
-        return null;
+  @Override
+  public Double getRmObject(CREAL xml) {
+    if (xml.isSetAssumedValue()) {
+      return Double.parseDouble("" + xml.getAssumedValue());
     }
+    return null;
+  }
 }

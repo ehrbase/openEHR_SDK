@@ -24,7 +24,5 @@ import org.ehrbase.util.reflection.ClassDependent;
 
 public interface RmObjectSkeletonBuilder<T extends XmlObject, R> extends ClassDependent<T> {
 
-
-    R getRmObject(T xml);
-
+  R getRmObject(T xml);
 }

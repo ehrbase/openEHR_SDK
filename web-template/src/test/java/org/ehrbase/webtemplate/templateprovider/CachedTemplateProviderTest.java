@@ -19,33 +19,32 @@
 
 package org.ehrbase.webtemplate.templateprovider;
 
-import org.junit.Test;
-import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
+import static org.junit.Assert.assertTrue;
 
 import javax.cache.Cache;
 import javax.cache.CacheManager;
 import javax.cache.Caching;
 import javax.cache.configuration.MutableConfiguration;
 import javax.cache.spi.CachingProvider;
-
-import static org.junit.Assert.assertTrue;
+import org.junit.Test;
+import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
 
 public class CachedTemplateProviderTest {
 
-    @Test
-    public void find() {
+  @Test
+  public void find() {
 
-        CachingProvider provider = Caching.getCachingProvider();
-        CacheManager cacheManager = provider.getCacheManager();
-        MutableConfiguration<String, OPERATIONALTEMPLATE> configuration =
-                new MutableConfiguration<String, OPERATIONALTEMPLATE>()
-                        .setTypes(String.class, OPERATIONALTEMPLATE.class)
-                        .setStoreByValue(false);
-        Cache<String, OPERATIONALTEMPLATE> cache = cacheManager.createCache("jCache", configuration);
+    CachingProvider provider = Caching.getCachingProvider();
+    CacheManager cacheManager = provider.getCacheManager();
+    MutableConfiguration<String, OPERATIONALTEMPLATE> configuration =
+        new MutableConfiguration<String, OPERATIONALTEMPLATE>()
+            .setTypes(String.class, OPERATIONALTEMPLATE.class)
+            .setStoreByValue(false);
+    Cache<String, OPERATIONALTEMPLATE> cache = cacheManager.createCache("jCache", configuration);
 
-        CachedTemplateProvider cut = new CachedTemplateProvider(new TestDataTemplateProvider(), cache);
-        assertTrue(cut.find("ehrbase_blood_pressure_simple.de.v0").isPresent());
-        // read from Cache
-        assertTrue(cut.find("ehrbase_blood_pressure_simple.de.v0").isPresent());
-    }
+    CachedTemplateProvider cut = new CachedTemplateProvider(new TestDataTemplateProvider(), cache);
+    assertTrue(cut.find("ehrbase_blood_pressure_simple.de.v0").isPresent());
+    // read from Cache
+    assertTrue(cut.find("ehrbase_blood_pressure_simple.de.v0").isPresent());
+  }
 }

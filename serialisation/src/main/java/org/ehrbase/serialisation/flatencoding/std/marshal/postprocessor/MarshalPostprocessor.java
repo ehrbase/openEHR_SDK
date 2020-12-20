@@ -20,21 +20,17 @@
 package org.ehrbase.serialisation.flatencoding.std.marshal.postprocessor;
 
 import com.nedap.archie.rm.RMObject;
-import org.ehrbase.util.reflection.ClassDependent;
-
 import java.util.Map;
-
+import org.ehrbase.util.reflection.ClassDependent;
 
 public interface MarshalPostprocessor<T extends RMObject> extends ClassDependent<T> {
 
-    /**
-     * Adds or removes Values from {@code values} depending on {@code rmObject}.
-     *
-     * @param term     current term in the marshal recursion.
-     * @param rmObject current rmObject in the marshal recursion.
-     * @param values   current values in the marshal recursion.
-     */
-    void process(String term, T rmObject, Map<String, Object> values);
-
-
+  /**
+   * Adds or removes Values from {@code values} depending on {@code rmObject}.
+   *
+   * @param term current term in the marshal recursion.
+   * @param rmObject current rmObject in the marshal recursion.
+   * @param values current values in the marshal recursion.
+   */
+  void process(String term, T rmObject, Map<String, Object> values);
 }

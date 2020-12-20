@@ -20,27 +20,26 @@
 package org.ehrbase.serialisation.flatencoding.std.umarshal.rmunmarshaller;
 
 import com.nedap.archie.rm.datavalues.encapsulated.DvParsable;
-import org.ehrbase.serialisation.walker.Context;
-
 import java.util.Map;
+import org.ehrbase.serialisation.walker.Context;
 
 public class DvParsableRMUnmarshaller extends AbstractRMUnmarshaller<DvParsable> {
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Class<DvParsable> getAssociatedClass() {
-        return DvParsable.class;
-    }
+  /** {@inheritDoc} */
+  @Override
+  public Class<DvParsable> getAssociatedClass() {
+    return DvParsable.class;
+  }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void handle(String currentTerm, DvParsable rmObject, Map<String, String> currentValues, Context<Map<String, String>> context) {
+  /** {@inheritDoc} */
+  @Override
+  public void handle(
+      String currentTerm,
+      DvParsable rmObject,
+      Map<String, String> currentValues,
+      Context<Map<String, String>> context) {
 
-        setValue(currentTerm, null, currentValues, rmObject::setValue, String.class);
-        setValue(currentTerm, "formalism", currentValues, rmObject::setFormalism, String.class);
-    }
+    setValue(currentTerm, null, currentValues, rmObject::setValue, String.class);
+    setValue(currentTerm, "formalism", currentValues, rmObject::setFormalism, String.class);
+  }
 }

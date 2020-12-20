@@ -20,41 +20,34 @@ package org.ehrbase.serialisation.dbencoding.wrappers.json.writer;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 import com.nedap.archie.rm.support.identification.GenericId;
+import java.io.IOException;
 import org.ehrbase.serialisation.dbencoding.CompositionSerializer;
 
-import java.io.IOException;
-
-/**
- * GSON adapter for GenericId
- */
+/** GSON adapter for GenericId */
 public class GenericIdAdapter extends DvTypeAdapter<GenericId> {
 
+  public GenericIdAdapter(AdapterType adapterType) {
+    super(adapterType);
+  }
 
-    public GenericIdAdapter(AdapterType adapterType) {
-        super(adapterType);
+  @Override
+  public GenericId read(JsonReader arg0) throws IOException {
+    return null;
+  }
+
+  @Override
+  public void write(JsonWriter writer, GenericId genericId) throws IOException {
+    if (genericId == null) {
+      writer.nullValue();
+      return;
     }
 
-
-    @Override
-    public GenericId read(JsonReader arg0) throws IOException {
-        return null;
+    if (adapterType == AdapterType.PG_JSONB) {
+      writer.beginObject();
+      writer.name("scheme").value(genericId.getScheme());
+      writer.name("value").value(genericId.getValue());
+      writer.name(CompositionSerializer.TAG_CLASS).value(GenericId.class.getSimpleName());
+      writer.endObject();
     }
-
-    @Override
-    public void write(JsonWriter writer, GenericId genericId) throws IOException {
-        if (genericId == null) {
-            writer.nullValue();
-            return;
-        }
-
-        if (adapterType == AdapterType.PG_JSONB) {
-            writer.beginObject();
-            writer.name("scheme").value(genericId.getScheme());
-            writer.name("value").value(genericId.getValue());
-            writer.name(CompositionSerializer.TAG_CLASS).value(GenericId.class.getSimpleName());
-            writer.endObject();
-        }
-
-    }
-
+  }
 }

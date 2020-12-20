@@ -1,14 +1,21 @@
 package org.ehrbase.client.classgenerator.examples.openereactcarecomposition.definition;
 
-import java.lang.String;
 import org.ehrbase.client.classgenerator.EnumValueSet;
 
 public enum ValueDefiningCode7 implements EnumValueSet {
-  SKIN_JOINT_WOUND("Skin / joint/ wound", "The likely source of infection is skin, joint or wound.", "local", "at0026"),
+  SKIN_JOINT_WOUND(
+      "Skin / joint/ wound",
+      "The likely source of infection is skin, joint or wound.",
+      "local",
+      "at0026"),
 
   URINE("Urine", "The likely source of infection is urine.", "local", "at0014"),
 
-  INDWELLING_DEVICE("Indwelling device", "The likely source of infection is an indwelling device.", "local", "at0027"),
+  INDWELLING_DEVICE(
+      "Indwelling device",
+      "The likely source of infection is an indwelling device.",
+      "local",
+      "at0027"),
 
   RESPIRATORY("Respiratory", "The likely source of infection is respiratory.", "local", "at0012"),
 
@@ -32,18 +39,18 @@ public enum ValueDefiningCode7 implements EnumValueSet {
   }
 
   public String getValue() {
-     return this.value ;
+    return this.value;
   }
 
   public String getDescription() {
-     return this.description ;
+    return this.description;
   }
 
   public String getTerminologyId() {
-     return this.terminologyId ;
+    return this.terminologyId;
   }
 
   public String getCode() {
-     return this.code ;
+    return this.code;
   }
 }

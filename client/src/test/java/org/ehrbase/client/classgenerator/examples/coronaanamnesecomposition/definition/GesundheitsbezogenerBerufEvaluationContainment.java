@@ -3,7 +3,6 @@ package org.ehrbase.client.classgenerator.examples.coronaanamnesecomposition.def
 import com.nedap.archie.rm.archetyped.FeederAudit;
 import com.nedap.archie.rm.datastructures.Cluster;
 import com.nedap.archie.rm.generic.PartyProxy;
-import java.lang.String;
 import org.ehrbase.client.aql.containment.Containment;
 import org.ehrbase.client.aql.field.AqlFieldImp;
 import org.ehrbase.client.aql.field.ListAqlFieldImp;
@@ -12,21 +11,61 @@ import org.ehrbase.client.aql.field.SelectAqlField;
 import org.ehrbase.client.classgenerator.shareddefinition.Language;
 
 public class GesundheitsbezogenerBerufEvaluationContainment extends Containment {
-  public SelectAqlField<GesundheitsbezogenerBerufEvaluation> GESUNDHEITSBEZOGENER_BERUF_EVALUATION = new AqlFieldImp<GesundheitsbezogenerBerufEvaluation>(GesundheitsbezogenerBerufEvaluation.class, "", "GesundheitsbezogenerBerufEvaluation", GesundheitsbezogenerBerufEvaluation.class, this);
+  public SelectAqlField<GesundheitsbezogenerBerufEvaluation> GESUNDHEITSBEZOGENER_BERUF_EVALUATION =
+      new AqlFieldImp<GesundheitsbezogenerBerufEvaluation>(
+          GesundheitsbezogenerBerufEvaluation.class,
+          "",
+          "GesundheitsbezogenerBerufEvaluation",
+          GesundheitsbezogenerBerufEvaluation.class,
+          this);
 
-  public SelectAqlField<String> BESCHAFTIGUNGSSTATUS_VALUE = new AqlFieldImp<String>(GesundheitsbezogenerBerufEvaluation.class, "/data[at0001]/items[at0004]/value|value", "beschaftigungsstatusValue", String.class, this);
+  public SelectAqlField<String> BESCHAFTIGUNGSSTATUS_VALUE =
+      new AqlFieldImp<String>(
+          GesundheitsbezogenerBerufEvaluation.class,
+          "/data[at0001]/items[at0004]/value|value",
+          "beschaftigungsstatusValue",
+          String.class,
+          this);
 
-  public ListSelectAqlField<BeschaftigungCluster> BESCHAFTIGUNG = new ListAqlFieldImp<BeschaftigungCluster>(GesundheitsbezogenerBerufEvaluation.class, "/data[at0001]/items[openEHR-EHR-CLUSTER.occupation_record.v1]", "beschaftigung", BeschaftigungCluster.class, this);
+  public ListSelectAqlField<BeschaftigungCluster> BESCHAFTIGUNG =
+      new ListAqlFieldImp<BeschaftigungCluster>(
+          GesundheitsbezogenerBerufEvaluation.class,
+          "/data[at0001]/items[openEHR-EHR-CLUSTER.occupation_record.v1]",
+          "beschaftigung",
+          BeschaftigungCluster.class,
+          this);
 
-  public ListSelectAqlField<Cluster> ZUSATZLICHE_ANGABEN = new ListAqlFieldImp<Cluster>(GesundheitsbezogenerBerufEvaluation.class, "/data[at0001]/items[at0005]", "zusatzlicheAngaben", Cluster.class, this);
+  public ListSelectAqlField<Cluster> ZUSATZLICHE_ANGABEN =
+      new ListAqlFieldImp<Cluster>(
+          GesundheitsbezogenerBerufEvaluation.class,
+          "/data[at0001]/items[at0005]",
+          "zusatzlicheAngaben",
+          Cluster.class,
+          this);
 
-  public ListSelectAqlField<Cluster> ERWEITERUNG = new ListAqlFieldImp<Cluster>(GesundheitsbezogenerBerufEvaluation.class, "/protocol[at0007]/items[at0008]", "erweiterung", Cluster.class, this);
+  public ListSelectAqlField<Cluster> ERWEITERUNG =
+      new ListAqlFieldImp<Cluster>(
+          GesundheitsbezogenerBerufEvaluation.class,
+          "/protocol[at0007]/items[at0008]",
+          "erweiterung",
+          Cluster.class,
+          this);
 
-  public SelectAqlField<PartyProxy> SUBJECT = new AqlFieldImp<PartyProxy>(GesundheitsbezogenerBerufEvaluation.class, "/subject", "subject", PartyProxy.class, this);
+  public SelectAqlField<PartyProxy> SUBJECT =
+      new AqlFieldImp<PartyProxy>(
+          GesundheitsbezogenerBerufEvaluation.class, "/subject", "subject", PartyProxy.class, this);
 
-  public SelectAqlField<Language> LANGUAGE = new AqlFieldImp<Language>(GesundheitsbezogenerBerufEvaluation.class, "/language", "language", Language.class, this);
+  public SelectAqlField<Language> LANGUAGE =
+      new AqlFieldImp<Language>(
+          GesundheitsbezogenerBerufEvaluation.class, "/language", "language", Language.class, this);
 
-  public SelectAqlField<FeederAudit> FEEDER_AUDIT = new AqlFieldImp<FeederAudit>(GesundheitsbezogenerBerufEvaluation.class, "/feeder_audit", "feederAudit", FeederAudit.class, this);
+  public SelectAqlField<FeederAudit> FEEDER_AUDIT =
+      new AqlFieldImp<FeederAudit>(
+          GesundheitsbezogenerBerufEvaluation.class,
+          "/feeder_audit",
+          "feederAudit",
+          FeederAudit.class,
+          this);
 
   private GesundheitsbezogenerBerufEvaluationContainment() {
     super("openEHR-EHR-EVALUATION.occupation_summary.v1");

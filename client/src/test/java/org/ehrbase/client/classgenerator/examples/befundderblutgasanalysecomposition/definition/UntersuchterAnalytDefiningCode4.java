@@ -1,12 +1,16 @@
 package org.ehrbase.client.classgenerator.examples.befundderblutgasanalysecomposition.definition;
 
-import java.lang.String;
 import org.ehrbase.client.classgenerator.EnumValueSet;
 
 public enum UntersuchterAnalytDefiningCode4 implements EnumValueSet {
-  OXYGEN_SATURATION_IN_BLOOD("Oxygen saturation in Blood", "Oxygen saturation in Blood", "LOINC", "20564-1"),
+  OXYGEN_SATURATION_IN_BLOOD(
+      "Oxygen saturation in Blood", "Oxygen saturation in Blood", "LOINC", "20564-1"),
 
-  OXYGEN_SATURATION_IN_ARTERIAL_BLOOD("Oxygen saturation in Arterial blood", "Oxygen saturation in Arterial blood", "LOINC", "2708-6");
+  OXYGEN_SATURATION_IN_ARTERIAL_BLOOD(
+      "Oxygen saturation in Arterial blood",
+      "Oxygen saturation in Arterial blood",
+      "LOINC",
+      "2708-6");
 
   private String value;
 
@@ -16,8 +20,8 @@ public enum UntersuchterAnalytDefiningCode4 implements EnumValueSet {
 
   private String code;
 
-  UntersuchterAnalytDefiningCode4(String value, String description, String terminologyId,
-      String code) {
+  UntersuchterAnalytDefiningCode4(
+      String value, String description, String terminologyId, String code) {
     this.value = value;
     this.description = description;
     this.terminologyId = terminologyId;
@@ -25,18 +29,18 @@ public enum UntersuchterAnalytDefiningCode4 implements EnumValueSet {
   }
 
   public String getValue() {
-     return this.value ;
+    return this.value;
   }
 
   public String getDescription() {
-     return this.description ;
+    return this.description;
   }
 
   public String getTerminologyId() {
-     return this.terminologyId ;
+    return this.terminologyId;
   }
 
   public String getCode() {
-     return this.code ;
+    return this.code;
   }
 }

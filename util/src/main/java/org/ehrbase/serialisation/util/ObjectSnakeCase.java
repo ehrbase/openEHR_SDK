@@ -19,16 +19,14 @@
 
 package org.ehrbase.serialisation.util;
 
-/**
- * Created by christian on 8/1/2017.
- */
+/** Created by christian on 8/1/2017. */
 public class ObjectSnakeCase extends SnakeCase {
 
-    public ObjectSnakeCase(Object object) {
-        super(object.getClass().getSimpleName());
-    }
+  public ObjectSnakeCase(Object object) {
+    super(object.getClass().getSimpleName());
+  }
 
-    public String camelToUpperSnake() {
-        return super.camelToUpperSnake();
-    }
+  public String camelToUpperSnake() {
+    return super.camelToUpperSnake();
+  }
 }

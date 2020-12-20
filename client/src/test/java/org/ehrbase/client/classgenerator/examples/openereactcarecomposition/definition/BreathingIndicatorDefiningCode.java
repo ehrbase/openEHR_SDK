@@ -1,10 +1,10 @@
 package org.ehrbase.client.classgenerator.examples.openereactcarecomposition.definition;
 
-import java.lang.String;
 import org.ehrbase.client.classgenerator.EnumValueSet;
 
 public enum BreathingIndicatorDefiningCode implements EnumValueSet {
-  UNABLE_TO_SPEAK_FULL_SENTENCES("Unable to speak full sentences", "Unable to speak in full sentences.", "local", "at0069"),
+  UNABLE_TO_SPEAK_FULL_SENTENCES(
+      "Unable to speak full sentences", "Unable to speak in full sentences.", "local", "at0069"),
 
   NOISY_BREATHING("Noisy breathing", "Noisy breathing.", "local", "at0067"),
 
@@ -20,8 +20,8 @@ public enum BreathingIndicatorDefiningCode implements EnumValueSet {
 
   private String code;
 
-  BreathingIndicatorDefiningCode(String value, String description, String terminologyId,
-      String code) {
+  BreathingIndicatorDefiningCode(
+      String value, String description, String terminologyId, String code) {
     this.value = value;
     this.description = description;
     this.terminologyId = terminologyId;
@@ -29,18 +29,18 @@ public enum BreathingIndicatorDefiningCode implements EnumValueSet {
   }
 
   public String getValue() {
-     return this.value ;
+    return this.value;
   }
 
   public String getDescription() {
-     return this.description ;
+    return this.description;
   }
 
   public String getTerminologyId() {
-     return this.terminologyId ;
+    return this.terminologyId;
   }
 
   public String getCode() {
-     return this.code ;
+    return this.code;
   }
 }

@@ -3,7 +3,8 @@ package org.ehrbase.client.classgenerator.olddtoexamples.shareddefinition;
 import org.ehrbase.client.classgenerator.EnumValueSet;
 
 public enum SettingDefiningcode implements EnumValueSet {
-  COMPLEMENTARY_HEALTH_CARE("complementary health care", "complementary health care", "openehr", "235"),
+  COMPLEMENTARY_HEALTH_CARE(
+      "complementary health care", "complementary health care", "openehr", "235"),
 
   HOME("home", "home", "openehr", "225"),
 
@@ -15,7 +16,8 @@ public enum SettingDefiningcode implements EnumValueSet {
 
   NURSING_HOME_CARE("nursing home care", "nursing home care", "openehr", "237"),
 
-  SECONDARY_ALLIED_HEALTH_CARE("secondary allied health care", "secondary allied health care", "openehr", "234"),
+  SECONDARY_ALLIED_HEALTH_CARE(
+      "secondary allied health care", "secondary allied health care", "openehr", "234"),
 
   EMERGENCY_CARE("emergency care", "emergency care", "openehr", "227"),
 
@@ -23,7 +25,8 @@ public enum SettingDefiningcode implements EnumValueSet {
 
   PRIMARY_MEDICAL_CARE("primary medical care", "primary medical care", "openehr", "228"),
 
-  PRIMARY_ALLIED_HEALTH_CARE("primary allied health care", "primary allied health care", "openehr", "230"),
+  PRIMARY_ALLIED_HEALTH_CARE(
+      "primary allied health care", "primary allied health care", "openehr", "230"),
 
   SECONDARY_MEDICAL_CARE("secondary medical care", "secondary medical care", "openehr", "232"),
 
@@ -45,18 +48,18 @@ public enum SettingDefiningcode implements EnumValueSet {
   }
 
   public String getValue() {
-     return this.value ;
+    return this.value;
   }
 
   public String getDescription() {
-     return this.description ;
+    return this.description;
   }
 
   public String getTerminologyId() {
-     return this.terminologyId ;
+    return this.terminologyId;
   }
 
   public String getCode() {
-     return this.code ;
+    return this.code;
   }
 }

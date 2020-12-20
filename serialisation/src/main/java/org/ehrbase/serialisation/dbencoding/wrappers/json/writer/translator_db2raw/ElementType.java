@@ -18,30 +18,27 @@
 
 package org.ehrbase.serialisation.dbencoding.wrappers.json.writer.translator_db2raw;
 
-import org.ehrbase.serialisation.dbencoding.CompositionSerializer;
-
 import java.util.List;
 import java.util.Map;
+import org.ehrbase.serialisation.dbencoding.CompositionSerializer;
 
 public class ElementType {
 
-    Map valueMap;
+  Map valueMap;
 
-    public ElementType(Map valueMap) {
-        this.valueMap = valueMap;
-    }
+  public ElementType(Map valueMap) {
+    this.valueMap = valueMap;
+  }
 
-    public String type() {
-        String elementType = null;
+  public String type() {
+    String elementType = null;
 
-        if (valueMap.get(CompositionSerializer.TAG_CLASS) instanceof String) {
-            elementType = (String) valueMap.get(CompositionSerializer.TAG_CLASS);
-        } else if (valueMap.get(CompositionSerializer.TAG_CLASS) instanceof List) {
-            elementType = (String) ((List) valueMap.get(CompositionSerializer.TAG_CLASS)).get(0);
-        } else
-            elementType = "*UNDEF*";
+    if (valueMap.get(CompositionSerializer.TAG_CLASS) instanceof String) {
+      elementType = (String) valueMap.get(CompositionSerializer.TAG_CLASS);
+    } else if (valueMap.get(CompositionSerializer.TAG_CLASS) instanceof List) {
+      elementType = (String) ((List) valueMap.get(CompositionSerializer.TAG_CLASS)).get(0);
+    } else elementType = "*UNDEF*";
 
-        return elementType;
-    }
+    return elementType;
+  }
 }
-

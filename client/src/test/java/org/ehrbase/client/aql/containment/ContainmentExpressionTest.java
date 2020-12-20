@@ -19,6 +19,8 @@
 
 package org.ehrbase.client.aql.containment;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.ehrbase.client.aql.query.Query;
 import org.ehrbase.client.classgenerator.examples.coronaanamnesecomposition.CoronaAnamneseCompositionContainment;
 import org.ehrbase.client.classgenerator.examples.coronaanamnesecomposition.definition.AllgemeineAngabenSectionContainment;
@@ -26,77 +28,107 @@ import org.ehrbase.client.classgenerator.examples.coronaanamnesecomposition.defi
 import org.ehrbase.client.classgenerator.examples.coronaanamnesecomposition.definition.SymptomeSectionContainment;
 import org.junit.Test;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-
 public class ContainmentExpressionTest {
 
-    @Test
-    public void buildAQLContains() {
-        CoronaAnamneseCompositionContainment coronaAnamneseCompositionContainment = CoronaAnamneseCompositionContainment.getInstance();
-        SymptomeSectionContainment symptomeSectionContainment = SymptomeSectionContainment.getInstance();
+  @Test
+  public void buildAQLContains() {
+    CoronaAnamneseCompositionContainment coronaAnamneseCompositionContainment =
+        CoronaAnamneseCompositionContainment.getInstance();
+    SymptomeSectionContainment symptomeSectionContainment =
+        SymptomeSectionContainment.getInstance();
 
-        coronaAnamneseCompositionContainment.setContains(symptomeSectionContainment);
+    coronaAnamneseCompositionContainment.setContains(symptomeSectionContainment);
 
-        Query.buildEntityQuery(coronaAnamneseCompositionContainment);
+    Query.buildEntityQuery(coronaAnamneseCompositionContainment);
 
-        assertThat(coronaAnamneseCompositionContainment.buildAQL()).isEqualTo("COMPOSITION c0[openEHR-EHR-COMPOSITION.report.v1] contains SECTION s1[openEHR-EHR-SECTION.adhoc.v1]");
-    }
+    assertThat(coronaAnamneseCompositionContainment.buildAQL())
+        .isEqualTo(
+            "COMPOSITION c0[openEHR-EHR-COMPOSITION.report.v1] contains SECTION s1[openEHR-EHR-SECTION.adhoc.v1]");
+  }
 
-    @Test
-    public void buildAQLOr() {
-        CoronaAnamneseCompositionContainment coronaAnamneseCompositionContainment = CoronaAnamneseCompositionContainment.getInstance();
+  @Test
+  public void buildAQLOr() {
+    CoronaAnamneseCompositionContainment coronaAnamneseCompositionContainment =
+        CoronaAnamneseCompositionContainment.getInstance();
 
-        SymptomeSectionContainment symptomeSectionContainment = SymptomeSectionContainment.getInstance();
-        AllgemeineAngabenSectionContainment allgemeineAngabenSectionContainment = AllgemeineAngabenSectionContainment.getInstance();
-        coronaAnamneseCompositionContainment.setContains(ContainmentExpression.or(allgemeineAngabenSectionContainment, symptomeSectionContainment));
+    SymptomeSectionContainment symptomeSectionContainment =
+        SymptomeSectionContainment.getInstance();
+    AllgemeineAngabenSectionContainment allgemeineAngabenSectionContainment =
+        AllgemeineAngabenSectionContainment.getInstance();
+    coronaAnamneseCompositionContainment.setContains(
+        ContainmentExpression.or(allgemeineAngabenSectionContainment, symptomeSectionContainment));
 
-        Query.buildEntityQuery(coronaAnamneseCompositionContainment);
+    Query.buildEntityQuery(coronaAnamneseCompositionContainment);
 
-        assertThat(coronaAnamneseCompositionContainment.buildAQL()).isEqualTo("COMPOSITION c0[openEHR-EHR-COMPOSITION.report.v1] contains (SECTION s1[openEHR-EHR-SECTION.adhoc.v1] or SECTION s2[openEHR-EHR-SECTION.adhoc.v1])");
-    }
+    assertThat(coronaAnamneseCompositionContainment.buildAQL())
+        .isEqualTo(
+            "COMPOSITION c0[openEHR-EHR-COMPOSITION.report.v1] contains (SECTION s1[openEHR-EHR-SECTION.adhoc.v1] or SECTION s2[openEHR-EHR-SECTION.adhoc.v1])");
+  }
 
+  @Test
+  public void buildAQLOr2() {
+    CoronaAnamneseCompositionContainment coronaAnamneseCompositionContainment =
+        CoronaAnamneseCompositionContainment.getInstance();
 
-    @Test
-    public void buildAQLOr2() {
-        CoronaAnamneseCompositionContainment coronaAnamneseCompositionContainment = CoronaAnamneseCompositionContainment.getInstance();
+    SymptomeSectionContainment symptomeSectionContainment =
+        SymptomeSectionContainment.getInstance();
+    AllgemeineAngabenSectionContainment allgemeineAngabenSectionContainment =
+        AllgemeineAngabenSectionContainment.getInstance();
+    GeschichteHistorieObservationContainment geschichteHistorieObservationContainment =
+        GeschichteHistorieObservationContainment.getInstance();
 
-        SymptomeSectionContainment symptomeSectionContainment = SymptomeSectionContainment.getInstance();
-        AllgemeineAngabenSectionContainment allgemeineAngabenSectionContainment = AllgemeineAngabenSectionContainment.getInstance();
-        GeschichteHistorieObservationContainment geschichteHistorieObservationContainment = GeschichteHistorieObservationContainment.getInstance();
+    coronaAnamneseCompositionContainment.setContains(
+        allgemeineAngabenSectionContainment
+            .or(symptomeSectionContainment)
+            .or(geschichteHistorieObservationContainment));
 
-        coronaAnamneseCompositionContainment.setContains(allgemeineAngabenSectionContainment.or(symptomeSectionContainment).or(geschichteHistorieObservationContainment));
+    Query.buildEntityQuery(coronaAnamneseCompositionContainment);
 
-        Query.buildEntityQuery(coronaAnamneseCompositionContainment);
+    assertThat(coronaAnamneseCompositionContainment.buildAQL())
+        .isEqualTo(
+            "COMPOSITION c0[openEHR-EHR-COMPOSITION.report.v1] contains (SECTION s1[openEHR-EHR-SECTION.adhoc.v1] or SECTION s2[openEHR-EHR-SECTION.adhoc.v1] or OBSERVATION o3[openEHR-EHR-OBSERVATION.story.v1])");
+  }
 
-        assertThat(coronaAnamneseCompositionContainment.buildAQL()).isEqualTo("COMPOSITION c0[openEHR-EHR-COMPOSITION.report.v1] contains (SECTION s1[openEHR-EHR-SECTION.adhoc.v1] or SECTION s2[openEHR-EHR-SECTION.adhoc.v1] or OBSERVATION o3[openEHR-EHR-OBSERVATION.story.v1])");
-    }
+  @Test
+  public void buildAQLOrAndAnd() {
+    CoronaAnamneseCompositionContainment coronaAnamneseCompositionContainment =
+        CoronaAnamneseCompositionContainment.getInstance();
 
-    @Test
-    public void buildAQLOrAndAnd() {
-        CoronaAnamneseCompositionContainment coronaAnamneseCompositionContainment = CoronaAnamneseCompositionContainment.getInstance();
+    SymptomeSectionContainment symptomeSectionContainment =
+        SymptomeSectionContainment.getInstance();
+    AllgemeineAngabenSectionContainment allgemeineAngabenSectionContainment =
+        AllgemeineAngabenSectionContainment.getInstance();
+    GeschichteHistorieObservationContainment geschichteHistorieObservationContainment =
+        GeschichteHistorieObservationContainment.getInstance();
 
-        SymptomeSectionContainment symptomeSectionContainment = SymptomeSectionContainment.getInstance();
-        AllgemeineAngabenSectionContainment allgemeineAngabenSectionContainment = AllgemeineAngabenSectionContainment.getInstance();
-        GeschichteHistorieObservationContainment geschichteHistorieObservationContainment = GeschichteHistorieObservationContainment.getInstance();
+    coronaAnamneseCompositionContainment.setContains(
+        allgemeineAngabenSectionContainment
+            .or(symptomeSectionContainment)
+            .and(geschichteHistorieObservationContainment));
 
-        coronaAnamneseCompositionContainment.setContains(allgemeineAngabenSectionContainment.or(symptomeSectionContainment).and(geschichteHistorieObservationContainment));
+    Query.buildEntityQuery(coronaAnamneseCompositionContainment);
 
-        Query.buildEntityQuery(coronaAnamneseCompositionContainment);
+    assertThat(coronaAnamneseCompositionContainment.buildAQL())
+        .isEqualTo(
+            "COMPOSITION c0[openEHR-EHR-COMPOSITION.report.v1] contains ((SECTION s1[openEHR-EHR-SECTION.adhoc.v1] or SECTION s2[openEHR-EHR-SECTION.adhoc.v1]) and OBSERVATION o3[openEHR-EHR-OBSERVATION.story.v1])");
+  }
 
-        assertThat(coronaAnamneseCompositionContainment.buildAQL()).isEqualTo("COMPOSITION c0[openEHR-EHR-COMPOSITION.report.v1] contains ((SECTION s1[openEHR-EHR-SECTION.adhoc.v1] or SECTION s2[openEHR-EHR-SECTION.adhoc.v1]) and OBSERVATION o3[openEHR-EHR-OBSERVATION.story.v1])");
-    }
+  @Test
+  public void buildAQLAnd() {
+    CoronaAnamneseCompositionContainment coronaAnamneseCompositionContainment =
+        CoronaAnamneseCompositionContainment.getInstance();
 
-    @Test
-    public void buildAQLAnd() {
-        CoronaAnamneseCompositionContainment coronaAnamneseCompositionContainment = CoronaAnamneseCompositionContainment.getInstance();
+    SymptomeSectionContainment symptomeSectionContainment =
+        SymptomeSectionContainment.getInstance();
+    AllgemeineAngabenSectionContainment allgemeineAngabenSectionContainment =
+        AllgemeineAngabenSectionContainment.getInstance();
+    coronaAnamneseCompositionContainment.setContains(
+        ContainmentExpression.and(allgemeineAngabenSectionContainment, symptomeSectionContainment));
 
-        SymptomeSectionContainment symptomeSectionContainment = SymptomeSectionContainment.getInstance();
-        AllgemeineAngabenSectionContainment allgemeineAngabenSectionContainment = AllgemeineAngabenSectionContainment.getInstance();
-        coronaAnamneseCompositionContainment.setContains(ContainmentExpression.and(allgemeineAngabenSectionContainment, symptomeSectionContainment));
+    Query.buildEntityQuery(coronaAnamneseCompositionContainment);
 
-        Query.buildEntityQuery(coronaAnamneseCompositionContainment);
-
-        assertThat(coronaAnamneseCompositionContainment.buildAQL()).isEqualTo("COMPOSITION c0[openEHR-EHR-COMPOSITION.report.v1] contains (SECTION s1[openEHR-EHR-SECTION.adhoc.v1] and SECTION s2[openEHR-EHR-SECTION.adhoc.v1])");
-    }
+    assertThat(coronaAnamneseCompositionContainment.buildAQL())
+        .isEqualTo(
+            "COMPOSITION c0[openEHR-EHR-COMPOSITION.report.v1] contains (SECTION s1[openEHR-EHR-SECTION.adhoc.v1] and SECTION s2[openEHR-EHR-SECTION.adhoc.v1])");
+  }
 }

@@ -41,9 +41,9 @@ import java.util.List;
  */
 public interface TerminologySource {
 
-    List<Group> getConceptGroups();
+  List<Group> getConceptGroups();
 
-    List<CodeSet> getCodeSets();
+  List<CodeSet> getCodeSets();
 }
 /*
  *  ***** BEGIN LICENSE BLOCK *****

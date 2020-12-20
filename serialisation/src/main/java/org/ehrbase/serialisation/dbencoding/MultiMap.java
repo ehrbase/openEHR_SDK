@@ -17,20 +17,17 @@
 
 package org.ehrbase.serialisation.dbencoding;
 
+import java.util.Map;
 import org.apache.commons.collections.map.MultiValueMap;
 
-import java.util.Map;
-
-/**
- * trivial wrapper for multivaluemap
- */
+/** trivial wrapper for multivaluemap */
 public class MultiMap {
 
-    private MultiMap() {
-        throw new IllegalStateException("Use only static method in this class");
-    }
+  private MultiMap() {
+    throw new IllegalStateException("Use only static method in this class");
+  }
 
-    public static Map<String, Object> getInstance() {
-        return new MultiValueMap();
-    }
+  public static Map<String, Object> getInstance() {
+    return new MultiValueMap();
+  }
 }

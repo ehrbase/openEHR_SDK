@@ -19,24 +19,24 @@
 
 package org.ehrbase.client.aql.field;
 
-import org.ehrbase.client.aql.containment.Containment;
-
 import java.util.UUID;
+import org.ehrbase.client.aql.containment.Containment;
 
 public class EhrFields {
 
-    public static final Containment EHR_CONTAINMENT = new Containment("EHR") {
+  public static final Containment EHR_CONTAINMENT =
+      new Containment("EHR") {
         @Override
         public String getVariableName() {
-            return "e";
+          return "e";
         }
-    };
+      };
 
-    private EhrFields() {
-    }
+  private EhrFields() {}
 
-    public static SelectAqlField<UUID> EHR_ID() {
-        AqlFieldImp<UUID> ehrId = new AqlFieldImp<>(null, "/ehr_id/value", "ehrId", UUID.class, EHR_CONTAINMENT);
-        return ehrId;
-    }
+  public static SelectAqlField<UUID> EHR_ID() {
+    AqlFieldImp<UUID> ehrId =
+        new AqlFieldImp<>(null, "/ehr_id/value", "ehrId", UUID.class, EHR_CONTAINMENT);
+    return ehrId;
+  }
 }

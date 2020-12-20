@@ -21,111 +21,110 @@ package org.ehrbase.response.openehr;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
+import java.util.*;
 import org.ehrbase.response.ehrscape.QueryResultDto;
 import org.ehrbase.response.ehrscape.query.ResultHolder;
-
-import java.util.*;
 
 @JacksonXmlRootElement
 public class QueryResponseData {
 
-    //the initial query without substitution (!)
-    @JsonProperty(value = "q")
-    private String query;
+  // the initial query without substitution (!)
+  @JsonProperty(value = "q")
+  private String query;
 
-    @JsonProperty(value = "name")
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    private String name;
+  @JsonProperty(value = "name")
+  @JsonInclude(JsonInclude.Include.NON_NULL)
+  private String name;
 
-    //the list of columns as defined in the SELECT clause (with a path...)
-    @JsonProperty(value = "columns")
-    private List<Map<String, String>> columns;
-    //the actual resultset
-    @JsonProperty(value = "rows")
-    private List<List<Object>> rows;
+  // the list of columns as defined in the SELECT clause (with a path...)
+  @JsonProperty(value = "columns")
+  private List<Map<String, String>> columns;
+  // the actual resultset
+  @JsonProperty(value = "rows")
+  private List<List<Object>> rows;
 
-    public QueryResponseData(QueryResultDto queryResultDto) {
-        this.query = queryResultDto.getExecutedAQL();
-        this.name = null;
+  public QueryResponseData(QueryResultDto queryResultDto) {
+    this.query = queryResultDto.getExecutedAQL();
+    this.name = null;
 
-        this.columns = new ArrayList<>();
-        this.rows = new ArrayList<>();
+    this.columns = new ArrayList<>();
+    this.rows = new ArrayList<>();
 
-        //set the columns definitions
-        if (!queryResultDto.variablesIsEmpty()) {
-            if (!queryResultDto.getResultSet().isEmpty()) {
-                //the order of the column definitions is set by the resultSet ordering
-                ResultHolder record = queryResultDto.getResultSet().get(0);
-                int count = 0;
+    // set the columns definitions
+    if (!queryResultDto.variablesIsEmpty()) {
+      if (!queryResultDto.getResultSet().isEmpty()) {
+        // the order of the column definitions is set by the resultSet ordering
+        ResultHolder record = queryResultDto.getResultSet().get(0);
+        int count = 0;
 
-                for (String columnId : record.columnIds()) {
-                    Map<String, String> fieldMap = new HashMap<>();
+        for (String columnId : record.columnIds()) {
+          Map<String, String> fieldMap = new HashMap<>();
 
-                    if (queryResultDto.variablesContainsColumnId(columnId)) {
-                        fieldMap.put("name", columnId);
-                        fieldMap.put("path", queryResultDto.variablesPath(columnId));
-                    } else {
-                        fieldMap.put("name", "#" + count);
-                        fieldMap.put("path", columnId);
-                    }
-                    count++;
-                    columns.add(fieldMap);
-                }
-            } else {
-                //use the variable definition instead
-                int count = 0;
-                Iterator<Map.Entry<String, String>> variablesIterator = queryResultDto.variablesIterator();
-                while (variablesIterator.hasNext()) {
-                    Map<String, String> fieldMap = new HashMap<>();
-                    Map.Entry<String, String> variableEntry = variablesIterator.next();
-                    if (variableEntry.getKey() != null) {
-                        fieldMap.put("name", variableEntry.getKey());
-                        fieldMap.put("path", variableEntry.getValue());
-                    } else {
-                        fieldMap.put("name", "#" + count);
-                        fieldMap.put("path", variableEntry.getValue());
-                    }
-                    count++;
-                    columns.add(fieldMap);
-                }
-            }
-
-            //set the row results
-            for (ResultHolder valueSet : queryResultDto.getResultSet()) {
-                rows.add(valueSet.values());
-            }
+          if (queryResultDto.variablesContainsColumnId(columnId)) {
+            fieldMap.put("name", columnId);
+            fieldMap.put("path", queryResultDto.variablesPath(columnId));
+          } else {
+            fieldMap.put("name", "#" + count);
+            fieldMap.put("path", columnId);
+          }
+          count++;
+          columns.add(fieldMap);
         }
-    }
+      } else {
+        // use the variable definition instead
+        int count = 0;
+        Iterator<Map.Entry<String, String>> variablesIterator = queryResultDto.variablesIterator();
+        while (variablesIterator.hasNext()) {
+          Map<String, String> fieldMap = new HashMap<>();
+          Map.Entry<String, String> variableEntry = variablesIterator.next();
+          if (variableEntry.getKey() != null) {
+            fieldMap.put("name", variableEntry.getKey());
+            fieldMap.put("path", variableEntry.getValue());
+          } else {
+            fieldMap.put("name", "#" + count);
+            fieldMap.put("path", variableEntry.getValue());
+          }
+          count++;
+          columns.add(fieldMap);
+        }
+      }
 
-    public String getQuery() {
-        return query;
+      // set the row results
+      for (ResultHolder valueSet : queryResultDto.getResultSet()) {
+        rows.add(valueSet.values());
+      }
     }
+  }
 
-    public void setQuery(String query) {
-        this.query = query;
-    }
+  public String getQuery() {
+    return query;
+  }
 
-    public List<Map<String, String>> getColumns() {
-        return columns;
-    }
+  public void setQuery(String query) {
+    this.query = query;
+  }
 
-    public void setColumns(List<Map<String, String>> columns) {
-        this.columns = columns;
-    }
+  public List<Map<String, String>> getColumns() {
+    return columns;
+  }
 
-    public List<List<Object>> getRows() {
-        return rows;
-    }
+  public void setColumns(List<Map<String, String>> columns) {
+    this.columns = columns;
+  }
 
-    public void setRows(List<List<Object>> rows) {
-        this.rows = rows;
-    }
+  public List<List<Object>> getRows() {
+    return rows;
+  }
 
-    public String getName() {
-        return name;
-    }
+  public void setRows(List<List<Object>> rows) {
+    this.rows = rows;
+  }
 
-    public void setName(String name) {
-        this.name = name;
-    }
+  public String getName() {
+    return name;
+  }
+
+  public void setName(String name) {
+    this.name = name;
+  }
 }

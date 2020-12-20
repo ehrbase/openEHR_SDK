@@ -20,16 +20,15 @@
 package org.ehrbase.client.classgenerator;
 
 import com.squareup.javapoet.TypeSpec;
+import java.util.ArrayDeque;
+import java.util.Deque;
+import java.util.HashMap;
+import java.util.Map;
 import org.apache.commons.collections4.MultiValuedMap;
 import org.apache.commons.collections4.multimap.ArrayListValuedHashMap;
 import org.ehrbase.terminology.client.terminology.ValueSet;
 import org.ehrbase.webtemplate.model.FilteredWebTemplate;
 import org.ehrbase.webtemplate.model.WebTemplateNode;
-
-import java.util.ArrayDeque;
-import java.util.Deque;
-import java.util.HashMap;
-import java.util.Map;
 
 class ClassGeneratorContext {
   final MultiValuedMap<String, TypeSpec> classes = new ArrayListValuedHashMap<>();

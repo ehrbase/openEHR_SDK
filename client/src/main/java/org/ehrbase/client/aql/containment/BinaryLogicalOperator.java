@@ -19,11 +19,10 @@
 
 package org.ehrbase.client.aql.containment;
 
-import org.ehrbase.client.aql.query.EntityQuery;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.ehrbase.client.aql.query.EntityQuery;
 
 public abstract class BinaryLogicalOperator implements ContainmentExpression {
 
@@ -38,12 +37,11 @@ public abstract class BinaryLogicalOperator implements ContainmentExpression {
   @Override
   public String buildAQL() {
 
-
-    return "(" +
-            containmentExpressionList.stream()
-                    .map(containmentExpression -> containmentExpression.buildAQL())
-                    .collect(Collectors.joining(" " + getSymbol() + " ")) +
-            ")";
+    return "("
+        + containmentExpressionList.stream()
+            .map(containmentExpression -> containmentExpression.buildAQL())
+            .collect(Collectors.joining(" " + getSymbol() + " "))
+        + ")";
   }
 
   @Override

@@ -17,61 +17,63 @@
 
 package org.ehrbase.serialisation.attributes;
 
+import static org.ehrbase.serialisation.dbencoding.CompositionSerializer.*;
+
 import com.nedap.archie.rm.archetyped.Locatable;
+import java.util.Map;
 import org.ehrbase.serialisation.dbencoding.CompositionSerializer;
 import org.ehrbase.serialisation.dbencoding.ItemStack;
 import org.ehrbase.serialisation.dbencoding.NameAsDvText;
 
-import java.util.Map;
-
-import static org.ehrbase.serialisation.dbencoding.CompositionSerializer.*;
 /**
- * populate the attributes for RM Locatable
- * Most RM object in a Composition inherit from this class
+ * populate the attributes for RM Locatable Most RM object in a Composition inherit from this class
  */
 public abstract class LocatableAttributes extends RMAttributes {
 
-    public LocatableAttributes(CompositionSerializer compositionSerializer, ItemStack itemStack, Map<String, Object> map) {
-        super(compositionSerializer, itemStack, map);
+  public LocatableAttributes(
+      CompositionSerializer compositionSerializer, ItemStack itemStack, Map<String, Object> map) {
+    super(compositionSerializer, itemStack, map);
+  }
+
+  /**
+   * map Locatable attributes in a queryable (AQL) form, that is the key follows openEHR RM UML
+   * conventions lower case, snake_case
+   *
+   * @param locatable
+   * @return
+   */
+  protected Map<String, Object> toMap(Locatable locatable) {
+    // add complementary attributes
+
+    if (locatable.getArchetypeNodeId() != null) {
+      map.put(TAG_ARCHETYPE_NODE_ID, locatable.getArchetypeNodeId());
+    }
+    if (locatable.getArchetypeDetails() != null) {
+      map.put(TAG_ARCHETYPE_DETAILS, locatable.getArchetypeDetails());
+    }
+    if (locatable.getFeederAudit() != null) {
+      map.put(TAG_FEEDER_AUDIT, new FeederAuditAttributes(locatable.getFeederAudit()).toMap());
+    }
+    if (locatable.getUid() != null) {
+      map = toMap(TAG_UID, locatable.getUid(), NO_NAME);
+    }
+    if (locatable.getLinks() != null && !locatable.getLinks().isEmpty()) {
+      map.put(TAG_LINKS, new LinksAttributes(locatable.getLinks()).toMap());
+    }
+    if (!map.containsKey(TAG_NAME)
+        && locatable.getName() != null) { // since name maybe resolved from the archetype node id
+      map.put(TAG_NAME, new NameAsDvText(locatable.getName()).toMap());
     }
 
-    /**
-     * map Locatable attributes in a queryable (AQL) form, that is the key follows openEHR RM UML conventions
-     * lower case, snake_case
-     * @param locatable
-     * @return
-     */
-    protected Map<String, Object> toMap(Locatable locatable){
-        //add complementary attributes
+    return map;
+  }
 
-        if (locatable.getArchetypeNodeId() != null){
-            map.put(TAG_ARCHETYPE_NODE_ID, locatable.getArchetypeNodeId());
-        }
-        if (locatable.getArchetypeDetails() != null){
-            map.put(TAG_ARCHETYPE_DETAILS, locatable.getArchetypeDetails());
-        }
-        if (locatable.getFeederAudit() != null){
-            map.put(TAG_FEEDER_AUDIT, new FeederAuditAttributes(locatable.getFeederAudit()).toMap());
-        }
-        if (locatable.getUid() != null){
-            map = toMap(TAG_UID, locatable.getUid(), NO_NAME);
-        }
-        if (locatable.getLinks() != null && !locatable.getLinks().isEmpty()){
-            map.put(TAG_LINKS, new LinksAttributes(locatable.getLinks()).toMap());
-        }
-        if (!map.containsKey(TAG_NAME) && locatable.getName() != null){ //since name maybe resolved from the archetype node id
-            map.put(TAG_NAME, new NameAsDvText(locatable.getName()).toMap());
-        }
-
-        return map;
-    }
-
-    public static boolean isLocatableAttribute(String key){
-        return (key.equals(TAG_ARCHETYPE_NODE_ID) ||
-                key.equals(TAG_ARCHETYPE_DETAILS) ||
-                key.equals(TAG_FEEDER_AUDIT)||
-                key.equals(TAG_UID)||
-                key.equals(TAG_LINKS) ||
-                key.equals(TAG_NAME));
-    }
+  public static boolean isLocatableAttribute(String key) {
+    return (key.equals(TAG_ARCHETYPE_NODE_ID)
+        || key.equals(TAG_ARCHETYPE_DETAILS)
+        || key.equals(TAG_FEEDER_AUDIT)
+        || key.equals(TAG_UID)
+        || key.equals(TAG_LINKS)
+        || key.equals(TAG_NAME));
+  }
 }

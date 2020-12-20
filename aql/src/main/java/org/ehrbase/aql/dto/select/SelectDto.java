@@ -19,9 +19,8 @@
 
 package org.ehrbase.aql.dto.select;
 
-import org.ehrbase.client.aql.top.Direction;
-
 import java.util.List;
+import org.ehrbase.client.aql.top.Direction;
 
 public class SelectDto {
 
@@ -29,8 +28,7 @@ public class SelectDto {
   private Direction topDirection;
   private List<SelectStatementDto> statement;
 
-  public SelectDto() {
-  }
+  public SelectDto() {}
 
   public Integer getTopCount() {
     return this.topCount;
@@ -63,14 +61,17 @@ public class SelectDto {
     if (!other.canEqual((Object) this)) return false;
     final Object this$topCount = this.getTopCount();
     final Object other$topCount = other.getTopCount();
-    if (this$topCount == null ? other$topCount != null : !this$topCount.equals(other$topCount)) return false;
+    if (this$topCount == null ? other$topCount != null : !this$topCount.equals(other$topCount))
+      return false;
     final Object this$topDirection = this.getTopDirection();
     final Object other$topDirection = other.getTopDirection();
-    if (this$topDirection == null ? other$topDirection != null : !this$topDirection.equals(other$topDirection))
-      return false;
+    if (this$topDirection == null
+        ? other$topDirection != null
+        : !this$topDirection.equals(other$topDirection)) return false;
     final Object this$statement = this.getStatement();
     final Object other$statement = other.getStatement();
-    if (this$statement == null ? other$statement != null : !this$statement.equals(other$statement)) return false;
+    if (this$statement == null ? other$statement != null : !this$statement.equals(other$statement))
+      return false;
     return true;
   }
 
@@ -91,6 +92,12 @@ public class SelectDto {
   }
 
   public String toString() {
-    return "SelectDto(topCount=" + this.getTopCount() + ", topDirection=" + this.getTopDirection() + ", statement=" + this.getStatement() + ")";
+    return "SelectDto(topCount="
+        + this.getTopCount()
+        + ", topDirection="
+        + this.getTopDirection()
+        + ", statement="
+        + this.getStatement()
+        + ")";
   }
 }

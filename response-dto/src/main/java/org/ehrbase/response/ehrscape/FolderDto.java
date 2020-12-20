@@ -23,42 +23,41 @@ import com.nedap.archie.rm.datavalues.DvText;
 import com.nedap.archie.rm.directory.Folder;
 import com.nedap.archie.rm.support.identification.ObjectRef;
 import com.nedap.archie.rm.support.identification.UIDBasedId;
-
 import java.util.List;
 
 public class FolderDto {
 
-    private final UIDBasedId uid;
-    private final List<Folder> folders;
-    private final List<ObjectRef> items;
-    private final DvText name;
-    private final ItemStructure details;
+  private final UIDBasedId uid;
+  private final List<Folder> folders;
+  private final List<ObjectRef> items;
+  private final DvText name;
+  private final ItemStructure details;
 
-    public FolderDto(Folder folder) {
-        this.uid = folder.getUid();
-        this.folders = folder.getFolders();
-        this.items = folder.getItems();
-        this.name = folder.getName();
-        this.details = folder.getDetails();
-    }
+  public FolderDto(Folder folder) {
+    this.uid = folder.getUid();
+    this.folders = folder.getFolders();
+    this.items = folder.getItems();
+    this.name = folder.getName();
+    this.details = folder.getDetails();
+  }
 
-    public List<Folder> getFolders() {
-        return folders;
-    }
+  public List<Folder> getFolders() {
+    return folders;
+  }
 
-    public List<ObjectRef> getItems() {
-        return items;
-    }
+  public List<ObjectRef> getItems() {
+    return items;
+  }
 
-    public DvText getName() {
-        return name;
-    }
+  public DvText getName() {
+    return name;
+  }
 
-    public UIDBasedId getUid() {
-        return uid;
-    }
+  public UIDBasedId getUid() {
+    return uid;
+  }
 
-    public ItemStructure getDetails() {
-        return details;
-    }
+  public ItemStructure getDetails() {
+    return details;
+  }
 }

@@ -19,22 +19,20 @@
 
 package org.ehrbase.client.classgenerator.interfaces;
 
-import org.ehrbase.client.classgenerator.shareddefinition.MathFunction;
-
-import java.time.temporal.TemporalAccessor;
 import java.time.temporal.TemporalAmount;
+import org.ehrbase.client.classgenerator.shareddefinition.MathFunction;
 
 public interface IntervalEventEntity extends LocatableEntity, EventEntity {
 
-    void setWidthValue(TemporalAmount widthValue);
+  void setWidthValue(TemporalAmount widthValue);
 
-    TemporalAmount getWidthValue();
+  TemporalAmount getWidthValue();
 
-    void setMathFunctionDefiningCode(MathFunction mathFunctionDefiningCode);
+  void setMathFunctionDefiningCode(MathFunction mathFunctionDefiningCode);
 
-    MathFunction getMathFunctionDefiningCode();
+  MathFunction getMathFunctionDefiningCode();
 
-    void setSampleCount(Long sampleCount);
+  void setSampleCount(Long sampleCount);
 
-    Long getSampleCount();
+  Long getSampleCount();
 }

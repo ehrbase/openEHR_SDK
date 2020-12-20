@@ -19,30 +19,30 @@
 package org.ehrbase.response.ehrscape;
 
 import com.nedap.archie.rm.generic.AuditDetails;
-
 import java.util.Map;
 import java.util.UUID;
 
 public class ContributionDto {
-    private final UUID uuid;
-    private final Map<String, String> objectReferences;
-    private final AuditDetails auditDetails;
+  private final UUID uuid;
+  private final Map<String, String> objectReferences;
+  private final AuditDetails auditDetails;
 
-    public ContributionDto(UUID uuid, Map<String, String> objectReferences, AuditDetails auditDetails) {
-        this.uuid = uuid;
-        this.objectReferences = objectReferences;
-        this.auditDetails = auditDetails;
-    }
+  public ContributionDto(
+      UUID uuid, Map<String, String> objectReferences, AuditDetails auditDetails) {
+    this.uuid = uuid;
+    this.objectReferences = objectReferences;
+    this.auditDetails = auditDetails;
+  }
 
-    public UUID getUuid() {
-        return uuid;
-    }
+  public UUID getUuid() {
+    return uuid;
+  }
 
-    public Map<String, String> getObjectReferences() {
-        return objectReferences;
-    }
+  public Map<String, String> getObjectReferences() {
+    return objectReferences;
+  }
 
-    public AuditDetails getAuditDetails() {
-        return auditDetails;
-    }
+  public AuditDetails getAuditDetails() {
+    return auditDetails;
+  }
 }

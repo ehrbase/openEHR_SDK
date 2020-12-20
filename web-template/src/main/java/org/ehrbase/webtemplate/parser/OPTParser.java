@@ -479,7 +479,8 @@ public class OPTParser {
                     .getLocalizedLabels()
                     .putAll(
                         Optional.ofNullable(termDefinitionMap.get(value.getValue()))
-                            .map(Map::entrySet).stream()
+                            .map(Map::entrySet)
+                            .stream()
                             .flatMap(Set::stream)
                             .collect(
                                 Collectors.toMap(Map.Entry::getKey, e -> e.getValue().getValue())));

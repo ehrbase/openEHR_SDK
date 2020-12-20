@@ -33,9 +33,9 @@
 package org.ehrbase.terminology.openehr.implementation;
 
 class Concept {
-    String id;
-    String rubric;
-    String description;
+  String id;
+  String rubric;
+  String description;
 }
 /*
  *  ***** BEGIN LICENSE BLOCK *****

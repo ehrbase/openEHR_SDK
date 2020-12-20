@@ -21,29 +21,28 @@ package org.ehrbase.response.openehr;
 import com.fasterxml.jackson.annotation.JsonValue;
 import com.nedap.archie.rm.generic.RevisionHistory;
 import com.nedap.archie.rm.generic.RevisionHistoryItem;
-
 import java.util.ArrayList;
 import java.util.List;
 
 public class RevisionHistoryResponseData {
 
-    private RevisionHistory revisionHistory;
+  private RevisionHistory revisionHistory;
 
-    public RevisionHistoryResponseData(RevisionHistory rh) {
-        List<RevisionHistoryItem> items = new ArrayList<>(rh.getItems());
-        this.revisionHistory = new RevisionHistory(items);
-    }
+  public RevisionHistoryResponseData(RevisionHistory rh) {
+    List<RevisionHistoryItem> items = new ArrayList<>(rh.getItems());
+    this.revisionHistory = new RevisionHistory(items);
+  }
 
-    public RevisionHistory getRevisionHistory() {
-        return revisionHistory;
-    }
+  public RevisionHistory getRevisionHistory() {
+    return revisionHistory;
+  }
 
-    @JsonValue
-    public List<RevisionHistoryItem> getRevisionHistoryItems() {
-        return revisionHistory.getItems();
-    }
+  @JsonValue
+  public List<RevisionHistoryItem> getRevisionHistoryItems() {
+    return revisionHistory.getItems();
+  }
 
-    public void setRevisionHistory(RevisionHistory revisionHistory) {
-        this.revisionHistory = revisionHistory;
-    }
+  public void setRevisionHistory(RevisionHistory revisionHistory) {
+    this.revisionHistory = revisionHistory;
+  }
 }

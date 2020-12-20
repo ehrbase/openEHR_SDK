@@ -1,6 +1,5 @@
 package org.ehrbase.client.classgenerator.examples.smicsbefundcomposition.definition;
 
-import java.lang.String;
 import org.ehrbase.client.classgenerator.EnumValueSet;
 
 public enum AntibiotikumDefiningCode implements EnumValueSet {
@@ -108,7 +107,8 @@ public enum AntibiotikumDefiningCode implements EnumValueSet {
 
   KANAMYCIN("Kanamycin", "Kanamycin", "LOINC", "18935-7"),
 
-  CEFTAZIDIM_CLAVULANSAURE("Ceftazidim/Clavulansäure", "Ceftazidim/Clavulansäure", "LOINC", "35776-4"),
+  CEFTAZIDIM_CLAVULANSAURE(
+      "Ceftazidim/Clavulansäure", "Ceftazidim/Clavulansäure", "LOINC", "35776-4"),
 
   PENICILLIN("Penicillin", "Penicillin", "LOINC", "18964-7"),
 
@@ -144,7 +144,8 @@ public enum AntibiotikumDefiningCode implements EnumValueSet {
 
   CLOFAZIMIN("Clofazimin", "Clofazimin", "LOINC", "23627-3"),
 
-  QUINUPRISTIN_DALFOPRISTIN("Quinupristin/Dalfopristin", "Quinupristin/Dalfopristin", "LOINC", "23640-6"),
+  QUINUPRISTIN_DALFOPRISTIN(
+      "Quinupristin/Dalfopristin", "Quinupristin/Dalfopristin", "LOINC", "23640-6"),
 
   CEFOTAXIM("Cefotaxim", "Cefotaxim", "LOINC", "18886-2"),
 
@@ -198,7 +199,8 @@ public enum AntibiotikumDefiningCode implements EnumValueSet {
 
   MINOCYCLIN("Minocyclin", "Minocyclin", "LOINC", "18948-0"),
 
-  TICARCILLIN_CLAVULANSAURE("Ticarcillin/Clavulansäure", "Ticarcillin/Clavulansäure", "LOINC", "18995-1"),
+  TICARCILLIN_CLAVULANSAURE(
+      "Ticarcillin/Clavulansäure", "Ticarcillin/Clavulansäure", "LOINC", "18995-1"),
 
   CARBENICILLIN("Carbenicillin", "Carbenicillin", "LOINC", "18873-0"),
 
@@ -230,7 +232,8 @@ public enum AntibiotikumDefiningCode implements EnumValueSet {
 
   PARA_AMINO_SALICYLSAURE("para-Amino-Salicylsäure", "para-Amino-Salicylsäure", "LOINC", "23629-9"),
 
-  AMOXYCILLIN_CLAVULANSAURE("Amoxycillin/Clavulansäure", "Amoxycillin/Clavulansäure", "LOINC", "18862-3"),
+  AMOXYCILLIN_CLAVULANSAURE(
+      "Amoxycillin/Clavulansäure", "Amoxycillin/Clavulansäure", "LOINC", "18862-3"),
 
   FAROPENEM("Faropenem", "Faropenem", "LOINC", "73600-9"),
 
@@ -320,7 +323,11 @@ public enum AntibiotikumDefiningCode implements EnumValueSet {
 
   METRONIDAZOL("Metronidazol", "Metronidazol", "LOINC", "18946-4"),
 
-  SULFAMETHOXAZOL_TRIMETHOPRIM_COTRIMOXAZOL("Sulfamethoxazol/Trimethoprim (Cotrimoxazol)", "Sulfamethoxazol/Trimethoprim (Cotrimoxazol)", "LOINC", "18998-5"),
+  SULFAMETHOXAZOL_TRIMETHOPRIM_COTRIMOXAZOL(
+      "Sulfamethoxazol/Trimethoprim (Cotrimoxazol)",
+      "Sulfamethoxazol/Trimethoprim (Cotrimoxazol)",
+      "LOINC",
+      "18998-5"),
 
   NALIDIXINSAURE("Nalidixinsäure", "Nalidixinsäure", "LOINC", "18952-2"),
 
@@ -380,18 +387,18 @@ public enum AntibiotikumDefiningCode implements EnumValueSet {
   }
 
   public String getValue() {
-     return this.value ;
+    return this.value;
   }
 
   public String getDescription() {
-     return this.description ;
+    return this.description;
   }
 
   public String getTerminologyId() {
-     return this.terminologyId ;
+    return this.terminologyId;
   }
 
   public String getCode() {
-     return this.code ;
+    return this.code;
   }
 }

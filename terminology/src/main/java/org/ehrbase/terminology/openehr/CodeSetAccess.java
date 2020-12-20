@@ -33,9 +33,7 @@
  */
 package org.ehrbase.terminology.openehr;
 
-
 import com.nedap.archie.rm.datatypes.CodePhrase;
-
 import java.util.Set;
 
 /**
@@ -46,35 +44,35 @@ import java.util.Set;
  */
 public interface CodeSetAccess {
 
-    /**
-     * Returns identification of this code set
-     *
-     * @return ID not null or empty
-     */
-    String id();
+  /**
+   * Returns identification of this code set
+   *
+   * @return ID not null or empty
+   */
+  String id();
 
-    /**
-     * Returns all codes known in this code set
-     *
-     * @return Set of DvCodePhrase
-     */
-    Set<CodePhrase> allCodes();
+  /**
+   * Returns all codes known in this code set
+   *
+   * @return Set of DvCodePhrase
+   */
+  Set<CodePhrase> allCodes();
 
-    /**
-     * Return true if this codeSet contains given codePhrase
-     *
-     * @param code
-     * @return true if has
-     */
-    boolean hasCode(CodePhrase code);
+  /**
+   * Return true if this codeSet contains given codePhrase
+   *
+   * @param code
+   * @return true if has
+   */
+  boolean hasCode(CodePhrase code);
 
-    /**
-     * Return true if this codeSet contains given 'lang'
-     *
-     * @param lang
-     * @return true if has
-     */
-    boolean hasLang(CodePhrase lang);
+  /**
+   * Return true if this codeSet contains given 'lang'
+   *
+   * @param lang
+   * @return true if has
+   */
+  boolean hasLang(CodePhrase lang);
 }
 /*
  *  ***** BEGIN LICENSE BLOCK *****

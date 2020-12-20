@@ -23,25 +23,25 @@ import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.dataformat.xml.ser.ToXmlGenerator;
 import com.nedap.archie.rm.RMObject;
+import java.io.IOException;
+import javax.xml.namespace.QName;
 import org.ehrbase.serialisation.jsonencoding.CanonicalJson;
 import org.ehrbase.serialisation.xmlencoding.CanonicalXML;
 
-import javax.xml.namespace.QName;
-import java.io.IOException;
-
 public class RmObjectJsonSerializer extends JsonSerializer<RMObject> {
-    @Override
-    public void serialize(RMObject value, JsonGenerator gen, SerializerProvider serializers) throws IOException {
-        if (gen instanceof ToXmlGenerator) {
-            final QName qName;
-            if (gen.getOutputContext().getCurrentName() != null) {
-                qName = new QName(null, gen.getOutputContext().getCurrentName());
-            } else {
-                qName = new QName(null, gen.getOutputContext().getParent().getCurrentName());
-            }
-            gen.writeRawValue(new CanonicalXML().marshalInline(value, qName));
-        } else {
-            gen.writeRawValue(new CanonicalJson().marshal(value));
-        }
+  @Override
+  public void serialize(RMObject value, JsonGenerator gen, SerializerProvider serializers)
+      throws IOException {
+    if (gen instanceof ToXmlGenerator) {
+      final QName qName;
+      if (gen.getOutputContext().getCurrentName() != null) {
+        qName = new QName(null, gen.getOutputContext().getCurrentName());
+      } else {
+        qName = new QName(null, gen.getOutputContext().getParent().getCurrentName());
+      }
+      gen.writeRawValue(new CanonicalXML().marshalInline(value, qName));
+    } else {
+      gen.writeRawValue(new CanonicalJson().marshal(value));
     }
+  }
 }

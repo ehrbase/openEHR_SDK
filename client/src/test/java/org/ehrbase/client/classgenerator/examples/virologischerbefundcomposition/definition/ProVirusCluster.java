@@ -3,9 +3,6 @@ package org.ehrbase.client.classgenerator.examples.virologischerbefundcompositio
 import com.nedap.archie.rm.archetyped.FeederAudit;
 import com.nedap.archie.rm.datastructures.Cluster;
 import com.nedap.archie.rm.datavalues.DvIdentifier;
-import java.lang.Double;
-import java.lang.Long;
-import java.lang.String;
 import java.util.List;
 import javax.annotation.processing.Generated;
 import org.ehrbase.client.annotations.Archetype;
@@ -18,26 +15,26 @@ import org.ehrbase.client.classgenerator.interfaces.LocatableEntity;
 @Generated(
     value = "org.ehrbase.client.classgenerator.ClassGenerator",
     date = "2020-12-10T13:06:13.770035700+01:00",
-    comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
-)
+    comments = "https://github.com/ehrbase/openEHR_SDK Version: null")
 public class ProVirusCluster implements LocatableEntity {
   /**
    * Path: Virologischer Befund/Befund/Jedes Ereignis/Kultur/Pro Virus/Analyseergebnis-Reihenfolge
-   * Description: Die beabsichtigte Position dieses Analyseergebnisses in der Reihenfolge aller Analyseergebnisse
+   * Description: Die beabsichtigte Position dieses Analyseergebnisses in der Reihenfolge aller
+   * Analyseergebnisse
    */
   @Path("/items[at0027]/value|magnitude")
   private Long analyseergebnisReihenfolgeMagnitude;
 
   /**
-   * Path: Virologischer Befund/Befund/Jedes Ereignis/Kultur/Pro Virus/Virus
-   * Description: Die Bezeichnung des Analyt-Resultats
+   * Path: Virologischer Befund/Befund/Jedes Ereignis/Kultur/Pro Virus/Virus Description: Die
+   * Bezeichnung des Analyt-Resultats
    */
   @Path("/items[at0024 and name/value='Virus']/value|value")
   private String virusValue;
 
   /**
-   * Path: Virologischer Befund/Befund/Jedes Ereignis/Kultur/Pro Virus/Nachweis
-   * Description: (Mess-)Wert des Analyt-Resultats.
+   * Path: Virologischer Befund/Befund/Jedes Ereignis/Kultur/Pro Virus/Nachweis Description:
+   * (Mess-)Wert des Analyt-Resultats.
    */
   @Path("/items[at0001 and name/value='Nachweis']/value|value")
   private String nachweisValue;
@@ -71,87 +68,85 @@ public class ProVirusCluster implements LocatableEntity {
   private DvIdentifier zugehorigeLaborprobe;
 
   /**
-   * Path: Virologischer Befund/Befund/Jedes Ereignis/Kultur/Pro Virus/Kommentar
-   * Description: Kommentar zum Analyt-Resultat, soweit noch nicht in anderen Feldern erfasst.
+   * Path: Virologischer Befund/Befund/Jedes Ereignis/Kultur/Pro Virus/Kommentar Description:
+   * Kommentar zum Analyt-Resultat, soweit noch nicht in anderen Feldern erfasst.
    */
   @Path("/items[at0003]/value|value")
   private String kommentarValue;
 
-  /**
-   * Path: Virologischer Befund/Befund/Jedes Ereignis/Kultur/Pro Virus/feeder_audit
-   */
+  /** Path: Virologischer Befund/Befund/Jedes Ereignis/Kultur/Pro Virus/feeder_audit */
   @Path("/feeder_audit")
   private FeederAudit feederAudit;
 
   public void setAnalyseergebnisReihenfolgeMagnitude(Long analyseergebnisReihenfolgeMagnitude) {
-     this.analyseergebnisReihenfolgeMagnitude = analyseergebnisReihenfolgeMagnitude;
+    this.analyseergebnisReihenfolgeMagnitude = analyseergebnisReihenfolgeMagnitude;
   }
 
   public Long getAnalyseergebnisReihenfolgeMagnitude() {
-     return this.analyseergebnisReihenfolgeMagnitude ;
+    return this.analyseergebnisReihenfolgeMagnitude;
   }
 
   public void setVirusValue(String virusValue) {
-     this.virusValue = virusValue;
+    this.virusValue = virusValue;
   }
 
   public String getVirusValue() {
-     return this.virusValue ;
+    return this.virusValue;
   }
 
   public void setNachweisValue(String nachweisValue) {
-     this.nachweisValue = nachweisValue;
+    this.nachweisValue = nachweisValue;
   }
 
   public String getNachweisValue() {
-     return this.nachweisValue ;
+    return this.nachweisValue;
   }
 
   public void setViruslastCtWertMagnitude(Double viruslastCtWertMagnitude) {
-     this.viruslastCtWertMagnitude = viruslastCtWertMagnitude;
+    this.viruslastCtWertMagnitude = viruslastCtWertMagnitude;
   }
 
   public Double getViruslastCtWertMagnitude() {
-     return this.viruslastCtWertMagnitude ;
+    return this.viruslastCtWertMagnitude;
   }
 
   public void setViruslastCtWertUnits(String viruslastCtWertUnits) {
-     this.viruslastCtWertUnits = viruslastCtWertUnits;
+    this.viruslastCtWertUnits = viruslastCtWertUnits;
   }
 
   public String getViruslastCtWertUnits() {
-     return this.viruslastCtWertUnits ;
+    return this.viruslastCtWertUnits;
   }
 
   public void setAnalyseergebnisDetails(List<Cluster> analyseergebnisDetails) {
-     this.analyseergebnisDetails = analyseergebnisDetails;
+    this.analyseergebnisDetails = analyseergebnisDetails;
   }
 
   public List<Cluster> getAnalyseergebnisDetails() {
-     return this.analyseergebnisDetails ;
+    return this.analyseergebnisDetails;
   }
 
   public void setZugehorigeLaborprobe(DvIdentifier zugehorigeLaborprobe) {
-     this.zugehorigeLaborprobe = zugehorigeLaborprobe;
+    this.zugehorigeLaborprobe = zugehorigeLaborprobe;
   }
 
   public DvIdentifier getZugehorigeLaborprobe() {
-     return this.zugehorigeLaborprobe ;
+    return this.zugehorigeLaborprobe;
   }
 
   public void setKommentarValue(String kommentarValue) {
-     this.kommentarValue = kommentarValue;
+    this.kommentarValue = kommentarValue;
   }
 
   public String getKommentarValue() {
-     return this.kommentarValue ;
+    return this.kommentarValue;
   }
 
   public void setFeederAudit(FeederAudit feederAudit) {
-     this.feederAudit = feederAudit;
+    this.feederAudit = feederAudit;
   }
 
   public FeederAudit getFeederAudit() {
-     return this.feederAudit ;
+    return this.feederAudit;
   }
 }

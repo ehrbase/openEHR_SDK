@@ -19,6 +19,8 @@
 
 package org.ehrbase.aql.binder;
 
+import java.util.HashMap;
+import java.util.Map;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.MutablePair;
 import org.apache.commons.lang3.tuple.Pair;
@@ -30,15 +32,11 @@ import org.ehrbase.client.aql.containment.Containment;
 import org.ehrbase.client.aql.containment.ContainmentExpression;
 import org.ehrbase.util.exception.SdkException;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class ContainmentBinder {
 
   public Pair<ContainmentExpression, Map<Integer, Containment>> buildContainment(
       ContainmentExpresionDto dto) {
     MutablePair<ContainmentExpression, Map<Integer, Containment>> result = new MutablePair<>();
-
 
     if (dto instanceof ContainmentDto) {
       handleContainmentDto((ContainmentDto) dto, result);
@@ -51,7 +49,9 @@ public class ContainmentBinder {
     return result;
   }
 
-  public void handleContainmentLogicalOperator(ContainmentLogicalOperator dto, MutablePair<ContainmentExpression, Map<Integer, Containment>> result) {
+  public void handleContainmentLogicalOperator(
+      ContainmentLogicalOperator dto,
+      MutablePair<ContainmentExpression, Map<Integer, Containment>> result) {
     ContainmentExpression containmentExpression;
     Map<Integer, Containment> containmentMap;
     Pair<ContainmentExpression, Map<Integer, Containment>> pair =
@@ -63,10 +63,7 @@ public class ContainmentBinder {
     containmentMap = pair.getRight();
     for (int i = 2; i < dto.getValues().size(); i++) {
       Pair<ContainmentExpression, Map<Integer, Containment>> subPair =
-          buildLogicalOperator(
-              dto.getSymbol(),
-              pair,
-              buildContainment(dto.getValues().get(i)));
+          buildLogicalOperator(dto.getSymbol(), pair, buildContainment(dto.getValues().get(i)));
       containmentExpression = subPair.getLeft();
       containmentMap.putAll(subPair.getRight());
     }
@@ -74,7 +71,8 @@ public class ContainmentBinder {
     result.setRight(containmentMap);
   }
 
-  public void handleContainmentDto(ContainmentDto dto, MutablePair<ContainmentExpression, Map<Integer, Containment>> result) {
+  public void handleContainmentDto(
+      ContainmentDto dto, MutablePair<ContainmentExpression, Map<Integer, Containment>> result) {
     ContainmentExpression containmentExpression;
     Map<Integer, Containment> containmentMap = new HashMap<>();
     ContainmentExpression containmentExpression1;

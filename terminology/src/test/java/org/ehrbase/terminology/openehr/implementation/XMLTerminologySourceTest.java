@@ -17,34 +17,32 @@
  */
 package org.ehrbase.terminology.openehr.implementation;
 
+import static org.junit.Assert.assertNotNull;
 
 import org.junit.Test;
 
-import static org.junit.Assert.assertNotNull;
-
 public class XMLTerminologySourceTest {
 
-    @Test
-    public void testGetOpenEHRInstance() throws Exception {
-        TerminologySource terminologySource =
-                TerminologySourceFactory.getOpenEHRTerminology();
+  @Test
+  public void testGetOpenEHRInstance() throws Exception {
+    TerminologySource terminologySource = TerminologySourceFactory.getOpenEHRTerminology();
 
-        assertNotNull(terminologySource);
-    }
+    assertNotNull(terminologySource);
+  }
 
-    @Test
-    public void testGetExternalInstance() throws Exception {
-        TerminologySource terminologySource =
-                TerminologySourceFactory.getExternalTerminologies("en");
+  @Test
+  public void testGetExternalInstance() throws Exception {
+    TerminologySource terminologySource = TerminologySourceFactory.getExternalTerminologies("en");
 
-        assertNotNull(terminologySource);
-    }
+    assertNotNull(terminologySource);
+  }
 
-    @Test
-    public void testGetMapper() throws Exception {
+  @Test
+  public void testGetMapper() throws Exception {
 
-        AttributeCodesetMapping attributeCodesetMapping = AttributeCodesetMapping.getInstance("attribute_to_openehr_codesets.xml");
+    AttributeCodesetMapping attributeCodesetMapping =
+        AttributeCodesetMapping.getInstance("attribute_to_openehr_codesets.xml");
 
-        assertNotNull(attributeCodesetMapping);
-    }
+    assertNotNull(attributeCodesetMapping);
+  }
 }

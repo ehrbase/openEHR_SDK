@@ -1,10 +1,13 @@
 package org.ehrbase.client.classgenerator.examples.openereactcarecomposition.definition;
 
-import java.lang.String;
 import org.ehrbase.client.classgenerator.EnumValueSet;
 
 public enum ValueDefiningCode4 implements EnumValueSet {
-  ABDOMINAL_DISTENSION_NAUSEA_BLEEDING("Abdominal distension/nausea/bleeding", "Abdominal distension/nausea/bleeding.", "local", "at0109"),
+  ABDOMINAL_DISTENSION_NAUSEA_BLEEDING(
+      "Abdominal distension/nausea/bleeding",
+      "Abdominal distension/nausea/bleeding.",
+      "local",
+      "at0109"),
 
   NO_PROGRESS("No progress", "No progress.", "local", "at0108");
 
@@ -24,18 +27,18 @@ public enum ValueDefiningCode4 implements EnumValueSet {
   }
 
   public String getValue() {
-     return this.value ;
+    return this.value;
   }
 
   public String getDescription() {
-     return this.description ;
+    return this.description;
   }
 
   public String getTerminologyId() {
-     return this.terminologyId ;
+    return this.terminologyId;
   }
 
   public String getCode() {
-     return this.code ;
+    return this.code;
   }
 }

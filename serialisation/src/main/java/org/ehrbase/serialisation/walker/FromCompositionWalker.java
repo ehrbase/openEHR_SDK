@@ -21,11 +21,10 @@ package org.ehrbase.serialisation.walker;
 
 import com.nedap.archie.rm.RMObject;
 import com.nedap.archie.rminfo.ArchieRMInfoLookup;
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.ehrbase.webtemplate.model.WebTemplateNode;
-
 import java.util.List;
 import java.util.Map;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.ehrbase.webtemplate.model.WebTemplateNode;
 
 public abstract class FromCompositionWalker<T> extends Walker<T> {
   public static final ArchieRMInfoLookup ARCHIE_RM_INFO_LOOKUP = ArchieRMInfoLookup.getInstance();
@@ -75,10 +74,22 @@ public abstract class FromCompositionWalker<T> extends Walker<T> {
     }
   }
 
-  protected ImmutablePair<T, RMObject> extractPair(Context<T> context, WebTemplateNode currentNode, Map<String, List<WebTemplateNode>> choices, WebTemplateNode childNode, Integer i) {
+  protected ImmutablePair<T, RMObject> extractPair(
+      Context<T> context,
+      WebTemplateNode currentNode,
+      Map<String, List<WebTemplateNode>> choices,
+      WebTemplateNode childNode,
+      Integer i) {
     RMObject currentChild = null;
     T childObject = null;
-    currentChild = (RMObject) extractRMChild(context.getRmObjectDeque().peek(), currentNode, childNode, choices.containsKey(childNode.getAqlPath()), i);
+    currentChild =
+        (RMObject)
+            extractRMChild(
+                context.getRmObjectDeque().peek(),
+                currentNode,
+                childNode,
+                choices.containsKey(childNode.getAqlPath()),
+                i);
 
     if (currentChild != null) {
       childObject = extract(context, childNode, choices.containsKey(childNode.getAqlPath()), i);

@@ -19,24 +19,21 @@ package org.ehrbase.serialisation.dbencoding;
 
 import com.nedap.archie.rm.datastructures.Element;
 
-/**
- * utility to deal with Element content check
- */
+/** utility to deal with Element content check */
 public class Elements {
 
-    private Element element;
+  private Element element;
 
-    public Elements(Element element) {
-        this.element = element;
-    }
+  public Elements(Element element) {
+    this.element = element;
+  }
 
-    /**
-     * check if an element is containing any significant values to be serialized (e.g. stored) to DB
-     *
-     * @return
-     */
-    public boolean isVoid() {
-        return (element.getValue() == null &&
-                element.getNullFlavour() == null);
-    }
+  /**
+   * check if an element is containing any significant values to be serialized (e.g. stored) to DB
+   *
+   * @return
+   */
+  public boolean isVoid() {
+    return (element.getValue() == null && element.getNullFlavour() == null);
+  }
 }

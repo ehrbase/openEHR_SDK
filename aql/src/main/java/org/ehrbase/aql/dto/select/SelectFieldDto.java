@@ -25,8 +25,7 @@ public class SelectFieldDto implements SelectStatementDto {
   private String aqlPath;
   private int containmentId;
 
-  public SelectFieldDto() {
-  }
+  public SelectFieldDto() {}
 
   public String getName() {
     return this.name;
@@ -62,7 +61,8 @@ public class SelectFieldDto implements SelectStatementDto {
     if (this$name == null ? other$name != null : !this$name.equals(other$name)) return false;
     final Object this$aqlPath = this.getAqlPath();
     final Object other$aqlPath = other.getAqlPath();
-    if (this$aqlPath == null ? other$aqlPath != null : !this$aqlPath.equals(other$aqlPath)) return false;
+    if (this$aqlPath == null ? other$aqlPath != null : !this$aqlPath.equals(other$aqlPath))
+      return false;
     if (this.getContainmentId() != other.getContainmentId()) return false;
     return true;
   }
@@ -83,6 +83,12 @@ public class SelectFieldDto implements SelectStatementDto {
   }
 
   public String toString() {
-    return "SelectFieldDto(name=" + this.getName() + ", aqlPath=" + this.getAqlPath() + ", containmentId=" + this.getContainmentId() + ")";
+    return "SelectFieldDto(name="
+        + this.getName()
+        + ", aqlPath="
+        + this.getAqlPath()
+        + ", containmentId="
+        + this.getContainmentId()
+        + ")";
   }
 }

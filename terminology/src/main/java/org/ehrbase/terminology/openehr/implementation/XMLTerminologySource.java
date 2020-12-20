@@ -32,17 +32,16 @@
  */
 package org.ehrbase.terminology.openehr.implementation;
 
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
+import javax.xml.XMLConstants;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 import org.ehrbase.terminology.openehr.TerminologyResourceException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
-
-import javax.xml.XMLConstants;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * This class provides access to terminology content in XML format
@@ -51,99 +50,97 @@ import java.util.List;
  */
 public class XMLTerminologySource implements TerminologySource {
 
-    /**
-     * Gets an terminology source loaded with specified xml content
-     */
-    public static XMLTerminologySource getInstance(String xmlfilename) throws TerminologyResourceException {
-        return new XMLTerminologySource(xmlfilename);
+  /** Gets an terminology source loaded with specified xml content */
+  public static XMLTerminologySource getInstance(String xmlfilename)
+      throws TerminologyResourceException {
+    return new XMLTerminologySource(xmlfilename);
+  }
+
+  public List<CodeSet> getCodeSets() {
+    return codeSetList;
+  }
+
+  public List<Group> getConceptGroups() {
+    return groupList;
+  }
+
+  /*
+   * Constructs an instance loaded with terminology content
+   */
+  private XMLTerminologySource(String filename) throws TerminologyResourceException {
+    codeSetList = new ArrayList<>();
+    groupList = new ArrayList<>();
+    loadTerminologyFromXML(filename);
+  }
+
+  private void loadTerminologyFromXML(String filename) throws TerminologyResourceException {
+    try (InputStream resourceAsStream = getClass().getClassLoader().getResourceAsStream(filename)) {
+
+      if (resourceAsStream == null) {
+        throw new TerminologyResourceException("Could not access filename:" + filename);
+      }
+
+      final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+      factory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+      factory.setAttribute(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
+      final DocumentBuilder documentBuilder = factory.newDocumentBuilder();
+      final Document document = documentBuilder.parse(resourceAsStream);
+      Element root = document.getDocumentElement();
+      NodeList codesets = root.getElementsByTagName("codeset");
+      codeSetList.clear();
+      groupList.clear();
+
+      for (int idx = 0; idx < codesets.getLength(); idx++) {
+        Element element = (Element) codesets.item(idx);
+        codeSetList.add(loadCodeSet(element));
+      }
+
+      NodeList groups = root.getElementsByTagName("group");
+      for (int idx = 0; idx < groups.getLength(); idx++) {
+        Element element = (Element) groups.item(idx);
+        groupList.add(loadGroup(element));
+      }
+    } catch (Exception e) {
+      throw new TerminologyResourceException(e.getMessage());
     }
+  }
 
-    public List<CodeSet> getCodeSets() {
-        return codeSetList;
+  /*
+   * Loads a code set from XML element
+   */
+  private CodeSet loadCodeSet(Element element) {
+    CodeSet codeset = new CodeSet();
+    codeset.openehrId = element.getAttribute("openehr_id");
+    codeset.issuer = element.getAttribute("issuer");
+    codeset.externalId = element.getAttribute("external_id");
+    NodeList children = element.getElementsByTagName("code");
+    for (int idx = 0; idx < children.getLength(); idx++) {
+      Element code = (Element) children.item(idx);
+      codeset.addCode(code.getAttribute("value"), code.getAttribute("description"));
     }
+    return codeset;
+  }
 
-    public List<Group> getConceptGroups() {
-        return groupList;
+  /*
+   * Loads a concept group from XML element
+   */
+  private Group loadGroup(Element element) {
+    Group group = new Group();
+    group.name = element.getAttribute("name");
+
+    NodeList children = element.getElementsByTagName("concept");
+    for (int idx = 0; idx < children.getLength(); idx++) {
+      Concept concept = new Concept();
+      Element e = (Element) children.item(idx);
+      concept.id = (e.getAttribute("id"));
+      concept.rubric = (e.getAttribute("rubric"));
+      group.addConcept(concept);
     }
+    return group;
+  }
 
-    /*
-     * Constructs an instance loaded with terminology content
-     */
-    private XMLTerminologySource(String filename) throws TerminologyResourceException {
-        codeSetList = new ArrayList<>();
-        groupList = new ArrayList<>();
-        loadTerminologyFromXML(filename);
-    }
-
-    private void loadTerminologyFromXML(String filename) throws TerminologyResourceException {
-        try (InputStream resourceAsStream = getClass().getClassLoader().getResourceAsStream(filename)) {
-
-            if (resourceAsStream == null) {
-                throw new TerminologyResourceException("Could not access filename:" + filename);
-            }
-
-            final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-            factory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
-            factory.setAttribute(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
-            final DocumentBuilder documentBuilder = factory.newDocumentBuilder();
-            final Document document = documentBuilder.parse(resourceAsStream);
-            Element root = document.getDocumentElement();
-            NodeList codesets = root.getElementsByTagName("codeset");
-            codeSetList.clear();
-            groupList.clear();
-
-            for (int idx = 0; idx < codesets.getLength(); idx++) {
-                Element element = (Element) codesets.item(idx);
-                codeSetList.add(loadCodeSet(element));
-            }
-
-            NodeList groups = root.getElementsByTagName("group");
-            for (int idx = 0; idx < groups.getLength(); idx++) {
-                Element element = (Element) groups.item(idx);
-                groupList.add(loadGroup(element));
-            }
-        } catch (Exception e) {
-            throw new TerminologyResourceException(e.getMessage());
-        }
-    }
-
-
-    /*
-     * Loads a code set from XML element
-     */
-    private CodeSet loadCodeSet(Element element) {
-        CodeSet codeset = new CodeSet();
-        codeset.openehrId = element.getAttribute("openehr_id");
-        codeset.issuer = element.getAttribute("issuer");
-        codeset.externalId = element.getAttribute("external_id");
-        NodeList children = element.getElementsByTagName("code");
-        for (int idx = 0; idx < children.getLength(); idx++) {
-            Element code = (Element) children.item(idx);
-            codeset.addCode(code.getAttribute("value"), code.getAttribute("description"));
-        }
-        return codeset;
-    }
-
-    /*
-     * Loads a concept group from XML element
-     */
-    private Group loadGroup(Element element) {
-        Group group = new Group();
-        group.name = element.getAttribute("name");
-
-        NodeList children = element.getElementsByTagName("concept");
-        for (int idx = 0; idx < children.getLength(); idx++) {
-            Concept concept = new Concept();
-            Element e = (Element) children.item(idx);
-            concept.id = (e.getAttribute("id"));
-            concept.rubric = (e.getAttribute("rubric"));
-            group.addConcept(concept);
-        }
-        return group;
-    }
-
-    private List<Group> groupList;
-    private List<CodeSet> codeSetList;
+  private List<Group> groupList;
+  private List<CodeSet> codeSetList;
 }
 /*
  *  ***** BEGIN LICENSE BLOCK *****

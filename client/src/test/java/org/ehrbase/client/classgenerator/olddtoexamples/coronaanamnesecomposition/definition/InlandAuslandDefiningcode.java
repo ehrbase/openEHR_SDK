@@ -3,11 +3,23 @@ package org.ehrbase.client.classgenerator.olddtoexamples.coronaanamnesecompositi
 import org.ehrbase.client.classgenerator.EnumValueSet;
 
 public enum InlandAuslandDefiningcode implements EnumValueSet {
-  INLANDSREISE("Inlandsreise", "Die Person ist innerhalb des angegebenen Zeitraums im Inland gereist.", "local", "at0028"),
+  INLANDSREISE(
+      "Inlandsreise",
+      "Die Person ist innerhalb des angegebenen Zeitraums im Inland gereist.",
+      "local",
+      "at0028"),
 
-  INLANDS_UND_AUSLANDSREISE("Inlands- und Auslandsreise", "Die Person ist innerhalb des festgelegten Zeitraums sowohl im Inland als auch international gereist.", "local", "at0030"),
+  INLANDS_UND_AUSLANDSREISE(
+      "Inlands- und Auslandsreise",
+      "Die Person ist innerhalb des festgelegten Zeitraums sowohl im Inland als auch international gereist.",
+      "local",
+      "at0030"),
 
-  AUSLANDREISE("Auslandreise", "Die Person ist innerhalb des angegebenen Zeitraums international gereist.", "local", "at0029");
+  AUSLANDREISE(
+      "Auslandreise",
+      "Die Person ist innerhalb des angegebenen Zeitraums international gereist.",
+      "local",
+      "at0029");
 
   private String value;
 
@@ -25,7 +37,7 @@ public enum InlandAuslandDefiningcode implements EnumValueSet {
   }
 
   public String getValue() {
-     return this.value;
+    return this.value;
   }
 
   public String getDescription() {

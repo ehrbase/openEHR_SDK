@@ -18,26 +18,26 @@
 package org.ehrbase.serialisation.attributes;
 
 import com.nedap.archie.rm.generic.PartyRelated;
+import java.util.Map;
 import org.ehrbase.serialisation.dbencoding.CompositionSerializer;
 
-import java.util.Map;
-/**
- * populate the attributes for RM PartyRelated
- */
+/** populate the attributes for RM PartyRelated */
 public class PartyRelatedAttributes implements I_SubjectAttributes {
 
-    PartyRelated partyRelated;
-    CompositionSerializer compositionSerializer;
+  PartyRelated partyRelated;
+  CompositionSerializer compositionSerializer;
 
-    public PartyRelatedAttributes(PartyRelated partyRelated, CompositionSerializer compositionSerializer) {
-        this.partyRelated = partyRelated;
-        this.compositionSerializer = compositionSerializer;
-    }
+  public PartyRelatedAttributes(
+      PartyRelated partyRelated, CompositionSerializer compositionSerializer) {
+    this.partyRelated = partyRelated;
+    this.compositionSerializer = compositionSerializer;
+  }
 
-    public Map<String, Object> toMap(){
-        Map<String, Object> valuemap = new PartyIdentifiedAttributes(partyRelated, compositionSerializer).toMap();
-        valuemap.put("relationship", partyRelated.getRelationship());
+  public Map<String, Object> toMap() {
+    Map<String, Object> valuemap =
+        new PartyIdentifiedAttributes(partyRelated, compositionSerializer).toMap();
+    valuemap.put("relationship", partyRelated.getRelationship());
 
-        return valuemap;
-    }
+    return valuemap;
+  }
 }

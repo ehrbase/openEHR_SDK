@@ -24,21 +24,20 @@ import org.ehrbase.client.aql.parameter.Parameter;
 
 public class LessThan<T> extends ComparisonOperator<T> {
 
+  protected LessThan(SelectAqlField<T> field, T value) {
+    super(field, value);
+  }
 
-    protected LessThan(SelectAqlField<T> field, T value) {
-        super(field, value);
-    }
+  protected LessThan(SelectAqlField<T> field, Parameter<T> parameter) {
+    super(field, parameter);
+  }
 
-    protected LessThan(SelectAqlField<T> field, Parameter<T> parameter) {
-        super(field, parameter);
-    }
+  public LessThan(SelectAqlField<T> field, SelectAqlField<T> compereField) {
+    super(field, compereField);
+  }
 
-    public LessThan(SelectAqlField<T> field, SelectAqlField<T> compereField) {
-        super(field, compereField);
-    }
-
-    @Override
-    protected String getSymbol() {
-        return "<";
-    }
+  @Override
+  protected String getSymbol() {
+    return "<";
+  }
 }

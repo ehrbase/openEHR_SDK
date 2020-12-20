@@ -21,12 +21,11 @@ package org.ehrbase.util.reflection;
 
 import io.github.classgraph.ClassGraph;
 import io.github.classgraph.ScanResult;
-import org.ehrbase.util.exception.SdkException;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import org.ehrbase.util.exception.SdkException;
 
 /** Helper class to find Configurations classes in the classpath. */
 public class ReflectionHelper {

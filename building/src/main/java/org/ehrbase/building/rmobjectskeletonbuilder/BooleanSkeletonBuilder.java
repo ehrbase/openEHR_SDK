@@ -22,17 +22,17 @@ package org.ehrbase.building.rmobjectskeletonbuilder;
 import org.openehr.schemas.v1.CBOOLEAN;
 
 public class BooleanSkeletonBuilder implements RmObjectSkeletonBuilder<CBOOLEAN, Boolean> {
-    @Override
-    public Class<CBOOLEAN> getAssociatedClass() {
-        return CBOOLEAN.class;
-    }
+  @Override
+  public Class<CBOOLEAN> getAssociatedClass() {
+    return CBOOLEAN.class;
+  }
 
-    @Override
-    public Boolean getRmObject(CBOOLEAN xml) {
-        if (xml.isSetAssumedValue()) {
-            return xml.getAssumedValue();
-        } else {
-            return null;
-        }
+  @Override
+  public Boolean getRmObject(CBOOLEAN xml) {
+    if (xml.isSetAssumedValue()) {
+      return xml.getAssumedValue();
+    } else {
+      return null;
     }
+  }
 }

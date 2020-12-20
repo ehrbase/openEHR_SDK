@@ -17,31 +17,29 @@
  */
 package org.ehrbase.serialisation.attributes;
 
+import static org.ehrbase.serialisation.dbencoding.CompositionSerializer.TAG_CLASS;
+
 import com.nedap.archie.rm.generic.PartySelf;
+import java.util.Map;
 import org.ehrbase.serialisation.dbencoding.CompositionSerializer;
 import org.ehrbase.serialisation.dbencoding.PathMap;
 
-import java.util.Map;
-
-import static org.ehrbase.serialisation.dbencoding.CompositionSerializer.TAG_CLASS;
-/**
- * populate the attributes for RM PartySelf
- */
+/** populate the attributes for RM PartySelf */
 public class PartySelfAttributes implements I_SubjectAttributes {
 
-    PartySelf partySelf;
-    CompositionSerializer compositionSerializer;
+  PartySelf partySelf;
+  CompositionSerializer compositionSerializer;
 
-    public PartySelfAttributes(PartySelf partySelf, CompositionSerializer compositionSerializer) {
-        this.partySelf = partySelf;
-        this.compositionSerializer = compositionSerializer;
-    }
+  public PartySelfAttributes(PartySelf partySelf, CompositionSerializer compositionSerializer) {
+    this.partySelf = partySelf;
+    this.compositionSerializer = compositionSerializer;
+  }
 
-    public Map<String, Object> toMap(){
-        Map<String, Object> valuemap = PathMap.getInstance();
+  public Map<String, Object> toMap() {
+    Map<String, Object> valuemap = PathMap.getInstance();
 
-        valuemap.put(TAG_CLASS, partySelf.getClass().getSimpleName());
+    valuemap.put(TAG_CLASS, partySelf.getClass().getSimpleName());
 
-        return valuemap;
-    }
+    return valuemap;
+  }
 }

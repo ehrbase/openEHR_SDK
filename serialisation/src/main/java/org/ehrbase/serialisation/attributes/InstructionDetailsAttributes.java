@@ -18,37 +18,36 @@
 package org.ehrbase.serialisation.attributes;
 
 import com.nedap.archie.rm.composition.InstructionDetails;
-import org.ehrbase.serialisation.dbencoding.PathMap;
-
 import java.util.Map;
+import org.ehrbase.serialisation.dbencoding.PathMap;
 
 public class InstructionDetailsAttributes {
 
-    private final InstructionDetails instructionDetails;
+  private final InstructionDetails instructionDetails;
 
-    public InstructionDetailsAttributes(InstructionDetails instructionDetails) {
-        this.instructionDetails = instructionDetails;
+  public InstructionDetailsAttributes(InstructionDetails instructionDetails) {
+    this.instructionDetails = instructionDetails;
+  }
+
+  /**
+   * encode the attributes lower snake case to comply with UML conventions and make is queryable
+   *
+   * @return
+   */
+  public Map<String, Object> toMap() {
+    Map<String, Object> valuemap = PathMap.getInstance();
+
+    if (instructionDetails == null) return null;
+
+    if (instructionDetails.getActivityId() != null) {
+      valuemap.put("activity_id", instructionDetails.getActivityId());
     }
-
-    /**
-     * encode the attributes lower snake case to comply with UML conventions and make is queryable
-     * @return
-     */
-    public Map<String, Object> toMap() {
-        Map<String, Object> valuemap = PathMap.getInstance();
-
-        if (instructionDetails == null)
-            return null;
-
-        if (instructionDetails.getActivityId() != null) {
-            valuemap.put("activity_id", instructionDetails.getActivityId());
-        }
-        if (instructionDetails.getInstructionId() != null) {
-            valuemap.put("instruction_id", instructionDetails.getInstructionId());
-        }
-        if (instructionDetails.getWfDetails() != null) {
-            valuemap.put("wf_details", instructionDetails.getWfDetails());
-        }
-        return valuemap;
+    if (instructionDetails.getInstructionId() != null) {
+      valuemap.put("instruction_id", instructionDetails.getInstructionId());
     }
+    if (instructionDetails.getWfDetails() != null) {
+      valuemap.put("wf_details", instructionDetails.getWfDetails());
+    }
+    return valuemap;
+  }
 }

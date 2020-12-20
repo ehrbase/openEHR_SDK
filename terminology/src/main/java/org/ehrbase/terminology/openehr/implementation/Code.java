@@ -18,19 +18,19 @@
 package org.ehrbase.terminology.openehr.implementation;
 
 public class Code {
-    String code;
-    String description;
+  String code;
+  String description;
 
-    public Code(String code, String description) {
-        this.code = code;
-        this.description = description;
-    }
+  public Code(String code, String description) {
+    this.code = code;
+    this.description = description;
+  }
 
-    public String getCode() {
-        return code;
-    }
+  public String getCode() {
+    return code;
+  }
 
-    public String getDescription() {
-        return description;
-    }
+  public String getDescription() {
+    return description;
+  }
 }

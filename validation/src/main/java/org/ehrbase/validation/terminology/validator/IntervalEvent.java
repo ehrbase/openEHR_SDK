@@ -22,17 +22,32 @@ import org.ehrbase.terminology.openehr.implementation.AttributeCodesetMapping;
 
 public class IntervalEvent extends TerminologyCheck {
 
-    public IntervalEvent() {
-        this.RM_CLASS = com.nedap.archie.rm.datastructures.IntervalEvent.class;
-    }
+  public IntervalEvent() {
+    this.RM_CLASS = com.nedap.archie.rm.datastructures.IntervalEvent.class;
+  }
 
-    public static void check(TerminologyInterface terminologyInterface, AttributeCodesetMapping codesetMapping, String context, com.nedap.archie.rm.datastructures.IntervalEvent intervalEvent, String language) throws IllegalArgumentException {
-        if (intervalEvent.getMathFunction() != null)
-            validate(terminologyInterface, codesetMapping, "mathFunction", intervalEvent.getMathFunction().getDefiningCode(), language);
-    }
+  public static void check(
+      TerminologyInterface terminologyInterface,
+      AttributeCodesetMapping codesetMapping,
+      String context,
+      com.nedap.archie.rm.datastructures.IntervalEvent intervalEvent,
+      String language)
+      throws IllegalArgumentException {
+    if (intervalEvent.getMathFunction() != null)
+      validate(
+          terminologyInterface,
+          codesetMapping,
+          "mathFunction",
+          intervalEvent.getMathFunction().getDefiningCode(),
+          language);
+  }
 
-    public static void check(TerminologyInterface terminologyInterface, AttributeCodesetMapping codesetMapping, String context, com.nedap.archie.rm.datastructures.IntervalEvent intervalEvent) throws IllegalArgumentException {
-        check(terminologyInterface, codesetMapping, context, intervalEvent, "en");
-    }
-
+  public static void check(
+      TerminologyInterface terminologyInterface,
+      AttributeCodesetMapping codesetMapping,
+      String context,
+      com.nedap.archie.rm.datastructures.IntervalEvent intervalEvent)
+      throws IllegalArgumentException {
+    check(terminologyInterface, codesetMapping, context, intervalEvent, "en");
+  }
 }

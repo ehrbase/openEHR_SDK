@@ -23,34 +23,43 @@ import com.nedap.archie.rm.generic.PartyIdentified;
 import com.nedap.archie.rm.generic.PartyProxy;
 import com.nedap.archie.rm.support.identification.ObjectId;
 import com.nedap.archie.rm.support.identification.ObjectRef;
-import org.ehrbase.serialisation.walker.Context;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import org.ehrbase.serialisation.walker.Context;
 
 public class PartyIdentifiedStdConfig extends AbstractsStdConfig<PartyIdentified> {
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Class<PartyIdentified> getAssociatedClass() {
-        return PartyIdentified.class;
-    }
+  /** {@inheritDoc} */
+  @Override
+  public Class<PartyIdentified> getAssociatedClass() {
+    return PartyIdentified.class;
+  }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Map<String, Object> buildChildValues(String currentTerm, PartyIdentified rmObject, Context<Map<String, Object>> context) {
+  /** {@inheritDoc} */
+  @Override
+  public Map<String, Object> buildChildValues(
+      String currentTerm, PartyIdentified rmObject, Context<Map<String, Object>> context) {
 
-        Map<String, Object> result = new HashMap<>();
-        addValue(result, currentTerm, "name", rmObject.getName());
-        addValue(result, currentTerm, "id", Optional.of(rmObject).map(PartyProxy::getExternalRef).map(ObjectRef::getId).map(ObjectId::getValue).orElse(null));
-        addValue(result, currentTerm, "id_namespace", Optional.of(rmObject).map(PartyProxy::getExternalRef).map(ObjectRef::getNamespace).orElse(null));
-        return result;
-    }
-
-
+    Map<String, Object> result = new HashMap<>();
+    addValue(result, currentTerm, "name", rmObject.getName());
+    addValue(
+        result,
+        currentTerm,
+        "id",
+        Optional.of(rmObject)
+            .map(PartyProxy::getExternalRef)
+            .map(ObjectRef::getId)
+            .map(ObjectId::getValue)
+            .orElse(null));
+    addValue(
+        result,
+        currentTerm,
+        "id_namespace",
+        Optional.of(rmObject)
+            .map(PartyProxy::getExternalRef)
+            .map(ObjectRef::getNamespace)
+            .orElse(null));
+    return result;
+  }
 }

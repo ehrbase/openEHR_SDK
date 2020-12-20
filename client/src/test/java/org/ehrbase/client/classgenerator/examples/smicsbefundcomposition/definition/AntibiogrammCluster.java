@@ -13,36 +13,37 @@ import org.ehrbase.client.classgenerator.interfaces.LocatableEntity;
 @Generated(
     value = "org.ehrbase.client.classgenerator.ClassGenerator",
     date = "2020-12-10T13:06:12.145022900+01:00",
-    comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
-)
+    comments = "https://github.com/ehrbase/openEHR_SDK Version: null")
 public class AntibiogrammCluster implements LocatableEntity {
   /**
-   * Path: SmICS Befund/SmICS-Ergebnis/Jedes Ereignis/Eigenschaften des beteiligten Erregers/Erregerdetails/Antibiogramm/Laboranalyt-Resultat
-   * Description: Ergebnis eines Labortests für einen bestimmten Analytwert.
-   * Comment: Beispiele: 'Natrium', 'Leukozytenzahl', 'T3'. Üblicherweise über eine externe Terminologie codiert.
+   * Path: SmICS Befund/SmICS-Ergebnis/Jedes Ereignis/Eigenschaften des beteiligten
+   * Erregers/Erregerdetails/Antibiogramm/Laboranalyt-Resultat Description: Ergebnis eines
+   * Labortests für einen bestimmten Analytwert. Comment: Beispiele: 'Natrium', 'Leukozytenzahl',
+   * 'T3'. Üblicherweise über eine externe Terminologie codiert.
    */
   @Path("/items[openEHR-EHR-CLUSTER.laboratory_test_analyte.v1]")
   private List<LaboranalytResultatCluster> laboranalytResultat;
 
   /**
-   * Path: SmICS Befund/SmICS-Ergebnis/Jedes Ereignis/Eigenschaften des beteiligten Erregers/Erregerdetails/Antibiogramm/feeder_audit
+   * Path: SmICS Befund/SmICS-Ergebnis/Jedes Ereignis/Eigenschaften des beteiligten
+   * Erregers/Erregerdetails/Antibiogramm/feeder_audit
    */
   @Path("/feeder_audit")
   private FeederAudit feederAudit;
 
   public void setLaboranalytResultat(List<LaboranalytResultatCluster> laboranalytResultat) {
-     this.laboranalytResultat = laboranalytResultat;
+    this.laboranalytResultat = laboranalytResultat;
   }
 
   public List<LaboranalytResultatCluster> getLaboranalytResultat() {
-     return this.laboranalytResultat ;
+    return this.laboranalytResultat;
   }
 
   public void setFeederAudit(FeederAudit feederAudit) {
-     this.feederAudit = feederAudit;
+    this.feederAudit = feederAudit;
   }
 
   public FeederAudit getFeederAudit() {
-     return this.feederAudit ;
+    return this.feederAudit;
   }
 }

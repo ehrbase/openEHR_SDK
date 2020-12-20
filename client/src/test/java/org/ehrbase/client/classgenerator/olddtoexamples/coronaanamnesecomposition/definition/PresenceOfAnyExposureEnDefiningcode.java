@@ -3,11 +3,23 @@ package org.ehrbase.client.classgenerator.olddtoexamples.coronaanamnesecompositi
 import org.ehrbase.client.classgenerator.EnumValueSet;
 
 public enum PresenceOfAnyExposureEnDefiningcode implements EnumValueSet {
-  ABSENT_EN("*Absent (en)", "*Exposure is or has been absent at or during the event. (en)", "local", "at0059"),
+  ABSENT_EN(
+      "*Absent (en)",
+      "*Exposure is or has been absent at or during the event. (en)",
+      "local",
+      "at0059"),
 
-  UNKNOWN_EN("*Unknown (en)", "*It is not known whether any exposure is or has been present or absent at or during the event. (en)", "local", "at0060"),
+  UNKNOWN_EN(
+      "*Unknown (en)",
+      "*It is not known whether any exposure is or has been present or absent at or during the event. (en)",
+      "local",
+      "at0060"),
 
-  PRESENT_EN("*Present (en)", "*Exposure is or has been present at or during the event. (en)", "local", "at0058");
+  PRESENT_EN(
+      "*Present (en)",
+      "*Exposure is or has been present at or during the event. (en)",
+      "local",
+      "at0058");
 
   private String value;
 
@@ -17,8 +29,8 @@ public enum PresenceOfAnyExposureEnDefiningcode implements EnumValueSet {
 
   private String code;
 
-  PresenceOfAnyExposureEnDefiningcode(String value, String description, String terminologyId,
-                                      String code) {
+  PresenceOfAnyExposureEnDefiningcode(
+      String value, String description, String terminologyId, String code) {
     this.value = value;
     this.description = description;
     this.terminologyId = terminologyId;

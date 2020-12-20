@@ -17,39 +17,24 @@
 
 package org.ehrbase.serialisation.attributes.datavalues.datetime;
 
-/**
- * handles specific time String representation evaluation
- */
+/** handles specific time String representation evaluation */
 public interface I_PartialTime {
 
-    /**
-     * true if time is hh:mm:ss:mmm
-     */
-    boolean ishhmmssfff();
+  /** true if time is hh:mm:ss:mmm */
+  boolean ishhmmssfff();
 
-    /**
-     * true if time is hh:mm:ss
-     */
-    boolean ishhmmss();
+  /** true if time is hh:mm:ss */
+  boolean ishhmmss();
 
-    /**
-     * true if time is hh:mm
-     */
-    boolean ishhmm();
+  /** true if time is hh:mm */
+  boolean ishhmm();
 
-    /**
-     * true if time is hh
-     * NB. never true with the current Java API
-     */
-    boolean ishh();
+  /** true if time is hh NB. never true with the current Java API */
+  boolean ishh();
 
-    /**
-     * true if a Zone Offset is present
-     */
-    boolean hasTZString();
+  /** true if a Zone Offset is present */
+  boolean hasTZString();
 
-    /**
-     * true if format: HH:MM:SS:mmm
-     */
-    boolean isNonCompactIS8601Representation();
+  /** true if format: HH:MM:SS:mmm */
+  boolean isNonCompactIS8601Representation();
 }

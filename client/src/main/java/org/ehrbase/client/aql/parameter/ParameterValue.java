@@ -20,30 +20,30 @@
 package org.ehrbase.client.aql.parameter;
 
 public class ParameterValue<T> {
-    private final Parameter<T> parameter;
-    private final T value;
+  private final Parameter<T> parameter;
+  private final T value;
 
-    public ParameterValue(Parameter<T> parameter, T value) {
-        this.parameter = parameter;
-        this.value = value;
-    }
+  public ParameterValue(Parameter<T> parameter, T value) {
+    this.parameter = parameter;
+    this.value = value;
+  }
 
-    public ParameterValue(String parameterName, T value) {
-        this.parameter = new Parameter(parameterName);
-        this.value = value;
-        //check that is valid AQl value
-        buildAql();
-    }
+  public ParameterValue(String parameterName, T value) {
+    this.parameter = new Parameter(parameterName);
+    this.value = value;
+    // check that is valid AQl value
+    buildAql();
+  }
 
-    public Parameter<T> getParameter() {
-        return parameter;
-    }
+  public Parameter<T> getParameter() {
+    return parameter;
+  }
 
-    public T getValue() {
-        return value;
-    }
+  public T getValue() {
+    return value;
+  }
 
-    public String buildAql() {
-        return new AqlValue(value).buildAql();
-    }
+  public String buildAql() {
+    return new AqlValue(value).buildAql();
+  }
 }

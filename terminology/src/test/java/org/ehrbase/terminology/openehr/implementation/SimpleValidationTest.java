@@ -25,32 +25,37 @@ import org.junit.Test;
 
 public class SimpleValidationTest {
 
-    @Test
-    public void testSimpleValidation() throws Exception {
-        TerminologyInterface simpleTerminologyInterface = new SimpleTerminologyInterface("en");
-        AttributeCodesetMapping codesetMapping = AttributeCodesetMapping.getInstance();
+  @Test
+  public void testSimpleValidation() throws Exception {
+    TerminologyInterface simpleTerminologyInterface = new SimpleTerminologyInterface("en");
+    AttributeCodesetMapping codesetMapping = AttributeCodesetMapping.getInstance();
 
-        CodePhrase codePhrase = new CodePhrase(new TerminologyId("openehr"), "433");
-        DvCodedText category = new DvCodedText("event", codePhrase);
+    CodePhrase codePhrase = new CodePhrase(new TerminologyId("openehr"), "433");
+    DvCodedText category = new DvCodedText("event", codePhrase);
 
-        //get the actual attribute
-        String attribute = codesetMapping.actualAttributeId("openehr", "category", "en");
-        ContainerType containerType = codesetMapping.containerType("openehr", "category");
-        switch (containerType) {
-            case GROUP: //a code string defined within a group of a codeset
-                boolean valid = simpleTerminologyInterface.terminology("openehr").hasCodeForGroupId(attribute, codePhrase);
-                //check if the supplied value matches codephrase
-                String rubric = simpleTerminologyInterface.terminology("openehr").rubricForCode(codePhrase.getCodeString(), "en");
-                valid = rubric.equals("event");
-                break;
+    // get the actual attribute
+    String attribute = codesetMapping.actualAttributeId("openehr", "category", "en");
+    ContainerType containerType = codesetMapping.containerType("openehr", "category");
+    switch (containerType) {
+      case GROUP: // a code string defined within a group of a codeset
+        boolean valid =
+            simpleTerminologyInterface
+                .terminology("openehr")
+                .hasCodeForGroupId(attribute, codePhrase);
+        // check if the supplied value matches codephrase
+        String rubric =
+            simpleTerminologyInterface
+                .terminology("openehr")
+                .rubricForCode(codePhrase.getCodeString(), "en");
+        valid = rubric.equals("event");
+        break;
 
-            case CODESET: //a codestring defined in a codeset
-                valid = simpleTerminologyInterface.codeSet(attribute).hasCode(codePhrase);
-                break;
+      case CODESET: // a codestring defined in a codeset
+        valid = simpleTerminologyInterface.codeSet(attribute).hasCode(codePhrase);
+        break;
 
-            default:
-                throw new IllegalArgumentException("undefined container type");
-        }
-
+      default:
+        throw new IllegalArgumentException("undefined container type");
     }
+  }
 }

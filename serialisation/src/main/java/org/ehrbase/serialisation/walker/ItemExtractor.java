@@ -24,13 +24,12 @@ import com.nedap.archie.rm.archetyped.Locatable;
 import com.nedap.archie.rm.archetyped.Pathable;
 import com.nedap.archie.rm.datastructures.Element;
 import com.nedap.archie.rm.datavalues.quantity.DvInterval;
+import java.util.List;
+import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import org.ehrbase.util.exception.SdkException;
 import org.ehrbase.webtemplate.model.WebTemplateNode;
 import org.ehrbase.webtemplate.parser.FlatPath;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 public class ItemExtractor {
   private RMObject currentRM;

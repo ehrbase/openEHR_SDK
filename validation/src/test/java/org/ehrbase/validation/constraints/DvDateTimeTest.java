@@ -18,34 +18,32 @@
 
 package org.ehrbase.validation.constraints;
 
+import static org.junit.Assert.fail;
+
 import com.nedap.archie.rm.datavalues.quantity.datetime.DvDateTime;
 import org.ehrbase.validation.constraints.wrappers.CArchetypeConstraint;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.fail;
-
 public class DvDateTimeTest extends ConstraintTestBase {
 
-    @Before
-    public void setUp() {
-        try {
-            setUpContext("./src/test/resources/constraints/dvdatetime.xml");
-        } catch (Exception e) {
-            fail();
-        }
+  @Before
+  public void setUp() {
+    try {
+      setUpContext("./src/test/resources/constraints/dvdatetime.xml");
+    } catch (Exception e) {
+      fail();
     }
+  }
 
+  @Test
+  public void testConstraintValidation() {
+    DvDateTime dateTime = new DvDateTime("2019-12-31T10:00:01Z");
 
-    @Test
-    public void testConstraintValidation() {
-        DvDateTime dateTime = new DvDateTime("2019-12-31T10:00:01Z");
-
-        try {
-            new CArchetypeConstraint(null).validate("test", dateTime, archetypeconstraint);
-        } catch (Exception e) {
-            fail(e.getMessage());
-        }
+    try {
+      new CArchetypeConstraint(null).validate("test", dateTime, archetypeconstraint);
+    } catch (Exception e) {
+      fail(e.getMessage());
     }
-
+  }
 }

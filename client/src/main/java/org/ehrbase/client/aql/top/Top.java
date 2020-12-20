@@ -21,17 +21,17 @@ package org.ehrbase.client.aql.top;
 
 public class Top implements TopExpresion {
 
-    private final int count;
-    private final Direction direction;
+  private final int count;
+  private final Direction direction;
 
-    Top(int count, Direction direction) {
-        this.count = count;
-        this.direction = direction;
-    }
+  Top(int count, Direction direction) {
+    this.count = count;
+    this.direction = direction;
+  }
 
-    @Override
-    public String buildAql() {
-        StringBuilder sb = new StringBuilder();
-        return sb.append("TOP ").append(count).append(" ").append(direction).toString();
-    }
+  @Override
+  public String buildAql() {
+    StringBuilder sb = new StringBuilder();
+    return sb.append("TOP ").append(count).append(" ").append(direction).toString();
+  }
 }

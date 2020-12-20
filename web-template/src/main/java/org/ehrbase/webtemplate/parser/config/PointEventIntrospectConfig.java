@@ -20,22 +20,21 @@
 package org.ehrbase.webtemplate.parser.config;
 
 import com.nedap.archie.rm.datastructures.PointEvent;
-
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class PointEventIntrospectConfig implements RmIntrospectConfig {
 
-    private static final Set<String> FIELDS = Stream.of("time").collect(Collectors.toSet());
+  private static final Set<String> FIELDS = Stream.of("time").collect(Collectors.toSet());
 
-    @Override
-    public Class getAssociatedClass() {
-        return PointEvent.class;
-    }
+  @Override
+  public Class getAssociatedClass() {
+    return PointEvent.class;
+  }
 
-    @Override
-    public Set<String> getNonTemplateFields() {
-        return FIELDS;
-    }
+  @Override
+  public Set<String> getNonTemplateFields() {
+    return FIELDS;
+  }
 }

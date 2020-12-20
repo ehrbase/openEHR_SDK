@@ -32,124 +32,122 @@
  */
 package org.ehrbase.terminology.openehr.implementation;
 
+import java.util.*;
 import org.ehrbase.terminology.openehr.*;
 
-import java.util.*;
-
-
 /**
- * A simple implementation of terminology service that provides
- * complete openEHR terminology and necessary code sets for the
- * kernel to work properly
- * <p>
- * TODO: load complete external codesets
+ * A simple implementation of terminology service that provides complete openEHR terminology and
+ * necessary code sets for the kernel to work properly
+ *
+ * <p>TODO: load complete external codesets
  *
  * @author rong.chen
  */
 public class SimpleTerminologyInterface implements TerminologyInterface {
 
-    public TerminologyAccess terminology(String name) {
-        return terminologies.get(name);
+  public TerminologyAccess terminology(String name) {
+    return terminologies.get(name);
+  }
+
+  public CodeSetAccess codeSet(String name) {
+    return codeSets.get(name);
+  }
+
+  public CodeSetAccess codeSetForId(OpenEHRCodeSetIdentifiers id) {
+    String name = codeSetInternalIdToExternalName.get(id.toString());
+    if (name == null) {
+      return null;
+    }
+    return codeSets.get(name);
+  }
+
+  public boolean hasTerminology(String name) {
+    return terminologies.containsKey(name);
+  }
+
+  public boolean hasCodeSet(String name) {
+    return codeSetInternalIdToExternalName.containsKey(name);
+  }
+
+  public List<String> terminologyIdentifiers() {
+    return new ArrayList<>(terminologies.keySet());
+  }
+
+  public List<String> codeSetIdentifiers() {
+    return new ArrayList<>(codeSets.keySet());
+  }
+
+  public Map<String, String> openehrCodeSets() {
+    return Collections.unmodifiableMap(codeSetInternalIdToExternalName);
+  }
+
+  /*
+   * Creates a simpleTerminologyService
+   */
+  SimpleTerminologyInterface(String language) {
+
+    terminologies = new HashMap<>();
+    codeSets = new HashMap<>();
+    codeSetInternalIdToExternalName = new HashMap<>();
+
+    try {
+      TerminologySource terminologySource =
+          TerminologySourceFactory.getOpenEHRTerminology(language);
+      loadTerminologies(terminologySource, language);
+      loadCodeSets(terminologySource);
+
+      terminologySource = TerminologySourceFactory.getExternalTerminologies(language);
+      loadTerminologies(terminologySource, language);
+      loadCodeSets(terminologySource);
+
+    } catch (Exception e) {
+      throw new TerminologyResourceException(e.getMessage());
+    }
+  }
+
+  private void loadTerminologies(TerminologySource source, String language) {
+
+    SimpleTerminologyAccess terminology =
+        (SimpleTerminologyAccess) terminologies.get(TerminologyInterface.OPENEHR);
+    if (terminology == null) {
+      terminology = new SimpleTerminologyAccess(TerminologyInterface.OPENEHR);
     }
 
-    public CodeSetAccess codeSet(String name) {
-        return codeSets.get(name);
+    List<Group> groups = source.getConceptGroups();
+    for (Group group : groups) {
+      Set<String> codes = new HashSet<>();
+      Map<String, String> names = new HashMap<>();
+      names.put(language, group.name);
+      for (Concept concept : group.concepts) {
+        codes.add(concept.id);
+        terminology.addRubric(language, concept.id, concept.rubric);
+      }
+      // English name as group id
+      terminology.addGroup(group.name, codes, names);
     }
+    terminologies.put(TerminologyInterface.OPENEHR, terminology);
+  }
 
-    public CodeSetAccess codeSetForId(OpenEHRCodeSetIdentifiers id) {
-        String name = codeSetInternalIdToExternalName.get(id.toString());
-        if (name == null) {
-            return null;
-        }
-        return codeSets.get(name);
+  private void loadCodeSets(TerminologySource source) {
+
+    for (CodeSet codeset : source.getCodeSets()) {
+      SimpleCodeSetAccess codeSetAccess =
+          new SimpleCodeSetAccess(codeset.externalId, new HashSet<>(codeset.codes));
+      codeSets.put(codeset.externalId, codeSetAccess);
+      codeSetInternalIdToExternalName.put(codeset.openehrId, codeset.externalId);
     }
+  }
 
-    public boolean hasTerminology(String name) {
-        return terminologies.containsKey(name);
-    }
+  /* static final field */
 
-    public boolean hasCodeSet(String name) {
-        return codeSetInternalIdToExternalName.containsKey(name);
-    }
+  /* code sets indexed by external codeset name */
+  private Map<String, CodeSetAccess> codeSets;
 
-    public List<String> terminologyIdentifiers() {
-        return new ArrayList<>(terminologies.keySet());
-    }
+  /* terminology indexed by name */
+  private Map<String, TerminologyAccess> terminologies;
 
-    public List<String> codeSetIdentifiers() {
-        return new ArrayList<>(codeSets.keySet());
-    }
-
-    public Map<String, String> openehrCodeSets() {
-        return Collections.unmodifiableMap(codeSetInternalIdToExternalName);
-    }
-
-    /*
-     * Creates a simpleTerminologyService
-     */
-    SimpleTerminologyInterface(String language) {
-
-        terminologies = new HashMap<>();
-        codeSets = new HashMap<>();
-        codeSetInternalIdToExternalName = new HashMap<>();
-
-
-        try {
-            TerminologySource terminologySource = TerminologySourceFactory.getOpenEHRTerminology(language);
-            loadTerminologies(terminologySource, language);
-            loadCodeSets(terminologySource);
-
-            terminologySource = TerminologySourceFactory.getExternalTerminologies(language);
-            loadTerminologies(terminologySource, language);
-            loadCodeSets(terminologySource);
-
-        } catch (Exception e) {
-            throw new TerminologyResourceException(e.getMessage());
-        }
-    }
-
-    private void loadTerminologies(TerminologySource source, String language) {
-
-        SimpleTerminologyAccess terminology = (SimpleTerminologyAccess)
-                terminologies.get(TerminologyInterface.OPENEHR);
-        if (terminology == null) {
-            terminology = new SimpleTerminologyAccess(TerminologyInterface.OPENEHR);
-        }
-
-        List<Group> groups = source.getConceptGroups();
-        for (Group group : groups) {
-            Set<String> codes = new HashSet<>();
-            Map<String, String> names = new HashMap<>();
-            names.put(language, group.name);
-            for (Concept concept : group.concepts) {
-                codes.add(concept.id);
-                terminology.addRubric(language, concept.id, concept.rubric);
-            }
-            // English name as group id
-            terminology.addGroup(group.name, codes, names);
-        }
-        terminologies.put(TerminologyInterface.OPENEHR, terminology);
-    }
-
-    private void loadCodeSets(TerminologySource source) {
-
-        for (CodeSet codeset : source.getCodeSets()) {
-            SimpleCodeSetAccess codeSetAccess = new SimpleCodeSetAccess(codeset.externalId, new HashSet<>(codeset.codes));
-            codeSets.put(codeset.externalId, codeSetAccess);
-            codeSetInternalIdToExternalName.put(codeset.openehrId, codeset.externalId);
-        }
-    }
-
-    /* static final field */
-
-    /* code sets indexed by external codeset name */
-    private Map<String, CodeSetAccess> codeSets;
-
-    /* terminology indexed by name */
-    private Map<String, TerminologyAccess> terminologies;
-
-    /* mapping between external name and openEHR codeset id */
-    private Map<String, String> codeSetInternalIdToExternalName;
+  /* mapping between external name and openEHR codeset id */
+  private Map<String, String> codeSetInternalIdToExternalName;
 }
 /*
  *  ***** BEGIN LICENSE BLOCK *****

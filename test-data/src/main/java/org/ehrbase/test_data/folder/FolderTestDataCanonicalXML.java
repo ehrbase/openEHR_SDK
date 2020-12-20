@@ -20,18 +20,17 @@ package org.ehrbase.test_data.folder;
 import java.io.InputStream;
 
 public enum FolderTestDataCanonicalXML {
+  SIMPLE_EMPTY_FOLDER("A simple empty folder with no sub folders", "simple_empty_folder.xml");
 
-    SIMPLE_EMPTY_FOLDER("A simple empty folder with no sub folders", "simple_empty_folder.xml");
+  private final String description;
+  private final String filename;
 
-    private final String description;
-    private final String filename;
+  FolderTestDataCanonicalXML(String description, String filename) {
+    this.description = description;
+    this.filename = filename;
+  }
 
-    FolderTestDataCanonicalXML(String description, String filename) {
-        this.description = description;
-        this.filename = filename;
-    }
-
-    public InputStream getStrean() {
-        return getClass().getResourceAsStream("/folder/canonical_xml/" + filename);
-    }
+  public InputStream getStrean() {
+    return getClass().getResourceAsStream("/folder/canonical_xml/" + filename);
+  }
 }

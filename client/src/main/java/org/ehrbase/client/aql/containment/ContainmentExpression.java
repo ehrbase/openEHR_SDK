@@ -23,23 +23,25 @@ import org.ehrbase.client.aql.query.EntityQuery;
 
 public interface ContainmentExpression {
 
-    String buildAQL();
+  String buildAQL();
 
-    void bindQuery(EntityQuery<?> query);
+  void bindQuery(EntityQuery<?> query);
 
-    default ContainmentExpression and(ContainmentExpression containmentExpression) {
-        return and(this, containmentExpression);
-    }
+  default ContainmentExpression and(ContainmentExpression containmentExpression) {
+    return and(this, containmentExpression);
+  }
 
-    default ContainmentExpression or(ContainmentExpression containmentExpression) {
-        return or(this, containmentExpression);
-    }
+  default ContainmentExpression or(ContainmentExpression containmentExpression) {
+    return or(this, containmentExpression);
+  }
 
-    static ContainmentExpression and(ContainmentExpression containmentExpression1, ContainmentExpression containmentExpression2) {
-        return new And(containmentExpression1, containmentExpression2);
-    }
+  static ContainmentExpression and(
+      ContainmentExpression containmentExpression1, ContainmentExpression containmentExpression2) {
+    return new And(containmentExpression1, containmentExpression2);
+  }
 
-    static ContainmentExpression or(ContainmentExpression containmentExpression1, ContainmentExpression containmentExpression2) {
-        return new Or(containmentExpression1, containmentExpression2);
-    }
+  static ContainmentExpression or(
+      ContainmentExpression containmentExpression1, ContainmentExpression containmentExpression2) {
+    return new Or(containmentExpression1, containmentExpression2);
+  }
 }

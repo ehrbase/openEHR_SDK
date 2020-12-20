@@ -21,68 +21,74 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 
 /**
- * Response data definition for EHRbase status response. Contains version information about runtime of EHRbase.
+ * Response data definition for EHRbase status response. Contains version information about runtime
+ * of EHRbase.
  */
 @JacksonXmlRootElement(localName = "status")
 public class StatusResponseData {
-    @JsonProperty(value = "ehrbase_version")
-    private String ehrbaseVersion;
-    @JsonProperty(value = "openehr_sdk_version")
-    private String openEhrSdkVersion;
-    @JsonProperty(value = "archie_version")
-    private String archieVersion;
-    @JsonProperty(value = "jvm_version")
-    private String jvmVersion;
-    @JsonProperty(value = "os_version")
-    private String osVersion;
-    @JsonProperty(value = "postgres_version")
-    private String postgresVersion;
+  @JsonProperty(value = "ehrbase_version")
+  private String ehrbaseVersion;
 
-    public String getEhrbaseVersion() {
-        return ehrbaseVersion;
-    }
+  @JsonProperty(value = "openehr_sdk_version")
+  private String openEhrSdkVersion;
 
-    public void setEhrbaseVersion(String ehrbaseVersion) {
-        this.ehrbaseVersion = ehrbaseVersion;
-    }
+  @JsonProperty(value = "archie_version")
+  private String archieVersion;
 
-    public String getOpenEhrSdkVersion() {
-        return openEhrSdkVersion;
-    }
+  @JsonProperty(value = "jvm_version")
+  private String jvmVersion;
 
-    public void setOpenEhrSdkVersion(String openEhrSdkVersion) {
-        this.openEhrSdkVersion = openEhrSdkVersion;
-    }
+  @JsonProperty(value = "os_version")
+  private String osVersion;
 
-    public String getArchieVersion() {
-        return archieVersion;
-    }
+  @JsonProperty(value = "postgres_version")
+  private String postgresVersion;
 
-    public void setArchieVersion(String archieVersion) {
-        this.archieVersion = archieVersion;
-    }
+  public String getEhrbaseVersion() {
+    return ehrbaseVersion;
+  }
 
-    public String getJvmVersion() {
-        return jvmVersion;
-    }
+  public void setEhrbaseVersion(String ehrbaseVersion) {
+    this.ehrbaseVersion = ehrbaseVersion;
+  }
 
-    public void setJvmVersion(String jvmVersion) {
-        this.jvmVersion = jvmVersion;
-    }
+  public String getOpenEhrSdkVersion() {
+    return openEhrSdkVersion;
+  }
 
-    public String getOsVersion() {
-        return osVersion;
-    }
+  public void setOpenEhrSdkVersion(String openEhrSdkVersion) {
+    this.openEhrSdkVersion = openEhrSdkVersion;
+  }
 
-    public void setOsVersion(String osVersion) {
-        this.osVersion = osVersion;
-    }
+  public String getArchieVersion() {
+    return archieVersion;
+  }
 
-    public String getPostgresVersion() {
-        return postgresVersion;
-    }
+  public void setArchieVersion(String archieVersion) {
+    this.archieVersion = archieVersion;
+  }
 
-    public void setPostgresVersion(String postgresVersion) {
-        this.postgresVersion = postgresVersion;
-    }
+  public String getJvmVersion() {
+    return jvmVersion;
+  }
+
+  public void setJvmVersion(String jvmVersion) {
+    this.jvmVersion = jvmVersion;
+  }
+
+  public String getOsVersion() {
+    return osVersion;
+  }
+
+  public void setOsVersion(String osVersion) {
+    this.osVersion = osVersion;
+  }
+
+  public String getPostgresVersion() {
+    return postgresVersion;
+  }
+
+  public void setPostgresVersion(String postgresVersion) {
+    this.postgresVersion = postgresVersion;
+  }
 }

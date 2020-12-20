@@ -22,5 +22,5 @@ package org.ehrbase.client.aql.field;
 import java.util.List;
 
 public interface ListSelectAqlField<T> extends SelectAqlField<List<T>> {
-    Class<T> getInnerClass();
+  Class<T> getInnerClass();
 }

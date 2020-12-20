@@ -1,14 +1,25 @@
 package org.ehrbase.client.classgenerator.exampleoptimizersettingsections.coronaanamnesecomposition.definition;
 
-import java.lang.String;
 import org.ehrbase.client.classgenerator.EnumValueSet;
 
 public enum MedikamentInVerwendungDefiningCode implements EnumValueSet {
-  NICHT_IN_VERWENDUNG("Nicht in Verwendung", "Die Person verwendet das Medikament zum Zeitpunkt des Ergebnis oder währendessen nicht oder hat es nicht verwendet.", "local", "at0032"),
+  NICHT_IN_VERWENDUNG(
+      "Nicht in Verwendung",
+      "Die Person verwendet das Medikament zum Zeitpunkt des Ergebnis oder währendessen nicht oder hat es nicht verwendet.",
+      "local",
+      "at0032"),
 
-  UNBEKANNT("Unbekannt", "Es ist unbekannt, ob die Person das Medikament zum Zeitpunkt des Ergebnis oder währendessen verwendet oder es verwendet hat.", "local", "at0033"),
+  UNBEKANNT(
+      "Unbekannt",
+      "Es ist unbekannt, ob die Person das Medikament zum Zeitpunkt des Ergebnis oder währendessen verwendet oder es verwendet hat.",
+      "local",
+      "at0033"),
 
-  IN_VERWENDUNG("In Verwendung", "Die Person verwendet das Medikament zum Zeitpunkt des Ergebnis oder währendessen oder hat es verwendet.", "local", "at0031");
+  IN_VERWENDUNG(
+      "In Verwendung",
+      "Die Person verwendet das Medikament zum Zeitpunkt des Ergebnis oder währendessen oder hat es verwendet.",
+      "local",
+      "at0031");
 
   private String value;
 
@@ -18,8 +29,8 @@ public enum MedikamentInVerwendungDefiningCode implements EnumValueSet {
 
   private String code;
 
-  MedikamentInVerwendungDefiningCode(String value, String description, String terminologyId,
-      String code) {
+  MedikamentInVerwendungDefiningCode(
+      String value, String description, String terminologyId, String code) {
     this.value = value;
     this.description = description;
     this.terminologyId = terminologyId;
@@ -27,18 +38,18 @@ public enum MedikamentInVerwendungDefiningCode implements EnumValueSet {
   }
 
   public String getValue() {
-     return this.value ;
+    return this.value;
   }
 
   public String getDescription() {
-     return this.description ;
+    return this.description;
   }
 
   public String getTerminologyId() {
-     return this.terminologyId ;
+    return this.terminologyId;
   }
 
   public String getCode() {
-     return this.code ;
+    return this.code;
   }
 }

@@ -21,30 +21,28 @@ package org.ehrbase.serialisation.attributes;
 import com.nedap.archie.rm.generic.PartyIdentified;
 import com.nedap.archie.rm.generic.PartyRelated;
 import com.nedap.archie.rm.generic.PartySelf;
+import java.util.Map;
 import org.ehrbase.serialisation.dbencoding.CompositionSerializer;
 
-import java.util.Map;
-
-/**
- * populate the attributes for RM PartyProxy specialization
- */
+/** populate the attributes for RM PartyProxy specialization */
 public class SubjectAttributes {
 
-    private final I_SubjectAttributes iSubjectAttributes;
+  private final I_SubjectAttributes iSubjectAttributes;
 
-    public SubjectAttributes(Object subject, CompositionSerializer compositionSerializer) {
+  public SubjectAttributes(Object subject, CompositionSerializer compositionSerializer) {
 
-        if (subject instanceof PartySelf)
-            iSubjectAttributes = new PartySelfAttributes((PartySelf)subject, compositionSerializer);
-        else if (subject instanceof PartyRelated)
-            iSubjectAttributes = new PartyRelatedAttributes((PartyRelated)subject, compositionSerializer);
-        else if (subject instanceof PartyIdentified)
-            iSubjectAttributes = new PartyIdentifiedAttributes((PartyIdentified)subject, compositionSerializer);
-        else
-            throw new IllegalStateException("Could not handle subject of type:"+subject.getClass());
-    }
+    if (subject instanceof PartySelf)
+      iSubjectAttributes = new PartySelfAttributes((PartySelf) subject, compositionSerializer);
+    else if (subject instanceof PartyRelated)
+      iSubjectAttributes =
+          new PartyRelatedAttributes((PartyRelated) subject, compositionSerializer);
+    else if (subject instanceof PartyIdentified)
+      iSubjectAttributes =
+          new PartyIdentifiedAttributes((PartyIdentified) subject, compositionSerializer);
+    else throw new IllegalStateException("Could not handle subject of type:" + subject.getClass());
+  }
 
-    public Map<String, Object> toMap(){
-        return iSubjectAttributes.toMap();
-    }
+  public Map<String, Object> toMap() {
+    return iSubjectAttributes.toMap();
+  }
 }

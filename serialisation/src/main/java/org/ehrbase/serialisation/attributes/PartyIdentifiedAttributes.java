@@ -16,36 +16,35 @@
  */
 package org.ehrbase.serialisation.attributes;
 
+import static org.ehrbase.serialisation.dbencoding.CompositionSerializer.TAG_CLASS;
+
 import com.nedap.archie.rm.generic.PartyIdentified;
+import java.util.Map;
 import org.ehrbase.serialisation.dbencoding.CompositionSerializer;
 import org.ehrbase.serialisation.dbencoding.PathMap;
 
-import java.util.Map;
-
-import static org.ehrbase.serialisation.dbencoding.CompositionSerializer.TAG_CLASS;
-/**
- * populate the attributes for RM PartyIdentified
- */
+/** populate the attributes for RM PartyIdentified */
 public class PartyIdentifiedAttributes implements I_SubjectAttributes {
 
-    PartyIdentified partyIdentified;
-    CompositionSerializer compositionSerializer;
+  PartyIdentified partyIdentified;
+  CompositionSerializer compositionSerializer;
 
-    public PartyIdentifiedAttributes(PartyIdentified partyIdentified, CompositionSerializer compositionSerializer) {
-        this.partyIdentified = partyIdentified;
-        this.compositionSerializer = compositionSerializer;
-    }
+  public PartyIdentifiedAttributes(
+      PartyIdentified partyIdentified, CompositionSerializer compositionSerializer) {
+    this.partyIdentified = partyIdentified;
+    this.compositionSerializer = compositionSerializer;
+  }
 
-    public Map<String, Object> toMap(){
-        Map<String, Object> valuemap = PathMap.getInstance();
+  public Map<String, Object> toMap() {
+    Map<String, Object> valuemap = PathMap.getInstance();
 
-        valuemap.put(TAG_CLASS, partyIdentified.getClass().getSimpleName());
+    valuemap.put(TAG_CLASS, partyIdentified.getClass().getSimpleName());
 
-        valuemap.put("external_ref", partyIdentified.getExternalRef());
-        valuemap.put("name", partyIdentified.getName());
-        if (!partyIdentified.getIdentifiers().isEmpty())
-            valuemap.put("identifiers", partyIdentified.getIdentifiers());
+    valuemap.put("external_ref", partyIdentified.getExternalRef());
+    valuemap.put("name", partyIdentified.getName());
+    if (!partyIdentified.getIdentifiers().isEmpty())
+      valuemap.put("identifiers", partyIdentified.getIdentifiers());
 
-        return valuemap;
-    }
+    return valuemap;
+  }
 }

@@ -20,62 +20,59 @@ package org.ehrbase.validation;
 
 import com.nedap.archie.rm.composition.Composition;
 import com.nedap.archie.rm.datastructures.ItemStructure;
+import java.io.Serializable;
 import org.ehrbase.validation.constraints.ConstraintChecker;
 import org.ehrbase.validation.constraints.OptConstraint;
 import org.ehrbase.validation.constraints.OptConstraintMapper;
 import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
 
-import java.io.Serializable;
-
 /**
  * Validator
- * <p>
- * Validate a composition or an arbitrary item structure (e.g. Locatable) using
- * constraints defined in a 1.4 operational template.
- * <p>
- * An optional boolean flag can be used to disable validation
+ *
+ * <p>Validate a composition or an arbitrary item structure (e.g. Locatable) using constraints
+ * defined in a 1.4 operational template.
+ *
+ * <p>An optional boolean flag can be used to disable validation
  */
 public class Validator implements Serializable {
 
-    private boolean lenient = false;
-    private OptConstraintMapper optConstraint;
+  private boolean lenient = false;
+  private OptConstraintMapper optConstraint;
 
-    public Validator(OPERATIONALTEMPLATE operationaltemplate, boolean lenient) {
-        this.lenient = lenient;
-    }
+  public Validator(OPERATIONALTEMPLATE operationaltemplate, boolean lenient) {
+    this.lenient = lenient;
+  }
 
-    public Validator(OPERATIONALTEMPLATE operationaltemplate) throws IllegalArgumentException {
-        optConstraint = new OptConstraint().map(operationaltemplate);
-    }
+  public Validator(OPERATIONALTEMPLATE operationaltemplate) throws IllegalArgumentException {
+    optConstraint = new OptConstraint().map(operationaltemplate);
+  }
 
+  /**
+   * Validate a composition
+   *
+   * @param composition
+   * @throws IllegalArgumentException
+   */
+  public void check(Composition composition) throws IllegalArgumentException {
+    new ConstraintChecker(lenient, composition, optConstraint).validate();
+  }
 
-    /**
-     * Validate a composition
-     *
-     * @param composition
-     * @throws IllegalArgumentException
-     */
-    public void check(Composition composition) throws IllegalArgumentException {
-        new ConstraintChecker(lenient, composition, optConstraint).validate();
-    }
+  /**
+   * Validate an ItemStructure
+   *
+   * @param itemStructure
+   * @throws IllegalArgumentException
+   */
+  public void check(ItemStructure itemStructure) throws IllegalArgumentException {
+    new ConstraintChecker(lenient, itemStructure, optConstraint).validate();
+  }
 
-    /**
-     * Validate an ItemStructure
-     *
-     * @param itemStructure
-     * @throws IllegalArgumentException
-     */
-    public void check(ItemStructure itemStructure) throws IllegalArgumentException {
-        new ConstraintChecker(lenient, itemStructure, optConstraint).validate();
-    }
-
-    /**
-     * set the lenient flag
-     * if true, the validation is disabled.
-     *
-     * @param lenient
-     */
-    public void setLenient(boolean lenient) {
-        this.lenient = lenient;
-    }
+  /**
+   * set the lenient flag if true, the validation is disabled.
+   *
+   * @param lenient
+   */
+  public void setLenient(boolean lenient) {
+    this.lenient = lenient;
+  }
 }

@@ -17,32 +17,30 @@
 
 package org.ehrbase.serialisation.attributes;
 
+import static org.ehrbase.serialisation.dbencoding.CompositionSerializer.TAG_ORIGIN;
+
 import com.nedap.archie.rm.datastructures.History;
 import com.nedap.archie.rm.datavalues.quantity.datetime.DvDateTime;
+import java.util.Map;
 import org.ehrbase.serialisation.dbencoding.CompositionSerializer;
 import org.ehrbase.serialisation.dbencoding.ItemStack;
 
-import java.util.Map;
-
-import static org.ehrbase.serialisation.dbencoding.CompositionSerializer.TAG_ORIGIN;
-/**
- * populate the attributes for RM History (origin in particular)
- */
+/** populate the attributes for RM History (origin in particular) */
 public class HistoryAttributes extends DataStructureAttributes {
 
-    public HistoryAttributes(CompositionSerializer compositionSerializer, ItemStack itemStack, Map<String, Object> map) {
-        super(compositionSerializer, itemStack, map);
+  public HistoryAttributes(
+      CompositionSerializer compositionSerializer, ItemStack itemStack, Map<String, Object> map) {
+    super(compositionSerializer, itemStack, map);
+  }
+
+  public Map<String, Object> toMap(History<?> history) {
+
+    if (history.getOrigin() != null && !history.getOrigin().equals(new DvDateTime())) {
+      map = toMap(TAG_ORIGIN, history.getOrigin(), history.getName());
     }
 
-    public Map<String, Object> toMap(History<?> history){
+    map = super.toMap(history);
 
-        if (history.getOrigin() != null && !history.getOrigin().equals(new DvDateTime())) {
-            map = toMap(TAG_ORIGIN, history.getOrigin(), history.getName());
-        }
-
-        map =  super.toMap(history);
-
-        return map;
-    }
-
+    return map;
+  }
 }

@@ -20,15 +20,14 @@
 package org.ehrbase.client.classgenerator.interfaces;
 
 import com.nedap.archie.rm.generic.PartyProxy;
-import org.ehrbase.client.classgenerator.interfaces.LocatableEntity;
 import org.ehrbase.client.classgenerator.shareddefinition.Language;
 
 public interface EntryEntity extends LocatableEntity {
-    void setSubject(PartyProxy subject);
+  void setSubject(PartyProxy subject);
 
-    PartyProxy getSubject();
+  PartyProxy getSubject();
 
-    void setLanguage(Language language);
+  void setLanguage(Language language);
 
-    Language getLanguage();
+  Language getLanguage();
 }

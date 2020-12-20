@@ -26,8 +26,7 @@ public class ConditionLogicalOperatorDto implements ConditionDto {
   private ConditionLogicalOperatorSymbol symbol;
   private List<ConditionDto> values;
 
-  public ConditionLogicalOperatorDto() {
-  }
+  public ConditionLogicalOperatorDto() {}
 
   public ConditionLogicalOperatorSymbol getSymbol() {
     return this.symbol;
@@ -52,10 +51,12 @@ public class ConditionLogicalOperatorDto implements ConditionDto {
     if (!other.canEqual((Object) this)) return false;
     final Object this$symbol = this.getSymbol();
     final Object other$symbol = other.getSymbol();
-    if (this$symbol == null ? other$symbol != null : !this$symbol.equals(other$symbol)) return false;
+    if (this$symbol == null ? other$symbol != null : !this$symbol.equals(other$symbol))
+      return false;
     final Object this$values = this.getValues();
     final Object other$values = other.getValues();
-    if (this$values == null ? other$values != null : !this$values.equals(other$values)) return false;
+    if (this$values == null ? other$values != null : !this$values.equals(other$values))
+      return false;
     return true;
   }
 
@@ -74,6 +75,10 @@ public class ConditionLogicalOperatorDto implements ConditionDto {
   }
 
   public String toString() {
-    return "ConditionLogicalOperatorDto(symbol=" + this.getSymbol() + ", values=" + this.getValues() + ")";
+    return "ConditionLogicalOperatorDto(symbol="
+        + this.getSymbol()
+        + ", values="
+        + this.getValues()
+        + ")";
   }
 }

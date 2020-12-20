@@ -17,54 +17,53 @@
 
 package org.ehrbase.client.flattener;
 
+import java.time.OffsetDateTime;
+import java.util.List;
 import org.ehrbase.client.annotations.Archetype;
 import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.Path;
 import org.ehrbase.client.annotations.Template;
-
-import java.time.OffsetDateTime;
-import java.util.List;
 
 @Archetype(value = "openEHR-EHR-COMPOSITION.sample_encounter.v1")
 @Template(value = "ehrbase_blood_pressure_simple.de.v0")
 @Entity
 public class BloodpressureListDe {
 
+  @Path(value = "/context/start_time|value")
+  private OffsetDateTime startTime;
 
-    @Path(value = "/context/start_time|value")
-    private OffsetDateTime startTime;
-    @Path(value = "/content[openEHR-EHR-OBSERVATION.sample_blood_pressure.v1]")
-    private List<Bloodpressure> bloodpressures;
+  @Path(value = "/content[openEHR-EHR-OBSERVATION.sample_blood_pressure.v1]")
+  private List<Bloodpressure> bloodpressures;
 
-    public OffsetDateTime getStartTime() {
-        return startTime;
+  public OffsetDateTime getStartTime() {
+    return startTime;
+  }
+
+  public void setStartTime(OffsetDateTime startTime) {
+    this.startTime = startTime;
+  }
+
+  public List<Bloodpressure> getBloodpressures() {
+    return bloodpressures;
+  }
+
+  public void setBloodpressures(List<Bloodpressure> bloodpressures) {
+    this.bloodpressures = bloodpressures;
+  }
+
+  @Archetype(value = "openEHR-EHR-OBSERVATION.sample_blood_pressure.v1")
+  @Entity
+  public static class Bloodpressure {
+
+    @Path(value = "/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value|magnitude")
+    private Double systolischValue;
+
+    public Double getSystolischValue() {
+      return systolischValue;
     }
 
-    public void setStartTime(OffsetDateTime startTime) {
-        this.startTime = startTime;
+    public void setSystolischValue(Double systolischValue) {
+      this.systolischValue = systolischValue;
     }
-
-    public List<Bloodpressure> getBloodpressures() {
-        return bloodpressures;
-    }
-
-    public void setBloodpressures(List<Bloodpressure> bloodpressures) {
-        this.bloodpressures = bloodpressures;
-    }
-
-    @Archetype(value = "openEHR-EHR-OBSERVATION.sample_blood_pressure.v1")
-    @Entity
-    public static class Bloodpressure {
-
-        @Path(value = "/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value|magnitude")
-        private Double systolischValue;
-
-        public Double getSystolischValue() {
-            return systolischValue;
-        }
-
-        public void setSystolischValue(Double systolischValue) {
-            this.systolischValue = systolischValue;
-        }
-    }
+  }
 }

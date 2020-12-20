@@ -3,9 +3,14 @@ package org.ehrbase.client.classgenerator.olddtoexamples.coronaanamnesecompositi
 import org.ehrbase.client.classgenerator.EnumValueSet;
 
 public enum VorhandenDefiningcode implements EnumValueSet {
-  NICHT_VORHANDEN("Nicht vorhanden", "Das spezifische Symptom oder Anzeichen ist nicht vorhanden.", "local", "at0024"),
+  NICHT_VORHANDEN(
+      "Nicht vorhanden",
+      "Das spezifische Symptom oder Anzeichen ist nicht vorhanden.",
+      "local",
+      "at0024"),
 
-  VORHANDEN("Vorhanden", "Das spezifische Symptom oder Anzeichen ist vorhanden.", "local", "at0023");
+  VORHANDEN(
+      "Vorhanden", "Das spezifische Symptom oder Anzeichen ist vorhanden.", "local", "at0023");
 
   private String value;
 
@@ -23,7 +28,7 @@ public enum VorhandenDefiningcode implements EnumValueSet {
   }
 
   public String getValue() {
-     return this.value;
+    return this.value;
   }
 
   public String getDescription() {

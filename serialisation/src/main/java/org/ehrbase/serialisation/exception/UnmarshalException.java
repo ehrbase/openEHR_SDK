@@ -22,11 +22,11 @@ import org.ehrbase.util.exception.SdkException;
 
 public class UnmarshalException extends SdkException {
 
-    public UnmarshalException(String message, Throwable cause) {
-        super(message, cause);
-    }
+  public UnmarshalException(String message, Throwable cause) {
+    super(message, cause);
+  }
 
-    public UnmarshalException(String message) {
-        super(message);
-    }
+  public UnmarshalException(String message) {
+    super(message);
+  }
 }

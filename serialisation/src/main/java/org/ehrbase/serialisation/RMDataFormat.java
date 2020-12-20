@@ -22,9 +22,7 @@ import com.nedap.archie.rm.RMObject;
 
 public interface RMDataFormat {
 
-    String marshal(RMObject rmObject);
+  String marshal(RMObject rmObject);
 
-    <T extends RMObject> T unmarshal(String value, Class<T> clazz);
-
-
+  <T extends RMObject> T unmarshal(String value, Class<T> clazz);
 }

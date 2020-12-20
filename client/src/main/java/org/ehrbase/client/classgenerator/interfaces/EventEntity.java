@@ -22,7 +22,7 @@ package org.ehrbase.client.classgenerator.interfaces;
 import java.time.temporal.TemporalAccessor;
 
 public interface EventEntity {
-    void setTimeValue(TemporalAccessor timeValue);
+  void setTimeValue(TemporalAccessor timeValue);
 
-    TemporalAccessor getTimeValue();
+  TemporalAccessor getTimeValue();
 }

@@ -18,24 +18,22 @@
 package org.ehrbase.serialisation.attributes;
 
 import com.nedap.archie.rm.composition.Section;
+import java.util.Map;
 import org.ehrbase.serialisation.dbencoding.CompositionSerializer;
 import org.ehrbase.serialisation.dbencoding.ItemStack;
 
-import java.util.Map;
-
-/**
- * populate the attributes for RM Section
- */
+/** populate the attributes for RM Section */
 public class SectionAttributes extends ContentItemAttributes {
 
-    public SectionAttributes(CompositionSerializer compositionSerializer, ItemStack itemStack, Map<String, Object> map) {
-        super(compositionSerializer, itemStack, map);
-    }
+  public SectionAttributes(
+      CompositionSerializer compositionSerializer, ItemStack itemStack, Map<String, Object> map) {
+    super(compositionSerializer, itemStack, map);
+  }
 
-    public Map<String, Object> toMap(Section section){
+  public Map<String, Object> toMap(Section section) {
 
-        map = super.toMap(section);
+    map = super.toMap(section);
 
-        return map;
-    }
+    return map;
+  }
 }

@@ -18,19 +18,18 @@
 package org.ehrbase.client.classgenerator.config;
 
 import com.nedap.archie.rm.generic.PartyIdentified;
-
 import java.util.Collections;
 import java.util.Set;
 
 public class PartyIdentifiedClassGeneratorConfig implements RmClassGeneratorConfig {
 
-    @Override
-    public Class getAssociatedClass() {
-        return PartyIdentified.class;
-    }
+  @Override
+  public Class getAssociatedClass() {
+    return PartyIdentified.class;
+  }
 
-    @Override
-    public Set<String> getExpandFields() {
-        return Collections.emptySet();
-    }
+  @Override
+  public Set<String> getExpandFields() {
+    return Collections.emptySet();
+  }
 }

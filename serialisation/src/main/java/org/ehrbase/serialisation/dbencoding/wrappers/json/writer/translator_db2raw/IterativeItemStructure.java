@@ -18,52 +18,50 @@
 package org.ehrbase.serialisation.dbencoding.wrappers.json.writer.translator_db2raw;
 
 import com.google.gson.internal.LinkedTreeMap;
+import java.util.Map;
 import org.ehrbase.serialisation.dbencoding.CompositionSerializer;
 
-import java.util.Map;
-
 /**
- * deals with representation issues required to support AQL at DB level but causing wrong structuration when
- * returning canonical json. For example
- * <code>
+ * deals with representation issues required to support AQL at DB level but causing wrong
+ * structuration when returning canonical json. For example <code>
  * /events: {
  * /events[at0002]: [
  * ...
  * ]
  * }
  * </code>
- * <p>
- * Should be return as:
  *
- * <code>
+ * <p>Should be return as: <code>
  * {"events":[...,"archetype_node_id":"at0002"}]}
  * </code>
- * <p>
- * The same logic applies to ACTIVITIES
+ *
+ * <p>The same logic applies to ACTIVITIES
  */
 class IterativeItemStructure {
 
-    private LinkedTreeMap<String, Object> valueMap;
+  private LinkedTreeMap<String, Object> valueMap;
 
-    private String[] iterativeTags = {CompositionSerializer.TAG_ACTIVITIES, CompositionSerializer.TAG_EVENTS};
+  private String[] iterativeTags = {
+    CompositionSerializer.TAG_ACTIVITIES, CompositionSerializer.TAG_EVENTS
+  };
 
+  IterativeItemStructure(LinkedTreeMap<String, Object> valueMap) {
+    this.valueMap = valueMap;
+  }
 
-    IterativeItemStructure(LinkedTreeMap<String, Object> valueMap) {
-        this.valueMap = valueMap;
-    }
-
-    LinkedTreeMap<String, Object> promoteIterations() {
-        for (String iterativeTag : iterativeTags) {
-            if (valueMap.containsKey(iterativeTag)) {
-                LinkedTreeMap<String, Object> activities = (LinkedTreeMap<String, Object>) valueMap.get(iterativeTag);
-                for (Map.Entry<String, Object> activityItem : activities.entrySet()) {
-                    if (activityItem.getKey().startsWith(iterativeTag)) {
-                        valueMap.put(activityItem.getKey(), activityItem.getValue());
-                    }
-                }
-                valueMap.remove(iterativeTag);
-            }
+  LinkedTreeMap<String, Object> promoteIterations() {
+    for (String iterativeTag : iterativeTags) {
+      if (valueMap.containsKey(iterativeTag)) {
+        LinkedTreeMap<String, Object> activities =
+            (LinkedTreeMap<String, Object>) valueMap.get(iterativeTag);
+        for (Map.Entry<String, Object> activityItem : activities.entrySet()) {
+          if (activityItem.getKey().startsWith(iterativeTag)) {
+            valueMap.put(activityItem.getKey(), activityItem.getValue());
+          }
         }
-        return valueMap;
+        valueMap.remove(iterativeTag);
+      }
     }
+    return valueMap;
+  }
 }

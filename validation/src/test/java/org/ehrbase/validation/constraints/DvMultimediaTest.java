@@ -18,6 +18,8 @@
 
 package org.ehrbase.validation.constraints;
 
+import static org.junit.Assert.fail;
+
 import com.nedap.archie.rm.datatypes.CodePhrase;
 import com.nedap.archie.rm.datavalues.DvURI;
 import com.nedap.archie.rm.datavalues.encapsulated.DvMultimedia;
@@ -26,46 +28,45 @@ import org.ehrbase.validation.constraints.wrappers.CArchetypeConstraint;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.fail;
-
 public class DvMultimediaTest extends ConstraintTestBase {
 
-    @Before
-    public void setUp(){
-        try {
-            setUpContext("./src/test/resources/constraints/dvmultimedia.xml");
-        } catch (Exception e){
-            fail();
-        }
+  @Before
+  public void setUp() {
+    try {
+      setUpContext("./src/test/resources/constraints/dvmultimedia.xml");
+    } catch (Exception e) {
+      fail();
     }
+  }
 
-    @Test
-    public void testConstraintValidation() {
-        CodePhrase charset = new CodePhrase(new TerminologyId("IANA_character-sets"), "UTF-8");
-        CodePhrase language = new CodePhrase(new TerminologyId("ISO_639-1"), "en");
-        String alternateText = "alternative text";
-        CodePhrase mediaType = new CodePhrase( new TerminologyId("IANA_media-types"), "text/plain");
-        CodePhrase compressionAlgorithm = new CodePhrase( new TerminologyId("openehr_compression_algorithms"), "other");
-        //byte[] integrityCheck = new byte[0];
-        CodePhrase integrityCheckAlgorithm = new CodePhrase( new TerminologyId("openehr_integrity_check_algorithms"), "SHA-1");
-        DvMultimedia thumbnail = null;
-        DvURI uri = new DvURI("www.iana.org");
+  @Test
+  public void testConstraintValidation() {
+    CodePhrase charset = new CodePhrase(new TerminologyId("IANA_character-sets"), "UTF-8");
+    CodePhrase language = new CodePhrase(new TerminologyId("ISO_639-1"), "en");
+    String alternateText = "alternative text";
+    CodePhrase mediaType = new CodePhrase(new TerminologyId("IANA_media-types"), "text/plain");
+    CodePhrase compressionAlgorithm =
+        new CodePhrase(new TerminologyId("openehr_compression_algorithms"), "other");
+    // byte[] integrityCheck = new byte[0];
+    CodePhrase integrityCheckAlgorithm =
+        new CodePhrase(new TerminologyId("openehr_integrity_check_algorithms"), "SHA-1");
+    DvMultimedia thumbnail = null;
+    DvURI uri = new DvURI("www.iana.org");
 
-        DvMultimedia multimedia = new DvMultimedia();
-        multimedia.setCharset(charset);
-        multimedia.setLanguage(language);
-        multimedia.setAlternateText(alternateText);
-        multimedia.setMediaType(mediaType);
-        multimedia.setCompressionAlgorithm(compressionAlgorithm);
-        multimedia.setIntegrityCheckAlgorithm(integrityCheckAlgorithm);
-        multimedia.setThumbnail(thumbnail);
-        multimedia.setUri(uri);
+    DvMultimedia multimedia = new DvMultimedia();
+    multimedia.setCharset(charset);
+    multimedia.setLanguage(language);
+    multimedia.setAlternateText(alternateText);
+    multimedia.setMediaType(mediaType);
+    multimedia.setCompressionAlgorithm(compressionAlgorithm);
+    multimedia.setIntegrityCheckAlgorithm(integrityCheckAlgorithm);
+    multimedia.setThumbnail(thumbnail);
+    multimedia.setUri(uri);
 
-        try {
-            new CArchetypeConstraint(null).validate("test", multimedia, archetypeconstraint);
-        }
-        catch (Exception e){
-            System.out.println(e.getMessage());
-        }
+    try {
+      new CArchetypeConstraint(null).validate("test", multimedia, archetypeconstraint);
+    } catch (Exception e) {
+      System.out.println(e.getMessage());
     }
+  }
 }

@@ -17,29 +17,28 @@
 
 package org.ehrbase.serialisation.attributes;
 
+import static org.ehrbase.serialisation.dbencoding.CompositionSerializer.TAG_NARRATIVE;
+
 import com.nedap.archie.rm.composition.Instruction;
+import java.util.Map;
 import org.ehrbase.serialisation.dbencoding.CompositionSerializer;
 import org.ehrbase.serialisation.dbencoding.ItemStack;
 
-import java.util.Map;
-
-import static org.ehrbase.serialisation.dbencoding.CompositionSerializer.TAG_NARRATIVE;
-/**
- * populate the attributes for RM Instruction (narrative)
- */
+/** populate the attributes for RM Instruction (narrative) */
 public class InstructionAttributes extends CareEntryAttributes {
 
-    public InstructionAttributes(CompositionSerializer compositionSerializer, ItemStack itemStack, Map<String, Object> map) {
-        super(compositionSerializer, itemStack, map);
-    }
+  public InstructionAttributes(
+      CompositionSerializer compositionSerializer, ItemStack itemStack, Map<String, Object> map) {
+    super(compositionSerializer, itemStack, map);
+  }
 
-    public Map<String, Object> toMap(Instruction instruction){
+  public Map<String, Object> toMap(Instruction instruction) {
 
-        if (instruction.getNarrative() != null)
-            map = toMap(TAG_NARRATIVE, instruction.getNarrative(), instruction.getName());
+    if (instruction.getNarrative() != null)
+      map = toMap(TAG_NARRATIVE, instruction.getNarrative(), instruction.getName());
 
-        map =  super.toMap(instruction);
+    map = super.toMap(instruction);
 
-        return map;
-    }
+    return map;
+  }
 }

@@ -18,25 +18,22 @@
 package org.ehrbase.serialisation.attributes;
 
 import com.nedap.archie.rm.composition.Observation;
+import java.util.Map;
 import org.ehrbase.serialisation.dbencoding.CompositionSerializer;
 import org.ehrbase.serialisation.dbencoding.ItemStack;
 
-import java.util.Map;
-
-/**
- * populate the attributes for RM Observation
- */
+/** populate the attributes for RM Observation */
 public class ObservationAttributes extends CareEntryAttributes {
 
-    public ObservationAttributes(CompositionSerializer compositionSerializer, ItemStack itemStack, Map<String, Object> map) {
-        super(compositionSerializer, itemStack, map);
-    }
+  public ObservationAttributes(
+      CompositionSerializer compositionSerializer, ItemStack itemStack, Map<String, Object> map) {
+    super(compositionSerializer, itemStack, map);
+  }
 
-    public Map<String, Object> toMap(Observation observation){
+  public Map<String, Object> toMap(Observation observation) {
 
-        map = super.toMap(observation);
+    map = super.toMap(observation);
 
-        return map;
-    }
-
+    return map;
+  }
 }

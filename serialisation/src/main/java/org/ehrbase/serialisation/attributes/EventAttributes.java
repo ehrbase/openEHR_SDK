@@ -17,41 +17,37 @@
 
 package org.ehrbase.serialisation.attributes;
 
+import static org.ehrbase.serialisation.dbencoding.CompositionSerializer.*;
+
 import com.nedap.archie.rm.datastructures.Event;
 import com.nedap.archie.rm.datastructures.IntervalEvent;
+import java.util.Map;
 import org.ehrbase.serialisation.dbencoding.CompositionSerializer;
 import org.ehrbase.serialisation.dbencoding.ItemStack;
 
-import java.util.Map;
-
-import static org.ehrbase.serialisation.dbencoding.CompositionSerializer.*;
-
-/**
- * populate the attributes for RM Event, in particular timing information
- */
+/** populate the attributes for RM Event, in particular timing information */
 public class EventAttributes extends LocatableAttributes {
 
-    public EventAttributes(CompositionSerializer compositionSerializer, ItemStack itemStack, Map<String, Object> map) {
-        super(compositionSerializer, itemStack, map);
+  public EventAttributes(
+      CompositionSerializer compositionSerializer, ItemStack itemStack, Map<String, Object> map) {
+    super(compositionSerializer, itemStack, map);
+  }
+
+  public Map<String, Object> toMap(Event<?> event) {
+
+    if (event instanceof IntervalEvent) {
+      IntervalEvent<?> intervalEvent = (IntervalEvent<?>) event;
+      if (intervalEvent.getWidth() != null) map.put(TAG_WIDTH, intervalEvent.getWidth());
+      if (intervalEvent.getMathFunction() != null)
+        map.put(TAG_MATH_FUNCTION, intervalEvent.getMathFunction());
     }
 
-    public Map<String, Object> toMap(Event<?> event){
-
-        if (event instanceof IntervalEvent) {
-            IntervalEvent<?> intervalEvent = (IntervalEvent<?>) event;
-            if (intervalEvent.getWidth() != null)
-                map.put(TAG_WIDTH, intervalEvent.getWidth());
-            if (intervalEvent.getMathFunction() != null)
-                map.put(TAG_MATH_FUNCTION, intervalEvent.getMathFunction());
-        }
-
-
-        if (event.getTime() != null) {
-            map = toMap(TAG_TIME, event.getTime(), event.getName());
-        }
-
-        map =  super.toMap(event);
-
-        return map;
+    if (event.getTime() != null) {
+      map = toMap(TAG_TIME, event.getTime(), event.getName());
     }
+
+    map = super.toMap(event);
+
+    return map;
+  }
 }

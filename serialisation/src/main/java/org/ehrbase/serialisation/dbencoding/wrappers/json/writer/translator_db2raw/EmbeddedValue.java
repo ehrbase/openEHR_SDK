@@ -20,38 +20,40 @@ package org.ehrbase.serialisation.dbencoding.wrappers.json.writer.translator_db2
 import com.google.gson.internal.LinkedTreeMap;
 import org.ehrbase.serialisation.dbencoding.CompositionSerializer;
 
-/**
- * restructure special items containing a "value" key for canonical representation
- */
+/** restructure special items containing a "value" key for canonical representation */
 class EmbeddedValue {
-    private LinkedTreeMap<String, Object> valueMap;
+  private LinkedTreeMap<String, Object> valueMap;
 
-    private String[] embeddedTags = {CompositionSerializer.TAG_NARRATIVE, CompositionSerializer.TAG_MATH_FUNCTION, CompositionSerializer.TAG_WIDTH, CompositionSerializer.TAG_UID};
+  private String[] embeddedTags = {
+    CompositionSerializer.TAG_NARRATIVE,
+    CompositionSerializer.TAG_MATH_FUNCTION,
+    CompositionSerializer.TAG_WIDTH,
+    CompositionSerializer.TAG_UID
+  };
 
-    EmbeddedValue(LinkedTreeMap<String, Object> valueMap) {
-        this.valueMap = valueMap;
+  EmbeddedValue(LinkedTreeMap<String, Object> valueMap) {
+    this.valueMap = valueMap;
+  }
+
+  private LinkedTreeMap<String, Object> formatForTag(String tag) {
+
+    if (valueMap.containsKey(tag)) {
+      LinkedTreeMap<String, Object> treeMap = (LinkedTreeMap<String, Object>) valueMap.get(tag);
+      // get the value
+      if (!(treeMap.get(CompositionSerializer.TAG_VALUE) instanceof String)) {
+        LinkedTreeMap treeMapValue = (LinkedTreeMap) treeMap.get(CompositionSerializer.TAG_VALUE);
+        if (treeMapValue != null)
+          treeMap.replace(CompositionSerializer.TAG_VALUE, treeMapValue.get("value"));
+      }
     }
 
-    private LinkedTreeMap<String, Object> formatForTag(String tag) {
+    return valueMap;
+  }
 
-        if (valueMap.containsKey(tag)) {
-            LinkedTreeMap<String, Object> treeMap = (LinkedTreeMap<String, Object>) valueMap.get(tag);
-            //get the value
-            if (!(treeMap.get(CompositionSerializer.TAG_VALUE) instanceof String)) {
-                LinkedTreeMap treeMapValue = (LinkedTreeMap) treeMap.get(CompositionSerializer.TAG_VALUE);
-                if (treeMapValue != null)
-                    treeMap.replace(CompositionSerializer.TAG_VALUE, treeMapValue.get("value"));
-            }
-        }
-
-        return valueMap;
+  LinkedTreeMap<String, Object> formatForEmbeddedTag() {
+    for (String tag : embeddedTags) {
+      if (valueMap.containsKey(tag)) valueMap = formatForTag(tag);
     }
-
-    LinkedTreeMap<String, Object> formatForEmbeddedTag() {
-        for (String tag : embeddedTags) {
-            if (valueMap.containsKey(tag))
-                valueMap = formatForTag(tag);
-        }
-        return valueMap;
-    }
+    return valueMap;
+  }
 }

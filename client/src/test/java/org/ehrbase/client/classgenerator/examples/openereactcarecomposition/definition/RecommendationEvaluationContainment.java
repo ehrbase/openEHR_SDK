@@ -11,17 +11,41 @@ import org.ehrbase.client.aql.field.SelectAqlField;
 import org.ehrbase.client.classgenerator.shareddefinition.Language;
 
 public class RecommendationEvaluationContainment extends Containment {
-  public SelectAqlField<RecommendationEvaluation> RECOMMENDATION_EVALUATION = new AqlFieldImp<RecommendationEvaluation>(RecommendationEvaluation.class, "", "RecommendationEvaluation", RecommendationEvaluation.class, this);
+  public SelectAqlField<RecommendationEvaluation> RECOMMENDATION_EVALUATION =
+      new AqlFieldImp<RecommendationEvaluation>(
+          RecommendationEvaluation.class,
+          "",
+          "RecommendationEvaluation",
+          RecommendationEvaluation.class,
+          this);
 
-  public ListSelectAqlField<RecommendationRecommendationElement> RECOMMENDATION = new ListAqlFieldImp<RecommendationRecommendationElement>(RecommendationEvaluation.class, "/data[at0001]/items[at0002]", "recommendation", RecommendationRecommendationElement.class, this);
+  public ListSelectAqlField<RecommendationRecommendationElement> RECOMMENDATION =
+      new ListAqlFieldImp<RecommendationRecommendationElement>(
+          RecommendationEvaluation.class,
+          "/data[at0001]/items[at0002]",
+          "recommendation",
+          RecommendationRecommendationElement.class,
+          this);
 
-  public ListSelectAqlField<Cluster> EXTENSION = new ListAqlFieldImp<Cluster>(RecommendationEvaluation.class, "/protocol[at0004]/items[at0005]", "extension", Cluster.class, this);
+  public ListSelectAqlField<Cluster> EXTENSION =
+      new ListAqlFieldImp<Cluster>(
+          RecommendationEvaluation.class,
+          "/protocol[at0004]/items[at0005]",
+          "extension",
+          Cluster.class,
+          this);
 
-  public SelectAqlField<PartyProxy> SUBJECT = new AqlFieldImp<PartyProxy>(RecommendationEvaluation.class, "/subject", "subject", PartyProxy.class, this);
+  public SelectAqlField<PartyProxy> SUBJECT =
+      new AqlFieldImp<PartyProxy>(
+          RecommendationEvaluation.class, "/subject", "subject", PartyProxy.class, this);
 
-  public SelectAqlField<Language> LANGUAGE = new AqlFieldImp<Language>(RecommendationEvaluation.class, "/language", "language", Language.class, this);
+  public SelectAqlField<Language> LANGUAGE =
+      new AqlFieldImp<Language>(
+          RecommendationEvaluation.class, "/language", "language", Language.class, this);
 
-  public SelectAqlField<FeederAudit> FEEDER_AUDIT = new AqlFieldImp<FeederAudit>(RecommendationEvaluation.class, "/feeder_audit", "feederAudit", FeederAudit.class, this);
+  public SelectAqlField<FeederAudit> FEEDER_AUDIT =
+      new AqlFieldImp<FeederAudit>(
+          RecommendationEvaluation.class, "/feeder_audit", "feederAudit", FeederAudit.class, this);
 
   private RecommendationEvaluationContainment() {
     super("openEHR-EHR-EVALUATION.recommendation.v1");

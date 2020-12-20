@@ -17,46 +17,49 @@
  */
 package org.ehrbase.terminology.openehr.implementation;
 
+import static junit.framework.TestCase.*;
+
 import com.nedap.archie.rm.datatypes.CodePhrase;
 import com.nedap.archie.rm.support.identification.TerminologyId;
+import java.util.Set;
 import org.ehrbase.terminology.openehr.TerminologyAccess;
 import org.ehrbase.terminology.openehr.TerminologyInterface;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.Set;
-
-import static junit.framework.TestCase.*;
-
 public class TerminologyAccessTest {
 
-    TerminologyAccess terminologyAccess;
+  TerminologyAccess terminologyAccess;
 
-    @Before
-    public void setUp() {
-        TerminologyInterface simpleTerminologyInterface = new SimpleTerminologyInterface("en");
+  @Before
+  public void setUp() {
+    TerminologyInterface simpleTerminologyInterface = new SimpleTerminologyInterface("en");
 
-        //get openehr terminology
-        terminologyAccess = simpleTerminologyInterface.terminology("openehr");
-    }
+    // get openehr terminology
+    terminologyAccess = simpleTerminologyInterface.terminology("openehr");
+  }
 
-    @Test
-    public void testTerminologyAccess() throws Exception {
-        assertEquals("openehr", terminologyAccess.id());
+  @Test
+  public void testTerminologyAccess() throws Exception {
+    assertEquals("openehr", terminologyAccess.id());
 
-        Set<CodePhrase> codePhrases = terminologyAccess.allCodes();
-        assertEquals(216, codePhrases.size());
+    Set<CodePhrase> codePhrases = terminologyAccess.allCodes();
+    assertEquals(216, codePhrases.size());
 
-        codePhrases = terminologyAccess.codesForGroupId("setting");
-        assertEquals(13, codePhrases.size());
+    codePhrases = terminologyAccess.codesForGroupId("setting");
+    assertEquals(13, codePhrases.size());
 
-        assertTrue(terminologyAccess.hasCodeForGroupId("setting", new CodePhrase(new TerminologyId("openehr"), "237"))); //nursing home care
+    assertTrue(
+        terminologyAccess.hasCodeForGroupId(
+            "setting", new CodePhrase(new TerminologyId("openehr"), "237"))); // nursing home care
 
-        assertFalse(terminologyAccess.hasCodeForGroupId("setting", new CodePhrase(new TerminologyId("openehr"), "240"))); //bad code string
-    }
+    assertFalse(
+        terminologyAccess.hasCodeForGroupId(
+            "setting", new CodePhrase(new TerminologyId("openehr"), "240"))); // bad code string
+  }
 
-    @Test
-    public void labelForCodeTest() {
-        assertEquals("nursing home care", terminologyAccess.rubricForCode("237", "en"));
-    }
+  @Test
+  public void labelForCodeTest() {
+    assertEquals("nursing home care", terminologyAccess.rubricForCode("237", "en"));
+  }
 }

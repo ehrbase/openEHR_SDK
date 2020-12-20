@@ -18,62 +18,60 @@
 
 package org.ehrbase.response.ehrscape;
 
-
 public class EhrStatusDto {
 
+  String subjectId;
+  String subjectNamespace;
+  boolean queryable;
+  boolean modifiable;
+  StructuredString otherDetails;
+  String otherDetailsTemplateId;
 
-    String subjectId;
-    String subjectNamespace;
-    boolean queryable;
-    boolean modifiable;
-    StructuredString otherDetails;
-    String otherDetailsTemplateId;
+  public String getSubjectId() {
+    return subjectId;
+  }
 
-    public String getSubjectId() {
-        return subjectId;
-    }
+  public void setSubjectId(String subjectId) {
+    this.subjectId = subjectId;
+  }
 
-    public void setSubjectId(String subjectId) {
-        this.subjectId = subjectId;
-    }
+  public String getSubjectNamespace() {
+    return subjectNamespace;
+  }
 
-    public String getSubjectNamespace() {
-        return subjectNamespace;
-    }
+  public void setSubjectNamespace(String subjectNamespace) {
+    this.subjectNamespace = subjectNamespace;
+  }
 
-    public void setSubjectNamespace(String subjectNamespace) {
-        this.subjectNamespace = subjectNamespace;
-    }
+  public boolean isQueryable() {
+    return queryable;
+  }
 
-    public boolean isQueryable() {
-        return queryable;
-    }
+  public void setQueryable(boolean queryable) {
+    this.queryable = queryable;
+  }
 
-    public void setQueryable(boolean queryable) {
-        this.queryable = queryable;
-    }
+  public boolean isModifiable() {
+    return modifiable;
+  }
 
-    public boolean isModifiable() {
-        return modifiable;
-    }
+  public void setModifiable(boolean modifiable) {
+    this.modifiable = modifiable;
+  }
 
-    public void setModifiable(boolean modifiable) {
-        this.modifiable = modifiable;
-    }
+  public StructuredString getOtherDetails() {
+    return otherDetails;
+  }
 
-    public StructuredString getOtherDetails() {
-        return otherDetails;
-    }
+  public void setOtherDetails(StructuredString otherDetails) {
+    this.otherDetails = otherDetails;
+  }
 
-    public void setOtherDetails(StructuredString otherDetails) {
-        this.otherDetails = otherDetails;
-    }
+  public String getOtherDetailsTemplateId() {
+    return otherDetailsTemplateId;
+  }
 
-    public String getOtherDetailsTemplateId() {
-        return otherDetailsTemplateId;
-    }
-
-    public void setOtherDetailsTemplateId(String otherDetailsTemplateId) {
-        this.otherDetailsTemplateId = otherDetailsTemplateId;
-    }
+  public void setOtherDetailsTemplateId(String otherDetailsTemplateId) {
+    this.otherDetailsTemplateId = otherDetailsTemplateId;
+  }
 }

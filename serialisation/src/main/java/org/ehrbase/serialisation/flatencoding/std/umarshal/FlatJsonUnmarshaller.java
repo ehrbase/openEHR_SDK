@@ -23,6 +23,12 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nedap.archie.rm.composition.Composition;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
 import org.ehrbase.building.OptSkeletonBuilder;
 import org.ehrbase.normalizer.Normalizer;
 import org.ehrbase.serialisation.exception.UnmarshalException;
@@ -30,68 +36,57 @@ import org.ehrbase.serialisation.jsonencoding.JacksonUtil;
 import org.ehrbase.webtemplate.model.WebTemplate;
 import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
-
 public class FlatJsonUnmarshaller {
 
-   private static final ObjectMapper OBJECT_MAPPER = JacksonUtil.getObjectMapper();
-    public static final OptSkeletonBuilder OPT_SKELETON_BUILDER = new OptSkeletonBuilder();
-    public static final Normalizer NORMALIZER = new Normalizer();
+  private static final ObjectMapper OBJECT_MAPPER = JacksonUtil.getObjectMapper();
+  public static final OptSkeletonBuilder OPT_SKELETON_BUILDER = new OptSkeletonBuilder();
+  public static final Normalizer NORMALIZER = new Normalizer();
 
+  private Set<String> consumedPath;
 
-    private Set<String> consumedPath;
+  private Map<String, String> currentValues;
 
+  /**
+   * Unmarshal flat Json to Composition
+   *
+   * @param flat the flat Json
+   * @param introspect the introspect belonging to the template
+   * @param operationalTemplate the template of the flat json
+   * @return
+   */
+  public Composition unmarshal(
+      String flat, WebTemplate introspect, OPERATIONALTEMPLATE operationalTemplate) {
 
-    private Map<String, String> currentValues;
+    consumedPath = new HashSet<>();
 
-    /**
-     * Unmarshal flat Json to Composition
-     *
-     * @param flat                the flat Json
-     * @param introspect          the introspect belonging to the template
-     * @param operationalTemplate the template of the flat json
-     * @return
-     */
-    public Composition unmarshal(String flat, WebTemplate introspect, OPERATIONALTEMPLATE operationalTemplate) {
+    try {
 
-        consumedPath = new HashSet<>();
+      currentValues = new HashMap<>();
+      for (Iterator<Map.Entry<String, JsonNode>> it = OBJECT_MAPPER.readTree(flat).fields();
+          it.hasNext(); ) {
+        Map.Entry<String, JsonNode> e = it.next();
+        currentValues.put(e.getKey(), e.getValue().toString());
+      }
 
-        try {
+      Composition generate = (Composition) OPT_SKELETON_BUILDER.generate(operationalTemplate);
 
-            currentValues = new HashMap<>();
-            for (Iterator<Map.Entry<String, JsonNode>> it = OBJECT_MAPPER.readTree(flat).fields(); it.hasNext(); ) {
-                Map.Entry<String, JsonNode> e = it.next();
-                currentValues.put(e.getKey(), e.getValue().toString());
+      StdToCompositionWalker walker = new StdToCompositionWalker();
+      walker.walk(generate, currentValues, introspect);
+      consumedPath = walker.getConsumedPaths();
 
-            }
-
-            Composition generate = (Composition) OPT_SKELETON_BUILDER.generate(operationalTemplate);
-
-            StdToCompositionWalker walker = new StdToCompositionWalker();
-            walker.walk(generate, currentValues, introspect);
-            consumedPath = walker.getConsumedPaths();
-
-            return NORMALIZER.normalize(generate);
-        } catch (JsonProcessingException e) {
-            throw new UnmarshalException(e.getMessage(), e);
-        }
-
-
+      return NORMALIZER.normalize(generate);
+    } catch (JsonProcessingException e) {
+      throw new UnmarshalException(e.getMessage(), e);
     }
+  }
 
-    public Set<String> getUnconsumed() {
-        if (currentValues != null && consumedPath != null) {
-            HashSet<String> set = new HashSet<>(currentValues.keySet());
-            set.removeAll(consumedPath);
-            return set;
-        } else {
-            return Collections.emptySet();
-        }
+  public Set<String> getUnconsumed() {
+    if (currentValues != null && consumedPath != null) {
+      HashSet<String> set = new HashSet<>(currentValues.keySet());
+      set.removeAll(consumedPath);
+      return set;
+    } else {
+      return Collections.emptySet();
     }
-
+  }
 }

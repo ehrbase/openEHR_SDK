@@ -21,33 +21,31 @@ package org.ehrbase.serialisation.flatencoding.std.marshal.config;
 
 import com.nedap.archie.rm.datatypes.CodePhrase;
 import com.nedap.archie.rm.support.identification.ObjectId;
-import org.ehrbase.serialisation.walker.Context;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import org.ehrbase.serialisation.walker.Context;
 
 public class CodePhraseStdConfig extends AbstractsStdConfig<CodePhrase> {
 
-    @Override
-    /**
-     * {@inheritDoc}
-     */
-    public Map<String, Object> buildChildValues(String currentTerm, CodePhrase rmObject, Context<Map<String, Object>> context) {
-        Map<String, Object> result = new HashMap<>();
-        addValue(result, currentTerm, "code", rmObject.getCodeString());
-        addValue(result, currentTerm, "terminology", Optional.of(rmObject.getTerminologyId()).map(ObjectId::getValue).orElse(null));
+  @Override
+  /** {@inheritDoc} */
+  public Map<String, Object> buildChildValues(
+      String currentTerm, CodePhrase rmObject, Context<Map<String, Object>> context) {
+    Map<String, Object> result = new HashMap<>();
+    addValue(result, currentTerm, "code", rmObject.getCodeString());
+    addValue(
+        result,
+        currentTerm,
+        "terminology",
+        Optional.of(rmObject.getTerminologyId()).map(ObjectId::getValue).orElse(null));
 
-        return result;
-    }
+    return result;
+  }
 
-    @Override
-    /**
-     * {@inheritDoc}
-     */
-    public Class<CodePhrase> getAssociatedClass() {
-        return CodePhrase.class;
-    }
-
-
+  @Override
+  /** {@inheritDoc} */
+  public Class<CodePhrase> getAssociatedClass() {
+    return CodePhrase.class;
+  }
 }

@@ -19,38 +19,36 @@
 
 package org.ehrbase.webtemplate.parser;
 
+import java.util.Arrays;
+import java.util.Optional;
 import org.openehr.schemas.v1.CCOMPLEXOBJECT;
 import org.openehr.schemas.v1.CPRIMITIVEOBJECT;
 import org.openehr.schemas.v1.CSINGLEATTRIBUTE;
 import org.openehr.schemas.v1.CSTRING;
 
-import java.util.Arrays;
-import java.util.Optional;
-
 public class OptNameHelper {
 
-    private OptNameHelper() {
-    }
+  private OptNameHelper() {}
 
-    public static Optional<String> extractName(CCOMPLEXOBJECT ccomplexobject) {
-        return Arrays.stream(ccomplexobject.getAttributesArray())
-                .filter(a -> CSINGLEATTRIBUTE.class.isAssignableFrom(a.getClass()))
-                .map(a -> (CSINGLEATTRIBUTE) a)
-                .filter(a -> a.getRmAttributeName().equals("name"))
-                .map(a -> a.getChildrenArray(0))
-                .filter(a -> CCOMPLEXOBJECT.class.isAssignableFrom(a.getClass()))
-                .map(c -> (CCOMPLEXOBJECT) c)
-                .map(CCOMPLEXOBJECT::getAttributesArray)
-                .flatMap(Arrays::stream)
-                .filter(a -> CSINGLEATTRIBUTE.class.isAssignableFrom(a.getClass()))
-                .map(a -> (CSINGLEATTRIBUTE) a)
-                .filter(a -> a.getRmAttributeName().equals("value"))
-                .map(a -> a.getChildrenArray(0))
-                .filter(p -> CPRIMITIVEOBJECT.class.isAssignableFrom(p.getClass()))
-                .map(p -> (CPRIMITIVEOBJECT) p)
-                .map(CPRIMITIVEOBJECT::getItem)
-                .map(s -> (CSTRING) s)
-                .map(s -> s.getListArray(0))
-                .findAny();
-    }
+  public static Optional<String> extractName(CCOMPLEXOBJECT ccomplexobject) {
+    return Arrays.stream(ccomplexobject.getAttributesArray())
+        .filter(a -> CSINGLEATTRIBUTE.class.isAssignableFrom(a.getClass()))
+        .map(a -> (CSINGLEATTRIBUTE) a)
+        .filter(a -> a.getRmAttributeName().equals("name"))
+        .map(a -> a.getChildrenArray(0))
+        .filter(a -> CCOMPLEXOBJECT.class.isAssignableFrom(a.getClass()))
+        .map(c -> (CCOMPLEXOBJECT) c)
+        .map(CCOMPLEXOBJECT::getAttributesArray)
+        .flatMap(Arrays::stream)
+        .filter(a -> CSINGLEATTRIBUTE.class.isAssignableFrom(a.getClass()))
+        .map(a -> (CSINGLEATTRIBUTE) a)
+        .filter(a -> a.getRmAttributeName().equals("value"))
+        .map(a -> a.getChildrenArray(0))
+        .filter(p -> CPRIMITIVEOBJECT.class.isAssignableFrom(p.getClass()))
+        .map(p -> (CPRIMITIVEOBJECT) p)
+        .map(CPRIMITIVEOBJECT::getItem)
+        .map(s -> (CSTRING) s)
+        .map(s -> s.getListArray(0))
+        .findAny();
+  }
 }

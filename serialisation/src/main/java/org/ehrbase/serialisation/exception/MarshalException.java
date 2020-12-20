@@ -22,11 +22,11 @@ import org.ehrbase.util.exception.SdkException;
 
 public class MarshalException extends SdkException {
 
-    public MarshalException(String message, Throwable cause) {
-        super(message, cause);
-    }
+  public MarshalException(String message, Throwable cause) {
+    super(message, cause);
+  }
 
-    public MarshalException(String message) {
-        super(message);
-    }
+  public MarshalException(String message) {
+    super(message);
+  }
 }

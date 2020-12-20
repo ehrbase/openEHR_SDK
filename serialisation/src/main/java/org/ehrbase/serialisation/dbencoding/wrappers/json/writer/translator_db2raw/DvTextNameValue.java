@@ -19,43 +19,40 @@ package org.ehrbase.serialisation.dbencoding.wrappers.json.writer.translator_db2
 
 import com.google.gson.internal.LinkedTreeMap;
 import com.google.gson.stream.JsonWriter;
+import java.io.IOException;
 import org.ehrbase.serialisation.dbencoding.wrappers.json.I_DvTypeAdapter;
 
-import java.io.IOException;
+public class DvTextNameValue implements I_NameValueHandler {
 
-public class DvTextNameValue implements I_NameValueHandler{
+  private final JsonWriter writer;
+  private final String value;
 
-    private final JsonWriter writer;
-    private final String value;
+  DvTextNameValue(JsonWriter writer, String value) {
+    this.writer = writer;
+    this.value = value;
+  }
 
-    DvTextNameValue(JsonWriter writer, String value) {
-        this.writer = writer;
-        this.value = value;
-    }
+  DvTextNameValue(JsonWriter writer, LinkedTreeMap value) {
+    this.writer = writer;
+    this.value = value.get("value").toString();
+  }
 
-    DvTextNameValue(JsonWriter writer, LinkedTreeMap value) {
-        this.writer = writer;
-        this.value = value.get("value").toString();
-    }
-
-
-    /**
-     * Encode a name value into the DB json structure
-     * <code>
-     *     "name": {
-     *         "value":...
-     *     }
-     * </code>
-     * @throws IOException
-     */
-    @Override
-    public void write() throws IOException {
-        if (value == null || value.isEmpty())
-            return;
-        writer.name(I_DvTypeAdapter.NAME);
-        writer.beginObject();
-        writer.name(I_DvTypeAdapter.VALUE).value(value);
-        writer.name(I_DvTypeAdapter.AT_TYPE).value("DV_TEXT");
-        writer.endObject();
-    }
+  /**
+   * Encode a name value into the DB json structure <code>
+   *     "name": {
+   *         "value":...
+   *     }
+   * </code>
+   *
+   * @throws IOException
+   */
+  @Override
+  public void write() throws IOException {
+    if (value == null || value.isEmpty()) return;
+    writer.name(I_DvTypeAdapter.NAME);
+    writer.beginObject();
+    writer.name(I_DvTypeAdapter.VALUE).value(value);
+    writer.name(I_DvTypeAdapter.AT_TYPE).value("DV_TEXT");
+    writer.endObject();
+  }
 }

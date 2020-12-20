@@ -21,13 +21,11 @@ package org.ehrbase.webtemplate.parser.config;
 
 import com.nedap.archie.rm.composition.Observation;
 
-public class ObservationIntrospectConfig extends CareEntryIntrospectConfig implements RmIntrospectConfig {
+public class ObservationIntrospectConfig extends CareEntryIntrospectConfig
+    implements RmIntrospectConfig {
 
-
-    @Override
-    public Class getAssociatedClass() {
-        return Observation.class;
-    }
-
-
+  @Override
+  public Class getAssociatedClass() {
+    return Observation.class;
+  }
 }

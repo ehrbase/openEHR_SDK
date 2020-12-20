@@ -39,51 +39,49 @@ package org.ehrbase.terminology.openehr;
  * @author Rong Chen
  */
 public enum OpenEHRCodeSetIdentifiers {
+  CHARACTER_SETS("character sets"),
+  COMPRESSION_ALGORITHMS("compression algorithms"),
+  COUNTRIES("countries"),
+  INTEGRITY_CHECK_ALGORITHMS("integrity check algorithms"),
+  LANGUAGES("languages"),
+  MEDIA_TYPES("media types"),
+  NORMAL_STATUSES("normal statuses");
 
-    CHARACTER_SETS("character sets"),
-    COMPRESSION_ALGORITHMS("compression algorithms"),
-    COUNTRIES("countries"),
-    INTEGRITY_CHECK_ALGORITHMS("integrity check algorithms"),
-    LANGUAGES("languages"),
-    MEDIA_TYPES("media types"),
-    NORMAL_STATUSES("normal statuses");
-
-    /**
-     * Validity function to test if an identifier is in the set
-     * defined by this class
-     *
-     * @param id
-     * @return true if valid
-     */
-    public static boolean validCodeSetId(String id) {
-        for (OpenEHRCodeSetIdentifiers codeSetId : values()) {
-            if (codeSetId.value.equals(id)) {
-                return true;
-            }
-        }
-        return false;
+  /**
+   * Validity function to test if an identifier is in the set defined by this class
+   *
+   * @param id
+   * @return true if valid
+   */
+  public static boolean validCodeSetId(String id) {
+    for (OpenEHRCodeSetIdentifiers codeSetId : values()) {
+      if (codeSetId.value.equals(id)) {
+        return true;
+      }
     }
+    return false;
+  }
 
-    /**
-     * Private constructor
-     *
-     * @param value
-     */
-    private OpenEHRCodeSetIdentifiers(String value) {
-        this.value = value;
-    }
+  /**
+   * Private constructor
+   *
+   * @param value
+   */
+  private OpenEHRCodeSetIdentifiers(String value) {
+    this.value = value;
+  }
 
-    /**
-     * Gets String representation of this identifier
-     *
-     * @return the string value
-     */
-    public String toString() {
-        return value;
-    }
+  /**
+   * Gets String representation of this identifier
+   *
+   * @return the string value
+   */
+  public String toString() {
+    return value;
+  }
 
-    /* String value of the identifier */
-    private final String value;
+  /* String value of the identifier */
+  private final String value;
 }
 
 /*

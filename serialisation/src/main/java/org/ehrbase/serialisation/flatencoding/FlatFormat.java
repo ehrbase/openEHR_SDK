@@ -22,11 +22,11 @@ package org.ehrbase.serialisation.flatencoding;
 /**
  * The supported flat jason formats
  *
- * @see <a href="https://specifications.openehr.org/releases/ITS-REST/latest/simplified_data_template.html">Simplified Data Template (SDT)</a>
+ * @see <a
+ *     href="https://specifications.openehr.org/releases/ITS-REST/latest/simplified_data_template.html">Simplified
+ *     Data Template (SDT)</a>
  */
 public enum FlatFormat {
-    /**
-     * Simplified IM Simplified Data template.
-     */
-    SIM_SDT;
+  /** Simplified IM Simplified Data template. */
+  SIM_SDT;
 }

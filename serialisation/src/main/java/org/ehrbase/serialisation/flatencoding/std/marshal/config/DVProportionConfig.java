@@ -20,37 +20,30 @@
 package org.ehrbase.serialisation.flatencoding.std.marshal.config;
 
 import com.nedap.archie.rm.datavalues.quantity.DvProportion;
-import org.ehrbase.serialisation.walker.Context;
-
 import java.util.HashMap;
 import java.util.Map;
+import org.ehrbase.serialisation.walker.Context;
 
 public class DVProportionConfig extends AbstractsStdConfig<DvProportion> {
 
+  /** {@inheritDoc} */
+  @Override
+  public Class<DvProportion> getAssociatedClass() {
+    return DvProportion.class;
+  }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Class<DvProportion> getAssociatedClass() {
-        return DvProportion.class;
+  /** {@inheritDoc} */
+  @Override
+  public Map<String, Object> buildChildValues(
+      String currentTerm, DvProportion rmObject, Context<Map<String, Object>> context) {
+    Map<String, Object> result = new HashMap<>();
+    addValue(result, currentTerm, "numerator", rmObject.getNumerator());
+    addValue(result, currentTerm, "denominator", rmObject.getDenominator());
+    addValue(result, currentTerm, "type", rmObject.getType());
+    if (rmObject.getNumerator() != null && rmObject.getDenominator() != null) {
+      addValue(result, currentTerm, null, rmObject.getNumerator() / rmObject.getDenominator());
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Map<String, Object> buildChildValues(String currentTerm, DvProportion rmObject, Context<Map<String, Object>> context) {
-        Map<String, Object> result = new HashMap<>();
-        addValue(result, currentTerm, "numerator", rmObject.getNumerator());
-        addValue(result, currentTerm, "denominator", rmObject.getDenominator());
-        addValue(result, currentTerm, "type", rmObject.getType());
-        if (rmObject.getNumerator() != null && rmObject.getDenominator() != null) {
-            addValue(result, currentTerm, null, rmObject.getNumerator() / rmObject.getDenominator());
-        }
-
-        return result;
-    }
-
-
+    return result;
+  }
 }

@@ -21,27 +21,31 @@ package org.ehrbase.serialisation.flatencoding.std.umarshal.rmunmarshaller;
 
 import com.nedap.archie.rm.datatypes.CodePhrase;
 import com.nedap.archie.rm.support.identification.TerminologyId;
-import org.ehrbase.serialisation.walker.Context;
-
 import java.util.Map;
+import org.ehrbase.serialisation.walker.Context;
 
 public class CodePhraseRMUnmarshaller extends AbstractRMUnmarshaller<CodePhrase> {
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Class<CodePhrase> getAssociatedClass() {
-        return CodePhrase.class;
-    }
+  /** {@inheritDoc} */
+  @Override
+  public Class<CodePhrase> getAssociatedClass() {
+    return CodePhrase.class;
+  }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void handle(String currentTerm, CodePhrase rmObject, Map<String, String> currentValues, Context<Map<String, String>> context) {
-        setValue(currentTerm, "code", currentValues, rmObject::setCodeString, String.class);
-        rmObject.setTerminologyId(new TerminologyId());
-        setValue(currentTerm, "terminology", currentValues, t -> rmObject.getTerminologyId().setValue(t), String.class);
-    }
+  /** {@inheritDoc} */
+  @Override
+  public void handle(
+      String currentTerm,
+      CodePhrase rmObject,
+      Map<String, String> currentValues,
+      Context<Map<String, String>> context) {
+    setValue(currentTerm, "code", currentValues, rmObject::setCodeString, String.class);
+    rmObject.setTerminologyId(new TerminologyId());
+    setValue(
+        currentTerm,
+        "terminology",
+        currentValues,
+        t -> rmObject.getTerminologyId().setValue(t),
+        String.class);
+  }
 }

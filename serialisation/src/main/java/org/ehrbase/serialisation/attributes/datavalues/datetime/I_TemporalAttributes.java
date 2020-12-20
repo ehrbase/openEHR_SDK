@@ -21,46 +21,49 @@ import java.time.temporal.Temporal;
 
 public interface I_TemporalAttributes {
 
-    /**
-     * get the epoch offset from a defaulted representation if applicable.
-     * @see I_TemporalAttributes::getValueExtended()
-     * @return Long
-     */
-    Long getMagnitude();
+  /**
+   * get the epoch offset from a defaulted representation if applicable.
+   *
+   * @see I_TemporalAttributes::getValueExtended()
+   * @return Long
+   */
+  Long getMagnitude();
 
-    /**
-     * return the value passed as an argument to the decorator
-     * @return Temporal
-     */
-    Temporal getValueAsProvided();
+  /**
+   * return the value passed as an argument to the decorator
+   *
+   * @return Temporal
+   */
+  Temporal getValueAsProvided();
 
-    /**
-     * default the missing fields according the argument class.
-     * f.e.
-     * - 2019-12 -> 2019-12-01 for a DvDate
-     * - 2019-12 -> 2019-12-01T00:00:00 for a DvDateTime
-     *
-     * @return Temporal
-     */
-    Temporal getValueExtended();
+  /**
+   * default the missing fields according the argument class. f.e. - 2019-12 -> 2019-12-01 for a
+   * DvDate - 2019-12 -> 2019-12-01T00:00:00 for a DvDateTime
+   *
+   * @return Temporal
+   */
+  Temporal getValueExtended();
 
-    /**
-     * return a bitmask of the supported ChronoFields for this argument
-     * @link ChronoFields
-     * @return a bitmask as in {@link TemporalAttributes}
-     */
-    Integer getSupportedChronoFields();
+  /**
+   * return a bitmask of the supported ChronoFields for this argument
+   *
+   * @link ChronoFields
+   * @return a bitmask as in {@link TemporalAttributes}
+   */
+  Integer getSupportedChronoFields();
 
-    /**
-     * @return return the timestamp calculated from the extended representation as a full ISO8601 date/time
-     * that is for a DvDate, it is converted to its ISO8601 equivalent (YYYY-MM-DDThh:mm:ss[TZ])
-     */
-    Long getTimeStamp();
+  /**
+   * @return return the timestamp calculated from the extended representation as a full ISO8601
+   *     date/time that is for a DvDate, it is converted to its ISO8601 equivalent
+   *     (YYYY-MM-DDThh:mm:ss[TZ])
+   */
+  Long getTimeStamp();
 
-    /**
-     * return the formatter to use to represent this argument as String from SQL
-     * @param bitmask bit map
-     * @return the formatter string
-     */
-    String getISOdateTimeSQLFormatter(Integer bitmask);
+  /**
+   * return the formatter to use to represent this argument as String from SQL
+   *
+   * @param bitmask bit map
+   * @return the formatter string
+   */
+  String getISOdateTimeSQLFormatter(Integer bitmask);
 }

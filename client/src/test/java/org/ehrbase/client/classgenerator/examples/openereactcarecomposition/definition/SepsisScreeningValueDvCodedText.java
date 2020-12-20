@@ -10,21 +10,18 @@ import org.ehrbase.client.classgenerator.interfaces.RMEntity;
 @Generated(
     value = "org.ehrbase.client.classgenerator.ClassGenerator",
     date = "2020-12-10T13:06:11.411499600+01:00",
-    comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
-)
+    comments = "https://github.com/ehrbase/openEHR_SDK Version: null")
 @OptionFor("DV_CODED_TEXT")
 public class SepsisScreeningValueDvCodedText implements RMEntity, SepsisScreeningValueChoice {
-  /**
-   * Path: open_eREACT-Care/Assessment/Sepsis/Sepsis screening/Any event/value/value
-   */
+  /** Path: open_eREACT-Care/Assessment/Sepsis/Sepsis screening/Any event/value/value */
   @Path("|defining_code")
   private ValueDefiningCode7 valueDefiningCode;
 
   public void setValueDefiningCode(ValueDefiningCode7 valueDefiningCode) {
-     this.valueDefiningCode = valueDefiningCode;
+    this.valueDefiningCode = valueDefiningCode;
   }
 
   public ValueDefiningCode7 getValueDefiningCode() {
-     return this.valueDefiningCode ;
+    return this.valueDefiningCode;
   }
 }

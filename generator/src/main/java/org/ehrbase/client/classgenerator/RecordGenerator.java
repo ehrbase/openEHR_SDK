@@ -29,20 +29,19 @@ import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 import com.squareup.javapoet.TypeVariableName;
 import com.squareup.javapoet.WildcardTypeName;
-import org.ehrbase.client.aql.containment.ContainmentExpression;
-import org.ehrbase.client.aql.field.AqlField;
-import org.ehrbase.client.aql.field.SelectAqlField;
-import org.ehrbase.client.aql.query.EntityQuery;
-import org.ehrbase.client.aql.query.NativeQuery;
-import org.ehrbase.client.aql.record.Record;
-
-import javax.lang.model.element.Modifier;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.stream.Collectors;
+import javax.lang.model.element.Modifier;
+import org.ehrbase.client.aql.containment.ContainmentExpression;
+import org.ehrbase.client.aql.field.AqlField;
+import org.ehrbase.client.aql.field.SelectAqlField;
+import org.ehrbase.client.aql.query.EntityQuery;
+import org.ehrbase.client.aql.query.NativeQuery;
+import org.ehrbase.client.aql.record.Record;
 
 public class RecordGenerator {
 

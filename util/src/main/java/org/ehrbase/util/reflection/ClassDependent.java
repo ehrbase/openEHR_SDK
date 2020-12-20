@@ -21,5 +21,5 @@ package org.ehrbase.util.reflection;
 
 public interface ClassDependent<T> {
 
-    Class<T> getAssociatedClass();
+  Class<T> getAssociatedClass();
 }

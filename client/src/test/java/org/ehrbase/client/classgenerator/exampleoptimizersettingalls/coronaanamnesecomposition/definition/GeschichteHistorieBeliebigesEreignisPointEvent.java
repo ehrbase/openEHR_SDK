@@ -14,66 +14,63 @@ import org.ehrbase.client.classgenerator.interfaces.PointEventEntity;
 @Generated(
     value = "org.ehrbase.client.classgenerator.ClassGenerator",
     date = "2020-12-10T13:06:13.048064200+01:00",
-    comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
-)
+    comments = "https://github.com/ehrbase/openEHR_SDK Version: null")
 @OptionFor("POINT_EVENT")
-public class GeschichteHistorieBeliebigesEreignisPointEvent implements PointEventEntity, GeschichteHistorieBeliebigesEreignisChoice {
+public class GeschichteHistorieBeliebigesEreignisPointEvent
+    implements PointEventEntity, GeschichteHistorieBeliebigesEreignisChoice {
   /**
-   * Path: Bericht/Geschichte/Historie/Beliebiges Ereignis/Geschichte
-   * Description: Beschreibung der Geschichte oder der klinischen Vorgeschichte für das Fachgebiet der Pflege.
+   * Path: Bericht/Geschichte/Historie/Beliebiges Ereignis/Geschichte Description: Beschreibung der
+   * Geschichte oder der klinischen Vorgeschichte für das Fachgebiet der Pflege.
    */
   @Path("/data[at0003]/items[at0004]")
   private List<GeschichteHistorieGeschichteElement> geschichte;
 
   /**
-   * Path: Bericht/Geschichte/Historie/Beliebiges Ereignis/Strukturierte Angabe
-   * Description: Strukturierte Angaben über die Geschichte der Person oder des Patienten.
-   * Comment: Zum Beispiel: ein spezifisches Symptom wie Übelkeit oder Schmerzen; ein Ereignis wie ein Sturz vom Fahrrad; oder ein Anliegen wie der Wunsch, mit dem Tabakkonsum aufzuhören.
+   * Path: Bericht/Geschichte/Historie/Beliebiges Ereignis/Strukturierte Angabe Description:
+   * Strukturierte Angaben über die Geschichte der Person oder des Patienten. Comment: Zum Beispiel:
+   * ein spezifisches Symptom wie Übelkeit oder Schmerzen; ein Ereignis wie ein Sturz vom Fahrrad;
+   * oder ein Anliegen wie der Wunsch, mit dem Tabakkonsum aufzuhören.
    */
   @Path("/data[at0003]/items[at0006]")
   private List<Cluster> strukturierteAngabe;
 
-  /**
-   * Path: Bericht/Geschichte/Historie/Beliebiges Ereignis/feeder_audit
-   */
+  /** Path: Bericht/Geschichte/Historie/Beliebiges Ereignis/feeder_audit */
   @Path("/feeder_audit")
   private FeederAudit feederAudit;
 
-  /**
-   * Path: Bericht/Geschichte/Historie/Beliebiges Ereignis/time
-   */
+  /** Path: Bericht/Geschichte/Historie/Beliebiges Ereignis/time */
   @Path("/time|value")
   private TemporalAccessor timeValue;
 
   public void setGeschichte(List<GeschichteHistorieGeschichteElement> geschichte) {
-     this.geschichte = geschichte;
+    this.geschichte = geschichte;
   }
 
   public List<GeschichteHistorieGeschichteElement> getGeschichte() {
-     return this.geschichte ;
+    return this.geschichte;
   }
 
   public void setStrukturierteAngabe(List<Cluster> strukturierteAngabe) {
-     this.strukturierteAngabe = strukturierteAngabe;
+    this.strukturierteAngabe = strukturierteAngabe;
   }
 
   public List<Cluster> getStrukturierteAngabe() {
-     return this.strukturierteAngabe ;
+    return this.strukturierteAngabe;
   }
 
   public void setFeederAudit(FeederAudit feederAudit) {
-     this.feederAudit = feederAudit;
+    this.feederAudit = feederAudit;
   }
 
   public FeederAudit getFeederAudit() {
-     return this.feederAudit ;
+    return this.feederAudit;
   }
 
   public void setTimeValue(TemporalAccessor timeValue) {
-     this.timeValue = timeValue;
+    this.timeValue = timeValue;
   }
 
   public TemporalAccessor getTimeValue() {
-     return this.timeValue ;
+    return this.timeValue;
   }
 }

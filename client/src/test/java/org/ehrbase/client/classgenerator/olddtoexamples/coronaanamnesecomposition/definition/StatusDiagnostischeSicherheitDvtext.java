@@ -7,14 +7,14 @@ import org.ehrbase.client.annotations.Path;
 @Entity
 @OptionFor("DV_TEXT")
 public class StatusDiagnostischeSicherheitDvtext implements StatusDiagnostischeSicherheitChoice {
-    @Path("|value")
-    private String diagnostischeSicherheitValue;
+  @Path("|value")
+  private String diagnostischeSicherheitValue;
 
-    public void setDiagnostischeSicherheitValue(String diagnostischeSicherheitValue) {
-        this.diagnostischeSicherheitValue = diagnostischeSicherheitValue;
-    }
+  public void setDiagnostischeSicherheitValue(String diagnostischeSicherheitValue) {
+    this.diagnostischeSicherheitValue = diagnostischeSicherheitValue;
+  }
 
-    public String getDiagnostischeSicherheitValue() {
-        return this.diagnostischeSicherheitValue;
-    }
+  public String getDiagnostischeSicherheitValue() {
+    return this.diagnostischeSicherheitValue;
+  }
 }

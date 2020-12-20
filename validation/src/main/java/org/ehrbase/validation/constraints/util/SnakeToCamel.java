@@ -22,28 +22,26 @@ import java.util.Arrays;
 import java.util.stream.Collectors;
 
 /**
- * Handle snake case to camel case conversion
- * Used to deal with attribute such as 'archetype_node_id' and convert to 'archetypeNodeId'
+ * Handle snake case to camel case conversion Used to deal with attribute such as
+ * 'archetype_node_id' and convert to 'archetypeNodeId'
  */
 public class SnakeToCamel {
 
-    private String string;
+  private String string;
 
-    public SnakeToCamel(String string) {
-        this.string = string;
-    }
+  public SnakeToCamel(String string) {
+    this.string = string;
+  }
 
-    /**
-     * Convert to camel case
-     *
-     * @return converted string
-     */
-    public String convert() {
-        return Arrays.stream(string.split("\\_"))
-                .map(String::toLowerCase)
-                .map(s -> s.substring(0, 1).toUpperCase() + s.substring(1))
-                .collect(Collectors.joining());
-    }
-
-
+  /**
+   * Convert to camel case
+   *
+   * @return converted string
+   */
+  public String convert() {
+    return Arrays.stream(string.split("\\_"))
+        .map(String::toLowerCase)
+        .map(s -> s.substring(0, 1).toUpperCase() + s.substring(1))
+        .collect(Collectors.joining());
+  }
 }

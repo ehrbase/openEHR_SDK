@@ -23,12 +23,12 @@ import org.ehrbase.client.aql.containment.Containment;
 
 public class NativeSelectAqlField<T> extends AqlFieldImp<T> {
 
-    public NativeSelectAqlField(Containment containment, String path, Class<T> valueClass) {
-        super(null, path, null, valueClass, false, containment);
-    }
+  public NativeSelectAqlField(Containment containment, String path, Class<T> valueClass) {
+    super(null, path, null, valueClass, false, containment);
+  }
 
-    public NativeSelectAqlField(Containment containment, String path,String name, Class<T> valueClass) {
-        super(null, path, name, valueClass, false, containment);
-    }
-
+  public NativeSelectAqlField(
+      Containment containment, String path, String name, Class<T> valueClass) {
+    super(null, path, name, valueClass, false, containment);
+  }
 }

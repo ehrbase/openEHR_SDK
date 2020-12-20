@@ -18,6 +18,8 @@
 
 package org.ehrbase.validation.terminology;
 
+import static org.junit.Assert.fail;
+
 import com.nedap.archie.rm.datatypes.CodePhrase;
 import com.nedap.archie.rm.datavalues.DvCodedText;
 import com.nedap.archie.rm.support.identification.TerminologyId;
@@ -26,50 +28,56 @@ import org.ehrbase.terminology.openehr.implementation.LocalizedTerminologies;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.fail;
-
 public class TerminologyCheckTest {
 
-    LocalizedTerminologies localizedTerminologies;
-    AttributeCodesetMapping codesetMapping;
+  LocalizedTerminologies localizedTerminologies;
+  AttributeCodesetMapping codesetMapping;
 
-    @Before
-    public void setup() throws Exception {
-        localizedTerminologies = new LocalizedTerminologies();
-        codesetMapping = AttributeCodesetMapping.getInstance();
+  @Before
+  public void setup() throws Exception {
+    localizedTerminologies = new LocalizedTerminologies();
+    codesetMapping = AttributeCodesetMapping.getInstance();
+  }
+
+  @Test
+  public void testSimpleValidation() throws Exception {
+    DvCodedText category =
+        new DvCodedText("event", new CodePhrase(new TerminologyId("openehr"), "433"));
+    org.ehrbase.validation.terminology.validator.DvCodedText.validate(
+        localizedTerminologies.locale("en"), codesetMapping, "category", category, "en");
+  }
+
+  @Test
+  public void testSimpleValidationWrongCode() throws Exception {
+    DvCodedText category =
+        new DvCodedText("event", new CodePhrase(new TerminologyId("openehr"), "999"));
+    try {
+      org.ehrbase.validation.terminology.validator.DvCodedText.validate(
+          localizedTerminologies.locale("en"), codesetMapping, "category", category, "en");
+      fail("should have detected a bad code");
+    } catch (Exception e) {
     }
+  }
 
-
-    @Test
-    public void testSimpleValidation() throws Exception {
-        DvCodedText category = new DvCodedText("event", new CodePhrase(new TerminologyId("openehr"), "433"));
-        org.ehrbase.validation.terminology.validator.DvCodedText.validate(localizedTerminologies.locale("en"), codesetMapping, "category", category, "en");
+  @Test
+  public void testSimpleValidationWrongValue() throws Exception {
+    DvCodedText category =
+        new DvCodedText(
+            "not quite sure what to put here", new CodePhrase(new TerminologyId("openehr"), "433"));
+    try {
+      org.ehrbase.validation.terminology.validator.DvCodedText.validate(
+          localizedTerminologies.locale("en"), codesetMapping, "category", category, "en");
+      fail("should have detected a wrong value");
+    } catch (Exception e) {
     }
+  }
 
-    @Test
-    public void testSimpleValidationWrongCode() throws Exception {
-        DvCodedText category = new DvCodedText("event", new CodePhrase(new TerminologyId("openehr"), "999"));
-        try {
-            org.ehrbase.validation.terminology.validator.DvCodedText.validate(localizedTerminologies.locale("en"), codesetMapping, "category", category, "en");
-            fail("should have detected a bad code");
-        }
-        catch (Exception e){}
-    }
-    @Test
-    public void testSimpleValidationWrongValue() throws Exception {
-        DvCodedText category = new DvCodedText("not quite sure what to put here", new CodePhrase(new TerminologyId("openehr"), "433"));
-        try {
-            org.ehrbase.validation.terminology.validator.DvCodedText.validate(localizedTerminologies.locale("en"), codesetMapping, "category", category, "en");
-            fail("should have detected a wrong value");
-        }
-        catch (Exception e){}
-    }
-
-    @Test
-    public void testSimpleValidationLanguage() throws Exception {
-        CodePhrase codePhrase = new CodePhrase(new TerminologyId("ISO_3166-1"), "AU");
-        org.ehrbase.validation.terminology.validator.CodePhrase.validate(localizedTerminologies.getDefault(), codesetMapping, "territory", codePhrase);
-        org.ehrbase.validation.terminology.validator.CodePhrase.validate(localizedTerminologies.getDefault(), codesetMapping, null, codePhrase);
-    }
-
+  @Test
+  public void testSimpleValidationLanguage() throws Exception {
+    CodePhrase codePhrase = new CodePhrase(new TerminologyId("ISO_3166-1"), "AU");
+    org.ehrbase.validation.terminology.validator.CodePhrase.validate(
+        localizedTerminologies.getDefault(), codesetMapping, "territory", codePhrase);
+    org.ehrbase.validation.terminology.validator.CodePhrase.validate(
+        localizedTerminologies.getDefault(), codesetMapping, null, codePhrase);
+  }
 }

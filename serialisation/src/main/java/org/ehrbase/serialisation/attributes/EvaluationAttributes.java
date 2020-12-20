@@ -18,23 +18,22 @@
 package org.ehrbase.serialisation.attributes;
 
 import com.nedap.archie.rm.composition.Evaluation;
+import java.util.Map;
 import org.ehrbase.serialisation.dbencoding.CompositionSerializer;
 import org.ehrbase.serialisation.dbencoding.ItemStack;
 
-import java.util.Map;
-/**
- * populate the attributes for RM Evaluation
- */
+/** populate the attributes for RM Evaluation */
 public class EvaluationAttributes extends CareEntryAttributes {
 
-    public EvaluationAttributes(CompositionSerializer compositionSerializer, ItemStack itemStack, Map<String, Object> map) {
-        super(compositionSerializer, itemStack, map);
-    }
+  public EvaluationAttributes(
+      CompositionSerializer compositionSerializer, ItemStack itemStack, Map<String, Object> map) {
+    super(compositionSerializer, itemStack, map);
+  }
 
-    public Map<String, Object> toMap(Evaluation evaluation){
+  public Map<String, Object> toMap(Evaluation evaluation) {
 
-        map =  super.toMap(evaluation);
+    map = super.toMap(evaluation);
 
-        return map;
-    }
+    return map;
+  }
 }

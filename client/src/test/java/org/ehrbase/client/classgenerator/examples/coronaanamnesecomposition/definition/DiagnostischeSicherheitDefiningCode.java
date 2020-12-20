@@ -1,14 +1,22 @@
 package org.ehrbase.client.classgenerator.examples.coronaanamnesecomposition.definition;
 
-import java.lang.String;
 import org.ehrbase.client.classgenerator.EnumValueSet;
 
 public enum DiagnostischeSicherheitDefiningCode implements EnumValueSet {
-  WAHRSCHEINLICH("Wahrscheinlich", "Die Diagnose wurde mit einem hohen Maß an Sicherheit gestellt.", "local", "at0075"),
+  WAHRSCHEINLICH(
+      "Wahrscheinlich",
+      "Die Diagnose wurde mit einem hohen Maß an Sicherheit gestellt.",
+      "local",
+      "at0075"),
 
-  VERMUTET("Vermutet", "Die Diagnose wurde mit einem niedrigen Grad an Sicherheit gestellt.", "local", "at0074"),
+  VERMUTET(
+      "Vermutet",
+      "Die Diagnose wurde mit einem niedrigen Grad an Sicherheit gestellt.",
+      "local",
+      "at0074"),
 
-  BESTATIGT("Bestätigt", "Die Diagnose wurde anhand anerkannter Kriterien bestätigt.", "local", "at0076");
+  BESTATIGT(
+      "Bestätigt", "Die Diagnose wurde anhand anerkannter Kriterien bestätigt.", "local", "at0076");
 
   private String value;
 
@@ -18,8 +26,8 @@ public enum DiagnostischeSicherheitDefiningCode implements EnumValueSet {
 
   private String code;
 
-  DiagnostischeSicherheitDefiningCode(String value, String description, String terminologyId,
-      String code) {
+  DiagnostischeSicherheitDefiningCode(
+      String value, String description, String terminologyId, String code) {
     this.value = value;
     this.description = description;
     this.terminologyId = terminologyId;
@@ -27,18 +35,18 @@ public enum DiagnostischeSicherheitDefiningCode implements EnumValueSet {
   }
 
   public String getValue() {
-     return this.value ;
+    return this.value;
   }
 
   public String getDescription() {
-     return this.description ;
+    return this.description;
   }
 
   public String getTerminologyId() {
-     return this.terminologyId ;
+    return this.terminologyId;
   }
 
   public String getCode() {
-     return this.code ;
+    return this.code;
   }
 }

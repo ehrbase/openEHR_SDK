@@ -21,11 +21,11 @@ package org.ehrbase.util.exception;
 
 public class SdkException extends RuntimeException {
 
-    public SdkException(String message) {
-        super(message);
-    }
+  public SdkException(String message) {
+    super(message);
+  }
 
-    public SdkException(String message, Throwable cause) {
-        super(message, cause);
-    }
+  public SdkException(String message, Throwable cause) {
+    super(message, cause);
+  }
 }

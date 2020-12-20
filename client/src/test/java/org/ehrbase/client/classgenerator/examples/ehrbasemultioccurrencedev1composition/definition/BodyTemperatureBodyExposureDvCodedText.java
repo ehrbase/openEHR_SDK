@@ -10,21 +10,19 @@ import org.ehrbase.client.classgenerator.interfaces.RMEntity;
 @Generated(
     value = "org.ehrbase.client.classgenerator.ClassGenerator",
     date = "2020-12-10T13:06:11.016497700+01:00",
-    comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
-)
+    comments = "https://github.com/ehrbase/openEHR_SDK Version: null")
 @OptionFor("DV_CODED_TEXT")
-public class BodyTemperatureBodyExposureDvCodedText implements RMEntity, BodyTemperatureBodyExposureChoice {
-  /**
-   * Path: Encounter/Body temperature/Any event/value/value
-   */
+public class BodyTemperatureBodyExposureDvCodedText
+    implements RMEntity, BodyTemperatureBodyExposureChoice {
+  /** Path: Encounter/Body temperature/Any event/value/value */
   @Path("|defining_code")
   private BodyExposureDefiningCode bodyExposureDefiningCode;
 
   public void setBodyExposureDefiningCode(BodyExposureDefiningCode bodyExposureDefiningCode) {
-     this.bodyExposureDefiningCode = bodyExposureDefiningCode;
+    this.bodyExposureDefiningCode = bodyExposureDefiningCode;
   }
 
   public BodyExposureDefiningCode getBodyExposureDefiningCode() {
-     return this.bodyExposureDefiningCode ;
+    return this.bodyExposureDefiningCode;
   }
 }

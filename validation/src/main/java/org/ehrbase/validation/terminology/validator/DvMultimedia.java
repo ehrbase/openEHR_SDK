@@ -22,22 +22,48 @@ import org.ehrbase.terminology.openehr.implementation.AttributeCodesetMapping;
 
 public class DvMultimedia extends TerminologyCheck {
 
-    public DvMultimedia() {
-        this.RM_CLASS = com.nedap.archie.rm.datavalues.encapsulated.DvMultimedia.class;
-    }
+  public DvMultimedia() {
+    this.RM_CLASS = com.nedap.archie.rm.datavalues.encapsulated.DvMultimedia.class;
+  }
 
-    public static void check(TerminologyInterface terminologyInterface, AttributeCodesetMapping codesetMapping, String context, com.nedap.archie.rm.datavalues.encapsulated.DvMultimedia dvMultimedia) throws IllegalArgumentException {
-        check(terminologyInterface, codesetMapping, context, dvMultimedia, "en");
-    }
+  public static void check(
+      TerminologyInterface terminologyInterface,
+      AttributeCodesetMapping codesetMapping,
+      String context,
+      com.nedap.archie.rm.datavalues.encapsulated.DvMultimedia dvMultimedia)
+      throws IllegalArgumentException {
+    check(terminologyInterface, codesetMapping, context, dvMultimedia, "en");
+  }
 
-    public static void check(TerminologyInterface terminologyInterface, AttributeCodesetMapping codesetMapping, String context, com.nedap.archie.rm.datavalues.encapsulated.DvMultimedia dvMultimedia, String language) throws IllegalArgumentException {
-        if (dvMultimedia.getIntegrityCheckAlgorithm() != null)
-            validate(terminologyInterface, codesetMapping, "integrity_check_algorithm", dvMultimedia.getIntegrityCheckAlgorithm(), language);
+  public static void check(
+      TerminologyInterface terminologyInterface,
+      AttributeCodesetMapping codesetMapping,
+      String context,
+      com.nedap.archie.rm.datavalues.encapsulated.DvMultimedia dvMultimedia,
+      String language)
+      throws IllegalArgumentException {
+    if (dvMultimedia.getIntegrityCheckAlgorithm() != null)
+      validate(
+          terminologyInterface,
+          codesetMapping,
+          "integrity_check_algorithm",
+          dvMultimedia.getIntegrityCheckAlgorithm(),
+          language);
 
-        if (dvMultimedia.getCompressionAlgorithm() != null)
-            validate(terminologyInterface, codesetMapping, "compression_algorithm", dvMultimedia.getCompressionAlgorithm(), language);
+    if (dvMultimedia.getCompressionAlgorithm() != null)
+      validate(
+          terminologyInterface,
+          codesetMapping,
+          "compression_algorithm",
+          dvMultimedia.getCompressionAlgorithm(),
+          language);
 
-        if (dvMultimedia.getMediaType() != null)
-            validate(terminologyInterface, codesetMapping, "media_type", dvMultimedia.getMediaType(), language);
-    }
+    if (dvMultimedia.getMediaType() != null)
+      validate(
+          terminologyInterface,
+          codesetMapping,
+          "media_type",
+          dvMultimedia.getMediaType(),
+          language);
+  }
 }

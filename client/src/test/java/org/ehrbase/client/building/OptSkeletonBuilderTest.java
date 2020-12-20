@@ -17,6 +17,7 @@
 
 package org.ehrbase.client.building;
 
+import static org.assertj.core.api.Assertions.assertThat;
 
 import com.nedap.archie.rm.archetyped.Locatable;
 import com.nedap.archie.rm.composition.Composition;
@@ -26,60 +27,59 @@ import org.ehrbase.test_data.operationaltemplate.OperationalTemplateTestData;
 import org.junit.Test;
 import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-
 public class OptSkeletonBuilderTest {
 
+  @Test
+  public void testGenerate() throws Exception {
 
-    @Test
-    public void testGenerate() throws Exception {
+    org.openehr.schemas.v1.TemplateDocument document =
+        org.openehr.schemas.v1.TemplateDocument.Factory.parse(
+            OperationalTemplateTestData.BLOOD_PRESSURE_SIMPLE.getStream());
+    OPERATIONALTEMPLATE operationaltemplate = document.getTemplate();
+    OptSkeletonBuilder cut = new OptSkeletonBuilder();
 
-        org.openehr.schemas.v1.TemplateDocument document = org.openehr.schemas.v1.TemplateDocument.Factory.parse(OperationalTemplateTestData.BLOOD_PRESSURE_SIMPLE.getStream());
-        OPERATIONALTEMPLATE operationaltemplate = document.getTemplate();
-        OptSkeletonBuilder cut = new OptSkeletonBuilder();
+    Composition generate = (Composition) cut.generate(operationaltemplate);
+    assertThat(generate).isNotNull();
+    assertThat(generate.itemAtPath("/composer")).isNotNull();
+    assertThat(generate.itemAtPath("/context/end_time")).isNotNull();
+    assertThat(
+            generate.itemAtPath(
+                "/content[openEHR-EHR-OBSERVATION.sample_blood_pressure.v1]/data[at0001]/events[at0002]/state[at0007]/items[at1005]/value"))
+        .isNotNull();
+  }
 
-        Composition generate = (Composition) cut.generate(operationaltemplate);
-        assertThat(generate).isNotNull();
-        assertThat(generate.itemAtPath("/composer")).isNotNull();
-        assertThat(generate.itemAtPath("/context/end_time")).isNotNull();
-        assertThat(generate.itemAtPath("/content[openEHR-EHR-OBSERVATION.sample_blood_pressure.v1]/data[at0001]/events[at0002]/state[at0007]/items[at1005]/value")).isNotNull();
-    }
+  @Test
+  public void testGenerateCorona() throws Exception {
 
+    org.openehr.schemas.v1.TemplateDocument document =
+        org.openehr.schemas.v1.TemplateDocument.Factory.parse(
+            OperationalTemplateTestData.CORONA_ANAMNESE.getStream());
+    OPERATIONALTEMPLATE operationaltemplate = document.getTemplate();
+    OptSkeletonBuilder cut = new OptSkeletonBuilder();
 
-    @Test
-    public void testGenerateCorona() throws Exception {
+    Composition generate = (Composition) cut.generate(operationaltemplate);
+    assertThat(generate.getContent())
+        .extracting(Locatable::getName)
+        .extracting(DvText::getValue)
+        .containsExactlyInAnyOrder(
+            "Geschichte/Historie", "Symptome", "Kontakt", "Risikogebiet", "Allgemeine Angaben");
+  }
 
-        org.openehr.schemas.v1.TemplateDocument document = org.openehr.schemas.v1.TemplateDocument.Factory.parse(OperationalTemplateTestData.CORONA_ANAMNESE.getStream());
-        OPERATIONALTEMPLATE operationaltemplate = document.getTemplate();
-        OptSkeletonBuilder cut = new OptSkeletonBuilder();
+  @Test
+  public void testGenerateEpisodeOfCare() throws Exception {
 
-        Composition generate = (Composition) cut.generate(operationaltemplate);
-        assertThat(generate.getContent())
-                .extracting(Locatable::getName)
-                .extracting(DvText::getValue)
-                .containsExactlyInAnyOrder(
-                        "Geschichte/Historie",
-                        "Symptome",
-                        "Kontakt",
-                        "Risikogebiet",
-                        "Allgemeine Angaben"
-                );
-    }
+    org.openehr.schemas.v1.TemplateDocument document =
+        org.openehr.schemas.v1.TemplateDocument.Factory.parse(
+            OperationalTemplateTestData.EPISODE_OF_CARE.getStream());
+    OPERATIONALTEMPLATE operationaltemplate = document.getTemplate();
+    OptSkeletonBuilder cut = new OptSkeletonBuilder();
 
-    @Test
-    public void testGenerateEpisodeOfCare() throws Exception {
-
-        org.openehr.schemas.v1.TemplateDocument document = org.openehr.schemas.v1.TemplateDocument.Factory.parse(OperationalTemplateTestData.EPISODE_OF_CARE.getStream());
-        OPERATIONALTEMPLATE operationaltemplate = document.getTemplate();
-        OptSkeletonBuilder cut = new OptSkeletonBuilder();
-
-        Composition generate = (Composition) cut.generate(operationaltemplate);
-        assertThat(generate).isNotNull();
-        assertThat(generate.itemAtPath("/composer")).isNotNull();
-        assertThat(generate.itemAtPath("/context/end_time")).isNotNull();
-        assertThat(generate.itemAtPath("/name")).extracting(d -> ((DvText) d).getValue()).isEqualTo("EpisodeOfCare");
-    }
-
-
+    Composition generate = (Composition) cut.generate(operationaltemplate);
+    assertThat(generate).isNotNull();
+    assertThat(generate.itemAtPath("/composer")).isNotNull();
+    assertThat(generate.itemAtPath("/context/end_time")).isNotNull();
+    assertThat(generate.itemAtPath("/name"))
+        .extracting(d -> ((DvText) d).getValue())
+        .isEqualTo("EpisodeOfCare");
+  }
 }

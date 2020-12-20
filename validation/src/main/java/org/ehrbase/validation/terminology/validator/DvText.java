@@ -23,29 +23,40 @@ import org.ehrbase.terminology.openehr.implementation.AttributeCodesetMapping;
 
 public class DvText extends TerminologyCheck {
 
-    public DvText() {
-        this.RM_CLASS = com.nedap.archie.rm.datavalues.DvText.class;
+  public DvText() {
+    this.RM_CLASS = com.nedap.archie.rm.datavalues.DvText.class;
+  }
+
+  public static void check(
+      TerminologyInterface terminologyInterface,
+      AttributeCodesetMapping codesetMapping,
+      String context,
+      com.nedap.archie.rm.datavalues.DvText dvText,
+      String language)
+      throws IllegalArgumentException {
+
+    if (dvText.getMappings() != null && !dvText.getMappings().isEmpty()) {
+
+      for (TermMapping termMapping : dvText.getMappings()) {
+        org.ehrbase.validation.terminology.validator.TermMapping.check(
+            terminologyInterface, codesetMapping, context, termMapping, language);
+      }
     }
+  }
 
-    public static void check(TerminologyInterface terminologyInterface, AttributeCodesetMapping codesetMapping, String context, com.nedap.archie.rm.datavalues.DvText dvText, String language) throws IllegalArgumentException {
+  public static void check(
+      TerminologyInterface terminologyInterface,
+      AttributeCodesetMapping codesetMapping,
+      String context,
+      com.nedap.archie.rm.datavalues.DvText dvText)
+      throws IllegalArgumentException {
 
-        if (dvText.getMappings() != null && !dvText.getMappings().isEmpty()) {
+    if (dvText.getMappings() != null && !dvText.getMappings().isEmpty()) {
 
-            for (TermMapping termMapping : dvText.getMappings()) {
-                org.ehrbase.validation.terminology.validator.TermMapping.check(terminologyInterface, codesetMapping, context, termMapping, language);
-            }
-        }
-
+      for (TermMapping termMapping : dvText.getMappings()) {
+        org.ehrbase.validation.terminology.validator.TermMapping.check(
+            terminologyInterface, codesetMapping, context, termMapping, "en");
+      }
     }
-
-    public static void check(TerminologyInterface terminologyInterface, AttributeCodesetMapping codesetMapping, String context, com.nedap.archie.rm.datavalues.DvText dvText) throws IllegalArgumentException {
-
-        if (dvText.getMappings() != null && !dvText.getMappings().isEmpty()) {
-
-            for (TermMapping termMapping : dvText.getMappings()) {
-                org.ehrbase.validation.terminology.validator.TermMapping.check(terminologyInterface, codesetMapping, context, termMapping, "en");
-            }
-        }
-
-    }
+  }
 }

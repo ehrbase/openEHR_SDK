@@ -19,42 +19,41 @@
 
 package org.ehrbase.webtemplate.parser;
 
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.Test;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 public class NodeIdTest {
 
-    @Test
-    public void isArchetypeId() {
-        NodeId nodeId1 = new NodeId("openEHR-EHR-SECTION.adhoc.v1");
-        assertThat(nodeId1.isArchetypeId()).isTrue();
-        NodeId nodeId2 = new NodeId("at0004");
-        assertThat(nodeId2.isArchetypeId()).isFalse();
-    }
+  @Test
+  public void isArchetypeId() {
+    NodeId nodeId1 = new NodeId("openEHR-EHR-SECTION.adhoc.v1");
+    assertThat(nodeId1.isArchetypeId()).isTrue();
+    NodeId nodeId2 = new NodeId("at0004");
+    assertThat(nodeId2.isArchetypeId()).isFalse();
+  }
 
-    @Test
-    public void testEquals() {
-        NodeId nodeId1 = new NodeId("openEHR-EHR-SECTION.adhoc.v1");
-        NodeId nodeId2 = new NodeId("at0004");
-        NodeId nodeId3 = new NodeId("SECTION");
+  @Test
+  public void testEquals() {
+    NodeId nodeId1 = new NodeId("openEHR-EHR-SECTION.adhoc.v1");
+    NodeId nodeId2 = new NodeId("at0004");
+    NodeId nodeId3 = new NodeId("SECTION");
 
-        assertThat(nodeId1.equals(nodeId1)).isTrue();
-        assertThat(nodeId2.equals(nodeId2)).isTrue();
-        assertThat(nodeId3.equals(nodeId3)).isTrue();
+    assertThat(nodeId1.equals(nodeId1)).isTrue();
+    assertThat(nodeId2.equals(nodeId2)).isTrue();
+    assertThat(nodeId3.equals(nodeId3)).isTrue();
 
-        assertThat(nodeId1.equals(nodeId2)).isFalse();
-        assertThat(nodeId1.equals(nodeId3)).isFalse();
-        assertThat(nodeId2.equals(nodeId3)).isFalse();
-    }
+    assertThat(nodeId1.equals(nodeId2)).isFalse();
+    assertThat(nodeId1.equals(nodeId3)).isFalse();
+    assertThat(nodeId2.equals(nodeId3)).isFalse();
+  }
 
-    @Test
-    public void testGetClassName() {
-        NodeId nodeId1 = new NodeId("openEHR-EHR-SECTION.adhoc.v1");
-        assertThat(nodeId1.getClassName()).isEqualTo("SECTION");
+  @Test
+  public void testGetClassName() {
+    NodeId nodeId1 = new NodeId("openEHR-EHR-SECTION.adhoc.v1");
+    assertThat(nodeId1.getClassName()).isEqualTo("SECTION");
 
-        NodeId nodeId2 = new NodeId("SECTION");
-        assertThat(nodeId2.getClassName()).isEqualTo("SECTION");
-    }
+    NodeId nodeId2 = new NodeId("SECTION");
+    assertThat(nodeId2.getClassName()).isEqualTo("SECTION");
+  }
 }

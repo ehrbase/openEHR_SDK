@@ -18,36 +18,34 @@
 
 package org.ehrbase.response.ehrscape;
 
-
 /**
- * Wrapper class for serializable data types in Ethercis. Attaches a format metadata parameter to a specific serialized content.
- * Allowed formats are specified by {@link StructuredStringFormat}
+ * Wrapper class for serializable data types in Ethercis. Attaches a format metadata parameter to a
+ * specific serialized content. Allowed formats are specified by {@link StructuredStringFormat}
  */
-
 public class StructuredString {
 
-    private /*final*/ String content;
+  private /*final*/ String content;
 
-    private /*final*/ StructuredStringFormat format;
+  private /*final*/ StructuredStringFormat format;
 
-    public StructuredString(String value, StructuredStringFormat format) {
-        this.content = value;
-        this.format = format;
-    }
+  public StructuredString(String value, StructuredStringFormat format) {
+    this.content = value;
+    this.format = format;
+  }
 
-    public String getValue() {
-        return content;
-    }
+  public String getValue() {
+    return content;
+  }
 
-    public void setValue(String value) {
-        this.content = value;
-    }
+  public void setValue(String value) {
+    this.content = value;
+  }
 
-    public StructuredStringFormat getFormat() {
-        return format;
-    }
+  public StructuredStringFormat getFormat() {
+    return format;
+  }
 
-    public void setFormat(StructuredStringFormat format) {
-        this.format = format;
-    }
+  public void setFormat(StructuredStringFormat format) {
+    this.format = format;
+  }
 }

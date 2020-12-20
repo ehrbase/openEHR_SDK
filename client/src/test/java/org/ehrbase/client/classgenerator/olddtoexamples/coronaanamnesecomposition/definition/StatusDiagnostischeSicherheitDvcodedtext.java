@@ -6,16 +6,17 @@ import org.ehrbase.client.annotations.Path;
 
 @Entity
 @OptionFor("DV_CODED_TEXT")
-public class StatusDiagnostischeSicherheitDvcodedtext implements StatusDiagnostischeSicherheitChoice {
-    @Path("|defining_code")
-    private DiagnostischeSicherheitDefiningcode diagnostischeSicherheitDefiningcode;
+public class StatusDiagnostischeSicherheitDvcodedtext
+    implements StatusDiagnostischeSicherheitChoice {
+  @Path("|defining_code")
+  private DiagnostischeSicherheitDefiningcode diagnostischeSicherheitDefiningcode;
 
-    public void setDiagnostischeSicherheitDefiningcode(
-            DiagnostischeSicherheitDefiningcode diagnostischeSicherheitDefiningcode) {
-        this.diagnostischeSicherheitDefiningcode = diagnostischeSicherheitDefiningcode;
-    }
+  public void setDiagnostischeSicherheitDefiningcode(
+      DiagnostischeSicherheitDefiningcode diagnostischeSicherheitDefiningcode) {
+    this.diagnostischeSicherheitDefiningcode = diagnostischeSicherheitDefiningcode;
+  }
 
-    public DiagnostischeSicherheitDefiningcode getDiagnostischeSicherheitDefiningcode() {
-        return this.diagnostischeSicherheitDefiningcode;
-    }
+  public DiagnostischeSicherheitDefiningcode getDiagnostischeSicherheitDefiningcode() {
+    return this.diagnostischeSicherheitDefiningcode;
+  }
 }

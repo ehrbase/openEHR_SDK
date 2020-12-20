@@ -21,11 +21,11 @@ import org.ehrbase.util.exception.SdkException;
 
 public class ClientException extends SdkException {
 
-    public ClientException(String message) {
-        super(message);
-    }
+  public ClientException(String message) {
+    super(message);
+  }
 
-    public ClientException(String message, Exception e) {
-        super(message, e);
-    }
+  public ClientException(String message, Exception e) {
+    super(message, e);
+  }
 }

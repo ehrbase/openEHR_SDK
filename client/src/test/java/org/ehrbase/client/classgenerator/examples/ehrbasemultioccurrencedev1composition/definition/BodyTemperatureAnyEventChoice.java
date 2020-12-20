@@ -2,9 +2,6 @@ package org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1com
 
 import com.nedap.archie.rm.archetyped.FeederAudit;
 import com.nedap.archie.rm.datastructures.Cluster;
-import java.lang.Double;
-import java.lang.Long;
-import java.lang.String;
 import java.time.temporal.TemporalAccessor;
 import java.util.List;
 import javax.annotation.processing.Generated;
@@ -12,8 +9,7 @@ import javax.annotation.processing.Generated;
 @Generated(
     value = "org.ehrbase.client.classgenerator.ClassGenerator",
     date = "2020-12-10T13:06:11.019496200+01:00",
-    comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
-)
+    comments = "https://github.com/ehrbase/openEHR_SDK Version: null")
 public interface BodyTemperatureAnyEventChoice {
   Cluster getExertion();
 

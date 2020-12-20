@@ -21,15 +21,15 @@ package org.ehrbase.serialisation.walker;
 
 import com.nedap.archie.rm.RMObject;
 
-public class RmBoolean extends RMObject implements RmPrimitive<Boolean>{
+public class RmBoolean extends RMObject implements RmPrimitive<Boolean> {
 
-    private final Boolean value;
+  private final Boolean value;
 
-    public RmBoolean(Boolean value) {
-        this.value = value;
-    }
+  public RmBoolean(Boolean value) {
+    this.value = value;
+  }
 
-    public Boolean getValue() {
-        return value;
-    }
+  public Boolean getValue() {
+    return value;
+  }
 }

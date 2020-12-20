@@ -23,19 +23,19 @@ import com.nedap.archie.rm.datavalues.quantity.datetime.DvDateTime;
 import org.openehr.schemas.v1.CDATETIME;
 
 public class DvDateTimeSkeletonBuilder implements RmObjectSkeletonBuilder<CDATETIME, DvDateTime> {
-    @Override
-    public Class<CDATETIME> getAssociatedClass() {
-        return CDATETIME.class;
-    }
+  @Override
+  public Class<CDATETIME> getAssociatedClass() {
+    return CDATETIME.class;
+  }
 
-    @Override
-    public DvDateTime getRmObject(CDATETIME xml) {
-        DvDateTime dvDateTime;
-        if (xml.isSetAssumedValue()) {
-            dvDateTime = new DvDateTime(xml.getAssumedValue());
-        } else {
-            dvDateTime = new DvDateTime();
-        }
-        return dvDateTime;
+  @Override
+  public DvDateTime getRmObject(CDATETIME xml) {
+    DvDateTime dvDateTime;
+    if (xml.isSetAssumedValue()) {
+      dvDateTime = new DvDateTime(xml.getAssumedValue());
+    } else {
+      dvDateTime = new DvDateTime();
     }
+    return dvDateTime;
+  }
 }

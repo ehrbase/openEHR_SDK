@@ -20,20 +20,18 @@
 package org.ehrbase.webtemplate.parser.config;
 
 import com.nedap.archie.rm.composition.Section;
-
 import java.util.Collections;
 import java.util.Set;
 
 public class SectionIntrospectConfig implements RmIntrospectConfig {
 
+  @Override
+  public Class getAssociatedClass() {
+    return Section.class;
+  }
 
-    @Override
-    public Class getAssociatedClass() {
-        return Section.class;
-    }
-
-    @Override
-    public Set<String> getNonTemplateFields() {
-        return Collections.emptySet();
-    }
+  @Override
+  public Set<String> getNonTemplateFields() {
+    return Collections.emptySet();
+  }
 }

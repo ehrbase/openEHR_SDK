@@ -1,14 +1,22 @@
 package org.ehrbase.client.classgenerator.exampleoptimizersettingalls.coronaanamnesecomposition.definition;
 
-import java.lang.String;
 import org.ehrbase.client.classgenerator.EnumValueSet;
 
 public enum VorhandenDefiningCode2 implements EnumValueSet {
-  NICHT_VORHANDEN("Nicht vorhanden", "Das spezifische Symptom oder Anzeichen ist nicht vorhanden.", "local", "at0024"),
+  NICHT_VORHANDEN(
+      "Nicht vorhanden",
+      "Das spezifische Symptom oder Anzeichen ist nicht vorhanden.",
+      "local",
+      "at0024"),
 
-  VORHANDEN("Vorhanden", "Das spezifische Symptom oder Anzeichen ist vorhanden.", "local", "at0023"),
+  VORHANDEN(
+      "Vorhanden", "Das spezifische Symptom oder Anzeichen ist vorhanden.", "local", "at0023"),
 
-  UNBEKANNT("Unbekannt", "Es ist nicht bekannt, ob das Symptom oder Anzeichen vorhanden ist oder nicht.", "local", "at0027");
+  UNBEKANNT(
+      "Unbekannt",
+      "Es ist nicht bekannt, ob das Symptom oder Anzeichen vorhanden ist oder nicht.",
+      "local",
+      "at0027");
 
   private String value;
 
@@ -26,18 +34,18 @@ public enum VorhandenDefiningCode2 implements EnumValueSet {
   }
 
   public String getValue() {
-     return this.value ;
+    return this.value;
   }
 
   public String getDescription() {
-     return this.description ;
+    return this.description;
   }
 
   public String getTerminologyId() {
-     return this.terminologyId ;
+    return this.terminologyId;
   }
 
   public String getCode() {
-     return this.code ;
+    return this.code;
   }
 }

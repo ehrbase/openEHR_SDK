@@ -18,12 +18,11 @@
 package org.ehrbase.validation.terminology.validator;
 
 import com.nedap.archie.rm.archetyped.Pathable;
-import org.apache.commons.lang3.StringUtils;
-
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
 import java.lang.reflect.Field;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * Simple utility class to materialize an object in a Pathable using a getter. This is used f.e. to
@@ -33,25 +32,27 @@ import java.lang.reflect.Field;
  */
 public class ItemField<T> {
 
-    private Pathable pathable;
+  private Pathable pathable;
 
-    public ItemField(Pathable pathable) {
-        this.pathable = pathable;
-    }
+  public ItemField(Pathable pathable) {
+    this.pathable = pathable;
+  }
 
-    public T objectForField(Field field) throws IllegalArgumentException, InternalError {
-        String getterName = "get" + StringUtils.capitalize(field.getName());
-        MethodHandle methodHandle;
-        try {
-            methodHandle = MethodHandles.lookup().findVirtual(pathable.getClass(), getterName, MethodType.methodType(field.getType()));
-        } catch (NoSuchMethodException | IllegalAccessException e) {
-            throw new InternalError("Internal error:" + e.getMessage());
-        }
-        try {
-            Object object = methodHandle.invoke(pathable);
-            return (T) object;
-        } catch (Throwable throwable) {
-            throw new InternalError("Internal:" + throwable.getMessage());
-        }
+  public T objectForField(Field field) throws IllegalArgumentException, InternalError {
+    String getterName = "get" + StringUtils.capitalize(field.getName());
+    MethodHandle methodHandle;
+    try {
+      methodHandle =
+          MethodHandles.lookup()
+              .findVirtual(pathable.getClass(), getterName, MethodType.methodType(field.getType()));
+    } catch (NoSuchMethodException | IllegalAccessException e) {
+      throw new InternalError("Internal error:" + e.getMessage());
     }
+    try {
+      Object object = methodHandle.invoke(pathable);
+      return (T) object;
+    } catch (Throwable throwable) {
+      throw new InternalError("Internal:" + throwable.getMessage());
+    }
+  }
 }

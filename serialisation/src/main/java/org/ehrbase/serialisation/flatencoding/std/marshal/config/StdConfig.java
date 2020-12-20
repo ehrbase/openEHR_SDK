@@ -20,23 +20,19 @@
 package org.ehrbase.serialisation.flatencoding.std.marshal.config;
 
 import com.nedap.archie.rm.RMObject;
+import java.util.Map;
 import org.ehrbase.serialisation.walker.Context;
 import org.ehrbase.util.reflection.ClassDependent;
 
-import java.util.Map;
-
-/**
- * Defines how terminal RMObjects will be marshalled to flat json
- */
+/** Defines how terminal RMObjects will be marshalled to flat json */
 public interface StdConfig<T extends RMObject> extends ClassDependent<T> {
 
-    /**
-     * @param currentTerm current flat term path
-     * @param rmObject    The {@link RMObject} to flatten
-     * @param context
-     * @return Map containing the flat representation of {@code rmObject}
-     */
-    Map<String, Object> buildChildValues(String currentTerm, T rmObject, Context<Map<String, Object>> context);
-
-
+  /**
+   * @param currentTerm current flat term path
+   * @param rmObject The {@link RMObject} to flatten
+   * @param context
+   * @return Map containing the flat representation of {@code rmObject}
+   */
+  Map<String, Object> buildChildValues(
+      String currentTerm, T rmObject, Context<Map<String, Object>> context);
 }

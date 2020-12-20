@@ -1,6 +1,5 @@
 package org.ehrbase.client.classgenerator.examples.smicsbefundcomposition.definition;
 
-import java.lang.String;
 import org.ehrbase.client.classgenerator.EnumValueSet;
 
 public enum ArtDerTypisierungDefiningCode implements EnumValueSet {
@@ -8,11 +7,13 @@ public enum ArtDerTypisierungDefiningCode implements EnumValueSet {
 
   PULSFELDGELELEKTROPHORESE_PFGE("Pulsfeldgelelektrophorese (PFGE)", "*", "local", "at0003"),
 
-  CORE_GENOM_MULTILOCUS_SEQUENCE_TYPING_CGMLST("core genom Multilocus Sequence Typing (cgMLST)", "*", "local", "at0005"),
+  CORE_GENOM_MULTILOCUS_SEQUENCE_TYPING_CGMLST(
+      "core genom Multilocus Sequence Typing (cgMLST)", "*", "local", "at0005"),
 
   MULTILOCUS_SEQUENCE_TYPING_MLST("Multilocus Sequence Typing (MLST)", "*", "local", "at0004"),
 
-  SPA_TYPISIERUNG_STAPHYLOCOCCUS_AUREUS("spa-Typisierung (Staphylococcus aureus)", "*", "local", "at0006");
+  SPA_TYPISIERUNG_STAPHYLOCOCCUS_AUREUS(
+      "spa-Typisierung (Staphylococcus aureus)", "*", "local", "at0006");
 
   private String value;
 
@@ -22,8 +23,8 @@ public enum ArtDerTypisierungDefiningCode implements EnumValueSet {
 
   private String code;
 
-  ArtDerTypisierungDefiningCode(String value, String description, String terminologyId,
-      String code) {
+  ArtDerTypisierungDefiningCode(
+      String value, String description, String terminologyId, String code) {
     this.value = value;
     this.description = description;
     this.terminologyId = terminologyId;
@@ -31,18 +32,18 @@ public enum ArtDerTypisierungDefiningCode implements EnumValueSet {
   }
 
   public String getValue() {
-     return this.value ;
+    return this.value;
   }
 
   public String getDescription() {
-     return this.description ;
+    return this.description;
   }
 
   public String getTerminologyId() {
-     return this.terminologyId ;
+    return this.terminologyId;
   }
 
   public String getCode() {
-     return this.code ;
+    return this.code;
   }
 }

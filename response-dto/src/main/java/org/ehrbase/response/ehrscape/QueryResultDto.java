@@ -18,63 +18,62 @@
 
 package org.ehrbase.response.ehrscape;
 
-import org.ehrbase.response.ehrscape.query.ResultHolder;
-
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import org.ehrbase.response.ehrscape.query.ResultHolder;
 
 public class QueryResultDto {
-    private String executedAQL;
-    private List<List<String>> explain;
-    private Map<String, String> variables;
-    private List<ResultHolder> resultSet;
+  private String executedAQL;
+  private List<List<String>> explain;
+  private Map<String, String> variables;
+  private List<ResultHolder> resultSet;
 
-    public List<ResultHolder> getResultSet() {
-        return resultSet;
-    }
+  public List<ResultHolder> getResultSet() {
+    return resultSet;
+  }
 
-    public void setResultSet(List<ResultHolder> resultSet) {
-        this.resultSet = resultSet;
-    }
+  public void setResultSet(List<ResultHolder> resultSet) {
+    this.resultSet = resultSet;
+  }
 
-    public String getExecutedAQL() {
-        return executedAQL;
-    }
+  public String getExecutedAQL() {
+    return executedAQL;
+  }
 
-    public void setExecutedAQL(String executedAQL) {
-        this.executedAQL = executedAQL;
-    }
+  public void setExecutedAQL(String executedAQL) {
+    this.executedAQL = executedAQL;
+  }
 
-    public List<List<String>> getExplain() {
-        return explain;
-    }
+  public List<List<String>> getExplain() {
+    return explain;
+  }
 
-    public void setExplain(List<List<String>> explain) {
-        this.explain = explain;
-    }
+  public void setExplain(List<List<String>> explain) {
+    this.explain = explain;
+  }
 
-    public Map<String, String> getVariables() {
-        return variables;
-    }
+  public Map<String, String> getVariables() {
+    return variables;
+  }
 
-    public void setVariables(Map<String, String> variables) {
-        this.variables = variables;
-    }
+  public void setVariables(Map<String, String> variables) {
+    this.variables = variables;
+  }
 
-    public boolean variablesIsEmpty() {
-        return variables.size() == 0;
-    }
+  public boolean variablesIsEmpty() {
+    return variables.size() == 0;
+  }
 
-    public boolean variablesContainsColumnId(String columnId) {
-        return getVariables().containsKey(columnId);
-    }
+  public boolean variablesContainsColumnId(String columnId) {
+    return getVariables().containsKey(columnId);
+  }
 
-    public String variablesPath(String columnId) {
-        return getVariables().get(columnId);
-    }
+  public String variablesPath(String columnId) {
+    return getVariables().get(columnId);
+  }
 
-    public Iterator<Map.Entry<String, String>> variablesIterator() {
-        return variables.entrySet().iterator();
-    }
+  public Iterator<Map.Entry<String, String>> variablesIterator() {
+    return variables.entrySet().iterator();
+  }
 }

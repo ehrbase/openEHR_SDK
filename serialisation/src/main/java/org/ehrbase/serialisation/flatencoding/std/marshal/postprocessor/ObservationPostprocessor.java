@@ -24,46 +24,49 @@ import com.nedap.archie.rm.datastructures.Event;
 import com.nedap.archie.rm.datastructures.History;
 import com.nedap.archie.rm.datastructures.ItemStructure;
 import com.nedap.archie.rm.datavalues.quantity.datetime.DvDateTime;
-
 import java.time.temporal.TemporalAccessor;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-
 public class ObservationPostprocessor implements MarshalPostprocessor<Observation> {
 
-    /**
-     * {@inheritDoc}
-     * Removes the {@link History#getOrigin} if it is equal to fist {@link Event#getTime()}
-     */
-    @Override
-    public void process(String term, Observation rmObject, Map<String, Object> values) {
-        if (rmObject.getData() != null && rmObject.getData().getOrigin() != null && rmObject.getData().getOrigin().getValue() != null) {
-            removeOrigin(term, rmObject.getData(), values);
-        }
-        if (rmObject.getState() != null && rmObject.getState().getOrigin() != null && rmObject.getState().getOrigin().getValue() != null) {
-            removeOrigin(term, rmObject.getState(), values);
-        }
+  /**
+   * {@inheritDoc} Removes the {@link History#getOrigin} if it is equal to fist {@link
+   * Event#getTime()}
+   */
+  @Override
+  public void process(String term, Observation rmObject, Map<String, Object> values) {
+    if (rmObject.getData() != null
+        && rmObject.getData().getOrigin() != null
+        && rmObject.getData().getOrigin().getValue() != null) {
+      removeOrigin(term, rmObject.getData(), values);
     }
-
-
-    public void removeOrigin(String term, History<ItemStructure> history, Map<String, Object> values) {
-        Optional<TemporalAccessor> first = history.getEvents().stream().map(Event::getTime)
-                .filter(Objects::nonNull)
-                .map(DvDateTime::getValue)
-                .filter(Objects::nonNull)
-                .sorted()
-                .findFirst();
-        first.filter(t -> t.equals(history.getOrigin().getValue())).ifPresent(
-                t -> values.remove(term + "/" + "origin"));
+    if (rmObject.getState() != null
+        && rmObject.getState().getOrigin() != null
+        && rmObject.getState().getOrigin().getValue() != null) {
+      removeOrigin(term, rmObject.getState(), values);
     }
+  }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Class<Observation> getAssociatedClass() {
-        return Observation.class;
-    }
+  public void removeOrigin(
+      String term, History<ItemStructure> history, Map<String, Object> values) {
+    Optional<TemporalAccessor> first =
+        history.getEvents().stream()
+            .map(Event::getTime)
+            .filter(Objects::nonNull)
+            .map(DvDateTime::getValue)
+            .filter(Objects::nonNull)
+            .sorted()
+            .findFirst();
+    first
+        .filter(t -> t.equals(history.getOrigin().getValue()))
+        .ifPresent(t -> values.remove(term + "/" + "origin"));
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public Class<Observation> getAssociatedClass() {
+    return Observation.class;
+  }
 }

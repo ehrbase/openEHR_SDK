@@ -19,23 +19,20 @@
 package org.ehrbase.validation;
 
 /**
- * Encode a validation exception message
- * The exception message consists of:
- * - a code
- * - the AQL path of the failing item
- * - a description
+ * Encode a validation exception message The exception message consists of: - a code - the AQL path
+ * of the failing item - a description
  */
 public class Message {
 
-    /**
-     * encode an exception message
-     *
-     * @param path    AQL path of the item
-     * @param message exception message
-     * @param code    code to ease identifying the issue
-     * @return the encoded message
-     */
-    public String encode(String path, String message, String code) {
-        return (code + (path.isEmpty() ? "-" : "-Validation error at " + path + ":")) + message + ".\n";
-    }
+  /**
+   * encode an exception message
+   *
+   * @param path AQL path of the item
+   * @param message exception message
+   * @param code code to ease identifying the issue
+   * @return the encoded message
+   */
+  public String encode(String path, String message, String code) {
+    return (code + (path.isEmpty() ? "-" : "-Validation error at " + path + ":")) + message + ".\n";
+  }
 }

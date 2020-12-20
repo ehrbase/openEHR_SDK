@@ -19,29 +19,28 @@
 package org.ehrbase.serialisation.dbencoding.wrappers.json.writer.translator_db2raw;
 
 import com.google.gson.stream.JsonWriter;
+import java.io.IOException;
 import org.ehrbase.serialisation.dbencoding.wrappers.json.I_DvTypeAdapter;
 
-import java.io.IOException;
-
-/**
- * Created by christian on 4/26/2018.
- */
+/** Created by christian on 4/26/2018. */
 public class ArchetypeNodeId {
 
-    JsonWriter writer;
-    String archetypeNodeId;
+  JsonWriter writer;
+  String archetypeNodeId;
 
-    public ArchetypeNodeId(JsonWriter writer, String nodeIdentifier) {
-        this.writer = writer;
-        this.archetypeNodeId = nodeIdentifier;
+  public ArchetypeNodeId(JsonWriter writer, String nodeIdentifier) {
+    this.writer = writer;
+    this.archetypeNodeId = nodeIdentifier;
+  }
+
+  public void write() throws IOException {
+    if (archetypeNodeId != null && !archetypeNodeId.isEmpty()) {
+      writer.name(I_DvTypeAdapter.ARCHETYPE_NODE_ID).value(archetypeNodeId);
+
+      if (new DomainStructure(archetypeNodeId).isArchetypeSlot())
+        writer
+            .name(I_DvTypeAdapter.AT_TYPE)
+            .value(new DomainStructure(archetypeNodeId).archetypeSlotType());
     }
-
-    public void write() throws IOException {
-        if (archetypeNodeId != null && !archetypeNodeId.isEmpty()) {
-            writer.name(I_DvTypeAdapter.ARCHETYPE_NODE_ID).value(archetypeNodeId);
-
-            if (new DomainStructure(archetypeNodeId).isArchetypeSlot())
-                writer.name(I_DvTypeAdapter.AT_TYPE).value(new DomainStructure(archetypeNodeId).archetypeSlotType());
-        }
-    }
+  }
 }

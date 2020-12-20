@@ -21,15 +21,15 @@ package org.ehrbase.client.aql.condition;
 
 public class Not implements Condition {
 
-    private final Condition condition;
+  private final Condition condition;
 
-    Not(Condition condition) {
-        this.condition = condition;
-    }
+  Not(Condition condition) {
+    this.condition = condition;
+  }
 
-    @Override
-    public String buildAql() {
-        StringBuilder builder = new StringBuilder();
-        return builder.append("NOT ").append(condition.buildAql()).toString();
-    }
+  @Override
+  public String buildAql() {
+    StringBuilder builder = new StringBuilder();
+    return builder.append("NOT ").append(condition.buildAql()).toString();
+  }
 }

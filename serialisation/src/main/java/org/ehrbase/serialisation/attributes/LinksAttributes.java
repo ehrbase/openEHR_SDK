@@ -17,37 +17,35 @@
 
 package org.ehrbase.serialisation.attributes;
 
-import com.nedap.archie.rm.archetyped.Link;
-import org.ehrbase.serialisation.dbencoding.PathMap;
-import org.ehrbase.serialisation.dbencoding.SimpleClassName;
+import static org.ehrbase.serialisation.dbencoding.CompositionSerializer.TAG_CLASS;
 
+import com.nedap.archie.rm.archetyped.Link;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import org.ehrbase.serialisation.dbencoding.PathMap;
+import org.ehrbase.serialisation.dbencoding.SimpleClassName;
 
-import static org.ehrbase.serialisation.dbencoding.CompositionSerializer.TAG_CLASS;
-/**
- * populate the attributes for RM Links
- */
+/** populate the attributes for RM Links */
 public class LinksAttributes {
 
-    private final List<Link> linkList;
+  private final List<Link> linkList;
 
-    public LinksAttributes(List<Link> linkList) {
-        this.linkList = linkList;
+  public LinksAttributes(List<Link> linkList) {
+    this.linkList = linkList;
+  }
+
+  public List<Map<String, Object>> toMap() {
+    List<Map<String, Object>> links = new ArrayList<>();
+    for (Link link : linkList) {
+      Map<String, Object> valuemap = PathMap.getInstance();
+      valuemap.put(TAG_CLASS, new SimpleClassName(link).toString());
+      valuemap.put("meaning", link.getMeaning());
+      valuemap.put("type", link.getType());
+      valuemap.put("target", link.getTarget());
+      links.add(valuemap);
     }
 
-    public List<Map<String, Object>> toMap(){
-        List<Map<String, Object>> links = new ArrayList<>();
-        for (Link link: linkList){
-            Map<String, Object> valuemap = PathMap.getInstance();
-            valuemap.put(TAG_CLASS, new SimpleClassName(link).toString());
-            valuemap.put("meaning", link.getMeaning());
-            valuemap.put("type", link.getType());
-            valuemap.put("target", link.getTarget());
-            links.add(valuemap);
-        }
-
-        return links;
-    }
+    return links;
+  }
 }

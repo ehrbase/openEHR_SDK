@@ -19,30 +19,23 @@
 
 package org.ehrbase.serialisation.flatencoding.std.marshal.postprocessor;
 
-import com.nedap.archie.rm.composition.Entry;
-
-import java.util.Map;
-
 import static org.ehrbase.webtemplate.parser.OPTParser.PATH_DIVIDER;
+
+import com.nedap.archie.rm.composition.Entry;
+import java.util.Map;
 
 public class EntryMarshalPostprocessor implements MarshalPostprocessor<Entry> {
 
+  /** {@inheritDoc} Adds the encoding information */
+  @Override
+  public void process(String term, Entry rmObject, Map<String, Object> values) {
+    values.put(term + PATH_DIVIDER + "encoding|code", "UTF-8");
+    values.put(term + PATH_DIVIDER + "encoding|terminology", "IANA_character-sets");
+  }
 
-    /**
-     * {@inheritDoc}
-     * Adds the encoding information
-     */
-    @Override
-    public void process(String term, Entry rmObject, Map<String, Object> values) {
-        values.put(term + PATH_DIVIDER + "encoding|code", "UTF-8");
-        values.put(term + PATH_DIVIDER + "encoding|terminology", "IANA_character-sets");
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Class<Entry> getAssociatedClass() {
-        return Entry.class;
-    }
+  /** {@inheritDoc} */
+  @Override
+  public Class<Entry> getAssociatedClass() {
+    return Entry.class;
+  }
 }

@@ -34,11 +34,10 @@ package org.ehrbase.terminology.openehr.implementation;
 
 import com.nedap.archie.rm.datatypes.CodePhrase;
 import com.nedap.archie.rm.support.identification.TerminologyId;
-import org.apache.commons.lang3.StringUtils;
-import org.ehrbase.terminology.openehr.CodeSetAccess;
-
 import java.util.HashSet;
 import java.util.Set;
+import org.apache.commons.lang3.StringUtils;
+import org.ehrbase.terminology.openehr.CodeSetAccess;
 
 /**
  * A simple in-memory implementation of CodeSetAccess
@@ -47,65 +46,63 @@ import java.util.Set;
  */
 public class SimpleCodeSetAccess implements CodeSetAccess {
 
-    /**
-     * External identifier of this code set
-     */
-    public String id() {
-        return id;
-    }
+  /** External identifier of this code set */
+  public String id() {
+    return id;
+  }
 
-    /**
-     * Gets all codes known to this code set
-     *
-     * @return unmodifiable view of all codes
-     */
-    public Set<CodePhrase> allCodes() {
-        return allCodes;
-    }
+  /**
+   * Gets all codes known to this code set
+   *
+   * @return unmodifiable view of all codes
+   */
+  public Set<CodePhrase> allCodes() {
+    return allCodes;
+  }
 
-    /**
-     * Returns true if has this code
-     *
-     * @throws IllegalArgumentException if code null
-     */
-    public boolean hasCode(CodePhrase code) {
-        if (code == null) {
-            throw new IllegalArgumentException("code null");
-        }
-        return allCodes.contains(code);
+  /**
+   * Returns true if has this code
+   *
+   * @throws IllegalArgumentException if code null
+   */
+  public boolean hasCode(CodePhrase code) {
+    if (code == null) {
+      throw new IllegalArgumentException("code null");
     }
+    return allCodes.contains(code);
+  }
 
-    // TODO: seems to be impossible to implement
-    //       code sets are language _independent_ by definition
-    public boolean hasLang(CodePhrase lang) {
-        return false;
+  // TODO: seems to be impossible to implement
+  //       code sets are language _independent_ by definition
+  public boolean hasLang(CodePhrase lang) {
+    return false;
+  }
+
+  /**
+   * Creates a simple code set
+   *
+   * @param id not null or empty
+   * @param codes not null or empty
+   * @throws IllegalArgumentException if id or codes empty
+   */
+  SimpleCodeSetAccess(String id, Set<Code> codes) {
+    if (StringUtils.isEmpty(id)) {
+      throw new IllegalArgumentException("null or empty id");
     }
-
-    /**
-     * Creates a simple code set
-     *
-     * @param id    not null or empty
-     * @param codes not null or empty
-     * @throws IllegalArgumentException if id or codes empty
-     */
-    SimpleCodeSetAccess(String id, Set<Code> codes) {
-        if (StringUtils.isEmpty(id)) {
-            throw new IllegalArgumentException("null or empty id");
-        }
-        if (codes == null || codes.isEmpty()) {
-            throw new IllegalArgumentException("null or empty codes");
-        }
-        this.id = id;
-        this.allCodes = new HashSet<>();
-        for (Code code : codes) {
-            CodePhrase cp = new CodePhrase(new TerminologyId(id), code.getCode());
-            this.allCodes.add(cp);
-        }
+    if (codes == null || codes.isEmpty()) {
+      throw new IllegalArgumentException("null or empty codes");
     }
+    this.id = id;
+    this.allCodes = new HashSet<>();
+    for (Code code : codes) {
+      CodePhrase cp = new CodePhrase(new TerminologyId(id), code.getCode());
+      this.allCodes.add(cp);
+    }
+  }
 
-    /* fields */
-    private final String id;
-    private final Set<CodePhrase> allCodes;
+  /* fields */
+  private final String id;
+  private final Set<CodePhrase> allCodes;
 }
 /*
  *  ***** BEGIN LICENSE BLOCK *****

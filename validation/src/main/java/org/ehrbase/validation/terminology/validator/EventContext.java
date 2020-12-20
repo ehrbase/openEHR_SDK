@@ -22,16 +22,32 @@ import org.ehrbase.terminology.openehr.implementation.AttributeCodesetMapping;
 
 public class EventContext extends TerminologyCheck {
 
-    public EventContext() {
-        this.RM_CLASS = com.nedap.archie.rm.composition.EventContext.class;
-    }
+  public EventContext() {
+    this.RM_CLASS = com.nedap.archie.rm.composition.EventContext.class;
+  }
 
-    public static void check(TerminologyInterface terminologyInterface, AttributeCodesetMapping codesetMapping, String context, com.nedap.archie.rm.composition.EventContext eventContext, String language) throws IllegalArgumentException {
-        if (eventContext.getSetting() != null)
-            validate(terminologyInterface, codesetMapping, "setting", eventContext.getSetting().getDefiningCode(), language);
-    }
+  public static void check(
+      TerminologyInterface terminologyInterface,
+      AttributeCodesetMapping codesetMapping,
+      String context,
+      com.nedap.archie.rm.composition.EventContext eventContext,
+      String language)
+      throws IllegalArgumentException {
+    if (eventContext.getSetting() != null)
+      validate(
+          terminologyInterface,
+          codesetMapping,
+          "setting",
+          eventContext.getSetting().getDefiningCode(),
+          language);
+  }
 
-    public static void check(TerminologyInterface terminologyInterface, AttributeCodesetMapping codesetMapping, String context, com.nedap.archie.rm.composition.EventContext eventContext) throws IllegalArgumentException {
-        check(terminologyInterface, codesetMapping, context, eventContext, "en");
-    }
+  public static void check(
+      TerminologyInterface terminologyInterface,
+      AttributeCodesetMapping codesetMapping,
+      String context,
+      com.nedap.archie.rm.composition.EventContext eventContext)
+      throws IllegalArgumentException {
+    check(terminologyInterface, codesetMapping, context, eventContext, "en");
+  }
 }

@@ -25,64 +25,67 @@ import com.nedap.archie.rm.datavalues.DvText;
 import com.nedap.archie.rm.directory.Folder;
 import com.nedap.archie.rm.support.identification.ObjectRef;
 import com.nedap.archie.rm.support.identification.UIDBasedId;
-
 import java.util.List;
 
 /**
- * Directory response data class. Will be used each time a response format other
- * than minimal is preferred by client.
+ * Directory response data class. Will be used each time a response format other than minimal is
+ * preferred by client.
  */
 @JacksonXmlRootElement
 public class DirectoryResponseData {
 
-    @JsonProperty(value = "uid")
-    private UIDBasedId uid;
-    @JsonProperty(value = "folders")
-    private List<Folder> folders;
-    @JsonProperty(value = "items")
-    private List<ObjectRef> items;
-    @JsonProperty(value = "details")
-    private ItemStructure details;
-    @JsonProperty(value = "name")
-    private DvText name;
+  @JsonProperty(value = "uid")
+  private UIDBasedId uid;
 
-    public UIDBasedId getUid() {
-        return uid;
-    }
+  @JsonProperty(value = "folders")
+  private List<Folder> folders;
 
-    public void setUid(UIDBasedId uid) {
-        this.uid = uid;
-    }
+  @JsonProperty(value = "items")
+  private List<ObjectRef> items;
 
-    public List<Folder> getFolders() {
-        return folders;
-    }
+  @JsonProperty(value = "details")
+  private ItemStructure details;
 
-    public void setFolders(List<Folder> folder) {
-        this.folders = folder;
-    }
+  @JsonProperty(value = "name")
+  private DvText name;
 
-    public List<ObjectRef> getItems() {
-        return items;
-    }
+  public UIDBasedId getUid() {
+    return uid;
+  }
 
-    public void setItems(List<ObjectRef> items) {
-        this.items = items;
-    }
+  public void setUid(UIDBasedId uid) {
+    this.uid = uid;
+  }
 
-    public ItemStructure getDetails() {
-        return details;
-    }
+  public List<Folder> getFolders() {
+    return folders;
+  }
 
-    public void setDetails(ItemStructure details) {
-        this.details = details;
-    }
+  public void setFolders(List<Folder> folder) {
+    this.folders = folder;
+  }
 
-    public DvText getName() {
-        return name;
-    }
+  public List<ObjectRef> getItems() {
+    return items;
+  }
 
-    public void setName(DvText name) {
-        this.name = name;
-    }
+  public void setItems(List<ObjectRef> items) {
+    this.items = items;
+  }
+
+  public ItemStructure getDetails() {
+    return details;
+  }
+
+  public void setDetails(ItemStructure details) {
+    this.details = details;
+  }
+
+  public DvText getName() {
+    return name;
+  }
+
+  public void setName(DvText name) {
+    this.name = name;
+  }
 }

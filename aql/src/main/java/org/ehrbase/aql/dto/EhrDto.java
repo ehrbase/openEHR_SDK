@@ -23,8 +23,7 @@ public class EhrDto {
 
   private int containmentId;
 
-  public EhrDto() {
-  }
+  public EhrDto() {}
 
   public int getContainmentId() {
     return this.containmentId;

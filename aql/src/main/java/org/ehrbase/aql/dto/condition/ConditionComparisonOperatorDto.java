@@ -19,7 +19,6 @@
 
 package org.ehrbase.aql.dto.condition;
 
-
 import org.ehrbase.aql.dto.select.SelectStatementDto;
 
 public class ConditionComparisonOperatorDto implements ConditionDto {
@@ -28,8 +27,7 @@ public class ConditionComparisonOperatorDto implements ConditionDto {
   private ConditionComparisonOperatorSymbol symbol;
   private Value value;
 
-  public ConditionComparisonOperatorDto() {
-  }
+  public ConditionComparisonOperatorDto() {}
 
   public SelectStatementDto getStatement() {
     return this.statement;
@@ -62,10 +60,12 @@ public class ConditionComparisonOperatorDto implements ConditionDto {
     if (!other.canEqual((Object) this)) return false;
     final Object this$statement = this.getStatement();
     final Object other$statement = other.getStatement();
-    if (this$statement == null ? other$statement != null : !this$statement.equals(other$statement)) return false;
+    if (this$statement == null ? other$statement != null : !this$statement.equals(other$statement))
+      return false;
     final Object this$symbol = this.getSymbol();
     final Object other$symbol = other.getSymbol();
-    if (this$symbol == null ? other$symbol != null : !this$symbol.equals(other$symbol)) return false;
+    if (this$symbol == null ? other$symbol != null : !this$symbol.equals(other$symbol))
+      return false;
     final Object this$value = this.getValue();
     final Object other$value = other.getValue();
     if (this$value == null ? other$value != null : !this$value.equals(other$value)) return false;
@@ -89,6 +89,12 @@ public class ConditionComparisonOperatorDto implements ConditionDto {
   }
 
   public String toString() {
-    return "ConditionComparisonOperatorDto(statement=" + this.getStatement() + ", symbol=" + this.getSymbol() + ", value=" + this.getValue() + ")";
+    return "ConditionComparisonOperatorDto(statement="
+        + this.getStatement()
+        + ", symbol="
+        + this.getSymbol()
+        + ", value="
+        + this.getValue()
+        + ")";
   }
 }

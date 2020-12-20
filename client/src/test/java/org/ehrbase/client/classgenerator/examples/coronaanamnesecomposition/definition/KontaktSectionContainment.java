@@ -6,13 +6,30 @@ import org.ehrbase.client.aql.field.AqlFieldImp;
 import org.ehrbase.client.aql.field.SelectAqlField;
 
 public class KontaktSectionContainment extends Containment {
-  public SelectAqlField<KontaktSection> KONTAKT_SECTION = new AqlFieldImp<KontaktSection>(KontaktSection.class, "", "KontaktSection", KontaktSection.class, this);
+  public SelectAqlField<KontaktSection> KONTAKT_SECTION =
+      new AqlFieldImp<KontaktSection>(
+          KontaktSection.class, "", "KontaktSection", KontaktSection.class, this);
 
-  public SelectAqlField<PersonenkontaktObservation> PERSONENKONTAKT = new AqlFieldImp<PersonenkontaktObservation>(KontaktSection.class, "/items[openEHR-EHR-OBSERVATION.exposure_assessment.v0]", "personenkontakt", PersonenkontaktObservation.class, this);
+  public SelectAqlField<PersonenkontaktObservation> PERSONENKONTAKT =
+      new AqlFieldImp<PersonenkontaktObservation>(
+          KontaktSection.class,
+          "/items[openEHR-EHR-OBSERVATION.exposure_assessment.v0]",
+          "personenkontakt",
+          PersonenkontaktObservation.class,
+          this);
 
-  public SelectAqlField<AufenthaltInGesundheitseinrichtungObservation> AUFENTHALT_IN_GESUNDHEITSEINRICHTUNG = new AqlFieldImp<AufenthaltInGesundheitseinrichtungObservation>(KontaktSection.class, "/items[openEHR-EHR-OBSERVATION.exposure_assessment.v0]", "aufenthaltInGesundheitseinrichtung", AufenthaltInGesundheitseinrichtungObservation.class, this);
+  public SelectAqlField<AufenthaltInGesundheitseinrichtungObservation>
+      AUFENTHALT_IN_GESUNDHEITSEINRICHTUNG =
+          new AqlFieldImp<AufenthaltInGesundheitseinrichtungObservation>(
+              KontaktSection.class,
+              "/items[openEHR-EHR-OBSERVATION.exposure_assessment.v0]",
+              "aufenthaltInGesundheitseinrichtung",
+              AufenthaltInGesundheitseinrichtungObservation.class,
+              this);
 
-  public SelectAqlField<FeederAudit> FEEDER_AUDIT = new AqlFieldImp<FeederAudit>(KontaktSection.class, "/feeder_audit", "feederAudit", FeederAudit.class, this);
+  public SelectAqlField<FeederAudit> FEEDER_AUDIT =
+      new AqlFieldImp<FeederAudit>(
+          KontaktSection.class, "/feeder_audit", "feederAudit", FeederAudit.class, this);
 
   private KontaktSectionContainment() {
     super("openEHR-EHR-SECTION.adhoc.v1");

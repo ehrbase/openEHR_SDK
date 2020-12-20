@@ -19,8 +19,11 @@
 
 package org.ehrbase.client.normalizer;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import com.nedap.archie.rm.RMObject;
 import com.nedap.archie.rm.composition.Composition;
+import java.io.IOException;
 import org.apache.xmlbeans.XmlException;
 import org.ehrbase.building.OptSkeletonBuilder;
 import org.ehrbase.normalizer.Normalizer;
@@ -29,21 +32,19 @@ import org.junit.Test;
 import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
 import org.openehr.schemas.v1.TemplateDocument;
 
-import java.io.IOException;
-
-import static org.assertj.core.api.Assertions.assertThat;
-
 public class NormalizerTest {
 
-    @Test
-    public void normalize() throws IOException, XmlException {
-        OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(OperationalTemplateTestData.ALL_TYPES.getStream()).getTemplate();
-        OptSkeletonBuilder skeletonBuilder = new OptSkeletonBuilder();
-        RMObject rmObject = skeletonBuilder.generate(template);
+  @Test
+  public void normalize() throws IOException, XmlException {
+    OPERATIONALTEMPLATE template =
+        TemplateDocument.Factory.parse(OperationalTemplateTestData.ALL_TYPES.getStream())
+            .getTemplate();
+    OptSkeletonBuilder skeletonBuilder = new OptSkeletonBuilder();
+    RMObject rmObject = skeletonBuilder.generate(template);
 
-        Normalizer cut = new Normalizer();
-        Composition actual = (Composition) cut.normalize(rmObject);
-        assertThat(actual).isNotNull();
-        assertThat(actual.getContent()).size().isEqualTo(0);
-    }
+    Normalizer cut = new Normalizer();
+    Composition actual = (Composition) cut.normalize(rmObject);
+    assertThat(actual).isNotNull();
+    assertThat(actual.getContent()).size().isEqualTo(0);
+  }
 }

@@ -23,37 +23,37 @@ import org.ehrbase.client.aql.query.EntityQuery;
 
 public class ContainmentPath implements ContainmentExpression {
 
-    private final Containment root;
+  private final Containment root;
 
-    ContainmentPath(Containment root) {
-        this.root = root;
-    }
+  ContainmentPath(Containment root) {
+    this.root = root;
+  }
 
-    @Override
-    public String buildAQL() {
-        return root.buildAQL();
-    }
+  @Override
+  public String buildAQL() {
+    return root.buildAQL();
+  }
 
-    @Override
-    public void bindQuery(EntityQuery<?> query) {
-        root.bindQuery(query);
-    }
+  @Override
+  public void bindQuery(EntityQuery<?> query) {
+    root.bindQuery(query);
+  }
 
-    public ContainmentPath contains(Containment contains) {
-        Containment leaf = root;
-        while (leaf.getContains() != null) {
-            leaf = (Containment) leaf.getContains();
-        }
-        leaf.setContains(contains);
-        return this;
+  public ContainmentPath contains(Containment contains) {
+    Containment leaf = root;
+    while (leaf.getContains() != null) {
+      leaf = (Containment) leaf.getContains();
     }
+    leaf.setContains(contains);
+    return this;
+  }
 
-    public ContainmentExpression contains(ContainmentExpression contains) {
-        Containment leaf = root;
-        while (leaf.getContains() != null) {
-            leaf = (Containment) leaf.getContains();
-        }
-        leaf.setContains(contains);
-        return this;
+  public ContainmentExpression contains(ContainmentExpression contains) {
+    Containment leaf = root;
+    while (leaf.getContains() != null) {
+      leaf = (Containment) leaf.getContains();
     }
+    leaf.setContains(contains);
+    return this;
+  }
 }

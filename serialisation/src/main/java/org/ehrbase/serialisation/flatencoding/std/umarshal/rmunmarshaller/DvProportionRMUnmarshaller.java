@@ -20,30 +20,29 @@
 package org.ehrbase.serialisation.flatencoding.std.umarshal.rmunmarshaller;
 
 import com.nedap.archie.rm.datavalues.quantity.DvProportion;
-import org.ehrbase.serialisation.walker.Context;
-
 import java.util.Map;
+import org.ehrbase.serialisation.walker.Context;
 
 public class DvProportionRMUnmarshaller extends AbstractRMUnmarshaller<DvProportion> {
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Class<DvProportion> getAssociatedClass() {
-        return DvProportion.class;
-    }
+  /** {@inheritDoc} */
+  @Override
+  public Class<DvProportion> getAssociatedClass() {
+    return DvProportion.class;
+  }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void handle(String currentTerm, DvProportion rmObject, Map<String, String> currentValues, Context<Map<String, String>> context) {
+  /** {@inheritDoc} */
+  @Override
+  public void handle(
+      String currentTerm,
+      DvProportion rmObject,
+      Map<String, String> currentValues,
+      Context<Map<String, String>> context) {
 
-        setValue(currentTerm, "numerator", currentValues, rmObject::setNumerator, Double.class);
-        setValue(currentTerm, "denominator", currentValues, rmObject::setDenominator, Double.class);
-        setValue(currentTerm, "type", currentValues, rmObject::setType, Long.class);
-        //Contains numerator/denominator
-        consumedPath.add(currentTerm);
-    }
+    setValue(currentTerm, "numerator", currentValues, rmObject::setNumerator, Double.class);
+    setValue(currentTerm, "denominator", currentValues, rmObject::setDenominator, Double.class);
+    setValue(currentTerm, "type", currentValues, rmObject::setType, Long.class);
+    // Contains numerator/denominator
+    consumedPath.add(currentTerm);
+  }
 }

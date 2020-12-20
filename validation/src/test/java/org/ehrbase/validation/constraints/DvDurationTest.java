@@ -18,34 +18,32 @@
 
 package org.ehrbase.validation.constraints;
 
+import static org.junit.Assert.fail;
+
 import com.nedap.archie.rm.datavalues.quantity.datetime.DvDuration;
 import org.ehrbase.validation.constraints.wrappers.CArchetypeConstraint;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.fail;
-
 public class DvDurationTest extends ConstraintTestBase {
 
-    @Before
-    public void setUp() {
-        try {
-            setUpContext("./src/test/resources/constraints/dvduration.xml");
-        } catch (Exception e) {
-            fail();
-        }
+  @Before
+  public void setUp() {
+    try {
+      setUpContext("./src/test/resources/constraints/dvduration.xml");
+    } catch (Exception e) {
+      fail();
     }
+  }
 
+  @Test
+  public void testConstraintValidation() {
+    DvDuration dvDuration = new DvDuration("PT11H11M");
 
-    @Test
-    public void testConstraintValidation() {
-        DvDuration dvDuration = new DvDuration("PT11H11M");
-
-        try {
-            new CArchetypeConstraint(null).validate("test", dvDuration, archetypeconstraint);
-        } catch (Exception e) {
-            fail(e.getMessage());
-        }
+    try {
+      new CArchetypeConstraint(null).validate("test", dvDuration, archetypeconstraint);
+    } catch (Exception e) {
+      fail(e.getMessage());
     }
-
+  }
 }

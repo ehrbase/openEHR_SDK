@@ -21,5 +21,5 @@ import java.io.IOException;
 
 public interface I_NameValueHandler {
 
-    public void write() throws IOException;
+  public void write() throws IOException;
 }

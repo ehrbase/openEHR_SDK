@@ -19,11 +19,19 @@
 
 package org.ehrbase.client.classgenerator;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.assertj.core.api.Assertions.assertThat;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nedap.archie.rm.RMObject;
 import com.nedap.archie.rm.archetyped.Locatable;
 import com.nedap.archie.rm.composition.Composition;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import org.apache.commons.io.IOUtils;
 import org.assertj.core.api.SoftAssertions;
 import org.assertj.core.groups.Tuple;
@@ -31,7 +39,6 @@ import org.ehrbase.client.classgenerator.olddtoexamples.coronaanamnesecompositio
 import org.ehrbase.client.classgenerator.olddtoexamples.coronaanamnesecomposition.definition.VorhandenDefiningcode;
 import org.ehrbase.client.classgenerator.olddtoexamples.testalltypesenv1composition.TestAllTypesEnV1Composition;
 import org.ehrbase.client.flattener.Flattener;
-import org.ehrbase.client.flattener.RoundTripTest;
 import org.ehrbase.client.flattener.Unflattener;
 import org.ehrbase.client.templateprovider.TestDataTemplateProvider;
 import org.ehrbase.serialisation.flatencoding.FlatFormat;
@@ -42,16 +49,6 @@ import org.ehrbase.serialisation.jsonencoding.JacksonUtil;
 import org.ehrbase.test_data.composition.CompositionTestDataCanonicalJson;
 import org.ehrbase.test_data.composition.CompositionTestDataSimSDTJson;
 import org.junit.Test;
-
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
-import static java.nio.charset.StandardCharsets.UTF_8;
-import static org.assertj.core.api.Assertions.assertThat;
-
 
 public class OldDtoModelTest {
 
@@ -95,23 +92,21 @@ public class OldDtoModelTest {
               "Missing path: test_all_types/test_all_types:0/proportion_any|type, value: 1"
             },
             new String[] {
-                    "Extra path: test_all_types/test_all_types:0/identifier, value: 55175056",
-                    "Extra path: test_all_types/test_all_types:0/proportion_any|type, value: 1.0",
-                    "Extra path: test_all_types/test_all_types:0/coded_text|value, value: value1",
-                    "Extra path: test_all_types/test_all_types:0/coded_text_terminology|value, value: .HCXbqCyQtseLkDyKS,QLpOdDZxrEJ",
-                    "Extra path: test_all_types/test_all_types3:0/section_2/section_3/test_all_types:0/current_activity/timing, value: P1D",
-                    "Extra path: test_all_types/test_all_types3:0/section_2/section_3/test_all_types:0/current_activity/timing|formalism, value: ISO8601",
+              "Extra path: test_all_types/test_all_types:0/identifier, value: 55175056",
+              "Extra path: test_all_types/test_all_types:0/proportion_any|type, value: 1.0",
+              "Extra path: test_all_types/test_all_types:0/coded_text|value, value: value1",
+              "Extra path: test_all_types/test_all_types:0/coded_text_terminology|value, value: .HCXbqCyQtseLkDyKS,QLpOdDZxrEJ",
+              "Extra path: test_all_types/test_all_types3:0/section_2/section_3/test_all_types:0/current_activity/timing, value: P1D",
+              "Extra path: test_all_types/test_all_types3:0/section_2/section_3/test_all_types:0/current_activity/timing|formalism, value: ISO8601",
             }));
     testCaseList.add(
-            new TestCase(
-                    2,
-                    CompositionTestDataSimSDTJson.CORONA,
-                    "Corona_Anamnese",
-                    CoronaAnamneseComposition.class,
-                    new String[] {
-                    },
-                    new String[] {
-                    }));
+        new TestCase(
+            2,
+            CompositionTestDataSimSDTJson.CORONA,
+            "Corona_Anamnese",
+            CoronaAnamneseComposition.class,
+            new String[] {},
+            new String[] {}));
 
     SoftAssertions softly = new SoftAssertions();
 
@@ -124,35 +119,42 @@ public class OldDtoModelTest {
 
   @Test
   public void testFlattenCorona() throws IOException {
-    Composition composition = new CanonicalJson().unmarshal(IOUtils.toString(CompositionTestDataCanonicalJson.CORONA.getStream(), StandardCharsets.UTF_8), Composition.class);
+    Composition composition =
+        new CanonicalJson()
+            .unmarshal(
+                IOUtils.toString(
+                    CompositionTestDataCanonicalJson.CORONA.getStream(), StandardCharsets.UTF_8),
+                Composition.class);
     Flattener cut = new Flattener(new TestDataTemplateProvider());
     CoronaAnamneseComposition actual = cut.flatten(composition, CoronaAnamneseComposition.class);
     assertThat(actual).isNotNull();
     assertThat(actual.getSymptome()).isNotNull();
     assertThat(actual.getSymptome().getHeiserkeit()).isNotNull();
-    assertThat(actual.getSymptome().getHeiserkeit().getVorhandenDefiningcode()).isEqualTo(VorhandenDefiningcode.NICHT_VORHANDEN);
+    assertThat(actual.getSymptome().getHeiserkeit().getVorhandenDefiningcode())
+        .isEqualTo(VorhandenDefiningcode.NICHT_VORHANDEN);
   }
-
 
   @Test
   public void testUnflattenCorona() throws IOException {
-    Composition expected = new CanonicalJson().unmarshal(IOUtils.toString(CompositionTestDataCanonicalJson.CORONA.getStream(), StandardCharsets.UTF_8), Composition.class);
+    Composition expected =
+        new CanonicalJson()
+            .unmarshal(
+                IOUtils.toString(
+                    CompositionTestDataCanonicalJson.CORONA.getStream(), StandardCharsets.UTF_8),
+                Composition.class);
     Flattener flattener = new Flattener(new TestDataTemplateProvider());
-    CoronaAnamneseComposition coronaAnamneseComposition = flattener.flatten(expected, CoronaAnamneseComposition.class);
+    CoronaAnamneseComposition coronaAnamneseComposition =
+        flattener.flatten(expected, CoronaAnamneseComposition.class);
 
     Unflattener cut = new Unflattener(new TestDataTemplateProvider());
     Composition actual = (Composition) cut.unflatten(coronaAnamneseComposition);
     assertThat(actual).isNotNull();
     assertThat(actual.getContent())
-            .extracting(
-                    Locatable::getNameAsString,
-                    Locatable::getArchetypeNodeId
-            )
-            .containsExactlyInAnyOrder(
-                    actual.getContent().stream().map(c -> new Tuple(
-                            c.getNameAsString(),
-                            c.getArchetypeNodeId())).toArray(Tuple[]::new)
-            );
+        .extracting(Locatable::getNameAsString, Locatable::getArchetypeNodeId)
+        .containsExactlyInAnyOrder(
+            actual.getContent().stream()
+                .map(c -> new Tuple(c.getNameAsString(), c.getArchetypeNodeId()))
+                .toArray(Tuple[]::new));
   }
 
   public void checkTestCase(TestCase testCase, SoftAssertions softly) throws IOException {
@@ -174,42 +176,40 @@ public class OldDtoModelTest {
 
     List<String> errors = compere(actualFlat, value);
 
-    softly.assertThat(errors)
-            .filteredOn(s -> s.startsWith("Missing"))
-            .as("Test Case %s", testCase.id)
-            .containsExactlyInAnyOrder(
-                    testCase.missing
-            );
+    softly
+        .assertThat(errors)
+        .filteredOn(s -> s.startsWith("Missing"))
+        .as("Test Case %s", testCase.id)
+        .containsExactlyInAnyOrder(testCase.missing);
 
-
-    softly.assertThat(errors)
-            .filteredOn(s -> s.startsWith("Extra"))
-            .as("Test Case %s", testCase.id)
-            .containsExactlyInAnyOrder(
-                    testCase.extra
-            );
-
-
+    softly
+        .assertThat(errors)
+        .filteredOn(s -> s.startsWith("Extra"))
+        .as("Test Case %s", testCase.id)
+        .containsExactlyInAnyOrder(testCase.extra);
   }
 
-  private static List<String> compere(String actualJson, String expectedJson) throws JsonProcessingException {
+  private static List<String> compere(String actualJson, String expectedJson)
+      throws JsonProcessingException {
     List<String> errors = new ArrayList<>();
     ObjectMapper objectMapper = JacksonUtil.getObjectMapper();
 
     Map<String, Object> actual = objectMapper.readValue(actualJson, Map.class);
     Map<String, Object> expected = objectMapper.readValue(expectedJson, Map.class);
 
-    actual.forEach((key, value) -> {
-      if (!expected.containsKey(key) || !expected.get(key).equals(value)) {
-        errors.add(String.format("Missing path: %s, value: %s", key, value));
-      }
-    });
+    actual.forEach(
+        (key, value) -> {
+          if (!expected.containsKey(key) || !expected.get(key).equals(value)) {
+            errors.add(String.format("Missing path: %s, value: %s", key, value));
+          }
+        });
 
-    expected.forEach((key, value) -> {
-      if (!actual.containsKey(key) || !actual.get(key).equals(value)) {
-        errors.add(String.format("Extra path: %s, value: %s", key, value));
-      }
-    });
+    expected.forEach(
+        (key, value) -> {
+          if (!actual.containsKey(key) || !actual.get(key).equals(value)) {
+            errors.add(String.format("Extra path: %s, value: %s", key, value));
+          }
+        });
 
     return errors;
   }

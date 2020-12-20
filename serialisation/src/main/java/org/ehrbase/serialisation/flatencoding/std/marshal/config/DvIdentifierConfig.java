@@ -20,34 +20,27 @@
 package org.ehrbase.serialisation.flatencoding.std.marshal.config;
 
 import com.nedap.archie.rm.datavalues.DvIdentifier;
-import org.ehrbase.serialisation.walker.Context;
-
 import java.util.HashMap;
 import java.util.Map;
+import org.ehrbase.serialisation.walker.Context;
 
 public class DvIdentifierConfig extends AbstractsStdConfig<DvIdentifier> {
 
+  /** {@inheritDoc} */
+  @Override
+  public Class<DvIdentifier> getAssociatedClass() {
+    return DvIdentifier.class;
+  }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Class<DvIdentifier> getAssociatedClass() {
-        return DvIdentifier.class;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Map<String, Object> buildChildValues(String currentTerm, DvIdentifier rmObject, Context<Map<String, Object>> context) {
-        Map<String, Object> result = new HashMap<>();
-        addValue(result, currentTerm, "id", rmObject.getId());
-        addValue(result, currentTerm, "issuer", rmObject.getIssuer());
-        addValue(result, currentTerm, "assigner", rmObject.getAssigner());
-        addValue(result, currentTerm, "type", rmObject.getType());
-        return result;
-    }
-
-
+  /** {@inheritDoc} */
+  @Override
+  public Map<String, Object> buildChildValues(
+      String currentTerm, DvIdentifier rmObject, Context<Map<String, Object>> context) {
+    Map<String, Object> result = new HashMap<>();
+    addValue(result, currentTerm, "id", rmObject.getId());
+    addValue(result, currentTerm, "issuer", rmObject.getIssuer());
+    addValue(result, currentTerm, "assigner", rmObject.getAssigner());
+    addValue(result, currentTerm, "type", rmObject.getType());
+    return result;
+  }
 }

@@ -24,64 +24,62 @@ import com.google.gson.stream.JsonWriter;
 import com.nedap.archie.rm.support.identification.GenericId;
 import com.nedap.archie.rm.support.identification.HierObjectId;
 import com.nedap.archie.rm.support.identification.PartyRef;
+import java.io.IOException;
 import org.ehrbase.serialisation.dbencoding.CompositionSerializer;
 
-import java.io.IOException;
-
-/**
- * GSON adapter for PartyRef
- */
+/** GSON adapter for PartyRef */
 public class PartyRefAdapter extends DvTypeAdapter<PartyRef> {
 
-    private Gson gson;
+  private Gson gson;
 
-    public PartyRefAdapter(AdapterType adapterType) {
-        super(adapterType);
-        gson = new GsonBuilder()
-                .registerTypeAdapter(GenericId.class, new GenericIdAdapter(adapterType))
-                .setPrettyPrinting()
-                .create();
+  public PartyRefAdapter(AdapterType adapterType) {
+    super(adapterType);
+    gson =
+        new GsonBuilder()
+            .registerTypeAdapter(GenericId.class, new GenericIdAdapter(adapterType))
+            .setPrettyPrinting()
+            .create();
+  }
+
+  public PartyRefAdapter() {
+    gson =
+        new GsonBuilder()
+            .registerTypeAdapter(GenericId.class, new GenericIdAdapter(adapterType))
+            .registerTypeAdapter(HierObjectId.class, new HierObjectIdAdapter(adapterType))
+            .create();
+  }
+
+  @Override
+  public PartyRef read(JsonReader arg0) throws IOException {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public void write(JsonWriter writer, PartyRef partyRef) throws IOException {
+    if (partyRef == null) {
+      writer.nullValue();
+      return;
     }
 
-    public PartyRefAdapter() {
-        gson = new GsonBuilder()
-                .registerTypeAdapter(GenericId.class, new GenericIdAdapter(adapterType))
-                .registerTypeAdapter(HierObjectId.class, new HierObjectIdAdapter(adapterType))
-                .create();
+    if (adapterType == AdapterType.PG_JSONB) {
+      writer.beginObject();
+      writer.name("namespace").value(partyRef.getNamespace());
+      writer.name(CompositionSerializer.TAG_CLASS).value(PartyRef.class.getSimpleName());
+      if (partyRef.getId() != null) {
+        writer.name("id").jsonValue(gson.toJson(partyRef.getId()));
+      }
+      // TODO: add Identifiers
+      writer.endObject();
+    } else if (adapterType == AdapterType.RAW_JSON) {
+      //
+      //            writer.beginObject(); //{
+      //            writer.name(I_DvTypeAdapter.TAG_CLASS_RAW_JSON).value(new
+      // ObjectSnakeCase(participation).camelToUpperSnake());
+      //            writer.name("value").value(participation.getValue());
+      //            CodePhrase codePhrase = participation.getDefiningCode();
+      //            writer.name("defining_code").value(gson.toJson(codePhrase));
+      //            writer.endObject(); //}
     }
-
-    @Override
-    public PartyRef read(JsonReader arg0) throws IOException {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public void write(JsonWriter writer, PartyRef partyRef) throws IOException {
-        if (partyRef == null) {
-            writer.nullValue();
-            return;
-        }
-
-        if (adapterType == AdapterType.PG_JSONB) {
-            writer.beginObject();
-            writer.name("namespace").value(partyRef.getNamespace());
-            writer.name(CompositionSerializer.TAG_CLASS).value(PartyRef.class.getSimpleName());
-            if (partyRef.getId() != null){
-                writer.name("id").jsonValue(gson.toJson(partyRef.getId()));
-            }
-            //TODO: add Identifiers
-            writer.endObject();
-        } else if (adapterType == AdapterType.RAW_JSON) {
-//
-//            writer.beginObject(); //{
-//            writer.name(I_DvTypeAdapter.TAG_CLASS_RAW_JSON).value(new ObjectSnakeCase(participation).camelToUpperSnake());
-//            writer.name("value").value(participation.getValue());
-//            CodePhrase codePhrase = participation.getDefiningCode();
-//            writer.name("defining_code").value(gson.toJson(codePhrase));
-//            writer.endObject(); //}
-        }
-
-    }
-
+  }
 }

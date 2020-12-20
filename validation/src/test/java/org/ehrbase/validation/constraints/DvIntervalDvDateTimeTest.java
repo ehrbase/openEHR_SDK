@@ -18,37 +18,35 @@
 
 package org.ehrbase.validation.constraints;
 
+import static org.junit.Assert.fail;
+
 import com.nedap.archie.rm.datavalues.quantity.DvInterval;
 import com.nedap.archie.rm.datavalues.quantity.datetime.DvDateTime;
+import java.time.LocalDateTime;
 import org.ehrbase.validation.constraints.wrappers.CArchetypeConstraint;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.time.LocalDateTime;
-
-import static org.junit.Assert.fail;
-
 public class DvIntervalDvDateTimeTest extends ConstraintTestBase {
 
-    @Before
-    public void setUp() {
-        try {
-            setUpContext("./src/test/resources/constraints/interval_dvdatetime.xml");
-        } catch (Exception e) {
-            fail();
-        }
+  @Before
+  public void setUp() {
+    try {
+      setUpContext("./src/test/resources/constraints/interval_dvdatetime.xml");
+    } catch (Exception e) {
+      fail();
     }
+  }
 
+  @Test
+  public void testConstraintValidation() {
+    DvInterval<DvDateTime> dvDateTimeDvInterval =
+        new DvInterval<>(new DvDateTime(LocalDateTime.now()), null);
 
-    @Test
-    public void testConstraintValidation() {
-        DvInterval<DvDateTime> dvDateTimeDvInterval = new DvInterval<>(new DvDateTime(LocalDateTime.now()), null);
-
-        try {
-            new CArchetypeConstraint(null).validate("test", dvDateTimeDvInterval, archetypeconstraint);
-        } catch (Exception e) {
-            fail(e.getMessage());
-        }
+    try {
+      new CArchetypeConstraint(null).validate("test", dvDateTimeDvInterval, archetypeconstraint);
+    } catch (Exception e) {
+      fail(e.getMessage());
     }
-
+  }
 }

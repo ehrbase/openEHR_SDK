@@ -19,36 +19,36 @@
 
 package org.ehrbase.serialisation.templateprovider;
 
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 import org.apache.xmlbeans.XmlException;
 import org.ehrbase.test_data.operationaltemplate.OperationalTemplateTestData;
 import org.ehrbase.webtemplate.templateprovider.TemplateProvider;
 import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
 import org.openehr.schemas.v1.TemplateDocument;
 
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
 public class TestDataTemplateProvider implements TemplateProvider {
-    @Override
-    public Optional<OPERATIONALTEMPLATE> find(String templateId) {
-        return Optional.ofNullable(OperationalTemplateTestData.findByTemplateId(templateId))
-                .map(OperationalTemplateTestData::getStream)
-                .map(s -> {
-                    try {
-                        return TemplateDocument.Factory.parse(s);
-                    } catch (XmlException | IOException e) {
-                        throw new RuntimeException(e.getMessage(), e);
-                    }
-                })
-                .map(TemplateDocument::getTemplate);
-    }
+  @Override
+  public Optional<OPERATIONALTEMPLATE> find(String templateId) {
+    return Optional.ofNullable(OperationalTemplateTestData.findByTemplateId(templateId))
+        .map(OperationalTemplateTestData::getStream)
+        .map(
+            s -> {
+              try {
+                return TemplateDocument.Factory.parse(s);
+              } catch (XmlException | IOException e) {
+                throw new RuntimeException(e.getMessage(), e);
+              }
+            })
+        .map(TemplateDocument::getTemplate);
+  }
 
-    public List<String> listTemplateIds() {
-        return Arrays.stream(OperationalTemplateTestData.values())
-                .map(OperationalTemplateTestData::getTemplateId)
-                .collect(Collectors.toList());
-    }
+  public List<String> listTemplateIds() {
+    return Arrays.stream(OperationalTemplateTestData.values())
+        .map(OperationalTemplateTestData::getTemplateId)
+        .collect(Collectors.toList());
+  }
 }

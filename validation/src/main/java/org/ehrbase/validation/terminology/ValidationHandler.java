@@ -21,19 +21,19 @@ import java.lang.invoke.MethodHandle;
 
 public class ValidationHandler {
 
-    private final Class clazz;
-    private final MethodHandle check;
+  private final Class clazz;
+  private final MethodHandle check;
 
-    public ValidationHandler(Class clazz, MethodHandle check) {
-        this.clazz = clazz;
-        this.check = check;
-    }
+  public ValidationHandler(Class clazz, MethodHandle check) {
+    this.clazz = clazz;
+    this.check = check;
+  }
 
-    public Class getClazz() {
-        return clazz;
-    }
+  public Class getClazz() {
+    return clazz;
+  }
 
-    public MethodHandle check() {
-        return check;
-    }
+  public MethodHandle check() {
+    return check;
+  }
 }

@@ -17,7 +17,15 @@
 
 package org.ehrbase.client.openehrclient.defaultrestclient;
 
+import static org.ehrbase.client.openehrclient.defaultrestclient.DefaultRestClient.OBJECT_MAPPER;
+
 import com.fasterxml.jackson.core.type.TypeReference;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.List;
+import java.util.Optional;
+import javax.xml.namespace.QName;
 import org.apache.http.Header;
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpResponse;
@@ -36,104 +44,109 @@ import org.openehr.schemas.v1.TemplateDocument;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.xml.namespace.QName;
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.List;
-import java.util.Optional;
-
-import static org.ehrbase.client.openehrclient.defaultrestclient.DefaultRestClient.OBJECT_MAPPER;
-
 public class DefaultRestTemplateEndpoint implements TemplateEndpoint {
 
-    public static final String DEFINITION_TEMPLATE_ADL_1_4_PATH = "definition/template/adl1.4/";
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+  public static final String DEFINITION_TEMPLATE_ADL_1_4_PATH = "definition/template/adl1.4/";
+  private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    private final DefaultRestClient defaultRestClient;
+  private final DefaultRestClient defaultRestClient;
 
+  public DefaultRestTemplateEndpoint(DefaultRestClient defaultRestClient) {
+    this.defaultRestClient = defaultRestClient;
+  }
 
-    public DefaultRestTemplateEndpoint(DefaultRestClient defaultRestClient) {
-        this.defaultRestClient = defaultRestClient;
+  @Override
+  public Optional<OPERATIONALTEMPLATE> findTemplate(String templateId) {
+    final TemplateDocument templateDocument;
+
+    try {
+      URI uri =
+          defaultRestClient
+              .getConfig()
+              .getBaseUri()
+              .resolve(
+                  new URIBuilder()
+                      .setPath(
+                          defaultRestClient.getConfig().getBaseUri().getPath()
+                              + DEFINITION_TEMPLATE_ADL_1_4_PATH
+                              + templateId)
+                      .build());
+
+      HttpResponse httpResponse =
+          defaultRestClient.internalGet(uri, null, ContentType.APPLICATION_XML.getMimeType());
+
+      if (httpResponse.getStatusLine().getStatusCode() == HttpStatus.SC_NOT_FOUND) {
+        return Optional.empty();
+      }
+
+      templateDocument = TemplateDocument.Factory.parse(httpResponse.getEntity().getContent());
+    } catch (IOException | XmlException | URISyntaxException e) {
+      throw new ClientException(e.getMessage(), e);
     }
 
-    @Override
-    public Optional<OPERATIONALTEMPLATE> findTemplate(String templateId) {
-        final TemplateDocument templateDocument;
+    return Optional.of(templateDocument.getTemplate());
+  }
 
-        try {
-            URI uri = defaultRestClient
-                    .getConfig()
-                    .getBaseUri()
-                    .resolve(new URIBuilder()
-                            .setPath(defaultRestClient.getConfig().getBaseUri().getPath() + DEFINITION_TEMPLATE_ADL_1_4_PATH + templateId)
-                            .build());
+  @Override
+  public TemplatesResponseData findAllTemplates() {
+    try {
+      URI uri =
+          defaultRestClient
+              .getConfig()
+              .getBaseUri()
+              .resolve(
+                  new URIBuilder()
+                      .setPath(
+                          defaultRestClient.getConfig().getBaseUri().getPath()
+                              + DEFINITION_TEMPLATE_ADL_1_4_PATH)
+                      .build());
 
-            HttpResponse httpResponse = defaultRestClient.internalGet(uri, null, ContentType.APPLICATION_XML.getMimeType());
+      HttpResponse response =
+          defaultRestClient.internalGet(uri, null, ContentType.APPLICATION_JSON.getMimeType());
+      List<TemplateMetaDataDto> templateResponseData =
+          OBJECT_MAPPER.readValue(response.getEntity().getContent(), new TypeReference<>() {});
 
-            if (httpResponse.getStatusLine().getStatusCode() == HttpStatus.SC_NOT_FOUND) {
-                return Optional.empty();
-            }
-
-            templateDocument = TemplateDocument.Factory.parse(httpResponse.getEntity().getContent());
-        } catch (IOException | XmlException | URISyntaxException e) {
-            throw new ClientException(e.getMessage(), e);
-        }
-
-        return Optional.of(templateDocument.getTemplate());
+      return new TemplatesResponseData(templateResponseData);
+    } catch (URISyntaxException | IOException e) {
+      logger.error(e.getMessage(), e);
+      throw new ClientException(e.getMessage(), e);
     }
+  }
 
-    @Override
-    public TemplatesResponseData findAllTemplates() {
-        try {
-            URI uri = defaultRestClient
-                    .getConfig()
-                    .getBaseUri()
-                    .resolve(new URIBuilder()
-                            .setPath(defaultRestClient.getConfig().getBaseUri().getPath() + DEFINITION_TEMPLATE_ADL_1_4_PATH)
-                            .build());
-
-            HttpResponse response = defaultRestClient.internalGet(uri, null, ContentType.APPLICATION_JSON.getMimeType());
-            List<TemplateMetaDataDto> templateResponseData = OBJECT_MAPPER.readValue(response.getEntity().getContent(),
-                    new TypeReference<>() {});
-
-            return new TemplatesResponseData(templateResponseData);
-        } catch (URISyntaxException | IOException e) {
-            logger.error(e.getMessage(), e);
-            throw new ClientException(e.getMessage(), e);
-        }
+  @Override
+  public void ensureExistence(String templateId) {
+    Optional<OPERATIONALTEMPLATE> operationalTemplate =
+        defaultRestClient.getTemplateProvider().find(templateId);
+    if (!operationalTemplate.isPresent()) {
+      throw new ClientException(String.format("Unknown Template with Id %s", templateId));
     }
-
-    @Override
-    public void ensureExistence(String templateId) {
-        Optional<OPERATIONALTEMPLATE> operationalTemplate = defaultRestClient.getTemplateProvider().find(templateId);
-        if (!operationalTemplate.isPresent()) {
-            throw new ClientException(String.format("Unknown Template with Id %s", templateId));
-        }
-        if (!findTemplate(templateId).isPresent()) {
-            upload(operationalTemplate.get());
-        }
+    if (!findTemplate(templateId).isPresent()) {
+      upload(operationalTemplate.get());
     }
+  }
 
+  /**
+   * Upload a template to the remote system.
+   *
+   * @param operationaltemplate
+   * @return The templateId
+   * @throws ClientException
+   * @throws WrongStatusCodeException
+   */
+  String upload(OPERATIONALTEMPLATE operationaltemplate) {
+    URI uri = defaultRestClient.getConfig().getBaseUri().resolve(DEFINITION_TEMPLATE_ADL_1_4_PATH);
+    XmlOptions opts = new XmlOptions();
+    opts.setSaveSyntheticDocumentElement(new QName("http://schemas.openehr.org/v1", "template"));
 
-    /**
-     * Upload a template to the remote system.
-     *
-     * @param operationaltemplate
-     * @return The templateId
-     * @throws ClientException
-     * @throws WrongStatusCodeException
-     */
-    String upload(OPERATIONALTEMPLATE operationaltemplate) {
-        URI uri = defaultRestClient.getConfig().getBaseUri().resolve(DEFINITION_TEMPLATE_ADL_1_4_PATH);
-        XmlOptions opts = new XmlOptions();
-        opts.setSaveSyntheticDocumentElement(new QName("http://schemas.openehr.org/v1", "template"));
+    HttpResponse response =
+        defaultRestClient.internalPost(
+            uri,
+            null,
+            operationaltemplate.xmlText(opts),
+            ContentType.APPLICATION_XML,
+            ContentType.APPLICATION_XML.getMimeType());
 
-        HttpResponse response =
-                defaultRestClient.internalPost(uri, null, operationaltemplate.xmlText(opts), ContentType.APPLICATION_XML, ContentType.APPLICATION_XML.getMimeType());
-
-        Header etag = response.getFirstHeader(HttpHeaders.ETAG);
-        return etag.getValue().replace("\"", "");
-
-    }
+    Header etag = response.getFirstHeader(HttpHeaders.ETAG);
+    return etag.getValue().replace("\"", "");
+  }
 }

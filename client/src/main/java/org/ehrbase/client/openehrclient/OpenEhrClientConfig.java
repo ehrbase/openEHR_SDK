@@ -21,22 +21,22 @@ import java.net.URI;
 
 public class OpenEhrClientConfig {
 
-    private final URI baseUri;
-    private CompositionFormat compositionFormat = CompositionFormat.JSON;
+  private final URI baseUri;
+  private CompositionFormat compositionFormat = CompositionFormat.JSON;
 
-    public OpenEhrClientConfig(URI baseUri) {
-        this.baseUri = baseUri;
-    }
+  public OpenEhrClientConfig(URI baseUri) {
+    this.baseUri = baseUri;
+  }
 
-    public URI getBaseUri() {
-        return baseUri;
-    }
+  public URI getBaseUri() {
+    return baseUri;
+  }
 
-    public CompositionFormat getCompositionFormat() {
-        return compositionFormat;
-    }
+  public CompositionFormat getCompositionFormat() {
+    return compositionFormat;
+  }
 
-    public void setCompositionFormat(CompositionFormat compositionFormat) {
-        this.compositionFormat = compositionFormat;
-    }
+  public void setCompositionFormat(CompositionFormat compositionFormat) {
+    this.compositionFormat = compositionFormat;
+  }
 }

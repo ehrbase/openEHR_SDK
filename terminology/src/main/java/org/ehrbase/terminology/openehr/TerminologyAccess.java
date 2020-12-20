@@ -33,9 +33,7 @@
  */
 package org.ehrbase.terminology.openehr;
 
-
 import com.nedap.archie.rm.datatypes.CodePhrase;
-
 import java.util.Set;
 
 /**
@@ -46,61 +44,57 @@ import java.util.Set;
  */
 public interface TerminologyAccess {
 
-    /**
-     * Returns identification of this terminology
-     *
-     * @return ID not null or empty
-     */
-    String id();
+  /**
+   * Returns identification of this terminology
+   *
+   * @return ID not null or empty
+   */
+  String id();
 
-    /**
-     * Returns all codes known in this terminology
-     *
-     * @return Set of DvCodePhrase
-     */
-    Set<CodePhrase> allCodes();
+  /**
+   * Returns all codes known in this terminology
+   *
+   * @return Set of DvCodePhrase
+   */
+  Set<CodePhrase> allCodes();
 
-    /**
-     * Returns all codes under grouper groupID of this terminology
-     *
-     * @param groupID
-     * @return Set of CodePhrase for given group ID, empty set
-     * returned if not found
-     * @throws IllegalArgumentException if groupID null or empty
-     */
-    Set<CodePhrase> codesForGroupId(String groupID);
+  /**
+   * Returns all codes under grouper groupID of this terminology
+   *
+   * @param groupID
+   * @return Set of CodePhrase for given group ID, empty set returned if not found
+   * @throws IllegalArgumentException if groupID null or empty
+   */
+  Set<CodePhrase> codesForGroupId(String groupID);
 
-    /**
-     * Returns true if the given code is known in the specified group
-     *
-     * @param groupId
-     * @param code
-     * @return true if code exists
-     */
-    boolean hasCodeForGroupId(String groupId, CodePhrase code);
+  /**
+   * Returns true if the given code is known in the specified group
+   *
+   * @param groupId
+   * @param code
+   * @return true if code exists
+   */
+  boolean hasCodeForGroupId(String groupId, CodePhrase code);
 
-    /**
-     * Return all codes under grouper whose name of given
-     * name and language from this terminology.
-     *
-     * @param name
-     * @param language
-     * @return Set of CodePhrase for given group name,
-     * empty set returned if not found
-     * @throws IllegalArgumentException if name,language null or empty
-     */
-    Set<CodePhrase> codesForGroupName(String name, String language);
+  /**
+   * Return all codes under grouper whose name of given name and language from this terminology.
+   *
+   * @param name
+   * @param language
+   * @return Set of CodePhrase for given group name, empty set returned if not found
+   * @throws IllegalArgumentException if name,language null or empty
+   */
+  Set<CodePhrase> codesForGroupName(String name, String language);
 
-    /**
-     * Returns all rubric of given code and language
-     *
-     * @param code
-     * @param language
-     * @return rubric of given code and language or null if not found
-     * @throws IllegalArgumentException if code,language null or empty
-     */
-    String rubricForCode(String code, String language);
-
+  /**
+   * Returns all rubric of given code and language
+   *
+   * @param code
+   * @param language
+   * @return rubric of given code and language or null if not found
+   * @throws IllegalArgumentException if code,language null or empty
+   */
+  String rubricForCode(String code, String language);
 }
 /*
  *  ***** BEGIN LICENSE BLOCK *****

@@ -18,22 +18,21 @@
 package org.ehrbase.serialisation.dbencoding.rmobject;
 
 import com.nedap.archie.rm.archetyped.FeederAudit;
+import java.util.Map;
 import org.ehrbase.serialisation.attributes.FeederAuditAttributes;
 
-import java.util.Map;
-
 /**
- * Encode/decode a FeederAudit object as a json structure.
- * Should be used to support FeederAudit at DB level (f.e. Composition Entry)
+ * Encode/decode a FeederAudit object as a json structure. Should be used to support FeederAudit at
+ * DB level (f.e. Composition Entry)
  */
-public class FeederAuditEncoding extends RMObjectEncoding{
+public class FeederAuditEncoding extends RMObjectEncoding {
 
-    public String toDB(FeederAudit feederAudit) {
-        Map<String, Object> objectMap = new FeederAuditAttributes(feederAudit).toMap();
-        return super.toDB(objectMap);
-    }
+  public String toDB(FeederAudit feederAudit) {
+    Map<String, Object> objectMap = new FeederAuditAttributes(feederAudit).toMap();
+    return super.toDB(objectMap);
+  }
 
-    public FeederAudit fromDB(String dbJonRepresentation) {
-        return (FeederAudit)super.fromDB(FeederAudit.class, dbJonRepresentation);
-    }
+  public FeederAudit fromDB(String dbJonRepresentation) {
+    return (FeederAudit) super.fromDB(FeederAudit.class, dbJonRepresentation);
+  }
 }

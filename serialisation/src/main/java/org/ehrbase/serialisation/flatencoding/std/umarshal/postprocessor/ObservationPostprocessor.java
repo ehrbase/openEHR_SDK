@@ -24,7 +24,6 @@ import com.nedap.archie.rm.datastructures.Event;
 import com.nedap.archie.rm.datastructures.History;
 import com.nedap.archie.rm.datastructures.ItemStructure;
 import com.nedap.archie.rm.datavalues.quantity.datetime.DvDateTime;
-
 import java.time.temporal.TemporalAccessor;
 import java.util.Map;
 import java.util.Objects;
@@ -32,34 +31,31 @@ import java.util.Optional;
 
 public class ObservationPostprocessor extends AbstractUnmarshalPostprocessor<Observation> {
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void process(String term, Observation rmObject, Map<String, String> values) {
-        if (rmObject.getData() != null && rmObject.getData().getOrigin().getValue() == null) {
-            setOrigin(rmObject.getData());
-        }
-        if (rmObject.getState() != null && rmObject.getState().getOrigin().getValue() == null) {
-            setOrigin(rmObject.getState());
-        }
+  /** {@inheritDoc} */
+  @Override
+  public void process(String term, Observation rmObject, Map<String, String> values) {
+    if (rmObject.getData() != null && rmObject.getData().getOrigin().getValue() == null) {
+      setOrigin(rmObject.getData());
     }
-
-    public void setOrigin(History<ItemStructure> history) {
-        Optional<TemporalAccessor> first = history.getEvents().stream().map(Event::getTime)
-                .map(DvDateTime::getValue)
-                .filter(Objects::nonNull)
-                .sorted()
-                .findFirst();
-        first.ifPresent(temporalAccessor -> history.setOrigin(new DvDateTime(temporalAccessor)));
+    if (rmObject.getState() != null && rmObject.getState().getOrigin().getValue() == null) {
+      setOrigin(rmObject.getState());
     }
+  }
 
+  public void setOrigin(History<ItemStructure> history) {
+    Optional<TemporalAccessor> first =
+        history.getEvents().stream()
+            .map(Event::getTime)
+            .map(DvDateTime::getValue)
+            .filter(Objects::nonNull)
+            .sorted()
+            .findFirst();
+    first.ifPresent(temporalAccessor -> history.setOrigin(new DvDateTime(temporalAccessor)));
+  }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Class<Observation> getAssociatedClass() {
-        return Observation.class;
-    }
+  /** {@inheritDoc} */
+  @Override
+  public Class<Observation> getAssociatedClass() {
+    return Observation.class;
+  }
 }

@@ -10,21 +10,18 @@ import org.ehrbase.client.classgenerator.interfaces.RMEntity;
 @Generated(
     value = "org.ehrbase.client.classgenerator.ClassGenerator",
     date = "2020-12-10T13:06:11.390502700+01:00",
-    comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
-)
+    comments = "https://github.com/ehrbase/openEHR_SDK Version: null")
 @OptionFor("DV_CODED_TEXT")
 public class DenwisValueDvCodedText2 implements RMEntity, DenwisValueChoice2 {
-  /**
-   * Path: open_eREACT-Care/Assessment/DENWIS/Point in time/value/value
-   */
+  /** Path: open_eREACT-Care/Assessment/DENWIS/Point in time/value/value */
   @Path("|defining_code")
   private ValueDefiningCode2 valueDefiningCode;
 
   public void setValueDefiningCode(ValueDefiningCode2 valueDefiningCode) {
-     this.valueDefiningCode = valueDefiningCode;
+    this.valueDefiningCode = valueDefiningCode;
   }
 
   public ValueDefiningCode2 getValueDefiningCode() {
-     return this.valueDefiningCode ;
+    return this.valueDefiningCode;
   }
 }

@@ -20,22 +20,21 @@
 package org.ehrbase.webtemplate.parser.config;
 
 import com.nedap.archie.rm.composition.Activity;
-
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class ActivityIntrospectConfig implements RmIntrospectConfig {
 
-    private static final Set<String> FIELDS = Stream.of("description").collect(Collectors.toSet());
+  private static final Set<String> FIELDS = Stream.of("description").collect(Collectors.toSet());
 
-    @Override
-    public Class getAssociatedClass() {
-        return Activity.class;
-    }
+  @Override
+  public Class getAssociatedClass() {
+    return Activity.class;
+  }
 
-    @Override
-    public Set<String> getNonTemplateFields() {
-        return FIELDS;
-    }
+  @Override
+  public Set<String> getNonTemplateFields() {
+    return FIELDS;
+  }
 }

@@ -17,33 +17,30 @@
 
 package org.ehrbase.serialisation.attributes;
 
+import static org.ehrbase.serialisation.dbencoding.CompositionSerializer.TAG_TIMING;
+
 import com.nedap.archie.rm.composition.Activity;
 import com.nedap.archie.rm.datavalues.encapsulated.DvParsable;
+import java.util.Map;
 import org.ehrbase.serialisation.dbencoding.CompositionSerializer;
 import org.ehrbase.serialisation.dbencoding.ItemStack;
 
-import java.util.Map;
-
-import static org.ehrbase.serialisation.dbencoding.CompositionSerializer.TAG_TIMING;
-
-/**
- * populate the attributes for RM Activity
- */
+/** populate the attributes for RM Activity */
 public class ActivityAttributes extends LocatableAttributes {
 
-    public ActivityAttributes(CompositionSerializer compositionSerializer, ItemStack itemStack, Map<String, Object> map) {
-        super(compositionSerializer, itemStack, map);
+  public ActivityAttributes(
+      CompositionSerializer compositionSerializer, ItemStack itemStack, Map<String, Object> map) {
+    super(compositionSerializer, itemStack, map);
+  }
+
+  public Map<String, Object> toMap(Activity activity) {
+
+    if (activity.getTiming() != null && !activity.getTiming().equals(new DvParsable())) {
+      map = toMap(TAG_TIMING, activity.getTiming(), null);
     }
 
-    public Map<String, Object> toMap(Activity activity){
+    map = super.toMap(activity);
 
-        if (activity.getTiming() != null && !activity.getTiming().equals(new DvParsable())) {
-            map = toMap(TAG_TIMING, activity.getTiming(), null);
-        }
-
-        map =  super.toMap(activity);
-
-        return map;
-    }
-
+    return map;
+  }
 }

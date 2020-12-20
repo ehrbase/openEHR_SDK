@@ -18,34 +18,32 @@
 
 package org.ehrbase.validation.constraints;
 
+import static org.junit.Assert.fail;
+
 import com.nedap.archie.rm.datavalues.quantity.DvCount;
 import com.nedap.archie.rm.datavalues.quantity.DvInterval;
 import org.ehrbase.validation.constraints.wrappers.CArchetypeConstraint;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.fail;
-
 public class DvIntervalDvCountTest extends ConstraintTestBase {
 
-    @Before
-    public void setUp() {
-        try {
-            setUpContext("./src/test/resources/constraints/interval_dvcount.xml");
-        } catch (Exception e) {
-            fail();
-        }
+  @Before
+  public void setUp() {
+    try {
+      setUpContext("./src/test/resources/constraints/interval_dvcount.xml");
+    } catch (Exception e) {
+      fail();
     }
+  }
 
-
-    @Test
-    public void testConstraintValidation() {
-        DvInterval<DvCount> dvIntervalDvCount = new DvInterval<>(new DvCount(10L), new DvCount(20L));
-        try {
-            new CArchetypeConstraint(null).validate("test", dvIntervalDvCount, archetypeconstraint);
-        } catch (Exception e) {
-            fail(e.getMessage());
-        }
+  @Test
+  public void testConstraintValidation() {
+    DvInterval<DvCount> dvIntervalDvCount = new DvInterval<>(new DvCount(10L), new DvCount(20L));
+    try {
+      new CArchetypeConstraint(null).validate("test", dvIntervalDvCount, archetypeconstraint);
+    } catch (Exception e) {
+      fail(e.getMessage());
     }
-
+  }
 }

@@ -2,8 +2,6 @@ package org.ehrbase.client.classgenerator.examples.befundderblutgasanalysecompos
 
 import com.nedap.archie.rm.archetyped.FeederAudit;
 import com.nedap.archie.rm.datastructures.Cluster;
-import java.lang.Double;
-import java.lang.String;
 import java.util.List;
 import javax.annotation.processing.Generated;
 import org.ehrbase.client.annotations.Archetype;
@@ -16,8 +14,7 @@ import org.ehrbase.client.classgenerator.interfaces.LocatableEntity;
 @Generated(
     value = "org.ehrbase.client.classgenerator.ClassGenerator",
     date = "2020-12-10T13:06:11.100496300+01:00",
-    comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
-)
+    comments = "https://github.com/ehrbase/openEHR_SDK Version: null")
 public class PhWertCluster implements LocatableEntity {
   /**
    * Path: Befund der Blutgasanalyse/Laborergebnis/Jedes Ereignis/pH-Wert/untersuchter Analyt
@@ -54,58 +51,56 @@ public class PhWertCluster implements LocatableEntity {
   @Path("/items[at0005]/value|value")
   private String ergebnisStatusValue;
 
-  /**
-   * Path: Befund der Blutgasanalyse/Laborergebnis/Jedes Ereignis/pH-Wert/feeder_audit
-   */
+  /** Path: Befund der Blutgasanalyse/Laborergebnis/Jedes Ereignis/pH-Wert/feeder_audit */
   @Path("/feeder_audit")
   private FeederAudit feederAudit;
 
   public void setUntersuchterAnalytDefiningCode(
       UntersuchterAnalytDefiningCode3 untersuchterAnalytDefiningCode) {
-     this.untersuchterAnalytDefiningCode = untersuchterAnalytDefiningCode;
+    this.untersuchterAnalytDefiningCode = untersuchterAnalytDefiningCode;
   }
 
   public UntersuchterAnalytDefiningCode3 getUntersuchterAnalytDefiningCode() {
-     return this.untersuchterAnalytDefiningCode ;
+    return this.untersuchterAnalytDefiningCode;
   }
 
   public void setAnalytResultatMagnitude(Double analytResultatMagnitude) {
-     this.analytResultatMagnitude = analytResultatMagnitude;
+    this.analytResultatMagnitude = analytResultatMagnitude;
   }
 
   public Double getAnalytResultatMagnitude() {
-     return this.analytResultatMagnitude ;
+    return this.analytResultatMagnitude;
   }
 
   public void setAnalytResultatUnits(String analytResultatUnits) {
-     this.analytResultatUnits = analytResultatUnits;
+    this.analytResultatUnits = analytResultatUnits;
   }
 
   public String getAnalytResultatUnits() {
-     return this.analytResultatUnits ;
+    return this.analytResultatUnits;
   }
 
   public void setAnalyseergebnisDetails(List<Cluster> analyseergebnisDetails) {
-     this.analyseergebnisDetails = analyseergebnisDetails;
+    this.analyseergebnisDetails = analyseergebnisDetails;
   }
 
   public List<Cluster> getAnalyseergebnisDetails() {
-     return this.analyseergebnisDetails ;
+    return this.analyseergebnisDetails;
   }
 
   public void setErgebnisStatusValue(String ergebnisStatusValue) {
-     this.ergebnisStatusValue = ergebnisStatusValue;
+    this.ergebnisStatusValue = ergebnisStatusValue;
   }
 
   public String getErgebnisStatusValue() {
-     return this.ergebnisStatusValue ;
+    return this.ergebnisStatusValue;
   }
 
   public void setFeederAudit(FeederAudit feederAudit) {
-     this.feederAudit = feederAudit;
+    this.feederAudit = feederAudit;
   }
 
   public FeederAudit getFeederAudit() {
-     return this.feederAudit ;
+    return this.feederAudit;
   }
 }

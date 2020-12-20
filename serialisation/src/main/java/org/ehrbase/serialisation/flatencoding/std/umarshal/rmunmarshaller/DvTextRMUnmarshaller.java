@@ -20,31 +20,31 @@
 package org.ehrbase.serialisation.flatencoding.std.umarshal.rmunmarshaller;
 
 import com.nedap.archie.rm.datavalues.DvText;
+import java.util.Map;
 import org.ehrbase.serialisation.walker.Context;
 import org.ehrbase.webtemplate.model.WebTemplateInput;
 
-import java.util.Map;
-
 public class DvTextRMUnmarshaller extends AbstractRMUnmarshaller<DvText> {
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Class<DvText> getAssociatedClass() {
-        return DvText.class;
-    }
+  /** {@inheritDoc} */
+  @Override
+  public Class<DvText> getAssociatedClass() {
+    return DvText.class;
+  }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void handle(String currentTerm, DvText rmObject, Map<String, String> currentValues, Context<Map<String, String>> context) {
-        if (context.getNodeDeque().peek().getInputs().stream().map(WebTemplateInput::getSuffix).anyMatch("other"::equals)) {
-            setValue(currentTerm, "other", currentValues, rmObject::setValue, String.class);
-        } else {
-            setValue(currentTerm, null, currentValues, rmObject::setValue, String.class);
-        }
-
+  /** {@inheritDoc} */
+  @Override
+  public void handle(
+      String currentTerm,
+      DvText rmObject,
+      Map<String, String> currentValues,
+      Context<Map<String, String>> context) {
+    if (context.getNodeDeque().peek().getInputs().stream()
+        .map(WebTemplateInput::getSuffix)
+        .anyMatch("other"::equals)) {
+      setValue(currentTerm, "other", currentValues, rmObject::setValue, String.class);
+    } else {
+      setValue(currentTerm, null, currentValues, rmObject::setValue, String.class);
     }
+  }
 }

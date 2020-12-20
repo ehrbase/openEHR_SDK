@@ -18,72 +18,72 @@
 package org.ehrbase.serialisation.attributes.datavalues.datetime.time;
 
 import com.nedap.archie.rm.datavalues.quantity.datetime.DvTime;
-import org.ehrbase.serialisation.attributes.datavalues.datetime.I_TimeAttributes;
-import org.ehrbase.serialisation.attributes.datavalues.datetime.TemporalAttributes;
-
 import java.time.*;
 import java.time.temporal.ChronoField;
 import java.time.temporal.Temporal;
+import org.ehrbase.serialisation.attributes.datavalues.datetime.I_TimeAttributes;
+import org.ehrbase.serialisation.attributes.datavalues.datetime.TemporalAttributes;
 
 abstract class DvTimeAttributesImp extends TemporalAttributes implements I_TimeAttributes {
 
-    protected final DvTime dvTime;
-    protected ZoneOffset zoneOffset;
+  protected final DvTime dvTime;
+  protected ZoneOffset zoneOffset;
 
-    DvTimeAttributesImp(DvTime dvTime) {
-        super();
-        this.dvTime = dvTime;
-        if (dvTime.getValue().isSupported(ChronoField.OFFSET_SECONDS))
-            zoneOffset = ZoneOffset.from(dvTime.getValue());
-    }
+  DvTimeAttributesImp(DvTime dvTime) {
+    super();
+    this.dvTime = dvTime;
+    if (dvTime.getValue().isSupported(ChronoField.OFFSET_SECONDS))
+      zoneOffset = ZoneOffset.from(dvTime.getValue());
+  }
 
-    @Override
-    public Temporal getValueAsProvided() {
-        return (Temporal) dvTime.getValue();
-    }
+  @Override
+  public Temporal getValueAsProvided() {
+    return (Temporal) dvTime.getValue();
+  }
 
-    @Override
-    public Long getMagnitude() {
-        return Math.round(dvTime.getMagnitude());
-    }
+  @Override
+  public Long getMagnitude() {
+    return Math.round(dvTime.getMagnitude());
+  }
 
-    @Override
-    public Long getTimeStamp(){
-        //since time is not related to a date, return the magnitude
-        return getMagnitude();
-    }
+  @Override
+  public Long getTimeStamp() {
+    // since time is not related to a date, return the magnitude
+    return getMagnitude();
+  }
 
-    public Integer supportedChronoFields(Integer chronoFieldBitmask) {
-        return TemporalAttributes.DV_TIME|chronoFieldBitmask;
-    }
+  public Integer supportedChronoFields(Integer chronoFieldBitmask) {
+    return TemporalAttributes.DV_TIME | chronoFieldBitmask;
+  }
 
-    @Override
-    public boolean isRmDvTime(){
-        return (getSupportedChronoFields() & DV_TIME) == DV_TIME;
-    }
+  @Override
+  public boolean isRmDvTime() {
+    return (getSupportedChronoFields() & DV_TIME) == DV_TIME;
+  }
 
-    @Override
-    public boolean isTimeHH(){
-        return getSupportedChronoFields() == (DV_TIME | HOUR);
-    }
+  @Override
+  public boolean isTimeHH() {
+    return getSupportedChronoFields() == (DV_TIME | HOUR);
+  }
 
-    @Override
-    public boolean isTimeHHMM(){
-        return getSupportedChronoFields() == (DV_TIME | HOUR | MINUTE_OF_HOUR);
-    }
+  @Override
+  public boolean isTimeHHMM() {
+    return getSupportedChronoFields() == (DV_TIME | HOUR | MINUTE_OF_HOUR);
+  }
 
-    @Override
-    public boolean isTimeHHMMSS(){
-        return getSupportedChronoFields() == (DV_TIME | HOUR | MINUTE_OF_HOUR | SECOND_OF_MINUTE);
-    }
+  @Override
+  public boolean isTimeHHMMSS() {
+    return getSupportedChronoFields() == (DV_TIME | HOUR | MINUTE_OF_HOUR | SECOND_OF_MINUTE);
+  }
 
-    @Override
-    public boolean isTimeHHMMSSmmm(){
-        return getSupportedChronoFields() == (DV_TIME | HOUR | MINUTE_OF_HOUR | SECOND_OF_MINUTE | MILLI_OF_SECOND);
-    }
+  @Override
+  public boolean isTimeHHMMSSmmm() {
+    return getSupportedChronoFields()
+        == (DV_TIME | HOUR | MINUTE_OF_HOUR | SECOND_OF_MINUTE | MILLI_OF_SECOND);
+  }
 
-    @Override
-    public ZoneOffset getZoneOffset() {
-        return zoneOffset;
-    }
+  @Override
+  public ZoneOffset getZoneOffset() {
+    return zoneOffset;
+  }
 }

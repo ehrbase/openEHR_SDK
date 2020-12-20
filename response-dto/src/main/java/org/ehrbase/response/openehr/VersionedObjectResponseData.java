@@ -24,61 +24,66 @@ import com.google.common.base.CaseFormat;
 import com.nedap.archie.rm.changecontrol.VersionedObject;
 import com.nedap.archie.rm.support.identification.HierObjectId;
 import com.nedap.archie.rm.support.identification.ObjectRef;
-
 import java.time.format.DateTimeFormatter;
 
 @JacksonXmlRootElement(localName = "ehr_status")
 public class VersionedObjectResponseData<T> {
 
-    @JsonProperty(value = "_type")
-    private String type;
-    @JsonProperty
-    private HierObjectId uid;
-    @JsonProperty(value = "owner_id")
-    private ObjectRef<HierObjectId> ownerId;
-    @JsonProperty(value = "time_created")
-    private String timeCreated;
+  @JsonProperty(value = "_type")
+  private String type;
 
-    public VersionedObjectResponseData(VersionedObject<T> versionedObject) {
-        // take the complete name with package and removes the package part to get plain class name
-        String className = versionedObject.getClass().getName().replace(versionedObject.getClass().getPackage().getName() + ".", "");
-        // format to upper underscore
-        setType(CaseFormat.LOWER_CAMEL.to(CaseFormat.UPPER_UNDERSCORE, className));
-        setUid(versionedObject.getUid());
-        setOwnerId(versionedObject.getOwnerId());
-        DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE_TIME;
-        setTimeCreated(formatter.format(versionedObject.getTimeCreated().getValue()));
-    }
+  @JsonProperty private HierObjectId uid;
 
-    public String getType() {
-        return type;
-    }
+  @JsonProperty(value = "owner_id")
+  private ObjectRef<HierObjectId> ownerId;
 
-    public void setType(String type) {
-        this.type = type;
-    }
+  @JsonProperty(value = "time_created")
+  private String timeCreated;
 
-    public HierObjectId getUid() {
-        return uid;
-    }
+  public VersionedObjectResponseData(VersionedObject<T> versionedObject) {
+    // take the complete name with package and removes the package part to get plain class name
+    String className =
+        versionedObject
+            .getClass()
+            .getName()
+            .replace(versionedObject.getClass().getPackage().getName() + ".", "");
+    // format to upper underscore
+    setType(CaseFormat.LOWER_CAMEL.to(CaseFormat.UPPER_UNDERSCORE, className));
+    setUid(versionedObject.getUid());
+    setOwnerId(versionedObject.getOwnerId());
+    DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE_TIME;
+    setTimeCreated(formatter.format(versionedObject.getTimeCreated().getValue()));
+  }
 
-    public void setUid(HierObjectId uid) {
-        this.uid = uid;
-    }
+  public String getType() {
+    return type;
+  }
 
-    public ObjectRef<HierObjectId> getOwnerId() {
-        return ownerId;
-    }
+  public void setType(String type) {
+    this.type = type;
+  }
 
-    public void setOwnerId(ObjectRef<HierObjectId> ownerId) {
-        this.ownerId = ownerId;
-    }
+  public HierObjectId getUid() {
+    return uid;
+  }
 
-    public String getTimeCreated() {
-        return timeCreated;
-    }
+  public void setUid(HierObjectId uid) {
+    this.uid = uid;
+  }
 
-    public void setTimeCreated(String timeCreated) {
-        this.timeCreated = timeCreated;
-    }
+  public ObjectRef<HierObjectId> getOwnerId() {
+    return ownerId;
+  }
+
+  public void setOwnerId(ObjectRef<HierObjectId> ownerId) {
+    this.ownerId = ownerId;
+  }
+
+  public String getTimeCreated() {
+    return timeCreated;
+  }
+
+  public void setTimeCreated(String timeCreated) {
+    this.timeCreated = timeCreated;
+  }
 }

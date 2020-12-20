@@ -22,16 +22,32 @@ import org.ehrbase.terminology.openehr.implementation.AttributeCodesetMapping;
 
 public class OriginalVersion extends TerminologyCheck {
 
-    public OriginalVersion() {
-        this.RM_CLASS = com.nedap.archie.rm.changecontrol.OriginalVersion.class;
-    }
+  public OriginalVersion() {
+    this.RM_CLASS = com.nedap.archie.rm.changecontrol.OriginalVersion.class;
+  }
 
-    public static void check(TerminologyInterface terminologyInterface, AttributeCodesetMapping codesetMapping, String context, com.nedap.archie.rm.changecontrol.OriginalVersion originalVersion, String language) throws IllegalArgumentException {
-        if (originalVersion.getLifecycleState() != null)
-            validate(terminologyInterface, codesetMapping, context, originalVersion.getLifecycleState().getDefiningCode(), language);
-    }
+  public static void check(
+      TerminologyInterface terminologyInterface,
+      AttributeCodesetMapping codesetMapping,
+      String context,
+      com.nedap.archie.rm.changecontrol.OriginalVersion originalVersion,
+      String language)
+      throws IllegalArgumentException {
+    if (originalVersion.getLifecycleState() != null)
+      validate(
+          terminologyInterface,
+          codesetMapping,
+          context,
+          originalVersion.getLifecycleState().getDefiningCode(),
+          language);
+  }
 
-    public static void check(TerminologyInterface terminologyInterface, AttributeCodesetMapping codesetMapping, String context, com.nedap.archie.rm.changecontrol.OriginalVersion originalVersion) throws IllegalArgumentException {
-        check(terminologyInterface, codesetMapping, context, originalVersion, "en");
-    }
+  public static void check(
+      TerminologyInterface terminologyInterface,
+      AttributeCodesetMapping codesetMapping,
+      String context,
+      com.nedap.archie.rm.changecontrol.OriginalVersion originalVersion)
+      throws IllegalArgumentException {
+    check(terminologyInterface, codesetMapping, context, originalVersion, "en");
+  }
 }

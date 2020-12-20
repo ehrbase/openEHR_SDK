@@ -19,5 +19,11 @@
 package org.ehrbase.response.ehrscape;
 
 public enum CompositionFormat {
-    FLAT, STRUCTURED, RAW, XML, ECISFLAT, EXPANDED, JSON;
+  FLAT,
+  STRUCTURED,
+  RAW,
+  XML,
+  ECISFLAT,
+  EXPANDED,
+  JSON;
 }

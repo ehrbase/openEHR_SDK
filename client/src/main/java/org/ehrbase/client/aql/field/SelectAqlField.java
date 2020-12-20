@@ -20,11 +20,11 @@
 package org.ehrbase.client.aql.field;
 
 public interface SelectAqlField<T> extends AqlField<T> {
-    String getName();
+  String getName();
 
-    String getPath();
+  String getPath();
 
-    Class<?> getEntityClass();
+  Class<?> getEntityClass();
 
-    String buildAQL();
+  String buildAQL();
 }

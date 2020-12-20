@@ -20,36 +20,35 @@
 package org.ehrbase.serialisation.walker;
 
 import com.nedap.archie.rm.RMObject;
-import org.ehrbase.webtemplate.model.WebTemplateNode;
-
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.Map;
+import org.ehrbase.webtemplate.model.WebTemplateNode;
 
 public class Context<T> {
 
-    private final Deque<WebTemplateNode> nodeDeque = new ArrayDeque<>();
+  private final Deque<WebTemplateNode> nodeDeque = new ArrayDeque<>();
 
-    private final Deque<RMObject> rmObjectDeque = new ArrayDeque<>();
+  private final Deque<RMObject> rmObjectDeque = new ArrayDeque<>();
 
-    private final Deque<T> objectDeque = new ArrayDeque<>();
+  private final Deque<T> objectDeque = new ArrayDeque<>();
 
-    private final Map<WebTemplateNode, Integer> countMap = new HashMap<>();
+  private final Map<WebTemplateNode, Integer> countMap = new HashMap<>();
 
-    public Deque<WebTemplateNode> getNodeDeque() {
-        return nodeDeque;
-    }
+  public Deque<WebTemplateNode> getNodeDeque() {
+    return nodeDeque;
+  }
 
-    public Deque<RMObject> getRmObjectDeque() {
-        return rmObjectDeque;
-    }
+  public Deque<RMObject> getRmObjectDeque() {
+    return rmObjectDeque;
+  }
 
-    public Deque<T> getObjectDeque() {
-        return objectDeque;
-    }
+  public Deque<T> getObjectDeque() {
+    return objectDeque;
+  }
 
-    public Map<WebTemplateNode, Integer> getCountMap() {
-        return countMap;
-    }
+  public Map<WebTemplateNode, Integer> getCountMap() {
+    return countMap;
+  }
 }

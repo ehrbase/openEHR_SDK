@@ -41,46 +41,48 @@ import org.ehrbase.terminology.openehr.TerminologyResourceException;
  */
 public class TerminologySourceFactory {
 
-    private static final String OPENEHR_TERMINOLOGY_EN = "openehr/en/openehr_terminology.xml";
-    private static final String OPENEHR_TERMINOLOGY_JA = "openehr/ja/openehr_terminology.xml";
-    private static final String OPENEHR_TERMINOLOGY_PT = "openehr/pt/openehr_terminology.xml";
-    private static final String EXTERNAL_TERMINOLOGIES = "openehr_external_terminologies.xml";
+  private static final String OPENEHR_TERMINOLOGY_EN = "openehr/en/openehr_terminology.xml";
+  private static final String OPENEHR_TERMINOLOGY_JA = "openehr/ja/openehr_terminology.xml";
+  private static final String OPENEHR_TERMINOLOGY_PT = "openehr/pt/openehr_terminology.xml";
+  private static final String EXTERNAL_TERMINOLOGIES = "openehr_external_terminologies.xml";
 
-    /**
-     * Gets an instance of openEHR terminology source
-     *
-     * @return terminology source instance
-     */
-    static TerminologySource getOpenEHRTerminology(String language) throws TerminologyResourceException {
-        switch (language) {
-            case "en":
-                return XMLTerminologySource.getInstance(OPENEHR_TERMINOLOGY_EN);
-            case "ja":
-                return XMLTerminologySource.getInstance(OPENEHR_TERMINOLOGY_JA);
-            case "pt":
-                return XMLTerminologySource.getInstance(OPENEHR_TERMINOLOGY_PT);
-            default:
-                return XMLTerminologySource.getInstance(OPENEHR_TERMINOLOGY_EN);
-        }
+  /**
+   * Gets an instance of openEHR terminology source
+   *
+   * @return terminology source instance
+   */
+  static TerminologySource getOpenEHRTerminology(String language)
+      throws TerminologyResourceException {
+    switch (language) {
+      case "en":
+        return XMLTerminologySource.getInstance(OPENEHR_TERMINOLOGY_EN);
+      case "ja":
+        return XMLTerminologySource.getInstance(OPENEHR_TERMINOLOGY_JA);
+      case "pt":
+        return XMLTerminologySource.getInstance(OPENEHR_TERMINOLOGY_PT);
+      default:
+        return XMLTerminologySource.getInstance(OPENEHR_TERMINOLOGY_EN);
     }
+  }
 
-    static TerminologySource getOpenEHRTerminology() throws TerminologyResourceException {
-        return getOpenEHRTerminology("en");
-    }
+  static TerminologySource getOpenEHRTerminology() throws TerminologyResourceException {
+    return getOpenEHRTerminology("en");
+  }
 
-    /**
-     * Gets an instance of external terminologies source
-     *
-     * @return terminology source instance
-     */
-    static TerminologySource getExternalTerminologies(String language) throws TerminologyResourceException {
-        return XMLTerminologySource.getInstance(EXTERNAL_TERMINOLOGIES);
-    }
+  /**
+   * Gets an instance of external terminologies source
+   *
+   * @return terminology source instance
+   */
+  static TerminologySource getExternalTerminologies(String language)
+      throws TerminologyResourceException {
+    return XMLTerminologySource.getInstance(EXTERNAL_TERMINOLOGIES);
+  }
 
-    public static TerminologySource getAttributeToGroupMappings() throws TerminologyResourceException {
-        return XMLTerminologySource.getInstance(EXTERNAL_TERMINOLOGIES);
-    }
-
+  public static TerminologySource getAttributeToGroupMappings()
+      throws TerminologyResourceException {
+    return XMLTerminologySource.getInstance(EXTERNAL_TERMINOLOGIES);
+  }
 }
 /*
  *  ***** BEGIN LICENSE BLOCK *****

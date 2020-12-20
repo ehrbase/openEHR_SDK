@@ -22,31 +22,28 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.nedap.archie.rm.RMObject;
 import com.nedap.archie.rminfo.ArchieRMInfoLookup;
+import java.util.Map;
 import org.ehrbase.serialisation.dbencoding.EncodeUtilArchie;
 import org.ehrbase.serialisation.dbencoding.rawjson.LightRawJsonEncoder;
 import org.ehrbase.serialisation.jsonencoding.CanonicalJson;
 
-import java.util.List;
-import java.util.Map;
-
-/**
- * utility class to deal with specific RM object DB encode/decode (f.e. FeederAudit)
- */
+/** utility class to deal with specific RM object DB encode/decode (f.e. FeederAudit) */
 public abstract class RMObjectEncoding {
 
-    protected String toDB(Map<String, Object> objectMap) {
-        GsonBuilder builder = EncodeUtilArchie.getGsonBuilderInstance();
-        Gson gson = builder.setPrettyPrinting().create();
-        return gson.toJson(objectMap);
-    }
+  protected String toDB(Map<String, Object> objectMap) {
+    GsonBuilder builder = EncodeUtilArchie.getGsonBuilderInstance();
+    Gson gson = builder.setPrettyPrinting().create();
+    return gson.toJson(objectMap);
+  }
 
-    protected RMObject fromDB(String rmClassName, String dbJonRepresentation) {
-        Class clazz = ArchieRMInfoLookup.getInstance().getClass(rmClassName);
-        return fromDB(clazz, dbJonRepresentation);
-    }
+  protected RMObject fromDB(String rmClassName, String dbJonRepresentation) {
+    Class clazz = ArchieRMInfoLookup.getInstance().getClass(rmClassName);
+    return fromDB(clazz, dbJonRepresentation);
+  }
 
-    protected RMObject fromDB(Class clazz, String dbJonRepresentation) {
-        JsonElement interpreted = new LightRawJsonEncoder(dbJonRepresentation).encodeContentAsJson(null);
-        return new CanonicalJson().unmarshal(interpreted.toString(), clazz);
-    }
+  protected RMObject fromDB(Class clazz, String dbJonRepresentation) {
+    JsonElement interpreted =
+        new LightRawJsonEncoder(dbJonRepresentation).encodeContentAsJson(null);
+    return new CanonicalJson().unmarshal(interpreted.toString(), clazz);
+  }
 }

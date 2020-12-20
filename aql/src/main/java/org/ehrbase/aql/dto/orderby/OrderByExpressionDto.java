@@ -19,7 +19,6 @@
 
 package org.ehrbase.aql.dto.orderby;
 
-
 import org.ehrbase.aql.dto.select.SelectStatementDto;
 
 public class OrderByExpressionDto {
@@ -27,8 +26,7 @@ public class OrderByExpressionDto {
   private SelectStatementDto statement;
   private OrderByExpressionSymbol symbol;
 
-  public OrderByExpressionDto() {
-  }
+  public OrderByExpressionDto() {}
 
   public SelectStatementDto getStatement() {
     return this.statement;
@@ -53,10 +51,12 @@ public class OrderByExpressionDto {
     if (!other.canEqual((Object) this)) return false;
     final Object this$statement = this.getStatement();
     final Object other$statement = other.getStatement();
-    if (this$statement == null ? other$statement != null : !this$statement.equals(other$statement)) return false;
+    if (this$statement == null ? other$statement != null : !this$statement.equals(other$statement))
+      return false;
     final Object this$symbol = this.getSymbol();
     final Object other$symbol = other.getSymbol();
-    if (this$symbol == null ? other$symbol != null : !this$symbol.equals(other$symbol)) return false;
+    if (this$symbol == null ? other$symbol != null : !this$symbol.equals(other$symbol))
+      return false;
     return true;
   }
 
@@ -75,6 +75,10 @@ public class OrderByExpressionDto {
   }
 
   public String toString() {
-    return "OrderByExpressionDto(statement=" + this.getStatement() + ", symbol=" + this.getSymbol() + ")";
+    return "OrderByExpressionDto(statement="
+        + this.getStatement()
+        + ", symbol="
+        + this.getSymbol()
+        + ")";
   }
 }

@@ -8,13 +8,34 @@ import org.ehrbase.client.aql.field.ListSelectAqlField;
 import org.ehrbase.client.aql.field.SelectAqlField;
 
 public class AtiopathogeneseClusterContainment extends Containment {
-  public SelectAqlField<AtiopathogeneseCluster> ATIOPATHOGENESE_CLUSTER = new AqlFieldImp<AtiopathogeneseCluster>(AtiopathogeneseCluster.class, "", "AtiopathogeneseCluster", AtiopathogeneseCluster.class, this);
+  public SelectAqlField<AtiopathogeneseCluster> ATIOPATHOGENESE_CLUSTER =
+      new AqlFieldImp<AtiopathogeneseCluster>(
+          AtiopathogeneseCluster.class,
+          "",
+          "AtiopathogeneseCluster",
+          AtiopathogeneseCluster.class,
+          this);
 
-  public ListSelectAqlField<AtiopathogeneseAtiologieDerKrankheitElement> ATIOLOGIE_DER_KRANKHEIT = new ListAqlFieldImp<AtiopathogeneseAtiologieDerKrankheitElement>(AtiopathogeneseCluster.class, "/items[at0001]", "atiologieDerKrankheit", AtiopathogeneseAtiologieDerKrankheitElement.class, this);
+  public ListSelectAqlField<AtiopathogeneseAtiologieDerKrankheitElement> ATIOLOGIE_DER_KRANKHEIT =
+      new ListAqlFieldImp<AtiopathogeneseAtiologieDerKrankheitElement>(
+          AtiopathogeneseCluster.class,
+          "/items[at0001]",
+          "atiologieDerKrankheit",
+          AtiopathogeneseAtiologieDerKrankheitElement.class,
+          this);
 
-  public ListSelectAqlField<AtiopathogeneseBeschreibungDesEntstehensElement> BESCHREIBUNG_DES_ENTSTEHENS = new ListAqlFieldImp<AtiopathogeneseBeschreibungDesEntstehensElement>(AtiopathogeneseCluster.class, "/items[at0017]", "beschreibungDesEntstehens", AtiopathogeneseBeschreibungDesEntstehensElement.class, this);
+  public ListSelectAqlField<AtiopathogeneseBeschreibungDesEntstehensElement>
+      BESCHREIBUNG_DES_ENTSTEHENS =
+          new ListAqlFieldImp<AtiopathogeneseBeschreibungDesEntstehensElement>(
+              AtiopathogeneseCluster.class,
+              "/items[at0017]",
+              "beschreibungDesEntstehens",
+              AtiopathogeneseBeschreibungDesEntstehensElement.class,
+              this);
 
-  public SelectAqlField<FeederAudit> FEEDER_AUDIT = new AqlFieldImp<FeederAudit>(AtiopathogeneseCluster.class, "/feeder_audit", "feederAudit", FeederAudit.class, this);
+  public SelectAqlField<FeederAudit> FEEDER_AUDIT =
+      new AqlFieldImp<FeederAudit>(
+          AtiopathogeneseCluster.class, "/feeder_audit", "feederAudit", FeederAudit.class, this);
 
   private AtiopathogeneseClusterContainment() {
     super("openEHR-EHR-CLUSTER.etiology.v1");

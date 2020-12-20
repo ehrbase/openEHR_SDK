@@ -19,21 +19,19 @@
 
 package org.ehrbase.aql.binder;
 
-
+import java.util.List;
+import java.util.Map;
 import org.ehrbase.aql.dto.orderby.OrderByExpressionDto;
 import org.ehrbase.client.aql.containment.Containment;
 import org.ehrbase.client.aql.orderby.OrderByExpression;
 import org.ehrbase.util.exception.SdkException;
-
-import java.util.List;
-import java.util.Map;
 
 public class OrderByBinder {
 
   private final SelectBinder selectBinder = new SelectBinder();
 
   public OrderByExpression bind(
-          List<OrderByExpressionDto> dtoList, Map<Integer, Containment> containmentMap) {
+      List<OrderByExpressionDto> dtoList, Map<Integer, Containment> containmentMap) {
 
     OrderByExpression orderByExpression = bind(dtoList.get(0), containmentMap);
     for (int i = 1; i < dtoList.size(); i++) {

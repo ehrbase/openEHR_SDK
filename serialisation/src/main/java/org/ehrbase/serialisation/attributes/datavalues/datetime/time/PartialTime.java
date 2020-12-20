@@ -18,40 +18,37 @@
 package org.ehrbase.serialisation.attributes.datavalues.datetime.time;
 
 import com.nedap.archie.rm.datavalues.quantity.datetime.DvTime;
+import java.time.ZoneOffset;
+import java.time.temporal.ChronoField;
 import org.apache.commons.lang3.StringUtils;
 import org.ehrbase.serialisation.attributes.datavalues.datetime.I_PartialTime;
 
-import java.time.ZoneOffset;
-import java.time.temporal.ChronoField;
-
 public abstract class PartialTime implements I_PartialTime {
 
-    String timeZoneString;
-    String dvTimeRepresentation;
+  String timeZoneString;
+  String dvTimeRepresentation;
 
-    protected PartialTime(DvTime dvTime) {
-        this.dvTimeRepresentation = dvTime.getValue().toString();
+  protected PartialTime(DvTime dvTime) {
+    this.dvTimeRepresentation = dvTime.getValue().toString();
 
-        if (dvTime.getValue().isSupported(ChronoField.OFFSET_SECONDS)){
-            timeZoneString = ZoneOffset.from(dvTime.getValue()).toString();
-            dvTimeRepresentation = StringUtils.remove(dvTimeRepresentation, timeZoneString);
-        }
+    if (dvTime.getValue().isSupported(ChronoField.OFFSET_SECONDS)) {
+      timeZoneString = ZoneOffset.from(dvTime.getValue()).toString();
+      dvTimeRepresentation = StringUtils.remove(dvTimeRepresentation, timeZoneString);
     }
+  }
 
-    public static I_PartialTime getInstance(DvTime dvTime){
-        if (dvTime.getValue().toString().contains(":"))
-            return new StandardPartialTime(dvTime);
-        else
-            throw new IllegalArgumentException("ISO8601 time compact form is not yet supported");
-    }
+  public static I_PartialTime getInstance(DvTime dvTime) {
+    if (dvTime.getValue().toString().contains(":")) return new StandardPartialTime(dvTime);
+    else throw new IllegalArgumentException("ISO8601 time compact form is not yet supported");
+  }
 
-    @Override
-    public boolean hasTZString() {
-        return timeZoneString != null;
-    }
+  @Override
+  public boolean hasTZString() {
+    return timeZoneString != null;
+  }
 
-    @Override
-    public boolean isNonCompactIS8601Representation() {
-        return dvTimeRepresentation.contains(":");
-    }
+  @Override
+  public boolean isNonCompactIS8601Representation() {
+    return dvTimeRepresentation.contains(":");
+  }
 }

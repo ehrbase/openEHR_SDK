@@ -1,10 +1,13 @@
 package org.ehrbase.client.classgenerator.examples.openereactcarecomposition.definition;
 
-import java.lang.String;
 import org.ehrbase.client.classgenerator.EnumValueSet;
 
 public enum RiskFactorDefiningCode3 implements EnumValueSet {
-  OTHER_HOUSEHOLD_MEMBERS_ARE_ILL("Other household members are ill", "The patient is in a house with other household members who are ill", "local", "at0.19");
+  OTHER_HOUSEHOLD_MEMBERS_ARE_ILL(
+      "Other household members are ill",
+      "The patient is in a house with other household members who are ill",
+      "local",
+      "at0.19");
 
   private String value;
 
@@ -22,18 +25,18 @@ public enum RiskFactorDefiningCode3 implements EnumValueSet {
   }
 
   public String getValue() {
-     return this.value ;
+    return this.value;
   }
 
   public String getDescription() {
-     return this.description ;
+    return this.description;
   }
 
   public String getTerminologyId() {
-     return this.terminologyId ;
+    return this.terminologyId;
   }
 
   public String getCode() {
-     return this.code ;
+    return this.code;
   }
 }

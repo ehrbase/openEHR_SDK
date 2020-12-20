@@ -9,8 +9,7 @@ import javax.annotation.processing.Generated;
 @Generated(
     value = "org.ehrbase.client.classgenerator.ClassGenerator",
     date = "2020-12-10T13:06:13.366035900+01:00",
-    comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
-)
+    comments = "https://github.com/ehrbase/openEHR_SDK Version: null")
 public interface GeschichteHistorieBeliebigesEreignisChoice {
   List<Cluster> getStrukturierteAngabe();
 

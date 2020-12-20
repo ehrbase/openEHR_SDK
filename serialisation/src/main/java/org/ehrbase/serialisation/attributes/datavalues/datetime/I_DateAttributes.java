@@ -19,24 +19,19 @@ package org.ehrbase.serialisation.attributes.datavalues.datetime;
 
 public interface I_DateAttributes extends I_TemporalAttributes {
 
-    /**
-     * true if the date is an RM DvDate instance
-     * @see com.nedap.archie.rm.datavalues.quantity.datetime.DvDate
-     */
-    boolean isRmDvDate();
+  /**
+   * true if the date is an RM DvDate instance
+   *
+   * @see com.nedap.archie.rm.datavalues.quantity.datetime.DvDate
+   */
+  boolean isRmDvDate();
 
-    /**
-     * true if the date is partial with year only
-     */
-    boolean isDateYYYY();
+  /** true if the date is partial with year only */
+  boolean isDateYYYY();
 
-    /**
-     * true if the date is partial with year-month only
-     */
-    boolean isDateYYYYMM();
+  /** true if the date is partial with year-month only */
+  boolean isDateYYYYMM();
 
-    /**
-     * true if date is ISO8601 canonical
-     */
-    boolean isDateYYYYMMDD();
+  /** true if date is ISO8601 canonical */
+  boolean isDateYYYYMMDD();
 }

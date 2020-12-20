@@ -20,50 +20,51 @@ package org.ehrbase.response.ehrscape;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
-
 import java.time.OffsetDateTime;
 
 public class TemplateMetaDataDto {
 
-    @JsonProperty("template_id")
-    private String templateId;
-    @JsonProperty("archetype_id")
-    private String archetypeId;
+  @JsonProperty("template_id")
+  private String templateId;
 
-    private String concept;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
-    @JsonProperty("created_timestamp")
-    private OffsetDateTime createdOn;
+  @JsonProperty("archetype_id")
+  private String archetypeId;
 
-    public String getTemplateId() {
-        return templateId;
-    }
+  private String concept;
 
-    public void setTemplateId(String templateId) {
-        this.templateId = templateId;
-    }
+  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
+  @JsonProperty("created_timestamp")
+  private OffsetDateTime createdOn;
 
-    public String getArchetypeId() {
-        return archetypeId;
-    }
+  public String getTemplateId() {
+    return templateId;
+  }
 
-    public void setArchetypeId(String archetypeId) {
-        this.archetypeId = archetypeId;
-    }
+  public void setTemplateId(String templateId) {
+    this.templateId = templateId;
+  }
 
-    public String getConcept() {
-        return concept;
-    }
+  public String getArchetypeId() {
+    return archetypeId;
+  }
 
-    public void setConcept(String concept) {
-        this.concept = concept;
-    }
+  public void setArchetypeId(String archetypeId) {
+    this.archetypeId = archetypeId;
+  }
 
-    public OffsetDateTime getCreatedOn() {
-        return createdOn;
-    }
+  public String getConcept() {
+    return concept;
+  }
 
-    public void setCreatedOn(OffsetDateTime createdOn) {
-        this.createdOn = createdOn;
-    }
+  public void setConcept(String concept) {
+    this.concept = concept;
+  }
+
+  public OffsetDateTime getCreatedOn() {
+    return createdOn;
+  }
+
+  public void setCreatedOn(OffsetDateTime createdOn) {
+    this.createdOn = createdOn;
+  }
 }

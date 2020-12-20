@@ -23,8 +23,7 @@ public class SimpleValue implements Value {
 
   private Object value;
 
-  public SimpleValue() {
-  }
+  public SimpleValue() {}
 
   public Object getValue() {
     return this.value;

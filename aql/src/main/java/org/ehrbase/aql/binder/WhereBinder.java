@@ -19,6 +19,11 @@
 
 package org.ehrbase.aql.binder;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.ehrbase.aql.dto.condition.ConditionComparisonOperatorDto;
@@ -32,12 +37,6 @@ import org.ehrbase.client.aql.containment.Containment;
 import org.ehrbase.client.aql.field.SelectAqlField;
 import org.ehrbase.client.aql.parameter.Parameter;
 import org.ehrbase.util.exception.SdkException;
-
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 public class WhereBinder {
   private final SelectBinder selectBinder = new SelectBinder();

@@ -21,13 +21,13 @@ package org.ehrbase.client.aql.top;
 
 public interface TopExpresion {
 
-    String buildAql();
+  String buildAql();
 
-    static TopExpresion forward(int count) {
-        return new Top(count, Direction.FORWARD);
-    }
+  static TopExpresion forward(int count) {
+    return new Top(count, Direction.FORWARD);
+  }
 
-    static TopExpresion backward(int count) {
-        return new Top(count, Direction.BACKWARD);
-    }
+  static TopExpresion backward(int count) {
+    return new Top(count, Direction.BACKWARD);
+  }
 }

@@ -21,20 +21,17 @@ package org.ehrbase.test_data.item_structure;
 import java.io.InputStream;
 
 public enum ItemStruktureTestDataCanonicalJson {
+  SIMPLE_EHR_OTHER_Details("Simple EHR other Details", "ehr_other_details.json");
 
-    SIMPLE_EHR_OTHER_Details("Simple EHR other Details", "ehr_other_details.json");
+  private final String filename;
+  private final String description;
 
-    private final String filename;
-    private final String description;
+  ItemStruktureTestDataCanonicalJson(String description, String filename) {
+    this.filename = filename;
+    this.description = description;
+  }
 
-    ItemStruktureTestDataCanonicalJson(String description, String filename) {
-        this.filename = filename;
-        this.description = description;
-    }
-
-
-    public InputStream getStream() {
-        return getClass().getResourceAsStream("/item_structure/canonical_json/" + filename);
-    }
+  public InputStream getStream() {
+    return getClass().getResourceAsStream("/item_structure/canonical_json/" + filename);
+  }
 }
-

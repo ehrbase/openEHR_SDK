@@ -39,67 +39,65 @@ package org.ehrbase.terminology.openehr;
  * @author Rong Chen
  */
 public enum OpenEHRTerminologyGroupIdentifiers {
+  AUDIT_CHANGE_TYPE("audit change type"),
+  ATTESTATION_REASON("attestation reason"),
+  COMPOSITION_CATEGORY("composition category"),
+  EVENT_MATH_FUNCTION("event math function"),
+  INSTRUCTION_STATES("instruction states"),
+  INSTRUCTION_TRANSITIONS("instruction transitions"),
+  NULL_FLAVOURS("null flavours"),
+  PROPERTY("property"),
+  PARTICIPATION_FUNCTION("participation function"),
+  PARTICIPATION_MODE("participation mode"),
+  SUBJECT_RELATIONSHIP("subject relationship"),
+  SETTING("setting"),
+  TERM_MAPPING_PURPOSE("term mapping purpose"),
+  VERSION_LIFECYCLE_STATE("version lifecycle state");
 
-    AUDIT_CHANGE_TYPE("audit change type"),
-    ATTESTATION_REASON("attestation reason"),
-    COMPOSITION_CATEGORY("composition category"),
-    EVENT_MATH_FUNCTION("event math function"),
-    INSTRUCTION_STATES("instruction states"),
-    INSTRUCTION_TRANSITIONS("instruction transitions"),
-    NULL_FLAVOURS("null flavours"),
-    PROPERTY("property"),
-    PARTICIPATION_FUNCTION("participation function"),
-    PARTICIPATION_MODE("participation mode"),
-    SUBJECT_RELATIONSHIP("subject relationship"),
-    SETTING("setting"),
-    TERM_MAPPING_PURPOSE("term mapping purpose"),
-    VERSION_LIFECYCLE_STATE("version lifecycle state");
+  /**
+   * Private constructor
+   *
+   * @param value
+   */
+  private OpenEHRTerminologyGroupIdentifiers(String value) {
+    this.value = value;
+  }
 
-    /**
-     * Private constructor
-     *
-     * @param value
-     */
-    private OpenEHRTerminologyGroupIdentifiers(String value) {
-        this.value = value;
+  /**
+   * Validity function to test if an identifier is in the set defined by this class.
+   *
+   * @param value
+   * @return true if id valid
+   */
+  public static boolean validTerminologyGroupId(String value) {
+    for (OpenEHRTerminologyGroupIdentifiers id : values()) {
+      if (id.value.equals(value)) {
+        return true;
+      }
     }
+    return false;
+  }
 
-    /**
-     * Validity function to test if an identifier is in the set
-     * defined by this class.
-     *
-     * @param value
-     * @return true if id valid
-     */
-    public static boolean validTerminologyGroupId(String value) {
-        for (OpenEHRTerminologyGroupIdentifiers id : values()) {
-            if (id.value.equals(value)) {
-                return true;
-            }
-        }
-        return false;
-    }
+  /**
+   * Gets String representation of this identifier
+   *
+   * @return the string value
+   */
+  public String toString() {
+    return value;
+  }
 
-    /**
-     * Gets String representation of this identifier
-     *
-     * @return the string value
-     */
-    public String toString() {
-        return value;
-    }
+  /**
+   * Gets the string value
+   *
+   * @return value
+   */
+  public String getValue() {
+    return value;
+  }
 
-    /**
-     * Gets the string value
-     *
-     * @return value
-     */
-    public String getValue() {
-        return value;
-    }
-
-    /* String value of the identifier */
-    private final String value;
+  /* String value of the identifier */
+  private final String value;
 }
 
 /*

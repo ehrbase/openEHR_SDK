@@ -31,7 +31,6 @@ public class Or extends BinaryLogicalOperator {
     return "or";
   }
 
-
   @Override
   public ContainmentExpression or(ContainmentExpression containmentExpression) {
     containmentExpressionList.add(containmentExpression);

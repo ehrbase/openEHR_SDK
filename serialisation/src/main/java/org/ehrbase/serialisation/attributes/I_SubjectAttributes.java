@@ -21,5 +21,5 @@ import java.util.Map;
 
 public interface I_SubjectAttributes {
 
-    Map<String, Object> toMap();
+  Map<String, Object> toMap();
 }

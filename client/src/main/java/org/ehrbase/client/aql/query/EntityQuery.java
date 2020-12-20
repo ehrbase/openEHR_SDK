@@ -19,6 +19,10 @@
 
 package org.ehrbase.client.aql.query;
 
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import org.ehrbase.client.aql.condition.Condition;
 import org.ehrbase.client.aql.containment.Containment;
@@ -29,11 +33,6 @@ import org.ehrbase.client.aql.orderby.OrderByExpression;
 import org.ehrbase.client.aql.parameter.Parameter;
 import org.ehrbase.client.aql.record.Record;
 import org.ehrbase.client.aql.top.TopExpresion;
-
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 public class EntityQuery<T extends Record> implements Query<T> {
   private final SelectAqlField<Object>[] fields;
@@ -79,7 +78,9 @@ public class EntityQuery<T extends Record> implements Query<T> {
 
     return field.buildAQL()
         + " as "
-        + (StringUtils.isNotBlank(field.getName()) ? field.getName().replaceAll("[^A-Za-z0-9]", "_") : "F" + selectCount);
+        + (StringUtils.isNotBlank(field.getName())
+            ? field.getName().replaceAll("[^A-Za-z0-9]", "_")
+            : "F" + selectCount);
   }
 
   @Override

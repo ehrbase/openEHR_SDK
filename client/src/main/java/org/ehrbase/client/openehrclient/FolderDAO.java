@@ -24,15 +24,15 @@ import java.util.Set;
 
 public interface FolderDAO {
 
-    String getName();
+  String getName();
 
-    void setName(String name);
+  void setName(String name);
 
-    Set<String> listSubFolderNames();
+  Set<String> listSubFolderNames();
 
-    FolderDAO getSubFolder(String path);
+  FolderDAO getSubFolder(String path);
 
-    <T> T addCompositionEntity(T entity);
+  <T> T addCompositionEntity(T entity);
 
-    <T> List<T> find(Class<T> clazz);
+  <T> List<T> find(Class<T> clazz);
 }

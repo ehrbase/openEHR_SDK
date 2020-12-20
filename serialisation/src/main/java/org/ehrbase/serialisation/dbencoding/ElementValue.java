@@ -21,32 +21,30 @@ import com.nedap.archie.base.Interval;
 import com.nedap.archie.rm.datavalues.DataValue;
 import com.nedap.archie.rm.datavalues.quantity.DvInterval;
 
-/**
- * this class handles special DataValues for DB serialization
- */
+/** this class handles special DataValues for DB serialization */
 public class ElementValue {
-    DataValue value;
+  DataValue value;
 
-    public ElementValue(DataValue value) {
-        this.value = value;
-    }
+  public ElementValue(DataValue value) {
+    this.value = value;
+  }
 
-    /**
-     * a normalize value is either a DATA_VALUE or rm.base type (at the moment Interval)
-     * this is required to normalize AQL path accesses to the data attributes
-     *
-     * @return the actualized object following the DB encoding convention
-     */
-    public Object normalize() {
-        if (value instanceof DvInterval) {
-            DvInterval<?> dvInterval = (DvInterval<?>) value;
-            Interval<?> interval = new Interval<>(dvInterval.getLower(), dvInterval.getUpper());
-            interval.setLowerIncluded(dvInterval.isLowerIncluded());
-            interval.setUpperIncluded(dvInterval.isUpperIncluded());
-            interval.setLowerUnbounded(dvInterval.isLowerUnbounded());
-            interval.setUpperUnbounded(dvInterval.isUpperUnbounded());
-            return interval;
-        }
-        return value;
+  /**
+   * a normalize value is either a DATA_VALUE or rm.base type (at the moment Interval) this is
+   * required to normalize AQL path accesses to the data attributes
+   *
+   * @return the actualized object following the DB encoding convention
+   */
+  public Object normalize() {
+    if (value instanceof DvInterval) {
+      DvInterval<?> dvInterval = (DvInterval<?>) value;
+      Interval<?> interval = new Interval<>(dvInterval.getLower(), dvInterval.getUpper());
+      interval.setLowerIncluded(dvInterval.isLowerIncluded());
+      interval.setUpperIncluded(dvInterval.isUpperIncluded());
+      interval.setLowerUnbounded(dvInterval.isLowerUnbounded());
+      interval.setUpperUnbounded(dvInterval.isUpperUnbounded());
+      return interval;
     }
+    return value;
+  }
 }

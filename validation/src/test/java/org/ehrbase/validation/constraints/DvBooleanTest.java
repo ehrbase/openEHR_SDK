@@ -18,46 +18,45 @@
 
 package org.ehrbase.validation.constraints;
 
+import static org.junit.Assert.fail;
+
 import com.nedap.archie.rm.datavalues.DvBoolean;
 import org.ehrbase.validation.constraints.wrappers.CArchetypeConstraint;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.fail;
-
 public class DvBooleanTest extends ConstraintTestBase {
 
-    @Before
-    public void setUp() {
-        try {
-            setUpContext("./src/test/resources/constraints/dvboolean.xml");
-        } catch (Exception e) {
-            fail();
-        }
+  @Before
+  public void setUp() {
+    try {
+      setUpContext("./src/test/resources/constraints/dvboolean.xml");
+    } catch (Exception e) {
+      fail();
     }
+  }
 
-    @Test
-    public void testConstraintValidationFalseNotAllowed() {
-        DvBoolean dvBoolean = new DvBoolean();
-        dvBoolean.setValue(false);
+  @Test
+  public void testConstraintValidationFalseNotAllowed() {
+    DvBoolean dvBoolean = new DvBoolean();
+    dvBoolean.setValue(false);
 
-        try {
-            new CArchetypeConstraint(null).validate("test", dvBoolean, archetypeconstraint);
-            fail("false is not allowed");
-        } catch (Exception e) {
-        }
+    try {
+      new CArchetypeConstraint(null).validate("test", dvBoolean, archetypeconstraint);
+      fail("false is not allowed");
+    } catch (Exception e) {
     }
+  }
 
-    @Test
-    public void testConstraintValidationTrueOK() {
-        DvBoolean dvBoolean = new DvBoolean();
-        dvBoolean.setValue(true);
+  @Test
+  public void testConstraintValidationTrueOK() {
+    DvBoolean dvBoolean = new DvBoolean();
+    dvBoolean.setValue(true);
 
-        try {
-            new CArchetypeConstraint(null).validate("test", dvBoolean, archetypeconstraint);
-        } catch (Exception e) {
-            fail("true is allowed");
-        }
+    try {
+      new CArchetypeConstraint(null).validate("test", dvBoolean, archetypeconstraint);
+    } catch (Exception e) {
+      fail("true is allowed");
     }
-
+  }
 }

@@ -24,21 +24,21 @@ import org.openehr.schemas.v1.CDVQUANTITY;
 import org.openehr.schemas.v1.DVQUANTITY;
 
 public class DvQuantitySkeletonBuilder implements RmObjectSkeletonBuilder<CDVQUANTITY, DvQuantity> {
-    @Override
-    public Class<CDVQUANTITY> getAssociatedClass() {
-        return CDVQUANTITY.class;
-    }
+  @Override
+  public Class<CDVQUANTITY> getAssociatedClass() {
+    return CDVQUANTITY.class;
+  }
 
-    @Override
-    public DvQuantity getRmObject(CDVQUANTITY xml) {
-        DvQuantity dvQuantity = new DvQuantity();
-        if (xml.isSetAssumedValue()) {
-            DVQUANTITY assumedValue = xml.getAssumedValue();
-            dvQuantity.setMagnitude(assumedValue.getMagnitude());
-            dvQuantity.setUnits(assumedValue.getUnits());
-            dvQuantity.setAccuracy(Double.parseDouble("" + assumedValue.getAccuracy()));
-            dvQuantity.setAccuracyIsPercent(assumedValue.getAccuracyIsPercent());
-        }
-        return dvQuantity;
+  @Override
+  public DvQuantity getRmObject(CDVQUANTITY xml) {
+    DvQuantity dvQuantity = new DvQuantity();
+    if (xml.isSetAssumedValue()) {
+      DVQUANTITY assumedValue = xml.getAssumedValue();
+      dvQuantity.setMagnitude(assumedValue.getMagnitude());
+      dvQuantity.setUnits(assumedValue.getUnits());
+      dvQuantity.setAccuracy(Double.parseDouble("" + assumedValue.getAccuracy()));
+      dvQuantity.setAccuracyIsPercent(assumedValue.getAccuracyIsPercent());
     }
+    return dvQuantity;
+  }
 }

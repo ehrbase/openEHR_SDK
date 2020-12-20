@@ -27,6 +27,8 @@ import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
+import java.util.List;
+import javax.lang.model.element.Modifier;
 import org.apache.commons.lang3.StringUtils;
 import org.ehrbase.client.annotations.Archetype;
 import org.ehrbase.client.annotations.Path;
@@ -37,9 +39,6 @@ import org.ehrbase.client.aql.field.ListSelectAqlField;
 import org.ehrbase.client.aql.field.SelectAqlField;
 import org.ehrbase.serialisation.util.SnakeCase;
 import org.ehrbase.webtemplate.parser.FlatPath;
-
-import javax.lang.model.element.Modifier;
-import java.util.List;
 
 public class FieldGenerator {
 

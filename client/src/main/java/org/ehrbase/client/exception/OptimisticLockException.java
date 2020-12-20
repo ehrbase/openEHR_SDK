@@ -20,7 +20,7 @@
 package org.ehrbase.client.exception;
 
 public class OptimisticLockException extends ClientException {
-    public OptimisticLockException(String message) {
-        super(message);
-    }
+  public OptimisticLockException(String message) {
+    super(message);
+  }
 }

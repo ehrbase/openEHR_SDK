@@ -20,22 +20,25 @@ package org.ehrbase.test_data.folder;
 import java.io.InputStream;
 
 public enum FolderTestDataCanonicalJson {
+  SIMPLE_EMPTY_FOLDER("A simple empty folder with no sub folders", "simple_empty_folder.json"),
+  FLAT_FOLDER_INSERT(
+      "A flat folder structure for testing simple inserts.", "flat_folder_insert.json"),
+  NESTED_FOLDER("A folder with muliple nested folders", "nested_folder.json"),
+  FOLDER_WITH_DUPLICATE_NAMES(
+      "Folder with two folders on the same sibling level with same names",
+      "duplicate_folder_names.json"),
+  FOLDER_WITHOUT_DUPLICATE_NAMES(
+      "Folder with two sub folders that have different names", "folder_without_duplicates.json");
 
-    SIMPLE_EMPTY_FOLDER("A simple empty folder with no sub folders", "simple_empty_folder.json"),
-    FLAT_FOLDER_INSERT("A flat folder structure for testing simple inserts.", "flat_folder_insert.json"),
-    NESTED_FOLDER("A folder with muliple nested folders", "nested_folder.json"),
-    FOLDER_WITH_DUPLICATE_NAMES("Folder with two folders on the same sibling level with same names", "duplicate_folder_names.json"),
-    FOLDER_WITHOUT_DUPLICATE_NAMES("Folder with two sub folders that have different names", "folder_without_duplicates.json");
+  private final String description;
+  private final String filename;
 
-    private final String description;
-    private final String filename;
+  FolderTestDataCanonicalJson(String description, String filename) {
+    this.description = description;
+    this.filename = filename;
+  }
 
-    FolderTestDataCanonicalJson(String description, String filename) {
-        this.description = description;
-        this.filename = filename;
-    }
-
-    public InputStream getStream() {
-        return getClass().getResourceAsStream("/folder/canonical_json/" + filename);
-    }
+  public InputStream getStream() {
+    return getClass().getResourceAsStream("/folder/canonical_json/" + filename);
+  }
 }

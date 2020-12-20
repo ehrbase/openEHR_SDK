@@ -18,21 +18,18 @@
 package org.ehrbase.client.classgenerator.config;
 
 import com.nedap.archie.rm.generic.PartyProxy;
-
 import java.util.Collections;
 import java.util.Set;
 
 public class PartyProxyClassGeneratorConfig implements RmClassGeneratorConfig {
 
+  @Override
+  public Class getAssociatedClass() {
+    return PartyProxy.class;
+  }
 
-    @Override
-    public Class getAssociatedClass() {
-        return PartyProxy.class;
-    }
-
-
-    @Override
-    public Set<String> getExpandFields() {
-        return Collections.emptySet();
-    }
+  @Override
+  public Set<String> getExpandFields() {
+    return Collections.emptySet();
+  }
 }

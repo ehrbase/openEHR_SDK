@@ -20,20 +20,19 @@ package org.ehrbase.response.openehr;
 
 public class TemplateResponseData implements ResponseData<String> {
 
-    public TemplateResponseData() {
-    }
+  public TemplateResponseData() {}
 
-    public TemplateResponseData(String template) {
-        this.template = template;
-    }
+  public TemplateResponseData(String template) {
+    this.template = template;
+  }
 
-    private String template;
+  private String template;
 
-    public String get() {
-        return template;
-    }
+  public String get() {
+    return template;
+  }
 
-    public void set(String template) {
-        this.template = template;
-    }
+  public void set(String template) {
+    this.template = template;
+  }
 }

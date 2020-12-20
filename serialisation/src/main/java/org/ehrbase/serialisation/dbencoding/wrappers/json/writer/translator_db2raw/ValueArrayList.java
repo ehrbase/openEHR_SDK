@@ -19,54 +19,51 @@ package org.ehrbase.serialisation.dbencoding.wrappers.json.writer.translator_db2
 
 import com.google.gson.internal.LinkedTreeMap;
 import com.google.gson.stream.JsonWriter;
+import java.io.IOException;
+import java.util.ArrayList;
 import org.ehrbase.serialisation.dbencoding.CompositionSerializer;
 import org.ehrbase.serialisation.dbencoding.wrappers.json.I_DvTypeAdapter;
 
-import java.io.IOException;
-import java.util.ArrayList;
-
 /**
- * deals with values passed as an array. This is a tweak since we use MultiValueMap which is backed by an ArrayList
- * hence the problem to retrieve a value which should have been a string but come out as an array of string of size 1
+ * deals with values passed as an array. This is a tweak since we use MultiValueMap which is backed
+ * by an ArrayList hence the problem to retrieve a value which should have been a string but come
+ * out as an array of string of size 1
  */
 public class ValueArrayList {
-    private final JsonWriter writer;
-    private final ArrayList value;
-    private final String tag;
+  private final JsonWriter writer;
+  private final ArrayList value;
+  private final String tag;
 
-    ValueArrayList(JsonWriter writer, Object value, String tag) {
-        this.writer = writer;
-        if (value instanceof ArrayList)
-            this.value = (ArrayList) value;
-        else
-            throw new IllegalStateException("Invalid value passed as argument");
-        this.tag = tag;
-    }
+  ValueArrayList(JsonWriter writer, Object value, String tag) {
+    this.writer = writer;
+    if (value instanceof ArrayList) this.value = (ArrayList) value;
+    else throw new IllegalStateException("Invalid value passed as argument");
+    this.tag = tag;
+  }
 
-    public void write() throws IOException {
-        if (value.isEmpty())
-            return;
+  public void write() throws IOException {
+    if (value.isEmpty()) return;
 
-        switch (tag) {
-            case CompositionSerializer.TAG_NAME:
+    switch (tag) {
+      case CompositionSerializer.TAG_NAME:
+        LinkedTreeMap nameEncoded =
+            (value.get(0) instanceof ArrayList)
+                ? ((LinkedTreeMap) ((ArrayList) value.get(0)).get(0))
+                : ((LinkedTreeMap) (value.get(0)));
 
-                LinkedTreeMap nameEncoded = (value.get(0) instanceof ArrayList) ?
-                        ((LinkedTreeMap)((ArrayList)value.get(0)).get(0)) :
-                        ((LinkedTreeMap) (value.get(0)));
-
-                if (nameEncoded.size() == 1) {
-                    new DvTextNameValue(writer, nameEncoded).write();
-                }
-                if (nameEncoded.size() > 1){ //dvCodedText
-                    new DvCodedTextNameValue(writer, nameEncoded).write();
-                }
-
-                break;
-            case CompositionSerializer.TAG_ARCHETYPE_NODE_ID:
-                writer.name(I_DvTypeAdapter.ARCHETYPE_NODE_ID).value(value.get(0).toString());
-                break;
-            default:
-                throw new IllegalStateException("Unknown serialization tag:" + tag);
+        if (nameEncoded.size() == 1) {
+          new DvTextNameValue(writer, nameEncoded).write();
         }
+        if (nameEncoded.size() > 1) { // dvCodedText
+          new DvCodedTextNameValue(writer, nameEncoded).write();
+        }
+
+        break;
+      case CompositionSerializer.TAG_ARCHETYPE_NODE_ID:
+        writer.name(I_DvTypeAdapter.ARCHETYPE_NODE_ID).value(value.get(0).toString());
+        break;
+      default:
+        throw new IllegalStateException("Unknown serialization tag:" + tag);
     }
+  }
 }

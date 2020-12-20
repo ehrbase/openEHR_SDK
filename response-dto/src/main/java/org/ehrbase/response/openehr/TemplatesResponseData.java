@@ -18,26 +18,24 @@
 
 package org.ehrbase.response.openehr;
 
-import org.ehrbase.response.ehrscape.TemplateMetaDataDto;
-
 import java.util.List;
+import org.ehrbase.response.ehrscape.TemplateMetaDataDto;
 
 public class TemplatesResponseData implements ResponseData<List<TemplateMetaDataDto>> {
 
-    List<TemplateMetaDataDto> templates;
+  List<TemplateMetaDataDto> templates;
 
-    public TemplatesResponseData() {
-    }
+  public TemplatesResponseData() {}
 
-    public TemplatesResponseData(List<TemplateMetaDataDto> templates) {
-        this.templates = templates;
-    }
+  public TemplatesResponseData(List<TemplateMetaDataDto> templates) {
+    this.templates = templates;
+  }
 
-    public List<TemplateMetaDataDto> get() {
-        return templates;
-    }
+  public List<TemplateMetaDataDto> get() {
+    return templates;
+  }
 
-    public void set(List<TemplateMetaDataDto> templates) {
-        this.templates = templates;
-    }
+  public void set(List<TemplateMetaDataDto> templates) {
+    this.templates = templates;
+  }
 }

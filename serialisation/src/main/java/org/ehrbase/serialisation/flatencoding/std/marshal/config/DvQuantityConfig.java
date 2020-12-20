@@ -20,32 +20,25 @@
 package org.ehrbase.serialisation.flatencoding.std.marshal.config;
 
 import com.nedap.archie.rm.datavalues.quantity.DvQuantity;
-import org.ehrbase.serialisation.walker.Context;
-
 import java.util.HashMap;
 import java.util.Map;
+import org.ehrbase.serialisation.walker.Context;
 
 public class DvQuantityConfig extends AbstractsStdConfig<DvQuantity> {
 
+  /** {@inheritDoc} */
+  @Override
+  public Class<DvQuantity> getAssociatedClass() {
+    return DvQuantity.class;
+  }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Class<DvQuantity> getAssociatedClass() {
-        return DvQuantity.class;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Map<String, Object> buildChildValues(String currentTerm, DvQuantity rmObject, Context<Map<String, Object>> context) {
-        Map<String, Object> result = new HashMap<>();
-        addValue(result, currentTerm, "magnitude", rmObject.getMagnitude());
-        addValue(result, currentTerm, "unit", rmObject.getUnits());
-        return result;
-    }
-
-
+  /** {@inheritDoc} */
+  @Override
+  public Map<String, Object> buildChildValues(
+      String currentTerm, DvQuantity rmObject, Context<Map<String, Object>> context) {
+    Map<String, Object> result = new HashMap<>();
+    addValue(result, currentTerm, "magnitude", rmObject.getMagnitude());
+    addValue(result, currentTerm, "unit", rmObject.getUnits());
+    return result;
+  }
 }

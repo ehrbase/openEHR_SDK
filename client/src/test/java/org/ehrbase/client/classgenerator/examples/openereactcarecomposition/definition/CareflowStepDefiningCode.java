@@ -1,10 +1,10 @@
 package org.ehrbase.client.classgenerator.examples.openereactcarecomposition.definition;
 
-import java.lang.String;
 import org.ehrbase.client.classgenerator.EnumValueSet;
 
 public enum CareflowStepDefiningCode implements EnumValueSet {
-  SERVICE_PLANNED("Service planned", "Service request to healthcare provider is planned.", "openehr", "at0002");
+  SERVICE_PLANNED(
+      "Service planned", "Service request to healthcare provider is planned.", "openehr", "at0002");
 
   private String value;
 
@@ -22,18 +22,18 @@ public enum CareflowStepDefiningCode implements EnumValueSet {
   }
 
   public String getValue() {
-     return this.value ;
+    return this.value;
   }
 
   public String getDescription() {
-     return this.description ;
+    return this.description;
   }
 
   public String getTerminologyId() {
-     return this.terminologyId ;
+    return this.terminologyId;
   }
 
   public String getCode() {
-     return this.code ;
+    return this.code;
   }
 }
