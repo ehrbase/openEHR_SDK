@@ -19,12 +19,16 @@
 
 package org.ehrbase.client.aql.field;
 
+import org.ehrbase.client.aql.containment.Containment;
+
 public interface SelectAqlField<T> extends AqlField<T> {
-    String getName();
+  Containment getContainment();
 
-    String getPath();
+  String getName();
 
-    Class<?> getEntityClass();
+  String getPath();
 
-    String buildAQL();
+  Class<?> getEntityClass();
+
+  String buildAQL();
 }

@@ -82,6 +82,7 @@ public class AqlToDtoVisitor extends AqlBaseVisitor<Object> {
     ehrDto.setContainmentId(buildContainmentId());
     if (ctx.IDENTIFIER() != null) {
       identifierMap.put(ctx.IDENTIFIER().getText(), ehrDto.getContainmentId());
+      ehrDto.setIdentifier(ctx.IDENTIFIER().getText());
     }
 
     return ehrDto;
@@ -223,8 +224,6 @@ public class AqlToDtoVisitor extends AqlBaseVisitor<Object> {
 
   @Override
   public ConditionDto visitIdentifiedExpr(AqlParser.IdentifiedExprContext ctx) {
-
-    AqlParser.IdentifiedExprContext currentContext = ctx;
 
     List<Object> boolList = new ArrayList<>();
 

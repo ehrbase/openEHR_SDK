@@ -35,7 +35,7 @@ public class AqlToDtoParserTest {
   @Test
   public void parse() {
     String aql =
-        "Select c0/context/other_context[at0001]/items[at0002]/value/value as Bericht_ID__value from EHR e  contains COMPOSITION c0[openEHR-EHR-COMPOSITION.report.v1]";
+        "Select c/context/other_context[at0001]/items[at0002]/value/value as Bericht_ID__value, d/ehr_id/value as ehr_id from EHR d contains COMPOSITION c[openEHR-EHR-COMPOSITION.report.v1]";
 
     AqlToDtoParser cut = new AqlToDtoParser();
     AqlDto actual = cut.parse(aql);
@@ -50,7 +50,7 @@ public class AqlToDtoParserTest {
   @Test
   public void parseWhere() {
     String aql =
-        "Select o0/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/magnitude as Systolic__magnitude, e/ehr_id/value as ehr_id from EHR e  contains OBSERVATION o0[openEHR-EHR-OBSERVATION.sample_blood_pressure.v1] where (o0/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/magnitude >= $magnitude and o0/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/magnitude < 1.1)";
+        "Select o0/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/magnitude as Systolic__magnitude, e/ehr_id/value as ehr_id from EHR e contains OBSERVATION o0[openEHR-EHR-OBSERVATION.sample_blood_pressure.v1] where (o0/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/magnitude >= $magnitude and o0/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/magnitude < 1.1)";
     AqlToDtoParser cut = new AqlToDtoParser();
     AqlDto actual = cut.parse(aql);
 
@@ -66,15 +66,9 @@ public class AqlToDtoParserTest {
     String aql =
         "Select c0/context/other_context[at0001]/items[at0002]/value/value as Bericht_ID__value from EHR e  contains COMPOSITION c0[openEHR-EHR-COMPOSITION.report.v1] contains OBSERVATION o0[openEHR-EHR-OBSERVATION.sample_blood_pressure.v1]";
 
-    AqlToDtoParser cut = new AqlToDtoParser();
-    AqlDto actual = cut.parse(aql);
-
-    assertThat(actual).isNotNull();
-    assertThat(actual.getContains()).isNotNull();
-
-    assertThat(render(actual.getContains()))
-        .isEqualTo(
-            "openEHR-EHR-COMPOSITION.report.v1 --> openEHR-EHR-OBSERVATION.sample_blood_pressure.v1");
+    testContains(
+        aql,
+        "openEHR-EHR-COMPOSITION.report.v1 --> openEHR-EHR-OBSERVATION.sample_blood_pressure.v1");
   }
 
   @Test
@@ -82,15 +76,9 @@ public class AqlToDtoParserTest {
     String aql =
         "Select c0/context/other_context[at0001]/items[at0002]/value/value as Bezeichnung_des_Symptoms_oder_Anzeichens___value, o3/data[at0001]/events[at0002]/data[at0042]/items[at0055]/value/value as Kommentar__value from EHR e  contains COMPOSITION c0[openEHR-EHR-COMPOSITION.report.v1] contains (OBSERVATION o1[openEHR-EHR-OBSERVATION.story.v1] and OBSERVATION o2[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0] or OBSERVATION o3[openEHR-EHR-OBSERVATION.exposure_assessment.v0])";
 
-    AqlToDtoParser cut = new AqlToDtoParser();
-    AqlDto actual = cut.parse(aql);
-
-    assertThat(actual).isNotNull();
-    assertThat(actual.getContains()).isNotNull();
-
-    assertThat(render(actual.getContains()))
-        .isEqualTo(
-            "openEHR-EHR-COMPOSITION.report.v1 --> ((openEHR-EHR-OBSERVATION.story.v1 AND openEHR-EHR-OBSERVATION.symptom_sign_screening.v0) OR openEHR-EHR-OBSERVATION.exposure_assessment.v0)");
+    testContains(
+        aql,
+        "openEHR-EHR-COMPOSITION.report.v1 --> ((openEHR-EHR-OBSERVATION.story.v1 AND openEHR-EHR-OBSERVATION.symptom_sign_screening.v0) OR openEHR-EHR-OBSERVATION.exposure_assessment.v0)");
   }
 
   @Test
@@ -98,15 +86,9 @@ public class AqlToDtoParserTest {
     String aql =
         "Select c0/context/other_context[at0001]/items[at0002]/value/value as Bezeichnung_des_Symptoms_oder_Anzeichens___value, o3/data[at0001]/events[at0002]/data[at0042]/items[at0055]/value/value as Kommentar__value from EHR e  contains COMPOSITION c0[openEHR-EHR-COMPOSITION.report.v1] contains (OBSERVATION o1[openEHR-EHR-OBSERVATION.story.v1] or OBSERVATION o2[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0] and OBSERVATION o3[openEHR-EHR-OBSERVATION.exposure_assessment.v0])";
 
-    AqlToDtoParser cut = new AqlToDtoParser();
-    AqlDto actual = cut.parse(aql);
-
-    assertThat(actual).isNotNull();
-    assertThat(actual.getContains()).isNotNull();
-
-    assertThat(render(actual.getContains()))
-        .isEqualTo(
-            "openEHR-EHR-COMPOSITION.report.v1 --> (openEHR-EHR-OBSERVATION.story.v1 OR (openEHR-EHR-OBSERVATION.symptom_sign_screening.v0 AND openEHR-EHR-OBSERVATION.exposure_assessment.v0))");
+    testContains(
+        aql,
+        "openEHR-EHR-COMPOSITION.report.v1 --> (openEHR-EHR-OBSERVATION.story.v1 OR (openEHR-EHR-OBSERVATION.symptom_sign_screening.v0 AND openEHR-EHR-OBSERVATION.exposure_assessment.v0))");
   }
 
   @Test
@@ -114,15 +96,19 @@ public class AqlToDtoParserTest {
     String aql =
         "Select c0/context/other_context[at0001]/items[at0002]/value/value as Bezeichnung_des_Symptoms_oder_Anzeichens___value, o3/data[at0001]/events[at0002]/data[at0042]/items[at0055]/value/value as Kommentar__value from EHR e  contains COMPOSITION c0[openEHR-EHR-COMPOSITION.report.v1] contains ((OBSERVATION o1[openEHR-EHR-OBSERVATION.story.v1] or OBSERVATION o2[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0]) and OBSERVATION o3[openEHR-EHR-OBSERVATION.exposure_assessment.v0])";
 
+    testContains(
+        aql,
+        "openEHR-EHR-COMPOSITION.report.v1 --> ((openEHR-EHR-OBSERVATION.story.v1 OR openEHR-EHR-OBSERVATION.symptom_sign_screening.v0) AND openEHR-EHR-OBSERVATION.exposure_assessment.v0)");
+  }
+
+  public void testContains(String aql, String s) {
     AqlToDtoParser cut = new AqlToDtoParser();
     AqlDto actual = cut.parse(aql);
 
     assertThat(actual).isNotNull();
     assertThat(actual.getContains()).isNotNull();
 
-    assertThat(render(actual.getContains()))
-        .isEqualTo(
-            "openEHR-EHR-COMPOSITION.report.v1 --> ((openEHR-EHR-OBSERVATION.story.v1 OR openEHR-EHR-OBSERVATION.symptom_sign_screening.v0) AND openEHR-EHR-OBSERVATION.exposure_assessment.v0)");
+    assertThat(render(actual.getContains())).isEqualTo(s);
   }
 
   @Test
@@ -130,15 +116,9 @@ public class AqlToDtoParserTest {
     String aql =
         "Select c0/context/other_context[at0001]/items[at0002]/value/value as Bezeichnung_des_Symptoms_oder_Anzeichens___value, o3/data[at0001]/events[at0002]/data[at0042]/items[at0055]/value/value as Kommentar__value from EHR e  contains COMPOSITION c0[openEHR-EHR-COMPOSITION.report.v1] contains (((OBSERVATION o1[openEHR-EHR-OBSERVATION.story.v1] contains CLUSTER) or OBSERVATION o2[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0]) and OBSERVATION o3[openEHR-EHR-OBSERVATION.exposure_assessment.v0])";
 
-    AqlToDtoParser cut = new AqlToDtoParser();
-    AqlDto actual = cut.parse(aql);
-
-    assertThat(actual).isNotNull();
-    assertThat(actual.getContains()).isNotNull();
-
-    assertThat(render(actual.getContains()))
-        .isEqualTo(
-            "openEHR-EHR-COMPOSITION.report.v1 --> ((openEHR-EHR-OBSERVATION.story.v1 --> CLUSTER OR openEHR-EHR-OBSERVATION.symptom_sign_screening.v0) AND openEHR-EHR-OBSERVATION.exposure_assessment.v0)");
+    testContains(
+        aql,
+        "openEHR-EHR-COMPOSITION.report.v1 --> ((openEHR-EHR-OBSERVATION.story.v1 --> CLUSTER OR openEHR-EHR-OBSERVATION.symptom_sign_screening.v0) AND openEHR-EHR-OBSERVATION.exposure_assessment.v0)");
   }
 
   private String render(ContainmentExpresionDto containmentExpresion) {
