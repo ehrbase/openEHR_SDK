@@ -48,6 +48,20 @@ public class AqlToDtoParserTest {
   }
 
   @Test
+  public void parseWhere() {
+    String aql =
+        "Select o0/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/magnitude as Systolic__magnitude, e/ehr_id/value as ehr_id from EHR e  contains OBSERVATION o0[openEHR-EHR-OBSERVATION.sample_blood_pressure.v1] where (o0/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/magnitude >= $magnitude and o0/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/magnitude < 1.1)";
+    AqlToDtoParser cut = new AqlToDtoParser();
+    AqlDto actual = cut.parse(aql);
+
+    assertThat(actual).isNotNull();
+
+    String actualAql = new AqlBinder().bind(actual).getLeft().buildAql();
+
+    assertThat(actualAql).isEqualTo(aql);
+  }
+
+  @Test
   public void parseContains() {
     String aql =
         "Select c0/context/other_context[at0001]/items[at0002]/value/value as Bericht_ID__value from EHR e  contains COMPOSITION c0[openEHR-EHR-COMPOSITION.report.v1] contains OBSERVATION o0[openEHR-EHR-OBSERVATION.sample_blood_pressure.v1]";

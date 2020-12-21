@@ -19,7 +19,20 @@
 
 package org.ehrbase.aql.dto.condition;
 
-public enum ConditionLogicalOperatorSymbol {
-  AND,
-  OR;
+import org.ehrbase.aql.dto.LogicalOperatorSymbol;
+
+public enum ConditionLogicalOperatorSymbol implements LogicalOperatorSymbol {
+  OR(4),
+  AND(2),
+  XOR(3);
+
+  private final int precedence;
+
+  ConditionLogicalOperatorSymbol(int precedence) {
+    this.precedence = precedence;
+  }
+
+  public int getPrecedence() {
+    return precedence;
+  }
 }
