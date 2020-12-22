@@ -49,6 +49,7 @@ import org.ehrbase.aql.dto.orderby.OrderByExpressionSymbol;
 import org.ehrbase.aql.dto.select.SelectDto;
 import org.ehrbase.aql.dto.select.SelectFieldDto;
 import org.ehrbase.aql.dto.select.SelectStatementDto;
+import org.ehrbase.client.aql.top.Direction;
 
 public class AqlToDtoVisitor extends AqlBaseVisitor<Object> {
 
@@ -71,7 +72,6 @@ public class AqlToDtoVisitor extends AqlBaseVisitor<Object> {
     if (ctx.queryExpr().orderBy() != null) {
       aqlDto.setOrderBy(visitOrderBySeq(ctx.queryExpr().orderBy().orderBySeq()));
     }
-
     selectFieldDtoMultiMap
         .entries()
         .forEach(
@@ -98,7 +98,19 @@ public class AqlToDtoVisitor extends AqlBaseVisitor<Object> {
   public SelectDto visitSelect(AqlParser.SelectContext ctx) {
     SelectDto selectDto = new SelectDto();
     selectDto.setStatement(visitSelectExpr(ctx.selectExpr()));
+    if (ctx.topExpr() != null) {
+      selectDto.setTopDirection(extractSymbol(ctx.topExpr()));
+      selectDto.setTopCount(Integer.parseInt(ctx.topExpr().INTEGER().getText()));
+    }
     return selectDto;
+  }
+
+  private Direction extractSymbol(AqlParser.TopExprContext topExpr) {
+    if (topExpr.BACKWARD() != null) {
+      return Direction.BACKWARD;
+    } else {
+      return Direction.FORWARD;
+    }
   }
 
   @Override

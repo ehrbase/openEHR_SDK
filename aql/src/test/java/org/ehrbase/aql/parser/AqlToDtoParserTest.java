@@ -49,6 +49,19 @@ public class AqlToDtoParserTest {
   }
 
   @Test
+  public void parseTop() {
+    String aql =
+        "Select TOP 10 FORWARD o0/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/magnitude as Systolic__magnitude, e/ehr_id/value as ehr_id from EHR e contains OBSERVATION o0[openEHR-EHR-OBSERVATION.sample_blood_pressure.v1] where (o0/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/magnitude >= $magnitude and o0/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/magnitude < 1.1)";
+
+    testAql(aql, aql);
+
+    String aqlTopWithoutDirection =
+        "Select TOP 10 o0/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/magnitude as Systolic__magnitude, e/ehr_id/value as ehr_id from EHR e contains OBSERVATION o0[openEHR-EHR-OBSERVATION.sample_blood_pressure.v1] where (o0/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/magnitude >= $magnitude and o0/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/magnitude < 1.1)";
+
+    testAql(aqlTopWithoutDirection, aql);
+  }
+
+  @Test
   public void parseOrderBy() {
 
     String aqlNoSymbole =
