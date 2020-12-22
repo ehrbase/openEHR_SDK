@@ -37,20 +37,43 @@ public class AqlToDtoParserTest {
     String aql =
         "Select c/context/other_context[at0001]/items[at0002]/value/value as Bericht_ID__value, d/ehr_id/value as ehr_id from EHR d contains COMPOSITION c[openEHR-EHR-COMPOSITION.report.v1]";
 
-    AqlToDtoParser cut = new AqlToDtoParser();
-    AqlDto actual = cut.parse(aql);
-
-    assertThat(actual).isNotNull();
-
-    String actualAql = new AqlBinder().bind(actual).getLeft().buildAql();
-
-    assertThat(actualAql).isEqualTo(aql);
+    testAql(aql, aql);
   }
 
   @Test
   public void parseWhere() {
     String aql =
         "Select o0/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/magnitude as Systolic__magnitude, e/ehr_id/value as ehr_id from EHR e contains OBSERVATION o0[openEHR-EHR-OBSERVATION.sample_blood_pressure.v1] where (o0/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/magnitude >= $magnitude and o0/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/magnitude < 1.1)";
+
+    testAql(aql, aql);
+  }
+
+  @Test
+  public void parseOrderBy() {
+
+    String aqlNoSymbole =
+        "Select e/ehr_id/value as ehr_id from EHR e contains OBSERVATION o0[openEHR-EHR-OBSERVATION.sample_blood_pressure.v1]"
+            + " order by o0/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/magnitude";
+
+    testAql(
+        aqlNoSymbole,
+        "Select e/ehr_id/value as ehr_id from EHR e contains OBSERVATION o0[openEHR-EHR-OBSERVATION.sample_blood_pressure.v1]"
+            + " order by o0/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/magnitude ASCENDING");
+
+    String aqlTwoOrderBy =
+        "Select e/ehr_id/value as ehr_id from EHR e contains OBSERVATION o0[openEHR-EHR-OBSERVATION.sample_blood_pressure.v1]"
+            + " order by o0/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/magnitude ASCENDING, e/ehr_id/value DESCENDING";
+
+    testAql(aqlTwoOrderBy, aqlTwoOrderBy);
+
+    String aqlShortenedSymbols =
+        "Select e/ehr_id/value as ehr_id from EHR e contains OBSERVATION o0[openEHR-EHR-OBSERVATION.sample_blood_pressure.v1]"
+            + " order by o0/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/magnitude ASC, e/ehr_id/value DESC";
+
+    testAql(aqlShortenedSymbols, aqlTwoOrderBy);
+  }
+
+  public void testAql(String aql, String expected) {
     AqlToDtoParser cut = new AqlToDtoParser();
     AqlDto actual = cut.parse(aql);
 
@@ -58,7 +81,7 @@ public class AqlToDtoParserTest {
 
     String actualAql = new AqlBinder().bind(actual).getLeft().buildAql();
 
-    assertThat(actualAql).isEqualTo(aql);
+    assertThat(actualAql).isEqualTo(expected);
   }
 
   @Test

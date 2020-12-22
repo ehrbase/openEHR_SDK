@@ -44,6 +44,8 @@ import org.ehrbase.aql.dto.containment.ContainmentDto;
 import org.ehrbase.aql.dto.containment.ContainmentExpresionDto;
 import org.ehrbase.aql.dto.containment.ContainmentLogicalOperator;
 import org.ehrbase.aql.dto.containment.ContainmentLogicalOperatorSymbol;
+import org.ehrbase.aql.dto.orderby.OrderByExpressionDto;
+import org.ehrbase.aql.dto.orderby.OrderByExpressionSymbol;
 import org.ehrbase.aql.dto.select.SelectDto;
 import org.ehrbase.aql.dto.select.SelectFieldDto;
 import org.ehrbase.aql.dto.select.SelectStatementDto;
@@ -64,6 +66,10 @@ public class AqlToDtoVisitor extends AqlBaseVisitor<Object> {
     aqlDto.setSelect(visitSelect(ctx.queryExpr().select()));
     if (ctx.queryExpr().where() != null) {
       aqlDto.setWhere(visitIdentifiedExpr(ctx.queryExpr().where().identifiedExpr()));
+    }
+
+    if (ctx.queryExpr().orderBy() != null) {
+      aqlDto.setOrderBy(visitOrderBySeq(ctx.queryExpr().orderBy().orderBySeq()));
     }
 
     selectFieldDtoMultiMap
@@ -341,6 +347,33 @@ public class AqlToDtoVisitor extends AqlBaseVisitor<Object> {
       throw new AqlParseException("Can not handle value " + ctx.getText());
     }
     return value;
+  }
+
+  @Override
+  public List<OrderByExpressionDto> visitOrderBySeq(AqlParser.OrderBySeqContext ctx) {
+    List<OrderByExpressionDto> orderByExpressionDtoList = new ArrayList<>();
+
+    orderByExpressionDtoList.add(visitOrderByExpr(ctx.orderByExpr()));
+    if (ctx.orderBySeq() != null) {
+      orderByExpressionDtoList.addAll(visitOrderBySeq(ctx.orderBySeq()));
+    }
+    return orderByExpressionDtoList;
+  }
+
+  @Override
+  public OrderByExpressionDto visitOrderByExpr(AqlParser.OrderByExprContext ctx) {
+    OrderByExpressionDto orderByExpressionDto = new OrderByExpressionDto();
+    orderByExpressionDto.setStatement(visitIdentifiedPath(ctx.identifiedPath()));
+    orderByExpressionDto.setSymbol(extractSymbol(ctx));
+    return orderByExpressionDto;
+  }
+
+  private OrderByExpressionSymbol extractSymbol(AqlParser.OrderByExprContext ctx) {
+    if (ctx.DESC() != null || ctx.DESCENDING() != null) {
+      return OrderByExpressionSymbol.DESC;
+    } else {
+      return OrderByExpressionSymbol.ASC;
+    }
   }
 
   private ConditionComparisonOperatorSymbol extractSymbol(AqlParser.IdentifiedEqualityContext ctx) {
