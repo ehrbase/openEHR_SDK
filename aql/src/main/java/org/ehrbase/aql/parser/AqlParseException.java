@@ -17,18 +17,17 @@
  *
  */
 
-package org.ehrbase.client.aql.field;
+package org.ehrbase.aql.parser;
 
-import org.ehrbase.client.aql.containment.Containment;
+import org.ehrbase.util.exception.SdkException;
 
-public interface SelectAqlField<T> extends AqlField<T> {
-  Containment getContainment();
+public class AqlParseException extends SdkException {
 
-  String getName();
+  public AqlParseException(String message) {
+    super(message);
+  }
 
-  String getPath();
-
-  Class<?> getEntityClass();
-
-  String buildAQL();
+  public AqlParseException(String message, Throwable cause) {
+    super(message, cause);
+  }
 }

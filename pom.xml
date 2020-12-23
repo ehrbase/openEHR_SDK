@@ -263,9 +263,28 @@
 
                 </executions>
             </plugin>
-
-
         </plugins>
+        <pluginManagement>
+            <plugins>
+            <plugin>
+                <groupId>org.antlr</groupId>
+                <artifactId>antlr4-maven-plugin</artifactId>
+                <version>4.8-1</version>
+                <configuration>
+                    <listener>false</listener>
+                    <visitor>true</visitor>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>antlr</id>
+                        <goals>
+                            <goal>antlr4</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            </plugins>
+        </pluginManagement>
     </build>
 
 
@@ -344,6 +363,11 @@
                 <groupId>com.github.openEHR</groupId>
                 <artifactId>archie</artifactId>
                 <version>2ef8389</version>
+            </dependency>
+            <dependency>
+                <groupId>org.antlr</groupId>
+                <artifactId>antlr4-runtime</artifactId>
+                <version>4.8-1</version>
             </dependency>
             <dependency>
                 <groupId>com.jayway.jsonpath</groupId>

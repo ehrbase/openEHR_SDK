@@ -17,18 +17,8 @@
  *
  */
 
-package org.ehrbase.client.aql.field;
+package org.ehrbase.aql.dto;
 
-import org.ehrbase.client.aql.containment.Containment;
-
-public interface SelectAqlField<T> extends AqlField<T> {
-  Containment getContainment();
-
-  String getName();
-
-  String getPath();
-
-  Class<?> getEntityClass();
-
-  String buildAQL();
+public interface LogicalOperatorSymbol {
+  int getPrecedence();
 }

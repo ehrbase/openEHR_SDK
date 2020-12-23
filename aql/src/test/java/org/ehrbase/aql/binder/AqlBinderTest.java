@@ -19,8 +19,13 @@
 
 package org.ehrbase.aql.binder;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import org.apache.commons.lang3.tuple.Pair;
 import org.assertj.core.groups.Tuple;
 import org.ehrbase.aql.dto.AqlDto;
@@ -28,12 +33,6 @@ import org.ehrbase.aql.dto.condition.ParameterValue;
 import org.ehrbase.client.aql.query.EntityQuery;
 import org.ehrbase.client.aql.record.Record;
 import org.junit.Test;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 public class AqlBinderTest {
   private static class TestCase {
@@ -79,7 +78,7 @@ public class AqlBinderTest {
                 + "        \"archetypeId\": \"openEHR-EHR-COMPOSITION.report.v1\"\n"
                 + "    }\n"
                 + "}",
-            "Select TOP 13 FORWARD c0/context/other_context[at0001]/items[at0002]/value/value as Bericht_ID__value from EHR e  contains COMPOSITION c0[openEHR-EHR-COMPOSITION.report.v1]",
+            "Select TOP 13 FORWARD c0/context/other_context[at0001]/items[at0002]/value/value as Bericht_ID__value from EHR e contains COMPOSITION c0[openEHR-EHR-COMPOSITION.report.v1]",
             Map.of()));
 
     testCaseList.add(
@@ -141,7 +140,7 @@ public class AqlBinderTest {
                 + "        }\n"
                 + "    }\n"
                 + "}",
-            "Select c0/context/other_context[at0001]/items[at0002]/value/value as Bericht_ID__value, o1/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/value as Geschichte__value, o2/data[at0001]/events[at0002]/data[at0003]/items[at0022]/items[at0004]/value/value as Bezeichnung_des_Symptoms_oder_Anzeichens___value, o3/data[at0001]/events[at0002]/data[at0042]/items[at0055]/value/value as Kommentar__value from EHR e  contains COMPOSITION c0[openEHR-EHR-COMPOSITION.report.v1] contains (OBSERVATION o1[openEHR-EHR-OBSERVATION.story.v1] and OBSERVATION o2[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0] and OBSERVATION o3[openEHR-EHR-OBSERVATION.exposure_assessment.v0])",
+            "Select c0/context/other_context[at0001]/items[at0002]/value/value as Bericht_ID__value, o1/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/value as Geschichte__value, o2/data[at0001]/events[at0002]/data[at0003]/items[at0022]/items[at0004]/value/value as Bezeichnung_des_Symptoms_oder_Anzeichens___value, o3/data[at0001]/events[at0002]/data[at0042]/items[at0055]/value/value as Kommentar__value from EHR e contains COMPOSITION c0[openEHR-EHR-COMPOSITION.report.v1] contains (OBSERVATION o1[openEHR-EHR-OBSERVATION.story.v1] and OBSERVATION o2[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0] and OBSERVATION o3[openEHR-EHR-OBSERVATION.exposure_assessment.v0])",
             Map.of()));
 
     testCaseList.add(
@@ -174,7 +173,7 @@ public class AqlBinderTest {
                 + "        \"archetypeId\": \"openEHR-EHR-COMPOSITION.report.v1\"\n"
                 + "    }\n"
                 + "}",
-            "Select c0/context/other_context[at0001]/items[at0002]/value/value as Bericht_ID__value, e/ehr_id/value as ehr_id from EHR e  contains COMPOSITION c0[openEHR-EHR-COMPOSITION.report.v1]",
+            "Select c0/context/other_context[at0001]/items[at0002]/value/value as Bericht_ID__value, e/ehr_id/value as ehr_id from EHR e contains COMPOSITION c0[openEHR-EHR-COMPOSITION.report.v1]",
             Map.of()));
 
     testCaseList.add(
@@ -221,7 +220,7 @@ public class AqlBinderTest {
                 + "        }    \n"
                 + "    }\n"
                 + "}",
-            "Select o0/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/magnitude as Systolic__magnitude, e/ehr_id/value as ehr_id from EHR e  contains OBSERVATION o0[openEHR-EHR-OBSERVATION.sample_blood_pressure.v1] where o0/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/magnitude = 1.1",
+            "Select o0/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/magnitude as Systolic__magnitude, e/ehr_id/value as ehr_id from EHR e contains OBSERVATION o0[openEHR-EHR-OBSERVATION.sample_blood_pressure.v1] where o0/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/magnitude = 1.1",
             Map.of()));
 
     testCaseList.add(
@@ -288,7 +287,7 @@ public class AqlBinderTest {
                 + "        ]\n"
                 + "    }\n"
                 + "}",
-            "Select o0/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/magnitude as Systolic__magnitude, e/ehr_id/value as ehr_id from EHR e  contains OBSERVATION o0[openEHR-EHR-OBSERVATION.sample_blood_pressure.v1] where (o0/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/magnitude >= $magnitude and o0/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/magnitude < 1.1)",
+            "Select o0/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/magnitude as Systolic__magnitude, e/ehr_id/value as ehr_id from EHR e contains OBSERVATION o0[openEHR-EHR-OBSERVATION.sample_blood_pressure.v1] where (o0/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/magnitude >= $magnitude and o0/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/magnitude < 1.1)",
             Map.of("magnitude", "DOUBLE")));
 
     testCaseList.add(
@@ -340,7 +339,7 @@ public class AqlBinderTest {
                 + "        }\n"
                 + "    ]\n"
                 + "}",
-            "Select o0/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/magnitude as Systolic__magnitude, e/ehr_id/value as ehr_id from EHR e  contains OBSERVATION o0[openEHR-EHR-OBSERVATION.sample_blood_pressure.v1] order by o0/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/magnitude ASCENDING, e/ehr_id/value DESCENDING",
+            "Select o0/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/magnitude as Systolic__magnitude, e/ehr_id/value as ehr_id from EHR e contains OBSERVATION o0[openEHR-EHR-OBSERVATION.sample_blood_pressure.v1] order by o0/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/magnitude ASCENDING, e/ehr_id/value DESCENDING",
             Map.of()));
 
     testCaseList.forEach(this::test);

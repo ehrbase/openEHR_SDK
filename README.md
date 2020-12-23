@@ -37,6 +37,17 @@ Generic openEHR Client and Objekt-mapper:
 
 * map Compositions from and to JSON;XML
 
+## aql (Beta)
+
+* Map an Aql-String from and to an Aql-Dto-Model.
+* Not supported right now:
+    - XOR
+    - functions
+    - matches
+    - like
+    - compare path to path expressions 
+    
+
 ## Release Notes (v1.0.0)
 
 * Support web-templates and flat-format

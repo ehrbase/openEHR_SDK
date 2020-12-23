@@ -22,9 +22,9 @@ package org.ehrbase.aql.dto;
 public class EhrDto {
 
   private int containmentId;
+  private String identifier;
 
-  public EhrDto() {
-  }
+  public EhrDto() {}
 
   public int getContainmentId() {
     return this.containmentId;
@@ -32,6 +32,14 @@ public class EhrDto {
 
   public void setContainmentId(int containmentId) {
     this.containmentId = containmentId;
+  }
+
+  public String getIdentifier() {
+    return identifier;
+  }
+
+  public void setIdentifier(String identifier) {
+    this.identifier = identifier;
   }
 
   public boolean equals(final Object o) {

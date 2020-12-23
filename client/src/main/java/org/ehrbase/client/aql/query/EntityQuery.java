@@ -19,21 +19,21 @@
 
 package org.ehrbase.client.aql.query;
 
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import org.ehrbase.client.aql.condition.Condition;
 import org.ehrbase.client.aql.containment.Containment;
 import org.ehrbase.client.aql.containment.ContainmentExpression;
 import org.ehrbase.client.aql.field.AqlField;
+import org.ehrbase.client.aql.field.AqlFieldImp;
 import org.ehrbase.client.aql.field.SelectAqlField;
 import org.ehrbase.client.aql.orderby.OrderByExpression;
 import org.ehrbase.client.aql.parameter.Parameter;
 import org.ehrbase.client.aql.record.Record;
 import org.ehrbase.client.aql.top.TopExpresion;
-
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 public class EntityQuery<T extends Record> implements Query<T> {
   private final SelectAqlField<Object>[] fields;
@@ -41,15 +41,48 @@ public class EntityQuery<T extends Record> implements Query<T> {
   private int variabelCount = 0;
   private int parameterCount = 0;
   private int selectCount = 0;
-  private Map<Containment, String> variablesMap = new HashMap<>();
+  private Map<Containment, String> variablesMap;
   private Condition where;
   private OrderByExpression orderByExpression;
   private TopExpresion topExpresion;
+  private final Containment ehrContainment;
+  private Integer limit;
+  private Integer offset;
 
   protected EntityQuery(ContainmentExpression containmentExpression, SelectAqlField<?>... fields) {
-    this.fields = (SelectAqlField<Object>[]) fields;
+    this(containmentExpression, new HashMap<>(), fields);
+  }
+
+  protected EntityQuery(
+      ContainmentExpression containmentExpression,
+      Map<Containment, String> variablesMap,
+      SelectAqlField<?>... fields) {
+    this.variablesMap = variablesMap;
+    ehrContainment = new Containment("EHR");
+    String ehrVariableName =
+        variablesMap.entrySet().stream()
+            .filter(e -> e.getKey().getTypeName().equals("EHR"))
+            .map(Map.Entry::getValue)
+            .findAny()
+            .orElse("e");
+    variablesMap.put(ehrContainment, ehrVariableName);
+    ehrContainment.bindQuery(this);
+    this.fields = Arrays.stream(fields).map(this::replace).toArray(SelectAqlField[]::new);
     this.containmentExpression = containmentExpression;
     containmentExpression.bindQuery(this);
+  }
+
+  private SelectAqlField<Object> replace(SelectAqlField<?> selectAqlField) {
+    if (selectAqlField.getContainment().getTypeName().equals("EHR")) {
+      return new AqlFieldImp(
+          selectAqlField.getEntityClass(),
+          selectAqlField.getPath(),
+          selectAqlField.getName(),
+          selectAqlField.getValueClass(),
+          ehrContainment);
+    } else {
+      return (SelectAqlField<Object>) selectAqlField;
+    }
   }
 
   @Override
@@ -61,7 +94,8 @@ public class EntityQuery<T extends Record> implements Query<T> {
     }
 
     sb.append(Arrays.stream(fields).map(this::buildFieldAql).collect(Collectors.joining(", ")))
-        .append(" from EHR e ");
+        .append(" from EHR ")
+        .append(buildVariabelName(ehrContainment));
     if (containmentExpression != null) {
       sb.append(" contains ").append(containmentExpression.buildAQL());
     }
@@ -71,6 +105,14 @@ public class EntityQuery<T extends Record> implements Query<T> {
     if (orderByExpression != null) {
       sb.append(" order by ").append(orderByExpression.buildAql());
     }
+
+    if (limit != null) {
+      sb.append(" LIMIT ").append(limit);
+    }
+
+    if (offset != null) {
+      sb.append(" OFFSET ").append(offset);
+    }
     return sb.toString();
   }
 
@@ -79,7 +121,9 @@ public class EntityQuery<T extends Record> implements Query<T> {
 
     return field.buildAQL()
         + " as "
-        + (StringUtils.isNotBlank(field.getName()) ? field.getName().replaceAll("[^A-Za-z0-9]", "_") : "F" + selectCount);
+        + (StringUtils.isNotBlank(field.getName())
+            ? field.getName().replaceAll("[^A-Za-z0-9]", "_")
+            : "F" + selectCount);
   }
 
   @Override
@@ -88,7 +132,6 @@ public class EntityQuery<T extends Record> implements Query<T> {
   }
 
   public String buildVariabelName(Containment containment) {
-
     return variablesMap.computeIfAbsent(containment, this::buildVariablesNameIntern);
   }
 
@@ -111,6 +154,16 @@ public class EntityQuery<T extends Record> implements Query<T> {
 
   public EntityQuery<T> top(TopExpresion topExpresion) {
     this.topExpresion = topExpresion;
+    return this;
+  }
+
+  public EntityQuery<T> limit(Integer limit) {
+    this.limit = limit;
+    return this;
+  }
+
+  public EntityQuery<T> offset(Integer offset) {
+    this.offset = offset;
     return this;
   }
 

@@ -19,11 +19,20 @@
 
 package org.ehrbase.aql.binder;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.ehrbase.aql.dto.AqlDto;
 import org.ehrbase.aql.dto.condition.ParameterValue;
+import org.ehrbase.aql.dto.containment.ContainmentDto;
+import org.ehrbase.aql.dto.containment.ContainmentExpresionDto;
+import org.ehrbase.aql.dto.containment.ContainmentLogicalOperator;
 import org.ehrbase.client.aql.condition.Condition;
 import org.ehrbase.client.aql.containment.Containment;
 import org.ehrbase.client.aql.containment.ContainmentExpression;
@@ -34,10 +43,6 @@ import org.ehrbase.client.aql.query.Query;
 import org.ehrbase.client.aql.record.Record;
 import org.ehrbase.client.aql.top.Direction;
 import org.ehrbase.client.aql.top.TopExpresion;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 public class AqlBinder {
 
@@ -53,8 +58,15 @@ public class AqlBinder {
         containmentBinder.buildContainment(aqlDto.getContains());
     ContainmentExpression containment = pair.getLeft();
     Map<Integer, Containment> containmentMap = pair.getRight();
+
+    Map<Containment, String> variablesMap =
+        buildVariableMap(aqlDto.getContains()).entrySet().stream()
+            .collect(Collectors.toMap(e -> containmentMap.get(e.getKey()), Map.Entry::getValue));
     if (aqlDto.getEhr() != null) {
       containmentMap.put(aqlDto.getEhr().getContainmentId(), EhrFields.EHR_CONTAINMENT);
+      if (StringUtils.isNotBlank(aqlDto.getEhr().getIdentifier())) {
+        variablesMap.put(EhrFields.EHR_CONTAINMENT, aqlDto.getEhr().getIdentifier());
+      }
     }
 
     // build select
@@ -62,7 +74,7 @@ public class AqlBinder {
         aqlDto.getSelect().getStatement().stream()
             .map(s -> selectBinder.bind(s, containmentMap))
             .toArray(SelectAqlField[]::new);
-    EntityQuery<Record> query = Query.buildEntityQuery(containment, selectAqlFields);
+    EntityQuery<Record> query = Query.buildEntityQuery(containment, variablesMap, selectAqlFields);
 
     // build where
     ArrayList<ParameterValue> parameterValues = new ArrayList<>();
@@ -84,7 +96,30 @@ public class AqlBinder {
     if (!CollectionUtils.isEmpty(aqlDto.getOrderBy())) {
       query.orderBy(orderByBinder.bind(aqlDto.getOrderBy(), containmentMap));
     }
-
+    if (aqlDto.getLimit() != null) {
+      query.limit(aqlDto.getLimit());
+    }
+    if (aqlDto.getOffset() != null) {
+      query.offset(aqlDto.getOffset());
+    }
     return new ImmutablePair<>(query, parameterValues);
+  }
+
+  private Map<Integer, String> buildVariableMap(ContainmentExpresionDto contains) {
+    Map<Integer, String> variablesMap = new HashMap<>();
+
+    if (contains instanceof ContainmentDto) {
+      if (StringUtils.isNotBlank(((ContainmentDto) contains).getIdentifier())) {
+        variablesMap.put(
+            ((ContainmentDto) contains).getId(), ((ContainmentDto) contains).getIdentifier());
+      }
+      if (((ContainmentDto) contains).getContains() != null) {
+        variablesMap.putAll(buildVariableMap(((ContainmentDto) contains).getContains()));
+      }
+    } else if (contains instanceof ContainmentLogicalOperator) {
+      ((ContainmentLogicalOperator) contains)
+          .getValues().stream().map(this::buildVariableMap).forEach(variablesMap::putAll);
+    }
+    return variablesMap;
   }
 }
