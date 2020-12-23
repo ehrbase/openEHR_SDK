@@ -72,6 +72,13 @@ public class AqlToDtoVisitor extends AqlBaseVisitor<Object> {
     if (ctx.queryExpr().orderBy() != null) {
       aqlDto.setOrderBy(visitOrderBySeq(ctx.queryExpr().orderBy().orderBySeq()));
     }
+
+    if (ctx.queryExpr().limit() != null) {
+      aqlDto.setLimit(Integer.parseInt(ctx.queryExpr().limit().INTEGER().getText()));
+    }
+    if (ctx.queryExpr().offset() != null) {
+      aqlDto.setOffset(Integer.parseInt(ctx.queryExpr().offset().INTEGER().getText()));
+    }
     selectFieldDtoMultiMap
         .entries()
         .forEach(

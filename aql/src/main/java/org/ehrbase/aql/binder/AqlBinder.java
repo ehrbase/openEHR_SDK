@@ -96,7 +96,12 @@ public class AqlBinder {
     if (!CollectionUtils.isEmpty(aqlDto.getOrderBy())) {
       query.orderBy(orderByBinder.bind(aqlDto.getOrderBy(), containmentMap));
     }
-
+    if (aqlDto.getLimit() != null) {
+      query.limit(aqlDto.getLimit());
+    }
+    if (aqlDto.getOffset() != null) {
+      query.offset(aqlDto.getOffset());
+    }
     return new ImmutablePair<>(query, parameterValues);
   }
 

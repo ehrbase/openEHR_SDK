@@ -46,6 +46,8 @@ public class EntityQuery<T extends Record> implements Query<T> {
   private OrderByExpression orderByExpression;
   private TopExpresion topExpresion;
   private final Containment ehrContainment;
+  private Integer limit;
+  private Integer offset;
 
   protected EntityQuery(ContainmentExpression containmentExpression, SelectAqlField<?>... fields) {
     this(containmentExpression, new HashMap<>(), fields);
@@ -103,6 +105,14 @@ public class EntityQuery<T extends Record> implements Query<T> {
     if (orderByExpression != null) {
       sb.append(" order by ").append(orderByExpression.buildAql());
     }
+
+    if (limit != null) {
+      sb.append(" LIMIT ").append(limit);
+    }
+
+    if (offset != null) {
+      sb.append(" OFFSET ").append(offset);
+    }
     return sb.toString();
   }
 
@@ -144,6 +154,16 @@ public class EntityQuery<T extends Record> implements Query<T> {
 
   public EntityQuery<T> top(TopExpresion topExpresion) {
     this.topExpresion = topExpresion;
+    return this;
+  }
+
+  public EntityQuery<T> limit(Integer limit) {
+    this.limit = limit;
+    return this;
+  }
+
+  public EntityQuery<T> offset(Integer offset) {
+    this.offset = offset;
     return this;
   }
 

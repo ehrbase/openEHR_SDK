@@ -42,6 +42,14 @@ public class AqlToDtoParserTest {
   }
 
   @Test
+  public void parseLimitOffset() {
+    String aql =
+        "Select c/context/other_context[at0001]/items[at0002]/value/value as Bericht_ID__value, d/ehr_id/value as ehr_id from EHR d contains COMPOSITION c[openEHR-EHR-COMPOSITION.report.v1] LIMIT 5 OFFSET 1";
+
+    testAql(aql, aql);
+  }
+
+  @Test
   public void parseError() {
     String aql =
         "Select c/context/other_context[at0001]/items[at0002]/value/value as Bericht_ID__value, d/ehr_id/value as ehr_id  EHR d contains COMPOSITION c[openEHR-EHR-COMPOSITION.report.v1]";
