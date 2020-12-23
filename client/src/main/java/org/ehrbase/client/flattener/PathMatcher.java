@@ -39,7 +39,7 @@ class PathMatcher {
                 new FlatPath(context.getNodeDeque().peek().getAqlPath()))
             .toString();
     if (StringUtils.startsWith(e.getKey(), aqlPath)) {
-      return StringUtils.removeStart(e.getKey(), aqlPath);
+      return remove(e, aqlPath, child);
     } else {
       FlatPath childPath = new FlatPath(aqlPath);
       FlatPath pathLast = childPath.getLast();
@@ -52,10 +52,21 @@ class PathMatcher {
                   .count()
               == 1) {
         logger.warn("name/value not set in dto for {}", child.getAqlPath());
-        return StringUtils.removeStart(e.getKey(), pathWithoutLastName.toString());
+        return remove(e, pathWithoutLastName.toString(), child);
       } else {
         return null;
       }
     }
+  }
+
+  private String remove(Map.Entry<String, ?> e, String s, WebTemplateNode child) {
+    if (child.getId().equals("ism_transition")) {
+      FlatPath flatPath = new FlatPath(StringUtils.removeStart(e.getKey(), s));
+      // fix for old dto model
+      if (StringUtils.isBlank(flatPath.getName())) {
+        return null;
+      }
+    }
+    return StringUtils.removeStart(e.getKey(), s);
   }
 }
