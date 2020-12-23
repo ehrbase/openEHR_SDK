@@ -133,7 +133,8 @@ public class OPTParser {
       while (lastSegment.getChild() != null) {
         lastSegment = lastSegment.getChild();
       }
-      lastSegment.addOtherPredicate("name/value", expliziteName.get());
+      lastSegment.addOtherPredicate(
+          "name/value", expliziteName.get().replace("\\", "\\\\").replace("'", "\\'"));
       node.setAqlPath(path.format(true));
       aqlPath = path.format(true);
     }
