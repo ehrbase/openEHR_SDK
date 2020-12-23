@@ -301,7 +301,7 @@ public class AqlToDtoVisitor extends AqlBaseVisitor<Object> {
     } else if (ctx.OR(i) != null) {
       return ConditionLogicalOperatorSymbol.OR;
     } else if (ctx.XOR(i) != null) {
-      return ConditionLogicalOperatorSymbol.XOR;
+      throw new AqlParseException("XOR not supported");
     }
     return null;
   }
@@ -429,7 +429,7 @@ public class AqlToDtoVisitor extends AqlBaseVisitor<Object> {
     } else if (ctx.AND() != null) {
       return ContainmentLogicalOperatorSymbol.AND;
     } else if (ctx.XOR() != null) {
-      return ContainmentLogicalOperatorSymbol.XOR;
+      throw new AqlParseException("XOR not supported");
     } else {
       return null;
     }

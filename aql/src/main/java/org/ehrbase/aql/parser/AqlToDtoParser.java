@@ -19,18 +19,50 @@
 
 package org.ehrbase.aql.parser;
 
+import org.antlr.v4.runtime.BaseErrorListener;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
+import org.antlr.v4.runtime.RecognitionException;
+import org.antlr.v4.runtime.Recognizer;
+import org.antlr.v4.runtime.misc.ParseCancellationException;
 import org.ehrbase.aql.dto.AqlDto;
 
 public class AqlToDtoParser {
 
   public AqlDto parse(String aql) {
-    AqlLexer aqlLexer = new AqlLexer(CharStreams.fromString(aql));
-    CommonTokenStream commonTokenStream = new CommonTokenStream(aqlLexer);
-    AqlParser aqlParser = new AqlParser(commonTokenStream);
+    try {
+      AqlLexer aqlLexer = new AqlLexer(CharStreams.fromString(aql));
+      aqlLexer.addErrorListener(new AqlErrorListener());
+      CommonTokenStream commonTokenStream = new CommonTokenStream(aqlLexer);
+      AqlParser aqlParser = new AqlParser(commonTokenStream);
+      aqlParser.addErrorListener(new AqlErrorListener());
+      AqlToDtoVisitor listener = new AqlToDtoVisitor();
+      return listener.visitQuery(aqlParser.query());
+    } catch (RuntimeException e) {
+      throw new AqlParseException(e.getMessage());
+    }
+  }
 
-    AqlToDtoVisitor listener = new AqlToDtoVisitor();
-    return listener.visitQuery(aqlParser.query());
+  private static class AqlErrorListener extends BaseErrorListener {
+    @Override
+    public void syntaxError(
+        Recognizer<?, ?> recognizer,
+        Object offendingSymbol,
+        int line,
+        int charPositionInLine,
+        String msg,
+        RecognitionException e) {
+
+      String sourceName = recognizer.getInputStream().getSourceName();
+      throw new ParseCancellationException(
+          "AQL Parse exception: "
+              + (sourceName.isEmpty() ? "source:" + sourceName : "")
+              + "line "
+              + line
+              + ": char "
+              + charPositionInLine
+              + " "
+              + msg);
+    }
   }
 }

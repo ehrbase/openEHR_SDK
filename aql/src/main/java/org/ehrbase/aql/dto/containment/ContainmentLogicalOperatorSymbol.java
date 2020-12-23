@@ -23,8 +23,7 @@ import org.ehrbase.aql.dto.LogicalOperatorSymbol;
 
 public enum ContainmentLogicalOperatorSymbol implements LogicalOperatorSymbol {
   OR(4),
-  AND(2),
-  XOR(3);
+  AND(2);
 
   private final int precedence;
 

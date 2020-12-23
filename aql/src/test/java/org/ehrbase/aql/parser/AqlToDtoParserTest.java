@@ -20,6 +20,7 @@
 package org.ehrbase.aql.parser;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
@@ -38,6 +39,21 @@ public class AqlToDtoParserTest {
         "Select c/context/other_context[at0001]/items[at0002]/value/value as Bericht_ID__value, d/ehr_id/value as ehr_id from EHR d contains COMPOSITION c[openEHR-EHR-COMPOSITION.report.v1]";
 
     testAql(aql, aql);
+  }
+
+  @Test
+  public void parseError() {
+    String aql =
+        "Select c/context/other_context[at0001]/items[at0002]/value/value as Bericht_ID__value, d/ehr_id/value as ehr_id  EHR d contains COMPOSITION c[openEHR-EHR-COMPOSITION.report.v1]";
+
+    AqlToDtoParser cut = new AqlToDtoParser();
+    try {
+      cut.parse(aql);
+      fail("Expected AqlParseException");
+    } catch (AqlParseException e) {
+      assertThat(e.getMessage())
+          .isEqualTo("AQL Parse exception: line 1: char 113 mismatched input 'EHR' expecting FROM");
+    }
   }
 
   @Test
