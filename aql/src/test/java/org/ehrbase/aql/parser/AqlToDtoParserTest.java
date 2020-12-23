@@ -80,15 +80,6 @@ public class AqlToDtoParserTest {
   @Test
   public void parseOrderBy() {
 
-    String aqlNoSymbole =
-        "Select e/ehr_id/value as ehr_id from EHR e contains OBSERVATION o0[openEHR-EHR-OBSERVATION.sample_blood_pressure.v1]"
-            + " order by o0/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/magnitude";
-
-    testAql(
-        aqlNoSymbole,
-        "Select e/ehr_id/value as ehr_id from EHR e contains OBSERVATION o0[openEHR-EHR-OBSERVATION.sample_blood_pressure.v1]"
-            + " order by o0/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/magnitude ASCENDING");
-
     String aqlTwoOrderBy =
         "Select e/ehr_id/value as ehr_id from EHR e contains OBSERVATION o0[openEHR-EHR-OBSERVATION.sample_blood_pressure.v1]"
             + " order by o0/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/magnitude ASCENDING, e/ehr_id/value DESCENDING";
