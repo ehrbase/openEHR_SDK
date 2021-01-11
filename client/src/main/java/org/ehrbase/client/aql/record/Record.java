@@ -23,12 +23,11 @@ import org.ehrbase.client.aql.field.AqlField;
 
 public interface Record {
 
-    AqlField<?> field(int index);
+  AqlField<Object> field(int index);
 
-    AqlField<?>[] fields();
+  AqlField<Object>[] fields();
 
-    Object value(int index);
+  Object value(int index);
 
-    Object[] values();
-
+  Object[] values();
 }
