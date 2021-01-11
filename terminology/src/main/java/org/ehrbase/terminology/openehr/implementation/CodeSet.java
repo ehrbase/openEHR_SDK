@@ -36,20 +36,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 class CodeSet {
-    CodeSet() {
-        codes = new ArrayList<Code>();
-    }
+  CodeSet() {
+    codes = new ArrayList<>();
+  }
 
-    void addCode(String code, String description) {
-        if (!codes.contains(code)) {
-            codes.add(new Code(code, description));
-        }
+  void addCode(String code, String description) {
+    if (codes.stream().noneMatch(c -> c.getCode().equals(code))) {
+      codes.add(new Code(code, description));
     }
+  }
 
-    String issuer;
-    String openehrId;
-    String externalId;
-    List<Code> codes;
+  String issuer;
+  String openehrId;
+  String externalId;
+  List<Code> codes;
 }
 /*
  *  ***** BEGIN LICENSE BLOCK *****
