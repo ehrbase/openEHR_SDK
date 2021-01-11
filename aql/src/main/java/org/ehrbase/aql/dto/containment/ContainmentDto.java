@@ -25,8 +25,6 @@ public class ContainmentDto implements ContainmentExpresionDto {
   private ContainmentExpresionDto contains;
   private String identifier;
 
-  public ContainmentDto() {}
-
   public int getId() {
     return this.id;
   }

@@ -36,8 +36,6 @@ public class AqlDto {
   private Integer limit;
   private Integer offset;
 
-  public AqlDto() {}
-
   public SelectDto getSelect() {
     return this.select;
   }
