@@ -362,7 +362,7 @@
 
                 <groupId>com.github.openEHR</groupId>
                 <artifactId>archie</artifactId>
-                <version>2ef8389</version>
+                <version>dc09642</version>
             </dependency>
             <dependency>
                 <groupId>org.antlr</groupId>
