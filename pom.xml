@@ -48,6 +48,7 @@
         <maven.compiler.target>11</maven.compiler.target>
         <jackson.version>2.12.0</jackson.version>
         <jacoco.version>0.8.6</jacoco.version>
+        <antlr4.version>4.9.1</antlr4.version>
 
         <skipIntegrationTests>true</skipIntegrationTests>
         <include.tests>**/*Test.java</include.tests>
@@ -269,7 +270,7 @@
             <plugin>
                 <groupId>org.antlr</groupId>
                 <artifactId>antlr4-maven-plugin</artifactId>
-                <version>4.8-1</version>
+                <version>${antlr4.version}</version>
                 <configuration>
                     <listener>false</listener>
                     <visitor>true</visitor>
@@ -354,21 +355,12 @@
             </dependency>
 
             <!-- external -->
-
-            <dependency>
-                <!--                <groupId>com.nedap.healthcare.archie</groupId>-->
-                <!--                <artifactId>archie-all</artifactId>-->
-                <!--                <version>0.10.0</version>-->
-
-                <groupId>com.github.openEHR</groupId>
-                <artifactId>archie</artifactId>
-                <version>2ef8389</version>
-            </dependency>
             <dependency>
                 <groupId>org.antlr</groupId>
                 <artifactId>antlr4-runtime</artifactId>
-                <version>4.8-1</version>
+                <version>${antlr4.version}</version>
             </dependency>
+
             <dependency>
                 <groupId>com.jayway.jsonpath</groupId>
                 <artifactId>json-path</artifactId>
@@ -487,7 +479,15 @@
             </dependency>
 
 
+            <dependency>
+                <!--                <groupId>com.nedap.healthcare.archie</groupId>-->
+                <!--                <artifactId>archie-all</artifactId>-->
+                <!--                <version>0.10.0</version>-->
 
+                <groupId>com.github.openEHR</groupId>
+                <artifactId>archie</artifactId>
+                <version>dc09642</version>
+            </dependency>
             <!-- NOTE: does not work properly when inside dependencyManagement -->
             <!-- 
             <dependency>
