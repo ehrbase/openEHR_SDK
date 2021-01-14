@@ -369,7 +369,10 @@ public class OPTParser {
     node.setId(buildId(attributeInfo.getRmName()));
     node.setRmType(attributeInfo.getTypeNameInCollection());
     node.setMax(attributeInfo.isMultipleValued() ? -1 : 1);
-    node.setMin(0);
+    node.setMin(attributeInfo.isNullable() ? 0 : 1);
+    if (attributeInfo.getRmName().equals("action_archetype_id")) {
+      node.setMin(1);
+    }
     addRMAttributes(node, node.getAqlPath(), termDefinitionMap);
     return node;
   }

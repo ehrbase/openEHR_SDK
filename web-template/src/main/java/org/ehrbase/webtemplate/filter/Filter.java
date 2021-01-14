@@ -28,13 +28,9 @@ import java.util.Deque;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
-import org.apache.commons.collections4.SetUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
-import org.ehrbase.serialisation.util.SnakeCase;
 import org.ehrbase.util.reflection.ReflectionHelper;
 import org.ehrbase.webtemplate.model.FilteredWebTemplate;
 import org.ehrbase.webtemplate.model.WebTemplate;
@@ -119,30 +115,15 @@ public class Filter implements WebTemplateFilter {
     if (node.isArchetypeSlot()) {
       return true;
     }
-    if (List.of("origin", "participations", "location", "feeder_audit").contains(node.getName())) {
+
+    if (List.of("upper_included", "lower_included", "upper_unbounded", "lower_unbounded")
+        .contains(node.getName())) {
       return true;
     }
-    if (parent != null) {
-      RMTypeInfo typeInfo = ARCHIE_RM_INFO_LOOKUP.getTypeInfo(parent.getRmType());
-      Set<String> attributeNames =
-          Optional.ofNullable(configMap.get(typeInfo.getJavaClass()))
-              .map(RmIntrospectConfig::getNonTemplateFields).orElse(Collections.emptySet()).stream()
-              .map(s -> new SnakeCase(s).camelToSnake())
-              .collect(Collectors.toSet());
-      attributeNames.add("context");
-      attributeNames.add("encoding");
-      attributeNames.add("timing");
-      attributeNames.add("expiry_time");
-      attributeNames.add("lower");
-      attributeNames.add("upper");
-      attributeNames.add("ism_transition");
-
-      SetUtils.SetView<String> difference =
-          SetUtils.difference(typeInfo.getAttributes().keySet(), attributeNames);
-      if (difference.contains(node.getName())) {
-        return true;
-      }
+    if (parent != null && isNonMandatoryRmAttribute(node, parent)) {
+      return true;
     }
+
     if (List.of("HISTORY", "ITEM_TREE", "ITEM_LIST", "ITEM_SINGLE", "ITEM_TABLE", "ITEM_STRUCTURE")
         .contains(node.getRmType())) {
       return true;
@@ -154,5 +135,19 @@ public class Filter implements WebTemplateFilter {
       return parent.getRmType().equals("DV_CODED_TEXT");
     }
     return false;
+  }
+
+  protected boolean isNonMandatoryRmAttribute(WebTemplateNode node, WebTemplateNode parent) {
+    RMTypeInfo typeInfo = ARCHIE_RM_INFO_LOOKUP.getTypeInfo(parent.getRmType());
+    boolean nonMandatoryRmAttribute =
+        typeInfo.getAttributes().containsKey(node.getName()) && node.getMin() == 0;
+    boolean mandatoryNotInWebTemplate =
+        List.of("name", "archetype_node_id", "origin", "media_type").contains(node.getName());
+    boolean nonMandatoryInWebTemplate =
+        typeInfo.getRmName().equals("ACTIVITY") && node.getName().equals("timing")
+            || typeInfo.getRmName().equals("INSTRUCTION") && node.getName().equals("expiry_time")
+            || typeInfo.getRmName().equals("ISM_TRANSITION") && node.getName().equals("transition");
+
+    return (nonMandatoryRmAttribute || mandatoryNotInWebTemplate) && !nonMandatoryInWebTemplate;
   }
 }

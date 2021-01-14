@@ -21,28 +21,27 @@ package org.ehrbase.serialisation.flatencoding.std.marshal.postprocessor;
 
 import static org.ehrbase.webtemplate.parser.OPTParser.PATH_DIVIDER;
 
-import com.nedap.archie.rm.archetyped.Locatable;
-import com.nedap.archie.rm.composition.Composition;
-import com.nedap.archie.rm.support.identification.ObjectId;
+import com.nedap.archie.rm.composition.EventContext;
+import com.nedap.archie.rm.datavalues.quantity.datetime.DvDateTime;
 import java.util.Map;
 import java.util.Optional;
 
-public class CompositionMarshalPostprocessor implements MarshalPostprocessor<Composition> {
+public class EventContextMarshalPostprocessor implements MarshalPostprocessor<EventContext> {
 
   /** {@inheritDoc} */
   @Override
-  public void process(String term, Composition rmObject, Map<String, Object> values) {
+  public void process(String term, EventContext rmObject, Map<String, Object> values) {
 
     MarshalPostprocessor.addValue(
         values,
-        term + PATH_DIVIDER + "_uid",
+        term + PATH_DIVIDER + "_end_time",
         null,
-        Optional.of(rmObject).map(Locatable::getUid).map(ObjectId::getValue).orElse(null));
+        Optional.ofNullable(rmObject.getEndTime()).map(DvDateTime::getValue).orElse(null));
   }
 
   /** {@inheritDoc} */
   @Override
-  public Class<Composition> getAssociatedClass() {
-    return Composition.class;
+  public Class<EventContext> getAssociatedClass() {
+    return EventContext.class;
   }
 }
