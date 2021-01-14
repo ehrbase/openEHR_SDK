@@ -286,6 +286,10 @@ public class WebTemplateNode implements Serializable {
         && this.getChildren().isEmpty();
   }
 
+  public boolean isNullable() {
+    return min == 0;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;

@@ -29,6 +29,7 @@ import com.nedap.archie.rminfo.RMAttributeInfo;
 import com.nedap.archie.rminfo.RMTypeInfo;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -239,7 +240,8 @@ public class OPTParser {
     }
 
     // Handle choice children
-    node.getChoicesInChildren().values().stream()
+    Collection<List<WebTemplateNode>> values = node.getChoicesInChildren().values();
+    values.stream()
         .flatMap(List::stream)
         .filter(n -> n.getRmType().startsWith("DV_"))
         .forEach(n -> n.setId(n.getRmType().replace("DV_", "").toLowerCase() + "_value"));
@@ -248,7 +250,10 @@ public class OPTParser {
     if (node.getRmType().equals("ELEMENT")) {
       List<WebTemplateNode> trueChildren =
           node.getChildren().stream()
-              .filter(n -> !List.of("null_flavour", "feeder_audit").contains(n.getName()))
+              .filter(
+                  n ->
+                      !List.of("null_flavour", "feeder_audit").contains(n.getName())
+                          || !n.isNullable())
               .collect(Collectors.toList());
       if (trueChildren.size() == 1) {
         WebTemplateNode value = trueChildren.get(0);
@@ -261,9 +266,10 @@ public class OPTParser {
         value.setLocalizedName(node.getLocalizedName());
         // If contains a choice of DV_TEXT and DV_CODED_TEXT add a merged node
       } else if (trueChildren.stream()
-          .map(WebTemplateNode::getRmType)
-          .collect(Collectors.toList())
-          .containsAll(List.of("DV_TEXT", DV_CODED_TEXT))) {
+              .map(WebTemplateNode::getRmType)
+              .collect(Collectors.toList())
+              .containsAll(List.of("DV_TEXT", DV_CODED_TEXT))
+          && node.getChoicesInChildren().size() > 0) {
         WebTemplateNode merged = new WebTemplateNode();
         merged.setId(node.getId(false));
         merged.setName(node.getName());
@@ -281,6 +287,16 @@ public class OPTParser {
         other.setSuffix("other");
         merged.getInputs().add(other);
         node.getChildren().add(merged);
+      }
+      // choice between value and null_flavour
+      else if (node.getChoicesInChildren().isEmpty()) {
+        node.getChildren().stream()
+            .filter(
+                n ->
+                    !List.of("null_flavour", "feeder_audit").contains(n.getName())
+                        || !n.isNullable())
+            .filter(n -> n.getRmType().startsWith("DV_"))
+            .forEach(n -> n.setId(n.getRmType().replace("DV_", "").toLowerCase() + "_value"));
       }
     }
 

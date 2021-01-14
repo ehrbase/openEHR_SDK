@@ -116,6 +116,28 @@ public class OPTParserTest {
   }
 
   @Test
+  public void parseInitialAssessment() throws IOException, XmlException {
+    OPERATIONALTEMPLATE template =
+        TemplateDocument.Factory.parse(OperationalTemplateTestData.INITIAL_ASSESSMENT.getStream())
+            .getTemplate();
+
+    OPTParser cut = new OPTParser(template);
+    WebTemplate actual = cut.parse();
+    actual = new Filter().filter(actual);
+    assertThat(actual).isNotNull();
+
+    ObjectMapper objectMapper = new ObjectMapper();
+    WebTemplate expected =
+        objectMapper.readValue(
+            IOUtils.toString(
+                WebTemplateTestData.INITIAL_ASSESSMENT.getStream(), StandardCharsets.UTF_8),
+            WebTemplate.class);
+
+    List<String> errors = compareWebTemplate(actual, expected);
+    checkErrors(errors, new String[] {}, new String[] {});
+  }
+
+  @Test
   public void parseAllTypes() throws IOException, XmlException {
     OPERATIONALTEMPLATE template =
         TemplateDocument.Factory.parse(OperationalTemplateTestData.ALL_TYPES.getStream())
