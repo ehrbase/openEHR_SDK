@@ -43,9 +43,12 @@ import org.ehrbase.terminology.client.terminology.ValueSet;
 import org.ehrbase.util.exception.SdkException;
 import org.ehrbase.webtemplate.model.WebTemplate;
 import org.ehrbase.webtemplate.model.WebTemplateAnnotation;
+import org.ehrbase.webtemplate.model.WebTemplateComparisonSymbol;
 import org.ehrbase.webtemplate.model.WebTemplateInput;
 import org.ehrbase.webtemplate.model.WebTemplateInputValue;
 import org.ehrbase.webtemplate.model.WebTemplateNode;
+import org.ehrbase.webtemplate.model.WebTemplateValidation;
+import org.ehrbase.webtemplate.model.WebTemplateValidationInterval;
 import org.openehr.schemas.v1.ARCHETYPESLOT;
 import org.openehr.schemas.v1.ARCHETYPETERM;
 import org.openehr.schemas.v1.CARCHETYPEROOT;
@@ -58,6 +61,8 @@ import org.openehr.schemas.v1.CDVORDINAL;
 import org.openehr.schemas.v1.CDVQUANTITY;
 import org.openehr.schemas.v1.CDVSTATE;
 import org.openehr.schemas.v1.COBJECT;
+import org.openehr.schemas.v1.CPRIMITIVEOBJECT;
+import org.openehr.schemas.v1.CSTRING;
 import org.openehr.schemas.v1.IntervalOfInteger;
 import org.openehr.schemas.v1.OBJECTID;
 import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
@@ -146,7 +151,7 @@ public class OPTParser {
       String pathLoop = aqlPath + PATH_DIVIDER + cattribute.getRmAttributeName();
       if (
       // Will be set via Attributes
-      pathLoop.equals("/category") || pathLoop.endsWith("/name")) {
+      pathLoop.endsWith("/name")) {
         continue;
       }
       List<WebTemplateNode> newChildren = new ArrayList<>();
@@ -264,6 +269,7 @@ public class OPTParser {
         value.getLocalizedDescriptions().putAll(node.getLocalizedDescriptions());
         value.getLocalizedNames().putAll(node.getLocalizedNames());
         value.setLocalizedName(node.getLocalizedName());
+
         // If contains a choice of DV_TEXT and DV_CODED_TEXT add a merged node
       } else if (trueChildren.stream()
               .map(WebTemplateNode::getRmType)
@@ -282,9 +288,8 @@ public class OPTParser {
         merged.getLocalizedDescriptions().putAll(node.getLocalizedDescriptions());
         merged.getLocalizedNames().putAll(node.getLocalizedNames());
         merged.setLocalizedName(node.getLocalizedName());
-        WebTemplateInput other = new WebTemplateInput();
-        other.setType("TEXT");
-        other.setSuffix("other");
+        WebTemplateInput other = buildWebTemplateInput("other", "TEXT");
+
         merged.getInputs().add(other);
         node.getChildren().add(merged);
       }
@@ -305,17 +310,39 @@ public class OPTParser {
       List<WebTemplateNode> matching = node.findMatching(n -> n.getRmType().equals("CODE_PHRASE"));
       if (!matching.isEmpty()) {
         node.getInputs().addAll(matching.get(0).getInputs());
-        WebTemplateInput code = node.getInputs().get(0);
-        if (code.getList().isEmpty()) {
-          WebTemplateInput value = new WebTemplateInput();
-          value.setType("TEXT");
-          value.setSuffix("value");
-          value.setTerminology(code.getTerminology());
-        }
+
+      } else {
+        node.getInputs().add(buildWebTemplateInput("value", "TEXT"));
+        node.getInputs().add(buildWebTemplateInput("code", "TEXT"));
+      }
+    }
+
+    if (node.getRmType().equals("DV_TEXT")) {
+      WebTemplateInput value = buildWebTemplateInput(null, "TEXT");
+      node.getInputs().add(value);
+
+      if (ccomplexobject.getAttributesArray().length == 1) {
+
+        CPRIMITIVEOBJECT valueCobject =
+            (CPRIMITIVEOBJECT) ccomplexobject.getAttributesArray(0).getChildrenArray(0);
+        CSTRING cstring = (CSTRING) valueCobject.getItem();
+        Arrays.stream(cstring.getListArray())
+            .forEach(
+                l -> {
+                  WebTemplateInputValue inputValue = new WebTemplateInputValue();
+                  inputValue.setValue(l);
+                  inputValue.setLabel(l);
+                });
+        value.setListOpen(cstring.getListOpen());
       }
     }
 
     addRMAttributes(node, aqlPath, termDefinitionMap);
+
+    // If inputs where not set from the template set them via rmType;
+    if (node.getInputs().isEmpty()) {
+      addInputs(node);
+    }
 
     makeIdUnique(node);
 
@@ -389,8 +416,134 @@ public class OPTParser {
     if (attributeInfo.getRmName().equals("action_archetype_id")) {
       node.setMin(1);
     }
+
+    addInputs(node);
+
     addRMAttributes(node, node.getAqlPath(), termDefinitionMap);
     return node;
+  }
+
+  private void addInputs(WebTemplateNode node) {
+    switch (node.getRmType()) {
+      case "DV_DATE":
+        node.getInputs().add(buildWebTemplateInput(null, "DATE"));
+        break;
+      case "DV_DATE_TIME":
+        node.getInputs().add(buildWebTemplateInput(null, "DATETIME"));
+        break;
+      case "DV_TIME":
+        node.getInputs().add(buildWebTemplateInput(null, "TIME"));
+        break;
+      case "PARTY_PROXY":
+        node.getInputs().add(buildWebTemplateInput("id", "TEXT"));
+        node.getInputs().add(buildWebTemplateInput("id_scheme", "TEXT"));
+        node.getInputs().add(buildWebTemplateInput("id_namespace", "TEXT"));
+        node.getInputs().add(buildWebTemplateInput("name", "TEXT"));
+        break;
+      case "DV_PARSABLE":
+        node.getInputs().add(buildWebTemplateInput("value", "TEXT"));
+        node.getInputs().add(buildWebTemplateInput("formalism", "TEXT"));
+        break;
+      case "DV_TEXT":
+      case "DV_URI":
+      case "DV_MULTIMEDIA":
+      case "STRING":
+        node.getInputs().add(buildWebTemplateInput(null, "TEXT"));
+        break;
+      case "DV_COUNT":
+        node.getInputs().add(buildWebTemplateInput(null, "INTEGER"));
+        break;
+      case "DV_BOOLEAN":
+        node.getInputs().add(buildWebTemplateInput(null, "BOOLEAN"));
+        break;
+      case "DV_CODED_TEXT":
+        node.getInputs().add(buildWebTemplateInput("code", "TEXT"));
+        node.getInputs().add(buildWebTemplateInput("value", "TEXT"));
+        break;
+      case "DV_PROPORTION":
+        node.getInputs().add(buildWebTemplateInput("numerator", "DECIMAL"));
+        node.getInputs().add(buildWebTemplateInput("denominator", "DECIMAL"));
+        break;
+      case "DV_IDENTIFIER":
+        node.getInputs().add(buildWebTemplateInput("id", "TEXT"));
+        node.getInputs().add(buildWebTemplateInput("type", "TEXT"));
+        node.getInputs().add(buildWebTemplateInput("issuer", "TEXT"));
+        node.getInputs().add(buildWebTemplateInput("assigner", "TEXT"));
+        break;
+
+      case "DV_DURATION":
+        node.getInputs()
+            .add(
+                buildWebTemplateInput(
+                    "year",
+                    "INTEGER",
+                    buildRange(0L, WebTemplateComparisonSymbol.GT_EQ, null, null)));
+        node.getInputs()
+            .add(
+                buildWebTemplateInput(
+                    "month",
+                    "INTEGER",
+                    buildRange(0L, WebTemplateComparisonSymbol.GT_EQ, null, null)));
+        node.getInputs()
+            .add(
+                buildWebTemplateInput(
+                    "day",
+                    "INTEGER",
+                    buildRange(0L, WebTemplateComparisonSymbol.GT_EQ, null, null)));
+        node.getInputs()
+            .add(
+                buildWebTemplateInput(
+                    "week",
+                    "INTEGER",
+                    buildRange(0L, WebTemplateComparisonSymbol.GT_EQ, null, null)));
+        node.getInputs()
+            .add(
+                buildWebTemplateInput(
+                    "hour",
+                    "INTEGER",
+                    buildRange(0L, WebTemplateComparisonSymbol.GT_EQ, null, null)));
+        node.getInputs()
+            .add(
+                buildWebTemplateInput(
+                    "minute",
+                    "INTEGER",
+                    buildRange(0L, WebTemplateComparisonSymbol.GT_EQ, null, null)));
+        node.getInputs()
+            .add(
+                buildWebTemplateInput(
+                    "second",
+                    "INTEGER",
+                    buildRange(0L, WebTemplateComparisonSymbol.GT_EQ, null, null)));
+        break;
+    }
+  }
+
+  private WebTemplateInput buildWebTemplateInput(String suffix, String type) {
+    WebTemplateInput date = new WebTemplateInput();
+    date.setType(type);
+    date.setSuffix(suffix);
+    return date;
+  }
+
+  private WebTemplateInput buildWebTemplateInput(
+      String suffix, String type, WebTemplateValidationInterval range) {
+    WebTemplateInput date = buildWebTemplateInput(suffix, type);
+    WebTemplateValidation validation = new WebTemplateValidation();
+    validation.setRange(range);
+    date.setValidation(validation);
+    return date;
+  }
+
+  private WebTemplateValidationInterval buildRange(
+      Long min, WebTemplateComparisonSymbol minOp, Long max, WebTemplateComparisonSymbol maxOp) {
+
+    WebTemplateValidationInterval range = new WebTemplateValidationInterval();
+    range.setMax(max);
+    range.setMaxOp(maxOp);
+    range.setMin(min);
+    range.setMinOp(minOp);
+
+    return range;
   }
 
   private WebTemplateNode parseCOBJECT(
@@ -487,6 +640,7 @@ public class OPTParser {
 
     } else if (cdomaintype instanceof CDVORDINAL) {
       WebTemplateInput code = new WebTemplateInput();
+
       code.setType(CODED_TEXT);
       node.getInputs().add(code);
       Arrays.stream(((CDVORDINAL) cdomaintype).getListArray())
@@ -509,7 +663,7 @@ public class OPTParser {
 
     } else if (cdomaintype instanceof CCODEPHRASE) {
       WebTemplateInput code = new WebTemplateInput();
-      code.setType(CODED_TEXT);
+      code.setSuffix("code");
       node.getInputs().add(code);
       if (cdomaintype instanceof CCODEREFERENCE) {
         code.setTerminology(
@@ -524,6 +678,7 @@ public class OPTParser {
                 .map(OBJECTID::getValue)
                 .orElse(null));
       }
+
       if (code.getTerminology().equals(OPENEHR)) {
         ValueSet valueSet =
             TerminologyProvider.findOpenEhrValueSet(
@@ -561,11 +716,15 @@ public class OPTParser {
                 });
       }
 
-      if (code.getList().isEmpty() && StringUtils.isBlank(code.getTerminology())) {
+      if (code.getList().isEmpty()) {
         code.setType("TEXT");
+        WebTemplateInput value = buildWebTemplateInput("value", "TEXT");
+        value.setTerminology(code.getTerminology());
+        node.getInputs().add(value);
       } else {
         code.setType(CODED_TEXT);
       }
+
     } else {
       throw new SdkException(
           String.format("Unexpected class: %s", cdomaintype.getClass().getSimpleName()));

@@ -19,40 +19,78 @@
 
 package org.ehrbase.webtemplate.model;
 
-import com.fasterxml.jackson.annotation.JsonAnySetter;
-
 import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Objects;
 
 public class WebTemplateValidation implements Serializable {
 
+  private WebTemplateValidationInterval precision;
+  private WebTemplateValidationInterval range;
+  private String pattern;
 
-    public WebTemplateValidation() {
+  public WebTemplateValidation() {}
+
+  public WebTemplateValidation(WebTemplateValidation other) {
+    if (other.precision != null) {
+      this.precision = new WebTemplateValidationInterval(other.precision);
     }
 
-    public WebTemplateValidation(WebTemplateValidation other) {
-        this.other = other.other;
+    if (other.range != null) {
+      this.range = new WebTemplateValidationInterval(other.range);
     }
 
-    @JsonAnySetter
-    private Map<String, Object> other = new HashMap<>();
+    this.pattern = other.pattern;
+  }
 
-    public Map<String, Object> getOther() {
-        return other;
-    }
+  public WebTemplateValidationInterval getPrecision() {
+    return precision;
+  }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        WebTemplateValidation that = (WebTemplateValidation) o;
-        return Objects.equals(other, that.other);
-    }
+  public void setPrecision(WebTemplateValidationInterval precision) {
+    this.precision = precision;
+  }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(other);
-    }
+  public WebTemplateValidationInterval getRange() {
+    return range;
+  }
+
+  public void setRange(WebTemplateValidationInterval range) {
+    this.range = range;
+  }
+
+  public String getPattern() {
+    return pattern;
+  }
+
+  public void setPattern(String pattern) {
+    this.pattern = pattern;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    WebTemplateValidation that = (WebTemplateValidation) o;
+    return Objects.equals(precision, that.precision)
+        && Objects.equals(range, that.range)
+        && Objects.equals(pattern, that.pattern);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(precision, range, pattern);
+  }
+
+  @Override
+  public String toString() {
+    return "WebTemplateValidation{"
+        + "precision="
+        + precision
+        + ", range="
+        + range
+        + ", pattern='"
+        + pattern
+        + '\''
+        + '}';
+  }
 }
