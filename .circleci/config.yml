@@ -649,7 +649,7 @@ jobs:
             fi
       - run-robot-tests:
           sut: "TEST"
-          include-tags: "aql_adhoc-queryANDlaql_loaded_db"
+          include-tags: "aql_adhoc-queryANDaql_loaded_db"
           test-suite-path: "QUERY_SERVICE_TESTS"
           test-suite-name: "ADHOC-QUERY-2"
       - save_cache:
