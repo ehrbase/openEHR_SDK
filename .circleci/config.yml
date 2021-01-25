@@ -479,7 +479,7 @@ jobs:
       - restore-ehrbase-workspace
       # - start-ehrbase-server
       - run-robot-tests:
-          include-tags: "compositionANDjson1"
+          include-tags: "compositionANDcomposition_json1"
           test-suite-path: "COMPOSITION_TESTS"
           test-suite-name: "COMPOSITION_1"
 
@@ -493,7 +493,7 @@ jobs:
       #-----------------------------------#
       - restore-ehrbase-workspace
       - run-robot-tests:
-          include-tags: "compositionANDjson2"
+          include-tags: "compositionANDcomposition_json2"
           test-suite-path: "COMPOSITION_TESTS"
           test-suite-name: "COMPOSITION_2"
 
@@ -507,7 +507,7 @@ jobs:
       #-----------------------------------#
       - restore-ehrbase-workspace
       - run-robot-tests:
-          include-tags: "compositionANDxml1"
+          include-tags: "compositionANDcomposition_xml1"
           test-suite-path: "COMPOSITION_TESTS"
           test-suite-name: "COMPOSITION_3"
 
@@ -521,7 +521,7 @@ jobs:
       #-----------------------------------#
       - restore-ehrbase-workspace
       - run-robot-tests:
-          include-tags: "compositionANDxml2"
+          include-tags: "compositionANDcomposition_xml2"
           test-suite-path: "COMPOSITION_TESTS"
           test-suite-name: "COMPOSITION_4"
 
@@ -591,7 +591,7 @@ jobs:
       #-----------------------------------#
       - restore-ehrbase-workspace
       - run-robot-tests:
-          include-tags: "KNOWLEDGE"
+          include-tags: "OPT"
           test-suite-path: "KNOWLEDGE_TESTS"
           test-suite-name: "KNOWLEDGE"
           allow-template-overwrite: false
@@ -607,7 +607,7 @@ jobs:
       #-----------------------------------#
       - restore-ehrbase-workspace
       - run-robot-tests:
-          include-tags: "aql_adhoc-queryANDempty_db"
+          include-tags: "aql_adhoc-queryANDaql_empty_db"
           test-suite-path: "QUERY_SERVICE_TESTS"
           test-suite-name: "ADHOC-QUERY-1"
 
@@ -632,19 +632,24 @@ jobs:
           keys:
             - ehrbasedb-dump-v8
       # COMMENT: USE THE NEXT LINE ONLY TO FORCE TEST-DATA REGENERATION! Otherwise comment it out!
-      # - run: echo "FORCE GENERATION OF TEST-DATA AND EXPECTED RESULTS!" > /tmp/DATA_CHANGED_NOTICE
+      - run: echo "FORCE GENERATION OF TEST-DATA AND EXPECTED RESULTS!" > /tmp/DATA_CHANGED_NOTICE
       - run: 
           name: CHECK IF EXPECTED-RESULT TEMPLATES HAVE CHANGED AND REGENERATE TEST-DATA IF NEEDED
           command: |
             cd ehrbase
-            find tests/robot/_resources/test_data_sets/query/expected_results/loaded_db/ -type f ! -name *.tmp.json | sort | xargs cat > /tmp/expected-results-loaded_db-seed
-            sha256sum /tmp/expected-results-loaded_db-seed
-            ACTUAL_HASH="$(sha256sum /tmp/expected-results-loaded_db-seed | cat)"
-            EXPECTED_HASH="f5ee5a9a55c50687dafc3c3acff66089759f1577d7a5dd71aff6e60793ce91c2  /tmp/expected-results-loaded_db-seed"
-            [ "$ACTUAL_HASH" = "$EXPECTED_HASH" ] && echo "Expected results unchanged!  Don't regenerate test-data!" || echo "Expected result data-sets changed. Regenerate!" > /tmp/DATA_CHANGED_NOTICE
+            FILE=/tmp/DATA_CHANGED_NOTICE
+            if [ -f "$FILE" ]; then
+                echo "REGENERATION OF TEST-DATA AND EXPECTED RESULT SETS IS EITHER REQUIRED OR WAS FORCED."
+            else 
+                find tests/robot/_resources/test_data_sets/query/expected_results/loaded_db/ -type f ! -name *.tmp.json | sort | xargs cat > /tmp/expected-results-loaded_db-seed
+                sha256sum /tmp/expected-results-loaded_db-seed
+                ACTUAL_HASH="$(sha256sum /tmp/expected-results-loaded_db-seed | cat)"
+                EXPECTED_HASH="f5ee5a9a55c50687dafc3c3acff66089759f1577d7a5dd71aff6e60793ce91c2  /tmp/expected-results-loaded_db-seed"
+                [ "$ACTUAL_HASH" = "$EXPECTED_HASH" ] && echo "Expected results unchanged!  Don't regenerate test-data!" || echo "Expected result data-sets changed. Regenerate!" > /tmp/DATA_CHANGED_NOTICE
+            fi
       - run-robot-tests:
           sut: "TEST"
-          include-tags: "aql_adhoc-queryANDloaded_db"
+          include-tags: "aql_adhoc-queryANDaql_loaded_db"
           test-suite-path: "QUERY_SERVICE_TESTS"
           test-suite-name: "ADHOC-QUERY-2"
       - save_cache:
@@ -1309,10 +1314,10 @@ commands:
             jps
             cd ~/projects/ehrbase/tests
             robot --include << parameters.include-tags >> \
-                  --exclude TODO -e future -e obsolete -e libtest \
+                  --skip TODO --skip future -e obsolete -e libtest \
+                  --skiponfailure not-ready \
                   --console dotted \
                   --loglevel TRACE \
-                  --noncritical not-ready \
                   --flattenkeywords for \
                   --flattenkeywords foritem \
                   --flattenkeywords name:_resources.* \
@@ -1407,7 +1412,7 @@ commands:
     steps:
       - run:
           command: |
-            pip install robotframework
+            pip install robotframework==v4.0b1
       - run:
           name: POST PROCESS & MERGE TEST RESULTS
           when: always
@@ -1417,11 +1422,10 @@ commands:
             # Create Log/Report with ALL DETAILS
             rebot --outputdir results/0 \
                   --name EHRbase \
-                  --exclude TODO -e future -e obsolete -e libtest \
+                  -e obsolete -e libtest \
                   --removekeywords for \
                   --removekeywords wuks \
                   --loglevel TRACE \
-                  --noncritical not-ready \
                   --output EHRbase-output.xml \
                   --log EHRbase-log.html \
                   --report EHRbase-report.html \
@@ -1434,8 +1438,7 @@ commands:
 
             # Create JUNIT report from merged results
             rebot --outputdir results/robot-tests \
-                  --exclude TODO -e future -e obsolete -e libtest \
-                  --noncritical not-ready \
+                  -e obsolete -e libtest \
                   --xunit junit-output.xml --xunitskipnoncritical \
                   --log NONE \
                   --report NONE \
