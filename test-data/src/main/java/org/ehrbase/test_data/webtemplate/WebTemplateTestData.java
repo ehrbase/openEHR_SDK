@@ -26,7 +26,8 @@ public enum WebTemplateTestData {
   CORONA("Corona", "corona_anamnese.json"),
   MULTI_OCCURRENCE("multi_occurrence", "multi_occurrence.json"),
   ALL_TYPES("test_all_types", "test_all_types.json"),
-  INITIAL_ASSESSMENT("example.initialassesment.v0", "example.initialassesment.json");
+  INITIAL_ASSESSMENT("example.initialassesment.v0", "example.initialassesment.json"),
+  CONSTRAIN_TEST("example with many constrains / default values", "constrain_test.json");
 
   private final String filename;
   private final String description;

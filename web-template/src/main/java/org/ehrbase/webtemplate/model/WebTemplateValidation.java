@@ -24,37 +24,37 @@ import java.util.Objects;
 
 public class WebTemplateValidation implements Serializable {
 
-  private WebTemplateValidationInterval precision;
-  private WebTemplateValidationInterval range;
+  private WebTemplateInterval precision;
+  private WebTemplateInterval range;
   private String pattern;
 
   public WebTemplateValidation() {}
 
   public WebTemplateValidation(WebTemplateValidation other) {
     if (other.precision != null) {
-      this.precision = new WebTemplateValidationInterval(other.precision);
+      this.precision = new WebTemplateInterval(other.precision);
     }
 
     if (other.range != null) {
-      this.range = new WebTemplateValidationInterval(other.range);
+      this.range = new WebTemplateInterval(other.range);
     }
 
     this.pattern = other.pattern;
   }
 
-  public WebTemplateValidationInterval getPrecision() {
+  public WebTemplateInterval getPrecision() {
     return precision;
   }
 
-  public void setPrecision(WebTemplateValidationInterval precision) {
+  public void setPrecision(WebTemplateInterval precision) {
     this.precision = precision;
   }
 
-  public WebTemplateValidationInterval getRange() {
+  public WebTemplateInterval getRange() {
     return range;
   }
 
-  public void setRange(WebTemplateValidationInterval range) {
+  public void setRange(WebTemplateInterval range) {
     this.range = range;
   }
 

@@ -21,27 +21,27 @@ package org.ehrbase.webtemplate.model;
 
 import java.util.Objects;
 
-public class WebTemplateValidationInterval {
+public class WebTemplateInterval<T> {
 
-  private Long min;
+  private T min;
   private WebTemplateComparisonSymbol minOp;
-  private Long max;
+  private T max;
   private WebTemplateComparisonSymbol maxOp;
 
-  public WebTemplateValidationInterval() {}
+  public WebTemplateInterval() {}
 
-  public WebTemplateValidationInterval(WebTemplateValidationInterval other) {
+  public WebTemplateInterval(WebTemplateInterval<T> other) {
     this.min = other.min;
     this.minOp = other.minOp;
     this.max = other.max;
     this.maxOp = other.maxOp;
   }
 
-  public Long getMin() {
+  public T getMin() {
     return min;
   }
 
-  public void setMin(Long min) {
+  public void setMin(T min) {
     this.min = min;
   }
 
@@ -53,11 +53,11 @@ public class WebTemplateValidationInterval {
     this.minOp = minOp;
   }
 
-  public Long getMax() {
+  public T getMax() {
     return max;
   }
 
-  public void setMax(Long max) {
+  public void setMax(T max) {
     this.max = max;
   }
 
@@ -73,7 +73,7 @@ public class WebTemplateValidationInterval {
   public boolean equals(Object o) {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
-    WebTemplateValidationInterval that = (WebTemplateValidationInterval) o;
+    WebTemplateInterval<?> that = (WebTemplateInterval<?>) o;
     return Objects.equals(min, that.min)
         && minOp == that.minOp
         && Objects.equals(max, that.max)
