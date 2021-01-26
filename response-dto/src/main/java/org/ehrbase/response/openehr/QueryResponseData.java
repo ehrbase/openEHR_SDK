@@ -97,6 +97,9 @@ public class QueryResponseData {
         }
     }
 
+    public QueryResponseData() {
+    }
+
     public String getQuery() {
         return query;
     }

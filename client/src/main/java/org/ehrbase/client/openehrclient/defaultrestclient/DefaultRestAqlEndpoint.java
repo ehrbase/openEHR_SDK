@@ -37,6 +37,7 @@ import java.net.URI;
 import java.time.temporal.TemporalAccessor;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -56,11 +57,15 @@ import org.ehrbase.client.exception.ClientException;
 import org.ehrbase.client.flattener.Flattener;
 import org.ehrbase.client.openehrclient.AqlEndpoint;
 import org.ehrbase.client.openehrclient.VersionUid;
+import org.ehrbase.response.openehr.QueryResponseData;
 import org.ehrbase.serialisation.jsonencoding.JacksonUtil;
 
 public class DefaultRestAqlEndpoint implements AqlEndpoint {
+
   public static final String AQL_PATH = "query/aql/";
+  public static final String QUERY_MAP_KEY = "q";
   public static final ObjectMapper AQL_OBJECT_MAPPER = buildAqlObjectMapper();
+
   private final DefaultRestClient defaultRestClient;
 
   public DefaultRestAqlEndpoint(DefaultRestClient defaultRestClient) {
@@ -85,7 +90,7 @@ public class DefaultRestAqlEndpoint implements AqlEndpoint {
       aql = aql.replace(v.getParameter().getAqlParameter(), v.buildAql());
     }
 
-    qMap.put("q", aql);
+    qMap.put(QUERY_MAP_KEY, aql);
     URI uri = defaultRestClient.getConfig().getBaseUri().resolve(AQL_PATH);
     try {
 
@@ -132,6 +137,45 @@ public class DefaultRestAqlEndpoint implements AqlEndpoint {
       throw new ClientException(e.getMessage(), e);
     }
     return result;
+  }
+
+  @Override
+  public QueryResponseData executeRaw(Query query, ParameterValue... parameters) {
+
+    if (query == null) {
+      throw new ClientException("Invalid query");
+    }
+
+    if (parameters == null) {
+      throw new ClientException("Invalid parameters");
+    }
+
+    String queryString = query.buildAql();
+
+    if (StringUtils.isEmpty(queryString)) {
+      throw new ClientException("Invalid query");
+    }
+
+    for (ParameterValue v : parameters) {
+      queryString = queryString.replace(v.getParameter().getAqlParameter(), v.buildAql());
+    }
+
+    URI uri = defaultRestClient.getConfig().getBaseUri().resolve(AQL_PATH);
+
+    try {
+      String body = OBJECT_MAPPER.writeValueAsString(Map.of(QUERY_MAP_KEY, queryString));
+      HttpResponse response =
+          defaultRestClient
+              .internalPost(uri, Collections.emptyMap(), body, ContentType.APPLICATION_JSON,
+                  ContentType.APPLICATION_JSON.getMimeType());
+
+      String responseJson = EntityUtils.toString(response.getEntity());
+
+      return DefaultRestClient.OBJECT_MAPPER.readValue(responseJson, QueryResponseData.class);
+
+    } catch (IOException e) {
+      throw new ClientException(e.getMessage(), e);
+    }
   }
 
   private Object extractValue(String valueAsString, Class<?> aClass)
