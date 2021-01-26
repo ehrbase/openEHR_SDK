@@ -171,8 +171,7 @@ public class DefaultRestAqlEndpoint implements AqlEndpoint {
 
       String responseJson = EntityUtils.toString(response.getEntity());
 
-      ObjectMapper mapper = new ObjectMapper();
-      return mapper.readValue(responseJson, QueryResponseData.class);
+      return DefaultRestClient.OBJECT_MAPPER.readValue(responseJson, QueryResponseData.class);
 
     } catch (IOException e) {
       throw new ClientException(e.getMessage(), e);
