@@ -57,6 +57,7 @@ import org.ehrbase.client.exception.ClientException;
 import org.ehrbase.client.flattener.Flattener;
 import org.ehrbase.client.openehrclient.AqlEndpoint;
 import org.ehrbase.client.openehrclient.VersionUid;
+import org.ehrbase.response.openehr.QueryResponseData;
 import org.ehrbase.serialisation.jsonencoding.JacksonUtil;
 
 public class DefaultRestAqlEndpoint implements AqlEndpoint {
@@ -139,7 +140,7 @@ public class DefaultRestAqlEndpoint implements AqlEndpoint {
   }
 
   @Override
-  public String executeWithDynamicResult(Query query, ParameterValue... parameters) {
+  public QueryResponseData executeRaw(Query query, ParameterValue... parameters) {
 
     if (query == null) {
       throw new ClientException("Invalid query");
@@ -168,7 +169,10 @@ public class DefaultRestAqlEndpoint implements AqlEndpoint {
               .internalPost(uri, Collections.emptyMap(), body, ContentType.APPLICATION_JSON,
                   ContentType.APPLICATION_JSON.getMimeType());
 
-      return EntityUtils.toString(response.getEntity());
+      String responseJson = EntityUtils.toString(response.getEntity());
+
+      ObjectMapper mapper = new ObjectMapper();
+      return mapper.readValue(responseJson, QueryResponseData.class);
 
     } catch (IOException e) {
       throw new ClientException(e.getMessage(), e);
