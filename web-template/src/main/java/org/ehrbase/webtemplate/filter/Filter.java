@@ -115,11 +115,6 @@ public class Filter implements WebTemplateFilter {
     if (node.isArchetypeSlot()) {
       return true;
     }
-
-    if (List.of("upper_included", "lower_included", "upper_unbounded", "lower_unbounded")
-        .contains(node.getName())) {
-      return true;
-    }
     if (parent != null && isNonMandatoryRmAttribute(node, parent)) {
       return true;
     }
@@ -142,7 +137,16 @@ public class Filter implements WebTemplateFilter {
     boolean nonMandatoryRmAttribute =
         typeInfo.getAttributes().containsKey(node.getName()) && node.getMin() == 0;
     boolean mandatoryNotInWebTemplate =
-        List.of("name", "archetype_node_id", "origin", "media_type").contains(node.getName());
+        List.of(
+                "name",
+                "archetype_node_id",
+                "origin",
+                "media_type",
+                "upper_included",
+                "lower_included",
+                "upper_unbounded",
+                "lower_unbounded")
+            .contains(node.getName());
     boolean nonMandatoryInWebTemplate =
         typeInfo.getRmName().equals("ACTIVITY") && node.getName().equals("timing")
             || typeInfo.getRmName().equals("INSTRUCTION") && node.getName().equals("expiry_time")

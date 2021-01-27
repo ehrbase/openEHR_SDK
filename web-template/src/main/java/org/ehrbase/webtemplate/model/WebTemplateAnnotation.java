@@ -19,38 +19,50 @@
 
 package org.ehrbase.webtemplate.model;
 
+import com.fasterxml.jackson.annotation.JsonAnyGetter;
+import com.fasterxml.jackson.annotation.JsonAnySetter;
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 public class WebTemplateAnnotation implements Serializable {
 
-    private String comment;
+  private String comment;
 
-    public WebTemplateAnnotation() {
-    }
+  private final Map<String, String> other = new HashMap<>();
 
-    public WebTemplateAnnotation(WebTemplateAnnotation other) {
-        this.comment = other.comment;
-    }
+  public WebTemplateAnnotation() {}
 
-    public String getComment() {
-        return comment;
-    }
+  public WebTemplateAnnotation(WebTemplateAnnotation other) {
+    this.comment = other.comment;
+    this.other.putAll(other.other);
+  }
 
-    public void setComment(String comment) {
-        this.comment = comment;
-    }
+  public String getComment() {
+    return comment;
+  }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        WebTemplateAnnotation that = (WebTemplateAnnotation) o;
-        return Objects.equals(comment, that.comment);
-    }
+  public void setComment(String comment) {
+    this.comment = comment;
+  }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(comment);
-    }
+  @JsonAnySetter
+  @JsonAnyGetter
+  public Map<String, String> getOther() {
+    return other;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    WebTemplateAnnotation that = (WebTemplateAnnotation) o;
+    return Objects.equals(comment, that.comment) && Objects.equals(other, that.other);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(comment, other);
+  }
 }

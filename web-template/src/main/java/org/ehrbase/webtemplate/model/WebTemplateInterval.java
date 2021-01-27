@@ -19,9 +19,10 @@
 
 package org.ehrbase.webtemplate.model;
 
+import java.io.Serializable;
 import java.util.Objects;
 
-public class WebTemplateInterval<T> {
+public class WebTemplateInterval<T extends Serializable> implements Serializable {
 
   private T min;
   private WebTemplateComparisonSymbol minOp;

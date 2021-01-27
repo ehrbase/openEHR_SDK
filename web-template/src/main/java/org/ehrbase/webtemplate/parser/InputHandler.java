@@ -19,6 +19,7 @@
 
 package org.ehrbase.webtemplate.parser;
 
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -113,7 +114,7 @@ public class InputHandler {
     return input;
   }
 
-  <T> WebTemplateInterval<T> extractInterval(Interval interval) {
+  <T extends Serializable> WebTemplateInterval<T> extractInterval(Interval interval) {
     if (interval == null) {
       return null;
     }
