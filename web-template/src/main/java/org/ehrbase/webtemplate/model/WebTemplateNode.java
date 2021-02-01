@@ -55,7 +55,7 @@ public class WebTemplateNode implements Serializable {
   private final Map<String, WebTemplateTerminology> termBindings = new HashMap<>();
   private final List<String> dependsOn = new ArrayList<>();
   private WebTemplateAnnotation annotations;
-  private final List<String> proportionTypes = new ArrayList<>();
+  private final List<ProportionType> proportionTypes = new ArrayList<>();
 
   public WebTemplateNode() {}
 
@@ -219,7 +219,7 @@ public class WebTemplateNode implements Serializable {
     this.annotations = annotations;
   }
 
-  public List<String> getProportionTypes() {
+  public List<ProportionType> getProportionTypes() {
     return proportionTypes;
   }
 

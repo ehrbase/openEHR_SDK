@@ -31,6 +31,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.xmlbeans.XmlException;
@@ -158,18 +159,7 @@ public class OPTParserTest {
             WebTemplate.class);
 
     List<String> errors = compareWebTemplate(actual, expected);
-    checkErrors(
-        errors,
-        new String[] {},
-        new String[] {},
-        new String[] {
-          "Validation not equal WebTemplateValidation{precision=null, range=WebTemplateValidationInterval{min=10, minOp=GT, max=15, maxOp=LT_EQ}, pattern='null'} != WebTemplateValidation{precision=null, range=WebTemplateValidationInterval{min=11, minOp=GT_EQ, max=15, maxOp=LT_EQ}, pattern='null'} in input.suffix:null id=total_pain_score aql=/content[openEHR-EHR-OBSERVATION.abbey_pain_scale.v0]/data[at0001]/events[at0002]/data[at0003]/items[at0014]/value",
-          "Validation not equal null != WebTemplateValidation{precision=null, range=WebTemplateValidationInterval{min=100.0, minOp=GT_EQ, max=100.0, maxOp=LT_EQ}, pattern='null'} in input.suffix:denominator id=total_body_surface_area_tbsa_affected aql=/content[openEHR-EHR-OBSERVATION.affected_body_surface_area.v0]/data[at0001]/events[at0002]/data[at0003]/items[at0014]/value",
-          "Validation not equal null != WebTemplateValidation{precision=null, range=WebTemplateValidationInterval{min=100.0, minOp=GT_EQ, max=100.0, maxOp=LT_EQ}, pattern='null'} in input.suffix:denominator id=total_body_surface_area_affected aql=/content[openEHR-EHR-OBSERVATION.affected_body_surface_area.v0]/data[at0001]/events[at0002]/data[at0003]/items[at0015]/items[at0017]/value",
-          "Validation not equal null != WebTemplateValidation{precision=null, range=WebTemplateValidationInterval{min=100.0, minOp=GT_EQ, max=100.0, maxOp=LT_EQ}, pattern='null'} in input.suffix:denominator id=affected_site_surface_area aql=/content[openEHR-EHR-OBSERVATION.affected_body_surface_area.v0]/data[at0001]/events[at0002]/data[at0003]/items[at0006]/items[at0011]/items[at0013]/value",
-          "Validation not equal null != WebTemplateValidation{precision=null, range=WebTemplateValidationInterval{min=100.0, minOp=GT_EQ, max=100.0, maxOp=LT_EQ}, pattern='null'} in input.suffix:denominator id=affected_site_surface_area aql=/content[openEHR-EHR-OBSERVATION.affected_body_surface_area.v0]/data[at0001]/events[at0002]/data[at0003]/items[at0006]/items[at0010]/value",
-          "Validation not equal null != WebTemplateValidation{precision=null, range=WebTemplateValidationInterval{min=100.0, minOp=GT_EQ, max=100.0, maxOp=LT_EQ}, pattern='null'} in input.suffix:denominator id=site_surface_area aql=/content[openEHR-EHR-OBSERVATION.affected_body_surface_area.v0]/data[at0001]/events[at0002]/data[at0003]/items[at0006]/items[at0008]/value"
-        });
+    checkErrors(errors, new String[] {}, new String[] {}, new String[] {});
   }
 
   @Test
@@ -278,6 +268,12 @@ public class OPTParserTest {
         .filteredOn(s -> s.startsWith("Validation not equal"))
         .containsExactlyInAnyOrder(wrongValidations);
 
+    // Non equal validations
+    softAssertions
+        .assertThat(errors)
+        .filteredOn(s -> s.startsWith("ProportionTypes not equal"))
+        .containsExactlyInAnyOrder(wrongValidations);
+
     softAssertions.assertAll();
   }
 
@@ -301,6 +297,7 @@ public class OPTParserTest {
     for (ImmutablePair<String, String> pair : actualMap.keySet()) {
       if (expectedMap.containsKey(pair)) {
         errors.addAll(compareNode(actualMap.get(pair), expectedMap.get(pair)));
+
       } else {
         errors.add(String.format("Extra Node id=%s aql=%s", pair.getRight(), pair.getLeft()));
       }
@@ -319,6 +316,17 @@ public class OPTParserTest {
     errors.addAll(compareNodes(actual.getChildren(), expected.getChildren()));
 
     errors.addAll(compereInputs(actual, actual.getInputs(), expected.getInputs()));
+
+    if (!CollectionUtils.isEqualCollection(
+        actual.getProportionTypes(), expected.getProportionTypes())) {
+      errors.add(
+          String.format(
+              "ProportionTypes not equal %s != %s in  id=%s aql=%s",
+              actual.getProportionTypes(),
+              expected.getProportionTypes(),
+              actual.getId(),
+              actual.getAqlPath()));
+    }
     return errors;
   }
 

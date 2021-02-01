@@ -20,12 +20,17 @@
 package org.ehrbase.webtemplate.parser;
 
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import org.apache.commons.lang3.CharUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.ehrbase.webtemplate.model.ProportionType;
 import org.ehrbase.webtemplate.model.WebTemplateComparisonSymbol;
 import org.ehrbase.webtemplate.model.WebTemplateInput;
 import org.ehrbase.webtemplate.model.WebTemplateInputValue;
@@ -81,6 +86,13 @@ public class InputHandler {
 
     if (item instanceof CINTEGER) {
       range = extractInterval(((CINTEGER) item).getRange());
+      Arrays.stream(((CINTEGER) item).getListArray())
+          .forEach(
+              i -> {
+                WebTemplateInputValue value = new WebTemplateInputValue();
+                value.setValue(Integer.toString(i));
+                input.getList().add(value);
+              });
     } else if (item instanceof CREAL) {
       range = extractInterval(((CREAL) item).getRange());
     }
@@ -135,7 +147,24 @@ public class InputHandler {
         webTemplateInterval.setMaxOp(WebTemplateComparisonSymbol.LT);
       }
     }
+    if (interval instanceof IntervalOfInteger) {
+      webTemplateInterval =
+          (WebTemplateInterval<T>)
+              normalizeInterval((WebTemplateInterval<Integer>) webTemplateInterval);
+    }
     return webTemplateInterval;
+  }
+
+  WebTemplateInterval<Integer> normalizeInterval(WebTemplateInterval<Integer> interval) {
+    if (Objects.equals(interval.getMaxOp(), WebTemplateComparisonSymbol.LT)) {
+      interval.setMaxOp(WebTemplateComparisonSymbol.LT_EQ);
+      interval.setMax(interval.getMax() - 1);
+    }
+    if (Objects.equals(interval.getMinOp(), WebTemplateComparisonSymbol.GT)) {
+      interval.setMinOp(WebTemplateComparisonSymbol.GT_EQ);
+      interval.setMin(interval.getMin() + 1);
+    }
+    return interval;
   }
 
   private <T> T extractLower(Interval interval) {
@@ -246,6 +275,21 @@ public class InputHandler {
             templateInputMap.getOrDefault(
                 "denominator", buildWebTemplateInput("denominator", "DECIMAL"));
         denominator.setSuffix("denominator");
+
+        List<ProportionType> proportionTypes =
+            Optional.ofNullable(templateInputMap.get("type")).map(WebTemplateInput::getList)
+                .stream()
+                .flatMap(List::stream)
+                .map(WebTemplateInputValue::getValue)
+                .map(Integer::valueOf)
+                .map(ProportionType::findById)
+                .collect(Collectors.toList());
+        if (proportionTypes.isEmpty()) {
+          proportionTypes = Arrays.asList(ProportionType.values());
+        } else if (proportionTypes.size() == 1) {
+          proportionTypes.get(0).getDenominatorValidator().ifPresent(denominator::setValidation);
+        }
+        node.getProportionTypes().addAll(proportionTypes);
         node.getInputs().add(denominator);
         break;
       case "DV_IDENTIFIER":

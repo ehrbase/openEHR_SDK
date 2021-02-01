@@ -22,7 +22,6 @@ package org.ehrbase.webtemplate.model;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 public enum WebTemplateComparisonSymbol {
-  EQ("="),
   GT_EQ(">="),
   GT(">"),
   LT_EQ("<="),
