@@ -291,10 +291,14 @@ public class OPTParserTest {
         .filteredOn(s -> s.startsWith("ListOpen not equal"))
         .containsExactlyInAnyOrder();
 
-    // Non equal validations
     softAssertions
         .assertThat(errors)
         .filteredOn(s -> s.startsWith("ProportionTypes not equal"))
+        .containsExactlyInAnyOrder();
+
+    softAssertions
+        .assertThat(errors)
+        .filteredOn(s -> s.startsWith("Annotations not equal"))
         .containsExactlyInAnyOrder();
 
     // Non equal InputValue
@@ -366,6 +370,17 @@ public class OPTParserTest {
               actual.getId(),
               actual.getAqlPath()));
     }
+
+    if (!Objects.equals(actual.getAnnotations(), expected.getAnnotations())) {
+      errors.add(
+          String.format(
+              "Annotations not equal %s != %s in  id=%s aql=%s",
+              actual.getAnnotations(),
+              expected.getAnnotations(),
+              actual.getId(),
+              actual.getAqlPath()));
+    }
+
     return errors;
   }
 
@@ -434,6 +449,7 @@ public class OPTParserTest {
               node.getId(),
               node.getAqlPath()));
     }
+
     errors.addAll(compereInputValues(node, actual.getList(), expected.getList()));
     return errors;
   }

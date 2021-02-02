@@ -278,6 +278,7 @@ public class OPTParser {
         value.getLocalizedDescriptions().putAll(node.getLocalizedDescriptions());
         value.getLocalizedNames().putAll(node.getLocalizedNames());
         value.setLocalizedName(node.getLocalizedName());
+        value.setAnnotations(node.getAnnotations());
 
         // If contains a choice of DV_TEXT and DV_CODED_TEXT add a merged node
       } else if (trueChildren.stream()
@@ -654,14 +655,20 @@ public class OPTParser {
                   .collect(
                       Collectors.toMap(Map.Entry::getKey, e -> e.getValue().getDescription())));
 
-      Optional.of(termDefinitionMap.get(nodeId))
-          .map(m -> m.get(defaultLanguage))
-          .map(TermDefinition::getOther)
-          .map(m -> m.get("comment"))
-          .ifPresent(
-              s -> {
-                node.setAnnotations(new WebTemplateAnnotation());
-                node.getAnnotations().setComment(s);
+      Optional.of(termDefinitionMap.get(nodeId)).map(m -> m.get(defaultLanguage))
+          .map(TermDefinition::getOther).stream()
+          .map(Map::entrySet)
+          .flatMap(Set::stream)
+          .forEach(
+              e -> {
+                if (node.getAnnotations() == null) {
+                  node.setAnnotations(new WebTemplateAnnotation());
+                }
+                if (e.getKey().equals("comment")) {
+                  node.getAnnotations().setComment(e.getValue());
+                } else {
+                  node.getAnnotations().getOther().put(e.getKey(), e.getValue());
+                }
               });
     } else {
       String name =

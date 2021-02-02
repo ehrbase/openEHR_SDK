@@ -65,4 +65,9 @@ public class WebTemplateAnnotation implements Serializable {
   public int hashCode() {
     return Objects.hash(comment, other);
   }
+
+  @Override
+  public String toString() {
+    return "WebTemplateAnnotation{" + "comment='" + comment + '\'' + ", other=" + other + '}';
+  }
 }
