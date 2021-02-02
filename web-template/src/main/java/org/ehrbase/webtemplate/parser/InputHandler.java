@@ -61,6 +61,9 @@ public class InputHandler {
     if (input.getType().equals("REAL")) {
       input.setType("DECIMAL");
     }
+    if (input.getType().equals("STRING")) {
+      input.setType("TEXT");
+    }
 
     CPRIMITIVE item = cprimitiveobject.getItem();
     String pattern = null;
@@ -77,6 +80,15 @@ public class InputHandler {
       pattern = ((CDATE) item).getPattern();
     } else if (item instanceof CSTRING) {
       pattern = ((CSTRING) item).getPattern();
+      Arrays.stream(((CSTRING) item).getListArray())
+          .forEach(
+              i -> {
+                WebTemplateInputValue value = new WebTemplateInputValue();
+                value.setValue(i);
+                value.setLabel(i);
+                input.getList().add(value);
+              });
+      input.setListOpen(((CSTRING) item).getListOpen());
     }
 
     if (item instanceof CDURATION) {

@@ -34,6 +34,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -61,7 +62,6 @@ import org.openehr.schemas.v1.CDVQUANTITY;
 import org.openehr.schemas.v1.CDVSTATE;
 import org.openehr.schemas.v1.COBJECT;
 import org.openehr.schemas.v1.CPRIMITIVEOBJECT;
-import org.openehr.schemas.v1.CSTRING;
 import org.openehr.schemas.v1.IntervalOfInteger;
 import org.openehr.schemas.v1.OBJECTID;
 import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
@@ -300,6 +300,10 @@ public class OPTParser {
         WebTemplateInput other = InputHandler.buildWebTemplateInput("other", "TEXT");
 
         merged.getInputs().add(other);
+        merged.getInputs().stream()
+            .filter(i -> Objects.equals(i.getSuffix(), "code"))
+            .findAny()
+            .ifPresent(i -> i.setListOpen(true));
         node.getChildren().add(merged);
       }
       // choice between value and null_flavour
@@ -323,26 +327,6 @@ public class OPTParser {
       } else {
         node.getInputs().add(InputHandler.buildWebTemplateInput("value", "TEXT"));
         node.getInputs().add(InputHandler.buildWebTemplateInput("code", "TEXT"));
-      }
-    }
-
-    if (node.getRmType().equals("DV_TEXT")) {
-      WebTemplateInput value = InputHandler.buildWebTemplateInput(null, "TEXT");
-      node.getInputs().add(value);
-
-      if (ccomplexobject.getAttributesArray().length == 1) {
-
-        CPRIMITIVEOBJECT valueCobject =
-            (CPRIMITIVEOBJECT) ccomplexobject.getAttributesArray(0).getChildrenArray(0);
-        CSTRING cstring = (CSTRING) valueCobject.getItem();
-        Arrays.stream(cstring.getListArray())
-            .forEach(
-                l -> {
-                  WebTemplateInputValue inputValue = new WebTemplateInputValue();
-                  inputValue.setValue(l);
-                  inputValue.setLabel(l);
-                });
-        value.setListOpen(cstring.getListOpen());
       }
     }
 
