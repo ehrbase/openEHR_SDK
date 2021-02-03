@@ -61,10 +61,12 @@ import org.openehr.schemas.v1.CDVORDINAL;
 import org.openehr.schemas.v1.CDVQUANTITY;
 import org.openehr.schemas.v1.CDVSTATE;
 import org.openehr.schemas.v1.COBJECT;
+import org.openehr.schemas.v1.CODEPHRASE;
 import org.openehr.schemas.v1.CPRIMITIVEOBJECT;
 import org.openehr.schemas.v1.IntervalOfInteger;
 import org.openehr.schemas.v1.OBJECTID;
 import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
+import org.openehr.schemas.v1.RESOURCEDESCRIPTIONITEM;
 import org.openehr.schemas.v1.StringDictionaryItem;
 
 public class OPTParser {
@@ -91,6 +93,13 @@ public class OPTParser {
     webTemplate.setTemplateId(operationaltemplate.getTemplateId().getValue());
     webTemplate.setDefaultLanguage(defaultLanguage);
     webTemplate.setVersion("2.3");
+    webTemplate
+        .getLanguages()
+        .addAll(
+            Arrays.stream(operationaltemplate.getDescription().getDetailsArray())
+                .map(RESOURCEDESCRIPTIONITEM::getLanguage)
+                .map(CODEPHRASE::getCodeString)
+                .collect(Collectors.toSet()));
     webTemplate.setTree(parseCARCHETYPEROO(operationaltemplate.getDefinition(), ""));
     return webTemplate;
   }
@@ -570,7 +579,9 @@ public class OPTParser {
       if (code.getTerminology().equals(OPENEHR)) {
         ValueSet valueSet =
             TerminologyProvider.findOpenEhrValueSet(
-                code.getTerminology(), ((CCODEPHRASE) cdomaintype).getCodeListArray());
+                code.getTerminology(),
+                ((CCODEPHRASE) cdomaintype).getCodeListArray(),
+                defaultLanguage);
         valueSet
             .getTherms()
             .forEach(

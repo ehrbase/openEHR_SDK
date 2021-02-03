@@ -178,6 +178,31 @@ public class OPTParserTest {
   }
 
   @Test
+  public void parseLanguageTest() throws IOException, XmlException {
+    OPERATIONALTEMPLATE template =
+        TemplateDocument.Factory.parse(OperationalTemplateTestData.LANGUAGE_TEST.getStream())
+            .getTemplate();
+
+    OPTParser cut = new OPTParser(template);
+    WebTemplate actual = cut.parse();
+    actual = new Filter().filter(actual);
+    assertThat(actual).isNotNull();
+
+    ObjectMapper objectMapper = new ObjectMapper();
+    WebTemplate expected =
+        objectMapper.readValue(
+            IOUtils.toString(WebTemplateTestData.LANGUAGE_TEST.getStream(), StandardCharsets.UTF_8),
+            WebTemplate.class);
+
+    List<String> errors = compareWebTemplate(actual, expected);
+    checkErrors(
+        errors,
+        new String[] {
+          "InputValue not equal 146:mean != 146:Durchschnitt in id=math_function aql=/content[openEHR-EHR-OBSERVATION.blood_pressure.v2]/data[at0001]/events[at1042]/math_function"
+        });
+  }
+
+  @Test
   public void parseAllTypes() throws IOException, XmlException {
     OPERATIONALTEMPLATE template =
         TemplateDocument.Factory.parse(OperationalTemplateTestData.ALL_TYPES.getStream())

@@ -71,7 +71,8 @@ public enum OperationalTemplateTestData {
       "example.initialassesment.v0"),
   D4L_QUESTIONNAIRE("D4L_questionnaire", "D4L_questionnaire.opt", "D4L_questionnaire"),
   CONSTRAIN_TEST(
-      "example with many constrains / default values", "constrain_test.opt", "constrain_test");
+      "example with many constrains / default values", "constrain_test.opt", "constrain_test"),
+  LANGUAGE_TEST("example with multiple languages", "language_test.opt", "language_test");
 
   private final String filename;
   private final String templateId;
