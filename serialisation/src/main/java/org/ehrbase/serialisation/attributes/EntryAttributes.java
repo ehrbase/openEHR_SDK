@@ -61,4 +61,13 @@ public abstract class EntryAttributes extends LocatableAttributes {
 
         return map;
     }
+
+    public static boolean isEntryAttribute(String key){
+        return (key.equals(TAG_SUBJECT) ||
+                key.equals(TAG_LANGUAGE) ||
+                key.equals(TAG_PROVIDER)||
+                key.equals(TAG_ENCODING)||
+                key.equals(TAG_WORKFLOW_ID) ||
+                key.equals(TAG_OTHER_PARTICIPATIONS));
+    }
 }
