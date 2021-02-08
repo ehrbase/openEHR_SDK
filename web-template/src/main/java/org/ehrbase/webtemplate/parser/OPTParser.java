@@ -39,6 +39,11 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
+import org.apache.xmlbeans.XmlCursor;
+import org.apache.xmlbeans.XmlObject;
+import org.apache.xmlbeans.XmlTokenSource;
 import org.ehrbase.terminology.client.terminology.TermDefinition;
 import org.ehrbase.terminology.client.terminology.TerminologyProvider;
 import org.ehrbase.terminology.client.terminology.ValueSet;
@@ -63,11 +68,16 @@ import org.openehr.schemas.v1.CDVSTATE;
 import org.openehr.schemas.v1.COBJECT;
 import org.openehr.schemas.v1.CODEPHRASE;
 import org.openehr.schemas.v1.CPRIMITIVEOBJECT;
+import org.openehr.schemas.v1.DVCODEDTEXT;
+import org.openehr.schemas.v1.DVORDINAL;
+import org.openehr.schemas.v1.DVQUANTITY;
 import org.openehr.schemas.v1.IntervalOfInteger;
 import org.openehr.schemas.v1.OBJECTID;
 import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
 import org.openehr.schemas.v1.RESOURCEDESCRIPTIONITEM;
 import org.openehr.schemas.v1.StringDictionaryItem;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 public class OPTParser {
   public static final String PATH_DIVIDER = "/";
@@ -80,11 +90,18 @@ public class OPTParser {
 
   private final OPERATIONALTEMPLATE operationaltemplate;
   private final String defaultLanguage;
-  private final InputHandler InputHandler = new InputHandler();
+  private Map<String, String> defaultValues = new HashMap<>();
+  private final InputHandler inputHandler = new InputHandler(defaultValues);
 
   public OPTParser(OPERATIONALTEMPLATE operationaltemplate) {
     this.operationaltemplate = operationaltemplate;
     defaultLanguage = operationaltemplate.getLanguage().getCodeString();
+    Arrays.stream(extractChilds(operationaltemplate, "constraints"))
+        .map(c -> extractChilds(c, "attributes"))
+        .flatMap(Arrays::stream)
+        .map(this::extractDefault)
+        .flatMap(List::stream)
+        .forEach(p -> defaultValues.put(p.getKey(), p.getValue()));
   }
 
   public WebTemplate parse() {
@@ -100,8 +117,79 @@ public class OPTParser {
                 .map(RESOURCEDESCRIPTIONITEM::getLanguage)
                 .map(CODEPHRASE::getCodeString)
                 .collect(Collectors.toSet()));
+
     webTemplate.setTree(parseCARCHETYPEROO(operationaltemplate.getDefinition(), ""));
     return webTemplate;
+  }
+
+  public XmlObject[] extractChilds(XmlObject c, String attributes) {
+    return c.selectChildren("http://schemas.openehr.org/v1", attributes);
+  }
+
+  private List<Pair<String, String>> extractDefault(XmlObject xmlObject) {
+    List<Pair<String, String>> defaults = new ArrayList<>();
+
+    String differential_path =
+        StringUtils.substringAfter(
+            extractChilds(xmlObject, "differential_path")[0].newCursor().getTextValue(), "/");
+    String rm_attribute_name =
+        extractChilds(xmlObject, "rm_attribute_name")[0].newCursor().getTextValue();
+    String aql = "/" + differential_path + "/" + rm_attribute_name;
+    List<String> attributeNames =
+        Arrays.stream(extractChilds(xmlObject, "children"))
+            .map(x -> extractChilds(x, "default_value"))
+            .flatMap(Arrays::stream)
+            .map(XmlTokenSource::newDomNode)
+            .map(Node::getFirstChild)
+            .map(Node::getChildNodes)
+            .map(this::buildList)
+            .flatMap(List::stream)
+            .map(Node::getNodeName)
+            .collect(Collectors.toList());
+
+    attributeNames.forEach(
+        n -> {
+          Optional<XmlObject> any =
+              Arrays.stream(extractChilds(xmlObject, "children"))
+                  .map(x -> extractChilds(x, "default_value"))
+                  .flatMap(Arrays::stream)
+                  .map(x -> extractChilds(x, n))
+                  .flatMap(Arrays::stream)
+                  .findAny();
+          if (any.isPresent()) {
+            if (any.get().newDomNode().getFirstChild().getChildNodes().getLength() == 1) {
+
+              String defaultValue = any.get().newCursor().getTextValue();
+
+              defaults.add(new ImmutablePair<>(aql + "|" + n, defaultValue));
+            } else {
+              String defaultValue =
+                  Arrays.stream(extractChilds(any.get(), "defining_code"))
+                      .findAny()
+                      .map(x -> extractChilds(x, "code_string"))
+                      .stream()
+                      .flatMap(Arrays::stream)
+                      .map(XmlTokenSource::newCursor)
+                      .map(XmlCursor::getTextValue)
+                      .findAny()
+                      .orElse("");
+              defaults.add(new ImmutablePair<>(aql + "|" + "defining_code", defaultValue));
+            }
+          }
+        });
+    return defaults;
+  }
+
+  private List<Node> buildList(NodeList list) {
+
+    List<Node> nodes = new ArrayList<>();
+    for (int i = 0; i < list.getLength(); i++) {
+      Node item = list.item(i);
+      if (item.getNodeType() == 1) {
+        nodes.add(item);
+      }
+    }
+    return nodes;
   }
 
   private WebTemplateNode parseCARCHETYPEROO(CARCHETYPEROOT carchetyperoot, String aqlPath) {
@@ -171,7 +259,7 @@ public class OPTParser {
         if (cobject instanceof CPRIMITIVEOBJECT) {
           inputMap.put(
               cattribute.getRmAttributeName(),
-              InputHandler.extractInput((CPRIMITIVEOBJECT) cobject));
+              inputHandler.extractInput((CPRIMITIVEOBJECT) cobject));
         } else {
           WebTemplateNode childNode =
               parseCOBJECT(cobject, pathLoop, termDefinitionMap, cattribute.getRmAttributeName());
@@ -307,7 +395,7 @@ public class OPTParser {
         merged.getLocalizedDescriptions().putAll(node.getLocalizedDescriptions());
         merged.getLocalizedNames().putAll(node.getLocalizedNames());
         merged.setLocalizedName(node.getLocalizedName());
-        WebTemplateInput other = InputHandler.buildWebTemplateInput("other", "TEXT");
+        WebTemplateInput other = inputHandler.buildWebTemplateInput("other", "TEXT");
 
         merged.getInputs().add(other);
         merged.getInputs().stream()
@@ -335,8 +423,8 @@ public class OPTParser {
         node.getInputs().addAll(matching.get(0).getInputs());
 
       } else {
-        node.getInputs().add(InputHandler.buildWebTemplateInput("value", "TEXT"));
-        node.getInputs().add(InputHandler.buildWebTemplateInput("code", "TEXT"));
+        node.getInputs().add(inputHandler.buildWebTemplateInput("value", "TEXT"));
+        node.getInputs().add(inputHandler.buildWebTemplateInput("code", "TEXT"));
       }
     }
 
@@ -344,7 +432,7 @@ public class OPTParser {
 
     // If inputs where not set from the template set them via rmType;
     if (node.getInputs().isEmpty()) {
-      InputHandler.addInputs(node, inputMap);
+      inputHandler.addInputs(node, inputMap);
     }
 
     makeIdUnique(node);
@@ -420,7 +508,7 @@ public class OPTParser {
       node.setMin(1);
     }
 
-    InputHandler.addInputs(node, Collections.emptyMap());
+    inputHandler.addInputs(node, Collections.emptyMap());
 
     addRMAttributes(node, node.getAqlPath(), termDefinitionMap);
     return node;
@@ -502,11 +590,22 @@ public class OPTParser {
       WebTemplateInput magnitude = new WebTemplateInput();
       magnitude.setSuffix("magnitude");
       magnitude.setType("DECIMAL");
+      Optional.of((CDVQUANTITY) cdomaintype)
+          .map(CDVQUANTITY::getAssumedValue)
+          .map(DVQUANTITY::getMagnitude)
+          .map(d -> Double.toString(d))
+          .ifPresent(magnitude::setDefaultValue);
+      inputHandler.findDefaultValue(node, "magnitude").ifPresent(magnitude::setDefaultValue);
       node.getInputs().add(magnitude);
 
       WebTemplateInput unit = new WebTemplateInput();
       unit.setSuffix("unit");
       unit.setType(CODED_TEXT);
+      Optional.of((CDVQUANTITY) cdomaintype)
+          .map(CDVQUANTITY::getAssumedValue)
+          .map(DVQUANTITY::getUnits)
+          .ifPresent(unit::setDefaultValue);
+      inputHandler.findDefaultValue(node, "units").ifPresent(unit::setDefaultValue);
       node.getInputs().add(unit);
 
       Arrays.stream(((CDVQUANTITY) cdomaintype).getListArray())
@@ -520,11 +619,11 @@ public class OPTParser {
                 boolean addValidation = false;
                 if (o.getMagnitude() != null) {
                   addValidation = true;
-                  validation.setRange(InputHandler.extractInterval(o.getMagnitude()));
+                  validation.setRange(inputHandler.extractInterval(o.getMagnitude()));
                 }
                 if (o.getPrecision() != null) {
                   addValidation = true;
-                  validation.setPrecision(InputHandler.extractInterval(o.getPrecision()));
+                  validation.setPrecision(inputHandler.extractInterval(o.getPrecision()));
                 }
                 if (addValidation) {
                   value.setValidation(validation);
@@ -537,9 +636,15 @@ public class OPTParser {
       }
     } else if (cdomaintype instanceof CDVORDINAL) {
       WebTemplateInput code = new WebTemplateInput();
-
+      inputHandler.findDefaultValue(node, "defining_code").ifPresent(code::setDefaultValue);
       code.setType(CODED_TEXT);
       node.getInputs().add(code);
+      Optional.of((CDVORDINAL) cdomaintype)
+          .map(CDVORDINAL::getAssumedValue)
+          .map(DVORDINAL::getSymbol)
+          .map(DVCODEDTEXT::getDefiningCode)
+          .map(CODEPHRASE::getCodeString)
+          .ifPresent(code::setDefaultValue);
       Arrays.stream(((CDVORDINAL) cdomaintype).getListArray())
           .forEach(
               o -> {
@@ -560,8 +665,14 @@ public class OPTParser {
 
     } else if (cdomaintype instanceof CCODEPHRASE) {
       WebTemplateInput code = new WebTemplateInput();
+      inputHandler.findDefaultValue(node, "defining_code").ifPresent(code::setDefaultValue);
       code.setSuffix("code");
       node.getInputs().add(code);
+      Optional.of((CCODEPHRASE) cdomaintype)
+          .map(CCODEPHRASE::getAssumedValue)
+          .map(CODEPHRASE::getCodeString)
+          .ifPresent(code::setDefaultValue);
+
       if (cdomaintype instanceof CCODEREFERENCE) {
         code.setTerminology(
             Optional.of((CCODEREFERENCE) cdomaintype)
@@ -617,7 +728,7 @@ public class OPTParser {
 
       if (code.getList().isEmpty()) {
         code.setType("TEXT");
-        WebTemplateInput value = InputHandler.buildWebTemplateInput("value", "TEXT");
+        WebTemplateInput value = inputHandler.buildWebTemplateInput("value", "TEXT");
         value.setTerminology(code.getTerminology());
         node.getInputs().add(value);
       } else {

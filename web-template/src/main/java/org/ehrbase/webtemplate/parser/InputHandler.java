@@ -53,7 +53,12 @@ import org.openehr.schemas.v1.IntervalOfInteger;
 import org.openehr.schemas.v1.IntervalOfReal;
 
 public class InputHandler {
-  public InputHandler() {}
+
+  private final Map<String, String> defaultValues;
+
+  public InputHandler(Map<String, String> defaultValues) {
+    this.defaultValues = defaultValues;
+  }
 
   public WebTemplateInput extractInput(CPRIMITIVEOBJECT cprimitiveobject) {
     WebTemplateInput input = new WebTemplateInput();
@@ -265,9 +270,11 @@ public class InputHandler {
             .add(templateInputMap.getOrDefault("value", buildWebTemplateInput(null, "TEXT")));
         break;
       case "DV_COUNT":
-        node.getInputs()
-            .add(
-                templateInputMap.getOrDefault("magnitude", buildWebTemplateInput(null, "INTEGER")));
+        WebTemplateInput magnitude =
+            templateInputMap.getOrDefault("magnitude", buildWebTemplateInput(null, "INTEGER"));
+        findDefaultValue(node, "magnitude").ifPresent(magnitude::setDefaultValue);
+
+        node.getInputs().add(magnitude);
         break;
       case "DV_BOOLEAN":
         node.getInputs()
@@ -340,6 +347,14 @@ public class InputHandler {
                     .map(WebTemplateInterval::getMax)
                     .map(Object::toString)
                     .orElse(null));
+
+        Map<String, Integer> defaults =
+            buildDurationConstrains(findDefaultValue(node, "value").orElse(null));
+        Integer df = 0;
+        if (defaults.isEmpty()) {
+          df = null;
+        }
+
         WebTemplateComparisonSymbol maxOperator =
             Optional.ofNullable(templateInputMap.get("value"))
                 .map(WebTemplateInput::getValidation)
@@ -357,7 +372,8 @@ public class InputHandler {
             minConstrains.get("Y"),
             minOperator,
             maxConstrains.get("Y"),
-            maxOperator);
+            maxOperator,
+            defaults.getOrDefault("Y", df));
         buildDurationInput(
             node,
             "M",
@@ -367,7 +383,8 @@ public class InputHandler {
             minConstrains.get("M"),
             minOperator,
             maxConstrains.get("M"),
-            maxOperator);
+            maxOperator,
+            defaults.getOrDefault("M", df));
         buildDurationInput(
             node,
             "D",
@@ -377,7 +394,8 @@ public class InputHandler {
             minConstrains.get("D"),
             minOperator,
             maxConstrains.get("D"),
-            maxOperator);
+            maxOperator,
+            defaults.getOrDefault("D", df));
         buildDurationInput(
             node,
             "W",
@@ -387,7 +405,8 @@ public class InputHandler {
             minConstrains.get("W"),
             minOperator,
             maxConstrains.get("W"),
-            maxOperator);
+            maxOperator,
+            defaults.getOrDefault("W", df));
         buildDurationInput(
             node,
             "H",
@@ -397,7 +416,8 @@ public class InputHandler {
             minConstrains.get("H"),
             minOperator,
             maxConstrains.get("H"),
-            maxOperator);
+            maxOperator,
+            defaults.getOrDefault("H", df));
         buildDurationInput(
             node,
             "M",
@@ -407,7 +427,8 @@ public class InputHandler {
             minConstrains.get("MT"),
             minOperator,
             maxConstrains.get("MT"),
-            maxOperator);
+            maxOperator,
+            defaults.getOrDefault("MT", df));
         buildDurationInput(
             node,
             "S",
@@ -417,9 +438,24 @@ public class InputHandler {
             minConstrains.get("S"),
             minOperator,
             maxConstrains.get("S"),
-            maxOperator);
+            maxOperator,
+            defaults.getOrDefault("S", df));
         break;
     }
+    node.getInputs()
+        .forEach(
+            i -> {
+              Optional.ofNullable(
+                      defaultValues.get(
+                          node.getAqlPath(false)
+                              + "|"
+                              + ((StringUtils.isBlank(i.getSuffix())) ? "value" : i.getSuffix())))
+                  .ifPresent(i::setDefaultValue);
+            });
+  }
+
+  public Optional<String> findDefaultValue(WebTemplateNode node, String inputSuffix) {
+    return Optional.ofNullable(defaultValues.get(node.getAqlPath(true) + "|" + inputSuffix));
   }
 
   private Map<String, Integer> buildDurationConstrains(String constrain) {
@@ -458,7 +494,8 @@ public class InputHandler {
       Integer minValue,
       WebTemplateComparisonSymbol minOperator,
       Integer maxValue,
-      WebTemplateComparisonSymbol maxOperator) {
+      WebTemplateComparisonSymbol maxOperator,
+      Integer defaultValue) {
     if (emptyPattern || pattern.contains(symbol)) {
 
       WebTemplateInterval<Integer> defaultRange =
@@ -471,7 +508,11 @@ public class InputHandler {
         defaultRange.setMax(maxValue);
         defaultRange.setMaxOp(maxOperator);
       }
-      node.getInputs().add(buildWebTemplateInput(suffix, "INTEGER", defaultRange));
+      WebTemplateInput input = buildWebTemplateInput(suffix, "INTEGER", defaultRange);
+      if (defaultValue != null) {
+        input.setDefaultValue(defaultValue.toString());
+      }
+      node.getInputs().add(input);
     }
   }
 }

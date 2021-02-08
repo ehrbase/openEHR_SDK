@@ -174,7 +174,11 @@ public class OPTParserTest {
             WebTemplate.class);
 
     List<String> errors = compareWebTemplate(actual, expected);
-    checkErrors(errors, new String[] {});
+    checkErrors(
+        errors,
+        new String[] {
+          "DefaultValue not equal 100.0 != null in input.suffix:denominator id=total_body_surface_area_tbsa_affected aql=/content[openEHR-EHR-OBSERVATION.affected_body_surface_area.v0]/data[at0001]/events[at0002]/data[at0003]/items[at0014]/value"
+        });
   }
 
   @Test
@@ -342,6 +346,11 @@ public class OPTParserTest {
         .filteredOn(s -> s.startsWith("InputValue not equal"))
         .containsExactlyInAnyOrder();
 
+    softAssertions
+        .assertThat(errors)
+        .filteredOn(s -> s.startsWith("DefaultValue not equal"))
+        .containsExactlyInAnyOrder();
+
     softAssertions.assertAll();
   }
 
@@ -470,6 +479,17 @@ public class OPTParserTest {
               "ListOpen not equal %s != %s in input.suffix:%s id=%s aql=%s",
               actual.getListOpen(),
               expected.getListOpen(),
+              actual.getSuffix(),
+              node.getId(),
+              node.getAqlPath()));
+    }
+
+    if (!Objects.equals(actual.getDefaultValue(), expected.getDefaultValue())) {
+      errors.add(
+          String.format(
+              "DefaultValue not equal %s != %s in input.suffix:%s id=%s aql=%s",
+              actual.getDefaultValue(),
+              expected.getDefaultValue(),
               actual.getSuffix(),
               node.getId(),
               node.getAqlPath()));
