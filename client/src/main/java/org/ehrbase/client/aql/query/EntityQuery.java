@@ -69,7 +69,10 @@ public class EntityQuery<T extends Record> implements Query<T> {
     ehrContainment.bindQuery(this);
     this.fields = Arrays.stream(fields).map(this::replace).toArray(SelectAqlField[]::new);
     this.containmentExpression = containmentExpression;
-    containmentExpression.bindQuery(this);
+
+    if (containmentExpression != null) {
+      containmentExpression.bindQuery(this);
+    }
   }
 
   private SelectAqlField<Object> replace(SelectAqlField<?> selectAqlField) {
