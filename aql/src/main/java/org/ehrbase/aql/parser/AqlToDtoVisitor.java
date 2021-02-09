@@ -63,7 +63,9 @@ public class AqlToDtoVisitor extends AqlBaseVisitor<Object> {
     AqlDto aqlDto = new AqlDto();
 
     aqlDto.setEhr(visitFromEHR(ctx.queryExpr().from().fromEHR()));
-    aqlDto.setContains(visitContainsExpression(ctx.queryExpr().from().containsExpression()));
+    if (ctx.queryExpr().from().containsExpression() != null) {
+      aqlDto.setContains(visitContainsExpression(ctx.queryExpr().from().containsExpression()));
+    }
     aqlDto.setSelect(visitSelect(ctx.queryExpr().select()));
     if (ctx.queryExpr().where() != null) {
       aqlDto.setWhere(visitIdentifiedExpr(ctx.queryExpr().where().identifiedExpr()));
@@ -126,7 +128,9 @@ public class AqlToDtoVisitor extends AqlBaseVisitor<Object> {
 
     if (ctx.identifiedPath() != null) {
       SelectFieldDto selectFieldDto = visitIdentifiedPath(ctx.identifiedPath());
-      selectFieldDto.setName(ctx.IDENTIFIER().getText());
+      if (ctx.IDENTIFIER() != null) {
+        selectFieldDto.setName(ctx.IDENTIFIER().getText());
+      }
       selectStatementDtos.add(selectFieldDto);
     }
 

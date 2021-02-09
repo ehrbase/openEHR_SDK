@@ -42,6 +42,13 @@ public class AqlToDtoParserTest {
   }
 
   @Test
+  public void parseWithoutContains() {
+    String aql = "SELECT e/ehr_id/value FROM EHR e";
+
+    testAql(aql, "Select e/ehr_id/value as F1 from EHR e");
+  }
+
+  @Test
   public void parseLimitOffset() {
     String aql =
         "Select c/context/other_context[at0001]/items[at0002]/value/value as Bericht_ID__value, d/ehr_id/value as ehr_id from EHR d contains COMPOSITION c[openEHR-EHR-COMPOSITION.report.v1] LIMIT 5 OFFSET 1";

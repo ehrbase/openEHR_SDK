@@ -54,10 +54,18 @@ public class AqlBinder {
   public Pair<EntityQuery<Record>, List<ParameterValue>> bind(AqlDto aqlDto) {
 
     // build Containment
-    Pair<ContainmentExpression, Map<Integer, Containment>> pair =
-        containmentBinder.buildContainment(aqlDto.getContains());
-    ContainmentExpression containment = pair.getLeft();
-    Map<Integer, Containment> containmentMap = pair.getRight();
+    final Map<Integer, Containment> containmentMap;
+    final ContainmentExpression containment;
+
+    if (aqlDto.getContains() != null) {
+      Pair<ContainmentExpression, Map<Integer, Containment>> pair =
+          containmentBinder.buildContainment(aqlDto.getContains());
+      containment = pair.getLeft();
+      containmentMap = pair.getRight();
+    } else {
+      containment = null;
+      containmentMap = new HashMap<>();
+    }
 
     Map<Containment, String> variablesMap =
         buildVariableMap(aqlDto.getContains()).entrySet().stream()
