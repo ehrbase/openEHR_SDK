@@ -37,6 +37,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
@@ -92,6 +93,7 @@ public class OPTParser {
   private final String defaultLanguage;
   private Map<String, String> defaultValues = new HashMap<>();
   private final InputHandler inputHandler = new InputHandler(defaultValues);
+  private List<String> languages;
 
   public OPTParser(OPERATIONALTEMPLATE operationaltemplate) {
     this.operationaltemplate = operationaltemplate;
@@ -117,6 +119,8 @@ public class OPTParser {
                 .map(RESOURCEDESCRIPTIONITEM::getLanguage)
                 .map(CODEPHRASE::getCodeString)
                 .collect(Collectors.toSet()));
+
+    languages = webTemplate.getLanguages();
 
     webTemplate.setTree(parseCARCHETYPEROO(operationaltemplate.getDefinition(), ""));
     return webTemplate;
@@ -214,10 +218,69 @@ public class OPTParser {
           .computeIfAbsent(code, c -> new HashMap<>())
           .put(defaultLanguage, new TermDefinition(code, value, description, otherMap));
     }
+
+    Map<String, Map<String, TermDefinition>> otherTermDefinitionMap =
+        buildOtherTerms(carchetyperoot.getArchetypeId().getValue());
+    otherTermDefinitionMap.forEach(
+        (key, value) -> {
+          termDefinitionMap.computeIfAbsent(key, c -> new HashMap<>()).putAll(value);
+        });
+
     WebTemplateNode node = parseCCOMPLEXOBJECT(carchetyperoot, aqlPath, termDefinitionMap, null);
     node.setNodeId(carchetyperoot.getArchetypeId().getValue());
     addRMAttributes(node, aqlPath, termDefinitionMap);
     return node;
+  }
+
+  private Map<String, Map<String, TermDefinition>> buildOtherTerms(String archetypeId) {
+    Map<String, Map<String, TermDefinition>> otherTermDefinitionMap = new HashMap<>();
+    List<XmlObject> ontologies = new ArrayList<>();
+    ontologies.addAll(
+        Arrays.stream(extractChilds(operationaltemplate, "ontology"))
+            .filter(
+                x ->
+                    x.selectAttribute("", "archetype_id")
+                        .newCursor()
+                        .getTextValue()
+                        .equals(archetypeId))
+            .map(x -> extractChilds(x, "term_definitions"))
+            .flatMap(Arrays::stream)
+            .collect(Collectors.toList()));
+    ontologies.addAll(
+        Arrays.stream(extractChilds(operationaltemplate, "component_ontologies"))
+            .filter(
+                x ->
+                    x.selectAttribute("", "archetype_id")
+                        .newCursor()
+                        .getTextValue()
+                        .equals(archetypeId))
+            .map(x -> extractChilds(x, "term_definitions"))
+            .flatMap(Arrays::stream)
+            .collect(Collectors.toList()));
+
+    for (XmlObject term : ontologies) {
+      String language = term.selectAttribute("", "language").newCursor().getTextValue();
+
+      for (XmlObject items : extractChilds(term, "items")) {
+        String code = items.selectAttribute("", "code").newCursor().getTextValue();
+        String text = "";
+        String description = "";
+        for (XmlObject item : extractChilds(items, "items")) {
+          String id = item.selectAttribute("", "id").newCursor().getTextValue();
+          String value = item.newCursor().getTextValue();
+          if (Objects.equals(id, "text")) {
+            text = value;
+          } else if (Objects.equals(id, "description")) {
+            description = value;
+          }
+        }
+        Map<String, TermDefinition> termDefinitionMap =
+            otherTermDefinitionMap.computeIfAbsent(code, c -> new HashMap<>());
+        termDefinitionMap.put(language, new TermDefinition(code, text, description));
+      }
+    }
+
+    return otherTermDefinitionMap;
   }
 
   private WebTemplateNode parseCCOMPLEXOBJECT(
@@ -366,15 +429,11 @@ public class OPTParser {
                       !List.of("null_flavour", "feeder_audit").contains(n.getName())
                           || !n.isNullable())
               .collect(Collectors.toList());
+      trueChildren.forEach(c -> pushProperties(node, c));
+
       if (trueChildren.size() == 1) {
         WebTemplateNode value = trueChildren.get(0);
         value.setId(node.getId(false));
-        value.setName(node.getName());
-        value.setMax(node.getMax());
-        value.setMin(node.getMin());
-        value.getLocalizedDescriptions().putAll(node.getLocalizedDescriptions());
-        value.getLocalizedNames().putAll(node.getLocalizedNames());
-        value.setLocalizedName(node.getLocalizedName());
         value.setAnnotations(node.getAnnotations());
 
         // If contains a choice of DV_TEXT and DV_CODED_TEXT add a merged node
@@ -395,6 +454,7 @@ public class OPTParser {
         merged.getLocalizedDescriptions().putAll(node.getLocalizedDescriptions());
         merged.getLocalizedNames().putAll(node.getLocalizedNames());
         merged.setLocalizedName(node.getLocalizedName());
+        merged.setAnnotations(node.getAnnotations());
         WebTemplateInput other = inputHandler.buildWebTemplateInput("other", "TEXT");
 
         merged.getInputs().add(other);
@@ -412,7 +472,12 @@ public class OPTParser {
                     !List.of("null_flavour", "feeder_audit").contains(n.getName())
                         || !n.isNullable())
             .filter(n -> n.getRmType().startsWith("DV_"))
-            .forEach(n -> n.setId(n.getRmType().replace("DV_", "").toLowerCase() + "_value"));
+            .forEach(
+                n -> {
+                  n.setId(n.getRmType().replace("DV_", "").toLowerCase() + "_value");
+                  n.getLocalizedDescriptions().putAll(node.getLocalizedDescriptions());
+                  n.getLocalizedNames().putAll(node.getLocalizedNames());
+                });
       }
     }
 
@@ -438,6 +503,15 @@ public class OPTParser {
     makeIdUnique(node);
 
     return node;
+  }
+
+  private void pushProperties(WebTemplateNode node, WebTemplateNode value) {
+    value.setName(node.getName());
+    value.setMax(node.getMax());
+    value.setMin(node.getMin());
+    value.getLocalizedDescriptions().putAll(node.getLocalizedDescriptions());
+    value.getLocalizedNames().putAll(node.getLocalizedNames());
+    value.setLocalizedName(node.getLocalizedName());
   }
 
   public static void makeIdUnique(WebTemplateNode node) {
@@ -628,7 +702,13 @@ public class OPTParser {
                 if (addValidation) {
                   value.setValidation(validation);
                 }
-
+                value
+                    .getLocalizedLabels()
+                    .putAll(
+                        termDefinitionMap.getOrDefault(o.getUnits(), Collections.emptyMap())
+                            .entrySet().stream()
+                            .collect(
+                                Collectors.toMap(Map.Entry::getKey, e -> e.getValue().getValue())));
                 unit.getList().add(value);
               });
       if (unit.getList().size() == 1) {
@@ -659,7 +739,19 @@ public class OPTParser {
                             .flatMap(Set::stream)
                             .collect(
                                 Collectors.toMap(Map.Entry::getKey, e -> e.getValue().getValue())));
+                value
+                    .getLocalizedDescriptions()
+                    .putAll(
+                        Optional.ofNullable(termDefinitionMap.get(value.getValue()))
+                            .map(Map::entrySet).stream()
+                            .flatMap(Set::stream)
+                            .collect(
+                                Collectors.toMap(
+                                    Map.Entry::getKey, e -> e.getValue().getDescription())));
                 value.setLabel(value.getLocalizedLabels().get(defaultLanguage));
+                if (!value.getLocalizedDescriptions().containsKey(defaultLanguage)) {
+                  value.getLocalizedDescriptions().put(defaultLanguage, "");
+                }
                 code.getList().add(value);
               });
 
@@ -693,6 +785,18 @@ public class OPTParser {
                 code.getTerminology(),
                 ((CCODEPHRASE) cdomaintype).getCodeListArray(),
                 defaultLanguage);
+
+        Map<String, ValueSet> collect =
+            languages.stream()
+                .collect(
+                    Collectors.toMap(
+                        Function.identity(),
+                        l ->
+                            TerminologyProvider.findOpenEhrValueSet(
+                                code.getTerminology(),
+                                ((CCODEPHRASE) cdomaintype).getCodeListArray(),
+                                l)));
+
         valueSet
             .getTherms()
             .forEach(
@@ -700,8 +804,22 @@ public class OPTParser {
                   WebTemplateInputValue value = new WebTemplateInputValue();
                   value.setValue(t.getCode());
                   value.setLabel(t.getValue());
+                  value
+                      .getLocalizedLabels()
+                      .putAll(
+                          collect.entrySet().stream()
+                              .collect(
+                                  Collectors.toMap(
+                                      Map.Entry::getKey,
+                                      e ->
+                                          e.getValue().getTherms().stream()
+                                              .filter(x -> x.getCode().equals(t.getCode()))
+                                              .findAny()
+                                              .map(TermDefinition::getValue)
+                                              .orElse(""))));
                   code.getList().add(value);
                 });
+
       } else {
         Arrays.stream(((CCODEPHRASE) cdomaintype).getCodeListArray())
             .forEach(
@@ -713,14 +831,27 @@ public class OPTParser {
                   if (termDefinition.isPresent()) {
                     value.setValue(termDefinition.get().getCode());
                     value.setLabel(termDefinition.get().getValue());
-                    if (StringUtils.isNotBlank(termDefinition.get().getDescription())) {
-                      value
-                          .getLocalizedDescriptions()
-                          .put(defaultLanguage, termDefinition.get().getDescription());
-                    }
+
                     value
                         .getLocalizedLabels()
-                        .put(defaultLanguage, termDefinition.get().getValue());
+                        .putAll(
+                            termDefinitionMap.getOrDefault(o, Collections.emptyMap()).entrySet()
+                                .stream()
+                                .collect(
+                                    Collectors.toMap(
+                                        Map.Entry::getKey, e -> e.getValue().getValue())));
+                    value
+                        .getLocalizedDescriptions()
+                        .putAll(
+                            termDefinitionMap.getOrDefault(o, Collections.emptyMap()).entrySet()
+                                .stream()
+                                .filter(e -> StringUtils.isNotBlank(e.getValue().getDescription()))
+                                .collect(
+                                    Collectors.toMap(
+                                        Map.Entry::getKey, e -> e.getValue().getDescription())));
+                    if (!value.getLocalizedDescriptions().containsKey(defaultLanguage)) {
+                      value.getLocalizedDescriptions().put(defaultLanguage, "");
+                    }
                     code.getList().add(value);
                   }
                 });
@@ -771,6 +902,8 @@ public class OPTParser {
           .putAll(
               termDefinitionMap.get(nodeId).entrySet().stream()
                   .collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().getValue())));
+      // honer expliziert set name.
+      node.getLocalizedNames().put(defaultLanguage, name);
       node.getLocalizedDescriptions()
           .putAll(
               termDefinitionMap.get(nodeId).entrySet().stream()

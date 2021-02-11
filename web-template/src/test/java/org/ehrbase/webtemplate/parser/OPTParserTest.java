@@ -70,7 +70,11 @@ public class OPTParserTest {
 
     List<String> errors = compareWebTemplate(actual, expected);
 
-    checkErrors(errors, new String[] {});
+    checkErrors(
+        errors,
+        new String[] {
+          "LocalizedNames not equal [de=event] != [de=] in inputValue.code:433 id=category aql=/category"
+        });
   }
 
   @Test
@@ -97,6 +101,7 @@ public class OPTParserTest {
     checkErrors(
         errors,
         new String[] {
+          "LocalizedNames not equal [de=event] != [de=] in inputValue.code:433 id=category aql=/category",
           "Validation not equal WebTemplateValidation{precision=null, range=WebTemplateValidationInterval{min=0.0, minOp=GT_EQ, max=1000000.0, maxOp=LT_EQ}, pattern='null'} != WebTemplateValidation{precision=null, range=WebTemplateValidationInterval{min=0, minOp=GT_EQ, max=1000000, maxOp=LT_EQ}, pattern='null'} in inputValue.code:g id=gewicht aql=/content[openEHR-EHR-OBSERVATION.body_weight.v2]/data[at0002]/events[at0026]/data[at0001]/items[at0004]/value",
           "Validation not equal WebTemplateValidation{precision=null, range=WebTemplateValidationInterval{min=0.0, minOp=GT_EQ, max=1000.0, maxOp=LT_EQ}, pattern='null'} != WebTemplateValidation{precision=null, range=WebTemplateValidationInterval{min=0, minOp=GT_EQ, max=1000, maxOp=LT_EQ}, pattern='null'} in inputValue.code:kg id=gewicht aql=/content[openEHR-EHR-OBSERVATION.body_weight.v2]/data[at0002]/events[at0026]/data[at0001]/items[at0004]/value",
           "Validation not equal WebTemplateValidation{precision=null, range=WebTemplateValidationInterval{min=0.0, minOp=GT_EQ, max=2000.0, maxOp=LT_EQ}, pattern='null'} != WebTemplateValidation{precision=null, range=WebTemplateValidationInterval{min=0, minOp=GT_EQ, max=2000, maxOp=LT_EQ}, pattern='null'} in inputValue.code:[lb_av] id=gewicht aql=/content[openEHR-EHR-OBSERVATION.body_weight.v2]/data[at0002]/events[at0026]/data[at0001]/items[at0004]/value",
@@ -202,7 +207,9 @@ public class OPTParserTest {
     checkErrors(
         errors,
         new String[] {
-          "InputValue not equal 146:mean != 146:Durchschnitt in id=math_function aql=/content[openEHR-EHR-OBSERVATION.blood_pressure.v2]/data[at0001]/events[at1042]/math_function"
+          "InputValue not equal 146:mean != 146:Durchschnitt in id=math_function aql=/content[openEHR-EHR-OBSERVATION.blood_pressure.v2]/data[at0001]/events[at1042]/math_function",
+          "LocalizedNames not equal [de=event, ar-sy=event, en=event, fi=event] != [de=, fi=, en=event, ar-sy=] in inputValue.code:433 id=category aql=/category",
+          "LocalizedNames not equal [de=mean, ar-sy=mean, en=mean, fi=mean] != [de=Durchschnitt, fi=, en=mean, ar-sy=] in inputValue.code:146 id=math_function aql=/content[openEHR-EHR-OBSERVATION.blood_pressure.v2]/data[at0001]/events[at1042]/math_function"
         });
   }
 
@@ -274,7 +281,16 @@ public class OPTParserTest {
 
     List<String> errors = compareWebTemplate(actual, expected);
 
-    checkErrors(errors, new String[] {});
+    checkErrors(
+        errors,
+        new String[] {
+          "LocalizedNames not equal [en=active] != [] in inputValue.code:245 id=current_state aql=/content[openEHR-EHR-SECTION.test_all_types.v1]/items[at0001]/items[at0002]/items[openEHR-EHR-ACTION.test_all_types.v1]/ism_transition/current_state",
+          "LocalizedNames not equal [en=completed] != [] in inputValue.code:532 id=current_state aql=/content[openEHR-EHR-SECTION.test_all_types.v1]/items[at0001]/items[at0002]/items[openEHR-EHR-ACTION.test_all_types.v1]/ism_transition/current_state",
+          "LocalizedNames not equal [en=planned] != [] in inputValue.code:526 id=current_state aql=/content[openEHR-EHR-SECTION.test_all_types.v1]/items[at0001]/items[at0002]/items[openEHR-EHR-ACTION.test_all_types.v1]/ism_transition/current_state",
+          "LocalizedDescriptions not equal {en=*} != {} in inputValue.code:at0005 id=careflow_step aql=/content[openEHR-EHR-SECTION.test_all_types.v1]/items[at0001]/items[at0002]/items[openEHR-EHR-ACTION.test_all_types.v1]/ism_transition/careflow_step",
+          "LocalizedDescriptions not equal {en=*} != {} in inputValue.code:at0004 id=careflow_step aql=/content[openEHR-EHR-SECTION.test_all_types.v1]/items[at0001]/items[at0002]/items[openEHR-EHR-ACTION.test_all_types.v1]/ism_transition/careflow_step",
+          "LocalizedDescriptions not equal {en=*} != {} in inputValue.code:at0003 id=careflow_step aql=/content[openEHR-EHR-SECTION.test_all_types.v1]/items[at0001]/items[at0002]/items[openEHR-EHR-ACTION.test_all_types.v1]/ism_transition/careflow_step"
+        });
   }
 
   public void checkErrors(List<String> errors, String[] expectedErrors) {
@@ -351,6 +367,16 @@ public class OPTParserTest {
         .filteredOn(s -> s.startsWith("DefaultValue not equal"))
         .containsExactlyInAnyOrder();
 
+    softAssertions
+        .assertThat(errors)
+        .filteredOn(s -> s.startsWith("LocalizedNames not equal"))
+        .containsExactlyInAnyOrder();
+
+    softAssertions
+        .assertThat(errors)
+        .filteredOn(s -> s.startsWith("LocalizedDescriptions not equal"))
+        .containsExactlyInAnyOrder();
+
     softAssertions.assertAll();
   }
 
@@ -415,6 +441,27 @@ public class OPTParserTest {
               actual.getAqlPath()));
     }
 
+    if (!CollectionUtils.isEqualCollection(
+        actual.getLocalizedNames().entrySet(), expected.getLocalizedNames().entrySet())) {
+      errors.add(
+          String.format(
+              "LocalizedNames not equal %s != %s in  id=%s aql=%s",
+              actual.getLocalizedNames().entrySet(),
+              expected.getLocalizedNames().entrySet(),
+              actual.getId(),
+              actual.getAqlPath()));
+    }
+    if (!CollectionUtils.isEqualCollection(
+        actual.getLocalizedDescriptions().entrySet(),
+        expected.getLocalizedDescriptions().entrySet())) {
+      errors.add(
+          String.format(
+              "LocalizedDescriptions not equal %s != %s in  id=%s aql=%s",
+              actual.getLocalizedDescriptions(),
+              expected.getLocalizedDescriptions(),
+              actual.getId(),
+              actual.getAqlPath()));
+    }
     return errors;
   }
 
@@ -557,6 +604,30 @@ public class OPTParserTest {
               "Validation not equal %s != %s in inputValue.code:%s id=%s aql=%s",
               actual.getValidation(),
               expected.getValidation(),
+              actual.getValue(),
+              node.getId(),
+              node.getAqlPath()));
+    }
+
+    if (!CollectionUtils.isEqualCollection(
+        actual.getLocalizedLabels().entrySet(), expected.getLocalizedLabels().entrySet())) {
+      errors.add(
+          String.format(
+              "LocalizedNames not equal %s != %s in inputValue.code:%s id=%s aql=%s",
+              actual.getLocalizedLabels().entrySet(),
+              expected.getLocalizedLabels().entrySet(),
+              actual.getValue(),
+              node.getId(),
+              node.getAqlPath()));
+    }
+    if (!CollectionUtils.isEqualCollection(
+        actual.getLocalizedDescriptions().entrySet(),
+        expected.getLocalizedDescriptions().entrySet())) {
+      errors.add(
+          String.format(
+              "LocalizedDescriptions not equal %s != %s in inputValue.code:%s id=%s aql=%s",
+              actual.getLocalizedDescriptions(),
+              expected.getLocalizedDescriptions(),
               actual.getValue(),
               node.getId(),
               node.getAqlPath()));

@@ -2615,7 +2615,7 @@
             <value>openEHR-EHR-COMPOSITION.encounter.v1</value>
         </archetype_id>
         <template_id>
-            <value>language-test</value>
+            <value>language_test</value>
         </template_id>
         <term_definitions code="at0001">
             <items id="text">Tree</items>
@@ -2627,7 +2627,7 @@
             <items id="comment">Zum Beispiel Informationen zu lokalen Krankenhausabteilungen oder zusätzliche Metadaten zur Übereinstimmung mit FHIR- oder CIMI-Äquivalenten.</items>
         </term_definitions>
         <term_definitions code="at0000">
-            <items id="text">language-test</items>
+            <items id="text">language_test</items>
             <items id="description">Interaktion, Kontakt oder Versorgungsereignis, zwischen einem Versorgungsempfänger und einem Gesundheitsdienstleister.</items>
         </term_definitions>
     </definition>
@@ -2643,7 +2643,7 @@
                 <items id="comment">e.g. Local hospital departmental infomation or additional metadata to align with FHIR or CIMI equivalents.</items>
             </items>
             <items code="at0000">
-                <items id="text">language-test</items>
+                <items id="text">language_test</items>
                 <items id="description">Interaction, contact or care event between a subject of care and healthcare provider(s).</items>
             </items>
         </term_definitions>
@@ -2658,7 +2658,7 @@
                 <items id="comment">*e.g. Local hospital departmental infomation or additional metadata to align with FHIR or CIMI equivalents.(en)</items>
             </items>
             <items code="at0000">
-                <items id="text">language-test</items>
+                <items id="text">language_test</items>
                 <items id="description">*Interaction, contact or care event between a subject of care and healthcare provider(s).(en)</items>
             </items>
         </term_definitions>
@@ -2673,7 +2673,7 @@
                 <items id="comment">*e.g. Local hospital departmental infomation or additional metadata to align with FHIR or CIMI equivalents.(en)</items>
             </items>
             <items code="at0000">
-                <items id="text">language-test</items>
+                <items id="text">language_test</items>
                 <items id="description">Hoitohenkilön ja terveydenhuollon tarjoajan välinen vuorovaikutus, kontakti- tai hoitotapahtuma.</items>
             </items>
         </term_definitions>

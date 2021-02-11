@@ -909,9 +909,7 @@
                     <value>openEHR-EHR-OBSERVATION.body_temperature.v2</value>
                 </archetype_id>
                 <term_definitions code="at0000">
-                    <items id="description">A measurement of the body temperature, which is a surrogate for the core
-                        body temperature of the individual.
-                    </items>
+                    <items id="description">A measurement of the body temperature, which is a surrogate for the core                         body temperature of the individual.                     </items>
                     <items id="text">Body temperature</items>
                 </term_definitions>
                 <term_definitions code="at0001">
@@ -923,14 +921,11 @@
                     <items id="text">History</items>
                 </term_definitions>
                 <term_definitions code="at0003">
-                    <items id="description">Default, unspecified point in time or interval event which may be explicitly
-                        defined in a template or at run-time.
-                    </items>
+                    <items id="description">Default, unspecified point in time or interval event which may be explicitly                         defined in a template or at run-time.                     </items>
                     <items id="text">Any event</items>
                 </term_definitions>
                 <term_definitions code="at0004">
-                    <items id="description">The measured body temperature (as a surrogate for the core of the body).
-                    </items>
+                    <items id="description">The measured body temperature (as a surrogate for the core of the body).                     </items>
                     <items id="text">Temperature</items>
                 </term_definitions>
                 <term_definitions code="at0020">
@@ -950,9 +945,7 @@
                     <items id="text">Ear canal</items>
                 </term_definitions>
                 <term_definitions code="at0024">
-                    <items id="description">Temperature is measured from the skin of the axilla with the arm positioned
-                        down by the side.
-                    </items>
+                    <items id="description">Temperature is measured from the skin of the axilla with the arm positioned                         down by the side.                     </items>
                     <items id="text">Axilla</items>
                 </term_definitions>
                 <term_definitions code="at0025">
@@ -984,27 +977,19 @@
                     <items id="text">Naked</items>
                 </term_definitions>
                 <term_definitions code="at0032">
-                    <items id="description">The person is covered by a lesser amount of clothing or bedding than deemed
-                        appropriate for the environmental circumstances.
-                    </items>
+                    <items id="description">The person is covered by a lesser amount of clothing or bedding than deemed                         appropriate for the environmental circumstances.                     </items>
                     <items id="text">Reduced clothing/bedding</items>
                 </term_definitions>
                 <term_definitions code="at0033">
-                    <items id="description">The person is covered by an amount of clothing or bedding deemed appropriate
-                        for the environmental circumstances.
-                    </items>
+                    <items id="description">The person is covered by an amount of clothing or bedding deemed appropriate                         for the environmental circumstances.                     </items>
                     <items id="text">Appropriate clothing/bedding</items>
                 </term_definitions>
                 <term_definitions code="at0034">
-                    <items id="description">The person is covered by an increased amount of clothing or bedding than
-                        deemed appropriate for the environmental circumstances.
-                    </items>
+                    <items id="description">The person is covered by an increased amount of clothing or bedding than                         deemed appropriate for the environmental circumstances.                     </items>
                     <items id="text">Increased clothing/bedding</items>
                 </term_definitions>
                 <term_definitions code="at0041">
-                    <items id="description">Description of the conditions applied to the subject that might influence
-                        their measured body temperature.
-                    </items>
+                    <items id="description">Description of the conditions applied to the subject that might influence                         their measured body temperature.                     </items>
                     <items id="text">Description of thermal stress</items>
                 </term_definitions>
                 <term_definitions code="at0043">
@@ -1020,21 +1005,15 @@
                     <items id="text">Oesophagus</items>
                 </term_definitions>
                 <term_definitions code="at0055">
-                    <items id="description">Temperature is measured in the inguinal skin crease between the leg and
-                        abdominal wall.
-                    </items>
+                    <items id="description">Temperature is measured in the inguinal skin crease between the leg and                         abdominal wall.                     </items>
                     <items id="text">Inguinal skin crease</items>
                 </term_definitions>
                 <term_definitions code="at0056">
-                    <items id="description">Details about the environmental conditions at the time of temperature
-                        measurement.
-                    </items>
+                    <items id="description">Details about the environmental conditions at the time of temperature                         measurement.                     </items>
                     <items id="text">Environmental conditions</items>
                 </term_definitions>
                 <term_definitions code="at0057">
-                    <items id="description">Details about the exertion of the person at the time of temperature
-                        measurement.
-                    </items>
+                    <items id="description">Details about the exertion of the person at the time of temperature                         measurement.                     </items>
                     <items id="text">Exertion</items>
                 </term_definitions>
                 <term_definitions code="at0059">
@@ -1042,9 +1021,7 @@
                     <items id="text">Device</items>
                 </term_definitions>
                 <term_definitions code="at0060">
-                    <items id="description">Temperature is measured at the temple, over the superficial temporal
-                        artery.
-                    </items>
+                    <items id="description">Temperature is measured at the temple, over the superficial temporal                         artery.                     </items>
                     <items id="text">Temple</items>
                 </term_definitions>
                 <term_definitions code="at0061">
@@ -1052,18 +1029,12 @@
                     <items id="text">Forehead</items>
                 </term_definitions>
                 <term_definitions code="at0062">
-                    <items id="comment">e.g. Local information requirements or additional metadata to align with FHIR or
-                        CIMI equivalents.
-                    </items>
-                    <items id="description">Additional information required to capture local content or to align with
-                        other reference models/formalisms.
-                    </items>
+                    <items id="comment">e.g. Local information requirements or additional metadata to align with FHIR or                         CIMI equivalents.                     </items>
+                    <items id="description">Additional information required to capture local content or to align with                         other reference models/formalisms.                     </items>
                     <items id="text">Extension</items>
                 </term_definitions>
                 <term_definitions code="at0063">
-                    <items id="description">Additional comment about the body temperature measurement not captured in
-                        other fields.
-                    </items>
+                    <items id="description">Additional comment about the body temperature measurement not captured in                         other fields.                     </items>
                     <items id="text">Comment</items>
                 </term_definitions>
                 <term_definitions code="at0064">
@@ -1113,9 +1084,7 @@
             <value>ehrbase_multi_occurence.de.v1</value>
         </template_id>
         <term_definitions code="at0000">
-            <items id="description">Interaction, contact or care event between a subject of care and healthcare
-                provider(s).
-            </items>
+            <items id="description">Interaction, contact or care event between a subject of care and healthcare                 provider(s).             </items>
             <items id="text">Encounter</items>
         </term_definitions>
         <term_definitions code="at0001">
@@ -1126,9 +1095,7 @@
             <items id="comment">e.g. Local hospital departmental infomation or additional metadata to align with FHIR or
                 CIMI equivalents.
             </items>
-            <items id="description">Additional information required to capture local context or to align with other
-                reference models/formalisms.
-            </items>
+            <items id="description">Additional information required to capture local context or to align with other                reference models/formalisms.            </items>
             <items id="text">Extension</items>
         </term_definitions>
     </definition>
