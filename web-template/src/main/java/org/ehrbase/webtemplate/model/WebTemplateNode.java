@@ -19,6 +19,7 @@
 
 package org.ehrbase.webtemplate.model;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.nedap.archie.rm.archetyped.Locatable;
 import com.nedap.archie.rminfo.ArchieRMInfoLookup;
 import java.io.Serializable;
@@ -48,7 +49,10 @@ public class WebTemplateNode implements Serializable {
   private int max;
   private final Map<String, String> localizedNames = new HashMap<>();
   private final Map<String, String> localizedDescriptions = new HashMap<>();
+
+  @JsonSerialize(using = AqlPathSerializer.class)
   private String aqlPath;
+
   private final List<WebTemplateNode> children = new ArrayList<>();
   private final List<WebTemplateInput> inputs = new ArrayList<>();
   private Boolean inContext;
