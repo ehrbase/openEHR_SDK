@@ -4,1257 +4,1257 @@ import java.lang.String;
 import org.ehrbase.client.classgenerator.EnumValueSet;
 
 public enum ErregernameDefiningCode implements EnumValueSet {
-  PARABURKHOLDERIA_PHENAZINIUM("Paraburkholderia phenazinium", "Paraburkholderia phenazinium", "SNOMED-CT", "431166001"),
+  SALMONELLA_TYPHIMURIUM_ORGANISM("Salmonella Typhimurium (organism)", "", "SNOMED-CT", "50136005"),
 
-  MYCOBACTERIUM_MICROTI_ORGANISM("Mycobacterium microti (organism)", "Mycobacterium microti (organism)", "SNOMED-CT", "70801007"),
+  BACILLUS_CEREUS_ORGANISM("Bacillus cereus (organism)", "", "SNOMED-CT", "84408007"),
 
-  LEGIONELLA_PNEUMOPHILA_SEROGROUP1_ORGANISM("Legionella pneumophila serogroup 1 (organism)", "Legionella pneumophila serogroup 1 (organism)", "SNOMED-CT", "103463005"),
+  CITROBACTER_YOUNGAE_ORGANISM("Citrobacter youngae (organism)", "", "SNOMED-CT", "114443001"),
 
-  RHIZOBIUM_RADIOBACTER_ORGANISM("Rhizobium radiobacter (organism)", "Rhizobium radiobacter (organism)", "SNOMED-CT", "438107000"),
+  GENUS_LACTOBACILLUS_ORGANISM("Genus Lactobacillus (organism)", "", "SNOMED-CT", "43690008"),
 
-  GENUS_CUTIBACTERIUM_ORGANISM("Genus Cutibacterium (organism)", "Genus Cutibacterium (organism)", "SNOMED-CT", "763051006"),
+  PASTEURELLA_PNEUMOTROPICA_ORGANISM("Pasteurella pneumotropica (organism)", "", "SNOMED-CT", "32562008"),
 
-  ENTEROCOCCUS_FAECIUM_ORGANISM("Enterococcus faecium (organism)", "Enterococcus faecium (organism)", "SNOMED-CT", "90272000"),
+  SALMONELLA_TYPHI_ORGANISM("Salmonella Typhi (organism)", "", "SNOMED-CT", "5595000"),
 
-  LACTOBACILLUS_CASEI_ORGANISM("Lactobacillus casei (organism)", "Lactobacillus casei (organism)", "SNOMED-CT", "1017006"),
+  BACTEROIDES_FRAGILIS_GROUP_ORGANISM("Bacteroides fragilis group (organism)", "", "SNOMED-CT", "417375007"),
 
-  PSEUDOMONAS_AERUGINOSA_ORGANISM("Pseudomonas aeruginosa (organism)", "Pseudomonas aeruginosa (organism)", "SNOMED-CT", "52499004"),
+  SALMONELLA_LIVINGSTONE("Salmonella Livingstone", "", "SNOMED-CT", "66713000"),
 
-  PROVIDENCIA_HEIMBACHAE_ORGANISM("Providencia heimbachae (organism)", "Providencia heimbachae (organism)", "SNOMED-CT", "47300009"),
+  STREPTOCOCCUS_AGALACTIAE_ORGANISM("Streptococcus agalactiae (organism)", "", "SNOMED-CT", "43492007"),
 
-  CITROBACTER_BRAAKII_ORGANISM("Citrobacter braakii (organism)", "Citrobacter braakii (organism)", "SNOMED-CT", "114262000"),
+  MYCOBACTERIUM_ABSCESSUS_ORGANISM("Mycobacterium abscessus (organism)", "", "SNOMED-CT", "113838007"),
 
-  STREPTOCOCCUS_INTERMEDIUS_ORGANISM("Streptococcus intermedius (organism)", "Streptococcus intermedius (organism)", "SNOMED-CT", "62170002"),
+  STAPHYLOCOCCUS_ARGENTEUS_ORGANISM("Staphylococcus argenteus (organism)", "", "SNOMED-CT", "782316009"),
 
-  HAEMOPHILUS_PARAHAEMOLYTICUS_ORGANISM("Haemophilus parahaemolyticus (organism)", "Haemophilus parahaemolyticus (organism)", "SNOMED-CT", "89800007"),
+  ENTEROCOCCUS_CASSELIFLAVUS_ORGANISM("Enterococcus casseliflavus (organism)", "", "SNOMED-CT", "30949009"),
 
-  AEROMONAS_JANDEI_ORGANISM("Aeromonas jandei (organism)", "Aeromonas jandei (organism)", "SNOMED-CT", "115034008"),
+  LEGIONELLA_PNEUMOPHILA_SEROGROUP8_ORGANISM("Legionella pneumophila serogroup 8 (organism)", "", "SNOMED-CT", "103470005"),
 
-  KOSAKONIA_COWANII("Kosakonia cowanii", "Kosakonia cowanii", "SNOMED-CT", "416229008"),
+  ACINETOBACTER_LWOFFI_ORGANISM("Acinetobacter lwoffi (organism)", "", "SNOMED-CT", "83088009"),
 
-  PASTEURELLA_DAGMATIS_ORGANISM("Pasteurella dagmatis (organism)", "Pasteurella dagmatis (organism)", "SNOMED-CT", "80948000"),
+  PENICILLIUM_ORGANISM("Penicillium (organism)", "", "SNOMED-CT", "42993004"),
 
-  SAPROCHAETE_CAPITATA_ORGANISM("Saprochaete capitata (organism)", "Saprochaete capitata (organism)", "SNOMED-CT", "67999003"),
+  GRANULICATELLA_ADIACENS_ORGANISM("Granulicatella adiacens (organism)", "", "SNOMED-CT", "113713009"),
 
-  AGGREGATIBACTER_ACTINOMYCETEMCOMITANS_ORGANISM("Aggregatibacter actinomycetemcomitans (organism)", "Aggregatibacter actinomycetemcomitans (organism)", "SNOMED-CT", "442680008"),
+  BACTEROIDES_THETAIOTAOMICRON_ORGANISM("Bacteroides thetaiotaomicron (organism)", "", "SNOMED-CT", "34236001"),
 
-  BREVUNDIMONAS_DIMINUTA_ORGANISM("Brevundimonas diminuta (organism)", "Brevundimonas diminuta (organism)", "SNOMED-CT", "113689009"),
+  CORYNEBACTERIUM_AFERMENTANS_ORGANISM("Corynebacterium afermentans (organism)", "", "SNOMED-CT", "113608003"),
 
-  SALMONELLA_DERBY("Salmonella Derby", "Salmonella Derby", "SNOMED-CT", "37091006"),
+  LEGIONELLA_BOZEMANAE_ORGANISM("Legionella bozemanae (organism)", "", "SNOMED-CT", "450611004"),
 
-  CORYNEBACTERIUM_GLUCURONOLYTICUM_ORGANISM("Corynebacterium glucuronolyticum (organism)", "Corynebacterium glucuronolyticum (organism)", "SNOMED-CT", "413927008"),
+  SHEWANELLA_ALGAE_ORGANISM("Shewanella algae (organism)", "", "SNOMED-CT", "113702006"),
 
-  SALMONELLA_WIEN("Salmonella Wien", "Salmonella Wien", "SNOMED-CT", "21975008"),
+  STREPTOCOCCUS_MITIS_ORGANISM("Streptococcus mitis (organism)", "", "SNOMED-CT", "57997003"),
 
-  ENTEROBACTER_LUDWIGII("Enterobacter ludwigii", "Enterobacter ludwigii", "SNOMED-CT", "432763001"),
+  ACINETOBACTER_CALCOACETICUS_ORGANISM("Acinetobacter calcoaceticus (organism)", "", "SNOMED-CT", "82550008"),
 
-  AEROMONAS_HYDROPHILA_ORGANISM("Aeromonas hydrophila (organism)", "Aeromonas hydrophila (organism)", "SNOMED-CT", "85823000"),
+  BACILLUS_THURINGIENSIS_ORGANISM("Bacillus thuringiensis (organism)", "", "SNOMED-CT", "64840009"),
 
-  SALMONELLA_BREDENEY("Salmonella Bredeney", "Salmonella Bredeney", "SNOMED-CT", "82364007"),
+  LEGIONELLA_PNEUMOPHILA_SEROGROUP4_ORGANISM("Legionella pneumophila serogroup 4 (organism)", "", "SNOMED-CT", "103466002"),
 
-  SACCHAROMYCES_CEREVISIAE_ORGANISM("Saccharomyces cerevisiae (organism)", "Saccharomyces cerevisiae (organism)", "SNOMED-CT", "58296003"),
+  ACINETOBACTER_GENOSPECIES3_ORGANISM("Acinetobacter genospecies 3 (organism)", "", "SNOMED-CT", "113377003"),
 
-  GENUS_FUSOBACTERIUM_ORGANISM("Genus Fusobacterium (organism)", "Genus Fusobacterium (organism)", "SNOMED-CT", "33562003"),
+  ENTEROBACTER_ASBURIAE_ORGANISM("Enterobacter asburiae (organism)", "", "SNOMED-CT", "33115003"),
 
-  GENUS_ACTINOMYCES_ORGANISM("Genus Actinomyces (organism)", "Genus Actinomyces (organism)", "SNOMED-CT", "40560008"),
+  STAPHYLOCOCCUS_INTERMEDIUS_ORGANISM("Staphylococcus intermedius (organism)", "", "SNOMED-CT", "34605002"),
 
-  KLEBSIELLA_VARIICOLA_ORGANISM("Klebsiella variicola (organism)", "Klebsiella variicola (organism)", "SNOMED-CT", "431976004"),
+  LEGIONELLA_MICDADEI_ORGANISM("Legionella micdadei (organism)", "", "SNOMED-CT", "116380009"),
 
-  SALMONELLA_TENNESSEE("Salmonella Tennessee", "Salmonella Tennessee", "SNOMED-CT", "79153007"),
+  SALMONELLA_ENTERICA_SUBSP_ARIZONAE_ORGANISM("Salmonella enterica subsp. arizonae (organism)", "", "SNOMED-CT", "397502001"),
 
-  SALMONELLA_VIRCHOW("Salmonella Virchow", "Salmonella Virchow", "SNOMED-CT", "5929008"),
+  ANAEROBIC_GRAM_NEGATIVE_BACILLUS_ORGANISM("Anaerobic Gram-negative bacillus (organism)", "", "SNOMED-CT", "243386003"),
 
-  PARABURKHOLDERIA_XENOVORANS("Paraburkholderia xenovorans", "Paraburkholderia xenovorans", "SNOMED-CT", "431176003"),
+  GENUS_CORYNEBACTERIUM_ORGANISM("Genus Corynebacterium (organism)", "", "SNOMED-CT", "77086004"),
 
-  STAPHYLOCOCCUS_CAPRAE_ORGANISM("Staphylococcus caprae (organism)", "Staphylococcus caprae (organism)", "SNOMED-CT", "76969000"),
+  MORAXELLA_CATARRHALIS_ORGANISM("Moraxella catarrhalis (organism)", "", "SNOMED-CT", "24226003"),
 
-  LEGIONELLA_PNEUMOPHILIA_SEROGROUP12_ORGANISM("Legionella pneumophilia serogroup 12 (organism)", "Legionella pneumophilia serogroup 12 (organism)", "SNOMED-CT", "131324005"),
+  ACINETOBACTER_PITTII_ORGANISM("Acinetobacter pittii (organism)", "", "SNOMED-CT", "698244000"),
 
-  LEGIONELLA_BELIARDENSIS_ORGANISM("Legionella beliardensis (organism)", "Legionella beliardensis (organism)", "SNOMED-CT", "432714000"),
+  DELFTIA_ACIDOVORANS_ORGANISM("Delftia acidovorans (organism)", "", "SNOMED-CT", "20432002"),
 
-  CITROBACTER_FARMERI_ORGANISM("Citrobacter farmeri (organism)", "Citrobacter farmeri (organism)", "SNOMED-CT", "114263005"),
+  CANDIDA_AURIS_ORGANISM("Candida auris (organism)", "", "SNOMED-CT", "3491000146109"),
 
-  STAPHYLOCOCCUS_WARNERI_ORGANISM("Staphylococcus warneri (organism)", "Staphylococcus warneri (organism)", "SNOMED-CT", "63550006"),
+  SERRATIA_GRIMESII_ORGANISM("Serratia grimesii (organism)", "", "SNOMED-CT", "115005002"),
 
-  CITROBACTER_FREUNDII_COMPLEX_ORGANISM("Citrobacter freundii complex (organism)", "Citrobacter freundii complex (organism)", "SNOMED-CT", "782522004"),
+  GENUS_KLEBSIELLA_ORGANISM("Genus Klebsiella (organism)", "", "SNOMED-CT", "75032006"),
 
-  PANTOEA_DISPERSA_ORGANISM("Pantoea dispersa (organism)", "Pantoea dispersa (organism)", "SNOMED-CT", "115017000"),
+  MYCOBACTERIUM_BOVIS_ORGANISM("Mycobacterium bovis (organism)", "", "SNOMED-CT", "27142009"),
 
-  GENUS_LEGIONELLA_ORGANISM("Genus Legionella (organism)", "Genus Legionella (organism)", "SNOMED-CT", "7527002"),
+  PARABACTEROIDES_DISTASONIS_ORGANISM("Parabacteroides distasonis (organism)", "", "SNOMED-CT", "447512008"),
 
-  CANDIDA_ALBICANS_ORGANISM("Candida albicans (organism)", "Candida albicans (organism)", "SNOMED-CT", "53326005"),
+  BURKHOLDERIA_DOLOSA("Burkholderia dolosa", "", "SNOMED-CT", "431173006"),
 
-  STAPHYLOCOCCUS_PETTENKOFERI_ORGANISM("Staphylococcus pettenkoferi (organism)", "Staphylococcus pettenkoferi (organism)", "SNOMED-CT", "428731005"),
+  SALMONELLA_MUENSTER("Salmonella Muenster", "", "SNOMED-CT", "68916009"),
 
-  PANTOEA_ANANATIS_ORGANISM("Pantoea ananatis (organism)", "Pantoea ananatis (organism)", "SNOMED-CT", "115014007"),
+  SHIGELLA_SONNEI_ORGANISM("Shigella sonnei (organism)", "", "SNOMED-CT", "4298009"),
 
-  MYCOBACTERIUM_TUBERCULOSIS_ORGANISM("Mycobacterium tuberculosis (organism)", "Mycobacterium tuberculosis (organism)", "SNOMED-CT", "113861009"),
+  CORYNEBACTERIUM_STRIATUM_ORGANISM("Corynebacterium striatum (organism)", "", "SNOMED-CT", "63815007"),
 
-  SALMONELLA_ORANIENBURG("Salmonella Oranienburg", "Salmonella Oranienburg", "SNOMED-CT", "46667007"),
+  MORAXELLA_LACUNATA_ORGANISM("Moraxella lacunata (organism)", "", "SNOMED-CT", "84066001"),
 
-  BURKHOLDERIA_CENOCEPACIA_ORGANISM("Burkholderia cenocepacia (organism)", "Burkholderia cenocepacia (organism)", "SNOMED-CT", "416941006"),
+  ASPERGILLUS_FLAVUS_GROUP_ORGANISM("Aspergillus flavus group (organism)", "", "SNOMED-CT", "243491003"),
 
-  GENUS_CLOSTRIDIUM_ORGANISM("Genus Clostridium (organism)", "Genus Clostridium (organism)", "SNOMED-CT", "8191000"),
+  PARABURKHOLDERIA_XENOVORANS("Paraburkholderia xenovorans", "", "SNOMED-CT", "431176003"),
 
-  KLEBSIELLA_PNEUMONIAE_SS_PNEUMONIAE_ORGANISM("Klebsiella pneumoniae ss. pneumoniae (organism)", "Klebsiella pneumoniae ss. pneumoniae (organism)", "SNOMED-CT", "18400002"),
+  LEGIONELLA_JORDANIS_ORGANISM("Legionella jordanis (organism)", "", "SNOMED-CT", "39739007"),
 
-  CRONOBACTER_UNIVERSALIS_ORGANISM("Cronobacter universalis (organism)", "Cronobacter universalis (organism)", "SNOMED-CT", "707335003"),
+  STAPHYLOCOCCUS_XYLOSUS_ORGANISM("Staphylococcus xylosus (organism)", "", "SNOMED-CT", "32737005"),
 
-  LEGIONELLA_GORMANII_ORGANISM("Legionella gormanii (organism)", "Legionella gormanii (organism)", "SNOMED-CT", "113721003"),
+  ACHROMOBACTER_PIECHAUDII_ORGANISM("Achromobacter piechaudii (organism)", "", "SNOMED-CT", "413420000"),
 
-  MORAXELLA_OSLOENSIS_ORGANISM("Moraxella osloensis (organism)", "Moraxella osloensis (organism)", "SNOMED-CT", "72401008"),
+  GENUS_CUTIBACTERIUM_ORGANISM("Genus Cutibacterium (organism)", "", "SNOMED-CT", "763051006"),
 
-  SALMONELLA_HAVANA("Salmonella Havana", "Salmonella Havana", "SNOMED-CT", "38788001"),
+  STAPHYLOCOCCUS_HOMINIS_ORGANISM("Staphylococcus hominis (organism)", "", "SNOMED-CT", "44827007"),
 
-  SALMONELLA_GOLDCOAST("Salmonella Goldcoast", "Salmonella Goldcoast", "SNOMED-CT", "16820003"),
+  KLEBSIELLA_AEROGENES_ORGANISM("Klebsiella aerogenes (organism)", "", "SNOMED-CT", "62592009"),
 
-  SALMONELLA_SANDIEGO("Salmonella Sandiego", "Salmonella Sandiego", "SNOMED-CT", "112287008"),
+  SALMONELLA_BRANDENBURG("Salmonella Brandenburg", "", "SNOMED-CT", "16888008"),
 
-  ASPERGILLUS_TERREUS_ORGANISM("Aspergillus terreus (organism)", "Aspergillus terreus (organism)", "SNOMED-CT", "26406003"),
+  SALMONELLA_SAINTPAUL("Salmonella Saintpaul", "", "SNOMED-CT", "2820001"),
 
-  PANTOEA_STEWARTII_ORGANISM("Pantoea stewartii (organism)", "Pantoea stewartii (organism)", "SNOMED-CT", "131300002"),
+  INQUILINUS_LIMOSUS_ORGANISM("Inquilinus limosus (organism)", "", "SNOMED-CT", "427977006"),
 
-  SALMONELLA_CHOLERAESUIS_VAR_KUNZENDORF("Salmonella Choleraesuis var. Kunzendorf", "Salmonella Choleraesuis var. Kunzendorf", "SNOMED-CT", "370577001"),
+  SALMONELLA_CHOLERAESUIS_VAR_KUNZENDORF("Salmonella Choleraesuis var. Kunzendorf", "", "SNOMED-CT", "370577001"),
 
-  BREVUNDIMONAS_VESICULARIS_ORGANISM("Brevundimonas vesicularis (organism)", "Brevundimonas vesicularis (organism)", "SNOMED-CT", "113690000"),
+  CORYNEBACTERIUM_GLUCURONOLYTICUM_ORGANISM("Corynebacterium glucuronolyticum (organism)", "", "SNOMED-CT", "413927008"),
 
-  LEGIONELLA_PNEUMOPHILA_SEROGROUP6_ORGANISM("Legionella pneumophila serogroup 6 (organism)", "Legionella pneumophila serogroup 6 (organism)", "SNOMED-CT", "103468001"),
+  GENUS_ACINETOBACTER_ORGANISM("Genus Acinetobacter (organism)", "", "SNOMED-CT", "7757008"),
 
-  ENTEROBACTER_KOBEI_ORGANISM("Enterobacter kobei (organism)", "Enterobacter kobei (organism)", "SNOMED-CT", "114456008"),
+  ENTEROBACTER_PYRINUS("Enterobacter pyrinus", "", "SNOMED-CT", "114455007"),
 
-  BURKHOLDERIA_DOLOSA("Burkholderia dolosa", "Burkholderia dolosa", "SNOMED-CT", "431173006"),
+  LEGIONELLA_TUCSONENSIS_ORGANISM("Legionella tucsonensis (organism)", "", "SNOMED-CT", "103461007"),
 
-  LEGIONELLA_PNEUMOPHILIA_SEROGROUP11_ORGANISM("Legionella pneumophilia serogroup 11 (organism)", "Legionella pneumophilia serogroup 11 (organism)", "SNOMED-CT", "131323004"),
+  SUBGENUS_MORAXELLA_ORGANISM("Subgenus Moraxella (organism)", "", "SNOMED-CT", "427057001"),
 
-  BACTEROIDES_FRAGILIS_ORGANISM("Bacteroides fragilis (organism)", "Bacteroides fragilis (organism)", "SNOMED-CT", "55247009"),
+  PASTEURELLA_MULTOCIDA_ORGANISM("Pasteurella multocida (organism)", "", "SNOMED-CT", "10879005"),
 
-  STREPTOCOCCUS_DYSGALACTIAE_SUBSPECIES_EQUISIMILIS_ORGANISM("Streptococcus dysgalactiae subspecies equisimilis (organism)", "Streptococcus dysgalactiae subspecies equisimilis (organism)", "SNOMED-CT", "128338004"),
+  MORGANELLA_MORGANII_SUBSP_MORGANII_ORGANISM("Morganella morganii subsp morganii (organism)", "", "SNOMED-CT", "243302003"),
 
-  CANDIDA_UTILIS_ORGANISM("Candida utilis (organism)", "Candida utilis (organism)", "SNOMED-CT", "243464000"),
+  ENTEROCOCCUS_FAECIUM_ORGANISM("Enterococcus faecium (organism)", "", "SNOMED-CT", "90272000"),
 
-  ESCHERICHIA_COLI_ORGANISM("Escherichia coli (organism)", "Escherichia coli (organism)", "SNOMED-CT", "112283007"),
+  SALMONELLA_OHIO("Salmonella Ohio", "", "SNOMED-CT", "67210008"),
 
-  AEROMONAS_VERONII_ORGANISM("Aeromonas veronii (organism)", "Aeromonas veronii (organism)", "SNOMED-CT", "9281006"),
+  MUCOID_PSEUDOMONAS_AERUGINOSA_ORGANISM("Mucoid Pseudomonas aeruginosa (organism)", "", "SNOMED-CT", "733537009"),
 
-  SALMONELLA_NEWPORT("Salmonella Newport", "Salmonella Newport", "SNOMED-CT", "56077000"),
+  SALMONELLA_STANLEY("Salmonella Stanley", "", "SNOMED-CT", "88091007"),
 
-  STREPTOCOCCUS_CONSTELLATUS_ORGANISM("Streptococcus constellatus (organism)", "Streptococcus constellatus (organism)", "SNOMED-CT", "76199005"),
+  GARDNERELLA_VAGINALIS_ORGANISM("Gardnerella vaginalis (organism)", "", "SNOMED-CT", "64071004"),
 
-  CANDIDA_LUSITANIAE_ORGANISM("Candida lusitaniae (organism)", "Candida lusitaniae (organism)", "SNOMED-CT", "47608006"),
+  LEGIONELLA_PNEUMOPHILA_ORGANISM("Legionella pneumophila (organism)", "", "SNOMED-CT", "80897008"),
 
-  MORAXELLA_LACUNATA_ORGANISM("Moraxella lacunata (organism)", "Moraxella lacunata (organism)", "SNOMED-CT", "84066001"),
+  CANDIDA_UTILIS_ORGANISM("Candida utilis (organism)", "", "SNOMED-CT", "243464000"),
 
-  SALMONELLA_PANAMA("Salmonella Panama", "Salmonella Panama", "SNOMED-CT", "40114001"),
+  LACTOBACILLUS_RHAMNOSUS_ORGANISM("Lactobacillus rhamnosus (organism)", "", "SNOMED-CT", "113798001"),
 
-  CORYNEBACTERIUM_PSEUDODIPHTHERITICUM_ORGANISM("Corynebacterium pseudodiphtheriticum (organism)", "Corynebacterium pseudodiphtheriticum (organism)", "SNOMED-CT", "12050008"),
+  LACTOBACILLUS_CASEI_ORGANISM("Lactobacillus casei (organism)", "", "SNOMED-CT", "1017006"),
 
-  ACTINOMYCES_NEUII_ORGANISM("Actinomyces neuii (organism)", "Actinomyces neuii (organism)", "SNOMED-CT", "877802991000087109"),
+  BACILLUS_LICHENIFORMIS_ORGANISM("Bacillus licheniformis (organism)", "", "SNOMED-CT", "74867004"),
 
-  ASPERGILLUS_FUMIGATUS_SPECIES_COMPLEX_ORGANISM("Aspergillus fumigatus species complex (organism)", "Aspergillus fumigatus species complex (organism)", "SNOMED-CT", "719029007"),
+  STREPTOCOCCUS_EQUINUS_ORGANISM("Streptococcus equinus (organism)", "", "SNOMED-CT", "72646003"),
 
-  CRONOBACTER_MALONATICUS("Cronobacter malonaticus", "Cronobacter malonaticus", "SNOMED-CT", "445560007"),
+  BACTEROIDES_VULGATUS_ORGANISM("Bacteroides vulgatus (organism)", "", "SNOMED-CT", "52798008"),
 
-  HAEMOPHILUS_PARAINFLUENZAE_ORGANISM("Haemophilus parainfluenzae (organism)", "Haemophilus parainfluenzae (organism)", "SNOMED-CT", "51593004"),
+  SALMONELLA_GROUP_O35_ORGANISM("Salmonella group O:35 (organism)", "", "SNOMED-CT", "404341009"),
 
-  LEGIONELLA_TUCSONENSIS_ORGANISM("Legionella tucsonensis (organism)", "Legionella tucsonensis (organism)", "SNOMED-CT", "103461007"),
+  SALMONELLA_ORANIENBURG("Salmonella Oranienburg", "", "SNOMED-CT", "46667007"),
 
-  GENUS_PICHIA_ORGANISM("Genus Pichia (organism)", "Genus Pichia (organism)", "SNOMED-CT", "4163004"),
+  PARABURKHOLDERIA_TROPICA("Paraburkholderia tropica", "", "SNOMED-CT", "431175004"),
 
-  YEAST_ORGANISM("Yeast (organism)", "Yeast (organism)", "SNOMED-CT", "62093005"),
+  CITROBACTER_GILLENII("Citrobacter gillenii", "", "SNOMED-CT", "416990006"),
 
-  ENTEROBACTER_AMNIGENUS_BIOGROUP_II_ORGANISM("Enterobacter amnigenus biogroup II (organism)", "Enterobacter amnigenus biogroup II (organism)", "SNOMED-CT", "114453000"),
+  SALMONELLA_MONTEVIDEO("Salmonella Montevideo", "", "SNOMED-CT", "80268001"),
 
-  CRONOBACTER_DUBLINENSIS_SUBSPECIES_LAUSANNENSIS("Cronobacter dublinensis subspecies lausannensis", "Cronobacter dublinensis subspecies lausannensis", "SNOMED-CT", "5711000087108"),
+  PANTOEA_ANANATIS_ORGANISM("Pantoea ananatis (organism)", "", "SNOMED-CT", "115014007"),
 
-  ASPERGILLUS_NIDULANS_GROUP_ORGANISM("Aspergillus nidulans Group (organism)", "Aspergillus nidulans Group (organism)", "SNOMED-CT", "415879008"),
+  PREVOTELLA_MELANINOGENICA_ORGANISM("Prevotella melaninogenica (organism)", "", "SNOMED-CT", "114144004"),
 
-  CLOSTRIDIOIDES_DIFFICILE_ORGANISM("Clostridioides difficile (organism)", "Clostridioides difficile (organism)", "SNOMED-CT", "5933001"),
+  LEGIONELLA_YABUUCHIAE_ORGANISM("Legionella yabuuchiae (organism)", "", "SNOMED-CT", "5131000146101"),
 
-  SALMONELLA_MONSCHAUI("Salmonella Monschaui", "Salmonella Monschaui", "SNOMED-CT", "65132007"),
+  LEGIONELLA_WADSWORTHII_ORGANISM("Legionella wadsworthii (organism)", "", "SNOMED-CT", "8147000"),
 
-  GENUS_PSEUDOMONAS_ORGANISM("Genus Pseudomonas (organism)", "Genus Pseudomonas (organism)", "SNOMED-CT", "57032008"),
+  GENUS_PEPTONIPHILUS_ORGANISM("Genus Peptoniphilus (organism)", "", "SNOMED-CT", "430742009"),
 
-  PROTEUS_MYXOFACIENS_ORGANISM("Proteus myxofaciens (organism)", "Proteus myxofaciens (organism)", "SNOMED-CT", "86145008"),
+  ACHROMOBACTER_XYLOSOXIDANS_XYLOSOXIDANS_ORGANISM("Achromobacter xylosoxidans xylosoxidans (organism)", "", "SNOMED-CT", "423897003"),
 
-  RHODOTORULA_RUBRA_ORGANISM("Rhodotorula rubra (organism)", "Rhodotorula rubra (organism)", "SNOMED-CT", "86724009"),
+  BURKHOLDERIA_PSEUDOMALLEI_ORGANISM("Burkholderia pseudomallei (organism)", "", "SNOMED-CT", "116399000"),
 
-  STAPHYLOCOCCUS_SACCHAROLYTICUS_ORGANISM("Staphylococcus saccharolyticus (organism)", "Staphylococcus saccharolyticus (organism)", "SNOMED-CT", "41103009"),
+  ACINETOBACTER_BAYLYI_ORGANISM("Acinetobacter baylyi (organism)", "", "SNOMED-CT", "423974000"),
 
-  CANDIDA_MAGNOLIAE_ORGANISM("Candida magnoliae (organism)", "Candida magnoliae (organism)", "SNOMED-CT", "446239009"),
+  MORAXELLA_NONLIQUEFACIENS_ORGANISM("Moraxella nonliquefaciens (organism)", "", "SNOMED-CT", "46455003"),
 
-  EIKENELLA_CORRODENS_ORGANISM("Eikenella corrodens (organism)", "Eikenella corrodens (organism)", "SNOMED-CT", "52591004"),
+  GENUS_BACTEROIDES_ORGANISM("Genus Bacteroides (organism)", "", "SNOMED-CT", "57522007"),
 
-  HAFNIA_ALVEI_ORGANISM("Hafnia alvei (organism)", "Hafnia alvei (organism)", "SNOMED-CT", "76694001"),
+  EIKENELLA_CORRODENS_ORGANISM("Eikenella corrodens (organism)", "", "SNOMED-CT", "52591004"),
 
-  SERRATIA_GRIMESII_ORGANISM("Serratia grimesii (organism)", "Serratia grimesii (organism)", "SNOMED-CT", "115005002"),
+  KLEBSIELLA_VARIICOLA_ORGANISM("Klebsiella variicola (organism)", "", "SNOMED-CT", "431976004"),
 
-  SALMONELLA_BRANDENBURG("Salmonella Brandenburg", "Salmonella Brandenburg", "SNOMED-CT", "16888008"),
+  SERRATIA_LIQUEFACIENS_COMPLEX_ORGANISM("Serratia liquefaciens complex (organism)", "", "SNOMED-CT", "722258003"),
 
-  SUBGENUS_MORAXELLA_ORGANISM("Subgenus Moraxella (organism)", "Subgenus Moraxella (organism)", "SNOMED-CT", "427057001"),
+  STAPHYLOCOCCUS_LUGDUNENSIS_ORGANISM("Staphylococcus lugdunensis (organism)", "", "SNOMED-CT", "103494005"),
 
-  YERSINIA_ENTEROCOLITICA_SEROGROUP_O5_ORGANISM("Yersinia enterocolitica serogroup O:5 (organism)", "Yersinia enterocolitica serogroup O:5 (organism)", "SNOMED-CT", "103431004"),
+  ALCALIGENES_FAECALIS_ORGANISM("Alcaligenes faecalis (organism)", "", "SNOMED-CT", "25223004"),
 
-  LEUCONOSTOC_LACTIS_ORGANISM("Leuconostoc lactis (organism)", "Leuconostoc lactis (organism)", "SNOMED-CT", "70285009"),
+  BACTEROIDES_UNIFORMIS_ORGANISM("Bacteroides uniformis (organism)", "", "SNOMED-CT", "59604009"),
 
-  SALMONELLA_MANCHESTER("Salmonella Manchester", "Salmonella Manchester", "SNOMED-CT", "70605000"),
+  STENOTROPHOMONAS_MALTOPHILIA_ORGANISM("Stenotrophomonas maltophilia (organism)", "", "SNOMED-CT", "113697002"),
 
-  LEGIONELLA_PNEUMOPHILIA_SEROGROUP13_ORGANISM("Legionella pneumophilia serogroup 13 (organism)", "Legionella pneumophilia serogroup 13 (organism)", "SNOMED-CT", "131325006"),
+  PROVIDENCIA_RUSTIGIANII_ORGANISM("Providencia rustigianii (organism)", "", "SNOMED-CT", "19196004"),
 
-  BIFIDOBACTERIUM_DENTIUM_ORGANISM("Bifidobacterium dentium (organism)", "Bifidobacterium dentium (organism)", "SNOMED-CT", "36623007"),
+  SALMONELLA_BAREILLY("Salmonella Bareilly", "", "SNOMED-CT", "8044005"),
 
-  CLOSTRIDIUM_PERFRINGENS_ORGANISM("Clostridium perfringens (organism)", "Clostridium perfringens (organism)", "SNOMED-CT", "8331005"),
+  GENUS_CLOSTRIDIUM_ORGANISM("Genus Clostridium (organism)", "", "SNOMED-CT", "8191000"),
 
-  CRYPTOCOCCUS_ORGANISM("Cryptococcus (organism)", "Cryptococcus (organism)", "SNOMED-CT", "17579001"),
+  HAEMOPHILUS_INFLUENZAE_TYPE_B_ORGANISM("Haemophilus influenzae type b (organism)", "", "SNOMED-CT", "103442008"),
 
-  MIXTA_CALIDA_ORGANISM("Mixta calida (organism)", "Mixta calida (organism)", "SNOMED-CT", "709310002"),
+  ASPERGILLUS_FUMIGATUS_ORGANISM("Aspergillus fumigatus (organism)", "", "SNOMED-CT", "32684000"),
 
-  SALMONELLA_ALBANY("Salmonella Albany", "Salmonella Albany", "SNOMED-CT", "72033009"),
+  BURKHOLDERIA_PYRROCINIA("Burkholderia pyrrocinia", "", "SNOMED-CT", "113677007"),
 
-  STREPTOCOCCUS_VESTIBULARIS_ORGANISM("Streptococcus vestibularis (organism)", "Streptococcus vestibularis (organism)", "SNOMED-CT", "113998009"),
+  CLOSTRIDIUM_SEPTICUM_ORGANISM("Clostridium septicum (organism)", "", "SNOMED-CT", "33101000"),
 
-  LEGIONELLA_BIRMINGHAMENSIS_ORGANISM("Legionella birminghamensis (organism)", "Legionella birminghamensis (organism)", "SNOMED-CT", "22592008"),
+  WANGIELLA_DERMATITIDIS_ORGANISM("Wangiella dermatitidis (organism)", "", "SNOMED-CT", "20586007"),
 
-  STREPTOCOCCUS_VIRIDANS_GROUP_ORGANISM("Streptococcus, viridans group (organism)", "Streptococcus, viridans group (organism)", "SNOMED-CT", "31703004"),
+  BACILLUS_PUMILUS_ORGANISM("Bacillus pumilus (organism)", "", "SNOMED-CT", "16580009"),
 
-  PANTOEA_AGGLOMERANS_ORGANISM("Pantoea agglomerans (organism)", "Pantoea agglomerans (organism)", "SNOMED-CT", "115015008"),
+  CRONOBACTER_DUBLINENSIS_SUBSPECIES_LAUSANNENSIS("Cronobacter dublinensis subspecies lausannensis", "", "SNOMED-CT", "5711000087108"),
 
-  SERRATIA_PLYMUTHICA_ORGANISM("Serratia plymuthica (organism)", "Serratia plymuthica (organism)", "SNOMED-CT", "28955009"),
+  BACTEROIDES_STERCORIS_ORGANISM("Bacteroides stercoris (organism)", "", "SNOMED-CT", "163009"),
 
-  ANAEROBIC_GRAM_NEGATIVE_BACILLUS_ORGANISM("Anaerobic Gram-negative bacillus (organism)", "Anaerobic Gram-negative bacillus (organism)", "SNOMED-CT", "243386003"),
+  BURKHOLDERIA_STABILIS("Burkholderia stabilis", "", "SNOMED-CT", "416616001"),
 
-  BREVUNDIMONAS_AURANTIACA("Brevundimonas aurantiaca", "Brevundimonas aurantiaca", "SNOMED-CT", "423035009"),
+  SALMONELLA_CHOLERAESUIS_ORGANISM("Salmonella Choleraesuis (organism)", "", "SNOMED-CT", "80232006"),
 
-  BETA_HEMOLYTIC_STREPTOCOCCUS_GROUP_A_ORGANISM("Beta-hemolytic Streptococcus, group A (organism)", "Beta-hemolytic Streptococcus, group A (organism)", "SNOMED-CT", "413643004"),
+  SALMONELLA_GALLINARUM("Salmonella Gallinarum", "", "SNOMED-CT", "370576005"),
 
-  NEISSERIA_GONORRHOEAE_ORGANISM("Neisseria gonorrhoeae (organism)", "Neisseria gonorrhoeae (organism)", "SNOMED-CT", "68704007"),
+  ACINETOBACTER_BAUMANNII_ORGANISM("Acinetobacter baumannii (organism)", "", "SNOMED-CT", "91288006"),
 
-  BURKHOLDERIA_VIETNAMIENSIS_ORGANISM("Burkholderia vietnamiensis (organism)", "Burkholderia vietnamiensis (organism)", "SNOMED-CT", "113680008"),
+  BACILLUS_MEGATERIUM_ORGANISM("Bacillus megaterium (organism)", "", "SNOMED-CT", "79109002"),
 
-  PEPTONIPHILUS_HAREI_ORGANISM("Peptoniphilus harei (organism)", "Peptoniphilus harei (organism)", "SNOMED-CT", "433373007"),
+  KOSAKONIA_RADICINCITANS("Kosakonia radicincitans", "", "SNOMED-CT", "8181000146108"),
 
-  SALMONELLA_ENTERICA_SUBSP_ENTERICA_ORGANISM("Salmonella enterica subsp. enterica (organism)", "Salmonella enterica subsp. enterica (organism)", "SNOMED-CT", "398508004"),
+  HAEMOPHILUS_PARAINFLUENZAE_ORGANISM("Haemophilus parainfluenzae (organism)", "", "SNOMED-CT", "51593004"),
 
-  DERMABACTER_HOMINIS_ORGANISM("Dermabacter hominis (organism)", "Dermabacter hominis (organism)", "SNOMED-CT", "413977006"),
+  STREPTOCOCCUS_GALLOLYTICUS_SUBSPECIES_GALLOLYTICUS_ORGANISM("Streptococcus gallolyticus subspecies gallolyticus (organism)", "", "SNOMED-CT", "421544007"),
 
-  MORGANELLA_MORGANII_SUBSP_SIBONII_ORGANISM("Morganella morganii subsp sibonii (organism)", "Morganella morganii subsp sibonii (organism)", "SNOMED-CT", "243303008"),
+  GENUS_PANTOEA_ORGANISM("Genus Pantoea (organism)", "", "SNOMED-CT", "115013001"),
 
-  STENOTROPHOMONAS_ACIDAMINIPHILA_ORGANISM("Stenotrophomonas acidaminiphila (organism)", "Stenotrophomonas acidaminiphila (organism)", "SNOMED-CT", "415583001"),
+  EGGERTHELLA_LENTA_ORGANISM("Eggerthella lenta (organism)", "", "SNOMED-CT", "414077004"),
 
-  LEGIONELLA_ERYTHRA_ORGANISM("Legionella erythra (organism)", "Legionella erythra (organism)", "SNOMED-CT", "28109006"),
+  SALMONELLA_DUISBURG("Salmonella Duisburg", "", "SNOMED-CT", "42410007"),
 
-  SALMONELLA_SINSTORF("Salmonella Sinstorf", "Salmonella Sinstorf", "SNOMED-CT", "71443004"),
+  BACILLUS_CEREUS_GROUP_ORGANISM("Bacillus cereus group (organism)", "", "SNOMED-CT", "413618005"),
 
-  PSEUDOMONAS_MENDOCINA_ORGANISM("Pseudomonas mendocina (organism)", "Pseudomonas mendocina (organism)", "SNOMED-CT", "59419001"),
+  GENUS_ENTEROCOCCUS_ORGANISM("Genus Enterococcus (organism)", "", "SNOMED-CT", "2785000"),
 
-  ANAEROBIC_GRAM_POSITIVE_BACILLUS_ORGANISM("Anaerobic Gram-positive bacillus (organism)", "Anaerobic Gram-positive bacillus (organism)", "SNOMED-CT", "243398008"),
+  STREPTOCOCCUS_CANIS_ORGANISM("Streptococcus canis (organism)", "", "SNOMED-CT", "88231003"),
 
-  ENTEROBACTER_HORMAECHEI_ORGANISM("Enterobacter hormaechei (organism)", "Enterobacter hormaechei (organism)", "SNOMED-CT", "114454006"),
+  CLOSTRIDIUM_RAMOSUM_ORGANISM("Clostridium ramosum (organism)", "", "SNOMED-CT", "42706008"),
 
-  BURKHOLDERIA_MALLEI("Burkholderia mallei", "Burkholderia mallei", "SNOMED-CT", "113674000"),
+  RAOULTELLA_ORNITHINOLYTICA_ORGANISM("Raoultella ornithinolytica (organism)", "", "SNOMED-CT", "416832000"),
 
-  BURKHOLDERIA_PYRROCINIA("Burkholderia pyrrocinia", "Burkholderia pyrrocinia", "SNOMED-CT", "113677007"),
+  ACINETOBACTER_TJERNBERGIAE_ORGANISM("Acinetobacter tjernbergiae (organism)", "", "SNOMED-CT", "425109008"),
 
-  SALMONELLA_CHOLERAESUIS_ORGANISM("Salmonella Choleraesuis (organism)", "Salmonella Choleraesuis (organism)", "SNOMED-CT", "80232006"),
+  CORYNEBACTERIUM_AMYCOLATUM_ORGANISM("Corynebacterium amycolatum (organism)", "", "SNOMED-CT", "113611002"),
 
-  LEGIONELLA_PNEUMOPHILA_SEROGROUP2_ORGANISM("Legionella pneumophila serogroup 2 (organism)", "Legionella pneumophila serogroup 2 (organism)", "SNOMED-CT", "103464004"),
+  STREPTOCOCCUS_AGALACTIAE_SEROTYPE_IB_ORGANISM("Streptococcus agalactiae serotype Ib (organism)", "", "SNOMED-CT", "698166003"),
 
-  STENOTROPHOMONAS_NITRITIREDUCENS_ORGANISM("Stenotrophomonas nitritireducens (organism)", "Stenotrophomonas nitritireducens (organism)", "SNOMED-CT", "416746005"),
+  SALMONELLA_MANHATTAN("Salmonella Manhattan", "", "SNOMED-CT", "20073008"),
 
-  STREPTOCOCCUS_CONSTELLATUS_SUBSPECIES_CONSTELLATUS_ORGANISM("Streptococcus constellatus subspecies constellatus (organism)", "Streptococcus constellatus subspecies constellatus (organism)", "SNOMED-CT", "415601009"),
+  STAPHYLOCOCCUS_HAEMOLYTICUS_ORGANISM("Staphylococcus haemolyticus (organism)", "", "SNOMED-CT", "83452006"),
 
-  BREVUNDIMONAS_NASDAE("Brevundimonas nasdae", "Brevundimonas nasdae", "SNOMED-CT", "424717001"),
+  GENUS_ACTINOMYCES_ORGANISM("Genus Actinomyces (organism)", "", "SNOMED-CT", "40560008"),
 
-  PARABURKHOLDERIA_TERRICOLA("Paraburkholderia terricola", "Paraburkholderia terricola", "SNOMED-CT", "431683009"),
+  CITROBACTER_KOSERI("Citrobacter koseri", "", "SNOMED-CT", "114264004"),
 
-  CHRYSEOBACTERIUM_GLEUM_ORGANISM("Chryseobacterium gleum (organism)", "Chryseobacterium gleum (organism)", "SNOMED-CT", "113548000"),
+  PARABURKHOLDERIA_TUBERUM("Paraburkholderia tuberum", "", "SNOMED-CT", "431167005"),
 
-  ACINETOBACTER_URSINGII_ORGANISM("Acinetobacter ursingii (organism)", "Acinetobacter ursingii (organism)", "SNOMED-CT", "424791004"),
+  CHRYSEOBACTERIUM_GLEUM_ORGANISM("Chryseobacterium gleum (organism)", "", "SNOMED-CT", "113548000"),
 
-  SALMONELLA_RICHMOND("Salmonella Richmond", "Salmonella Richmond", "SNOMED-CT", "31517006"),
+  ACTINOMYCES_TURICENSIS_ORGANISM("Actinomyces turicensis (organism)", "", "SNOMED-CT", "113422006"),
 
-  ASPERGILLUS_NIGER_ORGANISM("Aspergillus niger (organism)", "Aspergillus niger (organism)", "SNOMED-CT", "89354002"),
+  ACINETOBACTER_URSINGII_ORGANISM("Acinetobacter ursingii (organism)", "", "SNOMED-CT", "424791004"),
 
-  MYCOBACTERIUM_BOVIS_ORGANISM("Mycobacterium bovis (organism)", "Mycobacterium bovis (organism)", "SNOMED-CT", "27142009"),
+  SALMONELLA_RICHMOND("Salmonella Richmond", "", "SNOMED-CT", "31517006"),
 
-  MYCOBACTERIUM_BOVIS_SUBSPECIES_BOVIS_ORGANISM("Mycobacterium bovis subspecies bovis (organism)", "Mycobacterium bovis subspecies bovis (organism)", "SNOMED-CT", "832924651000087107"),
+  BURKHOLDERIA_CENOCEPACIA_ORGANISM("Burkholderia cenocepacia (organism)", "", "SNOMED-CT", "416941006"),
 
-  LEGIONELLA_ISRAELENSIS_ORGANISM("Legionella israelensis (organism)", "Legionella israelensis (organism)", "SNOMED-CT", "3128001"),
+  ENTEROBACTER_LUDWIGII("Enterobacter ludwigii", "", "SNOMED-CT", "432763001"),
 
-  SALMONELLA_PARATYPHI_B_VAR_JAVA("Salmonella Paratyphi B var. Java", "Salmonella Paratyphi B var. Java", "SNOMED-CT", "128388007"),
+  SALMONELLA_ADELAIDE("Salmonella Adelaide", "", "SNOMED-CT", "10343005"),
 
-  ACINETOBACTER_TANDOII_ORGANISM("Acinetobacter tandoii (organism)", "Acinetobacter tandoii (organism)", "SNOMED-CT", "424021002"),
+  MYCOBACTERIUM_AVIUM_ORGANISM("Mycobacterium avium (organism)", "", "SNOMED-CT", "83723009"),
 
-  PROTEUS_VULGARIS_ORGANISM("Proteus vulgaris (organism)", "Proteus vulgaris (organism)", "SNOMED-CT", "45834001"),
+  SALMONELLA_GROUP_O4_ORGANISM("Salmonella group O:4 (organism)", "", "SNOMED-CT", "398467008"),
 
-  SALMONELLA_SEROGROUP_C_ORGANISM("Salmonella, serogroup C (organism)", "Salmonella, serogroup C (organism)", "SNOMED-CT", "116048001"),
+  ACINETOBACTER_BEREZINIAE_ORGANISM("Acinetobacter bereziniae (organism)", "", "SNOMED-CT", "700398000"),
 
-  LACTOCOCCUS_LACTIS_SUBSPECIES_LACTIS_ORGANISM("Lactococcus lactis subspecies lactis (organism)", "Lactococcus lactis subspecies lactis (organism)", "SNOMED-CT", "38518005"),
+  HAEMOPHILUS_HAEMOLYTICUS_ORGANISM("Haemophilus haemolyticus (organism)", "", "SNOMED-CT", "54950008"),
 
-  LEGIONELLA_PNEUMOPHILIA_SEROGROUP14_ORGANISM("Legionella pneumophilia serogroup 14 (organism)", "Legionella pneumophilia serogroup 14 (organism)", "SNOMED-CT", "131326007"),
+  EUBACTERIUM_LIMOSUM_ORGANISM("Eubacterium limosum (organism)", "", "SNOMED-CT", "87632000"),
 
-  PEDIOCOCCUS_ACIDILACTICI_ORGANISM("Pediococcus acidilactici (organism)", "Pediococcus acidilactici (organism)", "SNOMED-CT", "243237003"),
+  ACINETOBACTER_TOWNERI_ORGANISM("Acinetobacter towneri (organism)", "", "SNOMED-CT", "424930007"),
 
-  GENUS_ALCALIGENES_ORGANISM("Genus Alcaligenes (organism)", "Genus Alcaligenes (organism)", "SNOMED-CT", "68571003"),
+  BREVUNDIMONAS_DIMINUTA_ORGANISM("Brevundimonas diminuta (organism)", "", "SNOMED-CT", "113689009"),
 
-  ASPERGILLUS_USTUS_ORGANISM("Aspergillus ustus (organism)", "Aspergillus ustus (organism)", "SNOMED-CT", "23179008"),
+  SALMONELLA_AGONA("Salmonella Agona", "", "SNOMED-CT", "80627004"),
 
-  CLOSTRIDIUM_RAMOSUM_ORGANISM("Clostridium ramosum (organism)", "Clostridium ramosum (organism)", "SNOMED-CT", "42706008"),
+  GENUS_CITROBACTER_ORGANISM("Genus Citrobacter (organism)", "", "SNOMED-CT", "75972000"),
 
-  KOCURIA_KRISTINAE_ORGANISM("Kocuria kristinae (organism)", "Kocuria kristinae (organism)", "SNOMED-CT", "113772007"),
+  PANTOEA_AGGLOMERANS_ORGANISM("Pantoea agglomerans (organism)", "", "SNOMED-CT", "115015008"),
 
-  CAMPYLOBACTER_JEJUNI_ORGANISM("Campylobacter jejuni (organism)", "Campylobacter jejuni (organism)", "SNOMED-CT", "66543000"),
+  LEGIONELLA_PNEUMOPHILIA_SEROGROUP13_ORGANISM("Legionella pneumophilia serogroup 13 (organism)", "", "SNOMED-CT", "131325006"),
 
-  PANTOEA_SEPTICA_ORGANISM("Pantoea septica (organism)", "Pantoea septica (organism)", "SNOMED-CT", "5681000146105"),
+  GENUS_PASTEURELLA_ORGANISM("Genus Pasteurella (organism)", "", "SNOMED-CT", "87579009"),
 
-  STREPTOCOCCUS_ORALIS_ORGANISM("Streptococcus oralis (organism)", "Streptococcus oralis (organism)", "SNOMED-CT", "19870004"),
+  ASPERGILLUS_FLAVUS_ORGANISM("Aspergillus flavus (organism)", "", "SNOMED-CT", "66821001"),
 
-  PREVOTELLA_INTERMEDIA_ORGANISM("Prevotella intermedia (organism)", "Prevotella intermedia (organism)", "SNOMED-CT", "114142000"),
+  ROTHIA_DENTOCARIOSA_ORGANISM("Rothia dentocariosa (organism)", "", "SNOMED-CT", "35379007"),
 
-  LEGIONELLA_BRUNENSIS_ORGANISM("Legionella brunensis (organism)", "Legionella brunensis (organism)", "SNOMED-CT", "103448007"),
+  SALMONELLA_KENTUCKY("Salmonella Kentucky", "", "SNOMED-CT", "8455004"),
 
-  STREPTOCOCCUS_AGALACTIAE_ORGANISM("Streptococcus agalactiae (organism)", "Streptococcus agalactiae (organism)", "SNOMED-CT", "43492007"),
+  PARABURKHOLDERIA_PHENAZINIUM("Paraburkholderia phenazinium", "", "SNOMED-CT", "431166001"),
 
-  STREPTOCOCCUS_MITIS_GROUP_ORGANISM("Streptococcus mitis group (organism)", "Streptococcus mitis group (organism)", "SNOMED-CT", "127539005"),
+  ENTEROCOCCUS_HIRAE_ORGANISM("Enterococcus hirae (organism)", "", "SNOMED-CT", "73852008"),
 
-  ACINETOBACTER_GENOSPECIES11_ORGANISM("Acinetobacter genospecies 11 (organism)", "Acinetobacter genospecies 11 (organism)", "SNOMED-CT", "113380002"),
+  CANDIDA_DUBLINIENSIS_ORGANISM("Candida dubliniensis (organism)", "", "SNOMED-CT", "115952006"),
 
-  PARABURKHOLDERIA_ANDROPOGONIS("Paraburkholderia andropogonis", "Paraburkholderia andropogonis", "SNOMED-CT", "113667005"),
+  GENUS_MYCOBACTERIUM_ORGANISM("Genus Mycobacterium (organism)", "", "SNOMED-CT", "243368001"),
 
-  BREVUNDIMONAS_INTERMEDIA("Brevundimonas intermedia", "Brevundimonas intermedia", "SNOMED-CT", "423923008"),
+  SERRATIA_FICARIA_ORGANISM("Serratia ficaria (organism)", "", "SNOMED-CT", "802004"),
 
-  CORYNEBACTERIUM_AFERMENTANS_ORGANISM("Corynebacterium afermentans (organism)", "Corynebacterium afermentans (organism)", "SNOMED-CT", "113608003"),
+  ACINETOBACTER_DIJKSHOORNIAE_ORGANISM("Acinetobacter dijkshoorniae (organism)", "", "SNOMED-CT", "787183008"),
 
-  NEISSERIA_SUBFLAVA_ORGANISM("Neisseria subflava (organism)", "Neisseria subflava (organism)", "SNOMED-CT", "77700001"),
+  ASPERGILLUS_SPECIES_NOT_ASPERGILLUS_FUMIGATUS_ORGANISM("Aspergillus species not Aspergillus fumigatus (organism)", "", "SNOMED-CT", "413584009"),
 
-  CORYNEBACTERIUM_TUBERCULOSTEARICUM_ORGANISM("Corynebacterium tuberculostearicum (organism)", "Corynebacterium tuberculostearicum (organism)", "SNOMED-CT", "416356007"),
+  PARABURKHOLDERIA_TERRICOLA("Paraburkholderia terricola", "", "SNOMED-CT", "431683009"),
 
-  BACILLUS_THURINGIENSIS_ORGANISM("Bacillus thuringiensis (organism)", "Bacillus thuringiensis (organism)", "SNOMED-CT", "64840009"),
+  GENUS_GEOTRICHUM_ORGANISM("Genus Geotrichum (organism)", "", "SNOMED-CT", "34324005"),
 
-  STREPTOCOCCUS_ANGINOSUS_GROUP_ORGANISM("Streptococcus anginosus group (organism)", "Streptococcus anginosus group (organism)", "SNOMED-CT", "415597009"),
+  PREVOTELLA_BIVIA_ORGANISM("Prevotella bivia (organism)", "", "SNOMED-CT", "114131009"),
 
-  PAENIBACILLUS_MACERANS_ORGANISM("Paenibacillus macerans (organism)", "Paenibacillus macerans (organism)", "SNOMED-CT", "114101003"),
+  MORGANELLA_MORGANII_SUBSP_SIBONII_ORGANISM("Morganella morganii subsp sibonii (organism)", "", "SNOMED-CT", "243303008"),
 
-  PARABURKHOLDERIA_FUNGORUM_ORGANISM("Paraburkholderia fungorum (organism)", "Paraburkholderia fungorum (organism)", "SNOMED-CT", "417285005"),
+  SAPROCHAETE_CAPITATA_ORGANISM("Saprochaete capitata (organism)", "", "SNOMED-CT", "67999003"),
 
-  FINEGOLDIA_MAGNA_ORGANISM("Finegoldia magna (organism)", "Finegoldia magna (organism)", "SNOMED-CT", "417469002"),
+  STREPTOCOCCUS_CONSTELLATUS_SUBSPECIES_PHARYNGIS_ORGANISM("Streptococcus constellatus subspecies pharyngis (organism)", "", "SNOMED-CT", "415602002"),
 
-  ASPERGILLUS_GLAUCUS("Aspergillus glaucus", "Aspergillus glaucus", "SNOMED-CT", "19556009"),
+  PSEUDOMONAS_STUTZERI_ORGANISM("Pseudomonas stutzeri (organism)", "", "SNOMED-CT", "58024003"),
 
-  CANDIDA_DUBLINIENSIS_ORGANISM("Candida dubliniensis (organism)", "Candida dubliniensis (organism)", "SNOMED-CT", "115952006"),
+  STREPTOCOCCUS_SALIVARIUS_SUBSPECIES_THERMOPHILUS_ORGANISM("Streptococcus salivarius subspecies thermophilus (organism)", "", "SNOMED-CT", "23310006"),
 
-  STREPTOCOCCUS_SANGUINIS_ORGANISM("Streptococcus sanguinis (organism)", "Streptococcus sanguinis (organism)", "SNOMED-CT", "113993000"),
+  SALMONELLA_BRAENDERUP("Salmonella Braenderup", "", "SNOMED-CT", "35225001"),
 
-  PROVIDENCIA_RUSTIGIANII_ORGANISM("Providencia rustigianii (organism)", "Providencia rustigianii (organism)", "SNOMED-CT", "19196004"),
+  LEGIONELLA_ISRAELENSIS_ORGANISM("Legionella israelensis (organism)", "", "SNOMED-CT", "3128001"),
 
-  SHIGELLA_FLEXNERI_ORGANISM("Shigella flexneri (organism)", "Shigella flexneri (organism)", "SNOMED-CT", "85729005"),
+  HAEMOPHILUS_INFLUENZAE_ORGANISM("Haemophilus influenzae (organism)", "", "SNOMED-CT", "44470000"),
 
-  BURKHOLDERIA_MULTIVORANS_ORGANISM("Burkholderia multivorans (organism)", "Burkholderia multivorans (organism)", "SNOMED-CT", "113675004"),
+  GENUS_SHIGELLA_ORGANISM("Genus Shigella (organism)", "", "SNOMED-CT", "77352002"),
 
-  CITROBACTER_MURLINIAE("Citrobacter murliniae", "Citrobacter murliniae", "SNOMED-CT", "417581000"),
+  ESCHERICHIA_VULNERIS_ORGANISM("Escherichia vulneris (organism)", "", "SNOMED-CT", "53013003"),
 
-  PREVOTELLA_NANCEIENSIS_ORGANISM("Prevotella nanceiensis (organism)", "Prevotella nanceiensis (organism)", "SNOMED-CT", "441625003"),
+  YERSINIA_ENTEROCOLITICA_ORGANISM("Yersinia enterocolitica (organism)", "", "SNOMED-CT", "65255000"),
 
-  GENUS_ACINETOBACTER_ORGANISM("Genus Acinetobacter (organism)", "Genus Acinetobacter (organism)", "SNOMED-CT", "7757008"),
+  KOCURIA_KRISTINAE_ORGANISM("Kocuria kristinae (organism)", "", "SNOMED-CT", "113772007"),
 
-  ASPERGILLUS_SPECIES_NOT_ASPERGILLUS_FUMIGATUS_ORGANISM("Aspergillus species not Aspergillus fumigatus (organism)", "Aspergillus species not Aspergillus fumigatus (organism)", "SNOMED-CT", "413584009"),
+  SALMONELLA_WIEN("Salmonella Wien", "", "SNOMED-CT", "21975008"),
 
-  STAPHYLOCOCCUS_PASTEURI_ORGANISM("Staphylococcus pasteuri (organism)", "Staphylococcus pasteuri (organism)", "SNOMED-CT", "103495006"),
+  AEROMONAS_VERONII_ORGANISM("Aeromonas veronii (organism)", "", "SNOMED-CT", "9281006"),
 
-  PREVOTELLA_BIVIA_ORGANISM("Prevotella bivia (organism)", "Prevotella bivia (organism)", "SNOMED-CT", "114131009"),
+  STREPTOCOCCUS_CRISTATUS_ORGANISM("Streptococcus cristatus (organism)", "", "SNOMED-CT", "113980005"),
 
-  MORGANELLA_MORGANII_ORGANISM("Morganella morganii (organism)", "Morganella morganii (organism)", "SNOMED-CT", "243301005"),
+  SALMONELLA_PANAMA("Salmonella Panama", "", "SNOMED-CT", "40114001"),
 
-  PREVOTELLA_BUCCAE_ORGANISM("Prevotella buccae (organism)", "Prevotella buccae (organism)", "SNOMED-CT", "114134001"),
+  BACILLUS_SIMPLEX_ORGANISM("Bacillus simplex (organism)", "", "SNOMED-CT", "113479004"),
 
-  KLUYVERA_INTERMEDIA("Kluyvera intermedia", "Kluyvera intermedia", "SNOMED-CT", "431977008"),
+  STREPTOCOCCUS_CONSTELLATUS_SUBSPECIES_CONSTELLATUS_ORGANISM("Streptococcus constellatus subspecies constellatus (organism)", "", "SNOMED-CT", "415601009"),
 
-  PROVIDENCIA_VERMICOLA_ORGANISM("Providencia vermicola (organism)", "Providencia vermicola (organism)", "SNOMED-CT", "6031000146109"),
+  ANAEROBIC_BACTERIA_ORGANISM("Anaerobic bacteria (organism)", "", "SNOMED-CT", "59343002"),
 
-  CUTIBACTERIUM_ACNES_ORGANISM("Cutibacterium acnes (organism)", "Cutibacterium acnes (organism)", "SNOMED-CT", "39473003"),
+  PROVIDENCIA_VERMICOLA_ORGANISM("Providencia vermicola (organism)", "", "SNOMED-CT", "6031000146109"),
 
-  PASTEURELLA_CANIS_ORGANISM("Pasteurella canis (organism)", "Pasteurella canis (organism)", "SNOMED-CT", "7784009"),
+  AEROMONAS_TROTA_ORGANISM("Aeromonas trota (organism)", "", "SNOMED-CT", "243316008"),
 
-  LEGIONELLA_YABUUCHIAE_ORGANISM("Legionella yabuuchiae (organism)", "Legionella yabuuchiae (organism)", "SNOMED-CT", "5131000146101"),
+  GENUS_MYROIDES_ORGANISM("Genus Myroides (organism)", "", "SNOMED-CT", "115127008"),
 
-  HAEMOPHILUS_HAEMOLYTICUS_ORGANISM("Haemophilus haemolyticus (organism)", "Haemophilus haemolyticus (organism)", "SNOMED-CT", "54950008"),
+  BURKHOLDERIA_CEPACIA_COMPLEX_ORGANISM("Burkholderia cepacia complex (organism)", "", "SNOMED-CT", "131281002"),
 
-  BACILLUS_CIRCULANS_ORGANISM("Bacillus circulans (organism)", "Bacillus circulans (organism)", "SNOMED-CT", "71812004"),
+  ROTHIA_MUCILAGINOSA_ORGANISM("Rothia mucilaginosa (organism)", "", "SNOMED-CT", "416544005"),
 
-  LEGIONELLA_RUBRILUCENS_ORGANISM("Legionella rubrilucens (organism)", "Legionella rubrilucens (organism)", "SNOMED-CT", "17298000"),
+  STAPHYLOCOCCUS_PASTEURI_ORGANISM("Staphylococcus pasteuri (organism)", "", "SNOMED-CT", "103495006"),
 
-  STREPTOCOCCUS_GORDONII_ORGANISM("Streptococcus gordonii (organism)", "Streptococcus gordonii (organism)", "SNOMED-CT", "113986004"),
+  GENUS_NEISSERIA_ORGANISM("Genus Neisseria (organism)", "", "SNOMED-CT", "59083001"),
 
-  PASTEURELLA_STOMATIS_ORGANISM("Pasteurella stomatis (organism)", "Pasteurella stomatis (organism)", "SNOMED-CT", "46827009"),
+  PSEUDOMONAS_SPECIES_NOT_AERUGINOSA_ORGANISM("Pseudomonas species not aeruginosa (organism)", "", "SNOMED-CT", "710336008"),
 
-  PSEUDOMONAS_PUTIDA_ORGANISM("Pseudomonas putida (organism)", "Pseudomonas putida (organism)", "SNOMED-CT", "68608003"),
+  ENTEROCOCCUS_MALODORATUS_ORGANISM("Enterococcus malodoratus (organism)", "", "SNOMED-CT", "10262005"),
 
-  ASPERGILLUS_FLAVUS_ORGANISM("Aspergillus flavus (organism)", "Aspergillus flavus (organism)", "SNOMED-CT", "66821001"),
+  GENUS_AEROCOCCUS_ORGANISM("Genus Aerococcus (organism)", "", "SNOMED-CT", "9008009"),
 
-  MYCOBACTERIUM_CAPRAE_ORGANISM("Mycobacterium caprae (organism)", "Mycobacterium caprae (organism)", "SNOMED-CT", "430579009"),
+  AEROMONAS_ENCHELEIA_ORGANISM("Aeromonas encheleia (organism)", "", "SNOMED-CT", "115028001"),
 
-  SALMONELLA_TYPHI_ORGANISM("Salmonella Typhi (organism)", "Salmonella Typhi (organism)", "SNOMED-CT", "5595000"),
+  SALMONELLA_PARATYPHI_B("Salmonella Paratyphi B", "", "SNOMED-CT", "85908006"),
 
-  STREPTOCOCCUS_EQUINUS_ORGANISM("Streptococcus equinus (organism)", "Streptococcus equinus (organism)", "SNOMED-CT", "72646003"),
+  PROVIDENCIA_ALCALIFACIENS_ORGANISM("Providencia alcalifaciens (organism)", "", "SNOMED-CT", "46349009"),
 
-  GENUS_PREVOTELLA_ORGANISM("Genus Prevotella (organism)", "Genus Prevotella (organism)", "SNOMED-CT", "114129000"),
+  BORDETELLA_PERTUSSIS_ORGANISM("Bordetella pertussis (organism)", "", "SNOMED-CT", "5247005"),
 
-  ASPERGILLUS_TAMARII_ORGANISM("Aspergillus tamarii (organism)", "Aspergillus tamarii (organism)", "SNOMED-CT", "3111000146107"),
+  ACINETOBACTER_NOSOCOMIALIS_ORGANISM("Acinetobacter nosocomialis (organism)", "", "SNOMED-CT", "708859003"),
 
-  CANDIDA_SPECIES_NOT_CANDIDA_ALBICANS_ORGANISM("Candida species not Candida albicans (organism)", "Candida species not Candida albicans (organism)", "SNOMED-CT", "714313009"),
+  BURKHOLDERIA_GLADIOLI_ORGANISM("Burkholderia gladioli (organism)", "", "SNOMED-CT", "113671008"),
 
-  AEROMONAS_ENCHELEIA_ORGANISM("Aeromonas encheleia (organism)", "Aeromonas encheleia (organism)", "SNOMED-CT", "115028001"),
+  AEROMONAS_POPOFFII_ORGANISM("Aeromonas popoffii (organism)", "", "SNOMED-CT", "115035009"),
 
-  PARABURKHOLDERIA_TROPICA("Paraburkholderia tropica", "Paraburkholderia tropica", "SNOMED-CT", "431175004"),
+  SERRATIA_LIQUEFACIENS_ORGANISM("Serratia liquefaciens (organism)", "", "SNOMED-CT", "23787004"),
 
-  LACTOBACILLUS_GASSERI_ORGANISM("Lactobacillus gasseri (organism)", "Lactobacillus gasseri (organism)", "SNOMED-CT", "71158000"),
+  CITROBACTER_MURLINIAE("Citrobacter murliniae", "", "SNOMED-CT", "417581000"),
 
-  SHIGELLA_BOYDII_ORGANISM("Shigella boydii (organism)", "Shigella boydii (organism)", "SNOMED-CT", "55462008"),
+  PSEUDOMONAS_PUTIDA_ORGANISM("Pseudomonas putida (organism)", "", "SNOMED-CT", "68608003"),
 
-  KLEBSIELLA_OXYTOCA_ORGANISM("Klebsiella oxytoca (organism)", "Klebsiella oxytoca (organism)", "SNOMED-CT", "40886007"),
+  SHIGELLA_DYSENTERIAE_ORGANISM("Shigella dysenteriae (organism)", "", "SNOMED-CT", "43612004"),
 
-  GENUS_MYCOBACTERIUM_ORGANISM("Genus Mycobacterium (organism)", "Genus Mycobacterium (organism)", "SNOMED-CT", "243368001"),
+  NON_TOXIGENIC_CLOSTRIDIUM_DIFFICILE_ORGANISM("Non-Toxigenic Clostridium difficile (organism)", "", "SNOMED-CT", "736051005"),
 
-  LEGIONELLA_BOZEMANAE_ORGANISM("Legionella bozemanae (organism)", "Legionella bozemanae (organism)", "SNOMED-CT", "450611004"),
+  LEGIONELLA_PNEUMOPHILA_SEROGROUP3_ORGANISM("Legionella pneumophila serogroup 3 (organism)", "", "SNOMED-CT", "103465003"),
 
-  BURKHOLDERIA_GLUMAE("Burkholderia glumae", "Burkholderia glumae", "SNOMED-CT", "113673006"),
+  LEGIONELLA_LANSINGENSIS_ORGANISM("Legionella lansingensis (organism)", "", "SNOMED-CT", "103452007"),
 
-  PREVOTELLA_DISIENS_ORGANISM("Prevotella disiens (organism)", "Prevotella disiens (organism)", "SNOMED-CT", "114139006"),
+  STAPHYLOCOCCUS_PETTENKOFERI_ORGANISM("Staphylococcus pettenkoferi (organism)", "", "SNOMED-CT", "428731005"),
 
-  AEROMONAS_POPOFFII_ORGANISM("Aeromonas popoffii (organism)", "Aeromonas popoffii (organism)", "SNOMED-CT", "115035009"),
+  CITROBACTER_RODENTIUM("Citrobacter rodentium", "", "SNOMED-CT", "114444007"),
 
-  PARABURKHOLDERIA_PHYMATUM("Paraburkholderia phymatum", "Paraburkholderia phymatum", "SNOMED-CT", "431165002"),
+  MYCOBACTERIUM_GORDONAE_ORGANISM("Mycobacterium gordonae (organism)", "", "SNOMED-CT", "24871004"),
 
-  ACINETOBACTER_TOWNERI_ORGANISM("Acinetobacter towneri (organism)", "Acinetobacter towneri (organism)", "SNOMED-CT", "424930007"),
+  FAMILY_ENTEROBACTERIACEAE_ORGANISM("Family Enterobacteriaceae (organism)", "", "SNOMED-CT", "106544002"),
 
-  ACINETOBACTER_BAYLYI_ORGANISM("Acinetobacter baylyi (organism)", "Acinetobacter baylyi (organism)", "SNOMED-CT", "423974000"),
+  CRYPTOCOCCUS_ORGANISM("Cryptococcus (organism)", "", "SNOMED-CT", "17579001"),
 
-  ANAEROBIC_BACTERIA_ORGANISM("Anaerobic bacteria (organism)", "Anaerobic bacteria (organism)", "SNOMED-CT", "59343002"),
+  SALMONELLA_HAVANA("Salmonella Havana", "", "SNOMED-CT", "38788001"),
 
-  PSEUDOMONAS_CITRONELLOLIS_ORGANISM("Pseudomonas citronellolis (organism)", "Pseudomonas citronellolis (organism)", "SNOMED-CT", "31277003"),
+  ACTINOMYCES_ODONTOLYTICUS_ORGANISM("Actinomyces odontolyticus (organism)", "", "SNOMED-CT", "12069003"),
 
-  SALMONELLA_OHIO("Salmonella Ohio", "Salmonella Ohio", "SNOMED-CT", "67210008"),
+  PREVOTELLA_NANCEIENSIS_ORGANISM("Prevotella nanceiensis (organism)", "", "SNOMED-CT", "441625003"),
 
-  NEOSARTORYA_HIRATSUKAE_ORGANISM("Neosartorya hiratsukae (organism)", "Neosartorya hiratsukae (organism)", "SNOMED-CT", "414835000"),
+  STENOTROPHOMONAS_ACIDAMINIPHILA_ORGANISM("Stenotrophomonas acidaminiphila (organism)", "", "SNOMED-CT", "415583001"),
 
-  ACTINOMYCES_NAESLUNDII_ORGANISM("Actinomyces naeslundii (organism)", "Actinomyces naeslundii (organism)", "SNOMED-CT", "8940004"),
+  STREPTOCOCCUS_SALIVARIUS_GROUP_ORGANISM("Streptococcus salivarius group (organism)", "", "SNOMED-CT", "127537007"),
 
-  SALMONELLA_SPECIES("Salmonella species", "Salmonella species", "SNOMED-CT", "27268008"),
+  AEROMONAS_EUCRENOPHILIA_ORGANISM("Aeromonas eucrenophilia (organism)", "", "SNOMED-CT", "115030004"),
 
-  SERRATIA_RUBIDAEA_ORGANISM("Serratia rubidaea (organism)", "Serratia rubidaea (organism)", "SNOMED-CT", "55825002"),
+  LEGIONELLA_PNEUMOPHILA_SEROGROUP7_ORGANISM("Legionella pneumophila serogroup 7 (organism)", "", "SNOMED-CT", "103469009"),
 
-  PREVOTELLA_ORIS_ORGANISM("Prevotella oris (organism)", "Prevotella oris (organism)", "SNOMED-CT", "114147006"),
+  SALMONELLA_SEROGROUP_C_ORGANISM("Salmonella, serogroup C (organism)", "", "SNOMED-CT", "116048001"),
 
-  CITROBACTER_GILLENII("Citrobacter gillenii", "Citrobacter gillenii", "SNOMED-CT", "416990006"),
+  CAMPYLOBACTER_JEJUNI_ORGANISM("Campylobacter jejuni (organism)", "", "SNOMED-CT", "66543000"),
 
-  MYCOBACTERIUM_INTRACELLULARE_ORGANISM("Mycobacterium intracellulare (organism)", "Mycobacterium intracellulare (organism)", "SNOMED-CT", "83841006"),
+  STREPTOCOCCUS_GORDONII_ORGANISM("Streptococcus gordonii (organism)", "", "SNOMED-CT", "113986004"),
 
-  CUPRIAVIDUS_PAUCULUS_ORGANISM("Cupriavidus pauculus (organism)", "Cupriavidus pauculus (organism)", "SNOMED-CT", "429465001"),
+  BREVUNDIMONAS_VESICULARIS_ORGANISM("Brevundimonas vesicularis (organism)", "", "SNOMED-CT", "113690000"),
 
-  ELIZABETHKINGIA_MIRICOLA_ORGANISM("Elizabethkingia miricola (organism)", "Elizabethkingia miricola (organism)", "SNOMED-CT", "444815005"),
+  KOSAKONIA_COWANII("Kosakonia cowanii", "", "SNOMED-CT", "416229008"),
 
-  GRAM_POSITIVE_COCCUS_ORGANISM("Gram-positive coccus (organism)", "Gram-positive coccus (organism)", "SNOMED-CT", "59206002"),
+  LISTERIA_MONOCYTOGENES_ORGANISM("Listeria monocytogenes (organism)", "", "SNOMED-CT", "36094007"),
 
-  ACINETOBACTER_NOSOCOMIALIS_ORGANISM("Acinetobacter nosocomialis (organism)", "Acinetobacter nosocomialis (organism)", "SNOMED-CT", "708859003"),
+  MORGANELLA_MORGANII_ORGANISM("Morganella morganii (organism)", "", "SNOMED-CT", "243301005"),
 
-  CITROBACTER_FREUNDII_ORGANISM("Citrobacter freundii (organism)", "Citrobacter freundii (organism)", "SNOMED-CT", "6265002"),
+  GENUS_PICHIA_ORGANISM("Genus Pichia (organism)", "", "SNOMED-CT", "4163004"),
 
-  BURKHOLDERIA_ANTHINA("Burkholderia anthina", "Burkholderia anthina", "SNOMED-CT", "417565005"),
+  PREVOTELLA_DISIENS_ORGANISM("Prevotella disiens (organism)", "", "SNOMED-CT", "114139006"),
 
-  SERRATIA_QUINIVORANS_ORGANISM("Serratia quinivorans (organism)", "Serratia quinivorans (organism)", "SNOMED-CT", "438199009"),
+  CLOSTRIDIOIDES_DIFFICILE_ORGANISM("Clostridioides difficile (organism)", "", "SNOMED-CT", "5933001"),
 
-  GENUS_AEROCOCCUS_ORGANISM("Genus Aerococcus (organism)", "Genus Aerococcus (organism)", "SNOMED-CT", "9008009"),
+  GENUS_PROVIDENCIA_ORGANISM("Genus Providencia (organism)", "", "SNOMED-CT", "112284001"),
 
-  ENTEROCOCCUS_GALLINARUM_ORGANISM("Enterococcus gallinarum (organism)", "Enterococcus gallinarum (organism)", "SNOMED-CT", "53233007"),
+  STREPTOCOCCUS_PARASANGUINIS_ORGANISM("Streptococcus parasanguinis (organism)", "", "SNOMED-CT", "113990002"),
 
-  CAMPYLOBACTER_UREOLYTICUS_ORGANISM("Campylobacter ureolyticus (organism)", "Campylobacter ureolyticus (organism)", "SNOMED-CT", "450602004"),
+  TATUMELLA_TERREA_ORGANISM("Tatumella terrea (organism)", "", "SNOMED-CT", "8301000146102"),
 
-  GRANULICATELLA_ADIACENS_ORGANISM("Granulicatella adiacens (organism)", "Granulicatella adiacens (organism)", "SNOMED-CT", "113713009"),
+  MYCOBACTERIUM_CAPRAE_ORGANISM("Mycobacterium caprae (organism)", "", "SNOMED-CT", "430579009"),
 
-  ACHROMOBACTER_XYLOSOXIDANS_ORGANISM("Achromobacter xylosoxidans (organism)", "Achromobacter xylosoxidans (organism)", "SNOMED-CT", "413424009"),
+  SERRATIA_PLYMUTHICA_ORGANISM("Serratia plymuthica (organism)", "", "SNOMED-CT", "28955009"),
 
-  GENUS_PROPIONIBACTERIUM_ORGANISM("Genus Propionibacterium (organism)", "Genus Propionibacterium (organism)", "SNOMED-CT", "34844008"),
+  AGGREGATIBACTER_ACTINOMYCETEMCOMITANS_ORGANISM("Aggregatibacter actinomycetemcomitans (organism)", "", "SNOMED-CT", "442680008"),
 
-  SERRATIA_ENTOMOPHILA_ORGANISM("Serratia entomophila (organism)", "Serratia entomophila (organism)", "SNOMED-CT", "76656001"),
+  ACINETOBACTER_GERNERI_ORGANISM("Acinetobacter gerneri (organism)", "", "SNOMED-CT", "424700008"),
 
-  ASPERGILLUS_NIVEUS_ORGANISM("Aspergillus niveus (organism)", "Aspergillus niveus (organism)", "SNOMED-CT", "18651002"),
+  ACINETOBACTER_JUNII_ORGANISM("Acinetobacter junii (organism)", "", "SNOMED-CT", "13879009"),
 
-  LACTOBACILLUS_PARACASEI_ORGANISM("Lactobacillus paracasei (organism)", "Lactobacillus paracasei (organism)", "SNOMED-CT", "113792000"),
+  SERRATIA_FONTICOLA_ORGANISM("Serratia fonticola (organism)", "", "SNOMED-CT", "112329006"),
 
-  PASTEURELLA_MULTOCIDA_ORGANISM("Pasteurella multocida (organism)", "Pasteurella multocida (organism)", "SNOMED-CT", "10879005"),
+  PSEUDOMONAS_KOREENSIS_ORGANISM("Pseudomonas koreensis (organism)", "", "SNOMED-CT", "438724003"),
 
-  GENUS_STREPTOCOCCUS_ORGANISM("Genus Streptococcus (organism)", "Genus Streptococcus (organism)", "SNOMED-CT", "58800005"),
+  YEAST_ORGANISM("Yeast (organism)", "", "SNOMED-CT", "62093005"),
 
-  BACTEROIDES_THETAIOTAOMICRON_ORGANISM("Bacteroides thetaiotaomicron (organism)", "Bacteroides thetaiotaomicron (organism)", "SNOMED-CT", "34236001"),
+  BACTEROIDES_FRAGILIS_ORGANISM("Bacteroides fragilis (organism)", "", "SNOMED-CT", "55247009"),
 
-  YERSINIA_ENTEROCOLITICA_SEROGROUP_O3_ORGANISM("Yersinia enterocolitica serogroup O:3 (organism)", "Yersinia enterocolitica serogroup O:3 (organism)", "SNOMED-CT", "103430003"),
+  DERMABACTER_HOMINIS_ORGANISM("Dermabacter hominis (organism)", "", "SNOMED-CT", "413977006"),
 
-  BURKHOLDERIA_CALEDONICA("Burkholderia caledonica", "Burkholderia caledonica", "SNOMED-CT", "423159001"),
+  LEGIONELLA_PNEUMOPHILIA_SEROGROUP12_ORGANISM("Legionella pneumophilia serogroup 12 (organism)", "", "SNOMED-CT", "131324005"),
 
-  AGGREGATIBACTER_APHROPHILUS_ORGANISM("Aggregatibacter aphrophilus (organism)", "Aggregatibacter aphrophilus (organism)", "SNOMED-CT", "442683005"),
+  BREVUNDIMONAS_NASDAE("Brevundimonas nasdae", "", "SNOMED-CT", "424717001"),
 
-  CRONOBACTER_TURICENSIS("Cronobacter turicensis", "Cronobacter turicensis", "SNOMED-CT", "445639005"),
+  LEGIONELLA_PNEUMOPHILA_SEROGROUP2_ORGANISM("Legionella pneumophila serogroup 2 (organism)", "", "SNOMED-CT", "103464004"),
 
-  EGGERTHELLA_LENTA_ORGANISM("Eggerthella lenta (organism)", "Eggerthella lenta (organism)", "SNOMED-CT", "414077004"),
+  ENTEROBACTER_CANCEROGENUS("Enterobacter cancerogenus", "", "SNOMED-CT", "114451003"),
 
-  INTERFERON_GAMMA_ASSAY_POSITIVE_FINDING("Interferon gamma assay positive (finding)", "Interferon gamma assay positive (finding)", "SNOMED-CT", "440662009"),
+  LACTOBACILLUS_JENSENII_ORGANISM("Lactobacillus jensenii (organism)", "", "SNOMED-CT", "65904004"),
 
-  LEGIONELLA_PNEUMOPHILA_SEROGROUP4_ORGANISM("Legionella pneumophila serogroup 4 (organism)", "Legionella pneumophila serogroup 4 (organism)", "SNOMED-CT", "103466002"),
+  SALMONELLA_SINSTORF("Salmonella Sinstorf", "", "SNOMED-CT", "71443004"),
 
-  ASPERGILLUS_NIDULANS_ORGANISM("Aspergillus nidulans (organism)", "Aspergillus nidulans (organism)", "SNOMED-CT", "60264008"),
+  SERRATIA_QUINIVORANS_ORGANISM("Serratia quinivorans (organism)", "", "SNOMED-CT", "438199009"),
 
-  ACINETOBACTER_SCHINDLERI_ORGANISM("Acinetobacter schindleri (organism)", "Acinetobacter schindleri (organism)", "SNOMED-CT", "423732001"),
+  LEGIONELLA_IMPLETISOLI_ORGANISM("Legionella impletisoli (organism)", "", "SNOMED-CT", "5121000146103"),
 
-  LEGIONELLA_PNEUMOPHILA_SEROGROUP7_ORGANISM("Legionella pneumophila serogroup 7 (organism)", "Legionella pneumophila serogroup 7 (organism)", "SNOMED-CT", "103469009"),
+  STAPHYLOCOCCUS_CAPRAE_ORGANISM("Staphylococcus caprae (organism)", "", "SNOMED-CT", "76969000"),
 
-  LEGIONELLA_DUMOFFII_ORGANISM("Legionella dumoffii (organism)", "Legionella dumoffii (organism)", "SNOMED-CT", "113720002"),
+  CANDIDA_TROPICALIS_ORGANISM("Candida tropicalis (organism)", "", "SNOMED-CT", "47885008"),
 
-  SHEWANELLA_PUTREFACIENS_ORGANISM("Shewanella putrefaciens (organism)", "Shewanella putrefaciens (organism)", "SNOMED-CT", "113700003"),
+  GENUS_PREVOTELLA_ORGANISM("Genus Prevotella (organism)", "", "SNOMED-CT", "114129000"),
 
-  GENUS_PEPTONIPHILUS_ORGANISM("Genus Peptoniphilus (organism)", "Genus Peptoniphilus (organism)", "SNOMED-CT", "430742009"),
+  CUTIBACTERIUM_ACNES_ORGANISM("Cutibacterium acnes (organism)", "", "SNOMED-CT", "39473003"),
 
-  SALMONELLA_POMONA("Salmonella Pomona", "Salmonella Pomona", "SNOMED-CT", "112314009"),
+  ENTEROCOCCUS_FAECALIS_ORGANISM("Enterococcus faecalis (organism)", "", "SNOMED-CT", "78065002"),
 
-  LEGIONELLA_PNEUMOPHILA_ORGANISM("Legionella pneumophila (organism)", "Legionella pneumophila (organism)", "SNOMED-CT", "80897008"),
+  PSEUDOMONAS_MENDOCINA_ORGANISM("Pseudomonas mendocina (organism)", "", "SNOMED-CT", "59419001"),
 
-  PSEUDOMONAS_FLUORESCENS_ORGANISM("Pseudomonas fluorescens (organism)", "Pseudomonas fluorescens (organism)", "SNOMED-CT", "39289003"),
+  CORYNEBACTERIUM_PSEUDODIPHTHERITICUM_ORGANISM("Corynebacterium pseudodiphtheriticum (organism)", "", "SNOMED-CT", "12050008"),
 
-  ASPERGILLUS_BRASILIENSIS_ORGANISM("Aspergillus brasiliensis (organism)", "Aspergillus brasiliensis (organism)", "SNOMED-CT", "3101000146105"),
+  MYCOBACTERIUM_INTRACELLULARE_ORGANISM("Mycobacterium intracellulare (organism)", "", "SNOMED-CT", "83841006"),
 
-  BACILLUS_SIMPLEX_ORGANISM("Bacillus simplex (organism)", "Bacillus simplex (organism)", "SNOMED-CT", "113479004"),
+  BURKHOLDERIA_MULTIVORANS_ORGANISM("Burkholderia multivorans (organism)", "", "SNOMED-CT", "113675004"),
 
-  DERMATOPHYTE_ORGANISM("Dermatophyte (organism)", "Dermatophyte (organism)", "SNOMED-CT", "115651002"),
+  LEGIONELLA_PNEUMOPHILIA_SEROGROUP10_ORGANISM("Legionella pneumophilia serogroup 10 (organism)", "", "SNOMED-CT", "131322009"),
 
-  ENTEROBACTER_CLOACAE_SUBSPECIES_DISSOLVENS("Enterobacter cloacae subspecies dissolvens", "Enterobacter cloacae subspecies dissolvens", "SNOMED-CT", "56813009"),
+  CANDIDA_LUSITANIAE_ORGANISM("Candida lusitaniae (organism)", "", "SNOMED-CT", "47608006"),
 
-  BREVUNDIMONAS_SUBVIBRIOIDES("Brevundimonas subvibrioides", "Brevundimonas subvibrioides", "SNOMED-CT", "423492004"),
+  LEUCONOSTOC_LACTIS_ORGANISM("Leuconostoc lactis (organism)", "", "SNOMED-CT", "70285009"),
 
-  LEGIONELLA_LANSINGENSIS_ORGANISM("Legionella lansingensis (organism)", "Legionella lansingensis (organism)", "SNOMED-CT", "103452007"),
+  SERRATIA_RUBIDAEA_ORGANISM("Serratia rubidaea (organism)", "", "SNOMED-CT", "55825002"),
 
-  SALMONELLA_GROUP_O35_ORGANISM("Salmonella group O:35 (organism)", "Salmonella group O:35 (organism)", "SNOMED-CT", "404341009"),
+  YERSINIA_ENTEROCOLITICA_SEROGROUP_O9_ORGANISM("Yersinia enterocolitica serogroup O:9 (organism)", "", "SNOMED-CT", "103433001"),
 
-  CANDIDA_KEFYR_ORGANISM("Candida kefyr (organism)", "Candida kefyr (organism)", "SNOMED-CT", "446237006"),
+  GENUS_ALCALIGENES_ORGANISM("Genus Alcaligenes (organism)", "", "SNOMED-CT", "68571003"),
 
-  SALMONELLA_GIVE("Salmonella Give", "Salmonella Give", "SNOMED-CT", "71768003"),
+  GENUS_VEILLONELLA_ORGANISM("Genus Veillonella (organism)", "", "SNOMED-CT", "29875005"),
 
-  PSEUDOMONAS_KOREENSIS_ORGANISM("Pseudomonas koreensis (organism)", "Pseudomonas koreensis (organism)", "SNOMED-CT", "438724003"),
+  STREPTOCOCCUS_DYSGALACTIAE_ORGANISM("Streptococcus dysgalactiae (organism)", "", "SNOMED-CT", "40812000"),
 
-  SALMONELLA_TYPHIMURIUM_ORGANISM("Salmonella Typhimurium (organism)", "Salmonella Typhimurium (organism)", "SNOMED-CT", "50136005"),
+  SALMONELLA_ALTONA("Salmonella Altona", "", "SNOMED-CT", "47229009"),
 
-  CANDIDA_GLABRATA_ORGANISM("Candida glabrata (organism)", "Candida glabrata (organism)", "SNOMED-CT", "444877006"),
+  BURKHOLDERIA_MALLEI("Burkholderia mallei", "", "SNOMED-CT", "113674000"),
 
-  STAPHYLOCOCCUS_CAPITIS_ORGANISM("Staphylococcus capitis (organism)", "Staphylococcus capitis (organism)", "SNOMED-CT", "40347003"),
+  PARABURKHOLDERIA_PHYMATUM("Paraburkholderia phymatum", "", "SNOMED-CT", "431165002"),
 
-  SALMONELLA_SEROGROUP_D_ORGANISM("Salmonella, serogroup D (organism)", "Salmonella, serogroup D (organism)", "SNOMED-CT", "115408009"),
+  CRONOBACTER_TURICENSIS("Cronobacter turicensis", "", "SNOMED-CT", "445639005"),
 
-  MANNHEIMIA_HAEMOLYTICA_ORGANISM("Mannheimia haemolytica (organism)", "Mannheimia haemolytica (organism)", "SNOMED-CT", "128385005"),
+  STAPHYLOCOCCUS_SIMULANS_ORGANISM("Staphylococcus simulans (organism)", "", "SNOMED-CT", "52122005"),
 
-  PREVOTELLA_MELANINOGENICA_ORGANISM("Prevotella melaninogenica (organism)", "Prevotella melaninogenica (organism)", "SNOMED-CT", "114144004"),
+  SALMONELLA_GIVE("Salmonella Give", "", "SNOMED-CT", "71768003"),
 
-  CANDIDA_PARAPSILOSIS_ORGANISM("Candida parapsilosis (organism)", "Candida parapsilosis (organism)", "SNOMED-CT", "61302002"),
+  CORYNEBACTERIUM_ACCOLENS_ORGANISM("Corynebacterium accolens (organism)", "", "SNOMED-CT", "243254006"),
 
-  CITROBACTER_YOUNGAE_ORGANISM("Citrobacter youngae (organism)", "Citrobacter youngae (organism)", "SNOMED-CT", "114443001"),
+  ENTEROBACTER_CLOACAE_COMPLEX_ORGANISM("Enterobacter cloacae complex (organism)", "", "SNOMED-CT", "414102007"),
 
-  CORYNEBACTERIUM_AURIMUCOSUM_ORGANISM("Corynebacterium aurimucosum (organism)", "Corynebacterium aurimucosum (organism)", "SNOMED-CT", "385503009"),
+  SALMONELLA_INDIANA("Salmonella Indiana", "", "SNOMED-CT", "12278000"),
 
-  PEDIOCOCCUS_PENTOSACEUS_ORGANISM("Pediococcus pentosaceus (organism)", "Pediococcus pentosaceus (organism)", "SNOMED-CT", "243242006"),
+  PANTOEA_SEPTICA_ORGANISM("Pantoea septica (organism)", "", "SNOMED-CT", "5681000146105"),
 
-  PNEUMOCYSTIS_JIROVECII_ORGANISM("Pneumocystis jirovecii (organism)", "Pneumocystis jirovecii (organism)", "SNOMED-CT", "79909001"),
+  GENUS_ROTHIA_ORGANISM("Genus Rothia (organism)", "", "SNOMED-CT", "90163001"),
 
-  CRYPTOCOCCUS_LAURENTII_ORGANISM("Cryptococcus laurentii (organism)", "Cryptococcus laurentii (organism)", "SNOMED-CT", "7299008"),
+  ENTEROBACTER_AMNIGENUS_BIOGROUP_I_ORGANISM("Enterobacter amnigenus biogroup I (organism)", "", "SNOMED-CT", "114452005"),
 
-  LEGIONELLA_PNEUMOPHILA_SEROGROUP3_ORGANISM("Legionella pneumophila serogroup 3 (organism)", "Legionella pneumophila serogroup 3 (organism)", "SNOMED-CT", "103465003"),
+  PROVIDENCIA_RETTGERI_ORGANISM("Providencia rettgeri (organism)", "", "SNOMED-CT", "14196002"),
 
-  SALMONELLA_MUENSTER("Salmonella Muenster", "Salmonella Muenster", "SNOMED-CT", "68916009"),
+  SALMONELLA_DERBY("Salmonella Derby", "", "SNOMED-CT", "37091006"),
 
-  GENUS_BACILLUS_ORGANISM("Genus Bacillus (organism)", "Genus Bacillus (organism)", "SNOMED-CT", "44762009"),
+  AEROMONAS_HYDROPHILA_ORGANISM("Aeromonas hydrophila (organism)", "", "SNOMED-CT", "85823000"),
 
-  STREPTOCOCCUS_CONSTELLATUS_SUBSPECIES_PHARYNGIS_ORGANISM("Streptococcus constellatus subspecies pharyngis (organism)", "Streptococcus constellatus subspecies pharyngis (organism)", "SNOMED-CT", "415602002"),
+  PARABURKHOLDERIA_FUNGORUM_ORGANISM("Paraburkholderia fungorum (organism)", "", "SNOMED-CT", "417285005"),
 
-  KLEBSIELLA_AEROGENES_ORGANISM("Klebsiella aerogenes (organism)", "Klebsiella aerogenes (organism)", "SNOMED-CT", "62592009"),
+  CANDIDA_KEFYR_ORGANISM("Candida kefyr (organism)", "", "SNOMED-CT", "446237006"),
 
-  PLURALIBACTER_GERGOVIAE("Pluralibacter gergoviae", "Pluralibacter gergoviae", "SNOMED-CT", "716346000"),
+  ACINETOBACTER_JOHNSONII_ORGANISM("Acinetobacter johnsonii (organism)", "", "SNOMED-CT", "252000"),
 
-  SALMONELLA_AGONA("Salmonella Agona", "Salmonella Agona", "SNOMED-CT", "80627004"),
+  TRICHOPHYTON_MENTAGROPHYTES_VAR_INTERDIGITALE_ORGANISM("Trichophyton mentagrophytes var. interdigitale (organism)", "", "SNOMED-CT", "76040007"),
 
-  SALMONELLA_PARATYPHI_A("Salmonella Paratyphi A", "Salmonella Paratyphi A", "SNOMED-CT", "79128009"),
+  LEGIONELLA_PARISIENSIS_ORGANISM("Legionella parisiensis (organism)", "", "SNOMED-CT", "38322001"),
 
-  GENUS_NEISSERIA_ORGANISM("Genus Neisseria (organism)", "Genus Neisseria (organism)", "SNOMED-CT", "59083001"),
+  PROVIDENCIA_STUARTII_ORGANISM("Providencia stuartii (organism)", "", "SNOMED-CT", "1445008"),
 
-  STREPTOCOCCUS_SALIVARIUS_GROUP_ORGANISM("Streptococcus salivarius group (organism)", "Streptococcus salivarius group (organism)", "SNOMED-CT", "127537007"),
+  CANDIDA_PARAPSILOSIS_COMPLEX_ORGANISM("Candida parapsilosis complex (organism)", "", "SNOMED-CT", "717979000"),
 
-  ACINETOBACTER_SEIFERTII_ORGANISM("Acinetobacter seifertii (organism)", "Acinetobacter seifertii (organism)", "SNOMED-CT", "787184002"),
+  CAMPYLOBACTER_COLI("Campylobacter coli", "", "SNOMED-CT", "40614002"),
 
-  ASPERGILLUS_OCHRACEUS_ORGANISM("Aspergillus ochraceus (organism)", "Aspergillus ochraceus (organism)", "SNOMED-CT", "60111002"),
+  PEDIOCOCCUS_ACIDILACTICI_ORGANISM("Pediococcus acidilactici (organism)", "", "SNOMED-CT", "243237003"),
 
-  CRONOBACTER_SAKAZAKII_ORGANISM("Cronobacter sakazakii (organism)", "Cronobacter sakazakii (organism)", "SNOMED-CT", "445562004"),
+  GENUS_STREPTOCOCCUS_ORGANISM("Genus Streptococcus (organism)", "", "SNOMED-CT", "58800005"),
 
-  ACINETOBACTER_JOHNSONII_ORGANISM("Acinetobacter johnsonii (organism)", "Acinetobacter johnsonii (organism)", "SNOMED-CT", "252000"),
+  SALMONELLA_MONSCHAUI("Salmonella Monschaui", "", "SNOMED-CT", "65132007"),
 
-  LEGIONELLA_CHERRII_ORGANISM("Legionella cherrii (organism)", "Legionella cherrii (organism)", "SNOMED-CT", "52462004"),
+  CITROBACTER_FREUNDII_ORGANISM("Citrobacter freundii (organism)", "", "SNOMED-CT", "6265002"),
 
-  WEEKSELLA_VIROSA_ORGANISM("Weeksella virosa (organism)", "Weeksella virosa (organism)", "SNOMED-CT", "83326004"),
+  GENUS_ANAEROCOCCUS_ORGANISM("Genus Anaerococcus (organism)", "", "SNOMED-CT", "413518000"),
 
-  ACTINOMYCES_TURICENSIS_ORGANISM("Actinomyces turicensis (organism)", "Actinomyces turicensis (organism)", "SNOMED-CT", "113422006"),
+  PROTEUS_HAUSERI_ORGANISM("Proteus hauseri (organism)", "", "SNOMED-CT", "417592004"),
 
-  CANDIDA_PARAPSILOSIS_COMPLEX_ORGANISM("Candida parapsilosis complex (organism)", "Candida parapsilosis complex (organism)", "SNOMED-CT", "717979000"),
+  AGGREGATIBACTER_APHROPHILUS_ORGANISM("Aggregatibacter aphrophilus (organism)", "", "SNOMED-CT", "442683005"),
 
-  BACTEROIDES_VULGATUS_ORGANISM("Bacteroides vulgatus (organism)", "Bacteroides vulgatus (organism)", "SNOMED-CT", "52798008"),
+  PSEUDOGLUTAMICIBACTER_CUMMINSII_ORGANISM("Pseudoglutamicibacter cumminsii (organism)", "", "SNOMED-CT", "113436001"),
 
-  STAPHYLOCOCCUS_LUGDUNENSIS_ORGANISM("Staphylococcus lugdunensis (organism)", "Staphylococcus lugdunensis (organism)", "SNOMED-CT", "103494005"),
+  MOLD_ORGANISM("Mold (organism)", "", "SNOMED-CT", "84489001"),
 
-  GENUS_BURKHOLDERIA_ORGANISM("Genus Burkholderia (organism)", "Genus Burkholderia (organism)", "SNOMED-CT", "414324002"),
+  GENUS_STAPHYLOCOCCUS_ORGANISM("Genus Staphylococcus (organism)", "", "SNOMED-CT", "65119002"),
 
-  CITROBACTER_RODENTIUM("Citrobacter rodentium", "Citrobacter rodentium", "SNOMED-CT", "114444007"),
+  GRAM_POSITIVE_COCCUS_ORGANISM("Gram-positive coccus (organism)", "", "SNOMED-CT", "59206002"),
 
-  CRONOBACTER_MUYTJENSII("Cronobacter muytjensii", "Cronobacter muytjensii", "SNOMED-CT", "445561006"),
+  ENTEROBACTER_AMNIGENUS_BIOGROUP_II_ORGANISM("Enterobacter amnigenus biogroup II (organism)", "", "SNOMED-CT", "114453000"),
 
-  PASTEURELLA_BETTYAE_ORGANISM("Pasteurella bettyae (organism)", "Pasteurella bettyae (organism)", "SNOMED-CT", "113902004"),
+  PROTEUS_MIRABILIS_ORGANISM("Proteus mirabilis (organism)", "", "SNOMED-CT", "73457008"),
 
-  ACHROMOBACTER_DENITRIFICANS_ORGANISM("Achromobacter denitrificans (organism)", "Achromobacter denitrificans (organism)", "SNOMED-CT", "413414001"),
+  SALMONELLA_HADAR("Salmonella Hadar", "", "SNOMED-CT", "49491006"),
 
-  BURKHOLDERIA_CEPACIA_ORGANISM("Burkholderia cepacia (organism)", "Burkholderia cepacia (organism)", "SNOMED-CT", "113669008"),
+  CLOSTRIDIUM_PARAPUTRIFICUM_ORGANISM("Clostridium paraputrificum (organism)", "", "SNOMED-CT", "41966004"),
 
-  ENTEROBACTER_AMNIGENUS("Enterobacter amnigenus", "Enterobacter amnigenus", "SNOMED-CT", "84221003"),
+  ELIZABETHKINGIA_MENINGOSEPTICA_ORGANISM("Elizabethkingia meningoseptica (organism)", "", "SNOMED-CT", "425774009"),
 
-  SALMONELLA_MUENCHEN("Salmonella Muenchen", "Salmonella Muenchen", "SNOMED-CT", "77584005"),
+  AEROMONAS_SOBRIA_ORGANISM("Aeromonas sobria (organism)", "", "SNOMED-CT", "43731003"),
 
-  SALMONELLA_STANLEYVILLE("Salmonella Stanleyville", "Salmonella Stanleyville", "SNOMED-CT", "47441000"),
+  SALMONELLA_PARATYPHI_B_VAR_JAVA("Salmonella Paratyphi B var. Java", "", "SNOMED-CT", "128388007"),
 
-  RAOULTELLA_TERRIGENA_ORGANISM("Raoultella terrigena (organism)", "Raoultella terrigena (organism)", "SNOMED-CT", "416096003"),
+  ESCHERICHIA_COLI_SEROGROUP_O157_ORGANISM("Escherichia coli serogroup O157 (organism)", "", "SNOMED-CT", "407166006"),
 
-  NEISSERIA_MENINGITIDIS_ORGANISM("Neisseria meningitidis (organism)", "Neisseria meningitidis (organism)", "SNOMED-CT", "17872004"),
+  SALMONELLA_GOLDCOAST("Salmonella Goldcoast", "", "SNOMED-CT", "16820003"),
 
-  MYCOBACTERIUM_GORDONAE_ORGANISM("Mycobacterium gordonae (organism)", "Mycobacterium gordonae (organism)", "SNOMED-CT", "24871004"),
+  GENUS_SERRATIA_ORGANISM("Genus Serratia (organism)", "", "SNOMED-CT", "42025004"),
 
-  CLOSTRIDIUM_PARAPUTRIFICUM_ORGANISM("Clostridium paraputrificum (organism)", "Clostridium paraputrificum (organism)", "SNOMED-CT", "41966004"),
+  LACTOBACILLUS_PARACASEI_ORGANISM("Lactobacillus paracasei (organism)", "", "SNOMED-CT", "113792000"),
 
-  FAMILY_ENTEROBACTERIACEAE_ORGANISM("Family Enterobacteriaceae (organism)", "Family Enterobacteriaceae (organism)", "SNOMED-CT", "106544002"),
+  CANDIDA_PARAPSILOSIS_ORGANISM("Candida parapsilosis (organism)", "", "SNOMED-CT", "61302002"),
 
-  AEROMONAS_ICHTHIOSMIA_ORGANISM("Aeromonas ichthiosmia (organism)", "Aeromonas ichthiosmia (organism)", "SNOMED-CT", "115033002"),
+  ENTEROCOCCUS_DURANS_ORGANISM("Enterococcus durans (organism)", "", "SNOMED-CT", "46464008"),
 
-  STAPHYLOCOCCUS_XYLOSUS_ORGANISM("Staphylococcus xylosus (organism)", "Staphylococcus xylosus (organism)", "SNOMED-CT", "32737005"),
+  NEISSERIA_SUBFLAVA_ORGANISM("Neisseria subflava (organism)", "", "SNOMED-CT", "77700001"),
 
-  STREPTOCOCCUS_GALLOLYTICUS_ORGANISM("Streptococcus gallolyticus (organism)", "Streptococcus gallolyticus (organism)", "SNOMED-CT", "113985000"),
+  KLEBSIELLA_OXYTOCA_ORGANISM("Klebsiella oxytoca (organism)", "", "SNOMED-CT", "40886007"),
 
-  ENTEROBACTER_PYRINUS("Enterobacter pyrinus", "Enterobacter pyrinus", "SNOMED-CT", "114455007"),
+  ENTEROCOCCUS_GALLINARUM_ORGANISM("Enterococcus gallinarum (organism)", "", "SNOMED-CT", "53233007"),
 
-  MYCOBACTERIUM_TUBERCULOSIS_COMPLEX_ORGANISM("Mycobacterium tuberculosis complex (organism)", "Mycobacterium tuberculosis complex (organism)", "SNOMED-CT", "113858008"),
+  GAMMA_HEMOLYTIC_STREPTOCOCCUS_ORGANISM("Gamma-hemolytic streptococcus (organism)", "", "SNOMED-CT", "22339002"),
 
-  ACINETOBACTER_LWOFFI_ORGANISM("Acinetobacter lwoffi (organism)", "Acinetobacter lwoffi (organism)", "SNOMED-CT", "83088009"),
+  CHRYSEOBACTERIUM_INDOLOGENES_ORGANISM("Chryseobacterium indologenes (organism)", "", "SNOMED-CT", "113549008"),
 
-  SALMONELLA_MANHATTAN("Salmonella Manhattan", "Salmonella Manhattan", "SNOMED-CT", "20073008"),
+  CITROBACTER_BRAAKII_ORGANISM("Citrobacter braakii (organism)", "", "SNOMED-CT", "114262000"),
 
-  AEROMONAS_CAVIAE_ORGANISM("Aeromonas caviae (organism)", "Aeromonas caviae (organism)", "SNOMED-CT", "115036005"),
+  YERSINIA_PSEUDOTUBERCULOSIS_ORGANISM("Yersinia pseudotuberculosis (organism)", "", "SNOMED-CT", "90530002"),
 
-  STENOTROPHOMONAS_MALTOPHILIA_ORGANISM("Stenotrophomonas maltophilia (organism)", "Stenotrophomonas maltophilia (organism)", "SNOMED-CT", "113697002"),
+  SALMONELLA_MANCHESTER("Salmonella Manchester", "", "SNOMED-CT", "70605000"),
 
-  KYTOCOCCUS_SCHROETERI_ORGANISM("Kytococcus schroeteri (organism)", "Kytococcus schroeteri (organism)", "SNOMED-CT", "428721003"),
+  BURKHOLDERIA_CARIBENSIS("Burkholderia caribensis", "", "SNOMED-CT", "431682004"),
 
-  SALMONELLA_POTSDAM("Salmonella Potsdam", "Salmonella Potsdam", "SNOMED-CT", "8544001"),
+  PSEUDOMONAS_CITRONELLOLIS_ORGANISM("Pseudomonas citronellolis (organism)", "", "SNOMED-CT", "31277003"),
 
-  YERSINIA_PSEUDOTUBERCULOSIS_ORGANISM("Yersinia pseudotuberculosis (organism)", "Yersinia pseudotuberculosis (organism)", "SNOMED-CT", "90530002"),
+  ACHROMOBACTER_DENITRIFICANS_ORGANISM("Achromobacter denitrificans (organism)", "", "SNOMED-CT", "413414001"),
 
-  SHEWANELLA_ALGAE_ORGANISM("Shewanella algae (organism)", "Shewanella algae (organism)", "SNOMED-CT", "113702006"),
+  AEROMONAS_MEDIA_ORGANISM("Aeromonas media (organism)", "", "SNOMED-CT", "65192005"),
 
-  GENUS_PANTOEA_ORGANISM("Genus Pantoea (organism)", "Genus Pantoea (organism)", "SNOMED-CT", "115013001"),
+  ABIOTROPHIA_DEFECTIVA_ORGANISM("Abiotrophia defectiva (organism)", "", "SNOMED-CT", "113714003"),
 
-  SALMONELLA_ADELAIDE("Salmonella Adelaide", "Salmonella Adelaide", "SNOMED-CT", "10343005"),
+  LEGIONELLA_RUBRILUCENS_ORGANISM("Legionella rubrilucens (organism)", "", "SNOMED-CT", "17298000"),
 
-  PROTEUS_PENNERI_ORGANISM("Proteus penneri (organism)", "Proteus penneri (organism)", "SNOMED-CT", "45298005"),
+  MYCOBACTERIUM_AFRICANUM_ORGANISM("Mycobacterium africanum (organism)", "", "SNOMED-CT", "51320008"),
 
-  ACHROMOBACTER_RUHLANDII_ORGANISM("Achromobacter ruhlandii (organism)", "Achromobacter ruhlandii (organism)", "SNOMED-CT", "413421001"),
+  ACINETOBACTER_HAEMOLYTICUS_ORGANISM("Acinetobacter haemolyticus (organism)", "", "SNOMED-CT", "77045006"),
 
-  SALMONELLA_ENTERITIDIS_ORGANISM("Salmonella Enteritidis (organism)", "Salmonella Enteritidis (organism)", "SNOMED-CT", "73525009"),
+  STAPHYLOCOCCUS_SACCHAROLYTICUS_ORGANISM("Staphylococcus saccharolyticus (organism)", "", "SNOMED-CT", "41103009"),
 
-  TOXIGENIC_CLOSTRIDIUM_DIFFICILE_ORGANISM("Toxigenic Clostridium difficile (organism)", "Toxigenic Clostridium difficile (organism)", "SNOMED-CT", "736050006"),
+  ACINETOBACTER_RADIORESISTENS_ORGANISM("Acinetobacter radioresistens (organism)", "", "SNOMED-CT", "113381003"),
 
-  ESCHERICHIA_VULNERIS_ORGANISM("Escherichia vulneris (organism)", "Escherichia vulneris (organism)", "SNOMED-CT", "53013003"),
+  TOXIGENIC_CLOSTRIDIUM_DIFFICILE_ORGANISM("Toxigenic Clostridium difficile (organism)", "", "SNOMED-CT", "736050006"),
 
-  ACINETOBACTER_JUNII_ORGANISM("Acinetobacter junii (organism)", "Acinetobacter junii (organism)", "SNOMED-CT", "13879009"),
+  CHRYSEOMONAS_LUTEOLA_ORGANISM("Chryseomonas luteola (organism)", "", "SNOMED-CT", "33919008"),
 
-  OCHROBACTRUM_ANTHROPI_ORGANISM("Ochrobactrum anthropi (organism)", "Ochrobactrum anthropi (organism)", "SNOMED-CT", "116490002"),
+  GRAM_NEGATIVE_BACILLUS_ORGANISM("Gram-negative bacillus (organism)", "", "SNOMED-CT", "87172008"),
 
-  ACINETOBACTER_CALCOACETICUS_ORGANISM("Acinetobacter calcoaceticus (organism)", "Acinetobacter calcoaceticus (organism)", "SNOMED-CT", "82550008"),
+  LEGIONELLA_SANTICRUCIS_ORGANISM("Legionella santicrucis (organism)", "", "SNOMED-CT", "72814000"),
 
-  PSEUDOMONAS_FLUORESCENS_GROUP_ORGANISM("Pseudomonas fluorescens group (organism)", "Pseudomonas fluorescens group (organism)", "SNOMED-CT", "415197003"),
+  MYCOBACTERIUM_BOVIS_SUBSPECIES_BOVIS_ORGANISM("Mycobacterium bovis subspecies bovis (organism)", "", "SNOMED-CT", "832924651000087107"),
 
-  GENUS_CORYNEBACTERIUM_ORGANISM("Genus Corynebacterium (organism)", "Genus Corynebacterium (organism)", "SNOMED-CT", "77086004"),
+  GENUS_ACHROMOBACTER_ORGANISM("Genus Achromobacter (organism)", "", "SNOMED-CT", "91620006"),
 
-  LACTOBACILLUS_JENSENII_ORGANISM("Lactobacillus jensenii (organism)", "Lactobacillus jensenii (organism)", "SNOMED-CT", "65904004"),
+  LEGIONELLA_FEELEII_ORGANISM("Legionella feeleii (organism)", "", "SNOMED-CT", "17083009"),
 
-  SHIGELLA_SONNEI_ORGANISM("Shigella sonnei (organism)", "Shigella sonnei (organism)", "SNOMED-CT", "4298009"),
+  CANDIDA_RUGOSA_ORGANISM("Candida rugosa (organism)", "", "SNOMED-CT", "23773004"),
 
-  CANDIDA_RUGOSA_ORGANISM("Candida rugosa (organism)", "Candida rugosa (organism)", "SNOMED-CT", "23773004"),
+  CITROBACTER_AMALONATICUS_ORGANISM("Citrobacter amalonaticus (organism)", "", "SNOMED-CT", "55744003"),
 
-  CANDIDA_AURIS_ORGANISM("Candida auris (organism)", "Candida auris (organism)", "SNOMED-CT", "3491000146109"),
+  SHEWANELLA_PUTREFACIENS_ORGANISM("Shewanella putrefaciens (organism)", "", "SNOMED-CT", "113700003"),
 
-  ROTHIA_DENTOCARIOSA_ORGANISM("Rothia dentocariosa (organism)", "Rothia dentocariosa (organism)", "SNOMED-CT", "35379007"),
+  BURKHOLDERIA_THAILANDENSIS_ORGANISM("Burkholderia thailandensis (organism)", "", "SNOMED-CT", "113678002"),
 
-  SALMONELLA_DUISBURG("Salmonella Duisburg", "Salmonella Duisburg", "SNOMED-CT", "42410007"),
+  KLEBSIELLA_PNEUMONIAE_SS_RHINOSCLEROMATIS_ORGANISM("Klebsiella pneumoniae ss. rhinoscleromatis (organism)", "", "SNOMED-CT", "17688001"),
 
-  SERRATIA_LIQUEFACIENS_COMPLEX_ORGANISM("Serratia liquefaciens complex (organism)", "Serratia liquefaciens complex (organism)", "SNOMED-CT", "722258003"),
+  GRAM_POSITIVE_BACILLUS_ORGANISM("Gram-positive bacillus (organism)", "", "SNOMED-CT", "83514008"),
 
-  ACINETOBACTER_DIJKSHOORNIAE_ORGANISM("Acinetobacter dijkshoorniae (organism)", "Acinetobacter dijkshoorniae (organism)", "SNOMED-CT", "787183008"),
+  LEGIONELLA_PNEUMOPHILA_SEROGROUP9_ORGANISM("Legionella pneumophila serogroup 9 (organism)", "", "SNOMED-CT", "103471009"),
 
-  LEGIONELLA_HACKELIAE_ORGANISM("Legionella hackeliae (organism)", "Legionella hackeliae (organism)", "SNOMED-CT", "58939000"),
+  ANAEROBIC_GRAM_POSITIVE_COCCUS_ORGANISM("Anaerobic Gram-positive coccus (organism)", "", "SNOMED-CT", "243416009"),
 
-  YERSINIA_ENTEROCOLITICA_SEROGROUP_O9_ORGANISM("Yersinia enterocolitica serogroup O:9 (organism)", "Yersinia enterocolitica serogroup O:9 (organism)", "SNOMED-CT", "103433001"),
+  SALMONELLA_BREDENEY("Salmonella Bredeney", "", "SNOMED-CT", "82364007"),
 
-  PENICILLIUM_ORGANISM("Penicillium (organism)", "Penicillium (organism)", "SNOMED-CT", "42993004"),
+  CANDIDA_NORVEGENSIS_ORGANISM("Candida norvegensis (organism)", "", "SNOMED-CT", "243458007"),
 
-  ACINETOBACTER_GUILLOUIAE_ORGANISM("Acinetobacter guillouiae (organism)", "Acinetobacter guillouiae (organism)", "SNOMED-CT", "700397005"),
+  SALMONELLA_GROUP_O18_ORGANISM("Salmonella group O:18 (organism)", "", "SNOMED-CT", "404294002"),
 
-  LEGIONELLA_OAKRIDGENSIS_ORGANISM("Legionella oakridgensis (organism)", "Legionella oakridgensis (organism)", "SNOMED-CT", "638008"),
+  BURKHOLDERIA_ANTHINA("Burkholderia anthina", "", "SNOMED-CT", "417565005"),
 
-  BACILLUS_LICHENIFORMIS_ORGANISM("Bacillus licheniformis (organism)", "Bacillus licheniformis (organism)", "SNOMED-CT", "74867004"),
+  MYCOBACTERIUM_KANSASII_ORGANISM("Mycobacterium kansasii (organism)", "", "SNOMED-CT", "1507005"),
 
-  PROTEUS_HAUSERI_ORGANISM("Proteus hauseri (organism)", "Proteus hauseri (organism)", "SNOMED-CT", "417592004"),
+  YERSINIA_ENTEROCOLITICA_SEROGROUP_O5_ORGANISM("Yersinia enterocolitica serogroup O:5 (organism)", "", "SNOMED-CT", "103431004"),
 
-  ACTINOMYCES_ODONTOLYTICUS_ORGANISM("Actinomyces odontolyticus (organism)", "Actinomyces odontolyticus (organism)", "SNOMED-CT", "12069003"),
+  CLOSTRIDIUM_INNOCUUM_ORGANISM("Clostridium innocuum (organism)", "", "SNOMED-CT", "19415008"),
 
-  ACINETOBACTER_CALCOACETICUS_ACINETOBACTER_BAUMANNII_COMPLEX_ORGANISM("Acinetobacter calcoaceticus-Acinetobacter baumannii complex (organism)", "Acinetobacter calcoaceticus-Acinetobacter baumannii complex (organism)", "SNOMED-CT", "113376007"),
+  ACINETOBACTER_GENOSPECIES_ORGANISM("Acinetobacter genospecies (organism)", "", "SNOMED-CT", "131203002"),
 
-  SALMONELLA_READING("Salmonella Reading", "Salmonella Reading", "SNOMED-CT", "63396002"),
+  ENTEROBACTER_HORMAECHEI_ORGANISM("Enterobacter hormaechei (organism)", "", "SNOMED-CT", "114454006"),
 
-  BACILLUS_PUMILUS_ORGANISM("Bacillus pumilus (organism)", "Bacillus pumilus (organism)", "SNOMED-CT", "16580009"),
+  ASPERGILLUS_FUMIGATUS_SPECIES_COMPLEX_ORGANISM("Aspergillus fumigatus species complex (organism)", "", "SNOMED-CT", "719029007"),
 
-  BURKHOLDERIA_PSEUDOMALLEI_ORGANISM("Burkholderia pseudomallei (organism)", "Burkholderia pseudomallei (organism)", "SNOMED-CT", "116399000"),
+  STREPTOCOCCUS_GALLOLYTICUS_ORGANISM("Streptococcus gallolyticus (organism)", "", "SNOMED-CT", "113985000"),
 
-  ENTEROCOCCUS_CASSELIFLAVUS_ORGANISM("Enterococcus casseliflavus (organism)", "Enterococcus casseliflavus (organism)", "SNOMED-CT", "30949009"),
+  LEGIONELLA_PNEUMOPHILA_SEROGROUP6_ORGANISM("Legionella pneumophila serogroup 6 (organism)", "", "SNOMED-CT", "103468001"),
 
-  GENUS_PASTEURELLA_ORGANISM("Genus Pasteurella (organism)", "Genus Pasteurella (organism)", "SNOMED-CT", "87579009"),
+  PEDIOCOCCUS_PENTOSACEUS_ORGANISM("Pediococcus pentosaceus (organism)", "", "SNOMED-CT", "243242006"),
 
-  LEGIONELLA_PNEUMOPHILA_SEROGROUP5_ORGANISM("Legionella pneumophila serogroup 5 (organism)", "Legionella pneumophila serogroup 5 (organism)", "SNOMED-CT", "103467006"),
+  SALMONELLA_PARATYPHI_C("Salmonella Paratyphi C", "", "SNOMED-CT", "32488009"),
 
-  FLAVIMONAS_ORYZIHABITANS_ORGANISM("Flavimonas oryzihabitans (organism)", "Flavimonas oryzihabitans (organism)", "SNOMED-CT", "113931000"),
+  LEGIONELLA_PNEUMOPHILIA_SEROGROUP11_ORGANISM("Legionella pneumophilia serogroup 11 (organism)", "", "SNOMED-CT", "131323004"),
 
-  SALMONELLA_SEROGROUP_E_ORGANISM("Salmonella, serogroup E (organism)", "Salmonella, serogroup E (organism)", "SNOMED-CT", "115409001"),
+  ASPERGILLUS_NIDULANS_GROUP_ORGANISM("Aspergillus nidulans Group (organism)", "", "SNOMED-CT", "415879008"),
 
-  VEILLONELLA_PARVULA_ORGANISM("Veillonella parvula (organism)", "Veillonella parvula (organism)", "SNOMED-CT", "90435009"),
+  CRONOBACTER_UNIVERSALIS_ORGANISM("Cronobacter universalis (organism)", "", "SNOMED-CT", "707335003"),
 
-  LEGIONELLA_PNEUMOPHILIA_SEROGROUP10_ORGANISM("Legionella pneumophilia serogroup 10 (organism)", "Legionella pneumophilia serogroup 10 (organism)", "SNOMED-CT", "131322009"),
+  LACTOBACILLUS_GASSERI_ORGANISM("Lactobacillus gasseri (organism)", "", "SNOMED-CT", "71158000"),
 
-  LEGIONELLA_SAINTHELENS_ORGANISM("Legionella sainthelens (organism)", "Legionella sainthelens (organism)", "SNOMED-CT", "87271006"),
+  MORAXELLA_OSLOENSIS_ORGANISM("Moraxella osloensis (organism)", "", "SNOMED-CT", "72401008"),
 
-  SALMONELLA_HEIDELBERG("Salmonella Heidelberg", "Salmonella Heidelberg", "SNOMED-CT", "71865006"),
+  AEROMONAS_BESTIARUM_ORGANISM("Aeromonas bestiarum (organism)", "", "SNOMED-CT", "115027006"),
 
-  ENTEROBACTER_CLOACAE_SUBSP_CLOACAE("Enterobacter cloacae subsp. cloacae", "Enterobacter cloacae subsp. cloacae", "SNOMED-CT", "721950003"),
+  AEROMONAS_ICHTHIOSMIA_ORGANISM("Aeromonas ichthiosmia (organism)", "", "SNOMED-CT", "115033002"),
 
-  SALMONELLA_GALLINARUM("Salmonella Gallinarum", "Salmonella Gallinarum", "SNOMED-CT", "370576005"),
+  LEGIONELLA_SAINTHELENS_ORGANISM("Legionella sainthelens (organism)", "", "SNOMED-CT", "87271006"),
 
-  GENUS_ENTEROBACTER_ORGANISM("Genus Enterobacter (organism)", "Genus Enterobacter (organism)", "SNOMED-CT", "58683007"),
+  SALMONELLA_TENNESSEE("Salmonella Tennessee", "", "SNOMED-CT", "79153007"),
 
-  PROTEUS_MIRABILIS_ORGANISM("Proteus mirabilis (organism)", "Proteus mirabilis (organism)", "SNOMED-CT", "73457008"),
+  KLEBSIELLA_PNEUMONIAE_ORGANISM("Klebsiella pneumoniae (organism)", "", "SNOMED-CT", "56415008"),
 
-  MYCOBACTERIUM_CHELONAE_ORGANISM("Mycobacterium chelonae (organism)", "Mycobacterium chelonae (organism)", "SNOMED-CT", "243377008"),
+  PSEUDOMONAS_FLUORESCENS_ORGANISM("Pseudomonas fluorescens (organism)", "", "SNOMED-CT", "39289003"),
 
-  MYCOBACTERIUM_AFRICANUM_ORGANISM("Mycobacterium africanum (organism)", "Mycobacterium africanum (organism)", "SNOMED-CT", "51320008"),
+  STREPTOCOCCUS_INTERMEDIUS_ORGANISM("Streptococcus intermedius (organism)", "", "SNOMED-CT", "62170002"),
 
-  BURKHOLDERIA_GLADIOLI_ORGANISM("Burkholderia gladioli (organism)", "Burkholderia gladioli (organism)", "SNOMED-CT", "113671008"),
+  LACTOCOCCUS_LACTIS_SUBSPECIES_LACTIS_ORGANISM("Lactococcus lactis subspecies lactis (organism)", "", "SNOMED-CT", "38518005"),
 
-  CLOSTRIDIUM_SEPTICUM_ORGANISM("Clostridium septicum (organism)", "Clostridium septicum (organism)", "SNOMED-CT", "33101000"),
+  SALMONELLA_KIAMBU("Salmonella Kiambu", "", "SNOMED-CT", "11901002"),
 
-  PASTEURELLA_MAIRII_ORGANISM("Pasteurella mairii (organism)", "Pasteurella mairii (organism)", "SNOMED-CT", "113905002"),
+  PASTEURELLA_DAGMATIS_ORGANISM("Pasteurella dagmatis (organism)", "", "SNOMED-CT", "80948000"),
 
-  SALMONELLA_LIVINGSTONE("Salmonella Livingstone", "Salmonella Livingstone", "SNOMED-CT", "66713000"),
+  LECLERCIA_ADECARBOXYLATA_ORGANISM("Leclercia adecarboxylata (organism)", "", "SNOMED-CT", "57459006"),
 
-  GENUS_STENOTROPHOMONAS_ORGANISM("Genus Stenotrophomonas (organism)", "Genus Stenotrophomonas (organism)", "SNOMED-CT", "115656007"),
+  LEGIONELLA_PNEUMOPHILA_SEROGROUP5_ORGANISM("Legionella pneumophila serogroup 5 (organism)", "", "SNOMED-CT", "103467006"),
 
-  GENUS_PROTEUS_ORGANISM("Genus Proteus (organism)", "Genus Proteus (organism)", "SNOMED-CT", "50517009"),
+  SALMONELLA_SPECIES("Salmonella species", "", "SNOMED-CT", "27268008"),
 
-  AEROMONAS_SOBRIA_ORGANISM("Aeromonas sobria (organism)", "Aeromonas sobria (organism)", "SNOMED-CT", "43731003"),
+  CITROBACTER_SEDLAKII("Citrobacter sedlakii", "", "SNOMED-CT", "114265003"),
 
-  PASTEURELLA_PNEUMOTROPICA_ORGANISM("Pasteurella pneumotropica (organism)", "Pasteurella pneumotropica (organism)", "SNOMED-CT", "32562008"),
+  PSEUDOMONAS_AERUGINOSA_ORGANISM("Pseudomonas aeruginosa (organism)", "", "SNOMED-CT", "52499004"),
 
-  RAOULTELLA_PLANTICOLA_ORGANISM("Raoultella planticola (organism)", "Raoultella planticola (organism)", "SNOMED-CT", "416264004"),
+  ESCHERICHIA_COLI_ORGANISM("Escherichia coli (organism)", "", "SNOMED-CT", "112283007"),
 
-  GENUS_ACHROMOBACTER_ORGANISM("Genus Achromobacter (organism)", "Genus Achromobacter (organism)", "SNOMED-CT", "91620006"),
+  PROTEUS_PENNERI_ORGANISM("Proteus penneri (organism)", "", "SNOMED-CT", "45298005"),
 
-  PROVIDENCIA_RETTGERI_ORGANISM("Providencia rettgeri (organism)", "Providencia rettgeri (organism)", "SNOMED-CT", "14196002"),
+  ASPERGILLUS_GLAUCUS("Aspergillus glaucus", "", "SNOMED-CT", "19556009"),
 
-  KOSAKONIA_RADICINCITANS("Kosakonia radicincitans", "Kosakonia radicincitans", "SNOMED-CT", "8181000146108"),
+  CANDIDA_INCONSPICUA_ORGANISM("Candida inconspicua (organism)", "", "SNOMED-CT", "283871001"),
 
-  BURKHOLDERIA_AMBIFARIA("Burkholderia ambifaria", "Burkholderia ambifaria", "SNOMED-CT", "416467009"),
+  PAENIBACILLUS_MACERANS_ORGANISM("Paenibacillus macerans (organism)", "", "SNOMED-CT", "114101003"),
 
-  GARDNERELLA_VAGINALIS_ORGANISM("Gardnerella vaginalis (organism)", "Gardnerella vaginalis (organism)", "SNOMED-CT", "64071004"),
+  CRONOBACTER_SAKAZAKII_ORGANISM("Cronobacter sakazakii (organism)", "", "SNOMED-CT", "445562004"),
 
-  ACINETOBACTER_GENOSPECIES_ORGANISM("Acinetobacter genospecies (organism)", "Acinetobacter genospecies (organism)", "SNOMED-CT", "131203002"),
+  STREPTOCOCCUS_SALIVARIUS_ORGANISM("Streptococcus salivarius (organism)", "", "SNOMED-CT", "39888004"),
 
-  GENUS_CITROBACTER_ORGANISM("Genus Citrobacter (organism)", "Genus Citrobacter (organism)", "SNOMED-CT", "75972000"),
+  CRYPTOCOCCUS_LAURENTII_ORGANISM("Cryptococcus laurentii (organism)", "", "SNOMED-CT", "7299008"),
 
-  SALMONELLA_BOVISMORBIFICANS("Salmonella Bovismorbificans", "Salmonella Bovismorbificans", "SNOMED-CT", "81938008"),
+  ACHROMOBACTER_SPANIUS_ORGANISM("Achromobacter spanius (organism)", "", "SNOMED-CT", "413422008"),
 
-  SALMONELLA_THOMPSON("Salmonella Thompson", "Salmonella Thompson", "SNOMED-CT", "4361005"),
+  LEGIONELLA_HACKELIAE_ORGANISM("Legionella hackeliae (organism)", "", "SNOMED-CT", "58939000"),
 
-  ACINETOBACTER_BAUMANNII_ORGANISM("Acinetobacter baumannii (organism)", "Acinetobacter baumannii (organism)", "SNOMED-CT", "91288006"),
+  GENUS_UREAPLASMA_ORGANISM("Genus Ureaplasma (organism)", "", "SNOMED-CT", "29680004"),
 
-  LACTOBACILLUS_CRISPATUS_ORGANISM("Lactobacillus crispatus (organism)", "Lactobacillus crispatus (organism)", "SNOMED-CT", "89237007"),
+  LEGIONELLA_BRUNENSIS_ORGANISM("Legionella brunensis (organism)", "", "SNOMED-CT", "103448007"),
 
-  LEGIONELLA_CINCINNATIENSIS_ORGANISM("Legionella cincinnatiensis (organism)", "Legionella cincinnatiensis (organism)", "SNOMED-CT", "58923007"),
+  STREPTOCOCCUS_DYSGALACTIAE_SUBSPECIES_DYSGALACTIAE_ORGANISM("Streptococcus dysgalactiae subspecies dysgalactiae (organism)", "", "SNOMED-CT", "113982002"),
 
-  PSEUDOGLUTAMICIBACTER_CUMMINSII_ORGANISM("Pseudoglutamicibacter cumminsii (organism)", "Pseudoglutamicibacter cumminsii (organism)", "SNOMED-CT", "113436001"),
+  GENUS_FUSOBACTERIUM_ORGANISM("Genus Fusobacterium (organism)", "", "SNOMED-CT", "33562003"),
 
-  BACILLUS_SUBTILIS_ORGANISM("Bacillus subtilis (organism)", "Bacillus subtilis (organism)", "SNOMED-CT", "83512007"),
+  MYCOBACTERIUM_TUBERCULOSIS_ORGANISM("Mycobacterium tuberculosis (organism)", "", "SNOMED-CT", "113861009"),
 
-  ALCALIGENES_FAECALIS_SUBSPECIES_FAECALIS_ORGANISM("Alcaligenes faecalis subspecies faecalis (organism)", "Alcaligenes faecalis subspecies faecalis (organism)", "SNOMED-CT", "424719003"),
+  GENUS_LEGIONELLA_ORGANISM("Genus Legionella (organism)", "", "SNOMED-CT", "7527002"),
 
-  ALCALIGENES_FAECALIS_ORGANISM("Alcaligenes faecalis (organism)", "Alcaligenes faecalis (organism)", "SNOMED-CT", "25223004"),
+  PEPTONIPHILUS_HAREI_ORGANISM("Peptoniphilus harei (organism)", "", "SNOMED-CT", "433373007"),
 
-  STREPTOCOCCUS_THORALTENSIS_ORGANISM("Streptococcus thoraltensis (organism)", "Streptococcus thoraltensis (organism)", "SNOMED-CT", "113997004"),
+  AEROMONAS_SALMONICIDA_SS_SALMONICIDA_ORGANISM("Aeromonas salmonicida ss. salmonicida (organism)", "", "SNOMED-CT", "62520007"),
 
-  SALMONELLA_GROUP_O4_ORGANISM("Salmonella group O:4 (organism)", "Salmonella group O:4 (organism)", "SNOMED-CT", "398467008"),
+  PROTEUS_MYXOFACIENS_ORGANISM("Proteus myxofaciens (organism)", "", "SNOMED-CT", "86145008"),
 
-  GENUS_VEILLONELLA_ORGANISM("Genus Veillonella (organism)", "Genus Veillonella (organism)", "SNOMED-CT", "29875005"),
+  INTERFERON_GAMMA_ASSAY_POSITIVE_FINDING("Interferon gamma assay positive (finding)", "", "SNOMED-CT", "440662009"),
 
-  AEROCOCCUS_URINAEHOMINIS_ORGANISM("Aerococcus urinaehominis (organism)", "Aerococcus urinaehominis (organism)", "SNOMED-CT", "409819000"),
+  PREVOTELLA_INTERMEDIA_ORGANISM("Prevotella intermedia (organism)", "", "SNOMED-CT", "114142000"),
 
-  ASPERGILLUS_FLAVUS_GROUP_ORGANISM("Aspergillus flavus group (organism)", "Aspergillus flavus group (organism)", "SNOMED-CT", "243491003"),
+  ACINETOBACTER_SEIFERTII_ORGANISM("Acinetobacter seifertii (organism)", "", "SNOMED-CT", "787184002"),
 
-  LEGIONELLA_IMPLETISOLI_ORGANISM("Legionella impletisoli (organism)", "Legionella impletisoli (organism)", "SNOMED-CT", "5121000146103"),
+  ACTINOTIGNUM_SCHAALII_ORGANISM("Actinotignum schaalii (organism)", "", "SNOMED-CT", "716526006"),
 
-  PARABURKHOLDERIA_TUBERUM("Paraburkholderia tuberum", "Paraburkholderia tuberum", "SNOMED-CT", "431167005"),
+  LEGIONELLA_PNEUMOPHILA_SEROGROUP1_ORGANISM("Legionella pneumophila serogroup 1 (organism)", "", "SNOMED-CT", "103463005"),
 
-  BURKHOLDERIA_PLANTARII("Burkholderia plantarii", "Burkholderia plantarii", "SNOMED-CT", "113676003"),
+  OCHROBACTRUM_ANTHROPI_ORGANISM("Ochrobactrum anthropi (organism)", "", "SNOMED-CT", "116490002"),
 
-  GENUS_MYCOPLASMA_ORGANISM("Genus Mycoplasma (organism)", "Genus Mycoplasma (organism)", "SNOMED-CT", "78981005"),
+  ALCALIGENES_FAECALIS_SUBSPECIES_FAECALIS_ORGANISM("Alcaligenes faecalis subspecies faecalis (organism)", "", "SNOMED-CT", "424719003"),
 
-  GENUS_PROVIDENCIA_ORGANISM("Genus Providencia (organism)", "Genus Providencia (organism)", "SNOMED-CT", "112284001"),
+  LEGIONELLA_LONGBEACHAE_ORGANISM("Legionella longbeachae (organism)", "", "SNOMED-CT", "89605004"),
 
-  KLEBSIELLA_PNEUMONIAE_SS_RHINOSCLEROMATIS_ORGANISM("Klebsiella pneumoniae ss. rhinoscleromatis (organism)", "Klebsiella pneumoniae ss. rhinoscleromatis (organism)", "SNOMED-CT", "17688001"),
+  CANDIDA_MAGNOLIAE_ORGANISM("Candida magnoliae (organism)", "", "SNOMED-CT", "446239009"),
 
-  MYCOBACTERIUM_ABSCESSUS_ORGANISM("Mycobacterium abscessus (organism)", "Mycobacterium abscessus (organism)", "SNOMED-CT", "113838007"),
+  RAOULTELLA_TERRIGENA_ORGANISM("Raoultella terrigena (organism)", "", "SNOMED-CT", "416096003"),
 
-  STREPTOCOCCUS_DYSGALACTIAE_SUBSPECIES_DYSGALACTIAE_ORGANISM("Streptococcus dysgalactiae subspecies dysgalactiae (organism)", "Streptococcus dysgalactiae subspecies dysgalactiae (organism)", "SNOMED-CT", "113982002"),
+  SHIGELLA_FLEXNERI_ORGANISM("Shigella flexneri (organism)", "", "SNOMED-CT", "85729005"),
 
-  SALMONELLA_SCHWARZENGRUND("Salmonella Schwarzengrund", "Salmonella Schwarzengrund", "SNOMED-CT", "45651006"),
+  ASPERGILLUS_TAMARII_ORGANISM("Aspergillus tamarii (organism)", "", "SNOMED-CT", "3111000146107"),
 
-  BACILLUS_CEREUS_ORGANISM("Bacillus cereus (organism)", "Bacillus cereus (organism)", "SNOMED-CT", "84408007"),
+  KYTOCOCCUS_SCHROETERI_ORGANISM("Kytococcus schroeteri (organism)", "", "SNOMED-CT", "428721003"),
 
-  SALMONELLA_POONA("Salmonella Poona", "Salmonella Poona", "SNOMED-CT", "57101009"),
+  STREPTOCOCCUS_SANGUINIS_ORGANISM("Streptococcus sanguinis (organism)", "", "SNOMED-CT", "113993000"),
 
-  GENUS_ANAEROCOCCUS_ORGANISM("Genus Anaerococcus (organism)", "Genus Anaerococcus (organism)", "SNOMED-CT", "413518000"),
+  CRONOBACTER_MALONATICUS("Cronobacter malonaticus", "", "SNOMED-CT", "445560007"),
 
-  MICROCOCCUS_LUTEUS_ORGANISM("Micrococcus luteus (organism)", "Micrococcus luteus (organism)", "SNOMED-CT", "48299003"),
+  CORYNEBACTERIUM_JEIKEIUM_ORGANISM("Corynebacterium jeikeium (organism)", "", "SNOMED-CT", "63410006"),
 
-  BIFIDOBACTERIUM_BREVE_ORGANISM("Bifidobacterium breve (organism)", "Bifidobacterium breve (organism)", "SNOMED-CT", "35011006"),
+  AEROMONAS_MOLLUSCORUM_ORGANISM("Aeromonas molluscorum (organism)", "", "SNOMED-CT", "425862003"),
 
-  LEGIONELLA_FEELEII_ORGANISM("Legionella feeleii (organism)", "Legionella feeleii (organism)", "SNOMED-CT", "17083009"),
+  PREVOTELLA_DENTICOLA_ORGANISM("Prevotella denticola (organism)", "", "SNOMED-CT", "114138003"),
 
-  PARABURKHOLDERIA_SACCHARI("Paraburkholderia sacchari", "Paraburkholderia sacchari", "SNOMED-CT", "431164003"),
+  SALMONELLA_TYPHIMURIUM_VAR_COPENHAGEN("Salmonella Typhimurium var. Copenhagen", "", "SNOMED-CT", "370578006"),
 
-  STAPHYLOCOCCUS_HAEMOLYTICUS_ORGANISM("Staphylococcus haemolyticus (organism)", "Staphylococcus haemolyticus (organism)", "SNOMED-CT", "83452006"),
+  STREPTOCOCCUS_ANGINOSUS_GROUP_ORGANISM("Streptococcus anginosus group (organism)", "", "SNOMED-CT", "415597009"),
 
-  FUSOBACTERIUM_NUCLEATUM_ORGANISM("Fusobacterium nucleatum (organism)", "Fusobacterium nucleatum (organism)", "SNOMED-CT", "32763000"),
+  CANDIDA_ALBICANS_ORGANISM("Candida albicans (organism)", "", "SNOMED-CT", "53326005"),
 
-  CORYNEBACTERIUM_ACCOLENS_ORGANISM("Corynebacterium accolens (organism)", "Corynebacterium accolens (organism)", "SNOMED-CT", "243254006"),
+  ACINETOBACTER_TANDOII_ORGANISM("Acinetobacter tandoii (organism)", "", "SNOMED-CT", "424021002"),
 
-  ACINETOBACTER_BEREZINIAE_ORGANISM("Acinetobacter bereziniae (organism)", "Acinetobacter bereziniae (organism)", "SNOMED-CT", "700398000"),
+  ASPERGILLUS_ORGANISM("Aspergillus (organism)", "", "SNOMED-CT", "2429008"),
 
-  AEROMONAS_MOLLUSCORUM_ORGANISM("Aeromonas molluscorum (organism)", "Aeromonas molluscorum (organism)", "SNOMED-CT", "425862003"),
+  BACTEROIDES_CACCAE_ORGANISM("Bacteroides caccae (organism)", "", "SNOMED-CT", "14342006"),
 
-  SALMONELLA_INDIANA("Salmonella Indiana", "Salmonella Indiana", "SNOMED-CT", "12278000"),
+  MYCOBACTERIUM_MICROTI_ORGANISM("Mycobacterium microti (organism)", "", "SNOMED-CT", "70801007"),
 
-  GENUS_CANDIDA_ORGANISM("Genus Candida (organism)", "Genus Candida (organism)", "SNOMED-CT", "3265006"),
+  SALMONELLA_THOMPSON("Salmonella Thompson", "", "SNOMED-CT", "4361005"),
 
-  STREPTOCOCCUS_DYSGALACTIAE_ORGANISM("Streptococcus dysgalactiae (organism)", "Streptococcus dysgalactiae (organism)", "SNOMED-CT", "40812000"),
+  HAFNIA_ALVEI_ORGANISM("Hafnia alvei (organism)", "", "SNOMED-CT", "76694001"),
 
-  GENUS_MYROIDES_ORGANISM("Genus Myroides (organism)", "Genus Myroides (organism)", "SNOMED-CT", "115127008"),
+  GENUS_AEROMONAS_ORGANISM("Genus Aeromonas (organism)", "", "SNOMED-CT", "88529008"),
 
-  SALMONELLA_MONTEVIDEO("Salmonella Montevideo", "Salmonella Montevideo", "SNOMED-CT", "80268001"),
+  ELIZABETHKINGIA_MIRICOLA_ORGANISM("Elizabethkingia miricola (organism)", "", "SNOMED-CT", "444815005"),
 
-  SALMONELLA_PARATYPHI_C("Salmonella Paratyphi C", "Salmonella Paratyphi C", "SNOMED-CT", "32488009"),
+  LEGIONELLA_MORAVICA_ORGANISM("Legionella moravica (organism)", "", "SNOMED-CT", "103454008"),
 
-  SALMONELLA_UGANDA("Salmonella Uganda", "Salmonella Uganda", "SNOMED-CT", "2434007"),
+  STREPTOCOCCUS_CONSTELLATUS_ORGANISM("Streptococcus constellatus (organism)", "", "SNOMED-CT", "76199005"),
 
-  SERRATIA_LIQUEFACIENS_ORGANISM("Serratia liquefaciens (organism)", "Serratia liquefaciens (organism)", "SNOMED-CT", "23787004"),
+  VEILLONELLA_PARVULA_ORGANISM("Veillonella parvula (organism)", "", "SNOMED-CT", "90435009"),
 
-  ASPERGILLUS_FUMIGATUS_ORGANISM("Aspergillus fumigatus (organism)", "Aspergillus fumigatus (organism)", "SNOMED-CT", "32684000"),
+  DERMATOPHYTE_ORGANISM("Dermatophyte (organism)", "", "SNOMED-CT", "115651002"),
 
-  SALMONELLA_LONDON("Salmonella London", "Salmonella London", "SNOMED-CT", "2291004"),
+  LACTOBACILLUS_FERMENTUM_ORGANISM("Lactobacillus fermentum (organism)", "", "SNOMED-CT", "65506008"),
 
-  LEGIONELLA_PARISIENSIS_ORGANISM("Legionella parisiensis (organism)", "Legionella parisiensis (organism)", "SNOMED-CT", "38322001"),
+  RAOULTELLA_PLANTICOLA_ORGANISM("Raoultella planticola (organism)", "", "SNOMED-CT", "416264004"),
 
-  BURKHOLDERIA_CARIBENSIS("Burkholderia caribensis", "Burkholderia caribensis", "SNOMED-CT", "431682004"),
+  AEROCOCCUS_URINAEHOMINIS_ORGANISM("Aerococcus urinaehominis (organism)", "", "SNOMED-CT", "409819000"),
 
-  PEPTOSTREPTOCOCCUS_ANAEROBIUS_ORGANISM("Peptostreptococcus anaerobius (organism)", "Peptostreptococcus anaerobius (organism)", "SNOMED-CT", "19217002"),
+  BIFIDOBACTERIUM_BREVE_ORGANISM("Bifidobacterium breve (organism)", "", "SNOMED-CT", "35011006"),
 
-  MUCOID_PSEUDOMONAS_AERUGINOSA_ORGANISM("Mucoid Pseudomonas aeruginosa (organism)", "Mucoid Pseudomonas aeruginosa (organism)", "SNOMED-CT", "733537009"),
+  UREAPLASMA_UREALYTICUM_ORGANISM("Ureaplasma urealyticum (organism)", "", "SNOMED-CT", "12006007"),
 
-  TRICHOPHYTON_MENTAGROPHYTES_VAR_INTERDIGITALE_ORGANISM("Trichophyton mentagrophytes var. interdigitale (organism)", "Trichophyton mentagrophytes var. interdigitale (organism)", "SNOMED-CT", "76040007"),
+  GENUS_BREVUNDIMONAS_ORGANISM("Genus Brevundimonas (organism)", "", "SNOMED-CT", "115154006"),
 
-  STREPTOCOCCUS_PNEUMONIAE_ORGANISM("Streptococcus pneumoniae (organism)", "Streptococcus pneumoniae (organism)", "SNOMED-CT", "9861002"),
+  GENUS_STENOTROPHOMONAS_ORGANISM("Genus Stenotrophomonas (organism)", "", "SNOMED-CT", "115656007"),
 
-  CITROBACTER_AMALONATICUS_ORGANISM("Citrobacter amalonaticus (organism)", "Citrobacter amalonaticus (organism)", "SNOMED-CT", "55744003"),
+  SALMONELLA_POMONA("Salmonella Pomona", "", "SNOMED-CT", "112314009"),
 
-  GENUS_GEOTRICHUM_ORGANISM("Genus Geotrichum (organism)", "Genus Geotrichum (organism)", "SNOMED-CT", "34324005"),
+  SALMONELLA_DUBLIN("Salmonella Dublin", "", "SNOMED-CT", "62136003"),
 
-  KLEBSIELLA_PNEUMONIAE_SS_OZAENAE_ORGANISM("Klebsiella pneumoniae ss. ozaenae (organism)", "Klebsiella pneumoniae ss. ozaenae (organism)", "SNOMED-CT", "65186004"),
+  SALMONELLA_MIKAWASIMA("Salmonella Mikawasima", "", "SNOMED-CT", "42709001"),
 
-  LECLERCIA_ADECARBOXYLATA_ORGANISM("Leclercia adecarboxylata (organism)", "Leclercia adecarboxylata (organism)", "SNOMED-CT", "57459006"),
+  ACINETOBACTER_GUILLOUIAE_ORGANISM("Acinetobacter guillouiae (organism)", "", "SNOMED-CT", "700397005"),
 
-  TATUMELLA_TERREA_ORGANISM("Tatumella terrea (organism)", "Tatumella terrea (organism)", "SNOMED-CT", "8301000146102"),
+  SALMONELLA_NEWPORT("Salmonella Newport", "", "SNOMED-CT", "56077000"),
 
-  SALMONELLA_ENTERICA_SUBSPECIES_DIARIZONAE("Salmonella enterica subspecies diarizonae", "Salmonella enterica subspecies diarizonae", "SNOMED-CT", "398428002"),
+  PASTEURELLA_MAIRII_ORGANISM("Pasteurella mairii (organism)", "", "SNOMED-CT", "113905002"),
 
-  GENUS_CAPNOCYTOPHAGA_ORGANISM("Genus Capnocytophaga (organism)", "Genus Capnocytophaga (organism)", "SNOMED-CT", "22294008"),
+  KLEBSIELLA_PNEUMONIAE_SS_OZAENAE_ORGANISM("Klebsiella pneumoniae ss. ozaenae (organism)", "", "SNOMED-CT", "65186004"),
 
-  SERRATIA_UREILYTICA_ORGANISM("Serratia ureilytica (organism)", "Serratia ureilytica (organism)", "SNOMED-CT", "450416004"),
+  RHODOTORULA_RUBRA_ORGANISM("Rhodotorula rubra (organism)", "", "SNOMED-CT", "86724009"),
 
-  BURKHOLDERIA_STABILIS("Burkholderia stabilis", "Burkholderia stabilis", "SNOMED-CT", "416616001"),
+  SALMONELLA_KUMASI("Salmonella Kumasi", "", "SNOMED-CT", "58946009"),
 
-  GRAM_NEGATIVE_BACILLUS_ORGANISM("Gram-negative bacillus (organism)", "Gram-negative bacillus (organism)", "SNOMED-CT", "87172008"),
+  ASPERGILLUS_NIVEUS_ORGANISM("Aspergillus niveus (organism)", "", "SNOMED-CT", "18651002"),
 
-  MICROBACTERIUM_FLAVESCENS_ORGANISM("Microbacterium flavescens (organism)", "Microbacterium flavescens (organism)", "SNOMED-CT", "114061003"),
+  SALMONELLA_ENTERICA_SUBSPECIES_DIARIZONAE("Salmonella enterica subspecies diarizonae", "", "SNOMED-CT", "398428002"),
 
-  ENTEROCOCCUS_MALODORATUS_ORGANISM("Enterococcus malodoratus (organism)", "Enterococcus malodoratus (organism)", "SNOMED-CT", "10262005"),
+  HAEMOPHILUS_PARAHAEMOLYTICUS_ORGANISM("Haemophilus parahaemolyticus (organism)", "", "SNOMED-CT", "89800007"),
 
-  PROVIDENCIA_STUARTII_ORGANISM("Providencia stuartii (organism)", "Providencia stuartii (organism)", "SNOMED-CT", "1445008"),
+  AEROMONAS_SIMIAE_ORGANISM("Aeromonas simiae (organism)", "", "SNOMED-CT", "426333004"),
 
-  YERSINIA_ENTEROCOLITICA_ORGANISM("Yersinia enterocolitica (organism)", "Yersinia enterocolitica (organism)", "SNOMED-CT", "65255000"),
+  SALMONELLA_SEROGROUP_E_ORGANISM("Salmonella, serogroup E (organism)", "", "SNOMED-CT", "115409001"),
 
-  SALMONELLA_BAREILLY("Salmonella Bareilly", "Salmonella Bareilly", "SNOMED-CT", "8044005"),
+  STAPHYLOCOCCUS_CAPITIS_ORGANISM("Staphylococcus capitis (organism)", "", "SNOMED-CT", "40347003"),
 
-  BACTEROIDES_CACCAE_ORGANISM("Bacteroides caccae (organism)", "Bacteroides caccae (organism)", "SNOMED-CT", "14342006"),
+  NEOSARTORYA_HIRATSUKAE_ORGANISM("Neosartorya hiratsukae (organism)", "", "SNOMED-CT", "414835000"),
 
-  STENOTROPHOMONAS_RHIZOPHILA_ORGANISM("Stenotrophomonas rhizophila (organism)", "Stenotrophomonas rhizophila (organism)", "SNOMED-CT", "416084005"),
+  BIFIDOBACTERIUM_DENTIUM_ORGANISM("Bifidobacterium dentium (organism)", "", "SNOMED-CT", "36623007"),
 
-  GENUS_BREVUNDIMONAS_ORGANISM("Genus Brevundimonas (organism)", "Genus Brevundimonas (organism)", "SNOMED-CT", "115154006"),
+  GENUS_ENTEROBACTER_ORGANISM("Genus Enterobacter (organism)", "", "SNOMED-CT", "58683007"),
 
-  BURKHOLDERIA_CEPACIA_COMPLEX_ORGANISM("Burkholderia cepacia complex (organism)", "Burkholderia cepacia complex (organism)", "SNOMED-CT", "131281002"),
+  ACINETOBACTER_GENOSPECIES11_ORGANISM("Acinetobacter genospecies 11 (organism)", "", "SNOMED-CT", "113380002"),
 
-  STREPTOCOCCUS_GALLOLYTICUS_SUBSPECIES_GALLOLYTICUS_ORGANISM("Streptococcus gallolyticus subspecies gallolyticus (organism)", "Streptococcus gallolyticus subspecies gallolyticus (organism)", "SNOMED-CT", "421544007"),
+  MYCOBACTERIUM_CHELONAE_ORGANISM("Mycobacterium chelonae (organism)", "", "SNOMED-CT", "243377008"),
 
-  ASPERGILLUS_VERSICOLOR_ORGANISM("Aspergillus versicolor (organism)", "Aspergillus versicolor (organism)", "SNOMED-CT", "48315007"),
+  SALMONELLA_MUENCHEN("Salmonella Muenchen", "", "SNOMED-CT", "77584005"),
 
-  SPHINGOBACTERIUM_MULTIVORUM_ORGANISM("Sphingobacterium multivorum (organism)", "Sphingobacterium multivorum (organism)", "SNOMED-CT", "51595006"),
+  LACTOBACILLUS_CRISPATUS_ORGANISM("Lactobacillus crispatus (organism)", "", "SNOMED-CT", "89237007"),
 
-  GRAM_POSITIVE_BACILLUS_ORGANISM("Gram-positive bacillus (organism)", "Gram-positive bacillus (organism)", "SNOMED-CT", "83514008"),
+  GENUS_PSEUDOMONAS_ORGANISM("Genus Pseudomonas (organism)", "", "SNOMED-CT", "57032008"),
 
-  GENUS_SHIGELLA_ORGANISM("Genus Shigella (organism)", "Genus Shigella (organism)", "SNOMED-CT", "77352002"),
+  BREVUNDIMONAS_INTERMEDIA("Brevundimonas intermedia", "", "SNOMED-CT", "423923008"),
 
-  STREPTOCOCCUS_CRISTATUS_ORGANISM("Streptococcus cristatus (organism)", "Streptococcus cristatus (organism)", "SNOMED-CT", "113980005"),
+  GENUS_RAOULTELLA_ORGANISM("Genus Raoultella (organism)", "", "SNOMED-CT", "417468005"),
 
-  CANDIDA_GUILLIERMONDII_ORGANISM("Candida guilliermondii (organism)", "Candida guilliermondii (organism)", "SNOMED-CT", "16557001"),
+  ACINETOBACTER_VARIABILIS_ORGANISM("Acinetobacter variabilis (organism)", "", "SNOMED-CT", "113384006"),
 
-  STREPTOCOCCUS_AGALACTIAE_SEROTYPE_IB_ORGANISM("Streptococcus agalactiae serotype Ib (organism)", "Streptococcus agalactiae serotype Ib (organism)", "SNOMED-CT", "698166003"),
+  MANNHEIMIA_HAEMOLYTICA_ORGANISM("Mannheimia haemolytica (organism)", "", "SNOMED-CT", "128385005"),
 
-  ACHROMOBACTER_SPANIUS_ORGANISM("Achromobacter spanius (organism)", "Achromobacter spanius (organism)", "SNOMED-CT", "413422008"),
+  STREPTOCOCCUS_ORALIS_ORGANISM("Streptococcus oralis (organism)", "", "SNOMED-CT", "19870004"),
 
-  MYCOBACTERIUM_KANSASII_ORGANISM("Mycobacterium kansasii (organism)", "Mycobacterium kansasii (organism)", "SNOMED-CT", "1507005"),
+  ASPERGILLUS_NIDULANS_ORGANISM("Aspergillus nidulans (organism)", "", "SNOMED-CT", "60264008"),
 
-  GENUS_RAOULTELLA_ORGANISM("Genus Raoultella (organism)", "Genus Raoultella (organism)", "SNOMED-CT", "417468005"),
+  RHIZOBIUM_RADIOBACTER_ORGANISM("Rhizobium radiobacter (organism)", "", "SNOMED-CT", "438107000"),
 
-  ENTEROBACTER_ASBURIAE_ORGANISM("Enterobacter asburiae (organism)", "Enterobacter asburiae (organism)", "SNOMED-CT", "33115003"),
+  BURKHOLDERIA_CEPACIA_ORGANISM("Burkholderia cepacia (organism)", "", "SNOMED-CT", "113669008"),
 
-  CORYNEBACTERIUM_AMYCOLATUM_ORGANISM("Corynebacterium amycolatum (organism)", "Corynebacterium amycolatum (organism)", "SNOMED-CT", "113611002"),
+  STREPTOCOCCUS_PYOGENES_ORGANISM("Streptococcus pyogenes (organism)", "", "SNOMED-CT", "80166006"),
 
-  SALMONELLA_KENTUCKY("Salmonella Kentucky", "Salmonella Kentucky", "SNOMED-CT", "8455004"),
+  GENUS_MYCOPLASMA_ORGANISM("Genus Mycoplasma (organism)", "", "SNOMED-CT", "78981005"),
 
-  SALMONELLA_HADAR("Salmonella Hadar", "Salmonella Hadar", "SNOMED-CT", "49491006"),
+  SALMONELLA_HEIDELBERG("Salmonella Heidelberg", "", "SNOMED-CT", "71865006"),
 
-  GEOTRICHUM_CANDIDUM_ORGANISM("Geotrichum candidum (organism)", "Geotrichum candidum (organism)", "SNOMED-CT", "41625002"),
+  MIXTA_CALIDA_ORGANISM("Mixta calida (organism)", "", "SNOMED-CT", "709310002"),
 
-  VAGOCOCCUS_FLUVIALIS_ORGANISM("Vagococcus fluvialis (organism)", "Vagococcus fluvialis (organism)", "SNOMED-CT", "116418005"),
+  CUPRIAVIDUS_PAUCULUS_ORGANISM("Cupriavidus pauculus (organism)", "", "SNOMED-CT", "429465001"),
 
-  CAMPYLOBACTER_COLI("Campylobacter coli", "Campylobacter coli", "SNOMED-CT", "40614002"),
+  BURKHOLDERIA_VIETNAMIENSIS_ORGANISM("Burkholderia vietnamiensis (organism)", "", "SNOMED-CT", "113680008"),
 
-  LEGIONELLA_JORDANIS_ORGANISM("Legionella jordanis (organism)", "Legionella jordanis (organism)", "SNOMED-CT", "39739007"),
+  LEGIONELLA_JAMESTOWNIENSIS_ORGANISM("Legionella jamestowniensis (organism)", "", "SNOMED-CT", "89709001"),
 
-  PEPTONIPHILUS_ASACCHAROLYTICUS_ORGANISM("Peptoniphilus asaccharolyticus (organism)", "Peptoniphilus asaccharolyticus (organism)", "SNOMED-CT", "433440001"),
+  CITROBACTER_FARMERI_ORGANISM("Citrobacter farmeri (organism)", "", "SNOMED-CT", "114263005"),
 
-  SALMONELLA_TYPHIMURIUM_VAR_COPENHAGEN("Salmonella Typhimurium var. Copenhagen", "Salmonella Typhimurium var. Copenhagen", "SNOMED-CT", "370578006"),
+  ACHROMOBACTER_INSOLITUS_ORGANISM("Achromobacter insolitus (organism)", "", "SNOMED-CT", "413417008"),
 
-  STAPHYLOCOCCUS_INTERMEDIUS_ORGANISM("Staphylococcus intermedius (organism)", "Staphylococcus intermedius (organism)", "SNOMED-CT", "34605002"),
+  SALMONELLA_INFANTIS("Salmonella Infantis", "", "SNOMED-CT", "82071007"),
 
-  CITROBACTER_KOSERI("Citrobacter koseri", "Citrobacter koseri", "SNOMED-CT", "114264004"),
+  SALMONELLA_SANDIEGO("Salmonella Sandiego", "", "SNOMED-CT", "112287008"),
 
-  SALMONELLA_ENTERICA_SUBSP_ARIZONAE_ORGANISM("Salmonella enterica subsp. arizonae (organism)", "Salmonella enterica subsp. arizonae (organism)", "SNOMED-CT", "397502001"),
+  GENUS_BACILLUS_ORGANISM("Genus Bacillus (organism)", "", "SNOMED-CT", "44762009"),
 
-  SALMONELLA_STANLEY("Salmonella Stanley", "Salmonella Stanley", "SNOMED-CT", "88091007"),
+  SERRATIA_PROTEAMACULANS_ORGANISM("Serratia proteamaculans (organism)", "", "SNOMED-CT", "116135003"),
 
-  LEGIONELLA_LONGBEACHAE_ORGANISM("Legionella longbeachae (organism)", "Legionella longbeachae (organism)", "SNOMED-CT", "89605004"),
+  SALMONELLA_UGANDA("Salmonella Uganda", "", "SNOMED-CT", "2434007"),
 
-  ZYGOSACCHAROMYCES_BAILII_ORGANISM("Zygosaccharomyces bailii (organism)", "Zygosaccharomyces bailii (organism)", "SNOMED-CT", "442943004"),
+  GENUS_CAPNOCYTOPHAGA_ORGANISM("Genus Capnocytophaga (organism)", "", "SNOMED-CT", "22294008"),
 
-  ACTINOTIGNUM_SCHAALII_ORGANISM("Actinotignum schaalii (organism)", "Actinotignum schaalii (organism)", "SNOMED-CT", "716526006"),
+  PARABURKHOLDERIA_SACCHARI("Paraburkholderia sacchari", "", "SNOMED-CT", "431164003"),
 
-  MOLD_ORGANISM("Mold (organism)", "Mold (organism)", "SNOMED-CT", "84489001"),
+  PANTOEA_STEWARTII_ORGANISM("Pantoea stewartii (organism)", "", "SNOMED-CT", "131300002"),
 
-  WANGIELLA_DERMATITIDIS_ORGANISM("Wangiella dermatitidis (organism)", "Wangiella dermatitidis (organism)", "SNOMED-CT", "20586007"),
+  PREVOTELLA_BUCCAE_ORGANISM("Prevotella buccae (organism)", "", "SNOMED-CT", "114134001"),
 
-  ACINETOBACTER_GERNERI_ORGANISM("Acinetobacter gerneri (organism)", "Acinetobacter gerneri (organism)", "SNOMED-CT", "424700008"),
+  CAMPYLOBACTER_UREOLYTICUS_ORGANISM("Campylobacter ureolyticus (organism)", "", "SNOMED-CT", "450602004"),
 
-  ENTEROBACTER_CLOACAE_ORGANISM("Enterobacter cloacae (organism)", "Enterobacter cloacae (organism)", "SNOMED-CT", "14385002"),
+  BURKHOLDERIA_CALEDONICA("Burkholderia caledonica", "", "SNOMED-CT", "423159001"),
 
-  SERRATIA_PROTEAMACULANS_ORGANISM("Serratia proteamaculans (organism)", "Serratia proteamaculans (organism)", "SNOMED-CT", "116135003"),
+  ENTEROBACTER_KOBEI_ORGANISM("Enterobacter kobei (organism)", "", "SNOMED-CT", "114456008"),
 
-  CHRYSEOBACTERIUM_INDOLOGENES_ORGANISM("Chryseobacterium indologenes (organism)", "Chryseobacterium indologenes (organism)", "SNOMED-CT", "113549008"),
+  SALMONELLA_SEROGROUP_D_ORGANISM("Salmonella, serogroup D (organism)", "", "SNOMED-CT", "115408009"),
 
-  GAMMA_HEMOLYTIC_STREPTOCOCCUS_ORGANISM("Gamma-hemolytic streptococcus (organism)", "Gamma-hemolytic streptococcus (organism)", "SNOMED-CT", "22339002"),
+  STAPHYLOCOCCUS_EPIDERMIDIS_ORGANISM("Staphylococcus epidermidis (organism)", "", "SNOMED-CT", "60875001"),
 
-  PARABACTEROIDES_DISTASONIS_ORGANISM("Parabacteroides distasonis (organism)", "Parabacteroides distasonis (organism)", "SNOMED-CT", "447512008"),
+  STREPTOCOCCUS_DYSGALACTIAE_SUBSPECIES_EQUISIMILIS_ORGANISM("Streptococcus dysgalactiae subspecies equisimilis (organism)", "", "SNOMED-CT", "128338004"),
 
-  STAPHYLOCOCCUS_HOMINIS_SUBSPECIES_HOMINIS_ORGANISM("Staphylococcus hominis subspecies hominis (organism)", "Staphylococcus hominis subspecies hominis (organism)", "SNOMED-CT", "432505008"),
+  VAGOCOCCUS_FLUVIALIS_ORGANISM("Vagococcus fluvialis (organism)", "", "SNOMED-CT", "116418005"),
 
-  LEGIONELLA_SANTICRUCIS_ORGANISM("Legionella santicrucis (organism)", "Legionella santicrucis (organism)", "SNOMED-CT", "72814000"),
+  BURKHOLDERIA_AMBIFARIA("Burkholderia ambifaria", "", "SNOMED-CT", "416467009"),
 
-  GENUS_BACTEROIDES_ORGANISM("Genus Bacteroides (organism)", "Genus Bacteroides (organism)", "SNOMED-CT", "57522007"),
+  ACINETOBACTER_BOUVETII_ORGANISM("Acinetobacter bouvetii (organism)", "", "SNOMED-CT", "424539001"),
 
-  BACILLUS_CEREUS_GROUP_ORGANISM("Bacillus cereus group (organism)", "Bacillus cereus group (organism)", "SNOMED-CT", "413618005"),
+  LEGIONELLA_CINCINNATIENSIS_ORGANISM("Legionella cincinnatiensis (organism)", "", "SNOMED-CT", "58923007"),
 
-  ACINETOBACTER_BOUVETII_ORGANISM("Acinetobacter bouvetii (organism)", "Acinetobacter bouvetii (organism)", "SNOMED-CT", "424539001"),
+  ASPERGILLUS_OCHRACEUS_ORGANISM("Aspergillus ochraceus (organism)", "", "SNOMED-CT", "60111002"),
 
-  ACHROMOBACTER_XYLOSOXIDANS_XYLOSOXIDANS_ORGANISM("Achromobacter xylosoxidans xylosoxidans (organism)", "Achromobacter xylosoxidans xylosoxidans (organism)", "SNOMED-CT", "423897003"),
+  CANDIDA_GUILLIERMONDII_ORGANISM("Candida guilliermondii (organism)", "", "SNOMED-CT", "16557001"),
 
-  ASPERGILLUS_SYDOWII_ORGANISM("Aspergillus sydowii (organism)", "Aspergillus sydowii (organism)", "SNOMED-CT", "46388006"),
+  ENTEROBACTER_CLOACAE_ORGANISM("Enterobacter cloacae (organism)", "", "SNOMED-CT", "14385002"),
 
-  INQUILINUS_LIMOSUS_ORGANISM("Inquilinus limosus (organism)", "Inquilinus limosus (organism)", "SNOMED-CT", "427977006"),
+  MICROCOCCUS_LUTEUS_ORGANISM("Micrococcus luteus (organism)", "", "SNOMED-CT", "48299003"),
 
-  ENTEROBACTER_CANCEROGENUS("Enterobacter cancerogenus", "Enterobacter cancerogenus", "SNOMED-CT", "114451003"),
+  NEISSERIA_GONORRHOEAE_ORGANISM("Neisseria gonorrhoeae (organism)", "", "SNOMED-CT", "68704007"),
 
-  PSEUDOMONAS_SPECIES_NOT_AERUGINOSA_ORGANISM("Pseudomonas species not aeruginosa (organism)", "Pseudomonas species not aeruginosa (organism)", "SNOMED-CT", "710336008"),
+  PSEUDOMONAS_FLUORESCENS_GROUP_ORGANISM("Pseudomonas fluorescens group (organism)", "", "SNOMED-CT", "415197003"),
 
-  STAPHYLOCOCCUS_SIMULANS_ORGANISM("Staphylococcus simulans (organism)", "Staphylococcus simulans (organism)", "SNOMED-CT", "52122005"),
+  SALMONELLA_APAPA("Salmonella Apapa", "", "SNOMED-CT", "46399008"),
 
-  MORAXELLA_NONLIQUEFACIENS_ORGANISM("Moraxella nonliquefaciens (organism)", "Moraxella nonliquefaciens (organism)", "SNOMED-CT", "46455003"),
+  PASTEURELLA_BETTYAE_ORGANISM("Pasteurella bettyae (organism)", "", "SNOMED-CT", "113902004"),
 
-  ENTEROBACTER_AMNIGENUS_BIOGROUP_I_ORGANISM("Enterobacter amnigenus biogroup I (organism)", "Enterobacter amnigenus biogroup I (organism)", "SNOMED-CT", "114452005"),
+  SALMONELLA_READING("Salmonella Reading", "", "SNOMED-CT", "63396002"),
 
-  CLOSTRIDIUM_INNOCUUM_ORGANISM("Clostridium innocuum (organism)", "Clostridium innocuum (organism)", "SNOMED-CT", "19415008"),
+  STAPHYLOCOCCUS_WARNERI_ORGANISM("Staphylococcus warneri (organism)", "", "SNOMED-CT", "63550006"),
 
-  ACINETOBACTER_HAEMOLYTICUS_ORGANISM("Acinetobacter haemolyticus (organism)", "Acinetobacter haemolyticus (organism)", "SNOMED-CT", "77045006"),
+  AEROMONAS_CAVIAE_ORGANISM("Aeromonas caviae (organism)", "", "SNOMED-CT", "115036005"),
 
-  AEROCOCCUS_URINAE_ORGANISM("Aerococcus urinae (organism)", "Aerococcus urinae (organism)", "SNOMED-CT", "243230001"),
+  SALMONELLA_POTSDAM("Salmonella Potsdam", "", "SNOMED-CT", "8544001"),
 
-  SALMONELLA_ALTONA("Salmonella Altona", "Salmonella Altona", "SNOMED-CT", "47229009"),
+  STREPTOCOCCUS_VIRIDANS_GROUP_ORGANISM("Streptococcus, viridans group (organism)", "", "SNOMED-CT", "31703004"),
 
-  UREAPLASMA_UREALYTICUM_ORGANISM("Ureaplasma urealyticum (organism)", "Ureaplasma urealyticum (organism)", "SNOMED-CT", "12006007"),
+  PLURALIBACTER_GERGOVIAE("Pluralibacter gergoviae", "", "SNOMED-CT", "716346000"),
 
-  AEROMONAS_SALMONICIDA_SS_SALMONICIDA_ORGANISM("Aeromonas salmonicida ss. salmonicida (organism)", "Aeromonas salmonicida ss. salmonicida (organism)", "SNOMED-CT", "62520007"),
+  KLEBSIELLA_PNEUMONIAE_SS_PNEUMONIAE_ORGANISM("Klebsiella pneumoniae ss. pneumoniae (organism)", "", "SNOMED-CT", "18400002"),
 
-  EUBACTERIUM_LIMOSUM_ORGANISM("Eubacterium limosum (organism)", "Eubacterium limosum (organism)", "SNOMED-CT", "87632000"),
+  SALMONELLA_VIRCHOW("Salmonella Virchow", "", "SNOMED-CT", "5929008"),
 
-  CANDIDA_TROPICALIS_ORGANISM("Candida tropicalis (organism)", "Candida tropicalis (organism)", "SNOMED-CT", "47885008"),
+  GENUS_CANDIDA_ORGANISM("Genus Candida (organism)", "", "SNOMED-CT", "3265006"),
 
-  STREPTOCOCCUS_PARASANGUINIS_ORGANISM("Streptococcus parasanguinis (organism)", "Streptococcus parasanguinis (organism)", "SNOMED-CT", "113990002"),
+  SERRATIA_UREILYTICA_ORGANISM("Serratia ureilytica (organism)", "", "SNOMED-CT", "450416004"),
 
-  ASPERGILLUS_ORGANISM("Aspergillus (organism)", "Aspergillus (organism)", "SNOMED-CT", "2429008"),
+  ENTEROCOCCUS_AVIUM_ORGANISM("Enterococcus avium (organism)", "", "SNOMED-CT", "87875008"),
 
-  BORDETELLA_PERTUSSIS_ORGANISM("Bordetella pertussis (organism)", "Bordetella pertussis (organism)", "SNOMED-CT", "5247005"),
+  PROVIDENCIA_HEIMBACHAE_ORGANISM("Providencia heimbachae (organism)", "", "SNOMED-CT", "47300009"),
 
-  SALMONELLA_PARATYPHI_B("Salmonella Paratyphi B", "Salmonella Paratyphi B", "SNOMED-CT", "85908006"),
+  ASPERGILLUS_SYDOWII_ORGANISM("Aspergillus sydowii (organism)", "", "SNOMED-CT", "46388006"),
 
-  RAOULTELLA_ORNITHINOLYTICA_ORGANISM("Raoultella ornithinolytica (organism)", "Raoultella ornithinolytica (organism)", "SNOMED-CT", "416832000"),
+  SALMONELLA_ENTERICA_SUBSP_ENTERICA_ORGANISM("Salmonella enterica subsp. enterica (organism)", "", "SNOMED-CT", "398508004"),
 
-  STREPTOCOCCUS_PYOGENES_ORGANISM("Streptococcus pyogenes (organism)", "Streptococcus pyogenes (organism)", "SNOMED-CT", "80166006"),
+  BREVUNDIMONAS_SUBVIBRIOIDES("Brevundimonas subvibrioides", "", "SNOMED-CT", "423492004"),
 
-  STAPHYLOCOCCUS_AUREUS_ORGANISM("Staphylococcus aureus (organism)", "Staphylococcus aureus (organism)", "SNOMED-CT", "3092008"),
+  CITROBACTER_FREUNDII_COMPLEX_ORGANISM("Citrobacter freundii complex (organism)", "", "SNOMED-CT", "782522004"),
 
-  SERRATIA_FICARIA_ORGANISM("Serratia ficaria (organism)", "Serratia ficaria (organism)", "SNOMED-CT", "802004"),
+  PNEUMOCYSTIS_JIROVECII_ORGANISM("Pneumocystis jirovecii (organism)", "", "SNOMED-CT", "79909001"),
 
-  STREPTOCOCCUS_MITIS_ORGANISM("Streptococcus mitis (organism)", "Streptococcus mitis (organism)", "SNOMED-CT", "57997003"),
+  ASPERGILLUS_NIGER_GROUP_ORGANISM("Aspergillus niger group (organism)", "", "SNOMED-CT", "243494006"),
 
-  DELFTIA_ACIDOVORANS_ORGANISM("Delftia acidovorans (organism)", "Delftia acidovorans (organism)", "SNOMED-CT", "20432002"),
+  FUSOBACTERIUM_NUCLEATUM_ORGANISM("Fusobacterium nucleatum (organism)", "", "SNOMED-CT", "32763000"),
 
-  SERRATIA_MARCESCENS_ORGANISM("Serratia marcescens (organism)", "Serratia marcescens (organism)", "SNOMED-CT", "33522002"),
+  ASPERGILLUS_TERREUS_ORGANISM("Aspergillus terreus (organism)", "", "SNOMED-CT", "26406003"),
 
-  ENTEROCOCCUS_FAECALIS_ORGANISM("Enterococcus faecalis (organism)", "Enterococcus faecalis (organism)", "SNOMED-CT", "78065002"),
+  SERRATIA_MARCESCENS_ORGANISM("Serratia marcescens (organism)", "", "SNOMED-CT", "33522002"),
 
-  AEROMONAS_BESTIARUM_ORGANISM("Aeromonas bestiarum (organism)", "Aeromonas bestiarum (organism)", "SNOMED-CT", "115027006"),
+  ACHROMOBACTER_RUHLANDII_ORGANISM("Achromobacter ruhlandii (organism)", "", "SNOMED-CT", "413421001"),
 
-  ENTEROHEMORRHAGIC_ESCHERICHIA_COLI_ORGANISM("Enterohemorrhagic Escherichia coli (organism)", "Enterohemorrhagic Escherichia coli (organism)", "SNOMED-CT", "116395006"),
+  SALMONELLA_LONDON("Salmonella London", "", "SNOMED-CT", "2291004"),
 
-  SALMONELLA_DUBLIN("Salmonella Dublin", "Salmonella Dublin", "SNOMED-CT", "62136003"),
+  BETA_HEMOLYTIC_STREPTOCOCCUS_GROUP_A_ORGANISM("Beta-hemolytic Streptococcus, group A (organism)", "", "SNOMED-CT", "413643004"),
 
-  CORYNEBACTERIUM_PROPINQUUM_ORGANISM("Corynebacterium propinquum (organism)", "Corynebacterium propinquum (organism)", "SNOMED-CT", "113612009"),
+  PASTEURELLA_STOMATIS_ORGANISM("Pasteurella stomatis (organism)", "", "SNOMED-CT", "46827009"),
 
-  LEGIONELLA_PNEUMOPHILA_SEROGROUP9_ORGANISM("Legionella pneumophila serogroup 9 (organism)", "Legionella pneumophila serogroup 9 (organism)", "SNOMED-CT", "103471009"),
+  STAPHYLOCOCCUS_SAPROPHYTICUS("Staphylococcus saprophyticus", "", "SNOMED-CT", "19743000"),
 
-  GENUS_ROTHIA_ORGANISM("Genus Rothia (organism)", "Genus Rothia (organism)", "SNOMED-CT", "90163001"),
+  CRONOBACTER_MUYTJENSII("Cronobacter muytjensii", "", "SNOMED-CT", "445561006"),
 
-  SALMONELLA_GROUP_O18_ORGANISM("Salmonella group O:18 (organism)", "Salmonella group O:18 (organism)", "SNOMED-CT", "404294002"),
+  PREVOTELLA_BERGENSIS_ORGANISM("Prevotella bergensis (organism)", "", "SNOMED-CT", "708941000"),
 
-  BACTEROIDES_OVATUS_ORGANISM("Bacteroides ovatus (organism)", "Bacteroides ovatus (organism)", "SNOMED-CT", "86936008"),
+  STAPHYLOCOCCUS_AUREUS_ORGANISM("Staphylococcus aureus (organism)", "", "SNOMED-CT", "3092008"),
 
-  STAPHYLOCOCCUS_HOMINIS_ORGANISM("Staphylococcus hominis (organism)", "Staphylococcus hominis (organism)", "SNOMED-CT", "44827007"),
+  BACILLUS_SUBTILIS_ORGANISM("Bacillus subtilis (organism)", "", "SNOMED-CT", "83512007"),
 
-  SERRATIA_FONTICOLA_ORGANISM("Serratia fonticola (organism)", "Serratia fonticola (organism)", "SNOMED-CT", "112329006"),
+  ENTEROHEMORRHAGIC_ESCHERICHIA_COLI_ORGANISM("Enterohemorrhagic Escherichia coli (organism)", "", "SNOMED-CT", "116395006"),
 
-  NON_TOXIGENIC_CLOSTRIDIUM_DIFFICILE_ORGANISM("Non-Toxigenic Clostridium difficile (organism)", "Non-Toxigenic Clostridium difficile (organism)", "SNOMED-CT", "736051005"),
+  SALMONELLA_BLOCKLEY("Salmonella Blockley", "", "SNOMED-CT", "53684004"),
 
-  LACTOBACILLUS_RHAMNOSUS_ORGANISM("Lactobacillus rhamnosus (organism)", "Lactobacillus rhamnosus (organism)", "SNOMED-CT", "113798001"),
+  SALMONELLA_ENTERITIDIS_ORGANISM("Salmonella Enteritidis (organism)", "", "SNOMED-CT", "73525009"),
 
-  STAPHYLOCOCCUS_SAPROPHYTICUS("Staphylococcus saprophyticus", "Staphylococcus saprophyticus", "SNOMED-CT", "19743000"),
+  ASPERGILLUS_VERSICOLOR_ORGANISM("Aspergillus versicolor (organism)", "", "SNOMED-CT", "48315007"),
 
-  STAPHYLOCOCCUS_EPIDERMIDIS_ORGANISM("Staphylococcus epidermidis (organism)", "Staphylococcus epidermidis (organism)", "SNOMED-CT", "60875001"),
+  ZYGOSACCHAROMYCES_BAILII_ORGANISM("Zygosaccharomyces bailii (organism)", "", "SNOMED-CT", "442943004"),
 
-  AEROMONAS_EUCRENOPHILIA_ORGANISM("Aeromonas eucrenophilia (organism)", "Aeromonas eucrenophilia (organism)", "SNOMED-CT", "115030004"),
+  BACILLUS_CIRCULANS_ORGANISM("Bacillus circulans (organism)", "", "SNOMED-CT", "71812004"),
 
-  CITROBACTER_SEDLAKII("Citrobacter sedlakii", "Citrobacter sedlakii", "SNOMED-CT", "114265003"),
+  LEGIONELLA_BIRMINGHAMENSIS_ORGANISM("Legionella birminghamensis (organism)", "", "SNOMED-CT", "22592008"),
 
-  ANAEROBIC_NON_SPORING_GRAM_POSITIVE_BACILLUS_ORGANISM("Anaerobic non-sporing Gram-positive bacillus (organism)", "Anaerobic non-sporing Gram-positive bacillus (organism)", "SNOMED-CT", "243399000"),
+  LEGIONELLA_BELIARDENSIS_ORGANISM("Legionella beliardensis (organism)", "", "SNOMED-CT", "432714000"),
 
-  SALMONELLA_SAINTPAUL("Salmonella Saintpaul", "Salmonella Saintpaul", "SNOMED-CT", "2820001"),
+  MICROBACTERIUM_FLAVESCENS_ORGANISM("Microbacterium flavescens (organism)", "", "SNOMED-CT", "114061003"),
 
-  GENUS_LACTOBACILLUS_ORGANISM("Genus Lactobacillus (organism)", "Genus Lactobacillus (organism)", "SNOMED-CT", "43690008"),
+  CLOSTRIDIUM_PERFRINGENS_ORGANISM("Clostridium perfringens (organism)", "", "SNOMED-CT", "8331005"),
 
-  PASTEURELLA_AEROGENES_ORGANISM("Pasteurella aerogenes (organism)", "Pasteurella aerogenes (organism)", "SNOMED-CT", "87075007"),
+  MYCOBACTERIUM_TUBERCULOSIS_COMPLEX_ORGANISM("Mycobacterium tuberculosis complex (organism)", "", "SNOMED-CT", "113858008"),
 
-  ACINETOBACTER_TJERNBERGIAE_ORGANISM("Acinetobacter tjernbergiae (organism)", "Acinetobacter tjernbergiae (organism)", "SNOMED-CT", "425109008"),
+  STREPTOCOCCUS_MITIS_GROUP_ORGANISM("Streptococcus mitis group (organism)", "", "SNOMED-CT", "127539005"),
 
-  GENUS_AEROMONAS_ORGANISM("Genus Aeromonas (organism)", "Genus Aeromonas (organism)", "SNOMED-CT", "88529008"),
+  NEISSERIA_MENINGITIDIS_ORGANISM("Neisseria meningitidis (organism)", "", "SNOMED-CT", "17872004"),
 
-  ACINETOBACTER_GENOSPECIES3_ORGANISM("Acinetobacter genospecies 3 (organism)", "Acinetobacter genospecies 3 (organism)", "SNOMED-CT", "113377003"),
+  PARVIMONAS_MICRA_ORGANISM("Parvimonas micra (organism)", "", "SNOMED-CT", "434293007"),
 
-  GENUS_UREAPLASMA_ORGANISM("Genus Ureaplasma (organism)", "Genus Ureaplasma (organism)", "SNOMED-CT", "29680004"),
+  GENUS_BURKHOLDERIA_ORGANISM("Genus Burkholderia (organism)", "", "SNOMED-CT", "414324002"),
 
-  CORYNEBACTERIUM_STRIATUM_ORGANISM("Corynebacterium striatum (organism)", "Corynebacterium striatum (organism)", "SNOMED-CT", "63815007"),
+  ENTEROBACTER_AMNIGENUS("Enterobacter amnigenus", "", "SNOMED-CT", "84221003"),
 
-  LISTERIA_MONOCYTOGENES_ORGANISM("Listeria monocytogenes (organism)", "Listeria monocytogenes (organism)", "SNOMED-CT", "36094007"),
+  LEGIONELLA_GORMANII_ORGANISM("Legionella gormanii (organism)", "", "SNOMED-CT", "113721003"),
 
-  CHRYSEOMONAS_LUTEOLA_ORGANISM("Chryseomonas luteola (organism)", "Chryseomonas luteola (organism)", "SNOMED-CT", "33919008"),
+  ACTINOMYCES_NEUII_ORGANISM("Actinomyces neuii (organism)", "", "SNOMED-CT", "877802991000087109"),
 
-  ASPERGILLUS_NIGER_GROUP_ORGANISM("Aspergillus niger group (organism)", "Aspergillus niger group (organism)", "SNOMED-CT", "243494006"),
+  GENUS_PROPIONIBACTERIUM_ORGANISM("Genus Propionibacterium (organism)", "", "SNOMED-CT", "34844008"),
 
-  ENTEROCOCCUS_AVIUM_ORGANISM("Enterococcus avium (organism)", "Enterococcus avium (organism)", "SNOMED-CT", "87875008"),
+  YERSINIA_ENTEROCOLITICA_SEROGROUP_O3_ORGANISM("Yersinia enterocolitica serogroup O:3 (organism)", "", "SNOMED-CT", "103430003"),
 
-  LEGIONELLA_JAMESTOWNIENSIS_ORGANISM("Legionella jamestowniensis (organism)", "Legionella jamestowniensis (organism)", "SNOMED-CT", "89709001"),
+  SPHINGOBACTERIUM_MULTIVORUM_ORGANISM("Sphingobacterium multivorum (organism)", "", "SNOMED-CT", "51595006"),
 
-  CORYNEBACTERIUM_JEIKEIUM_ORGANISM("Corynebacterium jeikeium (organism)", "Corynebacterium jeikeium (organism)", "SNOMED-CT", "63410006"),
+  STAPHYLOCOCCUS_HOMINIS_SUBSPECIES_HOMINIS_ORGANISM("Staphylococcus hominis subspecies hominis (organism)", "", "SNOMED-CT", "432505008"),
 
-  MORAXELLA_CATARRHALIS_ORGANISM("Moraxella catarrhalis (organism)", "Moraxella catarrhalis (organism)", "SNOMED-CT", "24226003"),
+  LEGIONELLA_CHERRII_ORGANISM("Legionella cherrii (organism)", "", "SNOMED-CT", "52462004"),
 
-  PSEUDOMONAS_STUTZERI_ORGANISM("Pseudomonas stutzeri (organism)", "Pseudomonas stutzeri (organism)", "SNOMED-CT", "58024003"),
+  ASPERGILLUS_NIGER_ORGANISM("Aspergillus niger (organism)", "", "SNOMED-CT", "89354002"),
 
-  HAEMOPHILUS_INFLUENZAE_ORGANISM("Haemophilus influenzae (organism)", "Haemophilus influenzae (organism)", "SNOMED-CT", "44470000"),
+  PEPTONIPHILUS_ASACCHAROLYTICUS_ORGANISM("Peptoniphilus asaccharolyticus (organism)", "", "SNOMED-CT", "433440001"),
 
-  BACTEROIDES_UNIFORMIS_ORGANISM("Bacteroides uniformis (organism)", "Bacteroides uniformis (organism)", "SNOMED-CT", "59604009"),
+  PROTEUS_VULGARIS_ORGANISM("Proteus vulgaris (organism)", "", "SNOMED-CT", "45834001"),
 
-  SALMONELLA_KIAMBU("Salmonella Kiambu", "Salmonella Kiambu", "SNOMED-CT", "11901002"),
+  LEGIONELLA_ERYTHRA_ORGANISM("Legionella erythra (organism)", "", "SNOMED-CT", "28109006"),
 
-  MYCOBACTERIUM_AVIUM_ORGANISM("Mycobacterium avium (organism)", "Mycobacterium avium (organism)", "SNOMED-CT", "83723009"),
+  GENUS_PROTEUS_ORGANISM("Genus Proteus (organism)", "", "SNOMED-CT", "50517009"),
 
-  ACINETOBACTER_VARIABILIS_ORGANISM("Acinetobacter variabilis (organism)", "Acinetobacter variabilis (organism)", "SNOMED-CT", "113384006"),
+  FUSOBACTERIUM_NECROPHORUM_ORGANISM("Fusobacterium necrophorum (organism)", "", "SNOMED-CT", "27274008"),
 
-  SALMONELLA_KUMASI("Salmonella Kumasi", "Salmonella Kumasi", "SNOMED-CT", "58946009"),
+  STENOTROPHOMONAS_RHIZOPHILA_ORGANISM("Stenotrophomonas rhizophila (organism)", "", "SNOMED-CT", "416084005"),
 
-  SALMONELLA_MIKAWASIMA("Salmonella Mikawasima", "Salmonella Mikawasima", "SNOMED-CT", "42709001"),
+  BURKHOLDERIA_PLANTARII("Burkholderia plantarii", "", "SNOMED-CT", "113676003"),
 
-  STAPHYLOCOCCUS_ARGENTEUS_ORGANISM("Staphylococcus argenteus (organism)", "Staphylococcus argenteus (organism)", "SNOMED-CT", "782316009"),
+  SERRATIA_ENTOMOPHILA_ORGANISM("Serratia entomophila (organism)", "", "SNOMED-CT", "76656001"),
 
-  AEROMONAS_TROTA_ORGANISM("Aeromonas trota (organism)", "Aeromonas trota (organism)", "SNOMED-CT", "243316008"),
+  SALMONELLA_SENFTENBERG("Salmonella Senftenberg", "", "SNOMED-CT", "18163008"),
 
-  ACHROMOBACTER_INSOLITUS_ORGANISM("Achromobacter insolitus (organism)", "Achromobacter insolitus (organism)", "SNOMED-CT", "413417008"),
+  CORYNEBACTERIUM_AURIMUCOSUM_ORGANISM("Corynebacterium aurimucosum (organism)", "", "SNOMED-CT", "385503009"),
 
-  PREVOTELLA_DENTICOLA_ORGANISM("Prevotella denticola (organism)", "Prevotella denticola (organism)", "SNOMED-CT", "114138003"),
+  ASPERGILLUS_TERREUS_GROUP_ORGANISM("Aspergillus terreus group (organism)", "", "SNOMED-CT", "243500005"),
 
-  KLEBSIELLA_PNEUMONIAE_ORGANISM("Klebsiella pneumoniae (organism)", "Klebsiella pneumoniae (organism)", "SNOMED-CT", "56415008"),
+  GENUS_NOCARDIA_ORGANISM("Genus Nocardia (organism)", "", "SNOMED-CT", "59674005"),
 
-  STAPHYLOCOCCUS_COAGULASE_NEGATIVE_ORGANISM("Staphylococcus, coagulase negative (organism)", "Staphylococcus, coagulase negative (organism)", "SNOMED-CT", "116197008"),
+  FLAVIMONAS_ORYZIHABITANS_ORGANISM("Flavimonas oryzihabitans (organism)", "", "SNOMED-CT", "113931000"),
 
-  SALMONELLA_CORVALLIS("Salmonella Corvallis", "Salmonella Corvallis", "SNOMED-CT", "45548005"),
+  LEGIONELLA_DUMOFFII_ORGANISM("Legionella dumoffii (organism)", "", "SNOMED-CT", "113720002"),
 
-  CANDIDA_NORVEGENSIS_ORGANISM("Candida norvegensis (organism)", "Candida norvegensis (organism)", "SNOMED-CT", "243458007"),
+  CANDIDA_KRUSEI_ORGANISM("Candida krusei (organism)", "", "SNOMED-CT", "76995003"),
 
-  STREPTOCOCCUS_SALIVARIUS_SUBSPECIES_THERMOPHILUS_ORGANISM("Streptococcus salivarius subspecies thermophilus (organism)", "Streptococcus salivarius subspecies thermophilus (organism)", "SNOMED-CT", "23310006"),
+  STREPTOCOCCUS_ANGINOSUS_ORGANISM("Streptococcus anginosus (organism)", "", "SNOMED-CT", "44304009"),
 
-  STREPTOCOCCUS_ANGINOSUS_ORGANISM("Streptococcus anginosus (organism)", "Streptococcus anginosus (organism)", "SNOMED-CT", "44304009"),
+  ANAEROBIC_NON_SPORING_GRAM_POSITIVE_BACILLUS_ORGANISM("Anaerobic non-sporing Gram-positive bacillus (organism)", "", "SNOMED-CT", "243399000"),
 
-  GENUS_SERRATIA_ORGANISM("Genus Serratia (organism)", "Genus Serratia (organism)", "SNOMED-CT", "42025004"),
+  STREPTOCOCCUS_THORALTENSIS_ORGANISM("Streptococcus thoraltensis (organism)", "", "SNOMED-CT", "113997004"),
 
-  BURKHOLDERIA_THAILANDENSIS_ORGANISM("Burkholderia thailandensis (organism)", "Burkholderia thailandensis (organism)", "SNOMED-CT", "113678002"),
+  AEROCOCCUS_URINAE_ORGANISM("Aerococcus urinae (organism)", "", "SNOMED-CT", "243230001"),
 
-  STREPTOCOCCUS_SALIVARIUS_ORGANISM("Streptococcus salivarius (organism)", "Streptococcus salivarius (organism)", "SNOMED-CT", "39888004"),
+  CORYNEBACTERIUM_TUBERCULOSTEARICUM_ORGANISM("Corynebacterium tuberculostearicum (organism)", "", "SNOMED-CT", "416356007"),
 
-  BACTEROIDES_STERCORIS_ORGANISM("Bacteroides stercoris (organism)", "Bacteroides stercoris (organism)", "SNOMED-CT", "163009"),
+  BACTEROIDES_OVATUS_ORGANISM("Bacteroides ovatus (organism)", "", "SNOMED-CT", "86936008"),
 
-  SALMONELLA_BRAENDERUP("Salmonella Braenderup", "Salmonella Braenderup", "SNOMED-CT", "35225001"),
+  CORYNEBACTERIUM_DIPHTHERIAE_ORGANISM("Corynebacterium diphtheriae (organism)", "", "SNOMED-CT", "5851001"),
 
-  ESCHERICHIA_COLI_SEROGROUP_O157_ORGANISM("Escherichia coli serogroup O157 (organism)", "Escherichia coli serogroup O157 (organism)", "SNOMED-CT", "407166006"),
+  SALMONELLA_POONA("Salmonella Poona", "", "SNOMED-CT", "57101009"),
 
-  ANAEROBIC_GRAM_POSITIVE_COCCUS_ORGANISM("Anaerobic Gram-positive coccus (organism)", "Anaerobic Gram-positive coccus (organism)", "SNOMED-CT", "243416009"),
+  AEROMONAS_SCHUBERTII_ORGANISM("Aeromonas schubertii (organism)", "", "SNOMED-CT", "115039003"),
 
-  PROVIDENCIA_ALCALIFACIENS_ORGANISM("Providencia alcalifaciens (organism)", "Providencia alcalifaciens (organism)", "SNOMED-CT", "46349009"),
+  ENTEROBACTER_CLOACAE_SUBSPECIES_DISSOLVENS("Enterobacter cloacae subspecies dissolvens", "", "SNOMED-CT", "56813009"),
 
-  SALMONELLA_BLOCKLEY("Salmonella Blockley", "Salmonella Blockley", "SNOMED-CT", "53684004"),
+  ACTINOMYCES_NAESLUNDII_ORGANISM("Actinomyces naeslundii (organism)", "", "SNOMED-CT", "8940004"),
 
-  CANDIDA_KRUSEI_ORGANISM("Candida krusei (organism)", "Candida krusei (organism)", "SNOMED-CT", "76995003"),
+  LEGIONELLA_PNEUMOPHILIA_SEROGROUP14_ORGANISM("Legionella pneumophilia serogroup 14 (organism)", "", "SNOMED-CT", "131326007"),
 
-  ELIZABETHKINGIA_MENINGOSEPTICA_ORGANISM("Elizabethkingia meningoseptica (organism)", "Elizabethkingia meningoseptica (organism)", "SNOMED-CT", "425774009"),
+  ACINETOBACTER_CALCOACETICUS_ACINETOBACTER_BAUMANNII_COMPLEX_ORGANISM("Acinetobacter calcoaceticus-Acinetobacter baumannii complex (organism)", "", "SNOMED-CT", "113376007"),
 
-  ABIOTROPHIA_DEFECTIVA_ORGANISM("Abiotrophia defectiva (organism)", "Abiotrophia defectiva (organism)", "SNOMED-CT", "113714003"),
+  WEEKSELLA_VIROSA_ORGANISM("Weeksella virosa (organism)", "", "SNOMED-CT", "83326004"),
 
-  MORGANELLA_MORGANII_SUBSP_MORGANII_ORGANISM("Morganella morganii subsp morganii (organism)", "Morganella morganii subsp morganii (organism)", "SNOMED-CT", "243302003"),
+  CORYNEBACTERIUM_PROPINQUUM_ORGANISM("Corynebacterium propinquum (organism)", "", "SNOMED-CT", "113612009"),
 
-  SHIGELLA_DYSENTERIAE_ORGANISM("Shigella dysenteriae (organism)", "Shigella dysenteriae (organism)", "SNOMED-CT", "43612004"),
+  SALMONELLA_SCHWARZENGRUND("Salmonella Schwarzengrund", "", "SNOMED-CT", "45651006"),
 
-  LEGIONELLA_WADSWORTHII_ORGANISM("Legionella wadsworthii (organism)", "Legionella wadsworthii (organism)", "SNOMED-CT", "8147000"),
+  KLUYVERA_INTERMEDIA("Kluyvera intermedia", "", "SNOMED-CT", "431977008"),
 
-  CANDIDA_INCONSPICUA_ORGANISM("Candida inconspicua (organism)", "Candida inconspicua (organism)", "SNOMED-CT", "283871001"),
+  BREVUNDIMONAS_AURANTIACA("Brevundimonas aurantiaca", "", "SNOMED-CT", "423035009"),
 
-  ACINETOBACTER_RADIORESISTENS_ORGANISM("Acinetobacter radioresistens (organism)", "Acinetobacter radioresistens (organism)", "SNOMED-CT", "113381003"),
+  GEOTRICHUM_CANDIDUM_ORGANISM("Geotrichum candidum (organism)", "", "SNOMED-CT", "41625002"),
 
-  CORYNEBACTERIUM_DIPHTHERIAE_ORGANISM("Corynebacterium diphtheriae (organism)", "Corynebacterium diphtheriae (organism)", "SNOMED-CT", "5851001"),
+  SALMONELLA_CORVALLIS("Salmonella Corvallis", "", "SNOMED-CT", "45548005"),
 
-  BACTEROIDES_FRAGILIS_GROUP_ORGANISM("Bacteroides fragilis group (organism)", "Bacteroides fragilis group (organism)", "SNOMED-CT", "417375007"),
+  LEGIONELLA_ANISA_ORGANISM("Legionella anisa (organism)", "", "SNOMED-CT", "18214000"),
 
-  LEGIONELLA_MICDADEI_ORGANISM("Legionella micdadei (organism)", "Legionella micdadei (organism)", "SNOMED-CT", "116380009"),
+  SALMONELLA_PARATYPHI_A("Salmonella Paratyphi A", "", "SNOMED-CT", "79128009"),
 
-  GENUS_NOCARDIA_ORGANISM("Genus Nocardia (organism)", "Genus Nocardia (organism)", "SNOMED-CT", "59674005"),
+  PEPTOSTREPTOCOCCUS_ANAEROBIUS_ORGANISM("Peptostreptococcus anaerobius (organism)", "", "SNOMED-CT", "19217002"),
 
-  ENTEROBACTER_CLOACAE_COMPLEX_ORGANISM("Enterobacter cloacae complex (organism)", "Enterobacter cloacae complex (organism)", "SNOMED-CT", "414102007"),
+  SALMONELLA_BOVISMORBIFICANS("Salmonella Bovismorbificans", "", "SNOMED-CT", "81938008"),
 
-  LEGIONELLA_PNEUMOPHILA_SEROGROUP8_ORGANISM("Legionella pneumophila serogroup 8 (organism)", "Legionella pneumophila serogroup 8 (organism)", "SNOMED-CT", "103470005"),
+  ENTEROBACTER_CLOACAE_SUBSP_CLOACAE("Enterobacter cloacae subsp. cloacae", "", "SNOMED-CT", "721950003"),
 
-  FUSOBACTERIUM_NECROPHORUM_ORGANISM("Fusobacterium necrophorum (organism)", "Fusobacterium necrophorum (organism)", "SNOMED-CT", "27274008"),
+  PASTEURELLA_CANIS_ORGANISM("Pasteurella canis (organism)", "", "SNOMED-CT", "7784009"),
 
-  HAEMOPHILUS_INFLUENZAE_TYPE_B_ORGANISM("Haemophilus influenzae type b (organism)", "Haemophilus influenzae type b (organism)", "SNOMED-CT", "103442008"),
+  SERRATIA_ODORIFERA_ORGANISM("Serratia odorifera (organism)", "", "SNOMED-CT", "10413007"),
 
-  AEROMONAS_SCHUBERTII_ORGANISM("Aeromonas schubertii (organism)", "Aeromonas schubertii (organism)", "SNOMED-CT", "115039003"),
+  AEROMONAS_JANDEI_ORGANISM("Aeromonas jandei (organism)", "", "SNOMED-CT", "115034008"),
 
-  PARVIMONAS_MICRA_ORGANISM("Parvimonas micra (organism)", "Parvimonas micra (organism)", "SNOMED-CT", "434293007"),
+  CANDIDA_SPECIES_NOT_CANDIDA_ALBICANS_ORGANISM("Candida species not Candida albicans (organism)", "", "SNOMED-CT", "714313009"),
 
-  ASPERGILLUS_TERREUS_GROUP_ORGANISM("Aspergillus terreus group (organism)", "Aspergillus terreus group (organism)", "SNOMED-CT", "243500005"),
+  ACHROMOBACTER_XYLOSOXIDANS_ORGANISM("Achromobacter xylosoxidans (organism)", "", "SNOMED-CT", "413424009"),
 
-  LEGIONELLA_MORAVICA_ORGANISM("Legionella moravica (organism)", "Legionella moravica (organism)", "SNOMED-CT", "103454008"),
+  ANAEROBIC_GRAM_POSITIVE_BACILLUS_ORGANISM("Anaerobic Gram-positive bacillus (organism)", "", "SNOMED-CT", "243398008"),
 
-  AEROMONAS_SIMIAE_ORGANISM("Aeromonas simiae (organism)", "Aeromonas simiae (organism)", "SNOMED-CT", "426333004"),
+  STREPTOCOCCUS_VESTIBULARIS_ORGANISM("Streptococcus vestibularis (organism)", "", "SNOMED-CT", "113998009"),
 
-  AEROMONAS_MEDIA_ORGANISM("Aeromonas media (organism)", "Aeromonas media (organism)", "SNOMED-CT", "65192005"),
+  STAPHYLOCOCCUS_COAGULASE_NEGATIVE_ORGANISM("Staphylococcus, coagulase negative (organism)", "", "SNOMED-CT", "116197008"),
 
-  LEGIONELLA_ANISA_ORGANISM("Legionella anisa (organism)", "Legionella anisa (organism)", "SNOMED-CT", "18214000"),
+  PREVOTELLA_ORIS_ORGANISM("Prevotella oris (organism)", "", "SNOMED-CT", "114147006"),
 
-  LACTOBACILLUS_FERMENTUM_ORGANISM("Lactobacillus fermentum (organism)", "Lactobacillus fermentum (organism)", "SNOMED-CT", "65506008"),
+  SACCHAROMYCES_CEREVISIAE_ORGANISM("Saccharomyces cerevisiae (organism)", "", "SNOMED-CT", "58296003"),
 
-  SALMONELLA_SENFTENBERG("Salmonella Senftenberg", "Salmonella Senftenberg", "SNOMED-CT", "18163008"),
+  STENOTROPHOMONAS_NITRITIREDUCENS_ORGANISM("Stenotrophomonas nitritireducens (organism)", "", "SNOMED-CT", "416746005"),
 
-  GENUS_ENTEROCOCCUS_ORGANISM("Genus Enterococcus (organism)", "Genus Enterococcus (organism)", "SNOMED-CT", "2785000"),
+  ASPERGILLUS_BRASILIENSIS_ORGANISM("Aspergillus brasiliensis (organism)", "", "SNOMED-CT", "3101000146105"),
 
-  ROTHIA_MUCILAGINOSA_ORGANISM("Rothia mucilaginosa (organism)", "Rothia mucilaginosa (organism)", "SNOMED-CT", "416544005"),
+  ASPERGILLUS_USTUS_ORGANISM("Aspergillus ustus (organism)", "", "SNOMED-CT", "23179008"),
 
-  ENTEROCOCCUS_DURANS_ORGANISM("Enterococcus durans (organism)", "Enterococcus durans (organism)", "SNOMED-CT", "46464008"),
+  SHIGELLA_BOYDII_ORGANISM("Shigella boydii (organism)", "", "SNOMED-CT", "55462008"),
 
-  STREPTOCOCCUS_CANIS_ORGANISM("Streptococcus canis (organism)", "Streptococcus canis (organism)", "SNOMED-CT", "88231003"),
+  FINEGOLDIA_MAGNA_ORGANISM("Finegoldia magna (organism)", "", "SNOMED-CT", "417469002"),
 
-  SERRATIA_ODORIFERA_ORGANISM("Serratia odorifera (organism)", "Serratia odorifera (organism)", "SNOMED-CT", "10413007"),
+  ACINETOBACTER_SCHINDLERI_ORGANISM("Acinetobacter schindleri (organism)", "", "SNOMED-CT", "423732001"),
 
-  ENTEROCOCCUS_HIRAE_ORGANISM("Enterococcus hirae (organism)", "Enterococcus hirae (organism)", "SNOMED-CT", "73852008"),
+  SALMONELLA_ALBANY("Salmonella Albany", "", "SNOMED-CT", "72033009"),
 
-  SALMONELLA_APAPA("Salmonella Apapa", "Salmonella Apapa", "SNOMED-CT", "46399008"),
+  BURKHOLDERIA_GLUMAE("Burkholderia glumae", "", "SNOMED-CT", "113673006"),
 
-  SALMONELLA_INFANTIS("Salmonella Infantis", "Salmonella Infantis", "SNOMED-CT", "82071007"),
+  STREPTOCOCCUS_PNEUMONIAE_ORGANISM("Streptococcus pneumoniae (organism)", "", "SNOMED-CT", "9861002"),
 
-  GENUS_STAPHYLOCOCCUS_ORGANISM("Genus Staphylococcus (organism)", "Genus Staphylococcus (organism)", "SNOMED-CT", "65119002"),
+  PARABURKHOLDERIA_ANDROPOGONIS("Paraburkholderia andropogonis", "", "SNOMED-CT", "113667005"),
 
-  GENUS_KLEBSIELLA_ORGANISM("Genus Klebsiella (organism)", "Genus Klebsiella (organism)", "SNOMED-CT", "75032006"),
+  CANDIDA_GLABRATA_ORGANISM("Candida glabrata (organism)", "", "SNOMED-CT", "444877006"),
 
-  ACINETOBACTER_PITTII_ORGANISM("Acinetobacter pittii (organism)", "Acinetobacter pittii (organism)", "SNOMED-CT", "698244000"),
+  PASTEURELLA_AEROGENES_ORGANISM("Pasteurella aerogenes (organism)", "", "SNOMED-CT", "87075007"),
 
-  BACILLUS_MEGATERIUM_ORGANISM("Bacillus megaterium (organism)", "Bacillus megaterium (organism)", "SNOMED-CT", "79109002"),
+  PANTOEA_DISPERSA_ORGANISM("Pantoea dispersa (organism)", "", "SNOMED-CT", "115017000"),
 
-  ACHROMOBACTER_PIECHAUDII_ORGANISM("Achromobacter piechaudii (organism)", "Achromobacter piechaudii (organism)", "SNOMED-CT", "413420000"),
+  SALMONELLA_STANLEYVILLE("Salmonella Stanleyville", "", "SNOMED-CT", "47441000"),
 
-  PREVOTELLA_BERGENSIS_ORGANISM("Prevotella bergensis (organism)", "Prevotella bergensis (organism)", "SNOMED-CT", "708941000");
+  LEGIONELLA_OAKRIDGENSIS_ORGANISM("Legionella oakridgensis (organism)", "", "SNOMED-CT", "638008");
 
   private String value;
 

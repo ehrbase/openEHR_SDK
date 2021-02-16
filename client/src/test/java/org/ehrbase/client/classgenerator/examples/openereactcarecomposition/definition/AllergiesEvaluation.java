@@ -16,7 +16,7 @@ import org.ehrbase.client.classgenerator.shareddefinition.Language;
 @Archetype("openEHR-EHR-EVALUATION.clinical_synopsis.v1")
 @Generated(
     value = "org.ehrbase.client.classgenerator.ClassGenerator",
-    date = "2020-12-10T13:06:11.336497500+01:00",
+    date = "2021-02-16T12:59:53.464778400+01:00",
     comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
 )
 public class AllergiesEvaluation implements EntryEntity {

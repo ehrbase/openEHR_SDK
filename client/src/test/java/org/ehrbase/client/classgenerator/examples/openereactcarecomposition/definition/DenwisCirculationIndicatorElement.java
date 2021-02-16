@@ -9,7 +9,7 @@ import org.ehrbase.client.classgenerator.interfaces.LocatableEntity;
 @Entity
 @Generated(
     value = "org.ehrbase.client.classgenerator.ClassGenerator",
-    date = "2020-12-10T13:06:11.385500900+01:00",
+    date = "2021-02-16T12:59:53.523777900+01:00",
     comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
 )
 public class DenwisCirculationIndicatorElement implements LocatableEntity {

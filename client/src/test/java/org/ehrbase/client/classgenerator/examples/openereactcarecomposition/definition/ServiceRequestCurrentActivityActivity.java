@@ -15,13 +15,14 @@ import org.ehrbase.client.classgenerator.interfaces.LocatableEntity;
 @Entity
 @Generated(
     value = "org.ehrbase.client.classgenerator.ClassGenerator",
-    date = "2020-12-10T13:06:11.589502500+01:00",
+    date = "2021-02-16T12:59:53.782779500+01:00",
     comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
 )
 public class ServiceRequestCurrentActivityActivity implements LocatableEntity {
   /**
    * Path: open_eREACT-Care/Response/Service request/Current Activity/Service name
    * Description: The name of the single service or activity requested.
+   * Comment: Coding of the 'Service name' with a coding system is desirable, if available. For example: 'referral' to an endocrinologist for diabetes management.
    */
   @Path("/description[at0009]/items[at0121]/value")
   private DvCodedText serviceName;
@@ -37,6 +38,7 @@ public class ServiceRequestCurrentActivityActivity implements LocatableEntity {
   /**
    * Path: open_eREACT-Care/Response/Service request/Current Activity/Reason for isolation
    * Description: Narrative description about the reason for request.
+   * Comment: For example: 'The patient's diabetes has recently become more difficult to stabilise and renal function is deteriorating'.
    */
   @Path("/description[at0009]/items[at0064 and name/value='Reason for isolation']/value|value")
   private String reasonForIsolationValue;
@@ -52,6 +54,7 @@ public class ServiceRequestCurrentActivityActivity implements LocatableEntity {
   /**
    * Path: open_eREACT-Care/Response/Service request/Current Activity/Date isolation due to start
    * Description: The date/time that marks the beginning of the valid period of time for delivery of this service.
+   * Comment: This date/time is the equivalent to the earliest possible date for service delivery. For example: sometimes a certain amount of time must pass before a service can be performed, for example some procedures can only be performed once the patient has stopped taking medications for a specific amount of time.
    */
   @Path("/description[at0009]/items[at0145 and name/value='Date isolation due to start']/value|value")
   private TemporalAccessor dateIsolationDueToStartValue;
@@ -59,6 +62,7 @@ public class ServiceRequestCurrentActivityActivity implements LocatableEntity {
   /**
    * Path: open_eREACT-Care/Response/Service request/Current Activity/Date isolation due to end
    * Description: The date/time that marks the conclusion of the clinically valid period of time for delivery of this service.
+   * Comment: This date/time is the equivalent to the latest possible date for service delivery or to the date of expiry for this request. For example: a service may be required to be completed before another event, such as scheduled surgery.
    */
   @Path("/description[at0009]/items[at0144 and name/value='Date isolation due to end']/value|value")
   private TemporalAccessor dateIsolationDueToEndValue;

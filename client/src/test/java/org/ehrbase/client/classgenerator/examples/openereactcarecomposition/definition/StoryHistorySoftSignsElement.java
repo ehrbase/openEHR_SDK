@@ -10,7 +10,7 @@ import org.ehrbase.client.classgenerator.interfaces.LocatableEntity;
 @Entity
 @Generated(
     value = "org.ehrbase.client.classgenerator.ClassGenerator",
-    date = "2020-12-10T13:06:11.315497800+01:00",
+    date = "2021-02-16T12:59:53.424780+01:00",
     comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
 )
 public class StoryHistorySoftSignsElement implements LocatableEntity {

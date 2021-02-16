@@ -29,11 +29,17 @@ import org.ehrbase.client.openehrclient.VersionUid;
 @Archetype("openEHR-EHR-COMPOSITION.encounter.v1")
 @Generated(
     value = "org.ehrbase.client.classgenerator.ClassGenerator",
-    date = "2020-12-10T13:06:11.310500500+01:00",
+    date = "2021-02-16T12:59:53.391783800+01:00",
     comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
 )
 @Template("open_eREACT-Care")
 public class OpenEREACTCareComposition implements CompositionEntity {
+  /**
+   * Path: open_eREACT-Care/category
+   */
+  @Path("/category|defining_code")
+  private Category categoryDefiningCode;
+
   /**
    * Path: open_eREACT-Care/context/Extension
    * Description: Additional information required to capture local context or to align with other reference models/formalisms.
@@ -125,12 +131,6 @@ public class OpenEREACTCareComposition implements CompositionEntity {
   private FeederAudit feederAudit;
 
   /**
-   * Path: open_eREACT-Care/category
-   */
-  @Path("/category|defining_code")
-  private Category categoryDefiningCode;
-
-  /**
    * Path: open_eREACT-Care/territory
    */
   @Path("/territory")
@@ -138,6 +138,14 @@ public class OpenEREACTCareComposition implements CompositionEntity {
 
   @Id
   private VersionUid versionUid;
+
+  public void setCategoryDefiningCode(Category categoryDefiningCode) {
+     this.categoryDefiningCode = categoryDefiningCode;
+  }
+
+  public Category getCategoryDefiningCode() {
+     return this.categoryDefiningCode ;
+  }
 
   public void setExtension(List<Cluster> extension) {
      this.extension = extension;
@@ -249,14 +257,6 @@ public class OpenEREACTCareComposition implements CompositionEntity {
 
   public FeederAudit getFeederAudit() {
      return this.feederAudit ;
-  }
-
-  public void setCategoryDefiningCode(Category categoryDefiningCode) {
-     this.categoryDefiningCode = categoryDefiningCode;
-  }
-
-  public Category getCategoryDefiningCode() {
-     return this.categoryDefiningCode ;
   }
 
   public void setTerritory(Territory territory) {

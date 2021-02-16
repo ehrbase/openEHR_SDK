@@ -16,7 +16,7 @@ import org.ehrbase.client.classgenerator.shareddefinition.Language;
 @Archetype("openEHR-EHR-EVALUATION.clinical_synopsis.v1")
 @Generated(
     value = "org.ehrbase.client.classgenerator.ClassGenerator",
-    date = "2020-12-10T13:06:11.520505500+01:00",
+    date = "2021-02-16T12:59:53.722778900+01:00",
     comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
 )
 public class CovidNotesEvaluation implements EntryEntity {

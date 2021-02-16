@@ -21,6 +21,8 @@ import org.ehrbase.client.classgenerator.shareddefinition.Territory;
 public class SmICSBefundCompositionContainment extends Containment {
   public SelectAqlField<SmICSBefundComposition> SM_I_C_S_BEFUND_COMPOSITION = new AqlFieldImp<SmICSBefundComposition>(SmICSBefundComposition.class, "", "SmICSBefundComposition", SmICSBefundComposition.class, this);
 
+  public SelectAqlField<Category> CATEGORY_DEFINING_CODE = new AqlFieldImp<Category>(SmICSBefundComposition.class, "/category|defining_code", "categoryDefiningCode", Category.class, this);
+
   public SelectAqlField<String> BERICHT_ID_VALUE = new AqlFieldImp<String>(SmICSBefundComposition.class, "/context/other_context[at0001]/items[at0002]/value|value", "berichtIdValue", String.class, this);
 
   public SelectAqlField<String> STATUS_VALUE = new AqlFieldImp<String>(SmICSBefundComposition.class, "/context/other_context[at0001]/items[at0005]/value|value", "statusValue", String.class, this);
@@ -46,8 +48,6 @@ public class SmICSBefundCompositionContainment extends Containment {
   public SelectAqlField<Language> LANGUAGE = new AqlFieldImp<Language>(SmICSBefundComposition.class, "/language", "language", Language.class, this);
 
   public SelectAqlField<FeederAudit> FEEDER_AUDIT = new AqlFieldImp<FeederAudit>(SmICSBefundComposition.class, "/feeder_audit", "feederAudit", FeederAudit.class, this);
-
-  public SelectAqlField<Category> CATEGORY_DEFINING_CODE = new AqlFieldImp<Category>(SmICSBefundComposition.class, "/category|defining_code", "categoryDefiningCode", Category.class, this);
 
   public SelectAqlField<Territory> TERRITORY = new AqlFieldImp<Territory>(SmICSBefundComposition.class, "/territory", "territory", Territory.class, this);
 

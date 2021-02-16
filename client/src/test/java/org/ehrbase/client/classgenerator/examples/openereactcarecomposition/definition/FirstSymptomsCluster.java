@@ -17,13 +17,14 @@ import org.ehrbase.client.classgenerator.interfaces.LocatableEntity;
 @Archetype("openEHR-EHR-CLUSTER.symptom_sign-cvid.v0")
 @Generated(
     value = "org.ehrbase.client.classgenerator.ClassGenerator",
-    date = "2020-12-10T13:06:11.461501900+01:00",
+    date = "2021-02-16T12:59:53.631777300+01:00",
     comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
 )
 public class FirstSymptomsCluster implements LocatableEntity {
   /**
    * Path: open_eREACT-Care/Assessment/Covid/Covid symptoms/Any event/First symptoms/Symptom/Sign name
    * Description: The name of the reported symptom or sign.
+   * Comment: Symptom name should be coded with a terminology, where possible.
    */
   @Path("/items[at0001.1]/value")
   private DvCodedText symptomSignName;
@@ -39,6 +40,7 @@ public class FirstSymptomsCluster implements LocatableEntity {
   /**
    * Path: open_eREACT-Care/Assessment/Covid/Covid symptoms/Any event/First symptoms/Date of onset of first symptoms
    * Description: The onset for this episode of the symptom or sign.
+   * Comment: While partial dates are permitted, the exact date and time of onset can be recorded, if appropriate. If this symptom or sign is experienced for the first time or is a re-occurrence, this date is used to represent the onset of this episode. If this symptom or sign is ongoing, this data element may be redundant if it has been recorded previously.
    */
   @Path("/items[at0152 and name/value='Date of onset of first symptoms']/value|value")
   private TemporalAccessor dateOfOnsetOfFirstSymptomsValue;
@@ -46,6 +48,7 @@ public class FirstSymptomsCluster implements LocatableEntity {
   /**
    * Path: open_eREACT-Care/Assessment/Covid/Covid symptoms/Any event/First symptoms/Duration
    * Description: The duration of this episode of the symptom or sign since onset.
+   * Comment: If 'Date/time of onset' and 'Date/time of resolution' are used in systems, this data element may be calculated, or alternatively, be considered redundant in this scenario.
    */
   @Path("/items[at0028]/value|value")
   private TemporalAmount durationValue;
@@ -53,6 +56,7 @@ public class FirstSymptomsCluster implements LocatableEntity {
   /**
    * Path: open_eREACT-Care/Assessment/Covid/Covid symptoms/Any event/First symptoms/Trend
    * Description: Description progression of the symptom or sign at the time of reporting.
+   * Comment: Occurrences of this data element are set to 0..* to allow multiple types of progression to be separated out in a template if desired - for example, severity or frequency.
    */
   @Path("/items[at0180 and name/value='Trend']/value|defining_code")
   private TrendDefiningCode trendDefiningCode;
@@ -60,6 +64,7 @@ public class FirstSymptomsCluster implements LocatableEntity {
   /**
    * Path: open_eREACT-Care/Assessment/Covid/Covid symptoms/Any event/First symptoms/Impact
    * Description: Description of the impact of this symptom or sign.
+   * Comment: Assessment of impact could consider the severity, duration and frequency of the symptom as well as the type of impact including, but not limited to, functional, social and emotional impact. Occurrences of this data element are set to 0..* to allow multiple types of impact to be separated out in a template if desired. Examples for functional impact from hearing loss may include: 'Difficulty Hearing in Quiet Environment'; 'Difficulty Hearing the TV or Radio'; 'Difficulty Hearing Group Conversation'; and 'Difficulty Hearing on Phone'.
    */
   @Path("/items[at0155]/value|value")
   private String impactValue;

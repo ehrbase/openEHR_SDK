@@ -26,11 +26,17 @@ import org.ehrbase.client.openehrclient.VersionUid;
 @Archetype("openEHR-EHR-COMPOSITION.report.v1")
 @Generated(
     value = "org.ehrbase.client.classgenerator.ClassGenerator",
-    date = "2020-12-10T13:06:12.107023600+01:00",
+    date = "2021-02-16T12:57:29.061800+01:00",
     comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
 )
 @Template("SmICS-Befund")
 public class SmICSBefundComposition implements CompositionEntity {
+  /**
+   * Path: SmICS Befund/category
+   */
+  @Path("/category|defining_code")
+  private Category categoryDefiningCode;
+
   /**
    * Path: SmICS Befund/context/Bericht ID
    * Description: Identifizierungsmerkmal des Berichts.
@@ -114,12 +120,6 @@ public class SmICSBefundComposition implements CompositionEntity {
   private FeederAudit feederAudit;
 
   /**
-   * Path: SmICS Befund/category
-   */
-  @Path("/category|defining_code")
-  private Category categoryDefiningCode;
-
-  /**
    * Path: SmICS Befund/territory
    */
   @Path("/territory")
@@ -127,6 +127,14 @@ public class SmICSBefundComposition implements CompositionEntity {
 
   @Id
   private VersionUid versionUid;
+
+  public void setCategoryDefiningCode(Category categoryDefiningCode) {
+     this.categoryDefiningCode = categoryDefiningCode;
+  }
+
+  public Category getCategoryDefiningCode() {
+     return this.categoryDefiningCode ;
+  }
 
   public void setBerichtIdValue(String berichtIdValue) {
      this.berichtIdValue = berichtIdValue;
@@ -230,14 +238,6 @@ public class SmICSBefundComposition implements CompositionEntity {
 
   public FeederAudit getFeederAudit() {
      return this.feederAudit ;
-  }
-
-  public void setCategoryDefiningCode(Category categoryDefiningCode) {
-     this.categoryDefiningCode = categoryDefiningCode;
-  }
-
-  public Category getCategoryDefiningCode() {
-     return this.categoryDefiningCode ;
   }
 
   public void setTerritory(Territory territory) {

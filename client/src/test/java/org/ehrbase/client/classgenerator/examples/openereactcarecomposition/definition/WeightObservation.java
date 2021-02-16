@@ -19,7 +19,7 @@ import org.ehrbase.client.classgenerator.shareddefinition.Language;
 @Archetype("openEHR-EHR-OBSERVATION.body_weight.v2")
 @Generated(
     value = "org.ehrbase.client.classgenerator.ClassGenerator",
-    date = "2020-12-10T13:06:11.327497900+01:00",
+    date = "2021-02-16T12:59:53.442785700+01:00",
     comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
 )
 public class WeightObservation implements EntryEntity {

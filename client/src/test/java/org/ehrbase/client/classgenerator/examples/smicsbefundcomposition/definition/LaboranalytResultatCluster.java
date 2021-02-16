@@ -15,13 +15,16 @@ import org.ehrbase.client.classgenerator.interfaces.LocatableEntity;
 @Archetype("openEHR-EHR-CLUSTER.laboratory_test_analyte.v1")
 @Generated(
     value = "org.ehrbase.client.classgenerator.ClassGenerator",
-    date = "2020-12-10T13:06:12.147024700+01:00",
+    date = "2021-02-16T12:58:09.942430500+01:00",
     comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
 )
 public class LaboranalytResultatCluster implements LocatableEntity {
   /**
    * Path: SmICS Befund/SmICS-Ergebnis/Jedes Ereignis/Eigenschaften des beteiligten Erregers/Erregerdetails/Antibiogramm/Laboranalyt-Resultat/Antibiotikum
    * Description: Die Bezeichnung des Analyt-Resultats
+   * Comment: Der Wert dieses Elements wird normalerweise meist durch eine Spezialisierung, durch einer Vorlage oder zur Laufzeit geliefert, um den aktuellen Analyt wiederzugeben. Zum Beispiel: 'Natrium im Serum','Hämoglobin'.
+   *                                                                                 Die Codierung mit einer externen Terminologie, wie LOINC, NPU, SNOMED-CT oder lokalen Labor-Terminologien wird dringend empfohlen.
+   *                                                                             
    */
   @Path("/items[at0024 and name/value='Antibiotikum']/value|defining_code")
   private AntibiotikumDefiningCode antibiotikumDefiningCode;
@@ -29,6 +32,10 @@ public class LaboranalytResultatCluster implements LocatableEntity {
   /**
    * Path: SmICS Befund/SmICS-Ergebnis/Jedes Ereignis/Eigenschaften des beteiligten Erregers/Erregerdetails/Antibiogramm/Laboranalyt-Resultat/Minimale Hemmkonzentration
    * Description: (Mess-)Wert des Analyt-Resultats.
+   * Comment: z.B. '7.3 mmol/l', 'Erhöht'. Der 'Any'-Datentyp wird dann
+   *                                                                                 durch eine Spezialisierung, eine Vorlage oder zur Laufzeit
+   *                                                                                 auf einen passenden Datentypen eingeschränkt werden müssen, um das aktuelle Analyt-Ergebnis wiederzugeben. Der 'Quantity'-Datentyp hat Referenzmodell-Attribute, wie Kennungen für normal/abnormal, Referenzbereiche und Näherungen - für weitere Details s. https://specifications.openehr.org/releases/RM/latest/data_types.html#_dv_quantity_class .
+   *                                                                             
    */
   @Path("/items[at0001 and name/value='Minimale Hemmkonzentration']/value|magnitude")
   private Double minimaleHemmkonzentrationMagnitude;
@@ -36,6 +43,10 @@ public class LaboranalytResultatCluster implements LocatableEntity {
   /**
    * Path: SmICS Befund/SmICS-Ergebnis/Jedes Ereignis/Eigenschaften des beteiligten Erregers/Erregerdetails/Antibiogramm/Laboranalyt-Resultat/Minimale Hemmkonzentration
    * Description: (Mess-)Wert des Analyt-Resultats.
+   * Comment: z.B. '7.3 mmol/l', 'Erhöht'. Der 'Any'-Datentyp wird dann
+   *                                                                                 durch eine Spezialisierung, eine Vorlage oder zur Laufzeit
+   *                                                                                 auf einen passenden Datentypen eingeschränkt werden müssen, um das aktuelle Analyt-Ergebnis wiederzugeben. Der 'Quantity'-Datentyp hat Referenzmodell-Attribute, wie Kennungen für normal/abnormal, Referenzbereiche und Näherungen - für weitere Details s. https://specifications.openehr.org/releases/RM/latest/data_types.html#_dv_quantity_class .
+   *                                                                             
    */
   @Path("/items[at0001 and name/value='Minimale Hemmkonzentration']/value|units")
   private String minimaleHemmkonzentrationUnits;
@@ -50,6 +61,7 @@ public class LaboranalytResultatCluster implements LocatableEntity {
   /**
    * Path: SmICS Befund/SmICS-Ergebnis/Jedes Ereignis/Eigenschaften des beteiligten Erregers/Erregerdetails/Antibiogramm/Laboranalyt-Resultat/Resistenz
    * Description: Zusätzliche Hinweise zur Anwendbarkeit des Referenzbereichs für dieses Resultat oder (codierter) Text, ob das Resultat im Referenzbereich ist oder nicht.
+   * Comment: z.B.: 'im Referenzbereich, bezogen auf Alter und Geschlecht'.
    */
   @Path("/items[at0004 and name/value='Resistenz']/value|value")
   private String resistenzValue;

@@ -10,13 +10,14 @@ import org.ehrbase.client.classgenerator.interfaces.LocatableEntity;
 @Entity
 @Generated(
     value = "org.ehrbase.client.classgenerator.ClassGenerator",
-    date = "2020-12-10T13:06:11.590502+01:00",
+    date = "2021-02-16T12:59:53.783780100+01:00",
     comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
 )
 public class ServiceRequestReasonForRequestElement implements LocatableEntity {
   /**
    * Path: open_eREACT-Care/Response/Service request/Current Activity/Reason for request
    * Description: A short phrase describing the reason for the request.
+   * Comment: Coding of the 'Reason for request' with a coding system is desirable, if available. This data element allows multiple occurrences to enable the user to record a multiple responses, if required. For example: 'manage diabetes complications'.
    */
   @Path("/value")
   private DvCodedText value;
