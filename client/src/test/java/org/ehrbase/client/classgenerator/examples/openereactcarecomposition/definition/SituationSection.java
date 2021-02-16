@@ -11,7 +11,7 @@ import org.ehrbase.client.classgenerator.interfaces.LocatableEntity;
 @Archetype("openEHR-EHR-SECTION.adhoc.v1")
 @Generated(
     value = "org.ehrbase.client.classgenerator.ClassGenerator",
-    date = "2020-12-10T13:06:11.313502100+01:00",
+    date = "2021-02-16T12:59:53.417782400+01:00",
     comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
 )
 public class SituationSection implements LocatableEntity {

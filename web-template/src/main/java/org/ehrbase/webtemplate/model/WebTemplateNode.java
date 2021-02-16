@@ -19,6 +19,9 @@
 
 package org.ehrbase.webtemplate.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.nedap.archie.rm.archetyped.Locatable;
 import com.nedap.archie.rminfo.ArchieRMInfoLookup;
 import java.io.Serializable;
@@ -30,10 +33,10 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
-import net.minidev.json.annotate.JsonIgnore;
 import org.apache.commons.lang3.StringUtils;
 import org.ehrbase.webtemplate.parser.FlatPath;
 
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class WebTemplateNode implements Serializable {
 
   private static final ArchieRMInfoLookup RM_INFO_LOOKUP = ArchieRMInfoLookup.getInstance();
@@ -48,14 +51,17 @@ public class WebTemplateNode implements Serializable {
   private int max;
   private final Map<String, String> localizedNames = new HashMap<>();
   private final Map<String, String> localizedDescriptions = new HashMap<>();
+
+  @JsonSerialize(using = AqlPathSerializer.class)
   private String aqlPath;
+
   private final List<WebTemplateNode> children = new ArrayList<>();
   private final List<WebTemplateInput> inputs = new ArrayList<>();
   private Boolean inContext;
   private final Map<String, WebTemplateTerminology> termBindings = new HashMap<>();
   private final List<String> dependsOn = new ArrayList<>();
   private WebTemplateAnnotation annotations;
-  private final List<String> proportionTypes = new ArrayList<>();
+  private final List<ProportionType> proportionTypes = new ArrayList<>();
 
   public WebTemplateNode() {}
 
@@ -182,6 +188,7 @@ public class WebTemplateNode implements Serializable {
     return children;
   }
 
+  @JsonIgnore
   public Map<String, List<WebTemplateNode>> getChoicesInChildren() {
     return children.stream()
         .collect(Collectors.groupingBy(WebTemplateNode::getAqlPath))
@@ -219,7 +226,7 @@ public class WebTemplateNode implements Serializable {
     this.annotations = annotations;
   }
 
-  public List<String> getProportionTypes() {
+  public List<ProportionType> getProportionTypes() {
     return proportionTypes;
   }
 
@@ -271,6 +278,7 @@ public class WebTemplateNode implements Serializable {
     return matching;
   }
 
+  @JsonIgnore
   public boolean isArchetype() {
     return RM_INFO_LOOKUP.getTypeInfo(this.getRmType()) != null
         && Locatable.class.isAssignableFrom(
@@ -278,12 +286,23 @@ public class WebTemplateNode implements Serializable {
         && !StringUtils.startsWith(this.getNodeId(), "at");
   }
 
+  @JsonIgnore
   public boolean isArchetypeSlot() {
     return RM_INFO_LOOKUP.getTypeInfo(this.getRmType()) != null
         && Locatable.class.isAssignableFrom(
             RM_INFO_LOOKUP.getTypeInfo(this.getRmType()).getJavaClass())
         && StringUtils.startsWith(this.getNodeId(), "at")
         && this.getChildren().isEmpty();
+  }
+
+  @JsonIgnore
+  public boolean isNullable() {
+    return min == 0;
+  }
+
+  @JsonIgnore
+  public boolean isMulti() {
+    return max != 1;
   }
 
   @Override
@@ -332,9 +351,5 @@ public class WebTemplateNode implements Serializable {
         dependsOn,
         annotations,
         proportionTypes);
-  }
-
-  public boolean isMulti() {
-    return max != 1;
   }
 }

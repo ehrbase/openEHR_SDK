@@ -14,13 +14,14 @@ import org.ehrbase.client.classgenerator.interfaces.LocatableEntity;
 @Archetype("openEHR-EHR-CLUSTER.symptom_sign-cvid.v0")
 @Generated(
     value = "org.ehrbase.client.classgenerator.ClassGenerator",
-    date = "2020-12-10T13:06:11.490501900+01:00",
+    date = "2021-02-16T12:59:53.692778800+01:00",
     comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
 )
 public class OtherSymptomCluster implements LocatableEntity {
   /**
    * Path: open_eREACT-Care/Assessment/Covid/Covid symptoms/Any event/Other symptom/Symptom/Sign name
    * Description: The name of the reported symptom or sign.
+   * Comment: Symptom name should be coded with a terminology, where possible.
    */
   @Path("/items[at0001.1]/value|value")
   private String symptomSignNameValue;

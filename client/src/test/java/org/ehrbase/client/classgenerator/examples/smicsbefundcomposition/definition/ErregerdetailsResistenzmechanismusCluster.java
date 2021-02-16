@@ -10,13 +10,14 @@ import org.ehrbase.client.classgenerator.interfaces.LocatableEntity;
 @Entity
 @Generated(
     value = "org.ehrbase.client.classgenerator.ClassGenerator",
-    date = "2020-12-10T13:06:12.156026200+01:00",
+    date = "2021-02-16T12:58:09.984434300+01:00",
     comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
 )
 public class ErregerdetailsResistenzmechanismusCluster implements LocatableEntity {
   /**
    * Path: SmICS Befund/SmICS-Ergebnis/Jedes Ereignis/Eigenschaften des beteiligten Erregers/Erregerdetails/Resistenzmechanismus/Resistenzmechanismus Bezeichnung
    * Description: Bezeichnung des Resistenzmechanismus.
+   * Comment: Ein bestes Beispiel wäre, die Untersuchung eines „Staphylococcus aureus“ der hier die Bezeichnung des Keims ist.
    */
   @Path("/items[at0017]/value|value")
   private String resistenzmechanismusBezeichnungValue;

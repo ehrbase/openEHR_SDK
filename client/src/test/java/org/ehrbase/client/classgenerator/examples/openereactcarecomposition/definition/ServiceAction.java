@@ -19,13 +19,14 @@ import org.ehrbase.client.classgenerator.shareddefinition.Transition;
 @Archetype("openEHR-EHR-ACTION.service.v0")
 @Generated(
     value = "org.ehrbase.client.classgenerator.ClassGenerator",
-    date = "2020-12-10T13:06:11.597503+01:00",
+    date = "2021-02-16T12:59:53.792779800+01:00",
     comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
 )
 public class ServiceAction implements EntryEntity {
   /**
    * Path: open_eREACT-Care/Response/Service/Service name
    * Description: Identification of the clinical service to be/being carried out.
+   * Comment: Coding of the specific service name with a terminology is preferred, where possible.
    */
   @Path("/description[at0001]/items[at0011]/value")
   private DvCodedText serviceName;

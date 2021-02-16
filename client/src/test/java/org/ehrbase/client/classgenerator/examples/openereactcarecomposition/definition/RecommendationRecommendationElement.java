@@ -10,13 +10,14 @@ import org.ehrbase.client.classgenerator.interfaces.LocatableEntity;
 @Entity
 @Generated(
     value = "org.ehrbase.client.classgenerator.ClassGenerator",
-    date = "2020-12-10T13:06:11.584502400+01:00",
+    date = "2021-02-16T12:59:53.775777800+01:00",
     comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
 )
 public class RecommendationRecommendationElement implements LocatableEntity {
   /**
    * Path: open_eREACT-Care/Response/Recommendation/Recommendation
    * Description: Narrative description of the recommendation.
+   * Comment: May be coded, using a terminology, if required.
    */
   @Path("/value|value")
   private String value;

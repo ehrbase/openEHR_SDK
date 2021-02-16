@@ -18,13 +18,14 @@ import org.ehrbase.client.classgenerator.shareddefinition.Language;
 @Archetype("openEHR-EHR-OBSERVATION.pulse.v1")
 @Generated(
     value = "org.ehrbase.client.classgenerator.ClassGenerator",
-    date = "2020-12-10T13:06:11.551502600+01:00",
+    date = "2021-02-16T12:59:53.745781400+01:00",
     comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
 )
 public class PulseObservation implements EntryEntity {
   /**
    * Path: open_eREACT-Care/Assessment/NEWS2/Pulse/Any event/Pulse Rate
    * Description: The rate, measured in beats per minute.
+   * Comment: Run-time name constraints have been specified, in order to simplify the renaming of this data element to Pulse Rate or Heart Rate, as required.
    */
   @Path("/data[at0002]/events[at0003]/data[at0001]/items[at0004 and name/value='Pulse Rate']/value|magnitude")
   private Double pulseRateMagnitude;
@@ -32,6 +33,7 @@ public class PulseObservation implements EntryEntity {
   /**
    * Path: open_eREACT-Care/Assessment/NEWS2/Pulse/Any event/Pulse Rate
    * Description: The rate, measured in beats per minute.
+   * Comment: Run-time name constraints have been specified, in order to simplify the renaming of this data element to Pulse Rate or Heart Rate, as required.
    */
   @Path("/data[at0002]/events[at0003]/data[at0001]/items[at0004 and name/value='Pulse Rate']/value|units")
   private String pulseRateUnits;

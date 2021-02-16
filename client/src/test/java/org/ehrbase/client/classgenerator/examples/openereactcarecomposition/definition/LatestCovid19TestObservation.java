@@ -18,13 +18,14 @@ import org.ehrbase.client.classgenerator.shareddefinition.Language;
 @Archetype("openEHR-EHR-OBSERVATION.laboratory_test_result.v1")
 @Generated(
     value = "org.ehrbase.client.classgenerator.ClassGenerator",
-    date = "2020-12-10T13:06:11.507500400+01:00",
+    date = "2021-02-16T12:59:53.711777800+01:00",
     comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
 )
 public class LatestCovid19TestObservation implements EntryEntity {
   /**
    * Path: open_eREACT-Care/Assessment/Covid/Latest Covid-19 test/Any event/Test name
    * Description: Name of the laboratory investigation performed on the specimen(s).
+   * Comment: A test result may be for a single analyte, or a group of items, including panel tests. It is strongly recommended that 'Test name' be coded with a terminology, for example LOINC or SNOMED CT. For example: 'Glucose', 'Urea and Electrolytes', 'Swab', 'Cortisol (am)', 'Potassium in perspiration' or 'Melanoma histopathology'. The name may sometimes include specimen type and patient state, for example 'Fasting blood glucose' or include other information, as 'Potassium (PNA blood gas)'.
    */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0005]/value|value")
   private String testNameValue;
@@ -48,6 +49,7 @@ public class LatestCovid19TestObservation implements EntryEntity {
   /**
    * Path: open_eREACT-Care/Assessment/Covid/Latest Covid-19 test/Any event/Test diagnosis
    * Description: Single word, phrase or brief description that represents the clinical meaning and significance of the laboratory test result.
+   * Comment: For example: 'Severe hepatic impairment', 'Salmonella contamination'. Coding of the diagnosis with a terminology is strongly recommended, where possible. This diagnosis should be aligned with the narrative in the 'Conclusion'.
    */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0098]/value|value")
   private String testDiagnosisValue;
@@ -145,7 +147,8 @@ public class LatestCovid19TestObservation implements EntryEntity {
   private FeederAudit feederAudit;
 
   /**
-   * Path: open_eREACT-Care/Assessment/Covid/Latest Covid-19 test/Any event/value
+   * Path: open_eREACT-Care/Assessment/Covid/Latest Covid-19 test/Any event/Overall test status
+   * Description: The status of the laboratory test result as a whole.
    */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0073]/value")
   @Choice

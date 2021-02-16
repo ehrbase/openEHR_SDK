@@ -18,7 +18,7 @@ import org.ehrbase.client.classgenerator.shareddefinition.Language;
 @Archetype("openEHR-EHR-OBSERVATION.news2.v1")
 @Generated(
     value = "org.ehrbase.client.classgenerator.ClassGenerator",
-    date = "2020-12-10T13:06:11.569501700+01:00",
+    date = "2021-02-16T12:59:53.767780200+01:00",
     comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
 )
 public class News2ScoreObservation implements EntryEntity {
@@ -32,6 +32,7 @@ public class News2ScoreObservation implements EntryEntity {
   /**
    * Path: open_eREACT-Care/Assessment/NEWS2/NEWS2 Score/Any point in time event/SpO₂ Scale 1
    * Description: Category for the oxygen saturation measurement.
+   * Comment: 'SpO₂ Scale 1' and 'SpO₂ Scale 2' are variations of the same physiological variable to be used in different clinical scenarios. Scale 1 will be used for most patients, with the exception of patients with an oxygen saturation target range of 88–92%, such as patients with hypercapnic respiratory failure.
    */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0029]/value")
   private DvOrdinal spoScale1;
@@ -39,6 +40,7 @@ public class News2ScoreObservation implements EntryEntity {
   /**
    * Path: open_eREACT-Care/Assessment/NEWS2/NEWS2 Score/Any point in time event/SpO₂ Scale 2
    * Description: Category for the oxygen saturation measurement in patients with a target oxygen saturation range of 88–92%.
+   * Comment: 'SpO₂ Scale 1' and 'SpO₂ Scale 2' are variations of the same physiological variable to be used in different clinical scenarios. Scale 2 will be used only in patients with an oxygen saturation target range of 88–92%, such as patients with hypercapnic respiratory failure. Otherwise use Scale 1.
    */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0047]/value")
   private DvOrdinal spoScale2;
@@ -81,6 +83,7 @@ public class News2ScoreObservation implements EntryEntity {
   /**
    * Path: open_eREACT-Care/Assessment/NEWS2/NEWS2 Score/Any point in time event/Total score
    * Description: The sum of points assigned for each of the component variables.
+   * Comment: The total score may be generated at run-time.
    */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0028]/value|magnitude")
   private Long totalScoreMagnitude;

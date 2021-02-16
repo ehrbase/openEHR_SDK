@@ -43,21 +43,21 @@ public class TerminologyProvider {
     }
   }
 
-  public static ValueSet findOpenEhrValueSet(String id, String group) {
+  public static ValueSet findOpenEhrValueSet(String id, String group, String language) {
     try {
       if (StringUtils.isNotBlank(group)) {
         return new ValueSet(
             id,
             group,
             LOCALIZED_TERMINOLOGIES.getDefault().terminology(id).codesForGroupId(group).stream()
-                .map((CodePhrase cp) -> convert(id, cp))
+                .map((CodePhrase cp) -> convert(id, cp, language))
                 .collect(Collectors.toSet()));
       } else {
         return new ValueSet(
             id,
             "all",
             LOCALIZED_TERMINOLOGIES.getDefault().codeSet(id).allCodes().stream()
-                .map((CodePhrase cp) -> convert(id, cp))
+                .map((CodePhrase cp) -> convert(id, cp, language))
                 .collect(Collectors.toSet()));
       }
     } catch (RuntimeException e) {
@@ -66,7 +66,7 @@ public class TerminologyProvider {
     }
   }
 
-  public static ValueSet findOpenEhrValueSet(String id, String[] values) {
+  public static ValueSet findOpenEhrValueSet(String id, String[] values, String language) {
     try {
       if (ArrayUtils.isNotEmpty(values)) {
         return new ValueSet(
@@ -74,14 +74,14 @@ public class TerminologyProvider {
             "local",
             Arrays.stream(values)
                 .map(v -> new CodePhrase(new TerminologyId(id), v))
-                .map((CodePhrase cp) -> convert(id, cp))
+                .map((CodePhrase cp) -> convert(id, cp, language))
                 .collect(Collectors.toSet()));
       } else {
         return new ValueSet(
             id,
             "all",
             LOCALIZED_TERMINOLOGIES.getDefault().codeSet(id).allCodes().stream()
-                .map((CodePhrase cp) -> convert(id, cp))
+                .map((CodePhrase cp) -> convert(id, cp, language))
                 .collect(Collectors.toSet()));
       }
     } catch (RuntimeException e) {
@@ -90,14 +90,15 @@ public class TerminologyProvider {
     }
   }
 
-  private static TermDefinition convert(String id, CodePhrase codePhrase) {
+  private static TermDefinition convert(String id, CodePhrase codePhrase, String language) {
     String value;
     try {
       value =
           LOCALIZED_TERMINOLOGIES
               .getDefault()
               .terminology(id)
-              .rubricForCode(codePhrase.getCodeString(), "en");
+              .rubricForCode(codePhrase.getCodeString(), language);
+
     } catch (RuntimeException e) {
       value = codePhrase.getCodeString();
     }

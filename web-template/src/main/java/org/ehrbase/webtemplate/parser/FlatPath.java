@@ -35,6 +35,12 @@ public class FlatPath {
   private final String attributeName;
   private final boolean startWithSlash;
 
+  public enum OtherPredicatesFormate {
+    NONE,
+    SHORTED,
+    FULL;
+  }
+
   public FlatPath(String path) {
     if (StringUtils.isBlank(path)) {
       name = "";
@@ -219,6 +225,14 @@ public class FlatPath {
   }
 
   public String format(boolean withOtherPredicates) {
+    if (withOtherPredicates) {
+      return format(OtherPredicatesFormate.FULL);
+    } else {
+      return format(OtherPredicatesFormate.NONE);
+    }
+  }
+
+  public String format(OtherPredicatesFormate otherPredicatesFormate) {
     StringBuilder sb = new StringBuilder();
     if (startWithSlash) {
       sb.append("/");
@@ -226,15 +240,21 @@ public class FlatPath {
     sb.append(name);
     if (StringUtils.isNotBlank(atCode)) {
       sb.append("[").append(atCode);
-      if (withOtherPredicates) {
+      if (!otherPredicatesFormate.equals(OtherPredicatesFormate.NONE)) {
         otherPredicates.forEach(
-            (key, value) ->
-                sb.append(" and ").append(key).append("=").append("'").append(value).append("'"));
+            (key, value) -> {
+              if (otherPredicatesFormate.equals(OtherPredicatesFormate.SHORTED)
+                  && key.equals("name/value")) {
+                sb.append(",").append("'").append(value).append("'");
+              } else {
+                sb.append(" and ").append(key).append("=").append("'").append(value).append("'");
+              }
+            });
       }
       sb.append("]");
     }
     if (child != null) {
-      sb.append(child.format(withOtherPredicates));
+      sb.append(child.format(otherPredicatesFormate));
     }
     if (attributeName != null) {
       sb.append("|").append(attributeName);

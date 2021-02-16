@@ -29,6 +29,7 @@ import com.nedap.archie.rm.datastructures.PointEvent;
 import com.nedap.archie.rm.datavalues.DvCodedText;
 import com.nedap.archie.rm.datavalues.quantity.datetime.DvDateTime;
 import com.nedap.archie.rm.datavalues.quantity.datetime.DvDuration;
+import com.nedap.archie.rm.support.identification.HierObjectId;
 import com.nedap.archie.rminfo.RMAttributeInfo;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -99,6 +100,7 @@ public abstract class ToCompositionWalker<T> extends Walker<T> {
       child = currentChild;
     }
     String rmclass = childNode.getRmType();
+
     if (child == null
         || (child.getClass().equals(PointEvent.class)
             && !childNode.getRmType().equals("POINT_EVENT"))
@@ -109,7 +111,11 @@ public abstract class ToCompositionWalker<T> extends Walker<T> {
       Object newChild;
       try {
 
-        newChild = RM_OBJECT_CREATOR.create(elementConstraint);
+        if (rmclass.equals("UID_BASED_ID")) {
+          newChild = new HierObjectId();
+        } else {
+          newChild = RM_OBJECT_CREATOR.create(elementConstraint);
+        }
 
         if (Event.class.isAssignableFrom(newChild.getClass())) {
           Event<ItemStructure> newEvent = (Event) newChild;

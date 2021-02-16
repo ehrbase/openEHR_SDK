@@ -9,13 +9,14 @@ import org.ehrbase.client.classgenerator.interfaces.LocatableEntity;
 @Entity
 @Generated(
     value = "org.ehrbase.client.classgenerator.ClassGenerator",
-    date = "2020-12-10T13:06:11.415498500+01:00",
+    date = "2021-02-16T12:59:53.599777800+01:00",
     comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
 )
 public class SepsisScreeningAmberFlagAcuteElement implements LocatableEntity {
   /**
    * Path: open_eREACT-Care/Assessment/Sepsis/Sepsis screening/Any event/Amber flag (acute)
    * Description: Used to record details of any amber flag indicators from the sepsis screening tool.
+   * Comment: Q4: ANY AMBER FLAG PRESENT?
    */
   @Path("/value|defining_code")
   private AmberFlagAcuteDefiningCode value;

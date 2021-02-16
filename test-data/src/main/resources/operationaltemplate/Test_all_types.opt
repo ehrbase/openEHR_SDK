@@ -2016,8 +2016,7 @@
                                                                                 </occurrences>
                                                                                 <node_id/>
                                                                                 <item xsi:type="C_DATE_TIME">
-                                                                                    <pattern>yyyy-mm-ddTHH:??:??
-                                                                                    </pattern>
+                                                                                    <pattern>yyyy-mm-ddTHH:??:??</pattern>
                                                                                 </item>
                                                                             </children>
                                                                         </attributes>

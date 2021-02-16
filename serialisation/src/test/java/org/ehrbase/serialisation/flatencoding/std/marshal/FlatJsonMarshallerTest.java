@@ -19,170 +19,216 @@
 
 package org.ehrbase.serialisation.flatencoding.std.marshal;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nedap.archie.rm.composition.Composition;
-import org.apache.commons.io.IOUtils;
-import org.apache.xmlbeans.XmlException;
-import org.ehrbase.serialisation.jsonencoding.CanonicalJson;
-import org.ehrbase.serialisation.jsonencoding.JacksonUtil;
-import org.ehrbase.test_data.composition.CompositionTestDataCanonicalJson;
-import org.ehrbase.test_data.composition.CompositionTestDataSimSDTJson;
-import org.ehrbase.test_data.operationaltemplate.OperationalTemplateTestData;
-import org.ehrbase.webtemplate.parser.OPTParser;
-import org.junit.Test;
-import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
-import org.openehr.schemas.v1.TemplateDocument;
-
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
-import static org.assertj.core.api.Assertions.assertThat;
-
+import org.apache.commons.io.IOUtils;
+import org.apache.xmlbeans.XmlException;
+import org.assertj.core.api.SoftAssertions;
+import org.ehrbase.serialisation.jsonencoding.CanonicalJson;
+import org.ehrbase.serialisation.jsonencoding.JacksonUtil;
+import org.ehrbase.test_data.composition.CompositionTestDataCanonicalJson;
+import org.ehrbase.test_data.composition.CompositionTestDataSimSDTJson;
+import org.ehrbase.test_data.operationaltemplate.OperationalTemplateTestData;
+import org.ehrbase.webtemplate.filter.Filter;
+import org.ehrbase.webtemplate.parser.OPTParser;
+import org.junit.Test;
+import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
+import org.openehr.schemas.v1.TemplateDocument;
 
 public class FlatJsonMarshallerTest {
 
-    @Test
-    public void toFlatJson() throws IOException, XmlException {
+  @Test
+  public void toFlatJson() throws IOException, XmlException {
 
-        OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(OperationalTemplateTestData.CORONA_ANAMNESE.getStream()).getTemplate();
-        Composition composition = new CanonicalJson().unmarshal(IOUtils.toString(CompositionTestDataCanonicalJson.CORONA.getStream(), StandardCharsets.UTF_8), Composition.class);
-        FlatJsonMarshaller cut = new FlatJsonMarshaller();
-        String actual = cut.toFlatJson(composition, new OPTParser(template).parse());
-        assertThat(actual).isNotNull();
+    OPERATIONALTEMPLATE template =
+        TemplateDocument.Factory.parse(OperationalTemplateTestData.CORONA_ANAMNESE.getStream())
+            .getTemplate();
+    Composition composition =
+        new CanonicalJson()
+            .unmarshal(
+                IOUtils.toString(
+                    CompositionTestDataCanonicalJson.CORONA.getStream(), StandardCharsets.UTF_8),
+                Composition.class);
+    FlatJsonMarshaller cut = new FlatJsonMarshaller();
+    String actual =
+        cut.toFlatJson(composition, new Filter().filter(new OPTParser(template).parse()));
+    assertThat(actual).isNotNull();
 
-        String expected = IOUtils.toString(CompositionTestDataSimSDTJson.CORONA.getStream(), StandardCharsets.UTF_8);
+    String expected =
+        IOUtils.toString(CompositionTestDataSimSDTJson.CORONA.getStream(), StandardCharsets.UTF_8);
 
-        List<String> errors = compere(actual, expected);
+    List<String> errors = compere(actual, expected);
 
-        assertThat(errors)
-                .filteredOn(s -> s.startsWith("Missing"))
-                .containsExactlyInAnyOrder();
+    assertThat(errors).filteredOn(s -> s.startsWith("Missing")).containsExactlyInAnyOrder();
 
-        assertThat(errors)
-                .filteredOn(s -> s.startsWith("Extra"))
-                .containsExactlyInAnyOrder();
-    }
+    assertThat(errors).filteredOn(s -> s.startsWith("Extra")).containsExactlyInAnyOrder();
+  }
 
-    @Test
-    public void toFlatJsonAltEvents() throws IOException, XmlException {
+  @Test
+  public void toFlatJsonAltEvents() throws IOException, XmlException {
 
-        OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(OperationalTemplateTestData.ALT_EVENTS.getStream()).getTemplate();
-        Composition composition = new CanonicalJson().unmarshal(IOUtils.toString(CompositionTestDataCanonicalJson.ALTERNATIVE_EVENTS.getStream(), StandardCharsets.UTF_8), Composition.class);
-        FlatJsonMarshaller cut = new FlatJsonMarshaller();
-        String actual = cut.toFlatJson(composition, new OPTParser(template).parse());
-        assertThat(actual).isNotNull();
+    OPERATIONALTEMPLATE template =
+        TemplateDocument.Factory.parse(OperationalTemplateTestData.ALT_EVENTS.getStream())
+            .getTemplate();
+    Composition composition =
+        new CanonicalJson()
+            .unmarshal(
+                IOUtils.toString(
+                    CompositionTestDataCanonicalJson.ALTERNATIVE_EVENTS.getStream(),
+                    StandardCharsets.UTF_8),
+                Composition.class);
+    FlatJsonMarshaller cut = new FlatJsonMarshaller();
+    String actual =
+        cut.toFlatJson(composition, new Filter().filter(new OPTParser(template).parse()));
+    assertThat(actual).isNotNull();
 
-        String expected = IOUtils.toString(CompositionTestDataSimSDTJson.ALTERNATIVE_EVENTS_2.getStream(), StandardCharsets.UTF_8);
+    String expected =
+        IOUtils.toString(
+            CompositionTestDataSimSDTJson.ALTERNATIVE_EVENTS_2.getStream(), StandardCharsets.UTF_8);
 
-        List<String> errors = compere(actual, expected);
+    List<String> errors = compere(actual, expected);
 
-        assertThat(errors)
-                .filteredOn(s -> s.startsWith("Missing"))
-                .containsExactlyInAnyOrder(
-                        "Missing path: bericht/körpergewicht:0/any_event_en:0/gewicht|magnitude, value: 55.0",
-                        "Missing path: bericht/körpergewicht:0/any_event_en:1/gewicht|magnitude, value: 60.0",
-                        "Missing path: bericht/körpergewicht:0/any_event_en:1/math_function|value, value: mean",
-                        "Missing path: bericht/körpergewicht:0/any_event_en:1/math_function|terminology, value: openehr",
-                        "Missing path: bericht/körpergewicht:0/any_event_en:1/math_function|code, value: 146",
-                        "Missing path: bericht/körpergewicht:0/birth_en/gewicht|magnitude, value: 30.0"
-                );
+    checkErrors(
+        errors,
+        new String[] {
+          "Missing path: bericht/körpergewicht:0/any_event_en:0/gewicht|magnitude, value: 55.0",
+          "Missing path: bericht/körpergewicht:0/any_event_en:1/gewicht|magnitude, value: 60.0",
+          "Missing path: bericht/körpergewicht:0/any_event_en:1/math_function|value, value: mean",
+          "Missing path: bericht/körpergewicht:0/any_event_en:1/math_function|terminology, value: openehr",
+          "Missing path: bericht/körpergewicht:0/any_event_en:1/math_function|code, value: 146",
+          "Missing path: bericht/körpergewicht:0/birth_en/gewicht|magnitude, value: 30.0"
+        },
+        new String[] {
+          "Extra path: bericht/körpergewicht:0/any_event_en:0/gewicht|magnitude, value: 55",
+          "Extra path: bericht/körpergewicht:0/any_event_en:1/gewicht|magnitude, value: 60",
+          "Extra path: bericht/körpergewicht:0/birth_en/gewicht|magnitude, value: 30"
+        });
+  }
 
-        assertThat(errors)
-                .filteredOn(s -> s.startsWith("Extra"))
-                .containsExactlyInAnyOrder(
-                        "Extra path: bericht/körpergewicht:0/any_event_en:0/gewicht|magnitude, value: 55",
-                        "Extra path: bericht/körpergewicht:0/any_event_en:1/gewicht|magnitude, value: 60",
-                        "Extra path: bericht/körpergewicht:0/birth_en/gewicht|magnitude, value: 30"
-                );
-    }
+  @Test
+  public void toFlatJsonMultiOccurrence() throws IOException, XmlException {
 
-    @Test
-    public void toFlatJsonMultiOccurrence() throws IOException, XmlException {
+    OPERATIONALTEMPLATE template =
+        TemplateDocument.Factory.parse(OperationalTemplateTestData.MULTI_OCCURRENCE.getStream())
+            .getTemplate();
+    Composition composition =
+        new CanonicalJson()
+            .unmarshal(
+                IOUtils.toString(
+                    CompositionTestDataCanonicalJson.MULTI_OCCURRENCE.getStream(),
+                    StandardCharsets.UTF_8),
+                Composition.class);
+    FlatJsonMarshaller cut = new FlatJsonMarshaller();
+    String actual =
+        cut.toFlatJson(composition, new Filter().filter(new OPTParser(template).parse()));
+    assertThat(actual).isNotNull();
 
-        OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(OperationalTemplateTestData.MULTI_OCCURRENCE.getStream()).getTemplate();
-        Composition composition = new CanonicalJson().unmarshal(IOUtils.toString(CompositionTestDataCanonicalJson.MULTI_OCCURRENCE.getStream(), StandardCharsets.UTF_8), Composition.class);
-        FlatJsonMarshaller cut = new FlatJsonMarshaller();
-        String actual = cut.toFlatJson(composition, new OPTParser(template).parse());
-        assertThat(actual).isNotNull();
+    String expected =
+        IOUtils.toString(
+            CompositionTestDataSimSDTJson.MULTI_OCCURRENCE.getStream(), StandardCharsets.UTF_8);
 
-        String expected = IOUtils.toString(CompositionTestDataSimSDTJson.MULTI_OCCURRENCE.getStream(), StandardCharsets.UTF_8);
+    List<String> errors = compere(actual, expected);
 
-        List<String> errors = compere(actual, expected);
+    checkErrors(
+        errors,
+        new String[] {
+          "Missing path: encounter/body_temperature:1/any_event:0/temperature|magnitude, value: 22.0",
+          "Missing path: encounter/body_temperature:1/any_event:1/temperature|magnitude, value: 11.0",
+          "Missing path: encounter/body_temperature:0/any_event:0/temperature|magnitude, value: 22.0",
+          "Missing path: encounter/body_temperature:0/any_event:1/temperature|magnitude, value: 11.0"
+        },
+        new String[] {
+          "Extra path: encounter/body_temperature:0/any_event:0/temperature|magnitude, value: 22",
+          "Extra path: encounter/body_temperature:0/any_event:1/temperature|magnitude, value: 11",
+          "Extra path: encounter/body_temperature:1/any_event:0/temperature|magnitude, value: 22",
+          "Extra path: encounter/body_temperature:1/any_event:1/temperature|magnitude, value: 11"
+        });
+  }
 
-        assertThat(errors)
-                .filteredOn(s -> s.startsWith("Missing"))
-                .containsExactlyInAnyOrder(
-                        "Missing path: encounter/body_temperature:1/any_event:0/temperature|magnitude, value: 22.0",
-                        "Missing path: encounter/body_temperature:1/any_event:1/temperature|magnitude, value: 11.0",
-                        "Missing path: encounter/context/end_time, value: 2020-10-06T13:30:34.317875+02:00",
-                        "Missing path: encounter/body_temperature:0/any_event:0/temperature|magnitude, value: 22.0",
-                        "Missing path: encounter/body_temperature:0/any_event:1/temperature|magnitude, value: 11.0"
-                );
+  @Test
+  public void toFlatJsonAllTypes() throws IOException, XmlException {
 
-        assertThat(errors)
-                .filteredOn(s -> s.startsWith("Extra"))
-                .containsExactlyInAnyOrder(
-                        "Extra path: encounter/context/_end_time, value: 2020-10-06T13:30:34.317875+02:00",
-                        "Extra path: encounter/body_temperature:0/any_event:0/temperature|magnitude, value: 22",
-                        "Extra path: encounter/body_temperature:0/any_event:1/temperature|magnitude, value: 11",
-                        "Extra path: encounter/body_temperature:1/any_event:0/temperature|magnitude, value: 22",
-                        "Extra path: encounter/body_temperature:1/any_event:1/temperature|magnitude, value: 11"
-                );
-    }
+    OPERATIONALTEMPLATE template =
+        TemplateDocument.Factory.parse(OperationalTemplateTestData.ALL_TYPES.getStream())
+            .getTemplate();
 
+    Composition composition =
+        new CanonicalJson()
+            .unmarshal(
+                IOUtils.toString(
+                    CompositionTestDataCanonicalJson.ALL_TYPES.getStream(), StandardCharsets.UTF_8),
+                Composition.class);
+    FlatJsonMarshaller cut = new FlatJsonMarshaller();
+    String actual =
+        cut.toFlatJson(composition, new Filter().filter(new OPTParser(template).parse()));
+    assertThat(actual).isNotNull();
 
-    @Test
-    public void toFlatJsonAllTypes() throws IOException, XmlException {
+    String expected =
+        IOUtils.toString(
+            CompositionTestDataSimSDTJson.ALL_TYPES.getStream(), StandardCharsets.UTF_8);
 
-        OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(OperationalTemplateTestData.ALL_TYPES.getStream()).getTemplate();
+    List<String> errors = compere(actual, expected);
 
-        Composition composition = new CanonicalJson().unmarshal(IOUtils.toString(CompositionTestDataCanonicalJson.ALL_TYPES.getStream(), StandardCharsets.UTF_8), Composition.class);
-        FlatJsonMarshaller cut = new FlatJsonMarshaller();
-        String actual = cut.toFlatJson(composition, new OPTParser(template).parse());
-        assertThat(actual).isNotNull();
+    checkErrors(
+        errors,
+        new String[] {
+          "Missing path: test_all_types/test_all_types:0/identifier|id, value: 55175056",
+          "Missing path: test_all_types/test_all_types:0/proportion_any|type, value: 1",
+          "Missing path: test_all_types/test_all_types3:0/section_2/section_3/test_all_types:0/current_activity/action_archetype_id, value: {value=openEHR-EHR-ACTION\\.test_all_types\\.v1}"
+        },
+        new String[] {
+          "Extra path: test_all_types/test_all_types:0/identifier, value: 55175056",
+          "Extra path: test_all_types/test_all_types:0/proportion_any|type, value: 1.0"
+        });
+  }
 
-        String expected = IOUtils.toString(CompositionTestDataSimSDTJson.ALL_TYPES.getStream(), StandardCharsets.UTF_8);
+  public void checkErrors(List<String> errors, String[] missing, String[] extra) {
 
-        List<String> errors = compere(actual, expected);
+    SoftAssertions softAssertions = new SoftAssertions();
 
-        assertThat(errors)
-                .filteredOn(s -> s.startsWith("Missing"))
-                .containsExactlyInAnyOrder(
-                        "Missing path: test_all_types/test_all_types:0/identifier|id, value: 55175056",
-                        "Missing path: test_all_types/test_all_types:0/proportion_any|type, value: 1"
-                );
+    softAssertions
+        .assertThat(errors)
+        .filteredOn(s -> s.startsWith("Missing"))
+        .containsExactlyInAnyOrder(missing);
 
-        assertThat(errors)
-                .filteredOn(s -> s.startsWith("Extra"))
-                .containsExactlyInAnyOrder(
-                        "Extra path: test_all_types/test_all_types:0/identifier, value: 55175056",
-                        "Extra path: test_all_types/test_all_types:0/proportion_any|type, value: 1.0"
-                );
-    }
+    softAssertions
+        .assertThat(errors)
+        .filteredOn(s -> s.startsWith("Extra"))
+        .containsExactlyInAnyOrder(extra);
 
-    public static List<String> compere(String actualJson, String expectedJson) throws JsonProcessingException {
-        List<String> errors = new ArrayList<>();
-        ObjectMapper objectMapper = JacksonUtil.getObjectMapper();
+    softAssertions.assertAll();
+  }
 
-        Map<String, Object> actual = objectMapper.readValue(actualJson, Map.class);
-        Map<String, Object> expected = objectMapper.readValue(expectedJson, Map.class);
+  public static List<String> compere(String actualJson, String expectedJson)
+      throws JsonProcessingException {
+    List<String> errors = new ArrayList<>();
+    ObjectMapper objectMapper = JacksonUtil.getObjectMapper();
 
-        actual.forEach((key, value) -> {
-            if (!expected.containsKey(key) || !expected.get(key).equals(value)) {
-                errors.add(String.format("Missing path: %s, value: %s", key, value));
-            }
+    Map<String, Object> actual = objectMapper.readValue(actualJson, Map.class);
+    Map<String, Object> expected = objectMapper.readValue(expectedJson, Map.class);
+
+    actual.forEach(
+        (key, value) -> {
+          if (!expected.containsKey(key) || !expected.get(key).equals(value)) {
+            errors.add(String.format("Missing path: %s, value: %s", key, value));
+          }
         });
 
-        expected.forEach((key, value) -> {
-            if (!actual.containsKey(key) || !actual.get(key).equals(value)) {
-                errors.add(String.format("Extra path: %s, value: %s", key, value));
-            }
+    expected.forEach(
+        (key, value) -> {
+          if (!actual.containsKey(key) || !actual.get(key).equals(value)) {
+            errors.add(String.format("Extra path: %s, value: %s", key, value));
+          }
         });
 
-        return errors;
-    }
+    return errors;
+  }
 }

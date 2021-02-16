@@ -426,8 +426,8 @@ public class ClassGeneratorTest {
 
     assertThat(fieldSpecs)
         .containsExactlyInAnyOrder(
-            "value",
-            "valueValue",
+            "idDerPerson",
+            "idDerPersonValue",
             "value",
             "idDerPerson",
             "artDerPersonValue",
@@ -1053,7 +1053,7 @@ public class ClassGeneratorTest {
             .flatMap(List::stream)
             .collect(Collectors.toList());
 
-    assertThat(fieldSpecs).size().isEqualTo(407);
+    assertThat(fieldSpecs).size().isEqualTo(409);
 
     writeFiles(generate);
   }
