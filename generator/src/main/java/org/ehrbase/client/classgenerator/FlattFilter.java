@@ -102,25 +102,18 @@ public class FlattFilter extends Filter {
         return !node.getChildren().isEmpty()
             && node.getMax() == 1
             && !node.getRmType().equals("COMPOSITION")
-            && (isSingleEvent(node, parent));
+            && (!isEvent(node) || parent.getChildren().stream().filter(this::isEvent).count() == 1);
       case SECTION:
         return !node.getChildren().isEmpty()
             && node.getMax() == 1
             && (!node.isArchetype() || node.getRmType().equals("SECTION"))
-            && isSingleEvent(node, parent);
+            && (!isEvent(node) || parent.getChildren().stream().filter(this::isEvent).count() == 1);
       default:
         return !node.getChildren().isEmpty()
             && node.getMax() == 1
             && !node.isArchetype()
-            && (isSingleEvent(node, parent));
+            && (!isEvent(node) || parent.getChildren().stream().filter(this::isEvent).count() == 1);
     }
-  }
-
-  private boolean isSingleEvent(WebTemplateNode node, WebTemplateNode parent) {
-    if (node.getRmType().equals("EVENT")) {
-      return false;
-    }
-    return !isEvent(node) || parent.getChildren().stream().filter(this::isEvent).count() == 1;
   }
 
   private boolean isEvent(WebTemplateNode node) {
@@ -130,7 +123,7 @@ public class FlattFilter extends Filter {
 
   protected void preHandle(WebTemplateNode node) {
 
-    if (new FlatPath(node.getAqlPath()).getLast().getName().equals("null_flavour")) {
+    if(new FlatPath( node.getAqlPath()).getLast().getName().equals("null_flavour")){
       node.setName("null_flavour");
     }
 
