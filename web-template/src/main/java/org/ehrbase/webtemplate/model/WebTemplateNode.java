@@ -19,6 +19,7 @@
 
 package org.ehrbase.webtemplate.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.nedap.archie.rm.archetyped.Locatable;
@@ -32,11 +33,10 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
-import net.minidev.json.annotate.JsonIgnore;
 import org.apache.commons.lang3.StringUtils;
 import org.ehrbase.webtemplate.parser.FlatPath;
 
-@JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class WebTemplateNode implements Serializable {
 
   private static final ArchieRMInfoLookup RM_INFO_LOOKUP = ArchieRMInfoLookup.getInstance();
