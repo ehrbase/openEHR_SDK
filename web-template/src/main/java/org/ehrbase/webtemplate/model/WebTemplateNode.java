@@ -19,6 +19,7 @@
 
 package org.ehrbase.webtemplate.model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.nedap.archie.rm.archetyped.Locatable;
 import com.nedap.archie.rminfo.ArchieRMInfoLookup;
@@ -35,6 +36,7 @@ import net.minidev.json.annotate.JsonIgnore;
 import org.apache.commons.lang3.StringUtils;
 import org.ehrbase.webtemplate.parser.FlatPath;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class WebTemplateNode implements Serializable {
 
   private static final ArchieRMInfoLookup RM_INFO_LOOKUP = ArchieRMInfoLookup.getInstance();
@@ -186,6 +188,7 @@ public class WebTemplateNode implements Serializable {
     return children;
   }
 
+  @JsonIgnore
   public Map<String, List<WebTemplateNode>> getChoicesInChildren() {
     return children.stream()
         .collect(Collectors.groupingBy(WebTemplateNode::getAqlPath))
@@ -275,6 +278,7 @@ public class WebTemplateNode implements Serializable {
     return matching;
   }
 
+  @JsonIgnore
   public boolean isArchetype() {
     return RM_INFO_LOOKUP.getTypeInfo(this.getRmType()) != null
         && Locatable.class.isAssignableFrom(
@@ -282,6 +286,7 @@ public class WebTemplateNode implements Serializable {
         && !StringUtils.startsWith(this.getNodeId(), "at");
   }
 
+  @JsonIgnore
   public boolean isArchetypeSlot() {
     return RM_INFO_LOOKUP.getTypeInfo(this.getRmType()) != null
         && Locatable.class.isAssignableFrom(
@@ -290,8 +295,14 @@ public class WebTemplateNode implements Serializable {
         && this.getChildren().isEmpty();
   }
 
+  @JsonIgnore
   public boolean isNullable() {
     return min == 0;
+  }
+
+  @JsonIgnore
+  public boolean isMulti() {
+    return max != 1;
   }
 
   @Override
@@ -340,9 +351,5 @@ public class WebTemplateNode implements Serializable {
         dependsOn,
         annotations,
         proportionTypes);
-  }
-
-  public boolean isMulti() {
-    return max != 1;
   }
 }
