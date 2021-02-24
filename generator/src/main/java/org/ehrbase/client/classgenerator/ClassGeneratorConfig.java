@@ -28,7 +28,11 @@ public class ClassGeneratorConfig {
   private OptimizerSetting optimizerSetting = OptimizerSetting.NONE;
   /** Whether or not to generate null flavor fields for Elements. */
   private boolean addNullFlavor = false;
-
+  /**
+   * Whether or not to generate Choices (POINT_EVENT & INTERVAL_EVENT) fields for a single EVENT. If
+   * "false" only POINT_EVENT will be generated
+   */
+  private boolean generateChoicesForSingleEvent = false;
   /** Map to define Characters in the Node name to be replaced. */
   private final Map<Character, String> replaceChars = new HashMap<>();
 
@@ -46,6 +50,14 @@ public class ClassGeneratorConfig {
 
   public void setAddNullFlavor(boolean addNullFlavor) {
     this.addNullFlavor = addNullFlavor;
+  }
+
+  public boolean isGenerateChoicesForSingleEvent() {
+    return generateChoicesForSingleEvent;
+  }
+
+  public void setGenerateChoicesForSingleEvent(boolean generateChoicesForSingleEvent) {
+    this.generateChoicesForSingleEvent = generateChoicesForSingleEvent;
   }
 
   public Map<Character, String> getReplaceChars() {

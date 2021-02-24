@@ -98,6 +98,7 @@ Parameter        | Default                         | Description
  -----------     | ---------                       | ------------- 
 optimizerSetting | SECTION                         | Defines if nodes which belong to are archetype but are single valued generate a new class: <ul><li>NONE: Always generate a class for nodes which belong to a archetype</li><li>SECTION: Do not generate a class for nodes which have rm-type section and are single valued</li><li>ALL: Do not generate a class for nodes which are single valued</li></ul>
 addNullFlavor    | true                            | Whether or not to generate null flavor fields for Elements.
+generateChoicesForSingleEvent    | false                           | Whether or not to generate Choices (POINT_EVENT & INTERVAL_EVENT) fields for a single EVENT. If "false" only POINT_EVENT will be generated.
 replaceChars     | German and Norwegian Characters | Map to define Characters in the Node name to be replaced. 
 
 see generator/src/main/resources/DefaultConfig.yaml

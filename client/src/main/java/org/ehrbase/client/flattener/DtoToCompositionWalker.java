@@ -90,12 +90,19 @@ public class DtoToCompositionWalker extends ToCompositionWalker<Map<String, Obje
                 .map(c -> c.getAnnotation(OptionFor.class))
                 .map(OptionFor::value);
         if (optionFor.isEmpty()) {
-          logger.warn(
-              "Path {} is choice but {} is missing OptionFor",
-              child.getAqlPath(),
-              value.getClass().getSimpleName());
+
+          //If choice for EVENT and not OptionFor use
           if (child.getRmType().equals("INTERVAL_EVENT")) {
             value = null;
+
+          }else if(child.getRmType().equals("POINT_EVENT")){
+            //NOP
+          }
+          else{
+            logger.warn(
+                    "Path {} is choice but {} is missing OptionFor",
+                    child.getAqlPath(),
+                    value.getClass().getSimpleName());
           }
         } else if (optionFor.filter(s -> s.equals(child.getRmType())).isEmpty()) {
           value = null;

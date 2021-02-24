@@ -53,9 +53,20 @@ public abstract class FromCompositionWalker<T> extends Walker<T> {
         child = null;
       }
     }
-    if (child != null && String.class.isAssignableFrom(child.getClass())) {
-      child = new RmString((String) child);
-    }
+    child = wrap(child);
+    return child;
+  }
+
+  private Object wrap(Object child) {
+    if (child != null) {
+      if (String.class.isAssignableFrom(child.getClass())) {
+        child = new RmString((String) child);
+      }else if(Long.class.isAssignableFrom(child.getClass())){
+        child = new RmLong((Long) child);
+      }if(Boolean.class.isAssignableFrom(child.getClass())){
+        child = new RmBoolean((Boolean) child);
+      }
+      }
     return child;
   }
 
