@@ -543,6 +543,26 @@ public class ClassGeneratorTest {
   }
 
   @Test
+  public void testGenerateSingleEvent() throws IOException, XmlException {
+    OPERATIONALTEMPLATE template =
+            TemplateDocument.Factory.parse(OperationalTemplateTestData.SINGLE_EVENT.getStream())
+                    .getTemplate();
+    ClassGenerator cut = new ClassGenerator(new ClassGeneratorConfig());
+    ClassGeneratorResult generate = cut.generate(PACKAGE_NAME, new OPTParser(template).parse());
+
+    List<FieldSpec> fieldSpecs =
+            generate.getClasses().values().stream()
+                    .flatMap(Collection::stream)
+                    .filter(t -> !t.kind.equals(TypeSpec.Kind.ENUM))
+                    .map(t -> t.fieldSpecs)
+                    .flatMap(List::stream)
+                    .collect(Collectors.toList());
+
+    assertThat(fieldSpecs).size().isEqualTo(26);
+    writeFiles(generate);
+  }
+
+  @Test
   public void testGeneratePatientenaufenthalt() throws IOException, XmlException {
     OPERATIONALTEMPLATE template =
         TemplateDocument.Factory.parse(OperationalTemplateTestData.PATIENTEN_AUFENTHALT.getStream())
