@@ -19,12 +19,18 @@
 
 package org.ehrbase.aql.binder;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.ehrbase.aql.dto.condition.ConditionComparisonOperatorDto;
 import org.ehrbase.aql.dto.condition.ConditionDto;
 import org.ehrbase.aql.dto.condition.ConditionLogicalOperatorDto;
 import org.ehrbase.aql.dto.condition.ConditionLogicalOperatorSymbol;
+import org.ehrbase.aql.dto.condition.MatchesOperatorDto;
 import org.ehrbase.aql.dto.condition.ParameterValue;
 import org.ehrbase.aql.dto.condition.SimpleValue;
 import org.ehrbase.client.aql.condition.Condition;
@@ -32,12 +38,6 @@ import org.ehrbase.client.aql.containment.Containment;
 import org.ehrbase.client.aql.field.SelectAqlField;
 import org.ehrbase.client.aql.parameter.Parameter;
 import org.ehrbase.util.exception.SdkException;
-
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 public class WhereBinder {
   private final SelectBinder selectBinder = new SelectBinder();
@@ -58,6 +58,21 @@ public class WhereBinder {
           handleConditionLogicalOperator((ConditionLogicalOperatorDto) dto, containmentMap);
       condition = pair.getLeft();
       parameterList.addAll(pair.getRight());
+    } else if (dto instanceof MatchesOperatorDto) {
+      Object[] value =
+          ((MatchesOperatorDto) dto)
+              .getValues().stream()
+                  .filter(f -> f.getClass().equals(SimpleValue.class))
+                  .map(v -> (SimpleValue) v)
+                  .map(SimpleValue::getValue)
+                  .toArray();
+      if (value.length != ((MatchesOperatorDto) dto).getValues().size()) {
+        throw new SdkException("Only simple values are supported Matches");
+      }
+      condition =
+          Condition.matches(
+              selectBinder.bind(((MatchesOperatorDto) dto).getStatement(), containmentMap), value);
+
     } else {
       throw new SdkException(String.format("Unexpected class: %s", dto.getClass().getSimpleName()));
     }

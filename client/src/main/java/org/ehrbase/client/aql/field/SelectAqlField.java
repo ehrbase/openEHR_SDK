@@ -30,5 +30,5 @@ public interface SelectAqlField<T> extends AqlField<T> {
 
   Class<?> getEntityClass();
 
-  String buildAQL();
+  String buildAQL(Containment ehrContainment);
 }

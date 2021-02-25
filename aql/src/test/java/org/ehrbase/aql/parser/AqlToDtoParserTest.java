@@ -22,13 +22,21 @@ package org.ehrbase.aql.parser;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import org.ehrbase.aql.binder.AqlBinder;
 import org.ehrbase.aql.dto.AqlDto;
+import org.ehrbase.aql.dto.condition.ConditionDto;
+import org.ehrbase.aql.dto.condition.ConditionLogicalOperatorDto;
+import org.ehrbase.aql.dto.condition.ConditionLogicalOperatorSymbol;
+import org.ehrbase.aql.dto.condition.MatchesOperatorDto;
+import org.ehrbase.aql.dto.condition.SimpleValue;
 import org.ehrbase.aql.dto.containment.ContainmentDto;
 import org.ehrbase.aql.dto.containment.ContainmentExpresionDto;
 import org.ehrbase.aql.dto.containment.ContainmentLogicalOperator;
+import org.ehrbase.aql.dto.select.SelectFieldDto;
 import org.junit.Test;
 
 public class AqlToDtoParserTest {
@@ -39,6 +47,57 @@ public class AqlToDtoParserTest {
         "Select c/context/other_context[at0001]/items[at0002]/value/value as Bericht_ID__value, d/ehr_id/value as ehr_id from EHR d contains COMPOSITION c[openEHR-EHR-COMPOSITION.report.v1]";
 
     testAql(aql, aql);
+  }
+
+  @Test
+  public void parseMatches() {
+    String aql =
+        "Select c/context/other_context[at0001]/items[at0002]/value/value as Bericht_ID__value, d/ehr_id/value as ehr_id from EHR d contains COMPOSITION c[openEHR-EHR-COMPOSITION.report.v1] where d/ehr_id/value matches {'f4da8646-8e36-4d9d-869c-af9dce5935c7','61861e76-1606-48c9-adcf-49ebbb2c6bbd'}";
+
+    testAql(aql, aql);
+  }
+
+  @Test
+  public void addMatches() {
+    String aql =
+        "Select o0/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/magnitude as Systolic__magnitude, e/ehr_id/value as ehr_id from EHR e contains OBSERVATION o0[openEHR-EHR-OBSERVATION.sample_blood_pressure.v1] where (o0/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/magnitude >= $magnitude and o0/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/magnitude < 1.1)";
+
+    AqlToDtoParser cut = new AqlToDtoParser();
+    AqlDto actual = cut.parse(aql);
+
+    ConditionDto contains = actual.getWhere();
+
+    MatchesOperatorDto matchesOperatorDto = new MatchesOperatorDto();
+
+    SelectFieldDto selectFieldDto = new SelectFieldDto();
+    selectFieldDto.setAqlPath("/ehr_id/value");
+    selectFieldDto.setContainmentId(actual.getEhr().getContainmentId());
+    matchesOperatorDto.setStatement(selectFieldDto);
+    matchesOperatorDto.setValues(
+        List.of("f4da8646-8e36-4d9d-869c-af9dce5935c7", "61861e76-1606-48c9-adcf-49ebbb2c6bbd")
+            .stream()
+            .map(
+                s -> {
+                  SimpleValue simpleValue = new SimpleValue();
+                  simpleValue.setValue(s);
+                  return simpleValue;
+                })
+            .collect(Collectors.toList()));
+
+    ConditionLogicalOperatorDto and = new ConditionLogicalOperatorDto();
+
+    and.setSymbol(ConditionLogicalOperatorSymbol.AND);
+    and.setValues(new ArrayList<>());
+    and.getValues().add(contains);
+    and.getValues().add(matchesOperatorDto);
+
+    actual.setWhere(and);
+
+    String actualAql = new AqlBinder().bind(actual).getLeft().buildAql();
+
+    assertThat(actualAql)
+        .isEqualTo(
+            "Select o0/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/magnitude as Systolic__magnitude, e/ehr_id/value as ehr_id from EHR e contains OBSERVATION o0[openEHR-EHR-OBSERVATION.sample_blood_pressure.v1] where (o0/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/magnitude >= $magnitude and o0/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/magnitude < 1.1 and e/ehr_id/value matches {'f4da8646-8e36-4d9d-869c-af9dce5935c7','61861e76-1606-48c9-adcf-49ebbb2c6bbd'})");
   }
 
   @Test

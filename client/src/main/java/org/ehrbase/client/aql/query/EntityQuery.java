@@ -68,6 +68,7 @@ public class EntityQuery<T extends Record> implements Query<T> {
     variablesMap.put(ehrContainment, ehrVariableName);
     ehrContainment.bindQuery(this);
     this.fields = Arrays.stream(fields).map(this::replace).toArray(SelectAqlField[]::new);
+
     this.containmentExpression = containmentExpression;
 
     if (containmentExpression != null) {
@@ -103,10 +104,10 @@ public class EntityQuery<T extends Record> implements Query<T> {
       sb.append(" contains ").append(containmentExpression.buildAQL());
     }
     if (where != null) {
-      sb.append(" where ").append(where.buildAql());
+      sb.append(" where ").append(where.buildAql(ehrContainment));
     }
     if (orderByExpression != null) {
-      sb.append(" order by ").append(orderByExpression.buildAql());
+      sb.append(" order by ").append(orderByExpression.buildAql(ehrContainment));
     }
 
     if (limit != null) {
@@ -122,7 +123,7 @@ public class EntityQuery<T extends Record> implements Query<T> {
   private String buildFieldAql(SelectAqlField<?> field) {
     selectCount++;
 
-    return field.buildAQL()
+    return field.buildAQL(ehrContainment)
         + " as "
         + (StringUtils.isNotBlank(field.getName())
             ? field.getName().replaceAll("[^A-Za-z0-9]", "_")

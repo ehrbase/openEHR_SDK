@@ -37,6 +37,7 @@ import org.ehrbase.aql.dto.condition.ConditionComparisonOperatorSymbol;
 import org.ehrbase.aql.dto.condition.ConditionDto;
 import org.ehrbase.aql.dto.condition.ConditionLogicalOperatorDto;
 import org.ehrbase.aql.dto.condition.ConditionLogicalOperatorSymbol;
+import org.ehrbase.aql.dto.condition.MatchesOperatorDto;
 import org.ehrbase.aql.dto.condition.ParameterValue;
 import org.ehrbase.aql.dto.condition.SimpleValue;
 import org.ehrbase.aql.dto.condition.Value;
@@ -331,6 +332,18 @@ public class AqlToDtoVisitor extends AqlBaseVisitor<Object> {
       operatorDto.setValue(visitOperand(ctx.identifiedOperand(1).operand()));
 
       conditionDto = operatorDto;
+    } else if (ctx.MATCHES() != null) {
+      MatchesOperatorDto matchesOperatorDto = new MatchesOperatorDto();
+      matchesOperatorDto.setStatement(
+          visitIdentifiedPath(ctx.identifiedOperand(0).identifiedPath()));
+      matchesOperatorDto.setValues(new ArrayList<>());
+      AqlParser.ValueListItemsContext valueListItemsContext = ctx.matchesOperand().valueListItems();
+      while (valueListItemsContext != null) {
+        matchesOperatorDto.getValues().add(visitOperand(valueListItemsContext.operand()));
+        valueListItemsContext = valueListItemsContext.valueListItems();
+      }
+
+      conditionDto = matchesOperatorDto;
     }
     return conditionDto;
   }
