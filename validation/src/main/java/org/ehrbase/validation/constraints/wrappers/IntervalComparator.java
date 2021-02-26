@@ -23,6 +23,7 @@ package org.ehrbase.validation.constraints.wrappers;
 
 import com.nedap.archie.rm.datavalues.quantity.datetime.DvDate;
 import com.nedap.archie.rm.datavalues.quantity.datetime.DvDateTime;
+import com.nedap.archie.rm.datavalues.quantity.datetime.DvDuration;
 import com.nedap.archie.rm.datavalues.quantity.datetime.DvTime;
 import org.ehrbase.validation.constraints.ConstraintOccurrences;
 import org.ehrbase.validation.constraints.util.ZonedDateTimeUtil;
@@ -232,31 +233,36 @@ public class IntervalComparator {
 
     public static void isWithinBoundaries(String rawDuration, IntervalOfDuration intervalOfDuration) throws IllegalArgumentException {
 
-        Duration valueDuration = Duration.parse(rawDuration);
+        DvDuration valueDuration = new DvDuration(rawDuration);
         isWithinBoundaries(valueDuration, intervalOfDuration);
 
     }
 
-    public static void isWithinBoundaries(Duration valueDuration, IntervalOfDuration intervalOfDuration) throws IllegalArgumentException {
+    public static void isWithinBoundaries(DvDuration valueDuration, IntervalOfDuration intervalOfDuration) throws IllegalArgumentException {
 
         String lower = (intervalOfDuration.isSetLower() ? intervalOfDuration.getLower() : null);
         String upper = (intervalOfDuration.isSetUpper() ? intervalOfDuration.getUpper() : null);
 
-        Duration lowerDuration, upperDuration;
+        DvDuration lowerDuration, upperDuration;
         //Date massage...
         //A period is not comparable (cannot compare days and months as depending on actual month...)
         try {
             if (lower != null)
-                lowerDuration = Duration.parse(lower);
+                lowerDuration = new DvDuration(lower);
             else
-                lowerDuration = Duration.ZERO;
+                lowerDuration = new DvDuration(Duration.ZERO);
 
             if (upper != null)
-                upperDuration = Duration.parse(upper);
+                upperDuration = new DvDuration(upper);
             else
-                upperDuration = Duration.of(Long.MAX_VALUE, ChronoUnit.FOREVER);
+                upperDuration = new DvDuration(Duration.of(Long.MAX_VALUE, ChronoUnit.FOREVER));
 
-            compareWithinInterval(valueDuration, intervalOfDuration, lowerDuration, upperDuration);
+            //TODO: currently not supported: Periods cannot be converted to a duration (ex. P64Y)
+            //it fails with an exception: "Unit must not have an estimated duration" (TemporalTypeException)
+//            compareWithinInterval(Duration.from(valueDuration.getValue()),
+//                                    intervalOfDuration,
+//                                    Duration.from(lowerDuration.getValue()),
+//                                    Duration.from(upperDuration.getValue()));
         }
         catch (Exception e){
             throw new IllegalArgumentException("Boundaries are invalid, please make sure that only durations are specified. Found: lower:"+lower+", upper:"+upper);
