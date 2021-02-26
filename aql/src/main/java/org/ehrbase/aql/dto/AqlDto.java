@@ -19,13 +19,12 @@
 
 package org.ehrbase.aql.dto;
 
-
+import java.util.List;
+import java.util.Objects;
 import org.ehrbase.aql.dto.condition.ConditionDto;
 import org.ehrbase.aql.dto.containment.ContainmentExpresionDto;
 import org.ehrbase.aql.dto.orderby.OrderByExpressionDto;
 import org.ehrbase.aql.dto.select.SelectDto;
-
-import java.util.List;
 
 public class AqlDto {
 
@@ -34,9 +33,8 @@ public class AqlDto {
   private ContainmentExpresionDto contains;
   private ConditionDto where;
   private List<OrderByExpressionDto> orderBy;
-
-  public AqlDto() {
-  }
+  private Integer limit;
+  private Integer offset;
 
   public SelectDto getSelect() {
     return this.select;
@@ -78,50 +76,58 @@ public class AqlDto {
     this.orderBy = orderBy;
   }
 
-  public boolean equals(final Object o) {
-    if (o == this) return true;
-    if (!(o instanceof AqlDto)) return false;
-    final AqlDto other = (AqlDto) o;
-    if (!other.canEqual((Object) this)) return false;
-    final Object this$select = this.getSelect();
-    final Object other$select = other.getSelect();
-    if (this$select == null ? other$select != null : !this$select.equals(other$select)) return false;
-    final Object this$ehr = this.getEhr();
-    final Object other$ehr = other.getEhr();
-    if (this$ehr == null ? other$ehr != null : !this$ehr.equals(other$ehr)) return false;
-    final Object this$contains = this.getContains();
-    final Object other$contains = other.getContains();
-    if (this$contains == null ? other$contains != null : !this$contains.equals(other$contains)) return false;
-    final Object this$where = this.getWhere();
-    final Object other$where = other.getWhere();
-    if (this$where == null ? other$where != null : !this$where.equals(other$where)) return false;
-    final Object this$orderBy = this.getOrderBy();
-    final Object other$orderBy = other.getOrderBy();
-    if (this$orderBy == null ? other$orderBy != null : !this$orderBy.equals(other$orderBy)) return false;
-    return true;
+  public Integer getLimit() {
+    return limit;
   }
 
-  protected boolean canEqual(final Object other) {
-    return other instanceof AqlDto;
+  public void setLimit(Integer limit) {
+    this.limit = limit;
   }
 
+  public Integer getOffset() {
+    return offset;
+  }
+
+  public void setOffset(Integer offset) {
+    this.offset = offset;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    AqlDto aqlDto = (AqlDto) o;
+    return Objects.equals(select, aqlDto.select)
+        && Objects.equals(ehr, aqlDto.ehr)
+        && Objects.equals(contains, aqlDto.contains)
+        && Objects.equals(where, aqlDto.where)
+        && Objects.equals(orderBy, aqlDto.orderBy)
+        && Objects.equals(limit, aqlDto.limit)
+        && Objects.equals(offset, aqlDto.offset);
+  }
+
+  @Override
   public int hashCode() {
-    final int PRIME = 59;
-    int result = 1;
-    final Object $select = this.getSelect();
-    result = result * PRIME + ($select == null ? 43 : $select.hashCode());
-    final Object $ehr = this.getEhr();
-    result = result * PRIME + ($ehr == null ? 43 : $ehr.hashCode());
-    final Object $contains = this.getContains();
-    result = result * PRIME + ($contains == null ? 43 : $contains.hashCode());
-    final Object $where = this.getWhere();
-    result = result * PRIME + ($where == null ? 43 : $where.hashCode());
-    final Object $orderBy = this.getOrderBy();
-    result = result * PRIME + ($orderBy == null ? 43 : $orderBy.hashCode());
-    return result;
+    return Objects.hash(select, ehr, contains, where, orderBy, limit, offset);
   }
 
+  @Override
   public String toString() {
-    return "AqlDto(select=" + this.getSelect() + ", ehr=" + this.getEhr() + ", contains=" + this.getContains() + ", where=" + this.getWhere() + ", orderBy=" + this.getOrderBy() + ")";
+    return "AqlDto{"
+        + "select="
+        + select
+        + ", ehr="
+        + ehr
+        + ", contains="
+        + contains
+        + ", where="
+        + where
+        + ", orderBy="
+        + orderBy
+        + ", limit="
+        + limit
+        + ", offset="
+        + offset
+        + '}';
   }
 }

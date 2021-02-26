@@ -24,6 +24,8 @@ import org.ehrbase.client.classgenerator.shareddefinition.Territory;
 public class OpenEREACTCareCompositionContainment extends Containment {
   public SelectAqlField<OpenEREACTCareComposition> OPEN_E_R_E_A_C_T_CARE_COMPOSITION = new AqlFieldImp<OpenEREACTCareComposition>(OpenEREACTCareComposition.class, "", "OpenEREACTCareComposition", OpenEREACTCareComposition.class, this);
 
+  public SelectAqlField<Category> CATEGORY_DEFINING_CODE = new AqlFieldImp<Category>(OpenEREACTCareComposition.class, "/category|defining_code", "categoryDefiningCode", Category.class, this);
+
   public ListSelectAqlField<Cluster> EXTENSION = new ListAqlFieldImp<Cluster>(OpenEREACTCareComposition.class, "/context/other_context[at0001]/items[at0002]", "extension", Cluster.class, this);
 
   public SelectAqlField<TemporalAccessor> START_TIME_VALUE = new AqlFieldImp<TemporalAccessor>(OpenEREACTCareComposition.class, "/context/start_time|value", "startTimeValue", TemporalAccessor.class, this);
@@ -51,8 +53,6 @@ public class OpenEREACTCareCompositionContainment extends Containment {
   public SelectAqlField<Language> LANGUAGE = new AqlFieldImp<Language>(OpenEREACTCareComposition.class, "/language", "language", Language.class, this);
 
   public SelectAqlField<FeederAudit> FEEDER_AUDIT = new AqlFieldImp<FeederAudit>(OpenEREACTCareComposition.class, "/feeder_audit", "feederAudit", FeederAudit.class, this);
-
-  public SelectAqlField<Category> CATEGORY_DEFINING_CODE = new AqlFieldImp<Category>(OpenEREACTCareComposition.class, "/category|defining_code", "categoryDefiningCode", Category.class, this);
 
   public SelectAqlField<Territory> TERRITORY = new AqlFieldImp<Territory>(OpenEREACTCareComposition.class, "/territory", "territory", Territory.class, this);
 

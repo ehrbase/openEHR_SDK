@@ -19,7 +19,20 @@
 
 package org.ehrbase.aql.dto.containment;
 
-public enum ContainmentLogicalOperatorSymbol {
-  OR,
-  AND;
+import org.ehrbase.aql.dto.LogicalOperatorSymbol;
+
+public enum ContainmentLogicalOperatorSymbol implements LogicalOperatorSymbol {
+  OR(4),
+  AND(2);
+
+  private final int precedence;
+
+  ContainmentLogicalOperatorSymbol(int precedence) {
+    this.precedence = precedence;
+  }
+
+  @Override
+  public int getPrecedence() {
+    return precedence;
+  }
 }

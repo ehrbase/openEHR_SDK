@@ -244,17 +244,23 @@ public class IntervalComparator {
 
         Duration lowerDuration, upperDuration;
         //Date massage...
-        if (lower != null)
-            lowerDuration = Duration.parse(lower);
-        else
-            lowerDuration = Duration.ZERO;
+        //A period is not comparable (cannot compare days and months as depending on actual month...)
+        try {
+            if (lower != null)
+                lowerDuration = Duration.parse(lower);
+            else
+                lowerDuration = Duration.ZERO;
 
-        if (upper != null)
-            upperDuration = Duration.parse(upper);
-        else
-            upperDuration = Duration.of(Long.MAX_VALUE, ChronoUnit.FOREVER);
+            if (upper != null)
+                upperDuration = Duration.parse(upper);
+            else
+                upperDuration = Duration.of(Long.MAX_VALUE, ChronoUnit.FOREVER);
 
-        compareWithinInterval(valueDuration, intervalOfDuration, lowerDuration, upperDuration);
+            compareWithinInterval(valueDuration, intervalOfDuration, lowerDuration, upperDuration);
+        }
+        catch (Exception e){
+            throw new IllegalArgumentException("Boundaries are invalid, please make sure that only durations are specified. Found: lower:"+lower+", upper:"+upper);
+        }
     }
 
     public static boolean isOptional(IntervalOfInteger intervalOfInteger) {

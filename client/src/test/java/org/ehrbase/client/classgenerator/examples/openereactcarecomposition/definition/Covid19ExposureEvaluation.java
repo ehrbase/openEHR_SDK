@@ -15,13 +15,14 @@ import org.ehrbase.client.classgenerator.shareddefinition.Language;
 @Archetype("openEHR-EHR-EVALUATION.health_risk-covid.v0")
 @Generated(
     value = "org.ehrbase.client.classgenerator.ClassGenerator",
-    date = "2020-12-10T13:06:11.499501400+01:00",
+    date = "2021-02-16T12:59:53.700777100+01:00",
     comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
 )
 public class Covid19ExposureEvaluation implements EntryEntity {
   /**
    * Path: open_eREACT-Care/Assessment/Covid/Covid-19 exposure/Health risk
    * Description: Identification of the potential future disease, condition or health issue for which the risk is being assessed, by name.
+   * Comment: Coding of 'Health risk' with a terminology is preferred, where possible. Free text should be used only if there is no appropriate terminology available. For example: risk of cardiovascular disease, with risk factors of hypertension and hypercholesterolaemia.
    */
   @Path("/data[at0001]/items[at0002.1]/value|defining_code")
   private HealthRiskDefiningCode healthRiskDefiningCode;
@@ -29,6 +30,8 @@ public class Covid19ExposureEvaluation implements EntryEntity {
   /**
    * Path: open_eREACT-Care/Assessment/Covid/Covid-19 exposure/Care home has suspected/confirmed Covid-19/Risk factor
    * Description: Identification of the risk factor, by name.
+   * Comment: For example: hypertension and hypercholesterolaemia, which may be used as part of the overall assessment for cardiovascular disease; or a genetic marker. Coding of 
+   *  'Risk factor' with a terminology, where possible.
    */
   @Path("/data[at0001]/items[at0016 and name/value='Care home has suspected/confirmed Covid-19']/items[at0013.1]/value|defining_code")
   private RiskFactorDefiningCode careHomeHasSuspectedConfirmedCovid19RiskFactorDefiningCode;
@@ -51,6 +54,8 @@ public class Covid19ExposureEvaluation implements EntryEntity {
   /**
    * Path: open_eREACT-Care/Assessment/Covid/Covid-19 exposure/Contact with confirmed case/Risk factor
    * Description: Identification of the risk factor, by name.
+   * Comment: For example: hypertension and hypercholesterolaemia, which may be used as part of the overall assessment for cardiovascular disease; or a genetic marker. Coding of 
+   *  'Risk factor' with a terminology, where possible.
    */
   @Path("/data[at0001]/items[at0016 and name/value='Contact with confirmed case']/items[at0013.1]/value|defining_code")
   private RiskFactorDefiningCode2 contactWithConfirmedCaseRiskFactorDefiningCode;
@@ -73,6 +78,8 @@ public class Covid19ExposureEvaluation implements EntryEntity {
   /**
    * Path: open_eREACT-Care/Assessment/Covid/Covid-19 exposure/Other residents/household members unwell/Risk factor
    * Description: Identification of the risk factor, by name.
+   * Comment: For example: hypertension and hypercholesterolaemia, which may be used as part of the overall assessment for cardiovascular disease; or a genetic marker. Coding of 
+   *  'Risk factor' with a terminology, where possible.
    */
   @Path("/data[at0001]/items[at0016 and name/value='Other residents/household members unwell']/items[at0013.1]/value|defining_code")
   private RiskFactorDefiningCode3 otherResidentsHouseholdMembersUnwellRiskFactorDefiningCode;
@@ -95,6 +102,7 @@ public class Covid19ExposureEvaluation implements EntryEntity {
   /**
    * Path: open_eREACT-Care/Assessment/Covid/Covid-19 exposure/Risk assessment
    * Description: Evaluation of the health risk.
+   * Comment: There may be multiple variations on the assessment of risk. The Choice data type allows for recording of the assessment as either free text or value sets (such as low, medium or hig). The proportion data type allows recording of a percentage, a ratio or a fraction. The quantity data type allows recording of a decimal number.
    */
   @Path("/data[at0001]/items[at0003.1]/value|defining_code")
   private RiskAssessmentDefiningCode riskAssessmentDefiningCode;

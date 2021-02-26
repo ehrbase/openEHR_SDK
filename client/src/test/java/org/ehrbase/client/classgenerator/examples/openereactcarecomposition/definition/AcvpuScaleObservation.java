@@ -17,7 +17,7 @@ import org.ehrbase.client.classgenerator.shareddefinition.Language;
 @Archetype("openEHR-EHR-OBSERVATION.acvpu.v0")
 @Generated(
     value = "org.ehrbase.client.classgenerator.ClassGenerator",
-    date = "2020-12-10T13:06:11.561503400+01:00",
+    date = "2021-02-16T12:59:53.757780+01:00",
     comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
 )
 public class AcvpuScaleObservation implements EntryEntity {

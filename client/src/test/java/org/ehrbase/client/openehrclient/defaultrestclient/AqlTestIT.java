@@ -19,6 +19,12 @@
 
 package org.ehrbase.client.openehrclient.defaultrestclient;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThrows;
+import static org.junit.Assert.assertTrue;
+
 import com.nedap.archie.rm.composition.Composition;
 import com.nedap.archie.rm.composition.Observation;
 import com.nedap.archie.rm.datastructures.Element;
@@ -26,6 +32,13 @@ import com.nedap.archie.rm.datastructures.Event;
 import com.nedap.archie.rm.datastructures.History;
 import com.nedap.archie.rm.datastructures.ItemList;
 import com.nedap.archie.rm.datavalues.quantity.DvQuantity;
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
+import java.util.List;
+import java.util.UUID;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.io.IOUtils;
 import org.assertj.core.groups.Tuple;
 import org.ehrbase.client.Integration;
@@ -41,22 +54,17 @@ import org.ehrbase.client.aql.query.Query;
 import org.ehrbase.client.aql.record.Record2;
 import org.ehrbase.client.classgenerator.examples.coronaanamnesecomposition.CoronaAnamneseComposition;
 import org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev0composition.EhrbaseBloodPressureSimpleDeV0Composition;
+import org.ehrbase.client.exception.ClientException;
+import org.ehrbase.client.exception.WrongStatusCodeException;
 import org.ehrbase.client.flattener.Flattener;
 import org.ehrbase.client.openehrclient.OpenEhrClient;
 import org.ehrbase.client.templateprovider.TestDataTemplateProvider;
+import org.ehrbase.response.openehr.QueryResponseData;
 import org.ehrbase.serialisation.jsonencoding.CanonicalJson;
 import org.ehrbase.test_data.composition.CompositionTestDataCanonicalJson;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.nio.charset.StandardCharsets;
-import java.util.List;
-import java.util.UUID;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 @Category(Integration.class)
 public class AqlTestIT {
@@ -439,4 +447,93 @@ public class AqlTestIT {
                 .size().isEqualTo(2);
 
     }
+
+  @Test
+  public void testExecute13() throws IOException {
+
+    UUID ehr = openEhrClient.ehrEndpoint().createEhr();
+
+    Composition composition = new CanonicalJson().unmarshal(IOUtils
+            .toString(CompositionTestDataCanonicalJson.CORONA.getStream(), StandardCharsets.UTF_8),
+        Composition.class);
+    Flattener flattener = new Flattener(new TestDataTemplateProvider());
+    CoronaAnamneseComposition coronaAnamneseComposition = flattener
+        .flatten(composition, CoronaAnamneseComposition.class);
+    coronaAnamneseComposition.setVersionUid(null);
+    openEhrClient.compositionEndpoint(ehr).mergeCompositionEntity(coronaAnamneseComposition);
+
+    Query query = Query.buildNativeQuery(
+        "Select o/data[at0001]/events[at0002]/data[at0003]/items[at0022]/items[at0005]/value/value, o/data[at0001]/events[at0002]/data[at0003]/items[at0022]/items[at0004]/value/value "
+            + "from EHR e[ehr_id/value = $ehr_id] "
+            + "contains COMPOSITION c3[openEHR-EHR-COMPOSITION.report.v1] contains SECTION s4[openEHR-EHR-SECTION.adhoc.v1] contains OBSERVATION o[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0]");
+
+    QueryResponseData result = openEhrClient.aqlEndpoint()
+        .executeRaw(query, new ParameterValue("ehr_id", ehr));
+
+    assertNotNull(result);
+    assertNotNull(result.getQuery());
+    assertNotNull(result.getRows());
+    assertNotNull(result.getColumns());
+    assertEquals(result.getRows().size(), 7);
+    assertEquals(result.getColumns().size(), 2);
+
+    List expectedResults = Arrays.asList(
+        List.of("Vorhanden", "Husten"),
+        List.of("Vorhanden", "Schnupfen"),
+        List.of("Nicht vorhanden", "Heiserkeit"),
+        List.of("Vorhanden", "Fieber oder erhöhte Körpertemperatur"),
+        List.of("Nicht vorhanden", "gestörter Geruchssinn"),
+        List.of("Nicht vorhanden", "gestörter Geschmackssinn"),
+        List.of("Nicht vorhanden", "Durchfall"));
+
+    assertTrue(CollectionUtils.isEqualCollection(result.getRows(), expectedResults));
+  }
+
+  @Test
+  public void testExecute14() {
+
+    UUID ehr = openEhrClient.ehrEndpoint().createEhr();
+
+    Query query = Query.buildNativeQuery("Invalid aql query");
+
+    Exception exception = assertThrows(WrongStatusCodeException.class,
+        () -> openEhrClient.aqlEndpoint()
+            .executeRaw(query, new ParameterValue("ehr_id", ehr)));
+
+    String expectedMessage = "AQL Parse exception: line 1: char 0 mismatched input 'Invalid'";
+    String actualMessage = exception.getMessage();
+
+    assertTrue(actualMessage.contains(expectedMessage));
+  }
+
+  @Test
+  public void testExecute15() {
+
+    Query query = Query.buildNativeQuery(
+        "Select o/data[at0001]/events[at0002]/data[at0003]/items[at0022]/items[at0005]/value/value, o/data[at0001]/events[at0002]/data[at0003]/items[at0022]/items[at0004]/value/value "
+            + "from EHR e[ehr_id/value = $ehr_id] "
+            + "contains COMPOSITION c3[openEHR-EHR-COMPOSITION.report.v1] contains SECTION s4[openEHR-EHR-SECTION.adhoc.v1] contains OBSERVATION o[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0]");
+
+    Exception exception = assertThrows(ClientException.class, () -> openEhrClient.aqlEndpoint()
+        .executeRaw(query, null));
+
+    String expectedMessage = "Invalid parameters";
+    String actualMessage = exception.getMessage();
+
+    assertTrue(actualMessage.contains(expectedMessage));
+  }
+
+  @Test
+  public void testExecute16() {
+
+    UUID ehr = openEhrClient.ehrEndpoint().createEhr();
+
+    Exception exception = assertThrows(ClientException.class, () -> openEhrClient.aqlEndpoint()
+        .executeRaw(null, new ParameterValue("ehr_id", ehr)));
+
+    String expectedMessage = "Invalid query";
+    String actualMessage = exception.getMessage();
+
+    assertTrue(actualMessage.contains(expectedMessage));
+  }
 }

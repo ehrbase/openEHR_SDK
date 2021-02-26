@@ -35,6 +35,7 @@ import org.ehrbase.util.reflection.ReflectionHelper;
 import org.ehrbase.webtemplate.filter.Filter;
 import org.ehrbase.webtemplate.model.WebTemplate;
 import org.ehrbase.webtemplate.model.WebTemplateNode;
+import org.ehrbase.webtemplate.parser.FlatPath;
 import org.ehrbase.webtemplate.parser.config.RmIntrospectConfig;
 
 public class FlattFilter extends Filter {
@@ -101,18 +102,26 @@ public class FlattFilter extends Filter {
         return !node.getChildren().isEmpty()
             && node.getMax() == 1
             && !node.getRmType().equals("COMPOSITION")
-            && (!isEvent(node) || parent.getChildren().stream().filter(this::isEvent).count() == 1);
+            && (!isEvent(node) || isSkippableEvent(parent, node));
       case SECTION:
         return !node.getChildren().isEmpty()
             && node.getMax() == 1
             && (!node.isArchetype() || node.getRmType().equals("SECTION"))
-            && (!isEvent(node) || parent.getChildren().stream().filter(this::isEvent).count() == 1);
+            && (!isEvent(node) || isSkippableEvent(parent, node));
       default:
         return !node.getChildren().isEmpty()
             && node.getMax() == 1
             && !node.isArchetype()
-            && (!isEvent(node) || parent.getChildren().stream().filter(this::isEvent).count() == 1);
+            && (!isEvent(node) || isSkippableEvent(parent, node));
     }
+  }
+
+  private boolean isSkippableEvent(WebTemplateNode parent, WebTemplateNode node) {
+    if (node.getRmType().equals("EVENT")
+        && (config.isGenerateChoicesForSingleEvent() || node.isMulti())) {
+      return false;
+    }
+    return parent.getChildren().stream().filter(this::isEvent).count() == 1;
   }
 
   private boolean isEvent(WebTemplateNode node) {
@@ -121,6 +130,10 @@ public class FlattFilter extends Filter {
   }
 
   protected void preHandle(WebTemplateNode node) {
+
+    if (new FlatPath(node.getAqlPath()).getLast().getName().equals("null_flavour")) {
+      node.setName("null_flavour");
+    }
 
     List<WebTemplateNode> ismTransitionList =
         node.getChildren().stream()

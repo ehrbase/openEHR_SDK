@@ -19,13 +19,13 @@
 
 package org.ehrbase.webtemplate.parser;
 
-import org.apache.commons.lang3.StringUtils;
-
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
+import org.apache.commons.lang3.StringUtils;
 
 public class FlatPath {
   private final String name;
@@ -34,6 +34,12 @@ public class FlatPath {
   private final Map<String, String> otherPredicates;
   private final String attributeName;
   private final boolean startWithSlash;
+
+  public enum OtherPredicatesFormate {
+    NONE,
+    SHORTED,
+    FULL;
+  }
 
   public FlatPath(String path) {
     if (StringUtils.isBlank(path)) {
@@ -48,6 +54,128 @@ public class FlatPath {
 
     final String[] strings;
     startWithSlash = StringUtils.startsWith(path, "/");
+    strings = split(StringUtils.stripStart(path, "/"), 2, "/");
+
+    String[] split;
+
+    if (strings.length == 2) {
+      if (StringUtils.endsWith(strings[0], "]")) {
+        int fist = strings[0].indexOf("[");
+        split = new String[2];
+        split[0] = strings[0].substring(0, fist);
+        split[1] = strings[0].substring(fist);
+      } else {
+        split = new String[1];
+        split[0] = strings[0];
+      }
+      name = StringUtils.stripStart(split[0], "/");
+      child = new FlatPath("/" + strings[1]);
+      attributeName = null;
+    } else {
+      child = null;
+      String[] attributeSplit = split(strings[0], null, "|");
+
+      if (attributeSplit.length == 2) {
+        attributeName = attributeSplit[1];
+      } else {
+        attributeName = null;
+      }
+
+      if (StringUtils.endsWith(attributeSplit[0], "]")) {
+        int fist = attributeSplit[0].indexOf("[");
+        split = new String[2];
+        split[0] = attributeSplit[0].substring(0, fist);
+        split[1] = attributeSplit[0].substring(fist);
+      } else {
+        split = new String[1];
+        split[0] = attributeSplit[0];
+      }
+      name = StringUtils.stripStart(split[0], "/");
+    }
+    if (split.length == 2) {
+      String node = StringUtils.removeEnd(StringUtils.removeStart(split[1], "["), "]");
+
+      String[] predicates = split(node, null, "and", ",");
+      atCode = predicates[0].trim();
+      otherPredicates = new HashMap<>();
+      for (int i = 1; i < predicates.length; i++) {
+        String[] pair = split(predicates[i], null, "=");
+        if (i == 1 && pair.length == 1) {
+          otherPredicates.put("name/value", StringUtils.unwrap(pair[0], "'"));
+        } else if (pair.length == 2) {
+          otherPredicates.put(pair[0].trim(), StringUtils.unwrap(pair[1], "'"));
+        }
+      }
+
+      /*
+            String regex;
+            if (node.matches(".*\\sand\\s.*")) {
+              regex = "\\sand\\s";
+              String[] ands = node.split(regex);
+              atCode = ands[0].trim();
+              otherPredicates =
+                  Arrays.stream(ands)
+                      .skip(1)
+                      .map(s -> s.split("="))
+                      .collect(Collectors.toMap(s -> s[0].trim(), s -> s[1].replace("'", "").trim()));
+            } else {
+              regex = ",";
+              String[] ands = node.split(regex);
+              atCode = ands[0].trim();
+              otherPredicates = new HashMap<>();
+              if (ands.length > 1) {
+                otherPredicates.put("name/value", ands[1].replace("'", "").trim());
+              }
+            }
+      */
+    } else {
+      atCode = null;
+      otherPredicates = Collections.emptyMap();
+    }
+  }
+
+  private String[] split(String path, Integer max, String... search) {
+    List<String> strings = new ArrayList<>();
+    List<String> searchList = Arrays.asList(search);
+
+    boolean inBrackets = false;
+    boolean inQuotes = false;
+    boolean escape = false;
+
+    int last = 0;
+    for (int i = 0; i < path.length(); i++) {
+      String pathAfter = path.substring(i);
+      if (pathAfter.startsWith("[") && !inQuotes) {
+        inBrackets = true;
+        escape = false;
+      } else if (pathAfter.startsWith("]") && !inQuotes) {
+        inBrackets = false;
+        escape = false;
+      } else if (pathAfter.startsWith("'") && !escape) {
+        inQuotes = !inQuotes;
+        escape = false;
+      } else if (pathAfter.startsWith("\\") && !escape) {
+        escape = true;
+      } else if (searchList.stream().anyMatch(pathAfter::startsWith) && !inBrackets && !inQuotes) {
+        strings.add(path.substring(last, i));
+        last =
+            searchList.stream().filter(pathAfter::startsWith).findAny().orElseThrow().length() + i;
+        if (max != null && strings.size() == max - 1) {
+          strings.add(path.substring(last));
+          break;
+        }
+      } else {
+        escape = false;
+      }
+    }
+
+    if (strings.isEmpty()) {
+      strings.add(path);
+    } else if (last < path.length() && max == null) {
+      strings.add(path.substring(last));
+    }
+    /*
+    final String[] strings;
     int splitPos = StringUtils.indexOf(StringUtils.stripStart(path, "/"), "/", path.indexOf(']'));
     if (splitPos > -1) {
       strings = new String[2];
@@ -57,51 +185,10 @@ public class FlatPath {
       strings = new String[1];
       strings[0] = path;
     }
+    return strings;
 
-    String[] split = StringUtils.split(strings[0], "[", 2);
-
-    if (split.length == 2) {
-      String node = StringUtils.substringBefore(split[1], "]");
-
-      String regex;
-      if (node.matches(".*\\sand\\s.*")) {
-        regex = "\\sand\\s";
-        String[] ands = node.split(regex);
-        atCode = ands[0].trim();
-        otherPredicates =
-            Arrays.stream(ands)
-                .skip(1)
-                .map(s -> s.split("="))
-                .collect(Collectors.toMap(s -> s[0].trim(), s -> s[1].replace("'", "").trim()));
-      } else {
-        regex = ",";
-        String[] ands = node.split(regex);
-        atCode = ands[0].trim();
-        otherPredicates = new HashMap<>();
-        if (ands.length > 1) {
-          otherPredicates.put("name/value", ands[1].replace("'", "").trim());
-        }
-      }
-
-    } else {
-      atCode = null;
-      otherPredicates = Collections.emptyMap();
-    }
-
-    if (strings.length == 2) {
-      name = StringUtils.stripStart(split[0], "/");
-      child = new FlatPath(strings[1]);
-      attributeName = null;
-    } else {
-      child = null;
-      String[] atributteSplit = StringUtils.stripStart(strings[0], "/").split("[|\\[]");
-      name = atributteSplit[0];
-      if (atributteSplit.length > 1 && !atributteSplit[atributteSplit.length - 1].contains("]")) {
-        attributeName = atributteSplit[atributteSplit.length - 1];
-      } else {
-        attributeName = null;
-      }
-    }
+     */
+    return strings.stream().toArray(String[]::new);
   }
 
   public String getName() {
@@ -116,8 +203,8 @@ public class FlatPath {
     return child;
   }
 
-  public String getPath(){
-    return StringUtils.removeEnd( toString(),"|"+getLast().getAttributeName());
+  public String getPath() {
+    return StringUtils.removeEnd(toString(), "|" + getLast().getAttributeName());
   }
 
   public String getAttributeName() {
@@ -138,6 +225,14 @@ public class FlatPath {
   }
 
   public String format(boolean withOtherPredicates) {
+    if (withOtherPredicates) {
+      return format(OtherPredicatesFormate.FULL);
+    } else {
+      return format(OtherPredicatesFormate.NONE);
+    }
+  }
+
+  public String format(OtherPredicatesFormate otherPredicatesFormate) {
     StringBuilder sb = new StringBuilder();
     if (startWithSlash) {
       sb.append("/");
@@ -145,15 +240,21 @@ public class FlatPath {
     sb.append(name);
     if (StringUtils.isNotBlank(atCode)) {
       sb.append("[").append(atCode);
-      if (withOtherPredicates) {
+      if (!otherPredicatesFormate.equals(OtherPredicatesFormate.NONE)) {
         otherPredicates.forEach(
-            (key, value) ->
-                sb.append(" and ").append(key).append("=").append("'").append(value).append("'"));
+            (key, value) -> {
+              if (otherPredicatesFormate.equals(OtherPredicatesFormate.SHORTED)
+                  && key.equals("name/value")) {
+                sb.append(",").append("'").append(value).append("'");
+              } else {
+                sb.append(" and ").append(key).append("=").append("'").append(value).append("'");
+              }
+            });
       }
       sb.append("]");
     }
     if (child != null) {
-      sb.append(child.format(withOtherPredicates));
+      sb.append(child.format(otherPredicatesFormate));
     }
     if (attributeName != null) {
       sb.append("|").append(attributeName);
@@ -177,8 +278,7 @@ public class FlatPath {
     return new FlatPath(StringUtils.removeStart(path.toString(), remove.toString()));
   }
 
-
   public static FlatPath addEnd(FlatPath path, FlatPath add) {
-    return new FlatPath(path.toString()+"/"+ StringUtils.removeStart( add.toString(),"/"));
+    return new FlatPath(path.toString() + "/" + StringUtils.removeStart(add.toString(), "/"));
   }
 }

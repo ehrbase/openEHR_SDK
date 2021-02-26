@@ -1,6 +1,7 @@
 package org.ehrbase.client.classgenerator.examples.openereactcarecomposition.definition;
 
 import com.nedap.archie.rm.archetyped.FeederAudit;
+import java.util.List;
 import javax.annotation.processing.Generated;
 import org.ehrbase.client.annotations.Choice;
 import org.ehrbase.client.annotations.Entity;
@@ -10,7 +11,7 @@ import org.ehrbase.client.classgenerator.interfaces.LocatableEntity;
 @Entity
 @Generated(
     value = "org.ehrbase.client.classgenerator.ClassGenerator",
-    date = "2020-12-10T13:06:11.391502500+01:00",
+    date = "2021-02-16T12:59:53.550784500+01:00",
     comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
 )
 public class DenwisAgitationIndicatorElement implements LocatableEntity {
@@ -21,11 +22,12 @@ public class DenwisAgitationIndicatorElement implements LocatableEntity {
   private FeederAudit feederAudit;
 
   /**
-   * Path: open_eREACT-Care/Assessment/DENWIS/Point in time/value
+   * Path: open_eREACT-Care/Assessment/DENWIS/Point in time/Agitation indicator
+   * Description: Nurse recorded changes in agitation.
    */
   @Path("/value")
   @Choice
-  private DenwisValueChoice2 value;
+  private List<DenwisAgitationIndicatorChoice> value;
 
   public void setFeederAudit(FeederAudit feederAudit) {
      this.feederAudit = feederAudit;
@@ -35,11 +37,11 @@ public class DenwisAgitationIndicatorElement implements LocatableEntity {
      return this.feederAudit ;
   }
 
-  public void setValue(DenwisValueChoice2 value) {
+  public void setValue(List<DenwisAgitationIndicatorChoice> value) {
      this.value = value;
   }
 
-  public DenwisValueChoice2 getValue() {
+  public List<DenwisAgitationIndicatorChoice> getValue() {
      return this.value ;
   }
 }

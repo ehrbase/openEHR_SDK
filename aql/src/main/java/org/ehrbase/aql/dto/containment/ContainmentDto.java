@@ -23,9 +23,7 @@ public class ContainmentDto implements ContainmentExpresionDto {
   private int id;
   private String archetypeId;
   private ContainmentExpresionDto contains;
-
-  public ContainmentDto() {
-  }
+  private String identifier;
 
   public int getId() {
     return this.id;
@@ -51,6 +49,14 @@ public class ContainmentDto implements ContainmentExpresionDto {
     this.contains = contains;
   }
 
+  public String getIdentifier() {
+    return identifier;
+  }
+
+  public void setIdentifier(String identifier) {
+    this.identifier = identifier;
+  }
+
   public boolean equals(final Object o) {
     if (o == this) return true;
     if (!(o instanceof ContainmentDto)) return false;
@@ -59,11 +65,13 @@ public class ContainmentDto implements ContainmentExpresionDto {
     if (this.getId() != other.getId()) return false;
     final Object this$archetypeId = this.getArchetypeId();
     final Object other$archetypeId = other.getArchetypeId();
-    if (this$archetypeId == null ? other$archetypeId != null : !this$archetypeId.equals(other$archetypeId))
-      return false;
+    if (this$archetypeId == null
+        ? other$archetypeId != null
+        : !this$archetypeId.equals(other$archetypeId)) return false;
     final Object this$contains = this.getContains();
     final Object other$contains = other.getContains();
-    if (this$contains == null ? other$contains != null : !this$contains.equals(other$contains)) return false;
+    if (this$contains == null ? other$contains != null : !this$contains.equals(other$contains))
+      return false;
     return true;
   }
 
@@ -83,6 +91,12 @@ public class ContainmentDto implements ContainmentExpresionDto {
   }
 
   public String toString() {
-    return "ContainmentDto(id=" + this.getId() + ", archetypeId=" + this.getArchetypeId() + ", contains=" + this.getContains() + ")";
+    return "ContainmentDto(id="
+        + this.getId()
+        + ", archetypeId="
+        + this.getArchetypeId()
+        + ", contains="
+        + this.getContains()
+        + ")";
   }
 }

@@ -11,7 +11,7 @@ import org.ehrbase.client.classgenerator.interfaces.LocatableEntity;
 @Entity
 @Generated(
     value = "org.ehrbase.client.classgenerator.ClassGenerator",
-    date = "2020-12-10T13:06:12.109023800+01:00",
+    date = "2021-02-16T12:57:29.118797400+01:00",
     comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
 )
 public class EventsummaryBeteiligtePersonenCluster implements LocatableEntity {

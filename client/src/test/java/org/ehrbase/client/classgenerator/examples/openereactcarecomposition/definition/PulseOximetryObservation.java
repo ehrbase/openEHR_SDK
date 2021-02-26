@@ -17,13 +17,14 @@ import org.ehrbase.client.classgenerator.shareddefinition.Language;
 @Archetype("openEHR-EHR-OBSERVATION.pulse_oximetry.v1")
 @Generated(
     value = "org.ehrbase.client.classgenerator.ClassGenerator",
-    date = "2020-12-10T13:06:11.543500900+01:00",
+    date = "2021-02-16T12:59:53.739779400+01:00",
     comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
 )
 public class PulseOximetryObservation implements EntryEntity {
   /**
    * Path: open_eREACT-Care/Assessment/NEWS2/Pulse oximetry/Any event/SpO₂
    * Description: The saturation of oxygen in the peripheral blood, measured via pulse oximetry.
+   * Comment: SpO₂ is defined as the percentage of oxyhaemoglobin (HbO₂) to the total concentration of haemoglobin (HbO₂ + deoxyhaemoglobin) in peripheral blood.
    */
   @Path("/data[at0001]/events[at0002]/data[at0003]/items[at0006]/value")
   private DvProportion spo;

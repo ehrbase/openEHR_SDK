@@ -19,6 +19,7 @@
 
 package org.ehrbase.client.aql.condition;
 
+import org.ehrbase.client.aql.containment.Containment;
 import org.ehrbase.client.aql.field.SelectAqlField;
 import org.ehrbase.client.aql.parameter.Parameter;
 
@@ -134,5 +135,5 @@ public interface Condition {
     return new Exists(field);
   }
 
-  String buildAql();
+  String buildAql(Containment ehrContainment);
 }

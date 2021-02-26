@@ -22,6 +22,7 @@ package org.ehrbase.client.aql.condition;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.ehrbase.client.aql.containment.Containment;
 
 public abstract class BinaryLogicalOperator implements Condition {
 
@@ -32,17 +33,15 @@ public abstract class BinaryLogicalOperator implements Condition {
     conditionList.add(condition2);
   }
 
-    @Override
-    public String buildAql() {
+  @Override
+  public String buildAql(Containment ehrContainment) {
 
-        return "(" +
-                conditionList.stream()
-                        .map(Condition::buildAql)
-                        .collect(Collectors.joining(" " + getSymbol() + " ")) +
-                ")";
-    }
-
+    return "("
+        + conditionList.stream()
+            .map(c -> c.buildAql(ehrContainment))
+            .collect(Collectors.joining(" " + getSymbol() + " "))
+        + ")";
+  }
 
   protected abstract String getSymbol();
-
 }

@@ -19,107 +19,112 @@
 
 package org.ehrbase.webtemplate.model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class WebTemplateInput implements Serializable {
 
-    private String suffix;
-    private String type;
-    private final List<WebTemplateInputValue> list = new ArrayList<>();
-    private Boolean listOpen;
-    private WebTemplateValidation validation;
-    private String terminology;
-    private String defaultValue;
+  private String suffix;
+  private String type;
+  private final List<WebTemplateInputValue> list = new ArrayList<>();
+  private Boolean listOpen;
+  private WebTemplateValidation validation;
+  private String terminology;
 
-    public WebTemplateInput() {
-    }
+  @JsonSerialize(using = StringToNumberSerializer.class)
+  private String defaultValue;
 
-    public WebTemplateInput(WebTemplateInput other) {
-        this.suffix = other.suffix;
-        this.type = other.type;
-        this.listOpen = other.listOpen;
-        if (other.validation != null) {
-            this.validation = new WebTemplateValidation(other.validation);
-        } else {
-            this.validation = null;
-        }
-        this.terminology = other.terminology;
-        this.defaultValue = other.defaultValue;
-        this.list.addAll(other.list.stream().map(WebTemplateInputValue::new).collect(Collectors.toList()));
-    }
+  public WebTemplateInput() {}
 
-    public String getSuffix() {
-        return suffix;
+  public WebTemplateInput(WebTemplateInput other) {
+    this.suffix = other.suffix;
+    this.type = other.type;
+    this.listOpen = other.listOpen;
+    if (other.validation != null) {
+      this.validation = new WebTemplateValidation(other.validation);
+    } else {
+      this.validation = null;
     }
+    this.terminology = other.terminology;
+    this.defaultValue = other.defaultValue;
+    this.list.addAll(
+        other.list.stream().map(WebTemplateInputValue::new).collect(Collectors.toList()));
+  }
 
-    public void setSuffix(String suffix) {
-        this.suffix = suffix;
-    }
+  public String getSuffix() {
+    return suffix;
+  }
 
-    public String getType() {
-        return type;
-    }
+  public void setSuffix(String suffix) {
+    this.suffix = suffix;
+  }
 
-    public void setType(String type) {
-        this.type = type;
-    }
+  public String getType() {
+    return type;
+  }
 
-    public List<WebTemplateInputValue> getList() {
-        return list;
-    }
+  public void setType(String type) {
+    this.type = type;
+  }
 
-    public Boolean getListOpen() {
-        return listOpen;
-    }
+  public List<WebTemplateInputValue> getList() {
+    return list;
+  }
 
-    public void setListOpen(Boolean listOpen) {
-        this.listOpen = listOpen;
-    }
+  public Boolean getListOpen() {
+    return listOpen;
+  }
 
-    public WebTemplateValidation getValidation() {
-        return validation;
-    }
+  public void setListOpen(Boolean listOpen) {
+    this.listOpen = listOpen;
+  }
 
-    public void setValidation(WebTemplateValidation validation) {
-        this.validation = validation;
-    }
+  public WebTemplateValidation getValidation() {
+    return validation;
+  }
 
-    public String getTerminology() {
-        return terminology;
-    }
+  public void setValidation(WebTemplateValidation validation) {
+    this.validation = validation;
+  }
 
-    public void setTerminology(String terminology) {
-        this.terminology = terminology;
-    }
+  public String getTerminology() {
+    return terminology;
+  }
 
-    public String getDefaultValue() {
-        return defaultValue;
-    }
+  public void setTerminology(String terminology) {
+    this.terminology = terminology;
+  }
 
-    public void setDefaultValue(String defaultValue) {
-        this.defaultValue = defaultValue;
-    }
+  public String getDefaultValue() {
+    return defaultValue;
+  }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        WebTemplateInput input = (WebTemplateInput) o;
-        return Objects.equals(suffix, input.suffix) &&
-                Objects.equals(type, input.type) &&
-                Objects.equals(list, input.list) &&
-                Objects.equals(listOpen, input.listOpen) &&
-                Objects.equals(validation, input.validation) &&
-                Objects.equals(terminology, input.terminology) &&
-                Objects.equals(defaultValue, input.defaultValue);
-    }
+  public void setDefaultValue(String defaultValue) {
+    this.defaultValue = defaultValue;
+  }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(suffix, type, list, listOpen, validation, terminology, defaultValue);
-    }
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    WebTemplateInput input = (WebTemplateInput) o;
+    return Objects.equals(suffix, input.suffix)
+        && Objects.equals(type, input.type)
+        && Objects.equals(list, input.list)
+        && Objects.equals(listOpen, input.listOpen)
+        && Objects.equals(validation, input.validation)
+        && Objects.equals(terminology, input.terminology)
+        && Objects.equals(defaultValue, input.defaultValue);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(suffix, type, list, listOpen, validation, terminology, defaultValue);
+  }
 }

@@ -29,13 +29,22 @@ import com.nedap.archie.rminfo.RMAttributeInfo;
 import com.nedap.archie.rminfo.RMTypeInfo;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
+import org.apache.xmlbeans.XmlCursor;
+import org.apache.xmlbeans.XmlObject;
+import org.apache.xmlbeans.XmlTokenSource;
 import org.ehrbase.terminology.client.terminology.TermDefinition;
 import org.ehrbase.terminology.client.terminology.TerminologyProvider;
 import org.ehrbase.terminology.client.terminology.ValueSet;
@@ -45,6 +54,7 @@ import org.ehrbase.webtemplate.model.WebTemplateAnnotation;
 import org.ehrbase.webtemplate.model.WebTemplateInput;
 import org.ehrbase.webtemplate.model.WebTemplateInputValue;
 import org.ehrbase.webtemplate.model.WebTemplateNode;
+import org.ehrbase.webtemplate.model.WebTemplateValidation;
 import org.openehr.schemas.v1.ARCHETYPESLOT;
 import org.openehr.schemas.v1.ARCHETYPETERM;
 import org.openehr.schemas.v1.CARCHETYPEROOT;
@@ -57,10 +67,18 @@ import org.openehr.schemas.v1.CDVORDINAL;
 import org.openehr.schemas.v1.CDVQUANTITY;
 import org.openehr.schemas.v1.CDVSTATE;
 import org.openehr.schemas.v1.COBJECT;
+import org.openehr.schemas.v1.CODEPHRASE;
+import org.openehr.schemas.v1.CPRIMITIVEOBJECT;
+import org.openehr.schemas.v1.DVCODEDTEXT;
+import org.openehr.schemas.v1.DVORDINAL;
+import org.openehr.schemas.v1.DVQUANTITY;
 import org.openehr.schemas.v1.IntervalOfInteger;
 import org.openehr.schemas.v1.OBJECTID;
 import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
+import org.openehr.schemas.v1.RESOURCEDESCRIPTIONITEM;
 import org.openehr.schemas.v1.StringDictionaryItem;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 public class OPTParser {
   public static final String PATH_DIVIDER = "/";
@@ -73,10 +91,19 @@ public class OPTParser {
 
   private final OPERATIONALTEMPLATE operationaltemplate;
   private final String defaultLanguage;
+  private Map<String, String> defaultValues = new HashMap<>();
+  private final InputHandler inputHandler = new InputHandler(defaultValues);
+  private List<String> languages;
 
   public OPTParser(OPERATIONALTEMPLATE operationaltemplate) {
     this.operationaltemplate = operationaltemplate;
     defaultLanguage = operationaltemplate.getLanguage().getCodeString();
+    Arrays.stream(extractChilds(operationaltemplate, "constraints"))
+        .map(c -> extractChilds(c, "attributes"))
+        .flatMap(Arrays::stream)
+        .map(this::extractDefault)
+        .flatMap(List::stream)
+        .forEach(p -> defaultValues.put(p.getKey(), p.getValue()));
   }
 
   public WebTemplate parse() {
@@ -85,8 +112,88 @@ public class OPTParser {
     webTemplate.setTemplateId(operationaltemplate.getTemplateId().getValue());
     webTemplate.setDefaultLanguage(defaultLanguage);
     webTemplate.setVersion("2.3");
+    webTemplate
+        .getLanguages()
+        .addAll(
+            Arrays.stream(operationaltemplate.getDescription().getDetailsArray())
+                .map(RESOURCEDESCRIPTIONITEM::getLanguage)
+                .map(CODEPHRASE::getCodeString)
+                .collect(Collectors.toSet()));
+
+    languages = webTemplate.getLanguages();
+
     webTemplate.setTree(parseCARCHETYPEROO(operationaltemplate.getDefinition(), ""));
     return webTemplate;
+  }
+
+  public XmlObject[] extractChilds(XmlObject c, String attributes) {
+    return c.selectChildren("http://schemas.openehr.org/v1", attributes);
+  }
+
+  private List<Pair<String, String>> extractDefault(XmlObject xmlObject) {
+    List<Pair<String, String>> defaults = new ArrayList<>();
+
+    String differential_path =
+        StringUtils.substringAfter(
+            extractChilds(xmlObject, "differential_path")[0].newCursor().getTextValue(), "/");
+    String rm_attribute_name =
+        extractChilds(xmlObject, "rm_attribute_name")[0].newCursor().getTextValue();
+    String aql = "/" + differential_path + "/" + rm_attribute_name;
+    List<String> attributeNames =
+        Arrays.stream(extractChilds(xmlObject, "children"))
+            .map(x -> extractChilds(x, "default_value"))
+            .flatMap(Arrays::stream)
+            .map(XmlTokenSource::newDomNode)
+            .map(Node::getFirstChild)
+            .map(Node::getChildNodes)
+            .map(this::buildList)
+            .flatMap(List::stream)
+            .map(Node::getNodeName)
+            .collect(Collectors.toList());
+
+    attributeNames.forEach(
+        n -> {
+          Optional<XmlObject> any =
+              Arrays.stream(extractChilds(xmlObject, "children"))
+                  .map(x -> extractChilds(x, "default_value"))
+                  .flatMap(Arrays::stream)
+                  .map(x -> extractChilds(x, n))
+                  .flatMap(Arrays::stream)
+                  .findAny();
+          if (any.isPresent()) {
+            if (any.get().newDomNode().getFirstChild().getChildNodes().getLength() == 1) {
+
+              String defaultValue = any.get().newCursor().getTextValue();
+
+              defaults.add(new ImmutablePair<>(aql + "|" + n, defaultValue));
+            } else {
+              String defaultValue =
+                  Arrays.stream(extractChilds(any.get(), "defining_code"))
+                      .findAny()
+                      .map(x -> extractChilds(x, "code_string"))
+                      .stream()
+                      .flatMap(Arrays::stream)
+                      .map(XmlTokenSource::newCursor)
+                      .map(XmlCursor::getTextValue)
+                      .findAny()
+                      .orElse("");
+              defaults.add(new ImmutablePair<>(aql + "|" + "defining_code", defaultValue));
+            }
+          }
+        });
+    return defaults;
+  }
+
+  private List<Node> buildList(NodeList list) {
+
+    List<Node> nodes = new ArrayList<>();
+    for (int i = 0; i < list.getLength(); i++) {
+      Node item = list.item(i);
+      if (item.getNodeType() == 1) {
+        nodes.add(item);
+      }
+    }
+    return nodes;
   }
 
   private WebTemplateNode parseCARCHETYPEROO(CARCHETYPEROOT carchetyperoot, String aqlPath) {
@@ -111,10 +218,69 @@ public class OPTParser {
           .computeIfAbsent(code, c -> new HashMap<>())
           .put(defaultLanguage, new TermDefinition(code, value, description, otherMap));
     }
+
+    Map<String, Map<String, TermDefinition>> otherTermDefinitionMap =
+        buildOtherTerms(carchetyperoot.getArchetypeId().getValue());
+    otherTermDefinitionMap.forEach(
+        (key, value) -> {
+          termDefinitionMap.computeIfAbsent(key, c -> new HashMap<>()).putAll(value);
+        });
+
     WebTemplateNode node = parseCCOMPLEXOBJECT(carchetyperoot, aqlPath, termDefinitionMap, null);
     node.setNodeId(carchetyperoot.getArchetypeId().getValue());
     addRMAttributes(node, aqlPath, termDefinitionMap);
     return node;
+  }
+
+  private Map<String, Map<String, TermDefinition>> buildOtherTerms(String archetypeId) {
+    Map<String, Map<String, TermDefinition>> otherTermDefinitionMap = new HashMap<>();
+    List<XmlObject> ontologies = new ArrayList<>();
+    ontologies.addAll(
+        Arrays.stream(extractChilds(operationaltemplate, "ontology"))
+            .filter(
+                x ->
+                    x.selectAttribute("", "archetype_id")
+                        .newCursor()
+                        .getTextValue()
+                        .equals(archetypeId))
+            .map(x -> extractChilds(x, "term_definitions"))
+            .flatMap(Arrays::stream)
+            .collect(Collectors.toList()));
+    ontologies.addAll(
+        Arrays.stream(extractChilds(operationaltemplate, "component_ontologies"))
+            .filter(
+                x ->
+                    x.selectAttribute("", "archetype_id")
+                        .newCursor()
+                        .getTextValue()
+                        .equals(archetypeId))
+            .map(x -> extractChilds(x, "term_definitions"))
+            .flatMap(Arrays::stream)
+            .collect(Collectors.toList()));
+
+    for (XmlObject term : ontologies) {
+      String language = term.selectAttribute("", "language").newCursor().getTextValue();
+
+      for (XmlObject items : extractChilds(term, "items")) {
+        String code = items.selectAttribute("", "code").newCursor().getTextValue();
+        String text = "";
+        String description = "";
+        for (XmlObject item : extractChilds(items, "items")) {
+          String id = item.selectAttribute("", "id").newCursor().getTextValue();
+          String value = item.newCursor().getTextValue();
+          if (Objects.equals(id, "text")) {
+            text = value;
+          } else if (Objects.equals(id, "description")) {
+            description = value;
+          }
+        }
+        Map<String, TermDefinition> termDefinitionMap =
+            otherTermDefinitionMap.computeIfAbsent(code, c -> new HashMap<>());
+        termDefinitionMap.put(language, new TermDefinition(code, text, description));
+      }
+    }
+
+    return otherTermDefinitionMap;
   }
 
   private WebTemplateNode parseCCOMPLEXOBJECT(
@@ -133,26 +299,36 @@ public class OPTParser {
       while (lastSegment.getChild() != null) {
         lastSegment = lastSegment.getChild();
       }
-      lastSegment.addOtherPredicate("name/value", expliziteName.get());
+      lastSegment.addOtherPredicate(
+          "name/value", expliziteName.get().replace("\\", "\\\\").replace("'", "\\'"));
       node.setAqlPath(path.format(true));
       aqlPath = path.format(true);
     }
 
     CATTRIBUTE[] cattributes = ccomplexobject.getAttributesArray();
 
+    Map<String, WebTemplateInput> inputMap = new HashMap<>();
+
     for (CATTRIBUTE cattribute : cattributes) {
       String pathLoop = aqlPath + PATH_DIVIDER + cattribute.getRmAttributeName();
       if (
       // Will be set via Attributes
-      pathLoop.equals("/category") || pathLoop.endsWith("/name")) {
+      pathLoop.endsWith("/name")) {
         continue;
       }
       List<WebTemplateNode> newChildren = new ArrayList<>();
       for (COBJECT cobject : cattribute.getChildrenArray()) {
-        WebTemplateNode childNode =
-            parseCOBJECT(cobject, pathLoop, termDefinitionMap, cattribute.getRmAttributeName());
-        if (childNode != null) {
-          newChildren.add(childNode);
+
+        if (cobject instanceof CPRIMITIVEOBJECT) {
+          inputMap.put(
+              cattribute.getRmAttributeName(),
+              inputHandler.extractInput((CPRIMITIVEOBJECT) cobject));
+        } else {
+          WebTemplateNode childNode =
+              parseCOBJECT(cobject, pathLoop, termDefinitionMap, cattribute.getRmAttributeName());
+          if (childNode != null) {
+            newChildren.add(childNode);
+          }
         }
       }
 
@@ -238,7 +414,8 @@ public class OPTParser {
     }
 
     // Handle choice children
-    node.getChoicesInChildren().values().stream()
+    Collection<List<WebTemplateNode>> values = node.getChoicesInChildren().values();
+    values.stream()
         .flatMap(List::stream)
         .filter(n -> n.getRmType().startsWith("DV_"))
         .forEach(n -> n.setId(n.getRmType().replace("DV_", "").toLowerCase() + "_value"));
@@ -247,22 +424,24 @@ public class OPTParser {
     if (node.getRmType().equals("ELEMENT")) {
       List<WebTemplateNode> trueChildren =
           node.getChildren().stream()
-              .filter(n -> !List.of("null_flavour", "feeder_audit").contains(n.getName()))
+              .filter(
+                  n ->
+                      !List.of("null_flavour", "feeder_audit").contains(n.getName())
+                          || !n.isNullable())
               .collect(Collectors.toList());
+      trueChildren.forEach(c -> pushProperties(node, c));
+
       if (trueChildren.size() == 1) {
         WebTemplateNode value = trueChildren.get(0);
         value.setId(node.getId(false));
-        value.setName(node.getName());
-        value.setMax(node.getMax());
-        value.setMin(node.getMin());
-        value.getLocalizedDescriptions().putAll(node.getLocalizedDescriptions());
-        value.getLocalizedNames().putAll(node.getLocalizedNames());
-        value.setLocalizedName(node.getLocalizedName());
+        value.setAnnotations(node.getAnnotations());
+
         // If contains a choice of DV_TEXT and DV_CODED_TEXT add a merged node
       } else if (trueChildren.stream()
-          .map(WebTemplateNode::getRmType)
-          .collect(Collectors.toList())
-          .containsAll(List.of("DV_TEXT", DV_CODED_TEXT))) {
+              .map(WebTemplateNode::getRmType)
+              .collect(Collectors.toList())
+              .containsAll(List.of("DV_TEXT", DV_CODED_TEXT))
+          && node.getChoicesInChildren().size() > 0) {
         WebTemplateNode merged = new WebTemplateNode();
         merged.setId(node.getId(false));
         merged.setName(node.getName());
@@ -275,11 +454,30 @@ public class OPTParser {
         merged.getLocalizedDescriptions().putAll(node.getLocalizedDescriptions());
         merged.getLocalizedNames().putAll(node.getLocalizedNames());
         merged.setLocalizedName(node.getLocalizedName());
-        WebTemplateInput other = new WebTemplateInput();
-        other.setType("TEXT");
-        other.setSuffix("other");
+        merged.setAnnotations(node.getAnnotations());
+        WebTemplateInput other = inputHandler.buildWebTemplateInput("other", "TEXT");
+
         merged.getInputs().add(other);
+        merged.getInputs().stream()
+            .filter(i -> Objects.equals(i.getSuffix(), "code"))
+            .findAny()
+            .ifPresent(i -> i.setListOpen(true));
         node.getChildren().add(merged);
+      }
+      // choice between value and null_flavour
+      else if (node.getChoicesInChildren().isEmpty()) {
+        node.getChildren().stream()
+            .filter(
+                n ->
+                    !List.of("null_flavour", "feeder_audit").contains(n.getName())
+                        || !n.isNullable())
+            .filter(n -> n.getRmType().startsWith("DV_"))
+            .forEach(
+                n -> {
+                  n.setId(n.getRmType().replace("DV_", "").toLowerCase() + "_value");
+                  n.getLocalizedDescriptions().putAll(node.getLocalizedDescriptions());
+                  n.getLocalizedNames().putAll(node.getLocalizedNames());
+                });
       }
     }
 
@@ -288,21 +486,32 @@ public class OPTParser {
       List<WebTemplateNode> matching = node.findMatching(n -> n.getRmType().equals("CODE_PHRASE"));
       if (!matching.isEmpty()) {
         node.getInputs().addAll(matching.get(0).getInputs());
-        WebTemplateInput code = node.getInputs().get(0);
-        if (code.getList().isEmpty()) {
-          WebTemplateInput value = new WebTemplateInput();
-          value.setType("TEXT");
-          value.setSuffix("value");
-          value.setTerminology(code.getTerminology());
-        }
+
+      } else {
+        node.getInputs().add(inputHandler.buildWebTemplateInput("value", "TEXT"));
+        node.getInputs().add(inputHandler.buildWebTemplateInput("code", "TEXT"));
       }
     }
 
     addRMAttributes(node, aqlPath, termDefinitionMap);
 
+    // If inputs where not set from the template set them via rmType;
+    if (node.getInputs().isEmpty()) {
+      inputHandler.addInputs(node, inputMap);
+    }
+
     makeIdUnique(node);
 
     return node;
+  }
+
+  private void pushProperties(WebTemplateNode node, WebTemplateNode value) {
+    value.setName(node.getName());
+    value.setMax(node.getMax());
+    value.setMin(node.getMin());
+    value.getLocalizedDescriptions().putAll(node.getLocalizedDescriptions());
+    value.getLocalizedNames().putAll(node.getLocalizedNames());
+    value.setLocalizedName(node.getLocalizedName());
   }
 
   public static void makeIdUnique(WebTemplateNode node) {
@@ -368,7 +577,13 @@ public class OPTParser {
     node.setId(buildId(attributeInfo.getRmName()));
     node.setRmType(attributeInfo.getTypeNameInCollection());
     node.setMax(attributeInfo.isMultipleValued() ? -1 : 1);
-    node.setMin(0);
+    node.setMin(attributeInfo.isNullable() ? 0 : 1);
+    if (attributeInfo.getRmName().equals("action_archetype_id")) {
+      node.setMin(1);
+    }
+
+    inputHandler.addInputs(node, Collections.emptyMap());
+
     addRMAttributes(node, node.getAqlPath(), termDefinitionMap);
     return node;
   }
@@ -449,11 +664,22 @@ public class OPTParser {
       WebTemplateInput magnitude = new WebTemplateInput();
       magnitude.setSuffix("magnitude");
       magnitude.setType("DECIMAL");
+      Optional.of((CDVQUANTITY) cdomaintype)
+          .map(CDVQUANTITY::getAssumedValue)
+          .map(DVQUANTITY::getMagnitude)
+          .map(d -> Double.toString(d))
+          .ifPresent(magnitude::setDefaultValue);
+      inputHandler.findDefaultValue(node, "magnitude").ifPresent(magnitude::setDefaultValue);
       node.getInputs().add(magnitude);
 
       WebTemplateInput unit = new WebTemplateInput();
       unit.setSuffix("unit");
       unit.setType(CODED_TEXT);
+      Optional.of((CDVQUANTITY) cdomaintype)
+          .map(CDVQUANTITY::getAssumedValue)
+          .map(DVQUANTITY::getUnits)
+          .ifPresent(unit::setDefaultValue);
+      inputHandler.findDefaultValue(node, "units").ifPresent(unit::setDefaultValue);
       node.getInputs().add(unit);
 
       Arrays.stream(((CDVQUANTITY) cdomaintype).getListArray())
@@ -462,13 +688,43 @@ public class OPTParser {
                 WebTemplateInputValue value = new WebTemplateInputValue();
                 value.setLabel(o.getUnits());
                 value.setValue(o.getUnits());
+
+                WebTemplateValidation validation = new WebTemplateValidation();
+                boolean addValidation = false;
+                if (o.getMagnitude() != null) {
+                  addValidation = true;
+                  validation.setRange(inputHandler.extractInterval(o.getMagnitude()));
+                }
+                if (o.getPrecision() != null) {
+                  addValidation = true;
+                  validation.setPrecision(inputHandler.extractInterval(o.getPrecision()));
+                }
+                if (addValidation) {
+                  value.setValidation(validation);
+                }
+                value
+                    .getLocalizedLabels()
+                    .putAll(
+                        termDefinitionMap.getOrDefault(o.getUnits(), Collections.emptyMap())
+                            .entrySet().stream()
+                            .collect(
+                                Collectors.toMap(Map.Entry::getKey, e -> e.getValue().getValue())));
                 unit.getList().add(value);
               });
-
+      if (unit.getList().size() == 1) {
+        magnitude.setValidation(unit.getList().get(0).getValidation());
+      }
     } else if (cdomaintype instanceof CDVORDINAL) {
       WebTemplateInput code = new WebTemplateInput();
+      inputHandler.findDefaultValue(node, "defining_code").ifPresent(code::setDefaultValue);
       code.setType(CODED_TEXT);
       node.getInputs().add(code);
+      Optional.of((CDVORDINAL) cdomaintype)
+          .map(CDVORDINAL::getAssumedValue)
+          .map(DVORDINAL::getSymbol)
+          .map(DVCODEDTEXT::getDefiningCode)
+          .map(CODEPHRASE::getCodeString)
+          .ifPresent(code::setDefaultValue);
       Arrays.stream(((CDVORDINAL) cdomaintype).getListArray())
           .forEach(
               o -> {
@@ -483,14 +739,32 @@ public class OPTParser {
                             .flatMap(Set::stream)
                             .collect(
                                 Collectors.toMap(Map.Entry::getKey, e -> e.getValue().getValue())));
+                value
+                    .getLocalizedDescriptions()
+                    .putAll(
+                        Optional.ofNullable(termDefinitionMap.get(value.getValue()))
+                            .map(Map::entrySet).stream()
+                            .flatMap(Set::stream)
+                            .collect(
+                                Collectors.toMap(
+                                    Map.Entry::getKey, e -> e.getValue().getDescription())));
                 value.setLabel(value.getLocalizedLabels().get(defaultLanguage));
+                if (!value.getLocalizedDescriptions().containsKey(defaultLanguage)) {
+                  value.getLocalizedDescriptions().put(defaultLanguage, "");
+                }
                 code.getList().add(value);
               });
 
     } else if (cdomaintype instanceof CCODEPHRASE) {
       WebTemplateInput code = new WebTemplateInput();
-      code.setType(CODED_TEXT);
+      inputHandler.findDefaultValue(node, "defining_code").ifPresent(code::setDefaultValue);
+      code.setSuffix("code");
       node.getInputs().add(code);
+      Optional.of((CCODEPHRASE) cdomaintype)
+          .map(CCODEPHRASE::getAssumedValue)
+          .map(CODEPHRASE::getCodeString)
+          .ifPresent(code::setDefaultValue);
+
       if (cdomaintype instanceof CCODEREFERENCE) {
         code.setTerminology(
             Optional.of((CCODEREFERENCE) cdomaintype)
@@ -504,10 +778,25 @@ public class OPTParser {
                 .map(OBJECTID::getValue)
                 .orElse(null));
       }
+
       if (code.getTerminology().equals(OPENEHR)) {
         ValueSet valueSet =
             TerminologyProvider.findOpenEhrValueSet(
-                code.getTerminology(), ((CCODEPHRASE) cdomaintype).getCodeListArray());
+                code.getTerminology(),
+                ((CCODEPHRASE) cdomaintype).getCodeListArray(),
+                defaultLanguage);
+
+        Map<String, ValueSet> collect =
+            languages.stream()
+                .collect(
+                    Collectors.toMap(
+                        Function.identity(),
+                        l ->
+                            TerminologyProvider.findOpenEhrValueSet(
+                                code.getTerminology(),
+                                ((CCODEPHRASE) cdomaintype).getCodeListArray(),
+                                l)));
+
         valueSet
             .getTherms()
             .forEach(
@@ -515,8 +804,22 @@ public class OPTParser {
                   WebTemplateInputValue value = new WebTemplateInputValue();
                   value.setValue(t.getCode());
                   value.setLabel(t.getValue());
+                  value
+                      .getLocalizedLabels()
+                      .putAll(
+                          collect.entrySet().stream()
+                              .collect(
+                                  Collectors.toMap(
+                                      Map.Entry::getKey,
+                                      e ->
+                                          e.getValue().getTherms().stream()
+                                              .filter(x -> x.getCode().equals(t.getCode()))
+                                              .findAny()
+                                              .map(TermDefinition::getValue)
+                                              .orElse(""))));
                   code.getList().add(value);
                 });
+
       } else {
         Arrays.stream(((CCODEPHRASE) cdomaintype).getCodeListArray())
             .forEach(
@@ -528,24 +831,41 @@ public class OPTParser {
                   if (termDefinition.isPresent()) {
                     value.setValue(termDefinition.get().getCode());
                     value.setLabel(termDefinition.get().getValue());
-                    if (StringUtils.isNotBlank(termDefinition.get().getDescription())) {
-                      value
-                          .getLocalizedDescriptions()
-                          .put(defaultLanguage, termDefinition.get().getDescription());
-                    }
+
                     value
                         .getLocalizedLabels()
-                        .put(defaultLanguage, termDefinition.get().getValue());
+                        .putAll(
+                            termDefinitionMap.getOrDefault(o, Collections.emptyMap()).entrySet()
+                                .stream()
+                                .collect(
+                                    Collectors.toMap(
+                                        Map.Entry::getKey, e -> e.getValue().getValue())));
+                    value
+                        .getLocalizedDescriptions()
+                        .putAll(
+                            termDefinitionMap.getOrDefault(o, Collections.emptyMap()).entrySet()
+                                .stream()
+                                .filter(e -> StringUtils.isNotBlank(e.getValue().getDescription()))
+                                .collect(
+                                    Collectors.toMap(
+                                        Map.Entry::getKey, e -> e.getValue().getDescription())));
+                    if (!value.getLocalizedDescriptions().containsKey(defaultLanguage)) {
+                      value.getLocalizedDescriptions().put(defaultLanguage, "");
+                    }
                     code.getList().add(value);
                   }
                 });
       }
 
-      if (code.getList().isEmpty() && StringUtils.isBlank(code.getTerminology())) {
+      if (code.getList().isEmpty()) {
         code.setType("TEXT");
+        WebTemplateInput value = inputHandler.buildWebTemplateInput("value", "TEXT");
+        value.setTerminology(code.getTerminology());
+        node.getInputs().add(value);
       } else {
         code.setType(CODED_TEXT);
       }
+
     } else {
       throw new SdkException(
           String.format("Unexpected class: %s", cdomaintype.getClass().getSimpleName()));
@@ -582,20 +902,28 @@ public class OPTParser {
           .putAll(
               termDefinitionMap.get(nodeId).entrySet().stream()
                   .collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().getValue())));
+      // honer expliziert set name.
+      node.getLocalizedNames().put(defaultLanguage, name);
       node.getLocalizedDescriptions()
           .putAll(
               termDefinitionMap.get(nodeId).entrySet().stream()
                   .collect(
                       Collectors.toMap(Map.Entry::getKey, e -> e.getValue().getDescription())));
 
-      Optional.of(termDefinitionMap.get(nodeId))
-          .map(m -> m.get(defaultLanguage))
-          .map(TermDefinition::getOther)
-          .map(m -> m.get("comment"))
-          .ifPresent(
-              s -> {
-                node.setAnnotations(new WebTemplateAnnotation());
-                node.getAnnotations().setComment(s);
+      Optional.of(termDefinitionMap.get(nodeId)).map(m -> m.get(defaultLanguage))
+          .map(TermDefinition::getOther).stream()
+          .map(Map::entrySet)
+          .flatMap(Set::stream)
+          .forEach(
+              e -> {
+                if (node.getAnnotations() == null) {
+                  node.setAnnotations(new WebTemplateAnnotation());
+                }
+                if (e.getKey().equals("comment")) {
+                  node.getAnnotations().setComment(e.getValue());
+                } else {
+                  node.getAnnotations().getOther().put(e.getKey(), e.getValue());
+                }
               });
     } else {
       String name =

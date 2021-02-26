@@ -24,6 +24,13 @@ import static org.ehrbase.client.TestData.buildEpisodeOfCareComposition;
 import com.nedap.archie.rm.RMObject;
 import com.nedap.archie.rm.archetyped.Locatable;
 import com.nedap.archie.rm.composition.Composition;
+import com.nedap.archie.rm.composition.ContentItem;
+import com.nedap.archie.rm.composition.Observation;
+import com.nedap.archie.rm.datastructures.Event;
+import com.nedap.archie.rm.datastructures.IntervalEvent;
+import com.nedap.archie.rm.datastructures.ItemStructure;
+import com.nedap.archie.rm.datastructures.PointEvent;
+import com.nedap.archie.rm.datavalues.quantity.DvQuantity;
 import com.nedap.archie.rm.generic.PartyIdentified;
 import com.nedap.archie.rm.generic.PartySelf;
 import java.io.IOException;
@@ -55,6 +62,8 @@ import org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1comp
 import org.ehrbase.client.classgenerator.examples.episodeofcarecomposition.EpisodeOfCareComposition;
 import org.ehrbase.client.classgenerator.examples.episodeofcarecomposition.definition.EpisodeofcareAdminEntry;
 import org.ehrbase.client.classgenerator.examples.episodeofcarecomposition.definition.EpisodeofcareTeamElement;
+import org.ehrbase.client.classgenerator.examples.korpergrossecomposition.KorpergrosseComposition;
+import org.ehrbase.client.classgenerator.examples.korpergrossecomposition.definition.GrosseLangeObservation;
 import org.ehrbase.client.classgenerator.shareddefinition.MathFunction;
 import org.ehrbase.client.classgenerator.shareddefinition.NullFlavour;
 import org.ehrbase.client.templateprovider.TestDataTemplateProvider;
@@ -79,6 +88,56 @@ public class FlattenerTest {
     assertThat(expected.getBloodpressures())
         .extracting(BloodpressureListDe.Bloodpressure::getSystolischValue)
         .containsExactlyInAnyOrder(12d, 22d);
+  }
+
+  @Test
+  public void testFlattenSingleEventPointEvent() {
+    Unflattener unflattener = new Unflattener(new TestDataTemplateProvider());
+
+    KorpergrosseComposition dto = new KorpergrosseComposition();
+    dto.setGrosseLange(new GrosseLangeObservation());
+    dto.getGrosseLange().setGrosseLangeMagnitude(22d);
+
+    Composition rmObject = (Composition) unflattener.unflatten(dto);
+
+    assertThat(rmObject).isNotNull();
+
+    Flattener cut = new Flattener(new TestDataTemplateProvider());
+
+    KorpergrosseComposition actual = cut.flatten(rmObject, KorpergrosseComposition.class);
+
+    assertThat(actual.getGrosseLange().getGrosseLangeMagnitude()).isEqualTo(22d);
+
+  }
+
+  @Test
+  public void testFlattenSingleEventIntervallEvent() {
+    Unflattener unflattener = new Unflattener(new TestDataTemplateProvider());
+
+    KorpergrosseComposition dto = new KorpergrosseComposition();
+    dto.setGrosseLange(new GrosseLangeObservation());
+    dto.getGrosseLange().setGrosseLangeMagnitude(22d);
+
+    Composition rmObject = (Composition) unflattener.unflatten(dto);
+    Observation observation = (Observation) rmObject.getContent().get(0);
+
+    Event<ItemStructure> event = observation.getData().getEvents().get(0);
+    observation.getData().getEvents().remove(event);
+
+    IntervalEvent<ItemStructure> intervalEvent = new IntervalEvent<>();
+    intervalEvent.setData(event.getData());
+    intervalEvent.setArchetypeNodeId(event.getArchetypeNodeId());
+    intervalEvent.setSampleCount(10L);
+    observation.getData().getEvents().add(intervalEvent);
+
+    assertThat(rmObject).isNotNull();
+
+    Flattener cut = new Flattener(new TestDataTemplateProvider());
+
+    KorpergrosseComposition actual = cut.flatten(rmObject, KorpergrosseComposition.class);
+
+    assertThat(actual.getGrosseLange().getGrosseLangeMagnitude()).isEqualTo(22d);
+
   }
 
   @Test

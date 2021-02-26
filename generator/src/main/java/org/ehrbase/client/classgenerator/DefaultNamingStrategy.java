@@ -218,6 +218,7 @@ public class DefaultNamingStrategy implements NamingStrategy {
   public String buildFieldName(ClassGeneratorContext context, String path, WebTemplateNode node) {
 
     String name = node.getName();
+
     String attributeName = new FlatPath(path).getLast().getAttributeName();
 
     if (!context.nodeDeque.isEmpty()) {
