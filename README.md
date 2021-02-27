@@ -73,9 +73,50 @@ Generic openEHR Client and Objekt-mapper:
 
 ### Build
 
+Use one of the options below to build the project.
+
+#### Option 1) -  Build w/o integration tets
+
+This option skipps integration tests. Code coverage report is based on unit tests only.
+
 ```bash
 mvn clean install
 ```
+or any specific maven phase
+```bash
+mvn clean test
+mvn clean verify
+mvn clean package
+...
+```
+
+
+
+#### Option 2) - Build with unit & integration tests
+This option includes unit as well as integration tests. Three coverage reports are generated: unit test report, integration test report and overall coverage report. 
+
+```bash
+mvn clean install -DskipIntegrationTests=false
+```
+
+or any specific maven phase
+
+```bash
+mvn clean verify -DskipIntegrationTests=false
+mvn clean package -DskipIntegrationTests=false
+...
+```
+
+  :warning: EHRbase server + DB must be running to execute integration tests successfully
+
+#### Option 3) - Execute tests via profiles
+
+```bash
+mvn clean -Pfast test    # will execute unit tests only
+mvn clean -Pslow test    # will execute integration tests only
+mvn clean -Pfull test    # will execute all test
+```
+NOTE: This option may not properly generate coverage reports because Jacoco is not configured in the profiles. Feel free to provide a PR to enhance this :wink:
 
 ## Usage
 
