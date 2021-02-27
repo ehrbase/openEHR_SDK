@@ -79,11 +79,11 @@ Use one of the options below to build the project.
 
 This option skipps integration tests. Code coverage report is based on unit tests only.
 
-```bash
+```
 mvn clean install
 ```
 or any specific maven phase
-```bash
+```
 mvn clean test
 mvn clean verify
 mvn clean package
@@ -95,13 +95,13 @@ mvn clean package
 #### Option 2) - Build with unit & integration tests
 This option includes unit as well as integration tests. Three coverage reports are generated: unit test report, integration test report and overall coverage report. 
 
-```bash
+```
 mvn clean install -DskipIntegrationTests=false
 ```
 
 or any specific maven phase
 
-```bash
+```
 mvn clean verify -DskipIntegrationTests=false
 mvn clean package -DskipIntegrationTests=false
 ...
@@ -111,7 +111,7 @@ mvn clean package -DskipIntegrationTests=false
 
 #### Option 3) - Execute tests via profiles
 
-```bash
+```
 mvn clean -Pfast test    # will execute unit tests only
 mvn clean -Pslow test    # will execute integration tests only
 mvn clean -Pfull test    # will execute all test
