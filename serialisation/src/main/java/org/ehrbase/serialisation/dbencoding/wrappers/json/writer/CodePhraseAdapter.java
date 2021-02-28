@@ -28,6 +28,7 @@ import com.nedap.archie.rm.datatypes.CodePhrase;
 import com.nedap.archie.rm.support.identification.TerminologyId;
 import org.ehrbase.serialisation.dbencoding.wrappers.json.I_DvTypeAdapter;
 import org.ehrbase.serialisation.util.ObjectSnakeCase;
+import org.ehrbase.serialisation.util.SnakeCase;
 
 import java.io.IOException;
 
@@ -66,18 +67,19 @@ public class CodePhraseAdapter extends DvTypeAdapter<CodePhrase> {
         if (adapterType == I_DvTypeAdapter.AdapterType.PG_JSONB) {
             writer.beginObject();
             writer.name("codeString").value(codePhrase.getCodeString());
+            writer.name(I_DvTypeAdapter.TAG_CLASS_RAW_JSON).value(new SnakeCase(CodePhrase.class.getSimpleName()).camelToUpperSnake());
             writer.name("terminologyId");
             writer.beginObject();
-            writer.name("name").value(codePhrase.getTerminologyId().getValue());
             writer.name("value").value(codePhrase.getTerminologyId().getValue());
+            writer.name(I_DvTypeAdapter.TAG_CLASS_RAW_JSON).value(new SnakeCase(TerminologyId.class.getSimpleName()).camelToUpperSnake());
             writer.endObject();
             writer.endObject();
         } else if (adapterType == I_DvTypeAdapter.AdapterType.RAW_JSON) {
-            writer.beginObject(); //{
+            writer.beginObject();
             writer.name(I_DvTypeAdapter.TAG_CLASS_RAW_JSON).value(new ObjectSnakeCase(codePhrase).camelToUpperSnake());
             writer.name("code_string").value(codePhrase.getCodeString());
             writer.name("terminology_id").value(gson.toJson(codePhrase.getTerminologyId()));
-            writer.endObject(); //}
+            writer.endObject();
         }
 
     }
