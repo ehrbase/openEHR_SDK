@@ -22,7 +22,7 @@
     <groupId>com.github.ehrbase.openEHR_SDK</groupId>
     <artifactId>root</artifactId>
     <packaging>pom</packaging>
-    <version>1.0.0</version>
+    <version>v1.2.0</version>
 
     <modules>
         <module>client</module>
