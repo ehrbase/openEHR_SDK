@@ -21,7 +21,7 @@ import com.nedap.archie.rm.RMObject;
 import com.nedap.archie.rm.datavalues.DvText;
 import com.nedap.archie.rm.datavalues.quantity.datetime.DvDateTime;
 import com.nedap.archie.rm.ehr.EhrStatus;
-import org.checkerframework.checker.units.qual.A;
+import org.ehrbase.client.Integration;
 import org.ehrbase.client.aql.parameter.ParameterValue;
 import org.ehrbase.client.aql.query.Query;
 import org.ehrbase.client.aql.record.Record1;
@@ -30,7 +30,11 @@ import org.ehrbase.client.openehrclient.defaultrestclient.DefaultRestClientTestH
 import org.ehrbase.client.openehrclient.defaultrestclient.systematic.CanonicalUtil;
 import org.ehrbase.client.openehrclient.defaultrestclient.systematic.comparator.EhrComparator;
 import org.ehrbase.response.openehr.QueryResponseData;
-import org.junit.*;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Ignore;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 import java.net.URISyntaxException;
 import java.time.OffsetDateTime;
@@ -40,6 +44,8 @@ import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@Category(Integration.class)
+@Ignore
 public class CanonicalEhrQuery1Test extends CanonicalUtil {
     private static OpenEhrClient openEhrClient;
 

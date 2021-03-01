@@ -1,0 +1,80 @@
+name,
+name/value,
+archetype_node_id,
+language,//TODO: https://github.com/ehrbase/project_management/issues/465
+language/code_string,
+language/terminology_id,//TODO: https://github.com/ehrbase/openEHR_SDK/tree/feature/465_name_in_terminology_id
+language/terminology_id/value,
+encoding,//TODO: https://github.com/ehrbase/openEHR_SDK/tree/feature/465_name_in_terminology_id
+encoding/code_string,
+encoding/terminology_id,//TODO: https://github.com/ehrbase/openEHR_SDK/tree/feature/465_name_in_terminology_id
+encoding/terminology_id/value,//TODO: https://github.com/ehrbase/project_management/issues/490
+subject,//TODO: https://github.com/ehrbase/project_management/issues/488
+data[at0001],//TODO: multiple discrepancies (extraneous _type, terminology name etc.
+data[at0001]/name,
+data[at0001]/name/value,
+data[at0001]/archetype_node_id,//TODO: https://github.com/ehrbase/project_management/issues/483
+data[at0001]/items[at0002],//TODO: https://github.com/ehrbase/project_management/issues/483
+data[at0001]/items[at0002]/name,//TODO: https://github.com/ehrbase/project_management/issues/492
+data[at0001]/items[at0002]/name/value,//TODO: https://github.com/ehrbase/project_management/issues/492
+data[at0001]/items[at0002]/archetype_node_id,//TODO: https://github.com/ehrbase/project_management/issues/483
+data[at0001]/items[at0003],//TODO: https://github.com/ehrbase/project_management/issues/483
+data[at0001]/items[at0003]/name,
+data[at0001]/items[at0003]/name/value,
+data[at0001]/items[at0003]/archetype_node_id,//TODO: https://github.com/ehrbase/project_management/issues/483
+data[at0001]/items[at0003]/value,//TODO: https://github.com/ehrbase/project_management/issues/485
+data[at0001]/items[at0003]/value/lower,//TODO: https://github.com/ehrbase/project_management/issues/485
+data[at0001]/items[at0003]/value/lower/magnitude,//TODO: https://github.com/ehrbase/project_management/issues/491
+data[at0001]/items[at0003]/value/upper,//TODO: https://github.com/ehrbase/project_management/issues/485
+data[at0001]/items[at0003]/value/upper/magnitude,//TODO:https://github.com/ehrbase/project_management/issues/491
+data[at0001]/items[at0003]/value/lower_unbounded,//TODO:https://github.com/ehrbase/project_management/issues/491
+data[at0001]/items[at0003]/value/upper_unbounded,//TODO:https://github.com/ehrbase/project_management/issues/491
+data[at0001]/items[at0004],//TODO: https://github.com/ehrbase/project_management/issues/483
+data[at0001]/items[at0004]/name,
+data[at0001]/items[at0004]/name/value,
+data[at0001]/items[at0004]/archetype_node_id,//TODO: https://github.com/ehrbase/project_management/issues/483
+data[at0001]/items[at0004]/value,//TODO: https://github.com/ehrbase/project_management/issues/485
+data[at0001]/items[at0004]/value/lower,//TODO:https://github.com/ehrbase/project_management/issues/493
+data[at0001]/items[at0004]/value/lower/magnitude,//TODO:https://github.com/ehrbase/project_management/issues/491
+data[at0001]/items[at0004]/value/lower/units,//TODO: https://github.com/ehrbase/project_management/issues/493
+data[at0001]/items[at0004]/value/upper,//TODO: https://github.com/ehrbase/project_management/issues/493
+data[at0001]/items[at0004]/value/upper/magnitude,//TODO:https://github.com/ehrbase/project_management/issues/491
+data[at0001]/items[at0004]/value/upper/units,//TODO: https://github.com/ehrbase/project_management/issues/493
+data[at0001]/items[at0004]/value/lower_unbounded,//TODO:https://github.com/ehrbase/project_management/issues/491
+data[at0001]/items[at0004]/value/upper_unbounded,//TODO:https://github.com/ehrbase/project_management/issues/491
+data[at0001]/items[at0005],//TODO: https://github.com/ehrbase/project_management/issues/483
+data[at0001]/items[at0005]/name,
+data[at0001]/items[at0005]/name/value,
+data[at0001]/items[at0005]/archetype_node_id,//TODO: https://github.com/ehrbase/project_management/issues/483
+data[at0001]/items[at0005]/value,//TODO: https://github.com/ehrbase/project_management/issues/485
+data[at0001]/items[at0005]/value/lower,//TODO: https://github.com/ehrbase/project_management/issues/493
+data[at0001]/items[at0005]/value/lower/value,//TODO: https://github.com/ehrbase/project_management/issues/493
+data[at0001]/items[at0005]/value/upper,//TODO: https://github.com/ehrbase/project_management/issues/493
+data[at0001]/items[at0005]/value/upper/value,//TODO: https://github.com/ehrbase/project_management/issues/493
+data[at0001]/items[at0005]/value/lower_unbounded,//TODO:https://github.com/ehrbase/project_management/issues/491
+data[at0001]/items[at0005]/value/upper_unbounded,//TODO:https://github.com/ehrbase/project_management/issues/491
+data[at0001]/items[at0009],//TODO: https://github.com/ehrbase/project_management/issues/483
+data[at0001]/items[at0009]/name,
+data[at0001]/items[at0009]/name/value,
+data[at0001]/items[at0009]/archetype_node_id,//TODO: https://github.com/ehrbase/project_management/issues/483
+data[at0001]/items[at0009]/value/magnitude,//TODO: https://github.com/ehrbase/project_management/issues/489
+data[at0001]/items[at0009]/value/magnitude,//TODO: https://github.com/ehrbase/project_management/issues/494
+data[at0001]/items[at0009]/value/units,//TODO: https://github.com/ehrbase/project_management/issues/494
+data[at0001]/items[at0006],//TODO: https://github.com/ehrbase/project_management/issues/483
+data[at0001]/items[at0006]/name,
+data[at0001]/items[at0006]/name/value,
+data[at0001]/items[at0006]/archetype_node_id,//TODO: https://github.com/ehrbase/project_management/issues/483
+data[at0001]/items[at0006]/items[at0007],//TODO: https://github.com/ehrbase/project_management/issues/483
+data[at0001]/items[at0006]/items[at0007]/name,
+data[at0001]/items[at0006]/items[at0007]/name/value,
+data[at0001]/items[at0006]/items[at0007]/archetype_node_id,//TODO: https://github.com/ehrbase/project_management/issues/483
+data[at0001]/items[at0006]/items[at0007]/items[at0008],//TODO: https://github.com/ehrbase/project_management/issues/483
+data[at0001]/items[at0006]/items[at0007]/items[at0008]/name,
+data[at0001]/items[at0006]/items[at0007]/items[at0008]/name/value,
+data[at0001]/items[at0006]/items[at0007]/items[at0008]/archetype_node_id,//TODO: https://github.com/ehrbase/project_management/issues/483
+data[at0001]/items[at0006]/items[at0007]/items[at0008]/items[at0010],//TODO: https://github.com/ehrbase/project_management/issues/483
+data[at0001]/items[at0006]/items[at0007]/items[at0008]/items[at0010]/name,
+data[at0001]/items[at0006]/items[at0007]/items[at0008]/items[at0010]/name/value,
+data[at0001]/items[at0006]/items[at0007]/items[at0008]/items[at0010]/archetype_node_id,//TODO: https://github.com/ehrbase/project_management/issues/483
+data[at0001]/items[at0006]/items[at0007]/items[at0008]/items[at0010]/value,
+data[at0001]/items[at0006]/items[at0007]/items[at0008]/items[at0010]/value/value

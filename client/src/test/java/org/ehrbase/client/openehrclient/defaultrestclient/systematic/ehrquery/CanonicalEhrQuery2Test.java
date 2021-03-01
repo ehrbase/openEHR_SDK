@@ -18,37 +18,35 @@
 package org.ehrbase.client.openehrclient.defaultrestclient.systematic.ehrquery;
 
 import com.nedap.archie.rm.RMObject;
-import com.nedap.archie.rm.composition.Composition;
-import com.nedap.archie.rm.datavalues.DvText;
-import com.nedap.archie.rm.datavalues.quantity.datetime.DvDateTime;
 import com.nedap.archie.rm.ehr.EhrStatus;
 import org.apache.commons.io.IOUtils;
+import org.ehrbase.client.Integration;
 import org.ehrbase.client.aql.parameter.ParameterValue;
 import org.ehrbase.client.aql.query.Query;
 import org.ehrbase.client.aql.record.Record1;
 import org.ehrbase.client.openehrclient.OpenEhrClient;
 import org.ehrbase.client.openehrclient.defaultrestclient.DefaultRestClientTestHelper;
 import org.ehrbase.client.openehrclient.defaultrestclient.systematic.CanonicalUtil;
-import org.ehrbase.client.openehrclient.defaultrestclient.systematic.comparator.EhrComparator;
 import org.ehrbase.response.openehr.QueryResponseData;
 import org.ehrbase.serialisation.jsonencoding.CanonicalJson;
-import org.ehrbase.test_data.composition.CompositionTestDataCanonicalJson;
 import org.ehrbase.test_data.ehr.EhrTestDataCanonicalJson;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
-import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@Category(Integration.class)
+@Ignore
 public class CanonicalEhrQuery2Test extends CanonicalUtil {
     private static OpenEhrClient openEhrClient;
 

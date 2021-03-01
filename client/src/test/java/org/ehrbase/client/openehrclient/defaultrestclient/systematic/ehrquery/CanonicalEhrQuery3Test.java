@@ -20,6 +20,7 @@ package org.ehrbase.client.openehrclient.defaultrestclient.systematic.ehrquery;
 import com.nedap.archie.rm.RMObject;
 import com.nedap.archie.rm.ehr.EhrStatus;
 import org.apache.commons.io.IOUtils;
+import org.ehrbase.client.Integration;
 import org.ehrbase.client.aql.parameter.ParameterValue;
 import org.ehrbase.client.aql.query.Query;
 import org.ehrbase.client.aql.record.Record1;
@@ -33,6 +34,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -43,6 +45,8 @@ import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@Category(Integration.class)
+@Ignore
 public class CanonicalEhrQuery3Test extends CanonicalUtil {
     private static OpenEhrClient openEhrClient;
 

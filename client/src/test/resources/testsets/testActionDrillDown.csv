@@ -1,0 +1,24 @@
+name,
+name/value,
+archetype_node_id,//TODO: https://github.com/ehrbase/project_management/issues/483
+language,//TODO: https://github.com/ehrbase/project_management/issues/465
+language/code_string,
+language/terminology_id,//TODO: https://github.com/ehrbase/openEHR_SDK/tree/feature/465_name_in_terminology_id
+language/terminology_id/value,
+encoding,//TODO: https://github.com/ehrbase/openEHR_SDK/tree/feature/465_name_in_terminology_id
+encoding/code_string,
+encoding/terminology_id,//TODO: https://github.com/ehrbase/openEHR_SDK/tree/feature/465_name_in_terminology_id
+encoding/terminology_id/value,//TODO: https://github.com/ehrbase/project_management/issues/490
+subject,//TODO: https://github.com/ehrbase/project_management/issues/488
+time,//TODO:https://github.com/ehrbase/project_management/issues/495
+time/value,
+ism_transition,//TODO:https://github.com/ehrbase/project_management/issues/501
+ism_transition/current_state,//TODO:https://github.com/ehrbase/project_management/issues/501
+ism_transition/current_state/value,//TODO:https://github.com/ehrbase/project_management/issues/501
+ism_transition/current_state/defining_code,//TODO:https://github.com/ehrbase/project_management/issues/501
+ism_transition/current_state/defining_code/code_string,//TODO:https://github.com/ehrbase/project_management/issues/501
+ism_transition/current_state/defining_code/terminology_id,//TODO:https://github.com/ehrbase/project_management/issues/501
+ism_transition/current_state/defining_code/terminology_id/value,//TODO:https://github.com/ehrbase/project_management/issues/501
+description[at0001]/items[openEHR-EHR-CLUSTER.test_all_types.v1]/items[at0001]/items[at0002]/items[at0003],//TODO:https://github.com/ehrbase/project_management/issues/502
+description[at0001]/items[openEHR-EHR-CLUSTER.test_all_types.v1]/items[at0001]/items[at0002]/items[at0003]/value,//TODO: https://github.com/ehrbase/project_management/issues/485
+description[at0001]/items[openEHR-EHR-CLUSTER.test_all_types.v1]/items[at0001]/items[at0002]/items[at0003]/value/value,//TODO:https://github.com/ehrbase/project_management/issues/491

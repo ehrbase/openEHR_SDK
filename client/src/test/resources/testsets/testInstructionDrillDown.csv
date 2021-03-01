@@ -1,0 +1,38 @@
+name,
+name/value,
+archetype_node_id,//TODO: https://github.com/ehrbase/project_management/issues/483
+language,//TODO: https://github.com/ehrbase/project_management/issues/465
+language/code_string,
+language/terminology_id,//TODO: https://github.com/ehrbase/openEHR_SDK/tree/feature/465_name_in_terminology_id
+language/terminology_id/value,
+encoding,//TODO: https://github.com/ehrbase/openEHR_SDK/tree/feature/465_name_in_terminology_id
+encoding/code_string,
+encoding/terminology_id,//TODO: https://github.com/ehrbase/openEHR_SDK/tree/feature/465_name_in_terminology_id
+encoding/terminology_id/value,//TODO: https://github.com/ehrbase/project_management/issues/490
+subject,//TODO: https://github.com/ehrbase/project_management/issues/488
+narrative,//TODO: https://github.com/ehrbase/project_management/issues/495
+narrative/value,//TODO: https://github.com/ehrbase/project_management/issues/496
+activities[at0001],//TODO: multiple discrepancies (extraneous _type, terminology name etc.
+activities[at0001]/name,//TODO: https://github.com/ehrbase/project_management/issues/497
+activities[at0001]/name/value,//TODO: https://github.com/ehrbase/project_management/issues/497
+activities[at0001]/timing,//TODO: https://github.com/ehrbase/project_management/issues/498
+activities[at0001]/timing/value,//TODO: https://github.com/ehrbase/project_management/issues/498
+activities[at0001]/timing/formalism,//TODO: https://github.com/ehrbase/project_management/issues/498
+activities[at0001]/action_archetype_id,//TODO:https://github.com/ehrbase/project_management/issues/499
+activities[at0001]/archetype_node_id,//TODO: https://github.com/ehrbase/project_management/issues/483
+activities[at0001]/description[at0002],//TODO: multiple discrepancies (extraneous _type, terminology name etc.
+activities[at0001]/description[at0002]/name,//TODO: https://github.com/ehrbase/project_management/issues/500
+activities[at0001]/description[at0002]/name/value,//TODO: https://github.com/ehrbase/project_management/issues/500
+activities[at0001]/description[at0002]/archetype_node_id,//TODO: https://github.com/ehrbase/project_management/issues/483
+activities[at0001]/description[at0002]/items[at0003],//TODO: multiple discrepancies (extraneous _type, terminology name etc.
+activities[at0001]/description[at0002]/items[at0003]/name,
+activities[at0001]/description[at0002]/items[at0003]/name/value,
+activities[at0001]/description[at0002]/items[at0003]/archetype_node_id,//TODO: https://github.com/ehrbase/project_management/issues/483
+activities[at0001]/description[at0002]/items[at0003]/value,//TODO: https://github.com/ehrbase/project_management/issues/485
+activities[at0001]/description[at0002]/items[at0003]/value/value,
+activities[at0001]/description[at0002]/items[at0004],//TODO: multiple discrepancies (extraneous _type, terminology name etc.
+activities[at0001]/description[at0002]/items[at0004]/name,//TODO:https://github.com/ehrbase/project_management/issues/485
+activities[at0001]/description[at0002]/items[at0004]/name/value,
+activities[at0001]/description[at0002]/items[at0004]/archetype_node_id,//TODO: https://github.com/ehrbase/project_management/issues/483
+activities[at0001]/description[at0002]/items[at0004]/value,//TODO:https://github.com/ehrbase/project_management/issues/485
+activities[at0001]/description[at0002]/items[at0004]/value/value,
