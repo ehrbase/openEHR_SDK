@@ -22,7 +22,7 @@
     <groupId>com.github.ehrbase.openEHR_SDK</groupId>
     <artifactId>root</artifactId>
     <packaging>pom</packaging>
-    <version>1.0.0</version>
+    <version>1.2.0</version>
 
     <modules>
         <module>client</module>
@@ -464,7 +464,7 @@
             <dependency>
                 <groupId>io.github.classgraph</groupId>
                 <artifactId>classgraph</artifactId>
-                <version>4.8.97</version>
+                <version>4.8.98</version>
             </dependency>
             <dependency>
                 <groupId>org.slf4j</groupId>
