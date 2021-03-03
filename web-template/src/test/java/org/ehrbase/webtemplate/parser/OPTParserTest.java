@@ -371,6 +371,11 @@ public class OPTParserTest {
         .filteredOn(s -> s.startsWith("Annotations not equal"))
         .containsExactlyInAnyOrder();
 
+    softAssertions
+        .assertThat(errors)
+        .filteredOn(s -> s.startsWith("Cardinalities not equal"))
+        .containsExactlyInAnyOrder();
+
     // Non equal InputValue
     softAssertions
         .assertThat(errors)
@@ -462,6 +467,16 @@ public class OPTParserTest {
               "Annotations not equal %s != %s in  id=%s aql=%s",
               actual.getAnnotations(),
               expected.getAnnotations(),
+              actual.getId(),
+              actual.getAqlPath()));
+    }
+
+    if (!Objects.equals(actual.getCardinalities(), expected.getCardinalities())) {
+      errors.add(
+          String.format(
+              "Cardinalities not equal %s != %s in  id=%s aql=%s",
+              actual.getCardinalities(),
+              expected.getCardinalities(),
               actual.getId(),
               actual.getAqlPath()));
     }

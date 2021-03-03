@@ -28,8 +28,8 @@ import java.util.Objects;
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class WebtemplateCardinality implements Serializable {
 
-  private int min;
-  private int max;
+  private Integer min;
+  private Integer max;
   private final List<String> ids = new ArrayList<>();
 
   public WebtemplateCardinality() {}
@@ -40,19 +40,19 @@ public class WebtemplateCardinality implements Serializable {
     this.ids.addAll(other.ids);
   }
 
-  public int getMin() {
+  public Integer getMin() {
     return min;
   }
 
-  public void setMin(int min) {
+  public void setMin(Integer min) {
     this.min = min;
   }
 
-  public int getMax() {
+  public Integer getMax() {
     return max;
   }
 
-  public void setMax(int max) {
+  public void setMax(Integer max) {
     this.max = max;
   }
 
