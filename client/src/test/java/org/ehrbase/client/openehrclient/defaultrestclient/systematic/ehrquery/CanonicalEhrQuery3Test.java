@@ -65,12 +65,14 @@ public class CanonicalEhrQuery3Test extends CanonicalUtil {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        ehrUUID = openEhrClient.ehrEndpoint().createEhr(referenceEhrStatus);
+//        ehrUUID = openEhrClient.ehrEndpoint().createEhr(referenceEhrStatus);
     }
 
      @Test
      @Ignore("requires a DB clean-up before invocation")
     public void testEhrAttributesDrillDown(){
+
+        ehrUUID = UUID.fromString("404c0199-4e01-4394-adee-13c9399acd0a");
 
         String rootPath = "e/ehr_status";
         RMObject referenceNode = referenceEhrStatus;
@@ -83,24 +85,21 @@ public class CanonicalEhrQuery3Test extends CanonicalUtil {
                  "archetype_details/template_id",
                  "archetype_details/template_id/value",
                  "subject",
-                 //TODO: https://github.com/ehrbase/project_management/issues/481
-//                 "subject/external_ref"
+                 "subject/external_ref",
                  "subject/external_ref/id",
                  "subject/external_ref/id/value",
                  "subject/external_ref/id/scheme",
                  "subject/external_ref/namespace",
                  "subject/external_ref/type",
-                 //TODO: https://github.com/ehrbase/project_management/issues/483
-//                 "other_details",
-                 //TODO: https://github.com/ehrbase/project_management/issues/482
-//                 "other_details/name",
+                 "other_details",
+                 "other_details/name",
                  "other_details/name/value",
                  //TODO: https://github.com/ehrbase/project_management/issues/484
 //                 "other_details/items[at0001]",
+//                 "other_details/items[at0001]/archetype_node_id",
                  "other_details/items[at0001]/name",
                  "other_details/items[at0001]/name/value",
-                 //TODO: https://github.com/ehrbase/project_management/issues/485
-//                 "other_details/items[at0001]/value",
+                 "other_details/items[at0001]/value",
                  "other_details/items[at0001]/value/id",
                  "other_details/items[at0001]/value/type",
                  "other_details/items[at0001]/value/issuer",

@@ -82,8 +82,7 @@ public class CanonicalEhrQuery2Test extends CanonicalUtil {
                  "archetype_details/template_id",
                  "archetype_details/template_id/value",
                  "subject",
-                 //TODO: https://github.com/ehrbase/project_management/issues/481
-//                 "subject/external_ref"
+                 "subject/external_ref",
                  "subject/external_ref/id",
                  "subject/external_ref/id/value",
                  "subject/external_ref/id/scheme",

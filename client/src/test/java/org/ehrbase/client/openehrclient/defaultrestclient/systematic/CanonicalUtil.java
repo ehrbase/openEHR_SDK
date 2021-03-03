@@ -21,6 +21,8 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.nedap.archie.rm.RMObject;
 import com.nedap.archie.rm.archetyped.Locatable;
+import com.nedap.archie.rm.datavalues.quantity.datetime.DvDateTime;
+import com.nedap.archie.rm.datavalues.quantity.datetime.DvTime;
 import com.nedap.archie.rm.generic.PartySelf;
 import com.nedap.archie.rm.support.identification.TerminologyId;
 import com.nedap.archie.rminfo.ArchieRMInfoLookup;
@@ -199,6 +201,12 @@ public abstract class CanonicalUtil {
         }
         else  if (object instanceof Temporal || object instanceof Duration || object instanceof URI)
             retObject = object.toString();
+
+        if (object instanceof Temporal){
+            //align the millisec delimiter
+            if (retObject instanceof String && ((String) retObject).contains("."))
+                retObject = ((String)retObject).replace(".", ",");
+        }
 
         return retObject;
     }
