@@ -62,6 +62,7 @@ public class WebTemplateNode implements Serializable {
   private final List<String> dependsOn = new ArrayList<>();
   private WebTemplateAnnotation annotations;
   private final List<ProportionType> proportionTypes = new ArrayList<>();
+  private final List<WebtemplateCardinality> cardinalities = new ArrayList<>();
 
   public WebTemplateNode() {}
 
@@ -82,6 +83,8 @@ public class WebTemplateNode implements Serializable {
     } else {
       this.annotations = null;
     }
+
+    this.cardinalities.addAll(other.cardinalities);
     this.inputs.addAll(
         other.getInputs().stream().map(WebTemplateInput::new).collect(Collectors.toList()));
     this.getChildren()
@@ -186,6 +189,10 @@ public class WebTemplateNode implements Serializable {
 
   public List<WebTemplateNode> getChildren() {
     return children;
+  }
+
+  public List<WebtemplateCardinality> getCardinalities() {
+    return cardinalities;
   }
 
   @JsonIgnore
@@ -309,25 +316,26 @@ public class WebTemplateNode implements Serializable {
   public boolean equals(Object o) {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
-    WebTemplateNode node = (WebTemplateNode) o;
-    return min == node.min
-        && max == node.max
-        && Objects.equals(id, node.id)
-        && Objects.equals(optionalIdNumber, node.optionalIdNumber)
-        && Objects.equals(name, node.name)
-        && Objects.equals(localizedName, node.localizedName)
-        && Objects.equals(rmType, node.rmType)
-        && Objects.equals(nodeId, node.nodeId)
-        && Objects.equals(localizedNames, node.localizedNames)
-        && Objects.equals(localizedDescriptions, node.localizedDescriptions)
-        && Objects.equals(aqlPath, node.aqlPath)
-        && Objects.equals(children, node.children)
-        && Objects.equals(inputs, node.inputs)
-        && Objects.equals(inContext, node.inContext)
-        && Objects.equals(termBindings, node.termBindings)
-        && Objects.equals(dependsOn, node.dependsOn)
-        && Objects.equals(annotations, node.annotations)
-        && Objects.equals(proportionTypes, node.proportionTypes);
+    WebTemplateNode that = (WebTemplateNode) o;
+    return min == that.min
+        && max == that.max
+        && Objects.equals(id, that.id)
+        && Objects.equals(optionalIdNumber, that.optionalIdNumber)
+        && Objects.equals(name, that.name)
+        && Objects.equals(localizedName, that.localizedName)
+        && Objects.equals(rmType, that.rmType)
+        && Objects.equals(nodeId, that.nodeId)
+        && Objects.equals(localizedNames, that.localizedNames)
+        && Objects.equals(localizedDescriptions, that.localizedDescriptions)
+        && Objects.equals(aqlPath, that.aqlPath)
+        && Objects.equals(children, that.children)
+        && Objects.equals(inputs, that.inputs)
+        && Objects.equals(inContext, that.inContext)
+        && Objects.equals(termBindings, that.termBindings)
+        && Objects.equals(dependsOn, that.dependsOn)
+        && Objects.equals(annotations, that.annotations)
+        && Objects.equals(proportionTypes, that.proportionTypes)
+        && Objects.equals(cardinalities, that.cardinalities);
   }
 
   @Override
@@ -350,6 +358,7 @@ public class WebTemplateNode implements Serializable {
         termBindings,
         dependsOn,
         annotations,
-        proportionTypes);
+        proportionTypes,
+        cardinalities);
   }
 }
