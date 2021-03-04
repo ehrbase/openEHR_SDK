@@ -123,7 +123,7 @@ public class Filter implements WebTemplateFilter {
     if (List.of("HISTORY", "ITEM_TREE", "ITEM_LIST", "ITEM_SINGLE", "ITEM_TABLE", "ITEM_STRUCTURE")
         .contains(node.getRmType())) {
       return true;
-    } else if (isEvent(node)) {
+    } else if (parent != null && isEvent(node)) {
       return parent.getChildren().stream().filter(this::isEvent).count() == 1 && node.getMax() == 1;
     } else if (node.getRmType().equals("ELEMENT")) {
       return node.getChildren().size() == 1;
