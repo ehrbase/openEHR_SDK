@@ -73,7 +73,8 @@ public enum OperationalTemplateTestData {
   CONSTRAIN_TEST(
       "example with many constrains / default values", "constrain_test.opt", "constrain_test"),
   LANGUAGE_TEST("example with multiple languages", "language_test.opt", "language_test"),
-  SINGLE_EVENT("example with a single valued EVENT", "single_event.opt", "Körpergröße");
+  SINGLE_EVENT("example with a single valued EVENT", "single_event.opt", "Körpergröße"),
+  ADDICTION("example ", "additciton_alcohol.opt", "AddictionAlcoholTemplate");
 
   private final String filename;
   private final String templateId;

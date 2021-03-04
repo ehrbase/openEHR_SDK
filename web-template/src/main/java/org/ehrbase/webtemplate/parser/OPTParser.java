@@ -55,6 +55,7 @@ import org.ehrbase.webtemplate.model.WebTemplateInput;
 import org.ehrbase.webtemplate.model.WebTemplateInputValue;
 import org.ehrbase.webtemplate.model.WebTemplateNode;
 import org.ehrbase.webtemplate.model.WebTemplateValidation;
+import org.ehrbase.webtemplate.model.WebtemplateCardinality;
 import org.openehr.schemas.v1.ARCHETYPESLOT;
 import org.openehr.schemas.v1.ARCHETYPETERM;
 import org.openehr.schemas.v1.CARCHETYPEROOT;
@@ -91,15 +92,15 @@ public class OPTParser {
 
   private final OPERATIONALTEMPLATE operationaltemplate;
   private final String defaultLanguage;
-  private Map<String, String> defaultValues = new HashMap<>();
+  private final Map<String, String> defaultValues = new HashMap<>();
   private final InputHandler inputHandler = new InputHandler(defaultValues);
   private List<String> languages;
 
   public OPTParser(OPERATIONALTEMPLATE operationaltemplate) {
     this.operationaltemplate = operationaltemplate;
     defaultLanguage = operationaltemplate.getLanguage().getCodeString();
-    Arrays.stream(extractChilds(operationaltemplate, "constraints"))
-        .map(c -> extractChilds(c, "attributes"))
+    Arrays.stream(extractChildren(operationaltemplate, "constraints"))
+        .map(c -> extractChildren(c, "attributes"))
         .flatMap(Arrays::stream)
         .map(this::extractDefault)
         .flatMap(List::stream)
@@ -126,7 +127,7 @@ public class OPTParser {
     return webTemplate;
   }
 
-  public XmlObject[] extractChilds(XmlObject c, String attributes) {
+  public XmlObject[] extractChildren(XmlObject c, String attributes) {
     return c.selectChildren("http://schemas.openehr.org/v1", attributes);
   }
 
@@ -135,13 +136,13 @@ public class OPTParser {
 
     String differential_path =
         StringUtils.substringAfter(
-            extractChilds(xmlObject, "differential_path")[0].newCursor().getTextValue(), "/");
+            extractChildren(xmlObject, "differential_path")[0].newCursor().getTextValue(), "/");
     String rm_attribute_name =
-        extractChilds(xmlObject, "rm_attribute_name")[0].newCursor().getTextValue();
+        extractChildren(xmlObject, "rm_attribute_name")[0].newCursor().getTextValue();
     String aql = "/" + differential_path + "/" + rm_attribute_name;
     List<String> attributeNames =
-        Arrays.stream(extractChilds(xmlObject, "children"))
-            .map(x -> extractChilds(x, "default_value"))
+        Arrays.stream(extractChildren(xmlObject, "children"))
+            .map(x -> extractChildren(x, "default_value"))
             .flatMap(Arrays::stream)
             .map(XmlTokenSource::newDomNode)
             .map(Node::getFirstChild)
@@ -154,10 +155,10 @@ public class OPTParser {
     attributeNames.forEach(
         n -> {
           Optional<XmlObject> any =
-              Arrays.stream(extractChilds(xmlObject, "children"))
-                  .map(x -> extractChilds(x, "default_value"))
+              Arrays.stream(extractChildren(xmlObject, "children"))
+                  .map(x -> extractChildren(x, "default_value"))
                   .flatMap(Arrays::stream)
-                  .map(x -> extractChilds(x, n))
+                  .map(x -> extractChildren(x, n))
                   .flatMap(Arrays::stream)
                   .findAny();
           if (any.isPresent()) {
@@ -168,9 +169,9 @@ public class OPTParser {
               defaults.add(new ImmutablePair<>(aql + "|" + n, defaultValue));
             } else {
               String defaultValue =
-                  Arrays.stream(extractChilds(any.get(), "defining_code"))
+                  Arrays.stream(extractChildren(any.get(), "defining_code"))
                       .findAny()
-                      .map(x -> extractChilds(x, "code_string"))
+                      .map(x -> extractChildren(x, "code_string"))
                       .stream()
                       .flatMap(Arrays::stream)
                       .map(XmlTokenSource::newCursor)
@@ -236,36 +237,36 @@ public class OPTParser {
     Map<String, Map<String, TermDefinition>> otherTermDefinitionMap = new HashMap<>();
     List<XmlObject> ontologies = new ArrayList<>();
     ontologies.addAll(
-        Arrays.stream(extractChilds(operationaltemplate, "ontology"))
+        Arrays.stream(extractChildren(operationaltemplate, "ontology"))
             .filter(
                 x ->
                     x.selectAttribute("", "archetype_id")
                         .newCursor()
                         .getTextValue()
                         .equals(archetypeId))
-            .map(x -> extractChilds(x, "term_definitions"))
+            .map(x -> extractChildren(x, "term_definitions"))
             .flatMap(Arrays::stream)
             .collect(Collectors.toList()));
     ontologies.addAll(
-        Arrays.stream(extractChilds(operationaltemplate, "component_ontologies"))
+        Arrays.stream(extractChildren(operationaltemplate, "component_ontologies"))
             .filter(
                 x ->
                     x.selectAttribute("", "archetype_id")
                         .newCursor()
                         .getTextValue()
                         .equals(archetypeId))
-            .map(x -> extractChilds(x, "term_definitions"))
+            .map(x -> extractChildren(x, "term_definitions"))
             .flatMap(Arrays::stream)
             .collect(Collectors.toList()));
 
     for (XmlObject term : ontologies) {
       String language = term.selectAttribute("", "language").newCursor().getTextValue();
 
-      for (XmlObject items : extractChilds(term, "items")) {
+      for (XmlObject items : extractChildren(term, "items")) {
         String code = items.selectAttribute("", "code").newCursor().getTextValue();
         String text = "";
         String description = "";
-        for (XmlObject item : extractChilds(items, "items")) {
+        for (XmlObject item : extractChildren(items, "items")) {
           String id = item.selectAttribute("", "id").newCursor().getTextValue();
           String value = item.newCursor().getTextValue();
           if (Objects.equals(id, "text")) {
@@ -308,6 +309,7 @@ public class OPTParser {
     CATTRIBUTE[] cattributes = ccomplexobject.getAttributesArray();
 
     Map<String, WebTemplateInput> inputMap = new HashMap<>();
+    List<Pair<WebtemplateCardinality, List<String>>> cardinaltyList = new ArrayList<>();
 
     for (CATTRIBUTE cattribute : cattributes) {
       String pathLoop = aqlPath + PATH_DIVIDER + cattribute.getRmAttributeName();
@@ -316,6 +318,7 @@ public class OPTParser {
       pathLoop.endsWith("/name")) {
         continue;
       }
+
       List<WebTemplateNode> newChildren = new ArrayList<>();
       for (COBJECT cobject : cattribute.getChildrenArray()) {
 
@@ -409,7 +412,19 @@ public class OPTParser {
         ismTransition.getChildren().add(transition);
         node.getChildren().add(ismTransition);
       }
-
+      WebtemplateCardinality webtemplateCardinality =
+          Arrays.stream(extractChildren(cattribute, "cardinality"))
+              .findFirst()
+              .map(this::buildCardinality)
+              .orElse(null);
+      if (webtemplateCardinality != null) {
+        cardinaltyList.add(
+            Pair.of(
+                webtemplateCardinality,
+                newChildren.stream()
+                    .map(WebTemplateNode::getAqlPath)
+                    .collect(Collectors.toList())));
+      }
       node.getChildren().addAll(newChildren);
     }
 
@@ -502,7 +517,40 @@ public class OPTParser {
 
     makeIdUnique(node);
 
+    cardinaltyList.forEach(
+        p -> {
+          List<String> nodeIds =
+              p.getRight().stream()
+                  .map(s -> node.findMatching(n -> n.getAqlPath().equals(s)))
+                  .flatMap(List::stream)
+                  .map(WebTemplateNode::getId)
+                  .collect(Collectors.toList());
+          if (p.getKey().getMax() != null && p.getKey().getMax() < nodeIds.size()) {
+            p.getKey().getIds().addAll(nodeIds);
+            node.getCardinalities().add(p.getKey());
+          }
+        });
+
     return node;
+  }
+
+  private WebtemplateCardinality buildCardinality(XmlObject xmlObject) {
+    WebtemplateCardinality webtemplateCardinality = new WebtemplateCardinality();
+    Arrays.stream(extractChildren(xmlObject, "interval"))
+        .map(x -> extractChildren(x, "lower"))
+        .flatMap(Arrays::stream)
+        .findFirst()
+        .map(x -> x.newCursor().getTextValue())
+        .map(Integer::valueOf)
+        .ifPresent(webtemplateCardinality::setMin);
+    Arrays.stream(extractChildren(xmlObject, "interval"))
+        .map(x -> extractChildren(x, "upper"))
+        .flatMap(Arrays::stream)
+        .findFirst()
+        .map(x -> x.newCursor().getTextValue())
+        .map(Integer::valueOf)
+        .ifPresent(webtemplateCardinality::setMax);
+    return webtemplateCardinality;
   }
 
   private void pushProperties(WebTemplateNode node, WebTemplateNode value) {

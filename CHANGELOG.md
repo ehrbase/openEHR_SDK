@@ -3,7 +3,11 @@ Note: version releases in the 0.x.y range may introduce breaking changes.
 ## [Unreleased]
 ### Added
 
+-  Webtemplate: Generate cardinalities for Nodes
+
 ### Fixed
+
+- Webtemplate: Fix erroneous skipping of Event. Happened when there  were a EVENT and a EVENT Spezialisation as Children of the same Node (see https://github.com/ehrbase/openEHR_SDK/pull/197)
 
 ## 1.0.0
 ### Added

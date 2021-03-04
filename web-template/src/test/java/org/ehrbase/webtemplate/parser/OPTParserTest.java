@@ -161,6 +161,31 @@ public class OPTParserTest {
   }
 
   @Test
+  public void parseAddiction() throws IOException, XmlException {
+    OPERATIONALTEMPLATE template =
+        TemplateDocument.Factory.parse(OperationalTemplateTestData.ADDICTION.getStream())
+            .getTemplate();
+
+    OPTParser cut = new OPTParser(template);
+    WebTemplate actual = cut.parse();
+    actual = new Filter().filter(actual);
+    assertThat(actual).isNotNull();
+
+    ObjectMapper objectMapper = new ObjectMapper();
+    WebTemplate expected =
+        objectMapper.readValue(
+            IOUtils.toString(WebTemplateTestData.ADDICTION.getStream(), StandardCharsets.UTF_8),
+            WebTemplate.class);
+
+    List<String> errors = compareWebTemplate(actual, expected);
+    checkErrors(
+        errors,
+        new String[] {
+          "LocalizedNames not equal [de=event] != [de=] in inputValue.code:433 id=category aql=/category"
+        });
+  }
+
+  @Test
   public void parseConstrainTest() throws IOException, XmlException {
     OPERATIONALTEMPLATE template =
         TemplateDocument.Factory.parse(OperationalTemplateTestData.CONSTRAIN_TEST.getStream())
@@ -346,6 +371,11 @@ public class OPTParserTest {
         .filteredOn(s -> s.startsWith("Annotations not equal"))
         .containsExactlyInAnyOrder();
 
+    softAssertions
+        .assertThat(errors)
+        .filteredOn(s -> s.startsWith("Cardinalities not equal"))
+        .containsExactlyInAnyOrder();
+
     // Non equal InputValue
     softAssertions
         .assertThat(errors)
@@ -437,6 +467,16 @@ public class OPTParserTest {
               "Annotations not equal %s != %s in  id=%s aql=%s",
               actual.getAnnotations(),
               expected.getAnnotations(),
+              actual.getId(),
+              actual.getAqlPath()));
+    }
+
+    if (!Objects.equals(actual.getCardinalities(), expected.getCardinalities())) {
+      errors.add(
+          String.format(
+              "Cardinalities not equal %s != %s in  id=%s aql=%s",
+              actual.getCardinalities(),
+              expected.getCardinalities(),
               actual.getId(),
               actual.getAqlPath()));
     }

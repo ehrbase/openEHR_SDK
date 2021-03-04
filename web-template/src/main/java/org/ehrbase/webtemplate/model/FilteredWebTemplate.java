@@ -19,10 +19,10 @@
 
 package org.ehrbase.webtemplate.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import java.util.Deque;
 import java.util.Map;
-import net.minidev.json.annotate.JsonIgnore;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
