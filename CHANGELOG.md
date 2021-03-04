@@ -1,9 +1,17 @@
 # Changelog
 Note: version releases in the 0.x.y range may introduce breaking changes.
+
 ## [Unreleased]
 ### Added
 
--  Webtemplate: Generate cardinalities for Nodes
+### Fixed
+
+## 1.3.0
+### Added
+
+- Webtemplate: Generate cardinalities for Nodes (see https://github.com/ehrbase/openEHR_SDK/pull/198)
+- ClientTemplateProvider: For dynamically retrieving templates from ehr server (see https://github.com/ehrbase/openEHR_SDK/pull/198)
+- DefaultRestClient: remove the need to provide a template Provider (see https://github.com/ehrbase/openEHR_SDK/pull/197)
 
 ### Fixed
 
