@@ -19,6 +19,7 @@
 
 package org.ehrbase.webtemplate.filter;
 
+import com.nedap.archie.rm.datastructures.Event;
 import com.nedap.archie.rminfo.ArchieRMInfoLookup;
 import com.nedap.archie.rminfo.RMTypeInfo;
 import java.util.ArrayDeque;
@@ -122,14 +123,19 @@ public class Filter implements WebTemplateFilter {
     if (List.of("HISTORY", "ITEM_TREE", "ITEM_LIST", "ITEM_SINGLE", "ITEM_TABLE", "ITEM_STRUCTURE")
         .contains(node.getRmType())) {
       return true;
-    } else if (node.getRmType().equals("EVENT")) {
-      return context.findAllByAqlPath(node.getAqlPath(), false).size() == 1 && node.getMax() == 1;
+    } else if (parent != null && isEvent(node)) {
+      return parent.getChildren().stream().filter(this::isEvent).count() == 1 && node.getMax() == 1;
     } else if (node.getRmType().equals("ELEMENT")) {
       return node.getChildren().size() == 1;
     } else if (node.getRmType().equals("CODE_PHRASE") && parent != null) {
       return parent.getRmType().equals("DV_CODED_TEXT");
     }
     return false;
+  }
+
+  protected boolean isEvent(WebTemplateNode node) {
+    RMTypeInfo typeInfo = ARCHIE_RM_INFO_LOOKUP.getTypeInfo(node.getRmType());
+    return typeInfo != null && Event.class.isAssignableFrom(typeInfo.getJavaClass());
   }
 
   protected boolean isNonMandatoryRmAttribute(WebTemplateNode node, WebTemplateNode parent) {

@@ -19,7 +19,6 @@ package org.ehrbase.client.openehrclient.defaultrestclient;
 
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.xmlbeans.XmlException;
-import org.ehrbase.client.openehrclient.OpenEhrClient;
 import org.ehrbase.response.ehrscape.TemplateMetaDataDto;
 import org.ehrbase.response.openehr.TemplatesResponseData;
 import org.ehrbase.test_data.operationaltemplate.OperationalTemplateTestData;
@@ -41,27 +40,39 @@ import static org.junit.Assert.assertTrue;
 
 public class DefaultRestTemplateEndpointIT {
 
-    private static OpenEhrClient openEhrClient;
-    private static DefaultRestClient defaultRestClient;
+    private static DefaultRestClient restClient;
+    private static DefaultRestClient restClientWithDefaultTemplateProvider;
 
     private static final String TEMPLATE_NAME_PREFIX = "ehrbase_blood_pressure_simple.de.v";
 
     @BeforeClass
     public static void setup() throws URISyntaxException {
-        openEhrClient = DefaultRestClientTestHelper.setupDefaultRestClient();
-        defaultRestClient = DefaultRestClientTestHelper.setupDefaultRestClient();
+        restClient = DefaultRestClientTestHelper.setupDefaultRestClient();
+        restClientWithDefaultTemplateProvider = DefaultRestClientTestHelper.setupRestClientWithDefaultTemplateProvider();
     }
 
     @Test
     public void testFindTemplate() {
-
-        Optional<OPERATIONALTEMPLATE> operationalTemplate = openEhrClient.templateEndpoint()
+        Optional<OPERATIONALTEMPLATE> operationalTemplate = restClient.templateEndpoint()
                 .findTemplate(String.format("%s%s", TEMPLATE_NAME_PREFIX, "99999"));
 
         assertFalse(operationalTemplate.isPresent());
 
-        Optional<OPERATIONALTEMPLATE> operationalTemplateFound = openEhrClient.templateEndpoint()
+        Optional<OPERATIONALTEMPLATE> operationalTemplateFound = restClient.templateEndpoint()
                 .findTemplate(String.format("%s%s", TEMPLATE_NAME_PREFIX, "0"));
+
+        assertTrue(operationalTemplateFound.isPresent());
+    }
+
+    @Test
+    public void testFindTemplateWithDefaultTemplateProvider() {
+        Optional<OPERATIONALTEMPLATE> operationalTemplate = restClientWithDefaultTemplateProvider.templateEndpoint()
+            .findTemplate(String.format("%s%s", TEMPLATE_NAME_PREFIX, "3456245"));
+
+        assertFalse(operationalTemplate.isPresent());
+
+        Optional<OPERATIONALTEMPLATE> operationalTemplateFound = restClient.templateEndpoint()
+            .findTemplate(String.format("%s%s", TEMPLATE_NAME_PREFIX, "0"));
 
         assertTrue(operationalTemplateFound.isPresent());
     }
@@ -75,31 +86,63 @@ public class DefaultRestTemplateEndpointIT {
         template.getTemplateId().setValue(templateId);
         template.getUid().setValue(UUID.randomUUID().toString());
 
-        String actual = new DefaultRestTemplateEndpoint(defaultRestClient).upload(template);
+        String actual = new DefaultRestTemplateEndpoint(restClient).upload(template);
+        assertThat(actual).isEqualTo(templateId);
+    }
+
+    @Test
+    public void testCreateTemplateWithDefaultTemplateProvider() throws IOException, XmlException {
+
+        OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(OperationalTemplateTestData.BLOOD_PRESSURE_SIMPLE.getStream()).getTemplate();
+
+        String templateId = String.format("%s%s", TEMPLATE_NAME_PREFIX, RandomStringUtils.randomNumeric(10));
+        template.getTemplateId().setValue(templateId);
+        template.getUid().setValue(UUID.randomUUID().toString());
+
+        String actual = new DefaultRestTemplateEndpoint(restClientWithDefaultTemplateProvider).upload(template);
         assertThat(actual).isEqualTo(templateId);
     }
 
     @Test
     public void testFindAllTemplates() throws IOException, XmlException {
 
-        DefaultRestTemplateEndpoint templateEndpoint = new DefaultRestTemplateEndpoint(defaultRestClient);
-
-        OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(OperationalTemplateTestData.BLOOD_PRESSURE_SIMPLE.getStream()).getTemplate();
-
         String templateId = String.format("%s%s", TEMPLATE_NAME_PREFIX, RandomStringUtils.randomNumeric(10));
+        String savedTemplateId = uploadTemplate(restClient,OperationalTemplateTestData.BLOOD_PRESSURE_SIMPLE, templateId);
 
-        template.getTemplateId().setValue(templateId);
-        template.getUid().setValue(UUID.randomUUID().toString());
-
-        String savedTemplateId = templateEndpoint.upload(template);
         assertThat(savedTemplateId).isEqualTo(templateId);
 
-        TemplatesResponseData templatesResponseData = templateEndpoint.findAllTemplates();
+        TemplatesResponseData templatesResponseData = restClient.templateEndpoint().findAllTemplates();
         assertThat(templatesResponseData).isNotNull();
 
         List<TemplateMetaDataDto> templateMetaDataDtos = templatesResponseData.get();
         assertThat(templateMetaDataDtos).isNotEmpty();
         assertThat(templateMetaDataDtos.stream().anyMatch(t -> t.getTemplateId().equals(templateId))).isTrue();
+    }
+
+    @Test
+    public void testFindAllTemplatesWithDefaultTemplateProvider() throws IOException, XmlException {
+        String templateId = String.format("%s%s", TEMPLATE_NAME_PREFIX, RandomStringUtils.randomNumeric(10));
+        String savedTemplateId = uploadTemplate(restClientWithDefaultTemplateProvider,OperationalTemplateTestData.BLOOD_PRESSURE_SIMPLE, templateId);
+
+        assertThat(savedTemplateId).isEqualTo(templateId);
+
+        TemplatesResponseData templatesResponseData = restClientWithDefaultTemplateProvider.templateEndpoint().findAllTemplates();
+        assertThat(templatesResponseData).isNotNull();
+
+        List<TemplateMetaDataDto> templateMetaDataDtos = templatesResponseData.get();
+        assertThat(templateMetaDataDtos).isNotEmpty();
+        assertThat(templateMetaDataDtos.stream().anyMatch(t -> t.getTemplateId().equals(templateId))).isTrue();
+    }
+
+    private String  uploadTemplate(DefaultRestClient client, OperationalTemplateTestData testTemplate, String testTemplateId) throws IOException, XmlException{
+        DefaultRestTemplateEndpoint templateEndpoint = new DefaultRestTemplateEndpoint(client);
+
+        OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(testTemplate.getStream()).getTemplate();
+
+        template.getTemplateId().setValue(testTemplateId);
+        template.getUid().setValue(UUID.randomUUID().toString());
+
+       return templateEndpoint.upload(template);
     }
 
 }

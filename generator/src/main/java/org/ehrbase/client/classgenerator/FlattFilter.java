@@ -20,7 +20,6 @@
 package org.ehrbase.client.classgenerator;
 
 import com.nedap.archie.rm.archetyped.Locatable;
-import com.nedap.archie.rm.datastructures.Event;
 import com.nedap.archie.rminfo.RMTypeInfo;
 import java.util.Collections;
 import java.util.Deque;
@@ -121,12 +120,7 @@ public class FlattFilter extends Filter {
         && (config.isGenerateChoicesForSingleEvent() || node.isMulti())) {
       return false;
     }
-    return parent.getChildren().stream().filter(this::isEvent).count() == 1;
-  }
-
-  private boolean isEvent(WebTemplateNode node) {
-    RMTypeInfo typeInfo = ARCHIE_RM_INFO_LOOKUP.getTypeInfo(node.getRmType());
-    return typeInfo != null && Event.class.isAssignableFrom(typeInfo.getJavaClass());
+    return parent.getChildren().stream().filter(this::isEvent).count() == 1 && !node.isMulti();
   }
 
   protected void preHandle(WebTemplateNode node) {

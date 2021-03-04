@@ -1,9 +1,21 @@
 # Changelog
 Note: version releases in the 0.x.y range may introduce breaking changes.
+
 ## [Unreleased]
 ### Added
 
 ### Fixed
+
+## 1.3.0
+### Added
+
+- Webtemplate: Generate cardinalities for Nodes (see https://github.com/ehrbase/openEHR_SDK/pull/198)
+- ClientTemplateProvider: For dynamically retrieving templates from ehr server (see https://github.com/ehrbase/openEHR_SDK/pull/198)
+- DefaultRestClient: remove the need to provide a template Provider (see https://github.com/ehrbase/openEHR_SDK/pull/197)
+
+### Fixed
+
+- Webtemplate: Fix erroneous skipping of Event. Happened when there  were a EVENT and a EVENT Spezialisation as Children of the same Node (see https://github.com/ehrbase/openEHR_SDK/pull/197)
 
 ## 1.0.0
 ### Added
