@@ -3,7 +3,8 @@ Note: version releases in the 0.x.y range may introduce breaking changes.
 ## [Unreleased]
 ### Added
 
--  Webtemplate: Generate cardinalities for Nodes
+- Webtemplate: Generate cardinalities for Nodes
+- ClientTemplateProvider: For dinamically retrieving templates from ehr server
 
 ### Fixed
 

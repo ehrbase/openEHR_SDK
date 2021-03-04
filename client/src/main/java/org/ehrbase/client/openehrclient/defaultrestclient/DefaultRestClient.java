@@ -67,7 +67,7 @@ public class DefaultRestClient implements OpenEhrClient {
 
     static final ObjectMapper OBJECT_MAPPER = createObjectMapper();
     private final OpenEhrClientConfig config;
-    private TemplateProvider templateProvider;
+    private final TemplateProvider templateProvider;
     private final Executor executor;
     private final DefaultRestEhrEndpoint defaultRestEhrEndpoint;
     private final Map<UUID, DefaultRestDirectoryEndpoint> directoryEndpointMap = new WeakHashMap<>();
