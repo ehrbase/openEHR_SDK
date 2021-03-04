@@ -66,8 +66,8 @@ public enum OperationalTemplateTestData {
       "stationärer_versorgungsfall.opt",
       "Stationärer Versorgungsfall"),
   INITIAL_ASSESSMENT(
-      "example.initialassesment.v0l",
-      "example.initialassesment.v0.opt",
+      "example.initialassesment.v0",
+      "example_initialassesment.v0.opt",
       "example.initialassesment.v0"),
   D4L_QUESTIONNAIRE("D4L_questionnaire", "D4L_questionnaire.opt", "D4L_questionnaire"),
   CONSTRAIN_TEST(

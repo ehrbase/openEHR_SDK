@@ -19,34 +19,29 @@
 
 package org.ehrbase.serialisation.flatencoding.std.umarshal.postprocessor;
 
+import static org.ehrbase.webtemplate.parser.OPTParser.PATH_DIVIDER;
+
 import com.nedap.archie.rm.composition.Composition;
 import com.nedap.archie.rm.support.identification.HierObjectId;
-import org.apache.commons.lang3.StringUtils;
-
 import java.util.Map;
-
-import static org.ehrbase.webtemplate.parser.OPTParser.PATH_DIVIDER;
 
 public class CompositionUnmarshalPostprocessor extends AbstractUnmarshalPostprocessor<Composition> {
 
-    /**
-     * {@inheritDoc}
-     * Unmarshalls {@link Composition#setUid}
-     */
-    @Override
-    public void process(String term, Composition rmObject, Map<String, String> values) {
-        String strip = StringUtils.strip(values.get(term + PATH_DIVIDER + "_uid") + "", "\"");
-        if (StringUtils.isNotBlank(strip)) {
-            rmObject.setUid(new HierObjectId(strip));
-        }
-        consumedPath.add(term + PATH_DIVIDER + "_uid");
-    }
+  /** {@inheritDoc} Unmarshalls {@link Composition#setUid} */
+  @Override
+  public void process(String term, Composition rmObject, Map<String, String> values) {
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Class<Composition> getAssociatedClass() {
-        return Composition.class;
-    }
+    setValue(
+        term + PATH_DIVIDER + "_uid",
+        null,
+        values,
+        s -> rmObject.setUid(new HierObjectId(s)),
+        String.class);
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public Class<Composition> getAssociatedClass() {
+    return Composition.class;
+  }
 }
