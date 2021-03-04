@@ -47,7 +47,6 @@ Generic openEHR Client and Objekt-mapper:
     - like
     - compare path to path expressions 
     
-
 ## Release Notes (v1.0.0)
 
 * Support web-templates and flat-format
