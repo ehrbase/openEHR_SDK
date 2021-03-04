@@ -65,7 +65,9 @@ public class WebtemplateCardinality implements Serializable {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     WebtemplateCardinality that = (WebtemplateCardinality) o;
-    return min == that.min && max == that.max && Objects.equals(ids, that.ids);
+    return Objects.equals(min, that.min)
+        && Objects.equals(max, that.max)
+        && Objects.equals(ids, that.ids);
   }
 
   @Override

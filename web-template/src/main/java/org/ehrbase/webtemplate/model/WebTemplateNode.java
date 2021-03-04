@@ -84,7 +84,8 @@ public class WebTemplateNode implements Serializable {
       this.annotations = null;
     }
 
-    this.cardinalities.addAll(other.cardinalities);
+    this.cardinalities.addAll(
+        other.cardinalities.stream().map(WebtemplateCardinality::new).collect(Collectors.toList()));
     this.inputs.addAll(
         other.getInputs().stream().map(WebTemplateInput::new).collect(Collectors.toList()));
     this.getChildren()
