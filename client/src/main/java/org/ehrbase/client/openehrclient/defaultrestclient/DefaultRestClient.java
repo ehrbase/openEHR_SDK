@@ -51,6 +51,7 @@ import org.ehrbase.client.openehrclient.OpenEhrClient;
 import org.ehrbase.client.openehrclient.OpenEhrClientConfig;
 import org.ehrbase.client.openehrclient.TemplateEndpoint;
 import org.ehrbase.client.openehrclient.VersionUid;
+import org.ehrbase.client.templateprovider.ClientTemplateProvider;
 import org.ehrbase.serialisation.jsonencoding.CanonicalJson;
 import org.ehrbase.serialisation.mapper.RmObjectJsonDeSerializer;
 import org.ehrbase.webtemplate.templateprovider.TemplateProvider;
@@ -76,9 +77,19 @@ public class DefaultRestClient implements OpenEhrClient {
         this(config, templateProvider, null);
     }
 
+    public DefaultRestClient(OpenEhrClientConfig config) {
+        this(config, null, null);
+    }
+
     public DefaultRestClient(OpenEhrClientConfig config, TemplateProvider templateProvider, HttpClient httpClient) {
         this.config = config;
-        this.templateProvider = templateProvider;
+
+        if(templateProvider != null){
+            this.templateProvider = templateProvider;
+        } else {
+            this.templateProvider = new ClientTemplateProvider(this);
+        }
+
         executor = Executor.newInstance(httpClient);
         defaultRestEhrEndpoint = new DefaultRestEhrEndpoint(this);
     }

@@ -25,10 +25,19 @@ import java.net.URISyntaxException;
 
 public class DefaultRestClientTestHelper {
 
-    public static DefaultRestClient setupDefaultRestClient() throws URISyntaxException {
-        TestDataTemplateProvider templateProvider = new TestDataTemplateProvider();
-        DefaultRestClient client = new DefaultRestClient(new OpenEhrClientConfig(new URI("http://localhost:8080/ehrbase/rest/openehr/v1/")), templateProvider);
-        templateProvider.listTemplateIds().stream().forEach(t -> client.templateEndpoint().ensureExistence(t));
-        return client;
-    }
+  private static final String OPEN_EHR_URL = "http://localhost:8080/ehrbase/rest/openehr/v1/";
+
+  public static DefaultRestClient setupDefaultRestClient() throws URISyntaxException {
+    TestDataTemplateProvider templateProvider = new TestDataTemplateProvider();
+    DefaultRestClient client = new DefaultRestClient(new OpenEhrClientConfig(new URI(OPEN_EHR_URL)),
+        templateProvider);
+    templateProvider.listTemplateIds().stream()
+        .forEach(t -> client.templateEndpoint().ensureExistence(t));
+    return client;
+  }
+
+  public static DefaultRestClient setupRestClientWithDefaultTemplateProvider()
+      throws URISyntaxException {
+    return new DefaultRestClient(new OpenEhrClientConfig(new URI(OPEN_EHR_URL)));
+  }
 }
