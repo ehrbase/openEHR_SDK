@@ -28,7 +28,7 @@ public class GenericRmType {
 
     private String type;
 
-    GenericRmType(String type) {
+    public GenericRmType(String type) {
         this.type = type;
     }
 
@@ -37,7 +37,7 @@ public class GenericRmType {
      *
      * @return true if the type is specialized
      */
-    boolean isSpecialized() {
+    public boolean isSpecialized() {
         return type.contains("<") && type.contains(">");
     }
 
@@ -46,7 +46,7 @@ public class GenericRmType {
      *
      * @return the main type
      */
-    String mainType() {
+    public String mainType() {
         if (!isSpecialized())
             return type;
         return type.substring(0, type.indexOf("<"));
@@ -58,7 +58,7 @@ public class GenericRmType {
      *
      * @return the specialized type or null
      */
-    String specializedWith() {
+    public String specializedWith() {
         if (!isSpecialized())
             return null;
 

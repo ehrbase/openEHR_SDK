@@ -1,11 +1,11 @@
 name,
 name/value,
-archetype_node_id,//TODO: https://github.com/ehrbase/project_management/issues/483
-items[at0001],//TODO: multiple discrepancies (extraneous _type, terminology name etc.
+archetype_node_id,//TBC
+items[at0001],//issue with ITEM_SINGLE
 items[at0001]/name,
 items[at0001]/name/value,
-items[at0001]/archetype_node_id,//TODO: https://github.com/ehrbase/project_management/issues/483
-items[at0001]/items[at0002],//TODO: multiple discrepancies (extraneous _type, terminology name etc.
+items[at0001]/archetype_node_id,
+items[at0001]/items[at0002],//multiple discrepancies f.e. action_archetype_id
 items[at0001]/items[at0002]/name,
 items[at0001]/items[at0002]/name/value,
-items[at0001]/items[at0002]/archetype_node_id,//TODO: https://github.com/ehrbase/project_management/issues/483
+items[at0001]/items[at0002]/archetype_node_id,

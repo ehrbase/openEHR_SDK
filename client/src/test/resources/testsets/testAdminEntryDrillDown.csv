@@ -1,17 +1,17 @@
 name,
 name/value,
-archetype_node_id,//TODO: https://github.com/ehrbase/project_management/issues/483
-language,//TODO: https://github.com/ehrbase/project_management/issues/465
+archetype_node_id
+language
 language/code_string,
-language/terminology_id,//TODO: https://github.com/ehrbase/openEHR_SDK/tree/feature/465_name_in_terminology_id
+language/terminology_id
 language/terminology_id/value,
-encoding,//TODO: https://github.com/ehrbase/openEHR_SDK/tree/feature/465_name_in_terminology_id
-encoding/code_string,
-encoding/terminology_id,//TODO: https://github.com/ehrbase/openEHR_SDK/tree/feature/465_name_in_terminology_id
-encoding/terminology_id/value,//TODO: https://github.com/ehrbase/project_management/issues/490
+encoding,//WRONG encoding
+encoding/code_string,//WRONG encoding
+encoding/terminology_id,//WRONG encoding
+encoding/terminology_id/value,//WRONG encoding
 subject,//TODO: https://github.com/ehrbase/project_management/issues/488
-data[at0001]/items[at0002],//TODO: https://github.com/ehrbase/project_management/issues/483
-data[at0001]/items[at0002]/name,//TODO: https://github.com/ehrbase/project_management/issues/492
-data[at0001]/items[at0002]/name/value,//TODO: https://github.com/ehrbase/project_management/issues/492
-data[at0001]/items[at0002]/value,//TODO: https://github.com/ehrbase/project_management/issues/483//TODO: https://github.com/ehrbase/project_management/issues/500//TODO: https://github.com/ehrbase/project_management/issues/503
-data[at0001]/items[at0002]/value/value,//TODO: https://github.com/ehrbase/project_management/issues/483//TODO: https://github.com/ehrbase/project_management/issues/500//TODO: https://github.com/ehrbase/project_management/issues/503
+data[at0001]/items[at0002],//https://github.com/ehrbase/project_management/issues/503
+data[at0001]/items[at0002]/name,//https://github.com/ehrbase/project_management/issues/503
+data[at0001]/items[at0002]/name/value,//https://github.com/ehrbase/project_management/issues/503
+data[at0001]/items[at0002]/value,//https://github.com/ehrbase/project_management/issues/503
+data[at0001]/items[at0002]/value/value,//https://github.com/ehrbase/project_management/issues/503

@@ -23,8 +23,8 @@ category/defining_code/terminology_id
 category/defining_code/terminology_id/value
 composer
 composer/name
-composer/external_ref,//TODO:https://github.com/ehrbase/project_management/issues/486
+composer/external_ref,
 composer/external_ref/type
 composer/external_ref/namespace
-composer/external_ref/id,//TODO:https://github.com/ehrbase/project_management/issues/486
+composer/external_ref/id,
 composer/external_ref/id/value

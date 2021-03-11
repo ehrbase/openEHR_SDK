@@ -199,14 +199,19 @@ public abstract class CanonicalUtil {
                 ((Map<String, Object>) retObject).put(I_DvTypeAdapter.AT_TYPE, "TERMINOLOGY_ID");
             }
         }
-        else  if (object instanceof Temporal || object instanceof Duration || object instanceof URI)
+        else  if (object instanceof Temporal || object instanceof Duration || object instanceof URI) {
             retObject = object.toString();
-
-        if (object instanceof Temporal){
-            //align the millisec delimiter
-            if (retObject instanceof String && ((String) retObject).contains("."))
-                retObject = ((String)retObject).replace(".", ",");
+            if (object instanceof Temporal){
+                //align the millisec delimiter
+                if (retObject instanceof String && ((String) retObject).contains("."))
+                    retObject = ((String)retObject).replace(".", ",");
+            }
         }
+        else if (object instanceof Integer)
+            //this is a hack as a Long is transformed as Integer in the HTTP response?
+            retObject = Integer.toUnsignedLong((Integer)object);
+        else if (object instanceof String && ((String)object).matches("^\\d{4}-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d(\\.\\d+)?(([+-]\\d\\d:\\d\\d)|Z)?$"))
+            retObject = ((String)retObject).replace(".", ",");
 
         return retObject;
     }

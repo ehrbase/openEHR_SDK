@@ -1,1 +1,44 @@
-encoding
+name
+name/value
+archetype_node_id
+language,
+language/code_string
+language/terminology_id,
+language/terminology_id/value
+encoding,//wrong encoding
+encoding/code_string,//wrong encoding
+encoding/terminology_id,//wrong encoding
+encoding/terminology_id/value,//wrong encoding
+subject,//TODO: https://github.com/ehrbase/project_management/issues/488
+data[at0001],
+data[at0001]/name
+data[at0001]/name/value
+data[at0001]/archetype_node_id
+data[at0001]/origin
+data[at0001]/origin/value
+data[at0001]/events[at0002]
+data[at0001]/events[at0002]/name
+data[at0001]/events[at0002]/name/value
+data[at0001]/events[at0002]/archetype_node_id
+data[at0001]/events[at0002]/time
+data[at0001]/events[at0002]/time/value
+data[at0001]/events[at0002]/data[at0003]
+data[at0001]/events[at0002]/data[at0003]/name
+data[at0001]/events[at0002]/data[at0003]/name/value
+data[at0001]/events[at0002]/data[at0003]/archetype_node_id
+data[at0001]/events[at0002]/data[at0003]/items[at0004],
+data[at0001]/events[at0002]/data[at0003]/items[at0004]/name
+data[at0001]/events[at0002]/data[at0003]/items[at0004]/name/value
+data[at0001]/events[at0002]/data[at0003]/items[at0004]/value
+data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/value
+data[at0001]/events[at0002]/data[at0003]/items[at0005],
+data[at0001]/events[at0002]/data[at0003]/items[at0005]/name
+data[at0001]/events[at0002]/data[at0003]/items[at0005]/name/value
+data[at0001]/events[at0002]/data[at0003]/items[at0005]/value
+data[at0001]/events[at0002]/data[at0003]/items[at0005]/value/value
+data[at0001]/events[at0002]/data[at0003]/items[at0005]/value/defining_code
+data[at0001]/events[at0002]/data[at0003]/items[at0005]/value/defining_code/code_string
+data[at0001]/events[at0002]/data[at0003]/items[at0005]/value/defining_code/terminology_id,
+data[at0001]/events[at0002]/data[at0003]/items[at0005]/value/defining_code/terminology_id/value
+data[at0001]/events[at0002]/data[at0003]/items[at0007]/name
+data[at0001]/events[at0002]/data[at0003]/items[at0007]/name/value

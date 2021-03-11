@@ -102,7 +102,7 @@
             "value": {
               "_type": "DV_INTERVAL",
               "lower": {
-                "_type": "DV_DATE_TIME",
+                "_type": "DV_DATE",
                 "value": "2019-11-22"
               },
               "upper_unbounded": false,

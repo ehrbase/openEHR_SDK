@@ -26,6 +26,7 @@ import org.ehrbase.client.aql.parameter.ParameterValue;
 import org.ehrbase.client.aql.query.Query;
 import org.ehrbase.client.aql.record.Record1;
 import org.ehrbase.client.classgenerator.examples.testalltypesenv1composition.TestAllTypesEnV1Composition;
+import org.ehrbase.client.exception.WrongStatusCodeException;
 import org.ehrbase.client.flattener.Flattener;
 import org.ehrbase.client.openehrclient.CompositionEndpoint;
 import org.ehrbase.client.openehrclient.OpenEhrClient;
@@ -54,9 +55,10 @@ import java.util.Map;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 @Category(Integration.class)
-@Ignore
+//@Ignore
 public class CanonicalCompoAllTypeQuery1Test extends CanonicalUtil {
     private static OpenEhrClient openEhrClient;
     private static final String dirPath = "src/test/resources/testsets";
@@ -75,17 +77,21 @@ public class CanonicalCompoAllTypeQuery1Test extends CanonicalUtil {
 
     @Before
     public void setUp() throws IOException {
+        //manual test use
+//        ehrUUID = UUID.fromString("d329cab4-df42-4d3c-8eed-5b6953c49eed");
+//        compositionUUID = UUID.fromString("582358a6-afff-419f-bb2c-0e4c2853ad9d");
+
         actualDvDateTime = new DvDateTime(OffsetDateTime.now());
+        allTypesComposition = new CanonicalJson().unmarshal(IOUtils.toString(CompositionTestDataCanonicalJson.ALL_TYPES_SYSTEMATIC_TESTS.getStream(), StandardCharsets.UTF_8), Composition.class);
+// normal test run
         ehrUUID = openEhrClient.ehrEndpoint().createEhr();
         compositionEndpoint = openEhrClient.compositionEndpoint(ehrUUID);
-        allTypesComposition = new CanonicalJson().unmarshal(IOUtils.toString(CompositionTestDataCanonicalJson.ALL_TYPES_SYSTEMATIC_TESTS.getStream(), StandardCharsets.UTF_8), Composition.class);
-        
         Flattener flattener = new Flattener(new TestDataTemplateProvider());
         TestAllTypesEnV1Composition testAllTypesEnV1Composition = flattener.flatten(allTypesComposition, TestAllTypesEnV1Composition.class);
-        
-        //create the composition
+//        create the composition
         TestAllTypesEnV1Composition comp = compositionEndpoint.mergeCompositionEntity(testAllTypesEnV1Composition);
         compositionUUID  = comp.getVersionUid().getUuid();
+
     }
 
     @Test
@@ -227,10 +233,15 @@ public class CanonicalCompoAllTypeQuery1Test extends CanonicalUtil {
                 buildAqlCompositionQuery(rootPath, attributePath, containment)
                 , Map.class
         );
-
-        return openEhrClient.aqlEndpoint().executeRaw(query,
-                new ParameterValue("ehr_id", ehrUUID),
-                new ParameterValue("comp_uuid", compositionUUID));
+        try {
+            return openEhrClient.aqlEndpoint().executeRaw(query,
+                    new ParameterValue("ehr_id", ehrUUID),
+                    new ParameterValue("comp_uuid", compositionUUID));
+        }
+        catch (WrongStatusCodeException e){
+            fail("path:"+rootPath+"/"+attributePath+", error"+e.getMessage());
+        }
+        return null;
     }
 
     private boolean testItemPaths(String csvTestSet, String rootPath, String contains, RMObject referenceNode) throws IOException {
