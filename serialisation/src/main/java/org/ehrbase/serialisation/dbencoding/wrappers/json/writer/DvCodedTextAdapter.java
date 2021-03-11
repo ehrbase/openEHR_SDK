@@ -65,27 +65,18 @@ public class DvCodedTextAdapter extends DvTypeAdapter<DvCodedText> {
             return;
         }
 
-//		"value": "complete blood count",
-//				"definingCode": {
-//			"codeString": "26604007",
-//					"terminologyId": {
-//				"name": "SNOMED-CT",
-//						"value": "SNOMED-CT"
-//			}
-//		}
         TermMappingAdapter termMappingAdapter = new TermMappingAdapter();
 
         if (adapterType == I_DvTypeAdapter.AdapterType.PG_JSONB) {
             writer.beginObject();
-            writer.name("value").value(dvalue.getValue());
+            writer.name(VALUE).value(dvalue.getValue());
             writer.name(I_DvTypeAdapter.TAG_CLASS_RAW_JSON).value(new SnakeCase(DvCodedText.class.getSimpleName()).camelToUpperSnake());
             writer.name("definingCode");
             writer.beginObject();
             writer.name("codeString").value(dvalue.getDefiningCode().getCodeString());
             writer.name("terminologyId");
             writer.beginObject();
-            writer.name("name").value(dvalue.getDefiningCode().getTerminologyId().getValue());
-            writer.name("value").value(dvalue.getDefiningCode().getTerminologyId().getValue());
+            writer.name(VALUE).value(dvalue.getDefiningCode().getTerminologyId().getValue());
             writer.name(I_DvTypeAdapter.TAG_CLASS_RAW_JSON).value(new SnakeCase(TerminologyId.class.getSimpleName()).camelToUpperSnake());
             writer.endObject();
             writer.name(I_DvTypeAdapter.TAG_CLASS_RAW_JSON).value(new SnakeCase(CodePhrase.class.getSimpleName()).camelToUpperSnake());
@@ -95,7 +86,7 @@ public class DvCodedTextAdapter extends DvTypeAdapter<DvCodedText> {
         } else if (adapterType == I_DvTypeAdapter.AdapterType.RAW_JSON) {
             writer.beginObject();
             writer.name(I_DvTypeAdapter.TAG_CLASS_RAW_JSON).value(new ObjectSnakeCase(dvalue).camelToUpperSnake());
-            writer.name("value").value(dvalue.getValue());
+            writer.name(VALUE).value(dvalue.getValue());
             CodePhrase codePhrase = dvalue.getDefiningCode();
             writer.name("defining_code").value(gson.toJson(codePhrase));
             writer.name(I_DvTypeAdapter.TAG_CLASS_RAW_JSON).value(new SnakeCase(CodePhrase.class.getSimpleName()).camelToUpperSnake());

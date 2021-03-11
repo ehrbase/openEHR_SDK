@@ -99,8 +99,8 @@ public class DtoFromCompositionWalker extends FromCompositionWalker<DtoWithMatch
       return null;
     } else if (subValues.size() > 1) {
       if (isChoice && child.getRmType().equals("INTERVAL_EVENT")) {
-        logger.warn("Path {} is choice but missing OptionFor", child.getAqlPath());
-        return null;
+        logger.warn("Path {} is choice but missing OptionFor: Transforming INTERVAL_EVENT to POINT_EVENT ", child.getAqlPath());
+
       }
       return new DtoWithMatchingFields(context.getObjectDeque().peek().getDto(), subValues);
     } else {

@@ -28,7 +28,8 @@ public enum WebTemplateTestData {
   ALL_TYPES("test_all_types", "test_all_types.json"),
   INITIAL_ASSESSMENT("example.initialassesment.v0", "example.initialassesment.json"),
   CONSTRAIN_TEST("example with many constrains / default values", "constrain_test.json"),
-  LANGUAGE_TEST("example with multiple languages", "language_test.json");
+  LANGUAGE_TEST("example with multiple languages", "language_test.json"),
+  ADDICTION("example with multiple languages", "addiction.json");
 
   private final String filename;
   private final String description;

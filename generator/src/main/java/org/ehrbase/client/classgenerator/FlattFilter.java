@@ -20,7 +20,6 @@
 package org.ehrbase.client.classgenerator;
 
 import com.nedap.archie.rm.archetyped.Locatable;
-import com.nedap.archie.rm.datastructures.Event;
 import com.nedap.archie.rminfo.RMTypeInfo;
 import java.util.Collections;
 import java.util.Deque;
@@ -102,28 +101,31 @@ public class FlattFilter extends Filter {
         return !node.getChildren().isEmpty()
             && node.getMax() == 1
             && !node.getRmType().equals("COMPOSITION")
-            && (!isEvent(node) || parent.getChildren().stream().filter(this::isEvent).count() == 1);
+            && (!isEvent(node) || isSkippableEvent(parent, node));
       case SECTION:
         return !node.getChildren().isEmpty()
             && node.getMax() == 1
             && (!node.isArchetype() || node.getRmType().equals("SECTION"))
-            && (!isEvent(node) || parent.getChildren().stream().filter(this::isEvent).count() == 1);
+            && (!isEvent(node) || isSkippableEvent(parent, node));
       default:
         return !node.getChildren().isEmpty()
             && node.getMax() == 1
             && !node.isArchetype()
-            && (!isEvent(node) || parent.getChildren().stream().filter(this::isEvent).count() == 1);
+            && (!isEvent(node) || isSkippableEvent(parent, node));
     }
   }
 
-  private boolean isEvent(WebTemplateNode node) {
-    RMTypeInfo typeInfo = ARCHIE_RM_INFO_LOOKUP.getTypeInfo(node.getRmType());
-    return typeInfo != null && Event.class.isAssignableFrom(typeInfo.getJavaClass());
+  private boolean isSkippableEvent(WebTemplateNode parent, WebTemplateNode node) {
+    if (node.getRmType().equals("EVENT")
+        && (config.isGenerateChoicesForSingleEvent() || node.isMulti())) {
+      return false;
+    }
+    return parent.getChildren().stream().filter(this::isEvent).count() == 1 && !node.isMulti();
   }
 
   protected void preHandle(WebTemplateNode node) {
 
-    if(new FlatPath( node.getAqlPath()).getLast().getName().equals("null_flavour")){
+    if (new FlatPath(node.getAqlPath()).getLast().getName().equals("null_flavour")) {
       node.setName("null_flavour");
     }
 

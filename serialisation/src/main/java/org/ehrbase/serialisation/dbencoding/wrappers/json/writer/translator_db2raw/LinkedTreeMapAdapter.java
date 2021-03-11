@@ -300,6 +300,10 @@ public class LinkedTreeMapAdapter extends TypeAdapter<LinkedTreeMap<String, Obje
       if (value == null) continue;
 
       String key = entry.getKey();
+
+      if (new OptOut(key).skipIt())
+        continue;
+
       String jsonKey = new RawJsonKey(key).toRawJson();
       final String archetypeNodeId = new NodeId(key).predicate();
 

@@ -19,20 +19,25 @@
 
 package org.ehrbase.client.aql.orderby;
 
+import org.ehrbase.client.aql.containment.Containment;
+
 public class AndThen implements OrderByExpression {
 
-    private final OrderByExpression first;
-    private final OrderByExpression second;
+  private final OrderByExpression first;
+  private final OrderByExpression second;
 
-    protected AndThen(OrderByExpression first, OrderByExpression second) {
-        this.first = first;
-        this.second = second;
-    }
+  protected AndThen(OrderByExpression first, OrderByExpression second) {
+    this.first = first;
+    this.second = second;
+  }
 
-    @Override
-    public String buildAql() {
+  @Override
+  public String buildAql(Containment ehrContainment) {
 
-        StringBuilder sb = new StringBuilder();
-        return sb.append(first.buildAql()).append(", ").append(second.buildAql()).toString();
-    }
+    StringBuilder sb = new StringBuilder();
+    return sb.append(first.buildAql(ehrContainment))
+        .append(", ")
+        .append(second.buildAql(ehrContainment))
+        .toString();
+  }
 }

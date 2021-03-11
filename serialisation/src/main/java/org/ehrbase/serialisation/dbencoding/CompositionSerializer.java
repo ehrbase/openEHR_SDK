@@ -112,6 +112,7 @@ public class CompositionSerializer {
   public static final String TAG_LINKS = "/links";
   public static final String DEFAULT_NARRATIVE = "DEFAULT_NARRATIVE";
   public static final String TAG_ARCHETYPE_DETAILS = "/archetype_details";
+  public static final String EPOCH_OFFSET = "epoch_offset";
   public static final DvText NO_NAME = null;
 
   public CompositionSerializer() {

@@ -100,7 +100,14 @@ public class AqlFieldImp<T> implements SelectAqlField<T> {
   }
 
   @Override
-  public String buildAQL() {
-    return containment.getVariableName() + path.replace("|", "/");
+  public String buildAQL(Containment ehrContainment) {
+
+    final String variableName;
+    if (containment.getTypeName().equals("EHR")) {
+      variableName = ehrContainment.getVariableName();
+    } else {
+      variableName = containment.getVariableName();
+    }
+    return variableName + path.replace("|", "/");
   }
 }

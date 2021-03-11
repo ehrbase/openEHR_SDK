@@ -1,5 +1,6 @@
 optimizerSetting: SECTION
 addNullFlavor: true
+generateChoicesForSingleEvent: false
 replaceChars:
   #German characters
   ä: ae

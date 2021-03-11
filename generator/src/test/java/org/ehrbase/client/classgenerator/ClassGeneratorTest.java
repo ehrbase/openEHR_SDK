@@ -543,6 +543,48 @@ public class ClassGeneratorTest {
   }
 
   @Test
+  public void testGenerateSingleEvent() throws IOException, XmlException {
+    OPERATIONALTEMPLATE template =
+        TemplateDocument.Factory.parse(OperationalTemplateTestData.SINGLE_EVENT.getStream())
+            .getTemplate();
+    ClassGenerator cut = new ClassGenerator(new ClassGeneratorConfig());
+    ClassGeneratorResult generate = cut.generate(PACKAGE_NAME, new OPTParser(template).parse());
+
+    List<FieldSpec> fieldSpecs =
+        generate.getClasses().values().stream()
+            .flatMap(Collection::stream)
+            .filter(t -> !t.kind.equals(TypeSpec.Kind.ENUM))
+            .map(t -> t.fieldSpecs)
+            .flatMap(List::stream)
+            .collect(Collectors.toList());
+
+    assertThat(fieldSpecs).size().isEqualTo(26);
+    writeFiles(generate);
+  }
+
+  @Test
+  public void testGenerateSingleEventWithOption() throws IOException, XmlException {
+    OPERATIONALTEMPLATE template =
+        TemplateDocument.Factory.parse(OperationalTemplateTestData.SINGLE_EVENT.getStream())
+            .getTemplate();
+    ClassGeneratorConfig config = new ClassGeneratorConfig();
+    config.setGenerateChoicesForSingleEvent(true);
+    ClassGenerator cut = new ClassGenerator(config);
+    ClassGeneratorResult generate = cut.generate(PACKAGE_NAME, new OPTParser(template).parse());
+
+    List<FieldSpec> fieldSpecs =
+        generate.getClasses().values().stream()
+            .flatMap(Collection::stream)
+            .filter(t -> !t.kind.equals(TypeSpec.Kind.ENUM))
+            .map(t -> t.fieldSpecs)
+            .flatMap(List::stream)
+            .collect(Collectors.toList());
+
+    assertThat(fieldSpecs).size().isEqualTo(36);
+    writeFiles(generate);
+  }
+
+  @Test
   public void testGeneratePatientenaufenthalt() throws IOException, XmlException {
     OPERATIONALTEMPLATE template =
         TemplateDocument.Factory.parse(OperationalTemplateTestData.PATIENTEN_AUFENTHALT.getStream())
@@ -915,14 +957,14 @@ public class ClassGeneratorTest {
             .getTemplate();
     ClassGeneratorConfig config = new ClassGeneratorConfig();
     config.setOptimizerSetting(OptimizerSetting.SECTION);
-    Map<Character, String> characterStringMap = Map.of(
+    Map<Character, String> characterStringMap =
+        Map.of(
             'ä', "ae",
             'Ä', "Ae",
             'ö', "oe",
             'Ö', "Oe",
             'ü', "ue",
-            'Ü', "ue"
-    );
+            'Ü', "ue");
     config.getReplaceChars().putAll(characterStringMap);
     ClassGenerator cut = new ClassGenerator(config);
     ClassGeneratorResult generate =
@@ -930,16 +972,16 @@ public class ClassGeneratorTest {
             PACKAGE_NAME.replace("example", "exampleoptimizersettingsection"),
             new OPTParser(template).parse());
 
-            List<String> fieldSpecs =
-                    generate.getClasses().values().stream()
-                            .flatMap(Collection::stream)
-                            .filter(t -> !t.kind.equals(TypeSpec.Kind.ENUM))
-                            .map(t -> t.fieldSpecs)
-                            .flatMap(List::stream)
-                            .map(f -> f.name)
-                            .collect(Collectors.toList());
+    List<String> fieldSpecs =
+        generate.getClasses().values().stream()
+            .flatMap(Collection::stream)
+            .filter(t -> !t.kind.equals(TypeSpec.Kind.ENUM))
+            .map(t -> t.fieldSpecs)
+            .flatMap(List::stream)
+            .map(f -> f.name)
+            .collect(Collectors.toList());
 
-     assertThat(fieldSpecs).contains("beschaeftigung")   ;
+    assertThat(fieldSpecs).contains("beschaeftigung");
 
     assertThat(fieldSpecs).size().isEqualTo(339);
 

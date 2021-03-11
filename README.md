@@ -47,7 +47,6 @@ Generic openEHR Client and Objekt-mapper:
     - like
     - compare path to path expressions 
     
-
 ## Release Notes (v1.0.0)
 
 * Support web-templates and flat-format
@@ -73,9 +72,50 @@ Generic openEHR Client and Objekt-mapper:
 
 ### Build
 
-```bash
+Use one of the options below to build the project.
+
+#### Option 1) -  Build w/o integration tets
+
+This option skipps integration tests. Code coverage report is based on unit tests only.
+
+```
 mvn clean install
 ```
+or any specific maven phase
+```
+mvn clean test
+mvn clean verify
+mvn clean package
+...
+```
+
+
+
+#### Option 2) - Build with unit & integration tests
+This option includes unit as well as integration tests. Three coverage reports are generated: unit test report, integration test report and overall coverage report. 
+
+```
+mvn clean install -DskipIntegrationTests=false
+```
+
+or any specific maven phase
+
+```
+mvn clean verify -DskipIntegrationTests=false
+mvn clean package -DskipIntegrationTests=false
+...
+```
+
+  :warning: EHRbase server + DB must be running to execute integration tests successfully
+
+#### Option 3) - Execute tests via profiles
+
+```
+mvn clean -Pfast test    # will execute unit tests only
+mvn clean -Pslow test    # will execute integration tests only
+mvn clean -Pfull test    # will execute all test
+```
+NOTE: This option may not properly generate coverage reports because Jacoco is not configured in the profiles. Feel free to provide a PR to enhance this :wink:
 
 ## Usage
 
@@ -98,6 +138,7 @@ Parameter        | Default                         | Description
  -----------     | ---------                       | ------------- 
 optimizerSetting | SECTION                         | Defines if nodes which belong to are archetype but are single valued generate a new class: <ul><li>NONE: Always generate a class for nodes which belong to a archetype</li><li>SECTION: Do not generate a class for nodes which have rm-type section and are single valued</li><li>ALL: Do not generate a class for nodes which are single valued</li></ul>
 addNullFlavor    | true                            | Whether or not to generate null flavor fields for Elements.
+generateChoicesForSingleEvent    | false                           | Whether or not to generate Choices (POINT_EVENT & INTERVAL_EVENT) fields for a single EVENT. If "false" only POINT_EVENT will be generated.
 replaceChars     | German and Norwegian Characters | Map to define Characters in the Node name to be replaced. 
 
 see generator/src/main/resources/DefaultConfig.yaml

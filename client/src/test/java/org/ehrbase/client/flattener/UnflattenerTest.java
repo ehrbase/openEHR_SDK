@@ -44,6 +44,8 @@ import org.ehrbase.client.classgenerator.examples.coronaanamnesecomposition.Coro
 import org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev0composition.EhrbaseBloodPressureSimpleDeV0Composition;
 import org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1composition.EhrbaseMultiOccurrenceDeV1Composition;
 import org.ehrbase.client.classgenerator.examples.episodeofcarecomposition.EpisodeOfCareComposition;
+import org.ehrbase.client.classgenerator.examples.korpergrossecomposition.KorpergrosseComposition;
+import org.ehrbase.client.classgenerator.examples.korpergrossecomposition.definition.GrosseLangeObservation;
 import org.ehrbase.client.templateprovider.TestDataTemplateProvider;
 import org.ehrbase.serialisation.jsonencoding.CanonicalJson;
 import org.ehrbase.test_data.composition.CompositionTestDataCanonicalJson;
@@ -90,6 +92,30 @@ public class UnflattenerTest {
 
         assertThat(systolischValues).containsExactlyInAnyOrder(12d, 22d);
     }
+
+    @Test
+    public void testUnflattenSingleEvent() {
+        Unflattener cut = new Unflattener(new TestDataTemplateProvider());
+
+        KorpergrosseComposition dto = new KorpergrosseComposition();
+        dto.setGrosseLange(new GrosseLangeObservation());
+        dto.getGrosseLange().setGrosseLangeMagnitude(22d);
+
+        Composition rmObject = (Composition) cut.unflatten(dto);
+
+        assertThat(rmObject).isNotNull();
+
+        Object event = rmObject.itemAtPath("/content[openEHR-EHR-OBSERVATION.height.v2]/data[at0001]/events[at0002]");
+        assertThat(event).isNotNull();
+        assertThat(event.getClass()).isEqualTo(PointEvent.class);
+        Object quantity = ((PointEvent) event).itemAtPath("/data[at0003]/items[at0004]/value");
+        assertThat(quantity).isNotNull();
+        assertThat(quantity.getClass()).isEqualTo(DvQuantity.class);
+        assertThat(((DvQuantity)quantity).getMagnitude()).isEqualTo(22d);
+
+    }
+
+
     @Test
     public void testUnflattenBefundDerBlutgasanalyse() {
         Unflattener cut = new Unflattener(new TestDataTemplateProvider());

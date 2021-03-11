@@ -21,6 +21,8 @@ import com.google.gson.internal.LinkedTreeMap;
 
 import java.util.Map;
 
+import static org.ehrbase.serialisation.dbencoding.wrappers.json.I_DvTypeAdapter.TAG_CLASS_RAW_JSON;
+
 /**
  * Deals with specialization of DataValues (f.e. DV_INTERVAL<DV_QUANTITY>)
  */
@@ -72,6 +74,7 @@ public class GenericRmType {
      * @param valueMap the built valueMap for canonical json encoding
      * @return the updated valueMap
      */
+    @SuppressWarnings("java:S2864")
     LinkedTreeMap<String, Object> inferSpecialization(LinkedTreeMap<String, Object> valueMap) {
 
         if (!isSpecialized()) //do nothing
@@ -79,12 +82,16 @@ public class GenericRmType {
 
         for (String key : valueMap.keySet()) {
             Object entry = valueMap.get(key);
-
+            //entry is either a Map or an Array
             if (entry instanceof Map) {
                 //add the type
-                ((Map<String, Object>) entry).put("_type", specializedWith());
+                ((Map<String, Object>) entry).put(TAG_CLASS_RAW_JSON, specializedWith());
             }
         }
+
+        //remove the specialization for canonical rendering
+        String valueType = (String)valueMap.get(TAG_CLASS_RAW_JSON);
+        valueMap.put(TAG_CLASS_RAW_JSON, valueType.split("<")[0]);
 
         return valueMap;
     }

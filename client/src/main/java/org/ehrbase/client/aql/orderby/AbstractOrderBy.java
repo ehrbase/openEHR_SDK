@@ -19,24 +19,23 @@
 
 package org.ehrbase.client.aql.orderby;
 
+import org.ehrbase.client.aql.containment.Containment;
 import org.ehrbase.client.aql.field.SelectAqlField;
 
 abstract class AbstractOrderBy implements OrderByExpression {
-    protected final SelectAqlField<?> field;
+  protected final SelectAqlField<?> field;
 
-    AbstractOrderBy(SelectAqlField<?> field) {
-        this.field = field;
-    }
+  AbstractOrderBy(SelectAqlField<?> field) {
+    this.field = field;
+  }
 
-    @Override
-    public String buildAql() {
-        StringBuilder sb = new StringBuilder();
+  @Override
+  public String buildAql(Containment ehrContainment) {
+    StringBuilder sb = new StringBuilder();
 
-        sb.append(field.buildAQL())
-                .append(" ")
-                .append(getSymbole());
-        return sb.toString();
-    }
+    sb.append(field.buildAQL(ehrContainment)).append(" ").append(getSymbole());
+    return sb.toString();
+  }
 
-    public abstract String getSymbole();
+  public abstract String getSymbole();
 }

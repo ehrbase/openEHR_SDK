@@ -17,18 +17,19 @@
  *
  */
 
-package org.ehrbase.client.aql.field;
+package org.ehrbase.serialisation.walker;
 
-import org.ehrbase.client.aql.containment.Containment;
+import com.nedap.archie.rm.RMObject;
 
-public interface SelectAqlField<T> extends AqlField<T> {
-  Containment getContainment();
+public class RmLong extends RMObject implements RmPrimitive<Long>{
 
-  String getName();
+    private final Long value;
 
-  String getPath();
+    public RmLong(Long value) {
+        this.value = value;
+    }
 
-  Class<?> getEntityClass();
-
-  String buildAQL(Containment ehrContainment);
+    public Long getValue() {
+        return value;
+    }
 }
