@@ -9,7 +9,7 @@ encoding,//wrong encoding
 encoding/code_string,//wrong encoding
 encoding/terminology_id,//wrong encoding
 encoding/terminology_id/value,//wrong encoding
-subject,//TODO: https://github.com/ehrbase/project_management/issues/488
+subject,
 activities[at0001],//TODO: multiple discrepancies (extraneous _type, terminology name etc.
 activities[at0001]/name
 activities[at0001]/name/value

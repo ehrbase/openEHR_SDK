@@ -36,10 +36,7 @@ import org.ehrbase.client.templateprovider.TestDataTemplateProvider;
 import org.ehrbase.response.openehr.QueryResponseData;
 import org.ehrbase.serialisation.jsonencoding.CanonicalJson;
 import org.ehrbase.test_data.composition.CompositionTestDataCanonicalJson;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.*;
 import org.junit.experimental.categories.Category;
 import org.junit.jupiter.params.shadow.com.univocity.parsers.csv.CsvParser;
 import org.junit.jupiter.params.shadow.com.univocity.parsers.csv.CsvParserSettings;
@@ -58,8 +55,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 
 @Category(Integration.class)
-//@Ignore
-public class CanonicalCompoAllTypeQuery1Test extends CanonicalUtil {
+@Ignore
+public class CanonicalCompoAllTypeQueryIT extends CanonicalUtil {
     private static OpenEhrClient openEhrClient;
     private static final String dirPath = "src/test/resources/testsets";
     private CompositionEndpoint compositionEndpoint;
@@ -71,15 +68,15 @@ public class CanonicalCompoAllTypeQuery1Test extends CanonicalUtil {
     private DvDateTime actualDvDateTime;
 
     @BeforeClass
-    public static void setup() throws URISyntaxException {
+    public static void before() throws URISyntaxException {
         openEhrClient = DefaultRestClientTestHelper.setupDefaultRestClient();
     }
 
     @Before
     public void setUp() throws IOException {
         //manual test use
-//        ehrUUID = UUID.fromString("d329cab4-df42-4d3c-8eed-5b6953c49eed");
-//        compositionUUID = UUID.fromString("582358a6-afff-419f-bb2c-0e4c2853ad9d");
+//        ehrUUID = UUID.fromString("ecc0de4d-eb29-40c2-ad7a-e2ab8d66a9f8");
+//        compositionUUID = UUID.fromString("a9c22c37-8002-4486-932a-f3e1729efe57");
 
         actualDvDateTime = new DvDateTime(OffsetDateTime.now());
         allTypesComposition = new CanonicalJson().unmarshal(IOUtils.toString(CompositionTestDataCanonicalJson.ALL_TYPES_SYSTEMATIC_TESTS.getStream(), StandardCharsets.UTF_8), Composition.class);
@@ -94,6 +91,12 @@ public class CanonicalCompoAllTypeQuery1Test extends CanonicalUtil {
 
     }
 
+    @After
+    public void tearDown(){
+        //delete the created EHR and all compositions using the admin endpoint
+        openEhrClient.adminEhrEndpoint().delete(ehrUUID);
+    }
+
     @Test
     public void testCompositionAttributeQuery() throws IOException {
         String rootPath = "c";
@@ -102,7 +105,7 @@ public class CanonicalCompoAllTypeQuery1Test extends CanonicalUtil {
         //reads in the test set
         BufferedReader inputCSVSetReader = new BufferedReader(new FileReader("src/test/resources/testsets/testCompositionAttributeQuery.csv"));
 
-        String csvParams = null;
+        String csvParams;
         CsvParser csvParser = new CsvParser(new CsvParserSettings());
 
         while ((csvParams = inputCSVSetReader.readLine()) != null) {

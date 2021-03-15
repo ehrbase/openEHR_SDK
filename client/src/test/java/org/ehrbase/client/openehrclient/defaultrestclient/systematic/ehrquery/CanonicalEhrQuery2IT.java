@@ -30,10 +30,7 @@ import org.ehrbase.client.openehrclient.defaultrestclient.systematic.CanonicalUt
 import org.ehrbase.response.openehr.QueryResponseData;
 import org.ehrbase.serialisation.jsonencoding.CanonicalJson;
 import org.ehrbase.test_data.ehr.EhrTestDataCanonicalJson;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.*;
 import org.junit.experimental.categories.Category;
 
 import java.io.IOException;
@@ -47,7 +44,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @Category(Integration.class)
 @Ignore
-public class CanonicalEhrQuery2Test extends CanonicalUtil {
+public class CanonicalEhrQuery2IT extends CanonicalUtil {
     private static OpenEhrClient openEhrClient;
 
     private UUID ehrUUID;
@@ -66,6 +63,12 @@ public class CanonicalEhrQuery2Test extends CanonicalUtil {
             e.printStackTrace();
         }
         ehrUUID = openEhrClient.ehrEndpoint().createEhr(referenceEhrStatus);
+    }
+
+    @After
+    public void tearDown(){
+        //delete the created EHR using the admin endpoint
+        openEhrClient.adminEhrEndpoint().delete(ehrUUID);
     }
 
      @Test

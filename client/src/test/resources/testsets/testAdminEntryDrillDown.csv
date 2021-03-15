@@ -9,7 +9,7 @@ encoding,//WRONG encoding
 encoding/code_string,//WRONG encoding
 encoding/terminology_id,//WRONG encoding
 encoding/terminology_id/value,//WRONG encoding
-subject,//TODO: https://github.com/ehrbase/project_management/issues/488
+subject,
 data[at0001]/items[at0002],//https://github.com/ehrbase/project_management/issues/503
 data[at0001]/items[at0002]/name,//https://github.com/ehrbase/project_management/issues/503
 data[at0001]/items[at0002]/name/value,//https://github.com/ehrbase/project_management/issues/503

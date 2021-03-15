@@ -30,10 +30,7 @@ import org.ehrbase.client.openehrclient.defaultrestclient.DefaultRestClientTestH
 import org.ehrbase.client.openehrclient.defaultrestclient.systematic.CanonicalUtil;
 import org.ehrbase.client.openehrclient.defaultrestclient.systematic.comparator.EhrComparator;
 import org.ehrbase.response.openehr.QueryResponseData;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.*;
 import org.junit.experimental.categories.Category;
 
 import java.net.URISyntaxException;
@@ -46,7 +43,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @Category(Integration.class)
 @Ignore
-public class CanonicalEhrQuery1Test extends CanonicalUtil {
+public class CanonicalEhrQuery1IT extends CanonicalUtil {
     private static OpenEhrClient openEhrClient;
 
     private UUID ehrUUID;
@@ -54,7 +51,7 @@ public class CanonicalEhrQuery1Test extends CanonicalUtil {
     private EhrStatus referenceEhrStatus;
 
     @BeforeClass
-    public static void setup() throws URISyntaxException {
+    public static void before() throws URISyntaxException {
         openEhrClient = DefaultRestClientTestHelper.setupDefaultRestClient();
     }
 
@@ -66,6 +63,12 @@ public class CanonicalEhrQuery1Test extends CanonicalUtil {
         referenceEhrStatus = openEhrClient.ehrEndpoint().getEhrStatus(ehrUUID).get();
     }
 
+    @After
+    public void tearDown(){
+        //delete the created EHR using the admin endpoint
+        openEhrClient.adminEhrEndpoint().delete(ehrUUID);
+    }
+
     /**
      * create a basic ehr and check attributes
      */
@@ -73,7 +76,7 @@ public class CanonicalEhrQuery1Test extends CanonicalUtil {
     @Ignore("CR https://github.com/ehrbase/project_management/issues/478")
     public void testEhrAttributes(){
 
-        //see issue CR #... (cannot retrieve time_created via a get using the SDK)
+        //see issue CR #478 (cannot retrieve time_created via a get using the SDK)
         //for the time being just compare date and time zone
 
 
@@ -91,6 +94,7 @@ public class CanonicalEhrQuery1Test extends CanonicalUtil {
     }
 
     @Test
+    @Ignore("CR https://github.com/ehrbase/project_management/issues/480")
     public void testEhrAttributesDrillDown1(){
 
         //see issue CR #... (cannot retrieve time_created via a get using the SDK)

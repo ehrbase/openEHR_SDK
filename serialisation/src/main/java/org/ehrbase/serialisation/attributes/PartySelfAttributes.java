@@ -17,9 +17,12 @@
  */
 package org.ehrbase.serialisation.attributes;
 
+import com.nedap.archie.rm.datavalues.DvText;
 import com.nedap.archie.rm.generic.PartySelf;
 import org.ehrbase.serialisation.dbencoding.CompositionSerializer;
 import org.ehrbase.serialisation.dbencoding.PathMap;
+import org.ehrbase.serialisation.dbencoding.wrappers.json.I_DvTypeAdapter;
+import org.ehrbase.serialisation.util.SnakeCase;
 
 import java.util.Map;
 
@@ -41,6 +44,7 @@ public class PartySelfAttributes implements I_SubjectAttributes {
         Map<String, Object> valuemap = PathMap.getInstance();
 
         valuemap.put(TAG_CLASS, partySelf.getClass().getSimpleName());
+        valuemap.put(I_DvTypeAdapter.AT_TYPE, new SnakeCase(partySelf.getClass().getSimpleName()).camelToUpperSnake());
 
         return valuemap;
     }

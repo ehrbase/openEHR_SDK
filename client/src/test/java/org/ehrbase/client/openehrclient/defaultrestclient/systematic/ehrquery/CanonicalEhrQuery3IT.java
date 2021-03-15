@@ -30,10 +30,7 @@ import org.ehrbase.client.openehrclient.defaultrestclient.systematic.CanonicalUt
 import org.ehrbase.response.openehr.QueryResponseData;
 import org.ehrbase.serialisation.jsonencoding.CanonicalJson;
 import org.ehrbase.test_data.ehr.EhrTestDataCanonicalJson;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.*;
 import org.junit.experimental.categories.Category;
 
 import java.io.IOException;
@@ -47,7 +44,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @Category(Integration.class)
 @Ignore
-public class CanonicalEhrQuery3Test extends CanonicalUtil {
+public class CanonicalEhrQuery3IT extends CanonicalUtil {
     private static OpenEhrClient openEhrClient;
 
     private UUID ehrUUID;
@@ -65,14 +62,20 @@ public class CanonicalEhrQuery3Test extends CanonicalUtil {
         } catch (IOException e) {
             e.printStackTrace();
         }
-//        ehrUUID = openEhrClient.ehrEndpoint().createEhr(referenceEhrStatus);
+        ehrUUID = openEhrClient.ehrEndpoint().createEhr(referenceEhrStatus);
+    }
+
+    @After
+    public void tearDown(){
+        //delete the created EHR using the admin endpoint
+        openEhrClient.adminEhrEndpoint().delete(ehrUUID);
     }
 
      @Test
-     @Ignore("requires a DB clean-up before invocation")
+//     @Ignore("requires a DB clean-up before invocation")
     public void testEhrAttributesDrillDown(){
 
-        ehrUUID = UUID.fromString("404c0199-4e01-4394-adee-13c9399acd0a");
+//        ehrUUID = UUID.fromString("404c0199-4e01-4394-adee-13c9399acd0a");
 
         String rootPath = "e/ehr_status";
         RMObject referenceNode = referenceEhrStatus;
@@ -95,8 +98,8 @@ public class CanonicalEhrQuery3Test extends CanonicalUtil {
                  "other_details/name",
                  "other_details/name/value",
                  //TODO: https://github.com/ehrbase/project_management/issues/484
-//                 "other_details/items[at0001]",
-//                 "other_details/items[at0001]/archetype_node_id",
+                 "other_details/items[at0001]",
+                 "other_details/items[at0001]/archetype_node_id",
                  "other_details/items[at0001]/name",
                  "other_details/items[at0001]/name/value",
                  "other_details/items[at0001]/value",
