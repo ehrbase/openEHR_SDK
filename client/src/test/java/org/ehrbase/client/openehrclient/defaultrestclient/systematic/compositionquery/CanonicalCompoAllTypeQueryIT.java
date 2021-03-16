@@ -55,7 +55,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 
 @Category(Integration.class)
-@Ignore
+//@Ignore
 public class CanonicalCompoAllTypeQueryIT extends CanonicalUtil {
     private static OpenEhrClient openEhrClient;
     private static final String dirPath = "src/test/resources/testsets";
