@@ -25,8 +25,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 
-import static org.ehrbase.serialisation.dbencoding.CompositionSerializer.TAG_NULL_FLAVOUR;
-import static org.ehrbase.serialisation.dbencoding.CompositionSerializer.TAG_VALUE;
+import static org.ehrbase.serialisation.dbencoding.CompositionSerializer.*;
 
 /**
  * populate the attributes for RM Elements
@@ -65,15 +64,18 @@ public class ElementAttributes extends ItemAttributes {
             log.debug(itemStack.pathStackDump() + "=" + element.getValue());
 
             if (element.getValue() != null && !element.getValue().toString().isEmpty())
-                valuemap = new SerialTree(valuemap).insert(new CompositeClassName(element.getValue()).toString(), element, TAG_VALUE, new ElementValue(element.getValue()).normalize());
+                valuemap = new SerialTree(valuemap).insert(new CompositeClassName(element.getValue()).toString(), element, TAG_VALUE, element.getValue());
         }
         else if (element.getNullFlavour() != null){
-            valuemap = new SerialTree(valuemap).insert(null, element, TAG_NULL_FLAVOUR, new ElementValue(element.getNullFlavour()).normalize());
+            valuemap = new SerialTree(valuemap).insert(null, element, TAG_NULL_FLAVOUR, element.getNullFlavour());
         }
 
 
         //set path
         valuemap = new PathItem(valuemap, tagMode, itemStack).encode(null);
+
+        //set archetype_node_id
+        valuemap.put(TAG_ARCHETYPE_NODE_ID, element.getArchetypeNodeId());
 
         ltree.put(TAG_VALUE, valuemap);
 

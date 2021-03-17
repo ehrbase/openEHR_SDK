@@ -18,9 +18,8 @@
 package org.ehrbase.serialisation.attributes;
 
 import com.nedap.archie.rm.archetyped.Locatable;
-import org.ehrbase.serialisation.dbencoding.CompositionSerializer;
-import org.ehrbase.serialisation.dbencoding.ItemStack;
-import org.ehrbase.serialisation.dbencoding.NameAsDvText;
+import org.apache.commons.collections.map.MultiValueMap;
+import org.ehrbase.serialisation.dbencoding.*;
 
 import java.util.Map;
 
@@ -60,7 +59,10 @@ public abstract class LocatableAttributes extends RMAttributes {
             map.put(TAG_LINKS, new LinksAttributes(locatable.getLinks()).toMap());
         }
         if (!map.containsKey(TAG_NAME) && locatable.getName() != null){ //since name maybe resolved from the archetype node id
-            map.put(TAG_NAME, new NameAsDvText(locatable.getName()).toMap());
+            if (map instanceof MultiValueMap)
+                map.put(TAG_NAME, new NameAsDvText(locatable.getName()).toMap());
+            else
+                new NameInMap(map, new NameAsDvText(locatable.getName()).toMap()).toMap();
         }
 
         return map;

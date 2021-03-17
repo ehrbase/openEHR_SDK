@@ -128,7 +128,7 @@
                   },
                   "archetype_node_id": "at0010.1",
                   "value": {
-                    "_type": "DV_DATE_TIME",
+                    "_type": "DV_DATE",
                     "value": "2019-01-28"
                   }
                 },
@@ -164,7 +164,7 @@
                   },
                   "archetype_node_id": "at0010.3",
                   "value": {
-                    "_type": "DV_DATE_TIME",
+                    "_type": "DV_DATE",
                     "value": "2019-01"
                   }
                 },
@@ -176,7 +176,7 @@
                   },
                   "archetype_node_id": "at0010.4",
                   "value": {
-                    "_type": "DV_DATE_TIME",
+                    "_type": "DV_DATE",
                     "value": "2019"
                   }
                 },

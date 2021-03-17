@@ -51,4 +51,11 @@ public interface OpenEhrClient {
      * @return
      */
     AqlEndpoint aqlEndpoint();
+
+    /**
+     * Get the {@link AdminEhrEndpoint}
+     *
+     * @return
+     */
+    AdminEhrEndpoint adminEhrEndpoint();
 }

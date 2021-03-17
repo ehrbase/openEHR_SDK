@@ -30,6 +30,7 @@ public enum CompositionTestDataCanonicalJson {
     MINIMAL_OBS("Minimal Observation", "minimal_observation.json"),
     INVALID("Invalid example", "invalid.json"),
     ALL_TYPES("All types", "all_types_no_multimedia.json"),
+    ALL_TYPES_SYSTEMATIC_TESTS("All types 2", "all_types_systematic_tests.json"),
     ALTERNATIVE_TYPES("Alternative types", "alternative_types.json"),
     OBS_ADMIN("Observation+Admin", "obs_admin.json"),
     OBS_ADMIN_NULL("Observation+Admin with null_flavour", "obs_admin_null_flavour.json"),

@@ -1,0 +1,37 @@
+name
+name/value
+archetype_node_id
+language,
+language/code_string
+language/terminology_id,
+language/terminology_id/value
+encoding,//wrong encoding
+encoding/code_string,//wrong encoding
+encoding/terminology_id,//wrong encoding
+encoding/terminology_id/value,//wrong encoding
+subject,
+activities[at0001],//TODO: multiple discrepancies (extraneous _type, terminology name etc.
+activities[at0001]/name
+activities[at0001]/name/value
+activities[at0001]/archetype_node_id
+activities[at0001]/action_archetype_id, //missing from flattener open CR!
+activities[at0001]/timing
+activities[at0001]/timing/value
+activities[at0001]/timing/value/value
+activities[at0001]/timing/value/formalism
+activities[at0001]/description[at0002],//CR #500
+activities[at0001]/description[at0002]/name,//CR #500
+activities[at0001]/description[at0002]/name/value,//CR #500
+activities[at0001]/description[at0002]/archetype_node_id
+activities[at0001]/description[at0002]/items[at0003]
+activities[at0001]/description[at0002]/items[at0003]/name
+activities[at0001]/description[at0002]/items[at0003]/name/value
+activities[at0001]/description[at0002]/items[at0003]/archetype_node_id
+activities[at0001]/description[at0002]/items[at0003]/value,
+activities[at0001]/description[at0002]/items[at0003]/value/value,
+activities[at0001]/description[at0002]/items[at0004],
+activities[at0001]/description[at0002]/items[at0004]/name
+activities[at0001]/description[at0002]/items[at0004]/name/value
+activities[at0001]/description[at0002]/items[at0004]/archetype_node_id
+activities[at0001]/description[at0002]/items[at0004]/value,
+activities[at0001]/description[at0002]/items[at0004]/value/value
