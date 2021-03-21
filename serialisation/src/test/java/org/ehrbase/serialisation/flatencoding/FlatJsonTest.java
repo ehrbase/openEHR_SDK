@@ -29,7 +29,6 @@ import java.util.List;
 import org.apache.commons.io.IOUtils;
 import org.ehrbase.serialisation.templateprovider.TestDataTemplateProvider;
 import org.ehrbase.test_data.composition.CompositionTestDataSimSDTJson;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class FlatJsonTest {
@@ -60,7 +59,6 @@ public class FlatJsonTest {
   }
 
   @Test
-  @Ignore
   public void roundTripDeterioriationAssessment() throws IOException {
     TestDataTemplateProvider templateProvider = new TestDataTemplateProvider();
     FlatJson cut =
@@ -94,7 +92,28 @@ public class FlatJsonTest {
             "Missing path: deterioration_assessment/assessment/news2/blood_pressure/diastolic|magnitude, value: 60.0",
             "Missing path: deterioration_assessment/assessment/news2/blood_pressure/systolic|magnitude, value: 96.0");
 
-    assertThat(errors).filteredOn(s -> s.startsWith("Extra")).containsExactlyInAnyOrder();
+    assertThat(errors)
+        .filteredOn(s -> s.startsWith("Extra"))
+        .containsExactlyInAnyOrder(
+            "Extra path: deterioration_assessment/assessment/denwis/agitation_indicator:0|code, value: at0104",
+            "Extra path: deterioration_assessment/assessment/denwis/agitation_indicator:0|terminology, value: local",
+            "Extra path: deterioration_assessment/assessment/denwis/agitation_indicator:0|value, value: Anxious",
+            "Extra path: deterioration_assessment/assessment/denwis/mentation_indicator:0|code, value: at0102",
+            "Extra path: deterioration_assessment/assessment/denwis/mentation_indicator:0|terminology, value: local",
+            "Extra path: deterioration_assessment/assessment/denwis/mentation_indicator:0|value, value: Confused",
+            "Extra path: deterioration_assessment/assessment/denwis/total_score|value, value: 0",
+            "Extra path: deterioration_assessment/assessment/news2/blood_pressure/diastolic|magnitude, value: 60",
+            "Extra path: deterioration_assessment/assessment/news2/blood_pressure/systolic|magnitude, value: 96",
+            "Extra path: deterioration_assessment/assessment/news2/news2_score/total_score|value, value: 6",
+            "Extra path: deterioration_assessment/assessment/news2/pulse/pulse_rate|magnitude, value: 80",
+            "Extra path: deterioration_assessment/assessment/news2/pulse_oximetry/spo|denominator, value: 100",
+            "Extra path: deterioration_assessment/assessment/news2/pulse_oximetry/spo|numerator, value: 80",
+            "Extra path: deterioration_assessment/assessment/news2/respirations/rate|magnitude, value: 110",
+            "Extra path: deterioration_assessment/composer|id_scheme, value: NMC",
+            "Extra path: deterioration_assessment/context/_health_care_facility|id, value: 12342341",
+            "Extra path: deterioration_assessment/context/_health_care_facility|id_namespace, value: uk.org.cqc",
+            "Extra path: deterioration_assessment/context/_health_care_facility|id_scheme, value: CQC",
+            "Extra path: deterioration_assessment/context/_health_care_facility|name, value: GlenCares Nursing Home");
   }
 
   @Test

@@ -17,32 +17,32 @@
  *
  */
 
-package org.ehrbase.serialisation.flatencoding.std.marshal.postprocessor;
+package org.ehrbase.serialisation.flatencoding.std.umarshal.postprocessor;
 
 import static org.ehrbase.webtemplate.parser.OPTParser.PATH_DIVIDER;
 
 import com.nedap.archie.rm.archetyped.Locatable;
 import com.nedap.archie.rm.composition.Composition;
-import com.nedap.archie.rm.support.identification.ObjectId;
+import com.nedap.archie.rm.support.identification.HierObjectId;
 import java.util.Map;
-import java.util.Optional;
 
-public class CompositionMarshalPostprocessor implements MarshalPostprocessor<Composition> {
+public class LocatableUnmarshalPostprocessor extends AbstractUnmarshalPostprocessor<Locatable> {
 
-  /** {@inheritDoc} */
+  /** {@inheritDoc} Unmarshalls {@link Composition#setUid} */
   @Override
-  public void process(String term, Composition rmObject, Map<String, Object> values) {
+  public void process(String term, Locatable rmObject, Map<String, String> values) {
 
-    MarshalPostprocessor.addValue(
-        values,
+    setValue(
         term + PATH_DIVIDER + "_uid",
         null,
-        Optional.of(rmObject).map(Locatable::getUid).map(ObjectId::getValue).orElse(null));
+        values,
+        s -> rmObject.setUid(new HierObjectId(s)),
+        String.class);
   }
 
   /** {@inheritDoc} */
   @Override
-  public Class<Composition> getAssociatedClass() {
-    return Composition.class;
+  public Class<Locatable> getAssociatedClass() {
+    return Locatable.class;
   }
 }
