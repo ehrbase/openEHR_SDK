@@ -37,6 +37,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.ehrbase.webtemplate.model.WebTemplateNode;
@@ -103,9 +104,9 @@ public abstract class ToCompositionWalker<T> extends Walker<T> {
 
     if (child == null
         || (child.getClass().equals(PointEvent.class)
-            && !childNode.getRmType().equals("POINT_EVENT"))
+            && childNode.getRmType().equals("INTERVAL_EVENT"))
         || (child.getClass().equals(IntervalEvent.class)
-            && !childNode.getRmType().equals("INTERVAL_EVENT"))) {
+            && childNode.getRmType().equals("POINT_EVENT"))) {
       CComplexObject elementConstraint = new CComplexObject();
       elementConstraint.setRmTypeName(rmclass);
       Object newChild;
@@ -120,15 +121,18 @@ public abstract class ToCompositionWalker<T> extends Walker<T> {
         if (Event.class.isAssignableFrom(newChild.getClass())) {
           Event<ItemStructure> newEvent = (Event) newChild;
           Event<ItemStructure> oldEvent = (Event) child;
+          newEvent.setTime(new DvDateTime());
           if (oldEvent != null) {
             newEvent.setState((ItemStructure) deepClone(oldEvent.getState()));
             newEvent.setData((ItemStructure) deepClone(oldEvent.getData()));
             newEvent.setArchetypeDetails(oldEvent.getArchetypeDetails());
             newEvent.setArchetypeNodeId(oldEvent.getArchetypeNodeId());
             newEvent.setName(oldEvent.getName());
+            Optional.ofNullable(oldEvent.getTime())
+                .map(DvDateTime::getValue)
+                .ifPresent(t -> newEvent.getTime().setValue(t));
           }
 
-          newEvent.setTime(new DvDateTime());
           if (IntervalEvent.class.isAssignableFrom(newEvent.getClass())) {
             ((IntervalEvent) newEvent).setWidth(new DvDuration());
             ((IntervalEvent<?>) newEvent).setMathFunction(new DvCodedText());
@@ -179,7 +183,9 @@ public abstract class ToCompositionWalker<T> extends Walker<T> {
                   currentNode,
                   childNode,
                   choices.containsKey(childNode.getAqlPath()),
-                  i);
+                  i,
+                  context.filteredNodeMap.get(
+                      new ImmutablePair<>(childNode.getAqlPath(), childNode.getRmType())));
     }
 
     return new ImmutablePair<>(childObject, currentChild);

@@ -74,7 +74,11 @@ public enum OperationalTemplateTestData {
       "example with many constrains / default values", "constrain_test.opt", "constrain_test"),
   LANGUAGE_TEST("example with multiple languages", "language_test.opt", "language_test"),
   SINGLE_EVENT("example with a single valued EVENT", "single_event.opt", "Körpergröße"),
-  ADDICTION("example ", "additciton_alcohol.opt", "AddictionAlcoholTemplate");
+  ADDICTION("example ", "additciton_alcohol.opt", "AddictionAlcoholTemplate"),
+  DETERIORIATION_ASSESSMENT(
+      "Deterioriation assessment ",
+      "EREACT - Deterioriation assessment.v0.opt",
+      "EREACT - Deterioriation assessment.v0");
 
   private final String filename;
   private final String templateId;

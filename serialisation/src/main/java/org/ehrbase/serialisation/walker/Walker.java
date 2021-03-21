@@ -29,14 +29,17 @@ import com.nedap.archie.rminfo.ArchieRMInfoLookup;
 import com.nedap.archie.rminfo.RMTypeInfo;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Deque;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.ImmutableTriple;
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
 import org.ehrbase.serialisation.jsonencoding.CanonicalJson;
+import org.ehrbase.webtemplate.model.FilteredWebTemplate;
 import org.ehrbase.webtemplate.model.WebTemplate;
 import org.ehrbase.webtemplate.model.WebTemplateInput;
 import org.ehrbase.webtemplate.model.WebTemplateNode;
@@ -47,17 +50,30 @@ public abstract class Walker<T> {
   public static final String DV_CODED_TEXT = "DV_CODED_TEXT";
 
   public void walk(Composition composition, T object, WebTemplate webTemplate) {
+    Map<Pair<String, String>, Deque<WebTemplateNode>> filteredNodeMap = null;
+    if (webTemplate instanceof FilteredWebTemplate) {
 
-    walk(composition, object, webTemplate.getTree());
+      filteredNodeMap = ((FilteredWebTemplate) webTemplate).filteredNodeMap;
+    }
+    walk(composition, object, webTemplate.getTree(), filteredNodeMap);
   }
 
   public void walk(RMObject composition, T object, WebTemplateNode root) {
+    walk(composition, object, root, null);
+  }
+
+  public void walk(
+      RMObject composition,
+      T object,
+      WebTemplateNode root,
+      Map<Pair<String, String>, Deque<WebTemplateNode>> filteredNodeMap) {
 
     Context<T> context = new Context<>();
 
     context.getNodeDeque().push(root);
     context.getObjectDeque().push(object);
     context.getRmObjectDeque().push(composition);
+    context.filteredNodeMap = filteredNodeMap;
 
     handle(context);
   }
@@ -168,6 +184,47 @@ public abstract class Walker<T> {
       Map<String, List<WebTemplateNode>> choices,
       WebTemplateNode childNode,
       Integer i);
+
+  protected Object extractRMChild(
+      RMObject currentRM,
+      WebTemplateNode currentNode,
+      WebTemplateNode childNode,
+      boolean isChoice,
+      Integer count,
+      Deque<WebTemplateNode> skippedNodes) {
+
+    RMObject incrementalRm = currentRM;
+    WebTemplateNode incrementalNode = currentNode;
+
+    if (skippedNodes != null) {
+      for (Iterator<WebTemplateNode> it = skippedNodes.descendingIterator(); it.hasNext(); ) {
+        WebTemplateNode node = it.next();
+        if (incrementalRm != null) {
+          Object incrementalchild =
+              extractRMChild(incrementalRm, incrementalNode, node, false, null);
+          if (incrementalchild instanceof List) {
+            if (((List<?>) incrementalchild).isEmpty()) {
+              incrementalRm = null;
+            } else {
+              incrementalRm = (RMObject) ((List<?>) incrementalchild).get(0);
+            }
+          } else {
+            incrementalRm = (RMObject) incrementalchild;
+          }
+        }
+        incrementalNode = node;
+      }
+    }
+
+    Object child;
+    if (incrementalRm != null) {
+      child = extractRMChild(incrementalRm, incrementalNode, childNode, isChoice, count);
+    } else {
+      child = null;
+    }
+
+    return child;
+  }
 
   protected abstract Object extractRMChild(
       RMObject currentRM,

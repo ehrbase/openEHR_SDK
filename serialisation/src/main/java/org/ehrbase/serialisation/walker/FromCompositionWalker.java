@@ -21,11 +21,10 @@ package org.ehrbase.serialisation.walker;
 
 import com.nedap.archie.rm.RMObject;
 import com.nedap.archie.rminfo.ArchieRMInfoLookup;
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.ehrbase.webtemplate.model.WebTemplateNode;
-
 import java.util.List;
 import java.util.Map;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.ehrbase.webtemplate.model.WebTemplateNode;
 
 public abstract class FromCompositionWalker<T> extends Walker<T> {
   public static final ArchieRMInfoLookup ARCHIE_RM_INFO_LOOKUP = ArchieRMInfoLookup.getInstance();
@@ -61,12 +60,13 @@ public abstract class FromCompositionWalker<T> extends Walker<T> {
     if (child != null) {
       if (String.class.isAssignableFrom(child.getClass())) {
         child = new RmString((String) child);
-      }else if(Long.class.isAssignableFrom(child.getClass())){
+      } else if (Long.class.isAssignableFrom(child.getClass())) {
         child = new RmLong((Long) child);
-      }if(Boolean.class.isAssignableFrom(child.getClass())){
+      }
+      if (Boolean.class.isAssignableFrom(child.getClass())) {
         child = new RmBoolean((Boolean) child);
       }
-      }
+    }
     return child;
   }
 
@@ -78,7 +78,9 @@ public abstract class FromCompositionWalker<T> extends Walker<T> {
             context.getNodeDeque().peek(),
             childNode,
             false,
-            null);
+            null,
+            context.filteredNodeMap.get(
+                new ImmutablePair<>(childNode.getAqlPath(), childNode.getRmType())));
     if (child instanceof List) {
       return ((List) child).size();
     } else {
@@ -86,10 +88,24 @@ public abstract class FromCompositionWalker<T> extends Walker<T> {
     }
   }
 
-  protected ImmutablePair<T, RMObject> extractPair(Context<T> context, WebTemplateNode currentNode, Map<String, List<WebTemplateNode>> choices, WebTemplateNode childNode, Integer i) {
+  protected ImmutablePair<T, RMObject> extractPair(
+      Context<T> context,
+      WebTemplateNode currentNode,
+      Map<String, List<WebTemplateNode>> choices,
+      WebTemplateNode childNode,
+      Integer i) {
     RMObject currentChild = null;
     T childObject = null;
-    currentChild = (RMObject) extractRMChild(context.getRmObjectDeque().peek(), currentNode, childNode, choices.containsKey(childNode.getAqlPath()), i);
+    currentChild =
+        (RMObject)
+            extractRMChild(
+                context.getRmObjectDeque().peek(),
+                currentNode,
+                childNode,
+                choices.containsKey(childNode.getAqlPath()),
+                i,
+                context.filteredNodeMap.get(
+                    new ImmutablePair<>(childNode.getAqlPath(), childNode.getRmType())));
 
     if (currentChild != null) {
       childObject = extract(context, childNode, choices.containsKey(childNode.getAqlPath()), i);
