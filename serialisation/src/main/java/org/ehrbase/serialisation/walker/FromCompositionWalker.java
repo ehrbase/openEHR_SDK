@@ -21,6 +21,7 @@ package org.ehrbase.serialisation.walker;
 
 import com.nedap.archie.rm.RMObject;
 import com.nedap.archie.rminfo.ArchieRMInfoLookup;
+import java.util.Deque;
 import java.util.List;
 import java.util.Map;
 import org.apache.commons.lang3.tuple.ImmutablePair;
@@ -72,6 +73,7 @@ public abstract class FromCompositionWalker<T> extends Walker<T> {
 
   @Override
   protected int calculateSize(Context<T> context, WebTemplateNode childNode) {
+
     Object child =
         extractRMChild(
             context.getRmObjectDeque().peek(),
@@ -79,8 +81,7 @@ public abstract class FromCompositionWalker<T> extends Walker<T> {
             childNode,
             false,
             null,
-            context.filteredNodeMap.get(
-                new ImmutablePair<>(childNode.getAqlPath(), childNode.getRmType())));
+            context.getSkippedNodes(childNode));
     if (child instanceof List) {
       return ((List) child).size();
     } else {
@@ -96,6 +97,13 @@ public abstract class FromCompositionWalker<T> extends Walker<T> {
       Integer i) {
     RMObject currentChild = null;
     T childObject = null;
+
+    Deque<WebTemplateNode> skippedNodes = null;
+    if (context.filteredNodeMap != null) {
+      skippedNodes =
+          context.filteredNodeMap.get(
+              new ImmutablePair<>(childNode.getAqlPath(), childNode.getRmType()));
+    }
     currentChild =
         (RMObject)
             extractRMChild(
@@ -104,8 +112,7 @@ public abstract class FromCompositionWalker<T> extends Walker<T> {
                 childNode,
                 choices.containsKey(childNode.getAqlPath()),
                 i,
-                context.filteredNodeMap.get(
-                    new ImmutablePair<>(childNode.getAqlPath(), childNode.getRmType())));
+                skippedNodes);
 
     if (currentChild != null) {
       childObject = extract(context, childNode, choices.containsKey(childNode.getAqlPath()), i);

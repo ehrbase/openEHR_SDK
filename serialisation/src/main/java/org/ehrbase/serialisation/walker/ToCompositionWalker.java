@@ -184,8 +184,7 @@ public abstract class ToCompositionWalker<T> extends Walker<T> {
                   childNode,
                   choices.containsKey(childNode.getAqlPath()),
                   i,
-                  context.filteredNodeMap.get(
-                      new ImmutablePair<>(childNode.getAqlPath(), childNode.getRmType())));
+                  context.getSkippedNodes(childNode));
     }
 
     return new ImmutablePair<>(childObject, currentChild);

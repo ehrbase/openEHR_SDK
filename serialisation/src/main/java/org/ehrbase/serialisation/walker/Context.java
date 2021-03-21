@@ -24,6 +24,7 @@ import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.Map;
+import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.ehrbase.webtemplate.model.WebTemplateNode;
 
@@ -52,5 +53,15 @@ public class Context<T> {
 
   public Map<WebTemplateNode, Integer> getCountMap() {
     return countMap;
+  }
+
+  public Deque<WebTemplateNode> getSkippedNodes(WebTemplateNode childNode) {
+    Deque<WebTemplateNode> skippedNodes = null;
+    if (this.filteredNodeMap != null) {
+      skippedNodes =
+          this.filteredNodeMap.get(
+              new ImmutablePair<>(childNode.getAqlPath(), childNode.getRmType()));
+    }
+    return skippedNodes;
   }
 }
