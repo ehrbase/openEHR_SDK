@@ -20,6 +20,7 @@ package org.ehrbase.serialisation.attributes;
 import com.nedap.archie.rm.composition.Entry;
 import org.ehrbase.serialisation.dbencoding.CompositionSerializer;
 import org.ehrbase.serialisation.dbencoding.ItemStack;
+import org.ehrbase.serialisation.dbencoding.RmObjectEncoding;
 
 import java.util.Map;
 
@@ -41,13 +42,13 @@ public abstract class EntryAttributes extends LocatableAttributes {
             map.put(TAG_SUBJECT, new SubjectAttributes(entry.getSubject(), compositionSerializer).toMap());
         }
         if (entry.getLanguage() != null){
-            map.put(TAG_LANGUAGE, entry.getLanguage());
+            map.put(TAG_LANGUAGE, new RmObjectEncoding(entry.getLanguage()).toMap());
         }
         if (entry.getProvider() != null){
             map.put(TAG_PROVIDER, new SubjectAttributes(entry.getProvider(), compositionSerializer).toMap());
         }
         if (entry.getEncoding() != null){
-            map.put(TAG_ENCODING, entry.getEncoding());
+            map.put(TAG_ENCODING, new RmObjectEncoding(entry.getEncoding()).toMap());
         }
 
         if (entry.getWorkflowId() != null)

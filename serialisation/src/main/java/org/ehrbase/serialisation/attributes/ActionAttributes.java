@@ -23,6 +23,7 @@ import com.nedap.archie.rm.composition.IsmTransition;
 import com.nedap.archie.rm.datavalues.quantity.datetime.DvDateTime;
 import org.ehrbase.serialisation.dbencoding.CompositionSerializer;
 import org.ehrbase.serialisation.dbencoding.ItemStack;
+import org.ehrbase.serialisation.dbencoding.RmObjectEncoding;
 
 import java.util.Map;
 
@@ -53,14 +54,14 @@ public class ActionAttributes extends CareEntryAttributes {
 
         if (action.getInstructionDetails() != null) {
             InstructionDetails instructionDetails = action.getInstructionDetails();
-            map.put("instruction_details", new InstructionDetailsAttributes(instructionDetails).toMap());
+            map.put(TAG_INSTRUCTION_DETAILS, new RmObjectEncoding(instructionDetails).toMap());
         }
 
 
         if (action.getIsmTransition() != null) {
             IsmTransition ismTransition = action.getIsmTransition();
             if (ismTransition != null) {
-                map.put("ism_transition", new IsmTransitionAttributes(ismTransition).toMap());
+                map.put(TAG_ISM_TRANSITION, new RmObjectEncoding(ismTransition).toMap());
             }
         }
 

@@ -30,6 +30,7 @@ import com.nedap.archie.rm.datastructures.ItemStructure;
 import com.nedap.archie.rm.datastructures.PointEvent;
 import com.nedap.archie.rm.datavalues.quantity.DvInterval;
 import com.nedap.archie.rm.datavalues.quantity.datetime.DvDateTime;
+import com.nedap.archie.rm.ehr.EhrStatus;
 import org.apache.commons.io.IOUtils;
 import org.apache.xmlbeans.XmlException;
 import org.ehrbase.serialisation.dbencoding.rawjson.LightRawJsonEncoder;
@@ -38,16 +39,19 @@ import org.ehrbase.serialisation.jsonencoding.CanonicalJson;
 import org.ehrbase.serialisation.xmlencoding.CanonicalXML;
 import org.ehrbase.test_data.composition.CompositionTestDataCanonicalJson;
 import org.ehrbase.test_data.composition.CompositionTestDataCanonicalXML;
+import org.ehrbase.test_data.ehr.EhrTestDataCanonicalJson;
 import org.ehrbase.test_data.operationaltemplate.OperationalTemplateTestData;
 import org.ehrbase.validation.Validator;
 import org.ehrbase.webtemplate.model.WebTemplate;
 import org.ehrbase.webtemplate.parser.OPTParser;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
 import org.openehr.schemas.v1.TemplateDocument;
 
 import javax.xml.bind.JAXBException;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
@@ -729,6 +733,31 @@ public class DBEncodeTest {
         assertEquals("openEHR-EHR-OBSERVATION.body_temperature-zn.v1", object.itemsAtPath("/content[openEHR-EHR-SECTION.ispek_dialog.v1]/items[openEHR-EHR-OBSERVATION.body_temperature-zn.v1]/archetype_details/archetype_id").get(0).toString());
 
         assertNotNull(object);
+    }
+
+    @Test
+    @Ignore
+    public void statusOtherDetailsEncodingTestRmType() throws Exception {
+        EhrStatus referenceEhrStatus = new CanonicalJson().unmarshal(IOUtils.toString(EhrTestDataCanonicalJson.EHR_STATUS_SUBJECT_EXTERNAL_REF_OTHER_DETAILS.getStream(), UTF_8), EhrStatus.class);
+
+        CompositionSerializer compositionSerializerRawJson = new CompositionSerializer();
+
+        String db_encoded = compositionSerializerRawJson.dbEncode(referenceEhrStatus.getOtherDetails());
+        //check that ITEM_TREE name is serialized
+        assertNotNull(db_encoded);
+
+        String converted = new LightRawJsonEncoder(db_encoded).encodeCompositionAsString();
+
+        assertNotNull(converted);
+
+        //see if this can be interpreted by Archie
+//        Composition object = new CanonicalJson().unmarshal(converted, Composition.class);
+//
+//        assertTrue(object.itemsAtPath("/content[openEHR-EHR-SECTION.ispek_dialog.v1]/items[openEHR-EHR-OBSERVATION.body_temperature-zn.v1]/archetype_details/archetype_id").size() > 0);
+//
+//        assertEquals("openEHR-EHR-OBSERVATION.body_temperature-zn.v1", object.itemsAtPath("/content[openEHR-EHR-SECTION.ispek_dialog.v1]/items[openEHR-EHR-OBSERVATION.body_temperature-zn.v1]/archetype_details/archetype_id").get(0).toString());
+//
+//        assertNotNull(object);
     }
 
 

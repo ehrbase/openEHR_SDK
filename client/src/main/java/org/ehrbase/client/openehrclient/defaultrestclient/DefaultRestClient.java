@@ -44,13 +44,7 @@ import org.apache.http.util.EntityUtils;
 import org.ehrbase.client.exception.ClientException;
 import org.ehrbase.client.exception.OptimisticLockException;
 import org.ehrbase.client.exception.WrongStatusCodeException;
-import org.ehrbase.client.openehrclient.AqlEndpoint;
-import org.ehrbase.client.openehrclient.CompositionEndpoint;
-import org.ehrbase.client.openehrclient.FolderDAO;
-import org.ehrbase.client.openehrclient.OpenEhrClient;
-import org.ehrbase.client.openehrclient.OpenEhrClientConfig;
-import org.ehrbase.client.openehrclient.TemplateEndpoint;
-import org.ehrbase.client.openehrclient.VersionUid;
+import org.ehrbase.client.openehrclient.*;
 import org.ehrbase.client.templateprovider.ClientTemplateProvider;
 import org.ehrbase.serialisation.jsonencoding.CanonicalJson;
 import org.ehrbase.serialisation.mapper.RmObjectJsonDeSerializer;
@@ -203,6 +197,29 @@ public class DefaultRestClient implements OpenEhrClient {
         return response;
     }
 
+    /**
+     * used with the admin endpoint for now
+     * @param uri
+     * @param headers
+     * @return
+     */
+    protected HttpResponse internalDelete(URI uri, Map<String, String> headers) {
+        HttpResponse response;
+        try {
+            Request request = Request.Delete(uri);
+            if (headers != null) {
+                headers.forEach(request::addHeader);
+            }
+
+            response = executor.execute(request).returnResponse();
+            checkStatus(response, HttpStatus.SC_OK, HttpStatus.SC_NO_CONTENT, HttpStatus.SC_ACCEPTED, HttpStatus.SC_NOT_FOUND);
+
+        } catch (IOException e) {
+            throw new ClientException(e.getMessage(), e);
+        }
+        return response;
+    }
+
     void checkStatus(HttpResponse httpResponse, int... expected) {
         if (!ArrayUtils.contains(expected, httpResponse.getStatusLine().getStatusCode())) {
             String message = Optional.of(httpResponse)
@@ -255,5 +272,10 @@ public class DefaultRestClient implements OpenEhrClient {
     @Override
     public AqlEndpoint aqlEndpoint() {
         return new DefaultRestAqlEndpoint(this);
+    }
+
+    @Override
+    public AdminEhrEndpoint adminEhrEndpoint() {
+        return new DefaultRestAdminEhrEndpoint(this);
     }
 }
