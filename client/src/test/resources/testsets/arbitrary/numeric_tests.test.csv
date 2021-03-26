@@ -1,0 +1,4 @@
+numeric_val_select.txt,"eval/data[at0001]/items[at0002]/value/magnitude >= 2 LIMIT 1 ORDER BY eval/data[at0001]/items[at0002]/value/magnitude ASC",2,java.lang.Double
+numeric_val_select.txt,"eval/data[at0001]/items[at0002]/value/magnitude >= 2 LIMIT 1 OFFSET 3 ORDER BY eval/data[at0001]/items[at0002]/value/magnitude ASC",5,java.lang.Double
+numeric_val_select.txt,"eval/data[at0001]/items[at0002]/value/magnitude >= 2 LIMIT 1 ORDER BY eval/data[at0001]/items[at0002]/value/magnitude DESC",10,java.lang.Double
+numeric_val_select.txt,"eval/data[at0001]/items[at0002]/value/magnitude >= 2 LIMIT 1 OFFSET 3 ORDER BY eval/data[at0001]/items[at0002]/value/magnitude DESC",7,java.lang.Double

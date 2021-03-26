@@ -26,7 +26,8 @@ import org.ehrbase.client.aql.query.Query;
 import org.ehrbase.client.aql.record.Record1;
 import org.ehrbase.client.openehrclient.OpenEhrClient;
 import org.ehrbase.client.openehrclient.defaultrestclient.DefaultRestClientTestHelper;
-import org.ehrbase.client.openehrclient.defaultrestclient.systematic.CanonicalUtil;
+import org.ehrbase.client.openehrclient.defaultrestclient.systematic.compositionquery.CanonicalCompoAllTypeQueryIT;
+import org.ehrbase.client.openehrclient.defaultrestclient.systematic.compositionquery.queries.auto.AutoEhrStatusWhereQuery;
 import org.ehrbase.response.openehr.QueryResponseData;
 import org.ehrbase.serialisation.jsonencoding.CanonicalJson;
 import org.ehrbase.test_data.ehr.EhrTestDataCanonicalJson;
@@ -43,8 +44,8 @@ import java.util.UUID;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @Category(Integration.class)
-@Ignore
-public class CanonicalEhrQuery3IT extends CanonicalUtil {
+//@Ignore
+public class CanonicalEhrQuery3IT extends CanonicalCompoAllTypeQueryIT {
     private static OpenEhrClient openEhrClient;
 
     private UUID ehrUUID;
@@ -130,6 +131,17 @@ public class CanonicalEhrQuery3IT extends CanonicalUtil {
                     .as(aqlSelect)
                     .isEqualTo(attributeValueAt(referenceNode, attributePath));
         }
+    }
+
+    @Test
+    public void testEhrAutoWhere() throws IOException {
+        EhrStatus referenceEhrStatus = new CanonicalJson().unmarshal(IOUtils.toString(EhrTestDataCanonicalJson.EHR_STATUS_SUBJECT_EXTERNAL_REF_OTHER_DETAILS.getStream(), StandardCharsets.UTF_8), EhrStatus.class);
+
+        String rootPath = "e/ehr_status";
+        RMObject referenceNode =  referenceEhrStatus;
+        String csvTestSet = dirPath+"/testEhrStatusWhere.csv";
+
+        assertThat(new AutoEhrStatusWhereQuery(ehrUUID, openEhrClient).testItemPaths(csvTestSet, rootPath, referenceNode)).isTrue();
     }
 
 }

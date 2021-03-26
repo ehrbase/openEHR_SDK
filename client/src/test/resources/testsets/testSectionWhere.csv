@@ -1,0 +1,6 @@
+name/value,
+archetype_node_id,//TBC
+items[at0001]/name/value,
+items[at0001]/archetype_node_id,//
+items[at0001]/items[at0002]/name/value,
+items[at0001]/items[at0002]/archetype_node_id,//

@@ -2,7 +2,7 @@ name/value,
 archetype_node_id,
 language/code_string,
 language/terminology_id/value,
-subject,
+subject,//ignore
 time/value,
 ism_transition/current_state/value,
 ism_transition/current_state/defining_code/code_string,

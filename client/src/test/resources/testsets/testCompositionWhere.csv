@@ -1,0 +1,17 @@
+name/value
+archetype_details/archetype_id/value
+archetype_details/template_id/value
+archetype_details/rm_version,//TODO: https://github.com/ehrbase/ehrbase/tree/feature/463_rm_version_persistence
+archetype_node_id
+uid/value,//this cannot be determined by autowhere (as it requires the localhost and the version id)
+language/code_string
+language/terminology_id/value
+territory/code_string
+territory/terminology_id/value
+category/value
+category/defining_code/code_string
+category/defining_code/terminology_id/value
+composer/name
+composer/external_ref/type
+composer/external_ref/namespace
+composer/external_ref/id/value

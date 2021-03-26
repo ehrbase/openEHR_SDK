@@ -15,40 +15,24 @@
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
-package org.ehrbase.client.openehrclient.defaultrestclient.systematic.compositionquery.queries;
+package org.ehrbase.client.openehrclient.defaultrestclient.systematic.compositionquery.queries.simple;
 
 import com.nedap.archie.rm.RMObject;
-import org.ehrbase.client.aql.query.Query;
-import org.ehrbase.client.aql.record.Record1;
 import org.ehrbase.client.openehrclient.OpenEhrClient;
-import org.ehrbase.response.openehr.QueryResponseData;
+import org.ehrbase.client.openehrclient.defaultrestclient.systematic.compositionquery.queries.TestQueryEngine;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
-import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-public class SimpleSelectQuery extends TestQueryEngine{
+public class SimpleSelectQuery extends TestQueryEngine {
 
     public SimpleSelectQuery(UUID ehrUUID, UUID compositionUUID, OpenEhrClient openEhrClient) {
         super(ehrUUID, compositionUUID, openEhrClient);
     }
 
     public boolean testItemPaths(String csvTestSet, String rootPath, String contains, RMObject referenceNode) throws IOException {
-        BufferedReader inputCSVSetReader = new BufferedReader(new FileReader(csvTestSet));
-
-        String csvParams;
-
-        while ((csvParams = inputCSVSetReader.readLine()) != null) {
-            checkSimpleQuery(csvParams, rootPath, contains, referenceNode);
-        }
-
+        checkSimpleQuery(csvTestSet, rootPath, contains, referenceNode);
         return true;
     }
-
 
 }

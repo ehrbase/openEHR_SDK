@@ -1,0 +1,14 @@
+ archetype_node_id,//not supported in where
+ subject/external_ref/id/value,
+ subject/external_ref/id/scheme,
+ subject/external_ref/namespace,
+ subject/external_ref/type,
+ other_details/name/value,
+ other_details/items[at0001]/archetype_node_id,//
+ other_details/items[at0001]/name/value,
+ other_details/items[at0001]/value/id,
+ other_details/items[at0001]/value/type,
+ other_details/items[at0001]/value/issuer,
+ other_details/items[at0001]/value/assigner,
+ is_queryable,
+ is_modifiable

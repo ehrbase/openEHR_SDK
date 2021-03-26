@@ -15,33 +15,24 @@
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
-package org.ehrbase.client.openehrclient.defaultrestclient.systematic.compositionquery.queries;
+package org.ehrbase.client.openehrclient.defaultrestclient.systematic.compositionquery.queries.auto;
 
 import com.nedap.archie.rm.RMObject;
 import org.ehrbase.client.openehrclient.OpenEhrClient;
+import org.ehrbase.client.openehrclient.defaultrestclient.systematic.compositionquery.queries.TestQueryEngine;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
 import java.util.UUID;
 
-public class AutoWhereQuery extends TestQueryEngine{
+public class AutoWhereQuery extends TestQueryEngine {
 
     public AutoWhereQuery(UUID ehrUUID, UUID compositionUUID, OpenEhrClient openEhrClient) {
         super(ehrUUID, compositionUUID, openEhrClient);
     }
 
     public boolean testItemPaths(String csvTestSet, String rootPath, String contains, RMObject referenceNode) throws IOException {
-        BufferedReader inputCSVSetReader = new BufferedReader(new FileReader(csvTestSet));
-
-        String csvParams;
-
-        while ((csvParams = inputCSVSetReader.readLine()) != null) {
-            checkAutoWhereQuery(csvParams, rootPath, contains, referenceNode);
-        }
-
+        checkAutoWhereQuery(csvTestSet, rootPath, contains, referenceNode);
         return true;
     }
-
 
 }

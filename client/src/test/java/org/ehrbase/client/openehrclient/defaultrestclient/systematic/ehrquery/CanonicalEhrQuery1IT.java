@@ -42,7 +42,7 @@ import java.util.UUID;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @Category(Integration.class)
-@Ignore
+//@Ignore
 public class CanonicalEhrQuery1IT extends CanonicalUtil {
     private static OpenEhrClient openEhrClient;
 
