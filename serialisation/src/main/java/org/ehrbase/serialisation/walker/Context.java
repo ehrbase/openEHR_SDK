@@ -20,36 +20,48 @@
 package org.ehrbase.serialisation.walker;
 
 import com.nedap.archie.rm.RMObject;
-import org.ehrbase.webtemplate.model.WebTemplateNode;
-
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.Map;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
+import org.ehrbase.webtemplate.model.WebTemplateNode;
 
 public class Context<T> {
 
-    private final Deque<WebTemplateNode> nodeDeque = new ArrayDeque<>();
+  private final Deque<WebTemplateNode> nodeDeque = new ArrayDeque<>();
 
-    private final Deque<RMObject> rmObjectDeque = new ArrayDeque<>();
+  private final Deque<RMObject> rmObjectDeque = new ArrayDeque<>();
 
-    private final Deque<T> objectDeque = new ArrayDeque<>();
+  private final Deque<T> objectDeque = new ArrayDeque<>();
 
-    private final Map<WebTemplateNode, Integer> countMap = new HashMap<>();
+  private final Map<WebTemplateNode, Integer> countMap = new HashMap<>();
+  public Map<Pair<String, String>, Deque<WebTemplateNode>> filteredNodeMap;
 
-    public Deque<WebTemplateNode> getNodeDeque() {
-        return nodeDeque;
+  public Deque<WebTemplateNode> getNodeDeque() {
+    return nodeDeque;
+  }
+
+  public Deque<RMObject> getRmObjectDeque() {
+    return rmObjectDeque;
+  }
+
+  public Deque<T> getObjectDeque() {
+    return objectDeque;
+  }
+
+  public Map<WebTemplateNode, Integer> getCountMap() {
+    return countMap;
+  }
+
+  public Deque<WebTemplateNode> getSkippedNodes(WebTemplateNode childNode) {
+    Deque<WebTemplateNode> skippedNodes = null;
+    if (this.filteredNodeMap != null) {
+      skippedNodes =
+          this.filteredNodeMap.get(
+              new ImmutablePair<>(childNode.getAqlPath(), childNode.getRmType()));
     }
-
-    public Deque<RMObject> getRmObjectDeque() {
-        return rmObjectDeque;
-    }
-
-    public Deque<T> getObjectDeque() {
-        return objectDeque;
-    }
-
-    public Map<WebTemplateNode, Integer> getCountMap() {
-        return countMap;
-    }
+    return skippedNodes;
+  }
 }

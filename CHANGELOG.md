@@ -6,6 +6,8 @@ Note: version releases in the 0.x.y range may introduce breaking changes.
 
 ### Fixed
 
+- Lost of small fixes to flat (see https://github.com/ehrbase/openEHR_SDK/pull/204)
+
 ## 1.3.0
 ### Added
 

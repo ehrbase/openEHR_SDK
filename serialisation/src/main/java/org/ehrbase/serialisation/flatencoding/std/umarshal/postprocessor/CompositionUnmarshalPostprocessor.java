@@ -19,34 +19,30 @@
 
 package org.ehrbase.serialisation.flatencoding.std.umarshal.postprocessor;
 
-import com.nedap.archie.rm.composition.Composition;
-import com.nedap.archie.rm.support.identification.HierObjectId;
-import org.apache.commons.lang3.StringUtils;
-
-import java.util.Map;
-
 import static org.ehrbase.webtemplate.parser.OPTParser.PATH_DIVIDER;
 
-public class CompositionUnmarshalPostprocessor extends AbstractUnmarshalPostprocessor<Composition> {
+import com.nedap.archie.rm.archetyped.Locatable;
+import com.nedap.archie.rm.composition.Composition;
+import com.nedap.archie.rm.support.identification.HierObjectId;
+import java.util.Map;
 
-    /**
-     * {@inheritDoc}
-     * Unmarshalls {@link Composition#setUid}
-     */
-    @Override
-    public void process(String term, Composition rmObject, Map<String, String> values) {
-        String strip = StringUtils.strip(values.get(term + PATH_DIVIDER + "_uid") + "", "\"");
-        if (StringUtils.isNotBlank(strip)) {
-            rmObject.setUid(new HierObjectId(strip));
-        }
-        consumedPath.add(term + PATH_DIVIDER + "_uid");
-    }
+public class CompositionUnmarshalPostprocessor extends AbstractUnmarshalPostprocessor<Locatable> {
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Class<Composition> getAssociatedClass() {
-        return Composition.class;
-    }
+  /** {@inheritDoc} Unmarshalls {@link Composition#setUid} */
+  @Override
+  public void process(String term, Locatable rmObject, Map<String, String> values) {
+
+    setValue(
+        term + PATH_DIVIDER + "_uid",
+        null,
+        values,
+        s -> rmObject.setUid(new HierObjectId(s)),
+        String.class);
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public Class<Locatable> getAssociatedClass() {
+    return Locatable.class;
+  }
 }

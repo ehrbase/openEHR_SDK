@@ -170,6 +170,7 @@ public class StdToCompositionWalker extends ToCompositionWalker<Map<String, Stri
             .filter(s -> StringUtils.startsWith(s, buildNamePath(context)))
             .map(s -> StringUtils.substringAfter(s, buildNamePath(context) + ":"))
             .map(s -> StringUtils.substringBefore(s, "/"))
+            .map(s -> StringUtils.substringBefore(s, "|"))
             .filter(StringUtils::isNotBlank)
             .map(Integer::parseInt)
             .sorted()

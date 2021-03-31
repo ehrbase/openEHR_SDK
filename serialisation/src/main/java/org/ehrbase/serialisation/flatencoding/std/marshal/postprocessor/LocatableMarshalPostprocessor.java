@@ -22,16 +22,15 @@ package org.ehrbase.serialisation.flatencoding.std.marshal.postprocessor;
 import static org.ehrbase.webtemplate.parser.OPTParser.PATH_DIVIDER;
 
 import com.nedap.archie.rm.archetyped.Locatable;
-import com.nedap.archie.rm.composition.Composition;
 import com.nedap.archie.rm.support.identification.ObjectId;
 import java.util.Map;
 import java.util.Optional;
 
-public class CompositionMarshalPostprocessor implements MarshalPostprocessor<Composition> {
+public class LocatableMarshalPostprocessor implements MarshalPostprocessor<Locatable> {
 
   /** {@inheritDoc} */
   @Override
-  public void process(String term, Composition rmObject, Map<String, Object> values) {
+  public void process(String term, Locatable rmObject, Map<String, Object> values) {
 
     MarshalPostprocessor.addValue(
         values,
@@ -42,7 +41,7 @@ public class CompositionMarshalPostprocessor implements MarshalPostprocessor<Com
 
   /** {@inheritDoc} */
   @Override
-  public Class<Composition> getAssociatedClass() {
-    return Composition.class;
+  public Class<Locatable> getAssociatedClass() {
+    return Locatable.class;
   }
 }
