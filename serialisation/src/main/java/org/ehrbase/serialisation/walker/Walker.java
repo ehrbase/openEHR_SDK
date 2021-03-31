@@ -86,21 +86,17 @@ public abstract class Walker<T> {
 
       Map<String, List<WebTemplateNode>> choices = currentNode.getChoicesInChildren();
       List<WebTemplateNode> children = new ArrayList<>(currentNode.getChildren());
-      if (children.stream()
-          .filter(n -> n.getRmType().equals(DV_CODED_TEXT))
-          .map(WebTemplateNode::getInputs)
-          .flatMap(List::stream)
-          .map(WebTemplateInput::getSuffix)
-          .anyMatch("other"::equals)) {
-        WebTemplateNode codeNode =
-            children.stream()
-                .filter(n -> n.getRmType().equals(DV_CODED_TEXT))
-                .findAny()
-                .orElseThrow();
-        WebTemplateNode textNode = new WebTemplateNode(codeNode);
-        textNode.setRmType("DV_TEXT");
-        choices.put(textNode.getAqlPath(), List.of(codeNode, textNode));
-        children.add(textNode);
+
+      for (WebTemplateNode codeNode : new ArrayList<>(children)) {
+        if (codeNode.getRmType().equals(DV_CODED_TEXT)
+            && codeNode.getInputs().stream()
+                .map(WebTemplateInput::getSuffix)
+                .anyMatch("other"::equals)) {
+          WebTemplateNode textNode = new WebTemplateNode(codeNode);
+          textNode.setRmType("DV_TEXT");
+          choices.put(textNode.getAqlPath(), List.of(codeNode, textNode));
+          children.add(textNode);
+        }
       }
 
       if (children.stream().anyMatch(n -> n.getRmType().equals("EVENT"))) {

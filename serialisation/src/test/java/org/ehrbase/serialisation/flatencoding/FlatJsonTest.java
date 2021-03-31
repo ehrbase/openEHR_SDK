@@ -95,12 +95,6 @@ public class FlatJsonTest {
     assertThat(errors)
         .filteredOn(s -> s.startsWith("Extra"))
         .containsExactlyInAnyOrder(
-            "Extra path: deterioration_assessment/assessment/denwis/agitation_indicator:0|code, value: at0104",
-            "Extra path: deterioration_assessment/assessment/denwis/agitation_indicator:0|terminology, value: local",
-            "Extra path: deterioration_assessment/assessment/denwis/agitation_indicator:0|value, value: Anxious",
-            "Extra path: deterioration_assessment/assessment/denwis/mentation_indicator:0|code, value: at0102",
-            "Extra path: deterioration_assessment/assessment/denwis/mentation_indicator:0|terminology, value: local",
-            "Extra path: deterioration_assessment/assessment/denwis/mentation_indicator:0|value, value: Confused",
             "Extra path: deterioration_assessment/assessment/denwis/total_score|value, value: 0",
             "Extra path: deterioration_assessment/assessment/news2/blood_pressure/diastolic|magnitude, value: 60",
             "Extra path: deterioration_assessment/assessment/news2/blood_pressure/systolic|magnitude, value: 96",
