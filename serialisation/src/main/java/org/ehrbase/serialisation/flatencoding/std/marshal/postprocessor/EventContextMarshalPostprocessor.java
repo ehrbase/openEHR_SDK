@@ -25,8 +25,12 @@ import com.nedap.archie.rm.composition.EventContext;
 import com.nedap.archie.rm.datavalues.quantity.datetime.DvDateTime;
 import java.util.Map;
 import java.util.Optional;
+import org.ehrbase.serialisation.flatencoding.std.marshal.config.PartyIdentifiedStdConfig;
 
 public class EventContextMarshalPostprocessor implements MarshalPostprocessor<EventContext> {
+
+  private static final PartyIdentifiedStdConfig PARTY_IDENTIFIED_STD_CONFIG =
+      new PartyIdentifiedStdConfig();
 
   /** {@inheritDoc} */
   @Override
@@ -37,6 +41,12 @@ public class EventContextMarshalPostprocessor implements MarshalPostprocessor<Ev
         term + PATH_DIVIDER + "_end_time",
         null,
         Optional.ofNullable(rmObject.getEndTime()).map(DvDateTime::getValue).orElse(null));
+
+    if (rmObject.getHealthCareFacility() != null) {
+      values.putAll(
+          PARTY_IDENTIFIED_STD_CONFIG.buildChildValues(
+              term + "/" + "_health_care_facility", rmObject.getHealthCareFacility(), null));
+    }
   }
 
   /** {@inheritDoc} */

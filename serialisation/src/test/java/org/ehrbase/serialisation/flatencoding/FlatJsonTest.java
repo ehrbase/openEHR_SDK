@@ -100,12 +100,7 @@ public class FlatJsonTest {
             "Extra path: deterioration_assessment/assessment/news2/pulse/pulse_rate|magnitude, value: 80",
             "Extra path: deterioration_assessment/assessment/news2/pulse_oximetry/spo|denominator, value: 100",
             "Extra path: deterioration_assessment/assessment/news2/pulse_oximetry/spo|numerator, value: 80",
-            "Extra path: deterioration_assessment/assessment/news2/respirations/rate|magnitude, value: 110",
-            "Extra path: deterioration_assessment/composer|id_scheme, value: NMC",
-            "Extra path: deterioration_assessment/context/_health_care_facility|id, value: 12342341",
-            "Extra path: deterioration_assessment/context/_health_care_facility|id_namespace, value: uk.org.cqc",
-            "Extra path: deterioration_assessment/context/_health_care_facility|id_scheme, value: CQC",
-            "Extra path: deterioration_assessment/context/_health_care_facility|name, value: GlenCares Nursing Home");
+            "Extra path: deterioration_assessment/assessment/news2/respirations/rate|magnitude, value: 110");
   }
 
   @Test
