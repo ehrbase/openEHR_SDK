@@ -39,6 +39,7 @@ import org.apache.commons.lang3.tuple.ImmutableTriple;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
 import org.ehrbase.serialisation.jsonencoding.CanonicalJson;
+import org.ehrbase.serialisation.walker.defaultvalues.DefaultValues;
 import org.ehrbase.webtemplate.model.FilteredWebTemplate;
 import org.ehrbase.webtemplate.model.WebTemplate;
 import org.ehrbase.webtemplate.model.WebTemplateInput;
@@ -49,31 +50,39 @@ public abstract class Walker<T> {
   public static final ArchieRMInfoLookup ARCHIE_RM_INFO_LOOKUP = ArchieRMInfoLookup.getInstance();
   public static final String DV_CODED_TEXT = "DV_CODED_TEXT";
 
-  public void walk(Composition composition, T object, WebTemplate webTemplate) {
+  public void walk(
+      Composition composition, T object, WebTemplate webTemplate, DefaultValues defaultValues) {
     Map<Pair<String, String>, Deque<WebTemplateNode>> filteredNodeMap = null;
     if (webTemplate instanceof FilteredWebTemplate) {
 
       filteredNodeMap = ((FilteredWebTemplate) webTemplate).filteredNodeMap;
     }
-    walk(composition, object, webTemplate.getTree(), filteredNodeMap);
+    walk(composition, object, webTemplate.getTree(), filteredNodeMap, defaultValues);
   }
 
   public void walk(RMObject composition, T object, WebTemplateNode root) {
-    walk(composition, object, root, null);
+    walk(composition, object, root, null, null);
   }
 
   public void walk(
       RMObject composition,
       T object,
       WebTemplateNode root,
-      Map<Pair<String, String>, Deque<WebTemplateNode>> filteredNodeMap) {
+      Map<Pair<String, String>, Deque<WebTemplateNode>> filteredNodeMap,
+      DefaultValues defaultValues) {
 
     Context<T> context = new Context<>();
 
     context.getNodeDeque().push(root);
     context.getObjectDeque().push(object);
     context.getRmObjectDeque().push(composition);
-    context.filteredNodeMap = filteredNodeMap;
+    context.setFilteredNodeMap(filteredNodeMap);
+
+    if (defaultValues != null) {
+      context.setDefaultValues(defaultValues);
+    } else {
+      context.setDefaultValues(new DefaultValues());
+    }
 
     handle(context);
   }
@@ -169,6 +178,7 @@ public abstract class Walker<T> {
       }
     }
     postHandle(context);
+    insertDefaults(context);
     context.getRmObjectDeque().remove();
     context.getNodeDeque().remove();
     context.getObjectDeque().remove();
@@ -244,6 +254,8 @@ public abstract class Walker<T> {
   protected abstract void preHandle(Context<T> context);
 
   protected abstract void postHandle(Context<T> context);
+
+  protected void insertDefaults(Context<T> context) {}
 
   protected abstract int calculateSize(Context<T> context, WebTemplateNode childNode);
 

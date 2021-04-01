@@ -40,6 +40,8 @@ import java.util.Map;
 import java.util.Optional;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.ehrbase.serialisation.walker.defaultvalues.defaultinserter.DefaultValueInserter;
+import org.ehrbase.util.reflection.ReflectionHelper;
 import org.ehrbase.webtemplate.model.WebTemplateNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,6 +50,9 @@ public abstract class ToCompositionWalker<T> extends Walker<T> {
 
   private static final RMObjectCreator RM_OBJECT_CREATOR =
       new RMObjectCreator(ARCHIE_RM_INFO_LOOKUP);
+
+  private static final Map<Class<?>, DefaultValueInserter> DEFAULT_VALUE_INSERTER_MAP =
+      ReflectionHelper.buildMap(DefaultValueInserter.class);
 
   private final Logger log = LoggerFactory.getLogger(getClass());
   private final Map<String, List<RMObject>> cloneMap = new HashMap<>();
@@ -188,5 +193,24 @@ public abstract class ToCompositionWalker<T> extends Walker<T> {
     }
 
     return new ImmutablePair<>(childObject, currentChild);
+  }
+
+  @Override
+  protected void insertDefaults(Context<T> context) {
+
+    List<DefaultValueInserter<? super RMObject>> postprocessor = new ArrayList<>();
+
+    Class<?> currentClass = context.getRmObjectDeque().peek().getClass();
+
+    while (currentClass != null) {
+      if (DEFAULT_VALUE_INSERTER_MAP.containsKey(currentClass)) {
+        postprocessor.add(DEFAULT_VALUE_INSERTER_MAP.get(currentClass));
+      }
+
+      currentClass = currentClass.getSuperclass();
+    }
+
+    postprocessor.forEach(
+        p -> p.insert(context.getRmObjectDeque().peek(), context.getDefaultValues()));
   }
 }

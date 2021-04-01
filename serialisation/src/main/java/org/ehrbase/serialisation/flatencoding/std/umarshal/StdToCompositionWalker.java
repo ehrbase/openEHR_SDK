@@ -34,6 +34,7 @@ import org.ehrbase.serialisation.flatencoding.std.umarshal.rmunmarshaller.Defaul
 import org.ehrbase.serialisation.flatencoding.std.umarshal.rmunmarshaller.RMUnmarshaller;
 import org.ehrbase.serialisation.walker.Context;
 import org.ehrbase.serialisation.walker.ToCompositionWalker;
+import org.ehrbase.serialisation.walker.defaultvalues.DefaultValues;
 import org.ehrbase.util.reflection.ReflectionHelper;
 import org.ehrbase.webtemplate.model.WebTemplate;
 import org.ehrbase.webtemplate.model.WebTemplateNode;
@@ -48,9 +49,13 @@ public class StdToCompositionWalker extends ToCompositionWalker<Map<String, Stri
   private Set<String> consumedPaths;
 
   @Override
-  public void walk(Composition composition, Map<String, String> object, WebTemplate webTemplate) {
+  public void walk(
+      Composition composition,
+      Map<String, String> object,
+      WebTemplate webTemplate,
+      DefaultValues defaultValues) {
     consumedPaths = new HashSet<>();
-    super.walk(composition, object, webTemplate);
+    super.walk(composition, object, webTemplate, defaultValues);
   }
 
   @Override
