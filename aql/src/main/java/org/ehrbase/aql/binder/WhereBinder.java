@@ -85,10 +85,11 @@ public class WhereBinder {
     Pair<Condition, List<ParameterValue>> pair = bind(dto.getValues().get(0), containmentMap);
     Condition condition = pair.getLeft();
     List<ParameterValue> parameterList = pair.getRight();
-
+    Pair<Condition, List<ParameterValue>> subPair = pair;
     for (int i = 1; i < dto.getValues().size(); i++) {
-      Pair<Condition, List<ParameterValue>> subPair =
-          buildLogicalOperator(dto.getSymbol(), pair, bind(dto.getValues().get(i), containmentMap));
+      subPair =
+          buildLogicalOperator(
+              dto.getSymbol(), subPair, bind(dto.getValues().get(i), containmentMap));
       condition = subPair.getLeft();
       parameterList = subPair.getRight();
     }
