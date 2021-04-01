@@ -7,6 +7,8 @@ Note: version releases in the 0.x.y range may introduce breaking changes.
 ### Fixed
 
 - Lost of small fixes to flat (see https://github.com/ehrbase/openEHR_SDK/pull/204)
+- Aql parsing : fix parsing of contains without archetypeId (see https://github.com/ehrbase/openEHR_SDK/pull/205)
+- Aql building : fix building of aql with more from Dto with more than 2 where ANDs
 
 ## 1.3.0
 ### Added
