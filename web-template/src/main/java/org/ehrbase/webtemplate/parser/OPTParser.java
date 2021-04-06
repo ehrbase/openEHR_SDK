@@ -542,7 +542,7 @@ public class OPTParser {
     Map<Class<?>, List<String>> contextAttributes =
         Map.of(
             Locatable.class, List.of("language"),
-            Composition.class, List.of("language", "territory"));
+            Composition.class, List.of("language", "territory", "composer"));
 
     RMTypeInfo typeInfo = ARCHIE_RM_INFO_LOOKUP.getTypeInfo(node.getRmType());
     if (typeInfo != null) {

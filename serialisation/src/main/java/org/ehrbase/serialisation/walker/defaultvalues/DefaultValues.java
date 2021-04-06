@@ -43,7 +43,14 @@ public class DefaultValues {
   public DefaultValues(Map<String, String> flat) {
     defaultValueMap = new HashMap<>();
 
-    Stream.of(DefaultValuePath.LANGUAGE, DefaultValuePath.TERRITORY)
+    Stream.of(
+            DefaultValuePath.LANGUAGE,
+            DefaultValuePath.TERRITORY,
+            DefaultValuePath.COMPOSER_NAME,
+            DefaultValuePath.COMPOSER_ID,
+            DefaultValuePath.ID_SCHEME,
+            DefaultValuePath.ID_NAMESPACE,
+            DefaultValuePath.COMPOSER_SELF)
         .forEach(
             path -> {
               Map<String, String> subValues =
@@ -61,6 +68,17 @@ public class DefaultValues {
                           .filter(e -> e.getCode().equals(value))
                           .findAny()
                           .orElseThrow());
+                } else if (String.class.isAssignableFrom(path.getType())) {
+                  String value =
+                      subValues.values().stream().map(DefaultValues::read).findAny().orElseThrow();
+                  defaultValueMap.put(path, value);
+
+                } else if (Boolean.class.isAssignableFrom(path.getType())) {
+                  String value =
+                      subValues.values().stream().map(DefaultValues::read).findAny().orElseThrow();
+                  if (value.equals("true")) {
+                    defaultValueMap.put(path, value);
+                  }
                 }
               }
             });

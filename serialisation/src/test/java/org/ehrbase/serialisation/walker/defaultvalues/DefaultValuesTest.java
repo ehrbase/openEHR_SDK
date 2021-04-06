@@ -23,6 +23,8 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.nedap.archie.rm.composition.Composition;
+import com.nedap.archie.rm.generic.PartyIdentified;
+import com.nedap.archie.rm.support.identification.GenericId;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
@@ -62,7 +64,8 @@ public class DefaultValuesTest {
     DefaultValues cut = new DefaultValues(currentValues);
 
     assertThat(cut).isNotNull();
-    assertThat(cut.getDefaultValue(DefaultValuePath.LANGUAGE)).isNotNull();
+    assertThat(cut.getDefaultValue(DefaultValuePath.LANGUAGE)).isEqualTo(Language.DE);
+    assertThat(cut.getDefaultValue(DefaultValuePath.COMPOSER_NAME)).isEqualTo("Silvia Blake");
   }
 
   @Test
@@ -85,5 +88,13 @@ public class DefaultValuesTest {
 
     assertThat(actual.getLanguage()).isNotNull();
     assertThat(actual.getLanguage().getCodeString()).isEqualTo(Language.DE.getCode());
+    assertThat(actual.getComposer()).isNotNull();
+    assertThat(actual.getComposer()).getClass().isAssignableFrom(PartyIdentified.class);
+    assertThat(((PartyIdentified) actual.getComposer()).getName()).isEqualTo("Silvia Blake");
+    assertThat(actual.getComposer().getExternalRef().getNamespace()).isEqualTo("HOSPITAL-NS");
+    assertThat(((GenericId) actual.getComposer().getExternalRef().getId()).getScheme())
+        .isEqualTo("HOSPITAL-NS");
+    assertThat(((GenericId) actual.getComposer().getExternalRef().getId()).getValue())
+        .isEqualTo("123");
   }
 }

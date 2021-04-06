@@ -25,9 +25,19 @@ import org.ehrbase.client.classgenerator.shareddefinition.Territory;
 public class DefaultValuePath<T> {
 
   public static final DefaultValuePath<Language> LANGUAGE =
-      new DefaultValuePath("language", Language.class);
+      new DefaultValuePath<>("language", Language.class);
   public static final DefaultValuePath<Territory> TERRITORY =
-      new DefaultValuePath("territory", Territory.class);
+      new DefaultValuePath<>("territory", Territory.class);
+  public static final DefaultValuePath<String> COMPOSER_NAME =
+      new DefaultValuePath<>("composer_name", String.class);
+  public static final DefaultValuePath<String> COMPOSER_ID =
+      new DefaultValuePath<>("composer_id", String.class);
+  public static final DefaultValuePath<String> ID_NAMESPACE =
+      new DefaultValuePath<>("id_namespace", String.class);
+  public static final DefaultValuePath<String> ID_SCHEME =
+      new DefaultValuePath<>("id_scheme", String.class);
+  public static final DefaultValuePath<Boolean> COMPOSER_SELF =
+      new DefaultValuePath<>("composer_self", Boolean.class);
 
   private final String path;
   private final Class<T> type;

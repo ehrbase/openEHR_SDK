@@ -19,22 +19,24 @@
 
 package org.ehrbase.serialisation.walker.defaultvalues.defaultinserter;
 
-import com.nedap.archie.rm.composition.Entry;
-import org.ehrbase.serialisation.walker.defaultvalues.DefaultValuePath;
-import org.ehrbase.serialisation.walker.defaultvalues.DefaultValues;
+import com.nedap.archie.rm.RMObject;
+import com.nedap.archie.rm.datatypes.CodePhrase;
+import com.nedap.archie.rm.generic.PartyIdentified;
+import org.apache.commons.collections4.CollectionUtils;
 
-public class EntryDefaultValueInserter extends AbstractValueInserter<Entry> {
-  @Override
-  public void insert(Entry rmObject, DefaultValues defaultValues) {
+public abstract class AbstractValueInserter<T extends RMObject> implements DefaultValueInserter<T> {
 
-    if (isEmpty(rmObject.getLanguage())
-        && defaultValues.getDefaultValue(DefaultValuePath.LANGUAGE) != null) {
-      rmObject.setLanguage(defaultValues.getDefaultValue(DefaultValuePath.LANGUAGE).toCodePhrase());
+  protected boolean isEmpty(Object rmObject) {
+    if (rmObject == null) {
+      return false;
     }
-  }
-
-  @Override
-  public Class<Entry> getAssociatedClass() {
-    return Entry.class;
+    if (rmObject instanceof CodePhrase) {
+      return ((CodePhrase) rmObject).getCodeString() == null;
+    }
+    if (rmObject instanceof PartyIdentified) {
+      return ((PartyIdentified) rmObject).getName() == null
+          && CollectionUtils.isEmpty(((PartyIdentified) rmObject).getIdentifiers());
+    }
+    return false;
   }
 }

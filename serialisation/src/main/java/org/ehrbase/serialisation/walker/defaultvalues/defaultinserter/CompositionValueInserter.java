@@ -20,22 +20,57 @@
 package org.ehrbase.serialisation.walker.defaultvalues.defaultinserter;
 
 import com.nedap.archie.rm.composition.Composition;
+import com.nedap.archie.rm.generic.PartyIdentified;
+import com.nedap.archie.rm.generic.PartySelf;
+import com.nedap.archie.rm.support.identification.GenericId;
+import com.nedap.archie.rm.support.identification.PartyRef;
 import org.ehrbase.serialisation.walker.defaultvalues.DefaultValuePath;
 import org.ehrbase.serialisation.walker.defaultvalues.DefaultValues;
 
-public class CompositionValueInserter implements DefaultValueInserter<Composition> {
+public class CompositionValueInserter extends AbstractValueInserter<Composition> {
   @Override
   public void insert(Composition rmObject, DefaultValues defaultValues) {
 
-    if ((rmObject.getLanguage() == null || rmObject.getLanguage().getCodeString() == null)
+    if (isEmpty(rmObject.getLanguage())
         && defaultValues.getDefaultValue(DefaultValuePath.LANGUAGE) != null) {
       rmObject.setLanguage(defaultValues.getDefaultValue(DefaultValuePath.LANGUAGE).toCodePhrase());
     }
 
-    if ((rmObject.getTerritory() == null || rmObject.getTerritory().getCodeString() == null)
+    if (isEmpty(rmObject.getTerritory())
         && defaultValues.getDefaultValue(DefaultValuePath.TERRITORY) != null) {
       rmObject.setTerritory(
           defaultValues.getDefaultValue(DefaultValuePath.TERRITORY).toCodePhrase());
+    }
+
+    if (isEmpty(rmObject.getComposer())) {
+
+      if (defaultValues.getDefaultValue(DefaultValuePath.COMPOSER_SELF)) {
+        rmObject.setComposer(new PartySelf());
+      }
+
+      if (defaultValues.getDefaultValue(DefaultValuePath.COMPOSER_NAME) != null) {
+
+        if (rmObject.getComposer() == null
+            || !PartyIdentified.class.isAssignableFrom(rmObject.getComposer().getClass())) {
+          rmObject.setComposer(new PartyIdentified());
+        }
+
+        ((PartyIdentified) rmObject.getComposer())
+            .setName(defaultValues.getDefaultValue(DefaultValuePath.COMPOSER_NAME));
+      }
+      if (defaultValues.getDefaultValue(DefaultValuePath.COMPOSER_ID) != null) {
+        if (rmObject.getComposer() == null
+            || !PartyIdentified.class.isAssignableFrom(rmObject.getComposer().getClass())) {
+          rmObject.setComposer(new PartyIdentified());
+        }
+        PartyRef partyRef = new PartyRef();
+        partyRef.setNamespace(defaultValues.getDefaultValue(DefaultValuePath.ID_NAMESPACE));
+        partyRef.setId(
+            new GenericId(
+                defaultValues.getDefaultValue(DefaultValuePath.COMPOSER_ID),
+                defaultValues.getDefaultValue(DefaultValuePath.ID_SCHEME)));
+        rmObject.getComposer().setExternalRef(partyRef);
+      }
     }
   }
 
