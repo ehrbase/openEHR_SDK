@@ -22,9 +22,10 @@ package org.ehrbase.serialisation.walker.defaultvalues;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Arrays;
-import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.apache.commons.lang3.StringUtils;
 import org.ehrbase.client.classgenerator.EnumValueSet;
 import org.ehrbase.serialisation.jsonencoding.JacksonUtil;
@@ -36,13 +37,13 @@ public class DefaultValues {
   private static final ObjectMapper OBJECT_MAPPER = JacksonUtil.getObjectMapper();
 
   public DefaultValues() {
-    defaultValueMap = new EnumMap<>(DefaultValuePath.class);
+    defaultValueMap = new HashMap<>();
   }
 
   public DefaultValues(Map<String, String> flat) {
-    defaultValueMap = new EnumMap<>(DefaultValuePath.class);
+    defaultValueMap = new HashMap<>();
 
-    Arrays.stream(DefaultValuePath.values())
+    Stream.of(DefaultValuePath.LANGUAGE, DefaultValuePath.TERRITORY)
         .forEach(
             path -> {
               Map<String, String> subValues =
@@ -50,22 +51,16 @@ public class DefaultValues {
                       .filter(e -> StringUtils.startsWith("ctx/" + path.getPath(), e.getKey()))
                       .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
               if (!subValues.isEmpty()) {
-                switch (path) {
-                  case LANGUAGE:
-                  case TERRITORY:
-                    String value =
-                        subValues.values().stream()
-                            .map(DefaultValues::read)
-                            .findAny()
-                            .orElseThrow();
-                    defaultValueMap.put(
-                        path,
-                        Arrays.stream(path.getType().getEnumConstants())
-                            .map(EnumValueSet.class::cast)
-                            .filter(e -> e.getCode().equals(value))
-                            .findAny()
-                            .orElseThrow());
-                    break;
+                if (EnumValueSet.class.isAssignableFrom(path.getType())) {
+                  String value =
+                      subValues.values().stream().map(DefaultValues::read).findAny().orElseThrow();
+                  defaultValueMap.put(
+                      path,
+                      Arrays.stream(path.getType().getEnumConstants())
+                          .map(EnumValueSet.class::cast)
+                          .filter(e -> e.getCode().equals(value))
+                          .findAny()
+                          .orElseThrow());
                 }
               }
             });
@@ -79,7 +74,7 @@ public class DefaultValues {
     }
   }
 
-  public void addDefaultValue(DefaultValuePath path, Object value) {
+  public <T> void addDefaultValue(DefaultValuePath<T> path, T value) {
 
     if (value == null) {
 
@@ -98,7 +93,7 @@ public class DefaultValues {
     defaultValueMap.remove(path);
   }
 
-  public <T> T getDefaultValue(DefaultValuePath path, Class<T> clazz) {
+  public <T> T getDefaultValue(DefaultValuePath<T> path) {
     return (T) defaultValueMap.get(path);
   }
 }

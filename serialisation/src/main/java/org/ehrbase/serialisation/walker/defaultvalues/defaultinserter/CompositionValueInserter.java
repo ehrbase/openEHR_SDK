@@ -20,8 +20,6 @@
 package org.ehrbase.serialisation.walker.defaultvalues.defaultinserter;
 
 import com.nedap.archie.rm.composition.Composition;
-import org.ehrbase.client.classgenerator.shareddefinition.Language;
-import org.ehrbase.client.classgenerator.shareddefinition.Territory;
 import org.ehrbase.serialisation.walker.defaultvalues.DefaultValuePath;
 import org.ehrbase.serialisation.walker.defaultvalues.DefaultValues;
 
@@ -30,17 +28,14 @@ public class CompositionValueInserter implements DefaultValueInserter<Compositio
   public void insert(Composition rmObject, DefaultValues defaultValues) {
 
     if ((rmObject.getLanguage() == null || rmObject.getLanguage().getCodeString() == null)
-        && defaultValues.getDefaultValue(DefaultValuePath.LANGUAGE, Language.class) != null) {
-      rmObject.setLanguage(
-          defaultValues.getDefaultValue(DefaultValuePath.LANGUAGE, Language.class).toCodePhrase());
+        && defaultValues.getDefaultValue(DefaultValuePath.LANGUAGE) != null) {
+      rmObject.setLanguage(defaultValues.getDefaultValue(DefaultValuePath.LANGUAGE).toCodePhrase());
     }
 
     if ((rmObject.getTerritory() == null || rmObject.getTerritory().getCodeString() == null)
-        && defaultValues.getDefaultValue(DefaultValuePath.TERRITORY, Territory.class) != null) {
+        && defaultValues.getDefaultValue(DefaultValuePath.TERRITORY) != null) {
       rmObject.setTerritory(
-          defaultValues
-              .getDefaultValue(DefaultValuePath.TERRITORY, Territory.class)
-              .toCodePhrase());
+          defaultValues.getDefaultValue(DefaultValuePath.TERRITORY).toCodePhrase());
     }
   }
 

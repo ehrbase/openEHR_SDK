@@ -62,6 +62,7 @@ public class DefaultValuesTest {
     DefaultValues cut = new DefaultValues(currentValues);
 
     assertThat(cut).isNotNull();
+    assertThat(cut.getDefaultValue(DefaultValuePath.LANGUAGE)).isNotNull();
   }
 
   @Test

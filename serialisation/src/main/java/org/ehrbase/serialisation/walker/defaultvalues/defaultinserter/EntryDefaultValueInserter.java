@@ -20,7 +20,6 @@
 package org.ehrbase.serialisation.walker.defaultvalues.defaultinserter;
 
 import com.nedap.archie.rm.composition.Entry;
-import org.ehrbase.client.classgenerator.shareddefinition.Language;
 import org.ehrbase.serialisation.walker.defaultvalues.DefaultValuePath;
 import org.ehrbase.serialisation.walker.defaultvalues.DefaultValues;
 
@@ -29,9 +28,8 @@ public class EntryDefaultValueInserter implements DefaultValueInserter<Entry> {
   public void insert(Entry rmObject, DefaultValues defaultValues) {
 
     if ((rmObject.getLanguage() == null || rmObject.getLanguage().getCodeString() == null)
-        && defaultValues.getDefaultValue(DefaultValuePath.LANGUAGE, Language.class) != null) {
-      rmObject.setLanguage(
-          defaultValues.getDefaultValue(DefaultValuePath.LANGUAGE, Language.class).toCodePhrase());
+        && defaultValues.getDefaultValue(DefaultValuePath.LANGUAGE) != null) {
+      rmObject.setLanguage(defaultValues.getDefaultValue(DefaultValuePath.LANGUAGE).toCodePhrase());
     }
   }
 

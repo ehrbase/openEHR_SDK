@@ -22,14 +22,17 @@ package org.ehrbase.serialisation.walker.defaultvalues;
 import org.ehrbase.client.classgenerator.shareddefinition.Language;
 import org.ehrbase.client.classgenerator.shareddefinition.Territory;
 
-public enum DefaultValuePath {
-  LANGUAGE("language", Language.class),
-  TERRITORY("territory", Territory.class);
+public class DefaultValuePath<T> {
+
+  public static final DefaultValuePath<Language> LANGUAGE =
+      new DefaultValuePath("language", Language.class);
+  public static final DefaultValuePath<Territory> TERRITORY =
+      new DefaultValuePath("territory", Territory.class);
 
   private final String path;
-  private final Class<?> type;
+  private final Class<T> type;
 
-  DefaultValuePath(String path, Class<?> type) {
+  private DefaultValuePath(String path, Class<T> type) {
     this.path = path;
     this.type = type;
   }
