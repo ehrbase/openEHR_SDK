@@ -20,6 +20,7 @@
 package org.ehrbase.webtemplate.parser;
 
 import com.nedap.archie.rm.archetyped.Locatable;
+import com.nedap.archie.rm.composition.Composition;
 import com.nedap.archie.rm.composition.EventContext;
 import com.nedap.archie.rm.composition.IsmTransition;
 import com.nedap.archie.rm.datastructures.Element;
@@ -531,7 +532,27 @@ public class OPTParser {
           }
         });
 
+    node.getChildren().forEach(child -> addInContext(node, child));
+
     return node;
+  }
+
+  private void addInContext(WebTemplateNode node, WebTemplateNode child) {
+
+    Map<Class<?>, List<String>> contextAttributes =
+        Map.of(
+            Locatable.class, List.of("language"),
+            Composition.class, List.of("language", "territory"));
+
+    RMTypeInfo typeInfo = ARCHIE_RM_INFO_LOOKUP.getTypeInfo(node.getRmType());
+    if (typeInfo != null) {
+      contextAttributes.forEach(
+          (k, v) -> {
+            if (k.isAssignableFrom(typeInfo.getJavaClass()) && v.contains(child.getId())) {
+              child.setInContext(true);
+            }
+          });
+    }
   }
 
   private WebtemplateCardinality buildCardinality(XmlObject xmlObject) {
