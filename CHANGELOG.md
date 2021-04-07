@@ -3,7 +3,8 @@ Note: version releases in the 0.x.y range may introduce breaking changes.
 
 ## [Unreleased]
 ### Added
-
+- Flat: support ctx variables (see https://github.com/ehrbase/openEHR_SDK/pull/206)
+- Webtemplate: set inContext (see https://github.com/ehrbase/openEHR_SDK/pull/206)
 ### Fixed
 
 - Lost of small fixes to flat (see https://github.com/ehrbase/openEHR_SDK/pull/204)
