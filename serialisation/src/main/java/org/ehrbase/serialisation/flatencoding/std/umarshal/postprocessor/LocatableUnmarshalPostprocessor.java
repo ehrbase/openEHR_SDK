@@ -26,7 +26,7 @@ import com.nedap.archie.rm.composition.Composition;
 import com.nedap.archie.rm.support.identification.HierObjectId;
 import java.util.Map;
 
-public class CompositionUnmarshalPostprocessor extends AbstractUnmarshalPostprocessor<Locatable> {
+public class LocatableUnmarshalPostprocessor extends AbstractUnmarshalPostprocessor<Locatable> {
 
   /** {@inheritDoc} Unmarshalls {@link Composition#setUid} */
   @Override

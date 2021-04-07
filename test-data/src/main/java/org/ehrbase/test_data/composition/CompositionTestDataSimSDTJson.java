@@ -24,6 +24,7 @@ public enum CompositionTestDataSimSDTJson {
   ALTERNATIVE_EVENTS("AlternativeEvents", "AlternativeEvents.json"),
   ALTERNATIVE_EVENTS_2("AlternativeEvents", "AlternativeEvents2.json"),
   CORONA("Corona", "corona.json"),
+  CORONA_WITH_CONTEXT("Corona", "corona_with_context.json"),
   MULTI_OCCURRENCE("multi_occurrence", "multi_occurrence.json"),
   ALL_TYPES("test_all_types", "test_all_types.json"),
   DETERIORIATION_ASSESSMENT(

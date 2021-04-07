@@ -99,10 +99,11 @@ public abstract class FromCompositionWalker<T> extends Walker<T> {
     T childObject = null;
 
     Deque<WebTemplateNode> skippedNodes = null;
-    if (context.filteredNodeMap != null) {
+    if (context.getFilteredNodeMap() != null) {
       skippedNodes =
-          context.filteredNodeMap.get(
-              new ImmutablePair<>(childNode.getAqlPath(), childNode.getRmType()));
+          context
+              .getFilteredNodeMap()
+              .get(new ImmutablePair<>(childNode.getAqlPath(), childNode.getRmType()));
     }
     currentChild =
         (RMObject)

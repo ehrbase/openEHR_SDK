@@ -17,14 +17,21 @@
 
 package org.ehrbase.client.classgenerator;
 
+import com.nedap.archie.rm.datatypes.CodePhrase;
+import com.nedap.archie.rm.support.identification.TerminologyId;
+
 public interface EnumValueSet {
 
-    String getValue();
+  String getValue();
 
-    String getDescription();
+  String getDescription();
 
-    String getTerminologyId();
+  String getTerminologyId();
 
-    String getCode();
+  String getCode();
 
+  default CodePhrase toCodePhrase() {
+
+    return new CodePhrase(new TerminologyId(getTerminologyId()), getCode());
+  }
 }

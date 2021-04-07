@@ -26,6 +26,7 @@ import java.util.HashMap;
 import java.util.Map;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
+import org.ehrbase.serialisation.walker.defaultvalues.DefaultValues;
 import org.ehrbase.webtemplate.model.WebTemplateNode;
 
 public class Context<T> {
@@ -37,7 +38,9 @@ public class Context<T> {
   private final Deque<T> objectDeque = new ArrayDeque<>();
 
   private final Map<WebTemplateNode, Integer> countMap = new HashMap<>();
-  public Map<Pair<String, String>, Deque<WebTemplateNode>> filteredNodeMap;
+
+  private Map<Pair<String, String>, Deque<WebTemplateNode>> filteredNodeMap;
+  private DefaultValues defaultValues;
 
   public Deque<WebTemplateNode> getNodeDeque() {
     return nodeDeque;
@@ -63,5 +66,22 @@ public class Context<T> {
               new ImmutablePair<>(childNode.getAqlPath(), childNode.getRmType()));
     }
     return skippedNodes;
+  }
+
+  public void setFilteredNodeMap(
+      Map<Pair<String, String>, Deque<WebTemplateNode>> filteredNodeMap) {
+    this.filteredNodeMap = filteredNodeMap;
+  }
+
+  public Map<Pair<String, String>, Deque<WebTemplateNode>> getFilteredNodeMap() {
+    return filteredNodeMap;
+  }
+
+  public DefaultValues getDefaultValues() {
+    return defaultValues;
+  }
+
+  public void setDefaultValues(DefaultValues defaultValues) {
+    this.defaultValues = defaultValues;
   }
 }
