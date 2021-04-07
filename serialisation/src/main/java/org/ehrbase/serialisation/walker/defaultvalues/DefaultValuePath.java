@@ -19,6 +19,7 @@
 
 package org.ehrbase.serialisation.walker.defaultvalues;
 
+import java.time.temporal.TemporalAccessor;
 import org.ehrbase.client.classgenerator.shareddefinition.Language;
 import org.ehrbase.client.classgenerator.shareddefinition.Territory;
 
@@ -38,6 +39,16 @@ public class DefaultValuePath<T> {
       new DefaultValuePath<>("id_scheme", String.class);
   public static final DefaultValuePath<Boolean> COMPOSER_SELF =
       new DefaultValuePath<>("composer_self", Boolean.class);
+  public static final DefaultValuePath<TemporalAccessor> TIME =
+      new DefaultValuePath<>("time", TemporalAccessor.class);
+  public static final DefaultValuePath<TemporalAccessor> END_TIME =
+      new DefaultValuePath<>("end_time", TemporalAccessor.class);
+  public static final DefaultValuePath<TemporalAccessor> HISTORY_ORIGIN =
+      new DefaultValuePath<>("history_origin", TemporalAccessor.class);
+  public static final DefaultValuePath<TemporalAccessor> ACTION_TIME =
+      new DefaultValuePath<>("action_time", TemporalAccessor.class);
+  public static final DefaultValuePath<String> ACTIVITY_TIMING =
+      new DefaultValuePath<>("activity_timing", String.class);
 
   private final String path;
   private final Class<T> type;

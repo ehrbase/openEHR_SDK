@@ -21,6 +21,8 @@ package org.ehrbase.serialisation.walker.defaultvalues;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.nedap.archie.datetime.DateTimeParsers;
+import java.time.temporal.TemporalAccessor;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -50,7 +52,12 @@ public class DefaultValues {
             DefaultValuePath.COMPOSER_ID,
             DefaultValuePath.ID_SCHEME,
             DefaultValuePath.ID_NAMESPACE,
-            DefaultValuePath.COMPOSER_SELF)
+            DefaultValuePath.COMPOSER_SELF,
+            DefaultValuePath.TIME,
+            DefaultValuePath.END_TIME,
+            DefaultValuePath.HISTORY_ORIGIN,
+            DefaultValuePath.ACTION_TIME,
+            DefaultValuePath.ACTIVITY_TIMING)
         .forEach(
             path -> {
               Map<String, String> subValues =
@@ -79,6 +86,10 @@ public class DefaultValues {
                   if (value.equals("true")) {
                     defaultValueMap.put(path, value);
                   }
+                } else if (TemporalAccessor.class.isAssignableFrom(path.getType())) {
+                  String value =
+                      subValues.values().stream().map(DefaultValues::read).findAny().orElseThrow();
+                  defaultValueMap.put(path, DateTimeParsers.parseDateTimeValue(value));
                 }
               }
             });
@@ -113,5 +124,9 @@ public class DefaultValues {
 
   public <T> T getDefaultValue(DefaultValuePath<T> path) {
     return (T) defaultValueMap.get(path);
+  }
+
+  public boolean containsDefaultValue(DefaultValuePath<?> path) {
+    return defaultValueMap.containsKey(path);
   }
 }

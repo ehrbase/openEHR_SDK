@@ -21,6 +21,8 @@ package org.ehrbase.serialisation.walker.defaultvalues.defaultinserter;
 
 import com.nedap.archie.rm.RMObject;
 import com.nedap.archie.rm.datatypes.CodePhrase;
+import com.nedap.archie.rm.datavalues.encapsulated.DvParsable;
+import com.nedap.archie.rm.datavalues.quantity.datetime.DvDateTime;
 import com.nedap.archie.rm.generic.PartyIdentified;
 import org.apache.commons.collections4.CollectionUtils;
 
@@ -36,6 +38,15 @@ public abstract class AbstractValueInserter<T extends RMObject> implements Defau
     if (rmObject instanceof PartyIdentified) {
       return ((PartyIdentified) rmObject).getName() == null
           && CollectionUtils.isEmpty(((PartyIdentified) rmObject).getIdentifiers());
+    }
+
+    if (rmObject instanceof DvDateTime) {
+      return ((DvDateTime) rmObject).getValue() == null;
+    }
+
+    if (rmObject instanceof DvParsable) {
+      return ((DvParsable) rmObject).getValue() == null
+          && ((DvParsable) rmObject).getFormalism() == null;
     }
     return false;
   }

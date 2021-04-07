@@ -23,10 +23,13 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.nedap.archie.rm.composition.Composition;
+import com.nedap.archie.rm.composition.Observation;
 import com.nedap.archie.rm.generic.PartyIdentified;
 import com.nedap.archie.rm.support.identification.GenericId;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -66,6 +69,8 @@ public class DefaultValuesTest {
     assertThat(cut).isNotNull();
     assertThat(cut.getDefaultValue(DefaultValuePath.LANGUAGE)).isEqualTo(Language.DE);
     assertThat(cut.getDefaultValue(DefaultValuePath.COMPOSER_NAME)).isEqualTo("Silvia Blake");
+    assertThat(cut.getDefaultValue(DefaultValuePath.TIME))
+        .isEqualTo(OffsetDateTime.of(2021, 4, 1, 12, 40, 31, 418954000, ZoneOffset.ofHours(2)));
   }
 
   @Test
@@ -96,5 +101,21 @@ public class DefaultValuesTest {
         .isEqualTo("HOSPITAL-NS");
     assertThat(((GenericId) actual.getComposer().getExternalRef().getId()).getValue())
         .isEqualTo("123");
+    assertThat(actual.getContext().getStartTime()).isNotNull();
+    assertThat(actual.getContext().getStartTime().getValue())
+        .isEqualTo(OffsetDateTime.of(2021, 4, 1, 12, 40, 31, 418954000, ZoneOffset.ofHours(2)));
+
+    Observation observation =
+        actual.getContent().stream()
+            .filter(c -> Observation.class.isAssignableFrom(c.getClass()))
+            .map(Observation.class::cast)
+            .findAny()
+            .orElse(null);
+    assertThat(observation).isNotNull();
+    assertThat(observation.getData()).isNotNull();
+    assertThat(observation.getData().getOrigin().getValue())
+        .isEqualTo(OffsetDateTime.of(2021, 4, 1, 12, 40, 31, 418954000, ZoneOffset.ofHours(2)));
+    assertThat(observation.getData().getEvents().get(0).getTime().getValue())
+        .isEqualTo(OffsetDateTime.of(2021, 4, 1, 12, 40, 31, 418954000, ZoneOffset.ofHours(2)));
   }
 }

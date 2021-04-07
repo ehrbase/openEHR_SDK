@@ -32,23 +32,23 @@ public class CompositionValueInserter extends AbstractValueInserter<Composition>
   public void insert(Composition rmObject, DefaultValues defaultValues) {
 
     if (isEmpty(rmObject.getLanguage())
-        && defaultValues.getDefaultValue(DefaultValuePath.LANGUAGE) != null) {
+        && defaultValues.containsDefaultValue(DefaultValuePath.LANGUAGE)) {
       rmObject.setLanguage(defaultValues.getDefaultValue(DefaultValuePath.LANGUAGE).toCodePhrase());
     }
 
     if (isEmpty(rmObject.getTerritory())
-        && defaultValues.getDefaultValue(DefaultValuePath.TERRITORY) != null) {
+        && defaultValues.containsDefaultValue(DefaultValuePath.TERRITORY)) {
       rmObject.setTerritory(
           defaultValues.getDefaultValue(DefaultValuePath.TERRITORY).toCodePhrase());
     }
 
     if (isEmpty(rmObject.getComposer())) {
 
-      if (defaultValues.getDefaultValue(DefaultValuePath.COMPOSER_SELF)) {
+      if (defaultValues.containsDefaultValue(DefaultValuePath.COMPOSER_SELF)) {
         rmObject.setComposer(new PartySelf());
       }
 
-      if (defaultValues.getDefaultValue(DefaultValuePath.COMPOSER_NAME) != null) {
+      if (defaultValues.containsDefaultValue(DefaultValuePath.COMPOSER_NAME)) {
 
         if (rmObject.getComposer() == null
             || !PartyIdentified.class.isAssignableFrom(rmObject.getComposer().getClass())) {
@@ -58,7 +58,7 @@ public class CompositionValueInserter extends AbstractValueInserter<Composition>
         ((PartyIdentified) rmObject.getComposer())
             .setName(defaultValues.getDefaultValue(DefaultValuePath.COMPOSER_NAME));
       }
-      if (defaultValues.getDefaultValue(DefaultValuePath.COMPOSER_ID) != null) {
+      if (defaultValues.containsDefaultValue(DefaultValuePath.COMPOSER_ID)) {
         if (rmObject.getComposer() == null
             || !PartyIdentified.class.isAssignableFrom(rmObject.getComposer().getClass())) {
           rmObject.setComposer(new PartyIdentified());

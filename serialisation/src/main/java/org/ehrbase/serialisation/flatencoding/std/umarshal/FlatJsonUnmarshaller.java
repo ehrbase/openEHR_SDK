@@ -23,6 +23,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nedap.archie.rm.composition.Composition;
+import java.time.OffsetDateTime;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -33,6 +34,7 @@ import org.ehrbase.building.OptSkeletonBuilder;
 import org.ehrbase.normalizer.Normalizer;
 import org.ehrbase.serialisation.exception.UnmarshalException;
 import org.ehrbase.serialisation.jsonencoding.JacksonUtil;
+import org.ehrbase.serialisation.walker.defaultvalues.DefaultValuePath;
 import org.ehrbase.serialisation.walker.defaultvalues.DefaultValues;
 import org.ehrbase.webtemplate.model.WebTemplate;
 import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
@@ -72,7 +74,12 @@ public class FlatJsonUnmarshaller {
       Composition generate = (Composition) OPT_SKELETON_BUILDER.generate(operationalTemplate);
 
       StdToCompositionWalker walker = new StdToCompositionWalker();
-      walker.walk(generate, currentValues, introspect, new DefaultValues(currentValues));
+      DefaultValues defaultValues = new DefaultValues(currentValues);
+      // put default for the defaults
+      if (defaultValues.getDefaultValue(DefaultValuePath.TIME) == null) {
+        defaultValues.addDefaultValue(DefaultValuePath.TIME, OffsetDateTime.now());
+      }
+      walker.walk(generate, currentValues, introspect, defaultValues);
       consumedPath = walker.getConsumedPaths();
 
       return NORMALIZER.normalize(generate);
