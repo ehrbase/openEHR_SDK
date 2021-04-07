@@ -92,6 +92,8 @@ public class DefaultValuesTest {
     Composition actual = cut.unmarshal(flat, webTemplate, template);
 
     assertThat(actual).isNotNull();
+    assertThat(actual.getCategory()).isNotNull();
+    assertThat(actual.getCategory().getValue()).isEqualTo("event");
 
     assertThat(actual.getLanguage()).isNotNull();
     assertThat(actual.getLanguage().getCodeString()).isEqualTo(Language.DE.getCode());
