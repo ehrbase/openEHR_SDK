@@ -20,10 +20,7 @@
 package org.ehrbase.serialisation.walker.defaultvalues.defaultinserter;
 
 import com.nedap.archie.rm.composition.Composition;
-import com.nedap.archie.rm.generic.PartyIdentified;
 import com.nedap.archie.rm.generic.PartySelf;
-import com.nedap.archie.rm.support.identification.GenericId;
-import com.nedap.archie.rm.support.identification.PartyRef;
 import org.ehrbase.serialisation.walker.defaultvalues.DefaultValuePath;
 import org.ehrbase.serialisation.walker.defaultvalues.DefaultValues;
 
@@ -48,29 +45,12 @@ public class CompositionValueInserter extends AbstractValueInserter<Composition>
         rmObject.setComposer(new PartySelf());
       }
 
-      if (defaultValues.containsDefaultValue(DefaultValuePath.COMPOSER_NAME)) {
-
-        if (rmObject.getComposer() == null
-            || !PartyIdentified.class.isAssignableFrom(rmObject.getComposer().getClass())) {
-          rmObject.setComposer(new PartyIdentified());
-        }
-
-        ((PartyIdentified) rmObject.getComposer())
-            .setName(defaultValues.getDefaultValue(DefaultValuePath.COMPOSER_NAME));
-      }
-      if (defaultValues.containsDefaultValue(DefaultValuePath.COMPOSER_ID)) {
-        if (rmObject.getComposer() == null
-            || !PartyIdentified.class.isAssignableFrom(rmObject.getComposer().getClass())) {
-          rmObject.setComposer(new PartyIdentified());
-        }
-        PartyRef partyRef = new PartyRef();
-        partyRef.setNamespace(defaultValues.getDefaultValue(DefaultValuePath.ID_NAMESPACE));
-        partyRef.setId(
-            new GenericId(
-                defaultValues.getDefaultValue(DefaultValuePath.COMPOSER_ID),
-                defaultValues.getDefaultValue(DefaultValuePath.ID_SCHEME)));
-        rmObject.getComposer().setExternalRef(partyRef);
-      }
+      rmObject.setComposer(
+          buildPartyIdentified(
+              defaultValues,
+              DefaultValuePath.COMPOSER_NAME,
+              DefaultValuePath.COMPOSER_ID,
+              rmObject.getComposer()));
     }
   }
 

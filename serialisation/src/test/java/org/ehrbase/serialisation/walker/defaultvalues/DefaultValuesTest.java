@@ -71,6 +71,8 @@ public class DefaultValuesTest {
     assertThat(cut.getDefaultValue(DefaultValuePath.COMPOSER_NAME)).isEqualTo("Silvia Blake");
     assertThat(cut.getDefaultValue(DefaultValuePath.TIME))
         .isEqualTo(OffsetDateTime.of(2021, 4, 1, 12, 40, 31, 418954000, ZoneOffset.ofHours(2)));
+    assertThat(cut.getDefaultValue(DefaultValuePath.HEALTHCARE_FACILITY_NAME))
+        .isEqualTo("Hospital");
   }
 
   @Test
@@ -101,6 +103,8 @@ public class DefaultValuesTest {
         .isEqualTo("HOSPITAL-NS");
     assertThat(((GenericId) actual.getComposer().getExternalRef().getId()).getValue())
         .isEqualTo("123");
+
+    assertThat(actual.getContext().getHealthCareFacility().getName()).isEqualTo("Hospital");
     assertThat(actual.getContext().getStartTime()).isNotNull();
     assertThat(actual.getContext().getStartTime().getValue())
         .isEqualTo(OffsetDateTime.of(2021, 4, 1, 12, 40, 31, 418954000, ZoneOffset.ofHours(2)));

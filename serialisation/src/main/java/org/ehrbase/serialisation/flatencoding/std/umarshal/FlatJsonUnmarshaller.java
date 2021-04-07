@@ -31,6 +31,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import org.ehrbase.building.OptSkeletonBuilder;
+import org.ehrbase.client.classgenerator.shareddefinition.Setting;
 import org.ehrbase.normalizer.Normalizer;
 import org.ehrbase.serialisation.exception.UnmarshalException;
 import org.ehrbase.serialisation.jsonencoding.JacksonUtil;
@@ -76,9 +77,13 @@ public class FlatJsonUnmarshaller {
       StdToCompositionWalker walker = new StdToCompositionWalker();
       DefaultValues defaultValues = new DefaultValues(currentValues);
       // put default for the defaults
-      if (defaultValues.getDefaultValue(DefaultValuePath.TIME) == null) {
+      if (!defaultValues.containsDefaultValue(DefaultValuePath.TIME)) {
         defaultValues.addDefaultValue(DefaultValuePath.TIME, OffsetDateTime.now());
       }
+      if (!defaultValues.containsDefaultValue(DefaultValuePath.SETTING)) {
+        defaultValues.addDefaultValue(DefaultValuePath.SETTING, Setting.OTHER_CARE);
+      }
+
       walker.walk(generate, currentValues, introspect, defaultValues);
       consumedPath = walker.getConsumedPaths();
 

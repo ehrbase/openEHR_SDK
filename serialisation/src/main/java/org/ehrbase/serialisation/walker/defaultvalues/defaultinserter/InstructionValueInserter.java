@@ -19,30 +19,26 @@
 
 package org.ehrbase.serialisation.walker.defaultvalues.defaultinserter;
 
-import com.nedap.archie.rm.composition.Entry;
+import com.nedap.archie.rm.composition.Instruction;
+import com.nedap.archie.rm.datavalues.DvText;
 import org.ehrbase.serialisation.walker.defaultvalues.DefaultValuePath;
 import org.ehrbase.serialisation.walker.defaultvalues.DefaultValues;
 
-public class EntryDefaultValueInserter extends AbstractValueInserter<Entry> {
-  @Override
-  public void insert(Entry rmObject, DefaultValues defaultValues) {
+public class InstructionValueInserter extends AbstractValueInserter<Instruction> {
 
-    if (isEmpty(rmObject.getLanguage())
-        && defaultValues.getDefaultValue(DefaultValuePath.LANGUAGE) != null) {
-      rmObject.setLanguage(defaultValues.getDefaultValue(DefaultValuePath.LANGUAGE).toCodePhrase());
-    }
-    if (isEmpty(rmObject.getProvider())) {
-      rmObject.setProvider(
-          buildPartyIdentified(
-              defaultValues,
-              DefaultValuePath.PROVIDER_NAME,
-              DefaultValuePath.PROVIDER_ID,
-              rmObject.getProvider()));
+  @Override
+  public void insert(Instruction rmObject, DefaultValues defaultValues) {
+
+    if (isEmpty(rmObject.getNarrative())
+        && defaultValues.containsDefaultValue(DefaultValuePath.INSTRUCTION_NARRATIVE)) {
+
+      rmObject.setNarrative(
+          new DvText(defaultValues.getDefaultValue(DefaultValuePath.INSTRUCTION_NARRATIVE)));
     }
   }
 
   @Override
-  public Class<Entry> getAssociatedClass() {
-    return Entry.class;
+  public Class<Instruction> getAssociatedClass() {
+    return Instruction.class;
   }
 }

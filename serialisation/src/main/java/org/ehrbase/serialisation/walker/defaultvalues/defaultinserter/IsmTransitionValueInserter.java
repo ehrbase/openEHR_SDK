@@ -19,30 +19,30 @@
 
 package org.ehrbase.serialisation.walker.defaultvalues.defaultinserter;
 
-import com.nedap.archie.rm.composition.Entry;
+import com.nedap.archie.rm.composition.IsmTransition;
+import com.nedap.archie.rm.datavalues.DvCodedText;
+import org.ehrbase.client.classgenerator.shareddefinition.Transition;
 import org.ehrbase.serialisation.walker.defaultvalues.DefaultValuePath;
 import org.ehrbase.serialisation.walker.defaultvalues.DefaultValues;
 
-public class EntryDefaultValueInserter extends AbstractValueInserter<Entry> {
-  @Override
-  public void insert(Entry rmObject, DefaultValues defaultValues) {
+public class IsmTransitionValueInserter extends AbstractValueInserter<IsmTransition> {
 
-    if (isEmpty(rmObject.getLanguage())
-        && defaultValues.getDefaultValue(DefaultValuePath.LANGUAGE) != null) {
-      rmObject.setLanguage(defaultValues.getDefaultValue(DefaultValuePath.LANGUAGE).toCodePhrase());
-    }
-    if (isEmpty(rmObject.getProvider())) {
-      rmObject.setProvider(
-          buildPartyIdentified(
-              defaultValues,
-              DefaultValuePath.PROVIDER_NAME,
-              DefaultValuePath.PROVIDER_ID,
-              rmObject.getProvider()));
+  @Override
+  public void insert(IsmTransition rmObject, DefaultValues defaultValues) {
+
+    if (isEmpty(rmObject.getCurrentState())
+        && defaultValues.containsDefaultValue(
+            DefaultValuePath.ACTION_ISM_TRANSITION_CURRENT_STATE)) {
+      Transition defaultValue =
+          defaultValues.getDefaultValue(DefaultValuePath.ACTION_ISM_TRANSITION_CURRENT_STATE);
+
+      rmObject.setCurrentState(
+          new DvCodedText(defaultValue.getValue(), defaultValue.toCodePhrase()));
     }
   }
 
   @Override
-  public Class<Entry> getAssociatedClass() {
-    return Entry.class;
+  public Class<IsmTransition> getAssociatedClass() {
+    return IsmTransition.class;
   }
 }

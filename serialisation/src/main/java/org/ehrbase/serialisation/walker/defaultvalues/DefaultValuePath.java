@@ -21,7 +21,9 @@ package org.ehrbase.serialisation.walker.defaultvalues;
 
 import java.time.temporal.TemporalAccessor;
 import org.ehrbase.client.classgenerator.shareddefinition.Language;
+import org.ehrbase.client.classgenerator.shareddefinition.Setting;
 import org.ehrbase.client.classgenerator.shareddefinition.Territory;
+import org.ehrbase.client.classgenerator.shareddefinition.Transition;
 
 public class DefaultValuePath<T> {
 
@@ -49,6 +51,22 @@ public class DefaultValuePath<T> {
       new DefaultValuePath<>("action_time", TemporalAccessor.class);
   public static final DefaultValuePath<String> ACTIVITY_TIMING =
       new DefaultValuePath<>("activity_timing", String.class);
+  public static final DefaultValuePath<String> PROVIDER_NAME =
+      new DefaultValuePath<>("provider_name", String.class);
+  public static final DefaultValuePath<String> PROVIDER_ID =
+      new DefaultValuePath<>("provider_id", String.class);
+  public static final DefaultValuePath<String> HEALTHCARE_FACILITY_NAME =
+      new DefaultValuePath<>("health_care_facility|name", String.class);
+  public static final DefaultValuePath<String> HEALTHCARE_FACILITY_ID =
+      new DefaultValuePath<>("health_care_facility|id", String.class);
+  public static final DefaultValuePath<Transition> ACTION_ISM_TRANSITION_CURRENT_STATE =
+      new DefaultValuePath<>("action_ism_transition_current_state", Transition.class);
+  public static final DefaultValuePath<String> INSTRUCTION_NARRATIVE =
+      new DefaultValuePath<>("instruction_narrative", String.class);
+  public static final DefaultValuePath<String> LOCATION =
+      new DefaultValuePath<>("location", String.class);
+  public static final DefaultValuePath<Setting> SETTING =
+      new DefaultValuePath<>("setting", Setting.class);
 
   private final String path;
   private final Class<T> type;

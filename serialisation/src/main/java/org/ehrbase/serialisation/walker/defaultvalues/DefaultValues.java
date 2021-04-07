@@ -57,7 +57,15 @@ public class DefaultValues {
             DefaultValuePath.END_TIME,
             DefaultValuePath.HISTORY_ORIGIN,
             DefaultValuePath.ACTION_TIME,
-            DefaultValuePath.ACTIVITY_TIMING)
+            DefaultValuePath.ACTIVITY_TIMING,
+            DefaultValuePath.PROVIDER_ID,
+            DefaultValuePath.PROVIDER_NAME,
+            DefaultValuePath.HEALTHCARE_FACILITY_NAME,
+            DefaultValuePath.HEALTHCARE_FACILITY_ID,
+            DefaultValuePath.ACTION_ISM_TRANSITION_CURRENT_STATE,
+            DefaultValuePath.INSTRUCTION_NARRATIVE,
+            DefaultValuePath.LOCATION,
+            DefaultValuePath.SETTING)
         .forEach(
             path -> {
               Map<String, String> subValues =

@@ -20,7 +20,9 @@
 package org.ehrbase.serialisation.walker.defaultvalues.defaultinserter;
 
 import com.nedap.archie.rm.composition.EventContext;
+import com.nedap.archie.rm.datavalues.DvCodedText;
 import com.nedap.archie.rm.datavalues.quantity.datetime.DvDateTime;
+import org.ehrbase.client.classgenerator.shareddefinition.Setting;
 import org.ehrbase.serialisation.walker.defaultvalues.DefaultValuePath;
 import org.ehrbase.serialisation.walker.defaultvalues.DefaultValues;
 
@@ -36,6 +38,26 @@ public class EventContextValueInserter extends AbstractValueInserter<EventContex
     if (isEmpty(rmObject.getEndTime())
         && defaultValues.containsDefaultValue(DefaultValuePath.END_TIME)) {
       rmObject.setEndTime(new DvDateTime(defaultValues.getDefaultValue(DefaultValuePath.END_TIME)));
+    }
+
+    if (isEmpty(rmObject.getHealthCareFacility())) {
+      rmObject.setHealthCareFacility(
+          buildPartyIdentified(
+              defaultValues,
+              DefaultValuePath.HEALTHCARE_FACILITY_NAME,
+              DefaultValuePath.HEALTHCARE_FACILITY_ID,
+              rmObject.getHealthCareFacility()));
+    }
+
+    if (isEmpty(rmObject.getLocation())
+        && defaultValues.containsDefaultValue(DefaultValuePath.LOCATION)) {
+      rmObject.setLocation(defaultValues.getDefaultValue(DefaultValuePath.LOCATION));
+    }
+
+    if (isEmpty(rmObject.getSetting())
+        && defaultValues.containsDefaultValue(DefaultValuePath.SETTING)) {
+      Setting defaultValue = defaultValues.getDefaultValue(DefaultValuePath.SETTING);
+      rmObject.setSetting(new DvCodedText(defaultValue.getValue(), defaultValue.toCodePhrase()));
     }
   }
 

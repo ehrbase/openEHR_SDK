@@ -21,10 +21,17 @@ package org.ehrbase.serialisation.walker.defaultvalues.defaultinserter;
 
 import com.nedap.archie.rm.RMObject;
 import com.nedap.archie.rm.datatypes.CodePhrase;
+import com.nedap.archie.rm.datavalues.DvCodedText;
+import com.nedap.archie.rm.datavalues.DvText;
 import com.nedap.archie.rm.datavalues.encapsulated.DvParsable;
 import com.nedap.archie.rm.datavalues.quantity.datetime.DvDateTime;
 import com.nedap.archie.rm.generic.PartyIdentified;
+import com.nedap.archie.rm.generic.PartyProxy;
+import com.nedap.archie.rm.support.identification.GenericId;
+import com.nedap.archie.rm.support.identification.PartyRef;
 import org.apache.commons.collections4.CollectionUtils;
+import org.ehrbase.serialisation.walker.defaultvalues.DefaultValuePath;
+import org.ehrbase.serialisation.walker.defaultvalues.DefaultValues;
 
 public abstract class AbstractValueInserter<T extends RMObject> implements DefaultValueInserter<T> {
 
@@ -35,6 +42,15 @@ public abstract class AbstractValueInserter<T extends RMObject> implements Defau
     if (rmObject instanceof CodePhrase) {
       return ((CodePhrase) rmObject).getCodeString() == null;
     }
+
+    if (rmObject instanceof DvCodedText) {
+      return ((DvCodedText) rmObject).getValue() == null;
+    }
+
+    if (rmObject instanceof DvText) {
+      return ((DvText) rmObject).getValue() == null;
+    }
+
     if (rmObject instanceof PartyIdentified) {
       return ((PartyIdentified) rmObject).getName() == null
           && CollectionUtils.isEmpty(((PartyIdentified) rmObject).getIdentifiers());
@@ -49,5 +65,33 @@ public abstract class AbstractValueInserter<T extends RMObject> implements Defau
           && ((DvParsable) rmObject).getFormalism() == null;
     }
     return false;
+  }
+
+  protected PartyIdentified buildPartyIdentified(
+      DefaultValues defaultValues,
+      DefaultValuePath<String> name,
+      DefaultValuePath<String> id,
+      PartyProxy partyProxy) {
+
+    if (partyProxy == null || !PartyIdentified.class.isAssignableFrom(partyProxy.getClass())) {
+      partyProxy = new PartyIdentified();
+    }
+
+    if (defaultValues.containsDefaultValue(name)) {
+
+      ((PartyIdentified) partyProxy).setName(defaultValues.getDefaultValue(name));
+    }
+    if (defaultValues.containsDefaultValue(id)) {
+
+      PartyRef partyRef = new PartyRef();
+      partyRef.setNamespace(defaultValues.getDefaultValue(DefaultValuePath.ID_NAMESPACE));
+      partyRef.setId(
+          new GenericId(
+              defaultValues.getDefaultValue(id),
+              defaultValues.getDefaultValue(DefaultValuePath.ID_SCHEME)));
+      partyProxy.setExternalRef(partyRef);
+    }
+
+    return (PartyIdentified) partyProxy;
   }
 }
