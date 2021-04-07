@@ -20,10 +20,16 @@
 package org.ehrbase.webtemplate.parser;
 
 import com.nedap.archie.rm.archetyped.Locatable;
+import com.nedap.archie.rm.composition.Action;
+import com.nedap.archie.rm.composition.Activity;
 import com.nedap.archie.rm.composition.Composition;
+import com.nedap.archie.rm.composition.Entry;
 import com.nedap.archie.rm.composition.EventContext;
+import com.nedap.archie.rm.composition.Instruction;
 import com.nedap.archie.rm.composition.IsmTransition;
 import com.nedap.archie.rm.datastructures.Element;
+import com.nedap.archie.rm.datastructures.Event;
+import com.nedap.archie.rm.datastructures.History;
 import com.nedap.archie.rm.datavalues.quantity.DvInterval;
 import com.nedap.archie.rminfo.ArchieRMInfoLookup;
 import com.nedap.archie.rminfo.RMAttributeInfo;
@@ -348,6 +354,7 @@ public class OPTParser {
         ismTransition.setMin(ismTransitionList.get(0).getMin());
         ismTransition.setMax(ismTransitionList.get(0).getMax());
         ismTransition.setRmType("ISM_TRANSITION");
+        ismTransition.setInContext(true);
         ismTransition.setAqlPath(aqlPath + "/" + cattribute.getRmAttributeName());
 
         WebTemplateNode careflowStep = new WebTemplateNode();
@@ -358,6 +365,7 @@ public class OPTParser {
         careflowStep.setName("Careflow_step");
         careflowStep.setId(CAREFLOW_STEP);
         careflowStep.setRmType(DV_CODED_TEXT);
+        careflowStep.setInContext(true);
         careflowStep.setAqlPath(
             aqlPath + "/" + cattribute.getRmAttributeName() + "/" + CAREFLOW_STEP);
         WebTemplateInput code = new WebTemplateInput();
@@ -388,6 +396,7 @@ public class OPTParser {
         currentState.setRmType(DV_CODED_TEXT);
         currentState.setName("Current_state");
         currentState.setId(CURRENT_STATE);
+        currentState.setInContext(true);
         currentState.setAqlPath(
             aqlPath + "/" + cattribute.getRmAttributeName() + "/" + CURRENT_STATE);
         WebTemplateInput code2 = new WebTemplateInput();
@@ -410,6 +419,7 @@ public class OPTParser {
         WebTemplateNode transition =
             ismTransitionList.get(0).findChildById("transition").orElseThrow();
         transition.setAqlPath(aqlPath + "/" + cattribute.getRmAttributeName() + "/" + "transition");
+        transition.setInContext(true);
         ismTransition.getChildren().add(transition);
         node.getChildren().add(ismTransition);
       }
@@ -541,8 +551,32 @@ public class OPTParser {
 
     Map<Class<?>, List<String>> contextAttributes =
         Map.of(
-            Locatable.class, List.of("language"),
-            Composition.class, List.of("language", "territory", "composer"));
+            Locatable.class,
+            List.of("language"),
+            Action.class,
+            List.of("time"),
+            Activity.class,
+            List.of("timing", "action_archetype_id"),
+            Instruction.class,
+            List.of("narrative"),
+            IsmTransition.class,
+            List.of("current_state", "careflow_step", "transition"),
+            History.class,
+            List.of("origin"),
+            Event.class,
+            List.of("time"),
+            Entry.class,
+            List.of("language", "provider", "other_participations", "subject", "encoding"),
+            EventContext.class,
+            List.of(
+                "start_time",
+                "end_time",
+                "location",
+                "setting",
+                "healthCareFacility",
+                "participations"),
+            Composition.class,
+            List.of("language", "territory", "composer", "category"));
 
     RMTypeInfo typeInfo = ARCHIE_RM_INFO_LOOKUP.getTypeInfo(node.getRmType());
     if (typeInfo != null) {
