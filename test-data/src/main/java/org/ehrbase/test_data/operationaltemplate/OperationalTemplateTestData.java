@@ -66,8 +66,8 @@ public enum OperationalTemplateTestData {
       "stationärer_versorgungsfall.opt",
       "Stationärer Versorgungsfall"),
   INITIAL_ASSESSMENT(
-      "example.initialassesment.v0l",
-      "example.initialassesment.v0.opt",
+      "example.initialassesment.v0",
+      "example_initialassesment.v0.opt",
       "example.initialassesment.v0"),
   D4L_QUESTIONNAIRE("D4L_questionnaire", "D4L_questionnaire.opt", "D4L_questionnaire"),
   CONSTRAIN_TEST(
@@ -76,6 +76,11 @@ public enum OperationalTemplateTestData {
   SINGLE_EVENT("example with a single valued EVENT", "single_event.opt", "Körpergröße"),
   ADDICTION("example ", "additciton_alcohol.opt", "AddictionAlcoholTemplate"),
   MINIMAL_EVALUATION("minimal evaluation", "minimal_evaluation.opt", "minimal_evaluation.en.v1");
+  DETERIORIATION_ASSESSMENT(
+      "Deterioriation assessment ",
+      "EREACT - Deterioriation assessment.v0.opt",
+      "EREACT - Deterioriation assessment.v0");
+
 
   private final String filename;
   private final String templateId;
