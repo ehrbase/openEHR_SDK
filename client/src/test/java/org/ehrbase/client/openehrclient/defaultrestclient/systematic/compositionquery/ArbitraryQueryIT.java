@@ -50,7 +50,7 @@ public class ArbitraryQueryIT extends CanonicalCompoAllTypeQueryIT {
 
     @Test
     public void testArbitraryString() throws IOException {
-        String csvTestSet = dirPath+"/arbitrary/string_where_tests.csv";
+        String csvTestSet = dirPath+"/arbitrary/arbitrary_tests.csv";
 
         assertThat(arbitraryQuery.testItemPaths(dirPath+"/arbitrary", csvTestSet)).isTrue();
     }

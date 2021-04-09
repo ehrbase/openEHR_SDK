@@ -21,28 +21,17 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.nedap.archie.rm.RMObject;
 import com.nedap.archie.rm.archetyped.Locatable;
-import com.nedap.archie.rm.datavalues.quantity.datetime.DvDateTime;
-import com.nedap.archie.rm.datavalues.quantity.datetime.DvTime;
-import com.nedap.archie.rm.generic.PartySelf;
-import com.nedap.archie.rm.support.identification.TerminologyId;
 import com.nedap.archie.rminfo.ArchieRMInfoLookup;
-import com.nedap.archie.terminology.openehr.Terminology;
-import org.ehrbase.serialisation.dbencoding.CompositionSerializer;
 import org.ehrbase.serialisation.dbencoding.wrappers.json.I_DvTypeAdapter;
 import org.ehrbase.serialisation.jsonencoding.CanonicalJson;
 import org.ehrbase.validation.constraints.util.SnakeToCamel;
 
 import java.lang.reflect.Method;
-import java.net.URI;
-import java.time.Duration;
-import java.time.OffsetDateTime;
-import java.time.temporal.Temporal;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.InstanceOfAssertFactories.OFFSET_TIME;
 
 public abstract class CanonicalUtil {
 
