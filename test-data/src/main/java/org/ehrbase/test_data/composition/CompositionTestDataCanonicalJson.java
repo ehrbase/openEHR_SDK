@@ -51,7 +51,8 @@ public enum CompositionTestDataCanonicalJson {
     ALTERNATIVE_EVENTS("Contains Event with mixed point and interval", "alternative_events.json"),
     CHOICE_ELEMENT("element containing multiple choice to test validation", "choice_validation_test.json"),
     CHOICE_DV_QUANTITY("choices in units", "dvquantity_choice.json"),
-    DEMO_VITALS("composition to test archetype_details roundtrip", "demo_vitals_352.json");
+    DEMO_VITALS("composition to test archetype_details roundtrip", "demo_vitals_352.json"),
+    FEEDER_AUDIT_DETAILS("composition to test feeder audit details", "compo_feeder_audit_details.json");
 
 
     private final String filename;

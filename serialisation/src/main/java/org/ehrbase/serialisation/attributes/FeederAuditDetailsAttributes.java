@@ -17,11 +17,12 @@
 
 package org.ehrbase.serialisation.attributes;
 
-import com.nedap.archie.rm.archetyped.FeederAudit;
 import com.nedap.archie.rm.archetyped.FeederAuditDetails;
+import org.ehrbase.serialisation.dbencoding.CompositionSerializer;
 import org.ehrbase.serialisation.dbencoding.PathMap;
 
 import java.util.Map;
+import org.ehrbase.serialisation.dbencoding.rawjson.LightRawJsonEncoder;
 
 public class FeederAuditDetailsAttributes {
 
@@ -55,6 +56,14 @@ public class FeederAuditDetailsAttributes {
         }
         if (feederAuditDetails.getTime() != null) {
             valuemap.put("time", feederAuditDetails.getTime());
+        }
+        if (feederAuditDetails.getVersionId() != null) {
+            valuemap.put("version_id", feederAuditDetails.getVersionId());
+        }
+        if (feederAuditDetails.getOtherDetails() != null) {
+            String dbEncoded = new CompositionSerializer().dbEncode(feederAuditDetails.getOtherDetails());
+            Map<String, Object> asMap = new LightRawJsonEncoder(dbEncoded).encodeOtherDetailsAsMap();
+            valuemap.put("other_details", asMap);
         }
         return valuemap;
     }
