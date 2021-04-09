@@ -75,7 +75,7 @@ public enum OperationalTemplateTestData {
   LANGUAGE_TEST("example with multiple languages", "language_test.opt", "language_test"),
   SINGLE_EVENT("example with a single valued EVENT", "single_event.opt", "Körpergröße"),
   ADDICTION("example ", "additciton_alcohol.opt", "AddictionAlcoholTemplate"),
-  MINIMAL_EVALUATION("minimal evaluation", "minimal_evaluation.opt", "minimal_evaluation.en.v1");
+  MINIMAL_EVALUATION("minimal evaluation", "minimal_evaluation.opt", "minimal_evaluation.en.v1"),
   DETERIORIATION_ASSESSMENT(
       "Deterioriation assessment ",
       "EREACT - Deterioriation assessment.v0.opt",
