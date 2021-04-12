@@ -49,6 +49,7 @@
         <jackson.version>2.12.0</jackson.version>
         <jacoco.version>0.8.6</jacoco.version>
         <antlr4.version>4.9.1</antlr4.version>
+        <archie.version>dc09642</archie.version>
 
         <skipIntegrationTests>true</skipIntegrationTests>
         <include.tests>**/*Test.java</include.tests>
@@ -477,16 +478,15 @@
                 <version>1.7.30</version>
                 <scope>test</scope>
             </dependency>
-
-
             <dependency>
-                <!--                <groupId>com.nedap.healthcare.archie</groupId>-->
-                <!--                <artifactId>archie-all</artifactId>-->
-                <!--                <version>0.10.0</version>-->
-
                 <groupId>com.github.openEHR</groupId>
                 <artifactId>archie</artifactId>
-                <version>dc09642</version>
+                <version>${archie.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.openEHR.archie</groupId>
+                <artifactId>openehr-rm</artifactId>
+                <version>${archie.version}</version>
             </dependency>
             <!-- NOTE: does not work properly when inside dependencyManagement -->
             <!-- 

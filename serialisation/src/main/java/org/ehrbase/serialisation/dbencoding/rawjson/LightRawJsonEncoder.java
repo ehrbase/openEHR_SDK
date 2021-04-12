@@ -96,6 +96,10 @@ public class LightRawJsonEncoder {
         return converted.replaceFirst(Pattern.quote("{"), new ArchieCompositionProlog(root, compositionName).toString());
     }
 
+    public Map<String, Object> encodeOtherDetailsAsMap() {
+        return (Map<String, Object>) db2map(false);
+    }
+
     @SuppressWarnings("unchecked")
     private Object db2map(boolean isValue) {
         boolean isArray = false;

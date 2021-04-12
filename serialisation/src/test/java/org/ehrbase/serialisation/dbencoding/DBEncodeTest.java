@@ -27,10 +27,13 @@ import com.nedap.archie.rm.composition.Section;
 import com.nedap.archie.rm.datastructures.Element;
 import com.nedap.archie.rm.datastructures.History;
 import com.nedap.archie.rm.datastructures.ItemStructure;
+import com.nedap.archie.rm.datastructures.ItemTree;
 import com.nedap.archie.rm.datastructures.PointEvent;
+import com.nedap.archie.rm.datavalues.DvIdentifier;
 import com.nedap.archie.rm.datavalues.quantity.DvInterval;
 import com.nedap.archie.rm.datavalues.quantity.datetime.DvDateTime;
 import com.nedap.archie.rm.ehr.EhrStatus;
+import java.util.Map;
 import org.apache.commons.io.IOUtils;
 import org.apache.xmlbeans.XmlException;
 import org.ehrbase.serialisation.dbencoding.rawjson.LightRawJsonEncoder;
@@ -51,7 +54,6 @@ import org.openehr.schemas.v1.TemplateDocument;
 
 import javax.xml.bind.JAXBException;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
@@ -760,5 +762,36 @@ public class DBEncodeTest {
 //        assertNotNull(object);
     }
 
+    @Test
+    public void compositionEncodingFeederAuditDetails() throws Exception {
+        String value = IOUtils.toString(CompositionTestDataCanonicalJson.FEEDER_AUDIT_DETAILS.getStream(), UTF_8);
+        CanonicalJson cut = new CanonicalJson();
+        Composition composition = cut.unmarshal(value, Composition.class);
+
+        // check compo
+        assertNotNull(composition);
+        assertNotNull(composition.getFeederAudit().getFeederSystemAudit());
+        // other details
+        assertNotNull(composition.getFeederAudit().getFeederSystemAudit().getOtherDetails());
+        assertEquals("family group", composition.getFeederAudit().getFeederSystemAudit().getOtherDetails().getName().getValue());
+        assertTrue(composition.getFeederAudit().getFeederSystemAudit().getOtherDetails() instanceof ItemTree);
+        assertEquals(1, composition.getFeederAudit().getFeederSystemAudit().getOtherDetails().getItems().size());
+        assertTrue(composition.getFeederAudit().getFeederSystemAudit().getOtherDetails().getItems().get(0) instanceof Element);
+        assertTrue(((Element) composition.getFeederAudit().getFeederSystemAudit().getOtherDetails().getItems().get(0)).getValue() instanceof DvIdentifier);
+        // version id
+        assertNotNull(composition.getFeederAudit().getFeederSystemAudit().getVersionId());
+        assertEquals("final", composition.getFeederAudit().getFeederSystemAudit().getVersionId());
+
+        // DB encode other details
+        CompositionSerializer compositionSerializerRawJson = new CompositionSerializer();
+        String dbEncoded = compositionSerializerRawJson.dbEncode(composition.getFeederAudit().getFeederSystemAudit().getOtherDetails());
+        assertNotNull(dbEncoded);
+
+        // Convert encoded string into map to write to DB
+        Map<String, Object> asMap = new LightRawJsonEncoder(dbEncoded).encodeOtherDetailsAsMap();
+        assertNotNull(asMap);
+        assertEquals(4, asMap.size());
+        assertNotNull(asMap.get("/items[at0001]"));
+    }
 
 }
