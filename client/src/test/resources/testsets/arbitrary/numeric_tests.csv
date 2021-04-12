@@ -1,0 +1,41 @@
+# test set consists on 10 evaluations with data value with value {1...10}
+# the data value DvQuantity path is eval/data[at0001]/items[at0002]/value/magnitude
+# NOTES:
+# 1. at the moment (25.3.21) no arithmetic operators are supported
+# 2. this also applies to all statistical functions as subselect is not yet implemented
+# 3. REAL type is now supported
+numeric_count_select.txt,eval/data[at0001]/items[at0002]/value/magnitude > 2.34567890,8,java.lang.Long
+numeric_count_select.txt,eval/data[at0001]/items[at0002]/value/magnitude > -1,10,java.lang.Long
+numeric_count_select.txt,eval/data[at0001]/items[at0002]/value/magnitude > -1.0,10,java.lang.Long
+numeric_count_select.txt,eval/data[at0001]/items[at0002]/value/magnitude IS NOT NULL,10,java.lang.Long
+numeric_count_select.txt,eval/data[at0001]/items[at0002]/value/magnitude IS NULL,0,java.lang.Long
+numeric_count_select.txt,NOT EXISTS eval/data[at0001]/items[at0002]/value/magnitude,0,java.lang.Long
+numeric_count_select.txt,EXISTS eval/data[at0001]/items[at0002]/value/magnitude,10,java.lang.Long
+numeric_count_select.txt,eval/data[at0001]/items[at0002]/value/magnitude BETWEEN 4 AND 7,4,java.lang.Long
+numeric_count_select.txt,"eval/data[at0001]/items[at0002]/value/magnitude MATCHES {1,2,3,4}",4,java.lang.Long
+numeric_count_select.txt,"1 MATCHES {eval/data[at0001]/items[at0002]/value/magnitude}",1,java.lang.Long
+numeric_count_select.txt,"eval/data[at0001]/items[at0002]/value/magnitude IN (1,2,3,4)",4,java.lang.Long
+numeric_count_select.txt,"1 = ANY(eval/data[at0001]/items[at0002]/value/magnitude)",1,java.lang.Long
+numeric_count_select.txt,"1 < ANY(eval/data[at0001]/items[at0002]/value/magnitude)",9,java.lang.Long
+numeric_count_select.txt,"1 = SOME(eval/data[at0001]/items[at0002]/value/magnitude)",1,java.lang.Long
+numeric_count_select.txt,"1 < SOME(eval/data[at0001]/items[at0002]/value/magnitude)",9,java.lang.Long
+numeric_count_select.txt,"1 = ALL(eval/data[at0001]/items[at0002]/value/magnitude)",1,java.lang.Long
+numeric_count_select.txt,"1 < ALL(eval/data[at0001]/items[at0002]/value/magnitude)",9,java.lang.Long
+numeric_count_select.txt,"eval/data[at0001]/items[at0002]/value/magnitude IS NOT NULL",10,java.lang.Long
+numeric_count_select.txt,"eval/data[at0001]/items[at0002]/value/magnitude IS DISTINCT FROM 2",9,java.lang.Long
+numeric_val_select.txt,"eval/data[at0001]/items[at0002]/value/magnitude = 2",2,java.lang.Double
+numeric_val_select.txt,"eval/data[at0001]/items[at0002]/value/magnitude >= 2 LIMIT 1 ORDER BY eval/data[at0001]/items[at0002]/value/magnitude ASC",2,java.lang.Double
+numeric_val_select.txt,"eval/data[at0001]/items[at0002]/value/magnitude >= 2 LIMIT 1 ORDER BY eval/data[at0001]/items[at0002]/value/magnitude ASCENDING",2,java.lang.Double
+numeric_val_select.txt,"eval/data[at0001]/items[at0002]/value/magnitude >= 2 LIMIT 1 OFFSET 3 ORDER BY eval/data[at0001]/items[at0002]/value/magnitude ASC",5,java.lang.Double
+numeric_val_select.txt,"eval/data[at0001]/items[at0002]/value/magnitude >= 2 LIMIT 1 ORDER BY eval/data[at0001]/items[at0002]/value/magnitude DESC",10,java.lang.Double
+numeric_val_select.txt,"eval/data[at0001]/items[at0002]/value/magnitude >= 2 LIMIT 1 ORDER BY eval/data[at0001]/items[at0002]/value/magnitude DESCENDING",10,java.lang.Double
+numeric_val_select.txt,"eval/data[at0001]/items[at0002]/value/magnitude >= 2 LIMIT 1 OFFSET 3 ORDER BY eval/data[at0001]/items[at0002]/value/magnitude DESC",7,java.lang.Double
+# functions (nb. SUM is now supported)
+,select sum(eval/data[at0001]/items[at0002]/value/magnitude) from EHR e contains COMPOSITION c contains EVALUATION eval[openEHR-EHR-EVALUATION.minimal.v1],55,java.lang.Double
+,select avg(eval/data[at0001]/items[at0002]/value/magnitude) from EHR e contains COMPOSITION c contains EVALUATION eval[openEHR-EHR-EVALUATION.minimal.v1],5.5,java.lang.Double
+,select min(eval/data[at0001]/items[at0002]/value/magnitude) from EHR e contains COMPOSITION c contains EVALUATION eval[openEHR-EHR-EVALUATION.minimal.v1],1,java.lang.Double
+,select max(eval/data[at0001]/items[at0002]/value/magnitude) from EHR e contains COMPOSITION c contains EVALUATION eval[openEHR-EHR-EVALUATION.minimal.v1],10,java.lang.Double
+# REAL is now supported
+numeric_count_select.txt,"eval/data[at0001]/items[at0002]/value/magnitude < 2e+3",10,java.lang.Long
+numeric_count_select.txt,"eval/data[at0001]/items[at0002]/value/magnitude < 2e3",10,java.lang.Long
+numeric_count_select.txt,"eval/data[at0001]/items[at0002]/value/magnitude < 2e-3",0,java.lang.Long

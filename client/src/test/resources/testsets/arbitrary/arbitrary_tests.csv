@@ -1,0 +1,72 @@
+# check partial string comparison
+
+#functions
+# TODO: implement function support in WHERE
+string_tests_select.txt, "SUBSTR(o/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/value,1,3)='the'","the quick brown fox jumps over the lazy dog",$FAIL$
+
+# supported functions in SELECT
+# substring
+,"select SUBSTR(o/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/value,1,3) from EHR e contains COMPOSITION c contains OBSERVATION o[openEHR-EHR-OBSERVATION.test_all_types.v1] ",the
+# split string on delimiter and returns the nth element
+,"select SPLIT_PART(o/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/value,' ',3) from EHR e contains COMPOSITION c contains OBSERVATION o[openEHR-EHR-OBSERVATION.test_all_types.v1] ",brown
+# trim leading and trailing char (here space)
+,"select BTRIM(o/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/value,' ') from EHR e contains COMPOSITION c contains OBSERVATION o[openEHR-EHR-OBSERVATION.test_all_types.v1] ","the quick brown fox jumps over the lazy dog"
+# concatenate strings
+,"select CONCAT(o/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/value,'1234') from EHR e contains COMPOSITION c contains OBSERVATION o[openEHR-EHR-OBSERVATION.test_all_types.v1] ","the quick brown fox jumps over the lazy dog1234"
+# CONCAT_WS function is used to concatenate strings with a separator
+,"select CONCAT_WS(',',o/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/value,'1234') from EHR e contains COMPOSITION c contains OBSERVATION o[openEHR-EHR-OBSERVATION.test_all_types.v1] ","the quick brown fox jumps over the lazy dog,1234"
+# encoding -- FAILS
+#,"select ENCODE(o/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/value,'base64') from EHR e contains COMPOSITION c contains OBSERVATION o[openEHR-EHR-OBSERVATION.test_all_types.v1] ",$FAIL$
+# formatting
+,"select FORMAT("EHRbase is %s",'great!') from EHR e contains COMPOSITION c contains OBSERVATION o[openEHR-EHR-OBSERVATION.test_all_types.v1] ","EHRbase is great!"
+# Initial cap
+,"select INITCAP(o/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/value) from EHR e contains COMPOSITION c contains OBSERVATION o[openEHR-EHR-OBSERVATION.test_all_types.v1] ","The Quick Brown Fox Jumps Over The Lazy Dog"
+# left substr
+,"select LEFT(o/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/value,4) from EHR e contains COMPOSITION c contains OBSERVATION o[openEHR-EHR-OBSERVATION.test_all_types.v1] ","the "
+# right substr
+,"select RIGHT(o/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/value,4) from EHR e contains COMPOSITION c contains OBSERVATION o[openEHR-EHR-OBSERVATION.test_all_types.v1] "," dog"
+# left pad
+,"select LPAD('EHRbase',11, '!') from EHR e ","!!!!EHRbase"
+# right pad
+,"select RPAD('EHRbase',11, '!') from EHR e ","EHRbase!!!!"
+# trim functions
+,"select LTRIM('EHRbase','E') from EHR e ","HRbase"
+,"select RTRIM('EHRbase','e') from EHR e ","EHRbas"
+,"select BTRIM(' EHRbase ',' ') from EHR e ","EHRbase"
+# regexp
+# FAILS as fct returns an array!
+#,"select REGEXP_MATCH(o/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/value,'quick|fox') from EHR e contains COMPOSITION c contains OBSERVATION o[openEHR-EHR-OBSERVATION.test_all_types.v1] "," dog"
+# repeat string
+,"select REPEAT('EHRbase ',2) from EHR e ","EHRbase EHRbase "
+# replace
+,"select REPEAT('EHRbase ',2) from EHR e ","EHRbase EHRbase "
+# reverse
+,"select REVERSE('EHRbase') from EHR e ","esabRHE"
+# translate
+# Seems reverse back is not reliable! Do not use!
+#,"select TRANSLATE(o/data[at0001]/events[at0002]/ata[at0003]/items[at0004]/value/value,'abcdefghijklmnopqrstuvwxyz','0123456789acwrvyuiopkjhbq0123456789acwrvyuiopkjhbq') from EHR e contains COMPOSITION c contains OBSERVATION o[openEHR-EHR-OBSERVATION.test_all_types.v1] ","p74 uk82a 1ivhr 5vb 9kwyo vj4i p74 c00q 3v6"
+#,"select TRANSLATE('p74 uk82a 1ivhr 5vb 9kwyo vj4i p74 c00q 3v6','0123456789acwrvyuiopkjhbq0123456789acwrvyuiopkjhbq', 'abcdefghijklmnopqrstuvwxyz') from EHR e","s74 gg82j 1fhfj 5hj 9gfdj hd4f s74 g0gh 3h6"
+
+
+#nested function calls
+# REQUIRES EXTENSIVE TESTING!
+,"select LEFT(REPEAT('EHRbase ',2),3) from EHR e ","EHR"
+# playing with CAST
+,"select CAST('2019-12-23 14:39:53.662522-05' AS 'DATE') as cast1  from EHR e","2019-12-23"
+,"select CAST('2019-12-23 14:39:53.662522-05' AS 'TIME') as cast1  from EHR e","14:39:53"
+# Constants
+#,select TRUE from EHR e,TRUE
+#,select FALSE from EHR e,FALSE
+
+
+
+# SIMILAR uses a regexp (see https://www.postgresql.org/docs/13/functions-matching.html#FUNCTIONS-SIMILARTO-REGEXP)
+string_tests_select.txt, "o/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/value SIMILAR TO '([a-z]| )*'","the quick brown fox jumps over the lazy dog"
+
+# standard like/ilike matching
+string_tests_select.txt, "o/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/value LIKE 'the%'","the quick brown fox jumps over the lazy dog"
+string_tests_select.txt, "o/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/value LIKE '__________brown____________________________'","the quick brown fox jumps over the lazy dog"
+string_tests_select.txt, "o/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/value ILIKE '%FOX%'","the quick brown fox jumps over the lazy dog"
+
+
+
