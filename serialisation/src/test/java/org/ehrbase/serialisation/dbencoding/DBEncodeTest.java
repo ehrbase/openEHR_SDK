@@ -20,7 +20,6 @@ package org.ehrbase.serialisation.dbencoding;
 
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
-import com.google.gson.internal.LinkedTreeMap;
 import com.nedap.archie.rm.archetyped.FeederAudit;
 import com.nedap.archie.rm.composition.AdminEntry;
 import com.nedap.archie.rm.composition.Composition;
@@ -35,7 +34,6 @@ import com.nedap.archie.rm.datavalues.quantity.DvInterval;
 import com.nedap.archie.rm.datavalues.quantity.datetime.DvDateTime;
 import com.nedap.archie.rm.ehr.EhrStatus;
 import java.util.Map;
-import org.apache.commons.collections4.map.PredicatedMap;
 import org.apache.commons.io.IOUtils;
 import org.apache.xmlbeans.XmlException;
 import org.ehrbase.serialisation.attributes.FeederAuditAttributes;
