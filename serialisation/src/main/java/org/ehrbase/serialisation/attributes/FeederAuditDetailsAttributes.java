@@ -63,7 +63,16 @@ public class FeederAuditDetailsAttributes {
         if (feederAuditDetails.getOtherDetails() != null) {
             String dbEncoded = new CompositionSerializer().dbEncode(feederAuditDetails.getOtherDetails());
             Map<String, Object> asMap = new LightRawJsonEncoder(dbEncoded).encodeOtherDetailsAsMap();
-            valuemap.put("other_details", asMap);
+            String nodeId = asMap.get("/archetype_node_id").toString();
+            // make sure node id is wrapped in [ and ] and throw errors if invalid input
+            if (!nodeId.startsWith("[")) {
+                if (nodeId.endsWith("]"))
+                    throw new IllegalArgumentException("Invalid archetype node id");
+                nodeId = "[" + nodeId + "]";
+            } else if (!nodeId.endsWith("]")) {
+                throw new IllegalArgumentException("Invalid archetype node id");
+            }
+            valuemap.put("other_details" + nodeId, asMap);
         }
         return valuemap;
     }
