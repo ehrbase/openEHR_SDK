@@ -63,7 +63,8 @@ public class FeederAuditDetailsAttributes {
         if (feederAuditDetails.getOtherDetails() != null) {
             String dbEncoded = new CompositionSerializer().dbEncode(feederAuditDetails.getOtherDetails());
             Map<String, Object> asMap = new LightRawJsonEncoder(dbEncoded).encodeOtherDetailsAsMap();
-            valuemap.put("other_details", asMap);
+            String nodeId = asMap.get("/archetype_node_id").toString();
+            valuemap.put("other_details" + nodeId, asMap);
         }
         return valuemap;
     }
