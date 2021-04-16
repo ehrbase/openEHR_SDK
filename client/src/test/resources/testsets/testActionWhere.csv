@@ -1,0 +1,10 @@
+name/value,
+archetype_node_id,
+language/code_string,
+language/terminology_id/value,
+subject,//ignore
+time/value,
+ism_transition/current_state/value,
+ism_transition/current_state/defining_code/code_string,
+ism_transition/current_state/defining_code/terminology_id/value,
+description[at0001]/items[openEHR-EHR-CLUSTER.test_all_types.v1]/items[at0001]/items[at0002]/items[at0003]/value/value,

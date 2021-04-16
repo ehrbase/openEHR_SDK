@@ -1,0 +1,20 @@
+# the path is quoted as it contains a comma (csv delimiter)
+date_time_tests_select.txt, "o/data[at0001]/events[at0002]/data[at0003]/items[at0011]/value/value = '2019-01-28T21:22:49,427+07:00'",Test all types
+
+# test comparison with partial date/time
+date_time_tests_select.txt, o/data[at0001]/events[at0002]/data[at0003]/items[at0011]/value/value > '2021' AND o/data[at0001]/events[at0002]/data[at0003]/items[at0011]/value/value < '2022',
+date_time_tests_select.txt, o/data[at0001]/events[at0002]/data[at0003]/items[at0011]/value/value > '2019' AND o/data[at0001]/events[at0002]/data[at0003]/items[at0011]/value/value < '2020',Test all types
+date_time_tests_select.txt, o/data[at0001]/events[at0002]/data[at0003]/items[at0011]/value/value > '2019-01' AND o/data[at0001]/events[at0002]/data[at0003]/items[at0011]/value/value < '2019-12',Test all types
+date_time_tests_select.txt, o/data[at0001]/events[at0002]/data[at0003]/items[at0011]/value/value > '2019-01-01' AND o/data[at0001]/events[at0002]/data[at0003]/items[at0011]/value/value < '2019-01-31',Test all types
+date_time_tests_select.txt, o/data[at0001]/events[at0002]/data[at0003]/items[at0011]/value/value > '2019-01-28T01' AND o/data[at0001]/events[at0002]/data[at0003]/items[at0011]/value/value < '2019-01-28T24',Test all types
+date_time_tests_select.txt, o/data[at0001]/events[at0002]/data[at0003]/items[at0011]/value/value > '2019-01-28T21:00' AND o/data[at0001]/events[at0002]/data[at0003]/items[at0011]/value/value < '2019-01-28T21:59',Test all types
+date_time_tests_select.txt, o/data[at0001]/events[at0002]/data[at0003]/items[at0011]/value/value > '2019-01-28T21:22:00' AND o/data[at0001]/events[at0002]/data[at0003]/items[at0011]/value/value < '2019-01-28T21:22:59',Test all types
+
+# TODO: add date time casting and function to allow partial date/time equality when millisecs is part of the date/time expression
+# at the moment, this test returns an empty set
+date_time_tests_select.txt, o/data[at0001]/events[at0002]/data[at0003]/items[at0011]/value/value = '2019-01-28T21:22:49',
+
+#interval
+date_time_tests_select.txt, o/data[at0001]/events[at0002]/data[at0003]/items[at0011]/value/value >= '2019-01-28T21:22:00' AND o/data[at0001]/events[at0002]/data[at0003]/items[at0011]/value/value <= '2019-01-28T21:22:59',Test all types
+date_time_tests_select.txt, o/data[at0001]/events[at0002]/data[at0003]/items[at0011]/value/value BETWEEN '2019-01-28T21:22:00' AND '2019-01-28T21:22:59',Test all types
+

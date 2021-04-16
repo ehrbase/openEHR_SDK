@@ -1,0 +1,4 @@
+start_time/value,//ignore due to delimiter in SQL timestamp.
+setting/value
+setting/defining_code/code_string
+setting/defining_code/terminology_id/value,

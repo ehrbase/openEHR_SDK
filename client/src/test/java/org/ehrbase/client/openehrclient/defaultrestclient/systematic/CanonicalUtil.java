@@ -21,75 +21,65 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.nedap.archie.rm.RMObject;
 import com.nedap.archie.rm.archetyped.Locatable;
-import com.nedap.archie.rm.datavalues.quantity.datetime.DvDateTime;
-import com.nedap.archie.rm.datavalues.quantity.datetime.DvTime;
-import com.nedap.archie.rm.generic.PartySelf;
-import com.nedap.archie.rm.support.identification.TerminologyId;
 import com.nedap.archie.rminfo.ArchieRMInfoLookup;
-import com.nedap.archie.terminology.openehr.Terminology;
 import org.ehrbase.serialisation.dbencoding.wrappers.json.I_DvTypeAdapter;
 import org.ehrbase.serialisation.jsonencoding.CanonicalJson;
 import org.ehrbase.validation.constraints.util.SnakeToCamel;
 
 import java.lang.reflect.Method;
-import java.net.URI;
-import java.time.Duration;
-import java.time.OffsetDateTime;
-import java.time.temporal.Temporal;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.InstanceOfAssertFactories.OFFSET_TIME;
 
 public abstract class CanonicalUtil {
 
-    public static String toJson(Object anRmObjectAsString){
+    public static String toJson(Object anRmObjectAsString) {
         GsonBuilder builder = new GsonBuilder();
         Gson gson = builder.setPrettyPrinting().create();
         return gson.toJson(anRmObjectAsString);
     }
 
-    public static Map<String, Object> toMap(RMObject anRmObject){
+    public static Map<String, Object> toMap(RMObject anRmObject) {
         GsonBuilder builder = new GsonBuilder();
         Gson gson = builder.create();
         String asString = new CanonicalJson().marshal(anRmObject);
         return gson.fromJson(asString, Map.class);
     }
 
-    public static String toRmJson(RMObject anRmObject){
+    public static String toRmJson(RMObject anRmObject) {
         return new CanonicalJson().marshal(anRmObject);
     }
 
-    public static RMObject toRmObject(Map<String, Object> anRmObjectAsMap, Class rmClass){
+    public static RMObject toRmObject(Map<String, Object> anRmObjectAsMap, Class rmClass) {
         return new CanonicalJson().unmarshal(toJson(anRmObjectAsMap), rmClass);
     }
 
-    public static Object valueObject(Object anObject){
+    public static Object valueObject(Object anObject) {
 
         Object retObject = anObject;
 
-        if (anObject instanceof Map){
+        if (anObject instanceof Map) {
             //perform the conversion using the type if any
-            if (((Map)anObject).containsKey(I_DvTypeAdapter.AT_TYPE)){
+            if (((Map) anObject).containsKey(I_DvTypeAdapter.AT_TYPE)) {
                 //get the actual type from Archie lookup
-                Class objectRmClass = ArchieRMInfoLookup.getInstance().getClass((String) ((Map)anObject).get(I_DvTypeAdapter.AT_TYPE));
+                Class objectRmClass = ArchieRMInfoLookup.getInstance().getClass((String) ((Map) anObject).get(I_DvTypeAdapter.AT_TYPE));
                 if (objectRmClass != null)
-                    retObject = toRmObject(((Map<String, Object>)anObject),objectRmClass);
+                    retObject = toRmObject(((Map<String, Object>) anObject), objectRmClass);
             }
         }
 
-        retObject = handleSpecialClass(retObject);
+        retObject = new SpecialCase().transform(retObject);
 
         return retObject;
     }
 
-    public static RMObject toRmObject(String anRmObjectAsString, Class rmClass){
+    public static RMObject toRmObject(String anRmObjectAsString, Class rmClass) {
         return new CanonicalJson().unmarshal(anRmObjectAsString, rmClass);
     }
 
-    public static Object compareArbitraryRmClass(Map<String, Object> anRmObjectAsMap, Class rmClass, RMObject compareExpectedObject){
+    public static Object compareArbitraryRmClass(Map<String, Object> anRmObjectAsMap, Class rmClass, RMObject compareExpectedObject) {
         RMObject actualRmObject = toRmObject(anRmObjectAsMap, rmClass);
         assertThat(actualRmObject).isEqualTo(compareExpectedObject);
         return null;
@@ -98,6 +88,7 @@ public abstract class CanonicalUtil {
     /**
      * resolves an attribute of a RMObject
      * NB. borrowed from CAttribute.java in validation
+     *
      * @param obj
      * @param attributePath
      * @return
@@ -111,18 +102,17 @@ public abstract class CanonicalUtil {
         Method getter;
         String getterName;
 
-        if (attributePath.startsWith("is_")){
+        if (attributePath.startsWith("is_")) {
             //conventionally, a getter for a boolean uses 'is' as a prefix
             getterName = "is" + new SnakeToCamel(attributePath.substring(3)).convert();
-        }
-        else
+        } else
             getterName = "get" + new SnakeToCamel(attributePath).convert();
 
         try {
             getter = rmClass.getMethod(getterName);
             value = getter.invoke(obj, null);
         } catch (Exception e) {
-            throw new IllegalStateException("unresolved attribute:"+attributePath+" for class:"+rmClass);
+            throw new IllegalStateException("unresolved attribute:" + attributePath + " for class:" + rmClass);
         }
 
         return value;
@@ -132,12 +122,13 @@ public abstract class CanonicalUtil {
      * Retrieve the value of an attribute identified by a path.
      * NB. This is not supposed to replace Locatable.itemsAtPath(), but instead it should be used
      * to resolve values in non locatable RMObject
+     *
      * @param root
      * @param attributePath
      * @return
      * @see com.nedap.archie.rm.archetyped.Locatable
      */
-    private static Object getAttributePathValue(Object root, String attributePath){
+    private static Object getAttributePathValue(Object root, String attributePath) {
         Object rmObject = root;
 
         if (rmObject instanceof Locatable) {
@@ -147,12 +138,10 @@ public abstract class CanonicalUtil {
                     rmObject = items.get(0);
                 else
                     rmObject = null;
+            } catch (Exception e) {
+                throw new IllegalArgumentException("Invalid path:" + attributePath);
             }
-            catch (Exception e){
-                throw new IllegalArgumentException("Invalid path:"+attributePath);
-            }
-        }
-        else {
+        } else {
             if (!attributePath.contains("/"))
                 rmObject = getAttributeValue(root, attributePath);
             else {
@@ -173,46 +162,17 @@ public abstract class CanonicalUtil {
         return rmObject;
     }
 
-    public static Object attributeValueAt(Object root, String path){
+    public static Object attributeValueAt(Object root, String path) {
         Object evaluated = getAttributePathValue(root, path);
-        return handleSpecialClass(evaluated);
+        return new SpecialCase().transform(evaluated);
     }
 
-    public static Object locatableValueItem(RMObject rmObject, int iteration, List<String> pathItems){
+    public static Object locatableValueItem(RMObject rmObject, int iteration, List<String> pathItems) {
         String actualItemPath;
         if (pathItems.isEmpty())
             actualItemPath = "/";
         else
             actualItemPath = String.join("/", pathItems);
-        return ((Locatable)rmObject).itemsAtPath(actualItemPath).get(0);
-    }
-
-    private static Object handleSpecialClass(Object object){
-        Object retObject = object;
-
-        if (object instanceof PartySelf && (((PartySelf)object).getExternalRef() == null || ((PartySelf)object).getExternalRef().getId() == null) )
-            retObject = "PARTY_SELF";
-        else if (object instanceof RMObject) {
-            retObject = toMap((RMObject) object);
-            if (object instanceof TerminologyId) {
-                //add the type as it is sometime implicit with archie but required for comparison
-                ((Map<String, Object>) retObject).put(I_DvTypeAdapter.AT_TYPE, "TERMINOLOGY_ID");
-            }
-        }
-        else  if (object instanceof Temporal || object instanceof Duration || object instanceof URI) {
-            retObject = object.toString();
-            if (object instanceof Temporal){
-                //align the millisec delimiter
-                if (retObject instanceof String && ((String) retObject).contains("."))
-                    retObject = ((String)retObject).replace(".", ",");
-            }
-        }
-        else if (object instanceof Integer)
-            //this is a hack as a Long is transformed as Integer in the HTTP response?
-            retObject = Integer.toUnsignedLong((Integer)object);
-        else if (object instanceof String && ((String)object).matches("^\\d{4}-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d(\\.\\d+)?(([+-]\\d\\d:\\d\\d)|Z)?$"))
-            retObject = ((String)retObject).replace(".", ",");
-
-        return retObject;
+        return ((Locatable) rmObject).itemsAtPath(actualItemPath).get(0);
     }
 }

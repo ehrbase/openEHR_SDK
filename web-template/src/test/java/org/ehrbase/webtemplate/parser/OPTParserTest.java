@@ -73,7 +73,9 @@ public class OPTParserTest {
     checkErrors(
         errors,
         new String[] {
-          "LocalizedNames not equal [de=event] != [de=] in inputValue.code:433 id=category aql=/category"
+          "LocalizedNames not equal [de=event] != [de=] in inputValue.code:433 id=category aql=/category",
+          "InContext not equal null != true in  id=math_function aql=/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Risikogebiet']/items[openEHR-EHR-OBSERVATION.travel_event.v0]/data[at0001]/events[at0002]/math_function",
+          "InContext not equal null != true in  id=width aql=/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Risikogebiet']/items[openEHR-EHR-OBSERVATION.travel_event.v0]/data[at0001]/events[at0002]/width"
         });
   }
 
@@ -314,7 +316,8 @@ public class OPTParserTest {
           "LocalizedNames not equal [en=planned] != [] in inputValue.code:526 id=current_state aql=/content[openEHR-EHR-SECTION.test_all_types.v1]/items[at0001]/items[at0002]/items[openEHR-EHR-ACTION.test_all_types.v1]/ism_transition/current_state",
           "LocalizedDescriptions not equal {en=*} != {} in inputValue.code:at0005 id=careflow_step aql=/content[openEHR-EHR-SECTION.test_all_types.v1]/items[at0001]/items[at0002]/items[openEHR-EHR-ACTION.test_all_types.v1]/ism_transition/careflow_step",
           "LocalizedDescriptions not equal {en=*} != {} in inputValue.code:at0004 id=careflow_step aql=/content[openEHR-EHR-SECTION.test_all_types.v1]/items[at0001]/items[at0002]/items[openEHR-EHR-ACTION.test_all_types.v1]/ism_transition/careflow_step",
-          "LocalizedDescriptions not equal {en=*} != {} in inputValue.code:at0003 id=careflow_step aql=/content[openEHR-EHR-SECTION.test_all_types.v1]/items[at0001]/items[at0002]/items[openEHR-EHR-ACTION.test_all_types.v1]/ism_transition/careflow_step"
+          "LocalizedDescriptions not equal {en=*} != {} in inputValue.code:at0003 id=careflow_step aql=/content[openEHR-EHR-SECTION.test_all_types.v1]/items[at0001]/items[at0002]/items[openEHR-EHR-ACTION.test_all_types.v1]/ism_transition/careflow_step",
+          "InContext not equal true != null in  id=action_archetype_id aql=/content[openEHR-EHR-SECTION.test_all_types.v1]/items[at0001]/items[at0002]/items[openEHR-EHR-INSTRUCTION.test_all_types.v1]/activities[at0001]/action_archetype_id"
         });
   }
 
@@ -364,6 +367,11 @@ public class OPTParserTest {
     softAssertions
         .assertThat(errors)
         .filteredOn(s -> s.startsWith("ProportionTypes not equal"))
+        .containsExactlyInAnyOrder();
+
+    softAssertions
+        .assertThat(errors)
+        .filteredOn(s -> s.startsWith("InContext not equal"))
         .containsExactlyInAnyOrder();
 
     softAssertions
@@ -491,6 +499,14 @@ public class OPTParserTest {
               actual.getId(),
               actual.getAqlPath()));
     }
+
+    if (!Objects.equals(actual.getInContext(), expected.getInContext())) {
+      errors.add(
+          String.format(
+              "InContext not equal %s != %s in  id=%s aql=%s",
+              actual.getInContext(), expected.getInContext(), actual.getId(), actual.getAqlPath()));
+    }
+
     if (!CollectionUtils.isEqualCollection(
         actual.getLocalizedDescriptions().entrySet(),
         expected.getLocalizedDescriptions().entrySet())) {

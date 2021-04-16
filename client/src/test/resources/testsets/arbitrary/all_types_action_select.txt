@@ -1,0 +1,5 @@
+select
+   c/name/value
+        from EHR e
+          contains COMPOSITION c
+                contains ACTION d[openEHR-EHR-ACTION.test_all_types.v1]

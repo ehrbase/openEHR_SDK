@@ -1,0 +1,5 @@
+select
+   count(eval/data[at0001]/items[at0002]/value/magnitude)
+        from EHR e
+          contains COMPOSITION c
+                contains EVALUATION eval[openEHR-EHR-EVALUATION.minimal.v1]

@@ -17,11 +17,12 @@
 
 package org.ehrbase.serialisation.attributes;
 
-import com.nedap.archie.rm.archetyped.FeederAudit;
 import com.nedap.archie.rm.archetyped.FeederAuditDetails;
+import org.ehrbase.serialisation.dbencoding.CompositionSerializer;
 import org.ehrbase.serialisation.dbencoding.PathMap;
 
 import java.util.Map;
+import org.ehrbase.serialisation.dbencoding.rawjson.LightRawJsonEncoder;
 
 public class FeederAuditDetailsAttributes {
 
@@ -55,6 +56,23 @@ public class FeederAuditDetailsAttributes {
         }
         if (feederAuditDetails.getTime() != null) {
             valuemap.put("time", feederAuditDetails.getTime());
+        }
+        if (feederAuditDetails.getVersionId() != null) {
+            valuemap.put("version_id", feederAuditDetails.getVersionId());
+        }
+        if (feederAuditDetails.getOtherDetails() != null) {
+            String dbEncoded = new CompositionSerializer().dbEncode(feederAuditDetails.getOtherDetails());
+            Map<String, Object> asMap = new LightRawJsonEncoder(dbEncoded).encodeOtherDetailsAsMap();
+            String nodeId = asMap.get("/archetype_node_id").toString();
+            // make sure node id is wrapped in [ and ] and throw errors if invalid input
+            if (!nodeId.startsWith("[")) {
+                if (nodeId.endsWith("]"))
+                    throw new IllegalArgumentException("Invalid archetype node id");
+                nodeId = "[" + nodeId + "]";
+            } else if (!nodeId.endsWith("]")) {
+                throw new IllegalArgumentException("Invalid archetype node id");
+            }
+            valuemap.put("other_details" + nodeId, asMap);
         }
         return valuemap;
     }

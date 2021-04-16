@@ -94,6 +94,19 @@ workflows:
                 - release
                 - /sync\/.*/
                 - /feature/sync\/.*/
+      
+      - COMPOSITION-tests-5:
+          context: org-global
+          requires:
+            - build-and-test-openEHR_SDK
+          filters:
+            branches:
+              ignore:
+                - master
+                - develop
+                - release
+                - /sync\/.*/
+                - /feature/sync\/.*/
 
       - CONTRIBUTION-tests:
           context: org-global
@@ -193,6 +206,7 @@ workflows:
             - COMPOSITION-tests-2
             - COMPOSITION-tests-3
             - COMPOSITION-tests-4
+            - COMPOSITION-tests-5
             - CONTRIBUTION-tests
             - DIRECTORY-tests
             - EHRSERVICE-tests
@@ -359,6 +373,10 @@ workflows:
           context: org-global
           requires:
             - build-and-test-synced-branches-of-EHRbase-and-openEHR_SDK
+      - COMPOSITION-tests-5:
+          context: org-global
+          requires:
+            - build-and-test-synced-branches-of-EHRbase-and-openEHR_SDK
       - CONTRIBUTION-tests:
           context: org-global
           requires:
@@ -402,6 +420,7 @@ workflows:
             - COMPOSITION-tests-2
             - COMPOSITION-tests-3
             - COMPOSITION-tests-4
+            - COMPOSITION-tests-5
             - CONTRIBUTION-tests
             - DIRECTORY-tests
             - EHRSERVICE-tests
@@ -479,7 +498,7 @@ jobs:
       - restore-ehrbase-workspace
       # - start-ehrbase-server
       - run-robot-tests:
-          include-tags: "compositionANDcomposition_json1"
+          include-tags: "compositionANDcomposition_create"
           test-suite-path: "COMPOSITION_TESTS"
           test-suite-name: "COMPOSITION_1"
 
@@ -493,7 +512,7 @@ jobs:
       #-----------------------------------#
       - restore-ehrbase-workspace
       - run-robot-tests:
-          include-tags: "compositionANDcomposition_json2"
+          include-tags: "compositionANDcomposition_get"
           test-suite-path: "COMPOSITION_TESTS"
           test-suite-name: "COMPOSITION_2"
 
@@ -507,7 +526,7 @@ jobs:
       #-----------------------------------#
       - restore-ehrbase-workspace
       - run-robot-tests:
-          include-tags: "compositionANDcomposition_xml1"
+          include-tags: "compositionANDcomposition_get_versioned"
           test-suite-path: "COMPOSITION_TESTS"
           test-suite-name: "COMPOSITION_3"
 
@@ -521,9 +540,23 @@ jobs:
       #-----------------------------------#
       - restore-ehrbase-workspace
       - run-robot-tests:
-          include-tags: "compositionANDcomposition_xml2"
+          include-tags: "compositionANDcomposition_update"
           test-suite-path: "COMPOSITION_TESTS"
           test-suite-name: "COMPOSITION_4"
+  
+  COMPOSITION-tests-5:
+    executor: docker-py3-java11-postgres
+    # executor: machine-ubuntu-2004                          # (use for pipeline debugging only)
+    steps:
+      #-----------------------------------#---------------(use for pipeline debugging only)
+      # - run: echo MOCKED JOB            # 
+      # - cache-out-ehrbase-workspace     #
+      #-----------------------------------#
+      - restore-ehrbase-workspace
+      - run-robot-tests:
+          include-tags: "compositionANDcomposition_delete"
+          test-suite-path: "COMPOSITION_TESTS"
+          test-suite-name: "COMPOSITION_5"
 
   CONTRIBUTION-tests:
     executor: docker-py3-java11-postgres
