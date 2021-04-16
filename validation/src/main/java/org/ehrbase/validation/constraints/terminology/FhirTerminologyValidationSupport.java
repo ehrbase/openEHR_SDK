@@ -23,6 +23,7 @@ import com.jayway.jsonpath.JsonPath;
 import com.nedap.archie.rm.datatypes.CodePhrase;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.fluent.Executor;
 import org.apache.http.client.fluent.Request;
@@ -32,6 +33,7 @@ import org.ehrbase.validation.constraints.wrappers.ValidationException;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Optional;
 
 /**
  * {@link ExternalTerminologyValidationSupport} that supports FHIR terminology validation.
@@ -133,17 +135,28 @@ public class FhirTerminologyValidationSupport implements ExternalTerminologyVali
     }
 
     private DocumentContext internalGet(String uri) {
+        Request request = Request.Get(uri).addHeader(HttpHeaders.ACCEPT, "application/fhir+json");
+
         try {
-            Request request = Request.Get(uri)
-                    .addHeader(HttpHeaders.ACCEPT, "application/fhir+json");
+            HttpResponse response = executor.execute(request).returnResponse();
+            String responseBody = Optional.ofNullable(response.getEntity())
+                    .map(entity -> {
+                        try {
+                            return EntityUtils.toString(response.getEntity());
+                        } catch (IOException e) {
+                            return null;
+                        }
+                    })
+                    .orElse("");
 
-            HttpResponse response = executor.execute(request)
-                    .returnResponse();
+            int statusCode = response.getStatusLine().getStatusCode();
+            if (statusCode != HttpStatus.SC_OK) {
+                throw new ExternalTerminologyValidationException("Error response received from the terminology server. HTTP status: " + statusCode + ". Body: " + responseBody);
+            }
 
-            String responseBody = EntityUtils.toString(response.getEntity());
             return JsonPath.parse(responseBody);
         } catch (IOException e) {
-            throw new RuntimeException(e); // FIXME: Handle exception correctly;
+            throw new ExternalTerminologyValidationException("An unexpected error occurred while executing the request:" + request, e);
         }
     }
 }
