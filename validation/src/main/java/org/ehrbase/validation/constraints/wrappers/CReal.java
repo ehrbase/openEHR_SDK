@@ -22,7 +22,7 @@
 package org.ehrbase.validation.constraints.wrappers;
 
 import org.apache.commons.lang3.ArrayUtils;
-import org.ehrbase.validation.terminology.ExternalTerminologyValidationSupport;
+import org.ehrbase.validation.constraints.terminology.ExternalTerminologyValidationSupport;
 import org.openehr.schemas.v1.CPRIMITIVE;
 import org.openehr.schemas.v1.CREAL;
 import org.openehr.schemas.v1.IntervalOfReal;
@@ -39,8 +39,8 @@ import java.util.Map;
  */
 public class CReal extends CConstraint implements I_CTypeValidate {
 
-    CReal(Map<String, Map<String, String>> localTerminologyLookup, ExternalTerminologyValidationSupport externalTerminologyLookup) {
-        super(localTerminologyLookup, externalTerminologyLookup);
+    CReal(Map<String, Map<String, String>> localTerminologyLookup, ExternalTerminologyValidationSupport externalTerminologyValidator) {
+        super(localTerminologyLookup, externalTerminologyValidator);
     }
 
     @Override

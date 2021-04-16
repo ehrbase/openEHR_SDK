@@ -1,4 +1,4 @@
-package org.ehrbase.validation.terminology;
+package org.ehrbase.validation.constraints.terminology;
 
 import com.nedap.archie.rm.datatypes.CodePhrase;
 
@@ -28,9 +28,12 @@ public class ExternalTerminologyValidationSupportChain implements ExternalTermin
     }
 
     @Override
-    public void validate(String referenceSetUri, CodePhrase codePhrase) {
+    public void validate(String path, String referenceSetUri, CodePhrase codePhrase) {
         for (ExternalTerminologyValidationSupport next : chain) {
-            next.validate(referenceSetUri, codePhrase);
+            if (supports(referenceSetUri)) {
+                next.validate(path, referenceSetUri, codePhrase);
+                return;
+            }
         }
     }
 }

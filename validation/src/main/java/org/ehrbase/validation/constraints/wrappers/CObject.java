@@ -23,7 +23,7 @@ package org.ehrbase.validation.constraints.wrappers;
 
 import com.nedap.archie.rminfo.ArchieRMInfoLookup;
 import org.apache.xmlbeans.SchemaType;
-import org.ehrbase.validation.terminology.ExternalTerminologyValidationSupport;
+import org.ehrbase.validation.constraints.terminology.ExternalTerminologyValidationSupport;
 import org.openehr.schemas.v1.ARCHETYPECONSTRAINT;
 import org.openehr.schemas.v1.CCOMPLEXOBJECT;
 import org.openehr.schemas.v1.CDOMAINTYPE;
@@ -40,8 +40,8 @@ import java.util.Map;
  */
 public class CObject extends CConstraint implements I_CArchetypeConstraintValidate {
 
-    CObject(Map<String, Map<String, String>> localTerminologyLookup, ExternalTerminologyValidationSupport externalTerminologyLookup) {
-        super(localTerminologyLookup, externalTerminologyLookup);
+    CObject(Map<String, Map<String, String>> localTerminologyLookup, ExternalTerminologyValidationSupport externalTerminologyValidator) {
+        super(localTerminologyLookup, externalTerminologyValidator);
     }
 
     @Override
@@ -52,12 +52,12 @@ public class CObject extends CConstraint implements I_CArchetypeConstraintValida
 
         if (constraint instanceof CCOMPLEXOBJECT) {
             if (aValue.getClass().equals(valueRmType(((CCOMPLEXOBJECT) constraint)))) {
-                new CComplexObject(localTerminologyLookup, externalTerminologyLookup).validate(path, aValue, (CCOMPLEXOBJECT) constraint);
+                new CComplexObject(localTerminologyLookup, externalTerminologyValidator).validate(path, aValue, (CCOMPLEXOBJECT) constraint);
             }
         } else if (constraint instanceof CPRIMITIVEOBJECT) {
-            new CPrimitive(localTerminologyLookup, externalTerminologyLookup).validate(path, aValue, (CPRIMITIVEOBJECT) constraint);
+            new CPrimitive(localTerminologyLookup, externalTerminologyValidator).validate(path, aValue, (CPRIMITIVEOBJECT) constraint);
         } else if (constraint instanceof CDOMAINTYPE) {
-            new CDomainType(localTerminologyLookup, externalTerminologyLookup).validate(path, aValue, (CDOMAINTYPE) constraint);
+            new CDomainType(localTerminologyLookup, externalTerminologyValidator).validate(path, aValue, (CDOMAINTYPE) constraint);
         } else {
             ValidationException.raise(path, "INTERNAL: unsupported COBJECT:" + archetypeconstraint, "COBJ01");
         }

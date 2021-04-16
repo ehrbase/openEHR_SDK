@@ -23,7 +23,7 @@ package org.ehrbase.validation.constraints.wrappers;
 
 import com.nedap.archie.rm.datavalues.quantity.DvOrdinal;
 import org.apache.commons.lang3.StringUtils;
-import org.ehrbase.validation.terminology.ExternalTerminologyValidationSupport;
+import org.ehrbase.validation.constraints.terminology.ExternalTerminologyValidationSupport;
 import org.openehr.schemas.v1.ARCHETYPECONSTRAINT;
 import org.openehr.schemas.v1.CDVORDINAL;
 import org.openehr.schemas.v1.DVORDINAL;
@@ -39,8 +39,8 @@ import java.util.Map;
  */
 public class CDvOrdinal extends CConstraint implements I_CArchetypeConstraintValidate {
 
-    CDvOrdinal(Map<String, Map<String, String>> localTerminologyLookup, ExternalTerminologyValidationSupport externalTerminologyLookup) {
-        super(localTerminologyLookup, externalTerminologyLookup);
+    CDvOrdinal(Map<String, Map<String, String>> localTerminologyLookup, ExternalTerminologyValidationSupport externalTerminologyValidator) {
+        super(localTerminologyLookup, externalTerminologyValidator);
     }
 
     @Override

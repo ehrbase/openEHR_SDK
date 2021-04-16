@@ -21,7 +21,7 @@
 
 package org.ehrbase.validation.constraints.wrappers;
 
-import org.ehrbase.validation.terminology.ExternalTerminologyValidationSupport;
+import org.ehrbase.validation.constraints.terminology.ExternalTerminologyValidationSupport;
 import org.openehr.schemas.v1.ARCHETYPECONSTRAINT;
 import org.openehr.schemas.v1.CBOOLEAN;
 import org.openehr.schemas.v1.CDATE;
@@ -44,8 +44,8 @@ import java.util.Map;
  */
 public class CPrimitive extends CConstraint implements I_CArchetypeConstraintValidate {
 
-    CPrimitive(Map<String, Map<String, String>> localTerminologyLookup, ExternalTerminologyValidationSupport externalTerminologyLookup) {
-        super(localTerminologyLookup, externalTerminologyLookup);
+    CPrimitive(Map<String, Map<String, String>> localTerminologyLookup, ExternalTerminologyValidationSupport externalTerminologyValidator) {
+        super(localTerminologyLookup, externalTerminologyValidator);
     }
 
     @Override
@@ -59,28 +59,28 @@ public class CPrimitive extends CConstraint implements I_CArchetypeConstraintVal
 
         switch (rmTypeName) {
             case "BOOLEAN":
-                new CBoolean(localTerminologyLookup, externalTerminologyLookup).validate(path, aValue, (CBOOLEAN) constraint.getItem().changeType(CBOOLEAN.type));
+                new CBoolean(localTerminologyLookup, externalTerminologyValidator).validate(path, aValue, (CBOOLEAN) constraint.getItem().changeType(CBOOLEAN.type));
                 break;
             case "STRING":
-                new CString(localTerminologyLookup, externalTerminologyLookup).validate(path, aValue, (CSTRING) constraint.getItem().changeType(CSTRING.type));
+                new CString(localTerminologyLookup, externalTerminologyValidator).validate(path, aValue, (CSTRING) constraint.getItem().changeType(CSTRING.type));
                 break;
             case "INTEGER":
-                new CInteger(localTerminologyLookup, externalTerminologyLookup).validate(path, aValue, (CINTEGER) constraint.getItem().changeType(CINTEGER.type));
+                new CInteger(localTerminologyLookup, externalTerminologyValidator).validate(path, aValue, (CINTEGER) constraint.getItem().changeType(CINTEGER.type));
                 break;
             case "REAL":
-                new CReal(localTerminologyLookup, externalTerminologyLookup).validate(path, aValue, (CREAL) constraint.getItem().changeType(CREAL.type));
+                new CReal(localTerminologyLookup, externalTerminologyValidator).validate(path, aValue, (CREAL) constraint.getItem().changeType(CREAL.type));
                 break;
             case "DATE":
-                new CDate(localTerminologyLookup, externalTerminologyLookup).validate(path, aValue, (CDATE) constraint.getItem().changeType(CDATE.type));
+                new CDate(localTerminologyLookup, externalTerminologyValidator).validate(path, aValue, (CDATE) constraint.getItem().changeType(CDATE.type));
                 break;
             case "DATE_TIME":
-                new CDateTime(localTerminologyLookup, externalTerminologyLookup).validate(path, aValue, (CDATETIME) constraint.getItem().changeType(CDATETIME.type));
+                new CDateTime(localTerminologyLookup, externalTerminologyValidator).validate(path, aValue, (CDATETIME) constraint.getItem().changeType(CDATETIME.type));
                 break;
             case "TIME":
-                new CTime(localTerminologyLookup, externalTerminologyLookup).validate(path, aValue, (CTIME) constraint.getItem().changeType(CTIME.type));
+                new CTime(localTerminologyLookup, externalTerminologyValidator).validate(path, aValue, (CTIME) constraint.getItem().changeType(CTIME.type));
                 break;
             case "DURATION":
-                new CDuration(localTerminologyLookup, externalTerminologyLookup).validate(path, aValue, (CDURATION) constraint.getItem().changeType(CDURATION.type));
+                new CDuration(localTerminologyLookup, externalTerminologyValidator).validate(path, aValue, (CDURATION) constraint.getItem().changeType(CDURATION.type));
                 break;
             default:
                 throw new IllegalStateException("INTERNAL: unsupported CPRIMIITVE:" + archetypeconstraint);

@@ -23,7 +23,7 @@ import com.nedap.archie.rm.datastructures.ItemStructure;
 import org.ehrbase.validation.constraints.ConstraintChecker;
 import org.ehrbase.validation.constraints.OptConstraint;
 import org.ehrbase.validation.constraints.OptConstraintMapper;
-import org.ehrbase.validation.terminology.ExternalTerminologyValidationSupport;
+import org.ehrbase.validation.constraints.terminology.ExternalTerminologyValidationSupport;
 import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
 
 import java.io.Serializable;
@@ -42,7 +42,7 @@ public class Validator implements Serializable {
 
     private OptConstraintMapper optConstraint;
 
-    private ExternalTerminologyValidationSupport externalTerminologyLookup;
+    private ExternalTerminologyValidationSupport externalTerminologyValidator;
 
     public Validator(OPERATIONALTEMPLATE operationaltemplate, boolean lenient) {
         this.lenient = lenient;
@@ -59,7 +59,7 @@ public class Validator implements Serializable {
      * @throws IllegalArgumentException
      */
     public void check(Composition composition) throws IllegalArgumentException {
-        new ConstraintChecker(lenient, composition, optConstraint, externalTerminologyLookup).validate();
+        new ConstraintChecker(lenient, composition, optConstraint, externalTerminologyValidator).validate();
     }
 
     /**
@@ -69,7 +69,7 @@ public class Validator implements Serializable {
      * @throws IllegalArgumentException
      */
     public void check(ItemStructure itemStructure) throws IllegalArgumentException {
-        new ConstraintChecker(lenient, itemStructure, optConstraint, externalTerminologyLookup).validate();
+        new ConstraintChecker(lenient, itemStructure, optConstraint, externalTerminologyValidator).validate();
     }
 
     /**
@@ -82,7 +82,7 @@ public class Validator implements Serializable {
         this.lenient = lenient;
     }
 
-    public void setExternalTerminologyLookup(ExternalTerminologyValidationSupport externalTerminologyLookup) {
-        this.externalTerminologyLookup = externalTerminologyLookup;
+    public void setExternalTerminologyValidator(ExternalTerminologyValidationSupport externalTerminologyValidator) {
+        this.externalTerminologyValidator = externalTerminologyValidator;
     }
 }

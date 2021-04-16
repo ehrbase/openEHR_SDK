@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ehrbase.validation.terminology;
+package org.ehrbase.validation.constraints.terminology;
 
 import com.nedap.archie.rm.datatypes.CodePhrase;
 import org.ehrbase.validation.constraints.wrappers.ValidationException;
@@ -26,12 +26,12 @@ import org.ehrbase.validation.constraints.wrappers.ValidationException;
 public interface ExternalTerminologyValidationSupport {
 
     /**
-     * Can this {@link ExternalTerminologyValidationSupport} {@link #validate(String, CodePhrase) validate}
+     * Can this {@link ExternalTerminologyValidationSupport} {@link #validate(String, String, CodePhrase) validate}
      * code phrase coming from the given terminology.
      *
      * @param referenceSetUri the reference URI of the external terminology
      * @return {@code true} if this {@link ExternalTerminologyValidationSupport} can indeed
-     * {@link #validate(String, CodePhrase) validate} instances of the
+     * {@link #validate(String, String, CodePhrase) validate} instances of the
      * supplied terminology
      */
     boolean supports(String referenceSetUri);
@@ -42,5 +42,5 @@ public interface ExternalTerminologyValidationSupport {
      * @param referenceSetUri the reference URI of the external terminology
      * @param codePhrase      the code phrase that is to be validated
      */
-    void validate(String referenceSetUri, CodePhrase codePhrase) throws ValidationException;
+    void validate(String path, String referenceSetUri, CodePhrase codePhrase) throws ValidationException;
 }

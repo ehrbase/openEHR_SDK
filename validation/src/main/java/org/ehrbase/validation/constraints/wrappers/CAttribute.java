@@ -28,7 +28,7 @@ import com.nedap.archie.rm.datavalues.DvText;
 import org.apache.commons.text.WordUtils;
 import org.apache.xmlbeans.SchemaType;
 import org.ehrbase.validation.constraints.util.SnakeToCamel;
-import org.ehrbase.validation.terminology.ExternalTerminologyValidationSupport;
+import org.ehrbase.validation.constraints.terminology.ExternalTerminologyValidationSupport;
 import org.openehr.schemas.v1.ARCHETYPECONSTRAINT;
 import org.openehr.schemas.v1.CATTRIBUTE;
 import org.openehr.schemas.v1.CMULTIPLEATTRIBUTE;
@@ -48,8 +48,8 @@ public class CAttribute extends CConstraint implements I_CArchetypeConstraintVal
 
     private boolean isAttributeResolved = false; // true if a getter or function has been found
 
-    CAttribute(Map<String, Map<String, String>> localTerminologyLookup, ExternalTerminologyValidationSupport externalTerminologyLookup) {
-        super(localTerminologyLookup, externalTerminologyLookup);
+    CAttribute(Map<String, Map<String, String>> localTerminologyLookup, ExternalTerminologyValidationSupport externalTerminologyValidator) {
+        super(localTerminologyLookup, externalTerminologyValidator);
     }
 
     @Override
@@ -65,9 +65,9 @@ public class CAttribute extends CConstraint implements I_CArchetypeConstraintVal
         if (cattribute.getRmAttributeName().equals("defining_code")) {
             if (aValue instanceof DvCodedText) {
                 // process this DvText as a DvCodedText
-                new CDvCodedText(localTerminologyLookup, externalTerminologyLookup).validate(path, aValue, cattribute);
+                new CDvCodedText(localTerminologyLookup, externalTerminologyValidator).validate(path, aValue, cattribute);
             } else if (aValue instanceof DvText) {
-                new CDvText(localTerminologyLookup, externalTerminologyLookup).validate(path, aValue, cattribute);
+                new CDvText(localTerminologyLookup, externalTerminologyValidator).validate(path, aValue, cattribute);
             }
 
             return;
@@ -101,9 +101,9 @@ public class CAttribute extends CConstraint implements I_CArchetypeConstraintVal
         }
 
         if (cattribute instanceof CSINGLEATTRIBUTE) {
-            new CSingleAttribute(localTerminologyLookup, externalTerminologyLookup).validate(path, value, cattribute);
+            new CSingleAttribute(localTerminologyLookup, externalTerminologyValidator).validate(path, value, cattribute);
         } else if (cattribute instanceof CMULTIPLEATTRIBUTE) {
-            new CMultipleAttribute(localTerminologyLookup, externalTerminologyLookup).validate(path, value, cattribute);
+            new CMultipleAttribute(localTerminologyLookup, externalTerminologyValidator).validate(path, value, cattribute);
         }
     }
 

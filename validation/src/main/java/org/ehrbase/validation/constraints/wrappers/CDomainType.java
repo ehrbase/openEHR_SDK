@@ -21,7 +21,7 @@
 
 package org.ehrbase.validation.constraints.wrappers;
 
-import org.ehrbase.validation.terminology.ExternalTerminologyValidationSupport;
+import org.ehrbase.validation.constraints.terminology.ExternalTerminologyValidationSupport;
 import org.openehr.schemas.v1.ARCHETYPECONSTRAINT;
 import org.openehr.schemas.v1.CCODEPHRASE;
 import org.openehr.schemas.v1.CCODEREFERENCE;
@@ -40,22 +40,22 @@ import java.util.Map;
  */
 public class CDomainType extends CConstraint implements I_CArchetypeConstraintValidate {
 
-    CDomainType(Map<String, Map<String, String>> localTerminologyLookup, ExternalTerminologyValidationSupport externalTerminologyLookup) {
-        super(localTerminologyLookup, externalTerminologyLookup);
+    CDomainType(Map<String, Map<String, String>> localTerminologyLookup, ExternalTerminologyValidationSupport externalTerminologyValidator) {
+        super(localTerminologyLookup, externalTerminologyValidator);
     }
 
     @Override
     public void validate(String path, Object aValue, ARCHETYPECONSTRAINT archetypeconstraint) throws IllegalArgumentException {
         if (archetypeconstraint instanceof CDVORDINAL) {
-            new CDvOrdinal(localTerminologyLookup, externalTerminologyLookup).validate(path, aValue, archetypeconstraint);
+            new CDvOrdinal(localTerminologyLookup, externalTerminologyValidator).validate(path, aValue, archetypeconstraint);
         } else if (archetypeconstraint instanceof CCODEREFERENCE) {
-            new CCodeReference(localTerminologyLookup, externalTerminologyLookup).validate(path, aValue, archetypeconstraint);
+            new CCodeReference(localTerminologyLookup, externalTerminologyValidator).validate(path, aValue, archetypeconstraint);
         } else if (archetypeconstraint instanceof CCODEPHRASE) {
-            new CCodePhrase(localTerminologyLookup, externalTerminologyLookup).validate(path, aValue, archetypeconstraint);
+            new CCodePhrase(localTerminologyLookup, externalTerminologyValidator).validate(path, aValue, archetypeconstraint);
         } else if (archetypeconstraint instanceof CDVQUANTITY) {
-            new CDvQuantity(localTerminologyLookup, externalTerminologyLookup).validate(path, aValue, archetypeconstraint);
+            new CDvQuantity(localTerminologyLookup, externalTerminologyValidator).validate(path, aValue, archetypeconstraint);
         } else if (archetypeconstraint instanceof CDVSTATE) {
-            new CDvState(localTerminologyLookup, externalTerminologyLookup).validate(path, aValue, archetypeconstraint);
+            new CDvState(localTerminologyLookup, externalTerminologyValidator).validate(path, aValue, archetypeconstraint);
         } else {
             throw new IllegalStateException("INTERNAL: unsupported CDOMAINTYPE:" + archetypeconstraint);
         }

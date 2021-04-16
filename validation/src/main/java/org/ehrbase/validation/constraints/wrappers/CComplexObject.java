@@ -22,7 +22,7 @@
 package org.ehrbase.validation.constraints.wrappers;
 
 
-import org.ehrbase.validation.terminology.ExternalTerminologyValidationSupport;
+import org.ehrbase.validation.constraints.terminology.ExternalTerminologyValidationSupport;
 import org.openehr.schemas.v1.ARCHETYPECONSTRAINT;
 import org.openehr.schemas.v1.CATTRIBUTE;
 import org.openehr.schemas.v1.CCOMPLEXOBJECT;
@@ -41,8 +41,8 @@ import static org.ehrbase.validation.constraints.wrappers.ValidationException.ra
  */
 public class CComplexObject extends CConstraint implements I_CArchetypeConstraintValidate {
 
-    CComplexObject(Map<String, Map<String, String>> localTerminologyLookup, ExternalTerminologyValidationSupport externalTerminologyLookup) {
-        super(localTerminologyLookup, externalTerminologyLookup);
+    CComplexObject(Map<String, Map<String, String>> localTerminologyLookup, ExternalTerminologyValidationSupport externalTerminologyValidator) {
+        super(localTerminologyLookup, externalTerminologyValidator);
     }
 
     public void validate(String path, Object value, ARCHETYPECONSTRAINT constraint) {
@@ -54,7 +54,7 @@ public class CComplexObject extends CConstraint implements I_CArchetypeConstrain
 
         for (CATTRIBUTE cattribute : ccomplexobject.getAttributesArray()) {
             try {
-                new CAttribute(localTerminologyLookup, externalTerminologyLookup).validate(path, value, cattribute);
+                new CAttribute(localTerminologyLookup, externalTerminologyValidator).validate(path, value, cattribute);
             } catch (ValidationException e) {
                 lastException = e;
                 ++failCount;

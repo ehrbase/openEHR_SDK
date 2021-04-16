@@ -24,7 +24,7 @@ package org.ehrbase.validation.constraints.wrappers;
 import com.nedap.archie.datetime.DateTimeFormatters;
 import com.nedap.archie.rm.datavalues.quantity.datetime.DvDateTime;
 import org.ehrbase.validation.constraints.util.DateTimeSyntax;
-import org.ehrbase.validation.terminology.ExternalTerminologyValidationSupport;
+import org.ehrbase.validation.constraints.terminology.ExternalTerminologyValidationSupport;
 import org.openehr.schemas.v1.CDATETIME;
 import org.openehr.schemas.v1.CPRIMITIVE;
 
@@ -41,8 +41,8 @@ import java.util.Map;
  */
 public class CDateTime extends CConstraint implements I_CTypeValidate {
 
-    CDateTime(Map<String, Map<String, String>> localTerminologyLookup, ExternalTerminologyValidationSupport externalTerminologyLookup) {
-        super(localTerminologyLookup, externalTerminologyLookup);
+    CDateTime(Map<String, Map<String, String>> localTerminologyLookup, ExternalTerminologyValidationSupport externalTerminologyValidator) {
+        super(localTerminologyLookup, externalTerminologyValidator);
     }
 
     @Override

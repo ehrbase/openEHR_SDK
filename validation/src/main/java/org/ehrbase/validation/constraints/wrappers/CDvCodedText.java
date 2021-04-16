@@ -23,7 +23,7 @@ package org.ehrbase.validation.constraints.wrappers;
 
 import com.nedap.archie.rm.datavalues.DvCodedText;
 import org.apache.xmlbeans.SchemaType;
-import org.ehrbase.validation.terminology.ExternalTerminologyValidationSupport;
+import org.ehrbase.validation.constraints.terminology.ExternalTerminologyValidationSupport;
 import org.openehr.schemas.v1.ARCHETYPECONSTRAINT;
 import org.openehr.schemas.v1.CCODEPHRASE;
 import org.openehr.schemas.v1.CCODEREFERENCE;
@@ -47,8 +47,8 @@ public class CDvCodedText extends CConstraint implements I_CArchetypeConstraintV
 
     private final Logger logger = LoggerFactory.getLogger(CDvCodedText.class);
 
-    CDvCodedText(Map<String, Map<String, String>> localTerminologyLookup, ExternalTerminologyValidationSupport externalTerminologyLookup) {
-        super(localTerminologyLookup, externalTerminologyLookup);
+    CDvCodedText(Map<String, Map<String, String>> localTerminologyLookup, ExternalTerminologyValidationSupport externalTerminologyValidator) {
+        super(localTerminologyLookup, externalTerminologyValidator);
     }
 
     @Override
@@ -70,12 +70,12 @@ public class CDvCodedText extends CConstraint implements I_CArchetypeConstraintV
         if (cobject instanceof CCODEREFERENCE) {
             CCODEREFERENCE ccodereference = (CCODEREFERENCE) cobject;
 
-            new CArchetypeConstraint(localTerminologyLookup, externalTerminologyLookup).validate(path, checkValue.getDefiningCode(), ccodereference);
+            new CArchetypeConstraint(localTerminologyLookup, externalTerminologyValidator).validate(path, checkValue.getDefiningCode(), ccodereference);
         } else if (cobject instanceof CCODEPHRASE) {
             CCODEPHRASE ccodephrase = (CCODEPHRASE) cobject;
 
             // use code phrase validation checker
-            new CArchetypeConstraint(localTerminologyLookup, externalTerminologyLookup)
+            new CArchetypeConstraint(localTerminologyLookup, externalTerminologyValidator)
                     .validate(path, checkValue.getDefiningCode(), ccodephrase);
 
             if (ccodephrase.isSetTerminologyId()
