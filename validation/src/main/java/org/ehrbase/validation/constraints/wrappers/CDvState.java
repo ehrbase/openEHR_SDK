@@ -22,6 +22,7 @@
 package org.ehrbase.validation.constraints.wrappers;
 
 import com.nedap.archie.rm.datavalues.DvState;
+import org.ehrbase.validation.terminology.ExternalTerminologyValidationSupport;
 import org.openehr.schemas.v1.ARCHETYPECONSTRAINT;
 import org.openehr.schemas.v1.CDVSTATE;
 import org.openehr.schemas.v1.STATE;
@@ -38,8 +39,8 @@ import java.util.Map;
  */
 public class CDvState extends CConstraint implements I_CArchetypeConstraintValidate {
 
-    CDvState(Map<String, Map<String, String>> localTerminologyLookup) {
-        super(localTerminologyLookup);
+    CDvState(Map<String, Map<String, String>> localTerminologyLookup, ExternalTerminologyValidationSupport externalTerminologyLookup) {
+        super(localTerminologyLookup, externalTerminologyLookup);
     }
 
     @Override

@@ -46,7 +46,7 @@ public class DvOrdinalTest extends ConstraintTestBase {
         DvOrdinal dvOrdinal = new DvOrdinal(2L, symbol);
 
         try {
-            new CArchetypeConstraint(null).validate("test", dvOrdinal, archetypeconstraint);
+            new CArchetypeConstraint(null, null).validate("test", dvOrdinal, archetypeconstraint);
         } catch (Exception e) {
             fail(e.getMessage());
         }

@@ -23,6 +23,7 @@ package org.ehrbase.validation.constraints.wrappers;
 
 import com.nedap.archie.rm.datavalues.quantity.datetime.DvDate;
 import org.ehrbase.validation.constraints.util.DateTimeSyntax;
+import org.ehrbase.validation.terminology.ExternalTerminologyValidationSupport;
 import org.openehr.schemas.v1.CDATE;
 import org.openehr.schemas.v1.CPRIMITIVE;
 
@@ -40,8 +41,8 @@ import java.util.Map;
  */
 public class CDate extends CConstraint implements I_CTypeValidate {
 
-    CDate(Map<String, Map<String, String>> localTerminologyLookup) {
-        super(localTerminologyLookup);
+    CDate(Map<String, Map<String, String>> localTerminologyLookup, ExternalTerminologyValidationSupport externalTerminologyLookup) {
+        super(localTerminologyLookup, externalTerminologyLookup);
     }
 
     @Override

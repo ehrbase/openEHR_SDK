@@ -33,6 +33,7 @@ import org.ehrbase.validation.constraints.hardwired.CHistory;
 import org.ehrbase.validation.constraints.util.LocatableHelper;
 import org.ehrbase.validation.constraints.wrappers.CArchetypeConstraint;
 import org.ehrbase.validation.constraints.wrappers.ValidationException;
+import org.ehrbase.validation.terminology.ExternalTerminologyValidationSupport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,24 +47,31 @@ import java.util.Map;
  */
 public class ConstraintChecker {
 
-    private boolean lenient;
-    private ConstraintMapper constraintMapper;
-    private Locatable locatable;
-    private Cardinality cardinality;
+    private final Logger log = LoggerFactory.getLogger(ConstraintChecker.class);
 
-    private Logger log = LoggerFactory.getLogger(ConstraintChecker.class);
+    private final boolean lenient;
 
-    public ConstraintChecker(Boolean lenient, Composition composition, ConstraintMapper constraintMapper) {
+    private final ConstraintMapper constraintMapper;
+
+    private final Locatable locatable;
+
+    private final Cardinality cardinality;
+
+    private final ExternalTerminologyValidationSupport externalTerminologyLookup;
+
+    public ConstraintChecker(Boolean lenient, Composition composition, ConstraintMapper constraintMapper, ExternalTerminologyValidationSupport externalTerminologyLookup) {
         this.lenient = lenient;
         this.locatable = composition;
         this.constraintMapper = constraintMapper;
+        this.externalTerminologyLookup = externalTerminologyLookup;
         cardinality = new Cardinality(constraintMapper, locatable, lenient);
     }
 
-    public ConstraintChecker(Boolean lenient, ItemStructure structure, ConstraintMapper constraintMapper) {
+    public ConstraintChecker(Boolean lenient, ItemStructure structure, ConstraintMapper constraintMapper, ExternalTerminologyValidationSupport externalTerminologyLookup) {
         this.lenient = lenient;
         this.locatable = structure;
         this.constraintMapper = constraintMapper;
+        this.externalTerminologyLookup = externalTerminologyLookup;
         cardinality = new Cardinality(constraintMapper, locatable, lenient);
     }
 
@@ -96,14 +104,14 @@ public class ConstraintChecker {
 
     }
 
-    private void checkElementConstraints(List<ConstraintMapper.ConstraintItem> constraints, String path, Element referenceElement){
+    private void checkElementConstraints(List<ConstraintMapper.ConstraintItem> constraints, String path, Element referenceElement) {
         Exception exception = null;
 
         for (ConstraintMapper.ConstraintItem constraintItem : constraints) {
             try {
                 if (constraintItem instanceof OptConstraintMapper.OptConstraintItem) {
                     OptConstraintMapper.OptConstraintItem optConstraintItem = (OptConstraintMapper.OptConstraintItem) constraintItem;
-                    new CArchetypeConstraint(constraintMapper.getLocalTerminologyLookup()).validate(optConstraintItem.getPath(), referenceElement, optConstraintItem.getConstraint());
+                    new CArchetypeConstraint(constraintMapper.getLocalTerminologyLookup(), externalTerminologyLookup).validate(optConstraintItem.getPath(), referenceElement, optConstraintItem.getConstraint());
                     exception = null; //reset exception
                     break;
                 } else

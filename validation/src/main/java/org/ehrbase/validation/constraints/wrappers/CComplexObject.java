@@ -22,11 +22,10 @@
 package org.ehrbase.validation.constraints.wrappers;
 
 
+import org.ehrbase.validation.terminology.ExternalTerminologyValidationSupport;
 import org.openehr.schemas.v1.ARCHETYPECONSTRAINT;
 import org.openehr.schemas.v1.CATTRIBUTE;
 import org.openehr.schemas.v1.CCOMPLEXOBJECT;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 
@@ -42,14 +41,11 @@ import static org.ehrbase.validation.constraints.wrappers.ValidationException.ra
  */
 public class CComplexObject extends CConstraint implements I_CArchetypeConstraintValidate {
 
-    static Logger logger = LoggerFactory.getLogger(CComplexObject.class);
-
-    CComplexObject(Map<String, Map<String, String>> localTerminologyLookup) {
-        super(localTerminologyLookup);
+    CComplexObject(Map<String, Map<String, String>> localTerminologyLookup, ExternalTerminologyValidationSupport externalTerminologyLookup) {
+        super(localTerminologyLookup, externalTerminologyLookup);
     }
 
     public void validate(String path, Object value, ARCHETYPECONSTRAINT constraint) {
-
         CCOMPLEXOBJECT ccomplexobject = (CCOMPLEXOBJECT) constraint;
 
         int attributeCount = ccomplexobject.sizeOfAttributesArray();
@@ -58,7 +54,7 @@ public class CComplexObject extends CConstraint implements I_CArchetypeConstrain
 
         for (CATTRIBUTE cattribute : ccomplexobject.getAttributesArray()) {
             try {
-                new CAttribute(localTerminologyLookup).validate(path, value, cattribute);
+                new CAttribute(localTerminologyLookup, externalTerminologyLookup).validate(path, value, cattribute);
             } catch (ValidationException e) {
                 lastException = e;
                 ++failCount;
@@ -66,8 +62,7 @@ public class CComplexObject extends CConstraint implements I_CArchetypeConstrain
         }
 
         if (attributeCount > 0 && failCount > 0) {
-                raise(path, lastException.getMessage(), "ELT01");
+            raise(path, lastException.getMessage(), "ELT01");
         }
-
     }
 }

@@ -21,7 +21,12 @@
 
 package org.ehrbase.validation.constraints.wrappers;
 
-import org.openehr.schemas.v1.*;
+import org.ehrbase.validation.terminology.ExternalTerminologyValidationSupport;
+import org.openehr.schemas.v1.ARCHETYPECONSTRAINT;
+import org.openehr.schemas.v1.CARDINALITY;
+import org.openehr.schemas.v1.CMULTIPLEATTRIBUTE;
+import org.openehr.schemas.v1.COBJECT;
+import org.openehr.schemas.v1.IntervalOfInteger;
 
 import java.util.Map;
 
@@ -34,8 +39,8 @@ import java.util.Map;
  */
 public class CMultipleAttribute extends CConstraint implements I_CArchetypeConstraintValidate {
 
-    CMultipleAttribute(Map<String, Map<String, String>> localTerminologyLookup) {
-        super(localTerminologyLookup);
+    CMultipleAttribute(Map<String, Map<String, String>> localTerminologyLookup, ExternalTerminologyValidationSupport externalTerminologyLookup) {
+        super(localTerminologyLookup, externalTerminologyLookup);
     }
 
     @Override
@@ -51,7 +56,7 @@ public class CMultipleAttribute extends CConstraint implements I_CArchetypeConst
 
         if (cmultipleattribute.sizeOfChildrenArray() > 0) {
             for (COBJECT cobject : cmultipleattribute.getChildrenArray())
-                new CObject(localTerminologyLookup).validate(path, aValue, cobject);
+                new CObject(localTerminologyLookup, externalTerminologyLookup).validate(path, aValue, cobject);
         }
 
     }

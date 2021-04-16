@@ -21,6 +21,8 @@
 
 package org.ehrbase.validation.constraints.wrappers;
 
+import org.ehrbase.validation.terminology.ExternalTerminologyValidationSupport;
+
 import java.util.Map;
 
 /**
@@ -32,8 +34,11 @@ public abstract class CConstraint {
 
     protected Map<String, Map<String, String>> localTerminologyLookup;
 
-    protected CConstraint(Map<String, Map<String, String>> localTerminologyLookup) {
-        this.localTerminologyLookup = localTerminologyLookup;
-    }
+    protected ExternalTerminologyValidationSupport externalTerminologyLookup;
 
+    protected CConstraint(Map<String, Map<String, String>> localTerminologyLookup,
+                          ExternalTerminologyValidationSupport externalTerminologyLookup) {
+        this.localTerminologyLookup = localTerminologyLookup;
+        this.externalTerminologyLookup = externalTerminologyLookup;
+    }
 }

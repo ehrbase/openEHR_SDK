@@ -46,7 +46,7 @@ public class DvIdentifierTest extends ConstraintTestBase {
         identifier.setType("dummy");
 
         try {
-            new CArchetypeConstraint(null).validate("test", identifier, archetypeconstraint);
+            new CArchetypeConstraint(null, null).validate("test", identifier, archetypeconstraint);
         } catch (Exception e) {
             fail(e.getMessage());
         }

@@ -23,6 +23,7 @@ import com.nedap.archie.rm.datastructures.ItemStructure;
 import org.ehrbase.validation.constraints.ConstraintChecker;
 import org.ehrbase.validation.constraints.OptConstraint;
 import org.ehrbase.validation.constraints.OptConstraintMapper;
+import org.ehrbase.validation.terminology.ExternalTerminologyValidationSupport;
 import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
 
 import java.io.Serializable;
@@ -38,7 +39,10 @@ import java.io.Serializable;
 public class Validator implements Serializable {
 
     private boolean lenient = false;
+
     private OptConstraintMapper optConstraint;
+
+    private ExternalTerminologyValidationSupport externalTerminologyLookup;
 
     public Validator(OPERATIONALTEMPLATE operationaltemplate, boolean lenient) {
         this.lenient = lenient;
@@ -48,7 +52,6 @@ public class Validator implements Serializable {
         optConstraint = new OptConstraint().map(operationaltemplate);
     }
 
-
     /**
      * Validate a composition
      *
@@ -56,7 +59,7 @@ public class Validator implements Serializable {
      * @throws IllegalArgumentException
      */
     public void check(Composition composition) throws IllegalArgumentException {
-        new ConstraintChecker(lenient, composition, optConstraint).validate();
+        new ConstraintChecker(lenient, composition, optConstraint, externalTerminologyLookup).validate();
     }
 
     /**
@@ -66,7 +69,7 @@ public class Validator implements Serializable {
      * @throws IllegalArgumentException
      */
     public void check(ItemStructure itemStructure) throws IllegalArgumentException {
-        new ConstraintChecker(lenient, itemStructure, optConstraint).validate();
+        new ConstraintChecker(lenient, itemStructure, optConstraint, externalTerminologyLookup).validate();
     }
 
     /**
@@ -77,5 +80,9 @@ public class Validator implements Serializable {
      */
     public void setLenient(boolean lenient) {
         this.lenient = lenient;
+    }
+
+    public void setExternalTerminologyLookup(ExternalTerminologyValidationSupport externalTerminologyLookup) {
+        this.externalTerminologyLookup = externalTerminologyLookup;
     }
 }

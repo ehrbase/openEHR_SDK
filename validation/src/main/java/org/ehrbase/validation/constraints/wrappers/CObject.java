@@ -23,7 +23,11 @@ package org.ehrbase.validation.constraints.wrappers;
 
 import com.nedap.archie.rminfo.ArchieRMInfoLookup;
 import org.apache.xmlbeans.SchemaType;
-import org.openehr.schemas.v1.*;
+import org.ehrbase.validation.terminology.ExternalTerminologyValidationSupport;
+import org.openehr.schemas.v1.ARCHETYPECONSTRAINT;
+import org.openehr.schemas.v1.CCOMPLEXOBJECT;
+import org.openehr.schemas.v1.CDOMAINTYPE;
+import org.openehr.schemas.v1.CPRIMITIVEOBJECT;
 
 import java.util.Map;
 
@@ -36,8 +40,8 @@ import java.util.Map;
  */
 public class CObject extends CConstraint implements I_CArchetypeConstraintValidate {
 
-    CObject(Map<String, Map<String, String>> localTerminologyLookup) {
-        super(localTerminologyLookup);
+    CObject(Map<String, Map<String, String>> localTerminologyLookup, ExternalTerminologyValidationSupport externalTerminologyLookup) {
+        super(localTerminologyLookup, externalTerminologyLookup);
     }
 
     @Override
@@ -47,20 +51,19 @@ public class CObject extends CConstraint implements I_CArchetypeConstraintValida
         Object constraint = archetypeconstraint.changeType(type);
 
         if (constraint instanceof CCOMPLEXOBJECT) {
-            if (aValue.getClass().equals(valueRmType(((CCOMPLEXOBJECT)constraint)))) {
-                new CComplexObject(localTerminologyLookup).validate(path, aValue, (CCOMPLEXOBJECT) constraint);
+            if (aValue.getClass().equals(valueRmType(((CCOMPLEXOBJECT) constraint)))) {
+                new CComplexObject(localTerminologyLookup, externalTerminologyLookup).validate(path, aValue, (CCOMPLEXOBJECT) constraint);
             }
-        }
-        else if (constraint instanceof CPRIMITIVEOBJECT)
-            new CPrimitive(localTerminologyLookup).validate(path, aValue, (CPRIMITIVEOBJECT) constraint);
-        else if (constraint instanceof CDOMAINTYPE)
-            new CDomainType(localTerminologyLookup).validate(path, aValue, (CDOMAINTYPE) constraint);
-        else
+        } else if (constraint instanceof CPRIMITIVEOBJECT) {
+            new CPrimitive(localTerminologyLookup, externalTerminologyLookup).validate(path, aValue, (CPRIMITIVEOBJECT) constraint);
+        } else if (constraint instanceof CDOMAINTYPE) {
+            new CDomainType(localTerminologyLookup, externalTerminologyLookup).validate(path, aValue, (CDOMAINTYPE) constraint);
+        } else {
             ValidationException.raise(path, "INTERNAL: unsupported COBJECT:" + archetypeconstraint, "COBJ01");
-
+        }
     }
 
-    private Class valueRmType(CCOMPLEXOBJECT ccomplexobject){
+    private Class valueRmType(CCOMPLEXOBJECT ccomplexobject) {
         String rmTypeName = ccomplexobject.getRmTypeName();
         return ArchieRMInfoLookup.getInstance().getClass(rmTypeName);
     }

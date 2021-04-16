@@ -21,6 +21,7 @@
 
 package org.ehrbase.validation.constraints.wrappers;
 
+import org.ehrbase.validation.terminology.ExternalTerminologyValidationSupport;
 import org.openehr.schemas.v1.CBOOLEAN;
 import org.openehr.schemas.v1.CPRIMITIVE;
 
@@ -37,17 +38,19 @@ import java.util.Map;
  */
 public class CBoolean extends CConstraint implements I_CTypeValidate {
 
-    protected CBoolean(Map<String, Map<String, String>> localTerminologyLookup) {
-        super(localTerminologyLookup);
+    protected CBoolean(Map<String, Map<String, String>> localTerminologyLookup, ExternalTerminologyValidationSupport externalTerminologyLookup) {
+        super(localTerminologyLookup, externalTerminologyLookup);
     }
 
     @Override
     public void validate(String path, Object value, CPRIMITIVE cprimitive) {
         Boolean dvBoolean = (Boolean) value;
         CBOOLEAN cboolean = (CBOOLEAN) cprimitive;
-        if (dvBoolean && !cboolean.getTrueValid())
+
+        if (dvBoolean && !cboolean.getTrueValid()) {
             ValidationException.raise(path, "TRUE value is not allowed", "BOOL01");
-        if (!dvBoolean && !cboolean.getFalseValid())
+        } else if (!dvBoolean && !cboolean.getFalseValid()) {
             ValidationException.raise(path, "FALSE value is not allowed", "BOOL02");
+        }
     }
 }

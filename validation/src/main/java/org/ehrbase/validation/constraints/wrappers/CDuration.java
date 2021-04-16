@@ -21,6 +21,7 @@
 
 package org.ehrbase.validation.constraints.wrappers;
 
+import org.ehrbase.validation.terminology.ExternalTerminologyValidationSupport;
 import org.openehr.schemas.v1.CDURATION;
 import org.openehr.schemas.v1.CPRIMITIVE;
 
@@ -36,8 +37,8 @@ import java.util.Map;
  */
 public class CDuration extends CConstraint implements I_CTypeValidate {
 
-    protected CDuration(Map<String, Map<String, String>> localTerminologyLookup) {
-        super(localTerminologyLookup);
+    protected CDuration(Map<String, Map<String, String>> localTerminologyLookup, ExternalTerminologyValidationSupport externalTerminologyLookup) {
+        super(localTerminologyLookup, externalTerminologyLookup);
     }
 
     @Override
@@ -52,7 +53,8 @@ public class CDuration extends CConstraint implements I_CTypeValidate {
 //        }
 
         //range check
-        if (cduration.isSetRange())
+        if (cduration.isSetRange()) {
             IntervalComparator.isWithinBoundaries(dvDurationStr, cduration.getRange());
+        }
     }
 }

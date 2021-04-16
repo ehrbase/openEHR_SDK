@@ -22,6 +22,7 @@
 package org.ehrbase.validation.constraints.wrappers;
 
 import org.apache.commons.lang3.ArrayUtils;
+import org.ehrbase.validation.terminology.ExternalTerminologyValidationSupport;
 import org.openehr.schemas.v1.CINTEGER;
 import org.openehr.schemas.v1.CPRIMITIVE;
 import org.openehr.schemas.v1.IntervalOfInteger;
@@ -38,30 +39,31 @@ import java.util.Map;
  */
 public class CInteger extends CConstraint implements I_CTypeValidate {
 
-    CInteger(Map<String, Map<String, String>> localTerminologyLookup) {
-        super(localTerminologyLookup);
+    CInteger(Map<String, Map<String, String>> localTerminologyLookup, ExternalTerminologyValidationSupport externalTerminologyLookup) {
+        super(localTerminologyLookup, externalTerminologyLookup);
     }
 
     @Override
     public void validate(String path, Object aValue, CPRIMITIVE cprimitive) throws IllegalArgumentException {
-
         CINTEGER cinteger = (CINTEGER) cprimitive;
         Integer integer = null;
 
-        if (aValue instanceof Integer)
+        if (aValue instanceof Integer) {
             integer = (Integer) aValue;
-        else if (aValue instanceof Long)
+        } else if (aValue instanceof Long) {
             integer = ((Long) aValue).intValue();
-        else
+        } else {
             ValidationException.raise(path, "Value is not a supported type for Integer:" + aValue.getClass().getSimpleName(), "INT02");
-
+        }
 
         IntervalOfInteger intervalOfInteger = cinteger.getRange();
-        if (intervalOfInteger != null)
+        if (intervalOfInteger != null) {
             IntervalComparator.isWithinBoundaries(integer, intervalOfInteger);
+        }
 
         //check within value list if specified
-        if (cinteger.sizeOfListArray() > 0 && !ArrayUtils.contains(cinteger.getListArray(), integer))
+        if (cinteger.sizeOfListArray() > 0 && !ArrayUtils.contains(cinteger.getListArray(), integer)) {
             ValidationException.raise(path, "Integer value does not match any values in constraint:" + integer, "INT01");
+        }
     }
 }

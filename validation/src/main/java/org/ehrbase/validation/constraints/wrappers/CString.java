@@ -21,6 +21,7 @@
 
 package org.ehrbase.validation.constraints.wrappers;
 
+import org.ehrbase.validation.terminology.ExternalTerminologyValidationSupport;
 import org.openehr.schemas.v1.CPRIMITIVE;
 
 import java.util.Map;
@@ -34,13 +35,13 @@ import java.util.Map;
  * @see com.nedap.archie.aom.primitives.CString
  */
 public class CString extends CConstraint implements I_CTypeValidate {
-    protected CString(Map<String, Map<String, String>> localTerminologyLookup) {
-        super(localTerminologyLookup);
+
+    protected CString(Map<String, Map<String, String>> localTerminologyLookup, ExternalTerminologyValidationSupport externalTerminologyLookup) {
+        super(localTerminologyLookup, externalTerminologyLookup);
     }
 
     @Override
     public void validate(String path, Object aValue, CPRIMITIVE cprimitive) {
-        return;
         /* TICKET #31: disable test until we find something better...
         String string = (String)aValue;
         CSTRING cstring = (CSTRING)cprimitive;

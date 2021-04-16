@@ -23,6 +23,7 @@ package org.ehrbase.validation.constraints.wrappers;
 
 import com.nedap.archie.rm.datavalues.quantity.DvOrdinal;
 import org.apache.commons.lang3.StringUtils;
+import org.ehrbase.validation.terminology.ExternalTerminologyValidationSupport;
 import org.openehr.schemas.v1.ARCHETYPECONSTRAINT;
 import org.openehr.schemas.v1.CDVORDINAL;
 import org.openehr.schemas.v1.DVORDINAL;
@@ -38,24 +39,26 @@ import java.util.Map;
  */
 public class CDvOrdinal extends CConstraint implements I_CArchetypeConstraintValidate {
 
-    CDvOrdinal(Map<String, Map<String, String>> localTerminologyLookup) {
-        super(localTerminologyLookup);
+    CDvOrdinal(Map<String, Map<String, String>> localTerminologyLookup, ExternalTerminologyValidationSupport externalTerminologyLookup) {
+        super(localTerminologyLookup, externalTerminologyLookup);
     }
 
     @Override
     public void validate(String path, Object aValue, ARCHETYPECONSTRAINT archetypeconstraint) throws IllegalArgumentException {
-
-        if (!(aValue instanceof DvOrdinal))
+        if (!(aValue instanceof DvOrdinal)) {
             ValidationException.raise(path, "INTERNAL: argument is not a DvOrdinal", "DV_ORDINAL_01");
+        }
 
         DvOrdinal dvOrdinal = (DvOrdinal) aValue;
         CDVORDINAL cdvordinal = (CDVORDINAL) archetypeconstraint;
 
-        if (dvOrdinal.getValue() == null)
+        if (dvOrdinal.getValue() == null) {
             ValidationException.raise(path, "DvOrdinal requires a non null value", "DV_ORDINAL_02");
+        }
 
-        if (dvOrdinal.getSymbol() == null)
+        if (dvOrdinal.getSymbol() == null) {
             ValidationException.raise(path, "DvOrdinal requires a non null symbol", "DV_ORDINAL_03");
+        }
 
         match_loop:
         {
