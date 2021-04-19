@@ -1,0 +1,6 @@
+# check where clause on feeder_audit
+
+feeder_audit_select.txt, "c/feeder_audit/originating_system_audit/system_id = 'FHIR-bridge'","Test all types"
+
+
+

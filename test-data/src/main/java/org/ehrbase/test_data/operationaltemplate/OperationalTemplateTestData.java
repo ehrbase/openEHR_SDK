@@ -79,7 +79,11 @@ public enum OperationalTemplateTestData {
   DETERIORIATION_ASSESSMENT(
       "Deterioriation assessment ",
       "EREACT - Deterioriation assessment.v0.opt",
-      "EREACT - Deterioriation assessment.v0");
+      "EREACT - Deterioriation assessment.v0"),
+  LABORBEFUND(
+      "Laboratory findings",
+              "Laborbefund.opt",
+              "Laborbefund");
 
 
   private final String filename;
