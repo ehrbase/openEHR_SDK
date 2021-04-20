@@ -52,7 +52,7 @@ public enum CompositionTestDataCanonicalJson {
     CHOICE_ELEMENT("element containing multiple choice to test validation", "choice_validation_test.json"),
     CHOICE_DV_QUANTITY("choices in units", "dvquantity_choice.json"),
     DEMO_VITALS("composition to test archetype_details roundtrip", "demo_vitals_352.json"),
-    FEEDER_AUDIT_DETAILS("composition to test feeder audit details", "compo_feeder_audit_details.json");
+    FEEDER_AUDIT_DETAILS("composition to test feeder audit details", "all_types_systematic_tests_feeder_audit.json");
 
 
     private final String filename;

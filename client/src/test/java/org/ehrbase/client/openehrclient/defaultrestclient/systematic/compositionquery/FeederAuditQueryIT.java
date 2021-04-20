@@ -49,17 +49,7 @@ public class FeederAuditQueryIT extends CanonicalCompoAllTypeQueryIT {
 
     @Before
     public void setUp() throws IOException {
-        // normal test run
-        ehrUUID = openEhrClient.ehrEndpoint().createEhr();
-        compositionEndpoint = openEhrClient.compositionEndpoint(ehrUUID);
-
-        aComposition = new CanonicalJson().unmarshal(IOUtils.toString(CompositionTestDataCanonicalJson.FEEDER_AUDIT_DETAILS.getStream(), StandardCharsets.UTF_8), Composition.class);
-        Flattener flattener = new Flattener(new TestDataTemplateProvider());
-        LaborbefundComposition laborbefundComposition = flattener.flatten(aComposition, LaborbefundComposition.class);
-//        create the composition
-        LaborbefundComposition comp = compositionEndpoint.mergeCompositionEntity(laborbefundComposition);
-        compositionUUID = comp.getVersionUid().getUuid();
-
+        super.setUp(CompositionTestDataCanonicalJson.FEEDER_AUDIT_DETAILS);
         arbitraryQuery = new ArbitraryQuery(ehrUUID, openEhrClient);
     }
 
