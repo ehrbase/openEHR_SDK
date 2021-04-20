@@ -1,7 +1,12 @@
 package org.ehrbase.serialisation.dbencoding;
 
+import com.google.gson.GsonBuilder;
+import com.nedap.archie.rm.RMObject;
 import com.nedap.archie.rm.archetyped.Locatable;
 import org.apache.commons.collections4.map.PredicatedMap;
+import org.ehrbase.serialisation.dbencoding.wrappers.json.I_DvTypeAdapter;
+import org.ehrbase.serialisation.jsonencoding.CanonicalJson;
+import org.ehrbase.serialisation.util.ObjectSnakeCase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,7 +50,11 @@ public class SerialTree {
         }
 
         try {
-            map.put(key, addStructure);
+            if (addStructure instanceof RMObject) {
+                map.put(key, new RmObjectEncoding((RMObject) addStructure).toMap());
+            }
+            else
+                map.put(key, addStructure);
             //add explicit name
             if (node instanceof Locatable && map instanceof PredicatedMap && !map.containsKey(TAG_NAME)) {
                 new NameInMap(map, new NameAsDvText(((Locatable) node).getName()).toMap()).toMap();

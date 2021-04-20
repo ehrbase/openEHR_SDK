@@ -212,9 +212,9 @@ public class CanonicalJson implements RMDataFormat {
                             !TemplateId.class.equals(t.getRawClass()) &&
                             !Archetyped.class.equals(t.getRawClass()) &&
                             !Link.class.equals(t.getRawClass()) &&
-                            !CodePhrase.class.equals(t.getRawClass()) &&
-                            !History.class.equals(t.getRawClass()) &&
-                            !TerminologyId.class.equals(t.getRawClass())
+//                            !CodePhrase.class.equals(t.getRawClass()) &&
+                            !History.class.equals(t.getRawClass())
+//                            !TerminologyId.class.equals(t.getRawClass())
             );
         }
     }

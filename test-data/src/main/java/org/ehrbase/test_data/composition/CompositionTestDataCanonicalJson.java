@@ -30,6 +30,7 @@ public enum CompositionTestDataCanonicalJson {
     MINIMAL_OBS("Minimal Observation", "minimal_observation.json"),
     INVALID("Invalid example", "invalid.json"),
     ALL_TYPES("All types", "all_types_no_multimedia.json"),
+    ALL_TYPES_SYSTEMATIC_TESTS("All types 2", "all_types_systematic_tests.json"),
     ALTERNATIVE_TYPES("Alternative types", "alternative_types.json"),
     OBS_ADMIN("Observation+Admin", "obs_admin.json"),
     OBS_ADMIN_NULL("Observation+Admin with null_flavour", "obs_admin_null_flavour.json"),
@@ -50,7 +51,8 @@ public enum CompositionTestDataCanonicalJson {
     ALTERNATIVE_EVENTS("Contains Event with mixed point and interval", "alternative_events.json"),
     CHOICE_ELEMENT("element containing multiple choice to test validation", "choice_validation_test.json"),
     CHOICE_DV_QUANTITY("choices in units", "dvquantity_choice.json"),
-    DEMO_VITALS("composition to test archetype_details roundtrip", "demo_vitals_352.json");
+    DEMO_VITALS("composition to test archetype_details roundtrip", "demo_vitals_352.json"),
+    FEEDER_AUDIT_DETAILS("composition to test feeder audit details", "compo_feeder_audit_details.json");
 
 
     private final String filename;

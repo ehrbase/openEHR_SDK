@@ -27,21 +27,28 @@ import com.nedap.archie.rm.composition.Section;
 import com.nedap.archie.rm.datastructures.Element;
 import com.nedap.archie.rm.datastructures.History;
 import com.nedap.archie.rm.datastructures.ItemStructure;
+import com.nedap.archie.rm.datastructures.ItemTree;
 import com.nedap.archie.rm.datastructures.PointEvent;
+import com.nedap.archie.rm.datavalues.DvIdentifier;
 import com.nedap.archie.rm.datavalues.quantity.DvInterval;
 import com.nedap.archie.rm.datavalues.quantity.datetime.DvDateTime;
+import com.nedap.archie.rm.ehr.EhrStatus;
+import java.util.Map;
 import org.apache.commons.io.IOUtils;
 import org.apache.xmlbeans.XmlException;
+import org.ehrbase.serialisation.attributes.FeederAuditAttributes;
 import org.ehrbase.serialisation.dbencoding.rawjson.LightRawJsonEncoder;
 import org.ehrbase.serialisation.dbencoding.rmobject.FeederAuditEncoding;
 import org.ehrbase.serialisation.jsonencoding.CanonicalJson;
 import org.ehrbase.serialisation.xmlencoding.CanonicalXML;
 import org.ehrbase.test_data.composition.CompositionTestDataCanonicalJson;
 import org.ehrbase.test_data.composition.CompositionTestDataCanonicalXML;
+import org.ehrbase.test_data.ehr.EhrTestDataCanonicalJson;
 import org.ehrbase.test_data.operationaltemplate.OperationalTemplateTestData;
 import org.ehrbase.validation.Validator;
 import org.ehrbase.webtemplate.model.WebTemplate;
 import org.ehrbase.webtemplate.parser.OPTParser;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
 import org.openehr.schemas.v1.TemplateDocument;
@@ -731,5 +738,70 @@ public class DBEncodeTest {
         assertNotNull(object);
     }
 
+    @Test
+    @Ignore
+    public void statusOtherDetailsEncodingTestRmType() throws Exception {
+        EhrStatus referenceEhrStatus = new CanonicalJson().unmarshal(IOUtils.toString(EhrTestDataCanonicalJson.EHR_STATUS_SUBJECT_EXTERNAL_REF_OTHER_DETAILS.getStream(), UTF_8), EhrStatus.class);
+
+        CompositionSerializer compositionSerializerRawJson = new CompositionSerializer();
+
+        String db_encoded = compositionSerializerRawJson.dbEncode(referenceEhrStatus.getOtherDetails());
+        //check that ITEM_TREE name is serialized
+        assertNotNull(db_encoded);
+
+        String converted = new LightRawJsonEncoder(db_encoded).encodeCompositionAsString();
+
+        assertNotNull(converted);
+
+        //see if this can be interpreted by Archie
+//        Composition object = new CanonicalJson().unmarshal(converted, Composition.class);
+//
+//        assertTrue(object.itemsAtPath("/content[openEHR-EHR-SECTION.ispek_dialog.v1]/items[openEHR-EHR-OBSERVATION.body_temperature-zn.v1]/archetype_details/archetype_id").size() > 0);
+//
+//        assertEquals("openEHR-EHR-OBSERVATION.body_temperature-zn.v1", object.itemsAtPath("/content[openEHR-EHR-SECTION.ispek_dialog.v1]/items[openEHR-EHR-OBSERVATION.body_temperature-zn.v1]/archetype_details/archetype_id").get(0).toString());
+//
+//        assertNotNull(object);
+    }
+
+    @Test
+    public void compositionEncodingFeederAuditDetails() throws Exception {
+        String value = IOUtils.toString(CompositionTestDataCanonicalJson.FEEDER_AUDIT_DETAILS.getStream(), UTF_8);
+        CanonicalJson cut = new CanonicalJson();
+        Composition composition = cut.unmarshal(value, Composition.class);
+
+        // check compo
+        assertNotNull(composition);
+        assertNotNull(composition.getFeederAudit().getFeederSystemAudit());
+        // other details
+        assertNotNull(composition.getFeederAudit().getFeederSystemAudit().getOtherDetails());
+        assertEquals("family group", composition.getFeederAudit().getFeederSystemAudit().getOtherDetails().getName().getValue());
+        assertTrue(composition.getFeederAudit().getFeederSystemAudit().getOtherDetails() instanceof ItemTree);
+        assertEquals(1, composition.getFeederAudit().getFeederSystemAudit().getOtherDetails().getItems().size());
+        assertTrue(composition.getFeederAudit().getFeederSystemAudit().getOtherDetails().getItems().get(0) instanceof Element);
+        assertTrue(((Element) composition.getFeederAudit().getFeederSystemAudit().getOtherDetails().getItems().get(0)).getValue() instanceof DvIdentifier);
+        // version id
+        assertNotNull(composition.getFeederAudit().getFeederSystemAudit().getVersionId());
+        assertEquals("final", composition.getFeederAudit().getFeederSystemAudit().getVersionId());
+
+        // DB encode other details
+        CompositionSerializer compositionSerializerRawJson = new CompositionSerializer();
+        String dbEncoded = compositionSerializerRawJson.dbEncode(composition.getFeederAudit().getFeederSystemAudit().getOtherDetails());
+        assertNotNull(dbEncoded);
+
+        // Convert encoded string into map to write to DB
+        Map<String, Object> asMap = new LightRawJsonEncoder(dbEncoded).encodeOtherDetailsAsMap();
+        assertNotNull(asMap);
+        assertEquals(4, asMap.size());
+        assertNotNull(asMap.get("/items[at0001]"));
+
+        // Attribute mapping and correct archetype node id path in naming
+        Map<String, Object> map = new FeederAuditAttributes(composition.getFeederAudit()).toMap();
+        assertNotNull(map);
+        assertNotNull(map.get("feeder_system_audit"));
+        Map<String, Object> feederMap = (Map) map.get("feeder_system_audit");
+        assertNotNull(feederMap);
+        assertNotNull(feederMap.get("other_details[openEHR-EHR-ITEM_TREE.generic.v1]"));
+        assertEquals(4, ((Map<String, Object>) feederMap.get("other_details[openEHR-EHR-ITEM_TREE.generic.v1]")).size());
+    }
 
 }

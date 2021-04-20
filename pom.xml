@@ -22,7 +22,7 @@
     <groupId>com.github.ehrbase.openEHR_SDK</groupId>
     <artifactId>root</artifactId>
     <packaging>pom</packaging>
-    <version>1.3.0</version>
+    <version>1.4.0</version>
 
     <modules>
         <module>client</module>
@@ -49,6 +49,7 @@
         <jackson.version>2.12.0</jackson.version>
         <jacoco.version>0.8.6</jacoco.version>
         <antlr4.version>4.9.1</antlr4.version>
+        <archie.version>dc09642</archie.version>
 
         <skipIntegrationTests>true</skipIntegrationTests>
         <include.tests>**/*Test.java</include.tests>
@@ -264,6 +265,23 @@
 
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.1.1</version>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <javadocExecutable>${java.home}/bin/javadoc</javadocExecutable>
+                    <additionalJOption>-Xdoclint:none</additionalJOption>
+                </configuration>
+            </plugin>
         </plugins>
         <pluginManagement>
             <plugins>
@@ -477,16 +495,15 @@
                 <version>1.7.30</version>
                 <scope>test</scope>
             </dependency>
-
-
             <dependency>
-                <!--                <groupId>com.nedap.healthcare.archie</groupId>-->
-                <!--                <artifactId>archie-all</artifactId>-->
-                <!--                <version>0.10.0</version>-->
-
                 <groupId>com.github.openEHR</groupId>
                 <artifactId>archie</artifactId>
-                <version>dc09642</version>
+                <version>${archie.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.openEHR.archie</groupId>
+                <artifactId>openehr-rm</artifactId>
+                <version>${archie.version}</version>
             </dependency>
             <!-- NOTE: does not work properly when inside dependencyManagement -->
             <!-- 

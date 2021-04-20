@@ -247,6 +247,10 @@ public class AqlToDtoVisitor extends AqlBaseVisitor<Object> {
 
     } else {
       currentContainment.setArchetypeId(ctx.IDENTIFIER(0).getText());
+      if (ctx.IDENTIFIER().size() == 2) {
+        currentContainment.setIdentifier(ctx.IDENTIFIER(1).getText());
+        identifierMap.put(currentContainment.getIdentifier(), currentContainment.getId());
+      }
     }
 
     return currentContainment;

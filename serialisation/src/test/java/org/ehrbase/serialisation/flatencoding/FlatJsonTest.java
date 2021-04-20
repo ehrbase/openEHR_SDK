@@ -59,6 +59,51 @@ public class FlatJsonTest {
   }
 
   @Test
+  public void roundTripDeterioriationAssessment() throws IOException {
+    TestDataTemplateProvider templateProvider = new TestDataTemplateProvider();
+    FlatJson cut =
+        new FlatJasonProvider(templateProvider)
+            .buildFlatJson(FlatFormat.SIM_SDT, "EREACT - Deterioriation assessment.v0");
+
+    String flat =
+        IOUtils.toString(
+            CompositionTestDataSimSDTJson.DETERIORIATION_ASSESSMENT.getStream(),
+            StandardCharsets.UTF_8);
+    Composition unmarshal = cut.unmarshal(flat);
+
+    assertThat(unmarshal).isNotNull();
+
+    String actual = cut.marshal(unmarshal);
+
+    String expected =
+        IOUtils.toString(
+            CompositionTestDataSimSDTJson.DETERIORIATION_ASSESSMENT.getStream(),
+            StandardCharsets.UTF_8);
+
+    List<String> errors = compere(actual, expected);
+
+    assertThat(errors)
+        .filteredOn(s -> s.startsWith("Missing"))
+        .containsExactlyInAnyOrder(
+            "Missing path: deterioration_assessment/assessment/news2/respirations/rate|magnitude, value: 110.0",
+            "Missing path: deterioration_assessment/assessment/news2/pulse/pulse_rate|magnitude, value: 80.0",
+            "Missing path: deterioration_assessment/assessment/news2/pulse_oximetry/spo|denominator, value: 100.0",
+            "Missing path: deterioration_assessment/assessment/news2/pulse_oximetry/spo|numerator, value: 80.0",
+            "Missing path: deterioration_assessment/assessment/news2/blood_pressure/diastolic|magnitude, value: 60.0",
+            "Missing path: deterioration_assessment/assessment/news2/blood_pressure/systolic|magnitude, value: 96.0");
+
+    assertThat(errors)
+        .filteredOn(s -> s.startsWith("Extra"))
+        .containsExactlyInAnyOrder(
+            "Extra path: deterioration_assessment/assessment/news2/blood_pressure/diastolic|magnitude, value: 60",
+            "Extra path: deterioration_assessment/assessment/news2/blood_pressure/systolic|magnitude, value: 96",
+            "Extra path: deterioration_assessment/assessment/news2/pulse/pulse_rate|magnitude, value: 80",
+            "Extra path: deterioration_assessment/assessment/news2/pulse_oximetry/spo|denominator, value: 100",
+            "Extra path: deterioration_assessment/assessment/news2/pulse_oximetry/spo|numerator, value: 80",
+            "Extra path: deterioration_assessment/assessment/news2/respirations/rate|magnitude, value: 110");
+  }
+
+  @Test
   public void roundTripAll() throws IOException {
     TestDataTemplateProvider templateProvider = new TestDataTemplateProvider();
     FlatJson cut =

@@ -50,6 +50,29 @@ public class AqlToDtoParserTest {
   }
 
   @Test
+  public void parseObservation() {
+    String aql = "SELECT o FROM EHR e CONTAINS OBSERVATION o";
+
+    testAql(aql, "Select o as F1 from EHR e contains OBSERVATION o");
+  }
+
+  @Test
+  public void parseObservation2() {
+    String aql =
+        "Select e/ehr_id/value as F1, o/data[at0001]/events[at0002]/data[at0003]/items[at0022]/items[at0005]/value/value as F2, o/data[at0001]/events[at0002]/data[at0003]/items[at0022]/items[at0004]/value/value as F3 from EHR e contains (COMPOSITION c0 and SECTION s4[openEHR-EHR-SECTION.adhoc.v1] contains OBSERVATION o[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0]) where (e/ehr_id/value matches {'47dc21a2-7076-4a57-89dc-bd83729ed52f'} and c0/archetype_details/template_id/value matches {'Corona_Anamnese'})";
+
+    testAql(aql, aql);
+  }
+
+  @Test
+  public void parseMultiWhere() {
+    String aql =
+        "Select c0 as openEHR_EHR_COMPOSITION_self_monitoring_v0, c1 as openEHR_EHR_COMPOSITION_report_v1 from EHR e contains (COMPOSITION c0[openEHR-EHR-COMPOSITION.self_monitoring.v0] and COMPOSITION c1[openEHR-EHR-COMPOSITION.report.v1]) where (e/ehr_id/value matches {'b3a40b41-36e1-4802-8748-062d4000aaae'} and c0/archetype_details/template_id/value matches {'Corona_Anamnese'} and c1/archetype_details/template_id/value matches {'Corona_Anamnese'})";
+
+    testAql(aql, aql);
+  }
+
+  @Test
   public void parseMatches() {
     String aql =
         "Select c/context/other_context[at0001]/items[at0002]/value/value as Bericht_ID__value, d/ehr_id/value as ehr_id from EHR d contains COMPOSITION c[openEHR-EHR-COMPOSITION.report.v1] where d/ehr_id/value matches {'f4da8646-8e36-4d9d-869c-af9dce5935c7','61861e76-1606-48c9-adcf-49ebbb2c6bbd'}";

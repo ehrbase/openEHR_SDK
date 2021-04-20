@@ -1,0 +1,2 @@
+#numeric_count_select.txt,"eval/data[at0001]/items[at0002]/value/magnitude IN (1,2,3,4)",4,java.lang.Long
+numeric_count_select.txt,"1 MATCHES {eval/data[at0001]/items[at0002]/value/magnitude,eval/data[at0001]/items[at0002]/value/magnitude}",1,java.lang.Long

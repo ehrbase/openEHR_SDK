@@ -24,6 +24,7 @@ import org.ehrbase.serialisation.dbencoding.ItemStack;
 
 import java.util.Map;
 
+import static org.ehrbase.serialisation.dbencoding.CompositionSerializer.TAG_ACTION_ARCHETYPE_ID;
 import static org.ehrbase.serialisation.dbencoding.CompositionSerializer.TAG_TIMING;
 
 /**
@@ -41,6 +42,9 @@ public class ActivityAttributes extends LocatableAttributes {
             map = toMap(TAG_TIMING, activity.getTiming(), null);
         }
 
+        if (activity.getActionArchetypeId() != null){
+            map.put(TAG_ACTION_ARCHETYPE_ID, activity.getActionArchetypeId());
+        }
         map =  super.toMap(activity);
 
         return map;

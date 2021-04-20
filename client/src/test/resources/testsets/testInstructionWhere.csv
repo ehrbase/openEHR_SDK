@@ -1,0 +1,16 @@
+name/value
+archetype_node_id,//
+language/code_string
+language/terminology_id/value
+activities[at0001]/name/value
+activities[at0001]/archetype_node_id,//
+activities[at0001]/action_archetype_id, //missing from flattener open CR!
+activities[at0001]/timing/value
+activities[at0001]/timing/formalism
+activities[at0001]/description[at0002]/archetype_node_id,//
+activities[at0001]/description[at0002]/items[at0003]/name/value
+activities[at0001]/description[at0002]/items[at0003]/archetype_node_id,//
+activities[at0001]/description[at0002]/items[at0003]/value/value,
+activities[at0001]/description[at0002]/items[at0004]/name/value
+activities[at0001]/description[at0002]/items[at0004]/archetype_node_id,//
+activities[at0001]/description[at0002]/items[at0004]/value/value

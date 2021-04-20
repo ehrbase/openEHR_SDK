@@ -37,8 +37,11 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.ehrbase.serialisation.walker.defaultvalues.defaultinserter.DefaultValueInserter;
+import org.ehrbase.util.reflection.ReflectionHelper;
 import org.ehrbase.webtemplate.model.WebTemplateNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,6 +50,9 @@ public abstract class ToCompositionWalker<T> extends Walker<T> {
 
   private static final RMObjectCreator RM_OBJECT_CREATOR =
       new RMObjectCreator(ARCHIE_RM_INFO_LOOKUP);
+
+  private static final Map<Class<?>, DefaultValueInserter> DEFAULT_VALUE_INSERTER_MAP =
+      ReflectionHelper.buildMap(DefaultValueInserter.class);
 
   private final Logger log = LoggerFactory.getLogger(getClass());
   private final Map<String, List<RMObject>> cloneMap = new HashMap<>();
@@ -103,9 +109,9 @@ public abstract class ToCompositionWalker<T> extends Walker<T> {
 
     if (child == null
         || (child.getClass().equals(PointEvent.class)
-            && !childNode.getRmType().equals("POINT_EVENT"))
+            && childNode.getRmType().equals("INTERVAL_EVENT"))
         || (child.getClass().equals(IntervalEvent.class)
-            && !childNode.getRmType().equals("INTERVAL_EVENT"))) {
+            && childNode.getRmType().equals("POINT_EVENT"))) {
       CComplexObject elementConstraint = new CComplexObject();
       elementConstraint.setRmTypeName(rmclass);
       Object newChild;
@@ -120,15 +126,18 @@ public abstract class ToCompositionWalker<T> extends Walker<T> {
         if (Event.class.isAssignableFrom(newChild.getClass())) {
           Event<ItemStructure> newEvent = (Event) newChild;
           Event<ItemStructure> oldEvent = (Event) child;
+          newEvent.setTime(new DvDateTime());
           if (oldEvent != null) {
             newEvent.setState((ItemStructure) deepClone(oldEvent.getState()));
             newEvent.setData((ItemStructure) deepClone(oldEvent.getData()));
             newEvent.setArchetypeDetails(oldEvent.getArchetypeDetails());
             newEvent.setArchetypeNodeId(oldEvent.getArchetypeNodeId());
             newEvent.setName(oldEvent.getName());
+            Optional.ofNullable(oldEvent.getTime())
+                .map(DvDateTime::getValue)
+                .ifPresent(t -> newEvent.getTime().setValue(t));
           }
 
-          newEvent.setTime(new DvDateTime());
           if (IntervalEvent.class.isAssignableFrom(newEvent.getClass())) {
             ((IntervalEvent) newEvent).setWidth(new DvDuration());
             ((IntervalEvent<?>) newEvent).setMathFunction(new DvCodedText());
@@ -179,9 +188,29 @@ public abstract class ToCompositionWalker<T> extends Walker<T> {
                   currentNode,
                   childNode,
                   choices.containsKey(childNode.getAqlPath()),
-                  i);
+                  i,
+                  context.getSkippedNodes(childNode));
     }
 
     return new ImmutablePair<>(childObject, currentChild);
+  }
+
+  @Override
+  protected void insertDefaults(Context<T> context) {
+
+    List<DefaultValueInserter<? super RMObject>> postprocessor = new ArrayList<>();
+
+    Class<?> currentClass = context.getRmObjectDeque().peek().getClass();
+
+    while (currentClass != null) {
+      if (DEFAULT_VALUE_INSERTER_MAP.containsKey(currentClass)) {
+        postprocessor.add(DEFAULT_VALUE_INSERTER_MAP.get(currentClass));
+      }
+
+      currentClass = currentClass.getSuperclass();
+    }
+
+    postprocessor.forEach(
+        p -> p.insert(context.getRmObjectDeque().peek(), context.getDefaultValues()));
   }
 }

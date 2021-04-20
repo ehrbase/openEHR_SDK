@@ -24,7 +24,7 @@
     <parent>
         <artifactId>root</artifactId>
         <groupId>com.github.ehrbase.openEHR_SDK</groupId>
-        <version>1.3.0</version>
+        <version>1.4.0</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
@@ -71,9 +71,6 @@
             <artifactId>json</artifactId>
         </dependency>
         <dependency>
-<!--            <groupId>com.nedap.healthcare.archie</groupId>-->
-<!--            <artifactId>archie-all</artifactId>-->
-
             <groupId>com.github.openEHR</groupId>
             <artifactId>archie</artifactId>
         </dependency>

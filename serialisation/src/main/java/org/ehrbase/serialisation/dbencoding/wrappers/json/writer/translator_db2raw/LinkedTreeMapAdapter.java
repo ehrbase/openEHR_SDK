@@ -126,10 +126,15 @@ public class LinkedTreeMapAdapter extends TypeAdapter<LinkedTreeMap<String, Obje
         }
       }
 
-      if (map.containsKey(CompositionSerializer.TAG_ARCHETYPE_NODE_ID))
-        writer
-            .name(ARCHETYPE_NODE_ID)
-            .value(map.get(CompositionSerializer.TAG_ARCHETYPE_NODE_ID).toString());
+      if (map.containsKey(CompositionSerializer.TAG_ARCHETYPE_NODE_ID)) {
+        if (map.get(CompositionSerializer.TAG_ARCHETYPE_NODE_ID) instanceof ArrayList)
+          new ValueArrayList(writer, map.get(CompositionSerializer.TAG_ARCHETYPE_NODE_ID), CompositionSerializer.TAG_ARCHETYPE_NODE_ID).write();
+        else
+          writer
+                  .name(ARCHETYPE_NODE_ID)
+                  .value(map.get(CompositionSerializer.TAG_ARCHETYPE_NODE_ID).toString());
+
+      }
 
       writeItemInArray(ITEMS, items, writer, parentItemsArchetypeNodeId, parentItemsType);
     } else if (isMultiEvents) {
