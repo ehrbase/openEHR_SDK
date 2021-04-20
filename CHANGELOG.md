@@ -3,17 +3,23 @@ Note: version releases in the 0.x.y range may introduce breaking changes.
 
 ## [Unreleased]
 ### Added
-- Flat: support ctx variables (see https://github.com/ehrbase/openEHR_SDK/pull/206)
-- Webtemplate: set inContext (see https://github.com/ehrbase/openEHR_SDK/pull/206)
+
 ### Fixed
 
+## 1.4.0
+### Added
+- Flat: support ctx variables (see https://github.com/ehrbase/openEHR_SDK/pull/206)
+- Webtemplate: set inContext (see https://github.com/ehrbase/openEHR_SDK/pull/206)
+
+### Fixed
 - Lost of small fixes to flat (see https://github.com/ehrbase/openEHR_SDK/pull/204)
 - Aql parsing : fix parsing of contains without archetypeId (see https://github.com/ehrbase/openEHR_SDK/pull/205)
 - Aql building : fix building of aql with more from Dto with more than 2 where ANDs
+- Several AQL fixes (see https://github.com/ehrbase/openEHR_SDK/pull/202 and https://github.com/ehrbase/openEHR_SDK/pull/207)
+- Feeder_audit other_details serialization and DB encoding (see https://github.com/ehrbase/openEHR_SDK/pull/208 and https://github.com/ehrbase/openEHR_SDK/pull/209)
 
 ## 1.3.0
 ### Added
-
 - Webtemplate: Generate cardinalities for Nodes (see https://github.com/ehrbase/openEHR_SDK/pull/198)
 - ClientTemplateProvider: For dynamically retrieving templates from ehr server (see https://github.com/ehrbase/openEHR_SDK/pull/198)
 - DefaultRestClient: remove the need to provide a template Provider (see https://github.com/ehrbase/openEHR_SDK/pull/197)
