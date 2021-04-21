@@ -40,7 +40,6 @@ import java.time.OffsetDateTime;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @Category(Integration.class)
-@Ignore
 public class FeederAuditQueryIT extends CanonicalCompoAllTypeQueryIT {
 
     protected ArbitraryQuery arbitraryQuery;

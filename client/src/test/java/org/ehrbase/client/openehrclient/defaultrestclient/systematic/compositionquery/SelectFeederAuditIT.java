@@ -37,7 +37,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @Category(Integration.class)
-@Ignore
+
 public class SelectFeederAuditIT extends CanonicalCompoAllTypeQueryIT {
 
     protected SimpleSelectQuery simpleSelectQueryEngine;
