@@ -46,14 +46,21 @@ public class FhirTerminologyValidationSupport implements ExternalTerminologyVali
 
     private final String baseUrl;
 
+    private final boolean failOnError;
+
     private final Executor executor;
 
     public FhirTerminologyValidationSupport(String baseUrl) {
-        this(baseUrl, HttpClients.createDefault());
+        this(baseUrl, true);
     }
 
-    public FhirTerminologyValidationSupport(String baseUrl, HttpClient httpClient) {
+    public FhirTerminologyValidationSupport(String baseUrl, boolean failOnError) {
+        this(baseUrl, failOnError, HttpClients.createDefault());
+    }
+
+    public FhirTerminologyValidationSupport(String baseUrl, boolean failOnError, HttpClient httpClient) {
         this.baseUrl = baseUrl;
+        this.failOnError = failOnError;
         executor = Executor.newInstance(httpClient);
     }
 
@@ -66,7 +73,16 @@ public class FhirTerminologyValidationSupport implements ExternalTerminologyVali
             return false;
         }
 
-        DocumentContext context = internalGet(buildUri(referenceSetUri));
+        DocumentContext context;
+        try {
+            context = internalGet(buildUri(referenceSetUri));
+        } catch (IOException e) {
+            if (failOnError) {
+                throw new ExternalTerminologyValidationException("An error occurred while checking if FHIR terminology server " +
+                        "supports the referenceSetUri: " + referenceSetUri, e);
+            }
+            return false;
+        }
         int total = context.read("$.total", int.class);
         return total > 0;
     }
@@ -96,7 +112,15 @@ public class FhirTerminologyValidationSupport implements ExternalTerminologyVali
      * @param codePhrase
      */
     private void validateCode(String path, String url, CodePhrase codePhrase) {
-        DocumentContext context = internalGet(baseUrl + "/CodeSystem/$validate-code?url=" + url + "&code=" + codePhrase.getCodeString());
+        DocumentContext context;
+        try {
+            context = internalGet(baseUrl + "/CodeSystem/$validate-code?url=" + url + "&code=" + codePhrase.getCodeString());
+        } catch (IOException e) {
+            if (failOnError) {
+                throw new ExternalTerminologyValidationException("An error occurred while validating the code in CodeSystem", e);
+            }
+            return;
+        }
         boolean result = context.read("$.parameter[0].valueBoolean", boolean.class);
         if (!result) {
             String message = context.read("$.parameter[1].valueString", String.class);
@@ -111,7 +135,15 @@ public class FhirTerminologyValidationSupport implements ExternalTerminologyVali
      * @param codePhrase
      */
     private void expandValueSet(String path, String url, CodePhrase codePhrase) {
-        DocumentContext context = internalGet(baseUrl + "/ValueSet/$expand?url=" + url);
+        DocumentContext context = null;
+        try {
+            context = internalGet(baseUrl + "/ValueSet/$expand?url=" + url);
+        } catch (IOException e) {
+            if (failOnError) {
+                throw new ExternalTerminologyValidationException("An error occurred while expanding the ValueSet", e);
+            }
+            return;
+        }
         String[] codes = context.read("$.expansion.contains[*].code", String[].class);
         if (!Arrays.asList(codes).contains(codePhrase.getCodeString())) {
             ValidationException.raise(path, "CodePhrase codeString does not match any option, found:" + codePhrase.getCodeString(), "CODE_PHRASE_03");
@@ -134,29 +166,25 @@ public class FhirTerminologyValidationSupport implements ExternalTerminologyVali
         return StringUtils.substringAfter(referenceSetUri, "url=");
     }
 
-    private DocumentContext internalGet(String uri) {
+    private DocumentContext internalGet(String uri) throws IOException {
         Request request = Request.Get(uri).addHeader(HttpHeaders.ACCEPT, "application/fhir+json");
 
-        try {
-            HttpResponse response = executor.execute(request).returnResponse();
-            String responseBody = Optional.ofNullable(response.getEntity())
-                    .map(entity -> {
-                        try {
-                            return EntityUtils.toString(response.getEntity());
-                        } catch (IOException e) {
-                            return null;
-                        }
-                    })
-                    .orElse("");
+        HttpResponse response = executor.execute(request).returnResponse();
+        String responseBody = Optional.ofNullable(response.getEntity())
+                .map(entity -> {
+                    try {
+                        return EntityUtils.toString(response.getEntity());
+                    } catch (IOException e) {
+                        return null;
+                    }
+                })
+                .orElse("");
 
-            int statusCode = response.getStatusLine().getStatusCode();
-            if (statusCode != HttpStatus.SC_OK) {
-                throw new ExternalTerminologyValidationException("Error response received from the terminology server. HTTP status: " + statusCode + ". Body: " + responseBody);
-            }
-
-            return JsonPath.parse(responseBody);
-        } catch (IOException e) {
-            throw new ExternalTerminologyValidationException("An unexpected error occurred while executing the request:" + request, e);
+        int statusCode = response.getStatusLine().getStatusCode();
+        if (statusCode != HttpStatus.SC_OK) {
+            throw new ExternalTerminologyValidationException("Error response received from the terminology server. HTTP status: " + statusCode + ". Body: " + responseBody);
         }
+
+        return JsonPath.parse(responseBody);
     }
 }
