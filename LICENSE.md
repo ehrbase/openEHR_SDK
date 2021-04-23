@@ -1,4 +1,4 @@
-Copyright (c) 2019 Vitasystems GmbH and Hannover Medical School.
+Copyright (c) 2021 Vitasystems GmbH and Hannover Medical School.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
