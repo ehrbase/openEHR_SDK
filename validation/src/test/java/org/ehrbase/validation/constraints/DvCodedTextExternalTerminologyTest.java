@@ -22,7 +22,7 @@ import com.nedap.archie.rm.datatypes.CodePhrase;
 import com.nedap.archie.rm.datavalues.DvCodedText;
 import com.nedap.archie.rm.support.identification.TerminologyId;
 import org.apache.xmlbeans.XmlException;
-Add failimport org.ehrbase.validation.constraints.terminology.ExternalTerminologyValidationException;
+import org.ehrbase.validation.constraints.terminology.ExternalTerminologyValidationException;
 import org.ehrbase.validation.constraints.terminology.FhirTerminologyValidationSupport;
 import org.ehrbase.validation.constraints.wrappers.CArchetypeConstraint;
 import org.ehrbase.validation.constraints.wrappers.ValidationException;

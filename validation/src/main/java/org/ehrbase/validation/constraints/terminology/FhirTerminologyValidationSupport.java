@@ -30,6 +30,8 @@ import org.apache.http.client.fluent.Request;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.ehrbase.validation.constraints.wrappers.ValidationException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -43,6 +45,8 @@ public class FhirTerminologyValidationSupport implements ExternalTerminologyVali
     private static final String CODE_SYSTEM_PREFIX = "terminology://fhir.hl7.org/CodeSystem";
 
     private static final String VALUE_SET_PREFIX = "terminology://fhir.hl7.org/ValueSet/$expand";
+
+    private static final Logger LOG = LoggerFactory.getLogger(FhirTerminologyValidationSupport.class);
 
     private final String baseUrl;
 
@@ -81,6 +85,7 @@ public class FhirTerminologyValidationSupport implements ExternalTerminologyVali
                 throw new ExternalTerminologyValidationException("An error occurred while checking if FHIR terminology server " +
                         "supports the referenceSetUri: " + referenceSetUri, e);
             }
+            LOG.warn("The following error occurred: {}", e.getMessage());
             return false;
         }
         int total = context.read("$.total", int.class);
@@ -119,6 +124,7 @@ public class FhirTerminologyValidationSupport implements ExternalTerminologyVali
             if (failOnError) {
                 throw new ExternalTerminologyValidationException("An error occurred while validating the code in CodeSystem", e);
             }
+            LOG.warn("An error occurred while validating the code in CodeSystem: {}", e.getMessage());
             return;
         }
         boolean result = context.read("$.parameter[0].valueBoolean", boolean.class);
@@ -135,13 +141,14 @@ public class FhirTerminologyValidationSupport implements ExternalTerminologyVali
      * @param codePhrase
      */
     private void expandValueSet(String path, String url, CodePhrase codePhrase) {
-        DocumentContext context = null;
+        DocumentContext context;
         try {
             context = internalGet(baseUrl + "/ValueSet/$expand?url=" + url);
         } catch (IOException e) {
             if (failOnError) {
                 throw new ExternalTerminologyValidationException("An error occurred while expanding the ValueSet", e);
             }
+            LOG.warn("An error occurred while expanding the ValueSet: {}", e.getMessage());
             return;
         }
         String[] codes = context.read("$.expansion.contains[*].code", String[].class);
