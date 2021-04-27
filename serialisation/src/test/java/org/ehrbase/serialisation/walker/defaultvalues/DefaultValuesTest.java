@@ -19,7 +19,7 @@
 
 package org.ehrbase.serialisation.walker.defaultvalues;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.nedap.archie.rm.composition.Composition;
@@ -35,6 +35,7 @@ import java.util.Iterator;
 import java.util.Map;
 import org.apache.commons.io.IOUtils;
 import org.apache.xmlbeans.XmlException;
+import org.assertj.core.groups.Tuple;
 import org.ehrbase.client.classgenerator.shareddefinition.Language;
 import org.ehrbase.serialisation.flatencoding.std.umarshal.FlatJsonUnmarshaller;
 import org.ehrbase.serialisation.jsonencoding.JacksonUtil;
@@ -73,6 +74,15 @@ public class DefaultValuesTest {
         .isEqualTo(OffsetDateTime.of(2021, 4, 1, 12, 40, 31, 418954000, ZoneOffset.ofHours(2)));
     assertThat(cut.getDefaultValue(DefaultValuePath.HEALTHCARE_FACILITY_NAME))
         .isEqualTo("Hospital");
+    assertThat(cut.getDefaultValue(DefaultValuePath.PARTICIPATION)).isNotNull();
+    assertThat(cut.getDefaultValue(DefaultValuePath.PARTICIPATION))
+        .extracting(
+            p -> p.getFunction().getValue(),
+            p -> ((PartyIdentified) p.getPerformer()).getName(),
+            p -> p.getPerformer().getExternalRef().getNamespace())
+        .containsExactlyInAnyOrder(
+            new Tuple("requester", "Dr. Marcus Johnson", "HOSPITAL-NS"),
+            new Tuple("performer", "Lara Markham", "HOSPITAL-NS"));
   }
 
   @Test
@@ -123,5 +133,14 @@ public class DefaultValuesTest {
         .isEqualTo(OffsetDateTime.of(2021, 4, 1, 12, 40, 31, 418954000, ZoneOffset.ofHours(2)));
     assertThat(observation.getData().getEvents().get(0).getTime().getValue())
         .isEqualTo(OffsetDateTime.of(2021, 4, 1, 12, 40, 31, 418954000, ZoneOffset.ofHours(2)));
+
+    assertThat(observation.getOtherParticipations())
+        .extracting(
+            p -> p.getFunction().getValue(),
+            p -> ((PartyIdentified) p.getPerformer()).getName(),
+            p -> p.getPerformer().getExternalRef().getNamespace())
+        .containsExactlyInAnyOrder(
+            new Tuple("requester", "Dr. Marcus Johnson", "HOSPITAL-NS"),
+            new Tuple("performer", "Lara Markham", "HOSPITAL-NS"));
   }
 }

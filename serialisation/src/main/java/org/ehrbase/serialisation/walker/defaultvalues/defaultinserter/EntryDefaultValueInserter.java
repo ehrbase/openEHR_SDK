@@ -20,6 +20,7 @@
 package org.ehrbase.serialisation.walker.defaultvalues.defaultinserter;
 
 import com.nedap.archie.rm.composition.Entry;
+import org.apache.commons.collections4.CollectionUtils;
 import org.ehrbase.serialisation.walker.defaultvalues.DefaultValuePath;
 import org.ehrbase.serialisation.walker.defaultvalues.DefaultValues;
 
@@ -38,6 +39,12 @@ public class EntryDefaultValueInserter extends AbstractValueInserter<Entry> {
               DefaultValuePath.PROVIDER_NAME,
               DefaultValuePath.PROVIDER_ID,
               rmObject.getProvider()));
+    }
+
+    if (CollectionUtils.isEmpty(rmObject.getOtherParticipations())
+        && defaultValues.containsDefaultValue(DefaultValuePath.PARTICIPATION)) {
+      rmObject.setOtherParticipations(
+          defaultValues.getDefaultValue(DefaultValuePath.PARTICIPATION));
     }
   }
 
