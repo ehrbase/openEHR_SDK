@@ -42,7 +42,7 @@ public class DvBooleanTest extends ConstraintTestBase {
         dvBoolean.setValue(false);
 
         try {
-            new CArchetypeConstraint(null).validate("test", dvBoolean, archetypeconstraint);
+            new CArchetypeConstraint(null, null).validate("test", dvBoolean, archetypeconstraint);
             fail("false is not allowed");
         } catch (Exception e) {
         }
@@ -54,7 +54,7 @@ public class DvBooleanTest extends ConstraintTestBase {
         dvBoolean.setValue(true);
 
         try {
-            new CArchetypeConstraint(null).validate("test", dvBoolean, archetypeconstraint);
+            new CArchetypeConstraint(null, null).validate("test", dvBoolean, archetypeconstraint);
         } catch (Exception e) {
             fail("true is allowed");
         }

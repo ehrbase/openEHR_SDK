@@ -21,6 +21,7 @@
 
 package org.ehrbase.validation.constraints.wrappers;
 
+import org.ehrbase.validation.constraints.terminology.ExternalTerminologyValidationSupport;
 import org.openehr.schemas.v1.ARCHETYPECONSTRAINT;
 import org.openehr.schemas.v1.COBJECT;
 import org.openehr.schemas.v1.CSINGLEATTRIBUTE;
@@ -36,8 +37,8 @@ import java.util.Map;
  */
 public class CSingleAttribute extends CConstraint implements I_CArchetypeConstraintValidate {
 
-    CSingleAttribute(Map<String, Map<String, String>> localTerminologyLookup) {
-        super(localTerminologyLookup);
+    CSingleAttribute(Map<String, Map<String, String>> localTerminologyLookup, ExternalTerminologyValidationSupport externalTerminologyValidator) {
+        super(localTerminologyLookup, externalTerminologyValidator);
     }
 
     @Override
@@ -51,7 +52,7 @@ public class CSingleAttribute extends CConstraint implements I_CArchetypeConstra
             for (COBJECT cobject : csingleattribute.getChildrenArray()) {
                 //multiple rules for a specific item, at least one must be verified
                 try {
-                    new CObject(localTerminologyLookup).validate(path, aValue, cobject);
+                    new CObject(localTerminologyLookup, externalTerminologyValidator).validate(path, aValue, cobject);
                 } catch (Exception e) {
                     if (messageBuffer.length() > 0)
                         messageBuffer.append(", ");

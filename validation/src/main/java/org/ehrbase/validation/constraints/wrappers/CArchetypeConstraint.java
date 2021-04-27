@@ -21,6 +21,7 @@
 
 package org.ehrbase.validation.constraints.wrappers;
 
+import org.ehrbase.validation.constraints.terminology.ExternalTerminologyValidationSupport;
 import org.openehr.schemas.v1.ARCHETYPECONSTRAINT;
 import org.openehr.schemas.v1.CATTRIBUTE;
 import org.openehr.schemas.v1.COBJECT;
@@ -32,16 +33,16 @@ import java.util.Map;
  */
 public class CArchetypeConstraint extends CConstraint implements I_CArchetypeConstraintValidate {
 
-    public CArchetypeConstraint(Map<String, Map<String, String>> localTerminologyLookup) {
-        super(localTerminologyLookup);
+    public CArchetypeConstraint(Map<String, Map<String, String>> localTerminologyLookup, ExternalTerminologyValidationSupport externalTerminologyValidator) {
+        super(localTerminologyLookup, externalTerminologyValidator);
     }
 
     @Override
     public void validate(String path, Object aValue, ARCHETYPECONSTRAINT archetypeconstraint) throws IllegalArgumentException {
         if (archetypeconstraint instanceof COBJECT)
-            new CObject(localTerminologyLookup).validate(path, aValue, archetypeconstraint);
+            new CObject(localTerminologyLookup, externalTerminologyValidator).validate(path, aValue, archetypeconstraint);
         else if (archetypeconstraint instanceof CATTRIBUTE)
-            new CAttribute(localTerminologyLookup).validate(path, aValue, archetypeconstraint);
+            new CAttribute(localTerminologyLookup, externalTerminologyValidator).validate(path, aValue, archetypeconstraint);
         else
             throw new IllegalArgumentException("INTERNAL: could not resolve archetypeconstraint type:" + archetypeconstraint);
     }

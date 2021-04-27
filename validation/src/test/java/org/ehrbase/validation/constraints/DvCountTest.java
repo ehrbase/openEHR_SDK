@@ -42,7 +42,7 @@ public class DvCountTest extends ConstraintTestBase {
         DvCount count = new DvCount(10L);
 
         try {
-            new CArchetypeConstraint(null).validate("test", count, archetypeconstraint);
+            new CArchetypeConstraint(null, null).validate("test", count, archetypeconstraint);
         } catch (Exception e) {
             fail(e.getMessage());
         }
@@ -54,7 +54,7 @@ public class DvCountTest extends ConstraintTestBase {
         DvCount count = new DvCount(null);
 
         try {
-            new CArchetypeConstraint(null).validate("test", count, archetypeconstraint);
+            new CArchetypeConstraint(null, null).validate("test", count, archetypeconstraint);
             fail("mandatory element not detected");
         } catch (Exception e) {
 

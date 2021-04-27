@@ -42,7 +42,7 @@ public class DvUriTest extends ConstraintTestBase {
         DvURI uri = new DvURI("http://java.sun.com/j2se/1.3/");
 
         try {
-            new CArchetypeConstraint(null).validate("test", uri, archetypeconstraint);
+            new CArchetypeConstraint(null, null).validate("test", uri, archetypeconstraint);
         } catch (Exception e) {
             fail(e.getMessage());
         }

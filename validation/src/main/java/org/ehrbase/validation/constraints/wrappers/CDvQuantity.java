@@ -23,6 +23,7 @@ package org.ehrbase.validation.constraints.wrappers;
 
 import com.nedap.archie.rm.datavalues.quantity.DvQuantity;
 import org.apache.commons.lang3.StringUtils;
+import org.ehrbase.validation.constraints.terminology.ExternalTerminologyValidationSupport;
 import org.openehr.schemas.v1.ARCHETYPECONSTRAINT;
 import org.openehr.schemas.v1.CDVQUANTITY;
 import org.openehr.schemas.v1.CQUANTITYITEM;
@@ -41,21 +42,22 @@ import java.util.Map;
  */
 public class CDvQuantity extends CConstraint implements I_CArchetypeConstraintValidate {
 
-    CDvQuantity(Map<String, Map<String, String>> localTerminologyLookup) {
-        super(localTerminologyLookup);
+    CDvQuantity(Map<String, Map<String, String>> localTerminologyLookup, ExternalTerminologyValidationSupport externalTerminologyValidator) {
+        super(localTerminologyLookup, externalTerminologyValidator);
     }
 
     public void validate(String path, Object aValue, ARCHETYPECONSTRAINT archetypeconstraint) throws IllegalArgumentException {
-
         DvQuantity quantity = (DvQuantity) aValue;
 
-        if (quantity.getMagnitude() == null)
+        if (quantity.getMagnitude() == null) {
             ValidationException.raise(path, "DvQuantity requires a non null magnitude", "DV_QUANTITY_01");
+        }
 
         CDVQUANTITY constraint = (CDVQUANTITY) archetypeconstraint;
         //check constraint attributes
-        if (quantity.getUnits() == null)
+        if (quantity.getUnits() == null) {
             ValidationException.raise(path, "No units specified for item:" + quantity + " at path:" + path, "DV_QUANTITY_02");
+        }
 
         List<String> stringBuffer = new ArrayList<>();
         match_value:
@@ -82,7 +84,6 @@ public class CDvQuantity extends CConstraint implements I_CArchetypeConstraintVa
             }
 
             ValidationException.raise(path, "No matching units for:" + (StringUtils.isNotEmpty(quantity.getUnits()) ? quantity.getUnits() : "*undef*") + ", expected units:" + String.join(",", stringBuffer), "DV_QUANTITY_03");
-
         }
     }
 }

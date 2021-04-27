@@ -45,7 +45,7 @@ public class DvIntervalDvDateTimeTest extends ConstraintTestBase {
         DvInterval<DvDateTime> dvDateTimeDvInterval = new DvInterval<>(new DvDateTime(LocalDateTime.now()), null);
 
         try {
-            new CArchetypeConstraint(null).validate("test", dvDateTimeDvInterval, archetypeconstraint);
+            new CArchetypeConstraint(null, null).validate("test", dvDateTimeDvInterval, archetypeconstraint);
         } catch (Exception e) {
             fail(e.getMessage());
         }

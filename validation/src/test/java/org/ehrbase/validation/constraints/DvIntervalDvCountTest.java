@@ -42,7 +42,7 @@ public class DvIntervalDvCountTest extends ConstraintTestBase {
     public void testConstraintValidation() {
         DvInterval<DvCount> dvIntervalDvCount = new DvInterval<>(new DvCount(10L), new DvCount(20L));
         try {
-            new CArchetypeConstraint(null).validate("test", dvIntervalDvCount, archetypeconstraint);
+            new CArchetypeConstraint(null, null).validate("test", dvIntervalDvCount, archetypeconstraint);
         } catch (Exception e) {
             fail(e.getMessage());
         }
