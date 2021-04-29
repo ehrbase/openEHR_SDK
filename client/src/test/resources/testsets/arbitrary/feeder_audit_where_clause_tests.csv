@@ -9,3 +9,10 @@ feeder_audit_select.txt, "c/feeder_audit/feeder_system_audit/other_details[openE
 feeder_audit_select.txt, "c/feeder_audit/feeder_system_audit/other_details[openEHR-EHR-ITEM_TREE.generic.v1]/items[at0001]/value/type = 'FAMILY_GROUP_ID'","Test all types"
 
 
+feeder_audit_select.txt, "c/feeder_audit/feeder_system_item_ids/id = '2.16.840.1.113883.3.1937.777.24.5.1.36'","Test all types"
+feeder_audit_select.txt, "c/feeder_audit/feeder_system_item_ids/type = 'OID_MDAT_nutzen'","Test all types"
+feeder_audit_select.txt, "c/feeder_audit/feeder_system_item_ids/issuer = 'DIMDI'","Test all types"
+feeder_audit_select.txt, "c/feeder_audit/feeder_system_item_ids/assigner = 'NUM-CODEX'","Test all types"
+
+
+

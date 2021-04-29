@@ -49,24 +49,33 @@ public class SelectFeederAuditIT extends CanonicalCompoAllTypeQueryIT {
     }
 
     @Test
-    public void testFeederAuditDrillDown() throws IOException {
+    public void testCompositionFeederAuditSelect() throws IOException {
+        assertThat(simpleSelectQueryEngine.testItemPaths(
+                dirPath + "/testCompositionFeederAuditQuery.csv",
+                "c/feeder_audit",
+                "composition c",
+                aComposition.getFeederAudit()
+                )).isTrue();
 
-        String rootPath = "c/feeder_audit";
-        RMObject referenceNode = aComposition.getFeederAudit();
-        String contains = "composition c";
-        String csvTestSet = dirPath + "/testCompositionFeederAuditQuery.csv";
+        assertThat(simpleSelectQueryEngine.testItemPaths(
+                dirPath + "/testCompositionFeederAuditOtherDetailsQuery.csv",
+                "c/feeder_audit/feeder_system_audit/other_details[openEHR-EHR-ITEM_TREE.generic.v1]",
+                "composition c",
+                aComposition.getFeederAudit().getFeederSystemAudit().getOtherDetails()
+                )).isTrue();
 
-        assertThat(simpleSelectQueryEngine.testItemPaths(csvTestSet, rootPath, contains, referenceNode)).isTrue();
-    }
+        assertThat(simpleSelectQueryEngine.testItemPaths(
+                dirPath + "/testCompositionFeederAuditQuery.csv",
+                "o/feeder_audit",
+                "composition c contains OBSERVATION o[openEHR-EHR-OBSERVATION.test_all_types.v1]",
+                (RMObject) aComposition.itemsAtPath("/content[openEHR-EHR-OBSERVATION.test_all_types.v1]/feeder_audit").get(0)
+        )).isTrue();
 
-    @Test
-    public void testFeederAuditOtherDetailsDrillDown() throws IOException {
-
-        String rootPath = "c/feeder_audit/feeder_system_audit/other_details[openEHR-EHR-ITEM_TREE.generic.v1]";
-        RMObject referenceNode = aComposition.getFeederAudit().getFeederSystemAudit().getOtherDetails();
-        String contains = "composition c";
-        String csvTestSet = dirPath + "/testCompositionFeederAuditOtherDetailsQuery.csv";
-
-        assertThat(simpleSelectQueryEngine.testItemPaths(csvTestSet, rootPath, contains, referenceNode)).isTrue();
+        assertThat(simpleSelectQueryEngine.testItemPaths(
+                dirPath + "/testCompositionFeederAuditOtherDetailsQuery.csv",
+                "o/feeder_audit/feeder_system_audit/other_details[openEHR-EHR-ITEM_TREE.generic.v1]",
+                "composition c contains OBSERVATION o[openEHR-EHR-OBSERVATION.test_all_types.v1]",
+                (RMObject) aComposition.itemsAtPath("/content[openEHR-EHR-OBSERVATION.test_all_types.v1]/feeder_audit/feeder_system_audit/other_details[openEHR-EHR-ITEM_TREE.generic.v1]").get(0)
+        )).isTrue();
     }
 }
