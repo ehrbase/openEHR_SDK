@@ -23,6 +23,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nedap.archie.datetime.DateTimeParsers;
 import com.nedap.archie.rm.datavalues.DvCodedText;
+import com.nedap.archie.rm.datavalues.DvIdentifier;
 import com.nedap.archie.rm.datavalues.DvText;
 import com.nedap.archie.rm.generic.Participation;
 import com.nedap.archie.rm.generic.PartyIdentified;
@@ -32,6 +33,7 @@ import com.nedap.archie.rm.support.identification.PartyRef;
 import java.time.temporal.TemporalAccessor;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -150,7 +152,7 @@ public class DefaultValues {
     Participation participation = new Participation();
     participation.setPerformer(new PartyIdentified());
 
-    extracted(
+    extract(
         subValues,
         "id",
         s -> {
@@ -160,9 +162,9 @@ public class DefaultValues {
           participation.getPerformer().getExternalRef().setId(id);
         });
 
-    extracted(subValues, "name", ((PartyIdentified) participation.getPerformer())::setName);
-    extracted(subValues, "function", s -> participation.setFunction(new DvText(s)));
-    extracted(
+    extract(subValues, "name", ((PartyIdentified) participation.getPerformer())::setName);
+    extract(subValues, "function", s -> participation.setFunction(new DvText(s)));
+    extract(
         subValues,
         "mode",
         s -> {
@@ -171,11 +173,74 @@ public class DefaultValues {
           participation.getMode().setValue(participationMode.getValue());
           participation.getMode().setDefiningCode(participationMode.toCodePhrase());
         });
-
+    ((PartyIdentified) participation.getPerformer())
+        .setIdentifiers(
+            splitByIndex(
+                    filter(
+                        subValues.stream()
+                            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)),
+                        DefaultValuePath.PARTICIPATION.getPath() + "_" + "identifiers"))
+                .values().stream()
+                .map(this::toDvIdentifier)
+                .collect(Collectors.toList()));
     return participation;
   }
 
-  private void extracted(
+  private DvIdentifier toDvIdentifier(Map<String, String> valueMap) {
+    DvIdentifier dvIdentifier = new DvIdentifier();
+
+    dvIdentifier.setId(valueMap.get("id"));
+    dvIdentifier.setAssigner(valueMap.get("assigner"));
+    dvIdentifier.setIssuer(valueMap.get("issuer"));
+    dvIdentifier.setType(valueMap.get("type"));
+
+    return dvIdentifier;
+  }
+
+  private Map<Integer, Map<String, String>> splitByIndex(Map<String, String> values) {
+    Map<Integer, Map<String, String>> map;
+
+    if (values.size() == 1) {
+      map = new HashMap<>();
+      String ids = StringUtils.unwrap(values.values().stream().findAny().orElseThrow(), '"');
+      int i = 0;
+      for (String sub : ids.split(";")) {
+        map.put(i, new HashMap<>());
+        String[] split = sub.split("::");
+
+        map.get(i).put("issuer", split[0]);
+        map.get(i).put("assigner", split[1]);
+        map.get(i).put("id", split[2]);
+        map.get(i).put("type", split[3]);
+
+        i++;
+      }
+    } else if (values.size() > 1) {
+
+      map =
+          values.entrySet().stream()
+              .collect(
+                  Collectors.groupingBy(
+                      e -> {
+                        String s =
+                            StringUtils.substringAfter(
+                                StringUtils.substringAfter(e.getKey(), "|"), ":");
+                        return StringUtils.isBlank(s) ? 0 : Integer.parseInt(s);
+                      },
+                      Collectors.toMap(
+                          e ->
+                              StringUtils.substringBefore(
+                                  StringUtils.substringAfter(e.getKey(), "|"), ":"),
+                          stringStringEntry ->
+                              StringUtils.unwrap(stringStringEntry.getValue(), '"'))));
+
+    } else {
+      map = Collections.emptyMap();
+    }
+    return map;
+  }
+
+  private void extract(
       List<Map.Entry<String, String>> subValues, String subPath, Consumer<String> stringConsumer) {
     filter(
             subValues.stream().collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)),

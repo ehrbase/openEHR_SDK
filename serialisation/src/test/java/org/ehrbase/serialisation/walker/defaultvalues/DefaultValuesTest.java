@@ -24,6 +24,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.nedap.archie.rm.composition.Composition;
 import com.nedap.archie.rm.composition.Observation;
+import com.nedap.archie.rm.datavalues.DvIdentifier;
 import com.nedap.archie.rm.generic.PartyIdentified;
 import com.nedap.archie.rm.support.identification.GenericId;
 import java.io.IOException;
@@ -83,6 +84,20 @@ public class DefaultValuesTest {
         .containsExactlyInAnyOrder(
             new Tuple("requester", "Dr. Marcus Johnson", "HOSPITAL-NS"),
             new Tuple("performer", "Lara Markham", "HOSPITAL-NS"));
+
+    assertThat(cut.getDefaultValue(DefaultValuePath.PARTICIPATION))
+        .extracting(p -> ((PartyIdentified) p.getPerformer()))
+        .flatExtracting(p -> p.getIdentifiers())
+        .extracting(
+            DvIdentifier::getAssigner,
+            DvIdentifier::getId,
+            DvIdentifier::getIssuer,
+            DvIdentifier::getType)
+        .containsExactlyInAnyOrder(
+            new Tuple("assigner1", "id1", "issuer1", "PERSON"),
+            new Tuple("assigner2", "id2", "issuer2", "PERSON"),
+            new Tuple("assigner3", "id3", "issuer3", "PERSON"),
+            new Tuple("assigner4", "id4", "issuer4", "PERSON"));
   }
 
   @Test
@@ -142,5 +157,19 @@ public class DefaultValuesTest {
         .containsExactlyInAnyOrder(
             new Tuple("requester", "Dr. Marcus Johnson", "HOSPITAL-NS"),
             new Tuple("performer", "Lara Markham", "HOSPITAL-NS"));
+
+    assertThat(observation.getOtherParticipations())
+        .extracting(p -> ((PartyIdentified) p.getPerformer()))
+        .flatExtracting(p -> p.getIdentifiers())
+        .extracting(
+            DvIdentifier::getAssigner,
+            DvIdentifier::getId,
+            DvIdentifier::getIssuer,
+            DvIdentifier::getType)
+        .containsExactlyInAnyOrder(
+            new Tuple("assigner1", "id1", "issuer1", "PERSON"),
+            new Tuple("assigner2", "id2", "issuer2", "PERSON"),
+            new Tuple("assigner3", "id3", "issuer3", "PERSON"),
+            new Tuple("assigner4", "id4", "issuer4", "PERSON"));
   }
 }
