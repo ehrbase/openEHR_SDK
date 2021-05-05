@@ -29,16 +29,19 @@ import com.nedap.archie.rm.generic.Participation;
 import com.nedap.archie.rm.generic.PartyIdentified;
 import com.nedap.archie.rm.generic.PartyProxy;
 import com.nedap.archie.rm.support.identification.GenericId;
+import com.nedap.archie.rm.support.identification.ObjectRef;
 import com.nedap.archie.rm.support.identification.PartyRef;
 import java.time.temporal.TemporalAccessor;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Consumer;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.apache.commons.lang3.StringUtils;
@@ -48,6 +51,12 @@ import org.ehrbase.serialisation.jsonencoding.JacksonUtil;
 import org.ehrbase.util.exception.SdkException;
 
 public class DefaultValues {
+
+  private static final Collector<Map.Entry<String, String>, ?, Map<String, String>>
+      ATTRIBUTE_COLLECTOR =
+          Collectors.toMap(
+              e -> StringUtils.substringBefore(StringUtils.substringAfter(e.getKey(), "|"), ":"),
+              stringStringEntry -> StringUtils.unwrap(stringStringEntry.getValue(), '"'));
 
   private final Map<DefaultValuePath, Object> defaultValueMap;
   private static final ObjectMapper OBJECT_MAPPER = JacksonUtil.getObjectMapper();
@@ -80,7 +89,8 @@ public class DefaultValues {
             DefaultValuePath.INSTRUCTION_NARRATIVE,
             DefaultValuePath.LOCATION,
             DefaultValuePath.SETTING,
-            DefaultValuePath.PARTICIPATION)
+            DefaultValuePath.PARTICIPATION,
+            DefaultValuePath.WORKFLOW_ID)
         .forEach(
             path -> {
               Map<String, String> subValues = filter(flat, path.getPath());
@@ -106,7 +116,7 @@ public class DefaultValues {
                   String value =
                       subValues.values().stream().map(DefaultValues::read).findAny().orElseThrow();
                   defaultValueMap.put(path, DateTimeParsers.parseDateTimeValue(value));
-                } else if (List.class.isAssignableFrom(path.getType())) {
+                } else if (path.equals(DefaultValuePath.PARTICIPATION)) {
                   Map<Integer, List<Map.Entry<String, String>>> byIndex =
                       subValues.entrySet().stream()
                           .collect(
@@ -123,6 +133,19 @@ public class DefaultValues {
                       .forEach(participations::add);
 
                   defaultValueMap.put(path, participations);
+                } else if (path.equals(DefaultValuePath.WORKFLOW_ID)) {
+                  ObjectRef<GenericId> ref = new ObjectRef<>();
+
+                  Map<String, String> attributes =
+                      subValues.entrySet().stream().collect(ATTRIBUTE_COLLECTOR);
+
+                  ref.setNamespace(attributes.get("id_namespace"));
+                  ref.setType(attributes.get("id_type"));
+                  ref.setId(new GenericId());
+                  ref.getId().setValue(attributes.get("id"));
+                  ref.getId().setScheme(attributes.get("id_scheme"));
+
+                  defaultValueMap.put(path, ref);
                 }
               }
 
@@ -138,6 +161,17 @@ public class DefaultValues {
                           ((GenericId) ref.getId())
                               .setScheme(getDefaultValue(DefaultValuePath.ID_SCHEME));
                         });
+              }
+              if (defaultValueMap.containsKey(DefaultValuePath.WORKFLOW_ID)) {
+                if (((GenericId) getDefaultValue(DefaultValuePath.WORKFLOW_ID).getId()).getScheme()
+                    == null) {
+                  ((GenericId) getDefaultValue(DefaultValuePath.WORKFLOW_ID).getId())
+                      .setScheme(getDefaultValue(DefaultValuePath.ID_SCHEME));
+                }
+                if (getDefaultValue(DefaultValuePath.WORKFLOW_ID).getNamespace() == null) {
+                  getDefaultValue(DefaultValuePath.WORKFLOW_ID)
+                      .setNamespace(getDefaultValue(DefaultValuePath.ID_NAMESPACE));
+                }
               }
             });
   }
@@ -227,12 +261,7 @@ public class DefaultValues {
                                 StringUtils.substringAfter(e.getKey(), "|"), ":");
                         return StringUtils.isBlank(s) ? 0 : Integer.parseInt(s);
                       },
-                      Collectors.toMap(
-                          e ->
-                              StringUtils.substringBefore(
-                                  StringUtils.substringAfter(e.getKey(), "|"), ":"),
-                          stringStringEntry ->
-                              StringUtils.unwrap(stringStringEntry.getValue(), '"'))));
+                      ATTRIBUTE_COLLECTOR));
 
     } else {
       map = Collections.emptyMap();
@@ -241,7 +270,9 @@ public class DefaultValues {
   }
 
   private void extract(
-      List<Map.Entry<String, String>> subValues, String subPath, Consumer<String> stringConsumer) {
+      Collection<Map.Entry<String, String>> subValues,
+      String subPath,
+      Consumer<String> stringConsumer) {
     filter(
             subValues.stream().collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)),
             DefaultValuePath.PARTICIPATION.getPath() + "_" + subPath)

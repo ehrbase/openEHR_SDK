@@ -98,6 +98,14 @@ public class DefaultValuesTest {
             new Tuple("assigner2", "id2", "issuer2", "PERSON"),
             new Tuple("assigner3", "id3", "issuer3", "PERSON"),
             new Tuple("assigner4", "id4", "issuer4", "PERSON"));
+
+    assertThat(cut.getDefaultValue(DefaultValuePath.WORKFLOW_ID)).isNotNull();
+    assertThat(cut.getDefaultValue(DefaultValuePath.WORKFLOW_ID).getNamespace())
+        .isEqualTo("HOSPITAL-NS");
+    assertThat(cut.getDefaultValue(DefaultValuePath.WORKFLOW_ID).getId().getValue())
+        .isEqualTo("567");
+    assertThat(cut.getDefaultValue(DefaultValuePath.WORKFLOW_ID).getType())
+        .isEqualTo("ORGANISATION");
   }
 
   @Test
@@ -135,6 +143,19 @@ public class DefaultValuesTest {
     assertThat(actual.getContext().getStartTime()).isNotNull();
     assertThat(actual.getContext().getStartTime().getValue())
         .isEqualTo(OffsetDateTime.of(2021, 4, 1, 12, 40, 31, 418954000, ZoneOffset.ofHours(2)));
+    assertThat(actual.getContext().getParticipations())
+        .extracting(p -> ((PartyIdentified) p.getPerformer()))
+        .flatExtracting(p -> p.getIdentifiers())
+        .extracting(
+            DvIdentifier::getAssigner,
+            DvIdentifier::getId,
+            DvIdentifier::getIssuer,
+            DvIdentifier::getType)
+        .containsExactlyInAnyOrder(
+            new Tuple("assigner1", "id1", "issuer1", "PERSON"),
+            new Tuple("assigner2", "id2", "issuer2", "PERSON"),
+            new Tuple("assigner3", "id3", "issuer3", "PERSON"),
+            new Tuple("assigner4", "id4", "issuer4", "PERSON"));
 
     Observation observation =
         actual.getContent().stream()
@@ -171,5 +192,10 @@ public class DefaultValuesTest {
             new Tuple("assigner2", "id2", "issuer2", "PERSON"),
             new Tuple("assigner3", "id3", "issuer3", "PERSON"),
             new Tuple("assigner4", "id4", "issuer4", "PERSON"));
+
+    assertThat(observation.getWorkflowId()).isNotNull();
+    assertThat(observation.getWorkflowId().getNamespace()).isEqualTo("HOSPITAL-NS");
+    assertThat(observation.getWorkflowId().getId().getValue()).isEqualTo("567");
+    assertThat(observation.getWorkflowId().getType()).isEqualTo("ORGANISATION");
   }
 }
