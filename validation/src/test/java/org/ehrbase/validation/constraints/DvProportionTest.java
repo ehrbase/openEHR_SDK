@@ -43,7 +43,7 @@ public class DvProportionTest extends ConstraintTestBase {
         DvProportion proportion = new DvProportion(5.4D, 10.4D, ProportionKind.RATIO.getPk());
 
         try {
-            new CArchetypeConstraint(null).validate("test", proportion, archetypeconstraint);
+            new CArchetypeConstraint(null, null).validate("test", proportion, archetypeconstraint);
         } catch (Exception e) {
             fail(e.getMessage());
         }
@@ -54,7 +54,7 @@ public class DvProportionTest extends ConstraintTestBase {
         DvProportion proportion = new DvProportion(5.4D, 10.4D, null);
 
         try {
-            new CArchetypeConstraint(null).validate("test", proportion, archetypeconstraint);
+            new CArchetypeConstraint(null, null).validate("test", proportion, archetypeconstraint);
             fail("null type");
         } catch (Exception e) {
         }

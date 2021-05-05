@@ -42,7 +42,7 @@ public class DvDateTimeTest extends ConstraintTestBase {
         DvDateTime dateTime = new DvDateTime("2019-12-31T10:00:01Z");
 
         try {
-            new CArchetypeConstraint(null).validate("test", dateTime, archetypeconstraint);
+            new CArchetypeConstraint(null, null).validate("test", dateTime, archetypeconstraint);
         } catch (Exception e) {
             fail(e.getMessage());
         }

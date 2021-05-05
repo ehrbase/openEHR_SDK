@@ -30,10 +30,10 @@ import static org.junit.Assert.fail;
 public class DvCodedTextTest extends ConstraintTestBase {
 
     @Before
-    public void setUp(){
+    public void setUp() {
         try {
             setUpContext("./src/test/resources/constraints/dvcodedtext.xml");
-        } catch (Exception e){
+        } catch (Exception e) {
             fail();
         }
     }
@@ -44,9 +44,8 @@ public class DvCodedTextTest extends ConstraintTestBase {
         DvCodedText dvCodedText = new DvCodedText("1234", codePhrase);
 
         try {
-            new CArchetypeConstraint(null).validate("test", dvCodedText, archetypeconstraint);
-        }
-        catch (Exception e){
+            new CArchetypeConstraint(null, null).validate("test", dvCodedText, archetypeconstraint);
+        } catch (Exception e) {
             System.out.println(e.getMessage());
         }
     }
@@ -57,10 +56,9 @@ public class DvCodedTextTest extends ConstraintTestBase {
         DvCodedText dvCodedText = new DvCodedText("1234", codePhrase);
 
         try {
-            new CArchetypeConstraint(null).validate("test", dvCodedText, archetypeconstraint);
+            new CArchetypeConstraint(null, null).validate("test", dvCodedText, archetypeconstraint);
             fail("Undetected wrong code string");
-        }
-        catch (Exception e){
+        } catch (Exception e) {
 
         }
     }
@@ -71,10 +69,9 @@ public class DvCodedTextTest extends ConstraintTestBase {
         DvCodedText dvCodedText = new DvCodedText("1234", codePhrase);
 
         try {
-            new CArchetypeConstraint(null).validate("test", dvCodedText, archetypeconstraint);
+            new CArchetypeConstraint(null, null).validate("test", dvCodedText, archetypeconstraint);
             fail("undetected wrong terminology id");
-        }
-        catch (Exception e){
+        } catch (Exception e) {
 
         }
     }

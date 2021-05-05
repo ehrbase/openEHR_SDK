@@ -62,7 +62,7 @@ public class DvMultimediaTest extends ConstraintTestBase {
         multimedia.setUri(uri);
 
         try {
-            new CArchetypeConstraint(null).validate("test", multimedia, archetypeconstraint);
+            new CArchetypeConstraint(null, null).validate("test", multimedia, archetypeconstraint);
         }
         catch (Exception e){
             System.out.println(e.getMessage());

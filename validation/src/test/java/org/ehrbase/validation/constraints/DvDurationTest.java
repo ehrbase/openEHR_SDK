@@ -42,7 +42,7 @@ public class DvDurationTest extends ConstraintTestBase {
         DvDuration dvDuration = new DvDuration("PT11H11M");
 
         try {
-            new CArchetypeConstraint(null).validate("test", dvDuration, archetypeconstraint);
+            new CArchetypeConstraint(null, null).validate("test", dvDuration, archetypeconstraint);
         } catch (Exception e) {
             fail(e.getMessage());
         }

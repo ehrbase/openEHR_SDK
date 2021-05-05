@@ -19,14 +19,34 @@
 package org.ehrbase.validation.constraints;
 
 import org.ehrbase.validation.constraints.util.LocatableHelper;
-import org.openehr.schemas.v1.*;
+import org.openehr.schemas.v1.ARCHETYPESLOT;
+import org.openehr.schemas.v1.ARCHETYPETERM;
+import org.openehr.schemas.v1.CARCHETYPEROOT;
+import org.openehr.schemas.v1.CATTRIBUTE;
+import org.openehr.schemas.v1.CCOMPLEXOBJECT;
+import org.openehr.schemas.v1.CDOMAINTYPE;
+import org.openehr.schemas.v1.CDVORDINAL;
+import org.openehr.schemas.v1.CMULTIPLEATTRIBUTE;
+import org.openehr.schemas.v1.COBJECT;
+import org.openehr.schemas.v1.CPRIMITIVEOBJECT;
+import org.openehr.schemas.v1.CSINGLEATTRIBUTE;
+import org.openehr.schemas.v1.DVORDINAL;
+import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
+import org.openehr.schemas.v1.StringDictionaryItem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class OptConstraint {
 
+    //field identifiers
+    protected static final String VALUE = "value";
+    protected static final String ANY = "$any$";
 
     private Logger log = LoggerFactory.getLogger(OptConstraint.class);
 
@@ -35,10 +55,6 @@ public class OptConstraint {
     private Map<String, Map<String, String>> termTable = new HashMap<>();
 
     private Map<String, List<DVORDINAL>> ordinalTable = new HashMap<>();
-
-    //field identifiers
-    protected static final String VALUE = "value";
-    protected static final String ANY = "$any$";
 
     /**
      * Generate empty Rm from template
@@ -77,7 +93,7 @@ public class OptConstraint {
                 }
             }
         }
-        log.debug("CARCHETYPEROOT path=" + path);
+        log.debug("CARCHETYPEROOT path={}", path);
         termTable.put(path, termDef);
         // Load complex component
         handleComplexObject(opt, def, termDef, name, path);
@@ -99,7 +115,7 @@ public class OptConstraint {
 
         String nodeId = ccobj.getNodeId();
         String rmTypeName = ccobj.getRmTypeName();
-        log.debug("rmTypeName=" + rmTypeName + ":nodeId=" + nodeId + ":ccobj=" + ccobj);
+        log.debug("rmTypeName={}:nodeId={}:ccobj={}", rmTypeName, nodeId, ccobj);
 
         constrainMapper.addToValidPath(path);
         constrainMapper.addToExistence(path, ccobj.getOccurrences());
@@ -116,12 +132,12 @@ public class OptConstraint {
                         try {
                             COBJECT cobj = children[0];
                             if (children.length > 1) {
-                                log.debug("Multiple children in CATTRIBUTE:" + children.length);
+                                log.debug("Multiple children in CATTRIBUTE: {}", children.length);
                             }
                             handleCObject(opt, cobj, termDef, attrName, pathloop);
-                            log.debug("attrName=" + attrName);
+                            log.debug("attrName={}", attrName);
                         } catch (Exception e) {
-                            log.error("Cannot create attribute name " + attrName + " on path " + pathloop, e);
+                            log.error("Cannot create attribute name {} on path {}", attrName, pathloop, e);
 
                         }
                     }
@@ -132,7 +148,7 @@ public class OptConstraint {
                         try {
 
                             handleCObject(opt, cobj, termDef, attrName, pathloop);
-                            log.debug("attrName=" + attrName);
+                            log.debug("attrName={}", attrName);
 
                         } catch (Exception e) {
                             log.error("Cannot create attribute name " + attrName + " on path " + pathloop, e);
@@ -152,7 +168,7 @@ public class OptConstraint {
             if (ccobj.getAttributesArray().length > 0) {
                 Object obj = ccobj.getAttributesArray()[0];
                 if (ccobj.getAttributesArray().length > 1) {
-                    log.debug("Multiple CCOBJ ELEMENT:" + ccobj.getAttributesArray().length);
+                    log.debug("Multiple CCOBJ ELEMENT: {}", ccobj.getAttributesArray().length);
                 }
                 if (obj instanceof CSINGLEATTRIBUTE) {
                     CSINGLEATTRIBUTE attr = (CSINGLEATTRIBUTE) obj;
@@ -163,23 +179,23 @@ public class OptConstraint {
                             for (COBJECT cobj : attr.getChildrenArray()) {
                                 children.add(cobj.getRmTypeName());
                             }
-                            log.debug("ELEMENT children length:" + attr.getChildrenArray().length);
+                            log.debug("ELEMENT children length: {}", attr.getChildrenArray().length);
                             if (attr.getChildrenArray().length > 1) {
-                                log.debug("CHOICE:" + attr.getChildrenArray().length);
+                                log.debug("CHOICE: {}", attr.getChildrenArray().length);
                             }
                             COBJECT cobj = attr.getChildrenArray()[0]; //TODO: check if iteration is needed
                             handleCObject(opt, cobj, termDef, name, path);
                         } else
                             log.debug("ELEMENT without child, assuming ANY type");
                     } else {
-                        log.debug("additional attribute found for element attr.getRmAttributeName()=" + attr.getRmAttributeName());
+                        log.debug("additional attribute found for element attr.getRmAttributeName()={}", attr.getRmAttributeName());
                     }
                     constrainMapper.addToWatchList(path, attr);
                 } else {
-                    log.debug("Other type for obj:" + obj);
+                    log.debug("Other type for obj: {}", obj);
                 }
             } else {
-                log.debug("Empty attribute list for ELEMENT, assuming ANY type:" + ccobj.toString());
+                log.debug("Empty attribute list for ELEMENT, assuming ANY type: {}", ccobj);
             }
             constrainMapper.bind(LocatableHelper.simplifyPath(path), ccobj);
         }
@@ -187,13 +203,13 @@ public class OptConstraint {
 
     private void handleCObject(OPERATIONALTEMPLATE opt, COBJECT cobj, Map<String, String> termDef, String attrName, String path) throws IllegalArgumentException {
         // if ( cobj.getOccurrences().isAvailable() ) {
-        log.debug("cobj=" + cobj.getClass() + ":" + cobj.getRmTypeName());
+        log.debug("cobj={}:{}", cobj.getClass(), cobj.getRmTypeName());
 
         if (cobj instanceof CARCHETYPEROOT) {
             if (!((CARCHETYPEROOT) cobj).getArchetypeId().getValue().isEmpty()) {
                 path = path + "[" + ((CARCHETYPEROOT) cobj).getArchetypeId().getValue() + "]";
             }
-            log.debug("CARCHETYPEROOT path=" + path);
+            log.debug("CARCHETYPEROOT path={}", path);
             handleArchetypeRoot(opt, (CARCHETYPEROOT) cobj, attrName, path);
         } else if (cobj instanceof CDOMAINTYPE) {
             handleDomainTypeObject((CDOMAINTYPE) cobj, termDef, path);
@@ -207,7 +223,7 @@ public class OptConstraint {
             if (cobj.getNodeId() != null && !cobj.getNodeId().isEmpty()) {
                 path = path + "[" + cobj.getNodeId() + "]";
             }
-            log.debug("CONTEXT path=" + path);
+            log.debug("CONTEXT path={}", path);
             handleComplexObject(opt, (CCOMPLEXOBJECT) cobj, termDef, attrName, path);
         } else if (cobj instanceof ARCHETYPESLOT) {
             if (!cobj.getNodeId().isEmpty()) {
@@ -216,18 +232,17 @@ public class OptConstraint {
 
 
             // slot.getIncludes().get(0).
-            log.debug("ARCHETYPESLOT path=" + path);
+            log.debug("ARCHETYPESLOT path={}", path);
             // return handleComplexObject(opt, (CCOMPLEXOBJECT) cobj, termDef,
             // attrName, path);
         } else if (cobj instanceof CPRIMITIVEOBJECT) {
             //do nothing
         } else {
             if (cobj.getNodeId() == null) {
-                log.debug("NodeId is null : " + cobj);
+                log.debug("NodeId is null: {}", cobj);
             }
-            log.debug("Some value cannot process because is not CARCHETYPEROOT or CCOMPLEXOBJECT : " + cobj);
+            log.debug("Some value cannot process because is not CARCHETYPEROOT or CCOMPLEXOBJECT: {}", cobj);
         }
-
     }
 
     public ConstraintMapper getConstraintMapper() {
@@ -250,16 +265,14 @@ public class OptConstraint {
     }
 
     private void handleDvOrdinal(CDVORDINAL cdo, Map<String, String> termDef, String path) throws IllegalArgumentException {
-
         List<DVORDINAL> list = Arrays.asList(cdo.getListArray());
-        if (list.size() == 0) {
+        if (list.isEmpty()) {
             throw new IllegalArgumentException("empty list of ordinal");
         }
         ordinalTable.put(path, list);
     }
 
     private void handleDomainTypeObject(CDOMAINTYPE cpo, Map<String, String> termDef, String path) throws IllegalArgumentException {
-
         if (cpo instanceof CDVORDINAL) {
             if (((CDVORDINAL) cpo).isSetAssumedValue()) {
                 //do nothing
