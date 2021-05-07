@@ -19,7 +19,10 @@
 
 package org.ehrbase.serialisation.walker.defaultvalues;
 
+import com.nedap.archie.rm.generic.Participation;
+import com.nedap.archie.rm.support.identification.ObjectRef;
 import java.time.temporal.TemporalAccessor;
+import java.util.List;
 import org.ehrbase.client.classgenerator.shareddefinition.Language;
 import org.ehrbase.client.classgenerator.shareddefinition.Setting;
 import org.ehrbase.client.classgenerator.shareddefinition.Territory;
@@ -67,9 +70,19 @@ public class DefaultValuePath<T> {
       new DefaultValuePath<>("location", String.class);
   public static final DefaultValuePath<Setting> SETTING =
       new DefaultValuePath<>("setting", Setting.class);
+  public static final DefaultValuePath<List<Participation>> PARTICIPATION =
+      new DefaultValuePath<>("participation");
+  public static final DefaultValuePath<ObjectRef> WORKFLOW_ID =
+      new DefaultValuePath<>("workflow_id", ObjectRef.class);
 
   private final String path;
   private final Class<T> type;
+
+  // For List valued Fields
+  private DefaultValuePath(String path) {
+    this.path = path;
+    this.type = null;
+  }
 
   private DefaultValuePath(String path, Class<T> type) {
     this.path = path;
@@ -81,6 +94,9 @@ public class DefaultValuePath<T> {
   }
 
   public Class<?> getType() {
+    if (type == null) {
+      return List.class;
+    }
     return type;
   }
 }

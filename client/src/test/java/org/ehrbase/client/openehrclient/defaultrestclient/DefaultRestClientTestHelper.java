@@ -17,11 +17,11 @@
 
 package org.ehrbase.client.openehrclient.defaultrestclient;
 
-import org.ehrbase.client.openehrclient.OpenEhrClientConfig;
-import org.ehrbase.client.templateprovider.TestDataTemplateProvider;
-
 import java.net.URI;
 import java.net.URISyntaxException;
+import org.ehrbase.client.flattener.DefaultValuesProvider;
+import org.ehrbase.client.openehrclient.OpenEhrClientConfig;
+import org.ehrbase.client.templateprovider.TestDataTemplateProvider;
 
 public class DefaultRestClientTestHelper {
 
@@ -29,8 +29,8 @@ public class DefaultRestClientTestHelper {
 
   public static DefaultRestClient setupDefaultRestClient() throws URISyntaxException {
     TestDataTemplateProvider templateProvider = new TestDataTemplateProvider();
-    DefaultRestClient client = new DefaultRestClient(new OpenEhrClientConfig(new URI(OPEN_EHR_URL)),
-        templateProvider);
+    DefaultRestClient client =
+        new DefaultRestClient(new OpenEhrClientConfig(new URI(OPEN_EHR_URL)), templateProvider);
     templateProvider.listTemplateIds().stream()
         .forEach(t -> client.templateEndpoint().ensureExistence(t));
     return client;
@@ -39,5 +39,16 @@ public class DefaultRestClientTestHelper {
   public static DefaultRestClient setupRestClientWithDefaultTemplateProvider()
       throws URISyntaxException {
     return new DefaultRestClient(new OpenEhrClientConfig(new URI(OPEN_EHR_URL)));
+  }
+
+  public static DefaultRestClient setupDefaultRestClientWithDefaultProvider(
+      DefaultValuesProvider defaultValuesProvider) throws URISyntaxException {
+    TestDataTemplateProvider templateProvider = new TestDataTemplateProvider();
+    OpenEhrClientConfig config = new OpenEhrClientConfig(new URI(OPEN_EHR_URL));
+    config.setDefaultValuesProvider(defaultValuesProvider);
+    DefaultRestClient client = new DefaultRestClient(config, templateProvider);
+    templateProvider.listTemplateIds().stream()
+        .forEach(t -> client.templateEndpoint().ensureExistence(t));
+    return client;
   }
 }

@@ -122,6 +122,27 @@ public class TestData {
     return bloodPressureSimpleDeV0;
   }
 
+  public static EhrbaseBloodPressureSimpleDeV0Composition
+      buildEhrbaseBloodPressureSimpleDeV0WithEmptyFields() {
+    EhrbaseBloodPressureSimpleDeV0Composition bloodPressureSimpleDeV0 =
+        new EhrbaseBloodPressureSimpleDeV0Composition();
+    bloodPressureSimpleDeV0.setStartTimeValue(
+        OffsetDateTime.of(2019, 04, 03, 22, 00, 00, 00, ZoneOffset.UTC));
+
+    bloodPressureSimpleDeV0.setBloodPressureTrainingSample(new ArrayList<>());
+    bloodPressureSimpleDeV0.setLanguage(Language.DE);
+    bloodPressureSimpleDeV0.setTerritory(Territory.DE);
+    bloodPressureSimpleDeV0.setCategoryDefiningCode(Category.EVENT);
+    bloodPressureSimpleDeV0.setSettingDefiningCode(Setting.NURSING_HOME_CARE);
+    bloodPressureSimpleDeV0.setComposer(new PartyIdentified(null, "Test", null));
+    bloodPressureSimpleDeV0.setParticipations(new ArrayList<>());
+
+    bloodPressureSimpleDeV0
+        .getBloodPressureTrainingSample()
+        .add(buildBloodPressureTrainingSampleObservation());
+    return bloodPressureSimpleDeV0;
+  }
+
   protected static BloodPressureTrainingSampleObservation
       buildBloodPressureTrainingSampleObservation() {
     BloodPressureTrainingSampleObservation bloodPressureTrainingSample =

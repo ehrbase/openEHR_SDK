@@ -96,11 +96,19 @@ public class DtoFromCompositionWalker extends FromCompositionWalker<DtoWithMatch
             .collect(Collectors.toMap(ImmutablePair::getLeft, ImmutablePair::getRight));
 
     if (subValues.isEmpty()) {
+      if (List.of("name", "archetype_node_id", "encoding", "archetype_details", "uid").stream()
+          .noneMatch(child.getAqlPath()::contains))
+        logger.warn(
+            String.format(
+                "Nor Field in dto %s for path %s",
+                context.getObjectDeque().peek().getDto().getClass().getSimpleName(),
+                child.getAqlPath(true)));
       return null;
     } else if (subValues.size() > 1) {
       if (isChoice && child.getRmType().equals("INTERVAL_EVENT")) {
-        logger.warn("Path {} is choice but missing OptionFor: Transforming INTERVAL_EVENT to POINT_EVENT ", child.getAqlPath());
-
+        logger.warn(
+            "Path {} is choice but missing OptionFor: Transforming INTERVAL_EVENT to POINT_EVENT ",
+            child.getAqlPath());
       }
       return new DtoWithMatchingFields(context.getObjectDeque().peek().getDto(), subValues);
     } else {

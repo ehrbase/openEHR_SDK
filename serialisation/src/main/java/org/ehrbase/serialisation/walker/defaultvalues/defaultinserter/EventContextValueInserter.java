@@ -22,6 +22,10 @@ package org.ehrbase.serialisation.walker.defaultvalues.defaultinserter;
 import com.nedap.archie.rm.composition.EventContext;
 import com.nedap.archie.rm.datavalues.DvCodedText;
 import com.nedap.archie.rm.datavalues.quantity.datetime.DvDateTime;
+import com.nedap.archie.rm.generic.Participation;
+import com.nedap.archie.rm.generic.PartyProxy;
+import com.nedap.archie.rm.support.identification.GenericId;
+import java.util.Objects;
 import org.ehrbase.client.classgenerator.shareddefinition.Setting;
 import org.ehrbase.serialisation.walker.defaultvalues.DefaultValuePath;
 import org.ehrbase.serialisation.walker.defaultvalues.DefaultValues;
@@ -58,6 +62,30 @@ public class EventContextValueInserter extends AbstractValueInserter<EventContex
         && defaultValues.containsDefaultValue(DefaultValuePath.SETTING)) {
       Setting defaultValue = defaultValues.getDefaultValue(DefaultValuePath.SETTING);
       rmObject.setSetting(new DvCodedText(defaultValue.getValue(), defaultValue.toCodePhrase()));
+    }
+
+    if (isEmpty(rmObject.getParticipations())
+        && defaultValues.containsDefaultValue(DefaultValuePath.PARTICIPATION)) {
+      rmObject.setParticipations(defaultValues.getDefaultValue(DefaultValuePath.PARTICIPATION));
+    }
+
+    if (rmObject.getParticipations() != null) {
+      rmObject.getParticipations().stream()
+          .map(Participation::getPerformer)
+          .filter(Objects::nonNull)
+          .map(PartyProxy::getExternalRef)
+          .filter(Objects::nonNull)
+          .filter(ref -> ref.getId() != null)
+          .forEach(
+              ref -> {
+                if (ref.getNamespace() == null) {
+                  ref.setNamespace(defaultValues.getDefaultValue(DefaultValuePath.ID_NAMESPACE));
+                }
+                if (ref.getId() instanceof GenericId && ref.getNamespace() == null) {
+                  ((GenericId) ref.getId())
+                      .setScheme(defaultValues.getDefaultValue(DefaultValuePath.ID_SCHEME));
+                }
+              });
     }
   }
 

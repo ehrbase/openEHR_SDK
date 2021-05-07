@@ -25,10 +25,12 @@ import com.nedap.archie.rm.datavalues.DvCodedText;
 import com.nedap.archie.rm.datavalues.DvText;
 import com.nedap.archie.rm.datavalues.encapsulated.DvParsable;
 import com.nedap.archie.rm.datavalues.quantity.datetime.DvDateTime;
+import com.nedap.archie.rm.generic.Participation;
 import com.nedap.archie.rm.generic.PartyIdentified;
 import com.nedap.archie.rm.generic.PartyProxy;
 import com.nedap.archie.rm.support.identification.GenericId;
 import com.nedap.archie.rm.support.identification.PartyRef;
+import java.util.Collection;
 import org.apache.commons.collections4.CollectionUtils;
 import org.ehrbase.serialisation.walker.defaultvalues.DefaultValuePath;
 import org.ehrbase.serialisation.walker.defaultvalues.DefaultValues;
@@ -37,8 +39,18 @@ public abstract class AbstractValueInserter<T extends RMObject> implements Defau
 
   protected boolean isEmpty(Object rmObject) {
     if (rmObject == null) {
-      return false;
+      return true;
     }
+
+    if (rmObject instanceof Collection) {
+      return ((Collection<?>) rmObject).isEmpty()
+          || ((Collection<?>) rmObject).stream().allMatch(this::isEmpty);
+    }
+
+    if (rmObject instanceof Participation) {
+      return ((Participation) rmObject).getPerformer() == null;
+    }
+
     if (rmObject instanceof CodePhrase) {
       return ((CodePhrase) rmObject).getCodeString() == null;
     }
