@@ -32,6 +32,12 @@ import com.nedap.archie.rm.ehr.EhrStatus;
 import com.nedap.archie.rm.support.identification.HierObjectId;
 import com.nedap.archie.rm.support.identification.ObjectRef;
 import com.nedap.archie.rm.support.identification.UIDBasedId;
+import java.io.IOException;
+import java.net.URI;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
+import java.util.WeakHashMap;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.http.Header;
 import org.apache.http.HttpResponse;
@@ -44,238 +50,267 @@ import org.apache.http.util.EntityUtils;
 import org.ehrbase.client.exception.ClientException;
 import org.ehrbase.client.exception.OptimisticLockException;
 import org.ehrbase.client.exception.WrongStatusCodeException;
+import org.ehrbase.client.flattener.DefaultValuesProvider;
 import org.ehrbase.client.openehrclient.*;
 import org.ehrbase.client.templateprovider.ClientTemplateProvider;
 import org.ehrbase.serialisation.jsonencoding.CanonicalJson;
 import org.ehrbase.serialisation.mapper.RmObjectJsonDeSerializer;
+import org.ehrbase.serialisation.walker.defaultvalues.DefaultValues;
 import org.ehrbase.webtemplate.templateprovider.TemplateProvider;
-
-import java.io.IOException;
-import java.net.URI;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
-import java.util.WeakHashMap;
 
 public class DefaultRestClient implements OpenEhrClient {
 
-    static final ObjectMapper OBJECT_MAPPER = createObjectMapper();
-    private final OpenEhrClientConfig config;
-    private final TemplateProvider templateProvider;
-    private final Executor executor;
-    private final DefaultRestEhrEndpoint defaultRestEhrEndpoint;
-    private final Map<UUID, DefaultRestDirectoryEndpoint> directoryEndpointMap = new WeakHashMap<>();
+  static final ObjectMapper OBJECT_MAPPER = createObjectMapper();
+  private final OpenEhrClientConfig config;
+  private final TemplateProvider templateProvider;
+  private final Executor executor;
+  private final DefaultRestEhrEndpoint defaultRestEhrEndpoint;
+  private final Map<UUID, DefaultRestDirectoryEndpoint> directoryEndpointMap = new WeakHashMap<>();
+  private final DefaultValuesProvider defaultValuesProvider;
 
+  public DefaultRestClient(OpenEhrClientConfig config, TemplateProvider templateProvider) {
+    this(config, templateProvider, null);
+  }
 
-    public DefaultRestClient(OpenEhrClientConfig config, TemplateProvider templateProvider) {
-        this(config, templateProvider, null);
+  public DefaultRestClient(OpenEhrClientConfig config) {
+    this(config, null, null);
+  }
+
+  public DefaultRestClient(
+      OpenEhrClientConfig config, TemplateProvider templateProvider, HttpClient httpClient) {
+    this.config = config;
+
+    if (templateProvider != null) {
+      this.templateProvider = templateProvider;
+    } else {
+      this.templateProvider = new ClientTemplateProvider(this);
     }
 
-    public DefaultRestClient(OpenEhrClientConfig config) {
-        this(config, null, null);
+    executor = Executor.newInstance(httpClient);
+    defaultRestEhrEndpoint = new DefaultRestEhrEndpoint(this);
+
+    if (config.getDefaultValuesProvider() != null) {
+      defaultValuesProvider = config.getDefaultValuesProvider();
+    } else {
+      defaultValuesProvider = o -> new DefaultValues();
     }
+  }
 
-    public DefaultRestClient(OpenEhrClientConfig config, TemplateProvider templateProvider, HttpClient httpClient) {
-        this.config = config;
+  private static ObjectMapper createObjectMapper() {
+    ObjectMapper objectMapper = new ObjectMapper();
+    SimpleModule module = new SimpleModule("openEHR", new Version(1, 0, 0, null, null, null));
+    module.addDeserializer(EhrStatus.class, new RmObjectJsonDeSerializer());
+    module.addDeserializer(HierObjectId.class, new RmObjectJsonDeSerializer());
+    module.addDeserializer(Composition.class, new RmObjectJsonDeSerializer());
+    module.addDeserializer(Folder.class, new RmObjectJsonDeSerializer());
+    module.addDeserializer(UIDBasedId.class, new RmObjectJsonDeSerializer());
+    module.addDeserializer(DvText.class, new RmObjectJsonDeSerializer());
+    module.addDeserializer(ObjectRef.class, new RmObjectJsonDeSerializer());
+    module.addDeserializer(ItemStructure.class, new RmObjectJsonDeSerializer());
 
-        if(templateProvider != null){
-            this.templateProvider = templateProvider;
-        } else {
-            this.templateProvider = new ClientTemplateProvider(this);
-        }
+    objectMapper.registerModule(module);
+    objectMapper.registerModule(new JavaTimeModule());
+    return objectMapper;
+  }
 
-        executor = Executor.newInstance(httpClient);
-        defaultRestEhrEndpoint = new DefaultRestEhrEndpoint(this);
+  protected VersionUid httpPost(URI uri, RMObject body) {
+    return httpPost(uri, body, null);
+  }
+
+  protected VersionUid httpPost(URI uri, RMObject body, Map<String, String> headers) {
+    String bodyString = new CanonicalJson().marshal(body);
+    HttpResponse response =
+        internalPost(
+            uri,
+            headers,
+            bodyString,
+            ContentType.APPLICATION_JSON,
+            ContentType.APPLICATION_JSON.getMimeType());
+    Header eTag = response.getFirstHeader(HttpHeaders.ETAG);
+    return new VersionUid(eTag.getValue().replace("\"", ""));
+  }
+
+  protected HttpResponse internalPost(
+      URI uri,
+      Map<String, String> headers,
+      String bodyString,
+      ContentType contentType,
+      String accept) {
+    HttpResponse response;
+    try {
+
+      Request request =
+          Request.Post(uri)
+              .addHeader(HttpHeaders.ACCEPT, accept)
+              .bodyString(bodyString, contentType);
+      if (headers != null) {
+        headers.forEach(request::addHeader);
+      }
+      response = executor.execute(request).returnResponse();
+      checkStatus(response, HttpStatus.SC_OK, HttpStatus.SC_CREATED, HttpStatus.SC_NO_CONTENT);
+    } catch (IOException e) {
+      throw new ClientException(e.getMessage(), e);
     }
+    return response;
+  }
 
-    private static ObjectMapper createObjectMapper() {
-        ObjectMapper objectMapper = new ObjectMapper();
-        SimpleModule module =
-                new SimpleModule("openEHR", new Version(1, 0, 0, null, null, null));
-        module.addDeserializer(EhrStatus.class, new RmObjectJsonDeSerializer());
-        module.addDeserializer(HierObjectId.class, new RmObjectJsonDeSerializer());
-        module.addDeserializer(Composition.class, new RmObjectJsonDeSerializer());
-        module.addDeserializer(Folder.class, new RmObjectJsonDeSerializer());
-        module.addDeserializer(UIDBasedId.class, new RmObjectJsonDeSerializer());
-        module.addDeserializer(DvText.class, new RmObjectJsonDeSerializer());
-        module.addDeserializer(ObjectRef.class, new RmObjectJsonDeSerializer());
-        module.addDeserializer(ItemStructure.class, new RmObjectJsonDeSerializer());
+  protected VersionUid httpPut(URI uri, Locatable body, VersionUid versionUid) {
+    return httpPut(uri, body, versionUid, null);
+  }
 
-        objectMapper.registerModule(module);
-        objectMapper.registerModule(new JavaTimeModule());
-        return objectMapper;
+  protected VersionUid httpPut(
+      URI uri, Locatable body, VersionUid versionUid, Map<String, String> headers) {
+    try {
+      Request request =
+          Request.Put(uri)
+              .addHeader(HttpHeaders.ACCEPT, ContentType.APPLICATION_JSON.getMimeType())
+              .addHeader(HttpHeaders.IF_MATCH, versionUid.toString())
+              .bodyString(new CanonicalJson().marshal(body), ContentType.APPLICATION_JSON);
+      if (headers != null) {
+        headers.forEach(request::addHeader);
+      }
+      HttpResponse response = executor.execute(request).returnResponse();
+      checkStatus(
+          response, HttpStatus.SC_OK, HttpStatus.SC_NO_CONTENT, HttpStatus.SC_PRECONDITION_FAILED);
+      if (HttpStatus.SC_PRECONDITION_FAILED == response.getStatusLine().getStatusCode()) {
+        throw new OptimisticLockException("Entity outdated");
+      }
+      Header eTag = response.getFirstHeader(HttpHeaders.ETAG);
+      return new VersionUid(eTag.getValue().replace("\"", ""));
+    } catch (IOException e) {
+      throw new ClientException(e.getMessage(), e);
     }
+  }
 
-    protected VersionUid httpPost(URI uri, RMObject body) {
-        return httpPost(uri, body, null);
+  protected <T> Optional<T> httpGet(URI uri, Class<T> valueType) {
+    return httpGet(uri, valueType, null);
+  }
+
+  protected <T> Optional<T> httpGet(URI uri, Class<T> valueType, Map<String, String> headers) {
+    HttpResponse response = internalGet(uri, headers, ContentType.APPLICATION_JSON.getMimeType());
+
+    if (response.getStatusLine().getStatusCode() == HttpStatus.SC_NOT_FOUND) {
+      return Optional.empty();
     }
-
-    protected VersionUid httpPost(URI uri, RMObject body, Map<String, String> headers) {
-        String bodyString = new CanonicalJson().marshal(body);
-        HttpResponse response = internalPost(uri, headers, bodyString, ContentType.APPLICATION_JSON, ContentType.APPLICATION_JSON.getMimeType());
-        Header eTag = response.getFirstHeader(HttpHeaders.ETAG);
-        return new VersionUid(eTag.getValue().replace("\"", ""));
-
+    try {
+      String value = EntityUtils.toString(response.getEntity());
+      return Optional.of(OBJECT_MAPPER.readValue(value, valueType));
+    } catch (IOException e) {
+      throw new ClientException(e.getMessage(), e);
     }
+  }
 
-    protected HttpResponse internalPost(URI uri, Map<String, String> headers, String bodyString, ContentType contentType, String accept) {
-        HttpResponse response;
-        try {
+  protected HttpResponse internalGet(URI uri, Map<String, String> headers, String accept) {
+    HttpResponse response;
+    try {
+      Request request = Request.Get(uri).addHeader(HttpHeaders.ACCEPT, accept);
+      if (headers != null) {
+        headers.forEach(request::addHeader);
+      }
 
-            Request request = Request.Post(uri)
-                    .addHeader(HttpHeaders.ACCEPT, accept)
-                    .bodyString(bodyString, contentType);
-            if (headers != null) {
-                headers.forEach(request::addHeader);
-            }
-            response = executor.execute(request).returnResponse();
-            checkStatus(response, HttpStatus.SC_OK, HttpStatus.SC_CREATED, HttpStatus.SC_NO_CONTENT);
-        } catch (IOException e) {
-            throw new ClientException(e.getMessage(), e);
-        }
-        return response;
+      response = executor.execute(request).returnResponse();
+      checkStatus(response, HttpStatus.SC_OK, HttpStatus.SC_NOT_FOUND);
+
+    } catch (IOException e) {
+      throw new ClientException(e.getMessage(), e);
     }
+    return response;
+  }
 
-    protected VersionUid httpPut(URI uri, Locatable body, VersionUid versionUid) {
-        return httpPut(uri, body, versionUid, null);
+  /**
+   * used with the admin endpoint for now
+   *
+   * @param uri
+   * @param headers
+   * @return
+   */
+  protected HttpResponse internalDelete(URI uri, Map<String, String> headers) {
+    HttpResponse response;
+    try {
+      Request request = Request.Delete(uri);
+      if (headers != null) {
+        headers.forEach(request::addHeader);
+      }
+
+      response = executor.execute(request).returnResponse();
+      checkStatus(
+          response,
+          HttpStatus.SC_OK,
+          HttpStatus.SC_NO_CONTENT,
+          HttpStatus.SC_ACCEPTED,
+          HttpStatus.SC_NOT_FOUND);
+
+    } catch (IOException e) {
+      throw new ClientException(e.getMessage(), e);
     }
+    return response;
+  }
 
-    protected VersionUid httpPut(URI uri, Locatable body, VersionUid versionUid, Map<String, String> headers) {
-        try {
-            Request request = Request.Put(uri)
-                    .addHeader(HttpHeaders.ACCEPT, ContentType.APPLICATION_JSON.getMimeType())
-                    .addHeader(HttpHeaders.IF_MATCH, versionUid.toString())
-                    .bodyString(new CanonicalJson().marshal(body), ContentType.APPLICATION_JSON);
-            if (headers != null) {
-                headers.forEach(request::addHeader);
-            }
-            HttpResponse response = executor.execute(request).returnResponse();
-            checkStatus(response, HttpStatus.SC_OK, HttpStatus.SC_NO_CONTENT, HttpStatus.SC_PRECONDITION_FAILED);
-            if (HttpStatus.SC_PRECONDITION_FAILED == response.getStatusLine().getStatusCode()) {
-                throw new OptimisticLockException("Entity outdated");
-            }
-            Header eTag = response.getFirstHeader(HttpHeaders.ETAG);
-            return new VersionUid(eTag.getValue().replace("\"", ""));
-        } catch (IOException e) {
-            throw new ClientException(e.getMessage(), e);
-        }
+  void checkStatus(HttpResponse httpResponse, int... expected) {
+    if (!ArrayUtils.contains(expected, httpResponse.getStatusLine().getStatusCode())) {
+      String message =
+          Optional.of(httpResponse)
+              .map(HttpResponse::getEntity)
+              .map(
+                  e -> {
+                    try {
+                      return EntityUtils.toString(e);
+                    } catch (IOException ex) {
+                      return null;
+                    }
+                  })
+              .orElse("");
+
+      throw new WrongStatusCodeException(
+          message, httpResponse.getStatusLine().getStatusCode(), expected);
     }
+  }
 
-    protected <T> Optional<T> httpGet(URI uri, Class<T> valueType) {
-        return httpGet(uri, valueType, null);
-    }
+  protected OpenEhrClientConfig getConfig() {
+    return config;
+  }
 
-    protected <T> Optional<T> httpGet(URI uri, Class<T> valueType, Map<String, String> headers) {
-        HttpResponse response = internalGet(uri, headers, ContentType.APPLICATION_JSON.getMimeType());
+  protected DefaultValuesProvider getDefaultValuesProvider() {
+    return defaultValuesProvider;
+  }
 
-        if (response.getStatusLine().getStatusCode() == HttpStatus.SC_NOT_FOUND) {
-            return Optional.empty();
-        }
-        try {
-            String value = EntityUtils.toString(response.getEntity());
-            return Optional.of(OBJECT_MAPPER.readValue(value, valueType));
-        } catch (IOException e) {
-            throw new ClientException(e.getMessage(), e);
-        }
-    }
+  public Executor getExecutor() {
+    return executor;
+  }
 
-    protected HttpResponse internalGet(URI uri, Map<String, String> headers, String accept) {
-        HttpResponse response;
-        try {
-            Request request = Request.Get(uri)
-                    .addHeader(HttpHeaders.ACCEPT, accept);
-            if (headers != null) {
-                headers.forEach(request::addHeader);
-            }
+  @Override
+  public DefaultRestEhrEndpoint ehrEndpoint() {
+    return defaultRestEhrEndpoint;
+  }
 
-            response = executor.execute(request).returnResponse();
-            checkStatus(response, HttpStatus.SC_OK, HttpStatus.SC_NOT_FOUND);
+  TemplateProvider getTemplateProvider() {
+    return templateProvider;
+  }
 
-        } catch (IOException e) {
-            throw new ClientException(e.getMessage(), e);
-        }
-        return response;
-    }
+  @Override
+  public CompositionEndpoint compositionEndpoint(UUID ehrId) {
+    return new DefaultRestCompositionEndpoint(this, ehrId);
+  }
 
-    /**
-     * used with the admin endpoint for now
-     * @param uri
-     * @param headers
-     * @return
-     */
-    protected HttpResponse internalDelete(URI uri, Map<String, String> headers) {
-        HttpResponse response;
-        try {
-            Request request = Request.Delete(uri);
-            if (headers != null) {
-                headers.forEach(request::addHeader);
-            }
+  @Override
+  public FolderDAO folder(UUID ehrId, String path) {
+    return directoryEndpointMap
+        .computeIfAbsent(ehrId, k -> new DefaultRestDirectoryEndpoint(this, k))
+        .getFolder(path);
+  }
 
-            response = executor.execute(request).returnResponse();
-            checkStatus(response, HttpStatus.SC_OK, HttpStatus.SC_NO_CONTENT, HttpStatus.SC_ACCEPTED, HttpStatus.SC_NOT_FOUND);
+  @Override
+  public TemplateEndpoint templateEndpoint() {
+    return new DefaultRestTemplateEndpoint(this);
+  }
 
-        } catch (IOException e) {
-            throw new ClientException(e.getMessage(), e);
-        }
-        return response;
-    }
+  @Override
+  public AqlEndpoint aqlEndpoint() {
+    return new DefaultRestAqlEndpoint(this);
+  }
 
-    void checkStatus(HttpResponse httpResponse, int... expected) {
-        if (!ArrayUtils.contains(expected, httpResponse.getStatusLine().getStatusCode())) {
-            String message = Optional.of(httpResponse)
-                    .map(HttpResponse::getEntity)
-                    .map(e -> {
-                        try {
-                            return EntityUtils.toString(e);
-                        } catch (IOException ex) {
-                            return null;
-                        }
-                    })
-                    .orElse("");
-
-            throw new WrongStatusCodeException(message, httpResponse.getStatusLine().getStatusCode(), expected);
-        }
-    }
-
-    OpenEhrClientConfig getConfig() {
-        return config;
-    }
-
-    public Executor getExecutor() {
-        return executor;
-    }
-
-    @Override
-    public DefaultRestEhrEndpoint ehrEndpoint() {
-        return defaultRestEhrEndpoint;
-    }
-
-    TemplateProvider getTemplateProvider() {
-        return templateProvider;
-    }
-
-    @Override
-    public CompositionEndpoint compositionEndpoint(UUID ehrId) {
-        return new DefaultRestCompositionEndpoint(this, ehrId);
-    }
-
-    @Override
-    public FolderDAO folder(UUID ehrId, String path) {
-        return directoryEndpointMap.computeIfAbsent(ehrId, k -> new DefaultRestDirectoryEndpoint(this, k)).getFolder(path);
-    }
-
-    @Override
-    public TemplateEndpoint templateEndpoint() {
-        return new DefaultRestTemplateEndpoint(this);
-    }
-
-    @Override
-    public AqlEndpoint aqlEndpoint() {
-        return new DefaultRestAqlEndpoint(this);
-    }
-
-    @Override
-    public AdminEhrEndpoint adminEhrEndpoint() {
-        return new DefaultRestAdminEhrEndpoint(this);
-    }
+  @Override
+  public AdminEhrEndpoint adminEhrEndpoint() {
+    return new DefaultRestAdminEhrEndpoint(this);
+  }
 }

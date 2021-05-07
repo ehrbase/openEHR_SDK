@@ -160,7 +160,7 @@ public abstract class Walker<T> {
             }
           }
 
-          for (int i = 0; i < size; i++) {
+          for (int i = 0; i < Math.min(size, pairs.size()); i++) {
             RMObject currentChild = null;
             T childObject = null;
             childObject = pairs.get(i).getLeft();
