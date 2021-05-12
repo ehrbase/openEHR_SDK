@@ -29,6 +29,7 @@ public enum WebTemplateTestData {
   INITIAL_ASSESSMENT("example.initialassesment.v0", "example.initialassesment.json"),
   CONSTRAIN_TEST("example with many constrains / default values", "constrain_test.json"),
   LANGUAGE_TEST("example with multiple languages", "language_test.json"),
+  GECCO_SEROLOGISCHER_BEFUND("template with any Element", "gecco_serologischer_befund.json"),
   ADDICTION("example with multiple languages", "addiction.json");
 
   private final String filename;
