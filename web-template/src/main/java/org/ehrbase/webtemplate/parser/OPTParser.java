@@ -575,7 +575,7 @@ public class OPTParser {
     subNode.setRmType(rmType);
     subNode.setId(subNode.getRmType().replace("DV_", "").toLowerCase() + "_value");
     subNode.setName(node.getName());
-    subNode.setAqlPath(node.getAqlPath(true) + "/" + node.getName());
+    subNode.setAqlPath(node.getAqlPath(true) + "/" + "value");
     subNode.setInContext(true);
     subNode.setMax(1);
     subNode.setMin(0);

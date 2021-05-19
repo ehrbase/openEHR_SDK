@@ -452,7 +452,7 @@
                               "localizedDescriptions": {
                                 "de": "(Mess-)Wert des Analyt-Resultats."
                               },
-                              "aqlPath": "/content[openEHR-EHR-OBSERVATION.laboratory_test_result.v1,'Befund']/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.laboratory_test_panel.v0]/items[openEHR-EHR-CLUSTER.laboratory_test_analyte.v1,'Pro Analyt']/items[at0001,'Quantitatives Ergebnis']/Quantitatives Ergebnis",
+                              "aqlPath": "/content[openEHR-EHR-OBSERVATION.laboratory_test_result.v1,'Befund']/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.laboratory_test_panel.v0]/items[openEHR-EHR-CLUSTER.laboratory_test_analyte.v1,'Pro Analyt']/items[at0001,'Quantitatives Ergebnis']/value",
                               "inputs": [
                                 {
                                   "suffix": "code",
@@ -478,7 +478,7 @@
                               "localizedDescriptions": {
                                 "de": "(Mess-)Wert des Analyt-Resultats."
                               },
-                              "aqlPath": "/content[openEHR-EHR-OBSERVATION.laboratory_test_result.v1,'Befund']/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.laboratory_test_panel.v0]/items[openEHR-EHR-CLUSTER.laboratory_test_analyte.v1,'Pro Analyt']/items[at0001,'Quantitatives Ergebnis']/Quantitatives Ergebnis",
+                              "aqlPath": "/content[openEHR-EHR-OBSERVATION.laboratory_test_result.v1,'Befund']/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.laboratory_test_panel.v0]/items[openEHR-EHR-CLUSTER.laboratory_test_analyte.v1,'Pro Analyt']/items[at0001,'Quantitatives Ergebnis']/value",
                               "inputs": [
                                 {
                                   "type": "TEXT"
@@ -499,7 +499,7 @@
                               "localizedDescriptions": {
                                 "de": "(Mess-)Wert des Analyt-Resultats."
                               },
-                              "aqlPath": "/content[openEHR-EHR-OBSERVATION.laboratory_test_result.v1,'Befund']/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.laboratory_test_panel.v0]/items[openEHR-EHR-CLUSTER.laboratory_test_analyte.v1,'Pro Analyt']/items[at0001,'Quantitatives Ergebnis']/Quantitatives Ergebnis",
+                              "aqlPath": "/content[openEHR-EHR-OBSERVATION.laboratory_test_result.v1,'Befund']/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.laboratory_test_panel.v0]/items[openEHR-EHR-CLUSTER.laboratory_test_analyte.v1,'Pro Analyt']/items[at0001,'Quantitatives Ergebnis']/value",
                               "inputs": [
                                 {
                                   "type": "TEXT"
@@ -520,7 +520,7 @@
                               "localizedDescriptions": {
                                 "de": "(Mess-)Wert des Analyt-Resultats."
                               },
-                              "aqlPath": "/content[openEHR-EHR-OBSERVATION.laboratory_test_result.v1,'Befund']/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.laboratory_test_panel.v0]/items[openEHR-EHR-CLUSTER.laboratory_test_analyte.v1,'Pro Analyt']/items[at0001,'Quantitatives Ergebnis']/Quantitatives Ergebnis",
+                              "aqlPath": "/content[openEHR-EHR-OBSERVATION.laboratory_test_result.v1,'Befund']/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.laboratory_test_panel.v0]/items[openEHR-EHR-CLUSTER.laboratory_test_analyte.v1,'Pro Analyt']/items[at0001,'Quantitatives Ergebnis']/value",
                               "inputs": [
                                 {
                                   "suffix": "value",
@@ -546,7 +546,7 @@
                               "localizedDescriptions": {
                                 "de": "(Mess-)Wert des Analyt-Resultats."
                               },
-                              "aqlPath": "/content[openEHR-EHR-OBSERVATION.laboratory_test_result.v1,'Befund']/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.laboratory_test_panel.v0]/items[openEHR-EHR-CLUSTER.laboratory_test_analyte.v1,'Pro Analyt']/items[at0001,'Quantitatives Ergebnis']/Quantitatives Ergebnis",
+                              "aqlPath": "/content[openEHR-EHR-OBSERVATION.laboratory_test_result.v1,'Befund']/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.laboratory_test_panel.v0]/items[openEHR-EHR-CLUSTER.laboratory_test_analyte.v1,'Pro Analyt']/items[at0001,'Quantitatives Ergebnis']/value",
                               "inputs": [
                                 {
                                   "suffix": "code",
@@ -572,7 +572,7 @@
                               "localizedDescriptions": {
                                 "de": "(Mess-)Wert des Analyt-Resultats."
                               },
-                              "aqlPath": "/content[openEHR-EHR-OBSERVATION.laboratory_test_result.v1,'Befund']/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.laboratory_test_panel.v0]/items[openEHR-EHR-CLUSTER.laboratory_test_analyte.v1,'Pro Analyt']/items[at0001,'Quantitatives Ergebnis']/Quantitatives Ergebnis",
+                              "aqlPath": "/content[openEHR-EHR-OBSERVATION.laboratory_test_result.v1,'Befund']/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.laboratory_test_panel.v0]/items[openEHR-EHR-CLUSTER.laboratory_test_analyte.v1,'Pro Analyt']/items[at0001,'Quantitatives Ergebnis']/value",
                               "inputs": [
                                 {
                                   "type": "BOOLEAN"
@@ -593,7 +593,7 @@
                               "localizedDescriptions": {
                                 "de": "(Mess-)Wert des Analyt-Resultats."
                               },
-                              "aqlPath": "/content[openEHR-EHR-OBSERVATION.laboratory_test_result.v1,'Befund']/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.laboratory_test_panel.v0]/items[openEHR-EHR-CLUSTER.laboratory_test_analyte.v1,'Pro Analyt']/items[at0001,'Quantitatives Ergebnis']/Quantitatives Ergebnis",
+                              "aqlPath": "/content[openEHR-EHR-OBSERVATION.laboratory_test_result.v1,'Befund']/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.laboratory_test_panel.v0]/items[openEHR-EHR-CLUSTER.laboratory_test_analyte.v1,'Pro Analyt']/items[at0001,'Quantitatives Ergebnis']/value",
                               "inputs": [
                                 {
                                   "suffix": "id",
@@ -627,7 +627,7 @@
                               "localizedDescriptions": {
                                 "de": "(Mess-)Wert des Analyt-Resultats."
                               },
-                              "aqlPath": "/content[openEHR-EHR-OBSERVATION.laboratory_test_result.v1,'Befund']/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.laboratory_test_panel.v0]/items[openEHR-EHR-CLUSTER.laboratory_test_analyte.v1,'Pro Analyt']/items[at0001,'Quantitatives Ergebnis']/Quantitatives Ergebnis",
+                              "aqlPath": "/content[openEHR-EHR-OBSERVATION.laboratory_test_result.v1,'Befund']/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.laboratory_test_panel.v0]/items[openEHR-EHR-CLUSTER.laboratory_test_analyte.v1,'Pro Analyt']/items[at0001,'Quantitatives Ergebnis']/value",
                               "inputs": [
                                 {
                                   "type": "TEXT"
@@ -648,7 +648,7 @@
                               "localizedDescriptions": {
                                 "de": "(Mess-)Wert des Analyt-Resultats."
                               },
-                              "aqlPath": "/content[openEHR-EHR-OBSERVATION.laboratory_test_result.v1,'Befund']/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.laboratory_test_panel.v0]/items[openEHR-EHR-CLUSTER.laboratory_test_analyte.v1,'Pro Analyt']/items[at0001,'Quantitatives Ergebnis']/Quantitatives Ergebnis",
+                              "aqlPath": "/content[openEHR-EHR-OBSERVATION.laboratory_test_result.v1,'Befund']/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.laboratory_test_panel.v0]/items[openEHR-EHR-CLUSTER.laboratory_test_analyte.v1,'Pro Analyt']/items[at0001,'Quantitatives Ergebnis']/value",
                               "inputs": [
                                 {
                                   "type": "TEXT"
@@ -669,7 +669,7 @@
                               "localizedDescriptions": {
                                 "de": "(Mess-)Wert des Analyt-Resultats."
                               },
-                              "aqlPath": "/content[openEHR-EHR-OBSERVATION.laboratory_test_result.v1,'Befund']/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.laboratory_test_panel.v0]/items[openEHR-EHR-CLUSTER.laboratory_test_analyte.v1,'Pro Analyt']/items[at0001,'Quantitatives Ergebnis']/Quantitatives Ergebnis",
+                              "aqlPath": "/content[openEHR-EHR-OBSERVATION.laboratory_test_result.v1,'Befund']/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.laboratory_test_panel.v0]/items[openEHR-EHR-CLUSTER.laboratory_test_analyte.v1,'Pro Analyt']/items[at0001,'Quantitatives Ergebnis']/value",
                               "inputs": [
                                 {
                                   "suffix": "year",
@@ -757,7 +757,7 @@
                               "localizedDescriptions": {
                                 "de": "(Mess-)Wert des Analyt-Resultats."
                               },
-                              "aqlPath": "/content[openEHR-EHR-OBSERVATION.laboratory_test_result.v1,'Befund']/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.laboratory_test_panel.v0]/items[openEHR-EHR-CLUSTER.laboratory_test_analyte.v1,'Pro Analyt']/items[at0001,'Quantitatives Ergebnis']/Quantitatives Ergebnis",
+                              "aqlPath": "/content[openEHR-EHR-OBSERVATION.laboratory_test_result.v1,'Befund']/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.laboratory_test_panel.v0]/items[openEHR-EHR-CLUSTER.laboratory_test_analyte.v1,'Pro Analyt']/items[at0001,'Quantitatives Ergebnis']/value",
                               "inputs": [
                                 {
                                   "suffix": "magnitude",
@@ -783,7 +783,7 @@
                               "localizedDescriptions": {
                                 "de": "(Mess-)Wert des Analyt-Resultats."
                               },
-                              "aqlPath": "/content[openEHR-EHR-OBSERVATION.laboratory_test_result.v1,'Befund']/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.laboratory_test_panel.v0]/items[openEHR-EHR-CLUSTER.laboratory_test_analyte.v1,'Pro Analyt']/items[at0001,'Quantitatives Ergebnis']/Quantitatives Ergebnis",
+                              "aqlPath": "/content[openEHR-EHR-OBSERVATION.laboratory_test_result.v1,'Befund']/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.laboratory_test_panel.v0]/items[openEHR-EHR-CLUSTER.laboratory_test_analyte.v1,'Pro Analyt']/items[at0001,'Quantitatives Ergebnis']/value",
                               "inputs": [
                                 {
                                   "type": "INTEGER"
@@ -804,7 +804,7 @@
                               "localizedDescriptions": {
                                 "de": "(Mess-)Wert des Analyt-Resultats."
                               },
-                              "aqlPath": "/content[openEHR-EHR-OBSERVATION.laboratory_test_result.v1,'Befund']/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.laboratory_test_panel.v0]/items[openEHR-EHR-CLUSTER.laboratory_test_analyte.v1,'Pro Analyt']/items[at0001,'Quantitatives Ergebnis']/Quantitatives Ergebnis",
+                              "aqlPath": "/content[openEHR-EHR-OBSERVATION.laboratory_test_result.v1,'Befund']/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.laboratory_test_panel.v0]/items[openEHR-EHR-CLUSTER.laboratory_test_analyte.v1,'Pro Analyt']/items[at0001,'Quantitatives Ergebnis']/value",
                               "proportionTypes": [
                                 "integer_fraction",
                                 "unitary",
@@ -837,7 +837,7 @@
                               "localizedDescriptions": {
                                 "de": "(Mess-)Wert des Analyt-Resultats."
                               },
-                              "aqlPath": "/content[openEHR-EHR-OBSERVATION.laboratory_test_result.v1,'Befund']/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.laboratory_test_panel.v0]/items[openEHR-EHR-CLUSTER.laboratory_test_analyte.v1,'Pro Analyt']/items[at0001,'Quantitatives Ergebnis']/Quantitatives Ergebnis",
+                              "aqlPath": "/content[openEHR-EHR-OBSERVATION.laboratory_test_result.v1,'Befund']/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.laboratory_test_panel.v0]/items[openEHR-EHR-CLUSTER.laboratory_test_analyte.v1,'Pro Analyt']/items[at0001,'Quantitatives Ergebnis']/value",
                               "inputs": [
                                 {
                                   "type": "DATETIME"
@@ -858,7 +858,7 @@
                               "localizedDescriptions": {
                                 "de": "(Mess-)Wert des Analyt-Resultats."
                               },
-                              "aqlPath": "/content[openEHR-EHR-OBSERVATION.laboratory_test_result.v1,'Befund']/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.laboratory_test_panel.v0]/items[openEHR-EHR-CLUSTER.laboratory_test_analyte.v1,'Pro Analyt']/items[at0001,'Quantitatives Ergebnis']/Quantitatives Ergebnis",
+                              "aqlPath": "/content[openEHR-EHR-OBSERVATION.laboratory_test_result.v1,'Befund']/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.laboratory_test_panel.v0]/items[openEHR-EHR-CLUSTER.laboratory_test_analyte.v1,'Pro Analyt']/items[at0001,'Quantitatives Ergebnis']/value",
                               "inputs": [
                                 {
                                   "type": "DATE"
@@ -879,7 +879,7 @@
                               "localizedDescriptions": {
                                 "de": "(Mess-)Wert des Analyt-Resultats."
                               },
-                              "aqlPath": "/content[openEHR-EHR-OBSERVATION.laboratory_test_result.v1,'Befund']/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.laboratory_test_panel.v0]/items[openEHR-EHR-CLUSTER.laboratory_test_analyte.v1,'Pro Analyt']/items[at0001,'Quantitatives Ergebnis']/Quantitatives Ergebnis",
+                              "aqlPath": "/content[openEHR-EHR-OBSERVATION.laboratory_test_result.v1,'Befund']/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.laboratory_test_panel.v0]/items[openEHR-EHR-CLUSTER.laboratory_test_analyte.v1,'Pro Analyt']/items[at0001,'Quantitatives Ergebnis']/value",
                               "inputs": [
                                 {
                                   "type": "TIME"
@@ -900,7 +900,7 @@
                               "localizedDescriptions": {
                                 "de": "(Mess-)Wert des Analyt-Resultats."
                               },
-                              "aqlPath": "/content[openEHR-EHR-OBSERVATION.laboratory_test_result.v1,'Befund']/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.laboratory_test_panel.v0]/items[openEHR-EHR-CLUSTER.laboratory_test_analyte.v1,'Pro Analyt']/items[at0001,'Quantitatives Ergebnis']/Quantitatives Ergebnis",
+                              "aqlPath": "/content[openEHR-EHR-OBSERVATION.laboratory_test_result.v1,'Befund']/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.laboratory_test_panel.v0]/items[openEHR-EHR-CLUSTER.laboratory_test_analyte.v1,'Pro Analyt']/items[at0001,'Quantitatives Ergebnis']/value",
                               "inputs": [
                                 {
                                   "type": "CODED_TEXT"
@@ -942,7 +942,7 @@
                               "localizedDescriptions": {
                                 "de": "Die Beschreibung der Methode, mit der der Test nur für diesen Analyten durchgeführt wurde."
                               },
-                              "aqlPath": "/content[openEHR-EHR-OBSERVATION.laboratory_test_result.v1,'Befund']/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.laboratory_test_panel.v0]/items[openEHR-EHR-CLUSTER.laboratory_test_analyte.v1,'Pro Analyt']/items[at0028]/Testmethode",
+                              "aqlPath": "/content[openEHR-EHR-OBSERVATION.laboratory_test_result.v1,'Befund']/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.laboratory_test_panel.v0]/items[openEHR-EHR-CLUSTER.laboratory_test_analyte.v1,'Pro Analyt']/items[at0028]/value",
                               "inputs": [
                                 {
                                   "suffix": "code",
@@ -968,7 +968,7 @@
                               "localizedDescriptions": {
                                 "de": "Die Beschreibung der Methode, mit der der Test nur für diesen Analyten durchgeführt wurde."
                               },
-                              "aqlPath": "/content[openEHR-EHR-OBSERVATION.laboratory_test_result.v1,'Befund']/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.laboratory_test_panel.v0]/items[openEHR-EHR-CLUSTER.laboratory_test_analyte.v1,'Pro Analyt']/items[at0028]/Testmethode",
+                              "aqlPath": "/content[openEHR-EHR-OBSERVATION.laboratory_test_result.v1,'Befund']/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.laboratory_test_panel.v0]/items[openEHR-EHR-CLUSTER.laboratory_test_analyte.v1,'Pro Analyt']/items[at0028]/value",
                               "inputs": [
                                 {
                                   "type": "TEXT"
@@ -989,7 +989,7 @@
                               "localizedDescriptions": {
                                 "de": "Die Beschreibung der Methode, mit der der Test nur für diesen Analyten durchgeführt wurde."
                               },
-                              "aqlPath": "/content[openEHR-EHR-OBSERVATION.laboratory_test_result.v1,'Befund']/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.laboratory_test_panel.v0]/items[openEHR-EHR-CLUSTER.laboratory_test_analyte.v1,'Pro Analyt']/items[at0028]/Testmethode",
+                              "aqlPath": "/content[openEHR-EHR-OBSERVATION.laboratory_test_result.v1,'Befund']/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.laboratory_test_panel.v0]/items[openEHR-EHR-CLUSTER.laboratory_test_analyte.v1,'Pro Analyt']/items[at0028]/value",
                               "inputs": [
                                 {
                                   "type": "TEXT"
@@ -1010,7 +1010,7 @@
                               "localizedDescriptions": {
                                 "de": "Die Beschreibung der Methode, mit der der Test nur für diesen Analyten durchgeführt wurde."
                               },
-                              "aqlPath": "/content[openEHR-EHR-OBSERVATION.laboratory_test_result.v1,'Befund']/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.laboratory_test_panel.v0]/items[openEHR-EHR-CLUSTER.laboratory_test_analyte.v1,'Pro Analyt']/items[at0028]/Testmethode",
+                              "aqlPath": "/content[openEHR-EHR-OBSERVATION.laboratory_test_result.v1,'Befund']/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.laboratory_test_panel.v0]/items[openEHR-EHR-CLUSTER.laboratory_test_analyte.v1,'Pro Analyt']/items[at0028]/value",
                               "inputs": [
                                 {
                                   "suffix": "value",
@@ -1036,7 +1036,7 @@
                               "localizedDescriptions": {
                                 "de": "Die Beschreibung der Methode, mit der der Test nur für diesen Analyten durchgeführt wurde."
                               },
-                              "aqlPath": "/content[openEHR-EHR-OBSERVATION.laboratory_test_result.v1,'Befund']/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.laboratory_test_panel.v0]/items[openEHR-EHR-CLUSTER.laboratory_test_analyte.v1,'Pro Analyt']/items[at0028]/Testmethode",
+                              "aqlPath": "/content[openEHR-EHR-OBSERVATION.laboratory_test_result.v1,'Befund']/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.laboratory_test_panel.v0]/items[openEHR-EHR-CLUSTER.laboratory_test_analyte.v1,'Pro Analyt']/items[at0028]/value",
                               "inputs": [
                                 {
                                   "suffix": "code",
@@ -1062,7 +1062,7 @@
                               "localizedDescriptions": {
                                 "de": "Die Beschreibung der Methode, mit der der Test nur für diesen Analyten durchgeführt wurde."
                               },
-                              "aqlPath": "/content[openEHR-EHR-OBSERVATION.laboratory_test_result.v1,'Befund']/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.laboratory_test_panel.v0]/items[openEHR-EHR-CLUSTER.laboratory_test_analyte.v1,'Pro Analyt']/items[at0028]/Testmethode",
+                              "aqlPath": "/content[openEHR-EHR-OBSERVATION.laboratory_test_result.v1,'Befund']/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.laboratory_test_panel.v0]/items[openEHR-EHR-CLUSTER.laboratory_test_analyte.v1,'Pro Analyt']/items[at0028]/value",
                               "inputs": [
                                 {
                                   "type": "BOOLEAN"
@@ -1083,7 +1083,7 @@
                               "localizedDescriptions": {
                                 "de": "Die Beschreibung der Methode, mit der der Test nur für diesen Analyten durchgeführt wurde."
                               },
-                              "aqlPath": "/content[openEHR-EHR-OBSERVATION.laboratory_test_result.v1,'Befund']/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.laboratory_test_panel.v0]/items[openEHR-EHR-CLUSTER.laboratory_test_analyte.v1,'Pro Analyt']/items[at0028]/Testmethode",
+                              "aqlPath": "/content[openEHR-EHR-OBSERVATION.laboratory_test_result.v1,'Befund']/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.laboratory_test_panel.v0]/items[openEHR-EHR-CLUSTER.laboratory_test_analyte.v1,'Pro Analyt']/items[at0028]/value",
                               "inputs": [
                                 {
                                   "suffix": "id",
@@ -1117,7 +1117,7 @@
                               "localizedDescriptions": {
                                 "de": "Die Beschreibung der Methode, mit der der Test nur für diesen Analyten durchgeführt wurde."
                               },
-                              "aqlPath": "/content[openEHR-EHR-OBSERVATION.laboratory_test_result.v1,'Befund']/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.laboratory_test_panel.v0]/items[openEHR-EHR-CLUSTER.laboratory_test_analyte.v1,'Pro Analyt']/items[at0028]/Testmethode",
+                              "aqlPath": "/content[openEHR-EHR-OBSERVATION.laboratory_test_result.v1,'Befund']/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.laboratory_test_panel.v0]/items[openEHR-EHR-CLUSTER.laboratory_test_analyte.v1,'Pro Analyt']/items[at0028]/value",
                               "inputs": [
                                 {
                                   "type": "TEXT"
@@ -1138,7 +1138,7 @@
                               "localizedDescriptions": {
                                 "de": "Die Beschreibung der Methode, mit der der Test nur für diesen Analyten durchgeführt wurde."
                               },
-                              "aqlPath": "/content[openEHR-EHR-OBSERVATION.laboratory_test_result.v1,'Befund']/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.laboratory_test_panel.v0]/items[openEHR-EHR-CLUSTER.laboratory_test_analyte.v1,'Pro Analyt']/items[at0028]/Testmethode",
+                              "aqlPath": "/content[openEHR-EHR-OBSERVATION.laboratory_test_result.v1,'Befund']/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.laboratory_test_panel.v0]/items[openEHR-EHR-CLUSTER.laboratory_test_analyte.v1,'Pro Analyt']/items[at0028]/value",
                               "inputs": [
                                 {
                                   "type": "TEXT"
@@ -1159,7 +1159,7 @@
                               "localizedDescriptions": {
                                 "de": "Die Beschreibung der Methode, mit der der Test nur für diesen Analyten durchgeführt wurde."
                               },
-                              "aqlPath": "/content[openEHR-EHR-OBSERVATION.laboratory_test_result.v1,'Befund']/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.laboratory_test_panel.v0]/items[openEHR-EHR-CLUSTER.laboratory_test_analyte.v1,'Pro Analyt']/items[at0028]/Testmethode",
+                              "aqlPath": "/content[openEHR-EHR-OBSERVATION.laboratory_test_result.v1,'Befund']/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.laboratory_test_panel.v0]/items[openEHR-EHR-CLUSTER.laboratory_test_analyte.v1,'Pro Analyt']/items[at0028]/value",
                               "inputs": [
                                 {
                                   "suffix": "year",
@@ -1247,7 +1247,7 @@
                               "localizedDescriptions": {
                                 "de": "Die Beschreibung der Methode, mit der der Test nur für diesen Analyten durchgeführt wurde."
                               },
-                              "aqlPath": "/content[openEHR-EHR-OBSERVATION.laboratory_test_result.v1,'Befund']/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.laboratory_test_panel.v0]/items[openEHR-EHR-CLUSTER.laboratory_test_analyte.v1,'Pro Analyt']/items[at0028]/Testmethode",
+                              "aqlPath": "/content[openEHR-EHR-OBSERVATION.laboratory_test_result.v1,'Befund']/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.laboratory_test_panel.v0]/items[openEHR-EHR-CLUSTER.laboratory_test_analyte.v1,'Pro Analyt']/items[at0028]/value",
                               "inputs": [
                                 {
                                   "suffix": "magnitude",
@@ -1273,7 +1273,7 @@
                               "localizedDescriptions": {
                                 "de": "Die Beschreibung der Methode, mit der der Test nur für diesen Analyten durchgeführt wurde."
                               },
-                              "aqlPath": "/content[openEHR-EHR-OBSERVATION.laboratory_test_result.v1,'Befund']/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.laboratory_test_panel.v0]/items[openEHR-EHR-CLUSTER.laboratory_test_analyte.v1,'Pro Analyt']/items[at0028]/Testmethode",
+                              "aqlPath": "/content[openEHR-EHR-OBSERVATION.laboratory_test_result.v1,'Befund']/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.laboratory_test_panel.v0]/items[openEHR-EHR-CLUSTER.laboratory_test_analyte.v1,'Pro Analyt']/items[at0028]/value",
                               "inputs": [
                                 {
                                   "type": "INTEGER"
@@ -1294,7 +1294,7 @@
                               "localizedDescriptions": {
                                 "de": "Die Beschreibung der Methode, mit der der Test nur für diesen Analyten durchgeführt wurde."
                               },
-                              "aqlPath": "/content[openEHR-EHR-OBSERVATION.laboratory_test_result.v1,'Befund']/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.laboratory_test_panel.v0]/items[openEHR-EHR-CLUSTER.laboratory_test_analyte.v1,'Pro Analyt']/items[at0028]/Testmethode",
+                              "aqlPath": "/content[openEHR-EHR-OBSERVATION.laboratory_test_result.v1,'Befund']/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.laboratory_test_panel.v0]/items[openEHR-EHR-CLUSTER.laboratory_test_analyte.v1,'Pro Analyt']/items[at0028]/value",
                               "proportionTypes": [
                                 "integer_fraction",
                                 "unitary",
@@ -1327,7 +1327,7 @@
                               "localizedDescriptions": {
                                 "de": "Die Beschreibung der Methode, mit der der Test nur für diesen Analyten durchgeführt wurde."
                               },
-                              "aqlPath": "/content[openEHR-EHR-OBSERVATION.laboratory_test_result.v1,'Befund']/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.laboratory_test_panel.v0]/items[openEHR-EHR-CLUSTER.laboratory_test_analyte.v1,'Pro Analyt']/items[at0028]/Testmethode",
+                              "aqlPath": "/content[openEHR-EHR-OBSERVATION.laboratory_test_result.v1,'Befund']/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.laboratory_test_panel.v0]/items[openEHR-EHR-CLUSTER.laboratory_test_analyte.v1,'Pro Analyt']/items[at0028]/value",
                               "inputs": [
                                 {
                                   "type": "DATETIME"
@@ -1348,7 +1348,7 @@
                               "localizedDescriptions": {
                                 "de": "Die Beschreibung der Methode, mit der der Test nur für diesen Analyten durchgeführt wurde."
                               },
-                              "aqlPath": "/content[openEHR-EHR-OBSERVATION.laboratory_test_result.v1,'Befund']/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.laboratory_test_panel.v0]/items[openEHR-EHR-CLUSTER.laboratory_test_analyte.v1,'Pro Analyt']/items[at0028]/Testmethode",
+                              "aqlPath": "/content[openEHR-EHR-OBSERVATION.laboratory_test_result.v1,'Befund']/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.laboratory_test_panel.v0]/items[openEHR-EHR-CLUSTER.laboratory_test_analyte.v1,'Pro Analyt']/items[at0028]/value",
                               "inputs": [
                                 {
                                   "type": "DATE"
@@ -1369,7 +1369,7 @@
                               "localizedDescriptions": {
                                 "de": "Die Beschreibung der Methode, mit der der Test nur für diesen Analyten durchgeführt wurde."
                               },
-                              "aqlPath": "/content[openEHR-EHR-OBSERVATION.laboratory_test_result.v1,'Befund']/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.laboratory_test_panel.v0]/items[openEHR-EHR-CLUSTER.laboratory_test_analyte.v1,'Pro Analyt']/items[at0028]/Testmethode",
+                              "aqlPath": "/content[openEHR-EHR-OBSERVATION.laboratory_test_result.v1,'Befund']/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.laboratory_test_panel.v0]/items[openEHR-EHR-CLUSTER.laboratory_test_analyte.v1,'Pro Analyt']/items[at0028]/value",
                               "inputs": [
                                 {
                                   "type": "TIME"
@@ -1390,7 +1390,7 @@
                               "localizedDescriptions": {
                                 "de": "Die Beschreibung der Methode, mit der der Test nur für diesen Analyten durchgeführt wurde."
                               },
-                              "aqlPath": "/content[openEHR-EHR-OBSERVATION.laboratory_test_result.v1,'Befund']/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.laboratory_test_panel.v0]/items[openEHR-EHR-CLUSTER.laboratory_test_analyte.v1,'Pro Analyt']/items[at0028]/Testmethode",
+                              "aqlPath": "/content[openEHR-EHR-OBSERVATION.laboratory_test_result.v1,'Befund']/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.laboratory_test_panel.v0]/items[openEHR-EHR-CLUSTER.laboratory_test_analyte.v1,'Pro Analyt']/items[at0028]/value",
                               "inputs": [
                                 {
                                   "type": "CODED_TEXT"
