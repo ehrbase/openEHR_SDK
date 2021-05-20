@@ -32,7 +32,7 @@ public class WebTemplateAnnotation implements Serializable {
 
   private String comment;
 
-  private final Map<String, String> other = new HashMap<>();
+  @JsonAnySetter private final Map<String, String> other = new HashMap<>();
 
   public WebTemplateAnnotation() {}
 
@@ -49,7 +49,6 @@ public class WebTemplateAnnotation implements Serializable {
     this.comment = comment;
   }
 
-  @JsonAnySetter
   @JsonAnyGetter
   public Map<String, String> getOther() {
     return other;

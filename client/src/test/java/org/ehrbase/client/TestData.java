@@ -49,6 +49,10 @@ import org.ehrbase.client.classgenerator.examples.episodeofcarecomposition.Episo
 import org.ehrbase.client.classgenerator.examples.episodeofcarecomposition.definition.EpisodeofcareAdminEntry;
 import org.ehrbase.client.classgenerator.examples.episodeofcarecomposition.definition.EpisodeofcareIdentifierElement;
 import org.ehrbase.client.classgenerator.examples.episodeofcarecomposition.definition.EpisodeofcareTeamElement;
+import org.ehrbase.client.classgenerator.examples.geccoserologischerbefundcomposition.GECCOSerologischerBefundComposition;
+import org.ehrbase.client.classgenerator.examples.geccoserologischerbefundcomposition.definition.AnforderungDefiningCode;
+import org.ehrbase.client.classgenerator.examples.geccoserologischerbefundcomposition.definition.BefundJedesEreignisPointEvent;
+import org.ehrbase.client.classgenerator.examples.geccoserologischerbefundcomposition.definition.ProAnalytQuantitativesErgebnisDvCount;
 import org.ehrbase.client.classgenerator.examples.patientenaufenthaltcomposition.PatientenaufenthaltComposition;
 import org.ehrbase.client.classgenerator.examples.patientenaufenthaltcomposition.definition.StandortCluster;
 import org.ehrbase.client.classgenerator.examples.patientenaufenthaltcomposition.definition.StandortschlusselDefiningCode;
@@ -141,6 +145,37 @@ public class TestData {
         .getBloodPressureTrainingSample()
         .add(buildBloodPressureTrainingSampleObservation());
     return bloodPressureSimpleDeV0;
+  }
+
+  public static GECCOSerologischerBefundComposition buildGeccoSerologischerBefundComposition() {
+    GECCOSerologischerBefundComposition composition = new GECCOSerologischerBefundComposition();
+    composition.setLanguage(Language.DE);
+    composition.setTerritory(Territory.DE);
+    composition.setCategoryDefiningCode(Category.EVENT);
+    composition.setSettingDefiningCode(Setting.NURSING_HOME_CARE);
+    composition.setComposer(new PartyIdentified(null, "Test", null));
+    composition.setStartTimeValue(OffsetDateTime.of(2019, 04, 03, 22, 00, 00, 00, ZoneOffset.UTC));
+    composition.setParticipations(new ArrayList<>());
+    composition.setBefund(new ArrayList<>());
+    var befundObservation =
+        new org.ehrbase.client.classgenerator.examples.geccoserologischerbefundcomposition
+            .definition.BefundObservation();
+    composition.getBefund().add(befundObservation);
+    befundObservation.setSubject(new PartySelf());
+    befundObservation.setJedesEreignis(new ArrayList<>());
+    befundObservation.setLanguage(Language.DE);
+    befundObservation.setAnforderungDefiningCode(
+        AnforderungDefiningCode.SARS_COV2_COVID19_AB_PANEL_SERUM_OR_PLASMA_BY_IMMUNOASSAY);
+    befundObservation.setOriginValue(
+        OffsetDateTime.of(2019, 04, 03, 22, 00, 00, 00, ZoneOffset.UTC));
+    BefundJedesEreignisPointEvent event = new BefundJedesEreignisPointEvent();
+    event.setTimeValue(OffsetDateTime.of(2019, 04, 03, 22, 00, 00, 00, ZoneOffset.UTC));
+    befundObservation.getJedesEreignis().add(event);
+    ProAnalytQuantitativesErgebnisDvCount quantitativesErgebnis =
+        new ProAnalytQuantitativesErgebnisDvCount();
+    quantitativesErgebnis.setQuantitativesErgebnisMagnitude(22l);
+    event.setQuantitativesErgebnis(quantitativesErgebnis);
+    return composition;
   }
 
   protected static BloodPressureTrainingSampleObservation

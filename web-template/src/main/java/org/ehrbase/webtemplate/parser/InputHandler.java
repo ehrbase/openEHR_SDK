@@ -252,6 +252,10 @@ public class InputHandler {
         node.getInputs()
             .add(templateInputMap.getOrDefault("value", buildWebTemplateInput(null, "TIME")));
         break;
+      case "DV_ORDINAL":
+        node.getInputs()
+            .add(templateInputMap.getOrDefault("value", buildWebTemplateInput(null, "CODED_TEXT")));
+        break;
       case "PARTY_PROXY":
         node.getInputs().add(buildWebTemplateInput("id", "TEXT"));
         node.getInputs().add(buildWebTemplateInput("id_scheme", "TEXT"));
@@ -263,6 +267,7 @@ public class InputHandler {
         node.getInputs().add(buildWebTemplateInput("formalism", "TEXT"));
         break;
       case "DV_TEXT":
+      case "DV_EHR_URI":
       case "DV_URI":
       case "DV_MULTIMEDIA":
       case "STRING":
@@ -270,16 +275,31 @@ public class InputHandler {
             .add(templateInputMap.getOrDefault("value", buildWebTemplateInput(null, "TEXT")));
         break;
       case "DV_COUNT":
-        WebTemplateInput magnitude =
-            templateInputMap.getOrDefault("magnitude", buildWebTemplateInput(null, "INTEGER"));
-        findDefaultValue(node, "magnitude").ifPresent(magnitude::setDefaultValue);
+        {
+          WebTemplateInput magnitude =
+              templateInputMap.getOrDefault("magnitude", buildWebTemplateInput(null, "INTEGER"));
+          findDefaultValue(node, "magnitude").ifPresent(magnitude::setDefaultValue);
 
-        node.getInputs().add(magnitude);
+          node.getInputs().add(magnitude);
+        }
+        break;
+      case "DV_QUANTITY":
+        {
+          WebTemplateInput magnitude =
+              templateInputMap.getOrDefault(
+                  "magnitude", buildWebTemplateInput("magnitude", "DECIMAL"));
+          findDefaultValue(node, "magnitude").ifPresent(magnitude::setDefaultValue);
+
+          node.getInputs().add(magnitude);
+
+          node.getInputs().add(buildWebTemplateInput("unit", "TEXT"));
+        }
         break;
       case "DV_BOOLEAN":
         node.getInputs()
             .add(templateInputMap.getOrDefault("value", buildWebTemplateInput(null, "BOOLEAN")));
         break;
+      case "DV_STATE":
       case "DV_CODED_TEXT":
         node.getInputs().add(buildWebTemplateInput("code", "TEXT"));
         node.getInputs().add(buildWebTemplateInput("value", "TEXT"));

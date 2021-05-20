@@ -53,6 +53,8 @@ import org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1comp
 import org.ehrbase.client.classgenerator.examples.episodeofcarecomposition.EpisodeOfCareComposition;
 import org.ehrbase.client.classgenerator.examples.episodeofcarecomposition.definition.EpisodeofcareAdminEntry;
 import org.ehrbase.client.classgenerator.examples.episodeofcarecomposition.definition.EpisodeofcareTeamElement;
+import org.ehrbase.client.classgenerator.examples.geccoserologischerbefundcomposition.GECCOSerologischerBefundComposition;
+import org.ehrbase.client.classgenerator.examples.geccoserologischerbefundcomposition.definition.ProAnalytQuantitativesErgebnisDvCount;
 import org.ehrbase.client.classgenerator.examples.virologischerbefundcomposition.VirologischerBefundComposition;
 import org.ehrbase.client.classgenerator.examples.virologischerbefundcomposition.definition.ProVirusCluster;
 import org.ehrbase.client.classgenerator.shareddefinition.ParticipationMode;
@@ -109,6 +111,49 @@ public class DefaultRestCompositionEndpointIT {
     } catch (RuntimeException e) {
       assertThat(e.getClass()).isEqualTo(OptimisticLockException.class);
     }
+  }
+
+  @Test
+  public void testSaveCompositionEntityWithAny() {
+
+    UUID ehr = openEhrClient.ehrEndpoint().createEhr();
+    GECCOSerologischerBefundComposition composition =
+        TestData.buildGeccoSerologischerBefundComposition();
+
+    composition = openEhrClient.compositionEndpoint(ehr).mergeCompositionEntity(composition);
+
+    Optional<GECCOSerologischerBefundComposition> actual =
+        openEhrClient
+            .compositionEndpoint(ehr)
+            .find(composition.getVersionUid().getUuid(), GECCOSerologischerBefundComposition.class);
+
+    assertThat(actual).isPresent();
+
+    assertThat(actual.get().getBefund()).size().isEqualTo(1);
+    assertThat(actual.get().getBefund().get(0).getJedesEreignis()).size().isEqualTo(1);
+    assertThat(actual.get().getBefund().get(0).getJedesEreignis().get(0).getQuantitativesErgebnis())
+        .isNotNull();
+    assertThat(
+            actual
+                .get()
+                .getBefund()
+                .get(0)
+                .getJedesEreignis()
+                .get(0)
+                .getQuantitativesErgebnis()
+                .getClass())
+        .isEqualTo(ProAnalytQuantitativesErgebnisDvCount.class);
+    assertThat(
+            ((ProAnalytQuantitativesErgebnisDvCount)
+                    actual
+                        .get()
+                        .getBefund()
+                        .get(0)
+                        .getJedesEreignis()
+                        .get(0)
+                        .getQuantitativesErgebnis())
+                .getQuantitativesErgebnisMagnitude())
+        .isEqualTo(22l);
   }
 
   @Test
