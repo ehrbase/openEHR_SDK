@@ -66,7 +66,9 @@ public class FlatJsonTest {
             .buildFlatJson(FlatFormat.SIM_SDT, "IDCR -  Adverse Reaction List.v1");
 
     String flat =
-        IOUtils.toString(CompositionTestDataSimSDTJson.IDCD.getStream(), StandardCharsets.UTF_8);
+        IOUtils.toString(
+            CompositionTestDataSimSDTJson.ADVERSE_REACTION_LIST.getStream(),
+            StandardCharsets.UTF_8);
     Composition unmarshal = cut.unmarshal(flat);
 
     assertThat(unmarshal).isNotNull();
@@ -74,7 +76,9 @@ public class FlatJsonTest {
     String actual = cut.marshal(unmarshal);
 
     String expected =
-        IOUtils.toString(CompositionTestDataSimSDTJson.IDCD.getStream(), StandardCharsets.UTF_8);
+        IOUtils.toString(
+            CompositionTestDataSimSDTJson.ADVERSE_REACTION_LIST.getStream(),
+            StandardCharsets.UTF_8);
 
     List<String> errors = compere(actual, expected);
 

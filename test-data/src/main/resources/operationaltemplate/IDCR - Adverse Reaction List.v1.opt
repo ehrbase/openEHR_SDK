@@ -41,12 +41,12 @@
     </details>
   </description>
   <uid>
-    <value>f473e2ed-7f0a-41c9-9ef6-01632fe6c78b</value>
+    <value>f473e2ed-7f0a-41c9-9ef6-01632fe6c88b</value>
   </uid>
   <template_id>
-    <value>IDCR -  Adverse Reaction List.v1</value>
+    <value>Adverse Reaction List.v1</value>
   </template_id>
-  <concept>IDCR -  Adverse Reaction List.v1</concept>
+  <concept>Adverse Reaction List.v1</concept>
   <definition>
     <rm_type_name>COMPOSITION</rm_type_name>
     <occurrences>

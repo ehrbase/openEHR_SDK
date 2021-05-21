@@ -23,7 +23,7 @@ import java.io.InputStream;
 public enum CompositionTestDataSimSDTJson {
   ALTERNATIVE_EVENTS("AlternativeEvents", "AlternativeEvents.json"),
   ALTERNATIVE_EVENTS_2("AlternativeEvents", "AlternativeEvents2.json"),
-  IDCD("AlternativeEvents", "IDCR - Adverse Reaction List.json"),
+  ADVERSE_REACTION_LIST("AlternativeEvents", "IDCR - Adverse Reaction List.json"),
   CORONA("Corona", "corona.json"),
   CORONA_WITH_CONTEXT("Corona", "corona_with_context.json"),
   MULTI_OCCURRENCE("multi_occurrence", "multi_occurrence.json"),
