@@ -36,6 +36,10 @@ public enum OperationalTemplateTestData {
       "IDCR - Laboratory Test Report.v0"),
   IDCR_PROBLEM_LIST(
       "IDCR  Problem List.v1", "IDCR - Problem List.v1.opt", "IDCR - Problem List.v1"),
+  IDCR_ADVERSE_REACTION_LIST(
+      "IDCR -  Adverse Reaction List.v1",
+      "IDCR - Adverse Reaction List.v1.opt",
+      "IDCR -  Adverse Reaction List.v1"),
   BLOOD_PRESSURE_SIMPLE(
       "Very simple blood_pressure template",
       "ehrbase_blood_pressure_simple.de.v0.opt",
