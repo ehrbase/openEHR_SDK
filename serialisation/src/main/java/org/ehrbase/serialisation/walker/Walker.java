@@ -96,6 +96,7 @@ public abstract class Walker<T> {
       Map<String, List<WebTemplateNode>> choices = currentNode.getChoicesInChildren();
       List<WebTemplateNode> children = new ArrayList<>(currentNode.getChildren());
 
+      // unwrap DV_CODED_TEXT
       for (WebTemplateNode codeNode : new ArrayList<>(children)) {
         if (codeNode.getRmType().equals(DV_CODED_TEXT)
             && codeNode.getInputs().stream()
@@ -105,6 +106,17 @@ public abstract class Walker<T> {
           textNode.setRmType("DV_TEXT");
           choices.put(textNode.getAqlPath(), List.of(codeNode, textNode));
           children.add(textNode);
+        }
+      }
+
+      // Add dummy DV_CODED_TEXT
+      for (WebTemplateNode textNode : new ArrayList<>(children)) {
+        if (textNode.getRmType().equals("DV_TEXT")
+            && choices.values().stream().flatMap(List::stream).noneMatch(textNode::equals)) {
+          WebTemplateNode codeNode = new WebTemplateNode(textNode);
+          codeNode.setRmType(DV_CODED_TEXT);
+          choices.put(codeNode.getAqlPath(), List.of(textNode, codeNode));
+          children.add(codeNode);
         }
       }
 
