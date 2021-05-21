@@ -114,7 +114,7 @@ public class DtoFromCompositionWalker extends FromCompositionWalker<DtoWithMatch
     } else {
       Field field = subValues.values().stream().findAny().orElseThrow();
       String path = subValues.keySet().stream().findAny().orElseThrow();
-      Class<?> type = field.getType();
+      Class type = field.getType();
       if (List.class.isAssignableFrom(type)) {
         type =
             TypeToken.of(((ParameterizedType) field.getGenericType()).getActualTypeArguments()[0])
@@ -189,12 +189,17 @@ public class DtoFromCompositionWalker extends FromCompositionWalker<DtoWithMatch
     }
   }
 
-  private Optional<? extends Class<?>> findActual(Class<?> actualTypeArgument, String simpleName) {
-    return dtoClassList.stream()
-        .filter(actualTypeArgument::isAssignableFrom)
-        .filter(c -> c.isAnnotationPresent(OptionFor.class))
-        .filter(c -> c.getAnnotation(OptionFor.class).value().equals(simpleName))
-        .findAny();
+  private Optional<Class<?>> findActual(Class<?> actualTypeArgument, String simpleName) {
+    Optional<Class<?>> aClass =
+        dtoClassList.stream()
+            .filter(actualTypeArgument::isAssignableFrom)
+            .filter(c -> c.isAnnotationPresent(OptionFor.class))
+            .filter(c -> c.getAnnotation(OptionFor.class).value().equals(simpleName))
+            .findAny();
+    if (aClass.isEmpty() && !actualTypeArgument.isInterface()) {
+      return Optional.of(actualTypeArgument);
+    }
+    return aClass;
   }
 
   @Override
