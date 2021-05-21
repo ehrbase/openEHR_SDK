@@ -58,6 +58,10 @@
             <groupId>com.github.ehrbase.openEHR_SDK</groupId>
             <artifactId>aql</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.github.ehrbase.openEHR_SDK</groupId>
+            <artifactId>serialisation_conformance_test</artifactId>
+        </dependency>
     </dependencies>
 
 

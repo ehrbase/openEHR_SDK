@@ -38,6 +38,7 @@
         <module>util</module>
         <module>building</module>
         <module>aql</module>
+        <module>serialisation_conformance_test</module>
     </modules>
 
 
@@ -50,6 +51,7 @@
         <jacoco.version>0.8.6</jacoco.version>
         <antlr4.version>4.9.1</antlr4.version>
         <archie.version>dc09642</archie.version>
+        <web-template-tests.version>8f3381a37d</web-template-tests.version>
 
         <skipIntegrationTests>true</skipIntegrationTests>
         <include.tests>**/*Test.java</include.tests>
@@ -333,6 +335,11 @@
             <dependency>
                 <groupId>com.github.ehrbase.openEHR_SDK</groupId>
                 <artifactId>building</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.ehrbase.openEHR_SDK</groupId>
+                <artifactId>serialisation_conformance_test</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
