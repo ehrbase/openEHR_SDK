@@ -63,7 +63,7 @@ public class FlatJsonTest {
     TestDataTemplateProvider templateProvider = new TestDataTemplateProvider();
     FlatJson cut =
         new FlatJasonProvider(templateProvider)
-            .buildFlatJson(FlatFormat.SIM_SDT, "IDCR -  Adverse Reaction List.v1");
+            .buildFlatJson(FlatFormat.SIM_SDT, "Adverse Reaction List.v1");
 
     String flat =
         IOUtils.toString(
