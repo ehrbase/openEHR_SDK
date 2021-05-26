@@ -91,6 +91,8 @@ public class CompositionConverterImp implements CompositionConverter {
   private String replace(String k) {
     if (k.equals("composerName")) {
       return "ctx/composer_name";
+    }else    if (k.equals("start_time")) {
+      return "ctx/time";
     }
     return "ctx/" + k;
   }
