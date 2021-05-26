@@ -221,9 +221,7 @@
                         </goals>
                         <configuration>
                             <skipTests>false</skipTests>
-                            <includes>
-                                <include>${include.tests}</include>
-                            </includes>
+
 
                         </configuration>
                     </execution>
