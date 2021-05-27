@@ -88,6 +88,9 @@
                     <includes  combine.self="override">
                         <include>WebTemplateContentTest.java</include>
                         <include>AnySomeConstrainedTest</include>
+                        <include>AnyTest</include>
+                        <include>BRMohTest</include>
+                        <include>BuilderTest</include>
                     </includes>
                 </configuration>
 

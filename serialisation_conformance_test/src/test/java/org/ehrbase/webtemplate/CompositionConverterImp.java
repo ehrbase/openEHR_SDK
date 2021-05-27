@@ -45,7 +45,7 @@ public class CompositionConverterImp implements CompositionConverter {
   @Override
   public String convertRawToFlat(String template, String defaultLanguage, String rawComposition)
       throws Exception {
-    Composition unmarshal = new CanonicalJson().unmarshal(rawComposition, Composition.class);
+    Composition unmarshal = new CanonicalJson().unmarshal(rawComposition.replace("@class","_type"), Composition.class);
 
     return getFlatJson(template).marshal(unmarshal);
   }
@@ -53,7 +53,7 @@ public class CompositionConverterImp implements CompositionConverter {
   @Override
   public String convertRawToStructured(
       String template, String defaultLanguage, String rawComposition) throws Exception {
-    return null;
+    throw  new UnsupportedOperationException();
   }
 
   @Override
@@ -104,7 +104,7 @@ public class CompositionConverterImp implements CompositionConverter {
       String flatComposition,
       Map<String, Object> compositionBuilderContext)
       throws Exception {
-    return null;
+    throw  new UnsupportedOperationException();
   }
 
   @Override
@@ -114,7 +114,7 @@ public class CompositionConverterImp implements CompositionConverter {
       String structuredComposition,
       Map<String, Object> compositionBuilderContext)
       throws Exception {
-    return null;
+    throw  new UnsupportedOperationException();
   }
 
   @Override
@@ -124,7 +124,7 @@ public class CompositionConverterImp implements CompositionConverter {
       String structuredComposition,
       Map<String, Object> compositionBuilderContext)
       throws Exception {
-    return null;
+    throw  new UnsupportedOperationException();
   }
 
   @Override
@@ -135,6 +135,6 @@ public class CompositionConverterImp implements CompositionConverter {
       Map<String, Object> compositionBuilderContext,
       Map<String, Object> deltaValues)
       throws Exception {
-    return null;
+    throw  new UnsupportedOperationException();
   }
 }

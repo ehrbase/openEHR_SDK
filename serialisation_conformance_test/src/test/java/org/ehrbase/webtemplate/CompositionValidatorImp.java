@@ -50,7 +50,7 @@ public class CompositionValidatorImp implements CompositionValidator {
     TemplateDocument templateDocument =
             TemplateDocument.Factory.parse(IOUtils.toInputStream(template, StandardCharsets.UTF_8));
     try {
-      new Validator(templateDocument.getTemplate()).check(new CanonicalJson().unmarshal(rawComposition, Composition.class));
+      new Validator(templateDocument.getTemplate()).check(new CanonicalJson().unmarshal(rawComposition.replace("@class","_type"), Composition.class));
     } catch (RuntimeException e) {
       return Collections.singletonList(new ValidationErrorDto(e.getMessage(), new String[0], 0));
     }
