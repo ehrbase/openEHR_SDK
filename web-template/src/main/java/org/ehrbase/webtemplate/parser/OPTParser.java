@@ -1050,7 +1050,7 @@ public class OPTParser {
           .putAll(
               termDefinitionMap.get(nodeId).entrySet().stream()
                   .collect(
-                      Collectors.toMap(Map.Entry::getKey, e -> e.getValue().getDescription())));
+                      Collectors.toMap(Map.Entry::getKey, e ->Optional.ofNullable( e.getValue().getDescription()).orElse(e.getValue().getValue()))));
 
       Optional.of(termDefinitionMap.get(nodeId)).map(m -> m.get(defaultLanguage))
           .map(TermDefinition::getOther).stream()

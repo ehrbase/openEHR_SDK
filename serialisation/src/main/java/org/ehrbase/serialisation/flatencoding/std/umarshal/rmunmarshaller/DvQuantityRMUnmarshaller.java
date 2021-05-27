@@ -19,10 +19,17 @@
 
 package org.ehrbase.serialisation.flatencoding.std.umarshal.rmunmarshaller;
 
+import com.ctc.wstx.util.StringUtil;
 import com.nedap.archie.rm.datavalues.quantity.DvQuantity;
+import org.apache.commons.lang3.StringUtils;
 import org.ehrbase.serialisation.walker.Context;
+import org.ehrbase.webtemplate.model.WebTemplateInput;
+import org.ehrbase.webtemplate.model.WebTemplateInputValue;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public class DvQuantityRMUnmarshaller extends AbstractRMUnmarshaller<DvQuantity> {
 
@@ -43,6 +50,13 @@ public class DvQuantityRMUnmarshaller extends AbstractRMUnmarshaller<DvQuantity>
         setValue(currentTerm, "units", currentValues, rmObject::setUnits, String.class);
         if (rmObject.getUnits() == null) {
             setValue(currentTerm, "unit", currentValues, rmObject::setUnits, String.class);
+        }
+
+        if (StringUtils.isBlank(rmObject.getUnits())) {
+            List<WebTemplateInputValue> units = Optional.ofNullable(context.getNodeDeque().peek().getInputs()).stream().flatMap(List::stream).filter(i -> "unit".equals(i.getSuffix())).findAny().map(WebTemplateInput::getList).orElse(Collections.emptyList());
+            if (units.size() == 1) {
+                rmObject.setUnits(units.get(0).getValue());
+            }
         }
     }
 }

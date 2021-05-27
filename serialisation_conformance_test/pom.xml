@@ -44,6 +44,10 @@
             <groupId>com.github.ehrbase.openEHR_SDK</groupId>
             <artifactId>serialisation</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.github.ehrbase.openEHR_SDK</groupId>
+            <artifactId>validation</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
@@ -83,6 +87,7 @@
                     <dependenciesToScan>com.github.better-care:web-template-tests</dependenciesToScan>
                     <includes  combine.self="override">
                         <include>WebTemplateContentTest.java</include>
+                        <include>AnySomeConstrainedTest</include>
                     </includes>
                 </configuration>
 

@@ -69,7 +69,7 @@ public class CompositionConverterImp implements CompositionConverter {
             OBJECT_MAPPER.readTree(flatComposition).fields();
         it.hasNext(); ) {
       Map.Entry<String, JsonNode> e = it.next();
-      currentValues.put(e.getKey(), e.getValue().toString());
+      currentValues.put(e.getKey(), e.getValue().asText());
     }
 
     compositionBuilderContext.forEach((k, v) -> currentValues.put(replace(k), v));
