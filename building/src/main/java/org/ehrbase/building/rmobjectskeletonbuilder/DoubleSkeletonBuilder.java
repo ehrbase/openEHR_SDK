@@ -29,9 +29,7 @@ public class DoubleSkeletonBuilder implements RmObjectSkeletonBuilder<CREAL, Dou
 
     @Override
     public Double getRmObject(CREAL xml) {
-        if (xml.isSetAssumedValue()) {
-            return Double.parseDouble("" + xml.getAssumedValue());
-        }
+
         return null;
     }
 }

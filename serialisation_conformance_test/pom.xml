@@ -91,6 +91,7 @@
                         <include>AnyTest</include>
                         <include>BRMohTest</include>
                         <include>BuilderTest</include>
+                        <include>CodedTextTest</include>
                     </includes>
                 </configuration>
 

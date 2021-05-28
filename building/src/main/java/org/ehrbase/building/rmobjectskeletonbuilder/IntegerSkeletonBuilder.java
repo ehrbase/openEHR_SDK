@@ -29,10 +29,7 @@ public class IntegerSkeletonBuilder implements RmObjectSkeletonBuilder<CINTEGER,
 
     @Override
     public Integer getRmObject(CINTEGER xml) {
-        if (xml.isSetAssumedValue()) {
-            return xml.getAssumedValue();
-        } else {
-            return null;
-        }
+
+        return null;
     }
 }

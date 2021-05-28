@@ -30,12 +30,7 @@ public class DvTimeSkeletonBuilder implements RmObjectSkeletonBuilder<CTIME, DvT
 
     @Override
     public DvTime getRmObject(CTIME xml) {
-        DvTime dvTime;
-        if (xml.isSetAssumedValue()) {
-            dvTime = new DvTime(xml.getAssumedValue());
-        } else {
-            dvTime = new DvTime();
-        }
-        return dvTime;
+
+        return new DvTime();
     }
 }

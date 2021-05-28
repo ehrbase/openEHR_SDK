@@ -192,7 +192,7 @@ public class StdToCompositionWalker extends ToCompositionWalker<Map<String, Stri
             .map(i -> i + 1)
             .orElse(0);
     if (count == 0 && context.getObjectDeque().peek().keySet().stream()
-            .anyMatch(s -> StringUtils.startsWith(s, buildNamePath(context, true)))){
+            .anyMatch(s -> StringUtils.startsWith(s, buildNamePath(context, false)))){
       count =1;
     }
     context.getNodeDeque().poll();
