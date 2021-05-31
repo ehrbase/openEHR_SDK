@@ -78,7 +78,7 @@ public class DefaultRestAqlEndpointTestIT {
 
         List<Record2<String, DvDateTime>> result = openEhrClient.aqlEndpoint().execute(query, new ParameterValue("ehr_id", ehr));
         assertThat(result).isNotNull();
-        assertThat(result).size().isEqualTo(2);
+        assertThat(result).size().isEqualTo(1);
 
 
     }
@@ -95,11 +95,10 @@ public class DefaultRestAqlEndpointTestIT {
 
         List<Record2<Double, OffsetDateTime>> result = openEhrClient.aqlEndpoint().execute(query, new ParameterValue("ehr_id", ehr));
         assertThat(result).isNotNull();
-        assertThat(result).size().isEqualTo(2);
+        assertThat(result).size().isEqualTo(1);
         assertThat(result).
                 extracting(objectVersionIdOffsetDateTimeRecord2 -> objectVersionIdOffsetDateTimeRecord2.value1(), Record2::value2)
                 .containsExactlyInAnyOrder(
-                        new Tuple(22d, OffsetDateTime.of(2019, 04, 03, 22, 00, 00, 00, ZoneOffset.UTC)),
                         new Tuple(22d, OffsetDateTime.of(2019, 04, 03, 22, 00, 00, 00, ZoneOffset.UTC))
                 );
 
