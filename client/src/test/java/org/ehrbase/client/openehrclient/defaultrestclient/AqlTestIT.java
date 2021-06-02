@@ -99,7 +99,7 @@ public class AqlTestIT {
 
         List<Record2<UUID, Double>> result = openEhrClient.aqlEndpoint().execute(query, new ParameterValue("ehr_id", ehr));
         assertThat(result).isNotNull();
-        assertThat(result).size().isEqualTo(1);
+        assertThat(result).size().isEqualTo(2);
 
 
     }
@@ -129,7 +129,7 @@ public class AqlTestIT {
 
         List<Record2<UUID, DvQuantity>> result = openEhrClient.aqlEndpoint().execute(query, new ParameterValue("ehr_id", ehr));
         assertThat(result).isNotNull();
-        assertThat(result).size().isEqualTo(1);
+        assertThat(result).size().isEqualTo(2);
 
 
     }
@@ -159,7 +159,7 @@ public class AqlTestIT {
 
         List<Record2<UUID, Element>> result = openEhrClient.aqlEndpoint().execute(query, new ParameterValue("ehr_id", ehr));
         assertThat(result).isNotNull();
-        assertThat(result).size().isEqualTo(1);
+        assertThat(result).size().isEqualTo(2);
 
 
     }
@@ -189,7 +189,7 @@ public class AqlTestIT {
 
         List<Record2<UUID, ItemList>> result = openEhrClient.aqlEndpoint().execute(query, new ParameterValue("ehr_id", ehr));
         assertThat(result).isNotNull();
-        assertThat(result).size().isEqualTo(1);
+        assertThat(result).size().isEqualTo(2);
 
 
     }
@@ -309,7 +309,7 @@ public class AqlTestIT {
 
         List<Record2<UUID, Double>> result = openEhrClient.aqlEndpoint().execute(query, new ParameterValue("ehr_id", ehr));
         assertThat(result).isNotNull();
-        assertThat(result).size().isEqualTo(1);
+        assertThat(result).size().isEqualTo(2);
 
 
     }
@@ -339,7 +339,7 @@ public class AqlTestIT {
 
         List<Record2<UUID, Double>> result = openEhrClient.aqlEndpoint().execute(query, new ParameterValue("ehr_id", ehr));
         assertThat(result).isNotNull();
-        assertThat(result).size().isEqualTo(1);
+        assertThat(result).size().isEqualTo(2);
 
 
     }
