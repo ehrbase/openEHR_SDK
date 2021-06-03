@@ -94,6 +94,7 @@
                         <include>CodedTextTest</include>
                         <include>ComposerTest</include>
                         <include>DurationTest</include>
+                        <include>EndTimeTest</include>
                     </includes>
                 </configuration>
 
