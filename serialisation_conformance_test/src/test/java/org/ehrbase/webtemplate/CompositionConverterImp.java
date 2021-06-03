@@ -74,7 +74,7 @@ public class CompositionConverterImp implements CompositionConverter {
 
     compositionBuilderContext.forEach((k, v) -> currentValues.put(replace(k), v));
     Composition composition = flatJson.unmarshal(OBJECT_MAPPER.writeValueAsString(currentValues));
-    return new CanonicalJson().marshal(composition);
+    return new CanonicalJson().marshal(composition).replace("_type","@class");
   }
 
   private FlatJson getFlatJson(String template) throws XmlException, IOException {

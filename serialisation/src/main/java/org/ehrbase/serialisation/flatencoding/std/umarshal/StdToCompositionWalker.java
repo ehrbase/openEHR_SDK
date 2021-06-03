@@ -133,12 +133,7 @@ public class StdToCompositionWalker extends ToCompositionWalker<Map<String, Stri
       RMUnmarshaller rmUnmarshaller =
           UNMARSHALLER_MAP.getOrDefault(
               context.getRmObjectDeque().peek().getClass(), new DefaultRMUnmarshaller());
-      String namePath = buildNamePath(context, true);
-      String finalNamePath = namePath;
-      if (context.getObjectDeque().peek().entrySet().stream()
-              .noneMatch(e -> e.getKey().startsWith(finalNamePath))) {
-        namePath = buildNamePath(context, false);
-      }
+      String namePath = getNamePath(context);
       rmUnmarshaller.handle(
               namePath,
           context.getRmObjectDeque().peek(),
@@ -162,15 +157,26 @@ public class StdToCompositionWalker extends ToCompositionWalker<Map<String, Stri
 
       currentClass = currentClass.getSuperclass();
     }
+    String namePath = getNamePath(context);
 
     postprocessor.forEach(
         p -> {
           p.process(
-              buildNamePath(context, true),
+                  namePath,
               context.getRmObjectDeque().peek(),
               context.getObjectDeque().peek());
           consumedPaths.addAll(p.getConsumedPaths());
         });
+  }
+
+  private String getNamePath(Context<Map<String, String>> context) {
+    String namePath = buildNamePath(context, true);
+    String finalNamePath = namePath;
+    if (context.getObjectDeque().peek().entrySet().stream()
+            .noneMatch(e -> e.getKey().startsWith(finalNamePath))) {
+      namePath = buildNamePath(context, false);
+    }
+    return namePath;
   }
 
   @Override

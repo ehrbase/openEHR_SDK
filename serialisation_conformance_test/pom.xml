@@ -92,6 +92,8 @@
                         <include>BRMohTest</include>
                         <include>BuilderTest</include>
                         <include>CodedTextTest</include>
+                        <include>ComposerTest</include>
+                        <include>DurationTest</include>
                     </includes>
                 </configuration>
 
