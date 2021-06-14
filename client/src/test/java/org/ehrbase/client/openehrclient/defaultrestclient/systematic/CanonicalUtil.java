@@ -66,11 +66,31 @@ public abstract class CanonicalUtil {
                 //get the actual type from Archie lookup
                 Class objectRmClass = ArchieRMInfoLookup.getInstance().getClass((String) ((Map) anObject).get(I_DvTypeAdapter.AT_TYPE));
                 if (objectRmClass != null)
-                    retObject = toRmObject(((Map<String, Object>) anObject), objectRmClass);
+                    retObject = new CanonicalJson().marshal(toRmObject(((Map<String, Object>) anObject), objectRmClass));
             }
         }
 
         retObject = new SpecialCase().transform(retObject);
+
+        return retObject;
+    }
+
+    public static Object valueObject(String anExpression) {
+
+        Object retObject = anExpression;
+
+        if (retObject == null)
+            return null; //null result is valid!
+
+        if (anExpression.startsWith("{")) { //assume json, transform in canonical json for comparison
+            Gson gsonBuilder = new GsonBuilder().create();
+            Map asMap = gsonBuilder.fromJson(anExpression, Map.class);
+            //get the type
+           retObject = valueObject(asMap);
+
+        }
+        else
+            retObject = new SpecialCase().transform(retObject);
 
         return retObject;
     }
@@ -159,7 +179,11 @@ public abstract class CanonicalUtil {
                 }
             }
         }
-        return rmObject;
+
+        if (rmObject instanceof RMObject)
+            return new CanonicalJson().marshal((RMObject) rmObject);
+        else
+            return rmObject;
     }
 
     public static Object attributeValueAt(Object root, String path) {

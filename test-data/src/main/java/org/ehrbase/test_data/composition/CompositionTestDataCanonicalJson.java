@@ -47,6 +47,7 @@ public enum CompositionTestDataCanonicalJson {
     DATE_TIME_TESTS("Composition with multiple partial and full date/time", "datetime_tests.json"),
     DURATION_TESTS("Composition with multiple DvDuration", "duration_tests.json"),
     VIROLOGY_FINDING_WITH_SPECIMEN("virology finding with specimen", "virology_finding_with_specimen.json"),
+    VIROLOGY_FINDING_WITH_SPECIMEN_NO_UPDATE("virology finding with specimen simple", "virology_finding_with_specimen_no_update.json"),
     MULTI_OCCURRENCE("multi occurrence", "multi_occurrence.json"),
     ALTERNATIVE_EVENTS("Contains Event with mixed point and interval", "alternative_events.json"),
     CHOICE_ELEMENT("element containing multiple choice to test validation", "choice_validation_test.json"),

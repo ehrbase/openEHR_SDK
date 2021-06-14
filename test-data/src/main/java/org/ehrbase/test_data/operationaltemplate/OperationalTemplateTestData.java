@@ -79,7 +79,16 @@ public enum OperationalTemplateTestData {
   DETERIORIATION_ASSESSMENT(
       "Deterioriation assessment ",
       "EREACT - Deterioriation assessment.v0.opt",
-      "EREACT - Deterioriation assessment.v0");
+      "EREACT - Deterioriation assessment.v0"),
+  VIROLOGISCHER_BEFUND(
+          "Virologischer Befund",
+          "Virologischer_Befund.opt",
+          "Virologischer Befund"),
+  LABOR_BEFUND(
+          "Labor Befund",
+          "laborbefund.opt",
+          "Laborbefund");
+  ;
 
 
   private final String filename;
