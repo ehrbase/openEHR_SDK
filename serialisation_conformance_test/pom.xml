@@ -96,6 +96,7 @@
                         <include>DurationTest</include>
                         <include>EndTimeTest</include>
                         <include>HistoryOriginTest</include>
+                        <include>IntervalEventTest</include>
                     </includes>
                 </configuration>
 

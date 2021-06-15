@@ -31,6 +31,8 @@ import com.nedap.archie.rm.generic.PartyProxy;
 import com.nedap.archie.rm.support.identification.GenericId;
 import com.nedap.archie.rm.support.identification.ObjectRef;
 import com.nedap.archie.rm.support.identification.PartyRef;
+
+import java.time.OffsetDateTime;
 import java.time.temporal.TemporalAccessor;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -47,6 +49,7 @@ import java.util.stream.Stream;
 import org.apache.commons.lang3.StringUtils;
 import org.ehrbase.client.classgenerator.EnumValueSet;
 import org.ehrbase.client.classgenerator.shareddefinition.ParticipationMode;
+import org.ehrbase.client.classgenerator.shareddefinition.State;
 import org.ehrbase.serialisation.jsonencoding.JacksonUtil;
 import org.ehrbase.util.exception.SdkException;
 
@@ -162,18 +165,32 @@ public class DefaultValues {
                               .setScheme(getDefaultValue(DefaultValuePath.ID_SCHEME));
                         });
               }
-              if (defaultValueMap.containsKey(DefaultValuePath.WORKFLOW_ID)) {
-                if (((GenericId) getDefaultValue(DefaultValuePath.WORKFLOW_ID).getId()).getScheme()
-                    == null) {
-                  ((GenericId) getDefaultValue(DefaultValuePath.WORKFLOW_ID).getId())
-                      .setScheme(getDefaultValue(DefaultValuePath.ID_SCHEME));
-                }
-                if (getDefaultValue(DefaultValuePath.WORKFLOW_ID).getNamespace() == null) {
-                  getDefaultValue(DefaultValuePath.WORKFLOW_ID)
-                      .setNamespace(getDefaultValue(DefaultValuePath.ID_NAMESPACE));
-                }
-              }
+              setFlatDefaults();
+
+
             });
+  }
+
+  private void setFlatDefaults() {
+    if (defaultValueMap.containsKey(DefaultValuePath.WORKFLOW_ID)) {
+      if (((GenericId) getDefaultValue(DefaultValuePath.WORKFLOW_ID).getId()).getScheme()
+          == null) {
+        ((GenericId) getDefaultValue(DefaultValuePath.WORKFLOW_ID).getId())
+            .setScheme(getDefaultValue(DefaultValuePath.ID_SCHEME));
+      }
+      if (getDefaultValue(DefaultValuePath.WORKFLOW_ID).getNamespace() == null) {
+        getDefaultValue(DefaultValuePath.WORKFLOW_ID)
+            .setNamespace(getDefaultValue(DefaultValuePath.ID_NAMESPACE));
+      }
+    }
+
+    if (!defaultValueMap.containsKey(DefaultValuePath.TIME)){
+      defaultValueMap.put(DefaultValuePath.TIME, OffsetDateTime.now());
+    }
+
+    if(!defaultValueMap.containsKey(DefaultValuePath.ACTION_ISM_TRANSITION_CURRENT_STATE)){
+      defaultValueMap.put(DefaultValuePath.ACTION_ISM_TRANSITION_CURRENT_STATE, State.INITIAL);
+    }
   }
 
   private Map<String, String> filter(Map<String, String> flat, String path) {
