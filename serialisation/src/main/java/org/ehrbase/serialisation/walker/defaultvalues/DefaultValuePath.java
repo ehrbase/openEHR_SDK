@@ -23,10 +23,8 @@ import com.nedap.archie.rm.generic.Participation;
 import com.nedap.archie.rm.support.identification.ObjectRef;
 import java.time.temporal.TemporalAccessor;
 import java.util.List;
-import org.ehrbase.client.classgenerator.shareddefinition.Language;
-import org.ehrbase.client.classgenerator.shareddefinition.Setting;
-import org.ehrbase.client.classgenerator.shareddefinition.Territory;
-import org.ehrbase.client.classgenerator.shareddefinition.Transition;
+
+import org.ehrbase.client.classgenerator.shareddefinition.*;
 
 public class DefaultValuePath<T> {
 
@@ -62,8 +60,8 @@ public class DefaultValuePath<T> {
       new DefaultValuePath<>("health_care_facility|name", String.class);
   public static final DefaultValuePath<String> HEALTHCARE_FACILITY_ID =
       new DefaultValuePath<>("health_care_facility|id", String.class);
-  public static final DefaultValuePath<Transition> ACTION_ISM_TRANSITION_CURRENT_STATE =
-      new DefaultValuePath<>("action_ism_transition_current_state", Transition.class);
+  public static final DefaultValuePath<State> ACTION_ISM_TRANSITION_CURRENT_STATE =
+      new DefaultValuePath<>("action_ism_transition_current_state", State.class);
   public static final DefaultValuePath<String> INSTRUCTION_NARRATIVE =
       new DefaultValuePath<>("instruction_narrative", String.class);
   public static final DefaultValuePath<String> LOCATION =

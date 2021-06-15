@@ -95,6 +95,7 @@
                         <include>ComposerTest</include>
                         <include>DurationTest</include>
                         <include>EndTimeTest</include>
+                        <include>HistoryOriginTest</include>
                     </includes>
                 </configuration>
 
