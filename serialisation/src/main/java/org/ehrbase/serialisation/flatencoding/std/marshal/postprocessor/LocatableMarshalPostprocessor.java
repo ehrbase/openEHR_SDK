@@ -19,12 +19,17 @@
 
 package org.ehrbase.serialisation.flatencoding.std.marshal.postprocessor;
 
-import static org.ehrbase.webtemplate.parser.OPTParser.PATH_DIVIDER;
-
+import com.nedap.archie.rm.archetyped.Link;
 import com.nedap.archie.rm.archetyped.Locatable;
+import com.nedap.archie.rm.datavalues.DvEHRURI;
+import com.nedap.archie.rm.datavalues.DvText;
 import com.nedap.archie.rm.support.identification.ObjectId;
+
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.IntStream;
+
+import static org.ehrbase.webtemplate.parser.OPTParser.PATH_DIVIDER;
 
 public class LocatableMarshalPostprocessor implements MarshalPostprocessor<Locatable> {
 
@@ -37,6 +42,30 @@ public class LocatableMarshalPostprocessor implements MarshalPostprocessor<Locat
         term + PATH_DIVIDER + "_uid",
         null,
         Optional.of(rmObject).map(Locatable::getUid).map(ObjectId::getValue).orElse(null));
+
+    if (rmObject.getLinks() != null) {
+      IntStream.range(0, rmObject.getLinks().size())
+          .forEach(
+              i -> {
+                Link link = rmObject.getLinks().get(i);
+                String termLoop = term + PATH_DIVIDER + "_link:" + i;
+                MarshalPostprocessor.addValue(
+                    values,
+                    termLoop,
+                    "meaning",
+                    Optional.of(link).map(Link::getMeaning).map(DvText::getValue).orElse(null));
+                MarshalPostprocessor.addValue(
+                    values,
+                    termLoop,
+                    "type",
+                    Optional.of(link).map(Link::getType).map(DvText::getValue).orElse(null));
+                MarshalPostprocessor.addValue(
+                    values,
+                    termLoop,
+                    "target",
+                    Optional.of(link).map(Link::getTarget).map(DvEHRURI::getValue).orElse(null));
+              });
+    }
   }
 
   /** {@inheritDoc} */

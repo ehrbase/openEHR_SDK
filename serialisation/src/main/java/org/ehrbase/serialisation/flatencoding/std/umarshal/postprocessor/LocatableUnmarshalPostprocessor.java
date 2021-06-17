@@ -19,12 +19,18 @@
 
 package org.ehrbase.serialisation.flatencoding.std.umarshal.postprocessor;
 
-import static org.ehrbase.webtemplate.parser.OPTParser.PATH_DIVIDER;
-
 import com.nedap.archie.rm.archetyped.Locatable;
 import com.nedap.archie.rm.composition.Composition;
 import com.nedap.archie.rm.support.identification.HierObjectId;
+import org.apache.commons.lang3.StringUtils;
+import org.ehrbase.serialisation.walker.defaultvalues.DefaultValues;
+
+import java.util.ArrayList;
 import java.util.Map;
+import java.util.stream.Collectors;
+
+import static org.ehrbase.serialisation.walker.defaultvalues.DefaultValues.ATTRIBUTE_COLLECTOR;
+import static org.ehrbase.webtemplate.parser.OPTParser.PATH_DIVIDER;
 
 public class LocatableUnmarshalPostprocessor extends AbstractUnmarshalPostprocessor<Locatable> {
 
@@ -38,6 +44,28 @@ public class LocatableUnmarshalPostprocessor extends AbstractUnmarshalPostproces
         values,
         s -> rmObject.setUid(new HierObjectId(s)),
         String.class);
+
+    Map<Integer, Map<String, String>> links =
+        values.entrySet().stream()
+            .filter(s -> StringUtils.startsWith(s.getKey(), term + PATH_DIVIDER + "_link"))
+            .collect(
+                Collectors.groupingBy(
+                    e -> {
+                      String s =
+                          StringUtils.substringBefore(
+                              StringUtils.substringAfter(e.getKey(), ":"), "|");
+                      return StringUtils.isBlank(s) ? 0 : Integer.parseInt(s);
+                    },
+                    ATTRIBUTE_COLLECTOR));
+
+    if (rmObject.getLinks() == null) {
+      rmObject.setLinks(new ArrayList<>());
+    }
+
+    rmObject
+        .getLinks()
+        .addAll(
+            links.values().stream().map(DefaultValues::createLink).collect(Collectors.toList()));
   }
 
   /** {@inheritDoc} */

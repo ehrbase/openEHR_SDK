@@ -19,12 +19,16 @@
 
 package org.ehrbase.serialisation.walker.defaultvalues;
 
+import com.nedap.archie.rm.archetyped.Link;
 import com.nedap.archie.rm.generic.Participation;
 import com.nedap.archie.rm.support.identification.ObjectRef;
+import org.ehrbase.client.classgenerator.shareddefinition.Language;
+import org.ehrbase.client.classgenerator.shareddefinition.Setting;
+import org.ehrbase.client.classgenerator.shareddefinition.State;
+import org.ehrbase.client.classgenerator.shareddefinition.Territory;
+
 import java.time.temporal.TemporalAccessor;
 import java.util.List;
-
-import org.ehrbase.client.classgenerator.shareddefinition.*;
 
 public class DefaultValuePath<T> {
 
@@ -70,6 +74,7 @@ public class DefaultValuePath<T> {
       new DefaultValuePath<>("setting", Setting.class);
   public static final DefaultValuePath<List<Participation>> PARTICIPATION =
       new DefaultValuePath<>("participation");
+  public static final DefaultValuePath<List<Link>> LINKS = new DefaultValuePath<>("link");
   public static final DefaultValuePath<ObjectRef> WORKFLOW_ID =
       new DefaultValuePath<>("workflow_id", ObjectRef.class);
 

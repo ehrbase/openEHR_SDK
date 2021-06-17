@@ -22,7 +22,9 @@ package org.ehrbase.serialisation.walker.defaultvalues;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nedap.archie.datetime.DateTimeParsers;
+import com.nedap.archie.rm.archetyped.Link;
 import com.nedap.archie.rm.datavalues.DvCodedText;
+import com.nedap.archie.rm.datavalues.DvEHRURI;
 import com.nedap.archie.rm.datavalues.DvIdentifier;
 import com.nedap.archie.rm.datavalues.DvText;
 import com.nedap.archie.rm.generic.Participation;
@@ -31,21 +33,6 @@ import com.nedap.archie.rm.generic.PartyProxy;
 import com.nedap.archie.rm.support.identification.GenericId;
 import com.nedap.archie.rm.support.identification.ObjectRef;
 import com.nedap.archie.rm.support.identification.PartyRef;
-
-import java.time.OffsetDateTime;
-import java.time.temporal.TemporalAccessor;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.function.Consumer;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import org.apache.commons.lang3.StringUtils;
 import org.ehrbase.client.classgenerator.EnumValueSet;
 import org.ehrbase.client.classgenerator.shareddefinition.ParticipationMode;
@@ -53,9 +40,17 @@ import org.ehrbase.client.classgenerator.shareddefinition.State;
 import org.ehrbase.serialisation.jsonencoding.JacksonUtil;
 import org.ehrbase.util.exception.SdkException;
 
+import java.time.OffsetDateTime;
+import java.time.temporal.TemporalAccessor;
+import java.util.*;
+import java.util.function.Consumer;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 public class DefaultValues {
 
-  private static final Collector<Map.Entry<String, String>, ?, Map<String, String>>
+  public static final Collector<Map.Entry<String, String>, ?, Map<String, String>>
       ATTRIBUTE_COLLECTOR =
           Collectors.toMap(
               e -> StringUtils.substringBefore(StringUtils.substringAfter(e.getKey(), "|"), ":"),
@@ -93,7 +88,8 @@ public class DefaultValues {
             DefaultValuePath.LOCATION,
             DefaultValuePath.SETTING,
             DefaultValuePath.PARTICIPATION,
-            DefaultValuePath.WORKFLOW_ID)
+            DefaultValuePath.WORKFLOW_ID,
+            DefaultValuePath.LINKS)
         .forEach(
             path -> {
               Map<String, String> subValues = filter(flat, path.getPath());
@@ -149,32 +145,49 @@ public class DefaultValues {
                   ref.getId().setScheme(attributes.get("id_scheme"));
 
                   defaultValueMap.put(path, ref);
+                } else if (path.equals(DefaultValuePath.LINKS)) {
+
+                  Map<Integer, Map<String, String>> links =
+                      subValues.entrySet().stream()
+                          .collect(
+                              Collectors.groupingBy(
+                                  e -> {
+                                    String s =
+                                        StringUtils.substringBefore(
+                                            StringUtils.substringAfter(e.getKey(), ":"), "|");
+                                    return StringUtils.isBlank(s) ? 0 : Integer.parseInt(s);
+                                  },
+                                  ATTRIBUTE_COLLECTOR));
+
+                  defaultValueMap.put(
+                      path,
+                      links.values().stream()
+                          .map(DefaultValues::createLink)
+                          .collect(Collectors.toList()));
                 }
               }
 
-              if (defaultValueMap.containsKey(DefaultValuePath.PARTICIPATION)) {
-                getDefaultValue(DefaultValuePath.PARTICIPATION).stream()
-                    .map(Participation::getPerformer)
-                    .map(PartyProxy::getExternalRef)
-                    .filter(Objects::nonNull)
-                    .filter(ref -> ref.getId() != null)
-                    .forEach(
-                        ref -> {
-                          ref.setNamespace(getDefaultValue(DefaultValuePath.ID_NAMESPACE));
-                          ((GenericId) ref.getId())
-                              .setScheme(getDefaultValue(DefaultValuePath.ID_SCHEME));
-                        });
-              }
               setFlatDefaults();
-
-
             });
   }
 
   private void setFlatDefaults() {
+
+    if (defaultValueMap.containsKey(DefaultValuePath.PARTICIPATION)) {
+      getDefaultValue(DefaultValuePath.PARTICIPATION).stream()
+          .map(Participation::getPerformer)
+          .map(PartyProxy::getExternalRef)
+          .filter(Objects::nonNull)
+          .filter(ref -> ref.getId() != null)
+          .forEach(
+              ref -> {
+                ref.setNamespace(getDefaultValue(DefaultValuePath.ID_NAMESPACE));
+                ((GenericId) ref.getId()).setScheme(getDefaultValue(DefaultValuePath.ID_SCHEME));
+              });
+    }
+
     if (defaultValueMap.containsKey(DefaultValuePath.WORKFLOW_ID)) {
-      if (((GenericId) getDefaultValue(DefaultValuePath.WORKFLOW_ID).getId()).getScheme()
-          == null) {
+      if (((GenericId) getDefaultValue(DefaultValuePath.WORKFLOW_ID).getId()).getScheme() == null) {
         ((GenericId) getDefaultValue(DefaultValuePath.WORKFLOW_ID).getId())
             .setScheme(getDefaultValue(DefaultValuePath.ID_SCHEME));
       }
@@ -184,13 +197,28 @@ public class DefaultValues {
       }
     }
 
-    if (!defaultValueMap.containsKey(DefaultValuePath.TIME)){
+    if (!defaultValueMap.containsKey(DefaultValuePath.TIME)) {
       defaultValueMap.put(DefaultValuePath.TIME, OffsetDateTime.now());
     }
 
-    if(!defaultValueMap.containsKey(DefaultValuePath.ACTION_ISM_TRANSITION_CURRENT_STATE)){
+    if (!defaultValueMap.containsKey(DefaultValuePath.ACTION_ISM_TRANSITION_CURRENT_STATE)) {
       defaultValueMap.put(DefaultValuePath.ACTION_ISM_TRANSITION_CURRENT_STATE, State.INITIAL);
     }
+  }
+
+  public static Link createLink(Map<String, String> stringStringMap) {
+    Link link = new Link();
+    if (stringStringMap.containsKey("meaning")) {
+      link.setMeaning(new DvText(stringStringMap.get("meaning")));
+    }
+    if (stringStringMap.containsKey("type")) {
+      link.setType(new DvText(stringStringMap.get("type")));
+    }
+    if (stringStringMap.containsKey("target")) {
+      link.setTarget(new DvEHRURI(stringStringMap.get("target")));
+    }
+
+    return link;
   }
 
   private Map<String, String> filter(Map<String, String> flat, String path) {
@@ -231,7 +259,8 @@ public class DefaultValues {
                         subValues.stream()
                             .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)),
                         DefaultValuePath.PARTICIPATION.getPath() + "_" + "identifiers"))
-                .values().stream()
+                .values()
+                .stream()
                 .map(this::toDvIdentifier)
                 .collect(Collectors.toList()));
     return participation;
@@ -293,7 +322,8 @@ public class DefaultValues {
     filter(
             subValues.stream().collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)),
             DefaultValuePath.PARTICIPATION.getPath() + "_" + subPath)
-        .values().stream()
+        .values()
+        .stream()
         .map(DefaultValues::read)
         .findAny()
         .ifPresent(stringConsumer);
