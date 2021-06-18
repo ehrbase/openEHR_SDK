@@ -98,7 +98,6 @@ public class CanonicalEhrQuery3IT extends CanonicalCompoAllTypeQueryIT {
                  "other_details",
                  "other_details/name",
                  "other_details/name/value",
-                 //TODO: https://github.com/ehrbase/project_management/issues/484
                  "other_details/items[at0001]",
                  "other_details/items[at0001]/archetype_node_id",
                  "other_details/items[at0001]/name",
