@@ -20,6 +20,8 @@
 package org.ehrbase.serialisation.flatencoding.std.marshal.postprocessor;
 
 import com.nedap.archie.rm.composition.Entry;
+import com.nedap.archie.rm.generic.PartyIdentified;
+import org.ehrbase.serialisation.flatencoding.std.marshal.config.PartyIdentifiedStdConfig;
 
 import java.util.Map;
 
@@ -27,22 +29,25 @@ import static org.ehrbase.webtemplate.parser.OPTParser.PATH_DIVIDER;
 
 public class EntryMarshalPostprocessor implements MarshalPostprocessor<Entry> {
 
+  /** {@inheritDoc} Adds the encoding information */
+  @Override
+  public void process(String term, Entry rmObject, Map<String, Object> values) {
+    values.put(term + PATH_DIVIDER + "encoding|code", "UTF-8");
+    values.put(term + PATH_DIVIDER + "encoding|terminology", "IANA_character-sets");
 
-    /**
-     * {@inheritDoc}
-     * Adds the encoding information
-     */
-    @Override
-    public void process(String term, Entry rmObject, Map<String, Object> values) {
-        values.put(term + PATH_DIVIDER + "encoding|code", "UTF-8");
-        values.put(term + PATH_DIVIDER + "encoding|terminology", "IANA_character-sets");
-    }
+    if (rmObject.getProvider() != null) {
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Class<Entry> getAssociatedClass() {
-        return Entry.class;
+      PartyIdentifiedStdConfig partyIdentifiedStdConfig = new PartyIdentifiedStdConfig();
+
+      values.putAll(
+          partyIdentifiedStdConfig.buildChildValues(
+              term + PATH_DIVIDER + "_provider", (PartyIdentified) rmObject.getProvider(), null));
     }
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public Class<Entry> getAssociatedClass() {
+    return Entry.class;
+  }
 }

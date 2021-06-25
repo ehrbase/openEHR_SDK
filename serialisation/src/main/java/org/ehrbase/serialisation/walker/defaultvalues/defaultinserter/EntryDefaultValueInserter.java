@@ -23,9 +23,10 @@ import com.nedap.archie.rm.composition.Entry;
 import com.nedap.archie.rm.generic.Participation;
 import com.nedap.archie.rm.generic.PartyProxy;
 import com.nedap.archie.rm.support.identification.GenericId;
-import java.util.Objects;
 import org.ehrbase.serialisation.walker.defaultvalues.DefaultValuePath;
 import org.ehrbase.serialisation.walker.defaultvalues.DefaultValues;
+
+import java.util.Objects;
 
 public class EntryDefaultValueInserter extends AbstractValueInserter<Entry> {
   @Override
@@ -81,6 +82,9 @@ public class EntryDefaultValueInserter extends AbstractValueInserter<Entry> {
         ((GenericId) rmObject.getWorkflowId().getId())
             .setScheme(defaultValues.getDefaultValue(DefaultValuePath.ID_SCHEME));
       }
+    }
+    if (rmObject.getProvider() != null) {
+      addSchemeNamespace(rmObject.getProvider().getExternalRef(), defaultValues);
     }
   }
 

@@ -23,12 +23,6 @@ import care.better.platform.web.template.converter.CompositionConverter;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nedap.archie.rm.composition.Composition;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Optional;
 import org.apache.commons.io.IOUtils;
 import org.apache.xmlbeans.XmlException;
 import org.ehrbase.serialisation.flatencoding.FlatFormat;
@@ -38,6 +32,13 @@ import org.ehrbase.serialisation.jsonencoding.CanonicalJson;
 import org.ehrbase.serialisation.jsonencoding.JacksonUtil;
 import org.openehr.schemas.v1.TemplateDocument;
 
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Optional;
+
 public class CompositionConverterImp implements CompositionConverter {
 
   public static final ObjectMapper OBJECT_MAPPER = JacksonUtil.getObjectMapper();
@@ -45,15 +46,19 @@ public class CompositionConverterImp implements CompositionConverter {
   @Override
   public String convertRawToFlat(String template, String defaultLanguage, String rawComposition)
       throws Exception {
-    Composition unmarshal = new CanonicalJson().unmarshal(rawComposition.replace("@class","_type"), Composition.class);
+    Composition unmarshal =
+        new CanonicalJson().unmarshal(rawComposition.replace("@class", "_type"), Composition.class);
 
-    return getFlatJson(template).marshal(unmarshal);
+    return getFlatJson(template)
+        .marshal(unmarshal)
+        .replace("_identifier:0|id", "_identifier:0")
+        .replace("_identifier:1|id", "_identifier:1");
   }
 
   @Override
   public String convertRawToStructured(
       String template, String defaultLanguage, String rawComposition) throws Exception {
-    throw  new UnsupportedOperationException();
+    throw new UnsupportedOperationException();
   }
 
   @Override
@@ -74,7 +79,7 @@ public class CompositionConverterImp implements CompositionConverter {
 
     compositionBuilderContext.forEach((k, v) -> currentValues.put(replace(k), v));
     Composition composition = flatJson.unmarshal(OBJECT_MAPPER.writeValueAsString(currentValues));
-    return new CanonicalJson().marshal(composition).replace("_type","@class");
+    return new CanonicalJson().marshal(composition).replace("_type", "@class");
   }
 
   private FlatJson getFlatJson(String template) throws XmlException, IOException {
@@ -91,7 +96,7 @@ public class CompositionConverterImp implements CompositionConverter {
   private String replace(String k) {
     if (k.equals("composerName")) {
       return "ctx/composer_name";
-    }else    if (k.equals("start_time")) {
+    } else if (k.equals("start_time")) {
       return "ctx/time";
     }
     return "ctx/" + k;
@@ -104,7 +109,7 @@ public class CompositionConverterImp implements CompositionConverter {
       String flatComposition,
       Map<String, Object> compositionBuilderContext)
       throws Exception {
-    throw  new UnsupportedOperationException();
+    throw new UnsupportedOperationException();
   }
 
   @Override
@@ -114,7 +119,7 @@ public class CompositionConverterImp implements CompositionConverter {
       String structuredComposition,
       Map<String, Object> compositionBuilderContext)
       throws Exception {
-    throw  new UnsupportedOperationException();
+    throw new UnsupportedOperationException();
   }
 
   @Override
@@ -124,7 +129,7 @@ public class CompositionConverterImp implements CompositionConverter {
       String structuredComposition,
       Map<String, Object> compositionBuilderContext)
       throws Exception {
-    throw  new UnsupportedOperationException();
+    throw new UnsupportedOperationException();
   }
 
   @Override
@@ -135,6 +140,6 @@ public class CompositionConverterImp implements CompositionConverter {
       Map<String, Object> compositionBuilderContext,
       Map<String, Object> deltaValues)
       throws Exception {
-    throw  new UnsupportedOperationException();
+    throw new UnsupportedOperationException();
   }
 }

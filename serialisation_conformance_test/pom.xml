@@ -99,6 +99,10 @@
                         <include>HistoryOriginTest</include>
                         <include>IntervalEventTest</include>
                         <include>LinksTest</include>
+                        <include>LocationTest</include>
+                        <include>MediaTypeExampleTest</include>
+                        <include>NoArchetypedTest</include>
+                        <include>ProviderTest</include>
                     </includes>
                 </configuration>
 

@@ -19,15 +19,15 @@
 
 package org.ehrbase.serialisation.flatencoding.std.umarshal.postprocessor;
 
-import static org.ehrbase.webtemplate.parser.OPTParser.PATH_DIVIDER;
-
 import com.nedap.archie.rm.composition.EventContext;
 import com.nedap.archie.rm.datavalues.quantity.datetime.DvDateTime;
 import com.nedap.archie.rm.generic.PartyIdentified;
+import org.ehrbase.serialisation.flatencoding.std.umarshal.rmunmarshaller.PartyIdentifiedRMUnmarshaller;
+
 import java.util.Map;
 import java.util.stream.Collectors;
-import org.apache.commons.lang3.StringUtils;
-import org.ehrbase.serialisation.flatencoding.std.umarshal.rmunmarshaller.PartyIdentifiedRMUnmarshaller;
+
+import static org.ehrbase.webtemplate.parser.OPTParser.PATH_DIVIDER;
 
 public class EventContextUnmarshalPostprocessor
     extends AbstractUnmarshalPostprocessor<EventContext> {
@@ -51,10 +51,7 @@ public class EventContextUnmarshalPostprocessor
 
     Map<String, String> health_care_facilityValues =
         values.entrySet().stream()
-            .filter(
-                e ->
-                    StringUtils.substringAfterLast(e.getKey(), "/")
-                        .contains("_health_care_facility"))
+            .filter(e -> e.getKey().startsWith(term + "/_health_care_facility"))
             .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     if (!health_care_facilityValues.isEmpty()) {
       rmObject.setHealthCareFacility(new PartyIdentified());
