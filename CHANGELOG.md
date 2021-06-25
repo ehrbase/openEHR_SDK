@@ -6,6 +6,8 @@ Note: version releases in the 0.x.y range may introduce breaking changes.
 
 ### Fixed
 
+- Flat: Allow replacing DV_TEXT with DV_CODED_TEXT (see https://github.com/ehrbase/openEHR_SDK/pull/223)
+
 ## 1.4.0
 ### Added
 - Flat: support ctx variables (see https://github.com/ehrbase/openEHR_SDK/pull/206)

@@ -19,12 +19,6 @@
 
 package org.ehrbase.client.openehrclient.defaultrestclient;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThrows;
-import static org.junit.Assert.assertTrue;
-
 import com.nedap.archie.rm.composition.Composition;
 import com.nedap.archie.rm.composition.Observation;
 import com.nedap.archie.rm.datastructures.Element;
@@ -32,12 +26,6 @@ import com.nedap.archie.rm.datastructures.Event;
 import com.nedap.archie.rm.datastructures.History;
 import com.nedap.archie.rm.datastructures.ItemList;
 import com.nedap.archie.rm.datavalues.quantity.DvQuantity;
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.io.IOUtils;
 import org.assertj.core.groups.Tuple;
@@ -65,6 +53,16 @@ import org.ehrbase.test_data.composition.CompositionTestDataCanonicalJson;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
+import java.util.List;
+import java.util.UUID;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.*;
 
 @Category(Integration.class)
 public class AqlTestIT {
@@ -371,7 +369,7 @@ public class AqlTestIT {
 
         List<Record2<UUID, Double>> result = openEhrClient.aqlEndpoint().execute(query, new ParameterValue("ehr_id", ehr));
         assertThat(result).isNotNull();
-        assertThat(result).size().isEqualTo(2);
+        assertThat(result).size().isEqualTo(1);
 
 
     }
@@ -405,7 +403,8 @@ public class AqlTestIT {
                         new Tuple("Vorhanden", "Fieber oder erhöhte Körpertemperatur"),
                         new Tuple("Nicht vorhanden", "gestörter Geruchssinn"),
                         new Tuple("Nicht vorhanden", "gestörter Geschmackssinn"),
-                        new Tuple("Nicht vorhanden", "Durchfall")
+                        new Tuple("Nicht vorhanden", "Durchfall"),
+                        new Tuple(null, null)
                 );
 
 
@@ -444,7 +443,7 @@ public class AqlTestIT {
         List<Record2<UUID, Double>> result = openEhrClient.aqlEndpoint().execute(entityQuery, ehrIdParameter.setValue(ehr));
         assertThat(result)
                 .isNotNull()
-                .size().isEqualTo(2);
+                .size().isEqualTo(1);
 
     }
 
@@ -474,7 +473,7 @@ public class AqlTestIT {
     assertNotNull(result.getQuery());
     assertNotNull(result.getRows());
     assertNotNull(result.getColumns());
-    assertEquals(result.getRows().size(), 7);
+    assertEquals(result.getRows().size(), 8);
     assertEquals(result.getColumns().size(), 2);
 
     List expectedResults = Arrays.asList(
@@ -484,7 +483,9 @@ public class AqlTestIT {
         List.of("Vorhanden", "Fieber oder erhöhte Körpertemperatur"),
         List.of("Nicht vorhanden", "gestörter Geruchssinn"),
         List.of("Nicht vorhanden", "gestörter Geschmackssinn"),
-        List.of("Nicht vorhanden", "Durchfall"));
+        List.of("Nicht vorhanden", "Durchfall"),
+        Arrays.asList(new String[]{null, null})
+    );
 
     assertTrue(CollectionUtils.isEqualCollection(result.getRows(), expectedResults));
   }

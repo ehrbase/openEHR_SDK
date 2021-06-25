@@ -59,6 +59,35 @@ public class FlatJsonTest {
   }
 
   @Test
+  public void roundTripIcd() throws IOException {
+    TestDataTemplateProvider templateProvider = new TestDataTemplateProvider();
+    FlatJson cut =
+        new FlatJasonProvider(templateProvider)
+            .buildFlatJson(FlatFormat.SIM_SDT, "Adverse Reaction List.v1");
+
+    String flat =
+        IOUtils.toString(
+            CompositionTestDataSimSDTJson.ADVERSE_REACTION_LIST.getStream(),
+            StandardCharsets.UTF_8);
+    Composition unmarshal = cut.unmarshal(flat);
+
+    assertThat(unmarshal).isNotNull();
+
+    String actual = cut.marshal(unmarshal);
+
+    String expected =
+        IOUtils.toString(
+            CompositionTestDataSimSDTJson.ADVERSE_REACTION_LIST.getStream(),
+            StandardCharsets.UTF_8);
+
+    List<String> errors = compere(actual, expected);
+
+    assertThat(errors).filteredOn(s -> s.startsWith("Missing")).containsExactlyInAnyOrder();
+
+    assertThat(errors).filteredOn(s -> s.startsWith("Extra")).containsExactlyInAnyOrder();
+  }
+
+  @Test
   public void roundTripDeterioriationAssessment() throws IOException {
     TestDataTemplateProvider templateProvider = new TestDataTemplateProvider();
     FlatJson cut =

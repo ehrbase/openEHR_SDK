@@ -34,7 +34,10 @@ public class SpecialCase {
     public Object transform(Object object){
         Object retObject = object;
 
-        if (object instanceof PartySelf && (((PartySelf)object).getExternalRef() == null || ((PartySelf)object).getExternalRef().getId() == null) )
+        if (object instanceof PartySelf &&
+                (((PartySelf)object).getExternalRef() == null
+                        || ((PartySelf)object).getExternalRef().getId() == null
+                        || ((PartySelf)object).getExternalRef().getType().equalsIgnoreCase("PARTY_REF")))
             retObject = "PARTY_SELF";
         else if (object instanceof RMObject) {
             retObject = toMap((RMObject) object);
@@ -57,6 +60,9 @@ public class SpecialCase {
         else if (object instanceof String &&
                 ((String)object).matches("^\\d{4}-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d(\\.\\d+)?(([+-]\\d\\d:\\d\\d)|Z)?$"))
             retObject = ((String)retObject).replace(".", ",");
+        else if (object instanceof String &&
+                ((String)object).contains("PARTY_SELF"))
+            retObject = "PARTY_SELF";
 
         return retObject;
     }

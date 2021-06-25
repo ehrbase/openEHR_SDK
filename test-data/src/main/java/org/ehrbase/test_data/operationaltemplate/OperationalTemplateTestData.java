@@ -36,6 +36,10 @@ public enum OperationalTemplateTestData {
       "IDCR - Laboratory Test Report.v0"),
   IDCR_PROBLEM_LIST(
       "IDCR  Problem List.v1", "IDCR - Problem List.v1.opt", "IDCR - Problem List.v1"),
+  IDCR_ADVERSE_REACTION_LIST(
+      "IDCR -  Adverse Reaction List.v1",
+      "IDCR - Adverse Reaction List.v1.opt",
+      "Adverse Reaction List.v1"),
   BLOOD_PRESSURE_SIMPLE(
       "Very simple blood_pressure template",
       "ehrbase_blood_pressure_simple.de.v0.opt",
@@ -81,7 +85,16 @@ public enum OperationalTemplateTestData {
   DETERIORIATION_ASSESSMENT(
       "Deterioriation assessment ",
       "EREACT - Deterioriation assessment.v0.opt",
-      "EREACT - Deterioriation assessment.v0");
+      "EREACT - Deterioriation assessment.v0"),
+  VIROLOGISCHER_BEFUND(
+          "Virologischer Befund",
+          "Virologischer_Befund.opt",
+          "Virologischer Befund"),
+  LABOR_BEFUND(
+          "Labor Befund",
+          "laborbefund.opt",
+          "Laborbefund");
+  ;
 
   private final String filename;
   private final String templateId;
