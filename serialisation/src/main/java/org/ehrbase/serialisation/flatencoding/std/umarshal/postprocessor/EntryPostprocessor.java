@@ -22,9 +22,11 @@ package org.ehrbase.serialisation.flatencoding.std.umarshal.postprocessor;
 import com.nedap.archie.rm.composition.Entry;
 import com.nedap.archie.rm.generic.PartyIdentified;
 import com.nedap.archie.rm.generic.PartyProxy;
+import com.nedap.archie.rm.generic.PartyRelated;
 import com.nedap.archie.rm.generic.PartySelf;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.ehrbase.serialisation.flatencoding.std.umarshal.rmunmarshaller.PartyIdentifiedRMUnmarshaller;
 
 import java.util.Map;
@@ -45,7 +47,10 @@ public class EntryPostprocessor extends AbstractUnmarshalPostprocessor<Entry> {
         || (subject instanceof PartyIdentified
             && ((PartyIdentified) subject).getName() == null
             && CollectionUtils.isEmpty(((PartyIdentified) subject).getIdentifiers())
-            && subject.getExternalRef() == null)) {
+            && subject.getExternalRef() == null
+            && (!(subject instanceof PartyRelated)
+                || ((PartyRelated) subject).getRelationship() == null
+                || StringUtils.isEmpty(((PartyRelated) subject).getRelationship().getValue())))) {
       rmObject.setSubject(new PartySelf());
     }
 

@@ -103,6 +103,7 @@
                         <include>MediaTypeExampleTest</include>
                         <include>NoArchetypedTest</include>
                         <include>ProviderTest</include>
+                        <include>SubjectTest</include>
                     </includes>
                 </configuration>
 
