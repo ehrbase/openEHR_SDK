@@ -23,8 +23,13 @@ import com.nedap.archie.rm.datatypes.CodePhrase;
 import com.nedap.archie.rm.datavalues.DvCodedText;
 import com.nedap.archie.rm.support.identification.TerminologyId;
 import org.ehrbase.serialisation.walker.Context;
+import org.ehrbase.webtemplate.model.WebTemplateInput;
 
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.Stream;
 
 public class DvCodedTextRMUnmarshaller extends AbstractRMUnmarshaller<DvCodedText> {
 
@@ -44,7 +49,33 @@ public class DvCodedTextRMUnmarshaller extends AbstractRMUnmarshaller<DvCodedTex
         setValue(currentTerm, "value", currentValues, rmObject::setValue, String.class);
         rmObject.setDefiningCode(new CodePhrase());
         setValue(currentTerm, "code", currentValues, c -> rmObject.getDefiningCode().setCodeString(c), String.class);
+        if (rmObject.getDefiningCode().getCodeString() == null){
+            setValue(currentTerm, null, currentValues, c -> rmObject.getDefiningCode().setCodeString(c), String.class);
+        }
         rmObject.getDefiningCode().setTerminologyId(new TerminologyId());
         setValue(currentTerm, "terminology", currentValues, t -> rmObject.getDefiningCode().getTerminologyId().setValue(t), String.class);
+
+        Optional.of(context.getNodeDeque().peek().getInputs())
+                .stream()
+                .flatMap(List::stream)
+                .filter(i -> "code".equals(i.getSuffix()))
+                .findAny()
+                .map(WebTemplateInput::getTerminology)
+                .ifPresent(t -> rmObject.getDefiningCode().getTerminologyId().setValue(t));
+
+        Optional.of(context.getNodeDeque().peek().getInputs())
+                .stream()
+                .flatMap(List::stream)
+                .filter(i -> "code".equals(i.getSuffix()))
+          .map(WebTemplateInput::getList)
+          .filter(Objects::nonNull)
+          .flatMap(List::stream)
+          .filter(v -> Objects.equals(v.getValue(),rmObject.getDefiningCode().getCodeString()))
+          .findAny()
+          .ifPresent(v -> rmObject.setValue(v.getLabel()));
+
+
     }
+
+
 }

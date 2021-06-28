@@ -19,14 +19,16 @@
 
 package org.ehrbase.serialisation.walker.defaultvalues;
 
+import com.nedap.archie.rm.archetyped.Link;
 import com.nedap.archie.rm.generic.Participation;
 import com.nedap.archie.rm.support.identification.ObjectRef;
-import java.time.temporal.TemporalAccessor;
-import java.util.List;
 import org.ehrbase.client.classgenerator.shareddefinition.Language;
 import org.ehrbase.client.classgenerator.shareddefinition.Setting;
+import org.ehrbase.client.classgenerator.shareddefinition.State;
 import org.ehrbase.client.classgenerator.shareddefinition.Territory;
-import org.ehrbase.client.classgenerator.shareddefinition.Transition;
+
+import java.time.temporal.TemporalAccessor;
+import java.util.List;
 
 public class DefaultValuePath<T> {
 
@@ -62,8 +64,8 @@ public class DefaultValuePath<T> {
       new DefaultValuePath<>("health_care_facility|name", String.class);
   public static final DefaultValuePath<String> HEALTHCARE_FACILITY_ID =
       new DefaultValuePath<>("health_care_facility|id", String.class);
-  public static final DefaultValuePath<Transition> ACTION_ISM_TRANSITION_CURRENT_STATE =
-      new DefaultValuePath<>("action_ism_transition_current_state", Transition.class);
+  public static final DefaultValuePath<State> ACTION_ISM_TRANSITION_CURRENT_STATE =
+      new DefaultValuePath<>("action_ism_transition_current_state", State.class);
   public static final DefaultValuePath<String> INSTRUCTION_NARRATIVE =
       new DefaultValuePath<>("instruction_narrative", String.class);
   public static final DefaultValuePath<String> LOCATION =
@@ -72,6 +74,7 @@ public class DefaultValuePath<T> {
       new DefaultValuePath<>("setting", Setting.class);
   public static final DefaultValuePath<List<Participation>> PARTICIPATION =
       new DefaultValuePath<>("participation");
+  public static final DefaultValuePath<List<Link>> LINKS = new DefaultValuePath<>("link");
   public static final DefaultValuePath<ObjectRef> WORKFLOW_ID =
       new DefaultValuePath<>("workflow_id", ObjectRef.class);
 

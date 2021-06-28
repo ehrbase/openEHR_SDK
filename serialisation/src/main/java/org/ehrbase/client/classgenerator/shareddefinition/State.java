@@ -1,0 +1,57 @@
+package org.ehrbase.client.classgenerator.shareddefinition;
+
+import org.ehrbase.client.classgenerator.EnumValueSet;
+
+public enum State implements EnumValueSet {
+  INITIAL("initial", "initial", "openehr", "524"),
+
+  PLANNED("planned", "planned", "openehr", "526"),
+
+  POSTPONED("postponed", "postponed", "openehr", "527"),
+
+  CANCELLED("cancelled", "cancelled", "openehr", "528"),
+
+  SCHEDULED("scheduled", "scheduled", "openehr", "529"),
+
+  ACTIVE("active", "active", "openehr", "245"),
+
+  SUSPENDED("suspended", "suspended", "openehr", "530"),
+
+  ABORTED("aborted", "aborted", "openehr", "531"),
+
+  COMPLETED("completed", "completed", "openehr", "532"),
+
+  EXPIRED("expired", "expired", "openehr", "533");
+
+
+  private String value;
+
+  private String description;
+
+  private String terminologyId;
+
+  private String code;
+
+  State(String value, String description, String terminologyId, String code) {
+    this.value = value;
+    this.description = description;
+    this.terminologyId = terminologyId;
+    this.code = code;
+  }
+
+  public String getValue() {
+    return this.value;
+  }
+
+  public String getDescription() {
+    return this.description;
+  }
+
+  public String getTerminologyId() {
+    return this.terminologyId;
+  }
+
+  public String getCode() {
+    return this.code;
+  }
+}

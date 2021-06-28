@@ -42,6 +42,10 @@ public class ActionValueInserter extends AbstractValueInserter<Action> {
               .orElseThrow();
       rmObject.setTime(new DvDateTime(defaultTemporalAccessor));
     }
+
+    if (rmObject.getIsmTransition() != null){
+      new IsmTransitionValueInserter().insert(rmObject.getIsmTransition(),defaultValues);
+    }
   }
 
   @Override

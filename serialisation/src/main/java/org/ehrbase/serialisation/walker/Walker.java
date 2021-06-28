@@ -279,13 +279,13 @@ public abstract class Walker<T> {
     return canonicalXML.unmarshal(canonicalXML.marshal(rmObject), rmObject.getClass());
   }
 
-  protected String buildNamePath(Context<T> context) {
+  protected String buildNamePath(Context<T> context, boolean addCount) {
     StringBuilder sb = new StringBuilder();
     for (Iterator<WebTemplateNode> iterator = context.getNodeDeque().descendingIterator();
         iterator.hasNext(); ) {
       WebTemplateNode node = iterator.next();
       sb.append(node.getId());
-      if (node.getMax() != 1 && context.getCountMap().containsKey(node)) {
+      if (node.getMax() != 1 && context.getCountMap().containsKey(node) && (addCount ||  context.getCountMap().get(node) != 0)) {
         sb.append(":").append(context.getCountMap().get(node));
       }
       if (iterator.hasNext()) {

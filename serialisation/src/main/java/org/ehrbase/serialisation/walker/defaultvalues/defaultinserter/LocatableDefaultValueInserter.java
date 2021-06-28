@@ -19,31 +19,27 @@
 
 package org.ehrbase.serialisation.walker.defaultvalues.defaultinserter;
 
-import com.nedap.archie.rm.composition.IsmTransition;
-import com.nedap.archie.rm.datavalues.DvCodedText;
-import org.ehrbase.client.classgenerator.shareddefinition.State;
-import org.ehrbase.client.classgenerator.shareddefinition.Transition;
+import com.nedap.archie.rm.archetyped.Locatable;
 import org.ehrbase.serialisation.walker.defaultvalues.DefaultValuePath;
 import org.ehrbase.serialisation.walker.defaultvalues.DefaultValues;
 
-public class IsmTransitionValueInserter extends AbstractValueInserter<IsmTransition> {
+import java.util.ArrayList;
 
+public class LocatableDefaultValueInserter extends AbstractValueInserter<Locatable> {
   @Override
-  public void insert(IsmTransition rmObject, DefaultValues defaultValues) {
+  public void insert(Locatable rmObject, DefaultValues defaultValues) {
 
-    if (isEmpty(rmObject.getCurrentState())
-        && defaultValues.containsDefaultValue(
-            DefaultValuePath.ACTION_ISM_TRANSITION_CURRENT_STATE)) {
-      State defaultValue =
-          defaultValues.getDefaultValue(DefaultValuePath.ACTION_ISM_TRANSITION_CURRENT_STATE);
+    if (defaultValues.containsDefaultValue(DefaultValuePath.LINKS)) {
+      if (rmObject.getLinks() == null) {
+        rmObject.setLinks(new ArrayList<>());
+      }
 
-      rmObject.setCurrentState(
-          new DvCodedText(defaultValue.getValue(), defaultValue.toCodePhrase()));
+      rmObject.getLinks().addAll(defaultValues.getDefaultValue(DefaultValuePath.LINKS));
     }
   }
 
   @Override
-  public Class<IsmTransition> getAssociatedClass() {
-    return IsmTransition.class;
+  public Class<Locatable> getAssociatedClass() {
+    return Locatable.class;
   }
 }

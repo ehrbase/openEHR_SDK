@@ -30,10 +30,11 @@ import com.nedap.archie.rm.generic.PartyIdentified;
 import com.nedap.archie.rm.generic.PartyProxy;
 import com.nedap.archie.rm.support.identification.GenericId;
 import com.nedap.archie.rm.support.identification.PartyRef;
-import java.util.Collection;
 import org.apache.commons.collections4.CollectionUtils;
 import org.ehrbase.serialisation.walker.defaultvalues.DefaultValuePath;
 import org.ehrbase.serialisation.walker.defaultvalues.DefaultValues;
+
+import java.util.Collection;
 
 public abstract class AbstractValueInserter<T extends RMObject> implements DefaultValueInserter<T> {
 
@@ -104,6 +105,23 @@ public abstract class AbstractValueInserter<T extends RMObject> implements Defau
       partyProxy.setExternalRef(partyRef);
     }
 
+    addSchemeNamespace(partyProxy.getExternalRef(), defaultValues);
+
     return (PartyIdentified) partyProxy;
+  }
+
+  protected void addSchemeNamespace(PartyRef partyRef, DefaultValues defaultValues) {
+    if (partyRef != null) {
+      if (isEmpty(partyRef.getNamespace())
+          && defaultValues.containsDefaultValue(DefaultValuePath.ID_NAMESPACE)) {
+        partyRef.setNamespace(defaultValues.getDefaultValue(DefaultValuePath.ID_NAMESPACE));
+      }
+      if (partyRef.getId() instanceof GenericId
+          && isEmpty(((GenericId) partyRef.getId()).getScheme())
+          && defaultValues.containsDefaultValue(DefaultValuePath.ID_NAMESPACE)) {
+        ((GenericId) partyRef.getId())
+            .setScheme(defaultValues.getDefaultValue(DefaultValuePath.ID_NAMESPACE));
+      }
+    }
   }
 }

@@ -1,6 +1,6 @@
 /*
  *
- *  *  Copyright (c) 2020  Stefan Spiska (Vitasystems GmbH) and Hannover Medical School
+ *  *  Copyright (c) 2021  Stefan Spiska (Vitasystems GmbH) and Hannover Medical School
  *  *  This file is part of Project EHRbase
  *  *
  *  *  Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,20 +17,13 @@
  *
  */
 
-package org.ehrbase.building.rmobjectskeletonbuilder;
+package org.ehrbase.webtemplate;
 
-import com.nedap.archie.rm.datavalues.quantity.datetime.DvTime;
-import org.openehr.schemas.v1.CTIME;
+import care.better.platform.web.template.provider.WebTemplateProvider;
 
-public class DvTimeSkeletonBuilder implements RmObjectSkeletonBuilder<CTIME, DvTime> {
-    @Override
-    public Class<CTIME> getAssociatedClass() {
-        return CTIME.class;
-    }
-
-    @Override
-    public DvTime getRmObject(CTIME xml) {
-
-        return new DvTime();
-    }
+public class WebTemplateProviderImp implements WebTemplateProvider {
+  @Override
+  public String provide(String template, String defaultLanguage) throws Exception {
+    return null;
+  }
 }

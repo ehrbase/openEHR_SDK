@@ -34,21 +34,8 @@ public class DvOrdinalSkeletonBuilder implements RmObjectSkeletonBuilder<CDVORDI
 
     @Override
     public DvOrdinal getRmObject(CDVORDINAL xml) {
-        DvOrdinal dvOrdinal = new DvOrdinal();
-        if (xml.isSetAssumedValue()) {
-            DVORDINAL assumedValue = xml.getAssumedValue();
-            dvOrdinal.setValue(Long.valueOf("" + assumedValue.getValue()));
-            dvOrdinal.setSymbol(
-                    new DvCodedText(
-                            assumedValue.getSymbol().getValue(),
-                            new CodePhrase(
-                                    new TerminologyId(assumedValue.getSymbol().getDefiningCode().getTerminologyId().getValue()),
-                                    assumedValue.getSymbol().getDefiningCode().getCodeString()
-                            )
-                    )
-            );
-        }
 
-        return dvOrdinal;
+
+        return new DvOrdinal();
     }
 }

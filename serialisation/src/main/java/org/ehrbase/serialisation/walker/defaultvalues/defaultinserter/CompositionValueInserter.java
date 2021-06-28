@@ -20,6 +20,7 @@
 package org.ehrbase.serialisation.walker.defaultvalues.defaultinserter;
 
 import com.nedap.archie.rm.composition.Composition;
+import com.nedap.archie.rm.composition.EventContext;
 import com.nedap.archie.rm.generic.PartySelf;
 import org.ehrbase.serialisation.walker.defaultvalues.DefaultValuePath;
 import org.ehrbase.serialisation.walker.defaultvalues.DefaultValues;
@@ -52,6 +53,13 @@ public class CompositionValueInserter extends AbstractValueInserter<Composition>
               DefaultValuePath.COMPOSER_ID,
               rmObject.getComposer()));
     }
+
+    if (rmObject.getContext() == null){
+      rmObject.setContext(new EventContext());
+    }
+
+    new EventContextValueInserter().insert(rmObject.getContext(),defaultValues);
+
   }
 
   @Override

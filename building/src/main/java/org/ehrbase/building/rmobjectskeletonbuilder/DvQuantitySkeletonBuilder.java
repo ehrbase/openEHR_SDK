@@ -31,14 +31,7 @@ public class DvQuantitySkeletonBuilder implements RmObjectSkeletonBuilder<CDVQUA
 
     @Override
     public DvQuantity getRmObject(CDVQUANTITY xml) {
-        DvQuantity dvQuantity = new DvQuantity();
-        if (xml.isSetAssumedValue()) {
-            DVQUANTITY assumedValue = xml.getAssumedValue();
-            dvQuantity.setMagnitude(assumedValue.getMagnitude());
-            dvQuantity.setUnits(assumedValue.getUnits());
-            dvQuantity.setAccuracy(Double.parseDouble("" + assumedValue.getAccuracy()));
-            dvQuantity.setAccuracyIsPercent(assumedValue.getAccuracyIsPercent());
-        }
-        return dvQuantity;
+
+        return new DvQuantity();
     }
 }

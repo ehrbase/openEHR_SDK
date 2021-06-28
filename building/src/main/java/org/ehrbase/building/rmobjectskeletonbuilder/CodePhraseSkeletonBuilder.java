@@ -33,12 +33,6 @@ public class CodePhraseSkeletonBuilder implements RmObjectSkeletonBuilder<CCODEP
     @Override
     public CodePhrase getRmObject(CCODEPHRASE xml) {
         CodePhrase codePhrase = new CodePhrase();
-        if (xml.isSetAssumedValue()) {
-            CODEPHRASE assumedValue = xml.getAssumedValue();
-            codePhrase.setCodeString(assumedValue.getCodeString());
-            codePhrase.setTerminologyId(new TerminologyId(assumedValue.getTerminologyId().getValue()));
-        }
-
         return codePhrase;
     }
 }

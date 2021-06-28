@@ -24,10 +24,12 @@ import com.nedap.archie.rm.generic.PartyProxy;
 import com.nedap.archie.rm.support.identification.GenericId;
 import com.nedap.archie.rm.support.identification.ObjectId;
 import com.nedap.archie.rm.support.identification.ObjectRef;
+import org.ehrbase.serialisation.walker.Context;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-import org.ehrbase.serialisation.walker.Context;
+import java.util.stream.IntStream;
 
 public class PartyIdentifiedStdConfig extends AbstractsStdConfig<PartyIdentified> {
 
@@ -71,6 +73,18 @@ public class PartyIdentifiedStdConfig extends AbstractsStdConfig<PartyIdentified
             .orElse(null);
     if (genericId != null) {
       addValue(result, currentTerm, "id_scheme", genericId.getScheme());
+    }
+
+    if (rmObject.getIdentifiers() != null) {
+      DvIdentifierConfig dvIdentifierConfig = new DvIdentifierConfig();
+      IntStream.range(0, rmObject.getIdentifiers().size())
+          .forEach(
+              i ->
+                  result.putAll(
+                      dvIdentifierConfig.buildChildValues(
+                          currentTerm + "/_identifier:" + i,
+                          rmObject.getIdentifiers().get(i),
+                          context)));
     }
     return result;
   }
