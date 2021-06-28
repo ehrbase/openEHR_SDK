@@ -87,7 +87,6 @@
                 <configuration combine.self="override">
                     <dependenciesToScan>com.github.better-care:web-template-tests</dependenciesToScan>
                     <includes combine.self="override">
-                        <include>WebTemplateContentTest.java</include>
                         <include>AnySomeConstrainedTest</include>
                         <include>AnyTest</include>
                         <include>BRMohTest</include>
@@ -104,6 +103,9 @@
                         <include>NoArchetypedTest</include>
                         <include>ProviderTest</include>
                         <include>SubjectTest</include>
+                        <include>TimeZoneTest</include>
+                        <include>UidTest</include>
+                        <include>WebTemplateContentTest.java</include>
                     </includes>
                 </configuration>
 
