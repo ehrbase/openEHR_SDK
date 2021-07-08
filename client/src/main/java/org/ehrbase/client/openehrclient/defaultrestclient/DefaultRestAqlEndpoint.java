@@ -62,7 +62,7 @@ import org.ehrbase.serialisation.jsonencoding.JacksonUtil;
 
 public class DefaultRestAqlEndpoint implements AqlEndpoint {
 
-  public static final String AQL_PATH = "/rest/openehr/v1/query/aql/";
+  public static final String AQL_PATH = "rest/openehr/v1/query/aql/";
   public static final String QUERY_MAP_KEY = "q";
   public static final ObjectMapper AQL_OBJECT_MAPPER = buildAqlObjectMapper();
 

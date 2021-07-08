@@ -25,7 +25,7 @@ import org.ehrbase.client.templateprovider.TestDataTemplateProvider;
 
 public class DefaultRestClientTestHelper {
 
-  private static final String OPEN_EHR_URL = "http://localhost:8080/ehrbase";
+  private static final String OPEN_EHR_URL = "http://localhost:8080/ehrbase/";
 
   public static DefaultRestClient setupDefaultRestClient() throws URISyntaxException {
     TestDataTemplateProvider templateProvider = new TestDataTemplateProvider();
