@@ -34,7 +34,7 @@ import org.ehrbase.client.openehrclient.CompositionEndpoint;
 import org.ehrbase.client.openehrclient.VersionUid;
 
 public class DefaultRestCompositionEndpoint implements CompositionEndpoint {
-  public static final String COMPOSITION_PATH = "/composition/";
+  public static final String COMPOSITION_PATH = "/rest/openehr/v1/composition/";
   private final DefaultRestClient defaultRestClient;
   private final UUID ehrId;
 

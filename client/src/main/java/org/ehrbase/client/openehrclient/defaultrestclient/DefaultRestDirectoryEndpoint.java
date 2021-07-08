@@ -37,7 +37,7 @@ import static org.ehrbase.client.openehrclient.defaultrestclient.DefaultRestEhrE
 public class DefaultRestDirectoryEndpoint {
 
     static final String FOLDER_DIVIDER = "/";
-    private static final String DIRECTORY_PATH = "/directory/";
+    private static final String DIRECTORY_PATH = "/rest/openehr/v1/directory/";
     private final DefaultRestClient defaultRestClient;
     private final UUID ehrId;
     private VersionUid rootVersion;
