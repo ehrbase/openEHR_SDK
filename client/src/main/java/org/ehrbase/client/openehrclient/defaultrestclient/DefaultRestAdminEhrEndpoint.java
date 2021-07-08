@@ -34,7 +34,7 @@ import java.util.UUID;
  */
 public class DefaultRestAdminEhrEndpoint implements AdminEhrEndpoint {
 
-    public static final String ADMIN_EHR_PATH = "admin/ehr/";
+    public static final String ADMIN_EHR_PATH = "/rest/admin/ehr/";
 
     private final DefaultRestClient defaultRestClient;
 
