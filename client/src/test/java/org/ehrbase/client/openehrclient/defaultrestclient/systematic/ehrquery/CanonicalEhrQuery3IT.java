@@ -44,7 +44,6 @@ import java.util.UUID;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @Category(Integration.class)
-//@Ignore
 public class CanonicalEhrQuery3IT extends CanonicalCompoAllTypeQueryIT {
     private static OpenEhrClient openEhrClient;
 
@@ -73,10 +72,7 @@ public class CanonicalEhrQuery3IT extends CanonicalCompoAllTypeQueryIT {
     }
 
      @Test
-//     @Ignore("requires a DB clean-up before invocation")
     public void testEhrAttributesDrillDown(){
-
-//        ehrUUID = UUID.fromString("404c0199-4e01-4394-adee-13c9399acd0a");
 
         String rootPath = "e/ehr_status";
         RMObject referenceNode = referenceEhrStatus;
@@ -111,6 +107,7 @@ public class CanonicalEhrQuery3IT extends CanonicalCompoAllTypeQueryIT {
                  "is_modifiable"
          };
 
+
         for (String attributePath: attributePaths) {
             String aqlSelect = rootPath+"/"+attributePath;
             StringBuilder stringBuilder = new StringBuilder();
@@ -126,7 +123,19 @@ public class CanonicalEhrQuery3IT extends CanonicalCompoAllTypeQueryIT {
 
             List<Object> objectList = result.getRows().get(0);
 
-            assertThat(valueObject(objectList.get(0)))
+            Object actual = valueObject(objectList.get(0)); //Mapped object(s) from JSON
+
+            if (actual instanceof List){
+                Object expected = attributeArrayValueAt(referenceNode, attributePath); //RMObject(s)
+
+                assertThat(
+                        toRmObjectList((List<Map<String, Object>>) actual).toArray())
+                        .as(aqlSelect)
+                        .containsExactlyInAnyOrder(((List<?>) expected).toArray()
+                        );
+            }
+            else
+                assertThat(valueObject(objectList.get(0)))
                     .as(aqlSelect)
                     .isEqualTo(attributeValueAt(referenceNode, attributePath));
         }
