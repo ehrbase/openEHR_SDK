@@ -79,11 +79,6 @@ public class CanonicalEhrQuery3IT extends CanonicalCompoAllTypeQueryIT {
 
          String[] attributePaths = {
                  "archetype_node_id",
-                 "archetype_details",
-                 "archetype_details/archetype_id",
-                 "archetype_details/archetype_id/value",
-                 "archetype_details/template_id",
-                 "archetype_details/template_id/value",
                  "subject",
                  "subject/external_ref",
                  "subject/external_ref/id",
