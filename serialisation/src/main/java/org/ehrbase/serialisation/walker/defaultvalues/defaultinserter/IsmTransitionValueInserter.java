@@ -21,6 +21,7 @@ package org.ehrbase.serialisation.walker.defaultvalues.defaultinserter;
 
 import com.nedap.archie.rm.composition.IsmTransition;
 import com.nedap.archie.rm.datavalues.DvCodedText;
+import org.ehrbase.client.classgenerator.shareddefinition.State;
 import org.ehrbase.client.classgenerator.shareddefinition.Transition;
 import org.ehrbase.serialisation.walker.defaultvalues.DefaultValuePath;
 import org.ehrbase.serialisation.walker.defaultvalues.DefaultValues;
@@ -33,7 +34,7 @@ public class IsmTransitionValueInserter extends AbstractValueInserter<IsmTransit
     if (isEmpty(rmObject.getCurrentState())
         && defaultValues.containsDefaultValue(
             DefaultValuePath.ACTION_ISM_TRANSITION_CURRENT_STATE)) {
-      Transition defaultValue =
+      State defaultValue =
           defaultValues.getDefaultValue(DefaultValuePath.ACTION_ISM_TRANSITION_CURRENT_STATE);
 
       rmObject.setCurrentState(

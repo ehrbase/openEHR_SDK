@@ -30,12 +30,8 @@ public class DvDurationSkeletonBuilder implements RmObjectSkeletonBuilder<CDURAT
 
     @Override
     public DvDuration getRmObject(CDURATION xml) {
-        DvDuration dvDuration;
-        if (xml.isSetAssumedValue()) {
-            dvDuration = new DvDuration(xml.getAssumedValue());
-        } else {
-            dvDuration = new DvDuration();
-        }
-        return dvDuration;
+
+
+        return new DvDuration();
     }
 }

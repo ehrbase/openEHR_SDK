@@ -29,10 +29,8 @@ public class BooleanSkeletonBuilder implements RmObjectSkeletonBuilder<CBOOLEAN,
 
     @Override
     public Boolean getRmObject(CBOOLEAN xml) {
-        if (xml.isSetAssumedValue()) {
-            return xml.getAssumedValue();
-        } else {
+
             return null;
-        }
+
     }
 }

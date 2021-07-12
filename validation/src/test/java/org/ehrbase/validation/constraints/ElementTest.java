@@ -47,7 +47,7 @@ public class ElementTest extends ConstraintTestBase{
         Element element = new Element("test", dvCodedText, dvQuantity);
 
         try {
-            new CArchetypeConstraint(null).validate("test", element, archetypeconstraint);
+            new CArchetypeConstraint(null, null).validate("test", element, archetypeconstraint);
         }
         catch (Exception e){
             fail(e.getMessage());

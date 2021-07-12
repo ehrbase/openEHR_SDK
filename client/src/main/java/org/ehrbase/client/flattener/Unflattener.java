@@ -27,7 +27,6 @@ import java.beans.PropertyDescriptor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.Optional;
-import java.util.function.Function;
 import org.ehrbase.building.OptSkeletonBuilder;
 import org.ehrbase.client.annotations.Id;
 import org.ehrbase.client.annotations.Template;
@@ -45,10 +44,10 @@ public class Unflattener {
   public static final OptSkeletonBuilder OPT_SKELETON_BUILDER = new OptSkeletonBuilder();
 
   private final TemplateProvider templateProvider;
-  private final Function<Object, DefaultValues> defaultValuesProvider;
+  private final DefaultValuesProvider defaultValuesProvider;
 
   public Unflattener(
-      TemplateProvider templateProvider, Function<Object, DefaultValues> defaultValuesProvider) {
+      TemplateProvider templateProvider, DefaultValuesProvider defaultValuesProvider) {
 
     this.templateProvider = templateProvider;
     this.defaultValuesProvider = defaultValuesProvider;
@@ -80,7 +79,7 @@ public class Unflattener {
                     () ->
                         new SdkException(
                             String.format("Can not find Template: %s", template.value()))),
-            defaultValuesProvider.apply(dto));
+            defaultValuesProvider.provide(dto));
     Optional<VersionUid> versionUid = extractVersionUid(dto);
     if (versionUid.isPresent()) {
       generate.setUid(new HierObjectId(versionUid.get().toString()));

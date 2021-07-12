@@ -1,6 +1,5 @@
 package org.ehrbase.client.classgenerator.examples.laborbefundcomposition.definition;
 
-import java.lang.String;
 import org.ehrbase.client.classgenerator.EnumValueSet;
 
 public enum ErgebnisStatusDefiningCode implements EnumValueSet {

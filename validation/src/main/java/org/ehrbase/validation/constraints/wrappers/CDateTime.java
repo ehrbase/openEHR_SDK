@@ -24,6 +24,7 @@ package org.ehrbase.validation.constraints.wrappers;
 import com.nedap.archie.datetime.DateTimeFormatters;
 import com.nedap.archie.rm.datavalues.quantity.datetime.DvDateTime;
 import org.ehrbase.validation.constraints.util.DateTimeSyntax;
+import org.ehrbase.validation.constraints.terminology.ExternalTerminologyValidationSupport;
 import org.openehr.schemas.v1.CDATETIME;
 import org.openehr.schemas.v1.CPRIMITIVE;
 
@@ -40,14 +41,15 @@ import java.util.Map;
  */
 public class CDateTime extends CConstraint implements I_CTypeValidate {
 
-    CDateTime(Map<String, Map<String, String>> localTerminologyLookup) {
-        super(localTerminologyLookup);
+    CDateTime(Map<String, Map<String, String>> localTerminologyLookup, ExternalTerminologyValidationSupport externalTerminologyValidator) {
+        super(localTerminologyLookup, externalTerminologyValidator);
     }
 
     @Override
     public void validate(String path, Object aValue, CPRIMITIVE cprimitive) throws IllegalArgumentException {
-        if (!(aValue instanceof Temporal))
+        if (!(aValue instanceof Temporal)) {
             ValidationException.raise(path, "INTERNAL: Time validation expects a java-date-time argument", "DATE_TIME_01");
+        }
 
         CDATETIME cdatetime = (CDATETIME) cprimitive;
         String dvDateStr = DateTimeFormatters.ISO_8601_DATE_TIME.format((Temporal) aValue);
@@ -57,8 +59,9 @@ public class CDateTime extends CConstraint implements I_CTypeValidate {
         //range check
         DvDateTime dateTime = new DvDateTime(dvDateStr);
 
-        if (cdatetime.isSetRange())
+        if (cdatetime.isSetRange()) {
             IntervalComparator.isWithinBoundaries(dateTime, cdatetime.getRange());
+        }
 
         validateTimeZone(path, dateTime, cdatetime);
     }

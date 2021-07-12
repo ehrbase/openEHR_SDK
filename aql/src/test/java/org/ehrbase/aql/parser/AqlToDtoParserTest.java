@@ -50,6 +50,26 @@ public class AqlToDtoParserTest {
   }
 
   @Test
+  public void parseDoubleAlias() {
+    String aql =
+        "Select e/ehr_id/value ,c0 as F1 from EHR e contains COMPOSITION c0[openEHR-EHR-COMPOSITION.report.v1]";
+
+    testAql(
+        aql,
+        "Select e/ehr_id/value as F1, c0 as F1_F2 from EHR e contains COMPOSITION c0[openEHR-EHR-COMPOSITION.report.v1]");
+  }
+
+  @Test
+  public void parseDoubleAlias2() {
+    String aql =
+        "Select c0 as F1, e/ehr_id/value from EHR e contains COMPOSITION c0[openEHR-EHR-COMPOSITION.report.v1]";
+
+    testAql(
+        aql,
+        "Select c0 as F1, e/ehr_id/value as F2 from EHR e contains COMPOSITION c0[openEHR-EHR-COMPOSITION.report.v1]");
+  }
+
+  @Test
   public void parseObservation() {
     String aql = "SELECT o FROM EHR e CONTAINS OBSERVATION o";
 

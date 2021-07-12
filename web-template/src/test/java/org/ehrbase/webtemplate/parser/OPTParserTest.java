@@ -141,6 +141,41 @@ public class OPTParserTest {
   }
 
   @Test
+  public void parseAny() throws IOException, XmlException {
+    OPERATIONALTEMPLATE template =
+        TemplateDocument.Factory.parse(
+                OperationalTemplateTestData.GECCO_SEROLOGISCHER_BEFUND.getStream())
+            .getTemplate();
+
+    OPTParser cut = new OPTParser(template);
+    WebTemplate actual = cut.parse();
+    actual = new Filter().filter(actual);
+    assertThat(actual).isNotNull();
+
+    ObjectMapper objectMapper = new ObjectMapper();
+    WebTemplate expected =
+        objectMapper.readValue(
+            IOUtils.toString(
+                WebTemplateTestData.GECCO_SEROLOGISCHER_BEFUND.getStream(), StandardCharsets.UTF_8),
+            WebTemplate.class);
+
+    List<String> errors = compareWebTemplate(actual, expected);
+    checkErrors(
+        errors.stream()
+            .filter(
+                e ->
+                    List.of(
+                            "Annotations not equal",
+                            "InputValue not equal",
+                            "LocalizedNames not equal",
+                            "LocalizedDescriptions not equal")
+                        .stream()
+                        .noneMatch(e::startsWith))
+            .collect(Collectors.toList()),
+        new String[] {});
+  }
+
+  @Test
   public void parseInitialAssessment() throws IOException, XmlException {
     OPERATIONALTEMPLATE template =
         TemplateDocument.Factory.parse(OperationalTemplateTestData.INITIAL_ASSESSMENT.getStream())

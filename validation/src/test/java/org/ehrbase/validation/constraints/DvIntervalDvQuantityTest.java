@@ -43,7 +43,7 @@ public class DvIntervalDvQuantityTest extends ConstraintTestBase {
         DvInterval<DvQuantity> dvQuantityDvInterval = new DvInterval<>(new DvQuantity("in", 100D, 2L), new DvQuantity("in", 200D, 2L));
 
         try {
-            new CArchetypeConstraint(null).validate("test", dvQuantityDvInterval, archetypeconstraint);
+            new CArchetypeConstraint(null, null).validate("test", dvQuantityDvInterval, archetypeconstraint);
         } catch (Exception e) {
             fail(e.getMessage());
         }

@@ -23,27 +23,32 @@ import com.nedap.archie.rm.composition.Observation;
 import com.nedap.archie.rm.datastructures.Event;
 import com.nedap.archie.rm.datastructures.History;
 import com.nedap.archie.rm.datavalues.quantity.datetime.DvDateTime;
+import org.ehrbase.normalizer.Normalizer;
+import org.ehrbase.serialisation.walker.defaultvalues.DefaultValuePath;
+import org.ehrbase.serialisation.walker.defaultvalues.DefaultValues;
+
 import java.time.temporal.TemporalAccessor;
 import java.util.Objects;
 import java.util.stream.Stream;
-import org.ehrbase.serialisation.walker.defaultvalues.DefaultValuePath;
-import org.ehrbase.serialisation.walker.defaultvalues.DefaultValues;
 
 public class ObservationValueInserter extends AbstractValueInserter<Observation> {
   @Override
   public void insert(Observation rmObject, DefaultValues defaultValues) {
-
-    if (rmObject.getData() != null) {
+    Normalizer normalizer = new Normalizer();
+    Observation normalize = normalizer.normalize(rmObject);
+    if (normalize.getData() != null) {
       insert(rmObject.getData(), defaultValues);
-      if (rmObject.getData().getEvents() != null) {
-        rmObject.getData().getEvents().forEach(e -> insert(e, defaultValues));
+
+      if (normalize.getData().getEvents() != null) {
+
+        normalize.getData().getEvents().stream().forEach(e -> insert(e, defaultValues));
       }
     }
 
-    if (rmObject.getState() != null) {
-      insert(rmObject.getState(), defaultValues);
-      if (rmObject.getState().getEvents() != null) {
-        rmObject.getState().getEvents().forEach(e -> insert(e, defaultValues));
+    if (normalize.getState() != null) {
+      insert(normalize.getState(), defaultValues);
+      if (normalize.getState().getEvents() != null) {
+        normalize.getState().getEvents().forEach(e -> insert(e, defaultValues));
       }
     }
   }

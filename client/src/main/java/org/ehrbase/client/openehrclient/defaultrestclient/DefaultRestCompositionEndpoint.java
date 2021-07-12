@@ -64,7 +64,11 @@ public class DefaultRestCompositionEndpoint implements CompositionEndpoint {
   @Override
   public <T> T mergeCompositionEntity(T entity) {
     Composition composition =
-        (Composition) new Unflattener(defaultRestClient.getTemplateProvider()).unflatten(entity);
+        (Composition)
+            new Unflattener(
+                    defaultRestClient.getTemplateProvider(),
+                    defaultRestClient.getDefaultValuesProvider())
+                .unflatten(entity);
 
     Optional<VersionUid> versionUid = extractVersionUid(entity);
 
@@ -88,6 +92,11 @@ public class DefaultRestCompositionEndpoint implements CompositionEndpoint {
               composition,
               versionUid.get());
     }
+    Flattener.addVersion(entity, updatedVersion);
+    entity =
+        (T)
+            new Flattener(defaultRestClient.getTemplateProvider())
+                .flatten(composition, entity.getClass());
     Flattener.addVersion(entity, updatedVersion);
 
     return entity;

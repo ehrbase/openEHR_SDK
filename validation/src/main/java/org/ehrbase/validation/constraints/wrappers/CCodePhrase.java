@@ -22,6 +22,7 @@
 package org.ehrbase.validation.constraints.wrappers;
 
 import com.nedap.archie.rm.datatypes.CodePhrase;
+import org.ehrbase.validation.constraints.terminology.ExternalTerminologyValidationSupport;
 import org.openehr.schemas.v1.ARCHETYPECONSTRAINT;
 import org.openehr.schemas.v1.CCODEPHRASE;
 
@@ -37,8 +38,8 @@ import java.util.Map;
  */
 public class CCodePhrase extends CConstraint implements I_CArchetypeConstraintValidate {
 
-    CCodePhrase(Map<String, Map<String, String>> localTerminologyLookup) {
-        super(localTerminologyLookup);
+    CCodePhrase(Map<String, Map<String, String>> localTerminologyLookup, ExternalTerminologyValidationSupport externalTerminologyValidator) {
+        super(localTerminologyLookup, externalTerminologyValidator);
     }
 
     @Override

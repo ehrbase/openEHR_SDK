@@ -183,7 +183,7 @@ public abstract class TestQueryEngine extends CanonicalUtil {
 
                 assertThat(valueObject(objectList.get(0)))
                         .as(arbitraryExpression.getRightSideExpression())
-                        .isEqualTo(arbitraryExpression.getExpectedResult());
+                        .isEqualTo(valueObject(arbitraryExpression.getExpectedResult()));
             }
         }
 

@@ -10,8 +10,8 @@ import org.ehrbase.client.classgenerator.interfaces.RMEntity;
 @Entity
 @Generated(
     value = "org.ehrbase.client.classgenerator.ClassGenerator",
-    date = "2021-04-19T11:36:01.966761+07:00",
-    comments = "https://github.com/ehrbase/openEHR_SDK Version: 1.3.0"
+    date = "2021-06-10T14:23:37.605900+07:00",
+    comments = "https://github.com/ehrbase/openEHR_SDK Version: 1.4.0"
 )
 @OptionFor("DV_TEXT")
 public class LaboranalytResultatMesswertDvText implements RMEntity, LaboranalytResultatMesswertChoice {

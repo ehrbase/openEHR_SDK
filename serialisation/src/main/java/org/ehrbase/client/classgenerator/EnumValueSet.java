@@ -18,6 +18,7 @@
 package org.ehrbase.client.classgenerator;
 
 import com.nedap.archie.rm.datatypes.CodePhrase;
+import com.nedap.archie.rm.datavalues.DvCodedText;
 import com.nedap.archie.rm.support.identification.TerminologyId;
 
 public interface EnumValueSet {
@@ -33,5 +34,9 @@ public interface EnumValueSet {
   default CodePhrase toCodePhrase() {
 
     return new CodePhrase(new TerminologyId(getTerminologyId()), getCode());
+  }
+
+  default DvCodedText toCodedText() {
+    return new DvCodedText(getValue(), toCodePhrase());
   }
 }

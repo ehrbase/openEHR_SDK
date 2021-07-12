@@ -29,10 +29,7 @@ public class StringSkeletonBuilder implements RmObjectSkeletonBuilder<CSTRING, S
 
     @Override
     public String getRmObject(CSTRING xml) {
-        if (xml.isSetAssumedValue()) {
-            return xml.getAssumedValue();
-        } else {
+
             return null;
-        }
     }
 }

@@ -19,17 +19,18 @@
 
 package org.ehrbase.serialisation.flatencoding;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.ehrbase.serialisation.flatencoding.std.marshal.FlatJsonMarshallerTest.compere;
-
 import com.nedap.archie.rm.composition.Composition;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.util.List;
 import org.apache.commons.io.IOUtils;
 import org.ehrbase.serialisation.templateprovider.TestDataTemplateProvider;
 import org.ehrbase.test_data.composition.CompositionTestDataSimSDTJson;
 import org.junit.Test;
+
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.ehrbase.serialisation.flatencoding.std.marshal.FlatJsonMarshallerTest.compere;
 
 public class FlatJsonTest {
 
@@ -50,6 +51,62 @@ public class FlatJsonTest {
 
     String expected =
         IOUtils.toString(CompositionTestDataSimSDTJson.CORONA.getStream(), StandardCharsets.UTF_8);
+
+    List<String> errors = compere(actual, expected);
+
+    assertThat(errors).filteredOn(s -> s.startsWith("Missing")).containsExactlyInAnyOrder();
+
+    assertThat(errors).filteredOn(s -> s.startsWith("Extra")).containsExactlyInAnyOrder();
+  }
+
+  @Test
+  public void roundTripVitalSigns() throws IOException {
+    TestDataTemplateProvider templateProvider = new TestDataTemplateProvider();
+    FlatJson cut =
+        new FlatJasonProvider(templateProvider)
+            .buildFlatJson(FlatFormat.SIM_SDT, "EHRN Vital signs.v2");
+
+    String flat =
+        IOUtils.toString(
+            CompositionTestDataSimSDTJson.VITALSIGNS.getStream(), StandardCharsets.UTF_8);
+    Composition unmarshal = cut.unmarshal(flat);
+
+    assertThat(unmarshal).isNotNull();
+
+    String actual = cut.marshal(unmarshal);
+
+    String expected =
+        IOUtils.toString(
+            CompositionTestDataSimSDTJson.VITALSIGNS.getStream(), StandardCharsets.UTF_8);
+
+    List<String> errors = compere(actual, expected);
+
+    assertThat(errors).filteredOn(s -> s.startsWith("Missing")).containsExactlyInAnyOrder();
+
+    assertThat(errors).filteredOn(s -> s.startsWith("Extra")).containsExactlyInAnyOrder();
+  }
+
+  @Test
+  public void roundTripIcd() throws IOException {
+    TestDataTemplateProvider templateProvider = new TestDataTemplateProvider();
+    FlatJson cut =
+        new FlatJasonProvider(templateProvider)
+            .buildFlatJson(FlatFormat.SIM_SDT, "Adverse Reaction List.v1");
+
+    String flat =
+        IOUtils.toString(
+            CompositionTestDataSimSDTJson.ADVERSE_REACTION_LIST.getStream(),
+            StandardCharsets.UTF_8);
+    Composition unmarshal = cut.unmarshal(flat);
+
+    assertThat(unmarshal).isNotNull();
+
+    String actual = cut.marshal(unmarshal);
+
+    String expected =
+        IOUtils.toString(
+            CompositionTestDataSimSDTJson.ADVERSE_REACTION_LIST.getStream(),
+            StandardCharsets.UTF_8);
 
     List<String> errors = compere(actual, expected);
 

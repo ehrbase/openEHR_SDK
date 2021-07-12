@@ -1,0 +1,3 @@
+# check feeder_audit querying
+#NB. the canonical result are into an intermediary representation (since it is a map), it is nevertheless properly formatted using REST
+,"select c/feeder_audit from EHR e contains COMPOSITION c[openEHR-EHR-COMPOSITION.report-result.v1]",""

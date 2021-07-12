@@ -59,7 +59,7 @@ public class StdFromCompositionWalker extends FromCompositionWalker<Map<String, 
       context
           .getObjectDeque()
           .peek()
-          .putAll(stdConfig.buildChildValues(buildNamePath(context), currentObject, context));
+          .putAll(stdConfig.buildChildValues(buildNamePath(context, true), currentObject, context));
     }
   }
 
@@ -82,7 +82,7 @@ public class StdFromCompositionWalker extends FromCompositionWalker<Map<String, 
     postprocessor.forEach(
         p ->
             p.process(
-                buildNamePath(context),
+                buildNamePath(context, true),
                 context.getRmObjectDeque().peek(),
                 context.getObjectDeque().peek()));
   }
