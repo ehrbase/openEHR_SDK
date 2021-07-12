@@ -17,16 +17,8 @@
 
 package org.ehrbase.client.openehrclient.defaultrestclient.systematic.compositionquery;
 
-import com.nedap.archie.rm.composition.Composition;
-import com.nedap.archie.rm.datavalues.quantity.datetime.DvDateTime;
-import org.apache.commons.io.IOUtils;
 import org.ehrbase.client.Integration;
-import org.ehrbase.client.classgenerator.examples.laborbefundcomposition.LaborbefundComposition;
-import org.ehrbase.client.classgenerator.examples.testalltypesenv1composition.TestAllTypesEnV1Composition;
-import org.ehrbase.client.flattener.Flattener;
 import org.ehrbase.client.openehrclient.defaultrestclient.systematic.compositionquery.queries.arbitrary.ArbitraryQuery;
-import org.ehrbase.client.templateprovider.TestDataTemplateProvider;
-import org.ehrbase.serialisation.jsonencoding.CanonicalJson;
 import org.ehrbase.test_data.composition.CompositionTestDataCanonicalJson;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -34,13 +26,11 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.time.OffsetDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @Category(Integration.class)
-@Ignore
+@Ignore("depends on CR#538")
 public class FeederAuditQueryIT extends CanonicalCompoAllTypeQueryIT {
 
     protected ArbitraryQuery arbitraryQuery;
