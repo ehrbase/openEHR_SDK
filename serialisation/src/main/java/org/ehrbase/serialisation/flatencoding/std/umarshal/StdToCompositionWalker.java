@@ -26,7 +26,9 @@ import com.nedap.archie.rm.datatypes.CodePhrase;
 import com.nedap.archie.rm.datavalues.DvCodedText;
 import com.nedap.archie.rm.generic.PartyRelated;
 import com.nedap.archie.rm.support.identification.TerminologyId;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.ehrbase.serialisation.flatencoding.std.umarshal.postprocessor.UnmarshalPostprocessor;
 import org.ehrbase.serialisation.flatencoding.std.umarshal.rmunmarshaller.DefaultRMUnmarshaller;
 import org.ehrbase.serialisation.flatencoding.std.umarshal.rmunmarshaller.RMUnmarshaller;
@@ -105,6 +107,21 @@ public class StdToCompositionWalker extends ToCompositionWalker<Map<String, Stri
     } else {
       return null;
     }
+  }
+
+  @Override
+  protected ImmutablePair<Map<String, String>, RMObject> extractPair(
+      Context<Map<String, String>> context,
+      WebTemplateNode currentNode,
+      Map<String, List<WebTemplateNode>> choices,
+      WebTemplateNode childNode,
+      Integer i) {
+
+    if (CollectionUtils.isEmpty(childNode.getChildren())
+        && flatHelper.skip(childNode, currentNode)) {
+      return new ImmutablePair<>(null, null);
+    }
+    return super.extractPair(context, currentNode, choices, childNode, i);
   }
 
   private boolean isMatchingNode(

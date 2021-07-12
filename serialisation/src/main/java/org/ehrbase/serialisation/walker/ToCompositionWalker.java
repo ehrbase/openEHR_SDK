@@ -32,7 +32,6 @@ import com.nedap.archie.rm.datavalues.quantity.datetime.DvDuration;
 import com.nedap.archie.rm.generic.PartyIdentified;
 import com.nedap.archie.rm.support.identification.HierObjectId;
 import com.nedap.archie.rminfo.RMAttributeInfo;
-import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.ehrbase.serialisation.walker.defaultvalues.defaultinserter.DefaultValueInserter;
@@ -181,28 +180,24 @@ public abstract class ToCompositionWalker<T> extends Walker<T> {
     T childObject = null;
     childObject = extract(context, childNode, choices.containsKey(childNode.getAqlPath()), i);
     if (childObject != null) {
-      if (CollectionUtils.isEmpty(childNode.getChildren())
-          && flatHelper.skip(childNode, currentNode)) {
-        currentChild = null;
-      } else {
-        boolean isChoice = choices.containsKey(childNode.getAqlPath());
 
-        if (currentNode.getRmType().equals("ELEMENT")
-            && childNode.getRmType().equals("DV_CODED_TEXT")
-            && childNode.getInputs().stream().anyMatch(in -> "other".equals(in.getSuffix()))) {
-          isChoice = true;
-        }
+      boolean isChoice = choices.containsKey(childNode.getAqlPath());
 
-        currentChild =
-            (RMObject)
-                extractRMChild(
-                    context.getRmObjectDeque().peek(),
-                    currentNode,
-                    childNode,
-                    isChoice,
-                    i,
-                    context.getSkippedNodes(childNode));
+      if (currentNode.getRmType().equals("ELEMENT")
+          && childNode.getRmType().equals("DV_CODED_TEXT")
+          && childNode.getInputs().stream().anyMatch(in -> "other".equals(in.getSuffix()))) {
+        isChoice = true;
       }
+
+      currentChild =
+          (RMObject)
+              extractRMChild(
+                  context.getRmObjectDeque().peek(),
+                  currentNode,
+                  childNode,
+                  isChoice,
+                  i,
+                  context.getSkippedNodes(childNode));
     }
 
     return new ImmutablePair<>(childObject, currentChild);
