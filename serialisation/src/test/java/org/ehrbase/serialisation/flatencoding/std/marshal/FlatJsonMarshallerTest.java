@@ -19,16 +19,9 @@
 
 package org.ehrbase.serialisation.flatencoding.std.marshal;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nedap.archie.rm.composition.Composition;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 import org.apache.commons.io.IOUtils;
 import org.apache.xmlbeans.XmlException;
 import org.assertj.core.api.SoftAssertions;
@@ -37,11 +30,18 @@ import org.ehrbase.serialisation.jsonencoding.JacksonUtil;
 import org.ehrbase.test_data.composition.CompositionTestDataCanonicalJson;
 import org.ehrbase.test_data.composition.CompositionTestDataSimSDTJson;
 import org.ehrbase.test_data.operationaltemplate.OperationalTemplateTestData;
-import org.ehrbase.webtemplate.filter.Filter;
 import org.ehrbase.webtemplate.parser.OPTParser;
 import org.junit.Test;
 import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
 import org.openehr.schemas.v1.TemplateDocument;
+
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class FlatJsonMarshallerTest {
 
@@ -58,8 +58,7 @@ public class FlatJsonMarshallerTest {
                     CompositionTestDataCanonicalJson.CORONA.getStream(), StandardCharsets.UTF_8),
                 Composition.class);
     FlatJsonMarshaller cut = new FlatJsonMarshaller();
-    String actual =
-        cut.toFlatJson(composition, new Filter().filter(new OPTParser(template).parse()));
+    String actual = cut.toFlatJson(composition, new OPTParser(template).parse());
     assertThat(actual).isNotNull();
 
     String expected =
@@ -86,8 +85,7 @@ public class FlatJsonMarshallerTest {
                     StandardCharsets.UTF_8),
                 Composition.class);
     FlatJsonMarshaller cut = new FlatJsonMarshaller();
-    String actual =
-        cut.toFlatJson(composition, new Filter().filter(new OPTParser(template).parse()));
+    String actual = cut.toFlatJson(composition, new OPTParser(template).parse());
     assertThat(actual).isNotNull();
 
     String expected =
@@ -101,9 +99,6 @@ public class FlatJsonMarshallerTest {
         new String[] {
           "Missing path: bericht/körpergewicht:0/any_event_en:0/gewicht|magnitude, value: 55.0",
           "Missing path: bericht/körpergewicht:0/any_event_en:1/gewicht|magnitude, value: 60.0",
-          "Missing path: bericht/körpergewicht:0/any_event_en:1/math_function|value, value: mean",
-          "Missing path: bericht/körpergewicht:0/any_event_en:1/math_function|terminology, value: openehr",
-          "Missing path: bericht/körpergewicht:0/any_event_en:1/math_function|code, value: 146",
           "Missing path: bericht/körpergewicht:0/birth_en/gewicht|magnitude, value: 30.0"
         },
         new String[] {
@@ -127,8 +122,7 @@ public class FlatJsonMarshallerTest {
                     StandardCharsets.UTF_8),
                 Composition.class);
     FlatJsonMarshaller cut = new FlatJsonMarshaller();
-    String actual =
-        cut.toFlatJson(composition, new Filter().filter(new OPTParser(template).parse()));
+    String actual = cut.toFlatJson(composition, new OPTParser(template).parse());
     assertThat(actual).isNotNull();
 
     String expected =
@@ -167,8 +161,7 @@ public class FlatJsonMarshallerTest {
                     CompositionTestDataCanonicalJson.ALL_TYPES.getStream(), StandardCharsets.UTF_8),
                 Composition.class);
     FlatJsonMarshaller cut = new FlatJsonMarshaller();
-    String actual =
-        cut.toFlatJson(composition, new Filter().filter(new OPTParser(template).parse()));
+    String actual = cut.toFlatJson(composition, new OPTParser(template).parse());
     assertThat(actual).isNotNull();
 
     String expected =

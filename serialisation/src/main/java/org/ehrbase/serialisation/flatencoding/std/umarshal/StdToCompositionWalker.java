@@ -31,12 +31,14 @@ import org.ehrbase.serialisation.flatencoding.std.umarshal.postprocessor.Unmarsh
 import org.ehrbase.serialisation.flatencoding.std.umarshal.rmunmarshaller.DefaultRMUnmarshaller;
 import org.ehrbase.serialisation.flatencoding.std.umarshal.rmunmarshaller.RMUnmarshaller;
 import org.ehrbase.serialisation.walker.Context;
+import org.ehrbase.serialisation.walker.NodeId;
 import org.ehrbase.serialisation.walker.ToCompositionWalker;
 import org.ehrbase.serialisation.walker.defaultvalues.DefaultValues;
 import org.ehrbase.util.reflection.ReflectionHelper;
 import org.ehrbase.webtemplate.model.WebTemplate;
 import org.ehrbase.webtemplate.model.WebTemplateInput;
 import org.ehrbase.webtemplate.model.WebTemplateNode;
+import org.ehrbase.webtemplate.parser.InputHandler;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -47,6 +49,8 @@ public class StdToCompositionWalker extends ToCompositionWalker<Map<String, Stri
       ReflectionHelper.buildMap(RMUnmarshaller.class);
   private static final Map<Class<?>, UnmarshalPostprocessor> POSTPROCESSOR_MAP =
       ReflectionHelper.buildMap(UnmarshalPostprocessor.class);
+
+  private static InputHandler inputHandler = new InputHandler(Collections.emptyMap());
 
   private Set<String> consumedPaths;
 
@@ -71,15 +75,15 @@ public class StdToCompositionWalker extends ToCompositionWalker<Map<String, Stri
 
     Integer oldCount = null;
     if (count != null) {
-      oldCount = context.getCountMap().get(child);
-      context.getCountMap().put(child, count);
+      oldCount = context.getCountMap().get(new NodeId(child));
+      context.getCountMap().put(new NodeId(child), count);
     }
-    String pathWithoutCount = buildNamePath(context, false);
-    String path = buildNamePath(context, true);
+    String pathWithoutCount = flatHelper.buildNamePath(context, false);
+    String path = flatHelper.buildNamePath(context, true);
     context.getNodeDeque().remove();
-    context.getCountMap().remove(child);
+    context.getCountMap().remove(new NodeId(child));
     if (oldCount != null) {
-      context.getCountMap().put(child, oldCount);
+      context.getCountMap().put(new NodeId(child), oldCount);
     }
 
     Map<String, String> subValues =
@@ -113,7 +117,7 @@ public class StdToCompositionWalker extends ToCompositionWalker<Map<String, Stri
     } else if (visitChildren(child)) {
       for (WebTemplateNode n : child.getChildren()) {
         context.getNodeDeque().push(n);
-        String path = buildNamePath(context, true);
+        String path = flatHelper.buildNamePath(context, true);
         context.getNodeDeque().remove();
         subValues =
             subValues.entrySet().stream()
@@ -136,7 +140,7 @@ public class StdToCompositionWalker extends ToCompositionWalker<Map<String, Stri
   protected void preHandle(Context<Map<String, String>> context) {
 
     // Handle if at a End-Node
-    if (!visitChildren(context.getNodeDeque().peek())) {
+    if (!visitChildren(context.getNodeDeque().peek()) && !skip(context)) {
       RMUnmarshaller rmUnmarshaller =
           UNMARSHALLER_MAP.getOrDefault(
               context.getRmObjectDeque().peek().getClass(), new DefaultRMUnmarshaller());
@@ -195,25 +199,113 @@ public class StdToCompositionWalker extends ToCompositionWalker<Map<String, Stri
   }
 
   private String getNamePath(Context<Map<String, String>> context) {
-    String namePath = buildNamePath(context, true);
+    String namePath = flatHelper.buildNamePath(context, true);
     String finalNamePath = namePath;
     if (context.getObjectDeque().peek().entrySet().stream()
         .noneMatch(e -> e.getKey().startsWith(finalNamePath))) {
-      namePath = buildNamePath(context, false);
+      namePath = flatHelper.buildNamePath(context, false);
     }
     return namePath;
   }
 
   @Override
+  protected void handleDVText(
+      WebTemplateNode currentNode,
+      Map<String, List<WebTemplateNode>> choices,
+      List<WebTemplateNode> children) {
+    if (currentNode.getRmType().equals("ELEMENT")) {
+      List<WebTemplateNode> trueChildren =
+          currentNode.getChildren().stream()
+              .filter(
+                  n ->
+                      !List.of("null_flavour", "feeder_audit").contains(n.getName())
+                          || !n.isNullable())
+              .collect(Collectors.toList());
+      if (trueChildren.stream()
+              .map(WebTemplateNode::getRmType)
+              .collect(Collectors.toList())
+              .containsAll(List.of("DV_TEXT", DV_CODED_TEXT))
+          && currentNode.getChoicesInChildren().size() > 0
+          && trueChildren.size() == 2) {
+        handleDVTextInternal(currentNode, choices, children);
+      } else {
+        super.handleDVText(currentNode, choices, children);
+      }
+    } else {
+      super.handleDVText(currentNode, choices, children);
+    }
+  }
+
+  public static void handleDVTextInternal(
+      WebTemplateNode node,
+      Map<String, List<WebTemplateNode>> choices,
+      List<WebTemplateNode> children) {
+
+    if (node.getRmType().equals("ELEMENT")) {
+      List<WebTemplateNode> trueChildren =
+          node.getChildren().stream()
+              .filter(
+                  n ->
+                      !List.of("null_flavour", "feeder_audit").contains(n.getName())
+                          || !n.isNullable())
+              .collect(Collectors.toList());
+      if (trueChildren.stream()
+              .map(WebTemplateNode::getRmType)
+              .collect(Collectors.toList())
+              .containsAll(List.of("DV_TEXT", DV_CODED_TEXT))
+          && node.getChoicesInChildren().size() > 0
+          && trueChildren.size() == 2) {
+        WebTemplateNode merged = new WebTemplateNode();
+        merged.setId(node.getId(false));
+        merged.setName(node.getName());
+        merged.setMax(node.getMax());
+        merged.setMin(node.getMin());
+        merged.setRmType(DV_CODED_TEXT);
+        WebTemplateNode codedTextValue = node.findChildById("coded_text_value").orElseThrow();
+        merged.getInputs().addAll(codedTextValue.getInputs());
+        merged.setAqlPath(codedTextValue.getAqlPath());
+        merged.getLocalizedDescriptions().putAll(node.getLocalizedDescriptions());
+        merged.getLocalizedNames().putAll(node.getLocalizedNames());
+        merged.setLocalizedName(node.getLocalizedName());
+        merged.setAnnotations(node.getAnnotations());
+
+        WebTemplateInput other = inputHandler.buildWebTemplateInput("other", "TEXT");
+
+        merged.getInputs().add(other);
+        merged.getInputs().stream()
+            .filter(i -> Objects.equals(i.getSuffix(), "code"))
+            .findAny()
+            .ifPresent(i -> i.setListOpen(true));
+
+        choices.clear();
+        children.clear();
+        children.add(merged);
+
+        node.getChildren()
+            .removeIf(n -> List.of("coded_text_value", "text_value").contains(n.getId()));
+        node.getChildren().add(merged);
+      }
+    }
+  }
+
+  @Override
   protected int calculateSize(Context<Map<String, String>> context, WebTemplateNode childNode) {
 
-    Integer oldCount = context.getCountMap().get(childNode);
-    context.getCountMap().remove(childNode);
+    Integer oldCount = context.getCountMap().get(new NodeId(childNode));
+    context.getCountMap().remove(new NodeId((childNode)));
     context.getNodeDeque().push(childNode);
+    String namePath = flatHelper.buildNamePath(context, true);
+
+    // simple Elements
+    if (childNode.getRmType().equals("ELEMENT") && skip(context)) {
+      namePath = namePath + childNode.getId();
+    }
+
+    String finalNamePath = namePath;
     Integer count =
         context.getObjectDeque().peek().keySet().stream()
-            .filter(s -> StringUtils.startsWith(s, buildNamePath(context, true)))
-            .map(s -> StringUtils.substringAfter(s, buildNamePath(context, true) + ":"))
+            .filter(s -> StringUtils.startsWith(s, finalNamePath))
+            .map(s -> StringUtils.substringAfter(s, finalNamePath + ":"))
             .map(s -> StringUtils.substringBefore(s, "/"))
             .map(s -> StringUtils.substringBefore(s, "|"))
             .filter(StringUtils::isNotBlank)
@@ -224,12 +316,12 @@ public class StdToCompositionWalker extends ToCompositionWalker<Map<String, Stri
             .orElse(0);
     if (count == 0
         && context.getObjectDeque().peek().keySet().stream()
-            .anyMatch(s -> StringUtils.startsWith(s, buildNamePath(context, false)))) {
+            .anyMatch(s -> StringUtils.startsWith(s, flatHelper.buildNamePath(context, false)))) {
       count = 1;
     }
     context.getNodeDeque().poll();
     if (oldCount != null) {
-      context.getCountMap().put(childNode, oldCount);
+      context.getCountMap().put(new NodeId(childNode), oldCount);
     }
     return count;
   }

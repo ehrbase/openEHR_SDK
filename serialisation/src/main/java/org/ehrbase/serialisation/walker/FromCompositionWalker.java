@@ -21,11 +21,12 @@ package org.ehrbase.serialisation.walker;
 
 import com.nedap.archie.rm.RMObject;
 import com.nedap.archie.rminfo.ArchieRMInfoLookup;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.ehrbase.webtemplate.model.WebTemplateNode;
+
 import java.util.Deque;
 import java.util.List;
 import java.util.Map;
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.ehrbase.webtemplate.model.WebTemplateNode;
 
 public abstract class FromCompositionWalker<T> extends Walker<T> {
   public static final ArchieRMInfoLookup ARCHIE_RM_INFO_LOOKUP = ArchieRMInfoLookup.getInstance();
@@ -54,20 +55,6 @@ public abstract class FromCompositionWalker<T> extends Walker<T> {
       }
     }
     child = wrap(child);
-    return child;
-  }
-
-  private Object wrap(Object child) {
-    if (child != null) {
-      if (String.class.isAssignableFrom(child.getClass())) {
-        child = new RmString((String) child);
-      } else if (Long.class.isAssignableFrom(child.getClass())) {
-        child = new RmLong((Long) child);
-      }
-      if (Boolean.class.isAssignableFrom(child.getClass())) {
-        child = new RmBoolean((Boolean) child);
-      }
-    }
     return child;
   }
 

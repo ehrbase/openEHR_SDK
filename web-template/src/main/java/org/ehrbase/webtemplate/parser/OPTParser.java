@@ -20,13 +20,7 @@
 package org.ehrbase.webtemplate.parser;
 
 import com.nedap.archie.rm.archetyped.Locatable;
-import com.nedap.archie.rm.composition.Action;
-import com.nedap.archie.rm.composition.Activity;
-import com.nedap.archie.rm.composition.Composition;
-import com.nedap.archie.rm.composition.Entry;
-import com.nedap.archie.rm.composition.EventContext;
-import com.nedap.archie.rm.composition.Instruction;
-import com.nedap.archie.rm.composition.IsmTransition;
+import com.nedap.archie.rm.composition.*;
 import com.nedap.archie.rm.datastructures.Element;
 import com.nedap.archie.rm.datastructures.Event;
 import com.nedap.archie.rm.datastructures.History;
@@ -34,18 +28,6 @@ import com.nedap.archie.rm.datavalues.quantity.DvInterval;
 import com.nedap.archie.rminfo.ArchieRMInfoLookup;
 import com.nedap.archie.rminfo.RMAttributeInfo;
 import com.nedap.archie.rminfo.RMTypeInfo;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
@@ -56,37 +38,14 @@ import org.ehrbase.terminology.client.terminology.TermDefinition;
 import org.ehrbase.terminology.client.terminology.TerminologyProvider;
 import org.ehrbase.terminology.client.terminology.ValueSet;
 import org.ehrbase.util.exception.SdkException;
-import org.ehrbase.webtemplate.model.WebTemplate;
-import org.ehrbase.webtemplate.model.WebTemplateAnnotation;
-import org.ehrbase.webtemplate.model.WebTemplateInput;
-import org.ehrbase.webtemplate.model.WebTemplateInputValue;
-import org.ehrbase.webtemplate.model.WebTemplateNode;
-import org.ehrbase.webtemplate.model.WebTemplateValidation;
-import org.ehrbase.webtemplate.model.WebtemplateCardinality;
-import org.openehr.schemas.v1.ARCHETYPESLOT;
-import org.openehr.schemas.v1.ARCHETYPETERM;
-import org.openehr.schemas.v1.CARCHETYPEROOT;
-import org.openehr.schemas.v1.CATTRIBUTE;
-import org.openehr.schemas.v1.CCODEPHRASE;
-import org.openehr.schemas.v1.CCODEREFERENCE;
-import org.openehr.schemas.v1.CCOMPLEXOBJECT;
-import org.openehr.schemas.v1.CDOMAINTYPE;
-import org.openehr.schemas.v1.CDVORDINAL;
-import org.openehr.schemas.v1.CDVQUANTITY;
-import org.openehr.schemas.v1.CDVSTATE;
-import org.openehr.schemas.v1.COBJECT;
-import org.openehr.schemas.v1.CODEPHRASE;
-import org.openehr.schemas.v1.CPRIMITIVEOBJECT;
-import org.openehr.schemas.v1.DVCODEDTEXT;
-import org.openehr.schemas.v1.DVORDINAL;
-import org.openehr.schemas.v1.DVQUANTITY;
-import org.openehr.schemas.v1.IntervalOfInteger;
-import org.openehr.schemas.v1.OBJECTID;
-import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
-import org.openehr.schemas.v1.RESOURCEDESCRIPTIONITEM;
-import org.openehr.schemas.v1.StringDictionaryItem;
+import org.ehrbase.webtemplate.model.*;
+import org.openehr.schemas.v1.*;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class OPTParser {
   public static final String PATH_DIVIDER = "/";
@@ -483,33 +442,6 @@ public class OPTParser {
           value.setId(node.getId(false));
           value.setAnnotations(node.getAnnotations());
 
-          // If contains a choice of DV_TEXT and DV_CODED_TEXT add a merged node
-        } else if (trueChildren.stream()
-                .map(WebTemplateNode::getRmType)
-                .collect(Collectors.toList())
-                .containsAll(List.of("DV_TEXT", DV_CODED_TEXT))
-            && node.getChoicesInChildren().size() > 0) {
-          WebTemplateNode merged = new WebTemplateNode();
-          merged.setId(node.getId(false));
-          merged.setName(node.getName());
-          merged.setMax(node.getMax());
-          merged.setMin(node.getMin());
-          merged.setRmType(DV_CODED_TEXT);
-          WebTemplateNode codedTextValue = node.findChildById("coded_text_value").orElseThrow();
-          merged.getInputs().addAll(codedTextValue.getInputs());
-          merged.setAqlPath(codedTextValue.getAqlPath());
-          merged.getLocalizedDescriptions().putAll(node.getLocalizedDescriptions());
-          merged.getLocalizedNames().putAll(node.getLocalizedNames());
-          merged.setLocalizedName(node.getLocalizedName());
-          merged.setAnnotations(node.getAnnotations());
-          WebTemplateInput other = inputHandler.buildWebTemplateInput("other", "TEXT");
-
-          merged.getInputs().add(other);
-          merged.getInputs().stream()
-              .filter(i -> Objects.equals(i.getSuffix(), "code"))
-              .findAny()
-              .ifPresent(i -> i.setListOpen(true));
-          node.getChildren().add(merged);
         }
         // choice between value and null_flavour
         else if (node.getChoicesInChildren().isEmpty()) {
@@ -847,8 +779,10 @@ public class OPTParser {
                 value
                     .getLocalizedLabels()
                     .putAll(
-                        termDefinitionMap.getOrDefault(o.getUnits(), Collections.emptyMap())
-                            .entrySet().stream()
+                        termDefinitionMap
+                            .getOrDefault(o.getUnits(), Collections.emptyMap())
+                            .entrySet()
+                            .stream()
                             .collect(
                                 Collectors.toMap(Map.Entry::getKey, e -> e.getValue().getValue())));
                 unit.getList().add(value);
@@ -877,7 +811,8 @@ public class OPTParser {
                     .getLocalizedLabels()
                     .putAll(
                         Optional.ofNullable(termDefinitionMap.get(value.getValue()))
-                            .map(Map::entrySet).stream()
+                            .map(Map::entrySet)
+                            .stream()
                             .flatMap(Set::stream)
                             .collect(
                                 Collectors.toMap(Map.Entry::getKey, e -> e.getValue().getValue())));
@@ -885,7 +820,8 @@ public class OPTParser {
                     .getLocalizedDescriptions()
                     .putAll(
                         Optional.ofNullable(termDefinitionMap.get(value.getValue()))
-                            .map(Map::entrySet).stream()
+                            .map(Map::entrySet)
+                            .stream()
                             .flatMap(Set::stream)
                             .collect(
                                 Collectors.toMap(
@@ -977,7 +913,9 @@ public class OPTParser {
                     value
                         .getLocalizedLabels()
                         .putAll(
-                            termDefinitionMap.getOrDefault(o, Collections.emptyMap()).entrySet()
+                            termDefinitionMap
+                                .getOrDefault(o, Collections.emptyMap())
+                                .entrySet()
                                 .stream()
                                 .collect(
                                     Collectors.toMap(
@@ -985,7 +923,9 @@ public class OPTParser {
                     value
                         .getLocalizedDescriptions()
                         .putAll(
-                            termDefinitionMap.getOrDefault(o, Collections.emptyMap()).entrySet()
+                            termDefinitionMap
+                                .getOrDefault(o, Collections.emptyMap())
+                                .entrySet()
                                 .stream()
                                 .filter(e -> StringUtils.isNotBlank(e.getValue().getDescription()))
                                 .collect(
@@ -1050,10 +990,16 @@ public class OPTParser {
           .putAll(
               termDefinitionMap.get(nodeId).entrySet().stream()
                   .collect(
-                      Collectors.toMap(Map.Entry::getKey, e ->Optional.ofNullable( e.getValue().getDescription()).orElse(e.getValue().getValue()))));
+                      Collectors.toMap(
+                          Map.Entry::getKey,
+                          e ->
+                              Optional.ofNullable(e.getValue().getDescription())
+                                  .orElse(e.getValue().getValue()))));
 
-      Optional.of(termDefinitionMap.get(nodeId)).map(m -> m.get(defaultLanguage))
-          .map(TermDefinition::getOther).stream()
+      Optional.of(termDefinitionMap.get(nodeId))
+          .map(m -> m.get(defaultLanguage))
+          .map(TermDefinition::getOther)
+          .stream()
           .map(Map::entrySet)
           .flatMap(Set::stream)
           .forEach(

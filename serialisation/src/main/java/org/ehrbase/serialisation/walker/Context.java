@@ -20,14 +20,15 @@
 package org.ehrbase.serialisation.walker;
 
 import com.nedap.archie.rm.RMObject;
-import java.util.ArrayDeque;
-import java.util.Deque;
-import java.util.HashMap;
-import java.util.Map;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.ehrbase.serialisation.walker.defaultvalues.DefaultValues;
 import org.ehrbase.webtemplate.model.WebTemplateNode;
+
+import java.util.ArrayDeque;
+import java.util.Deque;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Context<T> {
 
@@ -37,7 +38,7 @@ public class Context<T> {
 
   private final Deque<T> objectDeque = new ArrayDeque<>();
 
-  private final Map<WebTemplateNode, Integer> countMap = new HashMap<>();
+  private final Map<NodeId, Integer> countMap = new HashMap<>();
 
   private Map<Pair<String, String>, Deque<WebTemplateNode>> filteredNodeMap;
   private DefaultValues defaultValues;
@@ -54,7 +55,7 @@ public class Context<T> {
     return objectDeque;
   }
 
-  public Map<WebTemplateNode, Integer> getCountMap() {
+  public Map<NodeId, Integer> getCountMap() {
     return countMap;
   }
 

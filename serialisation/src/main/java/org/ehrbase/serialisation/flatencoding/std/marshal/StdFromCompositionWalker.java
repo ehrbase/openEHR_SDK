@@ -20,10 +20,6 @@
 package org.ehrbase.serialisation.flatencoding.std.marshal;
 
 import com.nedap.archie.rm.RMObject;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
 import org.ehrbase.serialisation.flatencoding.std.marshal.config.DefaultStdConfig;
 import org.ehrbase.serialisation.flatencoding.std.marshal.config.StdConfig;
 import org.ehrbase.serialisation.flatencoding.std.marshal.postprocessor.MarshalPostprocessor;
@@ -31,6 +27,14 @@ import org.ehrbase.serialisation.walker.Context;
 import org.ehrbase.serialisation.walker.FromCompositionWalker;
 import org.ehrbase.util.reflection.ReflectionHelper;
 import org.ehrbase.webtemplate.model.WebTemplateNode;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import static org.ehrbase.serialisation.flatencoding.std.umarshal.StdToCompositionWalker.handleDVTextInternal;
 
 public class StdFromCompositionWalker extends FromCompositionWalker<Map<String, Object>> {
 
@@ -51,7 +55,11 @@ public class StdFromCompositionWalker extends FromCompositionWalker<Map<String, 
   protected void preHandle(Context<Map<String, Object>> context) {
 
     // Handle if at a End-Node
-    if (!visitChildren(context.getNodeDeque().peek())) {
+    WebTemplateNode node = context.getNodeDeque().poll();
+
+    WebTemplateNode parent = context.getNodeDeque().peek();
+    context.getNodeDeque().push(node);
+    if (!visitChildren(node) && !flatHelper.skip(node, parent)) {
       RMObject currentObject = context.getRmObjectDeque().peek();
 
       StdConfig stdConfig = configMap.getOrDefault(currentObject.getClass(), DEFAULT_STD_CONFIG);
@@ -59,7 +67,9 @@ public class StdFromCompositionWalker extends FromCompositionWalker<Map<String, 
       context
           .getObjectDeque()
           .peek()
-          .putAll(stdConfig.buildChildValues(buildNamePath(context, true), currentObject, context));
+          .putAll(
+              stdConfig.buildChildValues(
+                  flatHelper.buildNamePath(context, true), currentObject, context));
     }
   }
 
@@ -82,8 +92,36 @@ public class StdFromCompositionWalker extends FromCompositionWalker<Map<String, 
     postprocessor.forEach(
         p ->
             p.process(
-                buildNamePath(context, true),
+                flatHelper.buildNamePath(context, true),
                 context.getRmObjectDeque().peek(),
                 context.getObjectDeque().peek()));
+  }
+
+  @Override
+  protected void handleDVText(
+      WebTemplateNode currentNode,
+      Map<String, List<WebTemplateNode>> choices,
+      List<WebTemplateNode> children) {
+    if (currentNode.getRmType().equals("ELEMENT")) {
+      List<WebTemplateNode> trueChildren =
+          currentNode.getChildren().stream()
+              .filter(
+                  n ->
+                      !List.of("null_flavour", "feeder_audit").contains(n.getName())
+                          || !n.isNullable())
+              .collect(Collectors.toList());
+      if (trueChildren.stream()
+              .map(WebTemplateNode::getRmType)
+              .collect(Collectors.toList())
+              .containsAll(List.of("DV_TEXT", DV_CODED_TEXT))
+          && currentNode.getChoicesInChildren().size() > 0
+          && trueChildren.size() == 2) {
+        handleDVTextInternal(currentNode, choices, children);
+      } else {
+        super.handleDVText(currentNode, choices, children);
+      }
+    } else {
+      super.handleDVText(currentNode, choices, children);
+    }
   }
 }
