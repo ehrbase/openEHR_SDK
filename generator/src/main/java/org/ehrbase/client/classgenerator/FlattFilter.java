@@ -134,13 +134,5 @@ public class FlattFilter extends Filter {
       node.getChildren().removeAll(ismTransitionList);
       node.getChildren().add(ismTransitionList.get(0));
     }
-
-    if (node.getRmType().equals("ELEMENT")
-        && node.getChildren().size() <= 5
-        && node.getChildren().stream()
-            .filter(n -> !List.of("null_flavour", "feeder_audit").contains(n.getName()))
-            .map(WebTemplateNode::getRmType)
-            .collect(Collectors.toList())
-            .containsAll(List.of("DV_TEXT", "DV_CODED_TEXT"))) {}
   }
 }
