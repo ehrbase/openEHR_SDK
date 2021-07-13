@@ -43,6 +43,8 @@ public class Context<T> {
   private Map<Pair<String, String>, Deque<WebTemplateNode>> filteredNodeMap;
   private DefaultValues defaultValues;
 
+  private final FlatHelper<T> flatHelper = new FlatHelper<>();
+
   public Deque<WebTemplateNode> getNodeDeque() {
     return nodeDeque;
   }
@@ -84,5 +86,9 @@ public class Context<T> {
 
   public void setDefaultValues(DefaultValues defaultValues) {
     this.defaultValues = defaultValues;
+  }
+
+  public FlatHelper<T> getFlatHelper() {
+    return flatHelper;
   }
 }

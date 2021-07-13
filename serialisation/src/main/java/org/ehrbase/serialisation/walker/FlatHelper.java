@@ -80,6 +80,14 @@ public class FlatHelper<T> {
     return sb.toString();
   }
 
+  public boolean skip(Context<T> context) {
+    WebTemplateNode node = context.getNodeDeque().poll();
+    WebTemplateNode parent = context.getNodeDeque().peek();
+    context.getNodeDeque().push(node);
+    boolean skip = skip(node, parent);
+    return skip;
+  }
+
   public boolean skip(WebTemplateNode node, WebTemplateNode parent) {
 
     if (node.isArchetypeSlot()) {

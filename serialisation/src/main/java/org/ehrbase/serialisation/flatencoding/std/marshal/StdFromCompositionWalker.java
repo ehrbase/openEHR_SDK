@@ -55,11 +55,7 @@ public class StdFromCompositionWalker extends FromCompositionWalker<Map<String, 
   protected void preHandle(Context<Map<String, Object>> context) {
 
     // Handle if at a End-Node
-    WebTemplateNode node = context.getNodeDeque().poll();
-
-    WebTemplateNode parent = context.getNodeDeque().peek();
-    context.getNodeDeque().push(node);
-    if (!visitChildren(node) && !flatHelper.skip(node, parent)) {
+    if (!visitChildren(context.getNodeDeque().peek()) && !context.getFlatHelper().skip(context)) {
       RMObject currentObject = context.getRmObjectDeque().peek();
 
       StdConfig stdConfig = configMap.getOrDefault(currentObject.getClass(), DEFAULT_STD_CONFIG);
@@ -69,7 +65,7 @@ public class StdFromCompositionWalker extends FromCompositionWalker<Map<String, 
           .peek()
           .putAll(
               stdConfig.buildChildValues(
-                  flatHelper.buildNamePath(context, true), currentObject, context));
+                  context.getFlatHelper().buildNamePath(context, true), currentObject, context));
     }
   }
 
@@ -92,7 +88,7 @@ public class StdFromCompositionWalker extends FromCompositionWalker<Map<String, 
     postprocessor.forEach(
         p ->
             p.process(
-                flatHelper.buildNamePath(context, true),
+                context.getFlatHelper().buildNamePath(context, true),
                 context.getRmObjectDeque().peek(),
                 context.getObjectDeque().peek()));
   }

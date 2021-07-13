@@ -80,8 +80,8 @@ public class StdToCompositionWalker extends ToCompositionWalker<Map<String, Stri
       oldCount = context.getCountMap().get(new NodeId(child));
       context.getCountMap().put(new NodeId(child), count);
     }
-    String pathWithoutCount = flatHelper.buildNamePath(context, false);
-    String path = flatHelper.buildNamePath(context, true);
+    String pathWithoutCount = context.getFlatHelper().buildNamePath(context, false);
+    String path = context.getFlatHelper().buildNamePath(context, true);
     context.getNodeDeque().remove();
     context.getCountMap().remove(new NodeId(child));
     if (oldCount != null) {
@@ -118,7 +118,7 @@ public class StdToCompositionWalker extends ToCompositionWalker<Map<String, Stri
       Integer i) {
 
     if (CollectionUtils.isEmpty(childNode.getChildren())
-        && flatHelper.skip(childNode, currentNode)) {
+        && context.getFlatHelper().skip(childNode, currentNode)) {
       return new ImmutablePair<>(null, null);
     }
     return super.extractPair(context, currentNode, choices, childNode, i);
@@ -134,7 +134,7 @@ public class StdToCompositionWalker extends ToCompositionWalker<Map<String, Stri
     } else if (visitChildren(child)) {
       for (WebTemplateNode n : child.getChildren()) {
         context.getNodeDeque().push(n);
-        String path = flatHelper.buildNamePath(context, true);
+        String path = context.getFlatHelper().buildNamePath(context, true);
         context.getNodeDeque().remove();
         subValues =
             subValues.entrySet().stream()
@@ -157,7 +157,7 @@ public class StdToCompositionWalker extends ToCompositionWalker<Map<String, Stri
   protected void preHandle(Context<Map<String, String>> context) {
 
     // Handle if at a End-Node
-    if (!visitChildren(context.getNodeDeque().peek()) && !skip(context)) {
+    if (!visitChildren(context.getNodeDeque().peek()) && !context.getFlatHelper().skip(context)) {
       RMUnmarshaller rmUnmarshaller =
           UNMARSHALLER_MAP.getOrDefault(
               context.getRmObjectDeque().peek().getClass(), new DefaultRMUnmarshaller());
@@ -216,11 +216,11 @@ public class StdToCompositionWalker extends ToCompositionWalker<Map<String, Stri
   }
 
   private String getNamePath(Context<Map<String, String>> context) {
-    String namePath = flatHelper.buildNamePath(context, true);
+    String namePath = context.getFlatHelper().buildNamePath(context, true);
     String finalNamePath = namePath;
     if (context.getObjectDeque().peek().entrySet().stream()
         .noneMatch(e -> e.getKey().startsWith(finalNamePath))) {
-      namePath = flatHelper.buildNamePath(context, false);
+      namePath = context.getFlatHelper().buildNamePath(context, false);
     }
     return namePath;
   }
@@ -311,10 +311,10 @@ public class StdToCompositionWalker extends ToCompositionWalker<Map<String, Stri
     Integer oldCount = context.getCountMap().get(new NodeId(childNode));
     context.getCountMap().remove(new NodeId((childNode)));
     context.getNodeDeque().push(childNode);
-    String namePath = flatHelper.buildNamePath(context, true);
+    String namePath = context.getFlatHelper().buildNamePath(context, true);
 
     // simple Elements
-    if (childNode.getRmType().equals("ELEMENT") && skip(context)) {
+    if (childNode.getRmType().equals("ELEMENT") && context.getFlatHelper().skip(context)) {
       namePath = namePath + childNode.getId();
     }
 
@@ -333,7 +333,10 @@ public class StdToCompositionWalker extends ToCompositionWalker<Map<String, Stri
             .orElse(0);
     if (count == 0
         && context.getObjectDeque().peek().keySet().stream()
-            .anyMatch(s -> StringUtils.startsWith(s, flatHelper.buildNamePath(context, false)))) {
+            .anyMatch(
+                s ->
+                    StringUtils.startsWith(
+                        s, context.getFlatHelper().buildNamePath(context, false)))) {
       count = 1;
     }
     context.getNodeDeque().poll();

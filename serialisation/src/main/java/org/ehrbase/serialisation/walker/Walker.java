@@ -45,7 +45,6 @@ public abstract class Walker<T> {
 
   public static final ArchieRMInfoLookup ARCHIE_RM_INFO_LOOKUP = ArchieRMInfoLookup.getInstance();
   public static final String DV_CODED_TEXT = "DV_CODED_TEXT";
-  public final FlatHelper<T> flatHelper = new FlatHelper<T>();
 
   public void walk(
       Composition composition, T object, WebTemplate webTemplate, DefaultValues defaultValues) {
@@ -86,7 +85,6 @@ public abstract class Walker<T> {
 
   private void handle(Context<T> context) {
 
-    // buildNamePath(context,false);
     preHandle(context);
     WebTemplateNode currentNode = context.getNodeDeque().peek();
     if (visitChildren(currentNode)) {
@@ -277,14 +275,6 @@ public abstract class Walker<T> {
 
   protected abstract void preHandle(Context<T> context);
 
-  protected boolean skip(Context<Map<String, String>> context) {
-    WebTemplateNode node2 = context.getNodeDeque().poll();
-    WebTemplateNode parent = context.getNodeDeque().peek();
-    context.getNodeDeque().push(node2);
-    boolean skip = flatHelper.skip(node2, parent);
-    return skip;
-  }
-
   protected abstract void postHandle(Context<T> context);
 
   protected void insertDefaults(Context<T> context) {}
@@ -311,24 +301,6 @@ public abstract class Walker<T> {
     }
     CanonicalJson canonicalXML = new CanonicalJson();
     return canonicalXML.unmarshal(canonicalXML.marshal(rmObject), rmObject.getClass());
-  }
-
-  protected String buildNamePath(Context<T> context, boolean addCount) {
-    return flatHelper.buildNamePath(context, addCount);
-  }
-
-  protected boolean skip(WebTemplateNode node, WebTemplateNode parent) {
-
-    return flatHelper.skip(node, parent);
-  }
-
-  protected boolean isEvent(WebTemplateNode node) {
-    return flatHelper.isEvent(node);
-  }
-
-  protected boolean isNonMandatoryRmAttribute(WebTemplateNode node, WebTemplateNode parent) {
-
-    return flatHelper.isNonMandatoryRmAttribute(node, parent);
   }
 
   public static class EventHelper {
