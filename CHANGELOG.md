@@ -6,6 +6,12 @@ Note: version releases in the 0.x.y range may introduce breaking changes.
 
 ### Added
 
+### Fixed
+
+## 1.5.0
+
+### Added
+
 - AqlParsing: Provide utility to remove parameters within AQL WHERE clauses (
   see https://github.com/ehrbase/openEHR_SDK/pull/231)
 
