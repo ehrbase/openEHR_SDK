@@ -100,6 +100,7 @@ public class Filter implements WebTemplateFilter {
     }
 
     if (node.getRmType().equals("ELEMENT")
+        && node.getChildren().size() <= 5
         && node.getChildren().stream()
             .filter(n -> !List.of("null_flavour", "feeder_audit").contains(n.getName()))
             .map(WebTemplateNode::getRmType)

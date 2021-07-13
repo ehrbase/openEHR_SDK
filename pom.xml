@@ -16,13 +16,14 @@
   ~  limitations under the License.
   -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.github.ehrbase.openEHR_SDK</groupId>
     <artifactId>root</artifactId>
     <packaging>pom</packaging>
-    <version>1.4.0</version>
+    <version>1.5.0</version>
 
     <modules>
         <module>client</module>
@@ -38,6 +39,7 @@
         <module>util</module>
         <module>building</module>
         <module>aql</module>
+        <module>serialisation_conformance_test</module>
     </modules>
 
 
@@ -50,6 +52,7 @@
         <jacoco.version>0.8.6</jacoco.version>
         <antlr4.version>4.9.1</antlr4.version>
         <archie.version>dc09642</archie.version>
+        <web-template-tests.version>8f3381a37d</web-template-tests.version>
 
         <skipIntegrationTests>true</skipIntegrationTests>
         <include.tests>**/*Test.java</include.tests>
@@ -219,9 +222,7 @@
                         </goals>
                         <configuration>
                             <skipTests>false</skipTests>
-                            <includes>
-                                <include>${include.tests}</include>
-                            </includes>
+
 
                         </configuration>
                     </execution>
@@ -258,8 +259,6 @@
                             </includes>
 
 
-
-
                         </configuration>
                     </execution>
 
@@ -285,23 +284,23 @@
         </plugins>
         <pluginManagement>
             <plugins>
-            <plugin>
-                <groupId>org.antlr</groupId>
-                <artifactId>antlr4-maven-plugin</artifactId>
-                <version>${antlr4.version}</version>
-                <configuration>
-                    <listener>false</listener>
-                    <visitor>true</visitor>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>antlr</id>
-                        <goals>
-                            <goal>antlr4</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
+                <plugin>
+                    <groupId>org.antlr</groupId>
+                    <artifactId>antlr4-maven-plugin</artifactId>
+                    <version>${antlr4.version}</version>
+                    <configuration>
+                        <listener>false</listener>
+                        <visitor>true</visitor>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <id>antlr</id>
+                            <goals>
+                                <goal>antlr4</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
             </plugins>
         </pluginManagement>
     </build>
@@ -333,6 +332,11 @@
             <dependency>
                 <groupId>com.github.ehrbase.openEHR_SDK</groupId>
                 <artifactId>building</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.ehrbase.openEHR_SDK</groupId>
+                <artifactId>serialisation_conformance_test</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -513,7 +517,6 @@
                 <version>4.12</version>
                 <scope>test</scope>
             </dependency> -->
-
 
 
             <dependency>

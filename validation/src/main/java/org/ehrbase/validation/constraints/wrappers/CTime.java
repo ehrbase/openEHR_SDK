@@ -24,6 +24,7 @@ package org.ehrbase.validation.constraints.wrappers;
 
 import com.nedap.archie.rm.datavalues.quantity.datetime.DvTime;
 import org.ehrbase.validation.constraints.util.DateTimeSyntax;
+import org.ehrbase.validation.constraints.terminology.ExternalTerminologyValidationSupport;
 import org.openehr.schemas.v1.CPRIMITIVE;
 import org.openehr.schemas.v1.CTIME;
 
@@ -39,8 +40,9 @@ import java.util.Map;
  * @see DvTime
  */
 public class CTime extends CConstraint implements I_CTypeValidate {
-    CTime(Map<String, Map<String, String>> localTerminologyLookup) {
-        super(localTerminologyLookup);
+
+    CTime(Map<String, Map<String, String>> localTerminologyLookup, ExternalTerminologyValidationSupport externalTerminologyValidator) {
+        super(localTerminologyLookup, externalTerminologyValidator);
     }
 
     @Override
@@ -58,8 +60,9 @@ public class CTime extends CConstraint implements I_CTypeValidate {
         //range check
         DvTime time = new DvTime(dvTimeStr);
 
-        if (ctime.isSetRange())
+        if (ctime.isSetRange()) {
             IntervalComparator.isWithinBoundaries(time, ctime.getRange());
+        }
 
         validateTimeZone(path, time, ctime);
     }

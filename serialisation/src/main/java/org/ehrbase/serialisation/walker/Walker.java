@@ -96,6 +96,7 @@ public abstract class Walker<T> {
       Map<String, List<WebTemplateNode>> choices = currentNode.getChoicesInChildren();
       List<WebTemplateNode> children = new ArrayList<>(currentNode.getChildren());
 
+      // unwrap DV_CODED_TEXT
       for (WebTemplateNode codeNode : new ArrayList<>(children)) {
         if (codeNode.getRmType().equals(DV_CODED_TEXT)
             && codeNode.getInputs().stream()
@@ -105,6 +106,17 @@ public abstract class Walker<T> {
           textNode.setRmType("DV_TEXT");
           choices.put(textNode.getAqlPath(), List.of(codeNode, textNode));
           children.add(textNode);
+        }
+      }
+
+      // Add dummy DV_CODED_TEXT
+      for (WebTemplateNode textNode : new ArrayList<>(children)) {
+        if (textNode.getRmType().equals("DV_TEXT")
+            && choices.values().stream().flatMap(List::stream).noneMatch(textNode::equals)) {
+          WebTemplateNode codeNode = new WebTemplateNode(textNode);
+          codeNode.setRmType(DV_CODED_TEXT);
+          choices.put(codeNode.getAqlPath(), List.of(textNode, codeNode));
+          children.add(codeNode);
         }
       }
 
@@ -160,7 +172,7 @@ public abstract class Walker<T> {
             }
           }
 
-          for (int i = 0; i < size; i++) {
+          for (int i = 0; i < Math.min(size, pairs.size()); i++) {
             RMObject currentChild = null;
             T childObject = null;
             childObject = pairs.get(i).getLeft();
@@ -267,13 +279,13 @@ public abstract class Walker<T> {
     return canonicalXML.unmarshal(canonicalXML.marshal(rmObject), rmObject.getClass());
   }
 
-  protected String buildNamePath(Context<T> context) {
+  protected String buildNamePath(Context<T> context, boolean addCount) {
     StringBuilder sb = new StringBuilder();
     for (Iterator<WebTemplateNode> iterator = context.getNodeDeque().descendingIterator();
         iterator.hasNext(); ) {
       WebTemplateNode node = iterator.next();
       sb.append(node.getId());
-      if (node.getMax() != 1 && context.getCountMap().containsKey(node)) {
+      if (node.getMax() != 1 && context.getCountMap().containsKey(node) && (addCount ||  context.getCountMap().get(node) != 0)) {
         sb.append(":").append(context.getCountMap().get(node));
       }
       if (iterator.hasNext()) {

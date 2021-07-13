@@ -21,13 +21,11 @@ package org.ehrbase.serialisation.flatencoding.std.umarshal;
 
 import com.nedap.archie.rm.RMObject;
 import com.nedap.archie.rm.composition.Composition;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
+import com.nedap.archie.rm.composition.Entry;
+import com.nedap.archie.rm.datatypes.CodePhrase;
+import com.nedap.archie.rm.datavalues.DvCodedText;
+import com.nedap.archie.rm.generic.PartyRelated;
+import com.nedap.archie.rm.support.identification.TerminologyId;
 import org.apache.commons.lang3.StringUtils;
 import org.ehrbase.serialisation.flatencoding.std.umarshal.postprocessor.UnmarshalPostprocessor;
 import org.ehrbase.serialisation.flatencoding.std.umarshal.rmunmarshaller.DefaultRMUnmarshaller;
@@ -37,7 +35,11 @@ import org.ehrbase.serialisation.walker.ToCompositionWalker;
 import org.ehrbase.serialisation.walker.defaultvalues.DefaultValues;
 import org.ehrbase.util.reflection.ReflectionHelper;
 import org.ehrbase.webtemplate.model.WebTemplate;
+import org.ehrbase.webtemplate.model.WebTemplateInput;
 import org.ehrbase.webtemplate.model.WebTemplateNode;
+
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class StdToCompositionWalker extends ToCompositionWalker<Map<String, String>> {
 
@@ -66,12 +68,14 @@ public class StdToCompositionWalker extends ToCompositionWalker<Map<String, Stri
       Integer count) {
 
     context.getNodeDeque().push(child);
+
     Integer oldCount = null;
     if (count != null) {
       oldCount = context.getCountMap().get(child);
       context.getCountMap().put(child, count);
     }
-    String path = buildNamePath(context);
+    String pathWithoutCount = buildNamePath(context, false);
+    String path = buildNamePath(context, true);
     context.getNodeDeque().remove();
     context.getCountMap().remove(child);
     if (oldCount != null) {
@@ -82,6 +86,12 @@ public class StdToCompositionWalker extends ToCompositionWalker<Map<String, Stri
         context.getObjectDeque().peek().entrySet().stream()
             .filter(e -> e.getKey().startsWith(path))
             .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+    if (subValues.isEmpty()) {
+      subValues =
+          context.getObjectDeque().peek().entrySet().stream()
+              .filter(e -> e.getKey().startsWith(pathWithoutCount))
+              .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+    }
     if (isChoice && !isMatchingNode(subValues, context, child)) {
       subValues = Collections.emptyMap();
     }
@@ -103,7 +113,7 @@ public class StdToCompositionWalker extends ToCompositionWalker<Map<String, Stri
     } else if (visitChildren(child)) {
       for (WebTemplateNode n : child.getChildren()) {
         context.getNodeDeque().push(n);
-        String path = buildNamePath(context);
+        String path = buildNamePath(context, true);
         context.getNodeDeque().remove();
         subValues =
             subValues.entrySet().stream()
@@ -130,11 +140,9 @@ public class StdToCompositionWalker extends ToCompositionWalker<Map<String, Stri
       RMUnmarshaller rmUnmarshaller =
           UNMARSHALLER_MAP.getOrDefault(
               context.getRmObjectDeque().peek().getClass(), new DefaultRMUnmarshaller());
+      String namePath = getNamePath(context);
       rmUnmarshaller.handle(
-          buildNamePath(context),
-          context.getRmObjectDeque().peek(),
-          context.getObjectDeque().peek(),
-          context);
+          namePath, context.getRmObjectDeque().peek(), context.getObjectDeque().peek(), context);
       consumedPaths.addAll(rmUnmarshaller.getConsumedPaths());
     }
   }
@@ -153,15 +161,47 @@ public class StdToCompositionWalker extends ToCompositionWalker<Map<String, Stri
 
       currentClass = currentClass.getSuperclass();
     }
+    String namePath = getNamePath(context);
+
+    if (Entry.class.isAssignableFrom(context.getRmObjectDeque().peek().getClass())) {
+      if (((Entry) context.getRmObjectDeque().peek()).getSubject() instanceof PartyRelated) {
+        Optional.ofNullable(context.getNodeDeque().peek())
+            .flatMap(c -> c.findChildById("subject"))
+            .flatMap(c -> c.findChildById("relationship"))
+            .stream()
+            .map(WebTemplateNode::getInputs)
+            .flatMap(List::stream)
+            .filter(i -> "code".equals(i.getSuffix()))
+            .map(WebTemplateInput::getList)
+            .map(l -> l.size() == 1 ? l.get(0) : null)
+            .filter(Objects::nonNull)
+            .findAny()
+            .ifPresent(
+                v -> {
+                  ((PartyRelated) ((Entry) context.getRmObjectDeque().peek()).getSubject())
+                      .setRelationship(
+                          new DvCodedText(
+                              v.getLabel(),
+                              new CodePhrase(new TerminologyId("openehr"), v.getValue())));
+                });
+      }
+    }
 
     postprocessor.forEach(
         p -> {
-          p.process(
-              buildNamePath(context),
-              context.getRmObjectDeque().peek(),
-              context.getObjectDeque().peek());
+          p.process(namePath, context.getRmObjectDeque().peek(), context.getObjectDeque().peek());
           consumedPaths.addAll(p.getConsumedPaths());
         });
+  }
+
+  private String getNamePath(Context<Map<String, String>> context) {
+    String namePath = buildNamePath(context, true);
+    String finalNamePath = namePath;
+    if (context.getObjectDeque().peek().entrySet().stream()
+        .noneMatch(e -> e.getKey().startsWith(finalNamePath))) {
+      namePath = buildNamePath(context, false);
+    }
+    return namePath;
   }
 
   @Override
@@ -172,8 +212,8 @@ public class StdToCompositionWalker extends ToCompositionWalker<Map<String, Stri
     context.getNodeDeque().push(childNode);
     Integer count =
         context.getObjectDeque().peek().keySet().stream()
-            .filter(s -> StringUtils.startsWith(s, buildNamePath(context)))
-            .map(s -> StringUtils.substringAfter(s, buildNamePath(context) + ":"))
+            .filter(s -> StringUtils.startsWith(s, buildNamePath(context, true)))
+            .map(s -> StringUtils.substringAfter(s, buildNamePath(context, true) + ":"))
             .map(s -> StringUtils.substringBefore(s, "/"))
             .map(s -> StringUtils.substringBefore(s, "|"))
             .filter(StringUtils::isNotBlank)
@@ -182,6 +222,11 @@ public class StdToCompositionWalker extends ToCompositionWalker<Map<String, Stri
             .reduce((first, second) -> second)
             .map(i -> i + 1)
             .orElse(0);
+    if (count == 0
+        && context.getObjectDeque().peek().keySet().stream()
+            .anyMatch(s -> StringUtils.startsWith(s, buildNamePath(context, false)))) {
+      count = 1;
+    }
     context.getNodeDeque().poll();
     if (oldCount != null) {
       context.getCountMap().put(childNode, oldCount);

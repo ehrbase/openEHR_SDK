@@ -19,25 +19,22 @@
 
 package org.ehrbase.aql.parser;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.fail;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import org.ehrbase.aql.binder.AqlBinder;
 import org.ehrbase.aql.dto.AqlDto;
-import org.ehrbase.aql.dto.condition.ConditionDto;
-import org.ehrbase.aql.dto.condition.ConditionLogicalOperatorDto;
-import org.ehrbase.aql.dto.condition.ConditionLogicalOperatorSymbol;
-import org.ehrbase.aql.dto.condition.MatchesOperatorDto;
-import org.ehrbase.aql.dto.condition.SimpleValue;
+import org.ehrbase.aql.dto.condition.*;
 import org.ehrbase.aql.dto.containment.ContainmentDto;
 import org.ehrbase.aql.dto.containment.ContainmentExpresionDto;
 import org.ehrbase.aql.dto.containment.ContainmentLogicalOperator;
 import org.ehrbase.aql.dto.select.SelectFieldDto;
 import org.junit.Test;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 public class AqlToDtoParserTest {
 
@@ -47,6 +44,26 @@ public class AqlToDtoParserTest {
         "Select c/context/other_context[at0001]/items[at0002]/value/value as Bericht_ID__value, d/ehr_id/value as ehr_id from EHR d contains COMPOSITION c[openEHR-EHR-COMPOSITION.report.v1]";
 
     testAql(aql, aql);
+  }
+
+  @Test
+  public void parseDoubleAlias() {
+    String aql =
+        "Select e/ehr_id/value ,c0 as F1 from EHR e contains COMPOSITION c0[openEHR-EHR-COMPOSITION.report.v1]";
+
+    testAql(
+        aql,
+        "Select e/ehr_id/value as F1, c0 as F1_F2 from EHR e contains COMPOSITION c0[openEHR-EHR-COMPOSITION.report.v1]");
+  }
+
+  @Test
+  public void parseDoubleAlias2() {
+    String aql =
+        "Select c0 as F1, e/ehr_id/value from EHR e contains COMPOSITION c0[openEHR-EHR-COMPOSITION.report.v1]";
+
+    testAql(
+        aql,
+        "Select c0 as F1, e/ehr_id/value as F2 from EHR e contains COMPOSITION c0[openEHR-EHR-COMPOSITION.report.v1]");
   }
 
   @Test
@@ -68,6 +85,14 @@ public class AqlToDtoParserTest {
   public void parseMultiWhere() {
     String aql =
         "Select c0 as openEHR_EHR_COMPOSITION_self_monitoring_v0, c1 as openEHR_EHR_COMPOSITION_report_v1 from EHR e contains (COMPOSITION c0[openEHR-EHR-COMPOSITION.self_monitoring.v0] and COMPOSITION c1[openEHR-EHR-COMPOSITION.report.v1]) where (e/ehr_id/value matches {'b3a40b41-36e1-4802-8748-062d4000aaae'} and c0/archetype_details/template_id/value matches {'Corona_Anamnese'} and c1/archetype_details/template_id/value matches {'Corona_Anamnese'})";
+
+    testAql(aql, aql);
+  }
+
+  @Test
+  public void parseMultiMixed() {
+    String aql =
+        "Select c0 as F1, e/ehr_id/value as F2 from EHR e contains COMPOSITION c0[openEHR-EHR-COMPOSITION.report.v1] where (e/ehr_id/value = $ehrid or (e/ehr_id/value = $ehrid2 and e/ehr_id/value = $ehrid3))";
 
     testAql(aql, aql);
   }

@@ -19,8 +19,10 @@
 
 package org.ehrbase.client.aql.query;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
@@ -96,8 +98,11 @@ public class EntityQuery<T extends Record> implements Query<T> {
     if (topExpresion != null) {
       sb.append(topExpresion.buildAql()).append(" ");
     }
-
-    sb.append(Arrays.stream(fields).map(this::buildFieldAql).collect(Collectors.joining(", ")))
+    List<String> usedNames = new ArrayList<>();
+    sb.append(
+            Arrays.stream(fields)
+                .map(field -> buildFieldAql(field, usedNames))
+                .collect(Collectors.joining(", ")))
         .append(" from EHR ")
         .append(buildVariabelName(ehrContainment));
     if (containmentExpression != null) {
@@ -120,14 +125,18 @@ public class EntityQuery<T extends Record> implements Query<T> {
     return sb.toString();
   }
 
-  private String buildFieldAql(SelectAqlField<?> field) {
+  private String buildFieldAql(SelectAqlField<?> field, List<String> usedNames) {
     selectCount++;
 
-    return field.buildAQL(ehrContainment)
-        + " as "
-        + (StringUtils.isNotBlank(field.getName())
+    String name =
+        StringUtils.isNotBlank(field.getName())
             ? field.getName().replaceAll("[^A-Za-z0-9]", "_")
-            : "F" + selectCount);
+            : "F" + selectCount;
+    while (usedNames.contains(name)) {
+      name = name + "_F" + selectCount;
+    }
+    usedNames.add(name);
+    return field.buildAQL(ehrContainment) + " as " + name;
   }
 
   @Override

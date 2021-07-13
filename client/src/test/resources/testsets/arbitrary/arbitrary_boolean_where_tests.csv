@@ -5,11 +5,12 @@ all_types_action_select.txt, d/description[at0001]/items[openEHR-EHR-CLUSTER.tes
 all_types_action_select.txt, d/description[at0001]/items[openEHR-EHR-CLUSTER.test_all_types.v1]/items[at0001]/items[at0002]/items[at0003]/value/value = true AND d/description[at0001]/items[openEHR-EHR-CLUSTER.test_all_types.v1]/items[at0001]/items[at0002]/items[at0003]/value/value != false,Test all types
 all_types_action_select.txt, d/description[at0001]/items[openEHR-EHR-CLUSTER.test_all_types.v1]/items[at0001]/items[at0002]/items[at0003]/value/value = true OR d/description[at0001]/items[openEHR-EHR-CLUSTER.test_all_types.v1]/items[at0001]/items[at0002]/items[at0003]/value/value = false,Test all types
 all_types_action_select.txt, d/description[at0001]/items[openEHR-EHR-CLUSTER.test_all_types.v1]/items[at0001]/items[at0002]/items[at0003]/value/value IN (true),Test all types
-all_types_action_select.txt, true = SOME(d/description[at0001]/items[openEHR-EHR-CLUSTER.test_all_types.v1]/items[at0001]/items[at0002]/items[at0003]/value/value),Test all types
-all_types_action_select.txt, true = ANY(d/description[at0001]/items[openEHR-EHR-CLUSTER.test_all_types.v1]/items[at0001]/items[at0002]/items[at0003]/value/value),Test all types
-all_types_action_select.txt, true = ANY(d/description[at0001]/items[openEHR-EHR-CLUSTER.test_all_types.v1]/items[at0001]/items[at0002]/items[at0003]/value/value),Test all types
-all_types_action_select.txt, true = ALL(d/description[at0001]/items[openEHR-EHR-CLUSTER.test_all_types.v1]/items[at0001]/items[at0002]/items[at0003]/value/value),Test all types
-all_types_action_select.txt, false = ALL(d/description[at0001]/items[openEHR-EHR-CLUSTER.test_all_types.v1]/items[at0001]/items[at0002]/items[at0003]/value/value)
+# change in semantic, right operand is required to be an array
+# all_types_action_select.txt, true = SOME(d/description[at0001]/items[openEHR-EHR-CLUSTER.test_all_types.v1]/items[at0001]/items[at0002]/items[at0003]/value/value),Test all types
+# all_types_action_select.txt, true = ANY(d/description[at0001]/items[openEHR-EHR-CLUSTER.test_all_types.v1]/items[at0001]/items[at0002]/items[at0003]/value/value),Test all types
+# all_types_action_select.txt, true = ANY(d/description[at0001]/items[openEHR-EHR-CLUSTER.test_all_types.v1]/items[at0001]/items[at0002]/items[at0003]/value/value),Test all types
+# all_types_action_select.txt, true = ALL(d/description[at0001]/items[openEHR-EHR-CLUSTER.test_all_types.v1]/items[at0001]/items[at0002]/items[at0003]/value/value),Test all types
+# all_types_action_select.txt, false = ALL(d/description[at0001]/items[openEHR-EHR-CLUSTER.test_all_types.v1]/items[at0001]/items[at0002]/items[at0003]/value/value)
 all_types_action_select.txt, d/description[at0001]/items[openEHR-EHR-CLUSTER.test_all_types.v1]/items[at0001]/items[at0002]/items[at0003]/value/value IS TRUE,Test all types
 all_types_action_select.txt, d/description[at0001]/items[openEHR-EHR-CLUSTER.test_all_types.v1]/items[at0001]/items[at0002]/items[at0003]/value/value IS NOT FALSE,Test all types
 all_types_action_select.txt, d/description[at0001]/items[openEHR-EHR-CLUSTER.test_all_types.v1]/items[at0001]/items[at0002]/items[at0003]/value/value IS FALSE

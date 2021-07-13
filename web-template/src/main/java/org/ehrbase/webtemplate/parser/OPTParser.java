@@ -448,62 +448,84 @@ public class OPTParser {
 
     // Inherit name for Element values
     if (node.getRmType().equals("ELEMENT")) {
-      List<WebTemplateNode> trueChildren =
+      // Is any Node
+      if (node.getChildren().isEmpty()) {
+        addAnyNode(node, "DV_TEXT", inputMap);
+        addAnyNode(node, "DV_CODED_TEXT", inputMap);
+        addAnyNode(node, "DV_MULTIMEDIA", inputMap);
+        addAnyNode(node, "DV_PARSABLE", inputMap);
+        addAnyNode(node, "DV_STATE", inputMap);
+        addAnyNode(node, "DV_BOOLEAN", inputMap);
+        addAnyNode(node, "DV_IDENTIFIER", inputMap);
+        addAnyNode(node, "DV_URI", inputMap);
+        addAnyNode(node, "DV_EHR_URI", inputMap);
+        addAnyNode(node, "DV_DURATION", inputMap);
+        addAnyNode(node, "DV_QUANTITY", inputMap);
+        addAnyNode(node, "DV_COUNT", inputMap);
+        addAnyNode(node, "DV_PROPORTION", inputMap);
+        addAnyNode(node, "DV_DATE_TIME", inputMap);
+        addAnyNode(node, "DV_TIME", inputMap);
+        addAnyNode(node, "DV_ORDINAL", inputMap);
+        addAnyNode(node, "DV_DATE", inputMap);
+
+      } else {
+        List<WebTemplateNode> trueChildren =
+            node.getChildren().stream()
+                .filter(
+                    n ->
+                        !List.of("null_flavour", "feeder_audit").contains(n.getName())
+                            || !n.isNullable())
+                .collect(Collectors.toList());
+        trueChildren.forEach(c -> pushProperties(node, c));
+
+        if (trueChildren.size() == 1) {
+          WebTemplateNode value = trueChildren.get(0);
+          value.setId(node.getId(false));
+          value.setAnnotations(node.getAnnotations());
+
+          // If contains a choice of DV_TEXT and DV_CODED_TEXT add a merged node
+        } else if (trueChildren.stream()
+                .map(WebTemplateNode::getRmType)
+                .collect(Collectors.toList())
+                .containsAll(List.of("DV_TEXT", DV_CODED_TEXT))
+            && node.getChoicesInChildren().size() > 0) {
+          WebTemplateNode merged = new WebTemplateNode();
+          merged.setId(node.getId(false));
+          merged.setName(node.getName());
+          merged.setMax(node.getMax());
+          merged.setMin(node.getMin());
+          merged.setRmType(DV_CODED_TEXT);
+          WebTemplateNode codedTextValue = node.findChildById("coded_text_value").orElseThrow();
+          merged.getInputs().addAll(codedTextValue.getInputs());
+          merged.setAqlPath(codedTextValue.getAqlPath());
+          merged.getLocalizedDescriptions().putAll(node.getLocalizedDescriptions());
+          merged.getLocalizedNames().putAll(node.getLocalizedNames());
+          merged.setLocalizedName(node.getLocalizedName());
+          merged.setAnnotations(node.getAnnotations());
+          WebTemplateInput other = inputHandler.buildWebTemplateInput("other", "TEXT");
+
+          merged.getInputs().add(other);
+          merged.getInputs().stream()
+              .filter(i -> Objects.equals(i.getSuffix(), "code"))
+              .findAny()
+              .ifPresent(i -> i.setListOpen(true));
+          node.getChildren().add(merged);
+        }
+        // choice between value and null_flavour
+        else if (node.getChoicesInChildren().isEmpty()) {
           node.getChildren().stream()
               .filter(
                   n ->
                       !List.of("null_flavour", "feeder_audit").contains(n.getName())
                           || !n.isNullable())
-              .collect(Collectors.toList());
-      trueChildren.forEach(c -> pushProperties(node, c));
-
-      if (trueChildren.size() == 1) {
-        WebTemplateNode value = trueChildren.get(0);
-        value.setId(node.getId(false));
-        value.setAnnotations(node.getAnnotations());
-
-        // If contains a choice of DV_TEXT and DV_CODED_TEXT add a merged node
-      } else if (trueChildren.stream()
-              .map(WebTemplateNode::getRmType)
-              .collect(Collectors.toList())
-              .containsAll(List.of("DV_TEXT", DV_CODED_TEXT))
-          && node.getChoicesInChildren().size() > 0) {
-        WebTemplateNode merged = new WebTemplateNode();
-        merged.setId(node.getId(false));
-        merged.setName(node.getName());
-        merged.setMax(node.getMax());
-        merged.setMin(node.getMin());
-        merged.setRmType(DV_CODED_TEXT);
-        WebTemplateNode codedTextValue = node.findChildById("coded_text_value").orElseThrow();
-        merged.getInputs().addAll(codedTextValue.getInputs());
-        merged.setAqlPath(codedTextValue.getAqlPath());
-        merged.getLocalizedDescriptions().putAll(node.getLocalizedDescriptions());
-        merged.getLocalizedNames().putAll(node.getLocalizedNames());
-        merged.setLocalizedName(node.getLocalizedName());
-        merged.setAnnotations(node.getAnnotations());
-        WebTemplateInput other = inputHandler.buildWebTemplateInput("other", "TEXT");
-
-        merged.getInputs().add(other);
-        merged.getInputs().stream()
-            .filter(i -> Objects.equals(i.getSuffix(), "code"))
-            .findAny()
-            .ifPresent(i -> i.setListOpen(true));
-        node.getChildren().add(merged);
-      }
-      // choice between value and null_flavour
-      else if (node.getChoicesInChildren().isEmpty()) {
-        node.getChildren().stream()
-            .filter(
-                n ->
-                    !List.of("null_flavour", "feeder_audit").contains(n.getName())
-                        || !n.isNullable())
-            .filter(n -> n.getRmType().startsWith("DV_"))
-            .forEach(
-                n -> {
-                  n.setId(n.getRmType().replace("DV_", "").toLowerCase() + "_value");
-                  n.getLocalizedDescriptions().putAll(node.getLocalizedDescriptions());
-                  n.getLocalizedNames().putAll(node.getLocalizedNames());
-                });
+              .filter(n -> n.getRmType().startsWith("DV_"))
+              .forEach(
+                  n -> {
+                    n.setId(n.getRmType().replace("DV_", "").toLowerCase() + "_value");
+                    n.getLocalizedDescriptions().putAll(node.getLocalizedDescriptions());
+                    n.getLocalizedNames().putAll(node.getLocalizedNames());
+                  });
+        }
       }
     }
 
@@ -545,6 +567,23 @@ public class OPTParser {
     node.getChildren().forEach(child -> addInContext(node, child));
 
     return node;
+  }
+
+  private void addAnyNode(
+      WebTemplateNode node, String rmType, Map<String, WebTemplateInput> inputMap) {
+    WebTemplateNode subNode = new WebTemplateNode();
+    subNode.setRmType(rmType);
+    subNode.setId(subNode.getRmType().replace("DV_", "").toLowerCase() + "_value");
+    subNode.setName(node.getName());
+    subNode.setAqlPath(node.getAqlPath(true) + "/" + "value");
+    subNode.setInContext(true);
+    subNode.setMax(1);
+    subNode.setMin(0);
+    subNode.setLocalizedName(node.getLocalizedName());
+    subNode.getLocalizedDescriptions().putAll(node.getLocalizedDescriptions());
+    subNode.getLocalizedNames().putAll(node.getLocalizedNames());
+    inputHandler.addInputs(subNode, inputMap);
+    node.getChildren().add(subNode);
   }
 
   private void addInContext(WebTemplateNode node, WebTemplateNode child) {
@@ -1011,7 +1050,7 @@ public class OPTParser {
           .putAll(
               termDefinitionMap.get(nodeId).entrySet().stream()
                   .collect(
-                      Collectors.toMap(Map.Entry::getKey, e -> e.getValue().getDescription())));
+                      Collectors.toMap(Map.Entry::getKey, e ->Optional.ofNullable( e.getValue().getDescription()).orElse(e.getValue().getValue()))));
 
       Optional.of(termDefinitionMap.get(nodeId)).map(m -> m.get(defaultLanguage))
           .map(TermDefinition::getOther).stream()

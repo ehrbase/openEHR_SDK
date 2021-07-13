@@ -30,6 +30,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
+import static org.ehrbase.webtemplate.parser.OPTParser.PATH_DIVIDER;
+
 public class ObservationPostprocessor extends AbstractUnmarshalPostprocessor<Observation> {
 
     /**
@@ -37,9 +39,37 @@ public class ObservationPostprocessor extends AbstractUnmarshalPostprocessor<Obs
      */
     @Override
     public void process(String term, Observation rmObject, Map<String, String> values) {
+
+        if (rmObject.getData() != null) {
+            setValue(
+                    term + PATH_DIVIDER + "history_origin",
+                    null,
+                    values,
+                    s -> {
+                        if (s != null) {
+                            rmObject.getData().setOrigin(new DvDateTime(s));
+                        }
+                    },
+                    String.class);
+        }
+
         if (rmObject.getData() != null && rmObject.getData().getOrigin().getValue() == null) {
             setOrigin(rmObject.getData());
         }
+
+        if (rmObject.getState() != null) {
+            setValue(
+                    term + PATH_DIVIDER + "history_origin",
+                    null,
+                    values,
+                    s -> {
+                        if (s != null) {
+                            rmObject.getState().setOrigin(new DvDateTime(s));
+                        }
+                    },
+                    String.class);
+        }
+
         if (rmObject.getState() != null && rmObject.getState().getOrigin().getValue() == null) {
             setOrigin(rmObject.getState());
         }

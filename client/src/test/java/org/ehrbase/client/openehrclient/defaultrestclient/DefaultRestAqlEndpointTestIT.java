@@ -397,14 +397,12 @@ public class DefaultRestAqlEndpointTestIT {
 
         List<Record1<Integer>> result = openEhrClient.aqlEndpoint().execute(query);
         assertThat(result).isNotNull();
-        assertThat(result.get(0).value1() > 0);
 
         query = Query.buildNativeQuery("select  count(c/uid/value) from EHR e contains composition c", Integer.class);
 
         result = openEhrClient.aqlEndpoint().execute(query);
         assertThat(result).isNotNull();
-        assertThat(result.get(0).value1() > 0);
-//        assertThat(result).size().isEqualTo(2);
+        assertThat(result).size().isEqualTo(1);
 
 
     }

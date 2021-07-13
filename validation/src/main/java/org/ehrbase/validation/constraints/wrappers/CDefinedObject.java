@@ -21,6 +21,7 @@
 
 package org.ehrbase.validation.constraints.wrappers;
 
+import org.ehrbase.validation.constraints.terminology.ExternalTerminologyValidationSupport;
 import org.openehr.schemas.v1.ARCHETYPECONSTRAINT;
 import org.openehr.schemas.v1.CCOMPLEXOBJECT;
 import org.openehr.schemas.v1.CDOMAINTYPE;
@@ -37,20 +38,20 @@ import java.util.Map;
  */
 public class CDefinedObject extends CConstraint implements I_CArchetypeConstraintValidate {
 
-    protected CDefinedObject(Map<String, Map<String, String>> localTerminologyLookup) {
-        super(localTerminologyLookup);
+    protected CDefinedObject(Map<String, Map<String, String>> localTerminologyLookup, ExternalTerminologyValidationSupport externalTerminologyValidator) {
+        super(localTerminologyLookup, externalTerminologyValidator);
     }
 
     @Override
     public void validate(String path, Object aValue, ARCHETYPECONSTRAINT archetypeconstraint) throws IllegalArgumentException {
-
-        if (archetypeconstraint instanceof CCOMPLEXOBJECT)
-            new CComplexObject(localTerminologyLookup).validate(path, aValue, archetypeconstraint);
-        else if (archetypeconstraint instanceof CPRIMITIVEOBJECT)
-            new CPrimitive(localTerminologyLookup).validate(path, aValue, archetypeconstraint);
-        else if (archetypeconstraint instanceof CDOMAINTYPE)
-            new CDomainType(localTerminologyLookup).validate(path, aValue, archetypeconstraint);
-        else
+        if (archetypeconstraint instanceof CCOMPLEXOBJECT) {
+            new CComplexObject(localTerminologyLookup, externalTerminologyValidator).validate(path, aValue, archetypeconstraint);
+        } else if (archetypeconstraint instanceof CPRIMITIVEOBJECT) {
+            new CPrimitive(localTerminologyLookup, externalTerminologyValidator).validate(path, aValue, archetypeconstraint);
+        } else if (archetypeconstraint instanceof CDOMAINTYPE) {
+            new CDomainType(localTerminologyLookup, externalTerminologyValidator).validate(path, aValue, archetypeconstraint);
+        } else {
             throw new IllegalStateException("INTERNAL: unsupported CDefinedObject:" + archetypeconstraint);
+        }
     }
 }

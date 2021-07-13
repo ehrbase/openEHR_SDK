@@ -30,12 +30,7 @@ public class DvDateTimeSkeletonBuilder implements RmObjectSkeletonBuilder<CDATET
 
     @Override
     public DvDateTime getRmObject(CDATETIME xml) {
-        DvDateTime dvDateTime;
-        if (xml.isSetAssumedValue()) {
-            dvDateTime = new DvDateTime(xml.getAssumedValue());
-        } else {
-            dvDateTime = new DvDateTime();
-        }
-        return dvDateTime;
+
+        return new DvDateTime();
     }
 }

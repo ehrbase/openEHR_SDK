@@ -42,6 +42,12 @@ public class EventContextMarshalPostprocessor implements MarshalPostprocessor<Ev
         null,
         Optional.ofNullable(rmObject.getEndTime()).map(DvDateTime::getValue).orElse(null));
 
+    MarshalPostprocessor.addValue(
+            values,
+            term + PATH_DIVIDER + "_location",
+            null,
+            Optional.ofNullable(rmObject.getLocation()).orElse(null));
+
     if (rmObject.getHealthCareFacility() != null) {
       values.putAll(
           PARTY_IDENTIFIED_STD_CONFIG.buildChildValues(

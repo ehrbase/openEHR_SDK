@@ -10,7 +10,7 @@ encoding/code_string,//wrong encoding
 encoding/terminology_id,//wrong encoding
 encoding/terminology_id/value,//wrong encoding
 subject,
-data[at0001],
+data[at0001],//missing _type in canonical representation!
 data[at0001]/name
 data[at0001]/name/value
 data[at0001]/archetype_node_id

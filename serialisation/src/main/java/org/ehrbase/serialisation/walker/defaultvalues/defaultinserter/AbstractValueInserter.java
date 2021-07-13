@@ -25,6 +25,7 @@ import com.nedap.archie.rm.datavalues.DvCodedText;
 import com.nedap.archie.rm.datavalues.DvText;
 import com.nedap.archie.rm.datavalues.encapsulated.DvParsable;
 import com.nedap.archie.rm.datavalues.quantity.datetime.DvDateTime;
+import com.nedap.archie.rm.generic.Participation;
 import com.nedap.archie.rm.generic.PartyIdentified;
 import com.nedap.archie.rm.generic.PartyProxy;
 import com.nedap.archie.rm.support.identification.GenericId;
@@ -33,12 +34,24 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.ehrbase.serialisation.walker.defaultvalues.DefaultValuePath;
 import org.ehrbase.serialisation.walker.defaultvalues.DefaultValues;
 
+import java.util.Collection;
+
 public abstract class AbstractValueInserter<T extends RMObject> implements DefaultValueInserter<T> {
 
   protected boolean isEmpty(Object rmObject) {
     if (rmObject == null) {
-      return false;
+      return true;
     }
+
+    if (rmObject instanceof Collection) {
+      return ((Collection<?>) rmObject).isEmpty()
+          || ((Collection<?>) rmObject).stream().allMatch(this::isEmpty);
+    }
+
+    if (rmObject instanceof Participation) {
+      return ((Participation) rmObject).getPerformer() == null;
+    }
+
     if (rmObject instanceof CodePhrase) {
       return ((CodePhrase) rmObject).getCodeString() == null;
     }
@@ -92,6 +105,23 @@ public abstract class AbstractValueInserter<T extends RMObject> implements Defau
       partyProxy.setExternalRef(partyRef);
     }
 
+    addSchemeNamespace(partyProxy.getExternalRef(), defaultValues);
+
     return (PartyIdentified) partyProxy;
+  }
+
+  protected void addSchemeNamespace(PartyRef partyRef, DefaultValues defaultValues) {
+    if (partyRef != null) {
+      if (isEmpty(partyRef.getNamespace())
+          && defaultValues.containsDefaultValue(DefaultValuePath.ID_NAMESPACE)) {
+        partyRef.setNamespace(defaultValues.getDefaultValue(DefaultValuePath.ID_NAMESPACE));
+      }
+      if (partyRef.getId() instanceof GenericId
+          && isEmpty(((GenericId) partyRef.getId()).getScheme())
+          && defaultValues.containsDefaultValue(DefaultValuePath.ID_NAMESPACE)) {
+        ((GenericId) partyRef.getId())
+            .setScheme(defaultValues.getDefaultValue(DefaultValuePath.ID_NAMESPACE));
+      }
+    }
   }
 }

@@ -22,6 +22,7 @@
 package org.ehrbase.validation.constraints.wrappers;
 
 import org.apache.commons.lang3.ArrayUtils;
+import org.ehrbase.validation.constraints.terminology.ExternalTerminologyValidationSupport;
 import org.openehr.schemas.v1.CPRIMITIVE;
 import org.openehr.schemas.v1.CREAL;
 import org.openehr.schemas.v1.IntervalOfReal;
@@ -37,31 +38,34 @@ import java.util.Map;
  * @see com.nedap.archie.aom.primitives.CReal
  */
 public class CReal extends CConstraint implements I_CTypeValidate {
-    CReal(Map<String, Map<String, String>> localTerminologyLookup) {
-        super(localTerminologyLookup);
+
+    CReal(Map<String, Map<String, String>> localTerminologyLookup, ExternalTerminologyValidationSupport externalTerminologyValidator) {
+        super(localTerminologyLookup, externalTerminologyValidator);
     }
 
     @Override
     public void validate(String path, Object aValue, CPRIMITIVE cprimitive) throws IllegalArgumentException {
-
         CREAL creal = (CREAL) cprimitive;
         Float aFloat = null;
 
-        if (aValue instanceof Double)
+        if (aValue instanceof Double) {
             aFloat = ((Double) aValue).floatValue();
-        else if (aValue instanceof Float)
+        } else if (aValue instanceof Float) {
             aFloat = (Float) aValue;
-        else if (aValue instanceof Integer)
+        } else if (aValue instanceof Integer) {
             aFloat = ((Integer) aValue).floatValue();
-        else
+        } else {
             ValidationException.raise(path, "Value could not be handled (is it numerical?)" + aValue, "FLOAT01");
+        }
 
         IntervalOfReal intervalOfReal = creal.getRange();
-        if (intervalOfReal != null)
+        if (intervalOfReal != null) {
             IntervalComparator.isWithinBoundaries(aFloat, intervalOfReal);
+        }
 
         //check within value list if specified
-        if (creal.sizeOfListArray() > 0 && !ArrayUtils.contains(creal.getListArray(), aFloat))
+        if (creal.sizeOfListArray() > 0 && !ArrayUtils.contains(creal.getListArray(), aFloat)) {
             ValidationException.raise(path, "Real value does not match any values in constraint:" + aFloat, "FLOAT02");
+        }
     }
 }

@@ -42,7 +42,7 @@ public class DvQuantityTest extends ConstraintTestBase {
         DvQuantity dvQuantity = new DvQuantity("/min", 120D, 0L);
 
         try {
-            new CArchetypeConstraint(null).validate("test", dvQuantity, archetypeconstraint);
+            new CArchetypeConstraint(null, null).validate("test", dvQuantity, archetypeconstraint);
         } catch (Exception e) {
             fail(e.getMessage());
         }
@@ -53,7 +53,7 @@ public class DvQuantityTest extends ConstraintTestBase {
         DvQuantity dvQuantity = new DvQuantity("/kg", 120D, 0L);
 
         try {
-            new CArchetypeConstraint(null).validate("test", dvQuantity, archetypeconstraint);
+            new CArchetypeConstraint(null, null).validate("test", dvQuantity, archetypeconstraint);
             fail("undetected wrong unit");
         } catch (Exception e) {
         }
@@ -64,7 +64,7 @@ public class DvQuantityTest extends ConstraintTestBase {
         DvQuantity dvQuantity = new DvQuantity("/min", -120D, 0L);
 
         try {
-            new CArchetypeConstraint(null).validate("test", dvQuantity, archetypeconstraint);
+            new CArchetypeConstraint(null, null).validate("test", dvQuantity, archetypeconstraint);
             fail("undetected negative value");
         } catch (Exception e) {
         }

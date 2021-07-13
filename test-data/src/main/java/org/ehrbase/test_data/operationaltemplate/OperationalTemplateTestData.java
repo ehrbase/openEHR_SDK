@@ -34,8 +34,13 @@ public enum OperationalTemplateTestData {
       "IDCR  Laboratory Test Report",
       "IDCR - Laboratory Test Report.v0.opt",
       "IDCR - Laboratory Test Report.v0"),
+  EHRN_VITAL_SIGNS_TEST("EHRN Vital signs.v2", "EHRN Vital signs.v2.opt", "EHRN Vital signs.v2"),
   IDCR_PROBLEM_LIST(
       "IDCR  Problem List.v1", "IDCR - Problem List.v1.opt", "IDCR - Problem List.v1"),
+  IDCR_ADVERSE_REACTION_LIST(
+      "IDCR -  Adverse Reaction List.v1",
+      "IDCR - Adverse Reaction List.v1.opt",
+      "Adverse Reaction List.v1"),
   BLOOD_PRESSURE_SIMPLE(
       "Very simple blood_pressure template",
       "ehrbase_blood_pressure_simple.de.v0.opt",
@@ -76,11 +81,15 @@ public enum OperationalTemplateTestData {
   SINGLE_EVENT("example with a single valued EVENT", "single_event.opt", "Körpergröße"),
   ADDICTION("example ", "additciton_alcohol.opt", "AddictionAlcoholTemplate"),
   MINIMAL_EVALUATION("minimal evaluation", "minimal_evaluation.opt", "minimal_evaluation.en.v1"),
+  GECCO_SEROLOGISCHER_BEFUND(
+      "template with any Element", "GECCO_Serologischer Befund.opt", "GECCO_Serologischer Befund"),
   DETERIORIATION_ASSESSMENT(
       "Deterioriation assessment ",
       "EREACT - Deterioriation assessment.v0.opt",
-      "EREACT - Deterioriation assessment.v0");
-
+      "EREACT - Deterioriation assessment.v0"),
+  VIROLOGISCHER_BEFUND("Virologischer Befund", "Virologischer_Befund.opt", "Virologischer Befund"),
+  LABOR_BEFUND("Labor Befund", "laborbefund.opt", "Laborbefund");
+  ;
 
   private final String filename;
   private final String templateId;
