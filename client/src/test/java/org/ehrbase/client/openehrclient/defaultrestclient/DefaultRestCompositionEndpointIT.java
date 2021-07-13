@@ -18,7 +18,9 @@
 package org.ehrbase.client.openehrclient.defaultrestclient;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.ehrbase.client.openehrclient.defaultrestclient.DefaultRestClientTestHelper.setupDefaultRestClientWithDefaultProvider;
+import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -59,7 +61,9 @@ import org.ehrbase.client.classgenerator.examples.virologischerbefundcomposition
 import org.ehrbase.client.classgenerator.examples.virologischerbefundcomposition.definition.ProVirusCluster;
 import org.ehrbase.client.classgenerator.shareddefinition.ParticipationMode;
 import org.ehrbase.client.classgenerator.shareddefinition.Setting;
+import org.ehrbase.client.exception.ClientException;
 import org.ehrbase.client.exception.OptimisticLockException;
+import org.ehrbase.client.exception.WrongStatusCodeException;
 import org.ehrbase.client.flattener.Flattener;
 import org.ehrbase.client.openehrclient.CompositionEndpoint;
 import org.ehrbase.client.openehrclient.OpenEhrClient;
@@ -355,5 +359,53 @@ public class DefaultRestCompositionEndpointIT {
         .extracting(
             ProVirusCluster::getVirusValue, ProVirusCluster::getAnalyseergebnisReihenfolgeMagnitude)
         .containsExactlyInAnyOrder(new Tuple("SARS-Cov-2", 32L), new Tuple("SARS-Cov-2", 34L));
+  }
+
+  @Test
+  public void testDeleteCompositionValid() {
+    UUID ehr = openEhrClient.ehrEndpoint().createEhr();
+    CompositionEndpoint compositionEndpoint = openEhrClient.compositionEndpoint(ehr);
+
+    EhrbaseBloodPressureSimpleDeV0Composition composition = TestData.buildEhrbaseBloodPressureSimpleDeV0();
+    composition = compositionEndpoint.mergeCompositionEntity(composition);
+
+    Optional<EhrbaseBloodPressureSimpleDeV0Composition> result;
+    result = compositionEndpoint.find(composition.getVersionUid().getUuid(), EhrbaseBloodPressureSimpleDeV0Composition.class);
+    assertTrue(result.isPresent());
+
+    compositionEndpoint.delete(composition.getVersionUid());
+
+    result = compositionEndpoint.find(composition.getVersionUid().getUuid(), EhrbaseBloodPressureSimpleDeV0Composition.class);
+    assertTrue(result.isEmpty());
+  }
+
+  @Test
+  public void testDeleteCompositionNullPrecedingVersionUid() {
+    UUID ehr = openEhrClient.ehrEndpoint().createEhr();
+    CompositionEndpoint compositionEndpoint = openEhrClient.compositionEndpoint(ehr);
+
+    assertThrows(ClientException.class, () -> compositionEndpoint.delete(null));
+  }
+
+  @Test
+  public void testDeleteCompositionUnknownPrecedingVersionUid() {
+    UUID ehr = openEhrClient.ehrEndpoint().createEhr();
+    CompositionEndpoint compositionEndpoint = openEhrClient.compositionEndpoint(ehr);
+
+    VersionUid precedingVersionUid = new VersionUid("bdd8e4f3-b587-479f-a2ff-d4143ef9ea06::local.ehrbase.org::1");
+    assertThatNoException().isThrownBy(() -> compositionEndpoint.delete(precedingVersionUid));
+  }
+
+  @Test
+  public void testDeleteCompositionInvalidPrecedingVersionUid() {
+    UUID ehr = openEhrClient.ehrEndpoint().createEhr();
+    CompositionEndpoint compositionEndpoint = openEhrClient.compositionEndpoint(ehr);
+
+    EhrbaseBloodPressureSimpleDeV0Composition composition = TestData.buildEhrbaseBloodPressureSimpleDeV0();
+    composition = compositionEndpoint.mergeCompositionEntity(composition);
+    composition = compositionEndpoint.mergeCompositionEntity(composition);
+
+    VersionUid precedingVersionUid = new VersionUid(composition.getVersionUid().getUuid(), composition.getVersionUid().getSystem(), 1);
+    assertThrows(WrongStatusCodeException.class, () -> compositionEndpoint.delete(precedingVersionUid));
   }
 }

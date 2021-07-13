@@ -46,4 +46,14 @@ public interface CompositionEndpoint {
      * @throws WrongStatusCodeException
      */
     <T> Optional<T> find(UUID compositionId, Class<T> clazz);
+
+    /**
+     * Deletes a Composition by preceding version uid.
+     *
+     * @param precedingVersionUid identifier of the Composition to be deleted.
+     *                            This MUST be the last (most recent) version.
+     * @throws ClientException
+     * @throws WrongStatusCodeException
+     */
+    void delete(VersionUid precedingVersionUid);
 }
