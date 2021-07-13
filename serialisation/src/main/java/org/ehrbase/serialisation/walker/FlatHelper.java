@@ -2,6 +2,7 @@ package org.ehrbase.serialisation.walker;
 
 import com.nedap.archie.rm.datastructures.Event;
 import com.nedap.archie.rminfo.RMTypeInfo;
+import org.apache.commons.lang3.StringUtils;
 import org.ehrbase.webtemplate.model.WebTemplateNode;
 
 import java.util.*;
@@ -77,7 +78,7 @@ public class FlatHelper<T> {
                     .orElse(1));
       }
     }
-    return sb.toString();
+    return StringUtils.removeEnd(sb.toString(), "/");
   }
 
   public boolean skip(Context<T> context) {
