@@ -24,7 +24,6 @@ import com.nedap.archie.rminfo.ArchieRMInfoLookup;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.ehrbase.webtemplate.model.WebTemplateNode;
 
-import java.util.Deque;
 import java.util.List;
 import java.util.Map;
 
@@ -67,8 +66,7 @@ public abstract class FromCompositionWalker<T> extends Walker<T> {
             context.getNodeDeque().peek(),
             childNode,
             false,
-            null,
-            context.getSkippedNodes(childNode));
+            null);
     if (child instanceof List) {
       return ((List) child).size();
     } else {
@@ -85,13 +83,6 @@ public abstract class FromCompositionWalker<T> extends Walker<T> {
     RMObject currentChild = null;
     T childObject = null;
 
-    Deque<WebTemplateNode> skippedNodes = null;
-    if (context.getFilteredNodeMap() != null) {
-      skippedNodes =
-          context
-              .getFilteredNodeMap()
-              .get(new ImmutablePair<>(childNode.getAqlPath(), childNode.getRmType()));
-    }
     currentChild =
         (RMObject)
             extractRMChild(
@@ -99,8 +90,7 @@ public abstract class FromCompositionWalker<T> extends Walker<T> {
                 currentNode,
                 childNode,
                 choices.containsKey(childNode.getAqlPath()),
-                i,
-                skippedNodes);
+                i);
 
     if (currentChild != null) {
       childObject = extract(context, childNode, choices.containsKey(childNode.getAqlPath()), i);

@@ -192,12 +192,7 @@ public abstract class ToCompositionWalker<T> extends Walker<T> {
       currentChild =
           (RMObject)
               extractRMChild(
-                  context.getRmObjectDeque().peek(),
-                  currentNode,
-                  childNode,
-                  isChoice,
-                  i,
-                  context.getSkippedNodes(childNode));
+                  context.getRmObjectDeque().peek(), currentNode, childNode, isChoice, i);
     }
 
     return new ImmutablePair<>(childObject, currentChild);

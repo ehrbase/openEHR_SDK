@@ -20,8 +20,6 @@
 package org.ehrbase.serialisation.walker;
 
 import com.nedap.archie.rm.RMObject;
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
 import org.ehrbase.serialisation.walker.defaultvalues.DefaultValues;
 import org.ehrbase.webtemplate.model.WebTemplateNode;
 
@@ -40,7 +38,6 @@ public class Context<T> {
 
   private final Map<NodeId, Integer> countMap = new HashMap<>();
 
-  private Map<Pair<String, String>, Deque<WebTemplateNode>> filteredNodeMap;
   private DefaultValues defaultValues;
 
   private final FlatHelper<T> flatHelper = new FlatHelper<>();
@@ -59,25 +56,6 @@ public class Context<T> {
 
   public Map<NodeId, Integer> getCountMap() {
     return countMap;
-  }
-
-  public Deque<WebTemplateNode> getSkippedNodes(WebTemplateNode childNode) {
-    Deque<WebTemplateNode> skippedNodes = null;
-    if (this.filteredNodeMap != null) {
-      skippedNodes =
-          this.filteredNodeMap.get(
-              new ImmutablePair<>(childNode.getAqlPath(), childNode.getRmType()));
-    }
-    return skippedNodes;
-  }
-
-  public void setFilteredNodeMap(
-      Map<Pair<String, String>, Deque<WebTemplateNode>> filteredNodeMap) {
-    this.filteredNodeMap = filteredNodeMap;
-  }
-
-  public Map<Pair<String, String>, Deque<WebTemplateNode>> getFilteredNodeMap() {
-    return filteredNodeMap;
   }
 
   public DefaultValues getDefaultValues() {

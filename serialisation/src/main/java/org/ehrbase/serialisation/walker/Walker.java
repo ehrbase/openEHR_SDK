@@ -30,11 +30,9 @@ import com.nedap.archie.rminfo.ArchieRMInfoLookup;
 import com.nedap.archie.rminfo.RMTypeInfo;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.ImmutableTriple;
-import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
 import org.ehrbase.serialisation.jsonencoding.CanonicalJson;
 import org.ehrbase.serialisation.walker.defaultvalues.DefaultValues;
-import org.ehrbase.webtemplate.model.FilteredWebTemplate;
 import org.ehrbase.webtemplate.model.WebTemplate;
 import org.ehrbase.webtemplate.model.WebTemplateInput;
 import org.ehrbase.webtemplate.model.WebTemplateNode;
@@ -48,31 +46,22 @@ public abstract class Walker<T> {
 
   public void walk(
       Composition composition, T object, WebTemplate webTemplate, DefaultValues defaultValues) {
-    Map<Pair<String, String>, Deque<WebTemplateNode>> filteredNodeMap = null;
-    if (webTemplate instanceof FilteredWebTemplate) {
 
-      filteredNodeMap = ((FilteredWebTemplate) webTemplate).filteredNodeMap;
-    }
-    walk(composition, object, webTemplate.getTree(), filteredNodeMap, defaultValues);
+    walk(composition, object, webTemplate.getTree(), defaultValues);
   }
 
   public void walk(RMObject composition, T object, WebTemplateNode root) {
-    walk(composition, object, root, null, null);
+    walk(composition, object, root, null);
   }
 
   public void walk(
-      RMObject composition,
-      T object,
-      WebTemplateNode root,
-      Map<Pair<String, String>, Deque<WebTemplateNode>> filteredNodeMap,
-      DefaultValues defaultValues) {
+      RMObject composition, T object, WebTemplateNode root, DefaultValues defaultValues) {
 
     Context<T> context = new Context<>();
 
     context.getNodeDeque().push(root);
     context.getObjectDeque().push(object);
     context.getRmObjectDeque().push(composition);
-    context.setFilteredNodeMap(filteredNodeMap);
 
     if (defaultValues != null) {
       context.setDefaultValues(defaultValues);
@@ -211,47 +200,6 @@ public abstract class Walker<T> {
       Map<String, List<WebTemplateNode>> choices,
       WebTemplateNode childNode,
       Integer i);
-
-  protected Object extractRMChild(
-      RMObject currentRM,
-      WebTemplateNode currentNode,
-      WebTemplateNode childNode,
-      boolean isChoice,
-      Integer count,
-      Deque<WebTemplateNode> skippedNodes) {
-
-    RMObject incrementalRm = currentRM;
-    WebTemplateNode incrementalNode = currentNode;
-
-    if (skippedNodes != null) {
-      for (Iterator<WebTemplateNode> it = skippedNodes.descendingIterator(); it.hasNext(); ) {
-        WebTemplateNode node = it.next();
-        if (incrementalRm != null) {
-          Object incrementalchild =
-              extractRMChild(incrementalRm, incrementalNode, node, false, null);
-          if (incrementalchild instanceof List) {
-            if (((List<?>) incrementalchild).isEmpty()) {
-              incrementalRm = null;
-            } else {
-              incrementalRm = (RMObject) ((List<?>) incrementalchild).get(0);
-            }
-          } else {
-            incrementalRm = (RMObject) incrementalchild;
-          }
-        }
-        incrementalNode = node;
-      }
-    }
-
-    Object child;
-    if (incrementalRm != null) {
-      child = extractRMChild(incrementalRm, incrementalNode, childNode, isChoice, count);
-    } else {
-      child = null;
-    }
-
-    return wrap(child);
-  }
 
   protected abstract Object extractRMChild(
       RMObject currentRM,
