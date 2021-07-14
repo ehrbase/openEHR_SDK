@@ -39,10 +39,13 @@ import org.ehrbase.webtemplate.model.WebTemplateNode;
 
 import java.util.*;
 
+import static org.ehrbase.util.rmconstants.RmConstants.DV_CODED_TEXT;
+import static org.ehrbase.util.rmconstants.RmConstants.DV_TEXT;
+
 public abstract class Walker<T> {
 
   public static final ArchieRMInfoLookup ARCHIE_RM_INFO_LOOKUP = ArchieRMInfoLookup.getInstance();
-  public static final String DV_CODED_TEXT = "DV_CODED_TEXT";
+
 
   public void walk(
       Composition composition, T object, WebTemplate webTemplate, DefaultValues defaultValues) {
@@ -176,7 +179,7 @@ public abstract class Walker<T> {
               .map(WebTemplateInput::getSuffix)
               .anyMatch("other"::equals)) {
         WebTemplateNode textNode = new WebTemplateNode(codeNode);
-        textNode.setRmType("DV_TEXT");
+        textNode.setRmType(DV_TEXT);
         choices.put(textNode.getAqlPath(), List.of(codeNode, textNode));
         children.add(textNode);
       }
@@ -184,7 +187,7 @@ public abstract class Walker<T> {
 
     // Add dummy DV_CODED_TEXT
     for (WebTemplateNode textNode : new ArrayList<>(children)) {
-      if (textNode.getRmType().equals("DV_TEXT")
+      if (textNode.getRmType().equals(DV_TEXT)
           && choices.values().stream().flatMap(List::stream).noneMatch(textNode::equals)) {
         WebTemplateNode codeNode = new WebTemplateNode(textNode);
         codeNode.setRmType(DV_CODED_TEXT);

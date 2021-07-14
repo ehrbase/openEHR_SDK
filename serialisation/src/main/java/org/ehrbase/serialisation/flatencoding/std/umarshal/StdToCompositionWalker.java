@@ -37,6 +37,7 @@ import org.ehrbase.serialisation.walker.NodeId;
 import org.ehrbase.serialisation.walker.ToCompositionWalker;
 import org.ehrbase.serialisation.walker.defaultvalues.DefaultValues;
 import org.ehrbase.util.reflection.ReflectionHelper;
+import org.ehrbase.webtemplate.filter.Filter;
 import org.ehrbase.webtemplate.model.WebTemplate;
 import org.ehrbase.webtemplate.model.WebTemplateInput;
 import org.ehrbase.webtemplate.model.WebTemplateNode;
@@ -44,6 +45,8 @@ import org.ehrbase.webtemplate.parser.InputHandler;
 
 import java.util.*;
 import java.util.stream.Collectors;
+
+import static org.ehrbase.util.rmconstants.RmConstants.*;
 
 public class StdToCompositionWalker extends ToCompositionWalker<Map<String, String>> {
 
@@ -143,9 +146,9 @@ public class StdToCompositionWalker extends ToCompositionWalker<Map<String, Stri
       }
 
       return subValues.isEmpty();
-    } else if (child.getRmType().equals("DV_CODED_TEXT")) {
+    } else if (child.getRmType().equals(DV_CODED_TEXT)) {
       return subValues.entrySet().stream().anyMatch(e -> e.getKey().endsWith("code"));
-    } else if (child.getRmType().equals("DV_TEXT")) {
+    } else if (child.getRmType().equals(DV_TEXT)) {
       return subValues.entrySet().stream().allMatch((e -> !e.getKey().endsWith("code")));
     } else {
       // End Nodes which are Choice always have unique flat paths
@@ -230,7 +233,7 @@ public class StdToCompositionWalker extends ToCompositionWalker<Map<String, Stri
       WebTemplateNode currentNode,
       Map<String, List<WebTemplateNode>> choices,
       List<WebTemplateNode> children) {
-    if (currentNode.getRmType().equals("ELEMENT")) {
+    if (currentNode.getRmType().equals(ELEMENT)) {
       List<WebTemplateNode> trueChildren =
           currentNode.getChildren().stream()
               .filter(
@@ -241,7 +244,7 @@ public class StdToCompositionWalker extends ToCompositionWalker<Map<String, Stri
       if (trueChildren.stream()
               .map(WebTemplateNode::getRmType)
               .collect(Collectors.toList())
-              .containsAll(List.of("DV_TEXT", DV_CODED_TEXT))
+              .containsAll(List.of(DV_TEXT, DV_CODED_TEXT))
           && currentNode.getChoicesInChildren().size() > 0
           && trueChildren.size() == 2) {
         handleDVTextInternal(currentNode, choices, children);
@@ -258,7 +261,7 @@ public class StdToCompositionWalker extends ToCompositionWalker<Map<String, Stri
       Map<String, List<WebTemplateNode>> choices,
       List<WebTemplateNode> children) {
 
-    if (node.getRmType().equals("ELEMENT")) {
+    if (node.getRmType().equals(ELEMENT)) {
       List<WebTemplateNode> trueChildren =
           node.getChildren().stream()
               .filter(
@@ -269,31 +272,10 @@ public class StdToCompositionWalker extends ToCompositionWalker<Map<String, Stri
       if (trueChildren.stream()
               .map(WebTemplateNode::getRmType)
               .collect(Collectors.toList())
-              .containsAll(List.of("DV_TEXT", DV_CODED_TEXT))
+              .containsAll(List.of(DV_TEXT, DV_CODED_TEXT))
           && node.getChoicesInChildren().size() > 0
           && trueChildren.size() == 2) {
-        WebTemplateNode merged = new WebTemplateNode();
-        merged.setId(node.getId(false));
-        merged.setName(node.getName());
-        merged.setMax(node.getMax());
-        merged.setMin(node.getMin());
-        merged.setRmType(DV_CODED_TEXT);
-        WebTemplateNode codedTextValue = node.findChildById("coded_text_value").orElseThrow();
-        merged.getInputs().addAll(codedTextValue.getInputs());
-        merged.setAqlPath(codedTextValue.getAqlPath());
-        merged.getLocalizedDescriptions().putAll(node.getLocalizedDescriptions());
-        merged.getLocalizedNames().putAll(node.getLocalizedNames());
-        merged.setLocalizedName(node.getLocalizedName());
-        merged.setAnnotations(node.getAnnotations());
-
-        WebTemplateInput other = inputHandler.buildWebTemplateInput("other", "TEXT");
-
-        merged.getInputs().add(other);
-        merged.getInputs().stream()
-            .filter(i -> Objects.equals(i.getSuffix(), "code"))
-            .findAny()
-            .ifPresent(i -> i.setListOpen(true));
-
+        WebTemplateNode merged = Filter.mergeDVText(node);
         choices.clear();
         children.clear();
         children.add(merged);
@@ -314,7 +296,7 @@ public class StdToCompositionWalker extends ToCompositionWalker<Map<String, Stri
     String namePath = context.getFlatHelper().buildNamePath(context, true);
 
     // simple Elements
-    if (childNode.getRmType().equals("ELEMENT") && context.getFlatHelper().skip(context)) {
+    if (childNode.getRmType().equals(ELEMENT) && context.getFlatHelper().skip(context)) {
       namePath = StringUtils.removeEnd( namePath,"/")+"/" + childNode.getId();
     }
 

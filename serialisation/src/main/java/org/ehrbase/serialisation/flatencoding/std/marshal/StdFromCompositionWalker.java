@@ -35,6 +35,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import static org.ehrbase.serialisation.flatencoding.std.umarshal.StdToCompositionWalker.handleDVTextInternal;
+import static org.ehrbase.util.rmconstants.RmConstants.DV_CODED_TEXT;
 
 public class StdFromCompositionWalker extends FromCompositionWalker<Map<String, Object>> {
 

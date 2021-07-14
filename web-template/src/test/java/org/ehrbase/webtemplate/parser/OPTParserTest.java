@@ -89,7 +89,7 @@ public class OPTParserTest {
     WebTemplate expected =
         objectMapper.readValue(
             IOUtils.toString(
-                WebTemplateTestData.GECCO_Diagnose.getStream(), StandardCharsets.UTF_8),
+                WebTemplateTestData.GECCO_DIAGNOSE.getStream(), StandardCharsets.UTF_8),
             WebTemplate.class);
 
     List<String> errors =

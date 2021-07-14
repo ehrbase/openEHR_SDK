@@ -199,7 +199,7 @@ public class InputHandler {
     return range;
   }
 
-  public WebTemplateInput buildWebTemplateInput(String suffix, String type) {
+  public static WebTemplateInput buildWebTemplateInput(String suffix, String type) {
     WebTemplateInput date = new WebTemplateInput();
     date.setType(type);
     date.setSuffix(suffix);

@@ -43,7 +43,7 @@ public class Filter implements WebTemplateFilter {
   private static final Map<Class<?>, RmIntrospectConfig> configMap =
       ReflectionHelper.buildMap(RmIntrospectConfig.class);
   public static final ArchieRMInfoLookup ARCHIE_RM_INFO_LOOKUP = ArchieRMInfoLookup.getInstance();
-  private final InputHandler inputHandler = new InputHandler(Collections.emptyMap());
+
 
   @Override
   public FilteredWebTemplate filter(WebTemplate webTemplate) {
@@ -113,30 +113,35 @@ public class Filter implements WebTemplateFilter {
               .containsAll(List.of("DV_TEXT", DV_CODED_TEXT))
           && node.getChoicesInChildren().size() > 0
           && trueChildren.size() == 2) {
-        WebTemplateNode merged = new WebTemplateNode();
-        merged.setId(node.getId(false));
-        merged.setName(node.getName());
-        merged.setMax(node.getMax());
-        merged.setMin(node.getMin());
-        merged.setRmType(DV_CODED_TEXT);
-        WebTemplateNode codedTextValue = node.findChildById("coded_text_value").orElseThrow();
-        merged.getInputs().addAll(codedTextValue.getInputs());
-        merged.setAqlPath(codedTextValue.getAqlPath());
-        merged.getLocalizedDescriptions().putAll(node.getLocalizedDescriptions());
-        merged.getLocalizedNames().putAll(node.getLocalizedNames());
-        merged.setLocalizedName(node.getLocalizedName());
-        merged.setAnnotations(node.getAnnotations());
-        WebTemplateInput other = inputHandler.buildWebTemplateInput("other", "TEXT");
-
-        merged.getInputs().add(other);
-        merged.getInputs().stream()
-            .filter(i -> Objects.equals(i.getSuffix(), "code"))
-            .findAny()
-            .ifPresent(i -> i.setListOpen(true));
+        WebTemplateNode merged = mergeDVText(node);
         node.getChildren().clear();
         node.getChildren().add(merged);
       }
     }
+  }
+
+  public static WebTemplateNode mergeDVText(WebTemplateNode node) {
+    WebTemplateNode merged = new WebTemplateNode();
+    merged.setId(node.getId(false));
+    merged.setName(node.getName());
+    merged.setMax(node.getMax());
+    merged.setMin(node.getMin());
+    merged.setRmType(DV_CODED_TEXT);
+    WebTemplateNode codedTextValue = node.findChildById("coded_text_value").orElseThrow();
+    merged.getInputs().addAll(codedTextValue.getInputs());
+    merged.setAqlPath(codedTextValue.getAqlPath());
+    merged.getLocalizedDescriptions().putAll(node.getLocalizedDescriptions());
+    merged.getLocalizedNames().putAll(node.getLocalizedNames());
+    merged.setLocalizedName(node.getLocalizedName());
+    merged.setAnnotations(node.getAnnotations());
+    WebTemplateInput other = InputHandler.buildWebTemplateInput("other", "TEXT");
+
+    merged.getInputs().add(other);
+    merged.getInputs().stream()
+        .filter(i -> Objects.equals(i.getSuffix(), "code"))
+        .findAny()
+        .ifPresent(i -> i.setListOpen(true));
+    return merged;
   }
 
   protected boolean skip(WebTemplateNode node, WebTemplate context, Deque<WebTemplateNode> deque) {

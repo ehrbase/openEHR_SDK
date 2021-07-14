@@ -8,11 +8,12 @@ import org.ehrbase.webtemplate.model.WebTemplateNode;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static org.ehrbase.util.rmconstants.RmConstants.*;
+
 public class FlatHelper<T> {
 
   private Map<String, Map<String, Integer>> pathCountMap = new HashMap<>();
 
-  public FlatHelper() {}
 
   public String buildNamePath(Context<T> context, boolean addCount) {
     StringBuilder sb = new StringBuilder();
@@ -98,19 +99,19 @@ public class FlatHelper<T> {
       return true;
     }
     if (parent != null
-        && parent.getRmType().equals("ELEMENT")
+        && parent.getRmType().equals(ELEMENT)
         && parent.getChildren().size() <= 5
         && parent.getChildren().stream()
             .filter(n -> !List.of("null_flavour", "feeder_audit").contains(n.getName()))
             .map(WebTemplateNode::getRmType)
             .collect(Collectors.toList())
-            .containsAll(List.of("DV_TEXT", "DV_CODED_TEXT"))
+            .containsAll(List.of(DV_TEXT, DV_CODED_TEXT))
         && !node.getId().equals(parent.getId())) {
       return true;
     }
 
     if (parent != null
-        && parent.getRmType().equals("ISM_TRANSITION")
+        && parent.getRmType().equals(ISM_TRANSITION)
         && !parent.getId().equals("ism_transition")) {
       return true;
     }
@@ -120,7 +121,7 @@ public class FlatHelper<T> {
       return true;
     } else if (parent != null && isEvent(node)) {
       return parent.getChildren().stream().filter(this::isEvent).count() == 1 && node.getMax() == 1;
-    } else if (node.getRmType().equals("ELEMENT")) {
+    } else if (node.getRmType().equals(ELEMENT)) {
       List<String> trueChildren =
           node.getChildren().stream()
               .filter(n -> !List.of("null_flavour", "feeder_audit").contains(n.getName()))
@@ -128,10 +129,10 @@ public class FlatHelper<T> {
               .collect(Collectors.toList());
       return node.getChildren().stream().anyMatch(n -> n.getId().equals(node.getId()))
           || (trueChildren.size() == 2
-              && trueChildren.containsAll(List.of("DV_TEXT", "DV_CODED_TEXT")));
-    } else if (node.getRmType().equals("CODE_PHRASE") && parent != null) {
-      return parent.getRmType().equals("DV_CODED_TEXT");
-    } else if (node.getRmType().equals("ISM_TRANSITION")) {
+              && trueChildren.containsAll(List.of(DV_TEXT, DV_CODED_TEXT)));
+    } else if (node.getRmType().equals(CODE_PHRASE) && parent != null) {
+      return parent.getRmType().equals(DV_CODED_TEXT);
+    } else if (node.getRmType().equals(ISM_TRANSITION)) {
       return !node.getId().equals("ism_transition");
     }
     return false;
@@ -161,7 +162,7 @@ public class FlatHelper<T> {
         typeInfo.getRmName().equals("ACTIVITY") && node.getName().equals("timing")
             || typeInfo.getRmName().equals("INSTRUCTION") && node.getName().equals("expiry_time")
             || typeInfo.getRmName().equals("INTERVAL_EVENT") && node.getName().equals("width")
-            || typeInfo.getRmName().equals("ISM_TRANSITION") && node.getName().equals("transition");
+            || typeInfo.getRmName().equals(ISM_TRANSITION) && node.getName().equals("transition");
 
     return (nonMandatoryRmAttribute || mandatoryNotInWebTemplate) && !nonMandatoryInWebTemplate;
   }
