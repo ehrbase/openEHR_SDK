@@ -315,7 +315,7 @@ public class StdToCompositionWalker extends ToCompositionWalker<Map<String, Stri
 
     // simple Elements
     if (childNode.getRmType().equals("ELEMENT") && context.getFlatHelper().skip(context)) {
-      namePath = namePath + childNode.getId();
+      namePath = StringUtils.removeEnd( namePath,"/")+"/" + childNode.getId();
     }
 
     String finalNamePath = namePath;
