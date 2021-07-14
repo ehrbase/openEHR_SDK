@@ -8,6 +8,8 @@ Note: version releases in the 0.x.y range may introduce breaking changes.
 
 ### Fixed
 
+- OptParser: fix parsing f snomed (see https://github.com/ehrbase/openEHR_SDK/pull/234)
+
 ## 1.5.0
 
 ### Added

@@ -30,16 +30,12 @@
                 </terminology_id>
                 <code_string>de</code_string>
             </language>
-            <purpose>Zur Repräsentation von Diagnosen im Rahmen des FoDaPl-Projektes / GECCO-Datensatzes. Es können
-                vorliegende, unbekannte und explizit ausgeschlossene Diagnosen angelegt werden.
-            </purpose>
+            <purpose>Zur Repräsentation von Diagnosen im Rahmen des FoDaPl-Projektes / GECCO-Datensatzes. Es können vorliegende, unbekannte und explizit ausgeschlossene Diagnosen angelegt werden.</purpose>
             <keywords>GECCO</keywords>
             <keywords>NUM</keywords>
             <keywords>FoDaPl</keywords>
             <keywords>Diagnose</keywords>
-            <use>Für die Abbildung von Diagnosen für die Speicherung im Rahmen des FoDaPI-Projektes /
-                GECCO-Datensatzes.
-            </use>
+            <use>Für die Abbildung von Diagnosen für die Speicherung im Rahmen des FoDaPI-Projektes / GECCO-Datensatzes.</use>
             <misuse>Nicht für die Abbildung von Symptomen.</misuse>
         </details>
     </description>
@@ -186,9 +182,7 @@
                                         <precedence_overridden>false</precedence_overridden>
                                         <left_operand xsi:type="EXPR_LEAF">
                                             <type>String</type>
-                                            <item xmlns:xs="http://www.w3.org/2001/XMLSchema" xsi:type="xs:string">
-                                                archetype_id/value
-                                            </item>
+                                            <item xmlns:xs="http://www.w3.org/2001/XMLSchema" xsi:type="xs:string">archetype_id/value</item>
                                             <reference_type>attribute</reference_type>
                                         </left_operand>
                                         <right_operand xsi:type="EXPR_LEAF">
@@ -641,26 +635,20 @@
                                         </occurrences>
                                         <node_id>at0053</node_id>
                                         <includes>
-                                            <string_expression>archetype_id/value matches
-                                                {/openEHR-EHR-CLUSTER\.anatomical_location_relative(-[a-zA-Z0-9_]+)*\.v1|openEHR-EHR-CLUSTER\.anatomical_location_circle(-[a-zA-Z0-9_]+)*\.v1/}
-                                            </string_expression>
+                                            <string_expression>archetype_id/value matches {/openEHR-EHR-CLUSTER\.anatomical_location_relative(-[a-zA-Z0-9_]+)*\.v1|openEHR-EHR-CLUSTER\.anatomical_location_circle(-[a-zA-Z0-9_]+)*\.v1/}</string_expression>
                                             <expression xsi:type="EXPR_BINARY_OPERATOR">
                                                 <type>Boolean</type>
                                                 <operator>2007</operator>
                                                 <precedence_overridden>false</precedence_overridden>
                                                 <left_operand xsi:type="EXPR_LEAF">
                                                     <type>String</type>
-                                                    <item xmlns:xs="http://www.w3.org/2001/XMLSchema"
-                                                          xsi:type="xs:string">archetype_id/value
-                                                    </item>
+                                                    <item xmlns:xs="http://www.w3.org/2001/XMLSchema" xsi:type="xs:string">archetype_id/value</item>
                                                     <reference_type>attribute</reference_type>
                                                 </left_operand>
                                                 <right_operand xsi:type="EXPR_LEAF">
                                                     <type>String</type>
                                                     <item xsi:type="C_STRING">
-                                                        <pattern>
-                                                            openEHR-EHR-CLUSTER\.anatomical_location_relative(-[a-zA-Z0-9_]+)*\.v1|openEHR-EHR-CLUSTER\.anatomical_location_circle(-[a-zA-Z0-9_]+)*\.v1
-                                                        </pattern>
+                                                        <pattern>openEHR-EHR-CLUSTER\.anatomical_location_relative(-[a-zA-Z0-9_]+)*\.v1|openEHR-EHR-CLUSTER\.anatomical_location_circle(-[a-zA-Z0-9_]+)*\.v1</pattern>
                                                     </item>
                                                     <reference_type>constraint</reference_type>
                                                 </right_operand>
@@ -678,25 +666,20 @@
                                         </occurrences>
                                         <node_id>at0054</node_id>
                                         <includes>
-                                            <string_expression>archetype_id/value matches
-                                                {/openEHR-EHR-CLUSTER\.multimedia(-[a-zA-Z0-9_]+)*\.v1/}
-                                            </string_expression>
+                                            <string_expression>archetype_id/value matches {/openEHR-EHR-CLUSTER\.multimedia(-[a-zA-Z0-9_]+)*\.v1/}</string_expression>
                                             <expression xsi:type="EXPR_BINARY_OPERATOR">
                                                 <type>Boolean</type>
                                                 <operator>2007</operator>
                                                 <precedence_overridden>false</precedence_overridden>
                                                 <left_operand xsi:type="EXPR_LEAF">
                                                     <type>String</type>
-                                                    <item xmlns:xs="http://www.w3.org/2001/XMLSchema"
-                                                          xsi:type="xs:string">archetype_id/value
-                                                    </item>
+                                                    <item xmlns:xs="http://www.w3.org/2001/XMLSchema" xsi:type="xs:string">archetype_id/value</item>
                                                     <reference_type>attribute</reference_type>
                                                 </left_operand>
                                                 <right_operand xsi:type="EXPR_LEAF">
                                                     <type>String</type>
                                                     <item xsi:type="C_STRING">
-                                                        <pattern>openEHR-EHR-CLUSTER\.multimedia(-[a-zA-Z0-9_]+)*\.v1
-                                                        </pattern>
+                                                        <pattern>openEHR-EHR-CLUSTER\.multimedia(-[a-zA-Z0-9_]+)*\.v1</pattern>
                                                     </item>
                                                     <reference_type>constraint</reference_type>
                                                 </right_operand>
@@ -771,48 +754,21 @@
                                 </archetype_id>
                                 <term_definitions code="at0000">
                                     <items id="text">Körperstelle</items>
-                                    <items id="description">Eine physische Stelle am oder innerhalb des menschlichen
-                                        Körpers.
-                                    </items>
+                                    <items id="description">Eine physische Stelle am oder innerhalb des menschlichen Körpers.</items>
                                 </term_definitions>
                                 <term_definitions code="at0001">
                                     <items id="text">Name der Körperstelle</items>
-                                    <items id="description">Identifikation einer einzelnen physischen Stelle entweder am
-                                        oder innerhalb des menschlichen Körpers.
-                                    </items>
-                                    <items id="comment">Dieses Datenelement ist der einzige verpflichtend auszufüllende
-                                        Datenpunkt in diesem Archetypen und sollte als primärer Datenpunkt verwendet
-                                        werden, um eine anatomische Lokalisation mit einem häufig verwendeten Namen
-                                        aufzuzeichnen. Es wird dringend empfohlen, dass der Name der Körperstelle so
-                                        genau aufgezeichnet wird, wie es anatomisch möglich ist. Zum Beispiel: zeichne
-                                        "oberes Augenlid" auf und nicht "Augenlid" mit "oberer" als Qualifier; "fünfte
-                                        Rippe" statt "Rippe" mit einem numerischen Qualifier. Verwenden Sie die anderen
-                                        Datenelemente für Lateralität, Sichtweise, Region und anatomische Linie, um mehr
-                                        Details anzugeben. &#13;
+                                    <items id="description">Identifikation einer einzelnen physischen Stelle entweder am oder innerhalb des menschlichen Körpers.</items>
+                                    <items id="comment">Dieses Datenelement ist der einzige verpflichtend auszufüllende Datenpunkt in diesem Archetypen und sollte als primärer Datenpunkt verwendet werden, um eine anatomische Lokalisation mit einem häufig verwendeten Namen aufzuzeichnen. Es wird dringend empfohlen, dass der Name der Körperstelle so genau aufgezeichnet wird, wie es anatomisch möglich ist. Zum Beispiel: zeichne "oberes Augenlid" auf und nicht "Augenlid" mit "oberer" als Qualifier; "fünfte Rippe" statt "Rippe" mit einem numerischen Qualifier. Verwenden Sie die anderen Datenelemente für Lateralität, Sichtweise, Region und anatomische Linie, um mehr Details anzugeben. &#13;
                                         &#13;
-                                        Dieses Datenelement sollte mit einer Terminologie kodiert werden, die nach
-                                        Möglichkeit Entscheidungsunterstützung auslösen kann - ein geeignetes Termset
-                                        für die Verwendung hier könnte aus einzelnen Konzepten oder einer Liste von
-                                        vorab abgestimmten Begriffen zusammengesetzt sein. Freitext sollte nur verwendet
-                                        werden, wenn keine entsprechende Terminologie vorhanden ist. &#13;
+                                        Dieses Datenelement sollte mit einer Terminologie kodiert werden, die nach Möglichkeit Entscheidungsunterstützung auslösen kann - ein geeignetes Termset für die Verwendung hier könnte aus einzelnen Konzepten oder einer Liste von vorab abgestimmten Begriffen zusammengesetzt sein. Freitext sollte nur verwendet werden, wenn keine entsprechende Terminologie vorhanden ist. &#13;
                                         &#13;
-                                        Wenn der Name der Körperstelle bereits im übergeordneten Archetyp angegeben ist,
-                                        kann dieses Datenelement redundant sein. Alternativ wurde ein Anwendungsfall
-                                        ermittelt, bei dem der Wert in dieses Element dupliziert sein könnte, um
-                                        semantische Abfragen unter Verwendung dieses Archetyps und nicht das
-                                        Datenelement innerhalb des übergeordneten Elements zu unterstützen.
-                                    </items>
+                                        Wenn der Name der Körperstelle bereits im übergeordneten Archetyp angegeben ist, kann dieses Datenelement redundant sein. Alternativ wurde ein Anwendungsfall ermittelt, bei dem der Wert in dieses Element dupliziert sein könnte, um semantische Abfragen unter Verwendung dieses Archetyps und nicht das Datenelement innerhalb des übergeordneten Elements zu unterstützen.</items>
                                 </term_definitions>
                                 <term_definitions code="at0002">
                                     <items id="text">Lateralität</items>
-                                    <items id="description">Die Seite des Körpers, an der sich die identifizierte
-                                        Körperstelle befindet.
-                                    </items>
-                                    <items id="comment">Wenn die identifizierte Körperstelle keine Seitenlage aufweist,
-                                        sollte dieses Datenelement keinen Wert haben. Wenn das Datenelement "Name der
-                                        Körperstelle" präkoordinierte Bezeichnungen verwendet, die eine
-                                        Seitenlokalisation einschließt, dann ist dieses Datenelement redundant.
-                                    </items>
+                                    <items id="description">Die Seite des Körpers, an der sich die identifizierte Körperstelle befindet.</items>
+                                    <items id="comment">Wenn die identifizierte Körperstelle keine Seitenlage aufweist, sollte dieses Datenelement keinen Wert haben. Wenn das Datenelement "Name der Körperstelle" präkoordinierte Bezeichnungen verwendet, die eine Seitenlokalisation einschließt, dann ist dieses Datenelement redundant.</items>
                                 </term_definitions>
                                 <term_definitions code="at0003">
                                     <items id="text">Links</items>
@@ -824,116 +780,60 @@
                                 </term_definitions>
                                 <term_definitions code="at0023">
                                     <items id="text">Beschreibung</items>
-                                    <items id="description">Aussagekräftige Erläuterung, die verwendet werden kann, um
-                                        die "Körperstelle" weiter zu verfeinern.
-                                    </items>
-                                    <items id="comment">Zum Beispiel: Angrenzend an den Amorbogen; eine Tätowierung
-                                        bedeckt die untere Hälfte dieses Bereichs.
-                                    </items>
+                                    <items id="description">Aussagekräftige Erläuterung, die verwendet werden kann, um die "Körperstelle" weiter zu verfeinern.</items>
+                                    <items id="comment">Zum Beispiel: Angrenzend an den Amorbogen; eine Tätowierung bedeckt die untere Hälfte dieses Bereichs.</items>
                                 </term_definitions>
                                 <term_definitions code="at0053">
                                     <items id="text">Alternative Struktur</items>
-                                    <items id="description">Zusätzliche Informationen über die anatomische Lage mit
-                                        alternativen Ansätzen zur Beschreibung der gleichen Körperstelle.
-                                    </items>
-                                    <items id="comment">Zum Beispiel, relative oder exakte Positionen unter Verwendung
-                                        von Koordinaten.
-                                    </items>
+                                    <items id="description">Zusätzliche Informationen über die anatomische Lage mit alternativen Ansätzen zur Beschreibung der gleichen Körperstelle.</items>
+                                    <items id="comment">Zum Beispiel, relative oder exakte Positionen unter Verwendung von Koordinaten.</items>
                                 </term_definitions>
                                 <term_definitions code="at0054">
                                     <items id="text">Multimediale Darstellung</items>
-                                    <items id="description">Bilder oder andere Medien, die der Identifizierung der
-                                        Körperstelle dienen.
-                                    </items>
+                                    <items id="description">Bilder oder andere Medien, die der Identifizierung der Körperstelle dienen.</items>
                                 </term_definitions>
                                 <term_definitions code="at0055">
                                     <items id="text">Anatomische Linie</items>
-                                    <items id="description">Zusätzliches Detail unter Verwendung theoretischer Linien,
-                                        die durch anatomische Strukturen erweitert werden können, um einen einheitlichen
-                                        Bezugspunkt auf dem menschlichen Körper zu erhalten.
-                                    </items>
-                                    <items id="comment">Verbreitete anatomische Linien wurden als Wertemenge
-                                        aufgenommen, die im Laufe der Zeit erweitert werden können, sowie eine
-                                        Freitextoption. Die zusätzliche Verwendung dieses Datenelements ermöglicht die
-                                        Aufzeichnung der typischen Position des Herzschlags am 5. Interkostalraum, der
-                                        linken Seite und der Mittelklavikularlinie. Wenn das Datenelement 'Body site
-                                        name' vorkoordinierte Begriffe verwendet, die eine anatomische Linie enthalten,
-                                        ist dieses Datenelement redundant.
-                                    </items>
+                                    <items id="description">Zusätzliches Detail unter Verwendung theoretischer Linien, die durch anatomische Strukturen erweitert werden können, um einen einheitlichen Bezugspunkt auf dem menschlichen Körper zu erhalten.</items>
+                                    <items id="comment">Verbreitete anatomische Linien wurden als Wertemenge aufgenommen, die im Laufe der Zeit erweitert werden können, sowie eine Freitextoption. Die zusätzliche Verwendung dieses Datenelements ermöglicht die Aufzeichnung der typischen Position des Herzschlags am 5. Interkostalraum, der linken Seite und der Mittelklavikularlinie. Wenn das Datenelement 'Body site name' vorkoordinierte Begriffe verwendet, die eine anatomische Linie enthalten, ist dieses Datenelement redundant.</items>
                                 </term_definitions>
                                 <term_definitions code="at0056">
                                     <items id="text">mittlere Axillarlinie</items>
-                                    <items id="description">Linie, die senkrecht zur Körperoberfläche verläuft und durch
-                                        den Scheitelpunkt der Achselhöhle geht.
-                                    </items>
+                                    <items id="description">Linie, die senkrecht zur Körperoberfläche verläuft und durch den Scheitelpunkt der Achselhöhle geht.</items>
                                 </term_definitions>
                                 <term_definitions code="at0057">
                                     <items id="text">vordere Axillarlinie</items>
-                                    <items id="description">Die Linie verläuft senkrecht über die Körperoberfläche und
-                                        verläuft durch die vordere Hautfalte der Achselhöhle.
-                                    </items>
+                                    <items id="description">Die Linie verläuft senkrecht über die Körperoberfläche und verläuft durch die vordere Hautfalte der Achselhöhle.</items>
                                 </term_definitions>
                                 <term_definitions code="at0058">
                                     <items id="text">hintere Axillarlinie</items>
-                                    <items id="description">Linie, die senkrecht über die Körperoberfläche verläuft und
-                                        durch die hintere Achselhaut führt.
-                                    </items>
+                                    <items id="description">Linie, die senkrecht über die Körperoberfläche verläuft und durch die hintere Achselhaut führt.</items>
                                 </term_definitions>
                                 <term_definitions code="at0059">
                                     <items id="text">Medioklavikularlinie</items>
-                                    <items id="description">Linie, die senkrecht über die Körperoberfläche verläuft,
-                                        parallel zur Mittellinie und durch den Mittelpunkt der Klavikula führt.
-                                    </items>
+                                    <items id="description">Linie, die senkrecht über die Körperoberfläche verläuft, parallel zur Mittellinie und durch den Mittelpunkt der Klavikula führt.</items>
                                 </term_definitions>
                                 <term_definitions code="at0060">
                                     <items id="text">Mittelere Pupillarlinie</items>
-                                    <items id="description">Die Linie verläuft vertikal durch den Mittelpunkt der
-                                        Pupille, wenn man direkt nach vorne schaut.
-                                    </items>
+                                    <items id="description">Die Linie verläuft vertikal durch den Mittelpunkt der Pupille, wenn man direkt nach vorne schaut.</items>
                                 </term_definitions>
                                 <term_definitions code="at0062">
                                     <items id="text">Mittellinie</items>
-                                    <items id="description">Vertikal verlaufende Linie, die den Körper in eine linke und
-                                        rechte Seite teilt und durch den Kopf, das Rückenmark und den Nabel verläuft.
-                                        Alternativ kann es sich auf eine Linie beziehen, die ein Körperteil in zwei
-                                        gleiche Teile teilt, zum Beispiel einen Zeh/Finger.
-                                    </items>
+                                    <items id="description">Vertikal verlaufende Linie, die den Körper in eine linke und rechte Seite teilt und durch den Kopf, das Rückenmark und den Nabel verläuft. Alternativ kann es sich auf eine Linie beziehen, die ein Körperteil in zwei gleiche Teile teilt, zum Beispiel einen Zeh/Finger.</items>
                                 </term_definitions>
                                 <term_definitions code="at0063">
                                     <items id="text">Mittlere Skapularlinie</items>
-                                    <items id="description">Die Linie verläuft senkrecht über die hintere
-                                        Körperoberfläche, parallel zur Mittellinie und verläuft durch den unteren Punkt
-                                        des Schulterblattes.
-                                    </items>
+                                    <items id="description">Die Linie verläuft senkrecht über die hintere Körperoberfläche, parallel zur Mittellinie und verläuft durch den unteren Punkt des Schulterblattes.</items>
                                 </term_definitions>
                                 <term_definitions code="at0064">
                                     <items id="text">Perspektive</items>
-                                    <items id="description">Qualifizierende Angabe unter spezifischer Sicht der
-                                        identifizierten Körperstelle.
-                                    </items>
-                                    <items id="comment">Falls benötigt, verwenden Sie dieses Element zur Erhöhung der
-                                        Erkennungsgenauigkeit der Körperstelle. Häufige Aspekte wurden als Wertmengen
-                                        hinzugefügt, die im Laufe der Zeit erweitert werden können, sowie auch eine
-                                        Freitextoption. Dies setzt voraus, dass der Körper in der anatomischen Position
-                                        beschrieben wird. Zum Beispiel: proximal Urethra; plantare Seite des linken
-                                        Daumens. Bei Bedarf können auch mehrere Aspekte beschrieben werden, indem 0..2
-                                        Lokalisationen zugelassen werden. Zum Beispiel: Eine Läsion kann sich an der
-                                        linken anterior/lateral (d.h. anterolateralen) Brustwand befinden. Wenn das
-                                        Datenelement 'Körperstelle' vordefinierte Begriffe verwendet, die die
-                                        Perspektive enthalten, dann ist dieses Datenelement redundant.
-                                    </items>
+                                    <items id="description">Qualifizierende Angabe unter spezifischer Sicht der identifizierten Körperstelle.</items>
+                                    <items id="comment">Falls benötigt, verwenden Sie dieses Element zur Erhöhung der Erkennungsgenauigkeit der Körperstelle. Häufige Aspekte wurden als Wertmengen hinzugefügt, die im Laufe der Zeit erweitert werden können, sowie auch eine Freitextoption. Dies setzt voraus, dass der Körper in der anatomischen Position beschrieben wird. Zum Beispiel: proximal Urethra; plantare Seite des linken Daumens. Bei Bedarf können auch mehrere Aspekte beschrieben werden, indem 0..2 Lokalisationen zugelassen werden. Zum Beispiel: Eine Läsion kann sich an der linken anterior/lateral (d.h. anterolateralen) Brustwand befinden. Wenn das Datenelement 'Körperstelle' vordefinierte Begriffe verwendet, die die Perspektive enthalten, dann ist dieses Datenelement redundant.</items>
                                 </term_definitions>
                                 <term_definitions code="at0065">
                                     <items id="text">Spezifische Körperstelle</items>
-                                    <items id="description">Zusätzliches Detail unter Verwendung eines bestimmten
-                                        Bereiches oder eines Punktes auf oder innerhalb der spezifischen Körperstelle.
-                                    </items>
-                                    <items id="comment">Zur Erhöhung der Erkennungsgenauigkeit der Körperstelle, falls
-                                        dies erforderlich ist. Zum Beispiel der obere rechte Quadrant oder McBurney's
-                                        Punkt auf der Bauchdecke oder das Zwischengelenk der Großzehe. Wenn das
-                                        Datenelement "Name der Körperstelle" präkoordinierte Bezeichnungen für die
-                                        jeweilige Stelle enthält, dann ist dieses Datenelement redundant.
-                                    </items>
+                                    <items id="description">Zusätzliches Detail unter Verwendung eines bestimmten Bereiches oder eines Punktes auf oder innerhalb der spezifischen Körperstelle.</items>
+                                    <items id="comment">Zur Erhöhung der Erkennungsgenauigkeit der Körperstelle, falls dies erforderlich ist. Zum Beispiel der obere rechte Quadrant oder McBurney's Punkt auf der Bauchdecke oder das Zwischengelenk der Großzehe. Wenn das Datenelement "Name der Körperstelle" präkoordinierte Bezeichnungen für die jeweilige Stelle enthält, dann ist dieses Datenelement redundant.</items>
                                 </term_definitions>
                                 <term_definitions code="at0067">
                                     <items id="text">Medial</items>
@@ -953,9 +853,7 @@
                                 </term_definitions>
                                 <term_definitions code="at0071">
                                     <items id="text">Anterior</items>
-                                    <items id="description">In Richtung der Vorderseite oder der ventralen Oberfläche
-                                        des Körpers.
-                                    </items>
+                                    <items id="description">In Richtung der Vorderseite oder der ventralen Oberfläche des Körpers.</items>
                                 </term_definitions>
                                 <term_definitions code="at0072">
                                     <items id="text">Posterior</items>
@@ -963,16 +861,11 @@
                                 </term_definitions>
                                 <term_definitions code="at0073">
                                     <items id="text">Proximal</items>
-                                    <items id="description">Zur Körpermitte hin. Beschreibt für gewöhnlich einen Teil
-                                        eines Gliedmaßes, Fingers oder eines Anhängsels.
-                                    </items>
+                                    <items id="description">Zur Körpermitte hin. Beschreibt für gewöhnlich einen Teil eines Gliedmaßes, Fingers oder eines Anhängsels.</items>
                                 </term_definitions>
                                 <term_definitions code="at0074">
                                     <items id="text">Distal</items>
-                                    <items id="description">Mehr periphere oder weiter vom Körpermitte entfernte Stelle.
-                                        Beschreibt in der Regel einen Teil einer Extremität, eines Fingers/Zehs oder
-                                        Körperglieds.
-                                    </items>
+                                    <items id="description">Mehr periphere oder weiter vom Körpermitte entfernte Stelle. Beschreibt in der Regel einen Teil einer Extremität, eines Fingers/Zehs oder Körperglieds.</items>
                                 </term_definitions>
                                 <term_definitions code="at0075">
                                     <items id="text">Palmar</items>
@@ -988,15 +881,11 @@
                                 </term_definitions>
                                 <term_definitions code="at0078">
                                     <items id="text">Oral</items>
-                                    <items id="description">Den Mund betreffend. Wird üblicherweise zur Beschreibung von
-                                        Stellen im Verdauungssystem verwendet.
-                                    </items>
+                                    <items id="description">Den Mund betreffend. Wird üblicherweise zur Beschreibung von Stellen im Verdauungssystem verwendet.</items>
                                 </term_definitions>
                                 <term_definitions code="at0079">
                                     <items id="text">Anal</items>
-                                    <items id="description">Zum Anus hin. Wird üblicherweise zur Beschreibung von
-                                        Stellen im Verdauungssystem verwendet.
-                                    </items>
+                                    <items id="description">Zum Anus hin. Wird üblicherweise zur Beschreibung von Stellen im Verdauungssystem verwendet.</items>
                                 </term_definitions>
                                 <term_definitions code="at0080">
                                     <items id="text">Tief</items>
@@ -1004,15 +893,11 @@
                                 </term_definitions>
                                 <term_definitions code="at0081">
                                     <items id="text">Oberflächlich</items>
-                                    <items id="description">Auf die Oberfläche zu, bezeichnet oberflächlich gelegene
-                                        Strukturen.
-                                    </items>
+                                    <items id="description">Auf die Oberfläche zu, bezeichnet oberflächlich gelegene Strukturen.</items>
                                 </term_definitions>
                                 <term_definitions code="at0082">
                                     <items id="text">Dorsal</items>
-                                    <items id="description">In Richtung des Handrückens oder des Fußrückens hin gelegen.
-                                        Als Gegenstück zu Palmar oder Plantar, nicht als Synonym für posterior.
-                                    </items>
+                                    <items id="description">In Richtung des Handrückens oder des Fußrückens hin gelegen. Als Gegenstück zu Palmar oder Plantar, nicht als Synonym für posterior.</items>
                                 </term_definitions>
                                 <term_definitions code="SNOMED Clinical Terms::302509004">
                                     <items id="text">Entire heart (body structure)</items>
@@ -1215,9 +1100,7 @@
                                         <precedence_overridden>false</precedence_overridden>
                                         <left_operand xsi:type="EXPR_LEAF">
                                             <type>String</type>
-                                            <item xmlns:xs="http://www.w3.org/2001/XMLSchema" xsi:type="xs:string">
-                                                archetype_id/value
-                                            </item>
+                                            <item xmlns:xs="http://www.w3.org/2001/XMLSchema" xsi:type="xs:string">archetype_id/value</item>
                                             <reference_type>attribute</reference_type>
                                         </left_operand>
                                         <right_operand xsi:type="EXPR_LEAF">
@@ -1277,26 +1160,20 @@
                                 </occurrences>
                                 <node_id>at0046</node_id>
                                 <includes>
-                                    <string_expression>archetype_id/value matches
-                                        {/openEHR-EHR-CLUSTER\.problem_qualifier(-[a-zA-Z0-9_]+)*\.v0|openEHR-EHR-CLUSTER\.problem_qualifier(-[a-zA-Z0-9_]+)*\.v1/}
-                                    </string_expression>
+                                    <string_expression>archetype_id/value matches {/openEHR-EHR-CLUSTER\.problem_qualifier(-[a-zA-Z0-9_]+)*\.v0|openEHR-EHR-CLUSTER\.problem_qualifier(-[a-zA-Z0-9_]+)*\.v1/}</string_expression>
                                     <expression xsi:type="EXPR_BINARY_OPERATOR">
                                         <type>Boolean</type>
                                         <operator>2007</operator>
                                         <precedence_overridden>false</precedence_overridden>
                                         <left_operand xsi:type="EXPR_LEAF">
                                             <type>String</type>
-                                            <item xmlns:xs="http://www.w3.org/2001/XMLSchema" xsi:type="xs:string">
-                                                archetype_id/value
-                                            </item>
+                                            <item xmlns:xs="http://www.w3.org/2001/XMLSchema" xsi:type="xs:string">archetype_id/value</item>
                                             <reference_type>attribute</reference_type>
                                         </left_operand>
                                         <right_operand xsi:type="EXPR_LEAF">
                                             <type>String</type>
                                             <item xsi:type="C_STRING">
-                                                <pattern>
-                                                    openEHR-EHR-CLUSTER\.problem_qualifier(-[a-zA-Z0-9_]+)*\.v0|openEHR-EHR-CLUSTER\.problem_qualifier(-[a-zA-Z0-9_]+)*\.v1
-                                                </pattern>
+                                                <pattern>openEHR-EHR-CLUSTER\.problem_qualifier(-[a-zA-Z0-9_]+)*\.v0|openEHR-EHR-CLUSTER\.problem_qualifier(-[a-zA-Z0-9_]+)*\.v1</pattern>
                                             </item>
                                             <reference_type>constraint</reference_type>
                                         </right_operand>
@@ -1404,9 +1281,7 @@
                                         <precedence_overridden>false</precedence_overridden>
                                         <left_operand xsi:type="EXPR_LEAF">
                                             <type>String</type>
-                                            <item xmlns:xs="http://www.w3.org/2001/XMLSchema" xsi:type="xs:string">
-                                                archetype_id/value
-                                            </item>
+                                            <item xmlns:xs="http://www.w3.org/2001/XMLSchema" xsi:type="xs:string">archetype_id/value</item>
                                             <reference_type>attribute</reference_type>
                                         </left_operand>
                                         <right_operand xsi:type="EXPR_LEAF">
@@ -1489,15 +1364,8 @@
                 </archetype_id>
                 <term_definitions code="at0000">
                     <items id="text">Vorliegende Diagnose</items>
-                    <items id="description">Angaben über einen einzelnen identifizierten Gesundheitszustand, eine
-                        Verletzung, eine Behinderung oder ein Problem, welches das körperliche, geistige und/oder
-                        soziale Wohlergehen einer Einzelperson beeinträchtigt.
-                    </items>
-                    <items id="comment">Eine klare Abgrenzung zwischen Problem und Diagnose ist in der Praxis nicht
-                        einfach zu erreichen. Für die Zwecke der klinischen Dokumentation mit diesem Archetyp werden
-                        Problem und Diagnose als ein Kontinuum betrachtet, mit zunehmendem Detaillierungsgrad und
-                        unterstützenden Beweisen, die in der Regel dem Etikett "Diagnose" Gewicht verleihen.
-                    </items>
+                    <items id="description">Angaben über einen einzelnen identifizierten Gesundheitszustand, eine Verletzung, eine Behinderung oder ein Problem, welches das körperliche, geistige und/oder soziale Wohlergehen einer Einzelperson beeinträchtigt.</items>
+                    <items id="comment">Eine klare Abgrenzung zwischen Problem und Diagnose ist in der Praxis nicht einfach zu erreichen. Für die Zwecke der klinischen Dokumentation mit diesem Archetyp werden Problem und Diagnose als ein Kontinuum betrachtet, mit zunehmendem Detaillierungsgrad und unterstützenden Beweisen, die in der Regel dem Etikett "Diagnose" Gewicht verleihen.</items>
                 </term_definitions>
                 <term_definitions code="at0001">
                     <items id="text">Structure</items>
@@ -1506,67 +1374,32 @@
                 <term_definitions code="at0002">
                     <items id="text">Name des Problems/ der Diagnose</items>
                     <items id="description">Namentliche Identifikation des Problems oder der Diagnose.</items>
-                    <items id="comment">Wo möglich, ist die Kodierung des Problems oder der Diagnose über eine
-                        Terminologie zu bevorzugen.
-                    </items>
+                    <items id="comment">Wo möglich, ist die Kodierung des Problems oder der Diagnose über eine Terminologie zu bevorzugen.</items>
                 </term_definitions>
                 <term_definitions code="at0003">
                     <items id="text">Datum/Zeitpunkt der klinischen Feststellung</items>
-                    <items id="description">Geschätzte oder exakte Zeit (bzw. Datum), zu der die Diagnose oder das
-                        Problem von einer medizinischen Fachkraft festgestellt wurde.
-                    </items>
-                    <items id="comment">Unvollständige Datumsangaben sind zulässig. Wenn der Patient unter einem Jahr
-                        alt ist, dann ist das vollständige Datum oder ein Minimum von Monat und Jahr notwendig, um
-                        genaue Altersberechnungen zu ermöglichen - z.B. wenn es zur Entscheidungsunterstützung verwendet
-                        wird. Datumswerte, die als "Alter zum Zeitpunkt der klinischen Feststellung" erfasst/importiert
-                        werden, sollten anhand des Geburtsdatums der Person in ein Datum umgewandelt werden.
-                    </items>
+                    <items id="description">Geschätzte oder exakte Zeit (bzw. Datum), zu der die Diagnose oder das Problem von einer medizinischen Fachkraft festgestellt wurde.</items>
+                    <items id="comment">Unvollständige Datumsangaben sind zulässig. Wenn der Patient unter einem Jahr alt ist, dann ist das vollständige Datum oder ein Minimum von Monat und Jahr notwendig, um genaue Altersberechnungen zu ermöglichen - z.B. wenn es zur Entscheidungsunterstützung verwendet wird. Datumswerte, die als "Alter zum Zeitpunkt der klinischen Feststellung" erfasst/importiert werden, sollten anhand des Geburtsdatums der Person in ein Datum umgewandelt werden.</items>
                 </term_definitions>
                 <term_definitions code="at0005">
                     <items id="text">Schweregrad</items>
-                    <items id="description">Eine Gesamtbeurteilung des Schweregrades des Problems oder der Diagnose.
-                    </items>
-                    <items id="comment">Ist der Schweregrad über vordefinierte Codes im Element "Name des Problems/ der
-                        Diagnose" enthalten, wird dieses Datenelement überflüssig. Hinweis: Eine spezifischere
-                        Einstufung des Schweregrads kann mit Hilfe des SLOTs "Spezifische Angaben" angegeben werden.
-                    </items>
+                    <items id="description">Eine Gesamtbeurteilung des Schweregrades des Problems oder der Diagnose.</items>
+                    <items id="comment">Ist der Schweregrad über vordefinierte Codes im Element "Name des Problems/ der Diagnose" enthalten, wird dieses Datenelement überflüssig. Hinweis: Eine spezifischere Einstufung des Schweregrads kann mit Hilfe des SLOTs "Spezifische Angaben" angegeben werden.</items>
                 </term_definitions>
                 <term_definitions code="at0009">
                     <items id="text">Klinische Beschreibung</items>
                     <items id="description">Beschreibung des Problems oder der Diagnose.</items>
-                    <items id="comment">Wird verwendet, um Hintergrund und Kontext, einschließlich Entwicklung, Episoden
-                        oder Verschlechterungen, Fortschritt und andere relevante Details über das Problem oder die
-                        Diagnose zu liefern.
-                    </items>
+                    <items id="comment">Wird verwendet, um Hintergrund und Kontext, einschließlich Entwicklung, Episoden oder Verschlechterungen, Fortschritt und andere relevante Details über das Problem oder die Diagnose zu liefern.</items>
                 </term_definitions>
                 <term_definitions code="at0012">
                     <items id="text">Körperstelle</items>
-                    <items id="description">Identifikation einer einfachen Körperstelle zur Lokalisierung des Problems
-                        oder der Diagnose.
-                    </items>
-                    <items id="comment">Wo dies möglich ist, ist die Kodierung der anatomischen Lokalisation über eine
-                        Terminologie zu bevorzugen. Verwenden Sie dieses Datenelement, um vorab präkoordinierte
-                        anatomische Lokalisationen zu erfassen. Wenn die Anforderungen an die Erfassung der anatomischen
-                        Lokalisation zur Laufzeit durch die Anwendung bestimmt werden oder komplexere Modellierungen,
-                        wie z.B. relative Lokalisationen erforderlich sind, dann verwenden Sie in diesem Archetyp den
-                        CLUSTER.anatomical_location oder CLUSTER.relative_location innerhalb des SLOT 'Structured
-                        anatomical location'. Die Anzahl für dieses Datenelement ist unbegrenzt, um klinische Szenarien
-                        wie die Beschreibung eines Hautausschlags an mehreren Stellen zu ermöglichen, wobei jedoch alle
-                        anderen Attribute identisch sind. Falls die anatomische Lage über präkoordinierte Codes im Namen
-                        des Problems/Diagnose enthalten ist, wird dieses Datenelement überflüssig.
-                    </items>
+                    <items id="description">Identifikation einer einfachen Körperstelle zur Lokalisierung des Problems oder der Diagnose.</items>
+                    <items id="comment">Wo dies möglich ist, ist die Kodierung der anatomischen Lokalisation über eine Terminologie zu bevorzugen. Verwenden Sie dieses Datenelement, um vorab präkoordinierte anatomische Lokalisationen zu erfassen. Wenn die Anforderungen an die Erfassung der anatomischen Lokalisation zur Laufzeit durch die Anwendung bestimmt werden oder komplexere Modellierungen, wie z.B. relative Lokalisationen erforderlich sind, dann verwenden Sie in diesem Archetyp den CLUSTER.anatomical_location oder CLUSTER.relative_location innerhalb des SLOT 'Structured anatomical location'. Die Anzahl für dieses Datenelement ist unbegrenzt, um klinische Szenarien wie die Beschreibung eines Hautausschlags an mehreren Stellen zu ermöglichen, wobei jedoch alle anderen Attribute identisch sind. Falls die anatomische Lage über präkoordinierte Codes im Namen des Problems/Diagnose enthalten ist, wird dieses Datenelement überflüssig.</items>
                 </term_definitions>
                 <term_definitions code="at0030">
                     <items id="text">Datum/Zeitpunkt der Genesung</items>
-                    <items id="description">Geschätzte oder exakte Zeit (bzw. Datum), zu der von einer medizinischen
-                        Fachkraft die Genesung oder die Remission des Problems oder der Diagnose festgestellt wurde.
-                    </items>
-                    <items id="comment">Unvollständige Datumsangaben sind zulässig. Wenn der Patient unter einem Jahr
-                        alt ist, dann ist das vollständige Datum oder ein Minimum von Monat und Jahr notwendig, um
-                        genaue Altersberechnungen zu ermöglichen - z.B. wenn es zur Entscheidungsunterstützung verwendet
-                        wird. Datumswerte, die als "Alter zum Zeitpunkt der Genesung" erfasst/importiert werden, sollten
-                        anhand des Geburtsdatums der Person in ein Datum umgewandelt werden.
-                    </items>
+                    <items id="description">Geschätzte oder exakte Zeit (bzw. Datum), zu der von einer medizinischen Fachkraft die Genesung oder die Remission des Problems oder der Diagnose festgestellt wurde.</items>
+                    <items id="comment">Unvollständige Datumsangaben sind zulässig. Wenn der Patient unter einem Jahr alt ist, dann ist das vollständige Datum oder ein Minimum von Monat und Jahr notwendig, um genaue Altersberechnungen zu ermöglichen - z.B. wenn es zur Entscheidungsunterstützung verwendet wird. Datumswerte, die als "Alter zum Zeitpunkt der Genesung" erfasst/importiert werden, sollten anhand des Geburtsdatums der Person in ein Datum umgewandelt werden.</items>
                 </term_definitions>
                 <term_definitions code="at0032">
                     <items id="text">Tree</items>
@@ -1574,62 +1407,34 @@
                 </term_definitions>
                 <term_definitions code="at0039">
                     <items id="text">Anatomische Stelle (strukturiert)</items>
-                    <items id="description">Eine strukturierte anatomische Lokalisation des Problems oder der
-                        Diagnose.
-                    </items>
-                    <items id="comment">Verwenden Sie diesen SLOT, um die Archetypen CLUSTER.anatomical_location oder
-                        CLUSTER.relative_location einzufügen, wenn die Anforderungen für die Aufnahme der anatomischen
-                        Position zur Laufzeit der Anwendung bestimmt werden oder komplexere Modellierungen wie z.B.
-                        relative Positionen erforderlich sind. Ist die anatomische Lokalisation über präkoordinierte
-                        Codes im Namen des Problems/Diagnose enthalten, wird die Verwendung dieses SLOT überflüssig.
-                    </items>
+                    <items id="description">Eine strukturierte anatomische Lokalisation des Problems oder der Diagnose.</items>
+                    <items id="comment">Verwenden Sie diesen SLOT, um die Archetypen CLUSTER.anatomical_location oder CLUSTER.relative_location einzufügen, wenn die Anforderungen für die Aufnahme der anatomischen Position zur Laufzeit der Anwendung bestimmt werden oder komplexere Modellierungen wie z.B. relative Positionen erforderlich sind. Ist die anatomische Lokalisation über präkoordinierte Codes im Namen des Problems/Diagnose enthalten, wird die Verwendung dieses SLOT überflüssig.</items>
                 </term_definitions>
                 <term_definitions code="at0043">
                     <items id="text">Spezifische Angaben</items>
-                    <items id="description">Zusätzlich benötigte Angaben, welche als eindeutige Merkmale des Problem/der
-                        Diagnose erfasst werden sollten.
-                    </items>
-                    <items id="comment">Hier können strukturierte Angaben über die Einstufung oder das Stadium der
-                        Diagnose enthalten sein; diagnostische Kriterien, Klassifizierungskriterien oder formale
-                        Bewertungen des Schweregrades wie z.B. "Common Terminology Criteria for Adverse Events".
-                    </items>
+                    <items id="description">Zusätzlich benötigte Angaben, welche als eindeutige Merkmale des Problem/der Diagnose erfasst werden sollten.</items>
+                    <items id="comment">Hier können strukturierte Angaben über die Einstufung oder das Stadium der Diagnose enthalten sein; diagnostische Kriterien, Klassifizierungskriterien oder formale Bewertungen des Schweregrades wie z.B. "Common Terminology Criteria for Adverse Events".</items>
                 </term_definitions>
                 <term_definitions code="at0046">
                     <items id="text">Status</items>
-                    <items id="description">Strukturierte Angaben zu standort-, domänen-, episoden- oder
-                        workflow-spezifischen Aspekten des diagnostischen Prozesses.
-                    </items>
-                    <items id="comment">Verwenden Sie Status- oder Kontext-Merkmale mit Vorsicht, da sie in der Praxis
-                        variabel eingesetzt werden und die Interoperabilität nicht gewährleistet werden kann, sofern die
-                        Verwendung nicht mit der Nutzungsgemeinschaft klar abgestimmt wird. Beispiel: aktiver Status -
-                        aktiv, inaktiv, genesen, in Remission; Entwicklungsstatus - initial, interim/working, final;
-                        zeitlicher Status - aktuell, vergangen; Episodenstatus - erstmalig, neu, laufend; Aufnahmestatus
-                        - Aufnahme, Entlassung; oder Prioritätsstatus - primär, sekundär.
-                    </items>
+                    <items id="description">Strukturierte Angaben zu standort-, domänen-, episoden- oder workflow-spezifischen Aspekten des diagnostischen Prozesses.</items>
+                    <items id="comment">Verwenden Sie Status- oder Kontext-Merkmale mit Vorsicht, da sie in der Praxis variabel eingesetzt werden und die Interoperabilität nicht gewährleistet werden kann, sofern die Verwendung nicht mit der Nutzungsgemeinschaft klar abgestimmt wird. Beispiel: aktiver Status - aktiv, inaktiv, genesen, in Remission; Entwicklungsstatus - initial, interim/working, final; zeitlicher Status - aktuell, vergangen; Episodenstatus - erstmalig, neu, laufend; Aufnahmestatus - Aufnahme, Entlassung; oder Prioritätsstatus - primär, sekundär.</items>
                 </term_definitions>
                 <term_definitions code="at0047">
                     <items id="text">Leicht</items>
-                    <items id="description">Das Problem oder die Diagnose beeinträchtigt die normale Aktivität nicht,
-                        bzw. verursacht nicht bleibende gesundheitliche Schäden, falls es nicht behandelt wird.
-                    </items>
+                    <items id="description">Das Problem oder die Diagnose beeinträchtigt die normale Aktivität nicht, bzw. verursacht nicht bleibende gesundheitliche Schäden, falls es nicht behandelt wird.</items>
                 </term_definitions>
                 <term_definitions code="at0048">
                     <items id="text">Mäßig</items>
-                    <items id="description">Das Problem oder die Diagnose beeinträchtigt die normale Aktivität oder
-                        verursacht bleibende gesundheitliche Schäden, falls es nicht behandelt wird.
-                    </items>
+                    <items id="description">Das Problem oder die Diagnose beeinträchtigt die normale Aktivität oder verursacht bleibende gesundheitliche Schäden, falls es nicht behandelt wird.</items>
                 </term_definitions>
                 <term_definitions code="at0049">
                     <items id="text">Schwer</items>
-                    <items id="description">Das Problem oder die Diagnose verhindert die normale Aktivität oder
-                        verursacht schwerwiegende gesundheitliche Schäden, falls es nicht behandelt wird.
-                    </items>
+                    <items id="description">Das Problem oder die Diagnose verhindert die normale Aktivität oder verursacht schwerwiegende gesundheitliche Schäden, falls es nicht behandelt wird.</items>
                 </term_definitions>
                 <term_definitions code="at0069">
                     <items id="text">Kommentar</items>
-                    <items id="description">Ergänzende Beschreibung des Problems oder der Diagnose, die nicht
-                        anderweitig erfasst wurde.
-                    </items>
+                    <items id="description">Ergänzende Beschreibung des Problems oder der Diagnose, die nicht anderweitig erfasst wurde.</items>
                 </term_definitions>
                 <term_definitions code="at0070">
                     <items id="text">Zuletzt aktualisiert</items>
@@ -1637,12 +1442,8 @@
                 </term_definitions>
                 <term_definitions code="at0071">
                     <items id="text">Erweiterung</items>
-                    <items id="description">Zusätzliche Informationen zur Erfassung lokaler Inhalte oder Anpassung an
-                        andere Referenzmodelle/Formalismen.
-                    </items>
-                    <items id="comment">Zum Beispiel: Lokaler Informationsbedarf oder zusätzliche Metadaten zur
-                        Anpassung an FHIR-Ressourcen oder CIMI-Modelle.
-                    </items>
+                    <items id="description">Zusätzliche Informationen zur Erfassung lokaler Inhalte oder Anpassung an andere Referenzmodelle/Formalismen.</items>
+                    <items id="comment">Zum Beispiel: Lokaler Informationsbedarf oder zusätzliche Metadaten zur Anpassung an FHIR-Ressourcen oder CIMI-Modelle.</items>
                 </term_definitions>
                 <term_definitions code="at0072">
                     <items id="text">Beschreibung des Verlaufs</items>
@@ -1666,12 +1467,8 @@
                 </term_definitions>
                 <term_definitions code="at0077">
                     <items id="text">Datum/ Zeitpunkt des Auftretens/ der Erstdiagnose</items>
-                    <items id="description">Geschätzte oder exakte Zeit (bzw. Datum), zu der die Krankheitsanzeichen
-                        oder Symptome zum ersten mal beobachtet wurden.
-                    </items>
-                    <items id="comment">Datumswerte, die als "Alter zu Beginn" erfasst/importiert werden, sollten anhand
-                        des Geburtsdatums der Person in ein Datum umgewandelt werden.
-                    </items>
+                    <items id="description">Geschätzte oder exakte Zeit (bzw. Datum), zu der die Krankheitsanzeichen oder Symptome zum ersten mal beobachtet wurden.</items>
+                    <items id="comment">Datumswerte, die als "Alter zu Beginn" erfasst/importiert werden, sollten anhand des Geburtsdatums der Person in ein Datum umgewandelt werden.</items>
                 </term_definitions>
                 <term_definitions code="SNOMED Clinical Terms::255604002">
                     <items id="text">Mild (qualifier value)</items>
@@ -2085,9 +1882,7 @@
                                         <precedence_overridden>false</precedence_overridden>
                                         <left_operand xsi:type="EXPR_LEAF">
                                             <type>String</type>
-                                            <item xmlns:xs="http://www.w3.org/2001/XMLSchema" xsi:type="xs:string">
-                                                archetype_id/value
-                                            </item>
+                                            <item xmlns:xs="http://www.w3.org/2001/XMLSchema" xsi:type="xs:string">archetype_id/value</item>
                                             <reference_type>attribute</reference_type>
                                         </left_operand>
                                         <right_operand xsi:type="EXPR_LEAF">
@@ -2170,10 +1965,7 @@
                 </archetype_id>
                 <term_definitions code="at0000">
                     <items id="text">Ausgeschlossene Diagnose</items>
-                    <items id="description">Ein Bericht über den Ausschluss eines/r Problems/Diagnose, familiäre
-                        Krankengeschichte, Medikation, Nebenwirkung/Allergens oder eines anderen klinischen Ereignisses,
-                        welche/s zur Zeit nicht oder noch nie vorhanden war.
-                    </items>
+                    <items id="description">Ein Bericht über den Ausschluss eines/r Problems/Diagnose, familiäre Krankengeschichte, Medikation, Nebenwirkung/Allergens oder eines anderen klinischen Ereignisses, welche/s zur Zeit nicht oder noch nie vorhanden war.</items>
                 </term_definitions>
                 <term_definitions code="at0001">
                     <items id="text">Tree</items>
@@ -2181,54 +1973,33 @@
                 </term_definitions>
                 <term_definitions code="at0002">
                     <items id="text">Aussage über den Ausschluss</items>
-                    <items id="description">Ein Bericht über den Ausschluss eines/r bestimmten Problems/Diagnose,
-                        familiäre Krankengeschichte, Medikation, Verfahren, Nebenwirkung oder eines anderen klinischen
-                        Ereignisses.
-                    </items>
-                    <items id="comment">Diese Beschreibung muss in Verbindung mit dem Datenelement "ausgeschlossene
-                        Kategorie" verwendet werden. Zum Beispiel: Dieses Datenelement kann zur Erfassung einer
-                        allgemeinen Aussage, wie z.B. "keine bekannte Vorgeschichte über..." verwendet werden. Die
-                        "ausgeschlossene Kategorie" spezifiziert die Aussage, in dem eine Zuordnung zu z.B. Diagnose
-                        oder Medikation vorgenommen werden kann. Wird bereits die "ausgeschlossene Kategorie" dafür
-                        genutzt, durch eine präkoordinierte Bezeichnung das Vorliegen von Diabetes in der familiären
-                        Krankengeschichte auszuschließen, ist der Eintrag in diesem Datenelement redundant. &#13;
+                    <items id="description">Ein Bericht über den Ausschluss eines/r bestimmten Problems/Diagnose, familiäre Krankengeschichte, Medikation, Verfahren, Nebenwirkung oder eines anderen klinischen Ereignisses.</items>
+                    <items id="comment">Diese Beschreibung muss in Verbindung mit dem Datenelement "ausgeschlossene Kategorie" verwendet werden. Zum Beispiel: Dieses Datenelement kann zur Erfassung einer allgemeinen Aussage, wie z.B. "keine bekannte Vorgeschichte über..." verwendet werden. Die "ausgeschlossene Kategorie" spezifiziert die Aussage, in dem eine Zuordnung zu z.B. Diagnose oder Medikation vorgenommen werden kann. Wird bereits die "ausgeschlossene Kategorie" dafür genutzt, durch eine präkoordinierte Bezeichnung das Vorliegen von Diabetes in der familiären Krankengeschichte auszuschließen, ist der Eintrag in diesem Datenelement redundant. &#13;
                     </items>
                 </term_definitions>
                 <term_definitions code="at0003">
                     <items id="text">Problem/Diagnose</items>
-                    <items id="description">Das Problem oder die Diagnose, auf die sich die Ausschlussaussage bezieht.
-                        Zum Beispiel: "Diabetes", "COPD" oder "Asthma".
-                    </items>
+                    <items id="description">Das Problem oder die Diagnose, auf die sich die Ausschlussaussage bezieht. Zum Beispiel: "Diabetes", "COPD" oder "Asthma".</items>
                 </term_definitions>
                 <term_definitions code="at0004">
                     <items id="text">Problem/Diagnose</items>
-                    <items id="description">Das Problem oder die Diagnose, auf die sich die Ausschlussaussage bezieht.
-                        Zum Beispiel: "Diabetes", "COPD" oder "Asthma".
-                    </items>
+                    <items id="description">Das Problem oder die Diagnose, auf die sich die Ausschlussaussage bezieht. Zum Beispiel: "Diabetes", "COPD" oder "Asthma".</items>
                 </term_definitions>
                 <term_definitions code="at0005">
                     <items id="text">Familiäre Krankengeschichte</items>
-                    <items id="description">Das Element der familiären Krankengeschichte auf das sich die
-                        Ausschlussaussage bezieht. Zum Beispiel: Herzerkrankung, Diabetes oder Alzheimer.
-                    </items>
+                    <items id="description">Das Element der familiären Krankengeschichte auf das sich die Ausschlussaussage bezieht. Zum Beispiel: Herzerkrankung, Diabetes oder Alzheimer.</items>
                 </term_definitions>
                 <term_definitions code="at0006">
                     <items id="text">Medikation</items>
-                    <items id="description">Der Name des Medikaments, auf das sich die Ausschlussaussage bezieht. Zum
-                        Beispiel: "Paracetamol", "Codein" oder "Antidepressiva".
-                    </items>
+                    <items id="description">Der Name des Medikaments, auf das sich die Ausschlussaussage bezieht. Zum Beispiel: "Paracetamol", "Codein" oder "Antidepressiva".</items>
                 </term_definitions>
                 <term_definitions code="at0007">
                     <items id="text">Eingriff</items>
-                    <items id="description">Der Eingriff, auf den sich die Ausschlussaussage bezieht. Zum Beispiel:
-                        "Herz-OP" oder "Appendektomie" oder "Hüftersatz".
-                    </items>
+                    <items id="description">Der Eingriff, auf den sich die Ausschlussaussage bezieht. Zum Beispiel: "Herz-OP" oder "Appendektomie" oder "Hüftersatz".</items>
                 </term_definitions>
                 <term_definitions code="at0008">
                     <items id="text">Nebenwirkungen auslösende Substanz/Allergen</items>
-                    <items id="description">Die Bennenung der Nebenwirkungen auslösenden Substanz/des Allergens,
-                        welche/s ausgeschlossen wird. Zum Beispiel: "Penicillin", "Erdnüsse" oder "Latex".
-                    </items>
+                    <items id="description">Die Bennenung der Nebenwirkungen auslösenden Substanz/des Allergens, welche/s ausgeschlossen wird. Zum Beispiel: "Penicillin", "Erdnüsse" oder "Latex".</items>
                 </term_definitions>
                 <term_definitions code="at0009">
                     <items id="text">Tree</items>
@@ -2236,18 +2007,12 @@
                 </term_definitions>
                 <term_definitions code="at0011">
                     <items id="text">Erweiterung</items>
-                    <items id="description">Zusätzliche Informationen zur Erfassung lokaler Inhalte oder Anpassung an
-                        andere Referenzmodelle/Formalismen.
-                    </items>
-                    <items id="comment">Zum Beispiel: Lokale Informationsbedarf oder zusätzliche Metadaten zur Anpassung
-                        an FHIR-Ressourcen oder CIMI-Modelle.
-                    </items>
+                    <items id="description">Zusätzliche Informationen zur Erfassung lokaler Inhalte oder Anpassung an andere Referenzmodelle/Formalismen.</items>
+                    <items id="comment">Zum Beispiel: Lokale Informationsbedarf oder zusätzliche Metadaten zur Anpassung an FHIR-Ressourcen oder CIMI-Modelle.</items>
                 </term_definitions>
                 <term_definitions code="at0012">
                     <items id="text">Kommentar</items>
-                    <items id="description">Es kann ein zusätzlicher Kommentar zum ausgeschlossenen Sachverhalt erfasst
-                        werden, wenn er nicht schon bereits an einer anderen Stelle dokumentiert wurde.
-                    </items>
+                    <items id="description">Es kann ein zusätzlicher Kommentar zum ausgeschlossenen Sachverhalt erfasst werden, wenn er nicht schon bereits an einer anderen Stelle dokumentiert wurde.</items>
                 </term_definitions>
                 <term_definitions code="SNOMED Clinical Terms::410594000">
                     <items id="text">Known absent (qualifier value)</items>
@@ -2280,9 +2045,7 @@
                     <items id="text">Hypertensive disorder, systemic arterial (disorder)</items>
                 </term_definitions>
                 <term_definitions code="SNOMED Clinical Terms::417662000:246090004=22298006">
-                    <items id="text">|History of clinical finding in subject (situation)|:|Associated finding
-                        (attribute)|=|Myocardial infarction (disorder)| Zustand nach Herzinfarkt
-                    </items>
+                    <items id="text">|History of clinical finding in subject (situation)|:|Associated finding (attribute)|=|Myocardial infarction (disorder)| Zustand nach Herzinfarkt</items>
                 </term_definitions>
                 <term_definitions code="SNOMED Clinical Terms::698247007">
                     <items id="text">Cardiac arrhythmia (disorder) Herzrhythmusstörungen</items>
@@ -2294,9 +2057,7 @@
                     <items id="text">Peripheral arterial occlusive disease (disorder)</items>
                 </term_definitions>
                 <term_definitions code="SNOMED Clinical Terms::416940007:363589002=81266008">
-                    <items id="text">|Past history of procedure (situation)|:|Associated procedure (attribute)|=|Heart
-                        revascularization (procedure)|
-                    </items>
+                    <items id="text">|Past history of procedure (situation)|:|Associated procedure (attribute)|=|Heart revascularization (procedure)|</items>
                 </term_definitions>
                 <term_definitions code="SNOMED Clinical Terms::53741008">
                     <items id="text">Coronary arteriosclerosis (disorder)</items>
@@ -2871,9 +2632,7 @@
                                         <precedence_overridden>false</precedence_overridden>
                                         <left_operand xsi:type="EXPR_LEAF">
                                             <type>String</type>
-                                            <item xmlns:xs="http://www.w3.org/2001/XMLSchema" xsi:type="xs:string">
-                                                archetype_id/value
-                                            </item>
+                                            <item xmlns:xs="http://www.w3.org/2001/XMLSchema" xsi:type="xs:string">archetype_id/value</item>
                                             <reference_type>attribute</reference_type>
                                         </left_operand>
                                         <right_operand xsi:type="EXPR_LEAF">
@@ -2956,10 +2715,7 @@
                 </archetype_id>
                 <term_definitions code="at0000">
                     <items id="text">Unbekannte Diagnose</items>
-                    <items id="description">Aussage darüber, dass bestimmte Gesundheitsinformationen zum Zeitpukt der
-                        Erfassung nicht in der Krankenakte oder einem Schriftstück erfasst werden können, da keine
-                        Kenntnisse darüber vorhanden sind.
-                    </items>
+                    <items id="description">Aussage darüber, dass bestimmte Gesundheitsinformationen zum Zeitpukt der Erfassung nicht in der Krankenakte oder einem Schriftstück erfasst werden können, da keine Kenntnisse darüber vorhanden sind.</items>
                 </term_definitions>
                 <term_definitions code="at0001">
                     <items id="text">Baum</items>
@@ -2968,11 +2724,7 @@
                 <term_definitions code="at0002">
                     <items id="text">Unbekannte Diagnose</items>
                     <items id="description">Positive Aussage, dass keine Informationen verfügbar sind.</items>
-                    <items id="comment">Zum Beispiel: "Es liegen keine Informationen über Nebenwirkungen vor"; "Es
-                        liegen keine Informationen über Probleme oder Diagnosen vor"; "Es liegen keine Informationen
-                        über vorangegangene Verfahren vor"; oder "Es liegen keine Informationen über verwendete
-                        Medikamente vor".
-                    </items>
+                    <items id="comment">Zum Beispiel: "Es liegen keine Informationen über Nebenwirkungen vor"; "Es liegen keine Informationen über Probleme oder Diagnosen vor"; "Es liegen keine Informationen über vorangegangene Verfahren vor"; oder "Es liegen keine Informationen über verwendete Medikamente vor".</items>
                 </term_definitions>
                 <term_definitions code="at0003">
                     <items id="text">Baum</items>
@@ -2980,25 +2732,17 @@
                 </term_definitions>
                 <term_definitions code="at0004">
                     <items id="text">Letzte Aktualisierung</items>
-                    <items id="description">Das Datum, an dem das Fehlen der Information das letzte Mal aktualisiert
-                        wurde.
-                    </items>
+                    <items id="description">Das Datum, an dem das Fehlen der Information das letzte Mal aktualisiert wurde.</items>
                 </term_definitions>
                 <term_definitions code="at0005">
                     <items id="text">Aussage über die fehlende Information</items>
                     <items id="description">Beschreibung des Grundes, warum keine Informationen vorhanden sind.</items>
-                    <items id="comment">Zum Beispiel: Der Patient ist bewusstlos oder weigert sich Informationen
-                        preiszugeben. Die Codierung mit einer Terminologie wird empfohlen, wenn möglich.
-                    </items>
+                    <items id="comment">Zum Beispiel: Der Patient ist bewusstlos oder weigert sich Informationen preiszugeben. Die Codierung mit einer Terminologie wird empfohlen, wenn möglich.</items>
                 </term_definitions>
                 <term_definitions code="at0006">
                     <items id="text">Erweiterung</items>
-                    <items id="description">Zusätzliche Informationen zur Erfassung lokaler Inhalte oder Anpassung an
-                        andere Referenzmodelle/Formalismen.
-                    </items>
-                    <items id="comment">Kommentar: Zum Beispiel: Lokaler Informationsbedarf oder zusätzliche Metadaten
-                        zur Anpassung an FHIR-Ressourcen oder CIMI-Modelle.
-                    </items>
+                    <items id="description">Zusätzliche Informationen zur Erfassung lokaler Inhalte oder Anpassung an andere Referenzmodelle/Formalismen.</items>
+                    <items id="comment">Kommentar: Zum Beispiel: Lokaler Informationsbedarf oder zusätzliche Metadaten zur Anpassung an FHIR-Ressourcen oder CIMI-Modelle.</items>
                 </term_definitions>
                 <term_definitions code="SNOMED Clinical Terms::195967001">
                     <items id="text">Asthma (disorder)</items>
@@ -3028,9 +2772,7 @@
                     <items id="text">Hypertensive disorder, systemic arterial (disorder)</items>
                 </term_definitions>
                 <term_definitions code="SNOMED Clinical Terms::417662000:246090004=22298006">
-                    <items id="text">|History of clinical finding in subject (situation)|:|Associated finding
-                        (attribute)|=|Myocardial infarction (disorder)| Zustand nach Herzinfarkt
-                    </items>
+                    <items id="text">|History of clinical finding in subject (situation)|:|Associated finding (attribute)|=|Myocardial infarction (disorder)| Zustand nach Herzinfarkt</items>
                 </term_definitions>
                 <term_definitions code="SNOMED Clinical Terms::698247007">
                     <items id="text">Cardiac arrhythmia (disorder) Herzrhythmusstörungen</items>
@@ -3042,9 +2784,7 @@
                     <items id="text">Peripheral arterial occlusive disease (disorder)</items>
                 </term_definitions>
                 <term_definitions code="SNOMED Clinical Terms::416940007:363589002=81266008">
-                    <items id="text">|Past history of procedure (situation)|:|Associated procedure (attribute)|=|Heart
-                        revascularization (procedure)|
-                    </items>
+                    <items id="text">|Past history of procedure (situation)|:|Associated procedure (attribute)|=|Heart revascularization (procedure)|</items>
                 </term_definitions>
                 <term_definitions code="SNOMED Clinical Terms::53741008">
                     <items id="text">Coronary arteriosclerosis (disorder)</items>
@@ -3235,9 +2975,7 @@
         </template_id>
         <term_definitions code="at0000">
             <items id="text">GECCO_Diagnose</items>
-            <items id="description">Generische Zusammenstellung zur Darstellung eines Datensatzes für
-                Forschungszwecke.
-            </items>
+            <items id="description">Generische Zusammenstellung zur Darstellung eines Datensatzes für Forschungszwecke. </items>
         </term_definitions>
         <term_definitions code="at0001">
             <items id="text">Baum</items>
@@ -3245,19 +2983,15 @@
         </term_definitions>
         <term_definitions code="at0002">
             <items id="text">Erweiterung</items>
-            <items id="description">Ergänzende Angaben zum Registereintrag.</items>
+            <items id="description">Ergänzende Angaben zum Registereintrag. </items>
         </term_definitions>
         <term_definitions code="at0004">
             <items id="text">Status</items>
-            <items id="description">Status der gelieferten Daten für den Registereintrag. Hinweis: Dies ist nicht der
-                Status einzelner Komponenten.
-            </items>
+            <items id="description">Status der gelieferten Daten für den Registereintrag. Hinweis: Dies ist nicht der Status einzelner Komponenten.</items>
         </term_definitions>
         <term_definitions code="at0005">
             <items id="text">Kategorie</items>
-            <items id="description">Die Klassifikation des Registereintrags (z.B. Typ der Observation des
-                FHIR-Profils).
-            </items>
+            <items id="description">Die Klassifikation des Registereintrags (z.B. Typ der Observation des FHIR-Profils).</items>
         </term_definitions>
         <term_definitions code="at0010">
             <items id="text">registriert</items>
@@ -3321,8 +3055,7 @@
             <items id="text">Ventilation status (observable entity)</items>
         </term_definitions>
     </definition>
-    <annotations
-            path="[openEHR-EHR-COMPOSITION.registereintrag.v1]/content[openEHR-EHR-EVALUATION.problem_diagnosis.v1 and name/value='Vorliegende Diagnose']">
+    <annotations path="[openEHR-EHR-COMPOSITION.registereintrag.v1]/content[openEHR-EHR-EVALUATION.problem_diagnosis.v1 and name/value='Vorliegende Diagnose']">
         <items id="410605003">Confirmed present (qualifier value)</items>
     </annotations>
 </template>
