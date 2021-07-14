@@ -88,8 +88,8 @@ public enum OperationalTemplateTestData {
       "EREACT - Deterioriation assessment.v0.opt",
       "EREACT - Deterioriation assessment.v0"),
   VIROLOGISCHER_BEFUND("Virologischer Befund", "Virologischer_Befund.opt", "Virologischer Befund"),
-  LABOR_BEFUND("Labor Befund", "laborbefund.opt", "Laborbefund");
-  ;
+  LABOR_BEFUND("Labor Befund", "laborbefund.opt", "Laborbefund"),
+  GECCO_DIAGNOSE("example with snomed terminologies", "GECCO_Diagnose.opt", "GECCO_Diagnose");
 
   private final String filename;
   private final String templateId;
