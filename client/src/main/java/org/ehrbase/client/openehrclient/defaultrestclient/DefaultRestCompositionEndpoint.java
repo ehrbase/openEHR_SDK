@@ -23,7 +23,9 @@ import com.nedap.archie.rm.composition.Composition;
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.InvocationTargetException;
+import java.net.URI;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Optional;
 import java.util.UUID;
 import org.ehrbase.client.annotations.Id;
@@ -114,5 +116,17 @@ public class DefaultRestCompositionEndpoint implements CompositionEndpoint {
 
     return composition.map(
         c -> new Flattener(defaultRestClient.getTemplateProvider()).flatten(c, clazz));
+  }
+
+  @Override
+  public void delete(VersionUid precedingVersionUid) {
+    if (precedingVersionUid == null) {
+      throw new ClientException("precedingVersionUid mush not be null");
+    }
+
+    URI uri = defaultRestClient.getConfig()
+            .getBaseUri()
+            .resolve(EHR_PATH + ehrId.toString() + COMPOSITION_PATH + precedingVersionUid);
+    defaultRestClient.internalDelete(uri, new HashMap<>());
   }
 }

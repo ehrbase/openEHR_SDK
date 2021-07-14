@@ -189,7 +189,8 @@ public class DefaultRestClient implements OpenEhrClient {
   protected <T> Optional<T> httpGet(URI uri, Class<T> valueType, Map<String, String> headers) {
     HttpResponse response = internalGet(uri, headers, ContentType.APPLICATION_JSON.getMimeType());
 
-    if (response.getStatusLine().getStatusCode() == HttpStatus.SC_NOT_FOUND) {
+    if (response.getStatusLine().getStatusCode() == HttpStatus.SC_NO_CONTENT ||
+            response.getStatusLine().getStatusCode() == HttpStatus.SC_NOT_FOUND) {
       return Optional.empty();
     }
     try {
@@ -209,7 +210,7 @@ public class DefaultRestClient implements OpenEhrClient {
       }
 
       response = executor.execute(request).returnResponse();
-      checkStatus(response, HttpStatus.SC_OK, HttpStatus.SC_NOT_FOUND);
+      checkStatus(response, HttpStatus.SC_OK, HttpStatus.SC_NO_CONTENT, HttpStatus.SC_NOT_FOUND);
 
     } catch (IOException e) {
       throw new ClientException(e.getMessage(), e);
