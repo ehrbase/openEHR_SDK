@@ -900,14 +900,30 @@ public class OPTParser {
 
       } else {
         Arrays.stream(((CCODEPHRASE) cdomaintype).getCodeListArray())
+            .map(
+                o ->
+                    StringUtils.isBlank(code.getTerminology())
+                            || "local".equals(code.getTerminology())
+                        ? o
+                        : code.getTerminology() + "::" + o)
             .forEach(
                 o -> {
                   WebTemplateInputValue value = new WebTemplateInputValue();
                   Optional<TermDefinition> termDefinition =
                       Optional.ofNullable(termDefinitionMap.get(o))
                           .map(e -> e.get(defaultLanguage));
+                  if (termDefinition.isEmpty()) {
+                    o = o.replace(code.getTerminology() + "::", "");
+                    termDefinition =
+                        Optional.ofNullable(termDefinitionMap.get(o))
+                            .map(e -> e.get(defaultLanguage));
+                  }
+
                   if (termDefinition.isPresent()) {
                     value.setValue(termDefinition.get().getCode());
+                    if (StringUtils.isNotBlank((code.getTerminology()))) {
+                      value.setValue(value.getValue().replace(code.getTerminology() + "::", ""));
+                    }
                     value.setLabel(termDefinition.get().getValue());
 
                     value

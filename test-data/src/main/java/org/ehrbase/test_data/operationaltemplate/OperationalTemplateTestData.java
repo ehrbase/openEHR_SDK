@@ -34,6 +34,7 @@ public enum OperationalTemplateTestData {
       "IDCR  Laboratory Test Report",
       "IDCR - Laboratory Test Report.v0.opt",
       "IDCR - Laboratory Test Report.v0"),
+  EHRN_VITAL_SIGNS_TEST("EHRN Vital signs.v2", "EHRN Vital signs.v2.opt", "EHRN Vital signs.v2"),
   IDCR_PROBLEM_LIST(
       "IDCR  Problem List.v1", "IDCR - Problem List.v1.opt", "IDCR - Problem List.v1"),
   IDCR_ADVERSE_REACTION_LIST(
@@ -86,15 +87,9 @@ public enum OperationalTemplateTestData {
       "Deterioriation assessment ",
       "EREACT - Deterioriation assessment.v0.opt",
       "EREACT - Deterioriation assessment.v0"),
-  VIROLOGISCHER_BEFUND(
-          "Virologischer Befund",
-          "Virologischer_Befund.opt",
-          "Virologischer Befund"),
-  LABOR_BEFUND(
-          "Labor Befund",
-          "laborbefund.opt",
-          "Laborbefund");
-  ;
+  VIROLOGISCHER_BEFUND("Virologischer Befund", "Virologischer_Befund.opt", "Virologischer Befund"),
+  LABOR_BEFUND("Labor Befund", "laborbefund.opt", "Laborbefund"),
+  GECCO_DIAGNOSE("example with snomed terminologies", "GECCO_Diagnose.opt", "GECCO_Diagnose");
 
   private final String filename;
   private final String templateId;
