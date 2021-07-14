@@ -442,33 +442,6 @@ public class OPTParser {
           value.setId(node.getId(false));
           value.setAnnotations(node.getAnnotations());
 
-          // If contains a choice of DV_TEXT and DV_CODED_TEXT add a merged node
-        } else if (trueChildren.stream()
-                .map(WebTemplateNode::getRmType)
-                .collect(Collectors.toList())
-                .containsAll(List.of("DV_TEXT", DV_CODED_TEXT))
-            && node.getChoicesInChildren().size() > 0) {
-          WebTemplateNode merged = new WebTemplateNode();
-          merged.setId(node.getId(false));
-          merged.setName(node.getName());
-          merged.setMax(node.getMax());
-          merged.setMin(node.getMin());
-          merged.setRmType(DV_CODED_TEXT);
-          WebTemplateNode codedTextValue = node.findChildById("coded_text_value").orElseThrow();
-          merged.getInputs().addAll(codedTextValue.getInputs());
-          merged.setAqlPath(codedTextValue.getAqlPath());
-          merged.getLocalizedDescriptions().putAll(node.getLocalizedDescriptions());
-          merged.getLocalizedNames().putAll(node.getLocalizedNames());
-          merged.setLocalizedName(node.getLocalizedName());
-          merged.setAnnotations(node.getAnnotations());
-          WebTemplateInput other = inputHandler.buildWebTemplateInput("other", "TEXT");
-
-          merged.getInputs().add(other);
-          merged.getInputs().stream()
-              .filter(i -> Objects.equals(i.getSuffix(), "code"))
-              .findAny()
-              .ifPresent(i -> i.setListOpen(true));
-          node.getChildren().add(merged);
         }
         // choice between value and null_flavour
         else if (node.getChoicesInChildren().isEmpty()) {
