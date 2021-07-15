@@ -54,6 +54,9 @@ public class OriginalVersionResponseData<T> {
     private List<Attestation> attestations;     // optional
     private T data;
 
+    public OriginalVersionResponseData() {
+    }
+
     public OriginalVersionResponseData(OriginalVersion<T> originalVersion, ContributionDto contributionDto) {
         setType("ORIGINAL_VERSION");
         setVersionId(originalVersion.getUid());

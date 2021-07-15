@@ -24,13 +24,19 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.google.common.net.HttpHeaders;
 import com.nedap.archie.rm.RMObject;
 import com.nedap.archie.rm.archetyped.Locatable;
+import com.nedap.archie.rm.changecontrol.Contribution;
 import com.nedap.archie.rm.composition.Composition;
 import com.nedap.archie.rm.datastructures.ItemStructure;
+import com.nedap.archie.rm.datavalues.DvCodedText;
 import com.nedap.archie.rm.datavalues.DvText;
 import com.nedap.archie.rm.directory.Folder;
 import com.nedap.archie.rm.ehr.EhrStatus;
+import com.nedap.archie.rm.ehr.VersionedComposition;
+import com.nedap.archie.rm.generic.AuditDetails;
+import com.nedap.archie.rm.generic.RevisionHistoryItem;
 import com.nedap.archie.rm.support.identification.HierObjectId;
 import com.nedap.archie.rm.support.identification.ObjectRef;
+import com.nedap.archie.rm.support.identification.ObjectVersionId;
 import com.nedap.archie.rm.support.identification.UIDBasedId;
 import java.io.IOException;
 import java.net.URI;
@@ -99,14 +105,20 @@ public class DefaultRestClient implements OpenEhrClient {
   private static ObjectMapper createObjectMapper() {
     ObjectMapper objectMapper = new ObjectMapper();
     SimpleModule module = new SimpleModule("openEHR", new Version(1, 0, 0, null, null, null));
-    module.addDeserializer(EhrStatus.class, new RmObjectJsonDeSerializer());
-    module.addDeserializer(HierObjectId.class, new RmObjectJsonDeSerializer());
+    module.addDeserializer(AuditDetails.class, new RmObjectJsonDeSerializer());
     module.addDeserializer(Composition.class, new RmObjectJsonDeSerializer());
-    module.addDeserializer(Folder.class, new RmObjectJsonDeSerializer());
-    module.addDeserializer(UIDBasedId.class, new RmObjectJsonDeSerializer());
+    module.addDeserializer(Contribution.class, new RmObjectJsonDeSerializer());
+    module.addDeserializer(DvCodedText.class, new RmObjectJsonDeSerializer());
     module.addDeserializer(DvText.class, new RmObjectJsonDeSerializer());
-    module.addDeserializer(ObjectRef.class, new RmObjectJsonDeSerializer());
+    module.addDeserializer(EhrStatus.class, new RmObjectJsonDeSerializer());
+    module.addDeserializer(Folder.class, new RmObjectJsonDeSerializer());
+    module.addDeserializer(HierObjectId.class, new RmObjectJsonDeSerializer());
     module.addDeserializer(ItemStructure.class, new RmObjectJsonDeSerializer());
+    module.addDeserializer(ObjectRef.class, new RmObjectJsonDeSerializer());
+    module.addDeserializer(ObjectVersionId.class, new RmObjectJsonDeSerializer());
+    module.addDeserializer(UIDBasedId.class, new RmObjectJsonDeSerializer());
+    module.addDeserializer(RevisionHistoryItem.class, new RmObjectJsonDeSerializer());
+    module.addDeserializer(VersionedComposition.class, new RmObjectJsonDeSerializer());
 
     objectMapper.registerModule(module);
     objectMapper.registerModule(new JavaTimeModule());
@@ -313,5 +325,10 @@ public class DefaultRestClient implements OpenEhrClient {
   @Override
   public AdminEhrEndpoint adminEhrEndpoint() {
     return new DefaultRestAdminEhrEndpoint(this);
+  }
+
+  @Override
+  public VersionedCompositionEndpoint versionedCompositionEndpoint(UUID ehrId) {
+    return new DefaultRestVersionedCompositionEndpoint(this, ehrId);
   }
 }
