@@ -113,8 +113,8 @@ public class FhirTerminologyValidationSupport implements ExternalTerminologyVali
     /**
      * Validates that the code comes from the CodeSystem using <code>validate-code</code> method.
      *
-     * @param url
-     * @param codePhrase
+     * @param url the URL of the CodeSystem
+     * @param codePhrase the concept code
      */
     private void validateCode(String path, String url, CodePhrase codePhrase) {
         DocumentContext context;
@@ -137,8 +137,8 @@ public class FhirTerminologyValidationSupport implements ExternalTerminologyVali
     /**
      * Validates that the code comes from the ValueSet using <code>$expand</code> method.
      *
-     * @param url
-     * @param codePhrase
+     * @param url the URL of the ValueSet
+     * @param codePhrase the concept code
      */
     private void expandValueSet(String path, String url, CodePhrase codePhrase) {
         DocumentContext context;
@@ -153,7 +153,7 @@ public class FhirTerminologyValidationSupport implements ExternalTerminologyVali
         }
         String[] codes = context.read("$.expansion.contains[*].code", String[].class);
         if (!Arrays.asList(codes).contains(codePhrase.getCodeString())) {
-            ValidationException.raise(path, "CodePhrase codeString does not match any option, found:" + codePhrase.getCodeString(), "CODE_PHRASE_03");
+            ValidationException.raise(path, "CodePhrase codeString does not match any option, found: " + codePhrase.getCodeString(), "CODE_PHRASE_03");
         }
     }
 
