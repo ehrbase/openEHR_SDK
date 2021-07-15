@@ -58,4 +58,12 @@ public interface OpenEhrClient {
      * @return
      */
     AdminEhrEndpoint adminEhrEndpoint();
+
+    /**
+     * Get the {@link VersionedCompositionEndpoint}.
+     *
+     * @param ehrId the EHR identifier
+     * @return the endpoint
+     */
+    VersionedCompositionEndpoint versionedCompositionEndpoint(UUID ehrId);
 }
