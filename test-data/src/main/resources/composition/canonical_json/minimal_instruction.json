@@ -17,10 +17,6 @@
     "rm_version": "1.0.2"
   },
   "archetype_node_id": "openEHR-EHR-COMPOSITION.minimal.v1",
-  "uid": {
-    "_type": "OBJECT_VERSION_ID",
-    "value": "__THIS_SHOULD_BE_MODIFIED_BY_THE_TEST_::piri.ehrscape.com::1"
-  },
   "language": {
     "_type": "CODE_PHRASE",
     "terminology_id": {

@@ -52,8 +52,8 @@ public abstract class TestQueryEngine extends CanonicalUtil {
     private static final String FAIL_EXPECTED = "*FAIL*";
 
     private final UUID ehrUUID;
-    private UUID compositionUUID;
-    private final OpenEhrClient openEhrClient;
+    protected UUID compositionUUID;
+    protected OpenEhrClient openEhrClient;
 
     public TestQueryEngine(UUID ehrUUID, UUID compositionUUID, OpenEhrClient openEhrClient) {
         this.ehrUUID = ehrUUID;
@@ -310,7 +310,15 @@ public abstract class TestQueryEngine extends CanonicalUtil {
 
     protected QueryResponseData execute(Query<Record1<Map>> query, String aql, boolean shouldFail){
         try {
-            return openEhrClient.aqlEndpoint().executeRaw(query, new ParameterValue("ehr_id", ehrUUID));
+            if (compositionUUID != null) {
+                return openEhrClient.aqlEndpoint().executeRaw(query,
+                        new ParameterValue("ehr_id", ehrUUID),
+                        new ParameterValue("comp_uuid", compositionUUID));
+            }
+            else {
+                return openEhrClient.aqlEndpoint().executeRaw(query,
+                        new ParameterValue("ehr_id", ehrUUID));
+            }
         }
         catch (WrongStatusCodeException e){
             if (!shouldFail)

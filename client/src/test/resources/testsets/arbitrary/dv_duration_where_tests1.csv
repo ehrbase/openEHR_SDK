@@ -1,0 +1,3 @@
+# the path is quoted as it contains a comma (csv delimiter)
+dv_duration_tests_select.txt, "c/uid/value = $comp_uuid AND i/activities[at0001]/description[at0002]/items[at0003]/value/value = 'PT1800S'",PT30M
+dv_duration_tests_select.txt, "c/uid/value = $comp_uuid AND i/activities[at0001]/description[at0002]/items[at0003]/value/value BETWEEN 'PT1600S' AND 'PT1900S'",PT30M
