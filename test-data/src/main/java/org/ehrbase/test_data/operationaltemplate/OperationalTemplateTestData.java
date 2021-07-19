@@ -81,6 +81,7 @@ public enum OperationalTemplateTestData {
   SINGLE_EVENT("example with a single valued EVENT", "single_event.opt", "Körpergröße"),
   ADDICTION("example ", "additciton_alcohol.opt", "AddictionAlcoholTemplate"),
   MINIMAL_EVALUATION("minimal evaluation", "minimal_evaluation.opt", "minimal_evaluation.en.v1"),
+  MINIMAL_INSTRUCTION("minimal instruction", "minimal_instruction.opt", "minimal_instruction.en.v1"),
   GECCO_SEROLOGISCHER_BEFUND(
       "template with any Element", "GECCO_Serologischer Befund.opt", "GECCO_Serologischer Befund"),
   DETERIORIATION_ASSESSMENT(
