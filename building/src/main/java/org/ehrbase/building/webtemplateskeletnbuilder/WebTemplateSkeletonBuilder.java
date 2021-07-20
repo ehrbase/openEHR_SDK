@@ -24,18 +24,24 @@ import com.nedap.archie.rm.archetyped.Archetyped;
 import com.nedap.archie.rm.archetyped.Locatable;
 import com.nedap.archie.rm.archetyped.TemplateId;
 import com.nedap.archie.rm.composition.Composition;
+import com.nedap.archie.rm.datatypes.CodePhrase;
+import com.nedap.archie.rm.datavalues.DvCodedText;
 import com.nedap.archie.rm.datavalues.DvText;
 import com.nedap.archie.rm.generic.PartyIdentified;
 import com.nedap.archie.rm.support.identification.ArchetypeID;
 import com.nedap.archie.rm.support.identification.HierObjectId;
+import com.nedap.archie.rm.support.identification.TerminologyId;
 import com.nedap.archie.rminfo.ArchieRMInfoLookup;
 import org.ehrbase.util.exception.SdkException;
 import org.ehrbase.webtemplate.model.WebTemplate;
+import org.ehrbase.webtemplate.model.WebTemplateInput;
+import org.ehrbase.webtemplate.model.WebTemplateInputValue;
 import org.ehrbase.webtemplate.model.WebTemplateNode;
 import org.ehrbase.webtemplate.parser.FlatPath;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import static org.ehrbase.util.rmconstants.RmConstants.RM_VERSION_1_4_0;
 
@@ -56,9 +62,12 @@ public class WebTemplateSkeletonBuilder {
         composition.getArchetypeDetails().setTemplateId(new TemplateId());
         composition.getArchetypeDetails().getTemplateId().setValue(template.getTemplateId());
         composition.getArchetypeDetails().setRmVersion(RM_VERSION_1_4_0);
-    composition
+        composition
         .getArchetypeDetails()
         .setArchetypeId(new ArchetypeID(composition.getArchetypeNodeId()));
+
+      template.getTree().findChildById("category").flatMap(n -> extractDefault(n, DvCodedText.class)).ifPresent(composition::setCategory);
+
 
         return composition;
     }
@@ -120,5 +129,34 @@ public class WebTemplateSkeletonBuilder {
 
         RM_OBJECT_CREATOR.addElementToListOrSetSingleValues(
                 parentObject, attributeName, Collections.singletonList(childObject));
+    }
+
+    public static <T> Optional<T> extractDefault(WebTemplateNode node, Class<T> clazz){
+
+        String rmclass = node.getRmType();
+
+        Object defaultValue = null;
+
+        switch (rmclass){
+            case "DV_CODED_TEXT":
+            if (node.getMin() >0){
+                Optional<WebTemplateInput> code = node.getInputs().stream()
+                        .filter(i -> i.getSuffix().equals("code"))
+                        .filter(i -> i.getList().size() == 1)
+                        .findAny();
+
+          if (code.isPresent()) {
+            defaultValue =
+                new DvCodedText(
+                    code.get().getList().get(0).getLabel(),
+                    new CodePhrase(
+                        new TerminologyId(code.get().getTerminology()),
+                        code.get().getList().get(0).getValue()));
+          }
+            }
+                break;
+        }
+
+        return Optional.ofNullable((T)defaultValue);
     }
 }

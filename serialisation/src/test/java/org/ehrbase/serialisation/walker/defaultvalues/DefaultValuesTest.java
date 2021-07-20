@@ -114,7 +114,7 @@ public class DefaultValuesTest {
     OPERATIONALTEMPLATE template =
         TemplateDocument.Factory.parse(OperationalTemplateTestData.CORONA_ANAMNESE.getStream())
             .getTemplate();
-    WebTemplate webTemplate = new Filter().filter(new OPTParser(template).parse());
+    WebTemplate webTemplate = new OPTParser(template).parse();
 
     FlatJsonUnmarshaller cut = new FlatJsonUnmarshaller();
 

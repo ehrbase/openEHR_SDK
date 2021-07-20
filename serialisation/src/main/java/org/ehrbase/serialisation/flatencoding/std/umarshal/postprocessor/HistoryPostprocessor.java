@@ -53,6 +53,7 @@ public class HistoryPostprocessor extends AbstractUnmarshalPostprocessor<History
           ((History<ItemStructure>) rmObject)
               .getEvents().stream()
                   .map(Event::getTime)
+                  .filter(Objects::nonNull)
                   .map(DvDateTime::getValue)
                   .filter(Objects::nonNull)
                   .sorted()
