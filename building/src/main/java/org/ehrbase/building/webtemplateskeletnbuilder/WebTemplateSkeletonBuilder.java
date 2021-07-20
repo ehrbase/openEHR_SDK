@@ -1,4 +1,4 @@
-package org.ehrbase.building2;
+package org.ehrbase.building.webtemplateskeletnbuilder;
 
 import com.nedap.archie.aom.CComplexObject;
 import com.nedap.archie.creation.RMObjectCreator;

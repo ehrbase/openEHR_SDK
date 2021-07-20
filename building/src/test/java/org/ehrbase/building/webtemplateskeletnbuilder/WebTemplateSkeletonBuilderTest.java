@@ -1,8 +1,7 @@
-package org.ehrbase.building2;
+package org.ehrbase.building.webtemplateskeletnbuilder;
 
 import com.nedap.archie.rm.composition.Composition;
 import org.apache.xmlbeans.XmlException;
-import org.ehrbase.building.OptSkeletonBuilder;
 import org.ehrbase.test_data.operationaltemplate.OperationalTemplateTestData;
 import org.ehrbase.webtemplate.model.WebTemplate;
 import org.ehrbase.webtemplate.parser.OPTParser;

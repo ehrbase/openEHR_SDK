@@ -46,6 +46,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.apache.xmlbeans.XmlObject;
 import org.ehrbase.building.rmobjectskeletonbuilder.RmObjectSkeletonBuilder;
+import org.ehrbase.building.webtemplateskeletnbuilder.WebTemplateSkeletonBuilder;
 import org.ehrbase.serialisation.util.SnakeCase;
 import org.ehrbase.terminology.openehr.implementation.LocalizedTerminologies;
 import org.ehrbase.util.reflection.ReflectionHelper;
@@ -58,6 +59,10 @@ import org.slf4j.LoggerFactory;
 import java.lang.reflect.*;
 import java.util.*;
 
+/**
+ *  @deprecated replaced by {@link WebTemplateSkeletonBuilder}
+ */
+@Deprecated
 public class OptSkeletonBuilder {
 
   private static final ArchieRMInfoLookup RM_INFO_LOOKUP = ArchieRMInfoLookup.getInstance();

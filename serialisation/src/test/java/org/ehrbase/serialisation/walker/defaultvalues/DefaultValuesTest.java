@@ -122,7 +122,7 @@ public class DefaultValuesTest {
         IOUtils.toString(
             CompositionTestDataSimSDTJson.CORONA_WITH_CONTEXT.getStream(), StandardCharsets.UTF_8);
 
-    Composition actual = cut.unmarshal(flat, webTemplate, template);
+    Composition actual = cut.unmarshal(flat, webTemplate);
 
     assertThat(actual).isNotNull();
     assertThat(actual.getCategory()).isNotNull();

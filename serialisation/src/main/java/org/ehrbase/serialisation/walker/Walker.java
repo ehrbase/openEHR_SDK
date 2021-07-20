@@ -38,6 +38,7 @@ import org.ehrbase.webtemplate.model.WebTemplateInput;
 import org.ehrbase.webtemplate.model.WebTemplateNode;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static org.ehrbase.util.rmconstants.RmConstants.DV_CODED_TEXT;
 import static org.ehrbase.util.rmconstants.RmConstants.DV_TEXT;
@@ -79,7 +80,19 @@ public abstract class Walker<T> {
 
     preHandle(context);
     WebTemplateNode currentNode = context.getNodeDeque().peek();
+
+
     if (visitChildren(currentNode)) {
+
+      List<WebTemplateNode> ismTransitionList =
+              currentNode.getChildren().stream()
+                      .filter(n -> "ISM_TRANSITION".equals(n.getRmType()))
+                      .collect(Collectors.toList());
+      if (!ismTransitionList.isEmpty()) {
+        currentNode.getChildren().removeAll(ismTransitionList);
+        currentNode.getChildren().add(ismTransitionList.get(0));
+      }
+
 
       Map<String, List<WebTemplateNode>> choices = currentNode.getChoicesInChildren();
       List<WebTemplateNode> children = new ArrayList<>(currentNode.getChildren());
