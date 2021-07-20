@@ -29,15 +29,9 @@ import com.nedap.archie.rm.datastructures.PointEvent;
 import com.nedap.archie.rm.datavalues.DvCodedText;
 import com.nedap.archie.rm.datavalues.quantity.datetime.DvDateTime;
 import com.nedap.archie.rm.datavalues.quantity.datetime.DvDuration;
+import com.nedap.archie.rm.generic.PartyIdentified;
 import com.nedap.archie.rm.support.identification.HierObjectId;
 import com.nedap.archie.rminfo.RMAttributeInfo;
-import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.ehrbase.serialisation.walker.defaultvalues.defaultinserter.DefaultValueInserter;
@@ -45,6 +39,9 @@ import org.ehrbase.util.reflection.ReflectionHelper;
 import org.ehrbase.webtemplate.model.WebTemplateNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.lang.reflect.InvocationTargetException;
+import java.util.*;
 
 public abstract class ToCompositionWalker<T> extends Walker<T> {
 
@@ -119,6 +116,8 @@ public abstract class ToCompositionWalker<T> extends Walker<T> {
 
         if (rmclass.equals("UID_BASED_ID")) {
           newChild = new HierObjectId();
+        } else if (rmclass.equals("PARTY_PROXY")) {
+          newChild = new PartyIdentified();
         } else {
           newChild = RM_OBJECT_CREATOR.create(elementConstraint);
         }
@@ -181,15 +180,19 @@ public abstract class ToCompositionWalker<T> extends Walker<T> {
     T childObject = null;
     childObject = extract(context, childNode, choices.containsKey(childNode.getAqlPath()), i);
     if (childObject != null) {
+
+      boolean isChoice = choices.containsKey(childNode.getAqlPath());
+
+      if (currentNode.getRmType().equals("ELEMENT")
+          && childNode.getRmType().equals("DV_CODED_TEXT")
+          && childNode.getInputs().stream().anyMatch(in -> "other".equals(in.getSuffix()))) {
+        isChoice = true;
+      }
+
       currentChild =
           (RMObject)
               extractRMChild(
-                  context.getRmObjectDeque().peek(),
-                  currentNode,
-                  childNode,
-                  choices.containsKey(childNode.getAqlPath()),
-                  i,
-                  context.getSkippedNodes(childNode));
+                  context.getRmObjectDeque().peek(), currentNode, childNode, isChoice, i);
     }
 
     return new ImmutablePair<>(childObject, currentChild);
