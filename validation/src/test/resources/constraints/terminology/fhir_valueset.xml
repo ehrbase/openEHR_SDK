@@ -31,7 +31,7 @@
                 <v1:upper>1</v1:upper>
             </v1:occurrences>
             <v1:node_id/>
-            <v1:referenceSetUri>terminology://fhir.hl7.org/ValueSet/$expand?url=http://hl7.org/fhir/ValueSet/surface</v1:referenceSetUri>
+            <v1:referenceSetUri>terminology://fhir.hl7.org/ValueSet/$expand?url=http://terminology.hl7.org/ValueSet/v3-EntityNameUseR2</v1:referenceSetUri>
         </v1:children>
     </v1:attributes>
 </xml-fragment>
