@@ -18,7 +18,10 @@
 package org.ehrbase.building.webtemplateskeletnbuilder;
 
 import com.nedap.archie.rm.composition.Composition;
+import com.nedap.archie.rm.composition.Observation;
+import com.nedap.archie.rm.datatypes.CodePhrase;
 import org.apache.xmlbeans.XmlException;
+import org.assertj.core.groups.Tuple;
 import org.ehrbase.test_data.operationaltemplate.OperationalTemplateTestData;
 import org.ehrbase.webtemplate.model.WebTemplate;
 import org.ehrbase.webtemplate.parser.OPTParser;
@@ -38,12 +41,25 @@ public class WebTemplateSkeletonBuilderTest {
 
         WebTemplate webTemplate = new OPTParser(operationaltemplate).parse();
 
-
-        Composition generate =  WebTemplateSkeletonBuilder.build(webTemplate,true);
-        assertThat(generate).isNotNull();
-        assertThat(generate.itemAtPath("/composer")).isNotNull();
-        assertThat(generate.itemAtPath("/context/end_time")).isNotNull();
-        assertThat(generate.itemAtPath("/content[openEHR-EHR-OBSERVATION.sample_blood_pressure.v1]/data[at0001]/events[at0002]/state[at0007]/items[at1005]/value")).isNotNull();
-
+    Composition generate = WebTemplateSkeletonBuilder.build(webTemplate, true);
+    assertThat(generate).isNotNull();
+    assertThat(generate.getCategory().getDefiningCode())
+            .extracting(CodePhrase::getCodeString, c -> c.getTerminologyId().getValue())
+            .containsExactly("433", "openehr");
+    assertThat(generate.itemAtPath("/composer")).isNotNull();
+    assertThat(generate.itemAtPath("/context/end_time")).isNotNull();
+    assertThat(generate.itemAtPath("/content[openEHR-EHR-OBSERVATION.sample_blood_pressure.v1]"))
+        .isNotNull();
+    assertThat(
+            ((Observation)
+                    generate.itemAtPath(
+                        "/content[openEHR-EHR-OBSERVATION.sample_blood_pressure.v1]"))
+                .getEncoding())
+        .extracting(CodePhrase::getCodeString, c -> c.getTerminologyId().getValue())
+        .containsExactly("UTF-8", "IANA_character-sets");
+    assertThat(
+            generate.itemAtPath(
+                "/content[openEHR-EHR-OBSERVATION.sample_blood_pressure.v1]/data[at0001]/events[at0002]/state[at0007]/items[at1005]/value"))
+        .isNotNull();
     }
 }

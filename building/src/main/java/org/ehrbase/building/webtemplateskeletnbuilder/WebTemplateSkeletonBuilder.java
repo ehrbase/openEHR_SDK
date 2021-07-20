@@ -24,6 +24,7 @@ import com.nedap.archie.rm.archetyped.Archetyped;
 import com.nedap.archie.rm.archetyped.Locatable;
 import com.nedap.archie.rm.archetyped.TemplateId;
 import com.nedap.archie.rm.composition.Composition;
+import com.nedap.archie.rm.composition.Entry;
 import com.nedap.archie.rm.datatypes.CodePhrase;
 import com.nedap.archie.rm.datavalues.DvCodedText;
 import com.nedap.archie.rm.datavalues.DvText;
@@ -114,6 +115,10 @@ public class WebTemplateSkeletonBuilder {
         if (skeleton instanceof Locatable){
             ((Locatable) skeleton).setName(new DvText(node.getName()));
             ((Locatable) skeleton).setArchetypeNodeId(node.getNodeId());
+        }
+
+        if (skeleton instanceof Entry) {
+            ((Entry) skeleton).setEncoding(new CodePhrase(new TerminologyId("IANA_character-sets"), "UTF-8"));
         }
 
         if (skeleton == null || clazz.isAssignableFrom(skeleton.getClass())) {
