@@ -25,6 +25,7 @@ import org.apache.xmlbeans.XmlException;
 import org.ehrbase.building.OptSkeletonBuilder;
 import org.ehrbase.normalizer.Normalizer;
 import org.ehrbase.test_data.operationaltemplate.OperationalTemplateTestData;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
 import org.openehr.schemas.v1.TemplateDocument;
@@ -33,6 +34,7 @@ import java.io.IOException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@Ignore
 public class NormalizerTest {
 
     @Test
