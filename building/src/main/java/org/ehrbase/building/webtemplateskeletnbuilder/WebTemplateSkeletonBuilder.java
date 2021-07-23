@@ -28,7 +28,10 @@ import com.nedap.archie.rm.composition.Entry;
 import com.nedap.archie.rm.datatypes.CodePhrase;
 import com.nedap.archie.rm.datavalues.DvCodedText;
 import com.nedap.archie.rm.datavalues.DvText;
+import com.nedap.archie.rm.datavalues.quantity.DvInterval;
 import com.nedap.archie.rm.generic.PartyIdentified;
+import com.nedap.archie.rm.generic.PartyProxy;
+import com.nedap.archie.rm.generic.PartyRelated;
 import com.nedap.archie.rm.support.identification.ArchetypeID;
 import com.nedap.archie.rm.support.identification.HierObjectId;
 import com.nedap.archie.rm.support.identification.TerminologyId;
@@ -66,9 +69,6 @@ public class WebTemplateSkeletonBuilder {
         composition
         .getArchetypeDetails()
         .setArchetypeId(new ArchetypeID(composition.getArchetypeNodeId()));
-
-      template.getTree().findChildById("category").flatMap(n -> extractDefault(n, DvCodedText.class)).ifPresent(composition::setCategory);
-
 
         return composition;
     }
@@ -119,6 +119,20 @@ public class WebTemplateSkeletonBuilder {
 
         if (skeleton instanceof Entry) {
             ((Entry) skeleton).setEncoding(new CodePhrase(new TerminologyId("IANA_character-sets"), "UTF-8"));
+            node.findChildById("subject").map( n -> build(n,false, PartyProxy.class)).ifPresent(((Entry) skeleton)::setSubject);
+        }
+
+        if (skeleton instanceof Composition){
+            node.findChildById("category").flatMap(n -> extractDefault(n, DvCodedText.class)).ifPresent(((Composition)skeleton)::setCategory);
+        }
+
+        if(skeleton instanceof DvInterval){
+            ((DvInterval<?>) skeleton).setLowerIncluded(true);
+            ((DvInterval<?>) skeleton).setUpperIncluded(true);
+        }
+
+        if(skeleton instanceof PartyRelated){
+            node.findChildById("relationship").flatMap(n -> extractDefault(n, DvCodedText.class)).ifPresent(((PartyRelated)skeleton)::setRelationship);
         }
 
         if (skeleton == null || clazz.isAssignableFrom(skeleton.getClass())) {

@@ -34,7 +34,7 @@ import java.io.IOException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@Ignore
+
 public class NormalizerTest {
 
     @Test
