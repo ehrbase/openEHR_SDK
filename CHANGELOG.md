@@ -7,7 +7,7 @@ Note: version releases in the 0.x.y range may introduce breaking changes.
 ### Added
 
 - Added WebTemplate based RmSkeleton builder. (see https://github.com/ehrbase/openEHR_SDK/pull/241) 
-
+- Generated Dtos: Add @inherited to annotation in generated classes for dtos so there can be inhered (see https://github.com/ehrbase/openEHR_SDK/pull/244) 
 ### Fixed
 
 - OptParser: fix parsing f snomed (see https://github.com/ehrbase/openEHR_SDK/pull/234)
