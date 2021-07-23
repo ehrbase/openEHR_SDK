@@ -42,6 +42,7 @@ import org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev0
 import org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev0composition.definition.KorotkoffSoundsDefiningCode;
 import org.ehrbase.client.openehrclient.OpenEhrClient;
 import org.ehrbase.client.openehrclient.VersionUid;
+import org.junit.After;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -61,15 +62,23 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class DefaultRestAqlEndpointTestIT {
     private static OpenEhrClient openEhrClient;
 
+    private UUID ehr;
+
     @BeforeClass
     public static void setup() throws URISyntaxException {
         openEhrClient = DefaultRestClientTestHelper.setupDefaultRestClient();
     }
 
+    @After
+    public void tearDown(){
+        //delete the created EHR using the admin endpoint
+        openEhrClient.adminEhrEndpoint().delete(ehr);
+    }
+
     @Test
     public void testExecute() {
 
-        UUID ehr = openEhrClient.ehrEndpoint().createEhr();
+        ehr = openEhrClient.ehrEndpoint().createEhr();
 
         openEhrClient.compositionEndpoint(ehr).mergeCompositionEntity(TestData.buildEhrbaseBloodPressureSimpleDeV0());
         openEhrClient.compositionEndpoint(ehr).mergeCompositionEntity(TestData.buildEhrbaseBloodPressureSimpleDeV0());
@@ -77,16 +86,13 @@ public class DefaultRestAqlEndpointTestIT {
         Query<Record2<String, DvDateTime>> query = Query.buildNativeQuery("select  a/template_id, a/context/start_time from EHR e[ehr_id/value = $ehr_id]  contains COMPOSITION a [openEHR-EHR-COMPOSITION.sample_encounter.v1]", String.class, DvDateTime.class);
 
         List<Record2<String, DvDateTime>> result = openEhrClient.aqlEndpoint().execute(query, new ParameterValue("ehr_id", ehr));
-        assertThat(result).isNotNull();
-        assertThat(result).size().isEqualTo(2);
-
-
+        assertThat(result).isNotNull().hasSize(2);
     }
 
     @Test
     public void testExecuteValue() {
 
-        UUID ehr = openEhrClient.ehrEndpoint().createEhr();
+        ehr = openEhrClient.ehrEndpoint().createEhr();
 
         EhrbaseBloodPressureSimpleDeV0Composition comp1 = openEhrClient.compositionEndpoint(ehr).mergeCompositionEntity(TestData.buildEhrbaseBloodPressureSimpleDeV0());
         EhrbaseBloodPressureSimpleDeV0Composition comp2 = openEhrClient.compositionEndpoint(ehr).mergeCompositionEntity(TestData.buildEhrbaseBloodPressureSimpleDeV0());
@@ -94,8 +100,7 @@ public class DefaultRestAqlEndpointTestIT {
         Query<Record2<Double, OffsetDateTime>> query = Query.buildNativeQuery("select  a/content[openEHR-EHR-OBSERVATION.sample_blood_pressure.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/magnitude, a/context/start_time/value from EHR e[ehr_id/value = $ehr_id]  contains COMPOSITION a [openEHR-EHR-COMPOSITION.sample_encounter.v1]", Double.class, OffsetDateTime.class);
 
         List<Record2<Double, OffsetDateTime>> result = openEhrClient.aqlEndpoint().execute(query, new ParameterValue("ehr_id", ehr));
-        assertThat(result).isNotNull();
-        assertThat(result).size().isEqualTo(2);
+        assertThat(result).isNotNull().hasSize(2);
         assertThat(result).
                 extracting(objectVersionIdOffsetDateTimeRecord2 -> objectVersionIdOffsetDateTimeRecord2.value1(), Record2::value2)
                 .containsExactlyInAnyOrder(
@@ -108,7 +113,7 @@ public class DefaultRestAqlEndpointTestIT {
     @Test
     public void testExecuteCustomConverters() {
 
-        UUID ehr = openEhrClient.ehrEndpoint().createEhr();
+        ehr = openEhrClient.ehrEndpoint().createEhr();
 
         EhrbaseBloodPressureSimpleDeV0Composition comp1 = openEhrClient.compositionEndpoint(ehr).mergeCompositionEntity(TestData.buildEhrbaseBloodPressureSimpleDeV0());
         EhrbaseBloodPressureSimpleDeV0Composition comp2 = openEhrClient.compositionEndpoint(ehr).mergeCompositionEntity(TestData.buildEhrbaseBloodPressureSimpleDeV0());
@@ -116,8 +121,7 @@ public class DefaultRestAqlEndpointTestIT {
         Query<Record2<VersionUid, TemporalAccessor>> query = Query.buildNativeQuery("select  a/uid/value, a/context/start_time/value from EHR e[ehr_id/value = $ehr_id]  contains COMPOSITION a [openEHR-EHR-COMPOSITION.sample_encounter.v1]", VersionUid.class, TemporalAccessor.class);
 
         List<Record2<VersionUid, TemporalAccessor>> result = openEhrClient.aqlEndpoint().execute(query, new ParameterValue("ehr_id", ehr));
-        assertThat(result).isNotNull();
-        assertThat(result).size().isEqualTo(2);
+        assertThat(result).isNotNull().hasSize(2);
         assertThat(result).
                 extracting(objectVersionIdOffsetDateTimeRecord2 -> objectVersionIdOffsetDateTimeRecord2.value1().toString(), Record2::value2)
                 .containsExactlyInAnyOrder(
@@ -131,7 +135,7 @@ public class DefaultRestAqlEndpointTestIT {
     @Test
     public void testExecuteEntityQuery() {
 
-        UUID ehr = openEhrClient.ehrEndpoint().createEhr();
+        ehr = openEhrClient.ehrEndpoint().createEhr();
 
         EhrbaseBloodPressureSimpleDeV0Composition comp1 = openEhrClient.compositionEndpoint(ehr).mergeCompositionEntity(TestData.buildEhrbaseBloodPressureSimpleDeV0());
         EhrbaseBloodPressureSimpleDeV0Composition comp2 = openEhrClient.compositionEndpoint(ehr).mergeCompositionEntity(TestData.buildEhrbaseBloodPressureSimpleDeV0());
@@ -165,7 +169,7 @@ public class DefaultRestAqlEndpointTestIT {
     @Test
     public void testExecuteEntityQueryWhere() {
 
-        UUID ehr = openEhrClient.ehrEndpoint().createEhr();
+        ehr = openEhrClient.ehrEndpoint().createEhr();
 
         EhrbaseBloodPressureSimpleDeV0Composition comp1 = openEhrClient.compositionEndpoint(ehr).mergeCompositionEntity(TestData.buildEhrbaseBloodPressureSimpleDeV0());
 
@@ -225,7 +229,7 @@ public class DefaultRestAqlEndpointTestIT {
     @Test
     public void testExecuteEntityQueryOrderBY() {
 
-        UUID ehr = openEhrClient.ehrEndpoint().createEhr();
+        ehr = openEhrClient.ehrEndpoint().createEhr();
 
         EhrbaseBloodPressureSimpleDeV0Composition comp1 = openEhrClient.compositionEndpoint(ehr).mergeCompositionEntity(TestData.buildEhrbaseBloodPressureSimpleDeV0());
 
@@ -295,7 +299,7 @@ public class DefaultRestAqlEndpointTestIT {
     @Test
     public void testExecuteEntityTOP() {
 
-        UUID ehr = openEhrClient.ehrEndpoint().createEhr();
+        ehr = openEhrClient.ehrEndpoint().createEhr();
 
         EhrbaseBloodPressureSimpleDeV0Composition comp1 = openEhrClient.compositionEndpoint(ehr).mergeCompositionEntity(TestData.buildEhrbaseBloodPressureSimpleDeV0());
 
@@ -364,7 +368,7 @@ public class DefaultRestAqlEndpointTestIT {
     @Test
     public void testExecuteEntityQueryWithList() {
 
-        UUID ehr = openEhrClient.ehrEndpoint().createEhr();
+        ehr = openEhrClient.ehrEndpoint().createEhr();
 
         EhrbaseBloodPressureSimpleDeV0Composition comp1 = openEhrClient.compositionEndpoint(ehr).mergeCompositionEntity(TestData.buildEhrbaseBloodPressureSimpleDeV0());
         EhrbaseBloodPressureSimpleDeV0Composition comp2 = openEhrClient.compositionEndpoint(ehr).mergeCompositionEntity(TestData.buildEhrbaseBloodPressureSimpleDeV0());
@@ -388,7 +392,7 @@ public class DefaultRestAqlEndpointTestIT {
     @Test
     public void testQueryCount() {
 
-        UUID ehr = openEhrClient.ehrEndpoint().createEhr();
+        ehr = openEhrClient.ehrEndpoint().createEhr();
 
         openEhrClient.compositionEndpoint(ehr).mergeCompositionEntity(TestData.buildEhrbaseBloodPressureSimpleDeV0());
         openEhrClient.compositionEndpoint(ehr).mergeCompositionEntity(TestData.buildEhrbaseBloodPressureSimpleDeV0());
@@ -401,9 +405,6 @@ public class DefaultRestAqlEndpointTestIT {
         query = Query.buildNativeQuery("select  count(c/uid/value) from EHR e contains composition c", Integer.class);
 
         result = openEhrClient.aqlEndpoint().execute(query);
-        assertThat(result).isNotNull();
-        assertThat(result).size().isEqualTo(1);
-
-
+        assertThat(result).isNotNull().hasSize(1);
     }
 }
