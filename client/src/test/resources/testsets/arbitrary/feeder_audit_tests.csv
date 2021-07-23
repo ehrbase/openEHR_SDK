@@ -1,0 +1,11 @@
+# check where clause on feeder_audit
+
+feeder_audit_select.txt, "c/feeder_audit/originating_system_audit/system_id = 'FHIR-bridge'","Test all types"
+feeder_audit_select.txt, "c/feeder_audit/feeder_system_audit/version_id = 'final'","Test all types"
+feeder_audit_select.txt, "c/feeder_audit/feeder_system_audit/other_details[openEHR-EHR-ITEM_TREE.generic.v1]/items[at0001]/name/value = 'family group id'","Test all types"
+feeder_audit_select.txt, "c/feeder_audit/feeder_system_audit/other_details[openEHR-EHR-ITEM_TREE.generic.v1]/items[at0001]/value/issuer = 'MoH'","Test all types"
+feeder_audit_select.txt, "c/feeder_audit/feeder_system_audit/other_details[openEHR-EHR-ITEM_TREE.generic.v1]/items[at0001]/value/assigner = 'MoH'","Test all types"
+feeder_audit_select.txt, "c/feeder_audit/feeder_system_audit/other_details[openEHR-EHR-ITEM_TREE.generic.v1]/items[at0001]/value/id = '99999999'","Test all types"
+feeder_audit_select.txt, "c/feeder_audit/feeder_system_audit/other_details[openEHR-EHR-ITEM_TREE.generic.v1]/items[at0001]/value/type = 'FAMILY_GROUP_ID'","Test all types"
+
+

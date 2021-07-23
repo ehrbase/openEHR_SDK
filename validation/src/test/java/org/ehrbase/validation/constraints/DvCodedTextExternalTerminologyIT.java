@@ -22,17 +22,17 @@ import com.nedap.archie.rm.datatypes.CodePhrase;
 import com.nedap.archie.rm.datavalues.DvCodedText;
 import com.nedap.archie.rm.support.identification.TerminologyId;
 import org.apache.xmlbeans.XmlException;
-import org.ehrbase.validation.constraints.terminology.ExternalTerminologyValidationException;
 import org.ehrbase.validation.constraints.terminology.FhirTerminologyValidationSupport;
 import org.ehrbase.validation.constraints.wrappers.CArchetypeConstraint;
 import org.ehrbase.validation.constraints.wrappers.ValidationException;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.IOException;
 
 /**
- * Integration Test for using an external FHIR terminology server to validate CodeSystem and ValueSet.
+ * Integration tests for external FHIR terminology server validation.
  * <p>
  * Note: Requires a FHIR Terminology Server (https://r4.ontoserver.csiro.au/fhir) up and running
  * and the following CodeSystem and ValueSet:
@@ -47,6 +47,7 @@ public class DvCodedTextExternalTerminologyIT extends ConstraintTestBase {
     private final FhirTerminologyValidationSupport fhirTerminologyValidator = new FhirTerminologyValidationSupport("https://r4.ontoserver.csiro.au/fhir");
 
     @Test
+    @Ignore("Requires a FHIR Terminology Server")
     public void testFhirCodeSystem() throws IOException, XmlException {
         setUpContext("./src/test/resources/constraints/terminology/fhir_codesystem.xml");
 
@@ -57,6 +58,7 @@ public class DvCodedTextExternalTerminologyIT extends ConstraintTestBase {
     }
 
     @Test
+    @Ignore("Requires a FHIR Terminology Server")
     public void testFhirCodeSystem_WrongTerminologyId() throws IOException, XmlException {
         setUpContext("./src/test/resources/constraints/terminology/fhir_codesystem.xml");
 
@@ -71,6 +73,7 @@ public class DvCodedTextExternalTerminologyIT extends ConstraintTestBase {
     }
 
     @Test
+    @Ignore("Requires a FHIR Terminology Server")
     public void testFhirCodeSystem_WrongCode() throws IOException, XmlException {
         setUpContext("./src/test/resources/constraints/terminology/fhir_codesystem.xml");
 
@@ -85,6 +88,7 @@ public class DvCodedTextExternalTerminologyIT extends ConstraintTestBase {
     }
 
     @Test
+    @Ignore("Requires a FHIR Terminology Server")
     public void testFhirValueSet() throws IOException, XmlException {
         setUpContext("./src/test/resources/constraints/terminology/fhir_valueset.xml");
 
@@ -95,6 +99,7 @@ public class DvCodedTextExternalTerminologyIT extends ConstraintTestBase {
     }
 
     @Test
+    @Ignore("Requires a FHIR Terminology Server")
     public void testFhirValueSet_WrongTerminologyId() throws IOException, XmlException {
         setUpContext("./src/test/resources/constraints/terminology/fhir_valueset.xml");
 
@@ -109,6 +114,7 @@ public class DvCodedTextExternalTerminologyIT extends ConstraintTestBase {
     }
 
     @Test
+    @Ignore("Requires a FHIR Terminology Server")
     public void testFhirValueSet_WrongCode() throws IOException, XmlException {
         setUpContext("./src/test/resources/constraints/terminology/fhir_valueset.xml");
 
@@ -119,33 +125,5 @@ public class DvCodedTextExternalTerminologyIT extends ConstraintTestBase {
         ValidationException ex = Assert.assertThrows(ValidationException.class, () -> constraint.validate("test", dvCodedText, archetypeconstraint));
 
         Assert.assertEquals("Validation error at test, ELT01:Validation error at test, CODE_PHRASE_03:CodePhrase codeString does not match any option, found: UKN", ex.getMessage());
-    }
-
-    @Test
-    public void testFailOnError_Enabled() throws IOException, XmlException {
-        FhirTerminologyValidationSupport validationSupport = new FhirTerminologyValidationSupport("https://r4.ontoserver.csiro.fr/fhir");
-        setUpContext("./src/test/resources/constraints/terminology/fhir_codesystem.xml");
-
-        CodePhrase codePhrase = new CodePhrase(new TerminologyId("http://hl7.org/fhir/observation-status"), "B");
-        DvCodedText dvCodedText = new DvCodedText("Buccal", codePhrase);
-
-        CArchetypeConstraint constraint = new CArchetypeConstraint(null, validationSupport);
-        ExternalTerminologyValidationException ex = Assert.assertThrows(ExternalTerminologyValidationException.class, () -> constraint.validate("test", dvCodedText, archetypeconstraint));
-
-        Assert.assertEquals("An error occurred while checking if FHIR terminology server supports the referenceSetUri: " +
-                "terminology://fhir.hl7.org/CodeSystem?url=http://hl7.org/fhir/observation-status", ex.getMessage());
-    }
-
-    @Test
-    public void testFailOnError_Disabled() throws IOException, XmlException {
-        FhirTerminologyValidationSupport validationSupport = new FhirTerminologyValidationSupport("https://r4.ontoserver.csiro.fr/fhir", false);
-        setUpContext("./src/test/resources/constraints/terminology/fhir_codesystem.xml");
-
-        CodePhrase codePhrase = new CodePhrase(new TerminologyId("http://terminology.hl7.org/CodeSystem/FDI-surface"), "B");
-        DvCodedText dvCodedText = new DvCodedText("Buccal", codePhrase);
-
-        new CArchetypeConstraint(null, validationSupport).validate("test", dvCodedText, archetypeconstraint);
-
-        Assert.assertTrue("No exception is thrown", true);
     }
 }

@@ -20,22 +20,23 @@
 */
 package org.ehrbase.serialisation.dbencoding.wrappers.json.writer.translator_db2raw;
 
-import static org.ehrbase.serialisation.dbencoding.CompositionSerializer.TAG_CLASS;
-
 import com.google.gson.TypeAdapter;
 import com.google.gson.internal.LinkedTreeMap;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 import com.nedap.archie.rm.datavalues.encapsulated.DvMultimedia;
 import com.nedap.archie.rminfo.ArchieRMInfoLookup;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Map;
 import org.ehrbase.serialisation.dbencoding.CompositionSerializer;
 import org.ehrbase.serialisation.dbencoding.wrappers.json.I_DvTypeAdapter;
 import org.ehrbase.serialisation.util.SnakeCase;
 import org.ehrbase.webtemplate.parser.FlatPath;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Map;
+
+import static org.ehrbase.serialisation.dbencoding.CompositionSerializer.TAG_CLASS;
 
 /**
  * GSON adapter for LinkedTreeMap
@@ -151,8 +152,10 @@ public class LinkedTreeMapAdapter extends TypeAdapter<LinkedTreeMap<String, Obje
             writeNode((LinkedTreeMap) map.get(key), writer);
             writer.endObject();
           } else if (map.get(key) instanceof ArrayList) { // due to using multimap
-            ArrayList arrayList = (ArrayList) map.get(key);
-            writer.name(key).value(arrayList.get(0).toString());
+            if (!key.equals(TAG_CLASS)) { //ignore it
+              ArrayList arrayList = (ArrayList) map.get(key);
+              writer.name(key).value(arrayList.get(0).toString());
+            }
           } else writer.name(key).value((String) map.get(key));
           map.remove(key);
         } else {
@@ -179,8 +182,9 @@ public class LinkedTreeMapAdapter extends TypeAdapter<LinkedTreeMap<String, Obje
         }
         if (map.size() == 1) {
           if (map.get(TAG_CLASS) != null) // the only remaining key is CLASS
-          return;
-          else
+          {
+            return;
+          } else
             throw new IllegalStateException(
                 "Inconsistent encoding of composition, found:" + map.keySet().toString());
         }
@@ -392,8 +396,9 @@ public class LinkedTreeMapAdapter extends TypeAdapter<LinkedTreeMap<String, Obje
           }
         }
         if (isNodePredicate(key)) // contains an archetype node predicate
-        valueMap.put(ARCHETYPE_NODE_ID, archetypeNodeId);
-        else if (key.equals(CompositionSerializer.TAG_ORIGIN)
+        {
+          valueMap.put(ARCHETYPE_NODE_ID, archetypeNodeId);
+        } else if (key.equals(CompositionSerializer.TAG_ORIGIN)
             || key.equals(CompositionSerializer.TAG_TIME)) {
           // compact time expression
           valueMap = compactTimeMap(valueMap);
