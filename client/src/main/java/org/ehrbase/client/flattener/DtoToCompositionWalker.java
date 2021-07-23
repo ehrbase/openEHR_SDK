@@ -237,7 +237,11 @@ public class DtoToCompositionWalker extends ToCompositionWalker<Map<String, Obje
     } else if (ARCHIE_RM_INFO_LOOKUP
         .getAttributeInfo(parent.getClass(), childName)
         .getTypeInCollection()
-        .isAssignableFrom(value.getClass())) {
+        .isAssignableFrom(value.getClass())
+    ||(ARCHIE_RM_INFO_LOOKUP
+            .getAttributeInfo(parent.getClass(), childName)
+            .getTypeInCollection().isAssignableFrom(boolean.class) && value.getClass().isAssignableFrom(Boolean.class) )
+    ) {
       RMAttributeInfo attributeInfo =
           ARCHIE_RM_INFO_LOOKUP.getAttributeInfo(parent.getClass(), childName);
       if (attributeInfo.isMultipleValued()) {

@@ -51,6 +51,7 @@ public class EntryPostprocessor extends AbstractUnmarshalPostprocessor<Entry> {
             && (!(subject instanceof PartyRelated)
                 || ((PartyRelated) subject).getRelationship() == null
                 || StringUtils.isEmpty(((PartyRelated) subject).getRelationship().getValue())))) {
+
       rmObject.setSubject(new PartySelf());
     }
 

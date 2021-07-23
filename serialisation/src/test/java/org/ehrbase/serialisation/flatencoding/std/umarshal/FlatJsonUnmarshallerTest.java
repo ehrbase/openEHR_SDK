@@ -54,7 +54,7 @@ public class FlatJsonUnmarshallerTest {
     String flat =
         IOUtils.toString(CompositionTestDataSimSDTJson.CORONA.getStream(), StandardCharsets.UTF_8);
 
-    Composition actual = cut.unmarshal(flat, webTemplate, template);
+    Composition actual = cut.unmarshal(flat, webTemplate);
 
     assertThat(actual).isNotNull();
 
@@ -86,7 +86,7 @@ public class FlatJsonUnmarshallerTest {
         IOUtils.toString(
             CompositionTestDataSimSDTJson.MULTI_OCCURRENCE.getStream(), StandardCharsets.UTF_8);
 
-    Composition actual = cut.unmarshal(flat, webTemplate, template);
+    Composition actual = cut.unmarshal(flat, webTemplate);
 
     assertThat(actual).isNotNull();
     assertThat(cut.getUnconsumed()).containsExactlyInAnyOrder();
@@ -110,7 +110,7 @@ public class FlatJsonUnmarshallerTest {
         IOUtils.toString(
             CompositionTestDataSimSDTJson.ALTERNATIVE_EVENTS.getStream(), StandardCharsets.UTF_8);
 
-    Composition actual = cut.unmarshal(flat, webTemplate, template);
+    Composition actual = cut.unmarshal(flat, webTemplate);
 
     assertThat(actual).isNotNull();
     assertThat(cut.getUnconsumed()).containsExactlyInAnyOrder();
@@ -134,7 +134,7 @@ public class FlatJsonUnmarshallerTest {
         IOUtils.toString(
             CompositionTestDataSimSDTJson.ALL_TYPES.getStream(), StandardCharsets.UTF_8);
 
-    Composition actual = cut.unmarshal(flat, webTemplate, template);
+    Composition actual = cut.unmarshal(flat, webTemplate);
 
     assertThat(actual).isNotNull();
 
@@ -171,7 +171,7 @@ public class FlatJsonUnmarshallerTest {
             CompositionTestDataSimSDTJson.DETERIORIATION_ASSESSMENT.getStream(),
             StandardCharsets.UTF_8);
 
-    Composition actual = cut.unmarshal(flat, webTemplate, template);
+    Composition actual = cut.unmarshal(flat, webTemplate);
 
     assertThat(actual).isNotNull();
 

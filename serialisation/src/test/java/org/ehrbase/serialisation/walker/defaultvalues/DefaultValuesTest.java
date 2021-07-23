@@ -114,7 +114,7 @@ public class DefaultValuesTest {
     OPERATIONALTEMPLATE template =
         TemplateDocument.Factory.parse(OperationalTemplateTestData.CORONA_ANAMNESE.getStream())
             .getTemplate();
-    WebTemplate webTemplate = new Filter().filter(new OPTParser(template).parse());
+    WebTemplate webTemplate = new OPTParser(template).parse();
 
     FlatJsonUnmarshaller cut = new FlatJsonUnmarshaller();
 
@@ -122,7 +122,7 @@ public class DefaultValuesTest {
         IOUtils.toString(
             CompositionTestDataSimSDTJson.CORONA_WITH_CONTEXT.getStream(), StandardCharsets.UTF_8);
 
-    Composition actual = cut.unmarshal(flat, webTemplate, template);
+    Composition actual = cut.unmarshal(flat, webTemplate);
 
     assertThat(actual).isNotNull();
     assertThat(actual.getCategory()).isNotNull();

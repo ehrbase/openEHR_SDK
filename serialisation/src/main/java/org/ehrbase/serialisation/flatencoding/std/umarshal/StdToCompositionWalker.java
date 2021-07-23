@@ -230,9 +230,7 @@ public class StdToCompositionWalker extends ToCompositionWalker<Map<String, Stri
 
   @Override
   protected void handleDVText(
-      WebTemplateNode currentNode,
-      Map<String, List<WebTemplateNode>> choices,
-      List<WebTemplateNode> children) {
+      WebTemplateNode currentNode) {
     if (currentNode.getRmType().equals(ELEMENT)) {
       List<WebTemplateNode> trueChildren =
           currentNode.getChildren().stream()
@@ -247,19 +245,19 @@ public class StdToCompositionWalker extends ToCompositionWalker<Map<String, Stri
               .containsAll(List.of(DV_TEXT, DV_CODED_TEXT))
           && currentNode.getChoicesInChildren().size() > 0
           && trueChildren.size() == 2) {
-        handleDVTextInternal(currentNode, choices, children);
+        handleDVTextInternal(currentNode);
       } else {
-        super.handleDVText(currentNode, choices, children);
+        super.handleDVText(currentNode);
       }
     } else {
-      super.handleDVText(currentNode, choices, children);
+      super.handleDVText(currentNode);
     }
   }
 
   public static void handleDVTextInternal(
-      WebTemplateNode node,
-      Map<String, List<WebTemplateNode>> choices,
-      List<WebTemplateNode> children) {
+      WebTemplateNode node
+
+    ) {
 
     if (node.getRmType().equals(ELEMENT)) {
       List<WebTemplateNode> trueChildren =
@@ -270,15 +268,12 @@ public class StdToCompositionWalker extends ToCompositionWalker<Map<String, Stri
                           || !n.isNullable())
               .collect(Collectors.toList());
       if (trueChildren.stream()
-              .map(WebTemplateNode::getRmType)
+              .map(WebTemplateNode::getId)
               .collect(Collectors.toList())
-              .containsAll(List.of(DV_TEXT, DV_CODED_TEXT))
+              .containsAll(List.of("coded_text_value", "text_value"))
           && node.getChoicesInChildren().size() > 0
           && trueChildren.size() == 2) {
         WebTemplateNode merged = Filter.mergeDVText(node);
-        choices.clear();
-        children.clear();
-        children.add(merged);
 
         node.getChildren()
             .removeIf(n -> List.of("coded_text_value", "text_value").contains(n.getId()));

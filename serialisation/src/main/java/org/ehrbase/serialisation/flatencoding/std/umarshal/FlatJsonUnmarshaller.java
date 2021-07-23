@@ -30,21 +30,18 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
-import org.ehrbase.building.OptSkeletonBuilder;
+
+import org.ehrbase.building.webtemplateskeletnbuilder.WebTemplateSkeletonBuilder;
 import org.ehrbase.client.classgenerator.shareddefinition.Setting;
-import org.ehrbase.normalizer.Normalizer;
 import org.ehrbase.serialisation.exception.UnmarshalException;
 import org.ehrbase.serialisation.jsonencoding.JacksonUtil;
 import org.ehrbase.serialisation.walker.defaultvalues.DefaultValuePath;
 import org.ehrbase.serialisation.walker.defaultvalues.DefaultValues;
 import org.ehrbase.webtemplate.model.WebTemplate;
-import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
 
 public class FlatJsonUnmarshaller {
 
   private static final ObjectMapper OBJECT_MAPPER = JacksonUtil.getObjectMapper();
-  public static final OptSkeletonBuilder OPT_SKELETON_BUILDER = new OptSkeletonBuilder();
-  public static final Normalizer NORMALIZER = new Normalizer();
 
   private Set<String> consumedPath;
 
@@ -55,11 +52,10 @@ public class FlatJsonUnmarshaller {
    *
    * @param flat the flat Json
    * @param introspect the introspect belonging to the template
-   * @param operationalTemplate the template of the flat json
    * @return
    */
   public Composition unmarshal(
-      String flat, WebTemplate introspect, OPERATIONALTEMPLATE operationalTemplate) {
+          String flat, WebTemplate introspect) {
 
     consumedPath = new HashSet<>();
 
@@ -72,7 +68,7 @@ public class FlatJsonUnmarshaller {
         currentValues.put(e.getKey(), e.getValue().toString());
       }
 
-      Composition generate = (Composition) OPT_SKELETON_BUILDER.generate(operationalTemplate);
+      Composition generate =  WebTemplateSkeletonBuilder.build(introspect,false);
 
       StdToCompositionWalker walker = new StdToCompositionWalker();
       DefaultValues defaultValues = new DefaultValues(currentValues);
@@ -87,7 +83,7 @@ public class FlatJsonUnmarshaller {
       walker.walk(generate, currentValues, introspect, defaultValues);
       consumedPath = walker.getConsumedPaths();
 
-      return NORMALIZER.normalize(generate);
+      return generate;
     } catch (JsonProcessingException e) {
       throw new UnmarshalException(e.getMessage(), e);
     }
