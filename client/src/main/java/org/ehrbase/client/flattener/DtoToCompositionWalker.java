@@ -38,6 +38,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.reflect.FieldUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.OptionFor;
@@ -192,7 +193,7 @@ public class DtoToCompositionWalker extends ToCompositionWalker<Map<String, Obje
 
   static Map<String, Object> findEntity(Object dto) {
 
-    return Arrays.stream(dto.getClass().getDeclaredFields())
+    return Arrays.stream(FieldUtils.getAllFields(dto.getClass()))
         .filter(m -> m.isAnnotationPresent(Path.class))
         .filter(m -> readField(m, dto) != null)
         .collect(

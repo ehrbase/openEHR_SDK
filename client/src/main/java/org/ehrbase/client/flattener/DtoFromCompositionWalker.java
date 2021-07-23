@@ -36,6 +36,7 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.reflect.FieldUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.text.CaseUtils;
 import org.ehrbase.client.annotations.Entity;
@@ -75,12 +76,12 @@ public class DtoFromCompositionWalker extends FromCompositionWalker<DtoWithMatch
   @Override
   public void walk(
       RMObject composition, DtoWithMatchingFields object, WebTemplateNode webTemplate) {
-    dtoClassList = ReflectionHelper.findAll(object.getDto().getClass().getPackageName());
+    dtoClassList = ReflectionHelper.findAll(ReflectionHelper.findRootClass( object.getDto().getClass()).getPackageName());
     super.walk(composition, object, webTemplate);
   }
 
   static Map<String, Field> buildFieldByPathMap(Class<?> clazz) {
-    return Arrays.stream(clazz.getDeclaredFields())
+    return Arrays.stream(FieldUtils.getAllFields(clazz))
         .filter(f -> f.isAnnotationPresent(Path.class))
         .collect(Collectors.toMap(f -> f.getAnnotation(Path.class).value(), Function.identity()));
   }
