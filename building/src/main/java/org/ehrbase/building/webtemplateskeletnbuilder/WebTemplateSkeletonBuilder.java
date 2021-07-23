@@ -56,7 +56,9 @@ public class WebTemplateSkeletonBuilder {
     private static final RMObjectCreator RM_OBJECT_CREATOR =
             new RMObjectCreator(ARCHIE_RM_INFO_LOOKUP);
 
-
+private WebTemplateSkeletonBuilder(){
+    //NOP
+}
 
     public static Composition build(WebTemplate template, boolean withChildren){
 
@@ -174,6 +176,8 @@ public class WebTemplateSkeletonBuilder {
           }
             }
                 break;
+            default:
+                defaultValue = null;
         }
 
         return Optional.ofNullable((T)defaultValue);

@@ -40,8 +40,7 @@ import org.ehrbase.webtemplate.model.WebTemplateNode;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static org.ehrbase.util.rmconstants.RmConstants.DV_CODED_TEXT;
-import static org.ehrbase.util.rmconstants.RmConstants.DV_TEXT;
+import static org.ehrbase.util.rmconstants.RmConstants.*;
 
 public abstract class Walker<T> {
 
@@ -84,20 +83,21 @@ public abstract class Walker<T> {
 
     if (visitChildren(currentNode)) {
 
+      if(ACTION.equals(currentNode.getRmType())){
       List<WebTemplateNode> ismTransitionList =
               currentNode.getChildren().stream()
-                      .filter(n -> "ISM_TRANSITION".equals(n.getRmType()))
+                      .filter(n -> ISM_TRANSITION.equals(n.getRmType()))
                       .collect(Collectors.toList());
-      if (!ismTransitionList.isEmpty()) {
-        currentNode.getChildren().removeAll(ismTransitionList);
-        currentNode.getChildren().add(ismTransitionList.get(0));
+        if (!ismTransitionList.isEmpty()) {
+          currentNode.getChildren().removeAll(ismTransitionList);
+          currentNode.getChildren().add(ismTransitionList.get(0));
+        }
       }
 
+      handleDVText(currentNode);
 
       Map<String, List<WebTemplateNode>> choices = currentNode.getChoicesInChildren();
       List<WebTemplateNode> children = new ArrayList<>(currentNode.getChildren());
-
-      handleDVText(currentNode, choices, children);
 
       if (children.stream().anyMatch(n -> n.getRmType().equals("EVENT"))) {
         WebTemplateNode event =
@@ -182,30 +182,29 @@ public abstract class Walker<T> {
   }
 
   protected void handleDVText(
-      WebTemplateNode currentNode,
-      Map<String, List<WebTemplateNode>> choices,
-      List<WebTemplateNode> children) {
+      WebTemplateNode currentNode
+     ) {
     // unwrap DV_CODED_TEXT
-    for (WebTemplateNode codeNode : new ArrayList<>(children)) {
+    for (WebTemplateNode codeNode : new ArrayList<>(currentNode.getChildren())) {
       if (codeNode.getRmType().equals(DV_CODED_TEXT)
           && codeNode.getInputs().stream()
               .map(WebTemplateInput::getSuffix)
               .anyMatch("other"::equals)) {
         WebTemplateNode textNode = new WebTemplateNode(codeNode);
         textNode.setRmType(DV_TEXT);
-        choices.put(textNode.getAqlPath(), List.of(codeNode, textNode));
-        children.add(textNode);
+        currentNode.getChildren().add(textNode);
       }
     }
 
     // Add dummy DV_CODED_TEXT
-    for (WebTemplateNode textNode : new ArrayList<>(children)) {
+    for (WebTemplateNode textNode : new ArrayList<>(currentNode.getChildren())) {
       if (textNode.getRmType().equals(DV_TEXT)
-          && choices.values().stream().flatMap(List::stream).noneMatch(textNode::equals)) {
+          && currentNode.getChildren().stream()
+              .filter(n -> n.getAqlPath(true).equals(textNode.getAqlPath(true)))
+              .noneMatch(n -> DV_CODED_TEXT.equals(n.getRmType()))) {
         WebTemplateNode codeNode = new WebTemplateNode(textNode);
         codeNode.setRmType(DV_CODED_TEXT);
-        choices.put(codeNode.getAqlPath(), List.of(textNode, codeNode));
-        children.add(codeNode);
+        currentNode.getChildren().add(codeNode);
       }
     }
   }

@@ -6,6 +6,8 @@ Note: version releases in the 0.x.y range may introduce breaking changes.
 
 ### Added
 
+- Added WebTemplate based RmSkeleton builder. (see https://github.com/ehrbase/openEHR_SDK/pull/241) 
+
 ### Fixed
 
 - OptParser: fix parsing f snomed (see https://github.com/ehrbase/openEHR_SDK/pull/234)
