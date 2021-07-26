@@ -28,6 +28,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Optional;
 import java.util.UUID;
+
+import org.apache.commons.lang3.reflect.FieldUtils;
 import org.ehrbase.client.annotations.Id;
 import org.ehrbase.client.exception.ClientException;
 import org.ehrbase.client.flattener.Flattener;
@@ -46,7 +48,7 @@ public class DefaultRestCompositionEndpoint implements CompositionEndpoint {
   }
 
   static Optional<VersionUid> extractVersionUid(Object entity) {
-    return Arrays.stream(entity.getClass().getDeclaredFields())
+    return Arrays.stream(FieldUtils.getAllFields(entity.getClass()))
         .filter(f -> f.isAnnotationPresent(Id.class))
         .findAny()
         .map(
