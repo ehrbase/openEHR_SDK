@@ -80,7 +80,14 @@ public class Flattener {
                       .acceptPackages(packageNames)
                       .scan();
 
-      String templateId = clazz.getAnnotation(Template.class).value();
+      String templateId =
+              classGraph
+                      .getClassesWithAnnotation(Template.class.getName())
+                      .loadClasses()
+                      .get(0)
+                      .getAnnotation(Template.class)
+                      .value();
+
       String archetypeValue = clazz.getAnnotation(Archetype.class).value();
       WebTemplateNode root =
           templateProvider

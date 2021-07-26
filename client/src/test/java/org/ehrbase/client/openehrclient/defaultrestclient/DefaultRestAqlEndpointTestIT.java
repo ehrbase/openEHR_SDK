@@ -90,6 +90,22 @@ public class DefaultRestAqlEndpointTestIT {
     }
 
     @Test
+    public void testExecuteProxy() {
+
+        ehr = openEhrClient.ehrEndpoint().createEhr();
+
+        openEhrClient.compositionEndpoint(ehr).mergeCompositionEntity(TestData.buildEhrbaseBloodPressureSimpleDeV0());
+        openEhrClient.compositionEndpoint(ehr).mergeCompositionEntity(TestData.buildEhrbaseBloodPressureSimpleDeV0());
+
+        Query<Record2<String, BloodPressureTrainingSampleObservationProxy>> query = Query.buildNativeQuery("select  a/template_id, o from EHR e[ehr_id/value = $ehr_id]  contains COMPOSITION a [openEHR-EHR-COMPOSITION.sample_encounter.v1] contains OBSERVATION o ", String.class, BloodPressureTrainingSampleObservationProxy.class);
+
+        List<Record2<String, BloodPressureTrainingSampleObservationProxy>> result = openEhrClient.aqlEndpoint().execute(query, new ParameterValue("ehr_id", ehr));
+        assertThat(result).isNotNull().hasSize(2);
+
+        assertThat(result.get(0).value2().dummy).isNull();
+    }
+
+    @Test
     public void testExecuteValue() {
 
         ehr = openEhrClient.ehrEndpoint().createEhr();
@@ -164,6 +180,7 @@ public class DefaultRestAqlEndpointTestIT {
         assertThat(record1.value3()).isEqualTo(CuffSizeDefiningCode.ADULT);
 
     }
+
 
 
     @Test
