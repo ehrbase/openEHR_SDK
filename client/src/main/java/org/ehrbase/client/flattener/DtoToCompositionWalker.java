@@ -51,6 +51,8 @@ import org.ehrbase.webtemplate.parser.FlatPath;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.ehrbase.util.rmconstants.RmConstants.DV_CODED_TEXT;
+
 public class DtoToCompositionWalker extends ToCompositionWalker<Map<String, Object>> {
 
   public static final ArchieRMInfoLookup ARCHIE_RM_INFO_LOOKUP = ArchieRMInfoLookup.getInstance();

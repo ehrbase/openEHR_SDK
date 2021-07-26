@@ -31,7 +31,7 @@
                 <v1:upper>1</v1:upper>
             </v1:occurrences>
             <v1:node_id/>
-            <v1:referenceSetUri>terminology://fhir.hl7.org/CodeSystem?url=http://terminology.hl7.org/CodeSystem/FDI-surface</v1:referenceSetUri>
+            <v1:referenceSetUri>terminology://fhir.hl7.org/CodeSystem?url=http://hl7.org/fhir/observation-status</v1:referenceSetUri>
         </v1:children>
     </v1:attributes>
 </xml-fragment>

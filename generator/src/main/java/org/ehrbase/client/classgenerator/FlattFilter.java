@@ -21,13 +21,6 @@ package org.ehrbase.client.classgenerator;
 
 import com.nedap.archie.rm.archetyped.Locatable;
 import com.nedap.archie.rminfo.RMTypeInfo;
-import java.util.Collections;
-import java.util.Deque;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
 import org.apache.commons.collections4.SetUtils;
 import org.ehrbase.serialisation.util.SnakeCase;
 import org.ehrbase.util.reflection.ReflectionHelper;
@@ -36,6 +29,9 @@ import org.ehrbase.webtemplate.model.WebTemplate;
 import org.ehrbase.webtemplate.model.WebTemplateNode;
 import org.ehrbase.webtemplate.parser.FlatPath;
 import org.ehrbase.webtemplate.parser.config.RmIntrospectConfig;
+
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class FlattFilter extends Filter {
   private static final Map<Class<?>, RmIntrospectConfig> configMap =
@@ -58,7 +54,8 @@ public class FlattFilter extends Filter {
         RMTypeInfo typeInfo = ARCHIE_RM_INFO_LOOKUP.getTypeInfo(parent.getRmType());
         Set<String> attributeNames =
             Optional.ofNullable(configMap.get(typeInfo.getJavaClass()))
-                .map(RmIntrospectConfig::getNonTemplateFields).orElse(Collections.emptySet())
+                .map(RmIntrospectConfig::getNonTemplateFields)
+                .orElse(Collections.emptySet())
                 .stream()
                 .map(s -> new SnakeCase(s).camelToSnake())
                 .collect(Collectors.toSet());
@@ -136,18 +133,6 @@ public class FlattFilter extends Filter {
     if (!ismTransitionList.isEmpty()) {
       node.getChildren().removeAll(ismTransitionList);
       node.getChildren().add(ismTransitionList.get(0));
-    }
-
-    if (node.getRmType().equals("ELEMENT")
-        && node.getChildren().size() <= 5
-        && node.getChildren().stream()
-            .filter(n -> !List.of("null_flavour", "feeder_audit").contains(n.getName()))
-            .map(WebTemplateNode::getRmType)
-            .collect(Collectors.toList())
-            .containsAll(List.of("DV_TEXT", "DV_CODED_TEXT"))) {
-      WebTemplateNode merged = node.findChildById(node.getId(false)).orElseThrow();
-
-      node.getChildren().remove(merged);
     }
   }
 }

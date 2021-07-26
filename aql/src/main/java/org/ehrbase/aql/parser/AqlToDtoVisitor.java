@@ -20,27 +20,15 @@
 package org.ehrbase.aql.parser;
 
 import com.nedap.archie.datetime.DateTimeParsers;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
+import org.antlr.v4.runtime.tree.ParseTree;
+import org.antlr.v4.runtime.tree.TerminalNode;
 import org.apache.commons.collections4.MultiValuedMap;
 import org.apache.commons.collections4.multimap.ArrayListValuedHashMap;
 import org.apache.commons.lang3.StringUtils;
 import org.ehrbase.aql.dto.AqlDto;
 import org.ehrbase.aql.dto.EhrDto;
 import org.ehrbase.aql.dto.LogicalOperatorSymbol;
-import org.ehrbase.aql.dto.condition.ConditionComparisonOperatorDto;
-import org.ehrbase.aql.dto.condition.ConditionComparisonOperatorSymbol;
-import org.ehrbase.aql.dto.condition.ConditionDto;
-import org.ehrbase.aql.dto.condition.ConditionLogicalOperatorDto;
-import org.ehrbase.aql.dto.condition.ConditionLogicalOperatorSymbol;
-import org.ehrbase.aql.dto.condition.MatchesOperatorDto;
-import org.ehrbase.aql.dto.condition.ParameterValue;
-import org.ehrbase.aql.dto.condition.SimpleValue;
-import org.ehrbase.aql.dto.condition.Value;
+import org.ehrbase.aql.dto.condition.*;
 import org.ehrbase.aql.dto.containment.ContainmentDto;
 import org.ehrbase.aql.dto.containment.ContainmentExpresionDto;
 import org.ehrbase.aql.dto.containment.ContainmentLogicalOperator;
@@ -51,6 +39,8 @@ import org.ehrbase.aql.dto.select.SelectDto;
 import org.ehrbase.aql.dto.select.SelectFieldDto;
 import org.ehrbase.aql.dto.select.SelectStatementDto;
 import org.ehrbase.client.aql.top.Direction;
+
+import java.util.*;
 
 public class AqlToDtoVisitor extends AqlBaseVisitor<Object> {
 
@@ -261,11 +251,15 @@ public class AqlToDtoVisitor extends AqlBaseVisitor<Object> {
 
     List<Object> boolList = new ArrayList<>();
 
-    for (int i = 0; i < ctx.identifiedEquality().size(); i++) {
-      boolList.add(visitIdentifiedEquality(ctx.identifiedEquality(i)));
-      ConditionLogicalOperatorSymbol symbol = extractSymbol(ctx, i);
-      if (symbol != null) {
-        boolList.add(symbol);
+    for (int i = 0; i < ctx.getChildCount(); i++) {
+      ParseTree child = ctx.getChild(i);
+      if (child instanceof AqlParser.IdentifiedEqualityContext) {
+        boolList.add(visitIdentifiedEquality((AqlParser.IdentifiedEqualityContext) child));
+      } else if (child instanceof TerminalNode) {
+        ConditionLogicalOperatorSymbol symbol = extractSymbolTerminal((TerminalNode) child);
+        if (symbol != null) {
+          boolList.add(symbol);
+        }
       }
     }
     if (boolList.size() == 1) {
@@ -311,14 +305,20 @@ public class AqlToDtoVisitor extends AqlBaseVisitor<Object> {
     return lowestOperator;
   }
 
-  private ConditionLogicalOperatorSymbol extractSymbol(AqlParser.IdentifiedExprContext ctx, int i) {
-    if (ctx.AND(i) != null) {
-      return ConditionLogicalOperatorSymbol.AND;
-    } else if (ctx.OR(i) != null) {
-      return ConditionLogicalOperatorSymbol.OR;
-    } else if (ctx.XOR(i) != null) {
-      throw new AqlParseException("XOR not supported");
+  private ConditionLogicalOperatorSymbol extractSymbolTerminal(TerminalNode child) {
+    if (child == null) {
+      return null;
     }
+
+    switch (child.getSymbol().getText()) {
+      case "or":
+        return ConditionLogicalOperatorSymbol.OR;
+      case "and":
+        return ConditionLogicalOperatorSymbol.AND;
+      case "xor":
+        throw new AqlParseException("XOR not supported");
+    }
+
     return null;
   }
 
