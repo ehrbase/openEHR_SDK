@@ -26,11 +26,12 @@ import com.nedap.archie.rm.support.identification.UIDBasedId;
 
 import java.util.List;
 
+@SuppressWarnings("java:S1452")
 public class FolderDto {
 
     private final UIDBasedId uid;
     private final List<Folder> folders;
-    private final List<ObjectRef> items;
+    private final List<ObjectRef<?>> items;
     private final DvText name;
     private final ItemStructure details;
 
@@ -46,7 +47,7 @@ public class FolderDto {
         return folders;
     }
 
-    public List<ObjectRef> getItems() {
+    public List<ObjectRef<?>> getItems() {
         return items;
     }
 

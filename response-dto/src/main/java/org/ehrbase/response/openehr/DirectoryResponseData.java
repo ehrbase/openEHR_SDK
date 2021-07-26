@@ -33,6 +33,7 @@ import java.util.List;
  * than minimal is preferred by client.
  */
 @JacksonXmlRootElement
+@SuppressWarnings("java:S1452")
 public class DirectoryResponseData {
 
     @JsonProperty(value = "uid")
@@ -40,7 +41,7 @@ public class DirectoryResponseData {
     @JsonProperty(value = "folders")
     private List<Folder> folders;
     @JsonProperty(value = "items")
-    private List<ObjectRef> items;
+    private List<ObjectRef<?>> items;
     @JsonProperty(value = "details")
     private ItemStructure details;
     @JsonProperty(value = "name")
@@ -62,11 +63,11 @@ public class DirectoryResponseData {
         this.folders = folder;
     }
 
-    public List<ObjectRef> getItems() {
+    public List<ObjectRef<?>> getItems() {
         return items;
     }
 
-    public void setItems(List<ObjectRef> items) {
+    public void setItems(List<ObjectRef<?>> items) {
         this.items = items;
     }
 

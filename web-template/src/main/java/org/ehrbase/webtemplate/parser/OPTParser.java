@@ -630,6 +630,8 @@ public class OPTParser {
                               || List.of("feeder_audit", "null_flavour").contains(s.getRmName()))
                   .filter(s -> !List.of("value").contains(s.getRmName()))
                   .filter(s -> !Locatable.class.isAssignableFrom(s.getTypeInCollection()))
+                  .filter(s -> !DvInterval.class.isAssignableFrom(typeInfo.getJavaClass()) ||
+                          !Objects.equals("interval", s.getRmName()))
                   .map(i -> buildNodeForAttribute(i, aqlPath, termDefinitionMap))
                   // only add if not already there
                   .filter(

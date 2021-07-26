@@ -62,11 +62,10 @@ public class OriginalVersionResponseData<T> {
         setVersionId(originalVersion.getUid());
 
         HierObjectId contributionId = new HierObjectId(contributionDto.getUuid().toString());
-        List<ObjectRef> versions = new ArrayList<>();
+        List<ObjectRef<?>> versions = new ArrayList<>();
         contributionDto.getObjectReferences().forEach((k, v) -> versions.add(
                 new ObjectRef<>(new HierObjectId(v), "local", k)));
-        Contribution contribution = new Contribution(contributionId, versions, contributionDto.getAuditDetails());
-        setContribution(contribution);
+        setContribution(new Contribution(contributionId, versions, contributionDto.getAuditDetails()));
 
         setSignature(originalVersion.getSignature());
         setAuditDetails(originalVersion.getCommitAudit());
