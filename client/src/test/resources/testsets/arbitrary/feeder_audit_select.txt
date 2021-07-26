@@ -1,0 +1,4 @@
+select
+   c/name/value
+        from EHR e
+          contains COMPOSITION c

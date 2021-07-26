@@ -45,6 +45,9 @@ public class DefaultRestAdminEhrEndpoint implements AdminEhrEndpoint {
 
     @Override
     public int delete(UUID ehrId) {
+        if (ehrId == null)
+            return 0;
+
         URI uri = defaultRestClient.getConfig().getBaseUri().resolve(ADMIN_EHR_PATH + ehrId.toString());
 
         HttpResponse response =

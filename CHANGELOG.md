@@ -6,10 +6,13 @@ Note: version releases in the 0.x.y range may introduce breaking changes.
 
 ### Added
 
+- Added WebTemplate based RmSkeleton builder. (see https://github.com/ehrbase/openEHR_SDK/pull/241) 
+
 ### Fixed
 
 - OptParser: fix parsing f snomed (see https://github.com/ehrbase/openEHR_SDK/pull/234)
 - Flat: refactor code to walk to all nodes (see https://github.com/ehrbase/project_management/issues/541)
+- DefaultRestClient: add VERSIONED_COMPOSITION endpoint (see https://github.com/ehrbase/openEHR_SDK/pull/237)
 
 ## 1.5.0
 
@@ -32,7 +35,7 @@ Note: version releases in the 0.x.y range may introduce breaking changes.
 
 ### Fixed
 
-- Lost of small fixes to flat (see https://github.com/ehrbase/openEHR_SDK/pull/204)
+- Lost of small fixes to flat (see https://githucb.com/ehrbase/openEHR_SDK/pull/204)
 - Aql parsing : fix parsing of contains without archetypeId (see https://github.com/ehrbase/openEHR_SDK/pull/205)
 - Aql building : fix building of aql with more from Dto with more than 2 where ANDs
 - Several AQL fixes (see https://github.com/ehrbase/openEHR_SDK/pull/202

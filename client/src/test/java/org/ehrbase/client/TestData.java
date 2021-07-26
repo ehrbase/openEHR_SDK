@@ -61,6 +61,8 @@ import org.ehrbase.client.classgenerator.examples.stationarerversorgungsfallcomp
 import org.ehrbase.client.classgenerator.examples.stationarerversorgungsfallcomposition.definition.AufnahmedatenAdminEntry;
 import org.ehrbase.client.classgenerator.examples.stationarerversorgungsfallcomposition.definition.EntlassungsdatenAdminEntry;
 import org.ehrbase.client.classgenerator.examples.stationarerversorgungsfallcomposition.definition.KlinischerZustandDesPatientenDefiningCode;
+import org.ehrbase.client.classgenerator.examples.testalltypesenv1composition.TestAllTypesEnV1Composition;
+import org.ehrbase.client.classgenerator.examples.testalltypesenv1composition.definition.TestAllTypesEvaluation;
 import org.ehrbase.client.classgenerator.examples.virologischerbefundcomposition.VirologischerBefundComposition;
 import org.ehrbase.client.classgenerator.examples.virologischerbefundcomposition.definition.BefundObservation;
 import org.ehrbase.client.classgenerator.examples.virologischerbefundcomposition.definition.FallidentifikationCluster;
@@ -94,6 +96,23 @@ public class TestData {
 
     dto.setBloodpressures(bloodpressureList);
     return dto;
+  }
+
+  public static TestAllTypesEnV1Composition buildTestAllTypesEnV1Composition(){
+    TestAllTypesEnV1Composition composition = new TestAllTypesEnV1Composition();
+
+    composition.setTestAllTypes2(new ArrayList<>());
+
+    TestAllTypesEvaluation evaluation = new TestAllTypesEvaluation();
+    composition.getTestAllTypes2().add(evaluation);
+
+    evaluation.setIntervalCountLowerIncluded(true);
+    evaluation.setIntervalCountUpperIncluded(true);
+    evaluation.setUpperMagnitude(20l);
+    evaluation.setLowerMagnitude(10l);
+
+
+    return composition;
   }
 
   public static EhrbaseBloodPressureSimpleDeV0Composition buildEhrbaseBloodPressureSimpleDeV0() {

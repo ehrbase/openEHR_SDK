@@ -77,6 +77,6 @@ public class FlatJson implements RMDataFormat {
   }
 
   public Composition unmarshal(String value) {
-    return flatJsonUnmarshaller.unmarshal(value, templateIntrospect, operationaltemplate);
+    return flatJsonUnmarshaller.unmarshal(value, templateIntrospect);
   }
 }
