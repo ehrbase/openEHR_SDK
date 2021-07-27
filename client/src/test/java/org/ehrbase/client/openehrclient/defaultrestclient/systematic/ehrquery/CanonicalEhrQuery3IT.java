@@ -31,7 +31,10 @@ import org.ehrbase.client.openehrclient.defaultrestclient.systematic.composition
 import org.ehrbase.response.openehr.QueryResponseData;
 import org.ehrbase.serialisation.jsonencoding.CanonicalJson;
 import org.ehrbase.test_data.ehr.EhrTestDataCanonicalJson;
-import org.junit.*;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
 import java.io.IOException;
@@ -126,9 +129,18 @@ public class CanonicalEhrQuery3IT extends CanonicalCompoAllTypeQueryIT {
 
             List<Object> objectList = result.getRows().get(0);
 
-            assertThat(valueObject(objectList.get(0)))
-                    .as(aqlSelect)
-                    .isEqualTo(attributeValueAt(referenceNode, attributePath));
+            Object resultingObject = objectList.get(0);
+
+            if (resultingObject instanceof List) {
+                assertThat(valueObject(objectList.get(0)))
+                        .as(aqlSelect)
+                        .isEqualTo(attributeArrayValueAt(referenceNode, attributePath));
+            }
+            else {
+                assertThat(valueObject(objectList.get(0)))
+                        .as(aqlSelect)
+                        .isEqualTo(attributeValueAt(referenceNode, attributePath));
+            }
         }
     }
 

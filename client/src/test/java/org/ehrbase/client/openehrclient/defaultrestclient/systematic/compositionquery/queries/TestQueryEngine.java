@@ -178,10 +178,13 @@ public abstract class TestQueryEngine extends CanonicalUtil {
                         fail(arbitraryExpression.getRightSideExpression() + ": no result");
                 }
 
-                //TODO: iterate on result
+//                //TODO: iterate on result
                 List<Object> objectList = result.getRows().get(0);
+                Object resultingObject = objectList.get(0);
+                if (resultingObject instanceof List)
+                    resultingObject = ((List<?>) resultingObject).get(0);
 
-                assertThat(valueObject(objectList.get(0)))
+                assertThat(valueObject(resultingObject))
                         .as(arbitraryExpression.getRightSideExpression())
                         .isEqualTo(valueObject(arbitraryExpression.getExpectedResult()));
             }
