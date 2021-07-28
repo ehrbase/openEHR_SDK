@@ -17,14 +17,8 @@
 
 package org.ehrbase.client.openehrclient.defaultrestclient.systematic.compositionquery;
 
-import com.nedap.archie.rm.composition.Composition;
-import org.apache.commons.io.IOUtils;
 import org.ehrbase.client.Integration;
-import org.ehrbase.client.classgenerator.examples.laborbefundcomposition.LaborbefundComposition;
-import org.ehrbase.client.flattener.Flattener;
 import org.ehrbase.client.openehrclient.defaultrestclient.systematic.compositionquery.queries.arbitrary.ArbitraryQuery;
-import org.ehrbase.client.templateprovider.TestDataTemplateProvider;
-import org.ehrbase.serialisation.jsonencoding.CanonicalJson;
 import org.ehrbase.test_data.composition.CompositionTestDataCanonicalJson;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -32,34 +26,28 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @Category(Integration.class)
-@Ignore("CR: to be created. freezes EHRbase server")
-public class ArbitraryQueryFeederAuditIT extends CanonicalCompoAllTypeQueryIT {
+@Ignore("depends on CR#538")
+public class FeederAuditQueryIT extends CanonicalCompoAllTypeQueryIT {
 
     protected ArbitraryQuery arbitraryQuery;
 
+
+
     @Before
     public void setUp() throws IOException {
-        ehrUUID = openEhrClient.ehrEndpoint().createEhr();
-        compositionEndpoint = openEhrClient.compositionEndpoint(ehrUUID);
-
-        aComposition = new CanonicalJson().unmarshal(IOUtils.toString(CompositionTestDataCanonicalJson.FEEDER_AUDIT_DETAILS.getStream(), StandardCharsets.UTF_8), Composition.class);
-        Flattener flattener = new Flattener(new TestDataTemplateProvider());
-        LaborbefundComposition laborbefundComposition = flattener.flatten(aComposition, LaborbefundComposition.class);
-//        create the composition
-        LaborbefundComposition comp = compositionEndpoint.mergeCompositionEntity(laborbefundComposition);
-        compositionUUID = comp.getVersionUid().getUuid();
+        super.setUp(CompositionTestDataCanonicalJson.FEEDER_AUDIT_DETAILS);
         arbitraryQuery = new ArbitraryQuery(ehrUUID, openEhrClient);
     }
 
     @Test
-    public void testArbitraryFeederAudit() throws IOException {
-        String csvTestSet = dirPath+"/arbitrary/arbitrary_feeder_audit.csv";
+    public void testArbitrary1() throws IOException {
+        String csvTestSet = dirPath+"/arbitrary/feeder_audit_tests.csv";
 
         assertThat(arbitraryQuery.testItemPaths(dirPath+"/arbitrary", csvTestSet)).isTrue();
     }
+
 }

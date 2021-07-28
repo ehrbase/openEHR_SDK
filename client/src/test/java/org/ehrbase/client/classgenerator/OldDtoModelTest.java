@@ -101,6 +101,9 @@ public class OldDtoModelTest {
                     "Extra path: test_all_types/test_all_types:0/coded_text_terminology|value, value: .HCXbqCyQtseLkDyKS,QLpOdDZxrEJ",
                     "Extra path: test_all_types/test_all_types3:0/section_2/section_3/test_all_types:0/current_activity/timing, value: P1D",
                     "Extra path: test_all_types/test_all_types3:0/section_2/section_3/test_all_types:0/current_activity/timing|formalism, value: ISO8601",
+                    "Extra path: test_all_types/test_all_types3:0/section_2/section_3/test_all_types2:0/ism_transition/current_state|code, value: 526",
+                    "Extra path: test_all_types/test_all_types3:0/section_2/section_3/test_all_types2:0/ism_transition/current_state|value, value: planned",
+                    "Extra path: test_all_types/test_all_types3:0/section_2/section_3/test_all_types2:0/ism_transition/current_state|terminology, value: openehr"
             }));
     testCaseList.add(
             new TestCase(

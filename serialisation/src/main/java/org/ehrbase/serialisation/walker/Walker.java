@@ -19,6 +19,7 @@
 
 package org.ehrbase.serialisation.walker;
 
+import com.nedap.archie.openehrtestrm.Element;
 import com.nedap.archie.rm.RMObject;
 import com.nedap.archie.rm.archetyped.Locatable;
 import com.nedap.archie.rm.composition.Composition;
@@ -27,56 +28,43 @@ import com.nedap.archie.rm.composition.IsmTransition;
 import com.nedap.archie.rm.datavalues.quantity.DvInterval;
 import com.nedap.archie.rminfo.ArchieRMInfoLookup;
 import com.nedap.archie.rminfo.RMTypeInfo;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Deque;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.ImmutableTriple;
-import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
 import org.ehrbase.serialisation.jsonencoding.CanonicalJson;
 import org.ehrbase.serialisation.walker.defaultvalues.DefaultValues;
-import org.ehrbase.webtemplate.model.FilteredWebTemplate;
 import org.ehrbase.webtemplate.model.WebTemplate;
 import org.ehrbase.webtemplate.model.WebTemplateInput;
 import org.ehrbase.webtemplate.model.WebTemplateNode;
 
+import java.util.*;
+import java.util.stream.Collectors;
+
+import static org.ehrbase.util.rmconstants.RmConstants.*;
+
 public abstract class Walker<T> {
 
   public static final ArchieRMInfoLookup ARCHIE_RM_INFO_LOOKUP = ArchieRMInfoLookup.getInstance();
-  public static final String DV_CODED_TEXT = "DV_CODED_TEXT";
+
 
   public void walk(
       Composition composition, T object, WebTemplate webTemplate, DefaultValues defaultValues) {
-    Map<Pair<String, String>, Deque<WebTemplateNode>> filteredNodeMap = null;
-    if (webTemplate instanceof FilteredWebTemplate) {
 
-      filteredNodeMap = ((FilteredWebTemplate) webTemplate).filteredNodeMap;
-    }
-    walk(composition, object, webTemplate.getTree(), filteredNodeMap, defaultValues);
+    walk(composition, object, webTemplate.getTree(), defaultValues);
   }
 
   public void walk(RMObject composition, T object, WebTemplateNode root) {
-    walk(composition, object, root, null, null);
+    walk(composition, object, root, null);
   }
 
   public void walk(
-      RMObject composition,
-      T object,
-      WebTemplateNode root,
-      Map<Pair<String, String>, Deque<WebTemplateNode>> filteredNodeMap,
-      DefaultValues defaultValues) {
+      RMObject composition, T object, WebTemplateNode root, DefaultValues defaultValues) {
 
     Context<T> context = new Context<>();
 
     context.getNodeDeque().push(root);
     context.getObjectDeque().push(object);
     context.getRmObjectDeque().push(composition);
-    context.setFilteredNodeMap(filteredNodeMap);
 
     if (defaultValues != null) {
       context.setDefaultValues(defaultValues);
@@ -91,34 +79,25 @@ public abstract class Walker<T> {
 
     preHandle(context);
     WebTemplateNode currentNode = context.getNodeDeque().peek();
+
+
     if (visitChildren(currentNode)) {
+
+      if(ACTION.equals(currentNode.getRmType())){
+      List<WebTemplateNode> ismTransitionList =
+              currentNode.getChildren().stream()
+                      .filter(n -> ISM_TRANSITION.equals(n.getRmType()))
+                      .collect(Collectors.toList());
+        if (!ismTransitionList.isEmpty()) {
+          currentNode.getChildren().removeAll(ismTransitionList);
+          currentNode.getChildren().add(ismTransitionList.get(0));
+        }
+      }
+
+      handleDVText(currentNode);
 
       Map<String, List<WebTemplateNode>> choices = currentNode.getChoicesInChildren();
       List<WebTemplateNode> children = new ArrayList<>(currentNode.getChildren());
-
-      // unwrap DV_CODED_TEXT
-      for (WebTemplateNode codeNode : new ArrayList<>(children)) {
-        if (codeNode.getRmType().equals(DV_CODED_TEXT)
-            && codeNode.getInputs().stream()
-                .map(WebTemplateInput::getSuffix)
-                .anyMatch("other"::equals)) {
-          WebTemplateNode textNode = new WebTemplateNode(codeNode);
-          textNode.setRmType("DV_TEXT");
-          choices.put(textNode.getAqlPath(), List.of(codeNode, textNode));
-          children.add(textNode);
-        }
-      }
-
-      // Add dummy DV_CODED_TEXT
-      for (WebTemplateNode textNode : new ArrayList<>(children)) {
-        if (textNode.getRmType().equals("DV_TEXT")
-            && choices.values().stream().flatMap(List::stream).noneMatch(textNode::equals)) {
-          WebTemplateNode codeNode = new WebTemplateNode(textNode);
-          codeNode.setRmType(DV_CODED_TEXT);
-          choices.put(codeNode.getAqlPath(), List.of(textNode, codeNode));
-          children.add(codeNode);
-        }
-      }
 
       if (children.stream().anyMatch(n -> n.getRmType().equals("EVENT"))) {
         WebTemplateNode event =
@@ -133,19 +112,24 @@ public abstract class Walker<T> {
         children.remove(event);
       }
 
-      Collection<List<WebTemplateNode>> childChoices =
-          children.stream()
-              .collect(Collectors.groupingBy(WebTemplateNode::getAqlPath))
-              .entrySet()
-              .stream()
-              .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue))
-              .values();
+      Map<String, List<WebTemplateNode>> map = new LinkedHashMap<>();
+      for (WebTemplateNode webTemplateNode : children) {
+        map.computeIfAbsent(webTemplateNode.getAqlPath(), k -> new ArrayList<>())
+            .add(webTemplateNode);
+      }
+      Map<String, List<WebTemplateNode>> result = new LinkedHashMap<>();
+      for (Map.Entry<String, List<WebTemplateNode>> stringListEntry : map.entrySet()) {
+        if (result.put(stringListEntry.getKey(), stringListEntry.getValue()) != null) {
+          throw new IllegalStateException("Duplicate key");
+        }
+      }
+      Collection<List<WebTemplateNode>> childChoices = result.values();
 
-      for (List<WebTemplateNode> choces : childChoices) {
+      for (List<WebTemplateNode> choice : childChoices) {
 
-        if (choces.stream().noneMatch(WebTemplateNode::isMulti)) {
+        if (choice.stream().noneMatch(WebTemplateNode::isMulti)) {
 
-          for (WebTemplateNode childNode : choces) {
+          for (WebTemplateNode childNode : choice) {
             ImmutablePair<T, RMObject> pair =
                 extractPair(context, currentNode, choices, childNode, null);
             T childObject = pair.getLeft();
@@ -159,11 +143,12 @@ public abstract class Walker<T> {
             }
           }
         } else {
-          int size = calculateSize(context, choces.get(0));
+
+          int size = calculateSize(context, choice.get(0));
 
           List<Triple<T, RMObject, WebTemplateNode>> pairs = new ArrayList<>();
           for (int i = 0; i < size; i++) {
-            for (WebTemplateNode childNode : choces) {
+            for (WebTemplateNode childNode : choice) {
               ImmutablePair<T, RMObject> pair =
                   extractPair(context, currentNode, choices, childNode, i);
               if (pair.getLeft() != null && pair.getRight() != null) {
@@ -182,7 +167,7 @@ public abstract class Walker<T> {
               context.getNodeDeque().push(childNode);
               context.getObjectDeque().push(childObject);
               context.getRmObjectDeque().push(currentChild);
-              context.getCountMap().put(childNode, i);
+              context.getCountMap().put(new NodeId(childNode), i);
               handle(context);
             }
           }
@@ -196,53 +181,40 @@ public abstract class Walker<T> {
     context.getObjectDeque().remove();
   }
 
+  protected void handleDVText(
+      WebTemplateNode currentNode
+     ) {
+    // unwrap DV_CODED_TEXT
+    for (WebTemplateNode codeNode : new ArrayList<>(currentNode.getChildren())) {
+      if (codeNode.getRmType().equals(DV_CODED_TEXT)
+          && codeNode.getInputs().stream()
+              .map(WebTemplateInput::getSuffix)
+              .anyMatch("other"::equals)) {
+        WebTemplateNode textNode = new WebTemplateNode(codeNode);
+        textNode.setRmType(DV_TEXT);
+        currentNode.getChildren().add(textNode);
+      }
+    }
+
+    // Add dummy DV_CODED_TEXT
+    for (WebTemplateNode textNode : new ArrayList<>(currentNode.getChildren())) {
+      if (textNode.getRmType().equals(DV_TEXT)
+          && currentNode.getChildren().stream()
+              .filter(n -> n.getAqlPath(true).equals(textNode.getAqlPath(true)))
+              .noneMatch(n -> DV_CODED_TEXT.equals(n.getRmType()))) {
+        WebTemplateNode codeNode = new WebTemplateNode(textNode);
+        codeNode.setRmType(DV_CODED_TEXT);
+        currentNode.getChildren().add(codeNode);
+      }
+    }
+  }
+
   protected abstract ImmutablePair<T, RMObject> extractPair(
       Context<T> context,
       WebTemplateNode currentNode,
       Map<String, List<WebTemplateNode>> choices,
       WebTemplateNode childNode,
       Integer i);
-
-  protected Object extractRMChild(
-      RMObject currentRM,
-      WebTemplateNode currentNode,
-      WebTemplateNode childNode,
-      boolean isChoice,
-      Integer count,
-      Deque<WebTemplateNode> skippedNodes) {
-
-    RMObject incrementalRm = currentRM;
-    WebTemplateNode incrementalNode = currentNode;
-
-    if (skippedNodes != null) {
-      for (Iterator<WebTemplateNode> it = skippedNodes.descendingIterator(); it.hasNext(); ) {
-        WebTemplateNode node = it.next();
-        if (incrementalRm != null) {
-          Object incrementalchild =
-              extractRMChild(incrementalRm, incrementalNode, node, false, null);
-          if (incrementalchild instanceof List) {
-            if (((List<?>) incrementalchild).isEmpty()) {
-              incrementalRm = null;
-            } else {
-              incrementalRm = (RMObject) ((List<?>) incrementalchild).get(0);
-            }
-          } else {
-            incrementalRm = (RMObject) incrementalchild;
-          }
-        }
-        incrementalNode = node;
-      }
-    }
-
-    Object child;
-    if (incrementalRm != null) {
-      child = extractRMChild(incrementalRm, incrementalNode, childNode, isChoice, count);
-    } else {
-      child = null;
-    }
-
-    return child;
-  }
 
   protected abstract Object extractRMChild(
       RMObject currentRM,
@@ -257,7 +229,8 @@ public abstract class Walker<T> {
         && (Locatable.class.isAssignableFrom(typeInfo.getJavaClass())
             || EventContext.class.isAssignableFrom(typeInfo.getJavaClass())
             || DvInterval.class.isAssignableFrom(typeInfo.getJavaClass())
-            || IsmTransition.class.isAssignableFrom(typeInfo.getJavaClass()));
+            || IsmTransition.class.isAssignableFrom(typeInfo.getJavaClass())
+            || Element.class.isAssignableFrom(typeInfo.getJavaClass()));
   }
 
   protected abstract T extract(
@@ -269,6 +242,20 @@ public abstract class Walker<T> {
 
   protected void insertDefaults(Context<T> context) {}
 
+  protected Object wrap(Object child) {
+    if (child != null) {
+      if (String.class.isAssignableFrom(child.getClass())) {
+        child = new RmString((String) child);
+      } else if (Long.class.isAssignableFrom(child.getClass())) {
+        child = new RmLong((Long) child);
+      }
+      if (Boolean.class.isAssignableFrom(child.getClass())) {
+        child = new RmBoolean((Boolean) child);
+      }
+    }
+    return child;
+  }
+
   protected abstract int calculateSize(Context<T> context, WebTemplateNode childNode);
 
   protected RMObject deepClone(RMObject rmObject) {
@@ -277,22 +264,6 @@ public abstract class Walker<T> {
     }
     CanonicalJson canonicalXML = new CanonicalJson();
     return canonicalXML.unmarshal(canonicalXML.marshal(rmObject), rmObject.getClass());
-  }
-
-  protected String buildNamePath(Context<T> context, boolean addCount) {
-    StringBuilder sb = new StringBuilder();
-    for (Iterator<WebTemplateNode> iterator = context.getNodeDeque().descendingIterator();
-        iterator.hasNext(); ) {
-      WebTemplateNode node = iterator.next();
-      sb.append(node.getId());
-      if (node.getMax() != 1 && context.getCountMap().containsKey(node) && (addCount ||  context.getCountMap().get(node) != 0)) {
-        sb.append(":").append(context.getCountMap().get(node));
-      }
-      if (iterator.hasNext()) {
-        sb.append("/");
-      }
-    }
-    return sb.toString();
   }
 
   public static class EventHelper {

@@ -19,21 +19,11 @@
 
 package org.ehrbase.client.classgenerator;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.TypeSpec;
-import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.xmlbeans.XmlException;
 import org.assertj.core.groups.Tuple;
 import org.ehrbase.test_data.operationaltemplate.OperationalTemplateTestData;
@@ -42,6 +32,14 @@ import org.ehrbase.webtemplate.parser.OPTParser;
 import org.junit.Test;
 import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
 import org.openehr.schemas.v1.TemplateDocument;
+
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.*;
+import java.util.stream.Collectors;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class ClassGeneratorTest {
 
@@ -332,7 +330,8 @@ public class ClassGeneratorTest {
     ClassGeneratorResult generate = cut.generate(PACKAGE_NAME, new OPTParser(template).parse());
 
     Set<String> derDiagnoseDefiningCode =
-        generate.getClasses()
+        generate
+            .getClasses()
             .get("org.ehrbase.client.classgenerator.examples.diagnosecomposition.definition")
             .stream()
             .filter(t -> t.name.equals("NameDesProblemsDerDiagnoseDefiningCode"))
@@ -540,6 +539,45 @@ public class ClassGeneratorTest {
             .collect(Collectors.toList());
 
     assertThat(fieldSpecs).size().isEqualTo(286);
+  }
+
+  @Test
+  public void testGenerateGECCODiagnose() throws IOException, XmlException {
+    OPERATIONALTEMPLATE template =
+        TemplateDocument.Factory.parse(OperationalTemplateTestData.GECCO_DIAGNOSE.getStream())
+            .getTemplate();
+    ClassGenerator cut = new ClassGenerator(new ClassGeneratorConfig());
+    ClassGeneratorResult generate = cut.generate(PACKAGE_NAME, new OPTParser(template).parse());
+
+    List<FieldSpec> fieldSpecs =
+        generate.getClasses().values().stream()
+            .flatMap(Collection::stream)
+            .filter(t -> !t.kind.equals(TypeSpec.Kind.ENUM))
+            .map(t -> t.fieldSpecs)
+            .flatMap(List::stream)
+            .collect(Collectors.toList());
+
+    assertThat(fieldSpecs).size().isEqualTo(49);
+    assertThat(
+            generate.getClasses().entrySet().stream()
+                .filter(e -> StringUtils.endsWith(e.getKey(), "definition"))
+                .findFirst()
+                .map(Map.Entry::getValue)
+                .stream()
+                .flatMap(Collection::stream)
+                .filter(f -> f.kind.equals(TypeSpec.Kind.ENUM))
+                .map(f -> f.name)
+                .collect(Collectors.toList()))
+        .containsExactlyInAnyOrder(
+            "StatusDefiningCode",
+            "KategorieDefiningCode",
+            "NameDerKorperstelleDefiningCode",
+            "LateralitatDefiningCode",
+            "SchweregradDefiningCode",
+            "AussageUberDenAusschlussDefiningCode",
+            "ProblemDiagnoseDefiningCode",
+            "ProblemDiagnoseDefiningCode",
+            "AussageUberDieFehlendeInformationDefiningCode");
   }
 
   @Test

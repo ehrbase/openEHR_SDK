@@ -18,6 +18,8 @@
 package org.ehrbase.client.openehrclient.defaultrestclient.systematic.compositionquery;
 
 import com.nedap.archie.rm.composition.Composition;
+import com.nedap.archie.rm.composition.EventContext;
+import com.nedap.archie.rm.datavalues.DvCodedText;
 import com.nedap.archie.rm.datavalues.quantity.datetime.DvDateTime;
 import org.apache.commons.io.IOUtils;
 import org.ehrbase.client.classgenerator.examples.testalltypesenv1composition.TestAllTypesEnV1Composition;

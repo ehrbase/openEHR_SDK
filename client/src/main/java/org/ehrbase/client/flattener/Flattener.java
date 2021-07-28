@@ -29,12 +29,14 @@ import java.util.Arrays;
 import java.util.Objects;
 import java.util.Optional;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.reflect.FieldUtils;
 import org.ehrbase.client.annotations.Archetype;
 import org.ehrbase.client.annotations.Id;
 import org.ehrbase.client.annotations.Template;
 import org.ehrbase.client.exception.ClientException;
 import org.ehrbase.client.openehrclient.VersionUid;
 import org.ehrbase.util.exception.SdkException;
+import org.ehrbase.util.reflection.ReflectionHelper;
 import org.ehrbase.webtemplate.model.WebTemplateNode;
 import org.ehrbase.webtemplate.templateprovider.TemplateProvider;
 
@@ -61,21 +63,31 @@ public class Flattener {
 
   public <T> T flatten(RMObject locatable, Class<T> clazz) {
     try {
-      classGraph =
-          new ClassGraph()
-              .enableClassInfo()
-              .enableAnnotationInfo()
-              .acceptPackages(StringUtils.removeEnd(clazz.getPackageName(), ".definition"))
-              .scan();
-      String templateId =
-          classGraph
-              .getClassesWithAnnotation(Template.class.getName())
-              .loadClasses()
-              .get(0)
-              .getAnnotation(Template.class)
-              .value();
+
+
+
+
+
+
 
       T dto = createInstance(clazz);
+    Class<?> rootC = ReflectionHelper.findRootClass(clazz);
+      String packageNames = StringUtils.removeEnd(rootC.getPackageName(), ".definition");
+      classGraph =
+              new ClassGraph()
+                      .enableClassInfo()
+                      .enableAnnotationInfo()
+                      .acceptPackages(packageNames)
+                      .scan();
+
+      String templateId =
+              classGraph
+                      .getClassesWithAnnotation(Template.class.getName())
+                      .loadClasses()
+                      .get(0)
+                      .getAnnotation(Template.class)
+                      .value();
+
       String archetypeValue = clazz.getAnnotation(Archetype.class).value();
       WebTemplateNode root =
           templateProvider
@@ -96,13 +108,15 @@ public class Flattener {
       }
       return dto;
     } finally {
-      classGraph.close();
+      if (classGraph != null) {
+        classGraph.close();
+      }
     }
   }
 
   public static <T> void addVersion(T entity, VersionUid versionUid) {
     Optional<Field> idField =
-        Arrays.stream(entity.getClass().getDeclaredFields())
+        Arrays.stream(FieldUtils.getAllFields(entity.getClass()))
             .filter(f -> f.isAnnotationPresent(Id.class))
             .findAny();
     if (idField.isPresent()) {

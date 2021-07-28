@@ -19,26 +19,26 @@
 
 package org.ehrbase.serialisation.flatencoding.std.umarshal;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import com.nedap.archie.rm.composition.Composition;
 import com.nedap.archie.rm.composition.Observation;
 import com.nedap.archie.rm.datavalues.quantity.DvQuantity;
 import com.nedap.archie.rm.generic.PartySelf;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import org.apache.commons.io.IOUtils;
 import org.apache.xmlbeans.XmlException;
 import org.ehrbase.test_data.composition.CompositionTestDataSimSDTJson;
 import org.ehrbase.test_data.operationaltemplate.OperationalTemplateTestData;
 import org.ehrbase.validation.Validator;
-import org.ehrbase.webtemplate.filter.Filter;
 import org.ehrbase.webtemplate.model.WebTemplate;
 import org.ehrbase.webtemplate.parser.OPTParser;
 import org.junit.Assert;
 import org.junit.Test;
 import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
 import org.openehr.schemas.v1.TemplateDocument;
+
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class FlatJsonUnmarshallerTest {
 
@@ -47,14 +47,14 @@ public class FlatJsonUnmarshallerTest {
     OPERATIONALTEMPLATE template =
         TemplateDocument.Factory.parse(OperationalTemplateTestData.CORONA_ANAMNESE.getStream())
             .getTemplate();
-    WebTemplate webTemplate = new Filter().filter(new OPTParser(template).parse());
+    WebTemplate webTemplate = new OPTParser(template).parse();
 
     FlatJsonUnmarshaller cut = new FlatJsonUnmarshaller();
 
     String flat =
         IOUtils.toString(CompositionTestDataSimSDTJson.CORONA.getStream(), StandardCharsets.UTF_8);
 
-    Composition actual = cut.unmarshal(flat, webTemplate, template);
+    Composition actual = cut.unmarshal(flat, webTemplate);
 
     assertThat(actual).isNotNull();
 
@@ -78,7 +78,7 @@ public class FlatJsonUnmarshallerTest {
     OPERATIONALTEMPLATE template =
         TemplateDocument.Factory.parse(OperationalTemplateTestData.MULTI_OCCURRENCE.getStream())
             .getTemplate();
-    WebTemplate webTemplate = new Filter().filter(new OPTParser(template).parse());
+    WebTemplate webTemplate = new OPTParser(template).parse();
 
     FlatJsonUnmarshaller cut = new FlatJsonUnmarshaller();
 
@@ -86,7 +86,7 @@ public class FlatJsonUnmarshallerTest {
         IOUtils.toString(
             CompositionTestDataSimSDTJson.MULTI_OCCURRENCE.getStream(), StandardCharsets.UTF_8);
 
-    Composition actual = cut.unmarshal(flat, webTemplate, template);
+    Composition actual = cut.unmarshal(flat, webTemplate);
 
     assertThat(actual).isNotNull();
     assertThat(cut.getUnconsumed()).containsExactlyInAnyOrder();
@@ -102,7 +102,7 @@ public class FlatJsonUnmarshallerTest {
     OPERATIONALTEMPLATE template =
         TemplateDocument.Factory.parse(OperationalTemplateTestData.ALT_EVENTS.getStream())
             .getTemplate();
-    WebTemplate webTemplate = new Filter().filter(new OPTParser(template).parse());
+    WebTemplate webTemplate = new OPTParser(template).parse();
 
     FlatJsonUnmarshaller cut = new FlatJsonUnmarshaller();
 
@@ -110,7 +110,7 @@ public class FlatJsonUnmarshallerTest {
         IOUtils.toString(
             CompositionTestDataSimSDTJson.ALTERNATIVE_EVENTS.getStream(), StandardCharsets.UTF_8);
 
-    Composition actual = cut.unmarshal(flat, webTemplate, template);
+    Composition actual = cut.unmarshal(flat, webTemplate);
 
     assertThat(actual).isNotNull();
     assertThat(cut.getUnconsumed()).containsExactlyInAnyOrder();
@@ -126,7 +126,7 @@ public class FlatJsonUnmarshallerTest {
     OPERATIONALTEMPLATE template =
         TemplateDocument.Factory.parse(OperationalTemplateTestData.ALL_TYPES.getStream())
             .getTemplate();
-    WebTemplate webTemplate = new Filter().filter(new OPTParser(template).parse());
+    WebTemplate webTemplate = new OPTParser(template).parse();
 
     FlatJsonUnmarshaller cut = new FlatJsonUnmarshaller();
 
@@ -134,7 +134,7 @@ public class FlatJsonUnmarshallerTest {
         IOUtils.toString(
             CompositionTestDataSimSDTJson.ALL_TYPES.getStream(), StandardCharsets.UTF_8);
 
-    Composition actual = cut.unmarshal(flat, webTemplate, template);
+    Composition actual = cut.unmarshal(flat, webTemplate);
 
     assertThat(actual).isNotNull();
 
@@ -148,6 +148,32 @@ public class FlatJsonUnmarshallerTest {
     assertThat(((DvQuantity) choice).getUnits()).isEqualTo("mm[H20]");
 
     assertThat(cut.getUnconsumed()).containsExactlyInAnyOrder();
+
+    try {
+      new Validator(template).check(actual);
+    } catch (Exception e) {
+      Assert.fail(e.getMessage());
+    }
+  }
+
+  @Test
+  public void unmarshalDeterioriationAssessment() throws IOException, XmlException {
+    OPERATIONALTEMPLATE template =
+        TemplateDocument.Factory.parse(
+                OperationalTemplateTestData.DETERIORIATION_ASSESSMENT.getStream())
+            .getTemplate();
+    WebTemplate webTemplate = new OPTParser(template).parse();
+
+    FlatJsonUnmarshaller cut = new FlatJsonUnmarshaller();
+
+    String flat =
+        IOUtils.toString(
+            CompositionTestDataSimSDTJson.DETERIORIATION_ASSESSMENT.getStream(),
+            StandardCharsets.UTF_8);
+
+    Composition actual = cut.unmarshal(flat, webTemplate);
+
+    assertThat(actual).isNotNull();
 
     try {
       new Validator(template).check(actual);
