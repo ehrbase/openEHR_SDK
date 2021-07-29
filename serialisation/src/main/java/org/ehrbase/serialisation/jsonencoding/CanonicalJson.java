@@ -32,11 +32,7 @@ import com.fasterxml.jackson.databind.type.TypeFactory;
 import com.nedap.archie.base.OpenEHRBase;
 import com.nedap.archie.paths.PathSegment;
 import com.nedap.archie.rm.RMObject;
-import com.nedap.archie.rm.archetyped.Archetyped;
-import com.nedap.archie.rm.archetyped.Link;
-import com.nedap.archie.rm.archetyped.Locatable;
-import com.nedap.archie.rm.archetyped.Pathable;
-import com.nedap.archie.rm.archetyped.TemplateId;
+import com.nedap.archie.rm.archetyped.*;
 import com.nedap.archie.rm.datastructures.History;
 import com.nedap.archie.rm.support.identification.ArchetypeID;
 import com.nedap.archie.rm.support.identification.UIDBasedId;
@@ -202,8 +198,8 @@ public class CanonicalJson implements RMDataFormat {
 
         @Override
         public boolean useForType(JavaType t) {
-            return  t.getRawClass().equals(Object.class) ||
-                    (OpenEHRBase.class.isAssignableFrom(t.getRawClass()) &&
+            return (
+                    OpenEHRBase.class.isAssignableFrom(t.getRawClass()) &&
                             !ArchetypeID.class.equals(t.getRawClass()) &&
                             !TemplateId.class.equals(t.getRawClass()) &&
                             !Archetyped.class.equals(t.getRawClass()) &&
