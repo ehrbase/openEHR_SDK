@@ -23,6 +23,7 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 import com.google.common.base.CaseFormat;
 import com.nedap.archie.rm.changecontrol.VersionedObject;
 import com.nedap.archie.rm.support.identification.HierObjectId;
+import com.nedap.archie.rm.support.identification.ObjectId;
 import com.nedap.archie.rm.support.identification.ObjectRef;
 
 import java.time.format.DateTimeFormatter;
@@ -36,7 +37,7 @@ public class VersionedObjectResponseData<T> {
     @JsonProperty
     private HierObjectId uid;
     @JsonProperty(value = "owner_id")
-    private ObjectRef<?> ownerId;
+    private ObjectRef<? extends ObjectId> ownerId;
     @JsonProperty(value = "time_created")
     private String timeCreated;
 
@@ -67,11 +68,11 @@ public class VersionedObjectResponseData<T> {
         this.uid = uid;
     }
 
-    public ObjectRef<?> getOwnerId() {
+    public ObjectRef<? extends ObjectId> getOwnerId() {
         return ownerId;
     }
 
-    public void setOwnerId(ObjectRef<?> ownerId) {
+    public void setOwnerId(ObjectRef<? extends ObjectId> ownerId) {
         this.ownerId = ownerId;
     }
 

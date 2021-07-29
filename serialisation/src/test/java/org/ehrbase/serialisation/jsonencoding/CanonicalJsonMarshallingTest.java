@@ -9,6 +9,7 @@ import com.nedap.archie.rm.datavalues.quantity.datetime.DvDateTime;
 import com.nedap.archie.rm.datavalues.quantity.datetime.DvDuration;
 import com.nedap.archie.rm.ehr.Ehr;
 import com.nedap.archie.rm.support.identification.HierObjectId;
+import com.nedap.archie.rm.support.identification.ObjectId;
 import com.nedap.archie.rm.support.identification.ObjectRef;
 import org.junit.Assert;
 import org.junit.Test;
@@ -101,7 +102,7 @@ public class CanonicalJsonMarshallingTest {
 
     @Test
     public void marshallContribution() {
-        List<ObjectRef<?>> versions = new ArrayList<>();
+        List<ObjectRef<? extends ObjectId>> versions = new ArrayList<>();
         versions.add(new ObjectRef<>(new HierObjectId("COMPOSITION"), "local", "b5c4aaed-2adc-4c56-9005-e21ff3cca62a::local.ehrbase.org::2"));
 
         Contribution expected = new Contribution();
@@ -117,11 +118,11 @@ public class CanonicalJsonMarshallingTest {
 
     @Test
     public void marshallEhr() {
-        List<ObjectRef<?>> compositions = new ArrayList<>();
+        List<ObjectRef<? extends ObjectId>> compositions = new ArrayList<>();
         compositions.add(new ObjectRef<>(new HierObjectId("COMPOSITION"), "local", "b5c4aaed-2adc-4c56-9005-e21ff3cca62a::local.ehrbase.org::2"));
-        List<ObjectRef<?>> contributions = new ArrayList<>();
+        List<ObjectRef<? extends ObjectId>> contributions = new ArrayList<>();
         contributions.add(new ObjectRef<>(new HierObjectId("COMPOSITION"), "local", "b5c4aaed-2adc-4c56-9005-e21ff3cca62a::local.ehrbase.org::2"));
-        List<ObjectRef<?>> folders = new ArrayList<>();
+        List<ObjectRef<? extends ObjectId>> folders = new ArrayList<>();
         folders.add(new ObjectRef<>(new HierObjectId("COMPOSITION"), "local", "b5c4aaed-2adc-4c56-9005-e21ff3cca62a::local.ehrbase.org::2"));
 
         Ehr expected = new Ehr();
