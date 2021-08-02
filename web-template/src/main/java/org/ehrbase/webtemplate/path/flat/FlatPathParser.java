@@ -20,6 +20,8 @@ package org.ehrbase.webtemplate.path.flat;
 
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
+import org.apache.commons.lang3.StringUtils;
+import org.ehrbase.util.exception.SDKErrorListener;
 import org.ehrbase.util.exception.SdkException;
 
 public class FlatPathParser {
@@ -27,16 +29,40 @@ public class FlatPathParser {
     private FlatPathParser(){}
 
    public static FlatPathDto parse(String path){
-       try {
-           FlatLexer aqlLexer = new FlatLexer(CharStreams.fromString(path));
-         //  aqlLexer.addErrorListener(new AqlErrorListener());
-           CommonTokenStream commonTokenStream = new CommonTokenStream(aqlLexer);
-           FlatParser aqlParser = new FlatParser(commonTokenStream);
-        //   aqlParser.addErrorListener(new AqlErrorListener());
-           FlatPathVisitor listener = new FlatPathVisitor();
-           return listener.visitPath(aqlParser.path());
-       } catch (RuntimeException e) {
-           throw new SdkException(e.getMessage());
-       }
+      FlatPathDto dto = new FlatPathDto();
+
+      if (StringUtils.isNotBlank(path) && !"/".equals(path)){
+          String[] tempSplit;
+          String tempSubPath;
+
+          //extract Children
+          tempSplit = StringUtils.split( StringUtils.removeStart(path,"/"), "/", 2);
+          tempSubPath = tempSplit[0];
+
+          if(tempSplit.length >1){
+              dto.setChild(parse(tempSplit[1]));
+          }
+
+          //extract AttributeName
+          tempSplit = StringUtils.split(tempSubPath,"|",2);
+          tempSubPath = tempSplit[0];
+
+          if(tempSplit.length >1){
+              dto.setAttributeName(tempSplit[1]);
+          }
+
+          //extract Count
+          tempSplit = StringUtils.split(tempSubPath,":",2);
+          tempSubPath = tempSplit[0];
+
+          if(tempSplit.length >1){
+              dto.setCount(Integer.valueOf(tempSplit[1]));
+          }
+
+          //Rest is the name
+          dto.setName(tempSubPath);
+      }
+
+      return dto;
    }
 }

@@ -56,7 +56,7 @@ public class FlatPathVisitor extends FlatBaseVisitor<Object> {
   @Override
   public FlatPathDto visitPathSegment(FlatParser.PathSegmentContext ctx) {
     FlatPathDto pathDto = new FlatPathDto();
-    pathDto.setName(ctx.TEXT().getText());
+    pathDto.setName(ctx.text().getText());
       String digit = Optional.ofNullable( ctx.DIGITS()).map(ParseTree::getText).orElse(null);
       if (StringUtils.isNotBlank(digit)){
           try{
@@ -71,7 +71,9 @@ public class FlatPathVisitor extends FlatBaseVisitor<Object> {
   @Override
   public FlatPathDto visitPathEndSegment(FlatParser.PathEndSegmentContext ctx) {
     FlatPathDto pathDto = visitPathSegment(ctx.pathSegment());
-    pathDto.setAttributeName(visitAttribute(ctx.attribute()));
+    if (ctx.attribute() != null) {
+      pathDto.setAttributeName(visitAttribute(ctx.attribute()));
+    }
     return pathDto;
   }
 
