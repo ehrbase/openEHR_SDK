@@ -18,8 +18,8 @@
 
 package org.ehrbase.webtemplate.path.flat;
 
+
 import org.apache.commons.lang3.StringUtils;
-import org.ehrbase.webtemplate.parser.FlatPath;
 
 public class FlatPathDto {
 
@@ -30,7 +30,14 @@ public class FlatPathDto {
 
   public FlatPathDto() {}
 
+  public FlatPathDto(String path) {
+
+    this(FlatPathParser.parse(path));
+  }
+
+
   public FlatPathDto(FlatPathDto flatPathDto) {
+
     this.name = flatPathDto.getName();
     this.child = flatPathDto.getChild();
     this.attributeName = flatPathDto.getAttributeName();
@@ -74,10 +81,6 @@ public class FlatPathDto {
 
     sb.append(name);
 
-    if (child != null) {
-      sb.append('/').append(child.format());
-    }
-
     if(count != null){
       sb.append(':').append(count);
     }
@@ -85,7 +88,29 @@ public class FlatPathDto {
     if (attributeName != null) {
       sb.append('|').append(attributeName);
     }
-
+    if (child != null) {
+      sb.append('/').append(child.format());
+    }
     return sb.toString();
+  }
+
+  public FlatPathDto getLast() {
+    FlatPathDto path = this;
+    while (path.getChild() != null) {
+      path = path.getChild();
+    }
+    return path;
+  }
+
+  public static FlatPathDto removeEnd(FlatPathDto path, FlatPathDto remove) {
+    return new FlatPathDto(StringUtils.removeEnd(path.format(), remove.format()));
+  }
+
+  public static FlatPathDto removeStart(FlatPathDto path, FlatPathDto remove) {
+    return new FlatPathDto(StringUtils.removeStart(path.format(), remove.format()));
+  }
+
+  public static FlatPathDto addEnd(FlatPathDto path, FlatPathDto add) {
+    return new FlatPathDto(path.format() + "/" + StringUtils.removeStart(add.format(), "/"));
   }
 }
