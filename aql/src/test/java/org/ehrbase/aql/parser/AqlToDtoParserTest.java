@@ -174,7 +174,7 @@ public class AqlToDtoParserTest {
       fail("Expected AqlParseException");
     } catch (AqlParseException e) {
       assertThat(e.getMessage())
-          .isEqualTo("AQL Parse exception: line 1: char 113 mismatched input 'EHR' expecting FROM");
+          .isEqualTo("Parse exception: line 1: char 113 mismatched input 'EHR' expecting FROM");
     }
   }
 
