@@ -30,6 +30,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 import org.ehrbase.building.webtemplateskeletnbuilder.WebTemplateSkeletonBuilder;
 import org.ehrbase.client.classgenerator.shareddefinition.Setting;
@@ -38,6 +40,7 @@ import org.ehrbase.serialisation.jsonencoding.JacksonUtil;
 import org.ehrbase.serialisation.walker.defaultvalues.DefaultValuePath;
 import org.ehrbase.serialisation.walker.defaultvalues.DefaultValues;
 import org.ehrbase.webtemplate.model.WebTemplate;
+import org.ehrbase.webtemplate.path.flat.FlatPathDto;
 
 public class FlatJsonUnmarshaller {
 
@@ -81,7 +84,7 @@ public class FlatJsonUnmarshaller {
       }
 
       String templateId = generate.getArchetypeDetails().getTemplateId().getValue();
-      walker.walk(generate, currentValues, introspect, defaultValues, templateId);
+      walker.walk(generate, currentValues.entrySet().stream().collect(Collectors.toMap(e1 -> new FlatPathDto( e1.getKey()), Map.Entry::getValue)), introspect, defaultValues, templateId);
       consumedPath = walker.getConsumedPaths();
 
       return generate;

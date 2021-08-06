@@ -22,6 +22,7 @@ package org.ehrbase.serialisation.flatencoding.std.umarshal.rmunmarshaller;
 import com.nedap.archie.rm.datavalues.DvText;
 import org.ehrbase.serialisation.walker.Context;
 import org.ehrbase.webtemplate.model.WebTemplateInput;
+import org.ehrbase.webtemplate.path.flat.FlatPathDto;
 
 import java.util.Map;
 
@@ -39,7 +40,7 @@ public class DvTextRMUnmarshaller extends AbstractRMUnmarshaller<DvText> {
      * {@inheritDoc}
      */
     @Override
-    public void handle(String currentTerm, DvText rmObject, Map<String, String> currentValues, Context<Map<String, String>> context) {
+    public void handle(String currentTerm, DvText rmObject, Map<FlatPathDto, String> currentValues, Context<Map<FlatPathDto, String>> context) {
         if (context.getNodeDeque().peek().getInputs().stream().map(WebTemplateInput::getSuffix).anyMatch("other"::equals)) {
             setValue(currentTerm, "other", currentValues, rmObject::setValue, String.class);
         } else {

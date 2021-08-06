@@ -23,6 +23,7 @@ import com.nedap.archie.rm.composition.EventContext;
 import com.nedap.archie.rm.datavalues.quantity.datetime.DvDateTime;
 import com.nedap.archie.rm.generic.PartyIdentified;
 import org.ehrbase.serialisation.flatencoding.std.umarshal.rmunmarshaller.PartyIdentifiedRMUnmarshaller;
+import org.ehrbase.webtemplate.path.flat.FlatPathDto;
 
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -37,7 +38,7 @@ public class EventContextUnmarshalPostprocessor
 
   /** {@inheritDoc} */
   @Override
-  public void process(String term, EventContext rmObject, Map<String, String> values) {
+  public void process(String term, EventContext rmObject, Map<FlatPathDto, String> values) {
     setValue(
         term + PATH_DIVIDER + "_end_time",
         null,
@@ -49,7 +50,7 @@ public class EventContextUnmarshalPostprocessor
         },
         String.class);
 
-    Map<String, String> health_care_facilityValues =
+    Map<FlatPathDto, String> health_care_facilityValues =
         values.entrySet().stream()
             .filter(e -> e.getKey().startsWith(term + "/_health_care_facility"))
             .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));

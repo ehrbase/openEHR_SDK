@@ -44,17 +44,10 @@ import java.time.OffsetDateTime;
 import java.time.temporal.TemporalAccessor;
 import java.util.*;
 import java.util.function.Consumer;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class DefaultValues {
-
-  public static final Collector<Map.Entry<String, String>, ?, Map<String, String>>
-      ATTRIBUTE_COLLECTOR =
-          Collectors.toMap(
-              e -> StringUtils.substringBefore(StringUtils.substringAfter(e.getKey(), "|"), ":"),
-              stringStringEntry -> StringUtils.unwrap(stringStringEntry.getValue(), '"'));
 
   private final Map<DefaultValuePath, Object> defaultValueMap;
   private static final ObjectMapper OBJECT_MAPPER = JacksonUtil.getObjectMapper();
@@ -136,7 +129,9 @@ public class DefaultValues {
                   ObjectRef<GenericId> ref = new ObjectRef<>();
 
                   Map<String, String> attributes =
-                      subValues.entrySet().stream().collect(ATTRIBUTE_COLLECTOR);
+                      subValues.entrySet().stream().collect(Collectors.toMap(
+                              e1 -> StringUtils.substringBefore(StringUtils.substringAfter(e1.getKey(), "|"), ":"),
+                          stringStringEntry -> StringUtils.unwrap(stringStringEntry.getValue(), '"')));
 
                   ref.setNamespace(attributes.get("id_namespace"));
                   ref.setType(attributes.get("id_type"));
@@ -157,7 +152,9 @@ public class DefaultValues {
                                             StringUtils.substringAfter(e.getKey(), ":"), "|");
                                     return StringUtils.isBlank(s) ? 0 : Integer.parseInt(s);
                                   },
-                                  ATTRIBUTE_COLLECTOR));
+                                      Collectors.toMap(
+                                              e1 -> StringUtils.substringBefore(StringUtils.substringAfter(e1.getKey(), "|"), ":"),
+                                          stringStringEntry -> StringUtils.unwrap(stringStringEntry.getValue(), '"'))));
 
                   defaultValueMap.put(
                       path,
@@ -307,7 +304,9 @@ public class DefaultValues {
                                 StringUtils.substringAfter(e.getKey(), "|"), ":");
                         return StringUtils.isBlank(s) ? 0 : Integer.parseInt(s);
                       },
-                      ATTRIBUTE_COLLECTOR));
+                          Collectors.toMap(
+                                  e1 -> StringUtils.substringBefore(StringUtils.substringAfter(e1.getKey(), "|"), ":"),
+                              stringStringEntry -> StringUtils.unwrap(stringStringEntry.getValue(), '"'))));
 
     } else {
       map = Collections.emptyMap();

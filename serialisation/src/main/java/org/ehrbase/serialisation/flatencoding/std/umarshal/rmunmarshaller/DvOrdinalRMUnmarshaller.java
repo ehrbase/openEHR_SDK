@@ -26,6 +26,7 @@ import com.nedap.archie.rm.support.identification.TerminologyId;
 import org.ehrbase.serialisation.walker.Context;
 import org.ehrbase.util.exception.SdkException;
 import org.ehrbase.webtemplate.model.WebTemplateInputValue;
+import org.ehrbase.webtemplate.path.flat.FlatPathDto;
 
 import java.util.Map;
 import java.util.function.Consumer;
@@ -44,7 +45,7 @@ public class DvOrdinalRMUnmarshaller extends AbstractRMUnmarshaller<DvOrdinal> {
      * {@inheritDoc}
      */
     @Override
-    public void handle(String currentTerm, DvOrdinal rmObject, Map<String, String> currentValues, Context<Map<String, String>> context) {
+    public void handle(String currentTerm, DvOrdinal rmObject, Map<FlatPathDto, String> currentValues, Context<Map<FlatPathDto, String>> context) {
 
         rmObject.setSymbol(new DvCodedText());
         rmObject.getSymbol().setDefiningCode(new CodePhrase());

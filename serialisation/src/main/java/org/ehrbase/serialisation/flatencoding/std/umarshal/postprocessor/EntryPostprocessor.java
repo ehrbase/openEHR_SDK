@@ -28,6 +28,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.ehrbase.serialisation.flatencoding.std.umarshal.rmunmarshaller.PartyIdentifiedRMUnmarshaller;
+import org.ehrbase.webtemplate.path.flat.FlatPathDto;
 
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -38,7 +39,7 @@ public class EntryPostprocessor extends AbstractUnmarshalPostprocessor<Entry> {
 
   /** {@inheritDoc} */
   @Override
-  public void process(String term, Entry rmObject, Map<String, String> values) {
+  public void process(String term, Entry rmObject, Map<FlatPathDto, String> values) {
     consumedPath.add(term + PATH_DIVIDER + "encoding|code");
     consumedPath.add(term + PATH_DIVIDER + "encoding|terminology");
 
@@ -55,7 +56,7 @@ public class EntryPostprocessor extends AbstractUnmarshalPostprocessor<Entry> {
       rmObject.setSubject(new PartySelf());
     }
 
-    Map<String, String> providerList =
+    Map<FlatPathDto, String> providerList =
         values.entrySet().stream()
             .filter(e -> e.getKey().startsWith(term + PATH_DIVIDER + "_provider"))
             .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
