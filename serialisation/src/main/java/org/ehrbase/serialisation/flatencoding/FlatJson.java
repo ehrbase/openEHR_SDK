@@ -34,7 +34,6 @@ public class FlatJson implements RMDataFormat {
   private final OPERATIONALTEMPLATE operationaltemplate;
   private final WebTemplate templateIntrospect;
   private final FlatJsonMarshaller flatJsonMarshaller;
-  private final FlatJsonUnmarshaller flatJsonUnmarshaller;
 
   FlatJson(FlatJasonProvider flatJasonProvider, String templateId) {
 
@@ -45,7 +44,7 @@ public class FlatJson implements RMDataFormat {
             .orElseThrow(
                 () -> new SdkException(String.format("Template %s not found", templateId)));
 
-    flatJsonUnmarshaller = new FlatJsonUnmarshaller();
+
     templateIntrospect =
         flatJasonProvider
             .getTemplateProvider()
@@ -77,6 +76,6 @@ public class FlatJson implements RMDataFormat {
   }
 
   public Composition unmarshal(String value) {
-    return flatJsonUnmarshaller.unmarshal(value, templateIntrospect);
+    return new FlatJsonUnmarshaller().unmarshal(value, templateIntrospect);
   }
 }

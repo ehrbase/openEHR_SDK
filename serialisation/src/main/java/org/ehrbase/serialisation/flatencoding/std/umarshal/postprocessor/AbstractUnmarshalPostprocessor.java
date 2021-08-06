@@ -28,6 +28,7 @@ import java.util.Set;
 import java.util.function.Consumer;
 import org.apache.commons.lang3.StringUtils;
 import org.ehrbase.serialisation.jsonencoding.JacksonUtil;
+import org.ehrbase.webtemplate.path.flat.FlatPathDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -60,11 +61,11 @@ public abstract class AbstractUnmarshalPostprocessor<T extends RMObject>
   protected <S> void setValue(
       String term,
       String propertyName,
-      Map<String, String> values,
+      Map<FlatPathDto, String> values,
       Consumer<S> consumer,
       Class<S> clazz) {
     String key = propertyName != null ? term + "|" + propertyName : term;
-    String jasonValue = values.get(key);
+    String jasonValue = FlatPathDto.get(values,(key));
     if (StringUtils.isNotBlank(jasonValue)) {
       try {
         S value = OBJECT_MAPPER.readValue(jasonValue, clazz);

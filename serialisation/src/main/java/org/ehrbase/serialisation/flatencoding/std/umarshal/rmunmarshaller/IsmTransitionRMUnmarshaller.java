@@ -24,6 +24,7 @@ import com.nedap.archie.rm.datatypes.CodePhrase;
 import com.nedap.archie.rm.datavalues.DvCodedText;
 import com.nedap.archie.rm.support.identification.TerminologyId;
 import org.ehrbase.serialisation.walker.Context;
+import org.ehrbase.webtemplate.path.flat.FlatPathDto;
 
 import java.util.Map;
 
@@ -35,7 +36,8 @@ public class IsmTransitionRMUnmarshaller extends AbstractRMUnmarshaller<IsmTrans
     }
 
     @Override
-    public void handle(String currentTerm, IsmTransition rmObject, Map<String, String> currentValues, Context<Map<String, String>> context) {
+    public void handle(String currentTerm, IsmTransition rmObject, Map<FlatPathDto, String> currentValues, Context<Map<FlatPathDto, String>> context) {
+
         rmObject.setCurrentState(new DvCodedText());
         rmObject.getCurrentState().setDefiningCode(new CodePhrase());
         rmObject.getCurrentState().getDefiningCode().setTerminologyId(new TerminologyId());

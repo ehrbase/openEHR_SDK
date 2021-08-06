@@ -25,11 +25,12 @@ import com.nedap.archie.rm.support.identification.GenericId;
 import com.nedap.archie.rm.support.identification.PartyRef;
 import org.apache.commons.lang3.StringUtils;
 import org.ehrbase.serialisation.walker.Context;
+import org.ehrbase.webtemplate.path.flat.FlatPathDto;
 
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static org.ehrbase.serialisation.walker.defaultvalues.DefaultValues.ATTRIBUTE_COLLECTOR;
 import static org.ehrbase.webtemplate.parser.OPTParser.PATH_DIVIDER;
 
 public class PartyIdentifiedRMUnmarshaller extends AbstractRMUnmarshaller<PartyIdentified> {
@@ -42,8 +43,8 @@ public class PartyIdentifiedRMUnmarshaller extends AbstractRMUnmarshaller<PartyI
   public void handle(
       String currentTerm,
       PartyIdentified rmObject,
-      Map<String, String> currentValues,
-      Context<Map<String, String>> context) {
+      Map<FlatPathDto, String> currentValues,
+      Context<Map<FlatPathDto, String>> context) {
     setValue(currentTerm, "name", currentValues, rmObject::setName, String.class);
     rmObject.setExternalRef(new PartyRef());
     rmObject.getExternalRef().setId(new GenericId());
@@ -69,16 +70,13 @@ public class PartyIdentifiedRMUnmarshaller extends AbstractRMUnmarshaller<PartyI
     Map<Integer, Map<String, String>> identifiers =
         currentValues.entrySet().stream()
             .filter(
-                s -> StringUtils.startsWith(s.getKey(), currentTerm + PATH_DIVIDER + "_identifier"))
+                s -> s.getKey().startsWith( currentTerm + PATH_DIVIDER + "_identifier"))
             .collect(
                 Collectors.groupingBy(
-                    e -> {
-                      String s =
-                          StringUtils.substringBefore(
-                              StringUtils.substringAfter(e.getKey(), ":"), "|");
-                      return StringUtils.isBlank(s) ? 0 : Integer.parseInt(s);
-                    },
-                    ATTRIBUTE_COLLECTOR));
+                    e -> Optional.ofNullable(e.getKey().getCount()).orElse(0),
+                        Collectors.toMap(
+                                e1 -> e1.getKey().getLast().getAttributeName(),
+                            stringStringEntry -> StringUtils.unwrap(stringStringEntry.getValue(), '"'))));
 
     rmObject.setIdentifiers(
         identifiers.values().stream().map(this::toId).collect(Collectors.toList()));

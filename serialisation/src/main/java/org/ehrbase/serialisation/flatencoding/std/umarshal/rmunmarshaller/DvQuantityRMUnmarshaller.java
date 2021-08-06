@@ -25,6 +25,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.ehrbase.serialisation.walker.Context;
 import org.ehrbase.webtemplate.model.WebTemplateInput;
 import org.ehrbase.webtemplate.model.WebTemplateInputValue;
+import org.ehrbase.webtemplate.path.flat.FlatPathDto;
 
 import java.util.Collections;
 import java.util.List;
@@ -45,7 +46,7 @@ public class DvQuantityRMUnmarshaller extends AbstractRMUnmarshaller<DvQuantity>
      * {@inheritDoc}
      */
     @Override
-    public void handle(String currentTerm, DvQuantity rmObject, Map<String, String> currentValues, Context<Map<String, String>> context) {
+    public void handle(String currentTerm, DvQuantity rmObject, Map<FlatPathDto, String> currentValues, Context<Map<FlatPathDto, String>> context) {
         setValue(currentTerm, "magnitude", currentValues, rmObject::setMagnitude, Double.class);
         setValue(currentTerm, "units", currentValues, rmObject::setUnits, String.class);
         if (rmObject.getUnits() == null) {

@@ -21,6 +21,8 @@ package org.ehrbase.webtemplate.path.flat;
 
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.Map;
+
 public class FlatPathDto {
 
   private String name;
@@ -112,5 +114,24 @@ public class FlatPathDto {
 
   public static FlatPathDto addEnd(FlatPathDto path, FlatPathDto add) {
     return new FlatPathDto(path.format() + "/" + StringUtils.removeStart(add.format(), "/"));
+  }
+
+  @Override
+  public String toString() {
+    return format();
+  }
+
+  public boolean startsWith(String otherPath) {
+    return StringUtils.startsWith(format(),otherPath);
+  }
+
+  public boolean isEqualTo(String otherPath){
+
+    return format().equals(otherPath);
+  }
+
+  public static  <T> T get(Map<FlatPathDto,T> map,String otherPath){
+
+    return map.entrySet().stream().filter(d -> d.getKey().format().equals(otherPath)).map(Map.Entry::getValue).findAny().orElse(null);
   }
 }
