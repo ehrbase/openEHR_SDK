@@ -47,7 +47,7 @@ import static org.ehrbase.client.openehrclient.defaultrestclient.DefaultRestClie
 
 public class DefaultRestTemplateEndpoint implements TemplateEndpoint {
 
-    public static final String DEFINITION_TEMPLATE_ADL_1_4_PATH = "definition/template/adl1.4/";
+    public static final String DEFINITION_TEMPLATE_ADL_1_4_PATH = "rest/openehr/v1/definition/template/adl1.4/";
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private final DefaultRestClient defaultRestClient;
