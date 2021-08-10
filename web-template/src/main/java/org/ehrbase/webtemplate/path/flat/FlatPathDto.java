@@ -21,7 +21,9 @@ package org.ehrbase.webtemplate.path.flat;
 
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.AbstractMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class FlatPathDto {
 
@@ -122,16 +124,62 @@ public class FlatPathDto {
   }
 
   public boolean startsWith(String otherPath) {
-    return StringUtils.startsWith(format(),otherPath);
+    FlatPathDto other = new FlatPathDto(otherPath);
+    FlatPathDto me = new FlatPathDto(this);
+    do{
+
+      if (!Objects.equals(me.getName(),other.getName())){
+        break;
+      }
+      if (other.getAttributeName() != null && !Objects.equals(me.getAttributeName(), other.getAttributeName())
+      ){
+        break;
+      }
+
+      if (!Objects.equals(me.getCount(),other.getCount())
+       && !(me.getCount() == null && Objects.equals(other.getCount(),0)) && !(Objects.equals(me.getCount(), 0) && other.getCount() == null)
+      ){
+        break;
+      }
+
+
+      other = other.getChild();
+      me = me.child;
+    }while (other != null && me != null);
+
+    return other == null;
   }
 
   public boolean isEqualTo(String otherPath){
 
-    return format().equals(otherPath);
+    FlatPathDto other = new FlatPathDto(otherPath);
+    FlatPathDto me = new FlatPathDto(this);
+    do{
+
+      if (!Objects.equals(me.getName(),other.getName())){
+        break;
+      }
+      if (!Objects.equals(me.getAttributeName(), other.getAttributeName())
+      ){
+        break;
+      }
+
+      if (!Objects.equals(me.getCount(),other.getCount())
+              && !(me.getCount() == null && Objects.equals(other.getCount(),0)) && !(Objects.equals(me.getCount(), 0) && other.getCount() == null)
+      ){
+        break;
+      }
+
+
+      other = other.getChild();
+      me = me.child;
+    }while (other != null && me != null);
+
+    return other == null && me == null;
   }
 
-  public static  <T> T get(Map<FlatPathDto,T> map,String otherPath){
+  public static  <T> Map.Entry<FlatPathDto,T> get(Map<FlatPathDto,T> map, String otherPath){
 
-    return map.entrySet().stream().filter(d -> d.getKey().format().equals(otherPath)).map(Map.Entry::getValue).findAny().orElse(null);
+    return map.entrySet().stream().filter(d -> d.getKey().isEqualTo(otherPath)).findAny().orElse(new AbstractMap.SimpleEntry<>(null,null));
   }
 }

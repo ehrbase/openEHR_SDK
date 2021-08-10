@@ -28,6 +28,7 @@ public enum CompositionTestDataSimSDTJson {
   CORONA("Corona", "corona.json"),
   CORONA_WITH_CONTEXT("Corona", "corona_with_context.json"),
   MULTI_OCCURRENCE("multi_occurrence", "multi_occurrence.json"),
+  MISSING_COUNT("flat_with_missing_count.json", "flat_with_missing_count.json"),
   ALL_TYPES("test_all_types", "test_all_types.json"),
   DETERIORIATION_ASSESSMENT(
       "EREACT - Deterioration_assessment", "EREACT - Deterioration_assessment.json");

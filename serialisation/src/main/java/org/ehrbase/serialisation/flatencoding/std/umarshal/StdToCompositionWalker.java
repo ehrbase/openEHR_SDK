@@ -27,7 +27,6 @@ import com.nedap.archie.rm.datavalues.DvCodedText;
 import com.nedap.archie.rm.generic.PartyRelated;
 import com.nedap.archie.rm.support.identification.TerminologyId;
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.ehrbase.serialisation.flatencoding.std.umarshal.postprocessor.UnmarshalPostprocessor;
 import org.ehrbase.serialisation.flatencoding.std.umarshal.rmunmarshaller.DefaultRMUnmarshaller;
@@ -96,7 +95,7 @@ public class StdToCompositionWalker extends ToCompositionWalker<Map<FlatPathDto,
 
     Map<FlatPathDto, String> subValues =
         context.getObjectDeque().peek().entrySet().stream()
-            .filter(e -> startsWith( e.getKey(),path))
+            .filter(e -> e.getKey().startsWith(path))
             .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
     if (isChoice && !isMatchingNode(subValues, context, child)) {
@@ -139,7 +138,7 @@ public class StdToCompositionWalker extends ToCompositionWalker<Map<FlatPathDto,
         context.getNodeDeque().remove();
         subValues =
             subValues.entrySet().stream()
-                .filter(e ->  !startsWith(e.getKey(),path))
+                .filter(e -> !e.getKey().startsWith(path))
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
       }
 
@@ -298,9 +297,10 @@ public class StdToCompositionWalker extends ToCompositionWalker<Map<FlatPathDto,
     String finalNamePath = namePath;
     Integer count =
         context.getObjectDeque().peek().keySet().stream()
-            .filter(s -> s.startsWith( finalNamePath))
-                .map(s -> FlatPathDto.removeStart(s,new FlatPathDto(finalNamePath)).getCount())
-            .filter(Objects::nonNull)
+            .filter(s -> s.startsWith(finalNamePath))
+            .map(s -> FlatPathDto.removeStart(s, new FlatPathDto(finalNamePath)))
+            .filter(n -> n.getName().equals(childNode.getId()))
+            .map(n -> Optional.ofNullable(n.getCount()).orElse(0))
             .sorted()
             .reduce((first, second) -> second)
             .map(i -> i + 1)
@@ -310,11 +310,6 @@ public class StdToCompositionWalker extends ToCompositionWalker<Map<FlatPathDto,
       context.getCountMap().put(new NodeId(childNode), oldCount);
     }
     return count;
-  }
-
-  public static boolean startsWith(FlatPathDto start, String path){
-
-    return StringUtils.startsWith(start.format(),path);
   }
 
   public Set<String> getConsumedPaths() {
