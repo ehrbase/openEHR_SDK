@@ -274,4 +274,53 @@ public class FlatJsonTest {
             "Extra path: encounter/body_temperature:1/any_event:0/temperature|magnitude, value: 22",
             "Extra path: encounter/body_temperature:1/any_event:1/temperature|magnitude, value: 11");
   }
+
+  @Test
+  public void roundTripMissingCount() throws IOException {
+    TestDataTemplateProvider templateProvider = new TestDataTemplateProvider();
+    FlatJson cut =
+            new FlatJasonProvider(templateProvider)
+                    .buildFlatJson(FlatFormat.SIM_SDT, "ehrbase_multi_occurrence.de.v1");
+
+    String flat =
+            IOUtils.toString(
+                    CompositionTestDataSimSDTJson.MISSING_COUNT.getStream(), StandardCharsets.UTF_8);
+    Composition unmarshal = cut.unmarshal(flat);
+
+    assertThat(unmarshal).isNotNull();
+
+    String actual = cut.marshal(unmarshal);
+
+    String expected =
+            IOUtils.toString(
+                    CompositionTestDataSimSDTJson.MISSING_COUNT.getStream(), StandardCharsets.UTF_8);
+
+    List<String> errors = compere(actual, expected);
+
+    assertThat(errors)
+            .filteredOn(s -> s.startsWith("Missing"))
+            .containsExactlyInAnyOrder(
+                    "Missing path: encounter/body_temperature:0/any_event:0/temperature|magnitude, value: 22.0",
+                    "Missing path: encounter/body_temperature:1/any_event:0/temperature|magnitude, value: 22.0",
+                    "Missing path: encounter/body_temperature:1/any_event:1/temperature|magnitude, value: 11.0",
+                    "Missing path: encounter/body_temperature:0/any_event:0/temperature|unit, value: Cel",
+                    "Missing path: encounter/body_temperature:0/any_event:0/body_exposure|terminology, value: local",
+                    "Missing path: encounter/body_temperature:0/any_event:0/body_exposure|value, value: Appropriate clothing/bedding",
+                    "Missing path: encounter/body_temperature:0/any_event:0/body_exposure|code, value: at0033",
+                    "Missing path: encounter/body_temperature:0/any_event:0/current_day_of_menstrual_cycle, value: 3",
+                    "Missing path: encounter/body_temperature:0/any_event:0/time, value: 2020-10-06T13:30:34.328873+02:00");
+
+    assertThat(errors)
+            .filteredOn(s -> s.startsWith("Extra"))
+            .containsExactlyInAnyOrder(
+                    "Extra path: encounter/body_temperature:0/any_event/temperature|magnitude, value: 22",
+                    "Extra path: encounter/body_temperature:0/any_event/temperature|unit, value: Cel",
+                    "Extra path: encounter/body_temperature:0/any_event/body_exposure|code, value: at0033",
+                    "Extra path: encounter/body_temperature:0/any_event/body_exposure|value, value: Appropriate clothing/bedding",
+                    "Extra path: encounter/body_temperature:0/any_event/body_exposure|terminology, value: local",
+                    "Extra path: encounter/body_temperature:0/any_event/current_day_of_menstrual_cycle, value: 3",
+                    "Extra path: encounter/body_temperature:0/any_event/time, value: 2020-10-06T13:30:34.328873+02:00",
+                    "Extra path: encounter/body_temperature:1/any_event:0/temperature|magnitude, value: 22",
+                    "Extra path: encounter/body_temperature:1/any_event:1/temperature|magnitude, value: 11");
+  }
 }

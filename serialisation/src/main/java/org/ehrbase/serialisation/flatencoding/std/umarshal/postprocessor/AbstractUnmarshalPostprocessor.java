@@ -65,18 +65,19 @@ public abstract class AbstractUnmarshalPostprocessor<T extends RMObject>
       Consumer<S> consumer,
       Class<S> clazz) {
     String key = propertyName != null ? term + "|" + propertyName : term;
-    String jasonValue = FlatPathDto.get(values,(key));
+    Map.Entry<FlatPathDto, String> entry = FlatPathDto.get(values, key);
+    String jasonValue = entry.getValue();
     if (StringUtils.isNotBlank(jasonValue)) {
       try {
         S value = OBJECT_MAPPER.readValue(jasonValue, clazz);
         consumer.accept(value);
-        consumedPath.add(key);
+        consumedPath.add(entry.getKey().format());
       } catch (JsonProcessingException e) {
         log.error(e.getMessage());
       }
     } else {
       consumer.accept(null);
-      consumedPath.add(key);
+
     }
   }
 }

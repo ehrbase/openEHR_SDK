@@ -33,6 +33,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.ehrbase.building.webtemplateskeletnbuilder.WebTemplateSkeletonBuilder;
 import org.ehrbase.client.classgenerator.shareddefinition.Setting;
 import org.ehrbase.serialisation.exception.UnmarshalException;
@@ -85,6 +86,9 @@ public class FlatJsonUnmarshaller {
 
       walker.walk(generate, currentValues.entrySet().stream().collect(Collectors.toMap(e1 -> new FlatPathDto( e1.getKey()), Map.Entry::getValue)), introspect, defaultValues);
       consumedPath = walker.getConsumedPaths();
+      if (!CollectionUtils.isEmpty(getUnconsumed())){
+//        throw new UnmarshalException(String.format("Could not consume Parts %s",getUnconsumed()));
+      }
 
       return generate;
     } catch (JsonProcessingException e) {
