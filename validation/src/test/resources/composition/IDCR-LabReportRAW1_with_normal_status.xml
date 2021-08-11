@@ -171,7 +171,7 @@
                                     <value xsi:type="DV_QUANTITY">
                                         <normal_status xsi:type="CODE_PRASE">
                                             <terminology_id>
-                                                <value>openehr</value>
+                                                <value>openehr_normal_statuses</value>
                                             </terminology_id>
                                             <code_string>H</code_string>
                                         </normal_status>

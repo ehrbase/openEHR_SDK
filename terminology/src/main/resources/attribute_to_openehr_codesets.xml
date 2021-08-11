@@ -133,7 +133,7 @@
     <map>
         <rm_attribute>normal_status</rm_attribute>
         <terminology>openehr_normal_status</terminology>
-        <container>group</container>
+        <container>codeset</container>
         <match>
             <codeset language="en" id="normal statuses"/>
         </match>
