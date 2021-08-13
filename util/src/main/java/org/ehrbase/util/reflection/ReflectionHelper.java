@@ -67,6 +67,16 @@ public class ReflectionHelper {
     }
   }
 
+  public static Class<?> findRootClass(Class<?> clazz){
+    Class<?> rootC = clazz;
+    while (!rootC.getSuperclass().equals(Object.class)){
+
+      rootC = rootC.getSuperclass();
+    }
+
+    return rootC;
+  }
+
   private static <T, S extends ClassDependent<T>> Map<Class<? extends T>, S> buildInternal(
       Class<?> root) {
     Map<Class<? extends T>, S> classSMap;

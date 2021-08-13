@@ -48,7 +48,8 @@ public class TerminologyCheck implements I_TerminologyCheck {
                 break;
 
             case CODESET: //a codestring defined in a codeset
-                valid = terminologyInterface.codeSet(codePhrase.getTerminologyId().getValue()).hasCode(codePhrase);
+                String terminologyId = codePhrase.getTerminologyId().getValue();
+                valid = terminologyInterface.codeSet(terminologyId).hasCode(codePhrase);
                 if (!valid) {
                     throw new IllegalArgumentException("supplied code string [" + codePhrase.getCodeString() + "] is not found in codeset:" + attribute);
                 }

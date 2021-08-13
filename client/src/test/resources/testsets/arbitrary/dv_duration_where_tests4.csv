@@ -1,0 +1,11 @@
+# the path is quoted as it contains a comma (csv delimiter)
+#
+# PostgreSQL uses the following conversions
+# See https://www.postgresql.org/docs/current/datatype-datetime.html#DATATYPE-INTERVAL-OUTPUT
+#
+# select 'P1Y'::interval = 'P360D'::interval
+# select 'P1Y'::interval = 'P12M'::interval
+# select 'P1M'::interval = 'P30D'::interval
+###################################################
+dv_duration_tests_select.txt, "c/uid/value = $comp_uuid AND i/activities[at0001]/description[at0002]/items[at0003]/value/value = 'P360D'",P1Y
+dv_duration_tests_select.txt, "c/uid/value = $comp_uuid AND i/activities[at0001]/description[at0002]/items[at0003]/value/value = 'P12M'",P1Y

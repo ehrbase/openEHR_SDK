@@ -34,4 +34,8 @@ public class ArbitraryQuery extends TestQueryEngine {
         return true;
     }
 
+    public void setCompositionUUID(UUID compositionUUID){
+        this.compositionUUID = compositionUUID;
+    }
+
 }

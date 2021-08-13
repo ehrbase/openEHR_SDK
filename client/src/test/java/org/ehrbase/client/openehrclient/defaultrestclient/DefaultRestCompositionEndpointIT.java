@@ -39,6 +39,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Optional;
 import java.util.UUID;
+
+import net.sf.cglib.proxy.Enhancer;
+import net.sf.cglib.proxy.MethodInterceptor;
 import org.apache.commons.io.IOUtils;
 import org.assertj.core.groups.Tuple;
 import org.ehrbase.client.Integration;
@@ -56,11 +59,16 @@ import org.ehrbase.client.classgenerator.examples.episodeofcarecomposition.Episo
 import org.ehrbase.client.classgenerator.examples.episodeofcarecomposition.definition.EpisodeofcareAdminEntry;
 import org.ehrbase.client.classgenerator.examples.episodeofcarecomposition.definition.EpisodeofcareTeamElement;
 import org.ehrbase.client.classgenerator.examples.geccoserologischerbefundcomposition.GECCOSerologischerBefundComposition;
+import org.ehrbase.client.classgenerator.examples.geccoserologischerbefundcomposition.definition.AnforderungDefiningCode;
+import org.ehrbase.client.classgenerator.examples.geccoserologischerbefundcomposition.definition.BefundJedesEreignisPointEvent;
+import org.ehrbase.client.classgenerator.examples.geccoserologischerbefundcomposition.definition.BefundObservation;
 import org.ehrbase.client.classgenerator.examples.geccoserologischerbefundcomposition.definition.ProAnalytQuantitativesErgebnisDvCount;
 import org.ehrbase.client.classgenerator.examples.virologischerbefundcomposition.VirologischerBefundComposition;
 import org.ehrbase.client.classgenerator.examples.virologischerbefundcomposition.definition.ProVirusCluster;
+import org.ehrbase.client.classgenerator.shareddefinition.Language;
 import org.ehrbase.client.classgenerator.shareddefinition.ParticipationMode;
 import org.ehrbase.client.classgenerator.shareddefinition.Setting;
+import org.ehrbase.client.classgenerator.shareddefinition.Territory;
 import org.ehrbase.client.exception.ClientException;
 import org.ehrbase.client.exception.OptimisticLockException;
 import org.ehrbase.client.exception.WrongStatusCodeException;
@@ -118,6 +126,122 @@ public class DefaultRestCompositionEndpointIT {
   }
 
   @Test
+  public void testSaveCompositionEntityProxy() {
+
+
+    UUID ehr = openEhrClient.ehrEndpoint().createEhr();
+    EhrbaseBloodPressureSimpleDeV0Composition bloodPressureSimpleDeV0 =
+            TestData.buildEhrbaseBloodPressureSimpleDeV0();
+
+    ProxyEhrbaseBloodPressureSimpleDeV0Composition proxy = new ProxyEhrbaseBloodPressureSimpleDeV0Composition();
+
+    proxy.dummy = "dummy";
+
+    proxy.setStartTimeValue(
+            OffsetDateTime.of(2019, 04, 03, 22, 00, 00, 00, ZoneOffset.UTC));
+    proxy.setEndTimeValue(OffsetDateTime.now());
+    proxy.setBloodPressureTrainingSample(new ArrayList<>());
+    proxy.setLanguage(Language.DE);
+    proxy.setTerritory(Territory.DE);
+    proxy.setCategoryDefiningCode(org.ehrbase.client.classgenerator.shareddefinition.Category.EVENT);
+    proxy.setSettingDefiningCode(Setting.NURSING_HOME_CARE);
+    proxy.setComposer(new PartyIdentified(null, "Test", null));
+    proxy.setParticipations(new ArrayList<>());
+    proxy
+            .getParticipations()
+            .add(
+                    new Participation(
+                            new PartyIdentified(null, "Test", null), new DvText("Pos1"), null, null));
+    proxy
+            .getParticipations()
+            .add(
+                    new Participation(
+                            new PartyIdentified(null, "Test2", null), new DvText("Pos2"), null, null));
+
+
+    proxy.setBloodPressureTrainingSample(bloodPressureSimpleDeV0.getBloodPressureTrainingSample());
+
+
+    openEhrClient.compositionEndpoint(ehr).mergeCompositionEntity(proxy);
+    assertThat(proxy.getVersionUid()).isNotNull();
+    assertThat(proxy.getVersionUid().getVersion()).isEqualTo(1L);
+
+    proxy.setSettingDefiningCode(Setting.EMERGENCY_CARE);
+    openEhrClient.compositionEndpoint(ehr).mergeCompositionEntity(proxy);
+    assertThat(proxy.getVersionUid()).isNotNull();
+    assertThat(proxy.getVersionUid().getVersion()).isEqualTo(2L);
+
+    proxy.setVersionUid(
+            new VersionUid(
+                    proxy.getVersionUid().getUuid(),
+                    proxy.getVersionUid().getSystem(),
+                    1L));
+
+    try {
+      openEhrClient.compositionEndpoint(ehr).mergeCompositionEntity(proxy);
+      fail();
+    } catch (RuntimeException e) {
+      assertThat(e.getClass()).isEqualTo(OptimisticLockException.class);
+    }
+  }
+
+  @Test
+  public void testSaveCompositionEntityCgiProxy() {
+
+
+    UUID ehr = openEhrClient.ehrEndpoint().createEhr();
+    EhrbaseBloodPressureSimpleDeV0Composition bloodPressureSimpleDeV0 =
+            TestData.buildEhrbaseBloodPressureSimpleDeV0();
+
+    Enhancer enhancer = new Enhancer();
+    enhancer.setSuperclass(EhrbaseBloodPressureSimpleDeV0Composition.class);
+    enhancer.setCallback((MethodInterceptor) (obj, method, args, proxy) -> {
+      if (method.getDeclaringClass() != Object.class && method.getName().equals("getLanguage")) {
+        return Language.EN;
+      } else {
+        return proxy.invokeSuper(obj, args);
+      }
+    } );
+
+   EhrbaseBloodPressureSimpleDeV0Composition proxy = (EhrbaseBloodPressureSimpleDeV0Composition) enhancer.create();
+
+
+    proxy.setStartTimeValue(
+            OffsetDateTime.of(2019, 04, 03, 22, 00, 00, 00, ZoneOffset.UTC));
+    proxy.setEndTimeValue(OffsetDateTime.now());
+    proxy.setBloodPressureTrainingSample(new ArrayList<>());
+    proxy.setLanguage(Language.DE);
+    proxy.setTerritory(Territory.DE);
+    proxy.setCategoryDefiningCode(org.ehrbase.client.classgenerator.shareddefinition.Category.EVENT);
+    proxy.setSettingDefiningCode(Setting.NURSING_HOME_CARE);
+    proxy.setComposer(new PartyIdentified(null, "Test", null));
+    proxy.setParticipations(new ArrayList<>());
+    proxy
+            .getParticipations()
+            .add(
+                    new Participation(
+                            new PartyIdentified(null, "Test", null), new DvText("Pos1"), null, null));
+    proxy
+            .getParticipations()
+            .add(
+                    new Participation(
+                            new PartyIdentified(null, "Test2", null), new DvText("Pos2"), null, null));
+
+
+    proxy.setBloodPressureTrainingSample(bloodPressureSimpleDeV0.getBloodPressureTrainingSample());
+
+
+openEhrClient.compositionEndpoint(ehr).mergeCompositionEntity(proxy);
+    assertThat(proxy.getVersionUid()).isNotNull();
+    assertThat(proxy.getVersionUid().getVersion()).isEqualTo(1L);
+
+    EhrbaseBloodPressureSimpleDeV0Composition actual = openEhrClient.compositionEndpoint(ehr).find(proxy.getVersionUid().getUuid(),EhrbaseBloodPressureSimpleDeV0Composition.class).get();
+    assertThat(actual.getLanguage()).isEqualTo(Language.EN);
+
+
+  }
+
+  @Test
   public void testSaveCompositionEntityWithAny() {
 
     UUID ehr = openEhrClient.ehrEndpoint().createEhr();
@@ -158,6 +282,96 @@ public class DefaultRestCompositionEndpointIT {
                         .getQuantitativesErgebnis())
                 .getQuantitativesErgebnisMagnitude())
         .isEqualTo(22l);
+  }
+
+  @Test
+  public void testSaveCompositionEntityWithAnyProxy() {
+
+    UUID ehr = openEhrClient.ehrEndpoint().createEhr();
+    GECCOSerologischerBefundComposition composition1 = new GECCOSerologischerBefundComposition();
+    composition1.setLanguage(Language.DE);
+    composition1.setTerritory(Territory.DE);
+    composition1.setCategoryDefiningCode(org.ehrbase.client.classgenerator.shareddefinition.Category.EVENT);
+    composition1.setSettingDefiningCode(Setting.NURSING_HOME_CARE);
+    composition1.setComposer(new PartyIdentified(null, "Test", null));
+    composition1.setStartTimeValue(OffsetDateTime.of(2019, 04, 03, 22, 00, 00, 00, ZoneOffset.UTC));
+    composition1.setParticipations(new ArrayList<>());
+    composition1.setBefund(new ArrayList<>());
+
+    Enhancer enhancerObservation = new Enhancer();
+
+    enhancerObservation.setSuperclass(BefundObservation.class);
+    enhancerObservation.setCallback((MethodInterceptor) (obj, method, args, proxy) -> {
+      if (method.getDeclaringClass() != Object.class && method.getName().equals("getLanguage")) {
+        return Language.EN;
+      } else {
+        return proxy.invokeSuper(obj, args);
+      }
+    } );
+
+    BefundObservation befundObservation =
+            (BefundObservation) enhancerObservation.create();
+    composition1.getBefund().add(befundObservation);
+    befundObservation.setSubject(new PartySelf());
+    befundObservation.setJedesEreignis(new ArrayList<>());
+    // Read will be overwritten by enhancerObservation
+    befundObservation.setLanguage(Language.DE);
+    befundObservation.setAnforderungDefiningCode(
+        AnforderungDefiningCode.SARS_COV2_COVID19_AB_PANEL_SERUM_OR_PLASMA_BY_IMMUNOASSAY);
+    befundObservation.setOriginValue(
+        OffsetDateTime.of(2019, 04, 03, 22, 00, 00, 00, ZoneOffset.UTC));
+    BefundJedesEreignisPointEvent event = new BefundJedesEreignisPointEvent();
+    event.setTimeValue(OffsetDateTime.of(2019, 04, 03, 22, 00, 00, 00, ZoneOffset.UTC));
+    befundObservation.getJedesEreignis().add(event);
+
+    Enhancer enhancerProAnalytQuantitativesErgebnisDvCount = new Enhancer();
+    enhancerProAnalytQuantitativesErgebnisDvCount.setSuperclass(ProAnalytQuantitativesErgebnisDvCount.class);
+
+    enhancerProAnalytQuantitativesErgebnisDvCount.setCallback((MethodInterceptor) (obj, method, args, proxy) -> {
+      if (method.getDeclaringClass() != Object.class && method.getName().equals("getQuantitativesErgebnisMagnitude")) {
+        return 33l;
+      } else {
+        return proxy.invokeSuper(obj, args);
+      }
+    } );
+
+    ProAnalytQuantitativesErgebnisDvCount quantitativesErgebnis =
+            (ProAnalytQuantitativesErgebnisDvCount) enhancerProAnalytQuantitativesErgebnisDvCount.create();
+    quantitativesErgebnis.setQuantitativesErgebnisMagnitude(22l);
+    event.setQuantitativesErgebnis(quantitativesErgebnis);
+    GECCOSerologischerBefundComposition composition =
+            composition1;
+
+    composition = openEhrClient.compositionEndpoint(ehr).mergeCompositionEntity(composition);
+
+    Optional<GECCOSerologischerBefundComposition> actual =
+            openEhrClient
+                    .compositionEndpoint(ehr)
+                    .find(composition.getVersionUid().getUuid(), GECCOSerologischerBefundComposition.class);
+
+    assertThat(actual).isPresent();
+
+    assertThat(actual.get().getBefund()).size().isEqualTo(1);
+    BefundObservation actualObservation = actual.get().getBefund().get(0);
+    assertThat(actualObservation.getLanguage()).isEqualTo(Language.EN);
+    assertThat(actualObservation.getJedesEreignis()).size().isEqualTo(1);
+    assertThat(actualObservation.getJedesEreignis().get(0).getQuantitativesErgebnis())
+            .isNotNull();
+    assertThat(
+            actualObservation
+                    .getJedesEreignis()
+                    .get(0)
+                    .getQuantitativesErgebnis()
+                    .getClass())
+            .isEqualTo(ProAnalytQuantitativesErgebnisDvCount.class);
+    assertThat(
+            ((ProAnalytQuantitativesErgebnisDvCount)
+                    actualObservation
+                            .getJedesEreignis()
+                            .get(0)
+                            .getQuantitativesErgebnis())
+                    .getQuantitativesErgebnisMagnitude())
+            .isEqualTo(33L);
   }
 
   @Test
