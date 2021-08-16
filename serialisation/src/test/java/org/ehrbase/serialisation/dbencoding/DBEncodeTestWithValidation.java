@@ -18,42 +18,21 @@
 
 package org.ehrbase.serialisation.dbencoding;
 
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonElement;
-import com.nedap.archie.rm.archetyped.FeederAudit;
-import com.nedap.archie.rm.composition.AdminEntry;
+import com.nedap.archie.json.JacksonUtil;
 import com.nedap.archie.rm.composition.Composition;
-import com.nedap.archie.rm.composition.Section;
-import com.nedap.archie.rm.datastructures.Element;
-import com.nedap.archie.rm.datastructures.History;
-import com.nedap.archie.rm.datastructures.ItemStructure;
-import com.nedap.archie.rm.datastructures.PointEvent;
-import com.nedap.archie.rm.datavalues.quantity.DvInterval;
-import com.nedap.archie.rm.datavalues.quantity.datetime.DvDateTime;
 import org.apache.commons.io.IOUtils;
 import org.apache.xmlbeans.XmlException;
-import org.ehrbase.serialisation.dbencoding.rawjson.LightRawJsonEncoder;
-import org.ehrbase.serialisation.dbencoding.rmobject.FeederAuditEncoding;
 import org.ehrbase.serialisation.jsonencoding.CanonicalJson;
-import org.ehrbase.serialisation.xmlencoding.CanonicalXML;
 import org.ehrbase.test_data.composition.CompositionTestDataCanonicalJson;
-import org.ehrbase.test_data.composition.CompositionTestDataCanonicalXML;
 import org.ehrbase.test_data.operationaltemplate.OperationalTemplateTestData;
 import org.ehrbase.validation.Validator;
-import org.ehrbase.webtemplate.model.WebTemplate;
-import org.ehrbase.webtemplate.parser.OPTParser;
 import org.junit.Test;
 import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
 import org.openehr.schemas.v1.TemplateDocument;
 
-import javax.xml.bind.JAXBException;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.*;
 
 public class DBEncodeTestWithValidation {
@@ -76,5 +55,21 @@ public class DBEncodeTestWithValidation {
         }
     }
 
+    @Test
+    public void testExampleComposition() throws IOException, XmlException {
+        String value = IOUtils.toString(CompositionTestDataCanonicalJson.MINIMAL_ACTION_2.getStream(), UTF_8);
+        CanonicalJson cut = new CanonicalJson();
+        Composition composition = cut.unmarshal(value, Composition.class);
+
+        //OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(new FileInputStream("./src/test/resources/operational_templates/minimal_action_2.opt")).getTemplate();
+        String templateValue = IOUtils.toString(OperationalTemplateTestData.MINIMAL_ACTION_2.getStream(), UTF_8);
+        OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(templateValue).getTemplate();
+
+        try {
+            new Validator(template).check(composition);
+        }catch (Exception e){
+            fail(e.getMessage());
+        }
+    }
 
 }
