@@ -13,6 +13,7 @@ Note: version releases in the 0.x.y range may introduce breaking changes.
 - Flat: refactor code to walk to all nodes (see https://github.com/ehrbase/project_management/issues/541)
 - DefaultRestClient: add VERSIONED_COMPOSITION endpoint (see https://github.com/ehrbase/openEHR_SDK/pull/237)
 - Generated Dtos: Enable usage of Dots with inheritance  (see https://github.com/ehrbase/openEHR_SDK/pull/244)
+- Fix validation of normal statuses (see https://github.com/ehrbase/openEHR_SDK/pull/249)
 
 ## 1.5.0
 

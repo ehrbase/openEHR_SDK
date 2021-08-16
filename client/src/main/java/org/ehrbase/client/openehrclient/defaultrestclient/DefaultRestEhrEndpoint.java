@@ -25,7 +25,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 public class DefaultRestEhrEndpoint implements EhrEndpoint {
-    public static final String EHR_PATH = "ehr/";
+    public static final String EHR_PATH = "rest/openehr/v1/ehr/";
     public static final String EHR_STATUS_PATH = "/ehr_status";
     private final DefaultRestClient defaultRestClient;
 

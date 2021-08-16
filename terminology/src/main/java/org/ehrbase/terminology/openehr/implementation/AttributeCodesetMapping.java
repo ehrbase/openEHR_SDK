@@ -132,13 +132,15 @@ public class AttributeCodesetMapping {
 
         String snakeAttribute = new SnakeCase(attribute).camelToSnake();
 
-        if (!getMappers().get(terminology).containsKey(snakeAttribute))
+        String fixTerminlogy = fixTerminlogy(terminology);
+
+        if (!getMappers().get(fixTerminlogy).containsKey(snakeAttribute))
             throw new IllegalArgumentException("attribute:" + attribute + ", is not defined in terminology:" + terminology);
 
-        if (!getMappers().get(terminology).get(snakeAttribute).getIdMap().containsKey(language))
+        if (!getMappers().get(fixTerminlogy).get(snakeAttribute).getIdMap().containsKey(language))
             language = "en"; //default to English
 
-        return getMappers().get(terminology).get(snakeAttribute).getIdMap().get(language);
+        return getMappers().get(fixTerminlogy).get(snakeAttribute).getIdMap().get(language);
     }
 
     public boolean isLocalizedAttribute(String terminology, String attribute, String language) {
@@ -148,14 +150,27 @@ public class AttributeCodesetMapping {
 
         String snakeAttribute = new SnakeCase(attribute).camelToSnake();
 
-        if (!getMappers().containsKey(terminology))
+        String fixTerminlogy = fixTerminlogy(terminology);
+
+        if (!getMappers().containsKey(fixTerminlogy))
             throw new IllegalArgumentException("Invalid terminology id:" + terminology);
 
-        if (!getMappers().get(terminology).containsKey(snakeAttribute))
+        if (!getMappers().get(fixTerminlogy).containsKey(snakeAttribute))
             throw new IllegalArgumentException("attribute:" + attribute + ", is not defined in terminology:" + terminology);
 
         //default to English
-        return getMappers().get(terminology).get(snakeAttribute).getIdMap().containsKey(language);
+        return getMappers().get(fixTerminlogy).get(snakeAttribute).getIdMap().containsKey(language);
+    }
+
+    //openehr_compression_algorithm, openehr_integrity_check_algorithm,openehr_normal_status
+    private String fixTerminlogy(String terminology) {
+        String fixTerminlogy;
+        if (terminology.contains("openehr")){
+            fixTerminlogy = "openehr";
+        }else{
+            fixTerminlogy = terminology;
+        }
+        return fixTerminlogy;
     }
 
     public ContainerType containerType(String terminology, String attribute) {
