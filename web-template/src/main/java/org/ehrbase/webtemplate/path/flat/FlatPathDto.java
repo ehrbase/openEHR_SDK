@@ -189,9 +189,14 @@ public class FlatPathDto {
         me.setAttributeName(null);
       }
 
-      boolean nodeEqualIgnoringAttrbiuteName = isNodeEqual(me, other);
+      Integer tempCount = me.getCount();;
+if(other.getChild() == null && other.count == null){
+  me.setCount(null);
+}
+      boolean nodeEqual = isNodeEqual(me, other);
       me.setAttributeName(tempAttributeName);
-      if (!nodeEqualIgnoringAttrbiuteName) break;
+      me.setCount(tempCount);
+      if (!nodeEqual) break;
 
 
       other = other.getChild();

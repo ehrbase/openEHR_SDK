@@ -73,9 +73,9 @@ public class PartyIdentifiedRMUnmarshaller extends AbstractRMUnmarshaller<PartyI
                 s -> s.getKey().startsWith( currentTerm + PATH_DIVIDER + "_identifier"))
             .collect(
                 Collectors.groupingBy(
-                    e -> Optional.ofNullable(e.getKey().getCount()).orElse(0),
+                    e -> Optional.ofNullable(e.getKey().getLast().getCount()).orElse(0),
                         Collectors.toMap(
-                                e1 -> e1.getKey().getLast().getAttributeName(),
+                                e1 -> Optional.ofNullable(e1.getKey().getLast().getAttributeName()).orElse(""),
                             stringStringEntry -> StringUtils.unwrap(stringStringEntry.getValue(), '"'))));
 
     rmObject.setIdentifiers(
