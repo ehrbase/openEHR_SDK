@@ -80,7 +80,8 @@ public class FlatJsonUnmarshaller {
         defaultValues.addDefaultValue(DefaultValuePath.SETTING, Setting.OTHER_CARE);
       }
 
-      walker.walk(generate, currentValues, introspect, defaultValues);
+      String templateId = generate.getArchetypeDetails().getTemplateId().getValue();
+      walker.walk(generate, currentValues, introspect, defaultValues, templateId);
       consumedPath = walker.getConsumedPaths();
 
       return generate;

@@ -102,7 +102,9 @@ public class Flattener {
               locatable,
               new DtoWithMatchingFields(
                   dto, DtoFromCompositionWalker.buildFieldByPathMap(dto.getClass())),
-              root);
+              root,
+              templateId
+          );
       if (locatable instanceof Composition && ((Composition) locatable).getUid() != null) {
         addVersion(dto, new VersionUid(((Composition) locatable).getUid().toString()));
       }

@@ -42,6 +42,8 @@ public class Context<T> {
 
   private final FlatHelper<T> flatHelper = new FlatHelper<>();
 
+  private String templateId;
+
   public Deque<WebTemplateNode> getNodeDeque() {
     return nodeDeque;
   }
@@ -68,5 +70,13 @@ public class Context<T> {
 
   public FlatHelper<T> getFlatHelper() {
     return flatHelper;
+  }
+
+  public String getTemplateId() {
+    return templateId;
+  }
+
+  public void setTemplateId(String templateId) {
+    this.templateId = templateId;
   }
 }
