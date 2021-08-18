@@ -65,32 +65,7 @@ public class FlatPathParserTest {
     }
 
 
-    @Test
-    public void removeEnd() {
 
-        String path = "bericht/risikogebiet/reisefall:0/beliebiges_intervallereignis:0/bestimmte_reise:0/bestimmtes_reiseziel:0/land";
-        FlatPathDto cut =  FlatPathParser.parse(path);
-        FlatPathDto actual = FlatPathDto.removeEnd(cut, cut.getLast());
-        assertThat(actual.format()).isEqualTo("bericht/risikogebiet/reisefall:0/beliebiges_intervallereignis:0/bestimmte_reise:0/bestimmtes_reiseziel:0");
-    }
-
-    @Test
-    public void removeStart() {
-
-        String path = "bericht/risikogebiet/reisefall:0/beliebiges_intervallereignis:0/bestimmte_reise:0/bestimmtes_reiseziel:0/land";
-        FlatPathDto cut =  FlatPathParser.parse(path);
-        FlatPathDto actual = FlatPathDto.removeStart(cut, new FlatPathDto("bericht/risikogebiet/reisefall:0/beliebiges_intervallereignis:0/bestimmte_reise:0/bestimmtes_reiseziel:0"));
-        assertThat(actual.format()).isEqualTo("land");
-    }
-
-    @Test
-    public void addEnd() {
-
-        String path = "bericht/risikogebiet/reisefall:0/beliebiges_intervallereignis:0/bestimmte_reise:0/bestimmtes_reiseziel:0";
-        FlatPathDto cut =  FlatPathParser.parse(path);
-        FlatPathDto actual = FlatPathDto.addEnd(cut, new FlatPathDto("land"));
-        assertThat(actual.format()).isEqualTo("bericht/risikogebiet/reisefall:0/beliebiges_intervallereignis:0/bestimmte_reise:0/bestimmtes_reiseziel:0/land");
-    }
 
 
 }

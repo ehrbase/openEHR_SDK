@@ -107,11 +107,67 @@ public class FlatPathDto {
   }
 
   public static FlatPathDto removeEnd(FlatPathDto path, FlatPathDto remove) {
-    return new FlatPathDto(StringUtils.removeEnd(path.format(), remove.format()));
+
+    FlatPathDto me = new FlatPathDto(path);
+    FlatPathDto other = new FlatPathDto(remove);
+    FlatPathDto newMe = null;
+    do {
+
+      if (isNodeEqual(me, other)) break;
+
+        FlatPathDto newChild = new FlatPathDto(me);
+        newChild.setChild(null);
+        if (newMe == null){
+          newMe = newChild;
+        }else{newMe.getLast().setChild(newChild);
+        }
+
+      me = me.child;
+
+    } while (me != null);
+
+    if (me != null && me.isEqualTo(other.format())) {
+      return newMe;
+    } else {
+      return me;
+    }
+  }
+
+  public static boolean isNodeEqual(FlatPathDto me, FlatPathDto other) {
+
+    if (!Objects.equals(me.getName(), other.getName())) {
+      return false;
+    }
+
+
+    if (!Objects.equals(me.getCount(), other.getCount())
+            && !(me.getCount() == null && Objects.equals(other.getCount(), 0)) && !(Objects.equals(me.getCount(), 0) && other.getCount() == null)
+    ) {
+      return false;
+    }
+
+    if (!Objects.equals(me.getAttributeName(), other.getAttributeName())
+    ) {
+      return false;
+    }
+    return true;
   }
 
   public static FlatPathDto removeStart(FlatPathDto path, FlatPathDto remove) {
-    return new FlatPathDto(StringUtils.removeStart(path.format(), remove.format()));
+    FlatPathDto other = new FlatPathDto(remove);
+    FlatPathDto me = new FlatPathDto(path);
+    do{
+
+      if (!isNodeEqual(me, other)) break;
+      other = other.getChild();
+      me = me.child;
+    }while (other != null && me != null);
+
+    if (other == null) {
+      return me;
+    } else {
+      return new FlatPathDto(path);
+    }
   }
 
   public static FlatPathDto addEnd(FlatPathDto path, FlatPathDto add) {
@@ -128,23 +184,19 @@ public class FlatPathDto {
     FlatPathDto me = new FlatPathDto(this);
     do{
 
-      if (!Objects.equals(me.getName(),other.getName())){
-        break;
-      }
-      if (other.getAttributeName() != null && !Objects.equals(me.getAttributeName(), other.getAttributeName())
-      ){
-        break;
+      String tempAttributeName = me.getAttributeName();
+      if (other.getAttributeName() == null    ){
+        me.setAttributeName(null);
       }
 
-      if (!Objects.equals(me.getCount(),other.getCount())
-       && !(me.getCount() == null && Objects.equals(other.getCount(),0)) && !(Objects.equals(me.getCount(), 0) && other.getCount() == null)
-      ){
-        break;
-      }
+      boolean nodeEqualIgnoringAttrbiuteName = isNodeEqual(me, other);
+      me.setAttributeName(tempAttributeName);
+      if (!nodeEqualIgnoringAttrbiuteName) break;
 
 
       other = other.getChild();
       me = me.child;
+
     }while (other != null && me != null);
 
     return other == null;
