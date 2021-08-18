@@ -51,4 +51,78 @@ public class FlatPathDtoTest {
 
         assertThat(cut.isEqualTo("encounter/body_temperature:1/any_event:0/temperature|magnitude")).isTrue();
     }
+
+    @Test
+    public void removeEnd() {
+
+        String path = "bericht/risikogebiet/reisefall:0/beliebiges_intervallereignis:0/bestimmte_reise:0/bestimmtes_reiseziel:0/land";
+        FlatPathDto cut =  FlatPathParser.parse(path);
+        FlatPathDto actual = FlatPathDto.removeEnd(cut, cut.getLast());
+        assertThat(actual.format()).isEqualTo("bericht/risikogebiet/reisefall:0/beliebiges_intervallereignis:0/bestimmte_reise:0/bestimmtes_reiseziel:0");
+    }
+
+    @Test
+    public void removeEndMissingCount() {
+
+        String path = "bericht/risikogebiet/reisefall:0/beliebiges_intervallereignis:0/bestimmte_reise:0/bestimmtes_reiseziel:0/land";
+        FlatPathDto cut =  FlatPathParser.parse(path);
+        FlatPathDto actual = FlatPathDto.removeEnd(cut, new FlatPathDto("bestimmtes_reiseziel/land"));
+        assertThat(actual.format()).isEqualTo("bericht/risikogebiet/reisefall:0/beliebiges_intervallereignis:0/bestimmte_reise:0");
+    }
+    @Test
+    public void removeEndMissingCount2() {
+
+        String path = "bericht/risikogebiet/reisefall:0/beliebiges_intervallereignis:0/bestimmte_reise:0/bestimmtes_reiseziel:0/land";
+        FlatPathDto cut =  FlatPathParser.parse(path);
+        FlatPathDto actual = FlatPathDto.removeEnd(cut, new FlatPathDto("bestimmtes_reiseziel/land"));
+        assertThat(actual.format()).isEqualTo("bericht/risikogebiet/reisefall:0/beliebiges_intervallereignis:0/bestimmte_reise:0");
+    }
+
+
+    @Test
+    public void removeStart() {
+
+        String path = "bericht/risikogebiet/reisefall:0/beliebiges_intervallereignis:0/bestimmte_reise:0/bestimmtes_reiseziel:0/land";
+        FlatPathDto cut =  FlatPathParser.parse(path);
+        FlatPathDto actual = FlatPathDto.removeStart(cut, new FlatPathDto("bericht/risikogebiet/reisefall:0/beliebiges_intervallereignis:0/bestimmte_reise:0/bestimmtes_reiseziel:0"));
+        assertThat(actual.format()).isEqualTo("land");
+    }
+
+    @Test
+    public void removeStartNonMatching() {
+
+        String path = "encounter/body_temperature:1/any_event/temperature2|magnitude";
+        FlatPathDto cut =  FlatPathParser.parse(path);
+    FlatPathDto actual =
+        FlatPathDto.removeStart(
+            cut, new FlatPathDto("encounter/body_temperature:1/any_event/temperature|magnitude"));
+        assertThat(actual.format()).isEqualTo("encounter/body_temperature:1/any_event/temperature2|magnitude");
+    }
+
+    @Test
+    public void removeStartMissingCount() {
+
+        String path = "bericht/risikogebiet/reisefall/beliebiges_intervallereignis/bestimmte_reise:0/bestimmtes_reiseziel:0/land";
+        FlatPathDto cut =  FlatPathParser.parse(path);
+        FlatPathDto actual = FlatPathDto.removeStart(cut, new FlatPathDto("bericht/risikogebiet/reisefall:0/beliebiges_intervallereignis:0/bestimmte_reise:0/bestimmtes_reiseziel:0"));
+        assertThat(actual.format()).isEqualTo("land");
+    }
+
+    @Test
+    public void removeStartMissingCount2() {
+
+        String path = "bericht/risikogebiet/reisefall:0/beliebiges_intervallereignis:0/bestimmte_reise:0/bestimmtes_reiseziel:0/land";
+        FlatPathDto cut =  FlatPathParser.parse(path);
+        FlatPathDto actual = FlatPathDto.removeStart(cut, new FlatPathDto("bericht/risikogebiet/reisefall/beliebiges_intervallereignis/bestimmte_reise:0/bestimmtes_reiseziel:0"));
+        assertThat(actual.format()).isEqualTo("land");
+    }
+
+    @Test
+    public void addEnd() {
+
+        String path = "bericht/risikogebiet/reisefall:0/beliebiges_intervallereignis:0/bestimmte_reise:0/bestimmtes_reiseziel:0";
+        FlatPathDto cut =  FlatPathParser.parse(path);
+        FlatPathDto actual = FlatPathDto.addEnd(cut, new FlatPathDto("land"));
+        assertThat(actual.format()).isEqualTo("bericht/risikogebiet/reisefall:0/beliebiges_intervallereignis:0/bestimmte_reise:0/bestimmtes_reiseziel:0/land");
+    }
 }
