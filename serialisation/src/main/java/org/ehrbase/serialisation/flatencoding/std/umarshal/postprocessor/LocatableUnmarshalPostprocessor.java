@@ -51,7 +51,7 @@ public class LocatableUnmarshalPostprocessor extends AbstractUnmarshalPostproces
             .filter(s -> s.getKey().startsWith(term + PATH_DIVIDER + "_link"))
             .collect(
                 Collectors.groupingBy(
-                    e -> Optional.ofNullable(e.getKey().getCount()).orElse(0),
+                    e -> Optional.ofNullable(e.getKey().getLast().getCount()).orElse(0),
                         Collectors.toMap(
                                 e1 -> e1.getKey().getLast().getAttributeName(),
                             stringStringEntry -> StringUtils.unwrap(stringStringEntry.getValue(), '"'))));

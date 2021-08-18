@@ -32,6 +32,13 @@ public class FlatPathDtoTest {
     }
 
     @Test
+    public void startsWith2() {
+        FlatPathDto cut = new FlatPathDto("vitals/vitals/haemoglobin_a1c/_link:1|type");
+
+        assertThat(cut.startsWith("vitals/vitals/haemoglobin_a1c/_link")).isTrue();
+    }
+
+    @Test
     public void startsWithMissingCount() {
         FlatPathDto cut = new FlatPathDto("encounter/body_temperature:1/any_event/temperature|magnitude");
 
