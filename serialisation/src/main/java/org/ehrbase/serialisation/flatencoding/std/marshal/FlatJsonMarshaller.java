@@ -44,7 +44,7 @@ public class FlatJsonMarshaller {
 
     Map<String, Object> result = new LinkedHashMap<>();
 
-    String templateId = composition.getArchetypeDetails().getTemplateId().getValue();
+    String templateId = webTemplate.getTemplateId();
     new StdFromCompositionWalker().walk(composition, result, webTemplate, null, templateId);
 
     try {
