@@ -44,7 +44,9 @@ public class EventContextValueInserter extends AbstractValueInserter<EventContex
       rmObject.setEndTime(new DvDateTime(defaultValues.getDefaultValue(DefaultValuePath.END_TIME)));
     }
 
-    if (isEmpty(rmObject.getHealthCareFacility())) {
+    if (isEmpty(rmObject.getHealthCareFacility()) &&
+        (defaultValues.containsDefaultValue(DefaultValuePath.HEALTHCARE_FACILITY_NAME) ||
+            defaultValues.containsDefaultValue(DefaultValuePath.HEALTHCARE_FACILITY_ID))) {
       rmObject.setHealthCareFacility(
           buildPartyIdentified(
               defaultValues,

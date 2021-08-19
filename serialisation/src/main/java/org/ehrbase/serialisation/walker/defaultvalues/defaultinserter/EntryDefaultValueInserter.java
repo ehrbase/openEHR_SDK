@@ -36,7 +36,9 @@ public class EntryDefaultValueInserter extends AbstractValueInserter<Entry> {
         && defaultValues.getDefaultValue(DefaultValuePath.LANGUAGE) != null) {
       rmObject.setLanguage(defaultValues.getDefaultValue(DefaultValuePath.LANGUAGE).toCodePhrase());
     }
-    if (isEmpty(rmObject.getProvider())) {
+    if (isEmpty(rmObject.getProvider()) &&
+        (defaultValues.containsDefaultValue(DefaultValuePath.PROVIDER_ID) ||
+            defaultValues.containsDefaultValue(DefaultValuePath.PROVIDER_NAME))) {
       rmObject.setProvider(
           buildPartyIdentified(
               defaultValues,
