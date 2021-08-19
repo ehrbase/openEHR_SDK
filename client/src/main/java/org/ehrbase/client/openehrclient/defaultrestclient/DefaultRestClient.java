@@ -45,6 +45,7 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.WeakHashMap;
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.http.Header;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -139,7 +140,11 @@ public class DefaultRestClient implements OpenEhrClient {
             ContentType.APPLICATION_JSON,
             ContentType.APPLICATION_JSON.getMimeType());
     Header eTag = response.getFirstHeader(HttpHeaders.ETAG);
-    return new VersionUid(eTag.getValue().replace("\"", ""));
+    return buildVersionUidFromETag(eTag);
+  }
+
+  private VersionUid buildVersionUidFromETag(Header eTag) {
+    return new VersionUid(StringUtils.unwrap(StringUtils.removeStart( eTag.getValue(),"W/"),'"'));
   }
 
   protected HttpResponse internalPost(
@@ -188,7 +193,7 @@ public class DefaultRestClient implements OpenEhrClient {
         throw new OptimisticLockException("Entity outdated");
       }
       Header eTag = response.getFirstHeader(HttpHeaders.ETAG);
-      return new VersionUid(eTag.getValue().replace("\"", ""));
+      return buildVersionUidFromETag(eTag);
     } catch (IOException e) {
       throw new ClientException(e.getMessage(), e);
     }
