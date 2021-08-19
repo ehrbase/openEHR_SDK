@@ -26,6 +26,7 @@ import com.nedap.archie.rm.datastructures.Event;
 import com.nedap.archie.rm.datastructures.History;
 import com.nedap.archie.rm.datastructures.ItemList;
 import com.nedap.archie.rm.datavalues.quantity.DvQuantity;
+import com.nedap.archie.rm.ehr.EhrStatus;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.io.IOUtils;
 import org.assertj.core.groups.Tuple;
@@ -40,6 +41,7 @@ import org.ehrbase.client.aql.parameter.ParameterValue;
 import org.ehrbase.client.aql.query.EntityQuery;
 import org.ehrbase.client.aql.query.Query;
 import org.ehrbase.client.aql.record.Record2;
+import org.ehrbase.client.aql.record.Record3;
 import org.ehrbase.client.classgenerator.examples.coronaanamnesecomposition.CoronaAnamneseComposition;
 import org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev0composition.EhrbaseBloodPressureSimpleDeV0Composition;
 import org.ehrbase.client.exception.ClientException;
@@ -97,15 +99,15 @@ public class AqlTestIT {
         pressureSimple2.getBloodPressureTrainingSample().get(0).setSystolicMagnitude(1.1);
         openEhrClient.compositionEndpoint(ehr).mergeCompositionEntity(pressureSimple2);
 
-        Query<Record2<UUID, Double>> query = Query.buildNativeQuery(
-                "select e/ehr_id/value,o/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/magnitude  " +
+        Query<Record3<UUID, Double,EhrStatus>> query = Query.buildNativeQuery(
+                "select e/ehr_id/value,o/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/magnitude,e/ehr_status  " +
                         "from EHR e[ehr_id/value = $ehr_id]  " +
                         "contains COMPOSITION a [openEHR-EHR-COMPOSITION.sample_encounter.v1] contains Observation o[openEHR-EHR-OBSERVATION.sample_blood_pressure.v1]" +
                         "where o/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/magnitude = 1.1"
-                , UUID.class, Double.class
+                , UUID.class, Double.class, EhrStatus.class
         );
 
-        List<Record2<UUID, Double>> result = openEhrClient.aqlEndpoint().execute(query, new ParameterValue("ehr_id", ehr));
+        List<Record3<UUID, Double,EhrStatus>> result = openEhrClient.aqlEndpoint().execute(query, new ParameterValue("ehr_id", ehr));
         assertThat(result).isNotNull().hasSize(2);
 
 
