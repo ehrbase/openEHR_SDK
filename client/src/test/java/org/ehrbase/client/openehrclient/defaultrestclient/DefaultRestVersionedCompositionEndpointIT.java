@@ -27,6 +27,7 @@ import org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1comp
 import org.ehrbase.client.classgenerator.examples.episodeofcarecomposition.EpisodeOfCareComposition;
 import org.ehrbase.client.openehrclient.OpenEhrClient;
 import org.ehrbase.client.openehrclient.VersionUid;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -42,15 +43,22 @@ import java.util.UUID;
 public class DefaultRestVersionedCompositionEndpointIT {
 
     private static OpenEhrClient openEhrClient;
+    private UUID ehrId;
 
     @BeforeClass
     public static void setup() throws URISyntaxException {
         openEhrClient = DefaultRestClientTestHelper.setupDefaultRestClient();
     }
 
+    @After
+    public void tearDown(){
+        //delete the created EHR using the admin endpoint
+        openEhrClient.adminEhrEndpoint().delete(ehrId);
+    }
+
     @Test
     public void testFindValid() {
-        UUID ehrId = openEhrClient.ehrEndpoint().createEhr();
+        ehrId = openEhrClient.ehrEndpoint().createEhr();
         EhrbaseBloodPressureSimpleDeV0Composition composition = TestData.buildEhrbaseBloodPressureSimpleDeV0();
         openEhrClient.compositionEndpoint(ehrId).mergeCompositionEntity(composition);
 
@@ -64,7 +72,7 @@ public class DefaultRestVersionedCompositionEndpointIT {
 
     @Test
     public void testFindWrongId() {
-        UUID ehrId = openEhrClient.ehrEndpoint().createEhr();
+        ehrId = openEhrClient.ehrEndpoint().createEhr();
 
         Optional<VersionedComposition> versionedComposition = openEhrClient.versionedCompositionEndpoint(ehrId)
                 .find(UUID.randomUUID());
@@ -74,7 +82,7 @@ public class DefaultRestVersionedCompositionEndpointIT {
 
     @Test
     public void testFindRevisionHistoryValid() {
-        UUID ehrId = openEhrClient.ehrEndpoint().createEhr();
+        ehrId = openEhrClient.ehrEndpoint().createEhr();
         EhrbaseMultiOccurrenceDeV1Composition composition = TestData.buildEhrbaseMultiOccurrenceDeV1();
 
         VersionUid v1 = openEhrClient.compositionEndpoint(ehrId).mergeCompositionEntity(composition).getVersionUid();
@@ -91,7 +99,7 @@ public class DefaultRestVersionedCompositionEndpointIT {
 
     @Test
     public void testFindRevisionHistoryWrongId() {
-        UUID ehrId = openEhrClient.ehrEndpoint().createEhr();
+        ehrId = openEhrClient.ehrEndpoint().createEhr();
 
         List<RevisionHistoryItem> revisionHistory = openEhrClient.versionedCompositionEndpoint(ehrId)
                 .findRevisionHistory(UUID.randomUUID());
@@ -101,7 +109,7 @@ public class DefaultRestVersionedCompositionEndpointIT {
 
     @Test
     public void testFindVersionById() {
-        UUID ehrId = openEhrClient.ehrEndpoint().createEhr();
+        ehrId = openEhrClient.ehrEndpoint().createEhr();
         EpisodeOfCareComposition composition = TestData.buildEpisodeOfCareComposition();
         openEhrClient.compositionEndpoint(ehrId).mergeCompositionEntity(composition);
         VersionUid v2 = openEhrClient.compositionEndpoint(ehrId).mergeCompositionEntity(composition).getVersionUid();
@@ -117,7 +125,7 @@ public class DefaultRestVersionedCompositionEndpointIT {
 
     @Test
     public void testFindVersionByIdWrongVersionedObjectUid() {
-        UUID ehrId = openEhrClient.ehrEndpoint().createEhr();
+        ehrId = openEhrClient.ehrEndpoint().createEhr();
         EpisodeOfCareComposition composition = TestData.buildEpisodeOfCareComposition();
         openEhrClient.compositionEndpoint(ehrId).mergeCompositionEntity(composition);
 
@@ -129,7 +137,7 @@ public class DefaultRestVersionedCompositionEndpointIT {
 
     @Test
     public void testFindVersionByIdWrongVersionId() {
-        UUID ehrId = openEhrClient.ehrEndpoint().createEhr();
+        ehrId = openEhrClient.ehrEndpoint().createEhr();
         EpisodeOfCareComposition composition = TestData.buildEpisodeOfCareComposition();
         openEhrClient.compositionEndpoint(ehrId).mergeCompositionEntity(composition);
 
@@ -143,7 +151,7 @@ public class DefaultRestVersionedCompositionEndpointIT {
 
     @Test
     public void testFindVersionAtTime() {
-        UUID ehrId = openEhrClient.ehrEndpoint().createEhr();
+        ehrId = openEhrClient.ehrEndpoint().createEhr();
         LocalDateTime versionAtTime;
         Optional<OriginalVersion<AlternativeEventsComposition>> result;
 
@@ -184,7 +192,7 @@ public class DefaultRestVersionedCompositionEndpointIT {
 
     @Test
     public void testFindVersionAtTimeNull() {
-        UUID ehrId = openEhrClient.ehrEndpoint().createEhr();
+        ehrId = openEhrClient.ehrEndpoint().createEhr();
         EpisodeOfCareComposition composition = TestData.buildEpisodeOfCareComposition();
         openEhrClient.compositionEndpoint(ehrId).mergeCompositionEntity(composition);
         openEhrClient.compositionEndpoint(ehrId).mergeCompositionEntity(composition);
@@ -202,7 +210,7 @@ public class DefaultRestVersionedCompositionEndpointIT {
     public void testFindVersionAtTimeInvalidIId() {
         LocalDateTime versionAtTime = LocalDateTime.now();
 
-        UUID ehrId = openEhrClient.ehrEndpoint().createEhr();
+        ehrId = openEhrClient.ehrEndpoint().createEhr();
         EpisodeOfCareComposition composition = TestData.buildEpisodeOfCareComposition();
         openEhrClient.compositionEndpoint(ehrId).mergeCompositionEntity(composition);
 
