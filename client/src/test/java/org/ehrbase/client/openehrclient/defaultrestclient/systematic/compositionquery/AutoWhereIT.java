@@ -22,6 +22,7 @@ import org.ehrbase.client.Integration;
 import org.ehrbase.client.openehrclient.defaultrestclient.systematic.compositionquery.queries.auto.AutoWhereQuery;
 import org.ehrbase.test_data.composition.CompositionTestDataCanonicalJson;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -39,6 +40,8 @@ public class AutoWhereIT extends CanonicalCompoAllTypeQueryIT {
         autoWhereQuery = new AutoWhereQuery(ehrUUID, compositionUUID, openEhrClient);
     }
 
+
+
     @Test
     public void testActionAutoWhere() throws IOException {
 
@@ -54,6 +57,7 @@ public class AutoWhereIT extends CanonicalCompoAllTypeQueryIT {
     }
 
     @Test
+    @Ignore
     public void testCompositionAutoWhere() throws IOException {
         String rootPath = "c";
         RMObject referenceNode = aComposition;
