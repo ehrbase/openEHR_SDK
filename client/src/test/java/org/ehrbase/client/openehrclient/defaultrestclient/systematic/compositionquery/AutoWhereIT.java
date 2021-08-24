@@ -40,6 +40,8 @@ public class AutoWhereIT extends CanonicalCompoAllTypeQueryIT {
         autoWhereQuery = new AutoWhereQuery(ehrUUID, compositionUUID, openEhrClient);
     }
 
+
+
     @Test
     public void testActionAutoWhere() throws IOException {
 

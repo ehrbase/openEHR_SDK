@@ -28,6 +28,7 @@ import org.ehrbase.client.Integration;
 import org.ehrbase.client.openehrclient.OpenEhrClient;
 import org.ehrbase.serialisation.jsonencoding.CanonicalJson;
 import org.ehrbase.test_data.item_structure.ItemStruktureTestDataCanonicalJson;
+import org.junit.After;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -44,25 +45,31 @@ import static org.junit.Assert.assertTrue;
 @Category(Integration.class)
 public class DefaultRestEhrFieldsEndpointIT {
     private static OpenEhrClient openEhrClient;
+    private UUID ehr;
 
     @BeforeClass
     public static void setup() throws URISyntaxException {
         openEhrClient = DefaultRestClientTestHelper.setupDefaultRestClient();
     }
 
+    @After
+    public void tearDown(){
+        //delete the created EHR using the admin endpoint
+        openEhrClient.adminEhrEndpoint().delete(ehr);
+    }
 
     @Test
     public void testCreateEhr() {
 
-        UUID ehr = openEhrClient.ehrEndpoint().createEhr();
+        ehr = openEhrClient.ehrEndpoint().createEhr();
         assertThat(ehr).isNotNull();
     }
 
     @Test
     public void testGetEhrStatus() {
 
-        UUID ehrId = openEhrClient.ehrEndpoint().createEhr();
-        Optional<EhrStatus> ehrStatus = openEhrClient.ehrEndpoint().getEhrStatus(ehrId);
+        ehr = openEhrClient.ehrEndpoint().createEhr();
+        Optional<EhrStatus> ehrStatus = openEhrClient.ehrEndpoint().getEhrStatus(ehr);
         assertTrue(ehrStatus.isPresent());
     }
 
@@ -77,7 +84,7 @@ public class DefaultRestEhrFieldsEndpointIT {
         ehrStatus.setArchetypeNodeId("just-a-status");
         ehrStatus.setName(new DvText("Status"));
 
-        UUID ehr = openEhrClient.ehrEndpoint().createEhr(ehrStatus);
+        ehr = openEhrClient.ehrEndpoint().createEhr(ehrStatus);
         assertThat(ehr).isNotNull();
 
         EhrStatus actual = openEhrClient.ehrEndpoint().getEhrStatus(ehr).get();
@@ -87,9 +94,9 @@ public class DefaultRestEhrFieldsEndpointIT {
     @Test
     public void testUpdateEhrStatus() throws IOException {
 
-        UUID ehrId = openEhrClient.ehrEndpoint().createEhr();
+        ehr = openEhrClient.ehrEndpoint().createEhr();
 
-        EhrStatus ehrStatus = openEhrClient.ehrEndpoint().getEhrStatus(ehrId).get();
+        EhrStatus ehrStatus = openEhrClient.ehrEndpoint().getEhrStatus(ehr).get();
         ehrStatus.setQueryable(false);
         ehrStatus.setModifiable(false);
         HierObjectId subjectId = new HierObjectId("6ee110de-08f8-4fac-8372-820650f150a9");
@@ -100,8 +107,8 @@ public class DefaultRestEhrFieldsEndpointIT {
         ehrStatus.getOtherDetails().setArchetypeNodeId("other-details-test");
         ehrStatus.getOtherDetails().setName(new DvText("test"));
 
-        openEhrClient.ehrEndpoint().updateEhrStatus(ehrId, ehrStatus);
-        EhrStatus actual = openEhrClient.ehrEndpoint().getEhrStatus(ehrId).get();
+        openEhrClient.ehrEndpoint().updateEhrStatus(ehr, ehrStatus);
+        EhrStatus actual = openEhrClient.ehrEndpoint().getEhrStatus(ehr).get();
 
         assertThat(actual.getSubject().getExternalRef().getId()).isEqualTo(subjectId);
         assertThat(actual.isModifiable()).isEqualTo(ehrStatus.isModifiable());

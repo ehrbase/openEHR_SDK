@@ -27,6 +27,7 @@ import org.ehrbase.client.openehrclient.defaultrestclient.systematic.composition
 import org.ehrbase.client.templateprovider.TestDataTemplateProvider;
 import org.ehrbase.serialisation.jsonencoding.CanonicalJson;
 import org.ehrbase.test_data.composition.CompositionTestDataCanonicalJson;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -58,6 +59,12 @@ public class ArbitraryQueryOtherContextIT extends CanonicalCompoAllTypeQueryIT {
 
         arbitraryQuery = new ArbitraryQuery(ehrUUID, openEhrClient);
         simpleSelectQueryEngine = new SimpleSelectQuery(ehrUUID, compositionUUID, openEhrClient);
+    }
+
+    @After
+    public void tearDown(){
+        //delete the created EHR using the admin endpoint
+        openEhrClient.adminEhrEndpoint().delete(ehrUUID);
     }
 
     @Test
