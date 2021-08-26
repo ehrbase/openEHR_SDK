@@ -76,8 +76,7 @@ public abstract class AbstractUnmarshalPostprocessor<T extends RMObject>
         log.error(e.getMessage());
       }
     } else {
-      consumer.accept(null);
-
+      consumedPath.add(key);
     }
   }
 }
