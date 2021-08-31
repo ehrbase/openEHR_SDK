@@ -114,14 +114,13 @@ public class DefaultRestCompositionEndpoint implements CompositionEndpoint {
   }
 
   @Override
-  public Composition mergeNative(Composition composition) {
+  public VersionUid mergeNative(Composition composition) {
 
     Optional<VersionUid> versionUid = Optional.ofNullable(composition.getUid()).map(ObjectId::toString).map(VersionUid::new);
 
     VersionUid newVersionUid = internalMerge(composition, versionUid);
 
-    composition.setUid(new HierObjectId(newVersionUid.toString()));
-    return composition;
+    return newVersionUid;
   }
 
   @Override

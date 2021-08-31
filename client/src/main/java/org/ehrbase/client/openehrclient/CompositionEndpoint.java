@@ -37,7 +37,7 @@ public interface CompositionEndpoint {
      */
     <T> T mergeCompositionEntity(T entity);
 
-    Composition mergeNative(Composition composition);
+    VersionUid mergeNative(Composition composition);
 
     /**
      * Finds a Flat-Entity by
