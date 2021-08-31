@@ -29,6 +29,8 @@ import java.util.HashMap;
 import java.util.Optional;
 import java.util.UUID;
 
+import com.nedap.archie.rm.support.identification.HierObjectId;
+import com.nedap.archie.rm.support.identification.ObjectId;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.ehrbase.client.annotations.Id;
 import org.ehrbase.client.exception.ClientException;
@@ -76,26 +78,7 @@ public class DefaultRestCompositionEndpoint implements CompositionEndpoint {
 
     Optional<VersionUid> versionUid = extractVersionUid(entity);
 
-    final VersionUid updatedVersion;
-    if (versionUid.isEmpty()) {
-      updatedVersion =
-          defaultRestClient.httpPost(
-              defaultRestClient
-                  .getConfig()
-                  .getBaseUri()
-                  .resolve(EHR_PATH + ehrId.toString() + COMPOSITION_PATH),
-              composition);
-    } else {
-      updatedVersion =
-          defaultRestClient.httpPut(
-              defaultRestClient
-                  .getConfig()
-                  .getBaseUri()
-                  .resolve(
-                      EHR_PATH + ehrId.toString() + COMPOSITION_PATH + versionUid.get().getUuid()),
-              composition,
-              versionUid.get());
-    }
+    final VersionUid updatedVersion = internalMerge(composition, versionUid);
     Flattener.addVersion(entity, updatedVersion);
     entity =
         (T)
@@ -106,8 +89,50 @@ public class DefaultRestCompositionEndpoint implements CompositionEndpoint {
     return entity;
   }
 
+  private VersionUid internalMerge(Composition composition, Optional<VersionUid> versionUid) {
+    final VersionUid updatedVersion;
+    if (versionUid.isEmpty()) {
+      updatedVersion =
+          defaultRestClient.httpPost(
+              defaultRestClient
+                  .getConfig()
+                  .getBaseUri()
+                  .resolve(EHR_PATH + ehrId.toString() + COMPOSITION_PATH),
+                  composition);
+    } else {
+      updatedVersion =
+          defaultRestClient.httpPut(
+              defaultRestClient
+                  .getConfig()
+                  .getBaseUri()
+                  .resolve(
+                      EHR_PATH + ehrId.toString() + COMPOSITION_PATH + versionUid.get().getUuid()),
+                  composition,
+              versionUid.get());
+    }
+    return updatedVersion;
+  }
+
+  @Override
+  public Composition mergeNative(Composition composition) {
+
+    Optional<VersionUid> versionUid = Optional.ofNullable(composition.getUid()).map(ObjectId::toString).map(VersionUid::new);
+
+    VersionUid newVersionUid = internalMerge(composition, versionUid);
+
+    composition.setUid(new HierObjectId(newVersionUid.toString()));
+    return composition;
+  }
+
   @Override
   public <T> Optional<T> find(UUID compositionId, Class<T> clazz) {
+    Optional<Composition> composition = findNative(compositionId);
+
+    return composition.map(
+        c -> new Flattener(defaultRestClient.getTemplateProvider()).flatten(c, clazz));
+  }
+  @Override
+  public Optional<Composition> findNative(UUID compositionId) {
     Optional<Composition> composition =
         defaultRestClient.httpGet(
             defaultRestClient
@@ -115,10 +140,9 @@ public class DefaultRestCompositionEndpoint implements CompositionEndpoint {
                 .getBaseUri()
                 .resolve(EHR_PATH + ehrId.toString() + COMPOSITION_PATH + compositionId.toString()),
             Composition.class);
-
-    return composition.map(
-        c -> new Flattener(defaultRestClient.getTemplateProvider()).flatten(c, clazz));
+    return composition;
   }
+
 
   @Override
   public void delete(VersionUid precedingVersionUid) {
