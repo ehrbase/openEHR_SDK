@@ -17,8 +17,7 @@ activities[at0001]/archetype_node_id
 activities[at0001]/action_archetype_id, //missing from flattener open CR!
 activities[at0001]/timing
 activities[at0001]/timing/value
-activities[at0001]/timing/value/value
-activities[at0001]/timing/value/formalism
+activities[at0001]/timing/formalism
 activities[at0001]/description[at0002],//CR #500
 activities[at0001]/description[at0002]/name,//CR #500
 activities[at0001]/description[at0002]/name/value,//CR #500
