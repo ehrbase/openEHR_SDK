@@ -29,13 +29,13 @@ import java.util.Optional;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
 
 @Category(Integration.class)
 public class DefaultRestAdminEhrEndpointIT {
 
     private static OpenEhrClient openEhrClient;
-
+    private UUID ehr;
 
     @BeforeClass
     public static void setup() throws URISyntaxException {
@@ -44,7 +44,7 @@ public class DefaultRestAdminEhrEndpointIT {
 
     @Test
     public void testDeleteEhr(){
-        UUID ehr = openEhrClient.ehrEndpoint().createEhr();
+        ehr = openEhrClient.ehrEndpoint().createEhr();
         assertThat(ehr).isNotNull();
         //delete the EHR
         openEhrClient.adminEhrEndpoint().delete(ehr);

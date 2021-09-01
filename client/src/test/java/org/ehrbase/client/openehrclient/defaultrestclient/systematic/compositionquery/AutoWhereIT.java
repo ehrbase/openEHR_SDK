@@ -40,6 +40,8 @@ public class AutoWhereIT extends CanonicalCompoAllTypeQueryIT {
         autoWhereQuery = new AutoWhereQuery(ehrUUID, compositionUUID, openEhrClient);
     }
 
+
+
     @Test
     public void testActionAutoWhere() throws IOException {
 
@@ -55,7 +57,6 @@ public class AutoWhereIT extends CanonicalCompoAllTypeQueryIT {
     }
 
     @Test
-    @Ignore
     public void testCompositionAutoWhere() throws IOException {
         String rootPath = "c";
         RMObject referenceNode = aComposition;

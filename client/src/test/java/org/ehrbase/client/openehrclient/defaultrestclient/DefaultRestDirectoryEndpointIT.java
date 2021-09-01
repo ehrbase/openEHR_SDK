@@ -25,6 +25,7 @@ import org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev0
 import org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1composition.EhrbaseMultiOccurrenceDeV1Composition;
 import org.ehrbase.client.openehrclient.FolderDAO;
 import org.ehrbase.client.openehrclient.OpenEhrClient;
+import org.junit.After;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -38,15 +39,22 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Category(Integration.class)
 public class DefaultRestDirectoryEndpointIT {
     private static OpenEhrClient openEhrClient;
+    private UUID ehr;
 
     @BeforeClass
     public static void setup() throws URISyntaxException {
         openEhrClient = DefaultRestClientTestHelper.setupDefaultRestClient();
     }
 
+    @After
+    public void tearDown(){
+        //delete the created EHR using the admin endpoint
+        openEhrClient.adminEhrEndpoint().delete(ehr);
+    }
+
     @Test
     public void testSetName() {
-        UUID ehr = openEhrClient.ehrEndpoint().createEhr();
+        ehr = openEhrClient.ehrEndpoint().createEhr();
         FolderDAO root = openEhrClient.folder(ehr, "");
         assertThat(root.getName()).isEqualTo("root");
         root.setName("case1");
@@ -56,7 +64,7 @@ public class DefaultRestDirectoryEndpointIT {
 
     @Test
     public void testGetSubFolder() {
-        UUID ehr = openEhrClient.ehrEndpoint().createEhr();
+        ehr = openEhrClient.ehrEndpoint().createEhr();
         FolderDAO root = openEhrClient.folder(ehr, "");
         FolderDAO visit = root.getSubFolder("case1/visit1");
         assertThat(visit.getName()).isEqualTo("visit1");
@@ -65,7 +73,7 @@ public class DefaultRestDirectoryEndpointIT {
 
     @Test
     public void testSaveEntity() {
-        UUID ehr = openEhrClient.ehrEndpoint().createEhr();
+        ehr = openEhrClient.ehrEndpoint().createEhr();
 
         FolderDAO root = openEhrClient.folder(ehr, "");
 
@@ -90,7 +98,7 @@ public class DefaultRestDirectoryEndpointIT {
 
     @Test
     public void testListSubFolderNames() {
-        UUID ehr = openEhrClient.ehrEndpoint().createEhr();
+        ehr = openEhrClient.ehrEndpoint().createEhr();
 
         FolderDAO root = openEhrClient.folder(ehr, "");
         root.getSubFolder("case1");
