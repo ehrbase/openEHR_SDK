@@ -60,27 +60,32 @@ public class EntryDefaultValueInserter extends AbstractValueInserter<Entry> {
           .filter(ref -> ref.getId() != null)
           .forEach(
               ref -> {
-                if (ref.getNamespace() == null) {
+                if (ref.getNamespace() == null
+                    && defaultValues.containsDefaultValue(DefaultValuePath.ID_NAMESPACE)) {
                   ref.setNamespace(defaultValues.getDefaultValue(DefaultValuePath.ID_NAMESPACE));
                 }
-                if (ref.getId() instanceof GenericId && ref.getNamespace() == null) {
+                if (ref.getId() instanceof GenericId && ref.getNamespace() == null
+                    && defaultValues.containsDefaultValue(DefaultValuePath.ID_SCHEME)) {
                   ((GenericId) ref.getId())
                       .setScheme(defaultValues.getDefaultValue(DefaultValuePath.ID_SCHEME));
                 }
               });
     }
 
-    if (isEmpty(rmObject.getWorkflowId())) {
+    if (isEmpty(rmObject.getWorkflowId())
+      && defaultValues.containsDefaultValue(DefaultValuePath.WORKFLOW_ID)) {
       rmObject.setWorkflowId(defaultValues.getDefaultValue(DefaultValuePath.WORKFLOW_ID));
     }
     if (rmObject.getWorkflowId() != null) {
-      if (rmObject.getWorkflowId().getNamespace() == null) {
+      if (rmObject.getWorkflowId().getNamespace() == null
+          && defaultValues.containsDefaultValue(DefaultValuePath.ID_NAMESPACE)) {
         rmObject
             .getWorkflowId()
             .setNamespace(defaultValues.getDefaultValue(DefaultValuePath.ID_NAMESPACE));
       }
       if (rmObject.getWorkflowId().getId() instanceof GenericId
-          && ((GenericId) rmObject.getWorkflowId().getId()).getScheme() == null) {
+          && ((GenericId) rmObject.getWorkflowId().getId()).getScheme() == null
+          && defaultValues.containsDefaultValue(DefaultValuePath.ID_SCHEME)) {
         ((GenericId) rmObject.getWorkflowId().getId())
             .setScheme(defaultValues.getDefaultValue(DefaultValuePath.ID_SCHEME));
       }

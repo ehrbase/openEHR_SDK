@@ -46,12 +46,15 @@ public class CompositionValueInserter extends AbstractValueInserter<Composition>
         rmObject.setComposer(new PartySelf());
       }
 
-      rmObject.setComposer(
-          buildPartyIdentified(
-              defaultValues,
-              DefaultValuePath.COMPOSER_NAME,
-              DefaultValuePath.COMPOSER_ID,
-              rmObject.getComposer()));
+      if (defaultValues.containsDefaultValue(DefaultValuePath.COMPOSER_NAME)
+        && defaultValues.containsDefaultValue(DefaultValuePath.COMPOSER_ID)) {
+        rmObject.setComposer(
+            buildPartyIdentified(
+                defaultValues,
+                DefaultValuePath.COMPOSER_NAME,
+                DefaultValuePath.COMPOSER_ID,
+                rmObject.getComposer()));
+      }
     }
 
     if (rmObject.getContext() == null){

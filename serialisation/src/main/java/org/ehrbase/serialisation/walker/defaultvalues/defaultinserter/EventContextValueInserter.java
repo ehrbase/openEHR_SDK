@@ -80,10 +80,12 @@ public class EventContextValueInserter extends AbstractValueInserter<EventContex
           .filter(ref -> ref.getId() != null)
           .forEach(
               ref -> {
-                if (ref.getNamespace() == null) {
+                if (ref.getNamespace() == null
+                  && defaultValues.containsDefaultValue(DefaultValuePath.ID_NAMESPACE)) {
                   ref.setNamespace(defaultValues.getDefaultValue(DefaultValuePath.ID_NAMESPACE));
                 }
-                if (ref.getId() instanceof GenericId && ref.getNamespace() == null) {
+                if (ref.getId() instanceof GenericId && ref.getNamespace() == null
+                  && defaultValues.containsDefaultValue(DefaultValuePath.ID_SCHEME)) {
                   ((GenericId) ref.getId())
                       .setScheme(defaultValues.getDefaultValue(DefaultValuePath.ID_SCHEME));
                 }
