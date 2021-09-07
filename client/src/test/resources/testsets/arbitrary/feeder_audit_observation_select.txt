@@ -1,0 +1,5 @@
+select
+   c/name/value
+        from EHR e
+          contains COMPOSITION c
+            contains OBSERVATION o[openEHR-EHR-OBSERVATION.test_all_types.v1]

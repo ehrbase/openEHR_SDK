@@ -79,6 +79,11 @@ public class CanonicalEhrQuery3IT extends CanonicalCompoAllTypeQueryIT {
 
          String[] attributePaths = {
                  "archetype_node_id",
+                 "archetype_details",
+                 "archetype_details/archetype_id",
+                 "archetype_details/archetype_id/value",
+                 "archetype_details/template_id",
+                 "archetype_details/template_id/value",
                  "subject",
                  "subject/external_ref",
                  "subject/external_ref/id",
@@ -118,22 +123,19 @@ public class CanonicalEhrQuery3IT extends CanonicalCompoAllTypeQueryIT {
 
             List<Object> objectList = result.getRows().get(0);
 
-            Object actual = valueObject(objectList.get(0)); //Mapped object(s) from JSON
+            Object resultingObject = objectList.get(0);
 
-            if (actual instanceof List){
-                Object expected = attributeArrayValueAt(referenceNode, attributePath); //RMObject(s)
-
-                assertThat(
-                        toRmObjectList((List<Map<String, Object>>) actual).toArray())
+            if (resultingObject instanceof List) {
+                assertThat(valueObject(objectList.get(0)))
                         .as(aqlSelect)
-                        .containsExactlyInAnyOrder(((List<?>) expected).toArray()
-                        );
+                        .isEqualTo(attributeArrayValueAt(referenceNode, attributePath));
             }
-            else
+            else {
                 assertThat(valueObject(objectList.get(0)))
                     .as(aqlSelect)
                     .isEqualTo(attributeValueAt(referenceNode, attributePath));
         }
+    }
     }
 
     @Test

@@ -99,6 +99,43 @@
       "_type" : "DV_TEXT",
       "value" : "Laborergebnis"
     },
+    "feeder_audit" : {
+      "_type" : "FEEDER_AUDIT",
+      "originating_system_audit" : {
+        "_type" : "FEEDER_AUDIT_DETAILS",
+        "system_id" : "FHIR-bridge"
+      },
+      "feeder_system_audit" : {
+        "_type" : "FEEDER_AUDIT_DETAILS",
+        "system_id" : "FHIR-bridge",
+        "version_id" : "final",
+        "other_details":{
+          "_type":"ITEM_TREE",
+          "name":{
+            "_type":"DV_TEXT",
+            "value":"family group"
+          },
+          "archetype_node_id":"openEHR-EHR-ITEM_TREE.generic.v1",
+          "items":[
+            {
+              "_type":"ELEMENT",
+              "name":{
+                "_type":"DV_TEXT",
+                "value":"family group id"
+              },
+              "archetype_node_id":"at0001",
+              "value":{
+                "_type":"DV_IDENTIFIER",
+                "issuer":"MoH",
+                "assigner":"MoH",
+                "id":"99999999",
+                "type":"FAMILY_GROUP_ID"
+              }
+            }
+          ]
+        }
+      }
+    },
     "language" : {
       "terminology_id" : {
         "value" : "ISO_639-1"
