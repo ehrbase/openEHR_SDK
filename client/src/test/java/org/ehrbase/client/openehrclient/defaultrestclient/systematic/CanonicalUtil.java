@@ -69,8 +69,19 @@ public abstract class CanonicalUtil {
                 if (objectRmClass != null)
                     retObject = new CanonicalJson().marshal(toRmObject(((Map<String, Object>) anObject), objectRmClass));
             }
+            retObject = new SpecialCase().transform(retObject);
         }
+        else if (anObject instanceof List){
+            List<RMObject> rmObjects =  toRmObjectList((List<Map<String, Object>>) anObject);
 
+            List<Object> retObjects = new ArrayList<>();
+            for (int i = 0; i < rmObjects.size(); i++){
+               retObjects.add(new SpecialCase().transform(rmObjects.get(i)));
+            }
+
+            retObject = rmObjects;
+        }
+        else
         retObject = new SpecialCase().transform(retObject);
 
         return retObject;
