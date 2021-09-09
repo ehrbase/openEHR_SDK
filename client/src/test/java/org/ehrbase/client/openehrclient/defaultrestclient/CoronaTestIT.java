@@ -64,6 +64,7 @@ import org.ehrbase.client.openehrclient.OpenEhrClient;
 import org.ehrbase.client.templateprovider.TestDataTemplateProvider;
 import org.ehrbase.serialisation.jsonencoding.CanonicalJson;
 import org.ehrbase.test_data.composition.CompositionTestDataCanonicalJson;
+import org.junit.After;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -80,17 +81,24 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class CoronaTestIT {
 
     private static OpenEhrClient openEhrClient;
+    private UUID ehr;
 
     @BeforeClass
     public static void setup() throws URISyntaxException {
         openEhrClient = DefaultRestClientTestHelper.setupDefaultRestClient();
     }
 
+    @After
+    public void tearDown(){
+        //delete the created EHR using the admin endpoint
+        openEhrClient.adminEhrEndpoint().delete(ehr);
+    }
+
     @Test
     @Ignore("see https://github.com/ehrbase/project_management/issues/376")
     public void testCorona() throws IOException {
 
-        UUID ehr = openEhrClient.ehrEndpoint().createEhr();
+        ehr = openEhrClient.ehrEndpoint().createEhr();
 
         Composition composition = new CanonicalJson().unmarshal(IOUtils.toString(CompositionTestDataCanonicalJson.CORONA.getStream(), StandardCharsets.UTF_8), Composition.class);
         Flattener flattener = new Flattener(new TestDataTemplateProvider());
@@ -157,7 +165,7 @@ public class CoronaTestIT {
     @Ignore
     public void testCoronaWithJoin() throws IOException {
 
-        UUID ehr = openEhrClient.ehrEndpoint().createEhr();
+        ehr = openEhrClient.ehrEndpoint().createEhr();
 
         Composition composition = new CanonicalJson().unmarshal(IOUtils.toString(CompositionTestDataCanonicalJson.CORONA.getStream(), StandardCharsets.UTF_8), Composition.class);
         Flattener flattener = new Flattener(new TestDataTemplateProvider());
@@ -236,7 +244,7 @@ public class CoronaTestIT {
 
     @Test
     public void testNUMResearchCase_1_2(){
-        UUID ehr = openEhrClient.ehrEndpoint().createEhr();
+        ehr = openEhrClient.ehrEndpoint().createEhr();
 
         openEhrClient.compositionEndpoint(ehr).mergeCompositionEntity(TestData.buildTestPatientenaufenthaltComposition());
 
@@ -285,7 +293,7 @@ public class CoronaTestIT {
         VirologischerBefundComposition virologischerBefundComposition = TestData.buildTestVirologischerBefundComposition();
         assertThat(virologischerBefundComposition.getBefund()).isNotNull();
 
-        UUID ehr = openEhrClient.ehrEndpoint().createEhr();
+        ehr = openEhrClient.ehrEndpoint().createEhr();
         openEhrClient.compositionEndpoint(ehr).mergeCompositionEntity(virologischerBefundComposition);
 
         //build AQL expression
@@ -338,7 +346,7 @@ public class CoronaTestIT {
 
     @Test
     public void testNUMResearchCase_5(){
-        UUID ehr = openEhrClient.ehrEndpoint().createEhr();
+        ehr = openEhrClient.ehrEndpoint().createEhr();
 
         openEhrClient.compositionEndpoint(ehr).mergeCompositionEntity(TestData.buildTestPatientenaufenthaltComposition());
 
@@ -392,7 +400,7 @@ public class CoronaTestIT {
 
     @Test
     public void testNUMResearchCase_6(){
-        UUID ehr = openEhrClient.ehrEndpoint().createEhr();
+        ehr = openEhrClient.ehrEndpoint().createEhr();
 
         openEhrClient.compositionEndpoint(ehr).mergeCompositionEntity(TestData.buildTestStationarerVersorgungsfallComposition());
 
@@ -448,7 +456,7 @@ public class CoronaTestIT {
         VirologischerBefundComposition virologischerBefundComposition = TestData.buildTestVirologischerBefundComposition();
         assertThat(virologischerBefundComposition.getBefund()).isNotNull();
 
-        UUID ehr = openEhrClient.ehrEndpoint().createEhr();
+        ehr = openEhrClient.ehrEndpoint().createEhr();
         openEhrClient.compositionEndpoint(ehr).mergeCompositionEntity(virologischerBefundComposition);
 
         //build AQL expression

@@ -24,16 +24,10 @@ import com.nedap.archie.rm.archetyped.FeederAudit;
 import com.nedap.archie.rm.composition.AdminEntry;
 import com.nedap.archie.rm.composition.Composition;
 import com.nedap.archie.rm.composition.Section;
-import com.nedap.archie.rm.datastructures.Element;
-import com.nedap.archie.rm.datastructures.History;
-import com.nedap.archie.rm.datastructures.ItemStructure;
-import com.nedap.archie.rm.datastructures.ItemTree;
-import com.nedap.archie.rm.datastructures.PointEvent;
+import com.nedap.archie.rm.datastructures.*;
 import com.nedap.archie.rm.datavalues.DvIdentifier;
 import com.nedap.archie.rm.datavalues.quantity.DvInterval;
 import com.nedap.archie.rm.datavalues.quantity.datetime.DvDateTime;
-import com.nedap.archie.rm.ehr.EhrStatus;
-import java.util.Map;
 import org.apache.commons.io.IOUtils;
 import org.apache.xmlbeans.XmlException;
 import org.ehrbase.serialisation.attributes.FeederAuditAttributes;
@@ -43,12 +37,10 @@ import org.ehrbase.serialisation.jsonencoding.CanonicalJson;
 import org.ehrbase.serialisation.xmlencoding.CanonicalXML;
 import org.ehrbase.test_data.composition.CompositionTestDataCanonicalJson;
 import org.ehrbase.test_data.composition.CompositionTestDataCanonicalXML;
-import org.ehrbase.test_data.ehr.EhrTestDataCanonicalJson;
 import org.ehrbase.test_data.operationaltemplate.OperationalTemplateTestData;
 import org.ehrbase.validation.Validator;
 import org.ehrbase.webtemplate.model.WebTemplate;
 import org.ehrbase.webtemplate.parser.OPTParser;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
 import org.openehr.schemas.v1.TemplateDocument;
@@ -57,6 +49,7 @@ import javax.xml.bind.JAXBException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Map;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -622,6 +615,32 @@ public class DBEncodeTest {
     }
 
     @Test
+    public void testEncodeDecodeFeederAuditWithOriginalContent(){
+        String jsonFeederAudit = " {\n" +
+                "    \"_type\" : \"FEEDER_AUDIT\",\n" +
+                "    \"original_content\" : {\n" +
+                "      \"_type\" : \"DV_PARSABLE\",\n" +
+                "      \"value\" : \"{\\\"resourceType\\\":\\\"Observation\\\",\\\"meta\\\":{\\\"profile\\\":[\\\"https://www.medizininformatik-initiative.de/fhir/core/StructureDefinition/ObservationLab\\\"]},\\\"identifier\\\":[{\\\"type\\\":{\\\"coding\\\":[{\\\"system\\\":\\\"http://terminology.hl7.org/CodeSystem/v2-0203\\\",\\\"code\\\":\\\"OBI\\\"}]},\\\"system\\\":\\\"https://diz.mii.de/fhir/core/NamingSystem/test-lab-results\\\",\\\"value\\\":\\\"59826-8_1234567890\\\",\\\"assigner\\\":{\\\"identifier\\\":{\\\"system\\\":\\\"https://www.medizininformatik-initiative.de/fhir/core/NamingSystem/org-identifier\\\",\\\"value\\\":\\\"DIZ-ID\\\"}}}],\\\"status\\\":\\\"final\\\",\\\"category\\\":[{\\\"coding\\\":[{\\\"system\\\":\\\"http://loinc.org\\\",\\\"code\\\":\\\"26436-6\\\"},{\\\"system\\\":\\\"http://terminology.hl7.org/CodeSystem/observation-category\\\",\\\"code\\\":\\\"laboratory\\\"}]}],\\\"code\\\":{\\\"coding\\\":[{\\\"system\\\":\\\"http://loinc.org\\\",\\\"code\\\":\\\"59826-8\\\",\\\"display\\\":\\\"Creatinine [Moles/volume] in Blood\\\"}],\\\"text\\\":\\\"Kreatinin\\\"},\\\"subject\\\":{\\\"reference\\\":\\\"Patient/679e3fc3-cc9a-4e04-bc81-cb4d4a7e8e1c\\\"},\\\"encounter\\\":{\\\"reference\\\":\\\"Encounter/555\\\"},\\\"effectiveDateTime\\\":\\\"2018-11-20T12:05:00+01:00\\\",\\\"issued\\\":\\\"2018-03-11T10:28:00+01:00\\\",\\\"performer\\\":[{\\\"reference\\\":\\\"Organization/7772\\\",\\\"display\\\":\\\"Zentrallabor des IKCL\\\"}],\\\"valueQuantity\\\":{\\\"value\\\":72,\\\"unit\\\":\\\"..mol/l\\\",\\\"system\\\":\\\"http://unitsofmeasure.org\\\",\\\"code\\\":\\\"umol/L\\\"},\\\"interpretation\\\":[{\\\"coding\\\":[{\\\"system\\\":\\\"http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation\\\",\\\"code\\\":\\\"N\\\"}]}],\\\"referenceRange\\\":[{\\\"low\\\":{\\\"value\\\":72},\\\"high\\\":{\\\"value\\\":127},\\\"type\\\":{\\\"coding\\\":[{\\\"system\\\":\\\"http://terminology.hl7.org/CodeSystem/referencerange-meaning\\\",\\\"code\\\":\\\"normal\\\",\\\"display\\\":\\\"Normal Range\\\"}]}}]}\",\n" +
+                "      \"formalism\" : \"application/json\"\n" +
+                "    },\n" +
+                "    \"originating_system_audit\" : {\n" +
+                "      \"_type\" : \"FEEDER_AUDIT_DETAILS\",\n" +
+                "      \"system_id\" : \"FHIR-bridge\"\n" +
+                "    }\n" +
+                "  }";
+
+        CanonicalJson cut = new CanonicalJson();
+        FeederAudit feederAudit = cut.unmarshal(jsonFeederAudit, FeederAudit.class);
+
+        String encodedToDB = new FeederAuditEncoding().toDB(feederAudit);
+
+        FeederAudit decodedFromDB = new FeederAuditEncoding().fromDB(encodedToDB);
+
+        assertEquals(feederAudit.getOriginatingSystemAudit().getSystemId(), decodedFromDB.getOriginatingSystemAudit().getSystemId());
+
+    }
+
+    @Test
     public void testEncodeTimeAsJson(){
         String fromDB = "{\"/value\": {\"value\": \"2020-04-02T12:00Z\", \"epoch_offset\": 1585828800}, \"/$CLASS$\": \"DvDateTime\"}";
 
@@ -736,31 +755,6 @@ public class DBEncodeTest {
         assertEquals("openEHR-EHR-OBSERVATION.body_temperature-zn.v1", object.itemsAtPath("/content[openEHR-EHR-SECTION.ispek_dialog.v1]/items[openEHR-EHR-OBSERVATION.body_temperature-zn.v1]/archetype_details/archetype_id").get(0).toString());
 
         assertNotNull(object);
-    }
-
-    @Test
-    @Ignore
-    public void statusOtherDetailsEncodingTestRmType() throws Exception {
-        EhrStatus referenceEhrStatus = new CanonicalJson().unmarshal(IOUtils.toString(EhrTestDataCanonicalJson.EHR_STATUS_SUBJECT_EXTERNAL_REF_OTHER_DETAILS.getStream(), UTF_8), EhrStatus.class);
-
-        CompositionSerializer compositionSerializerRawJson = new CompositionSerializer();
-
-        String db_encoded = compositionSerializerRawJson.dbEncode(referenceEhrStatus.getOtherDetails());
-        //check that ITEM_TREE name is serialized
-        assertNotNull(db_encoded);
-
-        String converted = new LightRawJsonEncoder(db_encoded).encodeCompositionAsString();
-
-        assertNotNull(converted);
-
-        //see if this can be interpreted by Archie
-//        Composition object = new CanonicalJson().unmarshal(converted, Composition.class);
-//
-//        assertTrue(object.itemsAtPath("/content[openEHR-EHR-SECTION.ispek_dialog.v1]/items[openEHR-EHR-OBSERVATION.body_temperature-zn.v1]/archetype_details/archetype_id").size() > 0);
-//
-//        assertEquals("openEHR-EHR-OBSERVATION.body_temperature-zn.v1", object.itemsAtPath("/content[openEHR-EHR-SECTION.ispek_dialog.v1]/items[openEHR-EHR-OBSERVATION.body_temperature-zn.v1]/archetype_details/archetype_id").get(0).toString());
-//
-//        assertNotNull(object);
     }
 
     @Test

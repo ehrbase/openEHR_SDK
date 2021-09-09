@@ -1,0 +1,12 @@
+# prefixed by feeder_system_audit/other_details[openEHR-EHR-ITEM_TREE.generic.v1]
+name, //CR # returns null
+name/value
+items[openEHR-EHR-ITEM_TREE.generic.v1]
+items[openEHR-EHR-ITEM_TREE.generic.v1]/name
+items[openEHR-EHR-ITEM_TREE.generic.v1]/name/value
+items[openEHR-EHR-ITEM_TREE.generic.v1]/value
+items[openEHR-EHR-ITEM_TREE.generic.v1]/value/type
+items[openEHR-EHR-ITEM_TREE.generic.v1]/value/issuer
+items[openEHR-EHR-ITEM_TREE.generic.v1]/value/assigner
+items[openEHR-EHR-ITEM_TREE.generic.v1]/archetype_node_id,//CR # returns null
+

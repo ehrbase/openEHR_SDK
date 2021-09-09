@@ -20,14 +20,12 @@ package org.ehrbase.client.openehrclient.defaultrestclient.systematic.compositio
 import com.nedap.archie.rm.composition.Composition;
 import org.apache.commons.io.IOUtils;
 import org.ehrbase.client.Integration;
-import org.ehrbase.client.classgenerator.examples.virologischerbefundcomposition.VirologischerBefundComposition;
+import org.ehrbase.client.classgenerator.examples.testalltypesenv1composition.TestAllTypesEnV1Composition;
 import org.ehrbase.client.flattener.Flattener;
 import org.ehrbase.client.openehrclient.defaultrestclient.systematic.compositionquery.queries.arbitrary.ArbitraryQuery;
-import org.ehrbase.client.openehrclient.defaultrestclient.systematic.compositionquery.queries.simple.SimpleSelectQuery;
 import org.ehrbase.client.templateprovider.TestDataTemplateProvider;
 import org.ehrbase.serialisation.jsonencoding.CanonicalJson;
 import org.ehrbase.test_data.composition.CompositionTestDataCanonicalJson;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -38,38 +36,27 @@ import java.nio.charset.StandardCharsets;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @Category(Integration.class)
-public class ArbitraryQueryOtherContextIT extends CanonicalCompoAllTypeQueryIT {
+public class ArbitraryQueryFeederAuditIT extends CanonicalCompoAllTypeQueryIT {
 
     protected ArbitraryQuery arbitraryQuery;
-    protected SimpleSelectQuery simpleSelectQueryEngine;
 
     @Before
     public void setUp() throws IOException {
-        // normal test run
         ehrUUID = openEhrClient.ehrEndpoint().createEhr();
         compositionEndpoint = openEhrClient.compositionEndpoint(ehrUUID);
 
-        aComposition = new CanonicalJson().unmarshal(IOUtils.toString(CompositionTestDataCanonicalJson.VIROLOGY_FINDING_WITH_SPECIMEN_NO_UPDATE.getStream(), StandardCharsets.UTF_8), Composition.class);
+        aComposition = new CanonicalJson().unmarshal(IOUtils.toString(CompositionTestDataCanonicalJson.FEEDER_AUDIT_DETAILS.getStream(), StandardCharsets.UTF_8), Composition.class);
         Flattener flattener = new Flattener(new TestDataTemplateProvider());
-        VirologischerBefundComposition virologischerBefundComposition = flattener.flatten(aComposition, VirologischerBefundComposition.class);
+        TestAllTypesEnV1Composition testAllTypesEnV1Composition = flattener.flatten(aComposition, TestAllTypesEnV1Composition.class);
 //        create the composition
-        VirologischerBefundComposition comp = compositionEndpoint.mergeCompositionEntity(virologischerBefundComposition);
+        TestAllTypesEnV1Composition comp = compositionEndpoint.mergeCompositionEntity(testAllTypesEnV1Composition);
         compositionUUID = comp.getVersionUid().getUuid();
-
-
         arbitraryQuery = new ArbitraryQuery(ehrUUID, openEhrClient);
-        simpleSelectQueryEngine = new SimpleSelectQuery(ehrUUID, compositionUUID, openEhrClient);
-    }
-
-    @After
-    public void tearDown(){
-        //delete the created EHR using the admin endpoint
-        openEhrClient.adminEhrEndpoint().delete(ehrUUID);
     }
 
     @Test
-    public void testArbitraryOtherContext() throws IOException {
-        String csvTestSet = dirPath+"/arbitrary/arbitrary_other_context.csv";
+    public void testArbitraryFeederAudit() throws IOException {
+        String csvTestSet = dirPath+"/arbitrary/arbitrary_feeder_audit.csv";
 
         assertThat(arbitraryQuery.testItemPaths(dirPath+"/arbitrary", csvTestSet)).isTrue();
     }
