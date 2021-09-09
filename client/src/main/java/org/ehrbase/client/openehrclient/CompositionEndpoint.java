@@ -37,7 +37,7 @@ public interface CompositionEndpoint {
      */
     <T> T mergeCompositionEntity(T entity);
 
-    VersionUid mergeNative(Composition composition);
+    VersionUid mergeRaw(Composition composition);
 
     /**
      * Finds a Flat-Entity by
@@ -50,7 +50,7 @@ public interface CompositionEndpoint {
      */
     <T> Optional<T> find(UUID compositionId, Class<T> clazz);
 
-    Optional<Composition> findNative(UUID compositionId);
+    Optional<Composition> findRaw(UUID compositionId);
 
     /**
      * Deletes a Composition by preceding version uid.

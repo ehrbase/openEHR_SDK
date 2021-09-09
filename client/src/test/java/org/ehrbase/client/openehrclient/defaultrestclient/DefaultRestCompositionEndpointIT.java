@@ -137,18 +137,18 @@ public class DefaultRestCompositionEndpointIT {
     assertThat(bloodPressureSimpleDeV0.getVersionUid().getVersion()).isEqualTo(1L);
 
 
-    Optional<Composition> aNative = openEhrClient.compositionEndpoint(ehr).findNative(bloodPressureSimpleDeV0.getVersionUid().getUuid());
+    Optional<Composition> aNative = openEhrClient.compositionEndpoint(ehr).findRaw(bloodPressureSimpleDeV0.getVersionUid().getUuid());
 
     assertThat(aNative).isPresent();
     assertThat(aNative.get().getUid().getExtension()).isEqualTo("local.ehrbase.org::1");
 
-   VersionUid versionUid= openEhrClient.compositionEndpoint(ehr).mergeNative(aNative.get());
+   VersionUid versionUid= openEhrClient.compositionEndpoint(ehr).mergeRaw(aNative.get());
 
     assertThat(versionUid.getVersion()).isEqualTo(2l);
 
     aNative.get().setUid(null);
 
-    versionUid = openEhrClient.compositionEndpoint(ehr).mergeNative(aNative.get());
+    versionUid = openEhrClient.compositionEndpoint(ehr).mergeRaw(aNative.get());
     assertThat(versionUid.getVersion()).isEqualTo(1L);
 
   }

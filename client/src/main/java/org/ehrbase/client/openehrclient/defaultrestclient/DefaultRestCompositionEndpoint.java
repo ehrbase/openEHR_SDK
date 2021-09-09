@@ -29,7 +29,6 @@ import java.util.HashMap;
 import java.util.Optional;
 import java.util.UUID;
 
-import com.nedap.archie.rm.support.identification.HierObjectId;
 import com.nedap.archie.rm.support.identification.ObjectId;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.ehrbase.client.annotations.Id;
@@ -114,7 +113,7 @@ public class DefaultRestCompositionEndpoint implements CompositionEndpoint {
   }
 
   @Override
-  public VersionUid mergeNative(Composition composition) {
+  public VersionUid mergeRaw(Composition composition) {
 
     Optional<VersionUid> versionUid = Optional.ofNullable(composition.getUid()).map(ObjectId::toString).map(VersionUid::new);
 
@@ -125,13 +124,13 @@ public class DefaultRestCompositionEndpoint implements CompositionEndpoint {
 
   @Override
   public <T> Optional<T> find(UUID compositionId, Class<T> clazz) {
-    Optional<Composition> composition = findNative(compositionId);
+    Optional<Composition> composition = findRaw(compositionId);
 
     return composition.map(
         c -> new Flattener(defaultRestClient.getTemplateProvider()).flatten(c, clazz));
   }
   @Override
-  public Optional<Composition> findNative(UUID compositionId) {
+  public Optional<Composition> findRaw(UUID compositionId) {
     Optional<Composition> composition =
         defaultRestClient.httpGet(
             defaultRestClient
