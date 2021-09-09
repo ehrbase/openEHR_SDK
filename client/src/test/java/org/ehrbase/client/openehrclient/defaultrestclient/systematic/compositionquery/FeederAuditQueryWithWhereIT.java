@@ -21,7 +21,6 @@ import org.ehrbase.client.Integration;
 import org.ehrbase.client.openehrclient.defaultrestclient.systematic.compositionquery.queries.arbitrary.ArbitraryQuery;
 import org.ehrbase.test_data.composition.CompositionTestDataCanonicalJson;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -30,8 +29,7 @@ import java.io.IOException;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @Category(Integration.class)
-@Ignore("depends on CR#538")
-public class FeederAuditQueryIT extends CanonicalCompoAllTypeQueryIT {
+public class FeederAuditQueryWithWhereIT extends CanonicalCompoAllTypeQueryIT {
 
     protected ArbitraryQuery arbitraryQuery;
 
@@ -44,8 +42,15 @@ public class FeederAuditQueryIT extends CanonicalCompoAllTypeQueryIT {
     }
 
     @Test
-    public void testArbitrary1() throws IOException {
-        String csvTestSet = dirPath+"/arbitrary/feeder_audit_tests.csv";
+    public void testArbitraryWhereClause() throws IOException {
+        String csvTestSet = dirPath+"/arbitrary/feeder_audit_where_clause_tests.csv";
+
+        assertThat(arbitraryQuery.testItemPaths(dirPath+"/arbitrary", csvTestSet)).isTrue();
+    }
+
+    @Test
+    public void testArbitraryLocatableWhereClause() throws IOException {
+        String csvTestSet = dirPath+"/arbitrary/feeder_audit_locatable_where_clause_tests.csv";
 
         assertThat(arbitraryQuery.testItemPaths(dirPath+"/arbitrary", csvTestSet)).isTrue();
     }

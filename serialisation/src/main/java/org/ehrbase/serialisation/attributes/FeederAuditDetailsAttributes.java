@@ -20,9 +20,12 @@ package org.ehrbase.serialisation.attributes;
 import com.nedap.archie.rm.archetyped.FeederAuditDetails;
 import org.ehrbase.serialisation.dbencoding.CompositionSerializer;
 import org.ehrbase.serialisation.dbencoding.PathMap;
+import org.ehrbase.serialisation.dbencoding.RmObjectEncoding;
+import org.ehrbase.serialisation.dbencoding.rawjson.LightRawJsonEncoder;
+import org.ehrbase.serialisation.dbencoding.wrappers.json.I_DvTypeAdapter;
+import org.ehrbase.serialisation.util.SnakeCase;
 
 import java.util.Map;
-import org.ehrbase.serialisation.dbencoding.rawjson.LightRawJsonEncoder;
 
 public class FeederAuditDetailsAttributes {
 
@@ -42,20 +45,22 @@ public class FeederAuditDetailsAttributes {
         if (feederAuditDetails == null)
             return null;
 
+        valuemap.put(I_DvTypeAdapter.AT_TYPE, new SnakeCase(FeederAuditDetails.class.getSimpleName()).camelToUpperSnake());
+
         if (feederAuditDetails.getLocation() != null) {
-            valuemap.put("location", feederAuditDetails.getLocation());
+            valuemap.put("location", new RmObjectEncoding(feederAuditDetails.getLocation()).toMap());
         }
         if (feederAuditDetails.getProvider() != null) {
-            valuemap.put("provider", feederAuditDetails.getProvider());
+            valuemap.put("provider", new RmObjectEncoding(feederAuditDetails.getProvider()).toMap());
         }
         if (feederAuditDetails.getSubject() != null) {
-            valuemap.put("subject", feederAuditDetails.getSubject());
+            valuemap.put("subject", new RmObjectEncoding(feederAuditDetails.getSubject()).toMap());
         }
         if (feederAuditDetails.getSystemId() != null) {
             valuemap.put("system_id", feederAuditDetails.getSystemId());
         }
         if (feederAuditDetails.getTime() != null) {
-            valuemap.put("time", feederAuditDetails.getTime());
+            valuemap.put("time", new RmObjectEncoding(feederAuditDetails.getTime()).toMap());
         }
         if (feederAuditDetails.getVersionId() != null) {
             valuemap.put("version_id", feederAuditDetails.getVersionId());
