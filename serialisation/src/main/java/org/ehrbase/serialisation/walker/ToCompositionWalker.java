@@ -51,7 +51,6 @@ public abstract class ToCompositionWalker<T> extends Walker<T> {
     RMObject currentRM = context.getRmObjectDeque().peek();
     WebTemplateNode currentNode = context.getNodeDeque().peek();
 
-    // TODO-527: correct assessment? should archetype_details added to ALL locatables, not just root ones?
     if (currentRM instanceof Locatable) {
       org.ehrbase.webtemplate.parser.NodeId nodeId = new NodeId(currentNode.getNodeId());
       if (nodeId.isArchetypeId()) {
