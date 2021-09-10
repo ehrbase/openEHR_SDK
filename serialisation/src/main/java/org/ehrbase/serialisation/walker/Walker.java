@@ -48,23 +48,24 @@ public abstract class Walker<T> {
 
 
   public void walk(
-      Composition composition, T object, WebTemplate webTemplate, DefaultValues defaultValues) {
+      Composition composition, T object, WebTemplate webTemplate, DefaultValues defaultValues, String templateId) {
 
-    walk(composition, object, webTemplate.getTree(), defaultValues);
+    walk(composition, object, webTemplate.getTree(), defaultValues, templateId);
   }
 
-  public void walk(RMObject composition, T object, WebTemplateNode root) {
-    walk(composition, object, root, null);
+  public void walk(RMObject composition, T object, WebTemplateNode root, String templateId) {
+    walk(composition, object, root, null, templateId);
   }
 
   public void walk(
-      RMObject composition, T object, WebTemplateNode root, DefaultValues defaultValues) {
+      RMObject composition, T object, WebTemplateNode root, DefaultValues defaultValues, String templateId) {
 
     Context<T> context = new Context<>();
 
     context.getNodeDeque().push(root);
     context.getObjectDeque().push(object);
     context.getRmObjectDeque().push(composition);
+    context.setTemplateId(templateId);
 
     if (defaultValues != null) {
       context.setDefaultValues(defaultValues);

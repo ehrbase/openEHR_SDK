@@ -44,7 +44,9 @@ public class EventContextValueInserter extends AbstractValueInserter<EventContex
       rmObject.setEndTime(new DvDateTime(defaultValues.getDefaultValue(DefaultValuePath.END_TIME)));
     }
 
-    if (isEmpty(rmObject.getHealthCareFacility())) {
+    if (isEmpty(rmObject.getHealthCareFacility()) &&
+        (defaultValues.containsDefaultValue(DefaultValuePath.HEALTHCARE_FACILITY_NAME) ||
+            defaultValues.containsDefaultValue(DefaultValuePath.HEALTHCARE_FACILITY_ID))) {
       rmObject.setHealthCareFacility(
           buildPartyIdentified(
               defaultValues,
@@ -78,10 +80,12 @@ public class EventContextValueInserter extends AbstractValueInserter<EventContex
           .filter(ref -> ref.getId() != null)
           .forEach(
               ref -> {
-                if (ref.getNamespace() == null) {
+                if (ref.getNamespace() == null
+                  && defaultValues.containsDefaultValue(DefaultValuePath.ID_NAMESPACE)) {
                   ref.setNamespace(defaultValues.getDefaultValue(DefaultValuePath.ID_NAMESPACE));
                 }
-                if (ref.getId() instanceof GenericId && ref.getNamespace() == null) {
+                if (ref.getId() instanceof GenericId && ref.getNamespace() == null
+                  && defaultValues.containsDefaultValue(DefaultValuePath.ID_SCHEME)) {
                   ((GenericId) ref.getId())
                       .setScheme(defaultValues.getDefaultValue(DefaultValuePath.ID_SCHEME));
                 }

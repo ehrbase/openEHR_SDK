@@ -64,9 +64,11 @@ public class StdToCompositionWalker extends ToCompositionWalker<Map<String, Stri
       Composition composition,
       Map<String, String> object,
       WebTemplate webTemplate,
-      DefaultValues defaultValues) {
+      DefaultValues defaultValues,
+      String templateId
+  ) {
     consumedPaths = new HashSet<>();
-    super.walk(composition, object, webTemplate, defaultValues);
+    super.walk(composition, object, webTemplate, defaultValues, templateId);
   }
 
   @Override
@@ -173,6 +175,8 @@ public class StdToCompositionWalker extends ToCompositionWalker<Map<String, Stri
 
   @Override
   protected void postHandle(Context<Map<String, String>> context) {
+
+    super.postHandle(context);
 
     List<UnmarshalPostprocessor<? super RMObject>> postprocessor = new ArrayList<>();
 
