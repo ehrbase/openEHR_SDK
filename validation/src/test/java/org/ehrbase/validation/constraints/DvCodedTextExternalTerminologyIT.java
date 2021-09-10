@@ -124,6 +124,7 @@ public class DvCodedTextExternalTerminologyIT extends ConstraintTestBase {
         CArchetypeConstraint constraint = new CArchetypeConstraint(null, fhirTerminologyValidator);
         ValidationException ex = Assert.assertThrows(ValidationException.class, () -> constraint.validate("test", dvCodedText, archetypeconstraint));
 
-        Assert.assertEquals("Validation error at test, ELT01:Validation error at test, CODE_PHRASE_03:CodePhrase codeString does not match any option, found: UKN", ex.getMessage());
+        Assert.assertEquals("Validation error at test, ELT01:Validation error at test, CODE_PHRASE_03:CodePhrase codeString does not match any option" +
+                " from the specified ValueSet http://terminology.hl7.org/ValueSet/v3-EntityNameUseR2, found: UKN", ex.getMessage());
     }
 }

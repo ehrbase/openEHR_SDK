@@ -155,8 +155,8 @@ public class FhirTerminologyValidationSupport implements ExternalTerminologyVali
         List<Map<String, String>> codings = context.read("$.expansion.contains[?(@.code=='" + codePhrase.getCodeString() + "')]");
 
         if (codings.isEmpty()) {
-            ValidationException.raise(path, "CodePhrase codeString does not match any option, found: "
-                    + codePhrase.getCodeString(), "CODE_PHRASE_03");
+            ValidationException.raise(path, "CodePhrase codeString does not match any option from the specified ValueSet "
+                    + url + ", found: " + codePhrase.getCodeString(), "CODE_PHRASE_03");
         } else if (codings.size() == 1) {
             Map<String, String> coding = codings.get(0);
             if (!StringUtils.equals(coding.get("system"), codePhrase.getTerminologyId().getValue())) {

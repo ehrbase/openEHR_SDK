@@ -146,14 +146,16 @@ public class DvCodedTextExternalTerminologyTest extends ConstraintTestBase {
 
         Mockito.when(fhirTerminologyValidatorMock.supports("terminology://fhir.hl7.org/ValueSet/$expand?url=http://terminology.hl7.org/ValueSet/v3-EntityNameUseR2"))
                 .thenReturn(true);
-        Mockito.doThrow(new ValidationException("test", "CODE_PHRASE_03:CodePhrase codeString does not match any option, found: UKN"))
+        Mockito.doThrow(new ValidationException("test", "CODE_PHRASE_03:CodePhrase codeString does not match any option " +
+                        "from the specified ValueSet http://terminology.hl7.org/ValueSet/v3-EntityNameUseR2, found: UKN"))
                 .when(fhirTerminologyValidatorMock)
                 .validate("test", "terminology://fhir.hl7.org/ValueSet/$expand?url=http://terminology.hl7.org/ValueSet/v3-EntityNameUseR2", codePhrase);
 
         CArchetypeConstraint constraint = new CArchetypeConstraint(null, fhirTerminologyValidatorMock);
         ValidationException ex = Assert.assertThrows(ValidationException.class, () -> constraint.validate("test", dvCodedText, archetypeconstraint));
 
-        Assert.assertEquals("Validation error at test, ELT01:Validation error at test, CODE_PHRASE_03:CodePhrase codeString does not match any option, found: UKN", ex.getMessage());
+        Assert.assertEquals("Validation error at test, ELT01:Validation error at test, CODE_PHRASE_03:CodePhrase codeString does not match any option " +
+                "from the specified ValueSet http://terminology.hl7.org/ValueSet/v3-EntityNameUseR2, found: UKN", ex.getMessage());
     }
 
     @Test
