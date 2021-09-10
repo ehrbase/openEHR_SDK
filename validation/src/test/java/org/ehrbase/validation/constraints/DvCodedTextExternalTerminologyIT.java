@@ -92,7 +92,7 @@ public class DvCodedTextExternalTerminologyIT extends ConstraintTestBase {
     public void testFhirValueSet() throws IOException, XmlException {
         setUpContext("./src/test/resources/constraints/terminology/fhir_valueset.xml");
 
-        CodePhrase codePhrase = new CodePhrase(new TerminologyId("http://terminology.hl7.org/ValueSet/v3-EntityNameUseR2"), "ANON");
+        CodePhrase codePhrase = new CodePhrase(new TerminologyId("http://terminology.hl7.org/CodeSystem/v3-EntityNameUseR2"), "ANON");
         DvCodedText dvCodedText = new DvCodedText("Anonymous", codePhrase);
 
         new CArchetypeConstraint(null, fhirTerminologyValidator).validate("test", dvCodedText, archetypeconstraint);
@@ -103,14 +103,14 @@ public class DvCodedTextExternalTerminologyIT extends ConstraintTestBase {
     public void testFhirValueSet_WrongTerminologyId() throws IOException, XmlException {
         setUpContext("./src/test/resources/constraints/terminology/fhir_valueset.xml");
 
-        CodePhrase codePhrase = new CodePhrase(new TerminologyId("http://hl7.org/fhir/ValueSet/languages"), "de");
-        DvCodedText dvCodedText = new DvCodedText("German", codePhrase);
+        CodePhrase codePhrase = new CodePhrase(new TerminologyId("http://snomed.info/sct"), "ANON");
+        DvCodedText dvCodedText = new DvCodedText("Anonymous", codePhrase);
 
         CArchetypeConstraint constraint = new CArchetypeConstraint(null, fhirTerminologyValidator);
         ValidationException ex = Assert.assertThrows(ValidationException.class, () -> constraint.validate("test", dvCodedText, archetypeconstraint));
 
         Assert.assertEquals("Validation error at test, ELT01:Validation error at test, CODE_PHRASE_02:CodePhrase terminology does not match, " +
-                "expected: http://terminology.hl7.org/ValueSet/v3-EntityNameUseR2, found: http://hl7.org/fhir/ValueSet/languages", ex.getMessage());
+                "expected: http://terminology.hl7.org/CodeSystem/v3-EntityNameUseR2, found: http://snomed.info/sct", ex.getMessage());
     }
 
     @Test
@@ -118,12 +118,13 @@ public class DvCodedTextExternalTerminologyIT extends ConstraintTestBase {
     public void testFhirValueSet_WrongCode() throws IOException, XmlException {
         setUpContext("./src/test/resources/constraints/terminology/fhir_valueset.xml");
 
-        CodePhrase codePhrase = new CodePhrase(new TerminologyId("http://terminology.hl7.org/ValueSet/v3-EntityNameUseR2"), "UKN");
+        CodePhrase codePhrase = new CodePhrase(new TerminologyId("http://terminology.hl7.org/CodeSystem/v3-EntityNameUseR2"), "UKN");
         DvCodedText dvCodedText = new DvCodedText("Unknown", codePhrase);
 
         CArchetypeConstraint constraint = new CArchetypeConstraint(null, fhirTerminologyValidator);
         ValidationException ex = Assert.assertThrows(ValidationException.class, () -> constraint.validate("test", dvCodedText, archetypeconstraint));
 
-        Assert.assertEquals("Validation error at test, ELT01:Validation error at test, CODE_PHRASE_03:CodePhrase codeString does not match any option, found: UKN", ex.getMessage());
+        Assert.assertEquals("Validation error at test, ELT01:Validation error at test, CODE_PHRASE_03:CodePhrase codeString does not match any option" +
+                " from the specified ValueSet http://terminology.hl7.org/ValueSet/v3-EntityNameUseR2, found: UKN", ex.getMessage());
     }
 }
