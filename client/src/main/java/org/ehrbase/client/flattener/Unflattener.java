@@ -73,7 +73,9 @@ public class Unflattener {
             generate,
             findEntity(dto),
                 introspect,
-            defaultValuesProvider.provide(dto));
+            defaultValuesProvider.provide(dto),
+            template.value()
+          );
     Optional<VersionUid> versionUid = extractVersionUid(dto);
     if (versionUid.isPresent()) {
       generate.setUid(new HierObjectId(versionUid.get().toString()));

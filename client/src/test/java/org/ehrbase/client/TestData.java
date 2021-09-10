@@ -209,7 +209,6 @@ public class TestData {
     bloodPressureTrainingSample.setSystolicUnits("mm[Hg]");
     bloodPressureTrainingSample.setDiastolicMagnitude(22d);
     bloodPressureTrainingSample.setDiastolicUnits("mm[Hg]");
-    bloodPressureTrainingSample.setMeanArterialPressureNullFlavourDefiningCode(NullFlavour.MASKED);
     bloodPressureTrainingSample.setMeanArterialPressureMagnitude(22d);
     bloodPressureTrainingSample.setMeanArterialPressureUnits("mm[Hg]");
     bloodPressureTrainingSample.setPulsePressureMagnitude(22d);

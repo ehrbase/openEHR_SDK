@@ -372,7 +372,7 @@
                     "numerator": 1.5,
                     "denominator": 1.0,
                     "type": 1,
-                    "precision": 0
+                    "precision": 1
                   }
                 }
               ]

@@ -33,8 +33,9 @@ public class LocatableDefaultValueInserter extends AbstractValueInserter<Locatab
       if (rmObject.getLinks() == null) {
         rmObject.setLinks(new ArrayList<>());
       }
-
-      rmObject.getLinks().addAll(defaultValues.getDefaultValue(DefaultValuePath.LINKS));
+      if (defaultValues.containsDefaultValue(DefaultValuePath.LINKS)) {
+        rmObject.getLinks().addAll(defaultValues.getDefaultValue(DefaultValuePath.LINKS));
+      }
     }
   }
 
