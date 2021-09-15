@@ -34,9 +34,7 @@ import com.nedap.archie.paths.PathSegment;
 import com.nedap.archie.rm.RMObject;
 import com.nedap.archie.rm.archetyped.*;
 import com.nedap.archie.rm.datastructures.History;
-import com.nedap.archie.rm.datatypes.CodePhrase;
 import com.nedap.archie.rm.support.identification.ArchetypeID;
-import com.nedap.archie.rm.support.identification.TerminologyId;
 import com.nedap.archie.rm.support.identification.UIDBasedId;
 import com.nedap.archie.rminfo.ArchieAOMInfoLookup;
 import com.nedap.archie.rminfo.ArchieRMInfoLookup;
@@ -154,8 +152,6 @@ public class CanonicalJson implements RMDataFormat {
         UIDBasedIdMixIn(@JsonProperty String value) {
         }
 
-        ;
-
         @JsonProperty("value")
         abstract String getValue();
 
@@ -173,8 +169,6 @@ public class CanonicalJson implements RMDataFormat {
                        @JsonProperty List<Link> links) {
         }
 
-        ;
-
         @JsonProperty("archetype_node_id")
         abstract String getArchetypeNodeId();
 
@@ -188,8 +182,6 @@ public class CanonicalJson implements RMDataFormat {
     abstract class PathableMixIn {
         PathableMixIn() {
         }
-
-        ;
 
         @JsonIgnore
         abstract String getPath();

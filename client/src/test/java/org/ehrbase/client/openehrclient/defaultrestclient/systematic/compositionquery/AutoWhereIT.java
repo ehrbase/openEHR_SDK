@@ -57,6 +57,7 @@ public class AutoWhereIT extends CanonicalCompoAllTypeQueryIT {
     }
 
     @Test
+    @Ignore
     public void testCompositionAutoWhere() throws IOException {
         String rootPath = "c";
         RMObject referenceNode = aComposition;

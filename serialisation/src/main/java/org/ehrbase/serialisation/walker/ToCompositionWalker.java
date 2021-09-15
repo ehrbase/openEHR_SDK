@@ -19,12 +19,19 @@
 
 package org.ehrbase.serialisation.walker;
 
+import static org.ehrbase.util.rmconstants.RmConstants.RM_VERSION_1_4_0;
+
 import com.nedap.archie.rm.RMObject;
+import com.nedap.archie.rm.archetyped.Archetyped;
+import com.nedap.archie.rm.archetyped.Locatable;
+import com.nedap.archie.rm.archetyped.TemplateId;
+import com.nedap.archie.rm.support.identification.ArchetypeID;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.ehrbase.building.webtemplateskeletnbuilder.WebTemplateSkeletonBuilder;
 import org.ehrbase.serialisation.walker.defaultvalues.defaultinserter.DefaultValueInserter;
 import org.ehrbase.util.reflection.ReflectionHelper;
 import org.ehrbase.webtemplate.model.WebTemplateNode;
+import org.ehrbase.webtemplate.parser.NodeId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,6 +45,26 @@ public abstract class ToCompositionWalker<T> extends Walker<T> {
       ReflectionHelper.buildMap(DefaultValueInserter.class);
 
   private final Logger log = LoggerFactory.getLogger(getClass());
+
+  @Override
+  protected void postHandle(Context<T> context) {
+    RMObject currentRM = context.getRmObjectDeque().peek();
+    WebTemplateNode currentNode = context.getNodeDeque().peek();
+
+    if (currentRM instanceof Locatable) {
+      org.ehrbase.webtemplate.parser.NodeId nodeId = new NodeId(currentNode.getNodeId());
+      if (nodeId.isArchetypeId()) {
+        Archetyped archetyped = new Archetyped();
+        archetyped.setArchetypeId(new ArchetypeID(nodeId.getNodeId()));
+        archetyped.setRmVersion(RM_VERSION_1_4_0);
+        TemplateId templateId = new TemplateId();
+        templateId.setValue(context.getTemplateId());
+        archetyped.setTemplateId(templateId);
+        ((Locatable) currentRM).setArchetypeDetails(archetyped);
+        ((Locatable) currentRM).setArchetypeNodeId(nodeId.getNodeId());
+      }
+    }
+  }
 
   @Override
   protected Object extractRMChild(

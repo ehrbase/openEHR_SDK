@@ -48,6 +48,7 @@ public class SelectRMIT extends CanonicalCompoAllTypeQueryIT {
     }
 
     @Test
+    @Ignore
     public void testCompositionAttributeQuery() throws IOException {
         String rootPath = "c";
         RMObject referenceNode = aComposition;

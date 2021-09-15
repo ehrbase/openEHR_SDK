@@ -173,7 +173,7 @@ public class DtoToCompositionWalker extends ToCompositionWalker<Map<String, Obje
 
   @Override
   protected void postHandle(Context<Map<String, Object>> context) {
-    // NOP
+    super.postHandle(context);
   }
 
   @Override

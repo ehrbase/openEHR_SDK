@@ -21,16 +21,18 @@ package org.ehrbase.response.ehrscape;
 import com.nedap.archie.rm.datastructures.ItemStructure;
 import com.nedap.archie.rm.datavalues.DvText;
 import com.nedap.archie.rm.directory.Folder;
+import com.nedap.archie.rm.support.identification.ObjectId;
 import com.nedap.archie.rm.support.identification.ObjectRef;
 import com.nedap.archie.rm.support.identification.UIDBasedId;
 
 import java.util.List;
 
+@SuppressWarnings("java:S1452")
 public class FolderDto {
 
     private final UIDBasedId uid;
     private final List<Folder> folders;
-    private final List<ObjectRef> items;
+    private final List<ObjectRef<? extends ObjectId>> items;
     private final DvText name;
     private final ItemStructure details;
 
@@ -46,7 +48,7 @@ public class FolderDto {
         return folders;
     }
 
-    public List<ObjectRef> getItems() {
+    public List<ObjectRef<? extends ObjectId>> getItems() {
         return items;
     }
 

@@ -181,7 +181,7 @@ public class FlattenerTest {
                 .getBloodPressureTrainingSample()
                 .get(0)
                 .getMeanArterialPressureNullFlavourDefiningCode())
-        .isEqualTo(NullFlavour.MASKED);
+        .isNull();
   }
 
   @Test
