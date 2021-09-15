@@ -125,6 +125,33 @@ public class DefaultRestCompositionEndpointIT {
       assertThat(e.getClass()).isEqualTo(OptimisticLockException.class);
     }
   }
+  @Test
+  public void testSaveCompositionEntityNative() {
+
+    ehr = openEhrClient.ehrEndpoint().createEhr();
+    EhrbaseBloodPressureSimpleDeV0Composition bloodPressureSimpleDeV0 =
+            TestData.buildEhrbaseBloodPressureSimpleDeV0();
+
+    openEhrClient.compositionEndpoint(ehr).mergeCompositionEntity(bloodPressureSimpleDeV0);
+    assertThat(bloodPressureSimpleDeV0.getVersionUid()).isNotNull();
+    assertThat(bloodPressureSimpleDeV0.getVersionUid().getVersion()).isEqualTo(1L);
+
+
+    Optional<Composition> aNative = openEhrClient.compositionEndpoint(ehr).findRaw(bloodPressureSimpleDeV0.getVersionUid().getUuid());
+
+    assertThat(aNative).isPresent();
+    assertThat(aNative.get().getUid().getExtension()).isEqualTo("local.ehrbase.org::1");
+
+   VersionUid versionUid= openEhrClient.compositionEndpoint(ehr).mergeRaw(aNative.get());
+
+    assertThat(versionUid.getVersion()).isEqualTo(2l);
+
+    aNative.get().setUid(null);
+
+    versionUid = openEhrClient.compositionEndpoint(ehr).mergeRaw(aNative.get());
+    assertThat(versionUid.getVersion()).isEqualTo(1L);
+
+  }
 
   @Test
   public void testSaveCompositionEntityProxy() {
