@@ -77,7 +77,7 @@ public class DefaultRestCompositionEndpoint implements CompositionEndpoint {
 
     Optional<VersionUid> versionUid = extractVersionUid(entity);
 
-    final VersionUid updatedVersion = internalMerge(composition, versionUid);
+    final VersionUid updatedVersion = internalMerge(composition, versionUid.orElse(null));
     Flattener.addVersion(entity, updatedVersion);
     entity =
         (T)
@@ -88,9 +88,9 @@ public class DefaultRestCompositionEndpoint implements CompositionEndpoint {
     return entity;
   }
 
-  private VersionUid internalMerge(Composition composition, Optional<VersionUid> versionUid) {
+  private VersionUid internalMerge(Composition composition, VersionUid versionUid) {
     final VersionUid updatedVersion;
-    if (versionUid.isEmpty()) {
+    if (versionUid == null) {
       updatedVersion =
           defaultRestClient.httpPost(
               defaultRestClient
@@ -105,9 +105,9 @@ public class DefaultRestCompositionEndpoint implements CompositionEndpoint {
                   .getConfig()
                   .getBaseUri()
                   .resolve(
-                      EHR_PATH + ehrId.toString() + COMPOSITION_PATH + versionUid.get().getUuid()),
+                      EHR_PATH + ehrId.toString() + COMPOSITION_PATH + versionUid.getUuid()),
                   composition,
-              versionUid.get());
+              versionUid);
     }
     return updatedVersion;
   }
@@ -117,7 +117,7 @@ public class DefaultRestCompositionEndpoint implements CompositionEndpoint {
 
     Optional<VersionUid> versionUid = Optional.ofNullable(composition.getUid()).map(ObjectId::toString).map(VersionUid::new);
 
-    VersionUid newVersionUid = internalMerge(composition, versionUid);
+    VersionUid newVersionUid = internalMerge(composition, versionUid.orElse(null));
 
     return newVersionUid;
   }
