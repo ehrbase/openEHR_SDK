@@ -59,11 +59,11 @@ public abstract class AbstractUnmarshalPostprocessor<T extends RMObject>
    * @param <S>
    */
   protected <S> void setValue(
-      String term,
-      String propertyName,
-      Map<FlatPathDto, String> values,
-      Consumer<S> consumer,
-      Class<S> clazz) {
+          String term,
+          String propertyName,
+          Map<FlatPathDto, String> values,
+          Consumer<S> consumer,
+          Class<S> clazz) {
     String key = propertyName != null ? term + "|" + propertyName : term;
     Map.Entry<FlatPathDto, String> entry = FlatPathDto.get(values, key);
     String jasonValue = entry.getValue();
@@ -80,3 +80,4 @@ public abstract class AbstractUnmarshalPostprocessor<T extends RMObject>
     }
   }
 }
+
