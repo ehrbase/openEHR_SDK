@@ -24,6 +24,7 @@ import org.ehrbase.serialisation.walker.Context;
 import org.ehrbase.webtemplate.path.flat.FlatPathDto;
 
 import java.util.Map;
+import java.util.Set;
 
 public class DvParsableRMUnmarshaller extends AbstractRMUnmarshaller<DvParsable> {
 
@@ -39,9 +40,9 @@ public class DvParsableRMUnmarshaller extends AbstractRMUnmarshaller<DvParsable>
      * {@inheritDoc}
      */
     @Override
-    public void handle(String currentTerm, DvParsable rmObject, Map<FlatPathDto, String> currentValues, Context<Map<FlatPathDto, String>> context) {
+    public void handle(String currentTerm, DvParsable rmObject, Map<FlatPathDto, String> currentValues, Context<Map<FlatPathDto, String>> context, Set<String> consumedPaths) {
 
-        setValue(currentTerm, null, currentValues, rmObject::setValue, String.class);
-        setValue(currentTerm, "formalism", currentValues, rmObject::setFormalism, String.class);
+        setValue(currentTerm, null, currentValues, rmObject::setValue, String.class, consumedPaths);
+        setValue(currentTerm, "formalism", currentValues, rmObject::setFormalism, String.class, consumedPaths);
     }
 }

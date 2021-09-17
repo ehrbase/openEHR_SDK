@@ -40,7 +40,6 @@ import org.ehrbase.webtemplate.filter.Filter;
 import org.ehrbase.webtemplate.model.WebTemplate;
 import org.ehrbase.webtemplate.model.WebTemplateInput;
 import org.ehrbase.webtemplate.model.WebTemplateNode;
-import org.ehrbase.webtemplate.parser.InputHandler;
 import org.ehrbase.webtemplate.path.flat.FlatPathDto;
 
 import java.util.*;
@@ -55,7 +54,6 @@ public class StdToCompositionWalker extends ToCompositionWalker<Map<FlatPathDto,
   private static final Map<Class<?>, UnmarshalPostprocessor> POSTPROCESSOR_MAP =
       ReflectionHelper.buildMap(UnmarshalPostprocessor.class);
 
-  private static InputHandler inputHandler = new InputHandler(Collections.emptyMap());
 
   private Set<String> consumedPaths;
 
@@ -163,8 +161,8 @@ public class StdToCompositionWalker extends ToCompositionWalker<Map<FlatPathDto,
               context.getRmObjectDeque().peek().getClass(), new DefaultRMUnmarshaller());
       String namePath = getNamePath(context);
       rmUnmarshaller.handle(
-          namePath, context.getRmObjectDeque().peek(), context.getObjectDeque().peek(), context);
-      consumedPaths.addAll(rmUnmarshaller.getConsumedPaths());
+          namePath, context.getRmObjectDeque().peek(), context.getObjectDeque().peek(), context, consumedPaths);
+
     }
   }
 
@@ -212,8 +210,7 @@ public class StdToCompositionWalker extends ToCompositionWalker<Map<FlatPathDto,
 
     postprocessor.forEach(
         p -> {
-          p.process(namePath, context.getRmObjectDeque().peek(), context.getObjectDeque().peek());
-          consumedPaths.addAll(p.getConsumedPaths());
+          p.process(namePath, context.getRmObjectDeque().peek(), context.getObjectDeque().peek(),consumedPaths );
         });
   }
 
@@ -315,4 +312,6 @@ public class StdToCompositionWalker extends ToCompositionWalker<Map<FlatPathDto,
   public Set<String> getConsumedPaths() {
     return consumedPaths;
   }
+
+
 }

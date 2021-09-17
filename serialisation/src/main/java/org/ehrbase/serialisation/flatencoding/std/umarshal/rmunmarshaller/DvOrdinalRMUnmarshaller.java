@@ -29,6 +29,7 @@ import org.ehrbase.webtemplate.model.WebTemplateInputValue;
 import org.ehrbase.webtemplate.path.flat.FlatPathDto;
 
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Consumer;
 
 public class DvOrdinalRMUnmarshaller extends AbstractRMUnmarshaller<DvOrdinal> {
@@ -45,12 +46,12 @@ public class DvOrdinalRMUnmarshaller extends AbstractRMUnmarshaller<DvOrdinal> {
      * {@inheritDoc}
      */
     @Override
-    public void handle(String currentTerm, DvOrdinal rmObject, Map<FlatPathDto, String> currentValues, Context<Map<FlatPathDto, String>> context) {
+    public void handle(String currentTerm, DvOrdinal rmObject, Map<FlatPathDto, String> currentValues, Context<Map<FlatPathDto, String>> context, Set<String> consumedPaths) {
 
         rmObject.setSymbol(new DvCodedText());
         rmObject.getSymbol().setDefiningCode(new CodePhrase());
         rmObject.getSymbol().getDefiningCode().setTerminologyId(new TerminologyId("local"));
-        setValue(currentTerm, "code", currentValues, rmObject.getSymbol().getDefiningCode()::setCodeString, String.class);
+        setValue(currentTerm, "code", currentValues, rmObject.getSymbol().getDefiningCode()::setCodeString, String.class, consumedPaths);
 
         WebTemplateInputValue value = context.getNodeDeque().peek()
                 .getInputs()
@@ -62,9 +63,9 @@ public class DvOrdinalRMUnmarshaller extends AbstractRMUnmarshaller<DvOrdinal> {
                 .orElseThrow(() -> new SdkException(String.format("Unknown Ordinal with code %s", (Consumer<String>) rmObject.getSymbol().getDefiningCode()::setCodeString)));
 
         rmObject.setValue(Long.valueOf(value.getOrdinal()));
-        consumedPath.add(currentTerm + "|ordinal");
+        consumedPaths.add(currentTerm + "|ordinal");
         rmObject.getSymbol().setValue(value.getLabel());
-        consumedPath.add(currentTerm + "|value");
+        consumedPaths.add(currentTerm + "|value");
 
     }
 }

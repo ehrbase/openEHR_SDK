@@ -29,6 +29,7 @@ import org.ehrbase.webtemplate.path.flat.FlatPathDto;
 
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static org.ehrbase.webtemplate.parser.OPTParser.PATH_DIVIDER;
@@ -41,11 +42,11 @@ public class PartyIdentifiedRMUnmarshaller extends AbstractRMUnmarshaller<PartyI
 
   @Override
   public void handle(
-      String currentTerm,
-      PartyIdentified rmObject,
-      Map<FlatPathDto, String> currentValues,
-      Context<Map<FlatPathDto, String>> context) {
-    setValue(currentTerm, "name", currentValues, rmObject::setName, String.class);
+          String currentTerm,
+          PartyIdentified rmObject,
+          Map<FlatPathDto, String> currentValues,
+          Context<Map<FlatPathDto, String>> context, Set<String> consumedPaths) {
+    setValue(currentTerm, "name", currentValues, rmObject::setName, String.class, consumedPaths);
     rmObject.setExternalRef(new PartyRef());
     rmObject.getExternalRef().setId(new GenericId());
     setValue(
@@ -53,19 +54,19 @@ public class PartyIdentifiedRMUnmarshaller extends AbstractRMUnmarshaller<PartyI
         "id",
         currentValues,
         rmObject.getExternalRef().getId()::setValue,
-        String.class);
+        String.class, consumedPaths);
     setValue(
         currentTerm,
         "id_scheme",
         currentValues,
         ((GenericId) rmObject.getExternalRef().getId())::setScheme,
-        String.class);
+        String.class, consumedPaths);
     setValue(
         currentTerm,
         "id_namespace",
         currentValues,
         rmObject.getExternalRef()::setNamespace,
-        String.class);
+        String.class, consumedPaths);
 
     Map<Integer, Map<String, String>> identifiers =
         currentValues.entrySet().stream()

@@ -88,7 +88,7 @@ public class FlatJsonUnmarshaller {
       walker.walk(generate, currentValues.entrySet().stream().collect(Collectors.toMap(e1 -> new FlatPathDto( e1.getKey()), Map.Entry::getValue)), introspect, defaultValues, templateId);
       consumedPath = walker.getConsumedPaths();
       if (!CollectionUtils.isEmpty(getUnconsumed())){
-//        throw new UnmarshalException(String.format("Could not consume Parts %s",getUnconsumed()));
+       throw new UnmarshalException(String.format("Could not consume Parts %s",getUnconsumed()));
       }
 
       return generate;
@@ -101,7 +101,7 @@ public class FlatJsonUnmarshaller {
     if (currentValues != null && consumedPath != null) {
       HashSet<String> set = new HashSet<>(currentValues.keySet());
       set.removeAll(consumedPath);
-      return set;
+      return set.stream().filter(p -> !p.startsWith("ctx")).collect(Collectors.toSet());
     } else {
       return Collections.emptySet();
     }

@@ -29,6 +29,7 @@ import org.ehrbase.webtemplate.path.flat.FlatPathDto;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static org.ehrbase.webtemplate.parser.OPTParser.PATH_DIVIDER;
@@ -37,14 +38,14 @@ public class LocatableUnmarshalPostprocessor extends AbstractUnmarshalPostproces
 
   /** {@inheritDoc} Unmarshalls {@link Composition#setUid} */
   @Override
-  public void process(String term, Locatable rmObject, Map<FlatPathDto, String> values) {
+  public void process(String term, Locatable rmObject, Map<FlatPathDto, String> values, Set<String> consumedPaths) {
 
     setValue(
         term + PATH_DIVIDER + "_uid",
         null,
         values,
         s -> rmObject.setUid(new HierObjectId(s)),
-        String.class);
+        String.class, consumedPaths);
 
     Map<Integer, Map<String, String>> links =
         values.entrySet().stream()

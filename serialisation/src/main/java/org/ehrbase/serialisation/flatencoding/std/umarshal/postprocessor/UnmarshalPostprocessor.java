@@ -30,18 +30,13 @@ public interface UnmarshalPostprocessor<T extends RMObject> extends ClassDepende
 
     /**
      * Adds or removes Values from {@code values} depending on {@code rmObject}.
-     *
-     * @param term     current term in the unmarshal recursion.
+     *  @param term     current term in the unmarshal recursion.
      * @param rmObject current rmObject in the unmarshal recursion.
      * @param values   current values in the unmarshal recursion.
+     * @param consumedPaths
      */
-    void process(String term, T rmObject, Map<FlatPathDto, String> values);
+    void process(String term, T rmObject, Map<FlatPathDto, String> values, Set<String> consumedPaths);
 
-    /**
-     * Can be called after {@code process} to get the set of consumed paths.
-     *
-     * @return
-     */
-    Set<String> getConsumedPaths();
+
 
 }

@@ -21,11 +21,11 @@ package org.ehrbase.serialisation.flatencoding.std.umarshal.rmunmarshaller;
 
 import com.nedap.archie.datetime.DateTimeParsers;
 import com.nedap.archie.rm.datavalues.quantity.datetime.DvDateTime;
-import org.apache.commons.lang3.StringUtils;
 import org.ehrbase.serialisation.walker.Context;
 import org.ehrbase.webtemplate.path.flat.FlatPathDto;
 
 import java.util.Map;
+import java.util.Set;
 
 public class DvDateTimeRMUnmarshaller extends AbstractRMUnmarshaller<DvDateTime> {
 
@@ -35,9 +35,9 @@ public class DvDateTimeRMUnmarshaller extends AbstractRMUnmarshaller<DvDateTime>
     }
 
     @Override
-    public void handle(String currentTerm, DvDateTime rmObject, Map<FlatPathDto, String> currentValues, Context<Map<FlatPathDto, String>> context) {
+    public void handle(String currentTerm, DvDateTime rmObject, Map<FlatPathDto, String> currentValues, Context<Map<FlatPathDto, String>> context, Set<String> consumedPaths) {
 
-        setValue(currentTerm,null,currentValues,s ->  rmObject.setValue(DateTimeParsers.parseDateTimeValue(s)) , String.class);
+        setValue(currentTerm,null,currentValues,s ->  rmObject.setValue(DateTimeParsers.parseDateTimeValue(s)) , String.class, consumedPaths);
 
     }
 }

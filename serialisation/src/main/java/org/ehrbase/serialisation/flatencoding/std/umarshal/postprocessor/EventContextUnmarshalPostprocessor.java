@@ -26,6 +26,7 @@ import org.ehrbase.serialisation.flatencoding.std.umarshal.rmunmarshaller.PartyI
 import org.ehrbase.webtemplate.path.flat.FlatPathDto;
 
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static org.ehrbase.webtemplate.parser.OPTParser.PATH_DIVIDER;
@@ -38,7 +39,7 @@ public class EventContextUnmarshalPostprocessor
 
   /** {@inheritDoc} */
   @Override
-  public void process(String term, EventContext rmObject, Map<FlatPathDto, String> values) {
+  public void process(String term, EventContext rmObject, Map<FlatPathDto, String> values, Set<String> consumedPaths) {
     setValue(
         term + PATH_DIVIDER + "_end_time",
         null,
@@ -48,7 +49,7 @@ public class EventContextUnmarshalPostprocessor
             rmObject.setEndTime(new DvDateTime(s));
           }
         },
-        String.class);
+        String.class, consumedPaths);
 
     Map<FlatPathDto, String> health_care_facilityValues =
         values.entrySet().stream()
@@ -61,7 +62,7 @@ public class EventContextUnmarshalPostprocessor
           term + "/" + "_health_care_facility",
           rmObject.getHealthCareFacility(),
           health_care_facilityValues,
-          null);
+          null, consumedPaths);
     }
   }
 

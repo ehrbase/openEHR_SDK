@@ -29,6 +29,7 @@ import java.time.temporal.TemporalAccessor;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 
 import static org.ehrbase.webtemplate.parser.OPTParser.PATH_DIVIDER;
 
@@ -36,7 +37,7 @@ public class HistoryPostprocessor extends AbstractUnmarshalPostprocessor<History
 
   /** {@inheritDoc} */
   @Override
-  public void process(String term, History rmObject, Map<FlatPathDto, String> values) {
+  public void process(String term, History rmObject, Map<FlatPathDto, String> values, Set<String> consumedPaths) {
 
     setValue(
         term + PATH_DIVIDER + "history_origin",
@@ -47,7 +48,7 @@ public class HistoryPostprocessor extends AbstractUnmarshalPostprocessor<History
             rmObject.setOrigin(new DvDateTime(s));
           }
         },
-        String.class);
+        String.class, consumedPaths );
 
     if (rmObject.getOrigin() == null || rmObject.getOrigin().getValue() == null) {
       Optional<TemporalAccessor> first =

@@ -24,6 +24,7 @@ import org.ehrbase.serialisation.walker.Context;
 import org.ehrbase.webtemplate.path.flat.FlatPathDto;
 
 import java.util.Map;
+import java.util.Set;
 
 public class DvProportionRMUnmarshaller extends AbstractRMUnmarshaller<DvProportion> {
 
@@ -39,12 +40,12 @@ public class DvProportionRMUnmarshaller extends AbstractRMUnmarshaller<DvProport
      * {@inheritDoc}
      */
     @Override
-    public void handle(String currentTerm, DvProportion rmObject, Map<FlatPathDto, String> currentValues, Context<Map<FlatPathDto, String>> context) {
+    public void handle(String currentTerm, DvProportion rmObject, Map<FlatPathDto, String> currentValues, Context<Map<FlatPathDto, String>> context, Set<String> consumedPaths) {
 
-        setValue(currentTerm, "numerator", currentValues, rmObject::setNumerator, Double.class);
-        setValue(currentTerm, "denominator", currentValues, rmObject::setDenominator, Double.class);
-        setValue(currentTerm, "type", currentValues, rmObject::setType, Long.class);
+        setValue(currentTerm, "numerator", currentValues, rmObject::setNumerator, Double.class, consumedPaths);
+        setValue(currentTerm, "denominator", currentValues, rmObject::setDenominator, Double.class, consumedPaths);
+        setValue(currentTerm, "type", currentValues, rmObject::setType, Long.class, consumedPaths);
         //Contains numerator/denominator
-        consumedPath.add(currentTerm);
+        consumedPaths.add(currentTerm);
     }
 }
