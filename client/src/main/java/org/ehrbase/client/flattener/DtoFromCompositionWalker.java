@@ -75,9 +75,9 @@ public class DtoFromCompositionWalker extends FromCompositionWalker<DtoWithMatch
 
   @Override
   public void walk(
-      RMObject composition, DtoWithMatchingFields object, WebTemplateNode webTemplate) {
+      RMObject composition, DtoWithMatchingFields object, WebTemplateNode webTemplate, String templateId) {
     dtoClassList = ReflectionHelper.findAll(ReflectionHelper.findRootClass( object.getDto().getClass()).getPackageName());
-    super.walk(composition, object, webTemplate);
+    super.walk(composition, object, webTemplate, templateId);
   }
 
   static Map<String, Field> buildFieldByPathMap(Class<?> clazz) {

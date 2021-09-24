@@ -34,7 +34,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -98,11 +99,6 @@ public class FhirTerminologyValidationSupport implements ExternalTerminologyVali
     @Override
     public void validate(String path, String referenceSetUri, CodePhrase codePhrase) {
         String url = extractUrl(referenceSetUri);
-        if (!StringUtils.equals(url, codePhrase.getTerminologyId().getValue())) {
-            ValidationException.raise(path, "CodePhrase terminology does not match, expected: " + url +
-                    ", found: " + codePhrase.getTerminologyId().getValue(), "CODE_PHRASE_02");
-        }
-
         if (isCodeSystem(referenceSetUri)) {
             validateCode(path, url, codePhrase);
         } else if (isValueSet(referenceSetUri)) {
@@ -113,10 +109,15 @@ public class FhirTerminologyValidationSupport implements ExternalTerminologyVali
     /**
      * Validates that the code comes from the CodeSystem using <code>validate-code</code> method.
      *
-     * @param url the URL of the CodeSystem
+     * @param url        the URL of the CodeSystem
      * @param codePhrase the concept code
      */
     private void validateCode(String path, String url, CodePhrase codePhrase) {
+        if (!StringUtils.equals(url, codePhrase.getTerminologyId().getValue())) {
+            ValidationException.raise(path, "CodePhrase terminology does not match, expected: " + url +
+                    ", found: " + codePhrase.getTerminologyId().getValue(), "CODE_PHRASE_02");
+        }
+
         DocumentContext context;
         try {
             context = internalGet(baseUrl + "/CodeSystem/$validate-code?url=" + url + "&code=" + codePhrase.getCodeString());
@@ -137,7 +138,7 @@ public class FhirTerminologyValidationSupport implements ExternalTerminologyVali
     /**
      * Validates that the code comes from the ValueSet using <code>$expand</code> method.
      *
-     * @param url the URL of the ValueSet
+     * @param url        the URL of the ValueSet
      * @param codePhrase the concept code
      */
     private void expandValueSet(String path, String url, CodePhrase codePhrase) {
@@ -151,9 +152,17 @@ public class FhirTerminologyValidationSupport implements ExternalTerminologyVali
             LOG.warn("An error occurred while expanding the ValueSet: {}", e.getMessage());
             return;
         }
-        String[] codes = context.read("$.expansion.contains[*].code", String[].class);
-        if (!Arrays.asList(codes).contains(codePhrase.getCodeString())) {
-            ValidationException.raise(path, "CodePhrase codeString does not match any option, found: " + codePhrase.getCodeString(), "CODE_PHRASE_03");
+        List<Map<String, String>> codings = context.read("$.expansion.contains[?(@.code=='" + codePhrase.getCodeString() + "')]");
+
+        if (codings.isEmpty()) {
+            ValidationException.raise(path, "CodePhrase codeString does not match any option from the specified ValueSet "
+                    + url + ", found: " + codePhrase.getCodeString(), "CODE_PHRASE_03");
+        } else if (codings.size() == 1) {
+            Map<String, String> coding = codings.get(0);
+            if (!StringUtils.equals(coding.get("system"), codePhrase.getTerminologyId().getValue())) {
+                ValidationException.raise(path, "CodePhrase terminology does not match, expected: " + coding.get("system") +
+                        ", found: " + codePhrase.getTerminologyId().getValue(), "CODE_PHRASE_02");
+            }
         }
     }
 

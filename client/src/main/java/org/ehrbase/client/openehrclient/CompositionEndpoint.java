@@ -17,6 +17,7 @@
 
 package org.ehrbase.client.openehrclient;
 
+import com.nedap.archie.rm.composition.Composition;
 import org.ehrbase.client.annotations.Template;
 import org.ehrbase.client.exception.ClientException;
 import org.ehrbase.client.exception.WrongStatusCodeException;
@@ -36,6 +37,8 @@ public interface CompositionEndpoint {
      */
     <T> T mergeCompositionEntity(T entity);
 
+    VersionUid mergeRaw(Composition composition);
+
     /**
      * Finds a Flat-Entity by
      *
@@ -46,6 +49,8 @@ public interface CompositionEndpoint {
      * @throws WrongStatusCodeException
      */
     <T> Optional<T> find(UUID compositionId, Class<T> clazz);
+
+    Optional<Composition> findRaw(UUID compositionId);
 
     /**
      * Deletes a Composition by preceding version uid.
