@@ -24,9 +24,11 @@ import com.nedap.archie.rm.datavalues.DvURI;
 import com.nedap.archie.rm.datavalues.encapsulated.DvMultimedia;
 import com.nedap.archie.rm.support.identification.TerminologyId;
 import org.ehrbase.serialisation.walker.Context;
+import org.ehrbase.webtemplate.path.flat.FlatPathDto;
 
 import java.net.URI;
 import java.util.Map;
+import java.util.Set;
 
 public class DvMultimediaRMUnmarshaller extends AbstractRMUnmarshaller<DvMultimedia> {
 
@@ -42,13 +44,13 @@ public class DvMultimediaRMUnmarshaller extends AbstractRMUnmarshaller<DvMultime
      * {@inheritDoc}
      */
     @Override
-    public void handle(String currentTerm, DvMultimedia rmObject, Map<String, String> currentValues, Context<Map<String, String>> context) {
+    public void handle(String currentTerm, DvMultimedia rmObject, Map<FlatPathDto, String> currentValues, Context<Map<FlatPathDto, String>> context, Set<String> consumedPaths) {
         rmObject.setUri(new DvURI());
         rmObject.setMediaType(new CodePhrase());
         rmObject.getMediaType().setTerminologyId(new TerminologyId("IANA_media-types"));
 
-        setValue(currentTerm, null, currentValues, rmObject.getUri()::setValue, URI.class);
-        setValue(currentTerm, "mediatype", currentValues, rmObject.getMediaType()::setCodeString, String.class);
-        setValue(currentTerm, "size", currentValues, rmObject::setSize, Integer.class);
+        setValue(currentTerm, null, currentValues, rmObject.getUri()::setValue, URI.class, consumedPaths);
+        setValue(currentTerm, "mediatype", currentValues, rmObject.getMediaType()::setCodeString, String.class, consumedPaths);
+        setValue(currentTerm, "size", currentValues, rmObject::setSize, Integer.class, consumedPaths);
     }
 }

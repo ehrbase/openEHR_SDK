@@ -23,7 +23,6 @@ import org.ehrbase.client.openehrclient.defaultrestclient.systematic.composition
 import org.ehrbase.response.openehr.QueryResponseData;
 import org.ehrbase.test_data.composition.CompositionTestDataCanonicalJson;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.jupiter.params.shadow.com.univocity.parsers.csv.CsvParser;
@@ -48,7 +47,6 @@ public class SelectRMIT extends CanonicalCompoAllTypeQueryIT {
     }
 
     @Test
-    @Ignore
     public void testCompositionAttributeQuery() throws IOException {
         String rootPath = "c";
         RMObject referenceNode = aComposition;

@@ -24,12 +24,9 @@ import com.nedap.archie.rm.datavalues.DvCodedText;
 import com.nedap.archie.rm.support.identification.TerminologyId;
 import org.ehrbase.serialisation.walker.Context;
 import org.ehrbase.webtemplate.model.WebTemplateInput;
+import org.ehrbase.webtemplate.path.flat.FlatPathDto;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.stream.Stream;
+import java.util.*;
 
 public class DvCodedTextRMUnmarshaller extends AbstractRMUnmarshaller<DvCodedText> {
 
@@ -45,15 +42,15 @@ public class DvCodedTextRMUnmarshaller extends AbstractRMUnmarshaller<DvCodedTex
      * {@inheritDoc}
      */
     @Override
-    public void handle(String currentTerm, DvCodedText rmObject, Map<String, String> currentValues, Context<Map<String, String>> context) {
-        setValue(currentTerm, "value", currentValues, rmObject::setValue, String.class);
+    public void handle(String currentTerm, DvCodedText rmObject, Map<FlatPathDto, String> currentValues, Context<Map<FlatPathDto, String>> context, Set<String> consumedPaths) {
+        setValue(currentTerm, "value", currentValues, rmObject::setValue, String.class, consumedPaths);
         rmObject.setDefiningCode(new CodePhrase());
-        setValue(currentTerm, "code", currentValues, c -> rmObject.getDefiningCode().setCodeString(c), String.class);
+        setValue(currentTerm, "code", currentValues, c -> rmObject.getDefiningCode().setCodeString(c), String.class, consumedPaths);
         if (rmObject.getDefiningCode().getCodeString() == null){
-            setValue(currentTerm, null, currentValues, c -> rmObject.getDefiningCode().setCodeString(c), String.class);
+            setValue(currentTerm, null, currentValues, c -> rmObject.getDefiningCode().setCodeString(c), String.class, consumedPaths);
         }
         rmObject.getDefiningCode().setTerminologyId(new TerminologyId());
-        setValue(currentTerm, "terminology", currentValues, t -> rmObject.getDefiningCode().getTerminologyId().setValue(t), String.class);
+        setValue(currentTerm, "terminology", currentValues, t -> rmObject.getDefiningCode().getTerminologyId().setValue(t), String.class, consumedPaths);
 
         Optional.of(context.getNodeDeque().peek().getInputs())
                 .stream()

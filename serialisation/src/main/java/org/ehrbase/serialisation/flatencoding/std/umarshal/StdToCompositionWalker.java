@@ -27,7 +27,6 @@ import com.nedap.archie.rm.datavalues.DvCodedText;
 import com.nedap.archie.rm.generic.PartyRelated;
 import com.nedap.archie.rm.support.identification.TerminologyId;
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.ehrbase.serialisation.flatencoding.std.umarshal.postprocessor.UnmarshalPostprocessor;
 import org.ehrbase.serialisation.flatencoding.std.umarshal.rmunmarshaller.DefaultRMUnmarshaller;
@@ -41,28 +40,27 @@ import org.ehrbase.webtemplate.filter.Filter;
 import org.ehrbase.webtemplate.model.WebTemplate;
 import org.ehrbase.webtemplate.model.WebTemplateInput;
 import org.ehrbase.webtemplate.model.WebTemplateNode;
-import org.ehrbase.webtemplate.parser.InputHandler;
+import org.ehrbase.webtemplate.path.flat.FlatPathDto;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.ehrbase.util.rmconstants.RmConstants.*;
 
-public class StdToCompositionWalker extends ToCompositionWalker<Map<String, String>> {
+public class StdToCompositionWalker extends ToCompositionWalker<Map<FlatPathDto, String>> {
 
   private static final Map<Class<?>, RMUnmarshaller> UNMARSHALLER_MAP =
       ReflectionHelper.buildMap(RMUnmarshaller.class);
   private static final Map<Class<?>, UnmarshalPostprocessor> POSTPROCESSOR_MAP =
       ReflectionHelper.buildMap(UnmarshalPostprocessor.class);
 
-  private static InputHandler inputHandler = new InputHandler(Collections.emptyMap());
 
   private Set<String> consumedPaths;
 
   @Override
   public void walk(
       Composition composition,
-      Map<String, String> object,
+      Map<FlatPathDto, String> object,
       WebTemplate webTemplate,
       DefaultValues defaultValues,
       String templateId
@@ -72,8 +70,8 @@ public class StdToCompositionWalker extends ToCompositionWalker<Map<String, Stri
   }
 
   @Override
-  protected Map<String, String> extract(
-      Context<Map<String, String>> context,
+  protected Map<FlatPathDto, String> extract(
+      Context<Map<FlatPathDto, String>> context,
       WebTemplateNode child,
       boolean isChoice,
       Integer count) {
@@ -85,7 +83,7 @@ public class StdToCompositionWalker extends ToCompositionWalker<Map<String, Stri
       oldCount = context.getCountMap().get(new NodeId(child));
       context.getCountMap().put(new NodeId(child), count);
     }
-    String pathWithoutCount = context.getFlatHelper().buildNamePath(context, false);
+
     String path = context.getFlatHelper().buildNamePath(context, true);
     context.getNodeDeque().remove();
     context.getCountMap().remove(new NodeId(child));
@@ -93,16 +91,11 @@ public class StdToCompositionWalker extends ToCompositionWalker<Map<String, Stri
       context.getCountMap().put(new NodeId(child), oldCount);
     }
 
-    Map<String, String> subValues =
+    Map<FlatPathDto, String> subValues =
         context.getObjectDeque().peek().entrySet().stream()
             .filter(e -> e.getKey().startsWith(path))
             .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-    if (subValues.isEmpty()) {
-      subValues =
-          context.getObjectDeque().peek().entrySet().stream()
-              .filter(e -> e.getKey().startsWith(pathWithoutCount))
-              .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-    }
+
     if (isChoice && !isMatchingNode(subValues, context, child)) {
       subValues = Collections.emptyMap();
     }
@@ -115,8 +108,8 @@ public class StdToCompositionWalker extends ToCompositionWalker<Map<String, Stri
   }
 
   @Override
-  protected ImmutablePair<Map<String, String>, RMObject> extractPair(
-      Context<Map<String, String>> context,
+  protected ImmutablePair<Map<FlatPathDto, String>, RMObject> extractPair(
+      Context<Map<FlatPathDto, String>> context,
       WebTemplateNode currentNode,
       Map<String, List<WebTemplateNode>> choices,
       WebTemplateNode childNode,
@@ -130,12 +123,12 @@ public class StdToCompositionWalker extends ToCompositionWalker<Map<String, Stri
   }
 
   private boolean isMatchingNode(
-      Map<String, String> subValues, Context<Map<String, String>> context, WebTemplateNode child) {
+      Map<FlatPathDto, String> subValues, Context<Map<FlatPathDto, String>> context, WebTemplateNode child) {
 
     if (child.getRmType().equals("POINT_EVENT")) {
-      return subValues.entrySet().stream().allMatch((e -> !e.getKey().endsWith("width")));
+      return subValues.entrySet().stream().allMatch((e -> !e.getKey().getLast().getName().equals ("width")));
     } else if (child.getRmType().equals("INTERVAL_EVENT")) {
-      return subValues.entrySet().stream().anyMatch((e -> e.getKey().endsWith("width")));
+      return subValues.entrySet().stream().anyMatch((e -> e.getKey().getLast().getName().equals("width")));
     } else if (visitChildren(child)) {
       for (WebTemplateNode n : child.getChildren()) {
         context.getNodeDeque().push(n);
@@ -149,9 +142,9 @@ public class StdToCompositionWalker extends ToCompositionWalker<Map<String, Stri
 
       return subValues.isEmpty();
     } else if (child.getRmType().equals(DV_CODED_TEXT)) {
-      return subValues.entrySet().stream().anyMatch(e -> e.getKey().endsWith("code"));
+      return subValues.entrySet().stream().anyMatch(e -> "code".equals(e.getKey().getLast().getAttributeName()));
     } else if (child.getRmType().equals(DV_TEXT)) {
-      return subValues.entrySet().stream().allMatch((e -> !e.getKey().endsWith("code")));
+      return subValues.entrySet().stream().allMatch((e -> !"code".equals(e.getKey().getLast().getAttributeName())));
     } else {
       // End Nodes which are Choice always have unique flat paths
       return true;
@@ -159,7 +152,7 @@ public class StdToCompositionWalker extends ToCompositionWalker<Map<String, Stri
   }
 
   @Override
-  protected void preHandle(Context<Map<String, String>> context) {
+  protected void preHandle(Context<Map<FlatPathDto, String>> context) {
 
     // Handle if at a End-Node
     if (!visitChildren(context.getNodeDeque().peek()) && !context.getFlatHelper().skip(context)) {
@@ -168,13 +161,13 @@ public class StdToCompositionWalker extends ToCompositionWalker<Map<String, Stri
               context.getRmObjectDeque().peek().getClass(), new DefaultRMUnmarshaller());
       String namePath = getNamePath(context);
       rmUnmarshaller.handle(
-          namePath, context.getRmObjectDeque().peek(), context.getObjectDeque().peek(), context);
-      consumedPaths.addAll(rmUnmarshaller.getConsumedPaths());
+          namePath, context.getRmObjectDeque().peek(), context.getObjectDeque().peek(), context, consumedPaths);
+
     }
   }
 
   @Override
-  protected void postHandle(Context<Map<String, String>> context) {
+  protected void postHandle(Context<Map<FlatPathDto, String>> context) {
 
     super.postHandle(context);
 
@@ -217,12 +210,11 @@ public class StdToCompositionWalker extends ToCompositionWalker<Map<String, Stri
 
     postprocessor.forEach(
         p -> {
-          p.process(namePath, context.getRmObjectDeque().peek(), context.getObjectDeque().peek());
-          consumedPaths.addAll(p.getConsumedPaths());
+          p.process(namePath, context.getRmObjectDeque().peek(), context.getObjectDeque().peek(),consumedPaths );
         });
   }
 
-  private String getNamePath(Context<Map<String, String>> context) {
+  private String getNamePath(Context<Map<FlatPathDto, String>> context) {
     String namePath = context.getFlatHelper().buildNamePath(context, true);
     String finalNamePath = namePath;
     if (context.getObjectDeque().peek().entrySet().stream()
@@ -287,40 +279,30 @@ public class StdToCompositionWalker extends ToCompositionWalker<Map<String, Stri
   }
 
   @Override
-  protected int calculateSize(Context<Map<String, String>> context, WebTemplateNode childNode) {
+  protected int calculateSize(Context<Map<FlatPathDto, String>> context, WebTemplateNode childNode) {
 
     Integer oldCount = context.getCountMap().get(new NodeId(childNode));
-    context.getCountMap().remove(new NodeId((childNode)));
-    context.getNodeDeque().push(childNode);
+  //  context.getCountMap().remove(new NodeId((childNode)));
+  //  context.getNodeDeque().push(childNode);
     String namePath = context.getFlatHelper().buildNamePath(context, true);
 
     // simple Elements
-    if (childNode.getRmType().equals(ELEMENT) && context.getFlatHelper().skip(context)) {
-      namePath = StringUtils.removeEnd( namePath,"/")+"/" + childNode.getId();
-    }
+  //  if (childNode.getRmType().equals(ELEMENT) && context.getFlatHelper().skip(context)) {
+  //    namePath = StringUtils.removeEnd( namePath,"/")+"/" + childNode.getId();
+  //  }
 
     String finalNamePath = namePath;
     Integer count =
         context.getObjectDeque().peek().keySet().stream()
-            .filter(s -> StringUtils.startsWith(s, finalNamePath))
-            .map(s -> StringUtils.substringAfter(s, finalNamePath + ":"))
-            .map(s -> StringUtils.substringBefore(s, "/"))
-            .map(s -> StringUtils.substringBefore(s, "|"))
-            .filter(StringUtils::isNotBlank)
-            .map(Integer::parseInt)
+            .filter(s -> s.startsWith(finalNamePath))
+            .map(s -> FlatPathDto.removeStart(s, new FlatPathDto(finalNamePath)))
+            .filter(n -> n.getName().equals(childNode.getId()))
+            .map(n -> Optional.ofNullable(n.getCount()).orElse(0))
             .sorted()
             .reduce((first, second) -> second)
             .map(i -> i + 1)
             .orElse(0);
-    if (count == 0
-        && context.getObjectDeque().peek().keySet().stream()
-            .anyMatch(
-                s ->
-                    StringUtils.startsWith(
-                        s, context.getFlatHelper().buildNamePath(context, false)))) {
-      count = 1;
-    }
-    context.getNodeDeque().poll();
+   // context.getNodeDeque().poll();
     if (oldCount != null) {
       context.getCountMap().put(new NodeId(childNode), oldCount);
     }
@@ -330,4 +312,6 @@ public class StdToCompositionWalker extends ToCompositionWalker<Map<String, Stri
   public Set<String> getConsumedPaths() {
     return consumedPaths;
   }
+
+
 }

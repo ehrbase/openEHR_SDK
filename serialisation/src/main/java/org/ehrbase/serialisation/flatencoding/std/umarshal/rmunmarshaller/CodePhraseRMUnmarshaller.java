@@ -22,8 +22,10 @@ package org.ehrbase.serialisation.flatencoding.std.umarshal.rmunmarshaller;
 import com.nedap.archie.rm.datatypes.CodePhrase;
 import com.nedap.archie.rm.support.identification.TerminologyId;
 import org.ehrbase.serialisation.walker.Context;
+import org.ehrbase.webtemplate.path.flat.FlatPathDto;
 
 import java.util.Map;
+import java.util.Set;
 
 public class CodePhraseRMUnmarshaller extends AbstractRMUnmarshaller<CodePhrase> {
 
@@ -39,9 +41,9 @@ public class CodePhraseRMUnmarshaller extends AbstractRMUnmarshaller<CodePhrase>
      * {@inheritDoc}
      */
     @Override
-    public void handle(String currentTerm, CodePhrase rmObject, Map<String, String> currentValues, Context<Map<String, String>> context) {
-        setValue(currentTerm, "code", currentValues, rmObject::setCodeString, String.class);
+    public void handle(String currentTerm, CodePhrase rmObject, Map<FlatPathDto, String> currentValues, Context<Map<FlatPathDto, String>> context, Set<String> consumedPaths) {
+        setValue(currentTerm, "code", currentValues, rmObject::setCodeString, String.class, consumedPaths);
         rmObject.setTerminologyId(new TerminologyId());
-        setValue(currentTerm, "terminology", currentValues, t -> rmObject.getTerminologyId().setValue(t), String.class);
+        setValue(currentTerm, "terminology", currentValues, t -> rmObject.getTerminologyId().setValue(t), String.class, consumedPaths);
     }
 }

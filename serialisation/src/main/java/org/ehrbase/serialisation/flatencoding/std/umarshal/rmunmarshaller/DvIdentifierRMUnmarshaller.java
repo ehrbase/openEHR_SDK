@@ -22,8 +22,10 @@ package org.ehrbase.serialisation.flatencoding.std.umarshal.rmunmarshaller;
 import com.nedap.archie.rm.datavalues.DvIdentifier;
 import org.apache.commons.lang3.StringUtils;
 import org.ehrbase.serialisation.walker.Context;
+import org.ehrbase.webtemplate.path.flat.FlatPathDto;
 
 import java.util.Map;
+import java.util.Set;
 
 public class DvIdentifierRMUnmarshaller extends AbstractRMUnmarshaller<DvIdentifier> {
 
@@ -39,14 +41,14 @@ public class DvIdentifierRMUnmarshaller extends AbstractRMUnmarshaller<DvIdentif
      * {@inheritDoc}
      */
     @Override
-    public void handle(String currentTerm, DvIdentifier rmObject, Map<String, String> currentValues, Context<Map<String, String>> context) {
+    public void handle(String currentTerm, DvIdentifier rmObject, Map<FlatPathDto, String> currentValues, Context<Map<FlatPathDto, String>> context, Set<String> consumedPaths) {
 
-        setValue(currentTerm, "id", currentValues, rmObject::setId, String.class);
+        setValue(currentTerm, "id", currentValues, rmObject::setId, String.class, consumedPaths);
         if (StringUtils.isBlank(rmObject.getId())) {
-            setValue(currentTerm, null, currentValues, rmObject::setId, String.class);
+            setValue(currentTerm, null, currentValues, rmObject::setId, String.class, consumedPaths);
         }
-        setValue(currentTerm, "issuer", currentValues, rmObject::setIssuer, String.class);
-        setValue(currentTerm, "assigner", currentValues, rmObject::setAssigner, String.class);
-        setValue(currentTerm, "type", currentValues, rmObject::setType, String.class);
+        setValue(currentTerm, "issuer", currentValues, rmObject::setIssuer, String.class, consumedPaths);
+        setValue(currentTerm, "assigner", currentValues, rmObject::setAssigner, String.class, consumedPaths);
+        setValue(currentTerm, "type", currentValues, rmObject::setType, String.class, consumedPaths);
     }
 }

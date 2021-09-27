@@ -31,7 +31,7 @@ import java.util.stream.Collectors;
 /** Helper class to find Configurations classes in the classpath. */
 public class ReflectionHelper {
 
-  private static Map<Class<?>, Map> cache = new HashMap<>();
+  private static final Map<Class<?>, Map> cache = new HashMap<>();
 
   private ReflectionHelper() {}
 

@@ -24,39 +24,38 @@ import com.nedap.archie.rm.composition.Composition;
 import com.nedap.archie.rm.support.identification.HierObjectId;
 import org.apache.commons.lang3.StringUtils;
 import org.ehrbase.serialisation.walker.defaultvalues.DefaultValues;
+import org.ehrbase.webtemplate.path.flat.FlatPathDto;
 
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
-import static org.ehrbase.serialisation.walker.defaultvalues.DefaultValues.ATTRIBUTE_COLLECTOR;
 import static org.ehrbase.webtemplate.parser.OPTParser.PATH_DIVIDER;
 
 public class LocatableUnmarshalPostprocessor extends AbstractUnmarshalPostprocessor<Locatable> {
 
   /** {@inheritDoc} Unmarshalls {@link Composition#setUid} */
   @Override
-  public void process(String term, Locatable rmObject, Map<String, String> values) {
+  public void process(String term, Locatable rmObject, Map<FlatPathDto, String> values, Set<String> consumedPaths) {
 
     setValue(
         term + PATH_DIVIDER + "_uid",
         null,
         values,
         s -> rmObject.setUid(new HierObjectId(s)),
-        String.class);
+        String.class, consumedPaths);
 
     Map<Integer, Map<String, String>> links =
         values.entrySet().stream()
-            .filter(s -> StringUtils.startsWith(s.getKey(), term + PATH_DIVIDER + "_link"))
+            .filter(s -> s.getKey().startsWith(term + PATH_DIVIDER + "_link"))
             .collect(
                 Collectors.groupingBy(
-                    e -> {
-                      String s =
-                          StringUtils.substringBefore(
-                              StringUtils.substringAfter(e.getKey(), ":"), "|");
-                      return StringUtils.isBlank(s) ? 0 : Integer.parseInt(s);
-                    },
-                    ATTRIBUTE_COLLECTOR));
+                    e -> Optional.ofNullable(e.getKey().getLast().getCount()).orElse(0),
+                        Collectors.toMap(
+                                e1 -> e1.getKey().getLast().getAttributeName(),
+                            stringStringEntry -> StringUtils.unwrap(stringStringEntry.getValue(), '"'))));
 
     if (rmObject.getLinks() == null) {
       rmObject.setLinks(new ArrayList<>());

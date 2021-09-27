@@ -22,6 +22,7 @@ package org.ehrbase.serialisation.flatencoding.std.umarshal.rmunmarshaller;
 import com.nedap.archie.rm.RMObject;
 import org.ehrbase.serialisation.walker.Context;
 import org.ehrbase.util.reflection.ClassDependent;
+import org.ehrbase.webtemplate.path.flat.FlatPathDto;
 
 import java.util.Map;
 import java.util.Set;
@@ -32,18 +33,15 @@ import java.util.Set;
 public interface RMUnmarshaller<T extends RMObject> extends ClassDependent<T> {
     /**
      * Puts the {@code currentValues} into the {@code rmObject}
-     *
-     * @param currentTerm
+     *  @param currentTerm
      * @param rmObject
      * @param currentValues
      * @param context
+     * @param consumedPaths
      */
-    void handle(String currentTerm, T rmObject, Map<String, String> currentValues, Context<Map<String, String>> context);
+    void handle(String currentTerm, T rmObject, Map<FlatPathDto, String> currentValues, Context<Map<FlatPathDto, String>> context, Set<String> consumedPaths);
 
-    /**
-     * @return The parts consumed by this RMUnmarshaller
-     */
-    Set<String> getConsumedPaths();
+
 
 
 }

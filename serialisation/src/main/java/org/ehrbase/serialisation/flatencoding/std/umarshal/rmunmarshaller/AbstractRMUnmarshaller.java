@@ -28,6 +28,7 @@ import org.ehrbase.serialisation.walker.Context;
 import org.ehrbase.util.exception.SdkException;
 import org.ehrbase.util.reflection.ReflectionHelper;
 import org.ehrbase.webtemplate.parser.config.RmIntrospectConfig;
+import org.ehrbase.webtemplate.path.flat.FlatPathDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,14 +48,14 @@ public abstract class AbstractRMUnmarshaller<T extends RMObject> implements RMUn
     private static final Map<Class<?>, RmIntrospectConfig> configMap = ReflectionHelper.buildMap(RmIntrospectConfig.class);
     private final Logger log = LoggerFactory.getLogger(getClass());
 
-    protected final Set<String> consumedPath = new HashSet<>();
+
 
 
     /**
      * {@inheritDoc}
      * Use {@link RmIntrospectConfig} to find die properties which needs to be set
      */
-    public void handle(String currentTerm, T rmObject, Map<String, String> currentValues, Context<Map<String, String>> context) {
+    public void handle(String currentTerm, T rmObject, Map<FlatPathDto, String> currentValues, Context<Map<FlatPathDto, String>> context, Set<String> consumedPaths) {
 
 
         Set<String> expandFields = Optional.ofNullable(configMap.get(rmObject.getClass()))
@@ -73,7 +74,7 @@ public abstract class AbstractRMUnmarshaller<T extends RMObject> implements RMUn
                         } catch (IllegalAccessException | InvocationTargetException e) {
                             throw new SdkException(e.getMessage(), e);
                         }
-                    }, propertyDescriptor.getPropertyType());
+                    }, propertyDescriptor.getPropertyType(), consumedPaths);
                 } catch (IntrospectionException e) {
                     throw new SdkException(e.getMessage(), e);
                 }
@@ -88,7 +89,7 @@ public abstract class AbstractRMUnmarshaller<T extends RMObject> implements RMUn
                             } catch (IllegalAccessException | InvocationTargetException e) {
                                 throw new SdkException(e.getMessage(), e);
                             }
-                        }, propertyDescriptor.getPropertyType());
+                        }, propertyDescriptor.getPropertyType(), consumedPaths);
                     } catch (IntrospectionException e) {
                         throw new SdkException(e.getMessage(), e);
                     }
@@ -101,32 +102,30 @@ public abstract class AbstractRMUnmarshaller<T extends RMObject> implements RMUn
     /**
      * Sets the {@code consumer} to the value in {@code values} corresponding to {@code term} and {@code propertyName}
      *
+     * @param <S>
      * @param term
      * @param propertyName
      * @param values
      * @param consumer
      * @param clazz
-     * @param <S>
+     * @param consumedPaths
      */
-    protected <S> void setValue(String term, String propertyName, Map<String, String> values, Consumer<S> consumer, Class<S> clazz) {
+    protected <S> void setValue(String term, String propertyName, Map<FlatPathDto, String> values, Consumer<S> consumer, Class<S> clazz, Set<String> consumedPaths) {
         String key = propertyName != null ? term + "|" + propertyName : term;
-        String jasonValue = values.get(key);
+        Map.Entry<FlatPathDto, String> entry = FlatPathDto.get(values, key);
+        String jasonValue = entry.getValue();
         if (StringUtils.isNotBlank(jasonValue)) {
             try {
                 S value = OBJECT_MAPPER.readValue(jasonValue, clazz);
                 consumer.accept(value);
-                consumedPath.add(key);
+                consumedPaths.add(entry.getKey().format());
             } catch (JsonProcessingException e) {
                 log.error(e.getMessage());
             }
         } else {
             consumer.accept(null);
-            consumedPath.add(key);
         }
     }
 
-    @Override
-    public Set<String> getConsumedPaths() {
-        return consumedPath;
-    }
+
 }
