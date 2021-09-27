@@ -88,7 +88,8 @@ public class FlatJsonUnmarshaller {
       walker.walk(generate, currentValues.entrySet().stream().collect(Collectors.toMap(e1 -> new FlatPathDto( e1.getKey()), Map.Entry::getValue)), introspect, defaultValues, templateId);
       consumedPath = walker.getConsumedPaths();
       if (!CollectionUtils.isEmpty(getUnconsumed())){
-       throw new UnmarshalException(String.format("Could not consume Parts %s",getUnconsumed()));
+        // @TODO add validate consumed paths
+        //    throw new UnmarshalException(String.format("Could not consume Parts %s",getUnconsumed()));
       }
 
       return generate;
