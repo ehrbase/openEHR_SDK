@@ -30,7 +30,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 import org.apache.commons.collections4.CollectionUtils;
@@ -47,9 +46,7 @@ public class FlatJsonUnmarshaller {
 
   private static final ObjectMapper OBJECT_MAPPER = JacksonUtil.getObjectMapper();
 
-  private Set<String> consumedPath;
 
-  private Map<String, String> currentValues;
 
   /**
    * Unmarshal flat Json to Composition
@@ -61,6 +58,9 @@ public class FlatJsonUnmarshaller {
   public Composition unmarshal(
           String flat, WebTemplate introspect) {
 
+     Set<String> consumedPath;
+
+     Map<String, String> currentValues;
     consumedPath = new HashSet<>();
 
     try {
@@ -87,9 +87,9 @@ public class FlatJsonUnmarshaller {
       String templateId = generate.getArchetypeDetails().getTemplateId().getValue();
       walker.walk(generate, currentValues.entrySet().stream().collect(Collectors.toMap(e1 -> new FlatPathDto( e1.getKey()), Map.Entry::getValue)), introspect, defaultValues, templateId);
       consumedPath = walker.getConsumedPaths();
-      if (!CollectionUtils.isEmpty(getUnconsumed())){
-        // @TODO add validate consumed paths
-        //    throw new UnmarshalException(String.format("Could not consume Parts %s",getUnconsumed()));
+      if (!CollectionUtils.isEmpty(getUnconsumed(consumedPath,currentValues))){
+
+        throw new UnmarshalException(String.format("Could not consume Parts %s",getUnconsumed(consumedPath, currentValues)));
       }
 
       return generate;
@@ -98,7 +98,7 @@ public class FlatJsonUnmarshaller {
     }
   }
 
-  public Set<String> getUnconsumed() {
+  private static Set<String> getUnconsumed(Set<String> consumedPath, Map<String, String> currentValues) {
     if (currentValues != null && consumedPath != null) {
       HashSet<String> set = new HashSet<>(currentValues.keySet());
       set.removeAll(consumedPath);

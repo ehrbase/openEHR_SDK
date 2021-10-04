@@ -87,6 +87,7 @@
   "test_all_types/category|value": "event",
   "test_all_types/category|terminology": "openehr",
   "test_all_types/composer|id": "b7c07d35-fa06-4280-8e65-eabdfbe64fdc",
+  "test_all_types/composer|id_scheme": "test",
   "test_all_types/composer|id_namespace": "DEMOGRAPHIC",
   "test_all_types/composer|name": "Dr. House"
 }

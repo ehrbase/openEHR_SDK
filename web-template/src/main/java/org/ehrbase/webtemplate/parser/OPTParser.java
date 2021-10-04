@@ -654,7 +654,7 @@ public class OPTParser {
     node.setRmType(attributeInfo.getTypeNameInCollection());
     node.setMax(attributeInfo.isMultipleValued() ? -1 : 1);
     node.setMin(attributeInfo.isNullable() ? 0 : 1);
-    if (attributeInfo.getRmName().equals("action_archetype_id")) {
+    if ( List.of("action_archetype_id","math_function").contains(attributeInfo.getRmName())) {
       node.setMin(1);
     }
 

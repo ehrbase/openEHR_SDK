@@ -21,13 +21,18 @@ package org.ehrbase.serialisation.flatencoding.std.marshal.postprocessor;
 
 import com.nedap.archie.rm.composition.Entry;
 import com.nedap.archie.rm.generic.PartyIdentified;
+import org.ehrbase.serialisation.flatencoding.std.marshal.config.ParticipationConfig;
 import org.ehrbase.serialisation.flatencoding.std.marshal.config.PartyIdentifiedStdConfig;
 
 import java.util.Map;
+import java.util.stream.IntStream;
 
 import static org.ehrbase.webtemplate.parser.OPTParser.PATH_DIVIDER;
+import static org.ehrbase.webtemplate.parser.OPTParser.makeIdUnique;
 
 public class EntryMarshalPostprocessor implements MarshalPostprocessor<Entry> {
+
+  private static final ParticipationConfig PARTICIPATION_CONFIG = new ParticipationConfig();
 
   /** {@inheritDoc} Adds the encoding information */
   @Override
@@ -42,6 +47,12 @@ public class EntryMarshalPostprocessor implements MarshalPostprocessor<Entry> {
       values.putAll(
           partyIdentifiedStdConfig.buildChildValues(
               term + PATH_DIVIDER + "_provider", (PartyIdentified) rmObject.getProvider(), null));
+    }
+
+    if (rmObject.getOtherParticipations() != null){
+      IntStream.range(0,rmObject.getOtherParticipations().size())
+                      .forEach(i -> values.putAll( PARTICIPATION_CONFIG.buildChildValues(term+PATH_DIVIDER+"_other_participation:"+i,rmObject.getOtherParticipations().get(i),null)));
+
     }
   }
 

@@ -22,10 +22,13 @@ package org.ehrbase.serialisation.walker;
 import static org.ehrbase.util.rmconstants.RmConstants.RM_VERSION_1_4_0;
 
 import com.nedap.archie.rm.RMObject;
-import com.nedap.archie.rm.archetyped.Archetyped;
-import com.nedap.archie.rm.archetyped.Locatable;
-import com.nedap.archie.rm.archetyped.TemplateId;
+import com.nedap.archie.rm.archetyped.*;
+import com.nedap.archie.rm.composition.*;
+import com.nedap.archie.rm.datastructures.Event;
+import com.nedap.archie.rm.datastructures.History;
+import com.nedap.archie.rm.datastructures.ItemStructure;
 import com.nedap.archie.rm.support.identification.ArchetypeID;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.ehrbase.building.webtemplateskeletnbuilder.WebTemplateSkeletonBuilder;
 import org.ehrbase.serialisation.walker.defaultvalues.defaultinserter.DefaultValueInserter;
@@ -38,7 +41,6 @@ import org.slf4j.LoggerFactory;
 import java.util.*;
 
 public abstract class ToCompositionWalker<T> extends Walker<T> {
-
 
 
   private static final Map<Class<?>, DefaultValueInserter> DEFAULT_VALUE_INSERTER_MAP =
@@ -62,6 +64,153 @@ public abstract class ToCompositionWalker<T> extends Walker<T> {
         archetyped.setTemplateId(templateId);
         ((Locatable) currentRM).setArchetypeDetails(archetyped);
         ((Locatable) currentRM).setArchetypeNodeId(nodeId.getNodeId());
+      }
+    }
+
+    normalise(currentRM);
+
+  }
+
+  /**
+   * Remove empty {@link ItemStructure}
+   * @param currentRM
+   */
+  private void normalise(RMObject currentRM) {
+    if (currentRM instanceof CareEntry) {
+
+      if (Optional.of(currentRM)
+              .map(CareEntry.class::cast)
+              .map(CareEntry::getProtocol)
+              .map(ItemStructure::getItems)
+              .filter(CollectionUtils::isNotEmpty)
+              .isEmpty()) {
+
+        ((CareEntry) currentRM).setProtocol(null);
+      }
+    }
+
+
+    if (currentRM instanceof Observation) {
+
+      if (Optional.of(currentRM)
+          .map(Observation.class::cast)
+          .map(Observation::getState)
+          .map(History::getEvents)
+          .filter(CollectionUtils::isNotEmpty)
+          .isEmpty()) {
+
+        ((Observation) currentRM).setState(null);
+      }
+
+      if (Optional.of(currentRM)
+          .map(Observation.class::cast)
+          .map(Observation::getData)
+          .map(History::getEvents)
+          .filter(CollectionUtils::isNotEmpty)
+          .isEmpty()) {
+
+        ((Observation) currentRM).setData(null);
+      }
+    }
+
+    if (currentRM instanceof Action) {
+
+      if (Optional.of(currentRM)
+          .map(Action.class::cast)
+          .map(Action::getDescription)
+          .map(ItemStructure::getItems)
+          .filter(CollectionUtils::isNotEmpty)
+          .isEmpty()) {
+
+        ((Action) currentRM).setDescription(null);
+      }
+    }
+
+    if (currentRM instanceof Evaluation) {
+
+      if (Optional.of(currentRM)
+          .map(Evaluation.class::cast)
+          .map(Evaluation::getData)
+          .map(ItemStructure::getItems)
+          .filter(CollectionUtils::isNotEmpty)
+          .isEmpty()) {
+
+        ((Evaluation) currentRM).setData(null);
+      }
+    }
+
+    if (currentRM instanceof FeederAuditDetails) {
+
+      if (Optional.of(currentRM)
+              .map(FeederAuditDetails.class::cast)
+              .map(FeederAuditDetails::getOtherDetails)
+              .map(ItemStructure::getItems)
+              .filter(CollectionUtils::isNotEmpty)
+              .isEmpty()) {
+
+        ((FeederAuditDetails) currentRM).setOtherDetails(null);
+      }
+    }
+
+    if (currentRM instanceof AdminEntry) {
+
+      if (Optional.of(currentRM)
+              .map(AdminEntry.class::cast)
+              .map(AdminEntry::getData)
+              .map(ItemStructure::getItems)
+              .filter(CollectionUtils::isNotEmpty)
+              .isEmpty()) {
+
+        ((AdminEntry) currentRM).setData(null);
+      }
+    }
+
+    if (currentRM instanceof EventContext) {
+
+      if (Optional.of(currentRM)
+              .map(EventContext.class::cast)
+              .map(EventContext::getOtherContext)
+              .map(ItemStructure::getItems)
+              .filter(CollectionUtils::isNotEmpty)
+              .isEmpty()) {
+
+        ((EventContext) currentRM).setOtherContext(null);
+      }
+    }
+
+    if (currentRM instanceof InstructionDetails) {
+
+      if (Optional.of(currentRM)
+              .map(InstructionDetails.class::cast)
+              .map(InstructionDetails::getWfDetails)
+              .map(ItemStructure::getItems)
+              .filter(CollectionUtils::isNotEmpty)
+              .isEmpty()) {
+
+        ((InstructionDetails) currentRM).setWfDetails(null);
+      }
+    }
+
+    if (currentRM instanceof Event) {
+
+      if (Optional.of(currentRM)
+              .map(Event.class::cast)
+              .map(Event::getState)
+              .map(ItemStructure::getItems)
+              .filter(CollectionUtils::isNotEmpty)
+              .isEmpty()) {
+
+        ((Event) currentRM).setState(null);
+      }
+
+      if (Optional.of(currentRM)
+              .map(Event.class::cast)
+              .map(Event::getData)
+              .map(ItemStructure::getItems)
+              .filter(CollectionUtils::isNotEmpty)
+              .isEmpty()) {
+
+        ((Event) currentRM).setData(null);
       }
     }
   }

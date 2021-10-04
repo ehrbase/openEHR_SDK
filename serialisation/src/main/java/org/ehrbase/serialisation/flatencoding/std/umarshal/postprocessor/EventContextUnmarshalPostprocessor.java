@@ -64,6 +64,12 @@ public class EventContextUnmarshalPostprocessor
           health_care_facilityValues,
           null, consumedPaths);
     }
+
+    // Strange Path with value true if setting = other care (238)
+    consumedPaths.add(term+"/"+"setting|238");
+    // Strange Path with value true if setting != other care (238)
+    consumedPaths.add(term+"/"+"setting|");
+
   }
 
   /** {@inheritDoc} */

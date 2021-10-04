@@ -295,6 +295,7 @@ public abstract class Walker<T> {
       width.setName("width");
       width.setRmType("DV_DURATION");
       width.setMax(1);
+      width.setMin(1);
       width.setAqlPath(event.getAqlPath() + "/width");
       intervalEvent.getChildren().add(width);
 
@@ -303,6 +304,7 @@ public abstract class Walker<T> {
       math.setName("math_function");
       math.setRmType(DV_CODED_TEXT);
       math.setMax(1);
+      math.setMin(1);
       math.setAqlPath(event.getAqlPath() + "/math_function");
       intervalEvent.getChildren().add(math);
 

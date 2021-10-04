@@ -162,6 +162,7 @@ public class FlatHelper<T> {
         typeInfo.getRmName().equals("ACTIVITY") && node.getName().equals("timing")
             || typeInfo.getRmName().equals("INSTRUCTION") && node.getName().equals("expiry_time")
             || typeInfo.getRmName().equals("INTERVAL_EVENT") && node.getName().equals("width")
+             || typeInfo.getRmName().equals("INTERVAL_EVENT") && node.getName().equals("math_function")
             || typeInfo.getRmName().equals(ISM_TRANSITION) && node.getName().equals("transition");
 
     return (nonMandatoryRmAttribute || mandatoryNotInWebTemplate) && !nonMandatoryInWebTemplate;

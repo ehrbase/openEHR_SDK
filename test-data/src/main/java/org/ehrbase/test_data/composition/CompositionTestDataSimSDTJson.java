@@ -26,6 +26,7 @@ public enum CompositionTestDataSimSDTJson {
   VITALSIGNS("Vitalsigns", "Vitalsigns.json"),
   ADVERSE_REACTION_LIST("AlternativeEvents", "IDCR - Adverse Reaction List.json"),
   CORONA("Corona", "corona.json"),
+  CORONA_WITH_OTHER_PARTICIPATION("Corona", "corona_with_other_participation.json"),
   CORONA_WITH_CONTEXT("Corona", "corona_with_context.json"),
   MULTI_OCCURRENCE("multi_occurrence", "multi_occurrence.json"),
   MISSING_COUNT("flat_with_missing_count.json", "flat_with_missing_count.json"),
