@@ -89,11 +89,11 @@
                     <includes combine.self="override">
                         <include>AnySomeConstrainedTest</include>
                         <include>AnyTest</include>
-                        <include>BRMohTest</include>
+
                         <include>BuilderTest</include>
                         <include>CodedTextTest</include>
                         <include>ComposerTest</include>
-                        <include>DurationTest</include>
+
                         <include>EndTimeTest</include>
                         <include>HistoryOriginTest</include>
                         <include>IntervalEventTest</include>

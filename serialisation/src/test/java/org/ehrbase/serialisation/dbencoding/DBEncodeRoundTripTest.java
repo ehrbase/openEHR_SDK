@@ -93,6 +93,7 @@ public class DBEncodeRoundTripTest {
                         "Extra path: test_all_types/category|terminology, value: openehr",
                         "Extra path: test_all_types/composer|id, value: b7c07d35-fa06-4280-8e65-eabdfbe64fdc",
                         "Extra path: test_all_types/composer|id_namespace, value: DEMOGRAPHIC",
+                        "Extra path: test_all_types/composer|id_scheme, value: test",
                         "Extra path: test_all_types/composer|name, value: Dr. House"
                 }));
 
