@@ -81,7 +81,7 @@ public abstract class ToCompositionWalker<T> extends Walker<T> {
               .map(CareEntry.class::cast)
               .map(CareEntry::getProtocol)
               .map(ItemStructure::getItems)
-              .filter(CollectionUtils::isNotEmpty)
+              .filter(this::isNotEmpty)
               .isEmpty()) {
 
         ((CareEntry) currentRM).setProtocol(null);
@@ -95,7 +95,7 @@ public abstract class ToCompositionWalker<T> extends Walker<T> {
           .map(Observation.class::cast)
           .map(Observation::getState)
           .map(History::getEvents)
-          .filter(CollectionUtils::isNotEmpty)
+          .filter(this::isNotEmpty)
           .isEmpty()) {
 
         ((Observation) currentRM).setState(null);
@@ -105,7 +105,7 @@ public abstract class ToCompositionWalker<T> extends Walker<T> {
           .map(Observation.class::cast)
           .map(Observation::getData)
           .map(History::getEvents)
-          .filter(CollectionUtils::isNotEmpty)
+          .filter(this::isNotEmpty)
           .isEmpty()) {
 
         ((Observation) currentRM).setData(null);
@@ -118,7 +118,7 @@ public abstract class ToCompositionWalker<T> extends Walker<T> {
           .map(Action.class::cast)
           .map(Action::getDescription)
           .map(ItemStructure::getItems)
-          .filter(CollectionUtils::isNotEmpty)
+          .filter(this::isNotEmpty)
           .isEmpty()) {
 
         ((Action) currentRM).setDescription(null);
@@ -131,7 +131,7 @@ public abstract class ToCompositionWalker<T> extends Walker<T> {
           .map(Evaluation.class::cast)
           .map(Evaluation::getData)
           .map(ItemStructure::getItems)
-          .filter(CollectionUtils::isNotEmpty)
+          .filter(this::isNotEmpty)
           .isEmpty()) {
 
         ((Evaluation) currentRM).setData(null);
@@ -144,7 +144,7 @@ public abstract class ToCompositionWalker<T> extends Walker<T> {
               .map(FeederAuditDetails.class::cast)
               .map(FeederAuditDetails::getOtherDetails)
               .map(ItemStructure::getItems)
-              .filter(CollectionUtils::isNotEmpty)
+              .filter(this::isNotEmpty)
               .isEmpty()) {
 
         ((FeederAuditDetails) currentRM).setOtherDetails(null);
@@ -157,7 +157,7 @@ public abstract class ToCompositionWalker<T> extends Walker<T> {
               .map(AdminEntry.class::cast)
               .map(AdminEntry::getData)
               .map(ItemStructure::getItems)
-              .filter(CollectionUtils::isNotEmpty)
+              .filter(this::isNotEmpty)
               .isEmpty()) {
 
         ((AdminEntry) currentRM).setData(null);
@@ -170,7 +170,7 @@ public abstract class ToCompositionWalker<T> extends Walker<T> {
               .map(EventContext.class::cast)
               .map(EventContext::getOtherContext)
               .map(ItemStructure::getItems)
-              .filter(CollectionUtils::isNotEmpty)
+              .filter(this::isNotEmpty)
               .isEmpty()) {
 
         ((EventContext) currentRM).setOtherContext(null);
@@ -183,7 +183,7 @@ public abstract class ToCompositionWalker<T> extends Walker<T> {
               .map(InstructionDetails.class::cast)
               .map(InstructionDetails::getWfDetails)
               .map(ItemStructure::getItems)
-              .filter(CollectionUtils::isNotEmpty)
+              .filter(this::isNotEmpty)
               .isEmpty()) {
 
         ((InstructionDetails) currentRM).setWfDetails(null);
@@ -196,7 +196,7 @@ public abstract class ToCompositionWalker<T> extends Walker<T> {
               .map(Event.class::cast)
               .map(Event::getState)
               .map(ItemStructure::getItems)
-              .filter(CollectionUtils::isNotEmpty)
+              .filter(this::isNotEmpty)
               .isEmpty()) {
 
         ((Event) currentRM).setState(null);
@@ -206,7 +206,7 @@ public abstract class ToCompositionWalker<T> extends Walker<T> {
               .map(Event.class::cast)
               .map(Event::getData)
               .map(ItemStructure::getItems)
-              .filter(CollectionUtils::isNotEmpty)
+              .filter(this::isNotEmpty)
               .isEmpty()) {
 
         ((Event) currentRM).setData(null);
@@ -215,7 +215,7 @@ public abstract class ToCompositionWalker<T> extends Walker<T> {
 
 
 
-      if (currentRM instanceof ItemSingle && isNotEmpty(((ItemSingle) currentRM).getItem())){
+      if (currentRM instanceof ItemSingle && !isNotEmpty(((ItemSingle) currentRM).getItem())){
         ((ItemSingle) currentRM).setItem(null);
 
      }
@@ -251,6 +251,11 @@ private   boolean isNotEmpty(Item item){
 
 
     return true;
+}
+
+private boolean isNotEmpty(Collection< ?> items){
+
+    return items != null && items.stream().anyMatch(Objects::nonNull);
 }
   @Override
   protected Object extractRMChild(
