@@ -24,9 +24,7 @@ import static org.ehrbase.util.rmconstants.RmConstants.RM_VERSION_1_4_0;
 import com.nedap.archie.rm.RMObject;
 import com.nedap.archie.rm.archetyped.*;
 import com.nedap.archie.rm.composition.*;
-import com.nedap.archie.rm.datastructures.Event;
-import com.nedap.archie.rm.datastructures.History;
-import com.nedap.archie.rm.datastructures.ItemStructure;
+import com.nedap.archie.rm.datastructures.*;
 import com.nedap.archie.rm.support.identification.ArchetypeID;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
@@ -39,6 +37,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public abstract class ToCompositionWalker<T> extends Walker<T> {
 
@@ -213,8 +212,46 @@ public abstract class ToCompositionWalker<T> extends Walker<T> {
         ((Event) currentRM).setData(null);
       }
     }
+
+
+
+      if (currentRM instanceof ItemSingle && isNotEmpty(((ItemSingle) currentRM).getItem())){
+        ((ItemSingle) currentRM).setItem(null);
+
+     }
+
+     if  (currentRM instanceof ItemList &&((ItemList) currentRM).getItems() != null){
+
+       ((ItemList) currentRM).setItems(((ItemList) currentRM).getItems().stream().filter(this::isNotEmpty).collect(Collectors.toList()));
+     }
+    if  (currentRM instanceof ItemTable &&((ItemTable) currentRM).getRows() != null){
+
+      ((ItemTable) currentRM).setRows(((ItemTable) currentRM).getRows().stream().filter(this::isNotEmpty).collect(Collectors.toList()));
+    }
+
+    if  (currentRM instanceof ItemTree &&((ItemTree) currentRM).getItems() != null){
+
+      ((ItemTree) currentRM).setItems(((ItemTree) currentRM).getItems().stream().filter(this::isNotEmpty).collect(Collectors.toList()));
+    }
+
+    if  (currentRM instanceof Cluster &&((Cluster) currentRM).getItems() != null){
+
+      ((Cluster) currentRM).setItems(((Cluster) currentRM).getItems().stream().filter(this::isNotEmpty).collect(Collectors.toList()));
+    }
+
   }
 
+private   boolean isNotEmpty(Item item){
+
+    if(item instanceof Element){
+      return ((Element) item).getValue() != null || ((Element) item).getNullFlavour() != null;
+    }else if ( item instanceof  Cluster){
+      return !CollectionUtils.isEmpty(((Cluster) item).getItems());
+    }
+
+
+    return true;
+}
   @Override
   protected Object extractRMChild(
       RMObject currentRM,
