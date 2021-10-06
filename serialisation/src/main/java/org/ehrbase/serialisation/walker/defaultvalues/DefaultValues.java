@@ -240,6 +240,7 @@ public class DefaultValues {
         "id",
         s -> {
           participation.getPerformer().setExternalRef(new PartyRef());
+          participation.getPerformer().getExternalRef().setType("PARTY");
           GenericId id = new GenericId();
           id.setValue(s);
           participation.getPerformer().getExternalRef().setId(id);

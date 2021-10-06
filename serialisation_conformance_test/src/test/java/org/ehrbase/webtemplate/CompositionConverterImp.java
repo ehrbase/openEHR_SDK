@@ -79,6 +79,10 @@ public class CompositionConverterImp implements CompositionConverter {
 
     compositionBuilderContext.forEach((k, v) -> currentValues.put(replace(k), v));
     replaceKey(currentValues, "ficha_individual_da_aten_cao_basica/resumo_do_atendimento/problemas/problem_diagnosis:0/related_item:0/item/value", "ficha_individual_da_aten_cao_basica/resumo_do_atendimento/problemas/problem_diagnosis:0/related_item:0/item/text_value");
+    currentValues.entrySet().stream()
+        .filter(e -> "video/mp4".equals(e.getValue()))
+        .forEach(e -> currentValues.replace(e.getKey(), "video/H263-2000"));
+
     Composition composition = flatJson.unmarshal(OBJECT_MAPPER.writeValueAsString(currentValues));
     return new CanonicalJson().marshal(composition).replace("_type", "@class");
   }

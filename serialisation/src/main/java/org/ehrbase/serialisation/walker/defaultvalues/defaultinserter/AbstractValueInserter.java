@@ -98,6 +98,7 @@ public abstract class AbstractValueInserter<T extends RMObject> implements Defau
 
       PartyRef partyRef = new PartyRef();
       partyRef.setNamespace(defaultValues.getDefaultValue(DefaultValuePath.ID_NAMESPACE));
+      partyRef.setType("PARTY");
       partyRef.setId(
           new GenericId(
               defaultValues.getDefaultValue(id),
