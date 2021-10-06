@@ -28,27 +28,28 @@ public class TerminologyCheck implements I_TerminologyCheck {
     protected Class RM_CLASS;
 
     public static void validate(TerminologyInterface terminologyInterface, AttributeCodesetMapping codesetMapping, String context, CodePhrase codePhrase, String language) {
-        //if terminology id == 'local' (e.g. defined at Template level) skip the validation
-        if (codePhrase.getTerminologyId().getValue().equals("local"))
+        String terminologyId = codePhrase.getTerminologyId().getValue();
+
+        //if terminology id is not supported, skip the validation
+        if (terminologyId.equals("local") || !terminologyInterface.codeSetIdentifiers().contains(terminologyId))
             return;
 
         //get the actual attribute
-        if (!codesetMapping.isLocalizedAttribute(codePhrase.getTerminologyId().getValue(), context, language))
+        if (!codesetMapping.isLocalizedAttribute(terminologyId, context, language))
             language = "en"; //default to English for the rest of the validation
 
-        String attribute = codesetMapping.actualAttributeId(codePhrase.getTerminologyId().getValue(), context, language);
-        ContainerType containerType = codesetMapping.containerType(codePhrase.getTerminologyId().getValue(), context);
+        String attribute = codesetMapping.actualAttributeId(terminologyId, context, language);
+        ContainerType containerType = codesetMapping.containerType(terminologyId, context);
 
         switch (containerType) {
             case GROUP: //a code string defined within a group of a codeset
-                boolean valid = terminologyInterface.terminology(codePhrase.getTerminologyId().getValue()).hasCodeForGroupId(attribute, codePhrase);
+                boolean valid = terminologyInterface.terminology(terminologyId).hasCodeForGroupId(attribute, codePhrase);
                 if (!valid) {
                     throw new IllegalArgumentException("supplied code string [" + codePhrase.getCodeString() + "] is not found in group:" + attribute);
                 }
                 break;
 
             case CODESET: //a codestring defined in a codeset
-                String terminologyId = codePhrase.getTerminologyId().getValue();
                 valid = terminologyInterface.codeSet(terminologyId).hasCode(codePhrase);
                 if (!valid) {
                     throw new IllegalArgumentException("supplied code string [" + codePhrase.getCodeString() + "] is not found in codeset:" + attribute);
