@@ -19,36 +19,39 @@
 
 package org.ehrbase.serialisation.flatencoding.std.marshal.config;
 
-import com.nedap.archie.rm.datatypes.CodePhrase;
-import com.nedap.archie.rm.datavalues.DvURI;
-import com.nedap.archie.rm.datavalues.encapsulated.DvMultimedia;
+import com.nedap.archie.rm.composition.InstructionDetails;
+import com.nedap.archie.rm.datavalues.DvEHRURI;
+import com.nedap.archie.rm.support.identification.LocatableRef;
+import com.nedap.archie.rm.support.identification.ObjectId;
 import org.ehrbase.serialisation.walker.Context;
 
+import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-public class DvMultimediaConfig extends AbstractsStdConfig<DvMultimedia> {
+public class InstructionDetailsConfig extends AbstractsStdConfig<InstructionDetails> {
 
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public Class<DvMultimedia> getAssociatedClass() {
-        return DvMultimedia.class;
+    public Class<InstructionDetails> getAssociatedClass() {
+        return InstructionDetails.class;
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public Map<String, Object> buildChildValues(String currentTerm, DvMultimedia rmObject, Context<Map<String, Object>> context) {
+    public Map<String, Object> buildChildValues(String currentTerm, InstructionDetails rmObject, Context<Map<String, Object>> context) {
         Map<String, Object> result = new HashMap<>();
-        addValue(result, currentTerm, null, Optional.of(rmObject).map(DvMultimedia::getUri).map(DvURI::getValue).orElse(null));
-        addValue(result, currentTerm, "mediatype", Optional.of(rmObject).map(DvMultimedia::getMediaType).map(CodePhrase::getCodeString).orElse(null));
-        addValue(result, currentTerm, "size", rmObject.getSize());
-        addValue(result, currentTerm, "alternatetext", rmObject.getAlternateText());
+
+        addValue(result, currentTerm, "activity_id", Optional.of(rmObject).map(InstructionDetails::getActivityId).orElse(null));
+        addValue(result, currentTerm, "composition_uid", Optional.of(rmObject).map(InstructionDetails::getInstructionId).map(LocatableRef::getId).map(ObjectId::getValue).orElse(null));
+        addValue(result, currentTerm, "path", Optional.of(rmObject).map(InstructionDetails::getInstructionId).map(LocatableRef::getPath).orElse(null));
+
         return result;
     }
 

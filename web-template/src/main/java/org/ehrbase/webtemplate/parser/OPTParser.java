@@ -38,6 +38,7 @@ import org.ehrbase.terminology.client.terminology.TermDefinition;
 import org.ehrbase.terminology.client.terminology.TerminologyProvider;
 import org.ehrbase.terminology.client.terminology.ValueSet;
 import org.ehrbase.util.exception.SdkException;
+import org.ehrbase.util.rmconstants.RmConstants;
 import org.ehrbase.webtemplate.model.*;
 import org.openehr.schemas.v1.*;
 import org.w3c.dom.Node;
@@ -599,7 +600,12 @@ public class OPTParser {
                 for (int i = 0; i < l.size(); i++) {
                   if (i > 0) {
                     WebTemplateNode n = l.get(i);
-                    n.setOptionalIdNumber((i + 1));
+                    int optionalIdNumber = i + 1;
+                    n.setOptionalIdNumber(optionalIdNumber);
+
+                    if (RmConstants.ELEMENT.equals(n.getRmType())){
+                      n.getChildren().stream().filter(c -> c.getId().equals(n.getId(false))).forEach(c -> c.setOptionalIdNumber(optionalIdNumber));
+                    }
                   }
                 }
               } else {
@@ -1002,7 +1008,7 @@ public class OPTParser {
           .putAll(
               termDefinitionMap.get(nodeId).entrySet().stream()
                   .collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().getValue())));
-      // honer expliziert set name.
+      // honer explicit set name.
       node.getLocalizedNames().put(defaultLanguage, name);
       node.getLocalizedDescriptions()
           .putAll(
@@ -1044,7 +1050,8 @@ public class OPTParser {
   private String buildId(String term) {
 
     String normalTerm =
-        StringUtils.normalizeSpace(term.toLowerCase().replaceAll("[^a-z0-9äüöß._\\-]", " ").trim())
+        StringUtils.normalizeSpace(
+                term.toLowerCase().replaceAll("[^\\p{IsAlphabetic}0-9._\\-]", " ").trim())
             .replace(" ", "_");
     if (StringUtils.isNumeric(normalTerm.substring(0, 1))) {
       normalTerm = "a" + normalTerm;

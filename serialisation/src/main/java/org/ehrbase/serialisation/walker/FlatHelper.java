@@ -2,6 +2,7 @@ package org.ehrbase.serialisation.walker;
 
 import com.nedap.archie.rm.datastructures.Event;
 import com.nedap.archie.rminfo.RMTypeInfo;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.ehrbase.webtemplate.model.WebTemplateNode;
 
@@ -98,17 +99,7 @@ public class FlatHelper<T> {
     if (parent != null && isNonMandatoryRmAttribute(node, parent)) {
       return true;
     }
-    if (parent != null
-        && parent.getRmType().equals(ELEMENT)
-        && parent.getChildren().size() <= 5
-        && parent.getChildren().stream()
-            .filter(n -> !List.of("null_flavour", "feeder_audit").contains(n.getName()))
-            .map(WebTemplateNode::getRmType)
-            .collect(Collectors.toList())
-            .containsAll(List.of(DV_TEXT, DV_CODED_TEXT))
-        && !node.getId().equals(parent.getId())) {
-      return true;
-    }
+
 
     if (parent != null
         && parent.getRmType().equals(ISM_TRANSITION)
