@@ -48,7 +48,7 @@
         <maven.compiler.release>11</maven.compiler.release>
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
-        <jackson.version>2.12.0</jackson.version>
+        <jackson.version>2.12.1</jackson.version>
         <jacoco.version>0.8.6</jacoco.version>
         <antlr4.version>4.9.1</antlr4.version>
         <archie.version>1.0.3</archie.version>
