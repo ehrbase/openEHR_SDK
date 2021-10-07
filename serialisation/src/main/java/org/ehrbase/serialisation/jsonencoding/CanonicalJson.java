@@ -46,6 +46,7 @@ import org.ehrbase.serialisation.exception.UnmarshalException;
 
 import java.io.IOException;
 import java.io.StringWriter;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -53,6 +54,34 @@ import java.util.Map;
 
 
 public class CanonicalJson implements RMDataFormat {
+
+    private static class ExcludeEmptyCollectionsFilter {
+        @Override
+        //Return true to exclude
+        public boolean equals(Object o) {
+
+            // Exclude Null
+            if (o == null){
+                return true;
+            }
+
+
+            if (o instanceof Map) {
+                return ((Map) o).size() == 0;
+            }
+            if (o instanceof Collection) {
+                return ((Collection) o).size() == 0;
+            }
+
+            if(o instanceof Object[]){
+                return ((Object[]) o).length == 0;
+            }
+
+            //Include everything else
+            return false;
+        }
+    }
+
 
     @Override
     public String marshal(RMObject rmObject) {
@@ -68,7 +97,8 @@ public class CanonicalJson implements RMDataFormat {
             om.addMixInAnnotations(UIDBasedId.class, UIDBasedIdMixIn.class);
 
             // Global configuration to not include empty lists in the JSON
-            om.setSerializationInclusion(Include.NON_EMPTY);
+
+            om.setDefaultPropertyInclusion(JsonInclude.Value.construct(Include.CUSTOM, Include.CUSTOM, ExcludeEmptyCollectionsFilter.class, ExcludeEmptyCollectionsFilter.class));
 
             // Avoid _type for final classes / concrete attributes with known type
             TypeResolverBuilder typeResolverBuilder = new CJArchieTypeResolverBuilder()

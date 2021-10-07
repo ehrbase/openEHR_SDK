@@ -36,6 +36,7 @@ import com.nedap.archie.rm.support.identification.PartyRef;
 import org.apache.commons.lang3.StringUtils;
 import org.ehrbase.client.classgenerator.EnumValueSet;
 import org.ehrbase.client.classgenerator.shareddefinition.ParticipationMode;
+import org.ehrbase.client.classgenerator.shareddefinition.Setting;
 import org.ehrbase.client.classgenerator.shareddefinition.State;
 import org.ehrbase.serialisation.jsonencoding.JacksonUtil;
 import org.ehrbase.util.exception.SdkException;
@@ -201,6 +202,11 @@ public class DefaultValues {
 
     if (!defaultValueMap.containsKey(DefaultValuePath.ACTION_ISM_TRANSITION_CURRENT_STATE)) {
       defaultValueMap.put(DefaultValuePath.ACTION_ISM_TRANSITION_CURRENT_STATE, State.INITIAL);
+    }
+
+    if (!defaultValueMap.containsKey(DefaultValuePath.SETTING)){
+
+      defaultValueMap.put(DefaultValuePath.SETTING, Setting.OTHER_CARE);
     }
   }
 
