@@ -32,7 +32,8 @@ public enum CompositionTestDataSimSDTJson {
   MISSING_COUNT("flat_with_missing_count.json", "flat_with_missing_count.json"),
   ALL_TYPES("test_all_types", "test_all_types.json"),
   DETERIORIATION_ASSESSMENT(
-      "EREACT - Deterioration_assessment", "EREACT - Deterioration_assessment.json");
+      "EREACT - Deterioration_assessment", "EREACT - Deterioration_assessment.json"),
+  EREACT_COVID_MANAGEMENT("flat with action", "EREACT - Covid status monitoring - FLAT.json");
 
   private final String filename;
   private final String description;
