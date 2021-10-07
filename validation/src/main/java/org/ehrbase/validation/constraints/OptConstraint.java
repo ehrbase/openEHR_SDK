@@ -266,19 +266,14 @@ public class OptConstraint {
 
     private void handleDvOrdinal(CDVORDINAL cdo, Map<String, String> termDef, String path) throws IllegalArgumentException {
         List<DVORDINAL> list = Arrays.asList(cdo.getListArray());
-        if (list.isEmpty()) {
-            throw new IllegalArgumentException("empty list of ordinal");
+        if (!list.isEmpty()) {
+            ordinalTable.put(path, list);
         }
-        ordinalTable.put(path, list);
     }
 
     private void handleDomainTypeObject(CDOMAINTYPE cpo, Map<String, String> termDef, String path) throws IllegalArgumentException {
-        if (cpo instanceof CDVORDINAL) {
-            if (((CDVORDINAL) cpo).isSetAssumedValue()) {
-                //do nothing
-            } else
-                handleDvOrdinal((CDVORDINAL) cpo, termDef, path);
-
+        if (cpo instanceof CDVORDINAL && !((CDVORDINAL) cpo).isSetAssumedValue()) {
+            handleDvOrdinal((CDVORDINAL) cpo, termDef, path);
         }
     }
 }

@@ -28,12 +28,14 @@ import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.jsontype.TypeResolverBuilder;
 import com.fasterxml.jackson.databind.jsontype.impl.ClassNameIdResolver;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 import com.nedap.archie.base.OpenEHRBase;
 import com.nedap.archie.paths.PathSegment;
 import com.nedap.archie.rm.RMObject;
 import com.nedap.archie.rm.archetyped.*;
 import com.nedap.archie.rm.datastructures.History;
+import com.nedap.archie.rm.datavalues.quantity.datetime.DvDateTime;
 import com.nedap.archie.rm.support.identification.ArchetypeID;
 import com.nedap.archie.rm.support.identification.UIDBasedId;
 import com.nedap.archie.rminfo.ArchieAOMInfoLookup;
@@ -95,6 +97,10 @@ public class CanonicalJson implements RMDataFormat {
             om.addMixInAnnotations(Locatable.class, LocatableMixIn.class);
             om.addMixInAnnotations(Pathable.class, PathableMixIn.class);
             om.addMixInAnnotations(UIDBasedId.class, UIDBasedIdMixIn.class);
+
+            SimpleModule module = new SimpleModule();
+            module.addSerializer(DvDateTime.class, new DateTimeSerializer());
+            om.registerModule(module);
 
             // Global configuration to not include empty lists in the JSON
 
@@ -251,6 +257,7 @@ public class CanonicalJson implements RMDataFormat {
             super(TypeFactory.defaultInstance().constructType(OpenEHRBase.class), TypeFactory.defaultInstance());
         }
 
+        @Override
         public JsonTypeInfo.Id getMechanism() {
             return JsonTypeInfo.Id.NAME;
         }
@@ -268,11 +275,6 @@ public class CanonicalJson implements RMDataFormat {
             } else {
                 return rmInfoLookup.getNamingStrategy().getTypeName(value.getClass());
             }
-            // This should work in all cases for openEHR-classes and this should not be used for other classes
-            // Additional code for making this work on non-ehr-types:
-            //        } else {
-            //            return super.idFromValue(value);
-            //        }
         }
 
         @Override

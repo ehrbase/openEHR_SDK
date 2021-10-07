@@ -163,4 +163,17 @@ public class CanonicalJsonMarshallingTest {
         Ehr actual = cut.unmarshal(json, Ehr.class);
         Assert.assertEquals(actual, expected);
     }
+
+    //check that dot is not converted into a comma!
+    @Test
+    public void MarshalDvDateTime() {
+        DvDateTime dvDateTime = new DvDateTime("2021-10-01T10:32:51.543+07:00");
+        CanonicalJson cut = new CanonicalJson();
+        String actual = cut.marshal(dvDateTime);
+        assertThat(actual).isEqualToIgnoringWhitespace("{" +
+                "  \"_type\" : \"DV_DATE_TIME\"," +
+                "  \"value\" : \"2021-10-01T10:32:51.543+07:00\"" +
+                "}");
+
+    }
 }

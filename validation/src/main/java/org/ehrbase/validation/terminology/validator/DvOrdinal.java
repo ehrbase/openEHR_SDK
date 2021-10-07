@@ -27,8 +27,9 @@ public class DvOrdinal extends TerminologyCheck {
     }
 
     public static void check(TerminologyInterface terminologyInterface, AttributeCodesetMapping codesetMapping, String context, com.nedap.archie.rm.datavalues.quantity.DvOrdinal dvOrdinal, String language) throws IllegalArgumentException {
-        if (dvOrdinal.getSymbol() != null)
+        if (dvOrdinal.getSymbol() != null) {
             validate(terminologyInterface, codesetMapping, "symbol", dvOrdinal.getSymbol(), language);
+        }
     }
 
     public static void check(TerminologyInterface terminologyInterface, AttributeCodesetMapping codesetMapping, String context, com.nedap.archie.rm.datavalues.quantity.DvOrdinal dvOrdinal) throws IllegalArgumentException {
