@@ -217,8 +217,7 @@ public class CompositionSerializer {
       if (observation.getProtocol() != null) {
         Object protocol = traverse(observation.getProtocol(), TAG_PROTOCOL);
         if (protocol != null) {
-          ltree = new EntrySerialTree(ltree, tagMode)
-              .insert(observation, TAG_PROTOCOL, traverse(observation.getProtocol(), TAG_PROTOCOL));
+          ltree = new EntrySerialTree(ltree, tagMode).insert(observation, TAG_PROTOCOL, protocol);
         }
       }
 
@@ -247,8 +246,7 @@ public class CompositionSerializer {
       if (evaluation.getProtocol() != null) {
         Object protocol = traverse(evaluation.getProtocol(), TAG_PROTOCOL);
         if (protocol != null) {
-          ltree = new EntrySerialTree(ltree, tagMode)
-              .insert(evaluation, TAG_PROTOCOL, traverse(evaluation.getProtocol(), TAG_PROTOCOL));
+          ltree = new EntrySerialTree(ltree, tagMode).insert(evaluation, TAG_PROTOCOL, protocol);
         }
       }
 
@@ -270,13 +268,14 @@ public class CompositionSerializer {
       Instruction instruction = (Instruction) item;
 
       if (instruction.getProtocol() != null) {
-        ltree =
-            new SerialTree(ltree)
-                .insert(
-                    instruction,
-                    new NodeEncoding(tagMode)
-                        .tag(TAG_PROTOCOL, ((Instruction) item).getProtocol(), ltree),
-                    traverse(instruction.getProtocol(), TAG_PROTOCOL));
+        Object protocol = traverse(instruction.getProtocol(), TAG_PROTOCOL);
+        if (protocol != null) {
+          ltree = new SerialTree(ltree)
+              .insert(instruction,
+                  new NodeEncoding(tagMode).tag(TAG_PROTOCOL, ((Instruction) item).getProtocol(),
+                      ltree),
+                  protocol);
+        }
       }
 
       ltree = new InstructionAttributes(this, itemStack, ltree).toMap(instruction);
@@ -309,16 +308,14 @@ public class CompositionSerializer {
       if (action.getProtocol() != null) {
         Object protocol = traverse(action.getProtocol(), TAG_PROTOCOL);
         if (protocol != null) {
-          ltree = new EntrySerialTree(ltree, tagMode)
-              .insert(action, TAG_PROTOCOL, traverse(action.getProtocol(), TAG_PROTOCOL));
+          ltree = new EntrySerialTree(ltree, tagMode).insert(action, TAG_PROTOCOL, protocol);
         }
       }
 
       if (action.getDescription() != null) {
         Object description = traverse(action.getDescription(), TAG_DESCRIPTION);
         if (description != null) {
-          ltree = new EntrySerialTree(ltree, tagMode)
-              .insert(action, TAG_DESCRIPTION, traverse(action.getDescription(), TAG_DESCRIPTION));
+          ltree = new EntrySerialTree(ltree, tagMode).insert(action, TAG_DESCRIPTION, description);
         }
       } else {
         // this should not occur except in test scenario as this is rejected by the validation
