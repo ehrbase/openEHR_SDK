@@ -84,10 +84,22 @@ public abstract class TestQueryEngine extends CanonicalUtil {
                 QueryResponseData result = performQuery(rootPath, attributePath, contains);
                 try {
                     List<Object> objectList = result.getRows().get(0);
+                    Object actual = valueObject(objectList.get(0));
 
-                    assertThat(valueObject(objectList.get(0)))
-                            .as(rootPath + "/" + attributePath)
-                            .isEqualTo(attributeValueAt(referenceNode, attributePath));
+                    if (actual instanceof List){
+                        Object expected = attributeArrayValueAt(referenceNode, attributePath); //RMObject(s)
+
+                        assertThat(
+                                toRmObjectList((List<Object>) actual).toArray())
+                                .as(rootPath + "/" + attributePath)
+                                .containsExactlyInAnyOrder(((List<?>) expected).toArray()
+                                );
+                    }
+                    else {
+                        assertThat(valueObject(objectList.get(0)))
+                                .as(rootPath + "/" + attributePath)
+                                .isEqualTo(attributeValueAt(referenceNode, attributePath));
+                    }
                 } catch (Exception e) {
                     fail(e.getMessage());
                 }
