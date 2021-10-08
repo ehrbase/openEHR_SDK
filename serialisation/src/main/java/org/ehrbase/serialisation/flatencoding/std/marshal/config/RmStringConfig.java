@@ -17,25 +17,35 @@
  *
  */
 
-package org.ehrbase.webtemplate.parser.config;
+package org.ehrbase.serialisation.flatencoding.std.marshal.config;
 
-import com.nedap.archie.rm.composition.Activity;
+import org.ehrbase.serialisation.walker.Context;
+import org.ehrbase.serialisation.walker.RmString;
 
-import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import java.util.HashMap;
+import java.util.Map;
 
-public class ActivityIntrospectConfig implements RmIntrospectConfig {
+public class RmStringConfig extends AbstractsStdConfig<RmString> {
 
-    private static final Set<String> FIELDS = Stream.of("description","actionArchetypeId","timing").collect(Collectors.toSet());
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public Class getAssociatedClass() {
-        return Activity.class;
+    public Class<RmString> getAssociatedClass() {
+        return RmString.class;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public Set<String> getNonTemplateFields() {
-        return FIELDS;
+    public Map<String, Object> buildChildValues(String currentTerm, RmString rmObject, Context<Map<String, Object>> context) {
+        Map<String, Object> result = new HashMap<>();
+        addValue(result, currentTerm, null, rmObject.getValue());
+
+        return result;
     }
+
+
 }

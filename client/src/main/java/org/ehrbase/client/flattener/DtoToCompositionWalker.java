@@ -21,22 +21,12 @@ package org.ehrbase.client.flattener;
 
 import com.nedap.archie.creation.RMObjectCreator;
 import com.nedap.archie.rm.RMObject;
+import com.nedap.archie.rm.composition.Activity;
 import com.nedap.archie.rm.datatypes.CodePhrase;
 import com.nedap.archie.rm.datavalues.DvCodedText;
 import com.nedap.archie.rm.support.identification.TerminologyId;
 import com.nedap.archie.rminfo.ArchieRMInfoLookup;
 import com.nedap.archie.rminfo.RMAttributeInfo;
-import java.beans.IntrospectionException;
-import java.beans.PropertyDescriptor;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
@@ -51,6 +41,13 @@ import org.ehrbase.webtemplate.model.WebTemplateNode;
 import org.ehrbase.webtemplate.parser.FlatPath;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.beans.IntrospectionException;
+import java.beans.PropertyDescriptor;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static org.ehrbase.util.rmconstants.RmConstants.DV_CODED_TEXT;
 
@@ -174,6 +171,11 @@ public class DtoToCompositionWalker extends ToCompositionWalker<Map<String, Obje
   @Override
   protected void postHandle(Context<Map<String, Object>> context) {
     super.postHandle(context);
+
+    RMObject rmObject = context.getRmObjectDeque().peek();
+    if (rmObject instanceof Activity){
+      context.getObjectDeque().peek().entrySet().stream().filter(e -> e.getKey().endsWith("/action_archetype_id")).map(Map.Entry::getValue).map(s -> (String) s).findAny().ifPresent(((Activity) rmObject)::setActionArchetypeId);
+    }
   }
 
   @Override

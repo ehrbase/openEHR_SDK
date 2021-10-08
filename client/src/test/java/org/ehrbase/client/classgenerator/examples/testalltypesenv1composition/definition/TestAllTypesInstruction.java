@@ -3,21 +3,21 @@ package org.ehrbase.client.classgenerator.examples.testalltypesenv1composition.d
 import com.nedap.archie.rm.archetyped.FeederAudit;
 import com.nedap.archie.rm.datavalues.encapsulated.DvParsable;
 import com.nedap.archie.rm.generic.PartyProxy;
-import java.lang.String;
-import java.time.temporal.Temporal;
-import java.time.temporal.TemporalAccessor;
-import javax.annotation.processing.Generated;
 import org.ehrbase.client.annotations.Archetype;
 import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.Path;
 import org.ehrbase.client.classgenerator.interfaces.EntryEntity;
 import org.ehrbase.client.classgenerator.shareddefinition.Language;
 
+import javax.annotation.processing.Generated;
+import java.time.temporal.Temporal;
+import java.time.temporal.TemporalAccessor;
+
 @Entity
 @Archetype("openEHR-EHR-INSTRUCTION.test_all_types.v1")
 @Generated(
     value = "org.ehrbase.client.classgenerator.ClassGenerator",
-    date = "2020-12-10T13:06:10.813499700+01:00",
+    date = "2021-10-08T15:38:06.364884300+02:00",
     comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
 )
 public class TestAllTypesInstruction implements EntryEntity {
@@ -40,6 +40,12 @@ public class TestAllTypesInstruction implements EntryEntity {
    */
   @Path("/activities[at0001]/timing")
   private DvParsable timing;
+
+  /**
+   * Path: Test all types/Test all types/section 2/section 3/Test all types/Current Activity/action_archetype_id
+   */
+  @Path("/activities[at0001]/action_archetype_id")
+  private String actionArchetypeId;
 
   /**
    * Path: Test all types/Test all types/section 2/section 3/Test all types/subject
@@ -93,6 +99,14 @@ public class TestAllTypesInstruction implements EntryEntity {
 
   public DvParsable getTiming() {
      return this.timing ;
+  }
+
+  public void setActionArchetypeId(String actionArchetypeId) {
+     this.actionArchetypeId = actionArchetypeId;
+  }
+
+  public String getActionArchetypeId() {
+     return this.actionArchetypeId ;
   }
 
   public void setSubject(PartyProxy subject) {

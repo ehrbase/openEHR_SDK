@@ -17,25 +17,39 @@
  *
  */
 
-package org.ehrbase.webtemplate.parser.config;
+package org.ehrbase.serialisation.flatencoding.std.umarshal.postprocessor;
 
 import com.nedap.archie.rm.composition.Activity;
+import org.ehrbase.webtemplate.path.flat.FlatPathDto;
 
+import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
-public class ActivityIntrospectConfig implements RmIntrospectConfig {
+import static org.ehrbase.webtemplate.parser.OPTParser.PATH_DIVIDER;
 
-    private static final Set<String> FIELDS = Stream.of("description","actionArchetypeId","timing").collect(Collectors.toSet());
+public class ActivityPostprocessor extends AbstractUnmarshalPostprocessor<Activity> {
 
-    @Override
-    public Class getAssociatedClass() {
-        return Activity.class;
-    }
 
-    @Override
-    public Set<String> getNonTemplateFields() {
-        return FIELDS;
-    }
+
+  /** {@inheritDoc} */
+  @Override
+  public void process(String term, Activity rmObject, Map<FlatPathDto, String> values, Set<String> consumedPaths) {
+
+    setValue(
+            term + PATH_DIVIDER + "action_archetype_id",
+            null,
+            values,
+            rmObject::setActionArchetypeId,
+            String.class, consumedPaths );
+
+  }
+
+
+
+
+  /** {@inheritDoc} */
+  @Override
+  public Class<Activity> getAssociatedClass() {
+    return Activity.class;
+  }
 }

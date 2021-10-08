@@ -64,6 +64,7 @@
   "test_all_types/test_all_types3:0/section_2/section_3/test_all_types:0/current_activity/partial_datetime": "2019-01-28T21:22:49.426Z",
   "test_all_types/test_all_types3:0/section_2/section_3/test_all_types:0/current_activity/timing": "P1D",
   "test_all_types/test_all_types3:0/section_2/section_3/test_all_types:0/current_activity/timing|formalism": "ISO8601",
+  "test_all_types/test_all_types3:0/section_2/section_3/test_all_types:0/current_activity/action_archetype_id": "openEHR-EHR-ACTION.test_all_types.v1",
   "test_all_types/test_all_types3:0/section_2/section_3/test_all_types:0/narrative": "WAZotVojPPlPDKcOwCqQGlJjRdMC.ujKPgVAmyWABEoOgtrRSznogUWokmqmfgxjZOYmUEAcyvmnfz,KhtTC FrpwevrLJFNiJKzkzOwfOPRFQJjRmQCTW,ewdqvscogOkayvONWrOTPcCFnZsUod CAQ fuhLaBA.pFWdEyzyFgDODbueIlUjIGBdnIDDpMfjzWivfUDSEvTUsncmCgPdHnpONCuNGXUwFTaiSHHHJBZYssxGne.BLIbBQzXhG",
   "test_all_types/test_all_types3:0/section_2/section_3/test_all_types:0/language|code": "en",
   "test_all_types/test_all_types3:0/section_2/section_3/test_all_types:0/language|terminology": "ISO_639-1",
