@@ -69,19 +69,8 @@ public abstract class CanonicalUtil {
                 if (objectRmClass != null)
                     retObject = new CanonicalJson().marshal(toRmObject(((Map<String, Object>) anObject), objectRmClass));
             }
-            retObject = new SpecialCase().transform(retObject);
         }
-        else if (anObject instanceof List){
-            List<RMObject> rmObjects =  toRmObjectList((List<Map<String, Object>>) anObject);
 
-            List<Object> retObjects = new ArrayList<>();
-            for (int i = 0; i < rmObjects.size(); i++){
-               retObjects.add(new SpecialCase().transform(rmObjects.get(i)));
-            }
-
-            retObject = rmObjects;
-        }
-        else
         retObject = new SpecialCase().transform(retObject);
 
         return retObject;
@@ -117,15 +106,18 @@ public abstract class CanonicalUtil {
         return null;
     }
 
-    public static List<RMObject> toRmObjectList(List<Map<String, Object>> rmObjectListAsMap){
+    public static List<RMObject> toRmObjectList(List<Object> rmObjectListAsMap){
         List<RMObject> objects = new ArrayList<>();
 
-        for (Map<String, Object> mappedObject: rmObjectListAsMap){
-            //get the type
-            String type = (String) mappedObject.get(AT_TYPE);
-            Class rmClass = ArchieRMInfoLookup.getInstance().getClass(type);
-            RMObject rmObject = toRmObject(mappedObject, rmClass);
-            objects.add(rmObject);
+        for (Object item: rmObjectListAsMap){
+            if (item instanceof Map) {
+                Map<String, Object> mappedObject = (Map<String, Object>)item;
+                //get the type
+                String type = (String) mappedObject.get(AT_TYPE);
+                Class rmClass = ArchieRMInfoLookup.getInstance().getClass(type);
+                RMObject rmObject = toRmObject(mappedObject, rmClass);
+                objects.add(rmObject);
+            }
         }
 
         return objects;

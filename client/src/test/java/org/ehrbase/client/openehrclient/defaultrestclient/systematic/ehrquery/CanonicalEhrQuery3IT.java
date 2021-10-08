@@ -123,12 +123,16 @@ public class CanonicalEhrQuery3IT extends CanonicalCompoAllTypeQueryIT {
 
             List<Object> objectList = result.getRows().get(0);
 
-            Object resultingObject = objectList.get(0);
+            Object actual = valueObject(objectList.get(0)); //Mapped object(s) from JSON
 
-            if (resultingObject instanceof List) {
-                assertThat(valueObject(objectList.get(0)))
+            if (actual instanceof List){
+                Object expected = attributeArrayValueAt(referenceNode, attributePath); //RMObject(s)
+
+                assertThat(
+                        toRmObjectList((List<Object>) actual).toArray())
                         .as(aqlSelect)
-                        .isEqualTo(attributeArrayValueAt(referenceNode, attributePath));
+                        .containsExactlyInAnyOrder(((List<?>) expected).toArray()
+                        );
             }
             else {
                 assertThat(valueObject(objectList.get(0)))
