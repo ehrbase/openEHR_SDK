@@ -253,7 +253,11 @@ public class DefaultValues {
         });
 
     extract(subValues, "name", ((PartyIdentified) participation.getPerformer())::setName);
+    extract(subValues, "id_namespace", n -> participation.getPerformer().getExternalRef().setNamespace(n));
+    extract(subValues, "id_scheme", n -> ((GenericId) participation.getPerformer().getExternalRef().getId()).setScheme(n));
+
     extract(subValues, "function", s -> participation.setFunction(new DvText(s)));
+
     extract(
         subValues,
         "mode",

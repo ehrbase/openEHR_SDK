@@ -19,18 +19,23 @@
 
 package org.ehrbase.serialisation.flatencoding.std.marshal.postprocessor;
 
-import static org.ehrbase.webtemplate.parser.OPTParser.PATH_DIVIDER;
-
 import com.nedap.archie.rm.composition.EventContext;
 import com.nedap.archie.rm.datavalues.quantity.datetime.DvDateTime;
+import org.ehrbase.serialisation.flatencoding.std.marshal.config.ParticipationConfig;
+import org.ehrbase.serialisation.flatencoding.std.marshal.config.PartyIdentifiedStdConfig;
+
 import java.util.Map;
 import java.util.Optional;
-import org.ehrbase.serialisation.flatencoding.std.marshal.config.PartyIdentifiedStdConfig;
+import java.util.stream.IntStream;
+
+import static org.ehrbase.webtemplate.parser.OPTParser.PATH_DIVIDER;
 
 public class EventContextMarshalPostprocessor implements MarshalPostprocessor<EventContext> {
 
   private static final PartyIdentifiedStdConfig PARTY_IDENTIFIED_STD_CONFIG =
       new PartyIdentifiedStdConfig();
+
+  private static final ParticipationConfig PARTICIPATION_CONFIG = new ParticipationConfig();
 
   /** {@inheritDoc} */
   @Override
@@ -52,6 +57,12 @@ public class EventContextMarshalPostprocessor implements MarshalPostprocessor<Ev
       values.putAll(
           PARTY_IDENTIFIED_STD_CONFIG.buildChildValues(
               term + "/" + "_health_care_facility", rmObject.getHealthCareFacility(), null));
+    }
+
+    if (rmObject.getParticipations() != null){
+      IntStream.range(0,rmObject.getParticipations().size())
+              .forEach(i -> values.putAll( PARTICIPATION_CONFIG.buildChildValues(term+PATH_DIVIDER+"_participation:"+i,rmObject.getParticipations().get(i),null)));
+
     }
   }
 

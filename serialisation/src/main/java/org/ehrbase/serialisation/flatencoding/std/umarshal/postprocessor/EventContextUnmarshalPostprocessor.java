@@ -22,13 +22,18 @@ package org.ehrbase.serialisation.flatencoding.std.umarshal.postprocessor;
 import com.nedap.archie.rm.composition.EventContext;
 import com.nedap.archie.rm.datavalues.quantity.datetime.DvDateTime;
 import com.nedap.archie.rm.generic.PartyIdentified;
+import org.apache.commons.lang3.StringUtils;
 import org.ehrbase.serialisation.flatencoding.std.umarshal.rmunmarshaller.PartyIdentifiedRMUnmarshaller;
+import org.ehrbase.serialisation.walker.defaultvalues.DefaultValuePath;
+import org.ehrbase.serialisation.walker.defaultvalues.DefaultValues;
 import org.ehrbase.webtemplate.path.flat.FlatPathDto;
 
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static org.ehrbase.serialisation.flatencoding.std.umarshal.postprocessor.EntryPostprocessor.consumeAllMatching;
+import static org.ehrbase.serialisation.flatencoding.std.umarshal.postprocessor.EntryPostprocessor.extractMultiValued;
 import static org.ehrbase.webtemplate.parser.OPTParser.PATH_DIVIDER;
 
 public class EventContextUnmarshalPostprocessor
@@ -64,6 +69,15 @@ public class EventContextUnmarshalPostprocessor
           health_care_facilityValues,
           null, consumedPaths);
     }
+
+
+    Map<Integer, Map<String, String>> other =
+            extractMultiValued(term + PATH_DIVIDER + "_participation", values);
+
+    other.values().stream().map(Map::entrySet).map(s -> s.stream().collect(Collectors.toMap(e ->"ctx/"+ DefaultValuePath.PARTICIPATION.getPath()+"_"+e.getKey().replace("identifiers_","identifiers|"), e -> StringUtils.wrap( e.getValue(),'"'))).entrySet()).map(DefaultValues::buildParticipation).forEach(rmObject::addParticipation);
+    consumeAllMatching(term + PATH_DIVIDER + "_participation", values, consumedPaths);
+
+
 
     // Strange Path with value true if setting = other care (238)
     consumedPaths.add(term+"/"+"setting|238");

@@ -24,8 +24,10 @@ import com.nedap.archie.rm.datavalues.DvText;
 import com.nedap.archie.rm.generic.Participation;
 import com.nedap.archie.rm.generic.PartyIdentified;
 import com.nedap.archie.rm.generic.PartyProxy;
+import com.nedap.archie.rm.support.identification.GenericId;
 import com.nedap.archie.rm.support.identification.ObjectId;
 import com.nedap.archie.rm.support.identification.ObjectRef;
+import com.nedap.archie.rm.support.identification.PartyRef;
 import org.ehrbase.serialisation.walker.Context;
 
 import java.util.*;
@@ -51,6 +53,8 @@ public class ParticipationConfig extends AbstractsStdConfig<Participation> {
     public Map<String, Object> buildChildValues(String currentTerm, Participation rmObject, Context<Map<String, Object>> context) {
         Map<String, Object> result = new HashMap<>();
         addValue(result, currentTerm, "id", Optional.of(rmObject).map(Participation::getPerformer).map(PartyProxy::getExternalRef).map(ObjectRef::getId).map(ObjectId::getValue).orElse(null));
+        addValue(result, currentTerm, "id_namespace", Optional.of(rmObject).map(Participation::getPerformer).map(PartyProxy::getExternalRef).map(ObjectRef::getNamespace).orElse(null));
+        addValue(result, currentTerm, "id_scheme", Optional.of(rmObject).map(Participation::getPerformer).map(PartyProxy::getExternalRef).map(PartyRef::getId).filter(cls -> GenericId.class.isAssignableFrom(cls.getClass())).map(GenericId.class::cast).map(GenericId::getScheme).orElse(null));
         addValue(result, currentTerm, "name", Optional.of(rmObject).map(Participation::getPerformer).filter(p -> PartyIdentified.class.isAssignableFrom(p.getClass())).map(p ->(PartyIdentified)p).map(PartyIdentified::getName).orElse(null));
         addValue(result, currentTerm, "mode", Optional.of(rmObject).map(Participation::getMode).map(DvText::getValue).orElse(null));
         addValue(result, currentTerm, "function", Optional.of(rmObject).map(Participation::getFunction).map(DvText::getValue).orElse(null));
