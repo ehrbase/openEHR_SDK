@@ -25,10 +25,11 @@ import com.nedap.archie.rm.datavalues.quantity.datetime.DvDateTime;
 import com.nedap.archie.rm.generic.Participation;
 import com.nedap.archie.rm.generic.PartyProxy;
 import com.nedap.archie.rm.support.identification.GenericId;
-import java.util.Objects;
 import org.ehrbase.client.classgenerator.shareddefinition.Setting;
 import org.ehrbase.serialisation.walker.defaultvalues.DefaultValuePath;
 import org.ehrbase.serialisation.walker.defaultvalues.DefaultValues;
+
+import java.util.Objects;
 
 public class EventContextValueInserter extends AbstractValueInserter<EventContext> {
   @Override
@@ -44,9 +45,9 @@ public class EventContextValueInserter extends AbstractValueInserter<EventContex
       rmObject.setEndTime(new DvDateTime(defaultValues.getDefaultValue(DefaultValuePath.END_TIME)));
     }
 
-    if (isEmpty(rmObject.getHealthCareFacility()) &&
-        (defaultValues.containsDefaultValue(DefaultValuePath.HEALTHCARE_FACILITY_NAME) ||
-            defaultValues.containsDefaultValue(DefaultValuePath.HEALTHCARE_FACILITY_ID))) {
+    if (isEmpty(rmObject.getHealthCareFacility())
+        && (defaultValues.containsDefaultValue(DefaultValuePath.HEALTHCARE_FACILITY_NAME)
+            || defaultValues.containsDefaultValue(DefaultValuePath.HEALTHCARE_FACILITY_ID))) {
       rmObject.setHealthCareFacility(
           buildPartyIdentified(
               defaultValues,
@@ -81,11 +82,12 @@ public class EventContextValueInserter extends AbstractValueInserter<EventContex
           .forEach(
               ref -> {
                 if (ref.getNamespace() == null
-                  && defaultValues.containsDefaultValue(DefaultValuePath.ID_NAMESPACE)) {
+                    && defaultValues.containsDefaultValue(DefaultValuePath.ID_NAMESPACE)) {
                   ref.setNamespace(defaultValues.getDefaultValue(DefaultValuePath.ID_NAMESPACE));
                 }
-                if (ref.getId() instanceof GenericId && ref.getNamespace() == null
-                  && defaultValues.containsDefaultValue(DefaultValuePath.ID_SCHEME)) {
+                if (ref.getId() instanceof GenericId
+                    && ref.getNamespace() == null
+                    && defaultValues.containsDefaultValue(DefaultValuePath.ID_SCHEME)) {
                   ((GenericId) ref.getId())
                       .setScheme(defaultValues.getDefaultValue(DefaultValuePath.ID_SCHEME));
                 }

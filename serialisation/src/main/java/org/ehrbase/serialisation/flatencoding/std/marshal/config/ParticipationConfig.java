@@ -35,46 +35,89 @@ import java.util.stream.IntStream;
 
 public class ParticipationConfig extends AbstractsStdConfig<Participation> {
 
+  /** {@inheritDoc} */
+  @Override
+  public Class<Participation> getAssociatedClass() {
+    return Participation.class;
+  }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Class<Participation> getAssociatedClass() {
-        return Participation.class;
-    }
+  public static final DvIdentifierConfig DV_IDENTIFIER_CONFIG = new DvIdentifierConfig();
+  /** {@inheritDoc} */
+  @Override
+  public Map<String, Object> buildChildValues(
+      String currentTerm, Participation rmObject, Context<Map<String, Object>> context) {
+    Map<String, Object> result = new HashMap<>();
+    addValue(
+        result,
+        currentTerm,
+        "id",
+        Optional.of(rmObject)
+            .map(Participation::getPerformer)
+            .map(PartyProxy::getExternalRef)
+            .map(ObjectRef::getId)
+            .map(ObjectId::getValue)
+            .orElse(null));
+    addValue(
+        result,
+        currentTerm,
+        "id_namespace",
+        Optional.of(rmObject)
+            .map(Participation::getPerformer)
+            .map(PartyProxy::getExternalRef)
+            .map(ObjectRef::getNamespace)
+            .orElse(null));
+    addValue(
+        result,
+        currentTerm,
+        "id_scheme",
+        Optional.of(rmObject)
+            .map(Participation::getPerformer)
+            .map(PartyProxy::getExternalRef)
+            .map(PartyRef::getId)
+            .filter(cls -> GenericId.class.isAssignableFrom(cls.getClass()))
+            .map(GenericId.class::cast)
+            .map(GenericId::getScheme)
+            .orElse(null));
+    addValue(
+        result,
+        currentTerm,
+        "name",
+        Optional.of(rmObject)
+            .map(Participation::getPerformer)
+            .filter(p -> PartyIdentified.class.isAssignableFrom(p.getClass()))
+            .map(PartyIdentified.class::cast)
+            .map(PartyIdentified::getName)
+            .orElse(null));
+    addValue(
+        result,
+        currentTerm,
+        "mode",
+        Optional.of(rmObject).map(Participation::getMode).map(DvText::getValue).orElse(null));
+    addValue(
+        result,
+        currentTerm,
+        "function",
+        Optional.of(rmObject).map(Participation::getFunction).map(DvText::getValue).orElse(null));
 
-    public static final DvIdentifierConfig DV_IDENTIFIER_CONFIG = new DvIdentifierConfig();
+    List<DvIdentifier> dvIdentifiers =
+        Optional.of(rmObject)
+            .map(Participation::getPerformer)
+            .filter(p -> PartyIdentified.class.isAssignableFrom(p.getClass()))
+            .map(PartyIdentified.class::cast)
+            .map(PartyIdentified::getIdentifiers)
+            .orElse(Collections.emptyList());
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Map<String, Object> buildChildValues(String currentTerm, Participation rmObject, Context<Map<String, Object>> context) {
-        Map<String, Object> result = new HashMap<>();
-        addValue(result, currentTerm, "id", Optional.of(rmObject).map(Participation::getPerformer).map(PartyProxy::getExternalRef).map(ObjectRef::getId).map(ObjectId::getValue).orElse(null));
-        addValue(result, currentTerm, "id_namespace", Optional.of(rmObject).map(Participation::getPerformer).map(PartyProxy::getExternalRef).map(ObjectRef::getNamespace).orElse(null));
-        addValue(result, currentTerm, "id_scheme", Optional.of(rmObject).map(Participation::getPerformer).map(PartyProxy::getExternalRef).map(PartyRef::getId).filter(cls -> GenericId.class.isAssignableFrom(cls.getClass())).map(GenericId.class::cast).map(GenericId::getScheme).orElse(null));
-        addValue(result, currentTerm, "name", Optional.of(rmObject).map(Participation::getPerformer).filter(p -> PartyIdentified.class.isAssignableFrom(p.getClass())).map(p ->(PartyIdentified)p).map(PartyIdentified::getName).orElse(null));
-        addValue(result, currentTerm, "mode", Optional.of(rmObject).map(Participation::getMode).map(DvText::getValue).orElse(null));
-        addValue(result, currentTerm, "function", Optional.of(rmObject).map(Participation::getFunction).map(DvText::getValue).orElse(null));
+    IntStream.range(0, dvIdentifiers.size())
+        .forEach(
+            i -> {
+              DvIdentifier identifier = dvIdentifiers.get(i);
 
-        List<DvIdentifier> dvIdentifiers = Optional.of(rmObject).map(Participation::getPerformer).filter(p -> PartyIdentified.class.isAssignableFrom(p.getClass())).map(p -> (PartyIdentified) p).map(PartyIdentified::getIdentifiers).orElse(Collections.emptyList());
+              addValue(result, currentTerm, "identifiers_id:" + i, identifier.getId());
+              addValue(result, currentTerm, "identifiers_issuer:" + i, identifier.getIssuer());
+              addValue(result, currentTerm, "identifiers_assigner:" + i, identifier.getAssigner());
+              addValue(result, currentTerm, "identifiers_type:" + i, identifier.getType());
+            });
 
-
-            IntStream.range(0,dvIdentifiers.size()).forEach(i ->{
-
-                DvIdentifier identifier = dvIdentifiers.get(i);
-
-                addValue(result, currentTerm, "identifiers_id:"+i, identifier.getId());
-                addValue(result, currentTerm, "identifiers_issuer:"+i, identifier.getIssuer());
-                addValue(result, currentTerm, "identifiers_assigner:"+i, identifier.getAssigner());
-                addValue(result, currentTerm, "identifiers_type:"+i, identifier.getType());
-
-            } );
-
-        return result;
-    }
-
-
+    return result;
+  }
 }

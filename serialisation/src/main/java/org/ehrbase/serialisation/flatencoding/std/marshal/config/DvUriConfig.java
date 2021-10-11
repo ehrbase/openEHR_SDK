@@ -19,7 +19,6 @@
 
 package org.ehrbase.serialisation.flatencoding.std.marshal.config;
 
-import com.nedap.archie.rm.datavalues.DvEHRURI;
 import com.nedap.archie.rm.datavalues.DvURI;
 import org.ehrbase.serialisation.walker.Context;
 
@@ -30,25 +29,20 @@ import java.util.Optional;
 
 public class DvUriConfig extends AbstractsStdConfig<DvURI> {
 
+  /** {@inheritDoc} */
+  @Override
+  public Class<DvURI> getAssociatedClass() {
+    return DvURI.class;
+  }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Class<DvURI> getAssociatedClass() {
-        return DvURI.class;
-    }
+  /** {@inheritDoc} */
+  @Override
+  public Map<String, Object> buildChildValues(
+      String currentTerm, DvURI rmObject, Context<Map<String, Object>> context) {
+    Map<String, Object> result = new HashMap<>();
+    addValue(
+        result, currentTerm, null, Optional.of(rmObject).map(DvURI::getValue).map(URI::toString));
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Map<String, Object> buildChildValues(String currentTerm, DvURI rmObject, Context<Map<String, Object>> context) {
-        Map<String, Object> result = new HashMap<>();
-        addValue(result, currentTerm, null, Optional.of(rmObject).map(DvURI::getValue).map(URI::toString));
-
-        return result;
-    }
-
-
+    return result;
+  }
 }

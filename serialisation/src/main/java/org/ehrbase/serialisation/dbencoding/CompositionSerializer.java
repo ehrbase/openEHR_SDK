@@ -29,11 +29,12 @@ import com.nedap.archie.rm.composition.*;
 import com.nedap.archie.rm.datastructures.*;
 import com.nedap.archie.rm.datavalues.DvText;
 import com.nedap.archie.rm.integration.GenericEntry;
-import java.util.Map;
 import org.ehrbase.serialisation.attributes.*;
 import org.ehrbase.serialisation.exception.MarshalException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Map;
 
 /**
  * Sequential Event Processor for Composition.

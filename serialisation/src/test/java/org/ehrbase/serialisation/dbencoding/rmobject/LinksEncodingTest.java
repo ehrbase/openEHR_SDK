@@ -20,17 +20,20 @@ package org.ehrbase.serialisation.dbencoding.rmobject;
 import com.nedap.archie.rm.archetyped.Link;
 import com.nedap.archie.rm.datavalues.DvEHRURI;
 import com.nedap.archie.rm.datavalues.DvText;
+import junit.framework.TestCase;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import junit.framework.TestCase;
 
 public class LinksEncodingTest extends TestCase {
 
   public void testToDb() {
     LinksEncoding encoding = new LinksEncoding();
 
-    Link link = new Link(new DvText("something"), new DvText("something else"), new DvEHRURI("ehr://target"));
+    Link link =
+        new Link(
+            new DvText("something"), new DvText("something else"), new DvEHRURI("ehr://target"));
 
     String encoded = encoding.toDB(Collections.singletonList(link));
 
@@ -40,7 +43,9 @@ public class LinksEncodingTest extends TestCase {
   public void testFromDbOneLink() {
     LinksEncoding encoding = new LinksEncoding();
 
-    Link link = new Link(new DvText("something"), new DvText("something else"), new DvEHRURI("ehr://target"));
+    Link link =
+        new Link(
+            new DvText("something"), new DvText("something else"), new DvEHRURI("ehr://target"));
     List<Link> list = Collections.singletonList(link);
 
     String encoded = encoding.toDB(list);
@@ -54,14 +59,18 @@ public class LinksEncodingTest extends TestCase {
   public void testFromDbTwoLinks() {
     LinksEncoding encoding = new LinksEncoding();
 
-    Link link = new Link(new DvText("something"), new DvText("something else"), new DvEHRURI("ehr://target"));
+    Link link =
+        new Link(
+            new DvText("something"), new DvText("something else"), new DvEHRURI("ehr://target"));
     List<Link> list = Collections.singletonList(link);
 
     String encoded = encoding.toDB(list);
 
     assertNotNull(encoded);
 
-    Link link2 = new Link(new DvText("something2"), new DvText("something else2"), new DvEHRURI("ehr://target2"));
+    Link link2 =
+        new Link(
+            new DvText("something2"), new DvText("something else2"), new DvEHRURI("ehr://target2"));
     List<Link> list2 = new ArrayList<Link>();
     list2.add(link);
     list2.add(link2);
@@ -71,5 +80,4 @@ public class LinksEncodingTest extends TestCase {
     List<Link> result2 = encoding.fromDB(encoded2);
     assertEquals(list2, result2);
   }
-
 }

@@ -28,7 +28,6 @@ import java.util.Map;
 import java.util.stream.IntStream;
 
 import static org.ehrbase.webtemplate.parser.OPTParser.PATH_DIVIDER;
-import static org.ehrbase.webtemplate.parser.OPTParser.makeIdUnique;
 
 public class EntryMarshalPostprocessor implements MarshalPostprocessor<Entry> {
 
@@ -49,10 +48,15 @@ public class EntryMarshalPostprocessor implements MarshalPostprocessor<Entry> {
               term + PATH_DIVIDER + "_provider", (PartyIdentified) rmObject.getProvider(), null));
     }
 
-    if (rmObject.getOtherParticipations() != null){
-      IntStream.range(0,rmObject.getOtherParticipations().size())
-                      .forEach(i -> values.putAll( PARTICIPATION_CONFIG.buildChildValues(term+PATH_DIVIDER+"_other_participation:"+i,rmObject.getOtherParticipations().get(i),null)));
-
+    if (rmObject.getOtherParticipations() != null) {
+      IntStream.range(0, rmObject.getOtherParticipations().size())
+          .forEach(
+              i ->
+                  values.putAll(
+                      PARTICIPATION_CONFIG.buildChildValues(
+                          term + PATH_DIVIDER + "_other_participation:" + i,
+                          rmObject.getOtherParticipations().get(i),
+                          null)));
     }
   }
 

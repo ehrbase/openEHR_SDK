@@ -23,13 +23,11 @@ import com.nedap.archie.rm.composition.Observation;
 import com.nedap.archie.rm.datastructures.Event;
 import com.nedap.archie.rm.datastructures.History;
 import com.nedap.archie.rm.datavalues.quantity.datetime.DvDateTime;
-import org.ehrbase.normalizer.Normalizer;
 import org.ehrbase.serialisation.walker.defaultvalues.DefaultValuePath;
 import org.ehrbase.serialisation.walker.defaultvalues.DefaultValues;
 
 import java.time.temporal.TemporalAccessor;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Stream;
 
 public class ObservationValueInserter extends AbstractValueInserter<Observation> {

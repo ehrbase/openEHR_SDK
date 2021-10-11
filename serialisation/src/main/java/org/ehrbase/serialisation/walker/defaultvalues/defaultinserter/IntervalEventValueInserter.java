@@ -19,27 +19,17 @@
 
 package org.ehrbase.serialisation.walker.defaultvalues.defaultinserter;
 
-import com.nedap.archie.rm.composition.Action;
 import com.nedap.archie.rm.datastructures.IntervalEvent;
-import com.nedap.archie.rm.datavalues.quantity.datetime.DvDateTime;
 import org.ehrbase.client.classgenerator.shareddefinition.MathFunction;
-import org.ehrbase.serialisation.walker.defaultvalues.DefaultValuePath;
 import org.ehrbase.serialisation.walker.defaultvalues.DefaultValues;
-
-import java.time.temporal.TemporalAccessor;
-import java.util.Objects;
-import java.util.stream.Stream;
 
 public class IntervalEventValueInserter extends AbstractValueInserter<IntervalEvent> {
   @Override
   public void insert(IntervalEvent rmObject, DefaultValues defaultValues) {
 
-    if (isEmpty(rmObject.getMathFunction())
-        ) {
-     rmObject.setMathFunction(MathFunction.ACTUAL.toCodedText());
+    if (isEmpty(rmObject.getMathFunction())) {
+      rmObject.setMathFunction(MathFunction.ACTUAL.toCodedText());
     }
-
-
   }
 
   @Override

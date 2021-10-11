@@ -20,13 +20,11 @@
 package org.ehrbase.serialisation.flatencoding.std.umarshal.rmunmarshaller;
 
 import com.nedap.archie.rm.composition.InstructionDetails;
-import com.nedap.archie.rm.datavalues.DvURI;
 import com.nedap.archie.rm.support.identification.HierObjectId;
 import com.nedap.archie.rm.support.identification.LocatableRef;
 import org.ehrbase.serialisation.walker.Context;
 import org.ehrbase.webtemplate.path.flat.FlatPathDto;
 
-import java.net.URI;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -52,7 +50,7 @@ public class InstructionDetailsRMUnmarshaller extends AbstractRMUnmarshaller<Ins
         currentTerm,
         "activity_id",
         currentValues,
-        s -> rmObject.setActivityId(s),
+        rmObject::setActivityId,
         String.class,
         consumedPaths);
 
@@ -61,21 +59,21 @@ public class InstructionDetailsRMUnmarshaller extends AbstractRMUnmarshaller<Ins
     rmObject.getInstructionId().setType("INSTRUCTION");
 
     setValue(
-            currentTerm,
-            "composition_uid",
-            currentValues,
-            s -> Optional.ofNullable(s).ifPresent(p -> rmObject.getInstructionId().setId(new HierObjectId(p))),
-            String.class,
-            consumedPaths);
+        currentTerm,
+        "composition_uid",
+        currentValues,
+        s ->
+            Optional.ofNullable(s)
+                .ifPresent(p -> rmObject.getInstructionId().setId(new HierObjectId(p))),
+        String.class,
+        consumedPaths);
 
     setValue(
-            currentTerm,
-            "path",
-            currentValues,
-            s -> rmObject.getInstructionId().setPath(s),
-            String.class,
-            consumedPaths);
-
-
+        currentTerm,
+        "path",
+        currentValues,
+        s -> rmObject.getInstructionId().setPath(s),
+        String.class,
+        consumedPaths);
   }
 }

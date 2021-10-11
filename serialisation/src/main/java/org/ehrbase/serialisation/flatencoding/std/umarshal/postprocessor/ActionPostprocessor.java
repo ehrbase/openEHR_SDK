@@ -20,23 +20,11 @@
 package org.ehrbase.serialisation.flatencoding.std.umarshal.postprocessor;
 
 import com.nedap.archie.rm.composition.Action;
-import com.nedap.archie.rm.composition.Entry;
 import com.nedap.archie.rm.composition.InstructionDetails;
-import com.nedap.archie.rm.generic.PartyIdentified;
-import com.nedap.archie.rm.generic.PartyProxy;
-import com.nedap.archie.rm.generic.PartyRelated;
-import com.nedap.archie.rm.generic.PartySelf;
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.collections4.MapUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.ehrbase.serialisation.flatencoding.std.umarshal.rmunmarshaller.InstructionDetailsRMUnmarshaller;
-import org.ehrbase.serialisation.flatencoding.std.umarshal.rmunmarshaller.PartyIdentifiedRMUnmarshaller;
-import org.ehrbase.serialisation.walker.defaultvalues.DefaultValuePath;
-import org.ehrbase.serialisation.walker.defaultvalues.DefaultValues;
 import org.ehrbase.webtemplate.path.flat.FlatPathDto;
 
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -44,30 +32,31 @@ import static org.ehrbase.webtemplate.parser.OPTParser.PATH_DIVIDER;
 
 public class ActionPostprocessor extends AbstractUnmarshalPostprocessor<Action> {
 
-  private final static InstructionDetailsRMUnmarshaller INSTRUCTION_DETAILS_RM_UNMARSHALLER = new InstructionDetailsRMUnmarshaller();
+  private static final InstructionDetailsRMUnmarshaller INSTRUCTION_DETAILS_RM_UNMARSHALLER =
+      new InstructionDetailsRMUnmarshaller();
 
   /** {@inheritDoc} */
   @Override
-  public void process(String term, Action rmObject, Map<FlatPathDto, String> values, Set<String> consumedPaths) {
-
+  public void process(
+      String term, Action rmObject, Map<FlatPathDto, String> values, Set<String> consumedPaths) {
 
     Map<FlatPathDto, String> instructionDetails =
         values.entrySet().stream()
             .filter(e -> e.getKey().startsWith(term + PATH_DIVIDER + "_instruction_details"))
             .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
-    if(!instructionDetails.isEmpty()){
-      if(rmObject.getInstructionDetails() == null){
-      rmObject.setInstructionDetails(new InstructionDetails());
+    if (!instructionDetails.isEmpty()) {
+      if (rmObject.getInstructionDetails() == null) {
+        rmObject.setInstructionDetails(new InstructionDetails());
       }
       INSTRUCTION_DETAILS_RM_UNMARSHALLER.handle(
-          term + PATH_DIVIDER + "_instruction_details", rmObject.getInstructionDetails(), instructionDetails,null,consumedPaths);
+          term + PATH_DIVIDER + "_instruction_details",
+          rmObject.getInstructionDetails(),
+          instructionDetails,
+          null,
+          consumedPaths);
     }
-
   }
-
-
-
 
   /** {@inheritDoc} */
   @Override

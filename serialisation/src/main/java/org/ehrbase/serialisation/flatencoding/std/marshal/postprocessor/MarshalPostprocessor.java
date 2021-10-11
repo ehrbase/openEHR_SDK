@@ -20,9 +20,10 @@
 package org.ehrbase.serialisation.flatencoding.std.marshal.postprocessor;
 
 import com.nedap.archie.rm.RMObject;
-import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.ehrbase.util.reflection.ClassDependent;
+
+import java.util.Map;
 
 public interface MarshalPostprocessor<T extends RMObject> extends ClassDependent<T> {
 

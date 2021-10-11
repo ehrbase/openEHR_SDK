@@ -2,7 +2,6 @@ package org.ehrbase.serialisation.walker;
 
 import com.nedap.archie.rm.datastructures.Event;
 import com.nedap.archie.rminfo.RMTypeInfo;
-import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.ehrbase.webtemplate.model.WebTemplateNode;
 
@@ -14,7 +13,6 @@ import static org.ehrbase.util.rmconstants.RmConstants.*;
 public class FlatHelper<T> {
 
   private Map<String, Map<String, Integer>> pathCountMap = new HashMap<>();
-
 
   public String buildNamePath(Context<T> context, boolean addCount) {
     StringBuilder sb = new StringBuilder();
@@ -100,7 +98,6 @@ public class FlatHelper<T> {
       return true;
     }
 
-
     if (parent != null
         && parent.getRmType().equals(ISM_TRANSITION)
         && !parent.getId().equals("ism_transition")) {
@@ -153,7 +150,8 @@ public class FlatHelper<T> {
         typeInfo.getRmName().equals("ACTIVITY") && node.getName().equals("timing")
             || typeInfo.getRmName().equals("INSTRUCTION") && node.getName().equals("expiry_time")
             || typeInfo.getRmName().equals("INTERVAL_EVENT") && node.getName().equals("width")
-             || typeInfo.getRmName().equals("INTERVAL_EVENT") && node.getName().equals("math_function")
+            || typeInfo.getRmName().equals("INTERVAL_EVENT")
+                && node.getName().equals("math_function")
             || typeInfo.getRmName().equals(ISM_TRANSITION) && node.getName().equals("transition");
 
     return (nonMandatoryRmAttribute || mandatoryNotInWebTemplate) && !nonMandatoryInWebTemplate;

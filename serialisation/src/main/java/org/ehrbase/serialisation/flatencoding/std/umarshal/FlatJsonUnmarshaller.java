@@ -23,15 +23,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nedap.archie.rm.composition.Composition;
-import java.time.OffsetDateTime;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
-
 import org.apache.commons.collections4.CollectionUtils;
 import org.ehrbase.building.webtemplateskeletnbuilder.WebTemplateSkeletonBuilder;
 import org.ehrbase.client.classgenerator.shareddefinition.Setting;
@@ -42,11 +33,13 @@ import org.ehrbase.serialisation.walker.defaultvalues.DefaultValues;
 import org.ehrbase.webtemplate.model.WebTemplate;
 import org.ehrbase.webtemplate.path.flat.FlatPathDto;
 
+import java.time.OffsetDateTime;
+import java.util.*;
+import java.util.stream.Collectors;
+
 public class FlatJsonUnmarshaller {
 
   private static final ObjectMapper OBJECT_MAPPER = JacksonUtil.getObjectMapper();
-
-
 
   /**
    * Unmarshal flat Json to Composition
@@ -55,12 +48,11 @@ public class FlatJsonUnmarshaller {
    * @param introspect the introspect belonging to the template
    * @return
    */
-  public Composition unmarshal(
-          String flat, WebTemplate introspect) {
+  public Composition unmarshal(String flat, WebTemplate introspect) {
 
-     Set<String> consumedPath;
+    Set<String> consumedPath;
 
-     Map<String, String> currentValues;
+    Map<String, String> currentValues;
     consumedPath = new HashSet<>();
 
     try {
@@ -72,7 +64,7 @@ public class FlatJsonUnmarshaller {
         currentValues.put(e.getKey(), e.getValue().toString());
       }
 
-      Composition generate =  WebTemplateSkeletonBuilder.build(introspect,false);
+      Composition generate = WebTemplateSkeletonBuilder.build(introspect, false);
 
       StdToCompositionWalker walker = new StdToCompositionWalker();
       DefaultValues defaultValues = new DefaultValues(currentValues);
@@ -85,11 +77,19 @@ public class FlatJsonUnmarshaller {
       }
 
       String templateId = generate.getArchetypeDetails().getTemplateId().getValue();
-      walker.walk(generate, currentValues.entrySet().stream().collect(Collectors.toMap(e1 -> new FlatPathDto( e1.getKey()), Map.Entry::getValue)), introspect, defaultValues, templateId);
+      walker.walk(
+          generate,
+          currentValues.entrySet().stream()
+              .collect(Collectors.toMap(e1 -> new FlatPathDto(e1.getKey()), Map.Entry::getValue)),
+          introspect,
+          defaultValues,
+          templateId);
       consumedPath = walker.getConsumedPaths();
-      if (!CollectionUtils.isEmpty(getUnconsumed(consumedPath,currentValues))){
+      if (!CollectionUtils.isEmpty(getUnconsumed(consumedPath, currentValues))) {
 
-        throw new UnmarshalException(String.format("Could not consume Parts %s",getUnconsumed(consumedPath, currentValues)));
+        throw new UnmarshalException(
+            String.format(
+                "Could not consume Parts %s", getUnconsumed(consumedPath, currentValues)));
       }
 
       return generate;
@@ -98,7 +98,8 @@ public class FlatJsonUnmarshaller {
     }
   }
 
-  private static Set<String> getUnconsumed(Set<String> consumedPath, Map<String, String> currentValues) {
+  private static Set<String> getUnconsumed(
+      Set<String> consumedPath, Map<String, String> currentValues) {
     if (currentValues != null && consumedPath != null) {
       HashSet<String> set = new HashSet<>(currentValues.keySet());
       set.removeAll(consumedPath);

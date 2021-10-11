@@ -21,11 +21,12 @@ package org.ehrbase.serialisation.walker.defaultvalues.defaultinserter;
 
 import com.nedap.archie.rm.composition.Action;
 import com.nedap.archie.rm.datavalues.quantity.datetime.DvDateTime;
+import org.ehrbase.serialisation.walker.defaultvalues.DefaultValuePath;
+import org.ehrbase.serialisation.walker.defaultvalues.DefaultValues;
+
 import java.time.temporal.TemporalAccessor;
 import java.util.Objects;
 import java.util.stream.Stream;
-import org.ehrbase.serialisation.walker.defaultvalues.DefaultValuePath;
-import org.ehrbase.serialisation.walker.defaultvalues.DefaultValues;
 
 public class ActionValueInserter extends AbstractValueInserter<Action> {
   @Override
@@ -43,8 +44,8 @@ public class ActionValueInserter extends AbstractValueInserter<Action> {
       rmObject.setTime(new DvDateTime(defaultTemporalAccessor));
     }
 
-    if (rmObject.getIsmTransition() != null){
-      new IsmTransitionValueInserter().insert(rmObject.getIsmTransition(),defaultValues);
+    if (rmObject.getIsmTransition() != null) {
+      new IsmTransitionValueInserter().insert(rmObject.getIsmTransition(), defaultValues);
     }
   }
 

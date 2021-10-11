@@ -20,11 +20,11 @@
 package org.ehrbase.serialisation.flatencoding.std.umarshal.rmunmarshaller;
 
 import com.nedap.archie.rm.datavalues.quantity.DvCount;
-import java.util.Map;
-import java.util.Set;
-
 import org.ehrbase.serialisation.walker.Context;
 import org.ehrbase.webtemplate.path.flat.FlatPathDto;
+
+import java.util.Map;
+import java.util.Set;
 
 public class DvCountRMUnmarshaller extends AbstractRMUnmarshaller<DvCount> {
 
@@ -37,12 +37,14 @@ public class DvCountRMUnmarshaller extends AbstractRMUnmarshaller<DvCount> {
   /** {@inheritDoc} */
   @Override
   public void handle(
-          String currentTerm,
-          DvCount rmObject,
-          Map<FlatPathDto, String> currentValues,
-          Context<Map<FlatPathDto, String>> context, Set<String> consumedPaths) {
+      String currentTerm,
+      DvCount rmObject,
+      Map<FlatPathDto, String> currentValues,
+      Context<Map<FlatPathDto, String>> context,
+      Set<String> consumedPaths) {
 
-    setValue(currentTerm, "value", currentValues, rmObject::setMagnitude, Long.class, consumedPaths);
+    setValue(
+        currentTerm, "value", currentValues, rmObject::setMagnitude, Long.class, consumedPaths);
     if (rmObject.getMagnitude() == null) {
       setValue(currentTerm, null, currentValues, rmObject::setMagnitude, Long.class, consumedPaths);
     }

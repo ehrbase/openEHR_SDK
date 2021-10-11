@@ -173,8 +173,13 @@ public class DtoToCompositionWalker extends ToCompositionWalker<Map<String, Obje
     super.postHandle(context);
 
     RMObject rmObject = context.getRmObjectDeque().peek();
-    if (rmObject instanceof Activity){
-      context.getObjectDeque().peek().entrySet().stream().filter(e -> e.getKey().endsWith("/action_archetype_id")).map(Map.Entry::getValue).map(s -> (String) s).findAny().ifPresent(((Activity) rmObject)::setActionArchetypeId);
+    if (rmObject instanceof Activity) {
+      context.getObjectDeque().peek().entrySet().stream()
+          .filter(e -> e.getKey().endsWith("/action_archetype_id"))
+          .map(Map.Entry::getValue)
+          .map(String.class::cast)
+          .findAny()
+          .ifPresent(((Activity) rmObject)::setActionArchetypeId);
     }
   }
 
@@ -238,13 +243,14 @@ public class DtoToCompositionWalker extends ToCompositionWalker<Map<String, Obje
           new CodePhrase(new TerminologyId(valueSet.getTerminologyId()), valueSet.getCode());
       RM_OBJECT_CREATOR.set(parent, childName, Collections.singletonList(codePhrase));
     } else if (ARCHIE_RM_INFO_LOOKUP
-        .getAttributeInfo(parent.getClass(), childName)
-        .getTypeInCollection()
-        .isAssignableFrom(value.getClass())
-    ||(ARCHIE_RM_INFO_LOOKUP
             .getAttributeInfo(parent.getClass(), childName)
-            .getTypeInCollection().isAssignableFrom(boolean.class) && value.getClass().isAssignableFrom(Boolean.class) )
-    ) {
+            .getTypeInCollection()
+            .isAssignableFrom(value.getClass())
+        || (ARCHIE_RM_INFO_LOOKUP
+                .getAttributeInfo(parent.getClass(), childName)
+                .getTypeInCollection()
+                .isAssignableFrom(boolean.class)
+            && value.getClass().isAssignableFrom(Boolean.class))) {
       RMAttributeInfo attributeInfo =
           ARCHIE_RM_INFO_LOOKUP.getAttributeInfo(parent.getClass(), childName);
       if (attributeInfo.isMultipleValued()) {
