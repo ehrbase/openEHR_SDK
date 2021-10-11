@@ -102,4 +102,9 @@ public class DefaultValuePath<T> {
     }
     return type;
   }
+
+  @Override
+  public String toString() {
+    return path;
+  }
 }

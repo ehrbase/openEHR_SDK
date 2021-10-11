@@ -2,16 +2,13 @@ package org.ehrbase.client.classgenerator.examples.testalltypesenv1composition.d
 
 import com.nedap.archie.rm.archetyped.FeederAudit;
 import com.nedap.archie.rm.generic.PartyProxy;
-import java.lang.Boolean;
-import java.lang.Double;
-import java.lang.Long;
-import java.lang.String;
-import java.net.URI;
-import java.time.temporal.TemporalAccessor;
 import org.ehrbase.client.aql.containment.Containment;
 import org.ehrbase.client.aql.field.AqlFieldImp;
 import org.ehrbase.client.aql.field.SelectAqlField;
 import org.ehrbase.client.classgenerator.shareddefinition.Language;
+
+import java.net.URI;
+import java.time.temporal.TemporalAccessor;
 
 public class TestAllTypesEvaluationContainment extends Containment {
   public SelectAqlField<TestAllTypesEvaluation> TEST_ALL_TYPES_EVALUATION = new AqlFieldImp<TestAllTypesEvaluation>(TestAllTypesEvaluation.class, "", "TestAllTypesEvaluation", TestAllTypesEvaluation.class, this);

@@ -21,32 +21,33 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.nedap.archie.rm.archetyped.Link;
-import java.util.Arrays;
 import org.ehrbase.serialisation.dbencoding.EncodeUtilArchie;
-
-import java.util.List;
 import org.ehrbase.serialisation.jsonencoding.JacksonUtil;
 
+import java.util.Arrays;
+import java.util.List;
+
 /**
- * Encode/decode a Links object as a json structure.
- * Should be used to support FeederAudit at DB level (f.e. Composition Entry)
+ * Encode/decode a Links object as a json structure. Should be used to support FeederAudit at DB
+ * level (f.e. Composition Entry)
  */
-public class LinksEncoding extends RMObjectEncoding{
+public class LinksEncoding extends RMObjectEncoding {
 
-    public String toDB(List<Link> linkList) {
-        GsonBuilder builder = EncodeUtilArchie.getGsonBuilderInstance();
-        Gson gson = builder.setPrettyPrinting().create();
-        return gson.toJson(linkList);
+  public String toDB(List<Link> linkList) {
+    GsonBuilder builder = EncodeUtilArchie.getGsonBuilderInstance();
+    Gson gson = builder.setPrettyPrinting().create();
+    return gson.toJson(linkList);
+  }
+
+  public List<Link> fromDB(String dbJonRepresentation) {
+    List<Link> list;
+    try {
+      list =
+          Arrays.asList(JacksonUtil.getObjectMapper().readValue(dbJonRepresentation, Link[].class));
+    } catch (JsonProcessingException e) {
+      throw new IllegalArgumentException();
     }
 
-    public List<Link> fromDB(String dbJonRepresentation) {
-        List<Link> list;
-        try {
-            list = Arrays.asList(JacksonUtil.getObjectMapper().readValue(dbJonRepresentation, Link[].class));
-        } catch (JsonProcessingException e) {
-            throw new IllegalArgumentException();
-        }
-
-        return list;
-    }
+    return list;
+  }
 }

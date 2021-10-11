@@ -14,7 +14,6 @@ public class FlatHelper<T> {
 
   private Map<String, Map<String, Integer>> pathCountMap = new HashMap<>();
 
-
   public String buildNamePath(Context<T> context, boolean addCount) {
     StringBuilder sb = new StringBuilder();
     StringBuilder fullPath = new StringBuilder();
@@ -98,17 +97,6 @@ public class FlatHelper<T> {
     if (parent != null && isNonMandatoryRmAttribute(node, parent)) {
       return true;
     }
-    if (parent != null
-        && parent.getRmType().equals(ELEMENT)
-        && parent.getChildren().size() <= 5
-        && parent.getChildren().stream()
-            .filter(n -> !List.of("null_flavour", "feeder_audit").contains(n.getName()))
-            .map(WebTemplateNode::getRmType)
-            .collect(Collectors.toList())
-            .containsAll(List.of(DV_TEXT, DV_CODED_TEXT))
-        && !node.getId().equals(parent.getId())) {
-      return true;
-    }
 
     if (parent != null
         && parent.getRmType().equals(ISM_TRANSITION)
@@ -162,6 +150,8 @@ public class FlatHelper<T> {
         typeInfo.getRmName().equals("ACTIVITY") && node.getName().equals("timing")
             || typeInfo.getRmName().equals("INSTRUCTION") && node.getName().equals("expiry_time")
             || typeInfo.getRmName().equals("INTERVAL_EVENT") && node.getName().equals("width")
+            || typeInfo.getRmName().equals("INTERVAL_EVENT")
+                && node.getName().equals("math_function")
             || typeInfo.getRmName().equals(ISM_TRANSITION) && node.getName().equals("transition");
 
     return (nonMandatoryRmAttribute || mandatoryNotInWebTemplate) && !nonMandatoryInWebTemplate;

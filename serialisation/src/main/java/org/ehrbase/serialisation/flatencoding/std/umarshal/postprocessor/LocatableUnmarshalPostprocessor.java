@@ -65,6 +65,9 @@ public class LocatableUnmarshalPostprocessor extends AbstractUnmarshalPostproces
         .getLinks()
         .addAll(
             links.values().stream().map(DefaultValues::createLink).collect(Collectors.toList()));
+
+  consumedPaths.addAll(  values.keySet().stream()
+            .filter(s -> s.startsWith(term + PATH_DIVIDER + "_link")).map(FlatPathDto::format).collect(Collectors.toSet()));
   }
 
   /** {@inheritDoc} */

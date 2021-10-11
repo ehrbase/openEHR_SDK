@@ -34,6 +34,7 @@ public class JacksonUtil {
     public static ObjectMapper getObjectMapper() {
         RMJacksonConfiguration configuration = new RMJacksonConfiguration();
         configuration.setTypePropertyName("_type");
+        configuration.setSerializeEmptyCollections(true);
         return com.nedap.archie.json.JacksonUtil.getObjectMapper(configuration);
 
     }

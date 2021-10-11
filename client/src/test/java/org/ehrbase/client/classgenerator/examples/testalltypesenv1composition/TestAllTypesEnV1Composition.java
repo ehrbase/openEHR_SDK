@@ -4,15 +4,7 @@ import com.nedap.archie.rm.archetyped.FeederAudit;
 import com.nedap.archie.rm.generic.Participation;
 import com.nedap.archie.rm.generic.PartyIdentified;
 import com.nedap.archie.rm.generic.PartyProxy;
-import java.lang.String;
-import java.time.temporal.TemporalAccessor;
-import java.util.List;
-import javax.annotation.processing.Generated;
-import org.ehrbase.client.annotations.Archetype;
-import org.ehrbase.client.annotations.Entity;
-import org.ehrbase.client.annotations.Id;
-import org.ehrbase.client.annotations.Path;
-import org.ehrbase.client.annotations.Template;
+import org.ehrbase.client.annotations.*;
 import org.ehrbase.client.classgenerator.examples.testalltypesenv1composition.definition.ContextCodedTextDefiningCode;
 import org.ehrbase.client.classgenerator.examples.testalltypesenv1composition.definition.TestAllTypesEvaluation;
 import org.ehrbase.client.classgenerator.examples.testalltypesenv1composition.definition.TestAllTypesObservation;
@@ -24,15 +16,25 @@ import org.ehrbase.client.classgenerator.shareddefinition.Setting;
 import org.ehrbase.client.classgenerator.shareddefinition.Territory;
 import org.ehrbase.client.openehrclient.VersionUid;
 
+import javax.annotation.processing.Generated;
+import java.time.temporal.TemporalAccessor;
+import java.util.List;
+
 @Entity
 @Archetype("openEHR-EHR-COMPOSITION.test_all_types.v1")
 @Generated(
     value = "org.ehrbase.client.classgenerator.ClassGenerator",
-    date = "2020-12-10T13:06:10.792494500+01:00",
+    date = "2021-10-08T15:38:06.294879900+02:00",
     comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
 )
 @Template("test_all_types.en.v1")
 public class TestAllTypesEnV1Composition implements CompositionEntity {
+  /**
+   * Path: Test all types/category
+   */
+  @Path("/category|defining_code")
+  private Category categoryDefiningCode;
+
   /**
    * Path: Test all types/context/context coded text
    * Description: *
@@ -116,12 +118,6 @@ public class TestAllTypesEnV1Composition implements CompositionEntity {
   private FeederAudit feederAudit;
 
   /**
-   * Path: Test all types/category
-   */
-  @Path("/category|defining_code")
-  private Category categoryDefiningCode;
-
-  /**
    * Path: Test all types/territory
    */
   @Path("/territory")
@@ -129,6 +125,14 @@ public class TestAllTypesEnV1Composition implements CompositionEntity {
 
   @Id
   private VersionUid versionUid;
+
+  public void setCategoryDefiningCode(Category categoryDefiningCode) {
+     this.categoryDefiningCode = categoryDefiningCode;
+  }
+
+  public Category getCategoryDefiningCode() {
+     return this.categoryDefiningCode ;
+  }
 
   public void setContextCodedTextDefiningCode(
       ContextCodedTextDefiningCode contextCodedTextDefiningCode) {
@@ -233,14 +237,6 @@ public class TestAllTypesEnV1Composition implements CompositionEntity {
 
   public FeederAudit getFeederAudit() {
      return this.feederAudit ;
-  }
-
-  public void setCategoryDefiningCode(Category categoryDefiningCode) {
-     this.categoryDefiningCode = categoryDefiningCode;
-  }
-
-  public Category getCategoryDefiningCode() {
-     return this.categoryDefiningCode ;
   }
 
   public void setTerritory(Territory territory) {

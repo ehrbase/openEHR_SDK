@@ -64,7 +64,6 @@ public class FlatJsonUnmarshallerTest {
         .isEqualTo("2020-05-11T22:53:12.039139+02:00");
     assertThat(observation.getSubject()).isNotNull();
     assertThat(observation.getSubject().getClass()).isEqualTo(PartySelf.class);
-    assertThat(cut.getUnconsumed()).containsExactlyInAnyOrder();
 
     try {
       new Validator(template).check(actual);
@@ -89,8 +88,7 @@ public class FlatJsonUnmarshallerTest {
     Composition actual = cut.unmarshal(flat, webTemplate);
 
     assertThat(actual).isNotNull();
-    assertThat(cut.getUnconsumed()).containsExactlyInAnyOrder();
-    try {
+   try {
       new Validator(template).check(actual);
     } catch (Exception e) {
       Assert.fail(e.getMessage());
@@ -113,8 +111,7 @@ public class FlatJsonUnmarshallerTest {
     Composition actual = cut.unmarshal(flat, webTemplate);
 
     assertThat(actual).isNotNull();
-    assertThat(cut.getUnconsumed()).containsExactlyInAnyOrder();
-    try {
+   try {
       new Validator(template).check(actual);
     } catch (Exception e) {
       Assert.fail(e.getMessage());
@@ -147,7 +144,6 @@ public class FlatJsonUnmarshallerTest {
     assertThat(((DvQuantity) choice).getMagnitude()).isEqualTo(148.01210165023804d);
     assertThat(((DvQuantity) choice).getUnits()).isEqualTo("mm[H20]");
 
-    assertThat(cut.getUnconsumed()).containsExactlyInAnyOrder();
 
     try {
       new Validator(template).check(actual);

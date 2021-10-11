@@ -52,5 +52,7 @@ public class DvMultimediaRMUnmarshaller extends AbstractRMUnmarshaller<DvMultime
         setValue(currentTerm, null, currentValues, rmObject.getUri()::setValue, URI.class, consumedPaths);
         setValue(currentTerm, "mediatype", currentValues, rmObject.getMediaType()::setCodeString, String.class, consumedPaths);
         setValue(currentTerm, "size", currentValues, rmObject::setSize, Integer.class, consumedPaths);
+        setValue(currentTerm, "alternatetext", currentValues, rmObject::setAlternateText, String.class, consumedPaths);
+
     }
 }

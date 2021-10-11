@@ -48,6 +48,7 @@ public class DvMultimediaConfig extends AbstractsStdConfig<DvMultimedia> {
         addValue(result, currentTerm, null, Optional.of(rmObject).map(DvMultimedia::getUri).map(DvURI::getValue).orElse(null));
         addValue(result, currentTerm, "mediatype", Optional.of(rmObject).map(DvMultimedia::getMediaType).map(CodePhrase::getCodeString).orElse(null));
         addValue(result, currentTerm, "size", rmObject.getSize());
+        addValue(result, currentTerm, "alternatetext", rmObject.getAlternateText());
         return result;
     }
 

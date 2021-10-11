@@ -31,6 +31,7 @@ import com.nedap.archie.rm.generic.PartyProxy;
 import com.nedap.archie.rm.support.identification.GenericId;
 import com.nedap.archie.rm.support.identification.PartyRef;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.ehrbase.serialisation.walker.defaultvalues.DefaultValuePath;
 import org.ehrbase.serialisation.walker.defaultvalues.DefaultValues;
 
@@ -53,11 +54,11 @@ public abstract class AbstractValueInserter<T extends RMObject> implements Defau
     }
 
     if (rmObject instanceof CodePhrase) {
-      return ((CodePhrase) rmObject).getCodeString() == null;
+      return StringUtils.isBlank(((CodePhrase) rmObject).getCodeString());
     }
 
     if (rmObject instanceof DvCodedText) {
-      return ((DvCodedText) rmObject).getValue() == null;
+      return isEmpty(((DvCodedText) rmObject).getDefiningCode());
     }
 
     if (rmObject instanceof DvText) {
@@ -98,6 +99,7 @@ public abstract class AbstractValueInserter<T extends RMObject> implements Defau
 
       PartyRef partyRef = new PartyRef();
       partyRef.setNamespace(defaultValues.getDefaultValue(DefaultValuePath.ID_NAMESPACE));
+      partyRef.setType("PARTY");
       partyRef.setId(
           new GenericId(
               defaultValues.getDefaultValue(id),

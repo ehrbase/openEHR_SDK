@@ -54,11 +54,13 @@
     "external_ref": {
       "_type": "PARTY_REF",
       "id": {
-        "_type": "HIER_OBJECT_ID",
-        "value": "b7c07d35-fa06-4280-8e65-eabdfbe64fdc"
+        "_type" : "GENERIC_ID",
+        "value" : "b7c07d35-fa06-4280-8e65-eabdfbe64fdc",
+        "scheme" : "test"
       },
       "namespace": "DEMOGRAPHIC",
       "type": "PERSON"
+
     },
     "name": "Dr. House"
   },
@@ -663,7 +665,7 @@
                         "value": "P1D",
                         "formalism": "ISO8601"
                       },
-                      "action_archetype_id": "openEHR-EHR-ACTION\\.test_all_types\\.v1"
+                      "action_archetype_id": "openEHR-EHR-ACTION.test_all_types.v1"
                     }
                   ]
                 },

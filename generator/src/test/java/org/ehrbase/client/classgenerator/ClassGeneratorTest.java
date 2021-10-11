@@ -879,7 +879,7 @@ public class ClassGeneratorTest {
             .flatMap(List::stream)
             .collect(Collectors.toList());
 
-    assertThat(fieldSpecs).size().isEqualTo(87L);
+    assertThat(fieldSpecs).size().isEqualTo(88L);
 
     writeFiles(generate);
   }
@@ -1006,7 +1006,7 @@ public class ClassGeneratorTest {
             .flatMap(List::stream)
             .collect(Collectors.toList());
 
-    assertThat(fieldSpecs).size().isEqualTo(347);
+    assertThat(fieldSpecs).size().isEqualTo(348);
 
     writeFiles(generate);
   }
@@ -1044,7 +1044,7 @@ public class ClassGeneratorTest {
 
     assertThat(fieldSpecs).contains("beschaeftigung");
 
-    assertThat(fieldSpecs).size().isEqualTo(339);
+    assertThat(fieldSpecs).size().isEqualTo(340);
 
     writeFiles(generate);
   }
@@ -1070,7 +1070,7 @@ public class ClassGeneratorTest {
             .flatMap(List::stream)
             .collect(Collectors.toList());
 
-    assertThat(fieldSpecs).size().isEqualTo(303);
+    assertThat(fieldSpecs).size().isEqualTo(304);
 
     writeFiles(generate);
   }
@@ -1156,7 +1156,7 @@ public class ClassGeneratorTest {
             .flatMap(List::stream)
             .collect(Collectors.toList());
 
-    assertThat(fieldSpecs).size().isEqualTo(409);
+    assertThat(fieldSpecs).size().isEqualTo(410);
 
     writeFiles(generate);
   }

@@ -27,7 +27,7 @@ import java.util.stream.Stream;
 
 public class ActivityIntrospectConfig implements RmIntrospectConfig {
 
-    private static final Set<String> FIELDS = Stream.of("description").collect(Collectors.toSet());
+    private static final Set<String> FIELDS = Stream.of("description","actionArchetypeId","timing").collect(Collectors.toSet());
 
     @Override
     public Class getAssociatedClass() {

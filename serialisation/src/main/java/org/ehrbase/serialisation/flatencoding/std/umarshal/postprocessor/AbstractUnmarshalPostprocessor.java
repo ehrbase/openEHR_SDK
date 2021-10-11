@@ -22,25 +22,22 @@ package org.ehrbase.serialisation.flatencoding.std.umarshal.postprocessor;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nedap.archie.rm.RMObject;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.function.Consumer;
 import org.apache.commons.lang3.StringUtils;
 import org.ehrbase.serialisation.jsonencoding.JacksonUtil;
 import org.ehrbase.webtemplate.path.flat.FlatPathDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Map;
+import java.util.Set;
+import java.util.function.Consumer;
+
 public abstract class AbstractUnmarshalPostprocessor<T extends RMObject>
     implements UnmarshalPostprocessor<T> {
 
   private static final ObjectMapper OBJECT_MAPPER = JacksonUtil.getObjectMapper();
 
-
   private final Logger log = LoggerFactory.getLogger(getClass());
-
-
 
   /**
    * Sets the {@code consumer} to the value in {@code values} corresponding to {@code term} and
@@ -55,11 +52,12 @@ public abstract class AbstractUnmarshalPostprocessor<T extends RMObject>
    * @param consumedPaths
    */
   protected <S> void setValue(
-          String term,
-          String propertyName,
-          Map<FlatPathDto, String> values,
-          Consumer<S> consumer,
-          Class<S> clazz, Set<String> consumedPaths) {
+      String term,
+      String propertyName,
+      Map<FlatPathDto, String> values,
+      Consumer<S> consumer,
+      Class<S> clazz,
+      Set<String> consumedPaths) {
     String key = propertyName != null ? term + "|" + propertyName : term;
     Map.Entry<FlatPathDto, String> entry = FlatPathDto.get(values, key);
     String jasonValue = entry.getValue();
@@ -76,4 +74,3 @@ public abstract class AbstractUnmarshalPostprocessor<T extends RMObject>
     }
   }
 }
-

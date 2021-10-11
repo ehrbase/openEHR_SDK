@@ -23,18 +23,6 @@ import com.google.common.reflect.TypeToken;
 import com.nedap.archie.rm.RMObject;
 import com.nedap.archie.rm.datatypes.CodePhrase;
 import com.nedap.archie.rm.support.identification.ObjectId;
-import java.beans.IntrospectionException;
-import java.beans.PropertyDescriptor;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.ParameterizedType;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
@@ -53,6 +41,16 @@ import org.ehrbase.webtemplate.model.WebTemplateNode;
 import org.ehrbase.webtemplate.parser.FlatPath;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.beans.IntrospectionException;
+import java.beans.PropertyDescriptor;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.ParameterizedType;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class DtoFromCompositionWalker extends FromCompositionWalker<DtoWithMatchingFields> {
 
@@ -97,11 +95,11 @@ public class DtoFromCompositionWalker extends FromCompositionWalker<DtoWithMatch
             .collect(Collectors.toMap(ImmutablePair::getLeft, ImmutablePair::getRight));
 
     if (subValues.isEmpty()) {
-      if (List.of("name", "archetype_node_id", "encoding", "archetype_details", "uid").stream()
+      if (Stream.of("name", "archetype_node_id", "encoding", "archetype_details", "uid","lower_unbounded","upper_unbounded")
           .noneMatch(child.getAqlPath()::contains))
         logger.warn(
             String.format(
-                "Nor Field in dto %s for path %s",
+                "No Field in dto %s for path %s",
                 context.getObjectDeque().peek().getDto().getClass().getSimpleName(),
                 child.getAqlPath(true)));
       return null;

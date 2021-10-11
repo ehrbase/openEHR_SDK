@@ -35,7 +35,6 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import static org.ehrbase.serialisation.flatencoding.std.umarshal.StdToCompositionWalker.handleDVTextInternal;
-import static org.ehrbase.util.rmconstants.RmConstants.DV_CODED_TEXT;
 
 public class StdFromCompositionWalker extends FromCompositionWalker<Map<String, Object>> {
 
@@ -95,8 +94,7 @@ public class StdFromCompositionWalker extends FromCompositionWalker<Map<String, 
   }
 
   @Override
-  protected void handleDVText(
-      WebTemplateNode currentNode) {
+  protected void handleDVText(WebTemplateNode currentNode) {
     if (currentNode.getRmType().equals("ELEMENT")) {
       List<WebTemplateNode> trueChildren =
           currentNode.getChildren().stream()

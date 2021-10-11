@@ -22,7 +22,6 @@ package org.ehrbase.serialisation.walker.defaultvalues.defaultinserter;
 import com.nedap.archie.rm.composition.IsmTransition;
 import com.nedap.archie.rm.datavalues.DvCodedText;
 import org.ehrbase.client.classgenerator.shareddefinition.State;
-import org.ehrbase.client.classgenerator.shareddefinition.Transition;
 import org.ehrbase.serialisation.walker.defaultvalues.DefaultValuePath;
 import org.ehrbase.serialisation.walker.defaultvalues.DefaultValues;
 
