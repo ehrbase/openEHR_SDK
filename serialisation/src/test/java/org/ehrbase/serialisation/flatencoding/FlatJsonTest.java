@@ -77,7 +77,7 @@ public class FlatJsonTest {
   }
 
   @Test
-  public void roundMulitList() throws IOException {
+  public void roundMultiList() throws IOException {
 
     CompositionTestDataSimSDTJson testData = CompositionTestDataSimSDTJson.MULTI_LIST;
     String templateId = OperationalTemplateTestData.MULTI_LIST.getTemplateId();
