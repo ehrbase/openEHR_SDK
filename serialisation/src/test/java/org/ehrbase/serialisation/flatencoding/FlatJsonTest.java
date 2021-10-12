@@ -77,6 +77,15 @@ public class FlatJsonTest {
   }
 
   @Test
+  public void roundMulitList() throws IOException {
+
+    CompositionTestDataSimSDTJson testData = CompositionTestDataSimSDTJson.MULTI_LIST;
+    String templateId = OperationalTemplateTestData.MULTI_LIST.getTemplateId();
+
+    check(templateId, testData, new String[] {}, new String[] {});
+  }
+
+  @Test
   public void roundTripDeterioriationAssessment() throws IOException {
 
     String templateId = "EREACT - Deterioriation assessment.v0";

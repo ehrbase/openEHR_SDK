@@ -52,12 +52,10 @@ public class FlatHelper<T> {
           sb.append(node.getId(false));
         }
       }
-
-      if (!skip
-          && node.getMax() != 1
-          && context.getCountMap().containsKey(new NodeId(node))
-          && (addCount || context.getCountMap().get(new NodeId(node)) != 0)) {
-        sb.append(":").append(context.getCountMap().get(new NodeId(node)));
+      if (parent != null && ELEMENT.equals(parent.getRmType()) && skip(parent, null)) {
+        addCount(context, addCount, sb, parent, skip);
+      } else {
+        addCount(context, addCount, sb, node, skip);
       }
       if (!skip && iterator.hasNext()) {
         sb.append("/");
@@ -79,6 +77,16 @@ public class FlatHelper<T> {
       }
     }
     return StringUtils.removeEnd(sb.toString(), "/");
+  }
+
+  private void addCount(
+      Context<T> context, boolean addCount, StringBuilder sb, WebTemplateNode node, boolean skip) {
+    if (!skip
+        && node.getMax() != 1
+        && context.getCountMap().containsKey(new NodeId(node))
+        && (addCount || context.getCountMap().get(new NodeId(node)) != 0)) {
+      sb.append(":").append(context.getCountMap().get(new NodeId(node)));
+    }
   }
 
   public boolean skip(Context<T> context) {

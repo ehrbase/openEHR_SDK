@@ -582,8 +582,6 @@ public class OPTParser {
 
   private void pushProperties(WebTemplateNode node, WebTemplateNode value) {
     value.setName(node.getName());
-    value.setMax(node.getMax());
-    value.setMin(node.getMin());
     value.getLocalizedDescriptions().putAll(node.getLocalizedDescriptions());
     value.getLocalizedNames().putAll(node.getLocalizedNames());
     value.setLocalizedName(node.getLocalizedName());

@@ -66,6 +66,7 @@ public enum OperationalTemplateTestData {
   BEFUND_DER_BLUTGASANALYSE(
       "Befund der Blutgasanalyse", "Befund_der_Blutgasanalyse.opt", "Befund der Blutgasanalyse"),
   SM_I_C_S_BEFUND("SmICS-Befund", "SmICS-Befund.opt", "SmICS-Befund"),
+  MULTI_LIST("template with ITEM_TREE", "Multi_list.opt", "Multi_list"),
   PATIENTEN_AUFENTHALT(
       "NUM test hospitalization", "Patientenaufenthalt.opt", "Patientenaufenthalt"),
   EPISODE_SUMMARY(
