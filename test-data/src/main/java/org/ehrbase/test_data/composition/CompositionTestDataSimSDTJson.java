@@ -34,7 +34,7 @@ public enum CompositionTestDataSimSDTJson {
   DETERIORIATION_ASSESSMENT(
       "EREACT - Deterioration_assessment", "EREACT - Deterioration_assessment.json"),
   MULTI_LIST(
-          "MULTI_LIST", "MULTI_LIST.json"),
+          "MULTI_LIST", "Multi_list.json"),
   EREACT_COVID_MANAGEMENT("flat with action", "EREACT - Covid status monitoring - FLAT.json");
 
   private final String filename;
