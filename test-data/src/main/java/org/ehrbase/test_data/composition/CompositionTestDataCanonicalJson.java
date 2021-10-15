@@ -38,6 +38,7 @@ public enum CompositionTestDataCanonicalJson {
     OBS_INST("Observation+Instruction", "obs_inst.json"),
     MINIMAL_PERSISTENT("Minimal Persistent", "minimal_persistent.json"),
     NESTED("Nested", "nested.json"),
+    NESTED_EN_V1("nested.en.v1", "nested.en.v1.json"),
     TIME_SERIES("Time Series", "time_series.json"),
     CORONA("Corona", "compo_corona.json"),
     SUBJECT_PARTY_IDENTIFIED("Nested subject PARTY_IDENTIFIED", "compo_with_nested_party_identified.json"),

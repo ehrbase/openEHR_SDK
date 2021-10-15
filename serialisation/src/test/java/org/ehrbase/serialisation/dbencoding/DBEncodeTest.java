@@ -23,11 +23,13 @@ import com.google.gson.JsonElement;
 import com.nedap.archie.rm.archetyped.FeederAudit;
 import com.nedap.archie.rm.composition.AdminEntry;
 import com.nedap.archie.rm.composition.Composition;
+import com.nedap.archie.rm.composition.Instruction;
 import com.nedap.archie.rm.composition.Section;
 import com.nedap.archie.rm.datastructures.*;
 import com.nedap.archie.rm.datavalues.DvIdentifier;
 import com.nedap.archie.rm.datavalues.quantity.DvInterval;
 import com.nedap.archie.rm.datavalues.quantity.datetime.DvDateTime;
+import java.time.OffsetDateTime;
 import org.apache.commons.io.IOUtils;
 import org.apache.xmlbeans.XmlException;
 import org.ehrbase.serialisation.attributes.FeederAuditAttributes;
@@ -41,6 +43,7 @@ import org.ehrbase.test_data.operationaltemplate.OperationalTemplateTestData;
 import org.ehrbase.validation.Validator;
 import org.ehrbase.webtemplate.model.WebTemplate;
 import org.ehrbase.webtemplate.parser.OPTParser;
+import org.junit.Assert;
 import org.junit.Test;
 import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
 import org.openehr.schemas.v1.TemplateDocument;
@@ -387,7 +390,7 @@ public class DBEncodeTest {
         JsonElement converted = new LightRawJsonEncoder(db_encoded).encodeContentAsJson("composition");
 
         //see if this can be interpreted by Archie
-        Composition composition2 = new CanonicalJson().unmarshal(converted.toString(), Composition.class);
+            Composition composition2 = new CanonicalJson().unmarshal(converted.toString(), Composition.class);
 
         assertNotNull(composition2);
 
@@ -798,4 +801,23 @@ public class DBEncodeTest {
         assertEquals(4, ((Map<String, Object>) feederMap.get("other_details[openEHR-EHR-ITEM_TREE.generic.v1]")).size());
     }
 
+    @Test
+    public void testDBEncodeDecodeInstruction() throws IOException {
+        Composition composition = new CanonicalJson()
+            .unmarshal(
+                IOUtils.toString(CompositionTestDataCanonicalJson.NESTED_EN_V1.getStream(), UTF_8),
+                Composition.class);
+
+        CompositionSerializer compositionSerializer = new CompositionSerializer();
+        String encoded = compositionSerializer.dbEncode(composition);
+
+        Assert.assertTrue(encoded.contains(CompositionSerializer.TAG_EXPIRY_TIME));
+
+        String json = new LightRawJsonEncoder(encoded).encodeCompositionAsString();
+        Composition result = new CanonicalJson().unmarshal(json, Composition.class);
+        DvDateTime expiryTime = ((Instruction) ((Section) result.getContent().get(0)).getItems().get(0)).getExpiryTime();
+
+        Assert.assertNotNull(expiryTime);
+        Assert.assertEquals(OffsetDateTime.parse("2021-05-18T13:13:09.780+03:00"), expiryTime.getValue());
+    }
 }
