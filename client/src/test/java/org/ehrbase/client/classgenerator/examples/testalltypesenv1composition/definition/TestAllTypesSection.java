@@ -1,18 +1,19 @@
 package org.ehrbase.client.classgenerator.examples.testalltypesenv1composition.definition;
 
 import com.nedap.archie.rm.archetyped.FeederAudit;
-import java.util.List;
-import javax.annotation.processing.Generated;
 import org.ehrbase.client.annotations.Archetype;
 import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.Path;
 import org.ehrbase.client.classgenerator.interfaces.LocatableEntity;
 
+import javax.annotation.processing.Generated;
+import java.util.List;
+
 @Entity
 @Archetype("openEHR-EHR-SECTION.test_all_types.v1")
 @Generated(
     value = "org.ehrbase.client.classgenerator.ClassGenerator",
-    date = "2020-12-10T13:06:10.812496900+01:00",
+    date = "2021-10-08T15:38:06.362881800+02:00",
     comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
 )
 public class TestAllTypesSection implements LocatableEntity {

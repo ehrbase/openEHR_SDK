@@ -3,6 +3,7 @@ package org.ehrbase.serialisation.jsonencoding;
 import com.nedap.archie.rm.changecontrol.Contribution;
 import com.nedap.archie.rm.datastructures.Element;
 import com.nedap.archie.rm.datastructures.ItemTree;
+import com.nedap.archie.rm.datavalues.DvText;
 import com.nedap.archie.rm.datavalues.encapsulated.DvMultimedia;
 import com.nedap.archie.rm.datavalues.quantity.datetime.DvDate;
 import com.nedap.archie.rm.datavalues.quantity.datetime.DvDateTime;
@@ -85,6 +86,32 @@ public class CanonicalJsonMarshallingTest {
 
     }
 
+    @Test
+    public void MarshalEmptyDvText() {
+        DvText dvText = new DvText("");
+        CanonicalJson cut = new CanonicalJson();
+        String actual = cut.marshal(dvText);
+    assertThat(actual)
+        .isEqualToIgnoringWhitespace(
+            "{\n" + "  \"_type\" : \"DV_TEXT\",\n" + "  \"value\" : \"\"\n" + "}");
+    }
+
+    @Test
+    public void MarshalEmptyContent() {
+        ItemTree itemTree = new ItemTree();
+        itemTree.setNameAsString("test");
+        CanonicalJson cut = new CanonicalJson();
+        String actual = cut.marshal(itemTree);
+    assertThat(actual)
+        .isEqualToIgnoringWhitespace(
+            "{\n"
+                + "  \"_type\" : \"ITEM_TREE\",\n"
+                + "  \"name\" : {\n"
+                + "    \"_type\" : \"DV_TEXT\",\n"
+                + "    \"value\" : \"test\"\n"
+                + "  }\n"
+                + "}");
+    }
 
     @Test
     public void UnmarshalPartialDateTime() throws IOException {

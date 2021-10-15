@@ -2,7 +2,6 @@ package org.ehrbase.client.classgenerator.examples.testalltypesenv1composition.d
 
 import com.nedap.archie.rm.archetyped.FeederAudit;
 import com.nedap.archie.rm.generic.PartyProxy;
-import java.lang.Long;
 import org.ehrbase.client.aql.containment.Containment;
 import org.ehrbase.client.aql.field.AqlFieldImp;
 import org.ehrbase.client.aql.field.SelectAqlField;

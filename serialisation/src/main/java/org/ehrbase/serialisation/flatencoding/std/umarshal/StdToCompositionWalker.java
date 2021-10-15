@@ -154,7 +154,7 @@ public class StdToCompositionWalker extends ToCompositionWalker<Map<FlatPathDto,
   @Override
   protected void preHandle(Context<Map<FlatPathDto, String>> context) {
 
-    // Handle if at a End-Node
+    // Handle if at an End-Node
     if (!visitChildren(context.getNodeDeque().peek()) && !context.getFlatHelper().skip(context)) {
       RMUnmarshaller rmUnmarshaller =
           UNMARSHALLER_MAP.getOrDefault(

@@ -390,7 +390,7 @@ public class DBEncodeTest {
         JsonElement converted = new LightRawJsonEncoder(db_encoded).encodeContentAsJson("composition");
 
         //see if this can be interpreted by Archie
-            Composition composition2 = new CanonicalJson().unmarshal(converted.toString(), Composition.class);
+        Composition composition2 = new CanonicalJson().unmarshal(converted.toString(), Composition.class);
 
         assertNotNull(composition2);
 
@@ -799,6 +799,33 @@ public class DBEncodeTest {
         assertNotNull(feederMap);
         assertNotNull(feederMap.get("other_details[openEHR-EHR-ITEM_TREE.generic.v1]"));
         assertEquals(4, ((Map<String, Object>) feederMap.get("other_details[openEHR-EHR-ITEM_TREE.generic.v1]")).size());
+    }
+
+    @Test
+    public void compositionEncodingEmptyProtocol() throws Exception {
+        String value = IOUtils.toString(CompositionTestDataCanonicalJson.GECCO_PERSONENDATEN.getStream(), UTF_8);
+        CanonicalJson cut = new CanonicalJson();
+        Composition composition = cut.unmarshal(value, Composition.class);
+
+        assertNotNull(composition);
+
+        CompositionSerializer compositionSerializerRawJson = new CompositionSerializer();
+
+        String db_encoded = compositionSerializerRawJson.dbEncode(composition);
+        assertNotNull(db_encoded);
+
+        String converted = new LightRawJsonEncoder(db_encoded).encodeCompositionAsString();
+
+        assertNotNull(converted);
+
+        //see if this can be interpreted by Archie
+        Composition object = new CanonicalJson().unmarshal(converted, Composition.class);
+
+        assertNotNull(object);
+
+        String interpreted = new CanonicalXML().marshal(object);
+
+        assertNotNull(interpreted);
     }
 
     @Test

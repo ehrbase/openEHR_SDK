@@ -7,6 +7,8 @@ Note: version releases in the 0.x.y range may introduce breaking changes.
 ### Added
 
 - Added WebTemplate based RmSkeleton builder. (see https://github.com/ehrbase/openEHR_SDK/pull/241)
+- validate that all flat parts are consumed. (see https://github.com/ehrbase/openEHR_SDK/pull/264 )
+
 ### Fixed
 
 - OptParser: fix parsing f snomed (see https://github.com/ehrbase/openEHR_SDK/pull/234)
@@ -15,6 +17,9 @@ Note: version releases in the 0.x.y range may introduce breaking changes.
 - Generated Dtos: Enable usage of Dots with inheritance  (see https://github.com/ehrbase/openEHR_SDK/pull/244)
 - Fix validation of normal statuses (see https://github.com/ehrbase/openEHR_SDK/pull/249)
 - Fix terminology validation issue (see https://github.com/ehrbase/openEHR_SDK/pull/263)
+- Fix NullPointerException when `protocol.items` is `null` or empty (
+  see https://github.com/ehrbase/openEHR_SDK/pull/262)
+- FLAT: Fix missing items in ITEM_TREE (see https://github.com/ehrbase/openEHR_SDK/pull/265)
 
 ## 1.5.0
 

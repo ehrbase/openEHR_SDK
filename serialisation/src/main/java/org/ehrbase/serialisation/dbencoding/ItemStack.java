@@ -20,9 +20,10 @@
 */
 package org.ehrbase.serialisation.dbencoding;
 
-import java.util.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.*;
 
 /** ETHERCIS Project ehrservice Created by Christian Chevalley on 8/3/2015. */
 public class ItemStack {

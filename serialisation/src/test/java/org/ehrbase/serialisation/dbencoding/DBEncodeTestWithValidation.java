@@ -18,7 +18,6 @@
 
 package org.ehrbase.serialisation.dbencoding;
 
-import com.nedap.archie.json.JacksonUtil;
 import com.nedap.archie.rm.composition.Composition;
 import org.apache.commons.io.IOUtils;
 import org.apache.xmlbeans.XmlException;
@@ -33,43 +32,50 @@ import org.openehr.schemas.v1.TemplateDocument;
 import java.io.IOException;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
 
 public class DBEncodeTestWithValidation {
 
+  @Test
+  public void compositionValidationCRSDK120() throws Exception {
+    String value =
+        IOUtils.toString(CompositionTestDataCanonicalJson.CHOICE_DV_QUANTITY.getStream(), UTF_8);
+    CanonicalJson cut = new CanonicalJson();
+    Composition composition = cut.unmarshal(value, Composition.class);
 
-    @Test
-    public void compositionValidationCRSDK120() throws Exception {
-        String value = IOUtils.toString(CompositionTestDataCanonicalJson.CHOICE_DV_QUANTITY.getStream(), UTF_8);
-        CanonicalJson cut = new CanonicalJson();
-        Composition composition = cut.unmarshal(value, Composition.class);
+    assertNotNull(composition);
 
-        assertNotNull(composition);
+    OPERATIONALTEMPLATE template =
+        TemplateDocument.Factory.parse(
+                IOUtils.toString(
+                    OperationalTemplateTestData.BEFUND_DER_BLUTGASANALYSE.getStream(), UTF_8))
+            .getTemplate();
 
-        OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(IOUtils.toString(OperationalTemplateTestData.BEFUND_DER_BLUTGASANALYSE.getStream(), UTF_8)).getTemplate();
-
-        try {
-            new Validator(template).check(composition);
-        }catch (Exception e){
-            fail(e.getMessage());
-        }
+    try {
+      new Validator(template).check(composition);
+    } catch (Exception e) {
+      fail(e.getMessage());
     }
+  }
 
-    @Test
-    public void testExampleComposition() throws IOException, XmlException {
-        String value = IOUtils.toString(CompositionTestDataCanonicalJson.MINIMAL_ACTION_2.getStream(), UTF_8);
-        CanonicalJson cut = new CanonicalJson();
-        Composition composition = cut.unmarshal(value, Composition.class);
+  @Test
+  public void testExampleComposition() throws IOException, XmlException {
+    String value =
+        IOUtils.toString(CompositionTestDataCanonicalJson.MINIMAL_ACTION_2.getStream(), UTF_8);
+    CanonicalJson cut = new CanonicalJson();
+    Composition composition = cut.unmarshal(value, Composition.class);
 
-        //OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(new FileInputStream("./src/test/resources/operational_templates/minimal_action_2.opt")).getTemplate();
-        String templateValue = IOUtils.toString(OperationalTemplateTestData.MINIMAL_ACTION_2.getStream(), UTF_8);
-        OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(templateValue).getTemplate();
+    // OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(new
+    // FileInputStream("./src/test/resources/operational_templates/minimal_action_2.opt")).getTemplate();
+    String templateValue =
+        IOUtils.toString(OperationalTemplateTestData.MINIMAL_ACTION_2.getStream(), UTF_8);
+    OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(templateValue).getTemplate();
 
-        try {
-            new Validator(template).check(composition);
-        }catch (Exception e){
-            fail(e.getMessage());
-        }
+    try {
+      new Validator(template).check(composition);
+    } catch (Exception e) {
+      fail(e.getMessage());
     }
-
+  }
 }

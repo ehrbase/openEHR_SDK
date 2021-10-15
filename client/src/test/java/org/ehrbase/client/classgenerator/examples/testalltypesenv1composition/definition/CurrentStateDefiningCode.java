@@ -1,6 +1,5 @@
 package org.ehrbase.client.classgenerator.examples.testalltypesenv1composition.definition;
 
-import java.lang.String;
 import org.ehrbase.client.classgenerator.EnumValueSet;
 
 public enum CurrentStateDefiningCode implements EnumValueSet {

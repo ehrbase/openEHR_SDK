@@ -3,13 +3,13 @@ package org.ehrbase.client.classgenerator.examples.testalltypesenv1composition.d
 import com.nedap.archie.rm.archetyped.FeederAudit;
 import com.nedap.archie.rm.datavalues.encapsulated.DvParsable;
 import com.nedap.archie.rm.generic.PartyProxy;
-import java.lang.String;
-import java.time.temporal.Temporal;
-import java.time.temporal.TemporalAccessor;
 import org.ehrbase.client.aql.containment.Containment;
 import org.ehrbase.client.aql.field.AqlFieldImp;
 import org.ehrbase.client.aql.field.SelectAqlField;
 import org.ehrbase.client.classgenerator.shareddefinition.Language;
+
+import java.time.temporal.Temporal;
+import java.time.temporal.TemporalAccessor;
 
 public class TestAllTypesInstructionContainment extends Containment {
   public SelectAqlField<TestAllTypesInstruction> TEST_ALL_TYPES_INSTRUCTION = new AqlFieldImp<TestAllTypesInstruction>(TestAllTypesInstruction.class, "", "TestAllTypesInstruction", TestAllTypesInstruction.class, this);
@@ -19,6 +19,8 @@ public class TestAllTypesInstructionContainment extends Containment {
   public SelectAqlField<TemporalAccessor> PARTIAL_DATETIME_VALUE = new AqlFieldImp<TemporalAccessor>(TestAllTypesInstruction.class, "/activities[at0001]/description[at0002]/items[at0004]/value|value", "partialDatetimeValue", TemporalAccessor.class, this);
 
   public SelectAqlField<DvParsable> TIMING = new AqlFieldImp<DvParsable>(TestAllTypesInstruction.class, "/activities[at0001]/timing", "timing", DvParsable.class, this);
+
+  public SelectAqlField<String> ACTION_ARCHETYPE_ID = new AqlFieldImp<String>(TestAllTypesInstruction.class, "/activities[at0001]/action_archetype_id", "actionArchetypeId", String.class, this);
 
   public SelectAqlField<PartyProxy> SUBJECT = new AqlFieldImp<PartyProxy>(TestAllTypesInstruction.class, "/subject", "subject", PartyProxy.class, this);
 

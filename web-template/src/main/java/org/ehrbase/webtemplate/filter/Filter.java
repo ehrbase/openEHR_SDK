@@ -25,6 +25,7 @@ import com.nedap.archie.rminfo.RMTypeInfo;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.ehrbase.util.reflection.ReflectionHelper;
+import org.ehrbase.util.rmconstants.RmConstants;
 import org.ehrbase.webtemplate.model.FilteredWebTemplate;
 import org.ehrbase.webtemplate.model.WebTemplate;
 import org.ehrbase.webtemplate.model.WebTemplateInput;
@@ -77,6 +78,12 @@ public class Filter implements WebTemplateFilter {
     node.getChildren().addAll(filteredChildren);
     if (skip(node, context, deque)) {
       nodes = filteredChildren;
+      if (node.getRmType().equals(RmConstants.ELEMENT)){
+        node.getChildren().forEach(n ->{
+          n.setMin(node.getMin());
+          n.setMax(node.getMax());
+        });
+      }
       for (WebTemplateNode child : filteredChildren) {
         nodeMap.get(new ImmutablePair<>(child.getAqlPath(), child.getRmType())).addLast(oldNode);
       }

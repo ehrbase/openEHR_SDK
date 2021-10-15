@@ -56,7 +56,8 @@ public enum CompositionTestDataCanonicalJson {
     DEMO_VITALS("composition to test archetype_details roundtrip", "demo_vitals_352.json"),
     FEEDER_AUDIT_DETAILS("composition to test feeder audit details", "all_types_systematic_tests_feeder_audit.json"),
     MINIMAL_INSTRUCTION("minimal instruction (contains DV_DURATION)", "minimal_instruction.json"),
-    MINIMAL_ACTION_2("Minimal Action 2", "minimal_action2_1.json");
+    MINIMAL_ACTION_2("Minimal Action 2", "minimal_action2_1.json"),
+    GECCO_PERSONENDATEN("GECCO_Personendaten", "gecco_personendaten.json");
 
 
     private final String filename;

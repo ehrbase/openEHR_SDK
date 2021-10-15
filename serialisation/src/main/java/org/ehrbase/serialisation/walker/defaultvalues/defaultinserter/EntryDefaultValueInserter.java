@@ -64,7 +64,7 @@ public class EntryDefaultValueInserter extends AbstractValueInserter<Entry> {
                     && defaultValues.containsDefaultValue(DefaultValuePath.ID_NAMESPACE)) {
                   ref.setNamespace(defaultValues.getDefaultValue(DefaultValuePath.ID_NAMESPACE));
                 }
-                if (ref.getId() instanceof GenericId && ref.getNamespace() == null
+                if (ref.getId() instanceof GenericId && ((GenericId) ref.getId()).getScheme() == null
                     && defaultValues.containsDefaultValue(DefaultValuePath.ID_SCHEME)) {
                   ((GenericId) ref.getId())
                       .setScheme(defaultValues.getDefaultValue(DefaultValuePath.ID_SCHEME));

@@ -33,6 +33,8 @@ import java.util.stream.IntStream;
 
 public class PartyIdentifiedStdConfig extends AbstractsStdConfig<PartyIdentified> {
 
+  public static final DvIdentifierConfig DV_IDENTIFIER_CONFIG = new DvIdentifierConfig();
+
   /** {@inheritDoc} */
   @Override
   public Class<PartyIdentified> getAssociatedClass() {
@@ -76,12 +78,11 @@ public class PartyIdentifiedStdConfig extends AbstractsStdConfig<PartyIdentified
     }
 
     if (rmObject.getIdentifiers() != null) {
-      DvIdentifierConfig dvIdentifierConfig = new DvIdentifierConfig();
       IntStream.range(0, rmObject.getIdentifiers().size())
           .forEach(
               i ->
                   result.putAll(
-                      dvIdentifierConfig.buildChildValues(
+                      DV_IDENTIFIER_CONFIG.buildChildValues(
                           currentTerm + "/_identifier:" + i,
                           rmObject.getIdentifiers().get(i),
                           context)));

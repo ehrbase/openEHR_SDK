@@ -36,7 +36,6 @@ import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -44,88 +43,106 @@ import java.util.function.Consumer;
 
 public abstract class AbstractRMUnmarshaller<T extends RMObject> implements RMUnmarshaller<T> {
 
-    private static final ObjectMapper OBJECT_MAPPER = JacksonUtil.getObjectMapper();
-    private static final Map<Class<?>, RmIntrospectConfig> configMap = ReflectionHelper.buildMap(RmIntrospectConfig.class);
-    private final Logger log = LoggerFactory.getLogger(getClass());
+  private static final ObjectMapper OBJECT_MAPPER = JacksonUtil.getObjectMapper();
+  private static final Map<Class<?>, RmIntrospectConfig> configMap =
+      ReflectionHelper.buildMap(RmIntrospectConfig.class);
+  private final Logger log = LoggerFactory.getLogger(getClass());
 
+  /** {@inheritDoc} Use {@link RmIntrospectConfig} to find die properties which needs to be set */
+  public void handle(
+      String currentTerm,
+      T rmObject,
+      Map<FlatPathDto, String> currentValues,
+      Context<Map<FlatPathDto, String>> context,
+      Set<String> consumedPaths) {
 
+    Set<String> expandFields =
+        Optional.ofNullable(configMap.get(rmObject.getClass()))
+            .map(RmIntrospectConfig::getNonTemplateFields)
+            .orElse(Collections.emptySet());
+    if (!expandFields.isEmpty()) {
 
+      if (expandFields.size() == 1 && expandFields.contains("value")) {
 
-    /**
-     * {@inheritDoc}
-     * Use {@link RmIntrospectConfig} to find die properties which needs to be set
-     */
-    public void handle(String currentTerm, T rmObject, Map<FlatPathDto, String> currentValues, Context<Map<FlatPathDto, String>> context, Set<String> consumedPaths) {
+        try {
+          PropertyDescriptor propertyDescriptor =
+              new PropertyDescriptor("value", rmObject.getClass());
 
-
-        Set<String> expandFields = Optional.ofNullable(configMap.get(rmObject.getClass()))
-                .map(RmIntrospectConfig::getNonTemplateFields)
-                .orElse(Collections.emptySet());
-        if (!expandFields.isEmpty()) {
-
-            if (expandFields.size() == 1 && expandFields.contains("value")) {
-
+          setValue(
+              currentTerm,
+              null,
+              currentValues,
+              s -> {
                 try {
-                    PropertyDescriptor propertyDescriptor = new PropertyDescriptor("value", rmObject.getClass());
+                  propertyDescriptor.getWriteMethod().invoke(rmObject, s);
+                } catch (IllegalAccessException | InvocationTargetException e) {
+                  throw new SdkException(e.getMessage(), e);
+                }
+              },
+              propertyDescriptor.getPropertyType(),
+              consumedPaths);
+        } catch (IntrospectionException e) {
+          throw new SdkException(e.getMessage(), e);
+        }
 
-                    setValue(currentTerm, null, currentValues, s -> {
-                        try {
-                            propertyDescriptor.getWriteMethod().invoke(rmObject, s);
-                        } catch (IllegalAccessException | InvocationTargetException e) {
-                            throw new SdkException(e.getMessage(), e);
-                        }
-                    }, propertyDescriptor.getPropertyType(), consumedPaths);
-                } catch (IntrospectionException e) {
+      } else {
+        for (String propertyName : expandFields) {
+          try {
+            PropertyDescriptor propertyDescriptor =
+                new PropertyDescriptor(propertyName, rmObject.getClass());
+            setValue(
+                currentTerm,
+                propertyName,
+                currentValues,
+                s -> {
+                  try {
+                    propertyDescriptor.getWriteMethod().invoke(rmObject, s);
+                  } catch (IllegalAccessException | InvocationTargetException e) {
                     throw new SdkException(e.getMessage(), e);
-                }
-
-            } else {
-                for (String propertyName : expandFields) {
-                    try {
-                        PropertyDescriptor propertyDescriptor = new PropertyDescriptor(propertyName, rmObject.getClass());
-                        setValue(currentTerm, propertyName, currentValues, s -> {
-                            try {
-                                propertyDescriptor.getWriteMethod().invoke(rmObject, s);
-                            } catch (IllegalAccessException | InvocationTargetException e) {
-                                throw new SdkException(e.getMessage(), e);
-                            }
-                        }, propertyDescriptor.getPropertyType(), consumedPaths);
-                    } catch (IntrospectionException e) {
-                        throw new SdkException(e.getMessage(), e);
-                    }
-                }
-            }
-
+                  }
+                },
+                propertyDescriptor.getPropertyType(),
+                consumedPaths);
+          } catch (IntrospectionException e) {
+            throw new SdkException(e.getMessage(), e);
+          }
         }
+      }
     }
+  }
 
-    /**
-     * Sets the {@code consumer} to the value in {@code values} corresponding to {@code term} and {@code propertyName}
-     *
-     * @param <S>
-     * @param term
-     * @param propertyName
-     * @param values
-     * @param consumer
-     * @param clazz
-     * @param consumedPaths
-     */
-    protected <S> void setValue(String term, String propertyName, Map<FlatPathDto, String> values, Consumer<S> consumer, Class<S> clazz, Set<String> consumedPaths) {
-        String key = propertyName != null ? term + "|" + propertyName : term;
-        Map.Entry<FlatPathDto, String> entry = FlatPathDto.get(values, key);
-        String jasonValue = entry.getValue();
-        if (StringUtils.isNotBlank(jasonValue)) {
-            try {
-                S value = OBJECT_MAPPER.readValue(jasonValue, clazz);
-                consumer.accept(value);
-                consumedPaths.add(entry.getKey().format());
-            } catch (JsonProcessingException e) {
-                log.error(e.getMessage());
-            }
-        } else {
-            consumer.accept(null);
-        }
+  /**
+   * Sets the {@code consumer} to the value in {@code values} corresponding to {@code term} and
+   * {@code propertyName}
+   *
+   * @param <S>
+   * @param term
+   * @param propertyName
+   * @param values
+   * @param consumer
+   * @param clazz
+   * @param consumedPaths
+   */
+  protected <S> void setValue(
+      String term,
+      String propertyName,
+      Map<FlatPathDto, String> values,
+      Consumer<S> consumer,
+      Class<S> clazz,
+      Set<String> consumedPaths) {
+    String key = propertyName != null ? term + "|" + propertyName : term;
+    Map.Entry<FlatPathDto, String> entry = FlatPathDto.get(values, key);
+    String jasonValue = entry.getValue();
+    if (StringUtils.isNotBlank(jasonValue)) {
+      try {
+        S value = OBJECT_MAPPER.readValue(jasonValue, clazz);
+        consumer.accept(value);
+        consumedPaths.add(entry.getKey().format());
+      } catch (JsonProcessingException e) {
+        log.error(e.getMessage());
+      }
+    } else {
+      consumer.accept(null);
     }
-
-
+  }
 }

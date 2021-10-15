@@ -49,6 +49,8 @@ public enum OperationalTemplateTestData {
       "Template with multiple occurrence",
       "ehrbase_multi_occurrence.de.opt",
       "ehrbase_multi_occurrence.de.v1"),
+  EREACT_COVID_MANAGEMENT(
+      "Template with action", "EREACT - COVID management.v0.opt", "EREACT - COVID management.v0"),
   ALL_TYPES("Template with all types", "Test_all_types.opt", "test_all_types.en.v1"),
   ALT_EVENTS("Template with alternative Events", "AlternativeEvents.opt", "AlternativeEvents"),
   TWO_EVENTS("Template with two Events", "TwoEvents.opt", "SingleEvent"),
@@ -64,6 +66,7 @@ public enum OperationalTemplateTestData {
   BEFUND_DER_BLUTGASANALYSE(
       "Befund der Blutgasanalyse", "Befund_der_Blutgasanalyse.opt", "Befund der Blutgasanalyse"),
   SM_I_C_S_BEFUND("SmICS-Befund", "SmICS-Befund.opt", "SmICS-Befund"),
+  MULTI_LIST("template with ITEM_TREE", "Multi_list.opt", "Multi_list"),
   PATIENTEN_AUFENTHALT(
       "NUM test hospitalization", "Patientenaufenthalt.opt", "Patientenaufenthalt"),
   EPISODE_SUMMARY(
@@ -81,7 +84,8 @@ public enum OperationalTemplateTestData {
   SINGLE_EVENT("example with a single valued EVENT", "single_event.opt", "Körpergröße"),
   ADDICTION("example ", "additciton_alcohol.opt", "AddictionAlcoholTemplate"),
   MINIMAL_EVALUATION("minimal evaluation", "minimal_evaluation.opt", "minimal_evaluation.en.v1"),
-  MINIMAL_INSTRUCTION("minimal instruction", "minimal_instruction.opt", "minimal_instruction.en.v1"),
+  MINIMAL_INSTRUCTION(
+      "minimal instruction", "minimal_instruction.opt", "minimal_instruction.en.v1"),
   GECCO_SEROLOGISCHER_BEFUND(
       "template with any Element", "GECCO_Serologischer Befund.opt", "GECCO_Serologischer Befund"),
   DETERIORIATION_ASSESSMENT(

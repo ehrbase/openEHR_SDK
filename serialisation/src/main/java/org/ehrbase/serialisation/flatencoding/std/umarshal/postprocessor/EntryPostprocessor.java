@@ -28,9 +28,12 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.ehrbase.serialisation.flatencoding.std.umarshal.rmunmarshaller.PartyIdentifiedRMUnmarshaller;
+import org.ehrbase.serialisation.walker.defaultvalues.DefaultValuePath;
+import org.ehrbase.serialisation.walker.defaultvalues.DefaultValues;
 import org.ehrbase.webtemplate.path.flat.FlatPathDto;
 
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -40,7 +43,8 @@ public class EntryPostprocessor extends AbstractUnmarshalPostprocessor<Entry> {
 
   /** {@inheritDoc} */
   @Override
-  public void process(String term, Entry rmObject, Map<FlatPathDto, String> values, Set<String> consumedPaths) {
+  public void process(
+      String term, Entry rmObject, Map<FlatPathDto, String> values, Set<String> consumedPaths) {
     consumedPaths.add(term + PATH_DIVIDER + "encoding|code");
     consumedPaths.add(term + PATH_DIVIDER + "encoding|terminology");
 
@@ -73,8 +77,51 @@ public class EntryPostprocessor extends AbstractUnmarshalPostprocessor<Entry> {
           term + PATH_DIVIDER + "_provider",
           (PartyIdentified) rmObject.getProvider(),
           providerList,
-          null, consumedPaths);
+          null,
+          consumedPaths);
     }
+
+    Map<Integer, Map<String, String>> other =
+        extractMultiValued(term + PATH_DIVIDER + "_other_participation", values);
+
+    other.values().stream()
+        .map(Map::entrySet)
+        .map(
+            s ->
+                s.stream()
+                    .collect(
+                        Collectors.toMap(
+                            e ->
+                                "ctx/"
+                                    + DefaultValuePath.PARTICIPATION.getPath()
+                                    + "_"
+                                    + e.getKey().replace("identifiers_", "identifiers|"),
+                            e -> StringUtils.wrap(e.getValue(), '"')))
+                    .entrySet())
+        .map(DefaultValues::buildParticipation)
+        .forEach(rmObject::addOtherParticipant);
+    consumeAllMatching(term + PATH_DIVIDER + "_other_participation", values, consumedPaths);
+  }
+
+  public static void consumeAllMatching(
+      String term, Map<FlatPathDto, String> values, Set<String> consumedPaths) {
+    consumedPaths.addAll(
+        values.keySet().stream()
+            .filter(s -> s.startsWith(term))
+            .map(FlatPathDto::format)
+            .collect(Collectors.toSet()));
+  }
+
+  public static Map<Integer, Map<String, String>> extractMultiValued(
+      String term, Map<FlatPathDto, String> values) {
+    return values.entrySet().stream()
+        .filter(s -> s.getKey().startsWith(term))
+        .collect(
+            Collectors.groupingBy(
+                e -> Optional.ofNullable(e.getKey().getLast().getCount()).orElse(0),
+                Collectors.toMap(
+                    e1 -> Optional.ofNullable(e1.getKey().getLast().getAttributeName()).orElse(""),
+                    stringStringEntry -> StringUtils.unwrap(stringStringEntry.getValue(), '"'))));
   }
 
   /** {@inheritDoc} */

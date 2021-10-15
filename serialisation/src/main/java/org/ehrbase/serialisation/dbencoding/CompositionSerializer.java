@@ -1,9 +1,9 @@
 /*
  * Modifications copyright (C) 2019 Christian Chevalley, Vitasystems GmbH and Hannover Medical School,
  * Stefan Spiska (Vitasystems GmbH).
-
+ *
  * This file is part of Project EHRbase
-
+ *
  * Copyright (c) 2015 Christian Chevalley
  * This file is part of Project Ethercis
  *
@@ -80,7 +80,7 @@ public class CompositionSerializer {
     RAW
   }
 
-  private Logger log = LoggerFactory.getLogger(this.getClass());
+  private final Logger log = LoggerFactory.getLogger(this.getClass());
 
   protected ItemStack itemStack = new ItemStack();
 
@@ -195,13 +195,8 @@ public class CompositionSerializer {
       return null;
     }
 
-    log.debug(
-        "traverse element of class:"
-            + item.getClass()
-            + ", tag:"
-            + tag
-            + ", nodeid:"
-            + item.getArchetypeNodeId());
+    log.debug("traverse element of class: {}, tag: {}, nodeid: {}",
+        item.getClass(), tag, item.getArchetypeNodeId());
 
     if (item.getArchetypeNodeId() == null || item.getArchetypeNodeId().isEmpty()) {
       throw new IllegalArgumentException(
@@ -221,10 +216,10 @@ public class CompositionSerializer {
       Map<String, Object> ltree = PathMap.getInstance();
 
       if (observation.getProtocol() != null) {
-        ltree =
-            new EntrySerialTree(ltree, tagMode)
-                .insert(
-                    observation, TAG_PROTOCOL, traverse(observation.getProtocol(), TAG_PROTOCOL));
+        Object protocol = traverse(observation.getProtocol(), TAG_PROTOCOL);
+        if (protocol != null) {
+          ltree = new EntrySerialTree(ltree, tagMode).insert(observation, TAG_PROTOCOL, protocol);
+        }
       }
 
       if (observation.getData() != null) {
@@ -243,8 +238,6 @@ public class CompositionSerializer {
 
       if (ltree.size() > 0) {
         retmap = ltree;
-      } else {
-        retmap = null;
       }
 
     } else if (item instanceof Evaluation) {
@@ -252,9 +245,10 @@ public class CompositionSerializer {
       Map<String, Object> ltree = PathMap.getInstance();
 
       if (evaluation.getProtocol() != null) {
-        ltree =
-            new EntrySerialTree(ltree, tagMode)
-                .insert(evaluation, TAG_PROTOCOL, traverse(evaluation.getProtocol(), TAG_PROTOCOL));
+        Object protocol = traverse(evaluation.getProtocol(), TAG_PROTOCOL);
+        if (protocol != null) {
+          ltree = new EntrySerialTree(ltree, tagMode).insert(evaluation, TAG_PROTOCOL, protocol);
+        }
       }
 
       if (evaluation.getData() != null) {
@@ -267,8 +261,6 @@ public class CompositionSerializer {
 
       if (ltree.size() > 0) {
         retmap = ltree;
-      } else {
-        retmap = null;
       }
 
     } else if (item instanceof Instruction) {
@@ -277,13 +269,14 @@ public class CompositionSerializer {
       Instruction instruction = (Instruction) item;
 
       if (instruction.getProtocol() != null) {
-        ltree =
-            new SerialTree(ltree)
-                .insert(
-                    instruction,
-                    new NodeEncoding(tagMode)
-                        .tag(TAG_PROTOCOL, ((Instruction) item).getProtocol(), ltree),
-                    traverse(instruction.getProtocol(), TAG_PROTOCOL));
+        Object protocol = traverse(instruction.getProtocol(), TAG_PROTOCOL);
+        if (protocol != null) {
+          ltree = new SerialTree(ltree)
+              .insert(instruction,
+                  new NodeEncoding(tagMode).tag(TAG_PROTOCOL, ((Instruction) item).getProtocol(),
+                      ltree),
+                  protocol);
+        }
       }
 
       ltree = new InstructionAttributes(this, itemStack, ltree).toMap(instruction);
@@ -306,8 +299,6 @@ public class CompositionSerializer {
 
       if (ltree.size() > 0) {
         retmap = ltree;
-      } else {
-        retmap = null;
       }
 
     } else if (item instanceof Action) {
@@ -318,32 +309,25 @@ public class CompositionSerializer {
       if (action.getProtocol() != null) {
         Object protocol = traverse(action.getProtocol(), TAG_PROTOCOL);
         if (protocol != null) {
-          ltree =
-              new EntrySerialTree(ltree, tagMode)
-                  .insert(action, TAG_PROTOCOL, traverse(action.getProtocol(), TAG_PROTOCOL));
+          ltree = new EntrySerialTree(ltree, tagMode).insert(action, TAG_PROTOCOL, protocol);
         }
       }
 
       if (action.getDescription() != null) {
         Object description = traverse(action.getDescription(), TAG_DESCRIPTION);
         if (description != null) {
-          ltree =
-              new EntrySerialTree(ltree, tagMode)
-                  .insert(
-                      action, TAG_DESCRIPTION, traverse(action.getDescription(), TAG_DESCRIPTION));
+          ltree = new EntrySerialTree(ltree, tagMode).insert(action, TAG_DESCRIPTION, description);
         }
       } else {
         // this should not occur except in test scenario as this is rejected by the validation
-        log.warn("ACTION requires attribute 'description' at node:" + itemStack.pathStackDump());
+        if (log.isWarnEnabled()) {
+          log.warn("ACTION requires attribute 'description' at node: {}",
+              itemStack.pathStackDump());
+        }
       }
 
       ltree = new ActionAttributes(this, itemStack, ltree).toMap(action);
-
-      if (!ltree.containsKey(TAG_CLASS)) {
-        // force class as this hasn't been completed since the action is not valid (see above
-        // comment)
-        ltree.put(TAG_CLASS, new SimpleClassName(item).toString());
-      }
+      ltree.computeIfAbsent(TAG_CLASS, value -> new SimpleClassName(item).toString());
 
       retmap = ltree;
 
@@ -358,7 +342,7 @@ public class CompositionSerializer {
                     contentItem,
                     new NodeEncoding(tagMode).tag(TAG_ITEMS, contentItem, ltree),
                     traverse(contentItem, TAG_ITEMS));
-        log.debug("ltree now:" + (ltree != null));
+        log.debug("ltree now: {}", ltree != null);
       }
 
       ltree = new SectionAttributes(this, itemStack, ltree).toMap((Section) item);
@@ -366,11 +350,7 @@ public class CompositionSerializer {
       ltree.remove(TAG_CLASS);
       ltree.put(TAG_CLASS, new SimpleClassName(item).toString()); // force the classname
 
-      if (ltree.size() > 0) {
-        retmap = ltree;
-      } else {
-        retmap = null;
-      }
+      retmap = ltree;
 
     } else if (item instanceof AdminEntry) {
       AdminEntry adminEntry = (AdminEntry) item;
@@ -389,8 +369,6 @@ public class CompositionSerializer {
 
       if (ltree.size() > 0) {
         retmap = ltree;
-      } else {
-        retmap = null;
       }
 
     } else if (item instanceof GenericEntry) {
@@ -407,12 +385,10 @@ public class CompositionSerializer {
 
       if (ltree.size() > 0) {
         retmap = ltree;
-      } else {
-        retmap = null;
       }
 
     } else {
-      log.warn("This item is not handled!" + item.getNameAsString());
+      log.warn("This item is not handled! {}", item.getNameAsString());
     }
 
     itemStack.popStacks();
@@ -424,7 +400,7 @@ public class CompositionSerializer {
       return null;
     }
 
-    log.debug("traverse activity:" + activity);
+    log.debug("traverse activity: {}", activity);
 
     if (activity.getDescription() == null) {
       throw new IllegalArgumentException(
@@ -439,13 +415,12 @@ public class CompositionSerializer {
         tag + "[" + activity.getDescription().getArchetypeNodeId() + "]",
         activity.getDescription().getName().getValue());
 
-    log.debug(
-        itemStack.pathStackDump()
-            + TAG_DESCRIPTION
-            + "["
-            + activity.getArchetypeNodeId()
-            + "]="
-            + activity.getDescription().toString());
+    if (log.isDebugEnabled()) {
+      log.debug("{}{}[{}]={}", itemStack.pathStackDump(), TAG_DESCRIPTION,
+          activity.getArchetypeNodeId(),
+          activity.getDescription());
+    }
+
     ltree =
         new EntrySerialTree(ltree, tagMode)
             .insert(
@@ -481,20 +456,17 @@ public class CompositionSerializer {
       return null;
     }
 
-    log.debug("traverse history:" + history);
+    log.debug("traverse history: {}", history);
 
     itemStack.pushStacks(
         tag + "[" + history.getArchetypeNodeId() + "]", history.getName().getValue());
 
     Map<String, Object> ltree = PathMap.getInstance();
 
-    log.debug(
-        itemStack.pathStackDump()
-            + TAG_ORIGIN
-            + "["
-            + history.getArchetypeNodeId()
-            + "]="
-            + history.getOrigin());
+    if (log.isDebugEnabled()) {
+      log.debug("{}{}[{}]={}", itemStack.pathStackDump(), TAG_ORIGIN, history.getArchetypeNodeId(),
+          history.getOrigin());
+    }
 
     ltree = new HistoryAttributes(this, itemStack, ltree).toMap(history);
 
@@ -513,13 +485,11 @@ public class CompositionSerializer {
             TAG_EVENTS + "[" + event.getArchetypeNodeId() + "]", event.getName().getValue());
 
         Map<String, Object> subtree = PathMap.getInstance();
-        log.debug(
-            itemStack.pathStackDump()
-                + TAG_TIME
-                + "["
-                + event.getArchetypeNodeId()
-                + "]="
-                + event.getTime());
+
+        if (log.isDebugEnabled()) {
+          log.debug("{}{}[{}]={}", itemStack.pathStackDump(), TAG_TIME, event.getArchetypeNodeId(),
+              event.getTime());
+        }
 
         subtree = new EventAttributes(this, itemStack, subtree).toMap(event);
 
@@ -571,7 +541,7 @@ public class CompositionSerializer {
       if (entry.keySet().size() == 1 && entry.get(TAG_VALUE) != null) {
         Object o = entry.get(TAG_VALUE);
         // TAG_VALUE is not required in the properties map representation
-        target = new SerialTree(target).insert(null, (Object) null, key, o);
+        target = new SerialTree(target).insert(null, null, key, o);
       } else {
         target =
             new SerialTree(target)
@@ -596,7 +566,7 @@ public class CompositionSerializer {
 
     Map<String, Object> retmap = null;
 
-    log.debug("traverse itemstructure:" + item);
+    log.debug("traverse itemstructure: {}", item);
 
     if (item == null) {
       return null;
@@ -622,8 +592,6 @@ public class CompositionSerializer {
       }
       if (ltree.size() > 0) {
         retmap = ltree;
-      } else {
-        retmap = null;
       }
     } else if (item instanceof ItemList) {
       Map<String, Object> ltree = MultiMap.getInstance();
@@ -643,8 +611,6 @@ public class CompositionSerializer {
       }
       if (ltree.size() > 0) {
         retmap = ltree;
-      } else {
-        retmap = null;
       }
 
     } else if (item instanceof ItemTree) {
@@ -665,8 +631,6 @@ public class CompositionSerializer {
       }
       if (ltree.size() > 0) {
         retmap = ltree;
-      } else {
-        retmap = null;
       }
 
     } else if (item instanceof ItemTable) {
@@ -687,8 +651,6 @@ public class CompositionSerializer {
       }
       if (ltree.size() > 0) {
         retmap = ltree;
-      } else {
-        retmap = null;
       }
     }
 
@@ -717,7 +679,7 @@ public class CompositionSerializer {
   private Map<String, Object> traverse(Item item, String tag) {
     Map<String, Object> retmap = PathMap.getInstance();
 
-    log.debug("traverse item:" + item);
+    log.debug("traverse item: {}", item);
 
     if (item == null) {
       return null;
@@ -739,22 +701,16 @@ public class CompositionSerializer {
         // CHC:160914: fixed issue with cluster encoding as items (generated /value {/name...
         // /value... /$PATH$... $CLASS$})
         // this caused inconsistencies when running AQL queries
-        for (Object itemInList : cluster.getItems()) {
-          if (itemInList instanceof Item) {
-            Item clusterItem = (Item) itemInList;
-            Map<String, Object> clusterItems = traverse(clusterItem, TAG_ITEMS);
+        for (Item clusterItem : cluster.getItems()) {
+          Map<String, Object> clusterItems = traverse(clusterItem, TAG_ITEMS);
 
-            if (clusterItems != null) {
-              if (clusterItems.containsKey(TAG_CLASS)) {
-                clusterItems.put(TAG_CLASS, item.getClass().getSimpleName());
-              }
-              ltree.put(
-                  new NodeEncoding(tagMode).tag(TAG_ITEMS, clusterItem, ltree),
-                  clusterItems.getOrDefault(TAG_VALUE, clusterItems));
-              //
-            }
-          } else {
-            throw new IllegalArgumentException("Found non item in cluster");
+          if (clusterItems != null) {
+            clusterItems.computeIfPresent(TAG_CLASS,
+                (key, value) -> item.getClass().getSimpleName());
+            ltree.put(
+                new NodeEncoding(tagMode).tag(TAG_ITEMS, clusterItem, ltree),
+                clusterItems.getOrDefault(TAG_VALUE, clusterItems));
+            //
           }
         }
         if (ltree.size() > 0) {
@@ -763,9 +719,7 @@ public class CompositionSerializer {
 
         ltree = new ClusterAttributes(this, itemStack, ltree).toMap(cluster);
 
-        if (!ltree.containsKey(TAG_CLASS)) {
-          ltree.put(TAG_CLASS, Cluster.class.getSimpleName());
-        }
+        ltree.computeIfAbsent(TAG_CLASS, value -> Cluster.class.getSimpleName());
       }
       if (hasContent) {
         retmap = ltree;

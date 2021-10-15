@@ -22,6 +22,7 @@ package org.ehrbase.serialisation.flatencoding.std.umarshal.rmunmarshaller;
 import com.nedap.archie.rm.datatypes.CodePhrase;
 import com.nedap.archie.rm.datavalues.DvCodedText;
 import com.nedap.archie.rm.support.identification.TerminologyId;
+import org.apache.commons.lang3.StringUtils;
 import org.ehrbase.serialisation.walker.Context;
 import org.ehrbase.webtemplate.model.WebTemplateInput;
 import org.ehrbase.webtemplate.path.flat.FlatPathDto;
@@ -71,7 +72,15 @@ public class DvCodedTextRMUnmarshaller extends AbstractRMUnmarshaller<DvCodedTex
           .findAny()
           .ifPresent(v -> rmObject.setValue(v.getLabel()));
 
-
+    if (rmObject.getDefiningCode() != null && rmObject.getDefiningCode().getCodeString() != null) {
+      currentValues.keySet().stream()
+          .map(FlatPathDto::format)
+          .filter(
+              k ->
+                  StringUtils.substringAfter(k, "|")
+                      .equals(rmObject.getDefiningCode().getCodeString()))
+          .forEach(consumedPaths::add);
+}
     }
 
 

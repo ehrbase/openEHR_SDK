@@ -22,6 +22,8 @@ package org.ehrbase.webtemplate;
 import care.better.platform.web.template.validator.CompositionValidator;
 import care.better.platform.web.template.validator.ValidationErrorDto;
 import com.nedap.archie.rm.composition.Composition;
+import com.nedap.archie.rminfo.ArchieRMInfoLookup;
+import com.nedap.archie.rmobjectvalidator.RMObjectValidator;
 import org.apache.commons.io.IOUtils;
 import org.ehrbase.serialisation.jsonencoding.CanonicalJson;
 import org.ehrbase.validation.Validator;
@@ -31,6 +33,7 @@ import org.openehr.schemas.v1.TemplateDocument;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class CompositionValidatorImp implements CompositionValidator {
   @Override
@@ -49,11 +52,15 @@ public class CompositionValidatorImp implements CompositionValidator {
           throws Exception {
     TemplateDocument templateDocument =
             TemplateDocument.Factory.parse(IOUtils.toInputStream(template, StandardCharsets.UTF_8));
+    Composition composition = new CanonicalJson().unmarshal(rawComposition.replace("@class", "_type"), Composition.class);
     try {
-      new Validator(templateDocument.getTemplate()).check(new CanonicalJson().unmarshal(rawComposition.replace("@class","_type"), Composition.class));
+
+      new Validator(templateDocument.getTemplate()).check(composition);
     } catch (RuntimeException e) {
       return Collections.singletonList(new ValidationErrorDto(e.getMessage(), new String[0], 0));
     }
-    return Collections.emptyList();
+
+    RMObjectValidator rmObjectValidator = new RMObjectValidator(ArchieRMInfoLookup.getInstance(), s -> null);
+    return rmObjectValidator.validate(composition).stream().map(e -> new ValidationErrorDto(e.getMessage(), new String[0], 0)).collect(Collectors.toList());
   }
 }

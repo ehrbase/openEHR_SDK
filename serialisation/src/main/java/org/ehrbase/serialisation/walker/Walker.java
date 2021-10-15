@@ -46,9 +46,12 @@ public abstract class Walker<T> {
 
   public static final ArchieRMInfoLookup ARCHIE_RM_INFO_LOOKUP = ArchieRMInfoLookup.getInstance();
 
-
   public void walk(
-      Composition composition, T object, WebTemplate webTemplate, DefaultValues defaultValues, String templateId) {
+      Composition composition,
+      T object,
+      WebTemplate webTemplate,
+      DefaultValues defaultValues,
+      String templateId) {
 
     walk(composition, object, webTemplate.getTree(), defaultValues, templateId);
   }
@@ -58,7 +61,11 @@ public abstract class Walker<T> {
   }
 
   public void walk(
-      RMObject composition, T object, WebTemplateNode root, DefaultValues defaultValues, String templateId) {
+      RMObject composition,
+      T object,
+      WebTemplateNode root,
+      DefaultValues defaultValues,
+      String templateId) {
 
     Context<T> context = new Context<>();
 
@@ -81,14 +88,13 @@ public abstract class Walker<T> {
     preHandle(context);
     WebTemplateNode currentNode = context.getNodeDeque().peek();
 
-
     if (visitChildren(currentNode)) {
 
-      if(ACTION.equals(currentNode.getRmType())){
-      List<WebTemplateNode> ismTransitionList =
-              currentNode.getChildren().stream()
-                      .filter(n -> ISM_TRANSITION.equals(n.getRmType()))
-                      .collect(Collectors.toList());
+      if (ACTION.equals(currentNode.getRmType())) {
+        List<WebTemplateNode> ismTransitionList =
+            currentNode.getChildren().stream()
+                .filter(n -> ISM_TRANSITION.equals(n.getRmType()))
+                .collect(Collectors.toList());
         if (!ismTransitionList.isEmpty()) {
           currentNode.getChildren().removeAll(ismTransitionList);
           currentNode.getChildren().add(ismTransitionList.get(0));
@@ -182,9 +188,7 @@ public abstract class Walker<T> {
     context.getObjectDeque().remove();
   }
 
-  protected void handleDVText(
-      WebTemplateNode currentNode
-     ) {
+  protected void handleDVText(WebTemplateNode currentNode) {
     // unwrap DV_CODED_TEXT
     for (WebTemplateNode codeNode : new ArrayList<>(currentNode.getChildren())) {
       if (codeNode.getRmType().equals(DV_CODED_TEXT)
@@ -295,6 +299,7 @@ public abstract class Walker<T> {
       width.setName("width");
       width.setRmType("DV_DURATION");
       width.setMax(1);
+      width.setMin(1);
       width.setAqlPath(event.getAqlPath() + "/width");
       intervalEvent.getChildren().add(width);
 
@@ -303,6 +308,7 @@ public abstract class Walker<T> {
       math.setName("math_function");
       math.setRmType(DV_CODED_TEXT);
       math.setMax(1);
+      math.setMin(1);
       math.setAqlPath(event.getAqlPath() + "/math_function");
       intervalEvent.getChildren().add(math);
 

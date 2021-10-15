@@ -8,17 +8,14 @@ import com.nedap.archie.rm.datavalues.encapsulated.DvParsable;
 import com.nedap.archie.rm.datavalues.quantity.DvOrdinal;
 import com.nedap.archie.rm.datavalues.quantity.DvProportion;
 import com.nedap.archie.rm.generic.PartyProxy;
-import java.lang.Boolean;
-import java.lang.Double;
-import java.lang.Long;
-import java.lang.String;
-import java.time.temporal.Temporal;
-import java.time.temporal.TemporalAccessor;
-import java.time.temporal.TemporalAmount;
 import org.ehrbase.client.aql.containment.Containment;
 import org.ehrbase.client.aql.field.AqlFieldImp;
 import org.ehrbase.client.aql.field.SelectAqlField;
 import org.ehrbase.client.classgenerator.shareddefinition.Language;
+
+import java.time.temporal.Temporal;
+import java.time.temporal.TemporalAccessor;
+import java.time.temporal.TemporalAmount;
 
 public class TestAllTypesObservationContainment extends Containment {
   public SelectAqlField<TestAllTypesObservation> TEST_ALL_TYPES_OBSERVATION = new AqlFieldImp<TestAllTypesObservation>(TestAllTypesObservation.class, "", "TestAllTypesObservation", TestAllTypesObservation.class, this);

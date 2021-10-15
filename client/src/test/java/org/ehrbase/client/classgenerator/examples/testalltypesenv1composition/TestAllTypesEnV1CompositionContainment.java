@@ -4,8 +4,6 @@ import com.nedap.archie.rm.archetyped.FeederAudit;
 import com.nedap.archie.rm.generic.Participation;
 import com.nedap.archie.rm.generic.PartyIdentified;
 import com.nedap.archie.rm.generic.PartyProxy;
-import java.lang.String;
-import java.time.temporal.TemporalAccessor;
 import org.ehrbase.client.aql.containment.Containment;
 import org.ehrbase.client.aql.field.AqlFieldImp;
 import org.ehrbase.client.aql.field.ListAqlFieldImp;
@@ -20,8 +18,12 @@ import org.ehrbase.client.classgenerator.shareddefinition.Language;
 import org.ehrbase.client.classgenerator.shareddefinition.Setting;
 import org.ehrbase.client.classgenerator.shareddefinition.Territory;
 
+import java.time.temporal.TemporalAccessor;
+
 public class TestAllTypesEnV1CompositionContainment extends Containment {
   public SelectAqlField<TestAllTypesEnV1Composition> TEST_ALL_TYPES_EN_V1_COMPOSITION = new AqlFieldImp<TestAllTypesEnV1Composition>(TestAllTypesEnV1Composition.class, "", "TestAllTypesEnV1Composition", TestAllTypesEnV1Composition.class, this);
+
+  public SelectAqlField<Category> CATEGORY_DEFINING_CODE = new AqlFieldImp<Category>(TestAllTypesEnV1Composition.class, "/category|defining_code", "categoryDefiningCode", Category.class, this);
 
   public SelectAqlField<ContextCodedTextDefiningCode> CONTEXT_CODED_TEXT_DEFINING_CODE = new AqlFieldImp<ContextCodedTextDefiningCode>(TestAllTypesEnV1Composition.class, "/context/other_context[at0004]/item[at0005]/value|defining_code", "contextCodedTextDefiningCode", ContextCodedTextDefiningCode.class, this);
 
@@ -48,8 +50,6 @@ public class TestAllTypesEnV1CompositionContainment extends Containment {
   public SelectAqlField<Language> LANGUAGE = new AqlFieldImp<Language>(TestAllTypesEnV1Composition.class, "/language", "language", Language.class, this);
 
   public SelectAqlField<FeederAudit> FEEDER_AUDIT = new AqlFieldImp<FeederAudit>(TestAllTypesEnV1Composition.class, "/feeder_audit", "feederAudit", FeederAudit.class, this);
-
-  public SelectAqlField<Category> CATEGORY_DEFINING_CODE = new AqlFieldImp<Category>(TestAllTypesEnV1Composition.class, "/category|defining_code", "categoryDefiningCode", Category.class, this);
 
   public SelectAqlField<Territory> TERRITORY = new AqlFieldImp<Territory>(TestAllTypesEnV1Composition.class, "/territory", "territory", Territory.class, this);
 

@@ -19,12 +19,12 @@
 
 package org.ehrbase.serialisation.flatencoding.std.umarshal.rmunmarshaller;
 
-import com.nedap.archie.rm.datavalues.DvIdentifier;
 import com.nedap.archie.rm.generic.PartyIdentified;
 import com.nedap.archie.rm.support.identification.GenericId;
 import com.nedap.archie.rm.support.identification.PartyRef;
 import org.apache.commons.lang3.StringUtils;
 import org.ehrbase.serialisation.walker.Context;
+import org.ehrbase.serialisation.walker.defaultvalues.DefaultValues;
 import org.ehrbase.webtemplate.path.flat.FlatPathDto;
 
 import java.util.Map;
@@ -42,60 +42,66 @@ public class PartyIdentifiedRMUnmarshaller extends AbstractRMUnmarshaller<PartyI
 
   @Override
   public void handle(
-          String currentTerm,
-          PartyIdentified rmObject,
-          Map<FlatPathDto, String> currentValues,
-          Context<Map<FlatPathDto, String>> context, Set<String> consumedPaths) {
+      String currentTerm,
+      PartyIdentified rmObject,
+      Map<FlatPathDto, String> currentValues,
+      Context<Map<FlatPathDto, String>> context,
+      Set<String> consumedPaths) {
     setValue(currentTerm, "name", currentValues, rmObject::setName, String.class, consumedPaths);
+
     rmObject.setExternalRef(new PartyRef());
+    rmObject.getExternalRef().setType("PARTY");
     rmObject.getExternalRef().setId(new GenericId());
     setValue(
         currentTerm,
         "id",
         currentValues,
         rmObject.getExternalRef().getId()::setValue,
-        String.class, consumedPaths);
+        String.class,
+        consumedPaths);
     setValue(
         currentTerm,
         "id_scheme",
         currentValues,
         ((GenericId) rmObject.getExternalRef().getId())::setScheme,
-        String.class, consumedPaths);
+        String.class,
+        consumedPaths);
     setValue(
         currentTerm,
         "id_namespace",
         currentValues,
         rmObject.getExternalRef()::setNamespace,
-        String.class, consumedPaths);
+        String.class,
+        consumedPaths);
+
+    // remove if not set
+    if (rmObject.getExternalRef().getId() == null
+        || StringUtils.isBlank(rmObject.getExternalRef().getId().getValue())) {
+      rmObject.setExternalRef(null);
+    }
 
     Map<Integer, Map<String, String>> identifiers =
         currentValues.entrySet().stream()
-            .filter(
-                s -> s.getKey().startsWith( currentTerm + PATH_DIVIDER + "_identifier"))
+            .filter(s -> s.getKey().startsWith(currentTerm + PATH_DIVIDER + "_identifier"))
             .collect(
                 Collectors.groupingBy(
                     e -> Optional.ofNullable(e.getKey().getLast().getCount()).orElse(0),
-                        Collectors.toMap(
-                                e1 -> Optional.ofNullable(e1.getKey().getLast().getAttributeName()).orElse(""),
-                            stringStringEntry -> StringUtils.unwrap(stringStringEntry.getValue(), '"'))));
+                    Collectors.toMap(
+                        e1 ->
+                            Optional.ofNullable(e1.getKey().getLast().getAttributeName())
+                                .orElse(""),
+                        stringStringEntry ->
+                            StringUtils.unwrap(stringStringEntry.getValue(), '"'))));
 
     rmObject.setIdentifiers(
-        identifiers.values().stream().map(this::toId).collect(Collectors.toList()));
-  }
+        identifiers.values().stream()
+            .map(DefaultValues::toDvIdentifier)
+            .collect(Collectors.toList()));
 
-  private DvIdentifier toId(Map<String, String> stringStringMap) {
-
-    DvIdentifier identifier = new DvIdentifier();
-
-    identifier.setId(stringStringMap.get("id"));
-    if (identifier.getId() == null) {
-      identifier.setId(stringStringMap.get(""));
-    }
-
-    identifier.setAssigner(stringStringMap.get("assigner"));
-    identifier.setType(stringStringMap.get("type"));
-    identifier.setIssuer(stringStringMap.get("issuer"));
-
-    return identifier;
+    consumedPaths.addAll(
+        currentValues.keySet().stream()
+            .filter(s -> s.startsWith(currentTerm + PATH_DIVIDER + "_identifier"))
+            .map(FlatPathDto::format)
+            .collect(Collectors.toSet()));
   }
 }

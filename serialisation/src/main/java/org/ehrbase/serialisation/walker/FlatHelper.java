@@ -14,7 +14,6 @@ public class FlatHelper<T> {
 
   private Map<String, Map<String, Integer>> pathCountMap = new HashMap<>();
 
-
   public String buildNamePath(Context<T> context, boolean addCount) {
     StringBuilder sb = new StringBuilder();
     StringBuilder fullPath = new StringBuilder();
@@ -53,12 +52,10 @@ public class FlatHelper<T> {
           sb.append(node.getId(false));
         }
       }
-
-      if (!skip
-          && node.getMax() != 1
-          && context.getCountMap().containsKey(new NodeId(node))
-          && (addCount || context.getCountMap().get(new NodeId(node)) != 0)) {
-        sb.append(":").append(context.getCountMap().get(new NodeId(node)));
+      if (parent != null && ELEMENT.equals(parent.getRmType()) && skip(parent, null)) {
+        addCount(context, addCount, sb, parent, skip);
+      } else {
+        addCount(context, addCount, sb, node, skip);
       }
       if (!skip && iterator.hasNext()) {
         sb.append("/");
@@ -82,6 +79,16 @@ public class FlatHelper<T> {
     return StringUtils.removeEnd(sb.toString(), "/");
   }
 
+  private void addCount(
+      Context<T> context, boolean addCount, StringBuilder sb, WebTemplateNode node, boolean skip) {
+    if (!skip
+        && node.getMax() != 1
+        && context.getCountMap().containsKey(new NodeId(node))
+        && (addCount || context.getCountMap().get(new NodeId(node)) != 0)) {
+      sb.append(":").append(context.getCountMap().get(new NodeId(node)));
+    }
+  }
+
   public boolean skip(Context<T> context) {
     WebTemplateNode node = context.getNodeDeque().poll();
     WebTemplateNode parent = context.getNodeDeque().peek();
@@ -96,17 +103,6 @@ public class FlatHelper<T> {
       return true;
     }
     if (parent != null && isNonMandatoryRmAttribute(node, parent)) {
-      return true;
-    }
-    if (parent != null
-        && parent.getRmType().equals(ELEMENT)
-        && parent.getChildren().size() <= 5
-        && parent.getChildren().stream()
-            .filter(n -> !List.of("null_flavour", "feeder_audit").contains(n.getName()))
-            .map(WebTemplateNode::getRmType)
-            .collect(Collectors.toList())
-            .containsAll(List.of(DV_TEXT, DV_CODED_TEXT))
-        && !node.getId().equals(parent.getId())) {
       return true;
     }
 
@@ -162,6 +158,8 @@ public class FlatHelper<T> {
         typeInfo.getRmName().equals("ACTIVITY") && node.getName().equals("timing")
             || typeInfo.getRmName().equals("INSTRUCTION") && node.getName().equals("expiry_time")
             || typeInfo.getRmName().equals("INTERVAL_EVENT") && node.getName().equals("width")
+            || typeInfo.getRmName().equals("INTERVAL_EVENT")
+                && node.getName().equals("math_function")
             || typeInfo.getRmName().equals(ISM_TRANSITION) && node.getName().equals("transition");
 
     return (nonMandatoryRmAttribute || mandatoryNotInWebTemplate) && !nonMandatoryInWebTemplate;
