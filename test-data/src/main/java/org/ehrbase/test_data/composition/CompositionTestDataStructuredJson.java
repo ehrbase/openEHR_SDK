@@ -20,35 +20,26 @@ package org.ehrbase.test_data.composition;
 
 import java.io.InputStream;
 
-public enum CompositionTestDataSimSDTJson {
-  ALTERNATIVE_EVENTS("AlternativeEvents", "AlternativeEvents.json"),
-  ALTERNATIVE_EVENTS_2("AlternativeEvents", "AlternativeEvents2.json"),
-  VITALSIGNS("Vitalsigns", "Vitalsigns.json"),
-  ADVERSE_REACTION_LIST("AlternativeEvents", "IDCR - Adverse Reaction List.json"),
-  CORONA("Corona", "corona.json"),
-  CORONA_WITH_OTHER_PARTICIPATION("Corona", "corona_with_other_participation.json"),
-  CORONA_WITH_CONTEXT("Corona", "corona_with_context.json"),
-  MULTI_OCCURRENCE("multi_occurrence", "multi_occurrence.json"),
-  MISSING_COUNT("flat_with_missing_count.json", "flat_with_missing_count.json"),
-  ALL_TYPES("test_all_types", "test_all_types.json"),
-  DETERIORIATION_ASSESSMENT(
-      "EREACT - Deterioration_assessment", "EREACT - Deterioration_assessment.json"),
+public enum CompositionTestDataStructuredJson {
+
   MULTI_LIST(
           "MULTI_LIST", "multi_list.json"),
-  EREACT_COVID_MANAGEMENT("flat with action", "EREACT - Covid status monitoring - FLAT.json");
+  CORONA("Corona", "corona.json");
+
 
   private final String filename;
   private final String description;
 
-  CompositionTestDataSimSDTJson(String description, String filename) {
+  CompositionTestDataStructuredJson(String description, String filename) {
     this.filename = filename;
     this.description = description;
   }
 
   public InputStream getStream() {
-    return getClass().getResourceAsStream("/composition/flat/simSDT/" + filename);
+    return getClass().getResourceAsStream("/composition/flat/structured/" + filename);
   }
 
+  @Override
   public String toString() {
     return this.description;
   }
