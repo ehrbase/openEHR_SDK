@@ -31,6 +31,7 @@ public enum CompositionTestDataSimSDTJson {
   MULTI_OCCURRENCE("multi_occurrence", "multi_occurrence.json"),
   MISSING_COUNT("flat_with_missing_count.json", "flat_with_missing_count.json"),
   ALL_TYPES("test_all_types", "test_all_types.json"),
+  WORD_WITH_AND("Template with archetype with and in name ", "wordwithandin_test.json"),
   DETERIORIATION_ASSESSMENT(
       "EREACT - Deterioration_assessment", "EREACT - Deterioration_assessment.json"),
   MULTI_LIST(

@@ -19,13 +19,9 @@
 
 package org.ehrbase.webtemplate.parser;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
+
+import java.util.*;
 
 public class FlatPath {
   private final String name;
@@ -95,7 +91,7 @@ public class FlatPath {
     if (split.length == 2) {
       String node = StringUtils.removeEnd(StringUtils.removeStart(split[1], "["), "]");
 
-      String[] predicates = split(node, null, "and", ",");
+      String[] predicates = split(node, null, " and", ",");
       atCode = predicates[0].trim();
       otherPredicates = new HashMap<>();
       for (int i = 1; i < predicates.length; i++) {

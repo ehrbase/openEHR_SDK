@@ -86,6 +86,15 @@ public class FlatJsonTest {
   }
 
   @Test
+  public void roundNameWithAnd() throws IOException {
+
+    CompositionTestDataSimSDTJson testData = CompositionTestDataSimSDTJson.WORD_WITH_AND;
+    String templateId = OperationalTemplateTestData.WORD_WITH_AND.getTemplateId();
+
+    check(templateId, testData, new String[] {}, new String[] {});
+  }
+
+  @Test
   public void roundTripDeterioriationAssessment() throws IOException {
 
     String templateId = "EREACT - Deterioriation assessment.v0";
