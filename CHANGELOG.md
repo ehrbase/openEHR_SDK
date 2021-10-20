@@ -20,6 +20,7 @@ Note: version releases in the 0.x.y range may introduce breaking changes.
 - Fix NullPointerException when `protocol.items` is `null` or empty (
   see https://github.com/ehrbase/openEHR_SDK/pull/262)
 - FLAT: Fix missing items in ITEM_TREE (see https://github.com/ehrbase/openEHR_SDK/pull/265)
+- Handle `expiry_time` in INSTRUCTION (see https://github.com/ehrbase/openEHR_SDK/pull/270)
 
 ## 1.5.0
 

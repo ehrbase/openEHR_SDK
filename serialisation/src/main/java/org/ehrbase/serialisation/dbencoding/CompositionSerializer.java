@@ -46,6 +46,7 @@ import com.nedap.archie.rm.datastructures.ItemTable;
 import com.nedap.archie.rm.datastructures.ItemTree;
 import com.nedap.archie.rm.datavalues.DvText;
 import com.nedap.archie.rm.integration.GenericEntry;
+import java.util.Map;
 import org.ehrbase.serialisation.attributes.ActionAttributes;
 import org.ehrbase.serialisation.attributes.ActivityAttributes;
 import org.ehrbase.serialisation.attributes.AdminEntryAttributes;
@@ -61,8 +62,6 @@ import org.ehrbase.serialisation.attributes.SectionAttributes;
 import org.ehrbase.serialisation.exception.MarshalException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.Map;
 
 /**
  * Sequential Event Processor for Composition.
@@ -98,6 +97,7 @@ public class CompositionSerializer {
   public static final String TAG_MATH_FUNCTION = "/math_function";
   public static final String TAG_INSTRUCTION = "/instruction";
   public static final String TAG_NARRATIVE = "/narrative";
+  public static final String TAG_EXPIRY_TIME = "/expiry_time";
   public static final String TAG_ITEMS = "/items";
   public static final String TAG_OTHER_CONTEXT = "/context/other_context";
   public static final String TAG_ACTIVITIES = "/activities";
