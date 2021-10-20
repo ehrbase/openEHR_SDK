@@ -27,10 +27,9 @@ import com.fasterxml.jackson.databind.node.ValueNode;
 import org.apache.commons.lang3.StringUtils;
 import org.ehrbase.serialisation.jsonencoding.JacksonUtil;
 import org.ehrbase.util.exception.SdkException;
+import org.ehrbase.webtemplate.path.flat.FlatPathDto;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.ehrbase.webtemplate.parser.OPTParser.PATH_DIVIDER;
@@ -42,12 +41,11 @@ public class StructuredHelper {
     // NOP
   }
 
-  public static String convert(String structuredString) {
-    JsonNode jsonNode = null;
-    try {
+  public static String convertStructuredToFlat(String structuredString) {
 
-      jsonNode = OBJECT_MAPPER.readTree(structuredString);
-        Map<String, JsonNode> convert = convert("", jsonNode);
+    try {
+        JsonNode jsonNode = OBJECT_MAPPER.readTree(structuredString);
+        Map<String, JsonNode> convert = convertStructuredToFlat("", jsonNode);
 
         return OBJECT_MAPPER.writeValueAsString(convert.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().asText())));
     } catch (JsonProcessingException e) {
@@ -57,9 +55,79 @@ public class StructuredHelper {
 
   }
 
+  public static String convertFlatToStructured(String flatString){
 
 
-  private static Map<String, JsonNode> convert(String path, JsonNode jsonNode) {
+      try {
+
+          JsonNode jsonNode = null;
+          jsonNode = OBJECT_MAPPER.readTree(flatString);
+
+          Map<FlatPathDto, JsonNode> flatMap = new HashMap<>();
+          for (Iterator<Map.Entry<String, JsonNode>> it = jsonNode.fields(); it.hasNext(); ) {
+              Map.Entry<String, JsonNode> next = it.next();
+
+              flatMap.put(new FlatPathDto(next.getKey()),next.getValue());
+
+          }
+          Map<String,Object> structuredMap = convertFlatToStructured(flatMap);
+
+          Map.Entry<String, Object> root = structuredMap.entrySet().stream().findAny().orElseThrow();
+
+          structuredMap.replace(root.getKey(),((List)root.getValue()).get(0));
+
+          return OBJECT_MAPPER.writeValueAsString(structuredMap);
+      } catch (JsonProcessingException e) {
+
+          throw  new SdkException(e.getMessage(),e);
+      }
+
+  }
+
+   private static Map<String,Object> convertFlatToStructured( Map<FlatPathDto, JsonNode> flatMap){
+
+       Map<FlatPathDto, Map<FlatPathDto, JsonNode>> subMap = flatMap.entrySet().stream().collect(Collectors.groupingBy(e -> {
+           FlatPathDto startFlatPathDto = new FlatPathDto();
+           startFlatPathDto.setName(e.getKey().getName());
+           startFlatPathDto.setCount(e.getKey().getCount());
+           return startFlatPathDto;
+       }, Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
+
+       Map<String,Object> structured = new HashMap<>();
+
+       subMap.forEach(
+               (k,v) ->{
+
+                   if(!structured.containsKey(k.getName())){
+                       structured.put(k.getName(), new ArrayList<>());
+                   }
+
+                   List<Object> values = (List<Object>) structured.get(k.getName());
+
+
+                   Map<String, Object> stringObjectMap = convertFlatToStructured(v.entrySet().stream().filter(e -> e.getKey().getChild() != null).collect(Collectors.toMap(e -> FlatPathDto.removeStart(e.getKey(), new FlatPathDto(k)), Map.Entry::getValue)));
+
+                   if (!stringObjectMap.isEmpty()){
+                       values.add(stringObjectMap);
+                   }
+
+
+                   Map<String, Object> collect = v.entrySet().stream().filter(e -> e.getKey().getChild() == null).collect(Collectors.toMap(e -> Optional.ofNullable(e.getKey().getAttributeName()).map(s -> "|"+s).orElse(""), Map.Entry::getValue));
+
+                   if (collect.size() == 1 && collect.containsKey("")){
+                       values.add(collect.entrySet().stream().findAny().map(Map.Entry::getValue).orElse(""));
+                   }else if (!collect.isEmpty()){
+                       values.add(collect);
+                   }
+               }
+       );
+
+
+
+       return structured;
+   }
+
+  private static Map<String, JsonNode> convertStructuredToFlat(String path, JsonNode jsonNode) {
     if (jsonNode instanceof ValueNode) {
 
       return Map.of(path, jsonNode);
@@ -73,7 +141,7 @@ public class StructuredHelper {
           }else {
               newPath = path +PATH_DIVIDER + field.getKey();
           }
-          map.putAll(convert(newPath  , field.getValue()));
+          map.putAll(convertStructuredToFlat(newPath  , field.getValue()));
       }
       return map;
     } else if (jsonNode instanceof ArrayNode) {
@@ -87,7 +155,7 @@ public class StructuredHelper {
           }else{
               newPath = path;
           }
-          map.putAll(convert(newPath,child));
+          map.putAll(convertStructuredToFlat(newPath,child));
       }
 
         return map;

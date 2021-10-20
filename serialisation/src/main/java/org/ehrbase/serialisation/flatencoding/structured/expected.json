@@ -1,0 +1,35 @@
+{
+  "fieber_oder_erhöhte_körpertemperatur": [
+    {
+      "spezifisches_symptom_anzeichen": [
+        {
+          "bezeichnung_des_symptoms_oder_anzeichens.": [
+            "Fieber oder erhöhte Körpertemperatur"
+          ],
+          "vorhanden": [
+            {
+              "|code": "at0023",
+              "|value": "Vorhanden",
+              "|terminology": "local"
+            }
+          ]
+        }
+      ],
+      "time": [
+        "2020-05-11T22:53:12.039139+02:00"
+      ],
+      "language": [
+        {
+          "|code": "de",
+          "|terminology": "ISO_639-1"
+        }
+      ],
+      "encoding": [
+        {
+          "|code": "UTF-8",
+          "|terminology": "IANA_character-sets"
+        }
+      ]
+    }
+  ]
+}

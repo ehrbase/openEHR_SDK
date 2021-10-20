@@ -28,6 +28,8 @@ import org.ehrbase.test_data.composition.CompositionTestDataSimSDTJson;
 import org.ehrbase.test_data.composition.CompositionTestDataStructuredJson;
 import org.ehrbase.test_data.operationaltemplate.OperationalTemplateTestData;
 import org.junit.Test;
+import org.skyscreamer.jsonassert.JSONAssert;
+import org.skyscreamer.jsonassert.JSONCompareMode;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -46,7 +48,28 @@ public class StructuredHelperTest {
         String templateId = OperationalTemplateTestData.CORONA_ANAMNESE.getTemplateId();
 
 
-        test(structuredJson, simSDTJson, templateId);
+        testStructuredToFlat(structuredJson, simSDTJson, templateId);
+    }
+
+    @Test
+    public void convertRevert() throws IOException {
+
+        CompositionTestDataStructuredJson structuredJson = CompositionTestDataStructuredJson.CORONA;
+        CompositionTestDataSimSDTJson simSDTJson = CompositionTestDataSimSDTJson.CORONA;
+
+
+        testFlatToStructured(structuredJson, simSDTJson);
+    }
+
+    private void testFlatToStructured(CompositionTestDataStructuredJson structuredJson, CompositionTestDataSimSDTJson simSDTJson) throws IOException {
+        String flat =
+                IOUtils.toString(simSDTJson.getStream(), StandardCharsets.UTF_8);
+
+        String actual = StructuredHelper.convertFlatToStructured(flat);
+
+        String expected =
+                IOUtils.toString(structuredJson.getStream(), StandardCharsets.UTF_8);
+        JSONAssert.assertEquals(expected,actual, JSONCompareMode.LENIENT);
     }
 
     @Test
@@ -57,13 +80,24 @@ public class StructuredHelperTest {
         String templateId = OperationalTemplateTestData.MULTI_LIST.getTemplateId();
 
 
-        test(structuredJson, simSDTJson, templateId);
+        testStructuredToFlat(structuredJson, simSDTJson, templateId);
     }
-    private void test(CompositionTestDataStructuredJson structuredJson, CompositionTestDataSimSDTJson simSDTJson, String templateId) throws IOException {
+
+
+    @Test
+    public void convertRevertMultiList() throws IOException {
+
+        CompositionTestDataStructuredJson structuredJson = CompositionTestDataStructuredJson.MULTI_LIST;
+        CompositionTestDataSimSDTJson simSDTJson = CompositionTestDataSimSDTJson.MULTI_LIST;
+
+
+        testFlatToStructured(structuredJson, simSDTJson);
+    }
+    private void testStructuredToFlat(CompositionTestDataStructuredJson structuredJson, CompositionTestDataSimSDTJson simSDTJson, String templateId) throws IOException {
         String flat =
                 IOUtils.toString(structuredJson.getStream(), StandardCharsets.UTF_8);
 
-        String actual = StructuredHelper.convert(flat);
+        String actual = StructuredHelper.convertStructuredToFlat(flat);
 
 
         String expected =
