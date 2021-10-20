@@ -19,9 +19,9 @@
 
 package org.ehrbase.webtemplate.parser;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import org.junit.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class FlatPathTest {
 
@@ -47,6 +47,15 @@ public class FlatPathTest {
     assertThat(cut.format(FlatPath.OtherPredicatesFormate.SHORTED))
         .isEqualTo(
             "/content[openEHR-EHR-OBSERVATION.laboratory_test_result.v1,'Einsenderstandort']/protocol[at0004]/items[at0094]/items[openEHR-EHR-CLUSTER.location.v1]");
+  }
+
+  @Test
+  public void testFlatPathWithAndInArchetypeId() {
+    String path = "/content[openEHR-EHR-OBSERVATION.wordwithandin.v1]";
+    FlatPath cut = new FlatPath(path);
+    assertThat(cut).isNotNull();
+    assertThat(cut.getAtCode()).isEqualTo("openEHR-EHR-OBSERVATION.wordwithandin.v1");
+    assertThat(cut.toString()).isEqualTo(path);
   }
 
   @Test
