@@ -29,26 +29,29 @@ import java.util.Set;
 
 public class DvIdentifierRMUnmarshaller extends AbstractRMUnmarshaller<DvIdentifier> {
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Class<DvIdentifier> getAssociatedClass() {
-        return DvIdentifier.class;
-    }
+  /** {@inheritDoc} */
+  @Override
+  public Class<DvIdentifier> getAssociatedClass() {
+    return DvIdentifier.class;
+  }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void handle(String currentTerm, DvIdentifier rmObject, Map<FlatPathDto, String> currentValues, Context<Map<FlatPathDto, String>> context, Set<String> consumedPaths) {
+  /** {@inheritDoc} */
+  @Override
+  public void handle(
+      String currentTerm,
+      DvIdentifier rmObject,
+      Map<FlatPathDto, String> currentValues,
+      Context<Map<FlatPathDto, String>> context,
+      Set<String> consumedPaths) {
 
-        setValue(currentTerm, "id", currentValues, rmObject::setId, String.class, consumedPaths);
-        if (StringUtils.isBlank(rmObject.getId())) {
-            setValue(currentTerm, null, currentValues, rmObject::setId, String.class, consumedPaths);
-        }
-        setValue(currentTerm, "issuer", currentValues, rmObject::setIssuer, String.class, consumedPaths);
-        setValue(currentTerm, "assigner", currentValues, rmObject::setAssigner, String.class, consumedPaths);
-        setValue(currentTerm, "type", currentValues, rmObject::setType, String.class, consumedPaths);
+    setValue(currentTerm, "id", currentValues, rmObject::setId, String.class, consumedPaths);
+    if (StringUtils.isBlank(rmObject.getId())) {
+      setValue(currentTerm, null, currentValues, rmObject::setId, String.class, consumedPaths);
     }
+    setValue(
+        currentTerm, "issuer", currentValues, rmObject::setIssuer, String.class, consumedPaths);
+    setValue(
+        currentTerm, "assigner", currentValues, rmObject::setAssigner, String.class, consumedPaths);
+    setValue(currentTerm, "type", currentValues, rmObject::setType, String.class, consumedPaths);
+  }
 }

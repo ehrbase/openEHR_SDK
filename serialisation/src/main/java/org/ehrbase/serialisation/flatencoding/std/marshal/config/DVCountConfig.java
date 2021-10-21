@@ -27,25 +27,19 @@ import java.util.Map;
 
 public class DVCountConfig extends AbstractsStdConfig<DvCount> {
 
+  /** {@inheritDoc} */
+  @Override
+  public Class<DvCount> getAssociatedClass() {
+    return DvCount.class;
+  }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Class<DvCount> getAssociatedClass() {
-        return DvCount.class;
-    }
+  /** {@inheritDoc} */
+  @Override
+  public Map<String, Object> buildChildValues(
+      String currentTerm, DvCount rmObject, Context<Map<String, Object>> context) {
+    Map<String, Object> result = new HashMap<>();
+    addValue(result, currentTerm, null, rmObject.getMagnitude());
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Map<String, Object> buildChildValues(String currentTerm, DvCount rmObject, Context<Map<String, Object>> context) {
-        Map<String, Object> result = new HashMap<>();
-        addValue(result, currentTerm, null, rmObject.getMagnitude());
-
-        return result;
-    }
-
-
+    return result;
+  }
 }

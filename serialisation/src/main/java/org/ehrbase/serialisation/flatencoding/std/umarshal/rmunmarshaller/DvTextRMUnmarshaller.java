@@ -29,24 +29,27 @@ import java.util.Set;
 
 public class DvTextRMUnmarshaller extends AbstractRMUnmarshaller<DvText> {
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Class<DvText> getAssociatedClass() {
-        return DvText.class;
-    }
+  /** {@inheritDoc} */
+  @Override
+  public Class<DvText> getAssociatedClass() {
+    return DvText.class;
+  }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void handle(String currentTerm, DvText rmObject, Map<FlatPathDto, String> currentValues, Context<Map<FlatPathDto, String>> context, Set<String> consumedPaths) {
-        if (context.getNodeDeque().peek().getInputs().stream().map(WebTemplateInput::getSuffix).anyMatch("other"::equals)) {
-            setValue(currentTerm, "other", currentValues, rmObject::setValue, String.class, consumedPaths);
-        } else {
-            setValue(currentTerm, null, currentValues, rmObject::setValue, String.class, consumedPaths);
-        }
-
+  /** {@inheritDoc} */
+  @Override
+  public void handle(
+      String currentTerm,
+      DvText rmObject,
+      Map<FlatPathDto, String> currentValues,
+      Context<Map<FlatPathDto, String>> context,
+      Set<String> consumedPaths) {
+    if (context.getNodeDeque().peek().getInputs().stream()
+        .map(WebTemplateInput::getSuffix)
+        .anyMatch("other"::equals)) {
+      setValue(
+          currentTerm, "other", currentValues, rmObject::setValue, String.class, consumedPaths);
+    } else {
+      setValue(currentTerm, null, currentValues, rmObject::setValue, String.class, consumedPaths);
     }
+  }
 }

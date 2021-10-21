@@ -28,15 +28,13 @@ import java.util.Set;
 
 public interface UnmarshalPostprocessor<T extends RMObject> extends ClassDependent<T> {
 
-    /**
-     * Adds or removes Values from {@code values} depending on {@code rmObject}.
-     *  @param term     current term in the unmarshal recursion.
-     * @param rmObject current rmObject in the unmarshal recursion.
-     * @param values   current values in the unmarshal recursion.
-     * @param consumedPaths
-     */
-    void process(String term, T rmObject, Map<FlatPathDto, String> values, Set<String> consumedPaths);
-
-
-
+  /**
+   * Adds or removes Values from {@code values} depending on {@code rmObject}.
+   *
+   * @param term current term in the unmarshal recursion.
+   * @param rmObject current rmObject in the unmarshal recursion.
+   * @param values current values in the unmarshal recursion.
+   * @param consumedPaths
+   */
+  void process(String term, T rmObject, Map<FlatPathDto, String> values, Set<String> consumedPaths);
 }

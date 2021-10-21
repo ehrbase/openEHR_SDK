@@ -30,12 +30,10 @@ import org.ehrbase.webtemplate.model.WebTemplate;
 
 public class StructuredJson implements RMDataFormat {
 
-
   private final WebTemplate templateIntrospect;
   private final FlatJsonMarshaller flatJsonMarshaller;
 
   StructuredJson(FlatJasonProvider flatJasonProvider, String templateId) {
-
 
     templateIntrospect =
         flatJasonProvider
@@ -71,7 +69,7 @@ public class StructuredJson implements RMDataFormat {
   @Override
   public Composition unmarshal(String value) {
 
-
-    return new FlatJsonUnmarshaller().unmarshal( StructuredHelper.convertStructuredToFlat(value), templateIntrospect);
+    return new FlatJsonUnmarshaller()
+        .unmarshal(StructuredHelper.convertStructuredToFlat(value), templateIntrospect);
   }
 }

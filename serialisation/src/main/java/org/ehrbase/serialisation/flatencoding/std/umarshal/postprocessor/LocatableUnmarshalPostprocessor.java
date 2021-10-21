@@ -38,14 +38,16 @@ public class LocatableUnmarshalPostprocessor extends AbstractUnmarshalPostproces
 
   /** {@inheritDoc} Unmarshalls {@link Composition#setUid} */
   @Override
-  public void process(String term, Locatable rmObject, Map<FlatPathDto, String> values, Set<String> consumedPaths) {
+  public void process(
+      String term, Locatable rmObject, Map<FlatPathDto, String> values, Set<String> consumedPaths) {
 
     setValue(
         term + PATH_DIVIDER + "_uid",
         null,
         values,
         s -> rmObject.setUid(new HierObjectId(s)),
-        String.class, consumedPaths);
+        String.class,
+        consumedPaths);
 
     Map<Integer, Map<String, String>> links =
         values.entrySet().stream()
@@ -53,9 +55,10 @@ public class LocatableUnmarshalPostprocessor extends AbstractUnmarshalPostproces
             .collect(
                 Collectors.groupingBy(
                     e -> Optional.ofNullable(e.getKey().getLast().getCount()).orElse(0),
-                        Collectors.toMap(
-                                e1 -> e1.getKey().getLast().getAttributeName(),
-                            stringStringEntry -> StringUtils.unwrap(stringStringEntry.getValue(), '"'))));
+                    Collectors.toMap(
+                        e1 -> e1.getKey().getLast().getAttributeName(),
+                        stringStringEntry ->
+                            StringUtils.unwrap(stringStringEntry.getValue(), '"'))));
 
     if (rmObject.getLinks() == null) {
       rmObject.setLinks(new ArrayList<>());
@@ -66,8 +69,11 @@ public class LocatableUnmarshalPostprocessor extends AbstractUnmarshalPostproces
         .addAll(
             links.values().stream().map(DefaultValues::createLink).collect(Collectors.toList()));
 
-  consumedPaths.addAll(  values.keySet().stream()
-            .filter(s -> s.startsWith(term + PATH_DIVIDER + "_link")).map(FlatPathDto::format).collect(Collectors.toSet()));
+    consumedPaths.addAll(
+        values.keySet().stream()
+            .filter(s -> s.startsWith(term + PATH_DIVIDER + "_link"))
+            .map(FlatPathDto::format)
+            .collect(Collectors.toSet()));
   }
 
   /** {@inheritDoc} */

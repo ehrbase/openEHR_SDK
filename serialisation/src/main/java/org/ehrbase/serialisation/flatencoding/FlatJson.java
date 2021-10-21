@@ -35,7 +35,6 @@ public class FlatJson implements RMDataFormat {
 
   FlatJson(FlatJasonProvider flatJasonProvider, String templateId) {
 
-
     templateIntrospect =
         flatJasonProvider
             .getTemplateProvider()

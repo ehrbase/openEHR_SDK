@@ -28,24 +28,37 @@ import java.util.Set;
 
 public class DvProportionRMUnmarshaller extends AbstractRMUnmarshaller<DvProportion> {
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Class<DvProportion> getAssociatedClass() {
-        return DvProportion.class;
-    }
+  /** {@inheritDoc} */
+  @Override
+  public Class<DvProportion> getAssociatedClass() {
+    return DvProportion.class;
+  }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void handle(String currentTerm, DvProportion rmObject, Map<FlatPathDto, String> currentValues, Context<Map<FlatPathDto, String>> context, Set<String> consumedPaths) {
+  /** {@inheritDoc} */
+  @Override
+  public void handle(
+      String currentTerm,
+      DvProportion rmObject,
+      Map<FlatPathDto, String> currentValues,
+      Context<Map<FlatPathDto, String>> context,
+      Set<String> consumedPaths) {
 
-        setValue(currentTerm, "numerator", currentValues, rmObject::setNumerator, Double.class, consumedPaths);
-        setValue(currentTerm, "denominator", currentValues, rmObject::setDenominator, Double.class, consumedPaths);
-        setValue(currentTerm, "type", currentValues, rmObject::setType, Long.class, consumedPaths);
-        //Contains numerator/denominator
-        consumedPaths.add(currentTerm);
-    }
+    setValue(
+        currentTerm,
+        "numerator",
+        currentValues,
+        rmObject::setNumerator,
+        Double.class,
+        consumedPaths);
+    setValue(
+        currentTerm,
+        "denominator",
+        currentValues,
+        rmObject::setDenominator,
+        Double.class,
+        consumedPaths);
+    setValue(currentTerm, "type", currentValues, rmObject::setType, Long.class, consumedPaths);
+    // Contains numerator/denominator
+    consumedPaths.add(currentTerm);
+  }
 }

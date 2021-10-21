@@ -27,25 +27,19 @@ import java.util.Map;
 
 public class DvParsableConfig extends AbstractsStdConfig<DvParsable> {
 
+  /** {@inheritDoc} */
+  @Override
+  public Class<DvParsable> getAssociatedClass() {
+    return DvParsable.class;
+  }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Class<DvParsable> getAssociatedClass() {
-        return DvParsable.class;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Map<String, Object> buildChildValues(String currentTerm, DvParsable rmObject, Context<Map<String, Object>> context) {
-        Map<String, Object> result = new HashMap<>();
-        addValue(result, currentTerm, null, rmObject.getValue());
-        addValue(result, currentTerm, "formalism", rmObject.getFormalism());
-        return result;
-    }
-
-
+  /** {@inheritDoc} */
+  @Override
+  public Map<String, Object> buildChildValues(
+      String currentTerm, DvParsable rmObject, Context<Map<String, Object>> context) {
+    Map<String, Object> result = new HashMap<>();
+    addValue(result, currentTerm, null, rmObject.getValue());
+    addValue(result, currentTerm, "formalism", rmObject.getFormalism());
+    return result;
+  }
 }
