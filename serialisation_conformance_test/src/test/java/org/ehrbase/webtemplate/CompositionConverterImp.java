@@ -49,7 +49,7 @@ public class CompositionConverterImp implements CompositionConverter {
     Composition unmarshal =
         new CanonicalJson().unmarshal(rawComposition.replace("@class", "_type"), Composition.class);
 
-    return getFlatJson(template)
+    return getFlatJson(template, FlatFormat.SIM_SDT)
         .marshal(unmarshal)
         .replace("_identifier:0|id", "_identifier:0")
         .replace("_identifier:1|id", "_identifier:1");
@@ -58,7 +58,12 @@ public class CompositionConverterImp implements CompositionConverter {
   @Override
   public String convertRawToStructured(
       String template, String defaultLanguage, String rawComposition) throws Exception {
-    throw new UnsupportedOperationException();
+
+
+    Composition unmarshal =
+            new CanonicalJson().unmarshal(rawComposition.replace("@class", "_type"), Composition.class);
+    return getFlatJson(template, FlatFormat.STRUCTURED)
+            .marshal(unmarshal);
   }
 
   @Override
@@ -68,7 +73,7 @@ public class CompositionConverterImp implements CompositionConverter {
       String flatComposition,
       Map<String, Object> compositionBuilderContext)
       throws Exception {
-    RMDataFormat flatJson = getFlatJson(template);
+    RMDataFormat flatJson = getFlatJson(template, FlatFormat.SIM_SDT);
     Map<String, Object> currentValues = new HashMap<>();
     for (Iterator<Map.Entry<String, JsonNode>> it =
             OBJECT_MAPPER.readTree(flatComposition).fields();
@@ -95,14 +100,14 @@ public class CompositionConverterImp implements CompositionConverter {
     }
   }
 
-  private RMDataFormat getFlatJson(String template) throws XmlException, IOException {
+  private RMDataFormat getFlatJson(String template, FlatFormat flatFormat) throws XmlException, IOException {
     TemplateDocument templateDocument =
         TemplateDocument.Factory.parse(IOUtils.toInputStream(template, StandardCharsets.UTF_8));
 
     RMDataFormat flatJson =
         new FlatJasonProvider(t -> Optional.ofNullable(templateDocument.getTemplate()))
             .buildFlatJson(
-                FlatFormat.SIM_SDT, templateDocument.getTemplate().getTemplateId().getValue());
+                    flatFormat, templateDocument.getTemplate().getTemplateId().getValue());
     return flatJson;
   }
 
@@ -122,7 +127,10 @@ public class CompositionConverterImp implements CompositionConverter {
       String flatComposition,
       Map<String, Object> compositionBuilderContext)
       throws Exception {
-    throw new UnsupportedOperationException();
+
+    Composition composition = getFlatJson(template, FlatFormat.SIM_SDT)
+            .unmarshal(flatComposition);
+    return getFlatJson(template,FlatFormat.STRUCTURED).marshal(composition);
   }
 
   @Override
@@ -132,7 +140,9 @@ public class CompositionConverterImp implements CompositionConverter {
       String structuredComposition,
       Map<String, Object> compositionBuilderContext)
       throws Exception {
-    throw new UnsupportedOperationException();
+    Composition composition = getFlatJson(template, FlatFormat.STRUCTURED)
+            .unmarshal(structuredComposition);
+    return getFlatJson(template,FlatFormat.SIM_SDT).marshal(composition);
   }
 
   @Override
@@ -142,7 +152,9 @@ public class CompositionConverterImp implements CompositionConverter {
       String structuredComposition,
       Map<String, Object> compositionBuilderContext)
       throws Exception {
-    throw new UnsupportedOperationException();
+    Composition composition = getFlatJson(template, FlatFormat.STRUCTURED)
+            .unmarshal(structuredComposition);
+    return getFlatJson(template,FlatFormat.SIM_SDT).marshal(composition);
   }
 
   @Override
