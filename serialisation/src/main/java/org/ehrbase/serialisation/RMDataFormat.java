@@ -19,6 +19,7 @@
 package org.ehrbase.serialisation;
 
 import com.nedap.archie.rm.RMObject;
+import com.nedap.archie.rm.composition.Composition;
 
 public interface RMDataFormat {
 
@@ -26,5 +27,9 @@ public interface RMDataFormat {
 
     <T extends RMObject> T unmarshal(String value, Class<T> clazz);
 
+    default Composition unmarshal(String value){
+
+        return unmarshal(value,Composition.class);
+    }
 
 }

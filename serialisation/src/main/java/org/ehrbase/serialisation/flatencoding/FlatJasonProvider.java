@@ -20,6 +20,7 @@
 package org.ehrbase.serialisation.flatencoding;
 
 
+import org.ehrbase.serialisation.RMDataFormat;
 import org.ehrbase.util.exception.SdkException;
 import org.ehrbase.webtemplate.templateprovider.TemplateProvider;
 
@@ -41,11 +42,13 @@ public class FlatJasonProvider {
      * @param templateId
      * @return
      */
-    public FlatJson buildFlatJson(FlatFormat format, String templateId) {
+    public RMDataFormat buildFlatJson(FlatFormat format, String templateId) {
 
         switch (format) {
             case SIM_SDT:
                 return new FlatJson(this, templateId);
+            case STRUCTURED:
+                return new StructuredJson(this, templateId);
             default:
                 throw new SdkException(String.format("Format %s not supported", format));
         }

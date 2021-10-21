@@ -20,9 +20,9 @@ package org.ehrbase.serialisation.flatencoding.structured;
 
 import org.apache.commons.io.IOUtils;
 import org.assertj.core.api.SoftAssertions;
+import org.ehrbase.serialisation.RMDataFormat;
 import org.ehrbase.serialisation.flatencoding.FlatFormat;
 import org.ehrbase.serialisation.flatencoding.FlatJasonProvider;
-import org.ehrbase.serialisation.flatencoding.FlatJson;
 import org.ehrbase.serialisation.templateprovider.TestDataTemplateProvider;
 import org.ehrbase.test_data.composition.CompositionTestDataSimSDTJson;
 import org.ehrbase.test_data.composition.CompositionTestDataStructuredJson;
@@ -69,7 +69,7 @@ public class StructuredHelperTest {
 
         String expected =
                 IOUtils.toString(structuredJson.getStream(), StandardCharsets.UTF_8);
-        JSONAssert.assertEquals(expected,actual, JSONCompareMode.LENIENT);
+        JSONAssert.assertEquals(expected,actual, JSONCompareMode.NON_EXTENSIBLE);
     }
 
     @Test
@@ -104,7 +104,7 @@ public class StructuredHelperTest {
                 IOUtils.toString(simSDTJson.getStream(), StandardCharsets.UTF_8);
 
 
-        FlatJson flatJson = new FlatJasonProvider(new TestDataTemplateProvider()).buildFlatJson(FlatFormat.SIM_SDT, templateId);
+        RMDataFormat flatJson = new FlatJasonProvider(new TestDataTemplateProvider()).buildFlatJson(FlatFormat.SIM_SDT, templateId);
 
         List<String> errors = compere(flatJson.marshal( flatJson.unmarshal(actual)), expected);
 

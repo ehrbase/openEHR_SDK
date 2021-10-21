@@ -28,5 +28,9 @@ public enum FlatFormat {
     /**
      * Simplified IM Simplified Data template.
      */
-    SIM_SDT;
+    SIM_SDT,
+    /**
+     * STRUCTURED
+     */
+    STRUCTURED;
 }

@@ -24,6 +24,7 @@ import com.nedap.archie.rminfo.ArchieRMInfoLookup;
 import com.nedap.archie.rmobjectvalidator.RMObjectValidator;
 import org.apache.commons.io.IOUtils;
 import org.assertj.core.api.SoftAssertions;
+import org.ehrbase.serialisation.RMDataFormat;
 import org.ehrbase.serialisation.templateprovider.TestDataTemplateProvider;
 import org.ehrbase.test_data.composition.CompositionTestDataSimSDTJson;
 import org.ehrbase.test_data.operationaltemplate.OperationalTemplateTestData;
@@ -227,7 +228,7 @@ public class FlatJsonTest {
       String[] expectedExtra)
       throws IOException {
 
-    FlatJson cut =
+    RMDataFormat cut =
         new FlatJasonProvider(templateProvider).buildFlatJson(FlatFormat.SIM_SDT, templateId);
 
     String flat = IOUtils.toString(testData.getStream(), StandardCharsets.UTF_8);

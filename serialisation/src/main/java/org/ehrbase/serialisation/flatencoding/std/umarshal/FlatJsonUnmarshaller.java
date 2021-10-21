@@ -58,8 +58,9 @@ public class FlatJsonUnmarshaller {
     try {
 
       currentValues = new HashMap<>();
+
       for (Iterator<Map.Entry<String, JsonNode>> it = OBJECT_MAPPER.readTree(flat).fields();
-          it.hasNext(); ) {
+           it.hasNext(); ) {
         Map.Entry<String, JsonNode> e = it.next();
         currentValues.put(e.getKey(), e.getValue().toString());
       }

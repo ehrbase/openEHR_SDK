@@ -47,7 +47,7 @@ public class StructuredHelper {
         JsonNode jsonNode = OBJECT_MAPPER.readTree(structuredString);
         Map<String, JsonNode> convert = convertStructuredToFlat("", jsonNode);
 
-        return OBJECT_MAPPER.writeValueAsString(convert.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().asText())));
+        return OBJECT_MAPPER.writeValueAsString(convert);
     } catch (JsonProcessingException e) {
 
      throw  new SdkException(e.getMessage(),e);
