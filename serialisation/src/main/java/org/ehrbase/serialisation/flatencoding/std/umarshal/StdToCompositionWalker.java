@@ -19,6 +19,8 @@
 
 package org.ehrbase.serialisation.flatencoding.std.umarshal;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nedap.archie.rm.RMObject;
 import com.nedap.archie.rm.composition.Composition;
 import com.nedap.archie.rm.composition.Entry;
@@ -27,10 +29,15 @@ import com.nedap.archie.rm.datavalues.DvCodedText;
 import com.nedap.archie.rm.generic.PartyRelated;
 import com.nedap.archie.rm.support.identification.TerminologyId;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.ehrbase.building.webtemplateskeletnbuilder.WebTemplateSkeletonBuilder;
+import org.ehrbase.serialisation.exception.UnmarshalException;
 import org.ehrbase.serialisation.flatencoding.std.umarshal.postprocessor.UnmarshalPostprocessor;
 import org.ehrbase.serialisation.flatencoding.std.umarshal.rmunmarshaller.DefaultRMUnmarshaller;
 import org.ehrbase.serialisation.flatencoding.std.umarshal.rmunmarshaller.RMUnmarshaller;
+import org.ehrbase.serialisation.jsonencoding.CanonicalJson;
+import org.ehrbase.serialisation.jsonencoding.JacksonUtil;
 import org.ehrbase.serialisation.walker.Context;
 import org.ehrbase.serialisation.walker.NodeId;
 import org.ehrbase.serialisation.walker.ToCompositionWalker;
@@ -54,7 +61,6 @@ public class StdToCompositionWalker extends ToCompositionWalker<Map<FlatPathDto,
   private static final Map<Class<?>, UnmarshalPostprocessor> POSTPROCESSOR_MAP =
       ReflectionHelper.buildMap(UnmarshalPostprocessor.class);
 
-
   private Set<String> consumedPaths;
 
   @Override
@@ -63,8 +69,7 @@ public class StdToCompositionWalker extends ToCompositionWalker<Map<FlatPathDto,
       Map<FlatPathDto, String> object,
       WebTemplate webTemplate,
       DefaultValues defaultValues,
-      String templateId
-  ) {
+      String templateId) {
     consumedPaths = new HashSet<>();
     super.walk(composition, object, webTemplate, defaultValues, templateId);
   }
@@ -123,12 +128,16 @@ public class StdToCompositionWalker extends ToCompositionWalker<Map<FlatPathDto,
   }
 
   private boolean isMatchingNode(
-      Map<FlatPathDto, String> subValues, Context<Map<FlatPathDto, String>> context, WebTemplateNode child) {
+      Map<FlatPathDto, String> subValues,
+      Context<Map<FlatPathDto, String>> context,
+      WebTemplateNode child) {
 
     if (child.getRmType().equals("POINT_EVENT")) {
-      return subValues.entrySet().stream().allMatch((e -> !e.getKey().getLast().getName().equals ("width")));
+      return subValues.entrySet().stream()
+          .allMatch((e -> !e.getKey().getLast().getName().equals("width")));
     } else if (child.getRmType().equals("INTERVAL_EVENT")) {
-      return subValues.entrySet().stream().anyMatch((e -> e.getKey().getLast().getName().equals("width")));
+      return subValues.entrySet().stream()
+          .anyMatch((e -> e.getKey().getLast().getName().equals("width")));
     } else if (visitChildren(child)) {
       for (WebTemplateNode n : child.getChildren()) {
         context.getNodeDeque().push(n);
@@ -142,9 +151,11 @@ public class StdToCompositionWalker extends ToCompositionWalker<Map<FlatPathDto,
 
       return subValues.isEmpty();
     } else if (child.getRmType().equals(DV_CODED_TEXT)) {
-      return subValues.entrySet().stream().anyMatch(e -> "code".equals(e.getKey().getLast().getAttributeName()));
+      return subValues.entrySet().stream()
+          .anyMatch(e -> "code".equals(e.getKey().getLast().getAttributeName()));
     } else if (child.getRmType().equals(DV_TEXT)) {
-      return subValues.entrySet().stream().allMatch((e -> !"code".equals(e.getKey().getLast().getAttributeName())));
+      return subValues.entrySet().stream()
+          .allMatch((e -> !"code".equals(e.getKey().getLast().getAttributeName())));
     } else {
       // End Nodes which are Choice always have unique flat paths
       return true;
@@ -155,21 +166,75 @@ public class StdToCompositionWalker extends ToCompositionWalker<Map<FlatPathDto,
   protected void preHandle(Context<Map<FlatPathDto, String>> context) {
 
     // Handle if at an End-Node
-    if (!visitChildren(context.getNodeDeque().peek()) && !context.getFlatHelper().skip(context)) {
+    if (!isRaw(context)
+        && !visitChildren(context.getNodeDeque().peek())
+        && !context.getFlatHelper().skip(context)) {
       RMUnmarshaller rmUnmarshaller =
           UNMARSHALLER_MAP.getOrDefault(
               context.getRmObjectDeque().peek().getClass(), new DefaultRMUnmarshaller());
       String namePath = getNamePath(context);
-      rmUnmarshaller.handle(
-          namePath, context.getRmObjectDeque().peek(), context.getObjectDeque().peek(), context, consumedPaths);
 
+      rmUnmarshaller.handle(
+          namePath,
+          context.getRmObjectDeque().peek(),
+          context.getObjectDeque().peek(),
+          context,
+          consumedPaths);
     }
+  }
+
+  private void handleRaw(Context<Map<FlatPathDto, String>> context) {
+    ObjectMapper om = JacksonUtil.getObjectMapper();
+    try {
+      Map.Entry<FlatPathDto, String> current =
+          context.getObjectDeque().peek().entrySet().stream().findAny().orElseThrow();
+
+      RMObject newRmObject =
+          new CanonicalJson()
+              .unmarshal(
+                  om.readValue(current.getValue(), String.class).replace("\"@class\"", "\"_type\""),
+                  RMObject.class);
+
+      // Replace old skeleton
+      RMObject oldRM = context.getRmObjectDeque().poll();
+      RMObject parentRM = context.getRmObjectDeque().peek();
+      WebTemplateNode currentNode = context.getNodeDeque().poll();
+      WebTemplateNode parentNode = context.getNodeDeque().peek();
+      WebTemplateSkeletonBuilder.remove(parentNode, parentRM, currentNode, oldRM);
+      WebTemplateSkeletonBuilder.insert(parentNode, parentRM, currentNode, newRmObject);
+      context.getNodeDeque().push(currentNode);
+      context.getRmObjectDeque().push(newRmObject);
+      consumedPaths.add(current.getKey().format());
+
+    } catch (JsonProcessingException e) {
+      throw new UnmarshalException(e.getMessage());
+    }
+  }
+
+  private boolean isRaw(Context<Map<FlatPathDto, String>> context) {
+
+    if (context.getObjectDeque().peek().size() != 1) {
+      return false;
+    }
+
+    Map.Entry<FlatPathDto, String> current =
+        context.getObjectDeque().peek().entrySet().stream().findAny().orElseThrow();
+    return Objects.equals(current.getKey().getLast().getAttributeName(), "raw")
+        // last flat path segment matches node_id ( starting '_' marks optional flat path )
+        && Objects.equals(
+            StringUtils.removeStart(context.getNodeDeque().peek().getId(false), "_"),
+            StringUtils.removeStart(current.getKey().getLast().getName(), "_"));
   }
 
   @Override
   protected void postHandle(Context<Map<FlatPathDto, String>> context) {
 
     super.postHandle(context);
+
+    if (isRaw(context)) {
+
+      handleRaw(context);
+    }
 
     List<UnmarshalPostprocessor<? super RMObject>> postprocessor = new ArrayList<>();
 
@@ -198,20 +263,22 @@ public class StdToCompositionWalker extends ToCompositionWalker<Map<FlatPathDto,
             .filter(Objects::nonNull)
             .findAny()
             .ifPresent(
-                v -> {
-                  ((PartyRelated) ((Entry) context.getRmObjectDeque().peek()).getSubject())
-                      .setRelationship(
-                          new DvCodedText(
-                              v.getLabel(),
-                              new CodePhrase(new TerminologyId("openehr"), v.getValue())));
-                });
+                v ->
+                    ((PartyRelated) ((Entry) context.getRmObjectDeque().peek()).getSubject())
+                        .setRelationship(
+                            new DvCodedText(
+                                v.getLabel(),
+                                new CodePhrase(new TerminologyId("openehr"), v.getValue()))));
       }
     }
 
     postprocessor.forEach(
-        p -> {
-          p.process(namePath, context.getRmObjectDeque().peek(), context.getObjectDeque().peek(),consumedPaths );
-        });
+        p ->
+            p.process(
+                namePath,
+                context.getRmObjectDeque().peek(),
+                context.getObjectDeque().peek(),
+                consumedPaths));
   }
 
   private String getNamePath(Context<Map<FlatPathDto, String>> context) {
@@ -225,8 +292,7 @@ public class StdToCompositionWalker extends ToCompositionWalker<Map<FlatPathDto,
   }
 
   @Override
-  protected void handleDVText(
-      WebTemplateNode currentNode) {
+  protected void handleDVText(WebTemplateNode currentNode) {
     if (currentNode.getRmType().equals(ELEMENT)) {
       List<WebTemplateNode> trueChildren =
           currentNode.getChildren().stream()
@@ -250,10 +316,7 @@ public class StdToCompositionWalker extends ToCompositionWalker<Map<FlatPathDto,
     }
   }
 
-  public static void handleDVTextInternal(
-      WebTemplateNode node
-
-    ) {
+  public static void handleDVTextInternal(WebTemplateNode node) {
 
     if (node.getRmType().equals(ELEMENT)) {
       List<WebTemplateNode> trueChildren =
@@ -279,17 +342,12 @@ public class StdToCompositionWalker extends ToCompositionWalker<Map<FlatPathDto,
   }
 
   @Override
-  protected int calculateSize(Context<Map<FlatPathDto, String>> context, WebTemplateNode childNode) {
+  protected int calculateSize(
+      Context<Map<FlatPathDto, String>> context, WebTemplateNode childNode) {
 
     Integer oldCount = context.getCountMap().get(new NodeId(childNode));
-  //  context.getCountMap().remove(new NodeId((childNode)));
-  //  context.getNodeDeque().push(childNode);
-    String namePath = context.getFlatHelper().buildNamePath(context, true);
 
-    // simple Elements
-  //  if (childNode.getRmType().equals(ELEMENT) && context.getFlatHelper().skip(context)) {
-  //    namePath = StringUtils.removeEnd( namePath,"/")+"/" + childNode.getId();
-  //  }
+    String namePath = context.getFlatHelper().buildNamePath(context, true);
 
     String finalNamePath = namePath;
     Integer count =
@@ -302,7 +360,7 @@ public class StdToCompositionWalker extends ToCompositionWalker<Map<FlatPathDto,
             .reduce((first, second) -> second)
             .map(i -> i + 1)
             .orElse(0);
-   // context.getNodeDeque().poll();
+
     if (oldCount != null) {
       context.getCountMap().put(new NodeId(childNode), oldCount);
     }
@@ -312,6 +370,4 @@ public class StdToCompositionWalker extends ToCompositionWalker<Map<FlatPathDto,
   public Set<String> getConsumedPaths() {
     return consumedPaths;
   }
-
-
 }
