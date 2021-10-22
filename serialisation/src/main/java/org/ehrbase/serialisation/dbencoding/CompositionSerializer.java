@@ -25,43 +25,16 @@ package org.ehrbase.serialisation.dbencoding;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.nedap.archie.rm.RMObject;
-import com.nedap.archie.rm.composition.Action;
-import com.nedap.archie.rm.composition.Activity;
-import com.nedap.archie.rm.composition.AdminEntry;
-import com.nedap.archie.rm.composition.Composition;
-import com.nedap.archie.rm.composition.ContentItem;
-import com.nedap.archie.rm.composition.Evaluation;
-import com.nedap.archie.rm.composition.Instruction;
-import com.nedap.archie.rm.composition.Observation;
-import com.nedap.archie.rm.composition.Section;
-import com.nedap.archie.rm.datastructures.Cluster;
-import com.nedap.archie.rm.datastructures.Element;
-import com.nedap.archie.rm.datastructures.Event;
-import com.nedap.archie.rm.datastructures.History;
-import com.nedap.archie.rm.datastructures.Item;
-import com.nedap.archie.rm.datastructures.ItemList;
-import com.nedap.archie.rm.datastructures.ItemSingle;
-import com.nedap.archie.rm.datastructures.ItemStructure;
-import com.nedap.archie.rm.datastructures.ItemTable;
-import com.nedap.archie.rm.datastructures.ItemTree;
+import com.nedap.archie.rm.composition.*;
+import com.nedap.archie.rm.datastructures.*;
 import com.nedap.archie.rm.datavalues.DvText;
 import com.nedap.archie.rm.integration.GenericEntry;
-import java.util.Map;
-import org.ehrbase.serialisation.attributes.ActionAttributes;
-import org.ehrbase.serialisation.attributes.ActivityAttributes;
-import org.ehrbase.serialisation.attributes.AdminEntryAttributes;
-import org.ehrbase.serialisation.attributes.ClusterAttributes;
-import org.ehrbase.serialisation.attributes.ElementAttributes;
-import org.ehrbase.serialisation.attributes.EvaluationAttributes;
-import org.ehrbase.serialisation.attributes.EventAttributes;
-import org.ehrbase.serialisation.attributes.HistoryAttributes;
-import org.ehrbase.serialisation.attributes.InstructionAttributes;
-import org.ehrbase.serialisation.attributes.ItemStructureAttributes;
-import org.ehrbase.serialisation.attributes.ObservationAttributes;
-import org.ehrbase.serialisation.attributes.SectionAttributes;
+import org.ehrbase.serialisation.attributes.*;
 import org.ehrbase.serialisation.exception.MarshalException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Map;
 
 /**
  * Sequential Event Processor for Composition.
@@ -429,16 +402,6 @@ public class CompositionSerializer {
                 traverse(
                     activity.getDescription(),
                     null)); // don't add a /data in path for description (don't ask me why...)
-
-    if (activity.getActionArchetypeId() != null) {
-      ltree =
-          new SerialTree(ltree)
-              .insert(
-                  new SimpleClassName(activity.getActionArchetypeId()).toString(),
-                  activity,
-                  TAG_ACTION_ARCHETYPE_ID,
-                  activity.getActionArchetypeId().trim());
-    }
 
     itemStack.popStacks();
     return ltree;
