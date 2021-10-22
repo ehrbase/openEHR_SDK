@@ -235,6 +235,20 @@ if(other.getChild() == null && other.count == null){
     return other == null && me == null;
   }
 
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    FlatPathDto that = (FlatPathDto) o;
+    return Objects.equals(name, that.name) && Objects.equals(child, that.child) && Objects.equals(attributeName, that.attributeName) && Objects.equals(count, that.count);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(name, child, attributeName, count);
+  }
+
   public static  <T> Map.Entry<FlatPathDto,T> get(Map<FlatPathDto,T> map, String otherPath){
 
     return map.entrySet().stream().filter(d -> d.getKey().isEqualTo(otherPath)).findAny().orElse(new AbstractMap.SimpleEntry<>(null,null));

@@ -27,25 +27,19 @@ import java.util.Map;
 
 public class RmStringConfig extends AbstractsStdConfig<RmString> {
 
+  /** {@inheritDoc} */
+  @Override
+  public Class<RmString> getAssociatedClass() {
+    return RmString.class;
+  }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Class<RmString> getAssociatedClass() {
-        return RmString.class;
-    }
+  /** {@inheritDoc} */
+  @Override
+  public Map<String, Object> buildChildValues(
+      String currentTerm, RmString rmObject, Context<Map<String, Object>> context) {
+    Map<String, Object> result = new HashMap<>();
+    addValue(result, currentTerm, null, rmObject.getValue());
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Map<String, Object> buildChildValues(String currentTerm, RmString rmObject, Context<Map<String, Object>> context) {
-        Map<String, Object> result = new HashMap<>();
-        addValue(result, currentTerm, null, rmObject.getValue());
-
-        return result;
-    }
-
-
+    return result;
+  }
 }

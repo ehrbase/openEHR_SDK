@@ -16,20 +16,31 @@
  * limitations under the License.
  */
 
-package org.ehrbase.serialisation;
+package org.ehrbase.test_data.composition;
 
-import com.nedap.archie.rm.RMObject;
-import com.nedap.archie.rm.composition.Composition;
+import java.io.InputStream;
 
-public interface RMDataFormat {
+public enum CompositionTestDataStructuredJson {
 
-    String marshal(RMObject rmObject);
+  MULTI_LIST(
+          "MULTI_LIST", "multi_list.json"),
+  CORONA("Corona", "corona.json");
 
-    <T extends RMObject> T unmarshal(String value, Class<T> clazz);
 
-    default Composition unmarshal(String value){
+  private final String filename;
+  private final String description;
 
-        return unmarshal(value,Composition.class);
-    }
+  CompositionTestDataStructuredJson(String description, String filename) {
+    this.filename = filename;
+    this.description = description;
+  }
 
+  public InputStream getStream() {
+    return getClass().getResourceAsStream("/composition/flat/structured/" + filename);
+  }
+
+  @Override
+  public String toString() {
+    return this.description;
+  }
 }

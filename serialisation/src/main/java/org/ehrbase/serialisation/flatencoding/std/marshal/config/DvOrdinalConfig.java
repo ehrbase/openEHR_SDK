@@ -32,38 +32,35 @@ import java.util.Optional;
 
 public class DvOrdinalConfig extends AbstractsStdConfig<DvOrdinal> {
 
+  /** {@inheritDoc} */
+  @Override
+  public Class<DvOrdinal> getAssociatedClass() {
+    return DvOrdinal.class;
+  }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Class<DvOrdinal> getAssociatedClass() {
-        return DvOrdinal.class;
-    }
+  /** {@inheritDoc} */
+  @Override
+  public Map<String, Object> buildChildValues(
+      String currentTerm, DvOrdinal rmObject, Context<Map<String, Object>> context) {
+    Map<String, Object> result = new HashMap<>();
+    String codeString =
+        Optional.of(rmObject)
+            .map(DvOrdinal::getSymbol)
+            .map(DvCodedText::getDefiningCode)
+            .map(CodePhrase::getCodeString)
+            .orElse(null);
+    addValue(result, currentTerm, "code", codeString);
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Map<String, Object> buildChildValues(String currentTerm, DvOrdinal rmObject, Context<Map<String, Object>> context) {
-        Map<String, Object> result = new HashMap<>();
-        String codeString = Optional.of(rmObject).map(DvOrdinal::getSymbol).map(DvCodedText::getDefiningCode).map(CodePhrase::getCodeString).orElse(null);
-        addValue(result, currentTerm, "code", codeString);
+    WebTemplateInputValue value =
+        context.getNodeDeque().peek().getInputs().get(0).getList().stream()
+            .filter(o -> o.getValue().equals(codeString))
+            .findAny()
+            .orElseThrow(
+                () -> new SdkException(String.format("Unknown Ordinal with code %s", codeString)));
 
-        WebTemplateInputValue value = context.getNodeDeque().peek()
-                .getInputs()
-                .get(0)
-                .getList()
-                .stream()
-                .filter(o -> o.getValue().equals(codeString))
-                .findAny()
-                .orElseThrow(() -> new SdkException(String.format("Unknown Ordinal with code %s", codeString)));
+    addValue(result, currentTerm, "ordinal", value.getOrdinal());
+    addValue(result, currentTerm, "value", value.getLabel());
 
-        addValue(result, currentTerm, "ordinal", value.getOrdinal());
-        addValue(result, currentTerm, "value", value.getLabel());
-
-        return result;
-    }
-
-
+    return result;
+  }
 }

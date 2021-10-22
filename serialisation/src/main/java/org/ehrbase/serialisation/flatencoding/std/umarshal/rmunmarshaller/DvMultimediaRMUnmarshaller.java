@@ -32,27 +32,40 @@ import java.util.Set;
 
 public class DvMultimediaRMUnmarshaller extends AbstractRMUnmarshaller<DvMultimedia> {
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Class<DvMultimedia> getAssociatedClass() {
-        return DvMultimedia.class;
-    }
+  /** {@inheritDoc} */
+  @Override
+  public Class<DvMultimedia> getAssociatedClass() {
+    return DvMultimedia.class;
+  }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void handle(String currentTerm, DvMultimedia rmObject, Map<FlatPathDto, String> currentValues, Context<Map<FlatPathDto, String>> context, Set<String> consumedPaths) {
-        rmObject.setUri(new DvURI());
-        rmObject.setMediaType(new CodePhrase());
-        rmObject.getMediaType().setTerminologyId(new TerminologyId("IANA_media-types"));
+  /** {@inheritDoc} */
+  @Override
+  public void handle(
+      String currentTerm,
+      DvMultimedia rmObject,
+      Map<FlatPathDto, String> currentValues,
+      Context<Map<FlatPathDto, String>> context,
+      Set<String> consumedPaths) {
+    rmObject.setUri(new DvURI());
+    rmObject.setMediaType(new CodePhrase());
+    rmObject.getMediaType().setTerminologyId(new TerminologyId("IANA_media-types"));
 
-        setValue(currentTerm, null, currentValues, rmObject.getUri()::setValue, URI.class, consumedPaths);
-        setValue(currentTerm, "mediatype", currentValues, rmObject.getMediaType()::setCodeString, String.class, consumedPaths);
-        setValue(currentTerm, "size", currentValues, rmObject::setSize, Integer.class, consumedPaths);
-        setValue(currentTerm, "alternatetext", currentValues, rmObject::setAlternateText, String.class, consumedPaths);
-
-    }
+    setValue(
+        currentTerm, null, currentValues, rmObject.getUri()::setValue, URI.class, consumedPaths);
+    setValue(
+        currentTerm,
+        "mediatype",
+        currentValues,
+        rmObject.getMediaType()::setCodeString,
+        String.class,
+        consumedPaths);
+    setValue(currentTerm, "size", currentValues, rmObject::setSize, Integer.class, consumedPaths);
+    setValue(
+        currentTerm,
+        "alternatetext",
+        currentValues,
+        rmObject::setAlternateText,
+        String.class,
+        consumedPaths);
+  }
 }

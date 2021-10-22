@@ -29,23 +29,19 @@ import static org.ehrbase.webtemplate.parser.OPTParser.PATH_DIVIDER;
 
 public class ActivityPostprocessor extends AbstractUnmarshalPostprocessor<Activity> {
 
-
-
   /** {@inheritDoc} */
   @Override
-  public void process(String term, Activity rmObject, Map<FlatPathDto, String> values, Set<String> consumedPaths) {
+  public void process(
+      String term, Activity rmObject, Map<FlatPathDto, String> values, Set<String> consumedPaths) {
 
     setValue(
-            term + PATH_DIVIDER + "action_archetype_id",
-            null,
-            values,
-            rmObject::setActionArchetypeId,
-            String.class, consumedPaths );
-
+        term + PATH_DIVIDER + "action_archetype_id",
+        null,
+        values,
+        rmObject::setActionArchetypeId,
+        String.class,
+        consumedPaths);
   }
-
-
-
 
   /** {@inheritDoc} */
   @Override

@@ -29,21 +29,29 @@ import java.util.Set;
 
 public class CodePhraseRMUnmarshaller extends AbstractRMUnmarshaller<CodePhrase> {
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Class<CodePhrase> getAssociatedClass() {
-        return CodePhrase.class;
-    }
+  /** {@inheritDoc} */
+  @Override
+  public Class<CodePhrase> getAssociatedClass() {
+    return CodePhrase.class;
+  }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void handle(String currentTerm, CodePhrase rmObject, Map<FlatPathDto, String> currentValues, Context<Map<FlatPathDto, String>> context, Set<String> consumedPaths) {
-        setValue(currentTerm, "code", currentValues, rmObject::setCodeString, String.class, consumedPaths);
-        rmObject.setTerminologyId(new TerminologyId());
-        setValue(currentTerm, "terminology", currentValues, t -> rmObject.getTerminologyId().setValue(t), String.class, consumedPaths);
-    }
+  /** {@inheritDoc} */
+  @Override
+  public void handle(
+      String currentTerm,
+      CodePhrase rmObject,
+      Map<FlatPathDto, String> currentValues,
+      Context<Map<FlatPathDto, String>> context,
+      Set<String> consumedPaths) {
+    setValue(
+        currentTerm, "code", currentValues, rmObject::setCodeString, String.class, consumedPaths);
+    rmObject.setTerminologyId(new TerminologyId());
+    setValue(
+        currentTerm,
+        "terminology",
+        currentValues,
+        t -> rmObject.getTerminologyId().setValue(t),
+        String.class,
+        consumedPaths);
+  }
 }

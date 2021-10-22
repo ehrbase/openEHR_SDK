@@ -1,0 +1,429 @@
+{
+  "bericht": {
+    "_uid": [
+      "93a018f1-ad95-4d52-bb8f-0f64d7f7cce6::piri.ehrscape.com::1"
+    ],
+    "language": [
+      {
+        "|code": "de",
+        "|terminology": "ISO_639-1"
+      }
+    ],
+    "territory": [
+      {
+        "|code": "DE",
+        "|terminology": "ISO_3166-1"
+      }
+    ],
+    "context": [
+      {
+        "start_time": [
+          "2020-05-11T22:53:12.039139+02:00"
+        ],
+        "setting": [
+          {
+            "|code": "238",
+            "|value": "other care",
+            "|terminology": "openehr"
+          }
+        ]
+      }
+    ],
+    "geschichte_historie": [
+      {
+        "beliebiges_ereignis": [
+          {
+            "geschichte": [
+              "War in Ischgl"
+            ],
+            "time": [
+              "2020-05-11T22:53:12.039139+02:00"
+            ]
+          }
+        ],
+        "language": [
+          {
+            "|code": "de",
+            "|terminology": "ISO_639-1"
+          }
+        ],
+        "encoding": [
+          {
+            "|code": "UTF-8",
+            "|terminology": "IANA_character-sets"
+          }
+        ]
+      }
+    ],
+    "symptome": [
+      {
+        "husten": [
+          {
+            "spezifisches_symptom_anzeichen": [
+              {
+                "bezeichnung_des_symptoms_oder_anzeichens.": [
+                  "Husten"
+                ],
+                "vorhanden": [
+                  {
+                    "|code": "at0023",
+                    "|value": "Vorhanden",
+                    "|terminology": "local"
+                  }
+                ]
+              }
+            ],
+            "time": [
+              "2020-05-11T22:53:12.039139+02:00"
+            ],
+            "language": [
+              {
+                "|code": "de",
+                "|terminology": "ISO_639-1"
+              }
+            ],
+            "encoding": [
+              {
+                "|code": "UTF-8",
+                "|terminology": "IANA_character-sets"
+              }
+            ]
+          }
+        ],
+        "schnupfen": [
+          {
+            "spezifisches_symptom_anzeichen": [
+              {
+                "bezeichnung_des_symptoms_oder_anzeichens.": [
+                  "Schnupfen"
+                ],
+                "vorhanden": [
+                  {
+                    "|code": "at0023",
+                    "|value": "Vorhanden",
+                    "|terminology": "local"
+                  }
+                ]
+              }
+            ],
+            "time": [
+              "2020-05-11T22:53:12.039139+02:00"
+            ],
+            "language": [
+              {
+                "|code": "de",
+                "|terminology": "ISO_639-1"
+              }
+            ],
+            "encoding": [
+              {
+                "|code": "UTF-8",
+                "|terminology": "IANA_character-sets"
+              }
+            ]
+          }
+        ],
+        "heiserkeit": [
+          {
+            "spezifisches_symptom_anzeichen": [
+              {
+                "bezeichnung_des_symptoms_oder_anzeichens.": [
+                  "Heiserkeit"
+                ],
+                "vorhanden": [
+                  {
+                    "|code": "at0024",
+                    "|value": "Nicht vorhanden",
+                    "|terminology": "local"
+                  }
+                ]
+              }
+            ],
+            "time": [
+              "2020-05-11T22:53:12.039139+02:00"
+            ],
+            "language": [
+              {
+                "|code": "de",
+                "|terminology": "ISO_639-1"
+              }
+            ],
+            "encoding": [
+              {
+                "|code": "UTF-8",
+                "|terminology": "IANA_character-sets"
+              }
+            ]
+          }
+        ],
+        "fieber_oder_erhöhte_körpertemperatur": [
+          {
+            "spezifisches_symptom_anzeichen": [
+              {
+                "bezeichnung_des_symptoms_oder_anzeichens.": [
+                  "Fieber oder erhöhte Körpertemperatur"
+                ],
+                "vorhanden": [
+                  {
+                    "|code": "at0023",
+                    "|value": "Vorhanden",
+                    "|terminology": "local"
+                  }
+                ]
+              }
+            ],
+            "time": [
+              "2020-05-11T22:53:12.039139+02:00"
+            ],
+            "language": [
+              {
+                "|code": "de",
+                "|terminology": "ISO_639-1"
+              }
+            ],
+            "encoding": [
+              {
+                "|code": "UTF-8",
+                "|terminology": "IANA_character-sets"
+              }
+            ]
+          }
+        ],
+        "körpertemperatur": [
+          {
+            "temperatur": [
+              {
+                "|magnitude": 39.0,
+                "|unit": "°C"
+              }
+            ],
+            "time": [
+              "2020-05-11T22:53:12.039139+02:00"
+            ],
+            "language": [
+              {
+                "|code": "de",
+                "|terminology": "ISO_639-1"
+              }
+            ],
+            "encoding": [
+              {
+                "|code": "UTF-8",
+                "|terminology": "IANA_character-sets"
+              }
+            ]
+          }
+        ],
+        "gestörter_geruchssinn": [
+          {
+            "spezifisches_symptom_anzeichen": [
+              {
+                "bezeichnung_des_symptoms_oder_anzeichens.": [
+                  "gestörter Geruchssinn"
+                ],
+                "vorhanden": [
+                  {
+                    "|code": "at0024",
+                    "|value": "Nicht vorhanden",
+                    "|terminology": "local"
+                  }
+                ]
+              }
+            ],
+            "time": [
+              "2020-05-11T22:53:12.039139+02:00"
+            ],
+            "language": [
+              {
+                "|code": "de",
+                "|terminology": "ISO_639-1"
+              }
+            ],
+            "encoding": [
+              {
+                "|code": "UTF-8",
+                "|terminology": "IANA_character-sets"
+              }
+            ]
+          }
+        ],
+        "gestörter_geschmackssinn": [
+          {
+            "spezifisches_symptom_anzeichen": [
+              {
+                "bezeichnung_des_symptoms_oder_anzeichens.": [
+                  "gestörter Geschmackssinn"
+                ],
+                "vorhanden": [
+                  {
+                    "|code": "at0024",
+                    "|value": "Nicht vorhanden",
+                    "|terminology": "local"
+                  }
+                ]
+              }
+            ],
+            "time": [
+              "2020-05-11T22:53:12.039139+02:00"
+            ],
+            "language": [
+              {
+                "|code": "de",
+                "|terminology": "ISO_639-1"
+              }
+            ],
+            "encoding": [
+              {
+                "|code": "UTF-8",
+                "|terminology": "IANA_character-sets"
+              }
+            ]
+          }
+        ],
+        "durchfall": [
+          {
+            "spezifisches_symptom_anzeichen": [
+              {
+                "bezeichnung_des_symptoms_oder_anzeichens.": [
+                  "Durchfall"
+                ],
+                "vorhanden": [
+                  {
+                    "|code": "at0024",
+                    "|value": "Nicht vorhanden",
+                    "|terminology": "local"
+                  }
+                ]
+              }
+            ],
+            "time": [
+              "2020-05-11T22:53:12.039139+02:00"
+            ],
+            "language": [
+              {
+                "|code": "de",
+                "|terminology": "ISO_639-1"
+              }
+            ],
+            "encoding": [
+              {
+                "|code": "UTF-8",
+                "|terminology": "IANA_character-sets"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "risikogebiet": [
+      {
+        "historie_der_reise": [
+          {
+            "aufenthalt_in_den_letzten_14_tage_in_einem_der_risikogebiete_für_coronainfektion_oder_kontakt_zu_menschen_die_dort_waren": [
+              {
+                "|code": "at0112",
+                "|value": "Ja",
+                "|terminology": "local"
+              }
+            ],
+            "ortsbeschreibung": [
+              {
+                "standort": [
+                  {
+                    "standortbeschreibung": [
+                      "Norditalien"
+                    ]
+                  }
+                ]
+              }
+            ],
+            "time": [
+              "2020-05-11T22:53:12.039139+02:00"
+            ],
+            "language": [
+              {
+                "|code": "de",
+                "|terminology": "ISO_639-1"
+              }
+            ],
+            "encoding": [
+              {
+                "|code": "UTF-8",
+                "|terminology": "IANA_character-sets"
+              }
+            ]
+          }
+        ],
+        "reisefall": [
+          {
+            "beliebiges_intervallereignis": [
+              {
+                "letzte_reise": [
+                  {
+                    "|code": "at0006",
+                    "|value": "Ja - national",
+                    "|terminology": "local"
+                  }
+                ],
+                "bestimmte_reise": [
+                  {
+                    "bestimmtes_reiseziel": [
+                      {
+                        "land": [
+                          "Deutschland"
+                        ],
+                        "bundesland_region": [
+                          "Baden-Württemberg"
+                        ],
+                        "stadt": [
+                          "Mannheim"
+                        ]
+                      }
+                    ]
+                  }
+                ],
+                "width": [
+                  "P0D"
+                ],
+                "math_function": [
+                  {
+                    "|code": "146",
+                    "|value": "mean",
+                    "|terminology": "openehr"
+                  }
+                ],
+                "time": [
+                  "2020-05-11T22:53:12.039139+02:00"
+                ]
+              }
+            ],
+            "language": [
+              {
+                "|code": "de",
+                "|terminology": "ISO_639-1"
+              }
+            ],
+            "encoding": [
+              {
+                "|code": "UTF-8",
+                "|terminology": "IANA_character-sets"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "category": [
+      {
+        "|code": "433",
+        "|value": "event",
+        "|terminology": "openehr"
+      }
+    ],
+    "composer": [
+      {
+        "|name": "birger.haarbrandt@plri.de"
+      }
+    ]
+  }
+}

@@ -31,46 +31,63 @@ import java.util.*;
 
 public class DvCodedTextRMUnmarshaller extends AbstractRMUnmarshaller<DvCodedText> {
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Class<DvCodedText> getAssociatedClass() {
-        return DvCodedText.class;
+  /** {@inheritDoc} */
+  @Override
+  public Class<DvCodedText> getAssociatedClass() {
+    return DvCodedText.class;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public void handle(
+      String currentTerm,
+      DvCodedText rmObject,
+      Map<FlatPathDto, String> currentValues,
+      Context<Map<FlatPathDto, String>> context,
+      Set<String> consumedPaths) {
+    setValue(currentTerm, "value", currentValues, rmObject::setValue, String.class, consumedPaths);
+    rmObject.setDefiningCode(new CodePhrase());
+    setValue(
+        currentTerm,
+        "code",
+        currentValues,
+        c -> rmObject.getDefiningCode().setCodeString(c),
+        String.class,
+        consumedPaths);
+    if (rmObject.getDefiningCode().getCodeString() == null) {
+      setValue(
+          currentTerm,
+          null,
+          currentValues,
+          c -> rmObject.getDefiningCode().setCodeString(c),
+          String.class,
+          consumedPaths);
     }
+    rmObject.getDefiningCode().setTerminologyId(new TerminologyId());
+    setValue(
+        currentTerm,
+        "terminology",
+        currentValues,
+        t -> rmObject.getDefiningCode().getTerminologyId().setValue(t),
+        String.class,
+        consumedPaths);
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void handle(String currentTerm, DvCodedText rmObject, Map<FlatPathDto, String> currentValues, Context<Map<FlatPathDto, String>> context, Set<String> consumedPaths) {
-        setValue(currentTerm, "value", currentValues, rmObject::setValue, String.class, consumedPaths);
-        rmObject.setDefiningCode(new CodePhrase());
-        setValue(currentTerm, "code", currentValues, c -> rmObject.getDefiningCode().setCodeString(c), String.class, consumedPaths);
-        if (rmObject.getDefiningCode().getCodeString() == null){
-            setValue(currentTerm, null, currentValues, c -> rmObject.getDefiningCode().setCodeString(c), String.class, consumedPaths);
-        }
-        rmObject.getDefiningCode().setTerminologyId(new TerminologyId());
-        setValue(currentTerm, "terminology", currentValues, t -> rmObject.getDefiningCode().getTerminologyId().setValue(t), String.class, consumedPaths);
+    Optional.of(context.getNodeDeque().peek().getInputs()).stream()
+        .flatMap(List::stream)
+        .filter(i -> "code".equals(i.getSuffix()))
+        .findAny()
+        .map(WebTemplateInput::getTerminology)
+        .ifPresent(t -> rmObject.getDefiningCode().getTerminologyId().setValue(t));
 
-        Optional.of(context.getNodeDeque().peek().getInputs())
-                .stream()
-                .flatMap(List::stream)
-                .filter(i -> "code".equals(i.getSuffix()))
-                .findAny()
-                .map(WebTemplateInput::getTerminology)
-                .ifPresent(t -> rmObject.getDefiningCode().getTerminologyId().setValue(t));
-
-        Optional.of(context.getNodeDeque().peek().getInputs())
-                .stream()
-                .flatMap(List::stream)
-                .filter(i -> "code".equals(i.getSuffix()))
-          .map(WebTemplateInput::getList)
-          .filter(Objects::nonNull)
-          .flatMap(List::stream)
-          .filter(v -> Objects.equals(v.getValue(),rmObject.getDefiningCode().getCodeString()))
-          .findAny()
-          .ifPresent(v -> rmObject.setValue(v.getLabel()));
+    Optional.of(context.getNodeDeque().peek().getInputs()).stream()
+        .flatMap(List::stream)
+        .filter(i -> "code".equals(i.getSuffix()))
+        .map(WebTemplateInput::getList)
+        .filter(Objects::nonNull)
+        .flatMap(List::stream)
+        .filter(v -> Objects.equals(v.getValue(), rmObject.getDefiningCode().getCodeString()))
+        .findAny()
+        .ifPresent(v -> rmObject.setValue(v.getLabel()));
 
     if (rmObject.getDefiningCode() != null && rmObject.getDefiningCode().getCodeString() != null) {
       currentValues.keySet().stream()
@@ -80,8 +97,6 @@ public class DvCodedTextRMUnmarshaller extends AbstractRMUnmarshaller<DvCodedTex
                   StringUtils.substringAfter(k, "|")
                       .equals(rmObject.getDefiningCode().getCodeString()))
           .forEach(consumedPaths::add);
-}
     }
-
-
+  }
 }

@@ -28,21 +28,28 @@ import java.util.Set;
 
 public class DvParsableRMUnmarshaller extends AbstractRMUnmarshaller<DvParsable> {
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Class<DvParsable> getAssociatedClass() {
-        return DvParsable.class;
-    }
+  /** {@inheritDoc} */
+  @Override
+  public Class<DvParsable> getAssociatedClass() {
+    return DvParsable.class;
+  }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void handle(String currentTerm, DvParsable rmObject, Map<FlatPathDto, String> currentValues, Context<Map<FlatPathDto, String>> context, Set<String> consumedPaths) {
+  /** {@inheritDoc} */
+  @Override
+  public void handle(
+      String currentTerm,
+      DvParsable rmObject,
+      Map<FlatPathDto, String> currentValues,
+      Context<Map<FlatPathDto, String>> context,
+      Set<String> consumedPaths) {
 
-        setValue(currentTerm, null, currentValues, rmObject::setValue, String.class, consumedPaths);
-        setValue(currentTerm, "formalism", currentValues, rmObject::setFormalism, String.class, consumedPaths);
-    }
+    setValue(currentTerm, null, currentValues, rmObject::setValue, String.class, consumedPaths);
+    setValue(
+        currentTerm,
+        "formalism",
+        currentValues,
+        rmObject::setFormalism,
+        String.class,
+        consumedPaths);
+  }
 }
