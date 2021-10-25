@@ -31,20 +31,42 @@ import java.util.Set;
 
 public class IsmTransitionRMUnmarshaller extends AbstractRMUnmarshaller<IsmTransition> {
 
-    @Override
-    public Class<IsmTransition> getAssociatedClass() {
-        return IsmTransition.class;
-    }
+  @Override
+  public Class<IsmTransition> getAssociatedClass() {
+    return IsmTransition.class;
+  }
 
-    @Override
-    public void handle(String currentTerm, IsmTransition rmObject, Map<FlatPathDto, String> currentValues, Context<Map<FlatPathDto, String>> context, Set<String> consumedPaths) {
+  @Override
+  public void handle(
+      String currentTerm,
+      IsmTransition rmObject,
+      Map<FlatPathDto, String> currentValues,
+      Context<Map<FlatPathDto, String>> context,
+      Set<String> consumedPaths) {
 
-        rmObject.setCurrentState(new DvCodedText());
-        rmObject.getCurrentState().setDefiningCode(new CodePhrase());
-        rmObject.getCurrentState().getDefiningCode().setTerminologyId(new TerminologyId());
-        setValue(currentTerm + "/current_state", "code", currentValues, rmObject.getCurrentState().getDefiningCode()::setCodeString, String.class, consumedPaths);
-        setValue(currentTerm + "/current_state", "value", currentValues, rmObject.getCurrentState()::setValue, String.class, consumedPaths);
-        setValue(currentTerm + "/current_state", "terminology", currentValues, rmObject.getCurrentState().getDefiningCode().getTerminologyId()::setValue, String.class, consumedPaths);
-
-    }
+    rmObject.setCurrentState(new DvCodedText());
+    rmObject.getCurrentState().setDefiningCode(new CodePhrase());
+    rmObject.getCurrentState().getDefiningCode().setTerminologyId(new TerminologyId());
+    setValue(
+        currentTerm + "/current_state",
+        "code",
+        currentValues,
+        rmObject.getCurrentState().getDefiningCode()::setCodeString,
+        String.class,
+        consumedPaths);
+    setValue(
+        currentTerm + "/current_state",
+        "value",
+        currentValues,
+        rmObject.getCurrentState()::setValue,
+        String.class,
+        consumedPaths);
+    setValue(
+        currentTerm + "/current_state",
+        "terminology",
+        currentValues,
+        rmObject.getCurrentState().getDefiningCode().getTerminologyId()::setValue,
+        String.class,
+        consumedPaths);
+  }
 }

@@ -30,30 +30,43 @@ import java.util.*;
 
 public class DvQuantityRMUnmarshaller extends AbstractRMUnmarshaller<DvQuantity> {
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Class<DvQuantity> getAssociatedClass() {
-        return DvQuantity.class;
+  /** {@inheritDoc} */
+  @Override
+  public Class<DvQuantity> getAssociatedClass() {
+    return DvQuantity.class;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public void handle(
+      String currentTerm,
+      DvQuantity rmObject,
+      Map<FlatPathDto, String> currentValues,
+      Context<Map<FlatPathDto, String>> context,
+      Set<String> consumedPaths) {
+    setValue(
+        currentTerm,
+        "magnitude",
+        currentValues,
+        rmObject::setMagnitude,
+        Double.class,
+        consumedPaths);
+    setValue(currentTerm, "units", currentValues, rmObject::setUnits, String.class, consumedPaths);
+    if (rmObject.getUnits() == null) {
+      setValue(currentTerm, "unit", currentValues, rmObject::setUnits, String.class, consumedPaths);
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void handle(String currentTerm, DvQuantity rmObject, Map<FlatPathDto, String> currentValues, Context<Map<FlatPathDto, String>> context, Set<String> consumedPaths) {
-        setValue(currentTerm, "magnitude", currentValues, rmObject::setMagnitude, Double.class, consumedPaths);
-        setValue(currentTerm, "units", currentValues, rmObject::setUnits, String.class, consumedPaths);
-        if (rmObject.getUnits() == null) {
-            setValue(currentTerm, "unit", currentValues, rmObject::setUnits, String.class, consumedPaths);
-        }
-
-        if (StringUtils.isBlank(rmObject.getUnits())) {
-            List<WebTemplateInputValue> units = Optional.ofNullable(context.getNodeDeque().peek().getInputs()).stream().flatMap(List::stream).filter(i -> "unit".equals(i.getSuffix())).findAny().map(WebTemplateInput::getList).orElse(Collections.emptyList());
-            if (units.size() == 1) {
-                rmObject.setUnits(units.get(0).getValue());
-            }
-        }
+    if (StringUtils.isBlank(rmObject.getUnits())) {
+      List<WebTemplateInputValue> units =
+          Optional.ofNullable(context.getNodeDeque().peek().getInputs()).stream()
+              .flatMap(List::stream)
+              .filter(i -> "unit".equals(i.getSuffix()))
+              .findAny()
+              .map(WebTemplateInput::getList)
+              .orElse(Collections.emptyList());
+      if (units.size() == 1) {
+        rmObject.setUnits(units.get(0).getValue());
+      }
     }
+  }
 }

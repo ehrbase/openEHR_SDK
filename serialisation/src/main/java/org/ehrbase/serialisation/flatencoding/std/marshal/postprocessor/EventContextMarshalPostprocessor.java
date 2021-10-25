@@ -48,10 +48,10 @@ public class EventContextMarshalPostprocessor implements MarshalPostprocessor<Ev
         Optional.ofNullable(rmObject.getEndTime()).map(DvDateTime::getValue).orElse(null));
 
     MarshalPostprocessor.addValue(
-            values,
-            term + PATH_DIVIDER + "_location",
-            null,
-            Optional.ofNullable(rmObject.getLocation()).orElse(null));
+        values,
+        term + PATH_DIVIDER + "_location",
+        null,
+        Optional.ofNullable(rmObject.getLocation()).orElse(null));
 
     if (rmObject.getHealthCareFacility() != null) {
       values.putAll(
@@ -59,10 +59,15 @@ public class EventContextMarshalPostprocessor implements MarshalPostprocessor<Ev
               term + "/" + "_health_care_facility", rmObject.getHealthCareFacility(), null));
     }
 
-    if (rmObject.getParticipations() != null){
-      IntStream.range(0,rmObject.getParticipations().size())
-              .forEach(i -> values.putAll( PARTICIPATION_CONFIG.buildChildValues(term+PATH_DIVIDER+"_participation:"+i,rmObject.getParticipations().get(i),null)));
-
+    if (rmObject.getParticipations() != null) {
+      IntStream.range(0, rmObject.getParticipations().size())
+          .forEach(
+              i ->
+                  values.putAll(
+                      PARTICIPATION_CONFIG.buildChildValues(
+                          term + PATH_DIVIDER + "_participation:" + i,
+                          rmObject.getParticipations().get(i),
+                          null)));
     }
   }
 

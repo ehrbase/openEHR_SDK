@@ -386,7 +386,6 @@ public class StdToCompositionWalker extends ToCompositionWalker<Map<FlatPathDto,
       Context<Map<FlatPathDto, String>> context, WebTemplateNode childNode) {
 
     Integer oldCount = context.getCountMap().get(new NodeId(childNode));
-
     String namePath = context.getFlatHelper().buildNamePath(context, true);
 
     String finalNamePath = namePath;
@@ -400,7 +399,6 @@ public class StdToCompositionWalker extends ToCompositionWalker<Map<FlatPathDto,
             .reduce((first, second) -> second)
             .map(i -> i + 1)
             .orElse(0);
-
     if (oldCount != null) {
       context.getCountMap().put(new NodeId(childNode), oldCount);
     }

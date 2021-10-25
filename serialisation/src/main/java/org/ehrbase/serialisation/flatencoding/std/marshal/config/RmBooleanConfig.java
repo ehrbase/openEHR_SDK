@@ -27,25 +27,19 @@ import java.util.Map;
 
 public class RmBooleanConfig extends AbstractsStdConfig<RmBoolean> {
 
+  /** {@inheritDoc} */
+  @Override
+  public Class<RmBoolean> getAssociatedClass() {
+    return RmBoolean.class;
+  }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Class<RmBoolean> getAssociatedClass() {
-        return RmBoolean.class;
-    }
+  /** {@inheritDoc} */
+  @Override
+  public Map<String, Object> buildChildValues(
+      String currentTerm, RmBoolean rmObject, Context<Map<String, Object>> context) {
+    Map<String, Object> result = new HashMap<>();
+    addValue(result, currentTerm, null, rmObject.getValue());
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Map<String, Object> buildChildValues(String currentTerm, RmBoolean rmObject, Context<Map<String, Object>> context) {
-        Map<String, Object> result = new HashMap<>();
-        addValue(result, currentTerm, null, rmObject.getValue());
-
-        return result;
-    }
-
-
+    return result;
+  }
 }

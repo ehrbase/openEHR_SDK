@@ -27,25 +27,19 @@ import java.util.Map;
 
 public class DvQuantityConfig extends AbstractsStdConfig<DvQuantity> {
 
+  /** {@inheritDoc} */
+  @Override
+  public Class<DvQuantity> getAssociatedClass() {
+    return DvQuantity.class;
+  }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Class<DvQuantity> getAssociatedClass() {
-        return DvQuantity.class;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Map<String, Object> buildChildValues(String currentTerm, DvQuantity rmObject, Context<Map<String, Object>> context) {
-        Map<String, Object> result = new HashMap<>();
-        addValue(result, currentTerm, "magnitude", rmObject.getMagnitude());
-        addValue(result, currentTerm, "unit", rmObject.getUnits());
-        return result;
-    }
-
-
+  /** {@inheritDoc} */
+  @Override
+  public Map<String, Object> buildChildValues(
+      String currentTerm, DvQuantity rmObject, Context<Map<String, Object>> context) {
+    Map<String, Object> result = new HashMap<>();
+    addValue(result, currentTerm, "magnitude", rmObject.getMagnitude());
+    addValue(result, currentTerm, "unit", rmObject.getUnits());
+    return result;
+  }
 }

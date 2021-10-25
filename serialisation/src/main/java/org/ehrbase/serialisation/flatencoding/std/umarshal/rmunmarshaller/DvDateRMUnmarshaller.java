@@ -29,14 +29,25 @@ import java.util.Set;
 
 public class DvDateRMUnmarshaller extends AbstractRMUnmarshaller<DvDate> {
 
-    @Override
-    public Class<DvDate> getAssociatedClass() {
-        return DvDate.class;
-    }
+  @Override
+  public Class<DvDate> getAssociatedClass() {
+    return DvDate.class;
+  }
 
-    @Override
-    public void handle(String currentTerm, DvDate rmObject, Map<FlatPathDto, String> currentValues, Context<Map<FlatPathDto, String>> context, Set<String> consumedPaths) {
+  @Override
+  public void handle(
+      String currentTerm,
+      DvDate rmObject,
+      Map<FlatPathDto, String> currentValues,
+      Context<Map<FlatPathDto, String>> context,
+      Set<String> consumedPaths) {
 
-        setValue(currentTerm,null,currentValues,s -> rmObject.setValue( DateTimeParsers.parseDateValue(s)),String.class, consumedPaths);
-    }
+    setValue(
+        currentTerm,
+        null,
+        currentValues,
+        s -> rmObject.setValue(DateTimeParsers.parseDateValue(s)),
+        String.class,
+        consumedPaths);
+  }
 }

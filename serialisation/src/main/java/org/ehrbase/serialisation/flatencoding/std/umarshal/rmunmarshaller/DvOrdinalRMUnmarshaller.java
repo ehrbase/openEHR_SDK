@@ -34,38 +34,48 @@ import java.util.function.Consumer;
 
 public class DvOrdinalRMUnmarshaller extends AbstractRMUnmarshaller<DvOrdinal> {
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Class<DvOrdinal> getAssociatedClass() {
-        return DvOrdinal.class;
-    }
+  /** {@inheritDoc} */
+  @Override
+  public Class<DvOrdinal> getAssociatedClass() {
+    return DvOrdinal.class;
+  }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void handle(String currentTerm, DvOrdinal rmObject, Map<FlatPathDto, String> currentValues, Context<Map<FlatPathDto, String>> context, Set<String> consumedPaths) {
+  /** {@inheritDoc} */
+  @Override
+  public void handle(
+      String currentTerm,
+      DvOrdinal rmObject,
+      Map<FlatPathDto, String> currentValues,
+      Context<Map<FlatPathDto, String>> context,
+      Set<String> consumedPaths) {
 
-        rmObject.setSymbol(new DvCodedText());
-        rmObject.getSymbol().setDefiningCode(new CodePhrase());
-        rmObject.getSymbol().getDefiningCode().setTerminologyId(new TerminologyId("local"));
-        setValue(currentTerm, "code", currentValues, rmObject.getSymbol().getDefiningCode()::setCodeString, String.class, consumedPaths);
+    rmObject.setSymbol(new DvCodedText());
+    rmObject.getSymbol().setDefiningCode(new CodePhrase());
+    rmObject.getSymbol().getDefiningCode().setTerminologyId(new TerminologyId("local"));
+    setValue(
+        currentTerm,
+        "code",
+        currentValues,
+        rmObject.getSymbol().getDefiningCode()::setCodeString,
+        String.class,
+        consumedPaths);
 
-        WebTemplateInputValue value = context.getNodeDeque().peek()
-                .getInputs()
-                .get(0)
-                .getList()
-                .stream()
-                .filter(o -> o.getValue().equals(rmObject.getSymbol().getDefiningCode().getCodeString()))
-                .findAny()
-                .orElseThrow(() -> new SdkException(String.format("Unknown Ordinal with code %s", (Consumer<String>) rmObject.getSymbol().getDefiningCode()::setCodeString)));
+    WebTemplateInputValue value =
+        context.getNodeDeque().peek().getInputs().get(0).getList().stream()
+            .filter(
+                o -> o.getValue().equals(rmObject.getSymbol().getDefiningCode().getCodeString()))
+            .findAny()
+            .orElseThrow(
+                () ->
+                    new SdkException(
+                        String.format(
+                            "Unknown Ordinal with code %s",
+                            (Consumer<String>)
+                                rmObject.getSymbol().getDefiningCode()::setCodeString)));
 
-        rmObject.setValue(Long.valueOf(value.getOrdinal()));
-        consumedPaths.add(currentTerm + "|ordinal");
-        rmObject.getSymbol().setValue(value.getLabel());
-        consumedPaths.add(currentTerm + "|value");
-
-    }
+    rmObject.setValue(Long.valueOf(value.getOrdinal()));
+    consumedPaths.add(currentTerm + "|ordinal");
+    rmObject.getSymbol().setValue(value.getLabel());
+    consumedPaths.add(currentTerm + "|value");
+  }
 }

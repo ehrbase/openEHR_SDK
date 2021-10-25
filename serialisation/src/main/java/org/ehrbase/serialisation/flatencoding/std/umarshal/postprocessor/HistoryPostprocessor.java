@@ -37,7 +37,8 @@ public class HistoryPostprocessor extends AbstractUnmarshalPostprocessor<History
 
   /** {@inheritDoc} */
   @Override
-  public void process(String term, History rmObject, Map<FlatPathDto, String> values, Set<String> consumedPaths) {
+  public void process(
+      String term, History rmObject, Map<FlatPathDto, String> values, Set<String> consumedPaths) {
 
     setValue(
         term + PATH_DIVIDER + "history_origin",
@@ -48,7 +49,8 @@ public class HistoryPostprocessor extends AbstractUnmarshalPostprocessor<History
             rmObject.setOrigin(new DvDateTime(s));
           }
         },
-        String.class, consumedPaths );
+        String.class,
+        consumedPaths);
 
     if (rmObject.getOrigin() == null || rmObject.getOrigin().getValue() == null) {
       Optional<TemporalAccessor> first =

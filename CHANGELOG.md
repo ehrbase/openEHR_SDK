@@ -8,6 +8,7 @@ Note: version releases in the 0.x.y range may introduce breaking changes.
 
 - Added WebTemplate based RmSkeleton builder. (see https://github.com/ehrbase/openEHR_SDK/pull/241)
 - validate that all flat parts are consumed. (see https://github.com/ehrbase/openEHR_SDK/pull/264 )
+- support Structured format. (see https://github.com/ehrbase/openEHR_SDK/pull/273)
 - Allow Json Values in flat (see https://github.com/ehrbase/openEHR_SDK/pull/277)
 
 ### Fixed
@@ -22,6 +23,8 @@ Note: version releases in the 0.x.y range may introduce breaking changes.
   see https://github.com/ehrbase/openEHR_SDK/pull/262)
 - FLAT: Fix missing items in ITEM_TREE (see https://github.com/ehrbase/openEHR_SDK/pull/265)
 - Handle `expiry_time` in INSTRUCTION (see https://github.com/ehrbase/openEHR_SDK/pull/270)
+- Fix ValidationException while parsing DvDuration with Period (see https://github.com/ehrbase/openEHR_SDK/pull/276)
+- Support optional `ETag` return by the server when uploading a template (see https://github.com/ehrbase/openEHR_SDK/pull/275)
 
 ## 1.5.0
 

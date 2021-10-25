@@ -38,7 +38,8 @@ public enum CompositionTestDataSimSDTJson {
   WORD_WITH_AND("Template with archetype with and in name ", "wordwithandin_test.json"),
   DETERIORIATION_ASSESSMENT(
       "EREACT - Deterioration_assessment", "EREACT - Deterioration_assessment.json"),
-  MULTI_LIST("MULTI_LIST", "Multi_list.json"),
+  MULTI_LIST(
+          "MULTI_LIST", "multi_list.json"),
   EREACT_COVID_MANAGEMENT("flat with action", "EREACT - Covid status monitoring - FLAT.json");
 
   private final String filename;

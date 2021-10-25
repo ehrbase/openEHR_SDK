@@ -31,12 +31,11 @@ import org.ehrbase.client.classgenerator.olddtoexamples.coronaanamnesecompositio
 import org.ehrbase.client.classgenerator.olddtoexamples.coronaanamnesecomposition.definition.VorhandenDefiningcode;
 import org.ehrbase.client.classgenerator.olddtoexamples.testalltypesenv1composition.TestAllTypesEnV1Composition;
 import org.ehrbase.client.flattener.Flattener;
-import org.ehrbase.client.flattener.RoundTripTest;
 import org.ehrbase.client.flattener.Unflattener;
 import org.ehrbase.client.templateprovider.TestDataTemplateProvider;
+import org.ehrbase.serialisation.RMDataFormat;
 import org.ehrbase.serialisation.flatencoding.FlatFormat;
 import org.ehrbase.serialisation.flatencoding.FlatJasonProvider;
-import org.ehrbase.serialisation.flatencoding.FlatJson;
 import org.ehrbase.serialisation.jsonencoding.CanonicalJson;
 import org.ehrbase.serialisation.jsonencoding.JacksonUtil;
 import org.ehrbase.test_data.composition.CompositionTestDataCanonicalJson;
@@ -161,7 +160,7 @@ public class OldDtoModelTest {
   public void checkTestCase(TestCase testCase, SoftAssertions softly) throws IOException {
 
     String value = IOUtils.toString(testCase.simSDTJson.getStream(), UTF_8);
-    FlatJson flatJson =
+    RMDataFormat flatJson =
         new FlatJasonProvider(new TestDataTemplateProvider())
             .buildFlatJson(FlatFormat.SIM_SDT, testCase.templateId);
 

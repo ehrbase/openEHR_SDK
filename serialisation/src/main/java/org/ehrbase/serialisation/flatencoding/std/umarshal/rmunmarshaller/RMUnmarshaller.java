@@ -27,21 +27,21 @@ import org.ehrbase.webtemplate.path.flat.FlatPathDto;
 import java.util.Map;
 import java.util.Set;
 
-/**
- * Defines how terminal RMObjects will be unmarshalled to flat json
- */
+/** Defines how terminal RMObjects will be unmarshalled to flat json */
 public interface RMUnmarshaller<T extends RMObject> extends ClassDependent<T> {
-    /**
-     * Puts the {@code currentValues} into the {@code rmObject}
-     *  @param currentTerm
-     * @param rmObject
-     * @param currentValues
-     * @param context
-     * @param consumedPaths
-     */
-    void handle(String currentTerm, T rmObject, Map<FlatPathDto, String> currentValues, Context<Map<FlatPathDto, String>> context, Set<String> consumedPaths);
-
-
-
-
+  /**
+   * Puts the {@code currentValues} into the {@code rmObject}
+   *
+   * @param currentTerm
+   * @param rmObject
+   * @param currentValues
+   * @param context
+   * @param consumedPaths
+   */
+  void handle(
+      String currentTerm,
+      T rmObject,
+      Map<FlatPathDto, String> currentValues,
+      Context<Map<FlatPathDto, String>> context,
+      Set<String> consumedPaths);
 }
