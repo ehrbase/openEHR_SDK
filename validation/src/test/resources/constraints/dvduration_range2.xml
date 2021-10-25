@@ -32,14 +32,13 @@
       </v1:occurrences>
       <v1:node_id/>
       <v1:item xsi:type="C_DURATION">
-        <v1:pattern>PYMWD</v1:pattern>
         <v1:range>
-          <v1:lower_included>false</v1:lower_included>
-          <v1:upper_included>false</v1:upper_included>
+          <v1:lower_included>true</v1:lower_included>
+          <v1:upper_included>true</v1:upper_included>
           <v1:lower_unbounded>false</v1:lower_unbounded>
           <v1:upper_unbounded>false</v1:upper_unbounded>
-          <v1:lower>P0D</v1:lower>
-          <v1:upper>P1D</v1:upper>
+          <v1:lower>P0Y</v1:lower>
+          <v1:upper>P200Y</v1:upper>
         </v1:range>
       </v1:item>
     </v1:children>

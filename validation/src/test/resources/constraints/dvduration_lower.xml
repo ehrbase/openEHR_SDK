@@ -32,7 +32,6 @@
       </v1:occurrences>
       <v1:node_id/>
       <v1:item xsi:type="C_DURATION">
-        <v1:pattern>PYMWD</v1:pattern>
         <v1:range>
           <v1:lower_included>true</v1:lower_included>
           <v1:lower_unbounded>false</v1:lower_unbounded>
