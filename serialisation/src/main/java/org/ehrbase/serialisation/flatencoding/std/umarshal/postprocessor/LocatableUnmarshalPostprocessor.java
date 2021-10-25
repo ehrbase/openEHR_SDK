@@ -19,43 +19,43 @@
 
 package org.ehrbase.serialisation.flatencoding.std.umarshal.postprocessor;
 
+import com.nedap.archie.rm.archetyped.FeederAudit;
 import com.nedap.archie.rm.archetyped.Locatable;
 import com.nedap.archie.rm.composition.Composition;
 import com.nedap.archie.rm.support.identification.HierObjectId;
-import org.apache.commons.lang3.StringUtils;
+import org.ehrbase.serialisation.flatencoding.std.umarshal.rmunmarshaller.FeederAuditRMUnmarshaller;
 import org.ehrbase.serialisation.walker.defaultvalues.DefaultValues;
 import org.ehrbase.webtemplate.path.flat.FlatPathDto;
 
 import java.util.ArrayList;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static org.ehrbase.serialisation.walker.FlatHelper.consumeAllMatching;
+import static org.ehrbase.serialisation.walker.FlatHelper.extractMultiValued;
 import static org.ehrbase.webtemplate.parser.OPTParser.PATH_DIVIDER;
 
 public class LocatableUnmarshalPostprocessor extends AbstractUnmarshalPostprocessor<Locatable> {
 
+  private static final FeederAuditRMUnmarshaller FEEDER_AUDIT_RM_UNMARSHALLER =
+      new FeederAuditRMUnmarshaller();
+
   /** {@inheritDoc} Unmarshalls {@link Composition#setUid} */
   @Override
-  public void process(String term, Locatable rmObject, Map<FlatPathDto, String> values, Set<String> consumedPaths) {
+  public void process(
+      String term, Locatable rmObject, Map<FlatPathDto, String> values, Set<String> consumedPaths) {
 
     setValue(
         term + PATH_DIVIDER + "_uid",
         null,
         values,
         s -> rmObject.setUid(new HierObjectId(s)),
-        String.class, consumedPaths);
+        String.class,
+        consumedPaths);
 
     Map<Integer, Map<String, String>> links =
-        values.entrySet().stream()
-            .filter(s -> s.getKey().startsWith(term + PATH_DIVIDER + "_link"))
-            .collect(
-                Collectors.groupingBy(
-                    e -> Optional.ofNullable(e.getKey().getLast().getCount()).orElse(0),
-                        Collectors.toMap(
-                                e1 -> e1.getKey().getLast().getAttributeName(),
-                            stringStringEntry -> StringUtils.unwrap(stringStringEntry.getValue(), '"'))));
+        extractMultiValued(term + PATH_DIVIDER + "_link", values);
 
     if (rmObject.getLinks() == null) {
       rmObject.setLinks(new ArrayList<>());
@@ -66,8 +66,17 @@ public class LocatableUnmarshalPostprocessor extends AbstractUnmarshalPostproces
         .addAll(
             links.values().stream().map(DefaultValues::createLink).collect(Collectors.toList()));
 
-  consumedPaths.addAll(  values.keySet().stream()
-            .filter(s -> s.startsWith(term + PATH_DIVIDER + "_link")).map(FlatPathDto::format).collect(Collectors.toSet()));
+    consumeAllMatching(term + PATH_DIVIDER + "_link", values, consumedPaths);
+
+    if (isEmpty(rmObject.getFeederAudit())) {
+
+      rmObject.setFeederAudit(new FeederAudit());
+      FEEDER_AUDIT_RM_UNMARSHALLER.handle(
+          term + "/_feeder_audit", rmObject.getFeederAudit(), values, null, consumedPaths);
+      if (isEmpty(rmObject.getFeederAudit())) {
+        rmObject.setFeederAudit(null);
+      }
+    }
   }
 
   /** {@inheritDoc} */

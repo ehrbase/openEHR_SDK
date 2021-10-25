@@ -51,6 +51,15 @@ public class FlatJsonTest {
   }
 
   @Test
+  public void roundTripFeederAudit() throws IOException {
+
+    CompositionTestDataSimSDTJson testData = CompositionTestDataSimSDTJson.CORONA_WITH_FEEDER_AUDIT;
+    String templateId = "Corona_Anamnese";
+
+    check(templateId, testData, new String[] {}, new String[] {});
+  }
+
+  @Test
   public void roundTripRaw() throws IOException {
 
     CompositionTestDataSimSDTJson testData = CompositionTestDataSimSDTJson.CORONA_WITH_RAW;

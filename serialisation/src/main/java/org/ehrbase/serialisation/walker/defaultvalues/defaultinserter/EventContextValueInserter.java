@@ -26,6 +26,7 @@ import com.nedap.archie.rm.generic.Participation;
 import com.nedap.archie.rm.generic.PartyProxy;
 import com.nedap.archie.rm.support.identification.GenericId;
 import org.ehrbase.client.classgenerator.shareddefinition.Setting;
+import org.ehrbase.serialisation.walker.RMHelper;
 import org.ehrbase.serialisation.walker.defaultvalues.DefaultValuePath;
 import org.ehrbase.serialisation.walker.defaultvalues.DefaultValues;
 
@@ -35,17 +36,17 @@ public class EventContextValueInserter extends AbstractValueInserter<EventContex
   @Override
   public void insert(EventContext rmObject, DefaultValues defaultValues) {
 
-    if (isEmpty(rmObject.getStartTime())
+    if (RMHelper.isEmpty(rmObject.getStartTime())
         && defaultValues.containsDefaultValue(DefaultValuePath.TIME)) {
       rmObject.setStartTime(new DvDateTime(defaultValues.getDefaultValue(DefaultValuePath.TIME)));
     }
 
-    if (isEmpty(rmObject.getEndTime())
+    if (RMHelper.isEmpty(rmObject.getEndTime())
         && defaultValues.containsDefaultValue(DefaultValuePath.END_TIME)) {
       rmObject.setEndTime(new DvDateTime(defaultValues.getDefaultValue(DefaultValuePath.END_TIME)));
     }
 
-    if (isEmpty(rmObject.getHealthCareFacility())
+    if (RMHelper.isEmpty(rmObject.getHealthCareFacility())
         && (defaultValues.containsDefaultValue(DefaultValuePath.HEALTHCARE_FACILITY_NAME)
             || defaultValues.containsDefaultValue(DefaultValuePath.HEALTHCARE_FACILITY_ID))) {
       rmObject.setHealthCareFacility(
@@ -56,18 +57,18 @@ public class EventContextValueInserter extends AbstractValueInserter<EventContex
               rmObject.getHealthCareFacility()));
     }
 
-    if (isEmpty(rmObject.getLocation())
+    if (RMHelper.isEmpty(rmObject.getLocation())
         && defaultValues.containsDefaultValue(DefaultValuePath.LOCATION)) {
       rmObject.setLocation(defaultValues.getDefaultValue(DefaultValuePath.LOCATION));
     }
 
-    if (isEmpty(rmObject.getSetting())
+    if (RMHelper.isEmpty(rmObject.getSetting())
         && defaultValues.containsDefaultValue(DefaultValuePath.SETTING)) {
       Setting defaultValue = defaultValues.getDefaultValue(DefaultValuePath.SETTING);
       rmObject.setSetting(new DvCodedText(defaultValue.getValue(), defaultValue.toCodePhrase()));
     }
 
-    if (isEmpty(rmObject.getParticipations())
+    if (RMHelper.isEmpty(rmObject.getParticipations())
         && defaultValues.containsDefaultValue(DefaultValuePath.PARTICIPATION)) {
       rmObject.setParticipations(defaultValues.getDefaultValue(DefaultValuePath.PARTICIPATION));
     }

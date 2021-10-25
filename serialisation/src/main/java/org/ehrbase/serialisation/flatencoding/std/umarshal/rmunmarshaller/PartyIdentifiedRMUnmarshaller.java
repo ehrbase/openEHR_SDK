@@ -28,10 +28,11 @@ import org.ehrbase.serialisation.walker.defaultvalues.DefaultValues;
 import org.ehrbase.webtemplate.path.flat.FlatPathDto;
 
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static org.ehrbase.serialisation.walker.FlatHelper.consumeAllMatching;
+import static org.ehrbase.serialisation.walker.FlatHelper.extractMultiValued;
 import static org.ehrbase.webtemplate.parser.OPTParser.PATH_DIVIDER;
 
 public class PartyIdentifiedRMUnmarshaller extends AbstractRMUnmarshaller<PartyIdentified> {
@@ -81,27 +82,13 @@ public class PartyIdentifiedRMUnmarshaller extends AbstractRMUnmarshaller<PartyI
     }
 
     Map<Integer, Map<String, String>> identifiers =
-        currentValues.entrySet().stream()
-            .filter(s -> s.getKey().startsWith(currentTerm + PATH_DIVIDER + "_identifier"))
-            .collect(
-                Collectors.groupingBy(
-                    e -> Optional.ofNullable(e.getKey().getLast().getCount()).orElse(0),
-                    Collectors.toMap(
-                        e1 ->
-                            Optional.ofNullable(e1.getKey().getLast().getAttributeName())
-                                .orElse(""),
-                        stringStringEntry ->
-                            StringUtils.unwrap(stringStringEntry.getValue(), '"'))));
+        extractMultiValued(currentTerm + PATH_DIVIDER + "_identifier", currentValues);
 
     rmObject.setIdentifiers(
         identifiers.values().stream()
             .map(DefaultValues::toDvIdentifier)
             .collect(Collectors.toList()));
 
-    consumedPaths.addAll(
-        currentValues.keySet().stream()
-            .filter(s -> s.startsWith(currentTerm + PATH_DIVIDER + "_identifier"))
-            .map(FlatPathDto::format)
-            .collect(Collectors.toSet()));
+    consumeAllMatching(currentTerm + PATH_DIVIDER + "_identifier", currentValues, consumedPaths);
   }
 }

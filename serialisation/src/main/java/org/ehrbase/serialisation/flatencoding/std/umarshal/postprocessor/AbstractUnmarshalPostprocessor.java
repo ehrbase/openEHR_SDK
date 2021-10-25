@@ -24,6 +24,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nedap.archie.rm.RMObject;
 import org.apache.commons.lang3.StringUtils;
 import org.ehrbase.serialisation.jsonencoding.JacksonUtil;
+import org.ehrbase.serialisation.walker.RMHelper;
 import org.ehrbase.webtemplate.path.flat.FlatPathDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -72,5 +73,10 @@ public abstract class AbstractUnmarshalPostprocessor<T extends RMObject>
     } else {
 
     }
+  }
+
+  protected boolean isEmpty(Object rmObject) {
+
+    return RMHelper.isEmpty(rmObject);
   }
 }

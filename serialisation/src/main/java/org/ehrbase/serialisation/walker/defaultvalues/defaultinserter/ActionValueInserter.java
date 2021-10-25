@@ -21,6 +21,7 @@ package org.ehrbase.serialisation.walker.defaultvalues.defaultinserter;
 
 import com.nedap.archie.rm.composition.Action;
 import com.nedap.archie.rm.datavalues.quantity.datetime.DvDateTime;
+import org.ehrbase.serialisation.walker.RMHelper;
 import org.ehrbase.serialisation.walker.defaultvalues.DefaultValuePath;
 import org.ehrbase.serialisation.walker.defaultvalues.DefaultValues;
 
@@ -32,7 +33,7 @@ public class ActionValueInserter extends AbstractValueInserter<Action> {
   @Override
   public void insert(Action rmObject, DefaultValues defaultValues) {
 
-    if (isEmpty(rmObject.getTime())
+    if (RMHelper.isEmpty(rmObject.getTime())
         && (defaultValues.containsDefaultValue(DefaultValuePath.TIME)
             || defaultValues.containsDefaultValue(DefaultValuePath.ACTION_TIME))) {
       TemporalAccessor defaultTemporalAccessor =

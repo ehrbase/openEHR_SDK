@@ -23,6 +23,7 @@ import com.nedap.archie.rm.composition.Observation;
 import com.nedap.archie.rm.datastructures.Event;
 import com.nedap.archie.rm.datastructures.History;
 import com.nedap.archie.rm.datavalues.quantity.datetime.DvDateTime;
+import org.ehrbase.serialisation.walker.RMHelper;
 import org.ehrbase.serialisation.walker.defaultvalues.DefaultValuePath;
 import org.ehrbase.serialisation.walker.defaultvalues.DefaultValues;
 
@@ -53,7 +54,7 @@ public class ObservationValueInserter extends AbstractValueInserter<Observation>
 
   private void insert(History<?> rmObject, DefaultValues defaultValues) {
 
-    if (isEmpty(rmObject.getOrigin())
+    if (RMHelper.isEmpty(rmObject.getOrigin())
         && (defaultValues.containsDefaultValue(DefaultValuePath.TIME)
             || defaultValues.containsDefaultValue(DefaultValuePath.HISTORY_ORIGIN))) {
       TemporalAccessor defaultTemporalAccessor =
@@ -67,7 +68,8 @@ public class ObservationValueInserter extends AbstractValueInserter<Observation>
   }
 
   private void insert(Event<?> rmObject, DefaultValues defaultValues) {
-    if (isEmpty(rmObject.getTime()) && defaultValues.containsDefaultValue(DefaultValuePath.TIME)) {
+    if (RMHelper.isEmpty(rmObject.getTime())
+        && defaultValues.containsDefaultValue(DefaultValuePath.TIME)) {
 
       rmObject.setTime(new DvDateTime(defaultValues.getDefaultValue(DefaultValuePath.TIME)));
     }

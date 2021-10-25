@@ -19,41 +19,42 @@
 
 package org.ehrbase.serialisation.flatencoding.std.umarshal.rmunmarshaller;
 
-import com.nedap.archie.rm.datavalues.encapsulated.DvParsable;
+import com.nedap.archie.rm.archetyped.FeederAuditDetails;
 import org.ehrbase.serialisation.walker.Context;
 import org.ehrbase.webtemplate.path.flat.FlatPathDto;
 
 import java.util.Map;
 import java.util.Set;
 
-public class DvParsableRMUnmarshaller extends AbstractRMUnmarshaller<DvParsable> {
+public class FeederAuditDetailsRMUnmarshaller extends AbstractRMUnmarshaller<FeederAuditDetails> {
 
   /** {@inheritDoc} */
   @Override
-  public Class<DvParsable> getAssociatedClass() {
-    return DvParsable.class;
+  public Class<FeederAuditDetails> getAssociatedClass() {
+    return FeederAuditDetails.class;
   }
 
   /** {@inheritDoc} */
   @Override
   public void handle(
       String currentTerm,
-      DvParsable rmObject,
+      FeederAuditDetails rmObject,
       Map<FlatPathDto, String> currentValues,
       Context<Map<FlatPathDto, String>> context,
       Set<String> consumedPaths) {
 
-    setValue(currentTerm, "value", currentValues, rmObject::setValue, String.class, consumedPaths);
-
-    if (rmObject.getValue() == null) {
-      setValue(currentTerm, null, currentValues, rmObject::setValue, String.class, consumedPaths);
-    }
-
     setValue(
         currentTerm,
-        "formalism",
+        "system_id",
         currentValues,
-        rmObject::setFormalism,
+        rmObject::setSystemId,
+        String.class,
+        consumedPaths);
+    setValue(
+        currentTerm,
+        "version_id",
+        currentValues,
+        rmObject::setVersionId,
         String.class,
         consumedPaths);
   }

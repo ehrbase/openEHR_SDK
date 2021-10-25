@@ -32,8 +32,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static org.ehrbase.serialisation.flatencoding.std.umarshal.postprocessor.EntryPostprocessor.consumeAllMatching;
-import static org.ehrbase.serialisation.flatencoding.std.umarshal.postprocessor.EntryPostprocessor.extractMultiValued;
+import static org.ehrbase.serialisation.walker.FlatHelper.consumeAllMatching;
+import static org.ehrbase.serialisation.walker.FlatHelper.extractMultiValued;
 import static org.ehrbase.webtemplate.parser.OPTParser.PATH_DIVIDER;
 
 public class EventContextUnmarshalPostprocessor
@@ -44,7 +44,11 @@ public class EventContextUnmarshalPostprocessor
 
   /** {@inheritDoc} */
   @Override
-  public void process(String term, EventContext rmObject, Map<FlatPathDto, String> values, Set<String> consumedPaths) {
+  public void process(
+      String term,
+      EventContext rmObject,
+      Map<FlatPathDto, String> values,
+      Set<String> consumedPaths) {
     setValue(
         term + PATH_DIVIDER + "_end_time",
         null,
@@ -54,7 +58,8 @@ public class EventContextUnmarshalPostprocessor
             rmObject.setEndTime(new DvDateTime(s));
           }
         },
-        String.class, consumedPaths);
+        String.class,
+        consumedPaths);
 
     Map<FlatPathDto, String> health_care_facilityValues =
         values.entrySet().stream()
@@ -67,23 +72,35 @@ public class EventContextUnmarshalPostprocessor
           term + "/" + "_health_care_facility",
           rmObject.getHealthCareFacility(),
           health_care_facilityValues,
-          null, consumedPaths);
+          null,
+          consumedPaths);
     }
 
-
     Map<Integer, Map<String, String>> other =
-            extractMultiValued(term + PATH_DIVIDER + "_participation", values);
+        extractMultiValued(term + PATH_DIVIDER + "_participation", values);
 
-    other.values().stream().map(Map::entrySet).map(s -> s.stream().collect(Collectors.toMap(e ->"ctx/"+ DefaultValuePath.PARTICIPATION.getPath()+"_"+e.getKey().replace("identifiers_","identifiers|"), e -> StringUtils.wrap( e.getValue(),'"'))).entrySet()).map(DefaultValues::buildParticipation).forEach(rmObject::addParticipation);
+    other.values().stream()
+        .map(Map::entrySet)
+        .map(
+            s ->
+                s.stream()
+                    .collect(
+                        Collectors.toMap(
+                            e ->
+                                "ctx/"
+                                    + DefaultValuePath.PARTICIPATION.getPath()
+                                    + "_"
+                                    + e.getKey().replace("identifiers_", "identifiers|"),
+                            e -> StringUtils.wrap(e.getValue(), '"')))
+                    .entrySet())
+        .map(DefaultValues::buildParticipation)
+        .forEach(rmObject::addParticipation);
     consumeAllMatching(term + PATH_DIVIDER + "_participation", values, consumedPaths);
 
-
-
     // Strange Path with value true if setting = other care (238)
-    consumedPaths.add(term+"/"+"setting|238");
+    consumedPaths.add(term + "/" + "setting|238");
     // Strange Path with value true if setting != other care (238)
-    consumedPaths.add(term+"/"+"setting|");
-
+    consumedPaths.add(term + "/" + "setting|");
   }
 
   /** {@inheritDoc} */

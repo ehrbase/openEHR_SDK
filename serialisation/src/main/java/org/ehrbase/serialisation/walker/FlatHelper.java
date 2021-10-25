@@ -4,6 +4,7 @@ import com.nedap.archie.rm.datastructures.Event;
 import com.nedap.archie.rminfo.RMTypeInfo;
 import org.apache.commons.lang3.StringUtils;
 import org.ehrbase.webtemplate.model.WebTemplateNode;
+import org.ehrbase.webtemplate.path.flat.FlatPathDto;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -163,5 +164,41 @@ public class FlatHelper<T> {
             || typeInfo.getRmName().equals(ISM_TRANSITION) && node.getName().equals("transition");
 
     return (nonMandatoryRmAttribute || mandatoryNotInWebTemplate) && !nonMandatoryInWebTemplate;
+  }
+
+  public static void consumeAllMatching(
+      String term, Map<FlatPathDto, String> values, Set<String> consumedPaths) {
+    consumedPaths.addAll(
+        values.keySet().stream()
+            .filter(s -> s.startsWith(term))
+            .map(FlatPathDto::format)
+            .collect(Collectors.toSet()));
+  }
+
+  /**
+   * extract multi valued sub-values like
+   * "vitals/vitals/body_temperature:0/_feeder_audit/feeder_system_item_id:0|id": "id1",
+   * "vitals/vitals/body_temperature:0/_feeder_audit/feeder_system_item_id:0|type": "PERSON",
+   * "vitals/vitals/body_temperature:0/_feeder_audit/feeder_system_item_id:0|assigner": "assigner1",
+   * "vitals/vitals/body_temperature:0/_feeder_audit/feeder_system_item_id:0|issuer": "issuer1",
+   * "vitals/vitals/body_temperature:0/_feeder_audit/feeder_system_item_id:1|id": "id2",
+   * "vitals/vitals/body_temperature:0/_feeder_audit/feeder_system_item_id:1|type": "PERSON",
+   * "vitals/vitals/body_temperature:0/_feeder_audit/feeder_system_item_id:1|assigner": "assigner2",
+   * "vitals/vitals/body_temperature:0/_feeder_audit/feeder_system_item_id:1|issuer": "issuer2",
+   *
+   * @param term
+   * @param values
+   * @return
+   */
+  public static Map<Integer, Map<String, String>> extractMultiValued(
+      String term, Map<FlatPathDto, String> values) {
+    return values.entrySet().stream()
+        .filter(s -> s.getKey().startsWith(term))
+        .collect(
+            Collectors.groupingBy(
+                e -> Optional.ofNullable(e.getKey().getLast().getCount()).orElse(0),
+                Collectors.toMap(
+                    e1 -> Optional.ofNullable(e1.getKey().getLast().getAttributeName()).orElse(""),
+                    stringStringEntry -> StringUtils.unwrap(stringStringEntry.getValue(), '"'))));
   }
 }

@@ -192,7 +192,9 @@ public class StdToCompositionWalker extends ToCompositionWalker<Map<FlatPathDto,
       RMObject newRmObject =
           new CanonicalJson()
               .unmarshal(
-                  om.readValue(current.getValue(), String.class).replace("\"@class\"", "\"_type\""),
+                  om.readValue(current.getValue(), String.class)
+                      // In case better RAW encoding is used instead of canonical
+                      .replace("\"@class\"", "\"_type\""),
                   RMObject.class);
 
       // Replace old skeleton
