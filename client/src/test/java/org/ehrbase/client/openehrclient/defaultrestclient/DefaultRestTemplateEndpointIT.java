@@ -89,7 +89,7 @@ public class DefaultRestTemplateEndpointIT {
         Optional<String> actual = new DefaultRestTemplateEndpoint(restClient).upload(template);
 
         assertTrue(actual.isPresent());
-        assertThat(actual).isEqualTo(templateId);
+        assertThat(actual.get()).isEqualTo(templateId);
     }
 
     @Test
