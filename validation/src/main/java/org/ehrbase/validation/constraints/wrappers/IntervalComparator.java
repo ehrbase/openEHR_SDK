@@ -27,6 +27,7 @@ import com.nedap.archie.rm.datavalues.quantity.datetime.DvDuration;
 import com.nedap.archie.rm.datavalues.quantity.datetime.DvTime;
 import java.time.Duration;
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
 import org.ehrbase.validation.constraints.ConstraintOccurrences;
 import org.ehrbase.validation.constraints.util.ZonedDateTimeUtil;
@@ -45,6 +46,9 @@ import org.openehr.schemas.v1.IntervalOfTime;
  */
 @SuppressWarnings("unchecked")
 public class IntervalComparator {
+
+  private IntervalComparator() {
+  }
 
   //lower exclusive, upper exclusive
   private static void isWithinLxUx(Comparable value, Comparable lower, Comparable upper)
@@ -88,8 +92,8 @@ public class IntervalComparator {
 
   private static void compareWithinInterval(Comparable value, Interval interval, Comparable lower,
       Comparable upper) throws IllegalArgumentException {
-    boolean isLowerIncluded = (interval.isSetLowerIncluded() ? interval.getLowerIncluded() : false);
-    boolean isUpperIncluded = (interval.isSetUpperIncluded() ? interval.getUpperIncluded() : false);
+    boolean isLowerIncluded = interval.isSetLowerIncluded() && interval.getLowerIncluded();
+    boolean isUpperIncluded = interval.isSetUpperIncluded() && interval.getUpperIncluded();
 
     if (isLowerIncluded && isUpperIncluded) {
       isWithinLiUi(value, lower, upper);
@@ -198,7 +202,9 @@ public class IntervalComparator {
     String lower = (intervalOfDate.isSetLower() ? intervalOfDate.getLower() : null);
     String upper = (intervalOfDate.isSetUpper() ? intervalOfDate.getUpper() : null);
 
-    ZonedDateTime lowerDate, upperDate;
+    ZonedDateTime lowerDate;
+    ZonedDateTime upperDate;
+
     //Date massage...
     if (lower != null) {
       lowerDate = ZonedDateTime.parse(lower);
@@ -230,7 +236,9 @@ public class IntervalComparator {
     String lower = (intervalOfDateTime.isSetLower() ? intervalOfDateTime.getLower() : null);
     String upper = (intervalOfDateTime.isSetUpper() ? intervalOfDateTime.getUpper() : null);
 
-    ZonedDateTime lowerDateTime, upperDateTime;
+    ZonedDateTime lowerDateTime;
+    ZonedDateTime upperDateTime;
+
     //Date massage...
     if (lower != null) {
       lowerDateTime = ZonedDateTime.parse(lower);
@@ -259,7 +267,9 @@ public class IntervalComparator {
     String lower = (intervalOfTime.isSetLower() ? intervalOfTime.getLower() : null);
     String upper = (intervalOfTime.isSetUpper() ? intervalOfTime.getUpper() : null);
 
-    ZonedDateTime lowerTime, upperTime;
+    ZonedDateTime lowerTime;
+    ZonedDateTime upperTime;
+
     //Date massage...
     if (lower != null) {
       lowerTime = ZonedDateTime.parse(lower);
@@ -307,7 +317,7 @@ public class IntervalComparator {
       compareWithinInterval(
           Duration.parse(valueDuration.getValue().toString()), intervalOfDuration,
           lowerDuration, upperDuration);
-    } catch (Exception e) {
+    } catch (DateTimeParseException e) {
       throw new IllegalArgumentException(
           "Boundaries are invalid, please make sure that only durations are specified. Found: lower:"
               + lower + ", upper:" + upper);
