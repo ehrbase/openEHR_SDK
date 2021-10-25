@@ -67,7 +67,7 @@ public class FlatJsonTest {
         CompositionTestDataSimSDTJson.CORONA_WITH_FEEDER_AUDIT_RAW;
     String templateId = "Corona_Anamnese";
 
-    FlatJson cut =
+    RMDataFormat cut =
         new FlatJasonProvider(templateProvider).buildFlatJson(FlatFormat.SIM_SDT, templateId);
 
     String flat = IOUtils.toString(testData.getStream(), StandardCharsets.UTF_8);
@@ -119,7 +119,7 @@ public class FlatJsonTest {
     CompositionTestDataSimSDTJson testData = CompositionTestDataSimSDTJson.CORONA_WITH_RAW;
     String templateId = "Corona_Anamnese";
 
-    FlatJson cut =
+    RMDataFormat cut =
         new FlatJasonProvider(templateProvider).buildFlatJson(FlatFormat.SIM_SDT, templateId);
 
     String flat = IOUtils.toString(testData.getStream(), StandardCharsets.UTF_8);
