@@ -86,7 +86,9 @@ public class DefaultRestTemplateEndpointIT {
         template.getTemplateId().setValue(templateId);
         template.getUid().setValue(UUID.randomUUID().toString());
 
-        String actual = new DefaultRestTemplateEndpoint(restClient).upload(template);
+        Optional<String> actual = new DefaultRestTemplateEndpoint(restClient).upload(template);
+
+        assertTrue(actual.isPresent());
         assertThat(actual).isEqualTo(templateId);
     }
 
@@ -99,17 +101,20 @@ public class DefaultRestTemplateEndpointIT {
         template.getTemplateId().setValue(templateId);
         template.getUid().setValue(UUID.randomUUID().toString());
 
-        String actual = new DefaultRestTemplateEndpoint(restClientWithDefaultTemplateProvider).upload(template);
-        assertThat(actual).isEqualTo(templateId);
+        Optional<String> actual = new DefaultRestTemplateEndpoint(restClientWithDefaultTemplateProvider).upload(template);
+
+        assertTrue(actual.isPresent());
+        assertThat(actual.get()).isEqualTo(templateId);
     }
 
     @Test
     public void testFindAllTemplates() throws IOException, XmlException {
 
         String templateId = String.format("%s%s", TEMPLATE_NAME_PREFIX, RandomStringUtils.randomNumeric(10));
-        String savedTemplateId = uploadTemplate(restClient,OperationalTemplateTestData.BLOOD_PRESSURE_SIMPLE, templateId);
+        Optional<String> savedTemplateId = uploadTemplate(restClient,OperationalTemplateTestData.BLOOD_PRESSURE_SIMPLE, templateId);
 
-        assertThat(savedTemplateId).isEqualTo(templateId);
+        assertTrue(savedTemplateId.isPresent());
+        assertThat(savedTemplateId.get()).isEqualTo(templateId);
 
         TemplatesResponseData templatesResponseData = restClient.templateEndpoint().findAllTemplates();
         assertThat(templatesResponseData).isNotNull();
@@ -122,9 +127,10 @@ public class DefaultRestTemplateEndpointIT {
     @Test
     public void testFindAllTemplatesWithDefaultTemplateProvider() throws IOException, XmlException {
         String templateId = String.format("%s%s", TEMPLATE_NAME_PREFIX, RandomStringUtils.randomNumeric(10));
-        String savedTemplateId = uploadTemplate(restClientWithDefaultTemplateProvider,OperationalTemplateTestData.BLOOD_PRESSURE_SIMPLE, templateId);
+        Optional<String> savedTemplateId = uploadTemplate(restClientWithDefaultTemplateProvider,OperationalTemplateTestData.BLOOD_PRESSURE_SIMPLE, templateId);
 
-        assertThat(savedTemplateId).isEqualTo(templateId);
+        assertTrue(savedTemplateId.isPresent());
+        assertThat(savedTemplateId.get()).isEqualTo(templateId);
 
         TemplatesResponseData templatesResponseData = restClientWithDefaultTemplateProvider.templateEndpoint().findAllTemplates();
         assertThat(templatesResponseData).isNotNull();
@@ -134,7 +140,7 @@ public class DefaultRestTemplateEndpointIT {
         assertThat(templateMetaDataDtos.stream().anyMatch(t -> t.getTemplateId().equals(templateId))).isTrue();
     }
 
-    private String  uploadTemplate(DefaultRestClient client, OperationalTemplateTestData testTemplate, String testTemplateId) throws IOException, XmlException{
+    private Optional<String> uploadTemplate(DefaultRestClient client, OperationalTemplateTestData testTemplate, String testTemplateId) throws IOException, XmlException{
         DefaultRestTemplateEndpoint templateEndpoint = new DefaultRestTemplateEndpoint(client);
 
         OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(testTemplate.getStream()).getTemplate();
