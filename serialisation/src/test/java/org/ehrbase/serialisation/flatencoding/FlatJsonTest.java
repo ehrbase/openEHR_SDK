@@ -60,6 +60,59 @@ public class FlatJsonTest {
   }
 
   @Test
+  public void roundTripFeederAuditRaw() throws IOException {
+
+    CompositionTestDataSimSDTJson testData =
+        CompositionTestDataSimSDTJson.CORONA_WITH_FEEDER_AUDIT_RAW;
+    String templateId = "Corona_Anamnese";
+
+    FlatJson cut =
+        new FlatJasonProvider(templateProvider).buildFlatJson(FlatFormat.SIM_SDT, templateId);
+
+    String flat = IOUtils.toString(testData.getStream(), StandardCharsets.UTF_8);
+    Composition unmarshal = cut.unmarshal(flat);
+
+    SoftAssertions softAssertions = new SoftAssertions();
+
+    softAssertions.assertThat(unmarshal).isNotNull();
+
+    try {
+      new Validator(templateProvider.find(templateId).get()).check(unmarshal);
+    } catch (Exception e) {
+      softAssertions.fail(e.getMessage());
+    }
+
+    RMObjectValidator rmObjectValidator =
+        new RMObjectValidator(ArchieRMInfoLookup.getInstance(), s -> null);
+
+    softAssertions
+        .assertThat(rmObjectValidator.validate(unmarshal))
+        .filteredOn(m -> !m.getMessage().contains("Inv_null_flavour_indicated"))
+        .containsExactlyInAnyOrder();
+
+    String actual = cut.marshal(unmarshal);
+
+    String expected =
+        IOUtils.toString(
+            CompositionTestDataSimSDTJson.CORONA_WITH_FEEDER_AUDIT.getStream(),
+            StandardCharsets.UTF_8);
+
+    List<String> errors = compere(actual, expected);
+
+    softAssertions
+        .assertThat(errors)
+        .filteredOn(s -> s.startsWith("Missing"))
+        .containsExactlyInAnyOrder();
+
+    softAssertions
+        .assertThat(errors)
+        .filteredOn(s -> s.startsWith("Extra"))
+        .containsExactlyInAnyOrder();
+
+    softAssertions.assertAll();
+  }
+
+  @Test
   public void roundTripRaw() throws IOException {
 
     CompositionTestDataSimSDTJson testData = CompositionTestDataSimSDTJson.CORONA_WITH_RAW;

@@ -238,6 +238,44 @@ public class StdToCompositionWalker extends ToCompositionWalker<Map<FlatPathDto,
       handleRaw(context);
     }
 
+    WebTemplateNode currentNode = context.getNodeDeque().peek();
+
+    currentNode
+        .getChildren()
+        .forEach(
+            childNode -> {
+
+              // Check for Raw in optional (skipped Nodes)
+              if (context.getFlatHelper().skip(childNode, currentNode)) {
+
+                context.getNodeDeque().push(childNode);
+                context
+                    .getRmObjectDeque()
+                    .push(
+                        new RMObject() {
+                          @Override
+                          public RMObject clone() {
+                            return super.clone();
+                          }
+                        });
+
+                String path = context.getFlatHelper().buildNamePath(context, true);
+                Map<FlatPathDto, String> subValues =
+                    context.getObjectDeque().peek().entrySet().stream()
+                        .filter(e -> e.getKey().startsWith(path + "/_" + childNode.getId()))
+                        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+
+                context.getObjectDeque().push(subValues);
+                if (isRaw(context)) {
+
+                  handleRaw(context);
+                }
+                context.getNodeDeque().poll();
+                context.getRmObjectDeque().poll();
+                context.getObjectDeque().poll();
+              }
+            });
+
     List<UnmarshalPostprocessor<? super RMObject>> postprocessor = new ArrayList<>();
 
     Class<?> currentClass = context.getRmObjectDeque().peek().getClass();
