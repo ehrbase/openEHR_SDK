@@ -17,8 +17,16 @@
 
 package org.ehrbase.client.openehrclient.defaultrestclient;
 
+import static org.ehrbase.client.openehrclient.defaultrestclient.DefaultRestClient.OBJECT_MAPPER;
+
 import com.fasterxml.jackson.core.type.TypeReference;
-import org.apache.http.Header;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.List;
+import java.util.Optional;
+import javax.xml.namespace.QName;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -35,15 +43,6 @@ import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
 import org.openehr.schemas.v1.TemplateDocument;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.xml.namespace.QName;
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.List;
-import java.util.Optional;
-
-import static org.ehrbase.client.openehrclient.defaultrestclient.DefaultRestClient.OBJECT_MAPPER;
 
 public class DefaultRestTemplateEndpoint implements TemplateEndpoint {
 
@@ -119,12 +118,12 @@ public class DefaultRestTemplateEndpoint implements TemplateEndpoint {
     /**
      * Upload a template to the remote system.
      *
-     * @param operationaltemplate
+     * @param operationaltemplate The operational template to be uploaded on the server
      * @return The templateId
      * @throws ClientException
      * @throws WrongStatusCodeException
      */
-    Optional<String> upload(OPERATIONALTEMPLATE operationaltemplate) {
+    String upload(OPERATIONALTEMPLATE operationaltemplate) {
         URI uri = defaultRestClient.getConfig().getBaseUri().resolve(DEFINITION_TEMPLATE_ADL_1_4_PATH);
         XmlOptions opts = new XmlOptions();
         opts.setSaveSyntheticDocumentElement(new QName("http://schemas.openehr.org/v1", "template"));
@@ -133,6 +132,7 @@ public class DefaultRestTemplateEndpoint implements TemplateEndpoint {
                 defaultRestClient.internalPost(uri, null, operationaltemplate.xmlText(opts), ContentType.APPLICATION_XML, ContentType.APPLICATION_XML.getMimeType());
 
         return Optional.ofNullable(response.getFirstHeader(HttpHeaders.ETAG))
-            .map(header -> header.getValue().replace("\"", ""));
+            .map(header -> StringUtils.unwrap(StringUtils.removeStart(header.getValue(),"W/"), '"'))
+            .orElse(operationaltemplate.getTemplateId().getValue());
     }
 }
