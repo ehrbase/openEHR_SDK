@@ -36,9 +36,10 @@ class DvDurationTest extends ConstraintTestBase {
         new FileInputStream("./src/test/resources/constraints/dvduration.xml"));
     CArchetypeConstraint constraint = new CArchetypeConstraint(null, null);
 
-    DvDuration duration = new DvDuration("P50D");
     Assertions.assertDoesNotThrow(
-        () -> constraint.validate("test", duration, archetypeconstraint));
+        () -> constraint.validate("test", new DvDuration("PT10H10M"), archetypeconstraint));
+    Assertions.assertDoesNotThrow(
+        () -> constraint.validate("test", new DvDuration("P1Y"), archetypeconstraint));
   }
 
   @Test
@@ -51,13 +52,24 @@ class DvDurationTest extends ConstraintTestBase {
     Assertions.assertDoesNotThrow(
         () -> constraint.validate("test", d1, archetypeconstraint));
 
-    DvDuration d2 = new DvDuration("P0D");
+    DvDuration d2 = new DvDuration("PT0S");
     Assertions.assertThrows(IllegalArgumentException.class,
         () -> constraint.validate("test", d2, archetypeconstraint));
 
-    DvDuration d3 = new DvDuration("P50D");
+    DvDuration d3 = new DvDuration("PT36H");
     Assertions.assertThrows(IllegalArgumentException.class,
         () -> constraint.validate("test", d3, archetypeconstraint));
+  }
+
+  @Test
+  void testConstraintValidationRange() throws XmlException, IOException {
+    setUpContext("./src/test/resources/constraints/dvduration_range2.xml");
+
+    CArchetypeConstraint constraint = new CArchetypeConstraint(null, null);
+
+    DvDuration d1 = new DvDuration("P67Y");
+    Assertions.assertDoesNotThrow(
+        () -> constraint.validate("test", d1, archetypeconstraint));
   }
 
   @Test
@@ -70,11 +82,11 @@ class DvDurationTest extends ConstraintTestBase {
     Assertions.assertDoesNotThrow(
         () -> constraint.validate("test", d1, archetypeconstraint));
 
-    DvDuration d2 = new DvDuration("P30D");
+    DvDuration d2 = new DvDuration("PT0H");
     Assertions.assertThrows(IllegalArgumentException.class,
         () -> constraint.validate("test", d2, archetypeconstraint));
 
-    DvDuration d3 = new DvDuration("PT1S");
+    DvDuration d3 = new DvDuration("PT24H");
     Assertions.assertThrows(IllegalArgumentException.class,
         () -> constraint.validate("test", d3, archetypeconstraint));
   }
@@ -89,22 +101,26 @@ class DvDurationTest extends ConstraintTestBase {
     Assertions.assertDoesNotThrow(
         () -> constraint.validate("test", d1, archetypeconstraint));
 
-    DvDuration d2 = new DvDuration("P0D");
+    DvDuration d2 = new DvDuration("PT0S");
     Assertions.assertThrows(IllegalArgumentException.class,
         () -> constraint.validate("test", d2, archetypeconstraint));
+
+    DvDuration d3 = new DvDuration("PT1S");
+    Assertions.assertDoesNotThrow(
+        () -> constraint.validate("test", d1, archetypeconstraint));
   }
 
   @Test
-  void testConstraintValidationUppder() throws XmlException, IOException {
+  void testConstraintValidationUpper() throws XmlException, IOException {
     setUpContext("./src/test/resources/constraints/dvduration_upper.xml");
 
     CArchetypeConstraint constraint = new CArchetypeConstraint(null, null);
 
-    DvDuration d1 = new DvDuration("P0D");
+    DvDuration d1 = new DvDuration("PT24H");
     Assertions.assertDoesNotThrow(
         () -> constraint.validate("test", d1, archetypeconstraint));
 
-    DvDuration d2 = new DvDuration("P50D");
+    DvDuration d2 = new DvDuration("PT744H");
     Assertions.assertThrows(IllegalArgumentException.class,
         () -> constraint.validate("test", d2, archetypeconstraint));
   }

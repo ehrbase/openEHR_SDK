@@ -297,30 +297,33 @@ public class IntervalComparator {
   public static void isWithinBoundaries(DvDuration valueDuration,
       IntervalOfDuration intervalOfDuration) throws IllegalArgumentException {
 
-    String lower = (intervalOfDuration.isSetLower() ? intervalOfDuration.getLower() : null);
-    String upper = (intervalOfDuration.isSetUpper() ? intervalOfDuration.getUpper() : null);
+    // Periods/PeriodDurations are not comparable.
+    if (valueDuration.getValue() instanceof Duration) {
+      String lower = (intervalOfDuration.isSetLower() ? intervalOfDuration.getLower() : null);
+      String upper = (intervalOfDuration.isSetUpper() ? intervalOfDuration.getUpper() : null);
 
-    try {
-      Duration lowerDuration;
-      if (lower != null) {
-        lowerDuration = Duration.parse(lower);
-      } else {
-        lowerDuration = Duration.ZERO;
-      }
-      Duration upperDuration;
-      if (upper != null) {
-        upperDuration = Duration.parse(upper);
-      } else {
-        upperDuration = ChronoUnit.FOREVER.getDuration();
-      }
+      try {
+        Duration lowerDuration;
+        if (lower != null) {
+          lowerDuration = Duration.parse(intervalOfDuration.getLower());
+        } else {
+          lowerDuration = Duration.ZERO;
+        }
 
-      compareWithinInterval(
-          Duration.parse(valueDuration.getValue().toString()), intervalOfDuration,
-          lowerDuration, upperDuration);
-    } catch (DateTimeParseException e) {
-      throw new IllegalArgumentException(
-          "Boundaries are invalid, please make sure that only durations are specified. Found: lower:"
-              + lower + ", upper:" + upper);
+        Duration upperDuration;
+        if (upper != null) {
+          upperDuration = Duration.parse(intervalOfDuration.getUpper());
+        } else {
+          upperDuration = ChronoUnit.FOREVER.getDuration();
+        }
+
+        compareWithinInterval((Duration) valueDuration.getValue(), intervalOfDuration,
+            lowerDuration, upperDuration);
+      } catch (DateTimeParseException e) {
+        throw new IllegalArgumentException(
+            "Boundaries are invalid, please make sure that only durations are specified. Found: lower:"
+                + lower + ", upper:" + upper);
+      }
     }
   }
 
