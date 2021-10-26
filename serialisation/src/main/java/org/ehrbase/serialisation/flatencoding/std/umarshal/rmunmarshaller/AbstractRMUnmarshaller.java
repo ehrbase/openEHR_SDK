@@ -25,7 +25,6 @@ import com.nedap.archie.rm.RMObject;
 import org.apache.commons.lang3.StringUtils;
 import org.ehrbase.serialisation.jsonencoding.JacksonUtil;
 import org.ehrbase.serialisation.walker.Context;
-import org.ehrbase.serialisation.walker.RMHelper;
 import org.ehrbase.util.exception.SdkException;
 import org.ehrbase.util.reflection.ReflectionHelper;
 import org.ehrbase.webtemplate.parser.config.RmIntrospectConfig;
@@ -145,10 +144,5 @@ public abstract class AbstractRMUnmarshaller<T extends RMObject> implements RMUn
     } else {
       consumer.accept(null);
     }
-  }
-
-  protected boolean isEmpty(Object rmObject) {
-
-    return RMHelper.isEmpty(rmObject);
   }
 }

@@ -23,6 +23,7 @@ import com.nedap.archie.rm.archetyped.FeederAudit;
 import com.nedap.archie.rm.archetyped.FeederAuditDetails;
 import com.nedap.archie.rm.datavalues.encapsulated.DvParsable;
 import org.ehrbase.serialisation.walker.Context;
+import org.ehrbase.serialisation.walker.RMHelper;
 import org.ehrbase.serialisation.walker.defaultvalues.DefaultValues;
 import org.ehrbase.webtemplate.path.flat.FlatPathDto;
 
@@ -62,7 +63,7 @@ public class FeederAuditRMUnmarshaller extends AbstractRMUnmarshaller<FeederAudi
         context,
         consumedPaths);
 
-    if (isEmpty(rmObject.getOriginalContent())) {
+    if (RMHelper.isEmpty(rmObject.getOriginalContent())) {
       rmObject.setOriginalContent(null);
     }
 
@@ -73,7 +74,8 @@ public class FeederAuditRMUnmarshaller extends AbstractRMUnmarshaller<FeederAudi
         currentValues,
         context,
         consumedPaths);
-    if (isEmpty(rmObject.getOriginatingSystemAudit())) {
+
+    if (RMHelper.isEmpty(rmObject.getOriginatingSystemAudit())) {
       rmObject.setOriginatingSystemAudit(null);
     }
 
