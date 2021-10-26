@@ -29,6 +29,8 @@ import java.util.*;
 @JacksonXmlRootElement
 public class QueryResponseData {
 
+    private MetaData meta;
+
     //the initial query without substitution (!)
     @JsonProperty(value = "q")
     private String query;
@@ -100,7 +102,15 @@ public class QueryResponseData {
     public QueryResponseData() {
     }
 
-    public String getQuery() {
+  public MetaData getMeta() {
+    return meta;
+  }
+
+  public void setMeta(MetaData meta) {
+    this.meta = meta;
+  }
+
+  public String getQuery() {
         return query;
     }
 

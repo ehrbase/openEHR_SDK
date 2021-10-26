@@ -1,0 +1,41 @@
+{
+  "meta": {
+    "_href": "... the URI for the executed AQL - used only for GET executions ...",
+    "_type": "RESULTSET",
+    "_schema_version": "1.0.0",
+    "_created": "2017-08-19T00:25:47.568+02:00",
+    "_generator": "DIPS.OpenEhr.ResultSets.Serialization.Json.ResultSetJsonWriter (5.0.0.0)",
+    "_executed_aql": "... the executed aql ..."
+  },
+  "name": "... the name or identifier of the stored query that was executed ...",
+  "q": "SELECT e/ehr_id/value, c/context/start_time/value as startTime, c/uid/value as cid, c/name FROM EHR e CONTAINS COMPOSITION c[openEHR-EHR-COMPOSITION.encounter.v1] CONTAINS OBSERVATION obs[openEHR-EHR-OBSERVATION.blood_pressure.v1] WHERE obs/data[at0001]/events[at0006]/data[at0003]/items[at0004]/value/magnitude >= $systolic_bp",
+  "columns": [
+    {
+      "name": "#0",
+      "path": "/ehr_id/value"
+    },
+    {
+      "name": "startTime",
+      "path": "/context/start_time/value"
+    },
+    {
+      "name": "cid",
+      "path": "/uid/value"
+    },
+    {
+      "name": "#3",
+      "path": "/name"
+    }
+  ],
+  "rows": [
+    [
+      "81433066-c417-4813-9b29-79783e7bed23",
+      "2017-02-16T13:50:11.308+01:00",
+      "90910cf0-66a0-4382-b1f8-c0f27e81b42d::openEHRSys.example.com::1",
+      {
+        "_type": "DV_TEXT",
+        "value": "Labs"
+      }
+    ]
+  ]
+}
