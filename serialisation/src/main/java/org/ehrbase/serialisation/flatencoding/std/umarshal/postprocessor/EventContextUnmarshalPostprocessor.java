@@ -32,8 +32,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static org.ehrbase.serialisation.flatencoding.std.umarshal.postprocessor.EntryPostprocessor.consumeAllMatching;
-import static org.ehrbase.serialisation.flatencoding.std.umarshal.postprocessor.EntryPostprocessor.extractMultiValued;
+import static org.ehrbase.serialisation.walker.FlatHelper.consumeAllMatching;
+import static org.ehrbase.serialisation.walker.FlatHelper.extractMultiValued;
 import static org.ehrbase.webtemplate.parser.OPTParser.PATH_DIVIDER;
 
 public class EventContextUnmarshalPostprocessor

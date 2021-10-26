@@ -9,6 +9,7 @@ Note: version releases in the 0.x.y range may introduce breaking changes.
 - Added WebTemplate based RmSkeleton builder. (see https://github.com/ehrbase/openEHR_SDK/pull/241)
 - validate that all flat parts are consumed. (see https://github.com/ehrbase/openEHR_SDK/pull/264 )
 - support Structured format. (see https://github.com/ehrbase/openEHR_SDK/pull/273)
+- Allow Json Values in flat (see https://github.com/ehrbase/openEHR_SDK/pull/277)
 
 ### Fixed
 

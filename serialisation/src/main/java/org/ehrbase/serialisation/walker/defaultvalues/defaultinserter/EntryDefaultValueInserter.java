@@ -23,6 +23,7 @@ import com.nedap.archie.rm.composition.Entry;
 import com.nedap.archie.rm.generic.Participation;
 import com.nedap.archie.rm.generic.PartyProxy;
 import com.nedap.archie.rm.support.identification.GenericId;
+import org.ehrbase.serialisation.walker.RMHelper;
 import org.ehrbase.serialisation.walker.defaultvalues.DefaultValuePath;
 import org.ehrbase.serialisation.walker.defaultvalues.DefaultValues;
 
@@ -32,13 +33,13 @@ public class EntryDefaultValueInserter extends AbstractValueInserter<Entry> {
   @Override
   public void insert(Entry rmObject, DefaultValues defaultValues) {
 
-    if (isEmpty(rmObject.getLanguage())
+    if (RMHelper.isEmpty(rmObject.getLanguage())
         && defaultValues.getDefaultValue(DefaultValuePath.LANGUAGE) != null) {
       rmObject.setLanguage(defaultValues.getDefaultValue(DefaultValuePath.LANGUAGE).toCodePhrase());
     }
-    if (isEmpty(rmObject.getProvider()) &&
-        (defaultValues.containsDefaultValue(DefaultValuePath.PROVIDER_ID) ||
-            defaultValues.containsDefaultValue(DefaultValuePath.PROVIDER_NAME))) {
+    if (RMHelper.isEmpty(rmObject.getProvider())
+        && (defaultValues.containsDefaultValue(DefaultValuePath.PROVIDER_ID)
+            || defaultValues.containsDefaultValue(DefaultValuePath.PROVIDER_NAME))) {
       rmObject.setProvider(
           buildPartyIdentified(
               defaultValues,
@@ -47,7 +48,7 @@ public class EntryDefaultValueInserter extends AbstractValueInserter<Entry> {
               rmObject.getProvider()));
     }
 
-    if (isEmpty(rmObject.getOtherParticipations())
+    if (RMHelper.isEmpty(rmObject.getOtherParticipations())
         && defaultValues.containsDefaultValue(DefaultValuePath.PARTICIPATION)) {
       rmObject.setOtherParticipations(
           defaultValues.getDefaultValue(DefaultValuePath.PARTICIPATION));
@@ -64,7 +65,8 @@ public class EntryDefaultValueInserter extends AbstractValueInserter<Entry> {
                     && defaultValues.containsDefaultValue(DefaultValuePath.ID_NAMESPACE)) {
                   ref.setNamespace(defaultValues.getDefaultValue(DefaultValuePath.ID_NAMESPACE));
                 }
-                if (ref.getId() instanceof GenericId && ((GenericId) ref.getId()).getScheme() == null
+                if (ref.getId() instanceof GenericId
+                    && ((GenericId) ref.getId()).getScheme() == null
                     && defaultValues.containsDefaultValue(DefaultValuePath.ID_SCHEME)) {
                   ((GenericId) ref.getId())
                       .setScheme(defaultValues.getDefaultValue(DefaultValuePath.ID_SCHEME));
@@ -72,8 +74,8 @@ public class EntryDefaultValueInserter extends AbstractValueInserter<Entry> {
               });
     }
 
-    if (isEmpty(rmObject.getWorkflowId())
-      && defaultValues.containsDefaultValue(DefaultValuePath.WORKFLOW_ID)) {
+    if (RMHelper.isEmpty(rmObject.getWorkflowId())
+        && defaultValues.containsDefaultValue(DefaultValuePath.WORKFLOW_ID)) {
       rmObject.setWorkflowId(defaultValues.getDefaultValue(DefaultValuePath.WORKFLOW_ID));
     }
     if (rmObject.getWorkflowId() != null) {

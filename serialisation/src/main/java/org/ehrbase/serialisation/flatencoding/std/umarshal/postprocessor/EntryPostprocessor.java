@@ -33,10 +33,11 @@ import org.ehrbase.serialisation.walker.defaultvalues.DefaultValues;
 import org.ehrbase.webtemplate.path.flat.FlatPathDto;
 
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static org.ehrbase.serialisation.walker.FlatHelper.consumeAllMatching;
+import static org.ehrbase.serialisation.walker.FlatHelper.extractMultiValued;
 import static org.ehrbase.webtemplate.parser.OPTParser.PATH_DIVIDER;
 
 public class EntryPostprocessor extends AbstractUnmarshalPostprocessor<Entry> {
@@ -101,27 +102,6 @@ public class EntryPostprocessor extends AbstractUnmarshalPostprocessor<Entry> {
         .map(DefaultValues::buildParticipation)
         .forEach(rmObject::addOtherParticipant);
     consumeAllMatching(term + PATH_DIVIDER + "_other_participation", values, consumedPaths);
-  }
-
-  public static void consumeAllMatching(
-      String term, Map<FlatPathDto, String> values, Set<String> consumedPaths) {
-    consumedPaths.addAll(
-        values.keySet().stream()
-            .filter(s -> s.startsWith(term))
-            .map(FlatPathDto::format)
-            .collect(Collectors.toSet()));
-  }
-
-  public static Map<Integer, Map<String, String>> extractMultiValued(
-      String term, Map<FlatPathDto, String> values) {
-    return values.entrySet().stream()
-        .filter(s -> s.getKey().startsWith(term))
-        .collect(
-            Collectors.groupingBy(
-                e -> Optional.ofNullable(e.getKey().getLast().getCount()).orElse(0),
-                Collectors.toMap(
-                    e1 -> Optional.ofNullable(e1.getKey().getLast().getAttributeName()).orElse(""),
-                    stringStringEntry -> StringUtils.unwrap(stringStringEntry.getValue(), '"'))));
   }
 
   /** {@inheritDoc} */

@@ -24,6 +24,7 @@ import com.nedap.archie.rm.archetyped.Locatable;
 import com.nedap.archie.rm.datavalues.DvEHRURI;
 import com.nedap.archie.rm.datavalues.DvText;
 import com.nedap.archie.rm.support.identification.ObjectId;
+import org.ehrbase.serialisation.flatencoding.std.marshal.config.FeederAuditConfig;
 
 import java.util.Map;
 import java.util.Optional;
@@ -32,6 +33,8 @@ import java.util.stream.IntStream;
 import static org.ehrbase.webtemplate.parser.OPTParser.PATH_DIVIDER;
 
 public class LocatableMarshalPostprocessor implements MarshalPostprocessor<Locatable> {
+
+  private static final FeederAuditConfig FEEDER_AUDIT_CONFIG = new FeederAuditConfig();
 
   /** {@inheritDoc} */
   @Override
@@ -65,6 +68,12 @@ public class LocatableMarshalPostprocessor implements MarshalPostprocessor<Locat
                     "target",
                     Optional.of(link).map(Link::getTarget).map(DvEHRURI::getValue).orElse(null));
               });
+
+      if (rmObject.getFeederAudit() != null) {
+        values.putAll(
+            FEEDER_AUDIT_CONFIG.buildChildValues(
+                term + "/_feeder_audit", rmObject.getFeederAudit(), null));
+      }
     }
   }
 
