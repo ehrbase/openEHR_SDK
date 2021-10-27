@@ -96,6 +96,7 @@
                         <include>ComposerTest</include>
                         <include>DurationTest</include>
                         <include>EndTimeTest</include>
+                        <include>FeederAuditTestOverwritten</include>
                         <include>HistoryOriginTest</include>
                         <include>IntervalEventTest</include>
                         <include>LinksTest</include>

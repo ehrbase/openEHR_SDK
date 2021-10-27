@@ -201,4 +201,11 @@ public class FlatHelper<T> {
                     e1 -> Optional.ofNullable(e1.getKey().getLast().getAttributeName()).orElse(""),
                     stringStringEntry -> StringUtils.unwrap(stringStringEntry.getValue(), '"'))));
   }
+
+  public static Map<FlatPathDto, String> filter(Map<FlatPathDto, String> values, String path) {
+
+    return values.entrySet().stream()
+        .filter(e -> e.getKey().startsWith(path))
+        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+  }
 }

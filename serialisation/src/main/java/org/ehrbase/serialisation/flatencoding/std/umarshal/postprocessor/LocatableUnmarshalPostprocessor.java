@@ -24,7 +24,7 @@ import com.nedap.archie.rm.archetyped.Locatable;
 import com.nedap.archie.rm.composition.Composition;
 import com.nedap.archie.rm.support.identification.HierObjectId;
 import org.ehrbase.serialisation.flatencoding.std.umarshal.rmunmarshaller.FeederAuditRMUnmarshaller;
-import org.ehrbase.serialisation.walker.RMHelper;
+import org.ehrbase.serialisation.walker.FlatHelper;
 import org.ehrbase.serialisation.walker.defaultvalues.DefaultValues;
 import org.ehrbase.webtemplate.path.flat.FlatPathDto;
 
@@ -69,15 +69,17 @@ public class LocatableUnmarshalPostprocessor extends AbstractUnmarshalPostproces
 
     consumeAllMatching(term + PATH_DIVIDER + "_link", values, consumedPaths);
 
-    if (RMHelper.isEmpty(rmObject.getFeederAudit())) {
+    Map<FlatPathDto, String> feederAuditValues = FlatHelper.filter(values, term + "/_feeder_audit");
+
+    if (!feederAuditValues.isEmpty()) {
 
       rmObject.setFeederAudit(new FeederAudit());
       FEEDER_AUDIT_RM_UNMARSHALLER.handle(
-          term + "/_feeder_audit", rmObject.getFeederAudit(), values, null, consumedPaths);
-
-      if (RMHelper.isEmpty(rmObject.getFeederAudit())) {
-        rmObject.setFeederAudit(null);
-      }
+          term + "/_feeder_audit",
+          rmObject.getFeederAudit(),
+          feederAuditValues,
+          null,
+          consumedPaths);
     }
   }
 

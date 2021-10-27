@@ -20,13 +20,19 @@
 package org.ehrbase.serialisation.flatencoding.std.umarshal.rmunmarshaller;
 
 import com.nedap.archie.rm.archetyped.FeederAuditDetails;
+import com.nedap.archie.rm.datavalues.quantity.datetime.DvDateTime;
+import com.nedap.archie.rm.generic.PartyIdentified;
 import org.ehrbase.serialisation.walker.Context;
+import org.ehrbase.serialisation.walker.FlatHelper;
 import org.ehrbase.webtemplate.path.flat.FlatPathDto;
 
 import java.util.Map;
 import java.util.Set;
 
 public class FeederAuditDetailsRMUnmarshaller extends AbstractRMUnmarshaller<FeederAuditDetails> {
+
+  private static final PartyIdentifiedRMUnmarshaller PARTY_IDENTIFIED_RM_UNMARSHALLER =
+      new PartyIdentifiedRMUnmarshaller();
 
   /** {@inheritDoc} */
   @Override
@@ -42,6 +48,36 @@ public class FeederAuditDetailsRMUnmarshaller extends AbstractRMUnmarshaller<Fee
       Map<FlatPathDto, String> currentValues,
       Context<Map<FlatPathDto, String>> context,
       Set<String> consumedPaths) {
+
+    setValue(
+        currentTerm,
+        "time",
+        currentValues,
+        s -> {
+          if (s != null) {
+            rmObject.setTime(new DvDateTime(s));
+          }
+        },
+        String.class,
+        consumedPaths);
+
+    Map<FlatPathDto, String> locationValues =
+        FlatHelper.filter(currentValues, currentTerm + "/location");
+
+    if (!locationValues.isEmpty()) {
+      rmObject.setLocation(new PartyIdentified());
+      PARTY_IDENTIFIED_RM_UNMARSHALLER.handle(
+          currentTerm + "/location", rmObject.getLocation(), locationValues, null, consumedPaths);
+    }
+
+    Map<FlatPathDto, String> providerValues =
+        FlatHelper.filter(currentValues, currentTerm + "/provider");
+
+    if (!providerValues.isEmpty()) {
+      rmObject.setProvider(new PartyIdentified());
+      PARTY_IDENTIFIED_RM_UNMARSHALLER.handle(
+          currentTerm + "/provider", rmObject.getProvider(), providerValues, null, consumedPaths);
+    }
 
     setValue(
         currentTerm,
