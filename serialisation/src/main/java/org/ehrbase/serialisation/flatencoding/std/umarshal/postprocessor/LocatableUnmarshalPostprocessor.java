@@ -71,7 +71,9 @@ public class LocatableUnmarshalPostprocessor extends AbstractUnmarshalPostproces
 
     Map<FlatPathDto, String> feederAuditValues = FlatHelper.filter(values, term + "/_feeder_audit");
 
-    if (!feederAuditValues.isEmpty()) {
+    if (!feederAuditValues.isEmpty()
+        && feederAuditValues.keySet().stream()
+            .noneMatch(p -> "raw".equals(p.getLast().getAttributeName()))) {
 
       rmObject.setFeederAudit(new FeederAudit());
       FEEDER_AUDIT_RM_UNMARSHALLER.handle(
