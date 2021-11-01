@@ -95,6 +95,7 @@
                         <include>CodedTextTest</include>
                         <include>ComposerTest</include>
                         <include>DoraBuilderTestOverwrite</include>
+                        <include>DrpBuilderTestOverwritten</include>
                         <include>DurationTest</include>
                         <include>EndTimeTest</include>
                         <include>FeederAuditTestOverwritten</include>

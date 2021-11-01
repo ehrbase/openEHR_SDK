@@ -26,6 +26,7 @@ import com.nedap.archie.rm.composition.Composition;
 import com.nedap.archie.rm.composition.Entry;
 import com.nedap.archie.rm.datatypes.CodePhrase;
 import com.nedap.archie.rm.datavalues.DvCodedText;
+import com.nedap.archie.rm.datavalues.DvText;
 import com.nedap.archie.rm.generic.PartyRelated;
 import com.nedap.archie.rm.support.identification.TerminologyId;
 import org.apache.commons.collections4.CollectionUtils;
@@ -88,10 +89,22 @@ public class StdToCompositionWalker extends ToCompositionWalker<Map<FlatPathDto,
       oldCount = context.getCountMap().get(new NodeId(child));
       context.getCountMap().put(new NodeId(child), count);
     }
+    String path;
+    if (child.getRmType().equals(ELEMENT)
+        && context.getFlatHelper().skip(context.getNodeDeque().peek(), child)) {
 
-    String path = context.getFlatHelper().buildNamePath(context, true);
+      WebTemplateNode valueNode = child.findChildById(child.getId()).orElseThrow();
+
+      context.getNodeDeque().push(valueNode);
+      path = context.getFlatHelper().buildNamePath(context, true);
+      context.getNodeDeque().remove();
+    } else {
+
+      path = context.getFlatHelper().buildNamePath(context, true);
+    }
     context.getNodeDeque().remove();
     context.getCountMap().remove(new NodeId(child));
+
     if (oldCount != null) {
       context.getCountMap().put(new NodeId(child), oldCount);
     }
@@ -169,6 +182,13 @@ public class StdToCompositionWalker extends ToCompositionWalker<Map<FlatPathDto,
     if (!isRaw(context)
         && !visitChildren(context.getNodeDeque().peek())
         && !context.getFlatHelper().skip(context)) {
+
+      if (context.getRmObjectDeque().peek().getClass().isAssignableFrom(DvCodedText.class)
+          && context.getObjectDeque().peek().keySet().stream()
+              .anyMatch(k -> "other".equals(k.getLast().getAttributeName()))) {
+        replaceRmObject(context, new DvText());
+      }
+
       RMUnmarshaller rmUnmarshaller =
           UNMARSHALLER_MAP.getOrDefault(
               context.getRmObjectDeque().peek().getClass(), new DefaultRMUnmarshaller());
@@ -198,19 +218,23 @@ public class StdToCompositionWalker extends ToCompositionWalker<Map<FlatPathDto,
                   RMObject.class);
 
       // Replace old skeleton
-      RMObject oldRM = context.getRmObjectDeque().poll();
-      RMObject parentRM = context.getRmObjectDeque().peek();
-      WebTemplateNode currentNode = context.getNodeDeque().poll();
-      WebTemplateNode parentNode = context.getNodeDeque().peek();
-      WebTemplateSkeletonBuilder.remove(parentNode, parentRM, currentNode, oldRM);
-      WebTemplateSkeletonBuilder.insert(parentNode, parentRM, currentNode, newRmObject);
-      context.getNodeDeque().push(currentNode);
-      context.getRmObjectDeque().push(newRmObject);
+      replaceRmObject(context, newRmObject);
       consumedPaths.add(current.getKey().format());
 
     } catch (JsonProcessingException e) {
       throw new UnmarshalException(e.getMessage());
     }
+  }
+
+  private void replaceRmObject(Context<Map<FlatPathDto, String>> context, RMObject newRmObject) {
+    RMObject oldRM = context.getRmObjectDeque().poll();
+    RMObject parentRM = context.getRmObjectDeque().peek();
+    WebTemplateNode currentNode = context.getNodeDeque().poll();
+    WebTemplateNode parentNode = context.getNodeDeque().peek();
+    WebTemplateSkeletonBuilder.remove(parentNode, parentRM, currentNode, oldRM);
+    WebTemplateSkeletonBuilder.insert(parentNode, parentRM, currentNode, newRmObject);
+    context.getNodeDeque().push(currentNode);
+    context.getRmObjectDeque().push(newRmObject);
   }
 
   private boolean isRaw(Context<Map<FlatPathDto, String>> context) {

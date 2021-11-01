@@ -188,7 +188,7 @@ public class WebTemplateSkeletonBuilder {
       if (actualChild instanceof Collection) {
         ((Collection<?>) actualChild).remove(removeChildObject);
       } else if (Objects.equals(actualChild, removeChildObject)) {
-        attributeInfo.getSetMethod().invoke(parentObject, null);
+        attributeInfo.getSetMethod().invoke(parentObject, (Object) null);
       }
     } catch (IllegalAccessException | InvocationTargetException e) {
       throw new SdkException(e.getMessage());

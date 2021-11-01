@@ -111,6 +111,14 @@ public class CompositionConverterImp implements CompositionConverter {
         .filter(e -> "video/mp4".equals(e.getValue()))
         .forEach(e -> currentValues.replace(e.getKey(), "video/H263-2000"));
 
+    // add missing terminology for medra_classification
+    if (currentValues.containsKey(
+        "drug_related_problem_report/medication_error/medra_classification|code")) {
+      currentValues.put(
+          "drug_related_problem_report/medication_error/medra_classification|terminology",
+          "terminology");
+    }
+
     Composition composition = flatJson.unmarshal(OBJECT_MAPPER.writeValueAsString(currentValues));
     return new CanonicalJson().marshal(composition).replace("\"_type\"", "\"@class\"");
   }

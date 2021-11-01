@@ -101,7 +101,7 @@ public abstract class Walker<T> {
         }
       }
 
-      handleDVText(currentNode);
+      currentNode.getChildren().forEach(this::handleDVText);
 
       Map<String, List<WebTemplateNode>> choices = currentNode.getChoicesInChildren();
       List<WebTemplateNode> children = new ArrayList<>(currentNode.getChildren());
@@ -134,7 +134,8 @@ public abstract class Walker<T> {
 
       for (List<WebTemplateNode> choice : childChoices) {
 
-        if (choice.stream().noneMatch(WebTemplateNode::isMulti)) {
+        if (choice.stream().noneMatch(WebTemplateNode::isMulti)
+            || currentNode.getRmType().equals(ELEMENT)) {
 
           for (WebTemplateNode childNode : choice) {
             ImmutablePair<T, RMObject> pair =
