@@ -111,16 +111,95 @@ public class CompositionConverterImp implements CompositionConverter {
         .filter(e -> "video/mp4".equals(e.getValue()))
         .forEach(e -> currentValues.replace(e.getKey(), "video/H263-2000"));
 
-    // add missing terminology for medra_classification
-    if (currentValues.containsKey(
-        "drug_related_problem_report/medication_error/medra_classification|code")) {
-      currentValues.put(
-          "drug_related_problem_report/medication_error/medra_classification|terminology",
-          "terminology");
-    }
+    // add missing terminology for some flat examples
+    addTerminology(
+        currentValues, "drug_related_problem_report/medication_error/medra_classification");
+    addTerminology(
+        currentValues,
+        "medication_error_report/medication_error/adverse_effect:1/intervention_details:1/intervention_result");
+    addTerminology(
+        currentValues,
+        "medication_error_report/medication_error/adverse_effect:1/intervention_details:2/intervention_result");
+    addTerminology(
+        currentValues,
+        "medication_error_report/medication_error/adverse_effect:1/intervention_details/intervention_result");
+    addTerminology(
+        currentValues, "medication_error_report/medication_error/adverse_effect:1/reaction");
+    addTerminology(
+        currentValues,
+        "medication_error_report/medication_error/adverse_effect/intervention_details:1/intervention_result");
+    addTerminology(
+        currentValues,
+        "medication_error_report/medication_error/adverse_effect/intervention_details:2/intervention_result");
+    addTerminology(
+        currentValues,
+        "medication_error_report/medication_error/adverse_effect/intervention_details:2/intervention_result");
+    addTerminology(
+        currentValues,
+        "medication_error_report/medication_error/adverse_effect/intervention_details/intervention_result");
+    addTerminology(
+        currentValues, "medication_error_report/medication_error/adverse_effect/reaction");
+    addTerminology(currentValues, "medication_error_report/medication_error/medra_classification");
+    addTerminology(
+        currentValues,
+        "medication_event_case_summary/case_summary/summary_details/admission_diagnosis_classification");
+    addTerminology(
+        currentValues,
+        "medication_event_case_summary/case_summary/summary_details/discharge_diagnosis_classification");
+
+    addTerminology(
+        currentValues,
+        "adverse_drug_reaction_report/adverse_drug_reaction/adverse_effect:1/intervention_details:1/intervention");
+    addTerminology(
+        currentValues,
+        "adverse_drug_reaction_report/adverse_drug_reaction/adverse_effect:1/intervention_details:1/intervention_result");
+    addTerminology(
+        currentValues,
+        "adverse_drug_reaction_report/adverse_drug_reaction/adverse_effect:1/intervention_details:2/intervention");
+    addTerminology(
+        currentValues,
+        "adverse_drug_reaction_report/adverse_drug_reaction/adverse_effect:1/intervention_details:2/intervention_result");
+    addTerminology(
+        currentValues,
+        "adverse_drug_reaction_report/adverse_drug_reaction/adverse_effect:1/intervention_details/intervention");
+    addTerminology(
+        currentValues,
+        "adverse_drug_reaction_report/adverse_drug_reaction/adverse_effect:1/intervention_details/intervention_result");
+    addTerminology(
+        currentValues,
+        "adverse_drug_reaction_report/adverse_drug_reaction/adverse_effect:1/reaction");
+    addTerminology(
+        currentValues,
+        "adverse_drug_reaction_report/adverse_drug_reaction/adverse_effect/intervention_details:1/intervention");
+    addTerminology(
+        currentValues,
+        "adverse_drug_reaction_report/adverse_drug_reaction/adverse_effect/intervention_details:1/intervention_result");
+    addTerminology(
+        currentValues,
+        "adverse_drug_reaction_report/adverse_drug_reaction/adverse_effect/intervention_details:2/intervention");
+    addTerminology(
+        currentValues,
+        "adverse_drug_reaction_report/adverse_drug_reaction/adverse_effect/intervention_details:2/intervention_result");
+    addTerminology(
+        currentValues,
+        "adverse_drug_reaction_report/adverse_drug_reaction/adverse_effect/intervention_details/intervention");
+    addTerminology(
+        currentValues,
+        "adverse_drug_reaction_report/adverse_drug_reaction/adverse_effect/intervention_details/intervention_result");
+    addTerminology(
+        currentValues,
+        "adverse_drug_reaction_report/adverse_drug_reaction/adverse_effect/reaction");
+    addTerminology(
+        currentValues, "adverse_drug_reaction_report/adverse_drug_reaction/medra_classification");
 
     Composition composition = flatJson.unmarshal(OBJECT_MAPPER.writeValueAsString(currentValues));
     return new CanonicalJson().marshal(composition).replace("\"_type\"", "\"@class\"");
+  }
+
+  private void addTerminology(Map<String, Object> currentValues, String path) {
+    if (currentValues.containsKey(path + "|code")) {
+      currentValues.put(path + "|terminology", "terminology");
+    }
   }
 
   private void replaceKey(Map<String, Object> currentValues, String key, String newKey) {

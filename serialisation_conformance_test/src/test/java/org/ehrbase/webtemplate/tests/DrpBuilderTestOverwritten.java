@@ -28,34 +28,4 @@ public class DrpBuilderTestOverwritten extends DrpBuilderTest {
    * Consider sdk behavior of trowing an error correct
    */
   public void codedWithOther1() throws Exception {}
-
-  @Override
-  /*
-   * not ready
-   */
-  public void errorReport() throws Exception {}
-
-  @Override
-  /*
-   * not ready
-   */
-  public void fixedValueTest() throws Exception {}
-
-  @Override
-  /*
-   * not ready
-   */
-  public void elementWith2Values() throws Exception {}
-
-  @Override
-  /*
-   * not ready
-   */
-  public void fixedValueTestDouble() throws Exception {}
-
-  @Override
-  /*
-   * not ready
-   */
-  public void adverseReactionException2() throws Exception {}
 }
