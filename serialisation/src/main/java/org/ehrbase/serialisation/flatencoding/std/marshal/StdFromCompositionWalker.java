@@ -23,6 +23,7 @@ import com.nedap.archie.rm.RMObject;
 import org.ehrbase.serialisation.flatencoding.std.marshal.config.DefaultStdConfig;
 import org.ehrbase.serialisation.flatencoding.std.marshal.config.StdConfig;
 import org.ehrbase.serialisation.flatencoding.std.marshal.postprocessor.MarshalPostprocessor;
+import org.ehrbase.serialisation.flatencoding.std.umarshal.StdToCompositionWalker;
 import org.ehrbase.serialisation.walker.Context;
 import org.ehrbase.serialisation.walker.FromCompositionWalker;
 import org.ehrbase.util.reflection.ReflectionHelper;
@@ -88,7 +89,7 @@ public class StdFromCompositionWalker extends FromCompositionWalker<Map<String, 
     postprocessor.forEach(
         p ->
             p.process(
-                context.getFlatHelper().buildNamePath(context, true),
+                StdToCompositionWalker.buildNamePathWithElementHandling(context),
                 context.getRmObjectDeque().peek(),
                 context.getObjectDeque().peek()));
   }

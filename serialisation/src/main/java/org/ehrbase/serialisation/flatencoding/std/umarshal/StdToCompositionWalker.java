@@ -90,18 +90,7 @@ public class StdToCompositionWalker extends ToCompositionWalker<Map<FlatPathDto,
       context.getCountMap().put(new NodeId(child), count);
     }
     String path;
-    if (child.getRmType().equals(ELEMENT)
-        && context.getFlatHelper().skip(context.getNodeDeque().peek(), child)) {
-
-      WebTemplateNode valueNode = child.findChildById(child.getId()).orElseThrow();
-
-      context.getNodeDeque().push(valueNode);
-      path = context.getFlatHelper().buildNamePath(context, true);
-      context.getNodeDeque().remove();
-    } else {
-
-      path = context.getFlatHelper().buildNamePath(context, true);
-    }
+    path = buildNamePathWithElementHandling(context);
     context.getNodeDeque().remove();
     context.getCountMap().remove(new NodeId(child));
 
@@ -123,6 +112,26 @@ public class StdToCompositionWalker extends ToCompositionWalker<Map<FlatPathDto,
     } else {
       return null;
     }
+  }
+
+  public static <T> String buildNamePathWithElementHandling(Context<T> context) {
+    String path;
+    WebTemplateNode child = context.getNodeDeque().peek();
+
+    // if skipped Element Path = path to Element value
+    if (child.getRmType().equals(ELEMENT)
+        && context.getFlatHelper().skip(context.getNodeDeque().peek(), child)) {
+
+      WebTemplateNode valueNode = child.findChildById(child.getId()).orElseThrow();
+
+      context.getNodeDeque().push(valueNode);
+      path = context.getFlatHelper().buildNamePath(context, true);
+      context.getNodeDeque().remove();
+    } else {
+
+      path = context.getFlatHelper().buildNamePath(context, true);
+    }
+    return path;
   }
 
   @Override
@@ -192,7 +201,7 @@ public class StdToCompositionWalker extends ToCompositionWalker<Map<FlatPathDto,
       RMUnmarshaller rmUnmarshaller =
           UNMARSHALLER_MAP.getOrDefault(
               context.getRmObjectDeque().peek().getClass(), new DefaultRMUnmarshaller());
-      String namePath = getNamePath(context);
+      String namePath = buildNamePathWithElementHandling(context);
 
       rmUnmarshaller.handle(
           namePath,
@@ -311,7 +320,7 @@ public class StdToCompositionWalker extends ToCompositionWalker<Map<FlatPathDto,
 
       currentClass = currentClass.getSuperclass();
     }
-    String namePath = getNamePath(context);
+    String namePath = buildNamePathWithElementHandling(context);
 
     if (Entry.class.isAssignableFrom(context.getRmObjectDeque().peek().getClass())) {
       if (((Entry) context.getRmObjectDeque().peek()).getSubject() instanceof PartyRelated) {

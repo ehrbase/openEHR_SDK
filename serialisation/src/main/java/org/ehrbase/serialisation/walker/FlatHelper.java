@@ -3,6 +3,8 @@ package org.ehrbase.serialisation.walker;
 import com.nedap.archie.rm.datastructures.Event;
 import com.nedap.archie.rminfo.RMTypeInfo;
 import org.apache.commons.lang3.StringUtils;
+import org.ehrbase.client.classgenerator.EnumValueSet;
+import org.ehrbase.util.exception.SdkException;
 import org.ehrbase.webtemplate.model.WebTemplateNode;
 import org.ehrbase.webtemplate.path.flat.FlatPathDto;
 
@@ -207,5 +209,18 @@ public class FlatHelper<T> {
     return values.entrySet().stream()
         .filter(e -> e.getKey().startsWith(path))
         .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+  }
+
+  public static <E extends EnumValueSet> E findEnumValueOrThrow(String value, Class<E> clazz) {
+
+    return Arrays.stream(clazz.getEnumConstants())
+        .filter(e -> e.getCode().equals(value) || e.getValue().equals(value))
+        .findAny()
+        .orElseThrow(
+            () ->
+                new SdkException(
+                    String.format(
+                        "Unknown Value %s in terminology %s",
+                        value, clazz.getEnumConstants()[0].getTerminologyId())));
   }
 }

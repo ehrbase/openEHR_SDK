@@ -169,9 +169,12 @@ public class StructuredHelper {
         final String newPath;
         if (StringUtils.startsWith(field.getKey(), "|") || StringUtils.isBlank(path)) {
           newPath = path + field.getKey();
+        } else if (StringUtils.isEmpty(field.getKey())) {
+          newPath = path;
         } else {
           newPath = path + PATH_DIVIDER + field.getKey();
         }
+
         map.putAll(convertStructuredToFlat(newPath, field.getValue()));
       }
       return map;

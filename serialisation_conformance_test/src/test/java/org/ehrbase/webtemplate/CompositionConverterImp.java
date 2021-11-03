@@ -251,7 +251,7 @@ public class CompositionConverterImp implements CompositionConverter {
       throws Exception {
     Composition composition =
         getFlatJson(template, FlatFormat.STRUCTURED).unmarshal(structuredComposition);
-    return getFlatJson(template, FlatFormat.SIM_SDT).marshal(composition);
+    return new CanonicalJson().marshal(composition).replace("\"_type\"", "\"@class\"");
   }
 
   @Override

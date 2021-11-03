@@ -106,6 +106,7 @@
                         <include>LocationTest</include>
                         <include>MediaTypeExampleTest</include>
                         <include>NoArchetypedTest</include>
+                        <include>NullFlavorTestOverwritten</include>
                         <include>ParentTest</include>
                         <include>ProviderTest</include>
                         <include>SubjectTest</include>
