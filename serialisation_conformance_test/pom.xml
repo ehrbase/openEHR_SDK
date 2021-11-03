@@ -96,6 +96,7 @@
                         <include>ComposerTest</include>
                         <include>DoraBuilderTestOverwrite</include>
                         <include>DrpBuilderTestOverwritten</include>
+                        <include>EthersBuilderTestOverwrite</include>
                         <include>DurationTest</include>
                         <include>EndTimeTest</include>
                         <include>FeederAuditTestOverwritten</include>

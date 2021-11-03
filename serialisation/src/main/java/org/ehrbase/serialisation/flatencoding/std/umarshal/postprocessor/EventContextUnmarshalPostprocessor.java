@@ -49,6 +49,14 @@ public class EventContextUnmarshalPostprocessor
       EventContext rmObject,
       Map<FlatPathDto, String> values,
       Set<String> consumedPaths) {
+
+    setValue(
+        term + PATH_DIVIDER + "_location",
+        null,
+        values,
+        rmObject::setLocation,
+        String.class,
+        consumedPaths);
     setValue(
         term + PATH_DIVIDER + "_end_time",
         null,
