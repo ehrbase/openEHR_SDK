@@ -91,7 +91,8 @@ public class StdFromCompositionWalker extends FromCompositionWalker<Map<String, 
             p.process(
                 StdToCompositionWalker.buildNamePathWithElementHandling(context),
                 context.getRmObjectDeque().peek(),
-                context.getObjectDeque().peek()));
+                context.getObjectDeque().peek(),
+                context));
   }
 
   @Override

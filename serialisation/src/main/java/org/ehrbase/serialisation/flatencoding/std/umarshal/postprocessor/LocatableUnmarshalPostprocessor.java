@@ -22,8 +22,13 @@ package org.ehrbase.serialisation.flatencoding.std.umarshal.postprocessor;
 import com.nedap.archie.rm.archetyped.FeederAudit;
 import com.nedap.archie.rm.archetyped.Locatable;
 import com.nedap.archie.rm.composition.Composition;
+import com.nedap.archie.rm.datavalues.DvCodedText;
+import com.nedap.archie.rm.datavalues.DvText;
 import com.nedap.archie.rm.support.identification.HierObjectId;
+import org.ehrbase.serialisation.flatencoding.std.umarshal.rmunmarshaller.DvCodedTextRMUnmarshaller;
+import org.ehrbase.serialisation.flatencoding.std.umarshal.rmunmarshaller.DvTextRMUnmarshaller;
 import org.ehrbase.serialisation.flatencoding.std.umarshal.rmunmarshaller.FeederAuditRMUnmarshaller;
+import org.ehrbase.serialisation.walker.Context;
 import org.ehrbase.serialisation.walker.FlatHelper;
 import org.ehrbase.serialisation.walker.defaultvalues.DefaultValues;
 import org.ehrbase.webtemplate.path.flat.FlatPathDto;
@@ -42,10 +47,19 @@ public class LocatableUnmarshalPostprocessor extends AbstractUnmarshalPostproces
   private static final FeederAuditRMUnmarshaller FEEDER_AUDIT_RM_UNMARSHALLER =
       new FeederAuditRMUnmarshaller();
 
+  private static final DvTextRMUnmarshaller DV_TEXT_RM_UNMARSHALLER = new DvTextRMUnmarshaller();
+
+  private static final DvCodedTextRMUnmarshaller DV_CODED_TEXT_RM_UNMARSHALLER =
+      new DvCodedTextRMUnmarshaller();
+
   /** {@inheritDoc} Unmarshalls {@link Composition#setUid} */
   @Override
   public void process(
-      String term, Locatable rmObject, Map<FlatPathDto, String> values, Set<String> consumedPaths) {
+      String term,
+      Locatable rmObject,
+      Map<FlatPathDto, String> values,
+      Set<String> consumedPaths,
+      Context<Map<FlatPathDto, String>> context) {
 
     setValue(
         term + PATH_DIVIDER + "_uid",
@@ -82,6 +96,18 @@ public class LocatableUnmarshalPostprocessor extends AbstractUnmarshalPostproces
           feederAuditValues,
           null,
           consumedPaths);
+    }
+
+    Map<FlatPathDto, String> nameValues = FlatHelper.filter(values, term + "/_name");
+
+    if (nameValues.size() == 1) {
+      rmObject.setName(new DvText());
+      DV_TEXT_RM_UNMARSHALLER.handle(
+          term + "/_name", rmObject.getName(), nameValues, context, consumedPaths);
+    } else if (!nameValues.isEmpty()) {
+      rmObject.setName(new DvCodedText());
+      DV_CODED_TEXT_RM_UNMARSHALLER.handle(
+          term + "/_name", (DvCodedText) rmObject.getName(), nameValues, context, consumedPaths);
     }
   }
 

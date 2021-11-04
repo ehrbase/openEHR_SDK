@@ -22,6 +22,7 @@ package org.ehrbase.serialisation.flatencoding.std.umarshal.postprocessor;
 import com.nedap.archie.rm.datastructures.Element;
 import org.apache.commons.lang3.StringUtils;
 import org.ehrbase.client.classgenerator.shareddefinition.NullFlavour;
+import org.ehrbase.serialisation.walker.Context;
 import org.ehrbase.serialisation.walker.FlatHelper;
 import org.ehrbase.webtemplate.path.flat.FlatPathDto;
 
@@ -35,7 +36,11 @@ public class ElementPostprocessor extends AbstractUnmarshalPostprocessor<Element
   /** {@inheritDoc} */
   @Override
   public void process(
-      String term, Element rmObject, Map<FlatPathDto, String> values, Set<String> consumedPaths) {
+      String term,
+      Element rmObject,
+      Map<FlatPathDto, String> values,
+      Set<String> consumedPaths,
+      Context<Map<FlatPathDto, String>> context) {
 
     setValue(
         term + PATH_DIVIDER + "_null_flavour",

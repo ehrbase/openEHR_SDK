@@ -28,6 +28,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.ehrbase.serialisation.flatencoding.std.umarshal.rmunmarshaller.PartyIdentifiedRMUnmarshaller;
+import org.ehrbase.serialisation.walker.Context;
 import org.ehrbase.serialisation.walker.defaultvalues.DefaultValuePath;
 import org.ehrbase.serialisation.walker.defaultvalues.DefaultValues;
 import org.ehrbase.webtemplate.path.flat.FlatPathDto;
@@ -45,7 +46,11 @@ public class EntryPostprocessor extends AbstractUnmarshalPostprocessor<Entry> {
   /** {@inheritDoc} */
   @Override
   public void process(
-      String term, Entry rmObject, Map<FlatPathDto, String> values, Set<String> consumedPaths) {
+      String term,
+      Entry rmObject,
+      Map<FlatPathDto, String> values,
+      Set<String> consumedPaths,
+      Context<Map<FlatPathDto, String>> context) {
     consumedPaths.add(term + PATH_DIVIDER + "encoding|code");
     consumedPaths.add(term + PATH_DIVIDER + "encoding|terminology");
 

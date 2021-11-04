@@ -351,7 +351,8 @@ public class StdToCompositionWalker extends ToCompositionWalker<Map<FlatPathDto,
                 namePath,
                 context.getRmObjectDeque().peek(),
                 context.getObjectDeque().peek(),
-                consumedPaths));
+                consumedPaths,
+                context));
   }
 
   private String getNamePath(Context<Map<FlatPathDto, String>> context) {

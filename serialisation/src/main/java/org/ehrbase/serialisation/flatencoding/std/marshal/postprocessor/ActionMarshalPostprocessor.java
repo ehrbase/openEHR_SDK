@@ -21,6 +21,7 @@ package org.ehrbase.serialisation.flatencoding.std.marshal.postprocessor;
 
 import com.nedap.archie.rm.composition.Action;
 import org.ehrbase.serialisation.flatencoding.std.marshal.config.InstructionDetailsConfig;
+import org.ehrbase.serialisation.walker.Context;
 
 import java.util.Map;
 
@@ -33,7 +34,11 @@ public class ActionMarshalPostprocessor implements MarshalPostprocessor<Action> 
 
   /** {@inheritDoc} Adds the encoding information */
   @Override
-  public void process(String term, Action rmObject, Map<String, Object> values) {
+  public void process(
+      String term,
+      Action rmObject,
+      Map<String, Object> values,
+      Context<Map<String, Object>> context) {
 
     if (rmObject.getInstructionDetails() != null) {
 

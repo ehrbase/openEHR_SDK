@@ -20,6 +20,7 @@
 package org.ehrbase.serialisation.flatencoding.std.umarshal.postprocessor;
 
 import com.nedap.archie.rm.RMObject;
+import org.ehrbase.serialisation.walker.Context;
 import org.ehrbase.util.reflection.ClassDependent;
 import org.ehrbase.webtemplate.path.flat.FlatPathDto;
 
@@ -35,6 +36,12 @@ public interface UnmarshalPostprocessor<T extends RMObject> extends ClassDepende
    * @param rmObject current rmObject in the unmarshal recursion.
    * @param values current values in the unmarshal recursion.
    * @param consumedPaths
+   * @param context
    */
-  void process(String term, T rmObject, Map<FlatPathDto, String> values, Set<String> consumedPaths);
+  void process(
+      String term,
+      T rmObject,
+      Map<FlatPathDto, String> values,
+      Set<String> consumedPaths,
+      Context<Map<FlatPathDto, String>> context);
 }

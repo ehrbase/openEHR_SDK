@@ -21,10 +21,14 @@ package org.ehrbase.serialisation.flatencoding.std.marshal.postprocessor;
 
 import com.nedap.archie.rm.archetyped.Link;
 import com.nedap.archie.rm.archetyped.Locatable;
+import com.nedap.archie.rm.datavalues.DvCodedText;
 import com.nedap.archie.rm.datavalues.DvEHRURI;
 import com.nedap.archie.rm.datavalues.DvText;
 import com.nedap.archie.rm.support.identification.ObjectId;
+import org.ehrbase.serialisation.flatencoding.std.marshal.config.DvCodedTextStdConfiguration;
+import org.ehrbase.serialisation.flatencoding.std.marshal.config.DvTextStdConfiguration;
 import org.ehrbase.serialisation.flatencoding.std.marshal.config.FeederAuditConfig;
+import org.ehrbase.serialisation.walker.Context;
 
 import java.util.Map;
 import java.util.Optional;
@@ -36,9 +40,18 @@ public class LocatableMarshalPostprocessor implements MarshalPostprocessor<Locat
 
   private static final FeederAuditConfig FEEDER_AUDIT_CONFIG = new FeederAuditConfig();
 
+  private static final DvCodedTextStdConfiguration DV_CODED_TEXT_STD_CONFIGURATION =
+      new DvCodedTextStdConfiguration();
+  private static final DvTextStdConfiguration DV_TEXT_STD_CONFIGURATION =
+      new DvTextStdConfiguration();
+
   /** {@inheritDoc} */
   @Override
-  public void process(String term, Locatable rmObject, Map<String, Object> values) {
+  public void process(
+      String term,
+      Locatable rmObject,
+      Map<String, Object> values,
+      Context<Map<String, Object>> context) {
 
     MarshalPostprocessor.addValue(
         values,
@@ -73,6 +86,18 @@ public class LocatableMarshalPostprocessor implements MarshalPostprocessor<Locat
         values.putAll(
             FEEDER_AUDIT_CONFIG.buildChildValues(
                 term + "/_feeder_audit", rmObject.getFeederAudit(), null));
+      }
+    }
+
+    if (!context.getNodeDeque().peek().getName().equals(rmObject.getName().getValue())) {
+      if (rmObject.getName() instanceof DvCodedText) {
+        values.putAll(
+            DV_CODED_TEXT_STD_CONFIGURATION.buildChildValues(
+                term + "/_name", (DvCodedText) rmObject.getName(), context));
+      } else {
+        values.putAll(
+            DV_TEXT_STD_CONFIGURATION.buildChildValues(
+                term + "/_name", rmObject.getName(), context));
       }
     }
   }

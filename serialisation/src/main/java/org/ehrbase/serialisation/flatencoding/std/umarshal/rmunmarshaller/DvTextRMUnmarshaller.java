@@ -50,6 +50,10 @@ public class DvTextRMUnmarshaller extends AbstractRMUnmarshaller<DvText> {
           currentTerm, "other", currentValues, rmObject::setValue, String.class, consumedPaths);
     } else {
       setValue(currentTerm, null, currentValues, rmObject::setValue, String.class, consumedPaths);
+      if (rmObject.getValue() == null) {
+        setValue(
+            currentTerm, "value", currentValues, rmObject::setValue, String.class, consumedPaths);
+      }
     }
   }
 }

@@ -23,6 +23,7 @@ import com.nedap.archie.rm.datastructures.Event;
 import com.nedap.archie.rm.datastructures.History;
 import com.nedap.archie.rm.datastructures.ItemStructure;
 import com.nedap.archie.rm.datavalues.quantity.datetime.DvDateTime;
+import org.ehrbase.serialisation.walker.Context;
 
 import java.time.temporal.TemporalAccessor;
 import java.util.Map;
@@ -36,7 +37,11 @@ public class HistoryPostprocessor implements MarshalPostprocessor<History> {
    * Event#getTime()}
    */
   @Override
-  public void process(String term, History rmObject, Map<String, Object> values) {
+  public void process(
+      String term,
+      History rmObject,
+      Map<String, Object> values,
+      Context<Map<String, Object>> context) {
 
     if (rmObject.getOrigin() != null && rmObject.getOrigin().getValue() != null) {
       Optional<TemporalAccessor> first =

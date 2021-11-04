@@ -23,6 +23,7 @@ import com.nedap.archie.rm.datastructures.Event;
 import com.nedap.archie.rm.datastructures.History;
 import com.nedap.archie.rm.datastructures.ItemStructure;
 import com.nedap.archie.rm.datavalues.quantity.datetime.DvDateTime;
+import org.ehrbase.serialisation.walker.Context;
 import org.ehrbase.webtemplate.path.flat.FlatPathDto;
 
 import java.time.temporal.TemporalAccessor;
@@ -38,7 +39,11 @@ public class HistoryPostprocessor extends AbstractUnmarshalPostprocessor<History
   /** {@inheritDoc} */
   @Override
   public void process(
-      String term, History rmObject, Map<FlatPathDto, String> values, Set<String> consumedPaths) {
+      String term,
+      History rmObject,
+      Map<FlatPathDto, String> values,
+      Set<String> consumedPaths,
+      Context<Map<FlatPathDto, String>> context) {
 
     setValue(
         term + PATH_DIVIDER + "history_origin",

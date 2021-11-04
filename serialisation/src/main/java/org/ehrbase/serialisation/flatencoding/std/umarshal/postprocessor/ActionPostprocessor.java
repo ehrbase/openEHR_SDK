@@ -22,6 +22,7 @@ package org.ehrbase.serialisation.flatencoding.std.umarshal.postprocessor;
 import com.nedap.archie.rm.composition.Action;
 import com.nedap.archie.rm.composition.InstructionDetails;
 import org.ehrbase.serialisation.flatencoding.std.umarshal.rmunmarshaller.InstructionDetailsRMUnmarshaller;
+import org.ehrbase.serialisation.walker.Context;
 import org.ehrbase.webtemplate.path.flat.FlatPathDto;
 
 import java.util.Map;
@@ -38,7 +39,11 @@ public class ActionPostprocessor extends AbstractUnmarshalPostprocessor<Action> 
   /** {@inheritDoc} */
   @Override
   public void process(
-      String term, Action rmObject, Map<FlatPathDto, String> values, Set<String> consumedPaths) {
+      String term,
+      Action rmObject,
+      Map<FlatPathDto, String> values,
+      Set<String> consumedPaths,
+      Context<Map<FlatPathDto, String>> context) {
 
     Map<FlatPathDto, String> instructionDetails =
         values.entrySet().stream()

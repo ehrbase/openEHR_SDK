@@ -105,6 +105,7 @@
                         <include>LinksTest</include>
                         <include>LocationTest</include>
                         <include>MediaTypeExampleTest</include>
+                        <include>NamedElementsTest</include>
                         <include>NoArchetypedTest</include>
                         <include>NullFlavorTestOverwritten</include>
                         <include>ParentTest</include>
