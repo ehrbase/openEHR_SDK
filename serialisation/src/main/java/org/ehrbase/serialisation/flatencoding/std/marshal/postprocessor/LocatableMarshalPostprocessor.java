@@ -31,6 +31,7 @@ import org.ehrbase.serialisation.flatencoding.std.marshal.config.FeederAuditConf
 import org.ehrbase.serialisation.walker.Context;
 
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.IntStream;
 
@@ -89,7 +90,10 @@ public class LocatableMarshalPostprocessor implements MarshalPostprocessor<Locat
       }
     }
 
-    if (!context.getNodeDeque().peek().getName().equals(rmObject.getName().getValue())) {
+    if (Optional.ofNullable(rmObject.getName())
+        .map(DvText::getValue)
+        .filter(n -> !Objects.equals(context.getNodeDeque().peek().getName(), n))
+        .isPresent()) {
       if (rmObject.getName() instanceof DvCodedText) {
         values.putAll(
             DV_CODED_TEXT_STD_CONFIGURATION.buildChildValues(
