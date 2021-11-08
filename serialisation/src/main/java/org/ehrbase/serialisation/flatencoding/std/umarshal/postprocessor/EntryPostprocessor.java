@@ -88,7 +88,7 @@ public class EntryPostprocessor extends AbstractUnmarshalPostprocessor<Entry> {
     }
 
     Map<Integer, Map<String, String>> other =
-        extractMultiValued(term + PATH_DIVIDER + "_other_participation", values);
+        extractMultiValued(term, "_other_participation", values);
 
     other.values().stream()
         .map(Map::entrySet)

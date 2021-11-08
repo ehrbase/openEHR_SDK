@@ -86,8 +86,7 @@ public class EventContextUnmarshalPostprocessor
           consumedPaths);
     }
 
-    Map<Integer, Map<String, String>> other =
-        extractMultiValued(term + PATH_DIVIDER + "_participation", values);
+    Map<Integer, Map<String, String>> other = extractMultiValued(term, "_participation", values);
 
     other.values().stream()
         .map(Map::entrySet)

@@ -69,8 +69,7 @@ public class LocatableUnmarshalPostprocessor extends AbstractUnmarshalPostproces
         String.class,
         consumedPaths);
 
-    Map<Integer, Map<String, String>> links =
-        extractMultiValued(term + PATH_DIVIDER + "_link", values);
+    Map<Integer, Map<String, String>> links = extractMultiValued(term, "_link", values);
 
     if (rmObject.getLinks() == null) {
       rmObject.setLinks(new ArrayList<>());

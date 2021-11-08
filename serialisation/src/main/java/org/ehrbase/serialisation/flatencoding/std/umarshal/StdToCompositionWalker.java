@@ -103,7 +103,7 @@ public class StdToCompositionWalker extends ToCompositionWalker<Map<FlatPathDto,
             .filter(e -> e.getKey().startsWith(path))
             .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
-    if (isChoice && !isMatchingNode(subValues, context, child)) {
+    if (isChoice && !isMatchingNode(subValues, context, child, new FlatPathDto(path))) {
       subValues = Collections.emptyMap();
     }
 
@@ -152,7 +152,8 @@ public class StdToCompositionWalker extends ToCompositionWalker<Map<FlatPathDto,
   private boolean isMatchingNode(
       Map<FlatPathDto, String> subValues,
       Context<Map<FlatPathDto, String>> context,
-      WebTemplateNode child) {
+      WebTemplateNode child,
+      FlatPathDto currentFlatPath) {
 
     if (child.getRmType().equals("POINT_EVENT")) {
       return subValues.entrySet().stream()
@@ -173,11 +174,17 @@ public class StdToCompositionWalker extends ToCompositionWalker<Map<FlatPathDto,
 
       return subValues.isEmpty();
     } else if (child.getRmType().equals(DV_CODED_TEXT)) {
-      return subValues.entrySet().stream()
-          .anyMatch(e -> "code".equals(e.getKey().getLast().getAttributeName()));
+      return subValues.keySet().stream()
+          .anyMatch(
+              e ->
+                  "code".equals(e.getLast().getAttributeName())
+                      && currentFlatPath.getLast().getName().equals(e.getLast().getName()));
     } else if (child.getRmType().equals(DV_TEXT)) {
-      return subValues.entrySet().stream()
-          .allMatch((e -> !"code".equals(e.getKey().getLast().getAttributeName())));
+      return subValues.keySet().stream()
+          .allMatch(
+              (e ->
+                  !("code".equals(e.getLast().getAttributeName())
+                      && currentFlatPath.getLast().getName().equals(e.getLast().getName()))));
     } else {
       // End Nodes which are Choice always have unique flat paths
       return true;

@@ -111,6 +111,7 @@
                         <include>ParentTest</include>
                         <include>ProviderTest</include>
                         <include>SubjectTest</include>
+                        <include>TermMappingTestOverwritten</include>
                         <include>TimeZoneTest</include>
                         <include>UidTest</include>
                         <include>WebTemplateContentTest.java</include>

@@ -82,7 +82,7 @@ public class PartyIdentifiedRMUnmarshaller extends AbstractRMUnmarshaller<PartyI
     }
 
     Map<Integer, Map<String, String>> identifiers =
-        extractMultiValued(currentTerm + PATH_DIVIDER + "_identifier", currentValues);
+        extractMultiValued(currentTerm, "_identifier", currentValues);
 
     rmObject.setIdentifiers(
         identifiers.values().stream()
