@@ -365,7 +365,7 @@ public class OPTParserTest {
             new Tuple("local", ""),
             new Tuple("SNOMED-CT", ""),
             new Tuple("SNOMED-CT", ""),
-            new Tuple("openehr", "at0003:Planned;at0004:Active;at0005:Completed"),
+            new Tuple("local", "at0003:Planned;at0004:Active;at0005:Completed"),
             new Tuple("openehr", "526:planned;245:active;532:completed"),
             new Tuple(null, ""),
             new Tuple(null, ""),
