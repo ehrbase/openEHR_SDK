@@ -193,7 +193,22 @@ public class CompositionConverterImp implements CompositionConverter {
         currentValues, "adverse_drug_reaction_report/adverse_drug_reaction/medra_classification");
 
     Composition composition = flatJson.unmarshal(OBJECT_MAPPER.writeValueAsString(currentValues));
-    return new CanonicalJson().marshal(composition).replace("\"_type\"", "\"@class\"");
+    String raw = new CanonicalJson().marshal(composition).replace("\"_type\"", "\"@class\"");
+
+    if (composition
+        .getArchetypeDetails()
+        .getTemplateId()
+        .getValue()
+        .equals("ISPEK - MED - Medication Order")) {
+      // Changing the DVCodedText depending on the asked language is not supported right now
+
+      raw = raw.replace("Plan medication", "*Plan medication(en)");
+      raw =
+          raw.replace(
+              "Issue prescription for medication", "*Issue prescription for medication(en)");
+    }
+
+    return raw;
   }
 
   private void addTerminology(Map<String, Object> currentValues, String path) {

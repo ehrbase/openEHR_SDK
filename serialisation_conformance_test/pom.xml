@@ -102,6 +102,7 @@
                         <include>FeederAuditTestOverwritten</include>
                         <include>HistoryOriginTest</include>
                         <include>IntervalEventTest</include>
+                        <include>IsmTransitionTest</include>
                         <include>LinksTest</include>
                         <include>LocationTest</include>
                         <include>MediaTypeExampleTest</include>
