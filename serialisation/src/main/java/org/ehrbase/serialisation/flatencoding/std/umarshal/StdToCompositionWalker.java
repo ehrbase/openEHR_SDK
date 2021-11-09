@@ -206,8 +206,7 @@ public class StdToCompositionWalker extends ToCompositionWalker<Map<FlatPathDto,
       }
 
       RMUnmarshaller rmUnmarshaller =
-          UNMARSHALLER_MAP.getOrDefault(
-              context.getRmObjectDeque().peek().getClass(), new DefaultRMUnmarshaller());
+          findRMUnmarshaller(context.getRmObjectDeque().peek().getClass());
       String namePath = buildNamePathWithElementHandling(context);
 
       rmUnmarshaller.handle(
@@ -217,6 +216,10 @@ public class StdToCompositionWalker extends ToCompositionWalker<Map<FlatPathDto,
           context,
           consumedPaths);
     }
+  }
+
+  public static <T extends RMObject> RMUnmarshaller<T> findRMUnmarshaller(Class<T> aClass) {
+    return UNMARSHALLER_MAP.getOrDefault(aClass, new DefaultRMUnmarshaller());
   }
 
   private void handleRaw(Context<Map<FlatPathDto, String>> context) {
