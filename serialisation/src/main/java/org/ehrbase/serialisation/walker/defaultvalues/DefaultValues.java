@@ -207,11 +207,10 @@ public class DefaultValues {
       }
     }
 
-
-      defaultValueMap.putIfAbsent(DefaultValuePath.TIME, OffsetDateTime.now());
-      defaultValueMap.putIfAbsent(DefaultValuePath.ACTION_ISM_TRANSITION_CURRENT_STATE,State.INITIAL);
-      defaultValueMap.putIfAbsent(DefaultValuePath.SETTING, Setting.OTHER_CARE);
-
+    defaultValueMap.putIfAbsent(DefaultValuePath.TIME, OffsetDateTime.now());
+    defaultValueMap.putIfAbsent(
+        DefaultValuePath.ACTION_ISM_TRANSITION_CURRENT_STATE, State.INITIAL);
+    defaultValueMap.putIfAbsent(DefaultValuePath.SETTING, Setting.OTHER_CARE);
   }
 
   public static Link createLink(Map<String, String> stringStringMap) {
@@ -257,14 +256,17 @@ public class DefaultValues {
         });
 
     extract(subValues, "name", ((PartyIdentified) participation.getPerformer())::setName);
-    extract(
-        subValues,
-        "id_namespace",
-        n -> participation.getPerformer().getExternalRef().setNamespace(n));
-    extract(
-        subValues,
-        "id_scheme",
-        ((GenericId) participation.getPerformer().getExternalRef().getId())::setScheme);
+
+    if (participation.getPerformer().getExternalRef() != null) {
+      extract(
+          subValues,
+          "id_namespace",
+          n -> participation.getPerformer().getExternalRef().setNamespace(n));
+      extract(
+          subValues,
+          "id_scheme",
+          ((GenericId) participation.getPerformer().getExternalRef().getId())::setScheme);
+    }
 
     extract(subValues, "function", s -> participation.setFunction(new DvText(s)));
 
