@@ -271,7 +271,7 @@ public class DefaultValues {
     extract(
         subValues,
         "id_scheme",
-        n -> ((GenericId) participation.getPerformer().getExternalRef().getId()).setScheme(n));
+        ((GenericId) participation.getPerformer().getExternalRef().getId())::setScheme);
 
     extract(subValues, "function", s -> participation.setFunction(new DvText(s)));
 

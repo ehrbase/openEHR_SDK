@@ -292,15 +292,7 @@ public class StdToCompositionWalker extends ToCompositionWalker<Map<FlatPathDto,
               if (context.getFlatHelper().skip(childNode, currentNode)) {
 
                 context.getNodeDeque().push(childNode);
-                context
-                    .getRmObjectDeque()
-                    .push(
-                        new RMObject() {
-                          @Override
-                          public RMObject clone() {
-                            return super.clone();
-                          }
-                        });
+                context.getRmObjectDeque().push(new RMObject() {});
 
                 String path = context.getFlatHelper().buildNamePath(context, true);
                 Map<FlatPathDto, String> subValues =
@@ -363,16 +355,6 @@ public class StdToCompositionWalker extends ToCompositionWalker<Map<FlatPathDto,
                 context.getObjectDeque().peek(),
                 consumedPaths,
                 context));
-  }
-
-  private String getNamePath(Context<Map<FlatPathDto, String>> context) {
-    String namePath = context.getFlatHelper().buildNamePath(context, true);
-    String finalNamePath = namePath;
-    if (context.getObjectDeque().peek().entrySet().stream()
-        .noneMatch(e -> e.getKey().startsWith(finalNamePath))) {
-      namePath = context.getFlatHelper().buildNamePath(context, false);
-    }
-    return namePath;
   }
 
   @Override
