@@ -19,11 +19,14 @@
 
 package org.ehrbase.serialisation.flatencoding.std.marshal.postprocessor;
 
+import com.nedap.archie.rm.datavalues.quantity.DvInterval;
 import com.nedap.archie.rm.datavalues.quantity.DvOrdered;
+import com.nedap.archie.rm.datavalues.quantity.ReferenceRange;
 import org.ehrbase.serialisation.flatencoding.std.marshal.config.StdConfig;
 import org.ehrbase.serialisation.walker.Context;
 
 import java.util.Map;
+import java.util.stream.IntStream;
 
 import static org.ehrbase.serialisation.flatencoding.std.marshal.StdFromCompositionWalker.findStdConfig;
 
@@ -37,20 +40,54 @@ public class DvOrderedPostprocessor implements MarshalPostprocessor<DvOrdered> {
       Map<String, Object> values,
       Context<Map<String, Object>> context) {
 
-    if (rmObject.getNormalRange() != null && rmObject.getNormalRange().getLower() != null) {
-      DvOrdered lower = rmObject.getNormalRange().getLower();
-
-      values.putAll(
-          ((StdConfig) findStdConfig(lower.getClass()))
-              .buildChildValues(term + "/_normal_range/lower", lower, context));
+    if (rmObject.getNormalRange() != null) {
+      handleRange(term + "/_normal_range", values, rmObject.getNormalRange(), context);
     }
 
-    if (rmObject.getNormalRange() != null && rmObject.getNormalRange().getUpper() != null) {
-      DvOrdered lower = rmObject.getNormalRange().getUpper();
+    IntStream.range(0, rmObject.getOtherReferenceRanges().size())
+        .forEach(
+            i -> {
+              ReferenceRange referenceRange =
+                  (ReferenceRange) rmObject.getOtherReferenceRanges().get(i);
+
+              if (referenceRange.getMeaning() != null) {
+                values.putAll(
+                    ((StdConfig) findStdConfig(referenceRange.getMeaning().getClass()))
+                        .buildChildValues(
+                            term + "/_other_reference_ranges:" + i + "/meaning",
+                            referenceRange.getMeaning(),
+                            context));
+              }
+
+              if (referenceRange.getRange() != null) {
+                handleRange(
+                    term + "/_other_reference_ranges:" + i,
+                    values,
+                    referenceRange.getRange(),
+                    context);
+              }
+            });
+  }
+
+  private void handleRange(
+      String rangeTerm,
+      Map<String, Object> values,
+      DvInterval range,
+      Context<Map<String, Object>> context) {
+    if (range.getLower() != null) {
+      DvOrdered lower = range.getLower();
 
       values.putAll(
           ((StdConfig) findStdConfig(lower.getClass()))
-              .buildChildValues(term + "/_normal_range/upper", lower, context));
+              .buildChildValues(rangeTerm + "/lower", lower, context));
+    }
+
+    if (range.getUpper() != null) {
+      DvOrdered lower = range.getUpper();
+
+      values.putAll(
+          ((StdConfig) findStdConfig(lower.getClass()))
+              .buildChildValues(rangeTerm + "/upper", lower, context));
     }
   }
 
