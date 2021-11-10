@@ -207,18 +207,11 @@ public class DefaultValues {
       }
     }
 
-    if (!defaultValueMap.containsKey(DefaultValuePath.TIME)) {
-      defaultValueMap.put(DefaultValuePath.TIME, OffsetDateTime.now());
-    }
 
-    if (!defaultValueMap.containsKey(DefaultValuePath.ACTION_ISM_TRANSITION_CURRENT_STATE)) {
-      defaultValueMap.put(DefaultValuePath.ACTION_ISM_TRANSITION_CURRENT_STATE, State.INITIAL);
-    }
+      defaultValueMap.putIfAbsent(DefaultValuePath.TIME, OffsetDateTime.now());
+      defaultValueMap.putIfAbsent(DefaultValuePath.ACTION_ISM_TRANSITION_CURRENT_STATE,State.INITIAL);
+      defaultValueMap.putIfAbsent(DefaultValuePath.SETTING, Setting.OTHER_CARE);
 
-    if (!defaultValueMap.containsKey(DefaultValuePath.SETTING)) {
-
-      defaultValueMap.put(DefaultValuePath.SETTING, Setting.OTHER_CARE);
-    }
   }
 
   public static Link createLink(Map<String, String> stringStringMap) {
