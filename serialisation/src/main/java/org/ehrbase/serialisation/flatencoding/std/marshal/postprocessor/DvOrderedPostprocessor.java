@@ -46,11 +46,11 @@ public class DvOrderedPostprocessor implements MarshalPostprocessor<DvOrdered> {
     }
 
     if (rmObject.getNormalRange() != null && rmObject.getNormalRange().getUpper() != null) {
-      DvOrdered lower = rmObject.getNormalRange().getUpper();
+      DvOrdered upper = rmObject.getNormalRange().getUpper();
 
       values.putAll(
-          ((StdConfig) findStdConfig(lower.getClass()))
-              .buildChildValues(term + "/_normal_range/upper", lower, context));
+          ((StdConfig) findStdConfig(upper.getClass()))
+              .buildChildValues(term + "/_normal_range/upper", upper, context));
     }
   }
 
