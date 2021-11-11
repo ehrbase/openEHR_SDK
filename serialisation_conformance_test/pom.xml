@@ -112,6 +112,7 @@
                         <include>NullFlavorTestOverwritten</include>
                         <include>OtherReferenceRangesTestOverwrite</include>
                         <include>ParentTest</include>
+                        <include>ParticipationCtxTestOverwrite</include>
                         <include>ProviderTest</include>
                         <include>SubjectTest</include>
                         <include>TermMappingTestOverwritten</include>
