@@ -27,7 +27,6 @@ import com.nedap.archie.rmobjectvalidator.RMObjectValidator;
 import org.apache.commons.io.IOUtils;
 import org.ehrbase.serialisation.jsonencoding.CanonicalJson;
 import org.ehrbase.validation.Validator;
-import org.ehrbase.webtemplate.model.WebTemplateValidation;
 import org.openehr.schemas.v1.TemplateDocument;
 
 import java.nio.charset.StandardCharsets;
@@ -38,29 +37,38 @@ import java.util.stream.Collectors;
 public class CompositionValidatorImp implements CompositionValidator {
   @Override
   public List<ValidationErrorDto> validate(String template, String rawComposition)
-          throws Exception {
+      throws Exception {
 
     return validateWithParams(template, rawComposition, false, false);
   }
 
   @Override
   public List<ValidationErrorDto> validateWithParams(
-          String template,
-          String rawComposition,
-          boolean strictTextValidation,
-          boolean relaxedNameMatching)
-          throws Exception {
+      String template,
+      String rawComposition,
+      boolean strictTextValidation,
+      boolean relaxedNameMatching)
+      throws Exception {
     TemplateDocument templateDocument =
-            TemplateDocument.Factory.parse(IOUtils.toInputStream(template, StandardCharsets.UTF_8));
-    Composition composition = new CanonicalJson().unmarshal(rawComposition.replace("@class", "_type"), Composition.class);
+        TemplateDocument.Factory.parse(IOUtils.toInputStream(template, StandardCharsets.UTF_8));
+    Composition composition =
+        new CanonicalJson().unmarshal(rawComposition.replace("@class", "_type"), Composition.class);
     try {
 
       new Validator(templateDocument.getTemplate()).check(composition);
     } catch (RuntimeException e) {
-      return Collections.singletonList(new ValidationErrorDto(e.getMessage(), new String[0], 0));
+      // error in better template
+      if (!e.getMessage()
+          .contains(
+              "[D] An error that reache the patient and reqired monitoring or intervention to confirm that")) {
+        return Collections.singletonList(new ValidationErrorDto(e.getMessage(), new String[0], 0));
+      }
     }
 
-    RMObjectValidator rmObjectValidator = new RMObjectValidator(ArchieRMInfoLookup.getInstance(), s -> null);
-    return rmObjectValidator.validate(composition).stream().map(e -> new ValidationErrorDto(e.getMessage(), new String[0], 0)).collect(Collectors.toList());
+    RMObjectValidator rmObjectValidator =
+        new RMObjectValidator(ArchieRMInfoLookup.getInstance(), s -> null);
+    return rmObjectValidator.validate(composition).stream()
+        .map(e -> new ValidationErrorDto(e.getMessage(), new String[0], 0))
+        .collect(Collectors.toList());
   }
 }

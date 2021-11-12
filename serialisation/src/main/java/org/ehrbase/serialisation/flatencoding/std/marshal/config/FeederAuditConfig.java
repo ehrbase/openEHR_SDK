@@ -59,8 +59,11 @@ public class FeederAuditConfig extends AbstractsStdConfig<FeederAudit> {
 
     } else if (rmObject.getOriginalContent() instanceof DvMultimedia) {
 
-      DV_MULTIMEDIA_CONFIG.buildChildValues(
-          currentTerm + "/original_content", (DvMultimedia) rmObject.getOriginalContent(), context);
+      result.putAll(
+          DV_MULTIMEDIA_CONFIG.buildChildValues(
+              currentTerm + "/original_content_multimedia",
+              (DvMultimedia) rmObject.getOriginalContent(),
+              context));
     }
 
     IntStream.range(0, rmObject.getFeederSystemItemIds().size())

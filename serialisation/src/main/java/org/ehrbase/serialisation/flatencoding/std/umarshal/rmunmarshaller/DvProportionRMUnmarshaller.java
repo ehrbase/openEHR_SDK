@@ -26,6 +26,8 @@ import org.ehrbase.webtemplate.path.flat.FlatPathDto;
 import java.util.Map;
 import java.util.Set;
 
+import static org.ehrbase.serialisation.walker.FlatHelper.consumeAllMatching;
+
 public class DvProportionRMUnmarshaller extends AbstractRMUnmarshaller<DvProportion> {
 
   /** {@inheritDoc} */
@@ -59,6 +61,6 @@ public class DvProportionRMUnmarshaller extends AbstractRMUnmarshaller<DvProport
         consumedPaths);
     setValue(currentTerm, "type", currentValues, rmObject::setType, Long.class, consumedPaths);
     // Contains numerator/denominator
-    consumedPaths.add(currentTerm);
+    consumeAllMatching(currentTerm, currentValues, consumedPaths);
   }
 }

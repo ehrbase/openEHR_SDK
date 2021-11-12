@@ -20,6 +20,7 @@
 package org.ehrbase.serialisation.flatencoding.std.umarshal.postprocessor;
 
 import com.nedap.archie.rm.composition.Activity;
+import org.ehrbase.serialisation.walker.Context;
 import org.ehrbase.webtemplate.path.flat.FlatPathDto;
 
 import java.util.Map;
@@ -32,7 +33,11 @@ public class ActivityPostprocessor extends AbstractUnmarshalPostprocessor<Activi
   /** {@inheritDoc} */
   @Override
   public void process(
-      String term, Activity rmObject, Map<FlatPathDto, String> values, Set<String> consumedPaths) {
+      String term,
+      Activity rmObject,
+      Map<FlatPathDto, String> values,
+      Set<String> consumedPaths,
+      Context<Map<FlatPathDto, String>> context) {
 
     setValue(
         term + PATH_DIVIDER + "action_archetype_id",

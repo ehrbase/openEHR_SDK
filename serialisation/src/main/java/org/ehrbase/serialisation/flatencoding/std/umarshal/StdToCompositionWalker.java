@@ -26,6 +26,7 @@ import com.nedap.archie.rm.composition.Composition;
 import com.nedap.archie.rm.composition.Entry;
 import com.nedap.archie.rm.datatypes.CodePhrase;
 import com.nedap.archie.rm.datavalues.DvCodedText;
+import com.nedap.archie.rm.datavalues.DvText;
 import com.nedap.archie.rm.generic.PartyRelated;
 import com.nedap.archie.rm.support.identification.TerminologyId;
 import org.apache.commons.collections4.CollectionUtils;
@@ -88,10 +89,11 @@ public class StdToCompositionWalker extends ToCompositionWalker<Map<FlatPathDto,
       oldCount = context.getCountMap().get(new NodeId(child));
       context.getCountMap().put(new NodeId(child), count);
     }
-
-    String path = context.getFlatHelper().buildNamePath(context, true);
+    String path;
+    path = buildNamePathWithElementHandling(context);
     context.getNodeDeque().remove();
     context.getCountMap().remove(new NodeId(child));
+
     if (oldCount != null) {
       context.getCountMap().put(new NodeId(child), oldCount);
     }
@@ -101,7 +103,7 @@ public class StdToCompositionWalker extends ToCompositionWalker<Map<FlatPathDto,
             .filter(e -> e.getKey().startsWith(path))
             .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
-    if (isChoice && !isMatchingNode(subValues, context, child)) {
+    if (isChoice && !isMatchingNode(subValues, context, child, new FlatPathDto(path))) {
       subValues = Collections.emptyMap();
     }
 
@@ -110,6 +112,26 @@ public class StdToCompositionWalker extends ToCompositionWalker<Map<FlatPathDto,
     } else {
       return null;
     }
+  }
+
+  public static <T> String buildNamePathWithElementHandling(Context<T> context) {
+    String path;
+    WebTemplateNode child = context.getNodeDeque().peek();
+
+    // if skipped Element Path = path to Element value
+    if (child.getRmType().equals(ELEMENT)
+        && context.getFlatHelper().skip(context.getNodeDeque().peek(), child)) {
+
+      WebTemplateNode valueNode = child.findChildById(child.getId()).orElseThrow();
+
+      context.getNodeDeque().push(valueNode);
+      path = context.getFlatHelper().buildNamePath(context, true);
+      context.getNodeDeque().remove();
+    } else {
+
+      path = context.getFlatHelper().buildNamePath(context, true);
+    }
+    return path;
   }
 
   @Override
@@ -130,7 +152,8 @@ public class StdToCompositionWalker extends ToCompositionWalker<Map<FlatPathDto,
   private boolean isMatchingNode(
       Map<FlatPathDto, String> subValues,
       Context<Map<FlatPathDto, String>> context,
-      WebTemplateNode child) {
+      WebTemplateNode child,
+      FlatPathDto currentFlatPath) {
 
     if (child.getRmType().equals("POINT_EVENT")) {
       return subValues.entrySet().stream()
@@ -151,11 +174,17 @@ public class StdToCompositionWalker extends ToCompositionWalker<Map<FlatPathDto,
 
       return subValues.isEmpty();
     } else if (child.getRmType().equals(DV_CODED_TEXT)) {
-      return subValues.entrySet().stream()
-          .anyMatch(e -> "code".equals(e.getKey().getLast().getAttributeName()));
+      return subValues.keySet().stream()
+          .anyMatch(
+              e ->
+                  "code".equals(e.getLast().getAttributeName())
+                      && currentFlatPath.getLast().getName().equals(e.getLast().getName()));
     } else if (child.getRmType().equals(DV_TEXT)) {
-      return subValues.entrySet().stream()
-          .allMatch((e -> !"code".equals(e.getKey().getLast().getAttributeName())));
+      return subValues.keySet().stream()
+          .allMatch(
+              (e ->
+                  !("code".equals(e.getLast().getAttributeName())
+                      && currentFlatPath.getLast().getName().equals(e.getLast().getName()))));
     } else {
       // End Nodes which are Choice always have unique flat paths
       return true;
@@ -169,10 +198,16 @@ public class StdToCompositionWalker extends ToCompositionWalker<Map<FlatPathDto,
     if (!isRaw(context)
         && !visitChildren(context.getNodeDeque().peek())
         && !context.getFlatHelper().skip(context)) {
+
+      if (context.getRmObjectDeque().peek().getClass().isAssignableFrom(DvCodedText.class)
+          && context.getObjectDeque().peek().keySet().stream()
+              .anyMatch(k -> "other".equals(k.getLast().getAttributeName()))) {
+        replaceRmObject(context, new DvText());
+      }
+
       RMUnmarshaller rmUnmarshaller =
-          UNMARSHALLER_MAP.getOrDefault(
-              context.getRmObjectDeque().peek().getClass(), new DefaultRMUnmarshaller());
-      String namePath = getNamePath(context);
+          findRMUnmarshaller(context.getRmObjectDeque().peek().getClass());
+      String namePath = buildNamePathWithElementHandling(context);
 
       rmUnmarshaller.handle(
           namePath,
@@ -181,6 +216,10 @@ public class StdToCompositionWalker extends ToCompositionWalker<Map<FlatPathDto,
           context,
           consumedPaths);
     }
+  }
+
+  public static <T extends RMObject> RMUnmarshaller<T> findRMUnmarshaller(Class<T> aClass) {
+    return UNMARSHALLER_MAP.getOrDefault(aClass, new DefaultRMUnmarshaller());
   }
 
   private void handleRaw(Context<Map<FlatPathDto, String>> context) {
@@ -198,19 +237,23 @@ public class StdToCompositionWalker extends ToCompositionWalker<Map<FlatPathDto,
                   RMObject.class);
 
       // Replace old skeleton
-      RMObject oldRM = context.getRmObjectDeque().poll();
-      RMObject parentRM = context.getRmObjectDeque().peek();
-      WebTemplateNode currentNode = context.getNodeDeque().poll();
-      WebTemplateNode parentNode = context.getNodeDeque().peek();
-      WebTemplateSkeletonBuilder.remove(parentNode, parentRM, currentNode, oldRM);
-      WebTemplateSkeletonBuilder.insert(parentNode, parentRM, currentNode, newRmObject);
-      context.getNodeDeque().push(currentNode);
-      context.getRmObjectDeque().push(newRmObject);
+      replaceRmObject(context, newRmObject);
       consumedPaths.add(current.getKey().format());
 
     } catch (JsonProcessingException e) {
       throw new UnmarshalException(e.getMessage());
     }
+  }
+
+  private void replaceRmObject(Context<Map<FlatPathDto, String>> context, RMObject newRmObject) {
+    RMObject oldRM = context.getRmObjectDeque().poll();
+    RMObject parentRM = context.getRmObjectDeque().peek();
+    WebTemplateNode currentNode = context.getNodeDeque().poll();
+    WebTemplateNode parentNode = context.getNodeDeque().peek();
+    WebTemplateSkeletonBuilder.remove(parentNode, parentRM, currentNode, oldRM);
+    WebTemplateSkeletonBuilder.insert(parentNode, parentRM, currentNode, newRmObject);
+    context.getNodeDeque().push(currentNode);
+    context.getRmObjectDeque().push(newRmObject);
   }
 
   private boolean isRaw(Context<Map<FlatPathDto, String>> context) {
@@ -249,15 +292,7 @@ public class StdToCompositionWalker extends ToCompositionWalker<Map<FlatPathDto,
               if (context.getFlatHelper().skip(childNode, currentNode)) {
 
                 context.getNodeDeque().push(childNode);
-                context
-                    .getRmObjectDeque()
-                    .push(
-                        new RMObject() {
-                          @Override
-                          public RMObject clone() {
-                            return super.clone();
-                          }
-                        });
+                context.getRmObjectDeque().push(new RMObject() {});
 
                 String path = context.getFlatHelper().buildNamePath(context, true);
                 Map<FlatPathDto, String> subValues =
@@ -287,7 +322,7 @@ public class StdToCompositionWalker extends ToCompositionWalker<Map<FlatPathDto,
 
       currentClass = currentClass.getSuperclass();
     }
-    String namePath = getNamePath(context);
+    String namePath = buildNamePathWithElementHandling(context);
 
     if (Entry.class.isAssignableFrom(context.getRmObjectDeque().peek().getClass())) {
       if (((Entry) context.getRmObjectDeque().peek()).getSubject() instanceof PartyRelated) {
@@ -318,17 +353,8 @@ public class StdToCompositionWalker extends ToCompositionWalker<Map<FlatPathDto,
                 namePath,
                 context.getRmObjectDeque().peek(),
                 context.getObjectDeque().peek(),
-                consumedPaths));
-  }
-
-  private String getNamePath(Context<Map<FlatPathDto, String>> context) {
-    String namePath = context.getFlatHelper().buildNamePath(context, true);
-    String finalNamePath = namePath;
-    if (context.getObjectDeque().peek().entrySet().stream()
-        .noneMatch(e -> e.getKey().startsWith(finalNamePath))) {
-      namePath = context.getFlatHelper().buildNamePath(context, false);
-    }
-    return namePath;
+                consumedPaths,
+                context));
   }
 
   @Override

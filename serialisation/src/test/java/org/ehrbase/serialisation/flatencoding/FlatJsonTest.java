@@ -173,6 +173,58 @@ public class FlatJsonTest {
   }
 
   @Test
+  public void roundTripNCD() throws IOException {
+
+    CompositionTestDataSimSDTJson testData = CompositionTestDataSimSDTJson.NCD;
+    String templateId = OperationalTemplateTestData.NCD.getTemplateId();
+
+    check(
+        templateId,
+        testData,
+        new String[] {
+          "Missing path: ncd/body_temperature/any_event:0/temperature|magnitude, value: 30.0",
+          "Missing path: ncd/blood_pressure/any_event:0/systolic|magnitude, value: 120.0",
+          "Missing path: ncd/blood_pressure/any_event:0/diastolic|magnitude, value: 80.0",
+          "Missing path: ncd/pulse_heart_beat/any_event:0/rate|magnitude, value: 80.0",
+          "Missing path: ncd/pulse_heart_beat/any_event:0/time, value: 2021-11-09T10:15:21.05Z",
+          "Missing path: ncd/height_length/any_event:0/height_length|magnitude, value: 168.0",
+          "Missing path: ncd/height_length/any_event:0/time, value: 2021-11-09T10:15:21.05Z",
+          "Missing path: ncd/body_weight/any_event:0/weight|magnitude, value: 74.0",
+          "Missing path: ncd/body_weight/any_event:0/time, value: 2021-11-09T10:15:21.05Z",
+          "Missing path: ncd/waist_circumference/any_event:0/waist_circumference|magnitude, value: 42.0",
+          "Missing path: ncd/waist_circumference/any_event:0/time, value: 2021-11-09T10:15:21.05Z",
+          "Missing path: ncd/hip_circumference/hip_circumference|magnitude, value: 90.0",
+          "Missing path: ncd/hip_circumference/time, value: 2021-11-09T10:15:21.05Z",
+          "Missing path: ncd/pulse_oximetry/any_event:0/spo|numerator, value: 2.0",
+          "Missing path: ncd/pulse_oximetry/any_event:0/spo|denominator, value: 100.0",
+          "Missing path: ncd/pulse_oximetry/any_event:0/spo, value: 0.02",
+          "Missing path: ncd/laboratory_test_result/any_event:0/haemoglobin/haemoglobin|magnitude, value: 13.0",
+          "Missing path: ncd/laboratory_test_result/any_event:0/cholesterol/cholesterol|magnitude, value: 36.0"
+        },
+        new String[] {
+          "Extra path: ncd/body_temperature/any_event:0/temperature|magnitude, value: 30",
+          "Extra path: ncd/blood_pressure/any_event:0/systolic|magnitude, value: 120",
+          "Extra path: ncd/blood_pressure/any_event:0/diastolic|magnitude, value: 80",
+          "Extra path: ncd/pulse_heart_beat/any_event:0/rate|magnitude, value: 80",
+          "Extra path: ncd/pulse_heart_beat/any_event:0/time, value: 2021-11-09T10:15:21.050Z",
+          "Extra path: ncd/height_length/any_event:0/height_length|magnitude, value: 168",
+          "Extra path: ncd/height_length/any_event:0/time, value: 2021-11-09T10:15:21.050Z",
+          "Extra path: ncd/body_weight/any_event:0/weight|magnitude, value: 74",
+          "Extra path: ncd/body_weight/any_event:0/time, value: 2021-11-09T10:15:21.050Z",
+          "Extra path: ncd/waist_circumference/any_event:0/waist_circumference|magnitude, value: 42",
+          "Extra path: ncd/waist_circumference/any_event:0/time, value: 2021-11-09T10:15:21.050Z",
+          "Extra path: ncd/hip_circumference/hip_circumference|magnitude, value: 90",
+          "Extra path: ncd/hip_circumference/time, value: 2021-11-09T10:15:21.050Z",
+          "Extra path: ncd/pulse_oximetry/any_event:0/spo|numerator, value: 2",
+          "Extra path: ncd/pulse_oximetry/any_event:0/spo|denominator, value: 100",
+          "Extra path: ncd/laboratory_test_result/any_event:0/haemoglobin/haemoglobin|magnitude, value: 13",
+          "Extra path: ncd/laboratory_test_result/any_event:0/cholesterol/cholesterol|magnitude, value: 36",
+          "Extra path: ncd/urinalysis/point_in_time:0/glucose|terminology, value: undefined",
+          "Extra path: ncd/urinalysis/point_in_time:0/protein|terminology, value: undefined"
+        });
+  }
+
+  @Test
   public void roundTripVitalSigns() throws IOException {
     CompositionTestDataSimSDTJson testData = CompositionTestDataSimSDTJson.VITALSIGNS;
     String templateId = "EHRN Vital signs.v2";

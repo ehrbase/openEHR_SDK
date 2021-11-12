@@ -20,12 +20,17 @@
 package org.ehrbase.serialisation.flatencoding.std.marshal.config;
 
 import com.nedap.archie.rm.archetyped.FeederAuditDetails;
+import com.nedap.archie.rm.datavalues.quantity.datetime.DvDateTime;
 import org.ehrbase.serialisation.walker.Context;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 public class FeederAudiDetailsStdConfig extends AbstractsStdConfig<FeederAuditDetails> {
+
+  private static final PartyIdentifiedStdConfig PARTY_IDENTIFIED_STD_CONFIG =
+      new PartyIdentifiedStdConfig();
 
   @Override
   /** {@inheritDoc} */
@@ -33,9 +38,24 @@ public class FeederAudiDetailsStdConfig extends AbstractsStdConfig<FeederAuditDe
       String currentTerm, FeederAuditDetails rmObject, Context<Map<String, Object>> context) {
     Map<String, Object> result = new HashMap<>();
 
+    addValue(
+        result,
+        currentTerm,
+        "time",
+        Optional.ofNullable(rmObject.getTime()).map(DvDateTime::getValue).orElse(null));
     addValue(result, currentTerm, "system_id", rmObject.getSystemId());
     addValue(result, currentTerm, "version_id", rmObject.getVersionId());
 
+    if (rmObject.getLocation() != null) {
+      result.putAll(
+          PARTY_IDENTIFIED_STD_CONFIG.buildChildValues(
+              currentTerm + "/location", rmObject.getLocation(), context));
+    }
+    if (rmObject.getProvider() != null) {
+      result.putAll(
+          PARTY_IDENTIFIED_STD_CONFIG.buildChildValues(
+              currentTerm + "/provider", rmObject.getProvider(), context));
+    }
     return result;
   }
 

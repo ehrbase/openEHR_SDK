@@ -23,6 +23,7 @@ import com.nedap.archie.rm.composition.Entry;
 import com.nedap.archie.rm.generic.PartyIdentified;
 import org.ehrbase.serialisation.flatencoding.std.marshal.config.ParticipationConfig;
 import org.ehrbase.serialisation.flatencoding.std.marshal.config.PartyIdentifiedStdConfig;
+import org.ehrbase.serialisation.walker.Context;
 
 import java.util.Map;
 import java.util.stream.IntStream;
@@ -35,7 +36,11 @@ public class EntryMarshalPostprocessor implements MarshalPostprocessor<Entry> {
 
   /** {@inheritDoc} Adds the encoding information */
   @Override
-  public void process(String term, Entry rmObject, Map<String, Object> values) {
+  public void process(
+      String term,
+      Entry rmObject,
+      Map<String, Object> values,
+      Context<Map<String, Object>> context) {
     values.put(term + PATH_DIVIDER + "encoding|code", "UTF-8");
     values.put(term + PATH_DIVIDER + "encoding|terminology", "IANA_character-sets");
 
