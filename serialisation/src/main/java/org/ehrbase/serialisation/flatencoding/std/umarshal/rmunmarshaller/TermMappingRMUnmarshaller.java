@@ -61,7 +61,7 @@ public class TermMappingRMUnmarshaller extends AbstractRMUnmarshaller<TermMappin
         consumedPaths);
 
     Map<FlatPathDto, String> targetValues =
-        FlatHelper.filter(currentValues, currentTerm + "/target");
+        FlatHelper.filter(currentValues, currentTerm + "/target", false);
 
     if (!targetValues.isEmpty()) {
       rmObject.setTarget(new CodePhrase());
@@ -69,7 +69,7 @@ public class TermMappingRMUnmarshaller extends AbstractRMUnmarshaller<TermMappin
           currentTerm + "/target", rmObject.getTarget(), targetValues, context, consumedPaths);
     }
     Map<FlatPathDto, String> purposeValues =
-        FlatHelper.filter(currentValues, currentTerm + "/purpose");
+        FlatHelper.filter(currentValues, currentTerm + "/purpose", false);
 
     if (!purposeValues.isEmpty()) {
       rmObject.setPurpose(new DvCodedText());

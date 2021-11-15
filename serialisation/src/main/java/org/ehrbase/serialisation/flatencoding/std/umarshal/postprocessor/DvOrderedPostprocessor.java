@@ -25,7 +25,6 @@ import com.nedap.archie.rm.datavalues.quantity.DvInterval;
 import com.nedap.archie.rm.datavalues.quantity.DvOrdered;
 import com.nedap.archie.rm.datavalues.quantity.ReferenceRange;
 import org.ehrbase.building.webtemplateskeletnbuilder.WebTemplateSkeletonBuilder;
-import org.ehrbase.serialisation.flatencoding.std.umarshal.StdToCompositionWalker;
 import org.ehrbase.serialisation.flatencoding.std.umarshal.rmunmarshaller.RMUnmarshaller;
 import org.ehrbase.serialisation.walker.Context;
 import org.ehrbase.serialisation.walker.FlatHelper;
@@ -59,24 +58,39 @@ public class DvOrderedPostprocessor extends AbstractUnmarshalPostprocessor<DvOrd
               rmObject.addOtherReferenceRange(referenceRange);
 
               Map<FlatPathDto, String> meaningValues =
-                  FlatHelper.filter(values, term + "/_other_reference_ranges:" + k + "/meaning");
+                  FlatHelper.filter(
+                      values, term + "/_other_reference_ranges:" + k + "/meaning", false);
 
               if (!meaningValues.isEmpty()) {
                 final DvText meaning;
-                if (meaningValues.size() > 1) {
+                boolean isDvCodedText =
+                    meaningValues.keySet().stream()
+                        .anyMatch(
+                            e ->
+                                "code".equals(e.getLast().getAttributeName())
+                                    && "meaning".equals(e.getLast().getName()));
+                if (isDvCodedText) {
                   meaning = new DvCodedText();
                 } else {
                   meaning = new DvText();
                 }
                 referenceRange.setMeaning(meaning);
-                ((RMUnmarshaller<DvText>)
-                        StdToCompositionWalker.findRMUnmarshaller(meaning.getClass()))
-                    .handle(
-                        term + "/_other_reference_ranges:" + k + "/meaning",
-                        meaning,
-                        meaningValues,
-                        context,
-                        consumedPaths);
+                callUnmarshal(
+                    term + "/_other_reference_ranges:" + k,
+                    "meaning",
+                    meaning,
+                    meaningValues,
+                    consumedPaths,
+                    context,
+                    context.getNodeDeque().peek().findChildById("meaning").orElse(null));
+                calPostProcess(
+                    term + "/_other_reference_ranges:" + k,
+                    "meaning",
+                    meaning,
+                    meaningValues,
+                    consumedPaths,
+                    context,
+                    context.getNodeDeque().peek().findChildById("meaning").orElse(null));
               }
 
               handleNormalRange(
@@ -95,7 +109,7 @@ public class DvOrderedPostprocessor extends AbstractUnmarshalPostprocessor<DvOrd
       String term,
       Consumer<DvInterval> rangeConsumer) {
 
-    Map<FlatPathDto, String> rangeValues = FlatHelper.filter(values, term);
+    Map<FlatPathDto, String> rangeValues = FlatHelper.filter(values, term, false);
     if (!rangeValues.isEmpty()) {
       DvInterval range = new DvInterval();
       rangeConsumer.accept(range);
@@ -114,7 +128,7 @@ public class DvOrderedPostprocessor extends AbstractUnmarshalPostprocessor<DvOrd
       String term) {
 
     Map<FlatPathDto, String> borderValues =
-        FlatHelper.filter(values, term + PATH_DIVIDER + borderName);
+        FlatHelper.filter(values, term + PATH_DIVIDER + borderName, false);
     if (!borderValues.isEmpty()) {
 
       DvOrdered lower =

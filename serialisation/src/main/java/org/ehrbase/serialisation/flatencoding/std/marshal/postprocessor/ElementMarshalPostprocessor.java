@@ -20,17 +20,11 @@
 package org.ehrbase.serialisation.flatencoding.std.marshal.postprocessor;
 
 import com.nedap.archie.rm.datastructures.Element;
-import org.ehrbase.serialisation.flatencoding.std.marshal.config.DvCodedTextStdConfiguration;
 import org.ehrbase.serialisation.walker.Context;
 
 import java.util.Map;
 
-import static org.ehrbase.webtemplate.parser.OPTParser.PATH_DIVIDER;
-
-public class ElementMarshalPostprocessor implements MarshalPostprocessor<Element> {
-
-  private static final DvCodedTextStdConfiguration DV_CODED_TEXT_STD_CONFIGURATION =
-      new DvCodedTextStdConfiguration();
+public class ElementMarshalPostprocessor extends AbstractMarshalPostprocessor<Element> {
 
   /** {@inheritDoc} Adds the encoding information */
   @Override
@@ -42,9 +36,7 @@ public class ElementMarshalPostprocessor implements MarshalPostprocessor<Element
 
     if (rmObject.getNullFlavour() != null) {
 
-      values.putAll(
-          DV_CODED_TEXT_STD_CONFIGURATION.buildChildValues(
-              term + PATH_DIVIDER + "_null_flavour", rmObject.getNullFlavour(), null));
+      handleRmAttribute(term, rmObject.getNullFlavour(), values, context, "null_flavour");
     }
   }
 

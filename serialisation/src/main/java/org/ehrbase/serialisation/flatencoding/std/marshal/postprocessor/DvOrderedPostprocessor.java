@@ -30,7 +30,7 @@ import java.util.stream.IntStream;
 
 import static org.ehrbase.serialisation.flatencoding.std.marshal.StdFromCompositionWalker.findStdConfig;
 
-public class DvOrderedPostprocessor implements MarshalPostprocessor<DvOrdered> {
+public class DvOrderedPostprocessor extends AbstractMarshalPostprocessor<DvOrdered> {
 
   /** {@inheritDoc} Adds the encoding information */
   @Override
@@ -51,12 +51,21 @@ public class DvOrderedPostprocessor implements MarshalPostprocessor<DvOrdered> {
                   (ReferenceRange) rmObject.getOtherReferenceRanges().get(i);
 
               if (referenceRange.getMeaning() != null) {
-                values.putAll(
-                    ((StdConfig) findStdConfig(referenceRange.getMeaning().getClass()))
-                        .buildChildValues(
-                            term + "/_other_reference_ranges:" + i + "/meaning",
-                            referenceRange.getMeaning(),
-                            context));
+
+                callMarshal(
+                    term,
+                    "_other_reference_ranges:" + i + "/meaning",
+                    referenceRange.getMeaning(),
+                    values,
+                    context,
+                    context.getNodeDeque().peek().findChildById("meaning").orElse(null));
+                callPostprocess(
+                    term,
+                    "_other_reference_ranges:" + i + "/meaning",
+                    referenceRange.getMeaning(),
+                    values,
+                    context,
+                    context.getNodeDeque().peek().findChildById("meaning").orElse(null));
               }
 
               if (referenceRange.getRange() != null) {

@@ -111,6 +111,7 @@
                         <include>NormalRangeTest</include>
                         <include>NullFlavorTestOverwritten</include>
                         <include>OtherReferenceRangesTestOverwrite</include>
+                        <include>GelBuilderTest</include>
                         <include>ParentTest</include>
                         <include>ParticipationCtxTestOverwrite</include>
                         <include>ProviderTest</include>

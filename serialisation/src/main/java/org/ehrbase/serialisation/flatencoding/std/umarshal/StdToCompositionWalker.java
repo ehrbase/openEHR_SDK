@@ -311,17 +311,8 @@ public class StdToCompositionWalker extends ToCompositionWalker<Map<FlatPathDto,
               }
             });
 
-    List<UnmarshalPostprocessor<? super RMObject>> postprocessor = new ArrayList<>();
-
-    Class<?> currentClass = context.getRmObjectDeque().peek().getClass();
-
-    while (currentClass != null) {
-      if (POSTPROCESSOR_MAP.containsKey(currentClass)) {
-        postprocessor.add(POSTPROCESSOR_MAP.get(currentClass));
-      }
-
-      currentClass = currentClass.getSuperclass();
-    }
+    List<? extends UnmarshalPostprocessor<? extends RMObject>> postprocessor =
+        findUnmarshalPostprocessors(context.getRmObjectDeque().peek().getClass());
     String namePath = buildNamePathWithElementHandling(context);
 
     if (Entry.class.isAssignableFrom(context.getRmObjectDeque().peek().getClass())) {
@@ -349,12 +340,29 @@ public class StdToCompositionWalker extends ToCompositionWalker<Map<FlatPathDto,
 
     postprocessor.forEach(
         p ->
-            p.process(
-                namePath,
-                context.getRmObjectDeque().peek(),
-                context.getObjectDeque().peek(),
-                consumedPaths,
-                context));
+            ((UnmarshalPostprocessor) p)
+                .process(
+                    namePath,
+                    context.getRmObjectDeque().peek(),
+                    context.getObjectDeque().peek(),
+                    consumedPaths,
+                    context));
+  }
+
+  public static <T extends RMObject> List<UnmarshalPostprocessor<T>> findUnmarshalPostprocessors(
+      Class<T> aClass) {
+    List<UnmarshalPostprocessor<T>> postprocessor = new ArrayList<>();
+
+    Class<?> currentClass = aClass;
+
+    while (currentClass != null) {
+      if (POSTPROCESSOR_MAP.containsKey(currentClass)) {
+        postprocessor.add(POSTPROCESSOR_MAP.get(currentClass));
+      }
+
+      currentClass = currentClass.getSuperclass();
+    }
+    return postprocessor;
   }
 
   @Override

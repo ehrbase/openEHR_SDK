@@ -21,13 +21,9 @@ package org.ehrbase.serialisation.flatencoding.std.marshal.postprocessor;
 
 import com.nedap.archie.rm.archetyped.Link;
 import com.nedap.archie.rm.archetyped.Locatable;
-import com.nedap.archie.rm.datavalues.DvCodedText;
 import com.nedap.archie.rm.datavalues.DvEHRURI;
 import com.nedap.archie.rm.datavalues.DvText;
 import com.nedap.archie.rm.support.identification.ObjectId;
-import org.ehrbase.serialisation.flatencoding.std.marshal.config.DvCodedTextStdConfiguration;
-import org.ehrbase.serialisation.flatencoding.std.marshal.config.DvTextStdConfiguration;
-import org.ehrbase.serialisation.flatencoding.std.marshal.config.FeederAuditConfig;
 import org.ehrbase.serialisation.walker.Context;
 
 import java.util.Map;
@@ -37,14 +33,7 @@ import java.util.stream.IntStream;
 
 import static org.ehrbase.webtemplate.parser.OPTParser.PATH_DIVIDER;
 
-public class LocatableMarshalPostprocessor implements MarshalPostprocessor<Locatable> {
-
-  private static final FeederAuditConfig FEEDER_AUDIT_CONFIG = new FeederAuditConfig();
-
-  private static final DvCodedTextStdConfiguration DV_CODED_TEXT_STD_CONFIGURATION =
-      new DvCodedTextStdConfiguration();
-  private static final DvTextStdConfiguration DV_TEXT_STD_CONFIGURATION =
-      new DvTextStdConfiguration();
+public class LocatableMarshalPostprocessor extends AbstractMarshalPostprocessor<Locatable> {
 
   /** {@inheritDoc} */
   @Override
@@ -54,7 +43,7 @@ public class LocatableMarshalPostprocessor implements MarshalPostprocessor<Locat
       Map<String, Object> values,
       Context<Map<String, Object>> context) {
 
-    MarshalPostprocessor.addValue(
+    addValue(
         values,
         term + PATH_DIVIDER + "_uid",
         null,
@@ -66,43 +55,35 @@ public class LocatableMarshalPostprocessor implements MarshalPostprocessor<Locat
               i -> {
                 Link link = rmObject.getLinks().get(i);
                 String termLoop = term + PATH_DIVIDER + "_link:" + i;
-                MarshalPostprocessor.addValue(
+
+                addValue(
                     values,
                     termLoop,
                     "meaning",
                     Optional.of(link).map(Link::getMeaning).map(DvText::getValue).orElse(null));
-                MarshalPostprocessor.addValue(
+                addValue(
                     values,
                     termLoop,
                     "type",
                     Optional.of(link).map(Link::getType).map(DvText::getValue).orElse(null));
-                MarshalPostprocessor.addValue(
+                addValue(
                     values,
                     termLoop,
                     "target",
                     Optional.of(link).map(Link::getTarget).map(DvEHRURI::getValue).orElse(null));
               });
+    }
 
-      if (rmObject.getFeederAudit() != null) {
-        values.putAll(
-            FEEDER_AUDIT_CONFIG.buildChildValues(
-                term + "/_feeder_audit", rmObject.getFeederAudit(), null));
-      }
+    if (rmObject.getFeederAudit() != null) {
+      handleRmAttribute(term, rmObject.getFeederAudit(), values, context, "feeder_audit");
     }
 
     if (Optional.ofNullable(rmObject.getName())
         .map(DvText::getValue)
         .filter(n -> !Objects.equals(context.getNodeDeque().peek().getName(), n))
         .isPresent()) {
-      if (rmObject.getName() instanceof DvCodedText) {
-        values.putAll(
-            DV_CODED_TEXT_STD_CONFIGURATION.buildChildValues(
-                term + "/_name", (DvCodedText) rmObject.getName(), context));
-      } else {
-        values.putAll(
-            DV_TEXT_STD_CONFIGURATION.buildChildValues(
-                term + "/_name", rmObject.getName(), context));
-      }
+
+      handleRmAttribute(term, rmObject.getName(), values, context, "name");
     }
   }
 

@@ -54,12 +54,14 @@ public class ActionPostprocessor extends AbstractUnmarshalPostprocessor<Action> 
       if (rmObject.getInstructionDetails() == null) {
         rmObject.setInstructionDetails(new InstructionDetails());
       }
-      INSTRUCTION_DETAILS_RM_UNMARSHALLER.handle(
-          term + PATH_DIVIDER + "_instruction_details",
+
+      handleRmAttribute(
+          term,
           rmObject.getInstructionDetails(),
           instructionDetails,
-          null,
-          consumedPaths);
+          consumedPaths,
+          context,
+          "instruction_details");
     }
   }
 

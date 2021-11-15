@@ -226,10 +226,12 @@ public class FlatHelper<T> {
                 Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
   }
 
-  public static Map<FlatPathDto, String> filter(Map<FlatPathDto, String> values, String path) {
+  public static Map<FlatPathDto, String> filter(
+      Map<FlatPathDto, String> values, String path, boolean includeRaw) {
 
     return values.entrySet().stream()
         .filter(e -> e.getKey().startsWith(path))
+        .filter(e -> includeRaw || !"raw".equals(e.getKey().getLast().getAttributeName()))
         .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
   }
 
