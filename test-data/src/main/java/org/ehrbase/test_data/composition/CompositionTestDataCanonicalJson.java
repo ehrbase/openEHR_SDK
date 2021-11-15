@@ -57,6 +57,8 @@ public enum CompositionTestDataCanonicalJson {
     FEEDER_AUDIT_DETAILS("composition to test feeder audit details", "all_types_systematic_tests_feeder_audit.json"),
     MINIMAL_INSTRUCTION("minimal instruction (contains DV_DURATION)", "minimal_instruction.json"),
     MINIMAL_ACTION_2("Minimal Action 2", "minimal_action2_1.json"),
+    MINIMAL_WITH_OPTIONAL_ATTRIBUTE("dv multimedia with alternate_text", "minimal_with_optional_attribute.json"),
+    MINIMAL_WITHOUT_OPTIONAL_ATTRIBUTE("dv multimedia without alternate_text", "minimal_without_optional_attribute.json"),
     GECCO_PERSONENDATEN("GECCO_Personendaten", "gecco_personendaten.json");
 
 
