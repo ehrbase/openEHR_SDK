@@ -21,9 +21,10 @@ package org.ehrbase.serialisation.flatencoding.std.umarshal.rmunmarshaller;
 
 import com.nedap.archie.rm.archetyped.FeederAudit;
 import com.nedap.archie.rm.archetyped.FeederAuditDetails;
+import com.nedap.archie.rm.datavalues.encapsulated.DvMultimedia;
 import com.nedap.archie.rm.datavalues.encapsulated.DvParsable;
 import org.ehrbase.serialisation.walker.Context;
-import org.ehrbase.serialisation.walker.RMHelper;
+import org.ehrbase.serialisation.walker.FlatHelper;
 import org.ehrbase.serialisation.walker.defaultvalues.DefaultValues;
 import org.ehrbase.webtemplate.path.flat.FlatPathDto;
 
@@ -39,6 +40,8 @@ public class FeederAuditRMUnmarshaller extends AbstractRMUnmarshaller<FeederAudi
 
   private static final DvParsableRMUnmarshaller DV_PARSABLE_RM_UNMARSHALLER =
       new DvParsableRMUnmarshaller();
+  private static final DvMultimediaRMUnmarshaller DV_MULTIMEDIA_RM_UNMARSHALLER =
+      new DvMultimediaRMUnmarshaller();
   private static final FeederAuditDetailsRMUnmarshaller FEEDER_AUDIT_DETAILS_RM_UNMARSHALLER =
       new FeederAuditDetailsRMUnmarshaller();
 
@@ -55,32 +58,46 @@ public class FeederAuditRMUnmarshaller extends AbstractRMUnmarshaller<FeederAudi
       Context<Map<FlatPathDto, String>> context,
       Set<String> consumedPaths) {
 
-    rmObject.setOriginalContent(new DvParsable());
-    DV_PARSABLE_RM_UNMARSHALLER.handle(
-        currentTerm + "/original_content",
-        (DvParsable) rmObject.getOriginalContent(),
-        currentValues,
-        context,
-        consumedPaths);
+    Map<FlatPathDto, String> originalContentValues =
+        FlatHelper.filter(currentValues, currentTerm + "/original_content");
 
-    if (RMHelper.isEmpty(rmObject.getOriginalContent())) {
-      rmObject.setOriginalContent(null);
+    if (!originalContentValues.isEmpty()) {
+      rmObject.setOriginalContent(new DvParsable());
+      DV_PARSABLE_RM_UNMARSHALLER.handle(
+          currentTerm + "/original_content",
+          (DvParsable) rmObject.getOriginalContent(),
+          originalContentValues,
+          context,
+          consumedPaths);
     }
 
-    rmObject.setOriginatingSystemAudit(new FeederAuditDetails());
-    FEEDER_AUDIT_DETAILS_RM_UNMARSHALLER.handle(
-        currentTerm + "/originating_system_audit",
-        rmObject.getOriginatingSystemAudit(),
-        currentValues,
-        context,
-        consumedPaths);
+    Map<FlatPathDto, String> originalContentMultimediaValues =
+        FlatHelper.filter(currentValues, currentTerm + "/original_content_multimedia");
 
-    if (RMHelper.isEmpty(rmObject.getOriginatingSystemAudit())) {
-      rmObject.setOriginatingSystemAudit(null);
+    if (!originalContentMultimediaValues.isEmpty()) {
+      rmObject.setOriginalContent(new DvMultimedia());
+      DV_MULTIMEDIA_RM_UNMARSHALLER.handle(
+          currentTerm + "/original_content_multimedia",
+          (DvMultimedia) rmObject.getOriginalContent(),
+          originalContentMultimediaValues,
+          context,
+          consumedPaths);
+    }
+
+    Map<FlatPathDto, String> originatingSystemAuditValues =
+        FlatHelper.filter(currentValues, currentTerm + "/originating_system_audit");
+    if (!originatingSystemAuditValues.isEmpty()) {
+      rmObject.setOriginatingSystemAudit(new FeederAuditDetails());
+      FEEDER_AUDIT_DETAILS_RM_UNMARSHALLER.handle(
+          currentTerm + "/originating_system_audit",
+          rmObject.getOriginatingSystemAudit(),
+          currentValues,
+          context,
+          consumedPaths);
     }
 
     Map<Integer, Map<String, String>> feederSystemIds =
-        extractMultiValued(currentTerm + PATH_DIVIDER + "feeder_system_item_id", currentValues);
+        extractMultiValued(currentTerm, "feeder_system_item_id", currentValues);
 
     rmObject
         .getFeederSystemItemIds()
@@ -93,8 +110,7 @@ public class FeederAuditRMUnmarshaller extends AbstractRMUnmarshaller<FeederAudi
         currentTerm + PATH_DIVIDER + "feeder_system_item_id", currentValues, consumedPaths);
 
     Map<Integer, Map<String, String>> originatingSystemIds =
-        extractMultiValued(
-            currentTerm + PATH_DIVIDER + "originating_system_item_id", currentValues);
+        extractMultiValued(currentTerm, "originating_system_item_id", currentValues);
 
     rmObject
         .getOriginatingSystemItemIds()

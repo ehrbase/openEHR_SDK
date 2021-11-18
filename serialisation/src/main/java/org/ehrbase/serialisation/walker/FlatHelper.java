@@ -3,6 +3,8 @@ package org.ehrbase.serialisation.walker;
 import com.nedap.archie.rm.datastructures.Event;
 import com.nedap.archie.rminfo.RMTypeInfo;
 import org.apache.commons.lang3.StringUtils;
+import org.ehrbase.client.classgenerator.EnumValueSet;
+import org.ehrbase.util.exception.SdkException;
 import org.ehrbase.webtemplate.model.WebTemplateNode;
 import org.ehrbase.webtemplate.path.flat.FlatPathDto;
 
@@ -10,6 +12,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.ehrbase.util.rmconstants.RmConstants.*;
+import static org.ehrbase.webtemplate.parser.OPTParser.PATH_DIVIDER;
 
 public class FlatHelper<T> {
 
@@ -186,19 +189,60 @@ public class FlatHelper<T> {
    * "vitals/vitals/body_temperature:0/_feeder_audit/feeder_system_item_id:1|assigner": "assigner2",
    * "vitals/vitals/body_temperature:0/_feeder_audit/feeder_system_item_id:1|issuer": "issuer2",
    *
-   * @param term
+   * @param currentTerm
+   * @param childTerm
    * @param values
    * @return
    */
   public static Map<Integer, Map<String, String>> extractMultiValued(
-      String term, Map<FlatPathDto, String> values) {
+      String currentTerm, String childTerm, Map<FlatPathDto, String> values) {
+
     return values.entrySet().stream()
-        .filter(s -> s.getKey().startsWith(term))
+        .filter(s -> s.getKey().startsWith(currentTerm + PATH_DIVIDER + childTerm))
         .collect(
             Collectors.groupingBy(
-                e -> Optional.ofNullable(e.getKey().getLast().getCount()).orElse(0),
+                e ->
+                    Optional.ofNullable(
+                            FlatPathDto.removeStart(e.getKey(), new FlatPathDto(currentTerm))
+                                .getCount())
+                        .orElse(0),
                 Collectors.toMap(
                     e1 -> Optional.ofNullable(e1.getKey().getLast().getAttributeName()).orElse(""),
                     stringStringEntry -> StringUtils.unwrap(stringStringEntry.getValue(), '"'))));
+  }
+
+  public static Map<Integer, Map<FlatPathDto, String>> extractMultiValuedFullPath(
+      String currentTerm, String childTerm, Map<FlatPathDto, String> values) {
+
+    return values.entrySet().stream()
+        .filter(s -> s.getKey().startsWith(currentTerm + PATH_DIVIDER + childTerm))
+        .collect(
+            Collectors.groupingBy(
+                e ->
+                    Optional.ofNullable(
+                            FlatPathDto.removeStart(e.getKey(), new FlatPathDto(currentTerm))
+                                .getCount())
+                        .orElse(0),
+                Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
+  }
+
+  public static Map<FlatPathDto, String> filter(Map<FlatPathDto, String> values, String path) {
+
+    return values.entrySet().stream()
+        .filter(e -> e.getKey().startsWith(path))
+        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+  }
+
+  public static <E extends EnumValueSet> E findEnumValueOrThrow(String value, Class<E> clazz) {
+
+    return Arrays.stream(clazz.getEnumConstants())
+        .filter(e -> e.getCode().equals(value) || e.getValue().equals(value))
+        .findAny()
+        .orElseThrow(
+            () ->
+                new SdkException(
+                    String.format(
+                        "Unknown Value %s in terminology %s",
+                        value, clazz.getEnumConstants()[0].getTerminologyId())));
   }
 }

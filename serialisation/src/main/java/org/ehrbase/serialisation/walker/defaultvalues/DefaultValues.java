@@ -49,6 +49,8 @@ import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static org.ehrbase.serialisation.walker.FlatHelper.findEnumValueOrThrow;
+
 public class DefaultValues {
 
   private final Map<DefaultValuePath, Object> defaultValueMap;
@@ -93,7 +95,8 @@ public class DefaultValues {
                   String value =
                       subValues.values().stream().map(DefaultValues::read).findAny().orElseThrow();
                   defaultValueMap.put(
-                      path, findEnumValue(value, (Class<? extends EnumValueSet>) path.getType()));
+                      path,
+                      findEnumValueOrThrow(value, (Class<? extends EnumValueSet>) path.getType()));
 
                 } else if (String.class.isAssignableFrom(path.getType())) {
                   String value =
@@ -131,9 +134,14 @@ public class DefaultValues {
                   ObjectRef<GenericId> ref = new ObjectRef<>();
 
                   Map<String, String> attributes =
-                      subValues.entrySet().stream().collect(Collectors.toMap(
-                              e1 -> StringUtils.substringBefore(StringUtils.substringAfter(e1.getKey(), "|"), ":"),
-                          stringStringEntry -> StringUtils.unwrap(stringStringEntry.getValue(), '"')));
+                      subValues.entrySet().stream()
+                          .collect(
+                              Collectors.toMap(
+                                  e1 ->
+                                      StringUtils.substringBefore(
+                                          StringUtils.substringAfter(e1.getKey(), "|"), ":"),
+                                  stringStringEntry ->
+                                      StringUtils.unwrap(stringStringEntry.getValue(), '"')));
 
                   ref.setNamespace(attributes.get("id_namespace"));
                   ref.setType(attributes.get("id_type"));
@@ -154,9 +162,12 @@ public class DefaultValues {
                                             StringUtils.substringAfter(e.getKey(), ":"), "|");
                                     return StringUtils.isBlank(s) ? 0 : Integer.parseInt(s);
                                   },
-                                      Collectors.toMap(
-                                              e1 -> StringUtils.substringBefore(StringUtils.substringAfter(e1.getKey(), "|"), ":"),
-                                          stringStringEntry -> StringUtils.unwrap(stringStringEntry.getValue(), '"'))));
+                                  Collectors.toMap(
+                                      e1 ->
+                                          StringUtils.substringBefore(
+                                              StringUtils.substringAfter(e1.getKey(), "|"), ":"),
+                                      stringStringEntry ->
+                                          StringUtils.unwrap(stringStringEntry.getValue(), '"'))));
 
                   defaultValueMap.put(
                       path,
@@ -196,18 +207,10 @@ public class DefaultValues {
       }
     }
 
-    if (!defaultValueMap.containsKey(DefaultValuePath.TIME)) {
-      defaultValueMap.put(DefaultValuePath.TIME, OffsetDateTime.now());
-    }
-
-    if (!defaultValueMap.containsKey(DefaultValuePath.ACTION_ISM_TRANSITION_CURRENT_STATE)) {
-      defaultValueMap.put(DefaultValuePath.ACTION_ISM_TRANSITION_CURRENT_STATE, State.INITIAL);
-    }
-
-    if (!defaultValueMap.containsKey(DefaultValuePath.SETTING)){
-
-      defaultValueMap.put(DefaultValuePath.SETTING, Setting.OTHER_CARE);
-    }
+    defaultValueMap.putIfAbsent(DefaultValuePath.TIME, OffsetDateTime.now());
+    defaultValueMap.putIfAbsent(
+        DefaultValuePath.ACTION_ISM_TRANSITION_CURRENT_STATE, State.INITIAL);
+    defaultValueMap.putIfAbsent(DefaultValuePath.SETTING, Setting.OTHER_CARE);
   }
 
   public static Link createLink(Map<String, String> stringStringMap) {
@@ -233,8 +236,8 @@ public class DefaultValues {
 
   private static Map<String, String> filterExact(Map<String, String> flat, String path) {
     return flat.entrySet().stream()
-            .filter(e -> new FlatPathDto(e.getKey()).startsWith( "ctx/" + path))
-            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+        .filter(e -> new FlatPathDto(e.getKey()).startsWith("ctx/" + path))
+        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
   }
 
   public static Participation buildParticipation(Collection<Map.Entry<String, String>> subValues) {
@@ -253,8 +256,17 @@ public class DefaultValues {
         });
 
     extract(subValues, "name", ((PartyIdentified) participation.getPerformer())::setName);
-    extract(subValues, "id_namespace", n -> participation.getPerformer().getExternalRef().setNamespace(n));
-    extract(subValues, "id_scheme", n -> ((GenericId) participation.getPerformer().getExternalRef().getId()).setScheme(n));
+
+    if (participation.getPerformer().getExternalRef() != null) {
+      extract(
+          subValues,
+          "id_namespace",
+          n -> participation.getPerformer().getExternalRef().setNamespace(n));
+      extract(
+          subValues,
+          "id_scheme",
+          ((GenericId) participation.getPerformer().getExternalRef().getId())::setScheme);
+    }
 
     extract(subValues, "function", s -> participation.setFunction(new DvText(s)));
 
@@ -262,7 +274,7 @@ public class DefaultValues {
         subValues,
         "mode",
         s -> {
-          ParticipationMode participationMode = findEnumValue(s, ParticipationMode.class);
+          ParticipationMode participationMode = findEnumValueOrThrow(s, ParticipationMode.class);
           participation.setMode(new DvCodedText());
           participation.getMode().setValue(participationMode.getValue());
           participation.getMode().setDefiningCode(participationMode.toCodePhrase());
@@ -286,7 +298,7 @@ public class DefaultValues {
 
     dvIdentifier.setId(valueMap.get("id"));
 
-    if ( StringUtils.isBlank(dvIdentifier.getId()) ){
+    if (StringUtils.isBlank(dvIdentifier.getId())) {
       dvIdentifier.setId(valueMap.get(""));
     }
     dvIdentifier.setAssigner(valueMap.get("assigner"));
@@ -326,9 +338,12 @@ public class DefaultValues {
                                 StringUtils.substringAfter(e.getKey(), "|"), ":");
                         return StringUtils.isBlank(s) ? 0 : Integer.parseInt(s);
                       },
-                          Collectors.toMap(
-                                  e1 -> StringUtils.substringBefore(StringUtils.substringAfter(e1.getKey(), "|"), ":"),
-                              stringStringEntry -> StringUtils.unwrap(stringStringEntry.getValue(), '"'))));
+                      Collectors.toMap(
+                          e1 ->
+                              StringUtils.substringBefore(
+                                  StringUtils.substringAfter(e1.getKey(), "|"), ":"),
+                          stringStringEntry ->
+                              StringUtils.unwrap(stringStringEntry.getValue(), '"'))));
 
     } else {
       map = Collections.emptyMap();
@@ -337,9 +352,9 @@ public class DefaultValues {
   }
 
   private static void extract(
-          Collection<Map.Entry<String, String>> subValues,
-          String subPath,
-          Consumer<String> stringConsumer) {
+      Collection<Map.Entry<String, String>> subValues,
+      String subPath,
+      Consumer<String> stringConsumer) {
     filter(
             subValues.stream().collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)),
             DefaultValuePath.PARTICIPATION.getPath() + "_" + subPath)
@@ -351,30 +366,17 @@ public class DefaultValues {
   }
 
   private static void extractExact(
-          Collection<Map.Entry<String, String>> subValues,
-          String subPath,
-          Consumer<String> stringConsumer) {
+      Collection<Map.Entry<String, String>> subValues,
+      String subPath,
+      Consumer<String> stringConsumer) {
     filterExact(
             subValues.stream().collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)),
             DefaultValuePath.PARTICIPATION.getPath() + "_" + subPath)
-            .values()
-            .stream()
-            .map(DefaultValues::read)
-            .findAny()
-            .ifPresent(stringConsumer);
-  }
-
-  private static <E extends EnumValueSet> E findEnumValue(String value, Class<E> clazz) {
-
-    return Arrays.stream(clazz.getEnumConstants())
-        .filter(e -> e.getCode().equals(value) || e.getValue().equals(value))
+        .values()
+        .stream()
+        .map(DefaultValues::read)
         .findAny()
-        .orElseThrow(
-            () ->
-                new SdkException(
-                    String.format(
-                        "Unknown Value %s in terminology %s",
-                        value, clazz.getEnumConstants()[0].getTerminologyId())));
+        .ifPresent(stringConsumer);
   }
 
   private static String read(String s) {

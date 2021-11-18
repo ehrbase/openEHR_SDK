@@ -19,40 +19,44 @@
 
 package org.ehrbase.serialisation.flatencoding.std.marshal.postprocessor;
 
-import com.nedap.archie.rm.composition.Action;
-import org.ehrbase.serialisation.flatencoding.std.marshal.config.InstructionDetailsConfig;
+import com.nedap.archie.rm.datavalues.quantity.DvOrdered;
+import org.ehrbase.serialisation.flatencoding.std.marshal.config.StdConfig;
 import org.ehrbase.serialisation.walker.Context;
 
 import java.util.Map;
 
-import static org.ehrbase.webtemplate.parser.OPTParser.PATH_DIVIDER;
+import static org.ehrbase.serialisation.flatencoding.std.marshal.StdFromCompositionWalker.findStdConfig;
 
-public class ActionMarshalPostprocessor implements MarshalPostprocessor<Action> {
-
-  private static final InstructionDetailsConfig INSTRUCTION_DETAILS_CONFIG =
-      new InstructionDetailsConfig();
+public class DvOrderedPostprocessor implements MarshalPostprocessor<DvOrdered> {
 
   /** {@inheritDoc} Adds the encoding information */
   @Override
   public void process(
       String term,
-      Action rmObject,
+      DvOrdered rmObject,
       Map<String, Object> values,
       Context<Map<String, Object>> context) {
 
-    if (rmObject.getInstructionDetails() != null) {
+    if (rmObject.getNormalRange() != null && rmObject.getNormalRange().getLower() != null) {
+      DvOrdered lower = rmObject.getNormalRange().getLower();
 
       values.putAll(
-          INSTRUCTION_DETAILS_CONFIG.buildChildValues(
-              term + PATH_DIVIDER + "_instruction_details",
-              rmObject.getInstructionDetails(),
-              null));
+          ((StdConfig) findStdConfig(lower.getClass()))
+              .buildChildValues(term + "/_normal_range/lower", lower, context));
+    }
+
+    if (rmObject.getNormalRange() != null && rmObject.getNormalRange().getUpper() != null) {
+      DvOrdered upper = rmObject.getNormalRange().getUpper();
+
+      values.putAll(
+          ((StdConfig) findStdConfig(upper.getClass()))
+              .buildChildValues(term + "/_normal_range/upper", upper, context));
     }
   }
 
   /** {@inheritDoc} */
   @Override
-  public Class<Action> getAssociatedClass() {
-    return Action.class;
+  public Class<DvOrdered> getAssociatedClass() {
+    return DvOrdered.class;
   }
 }

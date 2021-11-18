@@ -46,6 +46,7 @@ public class DvCodedTextRMUnmarshaller extends AbstractRMUnmarshaller<DvCodedTex
       Context<Map<FlatPathDto, String>> context,
       Set<String> consumedPaths) {
     setValue(currentTerm, "value", currentValues, rmObject::setValue, String.class, consumedPaths);
+
     rmObject.setDefiningCode(new CodePhrase());
     setValue(
         currentTerm,
@@ -54,6 +55,7 @@ public class DvCodedTextRMUnmarshaller extends AbstractRMUnmarshaller<DvCodedTex
         c -> rmObject.getDefiningCode().setCodeString(c),
         String.class,
         consumedPaths);
+
     if (rmObject.getDefiningCode().getCodeString() == null) {
       setValue(
           currentTerm,
@@ -63,6 +65,7 @@ public class DvCodedTextRMUnmarshaller extends AbstractRMUnmarshaller<DvCodedTex
           String.class,
           consumedPaths);
     }
+
     rmObject.getDefiningCode().setTerminologyId(new TerminologyId());
     setValue(
         currentTerm,
@@ -72,6 +75,7 @@ public class DvCodedTextRMUnmarshaller extends AbstractRMUnmarshaller<DvCodedTex
         String.class,
         consumedPaths);
 
+    // Set terminology from Node
     Optional.of(context.getNodeDeque().peek().getInputs()).stream()
         .flatMap(List::stream)
         .filter(i -> "code".equals(i.getSuffix()))
@@ -79,6 +83,7 @@ public class DvCodedTextRMUnmarshaller extends AbstractRMUnmarshaller<DvCodedTex
         .map(WebTemplateInput::getTerminology)
         .ifPresent(t -> rmObject.getDefiningCode().getTerminologyId().setValue(t));
 
+    // Set value from Node
     Optional.of(context.getNodeDeque().peek().getInputs()).stream()
         .flatMap(List::stream)
         .filter(i -> "code".equals(i.getSuffix()))
@@ -89,6 +94,7 @@ public class DvCodedTextRMUnmarshaller extends AbstractRMUnmarshaller<DvCodedTex
         .findAny()
         .ifPresent(v -> rmObject.setValue(v.getLabel()));
 
+    // consume strange legacy paths
     if (rmObject.getDefiningCode() != null && rmObject.getDefiningCode().getCodeString() != null) {
       currentValues.keySet().stream()
           .map(FlatPathDto::format)

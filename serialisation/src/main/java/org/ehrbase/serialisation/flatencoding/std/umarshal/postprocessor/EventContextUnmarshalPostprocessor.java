@@ -24,6 +24,7 @@ import com.nedap.archie.rm.datavalues.quantity.datetime.DvDateTime;
 import com.nedap.archie.rm.generic.PartyIdentified;
 import org.apache.commons.lang3.StringUtils;
 import org.ehrbase.serialisation.flatencoding.std.umarshal.rmunmarshaller.PartyIdentifiedRMUnmarshaller;
+import org.ehrbase.serialisation.walker.Context;
 import org.ehrbase.serialisation.walker.defaultvalues.DefaultValuePath;
 import org.ehrbase.serialisation.walker.defaultvalues.DefaultValues;
 import org.ehrbase.webtemplate.path.flat.FlatPathDto;
@@ -48,7 +49,16 @@ public class EventContextUnmarshalPostprocessor
       String term,
       EventContext rmObject,
       Map<FlatPathDto, String> values,
-      Set<String> consumedPaths) {
+      Set<String> consumedPaths,
+      Context<Map<FlatPathDto, String>> context) {
+
+    setValue(
+        term + PATH_DIVIDER + "_location",
+        null,
+        values,
+        rmObject::setLocation,
+        String.class,
+        consumedPaths);
     setValue(
         term + PATH_DIVIDER + "_end_time",
         null,
@@ -76,8 +86,7 @@ public class EventContextUnmarshalPostprocessor
           consumedPaths);
     }
 
-    Map<Integer, Map<String, String>> other =
-        extractMultiValued(term + PATH_DIVIDER + "_participation", values);
+    Map<Integer, Map<String, String>> other = extractMultiValued(term, "_participation", values);
 
     other.values().stream()
         .map(Map::entrySet)

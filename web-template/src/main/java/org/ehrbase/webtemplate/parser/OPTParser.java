@@ -331,7 +331,7 @@ public class OPTParser {
         WebTemplateInput code = new WebTemplateInput();
         code.setSuffix("code");
         code.setType(CODED_TEXT);
-        code.setTerminology(OPENEHR);
+        code.setTerminology("local");
 
         ismTransitionList.forEach(
             i -> {
@@ -601,8 +601,10 @@ public class OPTParser {
                     int optionalIdNumber = i + 1;
                     n.setOptionalIdNumber(optionalIdNumber);
 
-                    if (RmConstants.ELEMENT.equals(n.getRmType())){
-                      n.getChildren().stream().filter(c -> c.getId().equals(n.getId(false))).forEach(c -> c.setOptionalIdNumber(optionalIdNumber));
+                    if (RmConstants.ELEMENT.equals(n.getRmType())) {
+                      n.getChildren().stream()
+                          .filter(c -> c.getId().equals(n.getId(false)))
+                          .forEach(c -> c.setOptionalIdNumber(optionalIdNumber));
                     }
                   }
                 }
@@ -634,8 +636,10 @@ public class OPTParser {
                               || List.of("feeder_audit", "null_flavour").contains(s.getRmName()))
                   .filter(s -> !List.of("value").contains(s.getRmName()))
                   .filter(s -> !Locatable.class.isAssignableFrom(s.getTypeInCollection()))
-                  .filter(s -> !DvInterval.class.isAssignableFrom(typeInfo.getJavaClass()) ||
-                          !Objects.equals("interval", s.getRmName()))
+                  .filter(
+                      s ->
+                          !DvInterval.class.isAssignableFrom(typeInfo.getJavaClass())
+                              || !Objects.equals("interval", s.getRmName()))
                   .map(i -> buildNodeForAttribute(i, aqlPath, termDefinitionMap))
                   // only add if not already there
                   .filter(
@@ -658,7 +662,7 @@ public class OPTParser {
     node.setRmType(attributeInfo.getTypeNameInCollection());
     node.setMax(attributeInfo.isMultipleValued() ? -1 : 1);
     node.setMin(attributeInfo.isNullable() ? 0 : 1);
-    if ( List.of("action_archetype_id","math_function").contains(attributeInfo.getRmName())) {
+    if (List.of("action_archetype_id", "math_function").contains(attributeInfo.getRmName())) {
       node.setMin(1);
     }
 

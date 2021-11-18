@@ -101,7 +101,7 @@ public abstract class Walker<T> {
         }
       }
 
-      handleDVText(currentNode);
+      currentNode.getChildren().forEach(this::handleDVText);
 
       Map<String, List<WebTemplateNode>> choices = currentNode.getChoicesInChildren();
       List<WebTemplateNode> children = new ArrayList<>(currentNode.getChildren());
@@ -134,7 +134,8 @@ public abstract class Walker<T> {
 
       for (List<WebTemplateNode> choice : childChoices) {
 
-        if (choice.stream().noneMatch(WebTemplateNode::isMulti)) {
+        if (choice.stream().noneMatch(WebTemplateNode::isMulti)
+            || currentNode.getRmType().equals(ELEMENT)) {
 
           for (WebTemplateNode childNode : choice) {
             ImmutablePair<T, RMObject> pair =
@@ -153,31 +154,32 @@ public abstract class Walker<T> {
 
           int size = calculateSize(context, choice.get(0));
 
-          List<Triple<T, RMObject, WebTemplateNode>> pairs = new ArrayList<>();
+          Map<Integer, Triple<T, RMObject, WebTemplateNode>> pairs = new HashMap<>();
           for (int i = 0; i < size; i++) {
             for (WebTemplateNode childNode : choice) {
               ImmutablePair<T, RMObject> pair =
                   extractPair(context, currentNode, choices, childNode, i);
               if (pair.getLeft() != null && pair.getRight() != null) {
-                pairs.add(new ImmutableTriple<>(pair.getLeft(), pair.getRight(), childNode));
+                pairs.put(i, new ImmutableTriple<>(pair.getLeft(), pair.getRight(), childNode));
               }
             }
           }
 
-          for (int i = 0; i < Math.min(size, pairs.size()); i++) {
-            RMObject currentChild = null;
-            T childObject = null;
-            childObject = pairs.get(i).getLeft();
-            currentChild = pairs.get(i).getMiddle();
-            WebTemplateNode childNode = pairs.get(i).getRight();
-            if (currentChild != null && childObject != null) {
-              context.getNodeDeque().push(childNode);
-              context.getObjectDeque().push(childObject);
-              context.getRmObjectDeque().push(currentChild);
-              context.getCountMap().put(new NodeId(childNode), i);
-              handle(context);
-            }
-          }
+          pairs.forEach(
+              (i, p) -> {
+                RMObject currentChild = null;
+                T childObject = null;
+                childObject = p.getLeft();
+                currentChild = p.getMiddle();
+                WebTemplateNode childNode = p.getRight();
+                if (currentChild != null && childObject != null) {
+                  context.getNodeDeque().push(childNode);
+                  context.getObjectDeque().push(childObject);
+                  context.getRmObjectDeque().push(currentChild);
+                  context.getCountMap().put(new NodeId(childNode), i);
+                  handle(context);
+                }
+              });
         }
       }
     }

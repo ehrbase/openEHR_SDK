@@ -24,6 +24,7 @@ import com.nedap.archie.rm.datavalues.DvCodedText;
 import com.nedap.archie.rm.datavalues.quantity.DvOrdinal;
 import com.nedap.archie.rm.support.identification.TerminologyId;
 import org.ehrbase.serialisation.walker.Context;
+import org.ehrbase.serialisation.walker.FlatHelper;
 import org.ehrbase.util.exception.SdkException;
 import org.ehrbase.webtemplate.model.WebTemplateInputValue;
 import org.ehrbase.webtemplate.path.flat.FlatPathDto;
@@ -51,7 +52,11 @@ public class DvOrdinalRMUnmarshaller extends AbstractRMUnmarshaller<DvOrdinal> {
 
     rmObject.setSymbol(new DvCodedText());
     rmObject.getSymbol().setDefiningCode(new CodePhrase());
+
+    // TerminologyId is fixed local for DvOrdinal
     rmObject.getSymbol().getDefiningCode().setTerminologyId(new TerminologyId("local"));
+    FlatHelper.consumeAllMatching(currentTerm + "|terminology", currentValues, consumedPaths);
+
     setValue(
         currentTerm,
         "code",

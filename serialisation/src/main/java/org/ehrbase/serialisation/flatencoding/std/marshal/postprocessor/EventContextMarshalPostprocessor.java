@@ -23,6 +23,7 @@ import com.nedap.archie.rm.composition.EventContext;
 import com.nedap.archie.rm.datavalues.quantity.datetime.DvDateTime;
 import org.ehrbase.serialisation.flatencoding.std.marshal.config.ParticipationConfig;
 import org.ehrbase.serialisation.flatencoding.std.marshal.config.PartyIdentifiedStdConfig;
+import org.ehrbase.serialisation.walker.Context;
 
 import java.util.Map;
 import java.util.Optional;
@@ -39,7 +40,11 @@ public class EventContextMarshalPostprocessor implements MarshalPostprocessor<Ev
 
   /** {@inheritDoc} */
   @Override
-  public void process(String term, EventContext rmObject, Map<String, Object> values) {
+  public void process(
+      String term,
+      EventContext rmObject,
+      Map<String, Object> values,
+      Context<Map<String, Object>> context) {
 
     MarshalPostprocessor.addValue(
         values,

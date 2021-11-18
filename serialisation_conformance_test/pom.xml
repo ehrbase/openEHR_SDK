@@ -94,17 +94,26 @@
                         <include>BuildFromDataValueTest</include>
                         <include>CodedTextTest</include>
                         <include>ComposerTest</include>
+                        <include>DoraBuilderTestOverwrite</include>
+                        <include>DrpBuilderTestOverwritten</include>
+                        <include>EthersBuilderTestOverwrite</include>
                         <include>DurationTest</include>
                         <include>EndTimeTest</include>
+                        <include>FeederAuditTestOverwritten</include>
                         <include>HistoryOriginTest</include>
                         <include>IntervalEventTest</include>
+                        <include>IsmTransitionTest</include>
                         <include>LinksTest</include>
                         <include>LocationTest</include>
                         <include>MediaTypeExampleTest</include>
+                        <include>NamedElementsTest</include>
                         <include>NoArchetypedTest</include>
+                        <include>NormalRangeTest</include>
+                        <include>NullFlavorTestOverwritten</include>
                         <include>ParentTest</include>
                         <include>ProviderTest</include>
                         <include>SubjectTest</include>
+                        <include>TermMappingTestOverwritten</include>
                         <include>TimeZoneTest</include>
                         <include>UidTest</include>
                         <include>WebTemplateContentTest.java</include>

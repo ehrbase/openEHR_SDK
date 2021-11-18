@@ -24,6 +24,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.ValueNode;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.ehrbase.serialisation.jsonencoding.JacksonUtil;
 import org.ehrbase.util.exception.SdkException;
@@ -31,6 +32,8 @@ import org.ehrbase.webtemplate.path.flat.FlatPathDto;
 
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+import java.util.stream.StreamSupport;
 
 import static org.ehrbase.webtemplate.parser.OPTParser.PATH_DIVIDER;
 
@@ -118,6 +121,8 @@ public class StructuredHelper {
 
           List<Object> values = (List<Object>) structured.get(k.getName());
 
+          LinkedHashMap<String, Object> subMap = new LinkedHashMap<>();
+
           // find sub entries
           Map<String, Object> subEntriesMap =
               convertFlatToStructured(
@@ -129,7 +134,7 @@ public class StructuredHelper {
                               Map.Entry::getValue)));
 
           if (!subEntriesMap.isEmpty()) {
-            values.add(subEntriesMap);
+            subMap.putAll(subEntriesMap);
           }
 
           // find attributes
@@ -145,10 +150,19 @@ public class StructuredHelper {
                           Map.Entry::getValue));
 
           // singe valued Attributes have no name
-          if (collect.size() == 1 && collect.containsKey("")) {
+          if (collect.size() == 1 && collect.containsKey("") && subMap.isEmpty()) {
             values.add(collect.entrySet().stream().findAny().map(Map.Entry::getValue).orElse(""));
           } else if (!collect.isEmpty()) {
-            values.add(collect);
+
+            if (collect.containsKey("")) {
+              collect.put("|value", collect.get(""));
+              collect.remove("");
+            }
+            subMap.putAll(collect);
+          }
+
+          if (!subMap.isEmpty()) {
+            values.add(subMap);
           }
         });
 
@@ -169,21 +183,44 @@ public class StructuredHelper {
         final String newPath;
         if (StringUtils.startsWith(field.getKey(), "|") || StringUtils.isBlank(path)) {
           newPath = path + field.getKey();
+        } else if (StringUtils.isEmpty(field.getKey())) {
+          newPath = path;
         } else {
           newPath = path + PATH_DIVIDER + field.getKey();
         }
+
         map.putAll(convertStructuredToFlat(newPath, field.getValue()));
       }
       return map;
 
     } else if (jsonNode instanceof ArrayNode) {
 
-      Map<String, JsonNode> map = new HashMap<>();
+      Map<String, JsonNode> map = new LinkedHashMap<>();
+
+      boolean needsIndex =
+          IntStream.range(0, jsonNode.size())
+                  .mapToObj(jsonNode::get)
+                  .map(
+                      n -> {
+                        if (n instanceof ObjectNode) {
+                          return StreamSupport.stream(
+                                  Spliterators.spliteratorUnknownSize(
+                                      n.fields(), Spliterator.ORDERED),
+                                  false)
+                              .map(Map.Entry::getKey)
+                              .anyMatch(s -> !StringUtils.startsWith(s, "_"));
+                        }
+                        return true;
+                      })
+                  .filter(BooleanUtils::isTrue)
+                  .count()
+              > 1;
 
       for (int i = 0; i < jsonNode.size(); i++) {
         JsonNode child = jsonNode.get(i);
         final String newPath;
-        if (i > 0) {
+
+        if (i > 0 && needsIndex) {
           newPath = path + ":" + i;
         } else {
           // To save a look-up if at this path we have a single value or the first value of a multi

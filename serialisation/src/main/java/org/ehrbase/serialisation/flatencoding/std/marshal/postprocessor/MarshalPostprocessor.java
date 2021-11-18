@@ -21,6 +21,7 @@ package org.ehrbase.serialisation.flatencoding.std.marshal.postprocessor;
 
 import com.nedap.archie.rm.RMObject;
 import org.apache.commons.lang3.StringUtils;
+import org.ehrbase.serialisation.walker.Context;
 import org.ehrbase.util.reflection.ClassDependent;
 
 import java.util.Map;
@@ -33,8 +34,10 @@ public interface MarshalPostprocessor<T extends RMObject> extends ClassDependent
    * @param term current term in the marshal recursion.
    * @param rmObject current rmObject in the marshal recursion.
    * @param values current values in the marshal recursion.
+   * @param context
    */
-  void process(String term, T rmObject, Map<String, Object> values);
+  void process(
+      String term, T rmObject, Map<String, Object> values, Context<Map<String, Object>> context);
 
   static void addValue(
       Map<String, Object> result, String termLoop, String propertyName, Object value) {

@@ -19,63 +19,66 @@
 
 package org.ehrbase.serialisation.flatencoding.std.umarshal.postprocessor;
 
-import com.nedap.archie.rm.datastructures.Event;
-import com.nedap.archie.rm.datastructures.History;
-import com.nedap.archie.rm.datastructures.ItemStructure;
-import com.nedap.archie.rm.datavalues.quantity.datetime.DvDateTime;
+import com.nedap.archie.rm.datastructures.Element;
+import org.apache.commons.lang3.StringUtils;
+import org.ehrbase.client.classgenerator.shareddefinition.NullFlavour;
 import org.ehrbase.serialisation.walker.Context;
+import org.ehrbase.serialisation.walker.FlatHelper;
 import org.ehrbase.webtemplate.path.flat.FlatPathDto;
 
-import java.time.temporal.TemporalAccessor;
 import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
 import java.util.Set;
 
 import static org.ehrbase.webtemplate.parser.OPTParser.PATH_DIVIDER;
 
-public class HistoryPostprocessor extends AbstractUnmarshalPostprocessor<History> {
+public class ElementPostprocessor extends AbstractUnmarshalPostprocessor<Element> {
 
   /** {@inheritDoc} */
   @Override
   public void process(
       String term,
-      History rmObject,
+      Element rmObject,
       Map<FlatPathDto, String> values,
       Set<String> consumedPaths,
       Context<Map<FlatPathDto, String>> context) {
 
     setValue(
-        term + PATH_DIVIDER + "history_origin",
-        null,
+        term + PATH_DIVIDER + "_null_flavour",
+        "value",
         values,
         s -> {
-          if (s != null) {
-            rmObject.setOrigin(new DvDateTime(s));
+          if (StringUtils.isNotBlank(s)) {
+            rmObject.setNullFlavour(
+                FlatHelper.findEnumValueOrThrow(s, NullFlavour.class).toCodedText());
           }
         },
         String.class,
         consumedPaths);
 
-    if (rmObject.getOrigin() == null || rmObject.getOrigin().getValue() == null) {
-      Optional<TemporalAccessor> first =
-          ((History<ItemStructure>) rmObject)
-              .getEvents().stream()
-                  .map(Event::getTime)
-                  .filter(Objects::nonNull)
-                  .map(DvDateTime::getValue)
-                  .filter(Objects::nonNull)
-                  .sorted()
-                  .findFirst();
-      first.ifPresent(
-          temporalAccessor ->
-              ((History<ItemStructure>) rmObject).setOrigin(new DvDateTime(temporalAccessor)));
+    setValue(
+        term + PATH_DIVIDER + "_null_flavour",
+        "code",
+        values,
+        s -> {
+          if (StringUtils.isNotBlank(s)) {
+            rmObject.setNullFlavour(
+                FlatHelper.findEnumValueOrThrow(s, NullFlavour.class).toCodedText());
+          }
+        },
+        String.class,
+        consumedPaths);
+
+    FlatHelper.consumeAllMatching(
+        term + PATH_DIVIDER + "_null_flavour|terminology", values, consumedPaths);
+    if (rmObject.getNullFlavour() != null) {
+      rmObject.setValue(null);
+      FlatHelper.consumeAllMatching(term, values, consumedPaths);
     }
   }
 
   /** {@inheritDoc} */
   @Override
-  public Class<History> getAssociatedClass() {
-    return History.class;
+  public Class<Element> getAssociatedClass() {
+    return Element.class;
   }
 }

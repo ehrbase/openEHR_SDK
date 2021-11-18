@@ -26,6 +26,7 @@ import com.nedap.archie.rm.datastructures.Element;
 import com.nedap.archie.rm.datavalues.quantity.DvInterval;
 import org.apache.commons.lang3.StringUtils;
 import org.ehrbase.util.exception.SdkException;
+import org.ehrbase.util.rmconstants.RmConstants;
 import org.ehrbase.webtemplate.model.WebTemplateNode;
 import org.ehrbase.webtemplate.parser.FlatPath;
 
@@ -135,7 +136,8 @@ public class ItemExtractor {
       }
     }
 
-    if (childNode.getMax() == 1 && child instanceof List) {
+    if ((childNode.getMax() == 1 || currentNode.getRmType().equals(RmConstants.ELEMENT))
+        && child instanceof List) {
 
       if (((List<?>) child).isEmpty()) {
         child = null;
@@ -144,7 +146,7 @@ public class ItemExtractor {
       }
     }
 
-    if (child instanceof Element && !childNode.getRmType().equals("ELEMENT")) {
+    if (child instanceof Element && !childNode.getRmType().equals(RmConstants.ELEMENT)) {
       child = ((Element) child).getValue();
     }
     return this;
