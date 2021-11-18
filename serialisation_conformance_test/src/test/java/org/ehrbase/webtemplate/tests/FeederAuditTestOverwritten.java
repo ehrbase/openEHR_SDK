@@ -26,6 +26,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 public class FeederAuditTestOverwritten extends FeederAuditTest {
 
   @Override
-  /** test proprietary stuff from better */
+  /* test proprietary stuff from better */
   public void structuredWithGenericFields() throws Exception {}
 }

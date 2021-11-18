@@ -51,6 +51,7 @@ public class FeederAuditConfig extends AbstractsStdConfig<FeederAudit> {
     Map<String, Object> result = new HashMap<>();
 
     if (rmObject.getOriginalContent() instanceof DvParsable) {
+
       result.putAll(
           DV_PARSABLE_CONFIG.buildChildValues(
               currentTerm + "/original_content",
