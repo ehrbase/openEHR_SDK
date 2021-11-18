@@ -25,9 +25,11 @@ import com.nedap.archie.rm.support.identification.TerminologyId;
 import org.apache.commons.lang3.StringUtils;
 import org.ehrbase.serialisation.walker.Context;
 import org.ehrbase.webtemplate.model.WebTemplateInput;
+import org.ehrbase.webtemplate.model.WebTemplateInputValue;
 import org.ehrbase.webtemplate.path.flat.FlatPathDto;
 
 import java.util.*;
+import java.util.function.Predicate;
 
 public class DvCodedTextRMUnmarshaller extends AbstractRMUnmarshaller<DvCodedText> {
 
@@ -45,6 +47,7 @@ public class DvCodedTextRMUnmarshaller extends AbstractRMUnmarshaller<DvCodedTex
       Map<FlatPathDto, String> currentValues,
       Context<Map<FlatPathDto, String>> context,
       Set<String> consumedPaths) {
+
     setValue(currentTerm, "value", currentValues, rmObject::setValue, String.class, consumedPaths);
 
     rmObject.setDefiningCode(new CodePhrase());
@@ -56,16 +59,6 @@ public class DvCodedTextRMUnmarshaller extends AbstractRMUnmarshaller<DvCodedTex
         String.class,
         consumedPaths);
 
-    if (rmObject.getDefiningCode().getCodeString() == null) {
-      setValue(
-          currentTerm,
-          null,
-          currentValues,
-          c -> rmObject.getDefiningCode().setCodeString(c),
-          String.class,
-          consumedPaths);
-    }
-
     rmObject.getDefiningCode().setTerminologyId(new TerminologyId());
     setValue(
         currentTerm,
@@ -74,6 +67,25 @@ public class DvCodedTextRMUnmarshaller extends AbstractRMUnmarshaller<DvCodedTex
         t -> rmObject.getDefiningCode().getTerminologyId().setValue(t),
         String.class,
         consumedPaths);
+
+    if (rmObject.getDefiningCode().getCodeString() == null && rmObject.getValue() == null) {
+      setValue(
+          currentTerm,
+          null,
+          currentValues,
+          c -> {
+            if (c != null) {
+              // try to interpret as code
+              setFromNode(rmObject, context, v -> Objects.equals(v.getValue(), c));
+              if (rmObject.getValue() == null) {
+                // try to interpret as value
+                setFromNode(rmObject, context, v -> Objects.equals(v.getLabel(), c));
+              }
+            }
+          },
+          String.class,
+          consumedPaths);
+    }
 
     // Set terminology from Node
     Optional.of(context.getNodeDeque().peek().getInputs()).stream()
@@ -84,15 +96,10 @@ public class DvCodedTextRMUnmarshaller extends AbstractRMUnmarshaller<DvCodedTex
         .ifPresent(t -> rmObject.getDefiningCode().getTerminologyId().setValue(t));
 
     // Set value from Node
-    Optional.of(context.getNodeDeque().peek().getInputs()).stream()
-        .flatMap(List::stream)
-        .filter(i -> "code".equals(i.getSuffix()))
-        .map(WebTemplateInput::getList)
-        .filter(Objects::nonNull)
-        .flatMap(List::stream)
-        .filter(v -> Objects.equals(v.getValue(), rmObject.getDefiningCode().getCodeString()))
-        .findAny()
-        .ifPresent(v -> rmObject.setValue(v.getLabel()));
+    setFromNode(
+        rmObject,
+        context,
+        v -> Objects.equals(v.getValue(), rmObject.getDefiningCode().getCodeString()));
 
     // consume strange legacy paths
     if (rmObject.getDefiningCode() != null && rmObject.getDefiningCode().getCodeString() != null) {
@@ -104,5 +111,24 @@ public class DvCodedTextRMUnmarshaller extends AbstractRMUnmarshaller<DvCodedTex
                       .equals(rmObject.getDefiningCode().getCodeString()))
           .forEach(consumedPaths::add);
     }
+  }
+
+  private void setFromNode(
+      DvCodedText rmObject,
+      Context<Map<FlatPathDto, String>> context,
+      Predicate<WebTemplateInputValue> filter) {
+    Optional.of(context.getNodeDeque().peek().getInputs()).stream()
+        .flatMap(List::stream)
+        .filter(i -> "code".equals(i.getSuffix()))
+        .map(WebTemplateInput::getList)
+        .filter(Objects::nonNull)
+        .flatMap(List::stream)
+        .filter(filter)
+        .findAny()
+        .ifPresent(
+            v -> {
+              rmObject.setValue(v.getLabel());
+              rmObject.getDefiningCode().setCodeString(v.getValue());
+            });
   }
 }

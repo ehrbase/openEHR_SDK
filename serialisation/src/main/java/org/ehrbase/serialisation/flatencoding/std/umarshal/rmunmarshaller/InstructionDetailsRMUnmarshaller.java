@@ -23,8 +23,10 @@ import com.nedap.archie.rm.composition.InstructionDetails;
 import com.nedap.archie.rm.support.identification.HierObjectId;
 import com.nedap.archie.rm.support.identification.LocatableRef;
 import org.ehrbase.serialisation.walker.Context;
+import org.ehrbase.util.exception.SdkException;
 import org.ehrbase.webtemplate.path.flat.FlatPathDto;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -45,6 +47,24 @@ public class InstructionDetailsRMUnmarshaller extends AbstractRMUnmarshaller<Ins
       Map<FlatPathDto, String> currentValues,
       Context<Map<FlatPathDto, String>> context,
       Set<String> consumedPaths) {
+
+    if (currentValues.keySet().stream()
+        .anyMatch(
+            k ->
+                List.of("instruction_uid", "wt_path", "instruction_index")
+                    .contains(k.getLast().getAttributeName()))) {
+      throw new SdkException(
+          String.format(
+              "Calculation of Path from instruction_uid, wt_path or instruction_index is not supported. Provide |path at %s ",
+              currentTerm));
+    }
+    if (currentValues.keySet().stream()
+        .anyMatch(k -> List.of("activity_index").contains(k.getLast().getAttributeName()))) {
+      throw new SdkException(
+          String.format(
+              "Calculation of activity_id from activity_index is not supported. Provide |activity_id at %s ",
+              currentTerm));
+    }
 
     setValue(
         currentTerm,

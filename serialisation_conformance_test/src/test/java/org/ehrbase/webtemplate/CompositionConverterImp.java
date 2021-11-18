@@ -191,6 +191,16 @@ public class CompositionConverterImp implements CompositionConverter {
         "adverse_drug_reaction_report/adverse_drug_reaction/adverse_effect/reaction");
     addTerminology(
         currentValues, "adverse_drug_reaction_report/adverse_drug_reaction/medra_classification");
+    addTerminology(currentValues, "medication_order/medication_detail/medication_action/medicine");
+    // instruction_details is an optional rm attribute and thus needs to be prefixed with '_'
+    replaceKey(
+        currentValues,
+        "приостановка_курса_лекарственной_терапии/сведения_о_выполнении:0/instruction_details|composition_uid",
+        "приостановка_курса_лекарственной_терапии/сведения_о_выполнении:0/_instruction_details|composition_uid");
+    replaceKey(
+        currentValues,
+        "приостановка_курса_лекарственной_терапии/сведения_о_выполнении:0/instruction_details|activity_id",
+        "приостановка_курса_лекарственной_терапии/сведения_о_выполнении:0/_instruction_details|activity_id");
 
     Composition composition = flatJson.unmarshal(OBJECT_MAPPER.writeValueAsString(currentValues));
     String raw = new CanonicalJson().marshal(composition).replace("\"_type\"", "\"@class\"");

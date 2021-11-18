@@ -20,6 +20,7 @@ package org.ehrbase.serialisation.walker;
 
 import com.nedap.archie.rm.archetyped.FeederAudit;
 import com.nedap.archie.rm.archetyped.FeederAuditDetails;
+import com.nedap.archie.rm.composition.IsmTransition;
 import com.nedap.archie.rm.datatypes.CodePhrase;
 import com.nedap.archie.rm.datavalues.DvCodedText;
 import com.nedap.archie.rm.datavalues.DvText;
@@ -83,6 +84,10 @@ public class RMHelper {
     }
     if (rmObject instanceof FeederAuditDetails) {
       return StringUtils.isEmpty(((FeederAuditDetails) rmObject).getSystemId());
+    }
+
+    if (rmObject instanceof IsmTransition) {
+      return isEmpty(((IsmTransition) rmObject).getCurrentState());
     }
     return false;
   }

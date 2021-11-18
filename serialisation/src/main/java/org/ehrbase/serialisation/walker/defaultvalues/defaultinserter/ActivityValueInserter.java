@@ -42,6 +42,11 @@ public class ActivityValueInserter extends AbstractValueInserter<Activity> {
           .setValue(defaultValues.getDefaultValue(DefaultValuePath.ACTIVITY_TIMING));
       rmObject.getTiming().setFormalism("timing");
     }
+
+    if (rmObject.getTiming() != null && rmObject.getTiming().getFormalism() == null) {
+      // default
+      rmObject.getTiming().setFormalism("timing");
+    }
   }
 
   @Override

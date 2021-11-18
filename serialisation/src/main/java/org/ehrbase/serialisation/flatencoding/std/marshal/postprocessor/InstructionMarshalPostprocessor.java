@@ -1,6 +1,6 @@
 /*
  *
- *  *  Copyright (c) 2021  Stefan Spiska (Vitasystems GmbH) and Hannover Medical School
+ *  *  Copyright (c) 2020  Stefan Spiska (Vitasystems GmbH) and Hannover Medical School
  *  *  This file is part of Project EHRbase
  *  *
  *  *  Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,25 +17,29 @@
  *
  */
 
-package org.ehrbase.serialisation.walker.defaultvalues.defaultinserter;
+package org.ehrbase.serialisation.flatencoding.std.marshal.postprocessor;
 
 import com.nedap.archie.rm.composition.Instruction;
-import com.nedap.archie.rm.datavalues.DvText;
-import org.ehrbase.serialisation.walker.RMHelper;
-import org.ehrbase.serialisation.walker.defaultvalues.DefaultValuePath;
-import org.ehrbase.serialisation.walker.defaultvalues.DefaultValues;
+import org.ehrbase.serialisation.walker.Context;
 
-public class InstructionValueInserter extends AbstractValueInserter<Instruction> {
+import java.util.Map;
+
+public class InstructionMarshalPostprocessor extends AbstractMarshalPostprocessor<Instruction> {
+
+  /** {@inheritDoc} Adds the encoding information */
   @Override
-  public void insert(Instruction rmObject, DefaultValues defaultValues) {
+  public void process(
+      String term,
+      Instruction rmObject,
+      Map<String, Object> values,
+      Context<Map<String, Object>> context) {
 
-    if (RMHelper.isEmpty(rmObject.getNarrative())
-        && defaultValues.containsDefaultValue(DefaultValuePath.INSTRUCTION_NARRATIVE)) {
-      rmObject.setNarrative(
-          new DvText(defaultValues.getDefaultValue(DefaultValuePath.INSTRUCTION_NARRATIVE)));
+    if (rmObject.getWfDefinition() != null) {
+      handleRmAttribute(term, rmObject.getWfDefinition(), values, context, "wf_definition");
     }
   }
 
+  /** {@inheritDoc} */
   @Override
   public Class<Instruction> getAssociatedClass() {
     return Instruction.class;

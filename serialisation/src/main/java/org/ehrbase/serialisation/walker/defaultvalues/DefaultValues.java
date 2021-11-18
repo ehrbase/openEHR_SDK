@@ -209,8 +209,10 @@ public class DefaultValues {
 
     defaultValueMap.putIfAbsent(DefaultValuePath.TIME, OffsetDateTime.now());
     defaultValueMap.putIfAbsent(
-        DefaultValuePath.ACTION_ISM_TRANSITION_CURRENT_STATE, State.INITIAL);
+        DefaultValuePath.ACTION_ISM_TRANSITION_CURRENT_STATE, State.COMPLETED);
     defaultValueMap.putIfAbsent(DefaultValuePath.SETTING, Setting.OTHER_CARE);
+    defaultValueMap.putIfAbsent(DefaultValuePath.ACTIVITY_TIMING, "R1");
+    defaultValueMap.putIfAbsent(DefaultValuePath.INSTRUCTION_NARRATIVE, "<none>");
   }
 
   public static Link createLink(Map<String, String> stringStringMap) {
