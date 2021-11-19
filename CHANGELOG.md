@@ -27,6 +27,7 @@ Note: version releases in the 0.x.y range may introduce breaking changes.
 - Support optional `ETag` return by the server when uploading a template (
   see https://github.com/ehrbase/openEHR_SDK/pull/275)
 - FLat: Lots of small fixes (see https://github.com/ehrbase/openEHR_SDK/pull/280)
+- OPt Parsing : enhance performance (see https://github.com/ehrbase/openEHR_SDK/pull/284)
 
 ## 1.5.0
 
