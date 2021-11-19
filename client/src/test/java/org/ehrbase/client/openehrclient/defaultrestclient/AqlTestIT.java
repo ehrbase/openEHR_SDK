@@ -371,7 +371,13 @@ public class AqlTestIT {
                         " o/data[at0001]/events[at0002]/data[at0003]/items[at0022]/items[at0005]/value/value as var1," +
                         " o/data[at0001]/events[at0002]/data[at0003]/items[at0022]/items[at0004]/value/value as var2" +
                         " from EHR e[ehr_id/value = $ehr_id] " +
-                        " contains COMPOSITION c3[openEHR-EHR-COMPOSITION.report.v1] contains SECTION s4[openEHR-EHR-SECTION.adhoc.v1] contains OBSERVATION o[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0]"
+                        " contains COMPOSITION c3[openEHR-EHR-COMPOSITION.report.v1]" +
+                        " contains SECTION s4[openEHR-EHR-SECTION.adhoc.v1]" +
+                        " contains OBSERVATION o[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0] " +
+                        " WHERE" +
+                        "  o/data[at0001]/events[at0002]/data[at0003]/items[at0022]/items[at0005]/value/value is not null " +
+                        "  AND" +
+                        "  o/data[at0001]/events[at0002]/data[at0003]/items[at0022]/items[at0004]/value/value is not null"
                 , String.class, String.class
         );
 
@@ -454,7 +460,14 @@ public class AqlTestIT {
               "Select DISTINCT "
                       + " o/data[at0001]/events[at0002]/data[at0003]/items[at0022]/items[at0005]/value/value as var1, o/data[at0001]/events[at0002]/data[at0003]/items[at0022]/items[at0004]/value/value as var2 "
                       + " from EHR e[ehr_id/value = $ehr_id] "
-                      + " contains COMPOSITION c3[openEHR-EHR-COMPOSITION.report.v1] contains SECTION s4[openEHR-EHR-SECTION.adhoc.v1] contains OBSERVATION o[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0]");
+                      + " contains COMPOSITION c3[openEHR-EHR-COMPOSITION.report.v1]" +
+                      " contains SECTION s4[openEHR-EHR-SECTION.adhoc.v1]" +
+                      " contains OBSERVATION o[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0]" +
+                      " WHERE" +
+                      "  o/data[at0001]/events[at0002]/data[at0003]/items[at0022]/items[at0005]/value/value is not null " +
+                      "  AND" +
+                      "  o/data[at0001]/events[at0002]/data[at0003]/items[at0022]/items[at0004]/value/value is not null"
+                      );
 
       QueryResponseData result = openEhrClient.aqlEndpoint()
               .executeRaw(query, new ParameterValue("ehr_id", ehr));

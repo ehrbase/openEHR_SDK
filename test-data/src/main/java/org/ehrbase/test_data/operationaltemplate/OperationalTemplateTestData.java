@@ -99,8 +99,9 @@ public enum OperationalTemplateTestData {
   VIROLOGISCHER_BEFUND("Virologischer Befund", "Virologischer_Befund.opt", "Virologischer Befund"),
   LABOR_BEFUND("Labor Befund", "laborbefund.opt", "Laborbefund"),
   GECCO_DIAGNOSE("example with snomed terminologies", "GECCO_Diagnose.opt", "GECCO_Diagnose"),
-  NCD("ncd", "NCD.opt", "NCD"),
-  MINIMAL_ACTION_2("Minimal Action 2", "minimal_action2.opt", "Minimal action 2");
+  MINIMAL_ACTION_2("Minimal Action 2", "minimal_action2.opt", "Minimal action 2"),
+  MINIMAL_ACTION("Minimal Action 3", "minimal_action3.opt", "minimal_action_3.en.v1"),
+  NCD("ncd", "NCD.opt", "NCD");
 
   private final String filename;
   private final String templateId;
