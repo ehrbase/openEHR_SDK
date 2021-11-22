@@ -101,6 +101,16 @@ public class DvCodedTextRMUnmarshaller extends AbstractRMUnmarshaller<DvCodedTex
         context,
         v -> Objects.equals(v.getValue(), rmObject.getDefiningCode().getCodeString()));
 
+    // set code from value if not set
+    if (rmObject.getDefiningCode().getCodeString() == null && rmObject.getValue() != null) {
+      setFromNode(rmObject, context, v -> Objects.equals(v.getLabel(), rmObject.getValue()));
+    }
+
+    setFromNode(
+        rmObject,
+        context,
+        v -> Objects.equals(v.getValue(), rmObject.getDefiningCode().getCodeString()));
+
     // consume strange legacy paths
     if (rmObject.getDefiningCode() != null && rmObject.getDefiningCode().getCodeString() != null) {
       currentValues.keySet().stream()
