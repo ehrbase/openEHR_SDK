@@ -33,6 +33,7 @@ import org.ehrbase.webtemplate.model.WebTemplate;
 import org.ehrbase.webtemplate.model.WebTemplateInput;
 import org.ehrbase.webtemplate.model.WebTemplateInputValue;
 import org.ehrbase.webtemplate.model.WebTemplateNode;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
 import org.openehr.schemas.v1.TemplateDocument;
@@ -73,6 +74,32 @@ public class OPTParserTest {
           "InContext not equal null != true in  id=math_function aql=/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Risikogebiet']/items[openEHR-EHR-OBSERVATION.travel_event.v0]/data[at0001]/events[at0002]/math_function",
           "InContext not equal null != true in  id=width aql=/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Risikogebiet']/items[openEHR-EHR-OBSERVATION.travel_event.v0]/data[at0001]/events[at0002]/width"
         });
+  }
+
+  @Test
+  @Ignore
+  public void parseTestingTemplateN() throws IOException, XmlException {
+    OPERATIONALTEMPLATE template =
+            TemplateDocument.Factory.parse(OperationalTemplateTestData.TESTING_TEMPLATE_N.getStream())
+                    .getTemplate();
+
+    OPTParser cut = new OPTParser(template);
+    WebTemplate actual = cut.parse();
+    actual = new Filter().filter(actual);
+    assertThat(actual).isNotNull();
+
+    ObjectMapper objectMapper = new ObjectMapper();
+    WebTemplate expected =
+            objectMapper.readValue(
+                    IOUtils.toString(WebTemplateTestData.TESTING_TEMPLATE_N.getStream(), StandardCharsets.UTF_8),
+                    WebTemplate.class);
+
+    List<String> errors = compareWebTemplate(actual, expected);
+
+    checkErrors(
+            errors,
+            new String[] {
+            });
   }
 
   @Test
