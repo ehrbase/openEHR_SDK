@@ -66,8 +66,9 @@ public class OPTParser {
   public OPTParser(OPERATIONALTEMPLATE operationaltemplate) {
     this.operationaltemplate = operationaltemplate;
     defaultLanguage = operationaltemplate.getLanguage().getCodeString();
-    Arrays.stream(extractChildren(operationaltemplate, "constraints"))
-        .map(c -> extractChildren(c, "attributes"))
+    Optional.ofNullable(operationaltemplate.getConstraints())
+        .map(TCONSTRAINT::getAttributesArray)
+        .stream()
         .flatMap(Arrays::stream)
         .map(this::extractDefault)
         .flatMap(List::stream)
@@ -98,19 +99,18 @@ public class OPTParser {
     return c.selectChildren("http://schemas.openehr.org/v1", attributes);
   }
 
-  private List<Pair<String, String>> extractDefault(XmlObject xmlObject) {
+  private List<Pair<String, String>> extractDefault(TATTRIBUTE xmlObject) {
     List<Pair<String, String>> defaults = new ArrayList<>();
 
-    String differential_path =
-        StringUtils.substringAfter(
-            extractChildren(xmlObject, "differential_path")[0].newCursor().getTextValue(), "/");
-    String rm_attribute_name =
-        extractChildren(xmlObject, "rm_attribute_name")[0].newCursor().getTextValue();
-    String aql = "/" + differential_path + "/" + rm_attribute_name;
+    String differentialPath = StringUtils.substringAfter(xmlObject.getDifferentialPath(), "/");
+    String rmAttributeName = xmlObject.getRmAttributeName();
+    String aql = "/" + differentialPath + "/" + rmAttributeName;
+
+    // Instead of handling each subtype of DATAVALUE ist handheld generic since each child is an
+    // attribute of the DATAVALUE
     List<String> attributeNames =
-        Arrays.stream(extractChildren(xmlObject, "children"))
-            .map(x -> extractChildren(x, "default_value"))
-            .flatMap(Arrays::stream)
+        Arrays.stream(xmlObject.getChildrenArray())
+            .map(TCOMPLEXOBJECT::getDefaultValue)
             .map(XmlTokenSource::newDomNode)
             .map(Node::getFirstChild)
             .map(Node::getChildNodes)
@@ -122,9 +122,8 @@ public class OPTParser {
     attributeNames.forEach(
         n -> {
           Optional<XmlObject> any =
-              Arrays.stream(extractChildren(xmlObject, "children"))
-                  .map(x -> extractChildren(x, "default_value"))
-                  .flatMap(Arrays::stream)
+              Arrays.stream(xmlObject.getChildrenArray())
+                  .map(TCOMPLEXOBJECT::getDefaultValue)
                   .map(x -> extractChildren(x, n))
                   .flatMap(Arrays::stream)
                   .findAny();
@@ -190,9 +189,7 @@ public class OPTParser {
     Map<String, Map<String, TermDefinition>> otherTermDefinitionMap =
         buildOtherTerms(carchetyperoot.getArchetypeId().getValue());
     otherTermDefinitionMap.forEach(
-        (key, value) -> {
-          termDefinitionMap.computeIfAbsent(key, c -> new HashMap<>()).putAll(value);
-        });
+        (key, value) -> termDefinitionMap.computeIfAbsent(key, c -> new HashMap<>()).putAll(value));
 
     WebTemplateNode node = parseCCOMPLEXOBJECT(carchetyperoot, aqlPath, termDefinitionMap, null);
     node.setNodeId(carchetyperoot.getArchetypeId().getValue());
@@ -202,40 +199,33 @@ public class OPTParser {
 
   private Map<String, Map<String, TermDefinition>> buildOtherTerms(String archetypeId) {
     Map<String, Map<String, TermDefinition>> otherTermDefinitionMap = new HashMap<>();
-    List<XmlObject> ontologies = new ArrayList<>();
+    List<CodeDefinitionSet> ontologies = new ArrayList<>();
+
     ontologies.addAll(
-        Arrays.stream(extractChildren(operationaltemplate, "ontology"))
-            .filter(
-                x ->
-                    x.selectAttribute("", "archetype_id")
-                        .newCursor()
-                        .getTextValue()
-                        .equals(archetypeId))
-            .map(x -> extractChildren(x, "term_definitions"))
+        Optional.ofNullable(operationaltemplate.getOntology())
+            .filter(x -> Objects.equals(x.getArchetypeId(), archetypeId))
+            .map(ARCHETYPEONTOLOGY::getTermDefinitionsArray)
+            .stream()
             .flatMap(Arrays::stream)
             .collect(Collectors.toList()));
     ontologies.addAll(
-        Arrays.stream(extractChildren(operationaltemplate, "component_ontologies"))
-            .filter(
-                x ->
-                    x.selectAttribute("", "archetype_id")
-                        .newCursor()
-                        .getTextValue()
-                        .equals(archetypeId))
-            .map(x -> extractChildren(x, "term_definitions"))
+        Arrays.stream(operationaltemplate.getComponentOntologiesArray())
+            .filter(x -> Objects.equals(x.getArchetypeId(), archetypeId))
+            .map(ARCHETYPEONTOLOGY::getTermDefinitionsArray)
             .flatMap(Arrays::stream)
             .collect(Collectors.toList()));
 
-    for (XmlObject term : ontologies) {
-      String language = term.selectAttribute("", "language").newCursor().getTextValue();
+    for (CodeDefinitionSet term : ontologies) {
+      String language = term.getLanguage();
 
-      for (XmlObject items : extractChildren(term, "items")) {
-        String code = items.selectAttribute("", "code").newCursor().getTextValue();
+      for (ARCHETYPETERM items : term.getItemsArray()) {
+        String code = items.getCode();
         String text = "";
         String description = "";
-        for (XmlObject item : extractChildren(items, "items")) {
-          String id = item.selectAttribute("", "id").newCursor().getTextValue();
-          String value = item.newCursor().getTextValue();
+        for (StringDictionaryItem item : items.getItemsArray()) {
+          String id = item.getId();
+
+          String value = item.getStringValue();
           if (Objects.equals(id, "text")) {
             text = value;
           } else if (Objects.equals(id, "description")) {
@@ -383,18 +373,21 @@ public class OPTParser {
         ismTransition.getChildren().add(transition);
         node.getChildren().add(ismTransition);
       }
-      WebtemplateCardinality webtemplateCardinality =
-          Arrays.stream(extractChildren(cattribute, "cardinality"))
-              .findFirst()
-              .map(this::buildCardinality)
-              .orElse(null);
-      if (webtemplateCardinality != null) {
-        cardinaltyList.add(
-            Pair.of(
-                webtemplateCardinality,
-                newChildren.stream()
-                    .map(WebTemplateNode::getAqlPath)
-                    .collect(Collectors.toList())));
+
+      if (cattribute instanceof CMULTIPLEATTRIBUTE) {
+
+        WebtemplateCardinality webtemplateCardinality =
+            Optional.ofNullable(((CMULTIPLEATTRIBUTE) cattribute).getCardinality())
+                .map(this::buildCardinality)
+                .orElse(null);
+        if (webtemplateCardinality != null) {
+          cardinaltyList.add(
+              Pair.of(
+                  webtemplateCardinality,
+                  newChildren.stream()
+                      .map(WebTemplateNode::getAqlPath)
+                      .collect(Collectors.toList())));
+        }
       }
       node.getChildren().addAll(newChildren);
     }
@@ -561,22 +554,22 @@ public class OPTParser {
     }
   }
 
-  private WebtemplateCardinality buildCardinality(XmlObject xmlObject) {
+  private WebtemplateCardinality buildCardinality(CARDINALITY xmlObject) {
     WebtemplateCardinality webtemplateCardinality = new WebtemplateCardinality();
-    Arrays.stream(extractChildren(xmlObject, "interval"))
-        .map(x -> extractChildren(x, "lower"))
-        .flatMap(Arrays::stream)
-        .findFirst()
-        .map(x -> x.newCursor().getTextValue())
-        .map(Integer::valueOf)
-        .ifPresent(webtemplateCardinality::setMin);
-    Arrays.stream(extractChildren(xmlObject, "interval"))
-        .map(x -> extractChildren(x, "upper"))
-        .flatMap(Arrays::stream)
-        .findFirst()
-        .map(x -> x.newCursor().getTextValue())
-        .map(Integer::valueOf)
-        .ifPresent(webtemplateCardinality::setMax);
+    if (xmlObject.getInterval() != null) {
+      if (!xmlObject.getInterval().getLowerUnbounded()) {
+        Optional.of(xmlObject)
+            .map(CARDINALITY::getInterval)
+            .map(IntervalOfInteger::getLower)
+            .ifPresent(webtemplateCardinality::setMin);
+      }
+      if (!xmlObject.getInterval().getUpperUnbounded()) {
+        Optional.of(xmlObject)
+            .map(CARDINALITY::getInterval)
+            .map(IntervalOfInteger::getUpper)
+            .ifPresent(webtemplateCardinality::setMax);
+      }
+    }
     return webtemplateCardinality;
   }
 
