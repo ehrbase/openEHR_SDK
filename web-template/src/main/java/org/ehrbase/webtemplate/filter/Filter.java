@@ -109,6 +109,7 @@ public class Filter implements WebTemplateFilter {
     if (node.getRmType().equals("ELEMENT")) {
       List<WebTemplateNode> trueChildren =
           node.getChildren().stream()
+              .filter(n -> !"name".equals(n.getName()))
               .filter(
                   n ->
                       !List.of("null_flavour", "feeder_audit").contains(n.getName())

@@ -33,7 +33,6 @@ import org.ehrbase.webtemplate.model.WebTemplate;
 import org.ehrbase.webtemplate.model.WebTemplateInput;
 import org.ehrbase.webtemplate.model.WebTemplateInputValue;
 import org.ehrbase.webtemplate.model.WebTemplateNode;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
 import org.openehr.schemas.v1.TemplateDocument;
@@ -77,8 +76,8 @@ public class OPTParserTest {
   }
 
   @Test
-  @Ignore
   public void parseTestingTemplateN() throws IOException, XmlException {
+
     OPERATIONALTEMPLATE template =
             TemplateDocument.Factory.parse(OperationalTemplateTestData.TESTING_TEMPLATE_N.getStream())
                     .getTemplate();
@@ -99,6 +98,15 @@ public class OPTParserTest {
     checkErrors(
             errors,
             new String[] {
+                    "Extra Node id=external_terminology aql=/content[openEHR-EHR-OBSERVATION.testing.v1]/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.testing.v1]/items[at0016]/value",
+                    "Missing Node id=external_terminology aql=/content[openEHR-EHR-OBSERVATION.testing.v1]/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.testing.v1]/items[at0016 and name/value='External terminology']/value",
+                    "InputValue not equal 1234:Hello world != 1234:null in id=testing_dv_text aql=/content[openEHR-EHR-OBSERVATION.testing.v1]/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.testing.v1]/items[at0026]/value",
+                    "DefaultValue not equal 433 != null in input.suffix:code id=category aql=/category",
+                    "DefaultValue not equal at0008 != null in input.suffix:code id=fixed_text aql=/content[openEHR-EHR-OBSERVATION.testing.v1]/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.testing.v1]/items[at0001]/items[at0004]/value",
+                    "LocalizedNames not equal [en=event] != [en=event, sl=] in inputValue.code:433 id=category aql=/category",
+                    "LocalizedNames not equal [en=Hello world] != [en=, sl=] in inputValue.code:1234 id=testing_dv_text aql=/content[openEHR-EHR-OBSERVATION.testing.v1]/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.testing.v1]/items[at0026]/value",
+                    "LocalizedDescriptions not equal {en=} != {} in inputValue.code:1234 id=testing_dv_text aql=/content[openEHR-EHR-OBSERVATION.testing.v1]/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.testing.v1]/items[at0026]/value"
+
             });
   }
 
