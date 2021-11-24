@@ -112,6 +112,7 @@
                         <include>IsmTransitionTest</include>
                         <include>LinksTest</include>
                         <include>LocationTest</include>
+                        <include>LongValueJsonTest</include>
                         <include>MediaTypeExampleTest</include>
                         <include>NamedElementsTest</include>
                         <include>NoArchetypedTest</include>
