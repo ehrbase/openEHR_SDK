@@ -105,6 +105,7 @@
                         <include>DurationTest</include>
                         <include>EndTimeTest</include>
                         <include>FeederAuditTestOverwritten</include>
+                        <include>FixedValueTestOverwrite</include>
                         <include>HistoryOriginTest</include>
                         <include>InstructionActionTestOverwrite</include>
                         <include>IntervalEventTest</include>
