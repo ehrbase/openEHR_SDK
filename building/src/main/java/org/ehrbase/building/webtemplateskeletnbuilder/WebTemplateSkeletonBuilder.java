@@ -38,6 +38,7 @@ import com.nedap.archie.rm.support.identification.TerminologyId;
 import com.nedap.archie.rminfo.ArchieRMInfoLookup;
 import com.nedap.archie.rminfo.RMAttributeInfo;
 import org.ehrbase.util.exception.SdkException;
+import org.ehrbase.util.rmconstants.RmConstants;
 import org.ehrbase.webtemplate.model.WebTemplate;
 import org.ehrbase.webtemplate.model.WebTemplateInput;
 import org.ehrbase.webtemplate.model.WebTemplateNode;
@@ -114,7 +115,18 @@ public class WebTemplateSkeletonBuilder {
     }
 
     if (skeleton instanceof Locatable) {
-      ((Locatable) skeleton).setName(new DvText(node.getName()));
+      Optional<WebTemplateNode> name = node.findChildById("name");
+      if (name.isPresent()) {
+        if (name.get().getRmType().equals(RmConstants.DV_CODED_TEXT)) {
+          ((Locatable) skeleton)
+              .setName(extractDefault(name.get(), DvCodedText.class).orElseThrow());
+        } else {
+          ((Locatable) skeleton)
+              .setName(extractDefault(name.get(), DvText.class).orElse(new DvText(node.getName())));
+        }
+      } else {
+        ((Locatable) skeleton).setName(new DvText(node.getName()));
+      }
       ((Locatable) skeleton).setArchetypeNodeId(node.getNodeId());
     }
 
