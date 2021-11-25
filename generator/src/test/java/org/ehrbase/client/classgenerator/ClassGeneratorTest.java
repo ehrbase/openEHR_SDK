@@ -538,7 +538,7 @@ public class ClassGeneratorTest {
             .flatMap(List::stream)
             .collect(Collectors.toList());
 
-    assertThat(fieldSpecs).size().isEqualTo(286);
+    assertThat(fieldSpecs).size().isEqualTo(294);
   }
 
   @Test
