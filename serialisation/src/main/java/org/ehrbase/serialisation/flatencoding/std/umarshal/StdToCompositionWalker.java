@@ -142,7 +142,10 @@ public class StdToCompositionWalker extends ToCompositionWalker<Map<FlatPathDto,
       WebTemplateNode childNode,
       Integer i) {
 
-    if ((CollectionUtils.isEmpty(childNode.getChildren())
+    if (
+    // Nodes with children need to be put on the stack even if there are skip since the might have
+    // children. If there are empty there will be removed in ToCompositionWalker::normalise
+    (CollectionUtils.isEmpty(childNode.getChildren())
             && context.getFlatHelper().skip(childNode, currentNode))
         //  NonMandatoryRmAttribute are handled in the UnmarshalPostprocessor
         || (currentNode != null
