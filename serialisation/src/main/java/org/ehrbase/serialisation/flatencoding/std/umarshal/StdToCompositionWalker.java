@@ -122,7 +122,7 @@ public class StdToCompositionWalker extends ToCompositionWalker<Map<FlatPathDto,
     if (child.getRmType().equals(ELEMENT)
         && context.getFlatHelper().skip(context.getNodeDeque().peek(), child)) {
 
-      WebTemplateNode valueNode = child.findChildById(child.getId()).orElseThrow();
+      WebTemplateNode valueNode = child.findChildById("value").orElseThrow();
 
       context.getNodeDeque().push(valueNode);
       path = context.getFlatHelper().buildNamePath(context, true);
@@ -376,9 +376,10 @@ public class StdToCompositionWalker extends ToCompositionWalker<Map<FlatPathDto,
     if (currentNode.getRmType().equals(ELEMENT)) {
       List<WebTemplateNode> trueChildren =
           currentNode.getChildren().stream()
+              .filter(n -> !"name".equals(n.getId()))
               .filter(
                   n ->
-                      !List.of("null_flavour", "feeder_audit").contains(n.getName())
+                      !List.of("null_flavour", "feeder_audit").contains(n.getId())
                           || !n.isNullable())
               .collect(Collectors.toList());
       if (trueChildren.stream()
@@ -401,9 +402,10 @@ public class StdToCompositionWalker extends ToCompositionWalker<Map<FlatPathDto,
     if (node.getRmType().equals(ELEMENT)) {
       List<WebTemplateNode> trueChildren =
           node.getChildren().stream()
+              .filter(n -> !"name".equals(n.getId()))
               .filter(
                   n ->
-                      !List.of("null_flavour", "feeder_audit").contains(n.getName())
+                      !List.of("null_flavour", "feeder_audit").contains(n.getId())
                           || !n.isNullable())
               .collect(Collectors.toList());
       if (trueChildren.stream()

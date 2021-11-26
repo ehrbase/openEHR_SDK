@@ -27,10 +27,24 @@ public class FlatHelper<T> {
       WebTemplateNode parent = node;
       node = iterator.next();
       boolean skip = skip(node, parent);
-      fullPath.append(node.getId());
+      boolean parentIsSkippedElement =
+          parent != null && ELEMENT.equals(parent.getRmType()) && skip(parent, null);
+
+      if (parentIsSkippedElement) {
+        fullPath.append(parent.getId());
+      } else {
+        fullPath.append(node.getId());
+      }
 
       if (!skip) {
-        String key = sb + "/" + node.getId(false);
+        String key;
+
+        if (parentIsSkippedElement) {
+          key = sb + "/" + parent.getId(false);
+        } else {
+
+          key = sb + "/" + node.getId(false);
+        }
         if (!pathCountMap.containsKey(key)) {
           pathCountMap.put(key, new HashMap<>());
         }
@@ -50,13 +64,25 @@ public class FlatHelper<T> {
             Optional.ofNullable(pathCountMap.get(key))
                 .map(m -> m.get(fullPath.toString()))
                 .orElse(1);
+
         if (integer != 1) {
-          sb.append(node.getId(false) + integer);
+          if (parentIsSkippedElement) {
+            // Value inherits id of skipped Element
+            sb.append(parent.getId(false) + integer);
+          } else {
+            sb.append(node.getId(false) + integer);
+          }
         } else {
-          sb.append(node.getId(false));
+          if (parentIsSkippedElement) {
+            // Value inherits id of skipped Element
+            sb.append(parent.getId(false));
+          } else {
+            sb.append(node.getId(false));
+          }
         }
       }
-      if (parent != null && ELEMENT.equals(parent.getRmType()) && skip(parent, null)) {
+
+      if (parentIsSkippedElement) {
         addCount(context, addCount, sb, parent, skip);
       } else {
         addCount(context, addCount, sb, node, skip);
@@ -124,10 +150,10 @@ public class FlatHelper<T> {
     } else if (node.getRmType().equals(ELEMENT)) {
       List<String> trueChildren =
           node.getChildren().stream()
-              .filter(n -> !List.of("null_flavour", "feeder_audit").contains(n.getName()))
+              .filter(n -> !List.of("name", "null_flavour", "feeder_audit").contains(n.getName()))
               .map(WebTemplateNode::getRmType)
               .collect(Collectors.toList());
-      return node.getChildren().stream().anyMatch(n -> n.getId().equals(node.getId()))
+      return node.getChildren().stream().anyMatch(n -> n.getId().equals("value"))
           || (trueChildren.size() == 2
               && trueChildren.containsAll(List.of(DV_TEXT, DV_CODED_TEXT)));
     } else if (node.getRmType().equals(CODE_PHRASE) && parent != null) {

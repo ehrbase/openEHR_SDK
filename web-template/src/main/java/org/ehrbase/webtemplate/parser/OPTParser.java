@@ -535,7 +535,6 @@ public class OPTParser {
 
         if (trueChildren.size() == 1) {
           WebTemplateNode value = trueChildren.get(0);
-          value.setId(node.getId(false));
           value.setAnnotations(node.getAnnotations());
 
         }

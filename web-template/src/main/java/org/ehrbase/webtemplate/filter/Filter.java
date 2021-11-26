@@ -45,7 +45,6 @@ public class Filter implements WebTemplateFilter {
       ReflectionHelper.buildMap(RmIntrospectConfig.class);
   public static final ArchieRMInfoLookup ARCHIE_RM_INFO_LOOKUP = ArchieRMInfoLookup.getInstance();
 
-
   @Override
   public FilteredWebTemplate filter(WebTemplate webTemplate) {
     FilteredWebTemplate clone = new FilteredWebTemplate(webTemplate);
@@ -78,11 +77,13 @@ public class Filter implements WebTemplateFilter {
     node.getChildren().addAll(filteredChildren);
     if (skip(node, context, deque)) {
       nodes = filteredChildren;
-      if (node.getRmType().equals(RmConstants.ELEMENT)){
-        node.getChildren().forEach(n ->{
-          n.setMin(node.getMin());
-          n.setMax(node.getMax());
-        });
+      if (node.getRmType().equals(RmConstants.ELEMENT)) {
+        node.getChildren()
+            .forEach(
+                n -> {
+                  n.setMin(node.getMin());
+                  n.setMax(node.getMax());
+                });
       }
       for (WebTemplateNode child : filteredChildren) {
         nodeMap.get(new ImmutablePair<>(child.getAqlPath(), child.getRmType())).addLast(oldNode);
@@ -122,15 +123,19 @@ public class Filter implements WebTemplateFilter {
           && node.getChoicesInChildren().size() > 0
           && trueChildren.size() == 2) {
         WebTemplateNode merged = mergeDVText(node);
+        merged.setId(node.getId());
         node.getChildren().clear();
         node.getChildren().add(merged);
+      } else if (trueChildren.size() == 1) {
+        // Element will be skipped and the value node inherits the id
+        trueChildren.get(0).setId(node.getId());
       }
     }
   }
 
   public static WebTemplateNode mergeDVText(WebTemplateNode node) {
     WebTemplateNode merged = new WebTemplateNode();
-    merged.setId(node.getId(false));
+    merged.setId("value");
     merged.setName(node.getName());
     merged.setMax(node.getMax());
     merged.setMin(node.getMin());
