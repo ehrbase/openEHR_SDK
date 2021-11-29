@@ -107,6 +107,7 @@
                         <include>FeederAuditTestOverwritten</include>
                         <include>FixedValueTestOverwrite</include>
                         <include>HistoryOriginTest</include>
+                        <include>InfinnityTestOverwrite</include>
                         <include>InstructionActionTestOverwrite</include>
                         <include>IntervalEventTest</include>
                         <include>IsmTransitionTest</include>
