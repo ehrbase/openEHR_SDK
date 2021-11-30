@@ -59,7 +59,7 @@ public class FeederAuditRMUnmarshaller extends AbstractRMUnmarshaller<FeederAudi
       Set<String> consumedPaths) {
 
     Map<FlatPathDto, String> originalContentValues =
-        FlatHelper.filter(currentValues, currentTerm + "/original_content");
+        FlatHelper.filter(currentValues, currentTerm + "/original_content", false);
 
     if (!originalContentValues.isEmpty()) {
       rmObject.setOriginalContent(new DvParsable());
@@ -72,7 +72,7 @@ public class FeederAuditRMUnmarshaller extends AbstractRMUnmarshaller<FeederAudi
     }
 
     Map<FlatPathDto, String> originalContentMultimediaValues =
-        FlatHelper.filter(currentValues, currentTerm + "/original_content_multimedia");
+        FlatHelper.filter(currentValues, currentTerm + "/original_content_multimedia", false);
 
     if (!originalContentMultimediaValues.isEmpty()) {
       rmObject.setOriginalContent(new DvMultimedia());
@@ -85,7 +85,7 @@ public class FeederAuditRMUnmarshaller extends AbstractRMUnmarshaller<FeederAudi
     }
 
     Map<FlatPathDto, String> originatingSystemAuditValues =
-        FlatHelper.filter(currentValues, currentTerm + "/originating_system_audit");
+        FlatHelper.filter(currentValues, currentTerm + "/originating_system_audit", false);
     if (!originatingSystemAuditValues.isEmpty()) {
       rmObject.setOriginatingSystemAudit(new FeederAuditDetails());
       FEEDER_AUDIT_DETAILS_RM_UNMARSHALLER.handle(

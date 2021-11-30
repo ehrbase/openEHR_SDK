@@ -21,7 +21,6 @@ package org.ehrbase.serialisation.flatencoding.std.umarshal.postprocessor;
 
 import com.nedap.archie.rm.datavalues.DvText;
 import com.nedap.archie.rm.datavalues.TermMapping;
-import org.ehrbase.serialisation.flatencoding.std.umarshal.rmunmarshaller.TermMappingRMUnmarshaller;
 import org.ehrbase.serialisation.walker.Context;
 import org.ehrbase.serialisation.walker.FlatHelper;
 import org.ehrbase.webtemplate.path.flat.FlatPathDto;
@@ -31,8 +30,6 @@ import java.util.Set;
 
 public class DvTextPostprocessor extends AbstractUnmarshalPostprocessor<DvText> {
 
-  private static final TermMappingRMUnmarshaller TERM_MAPPING_RM_UNMARSHALLER =
-      new TermMappingRMUnmarshaller();
   /** {@inheritDoc} */
   @Override
   public void process(
@@ -44,9 +41,27 @@ public class DvTextPostprocessor extends AbstractUnmarshalPostprocessor<DvText> 
 
     FlatHelper.extractMultiValuedFullPath(term, "_mapping", values).entrySet().stream()
         .map(
-            e ->
-                toTermMapping(
-                    e.getValue(), term + "/_mapping:" + e.getKey(), consumedPaths, context))
+            e -> {
+              TermMapping termMapping = new TermMapping();
+              callUnmarshal(
+                  term,
+                  "/_mapping:" + e.getKey(),
+                  termMapping,
+                  e.getValue(),
+                  consumedPaths,
+                  context,
+                  context.getNodeDeque().peek().findChildById("mappings").orElse(null));
+              calPostProcess(
+                  term,
+                  "/_mapping:" + e.getKey(),
+                  termMapping,
+                  e.getValue(),
+                  consumedPaths,
+                  context,
+                  context.getNodeDeque().peek().findChildById("mappings").orElse(null));
+
+              return termMapping;
+            })
         .forEach(rmObject::addMapping);
 
     FlatHelper.consumeAllMatching(term + "/_mapping", values, consumedPaths);
@@ -56,17 +71,5 @@ public class DvTextPostprocessor extends AbstractUnmarshalPostprocessor<DvText> 
   @Override
   public Class<DvText> getAssociatedClass() {
     return DvText.class;
-  }
-
-  private TermMapping toTermMapping(
-      Map<FlatPathDto, String> values,
-      String term,
-      Set<String> consumedPaths,
-      Context<Map<FlatPathDto, String>> context) {
-    TermMapping termMapping = new TermMapping();
-
-    TERM_MAPPING_RM_UNMARSHALLER.handle(term, termMapping, values, context, consumedPaths);
-
-    return termMapping;
   }
 }

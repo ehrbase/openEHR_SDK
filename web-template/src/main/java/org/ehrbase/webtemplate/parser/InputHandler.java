@@ -28,6 +28,8 @@ import java.io.Serializable;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static org.ehrbase.webtemplate.parser.OPTParser.extractChildren;
+
 public class InputHandler {
 
   private final Map<String, String> defaultValues;
@@ -50,6 +52,13 @@ public class InputHandler {
     String pattern = null;
     WebTemplateInterval<?> range = null;
     WebTemplateValidation validation = new WebTemplateValidation();
+
+
+    Arrays.stream(extractChildren(item,"assumed_value"))
+            .findAny()
+            .map(a -> a.newCursor().getTextValue())
+            .ifPresent(input::setDefaultValue);
+
     boolean addValidation = false;
     if (item instanceof CDATETIME) {
 

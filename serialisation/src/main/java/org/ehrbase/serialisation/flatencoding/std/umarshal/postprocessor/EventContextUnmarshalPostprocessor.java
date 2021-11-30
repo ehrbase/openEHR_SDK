@@ -23,8 +23,8 @@ import com.nedap.archie.rm.composition.EventContext;
 import com.nedap.archie.rm.datavalues.quantity.datetime.DvDateTime;
 import com.nedap.archie.rm.generic.PartyIdentified;
 import org.apache.commons.lang3.StringUtils;
-import org.ehrbase.serialisation.flatencoding.std.umarshal.rmunmarshaller.PartyIdentifiedRMUnmarshaller;
 import org.ehrbase.serialisation.walker.Context;
+import org.ehrbase.serialisation.walker.FlatHelper;
 import org.ehrbase.serialisation.walker.defaultvalues.DefaultValuePath;
 import org.ehrbase.serialisation.walker.defaultvalues.DefaultValues;
 import org.ehrbase.webtemplate.path.flat.FlatPathDto;
@@ -39,9 +39,6 @@ import static org.ehrbase.webtemplate.parser.OPTParser.PATH_DIVIDER;
 
 public class EventContextUnmarshalPostprocessor
     extends AbstractUnmarshalPostprocessor<EventContext> {
-
-  private static final PartyIdentifiedRMUnmarshaller PARTY_IDENTIFIED_RM_UNMARSHALLER =
-      new PartyIdentifiedRMUnmarshaller();
 
   /** {@inheritDoc} */
   @Override
@@ -72,18 +69,18 @@ public class EventContextUnmarshalPostprocessor
         consumedPaths);
 
     Map<FlatPathDto, String> health_care_facilityValues =
-        values.entrySet().stream()
-            .filter(e -> e.getKey().startsWith(term + "/_health_care_facility"))
-            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+        FlatHelper.filter(values, term + "/_health_care_facility", false);
+
     if (!health_care_facilityValues.isEmpty()) {
       rmObject.setHealthCareFacility(new PartyIdentified());
 
-      PARTY_IDENTIFIED_RM_UNMARSHALLER.handle(
-          term + "/" + "_health_care_facility",
+      handleRmAttribute(
+          term,
           rmObject.getHealthCareFacility(),
           health_care_facilityValues,
-          null,
-          consumedPaths);
+          consumedPaths,
+          context,
+          "health_care_facility");
     }
 
     Map<Integer, Map<String, String>> other = extractMultiValued(term, "_participation", values);

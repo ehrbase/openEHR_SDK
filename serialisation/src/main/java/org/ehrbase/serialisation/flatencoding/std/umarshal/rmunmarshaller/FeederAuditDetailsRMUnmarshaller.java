@@ -62,7 +62,7 @@ public class FeederAuditDetailsRMUnmarshaller extends AbstractRMUnmarshaller<Fee
         consumedPaths);
 
     Map<FlatPathDto, String> locationValues =
-        FlatHelper.filter(currentValues, currentTerm + "/location");
+        FlatHelper.filter(currentValues, currentTerm + "/location", false);
 
     if (!locationValues.isEmpty()) {
       rmObject.setLocation(new PartyIdentified());
@@ -71,7 +71,7 @@ public class FeederAuditDetailsRMUnmarshaller extends AbstractRMUnmarshaller<Fee
     }
 
     Map<FlatPathDto, String> providerValues =
-        FlatHelper.filter(currentValues, currentTerm + "/provider");
+        FlatHelper.filter(currentValues, currentTerm + "/provider", false);
 
     if (!providerValues.isEmpty()) {
       rmObject.setProvider(new PartyIdentified());

@@ -122,7 +122,7 @@ public class StdToCompositionWalker extends ToCompositionWalker<Map<FlatPathDto,
     if (child.getRmType().equals(ELEMENT)
         && context.getFlatHelper().skip(context.getNodeDeque().peek(), child)) {
 
-      WebTemplateNode valueNode = child.findChildById(child.getId()).orElseThrow();
+      WebTemplateNode valueNode = child.findChildById("value").orElseThrow();
 
       context.getNodeDeque().push(valueNode);
       path = context.getFlatHelper().buildNamePath(context, true);
@@ -142,8 +142,14 @@ public class StdToCompositionWalker extends ToCompositionWalker<Map<FlatPathDto,
       WebTemplateNode childNode,
       Integer i) {
 
-    if (CollectionUtils.isEmpty(childNode.getChildren())
-        && context.getFlatHelper().skip(childNode, currentNode)) {
+    if (
+    // Nodes with children need to be put on the stack even if there are skip since the might have
+    // children. If there are empty there will be removed in ToCompositionWalker::normalise
+    (CollectionUtils.isEmpty(childNode.getChildren())
+            && context.getFlatHelper().skip(childNode, currentNode))
+        //  NonMandatoryRmAttribute are handled in the UnmarshalPostprocessor
+        || (currentNode != null
+            && context.getFlatHelper().isNonMandatoryRmAttribute(childNode, currentNode))) {
       return new ImmutablePair<>(null, null);
     }
     return super.extractPair(context, currentNode, choices, childNode, i);
@@ -311,17 +317,8 @@ public class StdToCompositionWalker extends ToCompositionWalker<Map<FlatPathDto,
               }
             });
 
-    List<UnmarshalPostprocessor<? super RMObject>> postprocessor = new ArrayList<>();
-
-    Class<?> currentClass = context.getRmObjectDeque().peek().getClass();
-
-    while (currentClass != null) {
-      if (POSTPROCESSOR_MAP.containsKey(currentClass)) {
-        postprocessor.add(POSTPROCESSOR_MAP.get(currentClass));
-      }
-
-      currentClass = currentClass.getSuperclass();
-    }
+    List<? extends UnmarshalPostprocessor<? extends RMObject>> postprocessor =
+        findUnmarshalPostprocessors(context.getRmObjectDeque().peek().getClass());
     String namePath = buildNamePathWithElementHandling(context);
 
     if (Entry.class.isAssignableFrom(context.getRmObjectDeque().peek().getClass())) {
@@ -349,12 +346,29 @@ public class StdToCompositionWalker extends ToCompositionWalker<Map<FlatPathDto,
 
     postprocessor.forEach(
         p ->
-            p.process(
-                namePath,
-                context.getRmObjectDeque().peek(),
-                context.getObjectDeque().peek(),
-                consumedPaths,
-                context));
+            ((UnmarshalPostprocessor) p)
+                .process(
+                    namePath,
+                    context.getRmObjectDeque().peek(),
+                    context.getObjectDeque().peek(),
+                    consumedPaths,
+                    context));
+  }
+
+  public static <T extends RMObject> List<UnmarshalPostprocessor<T>> findUnmarshalPostprocessors(
+      Class<T> aClass) {
+    List<UnmarshalPostprocessor<T>> postprocessor = new ArrayList<>();
+
+    Class<?> currentClass = aClass;
+
+    while (currentClass != null) {
+      if (POSTPROCESSOR_MAP.containsKey(currentClass)) {
+        postprocessor.add(POSTPROCESSOR_MAP.get(currentClass));
+      }
+
+      currentClass = currentClass.getSuperclass();
+    }
+    return postprocessor;
   }
 
   @Override
@@ -362,9 +376,10 @@ public class StdToCompositionWalker extends ToCompositionWalker<Map<FlatPathDto,
     if (currentNode.getRmType().equals(ELEMENT)) {
       List<WebTemplateNode> trueChildren =
           currentNode.getChildren().stream()
+              .filter(n -> !"name".equals(n.getId()))
               .filter(
                   n ->
-                      !List.of("null_flavour", "feeder_audit").contains(n.getName())
+                      !List.of("null_flavour", "feeder_audit").contains(n.getId())
                           || !n.isNullable())
               .collect(Collectors.toList());
       if (trueChildren.stream()
@@ -387,9 +402,10 @@ public class StdToCompositionWalker extends ToCompositionWalker<Map<FlatPathDto,
     if (node.getRmType().equals(ELEMENT)) {
       List<WebTemplateNode> trueChildren =
           node.getChildren().stream()
+              .filter(n -> !"name".equals(n.getId()))
               .filter(
                   n ->
-                      !List.of("null_flavour", "feeder_audit").contains(n.getName())
+                      !List.of("null_flavour", "feeder_audit").contains(n.getId())
                           || !n.isNullable())
               .collect(Collectors.toList());
       if (trueChildren.stream()

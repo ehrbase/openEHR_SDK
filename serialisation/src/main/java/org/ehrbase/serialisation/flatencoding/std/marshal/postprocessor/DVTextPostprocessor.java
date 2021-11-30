@@ -19,30 +19,45 @@
 
 package org.ehrbase.serialisation.flatencoding.std.marshal.postprocessor;
 
-import com.nedap.archie.rm.datastructures.Element;
+import com.nedap.archie.rm.datavalues.DvText;
 import org.ehrbase.serialisation.walker.Context;
 
 import java.util.Map;
+import java.util.stream.IntStream;
 
-public class ElementMarshalPostprocessor extends AbstractMarshalPostprocessor<Element> {
+public class DVTextPostprocessor extends AbstractMarshalPostprocessor<DvText> {
 
   /** {@inheritDoc} Adds the encoding information */
   @Override
   public void process(
       String term,
-      Element rmObject,
+      DvText rmObject,
       Map<String, Object> values,
       Context<Map<String, Object>> context) {
 
-    if (rmObject.getNullFlavour() != null) {
-
-      handleRmAttribute(term, rmObject.getNullFlavour(), values, context, "null_flavour");
-    }
+    IntStream.range(0, rmObject.getMappings().size())
+        .forEach(
+            i -> {
+              callMarshal(
+                  term,
+                  "_mapping:" + i,
+                  rmObject.getMappings().get(i),
+                  values,
+                  context,
+                  context.getNodeDeque().peek().findChildById("mapping").orElse(null));
+              callPostprocess(
+                  term,
+                  "_mapping:" + i,
+                  rmObject.getMappings().get(i),
+                  values,
+                  context,
+                  context.getNodeDeque().peek().findChildById("mapping").orElse(null));
+            });
   }
 
   /** {@inheritDoc} */
   @Override
-  public Class<Element> getAssociatedClass() {
-    return Element.class;
+  public Class<DvText> getAssociatedClass() {
+    return DvText.class;
   }
 }

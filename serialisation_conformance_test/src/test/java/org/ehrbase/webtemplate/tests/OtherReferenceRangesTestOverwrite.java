@@ -18,14 +18,15 @@
 
 package org.ehrbase.webtemplate.tests;
 
-import care.better.platform.web.template.FeederAuditTest;
-import care.better.platform.web.template.extension.WebTemplateTestExtension;
-import org.junit.jupiter.api.extension.ExtendWith;
+import care.better.platform.web.template.OtherReferenceRangesTest;
 
-@ExtendWith({WebTemplateTestExtension.class})
-public class FeederAuditTestOverwritten extends FeederAuditTest {
+public class OtherReferenceRangesTestOverwrite extends OtherReferenceRangesTest {
 
   @Override
-  /* test proprietary stuff from better */
-  public void structuredWithGenericFields() throws Exception {}
+  /*
+  Test error behavior which is not path of the spec
+   */
+  public void otherReferenceRangesInvalidAttribute() throws Exception {
+    super.otherReferenceRangesInvalidAttribute();
+  }
 }

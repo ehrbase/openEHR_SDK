@@ -60,6 +60,11 @@
             <artifactId>jackson-core</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <scope>test</scope>
+        </dependency>
 
         <dependency>
             <groupId>com.github.better-care</groupId>
@@ -100,17 +105,23 @@
                         <include>DurationTest</include>
                         <include>EndTimeTest</include>
                         <include>FeederAuditTestOverwritten</include>
+                        <include>FixedValueTestOverwrite</include>
                         <include>HistoryOriginTest</include>
+                        <include>InstructionActionTestOverwrite</include>
                         <include>IntervalEventTest</include>
                         <include>IsmTransitionTest</include>
                         <include>LinksTest</include>
                         <include>LocationTest</include>
+                        <include>LongValueJsonTest</include>
                         <include>MediaTypeExampleTest</include>
                         <include>NamedElementsTest</include>
                         <include>NoArchetypedTest</include>
                         <include>NormalRangeTest</include>
                         <include>NullFlavorTestOverwritten</include>
+                        <include>OtherReferenceRangesTestOverwrite</include>
+                        <include>GelBuilderTest</include>
                         <include>ParentTest</include>
+                        <include>ParticipationCtxTestOverwrite</include>
                         <include>ProviderTest</include>
                         <include>SubjectTest</include>
                         <include>TermMappingTestOverwritten</include>

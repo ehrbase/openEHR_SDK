@@ -20,17 +20,11 @@
 package org.ehrbase.serialisation.flatencoding.std.marshal.postprocessor;
 
 import com.nedap.archie.rm.composition.Action;
-import org.ehrbase.serialisation.flatencoding.std.marshal.config.InstructionDetailsConfig;
 import org.ehrbase.serialisation.walker.Context;
 
 import java.util.Map;
 
-import static org.ehrbase.webtemplate.parser.OPTParser.PATH_DIVIDER;
-
-public class ActionMarshalPostprocessor implements MarshalPostprocessor<Action> {
-
-  private static final InstructionDetailsConfig INSTRUCTION_DETAILS_CONFIG =
-      new InstructionDetailsConfig();
+public class ActionMarshalPostprocessor extends AbstractMarshalPostprocessor<Action> {
 
   /** {@inheritDoc} Adds the encoding information */
   @Override
@@ -41,12 +35,8 @@ public class ActionMarshalPostprocessor implements MarshalPostprocessor<Action> 
       Context<Map<String, Object>> context) {
 
     if (rmObject.getInstructionDetails() != null) {
-
-      values.putAll(
-          INSTRUCTION_DETAILS_CONFIG.buildChildValues(
-              term + PATH_DIVIDER + "_instruction_details",
-              rmObject.getInstructionDetails(),
-              null));
+      handleRmAttribute(
+          term, rmObject.getInstructionDetails(), values, context, "instruction_details");
     }
   }
 

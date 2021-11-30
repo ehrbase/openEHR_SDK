@@ -20,7 +20,6 @@
 package org.ehrbase.serialisation.flatencoding.std.marshal.postprocessor;
 
 import com.nedap.archie.rm.RMObject;
-import org.apache.commons.lang3.StringUtils;
 import org.ehrbase.serialisation.walker.Context;
 import org.ehrbase.util.reflection.ClassDependent;
 
@@ -38,17 +37,4 @@ public interface MarshalPostprocessor<T extends RMObject> extends ClassDependent
    */
   void process(
       String term, T rmObject, Map<String, Object> values, Context<Map<String, Object>> context);
-
-  static void addValue(
-      Map<String, Object> result, String termLoop, String propertyName, Object value) {
-    if (value != null) {
-      String key;
-      if (StringUtils.isNotBlank(propertyName)) {
-        key = termLoop + "|" + propertyName;
-      } else {
-        key = termLoop;
-      }
-      result.put(key, value);
-    }
-  }
 }

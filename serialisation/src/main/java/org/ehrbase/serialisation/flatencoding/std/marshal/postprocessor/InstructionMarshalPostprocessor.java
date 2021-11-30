@@ -19,36 +19,29 @@
 
 package org.ehrbase.serialisation.flatencoding.std.marshal.postprocessor;
 
-import com.nedap.archie.rm.datavalues.DvText;
-import org.ehrbase.serialisation.flatencoding.std.marshal.config.TermMappingStdConfig;
+import com.nedap.archie.rm.composition.Instruction;
 import org.ehrbase.serialisation.walker.Context;
 
 import java.util.Map;
-import java.util.stream.IntStream;
 
-public class DVTextlPostprocessor implements MarshalPostprocessor<DvText> {
-
-  private static final TermMappingStdConfig TERM_MAPPING_STD_CONFIG = new TermMappingStdConfig();
+public class InstructionMarshalPostprocessor extends AbstractMarshalPostprocessor<Instruction> {
 
   /** {@inheritDoc} Adds the encoding information */
   @Override
   public void process(
       String term,
-      DvText rmObject,
+      Instruction rmObject,
       Map<String, Object> values,
       Context<Map<String, Object>> context) {
 
-    IntStream.range(0, rmObject.getMappings().size())
-        .forEach(
-            i ->
-                values.putAll(
-                    TERM_MAPPING_STD_CONFIG.buildChildValues(
-                        term + "/_mapping:" + i, rmObject.getMappings().get(i), context)));
+    if (rmObject.getWfDefinition() != null) {
+      handleRmAttribute(term, rmObject.getWfDefinition(), values, context, "wf_definition");
+    }
   }
 
   /** {@inheritDoc} */
   @Override
-  public Class<DvText> getAssociatedClass() {
-    return DvText.class;
+  public Class<Instruction> getAssociatedClass() {
+    return Instruction.class;
   }
 }

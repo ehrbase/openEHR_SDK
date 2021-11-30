@@ -21,7 +21,6 @@ package org.ehrbase.serialisation.flatencoding.std.marshal.postprocessor;
 
 import com.nedap.archie.rm.composition.Entry;
 import com.nedap.archie.rm.generic.PartyIdentified;
-import org.ehrbase.serialisation.flatencoding.std.marshal.config.ParticipationConfig;
 import org.ehrbase.serialisation.flatencoding.std.marshal.config.PartyIdentifiedStdConfig;
 import org.ehrbase.serialisation.walker.Context;
 
@@ -30,9 +29,7 @@ import java.util.stream.IntStream;
 
 import static org.ehrbase.webtemplate.parser.OPTParser.PATH_DIVIDER;
 
-public class EntryMarshalPostprocessor implements MarshalPostprocessor<Entry> {
-
-  private static final ParticipationConfig PARTICIPATION_CONFIG = new ParticipationConfig();
+public class EntryMarshalPostprocessor extends AbstractMarshalPostprocessor<Entry> {
 
   /** {@inheritDoc} Adds the encoding information */
   @Override
@@ -56,12 +53,22 @@ public class EntryMarshalPostprocessor implements MarshalPostprocessor<Entry> {
     if (rmObject.getOtherParticipations() != null) {
       IntStream.range(0, rmObject.getOtherParticipations().size())
           .forEach(
-              i ->
-                  values.putAll(
-                      PARTICIPATION_CONFIG.buildChildValues(
-                          term + PATH_DIVIDER + "_other_participation:" + i,
-                          rmObject.getOtherParticipations().get(i),
-                          null)));
+              i -> {
+                callMarshal(
+                    term,
+                    "_other_participation:" + i,
+                    rmObject.getOtherParticipations().get(i),
+                    values,
+                    context,
+                    context.getNodeDeque().peek().findChildById("participation").orElse(null));
+                callPostprocess(
+                    term,
+                    "_other_participation:" + i,
+                    rmObject.getOtherParticipations().get(i),
+                    values,
+                    context,
+                    context.getNodeDeque().peek().findChildById("participation").orElse(null));
+              });
     }
   }
 

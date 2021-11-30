@@ -18,14 +18,19 @@
 
 package org.ehrbase.webtemplate.tests;
 
-import care.better.platform.web.template.FeederAuditTest;
-import care.better.platform.web.template.extension.WebTemplateTestExtension;
-import org.junit.jupiter.api.extension.ExtendWith;
+import care.better.platform.web.template.FixedValueTest;
 
-@ExtendWith({WebTemplateTestExtension.class})
-public class FeederAuditTestOverwritten extends FeederAuditTest {
+public class FixedValueTestOverwrite extends FixedValueTest {
 
   @Override
-  /* test proprietary stuff from better */
-  public void structuredWithGenericFields() throws Exception {}
+  /*
+  see https://jira.vitagroup.ag/browse/PEM-518
+  */
+  public void fixed() throws Exception {}
+
+  @Override
+  /*
+  see https://jira.vitagroup.ag/browse/PEM-518
+  */
+  public void fixedCodedInDvText() throws Exception {}
 }

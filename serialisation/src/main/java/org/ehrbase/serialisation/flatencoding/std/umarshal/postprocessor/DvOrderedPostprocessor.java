@@ -19,8 +19,11 @@
 
 package org.ehrbase.serialisation.flatencoding.std.umarshal.postprocessor;
 
+import com.nedap.archie.rm.datavalues.DvCodedText;
+import com.nedap.archie.rm.datavalues.DvText;
 import com.nedap.archie.rm.datavalues.quantity.DvInterval;
 import com.nedap.archie.rm.datavalues.quantity.DvOrdered;
+import com.nedap.archie.rm.datavalues.quantity.ReferenceRange;
 import org.ehrbase.building.webtemplateskeletnbuilder.WebTemplateSkeletonBuilder;
 import org.ehrbase.serialisation.flatencoding.std.umarshal.rmunmarshaller.RMUnmarshaller;
 import org.ehrbase.serialisation.walker.Context;
@@ -29,8 +32,10 @@ import org.ehrbase.webtemplate.path.flat.FlatPathDto;
 
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Consumer;
 
 import static org.ehrbase.serialisation.flatencoding.std.umarshal.StdToCompositionWalker.findRMUnmarshaller;
+import static org.ehrbase.webtemplate.parser.OPTParser.PATH_DIVIDER;
 
 public class DvOrderedPostprocessor extends AbstractUnmarshalPostprocessor<DvOrdered> {
 
@@ -43,40 +48,95 @@ public class DvOrderedPostprocessor extends AbstractUnmarshalPostprocessor<DvOrd
       Set<String> consumedPaths,
       Context<Map<FlatPathDto, String>> context) {
 
-    Map<FlatPathDto, String> upperValues = FlatHelper.filter(values, term + "/_normal_range/upper");
+    handleNormalRange(
+        values, consumedPaths, context, term + "/_normal_range", rmObject::setNormalRange);
 
-    if (!upperValues.isEmpty()) {
-      if (rmObject.getNormalRange() == null) {
-        rmObject.setNormalRange(new DvInterval());
-      }
-      DvOrdered upper =
-          WebTemplateSkeletonBuilder.build(context.getNodeDeque().peek(), false, DvOrdered.class);
-      rmObject.getNormalRange().setUpper(upper);
-      RMUnmarshaller rmUnmarshaller = findRMUnmarshaller(rmObject.getClass());
-      rmUnmarshaller.handle(
-          term + "/_normal_range/upper",
-          rmObject.getNormalRange().getUpper(),
-          upperValues,
-          context,
-          consumedPaths);
+    FlatHelper.extractMultiValuedFullPath(term, "_other_reference_ranges", values)
+        .forEach(
+            (k, v) -> {
+              ReferenceRange referenceRange = new ReferenceRange();
+              rmObject.addOtherReferenceRange(referenceRange);
+
+              Map<FlatPathDto, String> meaningValues =
+                  FlatHelper.filter(
+                      values, term + "/_other_reference_ranges:" + k + "/meaning", false);
+
+              if (!meaningValues.isEmpty()) {
+                final DvText meaning;
+                boolean isDvCodedText =
+                    meaningValues.keySet().stream()
+                        .anyMatch(
+                            e ->
+                                "code".equals(e.getLast().getAttributeName())
+                                    && "meaning".equals(e.getLast().getName()));
+                if (isDvCodedText) {
+                  meaning = new DvCodedText();
+                } else {
+                  meaning = new DvText();
+                }
+                referenceRange.setMeaning(meaning);
+                callUnmarshal(
+                    term + "/_other_reference_ranges:" + k,
+                    "meaning",
+                    meaning,
+                    meaningValues,
+                    consumedPaths,
+                    context,
+                    context.getNodeDeque().peek().findChildById("meaning").orElse(null));
+                calPostProcess(
+                    term + "/_other_reference_ranges:" + k,
+                    "meaning",
+                    meaning,
+                    meaningValues,
+                    consumedPaths,
+                    context,
+                    context.getNodeDeque().peek().findChildById("meaning").orElse(null));
+              }
+
+              handleNormalRange(
+                  v,
+                  consumedPaths,
+                  context,
+                  term + "/_other_reference_ranges:" + k,
+                  referenceRange::setRange);
+            });
+  }
+
+  private void handleNormalRange(
+      Map<FlatPathDto, String> values,
+      Set<String> consumedPaths,
+      Context<Map<FlatPathDto, String>> context,
+      String term,
+      Consumer<DvInterval> rangeConsumer) {
+
+    Map<FlatPathDto, String> rangeValues = FlatHelper.filter(values, term, false);
+    if (!rangeValues.isEmpty()) {
+      DvInterval range = new DvInterval();
+      rangeConsumer.accept(range);
+
+      handleBorder(values, consumedPaths, context, "upper", range::setUpper, term);
+      handleBorder(values, consumedPaths, context, "lower", range::setLower, term);
     }
+  }
 
-    Map<FlatPathDto, String> lowerValues = FlatHelper.filter(values, term + "/_normal_range/lower");
+  private void handleBorder(
+      Map<FlatPathDto, String> values,
+      Set<String> consumedPaths,
+      Context<Map<FlatPathDto, String>> context,
+      String borderName,
+      Consumer<DvOrdered> borderConsumer,
+      String term) {
 
-    if (!lowerValues.isEmpty()) {
-      if (rmObject.getNormalRange() == null) {
-        rmObject.setNormalRange(new DvInterval());
-      }
+    Map<FlatPathDto, String> borderValues =
+        FlatHelper.filter(values, term + PATH_DIVIDER + borderName, false);
+    if (!borderValues.isEmpty()) {
+
       DvOrdered lower =
           WebTemplateSkeletonBuilder.build(context.getNodeDeque().peek(), false, DvOrdered.class);
-      rmObject.getNormalRange().setLower(lower);
-      RMUnmarshaller rmUnmarshaller = findRMUnmarshaller(rmObject.getClass());
+      borderConsumer.accept(lower);
+      RMUnmarshaller rmUnmarshaller = findRMUnmarshaller(lower.getClass());
       rmUnmarshaller.handle(
-          term + "/_normal_range/lower",
-          rmObject.getNormalRange().getLower(),
-          lowerValues,
-          context,
-          consumedPaths);
+          term + PATH_DIVIDER + borderName, lower, borderValues, context, consumedPaths);
     }
   }
 

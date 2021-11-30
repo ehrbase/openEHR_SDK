@@ -26,13 +26,11 @@ import org.ehrbase.serialisation.walker.defaultvalues.DefaultValuePath;
 import org.ehrbase.serialisation.walker.defaultvalues.DefaultValues;
 
 public class InstructionValueInserter extends AbstractValueInserter<Instruction> {
-
   @Override
   public void insert(Instruction rmObject, DefaultValues defaultValues) {
 
     if (RMHelper.isEmpty(rmObject.getNarrative())
         && defaultValues.containsDefaultValue(DefaultValuePath.INSTRUCTION_NARRATIVE)) {
-
       rmObject.setNarrative(
           new DvText(defaultValues.getDefaultValue(DefaultValuePath.INSTRUCTION_NARRATIVE)));
     }

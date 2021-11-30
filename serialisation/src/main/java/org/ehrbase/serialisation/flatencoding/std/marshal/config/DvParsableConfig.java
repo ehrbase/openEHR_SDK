@@ -23,6 +23,7 @@ import com.nedap.archie.rm.datavalues.encapsulated.DvParsable;
 import org.ehrbase.serialisation.walker.Context;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class DvParsableConfig extends AbstractsStdConfig<DvParsable> {
@@ -38,7 +39,14 @@ public class DvParsableConfig extends AbstractsStdConfig<DvParsable> {
   public Map<String, Object> buildChildValues(
       String currentTerm, DvParsable rmObject, Context<Map<String, Object>> context) {
     Map<String, Object> result = new HashMap<>();
-    addValue(result, currentTerm, null, rmObject.getValue());
+
+    // wf_definition adds the value attribute name ,according to
+    // care.better.platform.web.template.InstructionActionTest
+    if (List.of("wf_definition").contains(context.getNodeDeque().peek().getId())) {
+      addValue(result, currentTerm, "value", rmObject.getValue());
+    } else {
+      addValue(result, currentTerm, null, rmObject.getValue());
+    }
     addValue(result, currentTerm, "formalism", rmObject.getFormalism());
     return result;
   }

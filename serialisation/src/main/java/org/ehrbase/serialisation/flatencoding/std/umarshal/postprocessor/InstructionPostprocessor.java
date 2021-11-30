@@ -19,8 +19,8 @@
 
 package org.ehrbase.serialisation.flatencoding.std.umarshal.postprocessor;
 
-import com.nedap.archie.rm.composition.Action;
-import com.nedap.archie.rm.composition.InstructionDetails;
+import com.nedap.archie.rm.composition.Instruction;
+import com.nedap.archie.rm.datavalues.encapsulated.DvParsable;
 import org.ehrbase.serialisation.walker.Context;
 import org.ehrbase.webtemplate.path.flat.FlatPathDto;
 
@@ -30,40 +30,32 @@ import java.util.stream.Collectors;
 
 import static org.ehrbase.webtemplate.parser.OPTParser.PATH_DIVIDER;
 
-public class ActionPostprocessor extends AbstractUnmarshalPostprocessor<Action> {
+public class InstructionPostprocessor extends AbstractUnmarshalPostprocessor<Instruction> {
 
   /** {@inheritDoc} */
   @Override
   public void process(
       String term,
-      Action rmObject,
+      Instruction rmObject,
       Map<FlatPathDto, String> values,
       Set<String> consumedPaths,
       Context<Map<FlatPathDto, String>> context) {
 
-    Map<FlatPathDto, String> instructionDetails =
+    Map<FlatPathDto, String> wfDefinition =
         values.entrySet().stream()
-            .filter(e -> e.getKey().startsWith(term + PATH_DIVIDER + "_instruction_details"))
+            .filter(e -> e.getKey().startsWith(term + PATH_DIVIDER + "_wf_definition"))
             .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
-    if (!instructionDetails.isEmpty()) {
-      if (rmObject.getInstructionDetails() == null) {
-        rmObject.setInstructionDetails(new InstructionDetails());
-      }
-
+    if (!wfDefinition.isEmpty()) {
+      rmObject.setWfDefinition(new DvParsable());
       handleRmAttribute(
-          term,
-          rmObject.getInstructionDetails(),
-          instructionDetails,
-          consumedPaths,
-          context,
-          "instruction_details");
+          term, rmObject.getWfDefinition(), wfDefinition, consumedPaths, context, "wf_definition");
     }
   }
 
   /** {@inheritDoc} */
   @Override
-  public Class<Action> getAssociatedClass() {
-    return Action.class;
+  public Class<Instruction> getAssociatedClass() {
+    return Instruction.class;
   }
 }

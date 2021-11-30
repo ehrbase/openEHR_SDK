@@ -18,14 +18,23 @@
 
 package org.ehrbase.webtemplate.tests;
 
-import care.better.platform.web.template.FeederAuditTest;
-import care.better.platform.web.template.extension.WebTemplateTestExtension;
-import org.junit.jupiter.api.extension.ExtendWith;
+import care.better.platform.web.template.ParticipationCtxTest;
 
-@ExtendWith({WebTemplateTestExtension.class})
-public class FeederAuditTestOverwritten extends FeederAuditTest {
+public class ParticipationCtxTestOverwrite extends ParticipationCtxTest {
 
-  @Override
-  /* test proprietary stuff from better */
-  public void structuredWithGenericFields() throws Exception {}
+    @Override
+    /*
+    Test error behavior which is not path of the spec
+     */
+    public void participationInvalid() throws Exception {
+        super.participationInvalid();
+    }
+
+    @Override
+     /*
+    Test error behavior which is not path of the spec
+     */
+    public void multipleParticipationMissingScheme() throws Exception {
+        super.multipleParticipationMissingScheme();
+    }
 }

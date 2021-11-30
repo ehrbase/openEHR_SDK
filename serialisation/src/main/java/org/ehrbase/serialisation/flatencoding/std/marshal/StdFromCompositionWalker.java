@@ -76,9 +76,27 @@ public class StdFromCompositionWalker extends FromCompositionWalker<Map<String, 
 
   @Override
   protected void postHandle(Context<Map<String, Object>> context) {
-    List<MarshalPostprocessor<? super RMObject>> postprocessor = new ArrayList<>();
 
-    Class<?> currentClass = context.getRmObjectDeque().peek().getClass();
+    Class<? extends RMObject> aClass = context.getRmObjectDeque().peek().getClass();
+
+    List<? extends MarshalPostprocessor<? extends RMObject>> postprocessor =
+        findPostprocessors(aClass);
+
+    postprocessor.forEach(
+        p ->
+            ((MarshalPostprocessor) p)
+                .process(
+                    StdToCompositionWalker.buildNamePathWithElementHandling(context),
+                    context.getRmObjectDeque().peek(),
+                    context.getObjectDeque().peek(),
+                    context));
+  }
+
+  public static <T extends RMObject> List<MarshalPostprocessor<T>> findPostprocessors(
+      Class<T> aClass) {
+    List<MarshalPostprocessor<T>> postprocessor = new ArrayList<>();
+
+    Class<?> currentClass = aClass;
 
     while (currentClass != null) {
       if (POSTPROCESSOR_MAP.containsKey(currentClass)) {
@@ -89,14 +107,7 @@ public class StdFromCompositionWalker extends FromCompositionWalker<Map<String, 
     }
 
     Collections.reverse(postprocessor);
-
-    postprocessor.forEach(
-        p ->
-            p.process(
-                StdToCompositionWalker.buildNamePathWithElementHandling(context),
-                context.getRmObjectDeque().peek(),
-                context.getObjectDeque().peek(),
-                context));
+    return postprocessor;
   }
 
   @Override

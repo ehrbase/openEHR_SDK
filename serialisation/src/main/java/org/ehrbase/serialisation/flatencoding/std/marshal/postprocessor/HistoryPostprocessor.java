@@ -30,7 +30,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-public class HistoryPostprocessor implements MarshalPostprocessor<History> {
+public class HistoryPostprocessor extends AbstractMarshalPostprocessor<History> {
 
   /**
    * {@inheritDoc} Removes the {@link History#getOrigin} if it is equal to fist {@link
