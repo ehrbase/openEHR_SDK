@@ -202,6 +202,46 @@ public class CompositionConverterImp implements CompositionConverter {
         "приостановка_курса_лекарственной_терапии/сведения_о_выполнении:0/instruction_details|activity_id",
         "приостановка_курса_лекарственной_терапии/сведения_о_выполнении:0/_instruction_details|activity_id");
 
+    // only iso date times are supported
+    currentValues.replace("ctx/time", "1.2.2012 00:00", "2012-02-01T00:00");
+    currentValues.replace(
+        "vitals/vitals/haemoglobin_a1c/datetime_result_issued",
+        "20.1.2012 19:30",
+        "2012-02-20T19:30");
+    currentValues.replace(
+        "vitals/vitals/body_temperature/any_event/time", "1.1.2012 0:0", "2012-01-01T00:00");
+    currentValues.replace("ctx/time", "2012-02-01T00:00", "2012-02-01T00:00:00+01:00");
+    currentValues.replace("ctx/time", "1.2.2012 00:01", "2012-02-01T00:01:00+01:00");
+    currentValues.replace("ctx/history_origin", "1.2.2012 00:01", "2012-02-01T00:01:00+01:00");
+    currentValues.replace(
+        "vitals/vitals/haemoglobin_a1c/datetime_result_issued",
+        "1/2/2012 8:07",
+        "2012-02-01T00:00:00+01:00");
+
+    // fix doubles
+    currentValues.replace("vitals/vitals/haemoglobin_a1c/any_event/hba1c", "5,1", "5.1");
+    currentValues.replace(
+        "vitals/vitals/body_temperature/any_event/temperature|magnitude", "38,1", "38.1");
+    currentValues.replace(
+        "vitals/vitals/body_temperature:1/any_event/temperature|magnitude", "39,1", "39.1");
+    // add expected timezone
+    currentValues.replace("ctx/time", "2012-02-01T00:00", "2012-02-01T00:00:00+01:00");
+
+    // IspekBuilderTest.perinatal2 has a dangling ctx/participation_mode:0 and missing subject name
+    if (currentValues.keySet().stream().filter(k -> k.startsWith("ctx/participation_")).count() == 1
+        && currentValues.keySet().stream()
+                .filter(
+                    k -> k.startsWith("perinatal_history/perinatal_history/maternal_pregnancy/"))
+                .count()
+            > 0) {
+      currentValues.remove("ctx/participation_mode:0", "face-to-face communication");
+      currentValues.put(
+          "perinatal_history/perinatal_history/maternal_pregnancy/subject/_name", "Lisa");
+    }
+
+    if (currentValues.containsKey("medical_document/document/content")) {
+      currentValues.put("medical_document/document/content|formalism", "text");
+    }
     Composition composition = flatJson.unmarshal(OBJECT_MAPPER.writeValueAsString(currentValues));
     String raw = new CanonicalJson().marshal(composition).replace("\"_type\"", "\"@class\"");
 

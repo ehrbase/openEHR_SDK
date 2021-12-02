@@ -29,6 +29,7 @@ import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.ehrbase.serialisation.flatencoding.std.umarshal.rmunmarshaller.PartyIdentifiedRMUnmarshaller;
 import org.ehrbase.serialisation.walker.Context;
+import org.ehrbase.serialisation.walker.FlatHelper;
 import org.ehrbase.serialisation.walker.defaultvalues.DefaultValuePath;
 import org.ehrbase.serialisation.walker.defaultvalues.DefaultValues;
 import org.ehrbase.webtemplate.path.flat.FlatPathDto;
@@ -53,6 +54,26 @@ public class EntryPostprocessor extends AbstractUnmarshalPostprocessor<Entry> {
       Context<Map<FlatPathDto, String>> context) {
     consumedPaths.add(term + PATH_DIVIDER + "encoding|code");
     consumedPaths.add(term + PATH_DIVIDER + "encoding|terminology");
+
+    Map<FlatPathDto, String> subjectValues = FlatHelper.filter(values, term + "/subject", false);
+
+    if (!subjectValues.isEmpty()) {
+
+      if (rmObject.getSubject() == null) {
+        // If it was PartyRelated it would be set by now do to the relationship  and if it was
+        // PartySelf subjectValues would be empty
+        rmObject.setSubject(new PartyIdentified());
+      }
+
+      callUnmarshal(
+          term,
+          "subject",
+          rmObject.getSubject(),
+          values,
+          consumedPaths,
+          context,
+          context.getNodeDeque().peek().findChildById("subject").orElse(null));
+    }
 
     PartyProxy subject = rmObject.getSubject();
     if (subject == null

@@ -509,6 +509,11 @@
                 <artifactId>openehr-rm</artifactId>
                 <version>${archie.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.threeten</groupId>
+                <artifactId>threeten-extra</artifactId>
+                <version>1.6.0</version>
+            </dependency>
             <!-- NOTE: does not work properly when inside dependencyManagement -->
             <!-- 
             <dependency>

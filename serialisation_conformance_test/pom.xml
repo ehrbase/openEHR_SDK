@@ -110,6 +110,7 @@
                         <include>InfinnityTestOverwrite</include>
                         <include>InstructionActionTestOverwrite</include>
                         <include>IntervalEventTest</include>
+                        <include>IspekBuilderTestOverwrite</include>
                         <include>IsmTransitionTest</include>
                         <include>LinksTest</include>
                         <include>LocationTest</include>

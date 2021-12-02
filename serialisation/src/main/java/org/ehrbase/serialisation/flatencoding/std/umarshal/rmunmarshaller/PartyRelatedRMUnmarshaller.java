@@ -19,42 +19,32 @@
 
 package org.ehrbase.serialisation.flatencoding.std.umarshal.rmunmarshaller;
 
-import com.nedap.archie.datetime.DateTimeParsers;
-import com.nedap.archie.rm.datavalues.quantity.datetime.DvDateTime;
+import com.nedap.archie.rm.generic.PartyRelated;
 import org.ehrbase.serialisation.walker.Context;
 import org.ehrbase.webtemplate.path.flat.FlatPathDto;
 
-import java.time.OffsetDateTime;
 import java.util.Map;
 import java.util.Set;
 
-public class DvDateTimeRMUnmarshaller extends AbstractRMUnmarshaller<DvDateTime> {
-
+public class PartyRelatedRMUnmarshaller extends AbstractRMUnmarshaller<PartyRelated> {
   @Override
-  public Class<DvDateTime> getAssociatedClass() {
-    return DvDateTime.class;
+  public Class<PartyRelated> getAssociatedClass() {
+    return PartyRelated.class;
   }
+
+  private static final PartyIdentifiedRMUnmarshaller PARTY_IDENTIFIED_RM_UNMARSHALLER =
+      new PartyIdentifiedRMUnmarshaller();
 
   @Override
   public void handle(
       String currentTerm,
-      DvDateTime rmObject,
+      PartyRelated rmObject,
       Map<FlatPathDto, String> currentValues,
       Context<Map<FlatPathDto, String>> context,
       Set<String> consumedPaths) {
 
-    setValue(
-        currentTerm,
-        null,
-        currentValues,
-        s -> {
-          if ("now".equals(s)) {
-            rmObject.setValue(OffsetDateTime.now());
-          } else if (s != null) {
-            rmObject.setValue(DateTimeParsers.parseDateTimeValue(s));
-          }
-        },
-        String.class,
-        consumedPaths);
+    // PartyRelated is a PartyIdentified
+    PARTY_IDENTIFIED_RM_UNMARSHALLER.handle(
+        currentTerm, rmObject, currentValues, context, consumedPaths);
   }
 }

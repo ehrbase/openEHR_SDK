@@ -60,7 +60,10 @@ public class DvProportionRMUnmarshaller extends AbstractRMUnmarshaller<DvProport
         Double.class,
         consumedPaths);
     setValue(currentTerm, "type", currentValues, rmObject::setType, Long.class, consumedPaths);
-    // Contains numerator/denominator
-    consumeAllMatching(currentTerm, currentValues, consumedPaths);
+
+    if (rmObject.getNumerator() != null && rmObject.getDenominator() != null) {
+      // Contains numerator/denominator
+      consumeAllMatching(currentTerm, currentValues, consumedPaths);
+    }
   }
 }

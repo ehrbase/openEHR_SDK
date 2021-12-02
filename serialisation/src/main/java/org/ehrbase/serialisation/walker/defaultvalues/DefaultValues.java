@@ -112,7 +112,11 @@ public class DefaultValues {
                 } else if (TemporalAccessor.class.isAssignableFrom(path.getType())) {
                   String value =
                       subValues.values().stream().map(DefaultValues::read).findAny().orElseThrow();
-                  defaultValueMap.put(path, DateTimeParsers.parseDateTimeValue(value));
+                  if ("now".equals(value)) {
+                    defaultValueMap.put(path, OffsetDateTime.now());
+                  } else {
+                    defaultValueMap.put(path, DateTimeParsers.parseDateTimeValue(value));
+                  }
                 } else if (path.equals(DefaultValuePath.PARTICIPATION)) {
                   Map<Integer, List<Map.Entry<String, String>>> byIndex =
                       subValues.entrySet().stream()
