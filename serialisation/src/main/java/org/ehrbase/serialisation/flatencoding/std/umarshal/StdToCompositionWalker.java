@@ -24,6 +24,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nedap.archie.rm.RMObject;
 import com.nedap.archie.rm.composition.Composition;
 import com.nedap.archie.rm.composition.Entry;
+import com.nedap.archie.rm.datastructures.Element;
 import com.nedap.archie.rm.datatypes.CodePhrase;
 import com.nedap.archie.rm.datavalues.DvCodedText;
 import com.nedap.archie.rm.datavalues.DvText;
@@ -256,10 +257,21 @@ public class StdToCompositionWalker extends ToCompositionWalker<Map<FlatPathDto,
     RMObject parentRM = context.getRmObjectDeque().peek();
     WebTemplateNode currentNode = context.getNodeDeque().poll();
     WebTemplateNode parentNode = context.getNodeDeque().peek();
-    WebTemplateSkeletonBuilder.remove(parentNode, parentRM, currentNode, oldRM);
-    WebTemplateSkeletonBuilder.insert(parentNode, parentRM, currentNode, newRmObject);
+    // since flat skips Elements we might need to keep it
+    if (oldRM instanceof Element && !(newRmObject instanceof Element)) {
+      WebTemplateNode valueNode =
+          currentNode.getChildren().stream()
+              .filter(n -> n.getId().contains("value"))
+              .findAny()
+              .orElseThrow();
+      WebTemplateSkeletonBuilder.insert(currentNode, oldRM, valueNode, newRmObject);
+      context.getRmObjectDeque().push(oldRM);
+    } else {
+      WebTemplateSkeletonBuilder.remove(parentNode, parentRM, currentNode, oldRM);
+      WebTemplateSkeletonBuilder.insert(parentNode, parentRM, currentNode, newRmObject);
+      context.getRmObjectDeque().push(newRmObject);
+    }
     context.getNodeDeque().push(currentNode);
-    context.getRmObjectDeque().push(newRmObject);
   }
 
   private boolean isRaw(Context<Map<FlatPathDto, String>> context) {
