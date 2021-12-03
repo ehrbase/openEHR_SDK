@@ -120,6 +120,7 @@
                         <include>NoArchetypedTest</include>
                         <include>NormalRangeTest</include>
                         <include>NullFlavorTestOverwritten</include>
+                        <include>OrderedArchetypeTest</include>
                         <include>OtherReferenceRangesTestOverwrite</include>
                         <include>GelBuilderTest</include>
                         <include>ParentTest</include>
