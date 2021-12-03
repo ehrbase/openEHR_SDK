@@ -20,9 +20,12 @@
 package org.ehrbase.serialisation.flatencoding.std.umarshal.rmunmarshaller;
 
 import com.nedap.archie.rm.datavalues.quantity.DvProportion;
+import org.apache.commons.collections4.CollectionUtils;
 import org.ehrbase.serialisation.walker.Context;
+import org.ehrbase.webtemplate.model.ProportionType;
 import org.ehrbase.webtemplate.path.flat.FlatPathDto;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -60,6 +63,13 @@ public class DvProportionRMUnmarshaller extends AbstractRMUnmarshaller<DvProport
         Double.class,
         consumedPaths);
     setValue(currentTerm, "type", currentValues, rmObject::setType, Long.class, consumedPaths);
+
+    if (rmObject.getType() == null) {
+      List<ProportionType> proportionTypes = context.getNodeDeque().peek().getProportionTypes();
+      if (CollectionUtils.isNotEmpty(proportionTypes) && proportionTypes.size() == 1) {
+        rmObject.setType(Long.valueOf(proportionTypes.get(0).getId()));
+      }
+    }
 
     if (rmObject.getNumerator() != null && rmObject.getDenominator() != null) {
       // Contains numerator/denominator

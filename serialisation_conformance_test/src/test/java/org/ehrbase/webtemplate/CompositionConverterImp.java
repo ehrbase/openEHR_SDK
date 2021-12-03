@@ -227,6 +227,8 @@ public class CompositionConverterImp implements CompositionConverter {
     // add expected timezone
     currentValues.replace("ctx/time", "2012-02-01T00:00", "2012-02-01T00:00:00+01:00");
 
+    // It is videoconferencing not videoconference
+    currentValues.replace("ctx/participation_mode", "videoconference", "videoconferencing");
     // IspekBuilderTest.perinatal2 has a dangling ctx/participation_mode:0 and missing subject name
     if (currentValues.keySet().stream().filter(k -> k.startsWith("ctx/participation_")).count() == 1
         && currentValues.keySet().stream()
@@ -242,6 +244,23 @@ public class CompositionConverterImp implements CompositionConverter {
     if (currentValues.containsKey("medical_document/document/content")) {
       currentValues.put("medical_document/document/content|formalism", "text");
     }
+    // code is not correctly set in template
+    if (currentValues.containsKey(
+        "visual_acuity_report/visual_acuity:0/any_event:0/test_name|code")) {
+      currentValues.put(
+          "visual_acuity_report/visual_acuity:0/any_event:0/test_name|value", "value");
+      currentValues.put(
+          "visual_acuity_report/visual_acuity:0/any_event:0/test_name|terminology", "terminology");
+    }
+    // code is not correctly set in template
+    if (currentValues.containsKey(
+        "visual_acuity_report/visual_acuity:0/any_event:1/test_name|code")) {
+      currentValues.put(
+          "visual_acuity_report/visual_acuity:0/any_event:1/test_name|value", "value");
+      currentValues.put(
+          "visual_acuity_report/visual_acuity:0/any_event:1/test_name|terminology", "terminology");
+    }
+
     Composition composition = flatJson.unmarshal(OBJECT_MAPPER.writeValueAsString(currentValues));
     String raw = new CanonicalJson().marshal(composition).replace("\"_type\"", "\"@class\"");
 

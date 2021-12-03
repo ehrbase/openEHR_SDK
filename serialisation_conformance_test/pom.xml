@@ -126,6 +126,7 @@
                         <include>ParentTest</include>
                         <include>ParticipationCtxTestOverwrite</include>
                         <include>PersistentCompositionTest</include>
+                        <include>ProportionPrecisionTest</include>
                         <include>ProviderTest</include>
                         <include>SubjectTest</include>
                         <include>TermMappingTestOverwritten</include>
