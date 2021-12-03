@@ -125,6 +125,7 @@
                         <include>GelBuilderTest</include>
                         <include>ParentTest</include>
                         <include>ParticipationCtxTestOverwrite</include>
+                        <include>PersistentCompositionTest</include>
                         <include>ProviderTest</include>
                         <include>SubjectTest</include>
                         <include>TermMappingTestOverwritten</include>
