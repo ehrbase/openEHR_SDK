@@ -127,6 +127,7 @@
                         <include>ParticipationCtxTestOverwrite</include>
                         <include>PersistentCompositionTest</include>
                         <include>ProportionPrecisionTest</include>
+                        <include>ProportionUpdateTestOverride</include>
                         <include>ProviderTest</include>
                         <include>SubjectTest</include>
                         <include>TermMappingTestOverwritten</include>
