@@ -23,8 +23,8 @@ package org.ehrbase.validation.constraints.wrappers;
 
 import com.nedap.archie.datetime.DateTimeFormatters;
 import com.nedap.archie.rm.datavalues.quantity.datetime.DvDateTime;
-import org.ehrbase.validation.constraints.util.DateTimeSyntax;
 import org.ehrbase.validation.constraints.terminology.ExternalTerminologyValidationSupport;
+import org.ehrbase.validation.constraints.util.DateTimeSyntax;
 import org.openehr.schemas.v1.CDATETIME;
 import org.openehr.schemas.v1.CPRIMITIVE;
 
@@ -34,7 +34,7 @@ import java.util.Map;
 /**
  * validate a DvDateTime
  *
- * @link https://specifications.openehr.org/releases/AM/latest/AOM1.4.html#_c_date_time_class
+ * @see <a href="https://specifications.openehr.org/releases/AM/latest/AOM1.4.html#_c_date_time_class">C_DATE_TIME Class</a>
  * <p>
  * Created by christian on 7/23/2016.
  * @see DvDateTime

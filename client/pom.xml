@@ -18,19 +18,34 @@
   ~  */
   -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
+        <groupId>org.ehrbase.openehr.sdk</groupId>
         <artifactId>root</artifactId>
-        <groupId>com.github.ehrbase.openEHR_SDK</groupId>
-        <version>1.5.0</version>
-        <relativePath>../pom.xml</relativePath>
+        <version>1.6.0-SNAPSHOT</version>
     </parent>
 
     <artifactId>client</artifactId>
 
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.0.0-M5</version>
+                <configuration combine.self="override">
+                    <dependenciesToScan>com.github.better-care:web-template-tests</dependenciesToScan>
+                    <includes>
+                        <include>${include.tests}</include>
+                    </includes>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
     <dependencies>
         <dependency>
@@ -42,15 +57,15 @@
             <artifactId>javax.annotation-api</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.github.ehrbase.openEHR_SDK</groupId>
+            <groupId>org.ehrbase.openehr.sdk</groupId>
             <artifactId>opt-1.4</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.github.ehrbase.openEHR_SDK</groupId>
+            <groupId>org.ehrbase.openehr.sdk</groupId>
             <artifactId>web-template</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.github.ehrbase.openEHR_SDK</groupId>
+            <groupId>org.ehrbase.openehr.sdk</groupId>
             <artifactId>util</artifactId>
         </dependency>
         <dependency>
@@ -58,15 +73,15 @@
             <artifactId>commons-cli</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.github.ehrbase.openEHR_SDK</groupId>
+            <groupId>org.ehrbase.openehr.sdk</groupId>
             <artifactId>serialisation</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.github.ehrbase.openEHR_SDK</groupId>
+            <groupId>org.ehrbase.openehr.sdk</groupId>
             <artifactId>terminology</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.github.ehrbase.openEHR_SDK</groupId>
+            <groupId>org.ehrbase.openehr.sdk</groupId>
             <artifactId>response-dto</artifactId>
         </dependency>
         <dependency>
@@ -96,17 +111,20 @@
         <dependency>
             <groupId>org.assertj</groupId>
             <artifactId>assertj-core</artifactId>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
+            <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>com.github.ehrbase.openEHR_SDK</groupId>
+            <groupId>org.ehrbase.openehr.sdk</groupId>
             <artifactId>test-data</artifactId>
+            <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>com.github.ehrbase.openEHR_SDK</groupId>
+            <groupId>org.ehrbase.openehr.sdk</groupId>
             <artifactId>validation</artifactId>
             <scope>test</scope>
         </dependency>
@@ -117,8 +135,17 @@
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-params</artifactId>
-            <version>5.5.2</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.vintage</groupId>
+            <artifactId>junit-vintage-engine</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -127,24 +154,4 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>3.0.0-M5</version>
-                <configuration combine.self="override">
-                    <dependenciesToScan>com.github.better-care:web-template-tests</dependenciesToScan>
-                    <includes>
-                        <include>${include.tests}</include>
-                    </includes>
-                </configuration>
-
-            </plugin>
-
-        </plugins>
-    </build>
-
-
 </project>

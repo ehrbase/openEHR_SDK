@@ -107,7 +107,7 @@ public class SimpleTerminologyAccess implements TerminologyAccess {
     }
 
     /**
-     * @returns "openehr"
+     * @return "openehr"
      */
     public String id() {
         return id;

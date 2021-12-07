@@ -59,8 +59,8 @@ public class ItemStructureVisitor implements I_ItemStructureVisitor {
      * main entry method, validate a composition.
      *
      * @param composition
-     * @return
-     * @throws IllegalArgumentException, InternalError
+     * @throws IllegalArgumentException
+     * @throws InternalError
      */
     @Override
     public void validate(Composition composition) throws IllegalArgumentException, InternalError {
