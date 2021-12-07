@@ -19,10 +19,7 @@ package org.ehrbase.serialisation.attributes;
 
 import com.nedap.archie.rm.archetyped.Locatable;
 import org.apache.commons.collections.map.MultiValueMap;
-import org.ehrbase.serialisation.dbencoding.CompositionSerializer;
-import org.ehrbase.serialisation.dbencoding.ItemStack;
-import org.ehrbase.serialisation.dbencoding.NameAsDvText;
-import org.ehrbase.serialisation.dbencoding.NameInMap;
+import org.ehrbase.serialisation.dbencoding.*;
 
 import java.util.Map;
 
@@ -32,7 +29,7 @@ import static org.ehrbase.serialisation.dbencoding.CompositionSerializer.*;
  */
 public abstract class LocatableAttributes extends RMAttributes {
 
-  public LocatableAttributes(
+  protected LocatableAttributes(
       CompositionSerializer compositionSerializer, ItemStack itemStack, Map<String, Object> map) {
     super(compositionSerializer, itemStack, map);
   }
@@ -51,7 +48,7 @@ public abstract class LocatableAttributes extends RMAttributes {
       map.put(TAG_ARCHETYPE_NODE_ID, locatable.getArchetypeNodeId());
     }
     if (locatable.getArchetypeDetails() != null) {
-      map.put(TAG_ARCHETYPE_DETAILS, locatable.getArchetypeDetails());
+      map.put(TAG_ARCHETYPE_DETAILS, new RmObjectEncoding(locatable.getArchetypeDetails()).toMap());
     }
     if (locatable.getFeederAudit() != null) {
       map.put(TAG_FEEDER_AUDIT, new FeederAuditAttributes(locatable.getFeederAudit()).toMap());
