@@ -2,12 +2,9 @@ name: build
 
 on:
   push:
-    branches: [ CDR-15_maven_central ]
-#on:
-#  push:
-#    branches:
-#      - master
-#      - develop
+    branches:
+      - master
+      - develop
 
 jobs:
   build:
