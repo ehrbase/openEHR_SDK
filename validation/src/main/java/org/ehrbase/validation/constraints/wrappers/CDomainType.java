@@ -34,7 +34,7 @@ import java.util.Map;
 /**
  * Validate a domain type
  *
- * @link https://specifications.openehr.org/releases/AM/latest/AOM1.4.html#_c_domain_type_class
+ * @see <a href="https://specifications.openehr.org/releases/AM/latest/AOM1.4.html#_c_domain_type_class">C_DOMAIN_TYPE Class</a>
  * <p>
  * Created by christian on 7/23/2016.
  */

@@ -27,8 +27,8 @@ import com.nedap.archie.rm.datavalues.DvCodedText;
 import com.nedap.archie.rm.datavalues.DvText;
 import org.apache.commons.text.WordUtils;
 import org.apache.xmlbeans.SchemaType;
-import org.ehrbase.validation.constraints.util.SnakeToCamel;
 import org.ehrbase.validation.constraints.terminology.ExternalTerminologyValidationSupport;
+import org.ehrbase.validation.constraints.util.SnakeToCamel;
 import org.openehr.schemas.v1.ARCHETYPECONSTRAINT;
 import org.openehr.schemas.v1.CATTRIBUTE;
 import org.openehr.schemas.v1.CMULTIPLEATTRIBUTE;
@@ -40,7 +40,7 @@ import java.util.Map;
 /**
  * validate the constraints for an attribute node
  *
- * @link https://specifications.openehr.org/releases/AM/latest/AOM1.4.html#_c_attribute_class
+ * @see <a href="https://specifications.openehr.org/releases/AM/latest/AOM1.4.html#_c_attribute_class">C_ATTRIBUTE Class</a>
  * <p>Created by christian on 7/23/2016.
  * @see com.nedap.archie.aom.CAttribute
  */

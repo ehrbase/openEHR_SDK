@@ -35,14 +35,9 @@ public class OptSkeletonBuilder {
    *
    * @param opt
    * @return
-   * @throws Exception
    */
   public RMObject generate(OPERATIONALTEMPLATE opt) {
-
     WebTemplate webTemplate = new OPTParser(opt).parse();
-
     return WebTemplateSkeletonBuilder.build(webTemplate,true);
   }
-
-
 }
