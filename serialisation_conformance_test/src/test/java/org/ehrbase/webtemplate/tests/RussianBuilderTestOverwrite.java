@@ -77,6 +77,9 @@ public class RussianBuilderTestOverwrite extends RussianBuilderTest {
   }
 
   @Override
+  /*
+  see https://jira.vitagroup.ag/browse/CDR-132
+  */
   public void testTherapistExaminationContent() throws Exception {}
 
   private RMDataFormat getFlatJson(String template, FlatFormat flatFormat)
