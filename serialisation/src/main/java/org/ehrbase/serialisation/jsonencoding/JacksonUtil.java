@@ -25,6 +25,10 @@ import com.nedap.archie.json.RMJacksonConfiguration;
 
 public class JacksonUtil {
 
+    private JacksonUtil() {
+        //for sonarlint...
+    }
+
     /**
      * Get an object mapper that works with Archie RM and AOM objects. It will be cached in a static variable for
      * performance reasons
@@ -33,6 +37,7 @@ public class JacksonUtil {
      */
     public static ObjectMapper getObjectMapper() {
         RMJacksonConfiguration configuration = new RMJacksonConfiguration();
+        configuration.setAddExtraFieldsInArchetypeId(false);
         configuration.setTypePropertyName("_type");
         configuration.setSerializeEmptyCollections(true);
         return com.nedap.archie.json.JacksonUtil.getObjectMapper(configuration);
