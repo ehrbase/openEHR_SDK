@@ -125,7 +125,7 @@
                         <include>GelBuilderTest</include>
                         <include>ParentTest</include>
                         <include>ParticipationCtxTestOverwrite</include>
-                        <include>PersistentCompositionTest</include>
+                        <include>PersistentCompositionTestOverwrite</include>
                         <include>ProportionPrecisionTest</include>
                         <include>ProportionUpdateTestOverride</include>
                         <include>PskyBuilderTestOverwrite</include>
