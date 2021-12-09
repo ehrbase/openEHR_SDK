@@ -129,6 +129,7 @@
                         <include>ProportionPrecisionTest</include>
                         <include>ProportionUpdateTestOverride</include>
                         <include>PskyBuilderTestOverwrite</include>
+                        <include>RussianBuilderTestOverwrite</include>
                         <include>ProviderTest</include>
                         <include>SubjectTest</include>
                         <include>TermMappingTestOverwritten</include>

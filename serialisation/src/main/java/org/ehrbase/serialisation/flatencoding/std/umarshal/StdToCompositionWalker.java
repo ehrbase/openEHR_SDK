@@ -447,7 +447,7 @@ public class StdToCompositionWalker extends ToCompositionWalker<Map<FlatPathDto,
         context.getObjectDeque().peek().keySet().stream()
             .filter(s -> s.startsWith(finalNamePath))
             .map(s -> FlatPathDto.removeStart(s, new FlatPathDto(finalNamePath)))
-            .filter(n -> n.getName().equals(childNode.getId()))
+            .filter(n -> n != null && n.getName().equals(childNode.getId()))
             .map(n -> Optional.ofNullable(n.getCount()).orElse(0))
             .sorted()
             .reduce((first, second) -> second)

@@ -80,8 +80,18 @@ public class CompositionConverterImp implements CompositionConverter {
       throws Exception {
     RMDataFormat flatJson = getFlatJson(template, FlatFormat.SIM_SDT);
     Map<String, Object> currentValues = new HashMap<>();
-    for (Iterator<Map.Entry<String, JsonNode>> it =
-            OBJECT_MAPPER.readTree(flatComposition).fields();
+
+    String fixed =
+        flatComposition
+            // fix wrong ":"
+            .replace(
+                "прием_пациента/метаданные/дата_и_время_создания_документа:2013-02-27T00:00\":\"00",
+                "прием_пациента/метаданные/дата_и_время_создания_документа\":\"2013-02-27T00:00:00")
+            // fix wrong ":"
+            .replace(
+                "прием_пациента/административная_информация/дата_приема:2013-03-22T00:00\":\"00",
+                "прием_пациента/административная_информация/дата_приема\":\"2013-03-22");
+    for (Iterator<Map.Entry<String, JsonNode>> it = OBJECT_MAPPER.readTree(fixed).fields();
         it.hasNext(); ) {
       Map.Entry<String, JsonNode> e = it.next();
       currentValues.put(e.getKey(), e.getValue().asText());
@@ -192,6 +202,11 @@ public class CompositionConverterImp implements CompositionConverter {
     addTerminology(
         currentValues, "adverse_drug_reaction_report/adverse_drug_reaction/medra_classification");
     addTerminology(currentValues, "medication_order/medication_detail/medication_action/medicine");
+
+    addTerminology(
+        currentValues, "прием_пациента/административная_информация/медицинское_учреждение");
+    addTerminology(currentValues, "прием_пациента/процедуры/request:0/название_процедуры");
+
     // instruction_details is an optional rm attribute and thus needs to be prefixed with '_'
     replaceKey(
         currentValues,
@@ -201,6 +216,18 @@ public class CompositionConverterImp implements CompositionConverter {
         currentValues,
         "приостановка_курса_лекарственной_терапии/сведения_о_выполнении:0/instruction_details|activity_id",
         "приостановка_курса_лекарственной_терапии/сведения_о_выполнении:0/_instruction_details|activity_id");
+
+    // add Attribute name and raise upper such that lower < upper
+    replaceKey(
+        currentValues,
+        "test/interval_quantity/fiels_for_test/upper",
+        "test/interval_quantity/fiels_for_test/upper|magnitude");
+    currentValues.replace("test/interval_quantity/fiels_for_test/upper|magnitude", "90", "130");
+
+    replaceKey(
+        currentValues,
+        "test/interval_quantity/fiels_for_test/lower",
+        "test/interval_quantity/fiels_for_test/lower|magnitude");
 
     // only iso date times are supported
     currentValues.replace("ctx/time", "1.2.2012 00:00", "2012-02-01T00:00");
@@ -217,6 +244,17 @@ public class CompositionConverterImp implements CompositionConverter {
         "vitals/vitals/haemoglobin_a1c/datetime_result_issued",
         "1/2/2012 8:07",
         "2012-02-01T00:00:00+01:00");
+
+    // date instead of datetime
+    currentValues.replace(
+        "прием_пациента_врачом-стоматологом-хирургом/административная_информация/дата_приема",
+        "2013-04-26T00:00:00",
+        "2013-04-26");
+
+    currentValues.replace(
+        "test/административная_информация/дата_приема",
+        "2013-06-03T00:00:00.000+06:00",
+        "2013-06-03");
 
     // fix doubles
     currentValues.replace("vitals/vitals/haemoglobin_a1c/any_event/hba1c", "5,1", "5.1");
@@ -260,6 +298,16 @@ public class CompositionConverterImp implements CompositionConverter {
       currentValues.put(
           "visual_acuity_report/visual_acuity:0/any_event:1/test_name|terminology", "terminology");
     }
+
+    // fix missing "_"
+    replaceKey(
+        currentValues,
+        "осмотр_терапевта/сведения_о_выполнении_назначения:0/выполнение:0/instruction_details|activity_id",
+        "осмотр_терапевта/сведения_о_выполнении_назначения:0/выполнение:0/_instruction_details|activity_id");
+    replaceKey(
+        currentValues,
+        "осмотр_терапевта/сведения_о_выполнении_назначения:0/выполнение:0/instruction_details|composition_uid",
+        "осмотр_терапевта/сведения_о_выполнении_назначения:0/выполнение:0/_instruction_details|composition_uid");
 
     Composition composition = flatJson.unmarshal(OBJECT_MAPPER.writeValueAsString(currentValues));
     String raw = new CanonicalJson().marshal(composition).replace("\"_type\"", "\"@class\"");
@@ -333,8 +381,20 @@ public class CompositionConverterImp implements CompositionConverter {
       String structuredComposition,
       Map<String, Object> compositionBuilderContext)
       throws Exception {
-    Composition composition =
-        getFlatJson(template, FlatFormat.STRUCTURED).unmarshal(structuredComposition);
+
+    String fixed =
+        structuredComposition
+            .replace("\"end_time\"", "\"_end_time\"")
+            .replace(
+                "\"дата_открытия_талона\":[\"20.03.2020\"]",
+                "\"дата_открытия_талона\":[\"2020-03-20\"]")
+            .replace(
+                "\"дата_закрытия_талона\":[\"20.03.2020\"]",
+                "\"дата_закрытия_талона\":[\"2020-03-20\"]")
+            .replace(
+                "\"дата_посещения\":[\"20.03.2020\"]", "\"дата_посещения\":[\"2020-03-20T00:00\"]");
+
+    Composition composition = getFlatJson(template, FlatFormat.STRUCTURED).unmarshal(fixed);
     return new CanonicalJson().marshal(composition).replace("\"_type\"", "\"@class\"");
   }
 
