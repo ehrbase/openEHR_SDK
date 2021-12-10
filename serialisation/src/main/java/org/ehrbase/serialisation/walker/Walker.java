@@ -69,7 +69,7 @@ public abstract class Walker<T> {
 
     Context<T> context = new Context<>();
 
-    context.getNodeDeque().push(root);
+    context.getNodeDeque().push(new WebTemplateNode(root));
     context.getObjectDeque().push(object);
     context.getRmObjectDeque().push(composition);
     context.setTemplateId(templateId);
