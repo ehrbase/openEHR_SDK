@@ -20,27 +20,28 @@
 package org.ehrbase.serialisation.flatencoding.std.umarshal.postprocessor;
 
 import com.nedap.archie.rm.RMObject;
+import org.ehrbase.serialisation.walker.Context;
 import org.ehrbase.util.reflection.ClassDependent;
+import org.ehrbase.webtemplate.path.flat.FlatPathDto;
 
 import java.util.Map;
 import java.util.Set;
 
 public interface UnmarshalPostprocessor<T extends RMObject> extends ClassDependent<T> {
 
-    /**
-     * Adds or removes Values from {@code values} depending on {@code rmObject}.
-     *
-     * @param term     current term in the unmarshal recursion.
-     * @param rmObject current rmObject in the unmarshal recursion.
-     * @param values   current values in the unmarshal recursion.
-     */
-    void process(String term, T rmObject, Map<String, String> values);
-
-    /**
-     * Can be called after {@code process} to get the set of consumed paths.
-     *
-     * @return
-     */
-    Set<String> getConsumedPaths();
-
+  /**
+   * Adds or removes Values from {@code values} depending on {@code rmObject}.
+   *
+   * @param term current term in the unmarshal recursion.
+   * @param rmObject current rmObject in the unmarshal recursion.
+   * @param values current values in the unmarshal recursion.
+   * @param consumedPaths
+   * @param context
+   */
+  void process(
+      String term,
+      T rmObject,
+      Map<FlatPathDto, String> values,
+      Set<String> consumedPaths,
+      Context<Map<FlatPathDto, String>> context);
 }

@@ -21,10 +21,10 @@ package org.ehrbase.serialisation.dbencoding;
 import com.nedap.archie.rm.composition.Composition;
 import org.apache.commons.io.IOUtils;
 import org.assertj.core.api.SoftAssertions;
+import org.ehrbase.serialisation.RMDataFormat;
 import org.ehrbase.serialisation.dbencoding.rawjson.LightRawJsonEncoder;
 import org.ehrbase.serialisation.flatencoding.FlatFormat;
 import org.ehrbase.serialisation.flatencoding.FlatJasonProvider;
-import org.ehrbase.serialisation.flatencoding.FlatJson;
 import org.ehrbase.serialisation.jsonencoding.CanonicalJson;
 import org.ehrbase.serialisation.templateprovider.TestDataTemplateProvider;
 import org.ehrbase.test_data.composition.CompositionTestDataSimSDTJson;
@@ -93,6 +93,7 @@ public class DBEncodeRoundTripTest {
                         "Extra path: test_all_types/category|terminology, value: openehr",
                         "Extra path: test_all_types/composer|id, value: b7c07d35-fa06-4280-8e65-eabdfbe64fdc",
                         "Extra path: test_all_types/composer|id_namespace, value: DEMOGRAPHIC",
+                        "Extra path: test_all_types/composer|id_scheme, value: test",
                         "Extra path: test_all_types/composer|name, value: Dr. House"
                 }));
 
@@ -196,7 +197,7 @@ public class DBEncodeRoundTripTest {
     public void checkTestCase(TestCase testCase, SoftAssertions softly) throws IOException {
 
         String value = IOUtils.toString(testCase.simSDTJson.getStream(), UTF_8);
-        FlatJson flatJson = new FlatJasonProvider(new TestDataTemplateProvider()).buildFlatJson(FlatFormat.SIM_SDT, testCase.templateId);
+        RMDataFormat flatJson = new FlatJasonProvider(new TestDataTemplateProvider()).buildFlatJson(FlatFormat.SIM_SDT, testCase.templateId);
 
         Composition composition = flatJson.unmarshal(value);
         assertThat(composition).isNotNull();
@@ -239,7 +240,7 @@ public class DBEncodeRoundTripTest {
     @Ignore
     public void testActivityRoundTrip() throws IOException {
         String value = new String(Files.readAllBytes(Paths.get("src/test/resources/sample_data/test_all_types_activity_flat.json")));
-        FlatJson flatJson = new FlatJasonProvider(new TestDataTemplateProvider()).buildFlatJson(FlatFormat.SIM_SDT, "test_all_types.en.v1");
+        RMDataFormat flatJson = new FlatJasonProvider(new TestDataTemplateProvider()).buildFlatJson(FlatFormat.SIM_SDT, "test_all_types.en.v1");
 
         Composition composition = flatJson.unmarshal(value);
         assertThat(composition).isNotNull();
@@ -266,7 +267,7 @@ public class DBEncodeRoundTripTest {
     @Ignore
     public void testIsmTransitionRoundTrip() throws IOException {
         String value = new String(Files.readAllBytes(Paths.get("src/test/resources/sample_data/test_all_types_ism_transition_flat.json")));
-        FlatJson flatJson = new FlatJasonProvider(new TestDataTemplateProvider()).buildFlatJson(FlatFormat.SIM_SDT, "test_all_types.en.v1");
+        RMDataFormat flatJson = new FlatJasonProvider(new TestDataTemplateProvider()).buildFlatJson(FlatFormat.SIM_SDT, "test_all_types.en.v1");
 
         Composition composition = flatJson.unmarshal(value);
         assertThat(composition).isNotNull();
@@ -292,7 +293,7 @@ public class DBEncodeRoundTripTest {
     @Ignore
     public void testCountRoundTrip() throws IOException {
         String value = new String(Files.readAllBytes(Paths.get("src/test/resources/sample_data/test_all_type_count_flat.json")));
-        FlatJson flatJson = new FlatJasonProvider(new TestDataTemplateProvider()).buildFlatJson(FlatFormat.SIM_SDT, "test_all_types.en.v1");
+        RMDataFormat flatJson = new FlatJasonProvider(new TestDataTemplateProvider()).buildFlatJson(FlatFormat.SIM_SDT, "test_all_types.en.v1");
 
         Composition composition = flatJson.unmarshal(value);
         assertThat(composition).isNotNull();
@@ -318,7 +319,7 @@ public class DBEncodeRoundTripTest {
     @Ignore
     public void testMathFunctionRoundTrip() throws IOException {
         String value = new String(Files.readAllBytes(Paths.get("src/test/resources/sample_data/corona_math_function_flat.json")));
-        FlatJson flatJson = new FlatJasonProvider(new TestDataTemplateProvider()).buildFlatJson(FlatFormat.SIM_SDT, "Corona_Anamnese");
+        RMDataFormat flatJson = new FlatJasonProvider(new TestDataTemplateProvider()).buildFlatJson(FlatFormat.SIM_SDT, "Corona_Anamnese");
 
         Composition composition = flatJson.unmarshal(value);
         assertThat(composition).isNotNull();
@@ -344,7 +345,7 @@ public class DBEncodeRoundTripTest {
     @Ignore
     public void testAlternativeEventsRoundTrip() throws IOException {
         String value = new String(Files.readAllBytes(Paths.get("src/test/resources/sample_data/alternative_events_reduced_flat.json")));
-        FlatJson flatJson = new FlatJasonProvider(new TestDataTemplateProvider()).buildFlatJson(FlatFormat.SIM_SDT, "AlternativeEvents");
+        RMDataFormat flatJson = new FlatJasonProvider(new TestDataTemplateProvider()).buildFlatJson(FlatFormat.SIM_SDT, "AlternativeEvents");
 
         Composition composition = flatJson.unmarshal(value);
         assertThat(composition).isNotNull();

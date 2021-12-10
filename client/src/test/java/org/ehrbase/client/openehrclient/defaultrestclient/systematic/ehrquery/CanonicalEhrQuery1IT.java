@@ -69,11 +69,12 @@ public class CanonicalEhrQuery1IT extends CanonicalUtil {
         openEhrClient.adminEhrEndpoint().delete(ehrUUID);
     }
 
+
+
     /**
      * create a basic ehr and check attributes
      */
     @Test
-    @Ignore("CR https://github.com/ehrbase/project_management/issues/478")
     public void testEhrAttributes(){
 
         //see issue CR #478 (cannot retrieve time_created via a get using the SDK)
@@ -94,7 +95,6 @@ public class CanonicalEhrQuery1IT extends CanonicalUtil {
     }
 
     @Test
-    @Ignore("CR https://github.com/ehrbase/project_management/issues/480")
     public void testEhrAttributesDrillDown1(){
 
         //see issue CR #... (cannot retrieve time_created via a get using the SDK)

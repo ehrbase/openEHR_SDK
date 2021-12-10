@@ -19,38 +19,16 @@
 
 package org.ehrbase.webtemplate.parser;
 
-import java.io.Serializable;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.stream.Collectors;
 import org.apache.commons.lang3.CharUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.ehrbase.webtemplate.model.ProportionType;
-import org.ehrbase.webtemplate.model.WebTemplateComparisonSymbol;
-import org.ehrbase.webtemplate.model.WebTemplateInput;
-import org.ehrbase.webtemplate.model.WebTemplateInputValue;
-import org.ehrbase.webtemplate.model.WebTemplateInterval;
-import org.ehrbase.webtemplate.model.WebTemplateNode;
-import org.ehrbase.webtemplate.model.WebTemplateValidation;
-import org.openehr.schemas.v1.CBOOLEAN;
-import org.openehr.schemas.v1.CDATE;
-import org.openehr.schemas.v1.CDATETIME;
-import org.openehr.schemas.v1.CDURATION;
-import org.openehr.schemas.v1.CINTEGER;
-import org.openehr.schemas.v1.CPRIMITIVE;
-import org.openehr.schemas.v1.CPRIMITIVEOBJECT;
-import org.openehr.schemas.v1.CREAL;
-import org.openehr.schemas.v1.CSTRING;
-import org.openehr.schemas.v1.CTIME;
-import org.openehr.schemas.v1.Interval;
-import org.openehr.schemas.v1.IntervalOfDuration;
-import org.openehr.schemas.v1.IntervalOfInteger;
-import org.openehr.schemas.v1.IntervalOfReal;
+import org.ehrbase.webtemplate.model.*;
+import org.openehr.schemas.v1.*;
+
+import java.io.Serializable;
+import java.util.*;
+import java.util.stream.Collectors;
+
+import static org.ehrbase.webtemplate.parser.OPTParser.extractChildren;
 
 public class InputHandler {
 
@@ -74,6 +52,13 @@ public class InputHandler {
     String pattern = null;
     WebTemplateInterval<?> range = null;
     WebTemplateValidation validation = new WebTemplateValidation();
+
+
+    Arrays.stream(extractChildren(item,"assumed_value"))
+            .findAny()
+            .map(a -> a.newCursor().getTextValue())
+            .ifPresent(input::setDefaultValue);
+
     boolean addValidation = false;
     if (item instanceof CDATETIME) {
 
@@ -223,7 +208,7 @@ public class InputHandler {
     return range;
   }
 
-  WebTemplateInput buildWebTemplateInput(String suffix, String type) {
+  public static WebTemplateInput buildWebTemplateInput(String suffix, String type) {
     WebTemplateInput date = new WebTemplateInput();
     date.setType(type);
     date.setSuffix(suffix);
@@ -316,7 +301,8 @@ public class InputHandler {
         denominator.setSuffix("denominator");
 
         List<ProportionType> proportionTypes =
-            Optional.ofNullable(templateInputMap.get("type")).map(WebTemplateInput::getList)
+            Optional.ofNullable(templateInputMap.get("type"))
+                .map(WebTemplateInput::getList)
                 .stream()
                 .flatMap(List::stream)
                 .map(WebTemplateInputValue::getValue)

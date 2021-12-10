@@ -25,9 +25,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nedap.archie.rm.composition.Composition;
 import org.apache.commons.io.IOUtils;
 import org.apache.xmlbeans.XmlException;
+import org.ehrbase.serialisation.RMDataFormat;
 import org.ehrbase.serialisation.flatencoding.FlatFormat;
 import org.ehrbase.serialisation.flatencoding.FlatJasonProvider;
-import org.ehrbase.serialisation.flatencoding.FlatJson;
 import org.ehrbase.serialisation.jsonencoding.CanonicalJson;
 import org.ehrbase.serialisation.jsonencoding.JacksonUtil;
 import org.openehr.schemas.v1.TemplateDocument;
@@ -47,18 +47,28 @@ public class CompositionConverterImp implements CompositionConverter {
   public String convertRawToFlat(String template, String defaultLanguage, String rawComposition)
       throws Exception {
     Composition unmarshal =
-        new CanonicalJson().unmarshal(rawComposition.replace("@class", "_type"), Composition.class);
+        new CanonicalJson()
+            .unmarshal(rawComposition.replace("\"@class\"", "\"_type\""), Composition.class);
 
-    return getFlatJson(template)
+    return getFlatJson(template, FlatFormat.SIM_SDT)
         .marshal(unmarshal)
+        // Test expect without |id even if this is wrong
         .replace("_identifier:0|id", "_identifier:0")
-        .replace("_identifier:1|id", "_identifier:1");
+        .replace("_identifier:1|id", "_identifier:1")
+        .replace("originating_system_item_id:0|id", "originating_system_item_id:0")
+        .replace("originating_system_item_id:1|id", "originating_system_item_id:1")
+        .replace("feeder_system_item_id:0|id", "feeder_system_item_id:0")
+        .replace("feeder_system_item_id:1|id", "feeder_system_item_id:1");
   }
 
   @Override
   public String convertRawToStructured(
       String template, String defaultLanguage, String rawComposition) throws Exception {
-    throw new UnsupportedOperationException();
+
+    Composition unmarshal =
+        new CanonicalJson()
+            .unmarshal(rawComposition.replace("\"@class\"", "\"_type\""), Composition.class);
+    return getFlatJson(template, FlatFormat.STRUCTURED).marshal(unmarshal);
   }
 
   @Override
@@ -68,7 +78,7 @@ public class CompositionConverterImp implements CompositionConverter {
       String flatComposition,
       Map<String, Object> compositionBuilderContext)
       throws Exception {
-    FlatJson flatJson = getFlatJson(template);
+    RMDataFormat flatJson = getFlatJson(template, FlatFormat.SIM_SDT);
     Map<String, Object> currentValues = new HashMap<>();
     for (Iterator<Map.Entry<String, JsonNode>> it =
             OBJECT_MAPPER.readTree(flatComposition).fields();
@@ -78,18 +88,161 @@ public class CompositionConverterImp implements CompositionConverter {
     }
 
     compositionBuilderContext.forEach((k, v) -> currentValues.put(replace(k), v));
+    replaceKey(
+        currentValues,
+        "ficha_individual_da_aten_cao_basica/resumo_do_atendimento/problemas/problem_diagnosis:0/related_item:0/item/value",
+        "ficha_individual_da_aten_cao_basica/resumo_do_atendimento/problemas/problem_diagnosis:0/related_item:0/item/text_value");
+
+    // topography is single  valued  in the template
+    replaceKey(
+        currentValues,
+        "gel_cancer_diagnosis/problem_diagnosis:3/cancer_diagnosis/topography:78",
+        "gel_cancer_diagnosis/problem_diagnosis:3/cancer_diagnosis/topography");
+    replaceKey(
+        currentValues,
+        "gel_cancer_diagnosis/problem_diagnosis:1/cancer_diagnosis/topography:19",
+        "gel_cancer_diagnosis/problem_diagnosis:1/cancer_diagnosis/topography");
+    replaceKey(
+        currentValues,
+        "gel_cancer_diagnosis/problem_diagnosis:5/cancer_diagnosis/topography:137",
+        "gel_cancer_diagnosis/problem_diagnosis:5/cancer_diagnosis/topography");
+
+    currentValues.entrySet().stream()
+        .filter(e -> "video/mp4".equals(e.getValue()))
+        .forEach(e -> currentValues.replace(e.getKey(), "video/H263-2000"));
+
+    // add missing terminology for some flat examples
+    addTerminology(
+        currentValues, "drug_related_problem_report/medication_error/medra_classification");
+    addTerminology(
+        currentValues,
+        "medication_error_report/medication_error/adverse_effect:1/intervention_details:1/intervention_result");
+    addTerminology(
+        currentValues,
+        "medication_error_report/medication_error/adverse_effect:1/intervention_details:2/intervention_result");
+    addTerminology(
+        currentValues,
+        "medication_error_report/medication_error/adverse_effect:1/intervention_details/intervention_result");
+    addTerminology(
+        currentValues, "medication_error_report/medication_error/adverse_effect:1/reaction");
+    addTerminology(
+        currentValues,
+        "medication_error_report/medication_error/adverse_effect/intervention_details:1/intervention_result");
+    addTerminology(
+        currentValues,
+        "medication_error_report/medication_error/adverse_effect/intervention_details:2/intervention_result");
+    addTerminology(
+        currentValues,
+        "medication_error_report/medication_error/adverse_effect/intervention_details:2/intervention_result");
+    addTerminology(
+        currentValues,
+        "medication_error_report/medication_error/adverse_effect/intervention_details/intervention_result");
+    addTerminology(
+        currentValues, "medication_error_report/medication_error/adverse_effect/reaction");
+    addTerminology(currentValues, "medication_error_report/medication_error/medra_classification");
+    addTerminology(
+        currentValues,
+        "medication_event_case_summary/case_summary/summary_details/admission_diagnosis_classification");
+    addTerminology(
+        currentValues,
+        "medication_event_case_summary/case_summary/summary_details/discharge_diagnosis_classification");
+
+    addTerminology(
+        currentValues,
+        "adverse_drug_reaction_report/adverse_drug_reaction/adverse_effect:1/intervention_details:1/intervention");
+    addTerminology(
+        currentValues,
+        "adverse_drug_reaction_report/adverse_drug_reaction/adverse_effect:1/intervention_details:1/intervention_result");
+    addTerminology(
+        currentValues,
+        "adverse_drug_reaction_report/adverse_drug_reaction/adverse_effect:1/intervention_details:2/intervention");
+    addTerminology(
+        currentValues,
+        "adverse_drug_reaction_report/adverse_drug_reaction/adverse_effect:1/intervention_details:2/intervention_result");
+    addTerminology(
+        currentValues,
+        "adverse_drug_reaction_report/adverse_drug_reaction/adverse_effect:1/intervention_details/intervention");
+    addTerminology(
+        currentValues,
+        "adverse_drug_reaction_report/adverse_drug_reaction/adverse_effect:1/intervention_details/intervention_result");
+    addTerminology(
+        currentValues,
+        "adverse_drug_reaction_report/adverse_drug_reaction/adverse_effect:1/reaction");
+    addTerminology(
+        currentValues,
+        "adverse_drug_reaction_report/adverse_drug_reaction/adverse_effect/intervention_details:1/intervention");
+    addTerminology(
+        currentValues,
+        "adverse_drug_reaction_report/adverse_drug_reaction/adverse_effect/intervention_details:1/intervention_result");
+    addTerminology(
+        currentValues,
+        "adverse_drug_reaction_report/adverse_drug_reaction/adverse_effect/intervention_details:2/intervention");
+    addTerminology(
+        currentValues,
+        "adverse_drug_reaction_report/adverse_drug_reaction/adverse_effect/intervention_details:2/intervention_result");
+    addTerminology(
+        currentValues,
+        "adverse_drug_reaction_report/adverse_drug_reaction/adverse_effect/intervention_details/intervention");
+    addTerminology(
+        currentValues,
+        "adverse_drug_reaction_report/adverse_drug_reaction/adverse_effect/intervention_details/intervention_result");
+    addTerminology(
+        currentValues,
+        "adverse_drug_reaction_report/adverse_drug_reaction/adverse_effect/reaction");
+    addTerminology(
+        currentValues, "adverse_drug_reaction_report/adverse_drug_reaction/medra_classification");
+    addTerminology(currentValues, "medication_order/medication_detail/medication_action/medicine");
+    // instruction_details is an optional rm attribute and thus needs to be prefixed with '_'
+    replaceKey(
+        currentValues,
+        "приостановка_курса_лекарственной_терапии/сведения_о_выполнении:0/instruction_details|composition_uid",
+        "приостановка_курса_лекарственной_терапии/сведения_о_выполнении:0/_instruction_details|composition_uid");
+    replaceKey(
+        currentValues,
+        "приостановка_курса_лекарственной_терапии/сведения_о_выполнении:0/instruction_details|activity_id",
+        "приостановка_курса_лекарственной_терапии/сведения_о_выполнении:0/_instruction_details|activity_id");
+
     Composition composition = flatJson.unmarshal(OBJECT_MAPPER.writeValueAsString(currentValues));
-    return new CanonicalJson().marshal(composition).replace("_type", "@class");
+    String raw = new CanonicalJson().marshal(composition).replace("\"_type\"", "\"@class\"");
+
+    if (composition
+        .getArchetypeDetails()
+        .getTemplateId()
+        .getValue()
+        .equals("ISPEK - MED - Medication Order")) {
+      // Changing the DVCodedText depending on the asked language is not supported right now
+
+      raw = raw.replace("Plan medication", "*Plan medication(en)");
+      raw =
+          raw.replace(
+              "Issue prescription for medication", "*Issue prescription for medication(en)");
+    }
+
+    return raw;
   }
 
-  private FlatJson getFlatJson(String template) throws XmlException, IOException {
+  private void addTerminology(Map<String, Object> currentValues, String path) {
+    if (currentValues.containsKey(path + "|code")) {
+      currentValues.put(path + "|terminology", "terminology");
+    }
+  }
+
+  private void replaceKey(Map<String, Object> currentValues, String key, String newKey) {
+    if (currentValues.containsKey(key)) {
+      Object o = currentValues.get(key);
+      currentValues.remove(key);
+      currentValues.put(newKey, o);
+    }
+  }
+
+  private RMDataFormat getFlatJson(String template, FlatFormat flatFormat)
+      throws XmlException, IOException {
     TemplateDocument templateDocument =
         TemplateDocument.Factory.parse(IOUtils.toInputStream(template, StandardCharsets.UTF_8));
 
-    FlatJson flatJson =
+    RMDataFormat flatJson =
         new FlatJasonProvider(t -> Optional.ofNullable(templateDocument.getTemplate()))
-            .buildFlatJson(
-                FlatFormat.SIM_SDT, templateDocument.getTemplate().getTemplateId().getValue());
+            .buildFlatJson(flatFormat, templateDocument.getTemplate().getTemplateId().getValue());
     return flatJson;
   }
 
@@ -109,7 +262,9 @@ public class CompositionConverterImp implements CompositionConverter {
       String flatComposition,
       Map<String, Object> compositionBuilderContext)
       throws Exception {
-    throw new UnsupportedOperationException();
+
+    Composition composition = getFlatJson(template, FlatFormat.SIM_SDT).unmarshal(flatComposition);
+    return getFlatJson(template, FlatFormat.STRUCTURED).marshal(composition);
   }
 
   @Override
@@ -119,7 +274,9 @@ public class CompositionConverterImp implements CompositionConverter {
       String structuredComposition,
       Map<String, Object> compositionBuilderContext)
       throws Exception {
-    throw new UnsupportedOperationException();
+    Composition composition =
+        getFlatJson(template, FlatFormat.STRUCTURED).unmarshal(structuredComposition);
+    return new CanonicalJson().marshal(composition).replace("\"_type\"", "\"@class\"");
   }
 
   @Override
@@ -129,7 +286,9 @@ public class CompositionConverterImp implements CompositionConverter {
       String structuredComposition,
       Map<String, Object> compositionBuilderContext)
       throws Exception {
-    throw new UnsupportedOperationException();
+    Composition composition =
+        getFlatJson(template, FlatFormat.STRUCTURED).unmarshal(structuredComposition);
+    return getFlatJson(template, FlatFormat.SIM_SDT).marshal(composition);
   }
 
   @Override

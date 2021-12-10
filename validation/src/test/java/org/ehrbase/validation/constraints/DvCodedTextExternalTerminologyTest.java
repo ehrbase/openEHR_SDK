@@ -27,108 +27,155 @@ import org.ehrbase.validation.constraints.terminology.FhirTerminologyValidationS
 import org.ehrbase.validation.constraints.wrappers.CArchetypeConstraint;
 import org.ehrbase.validation.constraints.wrappers.ValidationException;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 import java.io.IOException;
 
+/**
+ * Tests for external FHIR terminology server validation.
+ * <p>
+ * Note: This class use Mockito.
+ */
 @SuppressWarnings("HttpUrlsUsage")
 public class DvCodedTextExternalTerminologyTest extends ConstraintTestBase {
 
-    private final FhirTerminologyValidationSupport fhirTerminologyValidator = new FhirTerminologyValidationSupport("https://r4.ontoserver.csiro.au/fhir");
+    private FhirTerminologyValidationSupport fhirTerminologyValidatorMock;
+
+    @Before
+    public void setUp() {
+        fhirTerminologyValidatorMock = Mockito.mock(FhirTerminologyValidationSupport.class);
+    }
 
     @Test
     public void testFhirCodeSystem() throws IOException, XmlException {
         setUpContext("./src/test/resources/constraints/terminology/fhir_codesystem.xml");
+        CodePhrase codePhrase = new CodePhrase(new TerminologyId("http://hl7.org/fhir/observation-status"), "final");
 
-        CodePhrase codePhrase = new CodePhrase(new TerminologyId("http://terminology.hl7.org/CodeSystem/FDI-surface"), "B");
-        DvCodedText dvCodedText = new DvCodedText("Buccal", codePhrase);
+        Mockito.when(fhirTerminologyValidatorMock.supports("terminology://fhir.hl7.org/CodeSystem?url=http://hl7.org/fhir/observation-status"))
+                .thenReturn(true);
+        Mockito.doNothing()
+                .when(fhirTerminologyValidatorMock)
+                .validate("test", "terminology://fhir.hl7.org/CodeSystem?url=http://hl7.org/fhir/observation-status", codePhrase);
 
-        new CArchetypeConstraint(null, fhirTerminologyValidator).validate("test", dvCodedText, archetypeconstraint);
+        DvCodedText dvCodedText = new DvCodedText("Final", codePhrase);
+        new CArchetypeConstraint(null, fhirTerminologyValidatorMock).validate("test", dvCodedText, archetypeconstraint);
     }
 
     @Test
     public void testFhirCodeSystem_WrongTerminologyId() throws IOException, XmlException {
         setUpContext("./src/test/resources/constraints/terminology/fhir_codesystem.xml");
+        CodePhrase codePhrase = new CodePhrase(new TerminologyId("http://hl7.org/fhir/name-use"), "usual");
 
-        CodePhrase codePhrase = new CodePhrase(new TerminologyId("http://terminology.hl7.org/CodeSystem/v2-0444"), "G");
-        DvCodedText dvCodedText = new DvCodedText("Prefix Given Middle Family Suffix", codePhrase);
+        Mockito.when(fhirTerminologyValidatorMock.supports("terminology://fhir.hl7.org/CodeSystem?url=http://hl7.org/fhir/observation-status"))
+                .thenReturn(true);
+        Mockito.doThrow(new ValidationException("test", "CODE_PHRASE_02:CodePhrase terminology does not match, " +
+                "expected: http://hl7.org/fhir/observation-status, found: http://hl7.org/fhir/name-use"))
+                .when(fhirTerminologyValidatorMock)
+                .validate("test", "terminology://fhir.hl7.org/CodeSystem?url=http://hl7.org/fhir/observation-status", codePhrase);
 
-        CArchetypeConstraint constraint = new CArchetypeConstraint(null, fhirTerminologyValidator);
+        DvCodedText dvCodedText = new DvCodedText("Usual", codePhrase);
+        CArchetypeConstraint constraint = new CArchetypeConstraint(null, fhirTerminologyValidatorMock);
         ValidationException ex = Assert.assertThrows(ValidationException.class, () -> constraint.validate("test", dvCodedText, archetypeconstraint));
 
         Assert.assertEquals("Validation error at test, ELT01:Validation error at test, CODE_PHRASE_02:CodePhrase terminology does not match, " +
-                "expected: http://terminology.hl7.org/CodeSystem/FDI-surface, found: http://terminology.hl7.org/CodeSystem/v2-0444", ex.getMessage());
+                "expected: http://hl7.org/fhir/observation-status, found: http://hl7.org/fhir/name-use", ex.getMessage());
     }
 
     @Test
     public void testFhirCodeSystem_WrongCode() throws IOException, XmlException {
         setUpContext("./src/test/resources/constraints/terminology/fhir_codesystem.xml");
+        CodePhrase codePhrase = new CodePhrase(new TerminologyId("http://hl7.org/fhir/observation-status"), "casual");
 
-        CodePhrase codePhrase = new CodePhrase(new TerminologyId("http://terminology.hl7.org/CodeSystem/FDI-surface"), "G");
-        DvCodedText dvCodedText = new DvCodedText("Prefix Given Middle Family Suffix", codePhrase);
+        Mockito.when(fhirTerminologyValidatorMock.supports("terminology://fhir.hl7.org/CodeSystem?url=http://hl7.org/fhir/observation-status"))
+                .thenReturn(true);
+        Mockito.doThrow(new ValidationException("test", "CODE_PHRASE_03:The specified code 'casual' is not known " +
+                "to belong to the specified code system 'http://hl7.org/fhir/observation-status'"))
+                .when(fhirTerminologyValidatorMock)
+                .validate("test", "terminology://fhir.hl7.org/CodeSystem?url=http://hl7.org/fhir/observation-status", codePhrase);
 
-        CArchetypeConstraint constraint = new CArchetypeConstraint(null, fhirTerminologyValidator);
+        DvCodedText dvCodedText = new DvCodedText("Casual", codePhrase);
+        CArchetypeConstraint constraint = new CArchetypeConstraint(null, fhirTerminologyValidatorMock);
         ValidationException ex = Assert.assertThrows(ValidationException.class, () -> constraint.validate("test", dvCodedText, archetypeconstraint));
 
-        Assert.assertEquals("Validation error at test, ELT01:Validation error at test, CODE_PHRASE_03:The specified code 'G' " +
-                "is not known to belong to the specified code system 'http://terminology.hl7.org/CodeSystem/FDI-surface'", ex.getMessage());
+        Assert.assertEquals("Validation error at test, ELT01:Validation error at test, CODE_PHRASE_03:The specified code 'casual' " +
+                "is not known to belong to the specified code system 'http://hl7.org/fhir/observation-status'", ex.getMessage());
     }
 
     @Test
     public void testFhirValueSet() throws IOException, XmlException {
         setUpContext("./src/test/resources/constraints/terminology/fhir_valueset.xml");
+        CodePhrase codePhrase = new CodePhrase(new TerminologyId("http://terminology.hl7.org/CodeSystem/v3-EntityNameUseR2"), "UKN");
+        DvCodedText dvCodedText = new DvCodedText("Anonymous", codePhrase);
 
-        CodePhrase codePhrase = new CodePhrase(new TerminologyId("http://hl7.org/fhir/ValueSet/surface"), "B");
-        DvCodedText dvCodedText = new DvCodedText("Buccal", codePhrase);
+        Mockito.when(fhirTerminologyValidatorMock.supports("terminology://fhir.hl7.org/ValueSet/$expand?url=http://terminology.hl7.org/ValueSet/v3-EntityNameUseR2"))
+                .thenReturn(true);
+        Mockito.doNothing()
+                .when(fhirTerminologyValidatorMock)
+                .validate("test", "terminology://fhir.hl7.org/ValueSet/$expand?url=http://terminology.hl7.org/ValueSet/v3-EntityNameUseR2", codePhrase);
 
-        new CArchetypeConstraint(null, fhirTerminologyValidator).validate("test", dvCodedText, archetypeconstraint);
+        new CArchetypeConstraint(null, fhirTerminologyValidatorMock).validate("test", dvCodedText, archetypeconstraint);
     }
 
     @Test
     public void testFhirValueSet_WrongTerminologyId() throws IOException, XmlException {
         setUpContext("./src/test/resources/constraints/terminology/fhir_valueset.xml");
+        CodePhrase codePhrase = new CodePhrase(new TerminologyId("http://snomed.info/sct"), "ANON");
+        DvCodedText dvCodedText = new DvCodedText("Anonymous", codePhrase);
 
-        CodePhrase codePhrase = new CodePhrase(new TerminologyId("https://www.netzwerk-universitaetsmedizin.de/fhir/ValueSet/frailty-score"), "4");
-        DvCodedText dvCodedText = new DvCodedText("Vulnerable", codePhrase);
+        Mockito.when(fhirTerminologyValidatorMock.supports("terminology://fhir.hl7.org/ValueSet/$expand?url=http://terminology.hl7.org/ValueSet/v3-EntityNameUseR2"))
+                .thenReturn(true);
+        Mockito.doThrow(new ValidationException("test", "CODE_PHRASE_02:CodePhrase terminology does not match, " +
+                "expected: http://terminology.hl7.org/CodeSystem/v3-EntityNameUseR2, found: http://snomed.info/sct"))
+                .when(fhirTerminologyValidatorMock)
+                .validate("test", "terminology://fhir.hl7.org/ValueSet/$expand?url=http://terminology.hl7.org/ValueSet/v3-EntityNameUseR2", codePhrase);
 
-        CArchetypeConstraint constraint = new CArchetypeConstraint(null, fhirTerminologyValidator);
+        CArchetypeConstraint constraint = new CArchetypeConstraint(null, fhirTerminologyValidatorMock);
         ValidationException ex = Assert.assertThrows(ValidationException.class, () -> constraint.validate("test", dvCodedText, archetypeconstraint));
 
         Assert.assertEquals("Validation error at test, ELT01:Validation error at test, CODE_PHRASE_02:CodePhrase terminology does not match, " +
-                "expected: http://hl7.org/fhir/ValueSet/surface, found: https://www.netzwerk-universitaetsmedizin.de/fhir/ValueSet/frailty-score", ex.getMessage());
+                "expected: http://terminology.hl7.org/CodeSystem/v3-EntityNameUseR2, found: http://snomed.info/sct", ex.getMessage());
     }
 
     @Test
     public void testFhirValueSet_WrongCode() throws IOException, XmlException {
         setUpContext("./src/test/resources/constraints/terminology/fhir_valueset.xml");
+        CodePhrase codePhrase = new CodePhrase(new TerminologyId("http://terminology.hl7.org/CodeSystem/v3-EntityNameUseR2"), "UKN");
+        DvCodedText dvCodedText = new DvCodedText("Unknown", codePhrase);
 
-        CodePhrase codePhrase = new CodePhrase(new TerminologyId("http://hl7.org/fhir/ValueSet/surface"), "4");
-        DvCodedText dvCodedText = new DvCodedText("Vulnerable", codePhrase);
+        Mockito.when(fhirTerminologyValidatorMock.supports("terminology://fhir.hl7.org/ValueSet/$expand?url=http://terminology.hl7.org/ValueSet/v3-EntityNameUseR2"))
+                .thenReturn(true);
+        Mockito.doThrow(new ValidationException("test", "CODE_PHRASE_03:CodePhrase codeString does not match any option " +
+                        "from the specified ValueSet http://terminology.hl7.org/ValueSet/v3-EntityNameUseR2, found: UKN"))
+                .when(fhirTerminologyValidatorMock)
+                .validate("test", "terminology://fhir.hl7.org/ValueSet/$expand?url=http://terminology.hl7.org/ValueSet/v3-EntityNameUseR2", codePhrase);
 
-        CArchetypeConstraint constraint = new CArchetypeConstraint(null, fhirTerminologyValidator);
+        CArchetypeConstraint constraint = new CArchetypeConstraint(null, fhirTerminologyValidatorMock);
         ValidationException ex = Assert.assertThrows(ValidationException.class, () -> constraint.validate("test", dvCodedText, archetypeconstraint));
 
-        Assert.assertEquals("Validation error at test, ELT01:Validation error at test, CODE_PHRASE_03:CodePhrase codeString does not match any option, found:4", ex.getMessage());
+        Assert.assertEquals("Validation error at test, ELT01:Validation error at test, CODE_PHRASE_03:CodePhrase codeString does not match any option " +
+                "from the specified ValueSet http://terminology.hl7.org/ValueSet/v3-EntityNameUseR2, found: UKN", ex.getMessage());
     }
 
     @Test
     public void testFailOnError_Enabled() throws IOException, XmlException {
-        FhirTerminologyValidationSupport validationSupport = new FhirTerminologyValidationSupport("https://r4.ontoserver.csiro.fr/fhir");
+        FhirTerminologyValidationSupport validationSupport = new FhirTerminologyValidationSupport("https://wrong.terminology.server/fhir");
         setUpContext("./src/test/resources/constraints/terminology/fhir_codesystem.xml");
 
-        CodePhrase codePhrase = new CodePhrase(new TerminologyId("http://terminology.hl7.org/CodeSystem/FDI-surface"), "B");
+        CodePhrase codePhrase = new CodePhrase(new TerminologyId("http://hl7.org/fhir/observation-status"), "B");
         DvCodedText dvCodedText = new DvCodedText("Buccal", codePhrase);
 
         CArchetypeConstraint constraint = new CArchetypeConstraint(null, validationSupport);
         ExternalTerminologyValidationException ex = Assert.assertThrows(ExternalTerminologyValidationException.class, () -> constraint.validate("test", dvCodedText, archetypeconstraint));
 
         Assert.assertEquals("An error occurred while checking if FHIR terminology server supports the referenceSetUri: " +
-                "terminology://fhir.hl7.org/CodeSystem?url=http://terminology.hl7.org/CodeSystem/FDI-surface", ex.getMessage());
+                "terminology://fhir.hl7.org/CodeSystem?url=http://hl7.org/fhir/observation-status", ex.getMessage());
     }
 
     @Test
     public void testFailOnError_Disabled() throws IOException, XmlException {
-        FhirTerminologyValidationSupport validationSupport = new FhirTerminologyValidationSupport("https://r4.ontoserver.csiro.fr/fhir", false);
+        FhirTerminologyValidationSupport validationSupport = new FhirTerminologyValidationSupport("https://wrong.terminology.server/fhir", false);
         setUpContext("./src/test/resources/constraints/terminology/fhir_codesystem.xml");
 
         CodePhrase codePhrase = new CodePhrase(new TerminologyId("http://terminology.hl7.org/CodeSystem/FDI-surface"), "B");

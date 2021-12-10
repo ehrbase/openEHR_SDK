@@ -26,11 +26,21 @@ public enum CompositionTestDataSimSDTJson {
   VITALSIGNS("Vitalsigns", "Vitalsigns.json"),
   ADVERSE_REACTION_LIST("AlternativeEvents", "IDCR - Adverse Reaction List.json"),
   CORONA("Corona", "corona.json"),
+  CORONA_WITH_OTHER_PARTICIPATION("Corona", "corona_with_other_participation.json"),
   CORONA_WITH_CONTEXT("Corona", "corona_with_context.json"),
+  CORONA_WITH_FEEDER_AUDIT("Corona with feeder audit", "corona_with_feeder_audit.json"),
+  CORONA_WITH_FEEDER_AUDIT_RAW(
+      "Corona with feeder audit in Raw", "corona_with_feeder_audit_raw.json"),
+  CORONA_WITH_RAW("Corona with raw field", "corona_with_raw.json"),
   MULTI_OCCURRENCE("multi_occurrence", "multi_occurrence.json"),
+  MISSING_COUNT("flat_with_missing_count.json", "flat_with_missing_count.json"),
   ALL_TYPES("test_all_types", "test_all_types.json"),
+  WORD_WITH_AND("Template with archetype with and in name ", "wordwithandin_test.json"),
   DETERIORIATION_ASSESSMENT(
-      "EREACT - Deterioration_assessment", "EREACT - Deterioration_assessment.json");
+      "EREACT - Deterioration_assessment", "EREACT - Deterioration_assessment.json"),
+  MULTI_LIST("MULTI_LIST", "multi_list.json"),
+  NCD("NCD", "NCD.json"),
+  EREACT_COVID_MANAGEMENT("flat with action", "EREACT - Covid status monitoring - FLAT.json");
 
   private final String filename;
   private final String description;

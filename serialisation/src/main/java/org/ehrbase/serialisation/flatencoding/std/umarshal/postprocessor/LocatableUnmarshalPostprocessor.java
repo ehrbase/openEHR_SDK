@@ -19,44 +19,46 @@
 
 package org.ehrbase.serialisation.flatencoding.std.umarshal.postprocessor;
 
+import com.nedap.archie.rm.archetyped.FeederAudit;
 import com.nedap.archie.rm.archetyped.Locatable;
 import com.nedap.archie.rm.composition.Composition;
+import com.nedap.archie.rm.datavalues.DvCodedText;
+import com.nedap.archie.rm.datavalues.DvText;
 import com.nedap.archie.rm.support.identification.HierObjectId;
-import org.apache.commons.lang3.StringUtils;
+import org.ehrbase.serialisation.walker.Context;
+import org.ehrbase.serialisation.walker.FlatHelper;
 import org.ehrbase.serialisation.walker.defaultvalues.DefaultValues;
+import org.ehrbase.webtemplate.path.flat.FlatPathDto;
 
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
-import static org.ehrbase.serialisation.walker.defaultvalues.DefaultValues.ATTRIBUTE_COLLECTOR;
+import static org.ehrbase.serialisation.walker.FlatHelper.consumeAllMatching;
+import static org.ehrbase.serialisation.walker.FlatHelper.extractMultiValued;
 import static org.ehrbase.webtemplate.parser.OPTParser.PATH_DIVIDER;
 
 public class LocatableUnmarshalPostprocessor extends AbstractUnmarshalPostprocessor<Locatable> {
 
   /** {@inheritDoc} Unmarshalls {@link Composition#setUid} */
   @Override
-  public void process(String term, Locatable rmObject, Map<String, String> values) {
+  public void process(
+      String term,
+      Locatable rmObject,
+      Map<FlatPathDto, String> values,
+      Set<String> consumedPaths,
+      Context<Map<FlatPathDto, String>> context) {
 
     setValue(
         term + PATH_DIVIDER + "_uid",
         null,
         values,
         s -> rmObject.setUid(new HierObjectId(s)),
-        String.class);
+        String.class,
+        consumedPaths);
 
-    Map<Integer, Map<String, String>> links =
-        values.entrySet().stream()
-            .filter(s -> StringUtils.startsWith(s.getKey(), term + PATH_DIVIDER + "_link"))
-            .collect(
-                Collectors.groupingBy(
-                    e -> {
-                      String s =
-                          StringUtils.substringBefore(
-                              StringUtils.substringAfter(e.getKey(), ":"), "|");
-                      return StringUtils.isBlank(s) ? 0 : Integer.parseInt(s);
-                    },
-                    ATTRIBUTE_COLLECTOR));
+    Map<Integer, Map<String, String>> links = extractMultiValued(term, "_link", values);
 
     if (rmObject.getLinks() == null) {
       rmObject.setLinks(new ArrayList<>());
@@ -66,6 +68,42 @@ public class LocatableUnmarshalPostprocessor extends AbstractUnmarshalPostproces
         .getLinks()
         .addAll(
             links.values().stream().map(DefaultValues::createLink).collect(Collectors.toList()));
+
+    consumeAllMatching(term + PATH_DIVIDER + "_link", values, consumedPaths);
+
+    Map<FlatPathDto, String> feederAuditValues =
+        FlatHelper.filter(values, term + "/_feeder_audit", false);
+
+    if (!feederAuditValues.isEmpty()) {
+
+      rmObject.setFeederAudit(new FeederAudit());
+      handleRmAttribute(
+          term,
+          rmObject.getFeederAudit(),
+          feederAuditValues,
+          consumedPaths,
+          context,
+          "feeder_audit");
+    }
+
+    Map<FlatPathDto, String> nameValues = FlatHelper.filter(values, term + "/_name", false);
+    if (!nameValues.isEmpty()) {
+      final DvText name;
+      boolean isDvCodedText =
+          nameValues.keySet().stream()
+              .anyMatch(
+                  e ->
+                      "code".equals(e.getLast().getAttributeName())
+                          && "_name".equals(e.getLast().getName()));
+
+      if (isDvCodedText) {
+        name = new DvCodedText();
+      } else {
+        name = new DvText();
+      }
+      rmObject.setName(name);
+      handleRmAttribute(term, rmObject.getName(), nameValues, consumedPaths, context, "name");
+    }
   }
 
   /** {@inheritDoc} */

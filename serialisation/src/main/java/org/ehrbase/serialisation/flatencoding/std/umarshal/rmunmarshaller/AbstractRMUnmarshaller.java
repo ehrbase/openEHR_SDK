@@ -28,6 +28,7 @@ import org.ehrbase.serialisation.walker.Context;
 import org.ehrbase.util.exception.SdkException;
 import org.ehrbase.util.reflection.ReflectionHelper;
 import org.ehrbase.webtemplate.parser.config.RmIntrospectConfig;
+import org.ehrbase.webtemplate.path.flat.FlatPathDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,7 +36,6 @@ import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -43,90 +43,106 @@ import java.util.function.Consumer;
 
 public abstract class AbstractRMUnmarshaller<T extends RMObject> implements RMUnmarshaller<T> {
 
-    private static final ObjectMapper OBJECT_MAPPER = JacksonUtil.getObjectMapper();
-    private static final Map<Class<?>, RmIntrospectConfig> configMap = ReflectionHelper.buildMap(RmIntrospectConfig.class);
-    private final Logger log = LoggerFactory.getLogger(getClass());
+  private static final ObjectMapper OBJECT_MAPPER = JacksonUtil.getObjectMapper();
+  private static final Map<Class<?>, RmIntrospectConfig> configMap =
+      ReflectionHelper.buildMap(RmIntrospectConfig.class);
+  private final Logger log = LoggerFactory.getLogger(getClass());
 
-    protected final Set<String> consumedPath = new HashSet<>();
+  /** {@inheritDoc} Use {@link RmIntrospectConfig} to find die properties which needs to be set */
+  public void handle(
+      String currentTerm,
+      T rmObject,
+      Map<FlatPathDto, String> currentValues,
+      Context<Map<FlatPathDto, String>> context,
+      Set<String> consumedPaths) {
 
+    Set<String> expandFields =
+        Optional.ofNullable(configMap.get(rmObject.getClass()))
+            .map(RmIntrospectConfig::getNonTemplateFields)
+            .orElse(Collections.emptySet());
+    if (!expandFields.isEmpty()) {
 
-    /**
-     * {@inheritDoc}
-     * Use {@link RmIntrospectConfig} to find die properties which needs to be set
-     */
-    public void handle(String currentTerm, T rmObject, Map<String, String> currentValues, Context<Map<String, String>> context) {
+      if (expandFields.size() == 1 && expandFields.contains("value")) {
 
+        try {
+          PropertyDescriptor propertyDescriptor =
+              new PropertyDescriptor("value", rmObject.getClass());
 
-        Set<String> expandFields = Optional.ofNullable(configMap.get(rmObject.getClass()))
-                .map(RmIntrospectConfig::getNonTemplateFields)
-                .orElse(Collections.emptySet());
-        if (!expandFields.isEmpty()) {
-
-            if (expandFields.size() == 1 && expandFields.contains("value")) {
-
+          setValue(
+              currentTerm,
+              null,
+              currentValues,
+              s -> {
                 try {
-                    PropertyDescriptor propertyDescriptor = new PropertyDescriptor("value", rmObject.getClass());
+                  propertyDescriptor.getWriteMethod().invoke(rmObject, s);
+                } catch (IllegalAccessException | InvocationTargetException e) {
+                  throw new SdkException(e.getMessage(), e);
+                }
+              },
+              propertyDescriptor.getPropertyType(),
+              consumedPaths);
+        } catch (IntrospectionException e) {
+          throw new SdkException(e.getMessage(), e);
+        }
 
-                    setValue(currentTerm, null, currentValues, s -> {
-                        try {
-                            propertyDescriptor.getWriteMethod().invoke(rmObject, s);
-                        } catch (IllegalAccessException | InvocationTargetException e) {
-                            throw new SdkException(e.getMessage(), e);
-                        }
-                    }, propertyDescriptor.getPropertyType());
-                } catch (IntrospectionException e) {
+      } else {
+        for (String propertyName : expandFields) {
+          try {
+            PropertyDescriptor propertyDescriptor =
+                new PropertyDescriptor(propertyName, rmObject.getClass());
+            setValue(
+                currentTerm,
+                propertyName,
+                currentValues,
+                s -> {
+                  try {
+                    propertyDescriptor.getWriteMethod().invoke(rmObject, s);
+                  } catch (IllegalAccessException | InvocationTargetException e) {
                     throw new SdkException(e.getMessage(), e);
-                }
-
-            } else {
-                for (String propertyName : expandFields) {
-                    try {
-                        PropertyDescriptor propertyDescriptor = new PropertyDescriptor(propertyName, rmObject.getClass());
-                        setValue(currentTerm, propertyName, currentValues, s -> {
-                            try {
-                                propertyDescriptor.getWriteMethod().invoke(rmObject, s);
-                            } catch (IllegalAccessException | InvocationTargetException e) {
-                                throw new SdkException(e.getMessage(), e);
-                            }
-                        }, propertyDescriptor.getPropertyType());
-                    } catch (IntrospectionException e) {
-                        throw new SdkException(e.getMessage(), e);
-                    }
-                }
-            }
-
+                  }
+                },
+                propertyDescriptor.getPropertyType(),
+                consumedPaths);
+          } catch (IntrospectionException e) {
+            throw new SdkException(e.getMessage(), e);
+          }
         }
+      }
     }
+  }
 
-    /**
-     * Sets the {@code consumer} to the value in {@code values} corresponding to {@code term} and {@code propertyName}
-     *
-     * @param term
-     * @param propertyName
-     * @param values
-     * @param consumer
-     * @param clazz
-     * @param <S>
-     */
-    protected <S> void setValue(String term, String propertyName, Map<String, String> values, Consumer<S> consumer, Class<S> clazz) {
-        String key = propertyName != null ? term + "|" + propertyName : term;
-        String jasonValue = values.get(key);
-        if (StringUtils.isNotBlank(jasonValue)) {
-            try {
-                S value = OBJECT_MAPPER.readValue(jasonValue, clazz);
-                consumer.accept(value);
-                consumedPath.add(key);
-            } catch (JsonProcessingException e) {
-                log.error(e.getMessage());
-            }
-        } else {
-            consumer.accept(null);
-            consumedPath.add(key);
-        }
+  /**
+   * Sets the {@code consumer} to the value in {@code values} corresponding to {@code term} and
+   * {@code propertyName}
+   *
+   * @param <S>
+   * @param term
+   * @param propertyName
+   * @param values
+   * @param consumer
+   * @param clazz
+   * @param consumedPaths
+   */
+  protected <S> void setValue(
+      String term,
+      String propertyName,
+      Map<FlatPathDto, String> values,
+      Consumer<S> consumer,
+      Class<S> clazz,
+      Set<String> consumedPaths) {
+    String key = propertyName != null ? term + "|" + propertyName : term;
+    Map.Entry<FlatPathDto, String> entry = FlatPathDto.get(values, key);
+    String jasonValue = entry.getValue();
+    if (StringUtils.isNotBlank(jasonValue)) {
+      try {
+        S value = OBJECT_MAPPER.readValue(jasonValue, clazz);
+        consumer.accept(value);
+        consumedPaths.add(entry.getKey().format());
+      } catch (JsonProcessingException e) {
+        log.error(e.getMessage());
+      }
+    } else {
+      consumer.accept(null);
     }
-
-    @Override
-    public Set<String> getConsumedPaths() {
-        return consumedPath;
-    }
+  }
 }

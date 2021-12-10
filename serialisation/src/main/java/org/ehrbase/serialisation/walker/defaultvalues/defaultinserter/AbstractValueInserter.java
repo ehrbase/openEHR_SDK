@@ -20,64 +20,19 @@
 package org.ehrbase.serialisation.walker.defaultvalues.defaultinserter;
 
 import com.nedap.archie.rm.RMObject;
-import com.nedap.archie.rm.datatypes.CodePhrase;
-import com.nedap.archie.rm.datavalues.DvCodedText;
-import com.nedap.archie.rm.datavalues.DvText;
-import com.nedap.archie.rm.datavalues.encapsulated.DvParsable;
-import com.nedap.archie.rm.datavalues.quantity.datetime.DvDateTime;
-import com.nedap.archie.rm.generic.Participation;
 import com.nedap.archie.rm.generic.PartyIdentified;
 import com.nedap.archie.rm.generic.PartyProxy;
 import com.nedap.archie.rm.support.identification.GenericId;
 import com.nedap.archie.rm.support.identification.PartyRef;
-import org.apache.commons.collections4.CollectionUtils;
+import org.ehrbase.serialisation.walker.RMHelper;
 import org.ehrbase.serialisation.walker.defaultvalues.DefaultValuePath;
 import org.ehrbase.serialisation.walker.defaultvalues.DefaultValues;
-
-import java.util.Collection;
 
 public abstract class AbstractValueInserter<T extends RMObject> implements DefaultValueInserter<T> {
 
   protected boolean isEmpty(Object rmObject) {
-    if (rmObject == null) {
-      return true;
-    }
 
-    if (rmObject instanceof Collection) {
-      return ((Collection<?>) rmObject).isEmpty()
-          || ((Collection<?>) rmObject).stream().allMatch(this::isEmpty);
-    }
-
-    if (rmObject instanceof Participation) {
-      return ((Participation) rmObject).getPerformer() == null;
-    }
-
-    if (rmObject instanceof CodePhrase) {
-      return ((CodePhrase) rmObject).getCodeString() == null;
-    }
-
-    if (rmObject instanceof DvCodedText) {
-      return ((DvCodedText) rmObject).getValue() == null;
-    }
-
-    if (rmObject instanceof DvText) {
-      return ((DvText) rmObject).getValue() == null;
-    }
-
-    if (rmObject instanceof PartyIdentified) {
-      return ((PartyIdentified) rmObject).getName() == null
-          && CollectionUtils.isEmpty(((PartyIdentified) rmObject).getIdentifiers());
-    }
-
-    if (rmObject instanceof DvDateTime) {
-      return ((DvDateTime) rmObject).getValue() == null;
-    }
-
-    if (rmObject instanceof DvParsable) {
-      return ((DvParsable) rmObject).getValue() == null
-          && ((DvParsable) rmObject).getFormalism() == null;
-    }
-    return false;
+    return RMHelper.isEmpty(rmObject);
   }
 
   protected PartyIdentified buildPartyIdentified(
@@ -98,6 +53,7 @@ public abstract class AbstractValueInserter<T extends RMObject> implements Defau
 
       PartyRef partyRef = new PartyRef();
       partyRef.setNamespace(defaultValues.getDefaultValue(DefaultValuePath.ID_NAMESPACE));
+      partyRef.setType("PARTY");
       partyRef.setId(
           new GenericId(
               defaultValues.getDefaultValue(id),
@@ -112,12 +68,12 @@ public abstract class AbstractValueInserter<T extends RMObject> implements Defau
 
   protected void addSchemeNamespace(PartyRef partyRef, DefaultValues defaultValues) {
     if (partyRef != null) {
-      if (isEmpty(partyRef.getNamespace())
+      if (RMHelper.isEmpty(partyRef.getNamespace())
           && defaultValues.containsDefaultValue(DefaultValuePath.ID_NAMESPACE)) {
         partyRef.setNamespace(defaultValues.getDefaultValue(DefaultValuePath.ID_NAMESPACE));
       }
       if (partyRef.getId() instanceof GenericId
-          && isEmpty(((GenericId) partyRef.getId()).getScheme())
+          && RMHelper.isEmpty(((GenericId) partyRef.getId()).getScheme())
           && defaultValues.containsDefaultValue(DefaultValuePath.ID_NAMESPACE)) {
         ((GenericId) partyRef.getId())
             .setScheme(defaultValues.getDefaultValue(DefaultValuePath.ID_NAMESPACE));

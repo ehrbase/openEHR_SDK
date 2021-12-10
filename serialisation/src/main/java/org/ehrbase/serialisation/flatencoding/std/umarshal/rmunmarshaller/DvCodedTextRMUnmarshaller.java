@@ -22,60 +22,123 @@ package org.ehrbase.serialisation.flatencoding.std.umarshal.rmunmarshaller;
 import com.nedap.archie.rm.datatypes.CodePhrase;
 import com.nedap.archie.rm.datavalues.DvCodedText;
 import com.nedap.archie.rm.support.identification.TerminologyId;
+import org.apache.commons.lang3.StringUtils;
 import org.ehrbase.serialisation.walker.Context;
 import org.ehrbase.webtemplate.model.WebTemplateInput;
+import org.ehrbase.webtemplate.model.WebTemplateInputValue;
+import org.ehrbase.webtemplate.path.flat.FlatPathDto;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.stream.Stream;
+import java.util.*;
+import java.util.function.Predicate;
 
 public class DvCodedTextRMUnmarshaller extends AbstractRMUnmarshaller<DvCodedText> {
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Class<DvCodedText> getAssociatedClass() {
-        return DvCodedText.class;
+  /** {@inheritDoc} */
+  @Override
+  public Class<DvCodedText> getAssociatedClass() {
+    return DvCodedText.class;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public void handle(
+      String currentTerm,
+      DvCodedText rmObject,
+      Map<FlatPathDto, String> currentValues,
+      Context<Map<FlatPathDto, String>> context,
+      Set<String> consumedPaths) {
+
+    setValue(currentTerm, "value", currentValues, rmObject::setValue, String.class, consumedPaths);
+
+    rmObject.setDefiningCode(new CodePhrase());
+    setValue(
+        currentTerm,
+        "code",
+        currentValues,
+        c -> rmObject.getDefiningCode().setCodeString(c),
+        String.class,
+        consumedPaths);
+
+    rmObject.getDefiningCode().setTerminologyId(new TerminologyId());
+    setValue(
+        currentTerm,
+        "terminology",
+        currentValues,
+        t -> rmObject.getDefiningCode().getTerminologyId().setValue(t),
+        String.class,
+        consumedPaths);
+
+    if (rmObject.getDefiningCode().getCodeString() == null && rmObject.getValue() == null) {
+      setValue(
+          currentTerm,
+          null,
+          currentValues,
+          c -> {
+            if (c != null) {
+              // try to interpret as code
+              setFromNode(rmObject, context, v -> Objects.equals(v.getValue(), c));
+              if (rmObject.getValue() == null) {
+                // try to interpret as value
+                setFromNode(rmObject, context, v -> Objects.equals(v.getLabel(), c));
+              }
+            }
+          },
+          String.class,
+          consumedPaths);
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void handle(String currentTerm, DvCodedText rmObject, Map<String, String> currentValues, Context<Map<String, String>> context) {
-        setValue(currentTerm, "value", currentValues, rmObject::setValue, String.class);
-        rmObject.setDefiningCode(new CodePhrase());
-        setValue(currentTerm, "code", currentValues, c -> rmObject.getDefiningCode().setCodeString(c), String.class);
-        if (rmObject.getDefiningCode().getCodeString() == null){
-            setValue(currentTerm, null, currentValues, c -> rmObject.getDefiningCode().setCodeString(c), String.class);
-        }
-        rmObject.getDefiningCode().setTerminologyId(new TerminologyId());
-        setValue(currentTerm, "terminology", currentValues, t -> rmObject.getDefiningCode().getTerminologyId().setValue(t), String.class);
+    // Set terminology from Node
+    Optional.of(context.getNodeDeque().peek().getInputs()).stream()
+        .flatMap(List::stream)
+        .filter(i -> "code".equals(i.getSuffix()))
+        .findAny()
+        .map(WebTemplateInput::getTerminology)
+        .ifPresent(t -> rmObject.getDefiningCode().getTerminologyId().setValue(t));
 
-        Optional.of(context.getNodeDeque().peek().getInputs())
-                .stream()
-                .flatMap(List::stream)
-                .filter(i -> "code".equals(i.getSuffix()))
-                .findAny()
-                .map(WebTemplateInput::getTerminology)
-                .ifPresent(t -> rmObject.getDefiningCode().getTerminologyId().setValue(t));
+    // Set value from Node
+    setFromNode(
+        rmObject,
+        context,
+        v -> Objects.equals(v.getValue(), rmObject.getDefiningCode().getCodeString()));
 
-        Optional.of(context.getNodeDeque().peek().getInputs())
-                .stream()
-                .flatMap(List::stream)
-                .filter(i -> "code".equals(i.getSuffix()))
-          .map(WebTemplateInput::getList)
-          .filter(Objects::nonNull)
-          .flatMap(List::stream)
-          .filter(v -> Objects.equals(v.getValue(),rmObject.getDefiningCode().getCodeString()))
-          .findAny()
-          .ifPresent(v -> rmObject.setValue(v.getLabel()));
-
-
+    // set code from value if not set
+    if (rmObject.getDefiningCode().getCodeString() == null && rmObject.getValue() != null) {
+      setFromNode(rmObject, context, v -> Objects.equals(v.getLabel(), rmObject.getValue()));
     }
 
+    setFromNode(
+        rmObject,
+        context,
+        v -> Objects.equals(v.getValue(), rmObject.getDefiningCode().getCodeString()));
 
+    // consume strange legacy paths
+    if (rmObject.getDefiningCode() != null && rmObject.getDefiningCode().getCodeString() != null) {
+      currentValues.keySet().stream()
+          .map(FlatPathDto::format)
+          .filter(
+              k ->
+                  StringUtils.substringAfter(k, "|")
+                      .equals(rmObject.getDefiningCode().getCodeString()))
+          .forEach(consumedPaths::add);
+    }
+  }
+
+  private void setFromNode(
+      DvCodedText rmObject,
+      Context<Map<FlatPathDto, String>> context,
+      Predicate<WebTemplateInputValue> filter) {
+    Optional.of(context.getNodeDeque().peek().getInputs()).stream()
+        .flatMap(List::stream)
+        .filter(i -> "code".equals(i.getSuffix()))
+        .map(WebTemplateInput::getList)
+        .filter(Objects::nonNull)
+        .flatMap(List::stream)
+        .filter(filter)
+        .findAny()
+        .ifPresent(
+            v -> {
+              rmObject.setValue(v.getLabel());
+              rmObject.getDefiningCode().setCodeString(v.getValue());
+            });
+  }
 }

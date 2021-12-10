@@ -21,6 +21,7 @@ package org.ehrbase.serialisation.walker.defaultvalues.defaultinserter;
 
 import com.nedap.archie.rm.composition.Activity;
 import com.nedap.archie.rm.datavalues.encapsulated.DvParsable;
+import org.ehrbase.serialisation.walker.RMHelper;
 import org.ehrbase.serialisation.walker.defaultvalues.DefaultValuePath;
 import org.ehrbase.serialisation.walker.defaultvalues.DefaultValues;
 
@@ -29,7 +30,7 @@ public class ActivityValueInserter extends AbstractValueInserter<Activity> {
   @Override
   public void insert(Activity rmObject, DefaultValues defaultValues) {
 
-    if (isEmpty(rmObject.getTiming())
+    if (RMHelper.isEmpty(rmObject.getTiming())
         && defaultValues.containsDefaultValue(DefaultValuePath.ACTIVITY_TIMING)) {
 
       if (rmObject.getTiming() == null) {
@@ -39,6 +40,11 @@ public class ActivityValueInserter extends AbstractValueInserter<Activity> {
       rmObject
           .getTiming()
           .setValue(defaultValues.getDefaultValue(DefaultValuePath.ACTIVITY_TIMING));
+      rmObject.getTiming().setFormalism("timing");
+    }
+
+    if (rmObject.getTiming() != null && rmObject.getTiming().getFormalism() == null) {
+      // default
       rmObject.getTiming().setFormalism("timing");
     }
   }

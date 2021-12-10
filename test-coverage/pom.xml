@@ -1,80 +1,75 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
+        <groupId>org.ehrbase.openehr.sdk</groupId>
         <artifactId>root</artifactId>
-        <groupId>com.github.ehrbase.openEHR_SDK</groupId>
-        <version>1.5.0</version>
-        <relativePath>../pom.xml</relativePath>
+        <version>1.6.0</version>
     </parent>
 
     <artifactId>test-coverage</artifactId>
 
-
     <!-- MODULES TO INCLUDE INTO CODE-COVERAGE ANALISYS -->
     <dependencies>
         <dependency>
-            <groupId>com.github.ehrbase.openEHR_SDK</groupId>
+            <groupId>org.ehrbase.openehr.sdk</groupId>
             <artifactId>client</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.github.ehrbase.openEHR_SDK</groupId>
+            <groupId>org.ehrbase.openehr.sdk</groupId>
             <artifactId>generator</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.github.ehrbase.openEHR_SDK</groupId>
+            <groupId>org.ehrbase.openehr.sdk</groupId>
             <artifactId>response-dto</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.github.ehrbase.openEHR_SDK</groupId>
+            <groupId>org.ehrbase.openehr.sdk</groupId>
             <artifactId>opt-1.4</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.github.ehrbase.openEHR_SDK</groupId>
+            <groupId>org.ehrbase.openehr.sdk</groupId>
             <artifactId>serialisation</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.github.ehrbase.openEHR_SDK</groupId>
+            <groupId>org.ehrbase.openehr.sdk</groupId>
             <artifactId>terminology</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.github.ehrbase.openEHR_SDK</groupId>
+            <groupId>org.ehrbase.openehr.sdk</groupId>
             <artifactId>validation</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.github.ehrbase.openEHR_SDK</groupId>
+            <groupId>org.ehrbase.openehr.sdk</groupId>
             <artifactId>web-template</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.github.ehrbase.openEHR_SDK</groupId>
+            <groupId>org.ehrbase.openehr.sdk</groupId>
             <artifactId>building</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.github.ehrbase.openEHR_SDK</groupId>
+            <groupId>org.ehrbase.openehr.sdk</groupId>
             <artifactId>util</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.github.ehrbase.openEHR_SDK</groupId>
+            <groupId>org.ehrbase.openehr.sdk</groupId>
             <artifactId>aql</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.github.ehrbase.openEHR_SDK</groupId>
+            <groupId>org.ehrbase.openehr.sdk</groupId>
             <artifactId>serialisation_conformance_test</artifactId>
         </dependency>
     </dependencies>
 
-
     <build>
         <plugins>
-
-
             <plugin>
-
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
-
                 <configuration>
                     <!-- TODO: CLARIFY W/ @S.SPISKA IF IT'S OK TO EXCLUDE THIS STUFF! -->
                     <!-- This exclues the following bundles/modules:
@@ -167,13 +162,8 @@
                             </rules>
                         </configuration>
                     </execution>
-
-
                 </executions>
             </plugin>
-
-
         </plugins>
     </build>
-
 </project>

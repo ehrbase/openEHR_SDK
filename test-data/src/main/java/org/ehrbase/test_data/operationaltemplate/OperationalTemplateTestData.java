@@ -49,9 +49,15 @@ public enum OperationalTemplateTestData {
       "Template with multiple occurrence",
       "ehrbase_multi_occurrence.de.opt",
       "ehrbase_multi_occurrence.de.v1"),
+  EREACT_COVID_MANAGEMENT(
+      "Template with action", "EREACT - COVID management.v0.opt", "EREACT - COVID management.v0"),
   ALL_TYPES("Template with all types", "Test_all_types.opt", "test_all_types.en.v1"),
   ALT_EVENTS("Template with alternative Events", "AlternativeEvents.opt", "AlternativeEvents"),
   TWO_EVENTS("Template with two Events", "TwoEvents.opt", "SingleEvent"),
+  WORD_WITH_AND(
+      "Template with archetype with and in name ",
+      "wordwithandin_test.v0.opt",
+      "wordwithandin_test.v0"),
   AVERAGE_24(
       "Template with  a Interval Events", "24StundenDurchschnitt.opt", "24StundenDurchschnitt"),
   EPISODE_OF_CARE("EpisodeOfCare", "EpisodeOfCare.opt", "EpisodeOfCare"),
@@ -64,6 +70,7 @@ public enum OperationalTemplateTestData {
   BEFUND_DER_BLUTGASANALYSE(
       "Befund der Blutgasanalyse", "Befund_der_Blutgasanalyse.opt", "Befund der Blutgasanalyse"),
   SM_I_C_S_BEFUND("SmICS-Befund", "SmICS-Befund.opt", "SmICS-Befund"),
+  MULTI_LIST("template with ITEM_TREE", "Multi_list.opt", "Multi_list"),
   PATIENTEN_AUFENTHALT(
       "NUM test hospitalization", "Patientenaufenthalt.opt", "Patientenaufenthalt"),
   EPISODE_SUMMARY(
@@ -74,6 +81,7 @@ public enum OperationalTemplateTestData {
       "example.initialassesment.v0",
       "example_initialassesment.v0.opt",
       "example.initialassesment.v0"),
+  TESTING_TEMPLATE_N("Template with fixed values", "Testing_Template_N.opt", "Testing Template N"),
   D4L_QUESTIONNAIRE("D4L_questionnaire", "D4L_questionnaire.opt", "D4L_questionnaire"),
   CONSTRAIN_TEST(
       "example with many constrains / default values", "constrain_test.opt", "constrain_test"),
@@ -81,6 +89,8 @@ public enum OperationalTemplateTestData {
   SINGLE_EVENT("example with a single valued EVENT", "single_event.opt", "Körpergröße"),
   ADDICTION("example ", "additciton_alcohol.opt", "AddictionAlcoholTemplate"),
   MINIMAL_EVALUATION("minimal evaluation", "minimal_evaluation.opt", "minimal_evaluation.en.v1"),
+  MINIMAL_INSTRUCTION(
+      "minimal instruction", "minimal_instruction.opt", "minimal_instruction.en.v1"),
   GECCO_SEROLOGISCHER_BEFUND(
       "template with any Element", "GECCO_Serologischer Befund.opt", "GECCO_Serologischer Befund"),
   DETERIORIATION_ASSESSMENT(
@@ -88,8 +98,11 @@ public enum OperationalTemplateTestData {
       "EREACT - Deterioriation assessment.v0.opt",
       "EREACT - Deterioriation assessment.v0"),
   VIROLOGISCHER_BEFUND("Virologischer Befund", "Virologischer_Befund.opt", "Virologischer Befund"),
-  LABOR_BEFUND("Labor Befund", "laborbefund.opt", "Laborbefund");
-  ;
+  LABOR_BEFUND("Labor Befund", "laborbefund.opt", "Laborbefund"),
+  GECCO_DIAGNOSE("example with snomed terminologies", "GECCO_Diagnose.opt", "GECCO_Diagnose"),
+  MINIMAL_ACTION_2("Minimal Action 2", "minimal_action2.opt", "Minimal action 2"),
+  MINIMAL_ACTION("Minimal Action 3", "minimal_action3.opt", "minimal_action_3.en.v1"),
+  NCD("ncd", "NCD.opt", "NCD");
 
   private final String filename;
   private final String templateId;

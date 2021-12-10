@@ -30,26 +30,32 @@ import java.util.Optional;
 
 public class DvMultimediaConfig extends AbstractsStdConfig<DvMultimedia> {
 
+  /** {@inheritDoc} */
+  @Override
+  public Class<DvMultimedia> getAssociatedClass() {
+    return DvMultimedia.class;
+  }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Class<DvMultimedia> getAssociatedClass() {
-        return DvMultimedia.class;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Map<String, Object> buildChildValues(String currentTerm, DvMultimedia rmObject, Context<Map<String, Object>> context) {
-        Map<String, Object> result = new HashMap<>();
-        addValue(result, currentTerm, null, Optional.of(rmObject).map(DvMultimedia::getUri).map(DvURI::getValue).orElse(null));
-        addValue(result, currentTerm, "mediatype", Optional.of(rmObject).map(DvMultimedia::getMediaType).map(CodePhrase::getCodeString).orElse(null));
-        addValue(result, currentTerm, "size", rmObject.getSize());
-        return result;
-    }
-
-
+  /** {@inheritDoc} */
+  @Override
+  public Map<String, Object> buildChildValues(
+      String currentTerm, DvMultimedia rmObject, Context<Map<String, Object>> context) {
+    Map<String, Object> result = new HashMap<>();
+    addValue(
+        result,
+        currentTerm,
+        null,
+        Optional.of(rmObject).map(DvMultimedia::getUri).map(DvURI::getValue).orElse(null));
+    addValue(
+        result,
+        currentTerm,
+        "mediatype",
+        Optional.of(rmObject)
+            .map(DvMultimedia::getMediaType)
+            .map(CodePhrase::getCodeString)
+            .orElse(null));
+    addValue(result, currentTerm, "size", rmObject.getSize());
+    addValue(result, currentTerm, "alternatetext", rmObject.getAlternateText());
+    return result;
+  }
 }

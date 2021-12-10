@@ -19,15 +19,7 @@
 
 package org.ehrbase.webtemplate.model;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.util.List;
-import java.util.Set;
 import org.apache.commons.io.IOUtils;
 import org.apache.xmlbeans.XmlException;
 import org.assertj.core.api.Assertions;
@@ -38,6 +30,15 @@ import org.ehrbase.webtemplate.parser.OPTParser;
 import org.junit.Test;
 import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
 import org.openehr.schemas.v1.TemplateDocument;
+
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.List;
+import java.util.Set;
+
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 public class WebTemplateTest {
 
@@ -79,7 +80,7 @@ public class WebTemplateTest {
 
     assertNotNull(result);
 
-    assertEquals(21, result.size());
+    assertEquals(20, result.size());
   }
 
   @Test
@@ -91,7 +92,7 @@ public class WebTemplateTest {
 
     assertNotNull(result);
 
-    assertEquals(57, result.size());
+    assertEquals(45, result.size());
   }
 
   @Test
@@ -103,7 +104,7 @@ public class WebTemplateTest {
 
     assertNotNull(result);
 
-    assertEquals(266, result.size());
+    assertEquals(262, result.size());
   }
 
   @Test

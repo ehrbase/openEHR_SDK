@@ -52,8 +52,8 @@ public abstract class TestQueryEngine extends CanonicalUtil {
     private static final String FAIL_EXPECTED = "*FAIL*";
 
     private final UUID ehrUUID;
-    private UUID compositionUUID;
-    private final OpenEhrClient openEhrClient;
+    protected UUID compositionUUID;
+    protected OpenEhrClient openEhrClient;
 
     public TestQueryEngine(UUID ehrUUID, UUID compositionUUID, OpenEhrClient openEhrClient) {
         this.ehrUUID = ehrUUID;
@@ -84,10 +84,22 @@ public abstract class TestQueryEngine extends CanonicalUtil {
                 QueryResponseData result = performQuery(rootPath, attributePath, contains);
                 try {
                     List<Object> objectList = result.getRows().get(0);
+                    Object actual = valueObject(objectList.get(0));
 
-                    assertThat(valueObject(objectList.get(0)))
-                            .as(rootPath + "/" + attributePath)
-                            .isEqualTo(attributeValueAt(referenceNode, attributePath));
+                    if (actual instanceof List){
+                        Object expected = attributeArrayValueAt(referenceNode, attributePath); //RMObject(s)
+
+                        assertThat(
+                                toRmObjectList((List<Object>) actual).toArray())
+                                .as(rootPath + "/" + attributePath)
+                                .containsExactlyInAnyOrder(((List<?>) expected).toArray()
+                                );
+                    }
+                    else {
+                        assertThat(valueObject(objectList.get(0)))
+                                .as(rootPath + "/" + attributePath)
+                                .isEqualTo(attributeValueAt(referenceNode, attributePath));
+                    }
                 } catch (Exception e) {
                     fail(e.getMessage());
                 }
@@ -178,10 +190,13 @@ public abstract class TestQueryEngine extends CanonicalUtil {
                         fail(arbitraryExpression.getRightSideExpression() + ": no result");
                 }
 
-                //TODO: iterate on result
+//                //TODO: iterate on result
                 List<Object> objectList = result.getRows().get(0);
+                Object resultingObject = objectList.get(0);
+                if (resultingObject instanceof List)
+                    resultingObject = ((List<?>) resultingObject).get(0);
 
-                assertThat(valueObject(objectList.get(0)))
+                assertThat(valueObject(resultingObject))
                         .as(arbitraryExpression.getRightSideExpression())
                         .isEqualTo(valueObject(arbitraryExpression.getExpectedResult()));
             }
@@ -310,7 +325,15 @@ public abstract class TestQueryEngine extends CanonicalUtil {
 
     protected QueryResponseData execute(Query<Record1<Map>> query, String aql, boolean shouldFail){
         try {
-            return openEhrClient.aqlEndpoint().executeRaw(query, new ParameterValue("ehr_id", ehrUUID));
+            if (compositionUUID != null) {
+                return openEhrClient.aqlEndpoint().executeRaw(query,
+                        new ParameterValue("ehr_id", ehrUUID),
+                        new ParameterValue("comp_uuid", compositionUUID));
+            }
+            else {
+                return openEhrClient.aqlEndpoint().executeRaw(query,
+                        new ParameterValue("ehr_id", ehrUUID));
+            }
         }
         catch (WrongStatusCodeException e){
             if (!shouldFail)

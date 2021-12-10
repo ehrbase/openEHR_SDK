@@ -20,18 +20,21 @@
 package org.ehrbase.serialisation.walker.defaultvalues.defaultinserter;
 
 import com.nedap.archie.rm.composition.Action;
+import com.nedap.archie.rm.composition.IsmTransition;
 import com.nedap.archie.rm.datavalues.quantity.datetime.DvDateTime;
+import org.ehrbase.serialisation.walker.RMHelper;
+import org.ehrbase.serialisation.walker.defaultvalues.DefaultValuePath;
+import org.ehrbase.serialisation.walker.defaultvalues.DefaultValues;
+
 import java.time.temporal.TemporalAccessor;
 import java.util.Objects;
 import java.util.stream.Stream;
-import org.ehrbase.serialisation.walker.defaultvalues.DefaultValuePath;
-import org.ehrbase.serialisation.walker.defaultvalues.DefaultValues;
 
 public class ActionValueInserter extends AbstractValueInserter<Action> {
   @Override
   public void insert(Action rmObject, DefaultValues defaultValues) {
 
-    if (isEmpty(rmObject.getTime())
+    if (RMHelper.isEmpty(rmObject.getTime())
         && (defaultValues.containsDefaultValue(DefaultValuePath.TIME)
             || defaultValues.containsDefaultValue(DefaultValuePath.ACTION_TIME))) {
       TemporalAccessor defaultTemporalAccessor =
@@ -43,8 +46,12 @@ public class ActionValueInserter extends AbstractValueInserter<Action> {
       rmObject.setTime(new DvDateTime(defaultTemporalAccessor));
     }
 
-    if (rmObject.getIsmTransition() != null){
-      new IsmTransitionValueInserter().insert(rmObject.getIsmTransition(),defaultValues);
+    if (rmObject.getIsmTransition() == null) {
+      rmObject.setIsmTransition(new IsmTransition());
+    }
+    new IsmTransitionValueInserter().insert(rmObject.getIsmTransition(), defaultValues);
+    if (RMHelper.isEmpty(rmObject.getIsmTransition())) {
+      rmObject.setIsmTransition(null);
     }
   }
 

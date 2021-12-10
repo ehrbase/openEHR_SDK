@@ -22,22 +22,22 @@ package org.ehrbase.webtemplate.filter;
 import com.nedap.archie.rm.datastructures.Event;
 import com.nedap.archie.rminfo.ArchieRMInfoLookup;
 import com.nedap.archie.rminfo.RMTypeInfo;
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Deque;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.ehrbase.util.reflection.ReflectionHelper;
+import org.ehrbase.util.rmconstants.RmConstants;
 import org.ehrbase.webtemplate.model.FilteredWebTemplate;
 import org.ehrbase.webtemplate.model.WebTemplate;
+import org.ehrbase.webtemplate.model.WebTemplateInput;
 import org.ehrbase.webtemplate.model.WebTemplateNode;
+import org.ehrbase.webtemplate.parser.InputHandler;
 import org.ehrbase.webtemplate.parser.OPTParser;
 import org.ehrbase.webtemplate.parser.config.RmIntrospectConfig;
+
+import java.util.*;
+import java.util.stream.Collectors;
+
+import static org.ehrbase.webtemplate.parser.OPTParser.DV_CODED_TEXT;
 
 public class Filter implements WebTemplateFilter {
 
@@ -77,6 +77,14 @@ public class Filter implements WebTemplateFilter {
     node.getChildren().addAll(filteredChildren);
     if (skip(node, context, deque)) {
       nodes = filteredChildren;
+      if (node.getRmType().equals(RmConstants.ELEMENT)) {
+        node.getChildren()
+            .forEach(
+                n -> {
+                  n.setMin(node.getMin());
+                  n.setMax(node.getMax());
+                });
+      }
       for (WebTemplateNode child : filteredChildren) {
         nodeMap.get(new ImmutablePair<>(child.getAqlPath(), child.getRmType())).addLast(oldNode);
       }
@@ -99,17 +107,54 @@ public class Filter implements WebTemplateFilter {
       node.getChildren().add(ismTransitionList.get(0));
     }
 
-    if (node.getRmType().equals("ELEMENT")
-        && node.getChildren().size() <= 5
-        && node.getChildren().stream()
-            .filter(n -> !List.of("null_flavour", "feeder_audit").contains(n.getName()))
-            .map(WebTemplateNode::getRmType)
-            .collect(Collectors.toList())
-            .containsAll(List.of("DV_TEXT", "DV_CODED_TEXT"))) {
-      WebTemplateNode merged = node.findChildById(node.getId(false)).orElseThrow();
-      node.getChildren().clear();
-      node.getChildren().add(merged);
+    if (node.getRmType().equals("ELEMENT")) {
+      List<WebTemplateNode> trueChildren =
+          node.getChildren().stream()
+              .filter(n -> !"name".equals(n.getName()))
+              .filter(
+                  n ->
+                      !List.of("null_flavour", "feeder_audit").contains(n.getName())
+                          || !n.isNullable())
+              .collect(Collectors.toList());
+      if (trueChildren.stream()
+              .map(WebTemplateNode::getRmType)
+              .collect(Collectors.toList())
+              .containsAll(List.of("DV_TEXT", DV_CODED_TEXT))
+          && node.getChoicesInChildren().size() > 0
+          && trueChildren.size() == 2) {
+        WebTemplateNode merged = mergeDVText(node);
+        merged.setId(node.getId());
+        node.getChildren().clear();
+        node.getChildren().add(merged);
+      } else if (trueChildren.size() == 1) {
+        // Element will be skipped and the value node inherits the id
+        trueChildren.get(0).setId(node.getId());
+      }
     }
+  }
+
+  public static WebTemplateNode mergeDVText(WebTemplateNode node) {
+    WebTemplateNode merged = new WebTemplateNode();
+    merged.setId("value");
+    merged.setName(node.getName());
+    merged.setMax(node.getMax());
+    merged.setMin(node.getMin());
+    merged.setRmType(DV_CODED_TEXT);
+    WebTemplateNode codedTextValue = node.findChildById("coded_text_value").orElseThrow();
+    merged.getInputs().addAll(codedTextValue.getInputs());
+    merged.setAqlPath(codedTextValue.getAqlPath());
+    merged.getLocalizedDescriptions().putAll(node.getLocalizedDescriptions());
+    merged.getLocalizedNames().putAll(node.getLocalizedNames());
+    merged.setLocalizedName(node.getLocalizedName());
+    merged.setAnnotations(node.getAnnotations());
+    WebTemplateInput other = InputHandler.buildWebTemplateInput("other", "TEXT");
+
+    merged.getInputs().add(other);
+    merged.getInputs().stream()
+        .filter(i -> Objects.equals(i.getSuffix(), "code"))
+        .findAny()
+        .ifPresent(i -> i.setListOpen(true));
+    return merged;
   }
 
   protected boolean skip(WebTemplateNode node, WebTemplate context, Deque<WebTemplateNode> deque) {

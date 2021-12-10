@@ -20,14 +20,13 @@
 package org.ehrbase.serialisation.walker;
 
 import com.nedap.archie.rm.RMObject;
+import org.ehrbase.serialisation.walker.defaultvalues.DefaultValues;
+import org.ehrbase.webtemplate.model.WebTemplateNode;
+
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.Map;
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
-import org.ehrbase.serialisation.walker.defaultvalues.DefaultValues;
-import org.ehrbase.webtemplate.model.WebTemplateNode;
 
 public class Context<T> {
 
@@ -37,10 +36,13 @@ public class Context<T> {
 
   private final Deque<T> objectDeque = new ArrayDeque<>();
 
-  private final Map<WebTemplateNode, Integer> countMap = new HashMap<>();
+  private final Map<NodeId, Integer> countMap = new HashMap<>();
 
-  private Map<Pair<String, String>, Deque<WebTemplateNode>> filteredNodeMap;
   private DefaultValues defaultValues;
+
+  private final FlatHelper<T> flatHelper = new FlatHelper<>();
+
+  private String templateId;
 
   public Deque<WebTemplateNode> getNodeDeque() {
     return nodeDeque;
@@ -54,27 +56,8 @@ public class Context<T> {
     return objectDeque;
   }
 
-  public Map<WebTemplateNode, Integer> getCountMap() {
+  public Map<NodeId, Integer> getCountMap() {
     return countMap;
-  }
-
-  public Deque<WebTemplateNode> getSkippedNodes(WebTemplateNode childNode) {
-    Deque<WebTemplateNode> skippedNodes = null;
-    if (this.filteredNodeMap != null) {
-      skippedNodes =
-          this.filteredNodeMap.get(
-              new ImmutablePair<>(childNode.getAqlPath(), childNode.getRmType()));
-    }
-    return skippedNodes;
-  }
-
-  public void setFilteredNodeMap(
-      Map<Pair<String, String>, Deque<WebTemplateNode>> filteredNodeMap) {
-    this.filteredNodeMap = filteredNodeMap;
-  }
-
-  public Map<Pair<String, String>, Deque<WebTemplateNode>> getFilteredNodeMap() {
-    return filteredNodeMap;
   }
 
   public DefaultValues getDefaultValues() {
@@ -83,5 +66,17 @@ public class Context<T> {
 
   public void setDefaultValues(DefaultValues defaultValues) {
     this.defaultValues = defaultValues;
+  }
+
+  public FlatHelper<T> getFlatHelper() {
+    return flatHelper;
+  }
+
+  public String getTemplateId() {
+    return templateId;
+  }
+
+  public void setTemplateId(String templateId) {
+    this.templateId = templateId;
   }
 }

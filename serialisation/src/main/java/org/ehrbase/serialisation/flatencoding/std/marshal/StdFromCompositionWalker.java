@@ -20,17 +20,22 @@
 package org.ehrbase.serialisation.flatencoding.std.marshal;
 
 import com.nedap.archie.rm.RMObject;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
 import org.ehrbase.serialisation.flatencoding.std.marshal.config.DefaultStdConfig;
 import org.ehrbase.serialisation.flatencoding.std.marshal.config.StdConfig;
 import org.ehrbase.serialisation.flatencoding.std.marshal.postprocessor.MarshalPostprocessor;
+import org.ehrbase.serialisation.flatencoding.std.umarshal.StdToCompositionWalker;
 import org.ehrbase.serialisation.walker.Context;
 import org.ehrbase.serialisation.walker.FromCompositionWalker;
 import org.ehrbase.util.reflection.ReflectionHelper;
 import org.ehrbase.webtemplate.model.WebTemplateNode;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import static org.ehrbase.serialisation.flatencoding.std.umarshal.StdToCompositionWalker.handleDVTextInternal;
 
 public class StdFromCompositionWalker extends FromCompositionWalker<Map<String, Object>> {
 
@@ -51,23 +56,47 @@ public class StdFromCompositionWalker extends FromCompositionWalker<Map<String, 
   protected void preHandle(Context<Map<String, Object>> context) {
 
     // Handle if at a End-Node
-    if (!visitChildren(context.getNodeDeque().peek())) {
+    if (!visitChildren(context.getNodeDeque().peek()) && !context.getFlatHelper().skip(context)) {
       RMObject currentObject = context.getRmObjectDeque().peek();
 
-      StdConfig stdConfig = configMap.getOrDefault(currentObject.getClass(), DEFAULT_STD_CONFIG);
+      StdConfig stdConfig = findStdConfig(currentObject.getClass());
 
       context
           .getObjectDeque()
           .peek()
-          .putAll(stdConfig.buildChildValues(buildNamePath(context, true), currentObject, context));
+          .putAll(
+              stdConfig.buildChildValues(
+                  context.getFlatHelper().buildNamePath(context, true), currentObject, context));
     }
+  }
+
+  public static <T extends RMObject> StdConfig<T> findStdConfig(Class<T> aClass) {
+    return configMap.getOrDefault(aClass, DEFAULT_STD_CONFIG);
   }
 
   @Override
   protected void postHandle(Context<Map<String, Object>> context) {
-    List<MarshalPostprocessor<? super RMObject>> postprocessor = new ArrayList<>();
 
-    Class<?> currentClass = context.getRmObjectDeque().peek().getClass();
+    Class<? extends RMObject> aClass = context.getRmObjectDeque().peek().getClass();
+
+    List<? extends MarshalPostprocessor<? extends RMObject>> postprocessor =
+        findPostprocessors(aClass);
+
+    postprocessor.forEach(
+        p ->
+            ((MarshalPostprocessor) p)
+                .process(
+                    StdToCompositionWalker.buildNamePathWithElementHandling(context),
+                    context.getRmObjectDeque().peek(),
+                    context.getObjectDeque().peek(),
+                    context));
+  }
+
+  public static <T extends RMObject> List<MarshalPostprocessor<T>> findPostprocessors(
+      Class<T> aClass) {
+    List<MarshalPostprocessor<T>> postprocessor = new ArrayList<>();
+
+    Class<?> currentClass = aClass;
 
     while (currentClass != null) {
       if (POSTPROCESSOR_MAP.containsKey(currentClass)) {
@@ -78,12 +107,31 @@ public class StdFromCompositionWalker extends FromCompositionWalker<Map<String, 
     }
 
     Collections.reverse(postprocessor);
+    return postprocessor;
+  }
 
-    postprocessor.forEach(
-        p ->
-            p.process(
-                buildNamePath(context, true),
-                context.getRmObjectDeque().peek(),
-                context.getObjectDeque().peek()));
+  @Override
+  protected void handleDVText(WebTemplateNode currentNode) {
+    if (currentNode.getRmType().equals("ELEMENT")) {
+      List<WebTemplateNode> trueChildren =
+          currentNode.getChildren().stream()
+              .filter(
+                  n ->
+                      !List.of("null_flavour", "feeder_audit").contains(n.getName())
+                          || !n.isNullable())
+              .collect(Collectors.toList());
+      if (trueChildren.stream()
+              .map(WebTemplateNode::getId)
+              .collect(Collectors.toList())
+              .containsAll(List.of("coded_text_value", "text_value"))
+          && currentNode.getChoicesInChildren().size() > 0
+          && trueChildren.size() == 2) {
+        handleDVTextInternal(currentNode);
+      } else {
+        super.handleDVText(currentNode);
+      }
+    } else {
+      super.handleDVText(currentNode);
+    }
   }
 }

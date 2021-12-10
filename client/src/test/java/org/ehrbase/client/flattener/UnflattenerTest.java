@@ -46,9 +46,12 @@ import org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1comp
 import org.ehrbase.client.classgenerator.examples.episodeofcarecomposition.EpisodeOfCareComposition;
 import org.ehrbase.client.classgenerator.examples.korpergrossecomposition.KorpergrosseComposition;
 import org.ehrbase.client.classgenerator.examples.korpergrossecomposition.definition.GrosseLangeObservation;
+import org.ehrbase.client.classgenerator.examples.testalltypesenv1composition.TestAllTypesEnV1Composition;
+import org.ehrbase.client.classgenerator.examples.testalltypesenv1composition.definition.TestAllTypesEvaluation;
 import org.ehrbase.client.templateprovider.TestDataTemplateProvider;
 import org.ehrbase.serialisation.jsonencoding.CanonicalJson;
 import org.ehrbase.test_data.composition.CompositionTestDataCanonicalJson;
+import org.ehrbase.webtemplate.model.WebTemplate;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -58,13 +61,11 @@ import java.time.Duration;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.ehrbase.client.TestData.buildAlternativeEventsComposition;
-import static org.ehrbase.client.TestData.buildEhrbaseBloodPressureSimpleDeV0;
-import static org.ehrbase.client.TestData.buildEpisodeOfCareComposition;
-import static org.ehrbase.client.TestData.buildExampleBloodpressureListDe;
+import static org.ehrbase.client.TestData.*;
 import static org.junit.Assert.assertFalse;
 
 public class UnflattenerTest {
@@ -91,6 +92,26 @@ public class UnflattenerTest {
                 .collect(Collectors.toList());
 
         assertThat(systolischValues).containsExactlyInAnyOrder(12d, 22d);
+    }
+
+    @Test
+    public void testUnflattenInterval() {
+        TestDataTemplateProvider templateProvider = new TestDataTemplateProvider();
+
+        Unflattener cut = new Unflattener(templateProvider);
+
+        TestAllTypesEnV1Composition dto = buildTestAllTypesEnV1Composition();
+
+        Composition rmObject = (Composition) cut.unflatten(dto);
+
+        assertThat(rmObject).isNotNull();
+
+        assertThat(rmObject.itemAtPath("/content[openEHR-EHR-EVALUATION.test_all_types.v1]/data[at0001]/items[at0003]/value/upper_included")).isEqualTo(true);
+
+        TestAllTypesEnV1Composition actual = new Flattener(new TestDataTemplateProvider()).flatten(rmObject, TestAllTypesEnV1Composition.class);
+
+        assertThat(actual.getTestAllTypes2().get(0).isIntervalCountUpperIncluded()).isTrue();
+
     }
 
     @Test

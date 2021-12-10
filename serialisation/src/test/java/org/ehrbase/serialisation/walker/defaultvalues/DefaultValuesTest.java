@@ -19,21 +19,12 @@
 
 package org.ehrbase.serialisation.walker.defaultvalues;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.nedap.archie.rm.composition.Composition;
 import com.nedap.archie.rm.composition.Observation;
 import com.nedap.archie.rm.datavalues.DvIdentifier;
 import com.nedap.archie.rm.generic.PartyIdentified;
 import com.nedap.archie.rm.support.identification.GenericId;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
 import org.apache.commons.io.IOUtils;
 import org.apache.xmlbeans.XmlException;
 import org.assertj.core.groups.Tuple;
@@ -42,12 +33,21 @@ import org.ehrbase.serialisation.flatencoding.std.umarshal.FlatJsonUnmarshaller;
 import org.ehrbase.serialisation.jsonencoding.JacksonUtil;
 import org.ehrbase.test_data.composition.CompositionTestDataSimSDTJson;
 import org.ehrbase.test_data.operationaltemplate.OperationalTemplateTestData;
-import org.ehrbase.webtemplate.filter.Filter;
 import org.ehrbase.webtemplate.model.WebTemplate;
 import org.ehrbase.webtemplate.parser.OPTParser;
 import org.junit.Test;
 import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
 import org.openehr.schemas.v1.TemplateDocument;
+
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class DefaultValuesTest {
 
@@ -114,7 +114,7 @@ public class DefaultValuesTest {
     OPERATIONALTEMPLATE template =
         TemplateDocument.Factory.parse(OperationalTemplateTestData.CORONA_ANAMNESE.getStream())
             .getTemplate();
-    WebTemplate webTemplate = new Filter().filter(new OPTParser(template).parse());
+    WebTemplate webTemplate = new OPTParser(template).parse();
 
     FlatJsonUnmarshaller cut = new FlatJsonUnmarshaller();
 
@@ -122,7 +122,7 @@ public class DefaultValuesTest {
         IOUtils.toString(
             CompositionTestDataSimSDTJson.CORONA_WITH_CONTEXT.getStream(), StandardCharsets.UTF_8);
 
-    Composition actual = cut.unmarshal(flat, webTemplate, template);
+    Composition actual = cut.unmarshal(flat, webTemplate);
 
     assertThat(actual).isNotNull();
     assertThat(actual.getCategory()).isNotNull();

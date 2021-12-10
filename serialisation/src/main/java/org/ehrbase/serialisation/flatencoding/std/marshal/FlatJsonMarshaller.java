@@ -22,11 +22,12 @@ package org.ehrbase.serialisation.flatencoding.std.marshal;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nedap.archie.rm.composition.Composition;
-import java.util.LinkedHashMap;
-import java.util.Map;
 import org.ehrbase.serialisation.exception.MarshalException;
 import org.ehrbase.serialisation.jsonencoding.JacksonUtil;
 import org.ehrbase.webtemplate.model.WebTemplate;
+
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 public class FlatJsonMarshaller {
 
@@ -44,7 +45,8 @@ public class FlatJsonMarshaller {
 
     Map<String, Object> result = new LinkedHashMap<>();
 
-    new StdFromCompositionWalker().walk(composition, result, webTemplate, null);
+    String templateId = webTemplate.getTemplateId();
+    new StdFromCompositionWalker().walk(composition, result, webTemplate, null, templateId);
 
     try {
       return OBJECT_MAPPER.writeValueAsString(result);

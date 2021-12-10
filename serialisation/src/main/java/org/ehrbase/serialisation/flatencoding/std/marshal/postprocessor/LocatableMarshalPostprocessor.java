@@ -24,20 +24,26 @@ import com.nedap.archie.rm.archetyped.Locatable;
 import com.nedap.archie.rm.datavalues.DvEHRURI;
 import com.nedap.archie.rm.datavalues.DvText;
 import com.nedap.archie.rm.support.identification.ObjectId;
+import org.ehrbase.serialisation.walker.Context;
 
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.IntStream;
 
 import static org.ehrbase.webtemplate.parser.OPTParser.PATH_DIVIDER;
 
-public class LocatableMarshalPostprocessor implements MarshalPostprocessor<Locatable> {
+public class LocatableMarshalPostprocessor extends AbstractMarshalPostprocessor<Locatable> {
 
   /** {@inheritDoc} */
   @Override
-  public void process(String term, Locatable rmObject, Map<String, Object> values) {
+  public void process(
+      String term,
+      Locatable rmObject,
+      Map<String, Object> values,
+      Context<Map<String, Object>> context) {
 
-    MarshalPostprocessor.addValue(
+    addValue(
         values,
         term + PATH_DIVIDER + "_uid",
         null,
@@ -49,22 +55,35 @@ public class LocatableMarshalPostprocessor implements MarshalPostprocessor<Locat
               i -> {
                 Link link = rmObject.getLinks().get(i);
                 String termLoop = term + PATH_DIVIDER + "_link:" + i;
-                MarshalPostprocessor.addValue(
+
+                addValue(
                     values,
                     termLoop,
                     "meaning",
                     Optional.of(link).map(Link::getMeaning).map(DvText::getValue).orElse(null));
-                MarshalPostprocessor.addValue(
+                addValue(
                     values,
                     termLoop,
                     "type",
                     Optional.of(link).map(Link::getType).map(DvText::getValue).orElse(null));
-                MarshalPostprocessor.addValue(
+                addValue(
                     values,
                     termLoop,
                     "target",
                     Optional.of(link).map(Link::getTarget).map(DvEHRURI::getValue).orElse(null));
               });
+    }
+
+    if (rmObject.getFeederAudit() != null) {
+      handleRmAttribute(term, rmObject.getFeederAudit(), values, context, "feeder_audit");
+    }
+
+    if (Optional.ofNullable(rmObject.getName())
+        .map(DvText::getValue)
+        .filter(n -> !Objects.equals(context.getNodeDeque().peek().getName(), n))
+        .isPresent()) {
+
+      handleRmAttribute(term, rmObject.getName(), values, context, "name");
     }
   }
 

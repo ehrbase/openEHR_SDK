@@ -2,11 +2,33 @@
 
 Note: version releases in the 0.x.y range may introduce breaking changes.
 
-## [Unreleased]
+## 1.16.0
 
 ### Added
 
+- Added WebTemplate based RmSkeleton builder. (see https://github.com/ehrbase/openEHR_SDK/pull/241)
+- validate that all flat parts are consumed. (see https://github.com/ehrbase/openEHR_SDK/pull/264 )
+- support Structured format. (see https://github.com/ehrbase/openEHR_SDK/pull/273)
+- Allow Json Values in flat (see https://github.com/ehrbase/openEHR_SDK/pull/277)
+
 ### Fixed
+
+- OptParser: fix parsing f snomed (see https://github.com/ehrbase/openEHR_SDK/pull/234)
+- Flat: refactor code to walk to all nodes (see https://github.com/ehrbase/project_management/issues/541)
+- DefaultRestClient: add VERSIONED_COMPOSITION endpoint (see https://github.com/ehrbase/openEHR_SDK/pull/237)
+- Generated Dtos: Enable usage of Dots with inheritance  (see https://github.com/ehrbase/openEHR_SDK/pull/244)
+- Fix validation of normal statuses (see https://github.com/ehrbase/openEHR_SDK/pull/249)
+- Fix terminology validation issue (see https://github.com/ehrbase/openEHR_SDK/pull/263)
+- Fix NullPointerException when `protocol.items` is `null` or empty (
+  see https://github.com/ehrbase/openEHR_SDK/pull/262)
+- FLAT: Fix missing items in ITEM_TREE (see https://github.com/ehrbase/openEHR_SDK/pull/265)
+- Handle `expiry_time` in INSTRUCTION (see https://github.com/ehrbase/openEHR_SDK/pull/270)
+- Fix ValidationException while parsing DvDuration with Period (see https://github.com/ehrbase/openEHR_SDK/pull/276)
+- Support optional `ETag` return by the server when uploading a template (
+  see https://github.com/ehrbase/openEHR_SDK/pull/275)
+- FLat: Lots of small fixes (see https://github.com/ehrbase/openEHR_SDK/pull/280)
+- OPt Parsing : enhance performance (see https://github.com/ehrbase/openEHR_SDK/pull/284
+  , https://github.com/ehrbase/openEHR_SDK/pull/286)
 
 ## 1.5.0
 
@@ -29,7 +51,7 @@ Note: version releases in the 0.x.y range may introduce breaking changes.
 
 ### Fixed
 
-- Lost of small fixes to flat (see https://github.com/ehrbase/openEHR_SDK/pull/204)
+- Lost of small fixes to flat (see https://githucb.com/ehrbase/openEHR_SDK/pull/204)
 - Aql parsing : fix parsing of contains without archetypeId (see https://github.com/ehrbase/openEHR_SDK/pull/205)
 - Aql building : fix building of aql with more from Dto with more than 2 where ANDs
 - Several AQL fixes (see https://github.com/ehrbase/openEHR_SDK/pull/202

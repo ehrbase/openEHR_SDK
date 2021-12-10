@@ -22,16 +22,22 @@ package org.ehrbase.serialisation.flatencoding.std.marshal.postprocessor;
 import com.nedap.archie.rm.composition.Entry;
 import com.nedap.archie.rm.generic.PartyIdentified;
 import org.ehrbase.serialisation.flatencoding.std.marshal.config.PartyIdentifiedStdConfig;
+import org.ehrbase.serialisation.walker.Context;
 
 import java.util.Map;
+import java.util.stream.IntStream;
 
 import static org.ehrbase.webtemplate.parser.OPTParser.PATH_DIVIDER;
 
-public class EntryMarshalPostprocessor implements MarshalPostprocessor<Entry> {
+public class EntryMarshalPostprocessor extends AbstractMarshalPostprocessor<Entry> {
 
   /** {@inheritDoc} Adds the encoding information */
   @Override
-  public void process(String term, Entry rmObject, Map<String, Object> values) {
+  public void process(
+      String term,
+      Entry rmObject,
+      Map<String, Object> values,
+      Context<Map<String, Object>> context) {
     values.put(term + PATH_DIVIDER + "encoding|code", "UTF-8");
     values.put(term + PATH_DIVIDER + "encoding|terminology", "IANA_character-sets");
 
@@ -42,6 +48,27 @@ public class EntryMarshalPostprocessor implements MarshalPostprocessor<Entry> {
       values.putAll(
           partyIdentifiedStdConfig.buildChildValues(
               term + PATH_DIVIDER + "_provider", (PartyIdentified) rmObject.getProvider(), null));
+    }
+
+    if (rmObject.getOtherParticipations() != null) {
+      IntStream.range(0, rmObject.getOtherParticipations().size())
+          .forEach(
+              i -> {
+                callMarshal(
+                    term,
+                    "_other_participation:" + i,
+                    rmObject.getOtherParticipations().get(i),
+                    values,
+                    context,
+                    context.getNodeDeque().peek().findChildById("participation").orElse(null));
+                callPostprocess(
+                    term,
+                    "_other_participation:" + i,
+                    rmObject.getOtherParticipations().get(i),
+                    values,
+                    context,
+                    context.getNodeDeque().peek().findChildById("participation").orElse(null));
+              });
     }
   }
 

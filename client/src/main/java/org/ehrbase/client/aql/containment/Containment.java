@@ -19,7 +19,6 @@
 
 package org.ehrbase.client.aql.containment;
 
-import com.nedap.archie.rm.archetyped.Locatable;
 import com.nedap.archie.rminfo.ArchieRMInfoLookup;
 import org.apache.commons.lang3.StringUtils;
 import org.ehrbase.client.aql.query.EntityQuery;
@@ -33,7 +32,7 @@ public class Containment implements ContainmentExpression {
 
   private static final ArchieRMInfoLookup RM_INFO_LOOKUP = ArchieRMInfoLookup.getInstance();
 
-  private final Class<? extends Locatable> type;
+  private final Class<?> type;
   private final String archetype;
   private EntityQuery<?> query;
   private ContainmentExpression contains;
@@ -87,7 +86,7 @@ public class Containment implements ContainmentExpression {
     }
   }
 
-  public Class<? extends Locatable> getType() {
+  public Class<?> getType() {
     return type;
   }
 

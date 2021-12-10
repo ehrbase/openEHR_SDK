@@ -22,6 +22,7 @@ package org.ehrbase.serialisation.walker.defaultvalues.defaultinserter;
 import com.nedap.archie.rm.composition.Composition;
 import com.nedap.archie.rm.composition.EventContext;
 import com.nedap.archie.rm.generic.PartySelf;
+import org.ehrbase.serialisation.walker.RMHelper;
 import org.ehrbase.serialisation.walker.defaultvalues.DefaultValuePath;
 import org.ehrbase.serialisation.walker.defaultvalues.DefaultValues;
 
@@ -29,18 +30,18 @@ public class CompositionValueInserter extends AbstractValueInserter<Composition>
   @Override
   public void insert(Composition rmObject, DefaultValues defaultValues) {
 
-    if (isEmpty(rmObject.getLanguage())
+    if (RMHelper.isEmpty(rmObject.getLanguage())
         && defaultValues.containsDefaultValue(DefaultValuePath.LANGUAGE)) {
       rmObject.setLanguage(defaultValues.getDefaultValue(DefaultValuePath.LANGUAGE).toCodePhrase());
     }
 
-    if (isEmpty(rmObject.getTerritory())
+    if (RMHelper.isEmpty(rmObject.getTerritory())
         && defaultValues.containsDefaultValue(DefaultValuePath.TERRITORY)) {
       rmObject.setTerritory(
           defaultValues.getDefaultValue(DefaultValuePath.TERRITORY).toCodePhrase());
     }
 
-    if (isEmpty(rmObject.getComposer())) {
+    if (RMHelper.isEmpty(rmObject.getComposer())) {
 
       if (defaultValues.containsDefaultValue(DefaultValuePath.COMPOSER_SELF)) {
         rmObject.setComposer(new PartySelf());
@@ -54,12 +55,11 @@ public class CompositionValueInserter extends AbstractValueInserter<Composition>
               rmObject.getComposer()));
     }
 
-    if (rmObject.getContext() == null){
+    if (rmObject.getContext() == null) {
       rmObject.setContext(new EventContext());
     }
 
-    new EventContextValueInserter().insert(rmObject.getContext(),defaultValues);
-
+    new EventContextValueInserter().insert(rmObject.getContext(), defaultValues);
   }
 
   @Override

@@ -21,29 +21,46 @@ package org.ehrbase.serialisation.flatencoding.std.umarshal.rmunmarshaller;
 
 import com.nedap.archie.rm.datavalues.quantity.DvProportion;
 import org.ehrbase.serialisation.walker.Context;
+import org.ehrbase.webtemplate.path.flat.FlatPathDto;
 
 import java.util.Map;
+import java.util.Set;
+
+import static org.ehrbase.serialisation.walker.FlatHelper.consumeAllMatching;
 
 public class DvProportionRMUnmarshaller extends AbstractRMUnmarshaller<DvProportion> {
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Class<DvProportion> getAssociatedClass() {
-        return DvProportion.class;
-    }
+  /** {@inheritDoc} */
+  @Override
+  public Class<DvProportion> getAssociatedClass() {
+    return DvProportion.class;
+  }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void handle(String currentTerm, DvProportion rmObject, Map<String, String> currentValues, Context<Map<String, String>> context) {
+  /** {@inheritDoc} */
+  @Override
+  public void handle(
+      String currentTerm,
+      DvProportion rmObject,
+      Map<FlatPathDto, String> currentValues,
+      Context<Map<FlatPathDto, String>> context,
+      Set<String> consumedPaths) {
 
-        setValue(currentTerm, "numerator", currentValues, rmObject::setNumerator, Double.class);
-        setValue(currentTerm, "denominator", currentValues, rmObject::setDenominator, Double.class);
-        setValue(currentTerm, "type", currentValues, rmObject::setType, Long.class);
-        //Contains numerator/denominator
-        consumedPath.add(currentTerm);
-    }
+    setValue(
+        currentTerm,
+        "numerator",
+        currentValues,
+        rmObject::setNumerator,
+        Double.class,
+        consumedPaths);
+    setValue(
+        currentTerm,
+        "denominator",
+        currentValues,
+        rmObject::setDenominator,
+        Double.class,
+        consumedPaths);
+    setValue(currentTerm, "type", currentValues, rmObject::setType, Long.class, consumedPaths);
+    // Contains numerator/denominator
+    consumeAllMatching(currentTerm, currentValues, consumedPaths);
+  }
 }

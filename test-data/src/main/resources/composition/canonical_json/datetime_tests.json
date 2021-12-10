@@ -58,6 +58,25 @@
     },
     "name": "Dr. House"
   },
+  "context": {
+    "_type": "EVENT_CONTEXT",
+    "start_time": {
+      "_type": "DV_DATE_TIME",
+      "value": "2019-01-14T18:36:49,294+00:00"
+    },
+    "setting": {
+      "_type": "DV_CODED_TEXT",
+      "value": "primary nursing care",
+      "defining_code": {
+        "_type": "CODE_PHRASE",
+        "terminology_id": {
+          "_type": "TERMINOLOGY_ID",
+          "value": "openehr"
+        },
+        "code_string": "229"
+      }
+    }
+  },
   "content": [
     {
       "_type": "OBSERVATION",

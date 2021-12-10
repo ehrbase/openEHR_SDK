@@ -20,29 +20,25 @@ package org.ehrbase.serialisation.dbencoding.rmobject;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.nedap.archie.rm.datavalues.quantity.datetime.DvDate;
-import com.nedap.archie.rm.datavalues.quantity.datetime.DvDateTime;
 import org.ehrbase.serialisation.dbencoding.EncodeUtilArchie;
-
-import java.time.temporal.ChronoField;
-import java.time.temporal.TemporalAccessor;
-import java.time.temporal.TemporalField;
 
 public class TemporalEncoding extends RMObjectEncoding {
 
-//    private DvDateTime dvDateTime;
-    private DvDate dvDate;
+  //    private DvDateTime dvDateTime;
+  private DvDate dvDate;
 
-    public String toDB(DvDate dvDate){
-        GsonBuilder builder = EncodeUtilArchie.getGsonBuilderInstance();
-        Gson gson = builder.setPrettyPrinting().create();
-        return gson.toJson(dvDate);
-    }
+  public String toDB(DvDate dvDate) {
+    GsonBuilder builder = EncodeUtilArchie.getGsonBuilderInstance();
+    Gson gson = builder.setPrettyPrinting().create();
+    return gson.toJson(dvDate);
+  }
 
-//    public boolean isPartialYear(){
-//        return dvDate.getValue().isSupported(ChronoField.YEAR);
-//    }
-//
-//    public boolean isPartialYearMonth(){
-//        return (dvDate.getValue().isSupported(ChronoField.YEAR) && dvDate.getValue().isSupported(ChronoField.MONTH_OF_YEAR));
-//    }
+  //    public boolean isPartialYear(){
+  //        return dvDate.getValue().isSupported(ChronoField.YEAR);
+  //    }
+  //
+  //    public boolean isPartialYearMonth(){
+  //        return (dvDate.getValue().isSupported(ChronoField.YEAR) &&
+  // dvDate.getValue().isSupported(ChronoField.MONTH_OF_YEAR));
+  //    }
 }

@@ -21,24 +21,33 @@ package org.ehrbase.serialisation.flatencoding.std.umarshal.rmunmarshaller;
 
 import com.nedap.archie.datetime.DateTimeParsers;
 import com.nedap.archie.rm.datavalues.quantity.datetime.DvDuration;
-import org.apache.commons.lang3.StringUtils;
 import org.ehrbase.serialisation.walker.Context;
+import org.ehrbase.webtemplate.path.flat.FlatPathDto;
 
 import java.util.Map;
+import java.util.Set;
 
 public class DvDurationRMUnmarshaller extends AbstractRMUnmarshaller<DvDuration> {
 
-    @Override
-    public Class<DvDuration> getAssociatedClass() {
-        return DvDuration.class;
-    }
+  @Override
+  public Class<DvDuration> getAssociatedClass() {
+    return DvDuration.class;
+  }
 
-    @Override
-    public void handle(String currentTerm, DvDuration rmObject, Map<String, String> currentValues, Context<Map<String, String>> context) {
-        String s = currentValues.get(currentTerm);
-        if (StringUtils.isNotBlank(s)) {
-            rmObject.setValue(DateTimeParsers.parseDurationValue(StringUtils.strip(s, "\"")));
-            consumedPath.add(currentTerm);
-        }
-    }
+  @Override
+  public void handle(
+      String currentTerm,
+      DvDuration rmObject,
+      Map<FlatPathDto, String> currentValues,
+      Context<Map<FlatPathDto, String>> context,
+      Set<String> consumedPaths) {
+
+    setValue(
+        currentTerm,
+        null,
+        currentValues,
+        s -> rmObject.setValue(DateTimeParsers.parseDurationValue(s)),
+        String.class,
+        consumedPaths);
+  }
 }

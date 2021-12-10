@@ -42,7 +42,8 @@ public class OptConstraintMapper extends ConstraintMapper {
     }
 
     public class OptConstraintItem extends ConstraintItem {
-        transient CCOMPLEXOBJECT ccomplexobject;
+        @SuppressWarnings("java:S1948") // Implementations inherit from XmlObjectBase which implements Serializable
+        CCOMPLEXOBJECT ccomplexobject;
 
         OptConstraintItem(String path, CCOMPLEXOBJECT ccomplexobject) {
             super(path);
@@ -63,12 +64,9 @@ public class OptConstraintMapper extends ConstraintMapper {
     }
 
     public void bind(String path, CCOMPLEXOBJECT ccobj)  {
-        if (!elementConstraintMap.containsKey(path)){
-            List<ConstraintItem> optConstraints = new ArrayList<>();
-            elementConstraintMap.put(path, optConstraints);
-        }
-
-        elementConstraintMap.get(path).add(new OptConstraintItem(path, ccobj));
+        List<ConstraintItem> constraintItems =
+            elementConstraintMap.computeIfAbsent(path, s -> new ArrayList<>());
+        constraintItems.add(new OptConstraintItem(path, ccobj));
     }
 
     void addToValidPath(String path) {

@@ -31,7 +31,7 @@ import java.util.stream.Collectors;
 /** Helper class to find Configurations classes in the classpath. */
 public class ReflectionHelper {
 
-  private static Map<Class<?>, Map> cache = new HashMap<>();
+  private static final Map<Class<?>, Map> cache = new HashMap<>();
 
   private ReflectionHelper() {}
 
@@ -65,6 +65,16 @@ public class ReflectionHelper {
             .scan()) {
       return result.getAllClasses().loadClasses();
     }
+  }
+
+  public static Class<?> findRootClass(Class<?> clazz){
+    Class<?> rootC = clazz;
+    while (!rootC.getSuperclass().equals(Object.class)){
+
+      rootC = rootC.getSuperclass();
+    }
+
+    return rootC;
   }
 
   private static <T, S extends ClassDependent<T>> Map<Class<? extends T>, S> buildInternal(

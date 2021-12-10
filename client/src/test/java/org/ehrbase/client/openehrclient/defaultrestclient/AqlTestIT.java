@@ -50,6 +50,7 @@ import org.ehrbase.client.templateprovider.TestDataTemplateProvider;
 import org.ehrbase.response.openehr.QueryResponseData;
 import org.ehrbase.serialisation.jsonencoding.CanonicalJson;
 import org.ehrbase.test_data.composition.CompositionTestDataCanonicalJson;
+import org.junit.After;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -68,16 +69,23 @@ import static org.junit.Assert.*;
 public class AqlTestIT {
 
     private static OpenEhrClient openEhrClient;
+    private UUID ehr;
 
     @BeforeClass
     public static void setup() throws URISyntaxException {
         openEhrClient = DefaultRestClientTestHelper.setupDefaultRestClient();
     }
 
+    @After
+    public void tearDown(){
+        //delete the created EHR using the admin endpoint
+        openEhrClient.adminEhrEndpoint().delete(ehr);
+    }
+
     @Test
     public void testExecute() {
 
-        UUID ehr = openEhrClient.ehrEndpoint().createEhr();
+        ehr = openEhrClient.ehrEndpoint().createEhr();
 
         openEhrClient.compositionEndpoint(ehr).mergeCompositionEntity(TestData.buildEhrbaseBloodPressureSimpleDeV0());
 
@@ -98,8 +106,7 @@ public class AqlTestIT {
         );
 
         List<Record2<UUID, Double>> result = openEhrClient.aqlEndpoint().execute(query, new ParameterValue("ehr_id", ehr));
-        assertThat(result).isNotNull();
-        assertThat(result).size().isEqualTo(2);
+        assertThat(result).isNotNull().hasSize(2);
 
 
     }
@@ -107,7 +114,7 @@ public class AqlTestIT {
     @Test
     public void testExecute2() {
 
-        UUID ehr = openEhrClient.ehrEndpoint().createEhr();
+        ehr = openEhrClient.ehrEndpoint().createEhr();
 
         openEhrClient.compositionEndpoint(ehr).mergeCompositionEntity(TestData.buildEhrbaseBloodPressureSimpleDeV0());
 
@@ -128,16 +135,13 @@ public class AqlTestIT {
         );
 
         List<Record2<UUID, DvQuantity>> result = openEhrClient.aqlEndpoint().execute(query, new ParameterValue("ehr_id", ehr));
-        assertThat(result).isNotNull();
-        assertThat(result).size().isEqualTo(2);
-
-
+        assertThat(result).isNotNull().hasSize(2);
     }
 
     @Test
     public void testExecute3() {
 
-        UUID ehr = openEhrClient.ehrEndpoint().createEhr();
+        ehr = openEhrClient.ehrEndpoint().createEhr();
 
         openEhrClient.compositionEndpoint(ehr).mergeCompositionEntity(TestData.buildEhrbaseBloodPressureSimpleDeV0());
 
@@ -158,16 +162,14 @@ public class AqlTestIT {
         );
 
         List<Record2<UUID, Element>> result = openEhrClient.aqlEndpoint().execute(query, new ParameterValue("ehr_id", ehr));
-        assertThat(result).isNotNull();
-        assertThat(result).size().isEqualTo(2);
-
+        assertThat(result).isNotNull().hasSize(2);
 
     }
 
     @Test
     public void testExecute4() {
 
-        UUID ehr = openEhrClient.ehrEndpoint().createEhr();
+        ehr = openEhrClient.ehrEndpoint().createEhr();
 
         openEhrClient.compositionEndpoint(ehr).mergeCompositionEntity(TestData.buildEhrbaseBloodPressureSimpleDeV0());
 
@@ -188,16 +190,13 @@ public class AqlTestIT {
         );
 
         List<Record2<UUID, ItemList>> result = openEhrClient.aqlEndpoint().execute(query, new ParameterValue("ehr_id", ehr));
-        assertThat(result).isNotNull();
-        assertThat(result).size().isEqualTo(2);
-
-
+        assertThat(result).isNotNull().hasSize(2);
     }
 
     @Test
     public void testExecute5() {
 
-        UUID ehr = openEhrClient.ehrEndpoint().createEhr();
+        ehr = openEhrClient.ehrEndpoint().createEhr();
 
         openEhrClient.compositionEndpoint(ehr).mergeCompositionEntity(TestData.buildEhrbaseBloodPressureSimpleDeV0());
 
@@ -218,16 +217,13 @@ public class AqlTestIT {
         );
 
         List<Record2<UUID, Event>> result = openEhrClient.aqlEndpoint().execute(query, new ParameterValue("ehr_id", ehr));
-        assertThat(result).isNotNull();
-        assertThat(result).size().isEqualTo(2);
-
-
+        assertThat(result).isNotNull().hasSize(2);
     }
 
     @Test
     public void testExecute6() {
 
-        UUID ehr = openEhrClient.ehrEndpoint().createEhr();
+        ehr = openEhrClient.ehrEndpoint().createEhr();
 
         openEhrClient.compositionEndpoint(ehr).mergeCompositionEntity(TestData.buildEhrbaseBloodPressureSimpleDeV0());
 
@@ -248,16 +244,13 @@ public class AqlTestIT {
         );
 
         List<Record2<UUID, History>> result = openEhrClient.aqlEndpoint().execute(query, new ParameterValue("ehr_id", ehr));
-        assertThat(result).isNotNull();
-        assertThat(result).size().isEqualTo(2);
-
-
+        assertThat(result).isNotNull().hasSize(2);
     }
 
     @Test
     public void testExecute7() {
 
-        UUID ehr = openEhrClient.ehrEndpoint().createEhr();
+        ehr = openEhrClient.ehrEndpoint().createEhr();
 
         openEhrClient.compositionEndpoint(ehr).mergeCompositionEntity(TestData.buildEhrbaseBloodPressureSimpleDeV0());
 
@@ -278,16 +271,13 @@ public class AqlTestIT {
         );
 
         List<Record2<UUID, Observation>> result = openEhrClient.aqlEndpoint().execute(query, new ParameterValue("ehr_id", ehr));
-        assertThat(result).isNotNull();
-        assertThat(result).size().isEqualTo(2);
-
-
+        assertThat(result).isNotNull().hasSize(2);
     }
 
     @Test
     public void testExecute8() {
 
-        UUID ehr = openEhrClient.ehrEndpoint().createEhr();
+        ehr = openEhrClient.ehrEndpoint().createEhr();
 
         openEhrClient.compositionEndpoint(ehr).mergeCompositionEntity(TestData.buildEhrbaseBloodPressureSimpleDeV0());
 
@@ -308,16 +298,13 @@ public class AqlTestIT {
         );
 
         List<Record2<UUID, Double>> result = openEhrClient.aqlEndpoint().execute(query, new ParameterValue("ehr_id", ehr));
-        assertThat(result).isNotNull();
-        assertThat(result).size().isEqualTo(2);
-
-
+        assertThat(result).isNotNull().hasSize(2);
     }
 
     @Test
     public void testExecute9() {
 
-        UUID ehr = openEhrClient.ehrEndpoint().createEhr();
+        ehr = openEhrClient.ehrEndpoint().createEhr();
 
         openEhrClient.compositionEndpoint(ehr).mergeCompositionEntity(TestData.buildEhrbaseBloodPressureSimpleDeV0());
 
@@ -338,16 +325,13 @@ public class AqlTestIT {
         );
 
         List<Record2<UUID, Double>> result = openEhrClient.aqlEndpoint().execute(query, new ParameterValue("ehr_id", ehr));
-        assertThat(result).isNotNull();
-        assertThat(result).size().isEqualTo(2);
-
-
+        assertThat(result).isNotNull().hasSize(2);
     }
 
     @Test
     public void testExecute10() {
 
-        UUID ehr = openEhrClient.ehrEndpoint().createEhr();
+        ehr = openEhrClient.ehrEndpoint().createEhr();
 
         openEhrClient.compositionEndpoint(ehr).mergeCompositionEntity(TestData.buildEhrbaseBloodPressureSimpleDeV0());
 
@@ -368,16 +352,13 @@ public class AqlTestIT {
         );
 
         List<Record2<UUID, Double>> result = openEhrClient.aqlEndpoint().execute(query, new ParameterValue("ehr_id", ehr));
-        assertThat(result).isNotNull();
-        assertThat(result).size().isEqualTo(1);
-
-
+        assertThat(result).isNotNull().hasSize(1);
     }
 
     @Test
     public void testExecute11() throws IOException {
 
-        UUID ehr = openEhrClient.ehrEndpoint().createEhr();
+        ehr = openEhrClient.ehrEndpoint().createEhr();
 
         Composition composition = new CanonicalJson().unmarshal(IOUtils.toString(CompositionTestDataCanonicalJson.CORONA.getStream(), StandardCharsets.UTF_8), Composition.class);
         Flattener flattener = new Flattener(new TestDataTemplateProvider());
@@ -386,9 +367,17 @@ public class AqlTestIT {
         openEhrClient.compositionEndpoint(ehr).mergeCompositionEntity(coronaAnamneseComposition);
 
         Query<Record2<String, String>> query = Query.buildNativeQuery(
-                "Select o/data[at0001]/events[at0002]/data[at0003]/items[at0022]/items[at0005]/value/value, o/data[at0001]/events[at0002]/data[at0003]/items[at0022]/items[at0004]/value/value " +
-                        "from EHR e[ehr_id/value = $ehr_id] " +
-                        "contains COMPOSITION c3[openEHR-EHR-COMPOSITION.report.v1] contains SECTION s4[openEHR-EHR-SECTION.adhoc.v1] contains OBSERVATION o[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0]"
+                "Select DISTINCT" +
+                        " o/data[at0001]/events[at0002]/data[at0003]/items[at0022]/items[at0005]/value/value as var1," +
+                        " o/data[at0001]/events[at0002]/data[at0003]/items[at0022]/items[at0004]/value/value as var2" +
+                        " from EHR e[ehr_id/value = $ehr_id] " +
+                        " contains COMPOSITION c3[openEHR-EHR-COMPOSITION.report.v1]" +
+                        " contains SECTION s4[openEHR-EHR-SECTION.adhoc.v1]" +
+                        " contains OBSERVATION o[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0] " +
+                        " WHERE" +
+                        "  o/data[at0001]/events[at0002]/data[at0003]/items[at0022]/items[at0005]/value/value is not null " +
+                        "  AND" +
+                        "  o/data[at0001]/events[at0002]/data[at0003]/items[at0022]/items[at0004]/value/value is not null"
                 , String.class, String.class
         );
 
@@ -397,14 +386,20 @@ public class AqlTestIT {
         assertThat(result)
                 .extracting(Record2::value1, Record2::value2)
                 .containsExactlyInAnyOrder(
-                        new Tuple("Vorhanden", "Husten"),
-                        new Tuple("Vorhanden", "Schnupfen"),
-                        new Tuple("Nicht vorhanden", "Heiserkeit"),
-                        new Tuple("Vorhanden", "Fieber oder erhöhte Körpertemperatur"),
+                        new Tuple("Nicht vorhanden", "Durchfall"),
+                        new Tuple("Nicht vorhanden", "Fieber oder erhöhte Körpertemperatur"),
                         new Tuple("Nicht vorhanden", "gestörter Geruchssinn"),
                         new Tuple("Nicht vorhanden", "gestörter Geschmackssinn"),
-                        new Tuple("Nicht vorhanden", "Durchfall"),
-                        new Tuple(null, null)
+                        new Tuple("Nicht vorhanden", "Heiserkeit"),
+                        new Tuple("Nicht vorhanden", "Husten"),
+                        new Tuple("Nicht vorhanden", "Schnupfen"),
+                        new Tuple("Vorhanden", "Durchfall"),
+                        new Tuple("Vorhanden", "Fieber oder erhöhte Körpertemperatur"),
+                        new Tuple("Vorhanden", "gestörter Geruchssinn"),
+                        new Tuple("Vorhanden", "gestörter Geschmackssinn"),
+                        new Tuple("Vorhanden", "Heiserkeit"),
+                        new Tuple("Vorhanden", "Husten"),
+                        new Tuple("Vorhanden", "Schnupfen")
                 );
 
 
@@ -413,7 +408,7 @@ public class AqlTestIT {
     @Test
     public void testExecute12() {
 
-        UUID ehr = openEhrClient.ehrEndpoint().createEhr();
+        ehr = openEhrClient.ehrEndpoint().createEhr();
 
         openEhrClient.compositionEndpoint(ehr).mergeCompositionEntity(TestData.buildEhrbaseBloodPressureSimpleDeV0());
 
@@ -450,50 +445,65 @@ public class AqlTestIT {
   @Test
   public void testExecute13() throws IOException {
 
-    UUID ehr = openEhrClient.ehrEndpoint().createEhr();
+      ehr = openEhrClient.ehrEndpoint().createEhr();
 
-    Composition composition = new CanonicalJson().unmarshal(IOUtils
-            .toString(CompositionTestDataCanonicalJson.CORONA.getStream(), StandardCharsets.UTF_8),
-        Composition.class);
-    Flattener flattener = new Flattener(new TestDataTemplateProvider());
-    CoronaAnamneseComposition coronaAnamneseComposition = flattener
-        .flatten(composition, CoronaAnamneseComposition.class);
-    coronaAnamneseComposition.setVersionUid(null);
-    openEhrClient.compositionEndpoint(ehr).mergeCompositionEntity(coronaAnamneseComposition);
+      Composition composition = new CanonicalJson().unmarshal(IOUtils
+                      .toString(CompositionTestDataCanonicalJson.CORONA.getStream(), StandardCharsets.UTF_8),
+              Composition.class);
+      Flattener flattener = new Flattener(new TestDataTemplateProvider());
+      CoronaAnamneseComposition coronaAnamneseComposition = flattener
+              .flatten(composition, CoronaAnamneseComposition.class);
+      coronaAnamneseComposition.setVersionUid(null);
+      openEhrClient.compositionEndpoint(ehr).mergeCompositionEntity(coronaAnamneseComposition);
 
-    Query query = Query.buildNativeQuery(
-        "Select o/data[at0001]/events[at0002]/data[at0003]/items[at0022]/items[at0005]/value/value, o/data[at0001]/events[at0002]/data[at0003]/items[at0022]/items[at0004]/value/value "
-            + "from EHR e[ehr_id/value = $ehr_id] "
-            + "contains COMPOSITION c3[openEHR-EHR-COMPOSITION.report.v1] contains SECTION s4[openEHR-EHR-SECTION.adhoc.v1] contains OBSERVATION o[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0]");
+      Query query = Query.buildNativeQuery(
+              "Select DISTINCT "
+                      + " o/data[at0001]/events[at0002]/data[at0003]/items[at0022]/items[at0005]/value/value as var1, o/data[at0001]/events[at0002]/data[at0003]/items[at0022]/items[at0004]/value/value as var2 "
+                      + " from EHR e[ehr_id/value = $ehr_id] "
+                      + " contains COMPOSITION c3[openEHR-EHR-COMPOSITION.report.v1]" +
+                      " contains SECTION s4[openEHR-EHR-SECTION.adhoc.v1]" +
+                      " contains OBSERVATION o[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0]" +
+                      " WHERE" +
+                      "  o/data[at0001]/events[at0002]/data[at0003]/items[at0022]/items[at0005]/value/value is not null " +
+                      "  AND" +
+                      "  o/data[at0001]/events[at0002]/data[at0003]/items[at0022]/items[at0004]/value/value is not null"
+                      );
 
-    QueryResponseData result = openEhrClient.aqlEndpoint()
-        .executeRaw(query, new ParameterValue("ehr_id", ehr));
+      QueryResponseData result = openEhrClient.aqlEndpoint()
+              .executeRaw(query, new ParameterValue("ehr_id", ehr));
 
-    assertNotNull(result);
-    assertNotNull(result.getQuery());
-    assertNotNull(result.getRows());
-    assertNotNull(result.getColumns());
-    assertEquals(result.getRows().size(), 8);
-    assertEquals(result.getColumns().size(), 2);
+      assertNotNull(result);
+      assertNotNull(result.getQuery());
+      assertNotNull(result.getRows());
+      assertNotNull(result.getColumns());
+      assertEquals(14, result.getRows().size());
+      assertEquals(2, result.getColumns().size());
 
-    List expectedResults = Arrays.asList(
-        List.of("Vorhanden", "Husten"),
-        List.of("Vorhanden", "Schnupfen"),
-        List.of("Nicht vorhanden", "Heiserkeit"),
-        List.of("Vorhanden", "Fieber oder erhöhte Körpertemperatur"),
-        List.of("Nicht vorhanden", "gestörter Geruchssinn"),
-        List.of("Nicht vorhanden", "gestörter Geschmackssinn"),
-        List.of("Nicht vorhanden", "Durchfall"),
-        Arrays.asList(new String[]{null, null})
-    );
+      List expectedResults = Arrays.asList(
+              List.of("Nicht vorhanden", "Durchfall"),
+              List.of("Nicht vorhanden", "Fieber oder erhöhte Körpertemperatur"),
+              List.of("Nicht vorhanden", "gestörter Geruchssinn"),
+              List.of("Nicht vorhanden", "gestörter Geschmackssinn"),
+              List.of("Nicht vorhanden", "Heiserkeit"),
+              List.of("Nicht vorhanden", "Husten"),
+              List.of("Nicht vorhanden", "Schnupfen"),
+              List.of("Vorhanden", "Durchfall"),
+              List.of("Vorhanden", "Fieber oder erhöhte Körpertemperatur"),
+              List.of("Vorhanden", "gestörter Geruchssinn"),
+              List.of("Vorhanden", "gestörter Geschmackssinn"),
+              List.of("Vorhanden", "Heiserkeit"),
+              List.of("Vorhanden", "Husten"),
+              List.of("Vorhanden", "Schnupfen")
+      );
 
-    assertTrue(CollectionUtils.isEqualCollection(result.getRows(), expectedResults));
+      assertTrue(CollectionUtils.isEqualCollection(result.getRows(), expectedResults));
+
   }
 
   @Test
   public void testExecute14() {
 
-    UUID ehr = openEhrClient.ehrEndpoint().createEhr();
+    ehr = openEhrClient.ehrEndpoint().createEhr();
 
     Query query = Query.buildNativeQuery("Invalid aql query");
 
@@ -527,7 +537,7 @@ public class AqlTestIT {
   @Test
   public void testExecute16() {
 
-    UUID ehr = openEhrClient.ehrEndpoint().createEhr();
+    ehr = openEhrClient.ehrEndpoint().createEhr();
 
     Exception exception = assertThrows(ClientException.class, () -> openEhrClient.aqlEndpoint()
         .executeRaw(null, new ParameterValue("ehr_id", ehr)));

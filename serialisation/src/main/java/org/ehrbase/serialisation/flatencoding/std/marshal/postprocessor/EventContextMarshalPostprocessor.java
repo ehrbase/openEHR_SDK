@@ -19,39 +19,62 @@
 
 package org.ehrbase.serialisation.flatencoding.std.marshal.postprocessor;
 
-import static org.ehrbase.webtemplate.parser.OPTParser.PATH_DIVIDER;
-
 import com.nedap.archie.rm.composition.EventContext;
 import com.nedap.archie.rm.datavalues.quantity.datetime.DvDateTime;
+import org.ehrbase.serialisation.walker.Context;
+
 import java.util.Map;
 import java.util.Optional;
-import org.ehrbase.serialisation.flatencoding.std.marshal.config.PartyIdentifiedStdConfig;
+import java.util.stream.IntStream;
 
-public class EventContextMarshalPostprocessor implements MarshalPostprocessor<EventContext> {
+import static org.ehrbase.webtemplate.parser.OPTParser.PATH_DIVIDER;
 
-  private static final PartyIdentifiedStdConfig PARTY_IDENTIFIED_STD_CONFIG =
-      new PartyIdentifiedStdConfig();
+public class EventContextMarshalPostprocessor extends AbstractMarshalPostprocessor<EventContext> {
 
   /** {@inheritDoc} */
   @Override
-  public void process(String term, EventContext rmObject, Map<String, Object> values) {
+  public void process(
+      String term,
+      EventContext rmObject,
+      Map<String, Object> values,
+      Context<Map<String, Object>> context) {
 
-    MarshalPostprocessor.addValue(
+    addValue(
         values,
         term + PATH_DIVIDER + "_end_time",
         null,
         Optional.ofNullable(rmObject.getEndTime()).map(DvDateTime::getValue).orElse(null));
 
-    MarshalPostprocessor.addValue(
-            values,
-            term + PATH_DIVIDER + "_location",
-            null,
-            Optional.ofNullable(rmObject.getLocation()).orElse(null));
+    addValue(
+        values,
+        term + PATH_DIVIDER + "_location",
+        null,
+        Optional.ofNullable(rmObject.getLocation()).orElse(null));
 
     if (rmObject.getHealthCareFacility() != null) {
-      values.putAll(
-          PARTY_IDENTIFIED_STD_CONFIG.buildChildValues(
-              term + "/" + "_health_care_facility", rmObject.getHealthCareFacility(), null));
+      handleRmAttribute(
+          term, rmObject.getHealthCareFacility(), values, context, "health_care_facility");
+    }
+
+    if (rmObject.getParticipations() != null) {
+      IntStream.range(0, rmObject.getParticipations().size())
+          .forEach(
+              i -> {
+                callMarshal(
+                    term,
+                    "_participation:" + i,
+                    rmObject.getParticipations().get(i),
+                    values,
+                    context,
+                    context.getNodeDeque().peek().findChildById("participation").orElse(null));
+                callPostprocess(
+                    term,
+                    "_participation:" + i,
+                    rmObject.getParticipations().get(i),
+                    values,
+                    context,
+                    context.getNodeDeque().peek().findChildById("participation").orElse(null));
+              });
     }
   }
 

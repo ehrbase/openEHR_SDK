@@ -22,16 +22,17 @@ import com.google.gson.GsonBuilder;
 import com.nedap.archie.rm.RMObject;
 import com.nedap.archie.rm.archetyped.Locatable;
 import com.nedap.archie.rminfo.ArchieRMInfoLookup;
-import org.ehrbase.serialisation.dbencoding.wrappers.json.I_DvTypeAdapter;
 import org.ehrbase.serialisation.jsonencoding.CanonicalJson;
 import org.ehrbase.validation.constraints.util.SnakeToCamel;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.ehrbase.serialisation.dbencoding.wrappers.json.I_DvTypeAdapter.AT_TYPE;
 
 public abstract class CanonicalUtil {
 
@@ -62,9 +63,9 @@ public abstract class CanonicalUtil {
 
         if (anObject instanceof Map) {
             //perform the conversion using the type if any
-            if (((Map) anObject).containsKey(I_DvTypeAdapter.AT_TYPE)) {
+            if (((Map) anObject).containsKey(AT_TYPE)) {
                 //get the actual type from Archie lookup
-                Class objectRmClass = ArchieRMInfoLookup.getInstance().getClass((String) ((Map) anObject).get(I_DvTypeAdapter.AT_TYPE));
+                Class objectRmClass = ArchieRMInfoLookup.getInstance().getClass((String) ((Map) anObject).get(AT_TYPE));
                 if (objectRmClass != null)
                     retObject = new CanonicalJson().marshal(toRmObject(((Map<String, Object>) anObject), objectRmClass));
             }
@@ -103,6 +104,23 @@ public abstract class CanonicalUtil {
         RMObject actualRmObject = toRmObject(anRmObjectAsMap, rmClass);
         assertThat(actualRmObject).isEqualTo(compareExpectedObject);
         return null;
+    }
+
+    public static List<RMObject> toRmObjectList(List<Object> rmObjectListAsMap){
+        List<RMObject> objects = new ArrayList<>();
+
+        for (Object item: rmObjectListAsMap){
+            if (item instanceof Map) {
+                Map<String, Object> mappedObject = (Map<String, Object>)item;
+                //get the type
+                String type = (String) mappedObject.get(AT_TYPE);
+                Class rmClass = ArchieRMInfoLookup.getInstance().getClass(type);
+                RMObject rmObject = toRmObject(mappedObject, rmClass);
+                objects.add(rmObject);
+            }
+        }
+
+        return objects;
     }
 
     /**
@@ -148,14 +166,14 @@ public abstract class CanonicalUtil {
      * @return
      * @see com.nedap.archie.rm.archetyped.Locatable
      */
-    private static Object getAttributePathValue(Object root, String attributePath) {
+    private static Object getAttributePathValue(Object root, String attributePath, boolean keepArray) {
         Object rmObject = root;
 
         if (rmObject instanceof Locatable) {
             try {
                 List<Object> items = ((Locatable) root).itemsAtPath(attributePath);
                 if (!items.isEmpty())
-                    rmObject = items.get(0);
+                    rmObject = keepArray ? items : items.get(0);
                 else
                     rmObject = null;
             } catch (Exception e) {
@@ -187,7 +205,12 @@ public abstract class CanonicalUtil {
     }
 
     public static Object attributeValueAt(Object root, String path) {
-        Object evaluated = getAttributePathValue(root, path);
+        Object evaluated = getAttributePathValue(root, path, false);
+        return new SpecialCase().transform(evaluated);
+    }
+
+    public static Object attributeArrayValueAt(Object root, String path) {
+        Object evaluated = getAttributePathValue(root, path, true);
         return new SpecialCase().transform(evaluated);
     }
 

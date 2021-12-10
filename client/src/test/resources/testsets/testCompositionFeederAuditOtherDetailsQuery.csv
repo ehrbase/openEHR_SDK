@@ -1,0 +1,12 @@
+# prefixed by feeder_system_audit/other_details[openEHR-EHR-ITEM_TREE.generic.v1]
+name, //CR # returns null
+name/value
+items[at0001]
+items[at0001]/name
+items[at0001]/name/value
+items[at0001]/value
+items[at0001]/value/type
+items[at0001]/value/issuer
+items[at0001]/value/assigner
+items[at0001]/archetype_node_id,//CR # returns null
+

@@ -26,6 +26,7 @@ import com.nedap.archie.rm.datavalues.DvCodedText;
 import com.nedap.archie.rm.generic.Attestation;
 import com.nedap.archie.rm.generic.AuditDetails;
 import com.nedap.archie.rm.support.identification.HierObjectId;
+import com.nedap.archie.rm.support.identification.ObjectId;
 import com.nedap.archie.rm.support.identification.ObjectRef;
 import com.nedap.archie.rm.support.identification.ObjectVersionId;
 import org.ehrbase.response.ehrscape.ContributionDto;
@@ -54,16 +55,18 @@ public class OriginalVersionResponseData<T> {
     private List<Attestation> attestations;     // optional
     private T data;
 
+    public OriginalVersionResponseData() {
+    }
+
     public OriginalVersionResponseData(OriginalVersion<T> originalVersion, ContributionDto contributionDto) {
         setType("ORIGINAL_VERSION");
         setVersionId(originalVersion.getUid());
 
         HierObjectId contributionId = new HierObjectId(contributionDto.getUuid().toString());
-        List<ObjectRef> versions = new ArrayList<>();
+        List<ObjectRef<? extends ObjectId>> versions = new ArrayList<>();
         contributionDto.getObjectReferences().forEach((k, v) -> versions.add(
                 new ObjectRef<>(new HierObjectId(v), "local", k)));
-        Contribution contribution = new Contribution(contributionId, versions, contributionDto.getAuditDetails());
-        setContribution(contribution);
+        setContribution(new Contribution(contributionId, versions, contributionDto.getAuditDetails()));
 
         setSignature(originalVersion.getSignature());
         setAuditDetails(originalVersion.getCommitAudit());

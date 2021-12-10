@@ -22,38 +22,62 @@ package org.ehrbase.webtemplate;
 import care.better.platform.web.template.validator.CompositionValidator;
 import care.better.platform.web.template.validator.ValidationErrorDto;
 import com.nedap.archie.rm.composition.Composition;
+import com.nedap.archie.rminfo.ArchieRMInfoLookup;
+import com.nedap.archie.rmobjectvalidator.RMObjectValidator;
 import org.apache.commons.io.IOUtils;
 import org.ehrbase.serialisation.jsonencoding.CanonicalJson;
 import org.ehrbase.validation.Validator;
-import org.ehrbase.webtemplate.model.WebTemplateValidation;
 import org.openehr.schemas.v1.TemplateDocument;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class CompositionValidatorImp implements CompositionValidator {
+
+  private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
   @Override
   public List<ValidationErrorDto> validate(String template, String rawComposition)
-          throws Exception {
+      throws Exception {
 
     return validateWithParams(template, rawComposition, false, false);
   }
 
   @Override
   public List<ValidationErrorDto> validateWithParams(
-          String template,
-          String rawComposition,
-          boolean strictTextValidation,
-          boolean relaxedNameMatching)
-          throws Exception {
+      String template,
+      String rawComposition,
+      boolean strictTextValidation,
+      boolean relaxedNameMatching)
+      throws Exception {
     TemplateDocument templateDocument =
-            TemplateDocument.Factory.parse(IOUtils.toInputStream(template, StandardCharsets.UTF_8));
+        TemplateDocument.Factory.parse(IOUtils.toInputStream(template, StandardCharsets.UTF_8));
+    Composition composition =
+        new CanonicalJson().unmarshal(rawComposition.replace("@class", "_type"), Composition.class);
     try {
-      new Validator(templateDocument.getTemplate()).check(new CanonicalJson().unmarshal(rawComposition.replace("@class","_type"), Composition.class));
+
+      new Validator(templateDocument.getTemplate()).check(composition);
     } catch (RuntimeException e) {
-      return Collections.singletonList(new ValidationErrorDto(e.getMessage(), new String[0], 0));
+      // error in better template
+      if (!e.getMessage()
+          .contains(
+              "[D] An error that reache the patient and reqired monitoring or intervention to confirm that")) {
+        logger.info(e.getMessage());
+        return Collections.singletonList(new ValidationErrorDto(e.getMessage(), new String[0], 0));
+      }
     }
-    return Collections.emptyList();
+
+    RMObjectValidator rmObjectValidator =
+        new RMObjectValidator(ArchieRMInfoLookup.getInstance(), s -> null);
+    List<ValidationErrorDto> errorDtoList =
+        rmObjectValidator.validate(composition).stream()
+            .peek(e -> logger.info(e.getMessage()))
+            .map(e -> new ValidationErrorDto(e.getMessage(), new String[0], 0))
+            .collect(Collectors.toList());
+    return errorDtoList;
   }
 }

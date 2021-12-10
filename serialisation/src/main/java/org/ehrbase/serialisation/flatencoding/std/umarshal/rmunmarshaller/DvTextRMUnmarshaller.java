@@ -22,29 +22,38 @@ package org.ehrbase.serialisation.flatencoding.std.umarshal.rmunmarshaller;
 import com.nedap.archie.rm.datavalues.DvText;
 import org.ehrbase.serialisation.walker.Context;
 import org.ehrbase.webtemplate.model.WebTemplateInput;
+import org.ehrbase.webtemplate.path.flat.FlatPathDto;
 
 import java.util.Map;
+import java.util.Set;
 
 public class DvTextRMUnmarshaller extends AbstractRMUnmarshaller<DvText> {
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Class<DvText> getAssociatedClass() {
-        return DvText.class;
-    }
+  /** {@inheritDoc} */
+  @Override
+  public Class<DvText> getAssociatedClass() {
+    return DvText.class;
+  }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void handle(String currentTerm, DvText rmObject, Map<String, String> currentValues, Context<Map<String, String>> context) {
-        if (context.getNodeDeque().peek().getInputs().stream().map(WebTemplateInput::getSuffix).anyMatch("other"::equals)) {
-            setValue(currentTerm, "other", currentValues, rmObject::setValue, String.class);
-        } else {
-            setValue(currentTerm, null, currentValues, rmObject::setValue, String.class);
-        }
-
+  /** {@inheritDoc} */
+  @Override
+  public void handle(
+      String currentTerm,
+      DvText rmObject,
+      Map<FlatPathDto, String> currentValues,
+      Context<Map<FlatPathDto, String>> context,
+      Set<String> consumedPaths) {
+    if (context.getNodeDeque().peek().getInputs().stream()
+        .map(WebTemplateInput::getSuffix)
+        .anyMatch("other"::equals)) {
+      setValue(
+          currentTerm, "other", currentValues, rmObject::setValue, String.class, consumedPaths);
+    } else {
+      setValue(currentTerm, null, currentValues, rmObject::setValue, String.class, consumedPaths);
+      if (rmObject.getValue() == null) {
+        setValue(
+            currentTerm, "value", currentValues, rmObject::setValue, String.class, consumedPaths);
+      }
     }
+  }
 }

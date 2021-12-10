@@ -1,29 +1,30 @@
 package org.ehrbase.client.classgenerator.examples.testalltypesenv1composition.definition;
 
-import java.lang.Double;
-import java.lang.String;
-import javax.annotation.processing.Generated;
 import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.OptionFor;
 import org.ehrbase.client.annotations.Path;
 import org.ehrbase.client.classgenerator.interfaces.RMEntity;
 
+import javax.annotation.processing.Generated;
+
 @Entity
 @Generated(
     value = "org.ehrbase.client.classgenerator.ClassGenerator",
-    date = "2020-12-10T13:06:10.808495600+01:00",
+    date = "2021-10-08T15:38:06.346881500+02:00",
     comments = "https://github.com/ehrbase/openEHR_SDK Version: null"
 )
 @OptionFor("DV_QUANTITY")
 public class TestAllTypesChoiceDvQuantity implements RMEntity, TestAllTypesChoiceChoice {
   /**
-   * Path: Test all types/Test all types/value/value
+   * Path: Test all types/Test all types/choice/choice
+   * Description: *
    */
   @Path("|magnitude")
   private Double choiceMagnitude;
 
   /**
-   * Path: Test all types/Test all types/value/value
+   * Path: Test all types/Test all types/choice/choice
+   * Description: *
    */
   @Path("|units")
   private String choiceUnits;

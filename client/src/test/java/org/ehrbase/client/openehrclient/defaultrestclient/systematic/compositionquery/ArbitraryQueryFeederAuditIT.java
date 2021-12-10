@@ -20,14 +20,13 @@ package org.ehrbase.client.openehrclient.defaultrestclient.systematic.compositio
 import com.nedap.archie.rm.composition.Composition;
 import org.apache.commons.io.IOUtils;
 import org.ehrbase.client.Integration;
-import org.ehrbase.client.classgenerator.examples.laborbefundcomposition.LaborbefundComposition;
+import org.ehrbase.client.classgenerator.examples.testalltypesenv1composition.TestAllTypesEnV1Composition;
 import org.ehrbase.client.flattener.Flattener;
 import org.ehrbase.client.openehrclient.defaultrestclient.systematic.compositionquery.queries.arbitrary.ArbitraryQuery;
 import org.ehrbase.client.templateprovider.TestDataTemplateProvider;
 import org.ehrbase.serialisation.jsonencoding.CanonicalJson;
 import org.ehrbase.test_data.composition.CompositionTestDataCanonicalJson;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -37,7 +36,6 @@ import java.nio.charset.StandardCharsets;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @Category(Integration.class)
-@Ignore("CR: to be created. freezes EHRbase server")
 public class ArbitraryQueryFeederAuditIT extends CanonicalCompoAllTypeQueryIT {
 
     protected ArbitraryQuery arbitraryQuery;
@@ -49,9 +47,9 @@ public class ArbitraryQueryFeederAuditIT extends CanonicalCompoAllTypeQueryIT {
 
         aComposition = new CanonicalJson().unmarshal(IOUtils.toString(CompositionTestDataCanonicalJson.FEEDER_AUDIT_DETAILS.getStream(), StandardCharsets.UTF_8), Composition.class);
         Flattener flattener = new Flattener(new TestDataTemplateProvider());
-        LaborbefundComposition laborbefundComposition = flattener.flatten(aComposition, LaborbefundComposition.class);
+        TestAllTypesEnV1Composition testAllTypesEnV1Composition = flattener.flatten(aComposition, TestAllTypesEnV1Composition.class);
 //        create the composition
-        LaborbefundComposition comp = compositionEndpoint.mergeCompositionEntity(laborbefundComposition);
+        TestAllTypesEnV1Composition comp = compositionEndpoint.mergeCompositionEntity(testAllTypesEnV1Composition);
         compositionUUID = comp.getVersionUid().getUuid();
         arbitraryQuery = new ArbitraryQuery(ehrUUID, openEhrClient);
     }

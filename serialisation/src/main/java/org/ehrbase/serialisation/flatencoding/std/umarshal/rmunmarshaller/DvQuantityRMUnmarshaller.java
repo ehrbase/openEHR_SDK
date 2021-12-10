@@ -19,44 +19,54 @@
 
 package org.ehrbase.serialisation.flatencoding.std.umarshal.rmunmarshaller;
 
-import com.ctc.wstx.util.StringUtil;
 import com.nedap.archie.rm.datavalues.quantity.DvQuantity;
 import org.apache.commons.lang3.StringUtils;
 import org.ehrbase.serialisation.walker.Context;
 import org.ehrbase.webtemplate.model.WebTemplateInput;
 import org.ehrbase.webtemplate.model.WebTemplateInputValue;
+import org.ehrbase.webtemplate.path.flat.FlatPathDto;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 public class DvQuantityRMUnmarshaller extends AbstractRMUnmarshaller<DvQuantity> {
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Class<DvQuantity> getAssociatedClass() {
-        return DvQuantity.class;
+  /** {@inheritDoc} */
+  @Override
+  public Class<DvQuantity> getAssociatedClass() {
+    return DvQuantity.class;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public void handle(
+      String currentTerm,
+      DvQuantity rmObject,
+      Map<FlatPathDto, String> currentValues,
+      Context<Map<FlatPathDto, String>> context,
+      Set<String> consumedPaths) {
+    setValue(
+        currentTerm,
+        "magnitude",
+        currentValues,
+        rmObject::setMagnitude,
+        Double.class,
+        consumedPaths);
+    setValue(currentTerm, "units", currentValues, rmObject::setUnits, String.class, consumedPaths);
+    if (rmObject.getUnits() == null) {
+      setValue(currentTerm, "unit", currentValues, rmObject::setUnits, String.class, consumedPaths);
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void handle(String currentTerm, DvQuantity rmObject, Map<String, String> currentValues, Context<Map<String, String>> context) {
-        setValue(currentTerm, "magnitude", currentValues, rmObject::setMagnitude, Double.class);
-        setValue(currentTerm, "units", currentValues, rmObject::setUnits, String.class);
-        if (rmObject.getUnits() == null) {
-            setValue(currentTerm, "unit", currentValues, rmObject::setUnits, String.class);
-        }
-
-        if (StringUtils.isBlank(rmObject.getUnits())) {
-            List<WebTemplateInputValue> units = Optional.ofNullable(context.getNodeDeque().peek().getInputs()).stream().flatMap(List::stream).filter(i -> "unit".equals(i.getSuffix())).findAny().map(WebTemplateInput::getList).orElse(Collections.emptyList());
-            if (units.size() == 1) {
-                rmObject.setUnits(units.get(0).getValue());
-            }
-        }
+    if (StringUtils.isBlank(rmObject.getUnits())) {
+      List<WebTemplateInputValue> units =
+          Optional.ofNullable(context.getNodeDeque().peek().getInputs()).stream()
+              .flatMap(List::stream)
+              .filter(i -> "unit".equals(i.getSuffix()))
+              .findAny()
+              .map(WebTemplateInput::getList)
+              .orElse(Collections.emptyList());
+      if (units.size() == 1) {
+        rmObject.setUnits(units.get(0).getValue());
+      }
     }
+  }
 }

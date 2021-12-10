@@ -38,4 +38,10 @@ public class OptConstraintTest {
         assertNotNull(optConstraint);
     }
 
+    @Test
+    public void testLoadOperationalTemplate2() throws Exception {
+        OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(new FileInputStream("./src/test/resources/operational_templates/nested.v1.opt")).getTemplate();
+        OptConstraintMapper optConstraint = new OptConstraint().map(template);
+        assertNotNull(optConstraint);
+    }
 }

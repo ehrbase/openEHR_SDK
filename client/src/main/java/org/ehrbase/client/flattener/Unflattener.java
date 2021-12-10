@@ -27,21 +27,18 @@ import java.beans.PropertyDescriptor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.Optional;
-import org.ehrbase.building.OptSkeletonBuilder;
+
+import org.ehrbase.building.webtemplateskeletnbuilder.WebTemplateSkeletonBuilder;
 import org.ehrbase.client.annotations.Id;
 import org.ehrbase.client.annotations.Template;
 import org.ehrbase.client.exception.ClientException;
 import org.ehrbase.client.openehrclient.VersionUid;
-import org.ehrbase.normalizer.Normalizer;
 import org.ehrbase.serialisation.walker.defaultvalues.DefaultValues;
 import org.ehrbase.util.exception.SdkException;
+import org.ehrbase.webtemplate.model.WebTemplate;
 import org.ehrbase.webtemplate.templateprovider.TemplateProvider;
-import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
 
 public class Unflattener {
-
-  public static final Normalizer NORMALIZER = new Normalizer();
-  public static final OptSkeletonBuilder OPT_SKELETON_BUILDER = new OptSkeletonBuilder();
 
   private final TemplateProvider templateProvider;
   private final DefaultValuesProvider defaultValuesProvider;
@@ -62,29 +59,28 @@ public class Unflattener {
   public RMObject unflatten(Object dto) {
     Template template = dto.getClass().getAnnotation(Template.class);
 
-    OPERATIONALTEMPLATE operationalTemplate =
-        templateProvider
-            .find(template.value())
-            .orElseThrow(
-                () -> new ClientException(String.format("Unknown Template %s", template.value())));
-    Composition generate = (Composition) OPT_SKELETON_BUILDER.generate(operationalTemplate);
 
+    WebTemplate introspect = templateProvider
+            .buildIntrospect(template.value())
+            .orElseThrow(
+                    () ->
+                            new SdkException(
+                                    String.format("Can not find Template: %s", template.value())));
+
+    Composition generate = WebTemplateSkeletonBuilder.build(introspect,false);
     new DtoToCompositionWalker()
         .walk(
             generate,
             findEntity(dto),
-            templateProvider
-                .buildIntrospect(template.value())
-                .orElseThrow(
-                    () ->
-                        new SdkException(
-                            String.format("Can not find Template: %s", template.value()))),
-            defaultValuesProvider.provide(dto));
+                introspect,
+            defaultValuesProvider.provide(dto),
+            template.value()
+          );
     Optional<VersionUid> versionUid = extractVersionUid(dto);
     if (versionUid.isPresent()) {
       generate.setUid(new HierObjectId(versionUid.get().toString()));
     }
-    return NORMALIZER.normalize(generate);
+    return generate;
   }
 
   static Optional<VersionUid> extractVersionUid(Object entity) {

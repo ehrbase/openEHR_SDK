@@ -38,6 +38,7 @@ public enum CompositionTestDataCanonicalJson {
     OBS_INST("Observation+Instruction", "obs_inst.json"),
     MINIMAL_PERSISTENT("Minimal Persistent", "minimal_persistent.json"),
     NESTED("Nested", "nested.json"),
+    NESTED_EN_V1("nested.en.v1", "nested.en.v1.json"),
     TIME_SERIES("Time Series", "time_series.json"),
     CORONA("Corona", "compo_corona.json"),
     SUBJECT_PARTY_IDENTIFIED("Nested subject PARTY_IDENTIFIED", "compo_with_nested_party_identified.json"),
@@ -53,7 +54,12 @@ public enum CompositionTestDataCanonicalJson {
     CHOICE_ELEMENT("element containing multiple choice to test validation", "choice_validation_test.json"),
     CHOICE_DV_QUANTITY("choices in units", "dvquantity_choice.json"),
     DEMO_VITALS("composition to test archetype_details roundtrip", "demo_vitals_352.json"),
-    FEEDER_AUDIT_DETAILS("composition to test feeder audit details", "compo_feeder_audit_details.json");
+    FEEDER_AUDIT_DETAILS("composition to test feeder audit details", "all_types_systematic_tests_feeder_audit.json"),
+    MINIMAL_INSTRUCTION("minimal instruction (contains DV_DURATION)", "minimal_instruction.json"),
+    MINIMAL_ACTION_2("Minimal Action 2", "minimal_action2_1.json"),
+    MINIMAL_WITH_OPTIONAL_ATTRIBUTE("dv multimedia with alternate_text", "minimal_with_optional_attribute.json"),
+    MINIMAL_WITHOUT_OPTIONAL_ATTRIBUTE("dv multimedia without alternate_text", "minimal_without_optional_attribute.json"),
+    GECCO_PERSONENDATEN("GECCO_Personendaten", "gecco_personendaten.json");
 
 
     private final String filename;

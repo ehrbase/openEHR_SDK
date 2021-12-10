@@ -23,6 +23,7 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 import com.nedap.archie.rm.datastructures.ItemStructure;
 import com.nedap.archie.rm.datavalues.DvText;
 import com.nedap.archie.rm.directory.Folder;
+import com.nedap.archie.rm.support.identification.ObjectId;
 import com.nedap.archie.rm.support.identification.ObjectRef;
 import com.nedap.archie.rm.support.identification.UIDBasedId;
 
@@ -33,6 +34,7 @@ import java.util.List;
  * than minimal is preferred by client.
  */
 @JacksonXmlRootElement
+@SuppressWarnings("java:S1452")
 public class DirectoryResponseData {
 
     @JsonProperty(value = "uid")
@@ -40,7 +42,7 @@ public class DirectoryResponseData {
     @JsonProperty(value = "folders")
     private List<Folder> folders;
     @JsonProperty(value = "items")
-    private List<ObjectRef> items;
+    private List<ObjectRef<? extends ObjectId>> items;
     @JsonProperty(value = "details")
     private ItemStructure details;
     @JsonProperty(value = "name")
@@ -62,11 +64,11 @@ public class DirectoryResponseData {
         this.folders = folder;
     }
 
-    public List<ObjectRef> getItems() {
+    public List<ObjectRef<? extends ObjectId>> getItems() {
         return items;
     }
 
-    public void setItems(List<ObjectRef> items) {
+    public void setItems(List<ObjectRef<? extends ObjectId>> items) {
         this.items = items;
     }
 

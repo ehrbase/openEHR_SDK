@@ -23,7 +23,7 @@ import com.nedap.archie.rm.composition.Observation;
 import com.nedap.archie.rm.datastructures.Event;
 import com.nedap.archie.rm.datastructures.History;
 import com.nedap.archie.rm.datavalues.quantity.datetime.DvDateTime;
-import org.ehrbase.normalizer.Normalizer;
+import org.ehrbase.serialisation.walker.RMHelper;
 import org.ehrbase.serialisation.walker.defaultvalues.DefaultValuePath;
 import org.ehrbase.serialisation.walker.defaultvalues.DefaultValues;
 
@@ -34,28 +34,27 @@ import java.util.stream.Stream;
 public class ObservationValueInserter extends AbstractValueInserter<Observation> {
   @Override
   public void insert(Observation rmObject, DefaultValues defaultValues) {
-    Normalizer normalizer = new Normalizer();
-    Observation normalize = normalizer.normalize(rmObject);
-    if (normalize.getData() != null) {
+
+    if (rmObject.getData() != null) {
       insert(rmObject.getData(), defaultValues);
 
-      if (normalize.getData().getEvents() != null) {
+      if (rmObject.getData().getEvents() != null) {
 
-        normalize.getData().getEvents().stream().forEach(e -> insert(e, defaultValues));
+        rmObject.getData().getEvents().forEach(e -> insert(e, defaultValues));
       }
     }
 
-    if (normalize.getState() != null) {
-      insert(normalize.getState(), defaultValues);
-      if (normalize.getState().getEvents() != null) {
-        normalize.getState().getEvents().forEach(e -> insert(e, defaultValues));
+    if (rmObject.getState() != null) {
+      insert(rmObject.getState(), defaultValues);
+      if (rmObject.getState().getEvents() != null) {
+        rmObject.getState().getEvents().forEach(e -> insert(e, defaultValues));
       }
     }
   }
 
   private void insert(History<?> rmObject, DefaultValues defaultValues) {
 
-    if (isEmpty(rmObject.getOrigin())
+    if (RMHelper.isEmpty(rmObject.getOrigin())
         && (defaultValues.containsDefaultValue(DefaultValuePath.TIME)
             || defaultValues.containsDefaultValue(DefaultValuePath.HISTORY_ORIGIN))) {
       TemporalAccessor defaultTemporalAccessor =
@@ -69,7 +68,8 @@ public class ObservationValueInserter extends AbstractValueInserter<Observation>
   }
 
   private void insert(Event<?> rmObject, DefaultValues defaultValues) {
-    if (isEmpty(rmObject.getTime()) && defaultValues.containsDefaultValue(DefaultValuePath.TIME)) {
+    if (RMHelper.isEmpty(rmObject.getTime())
+        && defaultValues.containsDefaultValue(DefaultValuePath.TIME)) {
 
       rmObject.setTime(new DvDateTime(defaultValues.getDefaultValue(DefaultValuePath.TIME)));
     }

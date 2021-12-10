@@ -34,6 +34,7 @@ import org.ehrbase.terminology.openehr.implementation.LocalizedTerminologies;
 import org.ehrbase.test_data.composition.CompositionTestDataCanonicalXML;
 import org.ehrbase.test_data.item_structure.ItemStruktureTestDataCanonicalJson;
 import org.ehrbase.validation.terminology.ItemStructureVisitor;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -70,6 +71,19 @@ public class ItemStructureVisitorTest {
 
         itemStructureVisitor.validate(composition);
         assertEquals(26, itemStructureVisitor.getElementOccurrences()); //25 ELEMENTs + 1 ITEM_SINGLE!
+
+    }
+
+    @Test
+    public void elementVisitorTestNor() throws Throwable {
+        Unmarshaller unmarshaller = JAXBUtil.createRMContext().createUnmarshaller();
+        Composition composition = (Composition) unmarshaller.unmarshal(new FileInputStream(new File("./src/test/resources/composition/IDCR-LabReportRAW1_with_normal_status.xml")));
+
+        try {
+            itemStructureVisitor.validate(composition);
+        }catch (Exception e){
+            Assert.fail(e.getMessage());
+        }
 
     }
 

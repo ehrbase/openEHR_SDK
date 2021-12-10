@@ -1,0 +1,2027 @@
+{
+  "templateId": "GECCO_Diagnose",
+  "version": "2.3",
+  "defaultLanguage": "de",
+  "languages": [
+    "de"
+  ],
+  "tree": {
+    "id": "gecco_diagnose",
+    "name": "GECCO_Diagnose",
+    "localizedName": "GECCO_Diagnose",
+    "rmType": "COMPOSITION",
+    "nodeId": "openEHR-EHR-COMPOSITION.registereintrag.v1",
+    "min": 1,
+    "max": 1,
+    "localizedNames": {
+      "de": "GECCO_Diagnose"
+    },
+    "localizedDescriptions": {
+      "de": "Generische Zusammenstellung zur Darstellung eines Datensatzes für Forschungszwecke. "
+    },
+    "aqlPath": "",
+    "children": [
+      {
+        "id": "context",
+        "rmType": "EVENT_CONTEXT",
+        "nodeId": "",
+        "min": 1,
+        "max": 1,
+        "aqlPath": "/context",
+        "children": [
+          {
+            "id": "status",
+            "name": "Status",
+            "localizedName": "Status",
+            "rmType": "DV_CODED_TEXT",
+            "nodeId": "at0004",
+            "min": 0,
+            "max": 1,
+            "localizedNames": {
+              "de": "Status"
+            },
+            "localizedDescriptions": {
+              "de": "Status der gelieferten Daten für den Registereintrag. Hinweis: Dies ist nicht der Status einzelner Komponenten."
+            },
+            "aqlPath": "/context/other_context[at0001]/items[at0004]/value",
+            "inputs": [
+              {
+                "suffix": "code",
+                "type": "CODED_TEXT",
+                "list": [
+                  {
+                    "value": "at0010",
+                    "label": "registriert",
+                    "localizedLabels": {
+                      "de": "registriert"
+                    },
+                    "localizedDescriptions": {
+                      "de": "*"
+                    }
+                  },
+                  {
+                    "value": "at0011",
+                    "label": "vorläufig",
+                    "localizedLabels": {
+                      "de": "vorläufig"
+                    },
+                    "localizedDescriptions": {
+                      "de": "*"
+                    }
+                  },
+                  {
+                    "value": "at0012",
+                    "label": "final",
+                    "localizedLabels": {
+                      "de": "final"
+                    },
+                    "localizedDescriptions": {
+                      "de": "*"
+                    }
+                  },
+                  {
+                    "value": "at0013",
+                    "label": "geändert",
+                    "localizedLabels": {
+                      "de": "geändert"
+                    },
+                    "localizedDescriptions": {
+                      "de": "*"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "kategorie",
+            "name": "Kategorie",
+            "localizedName": "Kategorie",
+            "rmType": "DV_CODED_TEXT",
+            "nodeId": "at0005",
+            "min": 1,
+            "max": 1,
+            "localizedNames": {
+              "de": "Kategorie"
+            },
+            "localizedDescriptions": {
+              "de": "Die Klassifikation des Registereintrags (z.B. Typ der Observation des FHIR-Profils)."
+            },
+            "aqlPath": "/context/other_context[at0001]/items[at0005]/value",
+            "inputs": [
+              {
+                "suffix": "code",
+                "type": "CODED_TEXT",
+                "list": [
+                  {
+                    "value": "418112009",
+                    "label": "pulmonaryMedicine",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  },
+                  {
+                    "value": "722414000",
+                    "label": "vascularMedicine",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  },
+                  {
+                    "value": "408472002",
+                    "label": "hepatology",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  },
+                  {
+                    "value": "394810000",
+                    "label": "rheumatoloty",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  },
+                  {
+                    "value": "408480009",
+                    "label": "immunology",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  },
+                  {
+                    "value": "394807007",
+                    "label": "infectiousDiseases",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  },
+                  {
+                    "value": "408475000",
+                    "label": "Diabetic Medicine",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  },
+                  {
+                    "value": "394593009",
+                    "label": "Oncology",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  },
+                  {
+                    "value": "394584008",
+                    "label": "Gastroenterology",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  },
+                  {
+                    "value": "788415003",
+                    "label": "Transplant medicine",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  },
+                  {
+                    "value": "116223007",
+                    "label": "Complication (disorder)",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  },
+                  {
+                    "value": "394591006",
+                    "label": "Neurology",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  },
+                  {
+                    "value": "394587001",
+                    "label": "Psychiatry",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  },
+                  {
+                    "value": "394589003",
+                    "label": "Nephrology (qualifier value)",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  },
+                  {
+                    "value": "404989005",
+                    "label": "Ventilation status (observable entity)",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  }
+                ],
+                "terminology": "SNOMED Clinical Terms"
+              }
+            ]
+          },
+          {
+            "id": "start_time",
+            "name": "Start_time",
+            "rmType": "DV_DATE_TIME",
+            "min": 1,
+            "max": 1,
+            "aqlPath": "/context/start_time",
+            "inputs": [
+              {
+                "type": "DATETIME"
+              }
+            ],
+            "inContext": true
+          },
+          {
+            "id": "setting",
+            "name": "Setting",
+            "rmType": "DV_CODED_TEXT",
+            "min": 1,
+            "max": 1,
+            "aqlPath": "/context/setting",
+            "inputs": [
+              {
+                "suffix": "code",
+                "type": "TEXT"
+              },
+              {
+                "suffix": "value",
+                "type": "TEXT"
+              }
+            ],
+            "inContext": true
+          }
+        ]
+      },
+      {
+        "id": "vorliegende_diagnose",
+        "name": "Vorliegende Diagnose",
+        "localizedName": "Vorliegende Diagnose",
+        "rmType": "EVALUATION",
+        "nodeId": "openEHR-EHR-EVALUATION.problem_diagnosis.v1",
+        "min": 0,
+        "max": 1,
+        "localizedNames": {
+          "de": "Vorliegende Diagnose"
+        },
+        "localizedDescriptions": {
+          "de": "Angaben über einen einzelnen identifizierten Gesundheitszustand, eine Verletzung, eine Behinderung oder ein Problem, welches das körperliche, geistige und/oder soziale Wohlergehen einer Einzelperson beeinträchtigt."
+        },
+        "annotations": {
+          "410605003": "Confirmed present (qualifier value)",
+          "comment": "Eine klare Abgrenzung zwischen Problem und Diagnose ist in der Praxis nicht einfach zu erreichen. Für die Zwecke der klinischen Dokumentation mit diesem Archetyp werden Problem und Diagnose als ein Kontinuum betrachtet, mit zunehmendem Detaillierungsgrad und unterstützenden Beweisen, die in der Regel dem Etikett \"Diagnose\" Gewicht verleihen."
+        },
+        "aqlPath": "/content[openEHR-EHR-EVALUATION.problem_diagnosis.v1,'Vorliegende Diagnose']",
+        "children": [
+          {
+            "id": "name_des_problems_der_diagnose",
+            "name": "Name des Problems/ der Diagnose",
+            "localizedName": "Name des Problems/ der Diagnose",
+            "rmType": "DV_TEXT",
+            "nodeId": "at0002",
+            "min": 1,
+            "max": 1,
+            "localizedNames": {
+              "de": "Name des Problems/ der Diagnose"
+            },
+            "localizedDescriptions": {
+              "de": "Namentliche Identifikation des Problems oder der Diagnose."
+            },
+            "annotations": {
+              "comment": "Wo möglich, ist die Kodierung des Problems oder der Diagnose über eine Terminologie zu bevorzugen."
+            },
+            "aqlPath": "/content[openEHR-EHR-EVALUATION.problem_diagnosis.v1,'Vorliegende Diagnose']/data[at0001]/items[at0002]/value",
+            "inputs": [
+              {
+                "type": "TEXT",
+                "listOpen": true
+              },
+              {
+                "suffix": "other",
+                "type": "TEXT"
+              }
+            ]
+          },
+          {
+            "id": "körperstelle",
+            "name": "Körperstelle",
+            "localizedName": "Körperstelle",
+            "rmType": "CLUSTER",
+            "nodeId": "openEHR-EHR-CLUSTER.anatomical_location.v1",
+            "min": 0,
+            "max": -1,
+            "localizedNames": {
+              "de": "Körperstelle"
+            },
+            "localizedDescriptions": {
+              "de": "Eine physische Stelle am oder innerhalb des menschlichen Körpers."
+            },
+            "aqlPath": "/content[openEHR-EHR-EVALUATION.problem_diagnosis.v1,'Vorliegende Diagnose']/data[at0001]/items[openEHR-EHR-CLUSTER.anatomical_location.v1,'Körperstelle']",
+            "children": [
+              {
+                "id": "name_der_körperstelle",
+                "name": "Name der Körperstelle",
+                "localizedName": "Name der Körperstelle",
+                "rmType": "DV_CODED_TEXT",
+                "nodeId": "at0001",
+                "min": 1,
+                "max": 1,
+                "localizedNames": {
+                  "de": "Name der Körperstelle"
+                },
+                "localizedDescriptions": {
+                  "de": "Identifikation einer einzelnen physischen Stelle entweder am oder innerhalb des menschlichen Körpers."
+                },
+                "annotations": {
+                  "comment": "Dieses Datenelement ist der einzige verpflichtend auszufüllende Datenpunkt in diesem Archetypen und sollte als primärer Datenpunkt verwendet werden, um eine anatomische Lokalisation mit einem häufig verwendeten Namen aufzuzeichnen. Es wird dringend empfohlen, dass der Name der Körperstelle so genau aufgezeichnet wird, wie es anatomisch möglich ist. Zum Beispiel: zeichne \"oberes Augenlid\" auf und nicht \"Augenlid\" mit \"oberer\" als Qualifier; \"fünfte Rippe\" statt \"Rippe\" mit einem numerischen Qualifier. Verwenden Sie die anderen Datenelemente für Lateralität, Sichtweise, Region und anatomische Linie, um mehr Details anzugeben. \r\n\r\nDieses Datenelement sollte mit einer Terminologie kodiert werden, die nach Möglichkeit Entscheidungsunterstützung auslösen kann - ein geeignetes Termset für die Verwendung hier könnte aus einzelnen Konzepten oder einer Liste von vorab abgestimmten Begriffen zusammengesetzt sein. Freitext sollte nur verwendet werden, wenn keine entsprechende Terminologie vorhanden ist. \r\n\r\nWenn der Name der Körperstelle bereits im übergeordneten Archetyp angegeben ist, kann dieses Datenelement redundant sein. Alternativ wurde ein Anwendungsfall ermittelt, bei dem der Wert in dieses Element dupliziert sein könnte, um semantische Abfragen unter Verwendung dieses Archetyps und nicht das Datenelement innerhalb des übergeordneten Elements zu unterstützen."
+                },
+                "aqlPath": "/content[openEHR-EHR-EVALUATION.problem_diagnosis.v1,'Vorliegende Diagnose']/data[at0001]/items[openEHR-EHR-CLUSTER.anatomical_location.v1,'Körperstelle']/items[at0001]/value",
+                "inputs": [
+                  {
+                    "suffix": "code",
+                    "type": "CODED_TEXT",
+                    "list": [
+                      {
+                        "value": "302509004",
+                        "label": "Entire heart (body structure)",
+                        "localizedLabels": {
+                          "de": ""
+                        }
+                      },
+                      {
+                        "value": "181216001",
+                        "label": "Entire lung (body structure)",
+                        "localizedLabels": {
+                          "de": ""
+                        }
+                      },
+                      {
+                        "value": "181268008",
+                        "label": "Entire liver (body structure)",
+                        "localizedLabels": {
+                          "de": ""
+                        }
+                      },
+                      {
+                        "value": "181414000",
+                        "label": "Entire kidney (body structure)",
+                        "localizedLabels": {
+                          "de": ""
+                        }
+                      },
+                      {
+                        "value": "181277001",
+                        "label": "Entire pancreas (body structure)",
+                        "localizedLabels": {
+                          "de": ""
+                        }
+                      },
+                      {
+                        "value": "181250005",
+                        "label": "Entire small intestine (body structure)",
+                        "localizedLabels": {
+                          "de": ""
+                        }
+                      },
+                      {
+                        "value": "181254001",
+                        "label": "Entire large intestine (body structure)",
+                        "localizedLabels": {
+                          "de": ""
+                        }
+                      },
+                      {
+                        "value": "119181002",
+                        "label": "Skin part (body structure)",
+                        "localizedLabels": {
+                          "de": ""
+                        }
+                      },
+                      {
+                        "value": "181162001",
+                        "label": "Entire cornea (body structure)",
+                        "localizedLabels": {
+                          "de": ""
+                        }
+                      },
+                      {
+                        "value": "41845008",
+                        "label": "Ear ossicle structure (body structure)",
+                        "localizedLabels": {
+                          "de": ""
+                        }
+                      },
+                      {
+                        "value": "181285005",
+                        "label": "Entire heart valve (body structure)",
+                        "localizedLabels": {
+                          "de": ""
+                        }
+                      },
+                      {
+                        "value": "119206002",
+                        "label": "Blood vessel part (body structure)",
+                        "localizedLabels": {
+                          "de": ""
+                        }
+                      },
+                      {
+                        "value": "8935007",
+                        "label": "Cerebral meninges structure (body structure)",
+                        "localizedLabels": {
+                          "de": ""
+                        }
+                      },
+                      {
+                        "value": "3138006",
+                        "label": "Bone (tissue) structure (body structure)",
+                        "localizedLabels": {
+                          "de": ""
+                        }
+                      },
+                      {
+                        "value": "309312004",
+                        "label": "Cartilage tissue (body structure)",
+                        "localizedLabels": {
+                          "de": ""
+                        }
+                      },
+                      {
+                        "value": "13024002",
+                        "label": "Tendon structure (body structure)",
+                        "localizedLabels": {
+                          "de": ""
+                        }
+                      }
+                    ],
+                    "terminology": "SNOMED Clinical Terms"
+                  }
+                ]
+              },
+              {
+                "id": "lateralität",
+                "name": "Lateralität",
+                "localizedName": "Lateralität",
+                "rmType": "DV_CODED_TEXT",
+                "nodeId": "at0002",
+                "min": 0,
+                "max": 1,
+                "localizedNames": {
+                  "de": "Lateralität"
+                },
+                "localizedDescriptions": {
+                  "de": "Die Seite des Körpers, an der sich die identifizierte Körperstelle befindet."
+                },
+                "annotations": {
+                  "comment": "Wenn die identifizierte Körperstelle keine Seitenlage aufweist, sollte dieses Datenelement keinen Wert haben. Wenn das Datenelement \"Name der Körperstelle\" präkoordinierte Bezeichnungen verwendet, die eine Seitenlokalisation einschließt, dann ist dieses Datenelement redundant."
+                },
+                "aqlPath": "/content[openEHR-EHR-EVALUATION.problem_diagnosis.v1,'Vorliegende Diagnose']/data[at0001]/items[openEHR-EHR-CLUSTER.anatomical_location.v1,'Körperstelle']/items[at0002]/value",
+                "inputs": [
+                  {
+                    "suffix": "code",
+                    "type": "CODED_TEXT",
+                    "list": [
+                      {
+                        "value": "at0003",
+                        "label": "Links",
+                        "localizedLabels": {
+                          "de": "Links"
+                        },
+                        "localizedDescriptions": {
+                          "de": "Die linke Körperseite."
+                        },
+                        "termBindings": {
+                          "SNOMED-CT": {
+                            "value": "[SNOMED-CT::7771000]",
+                            "terminologyId": "SNOMED-CT"
+                          }
+                        }
+                      },
+                      {
+                        "value": "at0004",
+                        "label": "Rechts",
+                        "localizedLabels": {
+                          "de": "Rechts"
+                        },
+                        "localizedDescriptions": {
+                          "de": "Die rechte Körperseite."
+                        },
+                        "termBindings": {
+                          "SNOMED-CT": {
+                            "value": "[SNOMED-CT::24028007]",
+                            "terminologyId": "SNOMED-CT"
+                          }
+                        }
+                      }
+                    ]
+                  }
+                ],
+                "termBindings": {
+                  "SNOMED-CT": {
+                    "value": "[SNOMED-CT::272741003]",
+                    "terminologyId": "SNOMED-CT"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "id": "datum_zeitpunkt_des_auftretens_der_erstdiagnose",
+            "name": "Datum/ Zeitpunkt des Auftretens/ der Erstdiagnose",
+            "localizedName": "Datum/ Zeitpunkt des Auftretens/ der Erstdiagnose",
+            "rmType": "DV_DATE_TIME",
+            "nodeId": "at0077",
+            "min": 0,
+            "max": 1,
+            "localizedNames": {
+              "de": "Datum/ Zeitpunkt des Auftretens/ der Erstdiagnose"
+            },
+            "localizedDescriptions": {
+              "de": "Geschätzte oder exakte Zeit (bzw. Datum), zu der die Krankheitsanzeichen oder Symptome zum ersten mal beobachtet wurden."
+            },
+            "annotations": {
+              "comment": "Datumswerte, die als \"Alter zu Beginn\" erfasst/importiert werden, sollten anhand des Geburtsdatums der Person in ein Datum umgewandelt werden."
+            },
+            "aqlPath": "/content[openEHR-EHR-EVALUATION.problem_diagnosis.v1,'Vorliegende Diagnose']/data[at0001]/items[at0077]/value",
+            "inputs": [
+              {
+                "type": "DATETIME"
+              }
+            ]
+          },
+          {
+            "id": "schweregrad",
+            "name": "Schweregrad",
+            "localizedName": "Schweregrad",
+            "rmType": "DV_CODED_TEXT",
+            "nodeId": "at0005",
+            "min": 0,
+            "max": 1,
+            "localizedNames": {
+              "de": "Schweregrad"
+            },
+            "localizedDescriptions": {
+              "de": "Eine Gesamtbeurteilung des Schweregrades des Problems oder der Diagnose."
+            },
+            "annotations": {
+              "comment": "Ist der Schweregrad über vordefinierte Codes im Element \"Name des Problems/ der Diagnose\" enthalten, wird dieses Datenelement überflüssig. Hinweis: Eine spezifischere Einstufung des Schweregrads kann mit Hilfe des SLOTs \"Spezifische Angaben\" angegeben werden."
+            },
+            "aqlPath": "/content[openEHR-EHR-EVALUATION.problem_diagnosis.v1,'Vorliegende Diagnose']/data[at0001]/items[at0005]/value",
+            "inputs": [
+              {
+                "suffix": "code",
+                "type": "CODED_TEXT",
+                "list": [
+                  {
+                    "value": "255604002",
+                    "label": "Mild (qualifier value)",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  },
+                  {
+                    "value": "371923003",
+                    "label": "Mild to moderate (qualifier value)",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  },
+                  {
+                    "value": "6736007",
+                    "label": "Moderate (severity modifier) (qualifier value)",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  },
+                  {
+                    "value": "371924009",
+                    "label": "Moderate to severe (qualifier value)",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  },
+                  {
+                    "value": "24484000",
+                    "label": "Severe (severity modifier) (qualifier value)",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  },
+                  {
+                    "value": "442452003",
+                    "label": "Life threatening severity (qualifier value)",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  },
+                  {
+                    "value": "277022003",
+                    "label": "Remission phase (qualifier value)",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  },
+                  {
+                    "value": "399166001",
+                    "label": "Fatal (qualifier value)",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  },
+                  {
+                    "value": "261665006",
+                    "label": "Unknown (qualifier value)",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  }
+                ],
+                "terminology": "SNOMED Clinical Terms"
+              }
+            ]
+          },
+          {
+            "id": "datum_zeitpunkt_der_genesung",
+            "name": "Datum/Zeitpunkt der Genesung",
+            "localizedName": "Datum/Zeitpunkt der Genesung",
+            "rmType": "DV_DATE_TIME",
+            "nodeId": "at0030",
+            "min": 0,
+            "max": 1,
+            "localizedNames": {
+              "de": "Datum/Zeitpunkt der Genesung"
+            },
+            "localizedDescriptions": {
+              "de": "Geschätzte oder exakte Zeit (bzw. Datum), zu der von einer medizinischen Fachkraft die Genesung oder die Remission des Problems oder der Diagnose festgestellt wurde."
+            },
+            "annotations": {
+              "comment": "Unvollständige Datumsangaben sind zulässig. Wenn der Patient unter einem Jahr alt ist, dann ist das vollständige Datum oder ein Minimum von Monat und Jahr notwendig, um genaue Altersberechnungen zu ermöglichen - z.B. wenn es zur Entscheidungsunterstützung verwendet wird. Datumswerte, die als \"Alter zum Zeitpunkt der Genesung\" erfasst/importiert werden, sollten anhand des Geburtsdatums der Person in ein Datum umgewandelt werden."
+            },
+            "aqlPath": "/content[openEHR-EHR-EVALUATION.problem_diagnosis.v1,'Vorliegende Diagnose']/data[at0001]/items[at0030]/value",
+            "inputs": [
+              {
+                "type": "DATETIME"
+              }
+            ]
+          },
+          {
+            "id": "kommentar",
+            "name": "Kommentar",
+            "localizedName": "Kommentar",
+            "rmType": "DV_TEXT",
+            "nodeId": "at0069",
+            "min": 0,
+            "max": 1,
+            "localizedNames": {
+              "de": "Kommentar"
+            },
+            "localizedDescriptions": {
+              "de": "Ergänzende Beschreibung des Problems oder der Diagnose, die nicht anderweitig erfasst wurde."
+            },
+            "aqlPath": "/content[openEHR-EHR-EVALUATION.problem_diagnosis.v1,'Vorliegende Diagnose']/data[at0001]/items[at0069]/value",
+            "inputs": [
+              {
+                "type": "TEXT"
+              }
+            ]
+          },
+          {
+            "id": "language",
+            "name": "Language",
+            "rmType": "CODE_PHRASE",
+            "min": 1,
+            "max": 1,
+            "aqlPath": "/content[openEHR-EHR-EVALUATION.problem_diagnosis.v1,'Vorliegende Diagnose']/language",
+            "inContext": true
+          },
+          {
+            "id": "encoding",
+            "name": "Encoding",
+            "rmType": "CODE_PHRASE",
+            "min": 1,
+            "max": 1,
+            "aqlPath": "/content[openEHR-EHR-EVALUATION.problem_diagnosis.v1,'Vorliegende Diagnose']/encoding",
+            "inContext": true
+          },
+          {
+            "id": "subject",
+            "name": "Subject",
+            "rmType": "PARTY_PROXY",
+            "min": 1,
+            "max": 1,
+            "aqlPath": "/content[openEHR-EHR-EVALUATION.problem_diagnosis.v1,'Vorliegende Diagnose']/subject",
+            "inputs": [
+              {
+                "suffix": "id",
+                "type": "TEXT"
+              },
+              {
+                "suffix": "id_scheme",
+                "type": "TEXT"
+              },
+              {
+                "suffix": "id_namespace",
+                "type": "TEXT"
+              },
+              {
+                "suffix": "name",
+                "type": "TEXT"
+              }
+            ],
+            "inContext": true
+          }
+        ]
+      },
+      {
+        "id": "ausgeschlossene_diagnose",
+        "name": "Ausgeschlossene Diagnose",
+        "localizedName": "Ausgeschlossene Diagnose",
+        "rmType": "EVALUATION",
+        "nodeId": "openEHR-EHR-EVALUATION.exclusion_specific.v1",
+        "min": 0,
+        "max": 1,
+        "localizedNames": {
+          "de": "Ausgeschlossene Diagnose"
+        },
+        "localizedDescriptions": {
+          "de": "Ein Bericht über den Ausschluss eines/r Problems/Diagnose, familiäre Krankengeschichte, Medikation, Nebenwirkung/Allergens oder eines anderen klinischen Ereignisses, welche/s zur Zeit nicht oder noch nie vorhanden war."
+        },
+        "aqlPath": "/content[openEHR-EHR-EVALUATION.exclusion_specific.v1,'Ausgeschlossene Diagnose']",
+        "children": [
+          {
+            "id": "aussage_über_den_ausschluss",
+            "name": "Aussage über den Ausschluss",
+            "localizedName": "Aussage über den Ausschluss",
+            "rmType": "DV_CODED_TEXT",
+            "nodeId": "at0002",
+            "min": 1,
+            "max": 1,
+            "localizedNames": {
+              "de": "Aussage über den Ausschluss"
+            },
+            "localizedDescriptions": {
+              "de": "Ein Bericht über den Ausschluss eines/r bestimmten Problems/Diagnose, familiäre Krankengeschichte, Medikation, Verfahren, Nebenwirkung oder eines anderen klinischen Ereignisses."
+            },
+            "annotations": {
+              "comment": "Diese Beschreibung muss in Verbindung mit dem Datenelement \"ausgeschlossene Kategorie\" verwendet werden. Zum Beispiel: Dieses Datenelement kann zur Erfassung einer allgemeinen Aussage, wie z.B. \"keine bekannte Vorgeschichte über...\" verwendet werden. Die \"ausgeschlossene Kategorie\" spezifiziert die Aussage, in dem eine Zuordnung zu z.B. Diagnose oder Medikation vorgenommen werden kann. Wird bereits die \"ausgeschlossene Kategorie\" dafür genutzt, durch eine präkoordinierte Bezeichnung das Vorliegen von Diabetes in der familiären Krankengeschichte auszuschließen, ist der Eintrag in diesem Datenelement redundant. \r\n"
+            },
+            "aqlPath": "/content[openEHR-EHR-EVALUATION.exclusion_specific.v1,'Ausgeschlossene Diagnose']/data[at0001]/items[at0002]/value",
+            "inputs": [
+              {
+                "suffix": "code",
+                "type": "CODED_TEXT",
+                "list": [
+                  {
+                    "value": "410594000",
+                    "label": "Known absent (qualifier value)",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  }
+                ],
+                "terminology": "SNOMED Clinical Terms"
+              }
+            ]
+          },
+          {
+            "id": "problem_diagnose",
+            "name": "Problem/Diagnose",
+            "localizedName": "Problem/Diagnose",
+            "rmType": "DV_CODED_TEXT",
+            "nodeId": "at0003",
+            "min": 1,
+            "max": 1,
+            "localizedNames": {
+              "de": "Problem/Diagnose"
+            },
+            "localizedDescriptions": {
+              "de": "Das Problem oder die Diagnose, auf die sich die Ausschlussaussage bezieht. Zum Beispiel: \"Diabetes\", \"COPD\" oder \"Asthma\"."
+            },
+            "aqlPath": "/content[openEHR-EHR-EVALUATION.exclusion_specific.v1,'Ausgeschlossene Diagnose']/data[at0001]/items[at0003,'Problem/Diagnose']/value",
+            "inputs": [
+              {
+                "suffix": "code",
+                "type": "CODED_TEXT",
+                "list": [
+                  {
+                    "value": "195967001",
+                    "label": "Asthma (disorder)",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  },
+                  {
+                    "value": "13645005",
+                    "label": "Chronic obstructive lung disease (disorder)",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  },
+                  {
+                    "value": "51615001",
+                    "label": "Fibrosis of lung (disorder) Lungenfibrose",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  },
+                  {
+                    "value": "70995007",
+                    "label": "Pulmonary hypertension (disorder)",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  },
+                  {
+                    "value": "190966007",
+                    "label": "Extreme obesity with alveolar hypoventilation (disorder)",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  },
+                  {
+                    "value": "73430006",
+                    "label": "Sleep apnea (disorder)",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  },
+                  {
+                    "value": "78275009",
+                    "label": "Obstructive sleep apnea syndrome (disorder)",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  },
+                  {
+                    "value": "190905008",
+                    "label": "Cystic fibrosis (disorder) Cystische Fibrose",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  },
+                  {
+                    "value": "38341003",
+                    "label": "Hypertensive disorder, systemic arterial (disorder)",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  },
+                  {
+                    "value": "417662000:246090004=22298006",
+                    "label": "|History of clinical finding in subject (situation)|:|Associated finding (attribute)|=|Myocardial infarction (disorder)| Zustand nach Herzinfarkt",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  },
+                  {
+                    "value": "698247007",
+                    "label": "Cardiac arrhythmia (disorder) Herzrhythmusstörungen",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  },
+                  {
+                    "value": "84114007",
+                    "label": "Heart failure (disorder) Herzinsuffizienz",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  },
+                  {
+                    "value": "399957001",
+                    "label": "Peripheral arterial occlusive disease (disorder)",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  },
+                  {
+                    "value": "416940007:363589002=81266008",
+                    "label": "|Past history of procedure (situation)|:|Associated procedure (attribute)|=|Heart revascularization (procedure)|",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  },
+                  {
+                    "value": "53741008",
+                    "label": "Coronary arteriosclerosis (disorder)",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  },
+                  {
+                    "value": "64586002",
+                    "label": "Carotid artery stenosis (disorder)",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  },
+                  {
+                    "value": "197321007",
+                    "label": "Steatosis of liver (disorder)",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  },
+                  {
+                    "value": "19943007",
+                    "label": "Cirrhosis of liver (disorder)",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  },
+                  {
+                    "value": "10295004",
+                    "label": "Chronic viral hepatitis (disorder)",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  },
+                  {
+                    "value": "235890007",
+                    "label": "Autoimmune liver disease (disorder)",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  },
+                  {
+                    "value": "24526004",
+                    "label": "Inflammatory bowel disease (disorder)",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  },
+                  {
+                    "value": "69896004",
+                    "label": "Rheumatoid arthritis (disorder)",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  },
+                  {
+                    "value": "105969002",
+                    "label": "Disorder of connective tissue (disorder",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  },
+                  {
+                    "value": "31996006",
+                    "label": "Vasculitis (disorder)",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  },
+                  {
+                    "value": "36138009",
+                    "label": "Congenital immunodeficiency disease (disorder)",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  },
+                  {
+                    "value": "302509004",
+                    "label": "Entire heart (body structure)",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  },
+                  {
+                    "value": "181216001",
+                    "label": "Entire lung (body structure)",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  },
+                  {
+                    "value": "181268008",
+                    "label": "Entire liver (body structure)",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  },
+                  {
+                    "value": "181414000",
+                    "label": "Entire kidney (body structure)",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  },
+                  {
+                    "value": "181277001",
+                    "label": "Entire pancreas (body structure)",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  },
+                  {
+                    "value": "113276009",
+                    "label": "Intestinal structure (body structure)",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  },
+                  {
+                    "value": "181250005",
+                    "label": "Entire small intestine (body structure)",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  },
+                  {
+                    "value": "181254001",
+                    "label": "Entire large intestine (body structure)",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  },
+                  {
+                    "value": "119181002",
+                    "label": "Skin part (body structure)",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  },
+                  {
+                    "value": "181162001",
+                    "label": "Entire cornea (body structure)",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  },
+                  {
+                    "value": "41845008",
+                    "label": "Ear ossicle structure (body structure)",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  },
+                  {
+                    "value": "181285005",
+                    "label": "Entire heart valve (body structure)",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  },
+                  {
+                    "value": "119206002",
+                    "label": "Blood vessel part (body structure)",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  },
+                  {
+                    "value": "8935007",
+                    "label": "Cerebral meninges structure (body structure)",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  },
+                  {
+                    "value": "3138006",
+                    "label": "Bone (tissue) structure (body structure)",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  },
+                  {
+                    "value": "309312004",
+                    "label": "Cartilage tissue (body structure)",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  },
+                  {
+                    "value": "13024002",
+                    "label": "Tendon structure (body structure)",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  },
+                  {
+                    "value": "46635009",
+                    "label": "Diabetes mellitus type 1 (disorder)",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  },
+                  {
+                    "value": "44054006",
+                    "label": "Diabetes mellitus type 2 (disorder)",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  },
+                  {
+                    "value": "237599002",
+                    "label": "Insulin treated type 2 diabetes mellitus (disorder)",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  },
+                  {
+                    "value": "8801005",
+                    "label": "Secondary diabetes mellitus (disorder)",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  },
+                  {
+                    "value": "128283000",
+                    "label": "Chronic nervous system disorder (disorder)",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  },
+                  {
+                    "value": "74732009",
+                    "label": "Mental disorder (disorder)",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  },
+                  {
+                    "value": "197480006",
+                    "label": "Anxiety disorder (disorder)",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  },
+                  {
+                    "value": "35489007",
+                    "label": "Depressive disorder (disorder)",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  },
+                  {
+                    "value": "69322001",
+                    "label": "Psychotic disorder (disorder)",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  },
+                  {
+                    "value": "49049000",
+                    "label": "Parkinson's disease (disorder)",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  },
+                  {
+                    "value": "52448006",
+                    "label": "Dementia (disorder)",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  },
+                  {
+                    "value": "24700007",
+                    "label": "Multiple sclerosis (disorder)",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  },
+                  {
+                    "value": "257277002",
+                    "label": "Combined disorder of muscle AND peripheral nerve (disorder)",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  },
+                  {
+                    "value": "84757009",
+                    "label": "Epilepsy (disorder)",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  },
+                  {
+                    "value": "37796009",
+                    "label": "Migraine (disorder)",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  },
+                  {
+                    "value": "440140008",
+                    "label": "History of cerebrovascular accident with residual deficit (situation)",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  },
+                  {
+                    "value": "429993008",
+                    "label": "History of cerebrovascular accident without residual deficits (situation",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  },
+                  {
+                    "value": "714152005",
+                    "label": "Chronic kidney disease stage 5 on dialysis (disorder)",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  },
+                  {
+                    "value": "431855005",
+                    "label": "Chronic kidney disease stage 1 (disorder)",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  },
+                  {
+                    "value": "431856006",
+                    "label": "Chronic kidney disease stage 2 (disorder)",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  },
+                  {
+                    "value": "433144002",
+                    "label": "Chronic kidney disease stage 3 (disorder)",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  },
+                  {
+                    "value": "431857002",
+                    "label": "Chronic kidney disease stage 4 (disorder)",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  },
+                  {
+                    "value": "433146000",
+                    "label": "Chronic kidney disease stage 5 (disorder)",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  },
+                  {
+                    "value": "709044004",
+                    "label": "Chronic kidney disease (disorder)",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  },
+                  {
+                    "value": "86406008",
+                    "label": "Human immunodeficiency virus infection",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  },
+                  {
+                    "value": "363346000",
+                    "label": "Malignant neoplastic disease",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  },
+                  {
+                    "value": "40845000",
+                    "label": "Gastrointestinal ulcer",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  }
+                ],
+                "terminology": "SNOMED Clinical Terms"
+              }
+            ]
+          },
+          {
+            "id": "language",
+            "name": "Language",
+            "rmType": "CODE_PHRASE",
+            "min": 1,
+            "max": 1,
+            "aqlPath": "/content[openEHR-EHR-EVALUATION.exclusion_specific.v1,'Ausgeschlossene Diagnose']/language",
+            "inContext": true
+          },
+          {
+            "id": "encoding",
+            "name": "Encoding",
+            "rmType": "CODE_PHRASE",
+            "min": 1,
+            "max": 1,
+            "aqlPath": "/content[openEHR-EHR-EVALUATION.exclusion_specific.v1,'Ausgeschlossene Diagnose']/encoding",
+            "inContext": true
+          },
+          {
+            "id": "subject",
+            "name": "Subject",
+            "rmType": "PARTY_PROXY",
+            "min": 1,
+            "max": 1,
+            "aqlPath": "/content[openEHR-EHR-EVALUATION.exclusion_specific.v1,'Ausgeschlossene Diagnose']/subject",
+            "inputs": [
+              {
+                "suffix": "id",
+                "type": "TEXT"
+              },
+              {
+                "suffix": "id_scheme",
+                "type": "TEXT"
+              },
+              {
+                "suffix": "id_namespace",
+                "type": "TEXT"
+              },
+              {
+                "suffix": "name",
+                "type": "TEXT"
+              }
+            ],
+            "inContext": true
+          }
+        ]
+      },
+      {
+        "id": "unbekannte_diagnose",
+        "name": "Unbekannte Diagnose",
+        "localizedName": "Unbekannte Diagnose",
+        "rmType": "EVALUATION",
+        "nodeId": "openEHR-EHR-EVALUATION.absence.v2",
+        "min": 0,
+        "max": 1,
+        "localizedNames": {
+          "de": "Unbekannte Diagnose"
+        },
+        "localizedDescriptions": {
+          "de": "Aussage darüber, dass bestimmte Gesundheitsinformationen zum Zeitpukt der Erfassung nicht in der Krankenakte oder einem Schriftstück erfasst werden können, da keine Kenntnisse darüber vorhanden sind."
+        },
+        "aqlPath": "/content[openEHR-EHR-EVALUATION.absence.v2,'Unbekannte Diagnose']",
+        "children": [
+          {
+            "id": "unbekannte_diagnose",
+            "name": "Unbekannte Diagnose",
+            "localizedName": "Unbekannte Diagnose",
+            "rmType": "DV_CODED_TEXT",
+            "nodeId": "at0002",
+            "min": 1,
+            "max": 1,
+            "localizedNames": {
+              "de": "Unbekannte Diagnose"
+            },
+            "localizedDescriptions": {
+              "de": "Positive Aussage, dass keine Informationen verfügbar sind."
+            },
+            "annotations": {
+              "comment": "Zum Beispiel: \"Es liegen keine Informationen über Nebenwirkungen vor\"; \"Es liegen keine Informationen über Probleme oder Diagnosen vor\"; \"Es liegen keine Informationen über vorangegangene Verfahren vor\"; oder \"Es liegen keine Informationen über verwendete Medikamente vor\"."
+            },
+            "aqlPath": "/content[openEHR-EHR-EVALUATION.absence.v2,'Unbekannte Diagnose']/data[at0001]/items[at0002,'Unbekannte Diagnose']/value",
+            "inputs": [
+              {
+                "suffix": "code",
+                "type": "CODED_TEXT",
+                "list": [
+                  {
+                    "value": "195967001",
+                    "label": "Asthma (disorder)",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  },
+                  {
+                    "value": "13645005",
+                    "label": "Chronic obstructive lung disease (disorder)",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  },
+                  {
+                    "value": "51615001",
+                    "label": "Fibrosis of lung (disorder) Lungenfibrose",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  },
+                  {
+                    "value": "70995007",
+                    "label": "Pulmonary hypertension (disorder)",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  },
+                  {
+                    "value": "190966007",
+                    "label": "Extreme obesity with alveolar hypoventilation (disorder)",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  },
+                  {
+                    "value": "73430006",
+                    "label": "Sleep apnea (disorder)",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  },
+                  {
+                    "value": "78275009",
+                    "label": "Obstructive sleep apnea syndrome (disorder)",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  },
+                  {
+                    "value": "190905008",
+                    "label": "Cystic fibrosis (disorder) Cystische Fibrose",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  },
+                  {
+                    "value": "38341003",
+                    "label": "Hypertensive disorder, systemic arterial (disorder)",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  },
+                  {
+                    "value": "417662000:246090004=22298006",
+                    "label": "|History of clinical finding in subject (situation)|:|Associated finding (attribute)|=|Myocardial infarction (disorder)| Zustand nach Herzinfarkt",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  },
+                  {
+                    "value": "698247007",
+                    "label": "Cardiac arrhythmia (disorder) Herzrhythmusstörungen",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  },
+                  {
+                    "value": "84114007",
+                    "label": "Heart failure (disorder) Herzinsuffizienz",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  },
+                  {
+                    "value": "399957001",
+                    "label": "Peripheral arterial occlusive disease (disorder)",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  },
+                  {
+                    "value": "416940007:363589002=81266008",
+                    "label": "|Past history of procedure (situation)|:|Associated procedure (attribute)|=|Heart revascularization (procedure)|",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  },
+                  {
+                    "value": "53741008",
+                    "label": "Coronary arteriosclerosis (disorder)",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  },
+                  {
+                    "value": "64586002",
+                    "label": "Carotid artery stenosis (disorder)",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  },
+                  {
+                    "value": "197321007",
+                    "label": "Steatosis of liver (disorder)",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  },
+                  {
+                    "value": "19943007",
+                    "label": "Cirrhosis of liver (disorder)",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  },
+                  {
+                    "value": "10295004",
+                    "label": "Chronic viral hepatitis (disorder)",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  },
+                  {
+                    "value": "235890007",
+                    "label": "Autoimmune liver disease (disorder)",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  },
+                  {
+                    "value": "24526004",
+                    "label": "Inflammatory bowel disease (disorder)",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  },
+                  {
+                    "value": "69896004",
+                    "label": "Rheumatoid arthritis (disorder)",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  },
+                  {
+                    "value": "105969002",
+                    "label": "Disorder of connective tissue (disorder",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  },
+                  {
+                    "value": "31996006",
+                    "label": "Vasculitis (disorder)",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  },
+                  {
+                    "value": "36138009",
+                    "label": "Congenital immunodeficiency disease (disorder)",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  },
+                  {
+                    "value": "302509004",
+                    "label": "Entire heart (body structure)",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  },
+                  {
+                    "value": "181216001",
+                    "label": "Entire lung (body structure)",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  },
+                  {
+                    "value": "181268008",
+                    "label": "Entire liver (body structure)",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  },
+                  {
+                    "value": "181414000",
+                    "label": "Entire kidney (body structure)",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  },
+                  {
+                    "value": "181277001",
+                    "label": "Entire pancreas (body structure)",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  },
+                  {
+                    "value": "113276009",
+                    "label": "Intestinal structure (body structure)",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  },
+                  {
+                    "value": "181250005",
+                    "label": "Entire small intestine (body structure)",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  },
+                  {
+                    "value": "181254001",
+                    "label": "Entire large intestine (body structure)",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  },
+                  {
+                    "value": "119181002",
+                    "label": "Skin part (body structure)",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  },
+                  {
+                    "value": "181162001",
+                    "label": "Entire cornea (body structure)",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  },
+                  {
+                    "value": "41845008",
+                    "label": "Ear ossicle structure (body structure)",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  },
+                  {
+                    "value": "181285005",
+                    "label": "Entire heart valve (body structure)",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  },
+                  {
+                    "value": "119206002",
+                    "label": "Blood vessel part (body structure)",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  },
+                  {
+                    "value": "8935007",
+                    "label": "Cerebral meninges structure (body structure)",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  },
+                  {
+                    "value": "3138006",
+                    "label": "Bone (tissue) structure (body structure)",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  },
+                  {
+                    "value": "309312004",
+                    "label": "Cartilage tissue (body structure)",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  },
+                  {
+                    "value": "13024002",
+                    "label": "Tendon structure (body structure)",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  },
+                  {
+                    "value": "46635009",
+                    "label": "Diabetes mellitus type 1 (disorder)",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  },
+                  {
+                    "value": "44054006",
+                    "label": "Diabetes mellitus type 2 (disorder)",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  },
+                  {
+                    "value": "237599002",
+                    "label": "Insulin treated type 2 diabetes mellitus (disorder)",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  },
+                  {
+                    "value": "8801005",
+                    "label": "Secondary diabetes mellitus (disorder)",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  },
+                  {
+                    "value": "128283000",
+                    "label": "Chronic nervous system disorder (disorder)",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  },
+                  {
+                    "value": "74732009",
+                    "label": "Mental disorder (disorder)",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  },
+                  {
+                    "value": "197480006",
+                    "label": "Anxiety disorder (disorder)",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  },
+                  {
+                    "value": "35489007",
+                    "label": "Depressive disorder (disorder)",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  },
+                  {
+                    "value": "69322001",
+                    "label": "Psychotic disorder (disorder)",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  },
+                  {
+                    "value": "49049000",
+                    "label": "Parkinson's disease (disorder)",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  },
+                  {
+                    "value": "52448006",
+                    "label": "Dementia (disorder)",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  },
+                  {
+                    "value": "24700007",
+                    "label": "Multiple sclerosis (disorder)",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  },
+                  {
+                    "value": "257277002",
+                    "label": "Combined disorder of muscle AND peripheral nerve (disorder)",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  },
+                  {
+                    "value": "84757009",
+                    "label": "Epilepsy (disorder)",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  },
+                  {
+                    "value": "37796009",
+                    "label": "Migraine (disorder)",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  },
+                  {
+                    "value": "440140008",
+                    "label": "History of cerebrovascular accident with residual deficit (situation)",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  },
+                  {
+                    "value": "429993008",
+                    "label": "History of cerebrovascular accident without residual deficits (situation",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  },
+                  {
+                    "value": "714152005",
+                    "label": "Chronic kidney disease stage 5 on dialysis (disorder)",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  },
+                  {
+                    "value": "431855005",
+                    "label": "Chronic kidney disease stage 1 (disorder)",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  },
+                  {
+                    "value": "431856006",
+                    "label": "Chronic kidney disease stage 2 (disorder)",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  },
+                  {
+                    "value": "433144002",
+                    "label": "Chronic kidney disease stage 3 (disorder)",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  },
+                  {
+                    "value": "431857002",
+                    "label": "Chronic kidney disease stage 4 (disorder)",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  },
+                  {
+                    "value": "433146000",
+                    "label": "Chronic kidney disease stage 5 (disorder)",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  },
+                  {
+                    "value": "709044004",
+                    "label": "Chronic kidney disease (disorder)",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  },
+                  {
+                    "value": "86406008",
+                    "label": "Human immunodeficiency virus infection",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  },
+                  {
+                    "value": "363346000",
+                    "label": "Malignant neoplastic disease",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  },
+                  {
+                    "value": "40845000",
+                    "label": "Gastrointestinal ulcer",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  }
+                ],
+                "terminology": "SNOMED Clinical Terms"
+              }
+            ]
+          },
+          {
+            "id": "aussage_über_die_fehlende_information",
+            "name": "Aussage über die fehlende Information",
+            "localizedName": "Aussage über die fehlende Information",
+            "rmType": "DV_CODED_TEXT",
+            "nodeId": "at0005",
+            "min": 1,
+            "max": 1,
+            "localizedNames": {
+              "de": "Aussage über die fehlende Information"
+            },
+            "localizedDescriptions": {
+              "de": "Beschreibung des Grundes, warum keine Informationen vorhanden sind."
+            },
+            "annotations": {
+              "comment": "Zum Beispiel: Der Patient ist bewusstlos oder weigert sich Informationen preiszugeben. Die Codierung mit einer Terminologie wird empfohlen, wenn möglich."
+            },
+            "aqlPath": "/content[openEHR-EHR-EVALUATION.absence.v2,'Unbekannte Diagnose']/data[at0001]/items[at0005,'Aussage über die fehlende Information']/value",
+            "inputs": [
+              {
+                "suffix": "code",
+                "type": "CODED_TEXT",
+                "list": [
+                  {
+                    "value": "Unknown (qualifier value)",
+                    "label": "Unknown (qualifier value)",
+                    "localizedLabels": {
+                      "de": ""
+                    }
+                  }
+                ],
+                "terminology": "SNOMED Clinical Terms"
+              }
+            ]
+          },
+          {
+            "id": "language",
+            "name": "Language",
+            "rmType": "CODE_PHRASE",
+            "min": 1,
+            "max": 1,
+            "aqlPath": "/content[openEHR-EHR-EVALUATION.absence.v2,'Unbekannte Diagnose']/language",
+            "inContext": true
+          },
+          {
+            "id": "encoding",
+            "name": "Encoding",
+            "rmType": "CODE_PHRASE",
+            "min": 1,
+            "max": 1,
+            "aqlPath": "/content[openEHR-EHR-EVALUATION.absence.v2,'Unbekannte Diagnose']/encoding",
+            "inContext": true
+          },
+          {
+            "id": "subject",
+            "name": "Subject",
+            "rmType": "PARTY_PROXY",
+            "min": 1,
+            "max": 1,
+            "aqlPath": "/content[openEHR-EHR-EVALUATION.absence.v2,'Unbekannte Diagnose']/subject",
+            "inputs": [
+              {
+                "suffix": "id",
+                "type": "TEXT"
+              },
+              {
+                "suffix": "id_scheme",
+                "type": "TEXT"
+              },
+              {
+                "suffix": "id_namespace",
+                "type": "TEXT"
+              },
+              {
+                "suffix": "name",
+                "type": "TEXT"
+              }
+            ],
+            "inContext": true
+          }
+        ]
+      },
+      {
+        "id": "category",
+        "rmType": "DV_CODED_TEXT",
+        "nodeId": "",
+        "min": 1,
+        "max": 1,
+        "aqlPath": "/category",
+        "inputs": [
+          {
+            "suffix": "code",
+            "type": "CODED_TEXT",
+            "list": [
+              {
+                "value": "433",
+                "label": "event",
+                "localizedLabels": {
+                  "de": ""
+                }
+              }
+            ],
+            "terminology": "openehr"
+          }
+        ],
+        "inContext": true
+      },
+      {
+        "id": "language",
+        "name": "Language",
+        "rmType": "CODE_PHRASE",
+        "min": 1,
+        "max": 1,
+        "aqlPath": "/language",
+        "inContext": true
+      },
+      {
+        "id": "territory",
+        "name": "Territory",
+        "rmType": "CODE_PHRASE",
+        "min": 1,
+        "max": 1,
+        "aqlPath": "/territory",
+        "inContext": true
+      },
+      {
+        "id": "composer",
+        "name": "Composer",
+        "rmType": "PARTY_PROXY",
+        "min": 1,
+        "max": 1,
+        "aqlPath": "/composer",
+        "inputs": [
+          {
+            "suffix": "id",
+            "type": "TEXT"
+          },
+          {
+            "suffix": "id_scheme",
+            "type": "TEXT"
+          },
+          {
+            "suffix": "id_namespace",
+            "type": "TEXT"
+          },
+          {
+            "suffix": "name",
+            "type": "TEXT"
+          }
+        ],
+        "inContext": true
+      }
+    ]
+  }
+}

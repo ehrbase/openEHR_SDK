@@ -24,24 +24,49 @@ import com.nedap.archie.rm.datatypes.CodePhrase;
 import com.nedap.archie.rm.datavalues.DvCodedText;
 import com.nedap.archie.rm.support.identification.TerminologyId;
 import org.ehrbase.serialisation.walker.Context;
+import org.ehrbase.webtemplate.path.flat.FlatPathDto;
 
 import java.util.Map;
+import java.util.Set;
 
 public class IsmTransitionRMUnmarshaller extends AbstractRMUnmarshaller<IsmTransition> {
 
-    @Override
-    public Class<IsmTransition> getAssociatedClass() {
-        return IsmTransition.class;
-    }
+  @Override
+  public Class<IsmTransition> getAssociatedClass() {
+    return IsmTransition.class;
+  }
 
-    @Override
-    public void handle(String currentTerm, IsmTransition rmObject, Map<String, String> currentValues, Context<Map<String, String>> context) {
-        rmObject.setCurrentState(new DvCodedText());
-        rmObject.getCurrentState().setDefiningCode(new CodePhrase());
-        rmObject.getCurrentState().getDefiningCode().setTerminologyId(new TerminologyId());
-        setValue(currentTerm + "/current_state", "code", currentValues, rmObject.getCurrentState().getDefiningCode()::setCodeString, String.class);
-        setValue(currentTerm + "/current_state", "value", currentValues, rmObject.getCurrentState()::setValue, String.class);
-        setValue(currentTerm + "/current_state", "terminology", currentValues, rmObject.getCurrentState().getDefiningCode().getTerminologyId()::setValue, String.class);
+  @Override
+  public void handle(
+      String currentTerm,
+      IsmTransition rmObject,
+      Map<FlatPathDto, String> currentValues,
+      Context<Map<FlatPathDto, String>> context,
+      Set<String> consumedPaths) {
 
-    }
+    rmObject.setCurrentState(new DvCodedText());
+    rmObject.getCurrentState().setDefiningCode(new CodePhrase());
+    rmObject.getCurrentState().getDefiningCode().setTerminologyId(new TerminologyId());
+    setValue(
+        currentTerm + "/current_state",
+        "code",
+        currentValues,
+        rmObject.getCurrentState().getDefiningCode()::setCodeString,
+        String.class,
+        consumedPaths);
+    setValue(
+        currentTerm + "/current_state",
+        "value",
+        currentValues,
+        rmObject.getCurrentState()::setValue,
+        String.class,
+        consumedPaths);
+    setValue(
+        currentTerm + "/current_state",
+        "terminology",
+        currentValues,
+        rmObject.getCurrentState().getDefiningCode().getTerminologyId()::setValue,
+        String.class,
+        consumedPaths);
+  }
 }

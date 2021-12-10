@@ -1446,7 +1446,7 @@ commands:
     steps:
       - run:
           command: |
-            pip install robotframework==v4.0b1
+            pip install robotframework==v4.0.3
       - run:
           name: POST PROCESS & MERGE TEST RESULTS
           when: always
@@ -1508,7 +1508,7 @@ executors:
     working_directory: ~/projects
     docker:
       - image: circleci/python:3.8.5-node-browsers
-      - image: ehrbase/ehrbase-postgres:11.10
+      - image: ehrbase/ehrbase-postgres:13.4
         environment:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres

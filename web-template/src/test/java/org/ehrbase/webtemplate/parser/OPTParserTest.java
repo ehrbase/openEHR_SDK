@@ -19,19 +19,7 @@
 
 package org.ehrbase.webtemplate.parser;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
@@ -48,6 +36,14 @@ import org.ehrbase.webtemplate.model.WebTemplateNode;
 import org.junit.Test;
 import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
 import org.openehr.schemas.v1.TemplateDocument;
+
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class OPTParserTest {
 
@@ -76,6 +72,75 @@ public class OPTParserTest {
           "LocalizedNames not equal [de=event] != [de=] in inputValue.code:433 id=category aql=/category",
           "InContext not equal null != true in  id=math_function aql=/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Risikogebiet']/items[openEHR-EHR-OBSERVATION.travel_event.v0]/data[at0001]/events[at0002]/math_function",
           "InContext not equal null != true in  id=width aql=/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Risikogebiet']/items[openEHR-EHR-OBSERVATION.travel_event.v0]/data[at0001]/events[at0002]/width"
+        });
+  }
+
+  @Test
+  public void parseTestingTemplateN() throws IOException, XmlException {
+
+    OPERATIONALTEMPLATE template =
+        TemplateDocument.Factory.parse(OperationalTemplateTestData.TESTING_TEMPLATE_N.getStream())
+            .getTemplate();
+
+    OPTParser cut = new OPTParser(template);
+    WebTemplate actual = cut.parse();
+    actual = new Filter().filter(actual);
+    assertThat(actual).isNotNull();
+
+    ObjectMapper objectMapper = new ObjectMapper();
+    WebTemplate expected =
+        objectMapper.readValue(
+            IOUtils.toString(
+                WebTemplateTestData.TESTING_TEMPLATE_N.getStream(), StandardCharsets.UTF_8),
+            WebTemplate.class);
+
+    List<String> errors = compareWebTemplate(actual, expected);
+
+    checkErrors(
+        errors,
+        new String[] {
+          "Extra Node id=external_terminology aql=/content[openEHR-EHR-OBSERVATION.testing.v1]/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.testing.v1]/items[at0016]/value",
+          "Missing Node id=external_terminology aql=/content[openEHR-EHR-OBSERVATION.testing.v1]/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.testing.v1]/items[at0016 and name/value='External terminology']/value",
+          "InputValue not equal 1234:Hello world != 1234:null in id=testing_dv_text aql=/content[openEHR-EHR-OBSERVATION.testing.v1]/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.testing.v1]/items[at0026]/value",
+          "LocalizedNames not equal [en=event] != [en=event, sl=] in inputValue.code:433 id=category aql=/category",
+          "LocalizedNames not equal [en=Hello world] != [en=, sl=] in inputValue.code:1234 id=testing_dv_text aql=/content[openEHR-EHR-OBSERVATION.testing.v1]/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.testing.v1]/items[at0026]/value",
+          "LocalizedDescriptions not equal {en=} != {} in inputValue.code:1234 id=testing_dv_text aql=/content[openEHR-EHR-OBSERVATION.testing.v1]/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.testing.v1]/items[at0026]/value",
+          "DefaultValue not equal null != 1234 in input.suffix:code id=testing_dv_text aql=/content[openEHR-EHR-OBSERVATION.testing.v1]/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.testing.v1]/items[at0026]/value"
+        });
+  }
+
+  @Test
+  public void parseGECCODiagnose() throws IOException, XmlException {
+    OPERATIONALTEMPLATE template =
+        TemplateDocument.Factory.parse(OperationalTemplateTestData.GECCO_DIAGNOSE.getStream())
+            .getTemplate();
+
+    OPTParser cut = new OPTParser(template);
+    WebTemplate actual = cut.parse();
+    actual = new Filter().filter(actual);
+
+    ObjectMapper objectMapper = new ObjectMapper();
+    WebTemplate expected =
+        objectMapper.readValue(
+            IOUtils.toString(
+                WebTemplateTestData.GECCO_DIAGNOSE.getStream(), StandardCharsets.UTF_8),
+            WebTemplate.class);
+
+    List<String> errors =
+        compareWebTemplate(actual, expected).stream()
+            .filter(
+                f ->
+                    !f.startsWith("LocalizedDescriptions not equal")
+                        && !f.startsWith("LocalizedNames not equal")
+                        && !f.startsWith("Annotations not equal"))
+            .collect(Collectors.toList());
+
+    checkErrors(
+        errors,
+        new String[] {
+          "Extra Input code:TEXT in id=name_des_problems_der_diagnose aql=/content[openEHR-EHR-EVALUATION.problem_diagnosis.v1 and name/value='Vorliegende Diagnose']/data[at0001]/items[at0002]/value",
+          "Extra Input value:TEXT in id=name_des_problems_der_diagnose aql=/content[openEHR-EHR-EVALUATION.problem_diagnosis.v1 and name/value='Vorliegende Diagnose']/data[at0001]/items[at0002]/value",
+          "Missing Input null:TEXT in id=name_des_problems_der_diagnose aql=/content[openEHR-EHR-EVALUATION.problem_diagnosis.v1 and name/value='Vorliegende Diagnose']/data[at0001]/items[at0002]/value"
         });
   }
 
@@ -334,7 +399,7 @@ public class OPTParserTest {
             new Tuple("local", ""),
             new Tuple("SNOMED-CT", ""),
             new Tuple("SNOMED-CT", ""),
-            new Tuple("openehr", "at0003:Planned;at0004:Active;at0005:Completed"),
+            new Tuple("local", "at0003:Planned;at0004:Active;at0005:Completed"),
             new Tuple("openehr", "526:planned;245:active;532:completed"),
             new Tuple(null, ""),
             new Tuple(null, ""),

@@ -134,7 +134,7 @@ public class DefaultRestTemplateEndpointIT {
         assertThat(templateMetaDataDtos.stream().anyMatch(t -> t.getTemplateId().equals(templateId))).isTrue();
     }
 
-    private String  uploadTemplate(DefaultRestClient client, OperationalTemplateTestData testTemplate, String testTemplateId) throws IOException, XmlException{
+    private String uploadTemplate(DefaultRestClient client, OperationalTemplateTestData testTemplate, String testTemplateId) throws IOException, XmlException{
         DefaultRestTemplateEndpoint templateEndpoint = new DefaultRestTemplateEndpoint(client);
 
         OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(testTemplate.getStream()).getTemplate();

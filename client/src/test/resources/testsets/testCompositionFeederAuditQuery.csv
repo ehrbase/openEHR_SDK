@@ -1,0 +1,5 @@
+originating_system_audit,# CR missing _type attribute
+originating_system_audit/system_id
+feeder_system_audit,# CR missing _type attribute ("_type"="FEEDER_AUDIT_DETAILS")
+feeder_system_audit/system_id
+
