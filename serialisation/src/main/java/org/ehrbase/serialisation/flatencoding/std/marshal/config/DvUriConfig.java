@@ -41,7 +41,10 @@ public class DvUriConfig extends AbstractsStdConfig<DvURI> {
       String currentTerm, DvURI rmObject, Context<Map<String, Object>> context) {
     Map<String, Object> result = new HashMap<>();
     addValue(
-        result, currentTerm, null, Optional.of(rmObject).map(DvURI::getValue).map(URI::toString));
+        result,
+        currentTerm,
+        null,
+        Optional.of(rmObject).map(DvURI::getValue).map(URI::toString).orElse(null));
 
     return result;
   }

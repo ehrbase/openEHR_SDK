@@ -256,6 +256,9 @@ public class CompositionConverterImp implements CompositionConverter {
         "2013-06-03T00:00:00.000+06:00",
         "2013-06-03");
 
+    currentValues.replace(
+        "test/административная_информация/дата_приема", "2014-01-13T09:13:00.000Z", "2014-01-13");
+
     // fix doubles
     currentValues.replace("vitals/vitals/haemoglobin_a1c/any_event/hba1c", "5,1", "5.1");
     currentValues.replace(
