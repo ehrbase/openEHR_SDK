@@ -99,6 +99,7 @@
                         <include>BuildFromDataValueTest</include>
                         <include>CodedTextTest</include>
                         <include>ComposerTest</include>
+                        <include>ConstrainedNamesTestOverwrite</include>
                         <include>DoraBuilderTestOverwrite</include>
                         <include>DrpBuilderTestOverwritten</include>
                         <include>EthersBuilderTestOverwrite</include>
