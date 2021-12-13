@@ -33,7 +33,7 @@ import org.openehr.schemas.v1.CMULTIPLEATTRIBUTE;
 /**
  * Validate an Event node
  *
- * @link https://specifications.openehr.org/releases/RM/latest/data_structures.html#_event_t_class
+ * @see <a href="https://specifications.openehr.org/releases/RM/latest/data_structures.html#_event_class">EVENT Class</a>
  * <p>
  * Created by christian on 8/11/2016.
  * @see com.nedap.archie.rm.datastructures.PointEvent

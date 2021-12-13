@@ -18,36 +18,35 @@
   ~  */
   -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
+        <groupId>org.ehrbase.openehr.sdk</groupId>
         <artifactId>root</artifactId>
-        <groupId>com.github.ehrbase.openEHR_SDK</groupId>
-        <version>1.5.0</version>
-        <relativePath>../pom.xml</relativePath>
+        <version>1.7.0-SNAPSHOT</version>
     </parent>
 
     <artifactId>serialisation</artifactId>
 
-
     <dependencies>
         <dependency>
-            <groupId>com.github.ehrbase.openEHR_SDK</groupId>
+            <groupId>org.ehrbase.openehr.sdk</groupId>
             <artifactId>web-template</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.github.ehrbase.openEHR_SDK</groupId>
+            <groupId>org.ehrbase.openehr.sdk</groupId>
             <artifactId>building</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.github.ehrbase.openEHR_SDK</groupId>
+            <groupId>org.ehrbase.openehr.sdk</groupId>
             <artifactId>validation</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>com.github.ehrbase.openEHR_SDK</groupId>
+            <groupId>org.ehrbase.openehr.sdk</groupId>
             <artifactId>test-data</artifactId>
             <scope>test</scope>
         </dependency>
@@ -105,17 +104,27 @@
             <artifactId>gson</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.github.ehrbase.openEHR_SDK</groupId>
+            <groupId>org.ehrbase.openehr.sdk</groupId>
             <artifactId>util</artifactId>
         </dependency>
         <dependency>
             <groupId>org.skyscreamer</groupId>
             <artifactId>jsonassert</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.vintage</groupId>
+            <artifactId>junit-vintage-engine</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.threeten</groupId>
             <artifactId>threeten-extra</artifactId>
         </dependency>
     </dependencies>
-
 </project>

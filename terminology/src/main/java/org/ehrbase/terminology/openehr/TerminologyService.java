@@ -24,7 +24,7 @@ import java.util.Map;
 
 
 /**
- * @link https://specifications.openehr.org/releases/RM/latest/support.html#_terminology_package
+ * @see <a href="https://specifications.openehr.org/releases/RM/latest/support.html#_terminology_package">Terminology Package</a>
  */
 public interface TerminologyService {
 

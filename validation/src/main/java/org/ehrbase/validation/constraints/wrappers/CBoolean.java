@@ -30,7 +30,7 @@ import java.util.Map;
 /**
  * Validate a DvBoolean
  *
- * @link https://specifications.openehr.org/releases/AM/latest/AOM1.4.html#_c_boolean_class
+ * @see <a href="https://specifications.openehr.org/releases/AM/latest/AOM1.4.html#_c_boolean_class">C_BOOLEAN Class</a>
  * <p>
  * Created by christian on 7/22/2016.
  * @see com.nedap.archie.aom.primitives.CBoolean

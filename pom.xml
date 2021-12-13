@@ -16,14 +16,53 @@
   ~  limitations under the License.
   -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.github.ehrbase.openEHR_SDK</groupId>
+    <groupId>org.ehrbase.openehr.sdk</groupId>
     <artifactId>root</artifactId>
+    <version>1.7.0-SNAPSHOT</version>
     <packaging>pom</packaging>
-    <version>1.5.0</version>
+
+    <name>openEHR SDK</name>
+    <description>EHRbase openEHR SDK</description>
+    <url>https://github.com/ehrbase/openEHR_SDK</url>
+
+    <licenses>
+        <license>
+            <name>The Apache License, Version 2.0</name>
+            <url>https://www.apache.org/licenses/LICENSE-2.0</url>
+        </license>
+    </licenses>
+
+    <scm>
+        <connection>scm:git:https://github.com/ehrbase/openEHR_SDK.git</connection>
+        <developerConnection>scm:git:https://github.com/ehrbase/openEHR_SDK.git</developerConnection>
+        <url>https://github.com/ehrbase/openEHR_SDK</url>
+    </scm>
+
+    <developers>
+        <developer>
+            <name>Stefan Spiska</name>
+            <email>stefan.spiska@vitagroup.ag</email>
+            <organization>vitasystems GmbH</organization>
+            <organizationUrl>https://www.vitagroup.ag/</organizationUrl>
+        </developer>
+    </developers>
+
+    <distributionManagement>
+        <snapshotRepository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        </snapshotRepository>
+        <repository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+        </repository>
+    </distributionManagement>
 
     <modules>
         <module>client</module>
@@ -42,23 +81,51 @@
         <module>serialisation_conformance_test</module>
     </modules>
 
-
     <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.release>11</maven.compiler.release>
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
-        <jackson.version>2.12.1</jackson.version>
-        <jacoco.version>0.8.6</jacoco.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
         <antlr4.version>4.9.1</antlr4.version>
         <archie.version>1.0.3</archie.version>
+        <assertj.version>3.18.1</assertj.version>
+        <cglib.version>3.3.0</cglib.version>
+        <classgraph.version>4.8.98</classgraph.version>
+        <commons-cli.version>1.4</commons-cli.version>
+        <commons-collections4.version>4.4</commons-collections4.version>
+        <commons-lang3.version>3.11</commons-lang3.version>
+        <commons-io.version>2.8.0</commons-io.version>
+        <ehcache.version>3.8.1</ehcache.version>
+        <everit-json-schema.version>1.12.1</everit-json-schema.version>
+        <guava.version>30.1.1-jre</guava.version>
+        <gson.version>2.8.6</gson.version>
+        <httpclient.version>4.5.13</httpclient.version>
+        <jackson.version>2.12.1</jackson.version>
+        <jacoco.version>0.8.6</jacoco.version>
+        <javapoet.version>1.13.0</javapoet.version>
+        <javax-annotation.version>1.3.2</javax-annotation.version>
+        <javax-cache.version>1.1.1</javax-cache.version>
+        <javax-jaxb.version>2.3.1</javax-jaxb.version>
+        <json.version>20140107</json.version>
+        <json-path.version>2.5.0</json-path.version>
+        <jsonassert.version>1.5.0</jsonassert.version>
+        <junit.version>5.8.2</junit.version>
+        <maven-enforcer-plugin.version>1.4.1</maven-enforcer-plugin.version>
+        <maven-failsafe-plugin.version>2.22.2</maven-failsafe-plugin.version>
+        <maven-gpg-plugin.version>3.0.1</maven-gpg-plugin.version>
+        <maven-javadoc-plugin.version>3.3.1</maven-javadoc-plugin.version>
+        <maven-source-plugin.version>3.2.1</maven-source-plugin.version>
+        <maven-surefire-plugin.version>3.0.0-M5</maven-surefire-plugin.version>
+        <mockito.version>3.6.28</mockito.version>
+        <nexus-staging-maven-plugin.version>1.6.8</nexus-staging-maven-plugin.version>
+        <slf4j.version>1.7.30</slf4j.version>
         <web-template-tests.version>8f3381a37d</web-template-tests.version>
+        <xmlbeans.version>3.1.0</xmlbeans.version>
 
         <skipIntegrationTests>true</skipIntegrationTests>
         <include.tests>**/*Test.java</include.tests>
         <test.profile>unit</test.profile>
     </properties>
-
 
     <profiles>
         <!-- RUN UNIT TESTS ONLY -->
@@ -69,7 +136,6 @@
                 <test.profile>unit</test.profile>
             </properties>
         </profile>
-
         <!-- RUN INTEGRATION TESTS ONLY -->
         <profile>
             <id>slow</id>
@@ -78,7 +144,6 @@
                 <test.profile>integration</test.profile>
             </properties>
         </profile>
-
         <!-- RUN ALL JAVA TESTS (UNIT & INTEGRATION) -->
         <profile>
             <id>full</id>
@@ -87,44 +152,58 @@
                 <test.profile>all</test.profile>
             </properties>
         </profile>
+        <profile>
+            <id>release</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-source-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>attach-sources</id>
+                                <goals>
+                                    <goal>jar-no-fork</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>attach-javadocs</id>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                                <configuration>
+                                    <additionalJOption>-Xdoclint:none</additionalJOption>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
     </profiles>
-
-
-    <repositories>
-        <repository>
-            <id>jitpack.io</id>
-            <url>https://jitpack.io</url>
-        </repository>
-    </repositories>
-
-
-    <dependencies>
-
-
-        <!-- https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-api -->
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-api</artifactId>
-            <version>5.6.0</version>
-            <scope>test</scope>
-        </dependency>
-
-        <!-- https://mvnrepository.com/artifact/org.junit.vintage/junit-vintage-engine -->
-        <dependency>
-            <groupId>org.junit.vintage</groupId>
-            <artifactId>junit-vintage-engine</artifactId>
-            <version>5.6.0</version>
-            <scope>test</scope>
-        </dependency>
-    </dependencies>
-
 
     <build>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-enforcer-plugin</artifactId>
-                <version>1.4.1</version>
                 <configuration>
                     <rules>
                         <bannedDependencies>
@@ -156,25 +235,10 @@
                     </execution>
                 </executions>
             </plugin>
-
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.8.1</version>
-                <configuration>
-                    <release>11</release>
-                </configuration>
-            </plugin>
-
-
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
-                <version>${jacoco.version}</version>
-
                 <executions>
-
                     <!-- SET ARG LINE PROPERTY FOR SUREFIRE -->
                     <execution>
                         <id>agent for unit tests</id>
@@ -185,7 +249,6 @@
                             <propertyName>surefireArgLine</propertyName>
                         </configuration>
                     </execution>
-
                     <!-- SET ARG LINE PROPERTY FOR FAILSAFE -->
                     <execution>
                         <id>agent for integration tests</id>
@@ -196,24 +259,17 @@
                             <propertyName>failsafeArgLine</propertyName>
                         </configuration>
                     </execution>
-
                 </executions>
             </plugin>
-
-
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>3.0.0-M5</version>
-
                 <configuration>
                     <skipTests>true</skipTests>
                     <!-- SETS THE VM ARGUMENT LINE USED WHEN UNIT TESTS ARE RUN. -->
                     <argLine>${surefireArgLine}</argLine>
                 </configuration>
-
                 <executions>
-
                     <execution>
                         <id>${test.profile} tests</id>
                         <phase>test</phase>
@@ -222,27 +278,17 @@
                         </goals>
                         <configuration>
                             <skipTests>false</skipTests>
-
-
                         </configuration>
                     </execution>
-
                 </executions>
             </plugin>
-
-
             <plugin>
-
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-failsafe-plugin</artifactId>
-                <version>2.22.0</version>
-
                 <configuration>
                     <skipITs>${skipIntegrationTests}</skipITs>
                 </configuration>
-
                 <executions>
-
                     <execution>
                         <id>integration-test</id>
                         <phase>verify</phase>
@@ -253,32 +299,21 @@
                         <configuration>
                             <!-- SETS THE VM ARGUMENT LINE USED WHEN INTEGRATION TESTS ARE RUN. -->
                             <argLine>${failsafeArgLine}</argLine>
-
                             <includes>
                                 <include>**/*IT.java</include>
                             </includes>
-
-
                         </configuration>
                     </execution>
-
                 </executions>
             </plugin>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <version>3.1.1</version>
-                <executions>
-                    <execution>
-                        <id>attach-javadocs</id>
-                        <goals>
-                            <goal>jar</goal>
-                        </goals>
-                    </execution>
-                </executions>
+                <groupId>org.sonatype.plugins</groupId>
+                <artifactId>nexus-staging-maven-plugin</artifactId>
+                <extensions>true</extensions>
                 <configuration>
-                    <javadocExecutable>${java.home}/bin/javadoc</javadocExecutable>
-                    <additionalJOption>-Xdoclint:none</additionalJOption>
+                    <serverId>ossrh</serverId>
+                    <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+                    <autoReleaseAfterClose>true</autoReleaseAfterClose>
                 </configuration>
             </plugin>
         </plugins>
@@ -288,114 +323,137 @@
                     <groupId>org.antlr</groupId>
                     <artifactId>antlr4-maven-plugin</artifactId>
                     <version>${antlr4.version}</version>
-                    <configuration>
-                        <listener>false</listener>
-                        <visitor>true</visitor>
-                    </configuration>
-                    <executions>
-                        <execution>
-                            <id>antlr</id>
-                            <goals>
-                                <goal>antlr4</goal>
-                            </goals>
-                        </execution>
-                    </executions>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-enforcer-plugin</artifactId>
+                    <version>${maven-enforcer-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-failsafe-plugin</artifactId>
+                    <version>${maven-failsafe-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-gpg-plugin</artifactId>
+                    <version>${maven-gpg-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-javadoc-plugin</artifactId>
+                    <version>${maven-javadoc-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-source-plugin</artifactId>
+                    <version>${maven-source-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>${maven-surefire-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.jacoco</groupId>
+                    <artifactId>jacoco-maven-plugin</artifactId>
+                    <version>${jacoco.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.sonatype.plugins</groupId>
+                    <artifactId>nexus-staging-maven-plugin</artifactId>
+                    <version>${nexus-staging-maven-plugin.version}</version>
                 </plugin>
             </plugins>
         </pluginManagement>
     </build>
 
-
     <dependencyManagement>
         <dependencies>
-            <!-- modules -->
             <dependency>
-                <groupId>com.github.ehrbase.openEHR_SDK</groupId>
+                <groupId>org.ehrbase.openehr.sdk</groupId>
                 <artifactId>client</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.github.ehrbase.openEHR_SDK</groupId>
+                <groupId>org.ehrbase.openehr.sdk</groupId>
                 <artifactId>generator</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.github.ehrbase.openEHR_SDK</groupId>
+                <groupId>org.ehrbase.openehr.sdk</groupId>
                 <artifactId>response-dto</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.github.ehrbase.openEHR_SDK</groupId>
+                <groupId>org.ehrbase.openehr.sdk</groupId>
                 <artifactId>opt-1.4</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.github.ehrbase.openEHR_SDK</groupId>
+                <groupId>org.ehrbase.openehr.sdk</groupId>
                 <artifactId>building</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.github.ehrbase.openEHR_SDK</groupId>
+                <groupId>org.ehrbase.openehr.sdk</groupId>
                 <artifactId>serialisation_conformance_test</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.github.ehrbase.openEHR_SDK</groupId>
+                <groupId>org.ehrbase.openehr.sdk</groupId>
                 <artifactId>serialisation</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.github.ehrbase.openEHR_SDK</groupId>
+                <groupId>org.ehrbase.openehr.sdk</groupId>
                 <artifactId>terminology</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.github.ehrbase.openEHR_SDK</groupId>
+                <groupId>org.ehrbase.openehr.sdk</groupId>
                 <artifactId>validation</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.github.ehrbase.openEHR_SDK</groupId>
+                <groupId>org.ehrbase.openehr.sdk</groupId>
                 <artifactId>web-template</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.github.ehrbase.openEHR_SDK</groupId>
+                <groupId>org.ehrbase.openehr.sdk</groupId>
                 <artifactId>util</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.github.ehrbase.openEHR_SDK</groupId>
+                <groupId>org.ehrbase.openehr.sdk</groupId>
                 <artifactId>aql</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.github.ehrbase.openEHR_SDK</groupId>
+                <groupId>org.ehrbase.openehr.sdk</groupId>
                 <artifactId>test-data</artifactId>
                 <version>${project.version}</version>
-                <scope>test</scope>
             </dependency>
-
-            <!-- external -->
+            <!-- External Dependencies -->
             <dependency>
-                <groupId>org.antlr</groupId>
-                <artifactId>antlr4-runtime</artifactId>
-                <version>${antlr4.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>com.jayway.jsonpath</groupId>
-                <artifactId>json-path</artifactId>
-                <version>2.5.0</version>
+                <groupId>cglib</groupId>
+                <artifactId>cglib</artifactId>
+                <version>${cglib.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
-                <artifactId>jackson-databind</artifactId>
+                <artifactId>jackson-annotations</artifactId>
                 <version>${jackson.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-core</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-databind</artifactId>
                 <version>${jackson.version}</version>
             </dependency>
             <dependency>
@@ -409,95 +467,9 @@
                 <version>${jackson.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.fasterxml.jackson.core</groupId>
-                <artifactId>jackson-annotations</artifactId>
-                <version>${jackson.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.json</groupId>
-                <artifactId>json</artifactId>
-                <version>20140107</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.xmlbeans</groupId>
-                <artifactId>xmlbeans</artifactId>
-                <version>3.1.0</version>
-            </dependency>
-            <dependency>
-                <groupId>com.google.guava</groupId>
-                <artifactId>guava</artifactId>
-                <version>30.1.1-jre</version>
-            </dependency>
-            <dependency>
-                <groupId>javax.cache</groupId>
-                <artifactId>cache-api</artifactId>
-                <version>1.1.1</version>
-            </dependency>
-            <dependency>
-                <groupId>javax.annotation</groupId>
-                <artifactId>javax.annotation-api</artifactId>
-                <version>1.3.2</version>
-            </dependency>
-            <dependency>
                 <groupId>com.github.everit-org.json-schema</groupId>
                 <artifactId>org.everit.json.schema</artifactId>
-                <version>1.12.1</version>
-            </dependency>
-            <dependency>
-                <groupId>javax.xml.bind</groupId>
-                <artifactId>jaxb-api</artifactId>
-                <version>2.3.1</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.commons</groupId>
-                <artifactId>commons-collections4</artifactId>
-                <version>4.4</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.commons</groupId>
-                <artifactId>commons-lang3</artifactId>
-                <version>3.11</version>
-            </dependency>
-            <dependency>
-                <groupId>commons-io</groupId>
-                <artifactId>commons-io</artifactId>
-                <version>2.8.0</version>
-            </dependency>
-            <dependency>
-                <groupId>commons-cli</groupId>
-                <artifactId>commons-cli</artifactId>
-                <version>1.4</version>
-            </dependency>
-            <dependency>
-                <groupId>com.google.code.gson</groupId>
-                <artifactId>gson</artifactId>
-                <version>2.8.6</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.httpcomponents</groupId>
-                <artifactId>fluent-hc</artifactId>
-                <version>4.5.13</version>
-            </dependency>
-            <dependency>
-                <groupId>com.squareup</groupId>
-                <artifactId>javapoet</artifactId>
-                <version>1.13.0</version>
-            </dependency>
-            <dependency>
-                <groupId>io.github.classgraph</groupId>
-                <artifactId>classgraph</artifactId>
-                <version>4.8.98</version>
-            </dependency>
-            <dependency>
-                <groupId>org.slf4j</groupId>
-                <artifactId>slf4j-api</artifactId>
-                <version>1.7.30</version>
-            </dependency>
-            <dependency>
-                <groupId>org.slf4j</groupId>
-                <artifactId>slf4j-simple</artifactId>
-                <version>1.7.30</version>
-                <scope>test</scope>
+                <version>${everit-json-schema.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.github.openEHR</groupId>
@@ -510,6 +482,106 @@
                 <version>${archie.version}</version>
             </dependency>
             <dependency>
+                <groupId>com.google.code.gson</groupId>
+                <artifactId>gson</artifactId>
+                <version>${gson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.google.guava</groupId>
+                <artifactId>guava</artifactId>
+                <version>${guava.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.jayway.jsonpath</groupId>
+                <artifactId>json-path</artifactId>
+                <version>${json-path.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.squareup</groupId>
+                <artifactId>javapoet</artifactId>
+                <version>${javapoet.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-cli</groupId>
+                <artifactId>commons-cli</artifactId>
+                <version>${commons-cli.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-io</groupId>
+                <artifactId>commons-io</artifactId>
+                <version>${commons-io.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.github.classgraph</groupId>
+                <artifactId>classgraph</artifactId>
+                <version>${classgraph.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>javax.annotation</groupId>
+                <artifactId>javax.annotation-api</artifactId>
+                <version>${javax-annotation.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>javax.cache</groupId>
+                <artifactId>cache-api</artifactId>
+                <version>${javax-cache.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>javax.xml.bind</groupId>
+                <artifactId>jaxb-api</artifactId>
+                <version>${javax-jaxb.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.antlr</groupId>
+                <artifactId>antlr4-runtime</artifactId>
+                <version>${antlr4.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-collections4</artifactId>
+                <version>${commons-collections4.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-lang3</artifactId>
+                <version>${commons-lang3.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.httpcomponents</groupId>
+                <artifactId>fluent-hc</artifactId>
+                <version>${httpclient.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.xmlbeans</groupId>
+                <artifactId>xmlbeans</artifactId>
+                <version>${xmlbeans.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.assertj</groupId>
+                <artifactId>assertj-core</artifactId>
+                <version>${assertj.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.ehcache</groupId>
+                <artifactId>ehcache</artifactId>
+                <version>${ehcache.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.junit.jupiter</groupId>
+                <artifactId>junit-jupiter</artifactId>
+                <version>${junit.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.junit.jupiter</groupId>
+                <artifactId>junit-jupiter-engine</artifactId>
+                <version>${junit.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.junit.jupiter</groupId>
+                <artifactId>junit-jupiter-params</artifactId>
+                <version>${junit.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>org.threeten</groupId>
                 <artifactId>threeten-extra</artifactId>
                 <version>1.6.0</version>
@@ -517,44 +589,42 @@
             <!-- NOTE: does not work properly when inside dependencyManagement -->
             <!-- 
             <dependency>
-                <groupId>junit</groupId>
-                <artifactId>junit</artifactId>
-                <version>4.12</version>
-                <scope>test</scope>
-            </dependency> -->
-
-
+                <groupId>org.junit.vintage</groupId>
+                <artifactId>junit-vintage-engine</artifactId>
+                <version>${junit.version}</version>
+            </dependency>
             <dependency>
-                <groupId>org.assertj</groupId>
-                <artifactId>assertj-core</artifactId>
-                <scope>test</scope>
-                <version>3.18.1</version>
+                <groupId>org.json</groupId>
+                <artifactId>json</artifactId>
+                <version>${json.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.mockito</groupId>
                 <artifactId>mockito-core</artifactId>
-                <scope>test</scope>
-                <version>3.6.28</version>
-            </dependency>
-            <dependency>
-                <groupId>org.ehcache</groupId>
-                <artifactId>ehcache</artifactId>
-                <version>3.8.1</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>cglib</groupId>
-                <artifactId>cglib</artifactId>
-                <version>3.3.0</version>
-                <scope>test</scope>
+                <version>${mockito.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.skyscreamer</groupId>
                 <artifactId>jsonassert</artifactId>
-                <version>1.5.0</version>
-                <scope>test</scope>
+                <version>${jsonassert.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+                <version>${slf4j.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-simple</artifactId>
+                <version>${slf4j.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
 
+    <repositories>
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
+    </repositories>
 </project>
