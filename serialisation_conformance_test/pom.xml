@@ -102,6 +102,7 @@
                         <include>ConstrainedNamesTestOverwrite</include>
                         <include>DoraBuilderTestOverwrite</include>
                         <include>DrpBuilderTestOverwritten</include>
+                        <include>EmptynessTestOverwrite</include>
                         <include>EthersBuilderTestOverwrite</include>
                         <include>DurationTest</include>
                         <include>EndTimeTest</include>
