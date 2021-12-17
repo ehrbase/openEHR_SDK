@@ -19,11 +19,13 @@
 
 package org.ehrbase.serialisation.flatencoding.std.umarshal.postprocessor;
 
+import com.nedap.archie.rm.datatypes.CodePhrase;
 import com.nedap.archie.rm.datavalues.DvCodedText;
 import com.nedap.archie.rm.datavalues.DvText;
 import com.nedap.archie.rm.datavalues.quantity.DvInterval;
 import com.nedap.archie.rm.datavalues.quantity.DvOrdered;
 import com.nedap.archie.rm.datavalues.quantity.ReferenceRange;
+import com.nedap.archie.rm.support.identification.TerminologyId;
 import org.ehrbase.building.webtemplateskeletnbuilder.WebTemplateSkeletonBuilder;
 import org.ehrbase.serialisation.flatencoding.std.umarshal.rmunmarshaller.RMUnmarshaller;
 import org.ehrbase.serialisation.walker.Context;
@@ -99,6 +101,18 @@ public class DvOrderedPostprocessor extends AbstractUnmarshalPostprocessor<DvOrd
                   term + "/_other_reference_ranges:" + k,
                   referenceRange::setRange);
             });
+
+    setValue(
+        term,
+        "normal_status",
+        values,
+        s -> {
+          if (s != null) {
+            rmObject.setNormalStatus(new CodePhrase(new TerminologyId("openehr"), s));
+          }
+        },
+        String.class,
+        consumedPaths);
   }
 
   private void handleNormalRange(

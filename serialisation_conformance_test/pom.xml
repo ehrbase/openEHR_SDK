@@ -83,6 +83,8 @@
                         <include>SettersTestOverwrite</include>
                         <include>ProviderTest</include>
                         <include>SubjectTest</include>
+                        <include>SettersTestOverwrite</include>
+                        <include>StatusesTestOverwrite</include>
                         <include>TermMappingTestOverwritten</include>
                         <include>TimeZoneTest</include>
                         <include>UidTest</include>

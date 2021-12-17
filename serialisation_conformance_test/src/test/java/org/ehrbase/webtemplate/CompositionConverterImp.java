@@ -312,6 +312,8 @@ public class CompositionConverterImp implements CompositionConverter {
         "осмотр_терапевта/сведения_о_выполнении_назначения:0/выполнение:0/instruction_details|composition_uid",
         "осмотр_терапевта/сведения_о_выполнении_назначения:0/выполнение:0/_instruction_details|composition_uid");
 
+
+
     Composition composition = flatJson.unmarshal(OBJECT_MAPPER.writeValueAsString(currentValues));
     String raw = new CanonicalJson().marshal(composition).replace("\"_type\"", "\"@class\"");
 
