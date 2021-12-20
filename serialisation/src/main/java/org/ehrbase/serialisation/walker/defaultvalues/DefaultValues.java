@@ -91,10 +91,6 @@ public class DefaultValues {
             path -> {
               Map<String, String> subValues = filter(flat, path.getPath());
 
-              if (path.equals(DefaultValuePath.WORKFLOW_ID)) {
-                // better implementation uses work_flow_id
-                subValues.putAll(filter(flat, "work_flow_id"));
-              }
               if (!subValues.isEmpty()) {
                 if (EnumValueSet.class.isAssignableFrom(path.getType())) {
                   String value =
