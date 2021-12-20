@@ -27,28 +27,23 @@ import com.nedap.archie.rm.composition.Section;
 import com.nedap.archie.rm.support.identification.GenericId;
 import com.nedap.archie.rm.support.identification.ObjectId;
 import com.nedap.archie.rm.support.identification.ObjectRef;
-import org.apache.commons.io.IOUtils;
-import org.apache.xmlbeans.XmlException;
 import org.ehrbase.serialisation.RMDataFormat;
 import org.ehrbase.serialisation.flatencoding.FlatFormat;
-import org.ehrbase.serialisation.flatencoding.FlatJasonProvider;
 import org.junit.Test;
-import org.openehr.schemas.v1.TemplateDocument;
 
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.ehrbase.webtemplate.Helper.getFlatJson;
 
 public class WorkflowIdTestOverwrite extends WorkflowIdTest {
 
   public static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+
 
   @Override
   @Test
@@ -212,14 +207,5 @@ public class WorkflowIdTestOverwrite extends WorkflowIdTest {
         .containsEntry("vitals/vitals/haemoglobin_a1c:1/_work_flow_id|namespace", "y");
   }
 
-  private RMDataFormat getFlatJson(String template, FlatFormat flatFormat)
-      throws XmlException, IOException {
-    TemplateDocument templateDocument =
-        TemplateDocument.Factory.parse(IOUtils.toInputStream(template, StandardCharsets.UTF_8));
 
-    RMDataFormat flatJson =
-        new FlatJasonProvider(t -> Optional.ofNullable(templateDocument.getTemplate()))
-            .buildFlatJson(flatFormat, templateDocument.getTemplate().getTemplateId().getValue());
-    return flatJson;
-  }
 }

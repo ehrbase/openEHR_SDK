@@ -25,22 +25,15 @@ import com.nedap.archie.rm.datavalues.DvCodedText;
 import com.nedap.archie.rm.datavalues.DvText;
 import com.nedap.archie.rm.datavalues.TermMapping;
 import com.nedap.archie.rm.support.identification.TerminologyId;
-import org.apache.commons.io.IOUtils;
-import org.apache.xmlbeans.XmlException;
 import org.assertj.core.groups.Tuple;
-import org.ehrbase.serialisation.RMDataFormat;
 import org.ehrbase.serialisation.flatencoding.FlatFormat;
-import org.ehrbase.serialisation.flatencoding.FlatJasonProvider;
 import org.ehrbase.serialisation.jsonencoding.CanonicalJson;
 import org.junit.jupiter.api.Test;
-import org.openehr.schemas.v1.TemplateDocument;
 
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.ehrbase.webtemplate.Helper.getFlatJson;
 
 public class TermMappingTestOverwritten extends TermMappingTest {
 
@@ -157,14 +150,5 @@ public class TermMappingTestOverwritten extends TermMappingTest {
                     "Purpose 1", new CodePhrase(new TerminologyId("Purposes"), "p.0.63.1"))));
   }
 
-  private RMDataFormat getFlatJson(String template, FlatFormat flatFormat)
-      throws XmlException, IOException {
-    TemplateDocument templateDocument =
-        TemplateDocument.Factory.parse(IOUtils.toInputStream(template, StandardCharsets.UTF_8));
 
-    RMDataFormat flatJson =
-        new FlatJasonProvider(t -> Optional.ofNullable(templateDocument.getTemplate()))
-            .buildFlatJson(flatFormat, templateDocument.getTemplate().getTemplateId().getValue());
-    return flatJson;
-  }
 }

@@ -29,20 +29,14 @@ import com.nedap.archie.rm.datavalues.quantity.datetime.DvDate;
 import com.nedap.archie.rm.datavalues.quantity.datetime.DvDateTime;
 import com.nedap.archie.rm.datavalues.quantity.datetime.DvDuration;
 import com.nedap.archie.rm.datavalues.quantity.datetime.DvTime;
-import org.apache.commons.io.IOUtils;
-import org.apache.xmlbeans.XmlException;
 import org.ehrbase.serialisation.RMDataFormat;
 import org.ehrbase.serialisation.flatencoding.FlatFormat;
-import org.ehrbase.serialisation.flatencoding.FlatJasonProvider;
 import org.junit.Test;
-import org.openehr.schemas.v1.TemplateDocument;
 
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.Map;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.ehrbase.webtemplate.Helper.getFlatJson;
 
 public class StatusesTestOverwrite extends StatusesTest {
 
@@ -491,14 +485,4 @@ public class StatusesTestOverwrite extends StatusesTest {
    */
   public void proportionInvalid() throws Exception {}
 
-  private RMDataFormat getFlatJson(String template, FlatFormat flatFormat)
-      throws XmlException, IOException {
-    TemplateDocument templateDocument =
-        TemplateDocument.Factory.parse(IOUtils.toInputStream(template, StandardCharsets.UTF_8));
-
-    RMDataFormat flatJson =
-        new FlatJasonProvider(t -> Optional.ofNullable(templateDocument.getTemplate()))
-            .buildFlatJson(flatFormat, templateDocument.getTemplate().getTemplateId().getValue());
-    return flatJson;
-  }
 }
