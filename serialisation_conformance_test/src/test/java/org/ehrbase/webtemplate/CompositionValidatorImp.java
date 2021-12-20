@@ -75,7 +75,7 @@ public class CompositionValidatorImp implements CompositionValidator {
         new RMObjectValidator(ArchieRMInfoLookup.getInstance(), s -> null);
     List<ValidationErrorDto> errorDtoList =
         rmObjectValidator.validate(composition).stream()
-            .peek(e -> logger.info(e.getMessage()))
+            .peek(e -> logger.info(e.getMessage() + "|" + e.getPath()))
             .map(e -> new ValidationErrorDto(e.getMessage(), new String[0], 0))
             .collect(Collectors.toList());
     return errorDtoList;

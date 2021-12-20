@@ -90,6 +90,7 @@
                         <include>UidTest</include>
                         <include>WebTemplateContentTest.java</include>
                         <include>WorkflowIdTestOverwrite</include>
+                        <include>XdsBuilderTest</include>
                     </includes>
                 </configuration>
             </plugin>

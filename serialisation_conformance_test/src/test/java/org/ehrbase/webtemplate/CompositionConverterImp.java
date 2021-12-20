@@ -207,6 +207,23 @@ public class CompositionConverterImp implements CompositionConverter {
         currentValues, "прием_пациента/административная_информация/медицинское_учреждение");
     addTerminology(currentValues, "прием_пациента/процедуры/request:0/название_процедуры");
 
+    addTerminology(currentValues, "cda_document/xds_metadata/type");
+    addTerminology(currentValues, "cda_document/xds_metadata/format");
+    addTerminology(currentValues, "cda_document/cda_component:0/code");
+    addTerminology(currentValues, "cda_document/cda_component:1/code");
+    addTerminology(currentValues, "cda_document/xds_metadata/event:0");
+    addTerminology(currentValues, "cda_document/xds_metadata/class");
+    addTerminology(currentValues, "cda_document/cda_component:0/code");
+    addTerminology(currentValues, "cda_document/xds_metadata/event:1");
+    addTerminology(currentValues, "cda_document/xds_metadata/practice_setting");
+
+    addTerminology(currentValues, "xds_document/xds_metadata/practice_setting");
+    addTerminology(currentValues, "xds_document/xds_metadata/format");
+    addTerminology(currentValues, "xds_document/xds_metadata/event:0");
+    addTerminology(currentValues, "xds_document/xds_metadata/event:1");
+    addTerminology(currentValues, "xds_document/xds_metadata/class");
+    addTerminology(currentValues, "xds_document/xds_metadata/type");
+
     // instruction_details is an optional rm attribute and thus needs to be prefixed with '_'
     replaceKey(
         currentValues,
@@ -311,8 +328,12 @@ public class CompositionConverterImp implements CompositionConverter {
         currentValues,
         "осмотр_терапевта/сведения_о_выполнении_назначения:0/выполнение:0/instruction_details|composition_uid",
         "осмотр_терапевта/сведения_о_выполнении_назначения:0/выполнение:0/_instruction_details|composition_uid");
+    replaceKey(currentValues, "xds_document/context/end_time", "xds_document/context/_end_time");
 
-
+    replaceKey(
+        currentValues, "cda_document/cda_component:0/name", "cda_document/cda_component:0/_name");
+    replaceKey(
+        currentValues, "cda_document/cda_component:1/name", "cda_document/cda_component:1/_name");
 
     Composition composition = flatJson.unmarshal(OBJECT_MAPPER.writeValueAsString(currentValues));
     String raw = new CanonicalJson().marshal(composition).replace("\"_type\"", "\"@class\"");

@@ -22,6 +22,7 @@ package org.ehrbase.serialisation.flatencoding.std.umarshal.postprocessor;
 import com.nedap.archie.rm.composition.EventContext;
 import com.nedap.archie.rm.datavalues.quantity.datetime.DvDateTime;
 import com.nedap.archie.rm.generic.PartyIdentified;
+import com.nedap.archie.rm.support.identification.TerminologyId;
 import org.apache.commons.lang3.StringUtils;
 import org.ehrbase.serialisation.walker.Context;
 import org.ehrbase.serialisation.walker.FlatHelper;
@@ -107,6 +108,12 @@ public class EventContextUnmarshalPostprocessor
     consumedPaths.add(term + "/" + "setting|238");
     // Strange Path with value true if setting != other care (238)
     consumedPaths.add(term + "/" + "setting|");
+
+    if (rmObject.getSetting() != null
+        && (rmObject.getSetting().getDefiningCode().getTerminologyId() == null
+            || rmObject.getSetting().getDefiningCode().getTerminologyId().getValue() == null)) {
+      rmObject.getSetting().getDefiningCode().setTerminologyId(new TerminologyId("openehr"));
+    }
   }
 
   /** {@inheritDoc} */
