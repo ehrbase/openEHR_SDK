@@ -17,35 +17,29 @@
  *
  */
 
-package org.ehrbase.serialisation.flatencoding.std.marshal.config;
+package org.ehrbase.serialisation.flatencoding.std.marshal.postprocessor;
 
-import com.nedap.archie.rm.datavalues.DvURI;
+import com.nedap.archie.rm.datavalues.quantity.DvQuantified;
 import org.ehrbase.serialisation.walker.Context;
 
-import java.net.URI;
-import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
-public class DvUriConfig extends AbstractsStdConfig<DvURI> {
+public class DvQuantifiedPostprocessor extends AbstractMarshalPostprocessor<DvQuantified> {
 
-  /** {@inheritDoc} */
+  /** {@inheritDoc} Adds the encoding information */
   @Override
-  public Class<DvURI> getAssociatedClass() {
-    return DvURI.class;
+  public void process(
+      String term,
+      DvQuantified rmObject,
+      Map<String, Object> values,
+      Context<Map<String, Object>> context) {
+
+    addValue(values, term, "magnitude_status", rmObject.getMagnitudeStatus());
   }
 
   /** {@inheritDoc} */
   @Override
-  public Map<String, Object> buildChildValues(
-      String currentTerm, DvURI rmObject, Context<Map<String, Object>> context) {
-    Map<String, Object> result = new HashMap<>();
-    addValue(
-        result,
-        currentTerm,
-        null,
-        Optional.of(rmObject).map(DvURI::getValue).map(URI::toString).orElse(null));
-
-    return result;
+  public Class<DvQuantified> getAssociatedClass() {
+    return DvQuantified.class;
   }
 }

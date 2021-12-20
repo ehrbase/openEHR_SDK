@@ -17,35 +17,31 @@
  *
  */
 
-package org.ehrbase.serialisation.flatencoding.std.marshal.config;
+package org.ehrbase.serialisation.flatencoding.std.marshal.postprocessor;
 
-import com.nedap.archie.rm.datavalues.DvURI;
+import com.nedap.archie.rm.datavalues.quantity.datetime.DvTemporal;
 import org.ehrbase.serialisation.walker.Context;
 
-import java.net.URI;
-import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
-public class DvUriConfig extends AbstractsStdConfig<DvURI> {
+public class DvTemporalPostprocessor extends AbstractMarshalPostprocessor<DvTemporal> {
 
-  /** {@inheritDoc} */
+  /** {@inheritDoc} Adds the encoding information */
   @Override
-  public Class<DvURI> getAssociatedClass() {
-    return DvURI.class;
+  public void process(
+      String term,
+      DvTemporal rmObject,
+      Map<String, Object> values,
+      Context<Map<String, Object>> context) {
+
+    if (rmObject.getAccuracy() != null) {
+      handleRmAttribute(term, rmObject.getAccuracy(), values, context, "accuracy");
+    }
   }
 
   /** {@inheritDoc} */
   @Override
-  public Map<String, Object> buildChildValues(
-      String currentTerm, DvURI rmObject, Context<Map<String, Object>> context) {
-    Map<String, Object> result = new HashMap<>();
-    addValue(
-        result,
-        currentTerm,
-        null,
-        Optional.of(rmObject).map(DvURI::getValue).map(URI::toString).orElse(null));
-
-    return result;
+  public Class<DvTemporal> getAssociatedClass() {
+    return DvTemporal.class;
   }
 }

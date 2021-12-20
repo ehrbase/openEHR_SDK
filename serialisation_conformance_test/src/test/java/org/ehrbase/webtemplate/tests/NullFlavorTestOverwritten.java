@@ -21,20 +21,12 @@ package org.ehrbase.webtemplate.tests;
 import care.better.platform.web.template.NullFlavorTest;
 import com.nedap.archie.rm.composition.Composition;
 import com.nedap.archie.rm.datastructures.Element;
-import org.apache.commons.io.IOUtils;
-import org.apache.xmlbeans.XmlException;
 import org.ehrbase.client.classgenerator.shareddefinition.NullFlavour;
-import org.ehrbase.serialisation.RMDataFormat;
 import org.ehrbase.serialisation.flatencoding.FlatFormat;
-import org.ehrbase.serialisation.flatencoding.FlatJasonProvider;
 import org.junit.jupiter.api.Test;
-import org.openehr.schemas.v1.TemplateDocument;
-
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.ehrbase.webtemplate.Helper.getFlatJson;
 
 public class NullFlavorTestOverwritten extends NullFlavorTest {
 
@@ -89,14 +81,5 @@ public class NullFlavorTestOverwritten extends NullFlavorTest {
     assertThat(element1.getNullFlavour()).isEqualTo(NullFlavour.NO_INFORMATION.toCodedText());
   }
 
-  private RMDataFormat getFlatJson(String template, FlatFormat flatFormat)
-      throws XmlException, IOException {
-    TemplateDocument templateDocument =
-        TemplateDocument.Factory.parse(IOUtils.toInputStream(template, StandardCharsets.UTF_8));
 
-    RMDataFormat flatJson =
-        new FlatJasonProvider(t -> Optional.ofNullable(templateDocument.getTemplate()))
-            .buildFlatJson(flatFormat, templateDocument.getTemplate().getTemplateId().getValue());
-    return flatJson;
-  }
 }

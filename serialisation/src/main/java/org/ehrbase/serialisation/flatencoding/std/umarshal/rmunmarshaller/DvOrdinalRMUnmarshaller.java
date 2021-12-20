@@ -65,6 +65,16 @@ public class DvOrdinalRMUnmarshaller extends AbstractRMUnmarshaller<DvOrdinal> {
         String.class,
         consumedPaths);
 
+    if (rmObject.getSymbol().getDefiningCode().getCodeString() == null) {
+      setValue(
+          currentTerm,
+          null,
+          currentValues,
+          rmObject.getSymbol().getDefiningCode()::setCodeString,
+          String.class,
+          consumedPaths);
+    }
+
     WebTemplateInputValue value =
         context.getNodeDeque().peek().getInputs().get(0).getList().stream()
             .filter(

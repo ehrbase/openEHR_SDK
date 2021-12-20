@@ -17,35 +17,31 @@
  *
  */
 
-package org.ehrbase.serialisation.flatencoding.std.marshal.config;
+package org.ehrbase.serialisation.flatencoding.std.marshal.postprocessor;
 
-import com.nedap.archie.rm.datavalues.DvURI;
+import com.nedap.archie.rm.datavalues.quantity.DvAmount;
 import org.ehrbase.serialisation.walker.Context;
 
-import java.net.URI;
-import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
-public class DvUriConfig extends AbstractsStdConfig<DvURI> {
+public class DvAmountPostprocessor extends AbstractMarshalPostprocessor<DvAmount> {
 
-  /** {@inheritDoc} */
+  /** {@inheritDoc} Adds the encoding information */
   @Override
-  public Class<DvURI> getAssociatedClass() {
-    return DvURI.class;
+  public void process(
+      String term,
+      DvAmount rmObject,
+      Map<String, Object> values,
+      Context<Map<String, Object>> context) {
+
+    addValue(values, term, "accuracy", rmObject.getAccuracy());
+
+    addValue(values, term, "accuracy_is_percent", rmObject.getAccuracyIsPercent());
   }
 
   /** {@inheritDoc} */
   @Override
-  public Map<String, Object> buildChildValues(
-      String currentTerm, DvURI rmObject, Context<Map<String, Object>> context) {
-    Map<String, Object> result = new HashMap<>();
-    addValue(
-        result,
-        currentTerm,
-        null,
-        Optional.of(rmObject).map(DvURI::getValue).map(URI::toString).orElse(null));
-
-    return result;
+  public Class<DvAmount> getAssociatedClass() {
+    return DvAmount.class;
   }
 }

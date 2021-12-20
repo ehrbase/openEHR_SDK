@@ -19,33 +19,28 @@
 
 package org.ehrbase.serialisation.flatencoding.std.marshal.config;
 
-import com.nedap.archie.rm.datavalues.DvURI;
+import com.nedap.archie.rm.generic.PartyRelated;
 import org.ehrbase.serialisation.walker.Context;
 
-import java.net.URI;
-import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
-public class DvUriConfig extends AbstractsStdConfig<DvURI> {
+public class PartyRelatedStdConfig extends AbstractsStdConfig<PartyRelated> {
+
+  public static final PartyIdentifiedStdConfig PARTY_IDENTIFIED_STD_CONFIG =
+      new PartyIdentifiedStdConfig();
 
   /** {@inheritDoc} */
   @Override
-  public Class<DvURI> getAssociatedClass() {
-    return DvURI.class;
+  public Class<PartyRelated> getAssociatedClass() {
+    return PartyRelated.class;
   }
 
   /** {@inheritDoc} */
   @Override
   public Map<String, Object> buildChildValues(
-      String currentTerm, DvURI rmObject, Context<Map<String, Object>> context) {
-    Map<String, Object> result = new HashMap<>();
-    addValue(
-        result,
-        currentTerm,
-        null,
-        Optional.of(rmObject).map(DvURI::getValue).map(URI::toString).orElse(null));
+      String currentTerm, PartyRelated rmObject, Context<Map<String, Object>> context) {
 
-    return result;
+    // PartyRelated is also PartyIdentified
+    return PARTY_IDENTIFIED_STD_CONFIG.buildChildValues(currentTerm, rmObject, context);
   }
 }

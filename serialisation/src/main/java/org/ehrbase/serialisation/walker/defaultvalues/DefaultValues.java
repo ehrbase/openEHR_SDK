@@ -90,6 +90,7 @@ public class DefaultValues {
         .forEach(
             path -> {
               Map<String, String> subValues = filter(flat, path.getPath());
+
               if (!subValues.isEmpty()) {
                 if (EnumValueSet.class.isAssignableFrom(path.getType())) {
                   String value =
@@ -112,7 +113,11 @@ public class DefaultValues {
                 } else if (TemporalAccessor.class.isAssignableFrom(path.getType())) {
                   String value =
                       subValues.values().stream().map(DefaultValues::read).findAny().orElseThrow();
-                  defaultValueMap.put(path, DateTimeParsers.parseDateTimeValue(value));
+                  if ("now".equals(value)) {
+                    defaultValueMap.put(path, OffsetDateTime.now());
+                  } else {
+                    defaultValueMap.put(path, DateTimeParsers.parseDateTimeValue(value));
+                  }
                 } else if (path.equals(DefaultValuePath.PARTICIPATION)) {
                   Map<Integer, List<Map.Entry<String, String>>> byIndex =
                       subValues.entrySet().stream()
@@ -143,8 +148,8 @@ public class DefaultValues {
                                   stringStringEntry ->
                                       StringUtils.unwrap(stringStringEntry.getValue(), '"')));
 
-                  ref.setNamespace(attributes.get("id_namespace"));
-                  ref.setType(attributes.get("id_type"));
+                  ref.setNamespace(attributes.get("namespace"));
+                  ref.setType(attributes.get("type"));
                   ref.setId(new GenericId());
                   ref.getId().setValue(attributes.get("id"));
                   ref.getId().setScheme(attributes.get("id_scheme"));

@@ -23,21 +23,16 @@ import care.better.platform.web.template.converter.CompositionConverter;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nedap.archie.rm.composition.Composition;
-import org.apache.commons.io.IOUtils;
-import org.apache.xmlbeans.XmlException;
 import org.ehrbase.serialisation.RMDataFormat;
 import org.ehrbase.serialisation.flatencoding.FlatFormat;
-import org.ehrbase.serialisation.flatencoding.FlatJasonProvider;
 import org.ehrbase.serialisation.jsonencoding.CanonicalJson;
 import org.ehrbase.serialisation.jsonencoding.JacksonUtil;
-import org.openehr.schemas.v1.TemplateDocument;
 
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Optional;
+
+import static org.ehrbase.webtemplate.Helper.getFlatJson;
 
 public class CompositionConverterImp implements CompositionConverter {
 
@@ -80,8 +75,18 @@ public class CompositionConverterImp implements CompositionConverter {
       throws Exception {
     RMDataFormat flatJson = getFlatJson(template, FlatFormat.SIM_SDT);
     Map<String, Object> currentValues = new HashMap<>();
-    for (Iterator<Map.Entry<String, JsonNode>> it =
-            OBJECT_MAPPER.readTree(flatComposition).fields();
+
+    String fixed =
+        flatComposition
+            // fix wrong ":"
+            .replace(
+                "прием_пациента/метаданные/дата_и_время_создания_документа:2013-02-27T00:00\":\"00",
+                "прием_пациента/метаданные/дата_и_время_создания_документа\":\"2013-02-27T00:00:00")
+            // fix wrong ":"
+            .replace(
+                "прием_пациента/административная_информация/дата_приема:2013-03-22T00:00\":\"00",
+                "прием_пациента/административная_информация/дата_приема\":\"2013-03-22");
+    for (Iterator<Map.Entry<String, JsonNode>> it = OBJECT_MAPPER.readTree(fixed).fields();
         it.hasNext(); ) {
       Map.Entry<String, JsonNode> e = it.next();
       currentValues.put(e.getKey(), e.getValue().asText());
@@ -192,6 +197,28 @@ public class CompositionConverterImp implements CompositionConverter {
     addTerminology(
         currentValues, "adverse_drug_reaction_report/adverse_drug_reaction/medra_classification");
     addTerminology(currentValues, "medication_order/medication_detail/medication_action/medicine");
+
+    addTerminology(
+        currentValues, "прием_пациента/административная_информация/медицинское_учреждение");
+    addTerminology(currentValues, "прием_пациента/процедуры/request:0/название_процедуры");
+
+    addTerminology(currentValues, "cda_document/xds_metadata/type");
+    addTerminology(currentValues, "cda_document/xds_metadata/format");
+    addTerminology(currentValues, "cda_document/cda_component:0/code");
+    addTerminology(currentValues, "cda_document/cda_component:1/code");
+    addTerminology(currentValues, "cda_document/xds_metadata/event:0");
+    addTerminology(currentValues, "cda_document/xds_metadata/class");
+    addTerminology(currentValues, "cda_document/cda_component:0/code");
+    addTerminology(currentValues, "cda_document/xds_metadata/event:1");
+    addTerminology(currentValues, "cda_document/xds_metadata/practice_setting");
+
+    addTerminology(currentValues, "xds_document/xds_metadata/practice_setting");
+    addTerminology(currentValues, "xds_document/xds_metadata/format");
+    addTerminology(currentValues, "xds_document/xds_metadata/event:0");
+    addTerminology(currentValues, "xds_document/xds_metadata/event:1");
+    addTerminology(currentValues, "xds_document/xds_metadata/class");
+    addTerminology(currentValues, "xds_document/xds_metadata/type");
+
     // instruction_details is an optional rm attribute and thus needs to be prefixed with '_'
     replaceKey(
         currentValues,
@@ -201,6 +228,107 @@ public class CompositionConverterImp implements CompositionConverter {
         currentValues,
         "приостановка_курса_лекарственной_терапии/сведения_о_выполнении:0/instruction_details|activity_id",
         "приостановка_курса_лекарственной_терапии/сведения_о_выполнении:0/_instruction_details|activity_id");
+
+    // add Attribute name and raise upper such that lower < upper
+    replaceKey(
+        currentValues,
+        "test/interval_quantity/fiels_for_test/upper",
+        "test/interval_quantity/fiels_for_test/upper|magnitude");
+    currentValues.replace("test/interval_quantity/fiels_for_test/upper|magnitude", "90", "130");
+
+    replaceKey(
+        currentValues,
+        "test/interval_quantity/fiels_for_test/lower",
+        "test/interval_quantity/fiels_for_test/lower|magnitude");
+
+    // only iso date times are supported
+    currentValues.replace("ctx/time", "1.2.2012 00:00", "2012-02-01T00:00");
+    currentValues.replace(
+        "vitals/vitals/haemoglobin_a1c/datetime_result_issued",
+        "20.1.2012 19:30",
+        "2012-02-20T19:30");
+    currentValues.replace(
+        "vitals/vitals/body_temperature/any_event/time", "1.1.2012 0:0", "2012-01-01T00:00");
+    currentValues.replace("ctx/time", "2012-02-01T00:00", "2012-02-01T00:00:00+01:00");
+    currentValues.replace("ctx/time", "1.2.2012 00:01", "2012-02-01T00:01:00+01:00");
+    currentValues.replace("ctx/history_origin", "1.2.2012 00:01", "2012-02-01T00:01:00+01:00");
+    currentValues.replace(
+        "vitals/vitals/haemoglobin_a1c/datetime_result_issued",
+        "1/2/2012 8:07",
+        "2012-02-01T00:00:00+01:00");
+
+    // date instead of datetime
+    currentValues.replace(
+        "прием_пациента_врачом-стоматологом-хирургом/административная_информация/дата_приема",
+        "2013-04-26T00:00:00",
+        "2013-04-26");
+
+    currentValues.replace(
+        "test/административная_информация/дата_приема",
+        "2013-06-03T00:00:00.000+06:00",
+        "2013-06-03");
+
+    currentValues.replace(
+        "test/административная_информация/дата_приема", "2014-01-13T09:13:00.000Z", "2014-01-13");
+
+    // fix doubles
+    currentValues.replace("vitals/vitals/haemoglobin_a1c/any_event/hba1c", "5,1", "5.1");
+    currentValues.replace(
+        "vitals/vitals/body_temperature/any_event/temperature|magnitude", "38,1", "38.1");
+    currentValues.replace(
+        "vitals/vitals/body_temperature:1/any_event/temperature|magnitude", "39,1", "39.1");
+    // add expected timezone
+    currentValues.replace("ctx/time", "2012-02-01T00:00", "2012-02-01T00:00:00+01:00");
+
+    // It is videoconferencing not videoconference
+    currentValues.replace("ctx/participation_mode", "videoconference", "videoconferencing");
+    // IspekBuilderTest.perinatal2 has a dangling ctx/participation_mode:0 and missing subject name
+    if (currentValues.keySet().stream().filter(k -> k.startsWith("ctx/participation_")).count() == 1
+        && currentValues.keySet().stream()
+                .filter(
+                    k -> k.startsWith("perinatal_history/perinatal_history/maternal_pregnancy/"))
+                .count()
+            > 0) {
+      currentValues.remove("ctx/participation_mode:0", "face-to-face communication");
+      currentValues.put(
+          "perinatal_history/perinatal_history/maternal_pregnancy/subject/_name", "Lisa");
+    }
+
+    if (currentValues.containsKey("medical_document/document/content")) {
+      currentValues.put("medical_document/document/content|formalism", "text");
+    }
+    // code is not correctly set in template
+    if (currentValues.containsKey(
+        "visual_acuity_report/visual_acuity:0/any_event:0/test_name|code")) {
+      currentValues.put(
+          "visual_acuity_report/visual_acuity:0/any_event:0/test_name|value", "value");
+      currentValues.put(
+          "visual_acuity_report/visual_acuity:0/any_event:0/test_name|terminology", "terminology");
+    }
+    // code is not correctly set in template
+    if (currentValues.containsKey(
+        "visual_acuity_report/visual_acuity:0/any_event:1/test_name|code")) {
+      currentValues.put(
+          "visual_acuity_report/visual_acuity:0/any_event:1/test_name|value", "value");
+      currentValues.put(
+          "visual_acuity_report/visual_acuity:0/any_event:1/test_name|terminology", "terminology");
+    }
+
+    // fix missing "_"
+    replaceKey(
+        currentValues,
+        "осмотр_терапевта/сведения_о_выполнении_назначения:0/выполнение:0/instruction_details|activity_id",
+        "осмотр_терапевта/сведения_о_выполнении_назначения:0/выполнение:0/_instruction_details|activity_id");
+    replaceKey(
+        currentValues,
+        "осмотр_терапевта/сведения_о_выполнении_назначения:0/выполнение:0/instruction_details|composition_uid",
+        "осмотр_терапевта/сведения_о_выполнении_назначения:0/выполнение:0/_instruction_details|composition_uid");
+    replaceKey(currentValues, "xds_document/context/end_time", "xds_document/context/_end_time");
+
+    replaceKey(
+        currentValues, "cda_document/cda_component:0/name", "cda_document/cda_component:0/_name");
+    replaceKey(
+        currentValues, "cda_document/cda_component:1/name", "cda_document/cda_component:1/_name");
 
     Composition composition = flatJson.unmarshal(OBJECT_MAPPER.writeValueAsString(currentValues));
     String raw = new CanonicalJson().marshal(composition).replace("\"_type\"", "\"@class\"");
@@ -235,16 +363,7 @@ public class CompositionConverterImp implements CompositionConverter {
     }
   }
 
-  private RMDataFormat getFlatJson(String template, FlatFormat flatFormat)
-      throws XmlException, IOException {
-    TemplateDocument templateDocument =
-        TemplateDocument.Factory.parse(IOUtils.toInputStream(template, StandardCharsets.UTF_8));
 
-    RMDataFormat flatJson =
-        new FlatJasonProvider(t -> Optional.ofNullable(templateDocument.getTemplate()))
-            .buildFlatJson(flatFormat, templateDocument.getTemplate().getTemplateId().getValue());
-    return flatJson;
-  }
 
   private String replace(String k) {
     if (k.equals("composerName")) {
@@ -274,8 +393,20 @@ public class CompositionConverterImp implements CompositionConverter {
       String structuredComposition,
       Map<String, Object> compositionBuilderContext)
       throws Exception {
-    Composition composition =
-        getFlatJson(template, FlatFormat.STRUCTURED).unmarshal(structuredComposition);
+
+    String fixed =
+        structuredComposition
+            .replace("\"end_time\"", "\"_end_time\"")
+            .replace(
+                "\"дата_открытия_талона\":[\"20.03.2020\"]",
+                "\"дата_открытия_талона\":[\"2020-03-20\"]")
+            .replace(
+                "\"дата_закрытия_талона\":[\"20.03.2020\"]",
+                "\"дата_закрытия_талона\":[\"2020-03-20\"]")
+            .replace(
+                "\"дата_посещения\":[\"20.03.2020\"]", "\"дата_посещения\":[\"2020-03-20T00:00\"]");
+
+    Composition composition = getFlatJson(template, FlatFormat.STRUCTURED).unmarshal(fixed);
     return new CanonicalJson().marshal(composition).replace("\"_type\"", "\"@class\"");
   }
 

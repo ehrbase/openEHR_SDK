@@ -582,10 +582,17 @@
                 <version>${junit.version}</version>
             </dependency>
             <dependency>
+                <groupId>org.threeten</groupId>
+                <artifactId>threeten-extra</artifactId>
+                <version>1.6.0</version>
+            </dependency>
+
+            <dependency>
                 <groupId>org.junit.vintage</groupId>
                 <artifactId>junit-vintage-engine</artifactId>
                 <version>${junit.version}</version>
             </dependency>
+
             <dependency>
                 <groupId>org.json</groupId>
                 <artifactId>json</artifactId>

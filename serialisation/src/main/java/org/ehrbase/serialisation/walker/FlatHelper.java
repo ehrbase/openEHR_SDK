@@ -119,6 +119,14 @@ public class FlatHelper<T> {
     }
   }
 
+  public static boolean isDvCodedText(Map<FlatPathDto, String> values, String path) {
+    return values.keySet().stream()
+        .anyMatch(
+            e ->
+                FlatPathDto.isNodeEqual(e, new FlatPathDto(path))
+                    && "code".equals(e.getLast().getAttributeName()));
+  }
+
   public boolean skip(Context<T> context) {
     WebTemplateNode node = context.getNodeDeque().poll();
     WebTemplateNode parent = context.getNodeDeque().peek();

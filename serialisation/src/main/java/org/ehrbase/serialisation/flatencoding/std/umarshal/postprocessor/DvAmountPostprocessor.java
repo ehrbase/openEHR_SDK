@@ -17,44 +17,40 @@
  *
  */
 
-package org.ehrbase.serialisation.flatencoding.std.umarshal.rmunmarshaller;
+package org.ehrbase.serialisation.flatencoding.std.umarshal.postprocessor;
 
-import com.nedap.archie.datetime.DateTimeParsers;
-import com.nedap.archie.rm.datavalues.quantity.datetime.DvDateTime;
+import com.nedap.archie.rm.datavalues.quantity.DvAmount;
 import org.ehrbase.serialisation.walker.Context;
 import org.ehrbase.webtemplate.path.flat.FlatPathDto;
 
-import java.time.OffsetDateTime;
 import java.util.Map;
 import java.util.Set;
 
-public class DvDateTimeRMUnmarshaller extends AbstractRMUnmarshaller<DvDateTime> {
+public class DvAmountPostprocessor extends AbstractUnmarshalPostprocessor<DvAmount> {
 
+  /** {@inheritDoc} */
   @Override
-  public Class<DvDateTime> getAssociatedClass() {
-    return DvDateTime.class;
-  }
+  public void process(
+      String term,
+      DvAmount rmObject,
+      Map<FlatPathDto, String> values,
+      Set<String> consumedPaths,
+      Context<Map<FlatPathDto, String>> context) {
 
-  @Override
-  public void handle(
-      String currentTerm,
-      DvDateTime rmObject,
-      Map<FlatPathDto, String> currentValues,
-      Context<Map<FlatPathDto, String>> context,
-      Set<String> consumedPaths) {
+    setValue(term, "accuracy", values, rmObject::setAccuracy, Double.class, consumedPaths);
 
     setValue(
-        currentTerm,
-        null,
-        currentValues,
-        s -> {
-          if ("now".equals(s)) {
-            rmObject.setValue(OffsetDateTime.now());
-          } else if (s != null) {
-            rmObject.setValue(DateTimeParsers.parseDateTimeValue(s));
-          }
-        },
-        String.class,
+        term,
+        "accuracy_is_percent",
+        values,
+        rmObject::setAccuracyIsPercent,
+        Boolean.class,
         consumedPaths);
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public Class<DvAmount> getAssociatedClass() {
+    return DvAmount.class;
   }
 }

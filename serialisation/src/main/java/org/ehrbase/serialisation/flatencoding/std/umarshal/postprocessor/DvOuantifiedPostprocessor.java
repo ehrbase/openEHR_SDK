@@ -17,44 +17,38 @@
  *
  */
 
-package org.ehrbase.serialisation.flatencoding.std.umarshal.rmunmarshaller;
+package org.ehrbase.serialisation.flatencoding.std.umarshal.postprocessor;
 
-import com.nedap.archie.datetime.DateTimeParsers;
-import com.nedap.archie.rm.datavalues.quantity.datetime.DvDateTime;
+import com.nedap.archie.rm.datavalues.quantity.DvQuantified;
 import org.ehrbase.serialisation.walker.Context;
 import org.ehrbase.webtemplate.path.flat.FlatPathDto;
 
-import java.time.OffsetDateTime;
 import java.util.Map;
 import java.util.Set;
 
-public class DvDateTimeRMUnmarshaller extends AbstractRMUnmarshaller<DvDateTime> {
+public class DvOuantifiedPostprocessor extends AbstractUnmarshalPostprocessor<DvQuantified> {
 
+  /** {@inheritDoc} */
   @Override
-  public Class<DvDateTime> getAssociatedClass() {
-    return DvDateTime.class;
-  }
-
-  @Override
-  public void handle(
-      String currentTerm,
-      DvDateTime rmObject,
-      Map<FlatPathDto, String> currentValues,
-      Context<Map<FlatPathDto, String>> context,
-      Set<String> consumedPaths) {
+  public void process(
+      String term,
+      DvQuantified rmObject,
+      Map<FlatPathDto, String> values,
+      Set<String> consumedPaths,
+      Context<Map<FlatPathDto, String>> context) {
 
     setValue(
-        currentTerm,
-        null,
-        currentValues,
-        s -> {
-          if ("now".equals(s)) {
-            rmObject.setValue(OffsetDateTime.now());
-          } else if (s != null) {
-            rmObject.setValue(DateTimeParsers.parseDateTimeValue(s));
-          }
-        },
+        term,
+        "magnitude_status",
+        values,
+        rmObject::setMagnitudeStatus,
         String.class,
         consumedPaths);
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public Class<DvQuantified> getAssociatedClass() {
+    return DvQuantified.class;
   }
 }
