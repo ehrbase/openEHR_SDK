@@ -90,6 +90,11 @@ public class DefaultValues {
         .forEach(
             path -> {
               Map<String, String> subValues = filter(flat, path.getPath());
+
+              if (path.equals(DefaultValuePath.WORKFLOW_ID)) {
+                // better implementation uses work_flow_id
+                subValues.putAll(filter(flat, "work_flow_id"));
+              }
               if (!subValues.isEmpty()) {
                 if (EnumValueSet.class.isAssignableFrom(path.getType())) {
                   String value =
@@ -147,8 +152,8 @@ public class DefaultValues {
                                   stringStringEntry ->
                                       StringUtils.unwrap(stringStringEntry.getValue(), '"')));
 
-                  ref.setNamespace(attributes.get("id_namespace"));
-                  ref.setType(attributes.get("id_type"));
+                  ref.setNamespace(attributes.get("namespace"));
+                  ref.setType(attributes.get("type"));
                   ref.setId(new GenericId());
                   ref.getId().setValue(attributes.get("id"));
                   ref.getId().setScheme(attributes.get("id_scheme"));

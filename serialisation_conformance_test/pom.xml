@@ -89,6 +89,7 @@
                         <include>TimeZoneTest</include>
                         <include>UidTest</include>
                         <include>WebTemplateContentTest.java</include>
+                        <include>WorkflowIdTestOverwrite</include>
                     </includes>
                 </configuration>
             </plugin>

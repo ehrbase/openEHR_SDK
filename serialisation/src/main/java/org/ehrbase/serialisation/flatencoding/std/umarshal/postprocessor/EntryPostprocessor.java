@@ -24,6 +24,8 @@ import com.nedap.archie.rm.generic.PartyIdentified;
 import com.nedap.archie.rm.generic.PartyProxy;
 import com.nedap.archie.rm.generic.PartyRelated;
 import com.nedap.archie.rm.generic.PartySelf;
+import com.nedap.archie.rm.support.identification.GenericId;
+import com.nedap.archie.rm.support.identification.ObjectRef;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -38,8 +40,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static org.ehrbase.serialisation.walker.FlatHelper.consumeAllMatching;
-import static org.ehrbase.serialisation.walker.FlatHelper.extractMultiValued;
+import static org.ehrbase.serialisation.walker.FlatHelper.*;
 import static org.ehrbase.webtemplate.parser.OPTParser.PATH_DIVIDER;
 
 public class EntryPostprocessor extends AbstractUnmarshalPostprocessor<Entry> {
@@ -128,6 +129,41 @@ public class EntryPostprocessor extends AbstractUnmarshalPostprocessor<Entry> {
         .map(DefaultValues::buildParticipation)
         .forEach(rmObject::addOtherParticipant);
     consumeAllMatching(term + PATH_DIVIDER + "_other_participation", values, consumedPaths);
+
+    Map<FlatPathDto, String> workflowIdValues = filter(values, term + "/_work_flow_id", false);
+    if (!workflowIdValues.isEmpty()) {
+      ObjectRef<GenericId> ref = new ObjectRef<>();
+      ref.setId(new GenericId());
+      rmObject.setWorkflowId(ref);
+      setValue(
+          term + "/_work_flow_id",
+          "id",
+          workflowIdValues,
+          s -> ref.getId().setValue(s),
+          String.class,
+          consumedPaths);
+      setValue(
+          term + "/_work_flow_id",
+          "id_scheme",
+          workflowIdValues,
+          s -> ref.getId().setScheme(s),
+          String.class,
+          consumedPaths);
+      setValue(
+          term + "/_work_flow_id",
+          "namespace",
+          workflowIdValues,
+          ref::setNamespace,
+          String.class,
+          consumedPaths);
+      setValue(
+          term + "/_work_flow_id",
+          "type",
+          workflowIdValues,
+          ref::setType,
+          String.class,
+          consumedPaths);
+    }
   }
 
   /** {@inheritDoc} */

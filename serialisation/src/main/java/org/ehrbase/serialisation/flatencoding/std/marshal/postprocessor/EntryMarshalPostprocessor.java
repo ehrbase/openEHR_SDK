@@ -21,10 +21,14 @@ package org.ehrbase.serialisation.flatencoding.std.marshal.postprocessor;
 
 import com.nedap.archie.rm.composition.Entry;
 import com.nedap.archie.rm.generic.PartyIdentified;
+import com.nedap.archie.rm.support.identification.GenericId;
+import com.nedap.archie.rm.support.identification.ObjectId;
+import com.nedap.archie.rm.support.identification.ObjectRef;
 import org.ehrbase.serialisation.flatencoding.std.marshal.config.PartyIdentifiedStdConfig;
 import org.ehrbase.serialisation.walker.Context;
 
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.IntStream;
 
 import static org.ehrbase.webtemplate.parser.OPTParser.PATH_DIVIDER;
@@ -69,6 +73,31 @@ public class EntryMarshalPostprocessor extends AbstractMarshalPostprocessor<Entr
                     context,
                     context.getNodeDeque().peek().findChildById("participation").orElse(null));
               });
+    }
+
+    if (rmObject.getWorkflowId() != null) {
+
+      addValue(
+          values,
+          term + "/_work_flow_id",
+          "id",
+          Optional.of(rmObject.getWorkflowId())
+              .map(ObjectRef::getId)
+              .map(ObjectId::getValue)
+              .orElse(null));
+      addValue(
+          values,
+          term + "/_work_flow_id",
+          "id_scheme",
+          Optional.of(rmObject.getWorkflowId())
+              .map(ObjectRef::getId)
+              .filter(i -> GenericId.class.isAssignableFrom(i.getClass()))
+              .map(GenericId.class::cast)
+              .map(GenericId::getScheme)
+              .orElse(null));
+      addValue(
+          values, term + "/_work_flow_id", "namespace", rmObject.getWorkflowId().getNamespace());
+      addValue(values, term + "/_work_flow_id", "type", rmObject.getWorkflowId().getType());
     }
   }
 
