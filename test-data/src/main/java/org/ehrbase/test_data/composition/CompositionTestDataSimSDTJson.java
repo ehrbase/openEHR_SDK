@@ -18,40 +18,81 @@
 
 package org.ehrbase.test_data.composition;
 
+import org.ehrbase.test_data.operationaltemplate.OperationalTemplateTestData;
+
 import java.io.InputStream;
 
 public enum CompositionTestDataSimSDTJson {
-  ALTERNATIVE_EVENTS("AlternativeEvents", "AlternativeEvents.json"),
-  ALTERNATIVE_EVENTS_2("AlternativeEvents", "AlternativeEvents2.json"),
-  VITALSIGNS("Vitalsigns", "Vitalsigns.json"),
-  ADVERSE_REACTION_LIST("AlternativeEvents", "IDCR - Adverse Reaction List.json"),
-  CORONA("Corona", "corona.json"),
-  CORONA_WITH_OTHER_PARTICIPATION("Corona", "corona_with_other_participation.json"),
-  CORONA_WITH_CONTEXT("Corona", "corona_with_context.json"),
-  CORONA_WITH_FEEDER_AUDIT("Corona with feeder audit", "corona_with_feeder_audit.json"),
+  ALTERNATIVE_EVENTS(
+      "AlternativeEvents", "AlternativeEvents.json", OperationalTemplateTestData.ALT_EVENTS),
+  ALTERNATIVE_EVENTS_2(
+      "AlternativeEvents", "AlternativeEvents2.json", OperationalTemplateTestData.ALT_EVENTS),
+  VITALSIGNS("Vitalsigns", "Vitalsigns.json", OperationalTemplateTestData.EHRN_VITAL_SIGNS_TEST),
+  ADVERSE_REACTION_LIST(
+      "AlternativeEvents",
+      "IDCR - Adverse Reaction List.json",
+      OperationalTemplateTestData.IDCR_ADVERSE_REACTION_LIST),
+  CORONA("Corona", "corona.json", OperationalTemplateTestData.CORONA_ANAMNESE),
+  CORONA_WITH_OTHER_PARTICIPATION(
+      "Corona",
+      "corona_with_other_participation.json",
+      OperationalTemplateTestData.CORONA_ANAMNESE),
+  CORONA_WITH_CONTEXT(
+      "Corona", "corona_with_context.json", OperationalTemplateTestData.CORONA_ANAMNESE),
+  CORONA_WITH_FEEDER_AUDIT(
+      "Corona with feeder audit",
+      "corona_with_feeder_audit.json",
+      OperationalTemplateTestData.CORONA_ANAMNESE),
   CORONA_WITH_FEEDER_AUDIT_RAW(
-      "Corona with feeder audit in Raw", "corona_with_feeder_audit_raw.json"),
-  CORONA_WITH_RAW("Corona with raw field", "corona_with_raw.json"),
-  MULTI_OCCURRENCE("multi_occurrence", "multi_occurrence.json"),
-  MISSING_COUNT("flat_with_missing_count.json", "flat_with_missing_count.json"),
-  ALL_TYPES("test_all_types", "test_all_types.json"),
-  WORD_WITH_AND("Template with archetype with and in name ", "wordwithandin_test.json"),
+      "Corona with feeder audit in Raw",
+      "corona_with_feeder_audit_raw.json",
+      OperationalTemplateTestData.CORONA_ANAMNESE),
+  CORONA_WITH_RAW(
+      "Corona with raw field", "corona_with_raw.json", OperationalTemplateTestData.CORONA_ANAMNESE),
+  MULTI_OCCURRENCE(
+      "multi_occurrence", "multi_occurrence.json", OperationalTemplateTestData.MULTI_OCCURRENCE),
+  MISSING_COUNT(
+      "flat_with_missing_count.json",
+      "flat_with_missing_count.json",
+      OperationalTemplateTestData.MULTI_OCCURRENCE),
+  ALL_TYPES("test_all_types", "test_all_types.json", OperationalTemplateTestData.ALL_TYPES),
+  WORD_WITH_AND(
+      "Template with archetype with and in name ",
+      "wordwithandin_test.json",
+      OperationalTemplateTestData.WORD_WITH_AND),
   DETERIORIATION_ASSESSMENT(
-      "EREACT - Deterioration_assessment", "EREACT - Deterioration_assessment.json"),
-  MULTI_LIST("MULTI_LIST", "multi_list.json"),
-  NCD("NCD", "NCD.json"),
-  EREACT_COVID_MANAGEMENT("flat with action", "EREACT - Covid status monitoring - FLAT.json");
+      "EREACT - Deterioration_assessment",
+      "EREACT - Deterioration_assessment.json",
+      OperationalTemplateTestData.DETERIORIATION_ASSESSMENT),
+  MULTI_LIST("MULTI_LIST", "multi_list.json", OperationalTemplateTestData.MULTI_LIST),
+  NCD("NCD", "NCD.json", OperationalTemplateTestData.NCD),
+  EREACT_COVID_MANAGEMENT(
+      "flat with action",
+      "EREACT - Covid status monitoring - FLAT.json",
+      OperationalTemplateTestData.EREACT_COVID_MANAGEMENT),
+  EHRBASE_CONFORMANCE_DATA_TYPES_DV_TEXT(
+      "ehrbase_conformance_data_types_dv_text",
+      "ehrbase_conformance_data_types_dv_text.json",
+      OperationalTemplateTestData.CONFORMANCE);
 
   private final String filename;
   private final String description;
 
-  CompositionTestDataSimSDTJson(String description, String filename) {
+  private final OperationalTemplateTestData template;
+
+  CompositionTestDataSimSDTJson(
+      String description, String filename, OperationalTemplateTestData template) {
     this.filename = filename;
     this.description = description;
+    this.template = template;
   }
 
   public InputStream getStream() {
     return getClass().getResourceAsStream("/composition/flat/simSDT/" + filename);
+  }
+
+  public OperationalTemplateTestData getTemplate() {
+    return template;
   }
 
   public String toString() {

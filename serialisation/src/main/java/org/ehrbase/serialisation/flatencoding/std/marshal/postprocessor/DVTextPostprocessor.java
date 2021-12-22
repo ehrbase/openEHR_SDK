@@ -53,6 +53,13 @@ public class DVTextPostprocessor extends AbstractMarshalPostprocessor<DvText> {
                   context,
                   context.getNodeDeque().peek().findChildById("mapping").orElse(null));
             });
+
+    if (rmObject.getLanguage() != null) {
+      handleRmAttribute(term, rmObject.getLanguage(), values, context, "language");
+    }
+    if (rmObject.getEncoding() != null) {
+      handleRmAttribute(term, rmObject.getEncoding(), values, context, "encoding");
+    }
   }
 
   /** {@inheritDoc} */

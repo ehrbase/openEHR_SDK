@@ -34,12 +34,14 @@ public class CodePhraseStdConfig extends AbstractsStdConfig<CodePhrase> {
   public Map<String, Object> buildChildValues(
       String currentTerm, CodePhrase rmObject, Context<Map<String, Object>> context) {
     Map<String, Object> result = new HashMap<>();
+
     addValue(result, currentTerm, "code", rmObject.getCodeString());
     addValue(
         result,
         currentTerm,
         "terminology",
         Optional.of(rmObject.getTerminologyId()).map(ObjectId::getValue).orElse(null));
+    addValue(result, currentTerm, "preferred_term", rmObject.getPreferredTerm());
 
     return result;
   }

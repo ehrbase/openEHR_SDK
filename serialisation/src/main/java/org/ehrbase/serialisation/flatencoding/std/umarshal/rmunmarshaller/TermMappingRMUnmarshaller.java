@@ -69,12 +69,12 @@ public class TermMappingRMUnmarshaller extends AbstractRMUnmarshaller<TermMappin
           currentTerm + "/target", rmObject.getTarget(), targetValues, context, consumedPaths);
     }
     Map<FlatPathDto, String> purposeValues =
-        FlatHelper.filter(currentValues, currentTerm + "/purpose", false);
+        FlatHelper.filter(currentValues, currentTerm + "/_purpose", false);
 
     if (!purposeValues.isEmpty()) {
       rmObject.setPurpose(new DvCodedText());
       DV_CODED_TEXT_RM_UNMARSHALLER.handle(
-          currentTerm + "/purpose", rmObject.getPurpose(), purposeValues, context, consumedPaths);
+          currentTerm + "/_purpose", rmObject.getPurpose(), purposeValues, context, consumedPaths);
     }
   }
 }

@@ -19,6 +19,7 @@
 
 package org.ehrbase.serialisation.flatencoding.std.umarshal.postprocessor;
 
+import com.nedap.archie.rm.datatypes.CodePhrase;
 import com.nedap.archie.rm.datavalues.DvText;
 import com.nedap.archie.rm.datavalues.TermMapping;
 import org.ehrbase.serialisation.walker.Context;
@@ -65,6 +66,20 @@ public class DvTextPostprocessor extends AbstractUnmarshalPostprocessor<DvText> 
         .forEach(rmObject::addMapping);
 
     FlatHelper.consumeAllMatching(term + "/_mapping", values, consumedPaths);
+
+    Map<FlatPathDto, String> language = FlatHelper.filter(values, term + "/_language", false);
+
+    if (!language.isEmpty()) {
+      rmObject.setLanguage(new CodePhrase());
+      handleRmAttribute(term, rmObject.getLanguage(), language, consumedPaths, context, "language");
+    }
+
+    Map<FlatPathDto, String> encoding = FlatHelper.filter(values, term + "/_encoding", false);
+
+    if (!encoding.isEmpty()) {
+      rmObject.setEncoding(new CodePhrase());
+      handleRmAttribute(term, rmObject.getEncoding(), encoding, consumedPaths, context, "encoding");
+    }
   }
 
   /** {@inheritDoc} */
