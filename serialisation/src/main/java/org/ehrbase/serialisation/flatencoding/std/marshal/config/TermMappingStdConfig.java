@@ -49,7 +49,7 @@ public class TermMappingStdConfig extends AbstractsStdConfig<TermMapping> {
     if (rmObject.getPurpose() != null) {
       result.putAll(
           DV_CODED_TEXT_STD_CONFIGURATION.buildChildValues(
-              currentTerm + "/_purpose", rmObject.getPurpose(), context));
+              currentTerm + "/purpose", rmObject.getPurpose(), context));
     }
     return result;
   }
