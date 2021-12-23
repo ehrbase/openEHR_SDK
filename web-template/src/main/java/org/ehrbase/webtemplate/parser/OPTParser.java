@@ -48,6 +48,7 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+
 public class OPTParser {
   public static final String PATH_DIVIDER = "/";
   public static final ArchieRMInfoLookup ARCHIE_RM_INFO_LOOKUP = ArchieRMInfoLookup.getInstance();
@@ -1169,7 +1170,7 @@ public class OPTParser {
     return node;
   }
 
-  private String buildId(String term) {
+  public static String buildId(String term) {
 
     String normalTerm =
         StringUtils.normalizeSpace(
@@ -1181,4 +1182,5 @@ public class OPTParser {
 
     return normalTerm;
   }
+
 }

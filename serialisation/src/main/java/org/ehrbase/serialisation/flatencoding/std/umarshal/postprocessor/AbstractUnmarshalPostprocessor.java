@@ -37,6 +37,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
 
+import static org.ehrbase.serialisation.walker.FlatHelper.buildDummyChild;
 import static org.ehrbase.webtemplate.parser.OPTParser.PATH_DIVIDER;
 
 public abstract class AbstractUnmarshalPostprocessor<T extends RMObject>
@@ -96,7 +97,11 @@ public abstract class AbstractUnmarshalPostprocessor<T extends RMObject>
         values,
         consumedPaths,
         context,
-        context.getNodeDeque().peek().findChildById(attributeId).orElse(null));
+        context
+            .getNodeDeque()
+            .peek()
+            .findChildById(attributeId)
+            .orElse(buildDummyChild(attributeId, context.getNodeDeque().peek())));
 
     calPostProcess(
         currentTerm,
@@ -105,7 +110,11 @@ public abstract class AbstractUnmarshalPostprocessor<T extends RMObject>
         values,
         consumedPaths,
         context,
-        context.getNodeDeque().peek().findChildById(attributeId).orElse(null));
+        context
+            .getNodeDeque()
+            .peek()
+            .findChildById(attributeId)
+            .orElse(buildDummyChild(attributeId, context.getNodeDeque().peek())));
   }
 
   protected void callUnmarshal(

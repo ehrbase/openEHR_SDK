@@ -49,6 +49,24 @@ public class FlatConformanceTest {
     check(testData, new String[] {}, new String[] {});
   }
 
+  @Test
+  public void roundTripEhrbaseConformanceDataTypesDvCodedTextAsDvText() throws IOException {
+
+    CompositionTestDataSimSDTJson testData =
+        CompositionTestDataSimSDTJson.EHRBASE_CONFORMANCE_DATA_TYPES_DV_CODED_TEXT_AS_DV_TEXT;
+
+    check(testData, new String[] {}, new String[] {});
+  }
+
+  @Test
+  public void roundTripEhrbaseConformanceDataTypesDvCodedText() throws IOException {
+
+    CompositionTestDataSimSDTJson testData =
+        CompositionTestDataSimSDTJson.EHRBASE_CONFORMANCE_DATA_TYPES_DV_CODED_TEXT;
+
+    check(testData, new String[] {}, new String[] {});
+  }
+
   private void check(
       CompositionTestDataSimSDTJson testData, String[] expectedMissing, String[] expectedExtra)
       throws IOException {

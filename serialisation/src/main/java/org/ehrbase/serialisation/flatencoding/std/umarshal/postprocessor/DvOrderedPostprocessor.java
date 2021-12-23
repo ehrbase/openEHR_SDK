@@ -37,6 +37,7 @@ import java.util.Set;
 import java.util.function.Consumer;
 
 import static org.ehrbase.serialisation.flatencoding.std.umarshal.StdToCompositionWalker.findRMUnmarshaller;
+import static org.ehrbase.serialisation.walker.FlatHelper.buildDummyChild;
 import static org.ehrbase.serialisation.walker.FlatHelper.isDvCodedText;
 import static org.ehrbase.webtemplate.parser.OPTParser.PATH_DIVIDER;
 
@@ -83,7 +84,12 @@ public class DvOrderedPostprocessor extends AbstractUnmarshalPostprocessor<DvOrd
                     meaningValues,
                     consumedPaths,
                     context,
-                    context.getNodeDeque().peek().findChildById(meaningAttributeName).orElse(null));
+                    context
+                        .getNodeDeque()
+                        .peek()
+                        .findChildById(meaningAttributeName)
+                        .orElse(
+                            buildDummyChild(meaningAttributeName, context.getNodeDeque().peek())));
                 calPostProcess(
                     term + "/_other_reference_ranges:" + k,
                     meaningAttributeName,
@@ -91,7 +97,12 @@ public class DvOrderedPostprocessor extends AbstractUnmarshalPostprocessor<DvOrd
                     meaningValues,
                     consumedPaths,
                     context,
-                    context.getNodeDeque().peek().findChildById(meaningAttributeName).orElse(null));
+                    context
+                        .getNodeDeque()
+                        .peek()
+                        .findChildById(meaningAttributeName)
+                        .orElse(
+                            buildDummyChild(meaningAttributeName, context.getNodeDeque().peek())));
               }
 
               handleNormalRange(

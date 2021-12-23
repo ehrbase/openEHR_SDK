@@ -132,6 +132,14 @@ public class DvCodedTextRMUnmarshaller extends AbstractRMUnmarshaller<DvCodedTex
                       .equals(rmObject.getDefiningCode().getCodeString()))
           .forEach(consumedPaths::add);
     }
+
+    setValue(
+        currentTerm,
+        "formatting",
+        currentValues,
+        rmObject::setFormatting,
+        String.class,
+        consumedPaths);
   }
 
   private void setFromNode(

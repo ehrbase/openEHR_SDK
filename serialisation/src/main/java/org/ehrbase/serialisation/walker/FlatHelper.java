@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 
 import static org.ehrbase.util.rmconstants.RmConstants.*;
 import static org.ehrbase.webtemplate.parser.OPTParser.PATH_DIVIDER;
+import static org.ehrbase.webtemplate.parser.OPTParser.buildId;
 
 public class FlatHelper<T> {
 
@@ -280,5 +281,16 @@ public class FlatHelper<T> {
                     String.format(
                         "Unknown Value %s in terminology %s",
                         value, clazz.getEnumConstants()[0].getTerminologyId())));
+  }
+
+  public static WebTemplateNode buildDummyChild(String attributeName, WebTemplateNode parent) {
+    WebTemplateNode node = new WebTemplateNode();
+    node.setId(buildId(attributeName));
+    node.setName(attributeName);
+    node.setAqlPath(parent.getAqlPath() + PATH_DIVIDER + attributeName);
+    node.setMax(0);
+    node.setMax(1);
+
+    return node;
   }
 }

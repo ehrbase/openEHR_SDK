@@ -73,7 +73,11 @@ public class EntryPostprocessor extends AbstractUnmarshalPostprocessor<Entry> {
           values,
           consumedPaths,
           context,
-          context.getNodeDeque().peek().findChildById("subject").orElse(null));
+          context
+              .getNodeDeque()
+              .peek()
+              .findChildById("subject")
+              .orElse(buildDummyChild("subject", context.getNodeDeque().peek())));
     }
 
     PartyProxy subject = rmObject.getSubject();

@@ -73,6 +73,14 @@ public enum CompositionTestDataSimSDTJson {
   EHRBASE_CONFORMANCE_DATA_TYPES_DV_TEXT(
       "ehrbase_conformance_data_types_dv_text",
       "ehrbase_conformance_data_types_dv_text.json",
+      OperationalTemplateTestData.CONFORMANCE),
+  EHRBASE_CONFORMANCE_DATA_TYPES_DV_CODED_TEXT_AS_DV_TEXT(
+      "ehrbase_conformance_data_types_dv_coded_text_as_dv_text",
+      "ehrbase_conformance_data_types_dv_coded_text_as_dv_text.json",
+      OperationalTemplateTestData.CONFORMANCE),
+  EHRBASE_CONFORMANCE_DATA_TYPES_DV_CODED_TEXT(
+      "ehrbase_conformance_data_types_dv_coded_text",
+      "ehrbase_conformance_data_types_dv_coded_text.json",
       OperationalTemplateTestData.CONFORMANCE);
 
   private final String filename;

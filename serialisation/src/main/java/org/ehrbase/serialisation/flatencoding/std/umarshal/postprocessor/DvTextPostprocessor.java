@@ -29,6 +29,8 @@ import org.ehrbase.webtemplate.path.flat.FlatPathDto;
 import java.util.Map;
 import java.util.Set;
 
+import static org.ehrbase.serialisation.walker.FlatHelper.buildDummyChild;
+
 public class DvTextPostprocessor extends AbstractUnmarshalPostprocessor<DvText> {
 
   /** {@inheritDoc} */
@@ -51,7 +53,11 @@ public class DvTextPostprocessor extends AbstractUnmarshalPostprocessor<DvText> 
                   e.getValue(),
                   consumedPaths,
                   context,
-                  context.getNodeDeque().peek().findChildById("mappings").orElse(null));
+                  context
+                      .getNodeDeque()
+                      .peek()
+                      .findChildById("mappings")
+                      .orElse(buildDummyChild("mappings", context.getNodeDeque().peek())));
               calPostProcess(
                   term,
                   "/_mapping:" + e.getKey(),
@@ -59,7 +65,11 @@ public class DvTextPostprocessor extends AbstractUnmarshalPostprocessor<DvText> 
                   e.getValue(),
                   consumedPaths,
                   context,
-                  context.getNodeDeque().peek().findChildById("mappings").orElse(null));
+                  context
+                      .getNodeDeque()
+                      .peek()
+                      .findChildById("mappings")
+                      .orElse(buildDummyChild("mappings", context.getNodeDeque().peek())));
 
               return termMapping;
             })

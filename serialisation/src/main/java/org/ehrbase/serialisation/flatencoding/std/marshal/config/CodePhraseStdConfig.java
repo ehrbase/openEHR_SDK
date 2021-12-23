@@ -36,12 +36,15 @@ public class CodePhraseStdConfig extends AbstractsStdConfig<CodePhrase> {
     Map<String, Object> result = new HashMap<>();
 
     addValue(result, currentTerm, "code", rmObject.getCodeString());
+
     addValue(
         result,
         currentTerm,
         "terminology",
         Optional.of(rmObject.getTerminologyId()).map(ObjectId::getValue).orElse(null));
+
     addValue(result, currentTerm, "preferred_term", rmObject.getPreferredTerm());
+
 
     return result;
   }

@@ -30,6 +30,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
+import static org.ehrbase.serialisation.walker.FlatHelper.buildDummyChild;
+
 public class TermMappingRMUnmarshaller extends AbstractRMUnmarshaller<TermMapping> {
 
   private static final CodePhraseRMUnmarshaller CODE_PHRASE_RM_UNMARSHALLER =
@@ -65,16 +67,20 @@ public class TermMappingRMUnmarshaller extends AbstractRMUnmarshaller<TermMappin
 
     if (!targetValues.isEmpty()) {
       rmObject.setTarget(new CodePhrase());
+      context.getNodeDeque().push(buildDummyChild("target", context.getNodeDeque().peek()));
       CODE_PHRASE_RM_UNMARSHALLER.handle(
           currentTerm + "/target", rmObject.getTarget(), targetValues, context, consumedPaths);
+      context.getNodeDeque().poll();
     }
     Map<FlatPathDto, String> purposeValues =
         FlatHelper.filter(currentValues, currentTerm + "/purpose", false);
 
     if (!purposeValues.isEmpty()) {
       rmObject.setPurpose(new DvCodedText());
+      context.getNodeDeque().push(buildDummyChild("purpose", context.getNodeDeque().peek()));
       DV_CODED_TEXT_RM_UNMARSHALLER.handle(
           currentTerm + "/purpose", rmObject.getPurpose(), purposeValues, context, consumedPaths);
+      context.getNodeDeque().poll();
     }
   }
 }

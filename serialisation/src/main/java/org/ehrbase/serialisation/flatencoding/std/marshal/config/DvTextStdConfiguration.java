@@ -46,6 +46,7 @@ public class DvTextStdConfiguration extends AbstractsStdConfig<DvText> {
     } else {
       addValue(result, currentTerm, null, rmObject.getValue());
     }
+
     addValue(result, currentTerm, "formatting", rmObject.getFormatting());
 
     return result;
