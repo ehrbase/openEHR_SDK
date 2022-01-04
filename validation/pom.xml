@@ -41,8 +41,9 @@
             <artifactId>opt-1.4</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.github.openEHR</groupId>
-            <artifactId>archie</artifactId>
+            <groupId>com.nedap.healthcare.archie</groupId>
+            <artifactId>archie-utils</artifactId>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.ehrbase.openehr.sdk</groupId>

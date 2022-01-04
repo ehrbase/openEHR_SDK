@@ -33,6 +33,10 @@
 
     <dependencies>
         <dependency>
+            <groupId>com.nedap.healthcare.archie</groupId>
+            <artifactId>test-rm</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.ehrbase.openehr.sdk</groupId>
             <artifactId>web-template</artifactId>
         </dependency>
@@ -69,10 +73,6 @@
         <dependency>
             <groupId>org.json</groupId>
             <artifactId>json</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.github.openEHR</groupId>
-            <artifactId>archie</artifactId>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
