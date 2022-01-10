@@ -119,7 +119,8 @@ public class DvOrderedPostprocessor extends AbstractUnmarshalPostprocessor<DvOrd
         values,
         s -> {
           if (s != null) {
-            rmObject.setNormalStatus(new CodePhrase(new TerminologyId("openehr"), s));
+            rmObject.setNormalStatus(
+                new CodePhrase(new TerminologyId("openehr_normal_statuses"), s));
           }
         },
         String.class,

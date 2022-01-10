@@ -37,9 +37,15 @@ public class DvQuantityConfig extends AbstractsStdConfig<DvQuantity> {
   @Override
   public Map<String, Object> buildChildValues(
       String currentTerm, DvQuantity rmObject, Context<Map<String, Object>> context) {
+
     Map<String, Object> result = new HashMap<>();
+
     addValue(result, currentTerm, "magnitude", rmObject.getMagnitude());
+    addValue(result, currentTerm, "precision", rmObject.getPrecision());
     addValue(result, currentTerm, "unit", rmObject.getUnits());
+    addValue(result, currentTerm, "units_system", rmObject.getUnitsSystem());
+    addValue(result, currentTerm, "units_display_name", rmObject.getUnitsDisplayName());
+
     return result;
   }
 }
