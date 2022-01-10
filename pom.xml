@@ -87,7 +87,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <antlr4.version>4.9.1</antlr4.version>
-        <archie.version>1.0.3</archie.version>
+        <archie.version>1.0.4</archie.version>
         <assertj.version>3.18.1</assertj.version>
         <cglib.version>3.3.0</cglib.version>
         <classgraph.version>4.8.98</classgraph.version>
@@ -314,6 +314,7 @@
                     <serverId>ossrh</serverId>
                     <nexusUrl>https://oss.sonatype.org/</nexusUrl>
                     <autoReleaseAfterClose>true</autoReleaseAfterClose>
+                    <stagingProgressTimeoutMinutes>30</stagingProgressTimeoutMinutes>
                 </configuration>
             </plugin>
         </plugins>
@@ -472,13 +473,23 @@
                 <version>${everit-json-schema.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.github.openEHR</groupId>
-                <artifactId>archie</artifactId>
+                <groupId>com.nedap.healthcare.archie</groupId>
+                <artifactId>archie-utils</artifactId>
                 <version>${archie.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.github.openEHR.archie</groupId>
+                <groupId>com.nedap.healthcare.archie</groupId>
                 <artifactId>openehr-rm</artifactId>
+                <version>${archie.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.nedap.healthcare.archie</groupId>
+                <artifactId>test-rm</artifactId>
+                <version>${archie.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.nedap.healthcare.archie</groupId>
+                <artifactId>tools</artifactId>
                 <version>${archie.version}</version>
             </dependency>
             <dependency>

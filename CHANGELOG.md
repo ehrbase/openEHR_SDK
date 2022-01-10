@@ -7,6 +7,7 @@ Note: version releases in the 0.x.y range may introduce breaking changes.
 ### Added
 
 - Flat : added more test and devise fixes ( see https://github.com/ehrbase/openEHR_SDK/pull/291)
+- Upgrade to Archie 1.0.4 ([#292](https://github.com/ehrbase/openEHR_SDK/pull/292))
 
 ### Fixed
 
