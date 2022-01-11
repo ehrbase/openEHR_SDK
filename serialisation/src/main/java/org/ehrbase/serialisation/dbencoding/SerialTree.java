@@ -1,16 +1,19 @@
 package org.ehrbase.serialisation.dbencoding;
 
+import static org.ehrbase.serialisation.dbencoding.CompositionSerializer.TAG_CLASS;
+import static org.ehrbase.serialisation.dbencoding.CompositionSerializer.TAG_NAME;
+import static org.ehrbase.serialisation.dbencoding.CompositionSerializer.TAG_PATH;
+
 import com.nedap.archie.rm.RMObject;
 import com.nedap.archie.rm.archetyped.Locatable;
+import java.util.Map;
 import org.apache.commons.collections4.map.PredicatedMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Map;
-
-import static org.ehrbase.serialisation.dbencoding.CompositionSerializer.*;
-
-/** insert the attributes of a structural object into the DB encoded structure */
+/**
+ * insert the attributes of a structural object into the DB encoded structure
+ */
 public class SerialTree {
 
   Map<String, Object> map;
@@ -30,35 +33,45 @@ public class SerialTree {
    * @throws Exception
    */
   public Map<String, Object> insert(String clazz, Object node, String key, Object addStructure) {
+    if (addStructure == null) {
+      return map;
+    }
 
-    if (addStructure == null) return null;
     if (addStructure instanceof Map
         && ((Map) addStructure).size() == 0
-        && !clazz.equalsIgnoreCase("COMPOSITION")) return null;
+        && !clazz.equalsIgnoreCase("COMPOSITION")) {
+      return map;
+    }
 
     if (key.equals(TAG_NAME)) {
-      if (addStructure instanceof Map) return new NameInMap(map, (Map) addStructure).toMap();
-      else
+      if (addStructure instanceof Map) {
+        return new NameInMap(map, (Map) addStructure).toMap();
+      } else {
         throw new IllegalStateException(
             "INTERNAL: addStructure is not a map, found:" + addStructure.getClass());
+      }
     }
 
     try {
       if (addStructure instanceof RMObject) {
         map.put(key, new RmObjectEncoding((RMObject) addStructure).toMap());
-      } else map.put(key, addStructure);
+      } else {
+        map.put(key, addStructure);
+      }
       // add explicit name
       if (node instanceof Locatable && map instanceof PredicatedMap && !map.containsKey(TAG_NAME)) {
         new NameInMap(map, new NameAsDvText(((Locatable) node).getName()).toMap()).toMap();
       }
 
     } catch (IllegalArgumentException e) {
-      log.error("Ignoring duplicate key in path detected:" + key + " Exception:" + e);
+      log.error("Ignoring duplicate key in path detected: {}", key, e);
     }
 
-    if (clazz != null && !key.equals(TAG_PATH) && !map.containsKey(TAG_CLASS))
+    if (clazz != null && !key.equals(TAG_PATH) && !map.containsKey(TAG_CLASS)) {
       map.put(CompositionSerializer.TAG_CLASS, clazz);
-    else log.debug(map.containsKey(TAG_CLASS) ? "duplicate TAG_CLASS" : "null clazz");
+    } else {
+      log.debug(map.containsKey(TAG_CLASS) ? "duplicate TAG_CLASS" : "null clazz");
+    }
 
     return map;
   }

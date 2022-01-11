@@ -24,6 +24,7 @@ import com.nedap.archie.rm.datastructures.ItemTree;
 import org.apache.commons.io.IOUtils;
 import org.ehrbase.serialisation.jsonencoding.CanonicalJson;
 import org.ehrbase.serialisation.xmlencoding.CanonicalXML;
+import org.ehrbase.test_data.composition.CompositionTestDataCanonicalJson;
 import org.ehrbase.test_data.composition.CompositionTestDataCanonicalXML;
 import org.ehrbase.test_data.item_structure.ItemStruktureTestDataCanonicalJson;
 import org.junit.Test;
@@ -144,4 +145,14 @@ public class RawJsonTest {
         assertThat(composition.getName().getValue()).isEqualTo("Test all types");
     }
 
+    @Test
+    public void marshallEmptyState() throws Exception {
+        String json = IOUtils.toString(CompositionTestDataCanonicalJson.GECCO_LABORBEFUND.getStream(), UTF_8);
+        Composition composition = new CanonicalJson().unmarshal(json, Composition.class);
+
+        RawJson rawJson = new RawJson();
+        String actual = rawJson.marshal(composition);
+
+        assertThat(actual).isNotNull();
+    }
 }
