@@ -141,6 +141,18 @@ public class DvOrderedPostprocessor extends AbstractUnmarshalPostprocessor<DvOrd
 
       handleBorder(values, consumedPaths, context, "upper", range::setUpper, term);
       handleBorder(values, consumedPaths, context, "lower", range::setLower, term);
+      calPostProcess(
+          term,
+          null,
+          range,
+          rangeValues,
+          consumedPaths,
+          context,
+          context
+              .getNodeDeque()
+              .peek()
+              .findChildById("range")
+              .orElse(FlatHelper.buildDummyChild("range", context.getNodeDeque().peek())));
     }
   }
 

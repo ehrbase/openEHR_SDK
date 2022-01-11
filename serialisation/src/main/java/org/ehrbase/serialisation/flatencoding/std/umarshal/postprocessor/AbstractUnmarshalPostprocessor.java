@@ -151,7 +151,13 @@ public abstract class AbstractUnmarshalPostprocessor<T extends RMObject>
     if (subNode != null) {
       context.getNodeDeque().push(subNode);
     }
-    String newTerm = term + PATH_DIVIDER + subTerm;
+    final String newTerm;
+
+    if (subTerm != null) {
+      newTerm = term + PATH_DIVIDER + subTerm;
+    } else {
+      newTerm = term;
+    }
     Map<FlatPathDto, String> subValues = FlatHelper.filter(values, newTerm, false);
     if (!subValues.isEmpty()) {
       StdToCompositionWalker.findUnmarshalPostprocessors(rmObject.getClass())
