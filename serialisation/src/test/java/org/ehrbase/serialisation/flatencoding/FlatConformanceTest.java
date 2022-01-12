@@ -76,6 +76,15 @@ public class FlatConformanceTest {
     check(testData, new String[] {}, new String[] {});
   }
 
+  @Test
+  public void roundTripEhrbaseConformanceDataTypesIntervalDvQuantity() throws IOException {
+
+    CompositionTestDataSimSDTJson testData =
+            CompositionTestDataSimSDTJson.EHRBASE_CONFORMANCE_DATA_TYPES_INTERVAL_DV_QUANTITY;
+
+    check(testData, new String[] {}, new String[] {});
+  }
+
   private void check(
       CompositionTestDataSimSDTJson testData, String[] expectedMissing, String[] expectedExtra)
       throws IOException {
