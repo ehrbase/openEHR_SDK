@@ -29,8 +29,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import static org.ehrbase.serialisation.walker.FlatHelper.consumeAllMatching;
-
 public class DvProportionRMUnmarshaller extends AbstractRMUnmarshaller<DvProportion> {
 
   /** {@inheritDoc} */
@@ -64,6 +62,14 @@ public class DvProportionRMUnmarshaller extends AbstractRMUnmarshaller<DvProport
         consumedPaths);
     setValue(currentTerm, "type", currentValues, rmObject::setType, Long.class, consumedPaths);
 
+    setValue(
+            currentTerm,
+            "precision",
+            currentValues,
+            rmObject::setPrecision,
+            Long.class,
+            consumedPaths);
+
     if (rmObject.getType() == null) {
       List<ProportionType> proportionTypes = context.getNodeDeque().peek().getProportionTypes();
       if (CollectionUtils.isNotEmpty(proportionTypes) && proportionTypes.size() == 1) {
@@ -71,9 +77,9 @@ public class DvProportionRMUnmarshaller extends AbstractRMUnmarshaller<DvProport
       }
     }
 
-    if (rmObject.getNumerator() != null && rmObject.getDenominator() != null) {
-      // Contains numerator/denominator
-      consumeAllMatching(currentTerm, currentValues, consumedPaths);
-    }
+
+      //may contain magnitude
+   consumedPaths.add(currentTerm);
+
   }
 }
