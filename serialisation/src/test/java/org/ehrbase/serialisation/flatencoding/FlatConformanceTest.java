@@ -95,6 +95,30 @@ public class FlatConformanceTest {
   }
 
   @Test
+  public void roundTripEhrbaseConformanceDataTypesDvDateTime() throws IOException {
+
+    CompositionTestDataSimSDTJson testData =
+            CompositionTestDataSimSDTJson.EHRBASE_CONFORMANCE_DATA_TYPES_DV_DATE_TIME;
+
+    check(testData, new String[] {}, new String[] {});
+  }
+  @Test
+  public void roundTripEhrbaseConformanceDataTypesDvDate() throws IOException {
+
+    CompositionTestDataSimSDTJson testData =
+            CompositionTestDataSimSDTJson.EHRBASE_CONFORMANCE_DATA_TYPES_DV_DATE;
+
+    check(testData, new String[] {}, new String[] {});
+  }
+  @Test
+  public void roundTripEhrbaseConformanceDataTypesDvTime() throws IOException {
+
+    CompositionTestDataSimSDTJson testData =
+            CompositionTestDataSimSDTJson.EHRBASE_CONFORMANCE_DATA_TYPES_DV_TIME;
+
+    check(testData, new String[] {}, new String[] {});
+  }
+  @Test
   public void roundTripEhrbaseConformanceDataTypesIntervalDvQuantity() throws IOException {
 
     CompositionTestDataSimSDTJson testData =
