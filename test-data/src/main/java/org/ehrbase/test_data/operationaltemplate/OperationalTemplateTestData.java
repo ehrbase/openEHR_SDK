@@ -106,7 +106,8 @@ public enum OperationalTemplateTestData {
   CONFORMANCE(
       "ehrbase conformance test template",
       "conformance_ehrbase.de.v0.opt",
-      "conformance-ehrbase.de.v0");
+      "conformance-ehrbase.de.v0"),
+  MULTIMEDIA_TEST("MultimediaTest", "multimedia_test.en.v1.opt", "multimedia_test.en.v1");
 
   private final String filename;
   private final String templateId;

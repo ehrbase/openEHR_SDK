@@ -11,6 +11,8 @@ Note: version releases in the 0.x.y range may introduce breaking changes.
 
 ### Fixed
 
+- Fix NullPointerException when event has an empty state (https://github.com/ehrbase/openEHR_SDK/pull/294)
+
 ## 1.16.0
 
 ### Added

@@ -59,7 +59,8 @@ public enum CompositionTestDataCanonicalJson {
     MINIMAL_ACTION_2("Minimal Action 2", "minimal_action2_1.json"),
     MINIMAL_WITH_OPTIONAL_ATTRIBUTE("dv multimedia with alternate_text", "minimal_with_optional_attribute.json"),
     MINIMAL_WITHOUT_OPTIONAL_ATTRIBUTE("dv multimedia without alternate_text", "minimal_without_optional_attribute.json"),
-    GECCO_PERSONENDATEN("GECCO_Personendaten", "gecco_personendaten.json");
+    GECCO_PERSONENDATEN("GECCO_Personendaten", "gecco_personendaten.json"),
+    GECCO_LABORBEFUND("GECCO_Laborbefund", "gecco_laborbefund.json");
 
 
     private final String filename;
