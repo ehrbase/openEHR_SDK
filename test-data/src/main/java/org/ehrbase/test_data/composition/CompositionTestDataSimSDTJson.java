@@ -40,7 +40,8 @@ public enum CompositionTestDataSimSDTJson {
       "EREACT - Deterioration_assessment", "EREACT - Deterioration_assessment.json"),
   MULTI_LIST("MULTI_LIST", "multi_list.json"),
   NCD("NCD", "NCD.json"),
-  EREACT_COVID_MANAGEMENT("flat with action", "EREACT - Covid status monitoring - FLAT.json");
+  EREACT_COVID_MANAGEMENT("flat with action", "EREACT - Covid status monitoring - FLAT.json"),
+  NESTED("nested.en.v1", "nested.en.v1.json");
 
   private final String filename;
   private final String description;
@@ -54,6 +55,7 @@ public enum CompositionTestDataSimSDTJson {
     return getClass().getResourceAsStream("/composition/flat/simSDT/" + filename);
   }
 
+  @Override
   public String toString() {
     return this.description;
   }
