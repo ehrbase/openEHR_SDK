@@ -113,7 +113,8 @@ public enum CompositionTestDataSimSDTJson {
   EHRBASE_CONFORMANCE_DATA_TYPES_INTERVAL_DV_QUANTITY(
           "ehrbase_conformance_data_types_interval_dv_quantity",
           "ehrbase_conformance_data_types_interval_dv_quantity.json",
-          OperationalTemplateTestData.CONFORMANCE);
+          OperationalTemplateTestData.CONFORMANCE),
+  NESTED("nested.en.v1", "nested.en.v1.json",OperationalTemplateTestData.NESTED);
 
   private final String filename;
   private final String description;
@@ -135,6 +136,7 @@ public enum CompositionTestDataSimSDTJson {
     return template;
   }
 
+  @Override
   public String toString() {
     return this.description;
   }
