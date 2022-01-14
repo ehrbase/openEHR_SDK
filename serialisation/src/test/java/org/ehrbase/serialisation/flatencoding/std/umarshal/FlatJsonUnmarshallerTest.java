@@ -60,8 +60,8 @@ public class FlatJsonUnmarshallerTest {
 
     Observation observation =
         (Observation) actual.itemAtPath("/content[openEHR-EHR-OBSERVATION.story.v1]");
-    assertThat(observation.getData().getOrigin().getValue().toString())
-        .hasToString("2020-05-11T22:53:12.039139+02:00");
+    assertThat(observation.getData().getOrigin().getValue()).hasToString(
+        "2020-05-11T22:53:12.039139+02:00");
     assertThat(observation.getSubject()).isNotNull();
     assertThat(observation.getSubject().getClass()).isEqualTo(PartySelf.class);
 
