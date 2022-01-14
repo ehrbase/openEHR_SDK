@@ -75,7 +75,7 @@ public class DvTextPostprocessor extends AbstractUnmarshalPostprocessor<DvText> 
             })
         .forEach(rmObject::addMapping);
 
-    FlatHelper.consumeAllMatching(term + "/_mapping", values, consumedPaths);
+    FlatHelper.consumeAllMatching(term + "/_mapping", values, consumedPaths, false);
 
     Map<FlatPathDto, String> language = FlatHelper.filter(values, term + "/_language", false);
 

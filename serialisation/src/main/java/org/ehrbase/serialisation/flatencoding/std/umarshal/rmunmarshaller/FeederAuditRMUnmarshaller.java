@@ -107,7 +107,7 @@ public class FeederAuditRMUnmarshaller extends AbstractRMUnmarshaller<FeederAudi
                 .collect(Collectors.toList()));
 
     consumeAllMatching(
-        currentTerm + PATH_DIVIDER + "feeder_system_item_id", currentValues, consumedPaths);
+        currentTerm + PATH_DIVIDER + "feeder_system_item_id", currentValues, consumedPaths, false);
 
     Map<Integer, Map<String, String>> originatingSystemIds =
         extractMultiValued(currentTerm, "originating_system_item_id", currentValues);
@@ -120,6 +120,6 @@ public class FeederAuditRMUnmarshaller extends AbstractRMUnmarshaller<FeederAudi
                 .collect(Collectors.toList()));
 
     consumeAllMatching(
-        currentTerm + PATH_DIVIDER + "originating_system_item_id", currentValues, consumedPaths);
+        currentTerm + PATH_DIVIDER + "originating_system_item_id", currentValues, consumedPaths, false);
   }
 }

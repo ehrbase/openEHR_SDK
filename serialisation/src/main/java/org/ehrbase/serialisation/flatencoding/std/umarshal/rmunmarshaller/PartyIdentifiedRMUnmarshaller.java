@@ -110,6 +110,6 @@ public class PartyIdentifiedRMUnmarshaller extends AbstractRMUnmarshaller<PartyI
             .map(DefaultValues::toDvIdentifier)
             .collect(Collectors.toList()));
 
-    consumeAllMatching(currentTerm + PATH_DIVIDER + "_identifier", currentValues, consumedPaths);
+    consumeAllMatching(currentTerm + PATH_DIVIDER + "_identifier", currentValues, consumedPaths, false);
   }
 }

@@ -69,10 +69,10 @@ public class ElementPostprocessor extends AbstractUnmarshalPostprocessor<Element
         consumedPaths);
 
     FlatHelper.consumeAllMatching(
-        term + PATH_DIVIDER + "_null_flavour|terminology", values, consumedPaths);
+        term + PATH_DIVIDER + "_null_flavour|terminology", values, consumedPaths, false);
     if (rmObject.getNullFlavour() != null) {
       rmObject.setValue(null);
-      FlatHelper.consumeAllMatching(term, values, consumedPaths);
+      FlatHelper.consumeAllMatching(term, values, consumedPaths, false);
     }
   }
 

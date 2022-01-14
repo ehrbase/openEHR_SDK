@@ -55,7 +55,7 @@ public class DvOrdinalRMUnmarshaller extends AbstractRMUnmarshaller<DvOrdinal> {
 
     // TerminologyId is fixed local for DvOrdinal
     rmObject.getSymbol().getDefiningCode().setTerminologyId(new TerminologyId("local"));
-    FlatHelper.consumeAllMatching(currentTerm + "|terminology", currentValues, consumedPaths);
+    FlatHelper.consumeAllMatching(currentTerm + "|terminology", currentValues, consumedPaths, false);
 
     setValue(
         currentTerm,

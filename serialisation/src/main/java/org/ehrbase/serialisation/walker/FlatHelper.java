@@ -205,10 +205,10 @@ public class FlatHelper<T> {
   }
 
   public static void consumeAllMatching(
-      String term, Map<FlatPathDto, String> values, Set<String> consumedPaths) {
+          String term, Map<FlatPathDto, String> values, Set<String> consumedPaths, boolean exact) {
     consumedPaths.addAll(
         values.keySet().stream()
-            .filter(s -> s.startsWith(term))
+            .filter(s -> exact ?s.isEqualTo(term) : s.startsWith(term))
             .map(FlatPathDto::format)
             .collect(Collectors.toSet()));
   }

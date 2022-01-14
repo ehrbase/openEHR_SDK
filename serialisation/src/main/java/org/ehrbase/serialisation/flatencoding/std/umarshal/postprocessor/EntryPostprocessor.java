@@ -132,7 +132,7 @@ public class EntryPostprocessor extends AbstractUnmarshalPostprocessor<Entry> {
                     .entrySet())
         .map(DefaultValues::buildParticipation)
         .forEach(rmObject::addOtherParticipant);
-    consumeAllMatching(term + PATH_DIVIDER + "_other_participation", values, consumedPaths);
+    consumeAllMatching(term + PATH_DIVIDER + "_other_participation", values, consumedPaths, false);
 
     Map<FlatPathDto, String> workflowIdValues = filter(values, term + "/_work_flow_id", false);
     if (!workflowIdValues.isEmpty()) {

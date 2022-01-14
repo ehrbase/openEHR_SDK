@@ -102,7 +102,7 @@ public class EventContextUnmarshalPostprocessor
                     .entrySet())
         .map(DefaultValues::buildParticipation)
         .forEach(rmObject::addParticipation);
-    consumeAllMatching(term + PATH_DIVIDER + "_participation", values, consumedPaths);
+    consumeAllMatching(term + PATH_DIVIDER + "_participation", values, consumedPaths, false);
 
     // Strange Path with value true if setting = other care (238)
     consumedPaths.add(term + "/" + "setting|238");

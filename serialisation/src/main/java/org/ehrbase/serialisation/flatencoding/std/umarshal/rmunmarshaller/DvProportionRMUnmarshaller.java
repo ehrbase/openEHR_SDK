@@ -22,6 +22,7 @@ package org.ehrbase.serialisation.flatencoding.std.umarshal.rmunmarshaller;
 import com.nedap.archie.rm.datavalues.quantity.DvProportion;
 import org.apache.commons.collections4.CollectionUtils;
 import org.ehrbase.serialisation.walker.Context;
+import org.ehrbase.serialisation.walker.FlatHelper;
 import org.ehrbase.webtemplate.model.ProportionType;
 import org.ehrbase.webtemplate.path.flat.FlatPathDto;
 
@@ -79,7 +80,7 @@ public class DvProportionRMUnmarshaller extends AbstractRMUnmarshaller<DvProport
 
 
       //may contain magnitude
-   consumedPaths.add(currentTerm);
+    FlatHelper.consumeAllMatching(currentTerm,currentValues,consumedPaths,true);
 
   }
 }

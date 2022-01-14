@@ -69,7 +69,7 @@ public class LocatableUnmarshalPostprocessor extends AbstractUnmarshalPostproces
         .addAll(
             links.values().stream().map(DefaultValues::createLink).collect(Collectors.toList()));
 
-    consumeAllMatching(term + PATH_DIVIDER + "_link", values, consumedPaths);
+    consumeAllMatching(term + PATH_DIVIDER + "_link", values, consumedPaths, false);
 
     Map<FlatPathDto, String> feederAuditValues =
         FlatHelper.filter(values, term + "/_feeder_audit", false);
