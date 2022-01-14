@@ -110,6 +110,10 @@ public enum CompositionTestDataSimSDTJson {
           "ehrbase_conformance_data_types_dv_duration",
           "ehrbase_conformance_data_types_dv_duration.json",
           OperationalTemplateTestData.CONFORMANCE),
+  EHRBASE_CONFORMANCE_DATA_TYPES_DV_ORDINAL(
+          "ehrbase_conformance_data_types_dv_ordinal",
+          "ehrbase_conformance_data_types_dv_ordinal.json",
+          OperationalTemplateTestData.CONFORMANCE),
   EHRBASE_CONFORMANCE_DATA_TYPES_INTERVAL_DV_QUANTITY(
           "ehrbase_conformance_data_types_interval_dv_quantity",
           "ehrbase_conformance_data_types_interval_dv_quantity.json",

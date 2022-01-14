@@ -21,14 +21,12 @@ import com.nedap.archie.rm.datatypes.CodePhrase;
 import com.nedap.archie.rm.datavalues.DvCodedText;
 import com.nedap.archie.rm.datavalues.quantity.DvOrdinal;
 import com.nedap.archie.rm.support.identification.TerminologyId;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
 import org.ehrbase.serialisation.walker.Context;
 import org.ehrbase.serialisation.walker.FlatHelper;
-import org.ehrbase.util.exception.SdkException;
-import org.ehrbase.webtemplate.model.WebTemplateInputValue;
 import org.ehrbase.webtemplate.path.flat.FlatPathDto;
+
+import java.util.Map;
+import java.util.Set;
 
 @SuppressWarnings("unused")
 public class DvOrdinalRMUnmarshaller extends AbstractRMUnmarshaller<DvOrdinal> {
@@ -57,7 +55,7 @@ public class DvOrdinalRMUnmarshaller extends AbstractRMUnmarshaller<DvOrdinal> {
 
     // TerminologyId is fixed local for DvOrdinal
     rmObject.getSymbol().getDefiningCode().setTerminologyId(new TerminologyId("local"));
-    FlatHelper.consumeAllMatching(currentTerm + "|terminology", currentValues, consumedPaths, false);
+    FlatHelper.consumeAllMatching(currentTerm + "|terminology", currentValues, consumedPaths, true);
 
     setValue(
         currentTerm,
