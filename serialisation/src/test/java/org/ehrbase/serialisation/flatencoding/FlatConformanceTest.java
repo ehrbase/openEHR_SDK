@@ -137,6 +137,15 @@ public class FlatConformanceTest {
   }
 
   @Test
+  public void roundTripEhrbaseConformanceDataTypesDvBoolean() throws IOException {
+
+    CompositionTestDataSimSDTJson testData =
+            CompositionTestDataSimSDTJson.EHRBASE_CONFORMANCE_DATA_TYPES_DV_BOOLEAN;
+
+    check(testData, new String[] {}, new String[] {}, new String[]{});
+  }
+
+  @Test
   public void roundTripEhrbaseConformanceDataTypesIntervalDvDuration() throws IOException {
 
     CompositionTestDataSimSDTJson testData =
