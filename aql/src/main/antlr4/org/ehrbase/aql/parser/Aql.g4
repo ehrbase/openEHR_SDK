@@ -18,7 +18,7 @@ grammar Aql;
 
 query   :   queryExpr ;
 
-queryExpr : select from (where)? (limit)? (offset)? (orderBy)? EOF ;
+queryExpr : select from (where)? (orderBy)? (limitExpr)? EOF ;
 
 select
         : SELECT selectExpr
@@ -41,8 +41,8 @@ where
 orderBy
         : ORDERBY orderBySeq ;
 
-limit
-        : LIMIT INTEGER;
+limitExpr
+        : LIMIT INTEGER (offset)?;
 
 offset
         : OFFSET INTEGER;

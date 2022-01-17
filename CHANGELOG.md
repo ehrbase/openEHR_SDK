@@ -12,7 +12,8 @@ Note: version releases in the 0.x.y range may introduce breaking changes.
 ### Fixed
 
 - Fix NullPointerException when event has an empty state (https://github.com/ehrbase/openEHR_SDK/pull/294)
-- Fixes issue when template does not contain list of values for DV_ORDINAL (https://github.com/ehrbase/openEHR_SDK/pull/295)
+- Fix issue when template does not contain list of values for DV_ORDINAL (https://github.com/ehrbase/openEHR_SDK/pull/295)
+- Fix issue in AQL regarding LIMIT and OFFSET (https://github.com/ehrbase/openEHR_SDK/pull/296)
 
 ## 1.16.0
 
