@@ -155,6 +155,24 @@ public class FlatConformanceTest {
   }
 
   @Test
+  public void roundTripEhrbaseConformanceDataTypesDvUri() throws IOException {
+
+    CompositionTestDataSimSDTJson testData =
+            CompositionTestDataSimSDTJson.EHRBASE_CONFORMANCE_DATA_TYPES_DV_URI;
+
+    check(testData, new String[] {}, new String[] {}, new String[]{});
+  }
+
+  @Test
+  public void roundTripEhrbaseConformanceDataTypesDvEhrUri() throws IOException {
+
+    CompositionTestDataSimSDTJson testData =
+            CompositionTestDataSimSDTJson.EHRBASE_CONFORMANCE_DATA_TYPES_DV_EHR_URI;
+
+    check(testData, new String[] {}, new String[] {}, new String[]{});
+  }
+
+  @Test
   public void roundTripEhrbaseConformanceDataTypesIntervalDvDuration() throws IOException {
 
     CompositionTestDataSimSDTJson testData =
