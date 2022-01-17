@@ -41,7 +41,8 @@ public enum CompositionTestDataSimSDTJson {
   MULTI_LIST("MULTI_LIST", "multi_list.json"),
   NCD("NCD", "NCD.json"),
   EREACT_COVID_MANAGEMENT("flat with action", "EREACT - Covid status monitoring - FLAT.json"),
-  NESTED("nested.en.v1", "nested.en.v1.json");
+  NESTED("nested.en.v1", "nested.en.v1.json"),
+  IPS("International Patient Summary", "ips_flat.json");
 
   private final String filename;
   private final String description;

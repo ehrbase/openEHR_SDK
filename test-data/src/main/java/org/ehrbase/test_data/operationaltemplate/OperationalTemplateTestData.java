@@ -104,7 +104,8 @@ public enum OperationalTemplateTestData {
   MINIMAL_ACTION("Minimal Action 3", "minimal_action3.opt", "minimal_action_3.en.v1"),
   NCD("ncd", "NCD.opt", "NCD"),
   MULTIMEDIA_TEST("MultimediaTest", "multimedia_test.en.v1.opt", "multimedia_test.en.v1"),
-  NESTED("nested.en.v1", "nested.en.v1.opt", "nested.en.v1");
+  NESTED("nested.en.v1", "nested.en.v1.opt", "nested.en.v1"),
+  IPS("International Patient Summary", "ips.v0.opt", "International Patient Summary");
 
   private final String filename;
   private final String templateId;
