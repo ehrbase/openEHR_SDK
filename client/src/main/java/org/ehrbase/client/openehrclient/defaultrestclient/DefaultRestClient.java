@@ -333,6 +333,11 @@ public class DefaultRestClient implements OpenEhrClient {
   }
 
   @Override
+  public AdminTemplateEndpoint adminTemplateEndpoint() {
+    return new DefaultRestAdminTemplateEndpoint(this);
+  }
+
+  @Override
   public VersionedCompositionEndpoint versionedCompositionEndpoint(UUID ehrId) {
     return new DefaultRestVersionedCompositionEndpoint(this, ehrId);
   }

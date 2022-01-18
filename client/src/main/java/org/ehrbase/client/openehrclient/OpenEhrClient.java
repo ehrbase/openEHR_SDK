@@ -59,6 +59,8 @@ public interface OpenEhrClient {
      */
     AdminEhrEndpoint adminEhrEndpoint();
 
+    AdminTemplateEndpoint adminTemplateEndpoint();
+
     /**
      * Get the {@link VersionedCompositionEndpoint}.
      *
