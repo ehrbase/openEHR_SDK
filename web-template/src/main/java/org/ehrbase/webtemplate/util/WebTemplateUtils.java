@@ -19,7 +19,6 @@ package org.ehrbase.webtemplate.util;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
-import org.ehrbase.util.rmconstants.RmConstants;
 import org.ehrbase.webtemplate.model.WebTemplateNode;
 
 /**
