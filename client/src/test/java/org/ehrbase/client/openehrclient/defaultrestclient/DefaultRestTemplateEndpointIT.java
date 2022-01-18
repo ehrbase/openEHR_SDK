@@ -22,6 +22,7 @@ import org.apache.xmlbeans.XmlException;
 import org.ehrbase.response.ehrscape.TemplateMetaDataDto;
 import org.ehrbase.response.openehr.TemplatesResponseData;
 import org.ehrbase.test_data.operationaltemplate.OperationalTemplateTestData;
+import org.junit.After;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
@@ -45,10 +46,18 @@ public class DefaultRestTemplateEndpointIT {
 
     private static final String TEMPLATE_NAME_PREFIX = "ehrbase_blood_pressure_simple.de.v";
 
+    private String templateId = null; //global used for teardown
+
     @BeforeClass
     public static void setup() throws URISyntaxException {
         restClient = DefaultRestClientTestHelper.setupDefaultRestClient();
         restClientWithDefaultTemplateProvider = DefaultRestClientTestHelper.setupRestClientWithDefaultTemplateProvider();
+    }
+
+    @After
+    public void tearDown(){
+        //delete template with random version id (mostly)
+        restClient.adminTemplateEndpoint().delete(templateId);
     }
 
     @Test
@@ -82,7 +91,7 @@ public class DefaultRestTemplateEndpointIT {
 
         OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(OperationalTemplateTestData.BLOOD_PRESSURE_SIMPLE.getStream()).getTemplate();
 
-        String templateId = String.format("%s%s", TEMPLATE_NAME_PREFIX, RandomStringUtils.randomNumeric(10));
+        templateId = String.format("%s%s", TEMPLATE_NAME_PREFIX, RandomStringUtils.randomNumeric(10));
         template.getTemplateId().setValue(templateId);
         template.getUid().setValue(UUID.randomUUID().toString());
 
@@ -95,7 +104,7 @@ public class DefaultRestTemplateEndpointIT {
 
         OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(OperationalTemplateTestData.BLOOD_PRESSURE_SIMPLE.getStream()).getTemplate();
 
-        String templateId = String.format("%s%s", TEMPLATE_NAME_PREFIX, RandomStringUtils.randomNumeric(10));
+        templateId = String.format("%s%s", TEMPLATE_NAME_PREFIX, RandomStringUtils.randomNumeric(10));
         template.getTemplateId().setValue(templateId);
         template.getUid().setValue(UUID.randomUUID().toString());
 
@@ -106,7 +115,7 @@ public class DefaultRestTemplateEndpointIT {
     @Test
     public void testFindAllTemplates() throws IOException, XmlException {
 
-        String templateId = String.format("%s%s", TEMPLATE_NAME_PREFIX, RandomStringUtils.randomNumeric(10));
+        templateId = String.format("%s%s", TEMPLATE_NAME_PREFIX, RandomStringUtils.randomNumeric(10));
         String savedTemplateId = uploadTemplate(restClient,OperationalTemplateTestData.BLOOD_PRESSURE_SIMPLE, templateId);
 
         assertThat(savedTemplateId).isEqualTo(templateId);
@@ -121,7 +130,7 @@ public class DefaultRestTemplateEndpointIT {
 
     @Test
     public void testFindAllTemplatesWithDefaultTemplateProvider() throws IOException, XmlException {
-        String templateId = String.format("%s%s", TEMPLATE_NAME_PREFIX, RandomStringUtils.randomNumeric(10));
+        templateId = String.format("%s%s", TEMPLATE_NAME_PREFIX, RandomStringUtils.randomNumeric(10));
         String savedTemplateId = uploadTemplate(restClientWithDefaultTemplateProvider,OperationalTemplateTestData.BLOOD_PRESSURE_SIMPLE, templateId);
 
         assertThat(savedTemplateId).isEqualTo(templateId);
