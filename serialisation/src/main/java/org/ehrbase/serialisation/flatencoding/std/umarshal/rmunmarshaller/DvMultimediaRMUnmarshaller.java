@@ -28,6 +28,7 @@ import org.ehrbase.serialisation.walker.RMHelper;
 import org.ehrbase.webtemplate.path.flat.FlatPathDto;
 
 import java.net.URI;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.Set;
 
@@ -69,6 +70,60 @@ public class DvMultimediaRMUnmarshaller extends AbstractRMUnmarshaller<DvMultime
         rmObject.getMediaType()::setCodeString,
         String.class,
         consumedPaths);
+
+
+    setValue(
+        currentTerm,
+        "compression_algorithm",
+        currentValues,
+        codeString -> {
+          if (codeString != null) {
+            rmObject.setCompressionAlgorithm(new CodePhrase());
+            rmObject.getCompressionAlgorithm().setTerminologyId(new TerminologyId("openehr_compression_algorithms"));
+            rmObject.getCompressionAlgorithm().setCodeString(codeString);
+          }
+        },
+        String.class,
+        consumedPaths);
+
+
+    setValue(
+            currentTerm,
+            "integrity_check_algorithm",
+            currentValues,
+            codeString -> {
+              if (codeString != null) {
+                rmObject.setIntegrityCheckAlgorithm (new CodePhrase());
+                rmObject.getIntegrityCheckAlgorithm().setTerminologyId(new TerminologyId("openehr_integrity_check_algorithms"));
+                rmObject.getIntegrityCheckAlgorithm().setCodeString(codeString);
+              }
+            },
+            String.class,
+            consumedPaths);
+
+    setValue(
+            currentTerm,
+            "integrity_check",
+            currentValues,
+            codeString -> {
+              if (codeString != null) {
+               rmObject.setIntegrityCheck(codeString.getBytes(StandardCharsets.UTF_8));
+              }
+            },
+            String.class,
+            consumedPaths);
+
+    setValue(
+            currentTerm,
+            "data",
+            currentValues,
+            codeString -> {
+              if (codeString != null) {
+                rmObject.setData(codeString.getBytes(StandardCharsets.UTF_8));
+              }
+            },
+            String.class,
+            consumedPaths);
 
     setValue(currentTerm, "size", currentValues, rmObject::setSize, Integer.class, consumedPaths);
     setValue(

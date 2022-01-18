@@ -172,6 +172,25 @@ public class FlatConformanceTest {
     check(testData, new String[] {}, new String[] {}, new String[]{});
   }
 
+
+  @Test
+  public void roundTripEhrbaseConformanceDataTypesDvParsable() throws IOException {
+
+    CompositionTestDataSimSDTJson testData =
+            CompositionTestDataSimSDTJson.EHRBASE_CONFORMANCE_DATA_TYPES_DV_PARSABLE;
+
+    check(testData, new String[] {}, new String[] {}, new String[]{});
+  }
+
+  @Test
+  public void roundTripEhrbaseConformanceDataTypesDvMultimedia() throws IOException {
+
+    CompositionTestDataSimSDTJson testData =
+            CompositionTestDataSimSDTJson.EHRBASE_CONFORMANCE_DATA_TYPES_DV_MULTIMEDIA;
+
+    check(testData, new String[] {}, new String[] {}, new String[]{});
+  }
+
   @Test
   public void roundTripEhrbaseConformanceDataTypesIntervalDvDuration() throws IOException {
 
