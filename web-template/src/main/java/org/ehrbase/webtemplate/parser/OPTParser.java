@@ -20,7 +20,13 @@
 package org.ehrbase.webtemplate.parser;
 
 import com.nedap.archie.rm.archetyped.Locatable;
-import com.nedap.archie.rm.composition.*;
+import com.nedap.archie.rm.composition.Action;
+import com.nedap.archie.rm.composition.Activity;
+import com.nedap.archie.rm.composition.Composition;
+import com.nedap.archie.rm.composition.Entry;
+import com.nedap.archie.rm.composition.EventContext;
+import com.nedap.archie.rm.composition.Instruction;
+import com.nedap.archie.rm.composition.IsmTransition;
 import com.nedap.archie.rm.datastructures.Element;
 import com.nedap.archie.rm.datastructures.Event;
 import com.nedap.archie.rm.datastructures.History;
@@ -28,6 +34,18 @@ import com.nedap.archie.rm.datavalues.quantity.DvInterval;
 import com.nedap.archie.rminfo.ArchieRMInfoLookup;
 import com.nedap.archie.rminfo.RMAttributeInfo;
 import com.nedap.archie.rminfo.RMTypeInfo;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
@@ -39,8 +57,43 @@ import org.ehrbase.terminology.client.terminology.TerminologyProvider;
 import org.ehrbase.terminology.client.terminology.ValueSet;
 import org.ehrbase.util.exception.SdkException;
 import org.ehrbase.util.rmconstants.RmConstants;
-import org.ehrbase.webtemplate.model.*;
-import org.openehr.schemas.v1.*;
+import org.ehrbase.webtemplate.model.WebTemplate;
+import org.ehrbase.webtemplate.model.WebTemplateAnnotation;
+import org.ehrbase.webtemplate.model.WebTemplateInput;
+import org.ehrbase.webtemplate.model.WebTemplateInputValue;
+import org.ehrbase.webtemplate.model.WebTemplateNode;
+import org.ehrbase.webtemplate.model.WebTemplateValidation;
+import org.ehrbase.webtemplate.model.WebtemplateCardinality;
+import org.ehrbase.webtemplate.util.WebTemplateUtils;
+import org.openehr.schemas.v1.ARCHETYPEONTOLOGY;
+import org.openehr.schemas.v1.ARCHETYPESLOT;
+import org.openehr.schemas.v1.ARCHETYPETERM;
+import org.openehr.schemas.v1.CARCHETYPEROOT;
+import org.openehr.schemas.v1.CARDINALITY;
+import org.openehr.schemas.v1.CATTRIBUTE;
+import org.openehr.schemas.v1.CCODEPHRASE;
+import org.openehr.schemas.v1.CCODEREFERENCE;
+import org.openehr.schemas.v1.CCOMPLEXOBJECT;
+import org.openehr.schemas.v1.CDOMAINTYPE;
+import org.openehr.schemas.v1.CDVORDINAL;
+import org.openehr.schemas.v1.CDVQUANTITY;
+import org.openehr.schemas.v1.CDVSTATE;
+import org.openehr.schemas.v1.CMULTIPLEATTRIBUTE;
+import org.openehr.schemas.v1.COBJECT;
+import org.openehr.schemas.v1.CODEPHRASE;
+import org.openehr.schemas.v1.CPRIMITIVEOBJECT;
+import org.openehr.schemas.v1.CodeDefinitionSet;
+import org.openehr.schemas.v1.DVCODEDTEXT;
+import org.openehr.schemas.v1.DVORDINAL;
+import org.openehr.schemas.v1.DVQUANTITY;
+import org.openehr.schemas.v1.IntervalOfInteger;
+import org.openehr.schemas.v1.OBJECTID;
+import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
+import org.openehr.schemas.v1.RESOURCEDESCRIPTIONITEM;
+import org.openehr.schemas.v1.StringDictionaryItem;
+import org.openehr.schemas.v1.TATTRIBUTE;
+import org.openehr.schemas.v1.TCOMPLEXOBJECT;
+import org.openehr.schemas.v1.TCONSTRAINT;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
@@ -50,6 +103,7 @@ import java.util.stream.Collectors;
 
 
 public class OPTParser {
+
   public static final String PATH_DIVIDER = "/";
   public static final ArchieRMInfoLookup ARCHIE_RM_INFO_LOOKUP = ArchieRMInfoLookup.getInstance();
   public static final String CAREFLOW_STEP = "careflow_step";
@@ -248,6 +302,7 @@ public class OPTParser {
   }
 
   private static class Name {
+
     String label;
     Map<String, String> localizedLabels;
   }
@@ -373,8 +428,8 @@ public class OPTParser {
     for (CATTRIBUTE cattribute : ccomplexobject.getAttributesArray()) {
       String pathLoop = aqlPath + PATH_DIVIDER + cattribute.getRmAttributeName();
       if (
-      // Will be set via Attributes
-      pathLoop.endsWith("/name")) {
+        // Will be set via Attributes
+          pathLoop.endsWith("/name")) {
         continue;
       }
 
@@ -524,14 +579,7 @@ public class OPTParser {
         addAnyNode(node, "DV_DATE", inputMap);
 
       } else {
-        List<WebTemplateNode> trueChildren =
-            node.getChildren().stream()
-                .filter(n -> !"name".equals(n.getName()))
-                .filter(
-                    n ->
-                        !List.of("null_flavour", "feeder_audit").contains(n.getName())
-                            || !n.isNullable())
-                .collect(Collectors.toList());
+        List<WebTemplateNode> trueChildren = WebTemplateUtils.getTrueChildrenElement(node);
         trueChildren.forEach(c -> pushProperties(node, c));
 
         if (trueChildren.size() == 1) {
@@ -541,12 +589,7 @@ public class OPTParser {
         }
         // choice between value and null_flavour
         else if (node.getChoicesInChildren().isEmpty()) {
-          node.getChildren().stream()
-              .filter(n -> !"name".equals(n.getName()))
-              .filter(
-                  n ->
-                      !List.of("null_flavour", "feeder_audit").contains(n.getName())
-                          || !n.isNullable())
+          WebTemplateUtils.getTrueChildrenElement(node).stream()
               .filter(n -> n.getRmType().startsWith("DV_"))
               .forEach(
                   n -> {
@@ -590,8 +633,8 @@ public class OPTParser {
                   .collect(Collectors.toList());
           // only add non-trivial cardinalities.
           if ((p.getKey().getMax() != null
-                  && p.getKey().getMax() != -1
-                  && p.getKey().getMax() < nodeIds.size())
+              && p.getKey().getMax() != -1
+              && p.getKey().getMax() < nodeIds.size())
               || (p.getKey().getMin() != null && p.getKey().getMin() > 1)) {
             p.getKey().getIds().addAll(nodeIds);
             node.getCardinalities().add(p.getKey());
@@ -740,9 +783,9 @@ public class OPTParser {
     RMTypeInfo typeInfo = ARCHIE_RM_INFO_LOOKUP.getTypeInfo(node.getRmType());
     if (typeInfo != null
         && (Locatable.class.isAssignableFrom(typeInfo.getJavaClass())
-            || EventContext.class.isAssignableFrom(typeInfo.getJavaClass())
-            || DvInterval.class.isAssignableFrom(typeInfo.getJavaClass())
-            || IsmTransition.class.isAssignableFrom(typeInfo.getJavaClass()))) {
+        || EventContext.class.isAssignableFrom(typeInfo.getJavaClass())
+        || DvInterval.class.isAssignableFrom(typeInfo.getJavaClass())
+        || IsmTransition.class.isAssignableFrom(typeInfo.getJavaClass()))) {
 
       node.getChildren()
           .addAll(
@@ -1033,7 +1076,7 @@ public class OPTParser {
             .map(
                 o ->
                     StringUtils.isBlank(code.getTerminology())
-                            || "local".equals(code.getTerminology())
+                        || "local".equals(code.getTerminology())
                         ? o
                         : code.getTerminology() + "::" + o)
             .forEach(

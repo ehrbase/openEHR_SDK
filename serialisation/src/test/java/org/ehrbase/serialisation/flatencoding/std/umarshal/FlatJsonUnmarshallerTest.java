@@ -192,4 +192,21 @@ public class FlatJsonUnmarshallerTest {
 
     assertDoesNotThrow(() -> new Validator(optTemplate).check(composition));
   }
+
+
+  @Test
+  public void unmarshallIpsComposition() throws Exception {
+    var optTemplate = TemplateDocument.Factory.parse(OperationalTemplateTestData.IPS.getStream())
+        .getTemplate();
+    var webTemplate = new OPTParser(optTemplate).parse();
+
+    var json = IOUtils.toString(CompositionTestDataSimSDTJson.IPS.getStream(),
+        StandardCharsets.UTF_8);
+
+    var composition = new FlatJsonUnmarshaller().unmarshal(json, webTemplate);
+
+    assertThat(composition).isNotNull();
+
+    assertDoesNotThrow(() -> new Validator(optTemplate).check(composition));
+  }
 }

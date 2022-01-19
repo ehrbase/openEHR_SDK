@@ -8,12 +8,15 @@ Note: version releases in the 0.x.y range may introduce breaking changes.
 
 - Flat : added more test and devise fixes ( see https://github.com/ehrbase/openEHR_SDK/pull/291)
 - Upgrade to Archie 1.0.4 ([#292](https://github.com/ehrbase/openEHR_SDK/pull/292))
+- cleanup created templates (https://github.com/ehrbase/openEHR_SDK/issues/298)
 
 ### Fixed
 
 - Fix NullPointerException when event has an empty state (https://github.com/ehrbase/openEHR_SDK/pull/294)
-- Fixes issue when template does not contain list of values for DV_ORDINAL (https://github.com/ehrbase/openEHR_SDK/pull/295)
-
+- Fix issue when template does not contain list of values for DV_ORDINAL (https://github.com/ehrbase/openEHR_SDK/pull/295)
+- Fix issue in AQL regarding LIMIT and OFFSET (https://github.com/ehrbase/openEHR_SDK/pull/296)
+- Fix issue while unmarshalling FLAT composition that contains ELEMENT with children DV_CODED_TEXT and DV_TEXT (https://github.com/ehrbase/openEHR_SDK/pull/300)
+- 
 ## 1.16.0
 
 ### Added

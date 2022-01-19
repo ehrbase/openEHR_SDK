@@ -19,7 +19,13 @@
 
 package org.ehrbase.serialisation.flatencoding.std.marshal;
 
+import static org.ehrbase.serialisation.flatencoding.std.umarshal.StdToCompositionWalker.handleDVTextInternal;
+
 import com.nedap.archie.rm.RMObject;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 import org.ehrbase.serialisation.flatencoding.std.marshal.config.DefaultStdConfig;
 import org.ehrbase.serialisation.flatencoding.std.marshal.config.StdConfig;
 import org.ehrbase.serialisation.flatencoding.std.marshal.postprocessor.MarshalPostprocessor;
@@ -28,14 +34,7 @@ import org.ehrbase.serialisation.walker.Context;
 import org.ehrbase.serialisation.walker.FromCompositionWalker;
 import org.ehrbase.util.reflection.ReflectionHelper;
 import org.ehrbase.webtemplate.model.WebTemplateNode;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
-import static org.ehrbase.serialisation.flatencoding.std.umarshal.StdToCompositionWalker.handleDVTextInternal;
+import org.ehrbase.webtemplate.util.WebTemplateUtils;
 
 public class StdFromCompositionWalker extends FromCompositionWalker<Map<String, Object>> {
 
@@ -112,24 +111,9 @@ public class StdFromCompositionWalker extends FromCompositionWalker<Map<String, 
 
   @Override
   protected void handleDVText(WebTemplateNode currentNode) {
-    if (currentNode.getRmType().equals("ELEMENT")) {
-      List<WebTemplateNode> trueChildren =
-          currentNode.getChildren().stream()
-              .filter(
-                  n ->
-                      !List.of("null_flavour", "feeder_audit").contains(n.getName())
-                          || !n.isNullable())
-              .collect(Collectors.toList());
-      if (trueChildren.stream()
-              .map(WebTemplateNode::getId)
-              .collect(Collectors.toList())
-              .containsAll(List.of("coded_text_value", "text_value"))
-          && currentNode.getChoicesInChildren().size() > 0
-          && trueChildren.size() == 2) {
-        handleDVTextInternal(currentNode);
-      } else {
-        super.handleDVText(currentNode);
-      }
+    if (currentNode.getRmType().equals("ELEMENT")
+        && WebTemplateUtils.isChoiceDvCodedTextAndDvText(currentNode)) {
+      handleDVTextInternal(currentNode);
     } else {
       super.handleDVText(currentNode);
     }

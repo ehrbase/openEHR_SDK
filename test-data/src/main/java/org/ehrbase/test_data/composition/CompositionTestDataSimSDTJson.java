@@ -142,7 +142,8 @@ public enum CompositionTestDataSimSDTJson {
           "ehrbase_conformance_data_types_interval_dv_quantity",
           "ehrbase_conformance_data_types_interval_dv_quantity.json",
           OperationalTemplateTestData.CONFORMANCE),
-  NESTED("nested.en.v1", "nested.en.v1.json",OperationalTemplateTestData.NESTED);
+  NESTED("nested.en.v1", "nested.en.v1.json",OperationalTemplateTestData.NESTED),
+  IPS("International Patient Summary", "ips_flat.json",OperationalTemplateTestData.IPS);
 
   private final String filename;
   private final String description;

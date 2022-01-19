@@ -108,7 +108,8 @@ public enum OperationalTemplateTestData {
       "conformance_ehrbase.de.v0.opt",
       "conformance-ehrbase.de.v0"),
   MULTIMEDIA_TEST("MultimediaTest", "multimedia_test.en.v1.opt", "multimedia_test.en.v1"),
-  NESTED("nested.en.v1", "nested.en.v1.opt", "nested.en.v1");
+  NESTED("nested.en.v1", "nested.en.v1.opt", "nested.en.v1"),
+  IPS("International Patient Summary", "ips.v0.opt", "International Patient Summary");
 
   private final String filename;
   private final String templateId;
