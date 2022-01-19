@@ -574,7 +574,7 @@ public class OPTParser {
         addAnyNode(node, "DV_DATE", inputMap);
 
       } else {
-        List<WebTemplateNode> trueChildren = WebTemplateUtils.getTrueChildren(node);
+        List<WebTemplateNode> trueChildren = WebTemplateUtils.getTrueChildrenElement(node);
         trueChildren.forEach(c -> pushProperties(node, c));
 
         if (trueChildren.size() == 1) {
@@ -584,7 +584,7 @@ public class OPTParser {
         }
         // choice between value and null_flavour
         else if (node.getChoicesInChildren().isEmpty()) {
-          WebTemplateUtils.getTrueChildren(node).stream()
+          WebTemplateUtils.getTrueChildrenElement(node).stream()
               .filter(n -> n.getRmType().startsWith("DV_"))
               .forEach(
                   n -> {

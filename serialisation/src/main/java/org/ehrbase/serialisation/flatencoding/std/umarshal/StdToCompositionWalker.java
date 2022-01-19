@@ -396,7 +396,7 @@ public class StdToCompositionWalker extends ToCompositionWalker<Map<FlatPathDto,
   @Override
   protected void handleDVText(WebTemplateNode currentNode) {
     if (currentNode.getRmType().equals("ELEMENT")
-        && WebTemplateUtils.hasDvCodedTextAndDvText(currentNode)) {
+        && WebTemplateUtils.isChoiceDvCodedTextAndDvText(currentNode)) {
       handleDVTextInternal(currentNode);
     } else {
       super.handleDVText(currentNode);

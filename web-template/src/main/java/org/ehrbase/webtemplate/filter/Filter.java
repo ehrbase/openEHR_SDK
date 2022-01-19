@@ -115,13 +115,13 @@ public class Filter implements WebTemplateFilter {
     }
 
     if (node.getRmType().equals("ELEMENT")) {
-      if (WebTemplateUtils.hasDvCodedTextAndDvText(node)) {
+      if (WebTemplateUtils.isChoiceDvCodedTextAndDvText(node)) {
         WebTemplateNode merged = mergeDVText(node);
         merged.setId(node.getId());
         node.getChildren().clear();
         node.getChildren().add(merged);
       } else {
-        List<WebTemplateNode> trueChildren = WebTemplateUtils.getTrueChildren(node);
+        List<WebTemplateNode> trueChildren = WebTemplateUtils.getTrueChildrenElement(node);
         if (trueChildren.size() == 1) {
           // Element will be skipped and the value node inherits the id
           trueChildren.get(0).setId(node.getId());

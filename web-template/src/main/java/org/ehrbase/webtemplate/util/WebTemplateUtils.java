@@ -19,6 +19,7 @@ package org.ehrbase.webtemplate.util;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.ehrbase.util.rmconstants.RmConstants;
 import org.ehrbase.webtemplate.model.WebTemplateNode;
 
 /**
@@ -30,15 +31,15 @@ public class WebTemplateUtils {
   }
 
   /**
-   * Return whether the node has two children with types <code>DV_CODED_TEXT</code> and
+   * Return whether the node is a choice between <code>DV_CODED_TEXT</code> and
    * <code>DV_TEXT</code>.
    *
    * @param node the node to check
-   * @return <code>true</code> if the provided input both children; <code>false</code>
+   * @return <code>true</code> if the provided input is choice; <code>false</code>
    * otherwise
    */
-  public static boolean hasDvCodedTextAndDvText(WebTemplateNode node) {
-    List<String> childrenIds = getTrueChildren(node).stream()
+  public static boolean isChoiceDvCodedTextAndDvText(WebTemplateNode node) {
+    List<String> childrenIds = getTrueChildrenElement(node).stream()
         .map(WebTemplateNode::getId)
         .collect(Collectors.toList());
 
@@ -53,10 +54,11 @@ public class WebTemplateUtils {
    * @param node the node to check
    * @return the list of "true" children
    */
-  public static List<WebTemplateNode> getTrueChildren(WebTemplateNode node) {
-    if (!"ELEMENT".equals(node.getRmType())) {
+  public static List<WebTemplateNode> getTrueChildrenElement(WebTemplateNode node) {
+    if (!RmConstants.ELEMENT.equals(node.getRmType())) {
       return Collections.emptyList();
     }
+
     return node.getChildren().stream()
         .filter(childNode -> !"name".equals(childNode.getName()))
         .filter(childNode -> !List.of("null_flavour", "feeder_audit").contains(childNode.getName())
