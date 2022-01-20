@@ -58,7 +58,7 @@ public class DvTextPostprocessor extends AbstractUnmarshalPostprocessor<DvText> 
                       .peek()
                       .findChildById("mappings")
                       .orElse(buildDummyChild("mappings", context.getNodeDeque().peek())));
-              calPostProcess(
+              callPostProcess(
                   term,
                   "/_mapping:" + e.getKey(),
                   termMapping,
