@@ -62,7 +62,8 @@ public enum CompositionTestDataCanonicalJson {
     GECCO_PERSONENDATEN("GECCO_Personendaten", "gecco_personendaten.json"),
     GECCO_LABORBEFUND("GECCO_Laborbefund", "gecco_laborbefund.json"),
     PARTICIPATION_NO_CONTENT("to test various participation CR #710", "participation_no_content.json"),
-    IPS("Internation Patient Summary", "ips_canonical.json");
+    IPS("Internation Patient Summary", "ips_canonical.json"),
+    OTHER_PARTICIPATIONS("to test querying other_participations in composition", "other_participations.json");
 
 
     private final String filename;
