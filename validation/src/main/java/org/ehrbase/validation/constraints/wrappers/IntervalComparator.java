@@ -31,6 +31,7 @@ import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
 import org.ehrbase.validation.constraints.ConstraintOccurrences;
 import org.ehrbase.validation.constraints.util.ZonedDateTimeUtil;
+import org.ehrbase.validation.CompositionValidator;
 import org.openehr.schemas.v1.Interval;
 import org.openehr.schemas.v1.IntervalOfDate;
 import org.openehr.schemas.v1.IntervalOfDateTime;
@@ -43,7 +44,9 @@ import org.openehr.schemas.v1.IntervalOfTime;
  * Created by christian on 7/20/2016. 26.6.19: migrated from Joda-Time to java.time (see
  * https://blog.joda.org/2014/11/converting-from-joda-time-to-javatime.html) migrated to nedap
  * Archie
+ * @deprecated as of release 1.7, in favor of {@link CompositionValidator}
  */
+@Deprecated(since = "1.7")
 @SuppressWarnings("unchecked")
 public class IntervalComparator {
 

@@ -21,10 +21,14 @@
 
 package org.ehrbase.validation.constraints.wrappers;
 
+import org.ehrbase.validation.CompositionValidator;
+
 /**
  * "Package" multiple validation exceptions as a list
  * Created by christian on 7/22/2016.
+ * @deprecated as of release 1.7, in favor of {@link CompositionValidator}
  */
+@Deprecated(since = "1.7")
 public class ValidationException extends IllegalArgumentException {
 
 //    public static StringBuffer exceptionStack = new StringBuffer();

@@ -21,7 +21,8 @@
 
 package org.ehrbase.validation.constraints.wrappers;
 
-import org.ehrbase.validation.constraints.terminology.ExternalTerminologyValidationSupport;
+import org.ehrbase.validation.terminology.ExternalTerminologyValidation;
+import org.ehrbase.validation.CompositionValidator;
 import org.openehr.schemas.v1.ARCHETYPECONSTRAINT;
 import org.openehr.schemas.v1.CCOMPLEXOBJECT;
 import org.openehr.schemas.v1.CDOMAINTYPE;
@@ -35,10 +36,12 @@ import java.util.Map;
  * @see <a href="https://specifications.openehr.org/releases/AM/latest/AOM1.4.html#_c_defined_object_class">C_DEFINED_OBJECT Class</a>
  * <p>
  * Created by christian on 7/24/2016.
+ * @deprecated as of release 1.7, in favor of {@link CompositionValidator}
  */
+@Deprecated(since = "1.7")
 public class CDefinedObject extends CConstraint implements I_CArchetypeConstraintValidate {
 
-    protected CDefinedObject(Map<String, Map<String, String>> localTerminologyLookup, ExternalTerminologyValidationSupport externalTerminologyValidator) {
+    protected CDefinedObject(Map<String, Map<String, String>> localTerminologyLookup, ExternalTerminologyValidation externalTerminologyValidator) {
         super(localTerminologyLookup, externalTerminologyValidator);
     }
 

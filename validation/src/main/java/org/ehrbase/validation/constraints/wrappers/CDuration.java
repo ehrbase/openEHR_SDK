@@ -21,7 +21,7 @@
 
 package org.ehrbase.validation.constraints.wrappers;
 
-import org.ehrbase.validation.constraints.terminology.ExternalTerminologyValidationSupport;
+import org.ehrbase.validation.terminology.ExternalTerminologyValidation;
 import org.openehr.schemas.v1.CDURATION;
 import org.openehr.schemas.v1.CPRIMITIVE;
 
@@ -34,10 +34,12 @@ import java.util.Map;
  * <p>
  * Created by christian on 7/23/2016.
  * @see com.nedap.archie.aom.primitives.CDuration
+ * @deprecated as of release 1.7, in favor of {@link org.ehrbase.validation.webtemplate.DvDurationValidator}
  */
+@Deprecated(since = "1.7")
 public class CDuration extends CConstraint implements I_CTypeValidate {
 
-    protected CDuration(Map<String, Map<String, String>> localTerminologyLookup, ExternalTerminologyValidationSupport externalTerminologyValidator) {
+    protected CDuration(Map<String, Map<String, String>> localTerminologyLookup, ExternalTerminologyValidation externalTerminologyValidator) {
         super(localTerminologyLookup, externalTerminologyValidator);
     }
 

@@ -32,12 +32,15 @@ public class WebtemplateCardinality implements Serializable {
   private Integer max;
   private final List<String> ids = new ArrayList<>();
 
+  private Boolean excludeFromWebTemplate;
+
   public WebtemplateCardinality() {}
 
   public WebtemplateCardinality(WebtemplateCardinality other) {
     this.min = other.min;
     this.max = other.max;
     this.ids.addAll(other.ids);
+    this.excludeFromWebTemplate = other.getExcludeFromWebTemplate();
   }
 
   public Integer getMin() {
@@ -60,6 +63,14 @@ public class WebtemplateCardinality implements Serializable {
     return ids;
   }
 
+  public Boolean getExcludeFromWebTemplate() {
+    return excludeFromWebTemplate;
+  }
+
+  public void setExcludeFromWebTemplate(Boolean excludeFromWebTemplate) {
+    this.excludeFromWebTemplate = excludeFromWebTemplate;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
@@ -67,11 +78,12 @@ public class WebtemplateCardinality implements Serializable {
     WebtemplateCardinality that = (WebtemplateCardinality) o;
     return Objects.equals(min, that.min)
         && Objects.equals(max, that.max)
-        && Objects.equals(ids, that.ids);
+        && Objects.equals(ids, that.ids)
+        && Objects.equals(excludeFromWebTemplate, that.excludeFromWebTemplate);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(min, max, ids);
+    return Objects.hash(min, max, ids, excludeFromWebTemplate);
   }
 }

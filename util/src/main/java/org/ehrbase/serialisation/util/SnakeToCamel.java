@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.ehrbase.validation.constraints.util;
+package org.ehrbase.serialisation.util;
 
 import java.util.Arrays;
 import java.util.stream.Collectors;

@@ -45,6 +45,10 @@
       "code_string": "433"
     }
   },
+  "composer": {
+    "_type": "PARTY_IDENTIFIED",
+    "name": "Silvia Blake"
+  },
   "content": [
     {
       "_type": "OBSERVATION",
@@ -112,6 +116,48 @@
               "archetype_node_id": "at0003",
               "items": [
                 {
+                  "_type": "ELEMENT",
+                  "name": {
+                    "_type": "DV_TEXT",
+                    "value": "Labortest-Bezeichnung"
+                  },
+                  "archetype_node_id": "at0005",
+                  "value": {
+                    "_type": "DV_TEXT",
+                    "value": "Virologische Untersuchung"
+                  }
+                },
+                {
+                  "_type": "CLUSTER",
+                  "name": {
+                    "_type": "DV_TEXT",
+                    "value": "Probe"
+                  },
+                  "archetype_details": {
+                    "_type": "ARCHETYPED",
+                    "archetype_id": {
+                      "_type": "ARCHETYPE_ID",
+                      "value": "openEHR-EHR-CLUSTER.specimen.v1"
+                    },
+                    "rm_version": "1.0.4"
+                  },
+                  "archetype_node_id": "openEHR-EHR-CLUSTER.specimen.v1",
+                  "items": [
+                    {
+                      "_type": "ELEMENT",
+                      "name": {
+                        "_type": "DV_TEXT",
+                        "value": "Probenart"
+                      },
+                      "archetype_node_id": "at0029",
+                      "value": {
+                        "_type": "DV_TEXT",
+                        "value": "Virologische Untersuchung"
+                      }
+                    }
+                  ]
+                },
+                {
                   "_type": "CLUSTER",
                   "name": {
                     "_type": "DV_TEXT",
@@ -147,12 +193,27 @@
                           "_type": "ELEMENT",
                           "name": {
                             "_type": "DV_TEXT",
-                            "value": "Nachweis"
+                            "value": "Virus"
                           },
-                          "archetype_node_id": "at0001",
+                          "archetype_node_id": "at0024",
                           "value": {
                             "_type": "DV_TEXT",
-                            "value": "positiv"
+                            "value": "Virus"
+                          }
+                        },
+                        {
+                          "_type": "ELEMENT",
+                          "name": {
+                            "_type": "DV_TEXT",
+                            "value": "Zugehörige Laborprobe"
+                          },
+                          "archetype_node_id": "at0026",
+                          "value": {
+                            "_type": "DV_IDENTIFIER",
+                            "issuer": "Issuer",
+                            "assigner": "Assigner",
+                            "id": "73b166ae-1c28-4ce0-8c08-a9587d8fd95a",
+                            "type": "Prescription"
                           }
                         }
                       ]

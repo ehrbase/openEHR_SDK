@@ -21,7 +21,12 @@ package org.ehrbase.validation.constraints.util;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import org.ehrbase.validation.CompositionValidator;
 
+/**
+ * @deprecated as of release 1.7, in favor of {@link CompositionValidator}
+ */
+@Deprecated(since = "1.7")
 public class ZonedDateTimeUtil {
 
     /**

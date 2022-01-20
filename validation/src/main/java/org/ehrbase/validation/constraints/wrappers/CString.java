@@ -21,7 +21,8 @@
 
 package org.ehrbase.validation.constraints.wrappers;
 
-import org.ehrbase.validation.constraints.terminology.ExternalTerminologyValidationSupport;
+import org.ehrbase.validation.terminology.ExternalTerminologyValidation;
+import org.ehrbase.validation.webtemplate.PrimitiveConstraintValidator;
 import org.openehr.schemas.v1.CPRIMITIVE;
 
 import java.util.Map;
@@ -33,10 +34,12 @@ import java.util.Map;
  * <p>
  * Created by christian on 7/22/2016.
  * @see com.nedap.archie.aom.primitives.CString
+ * @deprecated as of release 1.7, in favor of {@link PrimitiveConstraintValidator}
  */
+@Deprecated(since = "1.7")
 public class CString extends CConstraint implements I_CTypeValidate {
 
-    protected CString(Map<String, Map<String, String>> localTerminologyLookup, ExternalTerminologyValidationSupport externalTerminologyValidator) {
+    protected CString(Map<String, Map<String, String>> localTerminologyLookup, ExternalTerminologyValidation externalTerminologyValidator) {
         super(localTerminologyLookup, externalTerminologyValidator);
     }
 

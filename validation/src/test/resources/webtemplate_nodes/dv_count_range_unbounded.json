@@ -1,0 +1,14 @@
+{
+  "aqlPath": "/test/dv_count_range_unbounded",
+  "inputs": [
+    {
+      "type": "INTEGER",
+      "validation": {
+        "range": {
+          "min": 0,
+          "minOp": ">="
+        }
+      }
+    }
+  ]
+}

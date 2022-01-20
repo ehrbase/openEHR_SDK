@@ -28,9 +28,10 @@ import com.nedap.archie.rm.datastructures.Element;
 import com.nedap.archie.rm.datastructures.History;
 import com.nedap.archie.rm.datastructures.ItemStructure;
 import org.ehrbase.validation.Cardinality;
+import org.ehrbase.validation.CompositionValidator;
 import org.ehrbase.validation.Message;
 import org.ehrbase.validation.constraints.hardwired.CHistory;
-import org.ehrbase.validation.constraints.terminology.ExternalTerminologyValidationSupport;
+import org.ehrbase.validation.terminology.ExternalTerminologyValidation;
 import org.ehrbase.validation.constraints.util.LocatableHelper;
 import org.ehrbase.validation.constraints.wrappers.CArchetypeConstraint;
 import org.ehrbase.validation.constraints.wrappers.ValidationException;
@@ -44,7 +45,9 @@ import java.util.Map;
 /**
  * Mostly here to avoid cyclic dependencies
  * Created by christian on 8/16/2016.
+ * @deprecated as of release 1.7, in favor of {@link CompositionValidator}
  */
+@Deprecated(since = "1.7")
 public class ConstraintChecker {
 
     private final Logger log = LoggerFactory.getLogger(ConstraintChecker.class);
@@ -57,9 +60,9 @@ public class ConstraintChecker {
 
     private final Cardinality cardinality;
 
-    private final ExternalTerminologyValidationSupport externalTerminologyValidator;
+    private final ExternalTerminologyValidation externalTerminologyValidator;
 
-    public ConstraintChecker(Boolean lenient, Composition composition, ConstraintMapper constraintMapper, ExternalTerminologyValidationSupport externalTerminologyValidator) {
+    public ConstraintChecker(Boolean lenient, Composition composition, ConstraintMapper constraintMapper, ExternalTerminologyValidation externalTerminologyValidator) {
         this.lenient = lenient;
         this.locatable = composition;
         this.constraintMapper = constraintMapper;
@@ -67,7 +70,7 @@ public class ConstraintChecker {
         cardinality = new Cardinality(constraintMapper, locatable, lenient);
     }
 
-    public ConstraintChecker(Boolean lenient, ItemStructure structure, ConstraintMapper constraintMapper, ExternalTerminologyValidationSupport externalTerminologyValidator) {
+    public ConstraintChecker(Boolean lenient, ItemStructure structure, ConstraintMapper constraintMapper, ExternalTerminologyValidation externalTerminologyValidator) {
         this.lenient = lenient;
         this.locatable = structure;
         this.constraintMapper = constraintMapper;

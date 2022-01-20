@@ -21,7 +21,7 @@
 
 package org.ehrbase.validation.constraints.wrappers;
 
-import org.ehrbase.validation.constraints.terminology.ExternalTerminologyValidationSupport;
+import org.ehrbase.validation.terminology.ExternalTerminologyValidation;
 import org.openehr.schemas.v1.CBOOLEAN;
 import org.openehr.schemas.v1.CPRIMITIVE;
 
@@ -35,10 +35,12 @@ import java.util.Map;
  * Created by christian on 7/22/2016.
  * @see com.nedap.archie.aom.primitives.CBoolean
  * @see com.nedap.archie.rm.datavalues.DvBoolean
+ * @deprecated as of release 1.7, in favor of {@link org.ehrbase.validation.webtemplate.DvBooleanValidator}
  */
+@Deprecated(since = "1.7")
 public class CBoolean extends CConstraint implements I_CTypeValidate {
 
-    protected CBoolean(Map<String, Map<String, String>> localTerminologyLookup, ExternalTerminologyValidationSupport externalTerminologyValidator) {
+    protected CBoolean(Map<String, Map<String, String>> localTerminologyLookup, ExternalTerminologyValidation externalTerminologyValidator) {
         super(localTerminologyLookup, externalTerminologyValidator);
     }
 

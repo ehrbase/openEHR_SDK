@@ -24,6 +24,7 @@ package org.ehrbase.validation.constraints.wrappers;
 import com.nedap.archie.rm.datavalues.DataValue;
 import org.ehrbase.validation.constraints.ConstraintOccurrences;
 import org.ehrbase.validation.constraints.ElementConstraint;
+import org.ehrbase.validation.CompositionValidator;
 import org.openehr.schemas.v1.ARCHETYPECONSTRAINT;
 import org.openehr.schemas.v1.COBJECT;
 
@@ -31,7 +32,9 @@ import org.openehr.schemas.v1.COBJECT;
  * Validate a generic object constraint
  * <p>
  * Created by christian on 7/15/2016.
+ * @deprecated as of release 1.7, in favor of {@link CompositionValidator}
  */
+@Deprecated(since = "1.7")
 public class CObjectConstraint extends ElementConstraint {
 
     private final String rmTypeName;

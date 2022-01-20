@@ -22,7 +22,7 @@
 package org.ehrbase.validation.constraints.wrappers;
 
 import org.apache.commons.lang3.ArrayUtils;
-import org.ehrbase.validation.constraints.terminology.ExternalTerminologyValidationSupport;
+import org.ehrbase.validation.terminology.ExternalTerminologyValidation;
 import org.openehr.schemas.v1.CINTEGER;
 import org.openehr.schemas.v1.CPRIMITIVE;
 import org.openehr.schemas.v1.IntervalOfInteger;
@@ -36,10 +36,12 @@ import java.util.Map;
  * <p>
  * Created by christian on 7/23/2016.
  * @see com.nedap.archie.aom.primitives.CInteger
+ * @deprecated as of release 1.7, in favor of {@link org.ehrbase.validation.webtemplate.DvCountValidator}
  */
+@Deprecated(since = "1.7")
 public class CInteger extends CConstraint implements I_CTypeValidate {
 
-    CInteger(Map<String, Map<String, String>> localTerminologyLookup, ExternalTerminologyValidationSupport externalTerminologyValidator) {
+    CInteger(Map<String, Map<String, String>> localTerminologyLookup, ExternalTerminologyValidation externalTerminologyValidator) {
         super(localTerminologyLookup, externalTerminologyValidator);
     }
 

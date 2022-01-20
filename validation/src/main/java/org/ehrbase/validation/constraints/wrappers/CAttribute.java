@@ -27,8 +27,8 @@ import com.nedap.archie.rm.datavalues.DvCodedText;
 import com.nedap.archie.rm.datavalues.DvText;
 import org.apache.commons.text.WordUtils;
 import org.apache.xmlbeans.SchemaType;
-import org.ehrbase.validation.constraints.terminology.ExternalTerminologyValidationSupport;
-import org.ehrbase.validation.constraints.util.SnakeToCamel;
+import org.ehrbase.validation.terminology.ExternalTerminologyValidation;
+import org.ehrbase.serialisation.util.SnakeToCamel;
 import org.openehr.schemas.v1.ARCHETYPECONSTRAINT;
 import org.openehr.schemas.v1.CATTRIBUTE;
 import org.openehr.schemas.v1.CMULTIPLEATTRIBUTE;
@@ -43,12 +43,14 @@ import java.util.Map;
  * @see <a href="https://specifications.openehr.org/releases/AM/latest/AOM1.4.html#_c_attribute_class">C_ATTRIBUTE Class</a>
  * <p>Created by christian on 7/23/2016.
  * @see com.nedap.archie.aom.CAttribute
+ * @deprecated as of release 1.7, in favor of {@link org.ehrbase.validation.webtemplate.DefaultValidator}
  */
+@Deprecated(since = "1.7")
 public class CAttribute extends CConstraint implements I_CArchetypeConstraintValidate {
 
     private boolean isAttributeResolved = false; // true if a getter or function has been found
 
-    CAttribute(Map<String, Map<String, String>> localTerminologyLookup, ExternalTerminologyValidationSupport externalTerminologyValidator) {
+    CAttribute(Map<String, Map<String, String>> localTerminologyLookup, ExternalTerminologyValidation externalTerminologyValidator) {
         super(localTerminologyLookup, externalTerminologyValidator);
     }
 

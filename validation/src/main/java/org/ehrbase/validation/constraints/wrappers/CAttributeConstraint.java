@@ -28,7 +28,9 @@ import org.openehr.schemas.v1.CATTRIBUTE;
 
 /**
  * Created by christian on 7/15/2016.
+ * @deprecated as of release 1.7, in favor of {@link org.ehrbase.validation.webtemplate.DefaultValidator}
  */
+@Deprecated(since = "1.7")
 public class CAttributeConstraint extends ElementConstraint {
 
 

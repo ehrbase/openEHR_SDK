@@ -22,7 +22,8 @@
 package org.ehrbase.validation.constraints.wrappers;
 
 import org.apache.commons.lang3.ArrayUtils;
-import org.ehrbase.validation.constraints.terminology.ExternalTerminologyValidationSupport;
+import org.ehrbase.validation.terminology.ExternalTerminologyValidation;
+import org.ehrbase.validation.webtemplate.PrimitiveConstraintValidator;
 import org.openehr.schemas.v1.CPRIMITIVE;
 import org.openehr.schemas.v1.CREAL;
 import org.openehr.schemas.v1.IntervalOfReal;
@@ -36,10 +37,12 @@ import java.util.Map;
  * <p>
  * Created by christian on 7/23/2016.
  * @see com.nedap.archie.aom.primitives.CReal
+ * @deprecated as of release 1.7, in favor of {@link PrimitiveConstraintValidator}
  */
+@Deprecated(since = "1.7")
 public class CReal extends CConstraint implements I_CTypeValidate {
 
-    CReal(Map<String, Map<String, String>> localTerminologyLookup, ExternalTerminologyValidationSupport externalTerminologyValidator) {
+    CReal(Map<String, Map<String, String>> localTerminologyLookup, ExternalTerminologyValidation externalTerminologyValidator) {
         super(localTerminologyLookup, externalTerminologyValidator);
     }
 

@@ -23,6 +23,7 @@ package org.ehrbase.validation.constraints;
 
 import com.nedap.archie.base.Interval;
 import com.nedap.archie.base.MultiplicityInterval;
+import org.ehrbase.validation.CompositionValidator;
 import org.openehr.schemas.v1.IntervalOfInteger;
 
 import java.io.Serializable;
@@ -38,7 +39,9 @@ import java.io.Serializable;
  * <v1:upper>1</v1:upper>
  * </v1:occurrences>
  * Created by christian on 7/14/2016.
+ * @deprecated as of release 1.7, in favor of {@link CompositionValidator}
  */
+@Deprecated(since = "1.7")
 public class ConstraintOccurrences implements Serializable {
     Boolean lowerIncluded;
     Boolean upperIncluded;
