@@ -21,7 +21,8 @@
 
 package org.ehrbase.validation.constraints.wrappers;
 
-import org.ehrbase.validation.constraints.terminology.ExternalTerminologyValidationSupport;
+import org.ehrbase.validation.terminology.ExternalTerminologyValidation;
+import org.ehrbase.validation.CompositionValidator;
 import org.openehr.schemas.v1.ARCHETYPECONSTRAINT;
 import org.openehr.schemas.v1.CARDINALITY;
 import org.openehr.schemas.v1.CMULTIPLEATTRIBUTE;
@@ -36,10 +37,12 @@ import java.util.Map;
  * @link https://specifications.openehr.org/releases/AM/latest/AOM1.4.html#_c_multiple_attribute_class
  * <p>
  * Created by christian on 7/23/2016.
+ * @deprecated as of release 1.7, in favor of {@link CompositionValidator}
  */
+@Deprecated(since = "1.7")
 public class CMultipleAttribute extends CConstraint implements I_CArchetypeConstraintValidate {
 
-    CMultipleAttribute(Map<String, Map<String, String>> localTerminologyLookup, ExternalTerminologyValidationSupport externalTerminologyValidator) {
+    CMultipleAttribute(Map<String, Map<String, String>> localTerminologyLookup, ExternalTerminologyValidation externalTerminologyValidator) {
         super(localTerminologyLookup, externalTerminologyValidator);
     }
 

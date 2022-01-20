@@ -22,7 +22,8 @@
 package org.ehrbase.validation.constraints.wrappers;
 
 
-import org.ehrbase.validation.constraints.terminology.ExternalTerminologyValidationSupport;
+import org.ehrbase.validation.terminology.ExternalTerminologyValidation;
+import org.ehrbase.validation.CompositionValidator;
 import org.openehr.schemas.v1.ARCHETYPECONSTRAINT;
 import org.openehr.schemas.v1.CATTRIBUTE;
 import org.openehr.schemas.v1.CCOMPLEXOBJECT;
@@ -38,10 +39,12 @@ import static org.ehrbase.validation.constraints.wrappers.ValidationException.ra
  * <p>
  * Created by christian on 7/22/2016.
  * @see com.nedap.archie.aom.CComplexObject
+ * @deprecated as of release 1.7, in favor of {@link CompositionValidator}
  */
+@Deprecated(since = "1.7")
 public class CComplexObject extends CConstraint implements I_CArchetypeConstraintValidate {
 
-    CComplexObject(Map<String, Map<String, String>> localTerminologyLookup, ExternalTerminologyValidationSupport externalTerminologyValidator) {
+    CComplexObject(Map<String, Map<String, String>> localTerminologyLookup, ExternalTerminologyValidation externalTerminologyValidator) {
         super(localTerminologyLookup, externalTerminologyValidator);
     }
 

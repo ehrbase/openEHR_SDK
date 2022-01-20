@@ -19,6 +19,7 @@
 package org.ehrbase.validation.constraints;
 
 import org.ehrbase.validation.constraints.util.LocatableHelper;
+import org.ehrbase.validation.CompositionValidator;
 import org.openehr.schemas.v1.ARCHETYPESLOT;
 import org.openehr.schemas.v1.ARCHETYPETERM;
 import org.openehr.schemas.v1.CARCHETYPEROOT;
@@ -42,6 +43,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * @deprecated as of release 1.7, in favor of {@link CompositionValidator}
+ */
+@Deprecated(since = "1.7")
 public class OptConstraint {
 
     //field identifiers

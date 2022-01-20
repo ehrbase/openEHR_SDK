@@ -23,7 +23,7 @@ package org.ehrbase.validation.constraints.wrappers;
 
 import com.nedap.archie.rm.datavalues.DvCodedText;
 import org.apache.xmlbeans.SchemaType;
-import org.ehrbase.validation.constraints.terminology.ExternalTerminologyValidationSupport;
+import org.ehrbase.validation.terminology.ExternalTerminologyValidation;
 import org.openehr.schemas.v1.ARCHETYPECONSTRAINT;
 import org.openehr.schemas.v1.CCODEPHRASE;
 import org.openehr.schemas.v1.CCODEREFERENCE;
@@ -42,12 +42,14 @@ import java.util.Map;
  *
  * @see DvCodedText
  * <p>Created by christian on 8/10/2016.
+ * @deprecated as of release 1.7, in favor of {@link org.ehrbase.validation.webtemplate.DvCodedTextValidator}
  */
+@Deprecated(since = "1.7")
 public class CDvCodedText extends CConstraint implements I_CArchetypeConstraintValidate {
 
     private final Logger logger = LoggerFactory.getLogger(CDvCodedText.class);
 
-    CDvCodedText(Map<String, Map<String, String>> localTerminologyLookup, ExternalTerminologyValidationSupport externalTerminologyValidator) {
+    CDvCodedText(Map<String, Map<String, String>> localTerminologyLookup, ExternalTerminologyValidation externalTerminologyValidator) {
         super(localTerminologyLookup, externalTerminologyValidator);
     }
 

@@ -32,7 +32,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.xmlbeans.XmlException;
 import org.ehrbase.test_data.composition.CompositionTestDataSimSDTJson;
 import org.ehrbase.test_data.operationaltemplate.OperationalTemplateTestData;
-import org.ehrbase.validation.Validator;
+//import org.ehrbase.validation.Validator;
 import org.ehrbase.webtemplate.model.WebTemplate;
 import org.ehrbase.webtemplate.parser.OPTParser;
 import org.junit.Assert;
@@ -64,12 +64,6 @@ public class FlatJsonUnmarshallerTest {
         "2020-05-11T22:53:12.039139+02:00");
     assertThat(observation.getSubject()).isNotNull();
     assertThat(observation.getSubject().getClass()).isEqualTo(PartySelf.class);
-
-    try {
-      new Validator(template).check(actual);
-    } catch (Exception e) {
-      Assert.fail(e.getMessage());
-    }
   }
 
   @Test
@@ -88,11 +82,6 @@ public class FlatJsonUnmarshallerTest {
     Composition actual = cut.unmarshal(flat, webTemplate);
 
     assertThat(actual).isNotNull();
-    try {
-      new Validator(template).check(actual);
-    } catch (Exception e) {
-      Assert.fail(e.getMessage());
-    }
   }
 
   @Test
@@ -111,11 +100,6 @@ public class FlatJsonUnmarshallerTest {
     Composition actual = cut.unmarshal(flat, webTemplate);
 
     assertThat(actual).isNotNull();
-    try {
-      new Validator(template).check(actual);
-    } catch (Exception e) {
-      Assert.fail(e.getMessage());
-    }
   }
 
   @Test
@@ -143,12 +127,6 @@ public class FlatJsonUnmarshallerTest {
     assertThat(choice.getClass()).isEqualTo(DvQuantity.class);
     assertThat(((DvQuantity) choice).getMagnitude()).isEqualTo(148.01210165023804d);
     assertThat(((DvQuantity) choice).getUnits()).isEqualTo("mm[H20]");
-
-    try {
-      new Validator(template).check(actual);
-    } catch (Exception e) {
-      Assert.fail(e.getMessage());
-    }
   }
 
   @Test
@@ -169,12 +147,6 @@ public class FlatJsonUnmarshallerTest {
     Composition actual = cut.unmarshal(flat, webTemplate);
 
     assertThat(actual).isNotNull();
-
-    try {
-      new Validator(template).check(actual);
-    } catch (Exception e) {
-      Assert.fail(e.getMessage());
-    }
   }
 
   @Test
@@ -189,8 +161,6 @@ public class FlatJsonUnmarshallerTest {
     var composition = new FlatJsonUnmarshaller().unmarshal(json, webTemplate);
 
     assertThat(composition).isNotNull();
-
-    assertDoesNotThrow(() -> new Validator(optTemplate).check(composition));
   }
 
 
@@ -206,7 +176,5 @@ public class FlatJsonUnmarshallerTest {
     var composition = new FlatJsonUnmarshaller().unmarshal(json, webTemplate);
 
     assertThat(composition).isNotNull();
-
-    assertDoesNotThrow(() -> new Validator(optTemplate).check(composition));
   }
 }

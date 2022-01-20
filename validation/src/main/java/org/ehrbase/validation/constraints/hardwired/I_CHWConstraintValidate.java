@@ -21,9 +21,13 @@
 
 package org.ehrbase.validation.constraints.hardwired;
 
+import org.ehrbase.validation.CompositionValidator;
+
 /**
  * Created by christian on 8/11/2016.
+ * @deprecated as of release 1.7, in favor of {@link CompositionValidator}
  */
+@Deprecated(since = "1.7")
 public interface I_CHWConstraintValidate {
     void validate(String path, Object aValue) throws IllegalArgumentException;
 }

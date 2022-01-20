@@ -29,6 +29,10 @@ import org.ehrbase.validation.constraints.wrappers.ValidationException;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * @deprecated as of release 1.7, in favor of {@link CompositionValidator}
+ */
+@Deprecated(since = "1.7")
 public class Cardinality {
 
     private ConstraintMapper constraintMapper;

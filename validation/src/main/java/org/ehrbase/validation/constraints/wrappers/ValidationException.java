@@ -22,21 +22,20 @@
 package org.ehrbase.validation.constraints.wrappers;
 
 /**
- * "Package" multiple validation exceptions as a list
- * Created by christian on 7/22/2016.
+ * "Package" multiple validation exceptions as a list Created by christian on 7/22/2016.
+ *
+ * @deprecated as of release 1.7, in favor of {@link org.ehrbase.validation.ValidationException} and
+ * {@link org.ehrbase.validation.ConstraintViolationException}
  */
+@Deprecated(since = "1.7")
 public class ValidationException extends IllegalArgumentException {
 
-//    public static StringBuffer exceptionStack = new StringBuffer();
+  public ValidationException(String path, String message) {
+    super((path.isEmpty() ? "" : "Validation error at " + path + ", ") + message);
+  }
 
-    public ValidationException(String path, String message) {
-
-        super((path.isEmpty() ? "" : "Validation error at " + path + ", ") + message);
-    }
-
-    public static void raise(String path, String message, String code) {
-//        exceptionStack.append(code+":validation error at "+path+", "+message);
-        throw new ValidationException(path, code + ":" + message);
-    }
+  public static void raise(String path, String message, String code) {
+    throw new ValidationException(path, code + ":" + message);
+  }
 
 }

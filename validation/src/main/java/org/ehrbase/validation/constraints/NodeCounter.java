@@ -25,10 +25,13 @@ import com.nedap.archie.rm.composition.*;
 import com.nedap.archie.rm.datastructures.*;
 
 import java.util.List;
+import org.ehrbase.validation.CompositionValidator;
 
 /**
  * Created by christian on 8/22/2016.
+ * @deprecated as of release 1.7, in favor of {@link CompositionValidator}
  */
+@Deprecated(since = "1.7")
 public class NodeCounter {
 
     private Integer count;

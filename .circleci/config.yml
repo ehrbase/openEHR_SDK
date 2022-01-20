@@ -479,7 +479,7 @@ jobs:
       - cache-out-ehrbase-m2-dependencies
       - force-ehrbase-build-to-use-local-sdk-version
       - build-and-run-ehrbase-then-run-all-sdk-java-tests
-      - cache-in-ehrbase-m2-dependencies      
+      - cache-in-ehrbase-m2-dependencies
       - cache-in-sdk-m2-dependencies
       - collect-sdk-unittest-results
       - collect-sdk-integrationtest-results

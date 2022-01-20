@@ -1,0 +1,11 @@
+{
+  "aqlPath": "/test/dv_text_pattern",
+  "inputs": [
+    {
+      "type": "TEXT",
+      "validation": {
+        "pattern": "/No known.+/"
+      }
+    }
+  ]
+}

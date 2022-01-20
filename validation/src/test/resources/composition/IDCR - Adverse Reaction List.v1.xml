@@ -56,7 +56,7 @@
                     <scheme>2.16.840.1.113883.2.1.4.3</scheme>
                 </id>
                 <namespace>NHS-UK</namespace>
-                <type>PARTY</type>
+                <type>ORGANISATION</type>
             </external_ref>
             <name>Home</name>
         </health_care_facility>
@@ -101,7 +101,7 @@
                         <scheme>2.16.840.1.113883.2.1.4.3</scheme>
                     </id>
                     <namespace>NHS-UK</namespace>
-                    <type>ANY</type>
+                    <type>ORGANISATION</type>
                 </external_ref>
                 <name>iHEALTHLINK Discharge</name>
             </provider>

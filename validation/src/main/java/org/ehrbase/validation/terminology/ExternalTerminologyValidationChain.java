@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ehrbase.validation.constraints.terminology;
+package org.ehrbase.validation.terminology;
 
 import com.nedap.archie.rm.datatypes.CodePhrase;
 
@@ -23,26 +23,26 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * {@link ExternalTerminologyValidationSupport} that provides support for chaining several external terminology server.
+ * {@link ExternalTerminologyValidation} that provides support for chaining several external terminology server.
  */
-public class ExternalTerminologyValidationSupportChain implements ExternalTerminologyValidationSupport {
+public class ExternalTerminologyValidationChain implements ExternalTerminologyValidation {
 
-    private final List<ExternalTerminologyValidationSupport> chain;
+    private final List<ExternalTerminologyValidation> chain;
 
-    public ExternalTerminologyValidationSupportChain() {
+    public ExternalTerminologyValidationChain() {
         chain = new ArrayList<>();
     }
 
-    public ExternalTerminologyValidationSupportChain(List<ExternalTerminologyValidationSupport> chain) {
+    public ExternalTerminologyValidationChain(List<ExternalTerminologyValidation> chain) {
         this.chain = chain;
     }
 
     /**
-     * @see ExternalTerminologyValidationSupport#supports(String)
+     * @see ExternalTerminologyValidation#supports(String)
      */
     @Override
     public boolean supports(String referenceSetUri) {
-        for (ExternalTerminologyValidationSupport next : chain) {
+        for (ExternalTerminologyValidation next : chain) {
             if (next.supports(referenceSetUri)) {
                 return true;
             }
@@ -51,11 +51,11 @@ public class ExternalTerminologyValidationSupportChain implements ExternalTermin
     }
 
     /**
-     * @see ExternalTerminologyValidationSupport#validate(String, String, CodePhrase)
+     * @see ExternalTerminologyValidation#validate(String, String, CodePhrase)
      */
     @Override
     public void validate(String path, String referenceSetUri, CodePhrase codePhrase) {
-        for (ExternalTerminologyValidationSupport next : chain) {
+        for (ExternalTerminologyValidation next : chain) {
             if (next.supports(referenceSetUri)) {
                 next.validate(path, referenceSetUri, codePhrase);
                 return;
@@ -68,7 +68,8 @@ public class ExternalTerminologyValidationSupportChain implements ExternalTermin
      *
      * @param externalTerminologyValidationSupport the external terminology server to add
      */
-    public void addExternalTerminologyValidationSupport(ExternalTerminologyValidationSupport externalTerminologyValidationSupport) {
+    public void addExternalTerminologyValidationSupport(
+        ExternalTerminologyValidation externalTerminologyValidationSupport) {
         chain.add(externalTerminologyValidationSupport);
     }
 }

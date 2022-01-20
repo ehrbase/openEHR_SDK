@@ -22,8 +22,13 @@ package org.ehrbase.validation.constraints.util;
 
 import com.nedap.archie.rm.archetyped.Locatable;
 import java.util.*;
+import org.ehrbase.validation.CompositionValidator;
 
-/** ETHERCIS Project ehrservice Created by Christian Chevalley on 8/18/2015. */
+/**
+ * ETHERCIS Project ehrservice Created by Christian Chevalley on 8/18/2015.
+ * @deprecated as of release 1.7, in favor of {@link CompositionValidator}
+ */
+@Deprecated(since = "1.7")
 public class LocatableHelper {
 
   public static final String AND_NAME_VALUE_TOKEN = "and name/value=";

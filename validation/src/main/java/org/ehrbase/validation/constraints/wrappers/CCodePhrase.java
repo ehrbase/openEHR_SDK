@@ -22,7 +22,7 @@
 package org.ehrbase.validation.constraints.wrappers;
 
 import com.nedap.archie.rm.datatypes.CodePhrase;
-import org.ehrbase.validation.constraints.terminology.ExternalTerminologyValidationSupport;
+import org.ehrbase.validation.terminology.ExternalTerminologyValidation;
 import org.openehr.schemas.v1.ARCHETYPECONSTRAINT;
 import org.openehr.schemas.v1.CCODEPHRASE;
 
@@ -35,10 +35,12 @@ import java.util.Map;
  * @see CodePhrase
  * <p>
  * Created by christian on 7/24/2016.
+ * @deprecated as of release 1.7, in favor of {@link org.ehrbase.validation.webtemplate.DvCodedTextValidator}
  */
+@Deprecated(since = "1.7")
 public class CCodePhrase extends CConstraint implements I_CArchetypeConstraintValidate {
 
-    CCodePhrase(Map<String, Map<String, String>> localTerminologyLookup, ExternalTerminologyValidationSupport externalTerminologyValidator) {
+    CCodePhrase(Map<String, Map<String, String>> localTerminologyLookup, ExternalTerminologyValidation externalTerminologyValidator) {
         super(localTerminologyLookup, externalTerminologyValidator);
     }
 

@@ -32,7 +32,8 @@ public enum WebTemplateTestData {
   GECCO_SEROLOGISCHER_BEFUND("template with any Element", "gecco_serologischer_befund.json"),
   ADDICTION("example with multiple languages", "addiction.json"),
   GECCO_DIAGNOSE("example with snomed terminologies", "GECCO_Diagnose.json"),
-  TESTING_TEMPLATE_N("Template with fixed values", "Testing_Template_N.json");
+  TESTING_TEMPLATE_N("Template with fixed values", "Testing_Template_N.json"),
+  IPS_TEMPLATE("IPS Template", "ips_template.json");
 
   private final String filename;
   private final String description;

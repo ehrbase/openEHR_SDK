@@ -22,7 +22,7 @@ import com.nedap.archie.rm.datatypes.CodePhrase;
 import com.nedap.archie.rm.datavalues.DvCodedText;
 import com.nedap.archie.rm.support.identification.TerminologyId;
 import org.apache.xmlbeans.XmlException;
-import org.ehrbase.validation.constraints.terminology.FhirTerminologyValidationSupport;
+import org.ehrbase.validation.terminology.FhirTerminologyValidation;
 import org.ehrbase.validation.constraints.wrappers.CArchetypeConstraint;
 import org.ehrbase.validation.constraints.wrappers.ValidationException;
 import org.junit.Assert;
@@ -44,7 +44,7 @@ import java.io.IOException;
 @SuppressWarnings("HttpUrlsUsage")
 public class DvCodedTextExternalTerminologyIT extends ConstraintTestBase {
 
-    private final FhirTerminologyValidationSupport fhirTerminologyValidator = new FhirTerminologyValidationSupport("https://r4.ontoserver.csiro.au/fhir");
+    private final FhirTerminologyValidation fhirTerminologyValidator = new FhirTerminologyValidation("https://r4.ontoserver.csiro.au/fhir");
 
     @Test
     @Ignore("Requires a FHIR Terminology Server")

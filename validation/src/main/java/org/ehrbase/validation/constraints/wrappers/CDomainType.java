@@ -21,7 +21,8 @@
 
 package org.ehrbase.validation.constraints.wrappers;
 
-import org.ehrbase.validation.constraints.terminology.ExternalTerminologyValidationSupport;
+import org.ehrbase.validation.terminology.ExternalTerminologyValidation;
+import org.ehrbase.validation.CompositionValidator;
 import org.openehr.schemas.v1.ARCHETYPECONSTRAINT;
 import org.openehr.schemas.v1.CCODEPHRASE;
 import org.openehr.schemas.v1.CCODEREFERENCE;
@@ -37,10 +38,12 @@ import java.util.Map;
  * @see <a href="https://specifications.openehr.org/releases/AM/latest/AOM1.4.html#_c_domain_type_class">C_DOMAIN_TYPE Class</a>
  * <p>
  * Created by christian on 7/23/2016.
+ * @deprecated as of release 1.7, in favor of {@link CompositionValidator}
  */
+@Deprecated(since = "1.7")
 public class CDomainType extends CConstraint implements I_CArchetypeConstraintValidate {
 
-    CDomainType(Map<String, Map<String, String>> localTerminologyLookup, ExternalTerminologyValidationSupport externalTerminologyValidator) {
+    CDomainType(Map<String, Map<String, String>> localTerminologyLookup, ExternalTerminologyValidation externalTerminologyValidator) {
         super(localTerminologyLookup, externalTerminologyValidator);
     }
 

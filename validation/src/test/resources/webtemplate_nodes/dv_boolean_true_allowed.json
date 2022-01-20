@@ -1,0 +1,14 @@
+{
+  "aqlPath": "/test/dv_boolean_true_allowed",
+  "inputs": [
+    {
+      "type": "BOOLEAN",
+      "list": [
+        {
+          "label": "true",
+          "value": "true"
+        }
+      ]
+    }
+  ]
+}

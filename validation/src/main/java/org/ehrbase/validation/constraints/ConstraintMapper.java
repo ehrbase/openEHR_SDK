@@ -25,10 +25,13 @@ import com.nedap.archie.base.MultiplicityInterval;
 
 import java.io.Serializable;
 import java.util.*;
+import org.ehrbase.validation.CompositionValidator;
 
 /**
  * Created by christian on 8/9/2016.
+ * @deprecated as of release 1.7, in favor of {@link CompositionValidator}
  */
+@Deprecated(since = "1.7")
 public abstract class ConstraintMapper implements Serializable {
 
     protected Map<String, Map<String, String>> localTerminologyLookup;

@@ -1,0 +1,25 @@
+{
+  "aqlPath": "/test/dv_quantity_list",
+  "inputs": [
+    {
+      "suffix": "magnitude",
+      "type": "DECIMAL",
+      "defaultValue": 50
+    },
+    {
+      "suffix": "unit",
+      "type": "CODED_TEXT",
+      "defaultValue": "kg",
+      "list": [
+        {
+          "label": "kg",
+          "value": "kg"
+        },
+        {
+          "label": "lb",
+          "value": "lb"
+        }
+      ]
+    }
+  ]
+}

@@ -21,22 +21,25 @@
 
 package org.ehrbase.validation.constraints.wrappers;
 
-import org.ehrbase.validation.constraints.terminology.ExternalTerminologyValidationSupport;
+import org.ehrbase.validation.terminology.ExternalTerminologyValidation;
 
 import java.util.Map;
+import org.ehrbase.validation.CompositionValidator;
 
 /**
  * Abstract class for all constraints
  *
  * @link Created by christian on 8/10/2016.
+ * @deprecated as of release 1.7, in favor of {@link CompositionValidator}
  */
+@Deprecated(since = "1.7")
 public abstract class CConstraint {
 
     protected Map<String, Map<String, String>> localTerminologyLookup;
 
-    protected ExternalTerminologyValidationSupport externalTerminologyValidator;
+    protected ExternalTerminologyValidation externalTerminologyValidator;
 
-    protected CConstraint(Map<String, Map<String, String>> localTerminologyLookup, ExternalTerminologyValidationSupport externalTerminologyValidator) {
+    protected CConstraint(Map<String, Map<String, String>> localTerminologyLookup, ExternalTerminologyValidation externalTerminologyValidator) {
         this.localTerminologyLookup = localTerminologyLookup;
         this.externalTerminologyValidator = externalTerminologyValidator;
     }

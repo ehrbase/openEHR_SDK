@@ -23,7 +23,7 @@ package org.ehrbase.validation.constraints.wrappers;
 
 import com.nedap.archie.datetime.DateTimeFormatters;
 import com.nedap.archie.rm.datavalues.quantity.datetime.DvDateTime;
-import org.ehrbase.validation.constraints.terminology.ExternalTerminologyValidationSupport;
+import org.ehrbase.validation.terminology.ExternalTerminologyValidation;
 import org.ehrbase.validation.constraints.util.DateTimeSyntax;
 import org.openehr.schemas.v1.CDATETIME;
 import org.openehr.schemas.v1.CPRIMITIVE;
@@ -38,10 +38,12 @@ import java.util.Map;
  * <p>
  * Created by christian on 7/23/2016.
  * @see DvDateTime
+ * @deprecated as of release 1.7, in favor of {@link org.ehrbase.validation.webtemplate.DvDateTimeValidator}
  */
+@Deprecated(since = "1.7")
 public class CDateTime extends CConstraint implements I_CTypeValidate {
 
-    CDateTime(Map<String, Map<String, String>> localTerminologyLookup, ExternalTerminologyValidationSupport externalTerminologyValidator) {
+    CDateTime(Map<String, Map<String, String>> localTerminologyLookup, ExternalTerminologyValidation externalTerminologyValidator) {
         super(localTerminologyLookup, externalTerminologyValidator);
     }
 
