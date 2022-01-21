@@ -847,4 +847,26 @@ public class DBEncodeTest {
         Assert.assertNotNull(expiryTime);
         Assert.assertEquals(OffsetDateTime.parse("2021-05-18T13:13:09.780+03:00"), expiryTime.getValue());
     }
+
+    @Test
+    public void testOtherParticipationsPartyRef() throws IOException {
+        Composition composition = new CanonicalJson().unmarshal(IOUtils.toString(CompositionTestDataCanonicalJson.OTHER_PARTICIPATIONS.getStream(), UTF_8),Composition.class);
+
+        assertNotNull(composition);
+
+        CompositionSerializer compositionSerializerRawJson = new CompositionSerializer();
+
+        String db_encoded = compositionSerializerRawJson.dbEncode(composition);
+        assertNotNull(db_encoded);
+
+        JsonElement converted = new LightRawJsonEncoder(db_encoded).encodeContentAsJson("composition");
+
+        //see if this can be interpreted by Archie
+        Composition composition2 = new CanonicalJson().unmarshal(converted.toString(), Composition.class);
+
+        assertNotNull(composition2);
+
+        assertEquals("PERSON",composition2.itemsAtPath("/content[openEHR-EHR-ACTION.minimal.v1]/other_participations/performer/external_ref/type").get(0));
+    }
+
 }
