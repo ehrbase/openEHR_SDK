@@ -33,7 +33,7 @@ import java.io.IOException;
  */
 public class PartyRefAdapter extends DvTypeAdapter<PartyRef> {
 
-    private Gson gson;
+    private final Gson gson;
 
     public PartyRefAdapter(AdapterType adapterType) {
         super(adapterType);
@@ -66,20 +66,13 @@ public class PartyRefAdapter extends DvTypeAdapter<PartyRef> {
         if (adapterType == AdapterType.PG_JSONB) {
             writer.beginObject();
             writer.name("namespace").value(partyRef.getNamespace());
+            writer.name("type").value(partyRef.getType());
             writer.name(CompositionSerializer.TAG_CLASS).value(PartyRef.class.getSimpleName());
             if (partyRef.getId() != null){
                 writer.name("id").jsonValue(gson.toJson(partyRef.getId()));
             }
             //TODO: add Identifiers
             writer.endObject();
-        } else if (adapterType == AdapterType.RAW_JSON) {
-//
-//            writer.beginObject(); //{
-//            writer.name(I_DvTypeAdapter.TAG_CLASS_RAW_JSON).value(new ObjectSnakeCase(participation).camelToUpperSnake());
-//            writer.name("value").value(participation.getValue());
-//            CodePhrase codePhrase = participation.getDefiningCode();
-//            writer.name("defining_code").value(gson.toJson(codePhrase));
-//            writer.endObject(); //}
         }
 
     }
