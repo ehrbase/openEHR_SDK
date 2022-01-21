@@ -150,6 +150,14 @@ public enum CompositionTestDataSimSDTJson {
           "ehrbase_conformance_cluster",
           "ehrbase_conformance_cluster.json",
           OperationalTemplateTestData.CONFORMANCE),
+  EHRBASE_CONFORMANCE_POINT_EVENT(
+          "ehrbase_conformance_point_event",
+          "ehrbase_conformance_point_event.json",
+          OperationalTemplateTestData.CONFORMANCE),
+  EHRBASE_CONFORMANCE_INTERVAL_EVENT(
+          "ehrbase_conformance_interval_event",
+          "ehrbase_conformance_interval_event.json",
+          OperationalTemplateTestData.CONFORMANCE),
   EHRBASE_CONFORMANCE_ELEMENT_FEEDER_AUDIT(
           "ehrbase_conformance_Element_feeder_audit",
           "ehrbase_conformance_Element_feeder_audit.json",
