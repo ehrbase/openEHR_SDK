@@ -211,6 +211,15 @@ public class FlatConformanceTest {
   }
 
   @Test
+  public void roundTripEhrbaseConformanceCluster() throws IOException {
+
+    CompositionTestDataSimSDTJson testData =
+            CompositionTestDataSimSDTJson.EHRBASE_CONFORMANCE_CLUSTER;
+
+    check(testData, new String[] {}, new String[] {}, new String[]{});
+  }
+
+  @Test
   public void roundTripEhrbaseConformanceDataTypesIntervalDvDuration() throws IOException {
 
     CompositionTestDataSimSDTJson testData =
