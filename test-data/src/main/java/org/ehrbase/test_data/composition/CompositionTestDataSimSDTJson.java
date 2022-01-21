@@ -142,6 +142,14 @@ public enum CompositionTestDataSimSDTJson {
           "ehrbase_conformance_data_types_interval_dv_quantity",
           "ehrbase_conformance_data_types_interval_dv_quantity.json",
           OperationalTemplateTestData.CONFORMANCE),
+  EHRBASE_CONFORMANCE_ELEMENT_NULL_FLAVOR(
+          "ehrbase_conformance_Element_null_flavor",
+          "ehrbase_conformance_Element_null_flavor.json",
+          OperationalTemplateTestData.CONFORMANCE),
+  EHRBASE_CONFORMANCE_ELEMENT_FEEDER_AUDIT(
+          "ehrbase_conformance_Element_feeder_audit",
+          "ehrbase_conformance_Element_feeder_audit.json",
+          OperationalTemplateTestData.CONFORMANCE),
   NESTED("nested.en.v1", "nested.en.v1.json",OperationalTemplateTestData.NESTED),
   IPS("International Patient Summary", "ips_flat.json",OperationalTemplateTestData.IPS);
 

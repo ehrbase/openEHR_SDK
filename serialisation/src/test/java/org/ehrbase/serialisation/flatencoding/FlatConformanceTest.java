@@ -191,6 +191,25 @@ public class FlatConformanceTest {
     check(testData, new String[] {}, new String[] {}, new String[]{});
   }
 
+
+  @Test
+  public void roundTripEhrbaseConformanceElementNullFlavor() throws IOException {
+
+    CompositionTestDataSimSDTJson testData =
+            CompositionTestDataSimSDTJson.EHRBASE_CONFORMANCE_ELEMENT_NULL_FLAVOR;
+
+    check(testData, new String[] {}, new String[] {}, new String[]{});
+  }
+
+  @Test
+  public void roundTripEhrbaseConformanceElementFeederAudit() throws IOException {
+
+    CompositionTestDataSimSDTJson testData =
+            CompositionTestDataSimSDTJson.EHRBASE_CONFORMANCE_ELEMENT_FEEDER_AUDIT;
+
+    check(testData, new String[] {}, new String[] {}, new String[]{});
+  }
+
   @Test
   public void roundTripEhrbaseConformanceDataTypesIntervalDvDuration() throws IOException {
 
@@ -199,6 +218,7 @@ public class FlatConformanceTest {
 // see https://github.com/openEHR/archie/issues/379
     check(testData, new String[] {}, new String[] {}, new String[]{"/content[openEHR-EHR-SECTION.conformance_section.v0, 1]/items[openEHR-EHR-OBSERVATION.conformance_observation.v0, 1]/data[at0001]/events[at0002, 1]/data[at0003]/items[at0018, 1]/value","/content[openEHR-EHR-SECTION.conformance_section.v0, 1]/items[openEHR-EHR-OBSERVATION.conformance_observation.v0, 1]/data[at0001]/events[at0002, 1]/data[at0003]/items[at0018, 1]/value/other_reference_ranges[1]/range/interval","/content[openEHR-EHR-SECTION.conformance_section.v0, 1]/items[openEHR-EHR-OBSERVATION.conformance_observation.v0, 1]/data[at0001]/events[at0002, 1]/data[at0003]/items[at0018, 1]/value/normal_range/interval"});
   }
+
 
   @Test
   @Ignore("see https://github.com/openEHR/archie/issues/379")
