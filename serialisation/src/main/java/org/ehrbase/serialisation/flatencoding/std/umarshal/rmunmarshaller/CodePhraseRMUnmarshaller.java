@@ -43,14 +43,24 @@ public class CodePhraseRMUnmarshaller extends AbstractRMUnmarshaller<CodePhrase>
       Map<FlatPathDto, String> currentValues,
       Context<Map<FlatPathDto, String>> context,
       Set<String> consumedPaths) {
+
     setValue(
         currentTerm, "code", currentValues, rmObject::setCodeString, String.class, consumedPaths);
+
     rmObject.setTerminologyId(new TerminologyId());
     setValue(
         currentTerm,
         "terminology",
         currentValues,
         t -> rmObject.getTerminologyId().setValue(t),
+        String.class,
+        consumedPaths);
+
+    setValue(
+        currentTerm,
+        "preferred_term",
+        currentValues,
+        rmObject::setPreferredTerm,
         String.class,
         consumedPaths);
   }

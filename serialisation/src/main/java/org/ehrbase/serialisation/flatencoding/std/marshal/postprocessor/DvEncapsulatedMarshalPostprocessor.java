@@ -19,52 +19,35 @@
 
 package org.ehrbase.serialisation.flatencoding.std.marshal.postprocessor;
 
-import com.nedap.archie.rm.datavalues.DvText;
+import com.nedap.archie.rm.datavalues.encapsulated.DvEncapsulated;
 import org.ehrbase.serialisation.walker.Context;
 
 import java.util.Map;
-import java.util.stream.IntStream;
 
-public class DVTextPostprocessor extends AbstractMarshalPostprocessor<DvText> {
+public class DvEncapsulatedMarshalPostprocessor extends AbstractMarshalPostprocessor<DvEncapsulated> {
 
   /** {@inheritDoc} Adds the encoding information */
   @Override
   public void process(
       String term,
-      DvText rmObject,
+      DvEncapsulated rmObject,
       Map<String, Object> values,
       Context<Map<String, Object>> context) {
 
-    IntStream.range(0, rmObject.getMappings().size())
-        .forEach(
-            i -> {
-              callMarshal(
-                  term,
-                  "_mapping:" + i,
-                  rmObject.getMappings().get(i),
-                  values,
-                  context,
-                  context.getNodeDeque().peek().findChildById("mapping").orElse(null));
-              callPostprocess(
-                  term,
-                  "_mapping:" + i,
-                  rmObject.getMappings().get(i),
-                  values,
-                  context,
-                  context.getNodeDeque().peek().findChildById("mapping").orElse(null));
-            });
-
     if (rmObject.getLanguage() != null) {
+
       handleRmAttribute(term, rmObject.getLanguage(), values, context, "language");
     }
-    if (rmObject.getEncoding() != null) {
-      handleRmAttribute(term, rmObject.getEncoding(), values, context, "encoding");
+
+    if (rmObject.getCharset()!= null) {
+
+      handleRmAttribute(term, rmObject.getCharset(), values, context, "charset");
     }
   }
 
   /** {@inheritDoc} */
   @Override
-  public Class<DvText> getAssociatedClass() {
-    return DvText.class;
+  public Class<DvEncapsulated> getAssociatedClass() {
+    return DvEncapsulated.class;
   }
 }

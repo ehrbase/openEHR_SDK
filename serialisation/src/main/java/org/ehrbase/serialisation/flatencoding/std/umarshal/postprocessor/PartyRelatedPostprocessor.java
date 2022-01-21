@@ -28,6 +28,8 @@ import org.ehrbase.webtemplate.path.flat.FlatPathDto;
 import java.util.Map;
 import java.util.Set;
 
+import static org.ehrbase.serialisation.walker.FlatHelper.buildDummyChild;
+
 public class PartyRelatedPostprocessor extends AbstractUnmarshalPostprocessor<PartyRelated> {
 
   /** {@inheritDoc} */
@@ -51,15 +53,23 @@ public class PartyRelatedPostprocessor extends AbstractUnmarshalPostprocessor<Pa
           relationshipValues,
           consumedPaths,
           context,
-          context.getNodeDeque().peek().findChildById("relationship").orElse(null));
-      calPostProcess(
+          context
+              .getNodeDeque()
+              .peek()
+              .findChildById("relationship")
+              .orElse(buildDummyChild("relationship", context.getNodeDeque().peek())));
+      callPostProcess(
           term,
           "relationship",
           rmObject.getRelationship(),
           relationshipValues,
           consumedPaths,
           context,
-          context.getNodeDeque().peek().findChildById("relationship").orElse(null));
+          context
+              .getNodeDeque()
+              .peek()
+              .findChildById("relationship")
+              .orElse(buildDummyChild("relationship", context.getNodeDeque().peek())));
     }
   }
 

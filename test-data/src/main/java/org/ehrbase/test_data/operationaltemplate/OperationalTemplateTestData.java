@@ -103,6 +103,10 @@ public enum OperationalTemplateTestData {
   MINIMAL_ACTION_2("Minimal Action 2", "minimal_action2.opt", "Minimal action 2"),
   MINIMAL_ACTION("Minimal Action 3", "minimal_action3.opt", "minimal_action_3.en.v1"),
   NCD("ncd", "NCD.opt", "NCD"),
+  CONFORMANCE(
+      "ehrbase conformance test template",
+      "conformance_ehrbase.de.v0.opt",
+      "conformance-ehrbase.de.v0"),
   MULTIMEDIA_TEST("MultimediaTest", "multimedia_test.en.v1.opt", "multimedia_test.en.v1"),
   NESTED("nested.en.v1", "nested.en.v1.opt", "nested.en.v1"),
   IPS("International Patient Summary", "ips.v0.opt", "International Patient Summary");

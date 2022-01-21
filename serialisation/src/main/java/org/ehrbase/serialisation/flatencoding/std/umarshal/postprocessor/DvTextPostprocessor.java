@@ -19,6 +19,7 @@
 
 package org.ehrbase.serialisation.flatencoding.std.umarshal.postprocessor;
 
+import com.nedap.archie.rm.datatypes.CodePhrase;
 import com.nedap.archie.rm.datavalues.DvText;
 import com.nedap.archie.rm.datavalues.TermMapping;
 import org.ehrbase.serialisation.walker.Context;
@@ -27,6 +28,8 @@ import org.ehrbase.webtemplate.path.flat.FlatPathDto;
 
 import java.util.Map;
 import java.util.Set;
+
+import static org.ehrbase.serialisation.walker.FlatHelper.buildDummyChild;
 
 public class DvTextPostprocessor extends AbstractUnmarshalPostprocessor<DvText> {
 
@@ -50,21 +53,43 @@ public class DvTextPostprocessor extends AbstractUnmarshalPostprocessor<DvText> 
                   e.getValue(),
                   consumedPaths,
                   context,
-                  context.getNodeDeque().peek().findChildById("mappings").orElse(null));
-              calPostProcess(
+                  context
+                      .getNodeDeque()
+                      .peek()
+                      .findChildById("mappings")
+                      .orElse(buildDummyChild("mappings", context.getNodeDeque().peek())));
+              callPostProcess(
                   term,
                   "/_mapping:" + e.getKey(),
                   termMapping,
                   e.getValue(),
                   consumedPaths,
                   context,
-                  context.getNodeDeque().peek().findChildById("mappings").orElse(null));
+                  context
+                      .getNodeDeque()
+                      .peek()
+                      .findChildById("mappings")
+                      .orElse(buildDummyChild("mappings", context.getNodeDeque().peek())));
 
               return termMapping;
             })
         .forEach(rmObject::addMapping);
 
-    FlatHelper.consumeAllMatching(term + "/_mapping", values, consumedPaths);
+    FlatHelper.consumeAllMatching(term + "/_mapping", values, consumedPaths, false);
+
+    Map<FlatPathDto, String> language = FlatHelper.filter(values, term + "/_language", false);
+
+    if (!language.isEmpty()) {
+      rmObject.setLanguage(new CodePhrase());
+      handleRmAttribute(term, rmObject.getLanguage(), language, consumedPaths, context, "language");
+    }
+
+    Map<FlatPathDto, String> encoding = FlatHelper.filter(values, term + "/_encoding", false);
+
+    if (!encoding.isEmpty()) {
+      rmObject.setEncoding(new CodePhrase());
+      handleRmAttribute(term, rmObject.getEncoding(), encoding, consumedPaths, context, "encoding");
+    }
   }
 
   /** {@inheritDoc} */

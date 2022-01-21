@@ -101,7 +101,13 @@ public abstract class AbstractMarshalPostprocessor<T extends RMObject>
     if (subNode != null) {
       context.getNodeDeque().push(subNode);
     }
-    String newTerm = term + PATH_DIVIDER + subTerm;
+
+    final String newTerm;
+    if (subTerm != null) {
+      newTerm = term + PATH_DIVIDER + subTerm;
+    } else {
+      newTerm = term;
+    }
 
     StdFromCompositionWalker.findPostprocessors(rmObject.getClass())
         .forEach(

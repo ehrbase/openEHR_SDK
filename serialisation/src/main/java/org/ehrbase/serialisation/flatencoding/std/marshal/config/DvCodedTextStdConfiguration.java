@@ -49,6 +49,7 @@ public class DvCodedTextStdConfiguration extends AbstractsStdConfig<DvCodedText>
             .map(DvCodedText::getDefiningCode)
             .map(CodePhrase::getCodeString)
             .orElse(null));
+
     addValue(
         result,
         currentTerm,
@@ -58,7 +59,10 @@ public class DvCodedTextStdConfiguration extends AbstractsStdConfig<DvCodedText>
             .map(CodePhrase::getTerminologyId)
             .map(ObjectId::getValue)
             .orElse(null));
+
     addValue(result, currentTerm, "value", rmObject.getValue());
+
+    addValue(result, currentTerm, "formatting", rmObject.getFormatting());
 
     return result;
   }

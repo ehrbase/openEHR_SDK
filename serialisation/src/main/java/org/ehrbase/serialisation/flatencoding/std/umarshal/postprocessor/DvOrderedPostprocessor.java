@@ -37,6 +37,7 @@ import java.util.Set;
 import java.util.function.Consumer;
 
 import static org.ehrbase.serialisation.flatencoding.std.umarshal.StdToCompositionWalker.findRMUnmarshaller;
+import static org.ehrbase.serialisation.walker.FlatHelper.buildDummyChild;
 import static org.ehrbase.serialisation.walker.FlatHelper.isDvCodedText;
 import static org.ehrbase.webtemplate.parser.OPTParser.PATH_DIVIDER;
 
@@ -83,15 +84,25 @@ public class DvOrderedPostprocessor extends AbstractUnmarshalPostprocessor<DvOrd
                     meaningValues,
                     consumedPaths,
                     context,
-                    context.getNodeDeque().peek().findChildById(meaningAttributeName).orElse(null));
-                calPostProcess(
+                    context
+                        .getNodeDeque()
+                        .peek()
+                        .findChildById(meaningAttributeName)
+                        .orElse(
+                            buildDummyChild(meaningAttributeName, context.getNodeDeque().peek())));
+                callPostProcess(
                     term + "/_other_reference_ranges:" + k,
                     meaningAttributeName,
                     meaning,
                     meaningValues,
                     consumedPaths,
                     context,
-                    context.getNodeDeque().peek().findChildById(meaningAttributeName).orElse(null));
+                    context
+                        .getNodeDeque()
+                        .peek()
+                        .findChildById(meaningAttributeName)
+                        .orElse(
+                            buildDummyChild(meaningAttributeName, context.getNodeDeque().peek())));
               }
 
               handleNormalRange(
@@ -108,7 +119,8 @@ public class DvOrderedPostprocessor extends AbstractUnmarshalPostprocessor<DvOrd
         values,
         s -> {
           if (s != null) {
-            rmObject.setNormalStatus(new CodePhrase(new TerminologyId("openehr"), s));
+            rmObject.setNormalStatus(
+                new CodePhrase(new TerminologyId("openehr_normal_statuses"), s));
           }
         },
         String.class,
@@ -129,6 +141,18 @@ public class DvOrderedPostprocessor extends AbstractUnmarshalPostprocessor<DvOrd
 
       handleBorder(values, consumedPaths, context, "upper", range::setUpper, term);
       handleBorder(values, consumedPaths, context, "lower", range::setLower, term);
+      callPostProcess(
+          term,
+          null,
+          range,
+          rangeValues,
+          consumedPaths,
+          context,
+          context
+              .getNodeDeque()
+              .peek()
+              .findChildById("range")
+              .orElse(FlatHelper.buildDummyChild("range", context.getNodeDeque().peek())));
     }
   }
 

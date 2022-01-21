@@ -17,36 +17,34 @@
  *
  */
 
-package org.ehrbase.serialisation.flatencoding.std.marshal.config;
+package org.ehrbase.serialisation.flatencoding.std.marshal.postprocessor;
 
-import com.nedap.archie.rm.datavalues.DvEHRURI;
+import com.nedap.archie.rm.datavalues.encapsulated.DvMultimedia;
 import org.ehrbase.serialisation.walker.Context;
 
-import java.net.URI;
-import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
-public class DVEHRUriConfig extends AbstractsStdConfig<DvEHRURI> {
+public class DvMultimediaMarshalPostprocessor extends AbstractMarshalPostprocessor<DvMultimedia> {
 
-  /** {@inheritDoc} */
+  /** {@inheritDoc} Adds the encoding information */
   @Override
-  public Class<DvEHRURI> getAssociatedClass() {
-    return DvEHRURI.class;
+  public void process(
+      String term,
+      DvMultimedia rmObject,
+      Map<String, Object> values,
+      Context<Map<String, Object>> context) {
+
+    if (rmObject.getThumbnail() != null) {
+
+      handleRmAttribute(term, rmObject.getThumbnail(), values, context, "thumbnail");
+    }
+
+
   }
 
   /** {@inheritDoc} */
   @Override
-  public Map<String, Object> buildChildValues(
-      String currentTerm, DvEHRURI rmObject, Context<Map<String, Object>> context) {
-    Map<String, Object> result = new HashMap<>();
-
-    addValue(
-        result,
-        currentTerm,
-        null,
-        Optional.of(rmObject).map(DvEHRURI::getValue).map(URI::toString).orElse(null));
-
-    return result;
+  public Class<DvMultimedia> getAssociatedClass() {
+    return DvMultimedia.class;
   }
 }

@@ -44,6 +44,7 @@ public class DvQuantityRMUnmarshaller extends AbstractRMUnmarshaller<DvQuantity>
       Map<FlatPathDto, String> currentValues,
       Context<Map<FlatPathDto, String>> context,
       Set<String> consumedPaths) {
+
     setValue(
         currentTerm,
         "magnitude",
@@ -51,7 +52,9 @@ public class DvQuantityRMUnmarshaller extends AbstractRMUnmarshaller<DvQuantity>
         rmObject::setMagnitude,
         Double.class,
         consumedPaths);
+
     setValue(currentTerm, "units", currentValues, rmObject::setUnits, String.class, consumedPaths);
+
     if (rmObject.getUnits() == null) {
       setValue(currentTerm, "unit", currentValues, rmObject::setUnits, String.class, consumedPaths);
     }
@@ -68,5 +71,23 @@ public class DvQuantityRMUnmarshaller extends AbstractRMUnmarshaller<DvQuantity>
         rmObject.setUnits(units.get(0).getValue());
       }
     }
+
+    setValue(
+        currentTerm,
+        "units_system",
+        currentValues,
+        rmObject::setUnitsSystem,
+        String.class,
+        consumedPaths);
+    setValue(
+        currentTerm,
+        "units_display_name",
+        currentValues,
+        rmObject::setUnitsDisplayName,
+        String.class,
+        consumedPaths);
+
+    setValue(
+        currentTerm, "precision", currentValues, rmObject::setPrecision, Long.class, consumedPaths);
   }
 }

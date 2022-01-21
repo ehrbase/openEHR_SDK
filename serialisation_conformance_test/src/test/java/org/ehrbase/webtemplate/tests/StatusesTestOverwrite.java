@@ -71,7 +71,8 @@ public class StatusesTestOverwrite extends StatusesTest {
                 "/content[openEHR-EHR-OBSERVATION.test_statuses.v0]/data[at0001]/events[at0002]/data[at0003]/items[at0005]/value");
 
     assertThat(ordinal.getNormalStatus()).isNotNull();
-    assertThat(ordinal.getNormalStatus().getTerminologyId().getValue()).isEqualTo("openehr");
+    assertThat(ordinal.getNormalStatus().getTerminologyId().getValue())
+        .isEqualTo("openehr_normal_statuses");
     assertThat(ordinal.getNormalStatus().getCodeString()).isEqualTo("L");
 
     Map<String, Object> value = OBJECT_MAPPER.readValue(flatJson.marshal(composition), Map.class);
@@ -107,7 +108,8 @@ public class StatusesTestOverwrite extends StatusesTest {
                 "/content[openEHR-EHR-OBSERVATION.test_statuses.v0]/data[at0001]/events[at0002]/data[at0003]/items[at0005]/value");
 
     assertThat(ordinal.getNormalStatus()).isNotNull();
-    assertThat(ordinal.getNormalStatus().getTerminologyId().getValue()).isEqualTo("openehr");
+    assertThat(ordinal.getNormalStatus().getTerminologyId().getValue())
+        .isEqualTo("openehr_normal_statuses");
     assertThat(ordinal.getNormalStatus().getCodeString()).isEqualTo("N");
 
     Map<String, Object> value = OBJECT_MAPPER.readValue(flatJson.marshal(composition), Map.class);
@@ -149,7 +151,8 @@ public class StatusesTestOverwrite extends StatusesTest {
                 "/content[openEHR-EHR-OBSERVATION.test_statuses.v0]/data[at0001]/events[at0002]/data[at0003]/items[at0009]/value");
 
     assertThat(rmObject.getNormalStatus()).isNotNull();
-    assertThat(rmObject.getNormalStatus().getTerminologyId().getValue()).isEqualTo("openehr");
+    assertThat(rmObject.getNormalStatus().getTerminologyId().getValue())
+        .isEqualTo("openehr_normal_statuses");
     assertThat(rmObject.getNormalStatus().getCodeString()).isEqualTo("L");
     assertThat(rmObject.getMagnitudeStatus()).isEqualTo(">=");
     assertThat(rmObject.getAccuracy()).isEqualTo(10);
@@ -196,7 +199,8 @@ public class StatusesTestOverwrite extends StatusesTest {
                 "/content[openEHR-EHR-OBSERVATION.test_statuses.v0]/data[at0001]/events[at0002]/data[at0003]/items[at0010]/value");
 
     assertThat(rmObject.getNormalStatus()).isNotNull();
-    assertThat(rmObject.getNormalStatus().getTerminologyId().getValue()).isEqualTo("openehr");
+    assertThat(rmObject.getNormalStatus().getTerminologyId().getValue())
+        .isEqualTo("openehr_normal_statuses");
     assertThat(rmObject.getNormalStatus().getCodeString()).isEqualTo("L");
     assertThat(rmObject.getMagnitudeStatus()).isEqualTo(">=");
     assertThat(rmObject.getAccuracy()).isEqualTo(10);
@@ -239,7 +243,8 @@ public class StatusesTestOverwrite extends StatusesTest {
                 "/content[openEHR-EHR-OBSERVATION.test_statuses.v0]/data[at0001]/events[at0002]/data[at0003]/items[at0011]/value");
 
     assertThat(rmObject.getNormalStatus()).isNotNull();
-    assertThat(rmObject.getNormalStatus().getTerminologyId().getValue()).isEqualTo("openehr");
+    assertThat(rmObject.getNormalStatus().getTerminologyId().getValue())
+        .isEqualTo("openehr_normal_statuses");
     assertThat(rmObject.getNormalStatus().getCodeString()).isEqualTo("L");
     assertThat(rmObject.getMagnitudeStatus()).isEqualTo(">=");
     assertThat(rmObject.getAccuracy())
@@ -284,7 +289,8 @@ public class StatusesTestOverwrite extends StatusesTest {
                 "/content[openEHR-EHR-OBSERVATION.test_statuses.v0]/data[at0001]/events[at0002]/data[at0003]/items[at0012]/value");
 
     assertThat(rmObject.getNormalStatus()).isNotNull();
-    assertThat(rmObject.getNormalStatus().getTerminologyId().getValue()).isEqualTo("openehr");
+    assertThat(rmObject.getNormalStatus().getTerminologyId().getValue())
+        .isEqualTo("openehr_normal_statuses");
     assertThat(rmObject.getNormalStatus().getCodeString()).isEqualTo("L");
     assertThat(rmObject.getMagnitudeStatus()).isEqualTo(">=");
     assertThat(rmObject.getAccuracy())
@@ -329,7 +335,8 @@ public class StatusesTestOverwrite extends StatusesTest {
                 "/content[openEHR-EHR-OBSERVATION.test_statuses.v0]/data[at0001]/events[at0002]/data[at0003]/items[at0013]/value");
 
     assertThat(rmObject.getNormalStatus()).isNotNull();
-    assertThat(rmObject.getNormalStatus().getTerminologyId().getValue()).isEqualTo("openehr");
+    assertThat(rmObject.getNormalStatus().getTerminologyId().getValue())
+        .isEqualTo("openehr_normal_statuses");
     assertThat(rmObject.getNormalStatus().getCodeString()).isEqualTo("L");
     assertThat(rmObject.getMagnitudeStatus()).isEqualTo(">=");
     assertThat(rmObject.getAccuracy())
@@ -376,7 +383,8 @@ public class StatusesTestOverwrite extends StatusesTest {
                 "/content[openEHR-EHR-OBSERVATION.test_statuses.v0]/data[at0001]/events[at0002]/data[at0003]/items[at0014]/value");
 
     assertThat(rmObject.getNormalStatus()).isNotNull();
-    assertThat(rmObject.getNormalStatus().getTerminologyId().getValue()).isEqualTo("openehr");
+    assertThat(rmObject.getNormalStatus().getTerminologyId().getValue())
+        .isEqualTo("openehr_normal_statuses");
     assertThat(rmObject.getNormalStatus().getCodeString()).isEqualTo("L");
     assertThat(rmObject.getMagnitudeStatus()).isEqualTo(">=");
     assertThat(rmObject.getAccuracy()).isEqualTo(10);
@@ -423,7 +431,8 @@ public class StatusesTestOverwrite extends StatusesTest {
                 "/content[openEHR-EHR-OBSERVATION.test_statuses.v0]/data[at0001]/events[at0002]/data[at0003]/items[at0015]/value");
 
     assertThat(rmObject.getNormalStatus()).isNotNull();
-    assertThat(rmObject.getNormalStatus().getTerminologyId().getValue()).isEqualTo("openehr");
+    assertThat(rmObject.getNormalStatus().getTerminologyId().getValue())
+        .isEqualTo("openehr_normal_statuses");
     assertThat(rmObject.getNormalStatus().getCodeString()).isEqualTo("L");
     assertThat(rmObject.getMagnitudeStatus()).isEqualTo(">=");
     assertThat(rmObject.getAccuracy()).isEqualTo(10);

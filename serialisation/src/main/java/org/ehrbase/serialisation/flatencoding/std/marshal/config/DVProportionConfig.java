@@ -38,12 +38,13 @@ public class DVProportionConfig extends AbstractsStdConfig<DvProportion> {
   public Map<String, Object> buildChildValues(
       String currentTerm, DvProportion rmObject, Context<Map<String, Object>> context) {
     Map<String, Object> result = new HashMap<>();
+
     addValue(result, currentTerm, "numerator", rmObject.getNumerator());
     addValue(result, currentTerm, "denominator", rmObject.getDenominator());
     addValue(result, currentTerm, "type", rmObject.getType());
-    if (rmObject.getNumerator() != null && rmObject.getDenominator() != null) {
-      addValue(result, currentTerm, null, rmObject.getNumerator() / rmObject.getDenominator());
-    }
+    addValue(result, currentTerm, "precision", rmObject.getPrecision());
+    addValue(result, currentTerm, null, rmObject.getMagnitude());
+
 
     return result;
   }

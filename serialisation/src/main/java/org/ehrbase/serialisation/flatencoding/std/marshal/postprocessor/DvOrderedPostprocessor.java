@@ -25,6 +25,7 @@ import com.nedap.archie.rm.datavalues.quantity.DvOrdered;
 import com.nedap.archie.rm.datavalues.quantity.ReferenceRange;
 import org.ehrbase.serialisation.flatencoding.std.marshal.config.StdConfig;
 import org.ehrbase.serialisation.walker.Context;
+import org.ehrbase.serialisation.walker.FlatHelper;
 
 import java.util.Map;
 import java.util.Optional;
@@ -108,6 +109,17 @@ public class DvOrderedPostprocessor extends AbstractMarshalPostprocessor<DvOrder
           ((StdConfig) findStdConfig(lower.getClass()))
               .buildChildValues(rangeTerm + "/upper", lower, context));
     }
+    callPostprocess(
+        rangeTerm,
+        null,
+        range,
+        values,
+        context,
+        context
+            .getNodeDeque()
+            .peek()
+            .findChildById("range")
+            .orElse(FlatHelper.buildDummyChild("range", context.getNodeDeque().peek())));
   }
 
   /** {@inheritDoc} */
