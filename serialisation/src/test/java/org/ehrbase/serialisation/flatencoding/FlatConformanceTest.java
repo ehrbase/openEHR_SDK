@@ -191,6 +191,52 @@ public class FlatConformanceTest {
     check(testData, new String[] {}, new String[] {}, new String[]{});
   }
 
+
+  @Test
+  public void roundTripEhrbaseConformanceElementNullFlavor() throws IOException {
+
+    CompositionTestDataSimSDTJson testData =
+            CompositionTestDataSimSDTJson.EHRBASE_CONFORMANCE_ELEMENT_NULL_FLAVOR;
+
+    check(testData, new String[] {}, new String[] {}, new String[]{});
+  }
+
+  @Test
+  public void roundTripEhrbaseConformanceElementFeederAudit() throws IOException {
+
+    CompositionTestDataSimSDTJson testData =
+            CompositionTestDataSimSDTJson.EHRBASE_CONFORMANCE_ELEMENT_FEEDER_AUDIT;
+
+    check(testData, new String[] {}, new String[] {}, new String[]{});
+  }
+
+  @Test
+  public void roundTripEhrbaseConformanceCluster() throws IOException {
+
+    CompositionTestDataSimSDTJson testData =
+            CompositionTestDataSimSDTJson.EHRBASE_CONFORMANCE_CLUSTER;
+
+    check(testData, new String[] {}, new String[] {}, new String[]{});
+  }
+
+  @Test
+  public void roundTripEhrbaseConformancePointEvent() throws IOException {
+
+    CompositionTestDataSimSDTJson testData =
+            CompositionTestDataSimSDTJson.EHRBASE_CONFORMANCE_POINT_EVENT;
+
+    check(testData, new String[] {}, new String[] {}, new String[]{});
+  }
+
+  @Test
+  public void roundTripEhrbaseConformanceIntervalEvent() throws IOException {
+
+    CompositionTestDataSimSDTJson testData =
+            CompositionTestDataSimSDTJson.EHRBASE_CONFORMANCE_INTERVAL_EVENT;
+
+    check(testData, new String[] {}, new String[] {}, new String[]{});
+  }
+
   @Test
   public void roundTripEhrbaseConformanceDataTypesIntervalDvDuration() throws IOException {
 

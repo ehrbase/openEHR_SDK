@@ -27,10 +27,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
+import static org.ehrbase.serialisation.flatencoding.std.marshal.StdFromCompositionWalker.findStdConfig;
+
 public class FeederAudiDetailsStdConfig extends AbstractsStdConfig<FeederAuditDetails> {
 
-  private static final PartyIdentifiedStdConfig PARTY_IDENTIFIED_STD_CONFIG =
-      new PartyIdentifiedStdConfig();
 
   @Override
   /** {@inheritDoc} */
@@ -47,14 +47,23 @@ public class FeederAudiDetailsStdConfig extends AbstractsStdConfig<FeederAuditDe
     addValue(result, currentTerm, "version_id", rmObject.getVersionId());
 
     if (rmObject.getLocation() != null) {
+      StdConfig stdConfig = findStdConfig(rmObject.getLocation().getClass());
       result.putAll(
-          PARTY_IDENTIFIED_STD_CONFIG.buildChildValues(
+              stdConfig.buildChildValues(
               currentTerm + "/location", rmObject.getLocation(), context));
     }
     if (rmObject.getProvider() != null) {
+      StdConfig stdConfig = findStdConfig(rmObject.getProvider().getClass());
       result.putAll(
-          PARTY_IDENTIFIED_STD_CONFIG.buildChildValues(
+              stdConfig.buildChildValues(
               currentTerm + "/provider", rmObject.getProvider(), context));
+    }
+
+    if (rmObject.getSubject() != null) {
+      StdConfig stdConfig = findStdConfig(rmObject.getSubject().getClass());
+      result.putAll(
+              stdConfig.buildChildValues(
+                      currentTerm + "/subject", rmObject.getSubject(), context));
     }
     return result;
   }

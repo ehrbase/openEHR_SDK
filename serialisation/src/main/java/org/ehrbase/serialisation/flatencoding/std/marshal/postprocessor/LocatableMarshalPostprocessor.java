@@ -25,6 +25,7 @@ import com.nedap.archie.rm.datavalues.DvEHRURI;
 import com.nedap.archie.rm.datavalues.DvText;
 import com.nedap.archie.rm.support.identification.ObjectId;
 import org.ehrbase.serialisation.walker.Context;
+import org.ehrbase.serialisation.walker.FlatHelper;
 
 import java.util.Map;
 import java.util.Objects;
@@ -75,7 +76,7 @@ public class LocatableMarshalPostprocessor extends AbstractMarshalPostprocessor<
     }
 
     if (rmObject.getFeederAudit() != null) {
-      handleRmAttribute(term, rmObject.getFeederAudit(), values, context, "feeder_audit");
+      callMarshal (term,"_feeder_audit", rmObject.getFeederAudit(), values, context, context.getNodeDeque().peek().findChildById("feeder_audit").orElse(FlatHelper.buildDummyChild("feeder_audit",context.getNodeDeque().peek())));
     }
 
     if (Optional.ofNullable(rmObject.getName())
