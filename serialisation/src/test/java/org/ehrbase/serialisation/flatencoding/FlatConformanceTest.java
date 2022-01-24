@@ -220,6 +220,15 @@ public class FlatConformanceTest {
   }
 
   @Test
+  public void roundTripEhrbaseConformanceComposition() throws IOException {
+
+    CompositionTestDataSimSDTJson testData =
+            CompositionTestDataSimSDTJson.EHRBASE_CONFORMANCE_COMPOSITION;
+
+    check(testData, new String[] {}, new String[] {}, new String[]{});
+  }
+
+  @Test
   public void roundTripEhrbaseConformancePointEvent() throws IOException {
 
     CompositionTestDataSimSDTJson testData =
