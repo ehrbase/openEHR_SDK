@@ -23,10 +23,13 @@ package org.ehrbase.validation.constraints;
 
 
 import com.nedap.archie.rm.datavalues.DataValue;
+import org.ehrbase.validation.CompositionValidator;
 
 /**
  * Created by christian on 7/15/2016.
+ * @deprecated as of release 1.7, in favor of {@link CompositionValidator}
  */
+@Deprecated(since = "1.7")
 public interface I_ElementConstraint {
 
     Boolean validate(DataValue value) throws IllegalArgumentException;

@@ -1,0 +1,11 @@
+{
+  "aqlPath": "/test/dv_datetime_pattern",
+  "inputs": [
+    {
+      "type": "DATETIME",
+      "validation": {
+        "pattern": "YYYY-MM-DDT??:??:??"
+      }
+    }
+  ]
+}

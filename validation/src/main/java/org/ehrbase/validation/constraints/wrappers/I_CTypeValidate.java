@@ -21,11 +21,14 @@
 
 package org.ehrbase.validation.constraints.wrappers;
 
+import org.ehrbase.validation.CompositionValidator;
 import org.openehr.schemas.v1.CPRIMITIVE;
 
 /**
  * Created by christian on 7/22/2016.
+ * @deprecated as of release 1.7, in favor of {@link CompositionValidator}
  */
+@Deprecated(since = "1.7")
 public interface I_CTypeValidate {
 
     void validate(String path, Object aValue, CPRIMITIVE cprimitive) throws IllegalArgumentException;

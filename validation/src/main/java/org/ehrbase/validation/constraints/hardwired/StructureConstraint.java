@@ -25,6 +25,7 @@ import org.ehrbase.validation.constraints.ConstraintMapper;
 import org.ehrbase.validation.constraints.OptConstraintMapper;
 import org.ehrbase.validation.constraints.wrappers.IntervalComparator;
 import org.ehrbase.validation.constraints.wrappers.ValidationException;
+import org.ehrbase.validation.CompositionValidator;
 import org.openehr.schemas.v1.CARDINALITY;
 import org.openehr.schemas.v1.CATTRIBUTE;
 import org.openehr.schemas.v1.CCOMPLEXOBJECT;
@@ -37,7 +38,9 @@ import org.openehr.schemas.v1.CMULTIPLEATTRIBUTE;
  * <p>
  * Created by christian on 8/11/2016.
  * @see com.nedap.archie.rm.datastructures.PointEvent
+ * @deprecated as of release 1.7, in favor of {@link CompositionValidator}
  */
+@Deprecated(since = "1.7")
 public abstract class StructureConstraint {
     private final ConstraintMapper constraintMapper;
 

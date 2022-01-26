@@ -23,6 +23,7 @@ package org.ehrbase.validation.constraints;
 
 import com.nedap.archie.base.MultiplicityInterval;
 import org.ehrbase.validation.constraints.wrappers.IntervalComparator;
+import org.ehrbase.validation.CompositionValidator;
 import org.openehr.schemas.v1.CCOMPLEXOBJECT;
 import org.openehr.schemas.v1.CMULTIPLEATTRIBUTE;
 import org.openehr.schemas.v1.CSINGLEATTRIBUTE;
@@ -34,7 +35,9 @@ import java.util.Map;
 
 /**
  * Created by christian on 8/9/2016.
+ * @deprecated as of release 1.7, in favor of {@link CompositionValidator}
  */
+@Deprecated(since = "1.7")
 public class OptConstraintMapper extends ConstraintMapper {
 
     public void setTerminology(Map<String, Map<String, String>> termTable) {

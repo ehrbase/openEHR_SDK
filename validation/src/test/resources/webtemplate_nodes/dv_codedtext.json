@@ -1,0 +1,28 @@
+{
+  "aqlPath": "/test/dv_coded_text",
+  "inputs": [
+    {
+      "suffix": "code",
+      "type": "CODED_TEXT",
+      "list": [
+        {
+          "label": "First",
+          "localizedLabels": {
+            "en": "First",
+            "de": "Erste"
+          },
+          "value": "at0028"
+        },
+        {
+          "label": "Second",
+          "localizedLabels": {
+            "en": "Second",
+            "de": "Zweite"
+          },
+          "value": "at0029"
+        }
+      ],
+      "defaultValue": "at0029"
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "aqlPath": "/test/dv_count_range",
+  "inputs": [
+    {
+      "type": "INTEGER",
+      "validation": {
+        "range": {
+          "min": 1,
+          "minOp": ">=",
+          "max": 20,
+          "maxOp": "<"
+        }
+      }
+    }
+  ]
+}

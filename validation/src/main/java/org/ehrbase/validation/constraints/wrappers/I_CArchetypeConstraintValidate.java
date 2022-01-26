@@ -24,13 +24,16 @@ package org.ehrbase.validation.constraints.wrappers;
 import org.apache.xmlbeans.SchemaType;
 import org.apache.xmlbeans.XmlBeans;
 import org.apache.xmlbeans.impl.values.XmlAnyTypeImpl;
+import org.ehrbase.validation.CompositionValidator;
 import org.openehr.schemas.v1.ARCHETYPECONSTRAINT;
 
 import javax.xml.namespace.QName;
 
 /**
  * Created by christian on 7/23/2016.
+ * @deprecated as of release 1.7, in favor of {@link CompositionValidator}
  */
+@Deprecated(since = "1.7")
 public interface I_CArchetypeConstraintValidate {
 
     static String getXmlType(ARCHETYPECONSTRAINT archetypeconstraint) {

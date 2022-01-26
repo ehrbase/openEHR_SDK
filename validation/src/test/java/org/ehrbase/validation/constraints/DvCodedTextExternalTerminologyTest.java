@@ -22,8 +22,8 @@ import com.nedap.archie.rm.datatypes.CodePhrase;
 import com.nedap.archie.rm.datavalues.DvCodedText;
 import com.nedap.archie.rm.support.identification.TerminologyId;
 import org.apache.xmlbeans.XmlException;
-import org.ehrbase.validation.constraints.terminology.ExternalTerminologyValidationException;
-import org.ehrbase.validation.constraints.terminology.FhirTerminologyValidationSupport;
+import org.ehrbase.validation.terminology.ExternalTerminologyValidationException;
+import org.ehrbase.validation.terminology.FhirTerminologyValidation;
 import org.ehrbase.validation.constraints.wrappers.CArchetypeConstraint;
 import org.ehrbase.validation.constraints.wrappers.ValidationException;
 import org.junit.Assert;
@@ -41,11 +41,11 @@ import java.io.IOException;
 @SuppressWarnings("HttpUrlsUsage")
 public class DvCodedTextExternalTerminologyTest extends ConstraintTestBase {
 
-    private FhirTerminologyValidationSupport fhirTerminologyValidatorMock;
+    private FhirTerminologyValidation fhirTerminologyValidatorMock;
 
     @Before
     public void setUp() {
-        fhirTerminologyValidatorMock = Mockito.mock(FhirTerminologyValidationSupport.class);
+        fhirTerminologyValidatorMock = Mockito.mock(FhirTerminologyValidation.class);
     }
 
     @Test
@@ -160,7 +160,7 @@ public class DvCodedTextExternalTerminologyTest extends ConstraintTestBase {
 
     @Test
     public void testFailOnError_Enabled() throws IOException, XmlException {
-        FhirTerminologyValidationSupport validationSupport = new FhirTerminologyValidationSupport("https://wrong.terminology.server/fhir");
+        FhirTerminologyValidation validationSupport = new FhirTerminologyValidation("https://wrong.terminology.server/fhir");
         setUpContext("./src/test/resources/constraints/terminology/fhir_codesystem.xml");
 
         CodePhrase codePhrase = new CodePhrase(new TerminologyId("http://hl7.org/fhir/observation-status"), "B");
@@ -175,7 +175,7 @@ public class DvCodedTextExternalTerminologyTest extends ConstraintTestBase {
 
     @Test
     public void testFailOnError_Disabled() throws IOException, XmlException {
-        FhirTerminologyValidationSupport validationSupport = new FhirTerminologyValidationSupport("https://wrong.terminology.server/fhir", false);
+        FhirTerminologyValidation validationSupport = new FhirTerminologyValidation("https://wrong.terminology.server/fhir", false);
         setUpContext("./src/test/resources/constraints/terminology/fhir_codesystem.xml");
 
         CodePhrase codePhrase = new CodePhrase(new TerminologyId("http://terminology.hl7.org/CodeSystem/FDI-surface"), "B");

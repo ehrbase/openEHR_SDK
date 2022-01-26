@@ -24,6 +24,7 @@ package org.ehrbase.validation.constraints.hardwired;
 import com.nedap.archie.rm.datastructures.History;
 import org.ehrbase.validation.constraints.ConstraintMapper;
 import org.ehrbase.validation.constraints.wrappers.ValidationException;
+import org.ehrbase.validation.CompositionValidator;
 
 /**
  * Validate an RM HISTORY node
@@ -32,7 +33,9 @@ import org.ehrbase.validation.constraints.wrappers.ValidationException;
  * <p>
  * Created by christian on 8/11/2016.
  * @see History
+ * @deprecated as of release 1.7, in favor of {@link CompositionValidator}
  */
+@Deprecated(since = "1.7")
 public class CHistory extends StructureConstraint implements I_CHWConstraintValidate {
 
 

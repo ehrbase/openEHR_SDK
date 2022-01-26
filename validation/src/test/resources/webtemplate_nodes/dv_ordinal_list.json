@@ -1,0 +1,28 @@
+{
+  "aqlPath": "/test/dv_ordinal_list",
+  "inputs": [
+    {
+      "list": [
+        {
+          "label": "First",
+          "localizedLabels": {
+            "en": "First",
+            "sl": "*First(en)"
+          },
+          "ordinal": 1,
+          "value": "at0043"
+        },
+        {
+          "label": "Second",
+          "localizedLabels": {
+            "en": "Second",
+            "sl": "*Second(en)"
+          },
+          "ordinal": 2,
+          "value": "at0044"
+        }
+      ],
+      "type": "CODED_TEXT"
+    }
+  ]
+}

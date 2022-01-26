@@ -1,0 +1,9 @@
+{
+  "aqlPath": "/test/dv_text",
+  "inputs": [
+    {
+      "type": "TEXT",
+      "defaultValue": "Default value"
+    }
+  ]
+}

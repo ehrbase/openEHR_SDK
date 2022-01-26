@@ -395,6 +395,19 @@ public class OPTParser {
             newChildren.addAll(childNode);
           }
         }
+
+        if (cattribute instanceof CSINGLEATTRIBUTE) {
+          if (cattribute.getExistence().getLower() == 0) {
+            WebtemplateCardinality cardinality = new WebtemplateCardinality();
+            cardinality.setMin(cattribute.getExistence().getLower());
+            cardinality.setMax(cattribute.getExistence().getUpper());
+            cardinality.setExcludeFromWebTemplate(Boolean.TRUE);
+
+            newChildren.forEach(c -> cardinality.getIds().add(c.getId()));
+
+            node.getCardinalities().add(cardinality);
+          }
+        }
       }
 
       List<WebTemplateNode> ismTransitionList =
@@ -494,6 +507,7 @@ public class OPTParser {
                       .collect(Collectors.toList())));
         }
       }
+
       node.getChildren().addAll(newChildren);
     }
 

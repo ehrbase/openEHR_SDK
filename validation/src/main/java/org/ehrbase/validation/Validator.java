@@ -23,7 +23,7 @@ import com.nedap.archie.rm.datastructures.ItemStructure;
 import org.ehrbase.validation.constraints.ConstraintChecker;
 import org.ehrbase.validation.constraints.OptConstraint;
 import org.ehrbase.validation.constraints.OptConstraintMapper;
-import org.ehrbase.validation.constraints.terminology.ExternalTerminologyValidationSupport;
+import org.ehrbase.validation.terminology.ExternalTerminologyValidation;
 import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
 
 import java.io.Serializable;
@@ -35,14 +35,16 @@ import java.io.Serializable;
  * constraints defined in a 1.4 operational template.
  * <p>
  * An optional boolean flag can be used to disable validation
+ * @deprecated as of release 1.7, in favor of {@link CompositionValidator}
  */
+@Deprecated(since = "1.7")
 public class Validator implements Serializable {
 
     private boolean lenient = false;
 
     private OptConstraintMapper optConstraint;
 
-    private ExternalTerminologyValidationSupport externalTerminologyValidator;
+    private ExternalTerminologyValidation externalTerminologyValidator;
 
     public Validator(OPERATIONALTEMPLATE operationaltemplate, boolean lenient) {
         this.lenient = lenient;
@@ -82,7 +84,8 @@ public class Validator implements Serializable {
         this.lenient = lenient;
     }
 
-    public void setExternalTerminologyValidator(ExternalTerminologyValidationSupport externalTerminologyValidator) {
+    public void setExternalTerminologyValidator(
+        ExternalTerminologyValidation externalTerminologyValidator) {
         this.externalTerminologyValidator = externalTerminologyValidator;
     }
 }

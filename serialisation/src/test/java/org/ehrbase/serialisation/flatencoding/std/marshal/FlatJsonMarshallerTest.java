@@ -175,11 +175,12 @@ public class FlatJsonMarshallerTest {
         new String[] {
           "Missing path: test_all_types/test_all_types:0/identifier|id, value: 55175056",
           "Missing path: test_all_types/test_all_types:0/proportion_any|type, value: 1",
-          "Missing path: test_all_types/test_all_types3:0/section_2/section_3/test_all_types:0/current_activity/_name, value: List",
-          "Missing path: test_all_types/test_all_types3:0/section_2/test_all_types:0/_name, value: single",
-          "Missing path: test_all_types/test_all_types:0/proportion_any|precision, value: 0"
+          "Missing path: test_all_types/test_all_types:0/proportion_any|precision, value: 1",
+          "Missing path: test_all_types/test_all_types:0/duration_any, value: P1Y2M10DT2H30M",
+          "Missing path: test_all_types/test_all_types2:0/uri, value: www.iana.org",
         },
         new String[] {
+          "Extra path: test_all_types/test_all_types:0/duration_any, value: PT30M",
           "Extra path: test_all_types/test_all_types:0/identifier, value: 55175056",
           "Extra path: test_all_types/test_all_types:0/proportion_any|type, value: 1.0"
         });

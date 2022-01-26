@@ -242,7 +242,7 @@ public class WebTemplateNode implements Serializable {
     return children.stream().filter(n -> n.getId().equals(id)).findAny();
   }
 
-  public String buildRelativPath(WebTemplateNode child) {
+  public String buildRelativePath(WebTemplateNode child) {
     return FlatPath.removeStart(new FlatPath(child.getAqlPath()), new FlatPath(this.getAqlPath()))
         .toString();
   }
@@ -361,5 +361,15 @@ public class WebTemplateNode implements Serializable {
         annotations,
         proportionTypes,
         cardinalities);
+  }
+
+  @Override
+  public String toString() {
+    return "WebTemplateNode{" +
+        "id='" + id + '\'' +
+        ", name='" + name + '\'' +
+        ", rmType='" + rmType + '\'' +
+        ", aqlPath='" + aqlPath + '\'' +
+        '}';
   }
 }

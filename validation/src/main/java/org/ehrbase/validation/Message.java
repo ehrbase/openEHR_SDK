@@ -24,7 +24,9 @@ package org.ehrbase.validation;
  * - a code
  * - the AQL path of the failing item
  * - a description
+ * @deprecated as of release 1.7, in favor of {@link CompositionValidator}
  */
+@Deprecated(since = "1.7")
 public class Message {
 
     /**

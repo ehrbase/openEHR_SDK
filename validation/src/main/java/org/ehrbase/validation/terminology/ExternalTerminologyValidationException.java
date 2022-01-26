@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ehrbase.validation.constraints.terminology;
+package org.ehrbase.validation.terminology;
 
 /**
  * Represents an error that occurs while communicating with an external terminology server.

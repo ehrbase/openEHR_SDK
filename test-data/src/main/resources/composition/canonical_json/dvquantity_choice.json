@@ -103,6 +103,14 @@
         "_type": "DV_TEXT",
         "value": "Laborergebnis"
       },
+      "archetype_details": {
+        "_type": "ARCHETYPED",
+        "archetype_id": {
+          "_type": "ARCHETYPE_ID",
+          "value": "openEHR-EHR-OBSERVATION.laboratory_test_result.v1"
+        },
+        "rm_version": "1.0.4"
+      },
       "language": {
         "terminology_id": {
           "value": "ISO_639-1"
