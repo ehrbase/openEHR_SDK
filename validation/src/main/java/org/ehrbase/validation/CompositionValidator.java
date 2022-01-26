@@ -28,6 +28,8 @@ import org.ehrbase.webtemplate.parser.OPTParser;
 import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
 
 /**
+ * Validator that validates composition based on Operational Template / Web Template.
+ *
  * @since 1.7
  */
 public class CompositionValidator {
@@ -44,11 +46,25 @@ public class CompositionValidator {
     this.externalTerminologyValidation = externalTerminologyValidation;
   }
 
+  /**
+   * Validates the composition using an Operational Template.
+   *
+   * @param composition the composition to validate
+   * @param template    the operational template used to validate the composition
+   * @return the list of constraint violations
+   */
   public List<ConstraintViolation> validate(Composition composition,
       OPERATIONALTEMPLATE template) {
     return validate(composition, new OPTParser(template).parse());
   }
 
+  /**
+   * Validates the composition using a Web Template.
+   *
+   * @param composition the composition to validate
+   * @param template    the web template used to validate the composition
+   * @return the list of constraint violations
+   */
   public List<ConstraintViolation> validate(Composition composition, WebTemplate template) {
     var result = rmObjectValidator.validate(composition).stream()
         .map(validationMessage -> new ConstraintViolation(validationMessage.getPath(),
@@ -63,10 +79,20 @@ public class CompositionValidator {
     return result;
   }
 
+  /**
+   * Enable or disable invariant checks in archie library.
+   *
+   * @param validateInvariants the boolean value
+   */
   public void setRunInvariantChecks(boolean validateInvariants) {
     rmObjectValidator.setRunInvariantChecks(validateInvariants);
   }
 
+  /**
+   * Sets the {@link ExternalTerminologyValidation} used to validate external terminology.
+   *
+   * @param externalTerminologyValidation the external terminology validator
+   */
   public void setExternalTerminologyValidation(
       ExternalTerminologyValidation externalTerminologyValidation) {
     this.externalTerminologyValidation = externalTerminologyValidation;
