@@ -21,72 +21,62 @@ package org.ehrbase.serialisation.flatencoding;
 import com.nedap.archie.rm.composition.Composition;
 import com.nedap.archie.rminfo.ArchieRMInfoLookup;
 import com.nedap.archie.rmobjectvalidator.RMObjectValidator;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import org.apache.commons.io.IOUtils;
 import org.assertj.core.api.SoftAssertions;
 import org.ehrbase.serialisation.RMDataFormat;
 import org.ehrbase.serialisation.templateprovider.TestDataTemplateProvider;
 import org.ehrbase.test_data.composition.CompositionTestDataStructuredJson;
 import org.ehrbase.test_data.operationaltemplate.OperationalTemplateTestData;
-//import org.ehrbase.validation.Validator;
 import org.junit.jupiter.api.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.skyscreamer.jsonassert.JSONCompareMode;
 
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-
 class StructuredJsonTest {
-    private static final TestDataTemplateProvider templateProvider = new TestDataTemplateProvider();
 
-    @Test
-   void testRoundTrip() throws IOException {
+  private static final TestDataTemplateProvider templateProvider = new TestDataTemplateProvider();
 
-        CompositionTestDataStructuredJson testData = CompositionTestDataStructuredJson.MULTI_LIST;
-        String templateId = OperationalTemplateTestData.MULTI_LIST.getTemplateId();
+  @Test
+  void testRoundTrip() throws IOException {
+    CompositionTestDataStructuredJson testData = CompositionTestDataStructuredJson.MULTI_LIST;
+    String templateId = OperationalTemplateTestData.MULTI_LIST.getTemplateId();
 
+    test(testData, templateId);
+  }
 
-        test(testData, templateId);
-    }
+  @Test
+  void testRoundTripCorona() throws IOException {
+    CompositionTestDataStructuredJson testData = CompositionTestDataStructuredJson.CORONA;
+    String templateId = OperationalTemplateTestData.CORONA_ANAMNESE.getTemplateId();
 
-    @Test
-    void testRoundTripCorona() throws IOException {
+    test(testData, templateId);
+  }
 
-        CompositionTestDataStructuredJson testData = CompositionTestDataStructuredJson.CORONA;
-        String templateId = OperationalTemplateTestData.CORONA_ANAMNESE.getTemplateId();
+  private void test(CompositionTestDataStructuredJson testData, String templateId)
+      throws IOException {
+    RMDataFormat cut =
+        new FlatJasonProvider(templateProvider).buildFlatJson(FlatFormat.STRUCTURED, templateId);
 
+    String flat = IOUtils.toString(testData.getStream(), StandardCharsets.UTF_8);
+    Composition unmarshal = cut.unmarshal(flat);
 
-        test(testData, templateId);
-    }
+    SoftAssertions softAssertions = new SoftAssertions();
 
-    private void test(CompositionTestDataStructuredJson testData, String templateId) throws IOException {
-        RMDataFormat cut =
-                new FlatJasonProvider(templateProvider).buildFlatJson(FlatFormat.STRUCTURED, templateId);
+    softAssertions.assertThat(unmarshal).isNotNull();
 
-        String flat = IOUtils.toString(testData.getStream(), StandardCharsets.UTF_8);
-        Composition unmarshal = cut.unmarshal(flat);
+    RMObjectValidator rmObjectValidator =
+        new RMObjectValidator(ArchieRMInfoLookup.getInstance(), s -> null);
 
-        SoftAssertions softAssertions = new SoftAssertions();
+    softAssertions
+        .assertThat(rmObjectValidator.validate(unmarshal))
+        .filteredOn(m -> !m.getMessage().contains("Inv_null_flavour_indicated"))
+        .containsExactlyInAnyOrder();
 
-        softAssertions.assertThat(unmarshal).isNotNull();
+    String actual = cut.marshal(unmarshal);
 
-//        try {
-//            new Validator(templateProvider.find(templateId).get()).check(unmarshal);
-//        } catch (Exception e) {
-//            softAssertions.fail(e.getMessage());
-//        }
+    String expected = IOUtils.toString(testData.getStream(), StandardCharsets.UTF_8);
 
-        RMObjectValidator rmObjectValidator =
-                new RMObjectValidator(ArchieRMInfoLookup.getInstance(), s -> null);
-
-        softAssertions
-                .assertThat(rmObjectValidator.validate(unmarshal))
-                .filteredOn(m -> !m.getMessage().contains("Inv_null_flavour_indicated"))
-                .containsExactlyInAnyOrder();
-
-        String actual = cut.marshal(unmarshal);
-
-        String expected = IOUtils.toString(testData.getStream(), StandardCharsets.UTF_8);
-
-        JSONAssert.assertEquals(expected,actual, JSONCompareMode.NON_EXTENSIBLE);
-    }
+    JSONAssert.assertEquals(expected, actual, JSONCompareMode.NON_EXTENSIBLE);
+  }
 }
