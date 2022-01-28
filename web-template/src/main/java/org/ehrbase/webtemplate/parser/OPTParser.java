@@ -508,6 +508,24 @@ public class OPTParser {
         }
       }
 
+      //Add missing names to aqlPath if needed
+      newChildren.stream()
+              // node dos not already have name in aql
+                      .filter(c -> !node.isRelativePathNameDependent(c))
+              // there  exist a node which maches  the aql withouth name but not with name
+                              .filter(c -> newChildren.stream().anyMatch(n -> n.getAqlPath(false).equals(c.getAqlPath(false))  && !n.getAqlPath(true).equals(c.getAqlPath(true))))
+                                      .forEach( c -> {
+                                        FlatPath flatPath = new FlatPath(c.getAqlPath(true));
+                                        flatPath.getLast().addOtherPredicate("name/value",c.getName());
+
+                                        c.getChildren().forEach(
+                                                n -> replaceParentAql(n,c.getAqlPath(),flatPath.format(true))
+                                        );
+
+                                        c.setAqlPath(flatPath.format(true));
+                                              }
+                                      );
+
       node.getChildren().addAll(newChildren);
     }
 
@@ -604,6 +622,17 @@ public class OPTParser {
         });
 
     node.getChildren().forEach(child -> addInContext(node, child));
+  }
+
+  private void replaceParentAql(WebTemplateNode node, String oldAqlPath, String newAql) {
+
+    String childAql = node.getAqlPath();
+
+    FlatPath relativeAql = FlatPath.removeStart(new FlatPath(childAql), new FlatPath(oldAqlPath));
+
+    node.setAqlPath(FlatPath.addEnd(new FlatPath(newAql), relativeAql).format(true));
+
+    node.getChildren().forEach(n -> replaceParentAql(n, childAql,node.getAqlPath())    );
   }
 
   private Optional<WebTemplateNode> buildNameNode(

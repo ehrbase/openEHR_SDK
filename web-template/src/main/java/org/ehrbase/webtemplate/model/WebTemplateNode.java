@@ -24,17 +24,13 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.nedap.archie.rm.archetyped.Locatable;
 import com.nedap.archie.rminfo.ArchieRMInfoLookup;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import org.ehrbase.webtemplate.parser.FlatPath;
+
+import java.io.Serializable;
+import java.util.*;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class WebTemplateNode implements Serializable {
@@ -247,6 +243,9 @@ public class WebTemplateNode implements Serializable {
         .toString();
   }
 
+  public boolean isRelativePathNameDependent(WebTemplateNode child){
+    return FlatPath.removeStart(new FlatPath(child.getAqlPath()), new FlatPath(this.getAqlPath())).getLast().findOtherPredicate("name/value") != null;
+  }
   public List<WebTemplateNode> findMatching(Predicate<WebTemplateNode> filter) {
 
     List<WebTemplateNode> matching =

@@ -20,13 +20,14 @@ import com.nedap.archie.base.MultiplicityInterval;
 import com.nedap.archie.rm.RMObject;
 import com.nedap.archie.rm.archetyped.Locatable;
 import com.nedap.archie.rmobjectvalidator.RMObjectValidationMessageIds;
+import org.apache.commons.lang3.BooleanUtils;
+import org.ehrbase.validation.ConstraintViolation;
+import org.ehrbase.webtemplate.model.WebTemplateNode;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import org.apache.commons.lang3.BooleanUtils;
-import org.ehrbase.validation.ConstraintViolation;
-import org.ehrbase.webtemplate.model.WebTemplateNode;
 
 /**
  * Default {@link ConstraintValidator} implementation that validates cardinalities.
@@ -62,7 +63,7 @@ public class DefaultValidator implements ConstraintValidator<RMObject> {
       var count = 0;
       for (var item : locatable.itemsAtPath(node.buildRelativePath(childNode))) {
         if (item instanceof Locatable) {
-          if (Objects.equals(((Locatable) item).getNameAsString(), childNode.getName())) {
+          if ( !node.isRelativePathNameDependent(childNode) || Objects.equals(((Locatable) item).getNameAsString(), childNode.getName())) {
             count++;
           }
         } else {
