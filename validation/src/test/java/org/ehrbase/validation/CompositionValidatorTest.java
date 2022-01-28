@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.ehrbase.validation.webtemplate;
+package org.ehrbase.validation;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -39,7 +39,7 @@ import org.openehr.schemas.v1.TemplateDocument;
  *
  */
 @SuppressWarnings("java:S5976")
-class ValidatorTest {
+class CompositionValidatorTest {
 
   private final CompositionValidator validator = new CompositionValidator();
 

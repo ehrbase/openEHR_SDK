@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.ehrbase.validation.webtemplate;
+package org.ehrbase.validation;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -25,14 +25,14 @@ import org.ehrbase.serialisation.flatencoding.FlatFormat;
 import org.ehrbase.serialisation.flatencoding.FlatJasonProvider;
 import org.ehrbase.test_data.composition.CompositionTestDataSimSDTJson;
 import org.ehrbase.test_data.operationaltemplate.OperationalTemplateTestData;
-import org.ehrbase.validation.CompositionValidator;
+import org.ehrbase.validation.webtemplate.TestDataTemplateProvider;
 import org.junit.jupiter.api.Test;
 
 /**
  *
  */
 @SuppressWarnings("java:S5976")
-class FlatValidatorTest {
+class FlatCompositionValidatorTest {
 
   private final CompositionValidator validator;
 
@@ -40,7 +40,7 @@ class FlatValidatorTest {
 
   private final FlatJasonProvider flatJsonProvider;
 
-  public FlatValidatorTest() {
+  public FlatCompositionValidatorTest() {
     validator = new CompositionValidator();
     templateProvider = new TestDataTemplateProvider();
     flatJsonProvider = new FlatJasonProvider(templateProvider);
