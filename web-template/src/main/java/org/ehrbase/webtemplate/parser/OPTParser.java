@@ -396,17 +396,15 @@ public class OPTParser {
           }
         }
 
-        if (cattribute instanceof CSINGLEATTRIBUTE) {
-          if (cattribute.getExistence().getLower() == 0) {
-            WebtemplateCardinality cardinality = new WebtemplateCardinality();
-            cardinality.setMin(cattribute.getExistence().getLower());
-            cardinality.setMax(cattribute.getExistence().getUpper());
-            cardinality.setExcludeFromWebTemplate(Boolean.TRUE);
+        if (cattribute instanceof CSINGLEATTRIBUTE && cattribute.getExistence().getLower() == 0) {
+          WebtemplateCardinality cardinality = new WebtemplateCardinality();
+          cardinality.setMin(cattribute.getExistence().getLower());
+          cardinality.setMax(cattribute.getExistence().getUpper());
+          cardinality.setExcludeFromWebTemplate(Boolean.TRUE);
 
-            newChildren.forEach(c -> cardinality.getIds().add(c.getId()));
+          newChildren.forEach(c -> cardinality.getIds().add(c.getId()));
 
-            node.getCardinalities().add(cardinality);
-          }
+          node.getCardinalities().add(cardinality);
         }
       }
 

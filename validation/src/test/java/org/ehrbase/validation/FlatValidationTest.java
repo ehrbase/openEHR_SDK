@@ -32,7 +32,7 @@ import org.junit.jupiter.api.Test;
  *
  */
 @SuppressWarnings("java:S5976")
-class FlatCompositionValidatorTest {
+class FlatValidationTest {
 
   private final CompositionValidator validator;
 
@@ -40,7 +40,7 @@ class FlatCompositionValidatorTest {
 
   private final FlatJasonProvider flatJsonProvider;
 
-  public FlatCompositionValidatorTest() {
+  public FlatValidationTest() {
     validator = new CompositionValidator();
     templateProvider = new TestDataTemplateProvider();
     flatJsonProvider = new FlatJasonProvider(templateProvider);
