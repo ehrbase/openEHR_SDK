@@ -2,25 +2,33 @@
   "_type": "COMPOSITION",
   "name": {
     "_type": "DV_TEXT",
-    "value": "Ergebnisbericht"
+    "value": "Virologischer Befund"
   },
   "archetype_details": {
+    "_type": "ARCHETYPED",
     "archetype_id": {
+      "_type": "ARCHETYPE_ID",
       "value": "openEHR-EHR-COMPOSITION.report-result.v1"
     },
     "template_id": {
+      "_type": "TEMPLATE_ID",
       "value": "Virologischer Befund"
     },
     "rm_version": "1.0.4"
   },
+  "archetype_node_id": "openEHR-EHR-COMPOSITION.report-result.v1",
   "language": {
+    "_type": "CODE_PHRASE",
     "terminology_id": {
+      "_type": "TERMINOLOGY_ID",
       "value": "ISO_639-1"
     },
     "code_string": "de"
   },
   "territory": {
+    "_type": "CODE_PHRASE",
     "terminology_id": {
+      "_type": "TERMINOLOGY_ID",
       "value": "ISO_3166-1"
     },
     "code_string": "DE"
@@ -29,7 +37,9 @@
     "_type": "DV_CODED_TEXT",
     "value": "event",
     "defining_code": {
+      "_type": "CODE_PHRASE",
       "terminology_id": {
+        "_type": "TERMINOLOGY_ID",
         "value": "openehr"
       },
       "code_string": "433"
@@ -37,7 +47,7 @@
   },
   "composer": {
     "_type": "PARTY_IDENTIFIED",
-    "name": "Test"
+    "name": "Silvia Blake"
   },
   "context": {
     "_type": "EVENT_CONTEXT",
@@ -49,7 +59,9 @@
       "_type": "DV_CODED_TEXT",
       "value": "secondary medical care",
       "defining_code": {
+        "_type": "CODE_PHRASE",
         "terminology_id": {
+          "_type": "TERMINOLOGY_ID",
           "value": "openehr"
         },
         "code_string": "232"
@@ -90,7 +102,16 @@
           "_type": "CLUSTER",
           "name": {
             "_type": "DV_TEXT",
-            "value": "Fallnummer"
+            "value": "Fallidentifikation"
+          },
+          "archetype_details": {
+            "archetype_id": {
+              "value": "openEHR-EHR-CLUSTER.case_identification.v0"
+            },
+            "template_id": {
+              "value": "Virologischer Befund"
+            },
+            "rm_version": "1.0.4"
           },
           "items": [
             {
@@ -109,7 +130,7 @@
           "archetype_node_id": "openEHR-EHR-CLUSTER.case_identification.v0"
         }
       ],
-      "archetype_node_id": "[at0001]"
+      "archetype_node_id": "at0001"
     }
   },
   "content": [
@@ -119,14 +140,27 @@
         "_type": "DV_TEXT",
         "value": "Befund"
       },
+      "archetype_details": {
+        "_type": "ARCHETYPED",
+        "archetype_id": {
+          "_type": "ARCHETYPE_ID",
+          "value": "openEHR-EHR-OBSERVATION.laboratory_test_result.v1"
+        },
+        "rm_version": "1.0.4"
+      },
+      "archetype_node_id": "openEHR-EHR-OBSERVATION.laboratory_test_result.v1",
       "language": {
+        "_type": "CODE_PHRASE",
         "terminology_id": {
+          "_type": "TERMINOLOGY_ID",
           "value": "ISO_639-1"
         },
         "code_string": "de"
       },
       "encoding": {
+        "_type": "CODE_PHRASE",
         "terminology_id": {
+          "_type": "TERMINOLOGY_ID",
           "value": "IANA_character-sets"
         },
         "code_string": "UTF-8"
@@ -134,60 +168,16 @@
       "subject": {
         "_type": "PARTY_SELF"
       },
-      "protocol": {
-        "_type": "ITEM_TREE",
-        "name": {
-          "_type": "DV_TEXT",
-          "value": "Tree"
-        },
-        "items": [
-          {
-            "_type": "CLUSTER",
-            "name": {
-              "_type": "DV_TEXT",
-              "value": "Details der Testanforderung"
-            },
-            "items": [
-              {
-                "_type": "ELEMENT",
-                "name": {
-                  "_type": "DV_TEXT",
-                  "value": "Auftrags-ID des anfordernden/einsendenden Systems"
-                },
-                "value": {
-                  "_type": "DV_IDENTIFIER",
-                  "issuer": "SAP ish med",
-                  "id": "6d057bac-08ae-4a20-9557-22d2cbf57ce6"
-                },
-                "archetype_node_id": "at0062"
-              },
-              {
-                "_type": "ELEMENT",
-                "name": {
-                  "_type": "DV_TEXT",
-                  "value": "Auftrags-ID (Empfänger)"
-                },
-                "value": {
-                  "_type": "DV_IDENTIFIER",
-                  "issuer": "SAP ish med",
-                  "id": "5d335154-c276-4f73-9427-22d70052ac97"
-                },
-                "archetype_node_id": "at0063"
-              }
-            ],
-            "archetype_node_id": "at0094"
-          }
-        ],
-        "archetype_node_id": "at0004"
-      },
       "data": {
+        "_type": "HISTORY",
         "name": {
           "_type": "DV_TEXT",
           "value": "Event Series"
         },
+        "archetype_node_id": "at0001",
         "origin": {
           "_type": "DV_DATE_TIME",
-          "value": "2020-04-02T12:00:00Z"
+          "value": "2020-01-21T12:00:00"
         },
         "events": [
           {
@@ -196,9 +186,10 @@
               "_type": "DV_TEXT",
               "value": "Jedes Ereignis"
             },
+            "archetype_node_id": "at0002",
             "time": {
               "_type": "DV_DATE_TIME",
-              "value": "2020-04-02T14:00:00Z"
+              "value": "2020-01-21T12:00:00"
             },
             "data": {
               "_type": "ITEM_TREE",
@@ -206,6 +197,7 @@
                 "_type": "DV_TEXT",
                 "value": "Tree"
               },
+              "archetype_node_id": "at0003",
               "items": [
                 {
                   "_type": "ELEMENT",
@@ -213,11 +205,11 @@
                     "_type": "DV_TEXT",
                     "value": "Labortest-Bezeichnung"
                   },
+                  "archetype_node_id": "at0005",
                   "value": {
                     "_type": "DV_TEXT",
                     "value": "Virologische Untersuchung"
-                  },
-                  "archetype_node_id": "at0005"
+                  }
                 },
                 {
                   "_type": "CLUSTER",
@@ -225,125 +217,98 @@
                     "_type": "DV_TEXT",
                     "value": "Probe"
                   },
-                  "items": [
-                    {
-                      "_type": "ELEMENT",
-                      "name": {
-                        "_type": "DV_TEXT",
-                        "value": "Zeitpunkt der Probenentnahme"
-                      },
-                      "value": {
-                        "_type": "DV_DATE_TIME",
-                        "value": "2020-04-01T12:00:00Z"
-                      },
-                      "archetype_node_id": "at0015"
+                  "archetype_details": {
+                    "_type": "ARCHETYPED",
+                    "archetype_id": {
+                      "_type": "ARCHETYPE_ID",
+                      "value": "openEHR-EHR-CLUSTER.specimen.v1"
                     },
+                    "rm_version": "1.0.4"
+                  },
+                  "archetype_node_id": "openEHR-EHR-CLUSTER.specimen.v1",
+                  "items": [
                     {
                       "_type": "ELEMENT",
                       "name": {
                         "_type": "DV_TEXT",
                         "value": "Probenart"
                       },
+                      "archetype_node_id": "at0029",
                       "value": {
                         "_type": "DV_TEXT",
-                        "value": "Blut"
-                      },
-                      "archetype_node_id": "at0029"
-                    },
-                    {
-                      "_type": "ELEMENT",
-                      "name": {
-                        "_type": "DV_TEXT",
-                        "value": "Zeitpunkt des Probeneingangs"
-                      },
-                      "value": {
-                        "_type": "DV_DATE_TIME",
-                        "value": "2020-04-02T09:00:00Z"
-                      },
-                      "archetype_node_id": "at0034"
-                    },
-                    {
-                      "_type": "ELEMENT",
-                      "name": {
-                        "_type": "DV_TEXT",
-                        "value": "Kommentar"
-                      },
-                      "value": {
-                        "_type": "DV_TEXT",
-                        "value": "Kommentar zur Probe"
-                      },
-                      "archetype_node_id": "at0045"
-                    },
-                    {
-                      "_type": "ELEMENT",
-                      "name": {
-                        "_type": "DV_TEXT",
-                        "value": "Kommentar des Probennehmers"
-                      },
-                      "value": {
-                        "_type": "DV_TEXT",
-                        "value": "Kommentar"
-                      },
-                      "archetype_node_id": "at0079"
+                        "value": "Virologische Untersuchung"
+                      }
                     }
-                  ],
-                  "archetype_node_id": "openEHR-EHR-CLUSTER.specimen.v1"
+                  ]
                 },
                 {
                   "_type": "CLUSTER",
                   "name": {
                     "_type": "DV_TEXT",
-                    "value": "Test Panel"
+                    "value": "Kultur"
                   },
+                  "archetype_details": {
+                    "_type": "ARCHETYPED",
+                    "archetype_id": {
+                      "_type": "ARCHETYPE_ID",
+                      "value": "openEHR-EHR-CLUSTER.laboratory_test_panel.v0"
+                    },
+                    "rm_version": "1.0.4"
+                  },
+                  "archetype_node_id": "openEHR-EHR-CLUSTER.laboratory_test_panel.v0",
                   "items": [
                     {
                       "_type": "CLUSTER",
                       "name": {
                         "_type": "DV_TEXT",
-                        "value": "Probe"
+                        "value": "Pro Virus"
                       },
+                      "archetype_details": {
+                        "_type": "ARCHETYPED",
+                        "archetype_id": {
+                          "_type": "ARCHETYPE_ID",
+                          "value": "openEHR-EHR-CLUSTER.laboratory_test_analyte.v1"
+                        },
+                        "rm_version": "1.0.4"
+                      },
+                      "archetype_node_id": "openEHR-EHR-CLUSTER.laboratory_test_analyte.v1",
                       "items": [
                         {
                           "_type": "ELEMENT",
                           "name": {
                             "_type": "DV_TEXT",
-                            "value": "Wert"
+                            "value": "Virus"
                           },
+                          "archetype_node_id": "at0024",
                           "value": {
-                            "_type": "DV_QUANTITY",
-                            "units": "ct",
-                            "magnitude": 32.29986924248519
-                          },
-                          "archetype_node_id": "at0001"
+                            "_type": "DV_TEXT",
+                            "value": "Virus"
+                          }
                         },
                         {
                           "_type": "ELEMENT",
                           "name": {
                             "_type": "DV_TEXT",
-                            "value": "Blut"
+                            "value": "Zugehörige Laborprobe"
                           },
+                          "archetype_node_id": "at0026",
                           "value": {
-                            "_type": "DV_TEXT",
-                            "value": "SARS-Cov-2"
-                          },
-                          "archetype_node_id": "at0024"
+                            "_type": "DV_IDENTIFIER",
+                            "issuer": "Issuer",
+                            "assigner": "Assigner",
+                            "id": "73b166ae-1c28-4ce0-8c08-a9587d8fd95a",
+                            "type": "Prescription"
+                          }
                         }
-                      ],
-                      "archetype_node_id": "openEHR-EHR-CLUSTER.laboratory_test_analyte.v1"
+                      ]
                     }
-                  ],
-                  "archetype_node_id": "openEHR-EHR-CLUSTER.laboratory_test_panel.v0"
+                  ]
                 }
-              ],
-              "archetype_node_id": "at0003"
-            },
-            "archetype_node_id": "at0002"
+              ]
+            }
           }
-        ],
-        "archetype_node_id": "at0001"
-      },
-      "archetype_node_id": "openEHR-EHR-OBSERVATION.laboratory_test_result.v1"
+        ]
+      }
     }
-  ],
-  "archetype_node_id": "openEHR-EHR-COMPOSITION.report-result.v1"
+  ]
 }

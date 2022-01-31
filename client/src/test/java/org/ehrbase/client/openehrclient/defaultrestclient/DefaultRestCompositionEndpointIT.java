@@ -39,7 +39,9 @@ import org.ehrbase.client.classgenerator.examples.geccoserologischerbefundcompos
 import org.ehrbase.client.classgenerator.examples.geccoserologischerbefundcomposition.definition.AnforderungDefiningCode;
 import org.ehrbase.client.classgenerator.examples.geccoserologischerbefundcomposition.definition.BefundJedesEreignisPointEvent;
 import org.ehrbase.client.classgenerator.examples.geccoserologischerbefundcomposition.definition.BefundObservation;
+import org.ehrbase.client.classgenerator.examples.geccoserologischerbefundcomposition.definition.LabortestBezeichnungDefiningCode;
 import org.ehrbase.client.classgenerator.examples.geccoserologischerbefundcomposition.definition.ProAnalytQuantitativesErgebnisDvCount;
+import org.ehrbase.client.classgenerator.examples.geccoserologischerbefundcomposition.definition.VirusnachweistestDefiningCode;
 import org.ehrbase.client.classgenerator.examples.virologischerbefundcomposition.VirologischerBefundComposition;
 import org.ehrbase.client.classgenerator.examples.virologischerbefundcomposition.definition.ProVirusCluster;
 import org.ehrbase.client.classgenerator.shareddefinition.Language;
@@ -350,6 +352,10 @@ openEhrClient.compositionEndpoint(ehr).mergeCompositionEntity(proxy);
         OffsetDateTime.of(2019, 04, 03, 22, 00, 00, 00, ZoneOffset.UTC));
     BefundJedesEreignisPointEvent event = new BefundJedesEreignisPointEvent();
     event.setTimeValue(OffsetDateTime.of(2019, 04, 03, 22, 00, 00, 00, ZoneOffset.UTC));
+    event.setLabortestBezeichnungDefiningCode(LabortestBezeichnungDefiningCode.SEROLOGIC_TEST_PROCEDURE);
+    event.setVirusnachweistestDefiningCode(
+        VirusnachweistestDefiningCode.SARS_COV2_COVID19_AB_PRESENCE_IN_SERUM_OR_PLASMA_BY_IMMUNOASSAY);
+    event.setErgebnisStatusValue("registered");
     befundObservation.getJedesEreignis().add(event);
 
     Enhancer enhancerProAnalytQuantitativesErgebnisDvCount = new Enhancer();
