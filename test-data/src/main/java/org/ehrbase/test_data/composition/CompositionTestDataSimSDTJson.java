@@ -166,6 +166,10 @@ public enum CompositionTestDataSimSDTJson {
           "ehrbase_conformance_observation",
           "ehrbase_conformance_observation.json",
           OperationalTemplateTestData.CONFORMANCE),
+  EHRBASE_CONFORMANCE_EVALUATION(
+          "ehrbase_conformance_evaluation",
+          "ehrbase_conformance_evaluation.json",
+          OperationalTemplateTestData.CONFORMANCE),
   EHRBASE_CONFORMANCE_ELEMENT_FEEDER_AUDIT(
           "ehrbase_conformance_Element_feeder_audit",
           "ehrbase_conformance_Element_feeder_audit.json",
