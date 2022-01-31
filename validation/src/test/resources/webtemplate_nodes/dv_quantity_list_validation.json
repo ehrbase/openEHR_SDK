@@ -1,0 +1,49 @@
+{
+  "aqlPath": "/test/dv_quantity_list_validation",
+  "inputs": [
+    {
+      "suffix": "magnitude",
+      "type": "DECIMAL",
+      "defaultValue": 50
+    },
+    {
+      "suffix": "unit",
+      "type": "CODED_TEXT",
+      "defaultValue": "kg",
+      "list": [
+        {
+          "label": "kg",
+          "validation": {
+            "range": {
+              "min": 0,
+              "minOp": ">=",
+              "max": 200,
+              "maxOp": "<="
+            },
+            "precision": {
+              "max": 1,
+              "min": 1
+            }
+          },
+          "value": "kg"
+        },
+        {
+          "label": "lb",
+          "validation": {
+            "range": {
+              "min": 0,
+              "minOp": ">=",
+              "max": 400,
+              "maxOp": "<="
+            },
+            "precision": {
+              "max": 1,
+              "min": 1
+            }
+          },
+          "value": "lb"
+        }
+      ]
+    }
+  ]
+}

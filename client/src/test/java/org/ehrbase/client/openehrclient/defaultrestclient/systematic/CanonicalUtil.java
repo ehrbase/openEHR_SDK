@@ -23,7 +23,7 @@ import com.nedap.archie.rm.RMObject;
 import com.nedap.archie.rm.archetyped.Locatable;
 import com.nedap.archie.rminfo.ArchieRMInfoLookup;
 import org.ehrbase.serialisation.jsonencoding.CanonicalJson;
-import org.ehrbase.validation.constraints.util.SnakeToCamel;
+import org.ehrbase.serialisation.util.SnakeToCamel;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;

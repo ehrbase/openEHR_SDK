@@ -1,0 +1,45 @@
+{
+  "aqlPath": "/test/dv_duration_period",
+  "inputs": [
+    {
+      "suffix": "year",
+      "type": "INTEGER",
+      "validation": {
+        "range": {
+          "minOp": ">",
+          "min": 0
+        }
+      }
+    },
+    {
+      "suffix": "month",
+      "type": "INTEGER",
+      "validation": {
+        "range": {
+          "minOp": ">",
+          "min": 1
+        }
+      }
+    },
+    {
+      "suffix": "week",
+      "type": "INTEGER",
+      "validation": {
+        "range": {
+          "minOp": ">=",
+          "min": 0
+        }
+      }
+    },
+    {
+      "suffix": "day",
+      "type": "INTEGER",
+      "validation": {
+        "range": {
+          "minOp": ">=",
+          "min": 0
+        }
+      }
+    }
+  ]
+}

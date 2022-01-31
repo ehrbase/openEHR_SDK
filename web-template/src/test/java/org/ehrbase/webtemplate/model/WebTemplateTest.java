@@ -71,6 +71,28 @@ public class WebTemplateTest {
         .isTrue();
   }
 
+
+  @Test
+  public void isRelativePathNameDependent() throws IOException, XmlException {
+    OPERATIONALTEMPLATE template =
+            TemplateDocument.Factory.parse(OperationalTemplateTestData.CORONA_ANAMNESE.getStream())
+                    .getTemplate();
+
+    OPTParser cut = new OPTParser(template);
+    WebTemplate actual = cut.parse();
+
+
+    WebTemplateNode node = actual
+            .findByAqlPath("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Symptome']")
+            .get();
+
+
+    Assertions.assertThat(actual.getTree().isRelativePathNameDependent(node)).isTrue();
+
+
+    Assertions.assertThat(node.isRelativePathNameDependent(node.findChildById("uid").get())).isFalse();
+  }
+
   @Test
   public void testQueryUpperUnbounded() throws IOException, XmlException {
     OPERATIONALTEMPLATE operationaltemplate =

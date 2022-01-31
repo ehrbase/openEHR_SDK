@@ -1,0 +1,41 @@
+{
+  "aqlPath": "/test/dv_duration_duration",
+  "inputs": [
+    {
+      "suffix": "hour",
+      "type": "INTEGER",
+      "validation": {
+        "range": {
+          "minOp": ">=",
+          "min": 0,
+          "maxOp": "<=",
+          "max": 12
+        }
+      }
+    },
+    {
+      "suffix": "minute",
+      "type": "INTEGER",
+      "validation": {
+        "range": {
+          "minOp": ">=",
+          "min": 0,
+          "maxOp": "<=",
+          "max": 30
+        }
+      }
+    },
+    {
+      "suffix": "second",
+      "type": "INTEGER",
+      "validation": {
+        "range": {
+          "minOp": ">=",
+          "min": 0,
+          "maxOp": "<=",
+          "max": 15
+        }
+      }
+    }
+  ]
+}
