@@ -1,0 +1,13 @@
+{
+  "aqlPath": "/test/dv_proportion",
+  "inputs": [
+    {
+      "suffix": "numerator",
+      "type": "DECIMAL"
+    },
+    {
+      "suffix": "denominator",
+      "type": "DECIMAL"
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "aqlPath": "/test/dv_proportion_range",
+  "inputs": [
+    {
+      "suffix": "numerator",
+      "type": "DECIMAL",
+      "validation": {
+        "range": {
+          "minOp": ">=",
+          "min": 0.0,
+          "maxOp": "<=",
+          "max": 100.0
+        }
+      }
+    },
+    {
+      "suffix": "denominator",
+      "type": "DECIMAL",
+      "validation": {
+        "range": {
+          "minOp": ">=",
+          "min": 100.0,
+          "maxOp": "<=",
+          "max": 100.0
+        }
+      }
+    }
+  ]
+}

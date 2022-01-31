@@ -1,0 +1,11 @@
+{
+  "aqlPath": "/test/dv_time_pattern",
+  "inputs": [
+    {
+      "type": "TIME",
+      "validation": {
+        "pattern": "HH:??:xx"
+      }
+    }
+  ]
+}

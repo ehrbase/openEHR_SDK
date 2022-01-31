@@ -1,0 +1,13 @@
+{
+  "aqlPath": "/test/dv_quantity",
+  "inputs": [
+    {
+      "suffix": "magnitude",
+      "type": "DECIMAL"
+    },
+    {
+      "suffix": "unit",
+      "type": "CODED_TEXT"
+    }
+  ]
+}

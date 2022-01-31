@@ -32,7 +32,6 @@ import org.assertj.core.api.SoftAssertions;
 import org.ehrbase.serialisation.RMDataFormat;
 import org.ehrbase.serialisation.templateprovider.TestDataTemplateProvider;
 import org.ehrbase.test_data.composition.CompositionTestDataSimSDTJson;
-import org.ehrbase.validation.Validator;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -246,6 +245,7 @@ public class FlatConformanceTest {
     check(testData, new String[] {}, new String[] {}, new String[]{});
   }
 
+
   @Test
   public void roundTripEhrbaseConformancePointEvent() throws IOException {
 
@@ -314,12 +314,6 @@ public class FlatConformanceTest {
     SoftAssertions softAssertions = new SoftAssertions();
 
     softAssertions.assertThat(unmarshal).isNotNull();
-
-    try {
-      new Validator(templateProvider.find(templateId).get()).check(unmarshal);
-    } catch (Exception e) {
-      softAssertions.fail(e.getMessage());
-    }
 
     RMObjectValidator rmObjectValidator =
         new RMObjectValidator(ArchieRMInfoLookup.getInstance(), s -> null);

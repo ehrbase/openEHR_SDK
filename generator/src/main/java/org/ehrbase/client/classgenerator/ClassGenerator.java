@@ -204,7 +204,7 @@ public class ClassGenerator {
 
       Deque<WebTemplateNode> filtersNodes = pushToUnfiltered(context, child);
 
-      String relativPath = context.nodeDeque.peek().buildRelativPath(child);
+      String relativPath = context.nodeDeque.peek().buildRelativePath(child);
       if (child.getChildren().isEmpty() && !choices.containsKey(child.getAqlPath())) {
 
         addSimpleField(context, classBuilder, relativPath, child);
@@ -414,7 +414,7 @@ public class ClassGenerator {
 
     List<WebTemplateNode> matching = relativeNode.findMatching(n -> true);
     matching.add(relativeNode);
-    matching.forEach(n -> n.setAqlPath(context.nodeDeque.peek().buildRelativPath(n)));
+    matching.forEach(n -> n.setAqlPath(context.nodeDeque.peek().buildRelativePath(n)));
     return relativeNode;
   }
 

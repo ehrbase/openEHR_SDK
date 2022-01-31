@@ -1,0 +1,27 @@
+{
+  "aqlPath": "/test/dv_text_list_close",
+  "inputs": [
+    {
+      "type": "TEXT",
+      "list": [
+        {
+          "value": "No known allergies",
+          "label": "No known allergies"
+        },
+        {
+          "value": "No known medication allergies",
+          "label": "No known medication allergies"
+        },
+        {
+          "value": "No known environmental allergies",
+          "label": "No known environmental allergies"
+        },
+        {
+          "value": "No known food allergies",
+          "label": "No known food allergies"
+        }
+      ],
+      "listOpen": false
+    }
+  ]
+}

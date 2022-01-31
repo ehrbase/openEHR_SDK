@@ -1,0 +1,16 @@
+{
+  "aqlPath": "/test/dv_time_range",
+  "inputs": [
+    {
+      "type": "TIME",
+      "validation": {
+        "range": {
+          "min": "10:00:00",
+          "minOp": ">=",
+          "max": "12:00:00",
+          "maxOp": "<="
+        }
+      }
+    }
+  ]
+}

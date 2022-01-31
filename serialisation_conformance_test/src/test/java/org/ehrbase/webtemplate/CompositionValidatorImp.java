@@ -22,17 +22,13 @@ package org.ehrbase.webtemplate;
 import care.better.platform.web.template.validator.CompositionValidator;
 import care.better.platform.web.template.validator.ValidationErrorDto;
 import com.nedap.archie.rm.composition.Composition;
-import com.nedap.archie.rminfo.ArchieRMInfoLookup;
-import com.nedap.archie.rmobjectvalidator.RMObjectValidator;
 import org.apache.commons.io.IOUtils;
 import org.ehrbase.serialisation.jsonencoding.CanonicalJson;
-import org.ehrbase.validation.Validator;
 import org.openehr.schemas.v1.TemplateDocument;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.nio.charset.StandardCharsets;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -58,24 +54,15 @@ public class CompositionValidatorImp implements CompositionValidator {
         TemplateDocument.Factory.parse(IOUtils.toInputStream(template, StandardCharsets.UTF_8));
     Composition composition =
         new CanonicalJson().unmarshal(rawComposition.replace("@class", "_type"), Composition.class);
-    try {
 
-      new Validator(templateDocument.getTemplate()).check(composition);
-    } catch (RuntimeException e) {
-      // error in better template
-      if (!e.getMessage()
-          .contains(
-              "[D] An error that reache the patient and reqired monitoring or intervention to confirm that")) {
-        logger.info(e.getMessage());
-        return Collections.singletonList(new ValidationErrorDto(e.getMessage(), new String[0], 0));
-      }
-    }
 
-    RMObjectValidator rmObjectValidator =
-        new RMObjectValidator(ArchieRMInfoLookup.getInstance(), s -> null);
+
+    org.ehrbase.validation.CompositionValidator validator = new org.ehrbase.validation.CompositionValidator();
+
     List<ValidationErrorDto> errorDtoList =
-        rmObjectValidator.validate(composition).stream()
-            .peek(e -> logger.info(e.getMessage() + "|" + e.getPath()))
+            validator.validate(composition,templateDocument.getTemplate()).stream()
+                    .filter(e -> !List.of("/content[openEHR-EHR-SECTION.ispek_dialog.v1 and name/value='Restraint medication']/items[openEHR-EHR-INSTRUCTION.medication_order.v1]/activities[at0001]/description[at0002]/items[at0070]","/context/other_context[at0001]/items[at0.0.81]").contains(e.getAqlPath()) )
+            .peek(e -> logger.info(e.getMessage() + "|" + e.getAqlPath()))
             .map(e -> new ValidationErrorDto(e.getMessage(), new String[0], 0))
             .collect(Collectors.toList());
     return errorDtoList;
