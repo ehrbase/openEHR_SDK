@@ -16,16 +16,17 @@
  *
  */
 
-package org.ehrbase.webtemplate.tests;
+package org.ehrbase.conformance_test.extern.tests;
 
-import care.better.platform.web.template.DrpBuilderTest;
+import care.better.platform.web.template.OtherReferenceRangesTest;
 
-public class DrpBuilderTestOverwritten extends DrpBuilderTest {
+public class OtherReferenceRangesTestOverwrite extends OtherReferenceRangesTest {
 
   @Override
   /*
-   * Test contains both code and other text value.
-   * Consider sdk behavior of trowing an error correct
+  Test error behavior which is not path of the spec
    */
-  public void codedWithOther1() throws Exception {}
+  public void otherReferenceRangesInvalidAttribute() throws Exception {
+    super.otherReferenceRangesInvalidAttribute();
+  }
 }

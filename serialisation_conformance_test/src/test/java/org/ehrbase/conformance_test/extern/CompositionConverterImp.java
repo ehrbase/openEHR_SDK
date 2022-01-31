@@ -1,23 +1,22 @@
 /*
+ *  Copyright (c) 2021  Stefan Spiska (Vitasystems GmbH) and Hannover Medical School
  *
- *  *  Copyright (c) 2021  Stefan Spiska (Vitasystems GmbH) and Hannover Medical School
- *  *  This file is part of Project EHRbase
- *  *
- *  *  Licensed under the Apache License, Version 2.0 (the "License");
- *  *  you may not use this file except in compliance with the License.
- *  *  You may obtain a copy of the License at
- *  *
- *  *  http://www.apache.org/licenses/LICENSE-2.0
- *  *
- *  *  Unless required by applicable law or agreed to in writing, software
- *  *  distributed under the License is distributed on an "AS IS" BASIS,
- *  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  *  See the License for the specific language governing permissions and
- *  *  limitations under the License.
+ *  This file is part of Project EHRbase
+ *   Licensed under the Apache License, Version 2.0 (the "License");
+ *   you may not use this file except in compliance with the License.
+ *   You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *   Unless required by applicable law or agreed to in writing, software
+ *   distributed under the License is distributed on an "AS IS" BASIS,
+ *   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *   See the License for the specific language governing permissions and
+ *   limitations under the License.
  *
  */
 
-package org.ehrbase.webtemplate;
+package org.ehrbase.conformance_test.extern;
 
 import care.better.platform.web.template.converter.CompositionConverter;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -32,8 +31,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import static org.ehrbase.webtemplate.Helper.getFlatJson;
-
 public class CompositionConverterImp implements CompositionConverter {
 
   public static final ObjectMapper OBJECT_MAPPER = JacksonUtil.getObjectMapper();
@@ -45,7 +42,7 @@ public class CompositionConverterImp implements CompositionConverter {
         new CanonicalJson()
             .unmarshal(rawComposition.replace("\"@class\"", "\"_type\""), Composition.class);
 
-    return getFlatJson(template, FlatFormat.SIM_SDT)
+    return Helper.getFlatJson(template, FlatFormat.SIM_SDT)
         .marshal(unmarshal)
         // Test expect without |id even if this is wrong
         .replace("_identifier:0|id", "_identifier:0")
@@ -63,7 +60,7 @@ public class CompositionConverterImp implements CompositionConverter {
     Composition unmarshal =
         new CanonicalJson()
             .unmarshal(rawComposition.replace("\"@class\"", "\"_type\""), Composition.class);
-    return getFlatJson(template, FlatFormat.STRUCTURED).marshal(unmarshal);
+    return Helper.getFlatJson(template, FlatFormat.STRUCTURED).marshal(unmarshal);
   }
 
   @Override
@@ -73,7 +70,7 @@ public class CompositionConverterImp implements CompositionConverter {
       String flatComposition,
       Map<String, Object> compositionBuilderContext)
       throws Exception {
-    RMDataFormat flatJson = getFlatJson(template, FlatFormat.SIM_SDT);
+    RMDataFormat flatJson = Helper.getFlatJson(template, FlatFormat.SIM_SDT);
     Map<String, Object> currentValues = new HashMap<>();
 
     String fixed =
@@ -382,8 +379,8 @@ public class CompositionConverterImp implements CompositionConverter {
       Map<String, Object> compositionBuilderContext)
       throws Exception {
 
-    Composition composition = getFlatJson(template, FlatFormat.SIM_SDT).unmarshal(flatComposition);
-    return getFlatJson(template, FlatFormat.STRUCTURED).marshal(composition);
+    Composition composition = Helper.getFlatJson(template, FlatFormat.SIM_SDT).unmarshal(flatComposition);
+    return Helper.getFlatJson(template, FlatFormat.STRUCTURED).marshal(composition);
   }
 
   @Override
@@ -406,7 +403,7 @@ public class CompositionConverterImp implements CompositionConverter {
             .replace(
                 "\"дата_посещения\":[\"20.03.2020\"]", "\"дата_посещения\":[\"2020-03-20T00:00\"]");
 
-    Composition composition = getFlatJson(template, FlatFormat.STRUCTURED).unmarshal(fixed);
+    Composition composition = Helper.getFlatJson(template, FlatFormat.STRUCTURED).unmarshal(fixed);
     return new CanonicalJson().marshal(composition).replace("\"_type\"", "\"@class\"");
   }
 
@@ -418,8 +415,8 @@ public class CompositionConverterImp implements CompositionConverter {
       Map<String, Object> compositionBuilderContext)
       throws Exception {
     Composition composition =
-        getFlatJson(template, FlatFormat.STRUCTURED).unmarshal(structuredComposition);
-    return getFlatJson(template, FlatFormat.SIM_SDT).marshal(composition);
+        Helper.getFlatJson(template, FlatFormat.STRUCTURED).unmarshal(structuredComposition);
+    return Helper.getFlatJson(template, FlatFormat.SIM_SDT).marshal(composition);
   }
 
   @Override

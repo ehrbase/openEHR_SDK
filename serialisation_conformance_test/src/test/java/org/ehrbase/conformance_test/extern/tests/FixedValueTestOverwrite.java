@@ -16,25 +16,21 @@
  *
  */
 
-package org.ehrbase.webtemplate.tests;
+package org.ehrbase.conformance_test.extern.tests;
 
-import care.better.platform.web.template.ParticipationCtxTest;
+import care.better.platform.web.template.FixedValueTest;
 
-public class ParticipationCtxTestOverwrite extends ParticipationCtxTest {
+public class FixedValueTestOverwrite extends FixedValueTest {
 
-    @Override
-    /*
-    Test error behavior which is not path of the spec
-     */
-    public void participationInvalid() throws Exception {
-        super.participationInvalid();
-    }
+  @Override
+  /*
+  see https://jira.vitagroup.ag/browse/PEM-518
+  */
+  public void fixed() throws Exception {}
 
-    @Override
-     /*
-    Test error behavior which is not path of the spec
-     */
-    public void multipleParticipationMissingScheme() throws Exception {
-        super.multipleParticipationMissingScheme();
-    }
+  @Override
+  /*
+  see https://jira.vitagroup.ag/browse/PEM-518
+  */
+  public void fixedCodedInDvText() throws Exception {}
 }

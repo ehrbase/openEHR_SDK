@@ -16,21 +16,15 @@
  *
  */
 
-package org.ehrbase.webtemplate.tests;
+package org.ehrbase.conformance_test.extern.tests;
 
-import care.better.platform.web.template.ConstrainedNamesTest;
+import care.better.platform.web.template.PskyBuilderTest;
 
-public class ConstrainedNamesTestOverwrite extends ConstrainedNamesTest {
-
-  @Override
-  /*
-  see https://jira.vitagroup.ag/browse/CDR-140
-   */
-  public void relaxedNamesConversion() throws Exception {}
+public class PskyBuilderTestOverwrite extends PskyBuilderTest {
 
   @Override
   /*
-  see https://jira.vitagroup.ag/browse/CDR-140
-   */
-  public void namesWithTerminologies() throws Exception {}
+  see https://jira.vitagroup.ag/browse/PEM-540
+  */
+  public void testDvIdentifierId() throws Exception {}
 }

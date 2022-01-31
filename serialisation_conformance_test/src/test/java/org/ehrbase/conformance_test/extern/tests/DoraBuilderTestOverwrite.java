@@ -16,16 +16,14 @@
  *
  */
 
-package org.ehrbase.webtemplate.tests;
+package org.ehrbase.conformance_test.extern.tests;
 
-import care.better.platform.web.template.FeederAuditTest;
-import care.better.platform.web.template.extension.WebTemplateTestExtension;
-import org.junit.jupiter.api.extension.ExtendWith;
+import care.better.platform.web.template.DoraBuilderTest;
 
-@ExtendWith({WebTemplateTestExtension.class})
-public class FeederAuditTestOverwritten extends FeederAuditTest {
+public class DoraBuilderTestOverwrite extends DoraBuilderTest {
 
   @Override
-  /* test proprietary stuff from better */
-  public void structuredWithGenericFields() throws Exception {}
+  /** Flat dos not match template (accession_number missing) */
+  public void occurencesBug() throws Exception {}
+  ;
 }

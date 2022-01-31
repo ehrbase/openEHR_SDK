@@ -16,21 +16,15 @@
  *
  */
 
-package org.ehrbase.webtemplate.tests;
+package org.ehrbase.conformance_test.extern.tests;
 
-import care.better.platform.web.template.FixedValueTest;
+import care.better.platform.web.template.PersistentCompositionTest;
 
-public class FixedValueTestOverwrite extends FixedValueTest {
-
-  @Override
-  /*
-  see https://jira.vitagroup.ag/browse/PEM-518
-  */
-  public void fixed() throws Exception {}
+public class PersistentCompositionTestOverwrite extends PersistentCompositionTest {
 
   @Override
   /*
-  see https://jira.vitagroup.ag/browse/PEM-518
-  */
-  public void fixedCodedInDvText() throws Exception {}
+  see https://jira.vitagroup.ag/browse/PEM-535
+      */
+  public void persistentWithoutContext() throws Exception {}
 }

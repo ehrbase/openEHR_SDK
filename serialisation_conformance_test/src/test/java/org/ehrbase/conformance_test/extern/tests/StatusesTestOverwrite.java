@@ -16,7 +16,7 @@
  *
  */
 
-package org.ehrbase.webtemplate.tests;
+package org.ehrbase.conformance_test.extern.tests;
 
 import care.better.platform.web.template.StatusesTest;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -36,7 +36,7 @@ import org.junit.Test;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.ehrbase.webtemplate.Helper.getFlatJson;
+import static org.ehrbase.conformance_test.extern.Helper.getFlatJson;
 
 public class StatusesTestOverwrite extends StatusesTest {
 

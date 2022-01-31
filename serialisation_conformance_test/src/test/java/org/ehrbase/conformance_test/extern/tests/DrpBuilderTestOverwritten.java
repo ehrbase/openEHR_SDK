@@ -16,15 +16,16 @@
  *
  */
 
-package org.ehrbase.webtemplate.tests;
+package org.ehrbase.conformance_test.extern.tests;
 
-import care.better.platform.web.template.PersistentCompositionTest;
+import care.better.platform.web.template.DrpBuilderTest;
 
-public class PersistentCompositionTestOverwrite extends PersistentCompositionTest {
+public class DrpBuilderTestOverwritten extends DrpBuilderTest {
 
   @Override
   /*
-  see https://jira.vitagroup.ag/browse/PEM-535
-      */
-  public void persistentWithoutContext() throws Exception {}
+   * Test contains both code and other text value.
+   * Consider sdk behavior of trowing an error correct
+   */
+  public void codedWithOther1() throws Exception {}
 }

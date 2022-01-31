@@ -16,7 +16,7 @@
  *
  */
 
-package org.ehrbase.webtemplate;
+package org.ehrbase.conformance_test.extern;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.xmlbeans.XmlException;
@@ -30,6 +30,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 
 public class Helper {
+
+
   private Helper() {}
 
   public static RMDataFormat getFlatJson(String template, FlatFormat flatFormat)

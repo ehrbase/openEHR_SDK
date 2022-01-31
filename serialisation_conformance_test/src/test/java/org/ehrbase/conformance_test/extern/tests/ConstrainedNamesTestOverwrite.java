@@ -16,17 +16,21 @@
  *
  */
 
-package org.ehrbase.webtemplate.tests;
+package org.ehrbase.conformance_test.extern.tests;
 
-import care.better.platform.web.template.OtherReferenceRangesTest;
+import care.better.platform.web.template.ConstrainedNamesTest;
 
-public class OtherReferenceRangesTestOverwrite extends OtherReferenceRangesTest {
+public class ConstrainedNamesTestOverwrite extends ConstrainedNamesTest {
 
   @Override
   /*
-  Test error behavior which is not path of the spec
+  see https://jira.vitagroup.ag/browse/CDR-140
    */
-  public void otherReferenceRangesInvalidAttribute() throws Exception {
-    super.otherReferenceRangesInvalidAttribute();
-  }
+  public void relaxedNamesConversion() throws Exception {}
+
+  @Override
+  /*
+  see https://jira.vitagroup.ag/browse/CDR-140
+   */
+  public void namesWithTerminologies() throws Exception {}
 }

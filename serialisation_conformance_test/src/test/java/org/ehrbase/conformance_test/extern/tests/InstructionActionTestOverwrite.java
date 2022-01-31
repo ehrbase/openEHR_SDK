@@ -16,7 +16,7 @@
  *
  */
 
-package org.ehrbase.webtemplate.tests;
+package org.ehrbase.conformance_test.extern.tests;
 
 import care.better.platform.web.template.InstructionActionTest;
 

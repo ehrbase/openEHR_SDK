@@ -16,14 +16,14 @@
  *
  */
 
-package org.ehrbase.webtemplate.tests;
+package org.ehrbase.test_data.composition;
 
-import care.better.platform.web.template.DoraBuilderTest;
+import org.ehrbase.test_data.operationaltemplate.OperationalTemplateTestData;
 
-public class DoraBuilderTestOverwrite extends DoraBuilderTest {
+import java.io.InputStream;
 
-  @Override
-  /** Flat dos not match template (accession_number missing) */
-  public void occurencesBug() throws Exception {}
-  ;
+public interface CompositionTestDataSimSDTJsonInterface {
+    InputStream getStream();
+
+    OperationalTemplateTestData getTemplate();
 }

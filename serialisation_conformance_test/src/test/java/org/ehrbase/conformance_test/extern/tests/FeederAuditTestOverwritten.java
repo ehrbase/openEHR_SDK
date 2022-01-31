@@ -16,23 +16,16 @@
  *
  */
 
-package org.ehrbase.webtemplate.tests;
+package org.ehrbase.conformance_test.extern.tests;
 
-import care.better.platform.web.template.EmptynessTest;
+import care.better.platform.web.template.FeederAuditTest;
+import care.better.platform.web.template.extension.WebTemplateTestExtension;
+import org.junit.jupiter.api.extension.ExtendWith;
 
-public class EmptynessTestOverwrite extends EmptynessTest {
-
-  @Override
-  /*
-  see https://jira.vitagroup.ag/browse/CDR-141
-
-  */
-  public void emptyEvaluation() throws Exception {}
+@ExtendWith({WebTemplateTestExtension.class})
+public class FeederAuditTestOverwritten extends FeederAuditTest {
 
   @Override
-  /*
-  see https://jira.vitagroup.ag/browse/CDR-141
-
-  */
-  public void emptyComposition() throws Exception {}
+  /* test proprietary stuff from better */
+  public void structuredWithGenericFields() throws Exception {}
 }

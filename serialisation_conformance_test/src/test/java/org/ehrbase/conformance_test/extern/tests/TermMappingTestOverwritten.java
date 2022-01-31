@@ -16,7 +16,7 @@
  *
  */
 
-package org.ehrbase.webtemplate.tests;
+package org.ehrbase.conformance_test.extern.tests;
 
 import care.better.platform.web.template.TermMappingTest;
 import com.nedap.archie.rm.composition.Composition;
@@ -33,7 +33,7 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.ehrbase.webtemplate.Helper.getFlatJson;
+import static org.ehrbase.conformance_test.extern.Helper.getFlatJson;
 
 public class TermMappingTestOverwritten extends TermMappingTest {
 

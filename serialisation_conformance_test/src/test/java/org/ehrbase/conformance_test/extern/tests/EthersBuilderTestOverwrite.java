@@ -16,15 +16,17 @@
  *
  */
 
-package org.ehrbase.webtemplate.tests;
+package org.ehrbase.conformance_test.extern.tests;
 
-import care.better.platform.web.template.PskyBuilderTest;
+import care.better.platform.web.template.EthercisBuilderTest;
 
-public class PskyBuilderTestOverwrite extends PskyBuilderTest {
+public class EthersBuilderTestOverwrite extends EthercisBuilderTest {
 
   @Override
   /*
-  see https://jira.vitagroup.ag/browse/PEM-540
-  */
-  public void testDvIdentifierId() throws Exception {}
+  Test count  of validation error messages with is not part of the spec
+   */
+  public void ctxValuesTest() throws Exception {
+    super.ctxValuesTest();
+  }
 }

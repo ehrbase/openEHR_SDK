@@ -16,7 +16,7 @@
  *
  */
 
-package org.ehrbase.webtemplate.tests;
+package org.ehrbase.conformance_test.extern.tests;
 
 import care.better.platform.web.template.NullFlavorTest;
 import com.nedap.archie.rm.composition.Composition;
@@ -26,7 +26,7 @@ import org.ehrbase.serialisation.flatencoding.FlatFormat;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.ehrbase.webtemplate.Helper.getFlatJson;
+import static org.ehrbase.conformance_test.extern.Helper.getFlatJson;
 
 public class NullFlavorTestOverwritten extends NullFlavorTest {
 

@@ -16,18 +16,17 @@
  *
  */
 
-package org.ehrbase.webtemplate.tests;
+package org.ehrbase.conformance_test.extern.tests;
 
 import care.better.platform.web.template.RussianBuilderTest;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nedap.archie.rm.composition.Composition;
 import org.assertj.core.api.Assertions;
+import org.ehrbase.conformance_test.extern.Helper;
 import org.ehrbase.serialisation.flatencoding.FlatFormat;
 import org.junit.Test;
 
 import java.util.Map;
-
-import static org.ehrbase.webtemplate.Helper.getFlatJson;
 
 public class RussianBuilderTestOverwrite extends RussianBuilderTest {
 
@@ -58,9 +57,9 @@ public class RussianBuilderTestOverwrite extends RussianBuilderTest {
         this.getFileContent("/res/ru-composition.json")
             .replace(",\"end_time\":[\"2019-05-06T14:56:57.670+03:00\"]", "");
 
-    Composition marshal = getFlatJson(template, FlatFormat.STRUCTURED).unmarshal(structuredJson);
+    Composition marshal = Helper.getFlatJson(template, FlatFormat.STRUCTURED).unmarshal(structuredJson);
 
-    String flatJson = getFlatJson(template, FlatFormat.SIM_SDT).marshal(marshal);
+    String flatJson = Helper.getFlatJson(template, FlatFormat.SIM_SDT).marshal(marshal);
 
     Map<String, Object> retrieve = new ObjectMapper().readValue(flatJson, Map.class);
     Assertions.assertThat(retrieve)

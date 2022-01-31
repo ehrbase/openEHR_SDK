@@ -16,33 +16,23 @@
  *
  */
 
-package org.ehrbase.webtemplate.tests;
+package org.ehrbase.conformance_test.extern.tests;
 
-import care.better.platform.web.template.InfinnityTest;
+import care.better.platform.web.template.EmptynessTest;
 
-public class InfinnityTestOverwrite extends InfinnityTest {
-
-  @Override
-  /*
-  Test count  of validation error messages with is not part of the spec
-   */
-  public void validationErrorInfinnityTest() throws Exception {}
+public class EmptynessTestOverwrite extends EmptynessTest {
 
   @Override
   /*
-  Test count  of validation error messages with is not part of the spec
-   */
-  public void infinnityTemplateMismatch0_12() throws Exception {}
+  see https://jira.vitagroup.ag/browse/CDR-141
 
-  @Override
-  /*
-  Test count  of validation error messages with is not part of the spec
-   */
-  public void infinnityTemplateMismatch1_17() throws Exception {}
-
-  @Override
-  /*
-  see https://jira.vitagroup.ag/browse/PEM-492
   */
-  public void ru354() throws Exception {}
+  public void emptyEvaluation() throws Exception {}
+
+  @Override
+  /*
+  see https://jira.vitagroup.ag/browse/CDR-141
+
+  */
+  public void emptyComposition() throws Exception {}
 }

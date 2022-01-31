@@ -16,21 +16,13 @@
  *
  */
 
-package org.ehrbase.webtemplate.tests;
+package org.ehrbase.conformance_test.extern;
 
-import care.better.platform.web.template.ProportionUpdateTest;
+import care.better.platform.web.template.provider.WebTemplateProvider;
 
-public class ProportionUpdateTestOverride extends ProportionUpdateTest {
-
+public class WebTemplateProviderImp implements WebTemplateProvider {
   @Override
-  /*
-  see https://jira.vitagroup.ag/browse/PEM-526
-  */
-  public void testInvalidAttribute() throws Exception {}
-
-  @Override
-  /*
-  see https://jira.vitagroup.ag/browse/PEM-526
-  */
-  public void testInvalidAttributeFailed() throws Exception {}
+  public String provide(String template, String defaultLanguage) throws Exception {
+    return null;
+  }
 }
