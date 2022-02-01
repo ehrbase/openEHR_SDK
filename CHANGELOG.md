@@ -11,6 +11,7 @@ Note: version releases in the 0.x.y range may introduce breaking changes.
 - cleanup created templates (https://github.com/ehrbase/openEHR_SDK/issues/298)
 - WebTemplate based validation (see https://github.com/ehrbase/openEHR_SDK/pull/309)
 - flat: created conformance tests (see https://github.com/ehrbase/openEHR_SDK/pull/310; https://github.com/ehrbase/openEHR_SDK/pull/305; https://github.com/ehrbase/openEHR_SDK/pull/304; https://github.com/ehrbase/openEHR_SDK/pull/301) 
+- db-serialising: created conformance test (see https://github.com/ehrbase/openEHR_SDK/pull/311) 
 
 ### Fixed
 
