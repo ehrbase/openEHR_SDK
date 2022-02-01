@@ -10,6 +10,7 @@ Note: version releases in the 0.x.y range may introduce breaking changes.
 - Upgrade to Archie 1.0.4 ([#292](https://github.com/ehrbase/openEHR_SDK/pull/292))
 - cleanup created templates (https://github.com/ehrbase/openEHR_SDK/issues/298)
 - WebTemplate based validation (see https://github.com/ehrbase/openEHR_SDK/pull/309)
+- flat: created conformance tests (see https://github.com/ehrbase/openEHR_SDK/pull/310; https://github.com/ehrbase/openEHR_SDK/pull/305; https://github.com/ehrbase/openEHR_SDK/pull/304; https://github.com/ehrbase/openEHR_SDK/pull/301) 
 
 ### Fixed
 

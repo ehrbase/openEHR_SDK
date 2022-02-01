@@ -22,7 +22,7 @@ import org.ehrbase.test_data.operationaltemplate.OperationalTemplateTestData;
 
 import java.io.InputStream;
 
-public enum CompositionTestDataSimSDTJson {
+public enum CompositionTestDataSimSDTJson implements CompositionTestDataSimSDTJsonInterface {
   ALTERNATIVE_EVENTS(
       "AlternativeEvents", "AlternativeEvents.json", OperationalTemplateTestData.ALT_EVENTS),
   ALTERNATIVE_EVENTS_2(
@@ -70,102 +70,6 @@ public enum CompositionTestDataSimSDTJson {
       "flat with action",
       "EREACT - Covid status monitoring - FLAT.json",
       OperationalTemplateTestData.EREACT_COVID_MANAGEMENT),
-  EHRBASE_CONFORMANCE_DATA_TYPES_DV_TEXT(
-      "ehrbase_conformance_data_types_dv_text",
-      "ehrbase_conformance_data_types_dv_text.json",
-      OperationalTemplateTestData.CONFORMANCE),
-  EHRBASE_CONFORMANCE_DATA_TYPES_DV_CODED_TEXT_AS_DV_TEXT(
-      "ehrbase_conformance_data_types_dv_coded_text_as_dv_text",
-      "ehrbase_conformance_data_types_dv_coded_text_as_dv_text.json",
-      OperationalTemplateTestData.CONFORMANCE),
-  EHRBASE_CONFORMANCE_DATA_TYPES_DV_CODED_TEXT(
-      "ehrbase_conformance_data_types_dv_coded_text",
-      "ehrbase_conformance_data_types_dv_coded_text.json",
-      OperationalTemplateTestData.CONFORMANCE),
-  EHRBASE_CONFORMANCE_DATA_TYPES_DV_QUANTITY(
-      "ehrbase_conformance_data_types_dv_quantity",
-              "ehrbase_conformance_data_types_dv_quantity.json",
-      OperationalTemplateTestData.CONFORMANCE),
-  EHRBASE_CONFORMANCE_DATA_TYPES_DV_PROPORTION(
-          "ehrbase_conformance_data_types_dv_proportion",
-          "ehrbase_conformance_data_types_dv_proportion.json",
-          OperationalTemplateTestData.CONFORMANCE),
-  EHRBASE_CONFORMANCE_DATA_TYPES_DV_COUNT(
-          "ehrbase_conformance_data_types_dv_count",
-          "ehrbase_conformance_data_types_dv_count.json",
-          OperationalTemplateTestData.CONFORMANCE),
-  EHRBASE_CONFORMANCE_DATA_TYPES_DV_DATE_TIME(
-          "ehrbase_conformance_data_types_dv_date_time",
-          "ehrbase_conformance_data_types_dv_date_time.json",
-          OperationalTemplateTestData.CONFORMANCE),
-  EHRBASE_CONFORMANCE_DATA_TYPES_DV_TIME(
-          "ehrbase_conformance_data_types_dv_time",
-          "ehrbase_conformance_data_types_dv_time.json",
-          OperationalTemplateTestData.CONFORMANCE),
-  EHRBASE_CONFORMANCE_DATA_TYPES_DV_DATE(
-          "ehrbase_conformance_data_types_dv_date",
-          "ehrbase_conformance_data_types_dv_date.json",
-          OperationalTemplateTestData.CONFORMANCE),
-  EHRBASE_CONFORMANCE_DATA_TYPES_DV_DURATION(
-          "ehrbase_conformance_data_types_dv_duration",
-          "ehrbase_conformance_data_types_dv_duration.json",
-          OperationalTemplateTestData.CONFORMANCE),
-  EHRBASE_CONFORMANCE_DATA_TYPES_DV_ORDINAL(
-          "ehrbase_conformance_data_types_dv_ordinal",
-          "ehrbase_conformance_data_types_dv_ordinal.json",
-          OperationalTemplateTestData.CONFORMANCE),
-  EHRBASE_CONFORMANCE_DATA_TYPES_DV_BOOLEAN(
-          "ehrbase_conformance_data_types_dv_boolean",
-          "ehrbase_conformance_data_types_dv_boolean.json",
-          OperationalTemplateTestData.CONFORMANCE),
-  EHRBASE_CONFORMANCE_DATA_TYPES_DV_IDENTIFIER(
-          "ehrbase_conformance_data_types_dv_identifier",
-          "ehrbase_conformance_data_types_dv_identifier.json",
-          OperationalTemplateTestData.CONFORMANCE),
-  EHRBASE_CONFORMANCE_DATA_TYPES_DV_URI(
-          "ehrbase_conformance_data_types_dv_uri",
-          "ehrbase_conformance_data_types_dv_uri.json",
-          OperationalTemplateTestData.CONFORMANCE),
-  EHRBASE_CONFORMANCE_DATA_TYPES_DV_EHR_URI(
-          "ehrbase_conformance_data_types_dv_ehr_uri",
-          "ehrbase_conformance_data_types_dv_ehr_uri.json",
-          OperationalTemplateTestData.CONFORMANCE),
-  EHRBASE_CONFORMANCE_DATA_TYPES_DV_PARSABLE(
-          "ehrbase_conformance_data_types_dv_parsable",
-          "ehrbase_conformance_data_types_dv_parsable.json",
-          OperationalTemplateTestData.CONFORMANCE),
-  EHRBASE_CONFORMANCE_DATA_TYPES_DV_MULTIMEDIA(
-          "ehrbase_conformance_data_types_dv_multimedia",
-          "ehrbase_conformance_data_types_dv_multimedia.json",
-          OperationalTemplateTestData.CONFORMANCE),
-  EHRBASE_CONFORMANCE_DATA_TYPES_INTERVAL_DV_QUANTITY(
-          "ehrbase_conformance_data_types_interval_dv_quantity",
-          "ehrbase_conformance_data_types_interval_dv_quantity.json",
-          OperationalTemplateTestData.CONFORMANCE),
-  EHRBASE_CONFORMANCE_ELEMENT_NULL_FLAVOR(
-          "ehrbase_conformance_Element_null_flavor",
-          "ehrbase_conformance_Element_null_flavor.json",
-          OperationalTemplateTestData.CONFORMANCE),
-  EHRBASE_CONFORMANCE_CLUSTER(
-          "ehrbase_conformance_cluster",
-          "ehrbase_conformance_cluster.json",
-          OperationalTemplateTestData.CONFORMANCE),
-  EHRBASE_CONFORMANCE_POINT_EVENT(
-          "ehrbase_conformance_point_event",
-          "ehrbase_conformance_point_event.json",
-          OperationalTemplateTestData.CONFORMANCE),
-  EHRBASE_CONFORMANCE_INTERVAL_EVENT(
-          "ehrbase_conformance_interval_event",
-          "ehrbase_conformance_interval_event.json",
-          OperationalTemplateTestData.CONFORMANCE),
-  EHRBASE_CONFORMANCE_COMPOSITION(
-          "ehrbase_conformance_composition",
-          "ehrbase_conformance_composition.json",
-          OperationalTemplateTestData.CONFORMANCE),
-  EHRBASE_CONFORMANCE_ELEMENT_FEEDER_AUDIT(
-          "ehrbase_conformance_Element_feeder_audit",
-          "ehrbase_conformance_Element_feeder_audit.json",
-          OperationalTemplateTestData.CONFORMANCE),
   NESTED("nested.en.v1", "nested.en.v1.json",OperationalTemplateTestData.NESTED),
   IPS("International Patient Summary", "ips_flat.json",OperationalTemplateTestData.IPS);
 
@@ -181,10 +85,12 @@ public enum CompositionTestDataSimSDTJson {
     this.template = template;
   }
 
+  @Override
   public InputStream getStream() {
     return getClass().getResourceAsStream("/composition/flat/simSDT/" + filename);
   }
 
+  @Override
   public OperationalTemplateTestData getTemplate() {
     return template;
   }

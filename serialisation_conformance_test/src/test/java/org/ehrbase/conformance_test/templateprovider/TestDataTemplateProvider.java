@@ -17,7 +17,7 @@
  *
  */
 
-package org.ehrbase.serialisation.templateprovider;
+package org.ehrbase.conformance_test.templateprovider;
 
 import org.apache.xmlbeans.XmlException;
 import org.ehrbase.test_data.operationaltemplate.OperationalTemplateTestData;
@@ -34,7 +34,6 @@ public class TestDataTemplateProvider implements TemplateProvider {
 
     private final Map<String,Optional<WebTemplate>> webTemplateMap = new HashMap<>();
 
-
     @Override
     public Optional<OPERATIONALTEMPLATE> find(String templateId) {
         return Optional.ofNullable(OperationalTemplateTestData.findByTemplateId(templateId))
@@ -49,14 +48,12 @@ public class TestDataTemplateProvider implements TemplateProvider {
                 .map(TemplateDocument::getTemplate);
     }
 
-
     @Override
     public Optional<WebTemplate> buildIntrospect(String templateId) {
 
         return webTemplateMap.computeIfAbsent(templateId, TemplateProvider.super::buildIntrospect);
 
     }
-
 
     public List<String> listTemplateIds() {
         return Arrays.stream(OperationalTemplateTestData.values())
