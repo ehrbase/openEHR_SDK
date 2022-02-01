@@ -98,182 +98,194 @@ class DbConformanceTest {
                           new String[] {}));
                   break;
 
-                  case EHRBASE_CONFORMANCE_OBSERVATION:
-                  case EHRBASE_CONFORMANCE_FEEDER_AUDIT_MULTIMEDIA:
-                      arguments.add(
-                              Arguments.of(
-                                      test,
-                                      new String[] {},
-                                      new String[] {
-                                              // see https://jira.vitagroup.ag/browse/CDR-219
-                                              "Extra path: conformance-ehrbase.de.v0/conformance_section/conformance_observation/_guideline_id|type, value: GUIDELINE",
-                                              "Extra path: conformance-ehrbase.de.v0/conformance_section/conformance_observation/_guideline_id|namespace, value: HOSPITAL-NS",
-                                              "Extra path: conformance-ehrbase.de.v0/conformance_section/conformance_observation/_guideline_id|id, value: 3445",
-                                              "Extra path: conformance-ehrbase.de.v0/conformance_section/conformance_observation/_guideline_id|id_scheme, value: HOSPITAL-NS",
-                                              "Extra path: conformance-ehrbase.de.v0/conformance_section/conformance_observation/_work_flow_id|type, value: WORKFLOW",
-                                              "Extra path: conformance-ehrbase.de.v0/conformance_section/conformance_observation/_work_flow_id|namespace, value: HOSPITAL-NS",
-                                              "Extra path: conformance-ehrbase.de.v0/conformance_section/conformance_observation/_work_flow_id|id, value: 335645",
-                                              "Extra path: conformance-ehrbase.de.v0/conformance_section/conformance_observation/_work_flow_id|id_scheme, value: HOSPITAL-NS"
-                                      },
-                                      new String[] {
-                                              "/content[openEHR-EHR-SECTION.conformance_section.v0, 1]/items[openEHR-EHR-OBSERVATION.conformance_observation.v0, 1]/workflow_id/id",
-                                              "/content[openEHR-EHR-SECTION.conformance_section.v0, 1]/items[openEHR-EHR-OBSERVATION.conformance_observation.v0, 1]/workflow_id/type",
-                                              "/content[openEHR-EHR-SECTION.conformance_section.v0, 1]/items[openEHR-EHR-OBSERVATION.conformance_observation.v0, 1]/workflow_id/namespace",
-                                              "/content[openEHR-EHR-SECTION.conformance_section.v0, 1]/items[openEHR-EHR-OBSERVATION.conformance_observation.v0, 1]/guideline_id/namespace",
-                                              "/content[openEHR-EHR-SECTION.conformance_section.v0, 1]/items[openEHR-EHR-OBSERVATION.conformance_observation.v0, 1]/guideline_id/id",
-                                              "/content[openEHR-EHR-SECTION.conformance_section.v0, 1]/items[openEHR-EHR-OBSERVATION.conformance_observation.v0, 1]/guideline_id/type"
-                                      }));
-                      break;
+                case EHRBASE_CONFORMANCE_ELEMENT_NULL_FLAVOR:
+                  arguments.add(
+                      Arguments.of(
+                          test,
+                          new String[] {},
+                          new String[] {
+                            // see https://jira.vitagroup.ag/browse/CDR-222
+                            "Extra path: conformance-ehrbase.de.v0/conformance_section/conformance_observation/any_event:0/dv_quantity/_null_reason, value: sample reason"
+                          },
+                          new String[] {}));
+                  break;
 
-                  case EHRBASE_CONFORMANCE_EVALUATION:
-                      arguments.add(
-                              Arguments.of(
-                                      test,
-                                      new String[] {},
-                                      new String[] {
-                                              // see https://jira.vitagroup.ag/browse/CDR-219
-                                              "Extra path: conformance-ehrbase.de.v0/conformance_section/conformance_evaluation/_guideline_id|type, value: GUIDELINE",
-                                              "Extra path: conformance-ehrbase.de.v0/conformance_section/conformance_evaluation/_guideline_id|namespace, value: HOSPITAL-NS",
-                                              "Extra path: conformance-ehrbase.de.v0/conformance_section/conformance_evaluation/_guideline_id|id, value: 3445",
-                                              "Extra path: conformance-ehrbase.de.v0/conformance_section/conformance_evaluation/_guideline_id|id_scheme, value: HOSPITAL-NS",
-                                              "Extra path: conformance-ehrbase.de.v0/conformance_section/conformance_evaluation/_work_flow_id|type, value: WORKFLOW",
-                                              "Extra path: conformance-ehrbase.de.v0/conformance_section/conformance_evaluation/_work_flow_id|namespace, value: HOSPITAL-NS",
-                                              "Extra path: conformance-ehrbase.de.v0/conformance_section/conformance_evaluation/_work_flow_id|id, value: 335645",
-                                              "Extra path: conformance-ehrbase.de.v0/conformance_section/conformance_evaluation/_work_flow_id|id_scheme, value: HOSPITAL-NS"
-                                      },
-                                      new String[] {
-                                              "/content[openEHR-EHR-SECTION.conformance_section.v0, 1]/items[openEHR-EHR-EVALUATION.conformance_evaluation.v0, 1]/workflow_id/id",
-                                              "/content[openEHR-EHR-SECTION.conformance_section.v0, 1]/items[openEHR-EHR-EVALUATION.conformance_evaluation.v0, 1]/workflow_id/type",
-                                              "/content[openEHR-EHR-SECTION.conformance_section.v0, 1]/items[openEHR-EHR-EVALUATION.conformance_evaluation.v0, 1]/workflow_id/namespace",
-                                              "/content[openEHR-EHR-SECTION.conformance_section.v0, 1]/items[openEHR-EHR-EVALUATION.conformance_evaluation.v0, 1]/guideline_id/namespace",
-                                              "/content[openEHR-EHR-SECTION.conformance_section.v0, 1]/items[openEHR-EHR-EVALUATION.conformance_evaluation.v0, 1]/guideline_id/id",
-                                              "/content[openEHR-EHR-SECTION.conformance_section.v0, 1]/items[openEHR-EHR-EVALUATION.conformance_evaluation.v0, 1]/guideline_id/type"
-                                      }));
-                      break;
-                  case EHRBASE_CONFORMANCE_ACTION:
-                      arguments.add(
-                              Arguments.of(
-                                      test,
-                                      new String[] {},
-                                      new String[] {
-                                              // see https://jira.vitagroup.ag/browse/CDR-219
-                                              "Extra path: conformance-ehrbase.de.v0/conformance_section/conformance_action/_guideline_id|type, value: GUIDELINE",
-                                              "Extra path: conformance-ehrbase.de.v0/conformance_section/conformance_action/_guideline_id|namespace, value: HOSPITAL-NS",
-                                              "Extra path: conformance-ehrbase.de.v0/conformance_section/conformance_action/_guideline_id|id, value: 3445",
-                                              "Extra path: conformance-ehrbase.de.v0/conformance_section/conformance_action/_guideline_id|id_scheme, value: HOSPITAL-NS",
-                                              "Extra path: conformance-ehrbase.de.v0/conformance_section/conformance_action/_work_flow_id|type, value: WORKFLOW",
-                                              "Extra path: conformance-ehrbase.de.v0/conformance_section/conformance_action/_work_flow_id|namespace, value: HOSPITAL-NS",
-                                              "Extra path: conformance-ehrbase.de.v0/conformance_section/conformance_action/_work_flow_id|id, value: 335645",
-                                              "Extra path: conformance-ehrbase.de.v0/conformance_section/conformance_action/_work_flow_id|id_scheme, value: HOSPITAL-NS"
-                                      },
-                                      new String[] {
-                                              "/content[openEHR-EHR-SECTION.conformance_section.v0, 1]/items[openEHR-EHR-ACTION.conformance_action_.v0, 1]/workflow_id/id",
-                                              "/content[openEHR-EHR-SECTION.conformance_section.v0, 1]/items[openEHR-EHR-ACTION.conformance_action_.v0, 1]/workflow_id/type",
-                                              "/content[openEHR-EHR-SECTION.conformance_section.v0, 1]/items[openEHR-EHR-ACTION.conformance_action_.v0, 1]/workflow_id/namespace",
-                                              "/content[openEHR-EHR-SECTION.conformance_section.v0, 1]/items[openEHR-EHR-ACTION.conformance_action_.v0, 1]/guideline_id/namespace",
-                                              "/content[openEHR-EHR-SECTION.conformance_section.v0, 1]/items[openEHR-EHR-ACTION.conformance_action_.v0, 1]/guideline_id/id",
-                                              "/content[openEHR-EHR-SECTION.conformance_section.v0, 1]/items[openEHR-EHR-ACTION.conformance_action_.v0, 1]/guideline_id/type"
-                                      }));
-                      break;
-                  case EHRBASE_CONFORMANCE_INSTRUCTION:
-                      arguments.add(
-                              Arguments.of(
-                                      test,
-                                      new String[] {},
-                                      new String[] {
-                                              // see https://jira.vitagroup.ag/browse/CDR-219
-                                              "Extra path: conformance-ehrbase.de.v0/conformance_section/conformance_instruction/_guideline_id|type, value: GUIDELINE",
-                                              "Extra path: conformance-ehrbase.de.v0/conformance_section/conformance_instruction/_guideline_id|namespace, value: HOSPITAL-NS",
-                                              "Extra path: conformance-ehrbase.de.v0/conformance_section/conformance_instruction/_guideline_id|id, value: 3445",
-                                              "Extra path: conformance-ehrbase.de.v0/conformance_section/conformance_instruction/_guideline_id|id_scheme, value: HOSPITAL-NS",
-                                              "Extra path: conformance-ehrbase.de.v0/conformance_section/conformance_instruction/_work_flow_id|type, value: WORKFLOW",
-                                              "Extra path: conformance-ehrbase.de.v0/conformance_section/conformance_instruction/_work_flow_id|namespace, value: HOSPITAL-NS",
-                                              "Extra path: conformance-ehrbase.de.v0/conformance_section/conformance_instruction/_work_flow_id|id, value: 335645",
-                                              "Extra path: conformance-ehrbase.de.v0/conformance_section/conformance_instruction/_work_flow_id|id_scheme, value: HOSPITAL-NS",
-                                              // https://jira.vitagroup.ag/browse/CDR-221
-                                              "Extra path: conformance-ehrbase.de.v0/conformance_section/conformance_instruction/_wf_definition|value, value: wf_definition",
-                                              "Extra path: conformance-ehrbase.de.v0/conformance_section/conformance_instruction/_wf_definition|formalism, value: formalism"
-                                      },
-                                      new String[] {
-                                              "/content[openEHR-EHR-SECTION.conformance_section.v0, 1]/items[openEHR-EHR-INSTRUCTION.conformance_instruction.v0, 1]/workflow_id/id",
-                                              "/content[openEHR-EHR-SECTION.conformance_section.v0, 1]/items[openEHR-EHR-INSTRUCTION.conformance_instruction.v0, 1]/workflow_id/type",
-                                              "/content[openEHR-EHR-SECTION.conformance_section.v0, 1]/items[openEHR-EHR-INSTRUCTION.conformance_instruction.v0, 1]/workflow_id/namespace",
-                                              "/content[openEHR-EHR-SECTION.conformance_section.v0, 1]/items[openEHR-EHR-INSTRUCTION.conformance_instruction.v0, 1]/guideline_id/namespace",
-                                              "/content[openEHR-EHR-SECTION.conformance_section.v0, 1]/items[openEHR-EHR-INSTRUCTION.conformance_instruction.v0, 1]/guideline_id/id",
-                                              "/content[openEHR-EHR-SECTION.conformance_section.v0, 1]/items[openEHR-EHR-INSTRUCTION.conformance_instruction.v0, 1]/guideline_id/type"
-                                      }));
-                      break;
+                case EHRBASE_CONFORMANCE_OBSERVATION:
+                case EHRBASE_CONFORMANCE_FEEDER_AUDIT_MULTIMEDIA:
+                  arguments.add(
+                      Arguments.of(
+                          test,
+                          new String[] {},
+                          new String[] {
+                            // see https://jira.vitagroup.ag/browse/CDR-219
+                            "Extra path: conformance-ehrbase.de.v0/conformance_section/conformance_observation/_guideline_id|type, value: GUIDELINE",
+                            "Extra path: conformance-ehrbase.de.v0/conformance_section/conformance_observation/_guideline_id|namespace, value: HOSPITAL-NS",
+                            "Extra path: conformance-ehrbase.de.v0/conformance_section/conformance_observation/_guideline_id|id, value: 3445",
+                            "Extra path: conformance-ehrbase.de.v0/conformance_section/conformance_observation/_guideline_id|id_scheme, value: HOSPITAL-NS",
+                            "Extra path: conformance-ehrbase.de.v0/conformance_section/conformance_observation/_work_flow_id|type, value: WORKFLOW",
+                            "Extra path: conformance-ehrbase.de.v0/conformance_section/conformance_observation/_work_flow_id|namespace, value: HOSPITAL-NS",
+                            "Extra path: conformance-ehrbase.de.v0/conformance_section/conformance_observation/_work_flow_id|id, value: 335645",
+                            "Extra path: conformance-ehrbase.de.v0/conformance_section/conformance_observation/_work_flow_id|id_scheme, value: HOSPITAL-NS"
+                          },
+                          new String[] {
+                            "/content[openEHR-EHR-SECTION.conformance_section.v0, 1]/items[openEHR-EHR-OBSERVATION.conformance_observation.v0, 1]/workflow_id/id",
+                            "/content[openEHR-EHR-SECTION.conformance_section.v0, 1]/items[openEHR-EHR-OBSERVATION.conformance_observation.v0, 1]/workflow_id/type",
+                            "/content[openEHR-EHR-SECTION.conformance_section.v0, 1]/items[openEHR-EHR-OBSERVATION.conformance_observation.v0, 1]/workflow_id/namespace",
+                            "/content[openEHR-EHR-SECTION.conformance_section.v0, 1]/items[openEHR-EHR-OBSERVATION.conformance_observation.v0, 1]/guideline_id/namespace",
+                            "/content[openEHR-EHR-SECTION.conformance_section.v0, 1]/items[openEHR-EHR-OBSERVATION.conformance_observation.v0, 1]/guideline_id/id",
+                            "/content[openEHR-EHR-SECTION.conformance_section.v0, 1]/items[openEHR-EHR-OBSERVATION.conformance_observation.v0, 1]/guideline_id/type"
+                          }));
+                  break;
 
-                  case EHRBASE_CONFORMANCE_ADMIN_ENTRY:
-                      arguments.add(
-                              Arguments.of(
-                                      test,
-                                      new String[] {},
-                                      new String[] {
-                                              // see https://jira.vitagroup.ag/browse/CDR-219
+                case EHRBASE_CONFORMANCE_EVALUATION:
+                  arguments.add(
+                      Arguments.of(
+                          test,
+                          new String[] {},
+                          new String[] {
+                            // see https://jira.vitagroup.ag/browse/CDR-219
+                            "Extra path: conformance-ehrbase.de.v0/conformance_section/conformance_evaluation/_guideline_id|type, value: GUIDELINE",
+                            "Extra path: conformance-ehrbase.de.v0/conformance_section/conformance_evaluation/_guideline_id|namespace, value: HOSPITAL-NS",
+                            "Extra path: conformance-ehrbase.de.v0/conformance_section/conformance_evaluation/_guideline_id|id, value: 3445",
+                            "Extra path: conformance-ehrbase.de.v0/conformance_section/conformance_evaluation/_guideline_id|id_scheme, value: HOSPITAL-NS",
+                            "Extra path: conformance-ehrbase.de.v0/conformance_section/conformance_evaluation/_work_flow_id|type, value: WORKFLOW",
+                            "Extra path: conformance-ehrbase.de.v0/conformance_section/conformance_evaluation/_work_flow_id|namespace, value: HOSPITAL-NS",
+                            "Extra path: conformance-ehrbase.de.v0/conformance_section/conformance_evaluation/_work_flow_id|id, value: 335645",
+                            "Extra path: conformance-ehrbase.de.v0/conformance_section/conformance_evaluation/_work_flow_id|id_scheme, value: HOSPITAL-NS"
+                          },
+                          new String[] {
+                            "/content[openEHR-EHR-SECTION.conformance_section.v0, 1]/items[openEHR-EHR-EVALUATION.conformance_evaluation.v0, 1]/workflow_id/id",
+                            "/content[openEHR-EHR-SECTION.conformance_section.v0, 1]/items[openEHR-EHR-EVALUATION.conformance_evaluation.v0, 1]/workflow_id/type",
+                            "/content[openEHR-EHR-SECTION.conformance_section.v0, 1]/items[openEHR-EHR-EVALUATION.conformance_evaluation.v0, 1]/workflow_id/namespace",
+                            "/content[openEHR-EHR-SECTION.conformance_section.v0, 1]/items[openEHR-EHR-EVALUATION.conformance_evaluation.v0, 1]/guideline_id/namespace",
+                            "/content[openEHR-EHR-SECTION.conformance_section.v0, 1]/items[openEHR-EHR-EVALUATION.conformance_evaluation.v0, 1]/guideline_id/id",
+                            "/content[openEHR-EHR-SECTION.conformance_section.v0, 1]/items[openEHR-EHR-EVALUATION.conformance_evaluation.v0, 1]/guideline_id/type"
+                          }));
+                  break;
+                case EHRBASE_CONFORMANCE_ACTION:
+                  arguments.add(
+                      Arguments.of(
+                          test,
+                          new String[] {},
+                          new String[] {
+                            // see https://jira.vitagroup.ag/browse/CDR-219
+                            "Extra path: conformance-ehrbase.de.v0/conformance_section/conformance_action/_guideline_id|type, value: GUIDELINE",
+                            "Extra path: conformance-ehrbase.de.v0/conformance_section/conformance_action/_guideline_id|namespace, value: HOSPITAL-NS",
+                            "Extra path: conformance-ehrbase.de.v0/conformance_section/conformance_action/_guideline_id|id, value: 3445",
+                            "Extra path: conformance-ehrbase.de.v0/conformance_section/conformance_action/_guideline_id|id_scheme, value: HOSPITAL-NS",
+                            "Extra path: conformance-ehrbase.de.v0/conformance_section/conformance_action/_work_flow_id|type, value: WORKFLOW",
+                            "Extra path: conformance-ehrbase.de.v0/conformance_section/conformance_action/_work_flow_id|namespace, value: HOSPITAL-NS",
+                            "Extra path: conformance-ehrbase.de.v0/conformance_section/conformance_action/_work_flow_id|id, value: 335645",
+                            "Extra path: conformance-ehrbase.de.v0/conformance_section/conformance_action/_work_flow_id|id_scheme, value: HOSPITAL-NS"
+                          },
+                          new String[] {
+                            "/content[openEHR-EHR-SECTION.conformance_section.v0, 1]/items[openEHR-EHR-ACTION.conformance_action_.v0, 1]/workflow_id/id",
+                            "/content[openEHR-EHR-SECTION.conformance_section.v0, 1]/items[openEHR-EHR-ACTION.conformance_action_.v0, 1]/workflow_id/type",
+                            "/content[openEHR-EHR-SECTION.conformance_section.v0, 1]/items[openEHR-EHR-ACTION.conformance_action_.v0, 1]/workflow_id/namespace",
+                            "/content[openEHR-EHR-SECTION.conformance_section.v0, 1]/items[openEHR-EHR-ACTION.conformance_action_.v0, 1]/guideline_id/namespace",
+                            "/content[openEHR-EHR-SECTION.conformance_section.v0, 1]/items[openEHR-EHR-ACTION.conformance_action_.v0, 1]/guideline_id/id",
+                            "/content[openEHR-EHR-SECTION.conformance_section.v0, 1]/items[openEHR-EHR-ACTION.conformance_action_.v0, 1]/guideline_id/type"
+                          }));
+                  break;
+                case EHRBASE_CONFORMANCE_INSTRUCTION:
+                  arguments.add(
+                      Arguments.of(
+                          test,
+                          new String[] {},
+                          new String[] {
+                            // see https://jira.vitagroup.ag/browse/CDR-219
+                            "Extra path: conformance-ehrbase.de.v0/conformance_section/conformance_instruction/_guideline_id|type, value: GUIDELINE",
+                            "Extra path: conformance-ehrbase.de.v0/conformance_section/conformance_instruction/_guideline_id|namespace, value: HOSPITAL-NS",
+                            "Extra path: conformance-ehrbase.de.v0/conformance_section/conformance_instruction/_guideline_id|id, value: 3445",
+                            "Extra path: conformance-ehrbase.de.v0/conformance_section/conformance_instruction/_guideline_id|id_scheme, value: HOSPITAL-NS",
+                            "Extra path: conformance-ehrbase.de.v0/conformance_section/conformance_instruction/_work_flow_id|type, value: WORKFLOW",
+                            "Extra path: conformance-ehrbase.de.v0/conformance_section/conformance_instruction/_work_flow_id|namespace, value: HOSPITAL-NS",
+                            "Extra path: conformance-ehrbase.de.v0/conformance_section/conformance_instruction/_work_flow_id|id, value: 335645",
+                            "Extra path: conformance-ehrbase.de.v0/conformance_section/conformance_instruction/_work_flow_id|id_scheme, value: HOSPITAL-NS",
+                            // https://jira.vitagroup.ag/browse/CDR-221
+                            "Extra path: conformance-ehrbase.de.v0/conformance_section/conformance_instruction/_wf_definition|value, value: wf_definition",
+                            "Extra path: conformance-ehrbase.de.v0/conformance_section/conformance_instruction/_wf_definition|formalism, value: formalism"
+                          },
+                          new String[] {
+                            "/content[openEHR-EHR-SECTION.conformance_section.v0, 1]/items[openEHR-EHR-INSTRUCTION.conformance_instruction.v0, 1]/workflow_id/id",
+                            "/content[openEHR-EHR-SECTION.conformance_section.v0, 1]/items[openEHR-EHR-INSTRUCTION.conformance_instruction.v0, 1]/workflow_id/type",
+                            "/content[openEHR-EHR-SECTION.conformance_section.v0, 1]/items[openEHR-EHR-INSTRUCTION.conformance_instruction.v0, 1]/workflow_id/namespace",
+                            "/content[openEHR-EHR-SECTION.conformance_section.v0, 1]/items[openEHR-EHR-INSTRUCTION.conformance_instruction.v0, 1]/guideline_id/namespace",
+                            "/content[openEHR-EHR-SECTION.conformance_section.v0, 1]/items[openEHR-EHR-INSTRUCTION.conformance_instruction.v0, 1]/guideline_id/id",
+                            "/content[openEHR-EHR-SECTION.conformance_section.v0, 1]/items[openEHR-EHR-INSTRUCTION.conformance_instruction.v0, 1]/guideline_id/type"
+                          }));
+                  break;
 
-                                              "Extra path: conformance-ehrbase.de.v0/conformance_section/conformance_admin_entry/_work_flow_id|type, value: WORKFLOW",
-                                              "Extra path: conformance-ehrbase.de.v0/conformance_section/conformance_admin_entry/_work_flow_id|namespace, value: HOSPITAL-NS",
-                                              "Extra path: conformance-ehrbase.de.v0/conformance_section/conformance_admin_entry/_work_flow_id|id, value: 335645",
-                                              "Extra path: conformance-ehrbase.de.v0/conformance_section/conformance_admin_entry/_work_flow_id|id_scheme, value: HOSPITAL-NS"
-                                      },
-                                      new String[] {
-                                              "/content[openEHR-EHR-SECTION.conformance_section.v0, 1]/items[openEHR-EHR-ADMIN_ENTRY.conformance_admin_entry.v0, 1]/workflow_id/id",
-                                              "/content[openEHR-EHR-SECTION.conformance_section.v0, 1]/items[openEHR-EHR-ADMIN_ENTRY.conformance_admin_entry.v0, 1]/workflow_id/type",
-                                              "/content[openEHR-EHR-SECTION.conformance_section.v0, 1]/items[openEHR-EHR-ADMIN_ENTRY.conformance_admin_entry.v0, 1]/workflow_id/namespace"
-                                      }));
-                      break;
+                case EHRBASE_CONFORMANCE_ADMIN_ENTRY:
+                  arguments.add(
+                      Arguments.of(
+                          test,
+                          new String[] {},
+                          new String[] {
+                            // see https://jira.vitagroup.ag/browse/CDR-219
 
-                  case EHRBASE_CONFORMANCE_DATA_TYPES_DV_EHR_URI:
+                            "Extra path: conformance-ehrbase.de.v0/conformance_section/conformance_admin_entry/_work_flow_id|type, value: WORKFLOW",
+                            "Extra path: conformance-ehrbase.de.v0/conformance_section/conformance_admin_entry/_work_flow_id|namespace, value: HOSPITAL-NS",
+                            "Extra path: conformance-ehrbase.de.v0/conformance_section/conformance_admin_entry/_work_flow_id|id, value: 335645",
+                            "Extra path: conformance-ehrbase.de.v0/conformance_section/conformance_admin_entry/_work_flow_id|id_scheme, value: HOSPITAL-NS"
+                          },
+                          new String[] {
+                            "/content[openEHR-EHR-SECTION.conformance_section.v0, 1]/items[openEHR-EHR-ADMIN_ENTRY.conformance_admin_entry.v0, 1]/workflow_id/id",
+                            "/content[openEHR-EHR-SECTION.conformance_section.v0, 1]/items[openEHR-EHR-ADMIN_ENTRY.conformance_admin_entry.v0, 1]/workflow_id/type",
+                            "/content[openEHR-EHR-SECTION.conformance_section.v0, 1]/items[openEHR-EHR-ADMIN_ENTRY.conformance_admin_entry.v0, 1]/workflow_id/namespace"
+                          }));
+                  break;
+
+                case EHRBASE_CONFORMANCE_DATA_TYPES_DV_EHR_URI:
                   // see https://jira.vitagroup.ag/browse/CDR-214
                   break;
-                  case EHRBASE_CONFORMANCE_SECTION:
-                      arguments.add(
-                              Arguments.of(
-                                      test,
-                                      new String[] {},
-                                      new String[] {
-                                              // see https://jira.vitagroup.ag/browse/CDR-220
-                                              "Extra path: conformance-ehrbase.de.v0/conformance_section/_uid, value: 9fcc1c70-9349-444d-b9cb-8fa817697f5e",
-                                              "Extra path: conformance-ehrbase.de.v0/conformance_section/_link:0|type, value: problem",
-                                              "Extra path: conformance-ehrbase.de.v0/conformance_section/_link:0|meaning, value: problem related note",
-                                              "Extra path: conformance-ehrbase.de.v0/conformance_section/_link:0|target, value: ehr://ehr.network/347a5490-55ee-4da9-b91a-9bba710f730e",
-                                              "Extra path: conformance-ehrbase.de.v0/conformance_section/_feeder_audit/originating_system_audit|version_id, value: final",
-                                              "Extra path: conformance-ehrbase.de.v0/conformance_section/_feeder_audit/originating_system_audit|system_id, value: orig",
-                                              "Extra path: conformance-ehrbase.de.v0/conformance_section/_feeder_audit/originating_system_audit/location|id, value: 12342341",
-                                              "Extra path: conformance-ehrbase.de.v0/conformance_section/_feeder_audit/originating_system_audit/location|id_namespace, value: uk.org.nmc",
-                                              "Extra path: conformance-ehrbase.de.v0/conformance_section/_feeder_audit/originating_system_audit/location|id_scheme, value: NMC",
-                                              "Extra path: conformance-ehrbase.de.v0/conformance_section/_feeder_audit/originating_system_audit/location|name, value: Org 1",
-                                              "Extra path: conformance-ehrbase.de.v0/conformance_section/_feeder_audit/originating_system_audit/subject|id, value: 456",
-                                              "Extra path: conformance-ehrbase.de.v0/conformance_section/_feeder_audit/originating_system_audit/subject|id_namespace, value: uk.org.nmc",
-                                              "Extra path: conformance-ehrbase.de.v0/conformance_section/_feeder_audit/originating_system_audit/subject|id_scheme, value: NMC",
-                                              "Extra path: conformance-ehrbase.de.v0/conformance_section/_feeder_audit/originating_system_audit/subject|name, value: Per 1",
-                                              "Extra path: conformance-ehrbase.de.v0/conformance_section/_feeder_audit/originating_system_audit/provider|id, value: 456",
-                                              "Extra path: conformance-ehrbase.de.v0/conformance_section/_feeder_audit/originating_system_audit/provider|id_namespace, value: uk.org.nmc",
-                                              "Extra path: conformance-ehrbase.de.v0/conformance_section/_feeder_audit/originating_system_audit/provider|id_scheme, value: NMC",
-                                              "Extra path: conformance-ehrbase.de.v0/conformance_section/_feeder_audit/originating_system_audit/provider|name, value: Per 1",
-                                              "Extra path: conformance-ehrbase.de.v0/conformance_section/_feeder_audit/originating_system_audit|time, value: 2021-12-21T16:02:58.0094262+01:00",
-                                              "Extra path: conformance-ehrbase.de.v0/conformance_section/_feeder_audit/originating_system_item_id:0|id, value: id1",
-                                              "Extra path: conformance-ehrbase.de.v0/conformance_section/_feeder_audit/originating_system_item_id:0|issuer, value: issuer1",
-                                              "Extra path: conformance-ehrbase.de.v0/conformance_section/_feeder_audit/originating_system_item_id:0|assigner, value: assigner1",
-                                              "Extra path: conformance-ehrbase.de.v0/conformance_section/_feeder_audit/originating_system_item_id:0|type, value: PERSON",
-                                              "Extra path: conformance-ehrbase.de.v0/conformance_section/_feeder_audit/originating_system_item_id:1|id, value: id2",
-                                              "Extra path: conformance-ehrbase.de.v0/conformance_section/_feeder_audit/originating_system_item_id:1|issuer, value: issuer2",
-                                              "Extra path: conformance-ehrbase.de.v0/conformance_section/_feeder_audit/originating_system_item_id:1|assigner, value: assigner2",
-                                              "Extra path: conformance-ehrbase.de.v0/conformance_section/_feeder_audit/originating_system_item_id:1|type, value: PERSON",
-                                              "Extra path: conformance-ehrbase.de.v0/conformance_section/_feeder_audit/original_content, value: Hello world!",
-                                              "Extra path: conformance-ehrbase.de.v0/conformance_section/_feeder_audit/original_content|formalism, value: text/plain",
-                                              "Extra path: conformance-ehrbase.de.v0/conformance_section/_feeder_audit/feeder_system_item_id:0|id, value: id1",
-                                              "Extra path: conformance-ehrbase.de.v0/conformance_section/_feeder_audit/feeder_system_item_id:0|issuer, value: issuer1",
-                                              "Extra path: conformance-ehrbase.de.v0/conformance_section/_feeder_audit/feeder_system_item_id:0|assigner, value: assigner1",
-                                              "Extra path: conformance-ehrbase.de.v0/conformance_section/_feeder_audit/feeder_system_item_id:0|type, value: PERSON",
-                                              "Extra path: conformance-ehrbase.de.v0/conformance_section/_feeder_audit/feeder_system_item_id:1|id, value: id2",
-                                              "Extra path: conformance-ehrbase.de.v0/conformance_section/_feeder_audit/feeder_system_item_id:1|issuer, value: issuer2",
-                                              "Extra path: conformance-ehrbase.de.v0/conformance_section/_feeder_audit/feeder_system_item_id:1|assigner, value: assigner2",
-                                              "Extra path: conformance-ehrbase.de.v0/conformance_section/_feeder_audit/feeder_system_item_id:1|type, value: PERSON"
-                                      },
-                                      new String[] {}));
-                      break;
+                case EHRBASE_CONFORMANCE_SECTION:
+                  arguments.add(
+                      Arguments.of(
+                          test,
+                          new String[] {},
+                          new String[] {
+                            // see https://jira.vitagroup.ag/browse/CDR-220
+                            "Extra path: conformance-ehrbase.de.v0/conformance_section/_uid, value: 9fcc1c70-9349-444d-b9cb-8fa817697f5e",
+                            "Extra path: conformance-ehrbase.de.v0/conformance_section/_link:0|type, value: problem",
+                            "Extra path: conformance-ehrbase.de.v0/conformance_section/_link:0|meaning, value: problem related note",
+                            "Extra path: conformance-ehrbase.de.v0/conformance_section/_link:0|target, value: ehr://ehr.network/347a5490-55ee-4da9-b91a-9bba710f730e",
+                            "Extra path: conformance-ehrbase.de.v0/conformance_section/_feeder_audit/originating_system_audit|version_id, value: final",
+                            "Extra path: conformance-ehrbase.de.v0/conformance_section/_feeder_audit/originating_system_audit|system_id, value: orig",
+                            "Extra path: conformance-ehrbase.de.v0/conformance_section/_feeder_audit/originating_system_audit/location|id, value: 12342341",
+                            "Extra path: conformance-ehrbase.de.v0/conformance_section/_feeder_audit/originating_system_audit/location|id_namespace, value: uk.org.nmc",
+                            "Extra path: conformance-ehrbase.de.v0/conformance_section/_feeder_audit/originating_system_audit/location|id_scheme, value: NMC",
+                            "Extra path: conformance-ehrbase.de.v0/conformance_section/_feeder_audit/originating_system_audit/location|name, value: Org 1",
+                            "Extra path: conformance-ehrbase.de.v0/conformance_section/_feeder_audit/originating_system_audit/subject|id, value: 456",
+                            "Extra path: conformance-ehrbase.de.v0/conformance_section/_feeder_audit/originating_system_audit/subject|id_namespace, value: uk.org.nmc",
+                            "Extra path: conformance-ehrbase.de.v0/conformance_section/_feeder_audit/originating_system_audit/subject|id_scheme, value: NMC",
+                            "Extra path: conformance-ehrbase.de.v0/conformance_section/_feeder_audit/originating_system_audit/subject|name, value: Per 1",
+                            "Extra path: conformance-ehrbase.de.v0/conformance_section/_feeder_audit/originating_system_audit/provider|id, value: 456",
+                            "Extra path: conformance-ehrbase.de.v0/conformance_section/_feeder_audit/originating_system_audit/provider|id_namespace, value: uk.org.nmc",
+                            "Extra path: conformance-ehrbase.de.v0/conformance_section/_feeder_audit/originating_system_audit/provider|id_scheme, value: NMC",
+                            "Extra path: conformance-ehrbase.de.v0/conformance_section/_feeder_audit/originating_system_audit/provider|name, value: Per 1",
+                            "Extra path: conformance-ehrbase.de.v0/conformance_section/_feeder_audit/originating_system_audit|time, value: 2021-12-21T16:02:58.0094262+01:00",
+                            "Extra path: conformance-ehrbase.de.v0/conformance_section/_feeder_audit/originating_system_item_id:0|id, value: id1",
+                            "Extra path: conformance-ehrbase.de.v0/conformance_section/_feeder_audit/originating_system_item_id:0|issuer, value: issuer1",
+                            "Extra path: conformance-ehrbase.de.v0/conformance_section/_feeder_audit/originating_system_item_id:0|assigner, value: assigner1",
+                            "Extra path: conformance-ehrbase.de.v0/conformance_section/_feeder_audit/originating_system_item_id:0|type, value: PERSON",
+                            "Extra path: conformance-ehrbase.de.v0/conformance_section/_feeder_audit/originating_system_item_id:1|id, value: id2",
+                            "Extra path: conformance-ehrbase.de.v0/conformance_section/_feeder_audit/originating_system_item_id:1|issuer, value: issuer2",
+                            "Extra path: conformance-ehrbase.de.v0/conformance_section/_feeder_audit/originating_system_item_id:1|assigner, value: assigner2",
+                            "Extra path: conformance-ehrbase.de.v0/conformance_section/_feeder_audit/originating_system_item_id:1|type, value: PERSON",
+                            "Extra path: conformance-ehrbase.de.v0/conformance_section/_feeder_audit/original_content, value: Hello world!",
+                            "Extra path: conformance-ehrbase.de.v0/conformance_section/_feeder_audit/original_content|formalism, value: text/plain",
+                            "Extra path: conformance-ehrbase.de.v0/conformance_section/_feeder_audit/feeder_system_item_id:0|id, value: id1",
+                            "Extra path: conformance-ehrbase.de.v0/conformance_section/_feeder_audit/feeder_system_item_id:0|issuer, value: issuer1",
+                            "Extra path: conformance-ehrbase.de.v0/conformance_section/_feeder_audit/feeder_system_item_id:0|assigner, value: assigner1",
+                            "Extra path: conformance-ehrbase.de.v0/conformance_section/_feeder_audit/feeder_system_item_id:0|type, value: PERSON",
+                            "Extra path: conformance-ehrbase.de.v0/conformance_section/_feeder_audit/feeder_system_item_id:1|id, value: id2",
+                            "Extra path: conformance-ehrbase.de.v0/conformance_section/_feeder_audit/feeder_system_item_id:1|issuer, value: issuer2",
+                            "Extra path: conformance-ehrbase.de.v0/conformance_section/_feeder_audit/feeder_system_item_id:1|assigner, value: assigner2",
+                            "Extra path: conformance-ehrbase.de.v0/conformance_section/_feeder_audit/feeder_system_item_id:1|type, value: PERSON"
+                          },
+                          new String[] {}));
+                  break;
                 case EHRBASE_CONFORMANCE_CLUSTER:
                   arguments.add(
                       Arguments.of(
