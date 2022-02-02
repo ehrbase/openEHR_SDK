@@ -948,7 +948,7 @@ commands:
       - run:
           name: Maven build, install openEHR_SDK (skip Tests!)
           command: |
-            mvn build-helper:parse-version versions:set -DnewVersion=\${project.version}-LOCAL versions:commit
+            mvn build-helper:parse-version versions:set -DnewVersion=\${project.version}-LOCAL$(cat /proc/sys/kernel/random/uuid) versions:commit
             mvn install -Dmaven.javadoc.skip=true -Djacoco.skip=true -Dmaven.test.skip
       - run:
           name: Save the version number of locally installed SDK into a file
@@ -1200,7 +1200,7 @@ commands:
             SDK_VERSION=$(cat ~/projects/SDK_VERSION)
             echo $SDK_VERSION
             cd ~/projects/ehrbase
-            xmlstarlet edit --inplace --update project/properties/ehrbase.sdk.version --value $SDK_VERSION pom.xml
+            xmlstarlet edit --inplace --update /_:project/_:properties/_:ehrbase.sdk.version --value $SDK_VERSION pom.xml
             cat pom.xml
   
 
