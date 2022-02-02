@@ -38,6 +38,12 @@ public class ElementMarshalPostprocessor extends AbstractMarshalPostprocessor<El
 
       handleRmAttribute(term, rmObject.getNullFlavour(), values, context, "null_flavour");
     }
+
+    if (rmObject.getNullReason() != null) {
+
+      handleRmAttribute(term, rmObject.getNullReason(), values, context, "null_reason");
+    }
+
   }
 
   /** {@inheritDoc} */
