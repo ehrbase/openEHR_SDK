@@ -86,18 +86,6 @@ class DbConformanceTest {
                           },
                           new String[] {}));
                   break;
-                case EHRBASE_CONFORMANCE_INTERVAL_EVENT:
-                  arguments.add(
-                      Arguments.of(
-                          test,
-                          new String[] {},
-                          new String[] {
-                            // see https://jira.vitagroup.ag/browse/CDR-217
-                            "Extra path: conformance-ehrbase.de.v0/conformance_section/conformance_observation/any_event:0|sample_count, value: 5"
-                          },
-                          new String[] {}));
-                  break;
-
                 case EHRBASE_CONFORMANCE_ELEMENT_NULL_FLAVOR:
                   arguments.add(
                       Arguments.of(

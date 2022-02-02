@@ -43,6 +43,10 @@ public class EventAttributes extends LocatableAttributes {
                 map.put(TAG_WIDTH, intervalEvent.getWidth());
             if (intervalEvent.getMathFunction() != null)
                 map.put(TAG_MATH_FUNCTION, intervalEvent.getMathFunction());
+
+            if(intervalEvent.getSampleCount() != null){
+                map.put("sample_count", intervalEvent.getSampleCount());
+            }
         }
 
 
