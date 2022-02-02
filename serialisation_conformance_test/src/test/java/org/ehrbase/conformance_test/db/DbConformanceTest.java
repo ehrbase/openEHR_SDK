@@ -68,36 +68,6 @@ class DbConformanceTest {
                             "/content[openEHR-EHR-SECTION.conformance_section.v0, 1]/items[openEHR-EHR-OBSERVATION.conformance_observation.v0, 1]/data[at0001]/events[at0002, 1]/data[at0003]/items[at0018, 1]/value/normal_range/interval"
                           }));
                   break;
-                case EHRBASE_CONFORMANCE_DATA_TYPES_DV_DATE_TIME:
-                  arguments.add(
-                      Arguments.of(
-                          test,
-                          new String[] {},
-                          new String[] {
-                            // see https://jira.vitagroup.ag/browse/CDR-213
-                            "Extra path: conformance-ehrbase.de.v0/conformance_section/conformance_observation/any_event:0/dv_date_time|magnitude_status, value: ~",
-                            "Extra path: conformance-ehrbase.de.v0/conformance_section/conformance_observation/any_event:0/dv_date_time|normal_status, value: N",
-                            "Extra path: conformance-ehrbase.de.v0/conformance_section/conformance_observation/any_event:0/dv_date_time/_accuracy, value: P2DT9H52M",
-                            "Extra path: conformance-ehrbase.de.v0/conformance_section/conformance_observation/any_event:0/dv_date_time/_normal_range/lower, value: 2022-01-12T13:22:34.000868+01:00",
-                            "Extra path: conformance-ehrbase.de.v0/conformance_section/conformance_observation/any_event:0/dv_date_time/_normal_range/upper, value: 2022-02-12T13:22:34.000868+01:00",
-                            "Extra path: conformance-ehrbase.de.v0/conformance_section/conformance_observation/any_event:0/dv_date_time/_other_reference_ranges:0/lower, value: 2022-02-12T13:22:34.000868+01:00",
-                            "Extra path: conformance-ehrbase.de.v0/conformance_section/conformance_observation/any_event:0/dv_date_time/_other_reference_ranges:0/upper, value: 2022-03-12T13:22:34.000868+01:00",
-                            "Extra path: conformance-ehrbase.de.v0/conformance_section/conformance_observation/any_event:0/dv_date_time/_other_reference_ranges:0/meaning, value: high"
-                          },
-                          new String[] {}));
-                  break;
-                case EHRBASE_CONFORMANCE_INTERVAL_EVENT:
-                  arguments.add(
-                      Arguments.of(
-                          test,
-                          new String[] {},
-                          new String[] {
-                            // see https://jira.vitagroup.ag/browse/CDR-217
-                            "Extra path: conformance-ehrbase.de.v0/conformance_section/conformance_observation/any_event:0|sample_count, value: 5"
-                          },
-                          new String[] {}));
-                  break;
-
                 case EHRBASE_CONFORMANCE_ELEMENT_NULL_FLAVOR:
                   arguments.add(
                       Arguments.of(
