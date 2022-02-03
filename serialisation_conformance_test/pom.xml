@@ -36,8 +36,8 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>3.0.0-M5</version>
                 <configuration combine.self="override">
+                    <argLine>${surefireArgLine}</argLine>
                     <dependenciesToScan>com.github.better-care:web-template-tests</dependenciesToScan>
                     <includes combine.self="override">
                         <include>AnySomeConstrainedTest</include>
@@ -91,6 +91,9 @@
                         <include>WebTemplateContentTest.java</include>
                         <include>WorkflowIdTestOverwrite</include>
                         <include>XdsBuilderTest</include>
+                        <include>DbConformanceTest</include>
+                        <include>DbConformanceTest</include>
+                        <include>FlatConformanceTest</include>
                     </includes>
                 </configuration>
             </plugin>
