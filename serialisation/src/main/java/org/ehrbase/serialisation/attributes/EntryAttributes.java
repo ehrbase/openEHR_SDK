@@ -51,8 +51,10 @@ public abstract class EntryAttributes extends LocatableAttributes {
             map.put(TAG_ENCODING, new RmObjectEncoding(entry.getEncoding()).toMap());
         }
 
-        if (entry.getWorkflowId() != null)
-            map = toMap(TAG_WORKFLOW_ID, entry.getWorkflowId(), entry.getName());
+    if (entry.getWorkflowId() != null) {
+
+      map.put(TAG_WORKFLOW_ID, new RmObjectEncoding(entry.getWorkflowId()).toMap());
+    }
 
         if (entry.getOtherParticipations() != null && !entry.getOtherParticipations().isEmpty()){
             map.put(TAG_OTHER_PARTICIPATIONS, new OtherParticipationAttributes(entry.getOtherParticipations(), compositionSerializer).toMap());

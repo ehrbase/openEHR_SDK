@@ -20,10 +20,12 @@ package org.ehrbase.serialisation.attributes;
 import com.nedap.archie.rm.composition.CareEntry;
 import org.ehrbase.serialisation.dbencoding.CompositionSerializer;
 import org.ehrbase.serialisation.dbencoding.ItemStack;
+import org.ehrbase.serialisation.dbencoding.RmObjectEncoding;
 
 import java.util.Map;
 
 import static org.ehrbase.serialisation.dbencoding.CompositionSerializer.TAG_GUIDELINE_ID;
+
 /** populate the attributes for RM CareEntry */
 public abstract class CareEntryAttributes extends EntryAttributes {
 
@@ -34,8 +36,10 @@ public abstract class CareEntryAttributes extends EntryAttributes {
 
   public Map<String, Object> toMap(CareEntry careEntry) {
 
-    if (careEntry.getGuidelineId() != null)
-      map = toMap(TAG_GUIDELINE_ID, careEntry.getGuidelineId(), careEntry.getName());
+    if (careEntry.getGuidelineId() != null) {
+
+      map.put(TAG_GUIDELINE_ID, new RmObjectEncoding(careEntry.getGuidelineId()).toMap());
+    }
 
     map = super.toMap(careEntry);
 
