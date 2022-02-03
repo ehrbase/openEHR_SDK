@@ -21,7 +21,7 @@ Note: version releases in the 0.x.y range may introduce breaking changes.
 - Fix issue while unmarshalling FLAT composition that contains ELEMENT with children DV_CODED_TEXT and DV_TEXT (https://github.com/ehrbase/openEHR_SDK/pull/300)
 - Fix missing 'type' attribute in ExternalRef encoding (https://github.com/ehrbase/openEHR_SDK/pull/303)
 - db-serialising: fix handling of dv_ehr_uri  (https://github.com/ehrbase/openEHR_SDK/pull/316)
--
+- Fix db-serialising: date-time dv_order attributes (https://github.com/ehrbase/openEHR_SDK/pull/314)
 
 ## 1.16.0
 

@@ -19,9 +19,11 @@ package org.ehrbase.serialisation.jsonencoding;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.jsontype.TypeSerializer;
 import com.nedap.archie.rm.datavalues.quantity.datetime.DvDateTime;
+import org.apache.commons.collections4.CollectionUtils;
 
 import java.io.IOException;
 import java.time.format.DateTimeFormatter;
@@ -49,15 +51,43 @@ public class DateTimeSerializer extends JsonSerializer<DvDateTime> {
         toJson(jsonGenerator, dvDateTime);
         }
 
-    @Override
-    public void serializeWithType(DvDateTime dvDateTime, JsonGenerator jsonGenerator, SerializerProvider serializerProvider, TypeSerializer typeSer) throws IOException {
-        toJson(jsonGenerator, dvDateTime);
-    }
+  @Override
+  public void serializeWithType(
+      DvDateTime dvDateTime,
+      JsonGenerator jsonGenerator,
+      SerializerProvider serializerProvider,
+      TypeSerializer typeSer)
+      throws IOException {
+    toJson(jsonGenerator, dvDateTime);
+  }
 
-    private void toJson(JsonGenerator jsonGenerator, DvDateTime dvDateTime) throws IOException {
-        jsonGenerator.writeStartObject();
-        jsonGenerator.writeStringField("_type", "DV_DATE_TIME");
-        jsonGenerator.writeStringField("value", ISO_8601_DATE_TIME.format(dvDateTime.getValue()));
-        jsonGenerator.writeEndObject();
+  private void toJson(JsonGenerator jsonGenerator, DvDateTime dvDateTime) throws IOException {
+
+    ObjectMapper mapper = (ObjectMapper) jsonGenerator.getCodec();
+
+    jsonGenerator.writeStartObject();
+    jsonGenerator.writeStringField("_type", "DV_DATE_TIME");
+    jsonGenerator.writeStringField("value", ISO_8601_DATE_TIME.format(dvDateTime.getValue()));
+    if (dvDateTime.getNormalStatus() != null) {
+      jsonGenerator.writeFieldName("normal_status");
+      jsonGenerator.writeRawValue(mapper.writeValueAsString(dvDateTime.getNormalStatus()));
     }
+    if (dvDateTime.getNormalRange() != null) {
+      jsonGenerator.writeFieldName("normal_range");
+      jsonGenerator.writeRawValue(mapper.writeValueAsString(dvDateTime.getNormalRange()));
+    }
+    if (!CollectionUtils.isEmpty(dvDateTime.getOtherReferenceRanges())) {
+      jsonGenerator.writeFieldName("other_reference_ranges");
+      jsonGenerator.writeRawValue(mapper.writeValueAsString(dvDateTime.getOtherReferenceRanges()));
+    }
+    if (dvDateTime.getMagnitudeStatus() != null) {
+      jsonGenerator.writeFieldName("magnitude_status");
+      jsonGenerator.writeRawValue(mapper.writeValueAsString(dvDateTime.getMagnitudeStatus()));
+    }
+    if (dvDateTime.getNormalStatus() != null) {
+      jsonGenerator.writeFieldName("accuracy");
+      jsonGenerator.writeRawValue(mapper.writeValueAsString(dvDateTime.getAccuracy()));
+    }
+    jsonGenerator.writeEndObject();
+  }
 }
