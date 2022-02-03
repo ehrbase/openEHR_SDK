@@ -48,6 +48,7 @@ public class SnakeCase {
         .toUpperCase()
         .replace("I_S_M", "ISM")
         .replace("_I_D", "_ID")
+        .replace("_E_H_R", "_EHR")
         .replace("_U_R_I", "_URI");
   }
 }
