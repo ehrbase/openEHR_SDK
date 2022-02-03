@@ -224,9 +224,6 @@ class DbConformanceTest {
                           }));
                   break;
 
-                case EHRBASE_CONFORMANCE_DATA_TYPES_DV_EHR_URI:
-                  // see https://jira.vitagroup.ag/browse/CDR-214
-                  break;
                 case EHRBASE_CONFORMANCE_SECTION:
                   arguments.add(
                       Arguments.of(
