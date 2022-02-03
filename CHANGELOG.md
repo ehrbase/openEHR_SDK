@@ -11,16 +11,20 @@ Note: version releases in the 0.x.y range may introduce breaking changes.
 - cleanup created templates (https://github.com/ehrbase/openEHR_SDK/issues/298)
 - WebTemplate based validation (see https://github.com/ehrbase/openEHR_SDK/pull/309)
 - flat: created conformance tests (see https://github.com/ehrbase/openEHR_SDK/pull/310; https://github.com/ehrbase/openEHR_SDK/pull/305; https://github.com/ehrbase/openEHR_SDK/pull/304; https://github.com/ehrbase/openEHR_SDK/pull/301) 
-- db-serialising: created conformance test (see https://github.com/ehrbase/openEHR_SDK/pull/311) 
+- db-serialising: created conformance test (see https://github.com/ehrbase/openEHR_SDK/pull/311)
 
 ### Fixed
 
 - Fix NullPointerException when event has an empty state (https://github.com/ehrbase/openEHR_SDK/pull/294)
-- Fix issue when template does not contain list of values for DV_ORDINAL (https://github.com/ehrbase/openEHR_SDK/pull/295)
+- Fix issue when template does not contain list of values for
+  DV_ORDINAL (https://github.com/ehrbase/openEHR_SDK/pull/295)
 - Fix issue in AQL regarding LIMIT and OFFSET (https://github.com/ehrbase/openEHR_SDK/pull/296)
-- Fix issue while unmarshalling FLAT composition that contains ELEMENT with children DV_CODED_TEXT and DV_TEXT (https://github.com/ehrbase/openEHR_SDK/pull/300)
+- Fix issue while unmarshalling FLAT composition that contains ELEMENT with children DV_CODED_TEXT and
+  DV_TEXT (https://github.com/ehrbase/openEHR_SDK/pull/300)
 - Fix missing 'type' attribute in ExternalRef encoding (https://github.com/ehrbase/openEHR_SDK/pull/303)
 - Fix db-serialising: date-time dv_order attributes (https://github.com/ehrbase/openEHR_SDK/pull/314)
+- Fix db-serialising: element.null_reason (https://github.com/ehrbase/openEHR_SDK/pull/317)
+
 ## 1.16.0
 
 ### Added
