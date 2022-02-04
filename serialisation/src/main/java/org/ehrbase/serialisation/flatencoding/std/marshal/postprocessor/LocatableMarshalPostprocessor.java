@@ -26,6 +26,7 @@ import com.nedap.archie.rm.datavalues.DvText;
 import com.nedap.archie.rm.support.identification.ObjectId;
 import org.ehrbase.serialisation.walker.Context;
 import org.ehrbase.serialisation.walker.FlatHelper;
+import org.ehrbase.util.rmconstants.RmConstants;
 
 import java.util.Map;
 import java.util.Objects;
@@ -44,7 +45,8 @@ public class LocatableMarshalPostprocessor extends AbstractMarshalPostprocessor<
       Map<String, Object> values,
       Context<Map<String, Object>> context) {
 
-    if (!context.getFlatHelper().skip(context)) {
+    if (RmConstants.ELEMENT.equals(context.getNodeDeque().peek().getRmType())
+        || !context.getFlatHelper().skip(context)) {
 
       addValue(
           values,

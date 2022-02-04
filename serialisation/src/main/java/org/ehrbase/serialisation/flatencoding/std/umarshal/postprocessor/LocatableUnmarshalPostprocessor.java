@@ -28,6 +28,7 @@ import com.nedap.archie.rm.support.identification.HierObjectId;
 import org.ehrbase.serialisation.walker.Context;
 import org.ehrbase.serialisation.walker.FlatHelper;
 import org.ehrbase.serialisation.walker.defaultvalues.DefaultValues;
+import org.ehrbase.util.rmconstants.RmConstants;
 import org.ehrbase.webtemplate.path.flat.FlatPathDto;
 
 import java.util.ArrayList;
@@ -50,7 +51,8 @@ public class LocatableUnmarshalPostprocessor extends AbstractUnmarshalPostproces
       Set<String> consumedPaths,
       Context<Map<FlatPathDto, String>> context) {
 
-    if (!context.getFlatHelper().skip(context)) {
+    if (RmConstants.ELEMENT.equals(context.getNodeDeque().peek().getRmType())
+        || !context.getFlatHelper().skip(context)) {
 
       setValue(
           term + PATH_DIVIDER + "_uid",
