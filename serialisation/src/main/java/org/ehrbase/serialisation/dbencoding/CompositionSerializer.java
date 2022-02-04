@@ -99,6 +99,7 @@ public class CompositionSerializer {
   public static final String TAG_ISM_TRANSITION_REASON = "/careflow_step";
   public static final String TAG_TRANSITION = "/transition";
   public static final String TAG_WORKFLOW_ID = "/workflow_id";
+  public static final String TAG_WF_DEFINITION = "/wf_definition";
   public static final String TAG_GUIDELINE_ID = "/guideline_id";
   public static final String TAG_OTHER_PARTICIPATIONS = "/other_participations";
   public static final String TAG_PROVIDER = "/provider"; // care entry provider
