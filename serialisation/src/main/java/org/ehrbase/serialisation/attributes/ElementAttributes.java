@@ -92,6 +92,19 @@ public class ElementAttributes extends ItemAttributes {
           new SerialTree(valueMap).insert(null, element, "/null_reason", element.getNullReason());
     }
 
+    if (element.getFeederAudit() != null) {
+      valueMap =
+          new SerialTree(valueMap)
+              .insert(null, element, TAG_FEEDER_AUDIT, element.getFeederAudit());
+    }
+    if (element.getLinks() != null) {
+      valueMap = new SerialTree(valueMap).insert(null, element, TAG_LINKS, element.getLinks());
+    }
+
+    if (element.getUid() != null) {
+      valueMap = new SerialTree(valueMap).insert(null, element, TAG_UID, element.getUid());
+    }
+
     // set path
     valueMap = new PathItem(valueMap, tagMode, itemStack).encode(null);
 

@@ -69,53 +69,6 @@ class DbConformanceTest {
                           }));
                   break;
 
-                case EHRBASE_CONFORMANCE_ELEMENT_FEEDER_AUDIT:
-                  arguments.add(
-                      Arguments.of(
-                          test,
-                          new String[] {},
-                          new String[] {
-                            // see https://jira.vitagroup.ag/browse/CDR-215
-                            "Extra path: conformance-ehrbase.de.v0/conformance_section/conformance_observation/any_event:0/dv_quantity/_uid, value: 9fcc1c70-9349-444d-b9cb-8fa817697f5e",
-                            "Extra path: conformance-ehrbase.de.v0/conformance_section/conformance_observation/any_event:0/dv_quantity/_link:0|type, value: problem",
-                            "Extra path: conformance-ehrbase.de.v0/conformance_section/conformance_observation/any_event:0/dv_quantity/_link:0|meaning, value: problem related note",
-                            "Extra path: conformance-ehrbase.de.v0/conformance_section/conformance_observation/any_event:0/dv_quantity/_link:0|target, value: ehr://ehr.network/347a5490-55ee-4da9-b91a-9bba710f730e",
-                            "Extra path: conformance-ehrbase.de.v0/conformance_section/conformance_observation/any_event:0/dv_quantity/_feeder_audit/originating_system_audit|version_id, value: final",
-                            "Extra path: conformance-ehrbase.de.v0/conformance_section/conformance_observation/any_event:0/dv_quantity/_feeder_audit/originating_system_audit|system_id, value: orig",
-                            "Extra path: conformance-ehrbase.de.v0/conformance_section/conformance_observation/any_event:0/dv_quantity/_feeder_audit/originating_system_audit/location|id, value: 12342341",
-                            "Extra path: conformance-ehrbase.de.v0/conformance_section/conformance_observation/any_event:0/dv_quantity/_feeder_audit/originating_system_audit/location|id_namespace, value: uk.org.nmc",
-                            "Extra path: conformance-ehrbase.de.v0/conformance_section/conformance_observation/any_event:0/dv_quantity/_feeder_audit/originating_system_audit/location|id_scheme, value: NMC",
-                            "Extra path: conformance-ehrbase.de.v0/conformance_section/conformance_observation/any_event:0/dv_quantity/_feeder_audit/originating_system_audit/location|name, value: Org 1",
-                            "Extra path: conformance-ehrbase.de.v0/conformance_section/conformance_observation/any_event:0/dv_quantity/_feeder_audit/originating_system_audit/subject|id, value: 456",
-                            "Extra path: conformance-ehrbase.de.v0/conformance_section/conformance_observation/any_event:0/dv_quantity/_feeder_audit/originating_system_audit/subject|id_namespace, value: uk.org.nmc",
-                            "Extra path: conformance-ehrbase.de.v0/conformance_section/conformance_observation/any_event:0/dv_quantity/_feeder_audit/originating_system_audit/subject|id_scheme, value: NMC",
-                            "Extra path: conformance-ehrbase.de.v0/conformance_section/conformance_observation/any_event:0/dv_quantity/_feeder_audit/originating_system_audit/subject|name, value: Per 1",
-                            "Extra path: conformance-ehrbase.de.v0/conformance_section/conformance_observation/any_event:0/dv_quantity/_feeder_audit/originating_system_audit/provider|id, value: 456",
-                            "Extra path: conformance-ehrbase.de.v0/conformance_section/conformance_observation/any_event:0/dv_quantity/_feeder_audit/originating_system_audit/provider|id_namespace, value: uk.org.nmc",
-                            "Extra path: conformance-ehrbase.de.v0/conformance_section/conformance_observation/any_event:0/dv_quantity/_feeder_audit/originating_system_audit/provider|id_scheme, value: NMC",
-                            "Extra path: conformance-ehrbase.de.v0/conformance_section/conformance_observation/any_event:0/dv_quantity/_feeder_audit/originating_system_audit/provider|name, value: Per 1",
-                            "Extra path: conformance-ehrbase.de.v0/conformance_section/conformance_observation/any_event:0/dv_quantity/_feeder_audit/originating_system_audit|time, value: 2021-12-21T16:02:58.0094262+01:00",
-                            "Extra path: conformance-ehrbase.de.v0/conformance_section/conformance_observation/any_event:0/dv_quantity/_feeder_audit/originating_system_item_id:0|id, value: id1",
-                            "Extra path: conformance-ehrbase.de.v0/conformance_section/conformance_observation/any_event:0/dv_quantity/_feeder_audit/originating_system_item_id:0|issuer, value: issuer1",
-                            "Extra path: conformance-ehrbase.de.v0/conformance_section/conformance_observation/any_event:0/dv_quantity/_feeder_audit/originating_system_item_id:0|assigner, value: assigner1",
-                            "Extra path: conformance-ehrbase.de.v0/conformance_section/conformance_observation/any_event:0/dv_quantity/_feeder_audit/originating_system_item_id:0|type, value: PERSON",
-                            "Extra path: conformance-ehrbase.de.v0/conformance_section/conformance_observation/any_event:0/dv_quantity/_feeder_audit/originating_system_item_id:1|id, value: id2",
-                            "Extra path: conformance-ehrbase.de.v0/conformance_section/conformance_observation/any_event:0/dv_quantity/_feeder_audit/originating_system_item_id:1|issuer, value: issuer2",
-                            "Extra path: conformance-ehrbase.de.v0/conformance_section/conformance_observation/any_event:0/dv_quantity/_feeder_audit/originating_system_item_id:1|assigner, value: assigner2",
-                            "Extra path: conformance-ehrbase.de.v0/conformance_section/conformance_observation/any_event:0/dv_quantity/_feeder_audit/originating_system_item_id:1|type, value: PERSON",
-                            "Extra path: conformance-ehrbase.de.v0/conformance_section/conformance_observation/any_event:0/dv_quantity/_feeder_audit/original_content, value: Hello world!",
-                            "Extra path: conformance-ehrbase.de.v0/conformance_section/conformance_observation/any_event:0/dv_quantity/_feeder_audit/original_content|formalism, value: text/plain",
-                            "Extra path: conformance-ehrbase.de.v0/conformance_section/conformance_observation/any_event:0/dv_quantity/_feeder_audit/feeder_system_item_id:0|id, value: id1",
-                            "Extra path: conformance-ehrbase.de.v0/conformance_section/conformance_observation/any_event:0/dv_quantity/_feeder_audit/feeder_system_item_id:0|issuer, value: issuer1",
-                            "Extra path: conformance-ehrbase.de.v0/conformance_section/conformance_observation/any_event:0/dv_quantity/_feeder_audit/feeder_system_item_id:0|assigner, value: assigner1",
-                            "Extra path: conformance-ehrbase.de.v0/conformance_section/conformance_observation/any_event:0/dv_quantity/_feeder_audit/feeder_system_item_id:0|type, value: PERSON",
-                            "Extra path: conformance-ehrbase.de.v0/conformance_section/conformance_observation/any_event:0/dv_quantity/_feeder_audit/feeder_system_item_id:1|id, value: id2",
-                            "Extra path: conformance-ehrbase.de.v0/conformance_section/conformance_observation/any_event:0/dv_quantity/_feeder_audit/feeder_system_item_id:1|issuer, value: issuer2",
-                            "Extra path: conformance-ehrbase.de.v0/conformance_section/conformance_observation/any_event:0/dv_quantity/_feeder_audit/feeder_system_item_id:1|assigner, value: assigner2",
-                            "Extra path: conformance-ehrbase.de.v0/conformance_section/conformance_observation/any_event:0/dv_quantity/_feeder_audit/feeder_system_item_id:1|type, value: PERSON"
-                          },
-                          new String[] {}));
-                  break;
                 default:
                   arguments.add(
                       Arguments.of(test, new String[] {}, new String[] {}, new String[] {}));
@@ -125,13 +78,14 @@ class DbConformanceTest {
      return arguments;
  }
 
-   @ParameterizedTest
-    @MethodSource("testRoundTripArguments")
-    void testRoundTrip(
-           CompositionTestDataConformanceSDTJson testData, String[] expectedMissing, String[] expectedExtra, String[] expectedValidationErrorPath)
-           throws IOException {
-
-
+  @ParameterizedTest
+  @MethodSource("testRoundTripArguments")
+  void testRoundTrip(
+      CompositionTestDataConformanceSDTJson testData,
+      String[] expectedMissing,
+      String[] expectedExtra,
+      String[] expectedValidationErrorPath)
+      throws IOException {
 
        String templateId = testData.getTemplate().getTemplateId();
 
