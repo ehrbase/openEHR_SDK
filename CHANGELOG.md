@@ -29,6 +29,7 @@ Note: version releases in the 0.x.y range may introduce breaking changes.
 - Fix db-serialising: element.null_reason (https://github.com/ehrbase/openEHR_SDK/pull/317)
 - db-serialising: fix handing of guideline_id & work_flow_id &
   wf_definition (https://github.com/ehrbase/openEHR_SDK/pull/315)
+- db-serialising: fix handling of locatable attributes  (https://github.com/ehrbase/openEHR_SDK/pull/318)
 
 
 ## 1.16.0
