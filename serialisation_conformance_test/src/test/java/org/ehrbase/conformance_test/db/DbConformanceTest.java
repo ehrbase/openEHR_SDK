@@ -68,17 +68,6 @@ class DbConformanceTest {
                             "/content[openEHR-EHR-SECTION.conformance_section.v0, 1]/items[openEHR-EHR-OBSERVATION.conformance_observation.v0, 1]/data[at0001]/events[at0002, 1]/data[at0003]/items[at0018, 1]/value/normal_range/interval"
                           }));
                   break;
-                case EHRBASE_CONFORMANCE_ELEMENT_NULL_FLAVOR:
-                  arguments.add(
-                      Arguments.of(
-                          test,
-                          new String[] {},
-                          new String[] {
-                            // see https://jira.vitagroup.ag/browse/CDR-222
-                            "Extra path: conformance-ehrbase.de.v0/conformance_section/conformance_observation/any_event:0/dv_quantity/_null_reason, value: sample reason"
-                          },
-                          new String[] {}));
-                  break;
 
 
                 case EHRBASE_CONFORMANCE_SECTION:
