@@ -17,14 +17,14 @@
 
 package org.ehrbase.serialisation.attributes;
 
-import static org.ehrbase.serialisation.dbencoding.CompositionSerializer.TAG_EXPIRY_TIME;
-import static org.ehrbase.serialisation.dbencoding.CompositionSerializer.TAG_NARRATIVE;
-
 import com.nedap.archie.rm.composition.Instruction;
-import java.util.Map;
 import org.ehrbase.serialisation.dbencoding.CompositionSerializer;
 import org.ehrbase.serialisation.dbencoding.ItemStack;
 import org.ehrbase.serialisation.dbencoding.RmObjectEncoding;
+
+import java.util.Map;
+
+import static org.ehrbase.serialisation.dbencoding.CompositionSerializer.*;
 
 /**
  * populate the attributes for RM Instruction (narrative)
@@ -44,6 +44,9 @@ public class InstructionAttributes extends CareEntryAttributes {
 
     if (instruction.getExpiryTime() != null) {
       map.put(TAG_EXPIRY_TIME, new RmObjectEncoding(instruction.getExpiryTime()).toMap());
+    }
+    if (instruction.getWfDefinition() != null) {
+      map.put(TAG_WF_DEFINITION, new RmObjectEncoding(instruction.getWfDefinition()).toMap());
     }
 
     map = super.toMap(instruction);
