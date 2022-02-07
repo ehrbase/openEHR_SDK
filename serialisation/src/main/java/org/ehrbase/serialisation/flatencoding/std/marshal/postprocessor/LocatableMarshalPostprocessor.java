@@ -26,6 +26,7 @@ import com.nedap.archie.rm.datavalues.DvText;
 import com.nedap.archie.rm.support.identification.ObjectId;
 import org.ehrbase.serialisation.walker.Context;
 import org.ehrbase.serialisation.walker.FlatHelper;
+import org.ehrbase.util.rmconstants.RmConstants;
 
 import java.util.Map;
 import java.util.Objects;
@@ -44,47 +45,61 @@ public class LocatableMarshalPostprocessor extends AbstractMarshalPostprocessor<
       Map<String, Object> values,
       Context<Map<String, Object>> context) {
 
-    addValue(
-        values,
-        term + PATH_DIVIDER + "_uid",
-        null,
-        Optional.of(rmObject).map(Locatable::getUid).map(ObjectId::getValue).orElse(null));
+    if (RmConstants.ELEMENT.equals(context.getNodeDeque().peek().getRmType())
+        || !context.getFlatHelper().skip(context)) {
 
-    if (rmObject.getLinks() != null) {
-      IntStream.range(0, rmObject.getLinks().size())
-          .forEach(
-              i -> {
-                Link link = rmObject.getLinks().get(i);
-                String termLoop = term + PATH_DIVIDER + "_link:" + i;
+      addValue(
+          values,
+          term + PATH_DIVIDER + "_uid",
+          null,
+          Optional.of(rmObject).map(Locatable::getUid).map(ObjectId::getValue).orElse(null));
 
-                addValue(
-                    values,
-                    termLoop,
-                    "meaning",
-                    Optional.of(link).map(Link::getMeaning).map(DvText::getValue).orElse(null));
-                addValue(
-                    values,
-                    termLoop,
-                    "type",
-                    Optional.of(link).map(Link::getType).map(DvText::getValue).orElse(null));
-                addValue(
-                    values,
-                    termLoop,
-                    "target",
-                    Optional.of(link).map(Link::getTarget).map(DvEHRURI::getValue).orElse(null));
-              });
-    }
+      if (rmObject.getLinks() != null) {
+        IntStream.range(0, rmObject.getLinks().size())
+            .forEach(
+                i -> {
+                  Link link = rmObject.getLinks().get(i);
+                  String termLoop = term + PATH_DIVIDER + "_link:" + i;
 
-    if (rmObject.getFeederAudit() != null) {
-      callMarshal (term,"_feeder_audit", rmObject.getFeederAudit(), values, context, context.getNodeDeque().peek().findChildById("feeder_audit").orElse(FlatHelper.buildDummyChild("feeder_audit",context.getNodeDeque().peek())));
-    }
+                  addValue(
+                      values,
+                      termLoop,
+                      "meaning",
+                      Optional.of(link).map(Link::getMeaning).map(DvText::getValue).orElse(null));
+                  addValue(
+                      values,
+                      termLoop,
+                      "type",
+                      Optional.of(link).map(Link::getType).map(DvText::getValue).orElse(null));
+                  addValue(
+                      values,
+                      termLoop,
+                      "target",
+                      Optional.of(link).map(Link::getTarget).map(DvEHRURI::getValue).orElse(null));
+                });
+      }
 
-    if (Optional.ofNullable(rmObject.getName())
-        .map(DvText::getValue)
-        .filter(n -> !Objects.equals(context.getNodeDeque().peek().getName(), n))
-        .isPresent()) {
+      if (rmObject.getFeederAudit() != null) {
+        callMarshal(
+            term,
+            "_feeder_audit",
+            rmObject.getFeederAudit(),
+            values,
+            context,
+            context
+                .getNodeDeque()
+                .peek()
+                .findChildById("feeder_audit")
+                .orElse(FlatHelper.buildDummyChild("feeder_audit", context.getNodeDeque().peek())));
+      }
 
-      handleRmAttribute(term, rmObject.getName(), values, context, "name");
+      if (Optional.ofNullable(rmObject.getName())
+          .map(DvText::getValue)
+          .filter(n -> !Objects.equals(context.getNodeDeque().peek().getName(), n))
+          .isPresent()) {
+
+        handleRmAttribute(term, rmObject.getName(), values, context, "name");
+      }
     }
   }
 
