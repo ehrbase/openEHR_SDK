@@ -58,27 +58,58 @@ public class ElementAttributes extends ItemAttributes {
             } else
                 return ltree;
         }
-        Map<String, Object> valuemap = PathMap.getInstance();
+
+    // contains value or null_flavor
+    Map<String, Object> valuemap = buildValueMap(element);
+    ltree.put(TAG_VALUE, valuemap);
+
+    return ltree;
+  }
+
+  private Map<String, Object> buildValueMap(Element element) {
+
+    Map<String, Object> valueMap = PathMap.getInstance();
 
         if (element.getValue() != null && !element.getValue().toString().isEmpty()) {
             log.debug(itemStack.pathStackDump() + "=" + element.getValue());
 
-            if (element.getValue() != null && !element.getValue().toString().isEmpty())
-                valuemap = new SerialTree(valuemap).insert(new CompositeClassName(element.getValue()).toString(), element, TAG_VALUE, element.getValue());
+      if (element.getValue() != null && !element.getValue().toString().isEmpty())
+        valueMap =
+            new SerialTree(valueMap)
+                .insert(
+                    new CompositeClassName(element.getValue()).toString(),
+                    element,
+                    TAG_VALUE,
+                    element.getValue());
         }
         else if (element.getNullFlavour() != null){
-            valuemap = new SerialTree(valuemap).insert(null, element, TAG_NULL_FLAVOUR, element.getNullFlavour());
+      valueMap =
+          new SerialTree(valueMap)
+              .insert(null, element, TAG_NULL_FLAVOUR, element.getNullFlavour());
         }
+    if (element.getNullReason() != null) {
+      valueMap =
+          new SerialTree(valueMap).insert(null, element, "/null_reason", element.getNullReason());
+    }
 
+    if (element.getFeederAudit() != null) {
+      valueMap =
+          new SerialTree(valueMap)
+              .insert(null, element, TAG_FEEDER_AUDIT, element.getFeederAudit());
+    }
+    if (element.getLinks() != null) {
+      valueMap = new SerialTree(valueMap).insert(null, element, TAG_LINKS, element.getLinks());
+    }
 
-        //set path
-        valuemap = new PathItem(valuemap, tagMode, itemStack).encode(null);
+    if (element.getUid() != null) {
+      valueMap = new SerialTree(valueMap).insert(null, element, TAG_UID, element.getUid());
+    }
 
-        //set archetype_node_id
-        valuemap.put(TAG_ARCHETYPE_NODE_ID, element.getArchetypeNodeId());
+    // set path
+    valueMap = new PathItem(valueMap, tagMode, itemStack).encode(null);
 
-        ltree.put(TAG_VALUE, valuemap);
-
-        return ltree;
+    // set archetype_node_id
+    valueMap.put(TAG_ARCHETYPE_NODE_ID, element.getArchetypeNodeId());
+    return valueMap;
     }
 }

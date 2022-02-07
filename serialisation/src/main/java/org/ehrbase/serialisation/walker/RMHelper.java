@@ -24,6 +24,7 @@ import com.nedap.archie.rm.composition.IsmTransition;
 import com.nedap.archie.rm.datatypes.CodePhrase;
 import com.nedap.archie.rm.datavalues.DvCodedText;
 import com.nedap.archie.rm.datavalues.DvText;
+import com.nedap.archie.rm.datavalues.DvURI;
 import com.nedap.archie.rm.datavalues.encapsulated.DvParsable;
 import com.nedap.archie.rm.datavalues.quantity.datetime.DvDateTime;
 import com.nedap.archie.rm.generic.Participation;
@@ -88,6 +89,10 @@ public class RMHelper {
 
     if (rmObject instanceof IsmTransition) {
       return isEmpty(((IsmTransition) rmObject).getCurrentState());
+    }
+
+    if(rmObject instanceof DvURI){
+      return ((DvURI) rmObject).getValue() == null;
     }
     return false;
   }

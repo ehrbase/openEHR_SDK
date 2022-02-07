@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 
 import static org.ehrbase.util.rmconstants.RmConstants.*;
 import static org.ehrbase.webtemplate.parser.OPTParser.PATH_DIVIDER;
+import static org.ehrbase.webtemplate.parser.OPTParser.buildId;
 
 public class FlatHelper<T> {
 
@@ -119,6 +120,14 @@ public class FlatHelper<T> {
     }
   }
 
+  public static boolean isDvCodedText(Map<FlatPathDto, String> values, String path) {
+    return values.keySet().stream()
+        .anyMatch(
+            e ->
+                FlatPathDto.isNodeEqual(e, new FlatPathDto(path))
+                    && "code".equals(e.getLast().getAttributeName()));
+  }
+
   public boolean skip(Context<T> context) {
     WebTemplateNode node = context.getNodeDeque().poll();
     WebTemplateNode parent = context.getNodeDeque().peek();
@@ -196,10 +205,10 @@ public class FlatHelper<T> {
   }
 
   public static void consumeAllMatching(
-      String term, Map<FlatPathDto, String> values, Set<String> consumedPaths) {
+          String term, Map<FlatPathDto, String> values, Set<String> consumedPaths, boolean exact) {
     consumedPaths.addAll(
         values.keySet().stream()
-            .filter(s -> s.startsWith(term))
+            .filter(s -> exact ?s.isEqualTo(term) : s.startsWith(term))
             .map(FlatPathDto::format)
             .collect(Collectors.toSet()));
   }
@@ -272,5 +281,16 @@ public class FlatHelper<T> {
                     String.format(
                         "Unknown Value %s in terminology %s",
                         value, clazz.getEnumConstants()[0].getTerminologyId())));
+  }
+
+  public static WebTemplateNode buildDummyChild(String attributeName, WebTemplateNode parent) {
+    WebTemplateNode node = new WebTemplateNode();
+    node.setId(buildId(attributeName));
+    node.setName(attributeName);
+    node.setAqlPath(parent.getAqlPath() + PATH_DIVIDER + attributeName);
+    node.setMax(0);
+    node.setMax(1);
+
+    return node;
   }
 }

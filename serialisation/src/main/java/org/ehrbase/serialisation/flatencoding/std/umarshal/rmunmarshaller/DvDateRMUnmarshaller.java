@@ -24,6 +24,7 @@ import com.nedap.archie.rm.datavalues.quantity.datetime.DvDate;
 import org.ehrbase.serialisation.walker.Context;
 import org.ehrbase.webtemplate.path.flat.FlatPathDto;
 
+import java.time.LocalDate;
 import java.util.Map;
 import java.util.Set;
 
@@ -46,7 +47,13 @@ public class DvDateRMUnmarshaller extends AbstractRMUnmarshaller<DvDate> {
         currentTerm,
         null,
         currentValues,
-        s -> rmObject.setValue(DateTimeParsers.parseDateValue(s)),
+        s -> {
+          if ("now".equals(s)) {
+            rmObject.setValue(LocalDate.now());
+          } else if (s != null) {
+            rmObject.setValue(DateTimeParsers.parseDateValue(s));
+          }
+        },
         String.class,
         consumedPaths);
   }

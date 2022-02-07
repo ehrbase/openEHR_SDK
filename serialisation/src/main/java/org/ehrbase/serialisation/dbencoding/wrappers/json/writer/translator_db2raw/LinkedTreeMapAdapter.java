@@ -24,6 +24,7 @@ import com.google.gson.TypeAdapter;
 import com.google.gson.internal.LinkedTreeMap;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
+import com.nedap.archie.rm.archetyped.Locatable;
 import com.nedap.archie.rm.datavalues.encapsulated.DvMultimedia;
 import com.nedap.archie.rminfo.ArchieRMInfoLookup;
 import org.ehrbase.serialisation.dbencoding.CompositionSerializer;
@@ -34,9 +35,10 @@ import org.ehrbase.webtemplate.parser.FlatPath;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
-import static org.ehrbase.serialisation.dbencoding.CompositionSerializer.TAG_CLASS;
+import static org.ehrbase.serialisation.dbencoding.CompositionSerializer.*;
 
 /**
  * GSON adapter for LinkedTreeMap
@@ -85,6 +87,8 @@ public class LinkedTreeMapAdapter extends TypeAdapter<LinkedTreeMap<String, Obje
     boolean isItemsOnly = new Children(map).isItemsOnly();
     boolean isMultiEvents = new Children(map).isEvents();
     boolean isMultiContent = new Children(map).isMultiContent();
+
+    fixWrongDbEncoding(map);
 
     String parentItemsArchetypeNodeId = null;
     String parentItemsType = null;
@@ -191,6 +195,34 @@ public class LinkedTreeMapAdapter extends TypeAdapter<LinkedTreeMap<String, Obje
       }
     } else {
       writeNode(map, writer);
+    }
+  }
+
+  /**
+   * fix worryingly encoded {@link com.nedap.archie.rm.archetyped.Locatable} attributes {@link
+   * Locatable#getLinks()}, {@link Locatable#getUid()} and {@link Locatable#getFeederAudit()} with
+   * extra []
+   *
+   * @param map
+   */
+  private void fixWrongDbEncoding(LinkedTreeMap<String, Object> map) {
+    if (map.containsKey(TAG_UID)
+        && map.get(TAG_UID) instanceof List
+        && !((List<?>) map.get(TAG_UID)).isEmpty()) {
+      map.put(TAG_UID, ((List<?>) map.get(TAG_UID)).get(0));
+    }
+
+    if (map.containsKey(TAG_FEEDER_AUDIT)
+        && map.get(TAG_FEEDER_AUDIT) instanceof List
+        && !((List<?>) map.get(TAG_FEEDER_AUDIT)).isEmpty()) {
+      map.put(TAG_FEEDER_AUDIT, ((List<?>) map.get(TAG_FEEDER_AUDIT)).get(0));
+    }
+
+    if (map.containsKey(TAG_LINKS)
+        && map.get(TAG_LINKS) instanceof List
+        && !((List<?>) map.get(TAG_LINKS)).isEmpty()
+        && ((List<?>) map.get(TAG_LINKS)).get(0) instanceof List) {
+      map.put(TAG_LINKS, ((List<?>) map.get(TAG_LINKS)).get(0));
     }
   }
 

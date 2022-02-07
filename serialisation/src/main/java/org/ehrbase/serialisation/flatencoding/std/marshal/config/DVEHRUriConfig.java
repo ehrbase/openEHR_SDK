@@ -40,11 +40,12 @@ public class DVEHRUriConfig extends AbstractsStdConfig<DvEHRURI> {
   public Map<String, Object> buildChildValues(
       String currentTerm, DvEHRURI rmObject, Context<Map<String, Object>> context) {
     Map<String, Object> result = new HashMap<>();
+
     addValue(
         result,
         currentTerm,
         null,
-        Optional.of(rmObject).map(DvEHRURI::getValue).map(URI::toString));
+        Optional.of(rmObject).map(DvEHRURI::getValue).map(URI::toString).orElse(null));
 
     return result;
   }

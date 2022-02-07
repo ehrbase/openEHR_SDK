@@ -26,7 +26,7 @@
     <parent>
         <groupId>org.ehrbase.openehr.sdk</groupId>
         <artifactId>root</artifactId>
-        <version>1.6.0</version>
+        <version>1.17.0</version>
     </parent>
 
     <artifactId>serialisation_conformance_test</artifactId>
@@ -36,8 +36,8 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>3.0.0-M5</version>
                 <configuration combine.self="override">
+                    <argLine>${surefireArgLine}</argLine>
                     <dependenciesToScan>com.github.better-care:web-template-tests</dependenciesToScan>
                     <includes combine.self="override">
                         <include>AnySomeConstrainedTest</include>
@@ -47,16 +47,20 @@
                         <include>BuildFromDataValueTest</include>
                         <include>CodedTextTest</include>
                         <include>ComposerTest</include>
+                        <include>ConstrainedNamesTestOverwrite</include>
                         <include>DoraBuilderTestOverwrite</include>
                         <include>DrpBuilderTestOverwritten</include>
+                        <include>EmptynessTestOverwrite</include>
                         <include>EthersBuilderTestOverwrite</include>
                         <include>DurationTest</include>
                         <include>EndTimeTest</include>
                         <include>FeederAuditTestOverwritten</include>
                         <include>FixedValueTestOverwrite</include>
                         <include>HistoryOriginTest</include>
+                        <include>InfinnityTestOverwrite</include>
                         <include>InstructionActionTestOverwrite</include>
                         <include>IntervalEventTest</include>
+                        <include>IspekBuilderTestOverwrite</include>
                         <include>IsmTransitionTest</include>
                         <include>LinksTest</include>
                         <include>LocationTest</include>
@@ -66,16 +70,30 @@
                         <include>NoArchetypedTest</include>
                         <include>NormalRangeTest</include>
                         <include>NullFlavorTestOverwritten</include>
+                        <include>OrderedArchetypeTest</include>
                         <include>OtherReferenceRangesTestOverwrite</include>
                         <include>GelBuilderTest</include>
                         <include>ParentTest</include>
                         <include>ParticipationCtxTestOverwrite</include>
+                        <include>PersistentCompositionTestOverwrite</include>
+                        <include>ProportionPrecisionTest</include>
+                        <include>ProportionUpdateTestOverride</include>
+                        <include>PskyBuilderTestOverwrite</include>
+                        <include>RussianBuilderTestOverwrite</include>
+                        <include>SettersTestOverwrite</include>
                         <include>ProviderTest</include>
                         <include>SubjectTest</include>
+                        <include>SettersTestOverwrite</include>
+                        <include>StatusesTestOverwrite</include>
                         <include>TermMappingTestOverwritten</include>
                         <include>TimeZoneTest</include>
                         <include>UidTest</include>
                         <include>WebTemplateContentTest.java</include>
+                        <include>WorkflowIdTestOverwrite</include>
+                        <include>XdsBuilderTest</include>
+                        <include>DbConformanceTest</include>
+                        <include>DbConformanceTest</include>
+                        <include>FlatConformanceTest</include>
                     </includes>
                 </configuration>
             </plugin>
@@ -125,6 +143,21 @@
         <dependency>
             <groupId>org.junit.vintage</groupId>
             <artifactId>junit-vintage-engine</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-params</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.ehrbase.openehr.sdk</groupId>
+            <artifactId>test-data</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>

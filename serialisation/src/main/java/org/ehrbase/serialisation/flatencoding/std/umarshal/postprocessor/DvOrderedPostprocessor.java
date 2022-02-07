@@ -19,11 +19,13 @@
 
 package org.ehrbase.serialisation.flatencoding.std.umarshal.postprocessor;
 
+import com.nedap.archie.rm.datatypes.CodePhrase;
 import com.nedap.archie.rm.datavalues.DvCodedText;
 import com.nedap.archie.rm.datavalues.DvText;
 import com.nedap.archie.rm.datavalues.quantity.DvInterval;
 import com.nedap.archie.rm.datavalues.quantity.DvOrdered;
 import com.nedap.archie.rm.datavalues.quantity.ReferenceRange;
+import com.nedap.archie.rm.support.identification.TerminologyId;
 import org.ehrbase.building.webtemplateskeletnbuilder.WebTemplateSkeletonBuilder;
 import org.ehrbase.serialisation.flatencoding.std.umarshal.rmunmarshaller.RMUnmarshaller;
 import org.ehrbase.serialisation.walker.Context;
@@ -35,6 +37,8 @@ import java.util.Set;
 import java.util.function.Consumer;
 
 import static org.ehrbase.serialisation.flatencoding.std.umarshal.StdToCompositionWalker.findRMUnmarshaller;
+import static org.ehrbase.serialisation.walker.FlatHelper.buildDummyChild;
+import static org.ehrbase.serialisation.walker.FlatHelper.isDvCodedText;
 import static org.ehrbase.webtemplate.parser.OPTParser.PATH_DIVIDER;
 
 public class DvOrderedPostprocessor extends AbstractUnmarshalPostprocessor<DvOrdered> {
@@ -63,12 +67,10 @@ public class DvOrderedPostprocessor extends AbstractUnmarshalPostprocessor<DvOrd
 
               if (!meaningValues.isEmpty()) {
                 final DvText meaning;
+                String meaningAttributeName = "meaning";
                 boolean isDvCodedText =
-                    meaningValues.keySet().stream()
-                        .anyMatch(
-                            e ->
-                                "code".equals(e.getLast().getAttributeName())
-                                    && "meaning".equals(e.getLast().getName()));
+                    isDvCodedText(
+                        meaningValues, term + "/_other_reference_ranges:" + k + "/meaning");
                 if (isDvCodedText) {
                   meaning = new DvCodedText();
                 } else {
@@ -77,20 +79,30 @@ public class DvOrderedPostprocessor extends AbstractUnmarshalPostprocessor<DvOrd
                 referenceRange.setMeaning(meaning);
                 callUnmarshal(
                     term + "/_other_reference_ranges:" + k,
-                    "meaning",
+                    meaningAttributeName,
                     meaning,
                     meaningValues,
                     consumedPaths,
                     context,
-                    context.getNodeDeque().peek().findChildById("meaning").orElse(null));
-                calPostProcess(
+                    context
+                        .getNodeDeque()
+                        .peek()
+                        .findChildById(meaningAttributeName)
+                        .orElse(
+                            buildDummyChild(meaningAttributeName, context.getNodeDeque().peek())));
+                callPostProcess(
                     term + "/_other_reference_ranges:" + k,
-                    "meaning",
+                    meaningAttributeName,
                     meaning,
                     meaningValues,
                     consumedPaths,
                     context,
-                    context.getNodeDeque().peek().findChildById("meaning").orElse(null));
+                    context
+                        .getNodeDeque()
+                        .peek()
+                        .findChildById(meaningAttributeName)
+                        .orElse(
+                            buildDummyChild(meaningAttributeName, context.getNodeDeque().peek())));
               }
 
               handleNormalRange(
@@ -100,6 +112,19 @@ public class DvOrderedPostprocessor extends AbstractUnmarshalPostprocessor<DvOrd
                   term + "/_other_reference_ranges:" + k,
                   referenceRange::setRange);
             });
+
+    setValue(
+        term,
+        "normal_status",
+        values,
+        s -> {
+          if (s != null) {
+            rmObject.setNormalStatus(
+                new CodePhrase(new TerminologyId("openehr_normal_statuses"), s));
+          }
+        },
+        String.class,
+        consumedPaths);
   }
 
   private void handleNormalRange(
@@ -116,6 +141,18 @@ public class DvOrderedPostprocessor extends AbstractUnmarshalPostprocessor<DvOrd
 
       handleBorder(values, consumedPaths, context, "upper", range::setUpper, term);
       handleBorder(values, consumedPaths, context, "lower", range::setLower, term);
+      callPostProcess(
+          term,
+          null,
+          range,
+          rangeValues,
+          consumedPaths,
+          context,
+          context
+              .getNodeDeque()
+              .peek()
+              .findChildById("range")
+              .orElse(FlatHelper.buildDummyChild("range", context.getNodeDeque().peek())));
     }
   }
 

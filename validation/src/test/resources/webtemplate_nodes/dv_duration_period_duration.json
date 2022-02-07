@@ -1,0 +1,81 @@
+{
+  "aqlPath": "/test/dv_duration_duration",
+  "inputs": [
+    {
+      "suffix": "year",
+      "type": "INTEGER",
+      "validation": {
+        "range": {
+          "minOp": ">",
+          "min": 5
+        }
+      }
+    },
+    {
+      "suffix": "month",
+      "type": "INTEGER",
+      "validation": {
+        "range": {
+          "minOp": ">",
+          "min": 4
+        }
+      }
+    },
+    {
+      "suffix": "week",
+      "type": "INTEGER",
+      "validation": {
+        "range": {
+          "minOp": ">=",
+          "min": 2
+        }
+      }
+    },
+    {
+      "suffix": "day",
+      "type": "INTEGER",
+      "validation": {
+        "range": {
+          "minOp": ">=",
+          "min": 1
+        }
+      }
+    },
+    {
+      "suffix": "hour",
+      "type": "INTEGER",
+      "validation": {
+        "range": {
+          "minOp": ">=",
+          "min": 0,
+          "maxOp": "<=",
+          "max": 10
+        }
+      }
+    },
+    {
+      "suffix": "minute",
+      "type": "INTEGER",
+      "validation": {
+        "range": {
+          "minOp": ">=",
+          "min": 0,
+          "maxOp": "<=",
+          "max": 30
+        }
+      }
+    },
+    {
+      "suffix": "second",
+      "type": "INTEGER",
+      "validation": {
+        "range": {
+          "minOp": ">=",
+          "min": 0,
+          "maxOp": "<=",
+          "max": 15
+        }
+      }
+    }
+  ]
+}

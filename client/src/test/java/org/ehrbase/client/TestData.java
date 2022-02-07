@@ -52,7 +52,9 @@ import org.ehrbase.client.classgenerator.examples.episodeofcarecomposition.defin
 import org.ehrbase.client.classgenerator.examples.geccoserologischerbefundcomposition.GECCOSerologischerBefundComposition;
 import org.ehrbase.client.classgenerator.examples.geccoserologischerbefundcomposition.definition.AnforderungDefiningCode;
 import org.ehrbase.client.classgenerator.examples.geccoserologischerbefundcomposition.definition.BefundJedesEreignisPointEvent;
+import org.ehrbase.client.classgenerator.examples.geccoserologischerbefundcomposition.definition.LabortestBezeichnungDefiningCode;
 import org.ehrbase.client.classgenerator.examples.geccoserologischerbefundcomposition.definition.ProAnalytQuantitativesErgebnisDvCount;
+import org.ehrbase.client.classgenerator.examples.geccoserologischerbefundcomposition.definition.VirusnachweistestDefiningCode;
 import org.ehrbase.client.classgenerator.examples.patientenaufenthaltcomposition.PatientenaufenthaltComposition;
 import org.ehrbase.client.classgenerator.examples.patientenaufenthaltcomposition.definition.StandortCluster;
 import org.ehrbase.client.classgenerator.examples.patientenaufenthaltcomposition.definition.StandortschlusselDefiningCode;
@@ -60,6 +62,7 @@ import org.ehrbase.client.classgenerator.examples.patientenaufenthaltcomposition
 import org.ehrbase.client.classgenerator.examples.stationarerversorgungsfallcomposition.StationarerVersorgungsfallComposition;
 import org.ehrbase.client.classgenerator.examples.stationarerversorgungsfallcomposition.definition.AufnahmedatenAdminEntry;
 import org.ehrbase.client.classgenerator.examples.stationarerversorgungsfallcomposition.definition.EntlassungsdatenAdminEntry;
+import org.ehrbase.client.classgenerator.examples.stationarerversorgungsfallcomposition.definition.FalltypDefiningCode;
 import org.ehrbase.client.classgenerator.examples.stationarerversorgungsfallcomposition.definition.KlinischerZustandDesPatientenDefiningCode;
 import org.ehrbase.client.classgenerator.examples.testalltypesenv1composition.TestAllTypesEnV1Composition;
 import org.ehrbase.client.classgenerator.examples.testalltypesenv1composition.definition.TestAllTypesEvaluation;
@@ -189,6 +192,9 @@ public class TestData {
         OffsetDateTime.of(2019, 04, 03, 22, 00, 00, 00, ZoneOffset.UTC));
     BefundJedesEreignisPointEvent event = new BefundJedesEreignisPointEvent();
     event.setTimeValue(OffsetDateTime.of(2019, 04, 03, 22, 00, 00, 00, ZoneOffset.UTC));
+    event.setErgebnisStatusValue("registered");
+    event.setLabortestBezeichnungDefiningCode(LabortestBezeichnungDefiningCode.SEROLOGIC_TEST_PROCEDURE);
+    event.setVirusnachweistestDefiningCode(VirusnachweistestDefiningCode.SARS_COV2_COVID19_AB_PRESENCE_IN_SERUM_OR_PLASMA_BY_IMMUNOASSAY);
     befundObservation.getJedesEreignis().add(event);
     ProAnalytQuantitativesErgebnisDvCount quantitativesErgebnis =
         new ProAnalytQuantitativesErgebnisDvCount();
@@ -444,10 +450,17 @@ public class TestData {
     ProVirusCluster proVirusCluster1 = new ProVirusCluster();
     proVirusCluster1.setVirusValue("SARS-Cov-2");
     proVirusCluster1.setAnalyseergebnisReihenfolgeMagnitude(Long.valueOf(32));
+    DvIdentifier identifier = new DvIdentifier();
+    identifier.setIssuer("Issuer");
+    identifier.setAssigner("Assigner");
+    identifier.setId("9a0e5173-07c8-443d-b414-24432b9d95ca");
+    identifier.setType("Prescription");
+    proVirusCluster1.setZugehorigeLaborprobe(identifier);
 
     ProVirusCluster proVirusCluster2 = new ProVirusCluster();
     proVirusCluster2.setVirusValue("SARS-Cov-2");
     proVirusCluster2.setAnalyseergebnisReihenfolgeMagnitude(Long.valueOf(34));
+    proVirusCluster2.setZugehorigeLaborprobe(identifier);
 
     // openEHR-EHR-CLUSTER.laboratory_test_panel.v0
     KulturCluster kulturCluster = new KulturCluster();
@@ -488,6 +501,7 @@ public class TestData {
         new DvDateTime("2020-04-02T12:00:00Z").getValue());
     stationarerVersorgungsfallComposition.setSettingDefiningCode(Setting.NURSING_HOME_CARE);
     // other_context
+    stationarerVersorgungsfallComposition.setFalltypDefiningCode(FalltypDefiningCode.VERSORGUNGSFALL);
     stationarerVersorgungsfallComposition.setFallKennungValue("45657678");
 
     // openEHR-EHR-ADMIN_ENTRY.admission.v0

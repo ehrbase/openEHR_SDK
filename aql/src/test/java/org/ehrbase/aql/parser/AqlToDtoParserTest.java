@@ -19,6 +19,7 @@
 
 package org.ehrbase.aql.parser;
 
+import java.util.stream.Stream;
 import org.apache.commons.lang3.StringUtils;
 import org.ehrbase.aql.binder.AqlBinder;
 import org.ehrbase.aql.dto.AqlDto;
@@ -35,6 +36,8 @@ import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class AqlToDtoParserTest {
 
@@ -122,8 +125,7 @@ public class AqlToDtoParserTest {
     selectFieldDto.setContainmentId(actual.getEhr().getContainmentId());
     matchesOperatorDto.setStatement(selectFieldDto);
     matchesOperatorDto.setValues(
-        List.of("f4da8646-8e36-4d9d-869c-af9dce5935c7", "61861e76-1606-48c9-adcf-49ebbb2c6bbd")
-            .stream()
+        Stream.of("f4da8646-8e36-4d9d-869c-af9dce5935c7", "61861e76-1606-48c9-adcf-49ebbb2c6bbd")
             .map(
                 s -> {
                   SimpleValue simpleValue = new SimpleValue();
@@ -311,5 +313,55 @@ public class AqlToDtoParserTest {
       return sb.toString();
     }
     return sb.toString();
+  }
+
+  @Test
+  public void parseAqlLimitOffset() {
+    var parser = new AqlToDtoParser();
+
+    var query1 = "select e/ehr_id/value "
+        + "from EHR e "
+        + "contains COMPOSITION c[openEHR-EHR-COMPOSITION.report.v1] "
+        + "contains OBSERVATION o [openEHR-EHR-OBSERVATION.body_temperature.v2] "
+        + "order by e/ehr_id/value ASC "
+        + "limit 10";
+
+    var aql = parser.parse(query1);
+    assertEquals(10, aql.getLimit());
+
+    var query2 = "select e/ehr_id/value "
+        + "from EHR e "
+        + "contains COMPOSITION c[openEHR-EHR-COMPOSITION.report.v1] "
+        + "contains OBSERVATION o [openEHR-EHR-OBSERVATION.body_temperature.v2] "
+        + "limit 50 "
+        + "offset 100";
+
+    aql = parser.parse(query2);
+    assertEquals(50, aql.getLimit());
+    assertEquals(100, aql.getOffset());
+
+    var query3 = "select e/ehr_id/value "
+        + "from EHR e "
+        + "contains COMPOSITION c[openEHR-EHR-COMPOSITION.report.v1] "
+        + "contains OBSERVATION o [openEHR-EHR-OBSERVATION.body_temperature.v2] "
+        + "limit 50 "
+        + "order by e/ehr_id/value ASC ";
+
+    assertThrows(AqlParseException.class, () -> parser.parse(query3));
+
+    var query4 = "select e/ehr_id/value "
+        + "from EHR e "
+        + "contains COMPOSITION c[openEHR-EHR-COMPOSITION.report.v1] "
+        + "contains OBSERVATION o [openEHR-EHR-OBSERVATION.body_temperature.v2] "
+        + "offset 100 "
+        + "order by e/ehr_id/value ASC ";
+
+    var query5 = "select e/ehr_id/value "
+        + "from EHR e "
+        + "contains COMPOSITION c[openEHR-EHR-COMPOSITION.report.v1] "
+        + "contains OBSERVATION o [openEHR-EHR-OBSERVATION.body_temperature.v2] "
+        + "offset 100";
+
+    assertThrows(AqlParseException.class, () -> parser.parse(query5));
   }
 }

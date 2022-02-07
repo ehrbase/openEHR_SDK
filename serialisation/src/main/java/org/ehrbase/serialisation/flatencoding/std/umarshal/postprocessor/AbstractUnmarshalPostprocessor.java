@@ -37,6 +37,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
 
+import static org.ehrbase.serialisation.walker.FlatHelper.buildDummyChild;
 import static org.ehrbase.webtemplate.parser.OPTParser.PATH_DIVIDER;
 
 public abstract class AbstractUnmarshalPostprocessor<T extends RMObject>
@@ -96,16 +97,24 @@ public abstract class AbstractUnmarshalPostprocessor<T extends RMObject>
         values,
         consumedPaths,
         context,
-        context.getNodeDeque().peek().findChildById(attributeId).orElse(null));
+        context
+            .getNodeDeque()
+            .peek()
+            .findChildById(attributeId)
+            .orElse(buildDummyChild(attributeId, context.getNodeDeque().peek())));
 
-    calPostProcess(
+    callPostProcess(
         currentTerm,
         "_" + attributeId,
         rmObject,
         values,
         consumedPaths,
         context,
-        context.getNodeDeque().peek().findChildById(attributeId).orElse(null));
+        context
+            .getNodeDeque()
+            .peek()
+            .findChildById(attributeId)
+            .orElse(buildDummyChild(attributeId, context.getNodeDeque().peek())));
   }
 
   protected void callUnmarshal(
@@ -131,7 +140,7 @@ public abstract class AbstractUnmarshalPostprocessor<T extends RMObject>
     }
   }
 
-  protected void calPostProcess(
+  protected void callPostProcess(
       String term,
       String subTerm,
       RMObject rmObject,
@@ -142,7 +151,13 @@ public abstract class AbstractUnmarshalPostprocessor<T extends RMObject>
     if (subNode != null) {
       context.getNodeDeque().push(subNode);
     }
-    String newTerm = term + PATH_DIVIDER + subTerm;
+    final String newTerm;
+
+    if (subTerm != null) {
+      newTerm = term + PATH_DIVIDER + subTerm;
+    } else {
+      newTerm = term;
+    }
     Map<FlatPathDto, String> subValues = FlatHelper.filter(values, newTerm, false);
     if (!subValues.isEmpty()) {
       StdToCompositionWalker.findUnmarshalPostprocessors(rmObject.getClass())

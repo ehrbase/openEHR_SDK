@@ -85,7 +85,18 @@ public class DvCodedTextRMUnmarshaller extends AbstractRMUnmarshaller<DvCodedTex
           },
           String.class,
           consumedPaths);
+    } else if (rmObject.getDefiningCode().getCodeString() == null) {
+      setValue(
+          currentTerm,
+          null,
+          currentValues,
+          // It is the code
+          c -> rmObject.getDefiningCode().setCodeString(c),
+          String.class,
+          consumedPaths);
     }
+
+
 
     // Set terminology from Node
     Optional.of(context.getNodeDeque().peek().getInputs()).stream()
@@ -121,6 +132,14 @@ public class DvCodedTextRMUnmarshaller extends AbstractRMUnmarshaller<DvCodedTex
                       .equals(rmObject.getDefiningCode().getCodeString()))
           .forEach(consumedPaths::add);
     }
+
+    setValue(
+        currentTerm,
+        "formatting",
+        currentValues,
+        rmObject::setFormatting,
+        String.class,
+        consumedPaths);
   }
 
   private void setFromNode(

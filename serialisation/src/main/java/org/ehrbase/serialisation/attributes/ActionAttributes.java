@@ -40,14 +40,6 @@ public class ActionAttributes extends CareEntryAttributes {
 
     public Map<String, Object> toMap(Action action){
 
-        if (action.getWorkflowId() != null) {
-            map = toMap(TAG_WORKFLOW_ID, action.getWorkflowId(), action.getName());
-        }
-
-        if (action.getGuidelineId() != null) {
-            map = toMap(TAG_GUIDELINE_ID, action.getGuidelineId(), action.getName());
-        }
-
         if (action.getTime() != null && !action.getTime().equals(new DvDateTime())) {
                 map = toMap(TAG_TIME, action.getTime(), action.getName());
         }

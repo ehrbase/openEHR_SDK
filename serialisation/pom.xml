@@ -26,12 +26,16 @@
     <parent>
         <groupId>org.ehrbase.openehr.sdk</groupId>
         <artifactId>root</artifactId>
-        <version>1.6.0</version>
+        <version>1.17.0</version>
     </parent>
 
     <artifactId>serialisation</artifactId>
 
     <dependencies>
+        <dependency>
+            <groupId>com.nedap.healthcare.archie</groupId>
+            <artifactId>test-rm</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.ehrbase.openehr.sdk</groupId>
             <artifactId>web-template</artifactId>
@@ -39,11 +43,6 @@
         <dependency>
             <groupId>org.ehrbase.openehr.sdk</groupId>
             <artifactId>building</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.ehrbase.openehr.sdk</groupId>
-            <artifactId>validation</artifactId>
-            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.ehrbase.openehr.sdk</groupId>
@@ -69,10 +68,6 @@
         <dependency>
             <groupId>org.json</groupId>
             <artifactId>json</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.github.openEHR</groupId>
-            <artifactId>archie</artifactId>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
@@ -121,6 +116,10 @@
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-engine</artifactId>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.threeten</groupId>
+            <artifactId>threeten-extra</artifactId>
         </dependency>
     </dependencies>
 </project>

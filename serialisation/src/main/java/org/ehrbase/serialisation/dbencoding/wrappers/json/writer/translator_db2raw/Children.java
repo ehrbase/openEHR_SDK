@@ -19,7 +19,6 @@
 package org.ehrbase.serialisation.dbencoding.wrappers.json.writer.translator_db2raw;
 
 import com.google.gson.internal.LinkedTreeMap;
-import org.ehrbase.serialisation.attributes.LocatableAttributes;
 import org.ehrbase.serialisation.dbencoding.CompositionSerializer;
 import org.ehrbase.serialisation.dbencoding.wrappers.json.I_DvTypeAdapter;
 
@@ -51,12 +50,18 @@ public class Children {
       if (!key.startsWith(CompositionSerializer.TAG_ITEMS)
           && !key.equals(I_DvTypeAdapter.ARCHETYPE_NODE_ID)
           && !key.equals(I_DvTypeAdapter.AT_CLASS)
-          && !LocatableAttributes.isLocatableAttribute(key)
+          && !isTrivialLocatableAttribute(key)
           && !key.equals(CompositionSerializer.TAG_CLASS)) {
         return false;
       }
     }
     return true;
+  }
+
+  private static boolean isTrivialLocatableAttribute(String key) {
+    return (key.equals(TAG_ARCHETYPE_NODE_ID)
+        || key.equals(TAG_ARCHETYPE_DETAILS)
+        || key.equals(TAG_NAME));
   }
 
   public int itemsCount() {

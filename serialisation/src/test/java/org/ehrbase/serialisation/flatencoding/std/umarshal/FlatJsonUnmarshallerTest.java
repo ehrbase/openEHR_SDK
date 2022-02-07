@@ -25,12 +25,11 @@ import com.nedap.archie.rm.datavalues.quantity.DvQuantity;
 import com.nedap.archie.rm.generic.PartySelf;
 import org.apache.commons.io.IOUtils;
 import org.apache.xmlbeans.XmlException;
+import org.ehrbase.test_data.composition.CompositionTestDataConformanceSDTJson;
 import org.ehrbase.test_data.composition.CompositionTestDataSimSDTJson;
 import org.ehrbase.test_data.operationaltemplate.OperationalTemplateTestData;
-import org.ehrbase.validation.Validator;
 import org.ehrbase.webtemplate.model.WebTemplate;
 import org.ehrbase.webtemplate.parser.OPTParser;
-import org.junit.Assert;
 import org.junit.Test;
 import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
 import org.openehr.schemas.v1.TemplateDocument;
@@ -60,16 +59,36 @@ public class FlatJsonUnmarshallerTest {
 
     Observation observation =
         (Observation) actual.itemAtPath("/content[openEHR-EHR-OBSERVATION.story.v1]");
-    assertThat(observation.getData().getOrigin().getValue().toString())
-        .isEqualTo("2020-05-11T22:53:12.039139+02:00");
+    assertThat(observation.getData().getOrigin().getValue()).hasToString(
+        "2020-05-11T22:53:12.039139+02:00");
     assertThat(observation.getSubject()).isNotNull();
     assertThat(observation.getSubject().getClass()).isEqualTo(PartySelf.class);
+  }
 
-    try {
-      new Validator(template).check(actual);
-    } catch (Exception e) {
-      Assert.fail(e.getMessage());
-    }
+  @Test
+  public void unmarshalUuid() throws IOException, XmlException {
+    OPERATIONALTEMPLATE template =
+        TemplateDocument.Factory.parse(OperationalTemplateTestData.CONFORMANCE.getStream())
+            .getTemplate();
+    WebTemplate webTemplate = new OPTParser(template).parse();
+
+    FlatJsonUnmarshaller cut = new FlatJsonUnmarshaller();
+
+    String flat =
+        IOUtils.toString(
+            CompositionTestDataConformanceSDTJson.EHRBASE_CONFORMANCE_OBSERVATION.getStream(),
+            StandardCharsets.UTF_8);
+
+    Composition actual = cut.unmarshal(flat, webTemplate);
+
+    assertThat(actual).isNotNull();
+
+    Observation observation =
+        (Observation)
+            actual.itemAtPath(
+                "/content[openEHR-EHR-SECTION.conformance_section.v0]/items[openEHR-EHR-OBSERVATION.conformance_observation.v0]");
+    assertThat(observation.getUid().getValue()).hasToString("9fcc1c70-9349-444d-b9cb-8fa817697f5e");
+    assertThat(observation.getData().getUid()).isNull();
   }
 
   @Test
@@ -88,11 +107,6 @@ public class FlatJsonUnmarshallerTest {
     Composition actual = cut.unmarshal(flat, webTemplate);
 
     assertThat(actual).isNotNull();
-   try {
-      new Validator(template).check(actual);
-    } catch (Exception e) {
-      Assert.fail(e.getMessage());
-    }
   }
 
   @Test
@@ -111,11 +125,6 @@ public class FlatJsonUnmarshallerTest {
     Composition actual = cut.unmarshal(flat, webTemplate);
 
     assertThat(actual).isNotNull();
-   try {
-      new Validator(template).check(actual);
-    } catch (Exception e) {
-      Assert.fail(e.getMessage());
-    }
   }
 
   @Test
@@ -143,13 +152,6 @@ public class FlatJsonUnmarshallerTest {
     assertThat(choice.getClass()).isEqualTo(DvQuantity.class);
     assertThat(((DvQuantity) choice).getMagnitude()).isEqualTo(148.01210165023804d);
     assertThat(((DvQuantity) choice).getUnits()).isEqualTo("mm[H20]");
-
-
-    try {
-      new Validator(template).check(actual);
-    } catch (Exception e) {
-      Assert.fail(e.getMessage());
-    }
   }
 
   @Test
@@ -170,11 +172,34 @@ public class FlatJsonUnmarshallerTest {
     Composition actual = cut.unmarshal(flat, webTemplate);
 
     assertThat(actual).isNotNull();
+  }
 
-    try {
-      new Validator(template).check(actual);
-    } catch (Exception e) {
-      Assert.fail(e.getMessage());
-    }
+  @Test
+  public void unmarshallNestedComposition() throws Exception {
+    var optTemplate = TemplateDocument.Factory.parse(OperationalTemplateTestData.NESTED.getStream())
+        .getTemplate();
+    var webTemplate = new OPTParser(optTemplate).parse();
+
+    var json = IOUtils.toString(CompositionTestDataSimSDTJson.NESTED.getStream(),
+        StandardCharsets.UTF_8);
+
+    var composition = new FlatJsonUnmarshaller().unmarshal(json, webTemplate);
+
+    assertThat(composition).isNotNull();
+  }
+
+
+  @Test
+  public void unmarshallIpsComposition() throws Exception {
+    var optTemplate = TemplateDocument.Factory.parse(OperationalTemplateTestData.IPS.getStream())
+        .getTemplate();
+    var webTemplate = new OPTParser(optTemplate).parse();
+
+    var json = IOUtils.toString(CompositionTestDataSimSDTJson.IPS.getStream(),
+        StandardCharsets.UTF_8);
+
+    var composition = new FlatJsonUnmarshaller().unmarshal(json, webTemplate);
+
+    assertThat(composition).isNotNull();
   }
 }

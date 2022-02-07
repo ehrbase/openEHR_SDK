@@ -26,15 +26,19 @@
     <parent>
         <groupId>org.ehrbase.openehr.sdk</groupId>
         <artifactId>root</artifactId>
-        <version>1.6.0</version>
+        <version>1.17.0</version>
     </parent>
 
     <artifactId>response-dto</artifactId>
 
     <dependencies>
         <dependency>
-            <groupId>com.github.openEHR</groupId>
-            <artifactId>archie</artifactId>
+            <groupId>com.nedap.healthcare.archie</groupId>
+            <artifactId>openehr-rm</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.dataformat</groupId>

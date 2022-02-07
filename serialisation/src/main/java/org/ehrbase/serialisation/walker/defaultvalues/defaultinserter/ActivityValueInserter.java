@@ -47,6 +47,10 @@ public class ActivityValueInserter extends AbstractValueInserter<Activity> {
       // default
       rmObject.getTiming().setFormalism("timing");
     }
+
+    if( rmObject.getActionArchetypeId() == null ){
+      rmObject.setActionArchetypeId("/.*/");
+    }
   }
 
   @Override

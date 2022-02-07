@@ -29,11 +29,14 @@ import com.nedap.archie.rm.composition.*;
 import com.nedap.archie.rm.datastructures.*;
 import com.nedap.archie.rm.datavalues.DvText;
 import com.nedap.archie.rm.integration.GenericEntry;
+import org.apache.commons.collections.map.MultiValueMap;
 import org.ehrbase.serialisation.attributes.*;
 import org.ehrbase.serialisation.exception.MarshalException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -96,6 +99,7 @@ public class CompositionSerializer {
   public static final String TAG_ISM_TRANSITION_REASON = "/careflow_step";
   public static final String TAG_TRANSITION = "/transition";
   public static final String TAG_WORKFLOW_ID = "/workflow_id";
+  public static final String TAG_WF_DEFINITION = "/wf_definition";
   public static final String TAG_GUIDELINE_ID = "/guideline_id";
   public static final String TAG_OTHER_PARTICIPATIONS = "/other_participations";
   public static final String TAG_PROVIDER = "/provider"; // care entry provider
@@ -322,7 +326,7 @@ public class CompositionSerializer {
 
       ltree.remove(TAG_CLASS);
       ltree.put(TAG_CLASS, new SimpleClassName(item).toString()); // force the classname
-
+      ltree = fixLocatableAttributes(ltree);
       retmap = ltree;
 
     } else if (item instanceof AdminEntry) {
@@ -628,8 +632,30 @@ public class CompositionSerializer {
       retmap.put(
           TAG_CLASS, new SimpleClassName(item).toString()); // this will come out as an array...
       retmap = new ItemStructureAttributes(this, itemStack, retmap).toMap(item);
+      retmap = fixLocatableAttributes(retmap);
     }
     return retmap;
+  }
+
+  private Map<String, Object> fixLocatableAttributes(Map<String, Object> map) {
+    if (map instanceof MultiValueMap) {
+      Map<String, Object> newMap = new LinkedHashMap<>();
+
+      map.forEach(
+          (k, v) -> {
+            if (List.of(TAG_UID, TAG_FEEDER_AUDIT, TAG_LINKS).contains(k)
+                && v instanceof List
+                && !((List<?>) v).isEmpty()) {
+              newMap.put(k, ((List<?>) v).get(0));
+            } else {
+              newMap.put(k, v);
+            }
+          });
+
+      return newMap;
+    } else {
+      return map;
+    }
   }
 
   /**
@@ -685,6 +711,7 @@ public class CompositionSerializer {
         ltree.computeIfAbsent(TAG_CLASS, value -> Cluster.class.getSimpleName());
       }
       if (hasContent) {
+        ltree = fixLocatableAttributes(ltree);
         retmap = ltree;
       } else {
         retmap = null;

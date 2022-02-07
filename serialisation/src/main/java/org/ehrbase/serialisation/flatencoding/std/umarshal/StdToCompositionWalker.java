@@ -19,16 +19,30 @@
 
 package org.ehrbase.serialisation.flatencoding.std.umarshal;
 
+import static org.ehrbase.util.rmconstants.RmConstants.DV_CODED_TEXT;
+import static org.ehrbase.util.rmconstants.RmConstants.DV_TEXT;
+import static org.ehrbase.util.rmconstants.RmConstants.ELEMENT;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nedap.archie.rm.RMObject;
 import com.nedap.archie.rm.composition.Composition;
 import com.nedap.archie.rm.composition.Entry;
+import com.nedap.archie.rm.datastructures.Element;
 import com.nedap.archie.rm.datatypes.CodePhrase;
 import com.nedap.archie.rm.datavalues.DvCodedText;
 import com.nedap.archie.rm.datavalues.DvText;
 import com.nedap.archie.rm.generic.PartyRelated;
 import com.nedap.archie.rm.support.identification.TerminologyId;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
@@ -49,11 +63,7 @@ import org.ehrbase.webtemplate.model.WebTemplate;
 import org.ehrbase.webtemplate.model.WebTemplateInput;
 import org.ehrbase.webtemplate.model.WebTemplateNode;
 import org.ehrbase.webtemplate.path.flat.FlatPathDto;
-
-import java.util.*;
-import java.util.stream.Collectors;
-
-import static org.ehrbase.util.rmconstants.RmConstants.*;
+import org.ehrbase.webtemplate.util.WebTemplateUtils;
 
 public class StdToCompositionWalker extends ToCompositionWalker<Map<FlatPathDto, String>> {
 
@@ -143,12 +153,12 @@ public class StdToCompositionWalker extends ToCompositionWalker<Map<FlatPathDto,
       Integer i) {
 
     if (
-    // Nodes with children need to be put on the stack even if there are skip since the might have
-    // children. If there are empty there will be removed in ToCompositionWalker::normalise
-    (CollectionUtils.isEmpty(childNode.getChildren())
+      // Nodes with children need to be put on the stack even if there are skip since the might have
+      // children. If there are empty there will be removed in ToCompositionWalker::normalise
+        (CollectionUtils.isEmpty(childNode.getChildren())
             && context.getFlatHelper().skip(childNode, currentNode))
-        //  NonMandatoryRmAttribute are handled in the UnmarshalPostprocessor
-        || (currentNode != null
+            //  NonMandatoryRmAttribute are handled in the UnmarshalPostprocessor
+            || (currentNode != null
             && context.getFlatHelper().isNonMandatoryRmAttribute(childNode, currentNode))) {
       return new ImmutablePair<>(null, null);
     }
@@ -207,7 +217,7 @@ public class StdToCompositionWalker extends ToCompositionWalker<Map<FlatPathDto,
 
       if (context.getRmObjectDeque().peek().getClass().isAssignableFrom(DvCodedText.class)
           && context.getObjectDeque().peek().keySet().stream()
-              .anyMatch(k -> "other".equals(k.getLast().getAttributeName()))) {
+          .anyMatch(k -> "other".equals(k.getLast().getAttributeName()))) {
         replaceRmObject(context, new DvText());
       }
 
@@ -256,10 +266,21 @@ public class StdToCompositionWalker extends ToCompositionWalker<Map<FlatPathDto,
     RMObject parentRM = context.getRmObjectDeque().peek();
     WebTemplateNode currentNode = context.getNodeDeque().poll();
     WebTemplateNode parentNode = context.getNodeDeque().peek();
-    WebTemplateSkeletonBuilder.remove(parentNode, parentRM, currentNode, oldRM);
-    WebTemplateSkeletonBuilder.insert(parentNode, parentRM, currentNode, newRmObject);
+    // since flat skips Elements we might need to keep it
+    if (oldRM instanceof Element && !(newRmObject instanceof Element)) {
+      WebTemplateNode valueNode =
+          currentNode.getChildren().stream()
+              .filter(n -> n.getId().contains("value"))
+              .findAny()
+              .orElseThrow();
+      WebTemplateSkeletonBuilder.insert(currentNode, oldRM, valueNode, newRmObject);
+      context.getRmObjectDeque().push(oldRM);
+    } else {
+      WebTemplateSkeletonBuilder.remove(parentNode, parentRM, currentNode, oldRM);
+      WebTemplateSkeletonBuilder.insert(parentNode, parentRM, currentNode, newRmObject);
+      context.getRmObjectDeque().push(newRmObject);
+    }
     context.getNodeDeque().push(currentNode);
-    context.getRmObjectDeque().push(newRmObject);
   }
 
   private boolean isRaw(Context<Map<FlatPathDto, String>> context) {
@@ -273,8 +294,8 @@ public class StdToCompositionWalker extends ToCompositionWalker<Map<FlatPathDto,
     return Objects.equals(current.getKey().getLast().getAttributeName(), "raw")
         // last flat path segment matches node_id ( starting '_' marks optional flat path )
         && Objects.equals(
-            StringUtils.removeStart(context.getNodeDeque().peek().getId(false), "_"),
-            StringUtils.removeStart(current.getKey().getLast().getName(), "_"));
+        StringUtils.removeStart(context.getNodeDeque().peek().getId(false), "_"),
+        StringUtils.removeStart(current.getKey().getLast().getName(), "_"));
   }
 
   @Override
@@ -298,7 +319,8 @@ public class StdToCompositionWalker extends ToCompositionWalker<Map<FlatPathDto,
               if (context.getFlatHelper().skip(childNode, currentNode)) {
 
                 context.getNodeDeque().push(childNode);
-                context.getRmObjectDeque().push(new RMObject() {});
+                context.getRmObjectDeque().push(new RMObject() {
+                });
 
                 String path = context.getFlatHelper().buildNamePath(context, true);
                 Map<FlatPathDto, String> subValues =
@@ -373,54 +395,20 @@ public class StdToCompositionWalker extends ToCompositionWalker<Map<FlatPathDto,
 
   @Override
   protected void handleDVText(WebTemplateNode currentNode) {
-    if (currentNode.getRmType().equals(ELEMENT)) {
-      List<WebTemplateNode> trueChildren =
-          currentNode.getChildren().stream()
-              .filter(n -> !"name".equals(n.getId()))
-              .filter(
-                  n ->
-                      !List.of("null_flavour", "feeder_audit").contains(n.getId())
-                          || !n.isNullable())
-              .collect(Collectors.toList());
-      if (trueChildren.stream()
-              .map(WebTemplateNode::getRmType)
-              .collect(Collectors.toList())
-              .containsAll(List.of(DV_TEXT, DV_CODED_TEXT))
-          && currentNode.getChoicesInChildren().size() > 0
-          && trueChildren.size() == 2) {
-        handleDVTextInternal(currentNode);
-      } else {
-        super.handleDVText(currentNode);
-      }
+    if (currentNode.getRmType().equals("ELEMENT")
+        && WebTemplateUtils.isChoiceDvCodedTextAndDvText(currentNode)) {
+      handleDVTextInternal(currentNode);
     } else {
       super.handleDVText(currentNode);
     }
   }
 
   public static void handleDVTextInternal(WebTemplateNode node) {
-
-    if (node.getRmType().equals(ELEMENT)) {
-      List<WebTemplateNode> trueChildren =
-          node.getChildren().stream()
-              .filter(n -> !"name".equals(n.getId()))
-              .filter(
-                  n ->
-                      !List.of("null_flavour", "feeder_audit").contains(n.getId())
-                          || !n.isNullable())
-              .collect(Collectors.toList());
-      if (trueChildren.stream()
-              .map(WebTemplateNode::getId)
-              .collect(Collectors.toList())
-              .containsAll(List.of("coded_text_value", "text_value"))
-          && node.getChoicesInChildren().size() > 0
-          && trueChildren.size() == 2) {
-        WebTemplateNode merged = Filter.mergeDVText(node);
-
-        node.getChildren()
-            .removeIf(n -> List.of("coded_text_value", "text_value").contains(n.getId()));
-        node.getChildren().add(merged);
-      }
-    }
+    WebTemplateNode merged = Filter.mergeDVText(node);
+    node.getChildren()
+        .removeIf(
+            childNode -> List.of("coded_text_value", "text_value").contains(childNode.getId()));
+    node.getChildren().add(merged);
   }
 
   @Override
@@ -435,7 +423,7 @@ public class StdToCompositionWalker extends ToCompositionWalker<Map<FlatPathDto,
         context.getObjectDeque().peek().keySet().stream()
             .filter(s -> s.startsWith(finalNamePath))
             .map(s -> FlatPathDto.removeStart(s, new FlatPathDto(finalNamePath)))
-            .filter(n -> n.getName().equals(childNode.getId()))
+            .filter(n -> n != null && n.getName().equals(childNode.getId()))
             .map(n -> Optional.ofNullable(n.getCount()).orElse(0))
             .sorted()
             .reduce((first, second) -> second)

@@ -76,7 +76,7 @@ public class DefaultValuePath<T> {
       new DefaultValuePath<>("participation");
   public static final DefaultValuePath<List<Link>> LINKS = new DefaultValuePath<>("link");
   public static final DefaultValuePath<ObjectRef> WORKFLOW_ID =
-      new DefaultValuePath<>("workflow_id", ObjectRef.class);
+      new DefaultValuePath<>("work_flow_id", ObjectRef.class);
 
   private final String path;
   private final Class<T> type;

@@ -20,6 +20,8 @@
 package org.ehrbase.serialisation.flatencoding.std.umarshal.postprocessor;
 
 import com.nedap.archie.rm.datastructures.Element;
+import com.nedap.archie.rm.datavalues.DvCodedText;
+import com.nedap.archie.rm.datavalues.DvText;
 import org.apache.commons.lang3.StringUtils;
 import org.ehrbase.client.classgenerator.shareddefinition.NullFlavour;
 import org.ehrbase.serialisation.walker.Context;
@@ -41,6 +43,18 @@ public class ElementPostprocessor extends AbstractUnmarshalPostprocessor<Element
       Map<FlatPathDto, String> values,
       Set<String> consumedPaths,
       Context<Map<FlatPathDto, String>> context) {
+
+      Map<FlatPathDto, String> reasonValues = FlatHelper.filter(values, term + "/_null_reason", false);
+
+      if(!reasonValues.isEmpty()){
+
+        if(  FlatHelper.isDvCodedText(reasonValues,term + "_null_reason")){
+            rmObject.setNullReason(new DvCodedText());
+      } else {
+        rmObject.setNullReason(new DvText());
+          }
+      handleRmAttribute(term,rmObject.getNullReason(),reasonValues,consumedPaths,context,"null_reason");
+      }
 
     setValue(
         term + PATH_DIVIDER + "_null_flavour",
@@ -69,10 +83,10 @@ public class ElementPostprocessor extends AbstractUnmarshalPostprocessor<Element
         consumedPaths);
 
     FlatHelper.consumeAllMatching(
-        term + PATH_DIVIDER + "_null_flavour|terminology", values, consumedPaths);
+        term + PATH_DIVIDER + "_null_flavour|terminology", values, consumedPaths, false);
     if (rmObject.getNullFlavour() != null) {
       rmObject.setValue(null);
-      FlatHelper.consumeAllMatching(term, values, consumedPaths);
+      FlatHelper.consumeAllMatching(term, values, consumedPaths, false);
     }
   }
 

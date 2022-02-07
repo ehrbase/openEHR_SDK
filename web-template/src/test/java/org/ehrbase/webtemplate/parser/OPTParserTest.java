@@ -421,6 +421,20 @@ public class OPTParserTest {
         });
   }
 
+  @Test
+  public void parseMultimediaTest() throws Exception {
+    var optTemplate = TemplateDocument.Factory.parse(OperationalTemplateTestData.MULTIMEDIA_TEST.getStream())
+            .getTemplate();
+    var parser = new OPTParser(optTemplate);
+
+    var webTemplate = parser.parse();
+    assertThat(webTemplate).isNotNull();
+
+    var nodes = webTemplate.getTree()
+        .findMatching(node ->  node.getRmType().equals("PARTICIPATION"));
+    assertThat(nodes.size()).isEqualTo(2L);
+  }
+
   public void checkErrors(List<String> errors, String[] expectedErrors) {
 
     SoftAssertions softAssertions = new SoftAssertions();

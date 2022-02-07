@@ -24,11 +24,14 @@ import com.nedap.archie.rm.generic.PartyIdentified;
 import com.nedap.archie.rm.generic.PartyProxy;
 import com.nedap.archie.rm.generic.PartyRelated;
 import com.nedap.archie.rm.generic.PartySelf;
+import com.nedap.archie.rm.support.identification.GenericId;
+import com.nedap.archie.rm.support.identification.ObjectRef;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.ehrbase.serialisation.flatencoding.std.umarshal.rmunmarshaller.PartyIdentifiedRMUnmarshaller;
 import org.ehrbase.serialisation.walker.Context;
+import org.ehrbase.serialisation.walker.FlatHelper;
 import org.ehrbase.serialisation.walker.defaultvalues.DefaultValuePath;
 import org.ehrbase.serialisation.walker.defaultvalues.DefaultValues;
 import org.ehrbase.webtemplate.path.flat.FlatPathDto;
@@ -37,8 +40,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static org.ehrbase.serialisation.walker.FlatHelper.consumeAllMatching;
-import static org.ehrbase.serialisation.walker.FlatHelper.extractMultiValued;
+import static org.ehrbase.serialisation.walker.FlatHelper.*;
 import static org.ehrbase.webtemplate.parser.OPTParser.PATH_DIVIDER;
 
 public class EntryPostprocessor extends AbstractUnmarshalPostprocessor<Entry> {
@@ -53,6 +55,30 @@ public class EntryPostprocessor extends AbstractUnmarshalPostprocessor<Entry> {
       Context<Map<FlatPathDto, String>> context) {
     consumedPaths.add(term + PATH_DIVIDER + "encoding|code");
     consumedPaths.add(term + PATH_DIVIDER + "encoding|terminology");
+
+    Map<FlatPathDto, String> subjectValues = FlatHelper.filter(values, term + "/subject", false);
+
+    if (!subjectValues.isEmpty()) {
+
+      if (rmObject.getSubject() == null) {
+        // If it was PartyRelated it would be set by now do to the relationship  and if it was
+        // PartySelf subjectValues would be empty
+        rmObject.setSubject(new PartyIdentified());
+      }
+
+      callUnmarshal(
+          term,
+          "subject",
+          rmObject.getSubject(),
+          values,
+          consumedPaths,
+          context,
+          context
+              .getNodeDeque()
+              .peek()
+              .findChildById("subject")
+              .orElse(buildDummyChild("subject", context.getNodeDeque().peek())));
+    }
 
     PartyProxy subject = rmObject.getSubject();
     if (subject == null
@@ -106,7 +132,42 @@ public class EntryPostprocessor extends AbstractUnmarshalPostprocessor<Entry> {
                     .entrySet())
         .map(DefaultValues::buildParticipation)
         .forEach(rmObject::addOtherParticipant);
-    consumeAllMatching(term + PATH_DIVIDER + "_other_participation", values, consumedPaths);
+    consumeAllMatching(term + PATH_DIVIDER + "_other_participation", values, consumedPaths, false);
+
+    Map<FlatPathDto, String> workflowIdValues = filter(values, term + "/_work_flow_id", false);
+    if (!workflowIdValues.isEmpty()) {
+      ObjectRef<GenericId> ref = new ObjectRef<>();
+      ref.setId(new GenericId());
+      rmObject.setWorkflowId(ref);
+      setValue(
+          term + "/_work_flow_id",
+          "id",
+          workflowIdValues,
+          s -> ref.getId().setValue(s),
+          String.class,
+          consumedPaths);
+      setValue(
+          term + "/_work_flow_id",
+          "id_scheme",
+          workflowIdValues,
+          s -> ref.getId().setScheme(s),
+          String.class,
+          consumedPaths);
+      setValue(
+          term + "/_work_flow_id",
+          "namespace",
+          workflowIdValues,
+          ref::setNamespace,
+          String.class,
+          consumedPaths);
+      setValue(
+          term + "/_work_flow_id",
+          "type",
+          workflowIdValues,
+          ref::setType,
+          String.class,
+          consumedPaths);
+    }
   }
 
   /** {@inheritDoc} */

@@ -59,7 +59,13 @@ public enum CompositionTestDataCanonicalJson {
     MINIMAL_ACTION_2("Minimal Action 2", "minimal_action2_1.json"),
     MINIMAL_WITH_OPTIONAL_ATTRIBUTE("dv multimedia with alternate_text", "minimal_with_optional_attribute.json"),
     MINIMAL_WITHOUT_OPTIONAL_ATTRIBUTE("dv multimedia without alternate_text", "minimal_without_optional_attribute.json"),
-    GECCO_PERSONENDATEN("GECCO_Personendaten", "gecco_personendaten.json");
+    GECCO_PERSONENDATEN("GECCO_Personendaten", "gecco_personendaten.json"),
+    GECCO_LABORBEFUND("GECCO_Laborbefund", "gecco_laborbefund.json"),
+    PARTICIPATION_NO_CONTENT("to test various participation CR #710", "participation_no_content.json"),
+    IPS("Internation Patient Summary", "ips_canonical.json"),
+    IPS_INVALID("IPS Invalid", "ips_invalid.json"),
+    OTHER_PARTICIPATIONS("to test querying other_participations in composition", "other_participations.json"),
+    SECTION_CARDINALITY("cardinality_of_section", "cardinality_of_section__full.json");
 
 
     private final String filename;

@@ -40,6 +40,7 @@ import org.ehrbase.terminology.client.terminology.ValueSet;
 import org.ehrbase.util.exception.SdkException;
 import org.ehrbase.util.rmconstants.RmConstants;
 import org.ehrbase.webtemplate.model.*;
+import org.ehrbase.webtemplate.util.WebTemplateUtils;
 import org.openehr.schemas.v1.*;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -48,7 +49,9 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+
 public class OPTParser {
+
   public static final String PATH_DIVIDER = "/";
   public static final ArchieRMInfoLookup ARCHIE_RM_INFO_LOOKUP = ArchieRMInfoLookup.getInstance();
   public static final String CAREFLOW_STEP = "careflow_step";
@@ -247,6 +250,7 @@ public class OPTParser {
   }
 
   private static class Name {
+
     String label;
     Map<String, String> localizedLabels;
   }
@@ -372,8 +376,8 @@ public class OPTParser {
     for (CATTRIBUTE cattribute : ccomplexobject.getAttributesArray()) {
       String pathLoop = aqlPath + PATH_DIVIDER + cattribute.getRmAttributeName();
       if (
-      // Will be set via Attributes
-      pathLoop.endsWith("/name")) {
+        // Will be set via Attributes
+          pathLoop.endsWith("/name")) {
         continue;
       }
 
@@ -390,6 +394,17 @@ public class OPTParser {
           if (childNode != null) {
             newChildren.addAll(childNode);
           }
+        }
+
+        if (cattribute instanceof CSINGLEATTRIBUTE && cattribute.getExistence().getLower() == 0) {
+          WebtemplateCardinality cardinality = new WebtemplateCardinality();
+          cardinality.setMin(cattribute.getExistence().getLower());
+          cardinality.setMax(cattribute.getExistence().getUpper());
+          cardinality.setExcludeFromWebTemplate(Boolean.TRUE);
+
+          newChildren.forEach(c -> cardinality.getIds().add(c.getId()));
+
+          node.getCardinalities().add(cardinality);
         }
       }
 
@@ -490,6 +505,25 @@ public class OPTParser {
                       .collect(Collectors.toList())));
         }
       }
+
+      //Add missing names to aqlPath if needed
+      newChildren.stream()
+              // node dos not already have name in aql
+                      .filter(c -> !node.isRelativePathNameDependent(c))
+              // there  exist a node which maches  the aql withouth name but not with name
+                              .filter(c -> newChildren.stream().anyMatch(n -> n.getAqlPath(false).equals(c.getAqlPath(false))  && !n.getAqlPath(true).equals(c.getAqlPath(true))))
+                                      .forEach( c -> {
+                                        FlatPath flatPath = new FlatPath(c.getAqlPath(true));
+                                        flatPath.getLast().addOtherPredicate("name/value",c.getName());
+
+                                        c.getChildren().forEach(
+                                                n -> replaceParentAql(n,c.getAqlPath(),flatPath.format(true))
+                                        );
+
+                                        c.setAqlPath(flatPath.format(true));
+                                              }
+                                      );
+
       node.getChildren().addAll(newChildren);
     }
 
@@ -523,14 +557,7 @@ public class OPTParser {
         addAnyNode(node, "DV_DATE", inputMap);
 
       } else {
-        List<WebTemplateNode> trueChildren =
-            node.getChildren().stream()
-                .filter(n -> !"name".equals(n.getName()))
-                .filter(
-                    n ->
-                        !List.of("null_flavour", "feeder_audit").contains(n.getName())
-                            || !n.isNullable())
-                .collect(Collectors.toList());
+        List<WebTemplateNode> trueChildren = WebTemplateUtils.getTrueChildrenElement(node);
         trueChildren.forEach(c -> pushProperties(node, c));
 
         if (trueChildren.size() == 1) {
@@ -540,12 +567,7 @@ public class OPTParser {
         }
         // choice between value and null_flavour
         else if (node.getChoicesInChildren().isEmpty()) {
-          node.getChildren().stream()
-              .filter(n -> !"name".equals(n.getName()))
-              .filter(
-                  n ->
-                      !List.of("null_flavour", "feeder_audit").contains(n.getName())
-                          || !n.isNullable())
+          WebTemplateUtils.getTrueChildrenElement(node).stream()
               .filter(n -> n.getRmType().startsWith("DV_"))
               .forEach(
                   n -> {
@@ -589,8 +611,8 @@ public class OPTParser {
                   .collect(Collectors.toList());
           // only add non-trivial cardinalities.
           if ((p.getKey().getMax() != null
-                  && p.getKey().getMax() != -1
-                  && p.getKey().getMax() < nodeIds.size())
+              && p.getKey().getMax() != -1
+              && p.getKey().getMax() < nodeIds.size())
               || (p.getKey().getMin() != null && p.getKey().getMin() > 1)) {
             p.getKey().getIds().addAll(nodeIds);
             node.getCardinalities().add(p.getKey());
@@ -598,6 +620,17 @@ public class OPTParser {
         });
 
     node.getChildren().forEach(child -> addInContext(node, child));
+  }
+
+  private void replaceParentAql(WebTemplateNode node, String oldAqlPath, String newAql) {
+
+    String childAql = node.getAqlPath();
+
+    FlatPath relativeAql = FlatPath.removeStart(new FlatPath(childAql), new FlatPath(oldAqlPath));
+
+    node.setAqlPath(FlatPath.addEnd(new FlatPath(newAql), relativeAql).format(true));
+
+    node.getChildren().forEach(n -> replaceParentAql(n, childAql,node.getAqlPath())    );
   }
 
   private Optional<WebTemplateNode> buildNameNode(
@@ -739,9 +772,9 @@ public class OPTParser {
     RMTypeInfo typeInfo = ARCHIE_RM_INFO_LOOKUP.getTypeInfo(node.getRmType());
     if (typeInfo != null
         && (Locatable.class.isAssignableFrom(typeInfo.getJavaClass())
-            || EventContext.class.isAssignableFrom(typeInfo.getJavaClass())
-            || DvInterval.class.isAssignableFrom(typeInfo.getJavaClass())
-            || IsmTransition.class.isAssignableFrom(typeInfo.getJavaClass()))) {
+        || EventContext.class.isAssignableFrom(typeInfo.getJavaClass())
+        || DvInterval.class.isAssignableFrom(typeInfo.getJavaClass())
+        || IsmTransition.class.isAssignableFrom(typeInfo.getJavaClass()))) {
 
       node.getChildren()
           .addAll(
@@ -1032,7 +1065,7 @@ public class OPTParser {
             .map(
                 o ->
                     StringUtils.isBlank(code.getTerminology())
-                            || "local".equals(code.getTerminology())
+                        || "local".equals(code.getTerminology())
                         ? o
                         : code.getTerminology() + "::" + o)
             .forEach(
@@ -1169,7 +1202,7 @@ public class OPTParser {
     return node;
   }
 
-  private String buildId(String term) {
+  public static String buildId(String term) {
 
     String normalTerm =
         StringUtils.normalizeSpace(
@@ -1181,4 +1214,5 @@ public class OPTParser {
 
     return normalTerm;
   }
+
 }

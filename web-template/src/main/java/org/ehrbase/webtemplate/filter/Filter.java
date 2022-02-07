@@ -19,9 +19,21 @@
 
 package org.ehrbase.webtemplate.filter;
 
+import static org.ehrbase.webtemplate.parser.OPTParser.DV_CODED_TEXT;
+
 import com.nedap.archie.rm.datastructures.Event;
 import com.nedap.archie.rminfo.ArchieRMInfoLookup;
 import com.nedap.archie.rminfo.RMTypeInfo;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Deque;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.ehrbase.util.reflection.ReflectionHelper;
@@ -30,14 +42,11 @@ import org.ehrbase.webtemplate.model.FilteredWebTemplate;
 import org.ehrbase.webtemplate.model.WebTemplate;
 import org.ehrbase.webtemplate.model.WebTemplateInput;
 import org.ehrbase.webtemplate.model.WebTemplateNode;
+import org.ehrbase.webtemplate.model.WebtemplateCardinality;
 import org.ehrbase.webtemplate.parser.InputHandler;
 import org.ehrbase.webtemplate.parser.OPTParser;
 import org.ehrbase.webtemplate.parser.config.RmIntrospectConfig;
-
-import java.util.*;
-import java.util.stream.Collectors;
-
-import static org.ehrbase.webtemplate.parser.OPTParser.DV_CODED_TEXT;
+import org.ehrbase.webtemplate.util.WebTemplateUtils;
 
 public class Filter implements WebTemplateFilter {
 
@@ -108,29 +117,26 @@ public class Filter implements WebTemplateFilter {
     }
 
     if (node.getRmType().equals("ELEMENT")) {
-      List<WebTemplateNode> trueChildren =
-          node.getChildren().stream()
-              .filter(n -> !"name".equals(n.getName()))
-              .filter(
-                  n ->
-                      !List.of("null_flavour", "feeder_audit").contains(n.getName())
-                          || !n.isNullable())
-              .collect(Collectors.toList());
-      if (trueChildren.stream()
-              .map(WebTemplateNode::getRmType)
-              .collect(Collectors.toList())
-              .containsAll(List.of("DV_TEXT", DV_CODED_TEXT))
-          && node.getChoicesInChildren().size() > 0
-          && trueChildren.size() == 2) {
+      if (WebTemplateUtils.isChoiceDvCodedTextAndDvText(node)) {
         WebTemplateNode merged = mergeDVText(node);
         merged.setId(node.getId());
         node.getChildren().clear();
         node.getChildren().add(merged);
-      } else if (trueChildren.size() == 1) {
-        // Element will be skipped and the value node inherits the id
-        trueChildren.get(0).setId(node.getId());
+      } else {
+        List<WebTemplateNode> trueChildren = WebTemplateUtils.getTrueChildrenElement(node);
+        if (trueChildren.size() == 1) {
+          // Element will be skipped and the value node inherits the id
+          trueChildren.get(0).setId(node.getId());
+        }
       }
     }
+
+    List<WebtemplateCardinality> cardinalities = node.getCardinalities().stream()
+        .filter(webtemplateCardinality -> BooleanUtils.isNotTrue(webtemplateCardinality.getExcludeFromWebTemplate()))
+        .collect(Collectors.toList());
+
+    node.getCardinalities().clear();
+    node.getCardinalities().addAll(cardinalities);
   }
 
   public static WebTemplateNode mergeDVText(WebTemplateNode node) {
@@ -202,7 +208,8 @@ public class Filter implements WebTemplateFilter {
     boolean nonMandatoryInWebTemplate =
         typeInfo.getRmName().equals("ACTIVITY") && node.getName().equals("timing")
             || typeInfo.getRmName().equals("INSTRUCTION") && node.getName().equals("expiry_time")
-            || typeInfo.getRmName().equals("ISM_TRANSITION") && node.getName().equals("transition");
+            || typeInfo.getRmName().equals("ISM_TRANSITION") && node.getName().equals("transition")
+            || typeInfo.getRmName().equals("COMPOSITION") && node.getName().equals("context");
 
     return (nonMandatoryRmAttribute || mandatoryNotInWebTemplate) && !nonMandatoryInWebTemplate;
   }

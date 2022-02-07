@@ -48,7 +48,28 @@ public class PartyIdentifiedRMUnmarshaller extends AbstractRMUnmarshaller<PartyI
       Map<FlatPathDto, String> currentValues,
       Context<Map<FlatPathDto, String>> context,
       Set<String> consumedPaths) {
+
     setValue(currentTerm, "name", currentValues, rmObject::setName, String.class, consumedPaths);
+
+    if (rmObject.getName() == null) {
+      // betters implementation uses /name or  /_name instead of |name for subject
+      setValue(
+          currentTerm + "/name",
+          null,
+          currentValues,
+          rmObject::setName,
+          String.class,
+          consumedPaths);
+      if (rmObject.getName() == null) {
+        setValue(
+            currentTerm + "/_name",
+            null,
+            currentValues,
+            rmObject::setName,
+            String.class,
+            consumedPaths);
+      }
+    }
 
     rmObject.setExternalRef(new PartyRef());
     rmObject.getExternalRef().setType("PARTY");
@@ -89,6 +110,6 @@ public class PartyIdentifiedRMUnmarshaller extends AbstractRMUnmarshaller<PartyI
             .map(DefaultValues::toDvIdentifier)
             .collect(Collectors.toList()));
 
-    consumeAllMatching(currentTerm + PATH_DIVIDER + "_identifier", currentValues, consumedPaths);
+    consumeAllMatching(currentTerm + PATH_DIVIDER + "_identifier", currentValues, consumedPaths, false);
   }
 }

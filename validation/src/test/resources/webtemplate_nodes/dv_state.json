@@ -1,0 +1,13 @@
+{
+  "aqlPath": "/test/dv_state",
+  "inputs": [
+    {
+      "suffix": "code",
+      "type": "TEXT"
+    },
+    {
+      "suffix": "value",
+      "type": "TEXT"
+    }
+  ]
+}

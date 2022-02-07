@@ -1,0 +1,8 @@
+{
+  "aqlPath": "/test/dv_time",
+  "inputs": [
+    {
+      "type": "TIME"
+    }
+  ]
+}

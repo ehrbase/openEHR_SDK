@@ -66,12 +66,15 @@ public class AqlToDtoVisitor extends AqlBaseVisitor<Object> {
       aqlDto.setOrderBy(visitOrderBySeq(ctx.queryExpr().orderBy().orderBySeq()));
     }
 
-    if (ctx.queryExpr().limit() != null) {
-      aqlDto.setLimit(Integer.parseInt(ctx.queryExpr().limit().INTEGER().getText()));
+    if (ctx.queryExpr().limitExpr() != null) {
+      AqlParser.LimitExprContext limitExpr = ctx.queryExpr().limitExpr();
+      aqlDto.setLimit(Integer.parseInt(limitExpr.INTEGER().getText()));
+
+      if (limitExpr.offset() != null) {
+        aqlDto.setOffset(Integer.parseInt(limitExpr.offset().INTEGER().getText()));
+      }
     }
-    if (ctx.queryExpr().offset() != null) {
-      aqlDto.setOffset(Integer.parseInt(ctx.queryExpr().offset().INTEGER().getText()));
-    }
+
     selectFieldDtoMultiMap
         .entries()
         .forEach(
@@ -317,9 +320,9 @@ public class AqlToDtoVisitor extends AqlBaseVisitor<Object> {
         return ConditionLogicalOperatorSymbol.AND;
       case "xor":
         throw new AqlParseException("XOR not supported");
+      default:
+        return null;
     }
-
-    return null;
   }
 
   @Override

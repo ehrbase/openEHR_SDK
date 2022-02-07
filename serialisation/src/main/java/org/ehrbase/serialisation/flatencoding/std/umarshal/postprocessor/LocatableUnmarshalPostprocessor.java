@@ -28,6 +28,7 @@ import com.nedap.archie.rm.support.identification.HierObjectId;
 import org.ehrbase.serialisation.walker.Context;
 import org.ehrbase.serialisation.walker.FlatHelper;
 import org.ehrbase.serialisation.walker.defaultvalues.DefaultValues;
+import org.ehrbase.util.rmconstants.RmConstants;
 import org.ehrbase.webtemplate.path.flat.FlatPathDto;
 
 import java.util.ArrayList;
@@ -50,59 +51,63 @@ public class LocatableUnmarshalPostprocessor extends AbstractUnmarshalPostproces
       Set<String> consumedPaths,
       Context<Map<FlatPathDto, String>> context) {
 
-    setValue(
-        term + PATH_DIVIDER + "_uid",
-        null,
-        values,
-        s -> rmObject.setUid(new HierObjectId(s)),
-        String.class,
-        consumedPaths);
+    if (RmConstants.ELEMENT.equals(context.getNodeDeque().peek().getRmType())
+        || !context.getFlatHelper().skip(context)) {
 
-    Map<Integer, Map<String, String>> links = extractMultiValued(term, "_link", values);
+      setValue(
+          term + PATH_DIVIDER + "_uid",
+          null,
+          values,
+          s -> rmObject.setUid(new HierObjectId(s)),
+          String.class,
+          consumedPaths);
 
-    if (rmObject.getLinks() == null) {
-      rmObject.setLinks(new ArrayList<>());
-    }
+      Map<Integer, Map<String, String>> links = extractMultiValued(term, "_link", values);
 
-    rmObject
-        .getLinks()
-        .addAll(
-            links.values().stream().map(DefaultValues::createLink).collect(Collectors.toList()));
-
-    consumeAllMatching(term + PATH_DIVIDER + "_link", values, consumedPaths);
-
-    Map<FlatPathDto, String> feederAuditValues =
-        FlatHelper.filter(values, term + "/_feeder_audit", false);
-
-    if (!feederAuditValues.isEmpty()) {
-
-      rmObject.setFeederAudit(new FeederAudit());
-      handleRmAttribute(
-          term,
-          rmObject.getFeederAudit(),
-          feederAuditValues,
-          consumedPaths,
-          context,
-          "feeder_audit");
-    }
-
-    Map<FlatPathDto, String> nameValues = FlatHelper.filter(values, term + "/_name", false);
-    if (!nameValues.isEmpty()) {
-      final DvText name;
-      boolean isDvCodedText =
-          nameValues.keySet().stream()
-              .anyMatch(
-                  e ->
-                      "code".equals(e.getLast().getAttributeName())
-                          && "_name".equals(e.getLast().getName()));
-
-      if (isDvCodedText) {
-        name = new DvCodedText();
-      } else {
-        name = new DvText();
+      if (rmObject.getLinks() == null) {
+        rmObject.setLinks(new ArrayList<>());
       }
-      rmObject.setName(name);
-      handleRmAttribute(term, rmObject.getName(), nameValues, consumedPaths, context, "name");
+
+      rmObject
+          .getLinks()
+          .addAll(
+              links.values().stream().map(DefaultValues::createLink).collect(Collectors.toList()));
+
+      consumeAllMatching(term + PATH_DIVIDER + "_link", values, consumedPaths, false);
+
+      Map<FlatPathDto, String> feederAuditValues =
+          FlatHelper.filter(values, term + "/_feeder_audit", false);
+
+      if (!feederAuditValues.isEmpty()) {
+
+        rmObject.setFeederAudit(new FeederAudit());
+        handleRmAttribute(
+            term,
+            rmObject.getFeederAudit(),
+            feederAuditValues,
+            consumedPaths,
+            context,
+            "feeder_audit");
+      }
+
+      Map<FlatPathDto, String> nameValues = FlatHelper.filter(values, term + "/_name", false);
+      if (!nameValues.isEmpty()) {
+        final DvText name;
+        boolean isDvCodedText =
+            nameValues.keySet().stream()
+                .anyMatch(
+                    e ->
+                        "code".equals(e.getLast().getAttributeName())
+                            && "_name".equals(e.getLast().getName()));
+
+        if (isDvCodedText) {
+          name = new DvCodedText();
+        } else {
+          name = new DvText();
+        }
+        rmObject.setName(name);
+        handleRmAttribute(term, rmObject.getName(), nameValues, consumedPaths, context, "name");
+      }
     }
   }
 

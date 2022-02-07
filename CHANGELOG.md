@@ -2,6 +2,36 @@
 
 Note: version releases in the 0.x.y range may introduce breaking changes.
 
+## 1.17.0
+
+### Added
+
+- Flat : added more test and devise fixes ( see https://github.com/ehrbase/openEHR_SDK/pull/291)
+- Upgrade to Archie 1.0.4 ([#292](https://github.com/ehrbase/openEHR_SDK/pull/292))
+- cleanup created templates (https://github.com/ehrbase/openEHR_SDK/issues/298)
+- WebTemplate based validation (see https://github.com/ehrbase/openEHR_SDK/pull/309)
+- db-serialising: created conformance test (see https://github.com/ehrbase/openEHR_SDK/pull/311)
+- flat: created conformance tests (see https://github.com/ehrbase/openEHR_SDK/pull/310
+  ; https://github.com/ehrbase/openEHR_SDK/pull/305; https://github.com/ehrbase/openEHR_SDK/pull/304
+  ; https://github.com/ehrbase/openEHR_SDK/pull/301)
+
+### Fixed
+
+- Fix NullPointerException when event has an empty state (https://github.com/ehrbase/openEHR_SDK/pull/294)
+- Fix issue when template does not contain list of values for
+  DV_ORDINAL (https://github.com/ehrbase/openEHR_SDK/pull/295)
+- Fix issue in AQL regarding LIMIT and OFFSET (https://github.com/ehrbase/openEHR_SDK/pull/296)
+- Fix issue while unmarshalling FLAT composition that contains ELEMENT with children DV_CODED_TEXT and
+  DV_TEXT (https://github.com/ehrbase/openEHR_SDK/pull/300)
+- Fix missing 'type' attribute in ExternalRef encoding (https://github.com/ehrbase/openEHR_SDK/pull/303)
+- db-serialising: fix handling of dv_ehr_uri  (https://github.com/ehrbase/openEHR_SDK/pull/316)
+- Fix db-serialising: date-time dv_order attributes (https://github.com/ehrbase/openEHR_SDK/pull/314)
+- Fix db-serialising: element.null_reason (https://github.com/ehrbase/openEHR_SDK/pull/317)
+- db-serialising: fix handing of guideline_id & work_flow_id &
+  wf_definition (https://github.com/ehrbase/openEHR_SDK/pull/315)
+- db-serialising: fix handling of locatable attributes  (https://github.com/ehrbase/openEHR_SDK/pull/318)
+
+
 ## 1.16.0
 
 ### Added

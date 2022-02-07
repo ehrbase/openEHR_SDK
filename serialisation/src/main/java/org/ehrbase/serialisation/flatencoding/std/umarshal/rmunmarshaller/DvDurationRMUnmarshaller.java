@@ -23,9 +23,14 @@ import com.nedap.archie.datetime.DateTimeParsers;
 import com.nedap.archie.rm.datavalues.quantity.datetime.DvDuration;
 import org.ehrbase.serialisation.walker.Context;
 import org.ehrbase.webtemplate.path.flat.FlatPathDto;
+import org.threeten.extra.PeriodDuration;
 
+import java.time.Duration;
+import java.time.Period;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class DvDurationRMUnmarshaller extends AbstractRMUnmarshaller<DvDuration> {
 
@@ -46,8 +51,59 @@ public class DvDurationRMUnmarshaller extends AbstractRMUnmarshaller<DvDuration>
         currentTerm,
         null,
         currentValues,
-        s -> rmObject.setValue(DateTimeParsers.parseDurationValue(s)),
+        s -> {
+          if (s != null) {
+            rmObject.setValue(DateTimeParsers.parseDurationValue(s));
+          }
+        },
         String.class,
         consumedPaths);
+
+    if (rmObject.getValue() == null) {
+
+      Period year =
+          Period.ofYears(getDurationComponent(currentTerm, currentValues, consumedPaths, "year"));
+      Period month =
+          Period.ofMonths(getDurationComponent(currentTerm, currentValues, consumedPaths, "month"));
+      Period week =
+          Period.ofWeeks(getDurationComponent(currentTerm, currentValues, consumedPaths, "week"));
+      Period day =
+          Period.ofDays(getDurationComponent(currentTerm, currentValues, consumedPaths, "day"));
+
+      Period totalPeriod = Period.from(year).plus(month).plus(week).plus(day);
+
+      Duration hour =
+          Duration.ofHours(getDurationComponent(currentTerm, currentValues, consumedPaths, "hour"));
+      Duration minute =
+          Duration.ofHours(
+              getDurationComponent(currentTerm, currentValues, consumedPaths, "minute"));
+      Duration second =
+          Duration.ofHours(
+              getDurationComponent(currentTerm, currentValues, consumedPaths, "second"));
+
+      Duration totalDuration = Duration.from(hour).plus(minute).plus(second);
+
+      rmObject.setValue(PeriodDuration.of(totalPeriod, totalDuration));
+    }
+  }
+
+  private Integer getDurationComponent(
+      String currentTerm,
+      Map<FlatPathDto, String> currentValues,
+      Set<String> consumedPaths,
+      String propertyName) {
+    AtomicReference<Integer> slot = new AtomicReference<>();
+    setValue(
+        currentTerm,
+        propertyName,
+        currentValues,
+        s -> {
+          if (s != null) {
+            slot.set(Integer.parseInt(s));
+          }
+        },
+        String.class,
+        consumedPaths);
+    return Optional.ofNullable(slot.get()).orElse(0);
   }
 }

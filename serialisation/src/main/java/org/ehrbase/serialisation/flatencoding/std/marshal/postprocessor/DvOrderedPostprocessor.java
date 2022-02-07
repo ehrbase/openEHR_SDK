@@ -19,13 +19,16 @@
 
 package org.ehrbase.serialisation.flatencoding.std.marshal.postprocessor;
 
+import com.nedap.archie.rm.datatypes.CodePhrase;
 import com.nedap.archie.rm.datavalues.quantity.DvInterval;
 import com.nedap.archie.rm.datavalues.quantity.DvOrdered;
 import com.nedap.archie.rm.datavalues.quantity.ReferenceRange;
 import org.ehrbase.serialisation.flatencoding.std.marshal.config.StdConfig;
 import org.ehrbase.serialisation.walker.Context;
+import org.ehrbase.serialisation.walker.FlatHelper;
 
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.IntStream;
 
 import static org.ehrbase.serialisation.flatencoding.std.marshal.StdFromCompositionWalker.findStdConfig;
@@ -76,6 +79,14 @@ public class DvOrderedPostprocessor extends AbstractMarshalPostprocessor<DvOrder
                     context);
               }
             });
+
+    addValue(
+        values,
+        term,
+        "normal_status",
+        Optional.ofNullable(rmObject.getNormalStatus())
+            .map(CodePhrase::getCodeString)
+            .orElse(null));
   }
 
   private void handleRange(
@@ -98,6 +109,17 @@ public class DvOrderedPostprocessor extends AbstractMarshalPostprocessor<DvOrder
           ((StdConfig) findStdConfig(lower.getClass()))
               .buildChildValues(rangeTerm + "/upper", lower, context));
     }
+    callPostprocess(
+        rangeTerm,
+        null,
+        range,
+        values,
+        context,
+        context
+            .getNodeDeque()
+            .peek()
+            .findChildById("range")
+            .orElse(FlatHelper.buildDummyChild("range", context.getNodeDeque().peek())));
   }
 
   /** {@inheritDoc} */

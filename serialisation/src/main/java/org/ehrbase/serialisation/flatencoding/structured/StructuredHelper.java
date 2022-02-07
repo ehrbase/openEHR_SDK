@@ -76,7 +76,7 @@ public class StructuredHelper {
       JsonNode jsonNode = null;
       jsonNode = OBJECT_MAPPER.readTree(flatString);
 
-      Map<FlatPathDto, JsonNode> flatMap = new HashMap<>();
+      Map<FlatPathDto, JsonNode> flatMap = new LinkedHashMap<>();
 
       for (Iterator<Map.Entry<String, JsonNode>> it = jsonNode.fields(); it.hasNext(); ) {
         Map.Entry<String, JsonNode> next = it.next();
@@ -109,9 +109,11 @@ public class StructuredHelper {
                       startFlatPathDto.setCount(e.getKey().getCount());
                       return startFlatPathDto;
                     },
-                    Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
+                    LinkedHashMap::new,
+                    Collectors.toMap(
+                        Map.Entry::getKey, Map.Entry::getValue, (u, v) -> u, LinkedHashMap::new)));
 
-    Map<String, Object> structured = new HashMap<>();
+    Map<String, Object> structured = new LinkedHashMap<>();
 
     sharedStartMap.forEach(
         (k, v) -> {
@@ -126,12 +128,15 @@ public class StructuredHelper {
           // find sub entries
           Map<String, Object> subEntriesMap =
               convertFlatToStructured(
-                  v.entrySet().stream()
-                      .filter(e -> e.getKey().getChild() != null)
-                      .collect(
-                          Collectors.toMap(
-                              e -> FlatPathDto.removeStart(e.getKey(), new FlatPathDto(k)),
-                              Map.Entry::getValue)));
+                  (Map<FlatPathDto, JsonNode>)
+                      v.entrySet().stream()
+                          .filter(e -> e.getKey().getChild() != null)
+                          .collect(
+                              Collectors.toMap(
+                                  e -> FlatPathDto.removeStart(e.getKey(), new FlatPathDto(k)),
+                                  Map.Entry::getValue,
+                                  (u, t) -> u,
+                                  LinkedHashMap::new)));
 
           if (!subEntriesMap.isEmpty()) {
             subMap.putAll(subEntriesMap);
@@ -147,7 +152,9 @@ public class StructuredHelper {
                               Optional.ofNullable(e.getKey().getAttributeName())
                                   .map(s -> "|" + s)
                                   .orElse(""),
-                          Map.Entry::getValue));
+                          Map.Entry::getValue,
+                          (u, j) -> u,
+                          LinkedHashMap::new));
 
           // singe valued Attributes have no name
           if (collect.size() == 1 && collect.containsKey("") && subMap.isEmpty()) {

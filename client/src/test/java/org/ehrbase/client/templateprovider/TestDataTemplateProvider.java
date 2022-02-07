@@ -21,17 +21,19 @@ package org.ehrbase.client.templateprovider;
 
 import org.apache.xmlbeans.XmlException;
 import org.ehrbase.test_data.operationaltemplate.OperationalTemplateTestData;
+import org.ehrbase.webtemplate.model.WebTemplate;
 import org.ehrbase.webtemplate.templateprovider.TemplateProvider;
 import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
 import org.openehr.schemas.v1.TemplateDocument;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class TestDataTemplateProvider implements TemplateProvider {
+
+    private final Map<String,Optional<WebTemplate>> webTemplateMap = new HashMap<>();
+
     @Override
     public Optional<OPERATIONALTEMPLATE> find(String templateId) {
         return Optional.ofNullable(OperationalTemplateTestData.findByTemplateId(templateId))
@@ -44,6 +46,14 @@ public class TestDataTemplateProvider implements TemplateProvider {
                     }
                 })
                 .map(TemplateDocument::getTemplate);
+    }
+
+
+    @Override
+    public Optional<WebTemplate> buildIntrospect(String templateId) {
+
+        return webTemplateMap.computeIfAbsent(templateId, TemplateProvider.super::buildIntrospect);
+
     }
 
     public List<String> listTemplateIds() {
