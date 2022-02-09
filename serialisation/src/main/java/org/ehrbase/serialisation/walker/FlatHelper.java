@@ -121,11 +121,30 @@ public class FlatHelper<T> {
   }
 
   public static boolean isDvCodedText(Map<FlatPathDto, String> values, String path) {
+    return values.keySet().stream().anyMatch(e -> e.isEqualTo(path + "|code"));
+  }
+
+  public static boolean isPartySelf(Map<FlatPathDto, String> values, String path) {
     return values.keySet().stream()
-        .anyMatch(
+        .noneMatch(
             e ->
-                FlatPathDto.isNodeEqual(e, new FlatPathDto(path))
-                    && "code".equals(e.getLast().getAttributeName()));
+                e.isEqualTo(path + "|name")
+                    || e.isEqualTo(path + "|id")
+                    || e.startsWith(path + "/relationship"));
+  }
+
+  public static boolean isPartyRelated(Map<FlatPathDto, String> values, String path) {
+    return values.keySet().stream().anyMatch(e -> e.startsWith(path + "/relationship"));
+  }
+
+  public static boolean isPartyIdentified(Map<FlatPathDto, String> values, String path) {
+    return values.keySet().stream().noneMatch(e -> e.startsWith(path + "/relationship"))
+        && values.keySet().stream()
+            .anyMatch(e -> e.isEqualTo(path + "|name") || e.isEqualTo(path + "|id"));
+  }
+
+  public static boolean isIntervalEvent(Map<FlatPathDto, String> values, String path) {
+    return values.keySet().stream().anyMatch(e -> e.startsWith(path + "/math_function"));
   }
 
   public boolean skip(Context<T> context) {

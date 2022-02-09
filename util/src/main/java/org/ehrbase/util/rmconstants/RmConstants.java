@@ -11,4 +11,11 @@ public class RmConstants {
     public static final String ELEMENT = "ELEMENT";
     public static final String CODE_PHRASE = "CODE_PHRASE";
     public static final String ACTION = "ACTION";
+  public static final String PARTY_PROXY = "PARTY_PROXY ";
+  public static final String PARTY_SELF = "PARTY_SELF";
+  public static final String PARTY_IDENTIFIED = "PARTY_IDENTIFIED ";
+  public static final String PARTY_RELATED = "PARTY_RELATED";
+  public static final String EVENT = "EVENT";
+  public static final String POINT_EVENT = "POINT_EVENT";
+  public static final String INTERVAL_EVENT = "INTERVAL_EVENT";
 }

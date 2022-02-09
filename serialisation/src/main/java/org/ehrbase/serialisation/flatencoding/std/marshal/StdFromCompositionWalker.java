@@ -19,13 +19,7 @@
 
 package org.ehrbase.serialisation.flatencoding.std.marshal;
 
-import static org.ehrbase.serialisation.flatencoding.std.umarshal.StdToCompositionWalker.handleDVTextInternal;
-
 import com.nedap.archie.rm.RMObject;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
 import org.ehrbase.serialisation.flatencoding.std.marshal.config.DefaultStdConfig;
 import org.ehrbase.serialisation.flatencoding.std.marshal.config.StdConfig;
 import org.ehrbase.serialisation.flatencoding.std.marshal.postprocessor.MarshalPostprocessor;
@@ -35,6 +29,13 @@ import org.ehrbase.serialisation.walker.FromCompositionWalker;
 import org.ehrbase.util.reflection.ReflectionHelper;
 import org.ehrbase.webtemplate.model.WebTemplateNode;
 import org.ehrbase.webtemplate.util.WebTemplateUtils;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+
+import static org.ehrbase.serialisation.flatencoding.std.umarshal.StdToCompositionWalker.handleDVTextInternal;
 
 public class StdFromCompositionWalker extends FromCompositionWalker<Map<String, Object>> {
 
@@ -110,12 +111,12 @@ public class StdFromCompositionWalker extends FromCompositionWalker<Map<String, 
   }
 
   @Override
-  protected void handleDVText(WebTemplateNode currentNode) {
+  protected void handleInheritance(WebTemplateNode currentNode) {
     if (currentNode.getRmType().equals("ELEMENT")
         && WebTemplateUtils.isChoiceDvCodedTextAndDvText(currentNode)) {
       handleDVTextInternal(currentNode);
     } else {
-      super.handleDVText(currentNode);
+      super.handleInheritance(currentNode);
     }
   }
 }

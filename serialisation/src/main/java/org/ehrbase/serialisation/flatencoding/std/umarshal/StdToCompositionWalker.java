@@ -19,10 +19,6 @@
 
 package org.ehrbase.serialisation.flatencoding.std.umarshal;
 
-import static org.ehrbase.util.rmconstants.RmConstants.DV_CODED_TEXT;
-import static org.ehrbase.util.rmconstants.RmConstants.DV_TEXT;
-import static org.ehrbase.util.rmconstants.RmConstants.ELEMENT;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nedap.archie.rm.RMObject;
@@ -34,15 +30,6 @@ import com.nedap.archie.rm.datavalues.DvCodedText;
 import com.nedap.archie.rm.datavalues.DvText;
 import com.nedap.archie.rm.generic.PartyRelated;
 import com.nedap.archie.rm.support.identification.TerminologyId;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
@@ -54,6 +41,7 @@ import org.ehrbase.serialisation.flatencoding.std.umarshal.rmunmarshaller.RMUnma
 import org.ehrbase.serialisation.jsonencoding.CanonicalJson;
 import org.ehrbase.serialisation.jsonencoding.JacksonUtil;
 import org.ehrbase.serialisation.walker.Context;
+import org.ehrbase.serialisation.walker.FlatHelper;
 import org.ehrbase.serialisation.walker.NodeId;
 import org.ehrbase.serialisation.walker.ToCompositionWalker;
 import org.ehrbase.serialisation.walker.defaultvalues.DefaultValues;
@@ -64,6 +52,11 @@ import org.ehrbase.webtemplate.model.WebTemplateInput;
 import org.ehrbase.webtemplate.model.WebTemplateNode;
 import org.ehrbase.webtemplate.path.flat.FlatPathDto;
 import org.ehrbase.webtemplate.util.WebTemplateUtils;
+
+import java.util.*;
+import java.util.stream.Collectors;
+
+import static org.ehrbase.util.rmconstants.RmConstants.*;
 
 public class StdToCompositionWalker extends ToCompositionWalker<Map<FlatPathDto, String>> {
 
@@ -171,12 +164,16 @@ public class StdToCompositionWalker extends ToCompositionWalker<Map<FlatPathDto,
       WebTemplateNode child,
       FlatPathDto currentFlatPath) {
 
-    if (child.getRmType().equals("POINT_EVENT")) {
-      return subValues.entrySet().stream()
-          .allMatch((e -> !e.getKey().getLast().getName().equals("width")));
-    } else if (child.getRmType().equals("INTERVAL_EVENT")) {
-      return subValues.entrySet().stream()
-          .anyMatch((e -> e.getKey().getLast().getName().equals("width")));
+    if (child.getRmType().equals(POINT_EVENT)) {
+      return !FlatHelper.isIntervalEvent(subValues, currentFlatPath.format());
+    } else if (child.getRmType().equals(INTERVAL_EVENT)) {
+      return FlatHelper.isIntervalEvent(subValues, currentFlatPath.format());
+    } else if (child.getRmType().equals(PARTY_SELF)) {
+      return FlatHelper.isPartySelf(subValues, currentFlatPath.format());
+    } else if (child.getRmType().equals(PARTY_IDENTIFIED)) {
+      return FlatHelper.isPartyIdentified(subValues, currentFlatPath.format());
+    } else if (child.getRmType().equals(PARTY_RELATED)) {
+      return FlatHelper.isPartyRelated(subValues, currentFlatPath.format());
     } else if (visitChildren(child)) {
       for (WebTemplateNode n : child.getChildren()) {
         context.getNodeDeque().push(n);
@@ -190,17 +187,9 @@ public class StdToCompositionWalker extends ToCompositionWalker<Map<FlatPathDto,
 
       return subValues.isEmpty();
     } else if (child.getRmType().equals(DV_CODED_TEXT)) {
-      return subValues.keySet().stream()
-          .anyMatch(
-              e ->
-                  "code".equals(e.getLast().getAttributeName())
-                      && currentFlatPath.getLast().getName().equals(e.getLast().getName()));
+      return FlatHelper.isDvCodedText(subValues, currentFlatPath.format());
     } else if (child.getRmType().equals(DV_TEXT)) {
-      return subValues.keySet().stream()
-          .allMatch(
-              (e ->
-                  !("code".equals(e.getLast().getAttributeName())
-                      && currentFlatPath.getLast().getName().equals(e.getLast().getName()))));
+      return !FlatHelper.isDvCodedText(subValues, currentFlatPath.format());
     } else {
       // End Nodes which are Choice always have unique flat paths
       return true;
@@ -394,12 +383,12 @@ public class StdToCompositionWalker extends ToCompositionWalker<Map<FlatPathDto,
   }
 
   @Override
-  protected void handleDVText(WebTemplateNode currentNode) {
+  protected void handleInheritance(WebTemplateNode currentNode) {
     if (currentNode.getRmType().equals("ELEMENT")
         && WebTemplateUtils.isChoiceDvCodedTextAndDvText(currentNode)) {
       handleDVTextInternal(currentNode);
     } else {
-      super.handleDVText(currentNode);
+      super.handleInheritance(currentNode);
     }
   }
 
