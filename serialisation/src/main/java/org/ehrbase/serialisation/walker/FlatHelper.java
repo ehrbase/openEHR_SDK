@@ -174,7 +174,15 @@ public class FlatHelper<T> {
         .contains(node.getRmType())) {
       return true;
     } else if (parent != null && isEvent(node)) {
-      return parent.getChildren().stream().filter(this::isEvent).count() == 1 && node.getMax() == 1;
+      // a corresponding  RM-tree would contain at maximum 1 event.
+      return parent.getChildren().stream()
+                  .collect(Collectors.groupingBy(WebTemplateNode::getAqlPath))
+                  .entrySet()
+                  .stream()
+                  .filter(e -> e.getValue().stream().anyMatch(this::isEvent))
+                  .count()
+              == 1
+          && node.getMax() == 1;
     } else if (node.getRmType().equals(ELEMENT)) {
       List<String> trueChildren =
           node.getChildren().stream()
