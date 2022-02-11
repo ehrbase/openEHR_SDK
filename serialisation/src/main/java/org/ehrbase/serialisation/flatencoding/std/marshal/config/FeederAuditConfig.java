@@ -95,6 +95,14 @@ public class FeederAuditConfig extends AbstractsStdConfig<FeederAudit> {
               rmObject.getOriginatingSystemAudit(),
               context));
     }
+
+    if (rmObject.getFeederSystemAudit() != null) {
+
+      result.putAll(
+          FEEDER_AUDI_DETAILS_STD_CONFIG.buildChildValues(
+              currentTerm + "/feeder_system_audit", rmObject.getFeederSystemAudit(), context));
+    }
+
     return result;
   }
 }

@@ -91,32 +91,51 @@ public class FeederAuditRMUnmarshaller extends AbstractRMUnmarshaller<FeederAudi
       FEEDER_AUDIT_DETAILS_RM_UNMARSHALLER.handle(
           currentTerm + "/originating_system_audit",
           rmObject.getOriginatingSystemAudit(),
-          currentValues,
+          originatingSystemAuditValues,
           context,
           consumedPaths);
     }
 
-    Map<Integer, Map<String, String>> feederSystemIds =
+    Map<FlatPathDto, String> feederSystemAuditValues =
+        FlatHelper.filter(currentValues, currentTerm + "/feeder_system_audit", false);
+    if (!feederSystemAuditValues.isEmpty()) {
+      rmObject.setFeederSystemAudit(new FeederAuditDetails());
+      FEEDER_AUDIT_DETAILS_RM_UNMARSHALLER.handle(
+          currentTerm + "/feeder_system_audit",
+          rmObject.getFeederSystemAudit(),
+          feederSystemAuditValues,
+          context,
+          consumedPaths);
+    }
+
+    Map<Integer, Map<FlatPathDto, String>> feederSystemIds =
         extractMultiValued(currentTerm, "feeder_system_item_id", currentValues);
 
     rmObject
         .getFeederSystemItemIds()
         .addAll(
-            feederSystemIds.values().stream()
-                .map(DefaultValues::toDvIdentifier)
+            feederSystemIds.entrySet().stream()
+                .map(
+                    e ->
+                        DefaultValues.toDvIdentifier(
+                            e.getValue(), currentTerm + "/feeder_system_item_id:" + e.getKey()))
                 .collect(Collectors.toList()));
 
     consumeAllMatching(
         currentTerm + PATH_DIVIDER + "feeder_system_item_id", currentValues, consumedPaths, false);
 
-    Map<Integer, Map<String, String>> originatingSystemIds =
+    Map<Integer, Map<FlatPathDto, String>> originatingSystemIds =
         extractMultiValued(currentTerm, "originating_system_item_id", currentValues);
 
     rmObject
         .getOriginatingSystemItemIds()
         .addAll(
-            originatingSystemIds.values().stream()
-                .map(DefaultValues::toDvIdentifier)
+            originatingSystemIds.entrySet().stream()
+                .map(
+                    e ->
+                        DefaultValues.toDvIdentifier(
+                            e.getValue(),
+                            currentTerm + "/originating_system_item_id:" + e.getKey()))
                 .collect(Collectors.toList()));
 
     consumeAllMatching(

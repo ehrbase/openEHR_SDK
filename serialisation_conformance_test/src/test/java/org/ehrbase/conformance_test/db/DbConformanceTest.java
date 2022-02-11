@@ -136,47 +136,58 @@ class DbConformanceTest {
         .filteredOn(s -> s.startsWith("Missing"))
         .containsExactlyInAnyOrder(expectedMissing);
 
-       softAssertions
-               .assertThat(errors)
-               // are stored in deducted tables and thus are not serialised
-               .filteredOn(
-                       s ->
-                               !List.of(
-                                               "Extra path: conformance-ehrbase.de.v0/_uid, value: 6e3a9506-b81c-4d74-a37f-1464fb7106b2::piri.ehrscape.com::1",
-                                               "Extra path: conformance-ehrbase.de.v0/language|code, value: en",
-                                               "Extra path: conformance-ehrbase.de.v0/language|terminology, value: ISO_639-1",
-                                               "Extra path: conformance-ehrbase.de.v0/territory|code, value: US",
-                                               "Extra path: conformance-ehrbase.de.v0/territory|terminology, value: ISO_3166-1",
-                                               "Extra path: conformance-ehrbase.de.v0/category|code, value: 433",
-                                               "Extra path: conformance-ehrbase.de.v0/category|value, value: event",
-                                               "Extra path: conformance-ehrbase.de.v0/category|terminology, value: openehr",
-                                               "Extra path: conformance-ehrbase.de.v0/context/_health_care_facility|id, value: 9091",
-                                               "Extra path: conformance-ehrbase.de.v0/context/_health_care_facility|id_scheme, value: HOSPITAL-NS",
-                                               "Extra path: conformance-ehrbase.de.v0/context/_health_care_facility|id_namespace, value: HOSPITAL-NS",
-                                               "Extra path: conformance-ehrbase.de.v0/context/_health_care_facility|name, value: Hospital",
-                                               "Extra path: conformance-ehrbase.de.v0/context/start_time, value: 2021-12-21T14:19:31.649613+01:00",
-                                               "Extra path: conformance-ehrbase.de.v0/context/_end_time, value: 2021-12-21T15:19:31.649613+01:00",
-                                               "Extra path: conformance-ehrbase.de.v0/context/_location, value: 2021-12-21T15:19:31.649613+01:00",
-                                               "Extra path: conformance-ehrbase.de.v0/context/setting|code, value: 238",
-                                               "Extra path: conformance-ehrbase.de.v0/context/setting|value, value: other care",
-                                               "Extra path: conformance-ehrbase.de.v0/context/setting|terminology, value: openehr",
-                                               "Extra path: conformance-ehrbase.de.v0/composer|name, value: Silvia Blake",
-                                               "Extra path: conformance-ehrbase.de.v0/composer|id, value: 1234-5678",
-                                               "Extra path: conformance-ehrbase.de.v0/composer|id_scheme, value: UUID",
-                                               "Extra path: conformance-ehrbase.de.v0/composer|id_namespace, value: EHR.NETWORK",
-                                               "Extra path: conformance-ehrbase.de.v0/context/_participation:0|function, value: requester",
-                                               "Extra path: conformance-ehrbase.de.v0/context/_participation:0|mode, value: face-to-face communication",
-                                               "Extra path: conformance-ehrbase.de.v0/context/_participation:0|name, value: Dr. Marcus Johnson",
-                                               "Extra path: conformance-ehrbase.de.v0/context/_participation:0|id, value: 199",
-                                               "Extra path: conformance-ehrbase.de.v0/context/_participation:0|id_scheme, value: HOSPITAL-NS",
-                                               "Extra path: conformance-ehrbase.de.v0/context/_participation:0|id_namespace, value: HOSPITAL-NS",
-                                               "Extra path: conformance-ehrbase.de.v0/_link:0|type, value: problem",
-                                               "Extra path: conformance-ehrbase.de.v0/_link:0|meaning, value: problem related note",
-                                               "Extra path: conformance-ehrbase.de.v0/_link:0|target, value: ehr://ehr.network/347a5490-55ee-4da9-b91a-9bba710f730e"
-                                       )
-                                       .contains(s))
-               .filteredOn(s -> s.startsWith("Extra"))
-               .containsExactlyInAnyOrder(expectedExtra);
+    softAssertions
+        .assertThat(errors)
+        // are stored in deducted tables and thus are not serialised
+        .filteredOn(
+            s ->
+                !List.of(
+                        "Extra path: conformance-ehrbase.de.v0/_uid, value: 6e3a9506-b81c-4d74-a37f-1464fb7106b2::piri.ehrscape.com::1",
+                        "Extra path: conformance-ehrbase.de.v0/language|code, value: en",
+                        "Extra path: conformance-ehrbase.de.v0/language|terminology, value: ISO_639-1",
+                        "Extra path: conformance-ehrbase.de.v0/territory|code, value: US",
+                        "Extra path: conformance-ehrbase.de.v0/territory|terminology, value: ISO_3166-1",
+                        "Extra path: conformance-ehrbase.de.v0/category|code, value: 433",
+                        "Extra path: conformance-ehrbase.de.v0/category|value, value: event",
+                        "Extra path: conformance-ehrbase.de.v0/category|terminology, value: openehr",
+                        "Extra path: conformance-ehrbase.de.v0/context/_health_care_facility|id, value: 9091",
+                        "Extra path: conformance-ehrbase.de.v0/context/_health_care_facility|id_scheme, value: HOSPITAL-NS",
+                        "Extra path: conformance-ehrbase.de.v0/context/_health_care_facility|id_namespace, value: HOSPITAL-NS",
+                        "Extra path: conformance-ehrbase.de.v0/context/_health_care_facility|name, value: Hospital",
+                        "Extra path: conformance-ehrbase.de.v0/context/_health_care_facility/_identifier:0|id, value: 122",
+                        "Extra path: conformance-ehrbase.de.v0/context/_health_care_facility/_identifier:0|issuer, value: issuer",
+                        "Extra path: conformance-ehrbase.de.v0/context/_health_care_facility/_identifier:0|assigner, value: assigner",
+                        "Extra path: conformance-ehrbase.de.v0/context/_health_care_facility/_identifier:0|type, value: type",
+                        "Extra path: conformance-ehrbase.de.v0/context/start_time, value: 2021-12-21T14:19:31.649613+01:00",
+                        "Extra path: conformance-ehrbase.de.v0/context/_end_time, value: 2021-12-21T15:19:31.649613+01:00",
+                        "Extra path: conformance-ehrbase.de.v0/context/_location, value: microbiology lab 2",
+                        "Extra path: conformance-ehrbase.de.v0/context/setting|code, value: 238",
+                        "Extra path: conformance-ehrbase.de.v0/context/setting|value, value: other care",
+                        "Extra path: conformance-ehrbase.de.v0/context/setting|terminology, value: openehr",
+                        "Extra path: conformance-ehrbase.de.v0/composer|name, value: Silvia Blake",
+                        "Extra path: conformance-ehrbase.de.v0/composer|id, value: 1234-5678",
+                        "Extra path: conformance-ehrbase.de.v0/composer|id_scheme, value: UUID",
+                        "Extra path: conformance-ehrbase.de.v0/composer|id_namespace, value: EHR.NETWORK",
+                        "Extra path: conformance-ehrbase.de.v0/composer/_identifier:0|id, value: 122",
+                        "Extra path: conformance-ehrbase.de.v0/composer/_identifier:0|issuer, value: issuer",
+                        "Extra path: conformance-ehrbase.de.v0/composer/_identifier:0|assigner, value: assigner",
+                        "Extra path: conformance-ehrbase.de.v0/composer/_identifier:0|type, value: type",
+                        "Extra path: conformance-ehrbase.de.v0/context/_participation:0|function, value: requester",
+                        "Extra path: conformance-ehrbase.de.v0/context/_participation:0|mode, value: face-to-face communication",
+                        "Extra path: conformance-ehrbase.de.v0/context/_participation:0|name, value: Dr. Marcus Johnson",
+                        "Extra path: conformance-ehrbase.de.v0/context/_participation:0|id, value: 199",
+                        "Extra path: conformance-ehrbase.de.v0/context/_participation:0|id_scheme, value: HOSPITAL-NS",
+                        "Extra path: conformance-ehrbase.de.v0/context/_participation:0|id_namespace, value: HOSPITAL-NS",
+                        "Extra path: conformance-ehrbase.de.v0/context/_participation:0|identifiers_assigner:0, value: assigner",
+                        "Extra path: conformance-ehrbase.de.v0/context/_participation:0|identifiers_issuer:0, value: issuer",
+                        "Extra path: conformance-ehrbase.de.v0/context/_participation:0|identifiers_type:0, value: type",
+                        "Extra path: conformance-ehrbase.de.v0/context/_participation:0|identifiers_id:0, value: 122",
+                        "Extra path: conformance-ehrbase.de.v0/_link:0|type, value: problem",
+                        "Extra path: conformance-ehrbase.de.v0/_link:0|meaning, value: problem related note",
+                        "Extra path: conformance-ehrbase.de.v0/_link:0|target, value: ehr://ehr.network/347a5490-55ee-4da9-b91a-9bba710f730e")
+                    .contains(s))
+        .filteredOn(s -> s.startsWith("Extra"))
+        .containsExactlyInAnyOrder(expectedExtra);
 
        softAssertions.assertAll();
    }

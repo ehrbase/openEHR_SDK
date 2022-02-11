@@ -102,12 +102,15 @@ public class PartyIdentifiedRMUnmarshaller extends AbstractRMUnmarshaller<PartyI
       rmObject.setExternalRef(null);
     }
 
-    Map<Integer, Map<String, String>> identifiers =
+    Map<Integer, Map<FlatPathDto, String>> identifiers =
         extractMultiValued(currentTerm, "_identifier", currentValues);
 
     rmObject.setIdentifiers(
-        identifiers.values().stream()
-            .map(DefaultValues::toDvIdentifier)
+        identifiers.entrySet().stream()
+            .map(
+                e ->
+                    DefaultValues.toDvIdentifier(
+                        e.getValue(), currentTerm + "/_identifier:" + e.getKey()))
             .collect(Collectors.toList()));
 
     consumeAllMatching(currentTerm + PATH_DIVIDER + "_identifier", currentValues, consumedPaths, false);

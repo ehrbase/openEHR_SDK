@@ -139,7 +139,7 @@ public abstract class AbstractRMUnmarshaller<T extends RMObject> implements RMUn
         consumer.accept(value);
         consumedPaths.add(entry.getKey().format());
       } catch (JsonProcessingException e) {
-        log.error(e.getMessage());
+        throw new SdkException(e.getMessage());
       }
     } else {
       consumer.accept(null);

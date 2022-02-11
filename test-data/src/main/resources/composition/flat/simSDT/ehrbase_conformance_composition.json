@@ -19,7 +19,7 @@
   "conformance-ehrbase.de.v0/context/_participation:0|id_namespace": "HOSPITAL-NS",
   "conformance-ehrbase.de.v0/context/start_time": "2021-12-21T14:19:31.649613+01:00",
   "conformance-ehrbase.de.v0/context/_end_time": "2021-12-21T15:19:31.649613+01:00",
-  "conformance-ehrbase.de.v0/context/_location": "2021-12-21T15:19:31.649613+01:00",
+  "conformance-ehrbase.de.v0/context/_location": "microbiology lab 2",
   "conformance-ehrbase.de.v0/context/setting|code": "238",
   "conformance-ehrbase.de.v0/context/setting|value": "other care",
   "conformance-ehrbase.de.v0/context/setting|terminology": "openehr",

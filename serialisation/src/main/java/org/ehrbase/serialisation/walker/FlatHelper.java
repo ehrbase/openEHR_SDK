@@ -120,30 +120,35 @@ public class FlatHelper<T> {
     }
   }
 
-  public static boolean isDvCodedText(Map<FlatPathDto, String> values, String path) {
+  public static boolean isExactlyDvCodedText(Map<FlatPathDto, String> values, String path) {
     return values.keySet().stream().anyMatch(e -> e.isEqualTo(path + "|code"));
   }
 
-  public static boolean isPartySelf(Map<FlatPathDto, String> values, String path) {
+  public static boolean isExactlyPartySelf(Map<FlatPathDto, String> values, String path) {
     return values.keySet().stream()
         .noneMatch(
             e ->
                 e.isEqualTo(path + "|name")
                     || e.isEqualTo(path + "|id")
-                    || e.startsWith(path + "/relationship"));
+                    || e.startsWith(path + "/relationship")
+                    || e.startsWith(path + "/_identifier"));
   }
 
-  public static boolean isPartyRelated(Map<FlatPathDto, String> values, String path) {
+  public static boolean isExactlyPartyRelated(Map<FlatPathDto, String> values, String path) {
     return values.keySet().stream().anyMatch(e -> e.startsWith(path + "/relationship"));
   }
 
-  public static boolean isPartyIdentified(Map<FlatPathDto, String> values, String path) {
+  public static boolean isExactlyPartyIdentified(Map<FlatPathDto, String> values, String path) {
     return values.keySet().stream().noneMatch(e -> e.startsWith(path + "/relationship"))
         && values.keySet().stream()
-            .anyMatch(e -> e.isEqualTo(path + "|name") || e.isEqualTo(path + "|id"));
+            .anyMatch(
+                e ->
+                    e.isEqualTo(path + "|name")
+                        || e.isEqualTo(path + "|id")
+                        || e.startsWith(path + "/_identifier"));
   }
 
-  public static boolean isIntervalEvent(Map<FlatPathDto, String> values, String path) {
+  public static boolean isExactlyIntervalEvent(Map<FlatPathDto, String> values, String path) {
     return values.keySet().stream().anyMatch(e -> e.startsWith(path + "/math_function"));
   }
 
@@ -256,7 +261,7 @@ public class FlatHelper<T> {
    * @param values
    * @return
    */
-  public static Map<Integer, Map<String, String>> extractMultiValued(
+  public static Map<Integer, Map<FlatPathDto, String>> extractMultiValued(
       String currentTerm, String childTerm, Map<FlatPathDto, String> values) {
 
     return values.entrySet().stream()
@@ -268,9 +273,7 @@ public class FlatHelper<T> {
                             FlatPathDto.removeStart(e.getKey(), new FlatPathDto(currentTerm))
                                 .getCount())
                         .orElse(0),
-                Collectors.toMap(
-                    e1 -> Optional.ofNullable(e1.getKey().getLast().getAttributeName()).orElse(""),
-                    stringStringEntry -> StringUtils.unwrap(stringStringEntry.getValue(), '"'))));
+                Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
   }
 
   public static Map<Integer, Map<FlatPathDto, String>> extractMultiValuedFullPath(
@@ -295,6 +298,37 @@ public class FlatHelper<T> {
         .filter(e -> e.getKey().startsWith(path))
         .filter(e -> includeRaw || !"raw".equals(e.getKey().getLast().getAttributeName()))
         .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+  }
+
+  public static Map<FlatPathDto, String> convertAttributeToFlat(
+      Map<FlatPathDto, String> values, String path, String attr, String node) {
+    Map<FlatPathDto, String> map;
+
+    map =
+        values.entrySet().stream()
+            .collect(
+                Collectors.toMap(
+                    e1 -> {
+                      String attributeName = e1.getKey().getLast().getAttributeName();
+                      if (StringUtils.contains(attributeName, attr + "_")) {
+                        Integer integer =
+                            Integer.valueOf(StringUtils.substringAfter(attributeName, ":"));
+
+                        return new FlatPathDto(
+                            path
+                                + "/"
+                                + node
+                                + ":"
+                                + integer
+                                + "|"
+                                + StringUtils.substringBetween(attributeName, attr + "_", ":"));
+                      } else {
+                        return e1.getKey();
+                      }
+                    },
+                    Map.Entry::getValue));
+
+    return map;
   }
 
   public static <E extends EnumValueSet> E findEnumValueOrThrow(String value, Class<E> clazz) {

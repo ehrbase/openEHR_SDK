@@ -23,16 +23,16 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nedap.archie.datetime.DateTimeParsers;
 import com.nedap.archie.rm.archetyped.Link;
+import com.nedap.archie.rm.datatypes.CodePhrase;
 import com.nedap.archie.rm.datavalues.DvCodedText;
 import com.nedap.archie.rm.datavalues.DvEHRURI;
 import com.nedap.archie.rm.datavalues.DvIdentifier;
 import com.nedap.archie.rm.datavalues.DvText;
-import com.nedap.archie.rm.generic.Participation;
-import com.nedap.archie.rm.generic.PartyIdentified;
-import com.nedap.archie.rm.generic.PartyProxy;
+import com.nedap.archie.rm.generic.*;
 import com.nedap.archie.rm.support.identification.GenericId;
 import com.nedap.archie.rm.support.identification.ObjectRef;
 import com.nedap.archie.rm.support.identification.PartyRef;
+import com.nedap.archie.rm.support.identification.TerminologyId;
 import org.apache.commons.lang3.StringUtils;
 import org.ehrbase.client.classgenerator.EnumValueSet;
 import org.ehrbase.client.classgenerator.shareddefinition.ParticipationMode;
@@ -41,6 +41,8 @@ import org.ehrbase.client.classgenerator.shareddefinition.State;
 import org.ehrbase.serialisation.jsonencoding.JacksonUtil;
 import org.ehrbase.util.exception.SdkException;
 import org.ehrbase.webtemplate.path.flat.FlatPathDto;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.time.OffsetDateTime;
 import java.time.temporal.TemporalAccessor;
@@ -49,12 +51,14 @@ import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static org.ehrbase.serialisation.walker.FlatHelper.findEnumValueOrThrow;
+import static org.ehrbase.serialisation.walker.FlatHelper.*;
 
 public class DefaultValues {
 
   private final Map<DefaultValuePath, Object> defaultValueMap;
   private static final ObjectMapper OBJECT_MAPPER = JacksonUtil.getObjectMapper();
+
+  private final Logger log = LoggerFactory.getLogger(getClass());
 
   public DefaultValues() {
     defaultValueMap = new HashMap<>();
@@ -235,6 +239,45 @@ public class DefaultValues {
     return link;
   }
 
+  public static Link createLink(Map<FlatPathDto, String> valueMap, String path) {
+    Link link = new Link();
+
+    setValue(
+        path,
+        "meaning",
+        valueMap,
+        s -> {
+          if (s != null) {
+            link.setMeaning(new DvText(s));
+          }
+        },
+        String.class);
+
+    setValue(
+        path,
+        "type",
+        valueMap,
+        s -> {
+          if (s != null) {
+            link.setType(new DvText(s));
+          }
+        },
+        String.class);
+
+    setValue(
+        path,
+        "target",
+        valueMap,
+        s -> {
+          if (s != null) {
+            link.setTarget(new DvEHRURI(s));
+          }
+        },
+        String.class);
+
+    return link;
+  }
+
   private static Map<String, String> filter(Map<String, String> flat, String path) {
     return flat.entrySet().stream()
         .filter(e -> StringUtils.startsWith(e.getKey(), "ctx/" + path))
@@ -246,6 +289,8 @@ public class DefaultValues {
         .filter(e -> new FlatPathDto(e.getKey()).startsWith("ctx/" + path))
         .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
   }
+
+
 
   public static Participation buildParticipation(Collection<Map.Entry<String, String>> subValues) {
     Participation participation = new Participation();
@@ -261,6 +306,8 @@ public class DefaultValues {
           id.setValue(s);
           participation.getPerformer().getExternalRef().setId(id);
         });
+
+
 
     extract(subValues, "name", ((PartyIdentified) participation.getPerformer())::setName);
 
@@ -300,6 +347,137 @@ public class DefaultValues {
     return participation;
   }
 
+  public static Participation buildParticipation(Map<FlatPathDto, String> subValues, String path) {
+    Participation participation = new Participation();
+
+    if (isExactlyPartyIdentified(subValues, path)) {
+      participation.setPerformer(new PartyIdentified());
+    } else if (isExactlyPartyRelated(subValues, path)) {
+      participation.setPerformer(new PartyRelated());
+    } else {
+      participation.setPerformer(new PartySelf());
+    }
+
+    setValue(
+        path,
+        "id",
+        subValues,
+        s -> {
+          if (s != null) {
+            participation.getPerformer().setExternalRef(new PartyRef());
+            participation.getPerformer().getExternalRef().setType("PARTY");
+            GenericId id = new GenericId();
+            id.setValue(s);
+            participation.getPerformer().getExternalRef().setId(id);
+          }
+        },
+        String.class);
+
+    setValue(
+        path,
+        "name",
+        subValues,
+        s -> {
+          if (s != null) {
+
+            ((PartyIdentified) participation.getPerformer()).setName(s);
+          }
+        },
+        String.class);
+
+    if (participation.getPerformer().getExternalRef() != null) {
+      setValue(
+          path,
+          "id_namespace",
+          subValues,
+          s -> {
+            if (s != null) {
+
+              participation.getPerformer().getExternalRef().setNamespace(s);
+            }
+          },
+          String.class);
+      setValue(
+          path,
+          "id_scheme",
+          subValues,
+          s -> {
+            if (s != null) {
+
+              ((GenericId) participation.getPerformer().getExternalRef().getId()).setScheme(s);
+            }
+          },
+          String.class);
+    }
+
+    setValue(
+        path,
+        "function",
+        subValues,
+        s -> {
+          if (s != null) {
+
+            participation.setFunction(new DvText(s));
+          }
+        },
+        String.class);
+
+    setValue(
+        path,
+        "mode",
+        subValues,
+        s -> {
+          if (s != null) {
+
+            ParticipationMode participationMode = findEnumValueOrThrow(s, ParticipationMode.class);
+            participation.setMode(new DvCodedText());
+            participation.getMode().setValue(participationMode.getValue());
+            participation.getMode().setDefiningCode(participationMode.toCodePhrase());
+          }
+        },
+        String.class);
+
+    Map<Integer, Map<FlatPathDto, String>> feederSystemIds =
+        extractMultiValued(path, "/_identifier", subValues);
+
+    if (participation.getPerformer() instanceof PartyIdentified) {
+      ((PartyIdentified) participation.getPerformer())
+          .setIdentifiers(
+              feederSystemIds.entrySet().stream()
+                  .map(
+                      e ->
+                          DefaultValues.toDvIdentifier(
+                              e.getValue(), path + "/_identifier:" + e.getKey()))
+                  .collect(Collectors.toList()));
+    }
+
+    if (participation.getPerformer() instanceof PartyRelated) {
+      DvCodedText relationship = new DvCodedText();
+      relationship.setDefiningCode(new CodePhrase());
+      ((PartyRelated) participation.getPerformer()).setRelationship(relationship);
+
+      setValue(path + "/relationship", "value", subValues, relationship::setValue, String.class);
+      setValue(
+          path + "/relationship",
+          "code",
+          subValues,
+          relationship.getDefiningCode()::setCodeString,
+          String.class);
+      setValue(
+          path + "/relationship",
+          "terminology",
+          subValues,
+          s -> {
+            if (s != null) {
+              relationship.getDefiningCode().setTerminologyId(new TerminologyId(s));
+            }
+          },
+          String.class);
+    }
+
+    return participation;
+  }
+
   public static DvIdentifier toDvIdentifier(Map<String, String> valueMap) {
     DvIdentifier dvIdentifier = new DvIdentifier();
 
@@ -313,6 +491,51 @@ public class DefaultValues {
     dvIdentifier.setType(valueMap.get("type"));
 
     return dvIdentifier;
+  }
+
+  public static DvIdentifier toDvIdentifier(Map<FlatPathDto, String> valueMap, String path) {
+    DvIdentifier dvIdentifier = new DvIdentifier();
+
+    setValue(path, "id", valueMap, dvIdentifier::setId, String.class);
+
+    if (StringUtils.isBlank(dvIdentifier.getId())) {
+      setValue(path, null, valueMap, dvIdentifier::setId, String.class);
+    }
+
+    setValue(path, "assigner", valueMap, dvIdentifier::setAssigner, String.class);
+    setValue(path, "issuer", valueMap, dvIdentifier::setIssuer, String.class);
+    setValue(path, "type", valueMap, dvIdentifier::setType, String.class);
+
+    return dvIdentifier;
+  }
+
+  private static <S> void setValue(
+      String term,
+      String propertyName,
+      Map<FlatPathDto, String> values,
+      Consumer<S> consumer,
+      Class<S> clazz) {
+    String key = propertyName != null ? term + "|" + propertyName : term;
+    Map.Entry<FlatPathDto, String> entry = FlatPathDto.get(values, key);
+    String jasonValue = entry.getValue();
+    if (StringUtils.isNotBlank(jasonValue)) {
+      try {
+        S value = OBJECT_MAPPER.readValue(jasonValue, clazz);
+        consumer.accept(value);
+
+      } catch (JsonProcessingException e) {
+        throw new SdkException(e.getMessage());
+      }
+    } else {
+      consumer.accept(null);
+    }
+  }
+
+  private static String getRead(Map<FlatPathDto, String> valueMap, String path) {
+    return Optional.ofNullable(FlatPathDto.get(valueMap, path))
+        .map(Map.Entry::getValue)
+        .map(DefaultValues::read)
+        .orElse(null);
   }
 
   private static Map<Integer, Map<String, String>> splitByIndex(Map<String, String> values) {

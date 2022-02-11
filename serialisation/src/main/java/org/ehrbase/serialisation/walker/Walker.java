@@ -200,14 +200,36 @@ public abstract class Walker<T> {
 
         currentNode.getChildren().add(buildCopy(childNode, PARTY_SELF));
         currentNode.getChildren().add(buildCopy(childNode, PARTY_IDENTIFIED));
-        currentNode.getChildren().add(buildCopy(childNode, PARTY_RELATED));
+
+        WebTemplateNode party = buildCopy(childNode, PARTY_RELATED);
+        WebTemplateNode relationship = new WebTemplateNode();
+        relationship.setId("relationship");
+        relationship.setName("relationship");
+        relationship.setRmType(DV_CODED_TEXT);
+        relationship.setMax(1);
+        relationship.setMin(1);
+        relationship.setAqlPath(party.getAqlPath() + "/relationship");
+        party.getChildren().add(relationship);
+
+        currentNode.getChildren().add(party);
 
         currentNode.getChildren().remove(childNode);
       }
 
       // Add explicit Party related
       if (childNode.getRmType().equals(PARTY_IDENTIFIED)) {
-        currentNode.getChildren().add(buildCopy(childNode, PARTY_RELATED));
+
+        WebTemplateNode party = buildCopy(childNode, PARTY_RELATED);
+        WebTemplateNode relationship = new WebTemplateNode();
+        relationship.setId("relationship");
+        relationship.setName("relationship");
+        relationship.setRmType(DV_CODED_TEXT);
+        relationship.setMax(1);
+        relationship.setMin(1);
+        relationship.setAqlPath(party.getAqlPath() + "/relationship");
+        party.getChildren().add(relationship);
+
+        currentNode.getChildren().add(party);
       }
 
       // Add explicit Event

@@ -28,6 +28,7 @@ import org.ehrbase.serialisation.flatencoding.std.umarshal.rmunmarshaller.RMUnma
 import org.ehrbase.serialisation.jsonencoding.JacksonUtil;
 import org.ehrbase.serialisation.walker.Context;
 import org.ehrbase.serialisation.walker.FlatHelper;
+import org.ehrbase.util.exception.SdkException;
 import org.ehrbase.webtemplate.model.WebTemplateNode;
 import org.ehrbase.webtemplate.path.flat.FlatPathDto;
 import org.slf4j.Logger;
@@ -75,7 +76,7 @@ public abstract class AbstractUnmarshalPostprocessor<T extends RMObject>
         consumer.accept(value);
         consumedPaths.add(entry.getKey().format());
       } catch (JsonProcessingException e) {
-        log.error(e.getMessage());
+        throw new SdkException(e.getMessage());
       }
     } else {
 

@@ -23,10 +23,8 @@ import com.nedap.archie.rm.composition.EventContext;
 import com.nedap.archie.rm.datavalues.quantity.datetime.DvDateTime;
 import com.nedap.archie.rm.generic.PartyIdentified;
 import com.nedap.archie.rm.support.identification.TerminologyId;
-import org.apache.commons.lang3.StringUtils;
 import org.ehrbase.serialisation.walker.Context;
 import org.ehrbase.serialisation.walker.FlatHelper;
-import org.ehrbase.serialisation.walker.defaultvalues.DefaultValuePath;
 import org.ehrbase.serialisation.walker.defaultvalues.DefaultValues;
 import org.ehrbase.webtemplate.path.flat.FlatPathDto;
 
@@ -34,8 +32,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static org.ehrbase.serialisation.walker.FlatHelper.consumeAllMatching;
-import static org.ehrbase.serialisation.walker.FlatHelper.extractMultiValued;
+import static org.ehrbase.serialisation.walker.FlatHelper.*;
 import static org.ehrbase.webtemplate.parser.OPTParser.PATH_DIVIDER;
 
 public class EventContextUnmarshalPostprocessor
@@ -84,24 +81,22 @@ public class EventContextUnmarshalPostprocessor
           "health_care_facility");
     }
 
-    Map<Integer, Map<String, String>> other = extractMultiValued(term, "_participation", values);
+    Map<Integer, Map<FlatPathDto, String>> other =
+        extractMultiValued(term, "_participation", values);
 
-    other.values().stream()
-        .map(Map::entrySet)
-        .map(
-            s ->
-                s.stream()
-                    .collect(
-                        Collectors.toMap(
-                            e ->
-                                "ctx/"
-                                    + DefaultValuePath.PARTICIPATION.getPath()
-                                    + "_"
-                                    + e.getKey().replace("identifiers_", "identifiers|"),
-                            e -> StringUtils.wrap(e.getValue(), '"')))
-                    .entrySet())
-        .map(DefaultValues::buildParticipation)
-        .forEach(rmObject::addParticipation);
+    other.replaceAll(
+        (k, v) ->
+            convertAttributeToFlat(v, term + "/_participation:" + k, "identifiers", "_identifier"));
+    rmObject
+        .getParticipations()
+        .addAll(
+            other.entrySet().stream()
+                .map(
+                    e ->
+                        DefaultValues.buildParticipation(
+                            e.getValue(), term + "/_participation:" + e.getKey()))
+                .collect(Collectors.toList()));
+
     consumeAllMatching(term + PATH_DIVIDER + "_participation", values, consumedPaths, false);
 
     // Strange Path with value true if setting = other care (238)
@@ -115,6 +110,8 @@ public class EventContextUnmarshalPostprocessor
       rmObject.getSetting().getDefiningCode().setTerminologyId(new TerminologyId("openehr"));
     }
   }
+
+
 
   /** {@inheritDoc} */
   @Override

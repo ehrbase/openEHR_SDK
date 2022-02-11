@@ -165,15 +165,15 @@ public class StdToCompositionWalker extends ToCompositionWalker<Map<FlatPathDto,
       FlatPathDto currentFlatPath) {
 
     if (child.getRmType().equals(POINT_EVENT)) {
-      return !FlatHelper.isIntervalEvent(subValues, currentFlatPath.format());
+      return !FlatHelper.isExactlyIntervalEvent(subValues, currentFlatPath.format());
     } else if (child.getRmType().equals(INTERVAL_EVENT)) {
-      return FlatHelper.isIntervalEvent(subValues, currentFlatPath.format());
+      return FlatHelper.isExactlyIntervalEvent(subValues, currentFlatPath.format());
     } else if (child.getRmType().equals(PARTY_SELF)) {
-      return FlatHelper.isPartySelf(subValues, currentFlatPath.format());
+      return FlatHelper.isExactlyPartySelf(subValues, currentFlatPath.format());
     } else if (child.getRmType().equals(PARTY_IDENTIFIED)) {
-      return FlatHelper.isPartyIdentified(subValues, currentFlatPath.format());
+      return FlatHelper.isExactlyPartyIdentified(subValues, currentFlatPath.format());
     } else if (child.getRmType().equals(PARTY_RELATED)) {
-      return FlatHelper.isPartyRelated(subValues, currentFlatPath.format());
+      return FlatHelper.isExactlyPartyRelated(subValues, currentFlatPath.format());
     } else if (visitChildren(child)) {
       for (WebTemplateNode n : child.getChildren()) {
         context.getNodeDeque().push(n);
@@ -187,9 +187,9 @@ public class StdToCompositionWalker extends ToCompositionWalker<Map<FlatPathDto,
 
       return subValues.isEmpty();
     } else if (child.getRmType().equals(DV_CODED_TEXT)) {
-      return FlatHelper.isDvCodedText(subValues, currentFlatPath.format());
+      return FlatHelper.isExactlyDvCodedText(subValues, currentFlatPath.format());
     } else if (child.getRmType().equals(DV_TEXT)) {
-      return !FlatHelper.isDvCodedText(subValues, currentFlatPath.format());
+      return !FlatHelper.isExactlyDvCodedText(subValues, currentFlatPath.format());
     } else {
       // End Nodes which are Choice always have unique flat paths
       return true;

@@ -45,7 +45,19 @@ public class FeederAuditPostprocessor extends AbstractUnmarshalPostprocessor<Fee
 
       }
 
+    Map<FlatPathDto, String> locationValues2 =
+        FlatHelper.filter(values, term + "/feeder_system_audit", false);
+    if (!locationValues2.isEmpty() && rmObject.getFeederSystemAudit() != null) {
 
+      callPostProcess(
+          term,
+          "feeder_system_audit",
+          rmObject.getFeederSystemAudit(),
+          locationValues2,
+          consumedPaths,
+          context,
+          null);
+    }
   }
 
   /** {@inheritDoc} */

@@ -62,7 +62,7 @@ public class LocatableUnmarshalPostprocessor extends AbstractUnmarshalPostproces
           String.class,
           consumedPaths);
 
-      Map<Integer, Map<String, String>> links = extractMultiValued(term, "_link", values);
+      Map<Integer, Map<FlatPathDto, String>> links = extractMultiValued(term, "_link", values);
 
       if (rmObject.getLinks() == null) {
         rmObject.setLinks(new ArrayList<>());
@@ -71,7 +71,9 @@ public class LocatableUnmarshalPostprocessor extends AbstractUnmarshalPostproces
       rmObject
           .getLinks()
           .addAll(
-              links.values().stream().map(DefaultValues::createLink).collect(Collectors.toList()));
+              links.entrySet().stream()
+                  .map(e -> DefaultValues.createLink(e.getValue(), term + "/_link:" + e.getKey()))
+                  .collect(Collectors.toList()));
 
       consumeAllMatching(term + PATH_DIVIDER + "_link", values, consumedPaths, false);
 
