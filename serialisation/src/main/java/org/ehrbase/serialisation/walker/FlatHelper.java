@@ -124,28 +124,61 @@ public class FlatHelper<T> {
     return values.keySet().stream().anyMatch(e -> e.isEqualTo(path + "|code"));
   }
 
-  public static boolean isExactlyPartySelf(Map<FlatPathDto, String> values, String path) {
-    return values.keySet().stream()
-        .noneMatch(
-            e ->
-                e.isEqualTo(path + "|name")
-                    || e.isEqualTo(path + "|id")
-                    || e.startsWith(path + "/relationship")
-                    || e.startsWith(path + "/_identifier"));
+  public static boolean isExactlyPartySelf(
+      Map<FlatPathDto, String> values, String path, WebTemplateNode node) {
+
+    if (node != null && !List.of(RM_OBJECT, PARTY_PROXY, PARTY_SELF).contains(node.getRmType())) {
+
+      return false;
+    }
+    return values.entrySet().stream()
+            .noneMatch(
+                e ->
+                    e.getKey().isEqualTo(path + "|name")
+                        || e.getKey().isEqualTo(path + "|id")
+                        || e.getKey().startsWith(path + "/relationship")
+                        || e.getKey().startsWith(path + "/_identifier"))
+        || values.entrySet().stream()
+            .anyMatch(
+                e ->
+                    e.getKey().isEqualTo(path + "|_type")
+                        && PARTY_SELF.equals(StringUtils.unwrap(e.getValue(), '"')));
   }
 
-  public static boolean isExactlyPartyRelated(Map<FlatPathDto, String> values, String path) {
+  public static boolean isExactlyPartyRelated(
+      Map<FlatPathDto, String> values, String path, WebTemplateNode node) {
+
+    if (node != null
+        && !List.of(RM_OBJECT, PARTY_PROXY, PARTY_IDENTIFIED, PARTY_RELATED)
+            .contains(node.getRmType())) {
+
+      return false;
+    }
+
     return values.keySet().stream().anyMatch(e -> e.startsWith(path + "/relationship"));
   }
 
-  public static boolean isExactlyPartyIdentified(Map<FlatPathDto, String> values, String path) {
-    return values.keySet().stream().noneMatch(e -> e.startsWith(path + "/relationship"))
-        && values.keySet().stream()
+  public static boolean isExactlyPartyIdentified(
+      Map<FlatPathDto, String> values, String path, WebTemplateNode node) {
+
+    if (node != null
+        && !List.of(RM_OBJECT, PARTY_PROXY, PARTY_IDENTIFIED).contains(node.getRmType())) {
+
+      return false;
+    }
+
+    return values.entrySet().stream().noneMatch(e -> e.getKey().startsWith(path + "/relationship"))
+        && values.entrySet().stream()
+            .noneMatch(
+                e ->
+                    e.getKey().isEqualTo(path + "|_type")
+                        && PARTY_SELF.equals(StringUtils.unwrap(e.getValue(), '"')))
+        && values.entrySet().stream()
             .anyMatch(
                 e ->
-                    e.isEqualTo(path + "|name")
-                        || e.isEqualTo(path + "|id")
-                        || e.startsWith(path + "/_identifier"));
+                    e.getKey().isEqualTo(path + "|name")
+                        || (e.getKey().isEqualTo(path + "|id"))
+                        || e.getKey().startsWith(path + "/_identifier"));
   }
 
   public static boolean isExactlyIntervalEvent(Map<FlatPathDto, String> values, String path) {
@@ -353,5 +386,14 @@ public class FlatHelper<T> {
     node.setMax(1);
 
     return node;
+  }
+
+  public static WebTemplateNode findOrBuildSubNode(
+      Context<Map<FlatPathDto, String>> context, String id) {
+    return context
+        .getNodeDeque()
+        .peek()
+        .findChildById(id)
+        .orElse(buildDummyChild(id, context.getNodeDeque().peek()));
   }
 }

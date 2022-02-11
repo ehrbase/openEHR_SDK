@@ -19,60 +19,59 @@
 
 package org.ehrbase.serialisation.flatencoding.std.umarshal.rmunmarshaller;
 
-import com.nedap.archie.rm.archetyped.FeederAuditDetails;
-import com.nedap.archie.rm.datavalues.quantity.datetime.DvDateTime;
+import com.nedap.archie.rm.generic.PartySelf;
+import com.nedap.archie.rm.support.identification.GenericId;
+import com.nedap.archie.rm.support.identification.PartyRef;
+import org.apache.commons.lang3.StringUtils;
 import org.ehrbase.serialisation.walker.Context;
 import org.ehrbase.webtemplate.path.flat.FlatPathDto;
 
 import java.util.Map;
 import java.util.Set;
 
-public class FeederAuditDetailsRMUnmarshaller extends AbstractRMUnmarshaller<FeederAuditDetails> {
-
-  private static final PartyIdentifiedRMUnmarshaller PARTY_IDENTIFIED_RM_UNMARSHALLER =
-      new PartyIdentifiedRMUnmarshaller();
-
-  /** {@inheritDoc} */
+public class PartySelfRMUnmarshaller extends AbstractRMUnmarshaller<PartySelf> {
   @Override
-  public Class<FeederAuditDetails> getAssociatedClass() {
-    return FeederAuditDetails.class;
+  public Class<PartySelf> getAssociatedClass() {
+    return PartySelf.class;
   }
 
-  /** {@inheritDoc} */
   @Override
   public void handle(
       String currentTerm,
-      FeederAuditDetails rmObject,
+      PartySelf rmObject,
       Map<FlatPathDto, String> currentValues,
       Context<Map<FlatPathDto, String>> context,
       Set<String> consumedPaths) {
 
+    rmObject.setExternalRef(new PartyRef());
+    rmObject.getExternalRef().setType("PARTY");
+    rmObject.getExternalRef().setId(new GenericId());
     setValue(
         currentTerm,
-        "time",
+        "id",
         currentValues,
-        s -> {
-          if (s != null) {
-            rmObject.setTime(new DvDateTime(s));
-          }
-        },
+        rmObject.getExternalRef().getId()::setValue,
+        String.class,
+        consumedPaths);
+    setValue(
+        currentTerm,
+        "id_scheme",
+        currentValues,
+        ((GenericId) rmObject.getExternalRef().getId())::setScheme,
+        String.class,
+        consumedPaths);
+    setValue(
+        currentTerm,
+        "id_namespace",
+        currentValues,
+        rmObject.getExternalRef()::setNamespace,
         String.class,
         consumedPaths);
 
-
-    setValue(
-        currentTerm,
-        "system_id",
-        currentValues,
-        rmObject::setSystemId,
-        String.class,
-        consumedPaths);
-    setValue(
-        currentTerm,
-        "version_id",
-        currentValues,
-        rmObject::setVersionId,
-        String.class,
-        consumedPaths);
+    // remove if not set
+    if (rmObject.getExternalRef().getId() == null
+        || StringUtils.isBlank(rmObject.getExternalRef().getId().getValue())) {
+      rmObject.setExternalRef(null);
+    }
   }
 }

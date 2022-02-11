@@ -164,6 +164,7 @@ class DbConformanceTest {
                         "Extra path: conformance-ehrbase.de.v0/context/setting|code, value: 238",
                         "Extra path: conformance-ehrbase.de.v0/context/setting|value, value: other care",
                         "Extra path: conformance-ehrbase.de.v0/context/setting|terminology, value: openehr",
+                        "Extra path: ctx/composer_self, value: true",
                         "Extra path: conformance-ehrbase.de.v0/composer|name, value: Silvia Blake",
                         "Extra path: conformance-ehrbase.de.v0/composer|id, value: 1234-5678",
                         "Extra path: conformance-ehrbase.de.v0/composer|id_scheme, value: UUID",

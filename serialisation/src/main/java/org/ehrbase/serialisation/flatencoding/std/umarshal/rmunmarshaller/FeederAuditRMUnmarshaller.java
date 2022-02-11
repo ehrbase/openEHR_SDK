@@ -20,7 +20,6 @@
 package org.ehrbase.serialisation.flatencoding.std.umarshal.rmunmarshaller;
 
 import com.nedap.archie.rm.archetyped.FeederAudit;
-import com.nedap.archie.rm.archetyped.FeederAuditDetails;
 import com.nedap.archie.rm.datavalues.encapsulated.DvMultimedia;
 import com.nedap.archie.rm.datavalues.encapsulated.DvParsable;
 import org.ehrbase.serialisation.walker.Context;
@@ -84,29 +83,7 @@ public class FeederAuditRMUnmarshaller extends AbstractRMUnmarshaller<FeederAudi
           consumedPaths);
     }
 
-    Map<FlatPathDto, String> originatingSystemAuditValues =
-        FlatHelper.filter(currentValues, currentTerm + "/originating_system_audit", false);
-    if (!originatingSystemAuditValues.isEmpty()) {
-      rmObject.setOriginatingSystemAudit(new FeederAuditDetails());
-      FEEDER_AUDIT_DETAILS_RM_UNMARSHALLER.handle(
-          currentTerm + "/originating_system_audit",
-          rmObject.getOriginatingSystemAudit(),
-          originatingSystemAuditValues,
-          context,
-          consumedPaths);
-    }
 
-    Map<FlatPathDto, String> feederSystemAuditValues =
-        FlatHelper.filter(currentValues, currentTerm + "/feeder_system_audit", false);
-    if (!feederSystemAuditValues.isEmpty()) {
-      rmObject.setFeederSystemAudit(new FeederAuditDetails());
-      FEEDER_AUDIT_DETAILS_RM_UNMARSHALLER.handle(
-          currentTerm + "/feeder_system_audit",
-          rmObject.getFeederSystemAudit(),
-          feederSystemAuditValues,
-          context,
-          consumedPaths);
-    }
 
     Map<Integer, Map<FlatPathDto, String>> feederSystemIds =
         extractMultiValued(currentTerm, "feeder_system_item_id", currentValues);

@@ -53,7 +53,8 @@ public class EntryPostprocessor extends AbstractUnmarshalPostprocessor<Entry> {
 
     Map<FlatPathDto, String> subjectValues = FlatHelper.filter(values, term + "/subject", false);
 
-    if (subjectValues.isEmpty()) {
+    if (FlatHelper.isExactlyPartySelf(
+        subjectValues, term + "/subject", FlatHelper.findOrBuildSubNode(context, "subject"))) {
       rmObject.setSubject(new PartySelf());
     }
 

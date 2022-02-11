@@ -31,6 +31,7 @@ import com.nedap.archie.rm.datavalues.DvText;
 import com.nedap.archie.rm.generic.PartyRelated;
 import com.nedap.archie.rm.support.identification.TerminologyId;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.ehrbase.building.webtemplateskeletnbuilder.WebTemplateSkeletonBuilder;
@@ -44,6 +45,7 @@ import org.ehrbase.serialisation.walker.Context;
 import org.ehrbase.serialisation.walker.FlatHelper;
 import org.ehrbase.serialisation.walker.NodeId;
 import org.ehrbase.serialisation.walker.ToCompositionWalker;
+import org.ehrbase.serialisation.walker.defaultvalues.DefaultValuePath;
 import org.ehrbase.serialisation.walker.defaultvalues.DefaultValues;
 import org.ehrbase.util.reflection.ReflectionHelper;
 import org.ehrbase.webtemplate.filter.Filter;
@@ -75,6 +77,12 @@ public class StdToCompositionWalker extends ToCompositionWalker<Map<FlatPathDto,
       DefaultValues defaultValues,
       String templateId) {
     consumedPaths = new HashSet<>();
+    if (defaultValues != null
+        && BooleanUtils.isTrue(defaultValues.getDefaultValue(DefaultValuePath.COMPOSER_SELF))) {
+      object.put(
+          new FlatPathDto(webTemplate.getTree().getId() + "/composer|_type"),
+          StringUtils.wrap(PARTY_SELF, '"'));
+    }
     super.walk(composition, object, webTemplate, defaultValues, templateId);
   }
 
@@ -125,7 +133,11 @@ public class StdToCompositionWalker extends ToCompositionWalker<Map<FlatPathDto,
     if (child.getRmType().equals(ELEMENT)
         && context.getFlatHelper().skip(context.getNodeDeque().peek(), child)) {
 
-      WebTemplateNode valueNode = child.findChildById("value").orElseThrow();
+      WebTemplateNode valueNode =
+          child.getChildren().stream()
+              .filter(n -> n.getId().endsWith("value"))
+              .findAny()
+              .orElseThrow();
 
       context.getNodeDeque().push(valueNode);
       path = context.getFlatHelper().buildNamePath(context, true);
@@ -169,11 +181,11 @@ public class StdToCompositionWalker extends ToCompositionWalker<Map<FlatPathDto,
     } else if (child.getRmType().equals(INTERVAL_EVENT)) {
       return FlatHelper.isExactlyIntervalEvent(subValues, currentFlatPath.format());
     } else if (child.getRmType().equals(PARTY_SELF)) {
-      return FlatHelper.isExactlyPartySelf(subValues, currentFlatPath.format());
+      return FlatHelper.isExactlyPartySelf(subValues, currentFlatPath.format(), child);
     } else if (child.getRmType().equals(PARTY_IDENTIFIED)) {
-      return FlatHelper.isExactlyPartyIdentified(subValues, currentFlatPath.format());
+      return FlatHelper.isExactlyPartyIdentified(subValues, currentFlatPath.format(), child);
     } else if (child.getRmType().equals(PARTY_RELATED)) {
-      return FlatHelper.isExactlyPartyRelated(subValues, currentFlatPath.format());
+      return FlatHelper.isExactlyPartyRelated(subValues, currentFlatPath.format(), child);
     } else if (visitChildren(child)) {
       for (WebTemplateNode n : child.getChildren()) {
         context.getNodeDeque().push(n);

@@ -23,6 +23,7 @@ import com.nedap.archie.rm.composition.EventContext;
 import com.nedap.archie.rm.datavalues.DvCodedText;
 import com.nedap.archie.rm.datavalues.quantity.datetime.DvDateTime;
 import com.nedap.archie.rm.generic.Participation;
+import com.nedap.archie.rm.generic.PartyIdentified;
 import com.nedap.archie.rm.generic.PartyProxy;
 import com.nedap.archie.rm.support.identification.GenericId;
 import org.ehrbase.client.classgenerator.shareddefinition.Setting;
@@ -49,6 +50,8 @@ public class EventContextValueInserter extends AbstractValueInserter<EventContex
     if (RMHelper.isEmpty(rmObject.getHealthCareFacility())
         && (defaultValues.containsDefaultValue(DefaultValuePath.HEALTHCARE_FACILITY_NAME)
             || defaultValues.containsDefaultValue(DefaultValuePath.HEALTHCARE_FACILITY_ID))) {
+
+      rmObject.setHealthCareFacility(new PartyIdentified());
       rmObject.setHealthCareFacility(
           buildPartyIdentified(
               defaultValues,

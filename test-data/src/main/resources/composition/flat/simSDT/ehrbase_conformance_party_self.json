@@ -21,6 +21,7 @@
   "conformance-ehrbase.de.v0/conformance_section/conformance_observation/_feeder_audit/originating_system_audit/location|id_scheme": "NMC",
   "conformance-ehrbase.de.v0/conformance_section/conformance_observation/_feeder_audit/originating_system_audit/location|id_namespace": "uk.org.nmc",
   "conformance-ehrbase.de.v0/conformance_section/conformance_observation/_feeder_audit/originating_system_audit/location|name": "Org 1",
+  "conformance-ehrbase.de.v0/conformance_section/conformance_observation/_feeder_audit/originating_system_audit/subject|_type": "PARTY_SELF",
   "conformance-ehrbase.de.v0/conformance_section/conformance_observation/_feeder_audit/originating_system_audit|system_id": "orig",
   "conformance-ehrbase.de.v0/conformance_section/conformance_observation/_feeder_audit/originating_system_audit|version_id": "final",
   "conformance-ehrbase.de.v0/conformance_section/conformance_observation/_feeder_audit/originating_system_item_id:0|id": "id1",
@@ -42,5 +43,8 @@
   "conformance-ehrbase.de.v0/conformance_section/conformance_observation/encoding|terminology": "IANA_character-sets",
   "conformance-ehrbase.de.v0/category|code": "433",
   "conformance-ehrbase.de.v0/category|value": "event",
-  "conformance-ehrbase.de.v0/category|terminology": "openehr"
+  "conformance-ehrbase.de.v0/category|terminology": "openehr",
+  "conformance-ehrbase.de.v0/composer|id": "1234-5678",
+  "conformance-ehrbase.de.v0/composer|id_scheme": "UUID",
+  "conformance-ehrbase.de.v0/composer|id_namespace": "EHR.NETWORK"
 }

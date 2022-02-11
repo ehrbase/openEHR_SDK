@@ -99,8 +99,7 @@ public abstract class Walker<T> {
           currentNode.getChildren().add(ismTransitionList.get(0));
         }
       }
-
-      currentNode.getChildren().forEach(this::handleInheritance);
+      handleInheritance(currentNode);
 
       Map<String, List<WebTemplateNode>> choices = currentNode.getChoicesInChildren();
       List<WebTemplateNode> children = new ArrayList<>(currentNode.getChildren());

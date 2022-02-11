@@ -20,43 +20,77 @@
 package org.ehrbase.serialisation.flatencoding.std.umarshal.postprocessor;
 
 import com.nedap.archie.rm.archetyped.FeederAudit;
+import com.nedap.archie.rm.archetyped.FeederAuditDetails;
 import org.ehrbase.serialisation.walker.Context;
 import org.ehrbase.serialisation.walker.FlatHelper;
 import org.ehrbase.webtemplate.path.flat.FlatPathDto;
 
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Consumer;
+
+import static org.ehrbase.serialisation.walker.FlatHelper.findOrBuildSubNode;
 
 public class FeederAuditPostprocessor extends AbstractUnmarshalPostprocessor<FeederAudit> {
 
   /** {@inheritDoc} */
   @Override
   public void process(
-      String term,
+      String currentTerm,
       FeederAudit rmObject,
-      Map<FlatPathDto, String> values,
+      Map<FlatPathDto, String> currentValues,
       Set<String> consumedPaths,
       Context<Map<FlatPathDto, String>> context) {
 
-      Map<FlatPathDto, String> locationValues = FlatHelper.filter(values, term + "/originating_system_audit", false);
-      if(!locationValues.isEmpty() && rmObject.getOriginatingSystemAudit() != null){
+    handeFeederAuditDetails(
+        currentTerm,
+        rmObject::setFeederSystemAudit,
+        currentValues,
+        consumedPaths,
+        context,
+        "feeder_system_audit");
+    handeFeederAuditDetails(
+        currentTerm,
+        rmObject::setOriginatingSystemAudit,
+        currentValues,
+        consumedPaths,
+        context,
+        "originating_system_audit");
+  }
 
-        callPostProcess(term,"originating_system_audit",rmObject.getOriginatingSystemAudit(),locationValues,consumedPaths,context,null );
+  private void handeFeederAuditDetails(
+      String currentTerm,
+      Consumer<FeederAuditDetails> auditDetailsConsumer,
+      Map<FlatPathDto, String> currentValues,
+      Set<String> consumedPaths,
+      Context<Map<FlatPathDto, String>> context,
+      String id) {
 
-      }
+    Map<FlatPathDto, String> auditValues =
+        FlatHelper.filter(currentValues, currentTerm + "/" + id, false);
 
-    Map<FlatPathDto, String> locationValues2 =
-        FlatHelper.filter(values, term + "/feeder_system_audit", false);
-    if (!locationValues2.isEmpty() && rmObject.getFeederSystemAudit() != null) {
+    if (!auditValues.isEmpty()) {
 
-      callPostProcess(
-          term,
-          "feeder_system_audit",
-          rmObject.getFeederSystemAudit(),
-          locationValues2,
+      FeederAuditDetails auditDetails = new FeederAuditDetails();
+      auditDetailsConsumer.accept(auditDetails);
+
+      callUnmarshal(
+          currentTerm,
+          "/" + id,
+          auditDetails,
+          auditValues,
           consumedPaths,
           context,
-          null);
+          findOrBuildSubNode(context, id));
+
+      callPostProcess(
+          currentTerm,
+          "/" + id,
+          auditDetails,
+          auditValues,
+          consumedPaths,
+          context,
+          findOrBuildSubNode(context, id));
     }
   }
 

@@ -112,7 +112,7 @@ public class DefaultValues {
                   String value =
                       subValues.values().stream().map(DefaultValues::read).findAny().orElseThrow();
                   if (value.equals("true")) {
-                    defaultValueMap.put(path, value);
+                    defaultValueMap.put(path, true);
                   }
                 } else if (TemporalAccessor.class.isAssignableFrom(path.getType())) {
                   String value =
@@ -350,9 +350,9 @@ public class DefaultValues {
   public static Participation buildParticipation(Map<FlatPathDto, String> subValues, String path) {
     Participation participation = new Participation();
 
-    if (isExactlyPartyIdentified(subValues, path)) {
+    if (isExactlyPartyIdentified(subValues, path, null)) {
       participation.setPerformer(new PartyIdentified());
-    } else if (isExactlyPartyRelated(subValues, path)) {
+    } else if (isExactlyPartyRelated(subValues, path, null)) {
       participation.setPerformer(new PartyRelated());
     } else {
       participation.setPerformer(new PartySelf());

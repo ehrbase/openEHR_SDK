@@ -20,54 +20,100 @@
 package org.ehrbase.serialisation.flatencoding.std.umarshal.postprocessor;
 
 import com.nedap.archie.rm.archetyped.FeederAuditDetails;
-import com.nedap.archie.rm.datavalues.quantity.datetime.DvDateTime;
 import com.nedap.archie.rm.generic.PartyIdentified;
+import com.nedap.archie.rm.generic.PartyProxy;
+import com.nedap.archie.rm.generic.PartyRelated;
+import com.nedap.archie.rm.generic.PartySelf;
+import org.ehrbase.serialisation.exception.UnmarshalException;
 import org.ehrbase.serialisation.walker.Context;
 import org.ehrbase.serialisation.walker.FlatHelper;
 import org.ehrbase.webtemplate.path.flat.FlatPathDto;
 
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Consumer;
 
-public class FeederAuditDetailsPostprocessor extends AbstractUnmarshalPostprocessor<FeederAuditDetails> {
+import static org.ehrbase.serialisation.walker.FlatHelper.findOrBuildSubNode;
+
+public class FeederAuditDetailsPostprocessor
+    extends AbstractUnmarshalPostprocessor<FeederAuditDetails> {
 
   /** {@inheritDoc} */
   @Override
   public void process(
-      String term,
+      String currentTerm,
       FeederAuditDetails rmObject,
-      Map<FlatPathDto, String> values,
+      Map<FlatPathDto, String> currentValues,
       Set<String> consumedPaths,
       Context<Map<FlatPathDto, String>> context) {
 
-      Map<FlatPathDto, String> locationValues = FlatHelper.filter(values, term + "/_location", false);
-      if(!locationValues.isEmpty() ){
-          rmObject.setLocation(new PartyIdentified());
-        handleRmAttribute(term,rmObject.getLocation(),locationValues,consumedPaths,context,"location" );
+    setParty(
+        currentTerm,
+        p -> rmObject.setLocation((PartyIdentified) p),
+        currentValues,
+        consumedPaths,
+        context,
+        "location",
+        false);
+    setParty(
+        currentTerm, rmObject::setSubject, currentValues, consumedPaths, context, "subject", true);
+    setParty(
+        currentTerm,
+        p -> rmObject.setProvider((PartyIdentified) p),
+        currentValues,
+        consumedPaths,
+        context,
+        "provider",
+        false);
+  }
 
+  private void setParty(
+      String currentTerm,
+      Consumer<PartyProxy> partyConsumer,
+      Map<FlatPathDto, String> currentValues,
+      Set<String> consumedPaths,
+      Context<Map<FlatPathDto, String>> context,
+      String id,
+      boolean allowPartySelf) {
+    Map<FlatPathDto, String> values =
+        FlatHelper.filter(currentValues, currentTerm + "/" + id, false);
+
+    PartyProxy partyProxy;
+
+    if (!values.isEmpty()) {
+
+      if (FlatHelper.isExactlyPartyRelated(values, currentTerm + "/" + id, null)) {
+        partyProxy = new PartyRelated();
+      } else if (FlatHelper.isExactlyPartyIdentified(values, currentTerm + "/" + id, null)) {
+        partyProxy = new PartyIdentified();
+      } else if (allowPartySelf
+          && FlatHelper.isExactlyPartySelf(values, currentTerm + "/" + id, null)) {
+        partyProxy = new PartySelf();
+      } else {
+        throw new UnmarshalException(
+            String.format(
+                "Could not find concrete instance of Party proxy for %s/%s", currentTerm, id));
       }
 
-      Map<FlatPathDto, String> subjectValues = FlatHelper.filter(values, term + "/_subject", false);
-      if(!subjectValues.isEmpty() ){
-          rmObject.setSubject(new PartyIdentified());
-          handleRmAttribute(term,rmObject.getSubject(),subjectValues,consumedPaths,context,"subject" );
+      partyConsumer.accept(partyProxy);
 
-      }
-
-      Map<FlatPathDto, String> providerValues = FlatHelper.filter(values, term + "/_provider", false);
-      if(!providerValues.isEmpty() ){
-          rmObject.setProvider(new PartyIdentified());
-          handleRmAttribute(term,rmObject.getProvider(),providerValues,consumedPaths,context,"provider" );
-
-      }
-
-      Map<FlatPathDto, String> timeValues = FlatHelper.filter(values, term + "/_time", false);
-      if(!timeValues.isEmpty() ){
-          rmObject.setTime(new DvDateTime( ));
-          handleRmAttribute(term,rmObject.getTime(),timeValues,consumedPaths,context,"time" );
-
-      }
-
+      callUnmarshal(
+          currentTerm,
+          id,
+          partyProxy,
+          values,
+          consumedPaths,
+          context,
+          findOrBuildSubNode(context, id));
+      callPostProcess(
+          currentTerm,
+          id,
+          partyProxy,
+          values,
+          consumedPaths,
+          context,
+          findOrBuildSubNode(context, id));
+    }
   }
 
   /** {@inheritDoc} */

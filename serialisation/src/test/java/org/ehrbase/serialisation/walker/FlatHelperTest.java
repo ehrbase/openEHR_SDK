@@ -109,15 +109,15 @@ class FlatHelperTest {
 
     assertThat(
             FlatHelper.isExactlyPartySelf(
-                codedTextValues, "conformance-ehrbase.de.v0/context/_participation:1"))
+                codedTextValues, "conformance-ehrbase.de.v0/context/_participation:1", null))
         .isFalse();
     assertThat(
             FlatHelper.isExactlyPartyIdentified(
-                codedTextValues, "conformance-ehrbase.de.v0/context/_participation:1"))
+                codedTextValues, "conformance-ehrbase.de.v0/context/_participation:1", null))
         .isFalse();
     assertThat(
             FlatHelper.isExactlyPartyRelated(
-                codedTextValues, "conformance-ehrbase.de.v0/context/_participation:1"))
+                codedTextValues, "conformance-ehrbase.de.v0/context/_participation:1", null))
         .isTrue();
   }
 
@@ -141,15 +141,47 @@ class FlatHelperTest {
 
     assertThat(
             FlatHelper.isExactlyPartySelf(
-                codedTextValues, "conformance-ehrbase.de.v0/context/_participation:1"))
+                codedTextValues, "conformance-ehrbase.de.v0/context/_participation:1", null))
         .isFalse();
     assertThat(
             FlatHelper.isExactlyPartyIdentified(
-                codedTextValues, "conformance-ehrbase.de.v0/context/_participation:1"))
+                codedTextValues, "conformance-ehrbase.de.v0/context/_participation:1", null))
         .isTrue();
     assertThat(
             FlatHelper.isExactlyPartyRelated(
-                codedTextValues, "conformance-ehrbase.de.v0/context/_participation:1"))
+                codedTextValues, "conformance-ehrbase.de.v0/context/_participation:1", null))
+        .isFalse();
+  }
+
+  @Test
+  void isPartySelfWithId() {
+
+    Map<FlatPathDto, String> codedTextValues =
+        Map.of(
+            new FlatPathDto("conformance-ehrbase.de.v0/context/_participation:1|function"),
+            "requester",
+            new FlatPathDto("conformance-ehrbase.de.v0/context/_participation:1|mode"),
+            "face-to-face communication",
+            new FlatPathDto("conformance-ehrbase.de.v0/context/_participation:1|_type"),
+            "PARTY_SELF",
+            new FlatPathDto("conformance-ehrbase.de.v0/context/_participation:1|id"),
+            "199",
+            new FlatPathDto("conformance-ehrbase.de.v0/context/_participation:1|id_scheme"),
+            "HOSPITAL-NS",
+            new FlatPathDto("conformance-ehrbase.de.v0/context/_participation:1|id_namespace"),
+            "HOSPITAL-NS");
+
+    assertThat(
+            FlatHelper.isExactlyPartySelf(
+                codedTextValues, "conformance-ehrbase.de.v0/context/_participation:1", null))
+        .isTrue();
+    assertThat(
+            FlatHelper.isExactlyPartyIdentified(
+                codedTextValues, "conformance-ehrbase.de.v0/context/_participation:1", null))
+        .isFalse();
+    assertThat(
+            FlatHelper.isExactlyPartyRelated(
+                codedTextValues, "conformance-ehrbase.de.v0/context/_participation:1", null))
         .isFalse();
   }
 
@@ -176,15 +208,15 @@ class FlatHelperTest {
 
     assertThat(
             FlatHelper.isExactlyPartySelf(
-                codedTextValues, "conformance-ehrbase.de.v0/context/_participation:1"))
+                codedTextValues, "conformance-ehrbase.de.v0/context/_participation:1", null))
         .isFalse();
     assertThat(
             FlatHelper.isExactlyPartyIdentified(
-                codedTextValues, "conformance-ehrbase.de.v0/context/_participation:1"))
+                codedTextValues, "conformance-ehrbase.de.v0/context/_participation:1", null))
         .isTrue();
     assertThat(
             FlatHelper.isExactlyPartyRelated(
-                codedTextValues, "conformance-ehrbase.de.v0/context/_participation:1"))
+                codedTextValues, "conformance-ehrbase.de.v0/context/_participation:1", null))
         .isFalse();
   }
 
@@ -202,15 +234,15 @@ class FlatHelperTest {
 
     assertThat(
             FlatHelper.isExactlyPartySelf(
-                codedTextValues, "conformance-ehrbase.de.v0/context/_participation:1"))
+                codedTextValues, "conformance-ehrbase.de.v0/context/_participation:1", null))
         .isFalse();
     assertThat(
             FlatHelper.isExactlyPartyIdentified(
-                codedTextValues, "conformance-ehrbase.de.v0/context/_participation:1"))
+                codedTextValues, "conformance-ehrbase.de.v0/context/_participation:1", null))
         .isTrue();
     assertThat(
             FlatHelper.isExactlyPartyRelated(
-                codedTextValues, "conformance-ehrbase.de.v0/context/_participation:1"))
+                codedTextValues, "conformance-ehrbase.de.v0/context/_participation:1", null))
         .isFalse();
   }
 
@@ -232,15 +264,15 @@ class FlatHelperTest {
 
     assertThat(
             FlatHelper.isExactlyPartySelf(
-                codedTextValues, "conformance-ehrbase.de.v0/context/_participation:1"))
+                codedTextValues, "conformance-ehrbase.de.v0/context/_participation:1", null))
         .isFalse();
     assertThat(
             FlatHelper.isExactlyPartyIdentified(
-                codedTextValues, "conformance-ehrbase.de.v0/context/_participation:1"))
+                codedTextValues, "conformance-ehrbase.de.v0/context/_participation:1", null))
         .isTrue();
     assertThat(
             FlatHelper.isExactlyPartyRelated(
-                codedTextValues, "conformance-ehrbase.de.v0/context/_participation:1"))
+                codedTextValues, "conformance-ehrbase.de.v0/context/_participation:1", null))
         .isFalse();
   }
 
@@ -258,15 +290,15 @@ class FlatHelperTest {
 
     assertThat(
             FlatHelper.isExactlyPartySelf(
-                codedTextValues, "conformance-ehrbase.de.v0/context/_participation:1"))
+                codedTextValues, "conformance-ehrbase.de.v0/context/_participation:1", null))
         .isTrue();
     assertThat(
             FlatHelper.isExactlyPartyIdentified(
-                codedTextValues, "conformance-ehrbase.de.v0/context/_participation:1"))
+                codedTextValues, "conformance-ehrbase.de.v0/context/_participation:1", null))
         .isFalse();
     assertThat(
             FlatHelper.isExactlyPartyRelated(
-                codedTextValues, "conformance-ehrbase.de.v0/context/_participation:1"))
+                codedTextValues, "conformance-ehrbase.de.v0/context/_participation:1", null))
         .isFalse();
   }
 
