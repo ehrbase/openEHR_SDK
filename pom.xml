@@ -86,7 +86,7 @@
         <maven.compiler.target>11</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-        <antlr4.version>4.9.1</antlr4.version>
+        <antlr4.version>4.9.3</antlr4.version>
         <archie.version>1.0.4</archie.version>
         <assertj.version>3.18.1</assertj.version>
         <cglib.version>3.3.0</cglib.version>
