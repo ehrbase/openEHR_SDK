@@ -42,7 +42,7 @@ public class DvTextPostprocessor extends AbstractUnmarshalPostprocessor<DvText> 
       Set<String> consumedPaths,
       Context<Map<FlatPathDto, String>> context) {
 
-    FlatHelper.extractMultiValuedFullPath(term, "_mapping", values).entrySet().stream()
+    FlatHelper.extractMultiValued(term, "_mapping", values).entrySet().stream()
         .map(
             e -> {
               TermMapping termMapping = new TermMapping();

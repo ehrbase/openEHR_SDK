@@ -55,7 +55,7 @@ public class DvOrderedPostprocessor extends AbstractUnmarshalPostprocessor<DvOrd
     handleNormalRange(
         values, consumedPaths, context, term + "/_normal_range", rmObject::setNormalRange);
 
-    FlatHelper.extractMultiValuedFullPath(term, "_other_reference_ranges", values)
+    FlatHelper.extractMultiValued(term, "_other_reference_ranges", values)
         .forEach(
             (k, v) -> {
               ReferenceRange referenceRange = new ReferenceRange();

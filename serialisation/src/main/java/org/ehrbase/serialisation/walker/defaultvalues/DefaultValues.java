@@ -123,22 +123,82 @@ public class DefaultValues {
                     defaultValueMap.put(path, DateTimeParsers.parseDateTimeValue(value));
                   }
                 } else if (path.equals(DefaultValuePath.PARTICIPATION)) {
-                  Map<Integer, List<Map.Entry<String, String>>> byIndex =
-                      subValues.entrySet().stream()
-                          .collect(
-                              Collectors.groupingBy(
-                                  e -> {
-                                    String s =
-                                        StringUtils.substringBefore(
-                                            StringUtils.substringAfter(e.getKey(), ":"), "|");
-                                    return StringUtils.isBlank(s) ? 0 : Integer.parseInt(s);
-                                  }));
-                  List<Participation> participations = new ArrayList<>();
-                  byIndex.values().stream()
-                      .map(DefaultValues::buildParticipation)
-                      .forEach(participations::add);
 
-                  defaultValueMap.put(path, participations);
+                  Map<Integer, Map<FlatPathDto, String>> participationValues =
+                      extractMultiValued(
+                          "ctx",
+                          null,
+                          subValues.entrySet().stream()
+                              .collect(
+                                  Collectors.toMap(
+                                      e -> new FlatPathDto(e.getKey()), Map.Entry::getValue)));
+                  participationValues.replaceAll(
+                      (k, v) -> {
+                        Map<FlatPathDto, String> map;
+
+                        map =
+                            v.entrySet().stream()
+                                .collect(
+                                    Collectors.toMap(
+                                        e1 -> {
+                                          if (StringUtils.equals(
+                                              e1.getKey().getLast().getName(),
+                                              "participation_identifiers")) {
+
+                                            Integer integer =
+                                                Optional.ofNullable(
+                                                        e1.getKey().getLast().getAttributeName())
+                                                    .map(a -> StringUtils.substringAfter(a, ':'))
+                                                    .map(Integer::valueOf)
+                                                    .orElse(0);
+
+                                            return new FlatPathDto(
+                                                ("ctx/"
+                                                        + DefaultValuePath.PARTICIPATION.getPath()
+                                                        + ":"
+                                                        + k)
+                                                    + "/"
+                                                    + "_identifier"
+                                                    + ":"
+                                                    + integer
+                                                    + "|"
+                                                    + Optional.ofNullable(
+                                                            StringUtils.substringBefore(
+                                                                e1.getKey()
+                                                                    .getLast()
+                                                                    .getAttributeName(),
+                                                                ":"))
+                                                        .orElse("split"));
+
+                                          } else {
+                                            return new FlatPathDto(
+                                                ("ctx/"
+                                                        + DefaultValuePath.PARTICIPATION.getPath()
+                                                        + ":"
+                                                        + k)
+                                                    + "|"
+                                                    + StringUtils.substringAfter(
+                                                        e1.getKey().getLast().getName(), "_"));
+                                          }
+                                        },
+                                        Map.Entry::getValue));
+
+                        return map;
+                      });
+
+                  defaultValueMap.put(
+                      path,
+                      participationValues.entrySet().stream()
+                          .map(
+                              e ->
+                                  buildParticipation(
+                                      e.getValue(),
+                                      "ctx/"
+                                          + DefaultValuePath.PARTICIPATION.getPath()
+                                          + ":"
+                                          + e.getKey()))
+                          .collect(Collectors.toList()));
+
                 } else if (path.equals(DefaultValuePath.WORKFLOW_ID)) {
                   ObjectRef<GenericId> ref = new ObjectRef<>();
 
@@ -161,27 +221,23 @@ public class DefaultValues {
                   defaultValueMap.put(path, ref);
                 } else if (path.equals(DefaultValuePath.LINKS)) {
 
-                  Map<Integer, Map<String, String>> links =
-                      subValues.entrySet().stream()
-                          .collect(
-                              Collectors.groupingBy(
-                                  e -> {
-                                    String s =
-                                        StringUtils.substringBefore(
-                                            StringUtils.substringAfter(e.getKey(), ":"), "|");
-                                    return StringUtils.isBlank(s) ? 0 : Integer.parseInt(s);
-                                  },
+                  Map<Integer, Map<FlatPathDto, String>> linkValues =
+                      extractMultiValued(
+                          "ctx",
+                          null,
+                          subValues.entrySet().stream()
+                              .collect(
                                   Collectors.toMap(
-                                      e1 ->
-                                          StringUtils.substringBefore(
-                                              StringUtils.substringAfter(e1.getKey(), "|"), ":"),
-                                      stringStringEntry ->
-                                          StringUtils.unwrap(stringStringEntry.getValue(), '"'))));
+                                      e -> new FlatPathDto(e.getKey()), Map.Entry::getValue)));
 
                   defaultValueMap.put(
                       path,
-                      links.values().stream()
-                          .map(DefaultValues::createLink)
+                      linkValues.entrySet().stream()
+                          .map(
+                              e ->
+                                  createLink(
+                                      e.getValue(),
+                                      "ctx/" + DefaultValuePath.LINKS.getPath() + ":" + e.getKey()))
                           .collect(Collectors.toList()));
                 }
               }
@@ -224,20 +280,7 @@ public class DefaultValues {
     defaultValueMap.putIfAbsent(DefaultValuePath.INSTRUCTION_NARRATIVE, "<none>");
   }
 
-  public static Link createLink(Map<String, String> stringStringMap) {
-    Link link = new Link();
-    if (stringStringMap.containsKey("meaning")) {
-      link.setMeaning(new DvText(stringStringMap.get("meaning")));
-    }
-    if (stringStringMap.containsKey("type")) {
-      link.setType(new DvText(stringStringMap.get("type")));
-    }
-    if (stringStringMap.containsKey("target")) {
-      link.setTarget(new DvEHRURI(stringStringMap.get("target")));
-    }
 
-    return link;
-  }
 
   public static Link createLink(Map<FlatPathDto, String> valueMap, String path) {
     Link link = new Link();
@@ -291,61 +334,6 @@ public class DefaultValues {
   }
 
 
-
-  public static Participation buildParticipation(Collection<Map.Entry<String, String>> subValues) {
-    Participation participation = new Participation();
-    participation.setPerformer(new PartyIdentified());
-
-    extractExact(
-        subValues,
-        "id",
-        s -> {
-          participation.getPerformer().setExternalRef(new PartyRef());
-          participation.getPerformer().getExternalRef().setType("PARTY");
-          GenericId id = new GenericId();
-          id.setValue(s);
-          participation.getPerformer().getExternalRef().setId(id);
-        });
-
-
-
-    extract(subValues, "name", ((PartyIdentified) participation.getPerformer())::setName);
-
-    if (participation.getPerformer().getExternalRef() != null) {
-      extract(
-          subValues,
-          "id_namespace",
-          n -> participation.getPerformer().getExternalRef().setNamespace(n));
-      extract(
-          subValues,
-          "id_scheme",
-          ((GenericId) participation.getPerformer().getExternalRef().getId())::setScheme);
-    }
-
-    extract(subValues, "function", s -> participation.setFunction(new DvText(s)));
-
-    extract(
-        subValues,
-        "mode",
-        s -> {
-          ParticipationMode participationMode = findEnumValueOrThrow(s, ParticipationMode.class);
-          participation.setMode(new DvCodedText());
-          participation.getMode().setValue(participationMode.getValue());
-          participation.getMode().setDefiningCode(participationMode.toCodePhrase());
-        });
-    ((PartyIdentified) participation.getPerformer())
-        .setIdentifiers(
-            splitByIndex(
-                    filter(
-                        subValues.stream()
-                            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)),
-                        DefaultValuePath.PARTICIPATION.getPath() + "_" + "identifiers"))
-                .values()
-                .stream()
-                .map(DefaultValues::toDvIdentifier)
-                .collect(Collectors.toList()));
-    return participation;
-  }
 
   public static Participation buildParticipation(Map<FlatPathDto, String> subValues, String path) {
     Participation participation = new Participation();
@@ -437,18 +425,47 @@ public class DefaultValues {
         },
         String.class);
 
-    Map<Integer, Map<FlatPathDto, String>> feederSystemIds =
+    Map<Integer, Map<FlatPathDto, String>> identifiers =
         extractMultiValued(path, "/_identifier", subValues);
 
     if (participation.getPerformer() instanceof PartyIdentified) {
-      ((PartyIdentified) participation.getPerformer())
-          .setIdentifiers(
-              feederSystemIds.entrySet().stream()
-                  .map(
-                      e ->
-                          DefaultValues.toDvIdentifier(
-                              e.getValue(), path + "/_identifier:" + e.getKey()))
-                  .collect(Collectors.toList()));
+
+      if (identifiers.size() == 1
+          && identifiers.get(0).size() == 1
+          && "split"
+              .equals(
+                  identifiers.get(0).entrySet().stream()
+                      .findAny()
+                      .get()
+                      .getKey()
+                      .getLast()
+                      .getAttributeName())) {
+
+        String ids =
+            StringUtils.unwrap(
+                identifiers.get(0).entrySet().stream().findAny().get().getValue(), '"');
+
+        for (String sub : ids.split(";")) {
+          DvIdentifier dvIdentifier = new DvIdentifier();
+          String[] split = sub.split("::");
+
+          dvIdentifier.setIssuer(split[0]);
+          dvIdentifier.setAssigner(split[1]);
+          dvIdentifier.setId(split[2]);
+          dvIdentifier.setType(split[3]);
+
+          ((PartyIdentified) participation.getPerformer()).addIdentifier(dvIdentifier);
+        }
+      } else {
+        ((PartyIdentified) participation.getPerformer())
+            .setIdentifiers(
+                identifiers.entrySet().stream()
+                    .map(
+                        e ->
+                            DefaultValues.toDvIdentifier(
+                                e.getValue(), path + "/_identifier:" + e.getKey()))
+                    .collect(Collectors.toList()));
+      }
     }
 
     if (participation.getPerformer() instanceof PartyRelated) {
@@ -478,20 +495,6 @@ public class DefaultValues {
     return participation;
   }
 
-  public static DvIdentifier toDvIdentifier(Map<String, String> valueMap) {
-    DvIdentifier dvIdentifier = new DvIdentifier();
-
-    dvIdentifier.setId(valueMap.get("id"));
-
-    if (StringUtils.isBlank(dvIdentifier.getId())) {
-      dvIdentifier.setId(valueMap.get(""));
-    }
-    dvIdentifier.setAssigner(valueMap.get("assigner"));
-    dvIdentifier.setIssuer(valueMap.get("issuer"));
-    dvIdentifier.setType(valueMap.get("type"));
-
-    return dvIdentifier;
-  }
 
   public static DvIdentifier toDvIdentifier(Map<FlatPathDto, String> valueMap, String path) {
     DvIdentifier dvIdentifier = new DvIdentifier();
@@ -529,13 +532,6 @@ public class DefaultValues {
     } else {
       consumer.accept(null);
     }
-  }
-
-  private static String getRead(Map<FlatPathDto, String> valueMap, String path) {
-    return Optional.ofNullable(FlatPathDto.get(valueMap, path))
-        .map(Map.Entry::getValue)
-        .map(DefaultValues::read)
-        .orElse(null);
   }
 
   private static Map<Integer, Map<String, String>> splitByIndex(Map<String, String> values) {

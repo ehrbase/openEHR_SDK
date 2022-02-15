@@ -296,9 +296,15 @@ public class FlatHelper<T> {
    */
   public static Map<Integer, Map<FlatPathDto, String>> extractMultiValued(
       String currentTerm, String childTerm, Map<FlatPathDto, String> values) {
+    final String otherPath;
+    if (childTerm != null) {
 
+      otherPath = currentTerm + PATH_DIVIDER + childTerm;
+    } else {
+      otherPath = currentTerm;
+    }
     return values.entrySet().stream()
-        .filter(s -> s.getKey().startsWith(currentTerm + PATH_DIVIDER + childTerm))
+        .filter(s -> s.getKey().startsWith(otherPath))
         .collect(
             Collectors.groupingBy(
                 e ->
@@ -309,20 +315,7 @@ public class FlatHelper<T> {
                 Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
   }
 
-  public static Map<Integer, Map<FlatPathDto, String>> extractMultiValuedFullPath(
-      String currentTerm, String childTerm, Map<FlatPathDto, String> values) {
 
-    return values.entrySet().stream()
-        .filter(s -> s.getKey().startsWith(currentTerm + PATH_DIVIDER + childTerm))
-        .collect(
-            Collectors.groupingBy(
-                e ->
-                    Optional.ofNullable(
-                            FlatPathDto.removeStart(e.getKey(), new FlatPathDto(currentTerm))
-                                .getCount())
-                        .orElse(0),
-                Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
-  }
 
   public static Map<FlatPathDto, String> filter(
       Map<FlatPathDto, String> values, String path, boolean includeRaw) {
