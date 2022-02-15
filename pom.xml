@@ -120,7 +120,7 @@
         <nexus-staging-maven-plugin.version>1.6.10</nexus-staging-maven-plugin.version>
         <slf4j.version>1.7.36</slf4j.version>
         <web-template-tests.version>8f3381a37d</web-template-tests.version>
-        <xmlbeans.version>3.1.0</xmlbeans.version>
+        <xmlbeans.version>5.0.3</xmlbeans.version>
 
         <skipIntegrationTests>true</skipIntegrationTests>
         <include.tests>**/*Test.java</include.tests>
