@@ -24,7 +24,6 @@ import com.nedap.archie.rm.datavalues.quantity.datetime.DvDateTime;
 import com.nedap.archie.rm.generic.PartyIdentified;
 import com.nedap.archie.rm.support.identification.TerminologyId;
 import org.ehrbase.serialisation.walker.Context;
-import org.ehrbase.serialisation.walker.FlatHelper;
 import org.ehrbase.serialisation.walker.defaultvalues.DefaultValues;
 import org.ehrbase.webtemplate.path.flat.FlatPathDto;
 
@@ -66,20 +65,14 @@ public class EventContextUnmarshalPostprocessor
         String.class,
         consumedPaths);
 
-    Map<FlatPathDto, String> health_care_facilityValues =
-        FlatHelper.filter(values, term + "/_health_care_facility", false);
-
-    if (!health_care_facilityValues.isEmpty()) {
-      rmObject.setHealthCareFacility(new PartyIdentified());
-
-      handleRmAttribute(
-          term,
-          rmObject.getHealthCareFacility(),
-          health_care_facilityValues,
-          consumedPaths,
-          context,
-          "health_care_facility");
-    }
+    setParty(
+        term,
+        p -> rmObject.setHealthCareFacility((PartyIdentified) p),
+        values,
+        consumedPaths,
+        context,
+        "_health_care_facility",
+        false);
 
     Map<Integer, Map<FlatPathDto, String>> other =
         extractMultiValued(term, "_participation", values);

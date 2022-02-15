@@ -388,8 +388,7 @@ public class FlatHelper<T> {
     return node;
   }
 
-  public static WebTemplateNode findOrBuildSubNode(
-      Context<Map<FlatPathDto, String>> context, String id) {
+  public static WebTemplateNode findOrBuildSubNode(Context<?> context, String id) {
     return context
         .getNodeDeque()
         .peek()

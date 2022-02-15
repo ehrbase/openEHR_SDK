@@ -21,19 +21,11 @@ package org.ehrbase.serialisation.flatencoding.std.umarshal.postprocessor;
 
 import com.nedap.archie.rm.archetyped.FeederAuditDetails;
 import com.nedap.archie.rm.generic.PartyIdentified;
-import com.nedap.archie.rm.generic.PartyProxy;
-import com.nedap.archie.rm.generic.PartyRelated;
-import com.nedap.archie.rm.generic.PartySelf;
-import org.ehrbase.serialisation.exception.UnmarshalException;
 import org.ehrbase.serialisation.walker.Context;
-import org.ehrbase.serialisation.walker.FlatHelper;
 import org.ehrbase.webtemplate.path.flat.FlatPathDto;
 
 import java.util.Map;
 import java.util.Set;
-import java.util.function.Consumer;
-
-import static org.ehrbase.serialisation.walker.FlatHelper.findOrBuildSubNode;
 
 public class FeederAuditDetailsPostprocessor
     extends AbstractUnmarshalPostprocessor<FeederAuditDetails> {
@@ -67,54 +59,6 @@ public class FeederAuditDetailsPostprocessor
         false);
   }
 
-  private void setParty(
-      String currentTerm,
-      Consumer<PartyProxy> partyConsumer,
-      Map<FlatPathDto, String> currentValues,
-      Set<String> consumedPaths,
-      Context<Map<FlatPathDto, String>> context,
-      String id,
-      boolean allowPartySelf) {
-    Map<FlatPathDto, String> values =
-        FlatHelper.filter(currentValues, currentTerm + "/" + id, false);
-
-    PartyProxy partyProxy;
-
-    if (!values.isEmpty()) {
-
-      if (FlatHelper.isExactlyPartyRelated(values, currentTerm + "/" + id, null)) {
-        partyProxy = new PartyRelated();
-      } else if (FlatHelper.isExactlyPartyIdentified(values, currentTerm + "/" + id, null)) {
-        partyProxy = new PartyIdentified();
-      } else if (allowPartySelf
-          && FlatHelper.isExactlyPartySelf(values, currentTerm + "/" + id, null)) {
-        partyProxy = new PartySelf();
-      } else {
-        throw new UnmarshalException(
-            String.format(
-                "Could not find concrete instance of Party proxy for %s/%s", currentTerm, id));
-      }
-
-      partyConsumer.accept(partyProxy);
-
-      callUnmarshal(
-          currentTerm,
-          id,
-          partyProxy,
-          values,
-          consumedPaths,
-          context,
-          findOrBuildSubNode(context, id));
-      callPostProcess(
-          currentTerm,
-          id,
-          partyProxy,
-          values,
-          consumedPaths,
-          context,
-          findOrBuildSubNode(context, id));
-    }
-  }
 
   /** {@inheritDoc} */
   @Override

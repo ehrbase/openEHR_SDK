@@ -20,12 +20,9 @@
 package org.ehrbase.serialisation.flatencoding.std.umarshal.postprocessor;
 
 import com.nedap.archie.rm.composition.Entry;
-import com.nedap.archie.rm.generic.PartyIdentified;
 import com.nedap.archie.rm.generic.PartySelf;
 import com.nedap.archie.rm.support.identification.GenericId;
 import com.nedap.archie.rm.support.identification.ObjectRef;
-import org.apache.commons.collections4.MapUtils;
-import org.ehrbase.serialisation.flatencoding.std.umarshal.rmunmarshaller.PartyIdentifiedRMUnmarshaller;
 import org.ehrbase.serialisation.walker.Context;
 import org.ehrbase.serialisation.walker.FlatHelper;
 import org.ehrbase.serialisation.walker.defaultvalues.DefaultValues;
@@ -58,26 +55,7 @@ public class EntryPostprocessor extends AbstractUnmarshalPostprocessor<Entry> {
       rmObject.setSubject(new PartySelf());
     }
 
-
-    Map<FlatPathDto, String> providerList =
-        values.entrySet().stream()
-            .filter(e -> e.getKey().startsWith(term + PATH_DIVIDER + "_provider"))
-            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-
-    if (!MapUtils.isEmpty(providerList)) {
-      if (!(rmObject.getProvider() instanceof PartyIdentified)) {
-        rmObject.setProvider(new PartyIdentified());
-      }
-      PartyIdentifiedRMUnmarshaller partyIdentifiedRMUnmarshaller =
-          new PartyIdentifiedRMUnmarshaller();
-
-      partyIdentifiedRMUnmarshaller.handle(
-          term + PATH_DIVIDER + "_provider",
-          (PartyIdentified) rmObject.getProvider(),
-          providerList,
-          null,
-          consumedPaths);
-    }
+    setParty(term, rmObject::setProvider, values, consumedPaths, context, "_provider", true);
 
     Map<Integer, Map<FlatPathDto, String>> other =
         extractMultiValued(term, "_other_participation", values);
