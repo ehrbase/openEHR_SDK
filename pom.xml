@@ -107,7 +107,7 @@
         <javax-cache.version>1.1.1</javax-cache.version>
         <javax-jaxb.version>2.3.1</javax-jaxb.version>
         <json.version>20211205</json.version>
-        <json-path.version>2.5.0</json-path.version>
+        <json-path.version>2.7.0</json-path.version>
         <jsonassert.version>1.5.0</jsonassert.version>
         <junit.version>5.8.2</junit.version>
         <maven-enforcer-plugin.version>1.4.1</maven-enforcer-plugin.version>
