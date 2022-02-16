@@ -41,12 +41,13 @@ import org.ehrbase.client.classgenerator.shareddefinition.State;
 import org.ehrbase.serialisation.jsonencoding.JacksonUtil;
 import org.ehrbase.util.exception.SdkException;
 import org.ehrbase.webtemplate.path.flat.FlatPathDto;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.time.OffsetDateTime;
 import java.time.temporal.TemporalAccessor;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -55,10 +56,10 @@ import static org.ehrbase.serialisation.walker.FlatHelper.*;
 
 public class DefaultValues {
 
+  public static final String COMPACT = "compact";
   private final Map<DefaultValuePath, Object> defaultValueMap;
   private static final ObjectMapper OBJECT_MAPPER = JacksonUtil.getObjectMapper();
 
-  private final Logger log = LoggerFactory.getLogger(getClass());
 
   public DefaultValues() {
     defaultValueMap = new HashMap<>();
@@ -168,7 +169,11 @@ public class DefaultValues {
                                                                     .getLast()
                                                                     .getAttributeName(),
                                                                 ":"))
-                                                        .orElse("split"));
+                                                        // Contains the identifiers in a compact
+                                                        // formate
+                                                        // "ctx/participation_identifiers:0":
+                                                        // "issuer1::assigner1::id1::PERSON;issuer2::assigner2::id2::PERSON"
+                                                        .orElse(COMPACT));
 
                                           } else {
                                             return new FlatPathDto(
@@ -327,11 +332,6 @@ public class DefaultValues {
         .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
   }
 
-  private static Map<String, String> filterExact(Map<String, String> flat, String path) {
-    return flat.entrySet().stream()
-        .filter(e -> new FlatPathDto(e.getKey()).startsWith("ctx/" + path))
-        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-  }
 
 
 
@@ -430,20 +430,21 @@ public class DefaultValues {
 
     if (participation.getPerformer() instanceof PartyIdentified) {
 
+      // Contains the identifiers in a compact formate "ctx/participation/_identifiers:0|compact":
+      // "issuer1::assigner1::id1::PERSON;issuer2::assigner2::id2::PERSON"
       if (identifiers.size() == 1
           && identifiers.get(0).size() == 1
-          && "split"
-              .equals(
-                  identifiers.get(0).entrySet().stream()
-                      .findAny()
-                      .get()
-                      .getKey()
-                      .getLast()
-                      .getAttributeName())) {
+          && COMPACT.equals(
+              identifiers.get(0).entrySet().stream()
+                  .findAny()
+                  .orElseThrow()
+                  .getKey()
+                  .getLast()
+                  .getAttributeName())) {
 
         String ids =
             StringUtils.unwrap(
-                identifiers.get(0).entrySet().stream().findAny().get().getValue(), '"');
+                identifiers.get(0).entrySet().stream().findAny().orElseThrow().getValue(), '"');
 
         for (String sub : ids.split(";")) {
           DvIdentifier dvIdentifier = new DvIdentifier();
@@ -534,76 +535,6 @@ public class DefaultValues {
     }
   }
 
-  private static Map<Integer, Map<String, String>> splitByIndex(Map<String, String> values) {
-    Map<Integer, Map<String, String>> map;
-
-    if (values.size() == 1) {
-      map = new HashMap<>();
-      String ids = StringUtils.unwrap(values.values().stream().findAny().orElseThrow(), '"');
-      int i = 0;
-      for (String sub : ids.split(";")) {
-        map.put(i, new HashMap<>());
-        String[] split = sub.split("::");
-
-        map.get(i).put("issuer", split[0]);
-        map.get(i).put("assigner", split[1]);
-        map.get(i).put("id", split[2]);
-        map.get(i).put("type", split[3]);
-
-        i++;
-      }
-    } else if (values.size() > 1) {
-
-      map =
-          values.entrySet().stream()
-              .collect(
-                  Collectors.groupingBy(
-                      e -> {
-                        String s =
-                            StringUtils.substringAfter(
-                                StringUtils.substringAfter(e.getKey(), "|"), ":");
-                        return StringUtils.isBlank(s) ? 0 : Integer.parseInt(s);
-                      },
-                      Collectors.toMap(
-                          e1 ->
-                              StringUtils.substringBefore(
-                                  StringUtils.substringAfter(e1.getKey(), "|"), ":"),
-                          stringStringEntry ->
-                              StringUtils.unwrap(stringStringEntry.getValue(), '"'))));
-
-    } else {
-      map = Collections.emptyMap();
-    }
-    return map;
-  }
-
-  private static void extract(
-      Collection<Map.Entry<String, String>> subValues,
-      String subPath,
-      Consumer<String> stringConsumer) {
-    filter(
-            subValues.stream().collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)),
-            DefaultValuePath.PARTICIPATION.getPath() + "_" + subPath)
-        .values()
-        .stream()
-        .map(DefaultValues::read)
-        .findAny()
-        .ifPresent(stringConsumer);
-  }
-
-  private static void extractExact(
-      Collection<Map.Entry<String, String>> subValues,
-      String subPath,
-      Consumer<String> stringConsumer) {
-    filterExact(
-            subValues.stream().collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)),
-            DefaultValuePath.PARTICIPATION.getPath() + "_" + subPath)
-        .values()
-        .stream()
-        .map(DefaultValues::read)
-        .findAny()
-        .ifPresent(stringConsumer);
-  }
 
   private static String read(String s) {
     try {

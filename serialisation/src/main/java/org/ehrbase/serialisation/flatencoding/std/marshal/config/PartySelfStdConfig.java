@@ -63,16 +63,12 @@ public class PartySelfStdConfig extends AbstractsStdConfig<PartySelf> {
             .map(ObjectRef::getNamespace)
             .orElse(null));
 
-    GenericId genericId =
-        Optional.of(rmObject)
-            .map(PartyProxy::getExternalRef)
-            .map(ObjectRef::getId)
-            .filter(i -> i.getClass().equals(GenericId.class))
-            .map(i -> (GenericId) i)
-            .orElse(null);
-    if (genericId != null) {
-      addValue(result, currentTerm, "id_scheme", genericId.getScheme());
-    }
+    Optional.of(rmObject)
+        .map(PartyProxy::getExternalRef)
+        .map(ObjectRef::getId)
+        .filter(i -> i.getClass().equals(GenericId.class))
+        .map(GenericId.class::cast)
+        .ifPresent(genericId -> addValue(result, currentTerm, "id_scheme", genericId.getScheme()));
 
     return result;
   }

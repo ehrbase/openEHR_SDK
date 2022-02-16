@@ -41,8 +41,6 @@ public class FeederAuditRMUnmarshaller extends AbstractRMUnmarshaller<FeederAudi
       new DvParsableRMUnmarshaller();
   private static final DvMultimediaRMUnmarshaller DV_MULTIMEDIA_RM_UNMARSHALLER =
       new DvMultimediaRMUnmarshaller();
-  private static final FeederAuditDetailsRMUnmarshaller FEEDER_AUDIT_DETAILS_RM_UNMARSHALLER =
-      new FeederAuditDetailsRMUnmarshaller();
 
   @Override
   public Class<FeederAudit> getAssociatedClass() {

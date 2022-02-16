@@ -36,8 +36,6 @@ import org.ehrbase.serialisation.walker.FlatHelper;
 import org.ehrbase.util.exception.SdkException;
 import org.ehrbase.webtemplate.model.WebTemplateNode;
 import org.ehrbase.webtemplate.path.flat.FlatPathDto;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 import java.util.Set;
@@ -52,7 +50,6 @@ public abstract class AbstractUnmarshalPostprocessor<T extends RMObject>
 
   private static final ObjectMapper OBJECT_MAPPER = JacksonUtil.getObjectMapper();
 
-  private final Logger log = LoggerFactory.getLogger(getClass());
 
   /**
    * Sets the {@code consumer} to the value in {@code values} corresponding to {@code term} and
@@ -84,8 +81,6 @@ public abstract class AbstractUnmarshalPostprocessor<T extends RMObject>
       } catch (JsonProcessingException e) {
         throw new SdkException(e.getMessage());
       }
-    } else {
-
     }
   }
 

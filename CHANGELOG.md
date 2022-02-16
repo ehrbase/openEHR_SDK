@@ -8,6 +8,8 @@ Note: version releases in the 0.x.y range may introduce breaking changes.
 
 ### Fixed
 
+- Flat : corrected handling of PARTY_PROXY ( see https://github.com/ehrbase/openEHR_SDK/pull/320)
+
 ## 1.17.0
 
 ### Added
