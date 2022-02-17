@@ -24,6 +24,7 @@
   "conformance-ehrbase.de.v0/conformance_section/conformance_observation/language|terminology": "ISO_639-1",
   "conformance-ehrbase.de.v0/conformance_section/conformance_observation/encoding|code": "UTF-8",
   "conformance-ehrbase.de.v0/conformance_section/conformance_observation/encoding|terminology": "IANA_character-sets",
+  "conformance-ehrbase.de.v0/conformance_section/conformance_observation/_provider|name": "Dr. Marcus Johnson",
   "conformance-ehrbase.de.v0/conformance_section/conformance_observation/_other_participation:0|function": "requester",
   "conformance-ehrbase.de.v0/conformance_section/conformance_observation/_other_participation:0|mode": "face-to-face communication",
   "conformance-ehrbase.de.v0/conformance_section/conformance_observation/_other_participation:0|name": "Dr. Marcus Johnson",
