@@ -29,8 +29,6 @@ import org.ehrbase.util.exception.SdkException;
 import org.ehrbase.util.reflection.ReflectionHelper;
 import org.ehrbase.webtemplate.parser.config.RmIntrospectConfig;
 import org.ehrbase.webtemplate.path.flat.FlatPathDto;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
@@ -46,7 +44,7 @@ public abstract class AbstractRMUnmarshaller<T extends RMObject> implements RMUn
   private static final ObjectMapper OBJECT_MAPPER = JacksonUtil.getObjectMapper();
   private static final Map<Class<?>, RmIntrospectConfig> configMap =
       ReflectionHelper.buildMap(RmIntrospectConfig.class);
-  private final Logger log = LoggerFactory.getLogger(getClass());
+
 
   /** {@inheritDoc} Use {@link RmIntrospectConfig} to find die properties which needs to be set */
   public void handle(
@@ -139,7 +137,7 @@ public abstract class AbstractRMUnmarshaller<T extends RMObject> implements RMUn
         consumer.accept(value);
         consumedPaths.add(entry.getKey().format());
       } catch (JsonProcessingException e) {
-        throw new SdkException(e.getMessage());
+        throw new SdkException(e.getMessage(), e);
       }
     } else {
       consumer.accept(null);

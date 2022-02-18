@@ -79,7 +79,7 @@ public abstract class AbstractUnmarshalPostprocessor<T extends RMObject>
         consumer.accept(value);
         consumedPaths.add(entry.getKey().format());
       } catch (JsonProcessingException e) {
-        throw new SdkException(e.getMessage());
+        throw new SdkException(e.getMessage(), e);
       }
     }
   }
