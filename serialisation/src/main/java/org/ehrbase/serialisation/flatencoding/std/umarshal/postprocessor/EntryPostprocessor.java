@@ -20,19 +20,11 @@
 package org.ehrbase.serialisation.flatencoding.std.umarshal.postprocessor;
 
 import com.nedap.archie.rm.composition.Entry;
-import com.nedap.archie.rm.generic.PartyIdentified;
-import com.nedap.archie.rm.generic.PartyProxy;
-import com.nedap.archie.rm.generic.PartyRelated;
 import com.nedap.archie.rm.generic.PartySelf;
 import com.nedap.archie.rm.support.identification.GenericId;
 import com.nedap.archie.rm.support.identification.ObjectRef;
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.collections4.MapUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.ehrbase.serialisation.flatencoding.std.umarshal.rmunmarshaller.PartyIdentifiedRMUnmarshaller;
 import org.ehrbase.serialisation.walker.Context;
 import org.ehrbase.serialisation.walker.FlatHelper;
-import org.ehrbase.serialisation.walker.defaultvalues.DefaultValuePath;
 import org.ehrbase.serialisation.walker.defaultvalues.DefaultValues;
 import org.ehrbase.webtemplate.path.flat.FlatPathDto;
 
@@ -58,80 +50,31 @@ public class EntryPostprocessor extends AbstractUnmarshalPostprocessor<Entry> {
 
     Map<FlatPathDto, String> subjectValues = FlatHelper.filter(values, term + "/subject", false);
 
-    if (!subjectValues.isEmpty()) {
-
-      if (rmObject.getSubject() == null) {
-        // If it was PartyRelated it would be set by now do to the relationship  and if it was
-        // PartySelf subjectValues would be empty
-        rmObject.setSubject(new PartyIdentified());
-      }
-
-      callUnmarshal(
-          term,
-          "subject",
-          rmObject.getSubject(),
-          values,
-          consumedPaths,
-          context,
-          context
-              .getNodeDeque()
-              .peek()
-              .findChildById("subject")
-              .orElse(buildDummyChild("subject", context.getNodeDeque().peek())));
-    }
-
-    PartyProxy subject = rmObject.getSubject();
-    if (subject == null
-        || (subject instanceof PartyIdentified
-            && ((PartyIdentified) subject).getName() == null
-            && CollectionUtils.isEmpty(((PartyIdentified) subject).getIdentifiers())
-            && subject.getExternalRef() == null
-            && (!(subject instanceof PartyRelated)
-                || ((PartyRelated) subject).getRelationship() == null
-                || StringUtils.isEmpty(((PartyRelated) subject).getRelationship().getValue())))) {
-
+    if (FlatHelper.isExactlyPartySelf(
+        subjectValues, term + "/subject", FlatHelper.findOrBuildSubNode(context, "subject"))) {
       rmObject.setSubject(new PartySelf());
     }
 
-    Map<FlatPathDto, String> providerList =
-        values.entrySet().stream()
-            .filter(e -> e.getKey().startsWith(term + PATH_DIVIDER + "_provider"))
-            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+    setParty(term, rmObject::setProvider, values, consumedPaths, context, "_provider", true);
 
-    if (!MapUtils.isEmpty(providerList)) {
-      if (!(rmObject.getProvider() instanceof PartyIdentified)) {
-        rmObject.setProvider(new PartyIdentified());
-      }
-      PartyIdentifiedRMUnmarshaller partyIdentifiedRMUnmarshaller =
-          new PartyIdentifiedRMUnmarshaller();
-
-      partyIdentifiedRMUnmarshaller.handle(
-          term + PATH_DIVIDER + "_provider",
-          (PartyIdentified) rmObject.getProvider(),
-          providerList,
-          null,
-          consumedPaths);
-    }
-
-    Map<Integer, Map<String, String>> other =
+    Map<Integer, Map<FlatPathDto, String>> other =
         extractMultiValued(term, "_other_participation", values);
 
-    other.values().stream()
-        .map(Map::entrySet)
-        .map(
-            s ->
-                s.stream()
-                    .collect(
-                        Collectors.toMap(
-                            e ->
-                                "ctx/"
-                                    + DefaultValuePath.PARTICIPATION.getPath()
-                                    + "_"
-                                    + e.getKey().replace("identifiers_", "identifiers|"),
-                            e -> StringUtils.wrap(e.getValue(), '"')))
-                    .entrySet())
-        .map(DefaultValues::buildParticipation)
-        .forEach(rmObject::addOtherParticipant);
+    other.replaceAll(
+        (k, v) ->
+            convertAttributeToFlat(
+                v, term + "/_other_participation:" + k, "identifiers", "_identifier"));
+
+    rmObject
+        .getOtherParticipations()
+        .addAll(
+            other.entrySet().stream()
+                .map(
+                    e ->
+                        DefaultValues.buildParticipation(
+                            e.getValue(), term + "/_other_participation:" + e.getKey()))
+                .collect(Collectors.toList()));
+
     consumeAllMatching(term + PATH_DIVIDER + "_other_participation", values, consumedPaths, false);
 
     Map<FlatPathDto, String> workflowIdValues = filter(values, term + "/_work_flow_id", false);

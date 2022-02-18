@@ -19,11 +19,16 @@
 
 package org.ehrbase.serialisation.flatencoding.std.marshal.config;
 
+import com.nedap.archie.rm.generic.PartyProxy;
 import com.nedap.archie.rm.generic.PartySelf;
+import com.nedap.archie.rm.support.identification.GenericId;
+import com.nedap.archie.rm.support.identification.ObjectId;
+import com.nedap.archie.rm.support.identification.ObjectRef;
 import org.ehrbase.serialisation.walker.Context;
 
-import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 public class PartySelfStdConfig extends AbstractsStdConfig<PartySelf> {
 
@@ -38,6 +43,33 @@ public class PartySelfStdConfig extends AbstractsStdConfig<PartySelf> {
   public Map<String, Object> buildChildValues(
       String currentTerm, PartySelf rmObject, Context<Map<String, Object>> context) {
 
-    return Collections.emptyMap();
+    Map<String, Object> result = new HashMap<>();
+
+    addValue(
+        result,
+        currentTerm,
+        "id",
+        Optional.of(rmObject)
+            .map(PartyProxy::getExternalRef)
+            .map(ObjectRef::getId)
+            .map(ObjectId::getValue)
+            .orElse(null));
+    addValue(
+        result,
+        currentTerm,
+        "id_namespace",
+        Optional.of(rmObject)
+            .map(PartyProxy::getExternalRef)
+            .map(ObjectRef::getNamespace)
+            .orElse(null));
+
+    Optional.of(rmObject)
+        .map(PartyProxy::getExternalRef)
+        .map(ObjectRef::getId)
+        .filter(i -> i.getClass().equals(GenericId.class))
+        .map(GenericId.class::cast)
+        .ifPresent(genericId -> addValue(result, currentTerm, "id_scheme", genericId.getScheme()));
+
+    return result;
   }
 }

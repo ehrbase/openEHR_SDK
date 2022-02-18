@@ -21,6 +21,7 @@ package org.ehrbase.serialisation.flatencoding.std.marshal.config;
 
 import com.nedap.archie.rm.archetyped.FeederAuditDetails;
 import com.nedap.archie.rm.datavalues.quantity.datetime.DvDateTime;
+import com.nedap.archie.rm.generic.PartySelf;
 import org.ehrbase.serialisation.walker.Context;
 
 import java.util.HashMap;
@@ -28,6 +29,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import static org.ehrbase.serialisation.flatencoding.std.marshal.StdFromCompositionWalker.findStdConfig;
+import static org.ehrbase.util.rmconstants.RmConstants.PARTY_SELF;
 
 public class FeederAudiDetailsStdConfig extends AbstractsStdConfig<FeederAuditDetails> {
 
@@ -58,6 +60,9 @@ public class FeederAudiDetailsStdConfig extends AbstractsStdConfig<FeederAuditDe
               stdConfig.buildChildValues(
               currentTerm + "/provider", rmObject.getProvider(), context));
     }
+    if (rmObject.getSubject() instanceof PartySelf) {
+      addValue(result, currentTerm + "/subject", "_type", PARTY_SELF);
+    }
 
     if (rmObject.getSubject() != null) {
       StdConfig stdConfig = findStdConfig(rmObject.getSubject().getClass());
@@ -65,6 +70,8 @@ public class FeederAudiDetailsStdConfig extends AbstractsStdConfig<FeederAuditDe
               stdConfig.buildChildValues(
                       currentTerm + "/subject", rmObject.getSubject(), context));
     }
+
+
     return result;
   }
 

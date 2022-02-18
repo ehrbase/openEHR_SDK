@@ -23,16 +23,16 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nedap.archie.datetime.DateTimeParsers;
 import com.nedap.archie.rm.archetyped.Link;
+import com.nedap.archie.rm.datatypes.CodePhrase;
 import com.nedap.archie.rm.datavalues.DvCodedText;
 import com.nedap.archie.rm.datavalues.DvEHRURI;
 import com.nedap.archie.rm.datavalues.DvIdentifier;
 import com.nedap.archie.rm.datavalues.DvText;
-import com.nedap.archie.rm.generic.Participation;
-import com.nedap.archie.rm.generic.PartyIdentified;
-import com.nedap.archie.rm.generic.PartyProxy;
+import com.nedap.archie.rm.generic.*;
 import com.nedap.archie.rm.support.identification.GenericId;
 import com.nedap.archie.rm.support.identification.ObjectRef;
 import com.nedap.archie.rm.support.identification.PartyRef;
+import com.nedap.archie.rm.support.identification.TerminologyId;
 import org.apache.commons.lang3.StringUtils;
 import org.ehrbase.client.classgenerator.EnumValueSet;
 import org.ehrbase.client.classgenerator.shareddefinition.ParticipationMode;
@@ -44,17 +44,22 @@ import org.ehrbase.webtemplate.path.flat.FlatPathDto;
 
 import java.time.OffsetDateTime;
 import java.time.temporal.TemporalAccessor;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static org.ehrbase.serialisation.walker.FlatHelper.findEnumValueOrThrow;
+import static org.ehrbase.serialisation.walker.FlatHelper.*;
 
 public class DefaultValues {
 
+  public static final String COMPACT = "compact";
   private final Map<DefaultValuePath, Object> defaultValueMap;
   private static final ObjectMapper OBJECT_MAPPER = JacksonUtil.getObjectMapper();
+
 
   public DefaultValues() {
     defaultValueMap = new HashMap<>();
@@ -108,7 +113,7 @@ public class DefaultValues {
                   String value =
                       subValues.values().stream().map(DefaultValues::read).findAny().orElseThrow();
                   if (value.equals("true")) {
-                    defaultValueMap.put(path, value);
+                    defaultValueMap.put(path, true);
                   }
                 } else if (TemporalAccessor.class.isAssignableFrom(path.getType())) {
                   String value =
@@ -119,22 +124,86 @@ public class DefaultValues {
                     defaultValueMap.put(path, DateTimeParsers.parseDateTimeValue(value));
                   }
                 } else if (path.equals(DefaultValuePath.PARTICIPATION)) {
-                  Map<Integer, List<Map.Entry<String, String>>> byIndex =
-                      subValues.entrySet().stream()
-                          .collect(
-                              Collectors.groupingBy(
-                                  e -> {
-                                    String s =
-                                        StringUtils.substringBefore(
-                                            StringUtils.substringAfter(e.getKey(), ":"), "|");
-                                    return StringUtils.isBlank(s) ? 0 : Integer.parseInt(s);
-                                  }));
-                  List<Participation> participations = new ArrayList<>();
-                  byIndex.values().stream()
-                      .map(DefaultValues::buildParticipation)
-                      .forEach(participations::add);
 
-                  defaultValueMap.put(path, participations);
+                  Map<Integer, Map<FlatPathDto, String>> participationValues =
+                      extractMultiValued(
+                          "ctx",
+                          null,
+                          subValues.entrySet().stream()
+                              .collect(
+                                  Collectors.toMap(
+                                      e -> new FlatPathDto(e.getKey()), Map.Entry::getValue)));
+                  participationValues.replaceAll(
+                      (k, v) -> {
+                        Map<FlatPathDto, String> map;
+
+                        map =
+                            v.entrySet().stream()
+                                .collect(
+                                    Collectors.toMap(
+                                        e1 -> {
+                                          if (StringUtils.equals(
+                                              e1.getKey().getLast().getName(),
+                                              "participation_identifiers")) {
+
+                                            Integer integer =
+                                                Optional.ofNullable(
+                                                        e1.getKey().getLast().getAttributeName())
+                                                    .map(a -> StringUtils.substringAfter(a, ':'))
+                                                    .map(Integer::valueOf)
+                                                    .orElse(0);
+
+                                            return new FlatPathDto(
+                                                ("ctx/"
+                                                        + DefaultValuePath.PARTICIPATION.getPath()
+                                                        + ":"
+                                                        + k)
+                                                    + "/"
+                                                    + "_identifier"
+                                                    + ":"
+                                                    + integer
+                                                    + "|"
+                                                    + Optional.ofNullable(
+                                                            StringUtils.substringBefore(
+                                                                e1.getKey()
+                                                                    .getLast()
+                                                                    .getAttributeName(),
+                                                                ":"))
+                                                        // Contains the identifiers in a compact
+                                                        // formate
+                                                        // "ctx/participation_identifiers:0":
+                                                        // "issuer1::assigner1::id1::PERSON;issuer2::assigner2::id2::PERSON"
+                                                        .orElse(COMPACT));
+
+                                          } else {
+                                            return new FlatPathDto(
+                                                ("ctx/"
+                                                        + DefaultValuePath.PARTICIPATION.getPath()
+                                                        + ":"
+                                                        + k)
+                                                    + "|"
+                                                    + StringUtils.substringAfter(
+                                                        e1.getKey().getLast().getName(), "_"));
+                                          }
+                                        },
+                                        Map.Entry::getValue));
+
+                        return map;
+                      });
+
+                  defaultValueMap.put(
+                      path,
+                      participationValues.entrySet().stream()
+                          .map(
+                              e ->
+                                  buildParticipation(
+                                      e.getValue(),
+                                      "ctx/"
+                                          + DefaultValuePath.PARTICIPATION.getPath()
+                                          + ":"
+                                          + e.getKey()))
+                          .collect(Collectors.toList()));
+
                 } else if (path.equals(DefaultValuePath.WORKFLOW_ID)) {
                   ObjectRef<GenericId> ref = new ObjectRef<>();
 
@@ -157,27 +226,23 @@ public class DefaultValues {
                   defaultValueMap.put(path, ref);
                 } else if (path.equals(DefaultValuePath.LINKS)) {
 
-                  Map<Integer, Map<String, String>> links =
-                      subValues.entrySet().stream()
-                          .collect(
-                              Collectors.groupingBy(
-                                  e -> {
-                                    String s =
-                                        StringUtils.substringBefore(
-                                            StringUtils.substringAfter(e.getKey(), ":"), "|");
-                                    return StringUtils.isBlank(s) ? 0 : Integer.parseInt(s);
-                                  },
+                  Map<Integer, Map<FlatPathDto, String>> linkValues =
+                      extractMultiValued(
+                          "ctx",
+                          null,
+                          subValues.entrySet().stream()
+                              .collect(
                                   Collectors.toMap(
-                                      e1 ->
-                                          StringUtils.substringBefore(
-                                              StringUtils.substringAfter(e1.getKey(), "|"), ":"),
-                                      stringStringEntry ->
-                                          StringUtils.unwrap(stringStringEntry.getValue(), '"'))));
+                                      e -> new FlatPathDto(e.getKey()), Map.Entry::getValue)));
 
                   defaultValueMap.put(
                       path,
-                      links.values().stream()
-                          .map(DefaultValues::createLink)
+                      linkValues.entrySet().stream()
+                          .map(
+                              e ->
+                                  createLink(
+                                      e.getValue(),
+                                      "ctx/" + DefaultValuePath.LINKS.getPath() + ":" + e.getKey()))
                           .collect(Collectors.toList()));
                 }
               }
@@ -220,17 +285,43 @@ public class DefaultValues {
     defaultValueMap.putIfAbsent(DefaultValuePath.INSTRUCTION_NARRATIVE, "<none>");
   }
 
-  public static Link createLink(Map<String, String> stringStringMap) {
+
+
+  public static Link createLink(Map<FlatPathDto, String> valueMap, String path) {
     Link link = new Link();
-    if (stringStringMap.containsKey("meaning")) {
-      link.setMeaning(new DvText(stringStringMap.get("meaning")));
-    }
-    if (stringStringMap.containsKey("type")) {
-      link.setType(new DvText(stringStringMap.get("type")));
-    }
-    if (stringStringMap.containsKey("target")) {
-      link.setTarget(new DvEHRURI(stringStringMap.get("target")));
-    }
+
+    setValue(
+        path,
+        "meaning",
+        valueMap,
+        s -> {
+          if (s != null) {
+            link.setMeaning(new DvText(s));
+          }
+        },
+        String.class);
+
+    setValue(
+        path,
+        "type",
+        valueMap,
+        s -> {
+          if (s != null) {
+            link.setType(new DvText(s));
+          }
+        },
+        String.class);
+
+    setValue(
+        path,
+        "target",
+        valueMap,
+        s -> {
+          if (s != null) {
+            link.setTarget(new DvEHRURI(s));
+          }
+        },
+        String.class);
 
     return link;
   }
@@ -241,150 +332,209 @@ public class DefaultValues {
         .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
   }
 
-  private static Map<String, String> filterExact(Map<String, String> flat, String path) {
-    return flat.entrySet().stream()
-        .filter(e -> new FlatPathDto(e.getKey()).startsWith("ctx/" + path))
-        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-  }
 
-  public static Participation buildParticipation(Collection<Map.Entry<String, String>> subValues) {
+
+
+  public static Participation buildParticipation(Map<FlatPathDto, String> subValues, String path) {
     Participation participation = new Participation();
-    participation.setPerformer(new PartyIdentified());
 
-    extractExact(
-        subValues,
-        "id",
-        s -> {
-          participation.getPerformer().setExternalRef(new PartyRef());
-          participation.getPerformer().getExternalRef().setType("PARTY");
-          GenericId id = new GenericId();
-          id.setValue(s);
-          participation.getPerformer().getExternalRef().setId(id);
-        });
-
-    extract(subValues, "name", ((PartyIdentified) participation.getPerformer())::setName);
-
-    if (participation.getPerformer().getExternalRef() != null) {
-      extract(
-          subValues,
-          "id_namespace",
-          n -> participation.getPerformer().getExternalRef().setNamespace(n));
-      extract(
-          subValues,
-          "id_scheme",
-          ((GenericId) participation.getPerformer().getExternalRef().getId())::setScheme);
+    if (isExactlyPartyIdentified(subValues, path, null)) {
+      participation.setPerformer(new PartyIdentified());
+    } else if (isExactlyPartyRelated(subValues, path, null)) {
+      participation.setPerformer(new PartyRelated());
+    } else {
+      participation.setPerformer(new PartySelf());
     }
 
-    extract(subValues, "function", s -> participation.setFunction(new DvText(s)));
-
-    extract(
+    setValue(
+        path,
+        "id",
         subValues,
-        "mode",
         s -> {
-          ParticipationMode participationMode = findEnumValueOrThrow(s, ParticipationMode.class);
-          participation.setMode(new DvCodedText());
-          participation.getMode().setValue(participationMode.getValue());
-          participation.getMode().setDefiningCode(participationMode.toCodePhrase());
-        });
-    ((PartyIdentified) participation.getPerformer())
-        .setIdentifiers(
-            splitByIndex(
-                    filter(
-                        subValues.stream()
-                            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)),
-                        DefaultValuePath.PARTICIPATION.getPath() + "_" + "identifiers"))
-                .values()
-                .stream()
-                .map(DefaultValues::toDvIdentifier)
-                .collect(Collectors.toList()));
+          if (s != null) {
+            participation.getPerformer().setExternalRef(new PartyRef());
+            participation.getPerformer().getExternalRef().setType("PARTY");
+            GenericId id = new GenericId();
+            id.setValue(s);
+            participation.getPerformer().getExternalRef().setId(id);
+          }
+        },
+        String.class);
+
+    setValue(
+        path,
+        "name",
+        subValues,
+        s -> {
+          if (s != null) {
+
+            ((PartyIdentified) participation.getPerformer()).setName(s);
+          }
+        },
+        String.class);
+
+    if (participation.getPerformer().getExternalRef() != null) {
+      setValue(
+          path,
+          "id_namespace",
+          subValues,
+          s -> {
+            if (s != null) {
+
+              participation.getPerformer().getExternalRef().setNamespace(s);
+            }
+          },
+          String.class);
+      setValue(
+          path,
+          "id_scheme",
+          subValues,
+          s -> {
+            if (s != null) {
+
+              ((GenericId) participation.getPerformer().getExternalRef().getId()).setScheme(s);
+            }
+          },
+          String.class);
+    }
+
+    setValue(
+        path,
+        "function",
+        subValues,
+        s -> {
+          if (s != null) {
+
+            participation.setFunction(new DvText(s));
+          }
+        },
+        String.class);
+
+    setValue(
+        path,
+        "mode",
+        subValues,
+        s -> {
+          if (s != null) {
+
+            ParticipationMode participationMode = findEnumValueOrThrow(s, ParticipationMode.class);
+            participation.setMode(new DvCodedText());
+            participation.getMode().setValue(participationMode.getValue());
+            participation.getMode().setDefiningCode(participationMode.toCodePhrase());
+          }
+        },
+        String.class);
+
+    Map<Integer, Map<FlatPathDto, String>> identifiers =
+        extractMultiValued(path, "/_identifier", subValues);
+
+    if (participation.getPerformer() instanceof PartyIdentified) {
+
+      // Contains the identifiers in a compact formate "ctx/participation/_identifiers:0|compact":
+      // "issuer1::assigner1::id1::PERSON;issuer2::assigner2::id2::PERSON"
+      if (identifiers.size() == 1
+          && identifiers.get(0).size() == 1
+          && COMPACT.equals(
+              identifiers.get(0).entrySet().stream()
+                  .findAny()
+                  .orElseThrow()
+                  .getKey()
+                  .getLast()
+                  .getAttributeName())) {
+
+        String ids =
+            StringUtils.unwrap(
+                identifiers.get(0).entrySet().stream().findAny().orElseThrow().getValue(), '"');
+
+        for (String sub : ids.split(";")) {
+          DvIdentifier dvIdentifier = new DvIdentifier();
+          String[] split = sub.split("::");
+
+          dvIdentifier.setIssuer(split[0]);
+          dvIdentifier.setAssigner(split[1]);
+          dvIdentifier.setId(split[2]);
+          dvIdentifier.setType(split[3]);
+
+          ((PartyIdentified) participation.getPerformer()).addIdentifier(dvIdentifier);
+        }
+      } else {
+        ((PartyIdentified) participation.getPerformer())
+            .setIdentifiers(
+                identifiers.entrySet().stream()
+                    .map(
+                        e ->
+                            DefaultValues.toDvIdentifier(
+                                e.getValue(), path + "/_identifier:" + e.getKey()))
+                    .collect(Collectors.toList()));
+      }
+    }
+
+    if (participation.getPerformer() instanceof PartyRelated) {
+      DvCodedText relationship = new DvCodedText();
+      relationship.setDefiningCode(new CodePhrase());
+      ((PartyRelated) participation.getPerformer()).setRelationship(relationship);
+
+      setValue(path + "/relationship", "value", subValues, relationship::setValue, String.class);
+      setValue(
+          path + "/relationship",
+          "code",
+          subValues,
+          relationship.getDefiningCode()::setCodeString,
+          String.class);
+      setValue(
+          path + "/relationship",
+          "terminology",
+          subValues,
+          s -> {
+            if (s != null) {
+              relationship.getDefiningCode().setTerminologyId(new TerminologyId(s));
+            }
+          },
+          String.class);
+    }
+
     return participation;
   }
 
-  public static DvIdentifier toDvIdentifier(Map<String, String> valueMap) {
+
+  public static DvIdentifier toDvIdentifier(Map<FlatPathDto, String> valueMap, String path) {
     DvIdentifier dvIdentifier = new DvIdentifier();
 
-    dvIdentifier.setId(valueMap.get("id"));
+    setValue(path, "id", valueMap, dvIdentifier::setId, String.class);
 
     if (StringUtils.isBlank(dvIdentifier.getId())) {
-      dvIdentifier.setId(valueMap.get(""));
+      setValue(path, null, valueMap, dvIdentifier::setId, String.class);
     }
-    dvIdentifier.setAssigner(valueMap.get("assigner"));
-    dvIdentifier.setIssuer(valueMap.get("issuer"));
-    dvIdentifier.setType(valueMap.get("type"));
+
+    setValue(path, "assigner", valueMap, dvIdentifier::setAssigner, String.class);
+    setValue(path, "issuer", valueMap, dvIdentifier::setIssuer, String.class);
+    setValue(path, "type", valueMap, dvIdentifier::setType, String.class);
 
     return dvIdentifier;
   }
 
-  private static Map<Integer, Map<String, String>> splitByIndex(Map<String, String> values) {
-    Map<Integer, Map<String, String>> map;
+  private static <S> void setValue(
+      String term,
+      String propertyName,
+      Map<FlatPathDto, String> values,
+      Consumer<S> consumer,
+      Class<S> clazz) {
+    String key = propertyName != null ? term + "|" + propertyName : term;
+    Map.Entry<FlatPathDto, String> entry = FlatPathDto.get(values, key);
+    String jasonValue = entry.getValue();
+    if (StringUtils.isNotBlank(jasonValue)) {
+      try {
+        S value = OBJECT_MAPPER.readValue(jasonValue, clazz);
+        consumer.accept(value);
 
-    if (values.size() == 1) {
-      map = new HashMap<>();
-      String ids = StringUtils.unwrap(values.values().stream().findAny().orElseThrow(), '"');
-      int i = 0;
-      for (String sub : ids.split(";")) {
-        map.put(i, new HashMap<>());
-        String[] split = sub.split("::");
-
-        map.get(i).put("issuer", split[0]);
-        map.get(i).put("assigner", split[1]);
-        map.get(i).put("id", split[2]);
-        map.get(i).put("type", split[3]);
-
-        i++;
+      } catch (JsonProcessingException e) {
+        throw new SdkException(e.getMessage());
       }
-    } else if (values.size() > 1) {
-
-      map =
-          values.entrySet().stream()
-              .collect(
-                  Collectors.groupingBy(
-                      e -> {
-                        String s =
-                            StringUtils.substringAfter(
-                                StringUtils.substringAfter(e.getKey(), "|"), ":");
-                        return StringUtils.isBlank(s) ? 0 : Integer.parseInt(s);
-                      },
-                      Collectors.toMap(
-                          e1 ->
-                              StringUtils.substringBefore(
-                                  StringUtils.substringAfter(e1.getKey(), "|"), ":"),
-                          stringStringEntry ->
-                              StringUtils.unwrap(stringStringEntry.getValue(), '"'))));
-
     } else {
-      map = Collections.emptyMap();
+      consumer.accept(null);
     }
-    return map;
   }
 
-  private static void extract(
-      Collection<Map.Entry<String, String>> subValues,
-      String subPath,
-      Consumer<String> stringConsumer) {
-    filter(
-            subValues.stream().collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)),
-            DefaultValuePath.PARTICIPATION.getPath() + "_" + subPath)
-        .values()
-        .stream()
-        .map(DefaultValues::read)
-        .findAny()
-        .ifPresent(stringConsumer);
-  }
-
-  private static void extractExact(
-      Collection<Map.Entry<String, String>> subValues,
-      String subPath,
-      Consumer<String> stringConsumer) {
-    filterExact(
-            subValues.stream().collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)),
-            DefaultValuePath.PARTICIPATION.getPath() + "_" + subPath)
-        .values()
-        .stream()
-        .map(DefaultValues::read)
-        .findAny()
-        .ifPresent(stringConsumer);
-  }
 
   private static String read(String s) {
     try {

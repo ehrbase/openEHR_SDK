@@ -86,11 +86,15 @@ public class LocatableMarshalPostprocessor extends AbstractMarshalPostprocessor<
             rmObject.getFeederAudit(),
             values,
             context,
-            context
-                .getNodeDeque()
-                .peek()
-                .findChildById("feeder_audit")
-                .orElse(FlatHelper.buildDummyChild("feeder_audit", context.getNodeDeque().peek())));
+            FlatHelper.findOrBuildSubNode(context, "feeder_audit"));
+
+        callPostprocess(
+            term,
+            "_feeder_audit",
+            rmObject.getFeederAudit(),
+            values,
+            context,
+            FlatHelper.findOrBuildSubNode(context, "feeder_audit"));
       }
 
       if (Optional.ofNullable(rmObject.getName())

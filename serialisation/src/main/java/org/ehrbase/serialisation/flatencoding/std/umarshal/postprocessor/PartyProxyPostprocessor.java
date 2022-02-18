@@ -19,50 +19,32 @@
 
 package org.ehrbase.serialisation.flatencoding.std.umarshal.postprocessor;
 
-import com.nedap.archie.rm.archetyped.FeederAuditDetails;
-import com.nedap.archie.rm.generic.PartyIdentified;
+import com.nedap.archie.rm.generic.PartyProxy;
 import org.ehrbase.serialisation.walker.Context;
+import org.ehrbase.serialisation.walker.FlatHelper;
 import org.ehrbase.webtemplate.path.flat.FlatPathDto;
 
 import java.util.Map;
 import java.util.Set;
 
-public class FeederAuditDetailsPostprocessor
-    extends AbstractUnmarshalPostprocessor<FeederAuditDetails> {
+public class PartyProxyPostprocessor extends AbstractUnmarshalPostprocessor<PartyProxy> {
 
   /** {@inheritDoc} */
   @Override
   public void process(
-      String currentTerm,
-      FeederAuditDetails rmObject,
-      Map<FlatPathDto, String> currentValues,
+      String term,
+      PartyProxy rmObject,
+      Map<FlatPathDto, String> values,
       Set<String> consumedPaths,
       Context<Map<FlatPathDto, String>> context) {
 
-    setParty(
-        currentTerm,
-        p -> rmObject.setLocation((PartyIdentified) p),
-        currentValues,
-        consumedPaths,
-        context,
-        "location",
-        false);
-    setParty(
-        currentTerm, rmObject::setSubject, currentValues, consumedPaths, context, "subject", true);
-    setParty(
-        currentTerm,
-        p -> rmObject.setProvider((PartyIdentified) p),
-        currentValues,
-        consumedPaths,
-        context,
-        "provider",
-        false);
+    // My contain information which party proxy implementation to use
+    FlatHelper.consumeAllMatching(term + "|_type", values, consumedPaths, true);
   }
-
 
   /** {@inheritDoc} */
   @Override
-  public Class<FeederAuditDetails> getAssociatedClass() {
-    return FeederAuditDetails.class;
+  public Class<PartyProxy> getAssociatedClass() {
+    return PartyProxy.class;
   }
 }

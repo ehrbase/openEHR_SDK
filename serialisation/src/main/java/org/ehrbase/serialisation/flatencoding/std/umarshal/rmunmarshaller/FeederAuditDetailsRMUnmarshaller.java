@@ -21,15 +21,11 @@ package org.ehrbase.serialisation.flatencoding.std.umarshal.rmunmarshaller;
 
 import com.nedap.archie.rm.archetyped.FeederAuditDetails;
 import com.nedap.archie.rm.datavalues.quantity.datetime.DvDateTime;
-import com.nedap.archie.rm.generic.PartyIdentified;
 import org.ehrbase.serialisation.walker.Context;
-import org.ehrbase.serialisation.walker.FlatHelper;
 import org.ehrbase.webtemplate.path.flat.FlatPathDto;
 
 import java.util.Map;
 import java.util.Set;
-
-import static org.ehrbase.serialisation.flatencoding.std.umarshal.StdToCompositionWalker.findRMUnmarshaller;
 
 public class FeederAuditDetailsRMUnmarshaller extends AbstractRMUnmarshaller<FeederAuditDetails> {
 
@@ -63,36 +59,6 @@ public class FeederAuditDetailsRMUnmarshaller extends AbstractRMUnmarshaller<Fee
         String.class,
         consumedPaths);
 
-    Map<FlatPathDto, String> locationValues =
-        FlatHelper.filter(currentValues, currentTerm + "/location", false);
-
-    if (!locationValues.isEmpty()) {
-      rmObject.setLocation(new PartyIdentified());
-      RMUnmarshaller rmUnmarshaller = findRMUnmarshaller(rmObject.getLocation().getClass());
-      rmUnmarshaller.handle(
-          currentTerm + "/location", rmObject.getLocation(), locationValues, null, consumedPaths);
-    }
-
-    Map<FlatPathDto, String> subjectValues =
-            FlatHelper.filter(currentValues, currentTerm + "/subject", false);
-
-    if (!subjectValues.isEmpty()) {
-      rmObject.setSubject(new PartyIdentified());
-      RMUnmarshaller rmUnmarshaller = findRMUnmarshaller(rmObject.getSubject().getClass());
-      rmUnmarshaller.handle(
-              currentTerm + "/subject", rmObject.getSubject(), subjectValues, null, consumedPaths);
-    }
-
-
-    Map<FlatPathDto, String> providerValues =
-        FlatHelper.filter(currentValues, currentTerm + "/provider", false);
-
-    if (!providerValues.isEmpty()) {
-      rmObject.setProvider(new PartyIdentified());
-      RMUnmarshaller rmUnmarshaller = findRMUnmarshaller(rmObject.getProvider().getClass());
-      rmUnmarshaller.handle(
-          currentTerm + "/provider", rmObject.getProvider(), providerValues, null, consumedPaths);
-    }
 
     setValue(
         currentTerm,

@@ -20,11 +20,9 @@
 package org.ehrbase.serialisation.flatencoding.std.marshal.postprocessor;
 
 import com.nedap.archie.rm.composition.Entry;
-import com.nedap.archie.rm.generic.PartyIdentified;
 import com.nedap.archie.rm.support.identification.GenericId;
 import com.nedap.archie.rm.support.identification.ObjectId;
 import com.nedap.archie.rm.support.identification.ObjectRef;
-import org.ehrbase.serialisation.flatencoding.std.marshal.config.PartyIdentifiedStdConfig;
 import org.ehrbase.serialisation.walker.Context;
 
 import java.util.Map;
@@ -47,11 +45,7 @@ public class EntryMarshalPostprocessor extends AbstractMarshalPostprocessor<Entr
 
     if (rmObject.getProvider() != null) {
 
-      PartyIdentifiedStdConfig partyIdentifiedStdConfig = new PartyIdentifiedStdConfig();
-
-      values.putAll(
-          partyIdentifiedStdConfig.buildChildValues(
-              term + PATH_DIVIDER + "_provider", (PartyIdentified) rmObject.getProvider(), null));
+      handleRmAttribute(term, rmObject.getProvider(), values, context, "provider");
     }
 
     if (rmObject.getOtherParticipations() != null) {

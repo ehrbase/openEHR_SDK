@@ -144,6 +144,18 @@ public enum CompositionTestDataConformanceSDTJson implements CompositionTestData
           "ehrbase_conformance_section",
           "ehrbase_conformance_section.json",
           OperationalTemplateTestData.CONFORMANCE),
+  EHRBASE_CONFORMANCE_PARTY_IDENTIFIED(
+      "ehrbase_conformance_party_identified",
+      "ehrbase_conformance_party_identified.json",
+      OperationalTemplateTestData.CONFORMANCE),
+  EHRBASE_CONFORMANCE_PARTY_RELATED(
+      "ehrbase_conformance_party_related",
+      "ehrbase_conformance_party_related.json",
+      OperationalTemplateTestData.CONFORMANCE),
+  EHRBASE_CONFORMANCE_PARTY_SELF(
+      "ehrbase_conformance_party_self",
+      "ehrbase_conformance_party_self.json",
+      OperationalTemplateTestData.CONFORMANCE),
   EHRBASE_CONFORMANCE_ELEMENT_FEEDER_AUDIT(
           "ehrbase_conformance_Element_feeder_audit",
           "ehrbase_conformance_Element_feeder_audit.json",
