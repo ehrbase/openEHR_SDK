@@ -18,25 +18,24 @@
 
 package org.ehrbase.webtemplate.path.flat;
 
-import org.antlr.v4.runtime.CharStreams;
-import org.antlr.v4.runtime.CommonTokenStream;
 import org.apache.commons.lang3.StringUtils;
-import org.ehrbase.util.exception.SDKErrorListener;
-import org.ehrbase.util.exception.SdkException;
+
+import static org.ehrbase.webtemplate.util.CharSequenceHelper.removeStart;
+import static org.ehrbase.webtemplate.util.CharSequenceHelper.splitFirst;
 
 public class FlatPathParser {
 
     private FlatPathParser(){}
 
-   public static FlatPathDto parse(String path){
+   public static FlatPathDto parse(CharSequence path){
       FlatPathDto dto = new FlatPathDto();
 
-      if (StringUtils.isNotBlank(path) && !"/".equals(path)){
-          String[] tempSplit;
-          String tempSubPath;
+      if (! StringUtils.equals("/", path)){
+          CharSequence[] tempSplit;
+          CharSequence tempSubPath;
 
           //extract Children
-          tempSplit = StringUtils.split( StringUtils.removeStart(path,"/"), "/", 2);
+          tempSplit = splitFirst(removeStart(path,"/"), '/');
           tempSubPath = tempSplit[0];
 
           if(tempSplit.length >1){
@@ -44,23 +43,23 @@ public class FlatPathParser {
           }
 
           //extract AttributeName
-          tempSplit = StringUtils.split(tempSubPath,"|",2);
+          tempSplit = splitFirst(tempSubPath,'|');
           tempSubPath = tempSplit[0];
 
           if(tempSplit.length >1){
-              dto.setAttributeName(tempSplit[1]);
+              dto.setAttributeName(tempSplit[1].toString());
           }
 
           //extract Count
-          tempSplit = StringUtils.split(tempSubPath,":",2);
+          tempSplit = splitFirst(tempSubPath,':');
           tempSubPath = tempSplit[0];
 
           if(tempSplit.length >1){
-              dto.setCount(Integer.valueOf(tempSplit[1]));
+              dto.setCount(Integer.valueOf(tempSplit[1].toString()));
           }
 
           //Rest is the name
-          dto.setName(tempSubPath);
+          dto.setName(tempSubPath.toString());
       }
 
       return dto;

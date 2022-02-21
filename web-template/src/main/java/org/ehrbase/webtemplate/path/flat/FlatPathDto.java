@@ -18,9 +18,6 @@
 
 package org.ehrbase.webtemplate.path.flat;
 
-
-import org.apache.commons.lang3.StringUtils;
-
 import java.util.AbstractMap;
 import java.util.Map;
 import java.util.Objects;
@@ -82,6 +79,11 @@ public class FlatPathDto {
 
   public String format() {
     StringBuilder sb = new StringBuilder();
+    appendFormat(sb);
+    return sb.toString();
+  }
+
+  private void appendFormat(StringBuilder sb) {
 
     sb.append(name);
 
@@ -93,9 +95,9 @@ public class FlatPathDto {
       sb.append('|').append(attributeName);
     }
     if (child != null) {
-      sb.append('/').append(child.format());
+      sb.append('/');
+      child.appendFormat(sb);
     }
-    return sb.toString();
   }
 
   public FlatPathDto getLast() {
@@ -119,7 +121,8 @@ public class FlatPathDto {
         newChild.setChild(null);
         if (newMe == null){
           newMe = newChild;
-        }else{newMe.getLast().setChild(newChild);
+        } else {
+          newMe.getLast().setChild(newChild);
         }
 
       me = me.child;
@@ -146,8 +149,7 @@ public class FlatPathDto {
       return false;
     }
 
-    if (!Objects.equals(me.getAttributeName(), other.getAttributeName())
-    ) {
+    if (!Objects.equals(me.getAttributeName(), other.getAttributeName())) {
       return false;
     }
     return true;
@@ -171,7 +173,9 @@ public class FlatPathDto {
   }
 
   public static FlatPathDto addEnd(FlatPathDto path, FlatPathDto add) {
-    return new FlatPathDto(path.format() + "/" + StringUtils.removeStart(add.format(), "/"));
+    var flatPath = new FlatPathDto(path);
+    flatPath.getLast().setChild(new FlatPathDto(add));
+    return flatPath;
   }
 
   @Override
@@ -189,9 +193,9 @@ public class FlatPathDto {
         me.setAttributeName(null);
       }
 
-      Integer tempCount = me.getCount();;
-if(other.getChild() == null && other.count == null){
-  me.setCount(null);
+      Integer tempCount = me.getCount();
+      if(other.getChild() == null && other.count == null){
+        me.setCount(null);
 }
       boolean nodeEqual = isNodeEqual(me, other);
       me.setAttributeName(tempAttributeName);
@@ -226,7 +230,6 @@ if(other.getChild() == null && other.count == null){
       ){
         break;
       }
-
 
       other = other.getChild();
       me = me.child;

@@ -48,6 +48,9 @@ public class WebTemplateNode implements Serializable {
   private final Map<String, String> localizedNames = new HashMap<>();
   private final Map<String, String> localizedDescriptions = new HashMap<>();
 
+  @JsonIgnore
+  private final String[] aqlCache = new String[2];
+
   @JsonSerialize(using = AqlPathSerializer.class)
   private String aqlPath;
 
@@ -177,11 +180,16 @@ public class WebTemplateNode implements Serializable {
   }
 
   public String getAqlPath(boolean withOtherPredicates) {
-    return new FlatPath(aqlPath).format(withOtherPredicates);
+    int idx = withOtherPredicates ? 0 : 1;
+    if (aqlCache[idx] == null) {
+      aqlCache[idx] = new FlatPath(aqlPath).format(withOtherPredicates);
+    }
+    return aqlCache[idx];
   }
 
   public void setAqlPath(String aqlPath) {
     this.aqlPath = aqlPath;
+    Arrays.fill(aqlCache, null);
   }
 
   public List<WebTemplateNode> getChildren() {
@@ -249,11 +257,10 @@ public class WebTemplateNode implements Serializable {
   public List<WebTemplateNode> findMatching(Predicate<WebTemplateNode> filter) {
 
     List<WebTemplateNode> matching =
-        new ArrayList<>(
             children.stream()
                 .map(c -> c.findMatching(filter))
                 .flatMap(List::stream)
-                .collect(Collectors.toList()));
+                .collect(Collectors.toList());
 
     if (filter.test(this)) {
       matching.add(this);
@@ -263,11 +270,10 @@ public class WebTemplateNode implements Serializable {
 
   public List<WebTemplateNode> multiValued() {
     List<WebTemplateNode> matching =
-        new ArrayList<>(
             children.stream()
                 .map(WebTemplateNode::multiValued)
                 .flatMap(List::stream)
-                .collect(Collectors.toList()));
+                .collect(Collectors.toList());
     if (this.max != 1) {
       matching.add(this);
     }
