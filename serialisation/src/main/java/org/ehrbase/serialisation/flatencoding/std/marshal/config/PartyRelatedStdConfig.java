@@ -19,10 +19,17 @@
 
 package org.ehrbase.serialisation.flatencoding.std.marshal.config;
 
+import com.nedap.archie.rm.RMObject;
 import com.nedap.archie.rm.generic.PartyRelated;
+import org.ehrbase.serialisation.flatencoding.std.marshal.StdFromCompositionWalker;
+import org.ehrbase.serialisation.flatencoding.std.marshal.postprocessor.MarshalPostprocessor;
 import org.ehrbase.serialisation.walker.Context;
+import org.ehrbase.serialisation.walker.FlatHelper;
+import org.ehrbase.webtemplate.model.WebTemplateNode;
 
 import java.util.Map;
+
+import static org.ehrbase.webtemplate.parser.OPTParser.PATH_DIVIDER;
 
 public class PartyRelatedStdConfig extends AbstractsStdConfig<PartyRelated> {
 
@@ -41,6 +48,43 @@ public class PartyRelatedStdConfig extends AbstractsStdConfig<PartyRelated> {
       String currentTerm, PartyRelated rmObject, Context<Map<String, Object>> context) {
 
     // PartyRelated is also PartyIdentified
-    return PARTY_IDENTIFIED_STD_CONFIG.buildChildValues(currentTerm, rmObject, context);
+    Map<String, Object> values =
+        PARTY_IDENTIFIED_STD_CONFIG.buildChildValues(currentTerm, rmObject, context);
+
+    addRelationship(currentTerm, rmObject, context, values);
+    return values;
+  }
+
+  static void addRelationship(
+      String currentTerm,
+      PartyRelated rmObject,
+      Context<Map<String, Object>> context,
+      Map<String, Object> values) {
+    if (rmObject.getRelationship() != null) {
+
+      WebTemplateNode subNode = FlatHelper.findOrBuildSubNode(context, "relationship");
+
+      context.getNodeDeque().push(subNode);
+
+      String newTerm = currentTerm + PATH_DIVIDER + "relationship";
+
+      values.putAll(
+          ((StdConfig)
+                  StdFromCompositionWalker.findStdConfig(
+                      ((RMObject) rmObject.getRelationship()).getClass()))
+              .buildChildValues(newTerm, rmObject.getRelationship(), context));
+
+      context.getNodeDeque().poll();
+
+      context.getNodeDeque().push(subNode);
+
+      StdFromCompositionWalker.findPostprocessors(rmObject.getClass())
+          .forEach(
+              p ->
+                  ((MarshalPostprocessor) p)
+                      .process(newTerm, rmObject.getRelationship(), values, context));
+
+      context.getNodeDeque().poll();
+    }
   }
 }

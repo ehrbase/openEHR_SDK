@@ -35,17 +35,13 @@ public abstract class AbstractValueInserter<T extends RMObject> implements Defau
     return RMHelper.isEmpty(rmObject);
   }
 
-  protected PartyIdentified buildPartyIdentified(
+  protected <X extends PartyProxy> X buildPartyIdentified(
       DefaultValues defaultValues,
       DefaultValuePath<String> name,
       DefaultValuePath<String> id,
-      PartyProxy partyProxy) {
+      X partyProxy) {
 
-    if (partyProxy == null || !PartyIdentified.class.isAssignableFrom(partyProxy.getClass())) {
-      partyProxy = new PartyIdentified();
-    }
-
-    if (defaultValues.containsDefaultValue(name)) {
+    if (defaultValues.containsDefaultValue(name) && partyProxy instanceof PartyIdentified) {
 
       ((PartyIdentified) partyProxy).setName(defaultValues.getDefaultValue(name));
     }
@@ -63,7 +59,7 @@ public abstract class AbstractValueInserter<T extends RMObject> implements Defau
 
     addSchemeNamespace(partyProxy.getExternalRef(), defaultValues);
 
-    return (PartyIdentified) partyProxy;
+    return partyProxy;
   }
 
   protected void addSchemeNamespace(PartyRef partyRef, DefaultValues defaultValues) {

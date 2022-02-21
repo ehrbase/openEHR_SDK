@@ -21,6 +21,7 @@ package org.ehrbase.serialisation.walker.defaultvalues.defaultinserter;
 
 import com.nedap.archie.rm.composition.Entry;
 import com.nedap.archie.rm.generic.Participation;
+import com.nedap.archie.rm.generic.PartyIdentified;
 import com.nedap.archie.rm.generic.PartyProxy;
 import com.nedap.archie.rm.support.identification.GenericId;
 import org.ehrbase.serialisation.walker.RMHelper;
@@ -40,6 +41,8 @@ public class EntryDefaultValueInserter extends AbstractValueInserter<Entry> {
     if (RMHelper.isEmpty(rmObject.getProvider())
         && (defaultValues.containsDefaultValue(DefaultValuePath.PROVIDER_ID)
             || defaultValues.containsDefaultValue(DefaultValuePath.PROVIDER_NAME))) {
+
+      rmObject.setProvider(new PartyIdentified());
       rmObject.setProvider(
           buildPartyIdentified(
               defaultValues,

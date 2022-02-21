@@ -24,6 +24,7 @@ import com.nedap.archie.rm.datavalues.DvText;
 import com.nedap.archie.rm.generic.Participation;
 import com.nedap.archie.rm.generic.PartyIdentified;
 import com.nedap.archie.rm.generic.PartyProxy;
+import com.nedap.archie.rm.generic.PartyRelated;
 import com.nedap.archie.rm.support.identification.GenericId;
 import com.nedap.archie.rm.support.identification.ObjectId;
 import com.nedap.archie.rm.support.identification.ObjectRef;
@@ -116,7 +117,13 @@ public class ParticipationConfig extends AbstractsStdConfig<Participation> {
               addValue(result, currentTerm, "identifiers_issuer:" + i, identifier.getIssuer());
               addValue(result, currentTerm, "identifiers_assigner:" + i, identifier.getAssigner());
               addValue(result, currentTerm, "identifiers_type:" + i, identifier.getType());
+
             });
+
+    if (rmObject.getPerformer() instanceof PartyRelated) {
+      PartyRelatedStdConfig.addRelationship(
+          currentTerm, (PartyRelated) rmObject.getPerformer(), context, result);
+    }
 
     return result;
   }

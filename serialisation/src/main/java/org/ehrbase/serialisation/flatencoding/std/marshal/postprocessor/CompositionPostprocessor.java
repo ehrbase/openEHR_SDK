@@ -19,43 +19,32 @@
 
 package org.ehrbase.serialisation.flatencoding.std.marshal.postprocessor;
 
-import com.nedap.archie.rm.generic.PartyRelated;
+import com.nedap.archie.rm.composition.Composition;
+import com.nedap.archie.rm.generic.PartySelf;
 import org.ehrbase.serialisation.walker.Context;
+import org.ehrbase.serialisation.walker.defaultvalues.DefaultValuePath;
 
 import java.util.Map;
 
-public class PartyRelatedPostprocessor extends AbstractMarshalPostprocessor<PartyRelated> {
+public class CompositionPostprocessor extends AbstractMarshalPostprocessor<Composition> {
 
   /** {@inheritDoc} Adds the encoding information */
   @Override
   public void process(
       String term,
-      PartyRelated rmObject,
+      Composition rmObject,
       Map<String, Object> values,
       Context<Map<String, Object>> context) {
 
-    if (rmObject.getRelationship() != null) {
+    if (rmObject.getComposer() instanceof PartySelf) {
 
-      callMarshal(
-          term,
-          "relationship",
-          rmObject.getRelationship(),
-          values,
-          context,
-          context.getNodeDeque().peek().findChildById("relationship").orElse(null));
-      callPostprocess(
-          term,
-          "relationship",
-          rmObject.getRelationship(),
-          values,
-          context,
-          context.getNodeDeque().peek().findChildById("relationship").orElse(null));
+      addValue(values, "ctx/" + DefaultValuePath.COMPOSER_SELF.getPath(), null, true);
     }
   }
 
   /** {@inheritDoc} */
   @Override
-  public Class<PartyRelated> getAssociatedClass() {
-    return PartyRelated.class;
+  public Class<Composition> getAssociatedClass() {
+    return Composition.class;
   }
 }

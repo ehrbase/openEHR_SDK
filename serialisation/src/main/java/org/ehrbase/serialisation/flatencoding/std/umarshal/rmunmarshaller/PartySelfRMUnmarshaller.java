@@ -19,57 +19,29 @@
 
 package org.ehrbase.serialisation.flatencoding.std.umarshal.rmunmarshaller;
 
-import com.nedap.archie.rm.generic.PartyIdentified;
+import com.nedap.archie.rm.generic.PartySelf;
 import com.nedap.archie.rm.support.identification.GenericId;
 import com.nedap.archie.rm.support.identification.PartyRef;
 import org.apache.commons.lang3.StringUtils;
 import org.ehrbase.serialisation.walker.Context;
-import org.ehrbase.serialisation.walker.defaultvalues.DefaultValues;
 import org.ehrbase.webtemplate.path.flat.FlatPathDto;
 
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
-import static org.ehrbase.serialisation.walker.FlatHelper.consumeAllMatching;
-import static org.ehrbase.serialisation.walker.FlatHelper.extractMultiValued;
-import static org.ehrbase.webtemplate.parser.OPTParser.PATH_DIVIDER;
-
-public class PartyIdentifiedRMUnmarshaller extends AbstractRMUnmarshaller<PartyIdentified> {
+public class PartySelfRMUnmarshaller extends AbstractRMUnmarshaller<PartySelf> {
   @Override
-  public Class<PartyIdentified> getAssociatedClass() {
-    return PartyIdentified.class;
+  public Class<PartySelf> getAssociatedClass() {
+    return PartySelf.class;
   }
 
   @Override
   public void handle(
       String currentTerm,
-      PartyIdentified rmObject,
+      PartySelf rmObject,
       Map<FlatPathDto, String> currentValues,
       Context<Map<FlatPathDto, String>> context,
       Set<String> consumedPaths) {
-
-    setValue(currentTerm, "name", currentValues, rmObject::setName, String.class, consumedPaths);
-
-    if (rmObject.getName() == null) {
-      // betters implementation uses /name or  /_name instead of |name for subject
-      setValue(
-          currentTerm + "/name",
-          null,
-          currentValues,
-          rmObject::setName,
-          String.class,
-          consumedPaths);
-      if (rmObject.getName() == null) {
-        setValue(
-            currentTerm + "/_name",
-            null,
-            currentValues,
-            rmObject::setName,
-            String.class,
-            consumedPaths);
-      }
-    }
 
     rmObject.setExternalRef(new PartyRef());
     rmObject.getExternalRef().setType("PARTY");
@@ -101,18 +73,5 @@ public class PartyIdentifiedRMUnmarshaller extends AbstractRMUnmarshaller<PartyI
         || StringUtils.isBlank(rmObject.getExternalRef().getId().getValue())) {
       rmObject.setExternalRef(null);
     }
-
-    Map<Integer, Map<FlatPathDto, String>> identifiers =
-        extractMultiValued(currentTerm, "_identifier", currentValues);
-
-    rmObject.setIdentifiers(
-        identifiers.entrySet().stream()
-            .map(
-                e ->
-                    DefaultValues.toDvIdentifier(
-                        e.getValue(), currentTerm + "/_identifier:" + e.getKey()))
-            .collect(Collectors.toList()));
-
-    consumeAllMatching(currentTerm + PATH_DIVIDER + "_identifier", currentValues, consumedPaths, false);
   }
 }
