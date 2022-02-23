@@ -175,7 +175,7 @@ public enum CompositionTestDataConformanceSDTJson implements CompositionTestData
 
   @Override
   public InputStream getStream() {
-    return getClass().getResourceAsStream("/composition/flat/simSDT/" + filename);
+    return getClass().getResourceAsStream("/composition/flat/simSDT/conformance/" + filename);
   }
 
   @Override
