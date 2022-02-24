@@ -142,7 +142,7 @@ class DbConformanceTest {
         .filteredOn(
             s ->
                 !List.of(
-                        "Extra path: conformance-ehrbase.de.v0/_uid, value: 6e3a9506-b81c-4d74-a37f-1464fb7106b2::piri.ehrscape.com::1",
+                        "Extra path: conformance-ehrbase.de.v0/_uid, value: 6e3a9506-b81c-4d74-a37f-1464fb7106b2::ehrbase.org::1",
                         "Extra path: conformance-ehrbase.de.v0/language|code, value: en",
                         "Extra path: conformance-ehrbase.de.v0/language|terminology, value: ISO_639-1",
                         "Extra path: conformance-ehrbase.de.v0/territory|code, value: US",
