@@ -44,6 +44,8 @@ public class HistoryPostprocessor extends AbstractMarshalPostprocessor<History> 
       Context<Map<String, Object>> context) {
 
     if (rmObject.getOrigin() != null && rmObject.getOrigin().getValue() != null) {
+
+      // Add history origin only if different from time of first event.
       Optional<TemporalAccessor> first =
           ((History<ItemStructure>) rmObject)
               .getEvents().stream()
@@ -53,9 +55,11 @@ public class HistoryPostprocessor extends AbstractMarshalPostprocessor<History> 
                   .filter(Objects::nonNull)
                   .sorted()
                   .findFirst();
-      first
+      if (first
           .filter(t -> t.equals(((History<ItemStructure>) rmObject).getOrigin().getValue()))
-          .ifPresent(t -> values.remove(term + "/" + "origin"));
+          .isEmpty()) {
+        addValue(values, term + "/history_origin", null, rmObject.getOrigin().getValue());
+      }
     }
   }
 
