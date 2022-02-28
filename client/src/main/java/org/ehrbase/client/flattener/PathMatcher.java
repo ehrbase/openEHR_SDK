@@ -19,8 +19,6 @@
 
 package org.ehrbase.client.flattener;
 
-import java.util.Map;
-import java.util.Objects;
 import org.apache.commons.lang3.StringUtils;
 import org.ehrbase.serialisation.walker.Context;
 import org.ehrbase.webtemplate.model.WebTemplateNode;
@@ -28,15 +26,16 @@ import org.ehrbase.webtemplate.parser.FlatPath;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Map;
+import java.util.Objects;
+
 class PathMatcher {
 
   Logger logger = LoggerFactory.getLogger(getClass());
 
   String matchesPath(Context<?> context, WebTemplateNode child, Map.Entry<String, ?> e) {
     String aqlPath =
-        FlatPath.removeStart(
-                new FlatPath(child.getAqlPath()),
-                new FlatPath(context.getNodeDeque().peek().getAqlPath()))
+        FlatPath.removeStart(child.getAqlPathDto(), context.getNodeDeque().peek().getAqlPathDto())
             .toString();
     if (StringUtils.startsWith(e.getKey(), aqlPath)) {
       return remove(e, aqlPath, child);
@@ -51,7 +50,7 @@ class PathMatcher {
                   .filter(n -> Objects.equals(n.getNodeId(), child.getNodeId()))
                   .count()
               == 1) {
-        logger.warn("name/value not set in dto for {}", child.getAqlPath());
+        logger.warn("name/value not set in dto for {}", child.getAqlPathDto());
         return remove(e, pathWithoutLastName.toString(), child);
       } else {
         return null;

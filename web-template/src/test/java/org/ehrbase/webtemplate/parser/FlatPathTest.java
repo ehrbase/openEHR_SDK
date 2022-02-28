@@ -19,6 +19,7 @@
 
 package org.ehrbase.webtemplate.parser;
 
+import org.apache.commons.lang3.time.StopWatch;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -148,6 +149,21 @@ public class FlatPathTest {
     assertThat(cut.getAtCode()).isEqualTo("at0004");
     assertThat(cut.getName()).isEqualTo("items");
     assertThat(cut.toString()).isEqualTo("/items[at0004]|magnitude");
+  }
+
+  @Test
+  public void testRemoveEnd2() {
+    FlatPath path1 =
+        new FlatPath("/data[at0001]/events[at0002]/data[at0003]/items[at0004]|magnitude");
+    FlatPath path2 = new FlatPath("/data[at0001]/events[at0002]");
+
+    StopWatch stopWatch = new StopWatch();
+    stopWatch.start();
+    FlatPath actual = FlatPath.removeStart(path1, path2);
+    stopWatch.stop();
+    System.out.println(stopWatch.getNanoTime());
+
+    assertThat(actual).hasToString("/data[at0003]/items[at0004]|magnitude");
   }
 
   @Test

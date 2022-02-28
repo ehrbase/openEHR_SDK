@@ -52,7 +52,7 @@ public class WebTemplateNode implements Serializable {
   private final String[] aqlCache = new String[2];
 
   @JsonSerialize(using = AqlPathSerializer.class)
-  private String aqlPath;
+  private FlatPath aqlPath;
 
   private final List<WebTemplateNode> children = new ArrayList<>();
   private final List<WebTemplateInput> inputs = new ArrayList<>();
@@ -176,18 +176,27 @@ public class WebTemplateNode implements Serializable {
   }
 
   public String getAqlPath() {
+    return aqlPath.format(true);
+  }
+
+  @JsonIgnore
+  public FlatPath getAqlPathDto() {
     return aqlPath;
   }
 
   public String getAqlPath(boolean withOtherPredicates) {
     int idx = withOtherPredicates ? 0 : 1;
     if (aqlCache[idx] == null) {
-      aqlCache[idx] = new FlatPath(aqlPath).format(withOtherPredicates);
+      aqlCache[idx] = aqlPath.format(withOtherPredicates);
     }
     return aqlCache[idx];
   }
 
   public void setAqlPath(String aqlPath) {
+    setAqlPath(new FlatPath(aqlPath));
+  }
+
+  public void setAqlPath(FlatPath aqlPath) {
     this.aqlPath = aqlPath;
     Arrays.fill(aqlCache, null);
   }
@@ -246,13 +255,15 @@ public class WebTemplateNode implements Serializable {
     return children.stream().filter(n -> n.getId().equals(id)).findAny();
   }
 
-  public String buildRelativePath(WebTemplateNode child) {
-    return FlatPath.removeStart(new FlatPath(child.getAqlPath()), new FlatPath(this.getAqlPath()))
-        .toString();
+  public FlatPath buildRelativePath(WebTemplateNode child) {
+    return FlatPath.removeStart(child.aqlPath, this.aqlPath);
   }
 
   public boolean isRelativePathNameDependent(WebTemplateNode child){
-    return FlatPath.removeStart(new FlatPath(child.getAqlPath()), new FlatPath(this.getAqlPath())).getLast().findOtherPredicate("name/value") != null;
+    return FlatPath.removeStart(child.aqlPath, this.aqlPath)
+            .getLast()
+            .findOtherPredicate("name/value")
+        != null;
   }
   public List<WebTemplateNode> findMatching(Predicate<WebTemplateNode> filter) {
 
@@ -280,8 +291,7 @@ public class WebTemplateNode implements Serializable {
 
     // Add all which are multi if ignoring name
     Map<String, List<WebTemplateNode>> collect =
-        children.stream()
-            .collect(Collectors.groupingBy(n -> new FlatPath(n.getAqlPath()).format(false)));
+        children.stream().collect(Collectors.groupingBy(n -> n.getAqlPathDto().format(false)));
     collect.forEach(
         (k, v) -> {
           if (v.size() > 1) {

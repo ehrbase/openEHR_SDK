@@ -54,19 +54,15 @@ public class ItemExtractor {
     this.isChoice = isChoice;
   }
 
-  public FlatPath getRelativeAql() {
-    return new FlatPath(relativeAql);
-  }
 
   public Object getChild() {
     return child;
   }
 
   public ItemExtractor invoke() {
-    relativeAql =
-        StringUtils.removeEnd(
-            StringUtils.removeStart(childNode.getAqlPath(), currentNode.getAqlPath()), "/");
-    FlatPath childPath = new FlatPath(relativeAql);
+
+    FlatPath childPath = currentNode.buildRelativePath(childNode);
+    relativeAql = childPath.format(true);
     parentAql =
         StringUtils.removeEnd(
             childPath.format(false),

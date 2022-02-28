@@ -34,6 +34,15 @@ public class FlatPath {
   private final String attributeName;
   private final boolean startWithSlash;
 
+  public FlatPath(FlatPath flatPath) {
+    this.name = flatPath.getName();
+    this.atCode = flatPath.getAtCode();
+    this.child = flatPath.getChild();
+    this.otherPredicates = new HashMap<>(flatPath.otherPredicates);
+    this.attributeName = flatPath.getAttributeName();
+    this.startWithSlash = flatPath.startWithSlash;
+  }
+
   public enum OtherPredicatesFormate {
     NONE,
     SHORTED,
@@ -226,6 +235,24 @@ public class FlatPath {
   }
 
   @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    FlatPath flatPath = (FlatPath) o;
+    return startWithSlash == flatPath.startWithSlash
+        && Objects.equals(name, flatPath.name)
+        && Objects.equals(atCode, flatPath.atCode)
+        && Objects.equals(child, flatPath.child)
+        && Objects.equals(otherPredicates, flatPath.otherPredicates)
+        && Objects.equals(attributeName, flatPath.attributeName);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(name, atCode, child, otherPredicates, attributeName, startWithSlash);
+  }
+
+  @Override
   public String toString() {
     return format(true);
   }
@@ -288,6 +315,25 @@ public class FlatPath {
     return new FlatPath(StringUtils.removeStart(path.toString(), remove.toString()));
   }
 
+  /*
+  public static FlatPath removeStart(FlatPath path, FlatPath remove) {
+    FlatPath other = new FlatPath(remove);
+    FlatPath me = new FlatPath(path);
+    do{
+
+      if (!new EqualsBuilder().append(me.startWithSlash, other.startWithSlash).append(me.name, other.name).append(me.atCode, other.atCode).append(me.otherPredicates, other.otherPredicates).append(me.attributeName, other.attributeName).isEquals()) break;
+      other = other.getChild();
+      me = me.child;
+    }while (other != null && me != null);
+
+    if (other == null) {
+      return me;
+    } else {
+      return new FlatPath(path);
+    }
+  }
+
+   */
   public static FlatPath addEnd(FlatPath path, FlatPath add) {
     return new FlatPath(path.toString() + "/" + StringUtils.removeStart(add.toString(), "/"));
   }

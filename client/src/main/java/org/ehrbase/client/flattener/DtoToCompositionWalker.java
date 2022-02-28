@@ -159,7 +159,7 @@ public class DtoToCompositionWalker extends ToCompositionWalker<Map<String, Obje
           RMObject child = context.getRmObjectDeque().poll();
           handleSingleValue(
               objectEntry.getValue(),
-              new FlatPath(context.getNodeDeque().peek().getAqlPath()).getLast().getName(),
+              context.getNodeDeque().peek().getAqlPathDto().getLast().getName(),
               child,
               context.getRmObjectDeque().peek());
           context.getRmObjectDeque().push(child);

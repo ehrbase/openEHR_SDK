@@ -26,56 +26,17 @@ import com.nedap.archie.rm.datastructures.IntervalEvent;
 import com.nedap.archie.rm.datastructures.PointEvent;
 import com.nedap.archie.rm.datatypes.CodePhrase;
 import com.nedap.archie.rminfo.ArchieRMInfoLookup;
-import com.squareup.javapoet.AnnotationSpec;
-import com.squareup.javapoet.ClassName;
-import com.squareup.javapoet.FieldSpec;
-import com.squareup.javapoet.MethodSpec;
-import com.squareup.javapoet.ParameterizedTypeName;
-import com.squareup.javapoet.TypeName;
-import com.squareup.javapoet.TypeSpec;
-import java.lang.reflect.Field;
-import java.lang.reflect.Type;
-import java.time.OffsetDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Deque;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
-import javax.annotation.processing.Generated;
-import javax.lang.model.element.Modifier;
+import com.squareup.javapoet.*;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.SetUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
-import org.ehrbase.client.annotations.Archetype;
-import org.ehrbase.client.annotations.Choice;
-import org.ehrbase.client.annotations.Entity;
-import org.ehrbase.client.annotations.Id;
-import org.ehrbase.client.annotations.OptionFor;
-import org.ehrbase.client.annotations.Path;
-import org.ehrbase.client.annotations.Template;
+import org.ehrbase.client.annotations.*;
 import org.ehrbase.client.classgenerator.config.RmClassGeneratorConfig;
-import org.ehrbase.client.classgenerator.interfaces.CompositionEntity;
-import org.ehrbase.client.classgenerator.interfaces.EntryEntity;
-import org.ehrbase.client.classgenerator.interfaces.IntervalEventEntity;
-import org.ehrbase.client.classgenerator.interfaces.LocatableEntity;
-import org.ehrbase.client.classgenerator.interfaces.PointEventEntity;
-import org.ehrbase.client.classgenerator.interfaces.RMEntity;
-import org.ehrbase.client.classgenerator.shareddefinition.Category;
-import org.ehrbase.client.classgenerator.shareddefinition.Language;
-import org.ehrbase.client.classgenerator.shareddefinition.MathFunction;
-import org.ehrbase.client.classgenerator.shareddefinition.NullFlavour;
-import org.ehrbase.client.classgenerator.shareddefinition.Setting;
-import org.ehrbase.client.classgenerator.shareddefinition.Territory;
-import org.ehrbase.client.classgenerator.shareddefinition.Transition;
+import org.ehrbase.client.classgenerator.interfaces.*;
+import org.ehrbase.client.classgenerator.shareddefinition.*;
 import org.ehrbase.client.openehrclient.VersionUid;
 import org.ehrbase.serialisation.util.SnakeCase;
 import org.ehrbase.serialisation.walker.Walker;
@@ -83,14 +44,18 @@ import org.ehrbase.terminology.client.terminology.TermDefinition;
 import org.ehrbase.terminology.client.terminology.ValueSet;
 import org.ehrbase.util.reflection.ReflectionHelper;
 import org.ehrbase.webtemplate.filter.WebTemplateFilter;
-import org.ehrbase.webtemplate.model.FilteredWebTemplate;
-import org.ehrbase.webtemplate.model.WebTemplate;
-import org.ehrbase.webtemplate.model.WebTemplateInput;
-import org.ehrbase.webtemplate.model.WebTemplateInputValue;
-import org.ehrbase.webtemplate.model.WebTemplateNode;
+import org.ehrbase.webtemplate.model.*;
 import org.ehrbase.webtemplate.parser.FlatPath;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.annotation.processing.Generated;
+import javax.lang.model.element.Modifier;
+import java.lang.reflect.Field;
+import java.lang.reflect.Type;
+import java.time.OffsetDateTime;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class ClassGenerator {
 
@@ -204,7 +169,7 @@ public class ClassGenerator {
 
       Deque<WebTemplateNode> filtersNodes = pushToUnfiltered(context, child);
 
-      String relativPath = context.nodeDeque.peek().buildRelativePath(child);
+      String relativPath = context.nodeDeque.peek().buildRelativePath(child).toString();
       if (child.getChildren().isEmpty() && !choices.containsKey(child.getAqlPath())) {
 
         addSimpleField(context, classBuilder, relativPath, child);

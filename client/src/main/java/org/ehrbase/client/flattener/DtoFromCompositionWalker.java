@@ -95,13 +95,21 @@ public class DtoFromCompositionWalker extends FromCompositionWalker<DtoWithMatch
             .collect(Collectors.toMap(ImmutablePair::getLeft, ImmutablePair::getRight));
 
     if (subValues.isEmpty()) {
-      if (Stream.of("name", "archetype_node_id", "encoding", "archetype_details", "uid","lower_unbounded","upper_unbounded")
-          .noneMatch(child.getAqlPath()::contains))
+      if (Stream.of(
+              "name",
+              "archetype_node_id",
+              "encoding",
+              "archetype_details",
+              "uid",
+              "lower_unbounded",
+              "upper_unbounded")
+          .noneMatch(s -> child.getAqlPathDto().getLast().getName().contains(s))) {
         logger.warn(
             String.format(
                 "No Field in dto %s for path %s",
                 context.getObjectDeque().peek().getDto().getClass().getSimpleName(),
                 child.getAqlPath(true)));
+      }
       return null;
     } else if (subValues.size() > 1) {
       if (isChoice && child.getRmType().equals("INTERVAL_EVENT")) {
