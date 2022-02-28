@@ -19,20 +19,46 @@
 package org.ehrbase.conformance_test.extern.tests;
 
 import care.better.platform.web.template.EmptynessTest;
+import care.better.platform.web.template.context.CompositionBuilderContextKey;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.google.common.collect.ImmutableMap;
+import org.assertj.core.api.Assertions;
+import org.ehrbase.conformance_test.extern.CompositionConverterImp;
+import org.junit.jupiter.api.Test;
+
+import java.util.Collections;
+
+import static org.ehrbase.conformance_test.extern.tests.WorkflowIdTestOverwrite.OBJECT_MAPPER;
 
 public class EmptynessTestOverwrite extends EmptynessTest {
 
   @Override
   /*
-  see https://jira.vitagroup.ag/browse/CDR-141
-
-  */
+  we do not automatically remove empty / null values
+   */
   public void emptyEvaluation() throws Exception {}
 
   @Override
-  /*
-  see https://jira.vitagroup.ag/browse/CDR-141
+  @Test
+  public void emptyComposition() throws Exception {
 
-  */
-  public void emptyComposition() throws Exception {}
+    String template =
+        this.getFileContent("/res/openEHR-EHR-COMPOSITION.t_allergist_examination_child_lanit.opt");
+    JsonNode rawComposition =
+        new CompositionConverterImp()
+            .convertStructuredToRaw(
+                template,
+                "ru",
+                OBJECT_MAPPER.writeValueAsString(Collections.emptyMap()),
+                ImmutableMap.of(
+                    CompositionBuilderContextKey.LANGUAGE.getKey(),
+                    "ru",
+                    CompositionBuilderContextKey.TERRITORY.getKey(),
+                    "RU",
+                    CompositionBuilderContextKey.COMPOSER_NAME.getKey(),
+                    "Composer"),
+                OBJECT_MAPPER);
+    Assertions.assertThat(rawComposition).isNotNull();
+    Assertions.assertThat(rawComposition.get("content")).isNull();
+  }
 }
