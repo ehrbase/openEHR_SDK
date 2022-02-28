@@ -60,7 +60,7 @@ public class DateTimeSerializer extends JsonSerializer<DvDateTime> {
           .appendOffsetId()
           .optionalEnd()
           .toFormatter()
-          .withDecimalStyle(DecimalStyle.STANDARD.withDecimalSeparator(','));
+          .withDecimalStyle(DecimalStyle.STANDARD.withDecimalSeparator('.'));
 
   public static final DateTimeFormatter ISO_8601_DATE_TIME =
       new DateTimeFormatterBuilder()
