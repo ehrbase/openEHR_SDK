@@ -255,25 +255,29 @@ public class WebTemplateNode implements Serializable {
     return children.stream().filter(n -> n.getId().equals(id)).findAny();
   }
 
-  public EnhancedAqlPath buildRelativePath(WebTemplateNode child) {
+  public EnhancedAqlPath buildRelativePath(WebTemplateNode child, boolean checkIfTrueChild) {
 
-    EnhancedAqlPath me = this.aqlPath;
-    EnhancedAqlPath other = child.aqlPath;
+    if (checkIfTrueChild) {
+      return EnhancedAqlPath.removeStart(child.getAqlPathDto(), this.getAqlPathDto());
+    } else {
+      EnhancedAqlPath me = this.aqlPath;
+      EnhancedAqlPath other = child.aqlPath;
 
-    if (StringUtils.isBlank(me.getName())) {
+      if (StringUtils.isBlank(me.getName())) {
+        return new EnhancedAqlPath(other);
+      }
+
+      while (me != null) {
+        me = me.getChild();
+        other = other.getChild();
+      }
+
       return new EnhancedAqlPath(other);
     }
-
-    while (me != null) {
-      me = me.getChild();
-      other = other.getChild();
-    }
-
-    return new EnhancedAqlPath(other);
   }
 
   public boolean isRelativePathNameDependent(WebTemplateNode child){
-    return buildRelativePath(child).getLast().findOtherPredicate("name/value") != null;
+    return buildRelativePath(child, false).getLast().findOtherPredicate("name/value") != null;
   }
   public List<WebTemplateNode> findMatching(Predicate<WebTemplateNode> filter) {
 

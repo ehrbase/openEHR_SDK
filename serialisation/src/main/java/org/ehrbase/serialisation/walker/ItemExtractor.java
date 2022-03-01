@@ -61,7 +61,7 @@ public class ItemExtractor {
 
   public ItemExtractor invoke() {
 
-    EnhancedAqlPath childPath = currentNode.buildRelativePath(childNode);
+    EnhancedAqlPath childPath = currentNode.buildRelativePath(childNode, false);
     relativeAql = childPath.format(true);
     parentAql =
         StringUtils.removeEnd(

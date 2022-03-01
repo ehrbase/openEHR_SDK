@@ -63,7 +63,8 @@ public class DefaultValidator implements ConstraintValidator<RMObject> {
         .forEach(
             childNode -> {
               var count = 0;
-              for (var item : locatable.itemsAtPath(node.buildRelativePath(childNode).toString())) {
+              for (var item :
+                  locatable.itemsAtPath(node.buildRelativePath(childNode, false).toString())) {
                 if (item instanceof Locatable) {
                   if (!node.isRelativePathNameDependent(childNode)
                       || Objects.equals(

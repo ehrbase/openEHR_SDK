@@ -254,7 +254,7 @@ public class DefaultNamingStrategy implements NamingStrategy {
   }
 
   private boolean isEntityAttribute(ClassGeneratorContext context, WebTemplateNode node) {
-    EnhancedAqlPath relativPath = context.nodeDeque.peek().buildRelativePath(node);
+    EnhancedAqlPath relativPath = context.nodeDeque.peek().buildRelativePath(node, true);
     RMTypeInfo typeInfo = RM_INFO_LOOKUP.getTypeInfo(context.nodeDeque.peek().getRmType());
 
     return relativPath.getChild() == null
