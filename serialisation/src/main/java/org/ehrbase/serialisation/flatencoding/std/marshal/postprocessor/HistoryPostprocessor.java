@@ -25,7 +25,6 @@ import com.nedap.archie.rm.datastructures.ItemStructure;
 import com.nedap.archie.rm.datavalues.quantity.datetime.DvDateTime;
 import org.ehrbase.serialisation.walker.Context;
 
-import java.time.temporal.TemporalAccessor;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -44,18 +43,21 @@ public class HistoryPostprocessor extends AbstractMarshalPostprocessor<History> 
       Context<Map<String, Object>> context) {
 
     if (rmObject.getOrigin() != null && rmObject.getOrigin().getValue() != null) {
-      Optional<TemporalAccessor> first =
+
+      // Add history origin only if different from time of first event.
+      Optional<DvDateTime> first =
           ((History<ItemStructure>) rmObject)
               .getEvents().stream()
                   .map(Event::getTime)
                   .filter(Objects::nonNull)
-                  .map(DvDateTime::getValue)
-                  .filter(Objects::nonNull)
+                  .filter(t -> t.getValue() != null)
                   .sorted()
                   .findFirst();
-      first
-          .filter(t -> t.equals(((History<ItemStructure>) rmObject).getOrigin().getValue()))
-          .ifPresent(t -> values.remove(term + "/" + "origin"));
+      if (first
+          .filter(t -> Objects.equals(t.getMagnitude(), rmObject.getOrigin().getMagnitude()))
+          .isEmpty()) {
+        addValue(values, term + "/history_origin", null, rmObject.getOrigin().getValue());
+      }
     }
   }
 

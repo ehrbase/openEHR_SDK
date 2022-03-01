@@ -8,6 +8,7 @@ import com.nedap.archie.rm.datavalues.encapsulated.DvMultimedia;
 import com.nedap.archie.rm.datavalues.quantity.datetime.DvDate;
 import com.nedap.archie.rm.datavalues.quantity.datetime.DvDateTime;
 import com.nedap.archie.rm.datavalues.quantity.datetime.DvDuration;
+import com.nedap.archie.rm.datavalues.quantity.datetime.DvTime;
 import com.nedap.archie.rm.ehr.Ehr;
 import com.nedap.archie.rm.support.identification.HierObjectId;
 import com.nedap.archie.rm.support.identification.ObjectId;
@@ -95,6 +96,29 @@ public class CanonicalJsonMarshallingTest {
         .isEqualToIgnoringWhitespace(
             "{\n" + "  \"_type\" : \"DV_TEXT\",\n" + "  \"value\" : \"\"\n" + "}");
     }
+
+  @Test
+  public void MarshalDvDateTimeWithZero() {
+    DvDateTime dvDateTime = new DvDateTime("2022-02-25T10:55:41.400Z");
+    CanonicalJson cut = new CanonicalJson();
+    String actual = cut.marshal(dvDateTime);
+    assertThat(actual)
+        .isEqualToIgnoringWhitespace(
+            "{\n"
+                + "  \"_type\" : \"DV_DATE_TIME\",\n"
+                + "  \"value\" : \"2022-02-25T10:55:41.400Z\"\n"
+                + "}");
+  }
+
+  @Test
+  public void MarshalDvTimeWithZero() {
+    DvTime dvTime = new DvTime("10:55:41.400Z");
+    CanonicalJson cut = new CanonicalJson();
+    String actual = cut.marshal(dvTime);
+    assertThat(actual)
+        .isEqualToIgnoringWhitespace(
+            "{\n" + "  \"_type\" : \"DV_TIME\",\n" + "  \"value\" : \"10:55:41.400Z\"\n" + "}");
+  }
 
     @Test
     public void MarshalEmptyContent() {
