@@ -53,17 +53,17 @@
                         <include>EmptynessTestOverwrite</include>
                         <include>EthersBuilderTestOverwrite</include>
                         <include>DurationTest</include>
-                        <include>EndTimeTest</include>
+                        <include>EndTimeTestOverwrite</include>
                         <include>FeederAuditTestOverwritten</include>
                         <include>FixedValueTestOverwrite</include>
-                        <include>HistoryOriginTest</include>
+                        <include>HistoryOriginTestOverwrite</include>
                         <include>InfinnityTestOverwrite</include>
                         <include>InstructionActionTestOverwrite</include>
                         <include>IntervalEventTest</include>
                         <include>IspekBuilderTestOverwrite</include>
                         <include>IsmTransitionTest</include>
                         <include>LinksTest</include>
-                        <include>LocationTest</include>
+                        <include>LocationTestOverwrite</include>
                         <include>LongValueJsonTest</include>
                         <include>MediaTypeExampleTest</include>
                         <include>NamedElementsTest</include>
@@ -86,7 +86,7 @@
                         <include>SettersTestOverwrite</include>
                         <include>StatusesTestOverwrite</include>
                         <include>TermMappingTestOverwritten</include>
-                        <include>TimeZoneTest</include>
+                        <include>TimeZoneTestOverwrite</include>
                         <include>UidTest</include>
                         <include>WebTemplateContentTest.java</include>
                         <include>WorkflowIdTestOverwrite</include>
