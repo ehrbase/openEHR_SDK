@@ -28,7 +28,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.ehrbase.util.exception.SdkException;
 import org.ehrbase.util.rmconstants.RmConstants;
 import org.ehrbase.webtemplate.model.WebTemplateNode;
-import org.ehrbase.webtemplate.parser.FlatPath;
+import org.ehrbase.webtemplate.parser.EnhancedAqlPath;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -61,7 +61,7 @@ public class ItemExtractor {
 
   public ItemExtractor invoke() {
 
-    FlatPath childPath = currentNode.buildRelativePath(childNode);
+    EnhancedAqlPath childPath = currentNode.buildRelativePath(childNode);
     relativeAql = childPath.format(true);
     parentAql =
         StringUtils.removeEnd(
@@ -148,8 +148,8 @@ public class ItemExtractor {
     return this;
   }
 
-  public FlatPath getParentAql() {
-    return new FlatPath(parentAql);
+  public EnhancedAqlPath getParentAql() {
+    return new EnhancedAqlPath(parentAql);
   }
 
   public Object getParent() {

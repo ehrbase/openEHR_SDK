@@ -38,7 +38,7 @@ import org.ehrbase.serialisation.walker.RmPrimitive;
 import org.ehrbase.util.exception.SdkException;
 import org.ehrbase.util.reflection.ReflectionHelper;
 import org.ehrbase.webtemplate.model.WebTemplateNode;
-import org.ehrbase.webtemplate.parser.FlatPath;
+import org.ehrbase.webtemplate.parser.EnhancedAqlPath;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -214,7 +214,7 @@ public class DtoFromCompositionWalker extends FromCompositionWalker<DtoWithMatch
     Map<String, Field> fieldByPath = context.getObjectDeque().peek().getFieldByPath();
 
     for (Map.Entry<String, Field> entry : fieldByPath.entrySet()) {
-      FlatPath path = new FlatPath(entry.getKey());
+      EnhancedAqlPath path = new EnhancedAqlPath(entry.getKey());
       if (StringUtils.isBlank(path.getName())) {
         if (StringUtils.isNotBlank(path.getAttributeName())) {
           writeField(

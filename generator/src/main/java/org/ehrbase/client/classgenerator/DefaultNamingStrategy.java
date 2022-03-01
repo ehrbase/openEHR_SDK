@@ -28,7 +28,7 @@ import org.apache.commons.text.CaseUtils;
 import org.ehrbase.serialisation.util.SnakeCase;
 import org.ehrbase.webtemplate.model.WebTemplateAnnotation;
 import org.ehrbase.webtemplate.model.WebTemplateNode;
-import org.ehrbase.webtemplate.parser.FlatPath;
+import org.ehrbase.webtemplate.parser.EnhancedAqlPath;
 
 import java.util.*;
 
@@ -214,7 +214,7 @@ public class DefaultNamingStrategy implements NamingStrategy {
 
     String name = node.getName();
 
-    String attributeName = new FlatPath(path).getLast().getAttributeName();
+    String attributeName = new EnhancedAqlPath(path).getLast().getAttributeName();
 
     if (!context.nodeDeque.isEmpty()) {
       if ((StringUtils.isBlank(attributeName)
@@ -254,7 +254,7 @@ public class DefaultNamingStrategy implements NamingStrategy {
   }
 
   private boolean isEntityAttribute(ClassGeneratorContext context, WebTemplateNode node) {
-    FlatPath relativPath = context.nodeDeque.peek().buildRelativePath(node);
+    EnhancedAqlPath relativPath = context.nodeDeque.peek().buildRelativePath(node);
     RMTypeInfo typeInfo = RM_INFO_LOOKUP.getTypeInfo(context.nodeDeque.peek().getRmType());
 
     return relativPath.getChild() == null

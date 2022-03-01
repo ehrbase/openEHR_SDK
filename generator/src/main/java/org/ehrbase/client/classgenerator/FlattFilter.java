@@ -27,7 +27,7 @@ import org.ehrbase.util.reflection.ReflectionHelper;
 import org.ehrbase.webtemplate.filter.Filter;
 import org.ehrbase.webtemplate.model.WebTemplate;
 import org.ehrbase.webtemplate.model.WebTemplateNode;
-import org.ehrbase.webtemplate.parser.FlatPath;
+import org.ehrbase.webtemplate.parser.EnhancedAqlPath;
 import org.ehrbase.webtemplate.parser.config.RmIntrospectConfig;
 
 import java.util.*;
@@ -122,7 +122,7 @@ public class FlattFilter extends Filter {
 
   protected void preHandle(WebTemplateNode node) {
 
-    if (new FlatPath(node.getAqlPath()).getLast().getName().equals("null_flavour")) {
+    if (new EnhancedAqlPath(node.getAqlPath()).getLast().getName().equals("null_flavour")) {
       node.setName("null_flavour");
     }
 

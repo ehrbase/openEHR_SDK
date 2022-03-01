@@ -18,7 +18,7 @@
 package org.ehrbase.client.flattener;
 
 import org.apache.commons.lang3.StringUtils;
-import org.ehrbase.webtemplate.parser.FlatPath;
+import org.ehrbase.webtemplate.parser.EnhancedAqlPath;
 
 import java.util.Optional;
 
@@ -50,19 +50,21 @@ public class PathExtractor {
     }
 
     private void invoke() {
-        FlatPath flatPath = new FlatPath(childPath);
+    EnhancedAqlPath enhancedAqlPath = new EnhancedAqlPath(childPath);
 
-        while (flatPath.getChild() != null) {
-            flatPath = flatPath.getChild();
+    while (enhancedAqlPath.getChild() != null) {
+      enhancedAqlPath = enhancedAqlPath.getChild();
         }
 
-        parentPath = StringUtils.remove(childPath, flatPath.toString());
+    parentPath = StringUtils.remove(childPath, enhancedAqlPath.toString());
         if (StringUtils.isBlank(parentPath)) {
             parentPath = "/";
         }
-        childPath = StringUtils.remove(childPath, Optional.ofNullable(flatPath.getAttributeName()).map(s -> "|" + s).orElse(""));
-        childName = flatPath.getName();
-        attributeName = flatPath.getAttributeName();
-
+    childPath =
+        StringUtils.remove(
+            childPath,
+            Optional.ofNullable(enhancedAqlPath.getAttributeName()).map(s -> "|" + s).orElse(""));
+    childName = enhancedAqlPath.getName();
+    attributeName = enhancedAqlPath.getAttributeName();
     }
 }

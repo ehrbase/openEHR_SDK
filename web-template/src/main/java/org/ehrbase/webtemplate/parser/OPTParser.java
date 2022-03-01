@@ -352,8 +352,8 @@ public class OPTParser {
     node.setAqlPath(aqlPath);
 
     if (StringUtils.isNotBlank(ccomplexobject.getNodeId()) && explicitName != null) {
-      FlatPath path = new FlatPath(node.getAqlPath());
-      FlatPath lastSegment = path;
+      EnhancedAqlPath path = new EnhancedAqlPath(node.getAqlPath());
+      EnhancedAqlPath lastSegment = path;
       while (lastSegment.getChild() != null) {
         lastSegment = lastSegment.getChild();
       }
@@ -506,23 +506,29 @@ public class OPTParser {
         }
       }
 
-      //Add missing names to aqlPath if needed
+      // Add missing names to aqlPath if needed
       newChildren.stream()
-              // node dos not already have name in aql
-                      .filter(c -> !node.isRelativePathNameDependent(c))
-              // there  exist a node which maches  the aql withouth name but not with name
-                              .filter(c -> newChildren.stream().anyMatch(n -> n.getAqlPath(false).equals(c.getAqlPath(false))  && !n.getAqlPath(true).equals(c.getAqlPath(true))))
-                                      .forEach( c -> {
-                                        FlatPath flatPath = new FlatPath(c.getAqlPath(true));
-                                        flatPath.getLast().addOtherPredicate("name/value",c.getName());
+          // node dos not already have name in aql
+          .filter(c -> !node.isRelativePathNameDependent(c))
+          // there  exist a node which maches  the aql withouth name but not with name
+          .filter(
+              c ->
+                  newChildren.stream()
+                      .anyMatch(
+                          n ->
+                              n.getAqlPath(false).equals(c.getAqlPath(false))
+                                  && !n.getAqlPath(true).equals(c.getAqlPath(true))))
+          .forEach(
+              c -> {
+                EnhancedAqlPath enhancedAqlPath = new EnhancedAqlPath(c.getAqlPath(true));
+                enhancedAqlPath.getLast().addOtherPredicate("name/value", c.getName());
 
-                                        c.getChildren().forEach(
-                                                n -> replaceParentAql(n,c.getAqlPath(),flatPath.format(true))
-                                        );
+                c.getChildren()
+                    .forEach(
+                        n -> replaceParentAql(n, c.getAqlPath(), enhancedAqlPath.format(true)));
 
-                                        c.setAqlPath(flatPath.format(true));
-                                              }
-                                      );
+                c.setAqlPath(enhancedAqlPath.format(true));
+              });
 
       node.getChildren().addAll(newChildren);
     }
@@ -626,9 +632,10 @@ public class OPTParser {
 
     String childAql = node.getAqlPath();
 
-    FlatPath relativeAql = FlatPath.removeStart(new FlatPath(childAql), new FlatPath(oldAqlPath));
+    EnhancedAqlPath relativeAql =
+        EnhancedAqlPath.removeStart(new EnhancedAqlPath(childAql), new EnhancedAqlPath(oldAqlPath));
 
-    node.setAqlPath(FlatPath.addEnd(new FlatPath(newAql), relativeAql).format(true));
+    node.setAqlPath(EnhancedAqlPath.addEnd(new EnhancedAqlPath(newAql), relativeAql).format(true));
 
     node.getChildren().forEach(n -> replaceParentAql(n, childAql,node.getAqlPath())    );
   }

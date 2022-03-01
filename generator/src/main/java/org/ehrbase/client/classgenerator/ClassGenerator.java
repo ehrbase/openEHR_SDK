@@ -45,7 +45,7 @@ import org.ehrbase.terminology.client.terminology.ValueSet;
 import org.ehrbase.util.reflection.ReflectionHelper;
 import org.ehrbase.webtemplate.filter.WebTemplateFilter;
 import org.ehrbase.webtemplate.model.*;
-import org.ehrbase.webtemplate.parser.FlatPath;
+import org.ehrbase.webtemplate.parser.EnhancedAqlPath;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -265,7 +265,8 @@ public class ClassGenerator {
             ParameterizedTypeName.get(ClassName.get(List.class), interfaceClassName);
       }
       String relativPath =
-          FlatPath.removeStart(new FlatPath(node.getAqlPath()), new FlatPath(next.getAqlPath()))
+          EnhancedAqlPath.removeStart(
+                  new EnhancedAqlPath(node.getAqlPath()), new EnhancedAqlPath(next.getAqlPath()))
               .toString();
       addField(
           context,

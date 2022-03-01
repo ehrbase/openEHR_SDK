@@ -19,17 +19,16 @@
 
 package org.ehrbase.webtemplate.parser;
 
-import org.apache.commons.lang3.time.StopWatch;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class FlatPathTest {
+public class EnhancedAqlPathTest {
 
   @Test
   public void testFlatPath() {
     String path = "/other_context[at0001]/items[at0006]";
-    FlatPath cut = new FlatPath(path);
+    EnhancedAqlPath cut = new EnhancedAqlPath(path);
     assertThat(cut).isNotNull();
     assertThat(cut.getAtCode()).isEqualTo("at0001");
     assertThat(cut.getName()).isEqualTo("other_context");
@@ -40,12 +39,12 @@ public class FlatPathTest {
   public void testFlatPathWithAndInName() {
     String path =
         "/content[openEHR-EHR-OBSERVATION.laboratory_test_result.v1 and name/value='Einsenderstandort']/protocol[at0004]/items[at0094]/items[openEHR-EHR-CLUSTER.location.v1]";
-    FlatPath cut = new FlatPath(path);
+    EnhancedAqlPath cut = new EnhancedAqlPath(path);
     assertThat(cut).isNotNull();
     assertThat(cut.getAtCode()).isEqualTo("openEHR-EHR-OBSERVATION.laboratory_test_result.v1");
     assertThat(cut.getName()).isEqualTo("content");
     assertThat(cut.toString()).isEqualTo(path);
-    assertThat(cut.format(FlatPath.OtherPredicatesFormate.SHORTED))
+    assertThat(cut.format(EnhancedAqlPath.OtherPredicatesFormate.SHORTED))
         .isEqualTo(
             "/content[openEHR-EHR-OBSERVATION.laboratory_test_result.v1,'Einsenderstandort']/protocol[at0004]/items[at0094]/items[openEHR-EHR-CLUSTER.location.v1]");
   }
@@ -53,7 +52,7 @@ public class FlatPathTest {
   @Test
   public void testFlatPathWithAndInArchetypeId() {
     String path = "/content[openEHR-EHR-OBSERVATION.wordwithandin.v1]";
-    FlatPath cut = new FlatPath(path);
+    EnhancedAqlPath cut = new EnhancedAqlPath(path);
     assertThat(cut).isNotNull();
     assertThat(cut.getAtCode()).isEqualTo("openEHR-EHR-OBSERVATION.wordwithandin.v1");
     assertThat(cut.toString()).isEqualTo(path);
@@ -62,7 +61,7 @@ public class FlatPathTest {
   @Test
   public void testFlatPathWithAttribute() {
     String path = "/context/end_time|value";
-    FlatPath cut = new FlatPath(path);
+    EnhancedAqlPath cut = new EnhancedAqlPath(path);
     assertThat(cut).isNotNull();
     assertThat(cut.getAtCode()).isNull();
     assertThat(cut.getName()).isEqualTo("context");
@@ -73,7 +72,7 @@ public class FlatPathTest {
   @Test
   public void testFlatPathWithPredicate() {
     String path = "/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Allgemeine Angaben']";
-    FlatPath cut = new FlatPath(path);
+    EnhancedAqlPath cut = new EnhancedAqlPath(path);
     assertThat(cut).isNotNull();
     assertThat(cut.getAtCode()).isEqualTo("openEHR-EHR-SECTION.adhoc.v1");
     assertThat(cut.getName()).isEqualTo("content");
@@ -86,7 +85,7 @@ public class FlatPathTest {
   public void testFlatPathWithPredicateAndInName() {
     String path =
         "/items[openEHR-EHR-SECTION.adhoc.v1 and name/value='Details of other relevant care planning documents and \\' \\\\ [] = where to find them']";
-    FlatPath cut = new FlatPath(path);
+    EnhancedAqlPath cut = new EnhancedAqlPath(path);
     assertThat(cut).isNotNull();
     assertThat(cut.getAtCode()).isEqualTo("openEHR-EHR-SECTION.adhoc.v1");
     assertThat(cut.getName()).isEqualTo("items");
@@ -100,7 +99,7 @@ public class FlatPathTest {
   @Test
   public void testFlatPathWithPredicateInShortForm() {
     String path = "/content[openEHR-EHR-SECTION.adhoc.v1,'Symptome']";
-    FlatPath cut = new FlatPath(path);
+    EnhancedAqlPath cut = new EnhancedAqlPath(path);
     assertThat(cut).isNotNull();
     assertThat(cut.getAtCode()).isEqualTo("openEHR-EHR-SECTION.adhoc.v1");
     assertThat(cut.getName()).isEqualTo("content");
@@ -113,7 +112,7 @@ public class FlatPathTest {
   @Test
   public void testFlatPathEmpty() {
     String path = "/";
-    FlatPath cut = new FlatPath(path);
+    EnhancedAqlPath cut = new EnhancedAqlPath(path);
     assertThat(cut).isNotNull();
     assertThat(cut.getAtCode()).isNull();
     assertThat(cut.getName()).isEqualTo("");
@@ -123,7 +122,7 @@ public class FlatPathTest {
   @Test
   public void testFlatPathOnlyAttribute() {
     String path = "|value";
-    FlatPath cut = new FlatPath(path);
+    EnhancedAqlPath cut = new EnhancedAqlPath(path);
     assertThat(cut).isNotNull();
     assertThat(cut.getAtCode()).isNull();
     assertThat(cut.getName()).isEqualTo("");
@@ -133,7 +132,7 @@ public class FlatPathTest {
   @Test
   public void testFlatPathAttributeAndAtCode() {
     String path = "/data[at0001]/events[at0002]/data[at0003]/items[at0004]|magnitude";
-    FlatPath cut = new FlatPath(path);
+    EnhancedAqlPath cut = new EnhancedAqlPath(path);
     assertThat(cut).isNotNull();
     assertThat(cut.getAtCode()).isEqualTo("at0001");
     assertThat(cut.getName()).isEqualTo("data");
@@ -144,7 +143,7 @@ public class FlatPathTest {
   @Test
   public void testGetLast() {
     String path = "/data[at0001]/events[at0002]/data[at0003]/items[at0004]|magnitude";
-    FlatPath cut = new FlatPath(path).getLast();
+    EnhancedAqlPath cut = new EnhancedAqlPath(path).getLast();
     assertThat(cut).isNotNull();
     assertThat(cut.getAtCode()).isEqualTo("at0004");
     assertThat(cut.getName()).isEqualTo("items");
@@ -152,16 +151,13 @@ public class FlatPathTest {
   }
 
   @Test
-  public void testRemoveEnd2() {
-    FlatPath path1 =
-        new FlatPath("/data[at0001]/events[at0002]/data[at0003]/items[at0004]|magnitude");
-    FlatPath path2 = new FlatPath("/data[at0001]/events[at0002]");
+  public void testRemoveStart() {
+    EnhancedAqlPath path1 =
+        new EnhancedAqlPath("/data[at0001]/events[at0002]/data[at0003]/items[at0004]|magnitude");
+    EnhancedAqlPath path2 = new EnhancedAqlPath("/data[at0001]/events[at0002]");
 
-    StopWatch stopWatch = new StopWatch();
-    stopWatch.start();
-    FlatPath actual = FlatPath.removeStart(path1, path2);
-    stopWatch.stop();
-    System.out.println(stopWatch.getNanoTime());
+    EnhancedAqlPath actual = EnhancedAqlPath.removeStart(path1, path2);
+
 
     assertThat(actual).hasToString("/data[at0003]/items[at0004]|magnitude");
   }
@@ -169,9 +165,9 @@ public class FlatPathTest {
   @Test
   public void testRemoveEnd() {
     String path = "/data[at0001]/events[at0002]/data[at0003]/items[at0004]|magnitude";
-    FlatPath path1 = new FlatPath(path);
-    FlatPath path2 = path1.getLast();
-    FlatPath actual = FlatPath.removeEnd(path1, path2);
+    EnhancedAqlPath path1 = new EnhancedAqlPath(path);
+    EnhancedAqlPath path2 = path1.getLast();
+    EnhancedAqlPath actual = EnhancedAqlPath.removeEnd(path1, path2);
     assertThat(actual).isNotNull();
     assertThat(actual.getAtCode()).isEqualTo("at0001");
     assertThat(actual.getName()).isEqualTo("data");
@@ -180,9 +176,9 @@ public class FlatPathTest {
 
   @Test
   public void testAddEnd() {
-    FlatPath path1 = new FlatPath("/data[at0001]/events[at0002]/data[at0003]");
-    FlatPath path2 = new FlatPath("/items[at0004 and name/value='Name']|magnitude");
-    FlatPath actual = FlatPath.addEnd(path1, path2);
+    EnhancedAqlPath path1 = new EnhancedAqlPath("/data[at0001]/events[at0002]/data[at0003]");
+    EnhancedAqlPath path2 = new EnhancedAqlPath("/items[at0004 and name/value='Name']|magnitude");
+    EnhancedAqlPath actual = EnhancedAqlPath.addEnd(path1, path2);
     assertThat(actual).isNotNull();
     assertThat(actual.getAtCode()).isEqualTo("at0001");
     assertThat(actual.getName()).isEqualTo("data");

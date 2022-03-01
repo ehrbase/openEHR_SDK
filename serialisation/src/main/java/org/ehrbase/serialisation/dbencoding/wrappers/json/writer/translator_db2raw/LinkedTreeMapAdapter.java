@@ -30,7 +30,7 @@ import com.nedap.archie.rminfo.ArchieRMInfoLookup;
 import org.ehrbase.serialisation.dbencoding.CompositionSerializer;
 import org.ehrbase.serialisation.dbencoding.wrappers.json.I_DvTypeAdapter;
 import org.ehrbase.serialisation.util.SnakeCase;
-import org.ehrbase.webtemplate.parser.FlatPath;
+import org.ehrbase.webtemplate.parser.EnhancedAqlPath;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -173,7 +173,7 @@ public class LinkedTreeMapAdapter extends TypeAdapter<LinkedTreeMap<String, Obje
                     LinkedTreeMap<String, Object> vm = (LinkedTreeMap<String, Object>) valueMap;
                     vm.put(
                         CompositionSerializer.TAG_ARCHETYPE_NODE_ID,
-                        new FlatPath(kv.getKey()).getLast().getAtCode());
+                        new EnhancedAqlPath(kv.getKey()).getLast().getAtCode());
                   }
                 }
               }
@@ -444,7 +444,7 @@ public class LinkedTreeMapAdapter extends TypeAdapter<LinkedTreeMap<String, Obje
               writer.name(AT_TYPE).value(new SnakeCase(((String) value)).camelToUpperSnake());
             break;
           case CompositionSerializer.TAG_PATH: // this is an element
-            String archetypeNodeId2 = new FlatPath((String) value).getLast().getAtCode();
+            String archetypeNodeId2 = new EnhancedAqlPath((String) value).getLast().getAtCode();
             if (archetypeNodeId2 != null) writer.name(AT_TYPE).value(ELEMENT);
             // CHC 20191003: removed writer for archetype_node_id as it was not applicable here
             break;

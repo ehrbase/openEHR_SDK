@@ -38,7 +38,7 @@ import org.ehrbase.client.exception.ClientException;
 import org.ehrbase.serialisation.walker.Context;
 import org.ehrbase.serialisation.walker.ToCompositionWalker;
 import org.ehrbase.webtemplate.model.WebTemplateNode;
-import org.ehrbase.webtemplate.parser.FlatPath;
+import org.ehrbase.webtemplate.parser.EnhancedAqlPath;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -117,7 +117,7 @@ public class DtoToCompositionWalker extends ToCompositionWalker<Map<String, Obje
       } else {
         String path = subValues.keySet().stream().findAny().orElseThrow();
         if (value.getClass().isAnnotationPresent(Entity.class)
-            && new FlatPath(path).getPath().equals("")) {
+            && new EnhancedAqlPath(path).getPath().equals("")) {
 
           Map<String, Object> newValues =
               findEntity(value).entrySet().stream()
@@ -145,14 +145,14 @@ public class DtoToCompositionWalker extends ToCompositionWalker<Map<String, Obje
 
     for (Map.Entry<String, Object> objectEntry : values.entrySet()) {
 
-      FlatPath flatPath = new FlatPath(objectEntry.getKey());
-      if (StringUtils.isBlank(flatPath.getPath())) {
-        if ("uuid".equals(flatPath.getAttributeName())) {
+      EnhancedAqlPath enhancedAqlPath = new EnhancedAqlPath(objectEntry.getKey());
+      if (StringUtils.isBlank(enhancedAqlPath.getPath())) {
+        if ("uuid".equals(enhancedAqlPath.getAttributeName())) {
           // NOP
-        } else if (StringUtils.isNotBlank(flatPath.getAttributeName())) {
+        } else if (StringUtils.isNotBlank(enhancedAqlPath.getAttributeName())) {
           handleSingleValue(
               objectEntry.getValue(),
-              flatPath.getAttributeName(),
+              enhancedAqlPath.getAttributeName(),
               null,
               context.getRmObjectDeque().peek());
         } else {

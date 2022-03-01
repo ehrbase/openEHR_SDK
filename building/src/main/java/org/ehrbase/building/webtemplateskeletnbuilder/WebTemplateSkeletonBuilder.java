@@ -42,7 +42,7 @@ import org.ehrbase.util.rmconstants.RmConstants;
 import org.ehrbase.webtemplate.model.WebTemplate;
 import org.ehrbase.webtemplate.model.WebTemplateInput;
 import org.ehrbase.webtemplate.model.WebTemplateNode;
-import org.ehrbase.webtemplate.parser.FlatPath;
+import org.ehrbase.webtemplate.parser.EnhancedAqlPath;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
@@ -170,8 +170,9 @@ public class WebTemplateSkeletonBuilder {
       Object childObject) {
 
     String attributeName =
-        FlatPath.removeStart(
-                new FlatPath(childNode.getAqlPath(true)), new FlatPath(parentNode.getAqlPath(true)))
+        EnhancedAqlPath.removeStart(
+                new EnhancedAqlPath(childNode.getAqlPath(true)),
+                new EnhancedAqlPath(parentNode.getAqlPath(true)))
             .getLast()
             .getName();
 
@@ -186,8 +187,9 @@ public class WebTemplateSkeletonBuilder {
       Object removeChildObject) {
 
     String attributeName =
-        FlatPath.removeStart(
-                new FlatPath(childNode.getAqlPath(true)), new FlatPath(parentNode.getAqlPath(true)))
+        EnhancedAqlPath.removeStart(
+                new EnhancedAqlPath(childNode.getAqlPath(true)),
+                new EnhancedAqlPath(parentNode.getAqlPath(true)))
             .getLast()
             .getName();
 

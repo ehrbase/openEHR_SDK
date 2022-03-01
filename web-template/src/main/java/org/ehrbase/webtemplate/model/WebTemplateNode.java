@@ -25,7 +25,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.nedap.archie.rm.archetyped.Locatable;
 import com.nedap.archie.rminfo.ArchieRMInfoLookup;
 import org.apache.commons.lang3.StringUtils;
-import org.ehrbase.webtemplate.parser.FlatPath;
+import org.ehrbase.webtemplate.parser.EnhancedAqlPath;
 
 import java.io.Serializable;
 import java.util.*;
@@ -52,7 +52,7 @@ public class WebTemplateNode implements Serializable {
   private final String[] aqlCache = new String[2];
 
   @JsonSerialize(using = AqlPathSerializer.class)
-  private FlatPath aqlPath;
+  private EnhancedAqlPath aqlPath;
 
   private final List<WebTemplateNode> children = new ArrayList<>();
   private final List<WebTemplateInput> inputs = new ArrayList<>();
@@ -180,7 +180,7 @@ public class WebTemplateNode implements Serializable {
   }
 
   @JsonIgnore
-  public FlatPath getAqlPathDto() {
+  public EnhancedAqlPath getAqlPathDto() {
     return aqlPath;
   }
 
@@ -193,10 +193,10 @@ public class WebTemplateNode implements Serializable {
   }
 
   public void setAqlPath(String aqlPath) {
-    setAqlPath(new FlatPath(aqlPath));
+    setAqlPath(new EnhancedAqlPath(aqlPath));
   }
 
-  public void setAqlPath(FlatPath aqlPath) {
+  public void setAqlPath(EnhancedAqlPath aqlPath) {
     this.aqlPath = aqlPath;
     Arrays.fill(aqlCache, null);
   }
@@ -255,15 +255,25 @@ public class WebTemplateNode implements Serializable {
     return children.stream().filter(n -> n.getId().equals(id)).findAny();
   }
 
-  public FlatPath buildRelativePath(WebTemplateNode child) {
-    return FlatPath.removeStart(child.aqlPath, this.aqlPath);
+  public EnhancedAqlPath buildRelativePath(WebTemplateNode child) {
+
+    EnhancedAqlPath me = this.aqlPath;
+    EnhancedAqlPath other = child.aqlPath;
+
+    if (StringUtils.isBlank(me.getName())) {
+      return new EnhancedAqlPath(other);
+    }
+
+    while (me != null) {
+      me = me.getChild();
+      other = other.getChild();
+    }
+
+    return new EnhancedAqlPath(other);
   }
 
   public boolean isRelativePathNameDependent(WebTemplateNode child){
-    return FlatPath.removeStart(child.aqlPath, this.aqlPath)
-            .getLast()
-            .findOtherPredicate("name/value")
-        != null;
+    return buildRelativePath(child).getLast().findOtherPredicate("name/value") != null;
   }
   public List<WebTemplateNode> findMatching(Predicate<WebTemplateNode> filter) {
 

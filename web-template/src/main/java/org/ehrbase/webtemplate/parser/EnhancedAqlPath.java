@@ -26,21 +26,22 @@ import java.util.*;
 
 import static org.ehrbase.webtemplate.util.CharSequenceHelper.subSequence;
 
-public class FlatPath {
+/** Reperesents a aql Path with an optional atribute at the end. */
+public class EnhancedAqlPath {
   private final String name;
   private final String atCode;
-  private final FlatPath child;
+  private final EnhancedAqlPath child;
   private final Map<String, String> otherPredicates;
   private final String attributeName;
   private final boolean startWithSlash;
 
-  public FlatPath(FlatPath flatPath) {
-    this.name = flatPath.getName();
-    this.atCode = flatPath.getAtCode();
-    this.child = flatPath.getChild();
-    this.otherPredicates = new HashMap<>(flatPath.otherPredicates);
-    this.attributeName = flatPath.getAttributeName();
-    this.startWithSlash = flatPath.startWithSlash;
+  public EnhancedAqlPath(EnhancedAqlPath enhancedAqlPath) {
+    this.name = enhancedAqlPath.getName();
+    this.atCode = enhancedAqlPath.getAtCode();
+    this.child = enhancedAqlPath.getChild();
+    this.otherPredicates = new HashMap<>(enhancedAqlPath.otherPredicates);
+    this.attributeName = enhancedAqlPath.getAttributeName();
+    this.startWithSlash = enhancedAqlPath.startWithSlash;
   }
 
   public enum OtherPredicatesFormate {
@@ -49,7 +50,7 @@ public class FlatPath {
     FULL;
   }
 
-  public FlatPath(String path) {
+  public EnhancedAqlPath(String path) {
     if (StringUtils.isBlank(path)) {
       name = "";
       atCode = null;
@@ -76,7 +77,7 @@ public class FlatPath {
         split = new CharSequence[] {strings[0]};
       }
       name = CharSequenceHelper.removeStart(split[0], "/").toString();
-      child = new FlatPath("/" + strings[1]);
+      child = new EnhancedAqlPath("/" + strings[1]);
       attributeName = null;
     } else {
       child = null;
@@ -214,7 +215,7 @@ public class FlatPath {
     return atCode;
   }
 
-  public FlatPath getChild() {
+  public EnhancedAqlPath getChild() {
     return child;
   }
 
@@ -238,13 +239,13 @@ public class FlatPath {
   public boolean equals(Object o) {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
-    FlatPath flatPath = (FlatPath) o;
-    return startWithSlash == flatPath.startWithSlash
-        && Objects.equals(name, flatPath.name)
-        && Objects.equals(atCode, flatPath.atCode)
-        && Objects.equals(child, flatPath.child)
-        && Objects.equals(otherPredicates, flatPath.otherPredicates)
-        && Objects.equals(attributeName, flatPath.attributeName);
+    EnhancedAqlPath enhancedAqlPath = (EnhancedAqlPath) o;
+    return startWithSlash == enhancedAqlPath.startWithSlash
+        && Objects.equals(name, enhancedAqlPath.name)
+        && Objects.equals(atCode, enhancedAqlPath.atCode)
+        && Objects.equals(child, enhancedAqlPath.child)
+        && Objects.equals(otherPredicates, enhancedAqlPath.otherPredicates)
+        && Objects.equals(attributeName, enhancedAqlPath.attributeName);
   }
 
   @Override
@@ -299,20 +300,20 @@ public class FlatPath {
     }
   }
 
-  public FlatPath getLast() {
-    FlatPath path = this;
+  public EnhancedAqlPath getLast() {
+    EnhancedAqlPath path = this;
     while (path.getChild() != null) {
       path = path.getChild();
     }
     return path;
   }
 
-  public static FlatPath removeEnd(FlatPath path, FlatPath remove) {
-    return new FlatPath(StringUtils.removeEnd(path.toString(), remove.toString()));
+  public static EnhancedAqlPath removeEnd(EnhancedAqlPath path, EnhancedAqlPath remove) {
+    return new EnhancedAqlPath(StringUtils.removeEnd(path.toString(), remove.toString()));
   }
 
-  public static FlatPath removeStart(FlatPath path, FlatPath remove) {
-    return new FlatPath(StringUtils.removeStart(path.toString(), remove.toString()));
+  public static EnhancedAqlPath removeStart(EnhancedAqlPath path, EnhancedAqlPath remove) {
+    return new EnhancedAqlPath(StringUtils.removeStart(path.toString(), remove.toString()));
   }
 
   /*
@@ -334,7 +335,8 @@ public class FlatPath {
   }
 
    */
-  public static FlatPath addEnd(FlatPath path, FlatPath add) {
-    return new FlatPath(path.toString() + "/" + StringUtils.removeStart(add.toString(), "/"));
+  public static EnhancedAqlPath addEnd(EnhancedAqlPath path, EnhancedAqlPath add) {
+    return new EnhancedAqlPath(
+        path.toString() + "/" + StringUtils.removeStart(add.toString(), "/"));
   }
 }

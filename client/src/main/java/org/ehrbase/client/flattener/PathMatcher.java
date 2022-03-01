@@ -22,7 +22,7 @@ package org.ehrbase.client.flattener;
 import org.apache.commons.lang3.StringUtils;
 import org.ehrbase.serialisation.walker.Context;
 import org.ehrbase.webtemplate.model.WebTemplateNode;
-import org.ehrbase.webtemplate.parser.FlatPath;
+import org.ehrbase.webtemplate.parser.EnhancedAqlPath;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,16 +35,18 @@ class PathMatcher {
 
   String matchesPath(Context<?> context, WebTemplateNode child, Map.Entry<String, ?> e) {
     String aqlPath =
-        FlatPath.removeStart(child.getAqlPathDto(), context.getNodeDeque().peek().getAqlPathDto())
+        EnhancedAqlPath.removeStart(
+                child.getAqlPathDto(), context.getNodeDeque().peek().getAqlPathDto())
             .toString();
     if (StringUtils.startsWith(e.getKey(), aqlPath)) {
       return remove(e, aqlPath, child);
     } else {
-      FlatPath childPath = new FlatPath(aqlPath);
-      FlatPath pathLast = childPath.getLast();
-      FlatPath pathWithoutLastName =
-          FlatPath.addEnd(
-              FlatPath.removeEnd(childPath, pathLast), new FlatPath(pathLast.format(false)));
+      EnhancedAqlPath childPath = new EnhancedAqlPath(aqlPath);
+      EnhancedAqlPath pathLast = childPath.getLast();
+      EnhancedAqlPath pathWithoutLastName =
+          EnhancedAqlPath.addEnd(
+              EnhancedAqlPath.removeEnd(childPath, pathLast),
+              new EnhancedAqlPath(pathLast.format(false)));
       if (StringUtils.startsWith(e.getKey(), pathWithoutLastName.toString())
           && context.getNodeDeque().peek().getChildren().stream()
                   .filter(n -> Objects.equals(n.getNodeId(), child.getNodeId()))
@@ -60,9 +62,9 @@ class PathMatcher {
 
   private String remove(Map.Entry<String, ?> e, String s, WebTemplateNode child) {
     if (child.getId().equals("ism_transition")) {
-      FlatPath flatPath = new FlatPath(StringUtils.removeStart(e.getKey(), s));
+      EnhancedAqlPath enhancedAqlPath = new EnhancedAqlPath(StringUtils.removeStart(e.getKey(), s));
       // fix for old dto model
-      if (StringUtils.isBlank(flatPath.getName())) {
+      if (StringUtils.isBlank(enhancedAqlPath.getName())) {
         return null;
       }
     }

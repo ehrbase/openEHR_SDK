@@ -20,7 +20,7 @@
 package org.ehrbase.webtemplate.model;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import org.ehrbase.webtemplate.parser.FlatPath;
+import org.ehrbase.webtemplate.parser.EnhancedAqlPath;
 import org.ehrbase.webtemplate.parser.NodeId;
 
 import java.io.Serializable;
@@ -101,7 +101,10 @@ public class WebTemplate implements Serializable {
   public List<WebTemplateNode> findAllByAqlPath(String aql, boolean ignoreName) {
 
     return tree.findMatching(
-        c -> new FlatPath(aql).format(!ignoreName).equals((c.getAqlPathDto().format(!ignoreName))));
+        c ->
+            new EnhancedAqlPath(aql)
+                .format(!ignoreName)
+                .equals((c.getAqlPathDto().format(!ignoreName))));
   }
 
   public Set<Set<NodeId>> findAllContainmentCombinations() {
