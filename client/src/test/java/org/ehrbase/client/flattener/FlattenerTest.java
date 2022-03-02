@@ -17,30 +17,15 @@
 
 package org.ehrbase.client.flattener;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.ehrbase.client.TestData.buildAlternativeEventsComposition;
-import static org.ehrbase.client.TestData.buildEpisodeOfCareComposition;
-
 import com.nedap.archie.rm.RMObject;
 import com.nedap.archie.rm.archetyped.Locatable;
 import com.nedap.archie.rm.composition.Composition;
-import com.nedap.archie.rm.composition.ContentItem;
 import com.nedap.archie.rm.composition.Observation;
 import com.nedap.archie.rm.datastructures.Event;
 import com.nedap.archie.rm.datastructures.IntervalEvent;
 import com.nedap.archie.rm.datastructures.ItemStructure;
-import com.nedap.archie.rm.datastructures.PointEvent;
-import com.nedap.archie.rm.datavalues.quantity.DvQuantity;
 import com.nedap.archie.rm.generic.PartyIdentified;
 import com.nedap.archie.rm.generic.PartySelf;
-import java.io.IOException;
-import java.net.URI;
-import java.nio.charset.StandardCharsets;
-import java.time.Duration;
-import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
-import java.util.List;
-import java.util.stream.Collectors;
 import org.apache.commons.io.IOUtils;
 import org.assertj.core.groups.Tuple;
 import org.ehrbase.client.TestData;
@@ -53,23 +38,33 @@ import org.ehrbase.client.classgenerator.examples.coronaanamnesecomposition.defi
 import org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev0composition.EhrbaseBloodPressureSimpleDeV0Composition;
 import org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev0composition.definition.KorotkoffSoundsDefiningCode;
 import org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1composition.EhrbaseMultiOccurrenceDeV1Composition;
-import org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1composition.definition.BodyTemperatureAnyEventPointEvent;
-import org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1composition.definition.BodyTemperatureLocationOfMeasurementChoice;
-import org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1composition.definition.BodyTemperatureLocationOfMeasurementDvCodedText;
-import org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1composition.definition.BodyTemperatureLocationOfMeasurementDvText;
-import org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1composition.definition.BodyTemperatureObservation;
-import org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1composition.definition.LocationOfMeasurementDefiningCode;
+import org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1composition.definition.*;
 import org.ehrbase.client.classgenerator.examples.episodeofcarecomposition.EpisodeOfCareComposition;
 import org.ehrbase.client.classgenerator.examples.episodeofcarecomposition.definition.EpisodeofcareAdminEntry;
 import org.ehrbase.client.classgenerator.examples.episodeofcarecomposition.definition.EpisodeofcareTeamElement;
+import org.ehrbase.client.classgenerator.examples.errortestcomposition.ErrorTestComposition;
+import org.ehrbase.client.classgenerator.examples.errortestcomposition.definition.*;
 import org.ehrbase.client.classgenerator.examples.korpergrossecomposition.KorpergrosseComposition;
 import org.ehrbase.client.classgenerator.examples.korpergrossecomposition.definition.GrosseLangeObservation;
 import org.ehrbase.client.classgenerator.shareddefinition.MathFunction;
-import org.ehrbase.client.classgenerator.shareddefinition.NullFlavour;
 import org.ehrbase.client.templateprovider.TestDataTemplateProvider;
 import org.ehrbase.serialisation.jsonencoding.CanonicalJson;
 import org.ehrbase.test_data.composition.CompositionTestDataCanonicalJson;
 import org.junit.Test;
+
+import java.io.IOException;
+import java.net.URI;
+import java.nio.charset.StandardCharsets;
+import java.time.Duration;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.ehrbase.client.TestData.buildAlternativeEventsComposition;
+import static org.ehrbase.client.TestData.buildEpisodeOfCareComposition;
 
 public class FlattenerTest {
 
@@ -88,6 +83,84 @@ public class FlattenerTest {
     assertThat(expected.getBloodpressures())
         .extracting(BloodpressureListDe.Bloodpressure::getSystolischValue)
         .containsExactlyInAnyOrder(12d, 22d);
+  }
+
+  @Test
+  public void testFlattenInterval() {
+    Flattener cut = new Flattener(new TestDataTemplateProvider());
+    ErrorTestComposition composition = new ErrorTestComposition();
+
+    LaboratoryTestResultObservation labTest = new LaboratoryTestResultObservation();
+
+    List<LaboratoryTestResultAnyEventChoice> anyEventList = new ArrayList<>();
+
+    {
+      LaboratoryTestResultAnyEventPointEvent eventWithTime =
+          new LaboratoryTestResultAnyEventPointEvent();
+      eventWithTime.setTestNameValue("Testname");
+
+      SpecimenCluster specimen = new SpecimenCluster();
+
+      SpecimenCollectionDateTimeDvDateTime collectionDateTime =
+          new SpecimenCollectionDateTimeDvDateTime();
+      collectionDateTime.setCollectionDateTimeValue(
+          OffsetDateTime.of(2020, 1, 2, 12, 30, 0, 0, ZoneOffset.UTC));
+      specimen.setCollectionDateTime(collectionDateTime);
+      eventWithTime.setSpecimen(specimen);
+
+      anyEventList.add(eventWithTime);
+    }
+
+    {
+      LaboratoryTestResultAnyEventPointEvent eventWithInterval =
+          new LaboratoryTestResultAnyEventPointEvent();
+      eventWithInterval.setTestNameValue("Testname");
+
+      SpecimenCluster specimen = new SpecimenCluster();
+
+      SpecimenCollectionDateTimeDvIntervalDvDateTime collectionDateTime =
+          new SpecimenCollectionDateTimeDvIntervalDvDateTime();
+      collectionDateTime.setLowerValue(OffsetDateTime.of(2020, 1, 2, 12, 30, 0, 0, ZoneOffset.UTC));
+      collectionDateTime.setUpperValue(OffsetDateTime.of(2020, 1, 2, 13, 30, 0, 0, ZoneOffset.UTC));
+      specimen.setCollectionDateTime(collectionDateTime);
+      eventWithInterval.setSpecimen(specimen);
+
+      anyEventList.add(eventWithInterval);
+    }
+
+    labTest.setAnyEvent(anyEventList);
+    composition.setLaboratoryTestResult(labTest);
+
+    RMObject rmObject = new Unflattener(new TestDataTemplateProvider()).unflatten(composition);
+
+    ErrorTestComposition expected = cut.flatten(rmObject, ErrorTestComposition.class);
+
+    assertThat(expected.getLaboratoryTestResult().getAnyEvent())
+        .extracting(
+            e -> e.getSpecimen().getCollectionDateTime().getClass().getSimpleName(),
+            e -> extractTime(e.getSpecimen().getCollectionDateTime()))
+        .containsExactly(
+            new Tuple("SpecimenCollectionDateTimeDvDateTime", "2020-01-02T12:30Z"),
+            new Tuple(
+                "SpecimenCollectionDateTimeDvIntervalDvDateTime",
+                "2020-01-02T12:30Z-2020-01-02T13:30Z"));
+  }
+
+  private String extractTime(SpecimenCollectionDateTimeChoice collectionDateTime) {
+
+    if (collectionDateTime instanceof SpecimenCollectionDateTimeDvIntervalDvDateTime) {
+      return ((SpecimenCollectionDateTimeDvIntervalDvDateTime) collectionDateTime)
+              .getLowerValue()
+              .toString()
+          + "-"
+          + ((SpecimenCollectionDateTimeDvIntervalDvDateTime) collectionDateTime)
+              .getUpperValue()
+              .toString();
+    } else {
+      return ((SpecimenCollectionDateTimeDvDateTime) collectionDateTime)
+          .getCollectionDateTimeValue()
+          .toString();
+    }
   }
 
   @Test
