@@ -24,10 +24,11 @@ import com.nedap.archie.rm.datavalues.DvText;
 import org.ehrbase.serialisation.walker.RMHelper;
 import org.ehrbase.serialisation.walker.defaultvalues.DefaultValuePath;
 import org.ehrbase.serialisation.walker.defaultvalues.DefaultValues;
+import org.ehrbase.webtemplate.model.WebTemplateNode;
 
 public class InstructionValueInserter extends AbstractValueInserter<Instruction> {
   @Override
-  public void insert(Instruction rmObject, DefaultValues defaultValues) {
+  public void insert(Instruction rmObject, DefaultValues defaultValues, WebTemplateNode node) {
 
     if (RMHelper.isEmpty(rmObject.getNarrative())
         && defaultValues.containsDefaultValue(DefaultValuePath.INSTRUCTION_NARRATIVE)) {

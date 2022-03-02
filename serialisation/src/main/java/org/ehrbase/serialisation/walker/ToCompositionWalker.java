@@ -325,6 +325,10 @@ public abstract class ToCompositionWalker<T> extends Walker<T> {
     }
 
     postprocessor.forEach(
-        p -> p.insert(context.getRmObjectDeque().peek(), context.getDefaultValues()));
+        p ->
+            p.insert(
+                context.getRmObjectDeque().peek(),
+                context.getDefaultValues(),
+                context.getNodeDeque().peek()));
   }
 }

@@ -27,12 +27,13 @@ import com.nedap.archie.rm.support.identification.GenericId;
 import org.ehrbase.serialisation.walker.RMHelper;
 import org.ehrbase.serialisation.walker.defaultvalues.DefaultValuePath;
 import org.ehrbase.serialisation.walker.defaultvalues.DefaultValues;
+import org.ehrbase.webtemplate.model.WebTemplateNode;
 
 import java.util.Objects;
 
 public class EntryDefaultValueInserter extends AbstractValueInserter<Entry> {
   @Override
-  public void insert(Entry rmObject, DefaultValues defaultValues) {
+  public void insert(Entry rmObject, DefaultValues defaultValues, WebTemplateNode node) {
 
     if (RMHelper.isEmpty(rmObject.getLanguage())
         && defaultValues.getDefaultValue(DefaultValuePath.LANGUAGE) != null) {

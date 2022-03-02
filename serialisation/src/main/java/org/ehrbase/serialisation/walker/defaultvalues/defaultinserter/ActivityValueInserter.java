@@ -24,11 +24,12 @@ import com.nedap.archie.rm.datavalues.encapsulated.DvParsable;
 import org.ehrbase.serialisation.walker.RMHelper;
 import org.ehrbase.serialisation.walker.defaultvalues.DefaultValuePath;
 import org.ehrbase.serialisation.walker.defaultvalues.DefaultValues;
+import org.ehrbase.webtemplate.model.WebTemplateNode;
 
 public class ActivityValueInserter extends AbstractValueInserter<Activity> {
 
   @Override
-  public void insert(Activity rmObject, DefaultValues defaultValues) {
+  public void insert(Activity rmObject, DefaultValues defaultValues, WebTemplateNode node) {
 
     if (RMHelper.isEmpty(rmObject.getTiming())
         && defaultValues.containsDefaultValue(DefaultValuePath.ACTIVITY_TIMING)) {
