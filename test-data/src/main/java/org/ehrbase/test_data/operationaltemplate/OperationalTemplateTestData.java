@@ -110,7 +110,7 @@ public enum OperationalTemplateTestData {
   MULTIMEDIA_TEST("MultimediaTest", "multimedia_test.en.v1.opt", "multimedia_test.en.v1"),
   NESTED("nested.en.v1", "nested.en.v1.opt", "nested.en.v1"),
   IPS("International Patient Summary", "ips.v0.opt", "International Patient Summary"),
-  ERROR_TEST("International Patient Summary", "ErrorTest.opt", "ErrorTest"),
+  ERROR_TEST("Contains choice between interval and not interval", "ErrorTest.opt", "ErrorTest"),
   SECTION_CARDINALITY("Cardinality test template sections", "section_cardinality.opt", "cardinality_of_section");
 
   private final String filename;
