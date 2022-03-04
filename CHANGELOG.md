@@ -11,6 +11,7 @@ Note: version releases in the 0.x.y range may introduce breaking changes.
 - Flat : corrected handling of PARTY_PROXY ( see https://github.com/ehrbase/openEHR_SDK/pull/320)
 - Flat : corrected handling of history origin and ISM_TRANSITION (see https://github.com/ehrbase/openEHR_SDK/pull/329)
 - Flat : handle fixed offset in template (see https://github.com/ehrbase/openEHR_SDK/pull/333)
+- Validation: fix validation of DV_TEXT with listopen (see https://github.com/ehrbase/openEHR_SDK/pull/335) 
 - Walker, Flat, DTO, Validation  : enhance performance of path handling (
   see https://github.com/ehrbase/openEHR_SDK/pull/325 )
 
