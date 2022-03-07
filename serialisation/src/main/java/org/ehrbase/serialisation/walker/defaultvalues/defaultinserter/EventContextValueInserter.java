@@ -30,12 +30,13 @@ import org.ehrbase.client.classgenerator.shareddefinition.Setting;
 import org.ehrbase.serialisation.walker.RMHelper;
 import org.ehrbase.serialisation.walker.defaultvalues.DefaultValuePath;
 import org.ehrbase.serialisation.walker.defaultvalues.DefaultValues;
+import org.ehrbase.webtemplate.model.WebTemplateNode;
 
 import java.util.Objects;
 
 public class EventContextValueInserter extends AbstractValueInserter<EventContext> {
   @Override
-  public void insert(EventContext rmObject, DefaultValues defaultValues) {
+  public void insert(EventContext rmObject, DefaultValues defaultValues, WebTemplateNode node) {
 
     if (RMHelper.isEmpty(rmObject.getStartTime())
         && defaultValues.containsDefaultValue(DefaultValuePath.TIME)) {

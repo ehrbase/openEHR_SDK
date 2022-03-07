@@ -22,12 +22,13 @@ package org.ehrbase.serialisation.walker.defaultvalues.defaultinserter;
 import com.nedap.archie.rm.archetyped.Locatable;
 import org.ehrbase.serialisation.walker.defaultvalues.DefaultValuePath;
 import org.ehrbase.serialisation.walker.defaultvalues.DefaultValues;
+import org.ehrbase.webtemplate.model.WebTemplateNode;
 
 import java.util.ArrayList;
 
 public class LocatableDefaultValueInserter extends AbstractValueInserter<Locatable> {
   @Override
-  public void insert(Locatable rmObject, DefaultValues defaultValues) {
+  public void insert(Locatable rmObject, DefaultValues defaultValues, WebTemplateNode node) {
 
     if (defaultValues.containsDefaultValue(DefaultValuePath.LINKS)) {
       if (rmObject.getLinks() == null) {
