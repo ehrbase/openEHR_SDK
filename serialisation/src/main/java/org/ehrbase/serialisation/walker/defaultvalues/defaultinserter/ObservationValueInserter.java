@@ -162,9 +162,10 @@ public class ObservationValueInserter extends AbstractValueInserter<Observation>
         return Duration.ofMinutes(validation.getMin());
       case "second":
         return Duration.ofSeconds(validation.getMin());
+      default:
+        throw new IllegalArgumentException("Unsupported suffix: " + suffix);
     }
 
-    return Duration.ZERO;
   }
 
   @Override
