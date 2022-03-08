@@ -299,9 +299,6 @@ public final class AqlPath implements Serializable {
 
       var currentNode = nodeStrings[i];
       boolean isLastNode = nodeStrings.length == i + 1;
-      String nodeName;
-      String atCode;
-      Map<String, String> otherPredicates;
 
       //remove attribute
       if (isLastNode) {
@@ -322,10 +319,7 @@ public final class AqlPath implements Serializable {
 
   private static Optional<AqlNode> parseNode(CharSequence currentNode, boolean isLastNode, String nameValue) {
     String nodeName;
-    String atCode;
-    Map<String, String> otherPredicates;
     CharSequence predicatesExp;
-
     if (StringUtils.endsWith(currentNode, "]")) {
       int fist = StringUtils.indexOf(currentNode, '[');
       nodeName =  subSequence(currentNode, 0, fist).toString();
@@ -339,6 +333,8 @@ public final class AqlPath implements Serializable {
       return Optional.empty();
     }
 
+    String atCode;
+    Map<String, String> otherPredicates;
     if (predicatesExp == null) {
       atCode = null;
       otherPredicates = Collections.emptyMap();

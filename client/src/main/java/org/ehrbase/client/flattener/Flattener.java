@@ -99,7 +99,8 @@ public class Flattener {
               false
             )
             .filter(n -> Objects.equals(n.getNodeId(), archetypeValue))
-            .findFirst().get();
+            .findFirst()
+            .orElseThrow();
       new DtoFromCompositionWalker()
           .walk(
               locatable,

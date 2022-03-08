@@ -408,19 +408,19 @@ public class OPTParser {
               .filter(n -> "ISM_TRANSITION".equals(n.getRmType()))
               .collect(Collectors.toList());
       if (!ismTransitionList.isEmpty()) {
-
+        WebTemplateNode firstChild = ismTransitionList.get(0);
         WebTemplateNode ismTransition = new WebTemplateNode();
         ismTransition.setName(cattribute.getRmAttributeName());
         ismTransition.setId(buildId(cattribute.getRmAttributeName()));
-        ismTransition.setMin(ismTransitionList.get(0).getMin());
-        ismTransition.setMax(ismTransitionList.get(0).getMax());
+        ismTransition.setMin(firstChild.getMin());
+        ismTransition.setMax(firstChild.getMax());
         ismTransition.setRmType("ISM_TRANSITION");
         ismTransition.setInContext(true);
         ismTransition.setAqlPath(aqlPath.addEnd(cattribute.getRmAttributeName()));
 
         WebTemplateNode careflowStep = new WebTemplateNode();
         WebTemplateNode careflowStepProto =
-            ismTransitionList.get(0).findChildById(CAREFLOW_STEP).get();
+            firstChild.findChildById(CAREFLOW_STEP).orElseThrow(() -> new SdkException(String.format("Missing node: %s", CAREFLOW_STEP)));
         careflowStep.setMin(careflowStepProto.getMin());
         careflowStep.setMax(careflowStepProto.getMin());
         careflowStep.setName("Careflow_step");
@@ -451,7 +451,7 @@ public class OPTParser {
 
         WebTemplateNode currentState = new WebTemplateNode();
         WebTemplateNode currentStateProto =
-            ismTransitionList.get(0).findChildById(CURRENT_STATE).get();
+            firstChild.findChildById(CURRENT_STATE).orElseThrow();
         currentState.setMin(currentStateProto.getMin());
         currentState.setMax(currentStateProto.getMin());
         currentState.setRmType(DV_CODED_TEXT);
@@ -477,7 +477,7 @@ public class OPTParser {
         currentState.getInputs().add(code2);
         ismTransition.getChildren().add(currentState);
         WebTemplateNode transition =
-            ismTransitionList.get(0).findChildById("transition").orElseThrow();
+            firstChild.findChildById("transition").orElseThrow();
         transition.setAqlPath(aqlPath.addEnd(cattribute.getRmAttributeName(), "transition"));
         transition.setInContext(true);
         ismTransition.getChildren().add(transition);
