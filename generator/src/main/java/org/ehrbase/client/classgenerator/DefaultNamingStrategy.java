@@ -28,7 +28,7 @@ import org.apache.commons.text.CaseUtils;
 import org.ehrbase.serialisation.util.SnakeCase;
 import org.ehrbase.webtemplate.model.WebTemplateAnnotation;
 import org.ehrbase.webtemplate.model.WebTemplateNode;
-import org.ehrbase.webtemplate.parser.EnhancedAqlPath;
+import org.ehrbase.webtemplate.parser.AqlPath;
 
 import java.util.*;
 
@@ -214,7 +214,7 @@ public class DefaultNamingStrategy implements NamingStrategy {
 
     String name = node.getName();
 
-    String attributeName = new EnhancedAqlPath(path).getLast().getAttributeName();
+    String attributeName = AqlPath.parse(path).getAttributeName();
 
     if (!context.nodeDeque.isEmpty()) {
       if ((StringUtils.isBlank(attributeName)
@@ -236,9 +236,7 @@ public class DefaultNamingStrategy implements NamingStrategy {
       name = VALUE;
     }
 
-    String fieldName = "";
-
-    fieldName = normalise(name, false);
+    String fieldName =  normalise(name, false);
 
     if (context.currentFieldNameMap.peek().containsKey(fieldName)) {
       context
@@ -254,12 +252,12 @@ public class DefaultNamingStrategy implements NamingStrategy {
   }
 
   private boolean isEntityAttribute(ClassGeneratorContext context, WebTemplateNode node) {
-    EnhancedAqlPath relativPath = context.nodeDeque.peek().buildRelativePath(node, true);
+    AqlPath relativPath = context.nodeDeque.peek().buildRelativePath(node, true);
     RMTypeInfo typeInfo = RM_INFO_LOOKUP.getTypeInfo(context.nodeDeque.peek().getRmType());
 
-    return relativPath.getChild() == null
+    return relativPath.getNodeCount() < 2
         && typeInfo != null
-        && typeInfo.getAttributes().containsKey(relativPath.getName());
+        && typeInfo.getAttributes().containsKey(relativPath.getBaseNode().getName());
   }
 
   protected String normalise(String name, boolean capitalizeFirstLetter) {

@@ -29,7 +29,7 @@ import org.ehrbase.client.aql.field.ListAqlFieldImp;
 import org.ehrbase.client.aql.field.ListSelectAqlField;
 import org.ehrbase.client.aql.field.SelectAqlField;
 import org.ehrbase.serialisation.util.SnakeCase;
-import org.ehrbase.webtemplate.parser.EnhancedAqlPath;
+import org.ehrbase.webtemplate.parser.AqlPath;
 
 import javax.lang.model.element.Modifier;
 import java.util.List;
@@ -107,7 +107,7 @@ public class FieldGenerator {
                     buildAQLField(
                         baseClassName,
                         f.name,
-                        new EnhancedAqlPath(extractAnnotationValue(f.annotations, Path.class))
+                        AqlPath.parse(extractAnnotationValue(f.annotations, Path.class))
                             .format(false),
                         f.type)));
 

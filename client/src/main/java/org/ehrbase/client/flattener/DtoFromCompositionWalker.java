@@ -23,7 +23,6 @@ import com.google.common.reflect.TypeToken;
 import com.nedap.archie.rm.RMObject;
 import com.nedap.archie.rm.datatypes.CodePhrase;
 import com.nedap.archie.rm.support.identification.ObjectId;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.text.CaseUtils;
@@ -38,7 +37,7 @@ import org.ehrbase.serialisation.walker.RmPrimitive;
 import org.ehrbase.util.exception.SdkException;
 import org.ehrbase.util.reflection.ReflectionHelper;
 import org.ehrbase.webtemplate.model.WebTemplateNode;
-import org.ehrbase.webtemplate.parser.EnhancedAqlPath;
+import org.ehrbase.webtemplate.parser.AqlPath;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,7 +49,6 @@ import java.lang.reflect.ParameterizedType;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class DtoFromCompositionWalker extends FromCompositionWalker<DtoWithMatchingFields> {
 
@@ -78,37 +76,34 @@ public class DtoFromCompositionWalker extends FromCompositionWalker<DtoWithMatch
     super.walk(composition, object, webTemplate, templateId);
   }
 
-  static Map<String, Field> buildFieldByPathMap(Class<?> clazz) {
+  static Map<AqlPath, Field> buildFieldByPathMap(Class<?> clazz) {
     return Arrays.stream(FieldUtils.getAllFields(clazz))
         .filter(f -> f.isAnnotationPresent(Path.class))
-        .collect(Collectors.toMap(f -> f.getAnnotation(Path.class).value(), Function.identity()));
+        .collect(Collectors.toMap(f -> AqlPath.parse(f.getAnnotation(Path.class).value()), Function.identity()));
   }
 
   @Override
   protected DtoWithMatchingFields extract(
       Context<DtoWithMatchingFields> context, WebTemplateNode child, boolean isChoice, Integer i) {
-    Map<String, Field> subValues =
+    Map<AqlPath, Field> subValues =
         context.getObjectDeque().peek().getFieldByPath().entrySet().stream()
             .map(
-                e -> new ImmutablePair<>(PATH_MATCHER.matchesPath(context, child, e), e.getValue()))
-            .filter(p -> p.getLeft() != null)
-            .collect(Collectors.toMap(ImmutablePair::getLeft, ImmutablePair::getRight));
+                e -> ImmutablePair.of(PATH_MATCHER.matchesPath(context, child, e), e.getValue()))
+            .filter(p -> Objects.nonNull(p.getKey()))
+            .collect(Collectors.toMap(ImmutablePair::getKey, ImmutablePair::getValue));
 
     if (subValues.isEmpty()) {
-      if (Stream.of(
+      boolean isKnownProperty = Set.of(
               "name",
               "archetype_node_id",
               "encoding",
               "archetype_details",
               "uid",
               "lower_unbounded",
-              "upper_unbounded")
-          .noneMatch(s -> child.getAqlPathDto().getLast().getName().contains(s))) {
-        logger.warn(
-            String.format(
-                "No Field in dto %s for path %s",
-                context.getObjectDeque().peek().getDto().getClass().getSimpleName(),
-                child.getAqlPath(true)));
+              "upper_unbounded"
+        ).contains(child.getAqlPathDto().getLastNode().getName());
+      if (!isKnownProperty) {
+        logger.warn("No Field in dto {} for path {}", context.getObjectDeque().peek().getDto().getClass().getSimpleName(), child);
       }
       return null;
     } else if (subValues.size() > 1) {
@@ -120,8 +115,8 @@ public class DtoFromCompositionWalker extends FromCompositionWalker<DtoWithMatch
       return new DtoWithMatchingFields(context.getObjectDeque().peek().getDto(), subValues);
     } else {
       Field field = subValues.values().stream().findAny().orElseThrow();
-      String path = subValues.keySet().stream().findAny().orElseThrow();
-      Class type = field.getType();
+      AqlPath path = subValues.keySet().stream().findAny().orElseThrow();
+      Class<?> type = field.getType();
       if (List.class.isAssignableFrom(type)) {
         type =
             TypeToken.of(((ParameterizedType) field.getGenericType()).getActualTypeArguments()[0])
@@ -130,7 +125,7 @@ public class DtoFromCompositionWalker extends FromCompositionWalker<DtoWithMatch
       if (isChoice) {
         type = findActual(type, child.getRmType()).orElseThrow();
       }
-      if (type.isAnnotationPresent(Entity.class) && StringUtils.isBlank(path)) {
+      if (type.isAnnotationPresent(Entity.class) && path.isEmpty()) {
         Object dto = create(type);
 
         writeField(field, context.getObjectDeque().peek().getDto(), dto);
@@ -153,7 +148,7 @@ public class DtoFromCompositionWalker extends FromCompositionWalker<DtoWithMatch
         CodePhrase codePhrase = (CodePhrase) value;
         EnumValueSet enumValueSet =
             Arrays.stream(field.getType().getEnumConstants())
-                .map(o -> (EnumValueSet) o)
+                .map(EnumValueSet.class::cast)
                 .filter(
                     v -> {
                       String terminologyId =
@@ -211,12 +206,12 @@ public class DtoFromCompositionWalker extends FromCompositionWalker<DtoWithMatch
 
   @Override
   protected void preHandle(Context<DtoWithMatchingFields> context) {
-    Map<String, Field> fieldByPath = context.getObjectDeque().peek().getFieldByPath();
+    Map<AqlPath, Field> fieldByPath = context.getObjectDeque().peek().getFieldByPath();
 
-    for (Map.Entry<String, Field> entry : fieldByPath.entrySet()) {
-      EnhancedAqlPath path = new EnhancedAqlPath(entry.getKey());
-      if (StringUtils.isBlank(path.getName())) {
-        if (StringUtils.isNotBlank(path.getAttributeName())) {
+    for (Map.Entry<AqlPath, Field> entry : fieldByPath.entrySet()) {
+      AqlPath path = entry.getKey();
+      if (!path.hasPath()) {
+        if (path.getAttributeName() != null) {
           writeField(
               entry.getValue(),
               context.getObjectDeque().peek().getDto(),

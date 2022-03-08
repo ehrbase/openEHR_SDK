@@ -22,23 +22,23 @@ package org.ehrbase.webtemplate.model;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
-import org.ehrbase.webtemplate.parser.EnhancedAqlPath;
+import org.ehrbase.webtemplate.parser.AqlPath;
 
 import java.io.IOException;
 
-public class AqlPathSerializer extends StdSerializer<EnhancedAqlPath> {
+public class AqlPathSerializer extends StdSerializer<AqlPath> {
 
   public AqlPathSerializer() {
     this(null);
   }
 
-  public AqlPathSerializer(Class<EnhancedAqlPath> t) {
+  public AqlPathSerializer(Class<AqlPath> t) {
     super(t);
   }
 
   @Override
-  public void serialize(EnhancedAqlPath value, JsonGenerator gen, SerializerProvider provider)
+  public void serialize(AqlPath value, JsonGenerator gen, SerializerProvider provider)
       throws IOException {
-    gen.writeString(value.format(EnhancedAqlPath.OtherPredicatesFormate.SHORTED));
+    gen.writeString(value.format(AqlPath.OtherPredicatesFormat.SHORTED, true));
   }
 }

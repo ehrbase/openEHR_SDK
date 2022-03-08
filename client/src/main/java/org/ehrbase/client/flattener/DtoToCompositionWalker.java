@@ -38,7 +38,7 @@ import org.ehrbase.client.exception.ClientException;
 import org.ehrbase.serialisation.walker.Context;
 import org.ehrbase.serialisation.walker.ToCompositionWalker;
 import org.ehrbase.webtemplate.model.WebTemplateNode;
-import org.ehrbase.webtemplate.parser.EnhancedAqlPath;
+import org.ehrbase.webtemplate.parser.AqlPath;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -51,7 +51,7 @@ import java.util.stream.Collectors;
 
 import static org.ehrbase.util.rmconstants.RmConstants.DV_CODED_TEXT;
 
-public class DtoToCompositionWalker extends ToCompositionWalker<Map<String, Object>> {
+public class DtoToCompositionWalker extends ToCompositionWalker<Map<AqlPath, Object>> {
 
   public static final ArchieRMInfoLookup ARCHIE_RM_INFO_LOOKUP = ArchieRMInfoLookup.getInstance();
 
@@ -59,14 +59,15 @@ public class DtoToCompositionWalker extends ToCompositionWalker<Map<String, Obje
       new RMObjectCreator(ARCHIE_RM_INFO_LOOKUP);
 
   private static final PathMatcher PATH_MATCHER = new PathMatcher();
+  public static final AqlPath.AqlNode ACTION_ARCHETYPE_ID = AqlPath.parse("action_archetype_id").getLastNode();
 
   private final Logger logger = LoggerFactory.getLogger(getClass());
 
   @Override
-  protected Map<String, Object> extract(
-      Context<Map<String, Object>> context, WebTemplateNode child, boolean isChoice, Integer i) {
+  protected Map<AqlPath, Object> extract(
+      Context<Map<AqlPath, Object>> context, WebTemplateNode child, boolean isChoice, Integer i) {
 
-    Map<String, Object> subValues = filterValues(context, child);
+    Map<AqlPath, Object> subValues = filterValues(context, child);
 
     if (subValues.isEmpty()) {
       return null;
@@ -115,13 +116,13 @@ public class DtoToCompositionWalker extends ToCompositionWalker<Map<String, Obje
       if (value == null) {
         return null;
       } else {
-        String path = subValues.keySet().stream().findAny().orElseThrow();
+        AqlPath path = subValues.keySet().stream().findAny().orElseThrow();
         if (value.getClass().isAnnotationPresent(Entity.class)
-            && new EnhancedAqlPath(path).getPath().equals("")) {
+            && !path.hasPath()) {
 
-          Map<String, Object> newValues =
+          Map<AqlPath, Object> newValues =
               findEntity(value).entrySet().stream()
-                  .collect(Collectors.toMap(e -> path + e.getKey(), Map.Entry::getValue));
+                  .collect(Collectors.toMap(e -> path.addEnd(e.getKey()), Map.Entry::getValue));
           return !newValues.isEmpty() ? newValues : null;
         } else {
           return Map.of(path, value);
@@ -130,8 +131,8 @@ public class DtoToCompositionWalker extends ToCompositionWalker<Map<String, Obje
     }
   }
 
-  private Map<String, Object> filterValues(
-      Context<Map<String, Object>> context, WebTemplateNode child) {
+  private Map<AqlPath, Object> filterValues(
+      Context<Map<AqlPath, Object>> context, WebTemplateNode child) {
     return context.getObjectDeque().peek().entrySet().stream()
         .map(e -> new ImmutablePair<>(PATH_MATCHER.matchesPath(context, child, e), e.getValue()))
         .filter(p -> p.getLeft() != null)
@@ -139,27 +140,27 @@ public class DtoToCompositionWalker extends ToCompositionWalker<Map<String, Obje
   }
 
   @Override
-  protected void preHandle(Context<Map<String, Object>> context) {
+  protected void preHandle(Context<Map<AqlPath, Object>> context) {
 
-    Map<String, Object> values = context.getObjectDeque().peek();
+    Map<AqlPath, Object> values = context.getObjectDeque().peek();
 
-    for (Map.Entry<String, Object> objectEntry : values.entrySet()) {
+    for (Map.Entry<AqlPath, Object> objectEntry : values.entrySet()) {
 
-      EnhancedAqlPath enhancedAqlPath = new EnhancedAqlPath(objectEntry.getKey());
-      if (StringUtils.isBlank(enhancedAqlPath.getPath())) {
-        if ("uuid".equals(enhancedAqlPath.getAttributeName())) {
+      AqlPath aqlPath = objectEntry.getKey();
+      if (!aqlPath.hasPath()) {
+        if ("uuid".equals(aqlPath.getAttributeName())) {
           // NOP
-        } else if (StringUtils.isNotBlank(enhancedAqlPath.getAttributeName())) {
+        } else if (StringUtils.isNotBlank(aqlPath.getAttributeName())) {
           handleSingleValue(
               objectEntry.getValue(),
-              enhancedAqlPath.getAttributeName(),
+              aqlPath.getAttributeName(),
               null,
               context.getRmObjectDeque().peek());
         } else {
           RMObject child = context.getRmObjectDeque().poll();
           handleSingleValue(
               objectEntry.getValue(),
-              context.getNodeDeque().peek().getAqlPathDto().getLast().getName(),
+              context.getNodeDeque().peek().getAqlPathDto().getLastNode().getName(),
               child,
               context.getRmObjectDeque().peek());
           context.getRmObjectDeque().push(child);
@@ -169,13 +170,13 @@ public class DtoToCompositionWalker extends ToCompositionWalker<Map<String, Obje
   }
 
   @Override
-  protected void postHandle(Context<Map<String, Object>> context) {
+  protected void postHandle(Context<Map<AqlPath, Object>> context) {
     super.postHandle(context);
 
     RMObject rmObject = context.getRmObjectDeque().peek();
     if (rmObject instanceof Activity) {
       context.getObjectDeque().peek().entrySet().stream()
-          .filter(e -> e.getKey().endsWith("/action_archetype_id"))
+          .filter(e -> e.getKey().getLastNode().equals(ACTION_ARCHETYPE_ID))
           .map(Map.Entry::getValue)
           .map(String.class::cast)
           .findAny()
@@ -184,9 +185,9 @@ public class DtoToCompositionWalker extends ToCompositionWalker<Map<String, Obje
   }
 
   @Override
-  protected int calculateSize(Context<Map<String, Object>> context, WebTemplateNode childNode) {
+  protected int calculateSize(Context<Map<AqlPath, Object>> context, WebTemplateNode childNode) {
 
-    Map<String, Object> values = filterValues(context, childNode);
+    Map<AqlPath, Object> values = filterValues(context, childNode);
     if (values.size() == 1) {
       Object value = values.values().stream().findAny().orElseThrow();
       if (value instanceof List) {
@@ -198,13 +199,13 @@ public class DtoToCompositionWalker extends ToCompositionWalker<Map<String, Obje
     return 0;
   }
 
-  static Map<String, Object> findEntity(Object dto) {
+  static Map<AqlPath, Object> findEntity(Object dto) {
 
     return Arrays.stream(FieldUtils.getAllFields(dto.getClass()))
         .filter(m -> m.isAnnotationPresent(Path.class))
         .filter(m -> readField(m, dto) != null)
         .collect(
-            Collectors.toMap(m -> m.getAnnotation(Path.class).value(), m -> readField(m, dto)));
+            Collectors.toMap(m -> AqlPath.parse(m.getAnnotation(Path.class).value()), m -> readField(m, dto)));
   }
 
   private static Object readField(Field field, Object dto) {

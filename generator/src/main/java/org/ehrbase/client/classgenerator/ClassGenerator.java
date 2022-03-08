@@ -45,7 +45,6 @@ import org.ehrbase.terminology.client.terminology.ValueSet;
 import org.ehrbase.util.reflection.ReflectionHelper;
 import org.ehrbase.webtemplate.filter.WebTemplateFilter;
 import org.ehrbase.webtemplate.model.*;
-import org.ehrbase.webtemplate.parser.EnhancedAqlPath;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -265,8 +264,7 @@ public class ClassGenerator {
             ParameterizedTypeName.get(ClassName.get(List.class), interfaceClassName);
       }
       String relativPath =
-          EnhancedAqlPath.removeStart(
-                  new EnhancedAqlPath(node.getAqlPath()), new EnhancedAqlPath(next.getAqlPath()))
+                  node.getAqlPathDto().removeStart(next.getAqlPathDto())
               .toString();
       addField(
           context,
@@ -379,7 +377,6 @@ public class ClassGenerator {
     WebTemplateNode relativeNode = new WebTemplateNode(node);
 
     List<WebTemplateNode> matching = relativeNode.findMatching(n -> true);
-    matching.add(relativeNode);
     matching.forEach(n -> n.setAqlPath(context.nodeDeque.peek().buildRelativePath(n, true)));
     return relativeNode;
   }
@@ -426,7 +423,7 @@ public class ClassGenerator {
 
     if (!expand) {
       TypeName className =
-          Optional.ofNullable(clazz).map(ClassName::get).orElse(ClassName.get(Object.class));
+          Optional.of(clazz).map(ClassName::get).orElse(ClassName.get(Object.class));
       if (endNode.isMulti() && !context.nodeDeque.peek().getRmType().equals("ELEMENT")) {
         className = ParameterizedTypeName.get(ClassName.get(List.class), className);
       }

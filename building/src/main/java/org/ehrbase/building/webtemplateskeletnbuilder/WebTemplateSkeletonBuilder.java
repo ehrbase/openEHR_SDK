@@ -40,13 +40,12 @@ import com.nedap.archie.rminfo.RMAttributeInfo;
 import org.ehrbase.util.exception.SdkException;
 import org.ehrbase.util.rmconstants.RmConstants;
 import org.ehrbase.webtemplate.model.WebTemplate;
-import org.ehrbase.webtemplate.model.WebTemplateInput;
 import org.ehrbase.webtemplate.model.WebTemplateNode;
-import org.ehrbase.webtemplate.parser.EnhancedAqlPath;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
+import static org.ehrbase.util.rmconstants.RmConstants.DV_CODED_TEXT;
 import static org.ehrbase.util.rmconstants.RmConstants.RM_VERSION_1_4_0;
 
 public class WebTemplateSkeletonBuilder {
@@ -61,16 +60,14 @@ public class WebTemplateSkeletonBuilder {
   }
 
   public static Composition build(WebTemplate template, boolean withChildren) {
-
     Composition composition = build(template.getTree(), withChildren, Composition.class);
 
-    composition.setArchetypeDetails(new Archetyped());
-    composition.getArchetypeDetails().setTemplateId(new TemplateId());
-    composition.getArchetypeDetails().getTemplateId().setValue(template.getTemplateId());
-    composition.getArchetypeDetails().setRmVersion(RM_VERSION_1_4_0);
-    composition
-        .getArchetypeDetails()
-        .setArchetypeId(new ArchetypeID(composition.getArchetypeNodeId()));
+    Archetyped archetypeDetails = new Archetyped();
+    composition.setArchetypeDetails(archetypeDetails);
+    archetypeDetails.setTemplateId(new TemplateId());
+    archetypeDetails.getTemplateId().setValue(template.getTemplateId());
+    archetypeDetails.setRmVersion(RM_VERSION_1_4_0);
+    archetypeDetails.setArchetypeId(new ArchetypeID(composition.getArchetypeNodeId()));
 
     return composition;
   }
@@ -78,13 +75,13 @@ public class WebTemplateSkeletonBuilder {
   @SuppressWarnings("unchecked")
   public static <T> T build(WebTemplateNode node, boolean withChildren, Class<T> clazz) {
 
-    String rmclass = node.getRmType();
+    String rmClass = node.getRmType();
 
     CComplexObject elementConstraint = new CComplexObject();
-    elementConstraint.setRmTypeName(rmclass);
+    elementConstraint.setRmTypeName(rmClass);
     Object skeleton;
 
-    switch (rmclass) {
+    switch (rmClass) {
       case "UID_BASED_ID":
         skeleton = new HierObjectId();
         break;
@@ -105,7 +102,7 @@ public class WebTemplateSkeletonBuilder {
 
     if (withChildren) {
       node.getChildren().stream()
-          .filter(n -> !List.of("name", "archetype_node_id", "offset").contains(n.getId()))
+          .filter(n -> !Set.of("name", "archetype_node_id", "offset").contains(n.getId()))
           .forEach(
               c -> {
                 Object childObject = build(c, true, Object.class);
@@ -169,11 +166,8 @@ public class WebTemplateSkeletonBuilder {
       WebTemplateNode childNode,
       Object childObject) {
 
-    String attributeName =
-        EnhancedAqlPath.removeStart(
-                new EnhancedAqlPath(childNode.getAqlPath(true)),
-                new EnhancedAqlPath(parentNode.getAqlPath(true)))
-            .getLast()
+    String attributeName = childNode.getAqlPathDto().removeStart(parentNode.getAqlPathDto())
+            .getLastNode()
             .getName();
 
     RM_OBJECT_CREATOR.addElementToListOrSetSingleValues(
@@ -186,11 +180,10 @@ public class WebTemplateSkeletonBuilder {
       WebTemplateNode childNode,
       Object removeChildObject) {
 
-    String attributeName =
-        EnhancedAqlPath.removeStart(
-                new EnhancedAqlPath(childNode.getAqlPath(true)),
-                new EnhancedAqlPath(parentNode.getAqlPath(true)))
-            .getLast()
+
+    String attributeName = childNode.getAqlPathDto()
+            .removeStart(parentNode.getAqlPathDto())
+            .getLastNode()
             .getName();
 
     RMAttributeInfo attributeInfo =
@@ -210,34 +203,22 @@ public class WebTemplateSkeletonBuilder {
   }
 
   public static <T> Optional<T> extractDefault(WebTemplateNode node, Class<T> clazz) {
+    if (node.getRmType().equals(DV_CODED_TEXT) && node.getMin() > 0) {
+          return node.getInputs().stream()
+          .filter(i -> i.getSuffix().equals("code"))
+          .filter(i -> i.getList().size() == 1)
+          .findAny()
+          .map(code ->
+            new DvCodedText(
+                code.getList().get(0).getLabel(),
+                new CodePhrase(
+                    new TerminologyId(code.getTerminology()),
+                    code.getList().get(0).getValue()))
+          )
+          .map(clazz::cast);
 
-    String rmclass = node.getRmType();
-
-    Object defaultValue = null;
-
-    switch (rmclass) {
-      case "DV_CODED_TEXT":
-        if (node.getMin() > 0) {
-          Optional<WebTemplateInput> code =
-              node.getInputs().stream()
-                  .filter(i -> i.getSuffix().equals("code"))
-                  .filter(i -> i.getList().size() == 1)
-                  .findAny();
-
-          if (code.isPresent()) {
-            defaultValue =
-                new DvCodedText(
-                    code.get().getList().get(0).getLabel(),
-                    new CodePhrase(
-                        new TerminologyId(code.get().getTerminology()),
-                        code.get().getList().get(0).getValue()));
-          }
-        }
-        break;
-      default:
-        defaultValue = null;
+    } else {
+      return Optional.empty();
     }
-
-    return Optional.ofNullable((T) defaultValue);
   }
 }
