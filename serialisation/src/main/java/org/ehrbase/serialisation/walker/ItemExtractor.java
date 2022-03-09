@@ -127,7 +127,8 @@ public class ItemExtractor {
                           Walker.ARCHIE_RM_INFO_LOOKUP
                               .getTypeInfo(c.getClass())
                               .getRmName()
-                              .equals(childNode.getRmType()))
+                              // childNode.getRmType my include Type "DV_INTERVAL<DV_TIME>"
+                              .equals(StringUtils.substringBefore(childNode.getRmType(), "<")))
                   .collect(Collectors.toList());
       // if rmType not found return null
       if (((List<?>) child).isEmpty()) {

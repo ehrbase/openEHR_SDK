@@ -25,11 +25,12 @@ import org.ehrbase.client.classgenerator.shareddefinition.State;
 import org.ehrbase.serialisation.walker.RMHelper;
 import org.ehrbase.serialisation.walker.defaultvalues.DefaultValuePath;
 import org.ehrbase.serialisation.walker.defaultvalues.DefaultValues;
+import org.ehrbase.webtemplate.model.WebTemplateNode;
 
 public class IsmTransitionValueInserter extends AbstractValueInserter<IsmTransition> {
 
   @Override
-  public void insert(IsmTransition rmObject, DefaultValues defaultValues) {
+  public void insert(IsmTransition rmObject, DefaultValues defaultValues, WebTemplateNode node) {
 
     if (RMHelper.isEmpty(rmObject.getCurrentState())
         && defaultValues.containsDefaultValue(

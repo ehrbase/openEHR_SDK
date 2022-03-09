@@ -23,10 +23,11 @@ import com.nedap.archie.rm.datastructures.IntervalEvent;
 import org.ehrbase.client.classgenerator.shareddefinition.MathFunction;
 import org.ehrbase.serialisation.walker.RMHelper;
 import org.ehrbase.serialisation.walker.defaultvalues.DefaultValues;
+import org.ehrbase.webtemplate.model.WebTemplateNode;
 
 public class IntervalEventValueInserter extends AbstractValueInserter<IntervalEvent> {
   @Override
-  public void insert(IntervalEvent rmObject, DefaultValues defaultValues) {
+  public void insert(IntervalEvent rmObject, DefaultValues defaultValues, WebTemplateNode node) {
 
     if (RMHelper.isEmpty(rmObject.getMathFunction())) {
       rmObject.setMathFunction(MathFunction.ACTUAL.toCodedText());

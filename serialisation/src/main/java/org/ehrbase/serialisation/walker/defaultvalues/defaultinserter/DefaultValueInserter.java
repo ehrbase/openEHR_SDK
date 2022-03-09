@@ -22,8 +22,9 @@ package org.ehrbase.serialisation.walker.defaultvalues.defaultinserter;
 import com.nedap.archie.rm.RMObject;
 import org.ehrbase.serialisation.walker.defaultvalues.DefaultValues;
 import org.ehrbase.util.reflection.ClassDependent;
+import org.ehrbase.webtemplate.model.WebTemplateNode;
 
 public interface DefaultValueInserter<T extends RMObject> extends ClassDependent<T> {
 
-  void insert(T rmObject, DefaultValues defaultValues);
+  void insert(T rmObject, DefaultValues defaultValues, WebTemplateNode node);
 }

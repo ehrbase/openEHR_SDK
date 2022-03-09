@@ -23,13 +23,15 @@ import com.nedap.archie.rm.composition.Composition;
 import com.nedap.archie.rm.composition.EventContext;
 import com.nedap.archie.rm.generic.PartyIdentified;
 import com.nedap.archie.rm.generic.PartySelf;
+import org.ehrbase.serialisation.walker.FlatHelper;
 import org.ehrbase.serialisation.walker.RMHelper;
 import org.ehrbase.serialisation.walker.defaultvalues.DefaultValuePath;
 import org.ehrbase.serialisation.walker.defaultvalues.DefaultValues;
+import org.ehrbase.webtemplate.model.WebTemplateNode;
 
 public class CompositionValueInserter extends AbstractValueInserter<Composition> {
   @Override
-  public void insert(Composition rmObject, DefaultValues defaultValues) {
+  public void insert(Composition rmObject, DefaultValues defaultValues, WebTemplateNode node) {
 
     if (RMHelper.isEmpty(rmObject.getLanguage())
         && defaultValues.containsDefaultValue(DefaultValuePath.LANGUAGE)) {
@@ -76,7 +78,8 @@ public class CompositionValueInserter extends AbstractValueInserter<Composition>
       rmObject.setContext(new EventContext());
     }
 
-    new EventContextValueInserter().insert(rmObject.getContext(), defaultValues);
+    new EventContextValueInserter()
+        .insert(rmObject.getContext(), defaultValues, FlatHelper.buildDummyChild("context", node));
   }
 
   @Override
