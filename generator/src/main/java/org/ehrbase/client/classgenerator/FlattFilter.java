@@ -28,7 +28,6 @@ import org.ehrbase.util.rmconstants.RmConstants;
 import org.ehrbase.webtemplate.filter.Filter;
 import org.ehrbase.webtemplate.model.WebTemplate;
 import org.ehrbase.webtemplate.model.WebTemplateNode;
-import org.ehrbase.webtemplate.parser.FlatPath;
 import org.ehrbase.webtemplate.parser.config.RmIntrospectConfig;
 import org.ehrbase.webtemplate.util.WebTemplateUtils;
 
@@ -134,16 +133,17 @@ public class FlattFilter extends Filter {
     return true;
   }
 
+  @Override
   protected void preHandle(WebTemplateNode node) {
 
-    if (new FlatPath(node.getAqlPath()).getLast().getName().equals("null_flavour")) {
+    if (node.getAqlPathDto().getLastNode().getName().equals("null_flavour")) {
       node.setName("null_flavour");
     }
 
     List<WebTemplateNode> ismTransitionList =
-        node.getChildren().stream()
-            .filter(n -> "ISM_TRANSITION".equals(n.getRmType()))
-            .collect(Collectors.toList());
+            node.getChildren().stream()
+                    .filter(n -> "ISM_TRANSITION".equals(n.getRmType()))
+                    .collect(Collectors.toList());
     if (!ismTransitionList.isEmpty()) {
       node.getChildren().removeAll(ismTransitionList);
       node.getChildren().add(ismTransitionList.get(0));

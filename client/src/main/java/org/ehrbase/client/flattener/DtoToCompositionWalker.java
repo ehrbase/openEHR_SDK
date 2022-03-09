@@ -38,7 +38,7 @@ import org.ehrbase.client.exception.ClientException;
 import org.ehrbase.serialisation.walker.Context;
 import org.ehrbase.serialisation.walker.ToCompositionWalker;
 import org.ehrbase.webtemplate.model.WebTemplateNode;
-import org.ehrbase.webtemplate.parser.FlatPath;
+import org.ehrbase.webtemplate.parser.AqlPath;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -51,7 +51,7 @@ import java.util.stream.Collectors;
 
 import static org.ehrbase.util.rmconstants.RmConstants.DV_CODED_TEXT;
 
-public class DtoToCompositionWalker extends ToCompositionWalker<Map<String, Object>> {
+public class DtoToCompositionWalker extends ToCompositionWalker<Map<AqlPath, Object>> {
 
   public static final ArchieRMInfoLookup ARCHIE_RM_INFO_LOOKUP = ArchieRMInfoLookup.getInstance();
 
@@ -59,79 +59,85 @@ public class DtoToCompositionWalker extends ToCompositionWalker<Map<String, Obje
       new RMObjectCreator(ARCHIE_RM_INFO_LOOKUP);
 
   private static final PathMatcher PATH_MATCHER = new PathMatcher();
+  public static final AqlPath.AqlNode ACTION_ARCHETYPE_ID = AqlPath.parse("action_archetype_id").getLastNode();
 
   private final Logger logger = LoggerFactory.getLogger(getClass());
 
   @Override
-  protected Map<String, Object> extract(
-      Context<Map<String, Object>> context, WebTemplateNode child, boolean isChoice, Integer i) {
+  protected Map<AqlPath, Object> extract(
+      Context<Map<AqlPath, Object>> context, WebTemplateNode child, boolean isChoice, Integer i) {
 
-    Map<String, Object> subValues = filterValues(context, child);
+    Map<AqlPath, Object> subValues = filterValues(context, child);
 
     if (subValues.isEmpty()) {
       return null;
+
     } else if (subValues.size() > 1) {
       if (isChoice && child.getRmType().equals("INTERVAL_EVENT")) {
         logger.warn("Path {} is choice but missing OptionFor", child.getAqlPath());
         return null;
       }
       return subValues;
-    } else {
-      Object value = subValues.values().stream().findAny().orElseThrow();
-      if (value instanceof List && i != null) {
+    }
 
-        value = ((List<?>) value).size() > i ? ((List<?>) value).get(i) : null;
-      }
+    Object value = subValues.values().stream().findAny().orElseThrow();
 
-      if (isChoice && value != null) {
-        Optional<String> optionFor =
-            Optional.of(value)
-                .map(Object::getClass)
-                .map(c -> c.getAnnotation(OptionFor.class))
-                .map(OptionFor::value);
-        if (optionFor.isEmpty()) {
+    if (value instanceof List && i != null) {
+      value = Optional.of(value)
+              .map(List.class::cast)
+              .filter(l -> l.size() > i)
+              .map(l -> l.get(i))
+              .orElse(null);
+    }
 
-          // If choice for EVENT and not OptionFor use
-          if (child.getRmType().equals("INTERVAL_EVENT")) {
+    if (isChoice && value != null) {
+      Optional<String> optionFor =
+          Optional.of(value)
+              .map(Object::getClass)
+              .map(c -> c.getAnnotation(OptionFor.class))
+              .map(OptionFor::value);
+
+      if (optionFor.isEmpty()) {
+        // If choice for EVENT and not OptionFor use
+        switch (child.getRmType()) {
+          case "INTERVAL_EVENT":
+          case DV_CODED_TEXT:
             value = null;
-
-          } else if (child.getRmType().equals("POINT_EVENT")) {
-            // NOP
-          } else if (child.getRmType().equals("DV_TEXT")) {
+            break;
+          case "POINT_EVENT":
+          case "DV_TEXT":
             // NOOP
-          } else if (child.getRmType().equals(DV_CODED_TEXT)) {
-            value = null;
-          } else {
-            logger.warn(
-                "Path {} is choice but {} is missing OptionFor",
-                child.getAqlPath(),
-                value.getClass().getSimpleName());
-          }
-        } else if (optionFor.filter(s -> s.equals(child.getRmType())).isEmpty()) {
-          value = null;
+            break;
+          default:
+            logger.warn("Path {} is choice but {} is missing OptionFor",
+              child.getAqlPath(),
+              value.getClass().getSimpleName());
         }
-      }
 
-      if (value == null) {
-        return null;
-      } else {
-        String path = subValues.keySet().stream().findAny().orElseThrow();
-        if (value.getClass().isAnnotationPresent(Entity.class)
-            && new FlatPath(path).getPath().equals("")) {
-
-          Map<String, Object> newValues =
-              findEntity(value).entrySet().stream()
-                  .collect(Collectors.toMap(e -> path + e.getKey(), Map.Entry::getValue));
-          return !newValues.isEmpty() ? newValues : null;
-        } else {
-          return Map.of(path, value);
-        }
+      } else if (optionFor.filter(s -> s.equals(child.getRmType())).isEmpty()) {
+        value = null;
       }
     }
+
+    if (value == null) {
+      return null;
+    }
+
+    AqlPath path = subValues.keySet().stream().findAny().orElseThrow();
+
+    if (value.getClass().isAnnotationPresent(Entity.class)
+        && !path.hasPath()) {
+      Map<AqlPath, Object> newValues =
+          findEntity(value).entrySet().stream()
+              .collect(Collectors.toMap(e -> path.addEnd(e.getKey()), Map.Entry::getValue));
+      return newValues.isEmpty() ? null : newValues;
+    }
+
+    return Map.of(path, value);
   }
 
-  private Map<String, Object> filterValues(
-      Context<Map<String, Object>> context, WebTemplateNode child) {
+  private Map<AqlPath, Object> filterValues(
+      Context<Map<AqlPath, Object>> context, WebTemplateNode child) {
     return context.getObjectDeque().peek().entrySet().stream()
         .map(e -> new ImmutablePair<>(PATH_MATCHER.matchesPath(context, child, e), e.getValue()))
         .filter(p -> p.getLeft() != null)
@@ -139,27 +145,27 @@ public class DtoToCompositionWalker extends ToCompositionWalker<Map<String, Obje
   }
 
   @Override
-  protected void preHandle(Context<Map<String, Object>> context) {
+  protected void preHandle(Context<Map<AqlPath, Object>> context) {
 
-    Map<String, Object> values = context.getObjectDeque().peek();
+    Map<AqlPath, Object> values = context.getObjectDeque().peek();
 
-    for (Map.Entry<String, Object> objectEntry : values.entrySet()) {
+    for (Map.Entry<AqlPath, Object> objectEntry : values.entrySet()) {
 
-      FlatPath flatPath = new FlatPath(objectEntry.getKey());
-      if (StringUtils.isBlank(flatPath.getPath())) {
-        if ("uuid".equals(flatPath.getAttributeName())) {
+      AqlPath aqlPath = objectEntry.getKey();
+      if (!aqlPath.hasPath()) {
+        if ("uuid".equals(aqlPath.getAttributeName())) {
           // NOP
-        } else if (StringUtils.isNotBlank(flatPath.getAttributeName())) {
+        } else if (StringUtils.isNotBlank(aqlPath.getAttributeName())) {
           handleSingleValue(
               objectEntry.getValue(),
-              flatPath.getAttributeName(),
+              aqlPath.getAttributeName(),
               null,
               context.getRmObjectDeque().peek());
         } else {
           RMObject child = context.getRmObjectDeque().poll();
           handleSingleValue(
               objectEntry.getValue(),
-              new FlatPath(context.getNodeDeque().peek().getAqlPath()).getLast().getName(),
+              context.getNodeDeque().peek().getAqlPathDto().getLastNode().getName(),
               child,
               context.getRmObjectDeque().peek());
           context.getRmObjectDeque().push(child);
@@ -169,13 +175,13 @@ public class DtoToCompositionWalker extends ToCompositionWalker<Map<String, Obje
   }
 
   @Override
-  protected void postHandle(Context<Map<String, Object>> context) {
+  protected void postHandle(Context<Map<AqlPath, Object>> context) {
     super.postHandle(context);
 
     RMObject rmObject = context.getRmObjectDeque().peek();
     if (rmObject instanceof Activity) {
       context.getObjectDeque().peek().entrySet().stream()
-          .filter(e -> e.getKey().endsWith("/action_archetype_id"))
+          .filter(e -> e.getKey().getLastNode().equals(ACTION_ARCHETYPE_ID))
           .map(Map.Entry::getValue)
           .map(String.class::cast)
           .findAny()
@@ -184,9 +190,9 @@ public class DtoToCompositionWalker extends ToCompositionWalker<Map<String, Obje
   }
 
   @Override
-  protected int calculateSize(Context<Map<String, Object>> context, WebTemplateNode childNode) {
+  protected int calculateSize(Context<Map<AqlPath, Object>> context, WebTemplateNode childNode) {
 
-    Map<String, Object> values = filterValues(context, childNode);
+    Map<AqlPath, Object> values = filterValues(context, childNode);
     if (values.size() == 1) {
       Object value = values.values().stream().findAny().orElseThrow();
       if (value instanceof List) {
@@ -198,13 +204,13 @@ public class DtoToCompositionWalker extends ToCompositionWalker<Map<String, Obje
     return 0;
   }
 
-  static Map<String, Object> findEntity(Object dto) {
+  static Map<AqlPath, Object> findEntity(Object dto) {
 
     return Arrays.stream(FieldUtils.getAllFields(dto.getClass()))
         .filter(m -> m.isAnnotationPresent(Path.class))
         .filter(m -> readField(m, dto) != null)
         .collect(
-            Collectors.toMap(m -> m.getAnnotation(Path.class).value(), m -> readField(m, dto)));
+            Collectors.toMap(m -> AqlPath.parse(m.getAnnotation(Path.class).value()), m -> readField(m, dto)));
   }
 
   private static Object readField(Field field, Object dto) {
@@ -228,6 +234,7 @@ public class DtoToCompositionWalker extends ToCompositionWalker<Map<String, Obje
       dvCodedText.setValue(valueSet.getValue());
       dvCodedText.setDefiningCode(
           new CodePhrase(new TerminologyId(valueSet.getTerminologyId()), valueSet.getCode()));
+
     } else if (EnumValueSet.class.isAssignableFrom(value.getClass())
         && DvCodedText.class.isAssignableFrom(
             ARCHIE_RM_INFO_LOOKUP.getAttributeInfo(parent.getClass(), childName).getType())) {
@@ -237,36 +244,34 @@ public class DtoToCompositionWalker extends ToCompositionWalker<Map<String, Obje
       dvCodedText.setDefiningCode(
           new CodePhrase(new TerminologyId(valueSet.getTerminologyId()), valueSet.getCode()));
       RM_OBJECT_CREATOR.set(parent, childName, Collections.singletonList(dvCodedText));
+
     } else if (EnumValueSet.class.isAssignableFrom(value.getClass())) {
       EnumValueSet valueSet = (EnumValueSet) value;
       CodePhrase codePhrase =
           new CodePhrase(new TerminologyId(valueSet.getTerminologyId()), valueSet.getCode());
       RM_OBJECT_CREATOR.set(parent, childName, Collections.singletonList(codePhrase));
-    } else if (ARCHIE_RM_INFO_LOOKUP
-            .getAttributeInfo(parent.getClass(), childName)
-            .getTypeInCollection()
-            .isAssignableFrom(value.getClass())
-        || (ARCHIE_RM_INFO_LOOKUP
-                .getAttributeInfo(parent.getClass(), childName)
-                .getTypeInCollection()
-                .isAssignableFrom(boolean.class)
-            && value.getClass().isAssignableFrom(Boolean.class))) {
-      RMAttributeInfo attributeInfo =
-          ARCHIE_RM_INFO_LOOKUP.getAttributeInfo(parent.getClass(), childName);
-      if (attributeInfo.isMultipleValued()) {
-        try {
-          Object invoke = attributeInfo.getGetMethod().invoke(parent);
-          if (Collection.class.isAssignableFrom(invoke.getClass()) && child != null) {
-            ((Collection) invoke).remove(child);
-          }
-        } catch (IllegalAccessException | InvocationTargetException e) {
-          logger.warn(e.getMessage(), e);
-        }
-      }
-      RM_OBJECT_CREATOR.addElementToListOrSetSingleValues(
-          parent, childName, Collections.singletonList(value));
+
     } else {
-      logger.warn("Unhandled child {} in {}", childName, parent);
+      RMAttributeInfo attributeInfo = ARCHIE_RM_INFO_LOOKUP.getAttributeInfo(parent.getClass(), childName);
+      Class<?> type = attributeInfo.getTypeInCollection();
+      if (type.isAssignableFrom(value.getClass())
+          || (type.equals(boolean.class) && value instanceof Boolean)) {
+        if (attributeInfo.isMultipleValued()) {
+          try {
+            Object invoke = attributeInfo.getGetMethod().invoke(parent);
+            if (child != null && invoke instanceof Collection) {
+              ((Collection<?>) invoke).remove(child);
+            }
+          } catch (IllegalAccessException | InvocationTargetException e) {
+            logger.warn(e.getMessage(), e);
+          }
+        }
+        RM_OBJECT_CREATOR.addElementToListOrSetSingleValues(
+                parent, childName, Collections.singletonList(value));
+
+      } else {
+        logger.warn("Unhandled child {} in {}", childName, parent);
+      }
     }
   }
 }

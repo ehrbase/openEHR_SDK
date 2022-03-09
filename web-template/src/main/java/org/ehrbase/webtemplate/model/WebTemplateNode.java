@@ -25,12 +25,13 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.nedap.archie.rm.archetyped.Locatable;
 import com.nedap.archie.rminfo.ArchieRMInfoLookup;
 import org.apache.commons.lang3.StringUtils;
-import org.ehrbase.webtemplate.parser.FlatPath;
+import org.ehrbase.webtemplate.parser.AqlPath;
 
 import java.io.Serializable;
 import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class WebTemplateNode implements Serializable {
@@ -52,7 +53,7 @@ public class WebTemplateNode implements Serializable {
   private final String[] aqlCache = new String[2];
 
   @JsonSerialize(using = AqlPathSerializer.class)
-  private String aqlPath;
+  private AqlPath aqlPath;
 
   private final List<WebTemplateNode> children = new ArrayList<>();
   private final List<WebTemplateInput> inputs = new ArrayList<>();
@@ -176,18 +177,27 @@ public class WebTemplateNode implements Serializable {
   }
 
   public String getAqlPath() {
+    return aqlPath.format(true);
+  }
+
+  @JsonIgnore
+  public AqlPath getAqlPathDto() {
     return aqlPath;
   }
 
   public String getAqlPath(boolean withOtherPredicates) {
     int idx = withOtherPredicates ? 0 : 1;
     if (aqlCache[idx] == null) {
-      aqlCache[idx] = new FlatPath(aqlPath).format(withOtherPredicates);
+      aqlCache[idx] = aqlPath.format(withOtherPredicates);
     }
     return aqlCache[idx];
   }
 
   public void setAqlPath(String aqlPath) {
+    setAqlPath(AqlPath.parse(aqlPath));
+  }
+
+  public void setAqlPath(AqlPath aqlPath) {
     this.aqlPath = aqlPath;
     Arrays.fill(aqlCache, null);
   }
@@ -246,14 +256,27 @@ public class WebTemplateNode implements Serializable {
     return children.stream().filter(n -> n.getId().equals(id)).findAny();
   }
 
-  public String buildRelativePath(WebTemplateNode child) {
-    return FlatPath.removeStart(new FlatPath(child.getAqlPath()), new FlatPath(this.getAqlPath()))
-        .toString();
+  public AqlPath buildRelativePath(WebTemplateNode child, boolean checkIfTrueChild) {
+
+    if (checkIfTrueChild) {
+      return child.getAqlPathDto().removeStart(this.getAqlPathDto());
+
+    } else {
+      AqlPath me = this.aqlPath;
+      AqlPath other = child.aqlPath;
+
+      if (! me.hasPath()) {
+        return other;
+      }
+
+      return other.getEnd(other.getNodeCount() - me.getNodeCount());
+    }
   }
 
   public boolean isRelativePathNameDependent(WebTemplateNode child){
-    return FlatPath.removeStart(new FlatPath(child.getAqlPath()), new FlatPath(this.getAqlPath())).getLast().findOtherPredicate("name/value") != null;
+    return buildRelativePath(child, false).getLastNode().findOtherPredicate(AqlPath.NAME_VALUE_KEY) != null;
   }
+
   public List<WebTemplateNode> findMatching(Predicate<WebTemplateNode> filter) {
 
     List<WebTemplateNode> matching =
@@ -268,6 +291,20 @@ public class WebTemplateNode implements Serializable {
     return matching;
   }
 
+  public static Stream<WebTemplateNode> streamSubtree(WebTemplateNode node, boolean depthFirst) {
+   return streamSubtree(List.of(node), depthFirst);
+  }
+
+  public static Stream<WebTemplateNode> streamSubtree(List<WebTemplateNode> nodes, boolean depthFirst) {
+    if (nodes.isEmpty()) {
+      return Stream.of();
+    } else if (depthFirst) {
+      return Stream.concat(nodes.stream().flatMap(n -> streamSubtree(n.getChildren(), true)), nodes.stream());
+    } else {
+      return Stream.concat(nodes.stream(), nodes.stream().flatMap(n -> streamSubtree(n.getChildren(), false)));
+    }
+  }
+
   public List<WebTemplateNode> multiValued() {
     List<WebTemplateNode> matching =
             children.stream()
@@ -280,8 +317,7 @@ public class WebTemplateNode implements Serializable {
 
     // Add all which are multi if ignoring name
     Map<String, List<WebTemplateNode>> collect =
-        children.stream()
-            .collect(Collectors.groupingBy(n -> new FlatPath(n.getAqlPath()).format(false)));
+        children.stream().collect(Collectors.groupingBy(n -> n.getAqlPathDto().format(false)));
     collect.forEach(
         (k, v) -> {
           if (v.size() > 1) {

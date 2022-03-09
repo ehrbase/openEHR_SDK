@@ -59,25 +59,31 @@ public class DefaultValidator implements ConstraintValidator<RMObject> {
   private List<ConstraintViolation> validate(Locatable locatable, WebTemplateNode node) {
     List<ConstraintViolation> result = new ArrayList<>();
 
-    node.getChildren().forEach(childNode -> {
-      var count = 0;
-      for (var item : locatable.itemsAtPath(node.buildRelativePath(childNode))) {
-        if (item instanceof Locatable) {
-          if ( !node.isRelativePathNameDependent(childNode) || Objects.equals(((Locatable) item).getNameAsString(), childNode.getName())) {
-            count++;
-          }
-        } else {
-          count++;
-        }
-      }
+    node.getChildren()
+        .forEach(
+            childNode -> {
+              var count = 0;
+              for (var item :
+                  locatable.itemsAtPath(node.buildRelativePath(childNode, false).toString())) {
+                if (item instanceof Locatable) {
+                  if (!node.isRelativePathNameDependent(childNode)
+                      || Objects.equals(
+                          ((Locatable) item).getNameAsString(), childNode.getName())) {
+                    count++;
+                  }
+                } else {
+                  count++;
+                }
+              }
 
-      var interval = getMultiplicityInterval(childNode, node);
-      if (!interval.has(count)) {
-        String message = RMObjectValidationMessageIds.rm_OCCURRENCE_MISMATCH.getMessage(count,
-            interval.toString());
-        result.add(new ConstraintViolation(childNode.getAqlPath(), message));
-      }
-    });
+              var interval = getMultiplicityInterval(childNode, node);
+              if (!interval.has(count)) {
+                String message =
+                    RMObjectValidationMessageIds.rm_OCCURRENCE_MISMATCH.getMessage(
+                        count, interval.toString());
+                result.add(new ConstraintViolation(childNode.getAqlPath(), message));
+              }
+            });
 
     return result;
   }

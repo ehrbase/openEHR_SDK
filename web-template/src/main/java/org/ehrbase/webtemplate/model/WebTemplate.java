@@ -20,16 +20,12 @@
 package org.ehrbase.webtemplate.model;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
-import org.ehrbase.webtemplate.parser.FlatPath;
+import org.ehrbase.webtemplate.parser.AqlPath;
 import org.ehrbase.webtemplate.parser.NodeId;
+
+import java.io.Serializable;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class WebTemplate implements Serializable {
@@ -103,12 +99,8 @@ public class WebTemplate implements Serializable {
   }
 
   public List<WebTemplateNode> findAllByAqlPath(String aql, boolean ignoreName) {
-
-    return tree.findMatching(
-        c ->
-            new FlatPath(aql)
-                .format(!ignoreName)
-                .equals(new FlatPath(c.getAqlPath()).format(!ignoreName)));
+    AqlPath aqlPath = AqlPath.parse(aql);
+    return tree.findMatching(c -> aqlPath.equals(c.getAqlPathDto(), !ignoreName));
   }
 
   public Set<Set<NodeId>> findAllContainmentCombinations() {
