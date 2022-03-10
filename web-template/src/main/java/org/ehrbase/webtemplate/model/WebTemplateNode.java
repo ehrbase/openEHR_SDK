@@ -21,17 +21,21 @@ package org.ehrbase.webtemplate.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.nedap.archie.rm.archetyped.Locatable;
 import com.nedap.archie.rminfo.ArchieRMInfoLookup;
-import org.apache.commons.lang3.StringUtils;
-import org.ehrbase.webtemplate.parser.AqlPath;
-
 import java.io.Serializable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.apache.commons.lang3.StringUtils;
+import org.ehrbase.webtemplate.parser.AqlPath;
 
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class WebTemplateNode implements Serializable {
@@ -52,7 +56,6 @@ public class WebTemplateNode implements Serializable {
   @JsonIgnore
   private final String[] aqlCache = new String[2];
 
-  @JsonSerialize(using = AqlPathSerializer.class)
   private AqlPath aqlPath;
 
   private final List<WebTemplateNode> children = new ArrayList<>();
