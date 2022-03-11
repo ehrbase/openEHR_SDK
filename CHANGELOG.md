@@ -15,6 +15,7 @@ Note: version releases in the 0.x.y range may introduce breaking changes.
 - Walker, Flat, DTO, Validation  : enhance performance of path handling (
   see https://github.com/ehrbase/openEHR_SDK/pull/325, https://github.com/ehrbase/openEHR_SDK/pull/332 )
 - dto: Fix handling of element wich contains a choice with one an interval (see https://github.com/ehrbase/openEHR_SDK/pull/334)
+- Fixes AqlParseException while using boolean in where clause ([#338](hhttps://github.com/ehrbase/openEHR_SDK/pull/338))
 
 
 ## 1.17.0

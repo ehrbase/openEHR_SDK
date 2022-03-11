@@ -20,6 +20,12 @@
 package org.ehrbase.aql.parser;
 
 import com.nedap.archie.datetime.DateTimeParsers;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
 import org.apache.commons.collections4.MultiValuedMap;
@@ -28,7 +34,15 @@ import org.apache.commons.lang3.StringUtils;
 import org.ehrbase.aql.dto.AqlDto;
 import org.ehrbase.aql.dto.EhrDto;
 import org.ehrbase.aql.dto.LogicalOperatorSymbol;
-import org.ehrbase.aql.dto.condition.*;
+import org.ehrbase.aql.dto.condition.ConditionComparisonOperatorDto;
+import org.ehrbase.aql.dto.condition.ConditionComparisonOperatorSymbol;
+import org.ehrbase.aql.dto.condition.ConditionDto;
+import org.ehrbase.aql.dto.condition.ConditionLogicalOperatorDto;
+import org.ehrbase.aql.dto.condition.ConditionLogicalOperatorSymbol;
+import org.ehrbase.aql.dto.condition.MatchesOperatorDto;
+import org.ehrbase.aql.dto.condition.ParameterValue;
+import org.ehrbase.aql.dto.condition.SimpleValue;
+import org.ehrbase.aql.dto.condition.Value;
 import org.ehrbase.aql.dto.containment.ContainmentDto;
 import org.ehrbase.aql.dto.containment.ContainmentExpresionDto;
 import org.ehrbase.aql.dto.containment.ContainmentLogicalOperator;
@@ -38,9 +52,8 @@ import org.ehrbase.aql.dto.orderby.OrderByExpressionSymbol;
 import org.ehrbase.aql.dto.select.SelectDto;
 import org.ehrbase.aql.dto.select.SelectFieldDto;
 import org.ehrbase.aql.dto.select.SelectStatementDto;
+import org.ehrbase.aql.parser.AqlParser.OperandContext;
 import org.ehrbase.client.aql.top.Direction;
-
-import java.util.*;
 
 public class AqlToDtoVisitor extends AqlBaseVisitor<Object> {
 
@@ -331,6 +344,18 @@ public class AqlToDtoVisitor extends AqlBaseVisitor<Object> {
 
     if (ctx.identifiedExpr() != null) {
       conditionDto = visitIdentifiedExpr(ctx.identifiedExpr());
+    } else if (ctx.IS() != null) {
+      ConditionComparisonOperatorDto operatorDto = new ConditionComparisonOperatorDto();
+      operatorDto.setSymbol(ctx.NOT() == null ? ConditionComparisonOperatorSymbol.EQ : ConditionComparisonOperatorSymbol.NEQ);
+      operatorDto.setStatement(visitIdentifiedPath(ctx.identifiedOperand(0).identifiedPath()));
+      if (ctx.TRUE() != null) {
+        operatorDto.setValue(new SimpleValue(true));
+      } else if (ctx.FALSE() != null) {
+        operatorDto.setValue(new SimpleValue(false));
+      } else {
+        throw new AqlParseException("Not supported, only IS (NOT) TRUE/FALSE is supported");
+      }
+      conditionDto = operatorDto;
     } else if (ctx.COMPARABLEOPERATOR() != null) {
       ConditionComparisonOperatorSymbol comparisonOperatorSymbol = extractSymbol(ctx);
       ConditionComparisonOperatorDto operatorDto = new ConditionComparisonOperatorDto();
@@ -359,7 +384,7 @@ public class AqlToDtoVisitor extends AqlBaseVisitor<Object> {
   public Value visitOperand(AqlParser.OperandContext ctx) {
     final Value value;
 
-    if (ctx.BOOLEAN() != null) {
+    if (isBooleanOperand(ctx)) {
       SimpleValue simpleValue = new SimpleValue();
       simpleValue.setValue(Boolean.parseBoolean(ctx.getText()));
       value = simpleValue;
@@ -464,5 +489,9 @@ public class AqlToDtoVisitor extends AqlBaseVisitor<Object> {
     } else {
       return null;
     }
+  }
+
+  private boolean isBooleanOperand(OperandContext ctx) {
+    return ctx.BOOLEAN() != null || ctx.TRUE() != null || ctx.FALSE() != null;
   }
 }

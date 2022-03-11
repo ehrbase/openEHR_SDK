@@ -364,4 +364,27 @@ public class AqlToDtoParserTest {
 
     assertThrows(AqlParseException.class, () -> parser.parse(query5));
   }
+
+  @Test
+  public void parseWhereClauseWithBoolean() {
+    String aql;
+
+    aql = "select e/ehr_id/value from EHR e contains OBSERVATION o where o/data[at0001]/items[at0024]/items[at0025]/value/value = true";
+    testAql(aql, "Select e/ehr_id/value as F1 from EHR e contains OBSERVATION o where o/data[at0001]/items[at0024]/items[at0025]/value/value = true");
+
+    aql = "select e/ehr_id/value from EHR e contains OBSERVATION o where o/data[at0001]/items[at0024]/items[at0025]/value/value is true";
+    testAql(aql, "Select e/ehr_id/value as F1 from EHR e contains OBSERVATION o where o/data[at0001]/items[at0024]/items[at0025]/value/value = true");
+
+    aql = "select e/ehr_id/value from EHR e contains OBSERVATION o where o/data[at0001]/items[at0024]/items[at0025]/value/value is not true";
+    testAql(aql, "Select e/ehr_id/value as F1 from EHR e contains OBSERVATION o where o/data[at0001]/items[at0024]/items[at0025]/value/value != true");
+
+    aql = "select e/ehr_id/value from EHR e contains OBSERVATION o where o/data[at0001]/items[at0024]/items[at0025]/value/value = false";
+    testAql(aql, "Select e/ehr_id/value as F1 from EHR e contains OBSERVATION o where o/data[at0001]/items[at0024]/items[at0025]/value/value = false");
+
+    aql = "select e/ehr_id/value from EHR e contains OBSERVATION o where o/data[at0001]/items[at0024]/items[at0025]/value/value is false";
+    testAql(aql, "Select e/ehr_id/value as F1 from EHR e contains OBSERVATION o where o/data[at0001]/items[at0024]/items[at0025]/value/value = false");
+
+    aql = "select e/ehr_id/value from EHR e contains OBSERVATION o where o/data[at0001]/items[at0024]/items[at0025]/value/value is not false";
+    testAql(aql, "Select e/ehr_id/value as F1 from EHR e contains OBSERVATION o where o/data[at0001]/items[at0024]/items[at0025]/value/value != false");
+  }
 }
