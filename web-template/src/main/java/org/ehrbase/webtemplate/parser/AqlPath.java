@@ -19,14 +19,21 @@
 
 package org.ehrbase.webtemplate.parser;
 
-import org.apache.commons.lang3.StringUtils;
-import org.ehrbase.webtemplate.util.CharSequenceHelper;
+import static org.ehrbase.webtemplate.util.CharSequenceHelper.subSequence;
 
 import java.io.Serializable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.function.UnaryOperator;
-
-import static org.ehrbase.webtemplate.util.CharSequenceHelper.subSequence;
+import org.apache.commons.lang3.StringUtils;
+import org.ehrbase.webtemplate.util.CharSequenceHelper;
 
 public final class AqlPath implements Serializable {
 
@@ -367,7 +374,7 @@ public final class AqlPath implements Serializable {
           } else {
             throw new IllegalArgumentException("Illegal predicate format");
           }
-          otherPredicates.put(key, StringUtils.unwrap(value.toString(), "'"));
+          otherPredicates.put(key.trim(), StringUtils.unwrap(value.toString().trim(), "'"));
         }
 
         if (isLastNode && StringUtils.isNotEmpty(nameValue)) {
@@ -422,12 +429,12 @@ public final class AqlPath implements Serializable {
     } else if (last < path.length() && max == null) {
       strings.add(subSequence(path, last, path.length()));
     }
-    return strings.stream().toArray(CharSequence[]::new);
+    return strings.toArray(CharSequence[]::new);
   }
 
   private static CharSequence findPrefix(CharSequence fullPath, int startPos, String[] search) {
     CharSequence pathAfter = subSequence(fullPath, startPos, fullPath.length());
-    int insertionPoint = Arrays.binarySearch(search, pathAfter, (a, b) -> CharSequence.compare(a, b));
+    int insertionPoint = Arrays.binarySearch(search, pathAfter, CharSequence::compare);
     if (insertionPoint >= 0) {
       return search[insertionPoint];
     }
