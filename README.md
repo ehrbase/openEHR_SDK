@@ -145,7 +145,7 @@ see generator/src/main/resources/DefaultConfig.yaml
 
 ### Use The SDK in your projekt
 
-You can include release versions of the SDK via [maven centra](https://search.maven.org/search?q=g:org.ehrbase.openehr.sdk)
+You can include release versions of the SDK via [maven central](https://search.maven.org/search?q=g:org.ehrbase.openehr.sdk)
 
 If you need specific development-versions, you can use [jitpack.io](https://jitpack.io/#ehrbase/openEHR_SDK)
 
