@@ -112,7 +112,8 @@ public enum OperationalTemplateTestData {
   RE_SPECT("ReSPECT-3.v0", "ReSPECT-3.v0.opt", "ReSPECT-3.v0"),
   IPS("International Patient Summary", "ips.v0.opt", "International Patient Summary"),
   ERROR_TEST("Contains choice between interval and not interval", "ErrorTest.opt", "ErrorTest"),
-  SECTION_CARDINALITY("Cardinality test template sections", "section_cardinality.opt", "cardinality_of_section");
+  SECTION_CARDINALITY("Cardinality test template sections", "section_cardinality.opt", "cardinality_of_section"),
+  NULLID("My Nullid test", "nullid.opt", "nullid");
 
   private final String filename;
   private final String templateId;
