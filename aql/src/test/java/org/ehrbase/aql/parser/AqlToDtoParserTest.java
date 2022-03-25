@@ -363,7 +363,8 @@ public class AqlToDtoParserTest {
         + "limit 50 "
         + "order by e/ehr_id/value ASC ";
 
-    assertThrows(AqlParseException.class, () -> parser.parse(query3));
+    aql = parser.parse(query3);
+    assertEquals(50, aql.getLimit());
 
     var query4 = "select e/ehr_id/value "
         + "from EHR e "
