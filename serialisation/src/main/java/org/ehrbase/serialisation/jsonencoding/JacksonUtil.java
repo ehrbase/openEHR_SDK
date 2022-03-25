@@ -21,7 +21,8 @@
 package org.ehrbase.serialisation.jsonencoding;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.nedap.archie.json.RMJacksonConfiguration;
+import com.nedap.archie.json.ArchieJacksonConfiguration;
+
 
 public class JacksonUtil {
 
@@ -36,7 +37,7 @@ public class JacksonUtil {
      * @return
      */
     public static ObjectMapper getObjectMapper() {
-        RMJacksonConfiguration configuration = new RMJacksonConfiguration();
+        ArchieJacksonConfiguration configuration = ArchieJacksonConfiguration.createStandardsCompliant();
         configuration.setAddExtraFieldsInArchetypeId(false);
         configuration.setTypePropertyName("_type");
         configuration.setSerializeEmptyCollections(true);

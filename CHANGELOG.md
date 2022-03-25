@@ -5,6 +5,7 @@ Note: version releases in the 0.x.y range may introduce breaking changes.
 ## [unreleased]
 
 ### Added
+- Update archie to version 2.0.1 ([#345](https://github.com/ehrbase/openEHR_SDK/pull/345))
 
 ### Fixed
 
