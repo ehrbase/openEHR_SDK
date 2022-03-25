@@ -409,4 +409,33 @@ public class AqlToDtoParserTest {
     testAql(aql,
         "Select e/ehr_id/value as F1 from EHR e contains OBSERVATION o where o/data[at0001]/items[at0024]/items[at0025]/value/value != false");
   }
+
+  @Test
+  public void orderByAndLimitOrder() {
+    var aql1 = "Select "
+        + "c/name/value as Name, c/context/start_time as date_time, c/composer/name as Composer "
+        + "from EHR e contains COMPOSITION c "
+        + "order by c/context/start_time ASCENDING "
+        + "LIMIT 10 OFFSET 10";
+    testAql(aql1, aql1);
+
+    var aql2 = "Select "
+        + "c/name/value as Name, c/context/start_time as date_time, c/composer/name as Composer "
+        + "from EHR e contains COMPOSITION c "
+        + "LIMIT 10 OFFSET 10 "
+        + "order by c/context/start_time ASCENDING";
+    testAql(aql2, aql1);
+
+    var aql3 = "Select "
+        + "c/name/value as Name, c/context/start_time as date_time, c/composer/name as Composer "
+        + "from EHR e contains COMPOSITION c "
+        + "LIMIT 10 OFFSET 10";
+    testAql(aql3, aql3);
+
+    var aql4 = "Select "
+        + "c/name/value as Name, c/context/start_time as date_time, c/composer/name as Composer "
+        + "from EHR e contains COMPOSITION c "
+        + "order by c/context/start_time ASCENDING";
+    testAql(aql4, aql4);
+  }
 }

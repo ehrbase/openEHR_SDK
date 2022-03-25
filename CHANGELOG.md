@@ -5,6 +5,7 @@ Note: version releases in the 0.x.y range may introduce breaking changes.
 ## [unreleased]
 
 ### Added
+- AQL: support `ORDER BY` and `LIMIT [OFFSET]` clauses in any order ([#344](https://github.com/ehrbase/openEHR_SDK/pull/344))
 
 ### Fixed
 
