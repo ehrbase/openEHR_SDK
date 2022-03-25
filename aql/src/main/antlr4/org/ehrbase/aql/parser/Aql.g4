@@ -51,7 +51,7 @@ orderBySeq
         : orderByExpr (COMMA orderBySeq)?;
 //      | orderByExpr COMMA orderBySeq ;
 
-orderByExpr : identifiedPath (DESCENDING|ASCENDING|DESC|ASC);
+orderByExpr : identifiedPath (DESCENDING|ASCENDING|DESC|ASC)?;
 //      | identifiedPath DESCENDING
 //      | identifiedPath ASCENDING
 //      | identifiedPath DESC
