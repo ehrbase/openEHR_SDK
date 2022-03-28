@@ -20,6 +20,7 @@ Note: version releases in the 0.x.y range may introduce breaking changes.
 - dto: Fix handling of element wich contains a choice with one an interval (see https://github.com/ehrbase/openEHR_SDK/pull/334)
 - Fixes AqlParseException while using boolean in where clause ([#338](https://github.com/ehrbase/openEHR_SDK/pull/338))
 - Fixes default ASC value for ORDER BY clause ([#342](https://github.com/ehrbase/openEHR_SDK/pull/342))
+- Fixes null nodeIds and annotations missing (https://github.com/ehrbase/openEHR_SDK/pull/343)
 
 ## 1.17.0
 

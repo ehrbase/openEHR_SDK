@@ -16,21 +16,7 @@
 
 package org.ehrbase.webtemplate.parser;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatNoException;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
@@ -40,16 +26,23 @@ import org.assertj.core.groups.Tuple;
 import org.ehrbase.test_data.operationaltemplate.OperationalTemplateTestData;
 import org.ehrbase.test_data.webtemplate.WebTemplateTestData;
 import org.ehrbase.webtemplate.filter.Filter;
-import org.ehrbase.webtemplate.model.WebTemplate;
-import org.ehrbase.webtemplate.model.WebTemplateInput;
-import org.ehrbase.webtemplate.model.WebTemplateInputValue;
-import org.ehrbase.webtemplate.model.WebTemplateNode;
+import org.ehrbase.webtemplate.model.*;
 import org.junit.Test;
 import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
 import org.openehr.schemas.v1.TemplateDocument;
 
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatNoException;
+
 /**
- * @author  Stefan Spiska
+ * @author Stefan Spiska
  * @since 1.0
  */
 public class OPTParserTest {
@@ -429,15 +422,16 @@ public class OPTParserTest {
 
   @Test
   public void parseMultimediaTest() throws Exception {
-    var optTemplate = TemplateDocument.Factory.parse(OperationalTemplateTestData.MULTIMEDIA_TEST.getStream())
+    var optTemplate =
+        TemplateDocument.Factory.parse(OperationalTemplateTestData.MULTIMEDIA_TEST.getStream())
             .getTemplate();
     var parser = new OPTParser(optTemplate);
 
     var webTemplate = parser.parse();
     assertThat(webTemplate).isNotNull();
 
-    var nodes = webTemplate.getTree()
-        .findMatching(node ->  node.getRmType().equals("PARTICIPATION"));
+    var nodes =
+        webTemplate.getTree().findMatching(node -> node.getRmType().equals("PARTICIPATION"));
     assertThat(nodes).hasSize(2);
   }
 
@@ -814,9 +808,9 @@ public class OPTParserTest {
 
   @Test
   public void testReadWrite() throws IOException, XmlException {
-    var template = TemplateDocument.Factory.parse(
-            OperationalTemplateTestData.CORONA_ANAMNESE.getStream())
-        .getTemplate();
+    var template =
+        TemplateDocument.Factory.parse(OperationalTemplateTestData.CORONA_ANAMNESE.getStream())
+            .getTemplate();
 
     var parser = new OPTParser(template);
     var webTemplate = parser.parse();
@@ -824,5 +818,43 @@ public class OPTParserTest {
     ObjectMapper objectMapper = new ObjectMapper();
 
     assertThatNoException().isThrownBy(() -> objectMapper.writeValueAsString(webTemplate));
+  }
+
+  @Test
+  public void missingNodeIdAndAnnotationsTest() throws IOException, XmlException {
+    OPERATIONALTEMPLATE template =
+        TemplateDocument.Factory.parse(OperationalTemplateTestData.NULLID.getStream())
+            .getTemplate();
+
+    WebTemplate webTemplate = new OPTParser(template).parse();
+    assertThat(webTemplate).isNotNull();
+    List<WebTemplateNode> nodes =
+        webTemplate.findAllByAqlPath(
+            "[openEHR-EHR-COMPOSITION.encounter.v1]/content[openEHR-EHR-OBSERVATION.blood_pressure.v2]/data[at0001]/events[at0006]/data[at0003]/items[at0004]",
+            true);
+    assertThat(nodes).isNotNull();
+    assertThat(nodes.size()).isGreaterThan(0);
+    WebTemplateNode node = nodes.get(0);
+    assertThat(node).isNotNull();
+    assertThat(node.getNodeId()).isNotNull();
+    WebTemplateAnnotation annotation = node.getAnnotations();
+    assertThat(annotation).isNotNull();
+    assertThat(annotation.getOther()).isNotNull();
+    assertThat(annotation.getOther().size()).isEqualTo(3);
+
+    webTemplate = new Filter().filter(webTemplate);
+    nodes =
+        webTemplate.findAllByAqlPath(
+            "[openEHR-EHR-COMPOSITION.encounter.v1]/content[openEHR-EHR-OBSERVATION.blood_pressure.v2]/data[at0001]/events[at0006]/data[at0003]/items[at0004]/value",
+            true);
+    assertThat(nodes).isNotNull();
+    assertThat(nodes.size()).isGreaterThan(0);
+    node = nodes.get(0);
+    assertThat(node).isNotNull();
+    assertThat(node.getNodeId()).isNotNull();
+    annotation = node.getAnnotations();
+    assertThat(annotation).isNotNull();
+    assertThat(annotation.getOther()).isNotNull();
+    assertThat(annotation.getOther().size()).isEqualTo(3);
   }
 }
