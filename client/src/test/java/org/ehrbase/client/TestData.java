@@ -208,8 +208,9 @@ public class TestData {
     BloodPressureTrainingSampleObservation bloodPressureTrainingSample =
         new BloodPressureTrainingSampleObservation();
     bloodPressureTrainingSample.setSubject(new PartySelf());
-    bloodPressureTrainingSample.setOriginValue(OffsetDateTime.now());
-    bloodPressureTrainingSample.setTimeValue(OffsetDateTime.now());
+    OffsetDateTime now = OffsetDateTime.now();
+    bloodPressureTrainingSample.setOriginValue(now);
+    bloodPressureTrainingSample.setTimeValue(now);
     bloodPressureTrainingSample.setLanguage(Language.DE);
     bloodPressureTrainingSample.setSystolicMagnitude(22d);
     bloodPressureTrainingSample.setSystolicUnits("mm[Hg]");
@@ -229,8 +230,9 @@ public class TestData {
 
   public static EhrbaseMultiOccurrenceDeV1Composition buildEhrbaseMultiOccurrenceDeV1() {
     EhrbaseMultiOccurrenceDeV1Composition dto = new EhrbaseMultiOccurrenceDeV1Composition();
-    dto.setStartTimeValue(OffsetDateTime.now());
-    dto.setEndTimeValue(OffsetDateTime.now());
+    OffsetDateTime now = OffsetDateTime.now();
+    dto.setStartTimeValue(now);
+    dto.setEndTimeValue(now);
     dto.setLanguage(Language.DE);
     dto.setTerritory(Territory.DE);
     dto.setSettingDefiningCode(Setting.DENTAL_CARE);
@@ -247,7 +249,8 @@ public class TestData {
     BodyTemperatureObservation bodyTemperature = new BodyTemperatureObservation();
     bodyTemperature.setLanguage(Language.DE);
     bodyTemperature.setSubject(new PartySelf());
-    bodyTemperature.setOriginValue(OffsetDateTime.now());
+    OffsetDateTime now = OffsetDateTime.now();
+    bodyTemperature.setOriginValue(now);
     bodyTemperature.setAnyEvent(new ArrayList<>());
     BodyTemperatureLocationOfMeasurementDvCodedText locationOfMeasurement =
         new BodyTemperatureLocationOfMeasurementDvCodedText();
@@ -260,14 +263,14 @@ public class TestData {
     history1.setTemperatureMagnitude(22d);
     history1.setTemperatureUnits("Cel");
     history1.setCurrentDayOfMenstrualCycleMagnitude(3l);
-    history1.setTimeValue(OffsetDateTime.now());
+    history1.setTimeValue(now);
     bodyTemperature.getAnyEvent().add(history1);
 
     BodyTemperatureAnyEventPointEvent history2 = new BodyTemperatureAnyEventPointEvent();
     history2.setTemperatureMagnitude(11d);
     history2.setTemperatureUnits("Cel");
     history2.setCurrentDayOfMenstrualCycleMagnitude(3l);
-    history2.setTimeValue(OffsetDateTime.now());
+    history2.setTimeValue(now);
     bodyTemperature.getAnyEvent().add(history2);
     return bodyTemperature;
   }
@@ -276,7 +279,8 @@ public class TestData {
     BodyTemperatureObservation bodyTemperature = new BodyTemperatureObservation();
     bodyTemperature.setLanguage(Language.DE);
     bodyTemperature.setSubject(new PartySelf());
-    bodyTemperature.setOriginValue(OffsetDateTime.now());
+    OffsetDateTime now = OffsetDateTime.now();
+    bodyTemperature.setOriginValue(now);
     bodyTemperature.setAnyEvent(new ArrayList<>());
     BodyTemperatureLocationOfMeasurementDvText locationOfMeasurement =
         new BodyTemperatureLocationOfMeasurementDvText();
@@ -287,14 +291,14 @@ public class TestData {
     history1.setTemperatureMagnitude(22d);
     history1.setTemperatureUnits("Cel");
     history1.setCurrentDayOfMenstrualCycleMagnitude(3l);
-    history1.setTimeValue(OffsetDateTime.now());
+    history1.setTimeValue(now);
     bodyTemperature.getAnyEvent().add(history1);
 
     BodyTemperatureAnyEventPointEvent history2 = new BodyTemperatureAnyEventPointEvent();
     history2.setTemperatureMagnitude(11d);
     history2.setTemperatureUnits("Cel");
     history2.setCurrentDayOfMenstrualCycleMagnitude(3l);
-    history2.setTimeValue(OffsetDateTime.now());
+    history2.setTimeValue(now);
     bodyTemperature.getAnyEvent().add(history2);
     return bodyTemperature;
   }
@@ -347,7 +351,8 @@ public class TestData {
     episode.setLanguage(Language.DE);
     episode.setTerritory(Territory.DE);
     episode.setEpisodeofcare(new ArrayList<>());
-    episode.setStartTimeValue(OffsetDateTime.now());
+    OffsetDateTime now = OffsetDateTime.now();
+    episode.setStartTimeValue(now);
     episode.setSettingDefiningCode(Setting.NURSING_HOME_CARE);
 
     FeederAudit audit = new FeederAudit();
@@ -359,8 +364,8 @@ public class TestData {
 
     EpisodeofcareAdminEntry episodeofcareAdminEntry = new EpisodeofcareAdminEntry();
 
-    episodeofcareAdminEntry.setUpperValue(OffsetDateTime.now());
-    episodeofcareAdminEntry.setLowerValue(OffsetDateTime.now());
+    episodeofcareAdminEntry.setUpperValue(now);
+    episodeofcareAdminEntry.setLowerValue(now);
     episodeofcareAdminEntry.setLanguage(Language.DE);
     episodeofcareAdminEntry.setSubject(new PartySelf());
     episodeofcareAdminEntry.setIdentifier(new ArrayList<>());
@@ -393,7 +398,8 @@ public class TestData {
     patientenaufenthaltComposition.setCategoryDefiningCode(Category.EVENT);
     patientenaufenthaltComposition.setLanguage(Language.DE);
     patientenaufenthaltComposition.setTerritory(Territory.DE);
-    patientenaufenthaltComposition.setStartTimeValue(OffsetDateTime.now());
+    OffsetDateTime now = OffsetDateTime.now();
+    patientenaufenthaltComposition.setStartTimeValue(now);
     patientenaufenthaltComposition.setSettingDefiningCode(Setting.NURSING_HOME_CARE);
 
     VersorgungsortAdminEntry versorgungsortAdminEntry = new VersorgungsortAdminEntry();
@@ -426,7 +432,8 @@ public class TestData {
     virologischerBefundComposition.setCategoryDefiningCode(Category.EVENT);
     virologischerBefundComposition.setLanguage(Language.DE);
     virologischerBefundComposition.setTerritory(Territory.DE);
-    virologischerBefundComposition.setStartTimeValue(OffsetDateTime.now());
+    OffsetDateTime now = OffsetDateTime.now();
+    virologischerBefundComposition.setStartTimeValue(now);
     virologischerBefundComposition.setSettingDefiningCode(Setting.SECONDARY_MEDICAL_CARE);
 
     // context, other_context
