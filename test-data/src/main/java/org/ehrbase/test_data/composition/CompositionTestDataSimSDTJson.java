@@ -71,6 +71,7 @@ public enum CompositionTestDataSimSDTJson implements CompositionTestDataSimSDTJs
       "EREACT - Covid status monitoring - FLAT.json",
       OperationalTemplateTestData.EREACT_COVID_MANAGEMENT),
   NESTED("nested.en.v1", "nested.en.v1.json",OperationalTemplateTestData.NESTED),
+  DURATION_VALIDATION("duration_validation", "duration_validation.json",OperationalTemplateTestData.DURATION_VALIDATION),
   RE_SPECT("nested.en.v1", "ReSPECT.json",OperationalTemplateTestData.RE_SPECT),
   IPS("International Patient Summary", "ips_flat.json",OperationalTemplateTestData.IPS);
 

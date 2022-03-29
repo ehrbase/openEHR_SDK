@@ -85,6 +85,15 @@ class CompositionValidatorTest {
   }
 
   @Test
+  void testValidateDuration() throws Exception {
+    var template = getOperationalTemplate(OperationalTemplateTestData.DURATION_VALIDATION);
+    var composition = getComposition(CompositionTestDataSimSDTJson.DURATION_VALIDATION);
+
+    var result = validator.validate(composition, template);
+    assertTrue(result.isEmpty());
+  }
+
+  @Test
   void testCardinality() throws Exception {
     var template = getOperationalTemplate(OperationalTemplateTestData.SECTION_CARDINALITY);
     var composition = getComposition(CompositionTestDataCanonicalJson.SECTION_CARDINALITY);

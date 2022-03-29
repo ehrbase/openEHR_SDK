@@ -37,7 +37,7 @@ public class JacksonUtil {
      * @return
      */
     public static ObjectMapper getObjectMapper() {
-        ArchieJacksonConfiguration configuration = ArchieJacksonConfiguration.createStandardsCompliant();
+        ArchieJacksonConfiguration configuration =  ArchieJacksonConfiguration.createStandardsCompliant();
         configuration.setAddExtraFieldsInArchetypeId(false);
         configuration.setTypePropertyName("_type");
         configuration.setSerializeEmptyCollections(true);
