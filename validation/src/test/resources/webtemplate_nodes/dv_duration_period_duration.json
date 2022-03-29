@@ -6,8 +6,10 @@
       "type": "INTEGER",
       "validation": {
         "range": {
-          "minOp": ">",
-          "min": 5
+          "minOp": ">=",
+          "min": 5,
+          "maxOp": "<=",
+          "max": 20
         }
       }
     },
@@ -16,7 +18,7 @@
       "type": "INTEGER",
       "validation": {
         "range": {
-          "minOp": ">",
+          "minOp": ">=",
           "min": 4
         }
       }
@@ -60,7 +62,7 @@
         "range": {
           "minOp": ">=",
           "min": 0,
-          "maxOp": "<=",
+          "maxOp": "<",
           "max": 30
         }
       }
