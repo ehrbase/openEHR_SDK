@@ -2,12 +2,11 @@
 
 Note: version releases in the 0.x.y range may introduce breaking changes.
 
-## [unreleased]
+## 1.18.0
 
 ### Added
 - Update archie to version 2.0.1 ([#345](https://github.com/ehrbase/openEHR_SDK/pull/345))
 - AQL: support `ORDER BY` and `LIMIT [OFFSET]` clauses in any order ([#344](https://github.com/ehrbase/openEHR_SDK/pull/344))
-
 
 ### Fixed
 
