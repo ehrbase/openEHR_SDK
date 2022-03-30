@@ -19,54 +19,47 @@
 
 package org.ehrbase.client.flattener;
 
-import java.util.Map;
-import java.util.Objects;
-import org.apache.commons.lang3.StringUtils;
 import org.ehrbase.serialisation.walker.Context;
 import org.ehrbase.webtemplate.model.WebTemplateNode;
-import org.ehrbase.webtemplate.parser.FlatPath;
+import org.ehrbase.webtemplate.parser.AqlPath;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Map;
+import java.util.Objects;
 
 class PathMatcher {
 
   Logger logger = LoggerFactory.getLogger(getClass());
 
-  String matchesPath(Context<?> context, WebTemplateNode child, Map.Entry<String, ?> e) {
-    String aqlPath =
-        FlatPath.removeStart(
-                new FlatPath(child.getAqlPath()),
-                new FlatPath(context.getNodeDeque().peek().getAqlPath()))
-            .toString();
-    if (StringUtils.startsWith(e.getKey(), aqlPath)) {
+  AqlPath matchesPath(Context<?> context, WebTemplateNode child, Map.Entry<AqlPath, ?> e) {
+    AqlPath aqlPath =
+            child.getAqlPathDto().removeStart(context.getNodeDeque().peek().getAqlPathDto());
+    if (e.getKey().startsWith(aqlPath)) {
       return remove(e, aqlPath, child);
     } else {
-      FlatPath childPath = new FlatPath(aqlPath);
-      FlatPath pathLast = childPath.getLast();
-      FlatPath pathWithoutLastName =
-          FlatPath.addEnd(
-              FlatPath.removeEnd(childPath, pathLast), new FlatPath(pathLast.format(false)));
-      if (StringUtils.startsWith(e.getKey(), pathWithoutLastName.toString())
+      AqlPath pathWithoutLastName = aqlPath.replaceLastNode(n -> n.withNameValue(null));
+      if (e.getKey().startsWith(pathWithoutLastName)
           && context.getNodeDeque().peek().getChildren().stream()
                   .filter(n -> Objects.equals(n.getNodeId(), child.getNodeId()))
                   .count()
               == 1) {
-        logger.warn("name/value not set in dto for {}", child.getAqlPath());
-        return remove(e, pathWithoutLastName.toString(), child);
+        logger.warn("name/value not set in dto for {}", child.getAqlPathDto());
+        return remove(e, pathWithoutLastName, child);
       } else {
         return null;
       }
     }
   }
 
-  private String remove(Map.Entry<String, ?> e, String s, WebTemplateNode child) {
+  private AqlPath remove(Map.Entry<AqlPath, ?> e, AqlPath s, WebTemplateNode child) {
     if (child.getId().equals("ism_transition")) {
-      FlatPath flatPath = new FlatPath(StringUtils.removeStart(e.getKey(), s));
+      AqlPath aqlPath = e.getKey().removeStart(s);
       // fix for old dto model
-      if (StringUtils.isBlank(flatPath.getName())) {
+      if (!aqlPath.hasPath()) {
         return null;
       }
     }
-    return StringUtils.removeStart(e.getKey(), s);
+    return e.getKey().removeStart(s);
   }
 }

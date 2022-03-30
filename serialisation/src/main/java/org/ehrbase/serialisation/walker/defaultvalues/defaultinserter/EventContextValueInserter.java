@@ -23,18 +23,20 @@ import com.nedap.archie.rm.composition.EventContext;
 import com.nedap.archie.rm.datavalues.DvCodedText;
 import com.nedap.archie.rm.datavalues.quantity.datetime.DvDateTime;
 import com.nedap.archie.rm.generic.Participation;
+import com.nedap.archie.rm.generic.PartyIdentified;
 import com.nedap.archie.rm.generic.PartyProxy;
 import com.nedap.archie.rm.support.identification.GenericId;
 import org.ehrbase.client.classgenerator.shareddefinition.Setting;
 import org.ehrbase.serialisation.walker.RMHelper;
 import org.ehrbase.serialisation.walker.defaultvalues.DefaultValuePath;
 import org.ehrbase.serialisation.walker.defaultvalues.DefaultValues;
+import org.ehrbase.webtemplate.model.WebTemplateNode;
 
 import java.util.Objects;
 
 public class EventContextValueInserter extends AbstractValueInserter<EventContext> {
   @Override
-  public void insert(EventContext rmObject, DefaultValues defaultValues) {
+  public void insert(EventContext rmObject, DefaultValues defaultValues, WebTemplateNode node) {
 
     if (RMHelper.isEmpty(rmObject.getStartTime())
         && defaultValues.containsDefaultValue(DefaultValuePath.TIME)) {
@@ -49,6 +51,8 @@ public class EventContextValueInserter extends AbstractValueInserter<EventContex
     if (RMHelper.isEmpty(rmObject.getHealthCareFacility())
         && (defaultValues.containsDefaultValue(DefaultValuePath.HEALTHCARE_FACILITY_NAME)
             || defaultValues.containsDefaultValue(DefaultValuePath.HEALTHCARE_FACILITY_ID))) {
+
+      rmObject.setHealthCareFacility(new PartyIdentified());
       rmObject.setHealthCareFacility(
           buildPartyIdentified(
               defaultValues,

@@ -30,13 +30,10 @@ import com.nedap.archie.rminfo.ArchieRMInfoLookup;
 import org.ehrbase.serialisation.dbencoding.CompositionSerializer;
 import org.ehrbase.serialisation.dbencoding.wrappers.json.I_DvTypeAdapter;
 import org.ehrbase.serialisation.util.SnakeCase;
-import org.ehrbase.webtemplate.parser.FlatPath;
+import org.ehrbase.webtemplate.parser.AqlPath;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.ehrbase.serialisation.dbencoding.CompositionSerializer.*;
 
@@ -48,7 +45,7 @@ import static org.ehrbase.serialisation.dbencoding.CompositionSerializer.*;
 public class LinkedTreeMapAdapter extends TypeAdapter<LinkedTreeMap<String, Object>>
     implements I_DvTypeAdapter {
 
-  private String[] structuralClasses = {
+  private static final Set<String> STRUCTURAL_CLASSES = Set.of (
     "ItemTree",
     "ItemTable",
     "ItemSingle",
@@ -59,7 +56,7 @@ public class LinkedTreeMapAdapter extends TypeAdapter<LinkedTreeMap<String, Obje
     "Action",
     "AdminEntry",
     "IntervalEvent"
-  };
+  );
 
   protected AdapterType adapterType;
 
@@ -157,7 +154,7 @@ public class LinkedTreeMapAdapter extends TypeAdapter<LinkedTreeMap<String, Obje
             writer.endObject();
           } else if (map.get(key) instanceof ArrayList) { // due to using multimap
             if (!key.equals(TAG_CLASS)) { //ignore it
-              ArrayList arrayList = (ArrayList) map.get(key);
+              ArrayList<?> arrayList = (ArrayList<?>) map.get(key);
               writer.name(key).value(arrayList.get(0).toString());
             }
           } else writer.name(key).value((String) map.get(key));
@@ -165,16 +162,13 @@ public class LinkedTreeMapAdapter extends TypeAdapter<LinkedTreeMap<String, Obje
         } else {
           if (isNodePredicate(key)) {
             // set the archetype node id in each children
-            for (Map.Entry<String, Object> entry : map.entrySet()) {
-              if (entry instanceof Map.Entry) {
-                Map.Entry<String, Object> kv = entry;
-                for (Object valueMap : (ArrayList) kv.getValue()) {
-                  if (valueMap instanceof LinkedTreeMap) {
-                    LinkedTreeMap<String, Object> vm = (LinkedTreeMap<String, Object>) valueMap;
-                    vm.put(
-                        CompositionSerializer.TAG_ARCHETYPE_NODE_ID,
-                        new FlatPath(kv.getKey()).getLast().getAtCode());
-                  }
+            for (Map.Entry<String, Object> kv : map.entrySet()) {
+              for (Object valueMap : (ArrayList<?>) kv.getValue()) {
+                if (valueMap instanceof LinkedTreeMap) {
+                  LinkedTreeMap<String, Object> vm = (LinkedTreeMap<String, Object>) valueMap;
+                  vm.put(
+                      CompositionSerializer.TAG_ARCHETYPE_NODE_ID,
+                      AqlPath.parse(kv.getKey()).getLastNode().getAtCode());
                 }
               }
             }
@@ -190,7 +184,7 @@ public class LinkedTreeMapAdapter extends TypeAdapter<LinkedTreeMap<String, Obje
             return;
           } else
             throw new IllegalStateException(
-                "Inconsistent encoding of composition, found:" + map.keySet().toString());
+                "Inconsistent encoding of composition, found:" + map.keySet());
         }
       }
     } else {
@@ -360,17 +354,17 @@ public class LinkedTreeMapAdapter extends TypeAdapter<LinkedTreeMap<String, Obje
         } else if (key.equals(TAG_CLASS)) {
           writer
               .name(AT_TYPE)
-              .value(new SnakeCase((String) ((ArrayList) value).get(0)).camelToUpperSnake());
+              .value(new SnakeCase((String) ((ArrayList<?>) value).get(0)).camelToUpperSnake());
         } else if (key.equals(CompositionSerializer.TAG_ARCHETYPE_NODE_ID)) {
           // same as name above, this is due to usage of MultiValueMap which is backed by ArrayList
           new ValueArrayList(writer, value, key).write();
         } else {
           // make sure we service a non empty array list value
-          if (!new ArrayChildren((ArrayList) value).isNull()) {
+          if (!new ArrayChildren((ArrayList<?>) value).isNull()) {
             writer.name(jsonKey);
             writer.beginArray();
             if (isNodePredicate(key)) {
-              ((ArrayList<Object>) value)
+              ((ArrayList<?>) value)
                   .stream()
                       .filter(o -> Map.class.isAssignableFrom(o.getClass()))
                       .forEach(
@@ -378,7 +372,7 @@ public class LinkedTreeMapAdapter extends TypeAdapter<LinkedTreeMap<String, Obje
                               ((Map<String, Object>) m)
                                   .put(I_DvTypeAdapter.ARCHETYPE_NODE_ID, archetypeNodeId));
             }
-            new ArrayListAdapter().write(writer, (ArrayList) value);
+            new ArrayListAdapter().write(writer, (ArrayList<?>) value);
             writer.endArray();
           }
         }
@@ -440,11 +434,11 @@ public class LinkedTreeMapAdapter extends TypeAdapter<LinkedTreeMap<String, Obje
       } else if (value instanceof String) {
         switch (key) {
           case TAG_CLASS:
-            if (Arrays.asList(structuralClasses).contains(value))
+            if (STRUCTURAL_CLASSES.contains(value))
               writer.name(AT_TYPE).value(new SnakeCase(((String) value)).camelToUpperSnake());
             break;
           case CompositionSerializer.TAG_PATH: // this is an element
-            String archetypeNodeId2 = new FlatPath((String) value).getLast().getAtCode();
+            String archetypeNodeId2 = AqlPath.parse((String) value).getLastNode().getAtCode();
             if (archetypeNodeId2 != null) writer.name(AT_TYPE).value(ELEMENT);
             // CHC 20191003: removed writer for archetype_node_id as it was not applicable here
             break;

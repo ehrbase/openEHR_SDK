@@ -23,36 +23,51 @@ import com.nedap.archie.rm.composition.Observation;
 import com.nedap.archie.rm.datastructures.Event;
 import com.nedap.archie.rm.datastructures.History;
 import com.nedap.archie.rm.datavalues.quantity.datetime.DvDateTime;
+import org.ehrbase.serialisation.walker.DurationHelper;
+import org.ehrbase.serialisation.walker.FlatHelper;
 import org.ehrbase.serialisation.walker.RMHelper;
 import org.ehrbase.serialisation.walker.defaultvalues.DefaultValuePath;
 import org.ehrbase.serialisation.walker.defaultvalues.DefaultValues;
+import org.ehrbase.webtemplate.model.WebTemplateNode;
 
+import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAccessor;
 import java.util.Objects;
 import java.util.stream.Stream;
+import org.threeten.extra.PeriodDuration;
 
 public class ObservationValueInserter extends AbstractValueInserter<Observation> {
-  @Override
-  public void insert(Observation rmObject, DefaultValues defaultValues) {
+
+
+
+  public void insert(Observation rmObject, DefaultValues defaultValues, WebTemplateNode node) {
 
     if (rmObject.getData() != null) {
-      insert(rmObject.getData(), defaultValues);
-
-      if (rmObject.getData().getEvents() != null) {
-
-        rmObject.getData().getEvents().forEach(e -> insert(e, defaultValues));
-      }
+      insert(
+          rmObject.getData(),
+          defaultValues,
+          node
+              .findMatching(
+                  n -> Objects.equals(n.getNodeId(), rmObject.getData().getArchetypeNodeId()))
+              .stream()
+              .findFirst()
+              .orElse(FlatHelper.buildDummyChild("history", node)));
     }
 
     if (rmObject.getState() != null) {
-      insert(rmObject.getState(), defaultValues);
-      if (rmObject.getState().getEvents() != null) {
-        rmObject.getState().getEvents().forEach(e -> insert(e, defaultValues));
-      }
+      insert(
+          rmObject.getState(),
+          defaultValues,
+          node
+              .findMatching(
+                  n -> Objects.equals(n.getNodeId(), rmObject.getState().getArchetypeNodeId()))
+              .stream()
+              .findFirst()
+              .orElse(FlatHelper.buildDummyChild("history", node)));
     }
   }
 
-  private void insert(History<?> rmObject, DefaultValues defaultValues) {
+  private void insert(History<?> rmObject, DefaultValues defaultValues, WebTemplateNode node) {
 
     if (RMHelper.isEmpty(rmObject.getOrigin())
         && (defaultValues.containsDefaultValue(DefaultValuePath.TIME)
@@ -65,15 +80,38 @@ public class ObservationValueInserter extends AbstractValueInserter<Observation>
               .orElseThrow();
       rmObject.setOrigin(new DvDateTime(defaultTemporalAccessor));
     }
-  }
 
-  private void insert(Event<?> rmObject, DefaultValues defaultValues) {
-    if (RMHelper.isEmpty(rmObject.getTime())
-        && defaultValues.containsDefaultValue(DefaultValuePath.TIME)) {
+    if (rmObject.getEvents() != null && rmObject.getOrigin() != null) {
 
-      rmObject.setTime(new DvDateTime(defaultValues.getDefaultValue(DefaultValuePath.TIME)));
+      rmObject
+          .getEvents()
+          .forEach(
+              e ->
+                  insert(
+                      e,
+                      rmObject.getOrigin().getValue(),
+                      node
+                          .findMatching(n -> Objects.equals(n.getNodeId(), e.getArchetypeNodeId()))
+                          .stream()
+                          .findFirst()
+                          .orElse(FlatHelper.buildDummyChild("event", node))));
     }
   }
+
+  private void insert(Event<?> rmObject, TemporalAccessor origin, WebTemplateNode node) {
+    if (RMHelper.isEmpty(rmObject.getTime())) {
+
+      TemporalAccessor defaultValue = origin;
+      if (defaultValue instanceof Temporal) {
+        defaultValue =
+            ((Temporal) defaultValue).plus(DurationHelper.buildTotalRange(node.findChildById("offset").orElse(null), DurationHelper.MIN_MAX.MIN).orElse(
+                PeriodDuration.ZERO));
+      }
+      rmObject.setTime(new DvDateTime(defaultValue));
+    }
+  }
+
+
 
   @Override
   public Class<Observation> getAssociatedClass() {

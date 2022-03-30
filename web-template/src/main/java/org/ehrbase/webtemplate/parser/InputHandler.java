@@ -464,7 +464,7 @@ public class InputHandler {
     return Optional.ofNullable(defaultValues.get(node.getAqlPath(true) + "|" + inputSuffix));
   }
 
-  private Map<String, Integer> buildDurationConstrains(String constrain) {
+  Map<String, Integer> buildDurationConstrains(String constrain) {
     if (StringUtils.isBlank(constrain)) {
       return Collections.emptyMap();
     }
@@ -480,7 +480,7 @@ public class InputHandler {
         sb.append(c);
       } else if (c != 'P') {
         String key = String.valueOf(c);
-        if (isDatePath && key.equals("M")) {
+        if (!isDatePath && key.equals("M")) {
           key = key + "T";
         }
         constrainMap.put(key, Integer.parseInt(sb.toString()));

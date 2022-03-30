@@ -20,7 +20,6 @@
 package org.ehrbase.serialisation.flatencoding.std.umarshal.rmunmarshaller;
 
 import com.nedap.archie.rm.archetyped.FeederAudit;
-import com.nedap.archie.rm.archetyped.FeederAuditDetails;
 import com.nedap.archie.rm.datavalues.encapsulated.DvMultimedia;
 import com.nedap.archie.rm.datavalues.encapsulated.DvParsable;
 import org.ehrbase.serialisation.walker.Context;
@@ -42,8 +41,6 @@ public class FeederAuditRMUnmarshaller extends AbstractRMUnmarshaller<FeederAudi
       new DvParsableRMUnmarshaller();
   private static final DvMultimediaRMUnmarshaller DV_MULTIMEDIA_RM_UNMARSHALLER =
       new DvMultimediaRMUnmarshaller();
-  private static final FeederAuditDetailsRMUnmarshaller FEEDER_AUDIT_DETAILS_RM_UNMARSHALLER =
-      new FeederAuditDetailsRMUnmarshaller();
 
   @Override
   public Class<FeederAudit> getAssociatedClass() {
@@ -84,39 +81,36 @@ public class FeederAuditRMUnmarshaller extends AbstractRMUnmarshaller<FeederAudi
           consumedPaths);
     }
 
-    Map<FlatPathDto, String> originatingSystemAuditValues =
-        FlatHelper.filter(currentValues, currentTerm + "/originating_system_audit", false);
-    if (!originatingSystemAuditValues.isEmpty()) {
-      rmObject.setOriginatingSystemAudit(new FeederAuditDetails());
-      FEEDER_AUDIT_DETAILS_RM_UNMARSHALLER.handle(
-          currentTerm + "/originating_system_audit",
-          rmObject.getOriginatingSystemAudit(),
-          currentValues,
-          context,
-          consumedPaths);
-    }
 
-    Map<Integer, Map<String, String>> feederSystemIds =
+
+    Map<Integer, Map<FlatPathDto, String>> feederSystemIds =
         extractMultiValued(currentTerm, "feeder_system_item_id", currentValues);
 
     rmObject
         .getFeederSystemItemIds()
         .addAll(
-            feederSystemIds.values().stream()
-                .map(DefaultValues::toDvIdentifier)
+            feederSystemIds.entrySet().stream()
+                .map(
+                    e ->
+                        DefaultValues.toDvIdentifier(
+                            e.getValue(), currentTerm + "/feeder_system_item_id:" + e.getKey()))
                 .collect(Collectors.toList()));
 
     consumeAllMatching(
         currentTerm + PATH_DIVIDER + "feeder_system_item_id", currentValues, consumedPaths, false);
 
-    Map<Integer, Map<String, String>> originatingSystemIds =
+    Map<Integer, Map<FlatPathDto, String>> originatingSystemIds =
         extractMultiValued(currentTerm, "originating_system_item_id", currentValues);
 
     rmObject
         .getOriginatingSystemItemIds()
         .addAll(
-            originatingSystemIds.values().stream()
-                .map(DefaultValues::toDvIdentifier)
+            originatingSystemIds.entrySet().stream()
+                .map(
+                    e ->
+                        DefaultValues.toDvIdentifier(
+                            e.getValue(),
+                            currentTerm + "/originating_system_item_id:" + e.getKey()))
                 .collect(Collectors.toList()));
 
     consumeAllMatching(

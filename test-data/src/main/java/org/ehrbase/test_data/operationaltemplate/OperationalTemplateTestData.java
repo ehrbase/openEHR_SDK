@@ -109,8 +109,12 @@ public enum OperationalTemplateTestData {
       "conformance-ehrbase.de.v0"),
   MULTIMEDIA_TEST("MultimediaTest", "multimedia_test.en.v1.opt", "multimedia_test.en.v1"),
   NESTED("nested.en.v1", "nested.en.v1.opt", "nested.en.v1"),
+  RE_SPECT("ReSPECT-3.v0", "ReSPECT-3.v0.opt", "ReSPECT-3.v0"),
   IPS("International Patient Summary", "ips.v0.opt", "International Patient Summary"),
-  SECTION_CARDINALITY("Cardinality test template sections", "section_cardinality.opt", "cardinality_of_section");
+  DURATION_VALIDATION("duration_validation", "duration_validation.opt", "duration_validation"),
+  ERROR_TEST("Contains choice between interval and not interval", "ErrorTest.opt", "ErrorTest"),
+  SECTION_CARDINALITY("Cardinality test template sections", "section_cardinality.opt", "cardinality_of_section"),
+  NULLID("My Nullid test", "nullid.opt", "null-nodeid-example");
 
   private final String filename;
   private final String templateId;

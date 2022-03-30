@@ -38,7 +38,7 @@ import java.util.function.Consumer;
 
 import static org.ehrbase.serialisation.flatencoding.std.umarshal.StdToCompositionWalker.findRMUnmarshaller;
 import static org.ehrbase.serialisation.walker.FlatHelper.buildDummyChild;
-import static org.ehrbase.serialisation.walker.FlatHelper.isDvCodedText;
+import static org.ehrbase.serialisation.walker.FlatHelper.isExactlyDvCodedText;
 import static org.ehrbase.webtemplate.parser.OPTParser.PATH_DIVIDER;
 
 public class DvOrderedPostprocessor extends AbstractUnmarshalPostprocessor<DvOrdered> {
@@ -55,7 +55,7 @@ public class DvOrderedPostprocessor extends AbstractUnmarshalPostprocessor<DvOrd
     handleNormalRange(
         values, consumedPaths, context, term + "/_normal_range", rmObject::setNormalRange);
 
-    FlatHelper.extractMultiValuedFullPath(term, "_other_reference_ranges", values)
+    FlatHelper.extractMultiValued(term, "_other_reference_ranges", values)
         .forEach(
             (k, v) -> {
               ReferenceRange referenceRange = new ReferenceRange();
@@ -69,7 +69,7 @@ public class DvOrderedPostprocessor extends AbstractUnmarshalPostprocessor<DvOrd
                 final DvText meaning;
                 String meaningAttributeName = "meaning";
                 boolean isDvCodedText =
-                    isDvCodedText(
+                    isExactlyDvCodedText(
                         meaningValues, term + "/_other_reference_ranges:" + k + "/meaning");
                 if (isDvCodedText) {
                   meaning = new DvCodedText();

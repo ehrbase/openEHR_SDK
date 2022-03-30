@@ -19,9 +19,18 @@
 
 package org.ehrbase.aql.dto.condition;
 
+import java.util.Objects;
+
 public class SimpleValue implements Value {
 
   private Object value;
+
+  public SimpleValue() {
+  }
+
+  public SimpleValue(Object value) {
+    this.value = value;
+  }
 
   public Object getValue() {
     return this.value;
@@ -35,11 +44,9 @@ public class SimpleValue implements Value {
     if (o == this) return true;
     if (!(o instanceof SimpleValue)) return false;
     final SimpleValue other = (SimpleValue) o;
-    if (!other.canEqual((Object) this)) return false;
-    final Object this$value = this.getValue();
-    final Object other$value = other.getValue();
-    if (this$value == null ? other$value != null : !this$value.equals(other$value)) return false;
-    return true;
+    if (!other.canEqual(this)) return false;
+    final Object otherValue = other.getValue();
+    return Objects.equals(value, otherValue);
   }
 
   protected boolean canEqual(final Object other) {
@@ -49,8 +56,7 @@ public class SimpleValue implements Value {
   public int hashCode() {
     final int PRIME = 59;
     int result = 1;
-    final Object $value = this.getValue();
-    result = result * PRIME + ($value == null ? 43 : $value.hashCode());
+    result = result * PRIME + (value == null ? 43 : value.hashCode());
     return result;
   }
 

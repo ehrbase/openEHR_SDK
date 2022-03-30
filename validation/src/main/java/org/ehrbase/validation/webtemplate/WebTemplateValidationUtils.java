@@ -19,6 +19,8 @@ package org.ehrbase.validation.webtemplate;
 import com.nedap.archie.base.MultiplicityInterval;
 import java.util.Objects;
 import java.util.Optional;
+
+import org.apache.commons.lang3.BooleanUtils;
 import org.ehrbase.webtemplate.model.WebTemplateInput;
 import org.ehrbase.webtemplate.model.WebTemplateInputValue;
 import org.ehrbase.webtemplate.model.WebTemplateNode;
@@ -157,7 +159,7 @@ public class WebTemplateValidationUtils {
    * otherwise
    */
   public static boolean hasList(WebTemplateInput input) {
-    return !input.getList().isEmpty() && input.getListOpen() != Boolean.TRUE;
+    return !input.getList().isEmpty() && BooleanUtils.isNotTrue(input.getListOpen());
   }
 
   /**

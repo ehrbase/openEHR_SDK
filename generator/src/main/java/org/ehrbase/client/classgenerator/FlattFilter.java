@@ -24,11 +24,12 @@ import com.nedap.archie.rminfo.RMTypeInfo;
 import org.apache.commons.collections4.SetUtils;
 import org.ehrbase.serialisation.util.SnakeCase;
 import org.ehrbase.util.reflection.ReflectionHelper;
+import org.ehrbase.util.rmconstants.RmConstants;
 import org.ehrbase.webtemplate.filter.Filter;
 import org.ehrbase.webtemplate.model.WebTemplate;
 import org.ehrbase.webtemplate.model.WebTemplateNode;
-import org.ehrbase.webtemplate.parser.FlatPath;
 import org.ehrbase.webtemplate.parser.config.RmIntrospectConfig;
+import org.ehrbase.webtemplate.util.WebTemplateUtils;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -98,16 +99,19 @@ public class FlattFilter extends Filter {
         return !node.getChildren().isEmpty()
             && node.getMax() == 1
             && !node.getRmType().equals("COMPOSITION")
+            && isSkippableInterval(parent, node)
             && (!isEvent(node) || isSkippableEvent(parent, node));
       case SECTION:
         return !node.getChildren().isEmpty()
             && node.getMax() == 1
             && (!node.isArchetype() || node.getRmType().equals("SECTION"))
+            && isSkippableInterval(parent, node)
             && (!isEvent(node) || isSkippableEvent(parent, node));
       default:
         return !node.getChildren().isEmpty()
             && node.getMax() == 1
             && !node.isArchetype()
+            && isSkippableInterval(parent, node)
             && (!isEvent(node) || isSkippableEvent(parent, node));
     }
   }
@@ -120,16 +124,26 @@ public class FlattFilter extends Filter {
     return parent.getChildren().stream().filter(this::isEvent).count() == 1 && !node.isMulti();
   }
 
+  private boolean isSkippableInterval(WebTemplateNode parent, WebTemplateNode node) {
+
+    if (parent.getRmType().equals(RmConstants.ELEMENT)
+        && node.getRmType().contains("DV_INTERVAL")) {
+      return WebTemplateUtils.getTrueChildrenElement(parent).size() == 1;
+    }
+    return true;
+  }
+
+  @Override
   protected void preHandle(WebTemplateNode node) {
 
-    if (new FlatPath(node.getAqlPath()).getLast().getName().equals("null_flavour")) {
+    if (node.getAqlPathDto().getLastNode().getName().equals("null_flavour")) {
       node.setName("null_flavour");
     }
 
     List<WebTemplateNode> ismTransitionList =
-        node.getChildren().stream()
-            .filter(n -> "ISM_TRANSITION".equals(n.getRmType()))
-            .collect(Collectors.toList());
+            node.getChildren().stream()
+                    .filter(n -> "ISM_TRANSITION".equals(n.getRmType()))
+                    .collect(Collectors.toList());
     if (!ismTransitionList.isEmpty()) {
       node.getChildren().removeAll(ismTransitionList);
       node.getChildren().add(ismTransitionList.get(0));

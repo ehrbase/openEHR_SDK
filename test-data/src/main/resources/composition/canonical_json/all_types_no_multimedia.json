@@ -19,7 +19,7 @@
   "archetype_node_id": "openEHR-EHR-COMPOSITION.test_all_types.v1",
   "uid": {
     "_type": "OBJECT_VERSION_ID",
-    "value": "bb015b91-68c0-460f-a458-8ef06869b53c::piri.ehrscape.com::1"
+    "value": "bb015b91-68c0-460f-a458-8ef06869b53c::ehrbase.org::1"
   },
   "language": {
     "_type": "CODE_PHRASE",

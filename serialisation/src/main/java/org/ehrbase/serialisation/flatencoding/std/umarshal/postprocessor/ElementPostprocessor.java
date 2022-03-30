@@ -48,7 +48,7 @@ public class ElementPostprocessor extends AbstractUnmarshalPostprocessor<Element
 
       if(!reasonValues.isEmpty()){
 
-        if(  FlatHelper.isDvCodedText(reasonValues,term + "_null_reason")){
+      if (FlatHelper.isExactlyDvCodedText(reasonValues, term + "_null_reason")) {
             rmObject.setNullReason(new DvCodedText());
       } else {
         rmObject.setNullReason(new DvText());

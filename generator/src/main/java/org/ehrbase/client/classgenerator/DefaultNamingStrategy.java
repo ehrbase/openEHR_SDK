@@ -22,20 +22,15 @@ package org.ehrbase.client.classgenerator;
 import com.google.common.base.CharMatcher;
 import com.nedap.archie.rminfo.ArchieRMInfoLookup;
 import com.nedap.archie.rminfo.RMTypeInfo;
-import java.util.Deque;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.StringJoiner;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.CaseUtils;
 import org.ehrbase.serialisation.util.SnakeCase;
 import org.ehrbase.webtemplate.model.WebTemplateAnnotation;
 import org.ehrbase.webtemplate.model.WebTemplateNode;
-import org.ehrbase.webtemplate.parser.FlatPath;
+import org.ehrbase.webtemplate.parser.AqlPath;
+
+import java.util.*;
 
 public class DefaultNamingStrategy implements NamingStrategy {
 
@@ -219,7 +214,7 @@ public class DefaultNamingStrategy implements NamingStrategy {
 
     String name = node.getName();
 
-    String attributeName = new FlatPath(path).getLast().getAttributeName();
+    String attributeName = AqlPath.parse(path).getAttributeName();
 
     if (!context.nodeDeque.isEmpty()) {
       if ((StringUtils.isBlank(attributeName)
@@ -241,9 +236,7 @@ public class DefaultNamingStrategy implements NamingStrategy {
       name = VALUE;
     }
 
-    String fieldName = "";
-
-    fieldName = normalise(name, false);
+    String fieldName =  normalise(name, false);
 
     if (context.currentFieldNameMap.peek().containsKey(fieldName)) {
       context
@@ -259,12 +252,12 @@ public class DefaultNamingStrategy implements NamingStrategy {
   }
 
   private boolean isEntityAttribute(ClassGeneratorContext context, WebTemplateNode node) {
-    FlatPath relativPath = new FlatPath(context.nodeDeque.peek().buildRelativePath(node));
+    AqlPath relativPath = context.nodeDeque.peek().buildRelativePath(node, true);
     RMTypeInfo typeInfo = RM_INFO_LOOKUP.getTypeInfo(context.nodeDeque.peek().getRmType());
 
-    return relativPath.getChild() == null
+    return relativPath.getNodeCount() < 2
         && typeInfo != null
-        && typeInfo.getAttributes().containsKey(relativPath.getName());
+        && typeInfo.getAttributes().containsKey(relativPath.getBaseNode().getName());
   }
 
   protected String normalise(String name, boolean capitalizeFirstLetter) {

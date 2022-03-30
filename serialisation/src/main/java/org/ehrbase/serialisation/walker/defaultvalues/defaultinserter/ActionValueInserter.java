@@ -22,9 +22,11 @@ package org.ehrbase.serialisation.walker.defaultvalues.defaultinserter;
 import com.nedap.archie.rm.composition.Action;
 import com.nedap.archie.rm.composition.IsmTransition;
 import com.nedap.archie.rm.datavalues.quantity.datetime.DvDateTime;
+import org.ehrbase.serialisation.walker.FlatHelper;
 import org.ehrbase.serialisation.walker.RMHelper;
 import org.ehrbase.serialisation.walker.defaultvalues.DefaultValuePath;
 import org.ehrbase.serialisation.walker.defaultvalues.DefaultValues;
+import org.ehrbase.webtemplate.model.WebTemplateNode;
 
 import java.time.temporal.TemporalAccessor;
 import java.util.Objects;
@@ -32,7 +34,7 @@ import java.util.stream.Stream;
 
 public class ActionValueInserter extends AbstractValueInserter<Action> {
   @Override
-  public void insert(Action rmObject, DefaultValues defaultValues) {
+  public void insert(Action rmObject, DefaultValues defaultValues, WebTemplateNode node) {
 
     if (RMHelper.isEmpty(rmObject.getTime())
         && (defaultValues.containsDefaultValue(DefaultValuePath.TIME)
@@ -49,7 +51,11 @@ public class ActionValueInserter extends AbstractValueInserter<Action> {
     if (rmObject.getIsmTransition() == null) {
       rmObject.setIsmTransition(new IsmTransition());
     }
-    new IsmTransitionValueInserter().insert(rmObject.getIsmTransition(), defaultValues);
+    new IsmTransitionValueInserter()
+        .insert(
+            rmObject.getIsmTransition(),
+            defaultValues,
+            FlatHelper.buildDummyChild("ism_transition", node));
     if (RMHelper.isEmpty(rmObject.getIsmTransition())) {
       rmObject.setIsmTransition(null);
     }

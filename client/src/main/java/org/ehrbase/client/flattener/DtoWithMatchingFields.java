@@ -19,15 +19,17 @@
 
 package org.ehrbase.client.flattener;
 
+import org.ehrbase.webtemplate.parser.AqlPath;
+
 import java.lang.reflect.Field;
 import java.util.Map;
 
 class DtoWithMatchingFields {
 
   private final Object dto;
-  private final Map<String, Field> fieldByPath;
+  private final Map<AqlPath, Field> fieldByPath;
 
-  DtoWithMatchingFields(Object dto, Map<String, Field> fieldByPath) {
+  DtoWithMatchingFields(Object dto, Map<AqlPath, Field> fieldByPath) {
     this.dto = dto;
     this.fieldByPath = fieldByPath;
   }
@@ -36,7 +38,7 @@ class DtoWithMatchingFields {
     return dto;
   }
 
-  Map<String, Field> getFieldByPath() {
+  Map<AqlPath, Field> getFieldByPath() {
     return fieldByPath;
   }
 }

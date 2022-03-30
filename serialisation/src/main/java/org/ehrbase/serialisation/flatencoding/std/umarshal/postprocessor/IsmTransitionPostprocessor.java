@@ -20,6 +20,8 @@
 package org.ehrbase.serialisation.flatencoding.std.umarshal.postprocessor;
 
 import com.nedap.archie.rm.composition.IsmTransition;
+import com.nedap.archie.rm.datavalues.DvCodedText;
+import com.nedap.archie.rm.datavalues.DvText;
 import org.apache.commons.collections4.CollectionUtils;
 import org.ehrbase.client.classgenerator.EnumValueSet;
 import org.ehrbase.client.classgenerator.shareddefinition.State;
@@ -68,6 +70,36 @@ public class IsmTransitionPostprocessor extends AbstractUnmarshalPostprocessor<I
           .map(EnumValueSet::toCodedText)
           .ifPresent(rmObject::setCurrentState);
     }
+
+    Map<Integer, Map<FlatPathDto, String>> reasonValues =
+        FlatHelper.extractMultiValued(term, "_reason", values);
+
+    reasonValues.forEach(
+        (key, value) -> {
+          final DvText reasonText;
+          if (FlatHelper.isExactlyDvCodedText(value, term + "/_reason:0")) {
+            reasonText = new DvCodedText();
+          } else {
+            reasonText = new DvText();
+          }
+          rmObject.addReason(reasonText);
+          callUnmarshal(
+              term,
+              "_reason:" + key,
+              reasonText,
+              value,
+              consumedPaths,
+              context,
+              FlatHelper.findOrBuildSubNode(context, "reason"));
+          callPostProcess(
+              term,
+              "_reason:" + key,
+              reasonText,
+              value,
+              consumedPaths,
+              context,
+              FlatHelper.findOrBuildSubNode(context, "reason"));
+        });
   }
 
   /** {@inheritDoc} */

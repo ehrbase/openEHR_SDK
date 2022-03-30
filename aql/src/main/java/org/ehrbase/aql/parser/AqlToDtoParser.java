@@ -39,5 +39,4 @@ public class AqlToDtoParser {
       throw new AqlParseException(e.getMessage());
     }
   }
-
 }

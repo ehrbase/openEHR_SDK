@@ -2,6 +2,26 @@
 
 Note: version releases in the 0.x.y range may introduce breaking changes.
 
+## 1.18.0
+
+### Added
+- Update archie to version 2.0.1 ([#345](https://github.com/ehrbase/openEHR_SDK/pull/345))
+- AQL: support `ORDER BY` and `LIMIT [OFFSET]` clauses in any order ([#344](https://github.com/ehrbase/openEHR_SDK/pull/344))
+
+### Fixed
+
+- Flat : corrected handling of PARTY_PROXY ( see https://github.com/ehrbase/openEHR_SDK/pull/320)
+- Flat : corrected handling of history origin and ISM_TRANSITION (see https://github.com/ehrbase/openEHR_SDK/pull/329)
+- Flat : handle fixed offset in template (see https://github.com/ehrbase/openEHR_SDK/pull/333)
+- Validation: fix validation of DV_TEXT with listopen (see https://github.com/ehrbase/openEHR_SDK/pull/335) 
+- Walker, Flat, DTO, Validation  : enhance performance of path handling (
+  see https://github.com/ehrbase/openEHR_SDK/pull/325, https://github.com/ehrbase/openEHR_SDK/pull/332 )
+- dto: Fix handling of element wich contains a choice with one an interval (see https://github.com/ehrbase/openEHR_SDK/pull/334)
+- Fixes AqlParseException while using boolean in where clause ([#338](https://github.com/ehrbase/openEHR_SDK/pull/338))
+- Fixes default ASC value for ORDER BY clause ([#342](https://github.com/ehrbase/openEHR_SDK/pull/342))
+- Fixes null nodeIds and annotations missing (https://github.com/ehrbase/openEHR_SDK/pull/343)
+- Fixes duration validation ([#346](https://github.com/ehrbase/openEHR_SDK/pull/346)
+
 ## 1.17.0
 
 ### Added

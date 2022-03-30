@@ -20,55 +20,45 @@
 package org.ehrbase.serialisation.flatencoding.std.umarshal.postprocessor;
 
 import com.nedap.archie.rm.archetyped.FeederAuditDetails;
-import com.nedap.archie.rm.datavalues.quantity.datetime.DvDateTime;
 import com.nedap.archie.rm.generic.PartyIdentified;
 import org.ehrbase.serialisation.walker.Context;
-import org.ehrbase.serialisation.walker.FlatHelper;
 import org.ehrbase.webtemplate.path.flat.FlatPathDto;
 
 import java.util.Map;
 import java.util.Set;
 
-public class FeederAuditDetailsPostprocessor extends AbstractUnmarshalPostprocessor<FeederAuditDetails> {
+public class FeederAuditDetailsPostprocessor
+    extends AbstractUnmarshalPostprocessor<FeederAuditDetails> {
 
   /** {@inheritDoc} */
   @Override
   public void process(
-      String term,
+      String currentTerm,
       FeederAuditDetails rmObject,
-      Map<FlatPathDto, String> values,
+      Map<FlatPathDto, String> currentValues,
       Set<String> consumedPaths,
       Context<Map<FlatPathDto, String>> context) {
 
-      Map<FlatPathDto, String> locationValues = FlatHelper.filter(values, term + "/_location", false);
-      if(!locationValues.isEmpty() ){
-          rmObject.setLocation(new PartyIdentified());
-        handleRmAttribute(term,rmObject.getLocation(),locationValues,consumedPaths,context,"location" );
-
-      }
-
-      Map<FlatPathDto, String> subjectValues = FlatHelper.filter(values, term + "/_subject", false);
-      if(!subjectValues.isEmpty() ){
-          rmObject.setSubject(new PartyIdentified());
-          handleRmAttribute(term,rmObject.getSubject(),subjectValues,consumedPaths,context,"subject" );
-
-      }
-
-      Map<FlatPathDto, String> providerValues = FlatHelper.filter(values, term + "/_provider", false);
-      if(!providerValues.isEmpty() ){
-          rmObject.setProvider(new PartyIdentified());
-          handleRmAttribute(term,rmObject.getProvider(),providerValues,consumedPaths,context,"provider" );
-
-      }
-
-      Map<FlatPathDto, String> timeValues = FlatHelper.filter(values, term + "/_time", false);
-      if(!timeValues.isEmpty() ){
-          rmObject.setTime(new DvDateTime( ));
-          handleRmAttribute(term,rmObject.getTime(),timeValues,consumedPaths,context,"time" );
-
-      }
-
+    setParty(
+        currentTerm,
+        p -> rmObject.setLocation((PartyIdentified) p),
+        currentValues,
+        consumedPaths,
+        context,
+        "location",
+        false);
+    setParty(
+        currentTerm, rmObject::setSubject, currentValues, consumedPaths, context, "subject", true);
+    setParty(
+        currentTerm,
+        p -> rmObject.setProvider((PartyIdentified) p),
+        currentValues,
+        consumedPaths,
+        context,
+        "provider",
+        false);
   }
+
 
   /** {@inheritDoc} */
   @Override

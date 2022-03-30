@@ -22,22 +22,27 @@ package org.ehrbase.serialisation.flatencoding.std.umarshal.postprocessor;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nedap.archie.rm.RMObject;
+import com.nedap.archie.rm.generic.PartyIdentified;
+import com.nedap.archie.rm.generic.PartyProxy;
+import com.nedap.archie.rm.generic.PartyRelated;
+import com.nedap.archie.rm.generic.PartySelf;
 import org.apache.commons.lang3.StringUtils;
+import org.ehrbase.serialisation.exception.UnmarshalException;
 import org.ehrbase.serialisation.flatencoding.std.umarshal.StdToCompositionWalker;
 import org.ehrbase.serialisation.flatencoding.std.umarshal.rmunmarshaller.RMUnmarshaller;
 import org.ehrbase.serialisation.jsonencoding.JacksonUtil;
 import org.ehrbase.serialisation.walker.Context;
 import org.ehrbase.serialisation.walker.FlatHelper;
+import org.ehrbase.util.exception.SdkException;
 import org.ehrbase.webtemplate.model.WebTemplateNode;
 import org.ehrbase.webtemplate.path.flat.FlatPathDto;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
 
 import static org.ehrbase.serialisation.walker.FlatHelper.buildDummyChild;
+import static org.ehrbase.serialisation.walker.FlatHelper.findOrBuildSubNode;
 import static org.ehrbase.webtemplate.parser.OPTParser.PATH_DIVIDER;
 
 public abstract class AbstractUnmarshalPostprocessor<T extends RMObject>
@@ -45,7 +50,6 @@ public abstract class AbstractUnmarshalPostprocessor<T extends RMObject>
 
   private static final ObjectMapper OBJECT_MAPPER = JacksonUtil.getObjectMapper();
 
-  private final Logger log = LoggerFactory.getLogger(getClass());
 
   /**
    * Sets the {@code consumer} to the value in {@code values} corresponding to {@code term} and
@@ -75,10 +79,8 @@ public abstract class AbstractUnmarshalPostprocessor<T extends RMObject>
         consumer.accept(value);
         consumedPaths.add(entry.getKey().format());
       } catch (JsonProcessingException e) {
-        log.error(e.getMessage());
+        throw new SdkException(e.getMessage(), e);
       }
-    } else {
-
     }
   }
 
@@ -169,6 +171,56 @@ public abstract class AbstractUnmarshalPostprocessor<T extends RMObject>
 
     if (subNode != null) {
       context.getNodeDeque().poll();
+    }
+  }
+
+  protected void setParty(
+      String currentTerm,
+      Consumer<PartyProxy> partyConsumer,
+      Map<FlatPathDto, String> currentValues,
+      Set<String> consumedPaths,
+      Context<Map<FlatPathDto, String>> context,
+      String id,
+      boolean allowPartySelf) {
+
+    Map<FlatPathDto, String> values =
+        FlatHelper.filter(currentValues, currentTerm + "/" + id, false);
+
+    PartyProxy partyProxy;
+
+    if (!values.isEmpty()) {
+
+      if (FlatHelper.isExactlyPartyRelated(values, currentTerm + "/" + id, null)) {
+        partyProxy = new PartyRelated();
+      } else if (FlatHelper.isExactlyPartyIdentified(values, currentTerm + "/" + id, null)) {
+        partyProxy = new PartyIdentified();
+      } else if (allowPartySelf
+          && FlatHelper.isExactlyPartySelf(values, currentTerm + "/" + id, null)) {
+        partyProxy = new PartySelf();
+      } else {
+        throw new UnmarshalException(
+            String.format(
+                "Could not find concrete instance of Party proxy for %s/%s", currentTerm, id));
+      }
+
+      partyConsumer.accept(partyProxy);
+
+      callUnmarshal(
+          currentTerm,
+          id,
+          partyProxy,
+          values,
+          consumedPaths,
+          context,
+          findOrBuildSubNode(context, StringUtils.removeStart(id, "_")));
+      callPostProcess(
+          currentTerm,
+          id,
+          partyProxy,
+          values,
+          consumedPaths,
+          context,
+          findOrBuildSubNode(context, id));
     }
   }
 }

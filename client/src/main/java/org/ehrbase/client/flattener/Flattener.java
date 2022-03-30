@@ -90,13 +90,17 @@ public class Flattener {
 
       String archetypeValue = clazz.getAnnotation(Archetype.class).value();
       WebTemplateNode root =
-          templateProvider
-              .buildIntrospect(templateId)
-              .orElseThrow(
-                  () -> new SdkException(String.format("Can not find Template: %s", templateId)))
-              .getTree()
-              .findMatching(n -> Objects.equals(n.getNodeId(), archetypeValue))
-              .get(0);
+          WebTemplateNode.streamSubtree(
+            templateProvider
+                .buildIntrospect(templateId)
+                .orElseThrow(
+                    () -> new SdkException(String.format("Can not find Template: %s", templateId)))
+                .getTree(),
+              false
+            )
+            .filter(n -> Objects.equals(n.getNodeId(), archetypeValue))
+            .findFirst()
+            .orElseThrow();
       new DtoFromCompositionWalker()
           .walk(
               locatable,

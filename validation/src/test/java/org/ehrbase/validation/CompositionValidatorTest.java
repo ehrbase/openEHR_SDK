@@ -27,10 +27,14 @@ import java.nio.charset.StandardCharsets;
 import javax.xml.bind.JAXBException;
 import org.apache.commons.io.IOUtils;
 import org.apache.xmlbeans.XmlException;
+import org.ehrbase.serialisation.flatencoding.FlatFormat;
+import org.ehrbase.serialisation.flatencoding.FlatJasonProvider;
 import org.ehrbase.serialisation.jsonencoding.CanonicalJson;
 import org.ehrbase.test_data.composition.CompositionTestDataCanonicalJson;
+import org.ehrbase.test_data.composition.CompositionTestDataSimSDTJson;
 import org.ehrbase.test_data.operationaltemplate.OperationalTemplateTestData;
 import org.ehrbase.validation.CompositionValidator;
+import org.ehrbase.validation.webtemplate.TestDataTemplateProvider;
 import org.junit.jupiter.api.Test;
 import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
 import org.openehr.schemas.v1.TemplateDocument;
@@ -53,6 +57,15 @@ class CompositionValidatorTest {
   }
 
   @Test
+  void testValidateReSPECT() throws Exception {
+    var template = getOperationalTemplate(OperationalTemplateTestData.RE_SPECT);
+    var composition = getComposition(CompositionTestDataSimSDTJson.RE_SPECT);
+
+    var result = validator.validate(composition, template);
+    assertTrue(result.isEmpty());
+  }
+
+  @Test
   void testValidateInternationalPatientSummary_Invalid() throws Exception {
     var template = getOperationalTemplate(OperationalTemplateTestData.IPS);
     var composition = getComposition(CompositionTestDataCanonicalJson.IPS_INVALID);
@@ -66,6 +79,15 @@ class CompositionValidatorTest {
   void testValidateCorona() throws Exception {
     var template = getOperationalTemplate(OperationalTemplateTestData.CORONA_ANAMNESE);
     var composition = getComposition(CompositionTestDataCanonicalJson.CORONA);
+
+    var result = validator.validate(composition, template);
+    assertTrue(result.isEmpty());
+  }
+
+  @Test
+  void testValidateDuration() throws Exception {
+    var template = getOperationalTemplate(OperationalTemplateTestData.DURATION_VALIDATION);
+    var composition = getComposition(CompositionTestDataSimSDTJson.DURATION_VALIDATION);
 
     var result = validator.validate(composition, template);
     assertTrue(result.isEmpty());
@@ -177,6 +199,12 @@ class CompositionValidatorTest {
       throws IOException {
     return new CanonicalJson().unmarshal(
         IOUtils.toString(composition.getStream(), StandardCharsets.UTF_8), Composition.class);
+  }
+
+  private Composition getComposition(CompositionTestDataSimSDTJson composition)
+          throws IOException {
+    return new FlatJasonProvider(new TestDataTemplateProvider()).buildFlatJson(FlatFormat.SIM_SDT,composition.getTemplate().getTemplateId()).unmarshal(
+            IOUtils.toString(composition.getStream(), StandardCharsets.UTF_8), Composition.class);
   }
 
   private Composition getComposition(String name) throws IOException, JAXBException {
