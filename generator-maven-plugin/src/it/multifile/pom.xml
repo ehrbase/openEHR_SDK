@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>generator-maven-plugin.it</groupId>
+  <artifactId>multifile</artifactId>
+  <version>@project.version@</version>
+  <packaging>jar</packaging>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>@project.groupId@</groupId>
+        <artifactId>@project.artifactId@</artifactId>
+        <version>@project.version@</version>
+        <configuration>
+          <addNullFlavor>true</addNullFlavor>
+          <packageName>ag.vitagroup.example</packageName>
+          <templateFiles>
+            <templateFile>src/main/resources/ehrbase_blood_pressure_simple.de.v0.opt</templateFile>
+            <templateFile>src/main/resources/GECCO_SerologischerBefund.opt</templateFile>
+          </templateFiles>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>
