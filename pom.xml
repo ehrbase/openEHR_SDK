@@ -67,6 +67,7 @@
     <modules>
         <module>client</module>
         <module>generator</module>
+        <module>generator-maven-plugin</module>
         <module>response-dto</module>
         <module>opt-1.4</module>
         <module>serialisation</module>
