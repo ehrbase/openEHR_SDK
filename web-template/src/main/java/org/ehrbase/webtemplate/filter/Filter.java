@@ -32,6 +32,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
@@ -50,8 +51,6 @@ import org.ehrbase.webtemplate.util.WebTemplateUtils;
 
 public class Filter implements WebTemplateFilter {
 
-  private static final Map<Class<?>, RmIntrospectConfig> configMap =
-      ReflectionHelper.buildMap(RmIntrospectConfig.class);
   public static final ArchieRMInfoLookup ARCHIE_RM_INFO_LOOKUP = ArchieRMInfoLookup.getInstance();
 
   @Override
@@ -172,15 +171,15 @@ public class Filter implements WebTemplateFilter {
       return true;
     }
 
-    if (List.of("HISTORY", "ITEM_TREE", "ITEM_LIST", "ITEM_SINGLE", "ITEM_TABLE", "ITEM_STRUCTURE")
+    if (Set.of("HISTORY", "ITEM_TREE", "ITEM_LIST", "ITEM_SINGLE", "ITEM_TABLE", "ITEM_STRUCTURE")
         .contains(node.getRmType())) {
       return true;
     } else if (parent != null && isEvent(node)) {
       return parent.getChildren().stream().filter(this::isEvent).count() == 1 && node.getMax() == 1;
     } else if (node.getRmType().equals("ELEMENT")) {
       return node.getChildren().size() == 1;
-    } else if (node.getRmType().equals("CODE_PHRASE") && parent != null) {
-      return parent.getRmType().equals("DV_CODED_TEXT");
+    } else if (node.getRmType().equals(RmConstants.CODE_PHRASE) && parent != null) {
+      return parent.getRmType().equals(RmConstants.DV_CODED_TEXT);
     }
     return false;
   }

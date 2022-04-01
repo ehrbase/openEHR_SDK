@@ -8,6 +8,8 @@ public class RmConstants {
   public static final String RM_OBJECT = "RM_OBJECT";
   public static final String DV_TEXT = "DV_TEXT";
   public static final String DV_CODED_TEXT = "DV_CODED_TEXT";
+  public static final String DV_DURATION = "DV_DURATION";
+  public static final String DV_INTERVAL = "DV_INTERVAL";
   public static final String ISM_TRANSITION = "ISM_TRANSITION";
   public static final String ELEMENT = "ELEMENT";
   public static final String CODE_PHRASE = "CODE_PHRASE";

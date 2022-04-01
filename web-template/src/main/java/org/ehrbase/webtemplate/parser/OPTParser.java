@@ -48,6 +48,7 @@ import org.w3c.dom.NodeList;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class OPTParser {
 
@@ -65,6 +66,18 @@ public class OPTParser {
   private final InputHandler inputHandler = new InputHandler(defaultValues);
   private final Map<String, Map<String, String>> annotationMap = new HashMap<>();
   private List<String> languages;
+
+  private final Map<String, String> choiceIdCache = new HashMap<>();
+
+  private boolean updateChoiceId(WebTemplateNode node) {
+    String rmType = node.getRmType();
+    if (rmType.startsWith("DV_")) {
+      node.setId(choiceIdCache.computeIfAbsent(rmType, t -> t.substring(3).toLowerCase() + "_value"));
+      return true;
+    } else {
+      return false;
+    }
+  }
 
   public OPTParser(OPERATIONALTEMPLATE operationaltemplate) {
     this.operationaltemplate = operationaltemplate;
@@ -548,30 +561,32 @@ public class OPTParser {
     Collection<List<WebTemplateNode>> values = node.getChoicesInChildren().values();
     values.stream()
         .flatMap(List::stream)
-        .filter(n -> n.getRmType().startsWith("DV_"))
-        .forEach(n -> n.setId(n.getRmType().replace("DV_", "").toLowerCase() + "_value"));
+        .forEach(this::updateChoiceId);
 
     // Inherit name for Element values
     if (node.getRmType().equals("ELEMENT")) {
       // Is any Node
       if (node.getChildren().isEmpty()) {
-        addAnyNode(node, "DV_TEXT", inputMap);
-        addAnyNode(node, "DV_CODED_TEXT", inputMap);
-        addAnyNode(node, "DV_MULTIMEDIA", inputMap);
-        addAnyNode(node, "DV_PARSABLE", inputMap);
-        addAnyNode(node, "DV_STATE", inputMap);
-        addAnyNode(node, "DV_BOOLEAN", inputMap);
-        addAnyNode(node, "DV_IDENTIFIER", inputMap);
-        addAnyNode(node, "DV_URI", inputMap);
-        addAnyNode(node, "DV_EHR_URI", inputMap);
-        addAnyNode(node, "DV_DURATION", inputMap);
-        addAnyNode(node, "DV_QUANTITY", inputMap);
-        addAnyNode(node, "DV_COUNT", inputMap);
-        addAnyNode(node, "DV_PROPORTION", inputMap);
-        addAnyNode(node, "DV_DATE_TIME", inputMap);
-        addAnyNode(node, "DV_TIME", inputMap);
-        addAnyNode(node, "DV_ORDINAL", inputMap);
-        addAnyNode(node, "DV_DATE", inputMap);
+
+        Stream.of(
+            RmConstants.DV_TEXT,
+            RmConstants.DV_CODED_TEXT,
+            "DV_MULTIMEDIA",
+            "DV_PARSABLE",
+            "DV_STATE",
+            "DV_BOOLEAN",
+            "DV_IDENTIFIER",
+            "DV_URI",
+            "DV_EHR_URI",
+            RmConstants.DV_DURATION,
+            "DV_QUANTITY",
+            "DV_COUNT",
+            "DV_PROPORTION",
+            "DV_DATE_TIME",
+            "DV_TIME",
+            "DV_ORDINAL",
+            "DV_DATE"
+        ).forEach(t -> addAnyNode(node, t, inputMap));
 
       } else {
         List<WebTemplateNode> trueChildren = WebTemplateUtils.getTrueChildrenElement(node);
@@ -580,13 +595,11 @@ public class OPTParser {
         // choice between value and null_flavour
         if (trueChildren.size() != 1 && node.getChoicesInChildren().isEmpty()) {
           WebTemplateUtils.getTrueChildrenElement(node).stream()
-              .filter(n -> n.getRmType().startsWith("DV_"))
-              .forEach(
-                  n -> {
-                    n.setId(n.getRmType().replace("DV_", "").toLowerCase() + "_value");
+              .filter(this::updateChoiceId)
+              .forEach(n -> {
                     n.getLocalizedDescriptions().putAll(node.getLocalizedDescriptions());
                     n.getLocalizedNames().putAll(node.getLocalizedNames());
-                  });
+              });
         }
       }
     }
@@ -665,7 +678,7 @@ public class OPTParser {
       WebTemplateNode node, String rmType, Map<String, WebTemplateInput> inputMap) {
     WebTemplateNode subNode = new WebTemplateNode();
     subNode.setRmType(rmType);
-    subNode.setId(subNode.getRmType().replace("DV_", "").toLowerCase() + "_value");
+    updateChoiceId(subNode);
     subNode.setName(node.getName());
     subNode.setAqlPath(node.getAqlPathDto().addEnd("value"));
     subNode.setInContext(true);
