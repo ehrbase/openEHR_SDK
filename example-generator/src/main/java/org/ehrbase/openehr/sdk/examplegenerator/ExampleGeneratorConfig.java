@@ -480,7 +480,7 @@ public class ExampleGeneratorConfig {
             ProportionType type = firstInputValue(node, "type")
                     .map(WebTemplateInputValue::getValue)
                     .map(s -> Arrays.stream(ProportionType.values())
-                            .filter(v -> v.getId() == v.getId()).findFirst().get())
+                            .filter(v -> Integer.toString(v.getId()).equals(s)).findFirst().get())
                     .orElse(ProportionType.FRACTION);
 
             value.setType((long) type.getId());
