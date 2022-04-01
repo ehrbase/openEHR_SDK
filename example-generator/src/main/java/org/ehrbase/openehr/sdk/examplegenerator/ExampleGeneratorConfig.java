@@ -90,6 +90,8 @@ import java.time.temporal.TemporalAmount;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.EnumMap;
+import java.util.EnumSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -264,26 +266,51 @@ public class ExampleGeneratorConfig {
         }
 
         static void handleIsmTransition(IsmTransition value, WebTemplateNode node) {
-            Optional<WebTemplateInputValue> currentState = firstInputValue(node, "current_state");
-            if (currentState.isPresent()) {
-                String stateName = currentState.get().getValue();
-                State state = Arrays.stream(State.values())
-                        .filter(s -> s.getValue().equals(stateName)).findFirst()
-                        .orElseThrow(() -> new IllegalArgumentException("Unknown state: " + stateName));
 
-                value.setCurrentState(new DvCodedText(currentState.get().getLabel(),  new CodePhrase(new TerminologyId(State.COMPLETED.getTerminologyId()), currentState.get().getValue())));
+            // determine permitted current states
+            final Set<State> states = getInput(node.findChildById("current_state").orElseThrow(), "code")
+                    .map(WebTemplateInput::getList)
+                    .stream()
+                    .flatMap(List::stream)
+                    .map(cs -> {
+                        String stateName = cs.getValue();
+                        State state = Arrays.stream(State.values())
+                                .filter(s -> s.getCode().equals(stateName)).findFirst()
+                                .orElseThrow(() -> new IllegalArgumentException("Unknown state: " + stateName));
+                        return state;
+                    })
+                    .collect(Collectors.toSet());
 
-                //find a transition that leads to current_state
-                Transition transition =  Arrays.stream(Transition.values())
-                        .filter(t -> t.getTargetState() == state)
-                        .findFirst()
-                        .orElseThrow(() -> new IllegalArgumentException("Could not determine a transition resulting in state " + stateName));
-                value.setTransition(transition.toCodedText());
-
-            } else {
-                value.setCurrentState(State.COMPLETED.toCodedText());
-                value.setTransition(Transition.FINISH.toCodedText());
+            if (states.isEmpty()) {
+                states.addAll(Arrays.asList(State.values()));
             }
+
+            // determine permitted transitions
+            Set<Transition> transitions = getInput(node.findChildById("transition").orElseThrow(), "code")
+                    .map(WebTemplateInput::getList)
+                    .stream()
+                    .flatMap(List::stream)
+                    .map(cs -> {
+                        String transitionName = cs.getValue();
+                        Transition transition = Arrays.stream(Transition.values())
+                                .filter(s -> s.getCode().equals(transitionName)).findFirst()
+                                .orElseThrow(() -> new IllegalArgumentException("Unknown transition: " + transitionName));
+                        return transition;
+                    })
+                    .collect(Collectors.toCollection(LinkedHashSet::new));
+
+            if (transitions.isEmpty()) {
+                transitions = EnumSet.allOf(Transition.class);
+                // filter transitions by permitted states
+                transitions.removeIf(t -> !states.contains(t.getTargetState()));
+            }
+
+            //take first transition
+            Transition transition = transitions.iterator().next();
+            State currentState = transition.getTargetState();
+
+            value.setCurrentState(currentState.toCodedText());
+            value.setTransition(transition.toCodedText());
         }
 
         static void handleCodePhrase(CodePhrase value, WebTemplateNode node, WebTemplateNode parent) {
@@ -453,7 +480,7 @@ public class ExampleGeneratorConfig {
             ProportionType type = firstInputValue(node, "type")
                     .map(WebTemplateInputValue::getValue)
                     .map(s -> Arrays.stream(ProportionType.values())
-                            .filter(v -> Integer.toString(v.getId()).equals(v.getId())).findFirst().get())
+                            .filter(v -> v.getId() == v.getId()).findFirst().get())
                     .orElse(ProportionType.FRACTION);
 
             value.setType((long) type.getId());

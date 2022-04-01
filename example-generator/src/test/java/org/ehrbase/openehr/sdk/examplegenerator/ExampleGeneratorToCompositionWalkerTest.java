@@ -65,14 +65,10 @@ class ExampleGeneratorToCompositionWalkerTest {
             OperationalTemplateTestData.EHRN_VITAL_SIGNS_TEST, 1,
             // existence 1..1 EVALUATION ACTION
             OperationalTemplateTestData.IDCR_PROBLEM_LIST, 13,
-            // CodePhrase codeString does not match any option, found: 532
-            OperationalTemplateTestData.OPEN_E_REACT_CARE, 1,
             // null_flavor support
             OperationalTemplateTestData.SM_I_C_S_BEFUND, 1,
             // null_flavor support
-            OperationalTemplateTestData.INITIAL_ASSESSMENT, 3,
-            // CodePhrase codeString does not match any option, found: 532
-            OperationalTemplateTestData.IPS, 1
+            OperationalTemplateTestData.INITIAL_ASSESSMENT, 3
     );
 
     @ParameterizedTest
