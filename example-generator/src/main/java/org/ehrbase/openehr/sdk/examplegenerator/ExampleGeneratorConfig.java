@@ -453,7 +453,7 @@ public class ExampleGeneratorConfig {
             ProportionType type = firstInputValue(node, "type")
                     .map(WebTemplateInputValue::getValue)
                     .map(s -> Arrays.stream(ProportionType.values())
-                            .filter(v -> Integer.toString(v.getId()).equals(v)).findFirst().get())
+                            .filter(v -> Integer.toString(v.getId()).equals(v.getId())).findFirst().get())
                     .orElse(ProportionType.FRACTION);
 
             value.setType((long) type.getId());
@@ -603,7 +603,7 @@ public class ExampleGeneratorConfig {
 
     List<WebTemplateNode> getChoices(WebTemplateNode parent, WebTemplateNode child) {
         List<WebTemplateNode> choices;
-        if (parent.findChildById(child.getId()).get().getRmType().equals(RmConstants.EVENT)) {
+        if (parent.findChildById(child.getId()).orElseThrow().getRmType().equals(RmConstants.EVENT)) {
             choices = List.of(cloneWithRmType(child,
                     RmConstants.POINT_EVENT),
                     cloneWithRmType(child, RmConstants.INTERVAL_EVENT));
