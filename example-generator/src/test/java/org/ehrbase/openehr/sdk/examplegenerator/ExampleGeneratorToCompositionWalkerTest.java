@@ -56,8 +56,7 @@ class ExampleGeneratorToCompositionWalkerTest {
         ExampleGeneratorToCompositionWalker cut = new ExampleGeneratorToCompositionWalker();
 
         Path outPath = Path.of("target", "compositions", "conformance.json");
-        Files.deleteIfExists(outPath);
-        Files.createFile(outPath);
+        Files.createDirectories(outPath.getParent());
         writeAndValidateComposition(cut, outPath, OperationalTemplateTestData.CONFORMANCE);
     }
 
