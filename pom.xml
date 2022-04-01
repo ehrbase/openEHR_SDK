@@ -80,6 +80,7 @@
         <module>building</module>
         <module>aql</module>
         <module>serialisation_conformance_test</module>
+        <module>example-generator</module>
     </modules>
 
     <properties>
