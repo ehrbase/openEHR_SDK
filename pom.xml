@@ -438,6 +438,11 @@
                 <artifactId>test-data</artifactId>
                 <version>${project.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.ehrbase.openehr.sdk</groupId>
+                <artifactId>example-generator</artifactId>
+                <version>${project.version}</version>
+            </dependency>
             <!-- External Dependencies -->
             <dependency>
                 <groupId>cglib</groupId>
