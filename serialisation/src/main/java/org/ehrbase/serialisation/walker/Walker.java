@@ -109,11 +109,11 @@ public abstract class Walker<T> {
 
       for (List<WebTemplateNode> childrenForPath : childrenByPath.values()) {
 
-        boolean isChoice = ! currentNode.getRmType().equals(ELEMENT)
+        boolean isMulti = ! currentNode.getRmType().equals(ELEMENT)
                 && childrenForPath.stream().anyMatch(WebTemplateNode::isMulti);
 
         Stream<NodeConstellation> childConstellations;
-        if (!isChoice) {
+        if (!isMulti) {
           childConstellations = streamChildConstellations(context, currentNode, allChoices, childrenForPath, null);
 
         } else {
