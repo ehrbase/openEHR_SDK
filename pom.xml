@@ -80,6 +80,7 @@
         <module>building</module>
         <module>aql</module>
         <module>serialisation_conformance_test</module>
+        <module>example-generator</module>
     </modules>
 
     <properties>
@@ -435,6 +436,11 @@
             <dependency>
                 <groupId>org.ehrbase.openehr.sdk</groupId>
                 <artifactId>test-data</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.ehrbase.openehr.sdk</groupId>
+                <artifactId>example-generator</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <!-- External Dependencies -->

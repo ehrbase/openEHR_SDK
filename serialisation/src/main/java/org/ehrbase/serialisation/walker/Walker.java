@@ -28,9 +28,8 @@ import com.nedap.archie.rm.composition.IsmTransition;
 import com.nedap.archie.rm.datavalues.quantity.DvInterval;
 import com.nedap.archie.rminfo.ArchieRMInfoLookup;
 import com.nedap.archie.rminfo.RMTypeInfo;
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.ImmutableTriple;
-import org.apache.commons.lang3.tuple.Triple;
 import org.ehrbase.serialisation.jsonencoding.CanonicalJson;
 import org.ehrbase.serialisation.walker.defaultvalues.DefaultValues;
 import org.ehrbase.webtemplate.model.WebTemplate;
@@ -38,6 +37,8 @@ import org.ehrbase.webtemplate.model.WebTemplateNode;
 
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 import static org.ehrbase.util.rmconstants.RmConstants.*;
 
@@ -101,72 +102,45 @@ public abstract class Walker<T> {
       }
       handleInheritance(currentNode);
 
-      Map<String, List<WebTemplateNode>> choices = currentNode.getChoicesInChildren();
-      List<WebTemplateNode> children = new ArrayList<>(currentNode.getChildren());
+      Map<?, List<WebTemplateNode>> childrenByPath =  currentNode.getChildren().stream()
+              .collect(Collectors.groupingBy(WebTemplateNode::getAqlPathDto, LinkedHashMap::new, Collectors.toList()));
 
+      Map<String, List<WebTemplateNode>> allChoices = currentNode.getChoicesInChildren();
 
-      Map<String, List<WebTemplateNode>> map = new LinkedHashMap<>();
-      for (WebTemplateNode webTemplateNode : children) {
-        map.computeIfAbsent(webTemplateNode.getAqlPath(), k -> new ArrayList<>())
-            .add(webTemplateNode);
-      }
-      Map<String, List<WebTemplateNode>> result = new LinkedHashMap<>();
-      for (Map.Entry<String, List<WebTemplateNode>> stringListEntry : map.entrySet()) {
-        if (result.put(stringListEntry.getKey(), stringListEntry.getValue()) != null) {
-          throw new IllegalStateException("Duplicate key");
-        }
-      }
-      Collection<List<WebTemplateNode>> childChoices = result.values();
+      for (List<WebTemplateNode> childrenForPath : childrenByPath.values()) {
 
-      for (List<WebTemplateNode> choice : childChoices) {
+        boolean isMulti = ! currentNode.getRmType().equals(ELEMENT)
+                && childrenForPath.stream().anyMatch(WebTemplateNode::isMulti);
 
-        if (choice.stream().noneMatch(WebTemplateNode::isMulti)
-            || currentNode.getRmType().equals(ELEMENT)) {
+        Stream<NodeConstellation> childConstellations;
+        if (!isMulti) {
+          childConstellations = streamChildConstellations(context, currentNode, allChoices, childrenForPath, null);
 
-          for (WebTemplateNode childNode : choice) {
-            ImmutablePair<T, RMObject> pair =
-                extractPair(context, currentNode, choices, childNode, null);
-            T childObject = pair.getLeft();
-            RMObject child = pair.getRight();
-
-            if (child != null && childObject != null) {
-              context.getNodeDeque().push(childNode);
-              context.getObjectDeque().push(childObject);
-              context.getRmObjectDeque().push(child);
-              handle(context);
-            }
-          }
         } else {
-
-          int size = calculateSize(context, choice.get(0));
-
-          Map<Integer, Triple<T, RMObject, WebTemplateNode>> pairs = new HashMap<>();
-          for (int i = 0; i < size; i++) {
-            for (WebTemplateNode childNode : choice) {
-              ImmutablePair<T, RMObject> pair =
-                  extractPair(context, currentNode, choices, childNode, i);
-              if (pair.getLeft() != null && pair.getRight() != null) {
-                pairs.put(i, new ImmutableTriple<>(pair.getLeft(), pair.getRight(), childNode));
-              }
-            }
-          }
-
-          pairs.forEach(
-              (i, p) -> {
-                RMObject currentChild = null;
-                T childObject = null;
-                childObject = p.getLeft();
-                currentChild = p.getMiddle();
-                WebTemplateNode childNode = p.getRight();
-                if (currentChild != null && childObject != null) {
-                  context.getNodeDeque().push(childNode);
-                  context.getObjectDeque().push(childObject);
-                  context.getRmObjectDeque().push(currentChild);
-                  context.getCountMap().put(new NodeId(childNode), i);
-                  handle(context);
-                }
-              });
+          //Number of entries to be added
+          int size = calculateSize(context, childrenForPath.get(0));
+          childConstellations = IntStream.range(0, size)
+                  .mapToObj(Integer::valueOf)
+                  .flatMap(index ->
+                          streamChildConstellations(context, currentNode, allChoices, childrenForPath, index)
+                          //for each index at most one of the choices is retained
+                          .findFirst()
+                          //an index may be skipped if none of the choices is accepted
+                          .stream()
+                  );
         }
+
+        childConstellations.forEach(
+                constellation -> {
+                  WebTemplateNode childNode = constellation.getNode();
+                  context.getNodeDeque().push(childNode);
+                  context.getObjectDeque().push(constellation.getObject());
+                  context.getRmObjectDeque().push(constellation.getRmObject());
+                  if (constellation.getIndex() != null) {
+                    context.getCountMap().put(new NodeId(childNode), constellation.getIndex());
+                  }
+                  handle(context);
+                });
       }
     }
     postHandle(context);
@@ -174,6 +148,49 @@ public abstract class Walker<T> {
     context.getRmObjectDeque().remove();
     context.getNodeDeque().remove();
     context.getObjectDeque().remove();
+  }
+
+  private Stream<NodeConstellation> streamChildConstellations(Context<T> context, WebTemplateNode currentNode, Map<String, List<WebTemplateNode>> choices, List<WebTemplateNode> childrenForPath, Integer index) {
+    return childrenForPath.stream()
+            .map(childNode -> {
+              var pair = extractPair(context, currentNode, choices, childNode, index);
+              if (ObjectUtils.anyNull(pair.getLeft(), pair.getRight())) {
+                return null;
+              } else {
+                return new NodeConstellation(index, pair.getLeft(), pair.getRight(), childNode);
+              }
+            })
+            .filter(Objects::nonNull);
+  }
+
+  private final class NodeConstellation {
+    private final Integer index;
+    private final T object;
+    private final RMObject rmObject;
+    private final WebTemplateNode node;
+
+    private NodeConstellation(Integer index, T object, RMObject rmObject, WebTemplateNode node) {
+      this.index = index;
+      this.object = object;
+      this.rmObject = rmObject;
+      this.node = node;
+    }
+
+    public Integer getIndex() {
+      return index;
+    }
+
+    public T getObject() {
+      return object;
+    }
+
+    public RMObject getRmObject() {
+      return rmObject;
+    }
+
+    public WebTemplateNode getNode() {
+      return node;
+    }
   }
 
   /**

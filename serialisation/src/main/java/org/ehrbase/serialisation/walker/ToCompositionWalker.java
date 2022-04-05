@@ -55,7 +55,7 @@ public abstract class ToCompositionWalker<T> extends Walker<T> {
     WebTemplateNode currentNode = context.getNodeDeque().peek();
 
     if (currentRM instanceof Locatable) {
-      org.ehrbase.webtemplate.parser.NodeId nodeId = new NodeId(currentNode.getNodeId());
+      NodeId nodeId = new NodeId(currentNode.getNodeId());
       if (nodeId.isArchetypeId()) {
         Archetyped archetyped = new Archetyped();
         archetyped.setArchetypeId(new ArchetypeID(nodeId.getNodeId()));

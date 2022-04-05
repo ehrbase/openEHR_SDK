@@ -60,16 +60,19 @@ public class FlattFilter extends Filter {
                 .stream()
                 .map(s -> new SnakeCase(s).camelToSnake())
                 .collect(Collectors.toSet());
-        attributeNames.add("context");
-        attributeNames.add("timing");
-        attributeNames.add("expiry_time");
-        attributeNames.add("lower");
-        attributeNames.add("upper");
-        attributeNames.add("ism_transition");
-        attributeNames.add("location");
-        attributeNames.add("lower_included");
-        attributeNames.add("upper_included");
-        attributeNames.add("sample_count");
+
+        attributeNames.addAll(Set.of(
+            "context",
+            "timing",
+            "expiry_time",
+            "lower",
+            "upper",
+            "ism_transition",
+            "location",
+            "lower_included",
+            "upper_included",
+            "sample_count"
+        ));
 
         deque.poll();
         if (!isTrivialNode(parent, deque.peek())
@@ -94,40 +97,40 @@ public class FlattFilter extends Filter {
 
   private boolean isTrivialNode(WebTemplateNode node, WebTemplateNode parent) {
 
+    boolean commonConditions =
+            //Only nodes with children need to be filtered
+            !node.getChildren().isEmpty()
+            && node.getMax() == 1
+            && isSkippableInterval(parent, node)
+            && (!isEvent(node) || isSkippableEvent(parent, node));
+
+    if (!commonConditions) {
+      return false;
+    }
+
     switch (config.getOptimizerSetting()) {
       case ALL:
-        return !node.getChildren().isEmpty()
-            && node.getMax() == 1
-            && !node.getRmType().equals("COMPOSITION")
-            && isSkippableInterval(parent, node)
-            && (!isEvent(node) || isSkippableEvent(parent, node));
+        return !node.getRmType().equals("COMPOSITION");
       case SECTION:
-        return !node.getChildren().isEmpty()
-            && node.getMax() == 1
-            && (!node.isArchetype() || node.getRmType().equals("SECTION"))
-            && isSkippableInterval(parent, node)
-            && (!isEvent(node) || isSkippableEvent(parent, node));
+        return (!node.isArchetype() || node.getRmType().equals("SECTION"));
       default:
-        return !node.getChildren().isEmpty()
-            && node.getMax() == 1
-            && !node.isArchetype()
-            && isSkippableInterval(parent, node)
-            && (!isEvent(node) || isSkippableEvent(parent, node));
+        return !node.isArchetype();
     }
   }
 
   private boolean isSkippableEvent(WebTemplateNode parent, WebTemplateNode node) {
-    if (node.getRmType().equals("EVENT")
+    if (node.getRmType().equals(RmConstants.EVENT)
         && (config.isGenerateChoicesForSingleEvent() || node.isMulti())) {
       return false;
     }
-    return parent.getChildren().stream().filter(this::isEvent).count() == 1 && !node.isMulti();
+    return !node.isMulti() && parent.getChildren().stream().filter(this::isEvent).count() == 1;
   }
 
   private boolean isSkippableInterval(WebTemplateNode parent, WebTemplateNode node) {
 
-    if (parent.getRmType().equals(RmConstants.ELEMENT)
-        && node.getRmType().contains("DV_INTERVAL")) {
+    if (parent != null
+        && parent.getRmType().equals(RmConstants.ELEMENT)
+        && node.getRmType().startsWith(RmConstants.DV_INTERVAL)) {
       return WebTemplateUtils.getTrueChildrenElement(parent).size() == 1;
     }
     return true;
@@ -142,7 +145,7 @@ public class FlattFilter extends Filter {
 
     List<WebTemplateNode> ismTransitionList =
             node.getChildren().stream()
-                    .filter(n -> "ISM_TRANSITION".equals(n.getRmType()))
+                    .filter(n -> RmConstants.ISM_TRANSITION.equals(n.getRmType()))
                     .collect(Collectors.toList());
     if (!ismTransitionList.isEmpty()) {
       node.getChildren().removeAll(ismTransitionList);
