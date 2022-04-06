@@ -105,6 +105,8 @@ import java.util.stream.Stream;
 
 public class ExampleGeneratorConfig {
 
+   private static final ArchieRMInfoLookup ARCHIE_RM_INFO_LOOKUP = ArchieRMInfoLookup.getInstance();
+
     static final Set<String> UNSUPPORTED = Stream.of(
             Archetyped.class,
             FeederAudit.class,
@@ -648,6 +650,17 @@ public class ExampleGeneratorConfig {
     }
 
     boolean doSkip(WebTemplateNode parent, WebTemplateNode child) {
+
+        RMTypeInfo parentTypeInfo = Optional.ofNullable(parent).map(WebTemplateNode::getRmType).map(ARCHIE_RM_INFO_LOOKUP::getTypeInfo).orElse(null);
+
+        if(parentTypeInfo != null && (parentTypeInfo.getJavaClass().isAssignableFrom(Entry.class)  || parentTypeInfo.getJavaClass().isAssignableFrom(Composition.class)   )){
+            // Will be set by defaults
+            if(List.of("language","composer").contains(child.getId())){
+                return true;
+            }
+        }
+
+
         if (child.getRmType().equals(RmConstants.CODE_PHRASE)) {
             return child.getMin() == 0;
         }

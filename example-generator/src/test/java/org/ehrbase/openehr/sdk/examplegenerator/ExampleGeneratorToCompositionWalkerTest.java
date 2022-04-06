@@ -122,8 +122,9 @@ class ExampleGeneratorToCompositionWalkerTest {
         defaultValues.addDefaultValue(DefaultValuePath.LANGUAGE, Language.DE);
         defaultValues.addDefaultValue(DefaultValuePath.TERRITORY, Territory.DE);
         defaultValues.addDefaultValue(DefaultValuePath.SETTING, Setting.DENTAL_CARE);
+        defaultValues.addDefaultValue(DefaultValuePath.COMPOSER_NAME,"Max Mustermann");
 
-        composition.setCategory(Category.EVENT.toCodedText());
+
 
         cut.walk(composition, object, webTemplate, defaultValues, templateId);
 
