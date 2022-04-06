@@ -62,23 +62,6 @@ import com.nedap.archie.rminfo.RMTypeInfo;
 import com.nedap.archie.rmutil.InvariantUtil;
 import com.nedap.archie.terminology.OpenEHRTerminologyAccess;
 import com.nedap.archie.terminology.TermCode;
-import org.apache.commons.lang3.ObjectUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.tuple.Pair;
-import org.apache.commons.lang3.tuple.Triple;
-import org.ehrbase.client.classgenerator.shareddefinition.State;
-import org.ehrbase.client.classgenerator.shareddefinition.Transition;
-import org.ehrbase.util.rmconstants.RmConstants;
-import org.ehrbase.webtemplate.model.ProportionType;
-import org.ehrbase.webtemplate.model.WebTemplateComparisonSymbol;
-import org.ehrbase.webtemplate.model.WebTemplateInput;
-import org.ehrbase.webtemplate.model.WebTemplateInputValue;
-import org.ehrbase.webtemplate.model.WebTemplateInterval;
-import org.ehrbase.webtemplate.model.WebTemplateNode;
-import org.ehrbase.webtemplate.model.WebTemplateValidation;
-import org.threeten.extra.PeriodDuration;
-
-import javax.xml.bind.annotation.XmlType;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URI;
@@ -102,8 +85,26 @@ import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import javax.xml.bind.annotation.XmlType;
+import org.apache.commons.lang3.ObjectUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.Pair;
+import org.apache.commons.lang3.tuple.Triple;
+import org.ehrbase.client.classgenerator.shareddefinition.State;
+import org.ehrbase.client.classgenerator.shareddefinition.Transition;
+import org.ehrbase.util.rmconstants.RmConstants;
+import org.ehrbase.webtemplate.model.ProportionType;
+import org.ehrbase.webtemplate.model.WebTemplateComparisonSymbol;
+import org.ehrbase.webtemplate.model.WebTemplateInput;
+import org.ehrbase.webtemplate.model.WebTemplateInputValue;
+import org.ehrbase.webtemplate.model.WebTemplateInterval;
+import org.ehrbase.webtemplate.model.WebTemplateNode;
+import org.ehrbase.webtemplate.model.WebTemplateValidation;
+import org.threeten.extra.PeriodDuration;
 
 public class ExampleGeneratorConfig {
+
+    private static final ArchieRMInfoLookup ARCHIE_RM_INFO_LOOKUP = ArchieRMInfoLookup.getInstance();
 
     static final Set<String> UNSUPPORTED = Stream.of(
             Archetyped.class,
@@ -114,6 +115,8 @@ public class ExampleGeneratorConfig {
         .collect(Collectors.toSet());
 
     private static final Map<ChronoUnit, String> DURATION_CHRONO_UNITS;
+    public static final String LANGUAGE = "language";
+
     static {
         Map<ChronoUnit, String> chronoUnits = new EnumMap<>(ChronoUnit.class);
         Stream.of(ChronoUnit.YEARS, ChronoUnit.MONTHS, ChronoUnit.WEEKS, ChronoUnit.DAYS, ChronoUnit.HOURS, ChronoUnit.MINUTES, ChronoUnit.SECONDS)
@@ -648,6 +651,17 @@ public class ExampleGeneratorConfig {
     }
 
     boolean doSkip(WebTemplateNode parent, WebTemplateNode child) {
+
+        RMTypeInfo parentTypeInfo = Optional.ofNullable(parent).map(WebTemplateNode::getRmType).map(ARCHIE_RM_INFO_LOOKUP::getTypeInfo).orElse(null);
+
+    // Will be set by defaults
+    if (parentTypeInfo != null
+        && (Entry.class.isAssignableFrom(parentTypeInfo.getJavaClass())
+            || Composition.class.isAssignableFrom(parentTypeInfo.getJavaClass()))
+        && List.of(LANGUAGE, "composer").contains(child.getId())) {
+      return true;
+    }
+
         if (child.getRmType().equals(RmConstants.CODE_PHRASE)) {
             return child.getMin() == 0;
         }
@@ -675,19 +689,19 @@ public class ExampleGeneratorConfig {
         ATTESTATION_REASON(Attestation.class, DvText.class, "reason", Attestation::getReason, Attestation::setReason, "attestation reason"),
         AUDIT_DETAILS_CHANGE_TYPE(AuditDetails.class, DvCodedText.class, "change_type", AuditDetails::getChangeType, AuditDetails::setChangeType, "audit change type"),
         COMPOSITION_CATEGORY(Composition.class, DvCodedText.class, "category", Composition::getCategory, Composition::setCategory, "composition category"),
-        COMPOSITION_LANGUAGE(Composition.class, CodePhrase.class, "language", Composition::getLanguage, Composition::setLanguage, "languages"),
+        COMPOSITION_LANGUAGE(Composition.class, CodePhrase.class, LANGUAGE, Composition::getLanguage, Composition::setLanguage, "languages"),
         COMPOSITION_TERRITORY(Composition.class, CodePhrase.class, "territory", Composition::getTerritory, Composition::setTerritory, "countries"),
         ELEMENT_NULL_FLAVOURS(Element.class, DvCodedText.class, "null_flavour", Element::getNullFlavour, Element::setNullFlavour, "null flavours"),
         ENTRY_ENCODING(Entry.class, CodePhrase.class, "encoding", Entry::getEncoding, Entry::setEncoding, "character sets"),
-        ENTRY_LANGUAGE(Entry.class, CodePhrase.class, "language", Entry::getLanguage, Entry::setLanguage, "languages"),
+        ENTRY_LANGUAGE(Entry.class, CodePhrase.class, LANGUAGE, Entry::getLanguage, Entry::setLanguage, "languages"),
         EVENT_CONTEXT_SETTING(EventContext.class, DvCodedText.class, "setting", EventContext::getSetting, EventContext::setSetting, "setting"),
-        DV_ENCAPSULATED_LANGUAGE(DvEncapsulated.class, CodePhrase.class, "language", DvEncapsulated::getLanguage, DvEncapsulated::setLanguage, "languages"),
+        DV_ENCAPSULATED_LANGUAGE(DvEncapsulated.class, CodePhrase.class, LANGUAGE, DvEncapsulated::getLanguage, DvEncapsulated::setLanguage, "languages"),
         DV_ENCAPSULATED_CHARSET(DvEncapsulated.class, CodePhrase.class, "charset", DvEncapsulated::getCharset, DvEncapsulated::setCharset, "character sets"),
         DV_MULTIMEDIA_COMPRESSION_ALGORITHM(DvMultimedia.class, CodePhrase.class, "compression_algorithm", DvMultimedia::getCompressionAlgorithm, DvMultimedia::setCompressionAlgorithm, "compression algorithms"),
         DV_MULTIMEDIA_INTEGRITY_CHECK_ALGORITHM(DvMultimedia.class, CodePhrase.class, "integrity_check_algorithm", DvMultimedia::getIntegrityCheckAlgorithm, DvMultimedia::setIntegrityCheckAlgorithm, "integrity check algorithms"),
         DV_MULTIMEDIA_MEDIA_TYPE(DvMultimedia.class, CodePhrase.class, "media_type", DvMultimedia::getMediaType, DvMultimedia::setMediaType, "media types"),
         DV_ORDERED_NORMALSTATUS(DvOrdered .class, CodePhrase.class, "normal_status", DvOrdered ::getNormalStatus, DvOrdered ::setNormalStatus, "normal statuses"),
-        DV_TEXT_LANGUAGE(DvText.class, CodePhrase.class, "language", DvText::getLanguage, DvText::setLanguage, "languages"),
+        DV_TEXT_LANGUAGE(DvText.class, CodePhrase.class, LANGUAGE, DvText::getLanguage, DvText::setLanguage, "languages"),
         DV_TEXT_ENCODING(DvText.class, CodePhrase.class, "encoding", DvText::getEncoding, DvText::setEncoding, "character sets"),
         ISM_TRANSITION_TRANSITION(IsmTransition.class, DvCodedText.class, "transition", IsmTransition:: getTransition, IsmTransition::setTransition, "instruction transitions"),
         INTERVAL_EVENT_MATH_FUNCTION(IntervalEvent.class, DvCodedText.class, "math_function", IntervalEvent::getMathFunction, IntervalEvent::setMathFunction, "event math function"),
