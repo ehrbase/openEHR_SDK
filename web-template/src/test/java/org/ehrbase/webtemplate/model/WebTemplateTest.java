@@ -83,10 +83,10 @@ public class WebTemplateTest {
 
 
     WebTemplateNode node = actual
-            .findByAqlPath("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Symptome']")
+            .findByAqlPath("/content[openEHR-EHR-SECTION.adhoc.v1]")
             .get();
 
-
+//
     Assertions.assertThat(actual.getTree().isRelativePathNameDependent(node)).isTrue();
 
 
@@ -140,4 +140,5 @@ public class WebTemplateTest {
 
     Assertions.assertThat(actual).size().isEqualTo(5);
   }
+
 }
