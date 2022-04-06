@@ -17,7 +17,11 @@
  */
 package org.ehrbase.validation.terminology;
 
+import java.util.List;
+
+import com.nedap.archie.aom.terminology.ValueSet;
 import com.nedap.archie.rm.datatypes.CodePhrase;
+import com.nedap.archie.rm.datavalues.DvCodedText;
 
 /**
  * This interface provides support for external terminology validation.
@@ -37,9 +41,21 @@ public interface ExternalTerminologyValidation {
   /**
    * Validate the supplied {@link CodePhrase}.
    *
+   * @param path            the AQL path to the relevant codePhrase 
    * @param referenceSetUri the reference URI of the external terminology
    * @param codePhrase      the code phrase that is to be validated
    * @throws org.ehrbase.validation.ConstraintViolationException if validation failed
    */
   void validate(String path, String referenceSetUri, CodePhrase codePhrase);
+  
+  
+  /**
+   * Expands the supplied {@link ValueSet}
+   *
+   * @param path            the AQL path to the relevant codePhrase 
+   * @param referenceSetUri the reference URI of the external terminology
+   * @param codePhrase      the code phrase that is to be validated
+   * @throws org.ehrbase.validation.ConstraintViolationException if validation failed
+   */
+  List<DvCodedText> expand(String path, String referenceSetUri);
 }

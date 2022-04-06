@@ -18,8 +18,10 @@
 package org.ehrbase.validation.terminology;
 
 import com.nedap.archie.rm.datatypes.CodePhrase;
+import com.nedap.archie.rm.datavalues.DvCodedText;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -62,7 +64,16 @@ public class ExternalTerminologyValidationChain implements ExternalTerminologyVa
             }
         }
     }
-
+    
+    @Override
+    public List<DvCodedText> expand(String path, String referenceSetUri) {
+      return chain.stream()
+        .filter(n -> n.supports(referenceSetUri))
+        .map(n -> n.expand(path, referenceSetUri))
+        .findFirst()
+        .orElseGet(() -> Collections.emptyList());
+    }
+    
     /**
      * Adds the given external terminology server to the chain.
      *
