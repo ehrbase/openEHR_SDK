@@ -5,6 +5,17 @@ Note: version releases in the 0.x.y range may introduce breaking changes.
 ## [unreleased]
 
 ### Added
+- Maven plugin to generate code from templates ([#347](https://github.com/ehrbase/openEHR_SDK/pull/347))
+- Example Generator ([#349](https://github.com/ehrbase/openEHR_SDK/pull/349), [#351](https://github.com/ehrbase/openEHR_SDK/pull/351))
+
+### Fixed
+
+
+## 1.18.0
+
+### Added
+- Update archie to version 2.0.1 ([#345](https://github.com/ehrbase/openEHR_SDK/pull/345))
+- AQL: support `ORDER BY` and `LIMIT [OFFSET]` clauses in any order ([#344](https://github.com/ehrbase/openEHR_SDK/pull/344))
 
 ### Fixed
 
@@ -15,8 +26,10 @@ Note: version releases in the 0.x.y range may introduce breaking changes.
 - Walker, Flat, DTO, Validation  : enhance performance of path handling (
   see https://github.com/ehrbase/openEHR_SDK/pull/325, https://github.com/ehrbase/openEHR_SDK/pull/332 )
 - dto: Fix handling of element wich contains a choice with one an interval (see https://github.com/ehrbase/openEHR_SDK/pull/334)
-- Fixes AqlParseException while using boolean in where clause ([#338](hhttps://github.com/ehrbase/openEHR_SDK/pull/338))
-
+- Fixes AqlParseException while using boolean in where clause ([#338](https://github.com/ehrbase/openEHR_SDK/pull/338))
+- Fixes default ASC value for ORDER BY clause ([#342](https://github.com/ehrbase/openEHR_SDK/pull/342))
+- Fixes null nodeIds and annotations missing (https://github.com/ehrbase/openEHR_SDK/pull/343)
+- Fixes duration validation ([#346](https://github.com/ehrbase/openEHR_SDK/pull/346)
 
 ## 1.17.0
 

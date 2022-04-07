@@ -19,8 +19,9 @@
 package org.ehrbase.validation;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.nedap.archie.json.ArchieJacksonConfiguration;
 import com.nedap.archie.json.JacksonUtil;
-import com.nedap.archie.json.RMJacksonConfiguration;
+
 import com.nedap.archie.rm.composition.Composition;
 import com.nedap.archie.rm.datastructures.ItemTree;
 import com.nedap.archie.rm.datavalues.DvText;
@@ -117,7 +118,7 @@ public class ItemStructureVisitorTest {
     public void ehrVisitorTest() throws Throwable {
         String value = IOUtils.toString(ItemStruktureTestDataCanonicalJson.SIMPLE_EHR_OTHER_Details.getStream(), UTF_8);
 
-        RMJacksonConfiguration configuration = new RMJacksonConfiguration();
+        ArchieJacksonConfiguration configuration = ArchieJacksonConfiguration.createStandardsCompliant();
         configuration.setTypePropertyName("_type");
         ObjectMapper objectMapper = JacksonUtil.getObjectMapper(configuration);
 

@@ -19,25 +19,27 @@
 
 package org.ehrbase.aql.parser;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import java.util.ArrayList;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.apache.commons.lang3.StringUtils;
 import org.ehrbase.aql.binder.AqlBinder;
 import org.ehrbase.aql.dto.AqlDto;
-import org.ehrbase.aql.dto.condition.*;
+import org.ehrbase.aql.dto.condition.ConditionDto;
+import org.ehrbase.aql.dto.condition.ConditionLogicalOperatorDto;
+import org.ehrbase.aql.dto.condition.ConditionLogicalOperatorSymbol;
+import org.ehrbase.aql.dto.condition.MatchesOperatorDto;
+import org.ehrbase.aql.dto.condition.SimpleValue;
 import org.ehrbase.aql.dto.containment.ContainmentDto;
 import org.ehrbase.aql.dto.containment.ContainmentExpresionDto;
 import org.ehrbase.aql.dto.containment.ContainmentLogicalOperator;
 import org.ehrbase.aql.dto.select.SelectFieldDto;
 import org.junit.Test;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.fail;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class AqlToDtoParserTest {
 
@@ -215,6 +217,20 @@ public class AqlToDtoParserTest {
             + " order by o0/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/magnitude ASC, e/ehr_id/value DESC";
 
     testAql(aqlShortenedSymbols, aqlTwoOrderBy);
+
+    var sortDefault1 =
+        "select e/ehr_id/value as ehr_id from EHR e contains OBSERVATION o0[openEHR-EHR-OBSERVATION.sample_blood_pressure.v1]"
+            + " order by o0/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/magnitude, e/ehr_id/value";
+    testAql(sortDefault1,
+        "Select e/ehr_id/value as ehr_id from EHR e contains OBSERVATION o0[openEHR-EHR-OBSERVATION.sample_blood_pressure.v1]"
+            + " order by o0/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/magnitude ASCENDING, e/ehr_id/value ASCENDING");
+
+    var sortDefault2 =
+        "select e/ehr_id/value as ehr_id from EHR e contains OBSERVATION o0[openEHR-EHR-OBSERVATION.sample_blood_pressure.v1]"
+            + " order by o0/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/magnitude DESC, e/ehr_id/value";
+    testAql(sortDefault2,
+        "Select e/ehr_id/value as ehr_id from EHR e contains OBSERVATION o0[openEHR-EHR-OBSERVATION.sample_blood_pressure.v1]"
+            + " order by o0/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/magnitude DESCENDING, e/ehr_id/value ASCENDING");
   }
 
   public void testAql(String aql, String expected) {
@@ -301,14 +317,14 @@ public class AqlToDtoParserTest {
           .append(
               ((ContainmentLogicalOperator) containmentExpresion)
                   .getValues().stream()
-                      .map(this::render)
-                      .collect(
-                          Collectors.joining(
-                              (StringUtils.wrap(
-                                  ((ContainmentLogicalOperator) containmentExpresion)
-                                      .getSymbol()
-                                      .toString(),
-                                  " ")))))
+                  .map(this::render)
+                  .collect(
+                      Collectors.joining(
+                          (StringUtils.wrap(
+                              ((ContainmentLogicalOperator) containmentExpresion)
+                                  .getSymbol()
+                                  .toString(),
+                              " ")))))
           .append(")");
       return sb.toString();
     }
@@ -347,7 +363,8 @@ public class AqlToDtoParserTest {
         + "limit 50 "
         + "order by e/ehr_id/value ASC ";
 
-    assertThrows(AqlParseException.class, () -> parser.parse(query3));
+    aql = parser.parse(query3);
+    assertEquals(50, aql.getLimit());
 
     var query4 = "select e/ehr_id/value "
         + "from EHR e "
@@ -370,21 +387,56 @@ public class AqlToDtoParserTest {
     String aql;
 
     aql = "select e/ehr_id/value from EHR e contains OBSERVATION o where o/data[at0001]/items[at0024]/items[at0025]/value/value = true";
-    testAql(aql, "Select e/ehr_id/value as F1 from EHR e contains OBSERVATION o where o/data[at0001]/items[at0024]/items[at0025]/value/value = true");
+    testAql(aql,
+        "Select e/ehr_id/value as F1 from EHR e contains OBSERVATION o where o/data[at0001]/items[at0024]/items[at0025]/value/value = true");
 
     aql = "select e/ehr_id/value from EHR e contains OBSERVATION o where o/data[at0001]/items[at0024]/items[at0025]/value/value is true";
-    testAql(aql, "Select e/ehr_id/value as F1 from EHR e contains OBSERVATION o where o/data[at0001]/items[at0024]/items[at0025]/value/value = true");
+    testAql(aql,
+        "Select e/ehr_id/value as F1 from EHR e contains OBSERVATION o where o/data[at0001]/items[at0024]/items[at0025]/value/value = true");
 
     aql = "select e/ehr_id/value from EHR e contains OBSERVATION o where o/data[at0001]/items[at0024]/items[at0025]/value/value is not true";
-    testAql(aql, "Select e/ehr_id/value as F1 from EHR e contains OBSERVATION o where o/data[at0001]/items[at0024]/items[at0025]/value/value != true");
+    testAql(aql,
+        "Select e/ehr_id/value as F1 from EHR e contains OBSERVATION o where o/data[at0001]/items[at0024]/items[at0025]/value/value != true");
 
     aql = "select e/ehr_id/value from EHR e contains OBSERVATION o where o/data[at0001]/items[at0024]/items[at0025]/value/value = false";
-    testAql(aql, "Select e/ehr_id/value as F1 from EHR e contains OBSERVATION o where o/data[at0001]/items[at0024]/items[at0025]/value/value = false");
+    testAql(aql,
+        "Select e/ehr_id/value as F1 from EHR e contains OBSERVATION o where o/data[at0001]/items[at0024]/items[at0025]/value/value = false");
 
     aql = "select e/ehr_id/value from EHR e contains OBSERVATION o where o/data[at0001]/items[at0024]/items[at0025]/value/value is false";
-    testAql(aql, "Select e/ehr_id/value as F1 from EHR e contains OBSERVATION o where o/data[at0001]/items[at0024]/items[at0025]/value/value = false");
+    testAql(aql,
+        "Select e/ehr_id/value as F1 from EHR e contains OBSERVATION o where o/data[at0001]/items[at0024]/items[at0025]/value/value = false");
 
     aql = "select e/ehr_id/value from EHR e contains OBSERVATION o where o/data[at0001]/items[at0024]/items[at0025]/value/value is not false";
-    testAql(aql, "Select e/ehr_id/value as F1 from EHR e contains OBSERVATION o where o/data[at0001]/items[at0024]/items[at0025]/value/value != false");
+    testAql(aql,
+        "Select e/ehr_id/value as F1 from EHR e contains OBSERVATION o where o/data[at0001]/items[at0024]/items[at0025]/value/value != false");
+  }
+
+  @Test
+  public void orderByAndLimitOrder() {
+    var aql1 = "Select "
+        + "c/name/value as Name, c/context/start_time as date_time, c/composer/name as Composer "
+        + "from EHR e contains COMPOSITION c "
+        + "order by c/context/start_time ASCENDING "
+        + "LIMIT 10 OFFSET 10";
+    testAql(aql1, aql1);
+
+    var aql2 = "Select "
+        + "c/name/value as Name, c/context/start_time as date_time, c/composer/name as Composer "
+        + "from EHR e contains COMPOSITION c "
+        + "LIMIT 10 OFFSET 10 "
+        + "order by c/context/start_time ASCENDING";
+    testAql(aql2, aql1);
+
+    var aql3 = "Select "
+        + "c/name/value as Name, c/context/start_time as date_time, c/composer/name as Composer "
+        + "from EHR e contains COMPOSITION c "
+        + "LIMIT 10 OFFSET 10";
+    testAql(aql3, aql3);
+
+    var aql4 = "Select "
+        + "c/name/value as Name, c/context/start_time as date_time, c/composer/name as Composer "
+        + "from EHR e contains COMPOSITION c "
+        + "order by c/context/start_time ASCENDING";
+    testAql(aql4, aql4);
   }
 }

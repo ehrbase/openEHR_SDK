@@ -166,7 +166,10 @@
                       }
                     ]
                   }
-                ]
+                ],
+                "annotations": {
+                  "comment": "Most commonly, the score for eye response will be selected from one of the ordinal values, however if a response cannot be tested, for example if the subject of care cannot physically open their eyes due to other injuries, then the \"Not Applicable\" null flavour should be recorded."
+                }
               },
               {
                 "id": "coded_text_value",
@@ -197,7 +200,10 @@
                     ],
                     "terminology": "openehr"
                   }
-                ]
+                ],
+                "annotations": {
+                  "comment": "Most commonly, the score for eye response will be selected from one of the ordinal values, however if a response cannot be tested, for example if the subject of care cannot physically open their eyes due to other injuries, then the \"Not Applicable\" null flavour should be recorded."
+                }
               }
             ]
           },
@@ -295,7 +301,10 @@
                       }
                     ]
                   }
-                ]
+                ],
+                "annotations": {
+                  "comment": "Most commonly, the score for verbal response will be selected from one of the ordinal values, however if a response cannot be tested, for example if the subject of care is intubated, then the \"Not Applicable\" null flavour should be recorded."
+                }
               },
               {
                 "id": "coded_text_value",
@@ -326,7 +335,10 @@
                     ],
                     "terminology": "openehr"
                   }
-                ]
+                ],
+                "annotations": {
+                  "comment": "Most commonly, the score for verbal response will be selected from one of the ordinal values, however if a response cannot be tested, for example if the subject of care is intubated, then the \"Not Applicable\" null flavour should be recorded."
+                }
               }
             ]
           },
@@ -435,7 +447,10 @@
                       }
                     ]
                   }
-                ]
+                ],
+                "annotations": {
+                  "comment": "Most commonly, the score for motor response will be selected from one of the ordinal values, however if a response cannot be tested, for example if the subject of care cannot move their limbs due to injury or paralysis, then the \"Not Applicable\" null flavour should be recorded."
+                }
               },
               {
                 "id": "coded_text_value",
@@ -466,7 +481,10 @@
                     ],
                     "terminology": "openehr"
                   }
-                ]
+                ],
+                "annotations": {
+                  "comment": "Most commonly, the score for motor response will be selected from one of the ordinal values, however if a response cannot be tested, for example if the subject of care cannot move their limbs due to injury or paralysis, then the \"Not Applicable\" null flavour should be recorded."
+                }
               }
             ]
           },
