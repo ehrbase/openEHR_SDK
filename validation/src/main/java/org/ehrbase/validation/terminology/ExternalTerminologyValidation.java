@@ -19,8 +19,9 @@ package org.ehrbase.validation.terminology;
 
 import java.util.List;
 
-import com.nedap.archie.aom.terminology.ValueSet;
-import com.nedap.archie.rm.datatypes.CodePhrase;
+import org.ehrbase.functional.Try;
+import org.ehrbase.validation.ConstraintViolationException;
+
 import com.nedap.archie.rm.datavalues.DvCodedText;
 
 /**
@@ -28,34 +29,28 @@ import com.nedap.archie.rm.datavalues.DvCodedText;
  */
 public interface ExternalTerminologyValidation {
 
-  /**
-   * Can this {@link ExternalTerminologyValidation} {@link #validate(String, String, CodePhrase)
-   * validate} code phrase coming from the given terminology.
-   *
-   * @param referenceSetUri the reference URI of the external terminology
-   * @return {@code true} if this {@link ExternalTerminologyValidation} can indeed {@link
-   * #validate(String, String, CodePhrase) validate} instances of the supplied terminology
-   */
-  boolean supports(String referenceSetUri);
-
-  /**
-   * Validate the supplied {@link CodePhrase}.
-   *
-   * @param path            the AQL path to the relevant codePhrase 
-   * @param referenceSetUri the reference URI of the external terminology
-   * @param codePhrase      the code phrase that is to be validated
-   * @throws org.ehrbase.validation.ConstraintViolationException if validation failed
-   */
-  void validate(String path, String referenceSetUri, CodePhrase codePhrase);
+//  /**
+//   * Can this {@link ExternalTerminologyValidation} {@link #validate(String, String, CodePhrase)
+//   * validate} code phrase coming from the given terminology.
+//   *
+//   * @param referenceSetUri the reference URI of the external terminology
+//   * @return {@code true} if this {@link ExternalTerminologyValidation} can indeed {@link
+//   * #validate(String, String, CodePhrase) validate} instances of the supplied terminology
+//   */
+//  @Deprecated
+//  boolean supports(String referenceSetUri);
+//
+//  /**
+//   * Validate the supplied {@link CodePhrase}.
+//   *
+//   * @param referenceSetUri the reference URI of the external terminology
+//   * @param codePhrase      the code phrase that is to be validated
+//   * @throws org.ehrbase.validation.ConstraintViolationException if validation failed
+//   */
+//  @Deprecated  
+//  void validate(String path, String referenceSetUri, CodePhrase codePhrase);
   
-  
-  /**
-   * Expands the supplied {@link ValueSet}
-   *
-   * @param path            the AQL path to the relevant codePhrase 
-   * @param referenceSetUri the reference URI of the external terminology
-   * @param codePhrase      the code phrase that is to be validated
-   * @throws org.ehrbase.validation.ConstraintViolationException if validation failed
-   */
-  List<DvCodedText> expand(String path, String referenceSetUri);
+  boolean supports(TerminologyParam param);
+  Try<Boolean,ConstraintViolationException> validate(TerminologyParam param);
+  List<DvCodedText> expand(TerminologyParam param);
 }

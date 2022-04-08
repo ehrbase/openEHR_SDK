@@ -1,5 +1,7 @@
 package org.ehrbase.validation.terminology;
 
+import java.util.ArrayList;
+import java.util.IllegalFormatException;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -19,7 +21,18 @@ import ca.uhn.fhir.context.FhirContext;
 import net.java.quickcheck.generator.PrimitiveGenerators;
 
 class FhirTerminologyValidationTest {
-
+  
+  @Test
+  public void renderTempl() {
+    String ref = String.format(FhirTerminologyValidation.SUPPORTS_CODE_SYS_TEMPL, "abc", "123");
+    String render1 = FhirTerminologyValidation.renderTempl(FhirTerminologyValidation.SUPPORTS_CODE_SYS_TEMPL, "abc", "123");
+    Assertions.assertEquals(ref, render1);
+    
+    String render2 = FhirTerminologyValidation.renderTempl(FhirTerminologyValidation.SUPPORTS_CODE_SYS_TEMPL, "abc", "123", "xyz");
+    Assertions.assertEquals(ref, render2);
+    Assertions.assertThrows(IllegalFormatException.class, () -> FhirTerminologyValidation.renderTempl(FhirTerminologyValidation.SUPPORTS_CODE_SYS_TEMPL, "abc"));
+  }
+  
   @Test
   void valueSetConverter() throws Exception {
     ValueSet values = anyValueSet();
@@ -30,6 +43,21 @@ class FhirTerminologyValidationTest {
     List<DvCodedText> dv = ValueSetConverter.convert(ctx);
     
     Assertions.assertEquals(values.getExpansion().getContains().size(), dv.size());
+  }
+  
+  @Test
+  void stringjoin() {
+    List<String> params = new ArrayList<>();
+    String reqParam = params.stream().collect(Collectors.joining("&"));
+    Assertions.assertTrue("".equals(reqParam));
+    
+    params = List.of("a");
+    reqParam = params.stream().collect(Collectors.joining("&"));
+    Assertions.assertTrue("a".equals(reqParam));
+    
+    params = List.of("a", "b");
+    reqParam = params.stream().collect(Collectors.joining("&"));
+    Assertions.assertTrue("a&b".equals(reqParam));
   }
   
   static ValueSet anyValueSet() {
