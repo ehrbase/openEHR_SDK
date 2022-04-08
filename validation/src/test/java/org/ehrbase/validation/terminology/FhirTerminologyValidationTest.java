@@ -23,6 +23,14 @@ import net.java.quickcheck.generator.PrimitiveGenerators;
 class FhirTerminologyValidationTest {
   
   @Test
+  public void guaranteePrefix() {
+    Assertions.assertEquals("url=ABC", FhirTerminologyValidation.guaranteePrefix("url=", "url=ABC"));
+    Assertions.assertEquals("url=ABC", FhirTerminologyValidation.guaranteePrefix("url=", "ABC"));
+    Assertions.assertEquals(null, FhirTerminologyValidation.guaranteePrefix("url=", ""));
+    Assertions.assertEquals("xyz=XYZ&url=ABC", FhirTerminologyValidation.guaranteePrefix("url=", "xyz=XYZ&url=ABC"));
+  }
+  
+  @Test
   public void renderTempl() {
     String ref = String.format(FhirTerminologyValidation.SUPPORTS_CODE_SYS_TEMPL, "abc", "123");
     String render1 = FhirTerminologyValidation.renderTempl(FhirTerminologyValidation.SUPPORTS_CODE_SYS_TEMPL, "abc", "123");
