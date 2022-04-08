@@ -21,9 +21,12 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+
+import org.ehrbase.functional.Try;
 import org.ehrbase.validation.ConstraintViolation;
 import org.ehrbase.validation.ConstraintViolationException;
 import org.ehrbase.validation.terminology.ExternalTerminologyValidation;
+import org.ehrbase.validation.terminology.TerminologyParam;
 import org.ehrbase.webtemplate.model.WebTemplateInput;
 import org.ehrbase.webtemplate.model.WebTemplateNode;
 
@@ -104,20 +107,52 @@ public class DvCodedTextValidator implements ConstraintValidator<DvCodedText> {
     return result;
   }
 
-  private List<ConstraintViolation> validateExternalTerminology(String aqlPath,
-      DvCodedText dvCodedText, WebTemplateInput input) {
+  private List<ConstraintViolation> validateExternalTerminology(String aqlPath, DvCodedText dvCodedText, WebTemplateInput input) {
     List<ConstraintViolation> result = new ArrayList<>();
+    
+    TerminologyParam tp = TerminologyParam.ofFhir(input.getTerminology());
+      tp.setCodePhrase(dvCodedText.getDefiningCode());
 
-    if (externalTerminologyValidation != null
-        && externalTerminologyValidation.supports(input.getTerminology())) {
-      try {
-        externalTerminologyValidation.validate(aqlPath, input.getTerminology(),
-            dvCodedText.getDefiningCode());
-      } catch (ConstraintViolationException e) {
-        result.addAll(e.getConstraintViolations());
+    if(externalTerminologyValidation != null && externalTerminologyValidation.supports(tp)) {
+      Try<Boolean,ConstraintViolationException> validationResult = externalTerminologyValidation.validate(tp);
+      if(validationResult.isFailure()) {
+        ConstraintViolationException ex = validationResult.getAsFailure().get();
+        result.add(new ConstraintViolation(aqlPath, "Failed to validate " + dvCodedText.toString()));
+        result.addAll(ex.getConstraintViolations());
       }
     }
 
     return result;
   }
+  
+  
+  
+//  private void validateCode(String path, String url, CodePhrase codePhrase) {
+//    if (!StringUtils.equals(url, codePhrase.getTerminologyId().getValue())) {
+//      var constraintViolation = new ConstraintViolation(path,
+//          MessageFormat.format("The terminology {0} must be {1}",
+//              codePhrase.getTerminologyId().getValue(), url));
+//      throw new ConstraintViolationException(List.of(constraintViolation));
+//    }
+//
+//    DocumentContext context;
+//    try {
+//      context = internalGet(baseUrl + "/CodeSystem/$validate-code?url=" + url + "&code="
+//          + codePhrase.getCodeString());
+//    } catch (IOException e) {
+//      if (failOnError) {
+//        throw new ExternalTerminologyValidationException(
+//            "An error occurred while validating the code in CodeSystem", e);
+//      }
+//      LOG.warn("An error occurred while validating the code in CodeSystem: {}", e.getMessage());
+//      return;
+//    }
+//    boolean result = context.read("$.parameter[0].valueBoolean", boolean.class);
+//    if (!result) {
+//      var message = context.read("$.parameter[1].valueString", String.class);
+//      var constraintViolation = new ConstraintViolation(path, message);
+//      throw new ConstraintViolationException(List.of(constraintViolation));
+//    }
+//  }
+  
 }
