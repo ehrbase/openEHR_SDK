@@ -200,6 +200,14 @@ public class FhirTerminologyValidation implements ExternalTerminologyValidation 
     return validateDocumentContext(() -> internalGet(_url));
   }
   
+  static String guaranteePrefix(String prefix, String str) {
+    if(StringUtils.isEmpty(str)) return null;
+    else if(str.contains(prefix))
+      return str;
+    else
+      return prefix + str;
+  }
+  
   @Override
   public List<DvCodedText> expand(TerminologyParam param) {
     //sanity checks
@@ -208,13 +216,20 @@ public class FhirTerminologyValidation implements ExternalTerminologyValidation 
       return Collections.emptyList();
     }
     
-    if(param.extractFromParameter(p -> Optional.ofNullable(extractUrl(p))).isEmpty()) {
-      LOG.warn("Missing value-set url");
+    Optional<String> urlParam = param.extractFromParameter(p -> Optional.ofNullable(guaranteePrefix("url=", p)));
+
+    if(urlParam.isEmpty()) {
+      LOG.warn("Missing CodeSystem");
       return Collections.emptyList();
     }
+    
+//    if(param.extractFromParameter(p -> Optional.ofNullable(extractUrl(p))).isEmpty()) {
+//      LOG.warn("Missing value-set url");
+//      return Collections.emptyList();
+//    }
 
     try {
-      DocumentContext jsonContext = internalGet(renderTempl(EXPAND_VALUE_SET_TEMPL, baseUrl, param.getParameter().get()));
+      DocumentContext jsonContext = internalGet(renderTempl(EXPAND_VALUE_SET_TEMPL, baseUrl, urlParam.get()));
       return ValueSetConverter.convert(jsonContext);
     } catch (Exception e) {
       if(failOnError)
