@@ -42,7 +42,7 @@ import com.nedap.archie.rm.datavalues.DvCodedText;
 
 public class ExternalTerminologyValidationServerTest {
 
-//    @Ignore("This test runs against ontoserver sample inteance. It is deactivated until we have a test FHIR terminology server and the architecture allows to run Spring integration tests.")
+    @Ignore("This test runs against ontoserver sample inteance. It is deactivated until we have a test FHIR terminology server and the architecture allows to run Spring integration tests.")
     @Test
     public void shouldRetrieveValueSet() {
         FhirTerminologyValidation tsserver = null;
