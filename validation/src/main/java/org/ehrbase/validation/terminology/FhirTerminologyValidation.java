@@ -23,14 +23,15 @@ import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.tuple.Pair;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.HttpClient;
@@ -82,6 +83,9 @@ public class FhirTerminologyValidation implements ExternalTerminologyValidation 
   }
 
   private DocumentContext internalGet(String uri) throws IOException {
+    
+    
+    
     Request request = Request.Get(uri).addHeader(HttpHeaders.ACCEPT, "application/fhir+json");
 
     HttpResponse response = executor.execute(request).returnResponse();
@@ -105,13 +109,9 @@ public class FhirTerminologyValidation implements ExternalTerminologyValidation 
     return JsonPath.parse(responseBody);
   }
   
-  //----------------------------------------------------------------------------------------------------------------------------------
-
   static final String SUPPORTS_CODE_SYS_TEMPL = "%s/CodeSystem?url=%s";
   static final String SUPPORTS_VALUE_SET_TEMPL = "%s/ValueSet?url=%s";
   private static final String ERR_SUPPORTS = "An error occurred while checking if FHIR terminology server supports the referenceSetUri: %s";
-  private static final String TERMINOLOGY_PREFIX = "terminology:";
-  private static final String FHIR_SERVICE_API = "//fhir.hl7.org";
   static final String VALIDATE_CODE_SYS_TEMPL = "%s/CodeSystem/$validate-code?%s";
   static final String VALIDATE_VALUE_SET_TEMPL = "%s/ValueSet/$validate-code?%s";
   static final String CODE_PHRASE_TEMPL = "code=%&system=%s";
@@ -122,6 +122,19 @@ public class FhirTerminologyValidation implements ExternalTerminologyValidation 
     return format(templ, args);
   }
   
+  @SuppressWarnings({ "serial" })
+  private final Set<String> acceptedFhirApis = new HashSet<>() {
+    {
+      add("//fhir.hl7.org");
+      add("terminology://fhir.hl7.org");
+      add("//hl7.org/fhir");
+    }
+    
+    public String toString() {
+      return this.stream().collect(Collectors.joining(", "));
+    }
+  };
+  
   private static Function<CodePhrase,Optional<String>> codePhraseToString = cp -> {
     if(cp == null) return Optional.empty();
     return Optional.of(renderTempl(CODE_PHRASE_TEMPL, cp.getCodeString(), cp.getTerminologyId().getValue()));
@@ -130,11 +143,11 @@ public class FhirTerminologyValidation implements ExternalTerminologyValidation 
   private boolean isValidTerminology(Optional<String> url) {
     if(url.isEmpty())
       return false;
-    else if(url.get().startsWith(FHIR_SERVICE_API))
-      return true;
-    else if(url.get().startsWith(TERMINOLOGY_PREFIX + FHIR_SERVICE_API))
-      return true;
-    return false;
+    return acceptedFhirApis.stream()
+      .filter(api -> url.get().startsWith(api))
+      .map(api -> Boolean.TRUE)
+      .findFirst()
+      .orElse(Boolean.FALSE);
   }
   
   @Override
@@ -166,19 +179,14 @@ public class FhirTerminologyValidation implements ExternalTerminologyValidation 
     //sanity checks
     if(param.getServiceApi().isEmpty() || !isValidTerminology(param.getServiceApi())) {
       return Try.failure(new ConstraintViolationException(List.of(
-        new ConstraintViolation(MessageFormat.format("Service-Api {0} must be {1}", param.getServiceApi(), FHIR_SERVICE_API))
+        new ConstraintViolation(MessageFormat.format("Service-Api {0} must be {1}", param.getServiceApi(), acceptedFhirApis.toString()))
       )));
     }
-//      LOG.warn("Unsupported service-api: {}", param.getServiceApi());
-//      return false;
-//    }
     
     if(param.extractFromParameter(p -> Optional.ofNullable(extractUrl(p))).isEmpty()) {
       return Try.failure(new ConstraintViolationException(List.of(
         new ConstraintViolation("Missing value-set url")
       )));
-//      LOG.warn("Missing value-set url");
-//      return false;
     }
     
     List<String> reqParam = new ArrayList<>();
@@ -218,15 +226,9 @@ public class FhirTerminologyValidation implements ExternalTerminologyValidation 
     
     Optional<String> urlParam = param.extractFromParameter(p -> Optional.ofNullable(guaranteePrefix("url=", p)));
 
-    if(urlParam.isEmpty()) {
-      LOG.warn("Missing CodeSystem");
+    if(urlParam.isEmpty() || param.getServiceApi().isEmpty() || !isValidTerminology(param.getServiceApi())) {
       return Collections.emptyList();
     }
-    
-//    if(param.extractFromParameter(p -> Optional.ofNullable(extractUrl(p))).isEmpty()) {
-//      LOG.warn("Missing value-set url");
-//      return Collections.emptyList();
-//    }
 
     try {
       DocumentContext jsonContext = internalGet(renderTempl(EXPAND_VALUE_SET_TEMPL, baseUrl, urlParam.get()));
