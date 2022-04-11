@@ -2,7 +2,6 @@ package org.ehrbase.functional;
 
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
-import java.util.function.Consumer;
 
 public abstract class Try<S,E extends Exception> {
   public static <S1,E1 extends Exception> Success<S1,E1> success(S1 result) {
@@ -26,7 +25,19 @@ public abstract class Try<S,E extends Exception> {
   public abstract Success<S,E> getAsSuccess();
   public abstract Failure<S,E> getAsFailure();
   
+  /**
+   * Convenience method to transform the internal state
+   * @param map function which maps the internal state to the specified type
+   * The function must be null safe in both arguments
+   * @return the mapped internal state
+   */
   public abstract <T> T map(BiFunction<S,E,T> map);
+
+  /**
+   * Convenience method to consume the internal state
+   * @param con consumer which consumes the internal state
+   * The consumer must be null safe in both arguments
+   */
   public abstract void consume(BiConsumer<S,E> con);
   
   public static class Success<S0,E0 extends Exception> extends Try<S0,E0> {
@@ -59,12 +70,16 @@ public abstract class Try<S,E extends Exception> {
       throw new UnsupportedOperationException();
     }
 
-    @Override
+    /**
+     * @see Try#map(BiFunction) 
+     */
     public <T> T map(BiFunction<S0,E0,T> map) {
       return map.apply(get(), null);
     }
 
-    @Override
+    /**
+     * @see Try#consume(BiConsumer)
+     */
     public void consume(BiConsumer<S0,E0> con) {
       con.accept(get(), null);
     }
@@ -100,12 +115,16 @@ public abstract class Try<S,E extends Exception> {
       return this;
     }
     
-    @Override
+    /**
+     * @see Try#map(BiFunction) 
+     */
     public <T> T map(BiFunction<S0,E0,T> map) {
       return map.apply(null, get());
     }
 
-    @Override
+    /**
+     * @see Try#consume(BiConsumer) 
+     */
     public void consume(BiConsumer<S0,E0> con) {
       con.accept(null, get());
     }
