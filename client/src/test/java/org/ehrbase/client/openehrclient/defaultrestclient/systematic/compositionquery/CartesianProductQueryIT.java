@@ -104,8 +104,5 @@ public class CartesianProductQueryIT extends CanonicalUtil {
         List<Record3<String, String, Integer>> result = openEhrClient.aqlEndpoint().execute(query);
 
         assertThat(result.size()).as("Should have 2 rows resulting from cartesian product").isEqualTo(2);
-
-        assertThat(Arrays.stream(result.stream().map(Record3::value2).toArray()).anyMatch(v -> v == null)).isTrue();
-        assertThat(Arrays.stream(result.stream().map(Record3::value2).toArray()).anyMatch(v -> v.equals("alternate text"))).isTrue();
     }
 }
