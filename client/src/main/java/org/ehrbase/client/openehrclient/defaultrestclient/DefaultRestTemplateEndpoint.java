@@ -114,6 +114,20 @@ public class DefaultRestTemplateEndpoint implements TemplateEndpoint {
         }
     }
 
+    @Override
+    public String createTemplate(String templateBody) {
+        URI uri = defaultRestClient.getConfig().getBaseUri().resolve(DEFINITION_TEMPLATE_ADL_1_4_PATH);
+        XmlOptions opts = new XmlOptions();
+        opts.setSaveSyntheticDocumentElement(new QName("http://schemas.openehr.org/v1", "template"));
+
+        HttpResponse response =
+                defaultRestClient.internalPost(uri, null, templateBody, ContentType.APPLICATION_XML, ContentType.APPLICATION_XML.getMimeType());
+
+        return Optional.ofNullable(response.getFirstHeader(HttpHeaders.ETAG))
+                .map(header -> StringUtils.unwrap(StringUtils.removeStart(header.getValue(),"W/"), '"'))
+                .orElseThrow(RuntimeException::new);
+    }
+
 
     /**
      * Upload a template to the remote system.

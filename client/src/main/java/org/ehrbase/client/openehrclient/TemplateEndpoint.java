@@ -53,4 +53,10 @@ public interface TemplateEndpoint {
     void ensureExistence(String templateId);
 
 
+    /**
+     * Creates template by opt file String body
+     *
+     * @return String id
+     */
+    String createTemplate(String templateBody);
 }
