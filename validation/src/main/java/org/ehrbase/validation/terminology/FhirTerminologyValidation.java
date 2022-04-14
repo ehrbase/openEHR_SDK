@@ -114,7 +114,7 @@ public class FhirTerminologyValidation implements ExternalTerminologyValidation 
   private static final String ERR_SUPPORTS = "An error occurred while checking if FHIR terminology server supports the referenceSetUri: %s";
   static final String VALIDATE_CODE_SYS_TEMPL = "%s/CodeSystem/$validate-code?%s";
   static final String VALIDATE_VALUE_SET_TEMPL = "%s/ValueSet/$validate-code?%s";
-  static final String CODE_PHRASE_TEMPL = "code=%&system=%s";
+  static final String CODE_PHRASE_TEMPL = "code=%s&system=%s";
   private static final String ERR_EXPAND_VALUESET = "Error while expanding ValueSet[%s]";
   static final String EXPAND_VALUE_SET_TEMPL = "%s/ValueSet/$expand?%s";
   
