@@ -812,7 +812,7 @@ commands:
             last_commit="$(git log -1 --pretty=%B | cat)"
             echo $last_commit
             case $last_commit in
-                *"[major]"*)
+                *"[major]"*)https://github.com/ehrbase/ehrbase/pull/816https://github.com/ehrbase/ehrbase/pull/816
                 
                     echo "bump major release version"
                     mvn build-helper:parse-version versions:set -DnewVersion=\${parsedVersion.nextMajorVersion}.0.0 versions:commit
@@ -948,7 +948,7 @@ commands:
       - run:
           name: Maven build, install openEHR_SDK (skip Tests!)
           command: |
-            mvn build-helper:parse-version versions:set -DnewVersion=\${project.version}-LOCAL$(cat /proc/sys/kernel/random/uuid) versions:commit
+            mvn build-helper:parse-version versions:set -DnewVersion=\${project.version}-LOCAL$(cat /proc/sys/kernel/random/uuid)  -DprocessAllModules=true versions:commit
             mvn install -Dmaven.javadoc.skip=true -Djacoco.skip=true -Dmaven.test.skip
       - run:
           name: Save the version number of locally installed SDK into a file
@@ -964,7 +964,7 @@ commands:
       - run:
           name: Maven build, test (ONLY unit tests), install openEHR_SDK
           command: |
-            mvn build-helper:parse-version versions:set -DnewVersion=\${project.version}-LOCAL versions:commit
+            mvn build-helper:parse-version versions:set -DnewVersion=\${project.version}-LOCAL -DprocessAllModules=true versions:commit
             mvn install dependency:go-offline -Djacoco.skip=true -Dmaven.javadoc.skip=true
       - run:
           name: Save the version number of locally installed SDK into a file
