@@ -124,35 +124,4 @@ public class DvCodedTextValidator implements ConstraintValidator<DvCodedText> {
 
     return result;
   }
-  
-  
-  
-//  private void validateCode(String path, String url, CodePhrase codePhrase) {
-//    if (!StringUtils.equals(url, codePhrase.getTerminologyId().getValue())) {
-//      var constraintViolation = new ConstraintViolation(path,
-//          MessageFormat.format("The terminology {0} must be {1}",
-//              codePhrase.getTerminologyId().getValue(), url));
-//      throw new ConstraintViolationException(List.of(constraintViolation));
-//    }
-//
-//    DocumentContext context;
-//    try {
-//      context = internalGet(baseUrl + "/CodeSystem/$validate-code?url=" + url + "&code="
-//          + codePhrase.getCodeString());
-//    } catch (IOException e) {
-//      if (failOnError) {
-//        throw new ExternalTerminologyValidationException(
-//            "An error occurred while validating the code in CodeSystem", e);
-//      }
-//      LOG.warn("An error occurred while validating the code in CodeSystem: {}", e.getMessage());
-//      return;
-//    }
-//    boolean result = context.read("$.parameter[0].valueBoolean", boolean.class);
-//    if (!result) {
-//      var message = context.read("$.parameter[1].valueString", String.class);
-//      var constraintViolation = new ConstraintViolation(path, message);
-//      throw new ConstraintViolationException(List.of(constraintViolation));
-//    }
-//  }
-  
 }

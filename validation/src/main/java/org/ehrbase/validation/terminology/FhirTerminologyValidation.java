@@ -21,14 +21,12 @@ import static java.lang.String.format;
 
 import java.io.IOException;
 import java.text.MessageFormat;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
@@ -39,7 +37,6 @@ import org.apache.http.client.fluent.Executor;
 import org.apache.http.client.fluent.Request;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
-import org.ehrbase.functional.ExceptionalSupplier;
 import org.ehrbase.functional.Try;
 import org.ehrbase.validation.ConstraintViolation;
 import org.ehrbase.validation.ConstraintViolationException;
@@ -83,9 +80,6 @@ public class FhirTerminologyValidation implements ExternalTerminologyValidation 
   }
 
   private DocumentContext internalGet(String uri) throws IOException {
-    
-    
-    
     Request request = Request.Get(uri).addHeader(HttpHeaders.ACCEPT, "application/fhir+json");
 
     HttpResponse response = executor.execute(request).returnResponse();
@@ -112,8 +106,6 @@ public class FhirTerminologyValidation implements ExternalTerminologyValidation 
   static final String SUPPORTS_CODE_SYS_TEMPL = "%s/CodeSystem?url=%s";
   static final String SUPPORTS_VALUE_SET_TEMPL = "%s/ValueSet?url=%s";
   private static final String ERR_SUPPORTS = "An error occurred while checking if FHIR terminology server supports the referenceSetUri: %s";
-  static final String VALIDATE_CODE_SYS_TEMPL = "%s/CodeSystem/$validate-code?%s";
-  static final String VALIDATE_VALUE_SET_TEMPL = "%s/ValueSet/$validate-code?%s";
   static final String CODE_PHRASE_TEMPL = "code=%s&system=%s";
   private static final String ERR_EXPAND_VALUESET = "Error while expanding ValueSet[%s]";
   static final String EXPAND_VALUE_SET_TEMPL = "%s/ValueSet/$expand?%s";
@@ -134,11 +126,6 @@ public class FhirTerminologyValidation implements ExternalTerminologyValidation 
       return this.stream().collect(Collectors.joining(", "));
     }
   };
-  
-  private static Function<CodePhrase,Optional<String>> codePhraseToString = cp -> {
-    if(cp == null) return Optional.empty();
-    return Optional.of(renderTempl(CODE_PHRASE_TEMPL, cp.getCodeString(), cp.getTerminologyId().getValue()));
-  };  
   
   private boolean isValidTerminology(Optional<String> url) {
     if(url.isEmpty())
@@ -176,36 +163,19 @@ public class FhirTerminologyValidation implements ExternalTerminologyValidation 
   
   @Override
   public Try<Boolean,ConstraintViolationException> validate(TerminologyParam param) {
-    //sanity checks
-    if(param.getServiceApi().isEmpty() || !isValidTerminology(param.getServiceApi())) {
-      return Try.failure(new ConstraintViolationException(List.of(
-        new ConstraintViolation(MessageFormat.format("Service-Api {0} must be {1}", param.getServiceApi(), acceptedFhirApis.toString()))
-      )));
-    }
-    
-    if(param.extractFromParameter(p -> Optional.ofNullable(extractUrl(p))).isEmpty()) {
+    Optional<String> url = param.extractFromParameter(p -> Optional.ofNullable(extractUrl(p)));
+
+    if(url.isEmpty()) {
       return Try.failure(new ConstraintViolationException(List.of(
         new ConstraintViolation("Missing value-set url")
       )));
     }
     
-    List<String> reqParam = new ArrayList<>();
-    param.renderCodePhrase(codePhraseToString).ifPresent(r -> reqParam.add(r));
-    param.getParameter().ifPresent(r -> reqParam.add(r));
-    
-    String urlParam = reqParam.stream().collect(Collectors.joining("&"));
-    String url = null;
-    
-    if(param.isUseValueSet())
-      url = renderTempl(VALIDATE_VALUE_SET_TEMPL, baseUrl, urlParam);
-    else if(param.isUseCodeSystem())
-      url = renderTempl(VALIDATE_CODE_SYS_TEMPL, baseUrl, urlParam);
-    else
-      return Try.failure(new ConstraintViolationException(List.of(
-          new ConstraintViolation("Either CodeSet or ValueSet must be set"))));
-    
-    String _url = url;
-    return validateDocumentContext(() -> internalGet(_url));
+    if(param.isUseCodeSystem())
+      return validateCode(url.get(), param.getCodePhrase().get());
+    else if(param.isUseValueSet())
+      return expandValueSet(url.get(), param.getCodePhrase().get());
+    throw new IllegalStateException();
   }
   
   static String guaranteePrefix(String prefix, String str) {
@@ -241,23 +211,6 @@ public class FhirTerminologyValidation implements ExternalTerminologyValidation 
     }
   }
   
-  private Try<Boolean,ConstraintViolationException> validateDocumentContext(ExceptionalSupplier<DocumentContext,IOException> ctx) {
-    try {
-      DocumentContext docCtx = ctx.doGet();
-      
-      Boolean result = docCtx.read("$.parameter[0].valueBoolean", boolean.class);
-      if(!result)
-        return Try.failure(new ConstraintViolationException(List.of(new ConstraintViolation(docCtx.read("$.parameter[1].valueString", String.class)))));
-      else
-        return Try.success(Boolean.TRUE);
-    } catch(IOException e) {
-      if(failOnError)
-        throw new ExternalTerminologyValidationException("An error occurred while validating the code in CodeSystem", e);
-      LOG.warn("An error occurred while validating the code in CodeSystem: {}", e.getMessage());
-      return Try.success(Boolean.FALSE);
-    }
-  }
-  
   static abstract class ValueSetConverter {
     private static final String CONTAINS = "$['expansion']['contains'][*]";
     private static final String SYS = "system";
@@ -272,5 +225,59 @@ public class FhirTerminologyValidation implements ExternalTerminologyValidation 
         .map(m -> new DvCodedText(m.get(DISP), new CodePhrase(new TerminologyId(m.get(SYS)), m.get(CODE))))
         .collect(Collectors.toList());
     }
+  }
+  
+  private Try<Boolean,ConstraintViolationException> validateCode(String url, CodePhrase codePhrase) {
+    if (!StringUtils.equals(url, codePhrase.getTerminologyId().getValue())) {
+      var constraintViolation = new ConstraintViolation(MessageFormat.format("The terminology {0} must be {1}",
+              codePhrase.getTerminologyId().getValue(), url));
+      return Try.failure(new ConstraintViolationException(List.of(constraintViolation)));
+    }
+
+    DocumentContext context;
+    try {
+      context = internalGet(baseUrl + "/CodeSystem/$validate-code?url=" + url + "&code=" + codePhrase.getCodeString());
+    } catch (IOException e) {
+      if (failOnError)
+        throw new ExternalTerminologyValidationException("An error occurred while validating the code in CodeSystem", e);
+      LOG.warn("An error occurred while validating the code in CodeSystem: {}", e.getMessage());
+      return Try.success(Boolean.FALSE);
+    }
+    boolean result = context.read("$.parameter[0].valueBoolean", boolean.class);
+    if(!result) {
+      var message = context.read("$.parameter[1].valueString", String.class);
+      var constraintViolation = new ConstraintViolation(message);
+      return Try.failure(new ConstraintViolationException(List.of(constraintViolation)));
+    }
+    
+    return Try.success(Boolean.TRUE);
+  }
+  
+  private Try<Boolean,ConstraintViolationException> expandValueSet(String url, CodePhrase codePhrase) {
+    DocumentContext context;
+    try {
+      context = internalGet(baseUrl + "/ValueSet/$expand?url=" + url);
+    } catch (IOException e) {
+      if (failOnError)
+        throw new ExternalTerminologyValidationException("An error occurred while expanding the ValueSet", e);
+      LOG.warn("An error occurred while expanding the ValueSet: {}", e.getMessage());
+      return Try.success(Boolean.FALSE);
+    }
+    List<Map<String, String>> codings = context.read(
+        "$.expansion.contains[?(@.code=='" + codePhrase.getCodeString() + "')]");
+
+    if (codings.isEmpty()) {
+      var constraintViolation = new ConstraintViolation(
+          MessageFormat.format("The value {0} does not match any option from value set {1}", codePhrase.getCodeString(), url));
+      return Try.failure(new ConstraintViolationException(List.of(constraintViolation)));
+    } else if (codings.size() == 1) {
+      Map<String, String> coding = codings.get(0);
+      if (!StringUtils.equals(coding.get("system"), codePhrase.getTerminologyId().getValue())) {
+        var constraintViolation = new ConstraintViolation(
+            MessageFormat.format("The terminology {0} must be  {1}", codePhrase.getCodeString(), url));
+        return Try.failure(new ConstraintViolationException(List.of(constraintViolation)));
+      }
+    }
+    return Try.success(Boolean.TRUE);
   }  
 }
