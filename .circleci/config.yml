@@ -812,7 +812,7 @@ commands:
             last_commit="$(git log -1 --pretty=%B | cat)"
             echo $last_commit
             case $last_commit in
-                *"[major]"*)https://github.com/ehrbase/ehrbase/pull/816https://github.com/ehrbase/ehrbase/pull/816
+                *"[major]"*)
                 
                     echo "bump major release version"
                     mvn build-helper:parse-version versions:set -DnewVersion=\${parsedVersion.nextMajorVersion}.0.0 versions:commit
