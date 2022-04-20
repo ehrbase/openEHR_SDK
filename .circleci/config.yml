@@ -921,7 +921,7 @@ commands:
           name: Install xmlstarlet to handle XML file from CLI
           command: |
             sudo killall -9 apt-get || true
-            sudo apt -y update && sudo apt -y install xmlstarlet=1.6.1-2
+            sudo apt -y update && sudo apt -y install xmlstarlet
   
 
   cache-out-versionupdater-dependencies:
