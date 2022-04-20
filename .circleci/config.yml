@@ -1323,9 +1323,9 @@ commands:
         type: string
     steps:
       # - cache-out-python-requirements
+      - install-xml-cli-tool
       - install-maven
       - install-python3-requirements
-      - install-xml-cli-tool
       - run:
           name: START EHRBASE SERVER AND EXECUTE ROBOT TESTS
           no_output_timeout: 30m
