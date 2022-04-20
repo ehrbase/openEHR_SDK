@@ -645,7 +645,7 @@ jobs:
           test-suite-name: "ADHOC-QUERY-1"
 
   QUERYSERVICE-tests-2:
-    executor: machine-ubuntu-2004
+    executor: docker-py3-java11-postgres
     environment:
       SUT: TEST
     steps:
