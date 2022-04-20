@@ -1200,8 +1200,8 @@ commands:
             SDK_VERSION=$(cat ~/projects/SDK_VERSION)
             echo $SDK_VERSION
             cd ~/projects/ehrbase
-            xmlstarlet edit --inplace --update /_:project/_:properties/_:ehrbase.sdk.version --value $SDK_VERSION pom.xml
-            cat pom.xml
+            xmlstarlet edit --inplace --update /_:project/_:properties/_:ehrbase.sdk.version --value $SDK_VERSION bom/pom.xml
+            cat bom/pom.xml
   
 
 
