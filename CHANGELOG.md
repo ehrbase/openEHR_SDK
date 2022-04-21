@@ -6,7 +6,9 @@ Note: version releases in the 0.x.y range may introduce breaking changes.
 
 ### Added
 - Maven plugin to generate code from templates ([#347](https://github.com/ehrbase/openEHR_SDK/pull/347))
-- Example Generator ([#349](https://github.com/ehrbase/openEHR_SDK/pull/349), [#351](https://github.com/ehrbase/openEHR_SDK/pull/351))
+- Example Generator ([#349](https://github.com/ehrbase/openEHR_SDK/pull/349)
+  , [#351](https://github.com/ehrbase/openEHR_SDK/pull/351))
+- use bom for dependency management ([#358](https://github.com/ehrbase/openEHR_SDK/pull/358))
 
 ### Fixed
 
