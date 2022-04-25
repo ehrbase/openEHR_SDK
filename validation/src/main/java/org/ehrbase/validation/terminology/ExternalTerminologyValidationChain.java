@@ -17,10 +17,14 @@
  */
 package org.ehrbase.validation.terminology;
 
-import com.nedap.archie.rm.datatypes.CodePhrase;
-
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+
+import org.ehrbase.functional.Try;
+import org.ehrbase.validation.ConstraintViolationException;
+
+import com.nedap.archie.rm.datavalues.DvCodedText;
 
 /**
  * {@link ExternalTerminologyValidation} that provides support for chaining several external terminology server.
@@ -37,32 +41,17 @@ public class ExternalTerminologyValidationChain implements ExternalTerminologyVa
         this.chain = chain;
     }
 
-    /**
-     * @see ExternalTerminologyValidation#supports(String)
-     */
+    
+    
     @Override
-    public boolean supports(String referenceSetUri) {
-        for (ExternalTerminologyValidation next : chain) {
-            if (next.supports(referenceSetUri)) {
-                return true;
-            }
-        }
-        return false;
+    public boolean supports(TerminologyParam param) {
+      for(ExternalTerminologyValidation next : chain) if(next.supports(param))
+        return true;
+      return false;
     }
+    
 
-    /**
-     * @see ExternalTerminologyValidation#validate(String, String, CodePhrase)
-     */
-    @Override
-    public void validate(String path, String referenceSetUri, CodePhrase codePhrase) {
-        for (ExternalTerminologyValidation next : chain) {
-            if (next.supports(referenceSetUri)) {
-                next.validate(path, referenceSetUri, codePhrase);
-                return;
-            }
-        }
-    }
-
+    
     /**
      * Adds the given external terminology server to the chain.
      *
@@ -71,5 +60,19 @@ public class ExternalTerminologyValidationChain implements ExternalTerminologyVa
     public void addExternalTerminologyValidationSupport(
         ExternalTerminologyValidation externalTerminologyValidationSupport) {
         chain.add(externalTerminologyValidationSupport);
+    }
+
+    @Override
+    public Try<Boolean,ConstraintViolationException> validate(TerminologyParam param) {
+      for(ExternalTerminologyValidation next : chain) if(next.supports(param))
+        return next.validate(param);
+      return Try.success(Boolean.FALSE);
+    }
+
+    @Override
+    public List<DvCodedText> expand(TerminologyParam param) {
+      for(ExternalTerminologyValidation next : chain) if(next.supports(param))
+        return next.expand(param);
+      return Collections.emptyList();
     }
 }
