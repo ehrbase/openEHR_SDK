@@ -21,7 +21,7 @@ jobs:
           git config --global user.name "username"
           git checkout -b release/v${{ github.event.inputs.version }}
           mvn versions:set -DnewVersion=${{ github.event.inputs.version }} -DprocessAllModules=true
-          git add
+          git add -A
           git commit -m "release ${{ github.event.inputs.version }}: updated version to${{ github.event.inputs.version }}"
           git push -u origin release/v${{ github.event.inputs.version }}
         env:
