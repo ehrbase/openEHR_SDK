@@ -805,6 +805,7 @@ commands:
   update-and-publish-snapshot-release-version:
     steps:
       - install-maven
+      - install-xml-cli-tool
       - run:
           name: Update Snapshot Release Version
           command: |
@@ -816,7 +817,7 @@ commands:
                 
                     echo "bump major release version"
                     mvn build-helper:parse-version versions:set -DnewVersion=\${parsedVersion.nextMajorVersion}.0.0 versions:commit
-                    SDK_VERSION=$(mvn -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive exec:exec)
+                    SDK_VERSION=$(xmlstarlet sel -t -m "/_:project/_:version" -v .   pom.xml )
                     
                     git commit -am "updated major version to v${SDK_VERSION}-SNAPSHOT [skip ci]"
                     git checkout -b major-snapshot-update
@@ -832,7 +833,7 @@ commands:
 
                     echo "bump minor release version"
                     mvn build-helper:parse-version versions:set -DnewVersion=\${parsedVersion.majorVersion}.\${parsedVersion.nextMinorVersion}.0 versions:commit
-                    SDK_VERSION=$(mvn -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive exec:exec)
+                    SDK_VERSION=$(xmlstarlet sel -t -m "/_:project/_:version" -v .   pom.xml )
                     
                     git commit -am "updated minor version to v${SDK_VERSION}-SNAPSHOT [skip ci]"
                     git checkout -b minor-snapshot-update
@@ -870,6 +871,7 @@ commands:
   publish-release-version:
     steps:
       - install-maven
+      - install-xml-cli-tool
       - run:
           name: Create and push release version tag
           description: |
@@ -886,7 +888,7 @@ commands:
             i.e. deployments into production.
           command: |
             git branch
-            SDK_VERSION=$(mvn -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive exec:exec)
+            SDK_VERSION=$(xmlstarlet sel -t -m "/_:project/_:version" -v .   pom.xml )
             echo $SDK_VERSION
             git fetch
             git checkout master
@@ -919,7 +921,7 @@ commands:
           name: Install xmlstarlet to handle XML file from CLI
           command: |
             sudo killall -9 apt-get || true
-            sudo apt -y update && sudo apt -y install xmlstarlet=1.6.1-2
+            sudo apt -y update && sudo apt -y install xmlstarlet
   
 
   cache-out-versionupdater-dependencies:
@@ -945,15 +947,16 @@ commands:
   build-sdk:
     steps:
       - install-maven
+      - install-xml-cli-tool
       - run:
           name: Maven build, install openEHR_SDK (skip Tests!)
           command: |
-            mvn build-helper:parse-version versions:set -DnewVersion=\${project.version}-LOCAL$(cat /proc/sys/kernel/random/uuid) versions:commit
+            mvn build-helper:parse-version versions:set -DnewVersion=\${project.version}-LOCAL$(cat /proc/sys/kernel/random/uuid)  -DprocessAllModules=true versions:commit
             mvn install -Dmaven.javadoc.skip=true -Djacoco.skip=true -Dmaven.test.skip
       - run:
           name: Save the version number of locally installed SDK into a file
           command: |
-            SDK_VERSION=$(mvn -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive exec:exec)
+            SDK_VERSION=$(xmlstarlet sel -t -m "/_:project/_:version" -v .   pom.xml )
             echo $SDK_VERSION > SDK_VERSION
             cat SDK_VERSION
 
@@ -961,15 +964,16 @@ commands:
   build-and-test-sdk:
     steps:
       - install-maven
+      - install-xml-cli-tool
       - run:
           name: Maven build, test (ONLY unit tests), install openEHR_SDK
           command: |
-            mvn build-helper:parse-version versions:set -DnewVersion=\${project.version}-LOCAL versions:commit
+            mvn build-helper:parse-version versions:set -DnewVersion=\${project.version}-LOCAL -DprocessAllModules=true versions:commit
             mvn install dependency:go-offline -Djacoco.skip=true -Dmaven.javadoc.skip=true
       - run:
           name: Save the version number of locally installed SDK into a file
           command: |
-            SDK_VERSION=$(mvn -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive exec:exec)
+            SDK_VERSION=$(xmlstarlet sel -t -m "/_:project/_:version" -v .   pom.xml )
             echo $SDK_VERSION > SDK_VERSION
             cat SDK_VERSION
 
@@ -1008,6 +1012,7 @@ commands:
         default: true
     steps:
       - install-maven
+      - install-xml-cli-tool
       - run:
           name: Maven build EHRbase
           command: |
@@ -1020,7 +1025,7 @@ commands:
           command: |
             ls -la
             cd ~/projects/ehrbase
-            EHRbase_VERSION=$(mvn -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive exec:exec)
+            EHRbase_VERSION=$(xmlstarlet sel -t -m "/_:project/_:version" -v .   pom.xml )
             echo ${EHRbase_VERSION}
             java -jar application/target/application-${EHRbase_VERSION}.jar --cache.enabled=true > log &
             grep -m 1 "Started EhrBase in" <(tail -f log)
@@ -1200,8 +1205,8 @@ commands:
             SDK_VERSION=$(cat ~/projects/SDK_VERSION)
             echo $SDK_VERSION
             cd ~/projects/ehrbase
-            xmlstarlet edit --inplace --update /_:project/_:properties/_:ehrbase.sdk.version --value $SDK_VERSION pom.xml
-            cat pom.xml
+            xmlstarlet edit --inplace --update /_:project/_:properties/_:ehrbase.sdk.version --value $SDK_VERSION bom/pom.xml
+            cat bom/pom.xml
   
 
 
@@ -1266,13 +1271,14 @@ commands:
       # - openjdk-install/openjdk:    # (use w/ machine executor only)
       #     version: 11               #
       - install-maven
+      - install-xml-cli-tool
       - run:
           name: Start EHRbase server
           background: true
           command: |
             ls -la
             cd ehrbase
-            EHRbase_VERSION=$(mvn -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive exec:exec)
+            EHRbase_VERSION=$(xmlstarlet sel -t -m "/_:project/_:version" -v .   pom.xml )
             echo ${EHRbase_VERSION}
             java -jar application/target/application-${EHRbase_VERSION}.jar --cache.enabled=true > log
 
@@ -1317,6 +1323,7 @@ commands:
         type: string
     steps:
       # - cache-out-python-requirements
+      - install-xml-cli-tool
       - install-maven
       - install-python3-requirements
       - run:
@@ -1330,7 +1337,7 @@ commands:
             cd ehrbase/
             ls -la
             if [ "${SUT}" != "TEST" ]; then
-              EHRbase_VERSION=$(mvn -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive exec:exec)
+              EHRbase_VERSION=$(xmlstarlet sel -t -m "/_:project/_:version" -v .   pom.xml )
               echo ${EHRbase_VERSION}
               java -jar "application/target/application-${EHRbase_VERSION}.jar" \
                    --system.allow-template-overwrite=<< parameters.allow-template-overwrite >> \

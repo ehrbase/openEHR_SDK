@@ -38,6 +38,8 @@ class DvCodedTextIT extends AbstractRMObjectValidatorTest {
   private final FhirTerminologyValidation fhirTerminologyValidator = new FhirTerminologyValidation(
       "https://r4.ontoserver.csiro.au/fhir");
 
+
+
   private final DvCodedTextValidator validator = new DvCodedTextValidator(fhirTerminologyValidator);
 
   @Test
