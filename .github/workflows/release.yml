@@ -19,8 +19,7 @@ jobs:
 
       - name: Create Release Branch
         run: |
-          git config --global user.email "bot@ehrbase.org"
-          git config --global user.name "bot"
+      
           gh auth login
           git checkout -b release/v${VERSION}
           mvn versions:set -DnewVersion=${VERSION} -DprocessAllModules=true
