@@ -31,13 +31,17 @@ jobs:
 
       - name: Wait for ci pipeline
         run: |
-          git rev-parse HEAD
-          git config --global user.email "emailaddress@yahoo.com"
-          git config --global user.name "username"
-          git checkout -b release/v${VERSION}
-          mvn versions:set -DnewVersion=${VERSION} -DprocessAllModules=true
-          git add -A
-          git commit -m "release ${VERSION}: updated version to${VERSION}"
-          git push -u origin release/v${VERSION}
+          STATUS="pending"
+          COMMIT=$(git rev-parse HEAD)
+          echo "$COMMIT"
+          while [ "$STATUS" == "pending" ]
+          do
+           STATUS=$(gh api /repos/stefanspiska/openEHR_SDK/commits/"${COMMIT}"/status -q .state)
+          sleep 10
+          done
+          echo "$STATUS"
+          if [ "$STATUS" != "success" ]
+           then exit 1
+          fi
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
