@@ -10,6 +10,8 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      - name: Calculate realise version
+        run: echo "VERSION=${{ github.event.inputs.version }}" >> $GITHUB_ENV
       - name: Checkout
         uses: actions/checkout@v2
         with:
@@ -19,10 +21,23 @@ jobs:
         run: |
           git config --global user.email "emailaddress@yahoo.com"
           git config --global user.name "username"
-          git checkout -b release/v${{ github.event.inputs.version }}
-          mvn versions:set -DnewVersion=${{ github.event.inputs.version }} -DprocessAllModules=true
+          git checkout -b release/v${VERSION}
+          mvn versions:set -DnewVersion=${VERSION} -DprocessAllModules=true
           git add -A
-          git commit -m "release ${{ github.event.inputs.version }}: updated version to${{ github.event.inputs.version }}"
-          git push -u origin release/v${{ github.event.inputs.version }}
+          git commit -m "release ${VERSION}: updated version to${VERSION}"
+          git push -u origin release/v${VERSION}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Wait for ci pipeline
+        run: |
+          git rev-parse HEAD
+          git config --global user.email "emailaddress@yahoo.com"
+          git config --global user.name "username"
+          git checkout -b release/v${VERSION}
+          mvn versions:set -DnewVersion=${VERSION} -DprocessAllModules=true
+          git add -A
+          git commit -m "release ${VERSION}: updated version to${VERSION}"
+          git push -u origin release/v${VERSION}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
