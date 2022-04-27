@@ -19,12 +19,19 @@
 
 package org.ehrbase.serialisation.flatencoding.std.umarshal;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.nedap.archie.rm.composition.Composition;
 import com.nedap.archie.rm.composition.Observation;
+import com.nedap.archie.rm.datastructures.Element;
 import com.nedap.archie.rm.datavalues.quantity.DvQuantity;
+import com.nedap.archie.rm.datavalues.quantity.datetime.DvDate;
+import com.nedap.archie.rm.datavalues.quantity.datetime.DvDateTime;
+import com.nedap.archie.rm.datavalues.quantity.datetime.DvTime;
 import com.nedap.archie.rm.generic.PartySelf;
 import org.apache.commons.io.IOUtils;
 import org.apache.xmlbeans.XmlException;
+import org.assertj.core.api.Assertions;
+import org.ehrbase.serialisation.jsonencoding.JacksonUtil;
 import org.ehrbase.test_data.composition.CompositionTestDataConformanceSDTJson;
 import org.ehrbase.test_data.composition.CompositionTestDataSimSDTJson;
 import org.ehrbase.test_data.operationaltemplate.OperationalTemplateTestData;
@@ -35,11 +42,18 @@ import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
 import org.openehr.schemas.v1.TemplateDocument;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class FlatJsonUnmarshallerTest {
+
+  private Object thing;
 
   @Test
   public void unmarshal() throws IOException, XmlException {
@@ -59,8 +73,8 @@ public class FlatJsonUnmarshallerTest {
 
     Observation observation =
         (Observation) actual.itemAtPath("/content[openEHR-EHR-OBSERVATION.story.v1]");
-    assertThat(observation.getData().getOrigin().getValue()).hasToString(
-        "2020-05-11T22:53:12.039139+02:00");
+    assertThat(observation.getData().getOrigin().getValue())
+        .hasToString("2020-05-11T22:53:12.039139+02:00");
     assertThat(observation.getSubject()).isNotNull();
     assertThat(observation.getSubject().getClass()).isEqualTo(PartySelf.class);
   }
@@ -176,30 +190,188 @@ public class FlatJsonUnmarshallerTest {
 
   @Test
   public void unmarshallNestedComposition() throws Exception {
-    var optTemplate = TemplateDocument.Factory.parse(OperationalTemplateTestData.NESTED.getStream())
-        .getTemplate();
+    var optTemplate =
+        TemplateDocument.Factory.parse(OperationalTemplateTestData.NESTED.getStream())
+            .getTemplate();
     var webTemplate = new OPTParser(optTemplate).parse();
 
-    var json = IOUtils.toString(CompositionTestDataSimSDTJson.NESTED.getStream(),
-        StandardCharsets.UTF_8);
+    var json =
+        IOUtils.toString(CompositionTestDataSimSDTJson.NESTED.getStream(), StandardCharsets.UTF_8);
 
     var composition = new FlatJsonUnmarshaller().unmarshal(json, webTemplate);
 
     assertThat(composition).isNotNull();
   }
 
-
   @Test
   public void unmarshallIpsComposition() throws Exception {
-    var optTemplate = TemplateDocument.Factory.parse(OperationalTemplateTestData.IPS.getStream())
-        .getTemplate();
+    var optTemplate =
+        TemplateDocument.Factory.parse(OperationalTemplateTestData.IPS.getStream()).getTemplate();
     var webTemplate = new OPTParser(optTemplate).parse();
 
-    var json = IOUtils.toString(CompositionTestDataSimSDTJson.IPS.getStream(),
-        StandardCharsets.UTF_8);
+    var json =
+        IOUtils.toString(CompositionTestDataSimSDTJson.IPS.getStream(), StandardCharsets.UTF_8);
 
     var composition = new FlatJsonUnmarshaller().unmarshal(json, webTemplate);
 
     assertThat(composition).isNotNull();
+  }
+
+  @Test
+  public void DvDateTimeTest() throws Exception {
+    var optTemplate =
+        TemplateDocument.Factory.parse(OperationalTemplateTestData.CONFORMANCE.getStream())
+            .getTemplate();
+    var webTemplate = new OPTParser(optTemplate).parse();
+    Map<String, String> flat =
+        getKeyValueFromFlatJson(
+            CompositionTestDataConformanceSDTJson.EHRBASE_CONFORMANCE_DATA_TYPES_DV_DATE_TIME
+                .getStream());
+
+    String key =
+        "conformance-ehrbase.de.v0/conformance_section/conformance_observation/any_event:0/dv_date_time";
+    FlatJsonUnmarshaller cut = new FlatJsonUnmarshaller();
+
+    for (TestCase testCase :
+        Arrays.asList(
+            new TestCase("2022-11-01", "2022-11-01"),
+            new TestCase("2022-11", "2022-11"),
+            new TestCase("2022", "2022"),
+            new TestCase("2022-11-01T13", "2022-11-01T13:00"),
+            new TestCase("2022-11-01T13+02:00", "2022-11-01T13:00+02:00"))) {
+      flat.put(key, testCase.input);
+      String json = JacksonUtil.getObjectMapper().writeValueAsString(flat);
+      Composition actual = cut.unmarshal(json, webTemplate);
+      assertThat(actual).isNotNull();
+      Element element =
+          (Element)
+              actual.itemAtPath(
+                  "/content[openEHR-EHR-SECTION.conformance_section.v0]/items[openEHR-EHR-OBSERVATION.conformance_observation.v0]/data[at0001]/events[at0002]/data[at0003]/items[at0011]");
+      assertThat(element).isNotNull();
+      DvDateTime dateTime = (DvDateTime) element.getValue();
+      assertThat(dateTime.getValue().toString()).isEqualTo(testCase.expected);
+    }
+  }
+
+  @Test
+  public void DvTimeTest() throws Exception {
+    var optTemplate =
+        TemplateDocument.Factory.parse(OperationalTemplateTestData.CONFORMANCE.getStream())
+            .getTemplate();
+    var webTemplate = new OPTParser(optTemplate).parse();
+    Map<String, String> flat =
+        getKeyValueFromFlatJson(
+            CompositionTestDataConformanceSDTJson.EHRBASE_CONFORMANCE_DATA_TYPES_DV_DATE_TIME
+                .getStream());
+
+    String key =
+        "conformance-ehrbase.de.v0/conformance_section/conformance_observation/any_event:0/dv_time";
+    FlatJsonUnmarshaller cut = new FlatJsonUnmarshaller();
+
+    for (TestCase testCase :
+        Arrays.asList(
+            new TestCase("13:12:11", "13:12:11"),
+            new TestCase("13:12", "13:12"),
+            new TestCase("13", "13:00"),
+            new TestCase("13+02:00", "13:00+02:00"),
+            new TestCase("2022-11", null),
+            new TestCase("2022-11-01", null),
+            new TestCase("2022-11-01T13", null))) {
+      flat.put(key, testCase.input);
+      String json = JacksonUtil.getObjectMapper().writeValueAsString(flat);
+      Composition actual;
+      try {
+        actual = cut.unmarshal(json, webTemplate);
+      } catch (IllegalArgumentException ex) {
+        if (testCase.expected != null) {
+          Assertions.fail("should not have failed", ex);
+        }
+        return;
+      }
+      if (testCase.expected == null) {
+        Assertions.fail(testCase.input + " should have failed");
+        return;
+      }
+      assertThat(actual).isNotNull();
+      Element element =
+          (Element)
+              actual.itemAtPath(
+                  "/content[openEHR-EHR-SECTION.conformance_section.v0]/items[openEHR-EHR-OBSERVATION.conformance_observation.v0]/data[at0001]/events[at0002]/data[at0003]/items[at0012]");
+      assertThat(element).isNotNull();
+      DvTime time = (DvTime) element.getValue();
+      assertThat(time.getValue().toString()).isEqualTo(testCase.expected);
+    }
+  }
+
+  @Test
+  public void DvDateTest() throws Exception {
+    var optTemplate =
+        TemplateDocument.Factory.parse(OperationalTemplateTestData.CONFORMANCE.getStream())
+            .getTemplate();
+    var webTemplate = new OPTParser(optTemplate).parse();
+    Map<String, String> flat =
+        getKeyValueFromFlatJson(
+            CompositionTestDataConformanceSDTJson.EHRBASE_CONFORMANCE_DATA_TYPES_DV_DATE_TIME
+                .getStream());
+
+    String key =
+        "conformance-ehrbase.de.v0/conformance_section/conformance_observation/any_event:0/dv_date";
+    FlatJsonUnmarshaller cut = new FlatJsonUnmarshaller();
+
+    for (TestCase testCase :
+        Arrays.asList(
+            new TestCase("2022-11-01", "2022-11-01"),
+            new TestCase("2022-11", "2022-11"),
+            new TestCase("2022", "2022"),
+            new TestCase("2022-11-01T13", null),
+            new TestCase("13:00:00", null),
+            new TestCase("T13", null))) {
+      flat.put(key, testCase.input);
+      String json = JacksonUtil.getObjectMapper().writeValueAsString(flat);
+      Composition actual;
+      try {
+        actual = cut.unmarshal(json, webTemplate);
+      } catch (IllegalArgumentException ex) {
+        if (testCase.expected != null) {
+          Assertions.fail("should not have failed", ex);
+        }
+        return;
+      }
+      if (testCase.expected == null) {
+        Assertions.fail(testCase.input + " should have failed");
+        return;
+      }
+      assertThat(actual).isNotNull();
+      Element element =
+          (Element)
+              actual.itemAtPath(
+                  "/content[openEHR-EHR-SECTION.conformance_section.v0]/items[openEHR-EHR-OBSERVATION.conformance_observation.v0]/data[at0001]/events[at0002]/data[at0003]/items[at0013]");
+      assertThat(element).isNotNull();
+      DvDate date = (DvDate) element.getValue();
+      assertThat(date.getValue().toString()).isEqualTo(testCase.expected);
+    }
+  }
+
+  private static class TestCase {
+    public final String input;
+    public final String expected;
+
+    public TestCase(String input, String expected) {
+      this.input = input;
+      this.expected = expected;
+    }
+  }
+
+  private Map<String, String> getKeyValueFromFlatJson(InputStream in) throws IOException {
+    Map<String, String> currentValues = new HashMap<>();
+    for (Iterator<Map.Entry<String, JsonNode>> it =
+            JacksonUtil.getObjectMapper()
+                .readTree(IOUtils.toString(in, StandardCharsets.UTF_8))
+                .fields();
+        it.hasNext(); ) {
+      Map.Entry<String, JsonNode> e = it.next();
+      currentValues.put(e.getKey(), e.getValue().textValue());
+    }
+    return currentValues;
   }
 }
