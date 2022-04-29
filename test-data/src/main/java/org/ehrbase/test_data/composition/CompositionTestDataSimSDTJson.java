@@ -18,9 +18,8 @@
 
 package org.ehrbase.test_data.composition;
 
-import org.ehrbase.test_data.operationaltemplate.OperationalTemplateTestData;
-
 import java.io.InputStream;
+import org.ehrbase.test_data.operationaltemplate.OperationalTemplateTestData;
 
 public enum CompositionTestDataSimSDTJson implements CompositionTestDataSimSDTJsonInterface {
   ALTERNATIVE_EVENTS(
@@ -73,6 +72,7 @@ public enum CompositionTestDataSimSDTJson implements CompositionTestDataSimSDTJs
   NESTED("nested.en.v1", "nested.en.v1.json",OperationalTemplateTestData.NESTED),
   DURATION_VALIDATION("duration_validation", "duration_validation.json",OperationalTemplateTestData.DURATION_VALIDATION),
   RE_SPECT("nested.en.v1", "ReSPECT.json",OperationalTemplateTestData.RE_SPECT),
+  SSIAD_PRIESM("SSIAD_PRIeSM", "SSIAD_PRIeSM.json", OperationalTemplateTestData.SSIAD_PR_IE_SM),
   IPS("International Patient Summary", "ips_flat.json",OperationalTemplateTestData.IPS);
 
   private final String filename;

@@ -20,7 +20,13 @@
 package org.ehrbase.webtemplate.parser;
 
 import com.nedap.archie.rm.archetyped.Locatable;
-import com.nedap.archie.rm.composition.*;
+import com.nedap.archie.rm.composition.Action;
+import com.nedap.archie.rm.composition.Activity;
+import com.nedap.archie.rm.composition.Composition;
+import com.nedap.archie.rm.composition.Entry;
+import com.nedap.archie.rm.composition.EventContext;
+import com.nedap.archie.rm.composition.Instruction;
+import com.nedap.archie.rm.composition.IsmTransition;
 import com.nedap.archie.rm.datastructures.Element;
 import com.nedap.archie.rm.datastructures.Event;
 import com.nedap.archie.rm.datastructures.History;
@@ -28,6 +34,19 @@ import com.nedap.archie.rm.datavalues.quantity.DvInterval;
 import com.nedap.archie.rminfo.ArchieRMInfoLookup;
 import com.nedap.archie.rminfo.RMAttributeInfo;
 import com.nedap.archie.rminfo.RMTypeInfo;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
@@ -39,16 +58,47 @@ import org.ehrbase.terminology.client.terminology.TerminologyProvider;
 import org.ehrbase.terminology.client.terminology.ValueSet;
 import org.ehrbase.util.exception.SdkException;
 import org.ehrbase.util.rmconstants.RmConstants;
-import org.ehrbase.webtemplate.model.*;
+import org.ehrbase.webtemplate.model.WebTemplate;
+import org.ehrbase.webtemplate.model.WebTemplateAnnotation;
+import org.ehrbase.webtemplate.model.WebTemplateInput;
+import org.ehrbase.webtemplate.model.WebTemplateInputValue;
+import org.ehrbase.webtemplate.model.WebTemplateNode;
+import org.ehrbase.webtemplate.model.WebTemplateValidation;
+import org.ehrbase.webtemplate.model.WebtemplateCardinality;
 import org.ehrbase.webtemplate.util.WebTemplateUtils;
-import org.openehr.schemas.v1.*;
+import org.openehr.schemas.v1.ANNOTATION;
+import org.openehr.schemas.v1.ARCHETYPEONTOLOGY;
+import org.openehr.schemas.v1.ARCHETYPESLOT;
+import org.openehr.schemas.v1.ARCHETYPETERM;
+import org.openehr.schemas.v1.CARCHETYPEROOT;
+import org.openehr.schemas.v1.CARDINALITY;
+import org.openehr.schemas.v1.CATTRIBUTE;
+import org.openehr.schemas.v1.CCODEPHRASE;
+import org.openehr.schemas.v1.CCODEREFERENCE;
+import org.openehr.schemas.v1.CCOMPLEXOBJECT;
+import org.openehr.schemas.v1.CDOMAINTYPE;
+import org.openehr.schemas.v1.CDVORDINAL;
+import org.openehr.schemas.v1.CDVQUANTITY;
+import org.openehr.schemas.v1.CDVSTATE;
+import org.openehr.schemas.v1.CMULTIPLEATTRIBUTE;
+import org.openehr.schemas.v1.COBJECT;
+import org.openehr.schemas.v1.CODEPHRASE;
+import org.openehr.schemas.v1.CPRIMITIVEOBJECT;
+import org.openehr.schemas.v1.CSINGLEATTRIBUTE;
+import org.openehr.schemas.v1.CodeDefinitionSet;
+import org.openehr.schemas.v1.DVCODEDTEXT;
+import org.openehr.schemas.v1.DVORDINAL;
+import org.openehr.schemas.v1.DVQUANTITY;
+import org.openehr.schemas.v1.IntervalOfInteger;
+import org.openehr.schemas.v1.OBJECTID;
+import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
+import org.openehr.schemas.v1.RESOURCEDESCRIPTIONITEM;
+import org.openehr.schemas.v1.StringDictionaryItem;
+import org.openehr.schemas.v1.TATTRIBUTE;
+import org.openehr.schemas.v1.TCOMPLEXOBJECT;
+import org.openehr.schemas.v1.TCONSTRAINT;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-
-import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class OPTParser {
 
@@ -390,7 +440,8 @@ public class OPTParser {
     node.setAqlPath(aqlPath);
 
     if (StringUtils.isNotBlank(ccomplexobject.getNodeId()) && explicitName != null) {
-      String nameValue = explicitName.label.replace("\\", "\\\\").replace("'", "\\'");
+      String nameValue = explicitName.label;
+      // .replace("\\", "\\\\").replace("'", "\\'");
       node.setAqlPath(node.getAqlPathDto().replaceLastNode(n -> n.withNameValue(nameValue)));
     }
     return node;

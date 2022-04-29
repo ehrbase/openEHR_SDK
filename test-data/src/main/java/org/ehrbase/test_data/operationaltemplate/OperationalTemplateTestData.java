@@ -114,6 +114,8 @@ public enum OperationalTemplateTestData {
   DURATION_VALIDATION("duration_validation", "duration_validation.opt", "duration_validation"),
   ERROR_TEST("Contains choice between interval and not interval", "ErrorTest.opt", "ErrorTest"),
   SECTION_CARDINALITY("Cardinality test template sections", "section_cardinality.opt", "cardinality_of_section"),
+
+  SSIAD_PR_IE_SM("Cardinality test template sections", "SSIAD_PRIeSM.opt", "SSIAD PRIeSM"),
   NULLID("My Nullid test", "nullid.opt", "null-nodeid-example");
 
   private final String filename;
