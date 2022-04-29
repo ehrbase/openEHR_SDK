@@ -120,7 +120,9 @@ public enum OperationalTemplateTestData {
   
   ISM_MISSING("ISM withn missing transition", "test-ism.vitagroup.de.v1.opt", "test-ism.vitagroup.de.v1"),
   ISM_WRONG("ISM transition with wrong current state", "test-ism.vitagroup.de.v1.opt", "test-ism.vitagroup.de.v1"),
-  ISM_VAILD("Vaild ism transition", "test-ism.vitagroup.de.v1.opt", "test-ism.vitagroup.de.v1");
+  ISM_VAILD("Vaild ism transition", "test-ism.vitagroup.de.v1.opt", "test-ism.vitagroup.de.v1"),
+  
+  ISM_INVALID_STATE("ISM withn invaild current state", "test-ism.vitagroup.de.v1.opt", "test-ism.vitagroup.de.v1");
 //  TEST_ISM("ISM transition test", "test-ism.vitagroup.de.v1.opt", "test-ism.vitagroup.de.v1");
 
   private final String filename;

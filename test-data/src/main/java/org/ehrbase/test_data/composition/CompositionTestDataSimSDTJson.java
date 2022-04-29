@@ -77,7 +77,9 @@ public enum CompositionTestDataSimSDTJson implements CompositionTestDataSimSDTJs
   
   ISM_MISSING("ISM withn unknown transition", "ism_missing_transition.json", OperationalTemplateTestData.ISM_MISSING),
   ISM_WRONG("ISM transition with wrong current state", "ism_wrong_current_state.json", OperationalTemplateTestData.ISM_WRONG),
-  ISM_VAILD("Vaild ism transition", "ism_vaild_transition.json", OperationalTemplateTestData.ISM_VAILD);
+  ISM_VAILD("Vaild ism transition", "ism_vaild_transition.json", OperationalTemplateTestData.ISM_VAILD),
+  
+  ISM_INVALID_STATE("ISM withn invaild current state", "ism_invalid_current_state.json", OperationalTemplateTestData.ISM_INVALID_STATE);
 
   private final String filename;
   private final String description;

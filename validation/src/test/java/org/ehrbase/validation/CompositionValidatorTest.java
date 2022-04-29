@@ -74,7 +74,17 @@ class CompositionValidatorTest {
     var result = validator.validate(composition, template);
     assertTrue(result.isEmpty());
   }
-  
+
+  //------------------------
+  @Test
+  void xxxismTransitionWithWrongState() throws Exception {
+    var template = getOperationalTemplate(OperationalTemplateTestData.ISM_INVALID_STATE);
+    var composition = getComposition(CompositionTestDataSimSDTJson.ISM_INVALID_STATE);
+
+    var result = validator.validate(composition, template);
+    assertFalse(result.isEmpty());
+  }
+  //------------------------  
   @Test
   void ismTransitionWithWrongState() throws Exception {
     var template = getOperationalTemplate(OperationalTemplateTestData.ISM_WRONG);

@@ -34,11 +34,21 @@ import org.ehrbase.webtemplate.model.WebTemplateNode;
 import com.nedap.archie.rm.composition.IsmTransition;
 import com.nedap.archie.rm.datavalues.DvCodedText;
 
+
+/*
+
+aus den ism_transitions die careflow step validieren
+in den steps ist eine input/lists die erlaubte wetre enthält
+in dieser liste muss der careflow step enthalten sein und der
+current state muss passen 
+
+
+*/
+
 /**
  * @see com.nedap.archie.rm.datavalues.IsmTransition
  * @since 1.7
  */
-@SuppressWarnings("unused")
 public class IsmTransitionValidator implements ConstraintValidator<IsmTransition> {
 
   public IsmTransitionValidator() { }
@@ -53,7 +63,7 @@ public class IsmTransitionValidator implements ConstraintValidator<IsmTransition
    */
   @Override
   public List<ConstraintViolation> validate(IsmTransition transition, WebTemplateNode node) {
-    return new CorrectStateValidator().apply(transition, node);
+    return new CurrentStateValidator().apply(transition, node);
   }
 
   private String ismToString(IsmTransition ism) {
@@ -64,10 +74,11 @@ public class IsmTransitionValidator implements ConstraintValidator<IsmTransition
       .toString();
   }
   
-  private class CorrectStateValidator implements BiFunction<IsmTransition, WebTemplateNode, List<ConstraintViolation>> {
+  //-------------------------------------------------------------------------------------------------------------------------------------------------------------  
+  
+  private class CurrentStateValidator implements BiFunction<IsmTransition, WebTemplateNode, List<ConstraintViolation>> {
     private static final String ERR_NO_VALID_TRANSITION = "No valid transition found for ism transition[%s]";
 
-    @Override
     @SuppressWarnings("unchecked")
     public List<ConstraintViolation> apply(IsmTransition transition, WebTemplateNode node) {
       /* transition is optional see https://specifications.openehr.org/releases/RM/latest/ehr.html#_ism_transition_class*/
@@ -110,4 +121,42 @@ public class IsmTransitionValidator implements ConstraintValidator<IsmTransition
         .collect(Collectors.toList());
     }
   }
+  
+  //-------------------------------------------------------------------------------------------------------------------------------------------------------------
+  
+  private class CareFlowValidator implements BiFunction<IsmTransition, WebTemplateNode, List<ConstraintViolation>> {
+
+    public List<ConstraintViolation> apply(IsmTransition transition, WebTemplateNode node) {
+      if(transition.getCareflowStep() == null)
+        return Collections.emptyList();
+      
+      
+      
+//      node.getChildren() muss careflow_step enthalten
+//        in diesem element ist ein inputs mit einer list, in der der current_state drin sein muss
+      
+      
+      
+      
+      return null;
+    }
+    
+//    private Try<> extractCareflow(WebTemplateNode node) {
+//      List<WebTemplateNode> candiate = node.getChildren().stream()
+//        .filter(n -> n.getAqlPath() != null)
+//        .filter(n -> n.getAqlPath().endsWith("careflow_step"))
+//        .collect(Collectors.toList());
+//      
+//      if(candiate.size() > 1)
+//        return null;
+//      
+//      
+//    }
+    
+  }
+  
+  
+  
+  
+  
 }
