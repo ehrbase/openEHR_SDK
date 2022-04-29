@@ -9,6 +9,7 @@ Note: version releases in the 0.x.y range may introduce breaking changes.
 - Example Generator ([#349](https://github.com/ehrbase/openEHR_SDK/pull/349)
   , [#351](https://github.com/ehrbase/openEHR_SDK/pull/351))
 - use bom for dependency management ([#358](https://github.com/ehrbase/openEHR_SDK/pull/358))
+- created release action ([#362](https://github.com/ehrbase/openEHR_SDK/pull/362))
 
 ### Fixed
 
