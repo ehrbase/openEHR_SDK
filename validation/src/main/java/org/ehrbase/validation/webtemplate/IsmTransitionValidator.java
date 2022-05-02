@@ -37,16 +37,6 @@ import com.nedap.archie.rm.composition.IsmTransition;
 import com.nedap.archie.rm.datavalues.DvCodedText;
 
 
-/*
-
-aus den ism_transitions die careflow step validieren
-in den steps ist eine input/lists die erlaubte wetre enthält
-in dieser liste muss der careflow step enthalten sein und der
-current state muss passen 
-
-
-*/
-
 /**
  * @see com.nedap.archie.rm.datavalues.IsmTransition
  * @since 1.7
