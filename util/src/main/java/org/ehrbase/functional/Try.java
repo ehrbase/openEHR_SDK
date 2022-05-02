@@ -3,7 +3,10 @@ package org.ehrbase.functional;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 
-public abstract class Try<S,E extends Exception> {
+import org.ehrbase.functional.Either.Left;
+import org.ehrbase.functional.Either.Right;
+
+public abstract class Try<S,E extends Exception> extends Either<S,E> {
   public static <S1,E1 extends Exception> Success<S1,E1> success(S1 result) {
     return new Success<>(result);
   }
@@ -12,12 +15,18 @@ public abstract class Try<S,E extends Exception> {
     return new Failure<>(failure);
   }
   
-  protected final Object result;
-  
   protected Try(Object result) {
-    this.result = result;
+    super(result);
   }
   
+  public boolean isLeft() {
+    return isSuccess();
+  }
+
+  public boolean isRight() {
+    return isFailure();
+  }
+
   public abstract boolean isSuccess();
   public abstract boolean isFailure();
   public abstract Object get();
@@ -55,7 +64,7 @@ public abstract class Try<S,E extends Exception> {
     
     @SuppressWarnings("unchecked")
     public S0 get() {
-      return (S0) super.result;
+      return (S0) super.value;
     }
 
     public S0 getOrThrow() throws E0 {
@@ -83,6 +92,14 @@ public abstract class Try<S,E extends Exception> {
     public void consume(BiConsumer<S0,E0> con) {
       con.accept(get(), null);
     }
+
+    public S0 getAsLeft() {
+      return this.get();
+    }
+
+    public E0 getAsRight() {
+      throw new UnsupportedOperationException();
+    }
   }
   
   public static class Failure<S0,E0 extends Exception> extends Try<S0,E0> {
@@ -100,7 +117,7 @@ public abstract class Try<S,E extends Exception> {
     
     @SuppressWarnings("unchecked")
     public E0 get() {
-      return (E0) super.result;
+      return (E0) super.value;
     }
 
     public S0 getOrThrow() throws E0 {
@@ -127,6 +144,14 @@ public abstract class Try<S,E extends Exception> {
      */
     public void consume(BiConsumer<S0,E0> con) {
       con.accept(null, get());
+    }
+
+    public S0 getAsLeft() {
+      throw new UnsupportedOperationException();
+    }
+
+    public E0 getAsRight() {
+      return this.get();
     }
   }
 }

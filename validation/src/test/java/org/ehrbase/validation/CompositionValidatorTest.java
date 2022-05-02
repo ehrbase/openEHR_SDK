@@ -77,7 +77,7 @@ class CompositionValidatorTest {
 
   //------------------------
   @Test
-  void xxxismTransitionWithWrongState() throws Exception {
+  void ismTransitionWithInvalidCurrentState() throws Exception {
     var template = getOperationalTemplate(OperationalTemplateTestData.ISM_INVALID_STATE);
     var composition = getComposition(CompositionTestDataSimSDTJson.ISM_INVALID_STATE);
 

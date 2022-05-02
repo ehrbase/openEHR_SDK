@@ -16,6 +16,7 @@
 
 package org.ehrbase.validation.webtemplate;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -28,6 +29,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.ehrbase.client.classgenerator.EnumValueSet;
 import org.ehrbase.client.classgenerator.shareddefinition.State;
 import org.ehrbase.client.classgenerator.shareddefinition.Transition;
+import org.ehrbase.functional.Either;
 import org.ehrbase.validation.ConstraintViolation;
 import org.ehrbase.webtemplate.model.WebTemplateNode;
 
@@ -63,7 +65,10 @@ public class IsmTransitionValidator implements ConstraintValidator<IsmTransition
    */
   @Override
   public List<ConstraintViolation> validate(IsmTransition transition, WebTemplateNode node) {
-    return new CurrentStateValidator().apply(transition, node);
+    List<ConstraintViolation> constraintViolations = new ArrayList<>();
+      constraintViolations.addAll(new CurrentStateValidator().apply(transition, node));
+      constraintViolations.addAll(new CareFlowValidator().apply(transition, node));
+    return constraintViolations;
   }
 
   private String ismToString(IsmTransition ism) {
@@ -127,36 +132,46 @@ public class IsmTransitionValidator implements ConstraintValidator<IsmTransition
   private class CareFlowValidator implements BiFunction<IsmTransition, WebTemplateNode, List<ConstraintViolation>> {
 
     public List<ConstraintViolation> apply(IsmTransition transition, WebTemplateNode node) {
-      if(transition.getCareflowStep() == null)
+      if(transition.getTransition() == null || transition.getCareflowStep() == null)
         return Collections.emptyList();
       
+      Either<List<WebTemplateNode>,ConstraintViolation> careflows = extractCareflow(node);
       
-      
-//      node.getChildren() muss careflow_step enthalten
-//        in diesem element ist ein inputs mit einer list, in der der current_state drin sein muss
-      
-      
-      
-      
-      return null;
+      return careflows.map((l, r) -> {
+        if(careflows.isRight())
+          return List.of(careflows.getAsRight());
+        else {
+          Boolean isValid = careflows.getAsLeft().stream()
+              .map(cf -> cf.getInputs())
+              .flatMap(list -> list.stream())
+              .flatMap(tmpl -> tmpl.getList().stream())
+              .filter(tmpl -> isMatchingCareflowStep(transition.getCareflowStep(), tmpl.getValue()))
+              .map(tmpl -> isCurrentStateValid(transition.getCurrentState(), tmpl.getCurrentStates()))
+              .findFirst()
+              .orElse(false);
+          return isValid ? Collections.emptyList() : List.of(new ConstraintViolation(node.getAqlPath(), "IsmTransition contains invalid current_state"));
+        }
+      });
     }
     
-//    private Try<> extractCareflow(WebTemplateNode node) {
-//      List<WebTemplateNode> candiate = node.getChildren().stream()
-//        .filter(n -> n.getAqlPath() != null)
-//        .filter(n -> n.getAqlPath().endsWith("careflow_step"))
-//        .collect(Collectors.toList());
-//      
-//      if(candiate.size() > 1)
-//        return null;
-//      
-//      
-//    }
+    private boolean isMatchingCareflowStep(DvCodedText cfsFromIsm, String codeFromWTV) {
+      return cfsFromIsm.getDefiningCode().getCodeString().equals(codeFromWTV);
+    }
     
+    private boolean isCurrentStateValid(DvCodedText currentState, List<String> allowedStates )  {
+     return allowedStates.contains(currentState.getDefiningCode().getCodeString());
+    }
+    
+    private Either<List<WebTemplateNode>,ConstraintViolation> extractCareflow(WebTemplateNode node) {
+      List<WebTemplateNode> candiate = node.getChildren().stream()
+        .filter(n -> n.getAqlPath() != null)
+        .filter(n -> n.getAqlPath().endsWith("careflow_step"))
+        .collect(Collectors.toList());
+      
+      if(candiate.size() > 1)
+        return Either.right(new ConstraintViolation(node.getAqlPath(), "Specification violation[too many careflow_step]"));
+      
+      return Either.left(candiate);
+    }
   }
-  
-  
-  
-  
-  
 }

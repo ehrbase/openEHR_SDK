@@ -34,24 +34,15 @@
     "test-ism.vitagroup.de.v1/medication_management/encoding|terminology": "IANA_character-sets",
     "test-ism.vitagroup.de.v1/medication_management/encoding|code": "UTF-8",
     "test-ism.vitagroup.de.v1/medication_management/time": "2022-02-03T04:05:06",
-    
-    
-    
-    
-    "test-ism.vitagroup.de.v1/medication_management/ism_transition/careflow_step|terminology": "xlocal",
-    "test-ism.vitagroup.de.v1/medication_management/ism_transition/careflow_step|value": "xMedication recommended",
-    "test-ism.vitagroup.de.v1/medication_management/ism_transition/careflow_step|code": "xat0109",
-    
+    "test-ism.vitagroup.de.v1/medication_management/ism_transition/careflow_step|terminology": "local",
+    "test-ism.vitagroup.de.v1/medication_management/ism_transition/careflow_step|value": "Medication recommended",
+    "test-ism.vitagroup.de.v1/medication_management/ism_transition/careflow_step|code": "at0109",
     "test-ism.vitagroup.de.v1/medication_management/ism_transition/current_state|terminology": "openehr",
     "test-ism.vitagroup.de.v1/medication_management/ism_transition/current_state|value": "active",
     "test-ism.vitagroup.de.v1/medication_management/ism_transition/current_state|code": "245",
-    
-    "test-ism.vitagroup.de.v1/medication_management/ism_transition/transition|value": "xcancel",
-    "test-ism.vitagroup.de.v1/medication_management/ism_transition/transition|terminology": "xopenehr",
-    "test-ism.vitagroup.de.v1/medication_management/ism_transition/transition|code": "1166",
-    
-    
-    
+    "test-ism.vitagroup.de.v1/medication_management/ism_transition/transition|value": "cancel",
+    "test-ism.vitagroup.de.v1/medication_management/ism_transition/transition|terminology": "openehr",
+    "test-ism.vitagroup.de.v1/medication_management/ism_transition/transition|code": "166",
     "test-ism.vitagroup.de.v1/medication_management/_uid": "84d8bcc4-d6aa-321e-8b74-c027c197da27",
     "test-ism.vitagroup.de.v1/medication_management/_work_flow_id|id": "2798bae6-b6f3-3c1f-99fa-7c6f9d671710",
     "test-ism.vitagroup.de.v1/medication_management/_work_flow_id|id_scheme": "scheme",
