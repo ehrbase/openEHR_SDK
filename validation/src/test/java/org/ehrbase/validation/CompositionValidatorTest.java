@@ -75,7 +75,6 @@ class CompositionValidatorTest {
     assertTrue(result.isEmpty());
   }
 
-  //------------------------
   @Test
   void ismTransitionWithInvalidCurrentState() throws Exception {
     var template = getOperationalTemplate(OperationalTemplateTestData.ISM_INVALID_STATE);
@@ -84,7 +83,7 @@ class CompositionValidatorTest {
     var result = validator.validate(composition, template);
     assertFalse(result.isEmpty());
   }
-  //------------------------  
+
   @Test
   void ismTransitionWithWrongState() throws Exception {
     var template = getOperationalTemplate(OperationalTemplateTestData.ISM_WRONG);
