@@ -11,11 +11,12 @@ Note: version releases in the 0.x.y range may introduce breaking changes.
 - Example Generator ([#349](https://github.com/ehrbase/openEHR_SDK/pull/349)
   , [#351](https://github.com/ehrbase/openEHR_SDK/pull/351))
 - use bom for dependency management ([#358](https://github.com/ehrbase/openEHR_SDK/pull/358))
+- created release action ([#362](https://github.com/ehrbase/openEHR_SDK/pull/362))
 
 ### Fixed
 
 
-## 1.18.0
+## [1.18.0]
 
 ### Added
 - Update archie to version 2.0.1 ([#345](https://github.com/ehrbase/openEHR_SDK/pull/345))
@@ -168,4 +169,9 @@ Note: version releases in the 0.x.y range may introduce breaking changes.
 
 - patch: openEHR SDK containing the contents of EHRbase serialization, response DTOs, terminology and validation
 
+
+
+
+[1.18.0]: https://github.com/ehrbase/openEHR_SDK/releases/tag/v1.18.0
+[unreleased]: https://github.com/ehrbase/openEHR_SDK/compare/v1.18.0...HEAD
 
