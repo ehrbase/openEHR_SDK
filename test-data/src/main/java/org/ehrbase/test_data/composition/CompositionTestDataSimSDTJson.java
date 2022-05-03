@@ -73,7 +73,11 @@ public enum CompositionTestDataSimSDTJson implements CompositionTestDataSimSDTJs
   DURATION_VALIDATION("duration_validation", "duration_validation.json",OperationalTemplateTestData.DURATION_VALIDATION),
   RE_SPECT("nested.en.v1", "ReSPECT.json",OperationalTemplateTestData.RE_SPECT),
   SSIAD_PRIESM("SSIAD_PRIeSM", "SSIAD_PRIeSM.json", OperationalTemplateTestData.SSIAD_PR_IE_SM),
-  IPS("International Patient Summary", "ips_flat.json",OperationalTemplateTestData.IPS);
+  IPS("International Patient Summary", "ips_flat.json",OperationalTemplateTestData.IPS),
+  ISM_MISSING("ISM withn unknown transition", "ism_missing_transition.json", OperationalTemplateTestData.ISM_MISSING),
+  ISM_WRONG("ISM transition with wrong current state", "ism_wrong_current_state.json", OperationalTemplateTestData.ISM_WRONG),
+  ISM_VAILD("Vaild ism transition", "ism_vaild_transition.json", OperationalTemplateTestData.ISM_VAILD),
+  ISM_INVALID_STATE("ISM withn invaild current state", "ism_invalid_current_state.json", OperationalTemplateTestData.ISM_INVALID_STATE);
 
   private final String filename;
   private final String description;

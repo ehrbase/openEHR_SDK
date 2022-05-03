@@ -114,9 +114,14 @@ public enum OperationalTemplateTestData {
   DURATION_VALIDATION("duration_validation", "duration_validation.opt", "duration_validation"),
   ERROR_TEST("Contains choice between interval and not interval", "ErrorTest.opt", "ErrorTest"),
   SECTION_CARDINALITY("Cardinality test template sections", "section_cardinality.opt", "cardinality_of_section"),
-
   SSIAD_PR_IE_SM("Cardinality test template sections", "SSIAD_PRIeSM.opt", "SSIAD PRIeSM"),
-  NULLID("My Nullid test", "nullid.opt", "null-nodeid-example");
+  NULLID("My Nullid test", "nullid.opt", "null-nodeid-example"),
+  ISM_MISSING("ISM withn missing transition", "test-ism.vitagroup.de.v1.opt", "test-ism.vitagroup.de.v1"),
+  ISM_WRONG("ISM transition with wrong current state", "test-ism.vitagroup.de.v1.opt", "test-ism.vitagroup.de.v1"),
+  ISM_VAILD("Vaild ism transition", "test-ism.vitagroup.de.v1.opt", "test-ism.vitagroup.de.v1"),
+  
+  ISM_INVALID_STATE("ISM withn invaild current state", "test-ism.vitagroup.de.v1.opt", "test-ism.vitagroup.de.v1");
+//  TEST_ISM("ISM transition test", "test-ism.vitagroup.de.v1.opt", "test-ism.vitagroup.de.v1");
 
   private final String filename;
   private final String templateId;
