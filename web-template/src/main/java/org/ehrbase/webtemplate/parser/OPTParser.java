@@ -441,7 +441,6 @@ public class OPTParser {
 
     if (StringUtils.isNotBlank(ccomplexobject.getNodeId()) && explicitName != null) {
       String nameValue = explicitName.label;
-      // .replace("\\", "\\\\").replace("'", "\\'");
       node.setAqlPath(node.getAqlPathDto().replaceLastNode(n -> n.withNameValue(nameValue)));
     }
     return node;

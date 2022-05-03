@@ -14,6 +14,7 @@ Note: version releases in the 0.x.y range may introduce breaking changes.
 - created release action ([#362](https://github.com/ehrbase/openEHR_SDK/pull/362))
 
 ### Fixed
+- fix wrong escape in names attribute of the aql path ([#364](https://github.com/ehrbase/openEHR_SDK/pull/364))
 
 
 ## [1.18.0]
