@@ -16,6 +16,49 @@
 
 package org.ehrbase.openehr.sdk.examplegenerator;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.net.URI;
+import java.nio.charset.StandardCharsets;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalAmount;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.EnumMap;
+import java.util.EnumSet;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
+import java.util.function.BiConsumer;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import javax.xml.bind.annotation.XmlType;
+
+import org.apache.commons.lang3.ObjectUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.Pair;
+import org.apache.commons.lang3.tuple.Triple;
+import org.ehrbase.client.classgenerator.shareddefinition.State;
+import org.ehrbase.client.classgenerator.shareddefinition.Transition;
+import org.ehrbase.util.rmconstants.RmConstants;
+import org.ehrbase.webtemplate.model.ProportionType;
+import org.ehrbase.webtemplate.model.WebTemplateComparisonSymbol;
+import org.ehrbase.webtemplate.model.WebTemplateInput;
+import org.ehrbase.webtemplate.model.WebTemplateInputValue;
+import org.ehrbase.webtemplate.model.WebTemplateInterval;
+import org.ehrbase.webtemplate.model.WebTemplateNode;
+import org.ehrbase.webtemplate.model.WebTemplateValidation;
+import org.threeten.extra.PeriodDuration;
+
 import com.nedap.archie.rm.RMObject;
 import com.nedap.archie.rm.archetyped.Archetyped;
 import com.nedap.archie.rm.archetyped.FeederAudit;
@@ -62,45 +105,6 @@ import com.nedap.archie.rminfo.RMTypeInfo;
 import com.nedap.archie.rmutil.InvariantUtil;
 import com.nedap.archie.terminology.OpenEHRTerminologyAccess;
 import com.nedap.archie.terminology.TermCode;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.net.URI;
-import java.nio.charset.StandardCharsets;
-import java.time.Duration;
-import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
-import java.time.temporal.TemporalAmount;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.EnumMap;
-import java.util.EnumSet;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
-import java.util.function.BiConsumer;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-import javax.xml.bind.annotation.XmlType;
-import org.apache.commons.lang3.ObjectUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.tuple.Pair;
-import org.apache.commons.lang3.tuple.Triple;
-import org.ehrbase.client.classgenerator.shareddefinition.State;
-import org.ehrbase.client.classgenerator.shareddefinition.Transition;
-import org.ehrbase.util.rmconstants.RmConstants;
-import org.ehrbase.webtemplate.model.ProportionType;
-import org.ehrbase.webtemplate.model.WebTemplateComparisonSymbol;
-import org.ehrbase.webtemplate.model.WebTemplateInput;
-import org.ehrbase.webtemplate.model.WebTemplateInputValue;
-import org.ehrbase.webtemplate.model.WebTemplateInterval;
-import org.ehrbase.webtemplate.model.WebTemplateNode;
-import org.ehrbase.webtemplate.model.WebTemplateValidation;
-import org.threeten.extra.PeriodDuration;
 
 public class ExampleGeneratorConfig {
 
@@ -151,7 +155,7 @@ public class ExampleGeneratorConfig {
     }
 
     private static Optional<WebTemplateInputValue> firstInputValue(WebTemplateNode node, String suffix) {
-        return selectInputValue(getInput(node, suffix), 0.);
+        return selectInputValue(getInput(node, e -> Objects.equals(suffix, e.getSuffix())), 0.);
     }
 
     private static Optional<WebTemplateInputValue> selectInputValue(Optional<WebTemplateInput> input, double t) {
@@ -200,15 +204,19 @@ public class ExampleGeneratorConfig {
         return Math.min(Math.max(0, (int) (t * size)), size - 1);
     }
 
-    private static Optional<WebTemplateInput> getInput(WebTemplateNode node, String suffix) {
-        return Optional.ofNullable(node)
-                .map(WebTemplateNode::getInputs)
-                .stream()
-                .flatMap(List::stream)
-                .filter(e -> Objects.equals(suffix, e.getSuffix()))
-                .findFirst();
+    private static Optional<WebTemplateInput> getInput(WebTemplateNode node, Predicate<WebTemplateInput> predicate) {
+        return getInputs(node, predicate).stream().findFirst();
     }
-
+    
+    private static List<WebTemplateInput> getInputs(WebTemplateNode node, Predicate<WebTemplateInput> predicate) {
+      return Optional.ofNullable(node)
+              .map(WebTemplateNode::getInputs)
+              .stream()
+              .flatMap(List::stream)
+              .filter(predicate)
+              .collect(Collectors.toList());
+    }
+    
     private static final LocalDateTime DEFAULT_DATE_TIME = LocalDateTime.of(2022, 2, 3, 4, 5, 6);
 
     public static class Handlers {
@@ -271,7 +279,7 @@ public class ExampleGeneratorConfig {
         static void handleIsmTransition(IsmTransition value, WebTemplateNode node) {
 
             // determine permitted current states
-            final Set<State> states = getInput(node.findChildById("current_state").orElseThrow(), "code")
+            final Set<State> states = getInput(node.findChildById("current_state").orElseThrow(), e -> Objects.equals("code", e.getSuffix()))
                     .map(WebTemplateInput::getList)
                     .stream()
                     .flatMap(List::stream)
@@ -289,7 +297,7 @@ public class ExampleGeneratorConfig {
             }
 
             // determine permitted transitions
-            Set<Transition> transitions = getInput(node.findChildById("transition").orElseThrow(), "code")
+            Set<Transition> transitions = getInput(node.findChildById("transition").orElseThrow(), e -> Objects.equals("code", e.getSuffix()))
                     .map(WebTemplateInput::getList)
                     .stream()
                     .flatMap(List::stream)
@@ -311,20 +319,33 @@ public class ExampleGeneratorConfig {
             //take first transition
             Transition transition = transitions.iterator().next();
             State currentState = transition.getTargetState();
-            
-//>>CDR-377            
-            node.findChildById("transition")
-            
-//<<<<<<<<<            
-            
 
+//CDR-377            
+            List<WebTemplateInput> cfs = getInputs(node.findChildById("careflow_step").orElseThrow(), t -> true);
+            
+            Optional<DvCodedText> findFirst = cfs.stream()
+                .flatMap(wti -> {
+                    return wti.getList().stream()
+                    .flatMap(wtiv -> wtiv.getCurrentStates().stream().map(cs -> Pair.of(wtiv, cs)))
+                    .filter(p -> p.getRight().equals(currentState.getCode()))
+                    .map(p ->
+                        new DvCodedText(
+                            p.getLeft().getLabel(),
+                            new CodePhrase(new TerminologyId(wti.getTerminology()), p.getLeft().getValue())))
+                    .findFirst()
+                    .stream();
+                })
+                .findFirst();
+//<<<<<<<            
+            
+            findFirst.ifPresent(f -> value.setCareflowStep(f));
             value.setCurrentState(currentState.toCodedText());
             value.setTransition(transition.toCodedText());
         }
 
         static void handleCodePhrase(CodePhrase value, WebTemplateNode node, WebTemplateNode parent) {
 
-            Optional<WebTemplateInput> codeIn = getInput(node, "code");
+            Optional<WebTemplateInput> codeIn = getInput(node, e -> Objects.equals("code", e.getSuffix()));
 
             selectInputValue(codeIn, 0.)
                     .map(c -> Pair.of(codeIn.map(WebTemplateInput::getTerminology).orElse(null), c.getValue()))
@@ -372,14 +393,14 @@ public class ExampleGeneratorConfig {
         }
 
         static void handleDvBoolean(DvBoolean value, WebTemplateNode node) {
-            Optional<WebTemplateInput> input = getInput(node, null);
+            Optional<WebTemplateInput> input = getInput(node, e -> Objects.equals(null, e.getSuffix()));
             selectInputValue(input, 0.).ifPresentOrElse(
                 c -> value.setValue(Boolean.valueOf(c.getValue())),
                 () -> value.setValue(true));
         }
 
         static void handleDvCount(DvCount value, WebTemplateNode node) {
-            value.setMagnitude(Math.round(fromValidation(42, getInput(node, null).map(WebTemplateInput::getValidation), .5)));
+            value.setMagnitude(Math.round(fromValidation(42, getInput(node, e -> Objects.equals(null, e.getSuffix())).map(WebTemplateInput::getValidation), .5)));
         }
 
         static void handleDvDate(DvDate value, WebTemplateNode node) {
@@ -393,7 +414,7 @@ public class ExampleGeneratorConfig {
         static void handleDvDuration(DvDuration value, WebTemplateNode node) {
             List<Pair<ChronoUnit, WebTemplateInterval>> constraints = DURATION_CHRONO_UNITS.entrySet().stream()
 
-                    .map(e -> getInput(node, e.getValue())
+                    .map(e -> getInput(node, t -> Objects.equals(e.getValue(), t.getSuffix()))
                             .map(WebTemplateInput::getValidation)
                             .map(WebTemplateValidation::getRange)
                             .filter(r -> ObjectUtils.anyNotNull(r.getMin(), r.getMax()))
@@ -468,7 +489,7 @@ public class ExampleGeneratorConfig {
 
         static void handleDvOrdinal(DvOrdinal value, WebTemplateNode node) {
 
-            Optional<WebTemplateInput> input = getInput(node, null);
+            Optional<WebTemplateInput> input = getInput(node, e -> Objects.equals(null, e.getSuffix()));
 
             selectInputValue(input, 0.).ifPresentOrElse(code -> {
                 value.setValue(code.getOrdinal().longValue());
@@ -494,13 +515,13 @@ public class ExampleGeneratorConfig {
 
             value.setType((long) type.getId());
 
-            value.setNumerator(fromValidation(42, getInput(node, "numerator").map(WebTemplateInput::getValidation), .5));
+            value.setNumerator(fromValidation(42, getInput(node, t -> Objects.equals("numerator", t.getSuffix())).map(WebTemplateInput::getValidation), .5));
 
             switch (type) {
                 case RATIO:
                 case FRACTION:
                 case INTEGER_FRACTION:
-                    value.setDenominator(fromValidation(3, getInput(node, "denominator").map(WebTemplateInput::getValidation), .5));
+                    value.setDenominator(fromValidation(3, getInput(node, t -> Objects.equals("denominator", t.getSuffix())).map(WebTemplateInput::getValidation), .5));
                     break;
                 case UNITARY:
                     value.setDenominator(1.);
@@ -536,7 +557,7 @@ public class ExampleGeneratorConfig {
         }
 
         static void handleDvCodedText(DvCodedText value, WebTemplateNode node, WebTemplateNode parent) {
-            Optional<WebTemplateInput> codeIn = getInput(node, "code");
+            Optional<WebTemplateInput> codeIn = getInput(node, t -> Objects.equals("code", t.getSuffix()));
 
             selectInputValue(codeIn, 0.)
             .map(c -> Triple.of(c.getLabel(), codeIn.map(WebTemplateInput::getTerminology).orElse(null), c.getValue()))
@@ -589,7 +610,7 @@ public class ExampleGeneratorConfig {
                     value.setValue(terms.get(i).getDescription());
 
                 } else {
-                    var in = getInput(node, null);
+                    var in = getInput(node, t -> Objects.equals(null, t.getSuffix()));
                     selectInputValue(in, 0.)
                             .map(WebTemplateInputValue::getLabel)
                             .or(() -> in.map(WebTemplateInput::getDefaultValue))
