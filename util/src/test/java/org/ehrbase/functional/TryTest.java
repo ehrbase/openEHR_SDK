@@ -28,7 +28,7 @@ class TryTest {
   }
   
   @Test
-  void filure() {
+  void failure() {
     RuntimeException exception = new RuntimeException();
     Try<Object, Exception> failure = Try.failure(exception);
     
