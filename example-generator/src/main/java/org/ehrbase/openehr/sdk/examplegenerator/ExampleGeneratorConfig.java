@@ -311,6 +311,12 @@ public class ExampleGeneratorConfig {
             //take first transition
             Transition transition = transitions.iterator().next();
             State currentState = transition.getTargetState();
+            
+//>>CDR-377            
+            node.findChildById("transition")
+            
+//<<<<<<<<<            
+            
 
             value.setCurrentState(currentState.toCodedText());
             value.setTransition(transition.toCodedText());
