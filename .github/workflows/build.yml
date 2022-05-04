@@ -23,6 +23,9 @@ jobs:
           java-version: '11'
           cache: 'maven'
 
+      - name: Get Maven project version
+        run: echo "PROJECT_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)" >> $GITHUB_ENV
+
       - name: Build with Maven
         run: mvn -B verify
 
@@ -44,3 +47,13 @@ jobs:
           OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
           OSSRH_TOKEN: ${{ secrets.OSSRH_TOKEN }}
           GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+
+      - name: 'Trigger ehrbase:next build'
+        if: ${{ endsWith(env.PROJECT_VERSION, '-SNAPSHOT') }}
+        run: |
+          curl \
+            -X POST \
+            -H "Authorization: token ${{ secrets.PERSONAL_ACCESS_TOKEN }}" \
+            -H "Content-Type: application/json" \
+            https://api.github.com/repos/ehrbase/ehrbase/dispatches \
+            -d '{"event_type":"build-ehrbase-next"}'
