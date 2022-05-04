@@ -320,7 +320,6 @@ public class ExampleGeneratorConfig {
             Transition transition = transitions.iterator().next();
             State currentState = transition.getTargetState();
 
-//CDR-377            
             List<WebTemplateInput> cfs = getInputs(node.findChildById("careflow_step").orElseThrow(), t -> true);
             
             Optional<DvCodedText> findFirst = cfs.stream()
@@ -336,7 +335,6 @@ public class ExampleGeneratorConfig {
                     .stream();
                 })
                 .findFirst();
-//<<<<<<<            
             
             findFirst.ifPresent(f -> value.setCareflowStep(f));
             value.setCurrentState(currentState.toCodedText());
