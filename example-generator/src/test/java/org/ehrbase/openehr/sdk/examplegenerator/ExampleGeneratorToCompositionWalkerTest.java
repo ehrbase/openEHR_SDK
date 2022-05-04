@@ -18,7 +18,6 @@ package org.ehrbase.openehr.sdk.examplegenerator;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.nedap.archie.rm.composition.Composition;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.charset.StandardCharsets;
@@ -30,6 +29,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
 import org.ehrbase.building.webtemplateskeletnbuilder.WebTemplateSkeletonBuilder;
 import org.ehrbase.client.classgenerator.shareddefinition.Language;
 import org.ehrbase.client.classgenerator.shareddefinition.Setting;
@@ -48,6 +48,8 @@ import org.ehrbase.webtemplate.model.WebTemplateNode;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
+
+import com.nedap.archie.rm.composition.Composition;
 
 class ExampleGeneratorToCompositionWalkerTest {
 
