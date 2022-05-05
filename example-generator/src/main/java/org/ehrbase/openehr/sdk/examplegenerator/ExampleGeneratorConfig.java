@@ -309,8 +309,12 @@ public class ExampleGeneratorConfig {
             if (transitions.isEmpty()) {
                 transitions = EnumSet.allOf(Transition.class);
                 // filter transitions by permitted states
-                transitions.removeIf(t -> !states.contains(t.getTargetState()));
             }
+            
+            transitions.removeIf(t -> !states.contains(t.getTargetState()));
+            //Can be empty
+            
+            
 
             //take first transition
             Transition transition = transitions.iterator().next();
