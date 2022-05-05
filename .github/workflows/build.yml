@@ -23,9 +23,6 @@ jobs:
           java-version: '11'
           cache: 'maven'
 
-      - name: Get Maven project version
-        run: echo "PROJECT_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)" >> $GITHUB_ENV
-
       - name: Build with Maven
         run: mvn -B verify
 
@@ -49,7 +46,7 @@ jobs:
           GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
 
       - name: 'Trigger ehrbase:next build'
-        if: ${{ endsWith(env.PROJECT_VERSION, '-SNAPSHOT') }}
+        if: github.ref == 'refs/heads/develop'
         run: |
           curl \
             -X POST \
