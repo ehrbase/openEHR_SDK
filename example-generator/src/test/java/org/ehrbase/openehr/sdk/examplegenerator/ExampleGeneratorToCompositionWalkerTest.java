@@ -16,9 +16,21 @@
 
 package org.ehrbase.openehr.sdk.examplegenerator;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import com.nedap.archie.rm.composition.Composition;
+import java.io.IOException;
+import java.io.UncheckedIOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
+import java.time.OffsetDateTime;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 import org.ehrbase.building.webtemplateskeletnbuilder.WebTemplateSkeletonBuilder;
-import org.ehrbase.client.classgenerator.shareddefinition.Category;
 import org.ehrbase.client.classgenerator.shareddefinition.Language;
 import org.ehrbase.client.classgenerator.shareddefinition.Setting;
 import org.ehrbase.client.classgenerator.shareddefinition.Territory;
@@ -37,18 +49,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 
-import java.io.IOException;
-import java.io.UncheckedIOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.StandardOpenOption;
-import java.time.OffsetDateTime;
-import java.util.*;
-import java.util.stream.Collectors;
-
-import static org.assertj.core.api.Assertions.assertThat;
-
 class ExampleGeneratorToCompositionWalkerTest {
 
     @Test
@@ -60,16 +60,22 @@ class ExampleGeneratorToCompositionWalkerTest {
         writeAndValidateComposition(cut, outPath, OperationalTemplateTestData.CONFORMANCE);
     }
 
-    private static Map<OperationalTemplateTestData, Integer> EXPECTED_CONSTRAINT_VIOLATIONS = Map.of(
-            // missing values for  Observation results
-            OperationalTemplateTestData.EHRN_VITAL_SIGNS_TEST, 1,
-            // existence 1..1 EVALUATION ACTION
-            OperationalTemplateTestData.IDCR_PROBLEM_LIST, 13,
-            // null_flavor support
-            OperationalTemplateTestData.SM_I_C_S_BEFUND, 1,
-            // null_flavor support
-            OperationalTemplateTestData.INITIAL_ASSESSMENT, 3
-    );
+  private static Map<OperationalTemplateTestData, Integer> EXPECTED_CONSTRAINT_VIOLATIONS =
+      Map.of(
+          // missing values for  Observation results
+          OperationalTemplateTestData.EHRN_VITAL_SIGNS_TEST,
+          1,
+          // existence 1..1 EVALUATION ACTION
+          OperationalTemplateTestData.IDCR_PROBLEM_LIST,
+          13,
+          // null_flavor support
+          OperationalTemplateTestData.SM_I_C_S_BEFUND,
+          1,
+          // null_flavor support
+          OperationalTemplateTestData.INITIAL_ASSESSMENT,
+          3,
+          OperationalTemplateTestData.SSIAD_PR_IE_SM,
+          2);
 
     @ParameterizedTest
     @EnumSource(value = OperationalTemplateTestData.class, names = {
