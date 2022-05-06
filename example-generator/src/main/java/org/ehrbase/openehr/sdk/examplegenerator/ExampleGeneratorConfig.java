@@ -272,76 +272,143 @@ public class ExampleGeneratorConfig {
             value.setInstructionId(new LocatableRef(new HierObjectId(generateUuid(node).toString()), "unknown", "INSTRUCTION", ""));
         }
 
+        private static Set<Pair<String,WebTemplateInputValue>> filterCareflowSteps(Set<Pair<String,WebTemplateInputValue>> pairs, String csCode) {
+          return pairs.stream()
+            .filter(p -> p.getRight().getCurrentStates().contains(csCode))
+            .collect(Collectors.toSet());
+        }
+        
+        private static Set<Transition> convertToTransition(Set<WebTemplateInputValue> transitions) {
+          return transitions.stream()
+            .map(tr -> {
+              String transitionName = tr.getValue();
+              Transition transition = Arrays.stream(Transition.values())
+                .filter(s -> s.getCode().equals(transitionName)).findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Unknown transition: " + transitionName));
+              return transition;
+            })
+            .collect(Collectors.toSet());
+        }
+        
+        private static Set<State> convertToState(Set<WebTemplateInputValue> currentStates) {
+          return currentStates.stream()
+            .map(cs -> {
+              String code = cs.getValue();
+              return Stream.of(State.values())
+                .filter(s -> s.getCode().equals(code))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Unknown state: " + code));
+            })
+            .collect(Collectors.toSet());
+        }
+        
+        private static State codeToState(String csCode) {
+          return Stream.of(State.values())
+            .filter(s -> s.getCode().equals(csCode))
+            .findFirst()
+            .orElseThrow(() -> new IllegalArgumentException("Unknown state: " + csCode));
+        }
+        
+        private static Set<Transition> filterTransitions(Set<Transition> transitions, String csCode) {
+          State state = codeToState(csCode);
+          
+          return transitions.stream()
+            .filter(tr -> tr.getSourceStates().contains(state))
+            .collect(Collectors.toSet());
+        }
+        
+        static void fillIsmTransitionByTriple(IsmTransition ism, Triple<Pair<String, WebTemplateInputValue>,State,Transition> triple) {
+          if(triple.getLeft() != null) {
+            DvCodedText dvCodedText = new DvCodedText(
+                triple.getLeft().getRight().getLabel(),
+                new CodePhrase(new TerminologyId(triple.getLeft().getLeft()), triple.getLeft().getRight().getValue()));
+            ism.setCareflowStep(dvCodedText);
+          }
+
+          if(triple.getMiddle() != null) 
+            ism.setCurrentState(triple.getMiddle().toCodedText());
+          
+          if(triple.getRight() != null)
+            ism.setTransition(triple.getRight().toCodedText());
+        }
+/////////////////////////////        
         static void handleIsmTransition(IsmTransition value, WebTemplateNode node) {
-
-            // determine permitted current states
-            final Set<State> states = getInput(node.findChildById("current_state").orElseThrow(), "code")
-                    .map(WebTemplateInput::getList)
-                    .stream()
-                    .flatMap(List::stream)
-                    .map(cs -> {
-                        String stateName = cs.getValue();
-                        State state = Arrays.stream(State.values())
-                                .filter(s -> s.getCode().equals(stateName)).findFirst()
-                                .orElseThrow(() -> new IllegalArgumentException("Unknown state: " + stateName));
-                        return state;
-                    })
-                    .collect(Collectors.toSet());
-
-            if (states.isEmpty()) {
-                states.addAll(Arrays.asList(State.values()));
-            }
-
-            // determine permitted transitions
-            Set<Transition> transitions = getInput(node.findChildById("transition").orElseThrow(), "code")
-                    .map(WebTemplateInput::getList)
-                    .stream()
-                    .flatMap(List::stream)
-                    .map(cs -> {
-                        String transitionName = cs.getValue();
-                        Transition transition = Arrays.stream(Transition.values())
-                                .filter(s -> s.getCode().equals(transitionName)).findFirst()
-                                .orElseThrow(() -> new IllegalArgumentException("Unknown transition: " + transitionName));
-                        return transition;
-                    })
-                    .collect(Collectors.toCollection(LinkedHashSet::new));
-
-            if (transitions.isEmpty()) {
-                transitions = EnumSet.allOf(Transition.class);
-                // filter transitions by permitted states
-            }
-            
-            transitions.removeIf(t -> !states.contains(t.getTargetState()));
-            //Can be empty
-            
-            
-
-            //take first transition
-            Transition transition = transitions.iterator().next();
-            State currentState = transition.getTargetState();
-            
-            List<WebTemplateInput> cfs = Stream.of(node.findChildById("careflow_step").orElseThrow())
-              .map(WebTemplateNode::getInputs)
+          Set<WebTemplateInputValue> theCurrentStates = getInput(node.findChildById("current_state").orElseThrow(), "code")
+              .map(WebTemplateInput::getList).stream()
               .flatMap(List::stream)
-              .collect(Collectors.toList());
-            
-            Optional<DvCodedText> findFirst = cfs.stream()
-                .flatMap(wti -> {
-                    return wti.getList().stream()
-                    .flatMap(wtiv -> wtiv.getCurrentStates().stream().map(cs -> Pair.of(wtiv, cs)))
-                    .filter(p -> p.getRight().equals(currentState.getCode()))
-                    .map(p ->
-                        new DvCodedText(
-                            p.getLeft().getLabel(),
-                            new CodePhrase(new TerminologyId(wti.getTerminology()), p.getLeft().getValue())))
-                    .findFirst()
-                    .stream();
-                })
-                .findFirst();
-            
-            findFirst.ifPresent(f -> value.setCareflowStep(f));
-            value.setCurrentState(currentState.toCodedText());
-            value.setTransition(transition.toCodedText());
+              .collect(Collectors.toSet());
+          
+          Set<State> allCurrentStates = convertToState(theCurrentStates);
+          
+          Set<WebTemplateInputValue> theTransitions = getInput(node.findChildById("transition").orElseThrow(), "code")
+              .map(WebTemplateInput::getList).stream()
+              .flatMap(List::stream)
+              .collect(Collectors.toCollection(LinkedHashSet::new));
+          
+          Set<Transition> allTransitions = convertToTransition(theTransitions);
+
+          Set<Pair<String,WebTemplateInputValue>> allCareflowTerminologyPairs = 
+              getInput(node.findChildById("careflow_step").orElseThrow(), "code")
+            .map(wti -> wti.getList().stream().map(wtiv -> Pair.of(wti.getTerminology(), wtiv)).collect(Collectors.toList()))
+            .stream()
+            .flatMap(l -> l.stream())
+            .collect(Collectors.toSet());
+          
+          //1. check if there is a match between careflow_step and transition related to a current_state
+          Optional<Triple<Pair<String, WebTemplateInputValue>,State,Transition>> candidate = allCurrentStates.stream()
+            .map(cs -> {
+              String code = cs.getCode();
+              Set<Pair<String,WebTemplateInputValue>> filteredCfs = filterCareflowSteps(allCareflowTerminologyPairs, code);
+              Set<Transition> filteredTrs = filterTransitions(allTransitions, code);
+              //we need just one
+              if(filteredCfs.isEmpty() || filteredTrs.isEmpty())
+                return null;
+              return Triple.of(filteredCfs.iterator().next(), cs, filteredTrs.iterator().next());
+            })
+            .filter(t -> t != null)
+            .findFirst();
+          
+          if(candidate.isPresent()) {
+            //we got a match use it and return immediately
+            candidate.ifPresent(c -> fillIsmTransitionByTriple(value, c));
+            return;
+          }
+          
+          //try careflow_step not empty, look for a creflow_step with a valid current_state
+          candidate = allCurrentStates.stream()
+            .flatMap(cs -> {
+              Set<Pair<String,WebTemplateInputValue>> filterCareflowSteps = filterCareflowSteps(allCareflowTerminologyPairs, cs.getCode());
+              return filterCareflowSteps.stream()
+                .map(cfs -> Triple.<Pair<String,WebTemplateInputValue>,State,Transition>of(cfs, cs, null));
+            })
+            .findFirst();
+          
+          if(candidate.isPresent()) {
+            //we got a match use it and return immediately
+            candidate.ifPresent(c -> fillIsmTransitionByTriple(value, c));
+            return;
+          } 
+          
+          //use logic as before
+          if(allCurrentStates.isEmpty())
+            allCurrentStates.addAll(Arrays.asList(State.values()));
+          
+          if(allTransitions.isEmpty())
+            allTransitions.addAll(EnumSet.allOf(Transition.class));
+          
+          candidate = allTransitions.stream()
+            .flatMap(tr -> allCurrentStates.stream()
+                .filter(cs -> tr.getSourceStates().contains(cs))
+                .map(cs -> Triple.<Pair<String,WebTemplateInputValue>,State,Transition>of(null, cs, tr))
+                .collect(Collectors.toSet())
+                .stream())
+            .findFirst();
+          
+          if(candidate.isPresent()) {
+            //we got a match use it and return immediately
+            candidate.ifPresent(c -> fillIsmTransitionByTriple(value, c));
+            return;
+          } 
         }
 
         static void handleCodePhrase(CodePhrase value, WebTemplateNode node, WebTemplateNode parent) {
