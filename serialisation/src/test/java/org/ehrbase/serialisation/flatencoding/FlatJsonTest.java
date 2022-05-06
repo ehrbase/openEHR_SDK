@@ -50,7 +50,7 @@ public class FlatJsonTest {
   }
 
   @Test
-  public void roundTripS() throws IOException {
+  public void roundTripSSIAD_PRIeSM() throws IOException {
 
     CompositionTestDataSimSDTJson testData = CompositionTestDataSimSDTJson.SSIAD_PRIESM;
     String templateId = testData.getTemplate().getTemplateId();
