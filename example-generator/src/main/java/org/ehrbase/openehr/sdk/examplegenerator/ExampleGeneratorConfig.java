@@ -272,14 +272,18 @@ public class ExampleGeneratorConfig {
             value.setInstructionId(new LocatableRef(new HierObjectId(generateUuid(node).toString()), "unknown", "INSTRUCTION", ""));
         }
 
-        private static Set<Pair<String,WebTemplateInputValue>> filterCareflowSteps(Set<Pair<String,WebTemplateInputValue>> pairs, String csCode) {
+        private static Set<Pair<String,WebTemplateInputValue>> filterCareflowSteps(Set<Pair<String,WebTemplateInputValue>> pairs, String stepCode) {
           return pairs.stream()
-            .filter(p -> p.getRight().getCurrentStates().contains(csCode))
+            .filter(p -> p.getRight().getCurrentStates().contains(stepCode))
             .collect(Collectors.toSet());
         }
         
-        private static Set<Transition> convertToTransition(Set<WebTemplateInputValue> transitions) {
-          return transitions.stream()
+        private static Set<Transition> getTransitions(WebTemplateNode node) {
+          Set<WebTemplateInputValue> theTransitions = getInput(node.findChildById("transition").orElseThrow(), "code")
+              .map(WebTemplateInput::getList).stream()
+              .flatMap(List::stream)
+              .collect(Collectors.toCollection(LinkedHashSet::new));
+          return theTransitions.stream()
             .map(tr -> {
               String transitionName = tr.getValue();
               Transition transition = Arrays.stream(Transition.values())
@@ -290,8 +294,12 @@ public class ExampleGeneratorConfig {
             .collect(Collectors.toSet());
         }
         
-        private static Set<State> convertToState(Set<WebTemplateInputValue> currentStates) {
-          return currentStates.stream()
+        private static Set<State> getCurrentStates(WebTemplateNode node) {
+          Set<WebTemplateInputValue> theCurrentStates = getInput(node.findChildById("current_state").orElseThrow(), "code")
+              .map(WebTemplateInput::getList).stream()
+              .flatMap(List::stream)
+              .collect(Collectors.toSet());
+          return theCurrentStates.stream()
             .map(cs -> {
               String code = cs.getValue();
               return Stream.of(State.values())
@@ -309,9 +317,7 @@ public class ExampleGeneratorConfig {
             .orElseThrow(() -> new IllegalArgumentException("Unknown state: " + csCode));
         }
         
-        private static Set<Transition> filterTransitions(Set<Transition> transitions, String csCode) {
-          State state = codeToState(csCode);
-          
+        private static Set<Transition> filterTransitions(Set<Transition> transitions, State state) {
           return transitions.stream()
             .filter(tr -> tr.getSourceStates().contains(state))
             .collect(Collectors.toSet());
@@ -331,41 +337,28 @@ public class ExampleGeneratorConfig {
           if(triple.getRight() != null)
             ism.setTransition(triple.getRight().toCodedText());
         }
-/////////////////////////////        
-        static void handleIsmTransition(IsmTransition value, WebTemplateNode node) {
-          Set<WebTemplateInputValue> theCurrentStates = getInput(node.findChildById("current_state").orElseThrow(), "code")
-              .map(WebTemplateInput::getList).stream()
-              .flatMap(List::stream)
-              .collect(Collectors.toSet());
-          
-          Set<State> allCurrentStates = convertToState(theCurrentStates);
-          
-          Set<WebTemplateInputValue> theTransitions = getInput(node.findChildById("transition").orElseThrow(), "code")
-              .map(WebTemplateInput::getList).stream()
-              .flatMap(List::stream)
-              .collect(Collectors.toCollection(LinkedHashSet::new));
-          
-          Set<Transition> allTransitions = convertToTransition(theTransitions);
 
-          Set<Pair<String,WebTemplateInputValue>> allCareflowTerminologyPairs = 
+        static void handleIsmTransition(IsmTransition value, WebTemplateNode node) {
+          Set<State> allCurrentStates = getCurrentStates(node);
+          Set<Transition> allTransitions = getTransitions(node);
+
+          Set<Pair<String,WebTemplateInputValue>> allCareflowTerminologyPairs =
               getInput(node.findChildById("careflow_step").orElseThrow(), "code")
-            .map(wti -> wti.getList().stream().map(wtiv -> Pair.of(wti.getTerminology(), wtiv)).collect(Collectors.toList()))
-            .stream()
-            .flatMap(l -> l.stream())
-            .collect(Collectors.toSet());
+                .stream()
+                .flatMap(wti -> wti.getList().stream().map(wtiv -> Pair.of(wti.getTerminology(), wtiv)))
+                .collect(Collectors.toSet());
           
           //1. check if there is a match between careflow_step and transition related to a current_state
           Optional<Triple<Pair<String, WebTemplateInputValue>,State,Transition>> candidate = allCurrentStates.stream()
             .map(cs -> {
-              String code = cs.getCode();
-              Set<Pair<String,WebTemplateInputValue>> filteredCfs = filterCareflowSteps(allCareflowTerminologyPairs, code);
-              Set<Transition> filteredTrs = filterTransitions(allTransitions, code);
+              Set<Pair<String,WebTemplateInputValue>> filteredCfs = filterCareflowSteps(allCareflowTerminologyPairs, cs.getCode());
+              Set<Transition> filteredTrs = filterTransitions(allTransitions, cs);
               //we need just one
               if(filteredCfs.isEmpty() || filteredTrs.isEmpty())
                 return null;
               return Triple.of(filteredCfs.iterator().next(), cs, filteredTrs.iterator().next());
             })
-            .filter(t -> t != null)
+            .filter(Objects::nonNull)
             .findFirst();
           
           if(candidate.isPresent()) {
