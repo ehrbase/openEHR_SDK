@@ -16,6 +16,48 @@
 
 package org.ehrbase.openehr.sdk.examplegenerator;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.net.URI;
+import java.nio.charset.StandardCharsets;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalAmount;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.EnumMap;
+import java.util.EnumSet;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
+import java.util.function.BiConsumer;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import javax.xml.bind.annotation.XmlType;
+
+import org.apache.commons.lang3.ObjectUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.Pair;
+import org.apache.commons.lang3.tuple.Triple;
+import org.ehrbase.client.classgenerator.shareddefinition.State;
+import org.ehrbase.client.classgenerator.shareddefinition.Transition;
+import org.ehrbase.util.rmconstants.RmConstants;
+import org.ehrbase.webtemplate.model.ProportionType;
+import org.ehrbase.webtemplate.model.WebTemplateComparisonSymbol;
+import org.ehrbase.webtemplate.model.WebTemplateInput;
+import org.ehrbase.webtemplate.model.WebTemplateInputValue;
+import org.ehrbase.webtemplate.model.WebTemplateInterval;
+import org.ehrbase.webtemplate.model.WebTemplateNode;
+import org.ehrbase.webtemplate.model.WebTemplateValidation;
+import org.threeten.extra.PeriodDuration;
+
 import com.nedap.archie.rm.RMObject;
 import com.nedap.archie.rm.archetyped.Archetyped;
 import com.nedap.archie.rm.archetyped.FeederAudit;
@@ -62,45 +104,6 @@ import com.nedap.archie.rminfo.RMTypeInfo;
 import com.nedap.archie.rmutil.InvariantUtil;
 import com.nedap.archie.terminology.OpenEHRTerminologyAccess;
 import com.nedap.archie.terminology.TermCode;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.net.URI;
-import java.nio.charset.StandardCharsets;
-import java.time.Duration;
-import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
-import java.time.temporal.TemporalAmount;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.EnumMap;
-import java.util.EnumSet;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
-import java.util.function.BiConsumer;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-import javax.xml.bind.annotation.XmlType;
-import org.apache.commons.lang3.ObjectUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.tuple.Pair;
-import org.apache.commons.lang3.tuple.Triple;
-import org.ehrbase.client.classgenerator.shareddefinition.State;
-import org.ehrbase.client.classgenerator.shareddefinition.Transition;
-import org.ehrbase.util.rmconstants.RmConstants;
-import org.ehrbase.webtemplate.model.ProportionType;
-import org.ehrbase.webtemplate.model.WebTemplateComparisonSymbol;
-import org.ehrbase.webtemplate.model.WebTemplateInput;
-import org.ehrbase.webtemplate.model.WebTemplateInputValue;
-import org.ehrbase.webtemplate.model.WebTemplateInterval;
-import org.ehrbase.webtemplate.model.WebTemplateNode;
-import org.ehrbase.webtemplate.model.WebTemplateValidation;
-import org.threeten.extra.PeriodDuration;
 
 public class ExampleGeneratorConfig {
 
@@ -201,14 +204,14 @@ public class ExampleGeneratorConfig {
     }
 
     private static Optional<WebTemplateInput> getInput(WebTemplateNode node, String suffix) {
-        return Optional.ofNullable(node)
-                .map(WebTemplateNode::getInputs)
-                .stream()
-                .flatMap(List::stream)
-                .filter(e -> Objects.equals(suffix, e.getSuffix()))
-                .findFirst();
+      return Optional.ofNullable(node)
+              .map(WebTemplateNode::getInputs)
+              .stream()
+              .flatMap(List::stream)
+              .filter(e -> Objects.equals(suffix, e.getSuffix()))
+              .findFirst();
     }
-
+    
     private static final LocalDateTime DEFAULT_DATE_TIME = LocalDateTime.of(2022, 2, 3, 4, 5, 6);
 
     public static class Handlers {
@@ -268,52 +271,137 @@ public class ExampleGeneratorConfig {
             value.setInstructionId(new LocatableRef(new HierObjectId(generateUuid(node).toString()), "unknown", "INSTRUCTION", ""));
         }
 
+        private static Set<Pair<String,WebTemplateInputValue>> filterCareflowSteps(Set<Pair<String,WebTemplateInputValue>> pairs, String stepCode) {
+          return pairs.stream()
+            .filter(p -> p.getRight().getCurrentStates().contains(stepCode))
+            .collect(Collectors.toSet());
+        }
+        
+        private static Set<Transition> getTransitions(WebTemplateNode node) {
+          Set<WebTemplateInputValue> theTransitions = getInput(node.findChildById("transition").orElseThrow(), "code")
+              .map(WebTemplateInput::getList).stream()
+              .flatMap(List::stream)
+              .collect(Collectors.toCollection(LinkedHashSet::new));
+          
+          if(theTransitions.isEmpty())
+            return EnumSet.allOf(Transition.class);
+          
+          return theTransitions.stream()
+            .map(tr -> {
+              String transitionName = tr.getValue();
+              Transition transition = Arrays.stream(Transition.values())
+                .filter(s -> s.getCode().equals(transitionName)).findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Unknown transition: " + transitionName));
+              return transition;
+            })
+            .collect(Collectors.toSet());
+        }
+        
+        private static Set<State> getCurrentStates(WebTemplateNode node) {
+          Set<WebTemplateInputValue> theCurrentStates = getInput(node.findChildById("current_state").orElseThrow(), "code")
+              .map(WebTemplateInput::getList).stream()
+              .flatMap(List::stream)
+              .collect(Collectors.toSet());
+
+          if(theCurrentStates.isEmpty())
+            return EnumSet.allOf(State.class);
+          
+          return theCurrentStates.stream()
+            .map(cs -> {
+              String code = cs.getValue();
+              return Stream.of(State.values())
+                .filter(s -> s.getCode().equals(code))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Unknown state: " + code));
+            })
+            .collect(Collectors.toSet());
+        }
+        
+        private static State codeToState(String csCode) {
+          return Stream.of(State.values())
+            .filter(s -> s.getCode().equals(csCode))
+            .findFirst()
+            .orElseThrow(() -> new IllegalArgumentException("Unknown state: " + csCode));
+        }
+        
+        private static Set<Transition> filterTransitions(Set<Transition> transitions, State state) {
+          return transitions.stream()
+            .filter(tr -> tr.getTargetState() == state)
+            .collect(Collectors.toSet());
+        }
+        
+        static void fillIsmTransitionByTriple(IsmTransition ism, Triple<Pair<String, WebTemplateInputValue>,State,Transition> triple) {
+          if(triple.getLeft() != null) {
+            DvCodedText dvCodedText = new DvCodedText(
+                triple.getLeft().getRight().getLabel(),
+                new CodePhrase(new TerminologyId(triple.getLeft().getLeft()), triple.getLeft().getRight().getValue()));
+            ism.setCareflowStep(dvCodedText);
+          }
+
+          if(triple.getMiddle() != null) 
+            ism.setCurrentState(triple.getMiddle().toCodedText());
+          
+          if(triple.getRight() != null)
+            ism.setTransition(triple.getRight().toCodedText());
+        }
+
         static void handleIsmTransition(IsmTransition value, WebTemplateNode node) {
+          Set<State> allCurrentStates = getCurrentStates(node);
+          Set<Transition> allTransitions = getTransitions(node);
 
-            // determine permitted current states
-            final Set<State> states = getInput(node.findChildById("current_state").orElseThrow(), "code")
-                    .map(WebTemplateInput::getList)
-                    .stream()
-                    .flatMap(List::stream)
-                    .map(cs -> {
-                        String stateName = cs.getValue();
-                        State state = Arrays.stream(State.values())
-                                .filter(s -> s.getCode().equals(stateName)).findFirst()
-                                .orElseThrow(() -> new IllegalArgumentException("Unknown state: " + stateName));
-                        return state;
-                    })
-                    .collect(Collectors.toSet());
-
-            if (states.isEmpty()) {
-                states.addAll(Arrays.asList(State.values()));
-            }
-
-            // determine permitted transitions
-            Set<Transition> transitions = getInput(node.findChildById("transition").orElseThrow(), "code")
-                    .map(WebTemplateInput::getList)
-                    .stream()
-                    .flatMap(List::stream)
-                    .map(cs -> {
-                        String transitionName = cs.getValue();
-                        Transition transition = Arrays.stream(Transition.values())
-                                .filter(s -> s.getCode().equals(transitionName)).findFirst()
-                                .orElseThrow(() -> new IllegalArgumentException("Unknown transition: " + transitionName));
-                        return transition;
-                    })
-                    .collect(Collectors.toCollection(LinkedHashSet::new));
-
-            if (transitions.isEmpty()) {
-                transitions = EnumSet.allOf(Transition.class);
-                // filter transitions by permitted states
-                transitions.removeIf(t -> !states.contains(t.getTargetState()));
-            }
-
-            //take first transition
-            Transition transition = transitions.iterator().next();
-            State currentState = transition.getTargetState();
-
-            value.setCurrentState(currentState.toCodedText());
-            value.setTransition(transition.toCodedText());
+          Set<Pair<String,WebTemplateInputValue>> allCareflowTerminologyPairs =
+              getInput(node.findChildById("careflow_step").orElseThrow(), "code")
+                .stream()
+                .flatMap(wti -> wti.getList().stream().map(wtiv -> Pair.of(wti.getTerminology(), wtiv)))
+                .collect(Collectors.toSet());
+          
+          //1. check if there is a match between careflow_step and transition related to a current_state
+          Optional<Triple<Pair<String, WebTemplateInputValue>,State,Transition>> candidate = allCurrentStates.stream()
+            .map(cs -> {
+              Set<Pair<String,WebTemplateInputValue>> filteredCfs = filterCareflowSteps(allCareflowTerminologyPairs, cs.getCode());
+              Set<Transition> filteredTrs = filterTransitions(allTransitions, cs);
+              //we need just one
+              if(filteredCfs.isEmpty() || filteredTrs.isEmpty())
+                return null;
+              return Triple.of(filteredCfs.iterator().next(), cs, filteredTrs.iterator().next());
+            })
+            .filter(Objects::nonNull)
+            .findFirst();
+          
+          if(candidate.isPresent()) {
+            //we got a match use it and return immediately
+            candidate.ifPresent(c -> fillIsmTransitionByTriple(value, c));
+            return;
+          }
+          
+          //try careflow_step not empty, look for a creflow_step with a valid current_state
+          candidate = allCurrentStates.stream()
+            .flatMap(cs -> {
+              Set<Pair<String,WebTemplateInputValue>> filterCareflowSteps = filterCareflowSteps(allCareflowTerminologyPairs, cs.getCode());
+              return filterCareflowSteps.stream()
+                .map(cfs -> Triple.<Pair<String,WebTemplateInputValue>,State,Transition>of(cfs, cs, null));
+            })
+            .findFirst();
+          
+          if(candidate.isPresent()) {
+            //we got a match use it and return immediately
+            candidate.ifPresent(c -> fillIsmTransitionByTriple(value, c));
+            return;
+          }
+          
+          candidate = allTransitions.stream()
+            .flatMap(tr -> allCurrentStates.stream()
+                .filter(cs -> tr.getTargetState() == cs)
+                .map(cs -> Triple.<Pair<String,WebTemplateInputValue>,State,Transition>of(null, cs, tr))
+                .collect(Collectors.toSet())
+                .stream())
+            .findFirst();
+          
+          if(candidate.isPresent()) {
+            //we got a match use it and return immediately
+            candidate.ifPresent(c -> fillIsmTransitionByTriple(value, c));
+            return;
+          } 
         }
 
         static void handleCodePhrase(CodePhrase value, WebTemplateNode node, WebTemplateNode parent) {
