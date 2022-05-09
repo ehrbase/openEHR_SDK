@@ -77,7 +77,7 @@ class ExampleGeneratorToCompositionWalkerTest {
           OperationalTemplateTestData.INITIAL_ASSESSMENT,
           3,
           OperationalTemplateTestData.SSIAD_PR_IE_SM,
-          2);
+          3);
 
     @ParameterizedTest
     @EnumSource(value = OperationalTemplateTestData.class, names = {
