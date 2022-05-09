@@ -37,7 +37,6 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -283,6 +282,10 @@ public class ExampleGeneratorConfig {
               .map(WebTemplateInput::getList).stream()
               .flatMap(List::stream)
               .collect(Collectors.toCollection(LinkedHashSet::new));
+          
+          if(theTransitions.isEmpty())
+            return EnumSet.allOf(Transition.class);
+          
           return theTransitions.stream()
             .map(tr -> {
               String transitionName = tr.getValue();
@@ -299,6 +302,10 @@ public class ExampleGeneratorConfig {
               .map(WebTemplateInput::getList).stream()
               .flatMap(List::stream)
               .collect(Collectors.toSet());
+
+          if(theCurrentStates.isEmpty())
+            return EnumSet.allOf(State.class);
+          
           return theCurrentStates.stream()
             .map(cs -> {
               String code = cs.getValue();
@@ -319,7 +326,7 @@ public class ExampleGeneratorConfig {
         
         private static Set<Transition> filterTransitions(Set<Transition> transitions, State state) {
           return transitions.stream()
-            .filter(tr -> tr.getSourceStates().contains(state))
+            .filter(tr -> tr.getTargetState() == state)
             .collect(Collectors.toSet());
         }
         
@@ -380,18 +387,11 @@ public class ExampleGeneratorConfig {
             //we got a match use it and return immediately
             candidate.ifPresent(c -> fillIsmTransitionByTriple(value, c));
             return;
-          } 
-          
-          //use logic as before
-          if(allCurrentStates.isEmpty())
-            allCurrentStates.addAll(Arrays.asList(State.values()));
-          
-          if(allTransitions.isEmpty())
-            allTransitions.addAll(EnumSet.allOf(Transition.class));
+          }
           
           candidate = allTransitions.stream()
             .flatMap(tr -> allCurrentStates.stream()
-                .filter(cs -> tr.getSourceStates().contains(cs))
+                .filter(cs -> tr.getTargetState() == cs)
                 .map(cs -> Triple.<Pair<String,WebTemplateInputValue>,State,Transition>of(null, cs, tr))
                 .collect(Collectors.toSet())
                 .stream())
