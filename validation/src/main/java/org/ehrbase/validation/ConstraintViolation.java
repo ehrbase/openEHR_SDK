@@ -25,6 +25,7 @@ import java.util.Objects;
  * @since 1.7
  */
 public class ConstraintViolation implements Serializable {
+  private static final long serialVersionUID = 4271592302120107558L;
 
   private final String aqlPath;
 
@@ -34,7 +35,11 @@ public class ConstraintViolation implements Serializable {
     this.aqlPath = aqlPath;
     this.message = message;
   }
-
+  
+  public ConstraintViolation(String message) {
+    this("", message);
+  }
+  
   public String getAqlPath() {
     return aqlPath;
   }

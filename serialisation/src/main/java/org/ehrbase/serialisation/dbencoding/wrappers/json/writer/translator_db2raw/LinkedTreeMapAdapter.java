@@ -155,7 +155,8 @@ public class LinkedTreeMapAdapter extends TypeAdapter<LinkedTreeMap<String, Obje
           } else if (map.get(key) instanceof ArrayList) { // due to using multimap
             if (!key.equals(TAG_CLASS)) { //ignore it
               ArrayList<?> arrayList = (ArrayList<?>) map.get(key);
-              writer.name(key).value(arrayList.get(0).toString());
+              if (!arrayList.isEmpty())
+                writer.name(key).value(arrayList.get(0).toString());
             }
           } else writer.name(key).value((String) map.get(key));
           map.remove(key);

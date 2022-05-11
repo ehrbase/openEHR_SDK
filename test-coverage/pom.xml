@@ -8,7 +8,7 @@
     <parent>
         <groupId>org.ehrbase.openehr.sdk</groupId>
         <artifactId>root</artifactId>
-        <version>1.18.0</version>
+        <version>1.19.0</version>
     </parent>
 
     <artifactId>test-coverage</artifactId>
@@ -62,6 +62,10 @@
         <dependency>
             <groupId>org.ehrbase.openehr.sdk</groupId>
             <artifactId>serialisation_conformance_test</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.ehrbase.openehr.sdk</groupId>
+            <artifactId>example-generator</artifactId>
         </dependency>
     </dependencies>
 

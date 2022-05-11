@@ -19,9 +19,14 @@
 
 package org.ehrbase.serialisation.flatencoding;
 
+import static org.ehrbase.serialisation.flatencoding.std.marshal.FlatJsonMarshallerTest.compere;
+
 import com.nedap.archie.rm.composition.Composition;
 import com.nedap.archie.rminfo.ArchieRMInfoLookup;
 import com.nedap.archie.rmobjectvalidator.RMObjectValidator;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.List;
 import org.apache.commons.io.IOUtils;
 import org.assertj.core.api.SoftAssertions;
 import org.ehrbase.serialisation.RMDataFormat;
@@ -29,12 +34,6 @@ import org.ehrbase.serialisation.templateprovider.TestDataTemplateProvider;
 import org.ehrbase.test_data.composition.CompositionTestDataSimSDTJson;
 import org.ehrbase.test_data.operationaltemplate.OperationalTemplateTestData;
 import org.junit.Test;
-
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.util.List;
-
-import static org.ehrbase.serialisation.flatencoding.std.marshal.FlatJsonMarshallerTest.compere;
 
 public class FlatJsonTest {
 
@@ -46,6 +45,15 @@ public class FlatJsonTest {
     CompositionTestDataSimSDTJson testData =
         CompositionTestDataSimSDTJson.CORONA_WITH_OTHER_PARTICIPATION;
     String templateId = "Corona_Anamnese";
+
+    check(templateId, testData, new String[] {}, new String[] {});
+  }
+
+  @Test
+  public void roundTripSSIAD_PRIeSM() throws IOException {
+
+    CompositionTestDataSimSDTJson testData = CompositionTestDataSimSDTJson.SSIAD_PRIESM;
+    String templateId = testData.getTemplate().getTemplateId();
 
     check(templateId, testData, new String[] {}, new String[] {});
   }

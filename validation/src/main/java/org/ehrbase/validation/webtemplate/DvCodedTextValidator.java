@@ -21,9 +21,12 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+
+import org.ehrbase.functional.Try;
 import org.ehrbase.validation.ConstraintViolation;
 import org.ehrbase.validation.ConstraintViolationException;
 import org.ehrbase.validation.terminology.ExternalTerminologyValidation;
+import org.ehrbase.validation.terminology.TerminologyParam;
 import org.ehrbase.webtemplate.model.WebTemplateInput;
 import org.ehrbase.webtemplate.model.WebTemplateNode;
 
@@ -104,17 +107,18 @@ public class DvCodedTextValidator implements ConstraintValidator<DvCodedText> {
     return result;
   }
 
-  private List<ConstraintViolation> validateExternalTerminology(String aqlPath,
-      DvCodedText dvCodedText, WebTemplateInput input) {
+  private List<ConstraintViolation> validateExternalTerminology(String aqlPath, DvCodedText dvCodedText, WebTemplateInput input) {
     List<ConstraintViolation> result = new ArrayList<>();
+    
+    TerminologyParam tp = TerminologyParam.ofFhir(input.getTerminology());
+      tp.setCodePhrase(dvCodedText.getDefiningCode());
 
-    if (externalTerminologyValidation != null
-        && externalTerminologyValidation.supports(input.getTerminology())) {
-      try {
-        externalTerminologyValidation.validate(aqlPath, input.getTerminology(),
-            dvCodedText.getDefiningCode());
-      } catch (ConstraintViolationException e) {
-        result.addAll(e.getConstraintViolations());
+    if(externalTerminologyValidation != null && externalTerminologyValidation.supports(tp)) {
+      Try<Boolean,ConstraintViolationException> validationResult = externalTerminologyValidation.validate(tp);
+      if(validationResult.isFailure()) {
+        ConstraintViolationException ex = validationResult.getAsFailure().get();
+        result.add(new ConstraintViolation(aqlPath, "Failed to validate " + dvCodedText.toString()));
+        result.addAll(ex.getConstraintViolations());
       }
     }
 

@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
  * @since 1.7
  */
 public class ConstraintViolationException extends ValidationException {
-
+  private static final long serialVersionUID = -3467256436138419008L;
   private final List<ConstraintViolation> constraintViolations;
 
   public ConstraintViolationException(String message,

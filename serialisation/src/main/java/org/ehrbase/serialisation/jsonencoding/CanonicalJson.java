@@ -33,7 +33,11 @@ import com.fasterxml.jackson.databind.type.TypeFactory;
 import com.nedap.archie.base.OpenEHRBase;
 import com.nedap.archie.paths.PathSegment;
 import com.nedap.archie.rm.RMObject;
-import com.nedap.archie.rm.archetyped.*;
+import com.nedap.archie.rm.archetyped.Archetyped;
+import com.nedap.archie.rm.archetyped.Link;
+import com.nedap.archie.rm.archetyped.Locatable;
+import com.nedap.archie.rm.archetyped.Pathable;
+import com.nedap.archie.rm.archetyped.TemplateId;
 import com.nedap.archie.rm.datastructures.History;
 import com.nedap.archie.rm.datavalues.quantity.datetime.DvDateTime;
 import com.nedap.archie.rm.support.identification.ArchetypeID;
@@ -42,19 +46,52 @@ import com.nedap.archie.rminfo.ArchieAOMInfoLookup;
 import com.nedap.archie.rminfo.ArchieRMInfoLookup;
 import com.nedap.archie.rminfo.ModelInfoLookup;
 import com.nedap.archie.rminfo.RMTypeInfo;
-import org.ehrbase.serialisation.RMDataFormat;
-import org.ehrbase.serialisation.exception.MarshalException;
-import org.ehrbase.serialisation.exception.UnmarshalException;
-
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import org.ehrbase.serialisation.RMDataFormat;
+import org.ehrbase.serialisation.exception.MarshalException;
+import org.ehrbase.serialisation.exception.UnmarshalException;
 
 // test CJOpenEHRTypeNaming
 
 public class CanonicalJson implements RMDataFormat {
+
+  private static final ObjectMapper MARSHAL_OM = JacksonUtil.getObjectMapper();
+
+  static {
+    // Configuration to ignore methods that are not part of the RM
+    ObjectMapper om = JacksonUtil.getObjectMapper();
+
+    om.addMixInAnnotations(ArchetypeID.class, ObjectIdMixIn.class);
+    om.addMixInAnnotations(Locatable.class, LocatableMixIn.class);
+    om.addMixInAnnotations(Pathable.class, PathableMixIn.class);
+    om.addMixInAnnotations(UIDBasedId.class, UIDBasedIdMixIn.class);
+
+    SimpleModule module = new SimpleModule();
+    module.addSerializer(DvDateTime.class, new DateTimeSerializer());
+    om.registerModule(module);
+
+    // Global configuration to not include empty lists in the JSON
+
+    om.setDefaultPropertyInclusion(
+        JsonInclude.Value.construct(
+            Include.CUSTOM,
+            Include.CUSTOM,
+            ExcludeEmptyCollectionsFilter.class,
+            ExcludeEmptyCollectionsFilter.class));
+
+    // Avoid _type for final classes / concrete attributes with known type
+    TypeResolverBuilder typeResolverBuilder =
+        new CJArchieTypeResolverBuilder()
+            .init(JsonTypeInfo.Id.NAME, new CJOpenEHRTypeNaming())
+            .typeProperty("_type")
+            .typeIdVisibility(true)
+            .inclusion(JsonTypeInfo.As.PROPERTY);
+    om.setDefaultTyping(typeResolverBuilder);
+  }
 
   private static class ExcludeEmptyCollectionsFilter {
     @Override
@@ -87,37 +124,7 @@ public class CanonicalJson implements RMDataFormat {
     StringWriter stringWriter = new StringWriter();
 
     try {
-      // Configuration to ignore methods that are not part of the RM
-      ObjectMapper om = JacksonUtil.getObjectMapper();
-
-      om.addMixInAnnotations(ArchetypeID.class, ObjectIdMixIn.class);
-      om.addMixInAnnotations(Locatable.class, LocatableMixIn.class);
-      om.addMixInAnnotations(Pathable.class, PathableMixIn.class);
-      om.addMixInAnnotations(UIDBasedId.class, UIDBasedIdMixIn.class);
-
-      SimpleModule module = new SimpleModule();
-      module.addSerializer(DvDateTime.class, new DateTimeSerializer());
-      om.registerModule(module);
-
-      // Global configuration to not include empty lists in the JSON
-
-      om.setDefaultPropertyInclusion(
-          JsonInclude.Value.construct(
-              Include.CUSTOM,
-              Include.CUSTOM,
-              ExcludeEmptyCollectionsFilter.class,
-              ExcludeEmptyCollectionsFilter.class));
-
-      // Avoid _type for final classes / concrete attributes with known type
-      TypeResolverBuilder typeResolverBuilder =
-          new CJArchieTypeResolverBuilder()
-              .init(JsonTypeInfo.Id.NAME, new CJOpenEHRTypeNaming())
-              .typeProperty("_type")
-              .typeIdVisibility(true)
-              .inclusion(JsonTypeInfo.As.PROPERTY);
-      om.setDefaultTyping(typeResolverBuilder);
-
-      om.writeValue(stringWriter, rmObject);
+      MARSHAL_OM.writeValue(stringWriter, rmObject);
     } catch (IOException e) {
       throw new MarshalException(e.getMessage(), e);
     }
@@ -246,9 +253,9 @@ public class CanonicalJson implements RMDataFormat {
   }
 
   // Test, inner class copied from com.nedap.archie.json.OpenEHRTypeNaming
-  public class CJOpenEHRTypeNaming extends ClassNameIdResolver {
+  public static class CJOpenEHRTypeNaming extends ClassNameIdResolver {
 
-    private ModelInfoLookup rmInfoLookup = ArchieRMInfoLookup.getInstance();
+    private ModelInfoLookup rmInfoLookup  = ArchieRMInfoLookup.getInstance();
     private ModelInfoLookup aomInfoLookup = ArchieAOMInfoLookup.getInstance();
 
     public CJOpenEHRTypeNaming() {

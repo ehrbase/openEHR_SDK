@@ -16,17 +16,17 @@
 
 package org.ehrbase.validation.webtemplate.integration;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import com.nedap.archie.rm.datatypes.CodePhrase;
-import com.nedap.archie.rm.datavalues.DvCodedText;
-import com.nedap.archie.rm.support.identification.TerminologyId;
 import org.ehrbase.validation.terminology.FhirTerminologyValidation;
 import org.ehrbase.validation.webtemplate.AbstractRMObjectValidatorTest;
 import org.ehrbase.validation.webtemplate.DvCodedTextValidator;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+
+import com.nedap.archie.rm.datatypes.CodePhrase;
+import com.nedap.archie.rm.datavalues.DvCodedText;
+import com.nedap.archie.rm.support.identification.TerminologyId;
 
 /**
  *
@@ -37,6 +37,8 @@ class DvCodedTextIT extends AbstractRMObjectValidatorTest {
 
   private final FhirTerminologyValidation fhirTerminologyValidator = new FhirTerminologyValidation(
       "https://r4.ontoserver.csiro.au/fhir");
+
+
 
   private final DvCodedTextValidator validator = new DvCodedTextValidator(fhirTerminologyValidator);
 
@@ -70,7 +72,7 @@ class DvCodedTextIT extends AbstractRMObjectValidatorTest {
     var node = parseNode("/webtemplate_nodes/dv_codedtext_fhir_codesystem.json");
 
     var result = validator.validate(new DvCodedText("Usual", codePhrase), node);
-    assertEquals(1, result.size());
+    assertTrue(result.size() > 0);
   }
 
   @Test
@@ -81,7 +83,7 @@ class DvCodedTextIT extends AbstractRMObjectValidatorTest {
     var node = parseNode("/webtemplate_nodes/dv_codedtext_fhir_codesystem.json");
 
     var result = validator.validate(new DvCodedText("Casual", codePhrase), node);
-    assertEquals(1, result.size());
+    assertTrue(result.size() > 0);
   }
 
   @Test
@@ -102,7 +104,7 @@ class DvCodedTextIT extends AbstractRMObjectValidatorTest {
     var node = parseNode("/webtemplate_nodes/dv_codedtext_fhir_valueset.json");
 
     var result = validator.validate(new DvCodedText("Anonymous", codePhrase), node);
-    assertEquals(1, result.size());
+    assertTrue(result.size() > 0);
   }
 
   @Test
@@ -113,6 +115,6 @@ class DvCodedTextIT extends AbstractRMObjectValidatorTest {
     var node = parseNode("/webtemplate_nodes/dv_codedtext_fhir_valueset.json");
 
     var result = validator.validate(new DvCodedText("Anonymous", codePhrase), node);
-    assertEquals(1, result.size());
+    assertTrue(result.size() > 0);
   }
 }

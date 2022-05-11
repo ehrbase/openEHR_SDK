@@ -20,7 +20,13 @@
 package org.ehrbase.webtemplate.parser;
 
 import com.nedap.archie.rm.archetyped.Locatable;
-import com.nedap.archie.rm.composition.*;
+import com.nedap.archie.rm.composition.Action;
+import com.nedap.archie.rm.composition.Activity;
+import com.nedap.archie.rm.composition.Composition;
+import com.nedap.archie.rm.composition.Entry;
+import com.nedap.archie.rm.composition.EventContext;
+import com.nedap.archie.rm.composition.Instruction;
+import com.nedap.archie.rm.composition.IsmTransition;
 import com.nedap.archie.rm.datastructures.Element;
 import com.nedap.archie.rm.datastructures.Event;
 import com.nedap.archie.rm.datastructures.History;
@@ -28,6 +34,19 @@ import com.nedap.archie.rm.datavalues.quantity.DvInterval;
 import com.nedap.archie.rminfo.ArchieRMInfoLookup;
 import com.nedap.archie.rminfo.RMAttributeInfo;
 import com.nedap.archie.rminfo.RMTypeInfo;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
@@ -39,15 +58,47 @@ import org.ehrbase.terminology.client.terminology.TerminologyProvider;
 import org.ehrbase.terminology.client.terminology.ValueSet;
 import org.ehrbase.util.exception.SdkException;
 import org.ehrbase.util.rmconstants.RmConstants;
-import org.ehrbase.webtemplate.model.*;
+import org.ehrbase.webtemplate.model.WebTemplate;
+import org.ehrbase.webtemplate.model.WebTemplateAnnotation;
+import org.ehrbase.webtemplate.model.WebTemplateInput;
+import org.ehrbase.webtemplate.model.WebTemplateInputValue;
+import org.ehrbase.webtemplate.model.WebTemplateNode;
+import org.ehrbase.webtemplate.model.WebTemplateValidation;
+import org.ehrbase.webtemplate.model.WebtemplateCardinality;
 import org.ehrbase.webtemplate.util.WebTemplateUtils;
-import org.openehr.schemas.v1.*;
+import org.openehr.schemas.v1.ANNOTATION;
+import org.openehr.schemas.v1.ARCHETYPEONTOLOGY;
+import org.openehr.schemas.v1.ARCHETYPESLOT;
+import org.openehr.schemas.v1.ARCHETYPETERM;
+import org.openehr.schemas.v1.CARCHETYPEROOT;
+import org.openehr.schemas.v1.CARDINALITY;
+import org.openehr.schemas.v1.CATTRIBUTE;
+import org.openehr.schemas.v1.CCODEPHRASE;
+import org.openehr.schemas.v1.CCODEREFERENCE;
+import org.openehr.schemas.v1.CCOMPLEXOBJECT;
+import org.openehr.schemas.v1.CDOMAINTYPE;
+import org.openehr.schemas.v1.CDVORDINAL;
+import org.openehr.schemas.v1.CDVQUANTITY;
+import org.openehr.schemas.v1.CDVSTATE;
+import org.openehr.schemas.v1.CMULTIPLEATTRIBUTE;
+import org.openehr.schemas.v1.COBJECT;
+import org.openehr.schemas.v1.CODEPHRASE;
+import org.openehr.schemas.v1.CPRIMITIVEOBJECT;
+import org.openehr.schemas.v1.CSINGLEATTRIBUTE;
+import org.openehr.schemas.v1.CodeDefinitionSet;
+import org.openehr.schemas.v1.DVCODEDTEXT;
+import org.openehr.schemas.v1.DVORDINAL;
+import org.openehr.schemas.v1.DVQUANTITY;
+import org.openehr.schemas.v1.IntervalOfInteger;
+import org.openehr.schemas.v1.OBJECTID;
+import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
+import org.openehr.schemas.v1.RESOURCEDESCRIPTIONITEM;
+import org.openehr.schemas.v1.StringDictionaryItem;
+import org.openehr.schemas.v1.TATTRIBUTE;
+import org.openehr.schemas.v1.TCOMPLEXOBJECT;
+import org.openehr.schemas.v1.TCONSTRAINT;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-
-import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 public class OPTParser {
 
@@ -65,6 +116,18 @@ public class OPTParser {
   private final InputHandler inputHandler = new InputHandler(defaultValues);
   private final Map<String, Map<String, String>> annotationMap = new HashMap<>();
   private List<String> languages;
+
+  private final Map<String, String> choiceIdCache = new HashMap<>();
+
+  private boolean updateChoiceId(WebTemplateNode node) {
+    String rmType = node.getRmType();
+    if (rmType.startsWith("DV_")) {
+      node.setId(choiceIdCache.computeIfAbsent(rmType, t -> t.substring(3).toLowerCase() + "_value"));
+      return true;
+    } else {
+      return false;
+    }
+  }
 
   public OPTParser(OPERATIONALTEMPLATE operationaltemplate) {
     this.operationaltemplate = operationaltemplate;
@@ -377,7 +440,7 @@ public class OPTParser {
     node.setAqlPath(aqlPath);
 
     if (StringUtils.isNotBlank(ccomplexobject.getNodeId()) && explicitName != null) {
-      String nameValue = explicitName.label.replace("\\", "\\\\").replace("'", "\\'");
+      String nameValue = explicitName.label;
       node.setAqlPath(node.getAqlPathDto().replaceLastNode(n -> n.withNameValue(nameValue)));
     }
     return node;
@@ -548,30 +611,32 @@ public class OPTParser {
     Collection<List<WebTemplateNode>> values = node.getChoicesInChildren().values();
     values.stream()
         .flatMap(List::stream)
-        .filter(n -> n.getRmType().startsWith("DV_"))
-        .forEach(n -> n.setId(n.getRmType().replace("DV_", "").toLowerCase() + "_value"));
+        .forEach(this::updateChoiceId);
 
     // Inherit name for Element values
     if (node.getRmType().equals("ELEMENT")) {
       // Is any Node
       if (node.getChildren().isEmpty()) {
-        addAnyNode(node, "DV_TEXT", inputMap);
-        addAnyNode(node, "DV_CODED_TEXT", inputMap);
-        addAnyNode(node, "DV_MULTIMEDIA", inputMap);
-        addAnyNode(node, "DV_PARSABLE", inputMap);
-        addAnyNode(node, "DV_STATE", inputMap);
-        addAnyNode(node, "DV_BOOLEAN", inputMap);
-        addAnyNode(node, "DV_IDENTIFIER", inputMap);
-        addAnyNode(node, "DV_URI", inputMap);
-        addAnyNode(node, "DV_EHR_URI", inputMap);
-        addAnyNode(node, "DV_DURATION", inputMap);
-        addAnyNode(node, "DV_QUANTITY", inputMap);
-        addAnyNode(node, "DV_COUNT", inputMap);
-        addAnyNode(node, "DV_PROPORTION", inputMap);
-        addAnyNode(node, "DV_DATE_TIME", inputMap);
-        addAnyNode(node, "DV_TIME", inputMap);
-        addAnyNode(node, "DV_ORDINAL", inputMap);
-        addAnyNode(node, "DV_DATE", inputMap);
+
+        Stream.of(
+            RmConstants.DV_TEXT,
+            RmConstants.DV_CODED_TEXT,
+            "DV_MULTIMEDIA",
+            "DV_PARSABLE",
+            "DV_STATE",
+            "DV_BOOLEAN",
+            "DV_IDENTIFIER",
+            "DV_URI",
+            "DV_EHR_URI",
+            RmConstants.DV_DURATION,
+            "DV_QUANTITY",
+            "DV_COUNT",
+            "DV_PROPORTION",
+            "DV_DATE_TIME",
+            "DV_TIME",
+            "DV_ORDINAL",
+            "DV_DATE"
+        ).forEach(t -> addAnyNode(node, t, inputMap));
 
       } else {
         List<WebTemplateNode> trueChildren = WebTemplateUtils.getTrueChildrenElement(node);
@@ -580,13 +645,11 @@ public class OPTParser {
         // choice between value and null_flavour
         if (trueChildren.size() != 1 && node.getChoicesInChildren().isEmpty()) {
           WebTemplateUtils.getTrueChildrenElement(node).stream()
-              .filter(n -> n.getRmType().startsWith("DV_"))
-              .forEach(
-                  n -> {
-                    n.setId(n.getRmType().replace("DV_", "").toLowerCase() + "_value");
+              .filter(this::updateChoiceId)
+              .forEach(n -> {
                     n.getLocalizedDescriptions().putAll(node.getLocalizedDescriptions());
                     n.getLocalizedNames().putAll(node.getLocalizedNames());
-                  });
+              });
         }
       }
     }
@@ -665,7 +728,7 @@ public class OPTParser {
       WebTemplateNode node, String rmType, Map<String, WebTemplateInput> inputMap) {
     WebTemplateNode subNode = new WebTemplateNode();
     subNode.setRmType(rmType);
-    subNode.setId(subNode.getRmType().replace("DV_", "").toLowerCase() + "_value");
+    updateChoiceId(subNode);
     subNode.setName(node.getName());
     subNode.setAqlPath(node.getAqlPathDto().addEnd("value"));
     subNode.setInContext(true);

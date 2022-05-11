@@ -97,15 +97,15 @@ public class DvCodedTextRMUnmarshaller extends AbstractRMUnmarshaller<DvCodedTex
     }
 
 
-
-    // Set terminology from Node
-    Optional.of(context.getNodeDeque().peek().getInputs()).stream()
-        .flatMap(List::stream)
-        .filter(i -> "code".equals(i.getSuffix()))
-        .findAny()
-        .map(WebTemplateInput::getTerminology)
-        .ifPresent(t -> rmObject.getDefiningCode().getTerminologyId().setValue(t));
-
+    if(rmObject.getDefiningCode() == null || rmObject.getDefiningCode().getTerminologyId() == null || rmObject.getDefiningCode().getTerminologyId().getValue() == null) {
+      // Set terminology from Node
+      Optional.of(context.getNodeDeque().peek().getInputs()).stream()
+          .flatMap(List::stream)
+          .filter(i -> "code".equals(i.getSuffix()))
+          .findAny()
+          .map(WebTemplateInput::getTerminology)
+          .ifPresent(t -> rmObject.getDefiningCode().getTerminologyId().setValue(t));
+    }
     // Set value from Node
     setFromNode(
         rmObject,

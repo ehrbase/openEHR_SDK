@@ -2,7 +2,22 @@
 
 Note: version releases in the 0.x.y range may introduce breaking changes.
 
-## 1.18.0
+## [1.19.0]
+
+### Added
+- Maven plugin to generate code from templates ([#347](https://github.com/ehrbase/openEHR_SDK/pull/347))
+- Example Generator ([#349](https://github.com/ehrbase/openEHR_SDK/pull/349), [#351](https://github.com/ehrbase/openEHR_SDK/pull/351))
+- Flatencoding parsing: automatically handle date/time/date_time precision [#352](https://github.com/ehrbase/openEHR_SDK/pull/352)
+- Example Generator ([#349](https://github.com/ehrbase/openEHR_SDK/pull/349)
+  , [#351](https://github.com/ehrbase/openEHR_SDK/pull/351))
+- use bom for dependency management ([#358](https://github.com/ehrbase/openEHR_SDK/pull/358))
+- created release action ([#362](https://github.com/ehrbase/openEHR_SDK/pull/362))
+
+### Fixed
+- fix wrong escape in names attribute of the aql path ([#364](https://github.com/ehrbase/openEHR_SDK/pull/364))
+
+
+## [1.18.0]
 
 ### Added
 - Update archie to version 2.0.1 ([#345](https://github.com/ehrbase/openEHR_SDK/pull/345))
@@ -155,4 +170,9 @@ Note: version releases in the 0.x.y range may introduce breaking changes.
 
 - patch: openEHR SDK containing the contents of EHRbase serialization, response DTOs, terminology and validation
 
+
+
+
+[1.18.0]: https://github.com/ehrbase/openEHR_SDK/releases/tag/v1.18.0
+[1.19.0]: https://github.com/ehrbase/openEHR_SDK/compare/v1.18.0...v1.19.0
 
