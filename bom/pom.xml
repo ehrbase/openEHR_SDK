@@ -11,6 +11,31 @@
     <version>1.19.0</version>
     <packaging>pom</packaging>
 
+    <name>openEHR SDK</name>
+    <description>EHRbase openEHR SDK</description>
+    <url>https://github.com/ehrbase/openEHR_SDK</url>
+
+    <licenses>
+        <license>
+            <name>The Apache License, Version 2.0</name>
+            <url>https://www.apache.org/licenses/LICENSE-2.0</url>
+        </license>
+    </licenses>
+
+    <scm>
+        <connection>scm:git:https://github.com/ehrbase/openEHR_SDK.git</connection>
+        <developerConnection>scm:git:https://github.com/ehrbase/openEHR_SDK.git</developerConnection>
+        <url>https://github.com/ehrbase/openEHR_SDK</url>
+    </scm>
+
+    <developers>
+        <developer>
+            <name>Stefan Spiska</name>
+            <email>stefan.spiska@vitagroup.ag</email>
+            <organization>vitasystems GmbH</organization>
+            <organizationUrl>https://www.vitagroup.ag/</organizationUrl>
+        </developer>
+    </developers>
 
     <properties>
         <antlr4.version>4.9.3</antlr4.version>
