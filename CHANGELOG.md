@@ -3,6 +3,10 @@
 Note: version releases in the 0.x.y range may introduce breaking changes.
 
 ## [unreleased]
+ ### Added 
+ ### Fixed 
+
+## [1.19.0]
 
 ### Added
 - Maven plugin to generate code from templates ([#347](https://github.com/ehrbase/openEHR_SDK/pull/347))
@@ -174,5 +178,6 @@ Note: version releases in the 0.x.y range may introduce breaking changes.
 
 
 [1.18.0]: https://github.com/ehrbase/openEHR_SDK/releases/tag/v1.18.0
-[unreleased]: https://github.com/ehrbase/openEHR_SDK/compare/v1.18.0...HEAD
+[1.19.0]: https://github.com/ehrbase/openEHR_SDK/compare/v1.18.0...v1.19.0
 
+[unreleased]: https://github.com/ehrbase/openEHR_SDK/compare/v1.19.0...HEAD
