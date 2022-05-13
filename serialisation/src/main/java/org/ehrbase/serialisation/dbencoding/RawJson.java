@@ -22,7 +22,7 @@ import com.nedap.archie.rm.RMObject;
 import com.nedap.archie.rm.composition.Composition;
 import org.ehrbase.serialisation.RMDataFormat;
 import org.ehrbase.serialisation.dbencoding.rawjson.LightRawJsonEncoder;
-import org.ehrbase.serialisation.jsonencoding.JacksonUtil;
+import org.ehrbase.serialisation.jsonencoding.ArchieObjectMapperProvider;
 
 import java.io.IOException;
 import java.util.Map;
@@ -53,7 +53,7 @@ public class RawJson implements RMDataFormat {
             converted = new LightRawJsonEncoder(value).encodeContentAsString(null);
         }
         try {
-            return JacksonUtil.getObjectMapper().readValue(converted, clazz);
+            return ArchieObjectMapperProvider.getObjectMapper().readValue(converted, clazz);
         } catch (IOException e) {
             throw new IllegalArgumentException(e.getMessage(), e);
         }

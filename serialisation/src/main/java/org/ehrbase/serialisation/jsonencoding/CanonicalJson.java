@@ -59,24 +59,23 @@ import org.ehrbase.serialisation.exception.UnmarshalException;
 
 public class CanonicalJson implements RMDataFormat {
 
-  private static final ObjectMapper MARSHAL_OM = JacksonUtil.getObjectMapper();
+  private static final ObjectMapper MARSHAL_OM = ArchieObjectMapperProvider.getObjectMapper().copy();
 
   static {
     // Configuration to ignore methods that are not part of the RM
-    ObjectMapper om = JacksonUtil.getObjectMapper();
 
-    om.addMixInAnnotations(ArchetypeID.class, ObjectIdMixIn.class);
-    om.addMixInAnnotations(Locatable.class, LocatableMixIn.class);
-    om.addMixInAnnotations(Pathable.class, PathableMixIn.class);
-    om.addMixInAnnotations(UIDBasedId.class, UIDBasedIdMixIn.class);
+    MARSHAL_OM.addMixInAnnotations(ArchetypeID.class, ObjectIdMixIn.class);
+    MARSHAL_OM.addMixInAnnotations(Locatable.class, LocatableMixIn.class);
+    MARSHAL_OM.addMixInAnnotations(Pathable.class, PathableMixIn.class);
+    MARSHAL_OM.addMixInAnnotations(UIDBasedId.class, UIDBasedIdMixIn.class);
 
     SimpleModule module = new SimpleModule();
     module.addSerializer(DvDateTime.class, new DateTimeSerializer());
-    om.registerModule(module);
+    MARSHAL_OM.registerModule(module);
 
     // Global configuration to not include empty lists in the JSON
 
-    om.setDefaultPropertyInclusion(
+    MARSHAL_OM.setDefaultPropertyInclusion(
         JsonInclude.Value.construct(
             Include.CUSTOM,
             Include.CUSTOM,
@@ -90,7 +89,7 @@ public class CanonicalJson implements RMDataFormat {
             .typeProperty("_type")
             .typeIdVisibility(true)
             .inclusion(JsonTypeInfo.As.PROPERTY);
-    om.setDefaultTyping(typeResolverBuilder);
+    MARSHAL_OM.setDefaultTyping(typeResolverBuilder);
   }
 
   private static class ExcludeEmptyCollectionsFilter {
@@ -135,7 +134,7 @@ public class CanonicalJson implements RMDataFormat {
   @Override
   public <T extends RMObject> T unmarshal(String value, Class<T> clazz) {
     try {
-      return JacksonUtil.getObjectMapper().readValue(value, clazz);
+      return ArchieObjectMapperProvider.getObjectMapper().readValue(value, clazz);
     } catch (IOException e) {
       throw new UnmarshalException(e.getMessage(), e);
     }
@@ -151,7 +150,7 @@ public class CanonicalJson implements RMDataFormat {
    */
   public Map<String, Object> unmarshalToMap(String value) {
     try {
-      return JacksonUtil.getObjectMapper().readValue(value, Map.class);
+      return ArchieObjectMapperProvider.getObjectMapper().readValue(value, Map.class);
     } catch (IOException e) {
       throw new UnmarshalException(e.getMessage(), e);
     }

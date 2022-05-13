@@ -25,7 +25,7 @@ import com.nedap.archie.rm.composition.Composition;
 import org.ehrbase.serialisation.RMDataFormat;
 import org.ehrbase.serialisation.flatencoding.FlatFormat;
 import org.ehrbase.serialisation.jsonencoding.CanonicalJson;
-import org.ehrbase.serialisation.jsonencoding.JacksonUtil;
+import org.ehrbase.serialisation.jsonencoding.ArchieObjectMapperProvider;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -33,7 +33,7 @@ import java.util.Map;
 
 public class CompositionConverterImp implements CompositionConverter {
 
-  public static final ObjectMapper OBJECT_MAPPER = JacksonUtil.getObjectMapper();
+  public static final ObjectMapper OBJECT_MAPPER = ArchieObjectMapperProvider.getObjectMapper();
 
   @Override
   public String convertRawToFlat(String template, String defaultLanguage, String rawComposition)

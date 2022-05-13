@@ -31,7 +31,7 @@ import org.ehrbase.serialisation.dbencoding.rawjson.LightRawJsonEncoder;
 import org.ehrbase.serialisation.flatencoding.FlatFormat;
 import org.ehrbase.serialisation.flatencoding.FlatJasonProvider;
 import org.ehrbase.serialisation.jsonencoding.CanonicalJson;
-import org.ehrbase.serialisation.jsonencoding.JacksonUtil;
+import org.ehrbase.serialisation.jsonencoding.ArchieObjectMapperProvider;
 import org.ehrbase.test_data.composition.CompositionTestDataConformanceSDTJson;
 import org.ehrbase.validation.CompositionValidator;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -205,7 +205,7 @@ class DbConformanceTest {
    private  List<String> compere(String actualJson, String expectedJson)
            throws JsonProcessingException {
        List<String> errors = new ArrayList<>();
-       ObjectMapper objectMapper = JacksonUtil.getObjectMapper();
+       ObjectMapper objectMapper = ArchieObjectMapperProvider.getObjectMapper();
 
        Map<String, Object> actual = objectMapper.readValue(actualJson, Map.class);
        Map<String, Object> expected = objectMapper.readValue(expectedJson, Map.class);

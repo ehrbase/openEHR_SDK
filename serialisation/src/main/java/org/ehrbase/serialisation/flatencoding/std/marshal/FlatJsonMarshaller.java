@@ -23,7 +23,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nedap.archie.rm.composition.Composition;
 import org.ehrbase.serialisation.exception.MarshalException;
-import org.ehrbase.serialisation.jsonencoding.JacksonUtil;
+import org.ehrbase.serialisation.jsonencoding.ArchieObjectMapperProvider;
 import org.ehrbase.webtemplate.model.WebTemplate;
 
 import java.util.LinkedHashMap;
@@ -31,7 +31,7 @@ import java.util.Map;
 
 public class FlatJsonMarshaller {
 
-  private static final ObjectMapper OBJECT_MAPPER = JacksonUtil.getObjectMapper();
+  private static final ObjectMapper OBJECT_MAPPER = ArchieObjectMapperProvider.getObjectMapper();
 
   public FlatJsonMarshaller() {}
 

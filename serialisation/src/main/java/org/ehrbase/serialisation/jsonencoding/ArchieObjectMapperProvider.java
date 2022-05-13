@@ -23,26 +23,23 @@ package org.ehrbase.serialisation.jsonencoding;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nedap.archie.json.ArchieJacksonConfiguration;
 
+public class ArchieObjectMapperProvider {
 
-public class JacksonUtil {
-
-    private JacksonUtil() {
-        //for sonarlint...
+    private ArchieObjectMapperProvider() {
+        // for sonarlint...
     }
 
     /**
-     * Get an object mapper that works with Archie RM and AOM objects. It will be cached in a static variable for
-     * performance reasons
+     * Get an object mapper that works with Archie RM and AOM objects. It will be cached in a static
+     * variable for performance reasons
      *
      * @return
      */
     public static ObjectMapper getObjectMapper() {
-        ArchieJacksonConfiguration configuration =  ArchieJacksonConfiguration.createStandardsCompliant();
+        ArchieJacksonConfiguration configuration = ArchieJacksonConfiguration.createStandardsCompliant();
         configuration.setAddExtraFieldsInArchetypeId(false);
         configuration.setTypePropertyName("_type");
         configuration.setSerializeEmptyCollections(true);
         return com.nedap.archie.json.JacksonUtil.getObjectMapper(configuration);
-
     }
-
 }

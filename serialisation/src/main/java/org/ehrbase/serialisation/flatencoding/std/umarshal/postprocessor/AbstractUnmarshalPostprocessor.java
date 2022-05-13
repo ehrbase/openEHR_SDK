@@ -30,7 +30,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.ehrbase.serialisation.exception.UnmarshalException;
 import org.ehrbase.serialisation.flatencoding.std.umarshal.StdToCompositionWalker;
 import org.ehrbase.serialisation.flatencoding.std.umarshal.rmunmarshaller.RMUnmarshaller;
-import org.ehrbase.serialisation.jsonencoding.JacksonUtil;
+import org.ehrbase.serialisation.jsonencoding.ArchieObjectMapperProvider;
 import org.ehrbase.serialisation.walker.Context;
 import org.ehrbase.serialisation.walker.FlatHelper;
 import org.ehrbase.util.exception.SdkException;
@@ -48,7 +48,7 @@ import static org.ehrbase.webtemplate.parser.OPTParser.PATH_DIVIDER;
 public abstract class AbstractUnmarshalPostprocessor<T extends RMObject>
     implements UnmarshalPostprocessor<T> {
 
-  private static final ObjectMapper OBJECT_MAPPER = JacksonUtil.getObjectMapper();
+  private static final ObjectMapper OBJECT_MAPPER = ArchieObjectMapperProvider.getObjectMapper();
 
 
   /**
