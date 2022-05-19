@@ -1,13 +1,15 @@
 /*
- * Copyright (c) 2019 vitasystems GmbH and Hannover Medical School.
+ * Modifications copyright (C) 2019 Christian Chevalley, Vitasystems GmbH and Hannover Medical School,
  *
- * This file is part of project openEHR_SDK
+ * This file is part of Project EHRbase
+ *
+ * Original Copyright: see below
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     https://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -15,18 +17,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+/*
+ * component:   "openEHR Reference Implementation"
+ * description: "Class XMLTerminologySource"
+ * keywords:    "terminology"
+ *
+ * author:      "Rong Chen <rong.acode@gmail.com>"
+ * copyright:   "Copyright (c) 2007 Rong Chen"
+ * license:     "See notice at bottom of class"
+ *
+ * file:        "$URL$"
+ * revision:    "$LastChangedRevision$"
+ * last_change: "$LastChangedDate$"
+ */
 package org.ehrbase.terminology.openehr.implementation;
 
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
-import javax.xml.XMLConstants;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import org.ehrbase.terminology.openehr.TerminologyResourceException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
+
+import javax.xml.XMLConstants;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This class provides access to terminology content in XML format
@@ -90,6 +106,7 @@ public class XMLTerminologySource implements TerminologySource {
             throw new TerminologyResourceException(e.getMessage());
         }
     }
+
 
     /*
      * Loads a code set from XML element

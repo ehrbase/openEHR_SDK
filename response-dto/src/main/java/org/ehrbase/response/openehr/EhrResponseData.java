@@ -1,13 +1,13 @@
 /*
- * Copyright (c) 2019 vitasystems GmbH and Hannover Medical School.
+ * Copyright (c) 2019 Vitasystems GmbH and Jake Smolka (Hannover Medical School).
  *
- * This file is part of project openEHR_SDK
+ * This file is part of project EHRbase
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     https://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -15,6 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.ehrbase.response.openehr;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -22,9 +23,10 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 import com.nedap.archie.rm.datavalues.quantity.datetime.DvDateTime;
 import com.nedap.archie.rm.ehr.EhrStatus;
 import com.nedap.archie.rm.support.identification.HierObjectId;
-import java.util.List;
 import org.ehrbase.response.ehrscape.CompositionDto;
 import org.ehrbase.response.ehrscape.ContributionDto;
+
+import java.util.List;
 
 /**
  * Basic set of response data regarding EHR operations. Used as default or when `PREFER` header requests minimal response.
@@ -32,21 +34,17 @@ import org.ehrbase.response.ehrscape.ContributionDto;
 @JacksonXmlRootElement(localName = "ehr")
 public class EhrResponseData {
 
+
     @JsonProperty(value = "system_id")
     private HierObjectId systemId;
-
     @JsonProperty(value = "ehr_id")
     private HierObjectId ehrId;
-
     @JsonProperty(value = "ehr_status")
     private EhrStatus ehrStatus;
-
     @JsonProperty(value = "time_created")
     private DvDateTime timeCreated;
-
     @JsonProperty
     private List<CompositionDto> compositions;
-
     @JsonProperty
     private List<ContributionDto> contributions;
 
@@ -74,16 +72,16 @@ public class EhrResponseData {
         this.ehrStatus = ehrStatus;
     }
 
-    public DvDateTime getTimeCreated() {
+    public DvDateTime  getTimeCreated() {
         return timeCreated;
     }
 
     public void setTimeCreated(String timeCreated) {
-        this.timeCreated = new DvDateTime(timeCreated);
+        this.timeCreated = new DvDateTime( timeCreated);
     }
 
     public void setTimeCreated(DvDateTime timeCreated) {
-        this.timeCreated = timeCreated;
+        this.timeCreated =  timeCreated;
     }
 
     public List<CompositionDto> getCompositions() {
@@ -101,4 +99,5 @@ public class EhrResponseData {
     public void setContributions(List<ContributionDto> contributions) {
         this.contributions = contributions;
     }
+
 }

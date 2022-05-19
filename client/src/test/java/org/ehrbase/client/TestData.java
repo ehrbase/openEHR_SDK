@@ -1,19 +1,18 @@
 /*
- * Copyright (c) 2019 vitasystems GmbH and Hannover Medical School.
+ *  Copyright (c) 2019  Stefan Spiska (Vitasystems GmbH) and Hannover Medical School
+ *  This file is part of Project EHRbase
  *
- * This file is part of project openEHR_SDK
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *  http://www.apache.org/licenses/LICENSE-2.0
  *
- *     https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
  */
 package org.ehrbase.client;
 
@@ -76,433 +75,462 @@ import org.ehrbase.client.classgenerator.examples.virologischerbefundcomposition
 import org.ehrbase.client.classgenerator.shareddefinition.Category;
 import org.ehrbase.client.classgenerator.shareddefinition.Language;
 import org.ehrbase.client.classgenerator.shareddefinition.MathFunction;
+import org.ehrbase.client.classgenerator.shareddefinition.NullFlavour;
 import org.ehrbase.client.classgenerator.shareddefinition.Setting;
 import org.ehrbase.client.classgenerator.shareddefinition.Territory;
 import org.ehrbase.client.flattener.BloodpressureListDe;
 
 public class TestData {
-    private TestData() {}
+  private TestData() {}
 
-    public static BloodpressureListDe buildExampleBloodpressureListDe() {
-        BloodpressureListDe dto = new BloodpressureListDe();
-        OffsetDateTime startTime = OffsetDateTime.of(2019, 9, 10, 12, 0, 0, 0, ZoneOffset.ofHours(2));
-        dto.setStartTime(startTime);
-        List<BloodpressureListDe.Bloodpressure> bloodpressureList = new ArrayList<>();
+  public static BloodpressureListDe buildExampleBloodpressureListDe() {
+    BloodpressureListDe dto = new BloodpressureListDe();
+    OffsetDateTime startTime = OffsetDateTime.of(2019, 9, 10, 12, 0, 0, 0, ZoneOffset.ofHours(2));
+    dto.setStartTime(startTime);
+    List<BloodpressureListDe.Bloodpressure> bloodpressureList = new ArrayList<>();
 
-        BloodpressureListDe.Bloodpressure bloodpressure1 = new BloodpressureListDe.Bloodpressure();
-        bloodpressure1.setSystolischValue(12d);
-        bloodpressureList.add(bloodpressure1);
+    BloodpressureListDe.Bloodpressure bloodpressure1 = new BloodpressureListDe.Bloodpressure();
+    bloodpressure1.setSystolischValue(12d);
+    bloodpressureList.add(bloodpressure1);
 
-        BloodpressureListDe.Bloodpressure bloodpressure2 = new BloodpressureListDe.Bloodpressure();
-        bloodpressure2.setSystolischValue(22d);
-        bloodpressureList.add(bloodpressure2);
+    BloodpressureListDe.Bloodpressure bloodpressure2 = new BloodpressureListDe.Bloodpressure();
+    bloodpressure2.setSystolischValue(22d);
+    bloodpressureList.add(bloodpressure2);
 
-        dto.setBloodpressures(bloodpressureList);
-        return dto;
-    }
+    dto.setBloodpressures(bloodpressureList);
+    return dto;
+  }
 
-    public static TestAllTypesEnV1Composition buildTestAllTypesEnV1Composition() {
-        TestAllTypesEnV1Composition composition = new TestAllTypesEnV1Composition();
+  public static TestAllTypesEnV1Composition buildTestAllTypesEnV1Composition(){
+    TestAllTypesEnV1Composition composition = new TestAllTypesEnV1Composition();
 
-        composition.setTestAllTypes2(new ArrayList<>());
+    composition.setTestAllTypes2(new ArrayList<>());
 
-        TestAllTypesEvaluation evaluation = new TestAllTypesEvaluation();
-        composition.getTestAllTypes2().add(evaluation);
+    TestAllTypesEvaluation evaluation = new TestAllTypesEvaluation();
+    composition.getTestAllTypes2().add(evaluation);
 
-        evaluation.setIntervalCountLowerIncluded(true);
-        evaluation.setIntervalCountUpperIncluded(true);
-        evaluation.setUpperMagnitude(20l);
-        evaluation.setLowerMagnitude(10l);
+    evaluation.setIntervalCountLowerIncluded(true);
+    evaluation.setIntervalCountUpperIncluded(true);
+    evaluation.setUpperMagnitude(20l);
+    evaluation.setLowerMagnitude(10l);
 
-        return composition;
-    }
 
-    public static EhrbaseBloodPressureSimpleDeV0Composition buildEhrbaseBloodPressureSimpleDeV0() {
-        EhrbaseBloodPressureSimpleDeV0Composition bloodPressureSimpleDeV0 =
-                new EhrbaseBloodPressureSimpleDeV0Composition();
-        bloodPressureSimpleDeV0.setStartTimeValue(OffsetDateTime.of(2019, 04, 03, 22, 00, 00, 00, ZoneOffset.UTC));
-        bloodPressureSimpleDeV0.setEndTimeValue(OffsetDateTime.now());
-        bloodPressureSimpleDeV0.setBloodPressureTrainingSample(new ArrayList<>());
-        bloodPressureSimpleDeV0.setLanguage(Language.DE);
-        bloodPressureSimpleDeV0.setTerritory(Territory.DE);
-        bloodPressureSimpleDeV0.setCategoryDefiningCode(Category.EVENT);
-        bloodPressureSimpleDeV0.setSettingDefiningCode(Setting.NURSING_HOME_CARE);
-        bloodPressureSimpleDeV0.setComposer(new PartyIdentified(null, "Test", null));
-        bloodPressureSimpleDeV0.setParticipations(new ArrayList<>());
-        bloodPressureSimpleDeV0
-                .getParticipations()
-                .add(new Participation(new PartyIdentified(null, "Test", null), new DvText("Pos1"), null, null));
-        bloodPressureSimpleDeV0
-                .getParticipations()
-                .add(new Participation(new PartyIdentified(null, "Test2", null), new DvText("Pos2"), null, null));
+    return composition;
+  }
 
-        bloodPressureSimpleDeV0.getBloodPressureTrainingSample().add(buildBloodPressureTrainingSampleObservation());
-        return bloodPressureSimpleDeV0;
-    }
+  public static EhrbaseBloodPressureSimpleDeV0Composition buildEhrbaseBloodPressureSimpleDeV0() {
+    EhrbaseBloodPressureSimpleDeV0Composition bloodPressureSimpleDeV0 =
+        new EhrbaseBloodPressureSimpleDeV0Composition();
+    bloodPressureSimpleDeV0.setStartTimeValue(
+        OffsetDateTime.of(2019, 04, 03, 22, 00, 00, 00, ZoneOffset.UTC));
+    bloodPressureSimpleDeV0.setEndTimeValue(OffsetDateTime.now());
+    bloodPressureSimpleDeV0.setBloodPressureTrainingSample(new ArrayList<>());
+    bloodPressureSimpleDeV0.setLanguage(Language.DE);
+    bloodPressureSimpleDeV0.setTerritory(Territory.DE);
+    bloodPressureSimpleDeV0.setCategoryDefiningCode(Category.EVENT);
+    bloodPressureSimpleDeV0.setSettingDefiningCode(Setting.NURSING_HOME_CARE);
+    bloodPressureSimpleDeV0.setComposer(new PartyIdentified(null, "Test", null));
+    bloodPressureSimpleDeV0.setParticipations(new ArrayList<>());
+    bloodPressureSimpleDeV0
+        .getParticipations()
+        .add(
+            new Participation(
+                new PartyIdentified(null, "Test", null), new DvText("Pos1"), null, null));
+    bloodPressureSimpleDeV0
+        .getParticipations()
+        .add(
+            new Participation(
+                new PartyIdentified(null, "Test2", null), new DvText("Pos2"), null, null));
 
-    public static EhrbaseBloodPressureSimpleDeV0Composition buildEhrbaseBloodPressureSimpleDeV0WithEmptyFields() {
-        EhrbaseBloodPressureSimpleDeV0Composition bloodPressureSimpleDeV0 =
-                new EhrbaseBloodPressureSimpleDeV0Composition();
-        bloodPressureSimpleDeV0.setStartTimeValue(OffsetDateTime.of(2019, 04, 03, 22, 00, 00, 00, ZoneOffset.UTC));
+    bloodPressureSimpleDeV0
+        .getBloodPressureTrainingSample()
+        .add(buildBloodPressureTrainingSampleObservation());
+    return bloodPressureSimpleDeV0;
+  }
 
-        bloodPressureSimpleDeV0.setBloodPressureTrainingSample(new ArrayList<>());
-        bloodPressureSimpleDeV0.setLanguage(Language.DE);
-        bloodPressureSimpleDeV0.setTerritory(Territory.DE);
-        bloodPressureSimpleDeV0.setCategoryDefiningCode(Category.EVENT);
-        bloodPressureSimpleDeV0.setSettingDefiningCode(Setting.NURSING_HOME_CARE);
-        bloodPressureSimpleDeV0.setComposer(new PartyIdentified(null, "Test", null));
-        bloodPressureSimpleDeV0.setParticipations(new ArrayList<>());
+  public static EhrbaseBloodPressureSimpleDeV0Composition
+      buildEhrbaseBloodPressureSimpleDeV0WithEmptyFields() {
+    EhrbaseBloodPressureSimpleDeV0Composition bloodPressureSimpleDeV0 =
+        new EhrbaseBloodPressureSimpleDeV0Composition();
+    bloodPressureSimpleDeV0.setStartTimeValue(
+        OffsetDateTime.of(2019, 04, 03, 22, 00, 00, 00, ZoneOffset.UTC));
 
-        bloodPressureSimpleDeV0.getBloodPressureTrainingSample().add(buildBloodPressureTrainingSampleObservation());
-        return bloodPressureSimpleDeV0;
-    }
+    bloodPressureSimpleDeV0.setBloodPressureTrainingSample(new ArrayList<>());
+    bloodPressureSimpleDeV0.setLanguage(Language.DE);
+    bloodPressureSimpleDeV0.setTerritory(Territory.DE);
+    bloodPressureSimpleDeV0.setCategoryDefiningCode(Category.EVENT);
+    bloodPressureSimpleDeV0.setSettingDefiningCode(Setting.NURSING_HOME_CARE);
+    bloodPressureSimpleDeV0.setComposer(new PartyIdentified(null, "Test", null));
+    bloodPressureSimpleDeV0.setParticipations(new ArrayList<>());
 
-    public static GECCOSerologischerBefundComposition buildGeccoSerologischerBefundComposition() {
-        GECCOSerologischerBefundComposition composition = new GECCOSerologischerBefundComposition();
-        composition.setLanguage(Language.DE);
-        composition.setTerritory(Territory.DE);
-        composition.setCategoryDefiningCode(Category.EVENT);
-        composition.setSettingDefiningCode(Setting.NURSING_HOME_CARE);
-        composition.setComposer(new PartyIdentified(null, "Test", null));
-        composition.setStartTimeValue(OffsetDateTime.of(2019, 04, 03, 22, 00, 00, 00, ZoneOffset.UTC));
-        composition.setParticipations(new ArrayList<>());
-        composition.setBefund(new ArrayList<>());
-        var befundObservation = new org.ehrbase.client.classgenerator.examples.geccoserologischerbefundcomposition
-                .definition.BefundObservation();
-        composition.getBefund().add(befundObservation);
-        befundObservation.setSubject(new PartySelf());
-        befundObservation.setJedesEreignis(new ArrayList<>());
-        befundObservation.setLanguage(Language.DE);
-        befundObservation.setAnforderungDefiningCode(
-                AnforderungDefiningCode.SARS_COV2_COVID19_AB_PANEL_SERUM_OR_PLASMA_BY_IMMUNOASSAY);
-        befundObservation.setOriginValue(OffsetDateTime.of(2019, 04, 03, 22, 00, 00, 00, ZoneOffset.UTC));
-        BefundJedesEreignisPointEvent event = new BefundJedesEreignisPointEvent();
-        event.setTimeValue(OffsetDateTime.of(2019, 04, 03, 22, 00, 00, 00, ZoneOffset.UTC));
-        event.setErgebnisStatusValue("registered");
-        event.setLabortestBezeichnungDefiningCode(LabortestBezeichnungDefiningCode.SEROLOGIC_TEST_PROCEDURE);
-        event.setVirusnachweistestDefiningCode(
-                VirusnachweistestDefiningCode.SARS_COV2_COVID19_AB_PRESENCE_IN_SERUM_OR_PLASMA_BY_IMMUNOASSAY);
-        befundObservation.getJedesEreignis().add(event);
-        ProAnalytQuantitativesErgebnisDvCount quantitativesErgebnis = new ProAnalytQuantitativesErgebnisDvCount();
-        quantitativesErgebnis.setQuantitativesErgebnisMagnitude(22l);
-        event.setQuantitativesErgebnis(quantitativesErgebnis);
-        return composition;
-    }
+    bloodPressureSimpleDeV0
+        .getBloodPressureTrainingSample()
+        .add(buildBloodPressureTrainingSampleObservation());
+    return bloodPressureSimpleDeV0;
+  }
 
-    protected static BloodPressureTrainingSampleObservation buildBloodPressureTrainingSampleObservation() {
-        BloodPressureTrainingSampleObservation bloodPressureTrainingSample =
-                new BloodPressureTrainingSampleObservation();
-        bloodPressureTrainingSample.setSubject(new PartySelf());
-        OffsetDateTime now = OffsetDateTime.now();
-        bloodPressureTrainingSample.setOriginValue(now);
-        bloodPressureTrainingSample.setTimeValue(now);
-        bloodPressureTrainingSample.setLanguage(Language.DE);
-        bloodPressureTrainingSample.setSystolicMagnitude(22d);
-        bloodPressureTrainingSample.setSystolicUnits("mm[Hg]");
-        bloodPressureTrainingSample.setDiastolicMagnitude(22d);
-        bloodPressureTrainingSample.setDiastolicUnits("mm[Hg]");
-        bloodPressureTrainingSample.setMeanArterialPressureMagnitude(22d);
-        bloodPressureTrainingSample.setMeanArterialPressureUnits("mm[Hg]");
-        bloodPressureTrainingSample.setPulsePressureMagnitude(22d);
-        bloodPressureTrainingSample.setPulsePressureUnits("mm[Hg]");
-        bloodPressureTrainingSample.setKorotkoffSoundsDefiningCode(KorotkoffSoundsDefiningCode.FIFTH_SOUND);
-        bloodPressureTrainingSample.setCuffSizeDefiningCode(CuffSizeDefiningCode.ADULT);
-        bloodPressureTrainingSample.setLocationOfMeasurementDefiningCode(LocationOfMeasurementDefiningCode.FINGER);
-        return bloodPressureTrainingSample;
-    }
+  public static GECCOSerologischerBefundComposition buildGeccoSerologischerBefundComposition() {
+    GECCOSerologischerBefundComposition composition = new GECCOSerologischerBefundComposition();
+    composition.setLanguage(Language.DE);
+    composition.setTerritory(Territory.DE);
+    composition.setCategoryDefiningCode(Category.EVENT);
+    composition.setSettingDefiningCode(Setting.NURSING_HOME_CARE);
+    composition.setComposer(new PartyIdentified(null, "Test", null));
+    composition.setStartTimeValue(OffsetDateTime.of(2019, 04, 03, 22, 00, 00, 00, ZoneOffset.UTC));
+    composition.setParticipations(new ArrayList<>());
+    composition.setBefund(new ArrayList<>());
+    var befundObservation =
+        new org.ehrbase.client.classgenerator.examples.geccoserologischerbefundcomposition
+            .definition.BefundObservation();
+    composition.getBefund().add(befundObservation);
+    befundObservation.setSubject(new PartySelf());
+    befundObservation.setJedesEreignis(new ArrayList<>());
+    befundObservation.setLanguage(Language.DE);
+    befundObservation.setAnforderungDefiningCode(
+        AnforderungDefiningCode.SARS_COV2_COVID19_AB_PANEL_SERUM_OR_PLASMA_BY_IMMUNOASSAY);
+    befundObservation.setOriginValue(
+        OffsetDateTime.of(2019, 04, 03, 22, 00, 00, 00, ZoneOffset.UTC));
+    BefundJedesEreignisPointEvent event = new BefundJedesEreignisPointEvent();
+    event.setTimeValue(OffsetDateTime.of(2019, 04, 03, 22, 00, 00, 00, ZoneOffset.UTC));
+    event.setErgebnisStatusValue("registered");
+    event.setLabortestBezeichnungDefiningCode(LabortestBezeichnungDefiningCode.SEROLOGIC_TEST_PROCEDURE);
+    event.setVirusnachweistestDefiningCode(VirusnachweistestDefiningCode.SARS_COV2_COVID19_AB_PRESENCE_IN_SERUM_OR_PLASMA_BY_IMMUNOASSAY);
+    befundObservation.getJedesEreignis().add(event);
+    ProAnalytQuantitativesErgebnisDvCount quantitativesErgebnis =
+        new ProAnalytQuantitativesErgebnisDvCount();
+    quantitativesErgebnis.setQuantitativesErgebnisMagnitude(22l);
+    event.setQuantitativesErgebnis(quantitativesErgebnis);
+    return composition;
+  }
 
-    public static EhrbaseMultiOccurrenceDeV1Composition buildEhrbaseMultiOccurrenceDeV1() {
-        EhrbaseMultiOccurrenceDeV1Composition dto = new EhrbaseMultiOccurrenceDeV1Composition();
-        OffsetDateTime now = OffsetDateTime.now();
-        dto.setStartTimeValue(now);
-        dto.setEndTimeValue(now);
-        dto.setLanguage(Language.DE);
-        dto.setTerritory(Territory.DE);
-        dto.setSettingDefiningCode(Setting.DENTAL_CARE);
-        dto.setCategoryDefiningCode(Category.EVENT);
-        dto.setComposer(new PartyIdentified(null, "Test", null));
-        dto.setBodyTemperature(new ArrayList<>());
+  protected static BloodPressureTrainingSampleObservation
+      buildBloodPressureTrainingSampleObservation() {
+    BloodPressureTrainingSampleObservation bloodPressureTrainingSample =
+        new BloodPressureTrainingSampleObservation();
+    bloodPressureTrainingSample.setSubject(new PartySelf());
+    OffsetDateTime now = OffsetDateTime.now();
+    bloodPressureTrainingSample.setOriginValue(now);
+    bloodPressureTrainingSample.setTimeValue(now);
+    bloodPressureTrainingSample.setLanguage(Language.DE);
+    bloodPressureTrainingSample.setSystolicMagnitude(22d);
+    bloodPressureTrainingSample.setSystolicUnits("mm[Hg]");
+    bloodPressureTrainingSample.setDiastolicMagnitude(22d);
+    bloodPressureTrainingSample.setDiastolicUnits("mm[Hg]");
+    bloodPressureTrainingSample.setMeanArterialPressureMagnitude(22d);
+    bloodPressureTrainingSample.setMeanArterialPressureUnits("mm[Hg]");
+    bloodPressureTrainingSample.setPulsePressureMagnitude(22d);
+    bloodPressureTrainingSample.setPulsePressureUnits("mm[Hg]");
+    bloodPressureTrainingSample.setKorotkoffSoundsDefiningCode(
+        KorotkoffSoundsDefiningCode.FIFTH_SOUND);
+    bloodPressureTrainingSample.setCuffSizeDefiningCode(CuffSizeDefiningCode.ADULT);
+    bloodPressureTrainingSample.setLocationOfMeasurementDefiningCode(
+        LocationOfMeasurementDefiningCode.FINGER);
+    return bloodPressureTrainingSample;
+  }
 
-        dto.getBodyTemperature().add(buildBodyTemperature1());
-        dto.getBodyTemperature().add(buildBodyTemperature2());
-        return dto;
-    }
+  public static EhrbaseMultiOccurrenceDeV1Composition buildEhrbaseMultiOccurrenceDeV1() {
+    EhrbaseMultiOccurrenceDeV1Composition dto = new EhrbaseMultiOccurrenceDeV1Composition();
+    OffsetDateTime now = OffsetDateTime.now();
+    dto.setStartTimeValue(now);
+    dto.setEndTimeValue(now);
+    dto.setLanguage(Language.DE);
+    dto.setTerritory(Territory.DE);
+    dto.setSettingDefiningCode(Setting.DENTAL_CARE);
+    dto.setCategoryDefiningCode(Category.EVENT);
+    dto.setComposer(new PartyIdentified(null, "Test", null));
+    dto.setBodyTemperature(new ArrayList<>());
 
-    private static BodyTemperatureObservation buildBodyTemperature1() {
-        BodyTemperatureObservation bodyTemperature = new BodyTemperatureObservation();
-        bodyTemperature.setLanguage(Language.DE);
-        bodyTemperature.setSubject(new PartySelf());
-        OffsetDateTime now = OffsetDateTime.now();
-        bodyTemperature.setOriginValue(now);
-        bodyTemperature.setAnyEvent(new ArrayList<>());
-        BodyTemperatureLocationOfMeasurementDvCodedText locationOfMeasurement =
-                new BodyTemperatureLocationOfMeasurementDvCodedText();
-        locationOfMeasurement.setLocationOfMeasurementDefiningCode(
-                org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1composition.definition
-                        .LocationOfMeasurementDefiningCode.FOREHEAD);
-        bodyTemperature.setLocationOfMeasurement(locationOfMeasurement);
+    dto.getBodyTemperature().add(buildBodyTemperature1());
+    dto.getBodyTemperature().add(buildBodyTemperature2());
+    return dto;
+  }
 
-        BodyTemperatureAnyEventPointEvent history1 = new BodyTemperatureAnyEventPointEvent();
-        history1.setTemperatureMagnitude(22d);
-        history1.setTemperatureUnits("Cel");
-        history1.setCurrentDayOfMenstrualCycleMagnitude(3l);
-        history1.setTimeValue(now);
-        bodyTemperature.getAnyEvent().add(history1);
+  private static BodyTemperatureObservation buildBodyTemperature1() {
+    BodyTemperatureObservation bodyTemperature = new BodyTemperatureObservation();
+    bodyTemperature.setLanguage(Language.DE);
+    bodyTemperature.setSubject(new PartySelf());
+    OffsetDateTime now = OffsetDateTime.now();
+    bodyTemperature.setOriginValue(now);
+    bodyTemperature.setAnyEvent(new ArrayList<>());
+    BodyTemperatureLocationOfMeasurementDvCodedText locationOfMeasurement =
+        new BodyTemperatureLocationOfMeasurementDvCodedText();
+    locationOfMeasurement.setLocationOfMeasurementDefiningCode(
+        org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1composition.definition
+            .LocationOfMeasurementDefiningCode.FOREHEAD);
+    bodyTemperature.setLocationOfMeasurement(locationOfMeasurement);
 
-        BodyTemperatureAnyEventPointEvent history2 = new BodyTemperatureAnyEventPointEvent();
-        history2.setTemperatureMagnitude(11d);
-        history2.setTemperatureUnits("Cel");
-        history2.setCurrentDayOfMenstrualCycleMagnitude(3l);
-        history2.setTimeValue(now);
-        bodyTemperature.getAnyEvent().add(history2);
-        return bodyTemperature;
-    }
+    BodyTemperatureAnyEventPointEvent history1 = new BodyTemperatureAnyEventPointEvent();
+    history1.setTemperatureMagnitude(22d);
+    history1.setTemperatureUnits("Cel");
+    history1.setCurrentDayOfMenstrualCycleMagnitude(3l);
+    history1.setTimeValue(now);
+    bodyTemperature.getAnyEvent().add(history1);
 
-    private static BodyTemperatureObservation buildBodyTemperature2() {
-        BodyTemperatureObservation bodyTemperature = new BodyTemperatureObservation();
-        bodyTemperature.setLanguage(Language.DE);
-        bodyTemperature.setSubject(new PartySelf());
-        OffsetDateTime now = OffsetDateTime.now();
-        bodyTemperature.setOriginValue(now);
-        bodyTemperature.setAnyEvent(new ArrayList<>());
-        BodyTemperatureLocationOfMeasurementDvText locationOfMeasurement =
-                new BodyTemperatureLocationOfMeasurementDvText();
-        locationOfMeasurement.setLocationOfMeasurementValue("location");
-        bodyTemperature.setLocationOfMeasurement(locationOfMeasurement);
+    BodyTemperatureAnyEventPointEvent history2 = new BodyTemperatureAnyEventPointEvent();
+    history2.setTemperatureMagnitude(11d);
+    history2.setTemperatureUnits("Cel");
+    history2.setCurrentDayOfMenstrualCycleMagnitude(3l);
+    history2.setTimeValue(now);
+    bodyTemperature.getAnyEvent().add(history2);
+    return bodyTemperature;
+  }
 
-        BodyTemperatureAnyEventPointEvent history1 = new BodyTemperatureAnyEventPointEvent();
-        history1.setTemperatureMagnitude(22d);
-        history1.setTemperatureUnits("Cel");
-        history1.setCurrentDayOfMenstrualCycleMagnitude(3l);
-        history1.setTimeValue(now);
-        bodyTemperature.getAnyEvent().add(history1);
+  private static BodyTemperatureObservation buildBodyTemperature2() {
+    BodyTemperatureObservation bodyTemperature = new BodyTemperatureObservation();
+    bodyTemperature.setLanguage(Language.DE);
+    bodyTemperature.setSubject(new PartySelf());
+    OffsetDateTime now = OffsetDateTime.now();
+    bodyTemperature.setOriginValue(now);
+    bodyTemperature.setAnyEvent(new ArrayList<>());
+    BodyTemperatureLocationOfMeasurementDvText locationOfMeasurement =
+        new BodyTemperatureLocationOfMeasurementDvText();
+    locationOfMeasurement.setLocationOfMeasurementValue("location");
+    bodyTemperature.setLocationOfMeasurement(locationOfMeasurement);
 
-        BodyTemperatureAnyEventPointEvent history2 = new BodyTemperatureAnyEventPointEvent();
-        history2.setTemperatureMagnitude(11d);
-        history2.setTemperatureUnits("Cel");
-        history2.setCurrentDayOfMenstrualCycleMagnitude(3l);
-        history2.setTimeValue(now);
-        bodyTemperature.getAnyEvent().add(history2);
-        return bodyTemperature;
-    }
+    BodyTemperatureAnyEventPointEvent history1 = new BodyTemperatureAnyEventPointEvent();
+    history1.setTemperatureMagnitude(22d);
+    history1.setTemperatureUnits("Cel");
+    history1.setCurrentDayOfMenstrualCycleMagnitude(3l);
+    history1.setTimeValue(now);
+    bodyTemperature.getAnyEvent().add(history1);
 
-    public static AlternativeEventsComposition buildAlternativeEventsComposition() {
-        AlternativeEventsComposition alternativeEventsComposition = new AlternativeEventsComposition();
-        alternativeEventsComposition.setStartTimeValue(OffsetDateTime.of(2010, 11, 02, 12, 00, 00, 00, ZoneOffset.UTC));
-        alternativeEventsComposition.setComposer(new PartyIdentified(null, "Test", null));
-        alternativeEventsComposition.setLanguage(Language.EN);
-        alternativeEventsComposition.setTerritory(Territory.DE);
-        alternativeEventsComposition.setCategoryDefiningCode(Category.EVENT);
-        alternativeEventsComposition.setSettingDefiningCode(Setting.COMPLEMENTARY_HEALTH_CARE);
-        alternativeEventsComposition.setKorpergewicht(new ArrayList<>());
-        KorpergewichtObservation korpergewichtObservation = new KorpergewichtObservation();
-        korpergewichtObservation.setLanguage(Language.EN);
-        korpergewichtObservation.setSubject(new PartySelf());
-        korpergewichtObservation.setOriginValue(OffsetDateTime.of(1990, 11, 02, 12, 00, 00, 00, ZoneOffset.UTC));
-        alternativeEventsComposition.getKorpergewicht().add(korpergewichtObservation);
+    BodyTemperatureAnyEventPointEvent history2 = new BodyTemperatureAnyEventPointEvent();
+    history2.setTemperatureMagnitude(11d);
+    history2.setTemperatureUnits("Cel");
+    history2.setCurrentDayOfMenstrualCycleMagnitude(3l);
+    history2.setTimeValue(now);
+    bodyTemperature.getAnyEvent().add(history2);
+    return bodyTemperature;
+  }
 
-        KorpergewichtBirthEnPointEvent birthEnEvent = new KorpergewichtBirthEnPointEvent();
-        birthEnEvent.setGewichtMagnitude(30d);
-        birthEnEvent.setGewichtUnits("kg");
-        birthEnEvent.setTimeValue(OffsetDateTime.of(1990, 11, 02, 12, 00, 00, 00, ZoneOffset.UTC));
+  public static AlternativeEventsComposition buildAlternativeEventsComposition() {
+    AlternativeEventsComposition alternativeEventsComposition = new AlternativeEventsComposition();
+    alternativeEventsComposition.setStartTimeValue(
+        OffsetDateTime.of(2010, 11, 02, 12, 00, 00, 00, ZoneOffset.UTC));
+    alternativeEventsComposition.setComposer(new PartyIdentified(null, "Test", null));
+    alternativeEventsComposition.setLanguage(Language.EN);
+    alternativeEventsComposition.setTerritory(Territory.DE);
+    alternativeEventsComposition.setCategoryDefiningCode(Category.EVENT);
+    alternativeEventsComposition.setSettingDefiningCode(Setting.COMPLEMENTARY_HEALTH_CARE);
+    alternativeEventsComposition.setKorpergewicht(new ArrayList<>());
+    KorpergewichtObservation korpergewichtObservation = new KorpergewichtObservation();
+    korpergewichtObservation.setLanguage(Language.EN);
+    korpergewichtObservation.setSubject(new PartySelf());
+    korpergewichtObservation.setOriginValue(
+        OffsetDateTime.of(1990, 11, 02, 12, 00, 00, 00, ZoneOffset.UTC));
+    alternativeEventsComposition.getKorpergewicht().add(korpergewichtObservation);
 
-        korpergewichtObservation.setBirthEn(birthEnEvent);
-        korpergewichtObservation.setAnyEventEn(new ArrayList<>());
+    KorpergewichtBirthEnPointEvent birthEnEvent = new KorpergewichtBirthEnPointEvent();
+    birthEnEvent.setGewichtMagnitude(30d);
+    birthEnEvent.setGewichtUnits("kg");
+    birthEnEvent.setTimeValue(OffsetDateTime.of(1990, 11, 02, 12, 00, 00, 00, ZoneOffset.UTC));
 
-        KorpergewichtAnyEventEnPointEvent pointEvent = new KorpergewichtAnyEventEnPointEvent();
-        pointEvent.setGewichtMagnitude(55d);
-        pointEvent.setGewichtUnits("kg");
-        pointEvent.setTimeValue(OffsetDateTime.of(2013, 11, 02, 12, 00, 00, 00, ZoneOffset.UTC));
-        korpergewichtObservation.getAnyEventEn().add(pointEvent);
+    korpergewichtObservation.setBirthEn(birthEnEvent);
+    korpergewichtObservation.setAnyEventEn(new ArrayList<>());
 
-        KorpergewichtAnyEventEnIntervalEvent intervalEvent = new KorpergewichtAnyEventEnIntervalEvent();
-        intervalEvent.setGewichtMagnitude(60d);
-        intervalEvent.setGewichtUnits("kg");
-        intervalEvent.setTimeValue(OffsetDateTime.of(2015, 11, 02, 12, 00, 00, 00, ZoneOffset.UTC));
-        intervalEvent.setWidthValue(Duration.ofDays(30));
-        intervalEvent.setMathFunctionDefiningCode(MathFunction.MEAN);
-        korpergewichtObservation.getAnyEventEn().add(intervalEvent);
-        return alternativeEventsComposition;
-    }
+    KorpergewichtAnyEventEnPointEvent pointEvent = new KorpergewichtAnyEventEnPointEvent();
+    pointEvent.setGewichtMagnitude(55d);
+    pointEvent.setGewichtUnits("kg");
+    pointEvent.setTimeValue(OffsetDateTime.of(2013, 11, 02, 12, 00, 00, 00, ZoneOffset.UTC));
+    korpergewichtObservation.getAnyEventEn().add(pointEvent);
 
-    public static EpisodeOfCareComposition buildEpisodeOfCareComposition() {
-        EpisodeOfCareComposition episode = new EpisodeOfCareComposition();
-        episode.setComposer(new PartyIdentified(null, "Test", null));
-        episode.setCategoryDefiningCode(Category.EVENT);
-        episode.setLanguage(Language.DE);
-        episode.setTerritory(Territory.DE);
-        episode.setEpisodeofcare(new ArrayList<>());
-        OffsetDateTime now = OffsetDateTime.now();
-        episode.setStartTimeValue(now);
-        episode.setSettingDefiningCode(Setting.NURSING_HOME_CARE);
+    KorpergewichtAnyEventEnIntervalEvent intervalEvent = new KorpergewichtAnyEventEnIntervalEvent();
+    intervalEvent.setGewichtMagnitude(60d);
+    intervalEvent.setGewichtUnits("kg");
+    intervalEvent.setTimeValue(OffsetDateTime.of(2015, 11, 02, 12, 00, 00, 00, ZoneOffset.UTC));
+    intervalEvent.setWidthValue(Duration.ofDays(30));
+    intervalEvent.setMathFunctionDefiningCode(MathFunction.MEAN);
+    korpergewichtObservation.getAnyEventEn().add(intervalEvent);
+    return alternativeEventsComposition;
+  }
 
-        FeederAudit audit = new FeederAudit();
-        audit.setFeederSystemAudit(new FeederAuditDetails());
-        audit.getFeederSystemAudit().setSystemId("System 1");
-        audit.setOriginatingSystemAudit(new FeederAuditDetails());
-        audit.getOriginatingSystemAudit().setSystemId("System 2");
-        episode.setFeederAudit(audit);
+  public static EpisodeOfCareComposition buildEpisodeOfCareComposition() {
+    EpisodeOfCareComposition episode = new EpisodeOfCareComposition();
+    episode.setComposer(new PartyIdentified(null, "Test", null));
+    episode.setCategoryDefiningCode(Category.EVENT);
+    episode.setLanguage(Language.DE);
+    episode.setTerritory(Territory.DE);
+    episode.setEpisodeofcare(new ArrayList<>());
+    OffsetDateTime now = OffsetDateTime.now();
+    episode.setStartTimeValue(now);
+    episode.setSettingDefiningCode(Setting.NURSING_HOME_CARE);
 
-        EpisodeofcareAdminEntry episodeofcareAdminEntry = new EpisodeofcareAdminEntry();
+    FeederAudit audit = new FeederAudit();
+    audit.setFeederSystemAudit(new FeederAuditDetails());
+    audit.getFeederSystemAudit().setSystemId("System 1");
+    audit.setOriginatingSystemAudit(new FeederAuditDetails());
+    audit.getOriginatingSystemAudit().setSystemId("System 2");
+    episode.setFeederAudit(audit);
 
-        episodeofcareAdminEntry.setUpperValue(now);
-        episodeofcareAdminEntry.setLowerValue(now);
-        episodeofcareAdminEntry.setLanguage(Language.DE);
-        episodeofcareAdminEntry.setSubject(new PartySelf());
-        episodeofcareAdminEntry.setIdentifier(new ArrayList<>());
-        EpisodeofcareIdentifierElement identifierElement = new EpisodeofcareIdentifierElement();
-        DvIdentifier value = new DvIdentifier();
-        value.setId("123");
-        identifierElement.setValue(value);
-        episodeofcareAdminEntry.getIdentifier().add(identifierElement);
+    EpisodeofcareAdminEntry episodeofcareAdminEntry = new EpisodeofcareAdminEntry();
 
-        EpisodeofcareIdentifierElement identifierElement2 = new EpisodeofcareIdentifierElement();
-        DvIdentifier value2 = new DvIdentifier();
-        value2.setId("456");
-        identifierElement2.setValue(value2);
-        episodeofcareAdminEntry.getIdentifier().add(identifierElement2);
+    episodeofcareAdminEntry.setUpperValue(now);
+    episodeofcareAdminEntry.setLowerValue(now);
+    episodeofcareAdminEntry.setLanguage(Language.DE);
+    episodeofcareAdminEntry.setSubject(new PartySelf());
+    episodeofcareAdminEntry.setIdentifier(new ArrayList<>());
+    EpisodeofcareIdentifierElement identifierElement = new EpisodeofcareIdentifierElement();
+    DvIdentifier value = new DvIdentifier();
+    value.setId("123");
+    identifierElement.setValue(value);
+    episodeofcareAdminEntry.getIdentifier().add(identifierElement);
 
-        episodeofcareAdminEntry.setTeam(new ArrayList<>());
-        EpisodeofcareTeamElement teamElement1 = new EpisodeofcareTeamElement();
-        teamElement1.setValue(URI.create("https://github.com/ehrbase"));
-        episodeofcareAdminEntry.getTeam().add(teamElement1);
+    EpisodeofcareIdentifierElement identifierElement2 = new EpisodeofcareIdentifierElement();
+    DvIdentifier value2 = new DvIdentifier();
+    value2.setId("456");
+    identifierElement2.setValue(value2);
+    episodeofcareAdminEntry.getIdentifier().add(identifierElement2);
 
-        episode.getEpisodeofcare().add(episodeofcareAdminEntry);
-        return episode;
-    }
+    episodeofcareAdminEntry.setTeam(new ArrayList<>());
+    EpisodeofcareTeamElement teamElement1 = new EpisodeofcareTeamElement();
+    teamElement1.setValue(URI.create("https://github.com/ehrbase"));
+    episodeofcareAdminEntry.getTeam().add(teamElement1);
 
-    public static PatientenaufenthaltComposition buildTestPatientenaufenthaltComposition() {
-        PatientenaufenthaltComposition patientenaufenthaltComposition = new PatientenaufenthaltComposition();
+    episode.getEpisodeofcare().add(episodeofcareAdminEntry);
+    return episode;
+  }
 
-        patientenaufenthaltComposition.setComposer(new PartyIdentified(null, "Test", null));
-        patientenaufenthaltComposition.setCategoryDefiningCode(Category.EVENT);
-        patientenaufenthaltComposition.setLanguage(Language.DE);
-        patientenaufenthaltComposition.setTerritory(Territory.DE);
-        OffsetDateTime now = OffsetDateTime.now();
-        patientenaufenthaltComposition.setStartTimeValue(now);
-        patientenaufenthaltComposition.setSettingDefiningCode(Setting.NURSING_HOME_CARE);
+  public static PatientenaufenthaltComposition buildTestPatientenaufenthaltComposition() {
+    PatientenaufenthaltComposition patientenaufenthaltComposition =
+        new PatientenaufenthaltComposition();
 
-        VersorgungsortAdminEntry versorgungsortAdminEntry = new VersorgungsortAdminEntry();
-        StandortCluster standortCluster = new StandortCluster();
-        standortCluster.setStandorttypValue("Test");
-        standortCluster.setStandortbeschreibungValue("Beschreibung");
-        standortCluster.setStandortschlusselDefiningCode(StandortschlusselDefiningCode.ANGIOLOGIE.ANGIOLOGIE);
-        standortCluster.setBettplatzkennungValue("Platz 2");
+    patientenaufenthaltComposition.setComposer(new PartyIdentified(null, "Test", null));
+    patientenaufenthaltComposition.setCategoryDefiningCode(Category.EVENT);
+    patientenaufenthaltComposition.setLanguage(Language.DE);
+    patientenaufenthaltComposition.setTerritory(Territory.DE);
+    OffsetDateTime now = OffsetDateTime.now();
+    patientenaufenthaltComposition.setStartTimeValue(now);
+    patientenaufenthaltComposition.setSettingDefiningCode(Setting.NURSING_HOME_CARE);
 
-        versorgungsortAdminEntry.setStandort(standortCluster);
-        versorgungsortAdminEntry.setBeginnValue(new DvDateTime("2020-01-01T10:00Z").getValue());
-        versorgungsortAdminEntry.setEndeValue(new DvDateTime("2020-01-01T12:00Z").getValue());
-        versorgungsortAdminEntry.setGrundDesAufenthaltesValue("test value");
-        versorgungsortAdminEntry.setLanguage(Language.DE);
-        versorgungsortAdminEntry.setSubject(new PartySelf());
+    VersorgungsortAdminEntry versorgungsortAdminEntry = new VersorgungsortAdminEntry();
+    StandortCluster standortCluster = new StandortCluster();
+    standortCluster.setStandorttypValue("Test");
+    standortCluster.setStandortbeschreibungValue("Beschreibung");
+    standortCluster.setStandortschlusselDefiningCode(
+        StandortschlusselDefiningCode.ANGIOLOGIE.ANGIOLOGIE);
+    standortCluster.setBettplatzkennungValue("Platz 2");
 
-        patientenaufenthaltComposition.setVersorgungsort(versorgungsortAdminEntry);
+    versorgungsortAdminEntry.setStandort(standortCluster);
+    versorgungsortAdminEntry.setBeginnValue(new DvDateTime("2020-01-01T10:00Z").getValue());
+    versorgungsortAdminEntry.setEndeValue(new DvDateTime("2020-01-01T12:00Z").getValue());
+    versorgungsortAdminEntry.setGrundDesAufenthaltesValue("test value");
+    versorgungsortAdminEntry.setLanguage(Language.DE);
+    versorgungsortAdminEntry.setSubject(new PartySelf());
 
-        return patientenaufenthaltComposition;
-    }
+    patientenaufenthaltComposition.setVersorgungsort(versorgungsortAdminEntry);
 
-    public static VirologischerBefundComposition buildTestVirologischerBefundComposition() {
+    return patientenaufenthaltComposition;
+  }
 
-        // openEHR-EHR-COMPOSITION.report-result.v1
-        VirologischerBefundComposition virologischerBefundComposition = new VirologischerBefundComposition();
+  public static VirologischerBefundComposition buildTestVirologischerBefundComposition() {
 
-        virologischerBefundComposition.setComposer(new PartyIdentified(null, "Test", null));
-        virologischerBefundComposition.setCategoryDefiningCode(Category.EVENT);
-        virologischerBefundComposition.setLanguage(Language.DE);
-        virologischerBefundComposition.setTerritory(Territory.DE);
-        OffsetDateTime now = OffsetDateTime.now();
-        virologischerBefundComposition.setStartTimeValue(now);
-        virologischerBefundComposition.setSettingDefiningCode(Setting.SECONDARY_MEDICAL_CARE);
+    // openEHR-EHR-COMPOSITION.report-result.v1
+    VirologischerBefundComposition virologischerBefundComposition =
+        new VirologischerBefundComposition();
 
-        // context, other_context
-        FallidentifikationCluster fallidentifikationCluster = new FallidentifikationCluster();
-        fallidentifikationCluster.setFallKennungValue("9251377");
-        virologischerBefundComposition.setFallidentifikation(fallidentifikationCluster);
-        virologischerBefundComposition.setBerichtIdValue("15a69a62-1ea7-4111-98a5-28aeae854bcd");
-        virologischerBefundComposition.setStatusValue("Endbefund");
+    virologischerBefundComposition.setComposer(new PartyIdentified(null, "Test", null));
+    virologischerBefundComposition.setCategoryDefiningCode(Category.EVENT);
+    virologischerBefundComposition.setLanguage(Language.DE);
+    virologischerBefundComposition.setTerritory(Territory.DE);
+    OffsetDateTime now = OffsetDateTime.now();
+    virologischerBefundComposition.setStartTimeValue(now);
+    virologischerBefundComposition.setSettingDefiningCode(Setting.SECONDARY_MEDICAL_CARE);
 
-        // openEHR-EHR-CLUSTER.specimen.v1
-        ProbeCluster probeCluster = new ProbeCluster();
-        probeCluster.setZeitpunktDerProbenentnahmeValue(new DvDateTime("2020-04-01T12:00:00Z").getValue());
-        probeCluster.setProbenartValue("Blut");
-        probeCluster.setZeitpunktDesProbeneingangsValue(new DvDateTime("2020-04-02T09:00:00Z").getValue());
-        probeCluster.setKommentarDesProbennehmersValue("Kommentar zur Probe");
-        probeCluster.setKommentarValue("Kommentar");
+    // context, other_context
+    FallidentifikationCluster fallidentifikationCluster = new FallidentifikationCluster();
+    fallidentifikationCluster.setFallKennungValue("9251377");
+    virologischerBefundComposition.setFallidentifikation(fallidentifikationCluster);
+    virologischerBefundComposition.setBerichtIdValue("15a69a62-1ea7-4111-98a5-28aeae854bcd");
+    virologischerBefundComposition.setStatusValue("Endbefund");
 
-        // openEHR-EHR-CLUSTER.laboratory_test_analyte.v1
-        ProVirusCluster proVirusCluster1 = new ProVirusCluster();
-        proVirusCluster1.setVirusValue("SARS-Cov-2");
-        proVirusCluster1.setAnalyseergebnisReihenfolgeMagnitude(Long.valueOf(32));
-        DvIdentifier identifier = new DvIdentifier();
-        identifier.setIssuer("Issuer");
-        identifier.setAssigner("Assigner");
-        identifier.setId("9a0e5173-07c8-443d-b414-24432b9d95ca");
-        identifier.setType("Prescription");
-        proVirusCluster1.setZugehorigeLaborprobe(identifier);
+    // openEHR-EHR-CLUSTER.specimen.v1
+    ProbeCluster probeCluster = new ProbeCluster();
+    probeCluster.setZeitpunktDerProbenentnahmeValue(
+        new DvDateTime("2020-04-01T12:00:00Z").getValue());
+    probeCluster.setProbenartValue("Blut");
+    probeCluster.setZeitpunktDesProbeneingangsValue(
+        new DvDateTime("2020-04-02T09:00:00Z").getValue());
+    probeCluster.setKommentarDesProbennehmersValue("Kommentar zur Probe");
+    probeCluster.setKommentarValue("Kommentar");
 
-        ProVirusCluster proVirusCluster2 = new ProVirusCluster();
-        proVirusCluster2.setVirusValue("SARS-Cov-2");
-        proVirusCluster2.setAnalyseergebnisReihenfolgeMagnitude(Long.valueOf(34));
-        proVirusCluster2.setZugehorigeLaborprobe(identifier);
+    // openEHR-EHR-CLUSTER.laboratory_test_analyte.v1
+    ProVirusCluster proVirusCluster1 = new ProVirusCluster();
+    proVirusCluster1.setVirusValue("SARS-Cov-2");
+    proVirusCluster1.setAnalyseergebnisReihenfolgeMagnitude(Long.valueOf(32));
+    DvIdentifier identifier = new DvIdentifier();
+    identifier.setIssuer("Issuer");
+    identifier.setAssigner("Assigner");
+    identifier.setId("9a0e5173-07c8-443d-b414-24432b9d95ca");
+    identifier.setType("Prescription");
+    proVirusCluster1.setZugehorigeLaborprobe(identifier);
 
-        // openEHR-EHR-CLUSTER.laboratory_test_panel.v0
-        KulturCluster kulturCluster = new KulturCluster();
-        kulturCluster.setProVirus(new ArrayList<>());
-        kulturCluster.getProVirus().add(proVirusCluster1);
-        kulturCluster.getProVirus().add(proVirusCluster2);
+    ProVirusCluster proVirusCluster2 = new ProVirusCluster();
+    proVirusCluster2.setVirusValue("SARS-Cov-2");
+    proVirusCluster2.setAnalyseergebnisReihenfolgeMagnitude(Long.valueOf(34));
+    proVirusCluster2.setZugehorigeLaborprobe(identifier);
 
-        // openEHR-EHR-OBSERVATION.laboratory_test_result.v1
-        BefundObservation befundObservation = new BefundObservation();
-        // set clusters in observation
-        befundObservation.setKultur(new ArrayList<>());
-        befundObservation.getKultur().add(kulturCluster);
-        befundObservation.setProbe(new ArrayList<>());
-        befundObservation.getProbe().add(probeCluster);
-        befundObservation.setOriginValue(new DvDateTime("2020-04-02T12:00:00Z").getValue());
-        befundObservation.setTimeValue(new DvDateTime("2020-04-02T14:00:00Z").getValue());
-        befundObservation.setLabortestBezeichnungValue("Virologische Untersuchung");
-        befundObservation.setSubject(new PartySelf());
-        befundObservation.setLanguage(Language.DE);
+    // openEHR-EHR-CLUSTER.laboratory_test_panel.v0
+    KulturCluster kulturCluster = new KulturCluster();
+    kulturCluster.setProVirus(new ArrayList<>());
+    kulturCluster.getProVirus().add(proVirusCluster1);
+    kulturCluster.getProVirus().add(proVirusCluster2);
 
-        virologischerBefundComposition.setBefund(befundObservation);
+    // openEHR-EHR-OBSERVATION.laboratory_test_result.v1
+    BefundObservation befundObservation = new BefundObservation();
+    // set clusters in observation
+    befundObservation.setKultur(new ArrayList<>());
+    befundObservation.getKultur().add(kulturCluster);
+    befundObservation.setProbe(new ArrayList<>());
+    befundObservation.getProbe().add(probeCluster);
+    befundObservation.setOriginValue(new DvDateTime("2020-04-02T12:00:00Z").getValue());
+    befundObservation.setTimeValue(new DvDateTime("2020-04-02T14:00:00Z").getValue());
+    befundObservation.setLabortestBezeichnungValue("Virologische Untersuchung");
+    befundObservation.setSubject(new PartySelf());
+    befundObservation.setLanguage(Language.DE);
 
-        return virologischerBefundComposition;
-    }
+    virologischerBefundComposition.setBefund(befundObservation);
 
-    public static StationarerVersorgungsfallComposition buildTestStationarerVersorgungsfallComposition() {
-        StationarerVersorgungsfallComposition stationarerVersorgungsfallComposition =
-                new StationarerVersorgungsfallComposition();
+    return virologischerBefundComposition;
+  }
 
-        stationarerVersorgungsfallComposition.setComposer(new PartyIdentified(null, "Test", null));
-        stationarerVersorgungsfallComposition.setCategoryDefiningCode(Category.EVENT);
-        stationarerVersorgungsfallComposition.setLanguage(Language.DE);
-        stationarerVersorgungsfallComposition.setTerritory(Territory.DE);
+  public static StationarerVersorgungsfallComposition
+      buildTestStationarerVersorgungsfallComposition() {
+    StationarerVersorgungsfallComposition stationarerVersorgungsfallComposition =
+        new StationarerVersorgungsfallComposition();
 
-        // context
-        stationarerVersorgungsfallComposition.setStartTimeValue(new DvDateTime("2020-04-02T12:00:00Z").getValue());
-        stationarerVersorgungsfallComposition.setSettingDefiningCode(Setting.NURSING_HOME_CARE);
-        // other_context
-        stationarerVersorgungsfallComposition.setFalltypDefiningCode(FalltypDefiningCode.VERSORGUNGSFALL);
-        stationarerVersorgungsfallComposition.setFallKennungValue("45657678");
+    stationarerVersorgungsfallComposition.setComposer(new PartyIdentified(null, "Test", null));
+    stationarerVersorgungsfallComposition.setCategoryDefiningCode(Category.EVENT);
+    stationarerVersorgungsfallComposition.setLanguage(Language.DE);
+    stationarerVersorgungsfallComposition.setTerritory(Territory.DE);
 
-        // openEHR-EHR-ADMIN_ENTRY.admission.v0
-        AufnahmedatenAdminEntry aufnahmedatenAdminEntry = new AufnahmedatenAdminEntry();
-        aufnahmedatenAdminEntry.setDatumUhrzeitDerAufnahmeValue(new DvDateTime("2020-04-02T12:00:00Z").getValue());
-        aufnahmedatenAdminEntry.setLanguage(Language.DE);
-        aufnahmedatenAdminEntry.setSubject(new PartySelf());
+    // context
+    stationarerVersorgungsfallComposition.setStartTimeValue(
+        new DvDateTime("2020-04-02T12:00:00Z").getValue());
+    stationarerVersorgungsfallComposition.setSettingDefiningCode(Setting.NURSING_HOME_CARE);
+    // other_context
+    stationarerVersorgungsfallComposition.setFalltypDefiningCode(FalltypDefiningCode.VERSORGUNGSFALL);
+    stationarerVersorgungsfallComposition.setFallKennungValue("45657678");
 
-        // openEHR-EHR-ADMIN_ENTRY.discharge_summary.v0
-        EntlassungsdatenAdminEntry entlassungsdatenAdminEntry = new EntlassungsdatenAdminEntry();
-        entlassungsdatenAdminEntry.setLanguage(Language.DE);
-        entlassungsdatenAdminEntry.setSubject(new PartySelf());
-        entlassungsdatenAdminEntry.setKlinischerZustandDesPatientenDefiningCode(
-                KlinischerZustandDesPatientenDefiningCode.UNBESTIMMT);
-        entlassungsdatenAdminEntry.setDatumUhrzeitDerEntlassungValue(new DvDateTime("2020-04-02T12:00:00Z").getValue());
+    // openEHR-EHR-ADMIN_ENTRY.admission.v0
+    AufnahmedatenAdminEntry aufnahmedatenAdminEntry = new AufnahmedatenAdminEntry();
+    aufnahmedatenAdminEntry.setDatumUhrzeitDerAufnahmeValue(
+        new DvDateTime("2020-04-02T12:00:00Z").getValue());
+    aufnahmedatenAdminEntry.setLanguage(Language.DE);
+    aufnahmedatenAdminEntry.setSubject(new PartySelf());
 
-        // assemble
-        stationarerVersorgungsfallComposition.setAufnahmedaten(aufnahmedatenAdminEntry);
-        stationarerVersorgungsfallComposition.setEntlassungsdaten(entlassungsdatenAdminEntry);
+    // openEHR-EHR-ADMIN_ENTRY.discharge_summary.v0
+    EntlassungsdatenAdminEntry entlassungsdatenAdminEntry = new EntlassungsdatenAdminEntry();
+    entlassungsdatenAdminEntry.setLanguage(Language.DE);
+    entlassungsdatenAdminEntry.setSubject(new PartySelf());
+    entlassungsdatenAdminEntry.setKlinischerZustandDesPatientenDefiningCode(
+        KlinischerZustandDesPatientenDefiningCode.UNBESTIMMT);
+    entlassungsdatenAdminEntry.setDatumUhrzeitDerEntlassungValue(
+        new DvDateTime("2020-04-02T12:00:00Z").getValue());
 
-        return stationarerVersorgungsfallComposition;
-    }
+    // assemble
+    stationarerVersorgungsfallComposition.setAufnahmedaten(aufnahmedatenAdminEntry);
+    stationarerVersorgungsfallComposition.setEntlassungsdaten(entlassungsdatenAdminEntry);
+
+    return stationarerVersorgungsfallComposition;
+  }
 }

@@ -1,13 +1,13 @@
 /*
- * Copyright (c) 2019 vitasystems GmbH and Hannover Medical School.
+ * Copyright (c) 2019 Vitasystems GmbH and Christian Chevalley (Hannover Medical School).
  *
- * This file is part of project openEHR_SDK
+ * This file is part of project EHRbase
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     https://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -26,28 +26,12 @@ public class EventContext extends TerminologyCheck {
         this.RM_CLASS = com.nedap.archie.rm.composition.EventContext.class;
     }
 
-    public static void check(
-            TerminologyInterface terminologyInterface,
-            AttributeCodesetMapping codesetMapping,
-            String context,
-            com.nedap.archie.rm.composition.EventContext eventContext,
-            String language)
-            throws IllegalArgumentException {
+    public static void check(TerminologyInterface terminologyInterface, AttributeCodesetMapping codesetMapping, String context, com.nedap.archie.rm.composition.EventContext eventContext, String language) throws IllegalArgumentException {
         if (eventContext.getSetting() != null)
-            validate(
-                    terminologyInterface,
-                    codesetMapping,
-                    "setting",
-                    eventContext.getSetting().getDefiningCode(),
-                    language);
+            validate(terminologyInterface, codesetMapping, "setting", eventContext.getSetting().getDefiningCode(), language);
     }
 
-    public static void check(
-            TerminologyInterface terminologyInterface,
-            AttributeCodesetMapping codesetMapping,
-            String context,
-            com.nedap.archie.rm.composition.EventContext eventContext)
-            throws IllegalArgumentException {
+    public static void check(TerminologyInterface terminologyInterface, AttributeCodesetMapping codesetMapping, String context, com.nedap.archie.rm.composition.EventContext eventContext) throws IllegalArgumentException {
         check(terminologyInterface, codesetMapping, context, eventContext, "en");
     }
 }

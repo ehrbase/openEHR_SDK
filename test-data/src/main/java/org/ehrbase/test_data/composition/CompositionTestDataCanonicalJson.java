@@ -1,13 +1,13 @@
 /*
- * Copyright (c) 2019 vitasystems GmbH and Hannover Medical School.
+ * Copyright (c) 2019 Stefan Spiska (Vitasystems GmbH) and Hannover Medical School.
  *
- * This file is part of project openEHR_SDK
+ * This file is part of project EHRbase
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     https://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -15,6 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.ehrbase.test_data.composition;
 
 import java.io.InputStream;
@@ -47,8 +48,7 @@ public enum CompositionTestDataCanonicalJson {
     DATE_TIME_TESTS("Composition with multiple partial and full date/time", "datetime_tests.json"),
     DURATION_TESTS("Composition with multiple DvDuration", "duration_tests.json"),
     VIROLOGY_FINDING_WITH_SPECIMEN("virology finding with specimen", "virology_finding_with_specimen.json"),
-    VIROLOGY_FINDING_WITH_SPECIMEN_NO_UPDATE(
-            "virology finding with specimen simple", "virology_finding_with_specimen_no_update.json"),
+    VIROLOGY_FINDING_WITH_SPECIMEN_NO_UPDATE("virology finding with specimen simple", "virology_finding_with_specimen_no_update.json"),
     MULTI_OCCURRENCE("multi occurrence", "multi_occurrence.json"),
     ALTERNATIVE_EVENTS("Contains Event with mixed point and interval", "alternative_events.json"),
     CHOICE_ELEMENT("element containing multiple choice to test validation", "choice_validation_test.json"),
@@ -58,8 +58,7 @@ public enum CompositionTestDataCanonicalJson {
     MINIMAL_INSTRUCTION("minimal instruction (contains DV_DURATION)", "minimal_instruction.json"),
     MINIMAL_ACTION_2("Minimal Action 2", "minimal_action2_1.json"),
     MINIMAL_WITH_OPTIONAL_ATTRIBUTE("dv multimedia with alternate_text", "minimal_with_optional_attribute.json"),
-    MINIMAL_WITHOUT_OPTIONAL_ATTRIBUTE(
-            "dv multimedia without alternate_text", "minimal_without_optional_attribute.json"),
+    MINIMAL_WITHOUT_OPTIONAL_ATTRIBUTE("dv multimedia without alternate_text", "minimal_without_optional_attribute.json"),
     GECCO_PERSONENDATEN("GECCO_Personendaten", "gecco_personendaten.json"),
     GECCO_LABORBEFUND("GECCO_Laborbefund", "gecco_laborbefund.json"),
     PARTICIPATION_NO_CONTENT("to test various participation CR #710", "participation_no_content.json"),
@@ -68,6 +67,7 @@ public enum CompositionTestDataCanonicalJson {
     OTHER_PARTICIPATIONS("to test querying other_participations in composition", "other_participations.json"),
     SECTION_CARDINALITY("cardinality_of_section", "cardinality_of_section__full.json");
 
+
     private final String filename;
     private final String description;
 
@@ -75,6 +75,7 @@ public enum CompositionTestDataCanonicalJson {
         this.filename = filename;
         this.description = description;
     }
+
 
     public InputStream getStream() {
         return getClass().getResourceAsStream("/composition/canonical_json/" + filename);

@@ -1,13 +1,13 @@
 /*
- * Copyright (c) 2020 vitasystems GmbH and Hannover Medical School.
+ * Copyright (c) 2020 Vitasystems GmbH and Christian Chevalley Hannover Medical School.
  *
- * This file is part of project openEHR_SDK
+ * This file is part of project EHRbase
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     https://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -19,11 +19,12 @@ package org.ehrbase.serialisation.dbencoding.wrappers.json.writer.translator_db2
 
 import com.google.gson.internal.LinkedTreeMap;
 import com.google.gson.stream.JsonWriter;
-import java.io.IOException;
-import java.util.Map;
 import org.ehrbase.serialisation.dbencoding.wrappers.json.I_DvTypeAdapter;
 
-public class DvCodedTextNameValue implements I_NameValueHandler {
+import java.io.IOException;
+import java.util.Map;
+
+public class DvCodedTextNameValue implements I_NameValueHandler{
 
     private final JsonWriter writer;
     private final String value;
@@ -34,13 +35,11 @@ public class DvCodedTextNameValue implements I_NameValueHandler {
         this.writer = writer;
         this.value = value.get("value").toString();
         if (value.get("defining_code") != null) {
-            this.codeString =
-                    ((Map) value.get("defining_code")).get("codeString").toString();
-            this.terminologyId = ((Map) ((Map) value.get("defining_code")).get("terminologyId"))
-                    .get("value")
-                    .toString();
+            this.codeString = ((Map) value.get("defining_code")).get("codeString").toString();
+            this.terminologyId = ((Map) ((Map) value.get("defining_code")).get("terminologyId")).get("value").toString();
         }
     }
+
 
     /**
      * Encode a name value into the DB json structure
@@ -53,7 +52,8 @@ public class DvCodedTextNameValue implements I_NameValueHandler {
      */
     @Override
     public void write() throws IOException {
-        if (value == null || value.isEmpty()) return;
+        if (value == null || value.isEmpty())
+            return;
         writer.name(I_DvTypeAdapter.NAME);
         writer.beginObject();
         writer.name(I_DvTypeAdapter.VALUE).value(value);
@@ -71,7 +71,9 @@ public class DvCodedTextNameValue implements I_NameValueHandler {
             writer.endObject();
 
             writer.endObject();
-        } else writer.name(I_DvTypeAdapter.AT_TYPE).value("DV_TEXT");
+        }
+        else
+            writer.name(I_DvTypeAdapter.AT_TYPE).value("DV_TEXT");
 
         writer.endObject();
     }

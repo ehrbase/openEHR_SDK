@@ -1,13 +1,13 @@
 /*
- * Copyright (c) 2019 vitasystems GmbH and Hannover Medical School.
+ * Copyright (c) 2019 Vitasystems GmbH and Christian Chevalley Hannover Medical School.
  *
- * This file is part of project openEHR_SDK
+ * This file is part of project EHRbase
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     https://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -26,12 +26,7 @@ import org.ehrbase.serialisation.dbencoding.CompositionSerializer;
 class EmbeddedValue {
     private LinkedTreeMap<String, Object> valueMap;
 
-    private String[] embeddedTags = {
-        CompositionSerializer.TAG_NARRATIVE,
-        CompositionSerializer.TAG_MATH_FUNCTION,
-        CompositionSerializer.TAG_WIDTH,
-        CompositionSerializer.TAG_UID
-    };
+    private String[] embeddedTags = {CompositionSerializer.TAG_NARRATIVE, CompositionSerializer.TAG_MATH_FUNCTION, CompositionSerializer.TAG_WIDTH, CompositionSerializer.TAG_UID};
 
     EmbeddedValue(LinkedTreeMap<String, Object> valueMap) {
         this.valueMap = valueMap;
@@ -41,10 +36,11 @@ class EmbeddedValue {
 
         if (valueMap.containsKey(tag)) {
             LinkedTreeMap<String, Object> treeMap = (LinkedTreeMap<String, Object>) valueMap.get(tag);
-            // get the value
+            //get the value
             if (!(treeMap.get(CompositionSerializer.TAG_VALUE) instanceof String)) {
                 LinkedTreeMap treeMapValue = (LinkedTreeMap) treeMap.get(CompositionSerializer.TAG_VALUE);
-                if (treeMapValue != null) treeMap.replace(CompositionSerializer.TAG_VALUE, treeMapValue.get("value"));
+                if (treeMapValue != null)
+                    treeMap.replace(CompositionSerializer.TAG_VALUE, treeMapValue.get("value"));
             }
         }
 
@@ -53,7 +49,8 @@ class EmbeddedValue {
 
     LinkedTreeMap<String, Object> formatForEmbeddedTag() {
         for (String tag : embeddedTags) {
-            if (valueMap.containsKey(tag)) valueMap = formatForTag(tag);
+            if (valueMap.containsKey(tag))
+                valueMap = formatForTag(tag);
         }
         return valueMap;
     }

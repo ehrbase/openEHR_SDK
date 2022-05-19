@@ -1,13 +1,13 @@
 /*
- * Copyright (c) 2020 vitasystems GmbH and Hannover Medical School.
+ * Copyright (c) 2020 Vitasystems GmbH and Christian Chevalley (Hannover Medical School).
  *
- * This file is part of project openEHR_SDK
+ * This file is part of project EHRbase
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     https://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -18,11 +18,12 @@
 package org.ehrbase.validation.terminology.validator;
 
 import com.nedap.archie.rm.archetyped.Pathable;
+import org.apache.commons.lang3.StringUtils;
+
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
 import java.lang.reflect.Field;
-import org.apache.commons.lang3.StringUtils;
 
 /**
  * Simple utility class to materialize an object in a Pathable using a getter. This is used f.e. to
@@ -42,8 +43,7 @@ public class ItemField<T> {
         String getterName = "get" + StringUtils.capitalize(field.getName());
         MethodHandle methodHandle;
         try {
-            methodHandle = MethodHandles.lookup()
-                    .findVirtual(pathable.getClass(), getterName, MethodType.methodType(field.getType()));
+            methodHandle = MethodHandles.lookup().findVirtual(pathable.getClass(), getterName, MethodType.methodType(field.getType()));
         } catch (NoSuchMethodException | IllegalAccessException e) {
             throw new InternalError("Internal error:" + e.getMessage());
         }

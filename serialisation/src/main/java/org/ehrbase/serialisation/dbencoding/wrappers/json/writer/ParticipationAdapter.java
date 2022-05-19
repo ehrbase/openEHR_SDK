@@ -1,13 +1,16 @@
 /*
- * Copyright (c) 2019 vitasystems GmbH and Hannover Medical School.
- *
- * This file is part of project openEHR_SDK
+ * Modifications copyright (C) 2019 Christian Chevalley, Vitasystems GmbH and Hannover Medical School
+
+ * This file is part of Project EHRbase
+
+ * Copyright (c) 2015 Christian Chevalley
+ * This file is part of Project Ethercis
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     https://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -21,6 +24,7 @@ import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 import com.nedap.archie.rm.generic.Participation;
 import com.nedap.archie.rm.generic.PartyIdentified;
+
 import java.io.IOException;
 
 /**
@@ -33,7 +37,8 @@ public class ParticipationAdapter extends DvTypeAdapter<Participation> {
         super(adapterType);
     }
 
-    public ParticipationAdapter() {}
+    public ParticipationAdapter() {
+    }
 
     @Override
     public Participation read(JsonReader arg0) throws IOException {
@@ -57,19 +62,19 @@ public class ParticipationAdapter extends DvTypeAdapter<Participation> {
             writer.name("mode");
             new DvCodedTextAdapter(AdapterType.PG_JSONB).write(writer, participation.getMode());
             writer.name("performer");
-            new PartyIdentifiedAdapter(AdapterType.PG_JSONB)
-                    .write(writer, (PartyIdentified) participation.getPerformer());
-            // TODO: add performer and time
+            new PartyIdentifiedAdapter(AdapterType.PG_JSONB).write(writer, (PartyIdentified) participation.getPerformer());
+            //TODO: add performer and time
             writer.endObject();
         } else if (adapterType == AdapterType.RAW_JSON) {
-            //
-            //            writer.beginObject(); //{
-            //            writer.name(I_DvTypeAdapter.TAG_CLASS_RAW_JSON).value(new
-            // ObjectSnakeCase(participation).camelToUpperSnake());
-            //            writer.name("value").value(participation.getValue());
-            //            CodePhrase codePhrase = participation.getDefiningCode();
-            //            writer.name("defining_code").value(gson.toJson(codePhrase));
-            //            writer.endObject(); //}
+//
+//            writer.beginObject(); //{
+//            writer.name(I_DvTypeAdapter.TAG_CLASS_RAW_JSON).value(new ObjectSnakeCase(participation).camelToUpperSnake());
+//            writer.name("value").value(participation.getValue());
+//            CodePhrase codePhrase = participation.getDefiningCode();
+//            writer.name("defining_code").value(gson.toJson(codePhrase));
+//            writer.endObject(); //}
         }
+
     }
+
 }

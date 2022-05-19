@@ -1,20 +1,22 @@
 /*
- * Copyright (c) 2020 vitasystems GmbH and Hannover Medical School.
  *
- * This file is part of project openEHR_SDK
+ *  *  Copyright (c) 2020  Stefan Spiska (Vitasystems GmbH) and Hannover Medical School
+ *  *  This file is part of Project EHRbase
+ *  *
+ *  *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  *  you may not use this file except in compliance with the License.
+ *  *  You may obtain a copy of the License at
+ *  *
+ *  *  http://www.apache.org/licenses/LICENSE-2.0
+ *  *
+ *  *  Unless required by applicable law or agreed to in writing, software
+ *  *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  *  See the License for the specific language governing permissions and
+ *  *  limitations under the License.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
  */
+
 package org.ehrbase.webtemplate.parser.config;
 
 import java.util.Set;
@@ -26,20 +28,21 @@ import org.ehrbase.terminology.client.terminology.ValueSet;
 /** Only used for extending */
 public abstract class CareEntryIntrospectConfig implements RmIntrospectConfig {
 
-    private static final Set<String> FIELDS = Stream.of("language", "subject").collect(Collectors.toSet());
+  private static final Set<String> FIELDS =
+      Stream.of("language", "subject").collect(Collectors.toSet());
 
-    @Override
-    public Set<String> getNonTemplateFields() {
-        return FIELDS;
-    }
+  @Override
+  public Set<String> getNonTemplateFields() {
+    return FIELDS;
+  }
 
-    @Override
-    public ValueSet findExternalValueSet(String fieldName) {
-        switch (fieldName) {
-            case "language":
-                return TerminologyProvider.findOpenEhrValueSet("ISO_639-1", "", "en");
-            default:
-                return ValueSet.EMPTY_VALUE_SET;
-        }
+  @Override
+  public ValueSet findExternalValueSet(String fieldName) {
+    switch (fieldName) {
+      case "language":
+        return TerminologyProvider.findOpenEhrValueSet("ISO_639-1", "", "en");
+      default:
+        return ValueSet.EMPTY_VALUE_SET;
     }
+  }
 }

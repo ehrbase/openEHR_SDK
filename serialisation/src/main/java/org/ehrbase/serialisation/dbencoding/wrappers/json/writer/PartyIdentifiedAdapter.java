@@ -1,13 +1,16 @@
 /*
- * Copyright (c) 2019 vitasystems GmbH and Hannover Medical School.
- *
- * This file is part of project openEHR_SDK
+ * Modifications copyright (C) 2019 Christian Chevalley, Vitasystems GmbH and Hannover Medical School.
+
+ * This file is part of Project EHRbase
+
+ * Copyright (c) 2015 Christian Chevalley
+ * This file is part of Project Ethercis
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     https://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -23,8 +26,9 @@ import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 import com.nedap.archie.rm.datatypes.CodePhrase;
 import com.nedap.archie.rm.generic.PartyIdentified;
-import java.io.IOException;
 import org.ehrbase.serialisation.dbencoding.CompositionSerializer;
+
+import java.io.IOException;
 
 /**
  * GSON adapter for DvDateTime
@@ -42,7 +46,8 @@ public class PartyIdentifiedAdapter extends DvTypeAdapter<PartyIdentified> {
                 .create();
     }
 
-    public PartyIdentifiedAdapter() {}
+    public PartyIdentifiedAdapter() {
+    }
 
     @Override
     public PartyIdentified read(JsonReader arg0) throws IOException {
@@ -63,17 +68,18 @@ public class PartyIdentifiedAdapter extends DvTypeAdapter<PartyIdentified> {
             writer.beginObject();
             writer.name("name").value(partyIdentified.getName());
             writer.name(CompositionSerializer.TAG_CLASS).value(PartyIdentified.class.getSimpleName());
-            // TODO: add Identifiers
+            //TODO: add Identifiers
             writer.endObject();
         } else if (adapterType == AdapterType.RAW_JSON) {
-            //
-            //            writer.beginObject(); //{
-            //            writer.name(I_DvTypeAdapter.TAG_CLASS_RAW_JSON).value(new
-            // ObjectSnakeCase(participation).camelToUpperSnake());
-            //            writer.name("value").value(participation.getValue());
-            //            CodePhrase codePhrase = participation.getDefiningCode();
-            //            writer.name("defining_code").value(gson.toJson(codePhrase));
-            //            writer.endObject(); //}
+//
+//            writer.beginObject(); //{
+//            writer.name(I_DvTypeAdapter.TAG_CLASS_RAW_JSON).value(new ObjectSnakeCase(participation).camelToUpperSnake());
+//            writer.name("value").value(participation.getValue());
+//            CodePhrase codePhrase = participation.getDefiningCode();
+//            writer.name("defining_code").value(gson.toJson(codePhrase));
+//            writer.endObject(); //}
         }
+
     }
+
 }

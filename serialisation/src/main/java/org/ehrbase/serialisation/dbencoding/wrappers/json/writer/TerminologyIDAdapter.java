@@ -1,13 +1,16 @@
 /*
- * Copyright (c) 2019 vitasystems GmbH and Hannover Medical School.
- *
- * This file is part of project openEHR_SDK
+ * Modifications copyright (C) 2019 Christian Chevalley, Vitasystems GmbH and Hannover Medical School.
+
+ * This file is part of Project EHRbase
+
+ * Copyright (c) 2015 Christian Chevalley
+ * This file is part of Project Ethercis
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     https://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -21,8 +24,9 @@ import com.google.gson.Gson;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 import com.nedap.archie.rm.support.identification.TerminologyId;
-import java.io.IOException;
 import org.ehrbase.serialisation.dbencoding.wrappers.json.I_DvTypeAdapter;
+
+import java.io.IOException;
 
 /**
  * GSON adapter for DvDateTime
@@ -36,7 +40,8 @@ public class TerminologyIDAdapter extends DvTypeAdapter<TerminologyId> {
         super(adapterType);
     }
 
-    public TerminologyIDAdapter() {}
+    public TerminologyIDAdapter() {
+    }
 
     @Override
     public TerminologyId read(JsonReader arg0) throws IOException {
@@ -56,10 +61,12 @@ public class TerminologyIDAdapter extends DvTypeAdapter<TerminologyId> {
             writer.name("terminology_id").value(terminologyID.getValue());
             writer.endObject();
         } else if (adapterType == AdapterType.RAW_JSON) {
-            writer.beginObject(); // {
+            writer.beginObject(); //{
             writer.name(I_DvTypeAdapter.TAG_CLASS_RAW_JSON).value("TERMINOLOGY_ID");
             writer.name("value").value(terminologyID.getValue());
-            writer.endObject(); // }
+            writer.endObject(); //}
         }
+
     }
+
 }

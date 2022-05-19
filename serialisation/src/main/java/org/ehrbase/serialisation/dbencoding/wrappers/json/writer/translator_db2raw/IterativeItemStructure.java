@@ -1,13 +1,13 @@
 /*
- * Copyright (c) 2019 vitasystems GmbH and Hannover Medical School.
+ * Copyright (c) 2019 Vitasystems GmbH and Christian Chevalley (Hannover Medical School).
  *
- * This file is part of project openEHR_SDK
+ * This file is part of project EHRbase
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     https://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -18,8 +18,9 @@
 package org.ehrbase.serialisation.dbencoding.wrappers.json.writer.translator_db2raw;
 
 import com.google.gson.internal.LinkedTreeMap;
-import java.util.Map;
 import org.ehrbase.serialisation.dbencoding.CompositionSerializer;
+
+import java.util.Map;
 
 /**
  * deals with representation issues required to support AQL at DB level but causing wrong structuration when
@@ -45,6 +46,7 @@ class IterativeItemStructure {
     private LinkedTreeMap<String, Object> valueMap;
 
     private String[] iterativeTags = {CompositionSerializer.TAG_ACTIVITIES, CompositionSerializer.TAG_EVENTS};
+
 
     IterativeItemStructure(LinkedTreeMap<String, Object> valueMap) {
         this.valueMap = valueMap;

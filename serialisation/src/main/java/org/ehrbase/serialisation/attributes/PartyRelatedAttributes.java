@@ -1,13 +1,13 @@
 /*
- * Copyright (c) 2020 vitasystems GmbH and Hannover Medical School.
+ * Copyright (c) 2020 Christian Chevalley (Hannover Medical School).
  *
- * This file is part of project openEHR_SDK
+ * This file is part of project EHRbase
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     https://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -18,9 +18,9 @@
 package org.ehrbase.serialisation.attributes;
 
 import com.nedap.archie.rm.generic.PartyRelated;
-import java.util.Map;
 import org.ehrbase.serialisation.dbencoding.CompositionSerializer;
 
+import java.util.Map;
 /**
  * populate the attributes for RM PartyRelated
  */
@@ -34,7 +34,7 @@ public class PartyRelatedAttributes implements I_SubjectAttributes {
         this.compositionSerializer = compositionSerializer;
     }
 
-    public Map<String, Object> toMap() {
+    public Map<String, Object> toMap(){
         Map<String, Object> valuemap = new PartyIdentifiedAttributes(partyRelated, compositionSerializer).toMap();
         valuemap.put("relationship", partyRelated.getRelationship());
 

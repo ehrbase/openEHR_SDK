@@ -1,25 +1,31 @@
 /*
- * Copyright (c) 2020 vitasystems GmbH and Hannover Medical School.
  *
- * This file is part of project openEHR_SDK
+ *  *  Copyright (c) 2020  Stefan Spiska (Vitasystems GmbH) and Hannover Medical School
+ *  *  This file is part of Project EHRbase
+ *  *
+ *  *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  *  you may not use this file except in compliance with the License.
+ *  *  You may obtain a copy of the License at
+ *  *
+ *  *  http://www.apache.org/licenses/LICENSE-2.0
+ *  *
+ *  *  Unless required by applicable law or agreed to in writing, software
+ *  *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  *  See the License for the specific language governing permissions and
+ *  *  limitations under the License.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
  */
+
 package org.ehrbase.webtemplate.templateprovider;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import org.apache.xmlbeans.XmlOptions;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
+import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
 
+import javax.xml.namespace.QName;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -27,12 +33,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collections;
-import javax.xml.namespace.QName;
-import org.apache.xmlbeans.XmlOptions;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
-import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
+
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class FileBasedTemplateProviderTest {
 
@@ -41,13 +44,11 @@ public class FileBasedTemplateProviderTest {
 
     public static void writeTemplateFile(File templateFolder, String templateId) throws IOException {
         TestDataTemplateProvider testDataTemplateProvider = new TestDataTemplateProvider();
-        OPERATIONALTEMPLATE operationaltemplate =
-                testDataTemplateProvider.find(templateId).get();
+        OPERATIONALTEMPLATE operationaltemplate = testDataTemplateProvider.find(templateId).get();
         XmlOptions opts = new XmlOptions();
         opts.setSaveSyntheticDocumentElement(new QName("http://schemas.openehr.org/v1", "template"));
 
-        Path path = Paths.get(
-                templateFolder.getPath(), operationaltemplate.getTemplateId().getValue() + ".opt");
+        Path path = Paths.get(templateFolder.getPath(), operationaltemplate.getTemplateId().getValue() + ".opt");
         Files.write(path, Collections.singletonList(operationaltemplate.xmlText(opts)), StandardCharsets.UTF_8);
     }
 
@@ -66,5 +67,6 @@ public class FileBasedTemplateProviderTest {
 
         writeTemplateFile(templateFolder, "test_all_types.en.v1");
         assertTrue(cut.find("test_all_types.en.v1").isPresent());
+
     }
 }

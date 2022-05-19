@@ -1,7 +1,6 @@
 /*
- * Copyright (c) 2020 vitasystems GmbH and Hannover Medical School.
- *
- * This file is part of project openEHR_SDK
+ * Copyright (c) 2020  Stefan Spiska (Vitasystems GmbH) and Hannover Medical School
+ * This file is part of Project EHRbase
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,10 +18,10 @@ package org.ehrbase.util.reflection;
 
 public interface ClassDependent<T> {
 
-    /**
-     * Return the class associated to the implementation of the interface.
-     *
-     * @return the associated class
-     */
-    Class<T> getAssociatedClass();
+  /**
+   * Return the class associated to the implementation of the interface.
+   *
+   * @return the associated class
+   */
+  Class<T> getAssociatedClass();
 }

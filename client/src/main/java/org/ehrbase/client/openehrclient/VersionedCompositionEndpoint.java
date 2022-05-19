@@ -1,13 +1,11 @@
 /*
- * Copyright (c) 2021 vitasystems GmbH and Hannover Medical School.
- *
- * This file is part of project openEHR_SDK
+ * Copyright 2021 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     https://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -15,16 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.ehrbase.client.openehrclient;
 
 import com.nedap.archie.rm.changecontrol.OriginalVersion;
 import com.nedap.archie.rm.ehr.VersionedComposition;
 import com.nedap.archie.rm.generic.RevisionHistoryItem;
+
+import javax.annotation.Nullable;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import javax.annotation.Nullable;
 
 public interface VersionedCompositionEndpoint {
 
@@ -67,6 +67,5 @@ public interface VersionedCompositionEndpoint {
      * @param <T>                expected type
      * @return the version of the versioned composition, or an empty {@link Optional}
      */
-    <T> Optional<OriginalVersion<T>> findVersionAtTime(
-            UUID versionedObjectUid, @Nullable LocalDateTime versionAtTime, Class<T> clazz);
+    <T> Optional<OriginalVersion<T>> findVersionAtTime(UUID versionedObjectUid, @Nullable LocalDateTime versionAtTime, Class<T> clazz);
 }

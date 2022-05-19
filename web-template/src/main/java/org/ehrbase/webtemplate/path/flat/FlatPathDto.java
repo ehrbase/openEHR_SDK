@@ -1,20 +1,21 @@
 /*
- * Copyright (c) 2021 vitasystems GmbH and Hannover Medical School.
+ *  Copyright (c) 2021  Stefan Spiska (Vitasystems GmbH) and Hannover Medical School
  *
- * This file is part of project openEHR_SDK
+ *  This file is part of Project EHRbase
+ *   Licensed under the Apache License, Version 2.0 (the "License");
+ *   you may not use this file except in compliance with the License.
+ *   You may obtain a copy of the License at
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *   http://www.apache.org/licenses/LICENSE-2.0
  *
- *     https://www.apache.org/licenses/LICENSE-2.0
+ *   Unless required by applicable law or agreed to in writing, software
+ *   distributed under the License is distributed on an "AS IS" BASIS,
+ *   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *   See the License for the specific language governing permissions and
+ *   limitations under the License.
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
  */
+
 package org.ehrbase.webtemplate.path.flat;
 
 import java.util.AbstractMap;
@@ -23,237 +24,236 @@ import java.util.Objects;
 
 public class FlatPathDto {
 
-    private String name;
-    private FlatPathDto child;
-    private String attributeName;
-    private Integer count;
+  private String name;
+  private FlatPathDto child;
+  private String attributeName;
+  private Integer count;
 
-    public FlatPathDto() {}
+  public FlatPathDto() {}
 
-    public FlatPathDto(String path) {
+  public FlatPathDto(String path) {
 
-        this(FlatPathParser.parse(path));
+    this(FlatPathParser.parse(path));
+  }
+
+
+  public FlatPathDto(FlatPathDto flatPathDto) {
+
+    this.name = flatPathDto.getName();
+    this.child = flatPathDto.getChild();
+    this.attributeName = flatPathDto.getAttributeName();
+    this.count = flatPathDto.getCount();
+  }
+
+  public String getName() {
+    return name;
+  }
+
+  public void setName(String name) {
+    this.name = name;
+  }
+
+  public FlatPathDto getChild() {
+    return child;
+  }
+
+  public void setChild(FlatPathDto child) {
+    this.child = child;
+  }
+
+  public String getAttributeName() {
+    return attributeName;
+  }
+
+  public void setAttributeName(String attributeName) {
+    this.attributeName = attributeName;
+  }
+
+  public Integer getCount() {
+    return count;
+  }
+
+  public void setCount(Integer count) {
+    this.count = count;
+  }
+
+  public String format() {
+    StringBuilder sb = new StringBuilder();
+    appendFormat(sb);
+    return sb.toString();
+  }
+
+  private void appendFormat(StringBuilder sb) {
+
+    sb.append(name);
+
+    if(count != null){
+      sb.append(':').append(count);
     }
 
-    public FlatPathDto(FlatPathDto flatPathDto) {
-
-        this.name = flatPathDto.getName();
-        this.child = flatPathDto.getChild();
-        this.attributeName = flatPathDto.getAttributeName();
-        this.count = flatPathDto.getCount();
+    if (attributeName != null) {
+      sb.append('|').append(attributeName);
     }
-
-    public String getName() {
-        return name;
+    if (child != null) {
+      sb.append('/');
+      child.appendFormat(sb);
     }
+  }
 
-    public void setName(String name) {
-        this.name = name;
+  public FlatPathDto getLast() {
+    FlatPathDto path = this;
+    while (path.getChild() != null) {
+      path = path.getChild();
     }
+    return path;
+  }
 
-    public FlatPathDto getChild() {
-        return child;
-    }
+  public static FlatPathDto removeEnd(FlatPathDto path, FlatPathDto remove) {
 
-    public void setChild(FlatPathDto child) {
-        this.child = child;
-    }
+    FlatPathDto me = new FlatPathDto(path);
+    FlatPathDto other = new FlatPathDto(remove);
+    FlatPathDto newMe = null;
+    do {
 
-    public String getAttributeName() {
-        return attributeName;
-    }
+      if (isNodeEqual(me, other)) break;
 
-    public void setAttributeName(String attributeName) {
-        this.attributeName = attributeName;
-    }
-
-    public Integer getCount() {
-        return count;
-    }
-
-    public void setCount(Integer count) {
-        this.count = count;
-    }
-
-    public String format() {
-        StringBuilder sb = new StringBuilder();
-        appendFormat(sb);
-        return sb.toString();
-    }
-
-    private void appendFormat(StringBuilder sb) {
-
-        sb.append(name);
-
-        if (count != null) {
-            sb.append(':').append(count);
-        }
-
-        if (attributeName != null) {
-            sb.append('|').append(attributeName);
-        }
-        if (child != null) {
-            sb.append('/');
-            child.appendFormat(sb);
-        }
-    }
-
-    public FlatPathDto getLast() {
-        FlatPathDto path = this;
-        while (path.getChild() != null) {
-            path = path.getChild();
-        }
-        return path;
-    }
-
-    public static FlatPathDto removeEnd(FlatPathDto path, FlatPathDto remove) {
-
-        FlatPathDto me = new FlatPathDto(path);
-        FlatPathDto other = new FlatPathDto(remove);
-        FlatPathDto newMe = null;
-        do {
-
-            if (isNodeEqual(me, other)) break;
-
-            FlatPathDto newChild = new FlatPathDto(me);
-            newChild.setChild(null);
-            if (newMe == null) {
-                newMe = newChild;
-            } else {
-                newMe.getLast().setChild(newChild);
-            }
-
-            me = me.child;
-
-        } while (me != null);
-
-        if (me != null && me.isEqualTo(other.format())) {
-            return newMe;
+        FlatPathDto newChild = new FlatPathDto(me);
+        newChild.setChild(null);
+        if (newMe == null){
+          newMe = newChild;
         } else {
-            return me;
-        }
-    }
-
-    public static boolean isNodeEqual(FlatPathDto me, FlatPathDto other) {
-
-        if (!Objects.equals(me.getName(), other.getName())) {
-            return false;
+          newMe.getLast().setChild(newChild);
         }
 
-        if (!Objects.equals(me.getCount(), other.getCount())
-                && !(me.getCount() == null && Objects.equals(other.getCount(), 0))
-                && !(Objects.equals(me.getCount(), 0) && other.getCount() == null)) {
-            return false;
-        }
+      me = me.child;
 
-        if (!Objects.equals(me.getAttributeName(), other.getAttributeName())) {
-            return false;
-        }
-        return true;
+    } while (me != null);
+
+    if (me != null && me.isEqualTo(other.format())) {
+      return newMe;
+    } else {
+      return me;
+    }
+  }
+
+  public static boolean isNodeEqual(FlatPathDto me, FlatPathDto other) {
+
+    if (!Objects.equals(me.getName(), other.getName())) {
+      return false;
     }
 
-    public static FlatPathDto removeStart(FlatPathDto path, FlatPathDto remove) {
-        FlatPathDto other = new FlatPathDto(remove);
-        FlatPathDto me = new FlatPathDto(path);
-        do {
 
-            if (!isNodeEqual(me, other)) break;
-            other = other.getChild();
-            me = me.child;
-        } while (other != null && me != null);
-
-        if (other == null) {
-            return me;
-        } else {
-            return new FlatPathDto(path);
-        }
+    if (!Objects.equals(me.getCount(), other.getCount())
+            && !(me.getCount() == null && Objects.equals(other.getCount(), 0)) && !(Objects.equals(me.getCount(), 0) && other.getCount() == null)
+    ) {
+      return false;
     }
 
-    public static FlatPathDto addEnd(FlatPathDto path, FlatPathDto add) {
-        var flatPath = new FlatPathDto(path);
-        flatPath.getLast().setChild(new FlatPathDto(add));
-        return flatPath;
+    if (!Objects.equals(me.getAttributeName(), other.getAttributeName())) {
+      return false;
     }
+    return true;
+  }
 
-    @Override
-    public String toString() {
-        return format();
+  public static FlatPathDto removeStart(FlatPathDto path, FlatPathDto remove) {
+    FlatPathDto other = new FlatPathDto(remove);
+    FlatPathDto me = new FlatPathDto(path);
+    do{
+
+      if (!isNodeEqual(me, other)) break;
+      other = other.getChild();
+      me = me.child;
+    }while (other != null && me != null);
+
+    if (other == null) {
+      return me;
+    } else {
+      return new FlatPathDto(path);
     }
+  }
 
-    public boolean startsWith(String otherPath) {
-        FlatPathDto other = new FlatPathDto(otherPath);
-        FlatPathDto me = new FlatPathDto(this);
-        do {
+  public static FlatPathDto addEnd(FlatPathDto path, FlatPathDto add) {
+    var flatPath = new FlatPathDto(path);
+    flatPath.getLast().setChild(new FlatPathDto(add));
+    return flatPath;
+  }
 
-            String tempAttributeName = me.getAttributeName();
-            if (other.getAttributeName() == null) {
-                me.setAttributeName(null);
-            }
+  @Override
+  public String toString() {
+    return format();
+  }
 
-            Integer tempCount = me.getCount();
-            if (other.getChild() == null && other.count == null) {
-                me.setCount(null);
-            }
-            boolean nodeEqual = isNodeEqual(me, other);
-            me.setAttributeName(tempAttributeName);
-            me.setCount(tempCount);
-            if (!nodeEqual) break;
+  public boolean startsWith(String otherPath) {
+    FlatPathDto other = new FlatPathDto(otherPath);
+    FlatPathDto me = new FlatPathDto(this);
+    do{
 
-            other = other.getChild();
-            me = me.child;
+      String tempAttributeName = me.getAttributeName();
+      if (other.getAttributeName() == null    ){
+        me.setAttributeName(null);
+      }
 
-        } while (other != null && me != null);
+      Integer tempCount = me.getCount();
+      if(other.getChild() == null && other.count == null){
+        me.setCount(null);
+}
+      boolean nodeEqual = isNodeEqual(me, other);
+      me.setAttributeName(tempAttributeName);
+      me.setCount(tempCount);
+      if (!nodeEqual) break;
 
-        return other == null;
-    }
 
-    public boolean isEqualTo(String otherPath) {
+      other = other.getChild();
+      me = me.child;
 
-        FlatPathDto other = new FlatPathDto(otherPath);
-        FlatPathDto me = new FlatPathDto(this);
-        do {
+    }while (other != null && me != null);
 
-            if (!Objects.equals(me.getName(), other.getName())) {
-                break;
-            }
-            if (!Objects.equals(me.getAttributeName(), other.getAttributeName())) {
-                break;
-            }
+    return other == null;
+  }
 
-            if (!Objects.equals(me.getCount(), other.getCount())
-                    && !(me.getCount() == null && Objects.equals(other.getCount(), 0))
-                    && !(Objects.equals(me.getCount(), 0) && other.getCount() == null)) {
-                break;
-            }
+  public boolean isEqualTo(String otherPath){
 
-            other = other.getChild();
-            me = me.child;
-        } while (other != null && me != null);
+    FlatPathDto other = new FlatPathDto(otherPath);
+    FlatPathDto me = new FlatPathDto(this);
+    do{
 
-        return other == null && me == null;
-    }
+      if (!Objects.equals(me.getName(),other.getName())){
+        break;
+      }
+      if (!Objects.equals(me.getAttributeName(), other.getAttributeName())
+      ){
+        break;
+      }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        FlatPathDto that = (FlatPathDto) o;
-        return Objects.equals(name, that.name)
-                && Objects.equals(child, that.child)
-                && Objects.equals(attributeName, that.attributeName)
-                && Objects.equals(count, that.count);
-    }
+      if (!Objects.equals(me.getCount(),other.getCount())
+              && !(me.getCount() == null && Objects.equals(other.getCount(),0)) && !(Objects.equals(me.getCount(), 0) && other.getCount() == null)
+      ){
+        break;
+      }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(name, child, attributeName, count);
-    }
+      other = other.getChild();
+      me = me.child;
+    }while (other != null && me != null);
 
-    public static <T> Map.Entry<FlatPathDto, T> get(Map<FlatPathDto, T> map, String otherPath) {
+    return other == null && me == null;
+  }
 
-        return map.entrySet().stream()
-                .filter(d -> d.getKey().isEqualTo(otherPath))
-                .findAny()
-                .orElse(new AbstractMap.SimpleEntry<>(null, null));
-    }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    FlatPathDto that = (FlatPathDto) o;
+    return Objects.equals(name, that.name) && Objects.equals(child, that.child) && Objects.equals(attributeName, that.attributeName) && Objects.equals(count, that.count);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(name, child, attributeName, count);
+  }
+
+  public static  <T> Map.Entry<FlatPathDto,T> get(Map<FlatPathDto,T> map, String otherPath){
+
+    return map.entrySet().stream().filter(d -> d.getKey().isEqualTo(otherPath)).findAny().orElse(new AbstractMap.SimpleEntry<>(null,null));
+  }
 }

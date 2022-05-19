@@ -1,30 +1,14 @@
-/*
- * Copyright (c) 2022 vitasystems GmbH and Hannover Medical School.
- *
- * This file is part of project openEHR_SDK
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package org.ehrbase.client.classgenerator.olddtoexamples.testalltypesenv1composition.definition;
 
 import com.nedap.archie.rm.generic.PartyProxy;
-import java.time.temporal.TemporalAccessor;
-import java.util.List;
 import org.ehrbase.client.annotations.Archetype;
 import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.Path;
 import org.ehrbase.client.classgenerator.olddtoexamples.shareddefinition.Language;
 import org.ehrbase.client.classgenerator.olddtoexamples.shareddefinition.TransitionDefiningcode;
+
+import java.time.temporal.TemporalAccessor;
+import java.util.List;
 
 @Entity
 @Archetype("openEHR-EHR-ACTION.test_all_types.v1")
@@ -76,7 +60,8 @@ public class TestAllTypesAction {
         return this.transitionDefiningcode;
     }
 
-    public void setTransitionDefiningcodeCompleted(TransitionDefiningcode transitionDefiningcodeCompleted) {
+    public void setTransitionDefiningcodeCompleted(
+            TransitionDefiningcode transitionDefiningcodeCompleted) {
         this.transitionDefiningcodeCompleted = transitionDefiningcodeCompleted;
     }
 
@@ -92,7 +77,8 @@ public class TestAllTypesAction {
         return this.completedDefiningcode;
     }
 
-    public void setCompletedDefiningcodeCurrentState(CompletedDefiningcode2 completedDefiningcodeCurrentState) {
+    public void setCompletedDefiningcodeCurrentState(
+            CompletedDefiningcode2 completedDefiningcodeCurrentState) {
         this.completedDefiningcodeCurrentState = completedDefiningcodeCurrentState;
     }
 
@@ -116,7 +102,8 @@ public class TestAllTypesAction {
         return this.plannedDefiningcode;
     }
 
-    public void setTransitionDefiningcodePlanned(TransitionDefiningcode transitionDefiningcodePlanned) {
+    public void setTransitionDefiningcodePlanned(
+            TransitionDefiningcode transitionDefiningcodePlanned) {
         this.transitionDefiningcodePlanned = transitionDefiningcodePlanned;
     }
 
@@ -140,7 +127,8 @@ public class TestAllTypesAction {
         return this.timeValue;
     }
 
-    public void setPlannedDefiningcodeCurrentState(PlannedDefiningcode2 plannedDefiningcodeCurrentState) {
+    public void setPlannedDefiningcodeCurrentState(
+            PlannedDefiningcode2 plannedDefiningcodeCurrentState) {
         this.plannedDefiningcodeCurrentState = plannedDefiningcodeCurrentState;
     }
 
@@ -156,7 +144,8 @@ public class TestAllTypesAction {
         return this.activeDefiningcode;
     }
 
-    public void setActiveDefiningcodeCareflowStep(ActiveDefiningcode2 activeDefiningcodeCareflowStep) {
+    public void setActiveDefiningcodeCareflowStep(
+            ActiveDefiningcode2 activeDefiningcodeCareflowStep) {
         this.activeDefiningcodeCareflowStep = activeDefiningcodeCareflowStep;
     }
 

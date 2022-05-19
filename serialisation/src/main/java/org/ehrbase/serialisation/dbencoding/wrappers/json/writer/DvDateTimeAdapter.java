@@ -1,13 +1,16 @@
 /*
- * Copyright (c) 2019 vitasystems GmbH and Hannover Medical School.
- *
- * This file is part of project openEHR_SDK
+ * Modifications copyright (C) 2019 Christian Chevalley, Vitasystems GmbH and Hannover Medical School.
+
+ * This file is part of Project EHRbase
+
+ * Copyright (c) 2015 Christian Chevalley
+ * This file is part of Project Ethercis
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     https://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -20,10 +23,11 @@ package org.ehrbase.serialisation.dbencoding.wrappers.json.writer;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 import com.nedap.archie.rm.datavalues.quantity.datetime.DvDateTime;
-import java.io.IOException;
 import org.ehrbase.serialisation.attributes.datavalues.datetime.datetime.DvDateTimeAttributes;
 import org.ehrbase.serialisation.dbencoding.wrappers.json.I_DvTypeAdapter;
 import org.ehrbase.serialisation.util.ObjectSnakeCase;
+
+import java.io.IOException;
 
 /**
  * GSON adapter for DvDateTime
@@ -31,11 +35,13 @@ import org.ehrbase.serialisation.util.ObjectSnakeCase;
  */
 public class DvDateTimeAdapter extends DvTypeAdapter<DvDateTime> {
 
+
     public DvDateTimeAdapter(I_DvTypeAdapter.AdapterType adapterType) {
         super(adapterType);
     }
 
-    public DvDateTimeAdapter() {}
+    public DvDateTimeAdapter() {
+    }
 
     @Override
     public DvDateTime read(JsonReader arg0) {
@@ -49,7 +55,7 @@ public class DvDateTimeAdapter extends DvTypeAdapter<DvDateTime> {
             return;
         }
 
-        // new encoding
+        //new encoding
         DvDateTimeAttributes dvDateTimeAttributes = DvDateTimeAttributes.instanceFromValue(dvalue);
 
         if (adapterType == I_DvTypeAdapter.AdapterType.PG_JSONB) {
@@ -63,5 +69,7 @@ public class DvDateTimeAdapter extends DvTypeAdapter<DvDateTime> {
             writer.name(VALUE).value(dvalue.getValue().toString());
             writer.endObject();
         }
+
     }
+
 }

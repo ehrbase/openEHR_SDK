@@ -1,13 +1,13 @@
 /*
- * Copyright (c) 2019 vitasystems GmbH and Hannover Medical School.
+ * Copyright (c) 2019 Vitasystems GmbH and Hannover Medical School.
  *
- * This file is part of project openEHR_SDK
+ * This file is part of project EHRbase
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     https://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -15,11 +15,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.ehrbase.serialisation.dbencoding.wrappers.json.writer.translator_db2raw;
 
 import com.google.gson.internal.LinkedTreeMap;
-import java.util.List;
 import org.ehrbase.serialisation.dbencoding.CompositionSerializer;
+
+import java.util.List;
 
 /**
  * Created by christian on 3/12/2018.
@@ -36,7 +38,8 @@ public class ArrayChildren {
         for (Object entry : arrayList) {
             if (entry instanceof LinkedTreeMap) {
                 LinkedTreeMap itemMap = (LinkedTreeMap) entry;
-                if (itemMap.containsKey(CompositionSerializer.TAG_PATH)) return true;
+                if (itemMap.containsKey(CompositionSerializer.TAG_PATH))
+                    return true;
             }
         }
         return false;
@@ -46,9 +49,10 @@ public class ArrayChildren {
      * check if all elements are null
      * @return
      */
-    public boolean isNull() {
+    public boolean isNull(){
         for (Object entry : arrayList) {
-            if (entry != null) return false;
+            if (entry != null)
+                return false;
         }
         return true;
     }

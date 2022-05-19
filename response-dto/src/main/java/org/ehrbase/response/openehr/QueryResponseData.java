@@ -1,13 +1,13 @@
 /*
- * Copyright (c) 2019 vitasystems GmbH and Hannover Medical School.
+ * Copyright (c) 2019 Vitasystems GmbH and Jake Smolka (Hannover Medical School).
  *
- * This file is part of project openEHR_SDK
+ * This file is part of project EHRbase
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     https://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -15,21 +15,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.ehrbase.response.openehr;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
-import java.util.*;
 import org.ehrbase.response.ehrscape.QueryResultDto;
 import org.ehrbase.response.ehrscape.query.ResultHolder;
+
+import java.util.*;
 
 @JacksonXmlRootElement
 public class QueryResponseData {
 
     private MetaData meta;
 
-    // the initial query without substitution (!)
+    //the initial query without substitution (!)
     @JsonProperty(value = "q")
     private String query;
 
@@ -37,10 +39,10 @@ public class QueryResponseData {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String name;
 
-    // the list of columns as defined in the SELECT clause (with a path...)
+    //the list of columns as defined in the SELECT clause (with a path...)
     @JsonProperty(value = "columns")
     private List<Map<String, String>> columns;
-    // the actual resultset
+    //the actual resultset
     @JsonProperty(value = "rows")
     private List<List<Object>> rows;
 
@@ -51,10 +53,10 @@ public class QueryResponseData {
         this.columns = new ArrayList<>();
         this.rows = new ArrayList<>();
 
-        // set the columns definitions
+        //set the columns definitions
         if (!queryResultDto.variablesIsEmpty()) {
             if (!queryResultDto.getResultSet().isEmpty()) {
-                // the order of the column definitions is set by the resultSet ordering
+                //the order of the column definitions is set by the resultSet ordering
                 ResultHolder record = queryResultDto.getResultSet().get(0);
                 int count = 0;
 
@@ -72,7 +74,7 @@ public class QueryResponseData {
                     columns.add(fieldMap);
                 }
             } else {
-                // use the variable definition instead
+                //use the variable definition instead
                 int count = 0;
                 Iterator<Map.Entry<String, String>> variablesIterator = queryResultDto.variablesIterator();
                 while (variablesIterator.hasNext()) {
@@ -90,24 +92,25 @@ public class QueryResponseData {
                 }
             }
 
-            // set the row results
+            //set the row results
             for (ResultHolder valueSet : queryResultDto.getResultSet()) {
                 rows.add(valueSet.values());
             }
         }
     }
 
-    public QueryResponseData() {}
-
-    public MetaData getMeta() {
-        return meta;
+    public QueryResponseData() {
     }
 
-    public void setMeta(MetaData meta) {
-        this.meta = meta;
-    }
+  public MetaData getMeta() {
+    return meta;
+  }
 
-    public String getQuery() {
+  public void setMeta(MetaData meta) {
+    this.meta = meta;
+  }
+
+  public String getQuery() {
         return query;
     }
 

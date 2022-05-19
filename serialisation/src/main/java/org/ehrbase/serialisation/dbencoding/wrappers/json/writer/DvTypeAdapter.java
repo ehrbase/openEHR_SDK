@@ -1,13 +1,16 @@
 /*
- * Copyright (c) 2019 vitasystems GmbH and Hannover Medical School.
- *
- * This file is part of project openEHR_SDK
+ * Modifications copyright (C) 2019 Christian Chevalley, Vitasystems GmbH and Hannover Medical School.
+
+ * This file is part of Project EHRbase
+
+ * Copyright (c) 2015 Christian Chevalley
+ * This file is part of Project Ethercis
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     https://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -20,8 +23,9 @@ package org.ehrbase.serialisation.dbencoding.wrappers.json.writer;
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
-import java.io.IOException;
 import org.ehrbase.serialisation.dbencoding.wrappers.json.I_DvTypeAdapter;
+
+import java.io.IOException;
 
 /**
  * GSON adapter for DvDateTime
@@ -50,5 +54,7 @@ public abstract class DvTypeAdapter<T> extends TypeAdapter<T> implements I_DvTyp
     }
 
     //	@Override
-    public void write(JsonWriter writer, T dvalue) throws IOException {}
+    public void write(JsonWriter writer, T dvalue) throws IOException {
+    }
+
 }

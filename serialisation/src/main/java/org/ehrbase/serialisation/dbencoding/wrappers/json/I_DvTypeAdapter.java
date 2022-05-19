@@ -1,13 +1,16 @@
 /*
- * Copyright (c) 2019 vitasystems GmbH and Hannover Medical School.
- *
- * This file is part of project openEHR_SDK
+ * Modifications copyright (C) 2019 Christian Chevalley, Vitasystems GmbH and Hannover Medical School
+
+ * This file is part of Project EHRbase
+
+ * Copyright (c) 2015 Christian Chevalley
+ * This file is part of Project Ethercis
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     https://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -15,6 +18,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.ehrbase.serialisation.dbencoding.wrappers.json;
 
 /**
@@ -22,15 +26,11 @@ package org.ehrbase.serialisation.dbencoding.wrappers.json;
  */
 public interface I_DvTypeAdapter {
 
-    enum AdapterType {
-        PG_JSONB,
-        RAW_JSON,
-        _DBJSON2RAWJSON,
-        DBJSON2RAWJSON
-    }
+    enum AdapterType {PG_JSONB, RAW_JSON, _DBJSON2RAWJSON, DBJSON2RAWJSON}
 
     String matchNodePredicate =
             "/(content|protocol|events|data|description|instruction|items|activities|activity|composition|entry|evaluation|observation|action|at)\\[([(0-9)|(A-Z)|(a-z)|\\-|_|\\.]*)\\]";
+
 
     String TAG_CLASS_RAW_JSON = "_type";
 
@@ -43,3 +43,4 @@ public interface I_DvTypeAdapter {
     String VALUE = "value";
     String ELEMENT = "ELEMENT";
 }
+

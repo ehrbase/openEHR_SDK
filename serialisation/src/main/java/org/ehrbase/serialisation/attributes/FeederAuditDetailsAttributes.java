@@ -1,30 +1,31 @@
 /*
- * Copyright (c) 2020 vitasystems GmbH and Hannover Medical School.
+ * Copyright (c) 2020 Christian Chevalley (Hannover Medical School) and Vitasystems GmbH
  *
- * This file is part of project openEHR_SDK
+ * This file is part of project EHRbase
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
+ *  Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *  You may obtain a copy of the License at
  *
- *     https://www.apache.org/licenses/LICENSE-2.0
+ *  http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ *  See the License for the specific language governing permissions and limitations under the License.
  */
+
 package org.ehrbase.serialisation.attributes;
 
 import com.nedap.archie.rm.archetyped.FeederAuditDetails;
-import java.util.Map;
 import org.ehrbase.serialisation.dbencoding.CompositionSerializer;
 import org.ehrbase.serialisation.dbencoding.PathMap;
 import org.ehrbase.serialisation.dbencoding.RmObjectEncoding;
 import org.ehrbase.serialisation.dbencoding.rawjson.LightRawJsonEncoder;
 import org.ehrbase.serialisation.dbencoding.wrappers.json.I_DvTypeAdapter;
 import org.ehrbase.serialisation.util.SnakeCase;
+
+import java.util.Map;
 
 public class FeederAuditDetailsAttributes {
 
@@ -41,10 +42,10 @@ public class FeederAuditDetailsAttributes {
     public Map<String, Object> toMap() {
         Map<String, Object> valuemap = PathMap.getInstance();
 
-        if (feederAuditDetails == null) return null;
+        if (feederAuditDetails == null)
+            return null;
 
-        valuemap.put(
-                I_DvTypeAdapter.AT_TYPE, new SnakeCase(FeederAuditDetails.class.getSimpleName()).camelToUpperSnake());
+        valuemap.put(I_DvTypeAdapter.AT_TYPE, new SnakeCase(FeederAuditDetails.class.getSimpleName()).camelToUpperSnake());
 
         if (feederAuditDetails.getLocation() != null) {
             valuemap.put("location", new RmObjectEncoding(feederAuditDetails.getLocation()).toMap());
@@ -70,7 +71,8 @@ public class FeederAuditDetailsAttributes {
             String nodeId = asMap.get("/archetype_node_id").toString();
             // make sure node id is wrapped in [ and ] and throw errors if invalid input
             if (!nodeId.startsWith("[")) {
-                if (nodeId.endsWith("]")) throw new IllegalArgumentException("Invalid archetype node id");
+                if (nodeId.endsWith("]"))
+                    throw new IllegalArgumentException("Invalid archetype node id");
                 nodeId = "[" + nodeId + "]";
             } else if (!nodeId.endsWith("]")) {
                 throw new IllegalArgumentException("Invalid archetype node id");

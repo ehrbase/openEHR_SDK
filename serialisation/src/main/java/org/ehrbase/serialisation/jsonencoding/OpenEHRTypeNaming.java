@@ -1,13 +1,16 @@
 /*
- * Copyright (c) 2019 vitasystems GmbH and Hannover Medical School.
- *
- * This file is part of project openEHR_SDK
+ * Modifications copyright (C) 2019 Vitasystems GmbH and Hannover Medical School.
+
+ * This file is part of Project EHRbase
+
+ * Copyright (c) 2015 Nedap Healthcare
+ * This file is part of Project Archie
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     https://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -27,6 +30,7 @@ import com.nedap.archie.rminfo.ArchieAOMInfoLookup;
 import com.nedap.archie.rminfo.ArchieRMInfoLookup;
 import com.nedap.archie.rminfo.ModelInfoLookup;
 import com.nedap.archie.rminfo.RMTypeInfo;
+
 import java.io.IOException;
 
 /**
@@ -56,17 +60,16 @@ public class OpenEHRTypeNaming extends ClassNameIdResolver {
             typeInfo = aomInfoLookup.getTypeInfo(value.getClass());
         }
         if (typeInfo != null) {
-            // this case is faster and should always work. If for some reason it does not, the case below works fine
-            // instead.
+            //this case is faster and should always work. If for some reason it does not, the case below works fine instead.
             return typeInfo.getRmName();
         } else {
             return rmInfoLookup.getNamingStrategy().getTypeName(value.getClass());
         }
-        // This should work in all cases for openEHR-classes and this should not be used for other classes
-        // Additional code for making this work on non-ehr-types:
-        //        } else {
-        //            return super.idFromValue(value);
-        //        }
+// This should work in all cases for openEHR-classes and this should not be used for other classes
+// Additional code for making this work on non-ehr-types:
+//        } else {
+//            return super.idFromValue(value);
+//        }
     }
 
     @Override
@@ -78,7 +81,7 @@ public class OpenEHRTypeNaming extends ClassNameIdResolver {
     protected JavaType _typeFromId(String typeName, DatabindContext ctxt) throws IOException {
         Class result = rmInfoLookup.getClass(typeName);
         if (result == null) {
-            // AOM class?
+            //AOM class?
             result = aomInfoLookup.getClass(typeName);
         }
         if (result != null) {

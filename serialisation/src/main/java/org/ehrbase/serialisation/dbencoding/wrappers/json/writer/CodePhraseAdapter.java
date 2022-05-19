@@ -1,13 +1,16 @@
 /*
- * Copyright (c) 2019 vitasystems GmbH and Hannover Medical School.
- *
- * This file is part of project openEHR_SDK
+ * Modifications copyright (C) 2019 Christian Chevalley, Vitasystems GmbH and Hannover Medical School
+
+ * This file is part of Project EHRbase
+
+ * Copyright (c) 2015 Christian Chevalley
+ * This file is part of Project Ethercis
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     https://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -23,10 +26,11 @@ import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 import com.nedap.archie.rm.datatypes.CodePhrase;
 import com.nedap.archie.rm.support.identification.TerminologyId;
-import java.io.IOException;
 import org.ehrbase.serialisation.dbencoding.wrappers.json.I_DvTypeAdapter;
 import org.ehrbase.serialisation.util.ObjectSnakeCase;
 import org.ehrbase.serialisation.util.SnakeCase;
+
+import java.io.IOException;
 
 /**
  * GSON adapter for DvDateTime
@@ -44,7 +48,8 @@ public class CodePhraseAdapter extends DvTypeAdapter<CodePhrase> {
                 .create();
     }
 
-    public CodePhraseAdapter() {}
+    public CodePhraseAdapter() {
+    }
 
     @Override
     public CodePhrase read(JsonReader arg0) throws IOException {
@@ -62,13 +67,11 @@ public class CodePhraseAdapter extends DvTypeAdapter<CodePhrase> {
         if (adapterType == I_DvTypeAdapter.AdapterType.PG_JSONB) {
             writer.beginObject();
             writer.name("codeString").value(codePhrase.getCodeString());
-            writer.name(I_DvTypeAdapter.TAG_CLASS_RAW_JSON)
-                    .value(new SnakeCase(CodePhrase.class.getSimpleName()).camelToUpperSnake());
+            writer.name(I_DvTypeAdapter.TAG_CLASS_RAW_JSON).value(new SnakeCase(CodePhrase.class.getSimpleName()).camelToUpperSnake());
             writer.name("terminologyId");
             writer.beginObject();
             writer.name("value").value(codePhrase.getTerminologyId().getValue());
-            writer.name(I_DvTypeAdapter.TAG_CLASS_RAW_JSON)
-                    .value(new SnakeCase(TerminologyId.class.getSimpleName()).camelToUpperSnake());
+            writer.name(I_DvTypeAdapter.TAG_CLASS_RAW_JSON).value(new SnakeCase(TerminologyId.class.getSimpleName()).camelToUpperSnake());
             writer.endObject();
             writer.endObject();
         } else if (adapterType == I_DvTypeAdapter.AdapterType.RAW_JSON) {
@@ -78,5 +81,7 @@ public class CodePhraseAdapter extends DvTypeAdapter<CodePhrase> {
             writer.name("terminology_id").value(gson.toJson(codePhrase.getTerminologyId()));
             writer.endObject();
         }
+
     }
+
 }

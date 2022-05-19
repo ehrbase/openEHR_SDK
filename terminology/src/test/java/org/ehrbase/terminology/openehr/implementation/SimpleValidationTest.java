@@ -1,13 +1,13 @@
 /*
- * Copyright (c) 2019 vitasystems GmbH and Hannover Medical School.
+ * Copyright (c) 2019 Vitasystems GmbH and Christian Chevalley (Hannover Medical School).
  *
- * This file is part of project openEHR_SDK
+ * This file is part of project EHRbase
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     https://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -33,26 +33,24 @@ public class SimpleValidationTest {
         CodePhrase codePhrase = new CodePhrase(new TerminologyId("openehr"), "433");
         DvCodedText category = new DvCodedText("event", codePhrase);
 
-        // get the actual attribute
+        //get the actual attribute
         String attribute = codesetMapping.actualAttributeId("openehr", "category", "en");
         ContainerType containerType = codesetMapping.containerType("openehr", "category");
         switch (containerType) {
-            case GROUP: // a code string defined within a group of a codeset
-                boolean valid =
-                        simpleTerminologyInterface.terminology("openehr").hasCodeForGroupId(attribute, codePhrase);
-                // check if the supplied value matches codephrase
-                String rubric = simpleTerminologyInterface
-                        .terminology("openehr")
-                        .rubricForCode(codePhrase.getCodeString(), "en");
+            case GROUP: //a code string defined within a group of a codeset
+                boolean valid = simpleTerminologyInterface.terminology("openehr").hasCodeForGroupId(attribute, codePhrase);
+                //check if the supplied value matches codephrase
+                String rubric = simpleTerminologyInterface.terminology("openehr").rubricForCode(codePhrase.getCodeString(), "en");
                 valid = rubric.equals("event");
                 break;
 
-            case CODESET: // a codestring defined in a codeset
+            case CODESET: //a codestring defined in a codeset
                 valid = simpleTerminologyInterface.codeSet(attribute).hasCode(codePhrase);
                 break;
 
             default:
                 throw new IllegalArgumentException("undefined container type");
         }
+
     }
 }

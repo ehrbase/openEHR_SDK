@@ -1,13 +1,11 @@
 /*
- * Copyright (c) 2022 vitasystems GmbH and Hannover Medical School.
- *
- * This file is part of project openEHR_SDK
+ * Copyright 2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     https://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -15,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.ehrbase.validation.webtemplate;
 
 import com.nedap.archie.rm.datavalues.quantity.datetime.DvDuration;
@@ -41,99 +40,102 @@ import org.threeten.extra.PeriodDuration;
 @SuppressWarnings("unused")
 public class DvDurationValidator implements ConstraintValidator<DvDuration> {
 
-    private final PrimitiveConstraintValidator validator = new PrimitiveConstraintValidator();
+  private final PrimitiveConstraintValidator validator = new PrimitiveConstraintValidator();
 
-    /** {@inheritDoc} */
-    @Override
-    public Class<DvDuration> getAssociatedClass() {
-        return DvDuration.class;
+  /** {@inheritDoc} */
+  @Override
+  public Class<DvDuration> getAssociatedClass() {
+    return DvDuration.class;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public List<ConstraintViolation> validate(DvDuration dvDuration, WebTemplateNode node) {
+    if (!WebTemplateValidationUtils.hasInputs(node)) {
+      return Collections.emptyList();
     }
 
-    /** {@inheritDoc} */
-    @Override
-    public List<ConstraintViolation> validate(DvDuration dvDuration, WebTemplateNode node) {
-        if (!WebTemplateValidationUtils.hasInputs(node)) {
-            return Collections.emptyList();
-        }
+    List<ConstraintViolation> result = new ArrayList<>();
 
-        List<ConstraintViolation> result = new ArrayList<>();
+    var duration = PeriodDuration.from(dvDuration.getValue());
 
-        var duration = PeriodDuration.from(dvDuration.getValue());
+    Arrays.stream(DurationHelper.MIN_MAX.values())
+        .map(m -> DurationHelper.getTotalComparisonSymbol(node, m).map(s -> Pair.of(m, s)))
+        .flatMap(Optional::stream)
+        .map(
+            p ->
+                validate(
+                    node, duration, p.getRight(), DurationHelper.buildTotalRange(node, p.getLeft()).orElse(PeriodDuration.ZERO)))
+        .forEach(result::addAll);
 
-        Arrays.stream(DurationHelper.MIN_MAX.values())
-                .map(m -> DurationHelper.getTotalComparisonSymbol(node, m).map(s -> Pair.of(m, s)))
-                .flatMap(Optional::stream)
-                .map(p -> validate(
-                        node,
-                        duration,
-                        p.getRight(),
-                        DurationHelper.buildTotalRange(node, p.getLeft()).orElse(PeriodDuration.ZERO)))
-                .forEach(result::addAll);
+    return result;
+  }
 
-        return result;
+  private List<ConstraintViolation> validate(
+      WebTemplateNode node,
+      PeriodDuration duration,
+      WebTemplateComparisonSymbol symbol,
+      TemporalAmount range) {
+
+    List<ConstraintViolation> result = new ArrayList<>();
+
+    boolean condition;
+
+    switch (symbol) {
+      case GT_EQ:
+        condition = new DvDuration(duration).compareTo(new DvDuration(range)) >= 0;
+        break;
+      case GT:
+        condition = new DvDuration(duration).compareTo(new DvDuration(range)) > 0;
+        break;
+
+      case LT_EQ:
+        condition = new DvDuration(duration).compareTo(new DvDuration(range)) <= 0;
+        break;
+      case LT:
+        condition =   new DvDuration(duration).compareTo(new DvDuration(range)) < 0;
+        break;
+      default:
+        condition = false;
     }
 
-    private List<ConstraintViolation> validate(
-            WebTemplateNode node, PeriodDuration duration, WebTemplateComparisonSymbol symbol, TemporalAmount range) {
-
-        List<ConstraintViolation> result = new ArrayList<>();
-
-        boolean condition;
-
-        switch (symbol) {
-            case GT_EQ:
-                condition = new DvDuration(duration).compareTo(new DvDuration(range)) >= 0;
-                break;
-            case GT:
-                condition = new DvDuration(duration).compareTo(new DvDuration(range)) > 0;
-                break;
-
-            case LT_EQ:
-                condition = new DvDuration(duration).compareTo(new DvDuration(range)) <= 0;
-                break;
-            case LT:
-                condition = new DvDuration(duration).compareTo(new DvDuration(range)) < 0;
-                break;
-            default:
-                condition = false;
-        }
-
-        if (!condition) {
-            result.add(new ConstraintViolation(
-                    node.getAqlPath(),
-                    String.format("The value %s must be %s %s", duration, symbol.getSymbol(), range)));
-        }
-
-        return result;
+    if (!condition) {
+      result.add(
+          new ConstraintViolation(
+              node.getAqlPath(),
+              String.format("The value %s must be %s %s", duration, symbol.getSymbol(), range)));
     }
 
-    private Long getValue(PeriodDuration duration, String unit) {
-        if (unit == null) {
-            throw new IllegalArgumentException("Unit must not be null");
-        }
+    return result;
+  }
 
-        switch (unit) {
-            case "year":
-                return duration.get(ChronoUnit.YEARS);
-            case "month":
-                return duration.get(ChronoUnit.MONTHS);
-            case "day":
-                return duration.get(ChronoUnit.DAYS);
-            case "week":
-                return duration.get(ChronoUnit.DAYS) / 7;
-            case "hour":
-                return (long) duration.getDuration().toHoursPart();
-            case "minute":
-                return (long) duration.getDuration().toMinutesPart();
-            case "second":
-                return (long) duration.getDuration().toSecondsPart();
-            default:
-                throw new IllegalArgumentException("Unsupported unit: " + unit);
-        }
+  private Long getValue(PeriodDuration duration, String unit) {
+    if (unit == null) {
+      throw new IllegalArgumentException("Unit must not be null");
     }
 
-    boolean isNegativ(PeriodDuration periodDuration) {
-        return periodDuration.getPeriod().isNegative()
-                || (periodDuration.isZero() && periodDuration.getDuration().isNegative());
+    switch (unit) {
+      case "year":
+        return duration.get(ChronoUnit.YEARS);
+      case "month":
+        return duration.get(ChronoUnit.MONTHS);
+      case "day":
+        return duration.get(ChronoUnit.DAYS);
+      case "week":
+        return duration.get(ChronoUnit.DAYS) / 7;
+      case "hour":
+        return (long) duration.getDuration().toHoursPart();
+      case "minute":
+        return (long) duration.getDuration().toMinutesPart();
+      case "second":
+        return (long) duration.getDuration().toSecondsPart();
+      default:
+        throw new IllegalArgumentException("Unsupported unit: " + unit);
     }
+  }
+
+  boolean isNegativ(PeriodDuration periodDuration) {
+    return periodDuration.getPeriod().isNegative()
+        || (periodDuration.isZero() && periodDuration.getDuration().isNegative());
+  }
 }

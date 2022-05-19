@@ -1,13 +1,11 @@
 /*
- * Copyright (c) 2022 vitasystems GmbH and Hannover Medical School.
- *
- * This file is part of project openEHR_SDK
+ * Copyright 2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     https://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -15,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.ehrbase.validation;
 
 import com.nedap.archie.rm.composition.Composition;
@@ -36,64 +35,67 @@ import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
  */
 public class CompositionValidator {
 
-    private final RMObjectValidator rmObjectValidator =
-            new RMObjectValidator(ArchieRMInfoLookup.getInstance(), archetypeId -> null);
+  private final RMObjectValidator rmObjectValidator = new RMObjectValidator(
+      ArchieRMInfoLookup.getInstance(), archetypeId -> null);
 
-    private ExternalTerminologyValidation externalTerminologyValidation;
+  private ExternalTerminologyValidation externalTerminologyValidation;
 
-    public CompositionValidator() {}
+  public CompositionValidator() {
+  }
 
-    public CompositionValidator(ExternalTerminologyValidation externalTerminologyValidation) {
-        this.externalTerminologyValidation = externalTerminologyValidation;
+  public CompositionValidator(ExternalTerminologyValidation externalTerminologyValidation) {
+    this.externalTerminologyValidation = externalTerminologyValidation;
+  }
+
+  /**
+   * Validates the composition using an Operational Template.
+   *
+   * @param composition the composition to validate
+   * @param template    the operational template used to validate the composition
+   * @return the list of constraint violations
+   */
+  public List<ConstraintViolation> validate(Composition composition,
+      OPERATIONALTEMPLATE template) {
+    return validate(composition, new OPTParser(template).parse());
+  }
+
+  /**
+   * Validates the composition using a Web Template.
+   *
+   * @param composition the composition to validate
+   * @param template    the web template used to validate the composition
+   * @return the list of constraint violations
+   */
+  public List<ConstraintViolation> validate(Composition composition, WebTemplate template) {
+    var result = rmObjectValidator.validate(composition).stream()
+        .map(validationMessage -> new ConstraintViolation(validationMessage.getPath(),
+            validationMessage.getMessage()))
+        .collect(Collectors.toList());
+
+    if (result.isEmpty()) {
+      new ValidationWalker(externalTerminologyValidation)
+          .walk(composition, result, template.getTree(), template.getTemplateId());
     }
 
-    /**
-     * Validates the composition using an Operational Template.
-     *
-     * @param composition the composition to validate
-     * @param template    the operational template used to validate the composition
-     * @return the list of constraint violations
-     */
-    public List<ConstraintViolation> validate(Composition composition, OPERATIONALTEMPLATE template) {
-        return validate(composition, new OPTParser(template).parse());
-    }
+    return result;
+  }
 
-    /**
-     * Validates the composition using a Web Template.
-     *
-     * @param composition the composition to validate
-     * @param template    the web template used to validate the composition
-     * @return the list of constraint violations
-     */
-    public List<ConstraintViolation> validate(Composition composition, WebTemplate template) {
-        var result = rmObjectValidator.validate(composition).stream()
-                .map(validationMessage ->
-                        new ConstraintViolation(validationMessage.getPath(), validationMessage.getMessage()))
-                .collect(Collectors.toList());
+  /**
+   * Enable or disable invariant checks in archie library.
+   *
+   * @param validateInvariants the boolean value
+   */
+  public void setRunInvariantChecks(boolean validateInvariants) {
+    rmObjectValidator.setRunInvariantChecks(validateInvariants);
+  }
 
-        if (result.isEmpty()) {
-            new ValidationWalker(externalTerminologyValidation)
-                    .walk(composition, result, template.getTree(), template.getTemplateId());
-        }
-
-        return result;
-    }
-
-    /**
-     * Enable or disable invariant checks in archie library.
-     *
-     * @param validateInvariants the boolean value
-     */
-    public void setRunInvariantChecks(boolean validateInvariants) {
-        rmObjectValidator.setRunInvariantChecks(validateInvariants);
-    }
-
-    /**
-     * Sets the {@link ExternalTerminologyValidation} used to validate external terminology.
-     *
-     * @param externalTerminologyValidation the external terminology validator
-     */
-    public void setExternalTerminologyValidation(ExternalTerminologyValidation externalTerminologyValidation) {
-        this.externalTerminologyValidation = externalTerminologyValidation;
-    }
+  /**
+   * Sets the {@link ExternalTerminologyValidation} used to validate external terminology.
+   *
+   * @param externalTerminologyValidation the external terminology validator
+   */
+  public void setExternalTerminologyValidation(
+      ExternalTerminologyValidation externalTerminologyValidation) {
+    this.externalTerminologyValidation = externalTerminologyValidation;
+  }
 }

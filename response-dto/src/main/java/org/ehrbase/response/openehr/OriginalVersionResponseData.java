@@ -1,13 +1,13 @@
 /*
- * Copyright (c) 2020 vitasystems GmbH and Hannover Medical School.
+ * Copyright (c) 2020 Jake Smolka (Hannover Medical School).
  *
- * This file is part of project openEHR_SDK
+ * This file is part of project EHRbase
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     https://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -15,6 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.ehrbase.response.openehr;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -28,38 +29,34 @@ import com.nedap.archie.rm.support.identification.HierObjectId;
 import com.nedap.archie.rm.support.identification.ObjectId;
 import com.nedap.archie.rm.support.identification.ObjectRef;
 import com.nedap.archie.rm.support.identification.ObjectVersionId;
+import org.ehrbase.response.ehrscape.ContributionDto;
+
 import java.util.ArrayList;
 import java.util.List;
-import org.ehrbase.response.ehrscape.ContributionDto;
 
 @JacksonXmlRootElement(localName = "original_version")
 public class OriginalVersionResponseData<T> {
 
     @JsonProperty(value = "_type")
     private String type;
-
     @JsonProperty(value = "uid")
     private ObjectVersionId versionId;
     // contribution, signature and commit_audit could be extracted to "VERSION" super class
     private Contribution contribution;
-    private String signature; // optional
-
+    private String signature;   // optional
     @JsonProperty(value = "commit_audit")
     private AuditDetails auditDetails;
-
     @JsonProperty(value = "preceding_version_uid")
-    private ObjectVersionId precedingVersionUid; // optional
-
+    private ObjectVersionId precedingVersionUid;   // optional
     @JsonProperty(value = "other_input_version_uids")
     private List<ObjectVersionId> otherInputVersionUids; // optional
-
     @JsonProperty(value = "lifecycle_state")
     private DvCodedText lifecycleState;
-
-    private List<Attestation> attestations; // optional
+    private List<Attestation> attestations;     // optional
     private T data;
 
-    public OriginalVersionResponseData() {}
+    public OriginalVersionResponseData() {
+    }
 
     public OriginalVersionResponseData(OriginalVersion<T> originalVersion, ContributionDto contributionDto) {
         setType("ORIGINAL_VERSION");
@@ -67,9 +64,8 @@ public class OriginalVersionResponseData<T> {
 
         HierObjectId contributionId = new HierObjectId(contributionDto.getUuid().toString());
         List<ObjectRef<? extends ObjectId>> versions = new ArrayList<>();
-        contributionDto
-                .getObjectReferences()
-                .forEach((k, v) -> versions.add(new ObjectRef<>(new HierObjectId(v), "local", k)));
+        contributionDto.getObjectReferences().forEach((k, v) -> versions.add(
+                new ObjectRef<>(new HierObjectId(v), "local", k)));
         setContribution(new Contribution(contributionId, versions, contributionDto.getAuditDetails()));
 
         setSignature(originalVersion.getSignature());

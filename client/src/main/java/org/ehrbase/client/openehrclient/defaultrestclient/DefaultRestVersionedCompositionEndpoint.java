@@ -1,13 +1,11 @@
 /*
- * Copyright (c) 2021 vitasystems GmbH and Hannover Medical School.
- *
- * This file is part of project openEHR_SDK
+ * Copyright 2021 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     https://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -15,26 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ehrbase.client.openehrclient.defaultrestclient;
 
-import static org.ehrbase.client.openehrclient.defaultrestclient.DefaultRestClient.OBJECT_MAPPER;
-import static org.ehrbase.client.openehrclient.defaultrestclient.DefaultRestEhrEndpoint.EHR_PATH;
+package org.ehrbase.client.openehrclient.defaultrestclient;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.nedap.archie.rm.changecontrol.OriginalVersion;
 import com.nedap.archie.rm.composition.Composition;
 import com.nedap.archie.rm.ehr.VersionedComposition;
 import com.nedap.archie.rm.generic.RevisionHistoryItem;
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
-import javax.annotation.Nullable;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.utils.URIBuilder;
@@ -45,6 +31,20 @@ import org.ehrbase.client.openehrclient.VersionUid;
 import org.ehrbase.client.openehrclient.VersionedCompositionEndpoint;
 import org.ehrbase.response.openehr.OriginalVersionResponseData;
 import org.ehrbase.response.openehr.RevisionHistoryResponseData;
+
+import javax.annotation.Nullable;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+
+import static org.ehrbase.client.openehrclient.defaultrestclient.DefaultRestClient.OBJECT_MAPPER;
+import static org.ehrbase.client.openehrclient.defaultrestclient.DefaultRestEhrEndpoint.EHR_PATH;
 
 @SuppressWarnings({"java:S6212", "java:S1075"})
 public class DefaultRestVersionedCompositionEndpoint implements VersionedCompositionEndpoint {
@@ -66,8 +66,7 @@ public class DefaultRestVersionedCompositionEndpoint implements VersionedComposi
 
     @Override
     public Optional<VersionedComposition> find(UUID versionedObjectUid) {
-        URI uri = defaultRestClient
-                .getConfig()
+        URI uri = defaultRestClient.getConfig()
                 .getBaseUri()
                 .resolve(EHR_PATH + ehrId + VERSIONED_COMPOSITION_PATH + versionedObjectUid);
         return defaultRestClient.httpGet(uri, VersionedComposition.class);
@@ -75,12 +74,10 @@ public class DefaultRestVersionedCompositionEndpoint implements VersionedComposi
 
     @Override
     public List<RevisionHistoryItem> findRevisionHistory(UUID versionedObjectUid) {
-        URI uri = defaultRestClient
-                .getConfig()
+        URI uri = defaultRestClient.getConfig()
                 .getBaseUri()
                 .resolve(EHR_PATH + ehrId + VERSIONED_COMPOSITION_PATH + versionedObjectUid + REVISION_HISTORY_PATH);
-        Optional<RevisionHistoryResponseData> result =
-                defaultRestClient.httpGet(uri, RevisionHistoryResponseData.class);
+        Optional<RevisionHistoryResponseData> result = defaultRestClient.httpGet(uri, RevisionHistoryResponseData.class);
         if (result.isEmpty()) {
             return new ArrayList<>();
         } else {
@@ -89,23 +86,18 @@ public class DefaultRestVersionedCompositionEndpoint implements VersionedComposi
     }
 
     @Override
-    public <T> Optional<OriginalVersion<T>> findVersionById(
-            UUID versionedObjectUid, VersionUid versionUid, Class<T> clazz) {
-        URI uri = defaultRestClient
-                .getConfig()
+    public <T> Optional<OriginalVersion<T>> findVersionById(UUID versionedObjectUid, VersionUid versionUid, Class<T> clazz) {
+        URI uri = defaultRestClient.getConfig()
                 .getBaseUri()
-                .resolve(EHR_PATH + ehrId + VERSIONED_COMPOSITION_PATH + versionedObjectUid + VERSION_PATH + "/"
-                        + versionUid.toString());
+                .resolve(EHR_PATH + ehrId + VERSIONED_COMPOSITION_PATH + versionedObjectUid + VERSION_PATH + "/" + versionUid.toString());
 
         return internalFindVersion(uri, clazz);
     }
 
     @Override
-    public <T> Optional<OriginalVersion<T>> findVersionAtTime(
-            UUID versionedObjectUid, @Nullable LocalDateTime versionAtTime, Class<T> clazz) {
+    public <T> Optional<OriginalVersion<T>> findVersionAtTime(UUID versionedObjectUid, @Nullable LocalDateTime versionAtTime, Class<T> clazz) {
         try {
-            URIBuilder uriBuilder = new URIBuilder(defaultRestClient
-                    .getConfig()
+            URIBuilder uriBuilder = new URIBuilder(defaultRestClient.getConfig()
                     .getBaseUri()
                     .resolve(EHR_PATH + ehrId + VERSIONED_COMPOSITION_PATH + versionedObjectUid + VERSION_PATH));
 
@@ -126,8 +118,10 @@ public class DefaultRestVersionedCompositionEndpoint implements VersionedComposi
         }
 
         try {
-            TypeReference<OriginalVersionResponseData<Composition>> valueTypeRef = new TypeReference<>() {};
-            return Optional.of(OBJECT_MAPPER.readValue(response.getEntity().getContent(), valueTypeRef))
+            TypeReference<OriginalVersionResponseData<Composition>> valueTypeRef = new TypeReference<>() {
+            };
+            return Optional
+                    .of(OBJECT_MAPPER.readValue(response.getEntity().getContent(), valueTypeRef))
                     .map(originalVersion -> this.convert(originalVersion, clazz));
         } catch (IOException e) {
             throw new ClientException(e.getMessage(), e);
@@ -152,10 +146,11 @@ public class DefaultRestVersionedCompositionEndpoint implements VersionedComposi
         result.setOtherInputVersionUids(originalVersion.getOtherInputVersionUids());
         result.setAttestations(originalVersion.getAttestations());
 
-        T composition =
-                new Flattener(defaultRestClient.getTemplateProvider()).flatten(originalVersion.getData(), clazz);
+        T composition = new Flattener(defaultRestClient.getTemplateProvider())
+                .flatten(originalVersion.getData(), clazz);
         result.setData(composition);
 
         return result;
     }
 }
+

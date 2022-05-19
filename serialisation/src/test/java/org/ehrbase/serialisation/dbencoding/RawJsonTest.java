@@ -1,13 +1,13 @@
 /*
- * Copyright (c) 2019 vitasystems GmbH and Hannover Medical School.
+ * Copyright (c) 2019 Vitasystems GmbH and Hannover Medical School.
  *
- * This file is part of project openEHR_SDK
+ * This file is part of project EHRbase
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     https://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -15,15 +15,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ehrbase.serialisation.dbencoding;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
-import static org.assertj.core.api.Assertions.assertThat;
+package org.ehrbase.serialisation.dbencoding;
 
 import com.nedap.archie.rm.composition.Composition;
 import com.nedap.archie.rm.datastructures.ItemStructure;
 import com.nedap.archie.rm.datastructures.ItemTree;
-import java.io.IOException;
 import org.apache.commons.io.IOUtils;
 import org.ehrbase.serialisation.jsonencoding.CanonicalJson;
 import org.ehrbase.serialisation.xmlencoding.CanonicalXML;
@@ -31,6 +28,11 @@ import org.ehrbase.test_data.composition.CompositionTestDataCanonicalJson;
 import org.ehrbase.test_data.composition.CompositionTestDataCanonicalXML;
 import org.ehrbase.test_data.item_structure.ItemStruktureTestDataCanonicalJson;
 import org.junit.Test;
+
+import java.io.IOException;
+
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class RawJsonTest {
 
@@ -88,22 +90,21 @@ public class RawJsonTest {
     @Test
     public void testUnmarshalItemStructureWithItemTable() throws IOException {
 
-        // This test fails as ITEM_TABLE is not yet supported.
-        //        String value = new
-        // String(Files.readAllBytes(Paths.get("src/test/resources/sample_data/item_table_sample.json")));
-        //
-        //        CanonicalJson canonicalJson = new CanonicalJson();
-        //
-        //        ItemTable itemTable = canonicalJson.unmarshal(value, ItemTable.class);
-        //
-        //        RawJson cut = new RawJson();
-        //
-        //        String marshal = cut.marshal(itemTable);
-        //
-        //        ItemTable actual = cut.unmarshal(marshal, ItemTable.class);
-        //
-        //        assertThat(actual).isNotNull();
-        //        assertThat(actual.getItems()).size().isEqualTo(3);
+        //This test fails as ITEM_TABLE is not yet supported.
+//        String value = new String(Files.readAllBytes(Paths.get("src/test/resources/sample_data/item_table_sample.json")));
+//
+//        CanonicalJson canonicalJson = new CanonicalJson();
+//
+//        ItemTable itemTable = canonicalJson.unmarshal(value, ItemTable.class);
+//
+//        RawJson cut = new RawJson();
+//
+//        String marshal = cut.marshal(itemTable);
+//
+//        ItemTable actual = cut.unmarshal(marshal, ItemTable.class);
+//
+//        assertThat(actual).isNotNull();
+//        assertThat(actual.getItems()).size().isEqualTo(3);
     }
 
     @Test

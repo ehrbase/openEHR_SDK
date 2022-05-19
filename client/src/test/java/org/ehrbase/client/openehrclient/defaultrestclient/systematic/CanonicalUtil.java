@@ -1,37 +1,38 @@
 /*
- * Copyright (c) 2020 vitasystems GmbH and Hannover Medical School.
+ * Copyright (c) 2020 Christian Chevalley (Hannover Medical School) and Vitasystems GmbH
  *
- * This file is part of project openEHR_SDK
+ * This file is part of project EHRbase
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
+ *  Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *  You may obtain a copy of the License at
  *
- *     https://www.apache.org/licenses/LICENSE-2.0
+ *  http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ *  See the License for the specific language governing permissions and limitations under the License.
  */
-package org.ehrbase.client.openehrclient.defaultrestclient.systematic;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.ehrbase.serialisation.dbencoding.wrappers.json.I_DvTypeAdapter.AT_TYPE;
+package org.ehrbase.client.openehrclient.defaultrestclient.systematic;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.nedap.archie.rm.RMObject;
 import com.nedap.archie.rm.archetyped.Locatable;
 import com.nedap.archie.rminfo.ArchieRMInfoLookup;
+import org.ehrbase.serialisation.jsonencoding.CanonicalJson;
+import org.ehrbase.serialisation.util.SnakeToCamel;
+
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import org.ehrbase.serialisation.jsonencoding.CanonicalJson;
-import org.ehrbase.serialisation.util.SnakeToCamel;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.ehrbase.serialisation.dbencoding.wrappers.json.I_DvTypeAdapter.AT_TYPE;
 
 public abstract class CanonicalUtil {
 
@@ -61,13 +62,12 @@ public abstract class CanonicalUtil {
         Object retObject = anObject;
 
         if (anObject instanceof Map) {
-            // perform the conversion using the type if any
+            //perform the conversion using the type if any
             if (((Map) anObject).containsKey(AT_TYPE)) {
-                // get the actual type from Archie lookup
+                //get the actual type from Archie lookup
                 Class objectRmClass = ArchieRMInfoLookup.getInstance().getClass((String) ((Map) anObject).get(AT_TYPE));
                 if (objectRmClass != null)
-                    retObject =
-                            new CanonicalJson().marshal(toRmObject(((Map<String, Object>) anObject), objectRmClass));
+                    retObject = new CanonicalJson().marshal(toRmObject(((Map<String, Object>) anObject), objectRmClass));
             }
         }
 
@@ -80,15 +80,18 @@ public abstract class CanonicalUtil {
 
         Object retObject = anExpression;
 
-        if (retObject == null) return null; // null result is valid!
+        if (retObject == null)
+            return null; //null result is valid!
 
-        if (anExpression.startsWith("{")) { // assume json, transform in canonical json for comparison
+        if (anExpression.startsWith("{")) { //assume json, transform in canonical json for comparison
             Gson gsonBuilder = new GsonBuilder().create();
             Map asMap = gsonBuilder.fromJson(anExpression, Map.class);
-            // get the type
-            retObject = valueObject(asMap);
+            //get the type
+           retObject = valueObject(asMap);
 
-        } else retObject = new SpecialCase().transform(retObject);
+        }
+        else
+            retObject = new SpecialCase().transform(retObject);
 
         return retObject;
     }
@@ -97,20 +100,19 @@ public abstract class CanonicalUtil {
         return new CanonicalJson().unmarshal(anRmObjectAsString, rmClass);
     }
 
-    public static Object compareArbitraryRmClass(
-            Map<String, Object> anRmObjectAsMap, Class rmClass, RMObject compareExpectedObject) {
+    public static Object compareArbitraryRmClass(Map<String, Object> anRmObjectAsMap, Class rmClass, RMObject compareExpectedObject) {
         RMObject actualRmObject = toRmObject(anRmObjectAsMap, rmClass);
         assertThat(actualRmObject).isEqualTo(compareExpectedObject);
         return null;
     }
 
-    public static List<RMObject> toRmObjectList(List<Object> rmObjectListAsMap) {
+    public static List<RMObject> toRmObjectList(List<Object> rmObjectListAsMap){
         List<RMObject> objects = new ArrayList<>();
 
-        for (Object item : rmObjectListAsMap) {
+        for (Object item: rmObjectListAsMap){
             if (item instanceof Map) {
-                Map<String, Object> mappedObject = (Map<String, Object>) item;
-                // get the type
+                Map<String, Object> mappedObject = (Map<String, Object>)item;
+                //get the type
                 String type = (String) mappedObject.get(AT_TYPE);
                 Class rmClass = ArchieRMInfoLookup.getInstance().getClass(type);
                 RMObject rmObject = toRmObject(mappedObject, rmClass);
@@ -130,7 +132,8 @@ public abstract class CanonicalUtil {
      * @return
      */
     private static Object getAttributeValue(Object obj, String attributePath) {
-        if (obj == null) return null;
+        if (obj == null)
+            return null;
 
         Class rmClass = obj.getClass();
         Object value;
@@ -138,9 +141,10 @@ public abstract class CanonicalUtil {
         String getterName;
 
         if (attributePath.startsWith("is_")) {
-            // conventionally, a getter for a boolean uses 'is' as a prefix
+            //conventionally, a getter for a boolean uses 'is' as a prefix
             getterName = "is" + new SnakeToCamel(attributePath.substring(3)).convert();
-        } else getterName = "get" + new SnakeToCamel(attributePath).convert();
+        } else
+            getterName = "get" + new SnakeToCamel(attributePath).convert();
 
         try {
             getter = rmClass.getMethod(getterName);
@@ -168,13 +172,16 @@ public abstract class CanonicalUtil {
         if (rmObject instanceof Locatable) {
             try {
                 List<Object> items = ((Locatable) root).itemsAtPath(attributePath);
-                if (!items.isEmpty()) rmObject = keepArray ? items : items.get(0);
-                else rmObject = null;
+                if (!items.isEmpty())
+                    rmObject = keepArray ? items : items.get(0);
+                else
+                    rmObject = null;
             } catch (Exception e) {
                 throw new IllegalArgumentException("Invalid path:" + attributePath);
             }
         } else {
-            if (!attributePath.contains("/")) rmObject = getAttributeValue(root, attributePath);
+            if (!attributePath.contains("/"))
+                rmObject = getAttributeValue(root, attributePath);
             else {
                 String[] pathItems = attributePath.split("/");
 
@@ -183,19 +190,18 @@ public abstract class CanonicalUtil {
                 for (String item : pathItems) {
                     rmObject = getAttributeValue(rmObject, item);
                     iteration++;
-                    if (rmObject instanceof Locatable) { // f.e. items in other_details
-                        rmObject = locatableValueItem(
-                                (RMObject) rmObject,
-                                iteration,
-                                Arrays.asList(pathItems).subList(iteration, pathItems.length));
+                    if (rmObject instanceof Locatable) { //f.e. items in other_details
+                        rmObject = locatableValueItem((RMObject) rmObject, iteration, Arrays.asList(pathItems).subList(iteration, pathItems.length));
                         break;
                     }
                 }
             }
         }
 
-        if (rmObject instanceof RMObject) return new CanonicalJson().marshal((RMObject) rmObject);
-        else return rmObject;
+        if (rmObject instanceof RMObject)
+            return new CanonicalJson().marshal((RMObject) rmObject);
+        else
+            return rmObject;
     }
 
     public static Object attributeValueAt(Object root, String path) {
@@ -210,8 +216,10 @@ public abstract class CanonicalUtil {
 
     public static Object locatableValueItem(RMObject rmObject, int iteration, List<String> pathItems) {
         String actualItemPath;
-        if (pathItems.isEmpty()) actualItemPath = "/";
-        else actualItemPath = String.join("/", pathItems);
+        if (pathItems.isEmpty())
+            actualItemPath = "/";
+        else
+            actualItemPath = String.join("/", pathItems);
         return ((Locatable) rmObject).itemsAtPath(actualItemPath).get(0);
     }
 }

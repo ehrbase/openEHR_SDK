@@ -1,13 +1,13 @@
 /*
- * Copyright (c) 2019 vitasystems GmbH and Hannover Medical School.
+ * Copyright (c) 2019 Vitasystems GmbH and Christian Chevalley (Hannover Medical School).
  *
- * This file is part of project openEHR_SDK
+ * This file is part of project EHRbase
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     https://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -17,22 +17,25 @@
  */
 package org.ehrbase.terminology.openehr.implementation;
 
-import static org.junit.Assert.assertNotNull;
 
 import org.junit.Test;
+
+import static org.junit.Assert.assertNotNull;
 
 public class XMLTerminologySourceTest {
 
     @Test
     public void testGetOpenEHRInstance() throws Exception {
-        TerminologySource terminologySource = TerminologySourceFactory.getOpenEHRTerminology();
+        TerminologySource terminologySource =
+                TerminologySourceFactory.getOpenEHRTerminology();
 
         assertNotNull(terminologySource);
     }
 
     @Test
     public void testGetExternalInstance() throws Exception {
-        TerminologySource terminologySource = TerminologySourceFactory.getExternalTerminologies("en");
+        TerminologySource terminologySource =
+                TerminologySourceFactory.getExternalTerminologies("en");
 
         assertNotNull(terminologySource);
     }
@@ -40,8 +43,7 @@ public class XMLTerminologySourceTest {
     @Test
     public void testGetMapper() throws Exception {
 
-        AttributeCodesetMapping attributeCodesetMapping =
-                AttributeCodesetMapping.getInstance("attribute_to_openehr_codesets.xml");
+        AttributeCodesetMapping attributeCodesetMapping = AttributeCodesetMapping.getInstance("attribute_to_openehr_codesets.xml");
 
         assertNotNull(attributeCodesetMapping);
     }

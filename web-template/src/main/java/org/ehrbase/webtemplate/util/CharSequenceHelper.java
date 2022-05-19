@@ -1,24 +1,26 @@
 /*
- * Copyright (c) 2022 vitasystems GmbH and Hannover Medical School.
+ *  Copyright (c) 2022  Holger Reise (Vitasystems GmbH) and Hannover Medical School
  *
- * This file is part of project openEHR_SDK
+ *  This file is part of Project EHRbase
+ *   Licensed under the Apache License, Version 2.0 (the "License");
+ *   you may not use this file except in compliance with the License.
+ *   You may obtain a copy of the License at
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *   http://www.apache.org/licenses/LICENSE-2.0
  *
- *     https://www.apache.org/licenses/LICENSE-2.0
+ *   Unless required by applicable law or agreed to in writing, software
+ *   distributed under the License is distributed on an "AS IS" BASIS,
+ *   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *   See the License for the specific language governing permissions and
+ *   limitations under the License.
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
  */
+
 package org.ehrbase.webtemplate.util;
 
-import java.nio.CharBuffer;
 import org.apache.commons.lang3.StringUtils;
+
+import java.nio.CharBuffer;
 
 /**
  * For optimizing performance of string based operations
@@ -26,7 +28,7 @@ import org.apache.commons.lang3.StringUtils;
 public class CharSequenceHelper {
 
     private CharSequenceHelper() {
-        // NOOP
+        //NOOP
     }
 
     public static CharBuffer subSequence(CharSequence str, int beginIndex, int endIndex) {
@@ -76,7 +78,10 @@ public class CharSequenceHelper {
             } else if (pos + 1 == str.length()) {
                 return new CharSequence[] {CharBuffer.wrap(str, 0, pos)};
             } else {
-                return new CharSequence[] {CharBuffer.wrap(str, 0, pos), CharBuffer.wrap(str, pos + 1, str.length())};
+                return new CharSequence[] {
+                    CharBuffer.wrap(str, 0, pos),
+                    CharBuffer.wrap(str, pos + 1, str.length())
+                };
             }
         }
     }
