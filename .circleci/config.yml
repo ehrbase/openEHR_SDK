@@ -33,6 +33,15 @@ workflows:
   # WORKFLOW 1/6) Build & Test the SDK
   QUALITY-GATE-I:
     jobs:
+      - check-codestyle:
+          context: org-global
+          filters:
+            branches:
+              ignore:
+                - /release\/.*/
+                - master
+                - /sync\/.*/
+                - /feature/sync\/.*/
       - build-and-test-openEHR_SDK:
           filters:
             branches:
@@ -94,7 +103,7 @@ workflows:
                 - release
                 - /sync\/.*/
                 - /feature/sync\/.*/
-      
+
       - COMPOSITION-tests-5:
           context: org-global
           requires:
@@ -146,7 +155,7 @@ workflows:
                 - release
                 - /sync\/.*/
                 - /feature/sync\/.*/
-      
+
       - EHRSTATUS-tests:
           context: org-global
           requires:
@@ -159,7 +168,7 @@ workflows:
                 - release
                 - /sync\/.*/
                 - /feature/sync\/.*/
-      
+
       - KNOWLEDGE-tests:
           context: org-global
           requires:
@@ -265,7 +274,7 @@ workflows:
 
 
 
-  # WORKFLOW 5/6) Code analysis w/ SonarCloud.io 
+  # WORKFLOW 5/6) Code analysis w/ SonarCloud.io
   QUALITY-GATE-II:
     jobs:
       - build-test-and-analyse-openEHR_SDK:
@@ -280,7 +289,7 @@ workflows:
                 - /feature/sync\/.*/
 
 
-  # WORKFLOW 6/6) 
+  # WORKFLOW 6/6)
   synced-feature-check:
     description: |
       WHAT THIS WORKFLOW DOES
@@ -350,6 +359,12 @@ workflows:
       //////////////////////////////////////////////////////////////////////
 
     jobs:
+      - check-codestyle:
+          filters:
+            branches:
+              only:
+                - /^sync\/.*/
+                - /^feature\/sync\/.*/
       - build-and-test-synced-branches-of-EHRbase-and-openEHR_SDK:
           context: org-global
           filters:
@@ -444,7 +459,15 @@ jobs:
   #           88  Y8,        ,8P  88      `8b          `8b
   #   88,   ,d88   Y8a.    .a8P   88      a8P  Y8a     a8P
   #    "Y8888P"     `"Y8888Y"'    88888888P"    "Y88888P"
-  
+
+
+  check-codestyle:
+    executor: docker-python3-java11
+    steps:
+      - checkout
+      - install-maven
+      - maven-check-codestyle
+
 
   build-and-test-openEHR_SDK:
     description: Build and run all openEHR_SDK Java tests (unit and integration tests w/ EHRbase + DB running).
@@ -457,7 +480,7 @@ jobs:
       - cache-out-ehrbase-m2-dependencies
       - force-ehrbase-build-to-use-local-sdk-version
       - build-and-run-ehrbase-then-run-all-sdk-java-tests
-      - cache-in-ehrbase-m2-dependencies      
+      - cache-in-ehrbase-m2-dependencies
       - cache-in-sdk-m2-dependencies
       - collect-sdk-unittest-results
       - collect-sdk-integrationtest-results
@@ -468,7 +491,7 @@ jobs:
   build-and-test-synced-branches-of-EHRbase-and-openEHR_SDK:
     description: |
       Build and run all openEHR_SDK Java tests (unit and integration tests)
-      w/ EHRbase being checked out from a sync/*-branch or feature/sync/*-branch 
+      w/ EHRbase being checked out from a sync/*-branch or feature/sync/*-branch
     executor: docker-py3-java11-postgres
     steps:
       - checkout
@@ -479,7 +502,7 @@ jobs:
       - cache-out-ehrbase-m2-dependencies
       - force-ehrbase-build-to-use-local-sdk-version
       - build-and-run-ehrbase-then-run-all-sdk-java-tests
-      - cache-in-ehrbase-m2-dependencies      
+      - cache-in-ehrbase-m2-dependencies
       - cache-in-sdk-m2-dependencies
       - collect-sdk-unittest-results
       - collect-sdk-integrationtest-results
@@ -492,7 +515,7 @@ jobs:
     # executor: machine-ubuntu-2004                          # (use for pipeline debugging only)
     steps:
       #-----------------------------------#---------------(use for pipeline debugging only)
-      # - run: echo MOCKED JOB            # 
+      # - run: echo MOCKED JOB            #
       # - cache-out-ehrbase-workspace     #
       #-----------------------------------#
       - restore-ehrbase-workspace
@@ -507,7 +530,7 @@ jobs:
     # executor: machine-ubuntu-2004                          # (use for pipeline debugging only)
     steps:
       #-----------------------------------#---------------(use for pipeline debugging only)
-      # - run: echo MOCKED JOB            # 
+      # - run: echo MOCKED JOB            #
       # - cache-out-ehrbase-workspace     #
       #-----------------------------------#
       - restore-ehrbase-workspace
@@ -521,7 +544,7 @@ jobs:
     # executor: machine-ubuntu-2004                          # (use for pipeline debugging only)
     steps:
       #-----------------------------------#---------------(use for pipeline debugging only)
-      # - run: echo MOCKED JOB            # 
+      # - run: echo MOCKED JOB            #
       # - cache-out-ehrbase-workspace     #
       #-----------------------------------#
       - restore-ehrbase-workspace
@@ -535,7 +558,7 @@ jobs:
     # executor: machine-ubuntu-2004                          # (use for pipeline debugging only)
     steps:
       #-----------------------------------#---------------(use for pipeline debugging only)
-      # - run: echo MOCKED JOB            # 
+      # - run: echo MOCKED JOB            #
       # - cache-out-ehrbase-workspace     #
       #-----------------------------------#
       - restore-ehrbase-workspace
@@ -543,13 +566,13 @@ jobs:
           include-tags: "compositionANDcomposition_update"
           test-suite-path: "COMPOSITION_TESTS"
           test-suite-name: "COMPOSITION_4"
-  
+
   COMPOSITION-tests-5:
     executor: docker-py3-java11-postgres
     # executor: machine-ubuntu-2004                          # (use for pipeline debugging only)
     steps:
       #-----------------------------------#---------------(use for pipeline debugging only)
-      # - run: echo MOCKED JOB            # 
+      # - run: echo MOCKED JOB            #
       # - cache-out-ehrbase-workspace     #
       #-----------------------------------#
       - restore-ehrbase-workspace
@@ -563,7 +586,7 @@ jobs:
     # executor: machine-ubuntu-2004                          # (use for pipeline debugging only)
     steps:
       #-----------------------------------#---------------(use for pipeline debugging only)
-      # - run: echo MOCKED JOB            # 
+      # - run: echo MOCKED JOB            #
       # - cache-out-ehrbase-workspace     #
       #-----------------------------------#
       - restore-ehrbase-workspace
@@ -577,7 +600,7 @@ jobs:
     # executor: machine-ubuntu-2004                          # (use for pipeline debugging only)
     steps:
       #-----------------------------------#---------------(use for pipeline debugging only)
-      # - run: echo MOCKED JOB            # 
+      # - run: echo MOCKED JOB            #
       # - cache-out-ehrbase-workspace     #
       #-----------------------------------#
       - restore-ehrbase-workspace
@@ -591,7 +614,7 @@ jobs:
     # executor: machine-ubuntu-2004                          # (use for pipeline debugging only)
     steps:
       #-----------------------------------#---------------(use for pipeline debugging only)
-      # - run: echo MOCKED JOB            # 
+      # - run: echo MOCKED JOB            #
       # - cache-out-ehrbase-workspace     #
       #-----------------------------------#
       - restore-ehrbase-workspace
@@ -605,7 +628,7 @@ jobs:
     # executor: machine-ubuntu-2004                          # (use for pipeline debugging only)
     steps:
       #-----------------------------------#---------------(use for pipeline debugging only)
-      # - run: echo MOCKED JOB            # 
+      # - run: echo MOCKED JOB            #
       # - cache-out-ehrbase-workspace     #
       #-----------------------------------#
       - restore-ehrbase-workspace
@@ -619,7 +642,7 @@ jobs:
     # executor: machine-ubuntu-2004                          # (use for pipeline debugging only)
     steps:
       #-----------------------------------#---------------(use for pipeline debugging only)
-      # - run: echo MOCKED JOB            # 
+      # - run: echo MOCKED JOB            #
       # - cache-out-ehrbase-workspace     #
       #-----------------------------------#
       - restore-ehrbase-workspace
@@ -635,7 +658,7 @@ jobs:
     # executor: machine-ubuntu-2004                          # (use for pipeline debugging only)
     steps:
       #-----------------------------------#---------------(use for pipeline debugging only)
-      # - run: echo MOCKED JOB            # 
+      # - run: echo MOCKED JOB            #
       # - cache-out-ehrbase-workspace     #
       #-----------------------------------#
       - restore-ehrbase-workspace
@@ -666,7 +689,7 @@ jobs:
             - ehrbasedb-dump-v8
       # COMMENT: USE THE NEXT LINE ONLY TO FORCE TEST-DATA REGENERATION! Otherwise comment it out!
       - run: echo "FORCE GENERATION OF TEST-DATA AND EXPECTED RESULTS!" > /tmp/DATA_CHANGED_NOTICE
-      - run: 
+      - run:
           name: CHECK IF EXPECTED-RESULT TEMPLATES HAVE CHANGED AND REGENERATE TEST-DATA IF NEEDED
           command: |
             cd ehrbase
@@ -710,7 +733,7 @@ jobs:
     # executor: machine-ubuntu-2004                          # (use for pipeline debugging only)
     steps:
       #-----------------------------------#---------------(use for pipeline debugging only)
-      # - run: echo MOCKED JOB            # 
+      # - run: echo MOCKED JOB            #
       # - cache-out-ehrbase-workspace     #
       #-----------------------------------#
       # - cache-out-python-requirements                 # TODO: @wlad find a solution: python cache not working yet
@@ -751,7 +774,7 @@ jobs:
     # executor: machine-ubuntu-2004                          # (use for pipeline debugging only!)
     steps:
       #-----------------------------------#---------------(use for pipeline debugging only)
-      - run: echo MOCKED JOB            # 
+      - run: echo MOCKED JOB            #
       # - cache-out-ehrbase-workspace     #
       #-----------------------------------#
       # - checkout
@@ -776,7 +799,7 @@ jobs:
           skip-jacoco: false
           skip-tests: false
           skip-javadoc: false
-      - cache-in-ehrbase-m2-dependencies      
+      - cache-in-ehrbase-m2-dependencies
       - cache-in-sdk-m2-dependencies
       - collect-sdk-unittest-results
       - collect-sdk-integrationtest-results
@@ -943,7 +966,16 @@ commands:
   # ///////////////////////////////////////////////////////////////////////////
   # /// SDK COMMANDS                                                        ///
   # ///////////////////////////////////////////////////////////////////////////
-  
+
+  maven-check-codestyle:
+    description: Run spotless plugin check goal
+    steps:
+      - run:
+          name: Run spotless plugin check goal
+          command: |
+            mvn com.diffplug.spotless:spotless-maven-plugin:check
+
+
   build-sdk:
     steps:
       - install-maven
@@ -980,7 +1012,7 @@ commands:
 
   build-and-integration-test-sdk:
     description: |
-      WARNING: this command requires EHRbase to be up and running 
+      WARNING: this command requires EHRbase to be up and running
     steps:
       - install-maven
       - run:
@@ -1001,7 +1033,7 @@ commands:
       skip-jacoco:
         description: Skip Jacoco's Code Instrumentation For Coverage Analysis
         type: boolean
-        default: true 
+        default: true
       skip-tests:
         description: Do Not Compile And Do Not Run Test Code
         type: boolean
@@ -1060,7 +1092,7 @@ commands:
             find . -type f -regex ".*/target/surefire-reports/.*xml" -exec cp {} ~/test-results/unit-tests/ \;
             find . -type f -regex ".*/target/surefire-reports/.*txt" -exec cp {} ~/test-results/unit-tests/ \;
           when: always
-  
+
 
   collect-sdk-integrationtest-results:
     steps:
@@ -1072,7 +1104,7 @@ commands:
             find . -type f -regex ".*/target/failsafe-reports/.*txt" -exec cp {} ~/test-results/integration-tests/ \;
           when: always
 
-    
+
   save-skd-test-results:
     steps:
       - store_test_results:
@@ -1092,7 +1124,7 @@ commands:
       #     path: test-coverage/target/site/jacoco-it-coverage
       - store_artifacts:
           path: test-coverage/target/site/jacoco-overall-coverage
-      
+
 
   save-sdk-workspace:
     steps:
@@ -1234,7 +1266,7 @@ commands:
   install-maven:
     description: Install Maven tool only if it's not already installed
     steps:
-      - run: 
+      - run:
           name: Install Maven tool
           command: |
             sudo killall -9 apt-get || true
@@ -1291,14 +1323,14 @@ commands:
         enum: ["DEV", "DEV -v AUTH_TYPE:OAUTH", "ADMIN-DEV", "TEST", "TEST -v AUTH_TYPE:OAUTH", "ADMIN-TEST"]
         default: "DEV"
         type: enum
-      
+
       nodename:
         description: | 
           EHRbase's "CREATING_SYSTEM_ID". It can be set from cli when starting server .jar, i.e.:
           `java -jar application.jar --server.nodename=local.ehrbase.org`
         default: "circleci.ehrbase.org"
         type: string
-      
+
       allow-template-overwrite:
         description:  Sets EHRbase's cli option `--system.allow-template-overwrite=true`
         default: true
@@ -1398,7 +1430,7 @@ commands:
             python -c "import site; print(site.getsitepackages())"
             pip install -r ~/projects/ehrbase/tests/requirements.txt
       # - cache-in-python-requirements
-  
+
 
   cache-in-python-requirements:
     description: Save all caches in interation tests job
@@ -1602,7 +1634,7 @@ executors:
   #           it fails when dependencies are not cached first.
   #           After caching dependencies it works but not 100% reliable.
 
-  #           As a more robust solution install xmlstarlet (a cli tool to handle XML) and 
+  #           As a more robust solution install xmlstarlet (a cli tool to handle XML) and
   #           use it as a fallback if the 'mvn -o' approach starts to fail.
   #         command: |
   #           SDK_VERSION=$(cat ~/projects/SDK_VERSION)
@@ -1656,7 +1688,7 @@ executors:
   #           cp -r test-coverage/target/site/jacoco-overall-coverage ~/code-coverage/
   #     - store_artifacts:
   #         path: ~/code-coverage/jacoco-it-coverage
-  
+
   # save-jacoco-overall-coverage:
   #   steps:
   #     - run:
