@@ -29,6 +29,10 @@
 
     <artifactId>validation</artifactId>
 
+    <properties>
+        <license-header.dir>../</license-header.dir>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.ehrbase.openehr.sdk</groupId>
@@ -96,7 +100,7 @@
                     <artifactId>jcl-over-slf4j</artifactId>
                 </exclusion>
             </exclusions>
-        </dependency>        
+        </dependency>
         <dependency>
             <groupId>net.java</groupId>
             <artifactId>quickcheck</artifactId>

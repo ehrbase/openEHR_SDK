@@ -30,6 +30,10 @@
 
     <artifactId>util</artifactId>
 
+    <properties>
+        <license-header.dir>../</license-header.dir>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>io.github.classgraph</groupId>
@@ -43,6 +47,6 @@
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-engine</artifactId>
             <scope>test</scope>
-        </dependency>        
+        </dependency>
     </dependencies>
 </project>

@@ -30,6 +30,10 @@
 
     <artifactId>building</artifactId>
 
+    <properties>
+        <license-header.dir>../</license-header.dir>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>com.nedap.healthcare.archie</groupId>

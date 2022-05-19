@@ -30,4 +30,8 @@
     </parent>
 
     <artifactId>test-data</artifactId>
+
+    <properties>
+        <license-header.dir>../</license-header.dir>
+    </properties>
 </project>
