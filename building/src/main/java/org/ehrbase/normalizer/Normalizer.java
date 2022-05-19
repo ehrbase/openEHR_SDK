@@ -1,22 +1,20 @@
 /*
+ * Copyright (c) 2020 vitasystems GmbH and Hannover Medical School.
  *
- *  *  Copyright (c) 2020  Stefan Spiska (Vitasystems GmbH) and Hannover Medical School
- *  *  This file is part of Project EHRbase
- *  *
- *  *  Licensed under the Apache License, Version 2.0 (the "License");
- *  *  you may not use this file except in compliance with the License.
- *  *  You may obtain a copy of the License at
- *  *
- *  *  http://www.apache.org/licenses/LICENSE-2.0
- *  *
- *  *  Unless required by applicable law or agreed to in writing, software
- *  *  distributed under the License is distributed on an "AS IS" BASIS,
- *  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  *  See the License for the specific language governing permissions and
- *  *  limitations under the License.
+ * This file is part of project openEHR_SDK
  *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
-
 package org.ehrbase.normalizer;
 
 import com.nedap.archie.rm.RMObject;
@@ -24,9 +22,6 @@ import com.nedap.archie.rm.archetyped.Locatable;
 import com.nedap.archie.rm.composition.Entry;
 import com.nedap.archie.rm.datavalues.quantity.DvInterval;
 import com.nedap.archie.rm.generic.PartySelf;
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.reflect.FieldUtils;
-
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Field;
@@ -36,6 +31,8 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.reflect.FieldUtils;
 
 public class Normalizer {
 
@@ -54,8 +51,10 @@ public class Normalizer {
             return t.equals(new DvInterval<>()) ? null : t;
         }
 
-        List<Field> allFields = Arrays.stream(FieldUtils.getAllFields(t.getClass())).collect(Collectors.toList());
-        boolean empty = allFields.stream().map(f -> normalizeField(f, t)).reduce(!allFields.isEmpty(), (b1, b2) -> b1 && b2);
+        List<Field> allFields =
+                Arrays.stream(FieldUtils.getAllFields(t.getClass())).collect(Collectors.toList());
+        boolean empty =
+                allFields.stream().map(f -> normalizeField(f, t)).reduce(!allFields.isEmpty(), (b1, b2) -> b1 && b2);
         if (PartySelf.class.isAssignableFrom(t.getClass())) {
             return t;
         } else if (empty && !root) {
@@ -65,13 +64,11 @@ public class Normalizer {
         }
     }
 
-
     @SuppressWarnings(value = "rawtypes,unchecked")
     private boolean normalizeField(Field field, Object object) {
         try {
             PropertyDescriptor propertyDescriptor = new PropertyDescriptor(field.getName(), object.getClass());
             Object value = propertyDescriptor.getReadMethod().invoke(object);
-
 
             Object normalize;
             if (value == null) {
@@ -103,7 +100,8 @@ public class Normalizer {
     }
 
     private boolean checkIsEmpty(Field field, Object normalize) {
-        if (field.getDeclaringClass().equals(Locatable.class) || field.getDeclaringClass().equals(Entry.class)) {
+        if (field.getDeclaringClass().equals(Locatable.class)
+                || field.getDeclaringClass().equals(Entry.class)) {
             return true;
         } else if (Collection.class.isAssignableFrom(field.getType())) {
             return CollectionUtils.isEmpty((Collection<?>) normalize);
@@ -111,6 +109,4 @@ public class Normalizer {
             return normalize == null;
         }
     }
-
-
 }

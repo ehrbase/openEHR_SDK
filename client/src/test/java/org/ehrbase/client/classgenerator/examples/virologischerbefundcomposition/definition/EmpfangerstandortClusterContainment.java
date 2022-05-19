@@ -1,8 +1,24 @@
+/*
+ * Copyright (c) 2022 vitasystems GmbH and Hannover Medical School.
+ *
+ * This file is part of project openEHR_SDK
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.ehrbase.client.classgenerator.examples.virologischerbefundcomposition.definition;
 
 import com.nedap.archie.rm.archetyped.FeederAudit;
 import com.nedap.archie.rm.datastructures.Cluster;
-import java.lang.String;
 import org.ehrbase.client.aql.containment.Containment;
 import org.ehrbase.client.aql.field.AqlFieldImp;
 import org.ehrbase.client.aql.field.ListAqlFieldImp;
@@ -10,23 +26,34 @@ import org.ehrbase.client.aql.field.ListSelectAqlField;
 import org.ehrbase.client.aql.field.SelectAqlField;
 
 public class EmpfangerstandortClusterContainment extends Containment {
-  public SelectAqlField<EmpfangerstandortCluster> EMPFANGERSTANDORT_CLUSTER = new AqlFieldImp<EmpfangerstandortCluster>(EmpfangerstandortCluster.class, "", "EmpfangerstandortCluster", EmpfangerstandortCluster.class, this);
+    public SelectAqlField<EmpfangerstandortCluster> EMPFANGERSTANDORT_CLUSTER = new AqlFieldImp<
+            EmpfangerstandortCluster>(
+            EmpfangerstandortCluster.class, "", "EmpfangerstandortCluster", EmpfangerstandortCluster.class, this);
 
-  public SelectAqlField<String> STANDORTTYP_VALUE = new AqlFieldImp<String>(EmpfangerstandortCluster.class, "/items[at0040]/value|value", "standorttypValue", String.class, this);
+    public SelectAqlField<String> STANDORTTYP_VALUE = new AqlFieldImp<String>(
+            EmpfangerstandortCluster.class, "/items[at0040]/value|value", "standorttypValue", String.class, this);
 
-  public SelectAqlField<String> STANDORTBESCHREIBUNG_VALUE = new AqlFieldImp<String>(EmpfangerstandortCluster.class, "/items[at0046]/value|value", "standortbeschreibungValue", String.class, this);
+    public SelectAqlField<String> STANDORTBESCHREIBUNG_VALUE = new AqlFieldImp<String>(
+            EmpfangerstandortCluster.class,
+            "/items[at0046]/value|value",
+            "standortbeschreibungValue",
+            String.class,
+            this);
 
-  public SelectAqlField<String> STANDORTSCHLUSSEL_VALUE = new AqlFieldImp<String>(EmpfangerstandortCluster.class, "/items[at0048]/value|value", "standortschlusselValue", String.class, this);
+    public SelectAqlField<String> STANDORTSCHLUSSEL_VALUE = new AqlFieldImp<String>(
+            EmpfangerstandortCluster.class, "/items[at0048]/value|value", "standortschlusselValue", String.class, this);
 
-  public ListSelectAqlField<Cluster> DETAILS = new ListAqlFieldImp<Cluster>(EmpfangerstandortCluster.class, "/items[at0047]", "details", Cluster.class, this);
+    public ListSelectAqlField<Cluster> DETAILS = new ListAqlFieldImp<Cluster>(
+            EmpfangerstandortCluster.class, "/items[at0047]", "details", Cluster.class, this);
 
-  public SelectAqlField<FeederAudit> FEEDER_AUDIT = new AqlFieldImp<FeederAudit>(EmpfangerstandortCluster.class, "/feeder_audit", "feederAudit", FeederAudit.class, this);
+    public SelectAqlField<FeederAudit> FEEDER_AUDIT = new AqlFieldImp<FeederAudit>(
+            EmpfangerstandortCluster.class, "/feeder_audit", "feederAudit", FeederAudit.class, this);
 
-  private EmpfangerstandortClusterContainment() {
-    super("openEHR-EHR-CLUSTER.location.v1");
-  }
+    private EmpfangerstandortClusterContainment() {
+        super("openEHR-EHR-CLUSTER.location.v1");
+    }
 
-  public static EmpfangerstandortClusterContainment getInstance() {
-    return new EmpfangerstandortClusterContainment();
-  }
+    public static EmpfangerstandortClusterContainment getInstance() {
+        return new EmpfangerstandortClusterContainment();
+    }
 }

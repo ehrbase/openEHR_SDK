@@ -1,28 +1,25 @@
 /*
+ * Copyright (c) 2020 vitasystems GmbH and Hannover Medical School.
  *
- *  *  Copyright (c) 2020  Stefan Spiska (Vitasystems GmbH) and Hannover Medical School
- *  *  This file is part of Project EHRbase
- *  *
- *  *  Licensed under the Apache License, Version 2.0 (the "License");
- *  *  you may not use this file except in compliance with the License.
- *  *  You may obtain a copy of the License at
- *  *
- *  *  http://www.apache.org/licenses/LICENSE-2.0
- *  *
- *  *  Unless required by applicable law or agreed to in writing, software
- *  *  distributed under the License is distributed on an "AS IS" BASIS,
- *  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  *  See the License for the specific language governing permissions and
- *  *  limitations under the License.
+ * This file is part of project openEHR_SDK
  *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
-
 package org.ehrbase.webtemplate.parser;
-
-import org.apache.commons.lang3.StringUtils;
 
 import java.io.Serializable;
 import java.util.Objects;
+import org.apache.commons.lang3.StringUtils;
 
 public class NodeId implements Serializable {
 
@@ -32,12 +29,12 @@ public class NodeId implements Serializable {
     private final String nodeId;
 
     public NodeId(String nodeId) {
-        //AtCode
+        // AtCode
         if (nodeId.startsWith("at")) {
             this.nodeId = nodeId;
             className = null;
         }
-        //ArchetypeId
+        // ArchetypeId
         else if (nodeId.startsWith("openEHR-EHR-")) {
             className = StringUtils.substringBetween(nodeId, "openEHR-EHR-", ".");
             this.nodeId = nodeId;
@@ -47,7 +44,6 @@ public class NodeId implements Serializable {
             className = nodeId;
             this.nodeId = null;
         }
-
     }
 
     public NodeId(String className, String nodeId) {
@@ -72,8 +68,7 @@ public class NodeId implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         NodeId nodeId1 = (NodeId) o;
-        return Objects.equals(className, nodeId1.className) &&
-                Objects.equals(nodeId, nodeId1.nodeId);
+        return Objects.equals(className, nodeId1.className) && Objects.equals(nodeId, nodeId1.nodeId);
     }
 
     @Override
@@ -83,9 +78,6 @@ public class NodeId implements Serializable {
 
     @Override
     public String toString() {
-        return "NodeId{" +
-                "className='" + className + '\'' +
-                ", nodeId='" + nodeId + '\'' +
-                '}';
+        return "NodeId{" + "className='" + className + '\'' + ", nodeId='" + nodeId + '\'' + '}';
     }
 }

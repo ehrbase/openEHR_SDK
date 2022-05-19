@@ -1,15 +1,13 @@
 /*
- * Modifications copyright (C) 2019 Christian Chevalley, Vitasystems GmbH and Hannover Medical School,
+ * Copyright (c) 2019 vitasystems GmbH and Hannover Medical School.
  *
- * This file is part of Project EHRbase
- *
- * Original Copyright: see below
+ * This file is part of project openEHR_SDK
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *     https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -17,25 +15,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
- * component:   "openEHR Reference Implementation"
- * description: "Class SimpleTerminologyInterface"
- * keywords:    "terminology"
- *
- * author:      "Rong Chen <rong.acode@gmail.com>"
- * copyright:   "Copyright (c) 2007 Rong Chen"
- * license:     "See notice at bottom of class"
- *
- * file:        "$URL$"
- * revision:    "$LastChangedRevision$"
- * last_change: "$LastChangedDate$"
- */
 package org.ehrbase.terminology.openehr.implementation;
 
-import org.ehrbase.terminology.openehr.*;
-
 import java.util.*;
-
+import org.ehrbase.terminology.openehr.*;
 
 /**
  * A simple implementation of terminology service that provides
@@ -93,7 +76,6 @@ public class SimpleTerminologyInterface implements TerminologyInterface {
         codeSets = new HashMap<>();
         codeSetInternalIdToExternalName = new HashMap<>();
 
-
         try {
             TerminologySource terminologySource = TerminologySourceFactory.getOpenEHRTerminology(language);
             loadTerminologies(terminologySource, language);
@@ -110,8 +92,7 @@ public class SimpleTerminologyInterface implements TerminologyInterface {
 
     private void loadTerminologies(TerminologySource source, String language) {
 
-        SimpleTerminologyAccess terminology = (SimpleTerminologyAccess)
-                terminologies.get(TerminologyInterface.OPENEHR);
+        SimpleTerminologyAccess terminology = (SimpleTerminologyAccess) terminologies.get(TerminologyInterface.OPENEHR);
         if (terminology == null) {
             terminology = new SimpleTerminologyAccess(TerminologyInterface.OPENEHR);
         }
@@ -134,7 +115,8 @@ public class SimpleTerminologyInterface implements TerminologyInterface {
     private void loadCodeSets(TerminologySource source) {
 
         for (CodeSet codeset : source.getCodeSets()) {
-            SimpleCodeSetAccess codeSetAccess = new SimpleCodeSetAccess(codeset.externalId, new HashSet<>(codeset.codes));
+            SimpleCodeSetAccess codeSetAccess =
+                    new SimpleCodeSetAccess(codeset.externalId, new HashSet<>(codeset.codes));
             codeSets.put(codeset.externalId, codeSetAccess);
             codeSetInternalIdToExternalName.put(codeset.openehrId, codeset.externalId);
         }

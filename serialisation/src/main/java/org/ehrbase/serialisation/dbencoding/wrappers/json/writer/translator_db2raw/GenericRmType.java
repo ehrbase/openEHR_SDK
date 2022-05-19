@@ -1,13 +1,13 @@
 /*
- * Copyright (c) 2020 Christian Chevalley (Hannover Medical School).
+ * Copyright (c) 2020 vitasystems GmbH and Hannover Medical School.
  *
- * This file is part of project EHRbase
+ * This file is part of project openEHR_SDK
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *     https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -17,11 +17,10 @@
  */
 package org.ehrbase.serialisation.dbencoding.wrappers.json.writer.translator_db2raw;
 
-import com.google.gson.internal.LinkedTreeMap;
-
-import java.util.Map;
-
 import static org.ehrbase.serialisation.dbencoding.wrappers.json.I_DvTypeAdapter.TAG_CLASS_RAW_JSON;
+
+import com.google.gson.internal.LinkedTreeMap;
+import java.util.Map;
 
 /**
  * Deals with specialization of DataValues (f.e. DV_INTERVAL<DV_QUANTITY>)
@@ -49,8 +48,7 @@ public class GenericRmType {
      * @return the main type
      */
     public String mainType() {
-        if (!isSpecialized())
-            return type;
+        if (!isSpecialized()) return type;
         return type.substring(0, type.indexOf("<"));
     }
 
@@ -61,8 +59,7 @@ public class GenericRmType {
      * @return the specialized type or null
      */
     public String specializedWith() {
-        if (!isSpecialized())
-            return null;
+        if (!isSpecialized()) return null;
 
         return type.substring(type.indexOf("<") + 1, type.indexOf(">"));
     }
@@ -77,20 +74,20 @@ public class GenericRmType {
     @SuppressWarnings("java:S2864")
     LinkedTreeMap<String, Object> inferSpecialization(LinkedTreeMap<String, Object> valueMap) {
 
-        if (!isSpecialized()) //do nothing
-            return valueMap;
+        if (!isSpecialized()) // do nothing
+        return valueMap;
 
         for (String key : valueMap.keySet()) {
             Object entry = valueMap.get(key);
-            //entry is either a Map or an Array
+            // entry is either a Map or an Array
             if (entry instanceof Map) {
-                //add the type
+                // add the type
                 ((Map<String, Object>) entry).put(TAG_CLASS_RAW_JSON, specializedWith());
             }
         }
 
-        //remove the specialization for canonical rendering
-        String valueType = (String)valueMap.get(TAG_CLASS_RAW_JSON);
+        // remove the specialization for canonical rendering
+        String valueType = (String) valueMap.get(TAG_CLASS_RAW_JSON);
         valueMap.put(TAG_CLASS_RAW_JSON, valueType.split("<")[0]);
 
         return valueMap;

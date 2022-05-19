@@ -1,13 +1,13 @@
 /*
- * Copyright (c) 2020 Christian Chevalley (Hannover Medical School).
+ * Copyright (c) 2020 vitasystems GmbH and Hannover Medical School.
  *
- * This file is part of project EHRbase
+ * This file is part of project openEHR_SDK
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *     https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -24,9 +24,8 @@ import com.google.gson.stream.JsonWriter;
 import com.nedap.archie.rm.support.identification.GenericId;
 import com.nedap.archie.rm.support.identification.HierObjectId;
 import com.nedap.archie.rm.support.identification.PartyRef;
-import org.ehrbase.serialisation.dbencoding.CompositionSerializer;
-
 import java.io.IOException;
+import org.ehrbase.serialisation.dbencoding.CompositionSerializer;
 
 /**
  * GSON adapter for PartyRef
@@ -68,13 +67,11 @@ public class PartyRefAdapter extends DvTypeAdapter<PartyRef> {
             writer.name("namespace").value(partyRef.getNamespace());
             writer.name("type").value(partyRef.getType());
             writer.name(CompositionSerializer.TAG_CLASS).value(PartyRef.class.getSimpleName());
-            if (partyRef.getId() != null){
+            if (partyRef.getId() != null) {
                 writer.name("id").jsonValue(gson.toJson(partyRef.getId()));
             }
-            //TODO: add Identifiers
+            // TODO: add Identifiers
             writer.endObject();
         }
-
     }
-
 }

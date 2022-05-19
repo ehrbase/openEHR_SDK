@@ -1,20 +1,20 @@
 /*
- *  Copyright (c) 2019  Stefan Spiska (Vitasystems GmbH) and Hannover Medical School
- *  This file is part of Project EHRbase
+ * Copyright (c) 2019 vitasystems GmbH and Hannover Medical School.
  *
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
+ * This file is part of project openEHR_SDK
  *
- *  http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
-
 package org.ehrbase.client.openehrclient.defaultrestclient;
 
 import static org.ehrbase.client.openehrclient.defaultrestclient.DefaultRestClient.OBJECT_MAPPER;
@@ -51,7 +51,6 @@ public class DefaultRestTemplateEndpoint implements TemplateEndpoint {
 
     private final DefaultRestClient defaultRestClient;
 
-
     public DefaultRestTemplateEndpoint(DefaultRestClient defaultRestClient) {
         this.defaultRestClient = defaultRestClient;
     }
@@ -65,16 +64,20 @@ public class DefaultRestTemplateEndpoint implements TemplateEndpoint {
                     .getConfig()
                     .getBaseUri()
                     .resolve(new URIBuilder()
-                            .setPath(defaultRestClient.getConfig().getBaseUri().getPath() + DEFINITION_TEMPLATE_ADL_1_4_PATH + templateId)
+                            .setPath(defaultRestClient.getConfig().getBaseUri().getPath()
+                                    + DEFINITION_TEMPLATE_ADL_1_4_PATH
+                                    + templateId)
                             .build());
 
-            HttpResponse httpResponse = defaultRestClient.internalGet(uri, null, ContentType.APPLICATION_XML.getMimeType());
+            HttpResponse httpResponse =
+                    defaultRestClient.internalGet(uri, null, ContentType.APPLICATION_XML.getMimeType());
 
             if (httpResponse.getStatusLine().getStatusCode() == HttpStatus.SC_NOT_FOUND) {
                 return Optional.empty();
             }
 
-            templateDocument = TemplateDocument.Factory.parse(httpResponse.getEntity().getContent());
+            templateDocument =
+                    TemplateDocument.Factory.parse(httpResponse.getEntity().getContent());
         } catch (IOException | XmlException | URISyntaxException e) {
             throw new ClientException(e.getMessage(), e);
         }
@@ -89,12 +92,14 @@ public class DefaultRestTemplateEndpoint implements TemplateEndpoint {
                     .getConfig()
                     .getBaseUri()
                     .resolve(new URIBuilder()
-                            .setPath(defaultRestClient.getConfig().getBaseUri().getPath() + DEFINITION_TEMPLATE_ADL_1_4_PATH)
+                            .setPath(defaultRestClient.getConfig().getBaseUri().getPath()
+                                    + DEFINITION_TEMPLATE_ADL_1_4_PATH)
                             .build());
 
-            HttpResponse response = defaultRestClient.internalGet(uri, null, ContentType.APPLICATION_JSON.getMimeType());
-            List<TemplateMetaDataDto> templateResponseData = OBJECT_MAPPER.readValue(response.getEntity().getContent(),
-                    new TypeReference<>() {});
+            HttpResponse response =
+                    defaultRestClient.internalGet(uri, null, ContentType.APPLICATION_JSON.getMimeType());
+            List<TemplateMetaDataDto> templateResponseData =
+                    OBJECT_MAPPER.readValue(response.getEntity().getContent(), new TypeReference<>() {});
 
             return new TemplatesResponseData(templateResponseData);
         } catch (URISyntaxException | IOException e) {
@@ -105,7 +110,8 @@ public class DefaultRestTemplateEndpoint implements TemplateEndpoint {
 
     @Override
     public void ensureExistence(String templateId) {
-        Optional<OPERATIONALTEMPLATE> operationalTemplate = defaultRestClient.getTemplateProvider().find(templateId);
+        Optional<OPERATIONALTEMPLATE> operationalTemplate =
+                defaultRestClient.getTemplateProvider().find(templateId);
         if (!operationalTemplate.isPresent()) {
             throw new ClientException(String.format("Unknown Template with Id %s", templateId));
         }
@@ -113,7 +119,6 @@ public class DefaultRestTemplateEndpoint implements TemplateEndpoint {
             upload(operationalTemplate.get());
         }
     }
-
 
     /**
      * Upload a template to the remote system.
@@ -128,11 +133,15 @@ public class DefaultRestTemplateEndpoint implements TemplateEndpoint {
         XmlOptions opts = new XmlOptions();
         opts.setSaveSyntheticDocumentElement(new QName("http://schemas.openehr.org/v1", "template"));
 
-        HttpResponse response =
-                defaultRestClient.internalPost(uri, null, operationaltemplate.xmlText(opts), ContentType.APPLICATION_XML, ContentType.APPLICATION_XML.getMimeType());
+        HttpResponse response = defaultRestClient.internalPost(
+                uri,
+                null,
+                operationaltemplate.xmlText(opts),
+                ContentType.APPLICATION_XML,
+                ContentType.APPLICATION_XML.getMimeType());
 
         return Optional.ofNullable(response.getFirstHeader(HttpHeaders.ETAG))
-            .map(header -> StringUtils.unwrap(StringUtils.removeStart(header.getValue(),"W/"), '"'))
-            .orElse(operationaltemplate.getTemplateId().getValue());
+                .map(header -> StringUtils.unwrap(StringUtils.removeStart(header.getValue(), "W/"), '"'))
+                .orElse(operationaltemplate.getTemplateId().getValue());
     }
 }

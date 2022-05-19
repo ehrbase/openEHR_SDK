@@ -1,16 +1,13 @@
 /*
- * Modifications copyright (C) 2019 Christian Chevalley, Vitasystems GmbH and Hannover Medical School.
-
- * This file is part of Project EHRbase
-
- * Copyright (c) 2015 Christian Chevalley
- * This file is part of Project Ethercis
+ * Copyright (c) 2019 vitasystems GmbH and Hannover Medical School.
+ *
+ * This file is part of project openEHR_SDK
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *     https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -23,11 +20,10 @@ package org.ehrbase.serialisation.dbencoding.wrappers.json.writer;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 import com.nedap.archie.rm.datavalues.DvText;
+import java.io.IOException;
 import org.ehrbase.serialisation.dbencoding.wrappers.json.I_DvTypeAdapter;
 import org.ehrbase.serialisation.util.ObjectSnakeCase;
 import org.ehrbase.serialisation.util.SnakeCase;
-
-import java.io.IOException;
 
 /**
  * GSON adapter for DvDateTime
@@ -39,8 +35,7 @@ public class DvTextAdapter extends DvTypeAdapter<DvText> {
         super(adapterType);
     }
 
-    public DvTextAdapter() {
-    }
+    public DvTextAdapter() {}
 
     @Override
     public DvText read(JsonReader arg0) {
@@ -58,7 +53,8 @@ public class DvTextAdapter extends DvTypeAdapter<DvText> {
             TermMappingAdapter termMappingAdapter = new TermMappingAdapter();
             writer.beginObject();
             writer.name("value").value(dvalue.getValue());
-            writer.name(I_DvTypeAdapter.TAG_CLASS_RAW_JSON).value(new SnakeCase(DvText.class.getSimpleName()).camelToUpperSnake());
+            writer.name(I_DvTypeAdapter.TAG_CLASS_RAW_JSON)
+                    .value(new SnakeCase(DvText.class.getSimpleName()).camelToUpperSnake());
             termMappingAdapter.write(writer, dvalue.getMappings());
             writer.endObject();
         } else if (adapterType == I_DvTypeAdapter.AdapterType.RAW_JSON) {
@@ -66,8 +62,6 @@ public class DvTextAdapter extends DvTypeAdapter<DvText> {
             writer.name(I_DvTypeAdapter.TAG_CLASS_RAW_JSON).value(new ObjectSnakeCase(dvalue).camelToUpperSnake());
             writer.name("value").value(dvalue.getValue());
             writer.endObject();
-
         }
-
     }
 }
