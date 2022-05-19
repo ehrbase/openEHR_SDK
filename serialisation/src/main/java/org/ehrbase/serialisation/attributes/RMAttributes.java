@@ -1,28 +1,27 @@
 /*
- * Copyright (c) 2020 Christian Chevalley (Hannover Medical School) and Vitasystems GmbH
+ * Copyright (c) 2020 vitasystems GmbH and Hannover Medical School.
  *
- * This file is part of project EHRbase
+ * This file is part of project openEHR_SDK
  *
- *  Licensed under the Apache License, Version 2.0 (the "License");
+ * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
+ * You may obtain a copy of the License at
  *
- *  http://www.apache.org/licenses/LICENSE-2.0
+ *     https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and limitations under the License.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
-
 package org.ehrbase.serialisation.attributes;
 
-import com.nedap.archie.rm.datavalues.DvText;
-import org.ehrbase.serialisation.dbencoding.*;
-
-import java.util.Map;
-
 import static org.ehrbase.serialisation.dbencoding.CompositionSerializer.*;
+
+import com.nedap.archie.rm.datavalues.DvText;
+import java.util.Map;
+import org.ehrbase.serialisation.dbencoding.*;
 
 /**
  * populate the attributes for RM Observation. Root class for all attribute mapping
@@ -48,14 +47,13 @@ public abstract class RMAttributes {
      */
     protected Map<String, Object> toMap(String tag, Object value, DvText name) {
         Map<String, Object> valuemap;
-        //CHC: 160317 make name optional ex: timing
+        // CHC: 160317 make name optional ex: timing
         if (name != null && !map.containsKey(TAG_NAME)) {
             valuemap = PathMap.getInstance();
             map.putAll(new SerialTree(valuemap).insert(null, value, TAG_NAME, new NameAsDvText(name).toMap()));
         }
 
-
-        //CHC: 160317 make value optional ex. simple name for activity
+        // CHC: 160317 make value optional ex. simple name for activity
         if (value != null) {
             valuemap = PathMap.getInstance();
             valuemap = new SerialTree(valuemap).insert(new SimpleClassName(value).toString(), value, TAG_VALUE, value);
@@ -64,5 +62,4 @@ public abstract class RMAttributes {
 
         return map;
     }
-
 }

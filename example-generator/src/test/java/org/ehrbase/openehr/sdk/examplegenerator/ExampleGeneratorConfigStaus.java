@@ -1,31 +1,31 @@
 /*
- * Copyright (c) 2022. vitasystems GmbH and Hannover Medical School.
+ * Copyright (c) 2022 vitasystems GmbH and Hannover Medical School.
  *
- *   Licensed under the Apache License, Version 2.0 (the "License");
- *   you may not use this file except in compliance with the License.
- *   You may obtain a copy of the License at
+ * This file is part of project openEHR_SDK
  *
- *   https://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
-
 package org.ehrbase.openehr.sdk.examplegenerator;
 
 import com.nedap.archie.rminfo.ArchieRMInfoLookup;
 import com.nedap.archie.rminfo.RMTypeInfo;
-import org.apache.commons.collections4.IterableUtils;
-import org.junit.jupiter.api.Test;
-
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import org.apache.commons.collections4.IterableUtils;
+import org.junit.jupiter.api.Test;
 
 class ExampleGeneratorConfigStaus {
 
@@ -52,7 +52,6 @@ class ExampleGeneratorConfigStaus {
                             return typeInfo;
                         default:
                             return IterableUtils.get(a, a.size() - 2);
-
                     }
                 })
                 .get();
@@ -70,11 +69,12 @@ class ExampleGeneratorConfigStaus {
                     System.out.println(e.getKey().getRmName() + ":");
 
                     e.getValue().stream()
-                            .sorted(Comparator.<RMTypeInfo, Boolean>comparing(v -> e.getKey().getRmName().equals(v.getRmName())).reversed().thenComparing(RMTypeInfo::getRmName))
+                            .sorted(Comparator.<RMTypeInfo, Boolean>comparing(
+                                            v -> e.getKey().getRmName().equals(v.getRmName()))
+                                    .reversed()
+                                    .thenComparing(RMTypeInfo::getRmName))
                             .forEach(v -> System.out.println("\t" + v.getRmName()));
-
                 });
-
     }
 
     @Test
@@ -84,10 +84,10 @@ class ExampleGeneratorConfigStaus {
 
         List<RMTypeInfo> allTypes = rmInfoLookup.getAllTypes();
 
-//        allTypes.removeIf(t -> handledTypes.contains(t.getRmName()));
+        //        allTypes.removeIf(t -> handledTypes.contains(t.getRmName()));
 
-        Map<RMTypeInfo, List<RMTypeInfo>> byBaseType = allTypes.stream()
-                .collect(Collectors.groupingBy(t -> getCategory(t)));
+        Map<RMTypeInfo, List<RMTypeInfo>> byBaseType =
+                allTypes.stream().collect(Collectors.groupingBy(t -> getCategory(t)));
 
         byBaseType.entrySet().stream()
                 .sorted(Comparator.comparing(e -> e.getKey().getRmName()))
@@ -95,7 +95,10 @@ class ExampleGeneratorConfigStaus {
                     System.out.println(e.getKey().getRmName() + ":");
 
                     e.getValue().stream()
-                            .sorted(Comparator.<RMTypeInfo, Boolean>comparing(v -> e.getKey().getRmName().equals(v.getRmName())).reversed().thenComparing(RMTypeInfo::getRmName))
+                            .sorted(Comparator.<RMTypeInfo, Boolean>comparing(
+                                            v -> e.getKey().getRmName().equals(v.getRmName()))
+                                    .reversed()
+                                    .thenComparing(RMTypeInfo::getRmName))
                             .forEach(v -> {
                                 System.out.print("\t");
                                 if (handledTypes.contains(v.getRmName())) {
@@ -103,9 +106,6 @@ class ExampleGeneratorConfigStaus {
                                 }
                                 System.out.println("\t" + v.getRmName());
                             });
-
                 });
-
     }
-
 }

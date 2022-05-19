@@ -1,13 +1,13 @@
 /*
- * Copyright (c) 2019 Axel Siebert (Vitasystems GmbH) and Hannover Medical School.
+ * Copyright (c) 2019 vitasystems GmbH and Hannover Medical School.
  *
- * This file is part of project EHRbase
+ * This file is part of project openEHR_SDK
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *     https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -27,14 +27,19 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 public class StatusResponseData {
     @JsonProperty(value = "ehrbase_version")
     private String ehrbaseVersion;
+
     @JsonProperty(value = "openehr_sdk_version")
     private String openEhrSdkVersion;
+
     @JsonProperty(value = "archie_version")
     private String archieVersion;
+
     @JsonProperty(value = "jvm_version")
     private String jvmVersion;
+
     @JsonProperty(value = "os_version")
     private String osVersion;
+
     @JsonProperty(value = "postgres_version")
     private String postgresVersion;
 

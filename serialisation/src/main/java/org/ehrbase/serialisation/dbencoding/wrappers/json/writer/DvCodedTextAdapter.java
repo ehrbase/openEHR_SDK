@@ -1,16 +1,13 @@
 /*
- * Modifications copyright (C) 2019 Christian Chevalley, Vitasystems GmbH and Hannover Medical School.
-
- * This file is part of Project EHRbase
-
- * Copyright (c) 2015 Christian Chevalley
- * This file is part of Project Ethercis
+ * Copyright (c) 2019 vitasystems GmbH and Hannover Medical School.
+ *
+ * This file is part of project openEHR_SDK
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *     https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -27,12 +24,11 @@ import com.google.gson.stream.JsonWriter;
 import com.nedap.archie.rm.datatypes.CodePhrase;
 import com.nedap.archie.rm.datavalues.DvCodedText;
 import com.nedap.archie.rm.support.identification.TerminologyId;
+import java.io.IOException;
+import java.util.Optional;
 import org.ehrbase.serialisation.dbencoding.wrappers.json.I_DvTypeAdapter;
 import org.ehrbase.serialisation.util.ObjectSnakeCase;
 import org.ehrbase.serialisation.util.SnakeCase;
-
-import java.io.IOException;
-import java.util.Optional;
 
 /**
  * GSON adapter for DvDateTime
@@ -50,8 +46,7 @@ public class DvCodedTextAdapter extends DvTypeAdapter<DvCodedText> {
                 .create();
     }
 
-    public DvCodedTextAdapter() {
-    }
+    public DvCodedTextAdapter() {}
 
     @Override
     public DvCodedText read(JsonReader arg0) {
@@ -60,7 +55,10 @@ public class DvCodedTextAdapter extends DvTypeAdapter<DvCodedText> {
 
     @Override
     public void write(JsonWriter writer, DvCodedText dvalue) throws IOException {
-        if (!Optional.ofNullable(dvalue).map(DvCodedText::getDefiningCode).map(CodePhrase::getCodeString).isPresent()) {
+        if (!Optional.ofNullable(dvalue)
+                .map(DvCodedText::getDefiningCode)
+                .map(CodePhrase::getCodeString)
+                .isPresent()) {
             writer.nullValue();
             return;
         }
@@ -70,16 +68,19 @@ public class DvCodedTextAdapter extends DvTypeAdapter<DvCodedText> {
         if (adapterType == I_DvTypeAdapter.AdapterType.PG_JSONB) {
             writer.beginObject();
             writer.name(VALUE).value(dvalue.getValue());
-            writer.name(I_DvTypeAdapter.TAG_CLASS_RAW_JSON).value(new SnakeCase(DvCodedText.class.getSimpleName()).camelToUpperSnake());
+            writer.name(I_DvTypeAdapter.TAG_CLASS_RAW_JSON)
+                    .value(new SnakeCase(DvCodedText.class.getSimpleName()).camelToUpperSnake());
             writer.name("definingCode");
             writer.beginObject();
             writer.name("codeString").value(dvalue.getDefiningCode().getCodeString());
             writer.name("terminologyId");
             writer.beginObject();
             writer.name(VALUE).value(dvalue.getDefiningCode().getTerminologyId().getValue());
-            writer.name(I_DvTypeAdapter.TAG_CLASS_RAW_JSON).value(new SnakeCase(TerminologyId.class.getSimpleName()).camelToUpperSnake());
+            writer.name(I_DvTypeAdapter.TAG_CLASS_RAW_JSON)
+                    .value(new SnakeCase(TerminologyId.class.getSimpleName()).camelToUpperSnake());
             writer.endObject();
-            writer.name(I_DvTypeAdapter.TAG_CLASS_RAW_JSON).value(new SnakeCase(CodePhrase.class.getSimpleName()).camelToUpperSnake());
+            writer.name(I_DvTypeAdapter.TAG_CLASS_RAW_JSON)
+                    .value(new SnakeCase(CodePhrase.class.getSimpleName()).camelToUpperSnake());
             writer.endObject();
             termMappingAdapter.write(writer, dvalue.getMappings());
             writer.endObject();
@@ -89,10 +90,9 @@ public class DvCodedTextAdapter extends DvTypeAdapter<DvCodedText> {
             writer.name(VALUE).value(dvalue.getValue());
             CodePhrase codePhrase = dvalue.getDefiningCode();
             writer.name("defining_code").value(gson.toJson(codePhrase));
-            writer.name(I_DvTypeAdapter.TAG_CLASS_RAW_JSON).value(new SnakeCase(CodePhrase.class.getSimpleName()).camelToUpperSnake());
+            writer.name(I_DvTypeAdapter.TAG_CLASS_RAW_JSON)
+                    .value(new SnakeCase(CodePhrase.class.getSimpleName()).camelToUpperSnake());
             writer.endObject();
         }
-
     }
-
 }

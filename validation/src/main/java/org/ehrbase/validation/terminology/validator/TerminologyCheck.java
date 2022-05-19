@@ -1,13 +1,13 @@
 /*
- * Copyright (c) 2019 Vitasystems GmbH and Christian Chevalley (Hannover Medical School).
+ * Copyright (c) 2019 vitasystems GmbH and Hannover Medical School.
  *
- * This file is part of project EHRbase
+ * This file is part of project openEHR_SDK
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *     https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -27,32 +27,40 @@ public class TerminologyCheck implements I_TerminologyCheck {
 
     protected Class RM_CLASS;
 
-    public static void validate(TerminologyInterface terminologyInterface, AttributeCodesetMapping codesetMapping, String context, CodePhrase codePhrase, String language) {
+    public static void validate(
+            TerminologyInterface terminologyInterface,
+            AttributeCodesetMapping codesetMapping,
+            String context,
+            CodePhrase codePhrase,
+            String language) {
         String terminologyId = codePhrase.getTerminologyId().getValue();
 
-        //if terminology id is not supported, skip the validation
-        if (terminologyId.equals("local") || !terminologyInterface.codeSetIdentifiers().contains(terminologyId))
-            return;
+        // if terminology id is not supported, skip the validation
+        if (terminologyId.equals("local")
+                || !terminologyInterface.codeSetIdentifiers().contains(terminologyId)) return;
 
-        //get the actual attribute
+        // get the actual attribute
         if (!codesetMapping.isLocalizedAttribute(terminologyId, context, language))
-            language = "en"; //default to English for the rest of the validation
+            language = "en"; // default to English for the rest of the validation
 
         String attribute = codesetMapping.actualAttributeId(terminologyId, context, language);
         ContainerType containerType = codesetMapping.containerType(terminologyId, context);
 
         switch (containerType) {
-            case GROUP: //a code string defined within a group of a codeset
-                boolean valid = terminologyInterface.terminology(terminologyId).hasCodeForGroupId(attribute, codePhrase);
+            case GROUP: // a code string defined within a group of a codeset
+                boolean valid =
+                        terminologyInterface.terminology(terminologyId).hasCodeForGroupId(attribute, codePhrase);
                 if (!valid) {
-                    throw new IllegalArgumentException("supplied code string [" + codePhrase.getCodeString() + "] is not found in group:" + attribute);
+                    throw new IllegalArgumentException("supplied code string [" + codePhrase.getCodeString()
+                            + "] is not found in group:" + attribute);
                 }
                 break;
 
-            case CODESET: //a codestring defined in a codeset
+            case CODESET: // a codestring defined in a codeset
                 valid = terminologyInterface.codeSet(terminologyId).hasCode(codePhrase);
                 if (!valid) {
-                    throw new IllegalArgumentException("supplied code string [" + codePhrase.getCodeString() + "] is not found in codeset:" + attribute);
+                    throw new IllegalArgumentException("supplied code string [" + codePhrase.getCodeString()
+                            + "] is not found in codeset:" + attribute);
                 }
                 break;
 
@@ -64,36 +72,57 @@ public class TerminologyCheck implements I_TerminologyCheck {
         }
     }
 
-    public static void validate(TerminologyInterface terminologyInterface, AttributeCodesetMapping codesetMapping, String context, CodePhrase codePhrase) throws IllegalArgumentException {
+    public static void validate(
+            TerminologyInterface terminologyInterface,
+            AttributeCodesetMapping codesetMapping,
+            String context,
+            CodePhrase codePhrase)
+            throws IllegalArgumentException {
         validate(terminologyInterface, codesetMapping, context, codePhrase, "en");
     }
 
-    public static void validate(TerminologyInterface terminologyInterface, AttributeCodesetMapping codesetMapping, String context, DvCodedText dvCodedText, String language) throws IllegalArgumentException {
+    public static void validate(
+            TerminologyInterface terminologyInterface,
+            AttributeCodesetMapping codesetMapping,
+            String context,
+            DvCodedText dvCodedText,
+            String language)
+            throws IllegalArgumentException {
         validate(terminologyInterface, codesetMapping, context, dvCodedText.getDefiningCode(), language);
 
-        if (terminologyInterface.terminology(dvCodedText.getDefiningCode().getTerminologyId().getValue()) == null) //terminology is NOT defined
-            return;
+        if (terminologyInterface.terminology(
+                        dvCodedText.getDefiningCode().getTerminologyId().getValue())
+                == null) // terminology is NOT defined
+        return;
 
-        if (!codesetMapping.isLocalizedAttribute(dvCodedText.getDefiningCode().getTerminologyId().getValue(), context, language))
-            language = "en"; //default to English for the rest of the validation
+        if (!codesetMapping.isLocalizedAttribute(
+                dvCodedText.getDefiningCode().getTerminologyId().getValue(), context, language))
+            language = "en"; // default to English for the rest of the validation
 
-        String rubric = terminologyInterface.terminology(dvCodedText.getDefiningCode().getTerminologyId().getValue()).rubricForCode(dvCodedText.getDefiningCode().getCodeString(), language);
+        String rubric = terminologyInterface
+                .terminology(dvCodedText.getDefiningCode().getTerminologyId().getValue())
+                .rubricForCode(dvCodedText.getDefiningCode().getCodeString(), language);
         boolean valid = rubric.equals(dvCodedText.getValue());
         if (!valid) {
             throw new IllegalArgumentException("supplied value ["
                     + dvCodedText.getValue()
                     + "] doesn't match code string:"
                     + dvCodedText.getDefiningCode().getCodeString()
-                    + " (language:" + language + ", terminology:" + dvCodedText.getDefiningCode().getTerminologyId().getValue() + "), expected:" + rubric);
+                    + " (language:" + language + ", terminology:"
+                    + dvCodedText.getDefiningCode().getTerminologyId().getValue() + "), expected:" + rubric);
         }
     }
 
-    public static void validate(TerminologyInterface terminologyInterface, AttributeCodesetMapping codesetMapping, String context, DvCodedText dvCodedText) throws IllegalArgumentException {
+    public static void validate(
+            TerminologyInterface terminologyInterface,
+            AttributeCodesetMapping codesetMapping,
+            String context,
+            DvCodedText dvCodedText)
+            throws IllegalArgumentException {
         validate(terminologyInterface, codesetMapping, context, dvCodedText, "en");
     }
 
     public Class rmClass() {
         return RM_CLASS;
     }
-
 }
