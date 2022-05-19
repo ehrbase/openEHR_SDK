@@ -37,7 +37,7 @@ import org.ehrbase.serialisation.RMDataFormat;
 import org.ehrbase.serialisation.flatencoding.FlatFormat;
 import org.ehrbase.serialisation.flatencoding.FlatJasonProvider;
 import org.ehrbase.serialisation.jsonencoding.CanonicalJson;
-import org.ehrbase.serialisation.jsonencoding.JacksonUtil;
+import org.ehrbase.serialisation.jsonencoding.ArchieObjectMapperProvider;
 import org.ehrbase.test_data.composition.CompositionTestDataCanonicalJson;
 import org.ehrbase.test_data.composition.CompositionTestDataSimSDTJson;
 import org.junit.Test;
@@ -174,7 +174,7 @@ public class OldDtoModelTest {
 
     String actualFlat = flatJson.marshal(actual);
 
-    List<String> errors = compere(actualFlat, value);
+    List<String> errors = compare(actualFlat, value);
 
     softly.assertThat(errors)
             .filteredOn(s -> s.startsWith("Missing"))
@@ -194,9 +194,9 @@ public class OldDtoModelTest {
 
   }
 
-  private static List<String> compere(String actualJson, String expectedJson) throws JsonProcessingException {
+  private static List<String> compare(String actualJson, String expectedJson) throws JsonProcessingException {
     List<String> errors = new ArrayList<>();
-    ObjectMapper objectMapper = JacksonUtil.getObjectMapper();
+    ObjectMapper objectMapper = ArchieObjectMapperProvider.getObjectMapper();
 
     Map<String, Object> actual = objectMapper.readValue(actualJson, Map.class);
     Map<String, Object> expected = objectMapper.readValue(expectedJson, Map.class);

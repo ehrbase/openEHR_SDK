@@ -26,7 +26,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.xmlbeans.XmlException;
 import org.assertj.core.api.SoftAssertions;
 import org.ehrbase.serialisation.jsonencoding.CanonicalJson;
-import org.ehrbase.serialisation.jsonencoding.JacksonUtil;
+import org.ehrbase.serialisation.jsonencoding.ArchieObjectMapperProvider;
 import org.ehrbase.test_data.composition.CompositionTestDataCanonicalJson;
 import org.ehrbase.test_data.composition.CompositionTestDataSimSDTJson;
 import org.ehrbase.test_data.operationaltemplate.OperationalTemplateTestData;
@@ -272,7 +272,7 @@ public class FlatJsonMarshallerTest {
   public static List<String> compere(String actualJson, String expectedJson)
       throws JsonProcessingException {
     List<String> errors = new ArrayList<>();
-    ObjectMapper objectMapper = JacksonUtil.getObjectMapper();
+    ObjectMapper objectMapper = ArchieObjectMapperProvider.getObjectMapper();
 
     Map<String, Object> actual = objectMapper.readValue(actualJson, Map.class);
     Map<String, Object> expected = objectMapper.readValue(expectedJson, Map.class);

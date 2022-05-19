@@ -26,7 +26,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.ValueNode;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.ehrbase.serialisation.jsonencoding.JacksonUtil;
+import org.ehrbase.serialisation.jsonencoding.ArchieObjectMapperProvider;
 import org.ehrbase.util.exception.SdkException;
 import org.ehrbase.webtemplate.path.flat.FlatPathDto;
 
@@ -38,7 +38,7 @@ import java.util.stream.StreamSupport;
 import static org.ehrbase.webtemplate.parser.OPTParser.PATH_DIVIDER;
 
 public class StructuredHelper {
-  private static final ObjectMapper OBJECT_MAPPER = JacksonUtil.getObjectMapper();
+  private static final ObjectMapper OBJECT_MAPPER = ArchieObjectMapperProvider.getObjectMapper();
 
   private StructuredHelper() {
     // NOP

@@ -22,7 +22,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.nedap.archie.rm.archetyped.Link;
 import org.ehrbase.serialisation.dbencoding.EncodeUtilArchie;
-import org.ehrbase.serialisation.jsonencoding.JacksonUtil;
+import org.ehrbase.serialisation.jsonencoding.ArchieObjectMapperProvider;
 
 import java.util.Arrays;
 import java.util.List;
@@ -43,7 +43,7 @@ public class LinksEncoding extends RMObjectEncoding {
     List<Link> list;
     try {
       list =
-          Arrays.asList(JacksonUtil.getObjectMapper().readValue(dbJonRepresentation, Link[].class));
+          Arrays.asList(ArchieObjectMapperProvider.getObjectMapper().readValue(dbJonRepresentation, Link[].class));
     } catch (JsonProcessingException e) {
       throw new IllegalArgumentException();
     }

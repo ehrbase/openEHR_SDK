@@ -58,7 +58,7 @@ import org.ehrbase.client.flattener.Flattener;
 import org.ehrbase.client.openehrclient.AqlEndpoint;
 import org.ehrbase.client.openehrclient.VersionUid;
 import org.ehrbase.response.openehr.QueryResponseData;
-import org.ehrbase.serialisation.jsonencoding.JacksonUtil;
+import org.ehrbase.serialisation.jsonencoding.ArchieObjectMapperProvider;
 
 public class DefaultRestAqlEndpoint implements AqlEndpoint {
 
@@ -73,7 +73,7 @@ public class DefaultRestAqlEndpoint implements AqlEndpoint {
   }
 
   private static ObjectMapper buildAqlObjectMapper() {
-    ObjectMapper objectMapper = JacksonUtil.getObjectMapper();
+    ObjectMapper objectMapper = ArchieObjectMapperProvider.getObjectMapper().copy();
     SimpleModule module = new SimpleModule("openEHR", new Version(1, 0, 0, null, null, null));
     module.addDeserializer(VersionUid.class, new VersionUidDeSerializer());
     module.addDeserializer(TemporalAccessor.class, new TemporalAccessorDeSerializer());

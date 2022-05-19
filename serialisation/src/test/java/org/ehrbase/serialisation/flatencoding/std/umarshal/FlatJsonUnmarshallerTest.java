@@ -31,7 +31,7 @@ import com.nedap.archie.rm.generic.PartySelf;
 import org.apache.commons.io.IOUtils;
 import org.apache.xmlbeans.XmlException;
 import org.assertj.core.api.Assertions;
-import org.ehrbase.serialisation.jsonencoding.JacksonUtil;
+import org.ehrbase.serialisation.jsonencoding.ArchieObjectMapperProvider;
 import org.ehrbase.test_data.composition.CompositionTestDataConformanceSDTJson;
 import org.ehrbase.test_data.composition.CompositionTestDataSimSDTJson;
 import org.ehrbase.test_data.operationaltemplate.OperationalTemplateTestData;
@@ -240,7 +240,7 @@ public class FlatJsonUnmarshallerTest {
             new TestCase("2022-11-01T13", "2022-11-01T13:00"),
             new TestCase("2022-11-01T13+02:00", "2022-11-01T13:00+02:00"))) {
       flat.put(key, testCase.input);
-      String json = JacksonUtil.getObjectMapper().writeValueAsString(flat);
+      String json = ArchieObjectMapperProvider.getObjectMapper().writeValueAsString(flat);
       Composition actual = cut.unmarshal(json, webTemplate);
       assertThat(actual).isNotNull();
       Element element =
@@ -278,7 +278,7 @@ public class FlatJsonUnmarshallerTest {
             new TestCase("2022-11-01", null),
             new TestCase("2022-11-01T13", null))) {
       flat.put(key, testCase.input);
-      String json = JacksonUtil.getObjectMapper().writeValueAsString(flat);
+      String json = ArchieObjectMapperProvider.getObjectMapper().writeValueAsString(flat);
       Composition actual;
       try {
         actual = cut.unmarshal(json, webTemplate);
@@ -327,7 +327,7 @@ public class FlatJsonUnmarshallerTest {
             new TestCase("13:00:00", null),
             new TestCase("T13", null))) {
       flat.put(key, testCase.input);
-      String json = JacksonUtil.getObjectMapper().writeValueAsString(flat);
+      String json = ArchieObjectMapperProvider.getObjectMapper().writeValueAsString(flat);
       Composition actual;
       try {
         actual = cut.unmarshal(json, webTemplate);
@@ -365,10 +365,10 @@ public class FlatJsonUnmarshallerTest {
   private Map<String, String> getKeyValueFromFlatJson(InputStream in) throws IOException {
     Map<String, String> currentValues = new HashMap<>();
     for (Iterator<Map.Entry<String, JsonNode>> it =
-            JacksonUtil.getObjectMapper()
+         ArchieObjectMapperProvider.getObjectMapper()
                 .readTree(IOUtils.toString(in, StandardCharsets.UTF_8))
                 .fields();
-        it.hasNext(); ) {
+         it.hasNext(); ) {
       Map.Entry<String, JsonNode> e = it.next();
       currentValues.put(e.getKey(), e.getValue().textValue());
     }

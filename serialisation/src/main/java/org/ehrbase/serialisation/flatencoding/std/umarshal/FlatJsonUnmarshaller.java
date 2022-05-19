@@ -27,7 +27,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.ehrbase.building.webtemplateskeletnbuilder.WebTemplateSkeletonBuilder;
 import org.ehrbase.client.classgenerator.shareddefinition.Setting;
 import org.ehrbase.serialisation.exception.UnmarshalException;
-import org.ehrbase.serialisation.jsonencoding.JacksonUtil;
+import org.ehrbase.serialisation.jsonencoding.ArchieObjectMapperProvider;
 import org.ehrbase.serialisation.walker.defaultvalues.DefaultValuePath;
 import org.ehrbase.serialisation.walker.defaultvalues.DefaultValues;
 import org.ehrbase.webtemplate.model.WebTemplate;
@@ -39,7 +39,7 @@ import java.util.stream.Collectors;
 
 public class FlatJsonUnmarshaller {
 
-  private static final ObjectMapper OBJECT_MAPPER = JacksonUtil.getObjectMapper();
+  private static final ObjectMapper OBJECT_MAPPER = ArchieObjectMapperProvider.getObjectMapper();
 
   /**
    * Unmarshal flat Json to Composition

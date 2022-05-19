@@ -22,7 +22,7 @@ package org.ehrbase.client.aql.parameter;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.apache.commons.lang3.StringUtils;
 import org.ehrbase.client.exception.ClientException;
-import org.ehrbase.serialisation.jsonencoding.JacksonUtil;
+import org.ehrbase.serialisation.jsonencoding.ArchieObjectMapperProvider;
 
 import java.time.temporal.TemporalAccessor;
 import java.util.Objects;
@@ -48,9 +48,9 @@ public class AqlValue {
         } else if (String.class.isAssignableFrom(value.getClass()) || UUID.class.isAssignableFrom(value.getClass())) {
             return StringUtils.wrap(value.toString(), "'");
         } else if (TemporalAccessor.class.isAssignableFrom(value.getClass())) {
-            String valueAsString = null;
+            String valueAsString;
             try {
-                valueAsString = JacksonUtil.getObjectMapper().writeValueAsString(value);
+                valueAsString = ArchieObjectMapperProvider.getObjectMapper().writeValueAsString(value);
             } catch (JsonProcessingException e) {
                 throw new ClientException(e.getMessage(), e);
             }

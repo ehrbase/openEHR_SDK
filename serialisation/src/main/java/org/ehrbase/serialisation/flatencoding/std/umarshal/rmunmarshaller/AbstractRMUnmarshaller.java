@@ -23,7 +23,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nedap.archie.rm.RMObject;
 import org.apache.commons.lang3.StringUtils;
-import org.ehrbase.serialisation.jsonencoding.JacksonUtil;
+import org.ehrbase.serialisation.jsonencoding.ArchieObjectMapperProvider;
 import org.ehrbase.serialisation.walker.Context;
 import org.ehrbase.util.exception.SdkException;
 import org.ehrbase.util.reflection.ReflectionHelper;
@@ -41,7 +41,7 @@ import java.util.function.Consumer;
 
 public abstract class AbstractRMUnmarshaller<T extends RMObject> implements RMUnmarshaller<T> {
 
-  private static final ObjectMapper OBJECT_MAPPER = JacksonUtil.getObjectMapper();
+  private static final ObjectMapper OBJECT_MAPPER = ArchieObjectMapperProvider.getObjectMapper();
   private static final Map<Class<?>, RmIntrospectConfig> configMap =
       ReflectionHelper.buildMap(RmIntrospectConfig.class);
 

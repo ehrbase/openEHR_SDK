@@ -30,6 +30,7 @@ import com.nedap.archie.rm.generic.PartySelf;
 import com.nedap.archie.rm.support.identification.PartyRef;
 import com.nedap.archie.xml.JAXBUtil;
 import org.apache.commons.io.IOUtils;
+import org.ehrbase.serialisation.jsonencoding.ArchieObjectMapperProvider;
 import org.ehrbase.terminology.openehr.implementation.AttributeCodesetMapping;
 import org.ehrbase.terminology.openehr.implementation.LocalizedTerminologies;
 import org.ehrbase.test_data.composition.CompositionTestDataCanonicalXML;
@@ -51,15 +52,11 @@ import static junit.framework.TestCase.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
 public class ItemStructureVisitorTest {
-
-    private LocalizedTerminologies localizedTerminologies;
-    private AttributeCodesetMapping codesetMapping;
     private ItemStructureVisitor itemStructureVisitor;
 
     @Before
     public void setup() throws Exception {
-        localizedTerminologies = new LocalizedTerminologies();
-        codesetMapping = AttributeCodesetMapping.getInstance();
+        LocalizedTerminologies localizedTerminologies = new LocalizedTerminologies();
         itemStructureVisitor = new ItemStructureVisitor(localizedTerminologies);
     }
 
@@ -67,7 +64,7 @@ public class ItemStructureVisitorTest {
     @Test
     public void elementVisitorTest() throws Throwable {
         Unmarshaller unmarshaller = JAXBUtil.createRMContext().createUnmarshaller();
-        Composition composition = (Composition) unmarshaller.unmarshal(new FileInputStream(new File("./src/test/resources/composition/test_all_types.fixed.v1.xml")));
+        Composition composition = (Composition) unmarshaller.unmarshal(new File("./src/test/resources/composition/test_all_types.fixed.v1.xml"));
 
 
         itemStructureVisitor.validate(composition);
@@ -78,7 +75,7 @@ public class ItemStructureVisitorTest {
     @Test
     public void elementVisitorTestNor() throws Throwable {
         Unmarshaller unmarshaller = JAXBUtil.createRMContext().createUnmarshaller();
-        Composition composition = (Composition) unmarshaller.unmarshal(new FileInputStream(new File("./src/test/resources/composition/IDCR-LabReportRAW1_with_normal_status.xml")));
+        Composition composition = (Composition) unmarshaller.unmarshal(new File("./src/test/resources/composition/IDCR-LabReportRAW1_with_normal_status.xml"));
 
         try {
             itemStructureVisitor.validate(composition);
@@ -91,7 +88,7 @@ public class ItemStructureVisitorTest {
     @Test
     public void elementVisitorTest2() throws Throwable {
         Unmarshaller unmarshaller = JAXBUtil.createRMContext().createUnmarshaller();
-        Composition composition = (Composition) unmarshaller.unmarshal(new FileInputStream(new File("./src/test/resources/composition/RIPPLE-ConformanceTest.xml")));
+        Composition composition = (Composition) unmarshaller.unmarshal(new File("./src/test/resources/composition/RIPPLE-ConformanceTest.xml"));
 
         itemStructureVisitor.validate(composition);
         assertEquals(61, itemStructureVisitor.getElementOccurrences()); //4 elements are in the context/other_context structure
@@ -103,7 +100,7 @@ public class ItemStructureVisitorTest {
     @Test
     public void elementVisitorTest3() throws Throwable {
         Unmarshaller unmarshaller = JAXBUtil.createRMContext().createUnmarshaller();
-        Composition composition = (Composition) unmarshaller.unmarshal(new FileInputStream(new File("./src/test/resources/composition/RIPPLE-ConformanceTest_invalid_other_context_mm_type.xml")));
+        Composition composition = (Composition) unmarshaller.unmarshal(new File("./src/test/resources/composition/RIPPLE-ConformanceTest_invalid_other_context_mm_type.xml"));
 
         try {
             itemStructureVisitor.validate(composition);
@@ -118,9 +115,7 @@ public class ItemStructureVisitorTest {
     public void ehrVisitorTest() throws Throwable {
         String value = IOUtils.toString(ItemStruktureTestDataCanonicalJson.SIMPLE_EHR_OTHER_Details.getStream(), UTF_8);
 
-        ArchieJacksonConfiguration configuration = ArchieJacksonConfiguration.createStandardsCompliant();
-        configuration.setTypePropertyName("_type");
-        ObjectMapper objectMapper = JacksonUtil.getObjectMapper(configuration);
+        ObjectMapper objectMapper = ArchieObjectMapperProvider.getObjectMapper();
 
         ItemTree otherDetails = objectMapper.readValue(value, ItemTree.class);
 
@@ -132,15 +127,15 @@ public class ItemStructureVisitorTest {
     }
 
     @Test
-    public void testValidateTestAllTypesWithInvalidParticipations() throws IOException, JAXBException {
+    public void testValidateTestAllTypesWithInvalidParticipations() throws JAXBException {
         Unmarshaller unmarshaller = JAXBUtil.getArchieJAXBContext().createUnmarshaller();
         Composition composition = (Composition) unmarshaller.unmarshal(CompositionTestDataCanonicalXML.ALL_TYPES_INVALID_PARTICIPATIONS.getStream());
 
         try {
             itemStructureVisitor.validate(composition);
             fail("invalid value in participations not detected");
-        } catch (Exception e) {
-
+        } catch (IllegalArgumentException e) {
+            // NOOP
         }
     }
 

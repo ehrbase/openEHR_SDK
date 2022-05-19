@@ -40,7 +40,7 @@ import org.ehrbase.serialisation.flatencoding.std.umarshal.postprocessor.Unmarsh
 import org.ehrbase.serialisation.flatencoding.std.umarshal.rmunmarshaller.DefaultRMUnmarshaller;
 import org.ehrbase.serialisation.flatencoding.std.umarshal.rmunmarshaller.RMUnmarshaller;
 import org.ehrbase.serialisation.jsonencoding.CanonicalJson;
-import org.ehrbase.serialisation.jsonencoding.JacksonUtil;
+import org.ehrbase.serialisation.jsonencoding.ArchieObjectMapperProvider;
 import org.ehrbase.serialisation.walker.Context;
 import org.ehrbase.serialisation.walker.FlatHelper;
 import org.ehrbase.serialisation.walker.NodeId;
@@ -240,7 +240,7 @@ public class StdToCompositionWalker extends ToCompositionWalker<Map<FlatPathDto,
   }
 
   private void handleRaw(Context<Map<FlatPathDto, String>> context) {
-    ObjectMapper om = JacksonUtil.getObjectMapper();
+    ObjectMapper om = ArchieObjectMapperProvider.getObjectMapper();
     try {
       Map.Entry<FlatPathDto, String> current =
           context.getObjectDeque().peek().entrySet().stream().findAny().orElseThrow();

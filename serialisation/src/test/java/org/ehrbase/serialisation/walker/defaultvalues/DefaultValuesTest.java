@@ -30,7 +30,7 @@ import org.apache.xmlbeans.XmlException;
 import org.assertj.core.groups.Tuple;
 import org.ehrbase.client.classgenerator.shareddefinition.Language;
 import org.ehrbase.serialisation.flatencoding.std.umarshal.FlatJsonUnmarshaller;
-import org.ehrbase.serialisation.jsonencoding.JacksonUtil;
+import org.ehrbase.serialisation.jsonencoding.ArchieObjectMapperProvider;
 import org.ehrbase.test_data.composition.CompositionTestDataSimSDTJson;
 import org.ehrbase.test_data.operationaltemplate.OperationalTemplateTestData;
 import org.ehrbase.webtemplate.model.WebTemplate;
@@ -55,13 +55,13 @@ public class DefaultValuesTest {
   public void test() throws IOException {
     Map<String, String> currentValues = new HashMap<>();
     for (Iterator<Map.Entry<String, JsonNode>> it =
-            JacksonUtil.getObjectMapper()
+         ArchieObjectMapperProvider.getObjectMapper()
                 .readTree(
                     IOUtils.toString(
                         CompositionTestDataSimSDTJson.CORONA_WITH_CONTEXT.getStream(),
                         StandardCharsets.UTF_8))
                 .fields();
-        it.hasNext(); ) {
+         it.hasNext(); ) {
       Map.Entry<String, JsonNode> e = it.next();
       currentValues.put(e.getKey(), e.getValue().toString());
     }

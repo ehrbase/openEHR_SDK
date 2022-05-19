@@ -38,7 +38,7 @@ import org.ehrbase.client.classgenerator.EnumValueSet;
 import org.ehrbase.client.classgenerator.shareddefinition.ParticipationMode;
 import org.ehrbase.client.classgenerator.shareddefinition.Setting;
 import org.ehrbase.client.classgenerator.shareddefinition.State;
-import org.ehrbase.serialisation.jsonencoding.JacksonUtil;
+import org.ehrbase.serialisation.jsonencoding.ArchieObjectMapperProvider;
 import org.ehrbase.util.exception.SdkException;
 import org.ehrbase.webtemplate.path.flat.FlatPathDto;
 
@@ -58,7 +58,7 @@ public class DefaultValues {
 
   public static final String COMPACT = "compact";
   private final Map<DefaultValuePath, Object> defaultValueMap;
-  private static final ObjectMapper OBJECT_MAPPER = JacksonUtil.getObjectMapper();
+  private static final ObjectMapper OBJECT_MAPPER = ArchieObjectMapperProvider.getObjectMapper();
 
 
   public DefaultValues() {
