@@ -31,6 +31,10 @@
 
     <artifactId>opt-1.4</artifactId>
 
+    <properties>
+        <license-header.dir>../</license-header.dir>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.apache.xmlbeans</groupId>

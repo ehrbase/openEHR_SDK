@@ -166,6 +166,35 @@ Pull requests are welcome. For major changes, please open an issue first to disc
 
 Please make sure to update tests as appropriate.
 
+### Codestyle/Formatting
+openEHR-SDK java sourcecode is using [palantir-java-format](https://github.com/palantir/palantir-java-format) codestyle.
+The formatting is checked and applied using the [spotless-maven-plugin](https://github.com/diffplug/spotless/tree/main/plugin-maven).
+To apply the codestyle run the `com.diffplug.spotless:spotless-maven-plugin:apply` maven goal in the root directory of the project.
+To check if the code conforms to the codestyle run the `com.diffplug.spotless:spotless-maven-plugin:check` maven goal in the root directory of the project.
+These maven goals can also be run for a single module by running them in the modules' subdirectory.
+
+To make sure all code conforms to the codestyle, the "check-codestyle" check is run on all pull requests.
+Pull requests not passing this check shall not be merged.
+
+If you wish to automatically apply the formatting on commit for *.java files, a simple pre-commit hook script "pre-commit.sh" is available in the root directory of this repository.
+To enable the hook you can either copy the script to or create a symlink for it at `.git/hooks/pre-commit`.
+The git hook will run the "apply" goal for the whole project, but formatting changes will only be staged for already staged files, to avoid including unrelated changes.
+
+In case there is a section of code that you carefully formatted in a special way the formatting can be turned off for that section like this:
+```
+everything here will be reformatted..
+
+// @formatter:off
+
+    This is not affected by spotless-plugin reformatting...
+            And will stay as is it is!
+
+// @formatter:on
+
+everything here will be reformatted..
+```
+Please be aware that `@formatter:off/on` should only be used on rare occasions to increase readability of complex code and shall be looked at critically when reviewing merge requests.
+
 ## License
 
 [APACHE 2.0](https://www.apache.org/licenses/LICENSE-2.0)

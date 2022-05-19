@@ -30,6 +30,10 @@
 
     <artifactId>generator</artifactId>
 
+    <properties>
+        <license-header.dir>../</license-header.dir>
+    </properties>
+
     <build>
         <plugins>
             <plugin>

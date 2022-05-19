@@ -30,6 +30,10 @@
 
     <artifactId>web-template</artifactId>
 
+    <properties>
+        <license-header.dir>../</license-header.dir>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.ehrbase.openehr.sdk</groupId>

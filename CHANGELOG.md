@@ -4,6 +4,7 @@ Note: version releases in the 0.x.y range may introduce breaking changes.
 
 ## [unreleased]
  ### Added 
+- Add spotless plugin, Add codestyle check to workflows ([#368](https://github.com/ehrbase/ehrbase/pull/368))
  ### Fixed 
 
 ## [1.19.0]

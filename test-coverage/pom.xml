@@ -13,6 +13,10 @@
 
     <artifactId>test-coverage</artifactId>
 
+    <properties>
+        <license-header.dir>../</license-header.dir>
+    </properties>
+
     <!-- MODULES TO INCLUDE INTO CODE-COVERAGE ANALISYS -->
     <dependencies>
         <dependency>

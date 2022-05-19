@@ -15,6 +15,7 @@
   <properties>
     <maven.plugin.skipErrorNoDescriptorsFound>true</maven.plugin.skipErrorNoDescriptorsFound>
     <skipTests>false</skipTests>
+    <license-header.dir>../</license-header.dir>
   </properties>
 
   <dependencies>

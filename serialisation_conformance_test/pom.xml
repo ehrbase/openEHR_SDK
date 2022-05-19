@@ -31,6 +31,10 @@
 
     <artifactId>serialisation_conformance_test</artifactId>
 
+    <properties>
+        <license-header.dir>../</license-header.dir>
+    </properties>
+
     <build>
         <plugins>
             <plugin>
