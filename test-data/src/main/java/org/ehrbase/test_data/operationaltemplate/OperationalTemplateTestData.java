@@ -90,7 +90,15 @@ public enum OperationalTemplateTestData {
     ISM_WRONG("ISM transition with wrong current state", "test-ism.vitagroup.de.v1.opt", "test-ism.vitagroup.de.v1"),
     ISM_VAILD("Vaild ism transition", "test-ism.vitagroup.de.v1.opt", "test-ism.vitagroup.de.v1"),
 
-    ISM_INVALID_STATE("ISM withn invaild current state", "test-ism.vitagroup.de.v1.opt", "test-ism.vitagroup.de.v1");
+    ISM_INVALID_STATE("ISM withn invaild current state", "test-ism.vitagroup.de.v1.opt", "test-ism.vitagroup.de.v1"),
+    UNUSED_ITEM_ARCHETYPE_SLOT(
+            "Template with an unused/open archetypeslot of type ITEM",
+            "unused-item-archetypeslot.opt",
+            "unused-item-archetypeslot"),
+    USED_ITEM_ARCHETYPE_SLOT(
+            "Template with an used archetypeslot of type ITEM",
+            "used-item-archetypeslot.opt",
+            "used-item-archetypeslot");
     //  TEST_ISM("ISM transition test", "test-ism.vitagroup.de.v1.opt", "test-ism.vitagroup.de.v1");
 
     private final String filename;
