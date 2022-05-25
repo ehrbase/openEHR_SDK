@@ -285,7 +285,9 @@ public class ExampleGeneratorConfig {
                             .flatMap(List::stream)
                             .collect(Collectors.toCollection(LinkedHashSet::new));
 
-            if (theTransitions.isEmpty()) return EnumSet.allOf(Transition.class);
+            if (theTransitions.isEmpty()) {
+                return EnumSet.allOf(Transition.class);
+            }
 
             return theTransitions.stream()
                     .map(tr -> {
@@ -308,7 +310,9 @@ public class ExampleGeneratorConfig {
                             .flatMap(List::stream)
                             .collect(Collectors.toSet());
 
-            if (theCurrentStates.isEmpty()) return EnumSet.allOf(State.class);
+            if (theCurrentStates.isEmpty()) {
+                return EnumSet.allOf(State.class);
+            }
 
             return theCurrentStates.stream()
                     .map(cs -> {
@@ -345,10 +349,13 @@ public class ExampleGeneratorConfig {
                 ism.setCareflowStep(dvCodedText);
             }
 
-            if (triple.getMiddle() != null)
+            if (triple.getMiddle() != null) {
                 ism.setCurrentState(triple.getMiddle().toCodedText());
+            }
 
-            if (triple.getRight() != null) ism.setTransition(triple.getRight().toCodedText());
+            if (triple.getRight() != null) {
+                ism.setTransition(triple.getRight().toCodedText());
+            }
         }
 
         static void handleIsmTransition(IsmTransition value, WebTemplateNode node) {
@@ -368,7 +375,9 @@ public class ExampleGeneratorConfig {
                                         filterCareflowSteps(allCareflowTerminologyPairs, cs.getCode());
                                 Set<Transition> filteredTrs = filterTransitions(allTransitions, cs);
                                 // we need just one
-                                if (filteredCfs.isEmpty() || filteredTrs.isEmpty()) return null;
+                                if (filteredCfs.isEmpty() || filteredTrs.isEmpty()) {
+                                    return null;
+                                }
                                 return Triple.of(
                                         filteredCfs.iterator().next(),
                                         cs,
@@ -585,7 +594,8 @@ public class ExampleGeneratorConfig {
 
         static void handleDvParsable(DvParsable value, WebTemplateNode node) {
             value.setValue(
-                    "<!DOCTYPE html><html lang=\"en\"><head><meta charset=\"UTF-8\"><title>Hello World</title></head><body>Hello World!</body></html>");
+                    "<!DOCTYPE html><html lang=\"en\"><head><meta charset=\"UTF-8\"><title>Hello World</title></head><body>Hello "
+                            + "World!</body></html>");
             value.setFormalism("text/html");
         }
 
@@ -798,7 +808,10 @@ public class ExampleGeneratorConfig {
         return UNSUPPORTED.contains(child.getRmType())
                 || child.getId().equals("name")
                 // If a Pathable is handled, all its attributes are handled there.
-                || (parent != null && Handlers.HANDLED_RM_TYPES.contains(parent.getRmType()));
+                || (parent != null && Handlers.HANDLED_RM_TYPES.contains(parent.getRmType()))
+                // Skip archetype slots, since we do not know the constraints and the template does not use the slot
+                // explicitly
+                || child.isArchetypeSlot();
     }
 
     static String getRmType(Class<? extends RMObject> type) {
