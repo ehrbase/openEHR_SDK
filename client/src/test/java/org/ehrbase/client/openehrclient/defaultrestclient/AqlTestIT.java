@@ -352,7 +352,7 @@ public class AqlTestIT {
         );
 
         List<Record2<UUID, Double>> result = openEhrClient.aqlEndpoint().execute(query, new ParameterValue("ehr_id", ehr));
-        assertThat(result).isNotNull().hasSize(2);
+        assertThat(result).isNotNull().hasSize(1);
     }
 
     @Test
@@ -431,7 +431,7 @@ public class AqlTestIT {
         List<Record2<UUID, Double>> result = openEhrClient.aqlEndpoint().execute(entityQuery, ehrIdParameter.setValue(ehr));
         assertThat(result)
                 .isNotNull()
-                .size().isEqualTo(2);
+                .size().isEqualTo(1);
 
     }
 
