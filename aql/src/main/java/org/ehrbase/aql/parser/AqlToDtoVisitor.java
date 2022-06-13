@@ -21,6 +21,7 @@ import com.nedap.archie.datetime.DateTimeParsers;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -76,12 +77,13 @@ public class AqlToDtoVisitor extends AqlBaseVisitor<Object> {
             aqlDto.setOrderBy(visitOrderBySeq(ctx.queryExpr().orderBy().orderBySeq()));
         }
 
-    if (ctx.queryExpr().limit() != null) {
-      AqlParser.LimitContext limitExpr = ctx.queryExpr().limit();
+        if (ctx.queryExpr().limit() != null) {
+            AqlParser.LimitContext limitExpr = ctx.queryExpr().limit();
             aqlDto.setLimit(Integer.parseInt(limitExpr.INTEGER().getText()));
 
-      if (ctx.queryExpr().offset() != null) {
-        aqlDto.setOffset(Integer.parseInt(ctx.queryExpr().offset().INTEGER().getText()));
+            if (ctx.queryExpr().offset() != null) {
+                aqlDto.setOffset(
+                        Integer.parseInt(ctx.queryExpr().offset().INTEGER().getText()));
             }
         }
 
@@ -319,7 +321,7 @@ public class AqlToDtoVisitor extends AqlBaseVisitor<Object> {
             return null;
         }
 
-        switch (child.getSymbol().getText()) {
+        switch (child.getSymbol().getText().toLowerCase(Locale.ROOT)) {
             case "or":
                 return ConditionLogicalOperatorSymbol.OR;
             case "and":
