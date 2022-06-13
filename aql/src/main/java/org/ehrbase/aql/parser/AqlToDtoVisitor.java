@@ -76,12 +76,12 @@ public class AqlToDtoVisitor extends AqlBaseVisitor<Object> {
             aqlDto.setOrderBy(visitOrderBySeq(ctx.queryExpr().orderBy().orderBySeq()));
         }
 
-        if (ctx.queryExpr().limitExpr() != null) {
-            AqlParser.LimitExprContext limitExpr = ctx.queryExpr().limitExpr();
+    if (ctx.queryExpr().limit() != null) {
+      AqlParser.LimitContext limitExpr = ctx.queryExpr().limit();
             aqlDto.setLimit(Integer.parseInt(limitExpr.INTEGER().getText()));
 
-            if (limitExpr.offset() != null) {
-                aqlDto.setOffset(Integer.parseInt(limitExpr.offset().INTEGER().getText()));
+      if (ctx.queryExpr().offset() != null) {
+        aqlDto.setOffset(Integer.parseInt(ctx.queryExpr().offset().INTEGER().getText()));
             }
         }
 
