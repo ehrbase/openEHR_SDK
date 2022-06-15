@@ -25,6 +25,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.Function;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
 import org.apache.commons.collections4.MultiValuedMap;
@@ -38,6 +39,7 @@ import org.ehrbase.aql.dto.condition.ConditionComparisonOperatorSymbol;
 import org.ehrbase.aql.dto.condition.ConditionDto;
 import org.ehrbase.aql.dto.condition.ConditionLogicalOperatorDto;
 import org.ehrbase.aql.dto.condition.ConditionLogicalOperatorSymbol;
+import org.ehrbase.aql.dto.condition.LogicalOperatorDto;
 import org.ehrbase.aql.dto.condition.MatchesOperatorDto;
 import org.ehrbase.aql.dto.condition.ParameterValue;
 import org.ehrbase.aql.dto.condition.SimpleValue;
@@ -177,38 +179,16 @@ public class AqlToDtoVisitor extends AqlBaseVisitor<Object> {
 
     private ContainmentLogicalOperator buildContainmentLogicalOperator(List<Object> boolList) {
 
-        ContainmentLogicalOperator currentOperator = new ContainmentLogicalOperator();
-        ContainmentLogicalOperatorSymbol currentSymbol = (ContainmentLogicalOperatorSymbol) boolList.get(1);
-        currentOperator.setSymbol(currentSymbol);
-        currentOperator.setValues(new ArrayList<>());
-        currentOperator.getValues().add((ContainmentExpresionDto) boolList.get(0));
-        ContainmentLogicalOperator lowestOperator = currentOperator;
-        for (int i = 2; i < boolList.size(); i = i + 2) {
-            ContainmentLogicalOperatorSymbol nextSymbol =
-                    i + 1 < boolList.size() ? (ContainmentLogicalOperatorSymbol) boolList.get(i + 1) : null;
-            if (nextSymbol == null || Objects.equals(currentSymbol, nextSymbol)) {
-                currentOperator.getValues().add((ContainmentExpresionDto) boolList.get(i));
-                currentSymbol = nextSymbol;
-            } else {
-                ContainmentLogicalOperator nextOperator = new ContainmentLogicalOperator();
-                nextOperator.setSymbol(nextSymbol);
-                nextOperator.setValues(new ArrayList<>());
+        return (ContainmentLogicalOperator) buildLogicalOperator(boolList, (Function<
+                        ContainmentLogicalOperatorSymbol,
+                        LogicalOperatorDto<ContainmentLogicalOperatorSymbol, ContainmentExpresionDto>>)
+                s -> {
+                    ContainmentLogicalOperator conditionLogicalOperatorDto = new ContainmentLogicalOperator();
+                    conditionLogicalOperatorDto.setSymbol(s);
+                    conditionLogicalOperatorDto.setValues(new ArrayList<>());
 
-                if (hasHigherPrecedence(currentSymbol, nextSymbol)) {
-                    currentOperator.getValues().add((ContainmentExpresionDto) boolList.get(i));
-                    nextOperator.getValues().add(currentOperator);
-                    lowestOperator = nextOperator;
-                } else {
-                    nextOperator.getValues().add((ContainmentExpresionDto) boolList.get(i));
-                    currentOperator.getValues().add(nextOperator);
-                    lowestOperator = currentOperator;
-                }
-
-                currentOperator = nextOperator;
-                currentSymbol = nextSymbol;
-            }
-        }
-        return lowestOperator;
+                    return conditionLogicalOperatorDto;
+                });
     }
 
     @Override
@@ -282,30 +262,40 @@ public class AqlToDtoVisitor extends AqlBaseVisitor<Object> {
 
     private ConditionLogicalOperatorDto buildConditionLogicalOperator(List<Object> boolList) {
 
-        ConditionLogicalOperatorDto currentOperator = new ConditionLogicalOperatorDto();
-        ConditionLogicalOperatorSymbol currentSymbol = (ConditionLogicalOperatorSymbol) boolList.get(1);
-        currentOperator.setSymbol(currentSymbol);
-        currentOperator.setValues(new ArrayList<>());
-        currentOperator.getValues().add((ConditionDto) boolList.get(0));
-        ConditionLogicalOperatorDto lowestOperator = currentOperator;
+        return (ConditionLogicalOperatorDto) buildLogicalOperator(boolList, (Function<
+                        ConditionLogicalOperatorSymbol,
+                        LogicalOperatorDto<ConditionLogicalOperatorSymbol, ConditionDto>>)
+                s -> {
+                    ConditionLogicalOperatorDto conditionLogicalOperatorDto = new ConditionLogicalOperatorDto();
+                    conditionLogicalOperatorDto.setSymbol(s);
+                    conditionLogicalOperatorDto.setValues(new ArrayList<>());
+
+                    return conditionLogicalOperatorDto;
+                });
+    }
+
+    private <S extends LogicalOperatorSymbol, T> LogicalOperatorDto<S, T> buildLogicalOperator(
+            List<Object> boolList, Function<S, LogicalOperatorDto<S, T>> creator) {
+
+        S currentSymbol = (S) boolList.get(1);
+        LogicalOperatorDto<S, T> currentOperator = creator.apply(currentSymbol);
+        currentOperator.getValues().add((T) boolList.get(0));
+        LogicalOperatorDto<S, T> lowestOperator = currentOperator;
         for (int i = 2; i < boolList.size(); i = i + 2) {
-            ConditionLogicalOperatorSymbol nextSymbol =
-                    i + 1 < boolList.size() ? (ConditionLogicalOperatorSymbol) boolList.get(i + 1) : null;
+            S nextSymbol = i + 1 < boolList.size() ? (S) boolList.get(i + 1) : null;
             if (nextSymbol == null || Objects.equals(currentSymbol, nextSymbol)) {
-                currentOperator.getValues().add((ConditionDto) boolList.get(i));
+                currentOperator.getValues().add((T) boolList.get(i));
                 currentSymbol = nextSymbol;
             } else {
-                ConditionLogicalOperatorDto nextOperator = new ConditionLogicalOperatorDto();
-                nextOperator.setSymbol(nextSymbol);
-                nextOperator.setValues(new ArrayList<>());
+                LogicalOperatorDto<S, T> nextOperator = creator.apply(nextSymbol);
 
                 if (hasHigherPrecedence(currentSymbol, nextSymbol)) {
-                    currentOperator.getValues().add((ConditionDto) boolList.get(i));
-                    nextOperator.getValues().add(currentOperator);
+                    currentOperator.getValues().add((T) boolList.get(i));
+                    nextOperator.getValues().add((T) currentOperator);
                     lowestOperator = nextOperator;
                 } else {
-                    nextOperator.getValues().add((ConditionDto) boolList.get(i));
-                    currentOperator.getValues().add(nextOperator);
+                    nextOperator.getValues().add((T) boolList.get(i));
+                    currentOperator.getValues().add((T) nextOperator);
                     lowestOperator = currentOperator;
                 }
 

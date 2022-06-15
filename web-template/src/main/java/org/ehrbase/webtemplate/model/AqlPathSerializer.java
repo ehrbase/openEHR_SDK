@@ -21,7 +21,7 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import java.io.IOException;
-import org.ehrbase.webtemplate.parser.AqlPath;
+import org.ehrbase.aql.dto.path.AqlPath;
 
 public class AqlPathSerializer extends StdSerializer<AqlPath> {
 

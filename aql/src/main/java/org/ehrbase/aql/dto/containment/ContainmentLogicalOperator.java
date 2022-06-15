@@ -18,8 +18,11 @@
 package org.ehrbase.aql.dto.containment;
 
 import java.util.List;
+import org.ehrbase.aql.dto.condition.LogicalOperatorDto;
 
-public class ContainmentLogicalOperator implements ContainmentExpresionDto {
+public class ContainmentLogicalOperator
+        implements ContainmentExpresionDto,
+                LogicalOperatorDto<ContainmentLogicalOperatorSymbol, ContainmentExpresionDto> {
     ContainmentLogicalOperatorSymbol symbol;
     List<ContainmentExpresionDto> values;
 

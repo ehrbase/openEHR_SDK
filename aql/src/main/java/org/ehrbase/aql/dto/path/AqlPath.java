@@ -15,9 +15,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ehrbase.webtemplate.parser;
+package org.ehrbase.aql.dto.path;
 
-import static org.ehrbase.webtemplate.util.CharSequenceHelper.subSequence;
+import static org.ehrbase.aql.util.CharSequenceHelper.subSequence;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -31,7 +31,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.function.UnaryOperator;
 import org.apache.commons.lang3.StringUtils;
-import org.ehrbase.webtemplate.util.CharSequenceHelper;
+import org.ehrbase.aql.util.CharSequenceHelper;
 
 public final class AqlPath implements Serializable {
 

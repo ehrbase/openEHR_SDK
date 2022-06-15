@@ -19,6 +19,7 @@ package org.ehrbase.webtemplate.util;
 
 import static org.junit.Assert.*;
 
+import org.ehrbase.aql.util.CharSequenceHelper;
 import org.junit.Test;
 
 public class CharSequenceHelperTest {

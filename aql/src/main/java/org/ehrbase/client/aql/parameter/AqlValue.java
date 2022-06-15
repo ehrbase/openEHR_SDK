@@ -18,12 +18,12 @@
 package org.ehrbase.client.aql.parameter;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.nedap.archie.json.JacksonUtil;
 import java.time.temporal.TemporalAccessor;
 import java.util.Objects;
 import java.util.UUID;
 import org.apache.commons.lang3.StringUtils;
-import org.ehrbase.client.exception.ClientException;
-import org.ehrbase.serialisation.jsonencoding.ArchieObjectMapperProvider;
+import org.ehrbase.util.exception.SdkException;
 
 public class AqlValue {
 
@@ -47,13 +47,13 @@ public class AqlValue {
         } else if (TemporalAccessor.class.isAssignableFrom(value.getClass())) {
             String valueAsString;
             try {
-                valueAsString = ArchieObjectMapperProvider.getObjectMapper().writeValueAsString(value);
+                valueAsString = JacksonUtil.getObjectMapper().writeValueAsString(value);
             } catch (JsonProcessingException e) {
-                throw new ClientException(e.getMessage(), e);
+                throw new SdkException(e.getMessage(), e);
             }
             return StringUtils.wrap(valueAsString.replace("\"", ""), "'");
         } else {
-            throw new ClientException(String.format("%s is not an valid AQL Value", value.getClass()));
+            throw new SdkException(String.format("%s is not an valid AQL Value", value.getClass()));
         }
     }
 }

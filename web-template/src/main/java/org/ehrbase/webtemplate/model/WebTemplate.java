@@ -21,7 +21,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import java.io.Serializable;
 import java.util.*;
 import java.util.stream.Collectors;
-import org.ehrbase.webtemplate.parser.AqlPath;
+import org.ehrbase.aql.dto.path.AqlPath;
 import org.ehrbase.webtemplate.parser.NodeId;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)

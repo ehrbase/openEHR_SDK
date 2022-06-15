@@ -24,10 +24,10 @@ import java.util.*;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.CaseUtils;
+import org.ehrbase.aql.dto.path.AqlPath;
 import org.ehrbase.serialisation.util.SnakeCase;
 import org.ehrbase.webtemplate.model.WebTemplateAnnotation;
 import org.ehrbase.webtemplate.model.WebTemplateNode;
-import org.ehrbase.webtemplate.parser.AqlPath;
 
 public class DefaultNamingStrategy implements NamingStrategy {
 

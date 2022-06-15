@@ -19,23 +19,28 @@ package org.ehrbase.aql.dto.condition;
 
 import java.util.List;
 
-public class ConditionLogicalOperatorDto implements ConditionDto {
+public class ConditionLogicalOperatorDto
+        implements ConditionDto, LogicalOperatorDto<ConditionLogicalOperatorSymbol, ConditionDto> {
 
     private ConditionLogicalOperatorSymbol symbol;
     private List<ConditionDto> values;
 
+    @Override
     public ConditionLogicalOperatorSymbol getSymbol() {
         return this.symbol;
     }
 
+    @Override
     public List<ConditionDto> getValues() {
         return this.values;
     }
 
+    @Override
     public void setSymbol(ConditionLogicalOperatorSymbol symbol) {
         this.symbol = symbol;
     }
 
+    @Override
     public void setValues(List<ConditionDto> values) {
         this.values = values;
     }

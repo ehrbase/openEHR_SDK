@@ -19,9 +19,9 @@ package org.ehrbase.client.flattener;
 
 import java.util.Map;
 import java.util.Objects;
+import org.ehrbase.aql.dto.path.AqlPath;
 import org.ehrbase.serialisation.walker.Context;
 import org.ehrbase.webtemplate.model.WebTemplateNode;
-import org.ehrbase.webtemplate.parser.AqlPath;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

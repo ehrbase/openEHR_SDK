@@ -28,10 +28,10 @@ import com.nedap.archie.rm.datavalues.encapsulated.DvMultimedia;
 import com.nedap.archie.rminfo.ArchieRMInfoLookup;
 import java.io.IOException;
 import java.util.*;
+import org.ehrbase.aql.dto.path.AqlPath;
 import org.ehrbase.serialisation.dbencoding.CompositionSerializer;
 import org.ehrbase.serialisation.dbencoding.wrappers.json.I_DvTypeAdapter;
 import org.ehrbase.serialisation.util.SnakeCase;
-import org.ehrbase.webtemplate.parser.AqlPath;
 
 /**
  * GSON adapter for LinkedTreeMap
