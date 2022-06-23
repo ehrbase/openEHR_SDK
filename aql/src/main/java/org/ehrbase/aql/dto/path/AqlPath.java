@@ -17,6 +17,10 @@
  */
 package org.ehrbase.aql.dto.path;
 
+import static org.ehrbase.aql.dto.path.predicate.PredicateHelper.ARCHETYPE_NODE_ID;
+import static org.ehrbase.aql.dto.path.predicate.PredicateHelper.NAME_VALUE;
+import static org.ehrbase.aql.dto.path.predicate.PredicateHelper.add;
+import static org.ehrbase.aql.dto.path.predicate.PredicateHelper.find;
 import static org.ehrbase.aql.util.CharSequenceHelper.subSequence;
 
 import java.io.Serializable;
@@ -24,21 +28,28 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.UnaryOperator;
 import org.apache.commons.lang3.StringUtils;
+import org.ehrbase.aql.dto.condition.SimpleValue;
+import org.ehrbase.aql.dto.path.predicate.PredicateComparisonOperatorDto;
+import org.ehrbase.aql.dto.path.predicate.PredicateComparisonOperatorSymbol;
+import org.ehrbase.aql.dto.path.predicate.PredicateDto;
+import org.ehrbase.aql.dto.path.predicate.PredicateHelper;
+import org.ehrbase.aql.dto.path.predicate.PredicateLogicalAndOperation;
+import org.ehrbase.aql.dto.path.predicate.PredicateLogicalOrOperation;
+import org.ehrbase.aql.dto.path.predicate.SimplePredicateDto;
 import org.ehrbase.aql.util.CharSequenceHelper;
+import org.ehrbase.util.exception.SdkException;
 
 public final class AqlPath implements Serializable {
 
     public static final AqlPath EMPTY_PATH = new AqlPath(true, new AqlNode[0], 0, null);
     public static final AqlPath ROOT_PATH = new AqlPath(false, new AqlNode[0], 0, null);
 
-    private static final AqlNode NO_NODE = new AqlNode("", null, Collections.emptyMap());
+    private static final AqlNode NO_NODE = new AqlNode("", null, new PredicateLogicalAndOperation());
     public static final String NAME_VALUE_KEY = "name/value";
 
     private final boolean isEmpty;
@@ -332,7 +343,7 @@ public final class AqlPath implements Serializable {
         if (StringUtils.endsWith(currentNode, "]")) {
             int fist = StringUtils.indexOf(currentNode, '[');
             nodeName = subSequence(currentNode, 0, fist).toString();
-            predicatesExp = subSequence(currentNode, fist, currentNode.length());
+            predicatesExp = subSequence(currentNode, fist + 1, currentNode.length() - 1);
         } else {
             nodeName = currentNode.toString();
             predicatesExp = null;
@@ -343,50 +354,83 @@ public final class AqlPath implements Serializable {
         }
 
         String atCode;
-        Map<String, String> otherPredicates;
-        if (predicatesExp == null) {
-            atCode = null;
-            otherPredicates = Collections.emptyMap();
+        PredicateLogicalAndOperation otherPredicates;
 
-        } else {
-            CharSequence node = CharSequenceHelper.removeEnd(CharSequenceHelper.removeStart(predicatesExp, "["), "]");
+        PredicateDto predicateDto = null;
+        if (predicatesExp != null) {
+            predicateDto = PredicateHelper.buildPredicate(predicatesExp.toString());
 
-            CharSequence[] predicates = split(node, null, " and ", ",");
-            atCode = predicates[0].toString().trim();
-
-            if (predicates.length == 1) {
-                if (isLastNode && StringUtils.isNotEmpty(nameValue)) {
-                    otherPredicates = Collections.singletonMap(NAME_VALUE_KEY, nameValue);
-                } else {
-                    otherPredicates = Collections.emptyMap();
-                }
+            if (predicateDto instanceof PredicateLogicalOrOperation) {
+                throw new SdkException("Or in predicate not supported");
+            } else if (predicateDto instanceof PredicateLogicalAndOperation) {
+                otherPredicates = (PredicateLogicalAndOperation) predicateDto;
             } else {
-                otherPredicates = new LinkedHashMap<>();
+                otherPredicates = new PredicateLogicalAndOperation();
+                otherPredicates.getValues().add((SimplePredicateDto) predicateDto);
+            }
 
-                for (int j = 1; j < predicates.length; j++) {
-                    CharSequence[] pair = split(predicates[j], 2, "=");
-                    String key;
-                    CharSequence value;
-                    if (j == 1 && pair.length == 1) {
-                        key = NAME_VALUE_KEY;
-                        value = pair[0];
-                    } else if (pair.length == 2) {
-                        key = pair[0].toString();
-                        value = pair[1];
-                    } else {
-                        throw new IllegalArgumentException("Illegal predicate format");
+            atCode = find(otherPredicates, ARCHETYPE_NODE_ID)
+                    .map(PredicateComparisonOperatorDto::getValue)
+                    .map(p -> (SimpleValue) p)
+                    .map(SimpleValue::getValue)
+                    .map(Object::toString)
+                    .orElse(null);
+        } else {
+            atCode = null;
+            otherPredicates = new PredicateLogicalAndOperation();
+        }
+        AqlNode node = new AqlNode(nodeName, atCode, otherPredicates);
+        if (nameValue != null && isLastNode) {
+            node = node.withNameValue(nameValue);
+        }
+        return Optional.of(node);
+    }
+
+    public static CharSequence[] split2(CharSequence path, Integer max, String... search) {
+        List<CharSequence> strings = new ArrayList<>();
+        Arrays.sort(search, CharSequence::compare);
+
+        boolean inBrackets = false;
+        boolean inQuotes = false;
+        boolean escape = false;
+
+        int last = 0;
+        for (int i = 0; i < path.length(); i++) {
+            char ch = path.charAt(i);
+            if (!inQuotes && ch == '[') {
+                inBrackets = true;
+                escape = false;
+            } else if (!inQuotes && ch == ']') {
+                inBrackets = false;
+                escape = false;
+            } else if (!escape && ch == '\'') {
+                inQuotes = !inQuotes;
+            } else if (!escape && ch == '\\') {
+                escape = true;
+            } else if (inBrackets || inQuotes) {
+                escape = false;
+            } else {
+                CharSequence prefix = findPrefix(path, i, search);
+                if (prefix == null) {
+                    escape = false;
+                } else {
+                    strings.add(subSequence(path, last, i));
+                    strings.add(prefix);
+                    last = prefix.length() + i;
+                    if (max != null && strings.size() == max - 1) {
+                        strings.add(subSequence(path, last, path.length()));
+                        break;
                     }
-                    otherPredicates.put(
-                            key.trim(), StringUtils.unwrap(value.toString().trim(), "'"));
-                }
-
-                if (isLastNode && StringUtils.isNotEmpty(nameValue)) {
-                    otherPredicates.put(NAME_VALUE_KEY, nameValue);
                 }
             }
         }
 
-        return Optional.of(new AqlNode(nodeName, atCode, otherPredicates));
+        if (strings.isEmpty()) {
+            strings.add(path);
+        } else if (last < path.length() && max == null) {
+            strings.add(subSequence(path, last, path.length()));
+        }
+        return strings.toArray(CharSequence[]::new);
     }
 
     private static CharSequence[] split(CharSequence path, Integer max, String... search) {
@@ -509,14 +553,14 @@ public final class AqlPath implements Serializable {
     public static final class AqlNode implements Serializable {
         private final String name;
         private final String atCode;
-        private final Map<String, String> otherPredicates;
+        private final PredicateLogicalAndOperation otherPredicate;
 
         private transient Integer hashCode;
 
-        private AqlNode(String name, String atCode, Map<String, String> otherPredicates) {
+        private AqlNode(String name, String atCode, PredicateLogicalAndOperation otherPredicates) {
             this.name = name;
             this.atCode = StringUtils.isBlank(atCode) ? null : atCode;
-            this.otherPredicates = otherPredicates;
+            this.otherPredicate = otherPredicates;
         }
 
         public String getName() {
@@ -528,51 +572,76 @@ public final class AqlPath implements Serializable {
         }
 
         public AqlNode withAtCode(String atCode) {
-            return new AqlNode(name, atCode, otherPredicates);
+
+            if (atCode != null) {
+
+                return new AqlNode(name, atCode, replace(ARCHETYPE_NODE_ID, atCode));
+            } else {
+
+                return new AqlNode(name, null, remove(ARCHETYPE_NODE_ID));
+            }
+        }
+
+        private PredicateLogicalAndOperation replace(String archetypeNodeId, String atCode) {
+            PredicateLogicalAndOperation newPredicateDto = PredicateHelper.clone(otherPredicate);
+
+            Optional<PredicateComparisonOperatorDto> predicateComparisonOperatorDto =
+                    find(newPredicateDto, archetypeNodeId);
+
+            if (predicateComparisonOperatorDto.isPresent()) {
+                predicateComparisonOperatorDto.get().setValue(new SimpleValue(atCode));
+            } else {
+                PredicateComparisonOperatorDto add = new PredicateComparisonOperatorDto();
+                add.setStatement(archetypeNodeId);
+                add.setSymbol(PredicateComparisonOperatorSymbol.EQ);
+                add.setValue(new SimpleValue(atCode));
+                newPredicateDto.getValues().add(add);
+            }
+            return newPredicateDto;
         }
 
         public AqlNode withNameValue(String nameValue) {
 
-            if (Objects.equals(nameValue, otherPredicates.get(NAME_VALUE_KEY))) {
+            if (Objects.equals(nameValue, find(otherPredicate, NAME_VALUE))) {
                 return this;
             }
-
-            Map<String, String> map;
-            if (StringUtils.isEmpty(nameValue)) {
-                if (otherPredicates.size() == 1) {
-                    map = Map.of();
-                } else {
-                    map = new LinkedHashMap<>(otherPredicates);
-                    map.remove(NAME_VALUE_KEY);
-                }
-            } else if (otherPredicates.containsKey(NAME_VALUE_KEY)) {
-                if (otherPredicates.size() == 1) {
-                    map = Map.of(NAME_VALUE_KEY, nameValue);
-                } else {
-                    map = new LinkedHashMap<>(otherPredicates);
-                    map.put(NAME_VALUE_KEY, nameValue);
-                }
+            if (nameValue != null) {
+                return new AqlNode(name, atCode, replace(NAME_VALUE, nameValue));
             } else {
-                if (otherPredicates.isEmpty()) {
-                    map = Map.of(NAME_VALUE_KEY, nameValue);
-                } else {
-                    map = new LinkedHashMap<>(otherPredicates);
-                    map.put(NAME_VALUE_KEY, nameValue);
-                }
+
+                return new AqlNode(name, atCode, remove(NAME_VALUE));
             }
-            return new AqlNode(name, atCode, map);
+        }
+
+        private PredicateLogicalAndOperation remove(String nameValue) {
+            PredicateLogicalAndOperation newPredicateDto = PredicateHelper.clone(otherPredicate);
+            Optional<PredicateComparisonOperatorDto> predicateComparisonOperatorDto = find(newPredicateDto, nameValue);
+            predicateComparisonOperatorDto.ifPresent(
+                    p -> newPredicateDto.getValues().remove(p));
+            return newPredicateDto;
         }
 
         public String findOtherPredicate(String name) {
-            return otherPredicates.get(name);
+            return find(otherPredicate, name)
+                    .map(PredicateComparisonOperatorDto::getValue)
+                    .filter(v -> v instanceof SimpleValue)
+                    .map(v -> (SimpleValue) v)
+                    .map(SimpleValue::getValue)
+                    .map(Object::toString)
+                    .orElse(null);
         }
 
         public AqlNode clearOtherPredicates() {
-            if (otherPredicates.isEmpty()) {
-                return this;
-            } else {
-                return new AqlNode(name, atCode, Map.of());
+            final PredicateLogicalAndOperation otherPredicates = new PredicateLogicalAndOperation();
+            if (atCode != null) {
+                PredicateComparisonOperatorDto predicateComparisonOperatorDto = new PredicateComparisonOperatorDto();
+
+                predicateComparisonOperatorDto.setStatement(ARCHETYPE_NODE_ID);
+                predicateComparisonOperatorDto.setSymbol(PredicateComparisonOperatorSymbol.EQ);
+                predicateComparisonOperatorDto.setValue(new SimpleValue(atCode));
+                otherPredicates.getValues().add(predicateComparisonOperatorDto);
             }
+            return new AqlNode(name, atCode, otherPredicates);
         }
 
         @Override
@@ -583,7 +652,7 @@ public final class AqlPath implements Serializable {
             AqlNode aqlNode = (AqlNode) o;
             return Objects.equals(name, aqlNode.name)
                     && Objects.equals(atCode, aqlNode.atCode)
-                    && Objects.equals(otherPredicates, aqlNode.otherPredicates);
+                    && Objects.equals(otherPredicate, aqlNode.otherPredicate);
         }
 
         public boolean equals(AqlNode o, boolean withOtherPredicates) {
@@ -597,29 +666,16 @@ public final class AqlPath implements Serializable {
         @Override
         public int hashCode() {
             if (hashCode == null) {
-                hashCode = Objects.hash(name, atCode, otherPredicates);
+                hashCode = Objects.hash(name, atCode, otherPredicate);
             }
             return hashCode;
         }
 
         public void appendFormat(StringBuilder sb, OtherPredicatesFormat otherPredicatesFormat) {
             sb.append(this.name);
-            if (this.atCode != null) {
-                sb.append("[").append(this.atCode);
-                if (otherPredicatesFormat != OtherPredicatesFormat.NONE) {
-                    this.otherPredicates.forEach((key, value) -> {
-                        // XXX escape value?? ('\)
-                        if (otherPredicatesFormat == OtherPredicatesFormat.SHORTED && key.equals(NAME_VALUE_KEY)) {
-                            sb.append(",'").append(value).append("'");
-                        } else {
-                            sb.append(" and ")
-                                    .append(key)
-                                    .append("='")
-                                    .append(value)
-                                    .append("'");
-                        }
-                    });
-                }
+            if (!otherPredicate.getValues().isEmpty()) {
+                sb.append("[");
+                PredicateHelper.format(sb, otherPredicate, otherPredicatesFormat);
                 sb.append("]");
             }
         }

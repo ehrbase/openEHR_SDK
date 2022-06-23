@@ -17,10 +17,19 @@
  */
 package org.ehrbase.aql.dto.condition;
 
-public class ParameterValue implements Value {
+import org.ehrbase.aql.dto.path.predicate.SimplePredicateDto;
+
+public class ParameterValue implements Value, SimplePredicateDto {
 
     private String name;
     private String type;
+
+    public ParameterValue() {}
+
+    public ParameterValue(ParameterValue other) {
+        this.name = other.name;
+        this.type = other.type;
+    }
 
     public String getName() {
         return this.name;

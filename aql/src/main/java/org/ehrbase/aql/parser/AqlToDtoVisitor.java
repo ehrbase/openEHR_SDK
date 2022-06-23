@@ -177,7 +177,7 @@ public class AqlToDtoVisitor extends AqlBaseVisitor<Object> {
         }
     }
 
-    private ContainmentLogicalOperator buildContainmentLogicalOperator(List<Object> boolList) {
+    public ContainmentLogicalOperator buildContainmentLogicalOperator(List<Object> boolList) {
 
         return (ContainmentLogicalOperator) buildLogicalOperator(boolList, (Function<
                         ContainmentLogicalOperatorSymbol,
@@ -274,7 +274,7 @@ public class AqlToDtoVisitor extends AqlBaseVisitor<Object> {
                 });
     }
 
-    private <S extends LogicalOperatorSymbol, T> LogicalOperatorDto<S, T> buildLogicalOperator(
+    public static <S extends LogicalOperatorSymbol, T> LogicalOperatorDto<S, T> buildLogicalOperator(
             List<Object> boolList, Function<S, LogicalOperatorDto<S, T>> creator) {
 
         S currentSymbol = (S) boolList.get(1);
@@ -453,7 +453,7 @@ public class AqlToDtoVisitor extends AqlBaseVisitor<Object> {
         }
     }
 
-    private boolean hasHigherPrecedence(
+    private static boolean hasHigherPrecedence(
             LogicalOperatorSymbol operatorSymbol, LogicalOperatorSymbol nextOperatorSymbol) {
         if (nextOperatorSymbol == null) {
             return true;
