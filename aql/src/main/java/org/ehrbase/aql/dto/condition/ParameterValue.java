@@ -17,9 +17,10 @@
  */
 package org.ehrbase.aql.dto.condition;
 
+import java.io.Serializable;
 import org.ehrbase.aql.dto.path.predicate.SimplePredicateDto;
 
-public class ParameterValue implements Value, SimplePredicateDto {
+public class ParameterValue implements Value, SimplePredicateDto, Serializable {
 
     private String name;
     private String type;

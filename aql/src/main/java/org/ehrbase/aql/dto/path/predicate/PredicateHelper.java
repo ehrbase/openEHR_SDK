@@ -196,7 +196,7 @@ public class PredicateHelper {
             for (int i = 0; i < values.size(); i++) {
                 if (i > 0 && !isNone(values.get(i), otherPredicatesFormat)) {
                     if (isShorten(values.get(i), otherPredicatesFormat)) {
-                        sb.append(",").append(" ");
+                        sb.append(",");
                     } else {
                         sb.append(" ").append("and").append(" ");
                     }

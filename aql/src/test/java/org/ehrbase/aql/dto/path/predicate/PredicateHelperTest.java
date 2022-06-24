@@ -38,14 +38,14 @@ class PredicateHelperTest {
         // T1_NODE("archetype_node_id=at001 and name/value='name1' or archetype_node_id=at001 and name/value='name2'",
         // AqlPath.OtherPredicatesFormat.NONE,"at001, 'name1' or at001, 'name2'"),
         T2_FULL(
-                "at001, 'name1' and path/value='abc'",
+                "at001,'name1' and path/value='abc'",
                 AqlPath.OtherPredicatesFormat.FULL,
                 "at001 and name/value='name1' and path/value='abc'"),
         T2_SHORT(
-                "at001, 'name1' and path/value='abc'",
+                "at001,'name1' and path/value='abc'",
                 AqlPath.OtherPredicatesFormat.SHORTED,
-                "at001, 'name1' and path/value='abc'"),
-        T2_NONE("at001, 'name1' and path/value='abc'", AqlPath.OtherPredicatesFormat.NONE, "at001"),
+                "at001,'name1' and path/value='abc'"),
+        T2_NONE("at001,'name1' and path/value='abc'", AqlPath.OtherPredicatesFormat.NONE, "at001"),
         T3_FULL(
                 "name/value='name1' and archetype_node_id=at001",
                 AqlPath.OtherPredicatesFormat.FULL,
@@ -53,7 +53,7 @@ class PredicateHelperTest {
         T3_SHORT(
                 "name/value='name1' and archetype_node_id=at001",
                 AqlPath.OtherPredicatesFormat.SHORTED,
-                "at001, 'name1'"),
+                "at001,'name1'"),
         T3_NONE("name/value='name1' and archetype_node_id=at001", AqlPath.OtherPredicatesFormat.NONE, "at001");
 
         final String input;

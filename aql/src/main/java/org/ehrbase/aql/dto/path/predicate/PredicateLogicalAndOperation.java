@@ -17,6 +17,7 @@
  */
 package org.ehrbase.aql.dto.path.predicate;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -26,7 +27,9 @@ import org.ehrbase.aql.dto.condition.LogicalOperatorDto;
  * @author Stefan Spiska
  */
 public class PredicateLogicalAndOperation
-        implements LogicalOperatorDto<PredicateLogicalOperatorSymbol, SimplePredicateDto>, SimplePredicateDto {
+        implements LogicalOperatorDto<PredicateLogicalOperatorSymbol, SimplePredicateDto>,
+                SimplePredicateDto,
+                Serializable {
 
     private final PredicateLogicalOperatorSymbol symbol = PredicateLogicalOperatorSymbol.AND;
     private List<SimplePredicateDto> values = new ArrayList<>();

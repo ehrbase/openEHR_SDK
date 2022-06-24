@@ -17,11 +17,12 @@
  */
 package org.ehrbase.aql.dto.path.predicate;
 
+import java.io.Serializable;
 import org.ehrbase.aql.dto.condition.ParameterValue;
 import org.ehrbase.aql.dto.condition.SimpleValue;
 import org.ehrbase.aql.dto.condition.Value;
 
-public class PredicateComparisonOperatorDto implements SimplePredicateDto {
+public class PredicateComparisonOperatorDto implements SimplePredicateDto, Serializable {
 
     private String statement;
     private PredicateComparisonOperatorSymbol symbol;

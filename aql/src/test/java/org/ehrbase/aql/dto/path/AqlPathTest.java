@@ -54,7 +54,7 @@ public class AqlPathTest {
         assertThat(cut).hasToString(path);
         assertThat(cut.format(AqlPath.OtherPredicatesFormat.SHORTED, true))
                 .isEqualTo(
-                        "/content[openEHR-EHR-OBSERVATION.laboratory_test_result.v1, 'Einsenderstandort']/protocol[at0004]/items[at0094]/items[openEHR-EHR-CLUSTER.location.v1]");
+                        "/content[openEHR-EHR-OBSERVATION.laboratory_test_result.v1,'Einsenderstandort']/protocol[at0004]/items[at0094]/items[openEHR-EHR-CLUSTER.location.v1]");
 
         AqlPath path2 = AqlPath.parse(path, "foo");
         assertThat(path2)
@@ -399,10 +399,10 @@ public class AqlPathTest {
                         "/content[openEHR-EHR-OBSERVATION.laboratory_test_result.v1 and name/value='Einsenderstandort']/protocol[at0004]/items[at0094]");
         assertThat(path.format(AqlPath.OtherPredicatesFormat.SHORTED, true))
                 .isEqualTo(
-                        "/content[openEHR-EHR-OBSERVATION.laboratory_test_result.v1, 'Einsenderstandort']/protocol[at0004]/items[at0094]|foo");
+                        "/content[openEHR-EHR-OBSERVATION.laboratory_test_result.v1,'Einsenderstandort']/protocol[at0004]/items[at0094]|foo");
         assertThat(path.format(AqlPath.OtherPredicatesFormat.SHORTED, false))
                 .isEqualTo(
-                        "/content[openEHR-EHR-OBSERVATION.laboratory_test_result.v1, 'Einsenderstandort']/protocol[at0004]/items[at0094]");
+                        "/content[openEHR-EHR-OBSERVATION.laboratory_test_result.v1,'Einsenderstandort']/protocol[at0004]/items[at0094]");
         assertThat(path.format(AqlPath.OtherPredicatesFormat.NONE, true))
                 .isEqualTo(
                         "/content[openEHR-EHR-OBSERVATION.laboratory_test_result.v1]/protocol[at0004]/items[at0094]|foo");
@@ -416,13 +416,13 @@ public class AqlPathTest {
         AqlPath path;
 
         path = AqlPath.parse(
-                "/content[openEHR-EHR-OBSERVATION.laboratory_test_result.v1, 'Einsenderstandort']/protocol[at0004]/items[at0094]/items[openEHR-EHR-CLUSTER.location.v1]");
+                "/content[openEHR-EHR-OBSERVATION.laboratory_test_result.v1,'Einsenderstandort']/protocol[at0004]/items[at0094]/items[openEHR-EHR-CLUSTER.location.v1]");
         assertThat(path.format(AqlPath.OtherPredicatesFormat.FULL, true))
                 .isEqualTo(
                         "/content[openEHR-EHR-OBSERVATION.laboratory_test_result.v1 and name/value='Einsenderstandort']/protocol[at0004]/items[at0094]/items[openEHR-EHR-CLUSTER.location.v1]");
         assertThat(path.format(AqlPath.OtherPredicatesFormat.SHORTED, true))
                 .isEqualTo(
-                        "/content[openEHR-EHR-OBSERVATION.laboratory_test_result.v1, 'Einsenderstandort']/protocol[at0004]/items[at0094]/items[openEHR-EHR-CLUSTER.location.v1]");
+                        "/content[openEHR-EHR-OBSERVATION.laboratory_test_result.v1,'Einsenderstandort']/protocol[at0004]/items[at0094]/items[openEHR-EHR-CLUSTER.location.v1]");
         assertThat(path.format(AqlPath.OtherPredicatesFormat.NONE, true))
                 .isEqualTo(
                         "/content[openEHR-EHR-OBSERVATION.laboratory_test_result.v1]/protocol[at0004]/items[at0094]/items[openEHR-EHR-CLUSTER.location.v1]");
@@ -434,6 +434,6 @@ public class AqlPathTest {
                         "/content[openEHR-EHR-OBSERVATION.laboratory_test_result.v1 and name/value='Einsenderstandort']/protocol[at0004]/items[at0094]|foo");
         assertThat(path.format(AqlPath.OtherPredicatesFormat.SHORTED, true))
                 .isEqualTo(
-                        "/content[openEHR-EHR-OBSERVATION.laboratory_test_result.v1, 'Einsenderstandort']/protocol[at0004]/items[at0094]|foo");
+                        "/content[openEHR-EHR-OBSERVATION.laboratory_test_result.v1,'Einsenderstandort']/protocol[at0004]/items[at0094]|foo");
     }
 }
