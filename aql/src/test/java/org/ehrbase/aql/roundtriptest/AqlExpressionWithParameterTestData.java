@@ -29,12 +29,13 @@ public enum AqlExpressionWithParameterTestData implements AqlTestDto {
                     + "contains OBSERVATION o_bp[openEHR-EHR-OBSERVATION.blood_pressure.v1] "
                     + "where o_bp/data[at0001]/events[at0006]/data[at0003]/items[at0005]/value/magnitude < $max_value "
                     + "and o_bp/data[at0001]/events[at0006]/data[at0003]/items[at0004]/value/magnitude > $another_value",
-            "select o_bp/data[at0001]/events[at0006]/data[at0003]/items[at0005, $nameValue1]/value/magnitude as diastolic, o_bp/data[at0001]/events[at0006]/data[at0003]/items[at0004, $nameValue2]/value/magnitude as systolic "
-                    + "from EHR e[ehr_id/value=$ehrId] "
+            "Select o_bp/data[at0001]/events[at0006]/data[at0003]/items[at0005,$nameValue1]/value/magnitude as diastolic, o_bp/data[at0001]/events[at0006]/data[at0003]/items[at0004,$nameValue2]/value/magnitude as systolic "
+                    + "from EHR e "
                     + "contains COMPOSITION a "
                     + "contains OBSERVATION o_bp[openEHR-EHR-OBSERVATION.blood_pressure.v1] "
-                    + "where o_bp/data[at0001]/events[at0006]/data[at0003]/items[at0005]/value/magnitude < $max_value "
-                    + "and o_bp/data[at0001]/events[at0006]/data[at0003]/items[at0004]/value/magnitude > $another_value",
+                    + "where (o_bp/data[at0001]/events[at0006]/data[at0003]/items[at0005]/value/magnitude < $max_value "
+                    + "and o_bp/data[at0001]/events[at0006]/data[at0003]/items[at0004]/value/magnitude > $another_value "
+                    + "and e/ehr_id/value = '$ehrId')",
             "testDump");
 
     private final String testAql;

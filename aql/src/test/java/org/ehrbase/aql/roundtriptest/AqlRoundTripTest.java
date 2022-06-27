@@ -41,7 +41,7 @@ class AqlRoundTripTest {
     @EnumSource(AqlExpressionWithParameterTestData.class)
     void testAqlExpressionWithParameterTest(AqlExpressionWithParameterTestData testData) {
 
-        //  testAql(testData);
+        testAql(testData);
     }
 
     void testAql(AqlTestDto testData) {

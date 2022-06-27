@@ -31,6 +31,7 @@ import org.antlr.v4.runtime.tree.TerminalNode;
 import org.apache.commons.collections4.MultiValuedMap;
 import org.apache.commons.collections4.multimap.ArrayListValuedHashMap;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.Pair;
 import org.ehrbase.aql.dto.AqlDto;
 import org.ehrbase.aql.dto.EhrDto;
 import org.ehrbase.aql.dto.LogicalOperatorSymbol;
@@ -50,6 +51,9 @@ import org.ehrbase.aql.dto.containment.ContainmentLogicalOperator;
 import org.ehrbase.aql.dto.containment.ContainmentLogicalOperatorSymbol;
 import org.ehrbase.aql.dto.orderby.OrderByExpressionDto;
 import org.ehrbase.aql.dto.orderby.OrderByExpressionSymbol;
+import org.ehrbase.aql.dto.path.predicate.PredicateComparisonOperatorDto;
+import org.ehrbase.aql.dto.path.predicate.PredicateDto;
+import org.ehrbase.aql.dto.path.predicate.PredicateHelper;
 import org.ehrbase.aql.dto.select.SelectDto;
 import org.ehrbase.aql.dto.select.SelectFieldDto;
 import org.ehrbase.aql.dto.select.SelectStatementDto;
@@ -66,13 +70,28 @@ public class AqlToDtoVisitor extends AqlBaseVisitor<Object> {
     public AqlDto visitQuery(AqlParser.QueryContext ctx) {
         AqlDto aqlDto = new AqlDto();
 
-        aqlDto.setEhr(visitFromEHR(ctx.queryExpr().from().fromEHR()));
+        Pair<EhrDto, ConditionDto> visitFromEHR =
+                visitFromEHR(ctx.queryExpr().from().fromEHR());
+        aqlDto.setEhr(visitFromEHR.getLeft());
+
         if (ctx.queryExpr().from().containsExpression() != null) {
             aqlDto.setContains(visitContainsExpression(ctx.queryExpr().from().containsExpression()));
         }
         aqlDto.setSelect(visitSelect(ctx.queryExpr().select()));
         if (ctx.queryExpr().where() != null) {
             aqlDto.setWhere(visitIdentifiedExpr(ctx.queryExpr().where().identifiedExpr()));
+        }
+        if (visitFromEHR.getRight() != null) {
+            if (aqlDto.getWhere() == null) {
+                aqlDto.setWhere(visitFromEHR.getRight());
+            } else {
+                ConditionLogicalOperatorDto and = new ConditionLogicalOperatorDto();
+                and.setSymbol(ConditionLogicalOperatorSymbol.AND);
+                and.setValues(new ArrayList<>());
+                and.getValues().add(aqlDto.getWhere());
+                and.getValues().add(visitFromEHR.getRight());
+                aqlDto.setWhere(and);
+            }
         }
 
         if (ctx.queryExpr().orderBy() != null) {
@@ -96,15 +115,39 @@ public class AqlToDtoVisitor extends AqlBaseVisitor<Object> {
     }
 
     @Override
-    public EhrDto visitFromEHR(AqlParser.FromEHRContext ctx) {
+    public Pair<EhrDto, ConditionDto> visitFromEHR(AqlParser.FromEHRContext ctx) {
         EhrDto ehrDto = new EhrDto();
         ehrDto.setContainmentId(buildContainmentId());
         if (ctx.IDENTIFIER() != null) {
             identifierMap.put(ctx.IDENTIFIER().getText(), ehrDto.getContainmentId());
             ehrDto.setIdentifier(ctx.IDENTIFIER().getText());
         }
+        return Pair.of(
+                ehrDto,
+                Optional.ofNullable(ctx.standardPredicate())
+                        .map(AqlParser.StandardPredicateContext::predicateExpr)
+                        .map(p -> buildConditionDtoFromPredicate(p, ehrDto.getContainmentId()))
+                        .orElse(null));
+    }
 
-        return ehrDto;
+    private ConditionDto buildConditionDtoFromPredicate(AqlParser.PredicateExprContext p, int containmentId) {
+        PredicateDto predicateDto = PredicateHelper.buildPredicate(p.getText());
+        return to(predicateDto, containmentId);
+    }
+
+    private ConditionDto to(PredicateDto predicateDto, int containmentId) {
+        if (predicateDto instanceof PredicateComparisonOperatorDto) {
+            ConditionComparisonOperatorDto conditionComparisonOperatorDto = new ConditionComparisonOperatorDto();
+            SelectFieldDto statement = new SelectFieldDto();
+            statement.setContainmentId(containmentId);
+            statement.setAqlPath(
+                    StringUtils.prependIfMissing(((PredicateComparisonOperatorDto) predicateDto).getStatement(), "/"));
+            conditionComparisonOperatorDto.setStatement(statement);
+            conditionComparisonOperatorDto.setSymbol(ConditionComparisonOperatorSymbol.EQ);
+            conditionComparisonOperatorDto.setValue(((PredicateComparisonOperatorDto) predicateDto).getValue());
+            return conditionComparisonOperatorDto;
+        }
+        return null;
     }
 
     @Override
