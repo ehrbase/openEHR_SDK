@@ -26,6 +26,9 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
+import java.util.stream.Collectors;
+import org.antlr.v4.runtime.ParserRuleContext;
+import org.antlr.v4.runtime.misc.Interval;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
 import org.apache.commons.collections4.MultiValuedMap;
@@ -54,6 +57,8 @@ import org.ehrbase.aql.dto.orderby.OrderByExpressionSymbol;
 import org.ehrbase.aql.dto.path.predicate.PredicateComparisonOperatorDto;
 import org.ehrbase.aql.dto.path.predicate.PredicateDto;
 import org.ehrbase.aql.dto.path.predicate.PredicateHelper;
+import org.ehrbase.aql.dto.path.predicate.PredicateLogicalAndOperation;
+import org.ehrbase.aql.dto.path.predicate.PredicateLogicalOrOperation;
 import org.ehrbase.aql.dto.select.SelectDto;
 import org.ehrbase.aql.dto.select.SelectFieldDto;
 import org.ehrbase.aql.dto.select.SelectStatementDto;
@@ -131,8 +136,19 @@ public class AqlToDtoVisitor extends AqlBaseVisitor<Object> {
     }
 
     private ConditionDto buildConditionDtoFromPredicate(AqlParser.PredicateExprContext p, int containmentId) {
-        PredicateDto predicateDto = PredicateHelper.buildPredicate(p.getText());
+        PredicateDto predicateDto = PredicateHelper.buildPredicate(getFullText(p));
         return to(predicateDto, containmentId);
+    }
+
+    public static String getFullText(ParserRuleContext context) {
+        if (context.start == null
+                || context.stop == null
+                || context.start.getStartIndex() < 0
+                || context.stop.getStopIndex() < 0) return context.getText(); // Fallback
+
+        return context.start
+                .getInputStream()
+                .getText(Interval.of(context.start.getStartIndex(), context.stop.getStopIndex()));
     }
 
     private ConditionDto to(PredicateDto predicateDto, int containmentId) {
@@ -143,10 +159,27 @@ public class AqlToDtoVisitor extends AqlBaseVisitor<Object> {
             statement.setAqlPath(
                     StringUtils.prependIfMissing(((PredicateComparisonOperatorDto) predicateDto).getStatement(), "/"));
             conditionComparisonOperatorDto.setStatement(statement);
-            conditionComparisonOperatorDto.setSymbol(ConditionComparisonOperatorSymbol.EQ);
+            conditionComparisonOperatorDto.setSymbol(((PredicateComparisonOperatorDto) predicateDto).getSymbol());
             conditionComparisonOperatorDto.setValue(((PredicateComparisonOperatorDto) predicateDto).getValue());
             return conditionComparisonOperatorDto;
         }
+
+        if (predicateDto instanceof PredicateLogicalAndOperation) {
+            ConditionLogicalOperatorDto and = new ConditionLogicalOperatorDto();
+            and.setSymbol(ConditionLogicalOperatorSymbol.AND);
+            and.setValues(((PredicateLogicalAndOperation) predicateDto)
+                    .getValues().stream().map(p -> to(p, containmentId)).collect(Collectors.toList()));
+            return and;
+        }
+
+        if (predicateDto instanceof PredicateLogicalOrOperation) {
+            ConditionLogicalOperatorDto or = new ConditionLogicalOperatorDto();
+            or.setSymbol(ConditionLogicalOperatorSymbol.OR);
+            or.setValues(((PredicateLogicalOrOperation) predicateDto)
+                    .getValues().stream().map(p -> to(p, containmentId)).collect(Collectors.toList()));
+            return or;
+        }
+
         return null;
     }
 

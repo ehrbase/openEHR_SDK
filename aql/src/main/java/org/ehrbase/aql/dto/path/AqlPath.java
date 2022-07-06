@@ -33,9 +33,9 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.function.UnaryOperator;
 import org.apache.commons.lang3.StringUtils;
+import org.ehrbase.aql.dto.condition.ConditionComparisonOperatorSymbol;
 import org.ehrbase.aql.dto.condition.SimpleValue;
 import org.ehrbase.aql.dto.path.predicate.PredicateComparisonOperatorDto;
-import org.ehrbase.aql.dto.path.predicate.PredicateComparisonOperatorSymbol;
 import org.ehrbase.aql.dto.path.predicate.PredicateDto;
 import org.ehrbase.aql.dto.path.predicate.PredicateHelper;
 import org.ehrbase.aql.dto.path.predicate.PredicateLogicalAndOperation;
@@ -593,7 +593,7 @@ public final class AqlPath implements Serializable {
             } else {
                 PredicateComparisonOperatorDto add = new PredicateComparisonOperatorDto();
                 add.setStatement(archetypeNodeId);
-                add.setSymbol(PredicateComparisonOperatorSymbol.EQ);
+                add.setSymbol(ConditionComparisonOperatorSymbol.EQ);
                 add.setValue(new SimpleValue(atCode));
                 newPredicateDto.getValues().add(add);
             }
@@ -637,7 +637,7 @@ public final class AqlPath implements Serializable {
                 PredicateComparisonOperatorDto predicateComparisonOperatorDto = new PredicateComparisonOperatorDto();
 
                 predicateComparisonOperatorDto.setStatement(ARCHETYPE_NODE_ID);
-                predicateComparisonOperatorDto.setSymbol(PredicateComparisonOperatorSymbol.EQ);
+                predicateComparisonOperatorDto.setSymbol(ConditionComparisonOperatorSymbol.EQ);
                 predicateComparisonOperatorDto.setValue(new SimpleValue(atCode));
                 otherPredicates.getValues().add(predicateComparisonOperatorDto);
             }

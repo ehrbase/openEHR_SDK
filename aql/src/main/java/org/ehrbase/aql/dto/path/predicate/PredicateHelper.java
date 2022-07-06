@@ -19,6 +19,7 @@ package org.ehrbase.aql.dto.path.predicate;
 
 import static org.ehrbase.aql.parser.AqlToDtoVisitor.buildLogicalOperator;
 
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
@@ -28,6 +29,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.ehrbase.aql.dto.condition.ConditionComparisonOperatorSymbol;
 import org.ehrbase.aql.dto.condition.LogicalOperatorDto;
 import org.ehrbase.aql.dto.condition.ParameterValue;
 import org.ehrbase.aql.dto.condition.SimpleValue;
@@ -127,10 +129,14 @@ public class PredicateHelper {
     }
 
     private static PredicateComparisonOperatorDto handleOperator(CharSequence sequence, int i) {
-        CharSequence[] split = AqlPath.split2(sequence, 3, "=");
+        CharSequence[] split = AqlPath.split2(
+                sequence,
+                3,
+                Arrays.stream(ConditionComparisonOperatorSymbol.values())
+                        .map(ConditionComparisonOperatorSymbol::getSymbole)
+                        .toArray(String[]::new));
         PredicateComparisonOperatorDto comparisonOperatorDto = new PredicateComparisonOperatorDto();
 
-        comparisonOperatorDto.setSymbol(PredicateComparisonOperatorSymbol.EQ);
         if (split.length == 1) {
             if (i == 0) {
 
@@ -138,6 +144,7 @@ public class PredicateHelper {
                 SimpleValue value = new SimpleValue();
                 value.setValue(split[0].toString().trim());
                 comparisonOperatorDto.setValue(value);
+                comparisonOperatorDto.setSymbol(ConditionComparisonOperatorSymbol.EQ);
             } else if (i == 2) {
 
                 comparisonOperatorDto.setStatement(NAME_VALUE);
@@ -148,15 +155,37 @@ public class PredicateHelper {
         } else {
 
             comparisonOperatorDto.setStatement(split[0].toString().trim());
-            SimpleValue value = new SimpleValue();
-            value.setValue(split[2].toString().trim());
-            if (comparisonOperatorDto.getStatement().equals(NAME_VALUE)) {
-                value.setValue(StringUtils.unwrap(value.getValue().toString(), "'"));
-            }
-            comparisonOperatorDto.setValue(value);
+
+            comparisonOperatorDto.setValue(parseValue(split[2].toString().trim()));
+            comparisonOperatorDto.setSymbol(ConditionComparisonOperatorSymbol.fromSymbol(split[1].toString()));
         }
 
         return comparisonOperatorDto;
+    }
+
+    private static Value parseValue(String s) {
+
+        if (s.startsWith("$")) {
+            ParameterValue parameterValue = new ParameterValue();
+            parameterValue.setName(StringUtils.removeStart(s, "$"));
+            return parameterValue;
+        }
+        if (s.startsWith("'")) {
+            SimpleValue simpleValue = new SimpleValue();
+
+            simpleValue.setValue(StringUtils.unwrap(s, "'"));
+            return simpleValue;
+        }
+
+        if (StringUtils.contains(s, '.')) {
+            SimpleValue simpleValue = new SimpleValue();
+            simpleValue.setValue(Double.parseDouble(s));
+            return simpleValue;
+        } else {
+            SimpleValue simpleValue = new SimpleValue();
+            simpleValue.setValue(Long.parseLong(s));
+            return simpleValue;
+        }
     }
 
     private static void format(String statement, StringBuilder sb, Value value) {
@@ -184,7 +213,9 @@ public class PredicateHelper {
                         ((PredicateComparisonOperatorDto) predicateDto).getValue());
             } else if (!isNone((SimplePredicateDto) predicateDto, otherPredicatesFormat)) {
                 sb.append(((PredicateComparisonOperatorDto) predicateDto).getStatement())
-                        .append("=");
+                        .append(((PredicateComparisonOperatorDto) predicateDto)
+                                .getSymbol()
+                                .getSymbole());
                 format(
                         ((PredicateComparisonOperatorDto) predicateDto).getStatement(),
                         sb,
@@ -265,7 +296,7 @@ public class PredicateHelper {
                             .contains(((PredicateComparisonOperatorDto) predicateDto).getStatement())
                     && ((PredicateComparisonOperatorDto) predicateDto)
                             .getSymbol()
-                            .equals(PredicateComparisonOperatorSymbol.EQ);
+                            .equals(ConditionComparisonOperatorSymbol.EQ);
         }
         return false;
     }

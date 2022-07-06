@@ -19,7 +19,9 @@ package org.ehrbase.aql.roundtriptest;
 
 /**
  * @author Stefan Spiska
- * @see <a href="https://github.com/ehrbase/ehrbase/blob/v0.21.1/service/src/test/java/org/ehrbase/aql/compiler/AqlExpressionTest.java">AqlExpressionTest in ehrbase</a>
+ * @see <a
+ *     href="https://github.com/ehrbase/ehrbase/blob/v0.21.1/service/src/test/java/org/ehrbase/aql/compiler/AqlExpressionTest.java">AqlExpressionTest
+ *     in ehrbase</a>
  */
 public enum AqlExpressionTestData implements AqlTestDto {
     DUMP(
@@ -28,10 +30,12 @@ public enum AqlExpressionTestData implements AqlTestDto {
                     + "CONTAINS COMPOSITION c [openEHR-EHR-COMPOSITION.encounter.v1] "
                     + "CONTAINS OBSERVATION o [openEHR-EHR-OBSERVATION.blood_pressure.v1]"
                     + "WHERE o/data[at0001]/events[at0006]/data[at0003]/items[at0004]/value/value > 140",
-            "Select o/data[at0002]/events[at0003] as systolic " + "from EHR e "
+            "Select o/data[at0002]/events[at0003] as systolic "
+                    + "from EHR e "
                     + "contains COMPOSITION c[openEHR-EHR-COMPOSITION.encounter.v1] "
                     + "contains OBSERVATION o[openEHR-EHR-OBSERVATION.blood_pressure.v1] "
-                    + "where o/data[at0001]/events[at0006]/data[at0003]/items[at0004]/value/value > 140",
+                    + "where (o/data[at0001]/events[at0006]/data[at0003]/items[at0004]/value/value > 140 "
+                    + "and e/ehr_id/value = '1234')",
             "testDump"),
     WHERE_EXPRESSION_WITH_PARENTHESIS(
             "select e/ehr_id, a/data[at0002]/events[at0003]/data[at0001]/items[at0004]/value/magnitude, a_a/data[at0002]/events[at0003]/time/value "

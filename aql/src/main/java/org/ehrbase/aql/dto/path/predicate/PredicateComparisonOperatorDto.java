@@ -18,6 +18,7 @@
 package org.ehrbase.aql.dto.path.predicate;
 
 import java.io.Serializable;
+import org.ehrbase.aql.dto.condition.ConditionComparisonOperatorSymbol;
 import org.ehrbase.aql.dto.condition.ParameterValue;
 import org.ehrbase.aql.dto.condition.SimpleValue;
 import org.ehrbase.aql.dto.condition.Value;
@@ -25,7 +26,7 @@ import org.ehrbase.aql.dto.condition.Value;
 public class PredicateComparisonOperatorDto implements SimplePredicateDto, Serializable {
 
     private String statement;
-    private PredicateComparisonOperatorSymbol symbol;
+    private ConditionComparisonOperatorSymbol symbol;
     private Value value;
 
     public PredicateComparisonOperatorDto() {}
@@ -45,7 +46,7 @@ public class PredicateComparisonOperatorDto implements SimplePredicateDto, Seria
         return this.statement;
     }
 
-    public PredicateComparisonOperatorSymbol getSymbol() {
+    public ConditionComparisonOperatorSymbol getSymbol() {
         return this.symbol;
     }
 
@@ -57,7 +58,7 @@ public class PredicateComparisonOperatorDto implements SimplePredicateDto, Seria
         this.statement = statement;
     }
 
-    public void setSymbol(PredicateComparisonOperatorSymbol symbol) {
+    public void setSymbol(ConditionComparisonOperatorSymbol symbol) {
         this.symbol = symbol;
     }
 
