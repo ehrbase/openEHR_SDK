@@ -44,6 +44,13 @@ class AqlRoundTripTest {
         testAql(testData);
     }
 
+    @ParameterizedTest
+    @EnumSource(UCTestData.class)
+    void testUC(UCTestData testData) {
+
+        testAql(testData);
+    }
+
     void testAql(AqlTestDto testData) {
         AqlToDtoParser cut = new AqlToDtoParser();
         AqlDto actual = cut.parse(testData.getTestAql());

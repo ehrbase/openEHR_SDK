@@ -151,6 +151,7 @@ public class PredicateHelper {
                 SimpleValue value = new SimpleValue();
                 value.setValue(StringUtils.unwrap(split[0].toString().trim(), "'"));
                 comparisonOperatorDto.setValue(value);
+                comparisonOperatorDto.setSymbol(ConditionComparisonOperatorSymbol.EQ);
             }
         } else {
 

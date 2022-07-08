@@ -19,11 +19,14 @@ package org.ehrbase.aql.binder;
 
 import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
+import org.ehrbase.aql.dto.select.FunctionDto;
 import org.ehrbase.aql.dto.select.SelectFieldDto;
 import org.ehrbase.aql.dto.select.SelectStatementDto;
+import org.ehrbase.aql.parser.AqlParseException;
 import org.ehrbase.client.aql.containment.Containment;
 import org.ehrbase.client.aql.field.NativeSelectAqlField;
 import org.ehrbase.client.aql.field.SelectAqlField;
+import org.ehrbase.client.aql.funtion.Function;
 import org.ehrbase.util.exception.SdkException;
 
 public class SelectBinder {
@@ -32,11 +35,24 @@ public class SelectBinder {
         SelectAqlField<Object> selectAqlField;
         if (dto instanceof SelectFieldDto) {
             selectAqlField = handleSelectFieldDto((SelectFieldDto) dto, containmentMap);
+        } else if (dto instanceof FunctionDto) {
+            selectAqlField = handleFunctionDto((FunctionDto) dto, containmentMap);
         } else {
             throw new SdkException(
                     String.format("Unexpected class: %s", dto.getClass().getSimpleName()));
         }
         return selectAqlField;
+    }
+
+    private SelectAqlField<Object> handleFunctionDto(FunctionDto dto, Map<Integer, Containment> containmentMap) {
+
+        switch (dto.getAqlFunction()) {
+            case COUNT:
+                return (SelectAqlField) Function.count(bind(dto.getParameters().get(0), containmentMap), dto.getName());
+            default:
+                throw new AqlParseException(String.format(
+                        "Unsupported Funktion %s", dto.getAqlFunction().name()));
+        }
     }
 
     public SelectAqlField<Object> handleSelectFieldDto(SelectFieldDto dto, Map<Integer, Containment> containmentMap) {

@@ -59,6 +59,8 @@ import org.ehrbase.aql.dto.path.predicate.PredicateDto;
 import org.ehrbase.aql.dto.path.predicate.PredicateHelper;
 import org.ehrbase.aql.dto.path.predicate.PredicateLogicalAndOperation;
 import org.ehrbase.aql.dto.path.predicate.PredicateLogicalOrOperation;
+import org.ehrbase.aql.dto.select.AQLFunction;
+import org.ehrbase.aql.dto.select.FunctionDto;
 import org.ehrbase.aql.dto.select.SelectDto;
 import org.ehrbase.aql.dto.select.SelectFieldDto;
 import org.ehrbase.aql.dto.select.SelectStatementDto;
@@ -212,12 +214,38 @@ public class AqlToDtoVisitor extends AqlBaseVisitor<Object> {
                 selectFieldDto.setName(ctx.IDENTIFIER().getText());
             }
             selectStatementDtos.add(selectFieldDto);
+        } else if (ctx.stdExpression() != null) {
+            if (ctx.stdExpression().function() != null) {
+                FunctionDto functionDto = visitFunction(ctx.stdExpression().function());
+                selectStatementDtos.add(functionDto);
+                if (ctx.IDENTIFIER() != null) {
+                    functionDto.setName(ctx.IDENTIFIER().getText());
+                }
+            }
         }
 
         if (ctx.selectExpr() != null) {
             selectStatementDtos.addAll(visitSelectExpr(ctx.selectExpr()));
         }
         return selectStatementDtos;
+    }
+
+    @Override
+    public FunctionDto visitFunction(AqlParser.FunctionContext ctx) {
+
+        FunctionDto functionDto = new FunctionDto();
+
+        AQLFunction aqlFunction =
+                AQLFunction.valueOf(ctx.FUNCTION_IDENTIFIER().toString().toUpperCase(Locale.ROOT));
+
+        functionDto.setAqlFunction(aqlFunction);
+
+        if (ctx.identifiedPath() != null) {
+            functionDto.setParameters(
+                    ctx.identifiedPath().stream().map(this::visitIdentifiedPath).collect(Collectors.toList()));
+        }
+
+        return functionDto;
     }
 
     @Override

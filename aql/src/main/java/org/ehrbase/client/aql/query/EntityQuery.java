@@ -30,6 +30,7 @@ import org.ehrbase.client.aql.containment.ContainmentExpression;
 import org.ehrbase.client.aql.field.AqlField;
 import org.ehrbase.client.aql.field.AqlFieldImp;
 import org.ehrbase.client.aql.field.SelectAqlField;
+import org.ehrbase.client.aql.funtion.Function;
 import org.ehrbase.client.aql.orderby.OrderByExpression;
 import org.ehrbase.client.aql.parameter.Parameter;
 import org.ehrbase.client.aql.record.Record;
@@ -76,6 +77,19 @@ public class EntityQuery<T extends Record> implements Query<T> {
     }
 
     private SelectAqlField<Object> replace(SelectAqlField<?> selectAqlField) {
+
+        if (selectAqlField instanceof Function) {
+
+            List<SelectAqlField<?>> parameters = ((Function) selectAqlField).getParameters();
+            List<SelectAqlField<Object>> replaceList =
+                    parameters.stream().map(this::replace).collect(Collectors.toList());
+
+            parameters.clear();
+            parameters.addAll(replaceList);
+
+            return (SelectAqlField<Object>) selectAqlField;
+        }
+
         if (selectAqlField.getContainment().getTypeName().equals("EHR")) {
             return new AqlFieldImp(
                     selectAqlField.getEntityClass(),
