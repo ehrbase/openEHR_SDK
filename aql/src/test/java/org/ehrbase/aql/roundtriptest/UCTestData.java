@@ -113,7 +113,60 @@ public enum UCTestData implements AqlTestDto {
     UC15(
             "select e/ehr_status/other_details from EHR e[ehr_id/value='2a3b673f-d1b1-44c5-9e38-dcadf67ff2fc']",
             "Select e/ehr_status/other_details as F1 from EHR e where e/ehr_id/value = '2a3b673f-d1b1-44c5-9e38-dcadf67ff2fc'",
-            "UC15");
+            "UC15"),
+
+    UC16(
+            "select a/description[at0001]/items[openEHR-EHR-CLUSTER.test_all_types.v1]/items[at0001]/items[at0002]/items[at0003]/value/value "
+                    + "from EHR e "
+                    + "contains COMPOSITION c[openEHR-EHR-COMPOSITION.health_summary.v1]  "
+                    + "contains ACTION a[openEHR-EHR-ACTION.immunisation_procedure.v1]"
+                    + "WHERE a/description[at0001]/items[at0001]/items[at0002]/items[at0003]/value/value = true "
+                    + "OR "
+                    + "("
+                    + "a/description[at0001]/items[at0001]/items[at0002]/items[at0003]/value/value = true "
+                    + "AND"
+                    + " a/description[at0001]/items[at0001]/items[at0002]/items[at0003]/value/value = true"
+                    + ")",
+            "Select a/description[at0001]/items[openEHR-EHR-CLUSTER.test_all_types.v1]/items[at0001]/items[at0002]/items[at0003]/value/value as F1 "
+                    + "from EHR e "
+                    + "contains COMPOSITION c[openEHR-EHR-COMPOSITION.health_summary.v1] "
+                    + "contains ACTION a[openEHR-EHR-ACTION.immunisation_procedure.v1]"
+                    + " where (a/description[at0001]/items[at0001]/items[at0002]/items[at0003]/value/value = true "
+                    + "or "
+                    + "("
+                    + "a/description[at0001]/items[at0001]/items[at0002]/items[at0003]/value/value = true "
+                    + "and"
+                    + " a/description[at0001]/items[at0001]/items[at0002]/items[at0003]/value/value = true"
+                    + "))",
+            "UC16"),
+    UC17(
+            "select a from EHR e [ehr_id/value = '4a7c01cf-bb1c-4d3d-8385-4ae0674befb1']"
+                    + "contains COMPOSITION c[openEHR-EHR-COMPOSITION.health_summary.v1]  "
+                    + "contains ACTION a[openEHR-EHR-ACTION.immunisation_procedure.v1]",
+            "Select a as F1 from EHR e contains COMPOSITION c[openEHR-EHR-COMPOSITION.health_summary.v1] contains ACTION a[openEHR-EHR-ACTION.immunisation_procedure.v1] where e/ehr_id/value = '4a7c01cf-bb1c-4d3d-8385-4ae0674befb1'",
+            "UC17"),
+    UC18(
+            "select a from EHR e [ehr_id/value = '4a7c01cf-bb1c-4d3d-8385-4ae0674befb1']"
+                    + "contains COMPOSITION c[openEHR-EHR-COMPOSITION.health_summary.v1]  "
+                    + "contains ACTION a[openEHR-EHR-ACTION.immunisation_procedure.v1] "
+                    + "where c/template_id='openEHR-EHR-COMPOSITION.health_summary.v1'",
+            "Select a as F1 from EHR e contains COMPOSITION c[openEHR-EHR-COMPOSITION.health_summary.v1] contains ACTION a[openEHR-EHR-ACTION.immunisation_procedure.v1] where (c/template_id = 'openEHR-EHR-COMPOSITION.health_summary.v1' and e/ehr_id/value = '4a7c01cf-bb1c-4d3d-8385-4ae0674befb1')",
+            "UC18"),
+    UC19(
+            "select c/category from EHR e [ehr_id/value = '4a7c01cf-bb1c-4d3d-8385-4ae0674befb1']"
+                    + "contains COMPOSITION c[openEHR-EHR-COMPOSITION.health_summary.v1]",
+            "Select c/category as F1 from EHR e contains COMPOSITION c[openEHR-EHR-COMPOSITION.health_summary.v1] where e/ehr_id/value = '4a7c01cf-bb1c-4d3d-8385-4ae0674befb1'",
+            "UC19"),
+    UC20(
+            "select c/category/defining_code from EHR e [ehr_id/value = '4a7c01cf-bb1c-4d3d-8385-4ae0674befb1']"
+                    + "contains COMPOSITION c[openEHR-EHR-COMPOSITION.health_summary.v1]",
+            "Select c/category/defining_code as F1 from EHR e contains COMPOSITION c[openEHR-EHR-COMPOSITION.health_summary.v1] where e/ehr_id/value = '4a7c01cf-bb1c-4d3d-8385-4ae0674befb1'",
+            "UC20"),
+    UC21(
+            "select c/category/defining_code/terminology_id/value from EHR e [ehr_id/value = '4a7c01cf-bb1c-4d3d-8385-4ae0674befb1']"
+                    + "contains COMPOSITION c[openEHR-EHR-COMPOSITION.health_summary.v1]",
+            "Select c/category/defining_code/terminology_id/value as F1 from EHR e contains COMPOSITION c[openEHR-EHR-COMPOSITION.health_summary.v1] where e/ehr_id/value = '4a7c01cf-bb1c-4d3d-8385-4ae0674befb1'",
+            "UC21");
 
     private final String testAql;
     private final String expectedAql;
