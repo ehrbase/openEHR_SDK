@@ -157,20 +157,28 @@ public class PredicateHelper {
 
             comparisonOperatorDto.setStatement(split[0].toString().trim());
 
-            comparisonOperatorDto.setValue(parseValue(split[2].toString().trim()));
+            comparisonOperatorDto.setValue(parseValue(
+                    comparisonOperatorDto.getStatement(), split[2].toString().trim()));
             comparisonOperatorDto.setSymbol(ConditionComparisonOperatorSymbol.fromSymbol(split[1].toString()));
         }
 
         return comparisonOperatorDto;
     }
 
-    private static Value parseValue(String s) {
+    private static Value parseValue(String statement, String s) {
 
         if (s.startsWith("$")) {
             ParameterValue parameterValue = new ParameterValue();
             parameterValue.setName(StringUtils.removeStart(s, "$"));
             return parameterValue;
         }
+
+        if (ARCHETYPE_NODE_ID.equals(statement)) {
+            SimpleValue simpleValue = new SimpleValue();
+            simpleValue.setValue(s);
+            return simpleValue;
+        }
+
         if (s.startsWith("'")) {
             SimpleValue simpleValue = new SimpleValue();
 
@@ -193,7 +201,7 @@ public class PredicateHelper {
         if (value instanceof SimpleValue) {
             Object o = ((SimpleValue) value).getValue();
 
-            if (NAME_VALUE.equals(statement)) {
+            if (o instanceof String && !ARCHETYPE_NODE_ID.equals(statement)) {
                 sb.append(StringUtils.wrap(o.toString(), "'"));
             } else {
                 sb.append(o);
