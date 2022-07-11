@@ -104,7 +104,16 @@ public enum UCTestData implements AqlTestDto {
                     + " from EHR e"
                     + " contains COMPOSITION c0"
                     + " contains ACTION d[openEHR-EHR-ACTION.immunisation_procedure.v1]",
-            "UC13");
+            "UC13"),
+    UC14(
+            "select c/composer/name from EHR e " + "contains COMPOSITION c[openEHR-EHR-COMPOSITION.unknown.v1]",
+            "Select c/composer/name as F1 from EHR e " + "contains COMPOSITION c[openEHR-EHR-COMPOSITION.unknown.v1]",
+            "UC14"),
+
+    UC15(
+            "select e/ehr_status/other_details from EHR e[ehr_id/value='2a3b673f-d1b1-44c5-9e38-dcadf67ff2fc']",
+            "Select e/ehr_status/other_details as F1 from EHR e where e/ehr_id/value = '2a3b673f-d1b1-44c5-9e38-dcadf67ff2fc'",
+            "UC15");
 
     private final String testAql;
     private final String expectedAql;

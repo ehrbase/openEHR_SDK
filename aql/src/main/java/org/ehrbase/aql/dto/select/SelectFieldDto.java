@@ -17,10 +17,12 @@
  */
 package org.ehrbase.aql.dto.select;
 
+import org.ehrbase.aql.dto.path.AqlPath;
+
 public class SelectFieldDto implements SelectStatementDto {
 
     private String name;
-    private String aqlPath;
+    private AqlPath aqlPath;
     private int containmentId;
 
     public String getName() {
@@ -28,7 +30,7 @@ public class SelectFieldDto implements SelectStatementDto {
     }
 
     public String getAqlPath() {
-        return this.aqlPath;
+        return this.aqlPath.format(AqlPath.OtherPredicatesFormat.SHORTED, false);
     }
 
     public int getContainmentId() {
@@ -40,7 +42,7 @@ public class SelectFieldDto implements SelectStatementDto {
     }
 
     public void setAqlPath(String aqlPath) {
-        this.aqlPath = aqlPath;
+        this.aqlPath = AqlPath.parse(aqlPath);
     }
 
     public void setContainmentId(int containmentId) {

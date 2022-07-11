@@ -141,16 +141,14 @@ public class PredicateHelper {
             if (i == 0) {
 
                 comparisonOperatorDto.setStatement(ARCHETYPE_NODE_ID);
-                SimpleValue value = new SimpleValue();
-                value.setValue(split[0].toString().trim());
-                comparisonOperatorDto.setValue(value);
+                comparisonOperatorDto.setValue(
+                        parseValue(ARCHETYPE_NODE_ID, split[0].toString().trim()));
                 comparisonOperatorDto.setSymbol(ConditionComparisonOperatorSymbol.EQ);
             } else if (i == 2) {
 
                 comparisonOperatorDto.setStatement(NAME_VALUE);
-                SimpleValue value = new SimpleValue();
-                value.setValue(StringUtils.unwrap(split[0].toString().trim(), "'"));
-                comparisonOperatorDto.setValue(value);
+                comparisonOperatorDto.setValue(
+                        parseValue(NAME_VALUE, split[0].toString().trim()));
                 comparisonOperatorDto.setSymbol(ConditionComparisonOperatorSymbol.EQ);
             }
         } else {
@@ -206,6 +204,9 @@ public class PredicateHelper {
             } else {
                 sb.append(o);
             }
+        } else if (value instanceof ParameterValue) {
+
+            sb.append("$").append(((ParameterValue) value).getName());
         }
     }
 
