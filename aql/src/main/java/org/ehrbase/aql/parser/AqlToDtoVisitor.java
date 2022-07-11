@@ -115,9 +115,26 @@ public class AqlToDtoVisitor extends AqlBaseVisitor<Object> {
             }
         }
 
-        selectFieldDtoMultiMap.entries().forEach(e -> e.getValue()
-                .setContainmentId(
-                        Optional.ofNullable(identifierMap.get(e.getKey())).orElseThrow()));
+        selectFieldDtoMultiMap.entries().forEach(e -> {
+            if (identifierMap.containsKey(e.getKey())) {
+                e.getValue().setContainmentId(identifierMap.get(e.getKey()));
+            }
+        });
+
+        // replace reference by name
+        selectFieldDtoMultiMap.entries().stream()
+                .filter(e -> !identifierMap.containsKey(e.getKey()))
+                .forEach(e -> {
+                    SelectFieldDto selectFieldDto = selectFieldDtoMultiMap.values().stream()
+                            .filter(d -> e.getKey().equals(d.getName()))
+                            .findAny()
+                            .orElseThrow();
+
+                    SelectFieldDto value = e.getValue();
+                    value.setName(selectFieldDto.getName());
+                    value.setAqlPath(selectFieldDto.getAqlPath());
+                    value.setContainmentId(selectFieldDto.getContainmentId());
+                });
         return aqlDto;
     }
 
