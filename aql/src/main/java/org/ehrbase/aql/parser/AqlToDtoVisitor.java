@@ -43,8 +43,10 @@ import org.ehrbase.aql.dto.condition.ConditionComparisonOperatorSymbol;
 import org.ehrbase.aql.dto.condition.ConditionDto;
 import org.ehrbase.aql.dto.condition.ConditionLogicalOperatorDto;
 import org.ehrbase.aql.dto.condition.ConditionLogicalOperatorSymbol;
+import org.ehrbase.aql.dto.condition.ExistsConditionOperator;
 import org.ehrbase.aql.dto.condition.LogicalOperatorDto;
 import org.ehrbase.aql.dto.condition.MatchesOperatorDto;
+import org.ehrbase.aql.dto.condition.NotConditionOperator;
 import org.ehrbase.aql.dto.condition.ParameterValue;
 import org.ehrbase.aql.dto.condition.SimpleValue;
 import org.ehrbase.aql.dto.condition.Value;
@@ -486,8 +488,15 @@ public class AqlToDtoVisitor extends AqlBaseVisitor<Object> {
             }
 
             conditionDto = matchesOperatorDto;
+        } else if (ctx.EXISTS() != null) {
+            conditionDto = new ExistsConditionOperator(visitIdentifiedPath(ctx.identifiedPath()));
         }
-        return conditionDto;
+
+        if (ctx.NOT() != null) {
+            return new NotConditionOperator(conditionDto);
+        } else {
+            return conditionDto;
+        }
     }
 
     @Override

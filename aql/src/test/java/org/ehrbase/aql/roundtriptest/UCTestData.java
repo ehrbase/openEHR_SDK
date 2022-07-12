@@ -166,7 +166,23 @@ public enum UCTestData implements AqlTestDto {
             "select c/category/defining_code/terminology_id/value from EHR e [ehr_id/value = '4a7c01cf-bb1c-4d3d-8385-4ae0674befb1']"
                     + "contains COMPOSITION c[openEHR-EHR-COMPOSITION.health_summary.v1]",
             "Select c/category/defining_code/terminology_id/value as F1 from EHR e contains COMPOSITION c[openEHR-EHR-COMPOSITION.health_summary.v1] where e/ehr_id/value = '4a7c01cf-bb1c-4d3d-8385-4ae0674befb1'",
-            "UC21");
+            "UC21"),
+    UC22(
+            "select count(a/description[at0001]/items[openEHR-EHR-CLUSTER.test_all_types.v1]/items[at0001]/items[at0002]/items[at0003]/value/value,"
+                    + "a/description[at0001]/items[openEHR-EHR-CLUSTER.test_all_types.v1]/items[at0001]/items[at0002]/items[at0004]/value/value)"
+                    + "from EHR e "
+                    + "contains COMPOSITION c[openEHR-EHR-COMPOSITION.health_summary.v1]  "
+                    + "contains ACTION a[openEHR-EHR-ACTION.immunisation_procedure.v1]",
+            "Select COUNT(a/description[at0001]/items[openEHR-EHR-CLUSTER.test_all_types.v1]/items[at0001]/items[at0002]/items[at0003]/value/value) as F1 from EHR e contains COMPOSITION c[openEHR-EHR-COMPOSITION.health_summary.v1] contains ACTION a[openEHR-EHR-ACTION.immunisation_procedure.v1]",
+            "UC22"),
+    UC23("SELECT count(e/time_created) FROM EHR e", "Select COUNT(e/time_created) as F1 from EHR e", "UC23"),
+
+    UC24(
+            "select c" + " from EHR e"
+                    + " contains COMPOSITION c[openEHR-EHR-COMPOSITION.health_summary.v1]"
+                    + " WHERE NOT EXISTS c/content[openEHR-EHR-ADMIN_ENTRY.hospitalization.v0]",
+            "Select c as F1 from EHR e contains COMPOSITION c[openEHR-EHR-COMPOSITION.health_summary.v1] where NOT EXISTS c/content[openEHR-EHR-ADMIN_ENTRY.hospitalization.v0]",
+            "UC24");
 
     private final String testAql;
     private final String expectedAql;
