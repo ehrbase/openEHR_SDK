@@ -21,5 +21,8 @@ package org.ehrbase.aql.dto.select;
  * @author Stefan Spiska
  */
 public enum AQLFunction {
-    COUNT;
+    COUNT,
+    MIN,
+    MAX,
+    AVG;
 }

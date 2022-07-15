@@ -65,4 +65,35 @@ public abstract class AbstractFunction<T> implements Function, SelectAqlField<T>
         sb.append(")");
         return sb.toString();
     }
+
+    protected static <X> AbstractFunction<X> create(
+            List<SelectAqlField<?>> parameters, AQLFunction function, String name, Class<X> aClass) {
+
+        return new AbstractFunction<X>(parameters, function, name) {
+            @Override
+            public Containment getContainment() {
+                return null;
+            }
+
+            @Override
+            public String getPath() {
+                return function.name();
+            }
+
+            @Override
+            public Class<?> getEntityClass() {
+                return null;
+            }
+
+            @Override
+            public Class<X> getValueClass() {
+                return aClass;
+            }
+
+            @Override
+            public boolean isMultiValued() {
+                return false;
+            }
+        };
+    }
 }

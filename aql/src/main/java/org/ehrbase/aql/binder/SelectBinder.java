@@ -49,6 +49,12 @@ public class SelectBinder {
         switch (dto.getAqlFunction()) {
             case COUNT:
                 return (SelectAqlField) Function.count(bind(dto.getParameters().get(0), containmentMap), dto.getName());
+            case MAX:
+                return (SelectAqlField) Function.max(bind(dto.getParameters().get(0), containmentMap), dto.getName());
+            case MIN:
+                return (SelectAqlField) Function.min(bind(dto.getParameters().get(0), containmentMap), dto.getName());
+            case AVG:
+                return (SelectAqlField) Function.avg(bind(dto.getParameters().get(0), containmentMap), dto.getName());
             default:
                 throw new AqlParseException(String.format(
                         "Unsupported Funktion %s", dto.getAqlFunction().name()));

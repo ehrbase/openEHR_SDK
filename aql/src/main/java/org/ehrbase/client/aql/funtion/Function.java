@@ -17,7 +17,9 @@
  */
 package org.ehrbase.client.aql.funtion;
 
+import java.util.Collections;
 import java.util.List;
+import org.ehrbase.aql.dto.select.AQLFunction;
 import org.ehrbase.client.aql.field.SelectAqlField;
 
 /**
@@ -27,13 +29,43 @@ public interface Function {
 
     List<SelectAqlField<?>> getParameters();
 
-    static Count count(SelectAqlField<?> field, String as) {
+    static AbstractFunction<Integer> count(SelectAqlField<?> field, String as) {
 
-        return new Count(field, as);
+        return AbstractFunction.create(Collections.singletonList(field), AQLFunction.COUNT, as, Integer.class);
     }
 
-    static Count count(SelectAqlField<?> field) {
+    static AbstractFunction<Integer> count(SelectAqlField<?> field) {
 
         return count(field, null);
+    }
+
+    static AbstractFunction<Integer> max(SelectAqlField<?> field, String as) {
+
+        return AbstractFunction.create(Collections.singletonList(field), AQLFunction.MAX, as, Integer.class);
+    }
+
+    static AbstractFunction<Integer> max(SelectAqlField<?> field) {
+
+        return max(field, null);
+    }
+
+    static AbstractFunction<Integer> min(SelectAqlField<?> field, String as) {
+
+        return AbstractFunction.create(Collections.singletonList(field), AQLFunction.MAX, as, Integer.class);
+    }
+
+    static AbstractFunction<Integer> min(SelectAqlField<?> field) {
+
+        return min(field, null);
+    }
+
+    static AbstractFunction<Integer> avg(SelectAqlField<?> field, String as) {
+
+        return AbstractFunction.create(Collections.singletonList(field), AQLFunction.AVG, as, Integer.class);
+    }
+
+    static AbstractFunction<Integer> avg(SelectAqlField<?> field) {
+
+        return avg(field, null);
     }
 }

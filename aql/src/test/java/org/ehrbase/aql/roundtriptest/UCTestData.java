@@ -73,9 +73,11 @@ public enum UCTestData implements AqlTestDto {
             "Select c as F1 from EHR e contains COMPOSITION c[openEHR-EHR-COMPOSITION.health_summary.v1]",
             "UC8"),
     UC9(
-            "select a from EHR e " + "contains COMPOSITION c[openEHR-EHR-COMPOSITION.health_summary.v1]  "
+            "select a from EHR e "
+                    + "contains COMPOSITION c[openEHR-EHR-COMPOSITION.health_summary.v1]  "
                     + "contains ACTION a[openEHR-EHR-ACTION.immunisation_procedure.v1]",
-            "Select a as F1 from EHR e " + "contains COMPOSITION c[openEHR-EHR-COMPOSITION.health_summary.v1] "
+            "Select a as F1 from EHR e "
+                    + "contains COMPOSITION c[openEHR-EHR-COMPOSITION.health_summary.v1] "
                     + "contains ACTION a[openEHR-EHR-ACTION.immunisation_procedure.v1]",
             "UC9"),
     UC10(
@@ -178,11 +180,99 @@ public enum UCTestData implements AqlTestDto {
     UC23("SELECT count(e/time_created) FROM EHR e", "Select COUNT(e/time_created) as F1 from EHR e", "UC23"),
 
     UC24(
-            "select c" + " from EHR e"
+            "select c"
+                    + " from EHR e"
                     + " contains COMPOSITION c[openEHR-EHR-COMPOSITION.health_summary.v1]"
                     + " WHERE NOT EXISTS c/content[openEHR-EHR-ADMIN_ENTRY.hospitalization.v0]",
             "Select c as F1 from EHR e contains COMPOSITION c[openEHR-EHR-COMPOSITION.health_summary.v1] where NOT EXISTS c/content[openEHR-EHR-ADMIN_ENTRY.hospitalization.v0]",
-            "UC24");
+            "UC24"),
+    UC25(
+            "select c/feeder_audit/originating_system_audit/system_id from EHR e "
+                    + "contains COMPOSITION c[openEHR-EHR-COMPOSITION.health_summary.v1]",
+            "Select c/feeder_audit/originating_system_audit/system_id as F1 from EHR e contains COMPOSITION c[openEHR-EHR-COMPOSITION.health_summary.v1]",
+            "UC25"),
+    /* unsupported CONTAINS syntax
+    UC26(
+        "select c from EHR e contains COMPOSITION c AND NOT CONTAINS ADMIN_ENTRY u[openEHR-EHR-ADMIN_ENTRY.hospitalization.v0]",
+        "Select c as F1 from EHR e contains COMPOSITION c AND NOT CONTAINS ADMIN_ENTRY u[openEHR-EHR-ADMIN_ENTRY.hospitalization.v0]",
+        "UC26"),
+        */
+    /*
+    IN not official aql feature
+      UC27(
+          "Select e/folders/name/value" + "               from EHR e"
+              + "               where e/ehr_id/value = 'c2561bab-4d2b-4ffd-a893-4382e9048f8c'"
+              + "               and 'case1' IN(e/folders/name/value)",
+          "Select e/folders/name/value" + "               from EHR e"
+              + "               where e/ehr_id/value = 'c2561bab-4d2b-4ffd-a893-4382e9048f8c'"
+              + "               and 'case1' IN(e/folders/name/value)",
+          "UC27"),
+
+     */
+    /*
+    SOME not official aql feature
+    UC28(
+        "Select e/folders/name/value\n" + "               from EHR e\n"
+            + "               where e/ehr_id/value = 'c2561bab-4d2b-4ffd-a893-4382e9048f8c'\n"
+            + "               and 'case1' = SOME(e/folders/name/value)",
+        "Select e/folders/name/value\n" + "               from EHR e\n"
+            + "               where e/ehr_id/value = 'c2561bab-4d2b-4ffd-a893-4382e9048f8c'\n"
+            + "               and 'case1' = SOME(e/folders/name/value)",
+        "UC28"),
+        */
+    /* any not official aql feature
+    UC29(
+        "Select e/folders/name/value\n" + "               from EHR e\n"
+            + "               where e/ehr_id/value = 'c2561bab-4d2b-4ffd-a893-4382e9048f8c'\n"
+            + "               and 'case1' = ANY(e/folders/name/value)",
+        "Select e/folders/name/value\n" +  "               from EHR e\n"
+            + "               where e/ehr_id/value = 'c2561bab-4d2b-4ffd-a893-4382e9048f8c'\n"
+            + "               and 'case1' = ANY(e/folders/name/value)",
+        "UC29"),
+     */
+    /* ALL not official aql feature
+    UC30(
+        "Select e/folders/name/value\n" + "               from EHR e\n"
+            + "               where e/ehr_id/value = 'c2561bab-4d2b-4ffd-a893-4382e9048f8c'\n"
+            + "               and 'case1' = ALL(e/folders/name/value)",
+        "Select e/folders/name/value\n" + "               from EHR e\n"
+            + "               where e/ehr_id/value = 'c2561bab-4d2b-4ffd-a893-4382e9048f8c'\n"
+            + "               and 'case1' = ALL(e/folders/name/value)",
+        "UC30")
+     */
+    /* ALL not official aql feature
+    UC31(
+        "Select e/folders/name/value\n" + "               from EHR e\n"
+            + "               where 'case1' = ALL(e/folders/name/value)"
+            + "                   and e/ehr_id/value = 'c2561bab-4d2b-4ffd-a893-4382e9048f8c'",
+        "Select e/folders/name/value\n" + "               from EHR e\n"
+            + "               where 'case1' = ALL(e/folders/name/value)"
+            + "                   and e/ehr_id/value = 'c2561bab-4d2b-4ffd-a893-4382e9048f8c'",
+        "UC31"),
+       */
+    /*
+    UC32(
+        "Select e/folders/name/value\n" + "               from EHR e\n"
+            + "               where 'case1' IN (regexp_split_to_array('case1,case2', ','))"
+            + "                   and e/ehr_id/value = 'c2561bab-4d2b-4ffd-a893-4382e9048f8c'",
+        "Select e/folders/name/value\n" + "               from EHR e\n"
+            + "               where 'case1' IN (regexp_split_to_array('case1,case2', ','))"
+            + "                   and e/ehr_id/value = 'c2561bab-4d2b-4ffd-a893-4382e9048f8c'",
+        "UC32"),
+
+     */
+    /*
+    UC33(
+        "Select e/folders/name/value\n" + "               from EHR e\n"
+            + "               where 'case1' IN ('case1','case2')"
+            + "                   and e/ehr_id/value = 'c2561bab-4d2b-4ffd-a893-4382e9048f8c'",
+        "Select e/folders/name/value\n" + "               from EHR e\n"
+            + "               where 'case1' IN ('case1','case2')"
+            + "                   and e/ehr_id/value = 'c2561bab-4d2b-4ffd-a893-4382e9048f8c'",
+        "UC33"),
+     */
+    UC34("SELECT min(e/time_created) FROM EHR e", "Select MAX(e/time_created) as F1 from EHR e", "UC34"),
+    ;
 
     private final String testAql;
     private final String expectedAql;
