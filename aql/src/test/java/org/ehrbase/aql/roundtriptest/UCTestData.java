@@ -272,6 +272,67 @@ public enum UCTestData implements AqlTestDto {
         "UC33"),
      */
     UC34("SELECT min(e/time_created) FROM EHR e", "Select MAX(e/time_created) as F1 from EHR e", "UC34"),
+    UC35("SELECT e/directory FROM EHR e", "Select e/directory as F1 from EHR e", "UC35"),
+    UC36("SELECT e FROM EHR e", "Select e as F1 from EHR e", "UC36"),
+    UC37(
+            "select" + "  avg (d/description[at0001]/items[at0004]/value/magnitude) as avg_magnitude"
+                    + " from EHR e"
+                    + "  contains COMPOSITION"
+                    + "  contains ACTION d[openEHR-EHR-ACTION.immunisation_procedure.v1]",
+            "Select AVG(d/description[at0001]/items[at0004]/value/magnitude) as avg_magnitude from EHR e contains COMPOSITION c0 contains ACTION d[openEHR-EHR-ACTION.immunisation_procedure.v1]",
+            "UC37"),
+    UC38(
+            "select" + "  min (d/description[at0001]/items[at0004]/value/magnitude) as min_magnitude"
+                    + " from EHR e"
+                    + "  contains COMPOSITION"
+                    + "  contains ACTION d[openEHR-EHR-ACTION.immunisation_procedure.v1]",
+            "Select MAX(d/description[at0001]/items[at0004]/value/magnitude) as min_magnitude from EHR e contains COMPOSITION c0 contains ACTION d[openEHR-EHR-ACTION.immunisation_procedure.v1]",
+            "UC38"),
+    UC39(
+            "select" + "  max (d/description[at0001]/items[at0004]/value/magnitude) as max_magnitude"
+                    + " from EHR e"
+                    + "  contains COMPOSITION"
+                    + "  contains ACTION d[openEHR-EHR-ACTION.immunisation_procedure.v1]",
+            "Select MAX(d/description[at0001]/items[at0004]/value/magnitude) as max_magnitude from EHR e contains COMPOSITION c0 contains ACTION d[openEHR-EHR-ACTION.immunisation_procedure.v1]",
+            "UC39"),
+    /*
+    UC40("select" + "  CAST (d/description[at0001]/items[at0004]/value/magnitude AS 'FLOAT') as max_magnitude"
+        + " from EHR e"
+        + "  contains COMPOSITION"
+        + "  contains ACTION d[openEHR-EHR-ACTION.immunisation_procedure.v1]", "", "UC40"),
+
+    */
+    /*
+    UC41("SELECT TRUE as constant FROM EHR e", "", "UC41"),
+
+     */
+    /*
+     UC42("SELECT\n" + "  \t  c[name/value = 'Diagnose']/uid/value as Diagnose,\n"
+         + "  \t  c[composer/external_ref/id/value = 'Dr Mabuse']/uid/value as MabuseComposition,\n"
+         + "  \t  c[context/start_time/value > '2020-01-01']/uid/value as NewerComposition\n"
+         + "\tFROM\n"
+         + "  \t  EHR e\n"
+         + "  \t  contains COMPOSITION c[openEHR-EHR-COMPOSITION.report-result.v1]",
+        "Select c['Diagnose']/uid/value as Diagnose, c/[composer/external_ref/id/value='Dr Mabuse']/uid/value as MabuseComposition," +
+            " c[context/start_time/value>'2020-01-01']/uid/value as NewerComposition " +
+            "from EHR e " +
+            "contains COMPOSITION c[openEHR-EHR-COMPOSITION.report-result.v1]", "UC42"),
+     UC43("select c[name/value = 'Laborbefund-1']/uid/value as uid1,\n"
+         + "\t\t\t   c[name/value = 'Laborbefund-2']/uid/value as uid2\n"
+         + "\t\t\t\tfrom EHR e \n"
+         + "\t\t\t\tcontains COMPOSITION c[openEHR-EHR-COMPOSITION.report-result.v1]", "", "UC43"),
+
+    */
+    UC46(
+            "select DISTINCT "
+                    + "   a/description[at0001]/items[at0002]/value/value as description,"
+                    + "   a/time as timing"
+                    + " from EHR e "
+                    + "contains COMPOSITION c[openEHR-EHR-COMPOSITION.health_summary.v1]  "
+                    + "contains ACTION a[openEHR-EHR-ACTION.immunisation_procedure.v1]"
+                    + "order by description ASC",
+            "Select DISTINCT a/description[at0001]/items[at0002]/value/value as description, a/time as timing from EHR e contains COMPOSITION c[openEHR-EHR-COMPOSITION.health_summary.v1] contains ACTION a[openEHR-EHR-ACTION.immunisation_procedure.v1] order by a/description[at0001]/items[at0002]/value/value ASCENDING",
+            "UC46"),
     ;
 
     private final String testAql;
