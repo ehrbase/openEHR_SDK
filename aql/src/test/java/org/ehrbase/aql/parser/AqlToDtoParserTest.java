@@ -424,14 +424,15 @@ class AqlToDtoParserTest {
                 + "from EHR e contains COMPOSITION c "
                 + "order by c/context/start_time ASCENDING "
                 + "LIMIT 10 OFFSET 10";
-        testAql(aql1, aql1);
 
         var aql2 = "Select "
                 + "c/name/value as Name, c/context/start_time as date_time, c/composer/name as Composer "
                 + "from EHR e contains COMPOSITION c "
                 + "LIMIT 10 OFFSET 10 "
                 + "order by c/context/start_time ASCENDING";
-        testAql(aql2, aql1);
+        testAql(aql1, aql2);
+
+        testAql(aql2, aql2);
 
         var aql3 = "Select "
                 + "c/name/value as Name, c/context/start_time as date_time, c/composer/name as Composer "

@@ -50,6 +50,8 @@ public class EntityQuery<T extends Record> implements Query<T> {
     private Integer limit;
     private Integer offset;
 
+    private boolean isDistinct = false;
+
     protected EntityQuery(ContainmentExpression containmentExpression, SelectAqlField<?>... fields) {
         this(containmentExpression, new HashMap<>(), fields);
     }
@@ -106,6 +108,11 @@ public class EntityQuery<T extends Record> implements Query<T> {
     public String buildAql() {
         StringBuilder sb = new StringBuilder();
         sb.append("Select ");
+
+        if (isDistinct) {
+            sb.append("DISTINCT").append(" ");
+        }
+
         if (topExpresion != null) {
             sb.append(topExpresion.buildAql()).append(" ");
         }
@@ -121,10 +128,6 @@ public class EntityQuery<T extends Record> implements Query<T> {
         if (where != null) {
             sb.append(" where ").append(where.buildAql(ehrContainment));
         }
-        if (orderByExpression != null) {
-            sb.append(" order by ").append(orderByExpression.buildAql(ehrContainment));
-        }
-
         if (limit != null) {
             sb.append(" LIMIT ").append(limit);
         }
@@ -132,6 +135,11 @@ public class EntityQuery<T extends Record> implements Query<T> {
         if (offset != null) {
             sb.append(" OFFSET ").append(offset);
         }
+
+        if (orderByExpression != null) {
+            sb.append(" order by ").append(orderByExpression.buildAql(ehrContainment));
+        }
+
         return sb.toString();
     }
 
@@ -175,6 +183,11 @@ public class EntityQuery<T extends Record> implements Query<T> {
 
     public EntityQuery<T> top(TopExpresion topExpresion) {
         this.topExpresion = topExpresion;
+        return this;
+    }
+
+    public EntityQuery<T> distinct(boolean isDistinct) {
+        this.isDistinct = isDistinct;
         return this;
     }
 

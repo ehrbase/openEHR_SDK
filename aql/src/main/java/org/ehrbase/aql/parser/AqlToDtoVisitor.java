@@ -212,6 +212,9 @@ public class AqlToDtoVisitor extends AqlBaseVisitor<Object> {
             selectDto.setTopDirection(extractSymbol(ctx.topExpr()));
             selectDto.setTopCount(Integer.parseInt(ctx.topExpr().INTEGER().getText()));
         }
+        if (ctx.selectExpr().DISTINCT() != null) {
+            selectDto.setDistinct(true);
+        }
         return selectDto;
     }
 
@@ -492,7 +495,9 @@ public class AqlToDtoVisitor extends AqlBaseVisitor<Object> {
             conditionDto = new ExistsConditionOperator(visitIdentifiedPath(ctx.identifiedPath()));
         }
 
-        if (ctx.NOT() != null) {
+        if (ctx.NOT() != null
+                // "NOT" not belonging to is, in or between.
+                && (ctx.IS() == null && ctx.IN() == null && ctx.BETWEEN() == null)) {
             return new NotConditionOperator(conditionDto);
         } else {
             return conditionDto;
