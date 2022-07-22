@@ -19,7 +19,6 @@ package org.ehrbase.aql.dto.path;
 
 import static org.ehrbase.aql.dto.path.predicate.PredicateHelper.ARCHETYPE_NODE_ID;
 import static org.ehrbase.aql.dto.path.predicate.PredicateHelper.NAME_VALUE;
-import static org.ehrbase.aql.dto.path.predicate.PredicateHelper.add;
 import static org.ehrbase.aql.dto.path.predicate.PredicateHelper.find;
 import static org.ehrbase.aql.util.CharSequenceHelper.subSequence;
 
@@ -312,7 +311,7 @@ public final class AqlPath implements Serializable {
         }
         String attributeName = null;
 
-        final CharSequence[] nodeStrings = split(CharSequenceHelper.removeStart(pathExp, "/"), null, "/");
+        final CharSequence[] nodeStrings = split(CharSequenceHelper.removeStart(pathExp, "/"), null, false, "/");
 
         List<AqlNode> nodes = new ArrayList<>(nodeStrings.length);
 
@@ -323,7 +322,7 @@ public final class AqlPath implements Serializable {
 
             // remove attribute
             if (isLastNode) {
-                CharSequence[] attributeSplit = split(currentNode, 2, "|");
+                CharSequence[] attributeSplit = split(currentNode, 2, false, "|");
                 if (attributeSplit.length == 2) {
                     attributeName = attributeSplit[1].toString();
                 }
@@ -371,7 +370,7 @@ public final class AqlPath implements Serializable {
 
             atCode = find(otherPredicates, ARCHETYPE_NODE_ID)
                     .map(PredicateComparisonOperatorDto::getValue)
-                    .map(p -> (SimpleValue) p)
+                    .map(SimpleValue.class::cast)
                     .map(SimpleValue::getValue)
                     .map(Object::toString)
                     .orElse(null);
@@ -386,7 +385,7 @@ public final class AqlPath implements Serializable {
         return Optional.of(node);
     }
 
-    public static CharSequence[] split2(CharSequence path, Integer max, String... search) {
+    public static CharSequence[] split(CharSequence path, Integer max, boolean addSearch, String... search) {
         List<CharSequence> strings = new ArrayList<>();
         Arrays.sort(search, CharSequence::compare);
 
@@ -415,53 +414,9 @@ public final class AqlPath implements Serializable {
                     escape = false;
                 } else {
                     strings.add(subSequence(path, last, i));
-                    strings.add(prefix);
-                    last = prefix.length() + i;
-                    if (max != null && strings.size() == max - 1) {
-                        strings.add(subSequence(path, last, path.length()));
-                        break;
+                    if (addSearch) {
+                        strings.add(prefix);
                     }
-                }
-            }
-        }
-
-        if (strings.isEmpty()) {
-            strings.add(path);
-        } else if (last < path.length() && max == null) {
-            strings.add(subSequence(path, last, path.length()));
-        }
-        return strings.toArray(CharSequence[]::new);
-    }
-
-    private static CharSequence[] split(CharSequence path, Integer max, String... search) {
-        List<CharSequence> strings = new ArrayList<>();
-        Arrays.sort(search, CharSequence::compare);
-
-        boolean inBrackets = false;
-        boolean inQuotes = false;
-        boolean escape = false;
-
-        int last = 0;
-        for (int i = 0; i < path.length(); i++) {
-            char ch = path.charAt(i);
-            if (!inQuotes && ch == '[') {
-                inBrackets = true;
-                escape = false;
-            } else if (!inQuotes && ch == ']') {
-                inBrackets = false;
-                escape = false;
-            } else if (!escape && ch == '\'') {
-                inQuotes = !inQuotes;
-            } else if (!escape && ch == '\\') {
-                escape = true;
-            } else if (inBrackets || inQuotes) {
-                escape = false;
-            } else {
-                CharSequence prefix = findPrefix(path, i, search);
-                if (prefix == null) {
-                    escape = false;
-                } else {
-                    strings.add(subSequence(path, last, i));
                     last = prefix.length() + i;
                     if (max != null && strings.size() == max - 1) {
                         strings.add(subSequence(path, last, path.length()));
@@ -624,8 +579,8 @@ public final class AqlPath implements Serializable {
         public String findOtherPredicate(String name) {
             return find(otherPredicate, name)
                     .map(PredicateComparisonOperatorDto::getValue)
-                    .filter(v -> v instanceof SimpleValue)
-                    .map(v -> (SimpleValue) v)
+                    .filter(SimpleValue.class::isInstance)
+                    .map(SimpleValue.class::cast)
                     .map(SimpleValue::getValue)
                     .map(Object::toString)
                     .orElse(null);

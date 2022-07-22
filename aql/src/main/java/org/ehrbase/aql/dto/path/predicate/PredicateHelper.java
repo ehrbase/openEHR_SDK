@@ -35,6 +35,7 @@ import org.ehrbase.aql.dto.condition.ParameterValue;
 import org.ehrbase.aql.dto.condition.SimpleValue;
 import org.ehrbase.aql.dto.condition.Value;
 import org.ehrbase.aql.dto.path.AqlPath;
+import org.ehrbase.util.exception.SdkException;
 
 /**
  * @author Stefan Spiska
@@ -101,7 +102,7 @@ public class PredicateHelper {
 
     static List<Object> parsePredicate(String predicate) {
 
-        CharSequence[] split = AqlPath.split2(predicate, null, PREDICATE_DIVIDERS);
+        CharSequence[] split = AqlPath.split(predicate, null, true, PREDICATE_DIVIDERS);
 
         return IntStream.range(0, split.length)
                 .mapToObj(i -> {
@@ -124,14 +125,15 @@ public class PredicateHelper {
             case "OR":
                 return PredicateLogicalOperatorSymbol.OR;
             default:
-                throw new RuntimeException();
+                throw new SdkException(String.format("Unknown symbol %s", sequence));
         }
     }
 
     private static PredicateComparisonOperatorDto handleOperator(CharSequence sequence, int i) {
-        CharSequence[] split = AqlPath.split2(
+        CharSequence[] split = AqlPath.split(
                 sequence,
                 3,
+                true,
                 Arrays.stream(ConditionComparisonOperatorSymbol.values())
                         .map(ConditionComparisonOperatorSymbol::getSymbole)
                         .toArray(String[]::new));
@@ -216,48 +218,62 @@ public class PredicateHelper {
         if (predicateDto instanceof ParameterValue) {
             sb.append("$").append(((ParameterValue) predicateDto).getName());
         } else if (predicateDto instanceof PredicateComparisonOperatorDto) {
-            if (isShorten((SimplePredicateDto) predicateDto, otherPredicatesFormat)) {
-                format(
-                        ((PredicateComparisonOperatorDto) predicateDto).getStatement(),
-                        sb,
-                        ((PredicateComparisonOperatorDto) predicateDto).getValue());
-            } else if (!isNone((SimplePredicateDto) predicateDto, otherPredicatesFormat)) {
-                sb.append(((PredicateComparisonOperatorDto) predicateDto).getStatement())
-                        .append(((PredicateComparisonOperatorDto) predicateDto)
-                                .getSymbol()
-                                .getSymbole());
-                format(
-                        ((PredicateComparisonOperatorDto) predicateDto).getStatement(),
-                        sb,
-                        ((PredicateComparisonOperatorDto) predicateDto).getValue());
-            }
+            formatPredicateComparisonOperatorDto(
+                    sb, (PredicateComparisonOperatorDto) predicateDto, otherPredicatesFormat);
         } else if (predicateDto instanceof PredicateLogicalAndOperation) {
-            List<SimplePredicateDto> values = ((PredicateLogicalAndOperation) predicateDto).getValues();
-            values.sort(PREDICATE_DTO_COMPARATOR);
-            for (int i = 0; i < values.size(); i++) {
-                if (i > 0 && !isNone(values.get(i), otherPredicatesFormat)) {
-                    if (isShorten(values.get(i), otherPredicatesFormat)) {
-                        sb.append(",");
-                    } else {
-                        sb.append(" ").append("and").append(" ");
-                    }
-                }
-                if (!isNone(values.get(i), otherPredicatesFormat)) {
-                    format(sb, values.get(i), otherPredicatesFormat);
-                }
-            }
+            formatPredicateLogicalAndOperation(sb, (PredicateLogicalAndOperation) predicateDto, otherPredicatesFormat);
         } else if (predicateDto instanceof PredicateLogicalOrOperation) {
-            if (otherPredicatesFormat.equals(AqlPath.OtherPredicatesFormat.SHORTED)) {
-                otherPredicatesFormat = AqlPath.OtherPredicatesFormat.FULL;
-            }
-            List<SimplePredicateDto> values = ((PredicateLogicalOrOperation) predicateDto).getValues();
-            for (int i = 0; i < values.size(); i++) {
+            formatPredicateLogicalOrOperation(sb, (PredicateLogicalOrOperation) predicateDto, otherPredicatesFormat);
+        }
+    }
 
-                if (i > 0 && !isNone(values.get(i), otherPredicatesFormat)) {
-                    sb.append(" ").append("or").append(" ");
+    private static void formatPredicateLogicalOrOperation(
+            StringBuilder sb,
+            PredicateLogicalOrOperation predicateDto,
+            AqlPath.OtherPredicatesFormat otherPredicatesFormat) {
+        if (otherPredicatesFormat.equals(AqlPath.OtherPredicatesFormat.SHORTED)) {
+            otherPredicatesFormat = AqlPath.OtherPredicatesFormat.FULL;
+        }
+        List<SimplePredicateDto> values = predicateDto.getValues();
+        for (int i = 0; i < values.size(); i++) {
+
+            if (i > 0 && !isNone(values.get(i), otherPredicatesFormat)) {
+                sb.append(" ").append("or").append(" ");
+            }
+            format(sb, values.get(i), otherPredicatesFormat);
+        }
+    }
+
+    private static void formatPredicateLogicalAndOperation(
+            StringBuilder sb,
+            PredicateLogicalAndOperation predicateDto,
+            AqlPath.OtherPredicatesFormat otherPredicatesFormat) {
+        List<SimplePredicateDto> values = predicateDto.getValues();
+        values.sort(PREDICATE_DTO_COMPARATOR);
+        for (int i = 0; i < values.size(); i++) {
+            if (i > 0 && !isNone(values.get(i), otherPredicatesFormat)) {
+                if (isShorten(values.get(i), otherPredicatesFormat)) {
+                    sb.append(",");
+                } else {
+                    sb.append(" ").append("and").append(" ");
                 }
+            }
+            if (!isNone(values.get(i), otherPredicatesFormat)) {
                 format(sb, values.get(i), otherPredicatesFormat);
             }
+        }
+    }
+
+    private static void formatPredicateComparisonOperatorDto(
+            StringBuilder sb,
+            PredicateComparisonOperatorDto predicateDto,
+            AqlPath.OtherPredicatesFormat otherPredicatesFormat) {
+        if (isShorten(predicateDto, otherPredicatesFormat)) {
+            format(predicateDto.getStatement(), sb, predicateDto.getValue());
+        } else if (!isNone(predicateDto, otherPredicatesFormat)) {
+            sb.append(predicateDto.getStatement())
+                    .append(predicateDto.getSymbol().getSymbole());
+            format(predicateDto.getStatement(), sb, predicateDto.getValue());
         }
     }
 

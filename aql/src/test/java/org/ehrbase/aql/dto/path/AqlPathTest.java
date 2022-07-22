@@ -29,7 +29,7 @@ public class AqlPathTest {
 
         String cut = "at001, name/value = 'dfd' or name/value= 'fdf'";
 
-        CharSequence[] ands = AqlPath.split2(cut, null, "and", "or", ",");
+        CharSequence[] ands = AqlPath.split(cut, null, true, "and", "or", ",");
         System.out.println(ands);
     }
 
