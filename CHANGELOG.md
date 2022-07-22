@@ -7,6 +7,7 @@ Note: version releases in the 0.x.y range may introduce breaking changes.
 - Add spotless plugin, Add codestyle check to workflows ([#368](https://github.com/ehrbase/ehrbase/pull/368))
  ### Fixed 
 - Skip archetype slots not used by the template in example generator ([#369](https://github.com/ehrbase/openEHR_SDK/pull/369))
+- enhance sdk aql parser to handle more cases ([#376](https://github.com/ehrbase/openEHR_SDK/pull/376))
 
 ## [1.19.0]
 
