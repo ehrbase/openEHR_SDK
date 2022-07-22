@@ -8,6 +8,8 @@ Note: version releases in the 0.x.y range may introduce breaking changes.
  ### Fixed 
 - Skip archetype slots not used by the template in example generator ([#369](https://github.com/ehrbase/openEHR_SDK/pull/369))
 - enhance sdk aql parser to handle more cases ([#376](https://github.com/ehrbase/openEHR_SDK/pull/376))
+- update update everit-json-schema to maven version ([#370](https://github.com/ehrbase/openEHR_SDK/pull/370))
+
 
 ## [1.19.0]
 
