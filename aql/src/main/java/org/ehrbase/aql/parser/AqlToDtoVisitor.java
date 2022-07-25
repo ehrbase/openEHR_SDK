@@ -43,10 +43,10 @@ import org.ehrbase.aql.dto.condition.ConditionComparisonOperatorSymbol;
 import org.ehrbase.aql.dto.condition.ConditionDto;
 import org.ehrbase.aql.dto.condition.ConditionLogicalOperatorDto;
 import org.ehrbase.aql.dto.condition.ConditionLogicalOperatorSymbol;
-import org.ehrbase.aql.dto.condition.ExistsConditionOperator;
+import org.ehrbase.aql.dto.condition.ExistsConditionOperatorDto;
 import org.ehrbase.aql.dto.condition.LogicalOperatorDto;
 import org.ehrbase.aql.dto.condition.MatchesOperatorDto;
-import org.ehrbase.aql.dto.condition.NotConditionOperator;
+import org.ehrbase.aql.dto.condition.NotConditionOperatorDto;
 import org.ehrbase.aql.dto.condition.ParameterValue;
 import org.ehrbase.aql.dto.condition.SimpleValue;
 import org.ehrbase.aql.dto.condition.Value;
@@ -492,13 +492,13 @@ public class AqlToDtoVisitor extends AqlBaseVisitor<Object> {
 
             conditionDto = matchesOperatorDto;
         } else if (ctx.EXISTS() != null) {
-            conditionDto = new ExistsConditionOperator(visitIdentifiedPath(ctx.identifiedPath()));
+            conditionDto = new ExistsConditionOperatorDto(visitIdentifiedPath(ctx.identifiedPath()));
         }
 
         if (ctx.NOT() != null
                 // "NOT" not belonging to is, in or between.
                 && (ctx.IS() == null && ctx.IN() == null && ctx.BETWEEN() == null)) {
-            return new NotConditionOperator(conditionDto);
+            return new NotConditionOperatorDto(conditionDto);
         } else {
             return conditionDto;
         }

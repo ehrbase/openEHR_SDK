@@ -31,34 +31,34 @@ import org.junit.jupiter.params.provider.EnumSource;
 class AqlRoundTripTest {
 
     @ParameterizedTest
-    @EnumSource(AqlExpressionTestData.class)
-    void testAqlExpressionTest(AqlExpressionTestData testData) {
+    @EnumSource(AqlExpressionTestCase.class)
+    void testAqlExpressionTest(AqlExpressionTestCase testData) {
 
-        testAql(testData);
+        assertRoundTrip(testData);
     }
 
     @ParameterizedTest
-    @EnumSource(AqlExpressionWithParameterTestData.class)
-    void testAqlExpressionWithParameterTest(AqlExpressionWithParameterTestData testData) {
+    @EnumSource(AqlExpressionWithParameterTestCase.class)
+    void testAqlExpressionWithParameterTest(AqlExpressionWithParameterTestCase testData) {
 
-        testAql(testData);
+        assertRoundTrip(testData);
     }
 
     @ParameterizedTest
     @EnumSource(UCTestData.class)
     void testUC(UCTestData testData) {
 
-        testAql(testData);
+        assertRoundTrip(testData);
     }
 
     @ParameterizedTest
     @EnumSource(PerformanceTestCase.class)
     void testPerformanceQuery(PerformanceTestCase testData) {
 
-        testAql(testData);
+        assertRoundTrip(testData);
     }
 
-    void testAql(AqlTestDto testData) {
+    void assertRoundTrip(AqlTestCase testData) {
         AqlToDtoParser cut = new AqlToDtoParser();
         AqlDto actual = cut.parse(testData.getTestAql());
 

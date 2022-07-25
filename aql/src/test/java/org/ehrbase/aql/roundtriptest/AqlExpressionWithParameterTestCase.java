@@ -21,7 +21,7 @@ package org.ehrbase.aql.roundtriptest;
  * @author Stefan Spiska
  * @see <a href="https://github.com/ehrbase/ehrbase/blob/v0.21.1/service/src/test/java/org/ehrbase/aql/compiler/AqlExpressionWithParametersTest.java">AqlExpressionWithParametersTest in ehrbase</a>
  */
-public enum AqlExpressionWithParameterTestData implements AqlTestDto {
+public enum AqlExpressionWithParameterTestCase implements AqlTestCase {
     DUMP(
             "select o_bp/data[at0001]/events[at0006]/data[at0003]/items[at0005, $nameValue1]/value/magnitude as diastolic, o_bp/data[at0001]/events[at0006]/data[at0003]/items[at0004, $nameValue2]/value/magnitude as systolic "
                     + "from EHR e[ehr_id/value=$ehrId] "
@@ -56,7 +56,7 @@ public enum AqlExpressionWithParameterTestData implements AqlTestDto {
     private final String testAql;
     private final String expectedAql;
 
-    AqlExpressionWithParameterTestData(String testAql, String expectedAql, String description) {
+    AqlExpressionWithParameterTestCase(String testAql, String expectedAql, String description) {
         this.testAql = testAql;
         this.expectedAql = expectedAql;
     }

@@ -23,7 +23,7 @@ package org.ehrbase.aql.roundtriptest;
  *     href="https://github.com/ehrbase/ehrbase/tree/v0.21.1/service/src/test/java/org/ehrbase/aql/sql/queryimpl/translator/testcase">UC*
  *     in ehrbase</a>
  */
-public enum UCTestData implements AqlTestDto {
+public enum UCTestData implements AqlTestCase {
     UC1("select e/ehr_id/value from EHR e", "Select e/ehr_id/value as F1 from EHR e", "UC1"),
     UC2(
             "select e/ehr_id/value from EHR e " + "where e/ehr_id/value = '30580007'",

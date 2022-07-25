@@ -28,9 +28,9 @@ import org.ehrbase.aql.dto.condition.ConditionComparisonOperatorDto;
 import org.ehrbase.aql.dto.condition.ConditionDto;
 import org.ehrbase.aql.dto.condition.ConditionLogicalOperatorDto;
 import org.ehrbase.aql.dto.condition.ConditionLogicalOperatorSymbol;
-import org.ehrbase.aql.dto.condition.ExistsConditionOperator;
+import org.ehrbase.aql.dto.condition.ExistsConditionOperatorDto;
 import org.ehrbase.aql.dto.condition.MatchesOperatorDto;
-import org.ehrbase.aql.dto.condition.NotConditionOperator;
+import org.ehrbase.aql.dto.condition.NotConditionOperatorDto;
 import org.ehrbase.aql.dto.condition.ParameterValue;
 import org.ehrbase.aql.dto.condition.SimpleValue;
 import org.ehrbase.client.aql.condition.Condition;
@@ -70,10 +70,11 @@ public class WhereBinder {
             condition = Condition.matches(
                     selectBinder.bind(((MatchesOperatorDto) dto).getStatement(), containmentMap), value);
 
-        } else if (dto instanceof ExistsConditionOperator) {
-            condition = Condition.exists(selectBinder.bind(((ExistsConditionOperator) dto).getValue(), containmentMap));
-        } else if (dto instanceof NotConditionOperator) {
-            condition = Condition.not(bind(((NotConditionOperator) dto).getConditionDto(), containmentMap)
+        } else if (dto instanceof ExistsConditionOperatorDto) {
+            condition =
+                    Condition.exists(selectBinder.bind(((ExistsConditionOperatorDto) dto).getValue(), containmentMap));
+        } else if (dto instanceof NotConditionOperatorDto) {
+            condition = Condition.not(bind(((NotConditionOperatorDto) dto).getConditionDto(), containmentMap)
                     .getLeft());
         } else {
             throw new SdkException(

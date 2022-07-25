@@ -23,7 +23,7 @@ package org.ehrbase.aql.roundtriptest;
  *     href="https://github.com/ehrbase/ehrbase/blob/v0.21.1/service/src/test/java/org/ehrbase/aql/compiler/AqlExpressionTest.java">AqlExpressionTest
  *     in ehrbase</a>
  */
-public enum AqlExpressionTestData implements AqlTestDto {
+public enum AqlExpressionTestCase implements AqlTestCase {
     DUMP(
             "SELECT o/data[at0002]/events[at0003] AS systolic "
                     + "FROM EHR [ehr_id/value='1234'] "
@@ -62,7 +62,7 @@ public enum AqlExpressionTestData implements AqlTestDto {
     private final String testAql;
     private final String expectedAql;
 
-    AqlExpressionTestData(String testAql, String expectedAql, String description) {
+    AqlExpressionTestCase(String testAql, String expectedAql, String description) {
         this.testAql = testAql;
         this.expectedAql = expectedAql;
     }

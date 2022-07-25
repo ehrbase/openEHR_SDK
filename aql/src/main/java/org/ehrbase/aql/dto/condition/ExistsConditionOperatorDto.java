@@ -18,31 +18,32 @@
 package org.ehrbase.aql.dto.condition;
 
 import java.util.Objects;
+import org.ehrbase.aql.dto.select.SelectFieldDto;
 
 /**
  * @author Stefan Spiska
  */
-public class NotConditionOperator implements ConditionDto {
+public class ExistsConditionOperatorDto implements ConditionDto {
 
-    private ConditionDto conditionDto;
+    private SelectFieldDto value;
 
-    public NotConditionOperator() {}
+    public ExistsConditionOperatorDto() {}
 
-    public NotConditionOperator(ConditionDto conditionDto) {
-        this.conditionDto = conditionDto;
+    public ExistsConditionOperatorDto(SelectFieldDto value) {
+        this.value = value;
     }
 
-    public ConditionDto getConditionDto() {
-        return conditionDto;
+    public SelectFieldDto getValue() {
+        return value;
     }
 
-    public void setConditionDto(ConditionDto conditionDto) {
-        this.conditionDto = conditionDto;
+    public void setValue(SelectFieldDto value) {
+        this.value = value;
     }
 
     @Override
     public String toString() {
-        return "NotConditionOperator{" + "conditionDto=" + conditionDto + '}';
+        return "ExistsConditionOperator{" + "value=" + value + '}';
     }
 
     @Override
@@ -53,12 +54,12 @@ public class NotConditionOperator implements ConditionDto {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        NotConditionOperator that = (NotConditionOperator) o;
-        return Objects.equals(conditionDto, that.conditionDto);
+        ExistsConditionOperatorDto that = (ExistsConditionOperatorDto) o;
+        return Objects.equals(value, that.value);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(conditionDto);
+        return Objects.hash(value);
     }
 }

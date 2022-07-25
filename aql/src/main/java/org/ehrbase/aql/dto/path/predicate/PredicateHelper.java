@@ -42,7 +42,6 @@ import org.ehrbase.util.exception.SdkException;
  */
 public class PredicateHelper {
 
-    public static final String[] PREDICATE_DIVIDERS = {" and ", " AND ", " or ", " OR ", ","};
     public static final String NAME_VALUE = "name/value";
     public static final String ARCHETYPE_NODE_ID = "archetype_node_id";
 
@@ -102,7 +101,7 @@ public class PredicateHelper {
 
     static List<Object> parsePredicate(String predicate) {
 
-        CharSequence[] split = AqlPath.split(predicate, null, true, PREDICATE_DIVIDERS);
+        CharSequence[] split = AqlPath.split(predicate, null, true, " and ", " AND ", " or ", " OR ", ",");
 
         return IntStream.range(0, split.length)
                 .mapToObj(i -> {

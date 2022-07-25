@@ -15,11 +15,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ehrbase.webtemplate.util;
+package org.ehrbase.aql.util;
 
 import static org.junit.Assert.*;
 
-import org.ehrbase.aql.util.CharSequenceHelper;
 import org.junit.Test;
 
 public class CharSequenceHelperTest {

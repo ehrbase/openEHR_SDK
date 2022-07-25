@@ -20,8 +20,8 @@ package org.ehrbase.aql.roundtriptest;
 /**
  * @author Stefan Spiska
  */
-public enum PerformanceTestCase implements AqlTestDto {
-    Query1(
+public enum PerformanceTestCase implements AqlTestCase {
+    QUERY_1(
             "SELECT c/uid/value as composition_id, c/context/start_time/value as start_time, o/data[at0002]/events[at0003]/data[at0001]/items[at0004]/value/magnitude as body_temperature"
                     + "  FROM EHR e"
                     + "    CONTAINS COMPOSITION c"
@@ -39,7 +39,7 @@ public enum PerformanceTestCase implements AqlTestDto {
                     + "LIMIT 10 OFFSET 10 "
                     + "order by c/context/start_time/value DESCENDING",
             "Get second page of measurements with page size 10 which indicated high temperature and their time"),
-    Query2(
+    QUERY_2(
             "SELECT c as composition"
                     + "  FROM EHR e"
                     + "    CONTAINS COMPOSITION c[openEHR-EHR-COMPOSITION.report.v1]"
@@ -54,7 +54,7 @@ public enum PerformanceTestCase implements AqlTestDto {
                     + "LIMIT 1 "
                     + "order by c/context/start_time/value DESCENDING",
             "Get latest 'Corona_Anamnese' document for a specific patient"),
-    Query3(
+    QUERY_3(
             "SELECT DISTINCT e/ehr_id/value "
                     + "FROM EHR e "
                     + "CONTAINS COMPOSITION c "

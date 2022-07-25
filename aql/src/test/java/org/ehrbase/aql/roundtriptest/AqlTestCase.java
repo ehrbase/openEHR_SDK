@@ -20,7 +20,7 @@ package org.ehrbase.aql.roundtriptest;
 /**
  * @author Stefan Spiska
  */
-public interface AqlTestDto {
+public interface AqlTestCase {
 
     String getTestAql();
 
