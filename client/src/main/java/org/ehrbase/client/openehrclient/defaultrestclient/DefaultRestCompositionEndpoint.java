@@ -36,6 +36,7 @@ import org.ehrbase.client.flattener.Flattener;
 import org.ehrbase.client.flattener.Unflattener;
 import org.ehrbase.client.openehrclient.CompositionEndpoint;
 import org.ehrbase.client.openehrclient.VersionUid;
+import org.ehrbase.webtemplate.templateprovider.TemplateProvider;
 
 public class DefaultRestCompositionEndpoint implements CompositionEndpoint {
     public static final String COMPOSITION_PATH = "/composition/";
@@ -72,7 +73,7 @@ public class DefaultRestCompositionEndpoint implements CompositionEndpoint {
 
         final VersionUid updatedVersion = internalMerge(composition, versionUid.orElse(null));
         Flattener.addVersion(entity, updatedVersion);
-        entity = (T) new Flattener(defaultRestClient.getTemplateProvider()).flatten(composition, entity.getClass());
+        entity = (T) createFlattener(defaultRestClient.getTemplateProvider()).flatten(composition, entity.getClass());
         Flattener.addVersion(entity, updatedVersion);
 
         return entity;
@@ -112,7 +113,8 @@ public class DefaultRestCompositionEndpoint implements CompositionEndpoint {
     public <T> Optional<T> find(UUID compositionId, Class<T> clazz) {
         Optional<Composition> composition = findRaw(compositionId);
 
-        return composition.map(c -> new Flattener(defaultRestClient.getTemplateProvider()).flatten(c, clazz));
+        return composition.map(
+                c -> createFlattener(defaultRestClient.getTemplateProvider()).flatten(c, clazz));
     }
 
     @Override
@@ -137,5 +139,9 @@ public class DefaultRestCompositionEndpoint implements CompositionEndpoint {
                 .getBaseUri()
                 .resolve(EHR_PATH + ehrId.toString() + COMPOSITION_PATH + precedingVersionUid);
         defaultRestClient.internalDelete(uri, new HashMap<>());
+    }
+
+    protected Flattener createFlattener(TemplateProvider templateProvider) {
+        return new Flattener(templateProvider);
     }
 }

@@ -57,6 +57,7 @@ import org.ehrbase.client.openehrclient.AqlEndpoint;
 import org.ehrbase.client.openehrclient.VersionUid;
 import org.ehrbase.response.openehr.QueryResponseData;
 import org.ehrbase.serialisation.jsonencoding.ArchieObjectMapperProvider;
+import org.ehrbase.webtemplate.templateprovider.TemplateProvider;
 
 public class DefaultRestAqlEndpoint implements AqlEndpoint {
 
@@ -185,7 +186,7 @@ public class DefaultRestAqlEndpoint implements AqlEndpoint {
             object = null;
         } else if (aClass.isAnnotationPresent(Entity.class)) {
             RMObject locatable = AQL_OBJECT_MAPPER.readValue(valueAsString, RMObject.class);
-            object = new Flattener(defaultRestClient.getTemplateProvider()).flatten(locatable, aClass);
+            object = createFlattener(defaultRestClient.getTemplateProvider()).flatten(locatable, aClass);
             if (locatable instanceof Composition) {
                 Flattener.addVersion(
                         object,
@@ -209,5 +210,9 @@ public class DefaultRestAqlEndpoint implements AqlEndpoint {
             object = AQL_OBJECT_MAPPER.readValue(valueAsString, aClass);
         }
         return object;
+    }
+
+    protected Flattener createFlattener(TemplateProvider templateProvider) {
+        return new Flattener(templateProvider);
     }
 }

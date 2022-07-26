@@ -45,6 +45,7 @@ import org.ehrbase.client.openehrclient.VersionUid;
 import org.ehrbase.client.openehrclient.VersionedCompositionEndpoint;
 import org.ehrbase.response.openehr.OriginalVersionResponseData;
 import org.ehrbase.response.openehr.RevisionHistoryResponseData;
+import org.ehrbase.webtemplate.templateprovider.TemplateProvider;
 
 @SuppressWarnings({"java:S6212", "java:S1075"})
 public class DefaultRestVersionedCompositionEndpoint implements VersionedCompositionEndpoint {
@@ -153,9 +154,13 @@ public class DefaultRestVersionedCompositionEndpoint implements VersionedComposi
         result.setAttestations(originalVersion.getAttestations());
 
         T composition =
-                new Flattener(defaultRestClient.getTemplateProvider()).flatten(originalVersion.getData(), clazz);
+                createFlattener(defaultRestClient.getTemplateProvider()).flatten(originalVersion.getData(), clazz);
         result.setData(composition);
 
         return result;
+    }
+
+    protected Flattener createFlattener(TemplateProvider templateProvider) {
+        return new Flattener(templateProvider);
     }
 }
