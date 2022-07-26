@@ -67,11 +67,7 @@ public class Flattener {
             T dto = createInstance(clazz);
             Class<?> rootC = ReflectionHelper.findRootClass(clazz);
             String packageNames = StringUtils.removeEnd(rootC.getPackageName(), ".definition");
-            classGraph = new ClassGraph()
-                    .enableClassInfo()
-                    .enableAnnotationInfo()
-                    .acceptPackages(packageNames)
-                    .scan();
+            classGraph = createClassGraph(packageNames).scan();
 
             String templateId = classGraph
                     .getClassesWithAnnotation(Template.class.getName())
@@ -108,6 +104,10 @@ public class Flattener {
                 classGraph.close();
             }
         }
+    }
+
+    protected ClassGraph createClassGraph(String packageNames) {
+        return new ClassGraph().enableClassInfo().enableAnnotationInfo().acceptPackages(packageNames);
     }
 
     public static <T> void addVersion(T entity, VersionUid versionUid) {
