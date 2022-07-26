@@ -17,21 +17,36 @@
  */
 package org.ehrbase.aql.dto.condition;
 
+import java.util.Arrays;
+
 public enum ConditionComparisonOperatorSymbol {
-    EQ("equal"),
-    NEQ("notEqual"),
-    GT_EQ("greaterOrEqual"),
-    GT("greaterThan"),
-    LT_EQ("lessOrEqual"),
-    LT("lessThan");
+    EQ("equal", "="),
+    NEQ("notEqual", "!="),
+    GT_EQ("greaterOrEqual", ">="),
+    GT("greaterThan", ">"),
+    LT_EQ("lessOrEqual", "<="),
+    LT("lessThan", "<");
 
     private final String javaName;
+    private final String symbole;
 
-    ConditionComparisonOperatorSymbol(String javaName) {
+    ConditionComparisonOperatorSymbol(String javaName, String symbole) {
         this.javaName = javaName;
+        this.symbole = symbole;
     }
 
     public String getJavaName() {
         return javaName;
+    }
+
+    public String getSymbole() {
+        return symbole;
+    }
+
+    public static ConditionComparisonOperatorSymbol fromSymbol(String symbole) {
+        return Arrays.stream(values())
+                .filter(s -> s.getSymbole().equals(symbole))
+                .findAny()
+                .orElseThrow();
     }
 }

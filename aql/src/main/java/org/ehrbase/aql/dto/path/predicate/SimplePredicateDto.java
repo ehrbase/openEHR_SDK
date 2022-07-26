@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 vitasystems GmbH and Hannover Medical School.
+ * Copyright (c) 2022 vitasystems GmbH and Hannover Medical School.
  *
  * This file is part of project openEHR_SDK
  *
@@ -15,27 +15,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ehrbase.client.flattener;
+package org.ehrbase.aql.dto.path.predicate;
 
-import java.lang.reflect.Field;
-import java.util.Map;
-import org.ehrbase.aql.dto.path.AqlPath;
-
-class DtoWithMatchingFields {
-
-    private final Object dto;
-    private final Map<AqlPath, Field> fieldByPath;
-
-    DtoWithMatchingFields(Object dto, Map<AqlPath, Field> fieldByPath) {
-        this.dto = dto;
-        this.fieldByPath = fieldByPath;
-    }
-
-    Object getDto() {
-        return dto;
-    }
-
-    Map<AqlPath, Field> getFieldByPath() {
-        return fieldByPath;
-    }
-}
+/**
+ * @author Stefan Spiska
+ */
+public interface SimplePredicateDto extends PredicateDto {}

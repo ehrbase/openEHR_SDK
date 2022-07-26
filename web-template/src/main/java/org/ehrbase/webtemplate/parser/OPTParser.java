@@ -51,6 +51,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.apache.xmlbeans.XmlCursor;
 import org.apache.xmlbeans.XmlObject;
 import org.apache.xmlbeans.XmlTokenSource;
+import org.ehrbase.aql.dto.path.AqlPath;
 import org.ehrbase.terminology.client.terminology.TermDefinition;
 import org.ehrbase.terminology.client.terminology.TerminologyProvider;
 import org.ehrbase.terminology.client.terminology.ValueSet;

@@ -30,6 +30,7 @@ import org.ehrbase.client.aql.containment.ContainmentExpression;
 import org.ehrbase.client.aql.field.AqlField;
 import org.ehrbase.client.aql.field.AqlFieldImp;
 import org.ehrbase.client.aql.field.SelectAqlField;
+import org.ehrbase.client.aql.funtion.Function;
 import org.ehrbase.client.aql.orderby.OrderByExpression;
 import org.ehrbase.client.aql.parameter.Parameter;
 import org.ehrbase.client.aql.record.Record;
@@ -48,6 +49,8 @@ public class EntityQuery<T extends Record> implements Query<T> {
     private final Containment ehrContainment;
     private Integer limit;
     private Integer offset;
+
+    private boolean isDistinct = false;
 
     protected EntityQuery(ContainmentExpression containmentExpression, SelectAqlField<?>... fields) {
         this(containmentExpression, new HashMap<>(), fields);
@@ -76,6 +79,19 @@ public class EntityQuery<T extends Record> implements Query<T> {
     }
 
     private SelectAqlField<Object> replace(SelectAqlField<?> selectAqlField) {
+
+        if (selectAqlField instanceof Function) {
+
+            List<SelectAqlField<?>> parameters = ((Function) selectAqlField).getParameters();
+            List<SelectAqlField<Object>> replaceList =
+                    parameters.stream().map(this::replace).collect(Collectors.toList());
+
+            parameters.clear();
+            parameters.addAll(replaceList);
+
+            return (SelectAqlField<Object>) selectAqlField;
+        }
+
         if (selectAqlField.getContainment().getTypeName().equals("EHR")) {
             return new AqlFieldImp(
                     selectAqlField.getEntityClass(),
@@ -92,6 +108,11 @@ public class EntityQuery<T extends Record> implements Query<T> {
     public String buildAql() {
         StringBuilder sb = new StringBuilder();
         sb.append("Select ");
+
+        if (isDistinct) {
+            sb.append("DISTINCT").append(" ");
+        }
+
         if (topExpresion != null) {
             sb.append(topExpresion.buildAql()).append(" ");
         }
@@ -107,10 +128,6 @@ public class EntityQuery<T extends Record> implements Query<T> {
         if (where != null) {
             sb.append(" where ").append(where.buildAql(ehrContainment));
         }
-        if (orderByExpression != null) {
-            sb.append(" order by ").append(orderByExpression.buildAql(ehrContainment));
-        }
-
         if (limit != null) {
             sb.append(" LIMIT ").append(limit);
         }
@@ -118,6 +135,11 @@ public class EntityQuery<T extends Record> implements Query<T> {
         if (offset != null) {
             sb.append(" OFFSET ").append(offset);
         }
+
+        if (orderByExpression != null) {
+            sb.append(" order by ").append(orderByExpression.buildAql(ehrContainment));
+        }
+
         return sb.toString();
     }
 
@@ -161,6 +183,11 @@ public class EntityQuery<T extends Record> implements Query<T> {
 
     public EntityQuery<T> top(TopExpresion topExpresion) {
         this.topExpresion = topExpresion;
+        return this;
+    }
+
+    public EntityQuery<T> distinct(boolean isDistinct) {
+        this.isDistinct = isDistinct;
         return this;
     }
 

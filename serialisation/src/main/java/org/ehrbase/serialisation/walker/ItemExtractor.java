@@ -25,10 +25,10 @@ import com.nedap.archie.rm.datavalues.quantity.DvInterval;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
+import org.ehrbase.aql.dto.path.AqlPath;
 import org.ehrbase.util.exception.SdkException;
 import org.ehrbase.util.rmconstants.RmConstants;
 import org.ehrbase.webtemplate.model.WebTemplateNode;
-import org.ehrbase.webtemplate.parser.AqlPath;
 
 public class ItemExtractor {
     private RMObject currentRM;

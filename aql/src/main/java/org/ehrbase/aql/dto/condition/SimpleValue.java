@@ -17,9 +17,10 @@
  */
 package org.ehrbase.aql.dto.condition;
 
+import java.io.Serializable;
 import java.util.Objects;
 
-public class SimpleValue implements Value {
+public class SimpleValue implements Value, Serializable {
 
     private Object value;
 

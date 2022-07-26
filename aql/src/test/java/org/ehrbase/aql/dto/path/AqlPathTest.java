@@ -15,14 +15,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ehrbase.webtemplate.parser;
+package org.ehrbase.aql.dto.path;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.Arrays;
+import java.util.stream.Collectors;
 import org.junit.Assert;
 import org.junit.Test;
 
 public class AqlPathTest {
+
+    @Test
+    public void testSplit() {
+
+        String cut = "at001, name/value = 'dfd' or name/value= 'fdf'";
+
+        CharSequence[] ands = AqlPath.split(cut, null, true, "and", "or", ",");
+
+        assertThat(Arrays.stream(ands).map(CharSequence::toString).collect(Collectors.toList()))
+                .containsExactly("at001", ",", " name/value = 'dfd' ", "or", " name/value= 'fdf'");
+    }
 
     @Test
     public void testParse() {
@@ -407,7 +420,7 @@ public class AqlPathTest {
         AqlPath path;
 
         path = AqlPath.parse(
-                "/content[openEHR-EHR-OBSERVATION.laboratory_test_result.v1, 'Einsenderstandort']/protocol[at0004]/items[at0094]/items[openEHR-EHR-CLUSTER.location.v1]");
+                "/content[openEHR-EHR-OBSERVATION.laboratory_test_result.v1,'Einsenderstandort']/protocol[at0004]/items[at0094]/items[openEHR-EHR-CLUSTER.location.v1]");
         assertThat(path.format(AqlPath.OtherPredicatesFormat.FULL, true))
                 .isEqualTo(
                         "/content[openEHR-EHR-OBSERVATION.laboratory_test_result.v1 and name/value='Einsenderstandort']/protocol[at0004]/items[at0094]/items[openEHR-EHR-CLUSTER.location.v1]");

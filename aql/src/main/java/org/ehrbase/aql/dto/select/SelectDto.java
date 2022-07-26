@@ -24,6 +24,9 @@ public class SelectDto {
 
     private Integer topCount;
     private Direction topDirection;
+
+    private boolean isDistinct = false;
+
     private List<SelectStatementDto> statement;
 
     public Integer getTopCount() {
@@ -48,6 +51,14 @@ public class SelectDto {
 
     public void setStatement(List<SelectStatementDto> statement) {
         this.statement = statement;
+    }
+
+    public boolean isDistinct() {
+        return isDistinct;
+    }
+
+    public void setDistinct(boolean distinct) {
+        isDistinct = distinct;
     }
 
     public boolean equals(final Object o) {

@@ -32,6 +32,7 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.text.CaseUtils;
+import org.ehrbase.aql.dto.path.AqlPath;
 import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.OptionFor;
 import org.ehrbase.client.annotations.Path;
@@ -43,7 +44,6 @@ import org.ehrbase.serialisation.walker.RmPrimitive;
 import org.ehrbase.util.exception.SdkException;
 import org.ehrbase.util.reflection.ReflectionHelper;
 import org.ehrbase.webtemplate.model.WebTemplateNode;
-import org.ehrbase.webtemplate.parser.AqlPath;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

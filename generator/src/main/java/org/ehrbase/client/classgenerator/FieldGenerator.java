@@ -21,6 +21,7 @@ import com.squareup.javapoet.*;
 import java.util.List;
 import javax.lang.model.element.Modifier;
 import org.apache.commons.lang3.StringUtils;
+import org.ehrbase.aql.dto.path.AqlPath;
 import org.ehrbase.client.annotations.Archetype;
 import org.ehrbase.client.annotations.Path;
 import org.ehrbase.client.aql.containment.Containment;
@@ -29,7 +30,6 @@ import org.ehrbase.client.aql.field.ListAqlFieldImp;
 import org.ehrbase.client.aql.field.ListSelectAqlField;
 import org.ehrbase.client.aql.field.SelectAqlField;
 import org.ehrbase.serialisation.util.SnakeCase;
-import org.ehrbase.webtemplate.parser.AqlPath;
 
 public class FieldGenerator {
 

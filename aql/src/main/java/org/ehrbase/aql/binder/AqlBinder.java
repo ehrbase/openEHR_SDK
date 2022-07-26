@@ -95,6 +95,11 @@ public class AqlBinder {
             query.top(TopExpresion.backward(aqlDto.getSelect().getTopCount()));
         }
 
+        // build distinct
+        if (aqlDto.getSelect().isDistinct()) {
+            query.distinct(true);
+        }
+
         // build order by
         if (!CollectionUtils.isEmpty(aqlDto.getOrderBy())) {
             query.orderBy(orderByBinder.bind(aqlDto.getOrderBy(), containmentMap));

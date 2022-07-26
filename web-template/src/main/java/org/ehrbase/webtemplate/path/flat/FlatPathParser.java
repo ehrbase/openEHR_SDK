@@ -17,8 +17,8 @@
  */
 package org.ehrbase.webtemplate.path.flat;
 
-import static org.ehrbase.webtemplate.util.CharSequenceHelper.removeStart;
-import static org.ehrbase.webtemplate.util.CharSequenceHelper.splitFirst;
+import static org.ehrbase.aql.util.CharSequenceHelper.removeStart;
+import static org.ehrbase.aql.util.CharSequenceHelper.splitFirst;
 
 import org.apache.commons.lang3.StringUtils;
 
