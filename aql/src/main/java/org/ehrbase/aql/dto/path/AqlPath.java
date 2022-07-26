@@ -512,7 +512,7 @@ public final class AqlPath implements Serializable {
 
         private transient Integer hashCode;
 
-        private AqlNode(String name, String atCode, PredicateLogicalAndOperation otherPredicates) {
+        public AqlNode(String name, String atCode, PredicateLogicalAndOperation otherPredicates) {
             this.name = name;
             this.atCode = StringUtils.isBlank(atCode) ? null : atCode;
             this.otherPredicate = otherPredicates;
