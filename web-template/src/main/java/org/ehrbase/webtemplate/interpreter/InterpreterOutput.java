@@ -17,6 +17,7 @@
  */
 package org.ehrbase.webtemplate.interpreter;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import org.ehrbase.aql.dto.path.AqlPath;
@@ -31,6 +32,14 @@ public class InterpreterOutput {
     private List<AqlPath.AqlNode> contain;
 
     private List<InterpreterPathNode> pathFromRootToValue;
+
+    public InterpreterOutput() {}
+
+    public InterpreterOutput(InterpreterOutput other) {
+        this.rootContainment = other.rootContainment;
+        this.contain = other.contain;
+        this.pathFromRootToValue = new ArrayList<>(other.pathFromRootToValue);
+    }
 
     public int getRootContainment() {
         return rootContainment;

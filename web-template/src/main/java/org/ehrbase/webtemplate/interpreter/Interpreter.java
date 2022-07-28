@@ -26,6 +26,7 @@ import java.util.Collections;
 import java.util.Deque;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.apache.commons.collections4.CollectionUtils;
@@ -34,9 +35,11 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.ehrbase.aql.dto.containment.ContainmentDto;
 import org.ehrbase.aql.dto.containment.ContainmentExpresionDto;
+import org.ehrbase.aql.dto.path.AqlPath;
 import org.ehrbase.aql.dto.path.AqlPath.AqlNode;
 import org.ehrbase.aql.dto.path.predicate.PredicateLogicalAndOperation;
 import org.ehrbase.aql.dto.select.SelectFieldDto;
+import org.ehrbase.util.rmconstants.RmConstants;
 import org.ehrbase.webtemplate.model.WebTemplateNode;
 import org.ehrbase.webtemplate.templateprovider.TemplateProvider;
 
@@ -89,13 +92,15 @@ public class Interpreter {
     }
 
     private Set<InterpreterOutput> interpret(InterpreterInput input, WebTemplateNode node) {
-
-        return resolve(input.getContainmentPath(), input.getContainment(), node).stream()
+        LinkedHashSet<InterpreterOutput> result = new LinkedHashSet<>();
+        resolve(input.getContainmentPath(), input.getContainment(), node).stream()
                 .map(r -> interpret(input, r))
-                .collect(Collectors.toCollection(LinkedHashSet::new));
+                .forEach(result::addAll);
+
+        return result;
     }
 
-    private InterpreterOutput interpret(
+    private Set<InterpreterOutput> interpret(
             InterpreterInput input, List<Pair<WebTemplateNode, Deque<WebTemplateNode>>> result) {
         InterpreterOutput interpreterOutput = new InterpreterOutput();
 
@@ -127,7 +132,48 @@ public class Interpreter {
             curent = next;
         }
 
-        return interpreterOutput;
+        LinkedHashSet<InterpreterOutput> inter = new LinkedHashSet<>();
+        curent.getChildren().stream()
+                .map(c -> finPathToValue(input.getPathFromContentment(), c))
+                .flatMap(Set::stream)
+                .map(l -> {
+                    InterpreterOutput output = new InterpreterOutput(interpreterOutput);
+                    output.getPathFromRootToValue().addAll(l);
+                    return output;
+                })
+                .forEach(inter::add);
+
+        return inter;
+    }
+
+    Set<List<InterpreterPathNode>> finPathToValue(AqlPath path, WebTemplateNode node) {
+
+        if (matches(path.getBaseNode(), node)) {
+
+            InterpreterPathNode interpreterPathNode = new InterpreterPathNode();
+            interpreterPathNode.setTemplateNode(new SimpleTemplateNode(node));
+            interpreterPathNode.setOtherPredicate(new PredicateLogicalAndOperation());
+            interpreterPathNode.setNormalisedNode(node.getAqlPathDto().getLastNode());
+
+            if (CollectionUtils.isEmpty(node.getChildren()) || node.getRmType().equals(RmConstants.ELEMENT)) {
+                return Collections.singleton(new ArrayList<>(Collections.singletonList(interpreterPathNode)));
+            } else {
+
+                LinkedHashSet<List<InterpreterPathNode>> result = new LinkedHashSet<>();
+
+                node.getChildren().stream()
+                        .map(c -> finPathToValue(path.removeStart(1), c))
+                        .flatMap(Set::stream)
+                        .forEach(l -> {
+                            l.add(0, interpreterPathNode);
+                            result.add(l);
+                        });
+
+                return result;
+            }
+        }
+
+        return Collections.emptySet();
     }
 
     private int findRoot(List<AqlNode> c) {
@@ -266,7 +312,7 @@ public class Interpreter {
             }
         } else {
 
-            if (!atCode.equals(node.getNodeId())) {
+            if (!Objects.equals(atCode, node.getNodeId())) {
                 return false;
             }
         }
@@ -276,6 +322,10 @@ public class Interpreter {
 
     private String findTypeName(String atCode) {
         String typeName = null;
+
+        if (atCode == null) {
+            return "";
+        }
         if (atCode.contains("openEHR-EHR-")) {
 
             typeName = StringUtils.substringBetween(atCode, "openEHR-EHR-", ".");
