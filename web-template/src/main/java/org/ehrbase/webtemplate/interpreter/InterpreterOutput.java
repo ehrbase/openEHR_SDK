@@ -20,7 +20,7 @@ package org.ehrbase.webtemplate.interpreter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import org.ehrbase.aql.dto.path.AqlPath;
+import org.ehrbase.aql.dto.containment.Containment;
 
 /**
  * @author Stefan Spiska
@@ -29,16 +29,17 @@ public class InterpreterOutput {
 
     private int rootContainment;
 
-    private List<AqlPath.AqlNode> contain;
+    private List<Containment> contain;
 
-    private List<InterpreterPathNode> pathFromRootToValue;
+    private InterpreterPath pathFromRootToValue = new InterpreterPath();
 
     public InterpreterOutput() {}
 
     public InterpreterOutput(InterpreterOutput other) {
         this.rootContainment = other.rootContainment;
         this.contain = other.contain;
-        this.pathFromRootToValue = new ArrayList<>(other.pathFromRootToValue);
+        this.pathFromRootToValue = new InterpreterPath();
+        this.pathFromRootToValue.setNodeList(new ArrayList<>(other.pathFromRootToValue.getNodeList()));
     }
 
     public int getRootContainment() {
@@ -49,20 +50,12 @@ public class InterpreterOutput {
         this.rootContainment = rootContainment;
     }
 
-    public List<AqlPath.AqlNode> getContain() {
+    public List<Containment> getContain() {
         return contain;
     }
 
-    public void setContain(List<AqlPath.AqlNode> contain) {
+    public void setContain(List<Containment> contain) {
         this.contain = contain;
-    }
-
-    public List<InterpreterPathNode> getPathFromRootToValue() {
-        return pathFromRootToValue;
-    }
-
-    public void setPathFromRootToValue(List<InterpreterPathNode> pathFromRootToValue) {
-        this.pathFromRootToValue = pathFromRootToValue;
     }
 
     @Override
@@ -90,5 +83,13 @@ public class InterpreterOutput {
                 + rootContainment + ", contain="
                 + contain + ", pathFromRootToValue="
                 + pathFromRootToValue + '}';
+    }
+
+    public InterpreterPath getPathFromRootToValue() {
+        return pathFromRootToValue;
+    }
+
+    public void setPathFromRootToValue(InterpreterPath pathFromRootToValue) {
+        this.pathFromRootToValue = pathFromRootToValue;
     }
 }

@@ -576,6 +576,10 @@ public final class AqlPath implements Serializable {
             return newPredicateDto;
         }
 
+        public PredicateLogicalAndOperation getOtherPredicate() {
+            return otherPredicate;
+        }
+
         public String findOtherPredicate(String name) {
             return find(otherPredicate, name)
                     .map(PredicateComparisonOperatorDto::getValue)

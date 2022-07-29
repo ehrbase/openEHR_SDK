@@ -17,9 +17,11 @@
  */
 package org.ehrbase.aql.dto.containment;
 
+import java.util.Objects;
+
 public class ContainmentDto implements ContainmentExpresionDto {
+    private Containment containment = new Containment();
     private int id;
-    private String archetypeId;
     private ContainmentExpresionDto contains;
     private String identifier;
 
@@ -28,7 +30,7 @@ public class ContainmentDto implements ContainmentExpresionDto {
     }
 
     public String getArchetypeId() {
-        return this.archetypeId;
+        return containment.getArchetypeId();
     }
 
     public ContainmentExpresionDto getContains() {
@@ -40,7 +42,7 @@ public class ContainmentDto implements ContainmentExpresionDto {
     }
 
     public void setArchetypeId(String archetypeId) {
-        this.archetypeId = archetypeId;
+        containment.setArchetypeId(archetypeId);
     }
 
     public void setContains(ContainmentExpresionDto contains) {
@@ -55,44 +57,40 @@ public class ContainmentDto implements ContainmentExpresionDto {
         this.identifier = identifier;
     }
 
-    public boolean equals(final Object o) {
-        if (o == this) return true;
-        if (!(o instanceof ContainmentDto)) return false;
-        final ContainmentDto other = (ContainmentDto) o;
-        if (!other.canEqual((Object) this)) return false;
-        if (this.getId() != other.getId()) return false;
-        final Object this$archetypeId = this.getArchetypeId();
-        final Object other$archetypeId = other.getArchetypeId();
-        if (this$archetypeId == null ? other$archetypeId != null : !this$archetypeId.equals(other$archetypeId))
+    public Containment getContainment() {
+        return containment;
+    }
+
+    public void setContainment(Containment containment) {
+        this.containment = containment;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
             return false;
-        final Object this$contains = this.getContains();
-        final Object other$contains = other.getContains();
-        if (this$contains == null ? other$contains != null : !this$contains.equals(other$contains)) return false;
-        return true;
+        }
+        ContainmentDto that = (ContainmentDto) o;
+        return id == that.id
+                && Objects.equals(containment, that.containment)
+                && Objects.equals(contains, that.contains)
+                && Objects.equals(identifier, that.identifier);
     }
 
-    protected boolean canEqual(final Object other) {
-        return other instanceof ContainmentDto;
-    }
-
+    @Override
     public int hashCode() {
-        final int PRIME = 59;
-        int result = 1;
-        result = result * PRIME + this.getId();
-        final Object $archetypeId = this.getArchetypeId();
-        result = result * PRIME + ($archetypeId == null ? 43 : $archetypeId.hashCode());
-        final Object $contains = this.getContains();
-        result = result * PRIME + ($contains == null ? 43 : $contains.hashCode());
-        return result;
+        return Objects.hash(containment, id, contains, identifier);
     }
 
+    @Override
     public String toString() {
-        return "ContainmentDto(id="
-                + this.getId()
-                + ", archetypeId="
-                + this.getArchetypeId()
-                + ", contains="
-                + this.getContains()
-                + ")";
+        return "ContainmentDto{" + "containment="
+                + containment + ", id="
+                + id + ", contains="
+                + contains + ", identifier='"
+                + identifier + '\'' + '}';
     }
 }

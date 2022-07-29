@@ -17,10 +17,9 @@
  */
 package org.ehrbase.webtemplate.interpreter;
 
-import static org.ehrbase.aql.dto.path.AqlPath.*;
-
 import java.util.List;
 import java.util.Objects;
+import org.ehrbase.aql.dto.containment.Containment;
 import org.ehrbase.aql.dto.path.AqlPath;
 
 /**
@@ -29,8 +28,8 @@ import org.ehrbase.aql.dto.path.AqlPath;
 public class InterpreterInput {
 
     private AqlPath pathFromContentment;
-    private AqlNode containment;
-    private List<AqlNode> containmentPath;
+    private Containment containment;
+    private List<Containment> containmentPath;
 
     public AqlPath getPathFromContentment() {
         return pathFromContentment;
@@ -40,19 +39,19 @@ public class InterpreterInput {
         this.pathFromContentment = pathFromContentment;
     }
 
-    public AqlNode getContainment() {
+    public Containment getContainment() {
         return containment;
     }
 
-    public void setContainment(AqlNode containment) {
+    public void setContainment(Containment containment) {
         this.containment = containment;
     }
 
-    public List<AqlNode> getContainmentPath() {
+    public List<Containment> getContainmentPath() {
         return containmentPath;
     }
 
-    public void setContainmentPath(List<AqlNode> containmentPath) {
+    public void setContainmentPath(List<Containment> containmentPath) {
         this.containmentPath = containmentPath;
     }
 

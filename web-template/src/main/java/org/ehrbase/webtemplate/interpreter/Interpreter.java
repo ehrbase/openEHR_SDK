@@ -34,10 +34,15 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
+import org.ehrbase.aql.dto.condition.ConditionComparisonOperatorSymbol;
+import org.ehrbase.aql.dto.condition.SimpleValue;
+import org.ehrbase.aql.dto.containment.Containment;
 import org.ehrbase.aql.dto.containment.ContainmentDto;
 import org.ehrbase.aql.dto.containment.ContainmentExpresionDto;
 import org.ehrbase.aql.dto.path.AqlPath;
 import org.ehrbase.aql.dto.path.AqlPath.AqlNode;
+import org.ehrbase.aql.dto.path.predicate.PredicateComparisonOperatorDto;
+import org.ehrbase.aql.dto.path.predicate.PredicateHelper;
 import org.ehrbase.aql.dto.path.predicate.PredicateLogicalAndOperation;
 import org.ehrbase.aql.dto.select.SelectFieldDto;
 import org.ehrbase.webtemplate.model.WebTemplateInput;
@@ -105,12 +110,37 @@ public class Interpreter {
             InterpreterInput input, List<Pair<WebTemplateNode, Deque<WebTemplateNode>>> result) {
         InterpreterOutput interpreterOutput = new InterpreterOutput();
 
-        interpreterOutput.setContain(input.getContainmentPath());
+        interpreterOutput.setContain(result.stream()
+                .map(n -> {
+                    Containment containment = new Containment();
+                    AqlNode lastNode = n.getLeft().getAqlPathDto().getLastNode();
+                    String atCode = Optional.ofNullable(lastNode.getAtCode())
+                            .orElse(n.getLeft().getNodeId());
+                    containment.setArchetypeId(atCode);
+                    containment.setType(findTypeName(atCode));
+                    containment.setOtherPredicates(lastNode.getOtherPredicate());
+
+                    if (lastNode.getAtCode() == null) {
+                        PredicateLogicalAndOperation predicateLogicalAndOperation = new PredicateLogicalAndOperation();
+                        PredicateComparisonOperatorDto predicateComparisonOperatorDto =
+                                new PredicateComparisonOperatorDto();
+                        predicateComparisonOperatorDto.setStatement(PredicateHelper.ARCHETYPE_NODE_ID);
+                        predicateComparisonOperatorDto.setSymbol(ConditionComparisonOperatorSymbol.EQ);
+                        predicateComparisonOperatorDto.setValue(new SimpleValue(atCode));
+                        predicateLogicalAndOperation.setValues(new ArrayList<>());
+                        predicateLogicalAndOperation.getValues().add(predicateComparisonOperatorDto);
+                        containment.setOtherPredicates(predicateLogicalAndOperation);
+                    }
+
+                    return containment;
+                })
+                .collect(Collectors.toList()));
+        Collections.reverse(interpreterOutput.getContain());
         interpreterOutput.setRootContainment(findRoot(interpreterOutput.getContain()));
 
         Deque<WebTemplateNode> webTemplateNodes = new ArrayDeque<>();
 
-        int continment = findContainment(interpreterOutput.getContain(), input.getContainment()) + 1;
+        int continment = findContainment(input.getContainmentPath(), input.getContainment()) + 1;
         int skip = result.size() - continment;
         int maxSize = (continment - interpreterOutput.getRootContainment()) - 1;
 
@@ -119,7 +149,7 @@ public class Interpreter {
         WebTemplateNode curent =
                 result.get(interpreterOutput.getRootContainment()).getLeft();
 
-        interpreterOutput.setPathFromRootToValue(new ArrayList<>());
+        interpreterOutput.getPathFromRootToValue().setNodeList(new ArrayList<>());
 
         while (!webTemplateNodes.isEmpty()) {
             WebTemplateNode next = webTemplateNodes.pollLast();
@@ -129,7 +159,7 @@ public class Interpreter {
             interpreterPathNode.setOtherPredicate(new PredicateLogicalAndOperation());
             interpreterPathNode.setTemplateNode(new SimpleTemplateNode(next));
 
-            interpreterOutput.getPathFromRootToValue().add(interpreterPathNode);
+            interpreterOutput.getPathFromRootToValue().getNodeList().add(interpreterPathNode);
             curent = next;
         }
 
@@ -139,7 +169,7 @@ public class Interpreter {
                 .flatMap(Set::stream)
                 .map(l -> {
                     InterpreterOutput output = new InterpreterOutput(interpreterOutput);
-                    output.getPathFromRootToValue().addAll(l);
+                    output.getPathFromRootToValue().getNodeList().addAll(l);
                     return output;
                 })
                 .forEach(inter::add);
@@ -147,7 +177,7 @@ public class Interpreter {
         return inter;
     }
 
-    Set<List<InterpreterPathNode>> findPathToValue(AqlPath path, WebTemplateNode node) {
+    protected Set<List<InterpreterPathNode>> findPathToValue(AqlPath path, WebTemplateNode node) {
 
         if (matches(path.getBaseNode(), node)) {
 
@@ -186,13 +216,13 @@ public class Interpreter {
         return Collections.emptySet();
     }
 
-    Optional<InterpreterPathNode> findPathToValue(AqlPath path, WebTemplateInput input) {
+    protected Optional<InterpreterPathNode> findPathToValue(AqlPath path, WebTemplateInput input) {
 
         if (matches(path.getBaseNode(), input)) {
 
             InterpreterPathNode interpreterPathNode = new InterpreterPathNode();
-            interpreterPathNode.setNormalisedNode(
-                    new AqlNode(input.getSuffix(), null, new PredicateLogicalAndOperation()));
+            interpreterPathNode.setNormalisedNode(new AqlNode(
+                    Optional.ofNullable(input.getSuffix()).orElse("value"), null, new PredicateLogicalAndOperation()));
             interpreterPathNode.setOtherPredicate(new PredicateLogicalAndOperation());
             interpreterPathNode.setTemplateNode(new SimpleTemplateNode(input));
 
@@ -206,9 +236,9 @@ public class Interpreter {
         return node.getName().equals(Optional.ofNullable(input.getSuffix()).orElse("value"));
     }
 
-    private int findRoot(List<AqlNode> c) {
+    private int findRoot(List<Containment> c) {
         for (int i = c.size() - 1; i >= 0; i--) {
-            if (rootContainment.contains(findTypeName(c.get(i).getAtCode()))) {
+            if (rootContainment.contains(c.get(i).getType())) {
                 return i;
             }
         }
@@ -216,7 +246,7 @@ public class Interpreter {
         throw new RuntimeException();
     }
 
-    private int findContainment(List<AqlNode> c, AqlNode con) {
+    private int findContainment(List<Containment> c, Containment con) {
         for (int i = c.size() - 1; i >= 0; i--) {
             if (c.get(i).equals(con)) {
                 return i;
@@ -226,22 +256,25 @@ public class Interpreter {
         throw new RuntimeException();
     }
 
-    protected Set<Pair<AqlNode[], AqlNode>> findContainment(Integer id, ContainmentExpresionDto containmentDto) {
+    protected Set<Pair<Containment[], Containment>> findContainment(
+            Integer id, ContainmentExpresionDto containmentDto) {
 
         if (containmentDto instanceof ContainmentDto) {
-            AqlNode node = new AqlNode(
-                    null, ((ContainmentDto) containmentDto).getArchetypeId(), new PredicateLogicalAndOperation());
+            Containment node = new Containment(
+                    findTypeName(((ContainmentDto) containmentDto).getArchetypeId()),
+                    ((ContainmentDto) containmentDto).getArchetypeId(),
+                    new PredicateLogicalAndOperation());
             if (((ContainmentDto) containmentDto).getContains() == null) {
 
                 if (id == null || id.equals(((ContainmentDto) containmentDto).getId())) {
-                    Set<Pair<AqlNode[], AqlNode>> list = new LinkedHashSet<>();
-                    final AqlNode found;
+                    Set<Pair<Containment[], Containment>> list = new LinkedHashSet<>();
+                    final Containment found;
                     if (id != null) {
                         found = node;
                     } else {
                         found = null;
                     }
-                    list.add(Pair.of(new AqlNode[] {node}, found));
+                    list.add(Pair.of(new Containment[] {node}, found));
 
                     return list;
                 } else {
@@ -265,7 +298,7 @@ public class Interpreter {
     }
 
     protected Set<List<Pair<WebTemplateNode, Deque<WebTemplateNode>>>> resolve(
-            List<AqlNode> contains, AqlNode id, WebTemplateNode node) {
+            List<Containment> contains, Containment id, WebTemplateNode node) {
         if (CollectionUtils.isEmpty(node.getChildren())) {
 
             if (contains.size() == 1 && matches(contains.get(0), node)) {
@@ -295,8 +328,7 @@ public class Interpreter {
                             if (id.equals(contains.get(0))) {
                                 ArrayDeque<WebTemplateNode> right = new ArrayDeque<>();
                                 right.add(node);
-                                return Collections.singleton(
-                                        new ArrayList<>(Collections.singletonList(Pair.of(node, right))));
+                                return new ArrayList<>(Collections.singletonList(Pair.of(node, right)));
                             } else {
                                 ArrayDeque<WebTemplateNode> right = new ArrayDeque<>();
                                 right.add(node);
@@ -322,67 +354,59 @@ public class Interpreter {
         }
     }
 
-    private boolean matches(AqlNode contain, WebTemplateNode node) {
+    private boolean matches(Containment contain, WebTemplateNode node) {
 
-        if (contain.getName() != null) {
-            AqlNode nodeAqlNode = node.getAqlPathDto().getLastNode();
+        String atCode = contain.getArchetypeId();
+        String typeName = contain.getType();
+        boolean isJustType = typeName != null && typeName.equals(atCode);
 
-            if (!Objects.equals(contain.getName(), nodeAqlNode.getName())) {
-
+        if (isJustType) {
+            if (!typeName.equals(StringUtils.substringBetween(node.getNodeId(), "openEHR-EHR-", "."))) {
                 return false;
             }
-
-            String atCode = contain.getAtCode();
-
-            if (atCode != null) {
-                String typeName = findTypeName(atCode);
-                boolean isJustType = typeName != null && typeName.equals(atCode);
-
-                if (isJustType) {
-                    if (!typeName.equals(StringUtils.substringBetween(nodeAqlNode.getAtCode(), "openEHR-EHR-", "."))) {
-                        return false;
-                    }
-                } else {
-
-                    if (!Objects.equals(atCode, nodeAqlNode.getAtCode())) {
-                        return false;
-                    }
-                }
-            }
-
-            if (contain.findOtherPredicate(NAME_VALUE) != null
-                    && !contain.findOtherPredicate(NAME_VALUE).equals(node.getName())) {
-                return false;
-            }
-
-            return true;
         } else {
 
-            String atCode = contain.getAtCode();
-
-            if (atCode != null) {
-                String typeName = findTypeName(atCode);
-                boolean isJustType = typeName != null && typeName.equals(atCode);
-
-                if (isJustType) {
-                    if (!typeName.equals(StringUtils.substringBetween(node.getNodeId(), "openEHR-EHR-", "."))) {
-                        return false;
-                    }
-                } else {
-
-                    if (!Objects.equals(atCode, node.getNodeId())) {
-                        return false;
-                    }
-                }
-            }
-
-            if (contain.findOtherPredicate(NAME_VALUE) != null
-                    && !contain.findOtherPredicate(NAME_VALUE).equals(node.getName())) {
+            if (!Objects.equals(atCode, node.getNodeId())) {
                 return false;
             }
-
-            return true;
         }
+
+        return true;
+    }
+
+    private boolean matches(AqlNode contain, WebTemplateNode node) {
+
+        AqlNode nodeAqlNode = node.getAqlPathDto().getLastNode();
+
+        if (!Objects.equals(contain.getName(), nodeAqlNode.getName())) {
+
+            return false;
+        }
+
+        String atCode = contain.getAtCode();
+
+        if (atCode != null) {
+            String typeName = findTypeName(atCode);
+            boolean isJustType = typeName != null && typeName.equals(atCode);
+
+            if (isJustType) {
+                if (!typeName.equals(StringUtils.substringBetween(nodeAqlNode.getAtCode(), "openEHR-EHR-", "."))) {
+                    return false;
+                }
+            } else {
+
+                if (!Objects.equals(atCode, nodeAqlNode.getAtCode())) {
+                    return false;
+                }
+            }
+        }
+
+        if (contain.findOtherPredicate(NAME_VALUE) != null
+                && !contain.findOtherPredicate(NAME_VALUE).equals(node.getName())) {
+            return false;
+        }
+
+        return true;
     }
 
     private String findTypeName(String atCode) {
