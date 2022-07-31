@@ -21,7 +21,7 @@
 	</codeset>
 	<group name="attestation reason">
 		<concept id="240" rubric="firmado"/>
-		<concept id="648" rubric="testigo"/>
+		<concept id="648" rubric="atestiguado"/>
 	</group>
 	<group name="audit change type">
 		<concept id="249" rubric="creación"/>
@@ -64,7 +64,7 @@
 		<concept id="410" rubric="audio/mpeg4-generic" />
 		<concept id="411" rubric="audio/L20" />
 		<concept id="412" rubric="audio/L24" />
-		<concept id="413" rubric="audio/telephone-evento" />
+		<concept id="413" rubric="audio/telephone-event" />
 		<concept id="414" rubric="video/quicktime" />
 		<concept id="415" rubric="text/calendar" />
 		<concept id="416" rubric="text/directory" />
@@ -112,7 +112,7 @@
 		<concept id="364" rubric="Energía, lineal"/>
 		<concept id="347" rubric="Caudal, masa"/>
 		<concept id="352" rubric="Caudal, masa/fuerza"/>
-		<concept id="351" rubric="Caudal, amsa/volumen"/>
+		<concept id="351" rubric="Caudal, masa/volumen"/>
 		<concept id="126" rubric="Caudal, volumen"/>
 		<concept id="348" rubric="Flujo, masa"/>
 		<concept id="355" rubric="Fuerza"/>
@@ -164,7 +164,7 @@
 		<concept id="374" rubric="Voltaje, eléctrico"/>
 		<concept id="129" rubric="Volumen"/>
 		<concept id="130" rubric="Trabajo"/>
-		<concept id="685" rubric="Poder refractivo"/>
+		<concept id="685" rubric="Potencia de refracción"/>
 	</group>
 	<group name="version lifecycle state">
 		<concept id="532" rubric="completo"/>
@@ -185,16 +185,16 @@
 		<concept id="216" rubric="comunicación cara a cara"/>
 		<concept id="223" rubric="comunicación cara a cara interpretada"/>
 		<concept id="217" rubric="firma (cara a cara)"/>
-		<concept id="195" rubric="audiovisuales en vivo; video conferencia; video llamada"/>
-		<concept id="198" rubric="video conferencia"/>
-		<concept id="197" rubric="video llamada"/>
+		<concept id="195" rubric="audiovisuales en vivo; videoconferencia; videollamada"/>
+		<concept id="198" rubric="videoconferencia"/>
+		<concept id="197" rubric="videollamada"/>
 		<concept id="218" rubric="firma sobre video"/>
 		<concept id="224" rubric="comunicación por video interpretada"/>
 		<concept id="194" rubric="audiovisual asíncrona; video grabado"/>
 		<concept id="196" rubric="video grabado"/>
-		<concept id="202" rubric="sólo audio en vivo; teléfono; teléfono de internet; tele-conferencia"/>
+		<concept id="202" rubric="sólo audio en vivo; teléfono; teléfono de internet; teleconferencia"/>
 		<concept id="204" rubric="teléfono"/>
-		<concept id="203" rubric="tele-conferencia"/>
+		<concept id="203" rubric="teleconferencia"/>
 		<concept id="205" rubric="teléfono de internet"/>
 		<concept id="222" rubric="sólo audio interpretado"/>
 		<concept id="199" rubric="sólo audio asíncrono; dictado; correo de voz"/>
@@ -235,7 +235,7 @@
 		<concept id="542" rubric="paso postpuesto"/>
 		<concept id="539" rubric="coordinar"/>
 		<concept id="534" rubric="paso coordinado"/>
-		<concept id="540" rubric="comienzar"/>
+		<concept id="540" rubric="comenzar"/>
 		<concept id="541" rubric="realizar"/>
 		<concept id="543" rubric="paso activo"/>
 		<concept id="544" rubric="suspender"/>
@@ -266,7 +266,7 @@
 		<concept id="265" rubric="cohabitante"/>
 		<concept id="257" rubric="primo"/>
 		<concept id="29" rubric="hija"/>
-		<concept id="264" rubric="guardián"/>
+		<concept id="264" rubric="tutor"/>
 		<concept id="39" rubric="tía materna"/>
 		<concept id="8" rubric="abuelo materno"/>
 		<concept id="7" rubric="abuela materna"/>
@@ -316,7 +316,7 @@
 		<concept id="234" rubric="atención secundaria de trabajadores de la salud"/>
 		<concept id="235" rubric="atención complementaria"/>
 		<concept id="236" rubric="atención dental"/>
-		<concept id="237" rubric="atención en casa de salud"/>
+		<concept id="237" rubric="atención en residencias de ancianos"/>
 		<concept id="238" rubric="otros cuidados"/>
 	</group>
 </terminology>
