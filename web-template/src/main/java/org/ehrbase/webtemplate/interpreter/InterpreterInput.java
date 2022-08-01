@@ -17,6 +17,7 @@
  */
 package org.ehrbase.webtemplate.interpreter;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
 import org.ehrbase.aql.dto.containment.Containment;
@@ -25,7 +26,7 @@ import org.ehrbase.aql.dto.path.AqlPath;
 /**
  * @author Stefan Spiska
  */
-public class InterpreterInput {
+public class InterpreterInput implements Serializable {
 
     private AqlPath pathFromContentment;
     private Containment containment;

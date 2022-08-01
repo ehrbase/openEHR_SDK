@@ -17,6 +17,7 @@
  */
 package org.ehrbase.webtemplate.interpreter;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -25,7 +26,7 @@ import org.ehrbase.aql.dto.containment.Containment;
 /**
  * @author Stefan Spiska
  */
-public class InterpreterOutput {
+public class InterpreterOutput implements Serializable {
 
     private int rootContainment;
 

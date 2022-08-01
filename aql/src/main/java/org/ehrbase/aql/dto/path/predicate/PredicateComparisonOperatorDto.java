@@ -42,6 +42,12 @@ public class PredicateComparisonOperatorDto implements SimplePredicateDto, Seria
         }
     }
 
+    public PredicateComparisonOperatorDto(String statement, ConditionComparisonOperatorSymbol symbol, Value value) {
+        this.statement = statement;
+        this.symbol = symbol;
+        this.value = value;
+    }
+
     public String getStatement() {
         return this.statement;
     }

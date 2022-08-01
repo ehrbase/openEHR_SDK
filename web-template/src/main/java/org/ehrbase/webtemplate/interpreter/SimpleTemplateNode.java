@@ -17,6 +17,7 @@
  */
 package org.ehrbase.webtemplate.interpreter;
 
+import java.io.Serializable;
 import java.util.Objects;
 import org.ehrbase.webtemplate.model.WebTemplateInput;
 import org.ehrbase.webtemplate.model.WebTemplateNode;
@@ -24,7 +25,7 @@ import org.ehrbase.webtemplate.model.WebTemplateNode;
 /**
  * @author Stefan Spiska
  */
-public class SimpleTemplateNode {
+public class SimpleTemplateNode implements Serializable {
 
     private String name;
     private String nodeId;

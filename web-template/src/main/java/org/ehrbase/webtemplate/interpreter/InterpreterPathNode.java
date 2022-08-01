@@ -17,6 +17,7 @@
  */
 package org.ehrbase.webtemplate.interpreter;
 
+import java.io.Serializable;
 import java.util.Objects;
 import org.ehrbase.aql.dto.path.AqlPath;
 import org.ehrbase.aql.dto.path.predicate.PredicateDto;
@@ -24,7 +25,7 @@ import org.ehrbase.aql.dto.path.predicate.PredicateDto;
 /**
  * @author Stefan Spiska
  */
-public class InterpreterPathNode {
+public class InterpreterPathNode implements Serializable {
 
     private AqlPath.AqlNode normalisedNode;
     private PredicateDto otherPredicate;

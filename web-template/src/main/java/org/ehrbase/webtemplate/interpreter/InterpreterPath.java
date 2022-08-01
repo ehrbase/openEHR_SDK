@@ -17,6 +17,7 @@
  */
 package org.ehrbase.webtemplate.interpreter;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
 import org.ehrbase.aql.dto.path.AqlPath;
@@ -24,7 +25,7 @@ import org.ehrbase.aql.dto.path.AqlPath;
 /**
  * @author Stefan Spiska
  */
-public class InterpreterPath {
+public class InterpreterPath implements Serializable {
 
     private List<InterpreterPathNode> nodeList;
 

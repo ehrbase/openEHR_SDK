@@ -19,6 +19,7 @@ package org.ehrbase.aql.dto.path.predicate;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import org.ehrbase.aql.dto.condition.LogicalOperatorDto;
@@ -33,6 +34,12 @@ public class PredicateLogicalAndOperation
 
     private final PredicateLogicalOperatorSymbol symbol = PredicateLogicalOperatorSymbol.AND;
     private List<SimplePredicateDto> values = new ArrayList<>();
+
+    public PredicateLogicalAndOperation() {}
+
+    public PredicateLogicalAndOperation(SimplePredicateDto... values) {
+        this.values.addAll(Arrays.asList(values));
+    }
 
     @Override
     public PredicateLogicalOperatorSymbol getSymbol() {
