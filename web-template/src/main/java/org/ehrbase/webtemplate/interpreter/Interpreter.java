@@ -54,13 +54,13 @@ import org.ehrbase.webtemplate.templateprovider.TemplateProvider;
  */
 public class Interpreter {
 
-    private final List<String> rootContainment =
-            List.of("COMPOSITION", "OBSERVATION", "EVALUATION", "INSTRUCTION", "ACTION");
+    private final List<String> resolveTo;
 
     private final TemplateProvider templateProvider;
 
-    public Interpreter(TemplateProvider templateProvider) {
+    public Interpreter(TemplateProvider templateProvider, List<String> resolveTo) {
         this.templateProvider = templateProvider;
+        this.resolveTo = resolveTo;
     }
 
     protected Set<InterpreterInput> toInterpreterInputSet(
@@ -136,18 +136,23 @@ public class Interpreter {
                 })
                 .collect(Collectors.toList()));
         Collections.reverse(interpreterOutput.getContain());
-        interpreterOutput.setRootContainment(findRoot(interpreterOutput.getContain()));
+
+        int continment = findContainment(input.getContainmentPath(), input.getContainment()) + 1;
+
+        interpreterOutput.setRootContainment(findRoot(interpreterOutput.getContain(), continment - 1));
 
         Deque<WebTemplateNode> webTemplateNodes = new ArrayDeque<>();
 
-        int continment = findContainment(input.getContainmentPath(), input.getContainment()) + 1;
         int skip = result.size() - continment;
         int maxSize = (continment - interpreterOutput.getRootContainment()) - 1;
+        if (maxSize < 0) {
+            maxSize = 0;
+        }
 
         result.stream().skip(skip).limit(maxSize).map(Pair::getValue).forEach(webTemplateNodes::addAll);
 
-        WebTemplateNode curent =
-                result.get(interpreterOutput.getRootContainment()).getLeft();
+        WebTemplateNode curent = result.get(result.size() - interpreterOutput.getRootContainment() - 1)
+                .getLeft();
 
         interpreterOutput.getPathFromRootToValue().setNodeList(new ArrayList<>());
 
@@ -189,7 +194,7 @@ public class Interpreter {
             if (CollectionUtils.isEmpty(node.getChildren())) {
 
                 Optional<InterpreterPathNode> input = node.getInputs().stream()
-                        .map(i -> findPathToValue(path.removeStart(0), i))
+                        .map(i -> findPathToValue(path.removeStart(1), i))
                         .flatMap(Optional::stream)
                         .findAny();
                 if (input.isEmpty()) {
@@ -236,9 +241,9 @@ public class Interpreter {
         return node.getName().equals(Optional.ofNullable(input.getSuffix()).orElse("value"));
     }
 
-    private int findRoot(List<Containment> c) {
-        for (int i = c.size() - 1; i >= 0; i--) {
-            if (rootContainment.contains(c.get(i).getType())) {
+    private int findRoot(List<Containment> c, int i) {
+        for (; i >= 0; i--) {
+            if (resolveTo.contains(c.get(i).getType())) {
                 return i;
             }
         }
@@ -325,18 +330,12 @@ public class Interpreter {
                         })
                         .flatMap(Set::stream)
                         .map(a -> {
-                            if (id.equals(contains.get(0))) {
-                                ArrayDeque<WebTemplateNode> right = new ArrayDeque<>();
-                                right.add(node);
-                                return new ArrayList<>(Collections.singletonList(Pair.of(node, right)));
-                            } else {
-                                ArrayDeque<WebTemplateNode> right = new ArrayDeque<>();
-                                right.add(node);
-                                a.add(Pair.of(node, right));
-                                return a;
-                            }
+                            ArrayDeque<WebTemplateNode> right = new ArrayDeque<>();
+                            right.add(node);
+                            a.add(Pair.of(node, right));
+                            return a;
                         })
-                        .forEach(r -> result.add((List<Pair<WebTemplateNode, Deque<WebTemplateNode>>>) r));
+                        .forEach(r -> result.add(r));
                 return result;
             } else {
                 LinkedHashSet<List<Pair<WebTemplateNode, Deque<WebTemplateNode>>>> result = new LinkedHashSet<>();

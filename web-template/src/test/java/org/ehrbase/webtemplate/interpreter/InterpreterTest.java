@@ -20,6 +20,7 @@ package org.ehrbase.webtemplate.interpreter;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.tuple.Pair;
@@ -46,7 +47,7 @@ class InterpreterTest {
     void findContainment() {
 
         String aql =
-                "select c/uid/value, o/data[at0001]/events[at0002.1]/data[at0003]/items[at0004]/value/value, cl/items[at0001]/value/value from ehr e contains COMPOSITION c contains OBSERVATION o[openEHR-EHR-OBSERVATION.demo_observation.v0] contains CLUSTER cl [openEHR-EHR-CLUSTER.lab_demo.v0]";
+                "select c/uid/value, o/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/value, cl/items[at0001]/value/value from ehr e contains COMPOSITION c contains OBSERVATION o[openEHR-EHR-OBSERVATION.demo_observation.v0] contains CLUSTER cl [openEHR-EHR-CLUSTER.lab_demo.v0]";
 
         AqlDto parse = new AqlToDtoParser().parse(aql);
 
@@ -54,7 +55,9 @@ class InterpreterTest {
         ContainmentDto observation = (ContainmentDto) composition.getContains();
         ContainmentDto cluster = (ContainmentDto) observation.getContains();
 
-        Interpreter cut = new Interpreter(new TestDataTemplateProvider());
+        Interpreter cut = new Interpreter(
+                new TestDataTemplateProvider(),
+                List.of("COMPOSITION", "OBSERVATION", "EVALUATION", "INSTRUCTION", "ACTION"));
         Set<Pair<Containment[], Containment>> expected1 = cut.findContainment(composition.getId(), parse.getContains());
         assertThat(expected1.stream().map(Pair::getLeft).flatMap(Arrays::stream).collect(Collectors.toList()))
                 .map(Containment::getArchetypeId)
@@ -84,8 +87,8 @@ class InterpreterTest {
     }
 
     private enum InterpreterTestCase {
-        CASE_1(
-                "select c/uid/value, o/data[at0001]/events[at0002.1]/data[at0003]/items[at0004]/value/value, cl/items[at0001]/value/value from ehr e contains COMPOSITION c contains OBSERVATION o[openEHR-EHR-OBSERVATION.demo_observation.v0] contains CLUSTER cl [openEHR-EHR-CLUSTER.lab_demo.v0]",
+        CASE_CLUSTER(
+                "select c/uid/value, o/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/value, cl/items[at0001]/value/value from ehr e contains COMPOSITION c contains OBSERVATION o[openEHR-EHR-OBSERVATION.demo_observation.v0] contains CLUSTER cl [openEHR-EHR-CLUSTER.lab_demo.v0]",
                 2,
                 new Tuple[] {
                     new Tuple(
@@ -97,37 +100,56 @@ class InterpreterTest {
                             "openEHR-EHR-COMPOSITION.report.v1;openEHR-EHR-OBSERVATION.demo_observation.v0,'root_observation';openEHR-EHR-CLUSTER.lab_demo.v0",
                             "/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.lab_demo.v0]/items[at0001]/value/value")
                 }),
-    /*
-          CASE_2(
-              "select c/uid/value, o/data[at0001]/events[at0002.1]/data[at0003]/items[at0004]/value/value, cl/items[at0001]/value/value from ehr e contains COMPOSITION c contains OBSERVATION o[openEHR-EHR-OBSERVATION.demo_observation.v0] contains CLUSTER cl [openEHR-EHR-CLUSTER.lab_demo.v0]",
-              1,
-              new Tuple[] {
-                  new Tuple(
-                      1,
-                      "openEHR-EHR-COMPOSITION.report.v1;openEHR-EHR-OBSERVATION.demo_observation.v0,'first_observation';openEHR-EHR-CLUSTER.lab_demo.v0",
-                      "/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.lab_demo.v0]/items[at0001]/value/value"),
-                  new Tuple(
-                      1,
-                      "openEHR-EHR-COMPOSITION.report.v1;openEHR-EHR-OBSERVATION.demo_observation.v0,'root_observation';openEHR-EHR-CLUSTER.lab_demo.v0",
-                      "/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.lab_demo.v0]/items[at0001]/value/value")
-              }),
 
-          CASE_3(
-              "select c/uid/value, o/data[at0001]/events[at0002.1]/data[at0003]/items[at0004]/value/value, cl/items[at0001]/value/value from ehr e contains COMPOSITION c contains OBSERVATION o[openEHR-EHR-OBSERVATION.demo_observation.v0] contains CLUSTER cl [openEHR-EHR-CLUSTER.lab_demo.v0]",
-              0,
-              new Tuple[] {
-                  new Tuple(
-                      1,
-                      "openEHR-EHR-COMPOSITION.report.v1;openEHR-EHR-OBSERVATION.demo_observation.v0,'first_observation';openEHR-EHR-CLUSTER.lab_demo.v0",
-                      "/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.lab_demo.v0]/items[at0001]/value/value"),
-                  new Tuple(
-                      1,
-                      "openEHR-EHR-COMPOSITION.report.v1;openEHR-EHR-OBSERVATION.demo_observation.v0,'root_observation';openEHR-EHR-CLUSTER.lab_demo.v0",
-                      "/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.lab_demo.v0]/items[at0001]/value/value")
-              })
+        CASE_OBSERVATION(
+                "select c/uid/value, o/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/value, cl/items[at0001]/value/value from ehr e contains COMPOSITION c contains OBSERVATION o[openEHR-EHR-OBSERVATION.demo_observation.v0] contains CLUSTER cl [openEHR-EHR-CLUSTER.lab_demo.v0]",
+                1,
+                new Tuple[] {
+                    new Tuple(
+                            1,
+                            "openEHR-EHR-COMPOSITION.report.v1;openEHR-EHR-OBSERVATION.demo_observation.v0,'first_observation';openEHR-EHR-CLUSTER.lab_demo.v0",
+                            "/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/value"),
+                    new Tuple(
+                            1,
+                            "openEHR-EHR-COMPOSITION.report.v1;openEHR-EHR-OBSERVATION.demo_observation.v0,'root_observation';openEHR-EHR-CLUSTER.lab_demo.v0",
+                            "/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/value")
+                }),
 
-    */
-    ;
+        CASE_OBSERVATION_2(
+                "select c/uid/value, o/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/value from ehr e contains COMPOSITION c contains OBSERVATION o[openEHR-EHR-OBSERVATION.demo_observation.v0]",
+                1,
+                new Tuple[] {
+                    new Tuple(
+                            1,
+                            "openEHR-EHR-COMPOSITION.report.v1;openEHR-EHR-OBSERVATION.demo_observation.v0,'demo_observation'",
+                            "/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/value"),
+                    new Tuple(
+                            1,
+                            "openEHR-EHR-COMPOSITION.report.v1;openEHR-EHR-OBSERVATION.demo_observation.v0,'first_observation'",
+                            "/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/value"),
+                    new Tuple(
+                            1,
+                            "openEHR-EHR-COMPOSITION.report.v1;openEHR-EHR-OBSERVATION.demo_observation.v0,'root_observation'",
+                            "/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/value")
+                }),
+
+        CASE_COMPOSITION(
+                "select c/uid/value, o/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/value, cl/items[at0001]/value/value from ehr e contains COMPOSITION c contains OBSERVATION o[openEHR-EHR-OBSERVATION.demo_observation.v0] contains CLUSTER cl [openEHR-EHR-CLUSTER.lab_demo.v0]",
+                0,
+                new Tuple[] {
+                    new Tuple(
+                            0,
+                            "openEHR-EHR-COMPOSITION.report.v1;openEHR-EHR-OBSERVATION.demo_observation.v0,'first_observation';openEHR-EHR-CLUSTER.lab_demo.v0",
+                            "/uid/value"),
+                    new Tuple(
+                            0,
+                            "openEHR-EHR-COMPOSITION.report.v1;openEHR-EHR-OBSERVATION.demo_observation.v0,'root_observation';openEHR-EHR-CLUSTER.lab_demo.v0",
+                            "/uid/value")
+                }),
+
+        CASE_COMPOSITION_2("select c/uid/value from ehr e contains COMPOSITION c ", 0, new Tuple[] {
+            new Tuple(0, "openEHR-EHR-COMPOSITION.report.v1", "/uid/value"),
+        });
         final String aql;
         final int selectField;
         final Tuple[] expected;
@@ -149,12 +171,68 @@ class InterpreterTest {
         SelectFieldDto clusterSelectStatementDto =
                 (SelectFieldDto) parse.getSelect().getStatement().get(test.selectField);
 
-        Interpreter cut = new Interpreter(new TestDataTemplateProvider());
+        Interpreter cut = new Interpreter(
+                new TestDataTemplateProvider(),
+                List.of("COMPOSITION", "OBSERVATION", "EVALUATION", "INSTRUCTION", "ACTION"));
 
         Set<InterpreterOutput> interpreterOutputSet = cut.interpret(
                 clusterSelectStatementDto, parse.getContains(), OperationalTemplateTestData.AQL_TEST.getTemplateId());
 
         assertOutput(interpreterOutputSet, test.expected);
+    }
+
+    @Test
+    void interpretToComposition() {
+
+        String aql =
+                "select c/uid/value, o/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/value, cl/items[at0001]/value/value from ehr e contains COMPOSITION c contains OBSERVATION o[openEHR-EHR-OBSERVATION.demo_observation.v0] contains CLUSTER cl [openEHR-EHR-CLUSTER.lab_demo.v0]";
+        AqlDto parse = new AqlToDtoParser().parse(aql);
+
+        SelectFieldDto clusterSelectStatementDto =
+                (SelectFieldDto) parse.getSelect().getStatement().get(2);
+
+        Interpreter cut = new Interpreter(new TestDataTemplateProvider(), List.of("COMPOSITION"));
+
+        Set<InterpreterOutput> interpreterOutputSet = cut.interpret(
+                clusterSelectStatementDto, parse.getContains(), OperationalTemplateTestData.AQL_TEST.getTemplateId());
+
+        assertOutput(interpreterOutputSet, new Tuple[] {
+            new Tuple(
+                    0,
+                    "openEHR-EHR-COMPOSITION.report.v1;openEHR-EHR-OBSERVATION.demo_observation.v0,'first_observation';openEHR-EHR-CLUSTER.lab_demo.v0",
+                    "/content[openEHR-EHR-SECTION.adhoc.v1,'cause']/items[openEHR-EHR-OBSERVATION.demo_observation.v0,'first_observation']/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.lab_demo.v0]/items[at0001]/value/value"),
+            new Tuple(
+                    0,
+                    "openEHR-EHR-COMPOSITION.report.v1;openEHR-EHR-OBSERVATION.demo_observation.v0,'root_observation';openEHR-EHR-CLUSTER.lab_demo.v0",
+                    "/content[openEHR-EHR-OBSERVATION.demo_observation.v0,'root_observation']/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.lab_demo.v0]/items[at0001]/value/value")
+        });
+    }
+
+    @Test
+    void interpretToComposition2() {
+
+        String aql =
+                "select c/content[openEHR-EHR-SECTION.adhoc.v1,'cause']/items[openEHR-EHR-OBSERVATION.demo_observation.v0]/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/value from ehr e contains COMPOSITION c";
+        AqlDto parse = new AqlToDtoParser().parse(aql);
+
+        SelectFieldDto clusterSelectStatementDto =
+                (SelectFieldDto) parse.getSelect().getStatement().get(0);
+
+        Interpreter cut = new Interpreter(new TestDataTemplateProvider(), List.of("COMPOSITION"));
+
+        Set<InterpreterOutput> interpreterOutputSet = cut.interpret(
+                clusterSelectStatementDto, parse.getContains(), OperationalTemplateTestData.AQL_TEST.getTemplateId());
+
+        assertOutput(interpreterOutputSet, new Tuple[] {
+            new Tuple(
+                    0,
+                    "openEHR-EHR-COMPOSITION.report.v1",
+                    "/content[openEHR-EHR-SECTION.adhoc.v1,'cause']/items[openEHR-EHR-OBSERVATION.demo_observation.v0,'demo_observation']/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/value"),
+            new Tuple(
+                    0,
+                    "openEHR-EHR-COMPOSITION.report.v1",
+                    "/content[openEHR-EHR-SECTION.adhoc.v1,'cause']/items[openEHR-EHR-OBSERVATION.demo_observation.v0,'first_observation']/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/value")
+        });
     }
 
     private static void assertOutput(Set<InterpreterOutput> interpreterOutputSet, Tuple... tuples) {
