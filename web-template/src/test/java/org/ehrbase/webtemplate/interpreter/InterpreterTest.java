@@ -61,7 +61,10 @@ class InterpreterTest {
         Set<Pair<Containment[], Containment>> expected1 = cut.findContainment(composition.getId(), parse.getContains());
         assertThat(expected1.stream().map(Pair::getLeft).flatMap(Arrays::stream).collect(Collectors.toList()))
                 .map(Containment::getArchetypeId)
-                .containsExactly(composition.getArchetypeId(), observation.getArchetypeId(), cluster.getArchetypeId());
+                .containsExactly(
+                        composition.getContainment().getArchetypeId(),
+                        observation.getContainment().getArchetypeId(),
+                        cluster.getContainment().getArchetypeId());
         assertThat(expected1)
                 .map(Pair::getValue)
                 .map(Containment::getArchetypeId)
@@ -70,7 +73,10 @@ class InterpreterTest {
         Set<Pair<Containment[], Containment>> expected2 = cut.findContainment(observation.getId(), parse.getContains());
         assertThat(expected2.stream().map(Pair::getLeft).flatMap(Arrays::stream).collect(Collectors.toList()))
                 .map(Containment::getArchetypeId)
-                .containsExactly(composition.getArchetypeId(), observation.getArchetypeId(), cluster.getArchetypeId());
+                .containsExactly(
+                        composition.getContainment().getArchetypeId(),
+                        observation.getContainment().getArchetypeId(),
+                        cluster.getContainment().getArchetypeId());
         assertThat(expected2)
                 .map(Pair::getValue)
                 .map(Containment::getArchetypeId)
@@ -79,7 +85,10 @@ class InterpreterTest {
         Set<Pair<Containment[], Containment>> expected3 = cut.findContainment(cluster.getId(), parse.getContains());
         assertThat(expected3.stream().map(Pair::getLeft).flatMap(Arrays::stream).collect(Collectors.toList()))
                 .map(Containment::getArchetypeId)
-                .containsExactly(composition.getArchetypeId(), observation.getArchetypeId(), cluster.getArchetypeId());
+                .containsExactly(
+                        composition.getContainment().getArchetypeId(),
+                        observation.getContainment().getArchetypeId(),
+                        cluster.getContainment().getArchetypeId());
         assertThat(expected3)
                 .map(Pair::getValue)
                 .map(Containment::getArchetypeId)

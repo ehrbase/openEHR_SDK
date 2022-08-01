@@ -29,8 +29,12 @@ public class ContainmentDto implements ContainmentExpresionDto {
         return this.id;
     }
 
+    @Deprecated
+    /**
+     * use {@link ContainmentDto#getContainment()} and {@link Containment#getArchetypeId()}
+     */
     public String getArchetypeId() {
-        return containment.getArchetypeId();
+        return getContainment().getArchetypeId();
     }
 
     public ContainmentExpresionDto getContains() {
@@ -41,8 +45,12 @@ public class ContainmentDto implements ContainmentExpresionDto {
         this.id = id;
     }
 
+    @Deprecated
+    /**
+     * use {@link ContainmentDto#getContainment()} and {@link Containment#setArchetypeId(String)}
+     */
     public void setArchetypeId(String archetypeId) {
-        containment.setArchetypeId(archetypeId);
+        getContainment().setArchetypeId(archetypeId);
     }
 
     public void setContains(ContainmentExpresionDto contains) {

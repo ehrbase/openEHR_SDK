@@ -55,12 +55,17 @@ public class Interpreter {
 
     private final TemplateProvider templateProvider;
 
+    /**
+     *
+     * @param templateProvider Used {@link TemplateProvider}
+     * @param resolveTo To wich {@link com.nedap.archie.rm.RMObject} should the part be resolved
+     */
     public Interpreter(TemplateProvider templateProvider, List<String> resolveTo) {
         this.templateProvider = templateProvider;
         this.resolveTo = resolveTo;
     }
 
-    protected Set<InterpreterInput> toInterpreterInputSet(
+    private Set<InterpreterInput> toInterpreterInputSet(
             SelectFieldDto selectFieldDto, ContainmentExpresionDto contains) {
 
         return findContainment(selectFieldDto.getContainmentId(), contains).stream()
@@ -83,6 +88,13 @@ public class Interpreter {
         return interpret(toInterpreterInputSet(selectFieldDto, contains), templateId);
     }
 
+    /**
+     * Called from {@link @see Interpreter#interpret(InterpreterInput, WebTemplateNode) }. Can be overwritten to take advantage of caching.
+     * @see Interpreter#interpret(InterpreterInput, WebTemplateNode)
+     * @param inputs
+     * @param templateId
+     * @return
+     */
     protected Set<InterpreterOutput> interpret(Set<InterpreterInput> inputs, String templateId) {
         Set<InterpreterOutput> result = new LinkedHashSet<>();
 
@@ -96,7 +108,7 @@ public class Interpreter {
 
     private Set<InterpreterOutput> interpret(InterpreterInput input, WebTemplateNode node) {
         LinkedHashSet<InterpreterOutput> result = new LinkedHashSet<>();
-        resolve(input.getContainmentPath(), input.getContainment(), node).stream()
+        resolve(input.getContainmentPath(), node).stream()
                 .map(r -> interpret(input, r))
                 .forEach(result::addAll);
 
@@ -254,29 +266,34 @@ public class Interpreter {
         throw new SdkException(String.format("No Element in %s  matches %s", c, con));
     }
 
+    /**
+     * Finds all direct contain path containing the {@link Containment} with given id.
+     * @param id
+     * @param containmentDto
+     * @return
+     */
     protected Set<Pair<Containment[], Containment>> findContainment(
             Integer id, ContainmentExpresionDto containmentDto) {
 
         if (containmentDto instanceof ContainmentDto) {
             return findContainmentInContainmentDto(id, (ContainmentDto) containmentDto);
+        } else {
+            throw new UnsupportedOperationException(
+                    String.format("%s not supported", containmentDto.getClass().getName()));
         }
-
-        return Collections.emptySet();
     }
 
     private Set<Pair<Containment[], Containment>> findContainmentInContainmentDto(
             Integer id, ContainmentDto containmentDto) {
-        Containment node = new Containment(
-                MatcherUtil.findTypeName(containmentDto.getArchetypeId()),
-                containmentDto.getArchetypeId(),
-                new PredicateLogicalAndOperation());
 
         if (containmentDto.getContains() == null) {
 
             if (id == null || id.equals(containmentDto.getId())) {
 
                 Set<Pair<Containment[], Containment>> list = new LinkedHashSet<>();
-                list.add(Pair.of(new Containment[] {node}, id != null ? node : null));
+                list.add(Pair.of(
+                        new Containment[] {containmentDto.getContainment()},
+                        id != null ? containmentDto.getContainment() : null));
 
                 return list;
             } else {
@@ -286,18 +303,22 @@ public class Interpreter {
 
             if (id != null && id.equals(containmentDto.getId())) {
                 return findContainment(null, containmentDto.getContains()).stream()
-                        .map(a -> Pair.of(ArrayUtils.addFirst(a.getLeft(), node), node))
+                        .map(a -> Pair.of(
+                                ArrayUtils.addFirst(a.getLeft(), containmentDto.getContainment()),
+                                containmentDto.getContainment()))
                         .collect(Collectors.toCollection(LinkedHashSet::new));
             } else {
                 return findContainment(id, containmentDto.getContains()).stream()
-                        .map(a -> Pair.of(ArrayUtils.addFirst(a.getLeft(), node), a.getRight()))
+                        .map(a -> Pair.of(
+                                ArrayUtils.addFirst(a.getLeft(), containmentDto.getContainment()), a.getRight()))
                         .collect(Collectors.toCollection(LinkedHashSet::new));
             }
         }
     }
 
     protected Set<List<Pair<WebTemplateNode, Deque<WebTemplateNode>>>> resolve(
-            List<Containment> contains, Containment id, WebTemplateNode node) {
+            List<Containment> contains, WebTemplateNode node) {
+
         if (CollectionUtils.isEmpty(node.getChildren())) {
 
             if (contains.size() == 1 && MatcherUtil.matches(contains.get(0), node)) {
@@ -320,7 +341,7 @@ public class Interpreter {
                         .map(c -> {
                             var nextContains = new ArrayList<>(contains);
                             nextContains.remove(0);
-                            return resolve(nextContains, id, c);
+                            return resolve(nextContains, c);
                         })
                         .flatMap(Set::stream)
                         .map(a -> {
@@ -334,7 +355,7 @@ public class Interpreter {
             } else {
                 LinkedHashSet<List<Pair<WebTemplateNode, Deque<WebTemplateNode>>>> result = new LinkedHashSet<>();
                 node.getChildren().stream()
-                        .map(c -> resolve(contains, id, c))
+                        .map(c -> resolve(contains, c))
                         .flatMap(Set::stream)
                         .map(p -> {
                             p.get(p.size() - 1).getValue().addLast(node);

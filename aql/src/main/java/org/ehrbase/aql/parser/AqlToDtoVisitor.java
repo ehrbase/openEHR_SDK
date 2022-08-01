@@ -349,11 +349,17 @@ public class AqlToDtoVisitor extends AqlBaseVisitor<Object> {
                         archetypedClassExprContext.IDENTIFIER(1).getText());
                 identifierMap.put(currentContainment.getIdentifier(), currentContainment.getId());
             }
-            currentContainment.setArchetypeId(
-                    archetypedClassExprContext.ARCHETYPEID().getText());
+
+            currentContainment
+                    .getContainment()
+                    .setType(archetypedClassExprContext.IDENTIFIER(0).getText());
+            currentContainment
+                    .getContainment()
+                    .setArchetypeId(archetypedClassExprContext.ARCHETYPEID().getText());
 
         } else {
-            currentContainment.setArchetypeId(ctx.IDENTIFIER(0).getText());
+            currentContainment.getContainment().setType(ctx.IDENTIFIER(0).getText());
+            currentContainment.getContainment().setArchetypeId(ctx.IDENTIFIER(0).getText());
             if (ctx.IDENTIFIER().size() == 2) {
                 currentContainment.setIdentifier(ctx.IDENTIFIER(1).getText());
                 identifierMap.put(currentContainment.getIdentifier(), currentContainment.getId());

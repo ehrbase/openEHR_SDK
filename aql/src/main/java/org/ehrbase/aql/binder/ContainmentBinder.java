@@ -71,7 +71,7 @@ public class ContainmentBinder {
         ContainmentExpression containmentExpression;
         Map<Integer, Containment> containmentMap = new HashMap<>();
         ContainmentExpression containmentExpression1;
-        Containment containment = new Containment(dto.getArchetypeId());
+        Containment containment = new Containment(dto.getContainment().getArchetypeId());
         containmentExpression1 = containment;
         containmentMap.put(dto.getId(), containment);
         if (dto.getContains() != null) {
