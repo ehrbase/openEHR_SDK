@@ -17,6 +17,8 @@
  */
 package org.ehrbase.webtemplate.interpreter;
 
+import static org.ehrbase.aql.dto.path.predicate.PredicateHelper.ARCHETYPE_NODE_ID;
+
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -38,7 +40,6 @@ import org.ehrbase.aql.dto.containment.ContainmentExpresionDto;
 import org.ehrbase.aql.dto.path.AqlPath;
 import org.ehrbase.aql.dto.path.AqlPath.AqlNode;
 import org.ehrbase.aql.dto.path.predicate.PredicateComparisonOperatorDto;
-import org.ehrbase.aql.dto.path.predicate.PredicateHelper;
 import org.ehrbase.aql.dto.path.predicate.PredicateLogicalAndOperation;
 import org.ehrbase.aql.dto.select.SelectFieldDto;
 import org.ehrbase.util.exception.SdkException;
@@ -117,68 +118,22 @@ public class Interpreter {
 
     private Set<InterpreterOutput> interpret(
             InterpreterInput input, List<Pair<WebTemplateNode, Deque<WebTemplateNode>>> result) {
+
         InterpreterOutput interpreterOutput = new InterpreterOutput();
 
         interpreterOutput.setContain(result.stream()
-                .map(n -> {
-                    Containment containment = new Containment();
-                    AqlNode lastNode = n.getLeft().getAqlPathDto().getLastNode();
-                    String atCode = Optional.ofNullable(lastNode.getAtCode())
-                            .orElse(n.getLeft().getNodeId());
-                    containment.setArchetypeId(atCode);
-                    containment.setType(MatcherUtil.findTypeName(atCode));
-                    containment.setOtherPredicates(lastNode.getOtherPredicate());
-
-                    if (lastNode.getAtCode() == null) {
-                        PredicateLogicalAndOperation predicateLogicalAndOperation = new PredicateLogicalAndOperation();
-                        PredicateComparisonOperatorDto predicateComparisonOperatorDto =
-                                new PredicateComparisonOperatorDto();
-                        predicateComparisonOperatorDto.setStatement(PredicateHelper.ARCHETYPE_NODE_ID);
-                        predicateComparisonOperatorDto.setSymbol(ConditionComparisonOperatorSymbol.EQ);
-                        predicateComparisonOperatorDto.setValue(new SimpleValue(atCode));
-                        predicateLogicalAndOperation.setValues(new ArrayList<>());
-                        predicateLogicalAndOperation.getValues().add(predicateComparisonOperatorDto);
-                        containment.setOtherPredicates(predicateLogicalAndOperation);
-                    }
-
-                    return containment;
-                })
+                .map(Pair::getLeft)
+                .map(Interpreter::toContainment)
                 .collect(Collectors.toList()));
-        Collections.reverse(interpreterOutput.getContain());
 
-        int continment = findContainment(input.getContainmentPath(), input.getContainment()) + 1;
+        int containment = findContainmentIndex(input.getContainmentPath(), input.getContainment());
 
-        interpreterOutput.setRootContainment(findRootIndex(interpreterOutput.getContain(), continment - 1));
+        interpreterOutput.setRootContainment(findRootIndex(interpreterOutput.getContain(), containment));
 
-        Deque<WebTemplateNode> webTemplateNodes = new ArrayDeque<>();
-
-        int skip = result.size() - continment;
-        int maxSize = (continment - interpreterOutput.getRootContainment()) - 1;
-        if (maxSize < 0) {
-            maxSize = 0;
-        }
-
-        result.stream().skip(skip).limit(maxSize).map(Pair::getValue).forEach(webTemplateNodes::addAll);
-
-        WebTemplateNode curent = result.get(result.size() - interpreterOutput.getRootContainment() - 1)
-                .getLeft();
-
-        interpreterOutput.getPathFromRootToValue().setNodeList(new ArrayList<>());
-
-        while (!webTemplateNodes.isEmpty()) {
-            WebTemplateNode next = webTemplateNodes.pollLast();
-            InterpreterPathNode interpreterPathNode = new InterpreterPathNode();
-            interpreterPathNode.setNormalisedNode(
-                    next.getAqlPathDto().removeStart(curent.getAqlPathDto()).getBaseNode());
-            interpreterPathNode.setOtherPredicate(new PredicateLogicalAndOperation());
-            interpreterPathNode.setTemplateNode(new SimpleTemplateNode(next));
-
-            interpreterOutput.getPathFromRootToValue().getNodeList().add(interpreterPathNode);
-            curent = next;
-        }
+        WebTemplateNode current = findPathToContainment(result, interpreterOutput, containment);
 
         LinkedHashSet<InterpreterOutput> inter = new LinkedHashSet<>();
-        curent.getChildren().stream()
+        current.getChildren().stream()
                 .map(c -> findPathToValue(input.getPathFromContentment(), c))
                 .flatMap(Set::stream)
                 .map(l -> {
@@ -189,6 +144,60 @@ public class Interpreter {
                 .forEach(inter::add);
 
         return inter;
+    }
+
+    private static Containment toContainment(WebTemplateNode n) {
+        Containment containment = new Containment();
+
+        // COMPOSITION has path '\' and thus must be dealt with extra.
+        if (MatcherUtil.findTypeName(n.getNodeId()).equals("COMPOSITION")) {
+
+            containment.setArchetypeId(n.getNodeId());
+            containment.setType("COMPOSITION");
+            containment.setOtherPredicates(new PredicateLogicalAndOperation(new PredicateComparisonOperatorDto(
+                    ARCHETYPE_NODE_ID, ConditionComparisonOperatorSymbol.EQ, new SimpleValue(n.getNodeId()))));
+
+        } else {
+            AqlNode lastNode = n.getAqlPathDto().getLastNode();
+
+            containment.setArchetypeId(lastNode.getAtCode());
+            containment.setType(MatcherUtil.findTypeName(lastNode.getAtCode()));
+            containment.setOtherPredicates(lastNode.getOtherPredicate());
+        }
+
+        return containment;
+    }
+
+    private static WebTemplateNode findPathToContainment(
+            List<Pair<WebTemplateNode, Deque<WebTemplateNode>>> result,
+            InterpreterOutput interpreterOutput,
+            int containment) {
+        Deque<WebTemplateNode> webTemplateNodes = new ArrayDeque<>();
+
+        int skip = interpreterOutput.getRootContainment() + 1;
+        int maxSize = (containment - interpreterOutput.getRootContainment());
+        if (maxSize < 0) {
+            maxSize = 0;
+        }
+
+        result.stream().skip(skip).limit(maxSize).map(Pair::getValue).forEach(webTemplateNodes::addAll);
+
+        WebTemplateNode curent =
+                result.get(interpreterOutput.getRootContainment()).getLeft();
+
+        interpreterOutput.getPathFromRootToValue().setNodeList(new ArrayList<>());
+
+        while (!webTemplateNodes.isEmpty()) {
+            WebTemplateNode next = webTemplateNodes.poll();
+            InterpreterPathNode interpreterPathNode = new InterpreterPathNode();
+            interpreterPathNode.setNormalisedNode(next.getAqlPathDto().getLastNode());
+            interpreterPathNode.setOtherPredicate(new PredicateLogicalAndOperation());
+            interpreterPathNode.setTemplateNode(new SimpleTemplateNode(next));
+
+            interpreterOutput.getPathFromRootToValue().getNodeList().add(interpreterPathNode);
+            curent = next;
+        }
+        return curent;
     }
 
     protected Set<List<InterpreterPathNode>> findPathToValue(AqlPath path, WebTemplateNode node) {
@@ -256,8 +265,8 @@ public class Interpreter {
         throw new SdkException(String.format("No Element in %s  matches %s", c, resolveTo));
     }
 
-    private int findContainment(List<Containment> c, Containment con) {
-        for (int i = c.size() - 1; i >= 0; i--) {
+    private int findContainmentIndex(List<Containment> c, Containment con) {
+        for (int i = 0; i < c.size(); i++) {
             if (c.get(i).equals(con)) {
                 return i;
             }
@@ -267,14 +276,14 @@ public class Interpreter {
     }
 
     /**
-     * Finds all direct contain path containing the {@link Containment} with given id.
-     * @param id
+     * Finds all direct contain path containing the {@link Containment} with given <code>id</code>.
+     * @param id Might be null to indicate to find all direct paths without the condition to match  <code>id</code>.
      * @param containmentDto
-     * @return
+     * @return The set of all direct contain path. {@link Pair#getLeft()} is the path and {@link Pair#getRight()} is the containment in the path matching the given <code>id</code>.
      */
     protected Set<Pair<Containment[], Containment>> findContainment(
             Integer id, ContainmentExpresionDto containmentDto) {
-
+        // @Todo support logical operations
         if (containmentDto instanceof ContainmentDto) {
             return findContainmentInContainmentDto(id, (ContainmentDto) containmentDto);
         } else {
@@ -283,24 +292,33 @@ public class Interpreter {
         }
     }
 
+    /**
+     * Handle {@link ContainmentDto}.
+     * @see Interpreter#findContainmentIndex(List, Containment)
+     * @param id
+     * @param containmentDto
+     * @return
+     */
     private Set<Pair<Containment[], Containment>> findContainmentInContainmentDto(
             Integer id, ContainmentDto containmentDto) {
 
+        // We are at the End
         if (containmentDto.getContains() == null) {
-
+            // match return itself
             if (id == null || id.equals(containmentDto.getId())) {
-
                 Set<Pair<Containment[], Containment>> list = new LinkedHashSet<>();
                 list.add(Pair.of(
                         new Containment[] {containmentDto.getContainment()},
                         id != null ? containmentDto.getContainment() : null));
 
                 return list;
+                // no match return empty
             } else {
                 return Collections.emptySortedSet();
             }
+            // more to come
         } else {
-
+            // match. Get  all containing sub paths and add them.
             if (id != null && id.equals(containmentDto.getId())) {
                 return findContainment(null, containmentDto.getContains()).stream()
                         .map(a -> Pair.of(
@@ -308,6 +326,7 @@ public class Interpreter {
                                 containmentDto.getContainment()))
                         .collect(Collectors.toCollection(LinkedHashSet::new));
             } else {
+                // no match. Get   containing sub paths wich match and add them.
                 return findContainment(id, containmentDto.getContains()).stream()
                         .map(a -> Pair.of(
                                 ArrayUtils.addFirst(a.getLeft(), containmentDto.getContainment()), a.getRight()))
@@ -316,11 +335,18 @@ public class Interpreter {
         }
     }
 
-    protected Set<List<Pair<WebTemplateNode, Deque<WebTemplateNode>>>> resolve(
+    /**
+     * Find all paths in the {@link WebTemplateNode} <code>node</code> matching the <code>contains</code>
+     * @param contains
+     * @param node
+     * @return The set of all matching parts. Each {@link Pair} in the list correspond to an Element of <code>contains</code>. where {@link Pair#getLeft()} is the matching {@link WebTemplateNode} and {@link Pair#getRight()} is the path to this node from the previous.
+     */
+    protected static Set<List<Pair<WebTemplateNode, Deque<WebTemplateNode>>>> resolve(
             List<Containment> contains, WebTemplateNode node) {
 
+        // We are at the End
         if (CollectionUtils.isEmpty(node.getChildren())) {
-
+            // if all have been matched return the node
             if (contains.size() == 1 && MatcherUtil.matches(contains.get(0), node)) {
                 ArrayDeque<WebTemplateNode> right = new ArrayDeque<>();
                 right.add(node);
@@ -329,14 +355,18 @@ public class Interpreter {
 
                 return Collections.emptySet();
             }
+            // more to come
         } else {
+            // if all have been matched return the node
             if (contains.size() == 1 && MatcherUtil.matches(contains.get(0), node)) {
+
                 ArrayDeque<WebTemplateNode> right = new ArrayDeque<>();
                 right.add(node);
                 return Collections.singleton(new ArrayList<>(Collections.singletonList(Pair.of(node, right))));
+                // if some have been matched but there are  more search for matches of the sub contains
             } else if (MatcherUtil.matches(contains.get(0), node)) {
-                LinkedHashSet<List<Pair<WebTemplateNode, Deque<WebTemplateNode>>>> result = new LinkedHashSet<>();
 
+                LinkedHashSet<List<Pair<WebTemplateNode, Deque<WebTemplateNode>>>> result = new LinkedHashSet<>();
                 node.getChildren().stream()
                         .map(c -> {
                             var nextContains = new ArrayList<>(contains);
@@ -347,22 +377,23 @@ public class Interpreter {
                         .map(a -> {
                             ArrayDeque<WebTemplateNode> right = new ArrayDeque<>();
                             right.add(node);
-                            a.add(Pair.of(node, right));
+                            a.add(0, Pair.of(node, right));
                             return a;
                         })
                         .forEach(result::add);
                 return result;
+                // continue searching
             } else {
+
                 LinkedHashSet<List<Pair<WebTemplateNode, Deque<WebTemplateNode>>>> result = new LinkedHashSet<>();
                 node.getChildren().stream()
                         .map(c -> resolve(contains, c))
                         .flatMap(Set::stream)
                         .map(p -> {
-                            p.get(p.size() - 1).getValue().addLast(node);
+                            p.get(0).getValue().addFirst(node);
                             return p;
                         })
                         .forEach(result::add);
-
                 return result;
             }
         }

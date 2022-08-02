@@ -20,6 +20,7 @@ package org.ehrbase.webtemplate.interpreter;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Arrays;
+import java.util.Deque;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -30,9 +31,11 @@ import org.ehrbase.aql.dto.containment.Containment;
 import org.ehrbase.aql.dto.containment.ContainmentDto;
 import org.ehrbase.aql.dto.path.AqlPath;
 import org.ehrbase.aql.dto.path.predicate.PredicateHelper;
+import org.ehrbase.aql.dto.path.predicate.PredicateLogicalAndOperation;
 import org.ehrbase.aql.dto.select.SelectFieldDto;
 import org.ehrbase.aql.parser.AqlToDtoParser;
 import org.ehrbase.test_data.operationaltemplate.OperationalTemplateTestData;
+import org.ehrbase.webtemplate.model.WebTemplateNode;
 import org.ehrbase.webtemplate.templateprovider.TestDataTemplateProvider;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -97,7 +100,12 @@ class InterpreterTest {
 
     private enum InterpreterTestCase {
         CASE_CLUSTER(
-                "select c/uid/value, o/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/value, cl/items[at0001]/value/value from ehr e contains COMPOSITION c contains OBSERVATION o[openEHR-EHR-OBSERVATION.demo_observation.v0] contains CLUSTER cl [openEHR-EHR-CLUSTER.lab_demo.v0]",
+                "select c/uid/value," + " o/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/value,"
+                        + " cl/items[at0001]/value/value "
+                        + "from ehr e "
+                        + "contains COMPOSITION c "
+                        + "contains OBSERVATION o[openEHR-EHR-OBSERVATION.demo_observation.v0] "
+                        + "contains CLUSTER cl [openEHR-EHR-CLUSTER.lab_demo.v0]",
                 2,
                 new Tuple[] {
                     new Tuple(
@@ -111,7 +119,12 @@ class InterpreterTest {
                 }),
 
         CASE_OBSERVATION(
-                "select c/uid/value, o/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/value, cl/items[at0001]/value/value from ehr e contains COMPOSITION c contains OBSERVATION o[openEHR-EHR-OBSERVATION.demo_observation.v0] contains CLUSTER cl [openEHR-EHR-CLUSTER.lab_demo.v0]",
+                "select c/uid/value," + " o/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/value,"
+                        + " cl/items[at0001]/value/value "
+                        + "from ehr e "
+                        + "contains COMPOSITION c "
+                        + "contains OBSERVATION o[openEHR-EHR-OBSERVATION.demo_observation.v0] "
+                        + "contains CLUSTER cl [openEHR-EHR-CLUSTER.lab_demo.v0]",
                 1,
                 new Tuple[] {
                     new Tuple(
@@ -125,7 +138,10 @@ class InterpreterTest {
                 }),
 
         CASE_OBSERVATION_2(
-                "select c/uid/value, o/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/value from ehr e contains COMPOSITION c contains OBSERVATION o[openEHR-EHR-OBSERVATION.demo_observation.v0]",
+                "select c/uid/value," + " o/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/value"
+                        + " from ehr e"
+                        + " contains COMPOSITION c"
+                        + " contains OBSERVATION o[openEHR-EHR-OBSERVATION.demo_observation.v0]",
                 1,
                 new Tuple[] {
                     new Tuple(
@@ -143,7 +159,12 @@ class InterpreterTest {
                 }),
 
         CASE_COMPOSITION(
-                "select c/uid/value, o/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/value, cl/items[at0001]/value/value from ehr e contains COMPOSITION c contains OBSERVATION o[openEHR-EHR-OBSERVATION.demo_observation.v0] contains CLUSTER cl [openEHR-EHR-CLUSTER.lab_demo.v0]",
+                "select c/uid/value," + " o/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/value,"
+                        + " cl/items[at0001]/value/value "
+                        + "from ehr e "
+                        + "contains COMPOSITION c "
+                        + "contains OBSERVATION o[openEHR-EHR-OBSERVATION.demo_observation.v0] "
+                        + "contains CLUSTER cl [openEHR-EHR-CLUSTER.lab_demo.v0]",
                 0,
                 new Tuple[] {
                     new Tuple(
@@ -156,7 +177,7 @@ class InterpreterTest {
                             "/uid/value")
                 }),
 
-        CASE_COMPOSITION_2("select c/uid/value from ehr e contains COMPOSITION c ", 0, new Tuple[] {
+        CASE_COMPOSITION_2("select c/uid/value " + "from ehr e " + "contains COMPOSITION c ", 0, new Tuple[] {
             new Tuple(0, "openEHR-EHR-COMPOSITION.report.v1", "/uid/value"),
         });
         final String aql;
@@ -193,8 +214,12 @@ class InterpreterTest {
     @Test
     void interpretToComposition() {
 
-        String aql =
-                "select c/uid/value, o/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/value, cl/items[at0001]/value/value from ehr e contains COMPOSITION c contains OBSERVATION o[openEHR-EHR-OBSERVATION.demo_observation.v0] contains CLUSTER cl [openEHR-EHR-CLUSTER.lab_demo.v0]";
+        String aql = "select c/uid/value," + " o/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/value,"
+                + " cl/items[at0001]/value/value "
+                + "from ehr e "
+                + "contains COMPOSITION c "
+                + "contains OBSERVATION o[openEHR-EHR-OBSERVATION.demo_observation.v0] "
+                + "contains CLUSTER cl [openEHR-EHR-CLUSTER.lab_demo.v0]";
         AqlDto parse = new AqlToDtoParser().parse(aql);
 
         SelectFieldDto clusterSelectStatementDto =
@@ -221,7 +246,9 @@ class InterpreterTest {
     void interpretToComposition2() {
 
         String aql =
-                "select c/content[openEHR-EHR-SECTION.adhoc.v1,'cause']/items[openEHR-EHR-OBSERVATION.demo_observation.v0]/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/value from ehr e contains COMPOSITION c";
+                "select c/content[openEHR-EHR-SECTION.adhoc.v1,'cause']/items[openEHR-EHR-OBSERVATION.demo_observation.v0]/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/value "
+                        + "from ehr e "
+                        + "contains COMPOSITION c";
         AqlDto parse = new AqlToDtoParser().parse(aql);
 
         SelectFieldDto clusterSelectStatementDto =
@@ -258,5 +285,38 @@ class InterpreterTest {
                                 .collect(Collectors.joining(";")),
                         o -> o.getPathFromRootToValue().buildNormalisedAql())
                 .contains(tuples);
+    }
+
+    @Test
+    void resolve() {
+
+        WebTemplateNode root = new TestDataTemplateProvider()
+                .buildIntrospect(OperationalTemplateTestData.AQL_TEST.getTemplateId())
+                .get()
+                .getTree();
+
+        Containment compositionContainment = new Containment("COMPOSITION", null, new PredicateLogicalAndOperation());
+        Containment observationContainment = new Containment(
+                "OBSERVATION", "openEHR-EHR-OBSERVATION.demo_observation.v0", new PredicateLogicalAndOperation());
+        Containment clusterContainment =
+                new Containment("CLUSTER", "openEHR-EHR-CLUSTER.lab_demo.v0", new PredicateLogicalAndOperation());
+
+        Set<List<Pair<WebTemplateNode, Deque<WebTemplateNode>>>> actual =
+                Interpreter.resolve(List.of(compositionContainment, observationContainment, clusterContainment), root);
+
+        assertThat(actual)
+                .map(s -> s.stream()
+                        .map(p -> p.getLeft().getNodeId() + ":"
+                                + p.getRight().stream()
+                                        .map(WebTemplateNode::getId)
+                                        .collect(Collectors.joining("->")))
+                        .collect(Collectors.joining(";")))
+                .containsExactly(
+                        "openEHR-EHR-COMPOSITION.report.v1:aql_demo.hip.de.v0;"
+                                + "openEHR-EHR-OBSERVATION.demo_observation.v0:cause->first_observation;"
+                                + "openEHR-EHR-CLUSTER.lab_demo.v0:history->any_event->tree->lab_demo",
+                        "openEHR-EHR-COMPOSITION.report.v1:aql_demo.hip.de.v0;"
+                                + "openEHR-EHR-OBSERVATION.demo_observation.v0:root_observation;"
+                                + "openEHR-EHR-CLUSTER.lab_demo.v0:history->any_event->tree->lab_demo");
     }
 }
