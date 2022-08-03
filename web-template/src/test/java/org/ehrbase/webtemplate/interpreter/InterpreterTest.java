@@ -243,10 +243,40 @@ class InterpreterTest {
     }
 
     @Test
-    void interpretToComposition2() {
+    void interpretToCompositionWithOtherPredicate() {
+
+        String aql = "select c/uid/value,"
+                + " o/data[at0001]/events[at0002 and time/value < '2020-05-11T22:53:12.039139+02:00']/data[at0003]/items[at0004]/value/value,"
+                + " cl/items[at0001]/value/value "
+                + "from ehr e "
+                + "contains COMPOSITION c "
+                + "contains OBSERVATION o[openEHR-EHR-OBSERVATION.demo_observation.v0] "
+                + "contains CLUSTER cl [openEHR-EHR-CLUSTER.lab_demo.v0]";
+        AqlDto parse = new AqlToDtoParser().parse(aql);
+
+        SelectFieldDto clusterSelectStatementDto =
+                (SelectFieldDto) parse.getSelect().getStatement().get(1);
+
+        Interpreter cut = new Interpreter(new TestDataTemplateProvider(), List.of("COMPOSITION"));
+
+        Set<InterpreterOutput> interpreterOutputSet = cut.interpret(
+                clusterSelectStatementDto, parse.getContains(), OperationalTemplateTestData.AQL_TEST.getTemplateId());
+
+        assertThat(interpreterOutputSet)
+                .map(o -> o.getPathFromRootToValue().getNodeList().stream()
+                        .filter(n -> n.getNormalisedNode().getName().equals("events"))
+                        .map(n -> PredicateHelper.format(n.getOtherPredicate(), AqlPath.OtherPredicatesFormat.SHORTED))
+                        .collect(Collectors.joining()))
+                .containsExactly(
+                        "time/value<'2020-05-11T22:53:12.039139+02:00'",
+                        "time/value<'2020-05-11T22:53:12.039139+02:00'");
+    }
+
+    @Test
+    void interpretToCompositionWithNotUniquePath() {
 
         String aql =
-                "select c/content[openEHR-EHR-SECTION.adhoc.v1,'cause']/items[openEHR-EHR-OBSERVATION.demo_observation.v0]/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/value "
+                "select c/content[openEHR-EHR-SECTION.adhoc.v1,'cause']/items[openEHR-EHR-OBSERVATION.demo_observation.v0]/data[at0001]/events[at0002]/data[at0003]/items/value/value "
                         + "from ehr e "
                         + "contains COMPOSITION c";
         AqlDto parse = new AqlToDtoParser().parse(aql);
@@ -284,7 +314,7 @@ class InterpreterTest {
                                 })
                                 .collect(Collectors.joining(";")),
                         o -> o.getPathFromRootToValue().buildNormalisedAql())
-                .contains(tuples);
+                .containsExactly(tuples);
     }
 
     @Test

@@ -275,7 +275,7 @@ public class AqlToDtoVisitor extends AqlBaseVisitor<Object> {
         SelectFieldDto selectStatementDto = new SelectFieldDto();
         selectFieldDtoMultiMap.put(ctx.IDENTIFIER().getText(), selectStatementDto);
         selectStatementDto.setAqlPath(
-                StringUtils.removeStart(ctx.getText(), ctx.IDENTIFIER().getText()));
+                StringUtils.removeStart(getFullText(ctx), ctx.IDENTIFIER().getText()));
 
         return selectStatementDto;
     }

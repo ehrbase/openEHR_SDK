@@ -20,6 +20,7 @@ package org.ehrbase.aql.dto.path.predicate;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 import org.ehrbase.aql.dto.path.AqlPath;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 
@@ -77,5 +78,16 @@ class PredicateHelperTest {
         PredicateHelper.format(sb, predicateDto, testCase.format);
 
         assertThat(sb).hasToString(testCase.expected);
+    }
+
+    @Test
+    void remove() {
+        PredicateDto predicateDto = PredicateHelper.buildPredicate("name/value='name1' and archetype_node_id=at001");
+
+        PredicateLogicalAndOperation actual =
+                PredicateHelper.remove((PredicateLogicalAndOperation) predicateDto, PredicateHelper.NAME_VALUE);
+        StringBuilder sb = new StringBuilder();
+        PredicateHelper.format(sb, actual, AqlPath.OtherPredicatesFormat.SHORTED);
+        assertThat(sb).hasToString("at001");
     }
 }

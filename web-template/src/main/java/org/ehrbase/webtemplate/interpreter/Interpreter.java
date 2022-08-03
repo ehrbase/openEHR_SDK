@@ -18,6 +18,8 @@
 package org.ehrbase.webtemplate.interpreter;
 
 import static org.ehrbase.aql.dto.path.predicate.PredicateHelper.ARCHETYPE_NODE_ID;
+import static org.ehrbase.aql.dto.path.predicate.PredicateHelper.NAME_VALUE;
+import static org.ehrbase.aql.dto.path.predicate.PredicateHelper.remove;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -228,7 +230,8 @@ public class Interpreter {
 
             InterpreterPathNode interpreterPathNode = new InterpreterPathNode();
             interpreterPathNode.setTemplateNode(new SimpleTemplateNode(node));
-            interpreterPathNode.setOtherPredicate(new PredicateLogicalAndOperation());
+            interpreterPathNode.setOtherPredicate(
+                    remove(path.getBaseNode().getOtherPredicate(), NAME_VALUE, ARCHETYPE_NODE_ID));
             interpreterPathNode.setNormalisedNode(node.getAqlPathDto().getLastNode());
 
             if (CollectionUtils.isEmpty(node.getChildren())) {

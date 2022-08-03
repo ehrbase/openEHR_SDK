@@ -28,6 +28,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.ehrbase.aql.dto.condition.ConditionComparisonOperatorSymbol;
 import org.ehrbase.aql.dto.condition.LogicalOperatorDto;
@@ -211,6 +212,12 @@ public class PredicateHelper {
         }
     }
 
+    public static String format(PredicateDto predicateDto, AqlPath.OtherPredicatesFormat otherPredicatesFormat) {
+        StringBuilder sb = new StringBuilder();
+        format(sb, predicateDto, otherPredicatesFormat);
+        return sb.toString();
+    }
+
     public static void format(
             StringBuilder sb, PredicateDto predicateDto, AqlPath.OtherPredicatesFormat otherPredicatesFormat) {
 
@@ -383,5 +390,23 @@ public class PredicateHelper {
 
             return and;
         }
+    }
+
+    public static PredicateLogicalAndOperation remove(PredicateLogicalAndOperation and, String... remove) {
+
+        PredicateLogicalAndOperation clone = new PredicateLogicalAndOperation();
+
+        for (int i = 0; i < and.getValues().size(); i++) {
+            SimplePredicateDto simplePredicateDto = and.getValues().get(i);
+            if (simplePredicateDto instanceof PredicateComparisonOperatorDto
+                    && !ArrayUtils.contains(
+                            remove, ((PredicateComparisonOperatorDto) simplePredicateDto).getStatement())) {
+                clone.getValues().add(clone(simplePredicateDto));
+            } else if (simplePredicateDto instanceof PredicateLogicalAndOperation) {
+                clone.getValues().add(remove((PredicateLogicalAndOperation) simplePredicateDto, remove));
+            }
+        }
+
+        return clone;
     }
 }
