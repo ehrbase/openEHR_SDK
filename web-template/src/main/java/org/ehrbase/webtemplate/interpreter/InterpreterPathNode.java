@@ -31,6 +31,16 @@ public class InterpreterPathNode implements Serializable {
     private PredicateDto otherPredicate;
     private SimpleTemplateNode templateNode;
 
+    private boolean isRepresentingObject;
+
+    public boolean isRepresentingObject() {
+        return isRepresentingObject;
+    }
+
+    public void setRepresentingObject(boolean representingObject) {
+        isRepresentingObject = representingObject;
+    }
+
     public AqlPath.AqlNode getNormalisedNode() {
         return normalisedNode;
     }
@@ -64,13 +74,23 @@ public class InterpreterPathNode implements Serializable {
             return false;
         }
         InterpreterPathNode that = (InterpreterPathNode) o;
-        return Objects.equals(normalisedNode, that.normalisedNode)
+        return isRepresentingObject == that.isRepresentingObject
+                && Objects.equals(normalisedNode, that.normalisedNode)
                 && Objects.equals(otherPredicate, that.otherPredicate)
                 && Objects.equals(templateNode, that.templateNode);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(normalisedNode, otherPredicate, templateNode);
+        return Objects.hash(normalisedNode, otherPredicate, templateNode, isRepresentingObject);
+    }
+
+    @Override
+    public String toString() {
+        return "InterpreterPathNode{" + "normalisedNode="
+                + normalisedNode + ", otherPredicate="
+                + otherPredicate + ", templateNode="
+                + templateNode + ", isRepresentingObject="
+                + isRepresentingObject + '}';
     }
 }

@@ -143,18 +143,22 @@ public class Interpreter {
         // resolve path from containment to rootContainment
         WebTemplateNode current = findPathToContainment(result, interpreterOutput, containmentIndex);
 
-        LinkedHashSet<InterpreterOutput> inter = new LinkedHashSet<>();
-        current.getChildren().stream()
-                .map(c -> findPathToValue(input.getPathFromContentment(), c))
-                .flatMap(Set::stream)
-                .map(l -> {
-                    InterpreterOutput output = new InterpreterOutput(interpreterOutput);
-                    output.getPathFromRootToValue().getNodeList().addAll(l);
-                    return output;
-                })
-                .forEach(inter::add);
+        if (input.getPathFromContentment().isEmpty()) {
 
-        return inter;
+            return Collections.singleton(interpreterOutput);
+        } else {
+            LinkedHashSet<InterpreterOutput> inter = new LinkedHashSet<>();
+            current.getChildren().stream()
+                    .map(c -> findPathToValue(input.getPathFromContentment(), c))
+                    .flatMap(Set::stream)
+                    .map(l -> {
+                        InterpreterOutput output = new InterpreterOutput(interpreterOutput);
+                        output.getPathFromRootToValue().getNodeList().addAll(l);
+                        return output;
+                    })
+                    .forEach(inter::add);
+            return inter;
+        }
     }
 
     private static Containment toContainment(WebTemplateNode n) {
@@ -211,6 +215,7 @@ public class Interpreter {
             interpreterPathNode.setNormalisedNode(next.getAqlPathDto().getLastNode());
             interpreterPathNode.setOtherPredicate(new PredicateLogicalAndOperation());
             interpreterPathNode.setTemplateNode(new SimpleTemplateNode(next));
+            interpreterPathNode.setRepresentingObject(true);
 
             interpreterOutput.getPathFromRootToValue().getNodeList().add(interpreterPathNode);
             curent = next;
@@ -233,31 +238,37 @@ public class Interpreter {
             interpreterPathNode.setOtherPredicate(
                     remove(path.getBaseNode().getOtherPredicate(), NAME_VALUE, ARCHETYPE_NODE_ID));
             interpreterPathNode.setNormalisedNode(node.getAqlPathDto().getLastNode());
+            interpreterPathNode.setRepresentingObject(true);
+            if (path.getNodeCount() == 1) {
 
-            if (CollectionUtils.isEmpty(node.getChildren())) {
+                return Collections.singleton(new ArrayList<>(List.of(interpreterPathNode)));
 
-                Optional<InterpreterPathNode> input = node.getInputs().stream()
-                        .map(i -> findPathToValue(path.removeStart(1), i))
-                        .flatMap(Optional::stream)
-                        .findAny();
-                if (input.isEmpty()) {
-                    return Collections.emptySet();
-                } else {
-                    return Collections.singleton(new ArrayList<>(List.of(interpreterPathNode, input.get())));
-                }
             } else {
+                if (CollectionUtils.isEmpty(node.getChildren())) {
 
-                LinkedHashSet<List<InterpreterPathNode>> result = new LinkedHashSet<>();
+                    Optional<InterpreterPathNode> input = node.getInputs().stream()
+                            .map(i -> findPathToValue(path.removeStart(1), i))
+                            .flatMap(Optional::stream)
+                            .findAny();
+                    if (input.isEmpty()) {
+                        return Collections.emptySet();
+                    } else {
+                        return Collections.singleton(new ArrayList<>(List.of(interpreterPathNode, input.get())));
+                    }
+                } else {
 
-                node.getChildren().stream()
-                        .map(c -> findPathToValue(path.removeStart(1), c))
-                        .flatMap(Set::stream)
-                        .forEach(l -> {
-                            l.add(0, interpreterPathNode);
-                            result.add(l);
-                        });
+                    LinkedHashSet<List<InterpreterPathNode>> result = new LinkedHashSet<>();
 
-                return result;
+                    node.getChildren().stream()
+                            .map(c -> findPathToValue(path.removeStart(1), c))
+                            .flatMap(Set::stream)
+                            .forEach(l -> {
+                                l.add(0, interpreterPathNode);
+                                result.add(l);
+                            });
+
+                    return result;
+                }
             }
         }
 
@@ -279,6 +290,7 @@ public class Interpreter {
                     Optional.ofNullable(input.getSuffix()).orElse("value"), null, new PredicateLogicalAndOperation()));
             interpreterPathNode.setOtherPredicate(new PredicateLogicalAndOperation());
             interpreterPathNode.setTemplateNode(new SimpleTemplateNode(input));
+            interpreterPathNode.setRepresentingObject(false);
 
             return Optional.of(interpreterPathNode);
         }

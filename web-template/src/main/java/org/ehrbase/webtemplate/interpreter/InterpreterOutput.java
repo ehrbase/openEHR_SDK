@@ -43,6 +43,14 @@ public class InterpreterOutput implements Serializable {
         this.pathFromRootToValue.setNodeList(new ArrayList<>(other.pathFromRootToValue.getNodeList()));
     }
 
+    public boolean isRepresentingObject() {
+        return pathFromRootToValue.getNodeList().isEmpty()
+                || pathFromRootToValue
+                        .getNodeList()
+                        .get(pathFromRootToValue.getNodeList().size() - 1)
+                        .isRepresentingObject();
+    }
+
     public int getRootContainment() {
         return rootContainment;
     }

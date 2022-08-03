@@ -111,11 +111,55 @@ class InterpreterTest {
                     new Tuple(
                             1,
                             "openEHR-EHR-COMPOSITION.report.v1;openEHR-EHR-OBSERVATION.demo_observation.v0,'first_observation';openEHR-EHR-CLUSTER.lab_demo.v0",
-                            "/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.lab_demo.v0]/items[at0001]/value/value"),
+                            "/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.lab_demo.v0]/items[at0001]/value/value",
+                            false),
                     new Tuple(
                             1,
                             "openEHR-EHR-COMPOSITION.report.v1;openEHR-EHR-OBSERVATION.demo_observation.v0,'root_observation';openEHR-EHR-CLUSTER.lab_demo.v0",
-                            "/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.lab_demo.v0]/items[at0001]/value/value")
+                            "/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.lab_demo.v0]/items[at0001]/value/value",
+                            false)
+                }),
+
+        CASE_CLUSTER_2(
+                "select c/uid/value," + " o/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/value,"
+                        + " cl/items[at0001]"
+                        + "from ehr e "
+                        + "contains COMPOSITION c "
+                        + "contains OBSERVATION o[openEHR-EHR-OBSERVATION.demo_observation.v0] "
+                        + "contains CLUSTER cl [openEHR-EHR-CLUSTER.lab_demo.v0]",
+                2,
+                new Tuple[] {
+                    new Tuple(
+                            1,
+                            "openEHR-EHR-COMPOSITION.report.v1;openEHR-EHR-OBSERVATION.demo_observation.v0,'first_observation';openEHR-EHR-CLUSTER.lab_demo.v0",
+                            "/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.lab_demo.v0]/items[at0001]",
+                            true),
+                    new Tuple(
+                            1,
+                            "openEHR-EHR-COMPOSITION.report.v1;openEHR-EHR-OBSERVATION.demo_observation.v0,'root_observation';openEHR-EHR-CLUSTER.lab_demo.v0",
+                            "/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.lab_demo.v0]/items[at0001]",
+                            true)
+                }),
+
+        CASE_CLUSTER_3(
+                "select c/uid/value," + " o/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/value,"
+                        + " cl"
+                        + " from ehr e "
+                        + "contains COMPOSITION c "
+                        + "contains OBSERVATION o[openEHR-EHR-OBSERVATION.demo_observation.v0] "
+                        + "contains CLUSTER cl [openEHR-EHR-CLUSTER.lab_demo.v0]",
+                2,
+                new Tuple[] {
+                    new Tuple(
+                            1,
+                            "openEHR-EHR-COMPOSITION.report.v1;openEHR-EHR-OBSERVATION.demo_observation.v0,'first_observation';openEHR-EHR-CLUSTER.lab_demo.v0",
+                            "/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.lab_demo.v0]",
+                            true),
+                    new Tuple(
+                            1,
+                            "openEHR-EHR-COMPOSITION.report.v1;openEHR-EHR-OBSERVATION.demo_observation.v0,'root_observation';openEHR-EHR-CLUSTER.lab_demo.v0",
+                            "/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.lab_demo.v0]",
+                            true)
                 }),
 
         CASE_OBSERVATION(
@@ -130,11 +174,13 @@ class InterpreterTest {
                     new Tuple(
                             1,
                             "openEHR-EHR-COMPOSITION.report.v1;openEHR-EHR-OBSERVATION.demo_observation.v0,'first_observation';openEHR-EHR-CLUSTER.lab_demo.v0",
-                            "/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/value"),
+                            "/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/value",
+                            false),
                     new Tuple(
                             1,
                             "openEHR-EHR-COMPOSITION.report.v1;openEHR-EHR-OBSERVATION.demo_observation.v0,'root_observation';openEHR-EHR-CLUSTER.lab_demo.v0",
-                            "/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/value")
+                            "/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/value",
+                            false)
                 }),
 
         CASE_OBSERVATION_2(
@@ -147,15 +193,42 @@ class InterpreterTest {
                     new Tuple(
                             1,
                             "openEHR-EHR-COMPOSITION.report.v1;openEHR-EHR-OBSERVATION.demo_observation.v0,'demo_observation'",
-                            "/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/value"),
+                            "/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/value",
+                            false),
                     new Tuple(
                             1,
                             "openEHR-EHR-COMPOSITION.report.v1;openEHR-EHR-OBSERVATION.demo_observation.v0,'first_observation'",
-                            "/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/value"),
+                            "/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/value",
+                            false),
                     new Tuple(
                             1,
                             "openEHR-EHR-COMPOSITION.report.v1;openEHR-EHR-OBSERVATION.demo_observation.v0,'root_observation'",
-                            "/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/value")
+                            "/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/value",
+                            false)
+                }),
+
+        CASE_OBSERVATION_3(
+                "select c/uid/value," + " o"
+                        + " from ehr e"
+                        + " contains COMPOSITION c"
+                        + " contains OBSERVATION o[openEHR-EHR-OBSERVATION.demo_observation.v0]",
+                1,
+                new Tuple[] {
+                    new Tuple(
+                            1,
+                            "openEHR-EHR-COMPOSITION.report.v1;openEHR-EHR-OBSERVATION.demo_observation.v0,'demo_observation'",
+                            "",
+                            true),
+                    new Tuple(
+                            1,
+                            "openEHR-EHR-COMPOSITION.report.v1;openEHR-EHR-OBSERVATION.demo_observation.v0,'first_observation'",
+                            "",
+                            true),
+                    new Tuple(
+                            1,
+                            "openEHR-EHR-COMPOSITION.report.v1;openEHR-EHR-OBSERVATION.demo_observation.v0,'root_observation'",
+                            "",
+                            true)
                 }),
 
         CASE_COMPOSITION(
@@ -170,15 +243,17 @@ class InterpreterTest {
                     new Tuple(
                             0,
                             "openEHR-EHR-COMPOSITION.report.v1;openEHR-EHR-OBSERVATION.demo_observation.v0,'first_observation';openEHR-EHR-CLUSTER.lab_demo.v0",
-                            "/uid/value"),
+                            "/uid/value",
+                            false),
                     new Tuple(
                             0,
                             "openEHR-EHR-COMPOSITION.report.v1;openEHR-EHR-OBSERVATION.demo_observation.v0,'root_observation';openEHR-EHR-CLUSTER.lab_demo.v0",
-                            "/uid/value")
+                            "/uid/value",
+                            false)
                 }),
 
         CASE_COMPOSITION_2("select c/uid/value " + "from ehr e " + "contains COMPOSITION c ", 0, new Tuple[] {
-            new Tuple(0, "openEHR-EHR-COMPOSITION.report.v1", "/uid/value"),
+            new Tuple(0, "openEHR-EHR-COMPOSITION.report.v1", "/uid/value", false),
         });
         final String aql;
         final int selectField;
@@ -273,6 +348,36 @@ class InterpreterTest {
     }
 
     @Test
+    void interpretToCompositionWith() {
+
+        String aql = "select c/uid/value,"
+                + " o/data[at0001]/events[at0002 and time/value < '2020-05-11T22:53:12.039139+02:00']/data[at0003]/items[at0004]/value/value,"
+                + " cl/items[at0001]"
+                + "from ehr e "
+                + "contains COMPOSITION c "
+                + "contains OBSERVATION o[openEHR-EHR-OBSERVATION.demo_observation.v0] "
+                + "contains CLUSTER cl [openEHR-EHR-CLUSTER.lab_demo.v0]";
+        AqlDto parse = new AqlToDtoParser().parse(aql);
+
+        SelectFieldDto clusterSelectStatementDto =
+                (SelectFieldDto) parse.getSelect().getStatement().get(2);
+
+        Interpreter cut = new Interpreter(new TestDataTemplateProvider(), List.of("COMPOSITION"));
+
+        Set<InterpreterOutput> interpreterOutputSet = cut.interpret(
+                clusterSelectStatementDto, parse.getContains(), OperationalTemplateTestData.AQL_TEST.getTemplateId());
+
+        assertThat(interpreterOutputSet)
+                .map(o -> o.getPathFromRootToValue().getNodeList().stream()
+                        .filter(n -> n.getNormalisedNode().getName().equals("events"))
+                        .map(n -> PredicateHelper.format(n.getOtherPredicate(), AqlPath.OtherPredicatesFormat.SHORTED))
+                        .collect(Collectors.joining()))
+                .containsExactly(
+                        "time/value<'2020-05-11T22:53:12.039139+02:00'",
+                        "time/value<'2020-05-11T22:53:12.039139+02:00'");
+    }
+
+    @Test
     void interpretToCompositionWithNotUniquePath() {
 
         String aql =
@@ -313,7 +418,8 @@ class InterpreterTest {
                                     return sb.toString();
                                 })
                                 .collect(Collectors.joining(";")),
-                        o -> o.getPathFromRootToValue().buildNormalisedAql())
+                        o -> o.getPathFromRootToValue().buildNormalisedAql(),
+                        InterpreterOutput::isRepresentingObject)
                 .containsExactly(tuples);
     }
 
