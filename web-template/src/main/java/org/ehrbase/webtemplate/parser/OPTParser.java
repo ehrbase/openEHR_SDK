@@ -828,14 +828,6 @@ public class OPTParser {
             node.setMin(1);
         }
 
-        if (node.getRmType().equals("UID_BASED_ID")) {
-            WebTemplateInput value = new WebTemplateInput();
-
-            value.setType("TEXT");
-
-            node.getInputs().add(value);
-        }
-
         inputHandler.addInputs(node, Collections.emptyMap());
 
         addRMAttributes(node, node.getAqlPathDto(), termDefinitionMap);

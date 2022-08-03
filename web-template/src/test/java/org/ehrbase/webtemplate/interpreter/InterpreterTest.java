@@ -309,11 +309,13 @@ class InterpreterTest {
             new Tuple(
                     0,
                     "openEHR-EHR-COMPOSITION.report.v1;openEHR-EHR-OBSERVATION.demo_observation.v0,'first_observation';openEHR-EHR-CLUSTER.lab_demo.v0",
-                    "/content[openEHR-EHR-SECTION.adhoc.v1,'cause']/items[openEHR-EHR-OBSERVATION.demo_observation.v0,'first_observation']/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.lab_demo.v0]/items[at0001]/value/value"),
+                    "/content[openEHR-EHR-SECTION.adhoc.v1,'cause']/items[openEHR-EHR-OBSERVATION.demo_observation.v0,'first_observation']/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.lab_demo.v0]/items[at0001]/value/value",
+                    false),
             new Tuple(
                     0,
                     "openEHR-EHR-COMPOSITION.report.v1;openEHR-EHR-OBSERVATION.demo_observation.v0,'root_observation';openEHR-EHR-CLUSTER.lab_demo.v0",
-                    "/content[openEHR-EHR-OBSERVATION.demo_observation.v0,'root_observation']/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.lab_demo.v0]/items[at0001]/value/value")
+                    "/content[openEHR-EHR-OBSERVATION.demo_observation.v0,'root_observation']/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.lab_demo.v0]/items[at0001]/value/value",
+                    false)
         });
     }
 
@@ -331,36 +333,6 @@ class InterpreterTest {
 
         SelectFieldDto clusterSelectStatementDto =
                 (SelectFieldDto) parse.getSelect().getStatement().get(1);
-
-        Interpreter cut = new Interpreter(new TestDataTemplateProvider(), List.of("COMPOSITION"));
-
-        Set<InterpreterOutput> interpreterOutputSet = cut.interpret(
-                clusterSelectStatementDto, parse.getContains(), OperationalTemplateTestData.AQL_TEST.getTemplateId());
-
-        assertThat(interpreterOutputSet)
-                .map(o -> o.getPathFromRootToValue().getNodeList().stream()
-                        .filter(n -> n.getNormalisedNode().getName().equals("events"))
-                        .map(n -> PredicateHelper.format(n.getOtherPredicate(), AqlPath.OtherPredicatesFormat.SHORTED))
-                        .collect(Collectors.joining()))
-                .containsExactly(
-                        "time/value<'2020-05-11T22:53:12.039139+02:00'",
-                        "time/value<'2020-05-11T22:53:12.039139+02:00'");
-    }
-
-    @Test
-    void interpretToCompositionWith() {
-
-        String aql = "select c/uid/value,"
-                + " o/data[at0001]/events[at0002 and time/value < '2020-05-11T22:53:12.039139+02:00']/data[at0003]/items[at0004]/value/value,"
-                + " cl/items[at0001]"
-                + "from ehr e "
-                + "contains COMPOSITION c "
-                + "contains OBSERVATION o[openEHR-EHR-OBSERVATION.demo_observation.v0] "
-                + "contains CLUSTER cl [openEHR-EHR-CLUSTER.lab_demo.v0]";
-        AqlDto parse = new AqlToDtoParser().parse(aql);
-
-        SelectFieldDto clusterSelectStatementDto =
-                (SelectFieldDto) parse.getSelect().getStatement().get(2);
 
         Interpreter cut = new Interpreter(new TestDataTemplateProvider(), List.of("COMPOSITION"));
 
@@ -398,11 +370,13 @@ class InterpreterTest {
             new Tuple(
                     0,
                     "openEHR-EHR-COMPOSITION.report.v1",
-                    "/content[openEHR-EHR-SECTION.adhoc.v1,'cause']/items[openEHR-EHR-OBSERVATION.demo_observation.v0,'demo_observation']/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/value"),
+                    "/content[openEHR-EHR-SECTION.adhoc.v1,'cause']/items[openEHR-EHR-OBSERVATION.demo_observation.v0,'demo_observation']/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/value",
+                    false),
             new Tuple(
                     0,
                     "openEHR-EHR-COMPOSITION.report.v1",
-                    "/content[openEHR-EHR-SECTION.adhoc.v1,'cause']/items[openEHR-EHR-OBSERVATION.demo_observation.v0,'first_observation']/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/value")
+                    "/content[openEHR-EHR-SECTION.adhoc.v1,'cause']/items[openEHR-EHR-OBSERVATION.demo_observation.v0,'first_observation']/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/value",
+                    false)
         });
     }
 
