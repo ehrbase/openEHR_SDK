@@ -66,6 +66,12 @@ public class Interpreter {
         this.resolveTo = resolveTo;
     }
 
+    /**
+     * Helper Method to convert the dots from the parser to one for the interpreter.
+     * @param selectFieldDto
+     * @param contains
+     * @return
+     */
     private Set<InterpreterInput> toInterpreterInputSet(
             SelectFieldDto selectFieldDto, ContainmentExpresionDto contains) {
 
@@ -109,6 +115,7 @@ public class Interpreter {
 
     private Set<InterpreterOutput> interpret(InterpreterInput input, WebTemplateNode node) {
         LinkedHashSet<InterpreterOutput> result = new LinkedHashSet<>();
+        // find all matching Paths in the node and interpret each
         resolve(input.getContainmentPath(), node).stream()
                 .map(r -> interpret(input, r))
                 .forEach(result::addAll);
@@ -120,17 +127,19 @@ public class Interpreter {
             InterpreterInput input, List<Pair<WebTemplateNode, Deque<WebTemplateNode>>> result) {
 
         InterpreterOutput interpreterOutput = new InterpreterOutput();
-
+        // set the resolved contains
         interpreterOutput.setContain(result.stream()
                 .map(Pair::getLeft)
                 .map(Interpreter::toContainment)
                 .collect(Collectors.toList()));
 
-        int containment = findContainmentIndex(input.getContainmentPath(), input.getContainment());
+        // find and set the index of the containment wich correspond to the input Field and the containment to wich to
+        // resolve to.
+        int containmentIndex = findContainmentIndex(input.getContainmentPath(), input.getContainment());
+        interpreterOutput.setRootContainment(findRootIndex(interpreterOutput.getContain(), containmentIndex));
 
-        interpreterOutput.setRootContainment(findRootIndex(interpreterOutput.getContain(), containment));
-
-        WebTemplateNode current = findPathToContainment(result, interpreterOutput, containment);
+        // resolve path from containment to rootContainment
+        WebTemplateNode current = findPathToContainment(result, interpreterOutput, containmentIndex);
 
         LinkedHashSet<InterpreterOutput> inter = new LinkedHashSet<>();
         current.getChildren().stream()
@@ -168,6 +177,13 @@ public class Interpreter {
         return containment;
     }
 
+    /**
+     * Add to <code>interpreterOutput</code> the path from the root containment {@link InterpreterOutput#getRootContainment()} to <code>containment</code>
+     * @param result
+     * @param interpreterOutput
+     * @param containment
+     * @return The {@link WebTemplateNode} which correspond to  <code>containment</code>
+     */
     private static WebTemplateNode findPathToContainment(
             List<Pair<WebTemplateNode, Deque<WebTemplateNode>>> result,
             InterpreterOutput interpreterOutput,
@@ -200,6 +216,12 @@ public class Interpreter {
         return curent;
     }
 
+    /**
+     * Find a paths from <code>node</code> wich match {@link AqlPath} <code>path</code>
+     * @param path
+     * @param node
+     * @return
+     */
     protected Set<List<InterpreterPathNode>> findPathToValue(AqlPath path, WebTemplateNode node) {
 
         if (MatcherUtil.matches(path.getBaseNode(), node)) {
@@ -239,6 +261,12 @@ public class Interpreter {
         return Collections.emptySet();
     }
 
+    /**
+     * Returns a {@link InterpreterPathNode} if <code>input</code> matches <code>path</code>
+     * @param path
+     * @param input
+     * @return
+     */
     protected Optional<InterpreterPathNode> findPathToValue(AqlPath path, WebTemplateInput input) {
 
         if (MatcherUtil.matches(path.getBaseNode(), input)) {
