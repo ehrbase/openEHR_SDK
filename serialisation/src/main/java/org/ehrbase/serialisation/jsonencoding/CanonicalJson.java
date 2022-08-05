@@ -58,7 +58,7 @@ import org.ehrbase.serialisation.exception.UnmarshalException;
 
 public class CanonicalJson implements RMDataFormat {
 
-    private static final ObjectMapper MARSHAL_OM =
+    public static final ObjectMapper MARSHAL_OM =
             ArchieObjectMapperProvider.getObjectMapper().copy();
 
     static {

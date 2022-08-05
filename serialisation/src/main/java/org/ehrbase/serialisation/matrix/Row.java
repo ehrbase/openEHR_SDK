@@ -17,26 +17,23 @@
  */
 package org.ehrbase.serialisation.matrix;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import org.ehrbase.aql.dto.path.AqlPath;
 
 /**
  * @author Stefan Spiska
  */
-public class Resolve {
+public class Row {
 
     private AqlPath pathFromRoot;
     private String archetypeId;
 
     private Integer count = 0;
 
-    public Resolve() {}
-
-    public Resolve(Resolve other) {
-        this.pathFromRoot = AqlPath.parse(other.pathFromRoot.getPath());
-        this.archetypeId = other.archetypeId;
-        this.count = other.count;
-    }
+    private List<Integer> index;
+    private Map<AqlPath, String> other;
 
     public AqlPath getPathFromRoot() {
         return pathFromRoot;
@@ -62,6 +59,22 @@ public class Resolve {
         this.count = count;
     }
 
+    public List<Integer> getIndex() {
+        return index;
+    }
+
+    public void setIndex(List<Integer> index) {
+        this.index = index;
+    }
+
+    public Map<AqlPath, String> getOther() {
+        return other;
+    }
+
+    public void setOther(Map<AqlPath, String> other) {
+        this.other = other;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -70,22 +83,26 @@ public class Resolve {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        Resolve resolve = (Resolve) o;
-        return Objects.equals(pathFromRoot, resolve.pathFromRoot)
-                && Objects.equals(archetypeId, resolve.archetypeId)
-                && Objects.equals(count, resolve.count);
+        Row row = (Row) o;
+        return Objects.equals(pathFromRoot, row.pathFromRoot)
+                && Objects.equals(archetypeId, row.archetypeId)
+                && Objects.equals(count, row.count)
+                && Objects.equals(index, row.index)
+                && Objects.equals(other, row.other);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(pathFromRoot, archetypeId, count);
+        return Objects.hash(pathFromRoot, archetypeId, count, index, other);
     }
 
     @Override
     public String toString() {
-        return "Resolve{" + "pathFromRoot="
+        return "Row{" + "pathFromRoot="
                 + pathFromRoot + ", archetypeId='"
                 + archetypeId + '\'' + ", count="
-                + count + '}';
+                + count + ", index="
+                + index + ", other="
+                + other + '}';
     }
 }
