@@ -22,9 +22,11 @@ import com.nedap.archie.rm.RMObject;
 import com.nedap.archie.rm.composition.Composition;
 import java.io.IOException;
 import java.util.Collection;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
 import org.ehrbase.aql.dto.path.AqlPath;
@@ -97,7 +99,7 @@ public class MatrixFormat implements RMDataFormat {
                     sb,
                     CSVFormat.DEFAULT
                             .builder()
-                            .setHeader("ArchetypeId", "Path", "COUNT", "INDEX", "JSON")
+                            .setHeader("ArchetypeId", "Path", "COUNT", "INDEX", "DEPTH", "JSON")
                             .build())) {
                 toTable((Composition) rmObject).forEach(r -> getPrintRecord(printer, r));
             } catch (IOException e) {
@@ -116,7 +118,17 @@ public class MatrixFormat implements RMDataFormat {
                     r.getArchetypeId(),
                     r.getPathFromRoot().getPath(),
                     r.getCount(),
-                    r.getIndex(),
+                    r.getIndex().isEmpty()
+                            ? "{}"
+                            : MAPPER.writeValueAsString(
+                                    IntStream.range(0, r.getIndex().size())
+                                            .boxed()
+                                            .collect(Collectors.toMap(
+                                                    i -> "R" + i,
+                                                    i -> r.getIndex().get(i),
+                                                    (e1, e2) -> e2,
+                                                    LinkedHashMap::new))),
+                    r.getIndex().size(),
                     MAPPER.writeValueAsString(r.getOther()));
         } catch (IOException e) {
             throw new RuntimeException(e);

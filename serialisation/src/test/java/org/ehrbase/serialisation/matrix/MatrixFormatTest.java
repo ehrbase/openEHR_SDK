@@ -63,4 +63,19 @@ class MatrixFormatTest {
 
         assertThat(actual).isEqualTo(expected);
     }
+
+    @Test
+    void toMatrixIPS() throws IOException {
+
+        String corona = IOUtils.toString(CompositionTestDataCanonicalJson.IPS.getStream(), StandardCharsets.UTF_8);
+
+        MatrixFormat cut = new MatrixFormat(new TestDataTemplateProvider());
+
+        String actual = cut.marshal(new CanonicalJson().unmarshal(corona));
+
+        String expected =
+                IOUtils.toString(MatrixFormat.class.getResourceAsStream("/csv/IPS.csv"), StandardCharsets.UTF_8);
+
+        assertThat(actual).isEqualTo(expected);
+    }
 }
