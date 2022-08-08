@@ -17,6 +17,8 @@
  */
 package org.ehrbase.serialisation.matrix;
 
+import static org.ehrbase.serialisation.matrix.CompositionToMatrixWalker.findTypeName;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nedap.archie.rm.RMObject;
 import com.nedap.archie.rm.composition.Composition;
@@ -99,7 +101,8 @@ public class MatrixFormat implements RMDataFormat {
                     sb,
                     CSVFormat.DEFAULT
                             .builder()
-                            .setHeader("ArchetypeId", "Path", "COUNT", "INDEX", "DEPTH", "JSON")
+                            .setHeader(
+                                    "archetype_id", "type", "path", "count", "index_string", "index", "depth", "json")
                             .build())) {
                 toTable((Composition) rmObject).forEach(r -> getPrintRecord(printer, r));
             } catch (IOException e) {
@@ -116,8 +119,10 @@ public class MatrixFormat implements RMDataFormat {
         try {
             printer.printRecord(
                     r.getArchetypeId(),
+                    findTypeName(r.getArchetypeId()),
                     r.getPathFromRoot().getPath(),
                     r.getCount(),
+                    r.getIndex(),
                     r.getIndex().isEmpty()
                             ? "{}"
                             : MAPPER.writeValueAsString(

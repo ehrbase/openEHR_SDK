@@ -46,7 +46,7 @@ class MatrixFormatTest {
         String expected = IOUtils.toString(
                 MatrixFormat.class.getResourceAsStream("/csv/MULTI_OCCURRENCE.csv"), StandardCharsets.UTF_8);
 
-        assertThat(actual).isEqualTo(expected);
+        assertThat(actual).isEqualToNormalizingNewlines(expected);
     }
 
     @Test
@@ -61,7 +61,7 @@ class MatrixFormatTest {
         String expected =
                 IOUtils.toString(MatrixFormat.class.getResourceAsStream("/csv/CORONA.csv"), StandardCharsets.UTF_8);
 
-        assertThat(actual).isEqualTo(expected);
+        assertThat(actual).isEqualToNormalizingNewlines(expected);
     }
 
     @Test
@@ -76,6 +76,6 @@ class MatrixFormatTest {
         String expected =
                 IOUtils.toString(MatrixFormat.class.getResourceAsStream("/csv/IPS.csv"), StandardCharsets.UTF_8);
 
-        assertThat(actual).isEqualTo(expected);
+        assertThat(actual).isEqualToNormalizingNewlines(expected);
     }
 }
