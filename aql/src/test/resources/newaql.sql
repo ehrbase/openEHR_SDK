@@ -35,7 +35,7 @@ $$
         comp_size INTEGER := 100;
         c         INTEGER := 0;
     BEGIN
-        FOR e IN 1..200 BY 1
+        FOR e IN 5200..20000 BY 1
 
             LOOP
                 FOR counter IN 1..comp_size BY 2
@@ -186,7 +186,9 @@ $$
                                 (e,c,'openEHR-EHR-OBSERVATION.travel_event.v0', 'OBSERVATION', '/content[openEHR-EHR-SECTION.adhoc.v1 and name/value=''Risikogebiet'']/items[openEHR-EHR-OBSERVATION.travel_event.v0]', 0, '[0]', '{"R0":0}', 1, '{"/data[at0001]/events[at0002]/data[at0003]/items[at0004 and name/value=''Letzte Reise?'']/name/_type":"DV_TEXT","/data[at0001]/events[at0002]/data[at0003]/items[at0004 and name/value=''Letzte Reise?'']/name/value":"Letzte Reise?","/data[at0001]/events[at0002]/data[at0003]/archetype_node_id/_type":"RM_STRING","/data[at0001]/events[at0002]/data[at0003]/archetype_node_id/value":"at0003","/data[at0001]/events[at0002]/data[at0003]/name/_type":"DV_TEXT","/data[at0001]/events[at0002]/data[at0003]/name/value":"Tree","/data[at0001]/events[at0002]/archetype_node_id/_type":"RM_STRING","/data[at0001]/events[at0002]/archetype_node_id/value":"at0002","/data[at0001]/events[at0002]/math_function/_type":"DV_CODED_TEXT","/data[at0001]/events[at0002]/math_function/value":"mean","/data[at0001]/events[at0002]/math_function/defining_code/_type":"CODE_PHRASE","/data[at0001]/events[at0002]/math_function/defining_code/terminology_id/_type":"TERMINOLOGY_ID","/data[at0001]/events[at0002]/math_function/defining_code/terminology_id/value":"openehr","/data[at0001]/events[at0002]/math_function/defining_code/code_string":"146","/data[at0001]/events[at0002]/width/_type":"DV_DURATION","/data[at0001]/events[at0002]/width/value":"P0D","/data[at0001]/events[at0002]/name/_type":"DV_TEXT","/data[at0001]/events[at0002]/name/value":"Beliebiges Intervallereignis","/data[at0001]/events[at0002]/time/_type":"DV_DATE_TIME","/data[at0001]/events[at0002]/time/value":"2020-05-11T22:53:12.039139+02:00"}'),
                                 (e,c,'openEHR-EHR-OBSERVATION.travel_event.v0', 'OBSERVATION', '/content[openEHR-EHR-SECTION.adhoc.v1 and name/value=''Risikogebiet'']/items[openEHR-EHR-OBSERVATION.travel_event.v0]', 0, '[0, 0]', '{"R0":0,"R1":0}', 2, '{"/data[at0001]/events[at0002]/data[at0003]/items[at0008]/archetype_node_id/_type":"RM_STRING","/data[at0001]/events[at0002]/data[at0003]/items[at0008]/archetype_node_id/value":"at0008","/data[at0001]/events[at0002]/data[at0003]/items[at0008]/name/_type":"DV_TEXT","/data[at0001]/events[at0002]/data[at0003]/items[at0008]/name/value":"Bestimmte Reise"}'),
                                 (e,c,'openEHR-EHR-OBSERVATION.travel_event.v0', 'OBSERVATION', '/content[openEHR-EHR-SECTION.adhoc.v1 and name/value=''Risikogebiet'']/items[openEHR-EHR-OBSERVATION.travel_event.v0]', 0, '[0, 0, 0]', '{"R0":0,"R1":0,"R2":0}', 3, '{"/data[at0001]/events[at0002]/data[at0003]/items[at0008]/items[at0010]/items[at0011]/value/_type":"DV_TEXT","/data[at0001]/events[at0002]/data[at0003]/items[at0008]/items[at0010]/items[at0011]/value/value":"Deutschland","/data[at0001]/events[at0002]/data[at0003]/items[at0008]/items[at0010]/items[at0012]/value/_type":"DV_TEXT","/data[at0001]/events[at0002]/data[at0003]/items[at0008]/items[at0010]/items[at0012]/value/value":"Baden-Württemberg","/data[at0001]/events[at0002]/data[at0003]/items[at0008]/items[at0010]/items[at0013]/value/_type":"DV_TEXT","/data[at0001]/events[at0002]/data[at0003]/items[at0008]/items[at0010]/items[at0013]/value/value":"Mannheim","/data[at0001]/events[at0002]/data[at0003]/items[at0008]/items[at0010]/archetype_node_id/_type":"RM_STRING","/data[at0001]/events[at0002]/data[at0003]/items[at0008]/items[at0010]/archetype_node_id/value":"at0010","/data[at0001]/events[at0002]/data[at0003]/items[at0008]/items[at0010]/name/_type":"DV_TEXT","/data[at0001]/events[at0002]/data[at0003]/items[at0008]/items[at0010]/name/value":"Bestimmtes Reiseziel"}');
+
                     END LOOP;
+                commit;
             END LOOP;
     END;
 $$;
@@ -194,12 +196,13 @@ $$;
 select count(distinct ehr_id)
 from entry2
 where (type = 'COMPOSITION')
-  and index ->> 'R0' is null;
+  and count= 0;
 select count(comp_id)
 from entry2
 where (type = 'COMPOSITION')
-  and index ->> 'R0' is null;
-
+  and count= 0;
+set yb_enable_expression_pushdown=on;
+set enable_hashjoin =on;
 -- Get second page of measurements with page size 10 which indicated high temperature and their time
 explain analyse
 select "array_599434088_1".*, "array_599434088_2".*
@@ -233,8 +236,10 @@ from (select e2.comp_id, json ->> '/archetype_details/template_id/value'
          join lateral ( select * from entry2 e3 where e3.comp_id = array_599434088_1.comp_id ) as "array_599434088_2"
               on true;
 
---Get all patients which have a specific diagnosis for a specific health care facility
 
+
+--Get all patients which have a specific diagnosis for a specific health care facility
+set enable_hashjoin =off;
 explain analyse
 select distinct array_599434088_2.ehr_id
 from (select e2.comp_id, e2.archetype_id, json ->> '/composer/name' as "composer"
