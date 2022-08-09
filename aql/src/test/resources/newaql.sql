@@ -196,15 +196,15 @@ $$;
 select count(distinct ehr_id)
 from entry2
 where (type = 'COMPOSITION')
-  and depth= 0;
+  and depth = 0;
 select count(comp_id)
 from entry2
 where (type = 'COMPOSITION')
-  and depth= 0;
-set yb_enable_expression_pushdown=on;
+  and depth = 0;
+set yb_enable_expression_pushdown = on;
 
 -- Get second page of measurements with page size 10 which indicated high temperature and their time
-set enable_hashjoin =on;
+set enable_hashjoin = on;
 explain analyse
 select "array_599434088_1".*, "array_599434088_2".*
 from (select e2.ehr_id, e2.comp_id, json ->> '/context/start_time/value' as "time"
@@ -225,7 +225,7 @@ order by "array_599434088_1"."time"
 limit 10 offset 10
 ;
 -- Get latest 'Corona_Anamnese' document for a specific patient
-set enable_hashjoin =on;
+set enable_hashjoin = on;
 explain analyse
 select array_599434088_2.*
 from (select e2.comp_id, json ->> '/archetype_details/template_id/value'
@@ -241,7 +241,8 @@ from (select e2.comp_id, json ->> '/archetype_details/template_id/value'
 
 
 --Get all patients which have a specific diagnosis for a specific health care facility
-set enable_hashjoin =off;
+-- To big for hash join
+set enable_hashjoin = off;
 explain analyse
 select distinct array_599434088_2.ehr_id
 from (select e2.comp_id, e2.archetype_id, json ->> '/composer/name' as "composer"
@@ -258,6 +259,58 @@ from (select e2.comp_id, e2.archetype_id, json ->> '/composer/name' as "composer
 
 
 
+-- deep select
+
+-- the default just uses hash  on the first join
+set enable_nestloop = off;
+set enable_hashjoin = on;
+
+explain analyse
+select array_599434088_1.comp_id,
+       array_599434088_1.composer,
+       array_599434088_2.subject,
+       array_599434088_3.time,
+       array_599434088_4.art,
+       array_599434088_5.ziel
+from (select e2.comp_id, e2.archetype_id, json ->> '/composer/name' as "composer"
+      from entry2 e2
+      where (type = 'COMPOSITION')
+        and depth = 0
+        and ehr_id = 1) as "array_599434088_1"
+         join lateral ( select e3.comp_id, json ->> '/subject/_type' as "subject"
+                        from entry2 e3
+                        where archetype_id = 'openEHR-EHR-OBSERVATION.travel_event.v0'
+                          and depth = 0
+                          and ehr_id = 1
+                          and e3.comp_id = array_599434088_1.comp_id ) as "array_599434088_2" on true
+         join lateral ( select e4.comp_id,
+                               e4.index ->> 'R0'                                  as "R0",
+                               json ->> '/data[at0001]/events[at0002]/time/value' as "time"
+                        from entry2 e4
+                        where archetype_id = 'openEHR-EHR-OBSERVATION.travel_event.v0'
+                          and depth = 1
+                          and ehr_id = 1
+                          and e4.comp_id = array_599434088_2.comp_id ) as "array_599434088_3" on true
+         join lateral ( select e5.comp_id,
+                               e5.index ->> 'R0'                                                             as "R0",
+                               e5.index ->> 'R1'                                                             as "R1",
+                               json ->> '/data[at0001]/events[at0002]/data[at0003]/items[at0008]/name/value' as "art"
+                        from entry2 e5
+                        where archetype_id = 'openEHR-EHR-OBSERVATION.travel_event.v0'
+                          and depth = 2
+                          and ehr_id = 1
+                          and e5.comp_id = array_599434088_3.comp_id
+                          and e5.index ->> 'R0' = array_599434088_3."R0") as "array_599434088_4" on true
+         join lateral ( select json ->>
+                               '/data[at0001]/events[at0002]/data[at0003]/items[at0008]/items[at0010]/name/value' as "ziel"
+                        from entry2 e6
+                        where archetype_id = 'openEHR-EHR-OBSERVATION.travel_event.v0'
+                          and depth = 3
+                          and ehr_id = 1
+                          and e6.comp_id = array_599434088_3.comp_id
+                          and e6.index ->> 'R0' = array_599434088_4."R0"
+                          and e6.index ->> 'R1' = array_599434088_4."R1") as "array_599434088_5" on true
+;
 
 
 
