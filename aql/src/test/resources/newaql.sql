@@ -18,16 +18,13 @@ create table ehr.entry2
 create index archetype_idx on ehr.entry2 (archetype_id, depth,ehr_id);
 create index type_idx on ehr.entry2 (type, depth,ehr_id);
 -- composer
+-- should be partial
 create index composer_idx on ehr.entry2 (type, depth, (json ->> '/composer/name'),ehr_id);
 -- should be partial
 -- custom index for a cross patient query
 create index diagnosis_idx on ehr.entry2 (archetype_id, depth,
                                       (json ->> '/data[at0001]/items[at0002]/value/value'), ehr_id);
--- should be partial
-
--- create index index_r0_idx on  ehr.entry2((index ->> 'R0'));
---create index start_time_idx on entry2(((json ->> '/context/start_time/value')::text) desc ,type,(index ->> 'R0'),ehr_id)
---    where type = 'COMPOSITION' and index ->> 'R0' is null;
+-- Idee splitt via type
 
 DO
 $$
@@ -190,6 +187,9 @@ $$
     END;
 $$;
 
+set yb_enable_expression_pushdown = on;
+
+
 select count(distinct ehr_id)
 from ehr.entry2
 where (type = 'COMPOSITION')
@@ -198,7 +198,7 @@ select count(comp_id)
 from ehr.entry2
 where (type = 'COMPOSITION')
   and depth = 0;
-set yb_enable_expression_pushdown = on;
+
 
 -- Get second page of measurements with page size 10 which indicated high temperature and their time
 set enable_hashjoin = on;
@@ -249,7 +249,8 @@ from (select e2.comp_id, e2.archetype_id, json ->> '/composer/name' as "composer
       from ehr.entry2 e2
       where (type = 'COMPOSITION')
         and depth = 0
-        and json ->> '/composer/name' = 'Silvia Blake') as "array_599434088_1"
+        and json ->> '/composer/name' = 'Silvia Blake'
+      ) as "array_599434088_1"
          join lateral ( select ehr_id
                         from ehr.entry2 e3
                         where archetype_id = 'openEHR-EHR-EVALUATION.problem_diagnosis.v1'
@@ -309,8 +310,7 @@ from (select e2.comp_id, e2.archetype_id, json ->> '/composer/name' as "composer
                           and ehr_id = 1
                           and e6.comp_id = array_599434088_3.comp_id
                           and e6.index ->> 'R0' = array_599434088_4."R0"
-                          and e6.index ->> 'R1' = array_599434088_4."R1") as "array_599434088_5" on true
-;
+                          and e6.index ->> 'R1' = array_599434088_4."R1") as "array_599434088_5" on true;
 
 
 
