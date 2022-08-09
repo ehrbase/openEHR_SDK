@@ -15,13 +15,13 @@ create table ehr.entry2
 );
 
 
-create index archetype_idx on ehr.entry2 (archetype_id, count,ehr_id);
-create index type_idx on ehr.entry2 (type, count,ehr_id);
+create index archetype_idx on ehr.entry2 (archetype_id, depth,ehr_id);
+create index type_idx on ehr.entry2 (type, depth,ehr_id);
 -- composer
-create index composer_idx on entry2 (type, count, (json ->> '/composer/name'),ehr_id);
+create index composer_idx on entry2 (type, depth, (json ->> '/composer/name'),ehr_id);
 -- should be partial
 -- custom index for a cross patient query
-create index diagnosis_idx on entry2 (archetype_id, count,
+create index diagnosis_idx on entry2 (archetype_id, depth,
                                       (json ->> '/data[at0001]/items[at0002]/value/value'), ehr_id);
 -- should be partial
 
@@ -35,7 +35,7 @@ $$
         comp_size INTEGER := 100;
         c         INTEGER := 0;
     BEGIN
-        FOR e IN 5200..20000 BY 1
+        FOR e IN 0..200 BY 1
 
             LOOP
                 FOR counter IN 1..comp_size BY 2
@@ -196,25 +196,26 @@ $$;
 select count(distinct ehr_id)
 from entry2
 where (type = 'COMPOSITION')
-  and count= 0;
+  and depth= 0;
 select count(comp_id)
 from entry2
 where (type = 'COMPOSITION')
-  and count= 0;
+  and depth= 0;
 set yb_enable_expression_pushdown=on;
-set enable_hashjoin =on;
+
 -- Get second page of measurements with page size 10 which indicated high temperature and their time
+set enable_hashjoin =on;
 explain analyse
 select "array_599434088_1".*, "array_599434088_2".*
 from (select e2.ehr_id, e2.comp_id, json ->> '/context/start_time/value' as "time"
       from entry2 e2
       where (type = 'COMPOSITION')
-        and count = 0
+        and depth = 0
         and ehr_id = 1) as "array_599434088_1"
          join lateral ( select (json ->> '/data[at0002]/events[at0003]/data[at0001]/items[at0004]/value/magnitude')::numeric
                         from entry2 e3
                         where (archetype_id = 'openEHR-EHR-OBSERVATION.body_temperature.v2')
-                          and count = 0
+                          and depth = 0
                           and ehr_id = 1
                           and (json ->>
                                '/data[at0002]/events[at0003]/data[at0001]/items[at0004]/value/magnitude')::numeric >
@@ -224,12 +225,13 @@ order by "array_599434088_1"."time"
 limit 10 offset 10
 ;
 -- Get latest 'Corona_Anamnese' document for a specific patient
+set enable_hashjoin =on;
 explain analyse
 select array_599434088_2.*
 from (select e2.comp_id, json ->> '/archetype_details/template_id/value'
       from entry2 e2
       where (type = 'COMPOSITION')
-        and count = 0
+        and depth = 0
         and json ->> '/archetype_details/template_id/value' = 'Corona_Anamnese'
         and ehr_id = 1
       limit 1) as "array_599434088_1"
@@ -245,12 +247,12 @@ select distinct array_599434088_2.ehr_id
 from (select e2.comp_id, e2.archetype_id, json ->> '/composer/name' as "composer"
       from entry2 e2
       where (type = 'COMPOSITION')
-        and count = 0
+        and depth = 0
         and json ->> '/composer/name' = 'Silvia Blake') as "array_599434088_1"
          join lateral ( select ehr_id
                         from entry2 e3
                         where archetype_id = 'openEHR-EHR-EVALUATION.problem_diagnosis.v1'
-                          and count = 0
+                          and depth = 0
                           and json ->> '/data[at0001]/items[at0002]/value/value' = 'Problem/Diagnosis name 10'
                           and e3.comp_id = array_599434088_1.comp_id ) as "array_599434088_2" on true;
 
