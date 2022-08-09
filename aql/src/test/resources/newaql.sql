@@ -1,4 +1,4 @@
-drop table if exists entry2;
+drop table if exists ehr.entry2;
 create table ehr.entry2
 (
     ehr_id       INTEGER,
@@ -18,10 +18,10 @@ create table ehr.entry2
 create index archetype_idx on ehr.entry2 (archetype_id, depth,ehr_id);
 create index type_idx on ehr.entry2 (type, depth,ehr_id);
 -- composer
-create index composer_idx on entry2 (type, depth, (json ->> '/composer/name'),ehr_id);
+create index composer_idx on ehr.entry2 (type, depth, (json ->> '/composer/name'),ehr_id);
 -- should be partial
 -- custom index for a cross patient query
-create index diagnosis_idx on entry2 (archetype_id, depth,
+create index diagnosis_idx on ehr.entry2 (archetype_id, depth,
                                       (json ->> '/data[at0001]/items[at0002]/value/value'), ehr_id);
 -- should be partial
 
@@ -41,7 +41,7 @@ $$
                 FOR counter IN 1..comp_size BY 2
                     LOOP
                         c := e * comp_size + counter;
-                        insert into entry2 (ehr_id, comp_id, archetype_id,type, path, count, index_string, index, depth,
+                        insert into ehr.entry2 (ehr_id, comp_id, archetype_id,type, path, count, index_string, index, depth,
                                             json)
 
                         values  (e,c,'openEHR-EHR-COMPOSITION.health_summary.v1', 'COMPOSITION', '/', 0, '[]', '{}', 0, '{"/context/start_time/_type":"DV_DATE_TIME","/context/start_time/value":"2021-12-03T17:34:06.849379+01:00","/context/start_time/magnitude":"63774146046","/context/health_care_facility/_type":"PARTY_IDENTIFIED","/context/health_care_facility/external_ref/_type":"PARTY_REF","/context/health_care_facility/external_ref/namespace":"HOSPITAL-NS","/context/health_care_facility/external_ref/type":"PARTY","/context/health_care_facility/external_ref/id/_type":"GENERIC_ID","/context/health_care_facility/external_ref/id/value":"9091","/context/health_care_facility/external_ref/id/scheme":"HOSPITAL-NS","/context/health_care_facility/name":"Hospital","/context/setting/_type":"DV_CODED_TEXT","/context/setting/value":"other care","/context/setting/defining_code/_type":"CODE_PHRASE","/context/setting/defining_code/terminology_id/_type":"TERMINOLOGY_ID","/context/setting/defining_code/terminology_id/value":"openehr","/context/setting/defining_code/code_string":"238","/content[openEHR-EHR-SECTION.adhoc.v1 and name/value=''Medication Summary'']/name/_type":"DV_TEXT","/content[openEHR-EHR-SECTION.adhoc.v1 and name/value=''Medication Summary'']/name/value":"Medication Summary","/content[openEHR-EHR-SECTION.adhoc.v1 and name/value=''Medication Summary'']/archetype_details/archetype_id/value":"openEHR-EHR-SECTION.adhoc.v1","/content[openEHR-EHR-SECTION.adhoc.v1 and name/value=''Medication Summary'']/archetype_details/rm_version":"1.0.4","/content[openEHR-EHR-SECTION.adhoc.v1 and name/value=''Medication Summary'']/archetype_node_id/_type":"RM_STRING","/content[openEHR-EHR-SECTION.adhoc.v1 and name/value=''Medication Summary'']/archetype_node_id/value":"openEHR-EHR-SECTION.adhoc.v1","/content[openEHR-EHR-SECTION.adhoc.v1 and name/value=''Allergies & Intolerances'']/name/_type":"DV_TEXT","/content[openEHR-EHR-SECTION.adhoc.v1 and name/value=''Allergies & Intolerances'']/name/value":"Allergies & Intolerances","/content[openEHR-EHR-SECTION.adhoc.v1 and name/value=''Allergies & Intolerances'']/archetype_details/archetype_id/value":"openEHR-EHR-SECTION.adhoc.v1","/content[openEHR-EHR-SECTION.adhoc.v1 and name/value=''Allergies & Intolerances'']/archetype_details/rm_version":"1.0.4","/content[openEHR-EHR-SECTION.adhoc.v1 and name/value=''Allergies & Intolerances'']/archetype_node_id/_type":"RM_STRING","/content[openEHR-EHR-SECTION.adhoc.v1 and name/value=''Allergies & Intolerances'']/archetype_node_id/value":"openEHR-EHR-SECTION.adhoc.v1","/content[openEHR-EHR-SECTION.adhoc.v1 and name/value=''Problem List'']/name/_type":"DV_TEXT","/content[openEHR-EHR-SECTION.adhoc.v1 and name/value=''Problem List'']/name/value":"Problem List","/content[openEHR-EHR-SECTION.adhoc.v1 and name/value=''Problem List'']/archetype_details/archetype_id/value":"openEHR-EHR-SECTION.adhoc.v1","/content[openEHR-EHR-SECTION.adhoc.v1 and name/value=''Problem List'']/archetype_details/rm_version":"1.0.4","/content[openEHR-EHR-SECTION.adhoc.v1 and name/value=''Problem List'']/archetype_node_id/_type":"RM_STRING","/content[openEHR-EHR-SECTION.adhoc.v1 and name/value=''Problem List'']/archetype_node_id/value":"openEHR-EHR-SECTION.adhoc.v1","/content[openEHR-EHR-SECTION.adhoc.v1 and name/value=''Immunizations'']/name/_type":"DV_TEXT","/content[openEHR-EHR-SECTION.adhoc.v1 and name/value=''Immunizations'']/name/value":"Immunizations","/content[openEHR-EHR-SECTION.adhoc.v1 and name/value=''Immunizations'']/archetype_details/archetype_id/value":"openEHR-EHR-SECTION.adhoc.v1","/content[openEHR-EHR-SECTION.adhoc.v1 and name/value=''Immunizations'']/archetype_details/rm_version":"1.0.4","/content[openEHR-EHR-SECTION.adhoc.v1 and name/value=''Immunizations'']/archetype_node_id/_type":"RM_STRING","/content[openEHR-EHR-SECTION.adhoc.v1 and name/value=''Immunizations'']/archetype_node_id/value":"openEHR-EHR-SECTION.adhoc.v1","/content[openEHR-EHR-SECTION.adhoc.v1 and name/value=''History of Procedures'']/name/_type":"DV_TEXT","/content[openEHR-EHR-SECTION.adhoc.v1 and name/value=''History of Procedures'']/name/value":"History of Procedures","/content[openEHR-EHR-SECTION.adhoc.v1 and name/value=''History of Procedures'']/archetype_details/archetype_id/value":"openEHR-EHR-SECTION.adhoc.v1","/content[openEHR-EHR-SECTION.adhoc.v1 and name/value=''History of Procedures'']/archetype_details/rm_version":"1.0.4","/content[openEHR-EHR-SECTION.adhoc.v1 and name/value=''History of Procedures'']/archetype_node_id/_type":"RM_STRING","/content[openEHR-EHR-SECTION.adhoc.v1 and name/value=''History of Procedures'']/archetype_node_id/value":"openEHR-EHR-SECTION.adhoc.v1","/content[openEHR-EHR-SECTION.adhoc.v1 and name/value=''Medical Devices'']/name/_type":"DV_TEXT","/content[openEHR-EHR-SECTION.adhoc.v1 and name/value=''Medical Devices'']/name/value":"Medical Devices","/content[openEHR-EHR-SECTION.adhoc.v1 and name/value=''Medical Devices'']/archetype_details/archetype_id/value":"openEHR-EHR-SECTION.adhoc.v1","/content[openEHR-EHR-SECTION.adhoc.v1 and name/value=''Medical Devices'']/archetype_details/rm_version":"1.0.4","/content[openEHR-EHR-SECTION.adhoc.v1 and name/value=''Medical Devices'']/archetype_node_id/_type":"RM_STRING","/content[openEHR-EHR-SECTION.adhoc.v1 and name/value=''Medical Devices'']/archetype_node_id/value":"openEHR-EHR-SECTION.adhoc.v1","/content[openEHR-EHR-SECTION.adhoc.v1 and name/value=''Diagnostic Results'']/name/_type":"DV_TEXT","/content[openEHR-EHR-SECTION.adhoc.v1 and name/value=''Diagnostic Results'']/name/value":"Diagnostic Results","/content[openEHR-EHR-SECTION.adhoc.v1 and name/value=''Diagnostic Results'']/archetype_details/archetype_id/value":"openEHR-EHR-SECTION.adhoc.v1","/content[openEHR-EHR-SECTION.adhoc.v1 and name/value=''Diagnostic Results'']/archetype_details/rm_version":"1.0.4","/content[openEHR-EHR-SECTION.adhoc.v1 and name/value=''Diagnostic Results'']/archetype_node_id/_type":"RM_STRING","/content[openEHR-EHR-SECTION.adhoc.v1 and name/value=''Diagnostic Results'']/archetype_node_id/value":"openEHR-EHR-SECTION.adhoc.v1","/content[openEHR-EHR-SECTION.adhoc.v1 and name/value=''Vital Signs'']/name/_type":"DV_TEXT","/content[openEHR-EHR-SECTION.adhoc.v1 and name/value=''Vital Signs'']/name/value":"Vital Signs","/content[openEHR-EHR-SECTION.adhoc.v1 and name/value=''Vital Signs'']/archetype_details/archetype_id/value":"openEHR-EHR-SECTION.adhoc.v1","/content[openEHR-EHR-SECTION.adhoc.v1 and name/value=''Vital Signs'']/archetype_details/rm_version":"1.0.4","/content[openEHR-EHR-SECTION.adhoc.v1 and name/value=''Vital Signs'']/archetype_node_id/_type":"RM_STRING","/content[openEHR-EHR-SECTION.adhoc.v1 and name/value=''Vital Signs'']/archetype_node_id/value":"openEHR-EHR-SECTION.adhoc.v1","/content[openEHR-EHR-SECTION.adhoc.v1 and name/value=''Past History of Illnesses'']/name/_type":"DV_TEXT","/content[openEHR-EHR-SECTION.adhoc.v1 and name/value=''Past History of Illnesses'']/name/value":"Past History of Illnesses","/content[openEHR-EHR-SECTION.adhoc.v1 and name/value=''Past History of Illnesses'']/archetype_details/archetype_id/value":"openEHR-EHR-SECTION.adhoc.v1","/content[openEHR-EHR-SECTION.adhoc.v1 and name/value=''Past History of Illnesses'']/archetype_details/rm_version":"1.0.4","/content[openEHR-EHR-SECTION.adhoc.v1 and name/value=''Past History of Illnesses'']/archetype_node_id/_type":"RM_STRING","/content[openEHR-EHR-SECTION.adhoc.v1 and name/value=''Past History of Illnesses'']/archetype_node_id/value":"openEHR-EHR-SECTION.adhoc.v1","/content[openEHR-EHR-SECTION.adhoc.v1 and name/value=''Pregnancy'']/name/_type":"DV_TEXT","/content[openEHR-EHR-SECTION.adhoc.v1 and name/value=''Pregnancy'']/name/value":"Pregnancy","/content[openEHR-EHR-SECTION.adhoc.v1 and name/value=''Pregnancy'']/archetype_details/archetype_id/value":"openEHR-EHR-SECTION.adhoc.v1","/content[openEHR-EHR-SECTION.adhoc.v1 and name/value=''Pregnancy'']/archetype_details/rm_version":"1.0.4","/content[openEHR-EHR-SECTION.adhoc.v1 and name/value=''Pregnancy'']/archetype_node_id/_type":"RM_STRING","/content[openEHR-EHR-SECTION.adhoc.v1 and name/value=''Pregnancy'']/archetype_node_id/value":"openEHR-EHR-SECTION.adhoc.v1","/content[openEHR-EHR-SECTION.adhoc.v1 and name/value=''Social History'']/name/_type":"DV_TEXT","/content[openEHR-EHR-SECTION.adhoc.v1 and name/value=''Social History'']/name/value":"Social History","/content[openEHR-EHR-SECTION.adhoc.v1 and name/value=''Social History'']/archetype_details/archetype_id/value":"openEHR-EHR-SECTION.adhoc.v1","/content[openEHR-EHR-SECTION.adhoc.v1 and name/value=''Social History'']/archetype_details/rm_version":"1.0.4","/content[openEHR-EHR-SECTION.adhoc.v1 and name/value=''Social History'']/archetype_node_id/_type":"RM_STRING","/content[openEHR-EHR-SECTION.adhoc.v1 and name/value=''Social History'']/archetype_node_id/value":"openEHR-EHR-SECTION.adhoc.v1","/content[openEHR-EHR-SECTION.adhoc.v1 and name/value=''Plan of Care'']/name/_type":"DV_TEXT","/content[openEHR-EHR-SECTION.adhoc.v1 and name/value=''Plan of Care'']/name/value":"Plan of Care","/content[openEHR-EHR-SECTION.adhoc.v1 and name/value=''Plan of Care'']/archetype_details/archetype_id/value":"openEHR-EHR-SECTION.adhoc.v1","/content[openEHR-EHR-SECTION.adhoc.v1 and name/value=''Plan of Care'']/archetype_details/rm_version":"1.0.4","/content[openEHR-EHR-SECTION.adhoc.v1 and name/value=''Plan of Care'']/archetype_node_id/_type":"RM_STRING","/content[openEHR-EHR-SECTION.adhoc.v1 and name/value=''Plan of Care'']/archetype_node_id/value":"openEHR-EHR-SECTION.adhoc.v1","/content[openEHR-EHR-SECTION.adhoc.v1 and name/value=''Functional Status'']/name/_type":"DV_TEXT","/content[openEHR-EHR-SECTION.adhoc.v1 and name/value=''Functional Status'']/name/value":"Functional Status","/content[openEHR-EHR-SECTION.adhoc.v1 and name/value=''Functional Status'']/archetype_details/archetype_id/value":"openEHR-EHR-SECTION.adhoc.v1","/content[openEHR-EHR-SECTION.adhoc.v1 and name/value=''Functional Status'']/archetype_details/rm_version":"1.0.4","/content[openEHR-EHR-SECTION.adhoc.v1 and name/value=''Functional Status'']/archetype_node_id/_type":"RM_STRING","/content[openEHR-EHR-SECTION.adhoc.v1 and name/value=''Functional Status'']/archetype_node_id/value":"openEHR-EHR-SECTION.adhoc.v1","/content[openEHR-EHR-SECTION.adhoc.v1 and name/value=''Advanced Directives'']/name/_type":"DV_TEXT","/content[openEHR-EHR-SECTION.adhoc.v1 and name/value=''Advanced Directives'']/name/value":"Advanced Directives","/content[openEHR-EHR-SECTION.adhoc.v1 and name/value=''Advanced Directives'']/archetype_details/archetype_id/value":"openEHR-EHR-SECTION.adhoc.v1","/content[openEHR-EHR-SECTION.adhoc.v1 and name/value=''Advanced Directives'']/archetype_details/rm_version":"1.0.4","/content[openEHR-EHR-SECTION.adhoc.v1 and name/value=''Advanced Directives'']/archetype_node_id/_type":"RM_STRING","/content[openEHR-EHR-SECTION.adhoc.v1 and name/value=''Advanced Directives'']/archetype_node_id/value":"openEHR-EHR-SECTION.adhoc.v1","/name/_type":"DV_TEXT","/name/value":"International Patient Summary","/archetype_node_id/_type":"RM_STRING","/archetype_node_id/value":"openEHR-EHR-COMPOSITION.health_summary.v1","/language/_type":"CODE_PHRASE","/language/terminology_id/_type":"TERMINOLOGY_ID","/language/terminology_id/value":"ISO_639-1","/language/code_string":"en","/uid/_type":"OBJECT_VERSION_ID","/uid/value":"c5db0694-5cd2-4fd1-a5bf-ed25f1c5d371::ehrbase.org::1","/archetype_details/archetype_id/value":"openEHR-EHR-COMPOSITION.health_summary.v1","/archetype_details/template_id/value":"International Patient Summary","/archetype_details/rm_version":"1.0.4","/territory/_type":"CODE_PHRASE","/territory/terminology_id/_type":"TERMINOLOGY_ID","/territory/terminology_id/value":"ISO_3166-1","/territory/code_string":"US","/composer/_type":"PARTY_IDENTIFIED","/composer/name":"Silvia Blake"}'),
@@ -166,7 +166,7 @@ $$
                                 (e,c,'openEHR-EHR-EVALUATION.limitation_of_treatment.v0', 'EVALUATION', '/content[openEHR-EHR-SECTION.adhoc.v1 and name/value=''Advanced Directives'']/items[openEHR-EHR-EVALUATION.limitation_of_treatment.v0]', 0, '[0]', '{"R0":0}', 1, '{"/other_participations/_type":"PARTICIPATION","/other_participations/function/_type":"DV_TEXT","/other_participations/function/value":"requester","/other_participations/mode/_type":"DV_CODED_TEXT","/other_participations/mode/value":"face-to-face communication","/other_participations/mode/defining_code/_type":"CODE_PHRASE","/other_participations/mode/defining_code/terminology_id/_type":"TERMINOLOGY_ID","/other_participations/mode/defining_code/terminology_id/value":"openehr","/other_participations/mode/defining_code/code_string":"216","/other_participations/performer/_type":"PARTY_IDENTIFIED","/other_participations/performer/external_ref/_type":"PARTY_REF","/other_participations/performer/external_ref/namespace":"HOSPITAL-NS","/other_participations/performer/external_ref/type":"PERSON","/other_participations/performer/external_ref/id/_type":"GENERIC_ID","/other_participations/performer/external_ref/id/value":"199","/other_participations/performer/external_ref/id/scheme":"HOSPITAL-NS","/other_participations/performer/name":"Dr. Marcus Johnson"}'),
                                 (e,c,'openEHR-EHR-EVALUATION.limitation_of_treatment.v0', 'EVALUATION', '/content[openEHR-EHR-SECTION.adhoc.v1 and name/value=''Advanced Directives'']/items[openEHR-EHR-EVALUATION.limitation_of_treatment.v0]', 0, '[1]', '{"R0":1}', 1, '{"/other_participations/_type":"PARTICIPATION","/other_participations/function/_type":"DV_TEXT","/other_participations/function/value":"performer","/other_participations/mode/_type":"DV_CODED_TEXT","/other_participations/mode/value":"not specified","/other_participations/mode/defining_code/_type":"CODE_PHRASE","/other_participations/mode/defining_code/terminology_id/_type":"TERMINOLOGY_ID","/other_participations/mode/defining_code/terminology_id/value":"openehr","/other_participations/mode/defining_code/code_string":"193","/other_participations/performer/_type":"PARTY_IDENTIFIED","/other_participations/performer/external_ref/_type":"PARTY_REF","/other_participations/performer/external_ref/namespace":"HOSPITAL-NS","/other_participations/performer/external_ref/type":"PERSON","/other_participations/performer/external_ref/id/_type":"GENERIC_ID","/other_participations/performer/external_ref/id/value":"198","/other_participations/performer/external_ref/id/scheme":"HOSPITAL-NS","/other_participations/performer/name":"Lara Markham"}');
                 c := c + 1;
-                insert into entry2 (ehr_id, comp_id, archetype_id, type,path, count, index_string, index, depth, json)
+                insert into ehr.entry2 (ehr_id, comp_id, archetype_id, type,path, count, index_string, index, depth, json)
                         values  (e,c,'openEHR-EHR-COMPOSITION.report.v1', 'COMPOSITION', '/', 0, '[]', '{}', 0, '{"/context/start_time/_type":"DV_DATE_TIME","/context/start_time/value":"2020-05-11T22:53:12.039139+02:00","/context/start_time/magnitude":"63724827192","/context/setting/_type":"DV_CODED_TEXT","/context/setting/value":"other care","/context/setting/defining_code/_type":"CODE_PHRASE","/context/setting/defining_code/terminology_id/_type":"TERMINOLOGY_ID","/context/setting/defining_code/terminology_id/value":"openehr","/context/setting/defining_code/code_string":"238","/content[openEHR-EHR-SECTION.adhoc.v1 and name/value=''Symptome'']/name/_type":"DV_TEXT","/content[openEHR-EHR-SECTION.adhoc.v1 and name/value=''Symptome'']/name/value":"Symptome","/content[openEHR-EHR-SECTION.adhoc.v1 and name/value=''Symptome'']/archetype_details/archetype_id/value":"openEHR-EHR-SECTION.adhoc.v1","/content[openEHR-EHR-SECTION.adhoc.v1 and name/value=''Symptome'']/archetype_details/rm_version":"1.0.4","/content[openEHR-EHR-SECTION.adhoc.v1 and name/value=''Symptome'']/archetype_node_id/_type":"RM_STRING","/content[openEHR-EHR-SECTION.adhoc.v1 and name/value=''Symptome'']/archetype_node_id/value":"openEHR-EHR-SECTION.adhoc.v1","/content[openEHR-EHR-SECTION.adhoc.v1 and name/value=''Risikogebiet'']/name/_type":"DV_TEXT","/content[openEHR-EHR-SECTION.adhoc.v1 and name/value=''Risikogebiet'']/name/value":"Risikogebiet","/content[openEHR-EHR-SECTION.adhoc.v1 and name/value=''Risikogebiet'']/archetype_details/archetype_id/value":"openEHR-EHR-SECTION.adhoc.v1","/content[openEHR-EHR-SECTION.adhoc.v1 and name/value=''Risikogebiet'']/archetype_details/rm_version":"1.0.4","/content[openEHR-EHR-SECTION.adhoc.v1 and name/value=''Risikogebiet'']/archetype_node_id/_type":"RM_STRING","/content[openEHR-EHR-SECTION.adhoc.v1 and name/value=''Risikogebiet'']/archetype_node_id/value":"openEHR-EHR-SECTION.adhoc.v1","/archetype_node_id/_type":"RM_STRING","/archetype_node_id/value":"openEHR-EHR-COMPOSITION.report.v1","/language/_type":"CODE_PHRASE","/language/terminology_id/_type":"TERMINOLOGY_ID","/language/terminology_id/value":"ISO_639-1","/language/code_string":"de","/uid/_type":"OBJECT_VERSION_ID","/uid/value":"93a018f1-ad95-4d52-bb8f-0f64d7f7cce6::ehrbase.org::1","/archetype_details/archetype_id/value":"openEHR-EHR-COMPOSITION.report.v1","/archetype_details/template_id/value":"Corona_Anamnese","/archetype_details/rm_version":"1.0.4","/name/_type":"DV_TEXT","/name/value":"Bericht","/territory/_type":"CODE_PHRASE","/territory/terminology_id/_type":"TERMINOLOGY_ID","/territory/terminology_id/value":"ISO_3166-1","/territory/code_string":"DE","/composer/_type":"PARTY_IDENTIFIED","/composer/name":"birger.haarbrandt@plri.de"}'),
                                 (e,c,'openEHR-EHR-OBSERVATION.story.v1', 'OBSERVATION', '/content[openEHR-EHR-OBSERVATION.story.v1]', 0, '[]', '{}', 0, '{"/data[at0001]/archetype_node_id/_type":"RM_STRING","/data[at0001]/archetype_node_id/value":"at0001","/data[at0001]/origin/_type":"DV_DATE_TIME","/data[at0001]/origin/value":"2020-05-11T22:53:12.039139+02:00","/data[at0001]/origin/magnitude":"63724827192","/data[at0001]/name/_type":"DV_TEXT","/data[at0001]/name/value":"Event Series","/archetype_node_id/_type":"RM_STRING","/archetype_node_id/value":"openEHR-EHR-OBSERVATION.story.v1","/language/_type":"CODE_PHRASE","/language/terminology_id/_type":"TERMINOLOGY_ID","/language/terminology_id/value":"ISO_639-1","/language/code_string":"de","/encoding/_type":"CODE_PHRASE","/encoding/terminology_id/_type":"TERMINOLOGY_ID","/encoding/terminology_id/value":"IANA_character-sets","/encoding/code_string":"UTF-8","/archetype_details/archetype_id/value":"openEHR-EHR-OBSERVATION.story.v1","/archetype_details/rm_version":"1.0.4","/name/_type":"DV_TEXT","/name/value":"Geschichte/Historie","/subject/_type":"PARTY_SELF"}'),
                                 (e,c,'openEHR-EHR-OBSERVATION.story.v1', 'OBSERVATION', '/content[openEHR-EHR-OBSERVATION.story.v1]', 0, '[0]', '{"R0":0}', 1, '{"/data[at0001]/events[at0002]/data[at0003]/archetype_node_id/_type":"RM_STRING","/data[at0001]/events[at0002]/data[at0003]/archetype_node_id/value":"at0003","/data[at0001]/events[at0002]/data[at0003]/name/_type":"DV_TEXT","/data[at0001]/events[at0002]/data[at0003]/name/value":"Tree","/data[at0001]/events[at0002]/archetype_node_id/_type":"RM_STRING","/data[at0001]/events[at0002]/archetype_node_id/value":"at0002","/data[at0001]/events[at0002]/name/_type":"DV_TEXT","/data[at0001]/events[at0002]/name/value":"Beliebiges Ereignis","/data[at0001]/events[at0002]/time/_type":"DV_DATE_TIME","/data[at0001]/events[at0002]/time/value":"2020-05-11T22:53:12.039139+02:00","/data[at0001]/events[at0002]/time/magnitude":"63724827192"}'),
@@ -191,11 +191,11 @@ $$
 $$;
 
 select count(distinct ehr_id)
-from entry2
+from ehr.entry2
 where (type = 'COMPOSITION')
   and depth = 0;
 select count(comp_id)
-from entry2
+from ehr.entry2
 where (type = 'COMPOSITION')
   and depth = 0;
 set yb_enable_expression_pushdown = on;
@@ -206,12 +206,12 @@ set enable_nestloop = on;
 explain analyse
 select "array_599434088_1".*, "array_599434088_2".*
 from (select e2.ehr_id, e2.comp_id, json ->> '/context/start_time/value' as "time",(json ->> '/context/start_time/magnitude')::numeric as "time_magnitude"
-      from entry2 e2
+      from ehr.entry2 e2
       where (type = 'COMPOSITION')
         and depth = 0
         and ehr_id = 1) as "array_599434088_1"
          join lateral ( select (json ->> '/data[at0002]/events[at0003]/data[at0001]/items[at0004]/value/magnitude')::numeric
-                        from entry2 e3
+                        from ehr.entry2 e3
                         where (archetype_id = 'openEHR-EHR-OBSERVATION.body_temperature.v2')
                           and depth = 0
                           and ehr_id = 1
@@ -228,13 +228,13 @@ set enable_nestloop = on;
 explain analyse
 select array_599434088_2.*
 from (select e2.comp_id, json ->> '/archetype_details/template_id/value'
-      from entry2 e2
+      from ehr.entry2 e2
       where (type = 'COMPOSITION')
         and depth = 0
         and json ->> '/archetype_details/template_id/value' = 'Corona_Anamnese'
         and ehr_id = 1
       limit 1) as "array_599434088_1"
-         join lateral ( select * from entry2 e3 where e3.comp_id = array_599434088_1.comp_id ) as "array_599434088_2"
+         join lateral ( select * from ehr.entry2 e3 where e3.comp_id = array_599434088_1.comp_id ) as "array_599434088_2"
               on true;
 
 
@@ -246,12 +246,12 @@ set enable_nestloop = on;
 explain analyse
 select distinct array_599434088_2.ehr_id
 from (select e2.comp_id, e2.archetype_id, json ->> '/composer/name' as "composer"
-      from entry2 e2
+      from ehr.entry2 e2
       where (type = 'COMPOSITION')
         and depth = 0
         and json ->> '/composer/name' = 'Silvia Blake') as "array_599434088_1"
          join lateral ( select ehr_id
-                        from entry2 e3
+                        from ehr.entry2 e3
                         where archetype_id = 'openEHR-EHR-EVALUATION.problem_diagnosis.v1'
                           and depth = 0
                           and json ->> '/data[at0001]/items[at0002]/value/value' = 'Problem/Diagnosis name 10'
@@ -273,12 +273,12 @@ select array_599434088_1.comp_id,
        array_599434088_4.art,
        array_599434088_5.ziel
 from (select e2.comp_id, e2.archetype_id, json ->> '/composer/name' as "composer"
-      from entry2 e2
+      from ehr.entry2 e2
       where (type = 'COMPOSITION')
         and depth = 0
         and ehr_id = 1) as "array_599434088_1"
          join lateral ( select e3.comp_id, json ->> '/subject/_type' as "subject"
-                        from entry2 e3
+                        from ehr.entry2 e3
                         where archetype_id = 'openEHR-EHR-OBSERVATION.travel_event.v0'
                           and depth = 0
                           and ehr_id = 1
@@ -286,7 +286,7 @@ from (select e2.comp_id, e2.archetype_id, json ->> '/composer/name' as "composer
          join lateral ( select e4.comp_id,
                                e4.index ->> 'R0'                                  as "R0",
                                json ->> '/data[at0001]/events[at0002]/time/value' as "time"
-                        from entry2 e4
+                        from ehr.entry2 e4
                         where archetype_id = 'openEHR-EHR-OBSERVATION.travel_event.v0'
                           and depth = 1
                           and ehr_id = 1
@@ -295,7 +295,7 @@ from (select e2.comp_id, e2.archetype_id, json ->> '/composer/name' as "composer
                                e5.index ->> 'R0'                                                             as "R0",
                                e5.index ->> 'R1'                                                             as "R1",
                                json ->> '/data[at0001]/events[at0002]/data[at0003]/items[at0008]/name/value' as "art"
-                        from entry2 e5
+                        from ehr.entry2 e5
                         where archetype_id = 'openEHR-EHR-OBSERVATION.travel_event.v0'
                           and depth = 2
                           and ehr_id = 1
@@ -303,7 +303,7 @@ from (select e2.comp_id, e2.archetype_id, json ->> '/composer/name' as "composer
                           and e5.index ->> 'R0' = array_599434088_3."R0") as "array_599434088_4" on true
          join lateral ( select json ->>
                                '/data[at0001]/events[at0002]/data[at0003]/items[at0008]/items[at0010]/name/value' as "ziel"
-                        from entry2 e6
+                        from ehr.entry2 e6
                         where archetype_id = 'openEHR-EHR-OBSERVATION.travel_event.v0'
                           and depth = 3
                           and ehr_id = 1
