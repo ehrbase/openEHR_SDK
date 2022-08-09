@@ -24,6 +24,11 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.ValueNode;
+import com.nedap.archie.rm.RMObject;
+import com.nedap.archie.rm.datavalues.quantity.datetime.DvDate;
+import com.nedap.archie.rm.datavalues.quantity.datetime.DvDateTime;
+import com.nedap.archie.rm.datavalues.quantity.datetime.DvDuration;
+import com.nedap.archie.rm.datavalues.quantity.datetime.DvTime;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -33,6 +38,7 @@ import org.ehrbase.aql.dto.path.AqlPath;
 import org.ehrbase.serialisation.walker.Context;
 import org.ehrbase.serialisation.walker.FromCompositionWalker;
 import org.ehrbase.webtemplate.model.WebTemplateNode;
+import org.openehr.schemas.v1.DVDATE;
 
 /**
  * @author Stefan Spiska
@@ -80,13 +86,38 @@ public class CompositionToMatrixWalker extends FromCompositionWalker<WalkerDto> 
             AqlPath relativ = node.getAqlPathDto()
                     .removeStart(walkerDto.getCurrentResolve().getPathFromRoot());
 
+            RMObject rmObject = context.getRmObjectDeque().peek();
             walkerDto
                     .getMatrix()
                     .get(walkerDto.getCurrentResolve())
                     .get(walkerDto.getCurrentIndex())
                     .putAll(flatten(
                             relativ,
-                            MARSHAL_OM.valueToTree(context.getRmObjectDeque().peek())));
+                            MARSHAL_OM.valueToTree(rmObject)));
+            if(rmObject instanceof DvTime){
+                walkerDto
+                    .getMatrix()
+                    .get(walkerDto.getCurrentResolve())
+                    .get(walkerDto.getCurrentIndex()).put(relativ.addEnd("/magnitude"),((DvTime) rmObject).getMagnitude().toString());
+            }
+            if(rmObject instanceof DvDate){
+                walkerDto
+                    .getMatrix()
+                    .get(walkerDto.getCurrentResolve())
+                    .get(walkerDto.getCurrentIndex()).put(relativ.addEnd("/magnitude"),((DvDate) rmObject).getMagnitude().toString());
+            }
+            if(rmObject instanceof DvDateTime){
+                walkerDto
+                    .getMatrix()
+                    .get(walkerDto.getCurrentResolve())
+                    .get(walkerDto.getCurrentIndex()).put(relativ.addEnd("/magnitude"),((DvDateTime) rmObject).getMagnitude().toString());
+            }
+            if(rmObject instanceof DvDuration){
+                walkerDto
+                    .getMatrix()
+                    .get(walkerDto.getCurrentResolve())
+                    .get(walkerDto.getCurrentIndex()).put(relativ.addEnd("/magnitude"),((DvDuration) rmObject).getMagnitude().toString());
+            }
         }
     }
 
