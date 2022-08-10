@@ -40,9 +40,9 @@ public class InterpreterOutput implements Serializable {
 
     public InterpreterOutput(InterpreterOutput other) {
         this.rootContainment = other.rootContainment;
-        this.contain = other.contain.stream().map(c -> new Containment(c)).collect(Collectors.toList());
+        this.contain = other.contain.stream().map(Containment::new).collect(Collectors.toList());
         this.originalContain =
-                other.originalContain.stream().map(c -> new Containment(c)).collect(Collectors.toList());
+                other.originalContain.stream().map(Containment::new).collect(Collectors.toList());
         this.pathFromRootToValue = new InterpreterPath();
         this.pathFromRootToValue.setNodeList(new ArrayList<>(other.pathFromRootToValue.getNodeList()));
     }
