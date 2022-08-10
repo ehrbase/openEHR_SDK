@@ -24,6 +24,7 @@ import static org.ehrbase.aql.dto.path.predicate.PredicateHelper.remove;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Deque;
 import java.util.LinkedHashSet;
@@ -84,7 +85,7 @@ public class Interpreter {
                     interpreterInput.setContainment(r.getRight());
                     interpreterInput.setContainmentPath(
                             Arrays.stream(r.getLeft()).collect(Collectors.toList()));
-                    interpreterInput.setPathFromContentment(selectFieldDto.getAqlPathDto());
+                    interpreterInput.setPathFromContainment(selectFieldDto.getAqlPathDto());
 
                     return interpreterInput;
                 })
@@ -98,8 +99,8 @@ public class Interpreter {
     }
 
     /**
-     * Called from {@link @see Interpreter#interpret(InterpreterInput, WebTemplateNode) }. Can be overwritten to take advantage of caching.
-     * @see Interpreter#interpret(InterpreterInput, WebTemplateNode)
+     * Called from {@link Interpreter#interpret(SelectFieldDto, ContainmentExpresionDto, String)  }. Can be overwritten to take advantage of caching.
+     * @see Interpreter#interpret(SelectFieldDto, ContainmentExpresionDto, String)
      * @param inputs
      * @param templateId
      * @return
@@ -116,13 +117,12 @@ public class Interpreter {
     }
 
     private Set<InterpreterOutput> interpret(InterpreterInput input, WebTemplateNode node) {
-        LinkedHashSet<InterpreterOutput> result = new LinkedHashSet<>();
-        // find all matching Paths in the node and interpret each
-        resolve(input.getContainmentPath(), node).stream()
-                .map(r -> interpret(input, r))
-                .forEach(result::addAll);
 
-        return result;
+        // find all matching Paths in the node and interpret each
+        return resolve(input.getContainmentPath(), node).stream()
+                .map(r -> interpret(input, r))
+                .flatMap(Collection::stream)
+                .collect(Collectors.toCollection(LinkedHashSet::new));
     }
 
     private Set<InterpreterOutput> interpret(
@@ -143,21 +143,20 @@ public class Interpreter {
         // resolve path from containment to rootContainment
         WebTemplateNode current = findPathToContainment(result, interpreterOutput, containmentIndex);
 
-        if (input.getPathFromContentment().isEmpty()) {
+        if (input.getPathFromContainment().isEmpty()) {
 
             return Collections.singleton(interpreterOutput);
         } else {
-            LinkedHashSet<InterpreterOutput> inter = new LinkedHashSet<>();
-            current.getChildren().stream()
-                    .map(c -> findPathToValue(input.getPathFromContentment(), c))
+
+            return current.getChildren().stream()
+                    .map(c -> findPathToValue(input.getPathFromContainment(), c))
                     .flatMap(Set::stream)
                     .map(l -> {
                         InterpreterOutput output = new InterpreterOutput(interpreterOutput);
                         output.getPathFromRootToValue().getNodeList().addAll(l);
                         return output;
                     })
-                    .forEach(inter::add);
-            return inter;
+                    .collect(Collectors.toCollection(LinkedHashSet::new));
         }
     }
 
@@ -387,27 +386,25 @@ public class Interpreter {
     protected static Set<List<Pair<WebTemplateNode, Deque<WebTemplateNode>>>> resolve(
             List<Containment> contains, WebTemplateNode node) {
 
-        // We are at the End
-        if (CollectionUtils.isEmpty(node.getChildren())) {
-            // if all have been matched return the node
-            if (contains.size() == 1 && MatcherUtil.matches(contains.get(0), node)) {
-                ArrayDeque<WebTemplateNode> right = new ArrayDeque<>();
-                right.add(node);
-                return Collections.singleton(new ArrayList<>(Collections.singletonList(Pair.of(node, right))));
-            } else {
+        // if all have been matched return the node
+        if (contains.size() == 1 && MatcherUtil.matches(contains.get(0), node)) {
 
-                return Collections.emptySet();
-            }
+            ArrayDeque<WebTemplateNode> right = new ArrayDeque<>();
+            right.add(node);
+            return Collections.singleton(new ArrayList<>(Collections.singletonList(Pair.of(node, right))));
+            // if some have been matched but there are  more search for matches of the sub contains
+        }
+
+        // We are at the End and all nodes not been match
+        if (CollectionUtils.isEmpty(node.getChildren())) {
+
+            return Collections.emptySet();
+
             // more to come
         } else {
-            // if all have been matched return the node
-            if (contains.size() == 1 && MatcherUtil.matches(contains.get(0), node)) {
 
-                ArrayDeque<WebTemplateNode> right = new ArrayDeque<>();
-                right.add(node);
-                return Collections.singleton(new ArrayList<>(Collections.singletonList(Pair.of(node, right))));
-                // if some have been matched but there are  more search for matches of the sub contains
-            } else if (MatcherUtil.matches(contains.get(0), node)) {
+            // find the matches for nextContains.remove(0) and add them to the found node
+            if (MatcherUtil.matches(contains.get(0), node)) {
 
                 LinkedHashSet<List<Pair<WebTemplateNode, Deque<WebTemplateNode>>>> result = new LinkedHashSet<>();
                 node.getChildren().stream()

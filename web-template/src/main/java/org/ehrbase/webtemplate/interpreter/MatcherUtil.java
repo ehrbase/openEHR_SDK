@@ -37,11 +37,28 @@ public class MatcherUtil {
         // Util Class
     }
 
+    /**
+     * Check if {@link WebTemplateInput#getSuffix()} matches {@link AqlPath.AqlNode#getName()}. 'value' might be left out as suffix
+     * @param node
+     * @param input
+     * @return
+     */
     static boolean matches(AqlPath.AqlNode node, WebTemplateInput input) {
         // value might be left out as suffix
         return node.getName().equals(Optional.ofNullable(input.getSuffix()).orElse("value"));
     }
 
+    /**
+     * Check whether {@link Containment} matches {@link WebTemplateNode}. that is
+     * <ul>
+     *     <li>type matches</li>
+     *     <li>ArchetypeId matches or is not set in {@link Containment} </li>
+     *     <li>name/value matches or is not set in {@link Containment} </li>
+     * </ul>
+     * @param contain
+     * @param node
+     * @return
+     */
     static boolean matches(Containment contain, WebTemplateNode node) {
 
         boolean isJustType = contain.getType() != null
@@ -67,6 +84,18 @@ public class MatcherUtil {
         return nameValue.isEmpty() || nameValue.get().equals(node.getName());
     }
 
+    /**
+     *
+     * Check whether {@link AqlPath.AqlNode} matches {@link WebTemplateNode}. that is
+     * <ul>
+     *   <li>path name matches</li>
+     *   <li>atCode matches or is not set in {@link AqlPath.AqlNode} </li>
+     *   <li>name/value matches or is not set in {@link AqlPath.AqlNode} </li>
+     * </ul>
+     * @param path
+     * @param node
+     * @return
+     */
     static boolean matches(AqlPath.AqlNode path, WebTemplateNode node) {
 
         AqlPath.AqlNode nodeAqlNode = node.getAqlPathDto().getLastNode();
@@ -86,6 +115,11 @@ public class MatcherUtil {
                 || path.findOtherPredicate(PredicateHelper.NAME_VALUE).equals(node.getName());
     }
 
+    /**
+     * extract the type from a nodeId
+     * @param atCode
+     * @return
+     */
     static String findTypeName(String atCode) {
         String typeName = null;
 

@@ -27,6 +27,7 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.tuple.Pair;
 import org.assertj.core.groups.Tuple;
 import org.ehrbase.aql.dto.AqlDto;
+import org.ehrbase.aql.dto.condition.ConditionComparisonOperatorDto;
 import org.ehrbase.aql.dto.containment.Containment;
 import org.ehrbase.aql.dto.containment.ContainmentDto;
 import org.ehrbase.aql.dto.path.AqlPath;
@@ -281,7 +282,9 @@ class InterpreterTest {
                 List.of("COMPOSITION", "OBSERVATION", "EVALUATION", "INSTRUCTION", "ACTION"));
 
         Set<InterpreterOutput> interpreterOutputSet = cut.interpret(
-                clusterSelectStatementDto, parse.getContains(), OperationalTemplateTestData.AQL_TEST.getTemplateId());
+                clusterSelectStatementDto,
+                parse.getContains(),
+                OperationalTemplateTestData.REPEATING_ARCHETYPES.getTemplateId());
 
         assertOutput(interpreterOutputSet, test.expected);
     }
@@ -303,7 +306,45 @@ class InterpreterTest {
         Interpreter cut = new Interpreter(new TestDataTemplateProvider(), List.of("COMPOSITION"));
 
         Set<InterpreterOutput> interpreterOutputSet = cut.interpret(
-                clusterSelectStatementDto, parse.getContains(), OperationalTemplateTestData.AQL_TEST.getTemplateId());
+                clusterSelectStatementDto,
+                parse.getContains(),
+                OperationalTemplateTestData.REPEATING_ARCHETYPES.getTemplateId());
+
+        assertOutput(interpreterOutputSet, new Tuple[] {
+            new Tuple(
+                    0,
+                    "openEHR-EHR-COMPOSITION.report.v1;openEHR-EHR-OBSERVATION.demo_observation.v0,'first_observation';openEHR-EHR-CLUSTER.lab_demo.v0",
+                    "/content[openEHR-EHR-SECTION.adhoc.v1,'cause']/items[openEHR-EHR-OBSERVATION.demo_observation.v0,'first_observation']/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.lab_demo.v0]/items[at0001]/value/value",
+                    false),
+            new Tuple(
+                    0,
+                    "openEHR-EHR-COMPOSITION.report.v1;openEHR-EHR-OBSERVATION.demo_observation.v0,'root_observation';openEHR-EHR-CLUSTER.lab_demo.v0",
+                    "/content[openEHR-EHR-OBSERVATION.demo_observation.v0,'root_observation']/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.lab_demo.v0]/items[at0001]/value/value",
+                    false)
+        });
+    }
+
+    @Test
+    void interpretWhere() {
+
+        String aql = "select c/uid/value," + " o/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/value,"
+                + " cl/items[at0001]/value/value "
+                + "from ehr e "
+                + "contains COMPOSITION c "
+                + "contains OBSERVATION o[openEHR-EHR-OBSERVATION.demo_observation.v0] "
+                + "contains CLUSTER cl [openEHR-EHR-CLUSTER.lab_demo.v0]"
+                + "where cl/items[at0001]/value/value = 'abc' ";
+        AqlDto parse = new AqlToDtoParser().parse(aql);
+
+        SelectFieldDto clusterSelectStatementDto =
+                (SelectFieldDto) ((ConditionComparisonOperatorDto) parse.getWhere()).getStatement();
+
+        Interpreter cut = new Interpreter(new TestDataTemplateProvider(), List.of("COMPOSITION"));
+
+        Set<InterpreterOutput> interpreterOutputSet = cut.interpret(
+                clusterSelectStatementDto,
+                parse.getContains(),
+                OperationalTemplateTestData.REPEATING_ARCHETYPES.getTemplateId());
 
         assertOutput(interpreterOutputSet, new Tuple[] {
             new Tuple(
@@ -337,7 +378,9 @@ class InterpreterTest {
         Interpreter cut = new Interpreter(new TestDataTemplateProvider(), List.of("COMPOSITION"));
 
         Set<InterpreterOutput> interpreterOutputSet = cut.interpret(
-                clusterSelectStatementDto, parse.getContains(), OperationalTemplateTestData.AQL_TEST.getTemplateId());
+                clusterSelectStatementDto,
+                parse.getContains(),
+                OperationalTemplateTestData.REPEATING_ARCHETYPES.getTemplateId());
 
         assertThat(interpreterOutputSet)
                 .map(o -> o.getPathFromRootToValue().getNodeList().stream()
@@ -364,7 +407,9 @@ class InterpreterTest {
         Interpreter cut = new Interpreter(new TestDataTemplateProvider(), List.of("COMPOSITION"));
 
         Set<InterpreterOutput> interpreterOutputSet = cut.interpret(
-                clusterSelectStatementDto, parse.getContains(), OperationalTemplateTestData.AQL_TEST.getTemplateId());
+                clusterSelectStatementDto,
+                parse.getContains(),
+                OperationalTemplateTestData.REPEATING_ARCHETYPES.getTemplateId());
 
         assertOutput(interpreterOutputSet, new Tuple[] {
             new Tuple(
@@ -401,7 +446,7 @@ class InterpreterTest {
     void resolve() {
 
         WebTemplateNode root = new TestDataTemplateProvider()
-                .buildIntrospect(OperationalTemplateTestData.AQL_TEST.getTemplateId())
+                .buildIntrospect(OperationalTemplateTestData.REPEATING_ARCHETYPES.getTemplateId())
                 .get()
                 .getTree();
 

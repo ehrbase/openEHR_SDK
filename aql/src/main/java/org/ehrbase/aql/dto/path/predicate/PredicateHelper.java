@@ -392,6 +392,12 @@ public class PredicateHelper {
         }
     }
 
+    /**
+     * Return a clone of <code>and</code> with all {@link PredicateComparisonOperatorDto} removed where {@link PredicateComparisonOperatorDto#getStatement()} is in <code>remove</code>
+     * @param and
+     * @param remove
+     * @return
+     */
     public static PredicateLogicalAndOperation remove(PredicateLogicalAndOperation and, String... remove) {
 
         PredicateLogicalAndOperation clone = new PredicateLogicalAndOperation();

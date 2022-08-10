@@ -28,16 +28,16 @@ import org.ehrbase.aql.dto.path.AqlPath;
  */
 public class InterpreterInput implements Serializable {
 
-    private AqlPath pathFromContentment;
+    private AqlPath pathFromContainment;
     private Containment containment;
     private List<Containment> containmentPath;
 
-    public AqlPath getPathFromContentment() {
-        return pathFromContentment;
+    public AqlPath getPathFromContainment() {
+        return pathFromContainment;
     }
 
-    public void setPathFromContentment(AqlPath pathFromContentment) {
-        this.pathFromContentment = pathFromContentment;
+    public void setPathFromContainment(AqlPath pathFromContainment) {
+        this.pathFromContainment = pathFromContainment;
     }
 
     public Containment getContainment() {
@@ -65,20 +65,20 @@ public class InterpreterInput implements Serializable {
             return false;
         }
         InterpreterInput that = (InterpreterInput) o;
-        return Objects.equals(pathFromContentment, that.pathFromContentment)
+        return Objects.equals(pathFromContainment, that.pathFromContainment)
                 && Objects.equals(containment, that.containment)
                 && Objects.equals(containmentPath, that.containmentPath);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(pathFromContentment, containment, containmentPath);
+        return Objects.hash(pathFromContainment, containment, containmentPath);
     }
 
     @Override
     public String toString() {
         return "InterpreterInput{" + "pathFromContentment="
-                + pathFromContentment + ", containment="
+                + pathFromContainment + ", containment="
                 + containment + ", containmentPath="
                 + containmentPath + '}';
     }
