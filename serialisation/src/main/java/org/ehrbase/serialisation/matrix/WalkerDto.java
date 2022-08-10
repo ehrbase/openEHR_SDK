@@ -26,10 +26,12 @@ import org.ehrbase.aql.dto.path.AqlPath;
  */
 public class WalkerDto {
 
-    private final Map<Resolve, Map<Index, Map<AqlPath, String>>> matrix;
+    private final Map<Resolve, Map<Index, Map<AqlPath, Object>>> matrix;
 
     private Resolve currentResolve;
     private Index currentIndex;
+
+    private boolean rootFound = false;
 
     public WalkerDto() {
 
@@ -40,9 +42,18 @@ public class WalkerDto {
         this.currentResolve = new Resolve(other.currentResolve);
         this.currentIndex = new Index(other.currentIndex);
         this.matrix = other.matrix;
+        this.rootFound = other.rootFound;
     }
 
-    public Map<Resolve, Map<Index, Map<AqlPath, String>>> getMatrix() {
+    public boolean isRootFound() {
+        return rootFound;
+    }
+
+    public void setRootFound(boolean rootFound) {
+        this.rootFound = rootFound;
+    }
+
+    public Map<Resolve, Map<Index, Map<AqlPath, Object>>> getMatrix() {
         return matrix;
     }
 

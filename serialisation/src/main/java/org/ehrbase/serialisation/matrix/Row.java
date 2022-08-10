@@ -17,7 +17,6 @@
  */
 package org.ehrbase.serialisation.matrix;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import org.ehrbase.aql.dto.path.AqlPath;
@@ -30,10 +29,10 @@ public class Row {
     private AqlPath pathFromRoot;
     private String archetypeId;
 
-    private Integer count = 0;
+    private Integer[] count;
 
-    private List<Integer> index;
-    private Map<AqlPath, String> other;
+    private Integer[] index;
+    private Map<AqlPath, Object> other;
 
     public AqlPath getPathFromRoot() {
         return pathFromRoot;
@@ -51,27 +50,27 @@ public class Row {
         this.archetypeId = archetypeId;
     }
 
-    public Integer getCount() {
+    public Integer[] getCount() {
         return count;
     }
 
-    public void setCount(Integer count) {
+    public void setCount(Integer[] count) {
         this.count = count;
     }
 
-    public List<Integer> getIndex() {
+    public Integer[] getIndex() {
         return index;
     }
 
-    public void setIndex(List<Integer> index) {
+    public void setIndex(Integer[] index) {
         this.index = index;
     }
 
-    public Map<AqlPath, String> getOther() {
+    public Map<AqlPath, Object> getOther() {
         return other;
     }
 
-    public void setOther(Map<AqlPath, String> other) {
+    public void setOther(Map<AqlPath, Object> other) {
         this.other = other;
     }
 

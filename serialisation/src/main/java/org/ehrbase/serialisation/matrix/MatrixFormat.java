@@ -23,14 +23,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nedap.archie.rm.RMObject;
 import com.nedap.archie.rm.composition.Composition;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Collection;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
+import org.apache.commons.lang3.ArrayUtils;
 import org.ehrbase.aql.dto.path.AqlPath;
 import org.ehrbase.serialisation.RMDataFormat;
 import org.ehrbase.webtemplate.templateprovider.TemplateProvider;
@@ -47,7 +48,7 @@ public class MatrixFormat implements RMDataFormat {
         this.templateProvider = templateProvider;
     }
 
-    Map<Resolve, Map<Index, Map<AqlPath, String>>> toMatrix(Composition composition) {
+    Map<Resolve, Map<Index, Map<AqlPath, Object>>> toMatrix(Composition composition) {
         String templateId = composition.getArchetypeDetails().getTemplateId().getValue();
         Resolve currentResolve = new Resolve();
         currentResolve.setPathFromRoot(AqlPath.ROOT_PATH);
@@ -69,7 +70,7 @@ public class MatrixFormat implements RMDataFormat {
         return flatten(toMatrix(composition));
     }
 
-    private List<Row> flatten(Map<Resolve, Map<Index, Map<AqlPath, String>>> map) {
+    private List<Row> flatten(Map<Resolve, Map<Index, Map<AqlPath, Object>>> map) {
 
         return map.entrySet().stream()
                 .map(e -> toRows(e.getKey(), e.getValue()))
@@ -77,12 +78,12 @@ public class MatrixFormat implements RMDataFormat {
                 .collect(Collectors.toList());
     }
 
-    private List<Row> toRows(Resolve resolve, Map<Index, Map<AqlPath, String>> map) {
+    private List<Row> toRows(Resolve resolve, Map<Index, Map<AqlPath, Object>> map) {
 
         return map.entrySet().stream()
                 .map(e -> {
                     Row row = new Row();
-                    row.setCount(resolve.getCount());
+                    row.setCount(resolve.getCount().getRepetitions());
                     row.setArchetypeId(resolve.getArchetypeId());
                     row.setPathFromRoot(resolve.getPathFromRoot());
                     row.setOther(e.getValue());
@@ -101,8 +102,7 @@ public class MatrixFormat implements RMDataFormat {
                     sb,
                     CSVFormat.DEFAULT
                             .builder()
-                            .setHeader(
-                                    "archetype_id", "type", "path", "count", "index_string", "index", "depth", "json")
+                            .setHeader("archetype_id", "type", "path", "count", "index", "depth", "json")
                             .build())) {
                 toTable((Composition) rmObject).forEach(r -> getPrintRecord(printer, r));
             } catch (IOException e) {
@@ -121,23 +121,19 @@ public class MatrixFormat implements RMDataFormat {
                     r.getArchetypeId(),
                     findTypeName(r.getArchetypeId()),
                     r.getPathFromRoot().getPath(),
-                    r.getCount(),
-                    r.getIndex(),
-                    r.getIndex().isEmpty()
-                            ? "{}"
-                            : MAPPER.writeValueAsString(
-                                    IntStream.range(0, r.getIndex().size())
-                                            .boxed()
-                                            .collect(Collectors.toMap(
-                                                    i -> "R" + i,
-                                                    i -> r.getIndex().get(i),
-                                                    (e1, e2) -> e2,
-                                                    LinkedHashMap::new))),
-                    r.getIndex().size(),
+                    printArray(r.getCount()),
+                    printArray(r.getIndex()),
+                    ArrayUtils.isEmpty(r.getIndex()) ? 0 : r.getIndex().length,
                     MAPPER.writeValueAsString(r.getOther()));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private static String printArray(Integer[] index) {
+        return ArrayUtils.isEmpty(index)
+                ? "{}"
+                : "{" + Arrays.stream(index).map(Objects::toString).collect(Collectors.joining(",")) + "}";
     }
 
     @Override

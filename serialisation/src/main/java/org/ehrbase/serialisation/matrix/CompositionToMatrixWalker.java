@@ -22,6 +22,8 @@ import static org.ehrbase.serialisation.jsonencoding.CanonicalJson.MARSHAL_OM;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.BooleanNode;
+import com.fasterxml.jackson.databind.node.NumericNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.ValueNode;
 import com.nedap.archie.rm.RMObject;
@@ -38,37 +40,48 @@ import org.ehrbase.aql.dto.path.AqlPath;
 import org.ehrbase.serialisation.walker.Context;
 import org.ehrbase.serialisation.walker.FromCompositionWalker;
 import org.ehrbase.webtemplate.model.WebTemplateNode;
-import org.openehr.schemas.v1.DVDATE;
 
 /**
  * @author Stefan Spiska
  */
 public class CompositionToMatrixWalker extends FromCompositionWalker<WalkerDto> {
 
-    private List<String> resolveTo = List.of("COMPOSITION", "OBSERVATION", "EVALUATION", "INSTRUCTION", "ACTION");
+    private List<String> resolveTo = List.of("OBSERVATION", "EVALUATION", "INSTRUCTION", "ACTION");
 
     @Override
     protected WalkerDto extract(Context<WalkerDto> context, WebTemplateNode child, boolean isChoice, Integer i) {
+
         WalkerDto next = new WalkerDto(context.getObjectDeque().peek());
+
+        if (child.getId().equals("context")) {
+            next.setRootFound(true);
+        }
 
         if (child.getNodeId() != null
                 && findTypeName(child.getNodeId()) != null
                 && resolveTo.contains(findTypeName(child.getNodeId()))) {
-            Resolve nextResolve = new Resolve();
+
+            Resolve nextResolve = new Resolve(next.getCurrentResolve());
             nextResolve.setArchetypeId(child.getNodeId());
             nextResolve.setPathFromRoot(
                     child.getAqlPathDto().removeStart(next.getCurrentResolve().getPathFromRoot()));
             if (i != null) {
-                nextResolve.setCount(i);
+                nextResolve.getCount().add(child.getAqlPath(), i);
             }
             next.updateResolve(nextResolve);
+            next.setRootFound(true);
 
-        } else if (i != null) {
+        } else {
 
-            next.setCurrentIndex(new Index(next.getCurrentIndex()));
-            next.getCurrentIndex().incrementIndex();
-            next.getCurrentIndex().setRepetition(i);
-            next.getMatrix().get(next.getCurrentResolve()).put(next.getCurrentIndex(), new LinkedHashMap<>());
+            if (i != null) {
+
+                if (next.isRootFound()) {
+                    next.getCurrentIndex().add(child.getAqlPath(), i);
+                    next.getMatrix().get(next.getCurrentResolve()).put(next.getCurrentIndex(), new LinkedHashMap<>());
+                } else {
+                    next.getCurrentResolve().getCount().add(child.getAqlPath(), i);
+                }
+            }
         }
 
         return next;
@@ -91,39 +104,41 @@ public class CompositionToMatrixWalker extends FromCompositionWalker<WalkerDto> 
                     .getMatrix()
                     .get(walkerDto.getCurrentResolve())
                     .get(walkerDto.getCurrentIndex())
-                    .putAll(flatten(
-                            relativ,
-                            MARSHAL_OM.valueToTree(rmObject)));
-            if(rmObject instanceof DvTime){
+                    .putAll(flatten(relativ, MARSHAL_OM.valueToTree(rmObject)));
+            if (rmObject instanceof DvTime) {
                 walkerDto
-                    .getMatrix()
-                    .get(walkerDto.getCurrentResolve())
-                    .get(walkerDto.getCurrentIndex()).put(relativ.addEnd("/magnitude"),((DvTime) rmObject).getMagnitude().toString());
+                        .getMatrix()
+                        .get(walkerDto.getCurrentResolve())
+                        .get(walkerDto.getCurrentIndex())
+                        .put(relativ.addEnd("/magnitude"), ((DvTime) rmObject).getMagnitude());
             }
-            if(rmObject instanceof DvDate){
+            if (rmObject instanceof DvDate) {
                 walkerDto
-                    .getMatrix()
-                    .get(walkerDto.getCurrentResolve())
-                    .get(walkerDto.getCurrentIndex()).put(relativ.addEnd("/magnitude"),((DvDate) rmObject).getMagnitude().toString());
+                        .getMatrix()
+                        .get(walkerDto.getCurrentResolve())
+                        .get(walkerDto.getCurrentIndex())
+                        .put(relativ.addEnd("/magnitude"), ((DvDate) rmObject).getMagnitude());
             }
-            if(rmObject instanceof DvDateTime){
+            if (rmObject instanceof DvDateTime) {
                 walkerDto
-                    .getMatrix()
-                    .get(walkerDto.getCurrentResolve())
-                    .get(walkerDto.getCurrentIndex()).put(relativ.addEnd("/magnitude"),((DvDateTime) rmObject).getMagnitude().toString());
+                        .getMatrix()
+                        .get(walkerDto.getCurrentResolve())
+                        .get(walkerDto.getCurrentIndex())
+                        .put(relativ.addEnd("/magnitude"), ((DvDateTime) rmObject).getMagnitude());
             }
-            if(rmObject instanceof DvDuration){
+            if (rmObject instanceof DvDuration) {
                 walkerDto
-                    .getMatrix()
-                    .get(walkerDto.getCurrentResolve())
-                    .get(walkerDto.getCurrentIndex()).put(relativ.addEnd("/magnitude"),((DvDuration) rmObject).getMagnitude().toString());
+                        .getMatrix()
+                        .get(walkerDto.getCurrentResolve())
+                        .get(walkerDto.getCurrentIndex())
+                        .put(relativ.addEnd("/magnitude"), ((DvDuration) rmObject).getMagnitude());
             }
         }
     }
 
-    private Map<AqlPath, String> flatten(AqlPath prefix, JsonNode node) {
+    private Map<AqlPath, Object> flatten(AqlPath prefix, JsonNode node) {
 
-        LinkedHashMap<AqlPath, String> result = new LinkedHashMap<>();
+        LinkedHashMap<AqlPath, Object> result = new LinkedHashMap<>();
         if (node instanceof ObjectNode) {
 
             for (Iterator<Map.Entry<String, JsonNode>> it = node.fields(); it.hasNext(); ) {
@@ -133,7 +148,13 @@ public class CompositionToMatrixWalker extends FromCompositionWalker<WalkerDto> 
             }
 
         } else if (node instanceof ValueNode) {
-            result.put(prefix, node.asText());
+            if (node instanceof NumericNode) {
+                result.put(prefix, node.numberValue());
+            } else if (node instanceof BooleanNode) {
+                result.put(prefix, node.booleanValue());
+            } else {
+                result.put(prefix, node.asText());
+            }
         } else if (node instanceof ArrayNode) {
             try {
                 result.put(prefix, MARSHAL_OM.writeValueAsString(node));

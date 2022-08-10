@@ -17,10 +17,7 @@
  */
 package org.ehrbase.serialisation.matrix;
 
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -28,28 +25,22 @@ import java.util.Objects;
  */
 public class Index {
 
-    private final Map<Integer, Integer> indexMap = new LinkedHashMap<>();
-    private Integer index = 0;
+    private final LinkedHashMap<String, Integer> indexMap = new LinkedHashMap<>();
 
     public Index() {}
 
     public Index(Index other) {
-        this.index = other.index;
+
         indexMap.putAll(other.indexMap);
     }
 
-    public void incrementIndex() {
-        index++;
+    public void add(String key, Integer value) {
+        indexMap.put(key, value);
     }
 
-    public void setRepetition(Integer repetition) {
+    Integer[] getRepetitions() {
 
-        indexMap.put(index, repetition);
-    }
-
-    List<Integer> getRepetitions() {
-
-        return new ArrayList<>(indexMap.values());
+        return indexMap.values().toArray(new Integer[0]);
     }
 
     @Override
@@ -60,17 +51,17 @@ public class Index {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        Index index1 = (Index) o;
-        return Objects.equals(indexMap, index1.indexMap) && Objects.equals(index, index1.index);
+        Index index = (Index) o;
+        return Objects.equals(indexMap, index.indexMap);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(indexMap, index);
+        return Objects.hash(indexMap);
     }
 
     @Override
     public String toString() {
-        return "Index{" + "indexMap=" + indexMap + ", index=" + index + '}';
+        return "Index{" + "indexMap=" + indexMap + '}';
     }
 }

@@ -28,14 +28,14 @@ public class Resolve {
     private AqlPath pathFromRoot;
     private String archetypeId;
 
-    private Integer count = 0;
+    private Index count = new Index();
 
     public Resolve() {}
 
     public Resolve(Resolve other) {
         this.pathFromRoot = AqlPath.parse(other.pathFromRoot.getPath());
         this.archetypeId = other.archetypeId;
-        this.count = other.count;
+        this.count = new Index(other.count);
     }
 
     public AqlPath getPathFromRoot() {
@@ -54,11 +54,11 @@ public class Resolve {
         this.archetypeId = archetypeId;
     }
 
-    public Integer getCount() {
+    public Index getCount() {
         return count;
     }
 
-    public void setCount(Integer count) {
+    public void setCount(Index count) {
         this.count = count;
     }
 
