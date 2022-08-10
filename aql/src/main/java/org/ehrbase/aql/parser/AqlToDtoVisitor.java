@@ -356,6 +356,12 @@ public class AqlToDtoVisitor extends AqlBaseVisitor<Object> {
             currentContainment
                     .getContainment()
                     .setArchetypeId(archetypedClassExprContext.ARCHETYPEID().getText());
+            currentContainment
+                    .getContainment()
+                    .setOtherPredicates(new PredicateLogicalAndOperation(new PredicateComparisonOperatorDto(
+                            PredicateHelper.ARCHETYPE_NODE_ID,
+                            ConditionComparisonOperatorSymbol.EQ,
+                            new SimpleValue(currentContainment.getContainment().getArchetypeId()))));
 
         } else {
             currentContainment.getContainment().setType(ctx.IDENTIFIER(0).getText());

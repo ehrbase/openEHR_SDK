@@ -325,6 +325,41 @@ class InterpreterTest {
     }
 
     @Test
+    void interpretOriginalContain() {
+
+        String aql = "select c/uid/value," + " o/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/value,"
+                + " cl/items[at0001]/value/value "
+                + "from ehr e "
+                + "contains COMPOSITION c "
+                + "contains OBSERVATION o[openEHR-EHR-OBSERVATION.demo_observation.v0] "
+                + "contains CLUSTER cl [openEHR-EHR-CLUSTER.lab_demo.v0]";
+        AqlDto parse = new AqlToDtoParser().parse(aql);
+
+        SelectFieldDto clusterSelectStatementDto =
+                (SelectFieldDto) parse.getSelect().getStatement().get(2);
+
+        Interpreter cut = new Interpreter(new TestDataTemplateProvider(), List.of("COMPOSITION"));
+
+        Set<InterpreterOutput> interpreterOutputSet = cut.interpret(
+                clusterSelectStatementDto,
+                parse.getContains(),
+                OperationalTemplateTestData.REPEATING_ARCHETYPES.getTemplateId());
+
+        assertThat(interpreterOutputSet)
+                .map(InterpreterOutput::getOriginalContain)
+                .map(l -> l.stream()
+                        .map(c -> {
+                            StringBuilder sb = new StringBuilder();
+                            PredicateHelper.format(sb, c.getOtherPredicates(), AqlPath.OtherPredicatesFormat.SHORTED);
+                            return c.getType() + "[" + sb + "]";
+                        })
+                        .collect(Collectors.joining(";")))
+                .containsExactly(
+                        "COMPOSITION[];OBSERVATION[openEHR-EHR-OBSERVATION.demo_observation.v0];CLUSTER[openEHR-EHR-CLUSTER.lab_demo.v0]",
+                        "COMPOSITION[];OBSERVATION[openEHR-EHR-OBSERVATION.demo_observation.v0];CLUSTER[openEHR-EHR-CLUSTER.lab_demo.v0]");
+    }
+
+    @Test
     void interpretWhere() {
 
         String aql = "select c/uid/value," + " o/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/value,"

@@ -129,6 +129,9 @@ public class Interpreter {
             InterpreterInput input, List<Pair<WebTemplateNode, Deque<WebTemplateNode>>> result) {
 
         InterpreterOutput interpreterOutput = new InterpreterOutput();
+
+        interpreterOutput.setOriginalContain(input.getContainmentPath());
+
         // set the resolved contains
         interpreterOutput.setContain(result.stream()
                 .map(Pair::getLeft)

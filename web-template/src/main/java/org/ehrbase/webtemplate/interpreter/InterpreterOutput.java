@@ -21,6 +21,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 import org.ehrbase.aql.dto.containment.Containment;
 
 /**
@@ -30,6 +31,7 @@ public class InterpreterOutput implements Serializable {
 
     private int rootContainment;
 
+    private List<Containment> originalContain;
     private List<Containment> contain;
 
     private InterpreterPath pathFromRootToValue = new InterpreterPath();
@@ -38,7 +40,9 @@ public class InterpreterOutput implements Serializable {
 
     public InterpreterOutput(InterpreterOutput other) {
         this.rootContainment = other.rootContainment;
-        this.contain = other.contain;
+        this.contain = other.contain.stream().map(c -> new Containment(c)).collect(Collectors.toList());
+        this.originalContain =
+                other.originalContain.stream().map(c -> new Containment(c)).collect(Collectors.toList());
         this.pathFromRootToValue = new InterpreterPath();
         this.pathFromRootToValue.setNodeList(new ArrayList<>(other.pathFromRootToValue.getNodeList()));
     }
@@ -67,6 +71,22 @@ public class InterpreterOutput implements Serializable {
         this.contain = contain;
     }
 
+    public List<Containment> getOriginalContain() {
+        return originalContain;
+    }
+
+    public void setOriginalContain(List<Containment> originalContain) {
+        this.originalContain = originalContain;
+    }
+
+    public InterpreterPath getPathFromRootToValue() {
+        return pathFromRootToValue;
+    }
+
+    public void setPathFromRootToValue(InterpreterPath pathFromRootToValue) {
+        this.pathFromRootToValue = pathFromRootToValue;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -77,28 +97,22 @@ public class InterpreterOutput implements Serializable {
         }
         InterpreterOutput that = (InterpreterOutput) o;
         return rootContainment == that.rootContainment
+                && Objects.equals(originalContain, that.originalContain)
                 && Objects.equals(contain, that.contain)
                 && Objects.equals(pathFromRootToValue, that.pathFromRootToValue);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(rootContainment, contain, pathFromRootToValue);
+        return Objects.hash(rootContainment, originalContain, contain, pathFromRootToValue);
     }
 
     @Override
     public String toString() {
         return "InterpreterOutput{" + "rootContainment="
-                + rootContainment + ", contain="
+                + rootContainment + ", originalContain="
+                + originalContain + ", contain="
                 + contain + ", pathFromRootToValue="
                 + pathFromRootToValue + '}';
-    }
-
-    public InterpreterPath getPathFromRootToValue() {
-        return pathFromRootToValue;
-    }
-
-    public void setPathFromRootToValue(InterpreterPath pathFromRootToValue) {
-        this.pathFromRootToValue = pathFromRootToValue;
     }
 }
