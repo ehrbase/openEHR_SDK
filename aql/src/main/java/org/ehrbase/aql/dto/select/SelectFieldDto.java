@@ -33,6 +33,10 @@ public class SelectFieldDto implements SelectStatementDto {
         return this.aqlPath.format(AqlPath.OtherPredicatesFormat.SHORTED, false);
     }
 
+    public AqlPath getAqlPathDto() {
+        return this.aqlPath;
+    }
+
     public int getContainmentId() {
         return this.containmentId;
     }

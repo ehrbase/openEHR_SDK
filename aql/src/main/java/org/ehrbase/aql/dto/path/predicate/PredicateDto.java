@@ -17,7 +17,9 @@
  */
 package org.ehrbase.aql.dto.path.predicate;
 
+import java.io.Serializable;
+
 /**
  * @author Stefan Spiska
  */
-public interface PredicateDto {}
+public interface PredicateDto extends Serializable {}

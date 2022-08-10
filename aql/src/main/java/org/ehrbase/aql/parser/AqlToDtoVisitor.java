@@ -275,7 +275,7 @@ public class AqlToDtoVisitor extends AqlBaseVisitor<Object> {
         SelectFieldDto selectStatementDto = new SelectFieldDto();
         selectFieldDtoMultiMap.put(ctx.IDENTIFIER().getText(), selectStatementDto);
         selectStatementDto.setAqlPath(
-                StringUtils.removeStart(ctx.getText(), ctx.IDENTIFIER().getText()));
+                StringUtils.removeStart(getFullText(ctx), ctx.IDENTIFIER().getText()));
 
         return selectStatementDto;
     }
@@ -349,11 +349,23 @@ public class AqlToDtoVisitor extends AqlBaseVisitor<Object> {
                         archetypedClassExprContext.IDENTIFIER(1).getText());
                 identifierMap.put(currentContainment.getIdentifier(), currentContainment.getId());
             }
-            currentContainment.setArchetypeId(
-                    archetypedClassExprContext.ARCHETYPEID().getText());
+
+            currentContainment
+                    .getContainment()
+                    .setType(archetypedClassExprContext.IDENTIFIER(0).getText());
+            currentContainment
+                    .getContainment()
+                    .setArchetypeId(archetypedClassExprContext.ARCHETYPEID().getText());
+            currentContainment
+                    .getContainment()
+                    .setOtherPredicates(new PredicateLogicalAndOperation(new PredicateComparisonOperatorDto(
+                            PredicateHelper.ARCHETYPE_NODE_ID,
+                            ConditionComparisonOperatorSymbol.EQ,
+                            new SimpleValue(currentContainment.getContainment().getArchetypeId()))));
 
         } else {
-            currentContainment.setArchetypeId(ctx.IDENTIFIER(0).getText());
+            currentContainment.getContainment().setType(ctx.IDENTIFIER(0).getText());
+            currentContainment.getContainment().setArchetypeId(ctx.IDENTIFIER(0).getText());
             if (ctx.IDENTIFIER().size() == 2) {
                 currentContainment.setIdentifier(ctx.IDENTIFIER(1).getText());
                 identifierMap.put(currentContainment.getIdentifier(), currentContainment.getId());

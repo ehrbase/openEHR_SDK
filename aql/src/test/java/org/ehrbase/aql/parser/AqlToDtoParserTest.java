@@ -304,7 +304,7 @@ class AqlToDtoParserTest {
     String render(ContainmentExpresionDto containmentExpresion) {
         StringBuilder sb = new StringBuilder();
         if (containmentExpresion instanceof ContainmentDto) {
-            sb.append(((ContainmentDto) containmentExpresion).getArchetypeId());
+            sb.append(((ContainmentDto) containmentExpresion).getContainment().getArchetypeId());
             ContainmentExpresionDto contains = ((ContainmentDto) containmentExpresion).getContains();
             if (contains != null) {
                 sb.append(" --> ").append(render(contains));

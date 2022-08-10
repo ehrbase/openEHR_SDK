@@ -239,6 +239,7 @@ public class InputHandler {
             case "DV_EHR_URI":
             case "DV_URI":
             case "DV_MULTIMEDIA":
+            case "UID_BASED_ID":
             case "STRING":
                 node.getInputs().add(templateInputMap.getOrDefault("value", buildWebTemplateInput(null, "TEXT")));
                 break;

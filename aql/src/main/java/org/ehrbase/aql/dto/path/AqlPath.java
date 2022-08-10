@@ -512,7 +512,7 @@ public final class AqlPath implements Serializable {
 
         private transient Integer hashCode;
 
-        private AqlNode(String name, String atCode, PredicateLogicalAndOperation otherPredicates) {
+        public AqlNode(String name, String atCode, PredicateLogicalAndOperation otherPredicates) {
             this.name = name;
             this.atCode = StringUtils.isBlank(atCode) ? null : atCode;
             this.otherPredicate = otherPredicates;
@@ -574,6 +574,10 @@ public final class AqlPath implements Serializable {
             predicateComparisonOperatorDto.ifPresent(
                     p -> newPredicateDto.getValues().remove(p));
             return newPredicateDto;
+        }
+
+        public PredicateLogicalAndOperation getOtherPredicate() {
+            return otherPredicate;
         }
 
         public String findOtherPredicate(String name) {
