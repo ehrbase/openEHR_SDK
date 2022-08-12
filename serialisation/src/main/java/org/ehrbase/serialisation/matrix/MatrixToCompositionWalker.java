@@ -19,6 +19,8 @@ package org.ehrbase.serialisation.matrix;
 
 import static org.ehrbase.serialisation.jsonencoding.CanonicalJson.MARSHAL_OM;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.ibm.icu.impl.Pair;
 import com.nedap.archie.rm.RMObject;
 import com.nedap.archie.rm.archetyped.Archetyped;
 import com.nedap.archie.rm.archetyped.TemplateId;
@@ -38,6 +40,12 @@ import org.ehrbase.webtemplate.model.WebTemplateNode;
 public class MatrixToCompositionWalker extends ToCompositionWalker<List<Entry>> {
     @Override
     protected List<Entry> extract(Context<List<Entry>> context, WebTemplateNode child, boolean isChoice, Integer i) {
+
+        if (child.getRmType().equals("STRING")) {
+
+            return null;
+        }
+
         List<Entry> filter = filter(context.getObjectDeque().peek(), child.getAqlPathDto(), i != null, i);
 
         if (isChoice
@@ -57,13 +65,22 @@ public class MatrixToCompositionWalker extends ToCompositionWalker<List<Entry>> 
 
         WebTemplateNode node = context.getNodeDeque().peek();
 
-        if (node.getChildren().isEmpty()) {
+        if (!visitChildren(node)) {
 
             Map<String, Object> unflatten = unflatten(context.getObjectDeque().peek().stream()
                     .map(o -> {
                         Entry entry = new Entry();
-                        entry.value = o.value;
                         entry.path = o.path.removeStart(node.getAqlPathDto());
+                        if (isaBoolean(node, entry)) {
+                            try {
+                                entry.value = MARSHAL_OM.readValue(o.value.toString(), List.class);
+                            } catch (JsonProcessingException e) {
+                                throw new RuntimeException(e);
+                            }
+                        } else {
+                            entry.value = o.value;
+                        }
+
                         entry.index = o.index;
                         return entry;
                     })
@@ -105,6 +122,24 @@ public class MatrixToCompositionWalker extends ToCompositionWalker<List<Entry>> 
         }
     }
 
+    private static boolean isaBoolean(WebTemplateNode node, Entry entry) {
+
+        List<Pair<String, String>> array = List.of(
+                Pair.of("mappings", "DV_TEXT"),
+                Pair.of("mappings", "DV_CODED_TEXT"),
+                Pair.of("other_reference_ranges", "DV_QUANTITY"),
+                Pair.of("other_reference_ranges", "DV_PROPORTION"),
+                Pair.of("other_reference_ranges", "DV_COUNT"),
+                Pair.of("other_reference_ranges", "DV_DATE"),
+                Pair.of("other_reference_ranges", "DV_DATE_TIME"),
+                Pair.of("other_reference_ranges", "DV_TIME"),
+                Pair.of("other_reference_ranges", "DV_CODED_TEXT"),
+                Pair.of("feeder_system_item_ids", "FEEDER_AUDIT"),
+                Pair.of("originating_system_item_ids", "FEEDER_AUDIT"));
+
+        return array.contains(Pair.of(entry.path.getBaseNode().getName(), node.getRmType()));
+    }
+
     Map<String, Object> unflatten(List<Entry> entries) {
 
         Map<String, List<Entry>> collect = entries.stream()
@@ -130,7 +165,7 @@ public class MatrixToCompositionWalker extends ToCompositionWalker<List<Entry>> 
     protected int calculateSize(Context<List<Entry>> context, WebTemplateNode childNode) {
 
         return filter(context.getObjectDeque().peek(), childNode.getAqlPathDto(), true, null).stream()
-                .mapToInt(e -> e.index.get(0))
+                .mapToInt(e -> e.index.get(0) + 1)
                 .max()
                 .orElse(0);
     }

@@ -33,6 +33,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
 import org.apache.commons.csv.CSVRecord;
@@ -49,6 +50,7 @@ import org.ehrbase.webtemplate.templateprovider.TemplateProvider;
 public class MatrixFormat implements RMDataFormat {
 
     private enum HEADERS {
+        NUM,
         ARCHETYPE_ID,
         TYPE,
         PATH,
@@ -92,10 +94,12 @@ public class MatrixFormat implements RMDataFormat {
 
     private List<Row> flatten(Map<Resolve, Map<Index, Map<AqlPath, Object>>> map) {
 
-        return map.entrySet().stream()
+        List<Row> collect = map.entrySet().stream()
                 .map(e -> toRows(e.getKey(), e.getValue()))
                 .flatMap(Collection::stream)
                 .collect(Collectors.toList());
+        IntStream.range(0, collect.size()).forEach(i -> collect.get(i).setNum(i));
+        return collect;
     }
 
     private List<Row> toRows(Resolve resolve, Map<Index, Map<AqlPath, Object>> map) {
@@ -145,6 +149,7 @@ public class MatrixFormat implements RMDataFormat {
     private static Row toRow(CSVRecord record) {
 
         Row row = new Row();
+        row.setNum(Integer.parseInt(record.get(HEADERS.NUM)));
         row.setCount(buildArray(record.get(HEADERS.COUNT)));
         row.setIndex(buildArray(record.get(HEADERS.INDEX)));
         row.setArchetypeId(record.get(HEADERS.ARCHETYPE_ID));
@@ -179,7 +184,9 @@ public class MatrixFormat implements RMDataFormat {
 
             StringBuilder sb = new StringBuilder();
             try (CSVPrinter printer = new CSVPrinter(sb, CSV_FORMAT)) {
-                toTable((Composition) rmObject).forEach(r -> getPrintRecord(printer, r));
+                for (Row r : toTable((Composition) rmObject)) {
+                    getPrintRecord(printer, r);
+                }
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -193,6 +200,7 @@ public class MatrixFormat implements RMDataFormat {
     private static void getPrintRecord(CSVPrinter printer, Row r) {
         try {
             printer.printRecord(
+                    r.getNum(),
                     r.getArchetypeId(),
                     findTypeName(r.getArchetypeId()),
                     r.getPathFromRoot().getPath(),

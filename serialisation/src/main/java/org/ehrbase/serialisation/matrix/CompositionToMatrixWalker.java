@@ -93,15 +93,12 @@ public class CompositionToMatrixWalker extends FromCompositionWalker<FromWalkerD
     protected void preHandle(Context<FromWalkerDto> context) {
 
         WebTemplateNode node = context.getNodeDeque().peek();
+        FromWalkerDto fromWalkerDto = context.getObjectDeque().peek();
+        RMObject rmObject = context.getRmObjectDeque().peek();
+        AqlPath relativ = node.getAqlPathDto()
+                .removeStart(fromWalkerDto.getCurrentResolve().getPathFromRoot());
+        if (!visitChildren(node)) {
 
-        if (node.getChildren().isEmpty()) {
-
-            FromWalkerDto fromWalkerDto = context.getObjectDeque().peek();
-
-            AqlPath relativ = node.getAqlPathDto()
-                    .removeStart(fromWalkerDto.getCurrentResolve().getPathFromRoot());
-
-            RMObject rmObject = context.getRmObjectDeque().peek();
             fromWalkerDto
                     .getMatrix()
                     .get(fromWalkerDto.getCurrentResolve())
@@ -144,6 +141,13 @@ public class CompositionToMatrixWalker extends FromCompositionWalker<FromWalkerD
                         .get(fromWalkerDto.getCurrentIndex())
                         .put(relativ.addEnd("/magnitude"), ((DvDuration) rmObject).getMagnitude());
             }
+        } else {
+
+            fromWalkerDto
+                    .getMatrix()
+                    .get(fromWalkerDto.getCurrentResolve())
+                    .get(fromWalkerDto.getCurrentIndex())
+                    .put(relativ.addEnd("/_type"), node.getRmType());
         }
     }
 

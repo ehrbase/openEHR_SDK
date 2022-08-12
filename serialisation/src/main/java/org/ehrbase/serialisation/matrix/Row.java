@@ -17,6 +17,7 @@
  */
 package org.ehrbase.serialisation.matrix;
 
+import java.util.Arrays;
 import java.util.Map;
 import java.util.Objects;
 import org.ehrbase.aql.dto.path.AqlPath;
@@ -26,6 +27,7 @@ import org.ehrbase.aql.dto.path.AqlPath;
  */
 public class Row {
 
+    private int num;
     private AqlPath pathFromRoot;
     private String archetypeId;
 
@@ -74,6 +76,14 @@ public class Row {
         this.other = other;
     }
 
+    public int getNum() {
+        return num;
+    }
+
+    public void setNum(int num) {
+        this.num = num;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -83,25 +93,30 @@ public class Row {
             return false;
         }
         Row row = (Row) o;
-        return Objects.equals(pathFromRoot, row.pathFromRoot)
+        return num == row.num
+                && Objects.equals(pathFromRoot, row.pathFromRoot)
                 && Objects.equals(archetypeId, row.archetypeId)
-                && Objects.equals(count, row.count)
-                && Objects.equals(index, row.index)
+                && Arrays.equals(count, row.count)
+                && Arrays.equals(index, row.index)
                 && Objects.equals(other, row.other);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(pathFromRoot, archetypeId, count, index, other);
+        int result = Objects.hash(num, pathFromRoot, archetypeId, other);
+        result = 31 * result + Arrays.hashCode(count);
+        result = 31 * result + Arrays.hashCode(index);
+        return result;
     }
 
     @Override
     public String toString() {
-        return "Row{" + "pathFromRoot="
+        return "Row{" + "num="
+                + num + ", pathFromRoot="
                 + pathFromRoot + ", archetypeId='"
                 + archetypeId + '\'' + ", count="
-                + count + ", index="
-                + index + ", other="
+                + Arrays.toString(count) + ", index="
+                + Arrays.toString(index) + ", other="
                 + other + '}';
     }
 }
