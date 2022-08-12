@@ -23,7 +23,7 @@ import java.util.Objects;
 /**
  * @author Stefan Spiska
  */
-public class Index {
+class Index {
 
     private final LinkedHashMap<String, Integer> indexMap = new LinkedHashMap<>();
 

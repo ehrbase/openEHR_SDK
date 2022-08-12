@@ -24,7 +24,7 @@ import org.ehrbase.aql.dto.path.AqlPath;
 /**
  * @author Stefan Spiska
  */
-public class WalkerDto {
+class FromWalkerDto {
 
     private final Map<Resolve, Map<Index, Map<AqlPath, Object>>> matrix;
 
@@ -33,12 +33,12 @@ public class WalkerDto {
 
     private boolean rootFound = false;
 
-    public WalkerDto() {
+    public FromWalkerDto() {
 
         this.matrix = new LinkedHashMap<>();
     }
 
-    public WalkerDto(WalkerDto other) {
+    public FromWalkerDto(FromWalkerDto other) {
         this.currentResolve = new Resolve(other.currentResolve);
         this.currentIndex = new Index(other.currentIndex);
         this.matrix = other.matrix;

@@ -56,6 +56,7 @@ public class EntryDefaultValueInserter extends AbstractValueInserter<Entry> {
         if (rmObject.getOtherParticipations() != null) {
             rmObject.getOtherParticipations().stream()
                     .map(Participation::getPerformer)
+                    .filter(Objects::nonNull)
                     .map(PartyProxy::getExternalRef)
                     .filter(Objects::nonNull)
                     .filter(ref -> ref.getId() != null)

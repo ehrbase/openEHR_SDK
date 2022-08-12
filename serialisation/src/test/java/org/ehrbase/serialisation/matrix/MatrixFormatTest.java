@@ -20,6 +20,7 @@ package org.ehrbase.serialisation.matrix;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
+import com.nedap.archie.rm.composition.Composition;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import org.apache.commons.io.IOUtils;
@@ -77,5 +78,14 @@ class MatrixFormatTest {
                 IOUtils.toString(MatrixFormat.class.getResourceAsStream("/csv/IPS.csv"), StandardCharsets.UTF_8);
 
         assertThat(actual).isEqualToNormalizingNewlines(expected);
+    }
+
+    @Test
+    void fromMatrix() throws IOException {
+        MatrixFormat cut = new MatrixFormat(new TestDataTemplateProvider());
+        Composition actual = cut.unmarshal(
+                IOUtils.toString(MatrixFormat.class.getResourceAsStream("/csv/IPS.csv"), StandardCharsets.UTF_8));
+
+        assertThat(actual.getContent()).size().isEqualTo(14);
     }
 }

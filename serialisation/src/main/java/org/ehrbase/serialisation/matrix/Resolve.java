@@ -23,7 +23,7 @@ import org.ehrbase.aql.dto.path.AqlPath;
 /**
  * @author Stefan Spiska
  */
-public class Resolve {
+class Resolve {
 
     private AqlPath pathFromRoot;
     private String archetypeId;

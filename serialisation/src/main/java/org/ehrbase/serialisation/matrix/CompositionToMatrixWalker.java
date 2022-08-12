@@ -27,6 +27,7 @@ import com.fasterxml.jackson.databind.node.NumericNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.ValueNode;
 import com.nedap.archie.rm.RMObject;
+import com.nedap.archie.rm.archetyped.Archetyped;
 import com.nedap.archie.rm.datavalues.quantity.datetime.DvDate;
 import com.nedap.archie.rm.datavalues.quantity.datetime.DvDateTime;
 import com.nedap.archie.rm.datavalues.quantity.datetime.DvDuration;
@@ -44,14 +45,15 @@ import org.ehrbase.webtemplate.model.WebTemplateNode;
 /**
  * @author Stefan Spiska
  */
-public class CompositionToMatrixWalker extends FromCompositionWalker<WalkerDto> {
+public class CompositionToMatrixWalker extends FromCompositionWalker<FromWalkerDto> {
 
     private List<String> resolveTo = List.of("OBSERVATION", "EVALUATION", "INSTRUCTION", "ACTION");
 
     @Override
-    protected WalkerDto extract(Context<WalkerDto> context, WebTemplateNode child, boolean isChoice, Integer i) {
+    protected FromWalkerDto extract(
+            Context<FromWalkerDto> context, WebTemplateNode child, boolean isChoice, Integer i) {
 
-        WalkerDto next = new WalkerDto(context.getObjectDeque().peek());
+        FromWalkerDto next = new FromWalkerDto(context.getObjectDeque().peek());
 
         if (child.getId().equals("context")) {
             next.setRootFound(true);
@@ -88,49 +90,58 @@ public class CompositionToMatrixWalker extends FromCompositionWalker<WalkerDto> 
     }
 
     @Override
-    protected void preHandle(Context<WalkerDto> context) {
+    protected void preHandle(Context<FromWalkerDto> context) {
 
         WebTemplateNode node = context.getNodeDeque().peek();
 
         if (node.getChildren().isEmpty()) {
 
-            WalkerDto walkerDto = context.getObjectDeque().peek();
+            FromWalkerDto fromWalkerDto = context.getObjectDeque().peek();
 
             AqlPath relativ = node.getAqlPathDto()
-                    .removeStart(walkerDto.getCurrentResolve().getPathFromRoot());
+                    .removeStart(fromWalkerDto.getCurrentResolve().getPathFromRoot());
 
             RMObject rmObject = context.getRmObjectDeque().peek();
-            walkerDto
+            fromWalkerDto
                     .getMatrix()
-                    .get(walkerDto.getCurrentResolve())
-                    .get(walkerDto.getCurrentIndex())
+                    .get(fromWalkerDto.getCurrentResolve())
+                    .get(fromWalkerDto.getCurrentIndex())
                     .putAll(flatten(relativ, MARSHAL_OM.valueToTree(rmObject)));
-            if (rmObject instanceof DvTime) {
-                walkerDto
+
+            if (rmObject instanceof Archetyped) {
+                fromWalkerDto
                         .getMatrix()
-                        .get(walkerDto.getCurrentResolve())
-                        .get(walkerDto.getCurrentIndex())
+                        .get(fromWalkerDto.getCurrentResolve())
+                        .get(fromWalkerDto.getCurrentIndex())
+                        .put(relativ.addEnd("/_type"), "ARCHETYPED");
+            }
+
+            if (rmObject instanceof DvTime) {
+                fromWalkerDto
+                        .getMatrix()
+                        .get(fromWalkerDto.getCurrentResolve())
+                        .get(fromWalkerDto.getCurrentIndex())
                         .put(relativ.addEnd("/magnitude"), ((DvTime) rmObject).getMagnitude());
             }
             if (rmObject instanceof DvDate) {
-                walkerDto
+                fromWalkerDto
                         .getMatrix()
-                        .get(walkerDto.getCurrentResolve())
-                        .get(walkerDto.getCurrentIndex())
+                        .get(fromWalkerDto.getCurrentResolve())
+                        .get(fromWalkerDto.getCurrentIndex())
                         .put(relativ.addEnd("/magnitude"), ((DvDate) rmObject).getMagnitude());
             }
             if (rmObject instanceof DvDateTime) {
-                walkerDto
+                fromWalkerDto
                         .getMatrix()
-                        .get(walkerDto.getCurrentResolve())
-                        .get(walkerDto.getCurrentIndex())
+                        .get(fromWalkerDto.getCurrentResolve())
+                        .get(fromWalkerDto.getCurrentIndex())
                         .put(relativ.addEnd("/magnitude"), ((DvDateTime) rmObject).getMagnitude());
             }
             if (rmObject instanceof DvDuration) {
-                walkerDto
+                fromWalkerDto
                         .getMatrix()
-                        .get(walkerDto.getCurrentResolve())
-                        .get(walkerDto.getCurrentIndex())
+                        .get(fromWalkerDto.getCurrentResolve())
+                        .get(fromWalkerDto.getCurrentIndex())
                         .put(relativ.addEnd("/magnitude"), ((DvDuration) rmObject).getMagnitude());
             }
         }
@@ -167,7 +178,7 @@ public class CompositionToMatrixWalker extends FromCompositionWalker<WalkerDto> 
     }
 
     @Override
-    protected void postHandle(Context<WalkerDto> context) {}
+    protected void postHandle(Context<FromWalkerDto> context) {}
 
     static String findTypeName(String atCode) {
         String typeName = null;
