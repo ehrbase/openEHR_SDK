@@ -235,8 +235,14 @@ $$;
 
 set yb_enable_expression_pushdown = on;
 
-select ehr_id from ehr.entry2 limit 1;
-SET ehr.id = '95683ce1-f449-47fc-9795-a48bcc3c4a0f';
+select distinct ehr_id
+from ehr.entry2
+where (type = 'COMPOSITION')
+  and depth = 0
+limit 2;
+
+SET ehr.id = '00826ff8-9980-4f43-baf0-78062167133f';
+SET ehr.id = '0119934e-b2d9-447a-ad38-67dfb47b5d01';
 
 select count(distinct ehr_id)
 from ehr.entry2
@@ -312,7 +318,7 @@ from (select e2.comp_id, e2.archetype_id, json ->> '/composer/name' as "composer
 
 -- the default just uses hash  on the first join
 set enable_nestloop = off;
-set enable_hashjoin = on;
+set enable_hashjoin = off;
 
 explain analyse
 select array_599434088_1.comp_id,
@@ -326,13 +332,13 @@ from (select e2.comp_id, e2.archetype_id, json ->> '/composer/name' as "composer
       where (type = 'COMPOSITION')
         and depth = 0
         and ehr_id = current_setting('ehr.id')::uuid) as "array_599434088_1"
-         join lateral ( select e3.comp_id, json ->> '/subject/_type' as "subject"
+          join  lateral ( select e3.comp_id, json ->> '/subject/_type' as "subject"
                         from ehr.entry2 e3
                         where archetype_id = 'openEHR-EHR-OBSERVATION.travel_event.v0'
                           and depth = 0
                           and ehr_id = current_setting('ehr.id')::uuid
                           and e3.comp_id = array_599434088_1.comp_id ) as "array_599434088_2" on true
-         join lateral ( select e4.comp_id,
+         left join lateral ( select e4.comp_id,
                                e4.index[1]                                as "R0",
                                json ->> '/data[at0001]/events[at0002]/time/value' as "time"
                         from ehr.entry2 e4
@@ -340,7 +346,7 @@ from (select e2.comp_id, e2.archetype_id, json ->> '/composer/name' as "composer
                           and depth = 1
                           and ehr_id = current_setting('ehr.id')::uuid
                           and e4.comp_id = array_599434088_2.comp_id ) as "array_599434088_3" on true
-         join lateral ( select e5.comp_id,
+          left  join lateral ( select e5.comp_id,
                                e5.index[1]                                                            as "R0",
                                e5.index[2]                                                            as "R1",
                                json ->> '/data[at0001]/events[at0002]/data[at0003]/items[at0008]/name/value' as "art"
@@ -350,8 +356,8 @@ from (select e2.comp_id, e2.archetype_id, json ->> '/composer/name' as "composer
                           and ehr_id = current_setting('ehr.id')::uuid
                           and e5.comp_id = array_599434088_3.comp_id
                           and e5.index[1]  = array_599434088_3."R0") as "array_599434088_4" on true
-         join lateral ( select json ->>
-                               '/data[at0001]/events[at0002]/data[at0003]/items[at0008]/items[at0010]/name/value' as "ziel"
+          left join lateral ( select json ->>
+                               '/data[at0001]/events[at0002]/data[at0003]/items[at0008]/items[at0010]/items[at0011]/value/value' as "ziel"
                         from ehr.entry2 e6
                         where archetype_id = 'openEHR-EHR-OBSERVATION.travel_event.v0'
                           and depth = 3

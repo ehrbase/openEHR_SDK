@@ -20,14 +20,15 @@ package org.ehrbase.serialisation.matrix;
 import static org.ehrbase.serialisation.jsonencoding.CanonicalJson.MARSHAL_OM;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.ibm.icu.impl.Pair;
 import com.nedap.archie.rm.RMObject;
 import com.nedap.archie.rm.archetyped.Archetyped;
+import com.nedap.archie.rm.archetyped.Link;
 import com.nedap.archie.rm.archetyped.TemplateId;
 import com.nedap.archie.rm.support.identification.ArchetypeID;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import org.apache.commons.lang3.tuple.Pair;
 import org.ehrbase.aql.dto.path.AqlPath;
 import org.ehrbase.building.webtemplateskeletnbuilder.WebTemplateSkeletonBuilder;
 import org.ehrbase.serialisation.walker.Context;
@@ -71,7 +72,7 @@ public class MatrixToCompositionWalker extends ToCompositionWalker<List<Entry>> 
                     .map(o -> {
                         Entry entry = new Entry();
                         entry.path = o.path.removeStart(node.getAqlPathDto());
-                        if (isaBoolean(node, entry)) {
+                        if (isJsonArray(node, entry)) {
                             try {
                                 entry.value = MARSHAL_OM.readValue(o.value.toString(), List.class);
                             } catch (JsonProcessingException e) {
@@ -87,6 +88,10 @@ public class MatrixToCompositionWalker extends ToCompositionWalker<List<Entry>> 
                     .collect(Collectors.toList()));
 
             RMObject peek = context.getRmObjectDeque().peek();
+
+            if (peek instanceof Link) {
+                unflatten.put("_type", "LINK");
+            }
             if (peek instanceof Archetyped) {
 
                 ((Archetyped) peek).setRmVersion(unflatten.get("rm_version").toString());
@@ -122,12 +127,14 @@ public class MatrixToCompositionWalker extends ToCompositionWalker<List<Entry>> 
         }
     }
 
-    private static boolean isaBoolean(WebTemplateNode node, Entry entry) {
+    private static boolean isJsonArray(WebTemplateNode node, Entry entry) {
 
         List<Pair<String, String>> array = List.of(
                 Pair.of("mappings", "DV_TEXT"),
                 Pair.of("mappings", "DV_CODED_TEXT"),
                 Pair.of("other_reference_ranges", "DV_QUANTITY"),
+                Pair.of("other_reference_ranges", "DV_DURATION"),
+                Pair.of("other_reference_ranges", "DV_ORDINAL"),
                 Pair.of("other_reference_ranges", "DV_PROPORTION"),
                 Pair.of("other_reference_ranges", "DV_COUNT"),
                 Pair.of("other_reference_ranges", "DV_DATE"),
@@ -135,9 +142,17 @@ public class MatrixToCompositionWalker extends ToCompositionWalker<List<Entry>> 
                 Pair.of("other_reference_ranges", "DV_TIME"),
                 Pair.of("other_reference_ranges", "DV_CODED_TEXT"),
                 Pair.of("feeder_system_item_ids", "FEEDER_AUDIT"),
-                Pair.of("originating_system_item_ids", "FEEDER_AUDIT"));
+                Pair.of("originating_system_item_ids", "FEEDER_AUDIT"),
+                Pair.of("performer/identifiers", "PARTICIPATION"),
+                Pair.of("identifiers", "PARTY_IDENTIFIED"),
+                Pair.of("identifiers", "PARTY_RELATED"),
+                Pair.of("originating_system_audit/provider/identifiers", "FEEDER_AUDIT"),
+                Pair.of("originating_system_audit/subject/identifiers", "FEEDER_AUDIT"),
+                Pair.of("feeder_system_audit/provider/identifiers", "FEEDER_AUDIT"),
+                Pair.of("feeder_system_audit/subject/identifiers", "FEEDER_AUDIT"));
 
-        return array.contains(Pair.of(entry.path.getBaseNode().getName(), node.getRmType()));
+        return array.stream()
+                .anyMatch(p -> p.getRight().equals(node.getRmType()) && entry.path.equals(AqlPath.parse(p.getLeft())));
     }
 
     Map<String, Object> unflatten(List<Entry> entries) {

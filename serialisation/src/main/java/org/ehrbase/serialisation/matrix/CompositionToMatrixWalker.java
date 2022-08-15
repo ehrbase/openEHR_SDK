@@ -25,6 +25,7 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.BooleanNode;
 import com.fasterxml.jackson.databind.node.NumericNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.fasterxml.jackson.databind.node.POJONode;
 import com.fasterxml.jackson.databind.node.ValueNode;
 import com.nedap.archie.rm.RMObject;
 import com.nedap.archie.rm.archetyped.Archetyped;
@@ -40,6 +41,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.ehrbase.aql.dto.path.AqlPath;
 import org.ehrbase.serialisation.walker.Context;
 import org.ehrbase.serialisation.walker.FromCompositionWalker;
+import org.ehrbase.serialisation.walker.RmPrimitive;
 import org.ehrbase.webtemplate.model.WebTemplateNode;
 
 /**
@@ -47,7 +49,7 @@ import org.ehrbase.webtemplate.model.WebTemplateNode;
  */
 public class CompositionToMatrixWalker extends FromCompositionWalker<FromWalkerDto> {
 
-    private List<String> resolveTo = List.of("OBSERVATION", "EVALUATION", "INSTRUCTION", "ACTION");
+    private List<String> resolveTo = List.of("OBSERVATION", "EVALUATION", "INSTRUCTION", "ACTION", "ADMIN_ENTRY");
 
     @Override
     protected FromWalkerDto extract(
@@ -55,7 +57,7 @@ public class CompositionToMatrixWalker extends FromCompositionWalker<FromWalkerD
 
         FromWalkerDto next = new FromWalkerDto(context.getObjectDeque().peek());
 
-        if (child.getId().equals("context")) {
+        if (List.of("context", "links", "feeder_audit").contains(child.getId())) {
             next.setRootFound(true);
         }
 
@@ -99,11 +101,19 @@ public class CompositionToMatrixWalker extends FromCompositionWalker<FromWalkerD
                 .removeStart(fromWalkerDto.getCurrentResolve().getPathFromRoot());
         if (!visitChildren(node)) {
 
-            fromWalkerDto
-                    .getMatrix()
-                    .get(fromWalkerDto.getCurrentResolve())
-                    .get(fromWalkerDto.getCurrentIndex())
-                    .putAll(flatten(relativ, MARSHAL_OM.valueToTree(rmObject)));
+            if (rmObject instanceof RmPrimitive) {
+                fromWalkerDto
+                        .getMatrix()
+                        .get(fromWalkerDto.getCurrentResolve())
+                        .get(fromWalkerDto.getCurrentIndex())
+                        .put(relativ, ((RmPrimitive<?>) rmObject).getValue());
+            } else {
+                fromWalkerDto
+                        .getMatrix()
+                        .get(fromWalkerDto.getCurrentResolve())
+                        .get(fromWalkerDto.getCurrentIndex())
+                        .putAll(flatten(relativ, MARSHAL_OM.valueToTree(rmObject)));
+            }
 
             if (rmObject instanceof Archetyped) {
                 fromWalkerDto
@@ -162,6 +172,12 @@ public class CompositionToMatrixWalker extends FromCompositionWalker<FromWalkerD
                 result.putAll(flatten(prefix.addEnd("/" + child.getKey()), child.getValue()));
             }
 
+        } else if (node instanceof POJONode) {
+            try {
+                result.putAll(flatten(prefix, MARSHAL_OM.readTree((node).toString())));
+            } catch (JsonProcessingException e) {
+                throw new RuntimeException(e);
+            }
         } else if (node instanceof ValueNode) {
             if (node instanceof NumericNode) {
                 result.put(prefix, node.numberValue());
