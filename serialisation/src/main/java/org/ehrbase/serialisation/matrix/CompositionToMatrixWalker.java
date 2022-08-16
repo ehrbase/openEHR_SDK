@@ -29,6 +29,8 @@ import com.fasterxml.jackson.databind.node.POJONode;
 import com.fasterxml.jackson.databind.node.ValueNode;
 import com.nedap.archie.rm.RMObject;
 import com.nedap.archie.rm.archetyped.Archetyped;
+import com.nedap.archie.rm.datastructures.Element;
+import com.nedap.archie.rm.datavalues.quantity.DvInterval;
 import com.nedap.archie.rm.datavalues.quantity.datetime.DvDate;
 import com.nedap.archie.rm.datavalues.quantity.datetime.DvDateTime;
 import com.nedap.archie.rm.datavalues.quantity.datetime.DvDuration;
@@ -198,7 +200,36 @@ public class CompositionToMatrixWalker extends FromCompositionWalker<FromWalkerD
     }
 
     @Override
-    protected void postHandle(Context<FromWalkerDto> context) {}
+    protected void postHandle(Context<FromWalkerDto> context) {
+
+        WebTemplateNode node = context.getNodeDeque().peek();
+        FromWalkerDto fromWalkerDto = context.getObjectDeque().peek();
+        RMObject rmObject = context.getRmObjectDeque().peek();
+        AqlPath relativ = node.getAqlPathDto()
+                .removeStart(fromWalkerDto.getCurrentResolve().getPathFromRoot());
+
+        if (rmObject instanceof Element) {
+
+            add(fromWalkerDto, relativ.addEnd("/null_reason"), ((Element) rmObject).getNullReason());
+        }
+
+        if (rmObject instanceof DvInterval) {
+            add(fromWalkerDto, relativ.addEnd("/lowerIncluded"), ((DvInterval) rmObject).isLowerIncluded());
+            add(fromWalkerDto, relativ.addEnd("/upperIncluded"), ((DvInterval) rmObject).isUpperIncluded());
+            add(fromWalkerDto, relativ.addEnd("/lowerUnbounded"), ((DvInterval) rmObject).isLowerUnbounded());
+            add(fromWalkerDto, relativ.addEnd("/upperUnbounded"), ((DvInterval) rmObject).isUpperUnbounded());
+        }
+    }
+
+    private void add(FromWalkerDto fromWalkerDto, AqlPath relativ, Object o) {
+        if (o != null) {
+            fromWalkerDto
+                    .getMatrix()
+                    .get(fromWalkerDto.getCurrentResolve())
+                    .get(fromWalkerDto.getCurrentIndex())
+                    .putAll(flatten(relativ, MARSHAL_OM.valueToTree(o)));
+        }
+    }
 
     static String findTypeName(String atCode) {
         String typeName = null;

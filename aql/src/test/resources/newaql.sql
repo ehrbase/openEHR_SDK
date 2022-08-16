@@ -318,7 +318,7 @@ from (select e2.comp_id, e2.archetype_id, json ->> '/composer/name' as "composer
 
 -- the default just uses hash  on the first join
 set enable_nestloop = off;
-set enable_hashjoin = off;
+set enable_hashjoin = on;
 
 explain analyse
 select array_599434088_1.comp_id,
