@@ -37,7 +37,6 @@ import org.ehrbase.serialisation.jsonencoding.ArchieObjectMapperProvider;
 import org.ehrbase.serialisation.matrix.MatrixFormat;
 import org.ehrbase.test_data.composition.CompositionTestDataConformanceSDTJson;
 import org.ehrbase.validation.CompositionValidator;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -61,7 +60,6 @@ class MatrixConformanceTest {
 
     @ParameterizedTest
     @MethodSource("testRoundTripArguments")
-    @Disabled
     void testRoundTrip(
             CompositionTestDataConformanceSDTJson testData,
             String[] expectedMissing,

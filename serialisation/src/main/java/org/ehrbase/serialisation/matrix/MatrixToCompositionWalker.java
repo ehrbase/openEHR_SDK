@@ -23,8 +23,12 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.nedap.archie.rm.RMObject;
 import com.nedap.archie.rm.archetyped.Archetyped;
 import com.nedap.archie.rm.archetyped.Link;
+import com.nedap.archie.rm.archetyped.Locatable;
 import com.nedap.archie.rm.archetyped.TemplateId;
+import com.nedap.archie.rm.composition.Activity;
+import com.nedap.archie.rm.composition.EventContext;
 import com.nedap.archie.rm.datastructures.Element;
+import com.nedap.archie.rm.datastructures.IntervalEvent;
 import com.nedap.archie.rm.datavalues.quantity.DvInterval;
 import com.nedap.archie.rm.support.identification.ArchetypeID;
 import java.util.List;
@@ -36,6 +40,7 @@ import org.ehrbase.aql.dto.path.AqlPath;
 import org.ehrbase.building.webtemplateskeletnbuilder.WebTemplateSkeletonBuilder;
 import org.ehrbase.serialisation.walker.Context;
 import org.ehrbase.serialisation.walker.ToCompositionWalker;
+import org.ehrbase.util.rmconstants.RmConstants;
 import org.ehrbase.webtemplate.model.WebTemplateNode;
 
 /**
@@ -56,6 +61,30 @@ public class MatrixToCompositionWalker extends ToCompositionWalker<List<Entry>> 
                 && filter(filter, child.getAqlPathDto().addEnd("/_type"), false, null).stream()
                         .noneMatch(e -> e.value.equals(child.getRmType()))) {
             return null;
+        }
+
+        if (child.getRmType().equals(RmConstants.ELEMENT)) {
+
+            WebTemplateNode links = new WebTemplateNode();
+
+            links.setRmType("LINK");
+            links.setAqlPath(child.getAqlPathDto().addEnd("/links"));
+            links.setId("links");
+            child.getChildren().add(links);
+            child.setMax(0);
+            child.setMax(0);
+        }
+
+        if (child.getRmType().equals(RmConstants.ISM_TRANSITION)) {
+
+            WebTemplateNode reason = new WebTemplateNode();
+
+            reason.setRmType("DV_TEXT");
+            reason.setAqlPath(child.getAqlPathDto().addEnd("/reason"));
+            reason.setId("reason");
+            child.getChildren().add(reason);
+            child.setMax(0);
+            child.setMax(0);
         }
 
         if (filter.isEmpty()) {
@@ -167,7 +196,8 @@ public class MatrixToCompositionWalker extends ToCompositionWalker<List<Entry>> 
                 Pair.of("originating_system_audit/provider/identifiers", "FEEDER_AUDIT"),
                 Pair.of("originating_system_audit/subject/identifiers", "FEEDER_AUDIT"),
                 Pair.of("feeder_system_audit/provider/identifiers", "FEEDER_AUDIT"),
-                Pair.of("feeder_system_audit/subject/identifiers", "FEEDER_AUDIT"));
+                Pair.of("feeder_system_audit/subject/identifiers", "FEEDER_AUDIT"),
+                Pair.of("", "LINK"));
 
         return array.stream()
                 .anyMatch(p -> p.getRight().equals(rmType) && entry.path.equals(AqlPath.parse(p.getLeft())));
@@ -200,6 +230,15 @@ public class MatrixToCompositionWalker extends ToCompositionWalker<List<Entry>> 
 
         RMObject rmObject = context.getRmObjectDeque().peek();
 
+        if (rmObject instanceof Locatable) {
+
+            add(
+                    ((Locatable) rmObject)::setUid,
+                    context.getObjectDeque().peek(),
+                    "HIER_OBJECT_ID",
+                    context.getNodeDeque().peek().getAqlPathDto().addEnd("/uid"));
+        }
+
         if (rmObject instanceof Element) {
 
             add(
@@ -209,28 +248,55 @@ public class MatrixToCompositionWalker extends ToCompositionWalker<List<Entry>> 
                     context.getNodeDeque().peek().getAqlPathDto().addEnd("/null_reason"));
         }
 
+        if (rmObject instanceof IntervalEvent) {
+
+            add(
+                    ((IntervalEvent) rmObject)::setSampleCount,
+                    context.getObjectDeque().peek(),
+                    "LONG",
+                    context.getNodeDeque().peek().getAqlPathDto().addEnd("/sample_count"));
+        }
+
+        if (rmObject instanceof EventContext) {
+
+            add(
+                    ((EventContext) rmObject)::setLocation,
+                    context.getObjectDeque().peek(),
+                    "STRING",
+                    context.getNodeDeque().peek().getAqlPathDto().addEnd("/location"));
+        }
+
+        if (rmObject instanceof Activity) {
+
+            add(
+                    ((Activity) rmObject)::setActionArchetypeId,
+                    context.getObjectDeque().peek(),
+                    "STRING",
+                    context.getNodeDeque().peek().getAqlPathDto().addEnd("/action_archetype_id"));
+        }
+
         if (rmObject instanceof DvInterval) {
 
             add(
                     ((DvInterval) rmObject)::setLowerIncluded,
                     context.getObjectDeque().peek(),
                     "BOOLEAN",
-                    context.getNodeDeque().peek().getAqlPathDto().addEnd("/lowerIncluded"));
+                    context.getNodeDeque().peek().getAqlPathDto().addEnd("/lower_included"));
             add(
                     ((DvInterval) rmObject)::setUpperIncluded,
                     context.getObjectDeque().peek(),
                     "BOOLEAN",
-                    context.getNodeDeque().peek().getAqlPathDto().addEnd("/upperIncluded"));
+                    context.getNodeDeque().peek().getAqlPathDto().addEnd("/upper_included"));
             add(
                     ((DvInterval) rmObject)::setLowerUnbounded,
                     context.getObjectDeque().peek(),
                     "BOOLEAN",
-                    context.getNodeDeque().peek().getAqlPathDto().addEnd("/lowerUnbounded"));
+                    context.getNodeDeque().peek().getAqlPathDto().addEnd("/lower_unbounded"));
             add(
                     ((DvInterval) rmObject)::setUpperUnbounded,
                     context.getObjectDeque().peek(),
                     "BOOLEAN",
-                    context.getNodeDeque().peek().getAqlPathDto().addEnd("/upperUnbounded"));
+                    context.getNodeDeque().peek().getAqlPathDto().addEnd("/upper_unbounded"));
         }
     }
 
@@ -251,6 +317,10 @@ public class MatrixToCompositionWalker extends ToCompositionWalker<List<Entry>> 
             Map<String, Object> unflaten = unflaten(rmType, aqlPath, filter);
 
             Object object = buildObject(unflaten);
+
+            if (object instanceof Integer && rmType.equals("LONG")) {
+                object = ((Integer) object).longValue();
+            }
 
             setter.accept((T) object);
         }

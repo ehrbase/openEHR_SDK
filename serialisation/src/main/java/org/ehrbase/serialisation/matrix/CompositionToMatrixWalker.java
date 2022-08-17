@@ -29,7 +29,11 @@ import com.fasterxml.jackson.databind.node.POJONode;
 import com.fasterxml.jackson.databind.node.ValueNode;
 import com.nedap.archie.rm.RMObject;
 import com.nedap.archie.rm.archetyped.Archetyped;
+import com.nedap.archie.rm.archetyped.Locatable;
+import com.nedap.archie.rm.composition.Activity;
+import com.nedap.archie.rm.composition.EventContext;
 import com.nedap.archie.rm.datastructures.Element;
+import com.nedap.archie.rm.datastructures.IntervalEvent;
 import com.nedap.archie.rm.datavalues.quantity.DvInterval;
 import com.nedap.archie.rm.datavalues.quantity.datetime.DvDate;
 import com.nedap.archie.rm.datavalues.quantity.datetime.DvDateTime;
@@ -44,6 +48,7 @@ import org.ehrbase.aql.dto.path.AqlPath;
 import org.ehrbase.serialisation.walker.Context;
 import org.ehrbase.serialisation.walker.FromCompositionWalker;
 import org.ehrbase.serialisation.walker.RmPrimitive;
+import org.ehrbase.util.rmconstants.RmConstants;
 import org.ehrbase.webtemplate.model.WebTemplateNode;
 
 /**
@@ -90,6 +95,41 @@ public class CompositionToMatrixWalker extends FromCompositionWalker<FromWalkerD
             }
         }
 
+        if (child.getRmType().equals(RmConstants.ELEMENT)) {
+
+            WebTemplateNode links = new WebTemplateNode();
+
+            links.setRmType("LINK");
+            links.setAqlPath(child.getAqlPathDto().addEnd("/links"));
+            links.setId("links");
+            child.getChildren().add(links);
+            child.setMax(0);
+            child.setMax(0);
+        }
+
+        if (child.getRmType().equals(RmConstants.ELEMENT)) {
+
+            WebTemplateNode links = new WebTemplateNode();
+
+            links.setRmType("LINK");
+            links.setAqlPath(child.getAqlPathDto().addEnd("/links"));
+            links.setId("links");
+            child.getChildren().add(links);
+            child.setMax(0);
+            child.setMax(0);
+        }
+
+        if (child.getRmType().equals(RmConstants.ISM_TRANSITION)) {
+
+            WebTemplateNode reason = new WebTemplateNode();
+
+            reason.setRmType("DV_TEXT");
+            reason.setAqlPath(child.getAqlPathDto().addEnd("/reason"));
+            reason.setId("reason");
+            child.getChildren().add(reason);
+            child.setMax(0);
+            child.setMax(0);
+        }
         return next;
     }
 
@@ -208,16 +248,36 @@ public class CompositionToMatrixWalker extends FromCompositionWalker<FromWalkerD
         AqlPath relativ = node.getAqlPathDto()
                 .removeStart(fromWalkerDto.getCurrentResolve().getPathFromRoot());
 
+        if (rmObject instanceof Locatable) {
+
+            add(fromWalkerDto, relativ.addEnd("/uid"), ((Locatable) rmObject).getUid());
+        }
+
         if (rmObject instanceof Element) {
 
             add(fromWalkerDto, relativ.addEnd("/null_reason"), ((Element) rmObject).getNullReason());
         }
 
+        if (rmObject instanceof IntervalEvent) {
+
+            add(fromWalkerDto, relativ.addEnd("/sample_count"), ((IntervalEvent) rmObject).getSampleCount());
+        }
+
+        if (rmObject instanceof EventContext) {
+
+            add(fromWalkerDto, relativ.addEnd("/location"), ((EventContext) rmObject).getLocation());
+        }
+
+        if (rmObject instanceof Activity) {
+
+            add(fromWalkerDto, relativ.addEnd("/action_archetype_id"), ((Activity) rmObject).getActionArchetypeId());
+        }
+
         if (rmObject instanceof DvInterval) {
-            add(fromWalkerDto, relativ.addEnd("/lowerIncluded"), ((DvInterval) rmObject).isLowerIncluded());
-            add(fromWalkerDto, relativ.addEnd("/upperIncluded"), ((DvInterval) rmObject).isUpperIncluded());
-            add(fromWalkerDto, relativ.addEnd("/lowerUnbounded"), ((DvInterval) rmObject).isLowerUnbounded());
-            add(fromWalkerDto, relativ.addEnd("/upperUnbounded"), ((DvInterval) rmObject).isUpperUnbounded());
+            add(fromWalkerDto, relativ.addEnd("/lower_included"), ((DvInterval) rmObject).isLowerIncluded());
+            add(fromWalkerDto, relativ.addEnd("/upper_included"), ((DvInterval) rmObject).isUpperIncluded());
+            add(fromWalkerDto, relativ.addEnd("/lower_unbounded"), ((DvInterval) rmObject).isLowerUnbounded());
+            add(fromWalkerDto, relativ.addEnd("/upper_unbounded"), ((DvInterval) rmObject).isUpperUnbounded());
         }
     }
 
