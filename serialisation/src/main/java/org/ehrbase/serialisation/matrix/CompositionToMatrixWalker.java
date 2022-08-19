@@ -91,6 +91,8 @@ public class CompositionToMatrixWalker extends FromCompositionWalker<FromWalkerD
                     next.getMatrix().get(next.getCurrentResolve()).put(next.getCurrentIndex(), new LinkedHashMap<>());
                 } else {
                     next.getCurrentResolve().getCount().add(child.getAqlPath(), i);
+                    next.getMatrix().put(next.getCurrentResolve(), new LinkedHashMap<>());
+                    next.getMatrix().get(next.getCurrentResolve()).put(next.getCurrentIndex(), new LinkedHashMap<>());
                 }
             }
         }
@@ -102,7 +104,7 @@ public class CompositionToMatrixWalker extends FromCompositionWalker<FromWalkerD
             links.setRmType("LINK");
             links.setAqlPath(child.getAqlPathDto().addEnd("/links"));
             links.setId("links");
-            links.setMax(1);
+            links.setMax(0);
             links.setMin(0);
             child.getChildren().add(links);
         }
@@ -114,8 +116,8 @@ public class CompositionToMatrixWalker extends FromCompositionWalker<FromWalkerD
             reason.setRmType("DV_TEXT");
             reason.setAqlPath(child.getAqlPathDto().addEnd("/reason"));
             reason.setId("reason");
-            child.setMax(0);
-            child.setMax(0);
+            reason.setMin(0);
+            reason.setMax(0);
             child.getChildren().add(reason);
         }
         return next;

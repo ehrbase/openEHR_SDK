@@ -36,6 +36,8 @@ import org.ehrbase.serialisation.flatencoding.FlatJasonProvider;
 import org.ehrbase.serialisation.jsonencoding.ArchieObjectMapperProvider;
 import org.ehrbase.serialisation.matrix.MatrixFormat;
 import org.ehrbase.test_data.composition.CompositionTestDataConformanceSDTJson;
+import org.ehrbase.test_data.composition.CompositionTestDataSimSDTJson;
+import org.ehrbase.test_data.composition.CompositionTestDataSimSDTJsonInterface;
 import org.ehrbase.validation.CompositionValidator;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -51,17 +53,31 @@ class MatrixConformanceTest {
         Arrays.stream(CompositionTestDataConformanceSDTJson.values()).forEach(test -> {
             switch (test) {
                 default:
-                    arguments.add(Arguments.of(test, new String[] {}, new String[] {}, new String[] {}));
+                    arguments.add(Arguments.of(
+                            (CompositionTestDataSimSDTJsonInterface) test,
+                            new String[] {},
+                            new String[] {},
+                            new String[] {}));
             }
         });
-
+        arguments.add(Arguments.of(
+                CompositionTestDataSimSDTJson.ALL_TYPES,
+                new String[] {
+                    "Missing path: test_all_types/test_all_types:0/identifier|id, value: 55175056",
+                    "Missing path: test_all_types/test_all_types:0/proportion_any|type, value: 1"
+                },
+                new String[] {
+                    "Extra path: test_all_types/test_all_types:0/identifier, value: 55175056",
+                    "Extra path: test_all_types/test_all_types:0/proportion_any|type, value: 1.0"
+                },
+                new String[] {}));
         return arguments;
     }
 
     @ParameterizedTest
     @MethodSource("testRoundTripArguments")
     void testRoundTrip(
-            CompositionTestDataConformanceSDTJson testData,
+            CompositionTestDataSimSDTJsonInterface testData,
             String[] expectedMissing,
             String[] expectedExtra,
             String[] expectedValidationErrorPath)
