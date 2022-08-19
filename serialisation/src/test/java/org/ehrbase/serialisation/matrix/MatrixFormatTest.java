@@ -18,7 +18,6 @@
 package org.ehrbase.serialisation.matrix;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 import com.nedap.archie.rm.composition.Composition;
 import java.io.IOException;
@@ -27,11 +26,13 @@ import org.apache.commons.io.IOUtils;
 import org.ehrbase.serialisation.jsonencoding.CanonicalJson;
 import org.ehrbase.serialisation.templateprovider.TestDataTemplateProvider;
 import org.ehrbase.test_data.composition.CompositionTestDataCanonicalJson;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 /**
  * @author Stefan Spiska
  */
+@Disabled
 class MatrixFormatTest {
 
     @Test
@@ -40,7 +41,7 @@ class MatrixFormatTest {
         String corona =
                 IOUtils.toString(CompositionTestDataCanonicalJson.MULTI_OCCURRENCE.getStream(), StandardCharsets.UTF_8);
 
-        MatrixFormat cut = new MatrixFormat(new TestDataTemplateProvider());
+        MatrixFormat cut = new MatrixFormat(new TestDataTemplateProvider(), false);
 
         String actual = cut.marshal(new CanonicalJson().unmarshal(corona));
 
@@ -55,7 +56,7 @@ class MatrixFormatTest {
 
         String corona = IOUtils.toString(CompositionTestDataCanonicalJson.CORONA.getStream(), StandardCharsets.UTF_8);
 
-        MatrixFormat cut = new MatrixFormat(new TestDataTemplateProvider());
+        MatrixFormat cut = new MatrixFormat(new TestDataTemplateProvider(), false);
 
         String actual = cut.marshal(new CanonicalJson().unmarshal(corona));
 
@@ -70,7 +71,7 @@ class MatrixFormatTest {
 
         String corona = IOUtils.toString(CompositionTestDataCanonicalJson.IPS.getStream(), StandardCharsets.UTF_8);
 
-        MatrixFormat cut = new MatrixFormat(new TestDataTemplateProvider());
+        MatrixFormat cut = new MatrixFormat(new TestDataTemplateProvider(), false);
 
         String actual = cut.marshal(new CanonicalJson().unmarshal(corona));
 
@@ -81,8 +82,38 @@ class MatrixFormatTest {
     }
 
     @Test
+    void toMatrixIPSEncode() throws IOException {
+
+        String corona = IOUtils.toString(CompositionTestDataCanonicalJson.IPS.getStream(), StandardCharsets.UTF_8);
+
+        MatrixFormat cut = new MatrixFormat(new TestDataTemplateProvider(), true);
+
+        String actual = cut.marshal(new CanonicalJson().unmarshal(corona));
+
+        String expected =
+                IOUtils.toString(MatrixFormat.class.getResourceAsStream("/csv/IPSEncode.csv"), StandardCharsets.UTF_8);
+
+        assertThat(actual).isEqualToNormalizingNewlines(expected);
+    }
+
+    @Test
+    void toMatrixCoronaEncode() throws IOException {
+
+        String corona = IOUtils.toString(CompositionTestDataCanonicalJson.CORONA.getStream(), StandardCharsets.UTF_8);
+
+        MatrixFormat cut = new MatrixFormat(new TestDataTemplateProvider(), true);
+
+        String actual = cut.marshal(new CanonicalJson().unmarshal(corona));
+
+        String expected = IOUtils.toString(
+                MatrixFormat.class.getResourceAsStream("/csv/CORONAEncode.csv"), StandardCharsets.UTF_8);
+
+        assertThat(actual).isEqualToNormalizingNewlines(expected);
+    }
+
+    @Test
     void fromMatrix() throws IOException {
-        MatrixFormat cut = new MatrixFormat(new TestDataTemplateProvider());
+        MatrixFormat cut = new MatrixFormat(new TestDataTemplateProvider(), false);
         Composition actual = cut.unmarshal(
                 IOUtils.toString(MatrixFormat.class.getResourceAsStream("/csv/IPS.csv"), StandardCharsets.UTF_8));
 

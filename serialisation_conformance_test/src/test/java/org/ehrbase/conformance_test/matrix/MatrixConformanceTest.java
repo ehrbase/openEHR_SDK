@@ -74,7 +74,7 @@ class MatrixConformanceTest {
         String flat = IOUtils.toString(testData.getStream(), StandardCharsets.UTF_8);
         Composition composition = flatJson.unmarshal(flat);
 
-        MatrixFormat cut = new MatrixFormat(TEMPLATE_PROVIDER);
+        MatrixFormat cut = new MatrixFormat(TEMPLATE_PROVIDER, false);
 
         String db_encoded = cut.marshal(composition);
 

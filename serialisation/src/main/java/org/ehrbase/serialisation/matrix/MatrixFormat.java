@@ -64,10 +64,15 @@ public class MatrixFormat implements RMDataFormat {
             CSVFormat.DEFAULT.builder().setHeader(HEADERS.class).build();
 
     public static final ObjectMapper MAPPER = new ObjectMapper();
+
+    private static final Encoder encoder = new Encoder();
     private final TemplateProvider templateProvider;
 
-    public MatrixFormat(TemplateProvider templateProvider) {
+    private final boolean encode;
+
+    public MatrixFormat(TemplateProvider templateProvider, boolean encode) {
         this.templateProvider = templateProvider;
+        this.encode = encode;
     }
 
     Map<Resolve, Map<Index, Map<AqlPath, Object>>> toMatrix(Composition composition) {
@@ -89,7 +94,13 @@ public class MatrixFormat implements RMDataFormat {
 
     public List<Row> toTable(Composition composition) {
 
-        return flatten(toMatrix(composition));
+        List<Row> flatten = flatten(toMatrix(composition));
+
+        if (encode) {
+            flatten.forEach(encoder::encode);
+        }
+
+        return flatten;
     }
 
     private List<Row> flatten(Map<Resolve, Map<Index, Map<AqlPath, Object>>> map) {
