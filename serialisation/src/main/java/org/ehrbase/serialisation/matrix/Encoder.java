@@ -21,6 +21,7 @@ import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 import org.apache.commons.csv.CSVFormat;
@@ -58,7 +59,13 @@ public class Encoder {
 
         row.setPathFromRoot(encode(row.getPathFromRoot()));
         row.setOther(row.getOther().entrySet().stream()
-                .collect(Collectors.toMap(e -> encode(e.getKey()), Map.Entry::getValue)));
+                .collect(Collectors.toMap(
+                        e -> encode(e.getKey()),
+                        Map.Entry::getValue,
+                        (u, v) -> {
+                            throw new IllegalStateException(String.format("Duplicate key %s", u));
+                        },
+                        LinkedHashMap::new)));
 
         return row;
     }

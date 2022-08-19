@@ -20,12 +20,13 @@ create index archetype_idx on ehr.entry2 (archetype_id, depth,ehr_id);
 create index type_idx on ehr.entry2 (type, depth,ehr_id);
 -- composer
 -- should be partial
-create index composer_idx on ehr.entry2 (type, depth, (json ->> '/!cp'),ehr_id);
+create index composer_idx on ehr.entry2 (type, depth, (json ->> '/composer/name'),ehr_id);
 -- should be partial
 -- custom index for a cross patient query
 create index diagnosis_idx on ehr.entry2 (archetype_id, depth,
-                                      (json ->> '/b[at0001]/a[at0002]/c/c'), ehr_id);
+                                      (json ->> '/data[at0001]/items[at0002]/value/value'), ehr_id);
 -- Idee splitt via type
+
 
 DO
 $$
