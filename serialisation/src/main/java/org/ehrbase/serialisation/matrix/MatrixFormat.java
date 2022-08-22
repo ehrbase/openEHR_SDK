@@ -87,13 +87,13 @@ public class MatrixFormat implements RMDataFormat {
         this.encode = encode;
     }
 
-    Map<Resolve, Map<Index, Map<AqlPath, Object>>> toMatrix(Composition composition) {
+    Map<Entity, Map<Index, Map<AqlPath, Object>>> toMatrix(Composition composition) {
         String templateId = composition.getArchetypeDetails().getTemplateId().getValue();
-        Resolve currentResolve = new Resolve();
-        currentResolve.setPathFromRoot(AqlPath.ROOT_PATH);
-        currentResolve.setArchetypeId(composition.getArchetypeNodeId());
+        Entity currentEntity = new Entity();
+        currentEntity.setPathFromRoot(AqlPath.ROOT_PATH);
+        currentEntity.setArchetypeId(composition.getArchetypeNodeId());
         FromWalkerDto fromWalkerDto = new FromWalkerDto();
-        fromWalkerDto.updateResolve(currentResolve);
+        fromWalkerDto.updateEntity(currentEntity);
         new CompositionToMatrixWalker()
                 .walk(
                         composition,
@@ -118,7 +118,7 @@ public class MatrixFormat implements RMDataFormat {
         return flatten;
     }
 
-    private List<Row> flatten(Map<Resolve, Map<Index, Map<AqlPath, Object>>> map) {
+    private List<Row> flatten(Map<Entity, Map<Index, Map<AqlPath, Object>>> map) {
 
         List<Row> collect = map.entrySet().stream()
                 .map(e -> toRows(e.getKey(), e.getValue()))
@@ -128,16 +128,16 @@ public class MatrixFormat implements RMDataFormat {
         return collect;
     }
 
-    private List<Row> toRows(Resolve resolve, Map<Index, Map<AqlPath, Object>> map) {
+    private List<Row> toRows(Entity entity, Map<Index, Map<AqlPath, Object>> map) {
 
-        return map.entrySet().stream().map(e -> toRow(resolve, e)).collect(Collectors.toList());
+        return map.entrySet().stream().map(e -> toRow(entity, e)).collect(Collectors.toList());
     }
 
-    private Row toRow(Resolve resolve, Map.Entry<Index, Map<AqlPath, Object>> e) {
+    private Row toRow(Entity entity, Map.Entry<Index, Map<AqlPath, Object>> e) {
         Row row = new Row();
-        row.setEntityIdx(resolve.getCount().getRepetitions());
-        row.setArchetypeId(resolve.getArchetypeId());
-        row.setEntityPath(resolve.getPathFromRoot());
+        row.setEntityIdx(entity.getEntityIdx().getRepetitions());
+        row.setArchetypeId(entity.getArchetypeId());
+        row.setEntityPath(entity.getPathFromRoot());
         row.setFields(e.getValue());
         row.setFieldIdx(e.getKey().getRepetitions());
         return row;

@@ -26,10 +26,10 @@ import org.ehrbase.aql.dto.path.AqlPath;
  */
 class FromWalkerDto {
 
-    private final Map<Resolve, Map<Index, Map<AqlPath, Object>>> matrix;
+    private final Map<Entity, Map<Index, Map<AqlPath, Object>>> matrix;
 
-    private Resolve currentResolve;
-    private Index currentIndex;
+    private Entity currentEntity;
+    private Index currentFieldIndex;
 
     private boolean rootFound = false;
 
@@ -39,8 +39,8 @@ class FromWalkerDto {
     }
 
     public FromWalkerDto(FromWalkerDto other) {
-        this.currentResolve = new Resolve(other.currentResolve);
-        this.currentIndex = new Index(other.currentIndex);
+        this.currentEntity = new Entity(other.currentEntity);
+        this.currentFieldIndex = new Index(other.currentFieldIndex);
         this.matrix = other.matrix;
         this.rootFound = other.rootFound;
     }
@@ -53,27 +53,27 @@ class FromWalkerDto {
         this.rootFound = rootFound;
     }
 
-    public Map<Resolve, Map<Index, Map<AqlPath, Object>>> getMatrix() {
+    public Map<Entity, Map<Index, Map<AqlPath, Object>>> getMatrix() {
         return matrix;
     }
 
-    public Resolve getCurrentResolve() {
-        return currentResolve;
+    public Entity getCurrentEntity() {
+        return currentEntity;
     }
 
-    public void updateResolve(Resolve currentResolve) {
-        this.currentResolve = currentResolve;
-        matrix.put(currentResolve, new LinkedHashMap<>());
+    public void updateEntity(Entity currentEntity) {
+        this.currentEntity = currentEntity;
+        matrix.put(currentEntity, new LinkedHashMap<>());
         Index key = new Index();
-        matrix.get(currentResolve).put(key, new LinkedHashMap<>());
-        currentIndex = key;
+        matrix.get(currentEntity).put(key, new LinkedHashMap<>());
+        currentFieldIndex = key;
     }
 
-    public Index getCurrentIndex() {
-        return currentIndex;
+    public Index getCurrentFieldIndex() {
+        return currentFieldIndex;
     }
 
-    public void setCurrentIndex(Index currentIndex) {
-        this.currentIndex = currentIndex;
+    public void setCurrentFieldIndex(Index currentFieldIndex) {
+        this.currentFieldIndex = currentFieldIndex;
     }
 }

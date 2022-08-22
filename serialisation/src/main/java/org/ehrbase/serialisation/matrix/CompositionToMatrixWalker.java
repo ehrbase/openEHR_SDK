@@ -48,6 +48,7 @@ import org.ehrbase.aql.dto.path.AqlPath;
 import org.ehrbase.serialisation.walker.Context;
 import org.ehrbase.serialisation.walker.FromCompositionWalker;
 import org.ehrbase.serialisation.walker.RmPrimitive;
+import org.ehrbase.util.exception.SdkException;
 import org.ehrbase.util.rmconstants.RmConstants;
 import org.ehrbase.webtemplate.model.WebTemplateNode;
 
@@ -56,6 +57,7 @@ import org.ehrbase.webtemplate.model.WebTemplateNode;
  */
 public class CompositionToMatrixWalker extends FromCompositionWalker<FromWalkerDto> {
 
+    public static final String MAGNITUDE = "/magnitude";
     private List<String> resolveTo = List.of("OBSERVATION", "EVALUATION", "INSTRUCTION", "ACTION", "ADMIN_ENTRY");
 
     @Override
@@ -64,39 +66,49 @@ public class CompositionToMatrixWalker extends FromCompositionWalker<FromWalkerD
 
         FromWalkerDto next = new FromWalkerDto(context.getObjectDeque().peek());
 
-        if (List.of("context", "links", "feeder_audit").contains(child.getId())) {
+        // this belongs to composition thus COMPOSITION is the root
+        if (List.of("context", "links", "feeder_audit").contains(child.getId())
+                && context.getNodeDeque().peek().getRmType().equals("COMPOSITION")) {
             next.setRootFound(true);
         }
 
+        // Is this a RM type to which we resolve to, then add a new Entity
         if (child.getNodeId() != null
                 && findTypeName(child.getNodeId()) != null
                 && resolveTo.contains(findTypeName(child.getNodeId()))) {
 
-            Resolve nextResolve = new Resolve(next.getCurrentResolve());
-            nextResolve.setArchetypeId(child.getNodeId());
-            nextResolve.setPathFromRoot(
-                    child.getAqlPathDto().removeStart(next.getCurrentResolve().getPathFromRoot()));
+            Entity nextEntity = new Entity(next.getCurrentEntity());
+            nextEntity.setArchetypeId(child.getNodeId());
+            nextEntity.setPathFromRoot(
+                    child.getAqlPathDto().removeStart(next.getCurrentEntity().getPathFromRoot()));
             if (i != null) {
-                nextResolve.getCount().add(child.getAqlPath(), i);
+                nextEntity.getEntityIdx().add(child.getAqlPath(), i);
             }
-            next.updateResolve(nextResolve);
+            next.updateEntity(nextEntity);
             next.setRootFound(true);
-
+            // increment index
         } else {
 
             if (i != null) {
 
                 if (next.isRootFound()) {
-                    next.getCurrentIndex().add(child.getAqlPath(), i);
-                    next.getMatrix().get(next.getCurrentResolve()).put(next.getCurrentIndex(), new LinkedHashMap<>());
+                    next.getCurrentFieldIndex().add(child.getAqlPath(), i);
+                    next.getMatrix()
+                            .get(next.getCurrentEntity())
+                            .put(next.getCurrentFieldIndex(), new LinkedHashMap<>());
                 } else {
-                    next.getCurrentResolve().getCount().add(child.getAqlPath(), i);
-                    next.getMatrix().put(next.getCurrentResolve(), new LinkedHashMap<>());
-                    next.getMatrix().get(next.getCurrentResolve()).put(next.getCurrentIndex(), new LinkedHashMap<>());
+                    next.getCurrentEntity().getEntityIdx().add(child.getAqlPath(), i);
+                    if (!next.getMatrix().containsKey(next.getCurrentEntity())) {
+                        next.getMatrix().put(next.getCurrentEntity(), new LinkedHashMap<>());
+                    }
+                    next.getMatrix()
+                            .get(next.getCurrentEntity())
+                            .put(next.getCurrentFieldIndex(), new LinkedHashMap<>());
                 }
             }
         }
 
+        // Webtemplate is missing "link" for Element thus we add it here
         if (child.getRmType().equals(RmConstants.ELEMENT)) {
 
             WebTemplateNode links = new WebTemplateNode();
@@ -108,7 +120,7 @@ public class CompositionToMatrixWalker extends FromCompositionWalker<FromWalkerD
             links.setMin(0);
             child.getChildren().add(links);
         }
-
+        // Webtemplate is missing "reason" for ISM_TRANSITION thus we add it here
         if (child.getRmType().equals(RmConstants.ISM_TRANSITION)) {
 
             WebTemplateNode reason = new WebTemplateNode();
@@ -130,69 +142,86 @@ public class CompositionToMatrixWalker extends FromCompositionWalker<FromWalkerD
         FromWalkerDto fromWalkerDto = context.getObjectDeque().peek();
         RMObject rmObject = context.getRmObjectDeque().peek();
         AqlPath relativ = node.getAqlPathDto()
-                .removeStart(fromWalkerDto.getCurrentResolve().getPathFromRoot());
+                .removeStart(fromWalkerDto.getCurrentEntity().getPathFromRoot());
         if (!visitChildren(node)) {
 
             if (rmObject instanceof RmPrimitive) {
                 fromWalkerDto
                         .getMatrix()
-                        .get(fromWalkerDto.getCurrentResolve())
-                        .get(fromWalkerDto.getCurrentIndex())
+                        .get(fromWalkerDto.getCurrentEntity())
+                        .get(fromWalkerDto.getCurrentFieldIndex())
                         .put(relativ, ((RmPrimitive<?>) rmObject).getValue());
             } else {
                 fromWalkerDto
                         .getMatrix()
-                        .get(fromWalkerDto.getCurrentResolve())
-                        .get(fromWalkerDto.getCurrentIndex())
+                        .get(fromWalkerDto.getCurrentEntity())
+                        .get(fromWalkerDto.getCurrentFieldIndex())
                         .putAll(flatten(relativ, MARSHAL_OM.valueToTree(rmObject)));
             }
 
             if (rmObject instanceof Archetyped) {
                 fromWalkerDto
                         .getMatrix()
-                        .get(fromWalkerDto.getCurrentResolve())
-                        .get(fromWalkerDto.getCurrentIndex())
+                        .get(fromWalkerDto.getCurrentEntity())
+                        .get(fromWalkerDto.getCurrentFieldIndex())
                         .put(relativ.addEnd("/_type"), "ARCHETYPED");
             }
 
-            if (rmObject instanceof DvTime) {
-                fromWalkerDto
-                        .getMatrix()
-                        .get(fromWalkerDto.getCurrentResolve())
-                        .get(fromWalkerDto.getCurrentIndex())
-                        .put(relativ.addEnd("/magnitude"), ((DvTime) rmObject).getMagnitude());
-            }
-            if (rmObject instanceof DvDate) {
-                fromWalkerDto
-                        .getMatrix()
-                        .get(fromWalkerDto.getCurrentResolve())
-                        .get(fromWalkerDto.getCurrentIndex())
-                        .put(relativ.addEnd("/magnitude"), ((DvDate) rmObject).getMagnitude());
-            }
-            if (rmObject instanceof DvDateTime) {
-                fromWalkerDto
-                        .getMatrix()
-                        .get(fromWalkerDto.getCurrentResolve())
-                        .get(fromWalkerDto.getCurrentIndex())
-                        .put(relativ.addEnd("/magnitude"), ((DvDateTime) rmObject).getMagnitude());
-            }
-            if (rmObject instanceof DvDuration) {
-                fromWalkerDto
-                        .getMatrix()
-                        .get(fromWalkerDto.getCurrentResolve())
-                        .get(fromWalkerDto.getCurrentIndex())
-                        .put(relativ.addEnd("/magnitude"), ((DvDuration) rmObject).getMagnitude());
-            }
-        } else {
+            addMagnitude(fromWalkerDto, rmObject, relativ);
 
+        } else {
+            // add the type
             fromWalkerDto
                     .getMatrix()
-                    .get(fromWalkerDto.getCurrentResolve())
-                    .get(fromWalkerDto.getCurrentIndex())
+                    .get(fromWalkerDto.getCurrentEntity())
+                    .get(fromWalkerDto.getCurrentFieldIndex())
                     .put(relativ.addEnd("/_type"), node.getRmType());
         }
     }
 
+    /**
+     * Add the magnitude field to be used for comparison in the db.
+     * @param fromWalkerDto
+     * @param rmObject
+     * @param relativ
+     */
+    private static void addMagnitude(FromWalkerDto fromWalkerDto, RMObject rmObject, AqlPath relativ) {
+        if (rmObject instanceof DvTime) {
+            fromWalkerDto
+                    .getMatrix()
+                    .get(fromWalkerDto.getCurrentEntity())
+                    .get(fromWalkerDto.getCurrentFieldIndex())
+                    .put(relativ.addEnd(MAGNITUDE), ((DvTime) rmObject).getMagnitude());
+        }
+        if (rmObject instanceof DvDate) {
+            fromWalkerDto
+                    .getMatrix()
+                    .get(fromWalkerDto.getCurrentEntity())
+                    .get(fromWalkerDto.getCurrentFieldIndex())
+                    .put(relativ.addEnd(MAGNITUDE), ((DvDate) rmObject).getMagnitude());
+        }
+        if (rmObject instanceof DvDateTime) {
+            fromWalkerDto
+                    .getMatrix()
+                    .get(fromWalkerDto.getCurrentEntity())
+                    .get(fromWalkerDto.getCurrentFieldIndex())
+                    .put(relativ.addEnd(MAGNITUDE), ((DvDateTime) rmObject).getMagnitude());
+        }
+        if (rmObject instanceof DvDuration) {
+            fromWalkerDto
+                    .getMatrix()
+                    .get(fromWalkerDto.getCurrentEntity())
+                    .get(fromWalkerDto.getCurrentFieldIndex())
+                    .put(relativ.addEnd(MAGNITUDE), ((DvDuration) rmObject).getMagnitude());
+        }
+    }
+
+    /**
+     * Transform a {@link JsonNode} representing a subtree in a flat map;
+     * @param prefix
+     * @param node
+     * @return
+     */
     private Map<AqlPath, Object> flatten(AqlPath prefix, JsonNode node) {
 
         LinkedHashMap<AqlPath, Object> result = new LinkedHashMap<>();
@@ -208,7 +237,7 @@ public class CompositionToMatrixWalker extends FromCompositionWalker<FromWalkerD
             try {
                 result.putAll(flatten(prefix, MARSHAL_OM.readTree((node).toString())));
             } catch (JsonProcessingException e) {
-                throw new RuntimeException(e);
+                throw new SdkException(e.getMessage());
             }
         } else if (node instanceof ValueNode) {
             if (node instanceof NumericNode) {
@@ -222,7 +251,7 @@ public class CompositionToMatrixWalker extends FromCompositionWalker<FromWalkerD
             try {
                 result.put(prefix, MARSHAL_OM.writeValueAsString(node));
             } catch (JsonProcessingException e) {
-                throw new RuntimeException(e);
+                throw new SdkException(e.getMessage());
             }
         }
 
@@ -236,8 +265,9 @@ public class CompositionToMatrixWalker extends FromCompositionWalker<FromWalkerD
         FromWalkerDto fromWalkerDto = context.getObjectDeque().peek();
         RMObject rmObject = context.getRmObjectDeque().peek();
         AqlPath relativ = node.getAqlPathDto()
-                .removeStart(fromWalkerDto.getCurrentResolve().getPathFromRoot());
+                .removeStart(fromWalkerDto.getCurrentEntity().getPathFromRoot());
 
+        // missing in the webtemplate and thus have to be handled manually
         if (rmObject instanceof Locatable) {
 
             add(fromWalkerDto, relativ.addEnd("/uid"), ((Locatable) rmObject).getUid());
@@ -275,8 +305,8 @@ public class CompositionToMatrixWalker extends FromCompositionWalker<FromWalkerD
         if (o != null) {
             fromWalkerDto
                     .getMatrix()
-                    .get(fromWalkerDto.getCurrentResolve())
-                    .get(fromWalkerDto.getCurrentIndex())
+                    .get(fromWalkerDto.getCurrentEntity())
+                    .get(fromWalkerDto.getCurrentFieldIndex())
                     .putAll(flatten(relativ, MARSHAL_OM.valueToTree(o)));
         }
     }

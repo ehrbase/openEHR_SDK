@@ -23,19 +23,19 @@ import org.ehrbase.aql.dto.path.AqlPath;
 /**
  * @author Stefan Spiska
  */
-class Resolve {
+class Entity {
 
     private AqlPath pathFromRoot;
     private String archetypeId;
 
-    private Index count = new Index();
+    private Index entityIdx = new Index();
 
-    public Resolve() {}
+    public Entity() {}
 
-    public Resolve(Resolve other) {
+    public Entity(Entity other) {
         this.pathFromRoot = AqlPath.parse(other.pathFromRoot.getPath());
         this.archetypeId = other.archetypeId;
-        this.count = new Index(other.count);
+        this.entityIdx = new Index(other.entityIdx);
     }
 
     public AqlPath getPathFromRoot() {
@@ -54,12 +54,12 @@ class Resolve {
         this.archetypeId = archetypeId;
     }
 
-    public Index getCount() {
-        return count;
+    public Index getEntityIdx() {
+        return entityIdx;
     }
 
-    public void setCount(Index count) {
-        this.count = count;
+    public void setEntityIdx(Index entityIdx) {
+        this.entityIdx = entityIdx;
     }
 
     @Override
@@ -70,15 +70,15 @@ class Resolve {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        Resolve resolve = (Resolve) o;
-        return Objects.equals(pathFromRoot, resolve.pathFromRoot)
-                && Objects.equals(archetypeId, resolve.archetypeId)
-                && Objects.equals(count, resolve.count);
+        Entity entity = (Entity) o;
+        return Objects.equals(pathFromRoot, entity.pathFromRoot)
+                && Objects.equals(archetypeId, entity.archetypeId)
+                && Objects.equals(entityIdx, entity.entityIdx);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(pathFromRoot, archetypeId, count);
+        return Objects.hash(pathFromRoot, archetypeId, entityIdx);
     }
 
     @Override
@@ -86,6 +86,6 @@ class Resolve {
         return "Resolve{" + "pathFromRoot="
                 + pathFromRoot + ", archetypeId='"
                 + archetypeId + '\'' + ", count="
-                + count + '}';
+                + entityIdx + '}';
     }
 }

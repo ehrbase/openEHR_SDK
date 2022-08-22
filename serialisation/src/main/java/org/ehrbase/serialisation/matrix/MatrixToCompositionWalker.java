@@ -141,7 +141,8 @@ public class MatrixToCompositionWalker extends ToCompositionWalker<List<Entry>> 
 
             RMObject peek = context.getRmObjectDeque().peek();
 
-            // Archie dos not correctly serialise Link and Archetyped
+            // We do not correctly serialise Link and Archetyped and thus have to do that manually. (see
+            // https://github.com/ehrbase/ehrbase/issues/924)
             if (peek instanceof Link) {
                 unflatten.put("_type", "LINK");
             }
