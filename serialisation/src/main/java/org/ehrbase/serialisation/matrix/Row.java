@@ -28,20 +28,20 @@ import org.ehrbase.aql.dto.path.AqlPath;
 public class Row {
 
     private int num;
-    private AqlPath pathFromRoot;
+    private AqlPath entityPath;
     private String archetypeId;
 
-    private Integer[] count;
+    private Integer[] entityIdx;
 
-    private Integer[] index;
-    private Map<AqlPath, Object> other;
+    private Integer[] fieldIdx;
+    private Map<AqlPath, Object> fields;
 
-    public AqlPath getPathFromRoot() {
-        return pathFromRoot;
+    public AqlPath getEntityPath() {
+        return entityPath;
     }
 
-    public void setPathFromRoot(AqlPath pathFromRoot) {
-        this.pathFromRoot = pathFromRoot;
+    public void setEntityPath(AqlPath entityPath) {
+        this.entityPath = entityPath;
     }
 
     public String getArchetypeId() {
@@ -52,28 +52,28 @@ public class Row {
         this.archetypeId = archetypeId;
     }
 
-    public Integer[] getCount() {
-        return count;
+    public Integer[] getEntityIdx() {
+        return entityIdx;
     }
 
-    public void setCount(Integer[] count) {
-        this.count = count;
+    public void setEntityIdx(Integer[] entityIdx) {
+        this.entityIdx = entityIdx;
     }
 
-    public Integer[] getIndex() {
-        return index;
+    public Integer[] getFieldIdx() {
+        return fieldIdx;
     }
 
-    public void setIndex(Integer[] index) {
-        this.index = index;
+    public void setFieldIdx(Integer[] fieldIdx) {
+        this.fieldIdx = fieldIdx;
     }
 
-    public Map<AqlPath, Object> getOther() {
-        return other;
+    public Map<AqlPath, Object> getFields() {
+        return fields;
     }
 
-    public void setOther(Map<AqlPath, Object> other) {
-        this.other = other;
+    public void setFields(Map<AqlPath, Object> fields) {
+        this.fields = fields;
     }
 
     public int getNum() {
@@ -94,18 +94,18 @@ public class Row {
         }
         Row row = (Row) o;
         return num == row.num
-                && Objects.equals(pathFromRoot, row.pathFromRoot)
+                && Objects.equals(entityPath, row.entityPath)
                 && Objects.equals(archetypeId, row.archetypeId)
-                && Arrays.equals(count, row.count)
-                && Arrays.equals(index, row.index)
-                && Objects.equals(other, row.other);
+                && Arrays.equals(entityIdx, row.entityIdx)
+                && Arrays.equals(fieldIdx, row.fieldIdx)
+                && Objects.equals(fields, row.fields);
     }
 
     @Override
     public int hashCode() {
-        int result = Objects.hash(num, pathFromRoot, archetypeId, other);
-        result = 31 * result + Arrays.hashCode(count);
-        result = 31 * result + Arrays.hashCode(index);
+        int result = Objects.hash(num, entityPath, archetypeId, fields);
+        result = 31 * result + Arrays.hashCode(entityIdx);
+        result = 31 * result + Arrays.hashCode(fieldIdx);
         return result;
     }
 
@@ -113,10 +113,10 @@ public class Row {
     public String toString() {
         return "Row{" + "num="
                 + num + ", pathFromRoot="
-                + pathFromRoot + ", archetypeId='"
+                + entityPath + ", archetypeId='"
                 + archetypeId + '\'' + ", count="
-                + Arrays.toString(count) + ", index="
-                + Arrays.toString(index) + ", other="
-                + other + '}';
+                + Arrays.toString(entityIdx) + ", index="
+                + Arrays.toString(fieldIdx) + ", other="
+                + fields + '}';
     }
 }

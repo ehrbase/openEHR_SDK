@@ -58,8 +58,8 @@ public class Encoder {
 
     public Row encode(Row row) {
 
-        row.setPathFromRoot(encode(row.getPathFromRoot()));
-        row.setOther(row.getOther().entrySet().stream()
+        row.setEntityPath(encode(row.getEntityPath()));
+        row.setFields(row.getFields().entrySet().stream()
                 .collect(Collectors.toMap(
                         e -> encode(e.getKey()),
                         Map.Entry::getValue,
@@ -99,8 +99,8 @@ public class Encoder {
 
     public Row decode(Row row) {
 
-        row.setPathFromRoot(decode(row.getPathFromRoot()));
-        row.setOther(row.getOther().entrySet().stream()
+        row.setEntityPath(decode(row.getEntityPath()));
+        row.setFields(row.getFields().entrySet().stream()
                 .collect(Collectors.toMap(
                         e -> decode(e.getKey()),
                         Map.Entry::getValue,

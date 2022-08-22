@@ -18,6 +18,8 @@
 package org.ehrbase.serialisation.matrix;
 
 import static org.ehrbase.serialisation.jsonencoding.CanonicalJson.MARSHAL_OM;
+import static org.ehrbase.util.rmconstants.RmConstants.DV_TEXT;
+import static org.ehrbase.util.rmconstants.RmConstants.FEEDER_AUDIT;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.nedap.archie.rm.RMObject;
@@ -40,6 +42,7 @@ import org.ehrbase.aql.dto.path.AqlPath;
 import org.ehrbase.building.webtemplateskeletnbuilder.WebTemplateSkeletonBuilder;
 import org.ehrbase.serialisation.walker.Context;
 import org.ehrbase.serialisation.walker.ToCompositionWalker;
+import org.ehrbase.util.exception.SdkException;
 import org.ehrbase.util.rmconstants.RmConstants;
 import org.ehrbase.webtemplate.model.WebTemplateNode;
 
@@ -48,46 +51,52 @@ import org.ehrbase.webtemplate.model.WebTemplateNode;
  */
 public class MatrixToCompositionWalker extends ToCompositionWalker<List<Entry>> {
 
+    public static final String OTHER_REFERENCE_RANGES = "other_reference_ranges";
     // These subparts are saved as arrays.
     public static final List<Pair<AqlPath, String>> ARRAY_ELEMENTS = List.of(
-            Pair.of(AqlPath.parse("mappings"), "DV_TEXT"),
+            Pair.of(AqlPath.parse("mappings"), DV_TEXT),
             Pair.of(AqlPath.parse("mappings"), "DV_CODED_TEXT"),
-            Pair.of(AqlPath.parse("other_reference_ranges"), "DV_QUANTITY"),
-            Pair.of(AqlPath.parse("other_reference_ranges"), "DV_DURATION"),
-            Pair.of(AqlPath.parse("other_reference_ranges"), "DV_ORDINAL"),
-            Pair.of(AqlPath.parse("other_reference_ranges"), "DV_PROPORTION"),
-            Pair.of(AqlPath.parse("other_reference_ranges"), "DV_COUNT"),
-            Pair.of(AqlPath.parse("other_reference_ranges"), "DV_DATE"),
-            Pair.of(AqlPath.parse("other_reference_ranges"), "DV_DATE_TIME"),
-            Pair.of(AqlPath.parse("other_reference_ranges"), "DV_TIME"),
-            Pair.of(AqlPath.parse("other_reference_ranges"), "DV_CODED_TEXT"),
-            Pair.of(AqlPath.parse("feeder_system_item_ids"), "FEEDER_AUDIT"),
-            Pair.of(AqlPath.parse("originating_system_item_ids"), "FEEDER_AUDIT"),
+            Pair.of(AqlPath.parse(OTHER_REFERENCE_RANGES), "DV_QUANTITY"),
+            Pair.of(AqlPath.parse(OTHER_REFERENCE_RANGES), "DV_DURATION"),
+            Pair.of(AqlPath.parse(OTHER_REFERENCE_RANGES), "DV_ORDINAL"),
+            Pair.of(AqlPath.parse(OTHER_REFERENCE_RANGES), "DV_PROPORTION"),
+            Pair.of(AqlPath.parse(OTHER_REFERENCE_RANGES), "DV_COUNT"),
+            Pair.of(AqlPath.parse(OTHER_REFERENCE_RANGES), "DV_DATE"),
+            Pair.of(AqlPath.parse(OTHER_REFERENCE_RANGES), "DV_DATE_TIME"),
+            Pair.of(AqlPath.parse(OTHER_REFERENCE_RANGES), "DV_TIME"),
+            Pair.of(AqlPath.parse(OTHER_REFERENCE_RANGES), "DV_CODED_TEXT"),
+            Pair.of(AqlPath.parse("feeder_system_item_ids"), FEEDER_AUDIT),
+            Pair.of(AqlPath.parse("originating_system_item_ids"), FEEDER_AUDIT),
             Pair.of(AqlPath.parse("performer/identifiers"), "PARTICIPATION"),
             Pair.of(AqlPath.parse("identifiers"), "PARTY_IDENTIFIED"),
             Pair.of(AqlPath.parse("identifiers"), "PARTY_RELATED"),
-            Pair.of(AqlPath.parse("originating_system_audit/provider/identifiers"), "FEEDER_AUDIT"),
-            Pair.of(AqlPath.parse("originating_system_audit/subject/identifiers"), "FEEDER_AUDIT"),
-            Pair.of(AqlPath.parse("feeder_system_audit/provider/identifiers"), "FEEDER_AUDIT"),
-            Pair.of(AqlPath.parse("feeder_system_audit/subject/identifiers"), "FEEDER_AUDIT"),
+            Pair.of(AqlPath.parse("originating_system_audit/provider/identifiers"), FEEDER_AUDIT),
+            Pair.of(AqlPath.parse("originating_system_audit/subject/identifiers"), FEEDER_AUDIT),
+            Pair.of(AqlPath.parse("feeder_system_audit/provider/identifiers"), FEEDER_AUDIT),
+            Pair.of(AqlPath.parse("feeder_system_audit/subject/identifiers"), FEEDER_AUDIT),
             Pair.of(AqlPath.parse(""), "LINK"));
+    public static final String STRING = "STRING";
+    public static final String BOOLEAN = "BOOLEAN";
 
     @Override
     protected List<Entry> extract(Context<List<Entry>> context, WebTemplateNode child, boolean isChoice, Integer i) {
 
-        if (child.getRmType().equals("STRING")) {
+        // If primitive return null
+        if (List.of(STRING, "LONG", BOOLEAN).contains(child.getRmType())) {
 
             return null;
         }
 
         List<Entry> filter = filter(context.getObjectDeque().peek(), child.getAqlPathDto(), i != null, i);
 
+        // Check that the type is correct
         if (isChoice
                 && filter(filter, child.getAqlPathDto().addEnd("/_type"), false, null).stream()
                         .noneMatch(e -> e.value.equals(child.getRmType()))) {
             return null;
         }
 
+        // Webtemplate is missing "link" for Element thus we add it here
         if (child.getRmType().equals(RmConstants.ELEMENT)) {
 
             WebTemplateNode links = new WebTemplateNode();
@@ -99,12 +108,12 @@ public class MatrixToCompositionWalker extends ToCompositionWalker<List<Entry>> 
             child.setMax(0);
             child.setMax(0);
         }
-
+        // Webtemplate is missing "reason" for ISM_TRANSITION thus we add it here
         if (child.getRmType().equals(RmConstants.ISM_TRANSITION)) {
 
             WebTemplateNode reason = new WebTemplateNode();
 
-            reason.setRmType("DV_TEXT");
+            reason.setRmType(DV_TEXT);
             reason.setAqlPath(child.getAqlPathDto().addEnd("/reason"));
             reason.setId("reason");
             child.getChildren().add(reason);
@@ -125,13 +134,14 @@ public class MatrixToCompositionWalker extends ToCompositionWalker<List<Entry>> 
 
         if (!visitChildren(node)) {
 
-            Map<String, Object> unflatten = unflaten(
+            Map<String, Object> unflatten = unflatten(
                     node.getRmType(),
                     node.getAqlPathDto(),
                     context.getObjectDeque().peek());
 
             RMObject peek = context.getRmObjectDeque().peek();
 
+            // Archie dos not correctly serialise Link and Archetyped
             if (peek instanceof Link) {
                 unflatten.put("_type", "LINK");
             }
@@ -167,6 +177,7 @@ public class MatrixToCompositionWalker extends ToCompositionWalker<List<Entry>> 
     }
 
     private static Object buildObject(Map<String, Object> unflatten) {
+
         Object newRmObject;
         if (unflatten.size() > 1 || unflatten.containsKey("_type")) {
             newRmObject = MARSHAL_OM.convertValue(unflatten, RMObject.class);
@@ -176,7 +187,7 @@ public class MatrixToCompositionWalker extends ToCompositionWalker<List<Entry>> 
         return newRmObject;
     }
 
-    private static Map<String, Object> unflaten(String rmType, AqlPath aqlPath, List<Entry> entries) {
+    private static Map<String, Object> unflatten(String rmType, AqlPath aqlPath, List<Entry> entries) {
         List<Entry> collect = entries.stream()
                 .map(o -> {
                     Entry entry = new Entry();
@@ -185,7 +196,7 @@ public class MatrixToCompositionWalker extends ToCompositionWalker<List<Entry>> 
                         try {
                             entry.value = MARSHAL_OM.readValue(o.value.toString(), List.class);
                         } catch (JsonProcessingException e) {
-                            throw new RuntimeException(e);
+                            throw new SdkException(e.getMessage());
                         }
                     } else {
                         entry.value = o.value;
@@ -195,8 +206,7 @@ public class MatrixToCompositionWalker extends ToCompositionWalker<List<Entry>> 
                     return entry;
                 })
                 .collect(Collectors.toList());
-        Map<String, Object> unflatten = unflatten(collect);
-        return unflatten;
+        return unflatten(collect);
     }
 
     private static boolean isJsonArray(Entry entry, String rmType) {
@@ -210,18 +220,22 @@ public class MatrixToCompositionWalker extends ToCompositionWalker<List<Entry>> 
                 .collect(Collectors.groupingBy(e -> e.path.getBaseNode().getName()));
 
         return collect.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> {
+            // Elementar Value found
             if (e.getValue().size() == 1 && e.getValue().get(0).path.getNodeCount() <= 1) {
                 return e.getValue().get(0).value;
             }
-            return unflatten(e.getValue().stream()
-                    .map(o -> {
-                        Entry entry = new Entry();
-                        entry.value = o.value;
-                        entry.path = o.path.removeStart(1);
-                        entry.index = o.index;
-                        return entry;
-                    })
-                    .collect(Collectors.toList()));
+            // unfaltten sub-values
+            else {
+                return unflatten(e.getValue().stream()
+                        .map(o -> {
+                            Entry entry = new Entry();
+                            entry.value = o.value;
+                            entry.path = o.path.removeStart(1);
+                            entry.index = o.index;
+                            return entry;
+                        })
+                        .collect(Collectors.toList()));
+            }
         }));
     }
 
@@ -231,6 +245,7 @@ public class MatrixToCompositionWalker extends ToCompositionWalker<List<Entry>> 
 
         RMObject rmObject = context.getRmObjectDeque().peek();
 
+        // missing in the webtemplate and thus have to be handled manually
         if (rmObject instanceof Locatable) {
 
             add(
@@ -245,7 +260,7 @@ public class MatrixToCompositionWalker extends ToCompositionWalker<List<Entry>> 
             add(
                     ((Element) rmObject)::setNullReason,
                     context.getObjectDeque().peek(),
-                    "DV_TEXT",
+                    DV_TEXT,
                     context.getNodeDeque().peek().getAqlPathDto().addEnd("/null_reason"));
         }
 
@@ -263,7 +278,7 @@ public class MatrixToCompositionWalker extends ToCompositionWalker<List<Entry>> 
             add(
                     ((EventContext) rmObject)::setLocation,
                     context.getObjectDeque().peek(),
-                    "STRING",
+                    STRING,
                     context.getNodeDeque().peek().getAqlPathDto().addEnd("/location"));
         }
 
@@ -272,7 +287,7 @@ public class MatrixToCompositionWalker extends ToCompositionWalker<List<Entry>> 
             add(
                     ((Activity) rmObject)::setActionArchetypeId,
                     context.getObjectDeque().peek(),
-                    "STRING",
+                    STRING,
                     context.getNodeDeque().peek().getAqlPathDto().addEnd("/action_archetype_id"));
         }
 
@@ -281,22 +296,22 @@ public class MatrixToCompositionWalker extends ToCompositionWalker<List<Entry>> 
             add(
                     ((DvInterval) rmObject)::setLowerIncluded,
                     context.getObjectDeque().peek(),
-                    "BOOLEAN",
+                    BOOLEAN,
                     context.getNodeDeque().peek().getAqlPathDto().addEnd("/lower_included"));
             add(
                     ((DvInterval) rmObject)::setUpperIncluded,
                     context.getObjectDeque().peek(),
-                    "BOOLEAN",
+                    BOOLEAN,
                     context.getNodeDeque().peek().getAqlPathDto().addEnd("/upper_included"));
             add(
                     ((DvInterval) rmObject)::setLowerUnbounded,
                     context.getObjectDeque().peek(),
-                    "BOOLEAN",
+                    BOOLEAN,
                     context.getNodeDeque().peek().getAqlPathDto().addEnd("/lower_unbounded"));
             add(
                     ((DvInterval) rmObject)::setUpperUnbounded,
                     context.getObjectDeque().peek(),
-                    "BOOLEAN",
+                    BOOLEAN,
                     context.getNodeDeque().peek().getAqlPathDto().addEnd("/upper_unbounded"));
         }
     }
@@ -315,7 +330,7 @@ public class MatrixToCompositionWalker extends ToCompositionWalker<List<Entry>> 
         List<Entry> filter = filter(entryList, aqlPath, false, null);
 
         if (!filter.isEmpty()) {
-            Map<String, Object> unflaten = unflaten(rmType, aqlPath, filter);
+            Map<String, Object> unflaten = unflatten(rmType, aqlPath, filter);
 
             Object object = buildObject(unflaten);
 
@@ -327,6 +342,14 @@ public class MatrixToCompositionWalker extends ToCompositionWalker<List<Entry>> 
         }
     }
 
+    /**
+     * Return
+     * @param list
+     * @param path
+     * @param checkIndex
+     * @param index
+     * @return
+     */
     static List<Entry> filter(List<Entry> list, AqlPath path, boolean checkIndex, Integer index) {
 
         return list.stream().filter(e -> matches(e, path, checkIndex, index)).collect(Collectors.toList());

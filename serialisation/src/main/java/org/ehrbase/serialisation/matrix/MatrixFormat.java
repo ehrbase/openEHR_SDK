@@ -19,8 +19,12 @@ package org.ehrbase.serialisation.matrix;
 
 import static org.ehrbase.serialisation.matrix.CompositionToMatrixWalker.findTypeName;
 
+import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializerProvider;
+import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import com.nedap.archie.rm.RMObject;
 import com.nedap.archie.rm.composition.Composition;
 import java.io.IOException;
@@ -51,19 +55,27 @@ public class MatrixFormat implements RMDataFormat {
 
     private enum HEADERS {
         NUM,
-        ARCHETYPE_ID,
-        TYPE,
-        PATH,
-        COUNT,
-        INDEX,
-        DEPTH,
-        JSON;
+        ENTITY_CONCEPT,
+        RM_ENTITY,
+        ENTITY_PATH,
+        ENTITY_IDX,
+        FIELD_IDX,
+        FIELD_IDX_LEN,
+        FIELDS;
     }
 
     public static final CSVFormat CSV_FORMAT =
             CSVFormat.DEFAULT.builder().setHeader(HEADERS.class).build();
 
-    public static final ObjectMapper MAPPER = new ObjectMapper();
+    public static final ObjectMapper MAPPER;
+
+    static {
+        MAPPER = new ObjectMapper();
+        SimpleModule module = new SimpleModule();
+        module.addKeySerializer(AqlPath.class, new AqlPathKeyStdSerializer());
+
+        MAPPER.registerModule(module);
+    }
 
     private static final Encoder encoder = new Encoder();
     private final TemplateProvider templateProvider;
@@ -123,11 +135,11 @@ public class MatrixFormat implements RMDataFormat {
 
     private Row toRow(Resolve resolve, Map.Entry<Index, Map<AqlPath, Object>> e) {
         Row row = new Row();
-        row.setCount(resolve.getCount().getRepetitions());
+        row.setEntityIdx(resolve.getCount().getRepetitions());
         row.setArchetypeId(resolve.getArchetypeId());
-        row.setPathFromRoot(resolve.getPathFromRoot());
-        row.setOther(e.getValue());
-        row.setIndex(e.getKey().getRepetitions());
+        row.setEntityPath(resolve.getPathFromRoot());
+        row.setFields(e.getValue());
+        row.setFieldIdx(e.getKey().getRepetitions());
         return row;
     }
 
@@ -147,13 +159,13 @@ public class MatrixFormat implements RMDataFormat {
 
     private List<Entry> toEntryList(Row row) {
 
-        return row.getOther().entrySet().stream()
+        return row.getFields().entrySet().stream()
                 .map(e -> {
                     Entry entry = new Entry();
 
-                    entry.path = row.getPathFromRoot().addEnd(e.getKey());
-                    entry.index = new ArrayList<>(Arrays.asList(row.getCount()));
-                    entry.index.addAll(Arrays.asList(row.getIndex()));
+                    entry.path = row.getEntityPath().addEnd(e.getKey());
+                    entry.index = new ArrayList<>(Arrays.asList(row.getEntityIdx()));
+                    entry.index.addAll(Arrays.asList(row.getFieldIdx()));
                     entry.value = e.getValue();
                     return entry;
                 })
@@ -164,15 +176,15 @@ public class MatrixFormat implements RMDataFormat {
 
         Row row = new Row();
         row.setNum(Integer.parseInt(record.get(HEADERS.NUM)));
-        row.setCount(buildArray(record.get(HEADERS.COUNT)));
-        row.setIndex(buildArray(record.get(HEADERS.INDEX)));
-        row.setArchetypeId(record.get(HEADERS.ARCHETYPE_ID));
-        row.setPathFromRoot(AqlPath.parse(record.get(HEADERS.PATH)));
+        row.setEntityIdx(buildArray(record.get(HEADERS.ENTITY_IDX)));
+        row.setFieldIdx(buildArray(record.get(HEADERS.FIELD_IDX)));
+        row.setArchetypeId(record.get(HEADERS.ENTITY_CONCEPT));
+        row.setEntityPath(AqlPath.parse(record.get(HEADERS.ENTITY_PATH)));
         try {
             Map<String, Object> map = MAPPER.readValue(
-                    record.get(HEADERS.JSON),
+                    record.get(HEADERS.FIELDS),
                     MAPPER.getTypeFactory().constructMapType(LinkedHashMap.class, String.class, Object.class));
-            row.setOther(map.entrySet().stream()
+            row.setFields(map.entrySet().stream()
                     .collect(Collectors.toMap(e -> AqlPath.parse(e.getKey()), Map.Entry::getValue)));
         } catch (JsonProcessingException e) {
             throw new SdkException(e.getMessage());
@@ -221,11 +233,12 @@ public class MatrixFormat implements RMDataFormat {
                     r.getNum(),
                     r.getArchetypeId(),
                     findTypeName(r.getArchetypeId()),
-                    r.getPathFromRoot().getPath(),
-                    printArray(r.getCount()),
-                    printArray(r.getIndex()),
-                    ArrayUtils.isEmpty(r.getIndex()) ? 0 : r.getIndex().length,
-                    MAPPER.writeValueAsString(r.getOther()));
+                    r.getEntityPath().format(AqlPath.OtherPredicatesFormat.SHORTED, true),
+                    printArray(r.getEntityIdx()),
+                    printArray(r.getFieldIdx()),
+                    ArrayUtils.isEmpty(r.getFieldIdx()) ? 0 : r.getFieldIdx().length,
+                    MAPPER.writerFor(MAPPER.getTypeFactory().constructMapType(Map.class, AqlPath.class, Object.class))
+                            .writeValueAsString(r.getFields()));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -262,5 +275,17 @@ public class MatrixFormat implements RMDataFormat {
                 templateId);
 
         return (T) composition;
+    }
+
+    private static class AqlPathKeyStdSerializer extends StdSerializer<AqlPath> {
+
+        public AqlPathKeyStdSerializer() {
+            super((Class<AqlPath>) null);
+        }
+
+        @Override
+        public void serialize(AqlPath value, JsonGenerator gen, SerializerProvider provider) throws IOException {
+            gen.writeFieldName(value.format(AqlPath.OtherPredicatesFormat.SHORTED, true));
+        }
     }
 }

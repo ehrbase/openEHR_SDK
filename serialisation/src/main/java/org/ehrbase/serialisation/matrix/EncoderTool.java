@@ -43,7 +43,7 @@ public class EncoderTool {
         Comparator<Map.Entry<AqlPath, Long>> comparator = Map.Entry.comparingByValue();
 
         seed.stream()
-                .flatMap(r -> Stream.concat(Stream.of(r.getPathFromRoot()), r.getOther().keySet().stream()))
+                .flatMap(r -> Stream.concat(Stream.of(r.getEntityPath()), r.getFields().keySet().stream()))
                 .filter(p -> isSimple(p.getNodes()))
                 .filter(p -> !p.getPath().equals("/"))
                 .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()))
@@ -63,7 +63,7 @@ public class EncoderTool {
         Comparator<Map.Entry<String, Long>> comparator = Map.Entry.comparingByValue();
 
         seed.stream()
-                .flatMap(r -> Stream.concat(Stream.of(r.getPathFromRoot()), r.getOther().keySet().stream()))
+                .flatMap(r -> Stream.concat(Stream.of(r.getEntityPath()), r.getFields().keySet().stream()))
                 .filter(p -> !p.getPath().equals("/"))
                 .filter(p -> !isSimple(p.getNodes()))
                 .flatMap(p -> p.getNodes().stream())
