@@ -86,7 +86,10 @@ public class MatrixFormat implements RMDataFormat {
                 .walk(
                         composition,
                         fromWalkerDto,
-                        templateProvider.buildIntrospect(templateId).get().getTree(),
+                        templateProvider
+                                .buildIntrospect(templateId)
+                                .orElseThrow(() -> new SdkException(String.format("Unknown template %s", templateId)))
+                                .getTree(),
                         templateId);
 
         return fromWalkerDto.getMatrix();
@@ -118,7 +121,7 @@ public class MatrixFormat implements RMDataFormat {
         return map.entrySet().stream().map(e -> toRow(resolve, e)).collect(Collectors.toList());
     }
 
-    private static Row toRow(Resolve resolve, Map.Entry<Index, Map<AqlPath, Object>> e) {
+    private Row toRow(Resolve resolve, Map.Entry<Index, Map<AqlPath, Object>> e) {
         Row row = new Row();
         row.setCount(resolve.getCount().getRepetitions());
         row.setArchetypeId(resolve.getArchetypeId());
@@ -128,13 +131,13 @@ public class MatrixFormat implements RMDataFormat {
         return row;
     }
 
-    private static List<Entry> toEntryList(String csv) {
+    private List<Entry> toEntryList(String csv) {
 
         try {
             return CSV_FORMAT.parse(new StringReader(csv)).stream()
                     .skip(1)
-                    .map(MatrixFormat::toRow)
-                    .map(MatrixFormat::toEntryList)
+                    .map(this::toRow)
+                    .map(this::toEntryList)
                     .flatMap(Collection::stream)
                     .collect(Collectors.toList());
         } catch (IOException e) {
@@ -142,7 +145,7 @@ public class MatrixFormat implements RMDataFormat {
         }
     }
 
-    private static List<Entry> toEntryList(Row row) {
+    private List<Entry> toEntryList(Row row) {
 
         return row.getOther().entrySet().stream()
                 .map(e -> {
@@ -157,7 +160,7 @@ public class MatrixFormat implements RMDataFormat {
                 .collect(Collectors.toList());
     }
 
-    private static Row toRow(CSVRecord record) {
+    private Row toRow(CSVRecord record) {
 
         Row row = new Row();
         row.setNum(Integer.parseInt(record.get(HEADERS.NUM)));
@@ -173,6 +176,10 @@ public class MatrixFormat implements RMDataFormat {
                     .collect(Collectors.toMap(e -> AqlPath.parse(e.getKey()), Map.Entry::getValue)));
         } catch (JsonProcessingException e) {
             throw new SdkException(e.getMessage());
+        }
+
+        if (encode) {
+            row = encoder.decode(row);
         }
 
         return row;
@@ -233,7 +240,7 @@ public class MatrixFormat implements RMDataFormat {
     @Override
     public <T extends RMObject> T unmarshal(String value, Class<T> clazz) {
 
-        List<Entry> entries = MatrixFormat.toEntryList(value);
+        List<Entry> entries = toEntryList(value);
 
         String templateId =
                 MatrixToCompositionWalker.filter(

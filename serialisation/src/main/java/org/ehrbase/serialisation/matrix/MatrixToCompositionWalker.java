@@ -47,6 +47,31 @@ import org.ehrbase.webtemplate.model.WebTemplateNode;
  * @author Stefan Spiska
  */
 public class MatrixToCompositionWalker extends ToCompositionWalker<List<Entry>> {
+
+    // These subparts are saved as arrays.
+    public static final List<Pair<AqlPath, String>> ARRAY_ELEMENTS = List.of(
+            Pair.of(AqlPath.parse("mappings"), "DV_TEXT"),
+            Pair.of(AqlPath.parse("mappings"), "DV_CODED_TEXT"),
+            Pair.of(AqlPath.parse("other_reference_ranges"), "DV_QUANTITY"),
+            Pair.of(AqlPath.parse("other_reference_ranges"), "DV_DURATION"),
+            Pair.of(AqlPath.parse("other_reference_ranges"), "DV_ORDINAL"),
+            Pair.of(AqlPath.parse("other_reference_ranges"), "DV_PROPORTION"),
+            Pair.of(AqlPath.parse("other_reference_ranges"), "DV_COUNT"),
+            Pair.of(AqlPath.parse("other_reference_ranges"), "DV_DATE"),
+            Pair.of(AqlPath.parse("other_reference_ranges"), "DV_DATE_TIME"),
+            Pair.of(AqlPath.parse("other_reference_ranges"), "DV_TIME"),
+            Pair.of(AqlPath.parse("other_reference_ranges"), "DV_CODED_TEXT"),
+            Pair.of(AqlPath.parse("feeder_system_item_ids"), "FEEDER_AUDIT"),
+            Pair.of(AqlPath.parse("originating_system_item_ids"), "FEEDER_AUDIT"),
+            Pair.of(AqlPath.parse("performer/identifiers"), "PARTICIPATION"),
+            Pair.of(AqlPath.parse("identifiers"), "PARTY_IDENTIFIED"),
+            Pair.of(AqlPath.parse("identifiers"), "PARTY_RELATED"),
+            Pair.of(AqlPath.parse("originating_system_audit/provider/identifiers"), "FEEDER_AUDIT"),
+            Pair.of(AqlPath.parse("originating_system_audit/subject/identifiers"), "FEEDER_AUDIT"),
+            Pair.of(AqlPath.parse("feeder_system_audit/provider/identifiers"), "FEEDER_AUDIT"),
+            Pair.of(AqlPath.parse("feeder_system_audit/subject/identifiers"), "FEEDER_AUDIT"),
+            Pair.of(AqlPath.parse(""), "LINK"));
+
     @Override
     protected List<Entry> extract(Context<List<Entry>> context, WebTemplateNode child, boolean isChoice, Integer i) {
 
@@ -146,7 +171,7 @@ public class MatrixToCompositionWalker extends ToCompositionWalker<List<Entry>> 
         if (unflatten.size() > 1 || unflatten.containsKey("_type")) {
             newRmObject = MARSHAL_OM.convertValue(unflatten, RMObject.class);
         } else {
-            newRmObject = unflatten.values().stream().findAny().get();
+            newRmObject = unflatten.values().stream().findAny().orElseThrow();
         }
         return newRmObject;
     }
@@ -176,31 +201,7 @@ public class MatrixToCompositionWalker extends ToCompositionWalker<List<Entry>> 
 
     private static boolean isJsonArray(Entry entry, String rmType) {
 
-        List<Pair<String, String>> array = List.of(
-                Pair.of("mappings", "DV_TEXT"),
-                Pair.of("mappings", "DV_CODED_TEXT"),
-                Pair.of("other_reference_ranges", "DV_QUANTITY"),
-                Pair.of("other_reference_ranges", "DV_DURATION"),
-                Pair.of("other_reference_ranges", "DV_ORDINAL"),
-                Pair.of("other_reference_ranges", "DV_PROPORTION"),
-                Pair.of("other_reference_ranges", "DV_COUNT"),
-                Pair.of("other_reference_ranges", "DV_DATE"),
-                Pair.of("other_reference_ranges", "DV_DATE_TIME"),
-                Pair.of("other_reference_ranges", "DV_TIME"),
-                Pair.of("other_reference_ranges", "DV_CODED_TEXT"),
-                Pair.of("feeder_system_item_ids", "FEEDER_AUDIT"),
-                Pair.of("originating_system_item_ids", "FEEDER_AUDIT"),
-                Pair.of("performer/identifiers", "PARTICIPATION"),
-                Pair.of("identifiers", "PARTY_IDENTIFIED"),
-                Pair.of("identifiers", "PARTY_RELATED"),
-                Pair.of("originating_system_audit/provider/identifiers", "FEEDER_AUDIT"),
-                Pair.of("originating_system_audit/subject/identifiers", "FEEDER_AUDIT"),
-                Pair.of("feeder_system_audit/provider/identifiers", "FEEDER_AUDIT"),
-                Pair.of("feeder_system_audit/subject/identifiers", "FEEDER_AUDIT"),
-                Pair.of("", "LINK"));
-
-        return array.stream()
-                .anyMatch(p -> p.getRight().equals(rmType) && entry.path.equals(AqlPath.parse(p.getLeft())));
+        return ARRAY_ELEMENTS.stream().anyMatch(p -> p.getRight().equals(rmType) && entry.path.equals(p.getLeft()));
     }
 
     private static Map<String, Object> unflatten(List<Entry> entries) {

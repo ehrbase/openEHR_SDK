@@ -26,6 +26,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
+import org.apache.commons.lang3.StringUtils;
 import org.ehrbase.aql.dto.path.AqlPath;
 
 /**
@@ -91,6 +92,50 @@ public class Encoder {
         if (pathEncoding.containsKey(node.getName())) {
 
             return new AqlPath.AqlNode(pathEncoding.get(node.getName()), node.getAtCode(), node.getOtherPredicate());
+        }
+
+        return node;
+    }
+
+    public Row decode(Row row) {
+
+        row.setPathFromRoot(decode(row.getPathFromRoot()));
+        row.setOther(row.getOther().entrySet().stream()
+                .collect(Collectors.toMap(
+                        e -> decode(e.getKey()),
+                        Map.Entry::getValue,
+                        (u, v) -> {
+                            throw new IllegalStateException(String.format("Duplicate key %s", u));
+                        },
+                        LinkedHashMap::new)));
+
+        return row;
+    }
+
+    private AqlPath decode(AqlPath path) {
+
+        String key = StringUtils.removeStart(path.getPath(), "/");
+
+        if (totalEncoding.containsValue(key)) {
+            return AqlPath.parse(totalEncoding.inverse().get(key));
+        }
+
+        AqlPath rootPath = AqlPath.ROOT_PATH;
+
+        for (AqlPath.AqlNode aqlNode : path.getNodes()) {
+            AqlPath.AqlNode n = decode(aqlNode);
+            rootPath = rootPath.addEnd(n);
+        }
+
+        return rootPath;
+    }
+
+    private AqlPath.AqlNode decode(AqlPath.AqlNode node) {
+
+        if (pathEncoding.containsValue(node.getName())) {
+
+            return new AqlPath.AqlNode(
+                    pathEncoding.inverse().get(node.getName()), node.getAtCode(), node.getOtherPredicate());
         }
 
         return node;
