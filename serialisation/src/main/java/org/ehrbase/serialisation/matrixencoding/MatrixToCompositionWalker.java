@@ -115,8 +115,8 @@ public class MatrixToCompositionWalker extends ToCompositionWalker<List<ToWalker
             links.setAqlPath(child.getAqlPathDto().addEnd("/links"));
             links.setId("links");
             child.getChildren().add(links);
-            child.setMax(0);
-            child.setMax(0);
+            child.setMax(1);
+            child.setMin(0);
         }
         // Webtemplate is missing "reason" for ISM_TRANSITION thus we add it here
         if (child.getRmType().equals(RmConstants.ISM_TRANSITION)) {
@@ -127,8 +127,8 @@ public class MatrixToCompositionWalker extends ToCompositionWalker<List<ToWalker
             reason.setAqlPath(child.getAqlPathDto().addEnd("/reason"));
             reason.setId("reason");
             child.getChildren().add(reason);
-            child.setMax(0);
-            child.setMax(0);
+            child.setMax(1);
+            child.setMin(0);
         }
     }
 
