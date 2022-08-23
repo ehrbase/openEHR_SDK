@@ -199,7 +199,7 @@ public class MatrixFormat implements RMDataFormat {
         }
 
         if (encoder != null) {
-            row = decode(row);
+            decode(row);
         }
 
         return row;
@@ -285,7 +285,7 @@ public class MatrixFormat implements RMDataFormat {
         return (T) composition;
     }
 
-    private Row encode(Row row) {
+    private void encode(Row row) {
 
         row.setEntityPath(encoder.encode(row.getEntityPath()));
         row.setFields(row.getFields().entrySet().stream()
@@ -296,11 +296,9 @@ public class MatrixFormat implements RMDataFormat {
                             throw new IllegalStateException(String.format("Duplicate key %s", u));
                         },
                         LinkedHashMap::new)));
-
-        return row;
     }
 
-    private Row decode(Row row) {
+    private void decode(Row row) {
 
         row.setEntityPath(encoder.decode(row.getEntityPath()));
         row.setFields(row.getFields().entrySet().stream()
@@ -311,8 +309,6 @@ public class MatrixFormat implements RMDataFormat {
                             throw new IllegalStateException(String.format("Duplicate key %s", u));
                         },
                         LinkedHashMap::new)));
-
-        return row;
     }
 
     private static class AqlPathKeyStdSerializer extends StdSerializer<AqlPath> {

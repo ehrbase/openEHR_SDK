@@ -18,6 +18,7 @@
 package org.ehrbase.serialisation.matrixencoding;
 
 import static org.ehrbase.serialisation.jsonencoding.CanonicalJson.MARSHAL_OM;
+import static org.ehrbase.serialisation.matrixencoding.MatrixToCompositionWalker.addMissingChidren;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -49,7 +50,6 @@ import org.ehrbase.serialisation.walker.Context;
 import org.ehrbase.serialisation.walker.FromCompositionWalker;
 import org.ehrbase.serialisation.walker.RmPrimitive;
 import org.ehrbase.util.exception.SdkException;
-import org.ehrbase.util.rmconstants.RmConstants;
 import org.ehrbase.webtemplate.model.WebTemplateNode;
 
 /**
@@ -108,30 +108,8 @@ public class CompositionToMatrixWalker extends FromCompositionWalker<FromWalkerD
             }
         }
 
-        // Webtemplate is missing "link" for Element thus we add it here
-        if (child.getRmType().equals(RmConstants.ELEMENT)) {
+        addMissingChidren(child);
 
-            WebTemplateNode links = new WebTemplateNode();
-
-            links.setRmType("LINK");
-            links.setAqlPath(child.getAqlPathDto().addEnd("/links"));
-            links.setId("links");
-            links.setMax(0);
-            links.setMin(0);
-            child.getChildren().add(links);
-        }
-        // Webtemplate is missing "reason" for ISM_TRANSITION thus we add it here
-        if (child.getRmType().equals(RmConstants.ISM_TRANSITION)) {
-
-            WebTemplateNode reason = new WebTemplateNode();
-
-            reason.setRmType("DV_TEXT");
-            reason.setAqlPath(child.getAqlPathDto().addEnd("/reason"));
-            reason.setId("reason");
-            reason.setMin(0);
-            reason.setMax(0);
-            child.getChildren().add(reason);
-        }
         return next;
     }
 

@@ -97,6 +97,15 @@ public class MatrixToCompositionWalker extends ToCompositionWalker<List<ToWalker
             return null;
         }
 
+        addMissingChidren(child);
+
+        if (filter.isEmpty()) {
+            return null;
+        }
+        return filter;
+    }
+
+    static void addMissingChidren(WebTemplateNode child) {
         // Webtemplate is missing "link" for Element thus we add it here
         if (child.getRmType().equals(RmConstants.ELEMENT)) {
 
@@ -121,11 +130,6 @@ public class MatrixToCompositionWalker extends ToCompositionWalker<List<ToWalker
             child.setMax(0);
             child.setMax(0);
         }
-
-        if (filter.isEmpty()) {
-            return null;
-        }
-        return filter;
     }
 
     @Override
