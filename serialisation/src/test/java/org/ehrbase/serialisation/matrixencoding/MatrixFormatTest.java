@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ehrbase.serialisation.matrix;
+package org.ehrbase.serialisation.matrixencoding;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -39,7 +39,7 @@ class MatrixFormatTest {
         String corona =
                 IOUtils.toString(CompositionTestDataCanonicalJson.MULTI_OCCURRENCE.getStream(), StandardCharsets.UTF_8);
 
-        MatrixFormat cut = new MatrixFormat(new TestDataTemplateProvider(), false);
+        MatrixFormat cut = new MatrixFormat(new TestDataTemplateProvider());
 
         String actual = cut.marshal(new CanonicalJson().unmarshal(corona));
 
@@ -54,7 +54,7 @@ class MatrixFormatTest {
 
         String corona = IOUtils.toString(CompositionTestDataCanonicalJson.CORONA.getStream(), StandardCharsets.UTF_8);
 
-        MatrixFormat cut = new MatrixFormat(new TestDataTemplateProvider(), false);
+        MatrixFormat cut = new MatrixFormat(new TestDataTemplateProvider());
 
         String actual = cut.marshal(new CanonicalJson().unmarshal(corona));
 
@@ -69,7 +69,7 @@ class MatrixFormatTest {
 
         String corona = IOUtils.toString(CompositionTestDataCanonicalJson.IPS.getStream(), StandardCharsets.UTF_8);
 
-        MatrixFormat cut = new MatrixFormat(new TestDataTemplateProvider(), false);
+        MatrixFormat cut = new MatrixFormat(new TestDataTemplateProvider());
 
         String actual = cut.marshal(new CanonicalJson().unmarshal(corona));
 
@@ -84,7 +84,7 @@ class MatrixFormatTest {
 
         String corona = IOUtils.toString(CompositionTestDataCanonicalJson.IPS.getStream(), StandardCharsets.UTF_8);
 
-        MatrixFormat cut = new MatrixFormat(new TestDataTemplateProvider(), true);
+        MatrixFormat cut = new MatrixFormat(new TestDataTemplateProvider(), new FixedCodeSetEncoder());
 
         String actual = cut.marshal(new CanonicalJson().unmarshal(corona));
 
@@ -99,7 +99,7 @@ class MatrixFormatTest {
 
         String corona = IOUtils.toString(CompositionTestDataCanonicalJson.CORONA.getStream(), StandardCharsets.UTF_8);
 
-        MatrixFormat cut = new MatrixFormat(new TestDataTemplateProvider(), true);
+        MatrixFormat cut = new MatrixFormat(new TestDataTemplateProvider(), new FixedCodeSetEncoder());
 
         String actual = cut.marshal(new CanonicalJson().unmarshal(corona));
 
@@ -111,7 +111,7 @@ class MatrixFormatTest {
 
     @Test
     void fromMatrix() throws IOException {
-        MatrixFormat cut = new MatrixFormat(new TestDataTemplateProvider(), false);
+        MatrixFormat cut = new MatrixFormat(new TestDataTemplateProvider());
         Composition actual = cut.unmarshal(
                 IOUtils.toString(MatrixFormat.class.getResourceAsStream("/csv/IPS.csv"), StandardCharsets.UTF_8));
 

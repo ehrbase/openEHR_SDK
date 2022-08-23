@@ -15,17 +15,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ehrbase.serialisation.matrix;
+package org.ehrbase.serialisation.matrixencoding;
 
-import java.util.List;
 import org.ehrbase.aql.dto.path.AqlPath;
 
 /**
  * @author Stefan Spiska
  */
-class Entry {
+public interface Encoder {
+    AqlPath encode(AqlPath path);
 
-    AqlPath path;
-    List<Integer> index;
-    Object value;
+    AqlPath decode(AqlPath path);
 }

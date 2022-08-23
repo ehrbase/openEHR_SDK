@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ehrbase.serialisation.matrix;
+package org.ehrbase.serialisation.matrixencoding;
 
 import static org.ehrbase.aql.dto.path.predicate.PredicateHelper.NAME_VALUE;
 
@@ -29,12 +29,13 @@ import java.util.stream.Stream;
 import org.ehrbase.aql.dto.path.AqlPath;
 
 /**
+ * Helper class to build the encoding csv for {@link FixedCodeSetEncoder}
  * @author Stefan Spiska
  */
-public class EncoderTool {
+class EncoderTool {
 
-    private final EncoderHelper totalHelper = new EncoderHelper();
-    private final EncoderHelper patHelper = new EncoderHelper();
+    private final CodeGenerator totalHelper = new CodeGenerator();
+    private final CodeGenerator pathHelper = new CodeGenerator();
 
     Map<String, String> buildTotalEncodingMap(List<Row> seed) {
 
@@ -73,7 +74,7 @@ public class EncoderTool {
                 .stream()
                 .sorted(comparator.reversed())
                 .map(Map.Entry::getKey)
-                .forEach(n -> encodingMap.computeIfAbsent(n, k -> totalHelper.next()));
+                .forEach(n -> encodingMap.computeIfAbsent(n, k -> pathHelper.next()));
 
         return encodingMap;
     }

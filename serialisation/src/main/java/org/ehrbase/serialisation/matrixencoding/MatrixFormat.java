@@ -15,9 +15,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ehrbase.serialisation.matrix;
+package org.ehrbase.serialisation.matrixencoding;
 
-import static org.ehrbase.serialisation.matrix.CompositionToMatrixWalker.findTypeName;
+import static org.ehrbase.serialisation.matrixencoding.CompositionToMatrixWalker.findTypeName;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -61,7 +61,7 @@ public class MatrixFormat implements RMDataFormat {
         ENTITY_IDX,
         FIELD_IDX,
         FIELD_IDX_LEN,
-        FIELDS;
+        FIELDS
     }
 
     public static final CSVFormat CSV_FORMAT =
@@ -77,14 +77,22 @@ public class MatrixFormat implements RMDataFormat {
         MAPPER.registerModule(module);
     }
 
-    private static final Encoder encoder = new Encoder();
+    private final Encoder encoder;
     private final TemplateProvider templateProvider;
 
-    private final boolean encode;
-
-    public MatrixFormat(TemplateProvider templateProvider, boolean encode) {
+    public MatrixFormat(TemplateProvider templateProvider) {
         this.templateProvider = templateProvider;
-        this.encode = encode;
+
+        encoder = null;
+    }
+
+    public MatrixFormat(TemplateProvider templateProvider, Encoder encoder) {
+        this.templateProvider = templateProvider;
+        this.encoder = encoder;
+    }
+
+    public Encoder getEncoder() {
+        return encoder;
     }
 
     Map<Entity, Map<Index, Map<AqlPath, Object>>> toMatrix(Composition composition) {
@@ -111,8 +119,8 @@ public class MatrixFormat implements RMDataFormat {
 
         List<Row> flatten = flatten(toMatrix(composition));
 
-        if (encode) {
-            flatten.forEach(encoder::encode);
+        if (encoder != null) {
+            flatten.forEach(this::encode);
         }
 
         return flatten;
@@ -143,7 +151,7 @@ public class MatrixFormat implements RMDataFormat {
         return row;
     }
 
-    private List<Entry> toEntryList(String csv) {
+    private List<ToWalkerDto> toEntryList(String csv) {
 
         try {
             return CSV_FORMAT.parse(new StringReader(csv)).stream()
@@ -153,45 +161,45 @@ public class MatrixFormat implements RMDataFormat {
                     .flatMap(Collection::stream)
                     .collect(Collectors.toList());
         } catch (IOException e) {
-            throw new SdkException(e.getMessage());
+            throw new SdkException(e.getMessage(), e);
         }
     }
 
-    private List<Entry> toEntryList(Row row) {
+    private List<ToWalkerDto> toEntryList(Row row) {
 
         return row.getFields().entrySet().stream()
                 .map(e -> {
-                    Entry entry = new Entry();
+                    ToWalkerDto toWalkerDto = new ToWalkerDto();
 
-                    entry.path = row.getEntityPath().addEnd(e.getKey());
-                    entry.index = new ArrayList<>(Arrays.asList(row.getEntityIdx()));
-                    entry.index.addAll(Arrays.asList(row.getFieldIdx()));
-                    entry.value = e.getValue();
-                    return entry;
+                    toWalkerDto.path = row.getEntityPath().addEnd(e.getKey());
+                    toWalkerDto.index = new ArrayList<>(Arrays.asList(row.getEntityIdx()));
+                    toWalkerDto.index.addAll(Arrays.asList(row.getFieldIdx()));
+                    toWalkerDto.value = e.getValue();
+                    return toWalkerDto;
                 })
                 .collect(Collectors.toList());
     }
 
-    private Row toRow(CSVRecord record) {
+    private Row toRow(CSVRecord csvRecord) {
 
         Row row = new Row();
-        row.setNum(Integer.parseInt(record.get(HEADERS.NUM)));
-        row.setEntityIdx(buildArray(record.get(HEADERS.ENTITY_IDX)));
-        row.setFieldIdx(buildArray(record.get(HEADERS.FIELD_IDX)));
-        row.setArchetypeId(record.get(HEADERS.ENTITY_CONCEPT));
-        row.setEntityPath(AqlPath.parse(record.get(HEADERS.ENTITY_PATH)));
+        row.setNum(Integer.parseInt(csvRecord.get(HEADERS.NUM)));
+        row.setEntityIdx(buildArray(csvRecord.get(HEADERS.ENTITY_IDX)));
+        row.setFieldIdx(buildArray(csvRecord.get(HEADERS.FIELD_IDX)));
+        row.setArchetypeId(csvRecord.get(HEADERS.ENTITY_CONCEPT));
+        row.setEntityPath(AqlPath.parse(csvRecord.get(HEADERS.ENTITY_PATH)));
         try {
             Map<String, Object> map = MAPPER.readValue(
-                    record.get(HEADERS.FIELDS),
+                    csvRecord.get(HEADERS.FIELDS),
                     MAPPER.getTypeFactory().constructMapType(LinkedHashMap.class, String.class, Object.class));
             row.setFields(map.entrySet().stream()
                     .collect(Collectors.toMap(e -> AqlPath.parse(e.getKey()), Map.Entry::getValue)));
         } catch (JsonProcessingException e) {
-            throw new SdkException(e.getMessage());
+            throw new SdkException(e.getMessage(), e);
         }
 
-        if (encode) {
-            row = encoder.decode(row);
+        if (encoder != null) {
+            row = decode(row);
         }
 
         return row;
@@ -218,7 +226,7 @@ public class MatrixFormat implements RMDataFormat {
                     getPrintRecord(printer, r);
                 }
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                throw new SdkException(e.getMessage(), e);
             }
 
             return sb.toString();
@@ -240,7 +248,7 @@ public class MatrixFormat implements RMDataFormat {
                     MAPPER.writerFor(MAPPER.getTypeFactory().constructMapType(Map.class, AqlPath.class, Object.class))
                             .writeValueAsString(r.getFields()));
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new SdkException(e.getMessage());
         }
     }
 
@@ -253,7 +261,7 @@ public class MatrixFormat implements RMDataFormat {
     @Override
     public <T extends RMObject> T unmarshal(String value, Class<T> clazz) {
 
-        List<Entry> entries = toEntryList(value);
+        List<ToWalkerDto> entries = toEntryList(value);
 
         String templateId =
                 MatrixToCompositionWalker.filter(
@@ -275,6 +283,36 @@ public class MatrixFormat implements RMDataFormat {
                 templateId);
 
         return (T) composition;
+    }
+
+    private Row encode(Row row) {
+
+        row.setEntityPath(encoder.encode(row.getEntityPath()));
+        row.setFields(row.getFields().entrySet().stream()
+                .collect(Collectors.toMap(
+                        e -> encoder.encode(e.getKey()),
+                        Map.Entry::getValue,
+                        (u, v) -> {
+                            throw new IllegalStateException(String.format("Duplicate key %s", u));
+                        },
+                        LinkedHashMap::new)));
+
+        return row;
+    }
+
+    private Row decode(Row row) {
+
+        row.setEntityPath(encoder.decode(row.getEntityPath()));
+        row.setFields(row.getFields().entrySet().stream()
+                .collect(Collectors.toMap(
+                        e -> encoder.decode(e.getKey()),
+                        Map.Entry::getValue,
+                        (u, v) -> {
+                            throw new IllegalStateException(String.format("Duplicate key %s", u));
+                        },
+                        LinkedHashMap::new)));
+
+        return row;
     }
 
     private static class AqlPathKeyStdSerializer extends StdSerializer<AqlPath> {

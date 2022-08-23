@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ehrbase.serialisation.matrix;
+package org.ehrbase.serialisation.matrixencoding;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -37,14 +37,13 @@ import org.junit.jupiter.api.Test;
 class EncoderToolTest {
 
     @Test
-    @Disabled
+    @Disabled("Helper to create the mappings")
     void createTotalMap() throws IOException {
 
         List<Row> rowList = new ArrayList<>();
 
         rowList.addAll(getRows(CompositionTestDataCanonicalJson.CORONA));
         rowList.addAll(getRows(CompositionTestDataCanonicalJson.IPS));
-        // rowList.addAll( getRows(CompositionTestDataCanonicalJson.ALL_TYPES));
 
         EncoderTool encoderTool = new EncoderTool();
 
@@ -68,14 +67,13 @@ class EncoderToolTest {
     }
 
     @Test
-    @Disabled
+    @Disabled("Helper to create the mappings")
     void createPathMap() throws IOException {
 
         List<Row> rowList = new ArrayList<>();
 
         rowList.addAll(getRows(CompositionTestDataCanonicalJson.CORONA));
         rowList.addAll(getRows(CompositionTestDataCanonicalJson.IPS));
-        // rowList.addAll( getRows(CompositionTestDataCanonicalJson.ALL_TYPES));
 
         EncoderTool encoderTool = new EncoderTool();
 
@@ -101,7 +99,7 @@ class EncoderToolTest {
     private static List<Row> getRows(CompositionTestDataCanonicalJson dataCanonicalJson) throws IOException {
         String corona = IOUtils.toString(dataCanonicalJson.getStream(), StandardCharsets.UTF_8);
 
-        MatrixFormat cut = new MatrixFormat(new TestDataTemplateProvider(), false);
+        MatrixFormat cut = new MatrixFormat(new TestDataTemplateProvider());
 
         return cut.toTable(new CanonicalJson().unmarshal(corona));
     }

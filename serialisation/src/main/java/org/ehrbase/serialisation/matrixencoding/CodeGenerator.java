@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ehrbase.serialisation.matrix;
+package org.ehrbase.serialisation.matrixencoding;
 
 import java.util.Arrays;
 import java.util.List;
@@ -25,7 +25,7 @@ import org.apache.commons.lang3.ArrayUtils;
 /**
  * @author Stefan Spiska
  */
-public class EncoderHelper {
+public class CodeGenerator {
 
     private static List<String> code = List.of(
             "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "y", "z", "1",

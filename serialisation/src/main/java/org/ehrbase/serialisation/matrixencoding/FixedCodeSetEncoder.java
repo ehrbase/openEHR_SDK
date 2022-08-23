@@ -15,63 +15,47 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ehrbase.serialisation.matrix;
+package org.ehrbase.serialisation.matrixencoding;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.stream.Collectors;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.lang3.StringUtils;
 import org.ehrbase.aql.dto.path.AqlPath;
+import org.ehrbase.util.exception.SdkException;
 
 /**
  * @author Stefan Spiska
  */
-public class Encoder {
+public class FixedCodeSetEncoder implements Encoder {
 
     private final BiMap<String, String> totalEncoding = HashBiMap.create();
     private final BiMap<String, String> pathEncoding = HashBiMap.create();
 
-    public Encoder() {
+    public FixedCodeSetEncoder() {
 
         try (CSVParser csv = new CSVParser(
-                new InputStreamReader(Encoder.class.getResourceAsStream("/encoder/totalpathencoding.csv")),
+                new InputStreamReader(FixedCodeSetEncoder.class.getResourceAsStream("/encoder/totalpathencoding.csv")),
                 CSVFormat.DEFAULT.builder().setHeader("path", "code").build())) {
             csv.stream().forEach(c -> totalEncoding.put(c.get(0), c.get(1)));
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new SdkException(e.getMessage(), e);
         }
 
         try (CSVParser csv = new CSVParser(
-                new InputStreamReader(Encoder.class.getResourceAsStream("/encoder/pathencoding.csv")),
+                new InputStreamReader(FixedCodeSetEncoder.class.getResourceAsStream("/encoder/pathencoding.csv")),
                 CSVFormat.DEFAULT.builder().setHeader("path", "code").build())) {
             csv.stream().forEach(c -> pathEncoding.put(c.get(0), c.get(1)));
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new SdkException(e.getMessage(), e);
         }
     }
 
-    public Row encode(Row row) {
-
-        row.setEntityPath(encode(row.getEntityPath()));
-        row.setFields(row.getFields().entrySet().stream()
-                .collect(Collectors.toMap(
-                        e -> encode(e.getKey()),
-                        Map.Entry::getValue,
-                        (u, v) -> {
-                            throw new IllegalStateException(String.format("Duplicate key %s", u));
-                        },
-                        LinkedHashMap::new)));
-
-        return row;
-    }
-
-    private AqlPath encode(AqlPath path) {
+    @Override
+    public AqlPath encode(AqlPath path) {
 
         if (totalEncoding.containsKey(path.getPath())) {
             return AqlPath.parse(totalEncoding.get(path.getPath()));
@@ -97,22 +81,8 @@ public class Encoder {
         return node;
     }
 
-    public Row decode(Row row) {
-
-        row.setEntityPath(decode(row.getEntityPath()));
-        row.setFields(row.getFields().entrySet().stream()
-                .collect(Collectors.toMap(
-                        e -> decode(e.getKey()),
-                        Map.Entry::getValue,
-                        (u, v) -> {
-                            throw new IllegalStateException(String.format("Duplicate key %s", u));
-                        },
-                        LinkedHashMap::new)));
-
-        return row;
-    }
-
-    private AqlPath decode(AqlPath path) {
+    @Override
+    public AqlPath decode(AqlPath path) {
 
         String key = StringUtils.removeStart(path.getPath(), "/");
 

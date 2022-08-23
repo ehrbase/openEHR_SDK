@@ -34,7 +34,8 @@ import org.ehrbase.serialisation.RMDataFormat;
 import org.ehrbase.serialisation.flatencoding.FlatFormat;
 import org.ehrbase.serialisation.flatencoding.FlatJasonProvider;
 import org.ehrbase.serialisation.jsonencoding.ArchieObjectMapperProvider;
-import org.ehrbase.serialisation.matrix.MatrixFormat;
+import org.ehrbase.serialisation.matrixencoding.FixedCodeSetEncoder;
+import org.ehrbase.serialisation.matrixencoding.MatrixFormat;
 import org.ehrbase.test_data.composition.CompositionTestDataConformanceSDTJson;
 import org.ehrbase.test_data.composition.CompositionTestDataSimSDTJson;
 import org.ehrbase.test_data.composition.CompositionTestDataSimSDTJsonInterface;
@@ -53,11 +54,7 @@ class MatrixConformanceTest {
         Arrays.stream(CompositionTestDataConformanceSDTJson.values()).forEach(test -> {
             switch (test) {
                 default:
-                    arguments.add(Arguments.of(
-                            (CompositionTestDataSimSDTJsonInterface) test,
-                            new String[] {},
-                            new String[] {},
-                            new String[] {}));
+                    arguments.add(Arguments.of(test, new String[] {}, new String[] {}, new String[] {}));
             }
         });
         arguments.add(Arguments.of(
@@ -83,14 +80,38 @@ class MatrixConformanceTest {
             String[] expectedValidationErrorPath)
             throws IOException {
 
+        MatrixFormat cut = new MatrixFormat(TEMPLATE_PROVIDER);
+
+        test(testData, expectedMissing, expectedExtra, expectedValidationErrorPath, cut);
+    }
+
+    @ParameterizedTest
+    @MethodSource("testRoundTripArguments")
+    void testRoundTripEncoding(
+            CompositionTestDataSimSDTJsonInterface testData,
+            String[] expectedMissing,
+            String[] expectedExtra,
+            String[] expectedValidationErrorPath)
+            throws IOException {
+
+        MatrixFormat cut = new MatrixFormat(TEMPLATE_PROVIDER, new FixedCodeSetEncoder());
+
+        test(testData, expectedMissing, expectedExtra, expectedValidationErrorPath, cut);
+    }
+
+    private void test(
+            CompositionTestDataSimSDTJsonInterface testData,
+            String[] expectedMissing,
+            String[] expectedExtra,
+            String[] expectedValidationErrorPath,
+            MatrixFormat cut)
+            throws IOException {
         String templateId = testData.getTemplate().getTemplateId();
 
         RMDataFormat flatJson = new FlatJasonProvider(TEMPLATE_PROVIDER).buildFlatJson(FlatFormat.SIM_SDT, templateId);
 
         String flat = IOUtils.toString(testData.getStream(), StandardCharsets.UTF_8);
         Composition composition = flatJson.unmarshal(flat);
-
-        MatrixFormat cut = new MatrixFormat(TEMPLATE_PROVIDER, true);
 
         String db_encoded = cut.marshal(composition);
 

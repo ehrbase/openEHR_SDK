@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ehrbase.serialisation.matrix;
+package org.ehrbase.serialisation.matrixencoding;
 
 import static org.ehrbase.serialisation.jsonencoding.CanonicalJson.MARSHAL_OM;
 import static org.ehrbase.util.rmconstants.RmConstants.DV_TEXT;
@@ -49,7 +49,7 @@ import org.ehrbase.webtemplate.model.WebTemplateNode;
 /**
  * @author Stefan Spiska
  */
-public class MatrixToCompositionWalker extends ToCompositionWalker<List<Entry>> {
+public class MatrixToCompositionWalker extends ToCompositionWalker<List<ToWalkerDto>> {
 
     public static final String OTHER_REFERENCE_RANGES = "other_reference_ranges";
     // These subparts are saved as arrays.
@@ -79,7 +79,8 @@ public class MatrixToCompositionWalker extends ToCompositionWalker<List<Entry>> 
     public static final String BOOLEAN = "BOOLEAN";
 
     @Override
-    protected List<Entry> extract(Context<List<Entry>> context, WebTemplateNode child, boolean isChoice, Integer i) {
+    protected List<ToWalkerDto> extract(
+            Context<List<ToWalkerDto>> context, WebTemplateNode child, boolean isChoice, Integer i) {
 
         // If primitive return null
         if (List.of(STRING, "LONG", BOOLEAN).contains(child.getRmType())) {
@@ -87,7 +88,7 @@ public class MatrixToCompositionWalker extends ToCompositionWalker<List<Entry>> 
             return null;
         }
 
-        List<Entry> filter = filter(context.getObjectDeque().peek(), child.getAqlPathDto(), i != null, i);
+        List<ToWalkerDto> filter = filter(context.getObjectDeque().peek(), child.getAqlPathDto(), i != null, i);
 
         // Check that the type is correct
         if (isChoice
@@ -128,7 +129,7 @@ public class MatrixToCompositionWalker extends ToCompositionWalker<List<Entry>> 
     }
 
     @Override
-    protected void preHandle(Context<List<Entry>> context) {
+    protected void preHandle(Context<List<ToWalkerDto>> context) {
 
         WebTemplateNode node = context.getNodeDeque().peek();
 
@@ -188,36 +189,37 @@ public class MatrixToCompositionWalker extends ToCompositionWalker<List<Entry>> 
         return newRmObject;
     }
 
-    private static Map<String, Object> unflatten(String rmType, AqlPath aqlPath, List<Entry> entries) {
-        List<Entry> collect = entries.stream()
+    private static Map<String, Object> unflatten(String rmType, AqlPath aqlPath, List<ToWalkerDto> entries) {
+        List<ToWalkerDto> collect = entries.stream()
                 .map(o -> {
-                    Entry entry = new Entry();
-                    entry.path = o.path.removeStart(aqlPath);
-                    if (isJsonArray(entry, rmType)) {
+                    ToWalkerDto toWalkerDto = new ToWalkerDto();
+                    toWalkerDto.path = o.path.removeStart(aqlPath);
+                    if (isJsonArray(toWalkerDto, rmType)) {
                         try {
-                            entry.value = MARSHAL_OM.readValue(o.value.toString(), List.class);
+                            toWalkerDto.value = MARSHAL_OM.readValue(o.value.toString(), List.class);
                         } catch (JsonProcessingException e) {
                             throw new SdkException(e.getMessage());
                         }
                     } else {
-                        entry.value = o.value;
+                        toWalkerDto.value = o.value;
                     }
 
-                    entry.index = o.index;
-                    return entry;
+                    toWalkerDto.index = o.index;
+                    return toWalkerDto;
                 })
                 .collect(Collectors.toList());
         return unflatten(collect);
     }
 
-    private static boolean isJsonArray(Entry entry, String rmType) {
+    private static boolean isJsonArray(ToWalkerDto toWalkerDto, String rmType) {
 
-        return ARRAY_ELEMENTS.stream().anyMatch(p -> p.getRight().equals(rmType) && entry.path.equals(p.getLeft()));
+        return ARRAY_ELEMENTS.stream()
+                .anyMatch(p -> p.getRight().equals(rmType) && toWalkerDto.path.equals(p.getLeft()));
     }
 
-    private static Map<String, Object> unflatten(List<Entry> entries) {
+    private static Map<String, Object> unflatten(List<ToWalkerDto> entries) {
 
-        Map<String, List<Entry>> collect = entries.stream()
+        Map<String, List<ToWalkerDto>> collect = entries.stream()
                 .collect(Collectors.groupingBy(e -> e.path.getBaseNode().getName()));
 
         return collect.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> {
@@ -229,11 +231,11 @@ public class MatrixToCompositionWalker extends ToCompositionWalker<List<Entry>> 
             else {
                 return unflatten(e.getValue().stream()
                         .map(o -> {
-                            Entry entry = new Entry();
-                            entry.value = o.value;
-                            entry.path = o.path.removeStart(1);
-                            entry.index = o.index;
-                            return entry;
+                            ToWalkerDto toWalkerDto = new ToWalkerDto();
+                            toWalkerDto.value = o.value;
+                            toWalkerDto.path = o.path.removeStart(1);
+                            toWalkerDto.index = o.index;
+                            return toWalkerDto;
                         })
                         .collect(Collectors.toList()));
             }
@@ -241,7 +243,7 @@ public class MatrixToCompositionWalker extends ToCompositionWalker<List<Entry>> 
     }
 
     @Override
-    protected void postHandle(Context<List<Entry>> context) {
+    protected void postHandle(Context<List<ToWalkerDto>> context) {
         super.postHandle(context);
 
         RMObject rmObject = context.getRmObjectDeque().peek();
@@ -318,7 +320,7 @@ public class MatrixToCompositionWalker extends ToCompositionWalker<List<Entry>> 
     }
 
     @Override
-    protected int calculateSize(Context<List<Entry>> context, WebTemplateNode childNode) {
+    protected int calculateSize(Context<List<ToWalkerDto>> context, WebTemplateNode childNode) {
 
         return filter(context.getObjectDeque().peek(), childNode.getAqlPathDto(), true, null).stream()
                 .mapToInt(e -> e.index.get(0) + 1)
@@ -326,9 +328,9 @@ public class MatrixToCompositionWalker extends ToCompositionWalker<List<Entry>> 
                 .orElse(0);
     }
 
-    private static <T> void add(Consumer<T> setter, List<Entry> entryList, String rmType, AqlPath aqlPath) {
+    private static <T> void add(Consumer<T> setter, List<ToWalkerDto> toWalkerDtoList, String rmType, AqlPath aqlPath) {
 
-        List<Entry> filter = filter(entryList, aqlPath, false, null);
+        List<ToWalkerDto> filter = filter(toWalkerDtoList, aqlPath, false, null);
 
         if (!filter.isEmpty()) {
             Map<String, Object> unflaten = unflatten(rmType, aqlPath, filter);
@@ -351,21 +353,21 @@ public class MatrixToCompositionWalker extends ToCompositionWalker<List<Entry>> 
      * @param index
      * @return
      */
-    static List<Entry> filter(List<Entry> list, AqlPath path, boolean checkIndex, Integer index) {
+    static List<ToWalkerDto> filter(List<ToWalkerDto> list, AqlPath path, boolean checkIndex, Integer index) {
 
         return list.stream().filter(e -> matches(e, path, checkIndex, index)).collect(Collectors.toList());
     }
 
-    private static boolean matches(Entry entry, AqlPath path, boolean checkIndex, Integer index) {
+    private static boolean matches(ToWalkerDto toWalkerDto, AqlPath path, boolean checkIndex, Integer index) {
 
-        if (!entry.path.startsWith(path)) {
+        if (!toWalkerDto.path.startsWith(path)) {
             return false;
         }
 
-        if (checkIndex && entry.index.isEmpty()) {
+        if (checkIndex && toWalkerDto.index.isEmpty()) {
             return false;
         }
 
-        return index == null || entry.index.get(0).equals(index);
+        return index == null || toWalkerDto.index.get(0).equals(index);
     }
 }
