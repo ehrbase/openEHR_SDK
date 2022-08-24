@@ -17,6 +17,8 @@
  */
 package org.ehrbase.serialisation.walker;
 
+import static org.ehrbase.util.rmconstants.RmConstants.ELEMENT;
+
 import com.nedap.archie.rm.archetyped.FeederAudit;
 import com.nedap.archie.rm.archetyped.FeederAuditDetails;
 import com.nedap.archie.rm.composition.IsmTransition;
@@ -31,6 +33,7 @@ import com.nedap.archie.rm.generic.PartyIdentified;
 import java.util.Collection;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.ehrbase.webtemplate.model.WebTemplateNode;
 
 public class RMHelper {
 
@@ -92,5 +95,16 @@ public class RMHelper {
             return ((DvURI) rmObject).getValue() == null;
         }
         return false;
+    }
+
+    /**
+     * Do to historic Reasons, the value for max (and min) are pushed down from Element to value. Thus, checken the max of a child gives the wrong result. A child of Element is multivalued if and only if it is 'link'
+     * @param parent
+     * @param child
+     * @return
+     */
+    static boolean isMulti(WebTemplateNode parent, WebTemplateNode child) {
+
+        return parent.getRmType().equals(ELEMENT) ? child.getId().equals("link") : child.isMulti();
     }
 }
