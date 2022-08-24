@@ -18,7 +18,7 @@
 package org.ehrbase.serialisation.matrixencoding;
 
 import static org.ehrbase.serialisation.jsonencoding.CanonicalJson.MARSHAL_OM;
-import static org.ehrbase.serialisation.matrixencoding.MatrixToCompositionWalker.addMissingChidren;
+import static org.ehrbase.serialisation.matrixencoding.MatrixUtil.addMissingChildren;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -108,7 +108,7 @@ public class CompositionToMatrixWalker extends FromCompositionWalker<FromWalkerD
             }
         }
 
-        addMissingChidren(child);
+        addMissingChildren(child);
 
         return next;
     }

@@ -43,7 +43,6 @@ import org.ehrbase.building.webtemplateskeletnbuilder.WebTemplateSkeletonBuilder
 import org.ehrbase.serialisation.walker.Context;
 import org.ehrbase.serialisation.walker.ToCompositionWalker;
 import org.ehrbase.util.exception.SdkException;
-import org.ehrbase.util.rmconstants.RmConstants;
 import org.ehrbase.webtemplate.model.WebTemplateNode;
 
 /**
@@ -97,39 +96,12 @@ public class MatrixToCompositionWalker extends ToCompositionWalker<List<ToWalker
             return null;
         }
 
-        addMissingChidren(child);
+        MatrixUtil.addMissingChildren(child);
 
         if (filter.isEmpty()) {
             return null;
         }
         return filter;
-    }
-
-    static void addMissingChidren(WebTemplateNode child) {
-        // Webtemplate is missing "link" for Element thus we add it here
-        if (child.getRmType().equals(RmConstants.ELEMENT)) {
-
-            WebTemplateNode links = new WebTemplateNode();
-
-            links.setRmType("LINK");
-            links.setAqlPath(child.getAqlPathDto().addEnd("/links"));
-            links.setId("links");
-            child.getChildren().add(links);
-            child.setMax(1);
-            child.setMin(0);
-        }
-        // Webtemplate is missing "reason" for ISM_TRANSITION thus we add it here
-        if (child.getRmType().equals(RmConstants.ISM_TRANSITION)) {
-
-            WebTemplateNode reason = new WebTemplateNode();
-
-            reason.setRmType(DV_TEXT);
-            reason.setAqlPath(child.getAqlPathDto().addEnd("/reason"));
-            reason.setId("reason");
-            child.getChildren().add(reason);
-            child.setMax(1);
-            child.setMin(0);
-        }
     }
 
     @Override

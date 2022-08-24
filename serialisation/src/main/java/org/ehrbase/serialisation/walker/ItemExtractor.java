@@ -122,10 +122,7 @@ public class ItemExtractor {
             }
         }
 
-        if ((childNode.getMax() == 1
-                        || (currentNode.getRmType().equals(RmConstants.ELEMENT))
-                                && !childNode.getId().equals("links"))
-                && child instanceof List) {
+        if (!RMHelper.isMulti(currentNode, childNode) && child instanceof List) {
             child = ((List<?>) child).stream().findFirst().orElse(null);
         }
 

@@ -102,10 +102,7 @@ public abstract class Walker<T> {
 
             for (List<WebTemplateNode> childrenForPath : childrenByPath.values()) {
 
-                boolean isMulti = !(currentNode.getRmType().equals(ELEMENT)
-                                && childrenForPath.stream()
-                                        .noneMatch(n -> n.getId().equals("links")))
-                        && childrenForPath.stream().anyMatch(WebTemplateNode::isMulti);
+                boolean isMulti = childrenForPath.stream().anyMatch(n -> RMHelper.isMulti(currentNode, n));
 
                 Stream<NodeConstellation> childConstellations;
                 if (!isMulti) {

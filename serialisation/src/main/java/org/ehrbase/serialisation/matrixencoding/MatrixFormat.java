@@ -223,7 +223,7 @@ public class MatrixFormat implements RMDataFormat {
             StringBuilder sb = new StringBuilder();
             try (CSVPrinter printer = new CSVPrinter(sb, CSV_FORMAT)) {
                 for (Row r : toTable((Composition) rmObject)) {
-                    getPrintRecord(printer, r);
+                    printRow(printer, r);
                 }
             } catch (IOException e) {
                 throw new SdkException(e.getMessage(), e);
@@ -235,7 +235,7 @@ public class MatrixFormat implements RMDataFormat {
         }
     }
 
-    private static void getPrintRecord(CSVPrinter printer, Row r) {
+    private static void printRow(CSVPrinter printer, Row r) {
         try {
             printer.printRecord(
                     r.getNum(),
