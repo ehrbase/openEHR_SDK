@@ -26,7 +26,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
-import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.apache.commons.lang3.StringUtils;
@@ -41,7 +40,7 @@ import org.ehrbase.client.aql.record.Record1;
 import org.ehrbase.client.exception.ClientException;
 import org.ehrbase.client.openehrclient.FolderDAO;
 
-public class DefaultRestFolderDAO implements FolderDAO {
+public class    DefaultRestFolderDAO implements FolderDAO {
 
     private final DefaultRestDirectoryEndpoint directoryEndpoint;
     private final String path;
@@ -85,7 +84,7 @@ public class DefaultRestFolderDAO implements FolderDAO {
         DefaultRestFolderDAO folderDAO = new DefaultRestFolderDAO(
                 directoryEndpoint,
                 Stream.of(this.path, path)
-                        .filter(s -> StringUtils.isNotBlank(s))
+                        .filter(StringUtils::isNotBlank)
                         .collect(Collectors.joining("//")));
         folderDAO.sync();
         return folderDAO;
@@ -94,14 +93,13 @@ public class DefaultRestFolderDAO implements FolderDAO {
     @Override
     public <T> T addCompositionEntity(T entity) {
         T updatedEntity = directoryEndpoint.getCompositionEndpoint().mergeCompositionEntity(entity);
-        UUID uuid = DefaultRestCompositionEndpoint.extractVersionUid(updatedEntity)
-                .orElseThrow(() -> new ClientException(String.format("No Id Element for %s", entity.getClass())))
-                .getUuid();
+        var versionId = DefaultRestCompositionEndpoint.extractVersionUid(updatedEntity)
+                .orElseThrow(() -> new ClientException(String.format("No Id Element for %s", entity.getClass())));
         Folder folder = getFolder();
         if (folder.getItems() == null) {
             folder.setItems(new ArrayList<>());
         }
-        folder.getItems().add(new ObjectRef(new ObjectVersionId(uuid.toString()), "dffddfd", "VERSIONED_COMPOSITION"));
+        folder.getItems().add(new ObjectRef(new ObjectVersionId(versionId.getUuid().toString()), versionId.getSystem(), "VERSIONED_COMPOSITION"));
         directoryEndpoint.saveToDb();
         return updatedEntity;
     }
