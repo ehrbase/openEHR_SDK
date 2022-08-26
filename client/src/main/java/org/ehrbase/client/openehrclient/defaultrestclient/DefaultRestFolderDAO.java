@@ -40,7 +40,7 @@ import org.ehrbase.client.aql.record.Record1;
 import org.ehrbase.client.exception.ClientException;
 import org.ehrbase.client.openehrclient.FolderDAO;
 
-public class    DefaultRestFolderDAO implements FolderDAO {
+public class DefaultRestFolderDAO implements FolderDAO {
 
     private final DefaultRestDirectoryEndpoint directoryEndpoint;
     private final String path;
@@ -83,9 +83,7 @@ public class    DefaultRestFolderDAO implements FolderDAO {
     public FolderDAO getSubFolder(String path) {
         DefaultRestFolderDAO folderDAO = new DefaultRestFolderDAO(
                 directoryEndpoint,
-                Stream.of(this.path, path)
-                        .filter(StringUtils::isNotBlank)
-                        .collect(Collectors.joining("//")));
+                Stream.of(this.path, path).filter(StringUtils::isNotBlank).collect(Collectors.joining("//")));
         folderDAO.sync();
         return folderDAO;
     }
@@ -99,7 +97,11 @@ public class    DefaultRestFolderDAO implements FolderDAO {
         if (folder.getItems() == null) {
             folder.setItems(new ArrayList<>());
         }
-        folder.getItems().add(new ObjectRef(new ObjectVersionId(versionId.getUuid().toString()), versionId.getSystem(), "VERSIONED_COMPOSITION"));
+        folder.getItems()
+                .add(new ObjectRef(
+                        new ObjectVersionId(versionId.getUuid().toString()),
+                        versionId.getSystem(),
+                        "VERSIONED_COMPOSITION"));
         directoryEndpoint.saveToDb();
         return updatedEntity;
     }
