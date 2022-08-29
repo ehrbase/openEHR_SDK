@@ -106,12 +106,12 @@ public class DefaultRestDirectoryEndpointIT {
         FolderDAO visit = root.getSubFolder("case1/visit1");
 
         Composition composition = (Composition)
-            new Unflattener(defaultRestClient.getTemplateProvider(), defaultRestClient.getDefaultValuesProvider())
-                .unflatten(TestData.buildEhrbaseBloodPressureSimpleDeV0());
+                new Unflattener(defaultRestClient.getTemplateProvider(), defaultRestClient.getDefaultValuesProvider())
+                        .unflatten(TestData.buildEhrbaseBloodPressureSimpleDeV0());
         visit.addRaw(composition);
 
         List<EhrbaseBloodPressureSimpleDeV0Composition> actual =
-            visit.find(EhrbaseBloodPressureSimpleDeV0Composition.class);
+                visit.find(EhrbaseBloodPressureSimpleDeV0Composition.class);
         assertThat(actual).size().isEqualTo(1);
     }
 
