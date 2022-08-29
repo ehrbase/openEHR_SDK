@@ -17,6 +17,7 @@
  */
 package org.ehrbase.client.openehrclient.defaultrestclient;
 
+import com.nedap.archie.rm.composition.Composition;
 import com.nedap.archie.rm.datavalues.DvText;
 import com.nedap.archie.rm.directory.Folder;
 import com.nedap.archie.rm.support.identification.ObjectRef;
@@ -39,6 +40,7 @@ import org.ehrbase.client.aql.query.Query;
 import org.ehrbase.client.aql.record.Record1;
 import org.ehrbase.client.exception.ClientException;
 import org.ehrbase.client.openehrclient.FolderDAO;
+import org.ehrbase.client.openehrclient.VersionUid;
 
 public class DefaultRestFolderDAO implements FolderDAO {
 
@@ -93,17 +95,15 @@ public class DefaultRestFolderDAO implements FolderDAO {
         T updatedEntity = directoryEndpoint.getCompositionEndpoint().mergeCompositionEntity(entity);
         var versionId = DefaultRestCompositionEndpoint.extractVersionUid(updatedEntity)
                 .orElseThrow(() -> new ClientException(String.format("No Id Element for %s", entity.getClass())));
-        Folder folder = getFolder();
-        if (folder.getItems() == null) {
-            folder.setItems(new ArrayList<>());
-        }
-        folder.getItems()
-                .add(new ObjectRef(
-                        new ObjectVersionId(versionId.getUuid().toString()),
-                        versionId.getSystem(),
-                        "VERSIONED_COMPOSITION"));
-        directoryEndpoint.saveToDb();
+        addToFolder(versionId);
         return updatedEntity;
+    }
+
+    @Override
+    public VersionUid addRaw(Composition composition) {
+        VersionUid versionId = directoryEndpoint.getCompositionEndpoint().mergeRaw(composition);
+        addToFolder(versionId);
+        return versionId;
     }
 
     @Override
@@ -139,5 +139,18 @@ public class DefaultRestFolderDAO implements FolderDAO {
     private String extractTemplateId(Class clazz) {
         Template annotation = (Template) clazz.getAnnotation(Template.class);
         return annotation.value();
+    }
+
+    private void addToFolder(VersionUid versionId) {
+        Folder folder = getFolder();
+        if (folder.getItems() == null) {
+            folder.setItems(new ArrayList<>());
+        }
+        folder.getItems()
+                .add(new ObjectRef(
+                        new ObjectVersionId(versionId.getUuid().toString()),
+                        versionId.getSystem(),
+                        "VERSIONED_COMPOSITION"));
+        directoryEndpoint.saveToDb();
     }
 }

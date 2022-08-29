@@ -19,6 +19,7 @@ package org.ehrbase.client.openehrclient.defaultrestclient;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.nedap.archie.rm.composition.Composition;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.UUID;
@@ -26,6 +27,7 @@ import org.ehrbase.client.Integration;
 import org.ehrbase.client.TestData;
 import org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev0composition.EhrbaseBloodPressureSimpleDeV0Composition;
 import org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1composition.EhrbaseMultiOccurrenceDeV1Composition;
+import org.ehrbase.client.flattener.Unflattener;
 import org.ehrbase.client.openehrclient.FolderDAO;
 import org.ehrbase.client.openehrclient.OpenEhrClient;
 import org.junit.After;
@@ -36,11 +38,13 @@ import org.junit.experimental.categories.Category;
 @Category(Integration.class)
 public class DefaultRestDirectoryEndpointIT {
     private static OpenEhrClient openEhrClient;
+    private static DefaultRestClient defaultRestClient;
     private UUID ehr;
 
     @BeforeClass
     public static void setup() throws URISyntaxException {
         openEhrClient = DefaultRestClientTestHelper.setupDefaultRestClient();
+        defaultRestClient = DefaultRestClientTestHelper.setupRestClientWithDefaultTemplateProvider();
     }
 
     @After
@@ -91,6 +95,24 @@ public class DefaultRestDirectoryEndpointIT {
 
         List<EhrbaseMultiOccurrenceDeV1Composition> actual2 = visit.find(EhrbaseMultiOccurrenceDeV1Composition.class);
         assertThat(actual2).size().isEqualTo(1);
+    }
+
+    @Test
+    public void testSaveRaw() {
+        ehr = openEhrClient.ehrEndpoint().createEhr();
+
+        FolderDAO root = openEhrClient.folder(ehr, "");
+
+        FolderDAO visit = root.getSubFolder("case1/visit1");
+
+        Composition composition = (Composition)
+            new Unflattener(defaultRestClient.getTemplateProvider(), defaultRestClient.getDefaultValuesProvider())
+                .unflatten(TestData.buildEhrbaseBloodPressureSimpleDeV0());
+        visit.addRaw(composition);
+
+        List<EhrbaseBloodPressureSimpleDeV0Composition> actual =
+            visit.find(EhrbaseBloodPressureSimpleDeV0Composition.class);
+        assertThat(actual).size().isEqualTo(1);
     }
 
     @Test
