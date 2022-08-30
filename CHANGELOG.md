@@ -2,7 +2,7 @@
 
 Note: version releases in the 0.x.y range may introduce breaking changes.
 
-## [unreleased]
+## [1.20.0]
  ### Added 
 - Add spotless plugin, Add codestyle check to workflows ([#368](https://github.com/ehrbase/openEHR_SDK/pull/368))
 - Add new Tool to interpret AQL against a template ([#379](https://github.com/ehrbase/openEHR_SDK/pull/379))
@@ -187,4 +187,4 @@ Note: version releases in the 0.x.y range may introduce breaking changes.
 [1.18.0]: https://github.com/ehrbase/openEHR_SDK/releases/tag/v1.18.0
 [1.19.0]: https://github.com/ehrbase/openEHR_SDK/compare/v1.18.0...v1.19.0
 
-[unreleased]: https://github.com/ehrbase/openEHR_SDK/compare/v1.19.0...HEAD
+[1.20.0]: https://github.com/ehrbase/openEHR_SDK/compare/v1.19.0...v1.20.0
