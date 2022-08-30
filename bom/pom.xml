@@ -8,7 +8,7 @@
 
     <artifactId>bom</artifactId>
     <groupId>org.ehrbase.openehr.sdk</groupId>
-    <version>1.19.0</version>
+    <version>1.20.0</version>
     <packaging>pom</packaging>
 
     <name>openEHR SDK</name>
@@ -174,8 +174,8 @@
                 <scope>import</scope>
             </dependency>
             <dependency>
-                <groupId>com.github.everit-org.json-schema</groupId>
-                <artifactId>org.everit.json.schema</artifactId>
+                <groupId>com.github.erosb</groupId>
+                <artifactId>everit-json-schema</artifactId>
                 <version>${everit-json-schema.version}</version>
             </dependency>
             <dependency>
@@ -227,6 +227,11 @@
                 <groupId>commons-io</groupId>
                 <artifactId>commons-io</artifactId>
                 <version>${commons-io.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-csv</artifactId>
+                <version>1.9.0</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.commons</groupId>

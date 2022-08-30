@@ -1,16 +1,13 @@
 /*
- * Modifications copyright (C) 2019 Christian Chevalley, Vitasystems GmbH and Hannover Medical School.
-
- * This file is part of Project EHRbase
-
- * Copyright (c) 2015 Christian Chevalley
- * This file is part of Project Ethercis
+ * Copyright (c) 2019 vitasystems GmbH and Hannover Medical School.
+ *
+ * This file is part of project openEHR_SDK
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *     https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -24,10 +21,9 @@ import com.google.gson.TypeAdapter;
 import com.google.gson.internal.LinkedTreeMap;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
-import org.ehrbase.serialisation.dbencoding.wrappers.json.I_DvTypeAdapter;
-
 import java.io.IOException;
 import java.util.ArrayList;
+import org.ehrbase.serialisation.dbencoding.wrappers.json.I_DvTypeAdapter;
 
 /**
  * GSON adapter for ArrayList
@@ -35,8 +31,8 @@ import java.util.ArrayList;
 public class ArrayListAdapter extends TypeAdapter<ArrayList> implements I_DvTypeAdapter {
 
     protected AdapterType adapterType = AdapterType._DBJSON2RAWJSON;
-//    protected String archetypeNodeId = null;
-//    protected String key = null;
+    //    protected String archetypeNodeId = null;
+    //    protected String key = null;
 
     public ArrayListAdapter(AdapterType adapterType) {
         super();
@@ -48,7 +44,6 @@ public class ArrayListAdapter extends TypeAdapter<ArrayList> implements I_DvType
         this.adapterType = AdapterType._DBJSON2RAWJSON;
     }
 
-
     //	@Override
     public ArrayList read(JsonReader arg0) throws IOException {
         // TODO Auto-generated method stub
@@ -58,19 +53,17 @@ public class ArrayListAdapter extends TypeAdapter<ArrayList> implements I_DvType
     //	@Override
     public void write(JsonWriter writer, ArrayList arrayList) throws IOException {
 
-//		System.out.println("begin array -----------------------------");
+        //		System.out.println("begin array -----------------------------");
         for (Object entry : arrayList) {
             if (entry instanceof LinkedTreeMap) {
                 LinkedTreeMap itemMap = (LinkedTreeMap) entry;
-//                String path = new PathAttribute().findPath(itemMap);
+                //                String path = new PathAttribute().findPath(itemMap);
                 new LinkedTreeMapAdapter().write(writer, itemMap);
-            } else
-                throw new IllegalArgumentException("unhandled item in array:" + entry);
+            } else throw new IllegalArgumentException("unhandled item in array:" + entry);
         }
 
-//		System.out.println("end array -----------------------------");
+        //		System.out.println("end array -----------------------------");
 
         return;
     }
-
 }

@@ -1,38 +1,35 @@
 /*
+ * Copyright (c) 2019 vitasystems GmbH and Hannover Medical School.
  *
- *  *  Copyright (c) 2019  Stefan Spiska (Vitasystems GmbH) and Hannover Medical School
- *  *  This file is part of Project EHRbase
- *  *
- *  *  Licensed under the Apache License, Version 2.0 (the "License");
- *  *  you may not use this file except in compliance with the License.
- *  *  You may obtain a copy of the License at
- *  *
- *  *  http://www.apache.org/licenses/LICENSE-2.0
- *  *
- *  *  Unless required by applicable law or agreed to in writing, software
- *  *  distributed under the License is distributed on an "AS IS" BASIS,
- *  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  *  See the License for the specific language governing permissions and
- *  *  limitations under the License.
+ * This file is part of project openEHR_SDK
  *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
-
 package org.ehrbase.client.openehrclient.defaultrestclient;
+
+import static org.ehrbase.client.openehrclient.defaultrestclient.DefaultRestEhrEndpoint.EHR_PATH;
 
 import com.nedap.archie.rm.datavalues.DvText;
 import com.nedap.archie.rm.directory.Folder;
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.Optional;
+import java.util.UUID;
 import org.apache.commons.lang3.StringUtils;
 import org.ehrbase.client.openehrclient.CompositionEndpoint;
 import org.ehrbase.client.openehrclient.FolderDAO;
 import org.ehrbase.client.openehrclient.VersionUid;
 import org.ehrbase.response.openehr.DirectoryResponseData;
-
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.Optional;
-import java.util.UUID;
-
-import static org.ehrbase.client.openehrclient.defaultrestclient.DefaultRestEhrEndpoint.EHR_PATH;
 
 public class DefaultRestDirectoryEndpoint {
 
@@ -42,7 +39,6 @@ public class DefaultRestDirectoryEndpoint {
     private final UUID ehrId;
     private VersionUid rootVersion;
     private Folder root;
-
 
     DefaultRestDirectoryEndpoint(DefaultRestClient defaultRestClient, UUID ehrId) {
         this.defaultRestClient = defaultRestClient;
@@ -54,7 +50,8 @@ public class DefaultRestDirectoryEndpoint {
         if (root == null) {
             createRoot();
         }
-        Optional<DirectoryResponseData> directoryResponseData = defaultRestClient.httpGet(resolve(""), DirectoryResponseData.class);
+        Optional<DirectoryResponseData> directoryResponseData =
+                defaultRestClient.httpGet(resolve(""), DirectoryResponseData.class);
         copyToFolder(root, directoryResponseData.orElseThrow());
     }
 
@@ -63,7 +60,6 @@ public class DefaultRestDirectoryEndpoint {
         syncFromDb();
     }
 
-
     synchronized Folder find(String path) {
         if (StringUtils.isBlank(path)) {
             return root;
@@ -71,7 +67,12 @@ public class DefaultRestDirectoryEndpoint {
         String[] split = path.split(FOLDER_DIVIDER);
         Folder current = root;
         for (String folderName : split) {
-            Folder newFolder = Optional.ofNullable(current).map(Folder::getFolders).flatMap(l -> l.stream().filter(f -> folderName.equals(f.getName().getValue())).findAny()).orElse(null);
+            Folder newFolder = Optional.ofNullable(current)
+                    .map(Folder::getFolders)
+                    .flatMap(l -> l.stream()
+                            .filter(f -> folderName.equals(f.getName().getValue()))
+                            .findAny())
+                    .orElse(null);
             if (newFolder == null) {
                 newFolder = new Folder();
                 newFolder.setArchetypeNodeId("openEHR-EHR-FOLDER.generic.v1");
@@ -107,7 +108,10 @@ public class DefaultRestDirectoryEndpoint {
         if (StringUtils.isBlank(subPath)) {
             return defaultRestClient.getConfig().getBaseUri().resolve(EHR_PATH + ehrId.toString() + DIRECTORY_PATH);
         } else {
-            return defaultRestClient.getConfig().getBaseUri().resolve(EHR_PATH + ehrId.toString() + DIRECTORY_PATH + subPath);
+            return defaultRestClient
+                    .getConfig()
+                    .getBaseUri()
+                    .resolve(EHR_PATH + ehrId.toString() + DIRECTORY_PATH + subPath);
         }
     }
 

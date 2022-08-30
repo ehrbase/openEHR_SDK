@@ -25,10 +25,14 @@
     <parent>
         <groupId>org.ehrbase.openehr.sdk</groupId>
         <artifactId>root</artifactId>
-        <version>1.19.0</version>
+        <version>1.20.0</version>
     </parent>
 
     <artifactId>util</artifactId>
+
+    <properties>
+        <license-header.dir>../</license-header.dir>
+    </properties>
 
     <dependencies>
         <dependency>
@@ -43,6 +47,6 @@
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-engine</artifactId>
             <scope>test</scope>
-        </dependency>        
+        </dependency>
     </dependencies>
 </project>

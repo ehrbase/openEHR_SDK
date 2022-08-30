@@ -1,38 +1,37 @@
 /*
- *  Copyright (c) 2019  Stefan Spiska (Vitasystems GmbH) and Hannover Medical School
- *  This file is part of Project EHRbase
+ * Copyright (c) 2019 vitasystems GmbH and Hannover Medical School.
  *
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
+ * This file is part of project openEHR_SDK
  *
- *  http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
-
 package org.ehrbase.client.flattener;
 
+import java.time.OffsetDateTime;
+import java.util.List;
 import org.ehrbase.client.annotations.Archetype;
 import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.Path;
 import org.ehrbase.client.annotations.Template;
-
-import java.time.OffsetDateTime;
-import java.util.List;
 
 @Archetype(value = "openEHR-EHR-COMPOSITION.sample_encounter.v1")
 @Template(value = "ehrbase_blood_pressure_simple.de.v0")
 @Entity
 public class BloodpressureListDe {
 
-
     @Path(value = "/context/start_time|value")
     private OffsetDateTime startTime;
+
     @Path(value = "/content[openEHR-EHR-OBSERVATION.sample_blood_pressure.v1]")
     private List<Bloodpressure> bloodpressures;
 

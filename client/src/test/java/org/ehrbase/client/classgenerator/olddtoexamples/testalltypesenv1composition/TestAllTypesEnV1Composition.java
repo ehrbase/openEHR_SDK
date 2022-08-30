@@ -1,9 +1,28 @@
+/*
+ * Copyright (c) 2022 vitasystems GmbH and Hannover Medical School.
+ *
+ * This file is part of project openEHR_SDK
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.ehrbase.client.classgenerator.olddtoexamples.testalltypesenv1composition;
 
 import com.nedap.archie.rm.archetyped.FeederAudit;
 import com.nedap.archie.rm.generic.Participation;
 import com.nedap.archie.rm.generic.PartyIdentified;
 import com.nedap.archie.rm.generic.PartyProxy;
+import java.time.temporal.TemporalAccessor;
+import java.util.List;
 import org.ehrbase.client.annotations.Archetype;
 import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.annotations.Id;
@@ -18,9 +37,6 @@ import org.ehrbase.client.classgenerator.olddtoexamples.testalltypesenv1composit
 import org.ehrbase.client.classgenerator.olddtoexamples.testalltypesenv1composition.definition.TestAllTypesObservation;
 import org.ehrbase.client.classgenerator.olddtoexamples.testalltypesenv1composition.definition.TestAllTypesSection;
 import org.ehrbase.client.openehrclient.VersionUid;
-
-import java.time.temporal.TemporalAccessor;
-import java.util.List;
 
 @Entity
 @Archetype("openEHR-EHR-COMPOSITION.test_all_types.v1")
@@ -122,8 +138,7 @@ public class TestAllTypesEnV1Composition {
         return this.territory;
     }
 
-    public void setContextCodedTextDefiningcode(
-            ContextCodedTextDefiningcode contextCodedTextDefiningcode) {
+    public void setContextCodedTextDefiningcode(ContextCodedTextDefiningcode contextCodedTextDefiningcode) {
         this.contextCodedTextDefiningcode = contextCodedTextDefiningcode;
     }
 
@@ -182,7 +197,8 @@ public class TestAllTypesEnV1Composition {
 
     public void setTestAllTypesContentOpenehrEhrObservationTestAllTypesV1(
             List<TestAllTypesObservation> testAllTypesContentOpenehrEhrObservationTestAllTypesV1) {
-        this.testAllTypesContentOpenehrEhrObservationTestAllTypesV1 = testAllTypesContentOpenehrEhrObservationTestAllTypesV1;
+        this.testAllTypesContentOpenehrEhrObservationTestAllTypesV1 =
+                testAllTypesContentOpenehrEhrObservationTestAllTypesV1;
     }
 
     public List<TestAllTypesObservation> getTestAllTypesContentOpenehrEhrObservationTestAllTypesV1() {

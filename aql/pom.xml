@@ -25,10 +25,14 @@
     <parent>
         <groupId>org.ehrbase.openehr.sdk</groupId>
         <artifactId>root</artifactId>
-        <version>1.19.0</version>
+        <version>1.20.0</version>
     </parent>
 
     <artifactId>aql</artifactId>
+
+    <properties>
+        <license-header.dir>../</license-header.dir>
+    </properties>
 
     <build>
         <plugins>
@@ -52,10 +56,7 @@
     </build>
 
     <dependencies>
-        <dependency>
-            <groupId>org.ehrbase.openehr.sdk</groupId>
-            <artifactId>client</artifactId>
-        </dependency>
+
         <dependency>
             <groupId>org.antlr</groupId>
             <artifactId>antlr4-runtime</artifactId>
@@ -74,6 +75,30 @@
             <groupId>org.junit.vintage</groupId>
             <artifactId>junit-vintage-engine</artifactId>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-collections4</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.ehrbase.openehr.sdk</groupId>
+            <artifactId>util</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.nedap.healthcare.archie</groupId>
+            <artifactId>openehr-rm</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.nedap.healthcare.archie</groupId>
+            <artifactId>archie-utils</artifactId>
         </dependency>
     </dependencies>
 </project>

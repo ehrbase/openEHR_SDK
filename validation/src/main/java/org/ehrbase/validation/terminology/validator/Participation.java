@@ -1,13 +1,13 @@
 /*
- * Copyright (c) 2019 Vitasystems GmbH and Christian Chevalley (Hannover Medical School).
+ * Copyright (c) 2019 vitasystems GmbH and Hannover Medical School.
  *
- * This file is part of project EHRbase
+ * This file is part of project openEHR_SDK
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *     https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -27,10 +27,22 @@ public class Participation extends TerminologyCheck {
         this.RM_CLASS = com.nedap.archie.rm.generic.Participation.class;
     }
 
-    public static void check(TerminologyInterface terminologyInterface, AttributeCodesetMapping codesetMapping, String context, com.nedap.archie.rm.generic.Participation participation, String language) {
+    public static void check(
+            TerminologyInterface terminologyInterface,
+            AttributeCodesetMapping codesetMapping,
+            String context,
+            com.nedap.archie.rm.generic.Participation participation,
+            String language) {
         if (participation.getMode() != null) {
-            //validate mode as a DvCodedText
-            validate(terminologyInterface, codesetMapping, "mode", new DvCodedText(participation.getMode().getValue(), participation.getMode().getDefiningCode()), language);
+            // validate mode as a DvCodedText
+            validate(
+                    terminologyInterface,
+                    codesetMapping,
+                    "mode",
+                    new DvCodedText(
+                            participation.getMode().getValue(),
+                            participation.getMode().getDefiningCode()),
+                    language);
         }
 
         if (participation.getFunction() != null && participation.getFunction() instanceof DvCodedText) {
@@ -38,8 +50,12 @@ public class Participation extends TerminologyCheck {
         }
     }
 
-    public static void check(TerminologyInterface terminologyInterface, AttributeCodesetMapping codesetMapping, String context, com.nedap.archie.rm.generic.Participation participation) throws IllegalArgumentException {
+    public static void check(
+            TerminologyInterface terminologyInterface,
+            AttributeCodesetMapping codesetMapping,
+            String context,
+            com.nedap.archie.rm.generic.Participation participation)
+            throws IllegalArgumentException {
         check(terminologyInterface, codesetMapping, context, participation, "en");
     }
-
 }

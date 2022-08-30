@@ -25,13 +25,13 @@
     <parent>
         <groupId>org.ehrbase.openehr.sdk</groupId>
         <artifactId>bom</artifactId>
-        <version>1.19.0</version>
+        <version>1.20.0</version>
         <relativePath>./bom/pom.xml</relativePath>
     </parent>
 
     <groupId>org.ehrbase.openehr.sdk</groupId>
     <artifactId>root</artifactId>
-    <version>1.19.0</version>
+    <version>1.20.0</version>
     <packaging>pom</packaging>
 
 
@@ -64,6 +64,7 @@
         <skipIntegrationTests>true</skipIntegrationTests>
         <include.tests>**/*Test.java</include.tests>
         <test.profile>unit</test.profile>
+        <license-header.dir>./</license-header.dir>
     </properties>
 
     <profiles>
@@ -254,6 +255,25 @@
                     <nexusUrl>https://oss.sonatype.org/</nexusUrl>
                     <autoReleaseAfterClose>true</autoReleaseAfterClose>
                     <stagingProgressTimeoutMinutes>30</stagingProgressTimeoutMinutes>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>com.diffplug.spotless</groupId>
+                <artifactId>spotless-maven-plugin</artifactId>
+                <version>2.22.5</version>
+                <configuration>
+                    <java>
+                        <toggleOffOn>
+                            <off>@format:off</off>
+                            <on>@format:on</on>
+                        </toggleOffOn>
+                        <palantirJavaFormat>
+                            <version>2.24.0</version>
+                        </palantirJavaFormat>
+                        <licenseHeader>
+                            <file>${license-header.dir}/license-header</file>
+                        </licenseHeader>
+                    </java>
                 </configuration>
             </plugin>
         </plugins>

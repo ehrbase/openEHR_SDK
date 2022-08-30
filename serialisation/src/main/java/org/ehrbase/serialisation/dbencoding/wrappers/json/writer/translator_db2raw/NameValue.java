@@ -1,13 +1,13 @@
 /*
- * Copyright (c) 2020 Vitasystems GmbH and Christian Chevalley Hannover Medical School.
+ * Copyright (c) 2020 vitasystems GmbH and Hannover Medical School.
  *
- * This file is part of project EHRbase
+ * This file is part of project openEHR_SDK
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *     https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -19,7 +19,6 @@ package org.ehrbase.serialisation.dbencoding.wrappers.json.writer.translator_db2
 
 import com.google.gson.internal.LinkedTreeMap;
 import com.google.gson.stream.JsonWriter;
-
 import java.io.IOException;
 
 public class NameValue {
@@ -31,13 +30,10 @@ public class NameValue {
     }
 
     NameValue(JsonWriter writer, LinkedTreeMap value) {
-        if (value.containsKey("defining_code")){
+        if (value.containsKey("defining_code")) {
             this.handler = new DvCodedTextNameValue(writer, value);
-        }
-        else
-            this.handler = new DvTextNameValue(writer, value);
+        } else this.handler = new DvTextNameValue(writer, value);
     }
-
 
     /**
      * Encode a name value into the DB json structure

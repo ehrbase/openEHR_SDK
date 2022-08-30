@@ -2,6 +2,17 @@
 
 Note: version releases in the 0.x.y range may introduce breaking changes.
 
+## [1.20.0]
+ ### Added 
+- Add spotless plugin, Add codestyle check to workflows ([#368](https://github.com/ehrbase/openEHR_SDK/pull/368))
+- Add new Tool to interpret AQL against a template ([#379](https://github.com/ehrbase/openEHR_SDK/pull/379))
+- Add new Matrix serialisation format ([#381](https://github.com/ehrbase/openEHR_SDK/pull/381))
+ ### Fixed 
+- Skip archetype slots not used by the template in example generator ([#369](https://github.com/ehrbase/openEHR_SDK/pull/369))
+- enhance sdk aql parser to handle more cases ([#376](https://github.com/ehrbase/openEHR_SDK/pull/376))
+- update update everit-json-schema to maven version ([#370](https://github.com/ehrbase/openEHR_SDK/pull/370))
+
+
 ## [1.19.0]
 
 ### Added
@@ -176,3 +187,4 @@ Note: version releases in the 0.x.y range may introduce breaking changes.
 [1.18.0]: https://github.com/ehrbase/openEHR_SDK/releases/tag/v1.18.0
 [1.19.0]: https://github.com/ehrbase/openEHR_SDK/compare/v1.18.0...v1.19.0
 
+[1.20.0]: https://github.com/ehrbase/openEHR_SDK/compare/v1.19.0...v1.20.0

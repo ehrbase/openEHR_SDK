@@ -1,102 +1,102 @@
 /*
+ * Copyright (c) 2020 vitasystems GmbH and Hannover Medical School.
  *
- * Copyright (c) 2020  Stefan Spiska (Vitasystems GmbH) and Hannover Medical School
- * This file is part of Project EHRbase
+ * This file is part of project openEHR_SDK
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *     https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
-
 package org.ehrbase.aql.dto.containment;
 
+import java.util.Objects;
+
 public class ContainmentDto implements ContainmentExpresionDto {
-  private int id;
-  private String archetypeId;
-  private ContainmentExpresionDto contains;
-  private String identifier;
+    private Containment containment = new Containment();
+    private int id;
+    private ContainmentExpresionDto contains;
+    private String identifier;
 
-  public int getId() {
-    return this.id;
-  }
+    public int getId() {
+        return this.id;
+    }
+    /**
+     * @deprecated use  {@link ContainmentDto#getContainment()} and {@link Containment#getArchetypeId()}
+     */
+    @Deprecated
+    public String getArchetypeId() {
+        return getContainment().getArchetypeId();
+    }
 
-  public String getArchetypeId() {
-    return this.archetypeId;
-  }
+    public ContainmentExpresionDto getContains() {
+        return this.contains;
+    }
 
-  public ContainmentExpresionDto getContains() {
-    return this.contains;
-  }
+    public void setId(int id) {
+        this.id = id;
+    }
+    /**
+     * @deprecated  use {@link ContainmentDto#getContainment()} and {@link Containment#setArchetypeId(String)}
+     */
+    @Deprecated
+    public void setArchetypeId(String archetypeId) {
+        getContainment().setArchetypeId(archetypeId);
+    }
 
-  public void setId(int id) {
-    this.id = id;
-  }
+    public void setContains(ContainmentExpresionDto contains) {
+        this.contains = contains;
+    }
 
-  public void setArchetypeId(String archetypeId) {
-    this.archetypeId = archetypeId;
-  }
+    public String getIdentifier() {
+        return identifier;
+    }
 
-  public void setContains(ContainmentExpresionDto contains) {
-    this.contains = contains;
-  }
+    public void setIdentifier(String identifier) {
+        this.identifier = identifier;
+    }
 
-  public String getIdentifier() {
-    return identifier;
-  }
+    public Containment getContainment() {
+        return containment;
+    }
 
-  public void setIdentifier(String identifier) {
-    this.identifier = identifier;
-  }
+    public void setContainment(Containment containment) {
+        this.containment = containment;
+    }
 
-  public boolean equals(final Object o) {
-    if (o == this) return true;
-    if (!(o instanceof ContainmentDto)) return false;
-    final ContainmentDto other = (ContainmentDto) o;
-    if (!other.canEqual((Object) this)) return false;
-    if (this.getId() != other.getId()) return false;
-    final Object this$archetypeId = this.getArchetypeId();
-    final Object other$archetypeId = other.getArchetypeId();
-    if (this$archetypeId == null
-        ? other$archetypeId != null
-        : !this$archetypeId.equals(other$archetypeId)) return false;
-    final Object this$contains = this.getContains();
-    final Object other$contains = other.getContains();
-    if (this$contains == null ? other$contains != null : !this$contains.equals(other$contains))
-      return false;
-    return true;
-  }
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        ContainmentDto that = (ContainmentDto) o;
+        return id == that.id
+                && Objects.equals(containment, that.containment)
+                && Objects.equals(contains, that.contains)
+                && Objects.equals(identifier, that.identifier);
+    }
 
-  protected boolean canEqual(final Object other) {
-    return other instanceof ContainmentDto;
-  }
+    @Override
+    public int hashCode() {
+        return Objects.hash(containment, id, contains, identifier);
+    }
 
-  public int hashCode() {
-    final int PRIME = 59;
-    int result = 1;
-    result = result * PRIME + this.getId();
-    final Object $archetypeId = this.getArchetypeId();
-    result = result * PRIME + ($archetypeId == null ? 43 : $archetypeId.hashCode());
-    final Object $contains = this.getContains();
-    result = result * PRIME + ($contains == null ? 43 : $contains.hashCode());
-    return result;
-  }
-
-  public String toString() {
-    return "ContainmentDto(id="
-        + this.getId()
-        + ", archetypeId="
-        + this.getArchetypeId()
-        + ", contains="
-        + this.getContains()
-        + ")";
-  }
+    @Override
+    public String toString() {
+        return "ContainmentDto{" + "containment="
+                + containment + ", id="
+                + id + ", contains="
+                + contains + ", identifier='"
+                + identifier + '\'' + '}';
+    }
 }

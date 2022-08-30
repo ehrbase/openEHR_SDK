@@ -1,16 +1,13 @@
 /*
- * Modifications copyright (C) 2019 Christian Chevalley, Vitasystems GmbH and Hannover Medical School.
-
- * This file is part of Project EHRbase
-
- * Copyright (c) 2015 Christian Chevalley
- * This file is part of Project Ethercis
+ * Copyright (c) 2019 vitasystems GmbH and Hannover Medical School.
+ *
+ * This file is part of project openEHR_SDK
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *     https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -18,22 +15,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.ehrbase.serialisation.dbencoding.rawjson;
 
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.internal.LinkedTreeMap;
-import org.ehrbase.serialisation.dbencoding.EncodeUtilArchie;
-import org.ehrbase.serialisation.dbencoding.wrappers.json.I_DvTypeAdapter;
-import org.ehrbase.serialisation.dbencoding.wrappers.json.writer.translator_db2raw.ArchieCompositionProlog;
-import org.ehrbase.serialisation.dbencoding.wrappers.json.writer.translator_db2raw.CompositionRoot;
-
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
+import org.ehrbase.serialisation.dbencoding.EncodeUtilArchie;
+import org.ehrbase.serialisation.dbencoding.wrappers.json.I_DvTypeAdapter;
+import org.ehrbase.serialisation.dbencoding.wrappers.json.writer.translator_db2raw.ArchieCompositionProlog;
+import org.ehrbase.serialisation.dbencoding.wrappers.json.writer.translator_db2raw.CompositionRoot;
 
 /**
  * Created by christian on 6/21/2017.
@@ -55,12 +50,10 @@ public class LightRawJsonEncoder {
         if (fromDB instanceof Map) {
             if (root != null) {
                 Object contentMap = ((Map) fromDB).get(root);
-                if (contentMap instanceof LinkedTreeMap && ((LinkedTreeMap) contentMap).size() == 0) //empty content
-                    raw = encodeNullContent();
-                else
-                    raw = gsonRaw.create().toJson(((Map) fromDB).get(root));
-            } else
-                raw = gsonRaw.create().toJson(fromDB);
+                if (contentMap instanceof LinkedTreeMap && ((LinkedTreeMap) contentMap).size() == 0) // empty content
+                raw = encodeNullContent();
+                else raw = gsonRaw.create().toJson(((Map) fromDB).get(root));
+            } else raw = gsonRaw.create().toJson(fromDB);
         }
 
         return raw;
@@ -76,7 +69,8 @@ public class LightRawJsonEncoder {
         GsonBuilder gsonRaw = EncodeUtilArchie.getGsonBuilderInstance(I_DvTypeAdapter.AdapterType.DBJSON2RAWJSON);
         JsonElement jsonElement = gsonRaw.create().toJsonTree(db2map(root != null && root.equals("value")));
         if (root != null) {
-            //in order to create the canonical form, build the ELEMENT json (hence the type is passed into the embedded value)
+            // in order to create the canonical form, build the ELEMENT json (hence the type is passed into the embedded
+            // value)
             jsonElement = jsonElement.getAsJsonObject().get(root);
         }
 
@@ -84,16 +78,17 @@ public class LightRawJsonEncoder {
     }
 
     public String encodeCompositionAsString() {
-        //get the composition root key
+        // get the composition root key
         String root = new CompositionRoot(jsonbOrigin).toString();
-        //convert to raw json
+        // convert to raw json
         String converted = encodeContentAsString(root);
 
         Map<String, Object> compoMap = (Map<String, Object>) db2map(false);
 
-        String compositionName = (String) ((Map)((List)compoMap.get("/name")).get(0)).get("value");
+        String compositionName = (String) ((Map) ((List) compoMap.get("/name")).get(0)).get("value");
 
-        return converted.replaceFirst(Pattern.quote("{"), new ArchieCompositionProlog(root, compositionName).toString());
+        return converted.replaceFirst(
+                Pattern.quote("{"), new ArchieCompositionProlog(root, compositionName).toString());
     }
 
     public Map<String, Object> encodeOtherDetailsAsMap() {
@@ -108,28 +103,28 @@ public class LightRawJsonEncoder {
         if (jsonbOrigin.startsWith("[")) {
             if (isValue) {
                 jsonbOrigin = jsonbOrigin.trim().substring(1, jsonbOrigin.length() - 1);
-            } else
-                isArray = true;
+            } else isArray = true;
         }
 
         Object fromDB = gsondb.create().fromJson(jsonbOrigin, isArray ? ArrayList.class : Map.class);
 
         if (fromDB instanceof Map && ((Map) fromDB).containsKey("content")) {
-            //push contents upward
+            // push contents upward
             Object contents = ((Map) fromDB).get("content");
 
             if (contents instanceof LinkedTreeMap) {
                 for (Object contentItem : ((LinkedTreeMap) contents).entrySet()) {
                     if (contentItem instanceof Map.Entry) {
-                        ((Map) fromDB).put(((Map.Entry) contentItem).getKey().toString(), ((Map.Entry) contentItem).getValue());
+                        ((Map) fromDB)
+                                .put(
+                                        ((Map.Entry) contentItem).getKey().toString(),
+                                        ((Map.Entry) contentItem).getValue());
                     }
                 }
                 ((Map) fromDB).remove("content");
             }
         }
 
-
         return fromDB;
     }
-
 }
