@@ -17,6 +17,7 @@
  */
 package org.ehrbase.client.openehrclient;
 
+import com.nedap.archie.rm.composition.Composition;
 import java.util.List;
 import java.util.Set;
 
@@ -31,6 +32,8 @@ public interface FolderDAO {
     FolderDAO getSubFolder(String path);
 
     <T> T addCompositionEntity(T entity);
+
+    VersionUid addRaw(Composition composition);
 
     <T> List<T> find(Class<T> clazz);
 }
