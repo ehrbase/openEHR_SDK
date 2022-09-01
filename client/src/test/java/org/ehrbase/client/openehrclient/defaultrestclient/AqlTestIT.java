@@ -56,6 +56,7 @@ import org.ehrbase.client.flattener.Flattener;
 import org.ehrbase.client.openehrclient.OpenEhrClient;
 import org.ehrbase.client.templateprovider.TestDataTemplateProvider;
 import org.ehrbase.response.openehr.QueryResponseData;
+import org.ehrbase.response.openehr.StoredQueryResponseData;
 import org.ehrbase.serialisation.jsonencoding.CanonicalJson;
 import org.ehrbase.test_data.composition.CompositionTestDataCanonicalJson;
 import org.junit.After;
@@ -546,7 +547,7 @@ public class AqlTestIT {
     }
 
     @Test
-    public void testExecute17() {
+    public void testExecuteStoredAqlQueryInvalid1() {
 
         ehr = openEhrClient.ehrEndpoint().createEhr();
 
@@ -561,9 +562,7 @@ public class AqlTestIT {
     }
 
     @Test
-    public void testExecute18() {
-
-        ehr = openEhrClient.ehrEndpoint().createEhr();
+    public void testExecuteStoredAqlQueryInvalid2() {
 
         Exception exception = assertThrows(
                 ClientException.class,
@@ -576,9 +575,7 @@ public class AqlTestIT {
     }
 
     @Test
-    public void testExecute19() {
-
-        ehr = openEhrClient.ehrEndpoint().createEhr();
+    public void testExecuteStoredAqlQueryInvalid3() {
 
         Exception exception = assertThrows(
                 WrongStatusCodeException.class,
@@ -590,4 +587,157 @@ public class AqlTestIT {
 
         assertTrue(actualMessage.contains(expectedMessage));
     }
+
+    @Test
+    public void testStoreAqlQueryInvalid1() {
+
+        Exception exception = assertThrows(
+                ClientException.class,
+                () -> openEhrClient.aqlEndpoint().storeAqlQuery(null,null,Optional.empty(),Optional.empty()));
+
+        String expectedMessage = "Invalid query";
+
+        assertTrue(exception.getMessage().contains(expectedMessage));
+
+        exception = assertThrows(
+                ClientException.class,
+                () -> openEhrClient.aqlEndpoint().storeAqlQuery(null,"",Optional.empty(),Optional.empty()));
+
+
+        assertTrue(exception.getMessage().contains(expectedMessage));
+    }
+
+    @Test
+    public void testStoreAqlQueryInvalid2() {
+
+        Query<Record2<UUID, Double>> query = Query.buildNativeQuery(
+                "select e/ehr_id/value,o/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/magnitude  "
+                        + "from EHR e[ehr_id/value = $ehr_id]  "
+                        + "contains COMPOSITION a [openEHR-EHR-COMPOSITION.sample_encounter.v1] contains Observation o[openEHR-EHR-OBSERVATION.sample_blood_pressure.v1]"
+                        + "where o/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/magnitude = 1.1",
+                UUID.class,
+                Double.class);
+
+        Exception exception = assertThrows(
+                ClientException.class,
+                () -> openEhrClient.aqlEndpoint().storeAqlQuery(query,null,Optional.empty(),Optional.empty()));
+
+        String expectedMessage = "Invalid parameters";
+
+        assertTrue(exception.getMessage().contains(expectedMessage));
+
+        exception = assertThrows(
+                ClientException.class,
+                () -> openEhrClient.aqlEndpoint().storeAqlQuery(query,"",Optional.empty(),Optional.empty()));
+
+        assertTrue(exception.getMessage().contains(expectedMessage));
+    }
+
+    @Test
+    public void testGetAqlQueryInvalid() {
+        checkInvalidStoredAqlQuery(null, null);
+        checkInvalidStoredAqlQuery(null, "");
+        checkInvalidStoredAqlQuery("", null);
+        checkInvalidStoredAqlQuery("", "");
+    }
+
+    private void checkInvalidStoredAqlQuery(String qualifiedQueryName, String version){
+        Exception exception = assertThrows(
+                ClientException.class,
+                () -> openEhrClient.aqlEndpoint().getStoredAqlQuery(qualifiedQueryName,version));
+
+        String expectedMessage = "Invalid query";
+
+        assertTrue(exception.getMessage().contains(expectedMessage));
+    }
+
+    @Test
+    public void testStoreAndRetrieveAqlQuery() {
+
+        Query<Record2<UUID, Double>> query = Query.buildNativeQuery(
+                "SELECT c " +
+                        "FROM EHR e[ehr_id/value=$ehr_id] " +
+                        "CONTAINS COMPOSITION c[openEHR-EHR-COMPOSITION.encounter.v1] " +
+                        "CONTAINS OBSERVATION obs[openEHR-EHR-OBSERVATION.blood_pressure.v1] " +
+                        "WHERE obs/data[at0001]/events[at0006]/data[at0003]/items[at0004]/value/magnitude >= 100",
+                UUID.class,
+                Double.class);
+
+        String qualifiedQueryName = "org.openehr::storedQueryName";
+        int patchVersion = 0;
+        String version = "1.0.";
+
+        boolean successful = false;
+
+        do {
+            //try to store the query
+            try {
+                openEhrClient.aqlEndpoint().storeAqlQuery(query, qualifiedQueryName, Optional.of(version + patchVersion), Optional.empty());
+                successful = true;
+            } catch (Exception e) {
+                patchVersion++;
+            }
+        }
+        while(!successful && patchVersion < 1000);
+
+        String fullVersion = version+patchVersion;
+
+        StoredQueryResponseData storedAqlQuery = openEhrClient.aqlEndpoint().getStoredAqlQuery(qualifiedQueryName, fullVersion);
+
+        //TODO: the qualified query name should not have the version number included
+        String expectedName = qualifiedQueryName + "/" + version + patchVersion;
+        assertEquals(expectedName,storedAqlQuery.getName());
+
+        //TODO: version is currently included within the qualified name and the version field is not filled
+        //this seems to not be conform to the specification
+        //https://specifications.openehr.org/releases/ITS-REST/Release-1.0.0/definitions.html#definitions-stored-query-get-1 (for Release 1.0.0)
+        //https://specifications.openehr.org/releases/ITS-REST/Release-1.0.2/definitions.html#definitions-stored-query-get-1 (for currently valid Release 1.0.2)
+        //assertEquals(fullVersion,storedAqlQuery.getVersion());
+        assertEquals(query.buildAql(),storedAqlQuery.getAqlQuery());
+    }
+
+    @Test
+    public void testExecuteStoredAqlQuery() {
+
+        ehr = openEhrClient.ehrEndpoint().createEhr();
+
+        Query<Record2<UUID, Double>> query = Query.buildNativeQuery(
+                "SELECT c " +
+                        "FROM EHR e[ehr_id/value=$ehr_id] " +
+                        "CONTAINS COMPOSITION c[openEHR-EHR-COMPOSITION.encounter.v1] " +
+                        "CONTAINS OBSERVATION obs[openEHR-EHR-OBSERVATION.blood_pressure.v1] " +
+                        "WHERE obs/data[at0001]/events[at0006]/data[at0003]/items[at0004]/value/magnitude >= 100",
+                UUID.class,
+                Double.class);
+
+        String qualifiedQueryName = "org.openehr::storedQueryName";
+        int patchVersion = 0;
+        String version = "1.0.";
+
+        boolean successful = false;
+
+        do {
+            //try to store the query
+            try {
+                openEhrClient.aqlEndpoint().storeAqlQuery(query, qualifiedQueryName, Optional.of(version + patchVersion), Optional.empty());
+                successful = true;
+            } catch (Exception e) {
+                patchVersion++;
+            }
+        }
+        while(!successful && patchVersion < 1000);
+
+        String fullVersion = version+patchVersion;
+
+        QueryResponseData queryResponse = openEhrClient.aqlEndpoint().executeStoredQuery(qualifiedQueryName, fullVersion, Optional.of(ehr), Optional.empty(), Optional.empty(), Optional.empty());
+
+        //TODO: the qualified query name should not have the version number included
+        String expectedName = qualifiedQueryName + "/" + version + patchVersion;
+        assertEquals(expectedName,queryResponse.getName());
+
+        assertEquals(query.buildAql(),queryResponse.getQuery());
+
+        assertTrue(queryResponse.getColumns().size() > 0);
+    }
+
 }

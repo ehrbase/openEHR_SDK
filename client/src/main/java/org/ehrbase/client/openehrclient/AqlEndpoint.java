@@ -25,6 +25,7 @@ import org.ehrbase.client.aql.parameter.ParameterValue;
 import org.ehrbase.client.aql.query.Query;
 import org.ehrbase.client.aql.record.Record;
 import org.ehrbase.response.openehr.QueryResponseData;
+import org.ehrbase.response.openehr.StoredQueryResponseData;
 
 public interface AqlEndpoint {
 
@@ -38,4 +39,12 @@ public interface AqlEndpoint {
                                          Optional<Integer> offset,
                                          Optional<Integer> fetch,
                                          Optional<String> queryParameters);
+
+    StoredQueryResponseData getStoredAqlQuery(String qualifiedQueryName,
+                                              String version);
+
+    void storeAqlQuery(Query query,
+                       String qualifiedQueryName,
+                       Optional<String> version,
+                       Optional<String> type);
 }

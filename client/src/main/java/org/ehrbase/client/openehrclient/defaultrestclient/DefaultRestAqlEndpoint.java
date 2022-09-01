@@ -54,14 +54,16 @@ import org.ehrbase.client.flattener.Flattener;
 import org.ehrbase.client.openehrclient.AqlEndpoint;
 import org.ehrbase.client.openehrclient.VersionUid;
 import org.ehrbase.response.openehr.QueryResponseData;
+import org.ehrbase.response.openehr.StoredQueryResponseData;
 import org.ehrbase.serialisation.jsonencoding.ArchieObjectMapperProvider;
 import org.ehrbase.webtemplate.templateprovider.TemplateProvider;
+import org.json.JSONObject;
 
 public class DefaultRestAqlEndpoint implements AqlEndpoint {
 
     public static final String AQL_PATH = "rest/openehr/v1/query/aql/";
-
     public static final String AQL_STORED_QUERY_PATH = "rest/openehr/v1/query/";
+    public static final String STORE_AQL_QUERY_PATH = "rest/openehr/v1/definition/query/";
     public static final String QUERY_MAP_KEY = "q";
     public static final ObjectMapper AQL_OBJECT_MAPPER = buildAqlObjectMapper();
 
@@ -194,25 +196,20 @@ public class DefaultRestAqlEndpoint implements AqlEndpoint {
             throw new ClientException("Invalid queryParameters");
         }
 
-        URI baseUri = defaultRestClient.getConfig().getBaseUri();
-
-        URIBuilder uriBuilder = new URIBuilder().
-                setScheme(baseUri.getScheme()).
-                setHost(baseUri.getHost()).
-                setPort(baseUri.getPort());
-
-        uriBuilder.setPath(baseUri.getPath()
+        URIBuilder uriBuilder = getBaseUriBuilder().setPath(
+                defaultRestClient.getConfig().getBaseUri().getPath()
                 + AQL_STORED_QUERY_PATH
                 + qualifiedQueryName + "/"
-                + version);
+                + version
+        );
 
-        ehrId.ifPresent(uuid -> uriBuilder.addParameter("ehr_id", uuid.toString()));
+        ehrId.ifPresent(value -> uriBuilder.addParameter("ehr_id", value.toString()));
 
-        offset.ifPresent(integer -> uriBuilder.addParameter("offset", integer.toString()));
+        offset.ifPresent(value -> uriBuilder.addParameter("offset", value.toString()));
 
-        fetch.ifPresent(integer -> uriBuilder.addParameter("fetch", integer.toString()));
+        fetch.ifPresent(value -> uriBuilder.addParameter("fetch", value.toString()));
 
-        queryParameters.ifPresent(s -> uriBuilder.addParameter("query_parameters", s.toString()));
+        queryParameters.ifPresent(value -> uriBuilder.addParameter("query_parameters", value));
 
         try {
             HttpResponse response = defaultRestClient.internalGet(
@@ -226,6 +223,82 @@ public class DefaultRestAqlEndpoint implements AqlEndpoint {
         } catch (IOException | URISyntaxException e) {
             throw new ClientException(e.getMessage(), e);
         }
+    }
+
+    @Override
+    public StoredQueryResponseData getStoredAqlQuery(String qualifiedQueryName, String version) {
+        if (StringUtils.isEmpty(qualifiedQueryName) || StringUtils.isEmpty(version) ) {
+            throw new ClientException("Invalid query");
+        }
+
+        URIBuilder uriBuilder = getBaseUriBuilder().setPath(
+                defaultRestClient.getConfig().getBaseUri().getPath()
+                        + AQL_STORED_QUERY_PATH
+                        + qualifiedQueryName + "/"
+                        + version
+        );
+
+        try {
+            HttpResponse response = defaultRestClient.internalGet(
+                    uriBuilder.build(),
+                    Collections.emptyMap(),
+                    ContentType.APPLICATION_JSON.getMimeType());
+
+            String responseJson = EntityUtils.toString(response.getEntity());
+
+            return DefaultRestClient.OBJECT_MAPPER.readValue(responseJson, StoredQueryResponseData.class);
+        } catch (IOException | URISyntaxException e) {
+            throw new ClientException(e.getMessage(), e);
+        }
+    }
+
+    @Override
+    public void storeAqlQuery(Query query,
+                  String qualifiedQueryName,
+                  Optional<String> version,
+                  Optional<String> type){
+
+        if (query == null) {
+            throw new ClientException("Invalid query");
+        }
+
+        if (StringUtils.isEmpty(qualifiedQueryName)) {
+            throw new ClientException("Invalid parameters");
+        }
+
+        JSONObject requestBody = new JSONObject();
+        requestBody.put("q", query.buildAql());
+
+        URIBuilder uriBuilder = getBaseUriBuilder().setPath(
+                defaultRestClient.getConfig().getBaseUri().getPath()
+                + STORE_AQL_QUERY_PATH
+                + qualifiedQueryName
+                + "/"
+                + version.orElse("")
+        );
+
+        type.ifPresent(t -> uriBuilder.addParameter("type", t));
+
+        try {
+            defaultRestClient.internalPut(
+                    uriBuilder.build(),
+                    Collections.emptyMap(),
+                    requestBody.toString(),
+                    ContentType.APPLICATION_JSON,
+                    ContentType.APPLICATION_JSON.getMimeType());
+
+        } catch (URISyntaxException e) {
+            throw new ClientException(e.getMessage(), e);
+        }
+    }
+
+    private URIBuilder getBaseUriBuilder(){
+        URI baseUri = defaultRestClient.getConfig().getBaseUri();
+
+        return new URIBuilder().
+                setScheme(baseUri.getScheme()).
+                setHost(baseUri.getHost()).
+                setPort(baseUri.getPort());
     }
 
     private Object extractValue(String valueAsString, Class<?> aClass)
