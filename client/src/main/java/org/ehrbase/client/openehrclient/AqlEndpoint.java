@@ -18,6 +18,9 @@
 package org.ehrbase.client.openehrclient;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+
 import org.ehrbase.client.aql.parameter.ParameterValue;
 import org.ehrbase.client.aql.query.Query;
 import org.ehrbase.client.aql.record.Record;
@@ -28,4 +31,11 @@ public interface AqlEndpoint {
     <T extends Record> List<T> execute(Query<T> query, ParameterValue... parameterValues);
 
     QueryResponseData executeRaw(Query query, ParameterValue... parameterValues);
+
+    QueryResponseData executeStoredQuery(String qualifiedQueryName,
+                                         String version,
+                                         Optional<UUID> ehrId,
+                                         Optional<Integer> offset,
+                                         Optional<Integer> fetch,
+                                         Optional<String> queryParameters);
 }

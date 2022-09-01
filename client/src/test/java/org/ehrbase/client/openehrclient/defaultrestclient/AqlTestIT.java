@@ -32,6 +32,7 @@ import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.io.IOUtils;
@@ -539,6 +540,52 @@ public class AqlTestIT {
                 () -> openEhrClient.aqlEndpoint().executeRaw(null, new ParameterValue("ehr_id", ehr)));
 
         String expectedMessage = "Invalid query";
+        String actualMessage = exception.getMessage();
+
+        assertTrue(actualMessage.contains(expectedMessage));
+    }
+
+    @Test
+    public void testExecute17() {
+
+        ehr = openEhrClient.ehrEndpoint().createEhr();
+
+        Exception exception = assertThrows(
+                ClientException.class,
+                () -> openEhrClient.aqlEndpoint().executeStoredQuery(null,null, Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty()));
+
+        String expectedMessage = "Invalid query";
+        String actualMessage = exception.getMessage();
+
+        assertTrue(actualMessage.contains(expectedMessage));
+    }
+
+    @Test
+    public void testExecute18() {
+
+        ehr = openEhrClient.ehrEndpoint().createEhr();
+
+        Exception exception = assertThrows(
+                ClientException.class,
+                () -> openEhrClient.aqlEndpoint().executeStoredQuery("queryName",null, Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty()));
+
+        String expectedMessage = "Invalid query";
+        String actualMessage = exception.getMessage();
+
+        assertTrue(actualMessage.contains(expectedMessage));
+    }
+
+    @Test
+    public void testExecute19() {
+
+        ehr = openEhrClient.ehrEndpoint().createEhr();
+
+        Exception exception = assertThrows(
+                WrongStatusCodeException.class,
+                () -> openEhrClient.aqlEndpoint().executeStoredQuery("org.openehr::blablabla","1.0", Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty())
+        );
+
+        String expectedMessage = "Could not retrieve stored query for qualified name";
         String actualMessage = exception.getMessage();
 
         assertTrue(actualMessage.contains(expectedMessage));
