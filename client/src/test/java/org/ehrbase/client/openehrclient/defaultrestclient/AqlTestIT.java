@@ -567,7 +567,6 @@ public class AqlTestIT {
     @Test
     public void testExecuteStoredAqlQueryInvalid2() {
         performInvalidExecuteStoredQuery2(new StoredQueryParameter("org.openehr::blablabla", null));
-        performInvalidExecuteStoredQuery2(new StoredQueryParameter("org.openehr::blablabla", "version"));
     }
 
     private void performInvalidExecuteStoredQuery2(StoredQueryParameter requestParam) {
