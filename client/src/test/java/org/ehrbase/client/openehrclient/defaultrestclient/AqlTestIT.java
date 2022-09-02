@@ -32,7 +32,6 @@ import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.io.IOUtils;
@@ -45,6 +44,7 @@ import org.ehrbase.client.aql.field.EhrFields;
 import org.ehrbase.client.aql.field.NativeSelectAqlField;
 import org.ehrbase.client.aql.parameter.Parameter;
 import org.ehrbase.client.aql.parameter.ParameterValue;
+import org.ehrbase.client.aql.parameter.StoredQueryParameter;
 import org.ehrbase.client.aql.query.EntityQuery;
 import org.ehrbase.client.aql.query.Query;
 import org.ehrbase.client.aql.record.Record2;
@@ -547,13 +547,16 @@ public class AqlTestIT {
     }
 
     @Test
-    public void testExecuteStoredAqlQueryInvalid1() {
+    public void testExecuteStoredAqlQueryInvalid() {
+        performInvalidExecuteStoredQuery(null);
+        performInvalidExecuteStoredQuery(new StoredQueryParameter(null, null));
+        performInvalidExecuteStoredQuery(new StoredQueryParameter("queryName", null));
+        performInvalidExecuteStoredQuery(new StoredQueryParameter(null, "version"));
+    }
 
-        ehr = openEhrClient.ehrEndpoint().createEhr();
-
-        Exception exception = assertThrows(ClientException.class, () -> openEhrClient
-                .aqlEndpoint()
-                .executeStoredQuery(null, null, Optional.empty(), Optional.empty(), Optional.empty()));
+    private void performInvalidExecuteStoredQuery(StoredQueryParameter requestParam) {
+        Exception exception = assertThrows(
+                ClientException.class, () -> openEhrClient.aqlEndpoint().executeStoredQuery(requestParam));
 
         String expectedMessage = "Invalid query";
         String actualMessage = exception.getMessage();
@@ -563,24 +566,14 @@ public class AqlTestIT {
 
     @Test
     public void testExecuteStoredAqlQueryInvalid2() {
-
-        Exception exception = assertThrows(ClientException.class, () -> openEhrClient
-                .aqlEndpoint()
-                .executeStoredQuery("queryName", null, Optional.empty(), Optional.empty(), Optional.empty()));
-
-        String expectedMessage = "Invalid query";
-        String actualMessage = exception.getMessage();
-
-        assertTrue(actualMessage.contains(expectedMessage));
+        performInvalidExecuteStoredQuery2(new StoredQueryParameter("org.openehr::blablabla", null));
+        performInvalidExecuteStoredQuery2(new StoredQueryParameter("org.openehr::blablabla", "version"));
     }
 
-    @Test
-    public void testExecuteStoredAqlQueryInvalid3() {
-
-        Exception exception = assertThrows(WrongStatusCodeException.class, () -> openEhrClient
-                .aqlEndpoint()
-                .executeStoredQuery(
-                        "org.openehr::blablabla", "1.0", Optional.empty(), Optional.empty(), Optional.empty()));
+    private void performInvalidExecuteStoredQuery2(StoredQueryParameter requestParam) {
+        Exception exception = assertThrows(
+                WrongStatusCodeException.class,
+                () -> openEhrClient.aqlEndpoint().executeStoredQuery(requestParam));
 
         String expectedMessage = "Could not retrieve stored query for qualified name";
         String actualMessage = exception.getMessage();
@@ -590,24 +583,10 @@ public class AqlTestIT {
 
     @Test
     public void testStoreAqlQueryInvalid1() {
-
-        Exception exception = assertThrows(
-                ClientException.class,
-                () -> openEhrClient.aqlEndpoint().storeAqlQuery(null, null, Optional.empty(), Optional.empty()));
-
-        String expectedMessage = "Invalid query";
-
-        assertTrue(exception.getMessage().contains(expectedMessage));
-
-        exception = assertThrows(
-                ClientException.class,
-                () -> openEhrClient.aqlEndpoint().storeAqlQuery(null, "", Optional.empty(), Optional.empty()));
-
-        assertTrue(exception.getMessage().contains(expectedMessage));
-    }
-
-    @Test
-    public void testStoreAqlQueryInvalid2() {
+        performInvalidStoreAqlQuery(null, null);
+        performInvalidStoreAqlQuery(null, new StoredQueryParameter(null, null));
+        performInvalidStoreAqlQuery(null, new StoredQueryParameter("queryName", null));
+        performInvalidStoreAqlQuery(null, new StoredQueryParameter(null, "version"));
 
         Query<Record2<UUID, Double>> query = Query.buildNativeQuery(
                 "select e/ehr_id/value,o/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/magnitude  "
@@ -617,17 +596,17 @@ public class AqlTestIT {
                 UUID.class,
                 Double.class);
 
+        performInvalidStoreAqlQuery(query, null);
+        performInvalidStoreAqlQuery(query, new StoredQueryParameter(null, null));
+        performInvalidStoreAqlQuery(query, new StoredQueryParameter("queryName", null));
+        performInvalidStoreAqlQuery(query, new StoredQueryParameter(null, "version"));
+    }
+
+    private void performInvalidStoreAqlQuery(Query query, StoredQueryParameter requestParam) {
         Exception exception = assertThrows(
-                ClientException.class,
-                () -> openEhrClient.aqlEndpoint().storeAqlQuery(query, null, Optional.empty(), Optional.empty()));
+                ClientException.class, () -> openEhrClient.aqlEndpoint().storeAqlQuery(query, requestParam));
 
-        String expectedMessage = "Invalid parameters";
-
-        assertTrue(exception.getMessage().contains(expectedMessage));
-
-        exception = assertThrows(
-                ClientException.class,
-                () -> openEhrClient.aqlEndpoint().storeAqlQuery(query, "", Optional.empty(), Optional.empty()));
+        String expectedMessage = "Invalid query";
 
         assertTrue(exception.getMessage().contains(expectedMessage));
     }
@@ -641,9 +620,10 @@ public class AqlTestIT {
     }
 
     private void checkInvalidStoredAqlQuery(String qualifiedQueryName, String version) {
+        StoredQueryParameter requestParam = new StoredQueryParameter(qualifiedQueryName, version);
+
         Exception exception = assertThrows(
-                ClientException.class,
-                () -> openEhrClient.aqlEndpoint().getStoredAqlQuery(qualifiedQueryName, version));
+                ClientException.class, () -> openEhrClient.aqlEndpoint().getStoredAqlQuery(requestParam));
 
         String expectedMessage = "Invalid query";
 
@@ -672,8 +652,7 @@ public class AqlTestIT {
             try {
                 openEhrClient
                         .aqlEndpoint()
-                        .storeAqlQuery(
-                                query, qualifiedQueryName, Optional.of(version + patchVersion), Optional.empty());
+                        .storeAqlQuery(query, new StoredQueryParameter(qualifiedQueryName, version + patchVersion));
                 successful = true;
             } catch (Exception e) {
                 patchVersion++;
@@ -682,8 +661,9 @@ public class AqlTestIT {
 
         String fullVersion = version + patchVersion;
 
-        StoredQueryResponseData storedAqlQuery =
-                openEhrClient.aqlEndpoint().getStoredAqlQuery(qualifiedQueryName, fullVersion);
+        StoredQueryResponseData storedAqlQuery = openEhrClient
+                .aqlEndpoint()
+                .getStoredAqlQuery(new StoredQueryParameter(qualifiedQueryName, fullVersion));
 
         // TODO: the qualified query name should not have the version number included
         String expectedName = qualifiedQueryName + "/" + version + patchVersion;
@@ -721,8 +701,7 @@ public class AqlTestIT {
             try {
                 openEhrClient
                         .aqlEndpoint()
-                        .storeAqlQuery(
-                                query, qualifiedQueryName, Optional.of(version + patchVersion), Optional.empty());
+                        .storeAqlQuery(query, new StoredQueryParameter(qualifiedQueryName, version + patchVersion));
                 successful = true;
             } catch (Exception e) {
                 patchVersion++;
@@ -733,14 +712,62 @@ public class AqlTestIT {
 
         QueryResponseData queryResponse = openEhrClient
                 .aqlEndpoint()
-                .executeStoredQuery(
-                        qualifiedQueryName, fullVersion, Optional.empty(), Optional.empty(), Optional.empty());
+                .executeStoredQuery(new StoredQueryParameter(qualifiedQueryName, fullVersion));
 
         // TODO: the qualified query name should not have the version number included
         String expectedName = qualifiedQueryName + "/" + version + patchVersion;
         assertEquals(expectedName, queryResponse.getName());
 
         assertEquals(query.buildAql(), queryResponse.getQuery());
+
+        assertTrue(queryResponse.getColumns().size() > 0);
+    }
+
+    @Test
+    public void testExecuteStoredAqlQueryFullParams() {
+
+        ehr = openEhrClient.ehrEndpoint().createEhr();
+
+        Query<Record2<UUID, Double>> query = Query.buildNativeQuery(
+                "SELECT c " + "FROM EHR e[ehr_id/value=$ehr_id] "
+                        + "CONTAINS COMPOSITION c[openEHR-EHR-COMPOSITION.encounter.v1] "
+                        + "CONTAINS OBSERVATION obs[openEHR-EHR-OBSERVATION.blood_pressure.v1] "
+                        + "WHERE obs/data[at0001]/events[at0006]/data[at0003]/items[at0004]/value/magnitude >= 100",
+                UUID.class,
+                Double.class);
+
+        String qualifiedQueryName = "org.openehr::storedQueryName";
+        int patchVersion = 0;
+        String version = "1.0.";
+
+        boolean successful = false;
+
+        do {
+            // try to store the query
+            try {
+                openEhrClient
+                        .aqlEndpoint()
+                        .storeAqlQuery(query, new StoredQueryParameter(qualifiedQueryName, version + patchVersion));
+                successful = true;
+            } catch (Exception e) {
+                patchVersion++;
+            }
+        } while (!successful && patchVersion < 1000);
+
+        String fullVersion = version + patchVersion;
+
+        int offsetValue = 1;
+        int fetchValue = 2;
+        StoredQueryParameter queryParameter = new StoredQueryParameter(qualifiedQueryName, fullVersion);
+        queryParameter.offset(offsetValue).fetch(fetchValue).addQueryParam("ehr_id", ehr.toString());
+
+        QueryResponseData queryResponse = openEhrClient.aqlEndpoint().executeStoredQuery(queryParameter);
+
+        // TODO: the qualified query name should not have the version number included
+        String expectedName = qualifiedQueryName + "/" + version + patchVersion;
+        assertEquals(expectedName, queryResponse.getName());
+
+        assertEquals(query.buildAql() + " LIMIT " + fetchValue + " OFFSET " + offsetValue, queryResponse.getQuery());
 
         assertTrue(queryResponse.getColumns().size() > 0);
     }

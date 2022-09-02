@@ -44,6 +44,7 @@ import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.aql.field.AqlField;
 import org.ehrbase.client.aql.field.ListSelectAqlField;
 import org.ehrbase.client.aql.parameter.ParameterValue;
+import org.ehrbase.client.aql.parameter.StoredQueryParameter;
 import org.ehrbase.client.aql.query.Query;
 import org.ehrbase.client.aql.record.Record;
 import org.ehrbase.client.aql.record.RecordImp;
@@ -180,37 +181,24 @@ public class DefaultRestAqlEndpoint implements AqlEndpoint {
     }
 
     @Override
-    public QueryResponseData executeStoredQuery(
-            String qualifiedQueryName,
-            String version,
-            // Optional<UUID> ehrId, // TODO: ehr_id not available in openEHR 1.0.0 spec. Has to be included in
-            // queryParameter
-            Optional<Integer> offset,
-            Optional<Integer> fetch,
-            Optional<String> queryParameters) {
+    public QueryResponseData executeStoredQuery(StoredQueryParameter queryParameter) {
 
-        if (StringUtils.isEmpty(qualifiedQueryName) || StringUtils.isEmpty(version)) {
+        if (queryParameter == null || !queryParameter.isValid()) {
             throw new ClientException("Invalid query");
-        }
-
-        if (queryParameters.isPresent() && queryParameters.get().isEmpty()) {
-            throw new ClientException("Invalid queryParameters");
         }
 
         URIBuilder uriBuilder = getBaseUriBuilder()
                 .setPath(defaultRestClient.getConfig().getBaseUri().getPath()
                         + AQL_STORED_QUERY_PATH
-                        + qualifiedQueryName + "/"
-                        + version);
+                        + queryParameter.getPath());
 
-        // TODO: ehr_id not available in openEHR 1.0.0 spec
-        // ehrId.ifPresent(value -> uriBuilder.addParameter("ehr_id", value.toString()));
+        queryParameter.getOffset().ifPresent(value -> uriBuilder.addParameter("offset", value.toString()));
 
-        offset.ifPresent(value -> uriBuilder.addParameter("offset", value.toString()));
+        queryParameter.getFetch().ifPresent(value -> uriBuilder.addParameter("fetch", value.toString()));
 
-        fetch.ifPresent(value -> uriBuilder.addParameter("fetch", value.toString()));
-
-        queryParameters.ifPresent(value -> uriBuilder.addParameter("query_parameters", value));
+        for (Map.Entry<String, String> param : queryParameter.getQueryParams().entrySet()) {
+            uriBuilder.addParameter(param.getKey(), param.getValue());
+        }
 
         try {
             HttpResponse response = defaultRestClient.internalGet(
@@ -225,16 +213,15 @@ public class DefaultRestAqlEndpoint implements AqlEndpoint {
     }
 
     @Override
-    public StoredQueryResponseData getStoredAqlQuery(String qualifiedQueryName, String version) {
-        if (StringUtils.isEmpty(qualifiedQueryName) || StringUtils.isEmpty(version)) {
+    public StoredQueryResponseData getStoredAqlQuery(StoredQueryParameter queryParameter) {
+        if (queryParameter == null || !queryParameter.isValid()) {
             throw new ClientException("Invalid query");
         }
 
         URIBuilder uriBuilder = getBaseUriBuilder()
                 .setPath(defaultRestClient.getConfig().getBaseUri().getPath()
                         + AQL_STORED_QUERY_PATH
-                        + qualifiedQueryName + "/"
-                        + version);
+                        + queryParameter.getPath());
 
         try {
             HttpResponse response = defaultRestClient.internalGet(
@@ -249,13 +236,13 @@ public class DefaultRestAqlEndpoint implements AqlEndpoint {
     }
 
     @Override
-    public void storeAqlQuery(Query query, String qualifiedQueryName, Optional<String> version, Optional<String> type) {
+    public void storeAqlQuery(Query query, StoredQueryParameter queryParameter) {
 
         if (query == null) {
             throw new ClientException("Invalid query");
         }
 
-        if (StringUtils.isEmpty(qualifiedQueryName)) {
+        if (queryParameter == null || !queryParameter.isValid()) {
             throw new ClientException("Invalid parameters");
         }
 
@@ -265,11 +252,9 @@ public class DefaultRestAqlEndpoint implements AqlEndpoint {
         URIBuilder uriBuilder = getBaseUriBuilder()
                 .setPath(defaultRestClient.getConfig().getBaseUri().getPath()
                         + STORE_AQL_QUERY_PATH
-                        + qualifiedQueryName
-                        + "/"
-                        + version.orElse(""));
+                        + queryParameter.getPath());
 
-        type.ifPresent(t -> uriBuilder.addParameter("type", t));
+        queryParameter.getType().ifPresent(type -> uriBuilder.addParameter("type", type));
 
         try {
             defaultRestClient.internalPut(
