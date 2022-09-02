@@ -551,9 +551,9 @@ public class AqlTestIT {
 
         ehr = openEhrClient.ehrEndpoint().createEhr();
 
-        Exception exception = assertThrows(
-                ClientException.class,
-                () -> openEhrClient.aqlEndpoint().executeStoredQuery(null,null,  Optional.empty(), Optional.empty(), Optional.empty()));
+        Exception exception = assertThrows(ClientException.class, () -> openEhrClient
+                .aqlEndpoint()
+                .executeStoredQuery(null, null, Optional.empty(), Optional.empty(), Optional.empty()));
 
         String expectedMessage = "Invalid query";
         String actualMessage = exception.getMessage();
@@ -564,9 +564,9 @@ public class AqlTestIT {
     @Test
     public void testExecuteStoredAqlQueryInvalid2() {
 
-        Exception exception = assertThrows(
-                ClientException.class,
-                () -> openEhrClient.aqlEndpoint().executeStoredQuery("queryName",null, Optional.empty(), Optional.empty(), Optional.empty()));
+        Exception exception = assertThrows(ClientException.class, () -> openEhrClient
+                .aqlEndpoint()
+                .executeStoredQuery("queryName", null, Optional.empty(), Optional.empty(), Optional.empty()));
 
         String expectedMessage = "Invalid query";
         String actualMessage = exception.getMessage();
@@ -577,10 +577,10 @@ public class AqlTestIT {
     @Test
     public void testExecuteStoredAqlQueryInvalid3() {
 
-        Exception exception = assertThrows(
-                WrongStatusCodeException.class,
-                () -> openEhrClient.aqlEndpoint().executeStoredQuery("org.openehr::blablabla","1.0",  Optional.empty(), Optional.empty(), Optional.empty())
-        );
+        Exception exception = assertThrows(WrongStatusCodeException.class, () -> openEhrClient
+                .aqlEndpoint()
+                .executeStoredQuery(
+                        "org.openehr::blablabla", "1.0", Optional.empty(), Optional.empty(), Optional.empty()));
 
         String expectedMessage = "Could not retrieve stored query for qualified name";
         String actualMessage = exception.getMessage();
@@ -593,7 +593,7 @@ public class AqlTestIT {
 
         Exception exception = assertThrows(
                 ClientException.class,
-                () -> openEhrClient.aqlEndpoint().storeAqlQuery(null,null,Optional.empty(),Optional.empty()));
+                () -> openEhrClient.aqlEndpoint().storeAqlQuery(null, null, Optional.empty(), Optional.empty()));
 
         String expectedMessage = "Invalid query";
 
@@ -601,8 +601,7 @@ public class AqlTestIT {
 
         exception = assertThrows(
                 ClientException.class,
-                () -> openEhrClient.aqlEndpoint().storeAqlQuery(null,"",Optional.empty(),Optional.empty()));
-
+                () -> openEhrClient.aqlEndpoint().storeAqlQuery(null, "", Optional.empty(), Optional.empty()));
 
         assertTrue(exception.getMessage().contains(expectedMessage));
     }
@@ -620,7 +619,7 @@ public class AqlTestIT {
 
         Exception exception = assertThrows(
                 ClientException.class,
-                () -> openEhrClient.aqlEndpoint().storeAqlQuery(query,null,Optional.empty(),Optional.empty()));
+                () -> openEhrClient.aqlEndpoint().storeAqlQuery(query, null, Optional.empty(), Optional.empty()));
 
         String expectedMessage = "Invalid parameters";
 
@@ -628,7 +627,7 @@ public class AqlTestIT {
 
         exception = assertThrows(
                 ClientException.class,
-                () -> openEhrClient.aqlEndpoint().storeAqlQuery(query,"",Optional.empty(),Optional.empty()));
+                () -> openEhrClient.aqlEndpoint().storeAqlQuery(query, "", Optional.empty(), Optional.empty()));
 
         assertTrue(exception.getMessage().contains(expectedMessage));
     }
@@ -641,10 +640,10 @@ public class AqlTestIT {
         checkInvalidStoredAqlQuery("", "");
     }
 
-    private void checkInvalidStoredAqlQuery(String qualifiedQueryName, String version){
+    private void checkInvalidStoredAqlQuery(String qualifiedQueryName, String version) {
         Exception exception = assertThrows(
                 ClientException.class,
-                () -> openEhrClient.aqlEndpoint().getStoredAqlQuery(qualifiedQueryName,version));
+                () -> openEhrClient.aqlEndpoint().getStoredAqlQuery(qualifiedQueryName, version));
 
         String expectedMessage = "Invalid query";
 
@@ -655,11 +654,10 @@ public class AqlTestIT {
     public void testStoreAndRetrieveAqlQuery() {
 
         Query<Record2<UUID, Double>> query = Query.buildNativeQuery(
-                "SELECT c " +
-                        "FROM EHR e[ehr_id/value=$ehr_id] " +
-                        "CONTAINS COMPOSITION c[openEHR-EHR-COMPOSITION.encounter.v1] " +
-                        "CONTAINS OBSERVATION obs[openEHR-EHR-OBSERVATION.blood_pressure.v1] " +
-                        "WHERE obs/data[at0001]/events[at0006]/data[at0003]/items[at0004]/value/magnitude >= 100",
+                "SELECT c " + "FROM EHR e[ehr_id/value=$ehr_id] "
+                        + "CONTAINS COMPOSITION c[openEHR-EHR-COMPOSITION.encounter.v1] "
+                        + "CONTAINS OBSERVATION obs[openEHR-EHR-OBSERVATION.blood_pressure.v1] "
+                        + "WHERE obs/data[at0001]/events[at0006]/data[at0003]/items[at0004]/value/magnitude >= 100",
                 UUID.class,
                 Double.class);
 
@@ -670,30 +668,33 @@ public class AqlTestIT {
         boolean successful = false;
 
         do {
-            //try to store the query
+            // try to store the query
             try {
-                openEhrClient.aqlEndpoint().storeAqlQuery(query, qualifiedQueryName, Optional.of(version + patchVersion), Optional.empty());
+                openEhrClient
+                        .aqlEndpoint()
+                        .storeAqlQuery(
+                                query, qualifiedQueryName, Optional.of(version + patchVersion), Optional.empty());
                 successful = true;
             } catch (Exception e) {
                 patchVersion++;
             }
-        }
-        while(!successful && patchVersion < 1000);
+        } while (!successful && patchVersion < 1000);
 
-        String fullVersion = version+patchVersion;
+        String fullVersion = version + patchVersion;
 
-        StoredQueryResponseData storedAqlQuery = openEhrClient.aqlEndpoint().getStoredAqlQuery(qualifiedQueryName, fullVersion);
+        StoredQueryResponseData storedAqlQuery =
+                openEhrClient.aqlEndpoint().getStoredAqlQuery(qualifiedQueryName, fullVersion);
 
-        //TODO: the qualified query name should not have the version number included
+        // TODO: the qualified query name should not have the version number included
         String expectedName = qualifiedQueryName + "/" + version + patchVersion;
-        assertEquals(expectedName,storedAqlQuery.getName());
+        assertEquals(expectedName, storedAqlQuery.getName());
 
-        //TODO: version is currently included within the qualified name and the version field is not filled
-        //this seems to not be conform to the specification
-        //https://specifications.openehr.org/releases/ITS-REST/Release-1.0.0/definitions.html#definitions-stored-query-get-1 (for Release 1.0.0)
-        //https://specifications.openehr.org/releases/ITS-REST/Release-1.0.2/definitions.html#definitions-stored-query-get-1 (for currently valid Release 1.0.2)
-        //assertEquals(fullVersion,storedAqlQuery.getVersion());
-        assertEquals(query.buildAql(),storedAqlQuery.getAqlQuery());
+        // TODO: version is currently included within the qualified name and the version field is not filled
+        // this seems to not be conform to the specification
+        // https://specifications.openehr.org/releases/ITS-REST/Release-1.0.0/definitions.html#definitions-stored-query-get-1 (for Release 1.0.0)
+        // https://specifications.openehr.org/releases/ITS-REST/Release-1.0.2/definitions.html#definitions-stored-query-get-1 (for currently valid Release 1.0.2)
+        // assertEquals(fullVersion,storedAqlQuery.getVersion());
+        assertEquals(query.buildAql(), storedAqlQuery.getAqlQuery());
     }
 
     @Test
@@ -702,11 +703,10 @@ public class AqlTestIT {
         ehr = openEhrClient.ehrEndpoint().createEhr();
 
         Query<Record2<UUID, Double>> query = Query.buildNativeQuery(
-                "SELECT c " +
-                        "FROM EHR e[ehr_id/value=$ehr_id] " +
-                        "CONTAINS COMPOSITION c[openEHR-EHR-COMPOSITION.encounter.v1] " +
-                        "CONTAINS OBSERVATION obs[openEHR-EHR-OBSERVATION.blood_pressure.v1] " +
-                        "WHERE obs/data[at0001]/events[at0006]/data[at0003]/items[at0004]/value/magnitude >= 100",
+                "SELECT c " + "FROM EHR e[ehr_id/value=$ehr_id] "
+                        + "CONTAINS COMPOSITION c[openEHR-EHR-COMPOSITION.encounter.v1] "
+                        + "CONTAINS OBSERVATION obs[openEHR-EHR-OBSERVATION.blood_pressure.v1] "
+                        + "WHERE obs/data[at0001]/events[at0006]/data[at0003]/items[at0004]/value/magnitude >= 100",
                 UUID.class,
                 Double.class);
 
@@ -717,27 +717,31 @@ public class AqlTestIT {
         boolean successful = false;
 
         do {
-            //try to store the query
+            // try to store the query
             try {
-                openEhrClient.aqlEndpoint().storeAqlQuery(query, qualifiedQueryName, Optional.of(version + patchVersion), Optional.empty());
+                openEhrClient
+                        .aqlEndpoint()
+                        .storeAqlQuery(
+                                query, qualifiedQueryName, Optional.of(version + patchVersion), Optional.empty());
                 successful = true;
             } catch (Exception e) {
                 patchVersion++;
             }
-        }
-        while(!successful && patchVersion < 1000);
+        } while (!successful && patchVersion < 1000);
 
-        String fullVersion = version+patchVersion;
+        String fullVersion = version + patchVersion;
 
-        QueryResponseData queryResponse = openEhrClient.aqlEndpoint().executeStoredQuery(qualifiedQueryName, fullVersion, Optional.empty(), Optional.empty(), Optional.empty());
+        QueryResponseData queryResponse = openEhrClient
+                .aqlEndpoint()
+                .executeStoredQuery(
+                        qualifiedQueryName, fullVersion, Optional.empty(), Optional.empty(), Optional.empty());
 
-        //TODO: the qualified query name should not have the version number included
+        // TODO: the qualified query name should not have the version number included
         String expectedName = qualifiedQueryName + "/" + version + patchVersion;
-        assertEquals(expectedName,queryResponse.getName());
+        assertEquals(expectedName, queryResponse.getName());
 
-        assertEquals(query.buildAql(),queryResponse.getQuery());
+        assertEquals(query.buildAql(), queryResponse.getQuery());
 
         assertTrue(queryResponse.getColumns().size() > 0);
     }
-
 }

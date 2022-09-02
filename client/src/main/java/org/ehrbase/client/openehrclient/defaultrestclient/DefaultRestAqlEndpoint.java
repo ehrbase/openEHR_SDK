@@ -35,7 +35,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.temporal.TemporalAccessor;
 import java.util.*;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.utils.URIBuilder;
@@ -181,14 +180,16 @@ public class DefaultRestAqlEndpoint implements AqlEndpoint {
     }
 
     @Override
-    public QueryResponseData executeStoredQuery(String qualifiedQueryName,
-                                                String version,
-                                                //Optional<UUID> ehrId, // TODO: ehr_id not available in openEHR 1.0.0 spec. Has to be included in queryParameter
-                                                Optional<Integer> offset,
-                                                Optional<Integer> fetch,
-                                                Optional<String> queryParameters) {
+    public QueryResponseData executeStoredQuery(
+            String qualifiedQueryName,
+            String version,
+            // Optional<UUID> ehrId, // TODO: ehr_id not available in openEHR 1.0.0 spec. Has to be included in
+            // queryParameter
+            Optional<Integer> offset,
+            Optional<Integer> fetch,
+            Optional<String> queryParameters) {
 
-        if (StringUtils.isEmpty(qualifiedQueryName) || StringUtils.isEmpty(version) ) {
+        if (StringUtils.isEmpty(qualifiedQueryName) || StringUtils.isEmpty(version)) {
             throw new ClientException("Invalid query");
         }
 
@@ -196,15 +197,14 @@ public class DefaultRestAqlEndpoint implements AqlEndpoint {
             throw new ClientException("Invalid queryParameters");
         }
 
-        URIBuilder uriBuilder = getBaseUriBuilder().setPath(
-                defaultRestClient.getConfig().getBaseUri().getPath()
-                + AQL_STORED_QUERY_PATH
-                + qualifiedQueryName + "/"
-                + version
-        );
+        URIBuilder uriBuilder = getBaseUriBuilder()
+                .setPath(defaultRestClient.getConfig().getBaseUri().getPath()
+                        + AQL_STORED_QUERY_PATH
+                        + qualifiedQueryName + "/"
+                        + version);
 
-        //TODO: ehr_id not available in openEHR 1.0.0 spec
-        //ehrId.ifPresent(value -> uriBuilder.addParameter("ehr_id", value.toString()));
+        // TODO: ehr_id not available in openEHR 1.0.0 spec
+        // ehrId.ifPresent(value -> uriBuilder.addParameter("ehr_id", value.toString()));
 
         offset.ifPresent(value -> uriBuilder.addParameter("offset", value.toString()));
 
@@ -214,9 +214,7 @@ public class DefaultRestAqlEndpoint implements AqlEndpoint {
 
         try {
             HttpResponse response = defaultRestClient.internalGet(
-                    uriBuilder.build(),
-                    Collections.emptyMap(),
-                    ContentType.APPLICATION_JSON.getMimeType());
+                    uriBuilder.build(), Collections.emptyMap(), ContentType.APPLICATION_JSON.getMimeType());
 
             String responseJson = EntityUtils.toString(response.getEntity());
 
@@ -228,22 +226,19 @@ public class DefaultRestAqlEndpoint implements AqlEndpoint {
 
     @Override
     public StoredQueryResponseData getStoredAqlQuery(String qualifiedQueryName, String version) {
-        if (StringUtils.isEmpty(qualifiedQueryName) || StringUtils.isEmpty(version) ) {
+        if (StringUtils.isEmpty(qualifiedQueryName) || StringUtils.isEmpty(version)) {
             throw new ClientException("Invalid query");
         }
 
-        URIBuilder uriBuilder = getBaseUriBuilder().setPath(
-                defaultRestClient.getConfig().getBaseUri().getPath()
+        URIBuilder uriBuilder = getBaseUriBuilder()
+                .setPath(defaultRestClient.getConfig().getBaseUri().getPath()
                         + AQL_STORED_QUERY_PATH
                         + qualifiedQueryName + "/"
-                        + version
-        );
+                        + version);
 
         try {
             HttpResponse response = defaultRestClient.internalGet(
-                    uriBuilder.build(),
-                    Collections.emptyMap(),
-                    ContentType.APPLICATION_JSON.getMimeType());
+                    uriBuilder.build(), Collections.emptyMap(), ContentType.APPLICATION_JSON.getMimeType());
 
             String responseJson = EntityUtils.toString(response.getEntity());
 
@@ -254,10 +249,7 @@ public class DefaultRestAqlEndpoint implements AqlEndpoint {
     }
 
     @Override
-    public void storeAqlQuery(Query query,
-                  String qualifiedQueryName,
-                  Optional<String> version,
-                  Optional<String> type){
+    public void storeAqlQuery(Query query, String qualifiedQueryName, Optional<String> version, Optional<String> type) {
 
         if (query == null) {
             throw new ClientException("Invalid query");
@@ -270,13 +262,12 @@ public class DefaultRestAqlEndpoint implements AqlEndpoint {
         JSONObject requestBody = new JSONObject();
         requestBody.put("q", query.buildAql());
 
-        URIBuilder uriBuilder = getBaseUriBuilder().setPath(
-                defaultRestClient.getConfig().getBaseUri().getPath()
-                + STORE_AQL_QUERY_PATH
-                + qualifiedQueryName
-                + "/"
-                + version.orElse("")
-        );
+        URIBuilder uriBuilder = getBaseUriBuilder()
+                .setPath(defaultRestClient.getConfig().getBaseUri().getPath()
+                        + STORE_AQL_QUERY_PATH
+                        + qualifiedQueryName
+                        + "/"
+                        + version.orElse(""));
 
         type.ifPresent(t -> uriBuilder.addParameter("type", t));
 
@@ -293,13 +284,13 @@ public class DefaultRestAqlEndpoint implements AqlEndpoint {
         }
     }
 
-    private URIBuilder getBaseUriBuilder(){
+    private URIBuilder getBaseUriBuilder() {
         URI baseUri = defaultRestClient.getConfig().getBaseUri();
 
-        return new URIBuilder().
-                setScheme(baseUri.getScheme()).
-                setHost(baseUri.getHost()).
-                setPort(baseUri.getPort());
+        return new URIBuilder()
+                .setScheme(baseUri.getScheme())
+                .setHost(baseUri.getHost())
+                .setPort(baseUri.getPort());
     }
 
     private Object extractValue(String valueAsString, Class<?> aClass)

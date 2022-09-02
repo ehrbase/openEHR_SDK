@@ -19,8 +19,6 @@ package org.ehrbase.client.openehrclient;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
-
 import org.ehrbase.client.aql.parameter.ParameterValue;
 import org.ehrbase.client.aql.query.Query;
 import org.ehrbase.client.aql.record.Record;
@@ -33,18 +31,16 @@ public interface AqlEndpoint {
 
     QueryResponseData executeRaw(Query query, ParameterValue... parameterValues);
 
-    QueryResponseData executeStoredQuery(String qualifiedQueryName,
-                                         String version,
-                                         //Optional<UUID> ehrId, // TODO: ehr_id not available in openEHR 1.0.0 spec. Has to be included in queryParameter
-                                         Optional<Integer> offset,
-                                         Optional<Integer> fetch,
-                                         Optional<String> queryParameters);
+    QueryResponseData executeStoredQuery(
+            String qualifiedQueryName,
+            String version,
+            // Optional<UUID> ehrId, // TODO: ehr_id not available in openEHR 1.0.0 spec. Has to be included in
+            // queryParameter
+            Optional<Integer> offset,
+            Optional<Integer> fetch,
+            Optional<String> queryParameters);
 
-    StoredQueryResponseData getStoredAqlQuery(String qualifiedQueryName,
-                                              String version);
+    StoredQueryResponseData getStoredAqlQuery(String qualifiedQueryName, String version);
 
-    void storeAqlQuery(Query query,
-                       String qualifiedQueryName,
-                       Optional<String> version,
-                       Optional<String> type);
+    void storeAqlQuery(Query query, String qualifiedQueryName, Optional<String> version, Optional<String> type);
 }
