@@ -552,6 +552,7 @@ public class AqlTestIT {
         performInvalidExecuteStoredQuery(new StoredQueryParameter(null, null));
         performInvalidExecuteStoredQuery(new StoredQueryParameter("queryName", null));
         performInvalidExecuteStoredQuery(new StoredQueryParameter(null, "version"));
+        performInvalidExecuteStoredQuery(new StoredQueryParameter("org.openehr::blablabla", null));
     }
 
     private void performInvalidExecuteStoredQuery(StoredQueryParameter requestParam) {
@@ -565,27 +566,11 @@ public class AqlTestIT {
     }
 
     @Test
-    public void testExecuteStoredAqlQueryInvalid2() {
-        performInvalidExecuteStoredQuery2(new StoredQueryParameter("org.openehr::blablabla", null));
-    }
-
-    private void performInvalidExecuteStoredQuery2(StoredQueryParameter requestParam) {
-        Exception exception = assertThrows(
-                WrongStatusCodeException.class,
-                () -> openEhrClient.aqlEndpoint().executeStoredQuery(requestParam));
-
-        String expectedMessage = "Could not retrieve stored query for qualified name";
-        String actualMessage = exception.getMessage();
-
-        assertTrue(actualMessage.contains(expectedMessage));
-    }
-
-    @Test
     public void testStoreAqlQueryInvalid1() {
-        performInvalidStoreAqlQuery(null, null);
-        performInvalidStoreAqlQuery(null, new StoredQueryParameter(null, null));
-        performInvalidStoreAqlQuery(null, new StoredQueryParameter("queryName", null));
-        performInvalidStoreAqlQuery(null, new StoredQueryParameter(null, "version"));
+        performInvalidStoreAqlQuery(null, null, "Invalid query");
+        performInvalidStoreAqlQuery(null, new StoredQueryParameter(null, null), "Invalid query");
+        performInvalidStoreAqlQuery(null, new StoredQueryParameter("queryName", null), "Invalid query");
+        performInvalidStoreAqlQuery(null, new StoredQueryParameter(null, "version"), "Invalid query");
 
         Query<Record2<UUID, Double>> query = Query.buildNativeQuery(
                 "select e/ehr_id/value,o/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/magnitude  "
@@ -595,17 +580,15 @@ public class AqlTestIT {
                 UUID.class,
                 Double.class);
 
-        performInvalidStoreAqlQuery(query, null);
-        performInvalidStoreAqlQuery(query, new StoredQueryParameter(null, null));
-        performInvalidStoreAqlQuery(query, new StoredQueryParameter("queryName", null));
-        performInvalidStoreAqlQuery(query, new StoredQueryParameter(null, "version"));
+        performInvalidStoreAqlQuery(query, null, "Invalid parameters");
+        performInvalidStoreAqlQuery(query, new StoredQueryParameter(null, null), "Invalid parameters");
+        performInvalidStoreAqlQuery(query, new StoredQueryParameter("queryName", null), "Invalid parameters");
+        performInvalidStoreAqlQuery(query, new StoredQueryParameter(null, "version"), "Invalid parameters");
     }
 
-    private void performInvalidStoreAqlQuery(Query query, StoredQueryParameter requestParam) {
+    private void performInvalidStoreAqlQuery(Query query, StoredQueryParameter requestParam, String expectedMessage) {
         Exception exception = assertThrows(
                 ClientException.class, () -> openEhrClient.aqlEndpoint().storeAqlQuery(query, requestParam));
-
-        String expectedMessage = "Invalid query";
 
         assertTrue(exception.getMessage().contains(expectedMessage));
     }
